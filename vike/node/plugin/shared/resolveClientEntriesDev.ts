@@ -12,8 +12,6 @@ import {
   requireResolveNonUserFile
 } from '../utils.js'
 import type { ViteDevServer } from 'vite'
-// @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
-const importMetaUrl: string = import.meta.url
 
 assertIsNotProductionRuntime()
 
@@ -40,11 +38,7 @@ async function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteD
   } else {
     if (clientEntry.startsWith('@@vike/')) {
       assert(clientEntry.endsWith('.js'))
-      // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/dist/esm/node/plugin/shared/resolveClientEntriesDev.js
-      filePath = requireResolveNonUserFile(
-        clientEntry.replace('@@vike/dist/esm/client/', '../../../../../dist/esm/client/') as `../${string}`,
-        { importMetaUrl }
-      )
+      filePath = requireResolveNonUserFile(`dist/esm/${clientEntry.replace('@@vike/dist/esm/', '')}`)
     } else {
       assertIsImportPathNpmPackage(clientEntry)
       filePath = requireResolveNpmPackage({ importPathNpmPackage: clientEntry, userRootDir })

@@ -31,8 +31,6 @@ import {
   handleAssetsManifest_assertUsageCssCodeSplit,
   handleAssetsManifest_getBuildConfig
 } from './handleAssetsManifest.js'
-// @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
-const importMetaUrl: string = import.meta.url
 const manifestTempFile = '_temp_manifest.json'
 
 function pluginBuildConfig(): Plugin[] {
@@ -106,8 +104,8 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
       ...clientEntries,
       ...pageFileEntries
     }
-    const clientRoutingEntry = resolve(`dist/esm/client/client-routing-runtime/entry.js`)
-    const serverRoutingEntry = resolve(`dist/esm/client/server-routing-runtime/entry.js`)
+    const clientRoutingEntry = requireResolveNonUserFile('dist/esm/client/client-routing-runtime/entry.js')
+    const serverRoutingEntry = requireResolveNonUserFile('dist/esm/client/server-routing-runtime/entry.js')
     if (hasClientRouting) {
       entries['entries/entry-client-routing'] = clientRoutingEntry
     }
@@ -219,12 +217,6 @@ function getEntryFromPageConfig(pageConfig: PageConfigBuildTime, isForClientSide
   entryName = prependEntriesDir(entryName)
   assert(!entryName.endsWith('/'))
   return { entryName, entryTarget }
-}
-
-function resolve(filePath: string) {
-  assert(filePath.startsWith('dist/'))
-  // [RELATIVE_PATH_FROM_DIST] Current directory: node_modules/vike/dist/esm/node/plugin/plugins/build/
-  return requireResolveNonUserFile(`../../../../../../${filePath}`, { importMetaUrl })
 }
 
 function addLogHook() {

@@ -27,7 +27,7 @@ function requireResolve_(
   assertPosixPath(importPath)
   assertPosixPath(importMetaUrl)
   assert(path.posix.basename(cwd).includes('.'), { cwd })
-  const importerPath = toFilePath(cwd)
+  const importerPath = addFilePrefix(cwd)
   const require_ = createRequire(
     // Seems like this gets overriden by the `paths` argument below.
     // - For example, passing an empty array to `paths` kills the argument passed to `createRequire()`.
@@ -74,14 +74,25 @@ function requireResolveOptionalDir({
   if (res.hasFailed) return null
   return res.importedFile
 }
-function requireResolveNonUserFile(importPath: `../${string}`, { importMetaUrl }: { importMetaUrl: string }) {
-  const res = requireResolve_(importPath, importMetaUrl, { doNotHandleFileExtension: true })
+function requireResolveNonUserFile(importPath: `dist/esm/${string}`) {
+  const vikeNodeModulesRoot = getVikeNodeModulesRoot()
+  assertPosixPath(vikeNodeModulesRoot)
+  assertPosixPath(importPath)
+  const importedFile = path.posix.join(vikeNodeModulesRoot, importPath)
+  const res = requireResolve_(
+    importedFile,
+    // TODO/now comment
+    importMetaUrl,
+    { doNotHandleFileExtension: true }
+  )
   if (res.hasFailed) throw res.err
+  assert(res.importedFile === importedFile)
   return res.importedFile
 }
 function getVikeNodeModulesRoot() {
-  // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/dist/esm/utils/requireResolve.ts
-  const vikeNodeModulesRoot = path.posix.join(importMetaUrl, '../../../../')
+  // [RELATIVE_PATH_FROM_DIST] Current file: vike/dist/esm/utils/requireResolve.js
+  assert(importMetaUrl.includes('/dist/esm/') || importMetaUrl.includes('/dist/cjs/'))
+  const vikeNodeModulesRoot = path.posix.join(removeFilePrefix(importMetaUrl), '../../../../')
   assert(vikeNodeModulesRoot.endsWith('vike/'), { vikeNodeModulesRoot }) // TODO/now remove
   return vikeNodeModulesRoot
 }
@@ -97,31 +108,34 @@ function requireResolveNpmPackage({
 }
 
 function toDirPath(filePath: string) {
-  let dirPath = path.posix.dirname(filePath)
-  const prefix = getFilePrefix()
-  if (dirPath.startsWith(prefix)) {
-    dirPath = dirPath.slice(prefix.length)
-  }
-  assert(!dirPath.startsWith('file'))
-  return dirPath
+  return path.posix.dirname(removeFilePrefix(filePath))
 }
-function toFilePath(filePath: string) {
+function addFilePrefix(filePath: string) {
   const filePrefix = getFilePrefix()
   if (!filePath.startsWith(filePrefix)) {
     assert(!filePath.startsWith('file'))
     filePath = filePrefix + filePath
   }
+  assert(filePath.startsWith(filePrefix))
   return filePath
 }
-function getFakeFilePath(dirPath: string) {
-  assertPosixPath(dirPath)
-  const filePath = path.posix.join(dirPath, 'fakeFileForNodeResolve.js')
+function removeFilePrefix(filePath: string) {
+  const filePrefix = getFilePrefix()
+  if (filePath.startsWith(filePrefix)) {
+    filePath = filePath.slice(filePrefix.length)
+  }
+  assert(!filePath.startsWith('file'))
   return filePath
 }
 function getFilePrefix() {
   let prefix = 'file://'
   if (process.platform === 'win32') prefix += '/'
   return prefix
+}
+function getFakeFilePath(dirPath: string) {
+  assertPosixPath(dirPath)
+  const filePath = path.posix.join(dirPath, 'fakeFileForNodeResolve.js')
+  return filePath
 }
 
 function removeFileExtention(importPath: string) {
@@ -141,7 +155,6 @@ function removeFileExtention(importPath: string) {
   }
   return importPath
 }
-
 function addFileExtensionsToRequireResolve(require_: NodeJS.Require) {
   const added: string[] = []
   scriptFileExtensionList.forEach((ext: string) => {
