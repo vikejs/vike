@@ -14,6 +14,7 @@ import path from 'node:path'
 import { assertIsImportPathNpmPackage, isImportPathNpmPackageOrPathAlias } from './parseNpmPackage.js'
 // @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
 const importMetaUrl: string = import.meta.url
+assertPosixPath(importMetaUrl)
 
 assertIsNotBrowser()
 assertIsNotProductionRuntime()
@@ -23,12 +24,12 @@ function requireResolve_(
   importerFile: string,
   options?: { doNotHandleFileExtension?: true; paths?: string[] }
 ) {
-  assertPosixPath(importerFile)
   assertPosixPath(importPath)
-  assertPosixPath(importMetaUrl)
-  assert(path.posix.basename(importerFile).includes('.'), { cwd: importerFile })
+  assertPosixPath(importerFile)
+
   const importerPath = addFilePrefix(importerFile)
   const require_ = createRequire(importerPath)
+
   if (!options?.doNotHandleFileExtension) {
     addFileExtensionsToRequireResolve(require_)
     importPath = removeFileExtention(importPath)
@@ -48,6 +49,14 @@ function requireResolve_(
     // - https://stackoverflow.com/questions/54977743/do-require-resolve-for-es-modules#comment139581675_62272600
     importedFile = require_.resolve(importPath, { paths })
   } catch (err) {
+    /* DEBUG
+    console.log('err', err)
+    console.log('importPath', importPath)
+    console.log('importerFile', importerFile)
+    console.log('importerPath', importerPath)
+    console.log('importMetaUrl', importMetaUrl)
+    console.log('paths', paths)
+    //*/
     return { importedFile: undefined, err, hasFailed: true as const }
   }
   importedFile = toPosixPath(importedFile)
@@ -68,7 +77,7 @@ function requireResolveOptionalDir({
   importerDir,
   userRootDir
 }: { importPath: string; importerDir: string; userRootDir: string }): string | null {
-  const importerFile = getFakeFilePath(importerDir)
+  const importerFile = getFakeImporterFile(importerDir)
   const paths = getExtraPathsForNpmPackageImport({ importPath, userRootDir })
   const res = requireResolve_(importPath, importerFile, { paths })
   if (res.hasFailed) return null
@@ -79,7 +88,7 @@ function requireResolveNpmPackage({
   userRootDir
 }: { importPathNpmPackage: string; userRootDir: string }): string {
   assertIsImportPathNpmPackage(importPathNpmPackage)
-  const importerFile = getFakeFilePath(userRootDir)
+  const importerFile = getFakeImporterFile(userRootDir)
   const paths = getExtraPathsForNpmPackageImport({ importPath: importPathNpmPackage, userRootDir })
   const res = requireResolve_(importPathNpmPackage, importerFile, { paths })
   if (res.hasFailed) throw res.err
@@ -95,7 +104,7 @@ function requireResolveVikeDistFile(vikeDistFile: `dist/esm/${string}`) {
   {
     const res = requireResolve_(
       importedFile,
-      // Passing some dummy context as the context isn't needed since importerFile is already resolved and absolute
+      // Passing some dummy context as the context isn't needed since importedFile is already resolved and absolute
       importMetaUrl,
       { doNotHandleFileExtension: true }
     )
@@ -162,11 +171,11 @@ function toDirPath(filePath: string) {
   return path.posix.dirname(removeFilePrefix(filePath))
 }
 
-function getFakeFilePath(dirPath: string) {
+function getFakeImporterFile(dirPath: string) {
   assertPosixPath(dirPath)
-  assert(!dirPath.startsWith('file')) // The file:// prefix is bogus with path.join
-  const filePath = path.posix.join(dirPath, 'fakeFileForNodeResolve.js')
-  return filePath
+  assert(!dirPath.startsWith('file')) // The file:// prefix is bogus when used with path.posix.join()
+  const importerFile = path.posix.join(dirPath, 'fakeFileForNodeResolve.js')
+  return importerFile
 }
 
 function addFilePrefix(filePath: string) {
