@@ -18,9 +18,9 @@ const importMetaUrl: string = import.meta.url
 assertIsNotProductionRuntime()
 
 async function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteDevServer): Promise<string> {
-  let root = viteDevServer.config.root
-  assert(root)
-  root = toPosixPath(root)
+  let userRootDir = viteDevServer.config.root
+  assert(userRootDir)
+  userRootDir = toPosixPath(userRootDir)
 
   // The `?import` suffix is needed for MDX to be transpiled:
   //   - Not transpiled: `/pages/markdown.page.mdx`
@@ -36,7 +36,7 @@ async function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteD
   assertPosixPath(clientEntry)
   let filePath: string
   if (clientEntry.startsWith('/')) {
-    filePath = pathJoin(root, clientEntry)
+    filePath = pathJoin(userRootDir, clientEntry)
   } else {
     if (clientEntry.startsWith('@@vike/')) {
       assert(clientEntry.endsWith('.js'))
@@ -59,7 +59,7 @@ async function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteD
       filePath = filePath_
     } else {
       assertIsImportPathNpmPackage(clientEntry)
-      filePath = requireResolve(clientEntry, root)
+      filePath = requireResolve(clientEntry, userRootDir)
     }
   }
 
