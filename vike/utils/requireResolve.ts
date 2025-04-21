@@ -114,8 +114,7 @@ function getExtraPathsForNpmPackageImport({ importPath, userRootDir }: { importP
     return undefined
   }
   const paths = [
-    // Workaround for monorepo resolve issue
-    // https://github.com/vikejs/vike-react/commit/b2df70c7c1a172dceb9fcd01a95e9603af9999a4
+    // Workaround for monorepo resolve issue: https://github.com/vikejs/vike-react/pull/161/commits/dbaa6643e78015ac2797c237552800fef29b72a7
     userRootDir,
     // I can't think of a use case where this would be needed, but let's add it to be extra safe
     toDirPath(importMetaUrl)
