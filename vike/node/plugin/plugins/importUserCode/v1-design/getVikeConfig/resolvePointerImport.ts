@@ -14,7 +14,6 @@ import {
   requireResolveOptional
 } from '../../../../utils.js'
 import { type PointerImportData, assertPointerImportPath, parsePointerImportData } from './pointerImports.js'
-import path from 'path'
 import {
   getFilePathAbsoluteUserRootDir,
   getFilePathResolved,
@@ -113,9 +112,12 @@ function resolveImportPathWithNode(
 ): string | null {
   const importerFilePathAbsolute = importerFilePath.filePathAbsoluteFilesystem
   assertPosixPath(importerFilePathAbsolute)
-  const cwd = path.posix.dirname(importerFilePathAbsolute)
   // filePathAbsoluteFilesystem is null when pointerImportData.importPath is a path alias that Node.js doesn't know about
-  const filePathAbsoluteFilesystem = requireResolveOptional(pointerImportData.importPath, cwd, userRootDir)
+  const filePathAbsoluteFilesystem = requireResolveOptional(
+    pointerImportData.importPath,
+    importerFilePathAbsolute,
+    userRootDir
+  )
   if (!filePathAbsoluteFilesystem) {
     assert(!isImportPathRelative(pointerImportData.importPath))
     // Libraries don't use path aliases => filePathAbsoluteFilesystem should be defined

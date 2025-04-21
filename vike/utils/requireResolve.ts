@@ -24,21 +24,22 @@ function requireResolve_(
   assertPosixPath(importPath)
   assertPosixPath(importMetaUrl)
   assert(path.posix.basename(cwd).includes('.'), { cwd })
+  const importerPath = toFilePath(cwd)
   const require_ = createRequire(
     // Seems like this gets overriden by the `paths` argument below.
     // - For example, passing an empty array to `paths` kills the argument passed to `createRequire()`.
-    cwd
+    importerPath
   )
   if (!options?.doNotHandleFileExtension) {
     addFileExtensionsToRequireResolve(require_)
     importPath = removeFileExtention(importPath)
   }
   const paths = [
-    cwd,
+    toDirPath(cwd),
     ...(options?.paths || []),
     // TODO/now: comment
-    importMetaUrl
-  ].map(resolveCwd)
+    toDirPath(importMetaUrl)
+  ]
 
   let importedFile: string
   try {
@@ -72,15 +73,27 @@ function requireResolve(importPath: string, cwd: string): string {
   return res.importedFile
 }
 
-function resolveCwd(cwd: string) {
+function toDirPath(filePath: string) {
+  let dirPath = path.posix.dirname(filePath)
+  const prefix = getFilePrefix()
+  if (dirPath.startsWith(prefix)) {
+    dirPath = dirPath.slice(prefix.length)
+  }
+  assert(!dirPath.startsWith('file'))
+  return dirPath
+}
+function toFilePath(filePath: string) {
+  const filePrefix = getFilePrefix()
+  if (!filePath.startsWith(filePrefix)) {
+    assert(!filePath.startsWith('file'))
+    filePath = filePrefix + filePath
+  }
+  return filePath
+}
+function getFilePrefix() {
   let prefix = 'file://'
   if (process.platform === 'win32') prefix += '/'
-  if (cwd.startsWith(prefix)) {
-    cwd = cwd.slice(prefix.length)
-    cwd = path.posix.dirname(cwd)
-  }
-  assert(!cwd.startsWith('file:'))
-  return cwd
+  return prefix
 }
 
 function removeFileExtention(importPath: string) {
