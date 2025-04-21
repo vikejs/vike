@@ -12,7 +12,8 @@ import {
   hasProp,
   isDevCheck,
   isDocker,
-  isObject
+  isObject,
+  isVitest
 } from '../utils.js'
 import { assertRollupInput } from './build/pluginBuildConfig.js'
 import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
@@ -210,6 +211,7 @@ function assertSingleInstance(config: ResolvedConfig) {
 
 function assertVikeCliOrApi(config: ResolvedConfig) {
   if (isVikeCliOrApi()) return
+  if (isVitest()) return
   if (isViteCliCall()) {
     assertWarning(false, `Vite's CLI is deprecated ${pc.underline('https://vike.dev/migration/cli')}`, {
       onlyOnce: true
