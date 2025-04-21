@@ -11,7 +11,7 @@ import { assertPosixPath, toPosixPath } from './path.js'
 import { scriptFileExtensionList } from './isScriptFile.js'
 import { createRequire } from 'node:module'
 import path from 'node:path'
-import { assertIsImportPathNpmPackage } from './parseNpmPackage.js'
+import { assertIsImportPathNpmPackage, isImportPathNpmPackageOrPathAlias } from './parseNpmPackage.js'
 // @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
 const importMetaUrl: string = import.meta.url
 
@@ -28,21 +28,19 @@ function requireResolve_(
   assertPosixPath(importMetaUrl)
   assert(path.posix.basename(importerFile).includes('.'), { cwd: importerFile })
   const importerPath = addFilePrefix(importerFile)
-  const require_ = createRequire(
-    // Seems like this gets overriden by the `paths` argument below.
-    // - For example, passing an empty array to `paths` kills the argument passed to `createRequire()`.
-    importerPath
-  )
+  const require_ = createRequire(importerPath)
   if (!options?.doNotHandleFileExtension) {
     addFileExtensionsToRequireResolve(require_)
     importPath = removeFileExtention(importPath)
   }
-  const paths = [
-    toDirPath(importerFile),
-    ...(options?.paths || []),
-    // TODO/now: comment
-    toDirPath(importMetaUrl)
-  ]
+
+  const paths = !options?.paths
+    ? undefined
+    : [
+        // Seems like `importerPath` gets overriden by the `paths` argument, so we add it to `paths`. (For example, passing an empty array to `paths` kills the argument passed to `createRequire()`.)
+        toDirPath(importerFile),
+        ...(options?.paths || [])
+      ]
 
   let importedFile: string
   try {
@@ -60,7 +58,8 @@ function requireResolveOptional({
   importerFile,
   userRootDir
 }: { importPath: string; importerFile: string; userRootDir: string }): string | null {
-  const res = requireResolve_(importPath, importerFile, { paths: [userRootDir] })
+  const paths = getExtraPathsForNpmPackageImport({ importPath, userRootDir })
+  const res = requireResolve_(importPath, importerFile, { paths })
   if (res.hasFailed) return null
   return res.importedFile
 }
@@ -70,9 +69,26 @@ function requireResolveOptionalDir({
   userRootDir
 }: { importPath: string; importerDir: string; userRootDir: string }): string | null {
   const importerFile = getFakeFilePath(importerDir)
-  const res = requireResolve_(importPath, importerFile, { paths: [userRootDir] })
+  const paths = getExtraPathsForNpmPackageImport({ importPath, userRootDir })
+  const res = requireResolve_(importPath, importerFile, { paths })
   if (res.hasFailed) return null
   return res.importedFile
+}
+function getExtraPathsForNpmPackageImport({ importPath, userRootDir }: { importPath: string; userRootDir: string }) {
+  if (
+    // Ideally we'd set `paths` only for npm packages, but unfortunately we cannot always disambiguate between npm package imports and path aliases.
+    !isImportPathNpmPackageOrPathAlias(importPath)
+  ) {
+    return undefined
+  }
+  const paths = [
+    // Workaround for monorepo resolve issue
+    // https://github.com/vikejs/vike-react/commit/b2df70c7c1a172dceb9fcd01a95e9603af9999a4
+    userRootDir,
+    // I can't think of a use case where this would be needed, but let's add it to be extra safe
+    toDirPath(importMetaUrl)
+  ]
+  return paths
 }
 function requireResolveVikeDistFile(vikeDistFile: `dist/esm/${string}`) {
   const vikeNodeModulesRoot = getVikeNodeModulesRoot()
@@ -106,7 +122,8 @@ function requireResolveNpmPackage({
 }: { importPathNpmPackage: string; userRootDir: string }): string {
   assertIsImportPathNpmPackage(importPathNpmPackage)
   const importerFile = getFakeFilePath(userRootDir)
-  const res = requireResolve_(importPathNpmPackage, importerFile)
+  const paths = getExtraPathsForNpmPackageImport({ importPath: importPathNpmPackage, userRootDir })
+  const res = requireResolve_(importPathNpmPackage, importerFile, { paths })
   if (res.hasFailed) throw res.err
   return res.importedFile
 }
