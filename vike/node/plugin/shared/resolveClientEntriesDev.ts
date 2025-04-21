@@ -46,14 +46,14 @@ async function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteD
         // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/node/plugin/shared/resolveClientEntriesDev.js
         filePath_ = requireResolveNonUserFile(
           clientEntry.replace('@@vike/dist/esm/client/', '../../../client/').replace('.js', '.ts'),
-          importMetaUrl
+          { importMetaUrl }
         )
       } else {
         // For most use cases.
         // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/dist/esm/node/plugin/shared/resolveClientEntriesDev.js
         filePath_ = requireResolveNonUserFile(
           clientEntry.replace('@@vike/dist/esm/client/', '../../../../../dist/esm/client/'),
-          importMetaUrl
+          { importMetaUrl }
         )
       }
       assert(filePath_)

@@ -224,7 +224,7 @@ function getEntryFromPageConfig(pageConfig: PageConfigBuildTime, isForClientSide
 function resolve(filePath: string) {
   assert(filePath.startsWith('dist/'))
   // [RELATIVE_PATH_FROM_DIST] Current directory: node_modules/vike/dist/esm/node/plugin/plugins/build/
-  return requireResolveNonUserFile(`../../../../../../${filePath}`, importMetaUrl)
+  return requireResolveNonUserFile(`../../../../../../${filePath}`, { importMetaUrl })
 }
 
 function addLogHook() {

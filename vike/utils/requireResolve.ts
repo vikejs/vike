@@ -57,8 +57,8 @@ function requireResolveOptional(importPath: string, cwd: string, userRootDir: st
   if (res.hasFailed) return null
   return res.importedFile
 }
-function requireResolveNonUserFile(importPath: string, cwd: string) {
-  const res = requireResolve_(importPath, cwd, { doNotHandleFileExtension: true })
+function requireResolveNonUserFile(importPath: string, { importMetaUrl }: { importMetaUrl: string }) {
+  const res = requireResolve_(importPath, importMetaUrl, { doNotHandleFileExtension: true })
   if (res.hasFailed) throw res.err
   return res.importedFile
 }

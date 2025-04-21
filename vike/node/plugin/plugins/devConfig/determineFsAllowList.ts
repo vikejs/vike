@@ -28,7 +28,7 @@ async function determineFsAllowList(config: ResolvedConfig) {
     // [RELATIVE_PATH_FROM_DIST] Current directory: node_modules/vike/dist/esm/node/plugin/plugins/config/
     const vikeRoot = path.posix.join(__dirname_, '../../../../../../')
     // Assert that `vikeRoot` is indeed pointing to `node_modules/vike/`
-    requireResolveNonUserFile(`${vikeRoot}/dist/esm/node/plugin/plugins/devConfig/index.js`, importMetaUrl)
+    requireResolveNonUserFile(`${vikeRoot}/dist/esm/node/plugin/plugins/devConfig/index.js`, { importMetaUrl })
     fsAllow.push(vikeRoot)
   }
 }
