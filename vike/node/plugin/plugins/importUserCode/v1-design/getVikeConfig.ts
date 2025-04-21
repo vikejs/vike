@@ -139,7 +139,7 @@ async function handleReloadSideEffects() {
     }
   }
 }
-// TODO/soon: predominantly use getVikeConfigPublic() instead of getVikeConfig() then maybe refector?
+// TODO/soon: predominantly use getVikeConfigInternal() instead of getVikeConfig() then maybe refector?
 async function getVikeConfig(
   config: ResolvedConfig,
   { doNotRestartViteOnError }: { doNotRestartViteOnError?: true } = {}
