@@ -8,7 +8,7 @@ import {
   pathJoin,
   assertIsImportPathNpmPackage,
   assertIsNotProductionRuntime,
-  requireResolve,
+  requireResolveNpmPackage,
   requireResolveNonUserFile
 } from '../utils.js'
 import type { ViteDevServer } from 'vite'
@@ -60,7 +60,7 @@ async function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteD
       filePath = filePath_
     } else {
       assertIsImportPathNpmPackage(clientEntry)
-      filePath = requireResolve({ importPath: clientEntry, userRootDir })
+      filePath = requireResolveNpmPackage({ importPathNpmPackage: clientEntry, userRootDir })
     }
   }
 

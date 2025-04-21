@@ -1,6 +1,6 @@
-export { requireResolve }
 export { requireResolveOptional }
 export { requireResolveOptionalDir }
+export { requireResolveNpmPackage }
 export { requireResolveNonUserFile }
 
 import { assert } from './assert.js'
@@ -10,6 +10,7 @@ import { assertPosixPath, toPosixPath } from './path.js'
 import { scriptFileExtensionList } from './isScriptFile.js'
 import { createRequire } from 'node:module'
 import path from 'node:path'
+import { assertIsImportPathNpmPackage } from './parseNpmPackage.js'
 // @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
 const importMetaUrl: string = import.meta.url
 
@@ -77,8 +78,13 @@ function requireResolveNonUserFile(importPath: string, { importMetaUrl }: { impo
   if (res.hasFailed) throw res.err
   return res.importedFile
 }
-function requireResolve({ importPath, userRootDir }: { importPath: string; userRootDir: string }): string {
-  const res = requireResolve_(importPath, importMetaUrl, { paths: [userRootDir] })
+function requireResolveNpmPackage({
+  importPathNpmPackage,
+  userRootDir
+}: { importPathNpmPackage: string; userRootDir: string }): string {
+  assertIsImportPathNpmPackage(importPathNpmPackage)
+  const importerFile = getFakeFilePath(userRootDir)
+  const res = requireResolve_(importPathNpmPackage, importerFile)
   if (res.hasFailed) throw res.err
   return res.importedFile
 }
