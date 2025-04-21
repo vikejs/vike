@@ -24,5 +24,6 @@ async function determineFsAllowList(config: ResolvedConfig) {
   fsAllow.push(searchForWorkspaceRoot(process.cwd()))
 
   // Add node_modules/vike/
-  fsAllow.push(getVikeNodeModulesRoot())
+  const vikeNodeModulesRoot = getVikeNodeModulesRoot()
+  fsAllow.push(vikeNodeModulesRoot)
 }

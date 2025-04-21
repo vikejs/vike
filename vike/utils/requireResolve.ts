@@ -134,6 +134,7 @@ function getFilePrefix() {
 }
 function getFakeFilePath(dirPath: string) {
   assertPosixPath(dirPath)
+  assert(!dirPath.startsWith('file')) // The file:// prefix is bogus with path.join
   const filePath = path.posix.join(dirPath, 'fakeFileForNodeResolve.js')
   return filePath
 }
