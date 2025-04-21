@@ -2,6 +2,7 @@ export { requireResolveOptional }
 export { requireResolveOptionalDir }
 export { requireResolveNpmPackage }
 export { requireResolveNonUserFile }
+export { getVikeNodeModulesRoot }
 
 import { assert } from './assert.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
@@ -73,10 +74,16 @@ function requireResolveOptionalDir({
   if (res.hasFailed) return null
   return res.importedFile
 }
-function requireResolveNonUserFile(importPath: string, { importMetaUrl }: { importMetaUrl: string }) {
+function requireResolveNonUserFile(importPath: `../${string}`, { importMetaUrl }: { importMetaUrl: string }) {
   const res = requireResolve_(importPath, importMetaUrl, { doNotHandleFileExtension: true })
   if (res.hasFailed) throw res.err
   return res.importedFile
+}
+function getVikeNodeModulesRoot() {
+  // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/dist/esm/utils/requireResolve.ts
+  const vikeNodeModulesRoot = path.posix.join(importMetaUrl, '../../../../')
+  assert(vikeNodeModulesRoot.endsWith('vike/'), { vikeNodeModulesRoot }) // TODO/now remove
+  return vikeNodeModulesRoot
 }
 function requireResolveNpmPackage({
   importPathNpmPackage,

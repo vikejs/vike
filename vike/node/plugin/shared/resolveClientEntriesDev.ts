@@ -45,14 +45,14 @@ async function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteD
         // For Vitest (which doesn't resolve vike to its dist but to its source files).
         // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/node/plugin/shared/resolveClientEntriesDev.js
         filePath_ = requireResolveNonUserFile(
-          clientEntry.replace('@@vike/dist/esm/client/', '../../../client/').replace('.js', '.ts'),
+          clientEntry.replace('@@vike/dist/esm/client/', '../../../client/').replace('.js', '.ts') as `../${string}`,
           { importMetaUrl }
         )
       } else {
         // For most use cases.
         // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/dist/esm/node/plugin/shared/resolveClientEntriesDev.js
         filePath_ = requireResolveNonUserFile(
-          clientEntry.replace('@@vike/dist/esm/client/', '../../../../../dist/esm/client/'),
+          clientEntry.replace('@@vike/dist/esm/client/', '../../../../../dist/esm/client/') as `../${string}`,
           { importMetaUrl }
         )
       }

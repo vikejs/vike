@@ -3,7 +3,7 @@ export { determineFsAllowList }
 import { searchForWorkspaceRoot } from 'vite'
 import type { ResolvedConfig } from 'vite'
 import path from 'node:path'
-import { assert, assertPosixPath, requireResolveNonUserFile } from '../../utils.js'
+import { assert, assertPosixPath, getVikeNodeModulesRoot } from '../../utils.js'
 import { fileURLToPath } from 'url'
 // @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
 const importMetaUrl: string = import.meta.url
@@ -24,11 +24,5 @@ async function determineFsAllowList(config: ResolvedConfig) {
   fsAllow.push(searchForWorkspaceRoot(process.cwd()))
 
   // Add node_modules/vike/
-  {
-    // [RELATIVE_PATH_FROM_DIST] Current directory: node_modules/vike/dist/esm/node/plugin/plugins/config/
-    const vikeRoot = path.posix.join(__dirname_, '../../../../../../')
-    // Assert that `vikeRoot` is indeed pointing to `node_modules/vike/`
-    requireResolveNonUserFile(`${vikeRoot}/dist/esm/node/plugin/plugins/devConfig/index.js`, { importMetaUrl })
-    fsAllow.push(vikeRoot)
-  }
+  fsAllow.push(getVikeNodeModulesRoot())
 }
