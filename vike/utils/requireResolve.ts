@@ -50,6 +50,12 @@ function requireResolve_(
     // - https://stackoverflow.com/questions/54977743/do-require-resolve-for-es-modules#comment139581675_62272600
     importedFile = require_.resolve(importPath, { paths })
   } catch (err) {
+    console.log('err', err)
+    console.log('importMetaUrl', importMetaUrl)
+    console.log('importPath', importPath)
+    console.log('cwd', cwd)
+    console.log('importerPath', importerPath)
+    console.log('paths', paths)
     return { importedFile: undefined, err, hasFailed: true as const }
   }
   importedFile = toPosixPath(importedFile)
