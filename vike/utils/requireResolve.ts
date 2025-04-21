@@ -46,18 +46,7 @@ function requireResolve_(
     // - https://stackoverflow.com/questions/54977743/do-require-resolve-for-es-modules#comment139581675_62272600
     importedFile = require_.resolve(importPath, { paths })
   } catch (err) {
-    console.log('err', err)
-    console.log('importPath', importPath)
-    console.log('cwd', cwd)
-    console.log('paths', paths)
     return { importedFile: undefined, err, hasFailed: true as const }
-  }
-  if (importedFile.includes('runtime')) {
-    console.log('success', new Error().stack)
-    console.log('importPath', importPath)
-    console.log('importedFile', importedFile)
-    console.log('cwd', cwd)
-    console.log('paths', paths)
   }
   importedFile = toPosixPath(importedFile)
   return { importedFile, err: undefined, hasFailed: false as const }
