@@ -1,7 +1,7 @@
 export { requireResolveOptional }
 export { requireResolveOptionalDir }
 export { requireResolveNpmPackage }
-export { requireResolveNonUserFile }
+export { requireResolveVikeDistFile }
 export { getVikeNodeModulesRoot }
 
 import { assert } from './assert.js'
@@ -74,7 +74,7 @@ function requireResolveOptionalDir({
   if (res.hasFailed) return null
   return res.importedFile
 }
-function requireResolveNonUserFile(importPath: `dist/esm/${string}`) {
+function requireResolveVikeDistFile(importPath: `dist/esm/${string}`) {
   const vikeNodeModulesRoot = getVikeNodeModulesRoot()
   assertPosixPath(vikeNodeModulesRoot)
   assertPosixPath(importPath)
