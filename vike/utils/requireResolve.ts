@@ -93,7 +93,6 @@ function getVikeNodeModulesRoot() {
   // [RELATIVE_PATH_FROM_DIST] Current file: vike/dist/esm/utils/requireResolve.js
   assert(importMetaUrl.includes('/dist/esm/') || importMetaUrl.includes('/dist/cjs/'))
   const vikeNodeModulesRoot = path.posix.join(removeFilePrefix(importMetaUrl), '../../../../')
-  assert(vikeNodeModulesRoot.endsWith('vike/'), { vikeNodeModulesRoot }) // TODO/now remove
   return vikeNodeModulesRoot
 }
 function requireResolveNpmPackage({
