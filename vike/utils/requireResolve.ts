@@ -77,8 +77,8 @@ function requireResolveNonUserFile(importPath: string, { importMetaUrl }: { impo
   if (res.hasFailed) throw res.err
   return res.importedFile
 }
-function requireResolve(importPath: string, cwd: string): string {
-  const res = requireResolve_(importPath, cwd)
+function requireResolve({ importPath, userRootDir }: { importPath: string; userRootDir: string }): string {
+  const res = requireResolve_(importPath, importMetaUrl, { paths: [userRootDir] })
   if (res.hasFailed) throw res.err
   return res.importedFile
 }

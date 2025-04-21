@@ -60,7 +60,7 @@ async function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteD
       filePath = filePath_
     } else {
       assertIsImportPathNpmPackage(clientEntry)
-      filePath = requireResolve(clientEntry, userRootDir)
+      filePath = requireResolve({ importPath: clientEntry, userRootDir })
     }
   }
 
