@@ -21,14 +21,14 @@ assertIsNotProductionRuntime()
 
 function requireResolve_(
   importPath: string,
-  importerFile: string | null,
+  importerFilePath: string | null,
   options?: { doNotHandleFileExtension?: true; paths?: string[] }
 ) {
-  importerFile ??= importMetaUrl // dummy context
+  importerFilePath ??= importMetaUrl // dummy context
   assertPosixPath(importPath)
-  assertPosixPath(importerFile)
+  assertPosixPath(importerFilePath)
 
-  const importerPath = addFilePrefix(importerFile)
+  const importerPath = addFilePrefix(importerFilePath)
   const require_ = createRequire(
     // Adding `importerPath` to `paths` isn't equivalent: https://github.com/brillout/require-test
     // In practice, I guess it doesn't make a difference though?
@@ -44,7 +44,7 @@ function requireResolve_(
     ? undefined
     : [
         // Seems like `importerPath` gets overriden by the `paths` argument, so we add it to `paths`. (For example, passing an empty array to `paths` kills the argument passed to `createRequire()`.)
-        toDirPath(importerFile),
+        toDirPath(importerFilePath),
         ...(options?.paths || [])
       ]
 
@@ -57,7 +57,7 @@ function requireResolve_(
     /* DEBUG
     console.log('err', err)
     console.log('importPath', importPath)
-    console.log('importerFile', importerFile)
+    console.log('importerFilePath', importerFilePath)
     console.log('importerPath', importerPath)
     console.log('importMetaUrl', importMetaUrl)
     console.log('paths', paths)
@@ -69,11 +69,11 @@ function requireResolve_(
 }
 function requireResolveOptional({
   importPath,
-  importerFile,
+  importerFilePath,
   userRootDir
-}: { importPath: string; importerFile: string; userRootDir: string }): string | null {
+}: { importPath: string; importerFilePath: string; userRootDir: string }): string | null {
   const paths = getExtraPathsForNpmPackageImport({ importPath, userRootDir })
-  const res = requireResolve_(importPath, importerFile, { paths })
+  const res = requireResolve_(importPath, importerFilePath, { paths })
   if (res.hasFailed) return null
   return res.importPathResolvedFilePath
 }
@@ -82,9 +82,9 @@ function requireResolveOptionalDir({
   importerDir,
   userRootDir
 }: { importPath: string; importerDir: string; userRootDir: string }): string | null {
-  const importerFile = getFakeImporterFile(importerDir)
+  const importerFilePath = getFakeImporterFile(importerDir)
   const paths = getExtraPathsForNpmPackageImport({ importPath, userRootDir })
-  const res = requireResolve_(importPath, importerFile, { paths })
+  const res = requireResolve_(importPath, importerFilePath, { paths })
   if (res.hasFailed) return null
   return res.importPathResolvedFilePath
 }
@@ -93,9 +93,9 @@ function requireResolveNpmPackage({
   userRootDir
 }: { importPathNpmPackage: string; userRootDir: string }): string {
   assertIsImportPathNpmPackage(importPathNpmPackage)
-  const importerFile = getFakeImporterFile(userRootDir)
+  const importerFilePath = getFakeImporterFile(userRootDir)
   const paths = getExtraPathsForNpmPackageImport({ importPath: importPathNpmPackage, userRootDir })
-  const res = requireResolve_(importPathNpmPackage, importerFile, { paths })
+  const res = requireResolve_(importPathNpmPackage, importerFilePath, { paths })
   if (res.hasFailed) throw res.err
   return res.importPathResolvedFilePath
 }
@@ -179,8 +179,8 @@ function toDirPath(filePath: string) {
 function getFakeImporterFile(dirPath: string) {
   assertPosixPath(dirPath)
   assert(!dirPath.startsWith('file')) // The file:// prefix is bogus when used with path.posix.join()
-  const importerFile = path.posix.join(dirPath, 'fakeFileForNodeResolve.js')
-  return importerFile
+  const importerFilePath = path.posix.join(dirPath, 'fakeFileForNodeResolve.js')
+  return importerFilePath
 }
 
 function addFilePrefix(filePath: string) {

@@ -115,7 +115,7 @@ function resolveImportPathWithNode(
   // filePathAbsoluteFilesystem is null when pointerImportData.importPath is a path alias that Node.js doesn't know about
   const filePathAbsoluteFilesystem = requireResolveOptional({
     importPath: pointerImportData.importPath,
-    importerFile: importerFilePathAbsolute,
+    importerFilePath: importerFilePathAbsolute,
     userRootDir
   })
   if (!filePathAbsoluteFilesystem) {
