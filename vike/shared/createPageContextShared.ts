@@ -16,7 +16,7 @@ async function createPageContextShared<T extends object>(
   objectAssign(
     pageContextCreated,
     {
-      _isPageContextObject: true,
+      isPageContext: true,
       ...pageConfigGlobalUserFriendly
     },
     true

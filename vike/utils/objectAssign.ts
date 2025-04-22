@@ -11,6 +11,6 @@ function objectAssign<Obj extends object, ObjAddendum extends object | null | un
   objAddendumCanBePageContextObject?: true
 ): asserts obj is Obj & ObjAddendum {
   if (!objAddendum) return
-  if (!objAddendumCanBePageContextObject) assert(!('_isPageContextObject' in objAddendum))
+  if (!objAddendumCanBePageContextObject) assert(!('isPageContext' in objAddendum))
   Object.defineProperties(obj, Object.getOwnPropertyDescriptors(objAddendum))
 }
