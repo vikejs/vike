@@ -21,9 +21,10 @@ assertIsNotProductionRuntime()
 
 function requireResolve_(
   importPath: string,
-  importerFile: string,
+  importerFile: string | null,
   options?: { doNotHandleFileExtension?: true; paths?: string[] }
 ) {
+  importerFile ??= importMetaUrl // dummy context
   assertPosixPath(importPath)
   assertPosixPath(importerFile)
 
@@ -108,8 +109,8 @@ function requireResolveVikeDistFile(vikeDistFile: `dist/esm/${string}`) {
   {
     const res = requireResolve_(
       importedFile,
-      // Passing some dummy context as the context isn't needed since importedFile is already resolved and absolute
-      importMetaUrl,
+      // No context needed: importedFile is already resolved and absolute
+      null,
       { doNotHandleFileExtension: true }
     )
     if (res.hasFailed) throw res.err
