@@ -12,6 +12,7 @@ import { scriptFileExtensionList } from './isScriptFile.js'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import { assertIsImportPathNpmPackage, isImportPathNpmPackageOrPathAlias } from './parseNpmPackage.js'
+import { isNotNullish } from './isNullish.js'
 // @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
 const importMetaUrl: string = import.meta.url
 assertPosixPath(importMetaUrl)
@@ -31,21 +32,21 @@ assertIsNotProductionRuntime()
 function requireResolve_(
   importPath: string,
   importerFilePath: string | null,
-  options: { doNotHandleFileExtension?: true; userRootDir?: string } = {}
+  { userRootDir, doNotHandleFileExtension }: { userRootDir?: string; doNotHandleFileExtension?: true } = {}
 ) {
   assertPosixPath(importPath)
 
-  const contexts = !importerFilePath
-    ? [importMetaUrl] // dummy context
-    : [addFilePrefix(importerFilePath)]
-  contexts.push(...getExtraContextForNpmPackageImport({ importPath, ...options }))
+  const contexts = importerFilePath
+    ? [importerFilePath]
+    : [userRootDir ? getFakeImporterFile(userRootDir) : importMetaUrl]
+  addExtraContextForNpmPackageImport(contexts, { importPath, userRootDir })
 
   let importPathResolvedFilePath: string | undefined
   let failure: undefined | { err: unknown }
   for (const context of contexts) {
     assertPosixPath(context)
-    const require_ = createRequire(context)
-    if (!options.doNotHandleFileExtension) {
+    const require_ = createRequire(ensureFilePrefix(context))
+    if (!doNotHandleFileExtension) {
       addFileExtensionsToRequireResolve(require_)
       importPath = removeFileExtention(importPath)
     }
@@ -126,21 +127,26 @@ function requireResolveVikeDistFile(vikeDistFile: `dist/esm/${string}`) {
   return importPathResolvedFilePath
 }
 
-function getExtraContextForNpmPackageImport({ importPath, userRootDir }: { importPath: string; userRootDir?: string }) {
-  if (
-    // Ideally we'd set `paths` only for npm packages, but unfortunately we cannot always disambiguate between npm package imports and path aliases.
-    !isImportPathNpmPackageOrPathAlias(importPath)
-  ) {
-    return []
-  }
-  assert(userRootDir)
-  const extraContext = [
+function addExtraContextForNpmPackageImport(
+  contexts: string[],
+  { importPath, userRootDir }: { importPath: string; userRootDir?: string }
+) {
+  // We should add extra context only for npm packages, but unfortunately we cannot always disambiguate between npm package imports and path aliases.
+  if (!isImportPathNpmPackageOrPathAlias(importPath)) return
+
+  const userRootDirFakeFile = userRootDir && getFakeImporterFile(userRootDir)
+  ;[
     // Workaround for monorepo resolve issue: https://github.com/vikejs/vike-react/pull/161/commits/dbaa6643e78015ac2797c237552800fef29b72a7
-    getFakeImporterFile(userRootDir),
-    // I can't think of a use case where this would be needed, but let's add it to be extra safe
+    userRootDirFakeFile,
+    // I can't think of a use case where this would be needed, but let's add one extra last chance to sucessfully resolve some complex monorepo setups
     importMetaUrl
   ]
-  return extraContext
+    .filter(isNotNullish)
+    .forEach((context) => {
+      const alreadyHasContext = contexts.includes(context) || contexts.includes(ensureFilePrefix(context))
+      if (alreadyHasContext) return
+      contexts.push(context)
+    })
 }
 
 function removeFileExtention(importPath: string) {
@@ -179,10 +185,6 @@ function getVikeNodeModulesRoot() {
   return vikeNodeModulesRoot
 }
 
-function toDirPath(filePath: string) {
-  return path.posix.dirname(removeFilePrefix(filePath))
-}
-
 function getFakeImporterFile(dirPath: string) {
   assertPosixPath(dirPath)
   assert(!dirPath.startsWith('file')) // The file:// prefix is bogus when used with path.posix.join()
@@ -190,7 +192,7 @@ function getFakeImporterFile(dirPath: string) {
   return importerFilePath
 }
 
-function addFilePrefix(filePath: string) {
+function ensureFilePrefix(filePath: string) {
   assertPosixPath(filePath)
   const filePrefix = getFilePrefix()
   if (!filePath.startsWith(filePrefix)) {
