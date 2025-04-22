@@ -1,15 +1,15 @@
-export { onBeforeRender }
+export { onCreateGlobalContext }
 
-import type { OnBeforeRenderAsync } from 'vike/types'
+import type { GlobalContextServer } from 'vike/types'
 
-const onBeforeRender: OnBeforeRenderAsync = async (pageContext): ReturnType<OnBeforeRenderAsync> => {
-  const { pages } = pageContext.globalContext
+async function onCreateGlobalContext(globalContext: GlobalContextServer) {
+  const { pages } = globalContext
   let staticUrls: string[] = Object.values(pages)
     .map((p) => p.route)
     .filter((p) => typeof p === 'string')
     .filter((p) => !p.includes('@'))
   staticUrls.sort(lowerFirst((url) => url.length))
-  pageContext.someWrapperObj = { staticUrls, neverPassedToClient: 123 }
+  globalContext.someWrapperObj = { staticUrls, neverPassedToClient: 123 }
 }
 
 function lowerFirst<T>(getValue: (element: T) => number): (element1: T, element2: T) => 0 | 1 | -1 {
@@ -25,9 +25,13 @@ function lowerFirst<T>(getValue: (element: T) => number): (element1: T, element2
 
 declare global {
   namespace Vike {
-    interface PageContext {
+    interface GlobalContextServer {
       someWrapperObj: {
-        neverPassedToClient?: 123
+        neverPassedToClient: 123
+      }
+    }
+    interface GlobalContext {
+      someWrapperObj: {
         staticUrls: string[]
       }
     }

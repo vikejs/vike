@@ -9,15 +9,17 @@ import type { GlobalContextClient } from 'vike/types'
 function Layout({ children }: { children: React.ReactNode }) {
   const pageContext = usePageContext()
   if (import.meta.env.SSR) {
-    assert(pageContext.someWrapperObj.neverPassedToClient === 123)
+    assert(!pageContext.globalContext.isClientSide)
+    assert(pageContext.globalContext.someWrapperObj.neverPassedToClient === 123)
   } else {
-    assert(!('neverPassedToClient' in pageContext.someWrapperObj))
+    assert(pageContext.globalContext.isClientSide)
+    assert(!('neverPassedToClient' in pageContext.globalContext.someWrapperObj))
   }
   return (
     <React.StrictMode>
       <Frame>
         <Left>
-          {pageContext.someWrapperObj.staticUrls
+          {pageContext.globalContext.someWrapperObj.staticUrls
             .filter((url) => !url.includes('config-meta'))
             .map((url) => (
               <Link href={url} key={url} />
