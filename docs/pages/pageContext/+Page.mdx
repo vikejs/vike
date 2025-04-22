@@ -100,12 +100,17 @@ Built-in properties:
  - **`pageContext.headers`**: The headers of the HTTP Request. As a string object (`Record<string, string>`) normalized by Vike, see <Link href="/headers"/>.
  - **`pageContext.headersOriginal`**: The headers of the HTTP Request. The original object provided by the server, see <Link href="/headers"/>.
  - **`pageContext.config`**: See <Link href="/meta" />.
- - **`pageContext.isHydration`**: Whether the page is rendered to HTML. When using <Link href="/client-routing" noBreadcrumb={true} />, the value is `true` for the first page the user navigates to, and `false` for any subsequent navigation. (When using <Link href="/server-routing" noBreadcrumb={true} />, the value is always `true`.) (If the page doesn't throw an error then it's equivalent to `!pageContext.isClientSideNavigation`, otherwise the error page is rendered and thus `pageContext.isHydration` is `false` whereas `!pageContext.isClientSideNavigation` is `true`.)
+ - **`pageContext.isHydration`**: Whether the page is rendered to HTML.
+
+   When using <Link href="/client-routing" noBreadcrumb={true} />, the value is `true` for the first page the user navigates to, and `false` for any subsequent navigation. When using <Link href="/server-routing" noBreadcrumb={true} />, the value is always `true`.
+
+   If the page doesn't throw an error then it's equivalent to <code>{'pageContext.isHydration\u00A0===\u00A0!pageContext.isClientSideNavigation'}</code>. If there is an error, the error page is rendered and both `pageContext.isHydration` `pageContext.isClientSideNavigation` are `false`.
+
  - **`pageContext.isClientSide`**: Whether the page is being rendered on the client-side or server-side / <Link href="/pre-rendering">pre-rendered</Link>.
 
    Also useful for narrowing down the type `PageContext` to either `PageContextClient` or `PageContextServer`, see <Link href="#narrowing-down" />.
 
-   It's equivalent to <code>{'pageContext.isClientSide\u00A0!==\u00A0import.meta.env.SSR'}</code>.
+   It's equivalent to <code>{'pageContext.isClientSide\u00A0===\u00A0!import.meta.env.SSR'}</code>.
 
    <Warning>
      We recommend using [Vite's `import.meta.env.SSR`](https://vite.dev/guide/env-and-mode.html#built-in-constants) whenever possible instead.
@@ -122,10 +127,16 @@ Built-in properties:
      ```
    </Warning>
  - **`pageContext.isPrerendering`**: Whether the page is being <Link href="/pre-rendering">pre-rendered</Link>. The value is always `false` in development.
- - **`pageContext.isBackwardNavigation`**: Whether the user is navigating back in history. The value is `true` when the user clicks on his browser's backward navigation button, or when invoking `history.back()`. The `isBackwardNavigation` property only works with Client Routing. (The value is always `null` when using Server Routing.)
+ - **`pageContext.isBackwardNavigation`**: Whether the user is navigating back in history.
+
+   The value is `true` when the user clicks on his browser's backward navigation button, or when invoking `history.back()`.
+
+   The `isBackwardNavigation` property is only defined when using <Link href="/client-routing" noBreadcrumb={true} />.
  - **`pageContext.previousPageContext`**: Upon client-side page navigation, you can use `pageContext.previousPageContext` to access the `pageContext` of the previous page. See <Link href="#lifecycle" />.
  - **`pageContext.is404`**: If an error occurs, whether the error is a `404 Page Not Found` or a `500 Internal Error`, see <Link href="/error-page" />.
- - **`pageContext.isClientSideNavigation`**: Whether the page was navigated by the client-side router. In other words, when using <Link href="/client-routing" noBreadcrumb={true} />, the value is `false` for the first page the user visits, and `true` for any subsequent navigation. (When using <Link href="/server-routing" noBreadcrumb={true} />, the value is always `false`.)
+ - **`pageContext.isClientSideNavigation`**: Whether the page was navigated by the client-side router.
+
+   In other words, when using <Link href="/client-routing" noBreadcrumb={true} />, the value is `false` for the first page the user visits, and `true` for any subsequent navigation. (When using <Link href="/server-routing" noBreadcrumb={true} />, the value is always `false`.)
  - **`pageContext.abortReason`**: Set by <Link href="/render" text={<code>throw render()</code>} /> and used by the <Link text="error page" href="/error-page" />.
  - **`pageContext.abortStatusCode`**: Set by <Link href="/render" text={<code>throw render()</code>} /> and used by the <Link text="error page" href="/error-page" />.
  - **`pageContext.errorWhileRendering`**: The first error (if there is any) that occurred while rendering the page, see <Link href="/error-tracking" />.
