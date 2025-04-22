@@ -19,6 +19,15 @@ assertPosixPath(importMetaUrl)
 assertIsNotBrowser()
 assertIsNotProductionRuntime()
 
+// - We still can't use import.meta.resolve() as of 23.1.0 (November 2024) because `parent` argument requires an experimental flag.
+//   - https://stackoverflow.com/questions/54977743/do-require-resolve-for-es-modules#comment139581675_62272600
+// - Passing context to createRequire(context) isn't equivalent to passing it to the `paths` argument of require.resolve()
+//   - https://github.com/brillout/require-test
+//   - In practice, I guess it doesn't make a difference? It just seems to be small Node.js weirdness.
+// - The argument createRequire(argument) seems to be overriden by the `paths` argument require.resolve()
+//   - For example, passing an empty array to `paths` kills the argument passed to `createRequire()`
+//   - Thus, when `paths` is defined, then the context needs to be passed to both createRequire() as well as the `paths` argument of require.resolve()
+
 function requireResolve_(
   importPath: string,
   importerFilePath: string | null,
@@ -31,30 +40,18 @@ function requireResolve_(
     : addFilePrefix(importerFilePath)
   assertPosixPath(context)
 
-  const require_ = createRequire(
-    // Adding `importerPath` to `paths` isn't equivalent: https://github.com/brillout/require-test
-    // In practice, I guess it doesn't make a difference though?
-    context
-  )
+  const require_ = createRequire(context)
 
   if (!options?.doNotHandleFileExtension) {
     addFileExtensionsToRequireResolve(require_)
     importPath = removeFileExtention(importPath)
   }
 
-  const paths = !options?.paths
-    ? undefined
-    : [
-        // Seems like `context` gets overriden by the `paths` argument, so we add it to `paths`. (For example, passing an empty array to `paths` kills the argument passed to `createRequire()`.)
-        toDirPath(context),
-        ...(options?.paths || [])
-      ]
+  const paths = !options?.paths ? undefined : [toDirPath(context), ...(options?.paths || [])]
 
   let importPathResolvedFilePath: string | undefined
   let failure: undefined | { err: unknown }
   try {
-    // We still can't use import.meta.resolve() as of 23.1.0 (November 2024) because `parent` argument requires an experimental flag.
-    // - https://stackoverflow.com/questions/54977743/do-require-resolve-for-es-modules#comment139581675_62272600
     importPathResolvedFilePath = require_.resolve(importPath, { paths })
   } catch (err) {
     /* DEBUG
