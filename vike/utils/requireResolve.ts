@@ -35,16 +35,16 @@ function requireResolve_(
 ) {
   assertPosixPath(importPath)
 
-  const contexts = !importerFilePath
-    ? [importMetaUrl] // dummy context
-    : [addFilePrefix(importerFilePath)]
-  contexts.push(...getExtraContextForNpmPackageImport({ importPath, userRootDir }))
+  const contexts = importerFilePath
+    ? [importerFilePath]
+    : [userRootDir ? getFakeImporterFile(userRootDir) : importMetaUrl]
+  addExtraContextForNpmPackageImport(contexts, { importPath, userRootDir })
 
   let importPathResolvedFilePath: string | undefined
   let failure: undefined | { err: unknown }
   for (const context of contexts) {
     assertPosixPath(context)
-    const require_ = createRequire(context)
+    const require_ = createRequire(addFilePrefix(context))
     if (!doNotHandleFileExtension) {
       addFileExtensionsToRequireResolve(require_)
       importPath = removeFileExtention(importPath)
@@ -126,21 +126,26 @@ function requireResolveVikeDistFile(vikeDistFile: `dist/esm/${string}`) {
   return importPathResolvedFilePath
 }
 
-function getExtraContextForNpmPackageImport({ importPath, userRootDir }: { importPath: string; userRootDir?: string }) {
-  if (
-    // Ideally we'd set `paths` only for npm packages, but unfortunately we cannot always disambiguate between npm package imports and path aliases.
-    !isImportPathNpmPackageOrPathAlias(importPath)
-  ) {
-    return []
+function addExtraContextForNpmPackageImport(
+  contexts: string[],
+  { importPath, userRootDir }: { importPath: string; userRootDir?: string }
+) {
+  // We should add extra context only for npm packages, but unfortunately we cannot always disambiguate between npm package imports and path aliases.
+  if (!isImportPathNpmPackageOrPathAlias(importPath)) return
+
+  // Workaround for monorepo resolve issue: https://github.com/vikejs/vike-react/pull/161/commits/dbaa6643e78015ac2797c237552800fef29b72a7
+  const userRootDirFakeFile = userRootDir && getFakeImporterFile(userRootDir)
+  if (userRootDirFakeFile && !alreadyHasContext(contexts, userRootDirFakeFile)) {
+    contexts.push(userRootDirFakeFile)
   }
-  assert(userRootDir)
-  const extraContext = [
-    // Workaround for monorepo resolve issue: https://github.com/vikejs/vike-react/pull/161/commits/dbaa6643e78015ac2797c237552800fef29b72a7
-    getFakeImporterFile(userRootDir),
-    // I can't think of a use case where this would be needed, but let's add it to be extra safe
-    importMetaUrl
-  ]
-  return extraContext
+
+  // I can't think of a use case where this would be needed, but let's add one extra last chance to sucessfully resolve some complex monorepo setups
+  if (!alreadyHasContext(contexts, importMetaUrl)) {
+    contexts.push(importMetaUrl)
+  }
+}
+function alreadyHasContext(contexts: string[], context: string) {
+  return contexts.includes(context) || contexts.includes(addFilePrefix(context))
 }
 
 function removeFileExtention(importPath: string) {
