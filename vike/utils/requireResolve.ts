@@ -12,6 +12,7 @@ import { scriptFileExtensionList } from './isScriptFile.js'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import { assertIsImportPathNpmPackage, isImportPathNpmPackageOrPathAlias } from './parseNpmPackage.js'
+import { isNotNullish } from './isNullish.js'
 // @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
 const importMetaUrl: string = import.meta.url
 assertPosixPath(importMetaUrl)
@@ -133,19 +134,19 @@ function addExtraContextForNpmPackageImport(
   // We should add extra context only for npm packages, but unfortunately we cannot always disambiguate between npm package imports and path aliases.
   if (!isImportPathNpmPackageOrPathAlias(importPath)) return
 
-  // Workaround for monorepo resolve issue: https://github.com/vikejs/vike-react/pull/161/commits/dbaa6643e78015ac2797c237552800fef29b72a7
   const userRootDirFakeFile = userRootDir && getFakeImporterFile(userRootDir)
-  if (userRootDirFakeFile && !alreadyHasContext(contexts, userRootDirFakeFile)) {
-    contexts.push(userRootDirFakeFile)
-  }
-
-  // I can't think of a use case where this would be needed, but let's add one extra last chance to sucessfully resolve some complex monorepo setups
-  if (!alreadyHasContext(contexts, importMetaUrl)) {
-    contexts.push(importMetaUrl)
-  }
-}
-function alreadyHasContext(contexts: string[], context: string) {
-  return contexts.includes(context) || contexts.includes(ensureFilePrefix(context))
+  ;[
+    // Workaround for monorepo resolve issue: https://github.com/vikejs/vike-react/pull/161/commits/dbaa6643e78015ac2797c237552800fef29b72a7
+    userRootDirFakeFile,
+    // I can't think of a use case where this would be needed, but let's add one extra last chance to sucessfully resolve some complex monorepo setups
+    importMetaUrl
+  ]
+    .filter(isNotNullish)
+    .forEach((context) => {
+      const alreadyHasContext = contexts.includes(context) || contexts.includes(ensureFilePrefix(context))
+      if (alreadyHasContext) return
+      contexts.push(context)
+    })
 }
 
 function removeFileExtention(importPath: string) {
