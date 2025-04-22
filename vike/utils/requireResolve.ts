@@ -48,11 +48,11 @@ function requireResolve_(
         ...(options?.paths || [])
       ]
 
-  let importedFile: string
+  let importPathResolvedFilePath: string
   try {
     // We still can't use import.meta.resolve() as of 23.1.0 (November 2024) because `parent` argument requires an experimental flag.
     // - https://stackoverflow.com/questions/54977743/do-require-resolve-for-es-modules#comment139581675_62272600
-    importedFile = require_.resolve(importPath, { paths })
+    importPathResolvedFilePath = require_.resolve(importPath, { paths })
   } catch (err) {
     /* DEBUG
     console.log('err', err)
@@ -62,10 +62,10 @@ function requireResolve_(
     console.log('importMetaUrl', importMetaUrl)
     console.log('paths', paths)
     //*/
-    return { importedFile: undefined, err, hasFailed: true as const }
+    return { importPathResolvedFilePath: undefined, err, hasFailed: true as const }
   }
-  importedFile = toPosixPath(importedFile)
-  return { importedFile, err: undefined, hasFailed: false as const }
+  importPathResolvedFilePath = toPosixPath(importPathResolvedFilePath)
+  return { importPathResolvedFilePath, err: undefined, hasFailed: false as const }
 }
 function requireResolveOptional({
   importPath,
@@ -75,7 +75,7 @@ function requireResolveOptional({
   const paths = getExtraPathsForNpmPackageImport({ importPath, userRootDir })
   const res = requireResolve_(importPath, importerFile, { paths })
   if (res.hasFailed) return null
-  return res.importedFile
+  return res.importPathResolvedFilePath
 }
 function requireResolveOptionalDir({
   importPath,
@@ -86,7 +86,7 @@ function requireResolveOptionalDir({
   const paths = getExtraPathsForNpmPackageImport({ importPath, userRootDir })
   const res = requireResolve_(importPath, importerFile, { paths })
   if (res.hasFailed) return null
-  return res.importedFile
+  return res.importPathResolvedFilePath
 }
 function requireResolveNpmPackage({
   importPathNpmPackage,
@@ -97,27 +97,27 @@ function requireResolveNpmPackage({
   const paths = getExtraPathsForNpmPackageImport({ importPath: importPathNpmPackage, userRootDir })
   const res = requireResolve_(importPathNpmPackage, importerFile, { paths })
   if (res.hasFailed) throw res.err
-  return res.importedFile
+  return res.importPathResolvedFilePath
 }
 function requireResolveVikeDistFile(vikeDistFile: `dist/esm/${string}`) {
   const vikeNodeModulesRoot = getVikeNodeModulesRoot()
   assertPosixPath(vikeNodeModulesRoot)
   assertPosixPath(vikeDistFile)
-  const importedFile = path.posix.join(vikeNodeModulesRoot, vikeDistFile)
+  const importPathResolvedFilePath = path.posix.join(vikeNodeModulesRoot, vikeDistFile)
 
   // Double check
   {
     const res = requireResolve_(
-      importedFile,
-      // No context needed: importedFile is already resolved and absolute
+      importPathResolvedFilePath,
+      // No context needed: importPathResolvedFilePath is already resolved and absolute
       null,
       { doNotHandleFileExtension: true }
     )
     if (res.hasFailed) throw res.err
-    assert(res.importedFile === importedFile)
+    assert(res.importPathResolvedFilePath === importPathResolvedFilePath)
   }
 
-  return importedFile
+  return importPathResolvedFilePath
 }
 
 function getExtraPathsForNpmPackageImport({ importPath, userRootDir }: { importPath: string; userRootDir: string }) {
