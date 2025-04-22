@@ -45,12 +45,18 @@ async function createGlobalContextShared<GlobalContextAddendum extends object>(
   return globalObject.globalContext as typeof globalContext
 }
 
-type GlobalContextSharedPublic = Pick<GlobalContextShared, 'config' | 'pages'>
+type GlobalContextSharedPublic = Pick<GlobalContextShared, 'config' | 'pages' | 'isGlobalContext'>
 type GlobalContextShared = ReturnType<typeof createGlobalContextBase>
 function createGlobalContextBase(virtualFileExports: unknown) {
   const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal, globalConfig, pageConfigsUserFriendly } =
     getPageConfigsRuntime(virtualFileExports)
   const globalContext = {
+    /**
+     * Useful for distinguishing `globalContext` from other objects and narrowing down TypeScript unions.
+     *
+     * https://vike.dev/globalContext#typescript
+     */
+    isGlobalContext: true as const,
     _virtualFileExports: virtualFileExports,
     _pageFilesAll: pageFilesAll,
     _pageConfigs: pageConfigs,

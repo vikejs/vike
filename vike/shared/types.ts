@@ -46,6 +46,13 @@ type PageContextClientWithServerRouting<Data = unknown> = PageContextBuiltInClie
   Vike.PageContextClient
 
 type PageContextBuiltInCommon<Data> = {
+  /**
+   * Useful for distinguishing `pageContext` from other objects and narrowing down TypeScript unions.
+   *
+   * https://vike.dev/pageContext#typescript
+   */
+  isPageContext: true
+
   /** The `export { Page }` of your `.page.js` file.
    *
    * https://vike.dev/Page
