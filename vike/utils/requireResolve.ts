@@ -48,7 +48,8 @@ function requireResolve_(
         ...(options?.paths || [])
       ]
 
-  let importPathResolvedFilePath: string
+  let importPathResolvedFilePath: string | undefined
+  let failure: undefined | { err: unknown }
   try {
     // We still can't use import.meta.resolve() as of 23.1.0 (November 2024) because `parent` argument requires an experimental flag.
     // - https://stackoverflow.com/questions/54977743/do-require-resolve-for-es-modules#comment139581675_62272600
@@ -62,10 +63,17 @@ function requireResolve_(
     console.log('importMetaUrl', importMetaUrl)
     console.log('paths', paths)
     //*/
-    return { importPathResolvedFilePath: undefined, err, hasFailed: true as const }
+    failure = { err }
   }
-  importPathResolvedFilePath = toPosixPath(importPathResolvedFilePath)
-  return { importPathResolvedFilePath, err: undefined, hasFailed: false as const }
+
+  if (!importPathResolvedFilePath) {
+    assert(failure)
+    return { importPathResolvedFilePath: undefined, err: failure.err, hasFailed: true as const }
+  } else {
+    assert(importPathResolvedFilePath)
+    importPathResolvedFilePath = toPosixPath(importPathResolvedFilePath)
+    return { importPathResolvedFilePath, err: undefined, hasFailed: false as const }
+  }
 }
 function requireResolveOptional({
   importPath,
