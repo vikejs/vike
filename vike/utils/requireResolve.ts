@@ -44,7 +44,7 @@ function requireResolve_(
   let failure: undefined | { err: unknown }
   for (const context of contexts) {
     assertPosixPath(context)
-    const require_ = createRequire(addFilePrefix(context))
+    const require_ = createRequire(ensureFilePrefix(context))
     if (!doNotHandleFileExtension) {
       addFileExtensionsToRequireResolve(require_)
       importPath = removeFileExtention(importPath)
@@ -145,7 +145,7 @@ function addExtraContextForNpmPackageImport(
   }
 }
 function alreadyHasContext(contexts: string[], context: string) {
-  return contexts.includes(context) || contexts.includes(addFilePrefix(context))
+  return contexts.includes(context) || contexts.includes(ensureFilePrefix(context))
 }
 
 function removeFileExtention(importPath: string) {
@@ -184,10 +184,6 @@ function getVikeNodeModulesRoot() {
   return vikeNodeModulesRoot
 }
 
-function toDirPath(filePath: string) {
-  return path.posix.dirname(removeFilePrefix(filePath))
-}
-
 function getFakeImporterFile(dirPath: string) {
   assertPosixPath(dirPath)
   assert(!dirPath.startsWith('file')) // The file:// prefix is bogus when used with path.posix.join()
@@ -195,7 +191,7 @@ function getFakeImporterFile(dirPath: string) {
   return importerFilePath
 }
 
-function addFilePrefix(filePath: string) {
+function ensureFilePrefix(filePath: string) {
   assertPosixPath(filePath)
   const filePrefix = getFilePrefix()
   if (!filePath.startsWith(filePrefix)) {
