@@ -24,15 +24,17 @@ function requireResolve_(
   importerFilePath: string | null,
   options?: { doNotHandleFileExtension?: true; paths?: string[] }
 ) {
-  importerFilePath ??= importMetaUrl // dummy context
   assertPosixPath(importPath)
-  assertPosixPath(importerFilePath)
 
-  const importerPath = addFilePrefix(importerFilePath)
+  const context = !importerFilePath
+    ? importMetaUrl // dummy context
+    : addFilePrefix(importerFilePath)
+  assertPosixPath(context)
+
   const require_ = createRequire(
     // Adding `importerPath` to `paths` isn't equivalent: https://github.com/brillout/require-test
     // In practice, I guess it doesn't make a difference though?
-    importerPath
+    context
   )
 
   if (!options?.doNotHandleFileExtension) {
@@ -43,8 +45,8 @@ function requireResolve_(
   const paths = !options?.paths
     ? undefined
     : [
-        // Seems like `importerPath` gets overriden by the `paths` argument, so we add it to `paths`. (For example, passing an empty array to `paths` kills the argument passed to `createRequire()`.)
-        toDirPath(importerFilePath),
+        // Seems like `context` gets overriden by the `paths` argument, so we add it to `paths`. (For example, passing an empty array to `paths` kills the argument passed to `createRequire()`.)
+        toDirPath(context),
         ...(options?.paths || [])
       ]
 
@@ -59,7 +61,7 @@ function requireResolve_(
     console.log('err', err)
     console.log('importPath', importPath)
     console.log('importerFilePath', importerFilePath)
-    console.log('importerPath', importerPath)
+    console.log('context', context)
     console.log('importMetaUrl', importMetaUrl)
     console.log('paths', paths)
     //*/
@@ -192,6 +194,7 @@ function getFakeImporterFile(dirPath: string) {
 }
 
 function addFilePrefix(filePath: string) {
+  assertPosixPath(filePath)
   const filePrefix = getFilePrefix()
   if (!filePath.startsWith(filePrefix)) {
     assert(!filePath.startsWith('file'))
