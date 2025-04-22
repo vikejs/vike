@@ -31,21 +31,21 @@ assertIsNotProductionRuntime()
 function requireResolve_(
   importPath: string,
   importerFilePath: string | null,
-  options: { doNotHandleFileExtension?: true; userRootDir?: string } = {}
+  { userRootDir, doNotHandleFileExtension }: { userRootDir?: string; doNotHandleFileExtension?: true } = {}
 ) {
   assertPosixPath(importPath)
 
   const contexts = !importerFilePath
     ? [importMetaUrl] // dummy context
     : [addFilePrefix(importerFilePath)]
-  contexts.push(...getExtraContextForNpmPackageImport({ importPath, ...options }))
+  contexts.push(...getExtraContextForNpmPackageImport({ importPath, userRootDir }))
 
   let importPathResolvedFilePath: string | undefined
   let failure: undefined | { err: unknown }
   for (const context of contexts) {
     assertPosixPath(context)
     const require_ = createRequire(context)
-    if (!options.doNotHandleFileExtension) {
+    if (!doNotHandleFileExtension) {
       addFileExtensionsToRequireResolve(require_)
       importPath = removeFileExtention(importPath)
     }
