@@ -19,104 +19,112 @@ assertPosixPath(importMetaUrl)
 assertIsNotBrowser()
 assertIsNotProductionRuntime()
 
+// - We still can't use import.meta.resolve() as of 23.1.0 (November 2024) because `parent` argument requires an experimental flag.
+//   - https://stackoverflow.com/questions/54977743/do-require-resolve-for-es-modules#comment139581675_62272600
+// - Passing context to createRequire(context) isn't equivalent to passing it to the `paths` argument of require.resolve()
+//   - https://github.com/brillout/require-test
+//   - In practice, I guess it doesn't make a difference? It just seems to be small Node.js weirdness.
+// - The argument createRequire(argument) seems to be overriden by the `paths` argument require.resolve()
+//   - For example, passing an empty array to `paths` kills the argument passed to `createRequire()`
+//   - Thus, when `paths` is defined, then the context needs to be passed to both createRequire() as well as the `paths` argument of require.resolve()
+
 function requireResolve_(
   importPath: string,
-  importerFile: string,
-  options?: { doNotHandleFileExtension?: true; paths?: string[] }
+  importerFilePath: string | null,
+  options: { doNotHandleFileExtension?: true; paths?: string[] } = {}
 ) {
   assertPosixPath(importPath)
-  assertPosixPath(importerFile)
 
-  const importerPath = addFilePrefix(importerFile)
-  const require_ = createRequire(
-    // Adding `importerPath` to `paths` isn't equivalent: https://github.com/brillout/require-test
-    // In practice, I guess it doesn't make a difference though?
-    importerPath
-  )
+  const context = !importerFilePath
+    ? importMetaUrl // dummy context
+    : addFilePrefix(importerFilePath)
+  assertPosixPath(context)
 
-  if (!options?.doNotHandleFileExtension) {
+  const require_ = createRequire(context)
+
+  if (!options.doNotHandleFileExtension) {
     addFileExtensionsToRequireResolve(require_)
     importPath = removeFileExtention(importPath)
   }
 
-  const paths = !options?.paths
-    ? undefined
-    : [
-        // Seems like `importerPath` gets overriden by the `paths` argument, so we add it to `paths`. (For example, passing an empty array to `paths` kills the argument passed to `createRequire()`.)
-        toDirPath(importerFile),
-        ...(options?.paths || [])
-      ]
+  const paths = !options.paths ? undefined : [toDirPath(context), ...(options.paths || [])]
 
-  let importedFile: string
+  let importPathResolvedFilePath: string | undefined
+  let failure: undefined | { err: unknown }
   try {
-    // We still can't use import.meta.resolve() as of 23.1.0 (November 2024) because `parent` argument requires an experimental flag.
-    // - https://stackoverflow.com/questions/54977743/do-require-resolve-for-es-modules#comment139581675_62272600
-    importedFile = require_.resolve(importPath, { paths })
+    importPathResolvedFilePath = require_.resolve(importPath, { paths })
   } catch (err) {
     /* DEBUG
     console.log('err', err)
     console.log('importPath', importPath)
-    console.log('importerFile', importerFile)
-    console.log('importerPath', importerPath)
+    console.log('importerFilePath', importerFilePath)
+    console.log('context', context)
     console.log('importMetaUrl', importMetaUrl)
     console.log('paths', paths)
     //*/
-    return { importedFile: undefined, err, hasFailed: true as const }
+    failure = { err }
   }
-  importedFile = toPosixPath(importedFile)
-  return { importedFile, err: undefined, hasFailed: false as const }
+
+  if (!importPathResolvedFilePath) {
+    assert(failure)
+    return { importPathResolvedFilePath: undefined, err: failure.err, hasFailed: true as const }
+  } else {
+    assert(importPathResolvedFilePath)
+    importPathResolvedFilePath = toPosixPath(importPathResolvedFilePath)
+    return { importPathResolvedFilePath, err: undefined, hasFailed: false as const }
+  }
 }
 function requireResolveOptional({
   importPath,
-  importerFile,
+  importerFilePath,
   userRootDir
-}: { importPath: string; importerFile: string; userRootDir: string }): string | null {
+}: { importPath: string; importerFilePath: string; userRootDir: string }): string | null {
   const paths = getExtraPathsForNpmPackageImport({ importPath, userRootDir })
-  const res = requireResolve_(importPath, importerFile, { paths })
+  const res = requireResolve_(importPath, importerFilePath, { paths })
   if (res.hasFailed) return null
-  return res.importedFile
+  return res.importPathResolvedFilePath
 }
 function requireResolveOptionalDir({
   importPath,
   importerDir,
   userRootDir
 }: { importPath: string; importerDir: string; userRootDir: string }): string | null {
-  const importerFile = getFakeImporterFile(importerDir)
+  const importerFilePath = getFakeImporterFile(importerDir)
   const paths = getExtraPathsForNpmPackageImport({ importPath, userRootDir })
-  const res = requireResolve_(importPath, importerFile, { paths })
+  const res = requireResolve_(importPath, importerFilePath, { paths })
   if (res.hasFailed) return null
-  return res.importedFile
+  return res.importPathResolvedFilePath
 }
 function requireResolveNpmPackage({
   importPathNpmPackage,
   userRootDir
 }: { importPathNpmPackage: string; userRootDir: string }): string {
   assertIsImportPathNpmPackage(importPathNpmPackage)
-  const importerFile = getFakeImporterFile(userRootDir)
+  const importerFilePath = getFakeImporterFile(userRootDir)
   const paths = getExtraPathsForNpmPackageImport({ importPath: importPathNpmPackage, userRootDir })
-  const res = requireResolve_(importPathNpmPackage, importerFile, { paths })
+  const res = requireResolve_(importPathNpmPackage, importerFilePath, { paths })
   if (res.hasFailed) throw res.err
-  return res.importedFile
+  return res.importPathResolvedFilePath
 }
 function requireResolveVikeDistFile(vikeDistFile: `dist/esm/${string}`) {
   const vikeNodeModulesRoot = getVikeNodeModulesRoot()
   assertPosixPath(vikeNodeModulesRoot)
   assertPosixPath(vikeDistFile)
-  const importedFile = path.posix.join(vikeNodeModulesRoot, vikeDistFile)
+  const importPathResolvedFilePath = path.posix.join(vikeNodeModulesRoot, vikeDistFile)
 
   // Double check
   {
     const res = requireResolve_(
-      importedFile,
-      // Passing some dummy context as the context isn't needed since importedFile is already resolved and absolute
-      importMetaUrl,
+      importPathResolvedFilePath,
+      // No context needed: importPathResolvedFilePath is already resolved and absolute
+      null,
       { doNotHandleFileExtension: true }
     )
     if (res.hasFailed) throw res.err
-    assert(res.importedFile === importedFile)
+    assert(res.importPathResolvedFilePath === importPathResolvedFilePath)
   }
 
-  return importedFile
+  return importPathResolvedFilePath
 }
 
 function getExtraPathsForNpmPackageImport({ importPath, userRootDir }: { importPath: string; userRootDir: string }) {
@@ -178,11 +186,12 @@ function toDirPath(filePath: string) {
 function getFakeImporterFile(dirPath: string) {
   assertPosixPath(dirPath)
   assert(!dirPath.startsWith('file')) // The file:// prefix is bogus when used with path.posix.join()
-  const importerFile = path.posix.join(dirPath, 'fakeFileForNodeResolve.js')
-  return importerFile
+  const importerFilePath = path.posix.join(dirPath, 'fakeFileForNodeResolve.js')
+  return importerFilePath
 }
 
 function addFilePrefix(filePath: string) {
+  assertPosixPath(filePath)
   const filePrefix = getFilePrefix()
   if (!filePath.startsWith(filePrefix)) {
     assert(!filePath.startsWith('file'))
