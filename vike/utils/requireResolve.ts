@@ -43,29 +43,29 @@ function requireResolve_(
   let importPathResolvedFilePath: string | undefined
   let failure: undefined | { err: unknown }
   for (const context of contexts) {
-  assertPosixPath(context)
-  const require_ = createRequire(context)
+    assertPosixPath(context)
+    const require_ = createRequire(context)
 
-  if (!options.doNotHandleFileExtension) {
-    addFileExtensionsToRequireResolve(require_)
-    importPath = removeFileExtention(importPath)
-  }
+    if (!options.doNotHandleFileExtension) {
+      addFileExtensionsToRequireResolve(require_)
+      importPath = removeFileExtention(importPath)
+    }
 
-  try {
-    importPathResolvedFilePath = require_.resolve(importPath)
-  } catch (err) {
-    /* DEBUG
-    console.log('err', err)
-    console.log('importPath', importPath)
-    console.log('importerFilePath', importerFilePath)
-    console.log('context', context)
-    console.log('importMetaUrl', importMetaUrl)
-    console.log('paths', paths)
-    //*/
-    failure ??= { err }
-  }
+    try {
+      importPathResolvedFilePath = require_.resolve(importPath)
+    } catch (err) {
+      /* DEBUG
+      console.log('err', err)
+      console.log('importPath', importPath)
+      console.log('importerFilePath', importerFilePath)
+      console.log('context', context)
+      console.log('importMetaUrl', importMetaUrl)
+      console.log('paths', paths)
+      //*/
+      failure ??= { err }
+    }
 
-  if (importPathResolvedFilePath) break
+    if (importPathResolvedFilePath) break
   }
 
   if (!importPathResolvedFilePath) {
