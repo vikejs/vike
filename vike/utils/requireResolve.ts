@@ -31,38 +31,40 @@ assertIsNotProductionRuntime()
 function requireResolve_(
   importPath: string,
   importerFilePath: string | null,
-  options: { doNotHandleFileExtension?: true; paths?: string[] } = {}
+  options: { doNotHandleFileExtension?: true; userRootDir?: string } = {}
 ) {
   assertPosixPath(importPath)
 
-  const context = !importerFilePath
-    ? importMetaUrl // dummy context
-    : addFilePrefix(importerFilePath)
-  assertPosixPath(context)
-
-  const require_ = createRequire(context)
-
-  if (!options.doNotHandleFileExtension) {
-    addFileExtensionsToRequireResolve(require_)
-    importPath = removeFileExtention(importPath)
-  }
-
-  const paths = !options.paths ? undefined : [toDirPath(context), ...(options.paths || [])]
+  const contexts = !importerFilePath
+    ? [importMetaUrl] // dummy context
+    : [addFilePrefix(importerFilePath)]
+  contexts.push(...getExtraContextForNpmPackageImport({ importPath, ...options }))
 
   let importPathResolvedFilePath: string | undefined
   let failure: undefined | { err: unknown }
-  try {
-    importPathResolvedFilePath = require_.resolve(importPath, { paths })
-  } catch (err) {
-    /* DEBUG
-    console.log('err', err)
-    console.log('importPath', importPath)
-    console.log('importerFilePath', importerFilePath)
-    console.log('context', context)
-    console.log('importMetaUrl', importMetaUrl)
-    console.log('paths', paths)
-    //*/
-    failure = { err }
+  for (const context of contexts) {
+    assertPosixPath(context)
+    const require_ = createRequire(context)
+    if (!options.doNotHandleFileExtension) {
+      addFileExtensionsToRequireResolve(require_)
+      importPath = removeFileExtention(importPath)
+    }
+
+    try {
+      importPathResolvedFilePath = require_.resolve(importPath)
+    } catch (err) {
+      /* DEBUG
+      console.log('err', err)
+      console.log('importPath', importPath)
+      console.log('importerFilePath', importerFilePath)
+      console.log('context', context)
+      console.log('importMetaUrl', importMetaUrl)
+      console.log('paths', paths)
+      //*/
+      failure ??= { err }
+    }
+
+    if (importPathResolvedFilePath) break
   }
 
   if (!importPathResolvedFilePath) {
@@ -79,8 +81,7 @@ function requireResolveOptional({
   importerFilePath,
   userRootDir
 }: { importPath: string; importerFilePath: string; userRootDir: string }): string | null {
-  const paths = getExtraPathsForNpmPackageImport({ importPath, userRootDir })
-  const res = requireResolve_(importPath, importerFilePath, { paths })
+  const res = requireResolve_(importPath, importerFilePath, { userRootDir })
   if (res.hasFailed) return null
   return res.importPathResolvedFilePath
 }
@@ -90,8 +91,7 @@ function requireResolveOptionalDir({
   userRootDir
 }: { importPath: string; importerDir: string; userRootDir: string }): string | null {
   const importerFilePath = getFakeImporterFile(importerDir)
-  const paths = getExtraPathsForNpmPackageImport({ importPath, userRootDir })
-  const res = requireResolve_(importPath, importerFilePath, { paths })
+  const res = requireResolve_(importPath, importerFilePath, { userRootDir })
   if (res.hasFailed) return null
   return res.importPathResolvedFilePath
 }
@@ -101,8 +101,7 @@ function requireResolveNpmPackage({
 }: { importPathNpmPackage: string; userRootDir: string }): string {
   assertIsImportPathNpmPackage(importPathNpmPackage)
   const importerFilePath = getFakeImporterFile(userRootDir)
-  const paths = getExtraPathsForNpmPackageImport({ importPath: importPathNpmPackage, userRootDir })
-  const res = requireResolve_(importPathNpmPackage, importerFilePath, { paths })
+  const res = requireResolve_(importPathNpmPackage, importerFilePath, { userRootDir })
   if (res.hasFailed) throw res.err
   return res.importPathResolvedFilePath
 }
@@ -127,20 +126,21 @@ function requireResolveVikeDistFile(vikeDistFile: `dist/esm/${string}`) {
   return importPathResolvedFilePath
 }
 
-function getExtraPathsForNpmPackageImport({ importPath, userRootDir }: { importPath: string; userRootDir: string }) {
+function getExtraContextForNpmPackageImport({ importPath, userRootDir }: { importPath: string; userRootDir?: string }) {
   if (
     // Ideally we'd set `paths` only for npm packages, but unfortunately we cannot always disambiguate between npm package imports and path aliases.
     !isImportPathNpmPackageOrPathAlias(importPath)
   ) {
-    return undefined
+    return []
   }
-  const paths = [
+  assert(userRootDir)
+  const extraContext = [
     // Workaround for monorepo resolve issue: https://github.com/vikejs/vike-react/pull/161/commits/dbaa6643e78015ac2797c237552800fef29b72a7
-    userRootDir,
+    getFakeImporterFile(userRootDir),
     // I can't think of a use case where this would be needed, but let's add it to be extra safe
-    toDirPath(importMetaUrl)
+    importMetaUrl
   ]
-  return paths
+  return extraContext
 }
 
 function removeFileExtention(importPath: string) {
