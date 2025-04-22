@@ -45,7 +45,6 @@ function requireResolve_(
   for (const context of contexts) {
     assertPosixPath(context)
     const require_ = createRequire(context)
-
     if (!options.doNotHandleFileExtension) {
       addFileExtensionsToRequireResolve(require_)
       importPath = removeFileExtention(importPath)
