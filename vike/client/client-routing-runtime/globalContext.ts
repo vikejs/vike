@@ -9,6 +9,7 @@ import * as virtualFileExports from 'virtual:vike:importUserCode:client:client-r
 
 // Public type
 type GlobalContextClient = GlobalContextSharedPublic &
+  Pick<GlobalContextClientInternal, 'isClientSide'> &
   Vike.GlobalContext &
   Vike.GlobalContextClient & {
     // Nothing extra for now

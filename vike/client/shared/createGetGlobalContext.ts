@@ -34,7 +34,14 @@ function createGetGlobalContext<GlobalContextAddendum extends object>(
 
     // Create
     const globalContext = await createGlobalContextShared(virtualFileExports, globalObject, async (globalContext) => {
-      const globalContextAddendum = {}
+      const globalContextAddendum = {
+        /**
+         * Whether the environment is client-side or server-side / pre-rendering.
+         *
+         * We recommend using `import.meta.env.SSR` instead, see https://vike.dev/globalContext
+         */
+        isClientSide: true as const
+      }
       objectAssign(globalContextAddendum, getGlobalContextSerializedInHtml())
       objectAssign(globalContextAddendum, await addGlobalContext?.(globalContext))
       return globalContextAddendum

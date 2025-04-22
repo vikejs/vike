@@ -113,7 +113,7 @@ Built-in properties:
    It's equivalent to <code>{'pageContext.isClientSide\u00A0===\u00A0!import.meta.env.SSR'}</code>.
 
    <Warning>
-     We recommend using [Vite's `import.meta.env.SSR`](https://vite.dev/guide/env-and-mode.html#built-in-constants) whenever possible instead.
+     We recommend using [Vite's `import.meta.env.SSR`](https://vite.dev/guide/env-and-mode.html#built-in-constants) instead.
 
      The advantage is that, when building client-side code, Vite eliminates all code defined inside `import.meta.env.SSR` if-blocks. Potentially saving a *lot* of KBs and reducing the risk of exposing sensitive server-side information. Unlike `import.meta.env.SSR` code isn't eliminated inside `!pageContext.isClientSide` if-blocks.
      ```js

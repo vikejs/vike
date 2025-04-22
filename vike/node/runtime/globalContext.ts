@@ -182,7 +182,16 @@ function makePublic(globalContext: GlobalContextServerInternal) {
   const globalContextPublic = getPublicProxy(
     globalContext,
     'globalContext',
-    ['assetsManifest', 'config', 'viteConfig', 'viteConfigRuntime', 'pages', 'baseServer', 'baseAssets'],
+    [
+      'assetsManifest',
+      'config',
+      'viteConfig',
+      'viteConfigRuntime',
+      'pages',
+      'baseServer',
+      'baseAssets',
+      'isClientSide'
+    ],
     true
   )
   return globalContextPublic
@@ -447,6 +456,7 @@ async function addGlobalContext(globalContext: GlobalContextShared) {
     globalContext._allPageIds
   )
   const globalContextBase = {
+    isClientSide: false as const,
     _pageRoutes: pageRoutes,
     _onBeforeRouteHook: onBeforeRouteHook
   }
