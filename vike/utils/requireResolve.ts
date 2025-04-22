@@ -31,7 +31,7 @@ assertIsNotProductionRuntime()
 function requireResolve_(
   importPath: string,
   importerFilePath: string | null,
-  options?: { doNotHandleFileExtension?: true; paths?: string[] }
+  options: { doNotHandleFileExtension?: true; paths?: string[] } = {}
 ) {
   assertPosixPath(importPath)
 
@@ -42,12 +42,12 @@ function requireResolve_(
 
   const require_ = createRequire(context)
 
-  if (!options?.doNotHandleFileExtension) {
+  if (!options.doNotHandleFileExtension) {
     addFileExtensionsToRequireResolve(require_)
     importPath = removeFileExtention(importPath)
   }
 
-  const paths = !options?.paths ? undefined : [toDirPath(context), ...(options?.paths || [])]
+  const paths = !options.paths ? undefined : [toDirPath(context), ...(options.paths || [])]
 
   let importPathResolvedFilePath: string | undefined
   let failure: undefined | { err: unknown }
