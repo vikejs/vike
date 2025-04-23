@@ -3,11 +3,11 @@ export { createPageContextClientSide }
 import { createPageContextShared } from '../../shared/createPageContextShared.js'
 import { getPageContextUrlComputed } from '../../shared/getPageContextUrlComputed.js'
 import { getBaseServer } from './getBaseServer.js'
-import { getGlobalContext } from './globalContext.js'
+import { getGlobalContextClientInternal } from './globalContext.js'
 import { assert, augmentType, isBaseServer, objectAssign } from './utils.js'
 
 async function createPageContextClientSide(urlOriginal: string) {
-  const globalContext = await getGlobalContext()
+  const globalContext = await getGlobalContextClientInternal()
 
   const baseServer = getBaseServer()
   assert(isBaseServer(baseServer))
