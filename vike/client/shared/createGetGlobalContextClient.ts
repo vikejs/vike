@@ -1,3 +1,8 @@
+// Public usage
+export { getGlobalContext }
+export { getGlobalContextSync }
+
+// Internal usage
 export { createGetGlobalContextClient }
 
 import { createGlobalContextShared, type GlobalContextShared } from '../../shared/createGlobalContextShared.js'
@@ -50,4 +55,11 @@ function createGetGlobalContextClient<GlobalContextAddendum extends object>(
     // Return
     return globalContext
   }
+}
+
+async function getGlobalContext() {
+  // TODO/now
+}
+function getGlobalContextSync() {
+  // TODO/now
 }

@@ -110,12 +110,12 @@
       "default": "./dist/esm/node/runtime/page-files/setup.js"
     },
     ".": {
-      "worker": "./dist/esm/node/runtime/index-deprecated.js",
-      "require": "./dist/cjs/node/runtime/index-deprecated.js",
-      "node": "./dist/esm/node/runtime/index-deprecated.js",
-      "browser": "./dist/esm/client/node.js",
-      "types": "./dist/esm/node/runtime/index-deprecated.d.ts",
-      "default": "./dist/esm/node/runtime/index-deprecated.js"
+      "worker": "./dist/esm/node/runtime/index.js",
+      "require": "./dist/cjs/node/runtime/index.js",
+      "node": "./dist/esm/node/runtime/index.js",
+      "browser": "./dist/esm/client/index.js",
+      "types": "./dist/esm/node/runtime/index.d.ts",
+      "default": "./dist/esm/node/runtime/index.js"
     }
   },
   "dependencies": {
@@ -217,8 +217,9 @@
       ]
     }
   },
-  "main": "./dist/esm/node/runtime/index-deprecated.js",
-  "types": "./dist/esm/node/runtime/index-deprecated.d.ts",
+  "main": "./dist/esm/node/runtime/index.js",
+  "browser": "./dist/esm/client/index.js",
+  "types": "./dist/esm/node/runtime/index.d.ts",
   "type": "module",
   "bin": {
     "vike": "./node/cli/bin.js"
