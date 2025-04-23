@@ -57,6 +57,9 @@ function tolerateError({ logSource, logText, testInfo }) {
   return (
     // TODO/eventually: move everything to this array
     [
+      // [23:54:58.279][/test-preview.test.ts][npm run preview][stderr] 11:54:58 PM [vike][Warning] getGlobalContextSync() is going to be deprecated in the next major release, see https://vike.dev/getGlobalContext
+      'getGlobalContextSync() is going to be deprecated',
+
       // Required for Cloudflare tests
       // [14:00:34.879][/][npm run preview][stderr] [vike][Warning] process.env.NODE_ENV==="undefined" which is unexpected: process.env.NODE_ENV is allowed to be the *value* undefined (i.e. process.env.NODE_ENV===undefined) but it shouldn't be the *string* "undefined" https://vike.dev/NODE_ENV
       'process.env.NODE_ENV==="undefined" which is unexpected',

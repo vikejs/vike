@@ -5,9 +5,11 @@ import './Layout.css'
 import { usePageContext } from 'vike-react/usePageContext'
 import { assert } from '../utils/assert'
 import type { GlobalContextClient } from 'vike/types'
+import { getGlobalContextSync } from 'vike'
 
 function Layout({ children }: { children: React.ReactNode }) {
   const pageContext = usePageContext()
+
   if (import.meta.env.SSR) {
     assert(!pageContext.globalContext.isClientSide)
     assert(pageContext.globalContext.someWrapperObj.neverPassedToClient === 123)
@@ -15,6 +17,10 @@ function Layout({ children }: { children: React.ReactNode }) {
     assert(pageContext.globalContext.isClientSide)
     assert(!('neverPassedToClient' in pageContext.globalContext.someWrapperObj))
   }
+
+  // TEST: getGlobalContextSync()
+  assert(pageContext.globalContext === getGlobalContextSync())
+
   return (
     <React.StrictMode>
       <Frame>
