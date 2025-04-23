@@ -8,10 +8,11 @@ import * as virtualFileExports from 'virtual:vike:importUserCode:client:server-r
 
 // Public type
 type GlobalContextClientWithServerRouting = GlobalContextSharedPublic &
+  Pick<GlobalContextClientInternal, 'isClientSide'> &
   Vike.GlobalContext &
   Vike.GlobalContextClient & {
     // Nothing extra for now
   }
+type GlobalContextClientInternal = Awaited<ReturnType<typeof getGlobalContextClientInternal>>
 
-type GlobalContextClientWithServerRoutingInternal = Awaited<ReturnType<typeof getGlobalContextClientInternal>>
 const getGlobalContextClientInternal = createGetGlobalContextClient(virtualFileExports, false)
