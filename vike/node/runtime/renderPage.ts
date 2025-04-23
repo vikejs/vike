@@ -38,10 +38,10 @@ import {
   PageContextFromRewrite
 } from '../../shared/route/abort.js'
 import {
-  getGlobalContextInternal,
+  getGlobalContextServerInternal,
   type GlobalContextServer,
   initGlobalContext_renderPage,
-  type GlobalContextInternal
+  type GlobalContextServerInternal
 } from './globalContext.js'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl.js'
 import {
@@ -151,7 +151,7 @@ async function renderPagePrepare(
   } else {
     // `globalContext` now contains the entire Vike config and getVikeConfig() isn't called anymore for this request.
   }
-  const { globalContext, globalContext_public } = await getGlobalContextInternal()
+  const { globalContext, globalContext_public } = await getGlobalContextServerInternal()
 
   const pageContextBegin = await getPageContextBegin(
     pageContextInit,
@@ -183,7 +183,7 @@ async function renderPagePrepare(
 
 async function renderPageAlreadyPrepared(
   pageContextBegin: PageContextBegin,
-  globalContext: GlobalContextInternal,
+  globalContext: GlobalContextServerInternal,
   httpRequestId: number,
   pageContextsFromRewrite: PageContextFromRewrite[]
 ): Promise<PageContextAfterRender> {
@@ -440,7 +440,7 @@ async function getPageContextErrorPageInit(
 
 async function getPageContextBegin(
   pageContextInit: PageContextInit,
-  globalContext: GlobalContextInternal,
+  globalContext: GlobalContextServerInternal,
   globalContext_public: GlobalContextServer,
   httpRequestId: number
 ) {
@@ -495,7 +495,7 @@ function assertIsNotViteRequest(urlPathname: string, urlOriginal: string) {
 
 async function normalizeUrl(
   pageContextBegin: PageContextBegin,
-  globalContext: GlobalContextInternal,
+  globalContext: GlobalContextServerInternal,
   httpRequestId: number
 ) {
   const pageContext = forkPageContext(pageContextBegin)
@@ -518,7 +518,7 @@ async function normalizeUrl(
 
 async function getPermanentRedirect(
   pageContextBegin: PageContextBegin,
-  globalContext: GlobalContextInternal,
+  globalContext: GlobalContextServerInternal,
   httpRequestId: number
 ) {
   const pageContext = forkPageContext(pageContextBegin)
@@ -574,7 +574,7 @@ async function handleAbortError(
   pageContextNominalPageBegin: PageContextBegin,
   httpRequestId: number,
   pageContextErrorPageInit: PageContextErrorPageInit,
-  globalContext: GlobalContextInternal
+  globalContext: GlobalContextServerInternal
 ): Promise<
   | { pageContextReturn: PageContextAfterRender; pageContextAbort?: never }
   | { pageContextReturn?: never; pageContextAbort: Record<string, unknown> }
@@ -628,7 +628,7 @@ async function handleAbortError(
   return { pageContextAbort }
 }
 
-async function checkBaseUrl(pageContextBegin: PageContextBegin, globalContext: GlobalContextInternal) {
+async function checkBaseUrl(pageContextBegin: PageContextBegin, globalContext: GlobalContextServerInternal) {
   const pageContext = forkPageContext(pageContextBegin)
   const { baseServer } = globalContext
   const { urlOriginal } = pageContext

@@ -4,14 +4,14 @@ export type { PageContextCreatedServerSide }
 
 import { assert, assertUsage, assertWarning, augmentType, normalizeHeaders, objectAssign } from '../utils.js'
 import { getPageContextUrlComputed } from '../../../shared/getPageContextUrlComputed.js'
-import type { GlobalContextInternal, GlobalContextServer } from '../globalContext.js'
+import type { GlobalContextServerInternal, GlobalContextServer } from '../globalContext.js'
 import type { PageContextInit } from '../renderPage.js'
 import { createPageContextShared } from '../../../shared/createPageContextShared.js'
 
 type PageContextCreatedServerSide = Awaited<ReturnType<typeof createPageContextServerSide>>
 async function createPageContextServerSide(
   pageContextInit: PageContextInit,
-  globalContext: GlobalContextInternal,
+  globalContext: GlobalContextServerInternal,
   globalObject_public: GlobalContextServer,
   {
     isPrerendering,

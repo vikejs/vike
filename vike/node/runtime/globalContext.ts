@@ -4,7 +4,7 @@ export { getGlobalContextSync }
 export { getGlobalContextAsync }
 
 // Internal use
-export { getGlobalContextInternal }
+export { getGlobalContextServerInternal }
 export { getViteDevServer }
 export { getViteConfig }
 export { initGlobalContext_renderPage }
@@ -19,7 +19,7 @@ export { clearGlobalContext }
 export { assertBuildInfo }
 export { updateUserFiles }
 export type { BuildInfo }
-export type { GlobalContextServerInternal as GlobalContextInternal }
+export type { GlobalContextServerInternal as GlobalContextServerInternal }
 export type { GlobalContextServer }
 
 // The core logic revolves around:
@@ -94,8 +94,8 @@ type GlobalContextServer = ReturnType<typeof makePublic> & Vike.GlobalContext & 
 // Private type
 type GlobalContextServerInternal = Awaited<ReturnType<typeof setGlobalContext>>
 
-async function getGlobalContextInternal() {
-  // getGlobalContextInternal() should always be called after initGlobalContext()
+async function getGlobalContextServerInternal() {
+  // getGlobalContextServerInternal() should always be called after initGlobalContext()
   assert(globalObject.isInitialized)
   assertGlobalContextIsDefined()
   if (globalObject.isProduction !== true) await globalObject.waitForUserFilesUpdate

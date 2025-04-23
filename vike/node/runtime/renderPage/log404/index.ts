@@ -5,7 +5,7 @@ export { getRoutesInfo }
 
 import type { PageRoutes } from '../../../../shared/route/index.js'
 import { noRouteMatch } from '../../../../shared/route/noRouteMatch.js'
-import type { GlobalContextInternal } from '../../globalContext.js'
+import type { GlobalContextServerInternal } from '../../globalContext.js'
 import {
   assert,
   assertUsage,
@@ -22,7 +22,7 @@ async function log404(pageContext: {
   errorWhileRendering: null | Error
   isClientSideNavigation: boolean
   _pageRoutes: PageRoutes
-  _globalContext: GlobalContextInternal
+  _globalContext: GlobalContextServerInternal
 }) {
   const { urlPathname } = pageContext
 
