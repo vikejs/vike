@@ -5,7 +5,7 @@
     "react-dom": "^18.2.0",
     "typescript": "^5.8.3",
     "vike": "0.4.228",
-    "vite": "^6.2.5"
+    "vite": "^6.3.2"
   },
   "type": "module"
 }
