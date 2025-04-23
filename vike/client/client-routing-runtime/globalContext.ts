@@ -1,7 +1,7 @@
 export { getGlobalContext }
 export type { GlobalContextClient }
 
-import { createGetGlobalContext } from '../shared/createGetGlobalContext.js'
+import { createGetGlobalContextClient } from '../shared/createGetGlobalContextClient.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import type { GlobalContextShared, GlobalContextSharedPublic } from '../../shared/createGlobalContextShared.js'
 // @ts-ignore
@@ -16,7 +16,7 @@ type GlobalContextClient = GlobalContextSharedPublic &
   }
 type GlobalContextClientInternal = Awaited<ReturnType<typeof getGlobalContext>>
 
-const getGlobalContext = createGetGlobalContext(virtualFileExports, true, addGlobalContext)
+const getGlobalContext = createGetGlobalContextClient(virtualFileExports, true, addGlobalContext)
 
 async function addGlobalContext(globalContext: GlobalContextShared) {
   const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(

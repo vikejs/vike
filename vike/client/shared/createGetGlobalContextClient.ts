@@ -1,4 +1,4 @@
-export { createGetGlobalContext }
+export { createGetGlobalContextClient }
 
 import { createGlobalContextShared, type GlobalContextShared } from '../../shared/createGlobalContextShared.js'
 import { getGlobalContextSerializedInHtml } from './getJsonSerializedInHtml.js'
@@ -7,9 +7,9 @@ import { assert, getGlobalObject, objectAssign } from './utils.js'
 const globalObject = getGlobalObject<{
   globalContext?: Record<string, unknown>
   isClientRouting?: boolean
-}>('createGetGlobalContext.ts', {})
+}>('createGetGlobalContextClient.ts', {})
 
-function createGetGlobalContext<GlobalContextAddendum extends object>(
+function createGetGlobalContextClient<GlobalContextAddendum extends object>(
   virtualFileExports: unknown,
   isClientRouting: boolean,
   addGlobalContext?: (globalContext: GlobalContextShared) => Promise<GlobalContextAddendum>
