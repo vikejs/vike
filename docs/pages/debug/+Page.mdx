@@ -6,7 +6,7 @@ In general, if you run into any issues with Vike, we recommend that you <Link hr
 
 That said, you can also dig into issues yourself.
 
-> In some situations, you may want to dig into a problem yourself. For example, if we ask you to provide a minimal reproduction, it might be quicker to dig into Vike's source code instead.
+> In some situations, you may want to dig into a problem yourself. For example, in the rare case we ask you to provide a minimal reproduction, it might actually be quicker to dig into Vike's source code instead.
 
 
 ## Verbose errors
@@ -54,6 +54,62 @@ The trick here is to directly modify the built code at `node_modules/`, while us
 > - You may end up being able to make a PR solving your problem and help the whole community.
 
 > We recommend this practice not only for Vike, but also for other tools such as Vite.
+
+
+## Digging into `dist/client/`
+
+By default, the client-side code in `dist/client/` is minified, which makes debugging difficult. You can temporarily disable minification:
+
+
+```js
+// vite.config.js
+
+export default {
+  build: { minify: false },
+  // ...
+}
+```
+
+You can then easily trace back where code in `dist/client/` originates from:
+
+```js
+// dist/client/assets/entries/pages_about.DrVcZv1W.js
+
+import { j as jsxRuntimeExports } from "../chunks/chunk-BXiwBnjM.js";
+import { i as isBrowser, a as assertClientRouting } from "../chunks/chunk-CSn_bGv_.js";
+
+/*! /home/rom/code/vike/vike/dist/esm/shared/route/utils.js [vike:pluginModuleBanner] */
+if (isBrowser()) {
+  assertClientRouting();
+}
+
+/*! pages/about/+Page.jsx [vike:pluginModuleBanner] */
+function Page() {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { children: "About" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Example of using Vike." })
+  ] });
+}
+const import2 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  default: Page
+}, Symbol.toStringTag, { value: "Module" }));
+
+/*! virtual:vike:pageConfigValuesAll:client:/pages/about [vike:pluginModuleBanner] */
+const configValuesSerialized = {
+  ["Page"]: {
+    type: "standard",
+    definedAtData: { "filePathToShowToUser": "/pages/about/+Page.jsx" },
+    valueSerialized: {
+      type: "plus-file",
+      exportValues: import2
+    }
+  }
+};
+export {
+  configValuesSerialized
+};
+```
 
 
 ## Debug flags
