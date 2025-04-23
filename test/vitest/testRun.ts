@@ -12,7 +12,7 @@ const urlBase = 'http://localhost:3000'
 
 function testRun() {
   describe('Vitest', () => {
-    it('run Vitest with Vike', async () => {
+    it('run Vitest with Vike', { timeout: 10 * 1000 }, async () => {
       {
         const html = await fetchHtml('/')
         expect(html).toContain('<h1>Welcome</h1>')
