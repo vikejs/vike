@@ -1,4 +1,4 @@
-export { getGlobalContext }
+export { getGlobalContextClientInternal }
 export type { GlobalContextClientWithServerRouting }
 
 import { createGetGlobalContextClient } from '../shared/createGetGlobalContextClient.js'
@@ -13,5 +13,5 @@ type GlobalContextClientWithServerRouting = GlobalContextSharedPublic &
     // Nothing extra for now
   }
 
-type GlobalContextClientWithServerRoutingInternal = Awaited<ReturnType<typeof getGlobalContext>>
-const getGlobalContext = createGetGlobalContextClient(virtualFileExports, false)
+type GlobalContextClientWithServerRoutingInternal = Awaited<ReturnType<typeof getGlobalContextClientInternal>>
+const getGlobalContextClientInternal = createGetGlobalContextClient(virtualFileExports, false)
