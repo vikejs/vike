@@ -1,10 +1,16 @@
 export { testSettingOnlyAvailableInCorrectEnv }
 
-import { expect, test } from '@brillout/test-e2e'
+import { expect, sleep, test } from '@brillout/test-e2e'
 import { retrievePageContext } from '../retrievePageContext'
 
 function testSettingOnlyAvailableInCorrectEnv() {
   test('Custom Setting Env - Client-only', async () => {
+    // Avoid weird error:
+    // ```console
+    // proxy.goto: Navigation to "http://localhost:3000/config-meta/env/client" is interrupted by another navigation to "http://localhost:3000/"
+    // ```
+    await sleep(100)
+
     let json = await retrievePageContext('/config-meta/env/client', { clientSide: true })
 
     expect(json).to.deep.equal({
