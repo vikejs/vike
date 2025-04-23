@@ -1,7 +1,7 @@
-export { getGlobalContext }
+export { getGlobalContextClientInternal }
 export type { GlobalContextClient }
 
-import { createGetGlobalContext } from '../shared/createGetGlobalContext.js'
+import { createGetGlobalContextClient } from '../shared/createGetGlobalContextClient.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import type { GlobalContextShared, GlobalContextSharedPublic } from '../../shared/createGlobalContextShared.js'
 // @ts-ignore
@@ -14,9 +14,9 @@ type GlobalContextClient = GlobalContextSharedPublic &
   Vike.GlobalContextClient & {
     // Nothing extra for now
   }
-type GlobalContextClientInternal = Awaited<ReturnType<typeof getGlobalContext>>
+type GlobalContextClientInternal = Awaited<ReturnType<typeof getGlobalContextClientInternal>>
 
-const getGlobalContext = createGetGlobalContext(virtualFileExports, true, addGlobalContext)
+const getGlobalContextClientInternal = createGetGlobalContextClient(virtualFileExports, true, addGlobalContext)
 
 async function addGlobalContext(globalContext: GlobalContextShared) {
   const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(

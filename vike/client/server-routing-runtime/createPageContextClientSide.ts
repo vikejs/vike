@@ -6,12 +6,12 @@ import { loadUserFilesClientSide, type PageContextUserFiles } from '../shared/lo
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 
 import { createPageContextShared } from '../../shared/createPageContextShared.js'
-import { getGlobalContext } from './globalContext.js'
+import { getGlobalContextClientInternal } from './globalContext.js'
 
 const urlFirst = getCurrentUrl({ withoutHash: true })
 
 async function createPageContextClientSide() {
-  const globalContext = await getGlobalContext()
+  const globalContext = await getGlobalContextClientInternal()
 
   const pageContextCreated = {
     /* Don't spread globalContext for now? Or never spread it as it leads to confusion? The convenience isn't worth the added confusion?

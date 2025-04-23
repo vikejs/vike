@@ -7,7 +7,7 @@ import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.
 import type { PageConfigUserFriendlyOld } from '../../../shared/page-configs/getPageConfigUserFriendly.js'
 import { PageContextBuiltInServerInternal } from '../../../shared/types.js'
 import { preparePageContextForUserConsumption } from '../../../shared/preparePageContextForUserConsumption.js'
-import type { GlobalContextInternal, GlobalContextServer } from '../globalContext.js'
+import type { GlobalContextServerInternal, GlobalContextServer } from '../globalContext.js'
 
 type PageContextForUserConsumptionServerSide = PageContextBuiltInServerInternal &
   PageConfigUserFriendlyOld & {
@@ -23,7 +23,7 @@ type PageContextForUserConsumptionServerSide = PageContextBuiltInServerInternal 
     is404: null | boolean
     isClientSideNavigation: boolean
     pageProps?: Record<string, unknown>
-    _globalContext: GlobalContextInternal
+    _globalContext: GlobalContextServerInternal
     globalContext: GlobalContextServer
   } & Record<string, unknown>
 

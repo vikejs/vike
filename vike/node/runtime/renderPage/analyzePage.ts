@@ -7,14 +7,14 @@ import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.
 import { type AnalysisResult, analyzePageClientSide } from '../../../shared/getPageFiles/analyzePageClientSide.js'
 import { getVirtualFileIdPageConfigValuesAll } from '../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { analyzeClientSide } from '../../../shared/getPageFiles/analyzeClientSide.js'
-import type { GlobalContextInternal } from '../globalContext.js'
+import type { GlobalContextServerInternal } from '../globalContext.js'
 import { getConfigValueRuntime } from '../../../shared/page-configs/getConfigValueRuntime.js'
 
 async function analyzePage(
   pageFilesAll: PageFile[],
   pageConfig: null | PageConfigRuntime,
   pageId: string,
-  globalContext: GlobalContextInternal
+  globalContext: GlobalContextServerInternal
 ): Promise<AnalysisResult> {
   if (pageConfig) {
     const { isClientRuntimeLoaded, isClientRouting } = analyzeClientSide(pageConfig, pageFilesAll, pageId)

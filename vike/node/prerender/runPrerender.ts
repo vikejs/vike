@@ -33,8 +33,8 @@ import pc from '@brillout/picocolors'
 import { cpus } from 'os'
 import type { PageFile } from '../../shared/getPageFiles.js'
 import {
-  getGlobalContextInternal,
-  type GlobalContextInternal,
+  getGlobalContextServerInternal,
+  type GlobalContextServerInternal,
   type GlobalContextServer,
   initGlobalContext_runPrerender,
   setGlobalContext_isPrerendering
@@ -203,7 +203,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   )
 
   await initGlobalContext_runPrerender()
-  const { globalContext, globalContext_public } = await getGlobalContextInternal()
+  const { globalContext, globalContext_public } = await getGlobalContextServerInternal()
   globalContext._pageFilesAll.forEach(assertExportNames)
 
   const prerenderContext: PrerenderContext = {
@@ -279,7 +279,7 @@ async function collectDoNoPrerenderList(
   doNotPrerenderList: DoNotPrerenderList,
   defaultLocalValue: boolean,
   concurrencyLimit: PLimit,
-  globalContext: GlobalContextInternal
+  globalContext: GlobalContextServerInternal
 ) {
   // V1 design
   pageConfigs.forEach((pageConfig) => {
@@ -347,7 +347,7 @@ function assertExportNames(pageFile: PageFile) {
 
 async function callOnBeforePrerenderStartHooks(
   prerenderContext: PrerenderContext,
-  globalContext: GlobalContextInternal,
+  globalContext: GlobalContextServerInternal,
   globalContext_public: GlobalContextServer,
   concurrencyLimit: PLimit,
   doNotPrerenderList: DoNotPrerenderList
@@ -475,7 +475,7 @@ async function callOnBeforePrerenderStartHooks(
 }
 
 function getUrlListFromPagesWithStaticRoute(
-  globalContext: GlobalContextInternal,
+  globalContext: GlobalContextServerInternal,
   doNotPrerenderList: DoNotPrerenderList
 ) {
   const urlList: UrlListEntry[] = []
@@ -503,7 +503,7 @@ function getUrlListFromPagesWithStaticRoute(
   })
   return urlList
 }
-function getUrlList404(globalContext: GlobalContextInternal): UrlListEntry[] {
+function getUrlList404(globalContext: GlobalContextServerInternal): UrlListEntry[] {
   const urlList: UrlListEntry[] = []
   const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
   if (errorPageId) {
@@ -523,7 +523,7 @@ type UrlListEntry = {
 async function createPageContexts(
   urlList: UrlListEntry[],
   prerenderContext: PrerenderContext,
-  globalContext: GlobalContextInternal,
+  globalContext: GlobalContextServerInternal,
   globalContext_public: GlobalContextServer,
   concurrencyLimit: PLimit,
   is404: boolean
@@ -553,7 +553,7 @@ async function createPageContexts(
 async function createPageContextPrerendering(
   urlOriginal: string,
   prerenderContext: PrerenderContext,
-  globalContext: GlobalContextInternal,
+  globalContext: GlobalContextServerInternal,
   globalContext_public: GlobalContextServer,
   is404: boolean,
   pageId: string | undefined,
@@ -654,7 +654,7 @@ function assertRouteMatch(
 
 async function callOnPrerenderStartHook(
   prerenderContext: PrerenderContext,
-  globalContext: GlobalContextInternal,
+  globalContext: GlobalContextServerInternal,
   concurrencyLimit: PLimit
 ) {
   let onPrerenderStartHook:
@@ -921,7 +921,7 @@ function warnContradictoryNoPrerenderList(
 
 async function warnMissingPages(
   prerenderedPageContexts: Record<string, unknown>,
-  globalContext: GlobalContextInternal,
+  globalContext: GlobalContextServerInternal,
   doNotPrerenderList: DoNotPrerenderList,
   partial: boolean
 ) {
