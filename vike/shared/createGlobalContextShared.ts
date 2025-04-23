@@ -1,6 +1,10 @@
 export { createGlobalContextShared }
+export { getGlobalContextSyncErrMsg }
 export type { GlobalContextShared }
 export type { GlobalContextSharedPublic }
+
+const getGlobalContextSyncErrMsg =
+  "The global context isn't set yet, call getGlobalContextSync() later or use getGlobalContext() instead."
 
 import { getPageConfigsRuntime } from './getPageConfigsRuntime.js'
 import { executeHookGenericGlobalCumulative } from './hooks/executeHookGeneric.js'

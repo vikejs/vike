@@ -5,14 +5,30 @@ export { getGlobalContextSync }
 // Internal usage
 export { createGetGlobalContextClient }
 
-import { createGlobalContextShared, type GlobalContextShared } from '../../shared/createGlobalContextShared.js'
+import {
+  createGlobalContextShared,
+  getGlobalContextSyncErrMsg,
+  type GlobalContextShared
+} from '../../shared/createGlobalContextShared.js'
 import { getGlobalContextSerializedInHtml } from './getJsonSerializedInHtml.js'
-import { assert, getGlobalObject, objectAssign } from './utils.js'
+import { assert, assertUsage, genPromise, getGlobalObject, objectAssign } from './utils.js'
 
+type GlobalContextUnkown = Record<string, unknown>
 const globalObject = getGlobalObject<{
-  globalContext?: Record<string, unknown>
+  globalContext?: GlobalContextUnkown
   isClientRouting?: boolean
-}>('createGetGlobalContextClient.ts', {})
+  globalContextPromise: Promise<GlobalContextUnkown>
+  globalContextPromiseResolve: (globalContext: GlobalContextUnkown) => void
+}>(
+  'createGetGlobalContextClient.ts',
+  (() => {
+    const { promise: globalContextPromise, resolve: globalContextPromiseResolve } = genPromise<GlobalContextUnkown>()
+    return {
+      globalContextPromise,
+      globalContextPromiseResolve
+    }
+  })()
+)
 
 function createGetGlobalContextClient<GlobalContextAddendum extends object>(
   virtualFileExports: unknown,
@@ -52,6 +68,7 @@ function createGetGlobalContextClient<GlobalContextAddendum extends object>(
       return globalContextAddendum
     })
     globalObject.globalContext = globalContext
+    globalObject.globalContextPromiseResolve(globalObject.globalContext)
 
     // Return
     return globalContext
@@ -59,8 +76,10 @@ function createGetGlobalContextClient<GlobalContextAddendum extends object>(
 }
 
 async function getGlobalContext() {
-  // TODO/now
+  return globalObject.globalContextPromise
 }
 function getGlobalContextSync() {
-  // TODO/now
+  const { globalContext } = globalObject
+  assertUsage(globalContext, getGlobalContextSyncErrMsg)
+  return globalContext
 }

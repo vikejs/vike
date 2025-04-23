@@ -59,7 +59,11 @@ import { assertV1Design } from '../shared/assertV1Design.js'
 import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
 import { resolveBase } from '../shared/resolveBase.js'
 import type { ViteConfigRuntime } from '../plugin/shared/getViteConfigRuntime.js'
-import { createGlobalContextShared, type GlobalContextShared } from '../../shared/createGlobalContextShared.js'
+import {
+  createGlobalContextShared,
+  getGlobalContextSyncErrMsg,
+  type GlobalContextShared
+} from '../../shared/createGlobalContextShared.js'
 type PageConfigsRuntime = ReturnType<typeof getPageConfigsRuntime>
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
@@ -164,10 +168,7 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
 function getGlobalContextSync(): GlobalContextServer {
   debug('getGlobalContextSync()')
   const { globalContext_public } = globalObjectTyped
-  assertUsage(
-    globalContext_public,
-    "The global context isn't set yet, call getGlobalContextSync() later or use getGlobalContext() instead."
-  )
+  assertUsage(globalContext_public, getGlobalContextSyncErrMsg)
   assertWarning(
     false,
     // We discourage users from using it because `pageContext.globalContext` is safer: I ain't sure but there could be race conditions when using `getGlobalContextSync()` inside React/Vue components upon HMR.
