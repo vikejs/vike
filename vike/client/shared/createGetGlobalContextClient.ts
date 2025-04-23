@@ -13,16 +13,16 @@ import {
 import { getGlobalContextSerializedInHtml } from './getJsonSerializedInHtml.js'
 import { assert, assertUsage, genPromise, getGlobalObject, objectAssign } from './utils.js'
 
-type GlobalContextUnkown = Record<string, unknown>
+type GlobalContextNotTyped = Record<string, unknown>
 const globalObject = getGlobalObject<{
-  globalContext?: GlobalContextUnkown
+  globalContext?: GlobalContextNotTyped
   isClientRouting?: boolean
-  globalContextPromise: Promise<GlobalContextUnkown>
-  globalContextPromiseResolve: (globalContext: GlobalContextUnkown) => void
+  globalContextPromise: Promise<GlobalContextNotTyped>
+  globalContextPromiseResolve: (globalContext: GlobalContextNotTyped) => void
 }>(
   'createGetGlobalContextClient.ts',
   (() => {
-    const { promise: globalContextPromise, resolve: globalContextPromiseResolve } = genPromise<GlobalContextUnkown>()
+    const { promise: globalContextPromise, resolve: globalContextPromiseResolve } = genPromise<GlobalContextNotTyped>()
     return {
       globalContextPromise,
       globalContextPromiseResolve
