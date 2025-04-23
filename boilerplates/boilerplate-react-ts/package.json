@@ -13,7 +13,7 @@
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.1",
     "@types/react-dom": "^19.0.2",
-    "@vitejs/plugin-react": "^4.3.4",
+    "@vitejs/plugin-react": "^4.4.1",
     "compression": "^1.7.5",
     "cross-env": "^7.0.3",
     "express": "^5.1.0",

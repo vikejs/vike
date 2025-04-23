@@ -5,7 +5,7 @@
     "preview": "vike build && vike preview"
   },
   "dependencies": {
-    "@vitejs/plugin-react": "^4.3.4",
+    "@vitejs/plugin-react": "^4.4.1",
     "node-fetch": "^3.3.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
