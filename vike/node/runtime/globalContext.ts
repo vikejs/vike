@@ -170,7 +170,7 @@ function getGlobalContextSync(): GlobalContextServer {
   )
   assertWarning(
     false,
-    // We discourage users from using it because using `pageContext.globalContext` is better: it doesn't have the race condition issue that `getGlobalContextSync()` would have when called inside React/Vue components.
+    // We discourage users from using it because `pageContext.globalContext` is safer: I ain't sure but there could be race conditions when using `getGlobalContextSync()` inside React/Vue components upon HMR.
     // We're lying about "is going to be deprecated in the next major release": let's keep it and see if users need it (so far I can't see a use case for it).
     'getGlobalContextSync() is going to be deprecated in the next major release, see https://vike.dev/getGlobalContext',
     { onlyOnce: true }
