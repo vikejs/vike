@@ -49,7 +49,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1De
     } else {
       expect(html).toContain('<script')
       expect(html).toContain('@vite/client')
-      expect(html).toContain('import RefreshRuntime from "/@react-refresh"')
+      expect(html).toContain('from "/@react-refresh"')
       expect(html).toContain('<link rel="stylesheet" type="text/css" href="/renderer/Layout.css?direct">')
       expect(html).toContain('<link rel="stylesheet" type="text/css" href="/pages/html-only/index.css?direct">')
     }

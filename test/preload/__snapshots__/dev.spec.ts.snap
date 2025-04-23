@@ -30,11 +30,10 @@ exports[`preload tags > Preload Default 2`] = `
         <script id="vike_pageContext" type="application/json">{"_urlRewrite":null,"pageId":"/pages/index","routeParams":{}}</script>
         <script id="vike_globalContext" type="application/json">{}</script>
         <script type="module" async>
-import RefreshRuntime from "/@react-refresh"
-RefreshRuntime.injectIntoGlobalHook(window)
-window.$RefreshReg$ = () => {}
-window.$RefreshSig$ = () => (type) => type
-window.__vite_plugin_react_preamble_installed__ = true
+import { injectIntoGlobalHook } from "/@react-refresh"
+injectIntoGlobalHook(window);
+window.$RefreshReg$ = () => {};
+window.$RefreshSig$ = () => (type) => type;
 import "/@vite/client";
 import "/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js";
 </script>
@@ -72,11 +71,10 @@ exports[`preload tags > Preload Disabled 2`] = `
         <script id="vike_pageContext" type="application/json">{"_urlRewrite":null,"pageId":"/pages/preload-disabled","routeParams":{}}</script>
         <script id="vike_globalContext" type="application/json">{}</script>
         <script type="module" async>
-import RefreshRuntime from "/@react-refresh"
-RefreshRuntime.injectIntoGlobalHook(window)
-window.$RefreshReg$ = () => {}
-window.$RefreshSig$ = () => (type) => type
-window.__vite_plugin_react_preamble_installed__ = true
+import { injectIntoGlobalHook } from "/@react-refresh"
+injectIntoGlobalHook(window);
+window.$RefreshReg$ = () => {};
+window.$RefreshSig$ = () => (type) => type;
 import "/@vite/client";
 import "/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js";
 </script>
@@ -114,11 +112,10 @@ exports[`preload tags > Preload Eager 2`] = `
         <script id="vike_pageContext" type="application/json">{"_urlRewrite":null,"pageId":"/pages/preload-eager","routeParams":{}}</script>
         <script id="vike_globalContext" type="application/json">{}</script>
         <script type="module" async>
-import RefreshRuntime from "/@react-refresh"
-RefreshRuntime.injectIntoGlobalHook(window)
-window.$RefreshReg$ = () => {}
-window.$RefreshSig$ = () => (type) => type
-window.__vite_plugin_react_preamble_installed__ = true
+import { injectIntoGlobalHook } from "/@react-refresh"
+injectIntoGlobalHook(window);
+window.$RefreshReg$ = () => {};
+window.$RefreshSig$ = () => (type) => type;
 import "/@vite/client";
 import "/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js";
 </script>
@@ -156,11 +153,10 @@ exports[`preload tags > Preload Images 2`] = `
         <script id="vike_pageContext" type="application/json">{"_urlRewrite":null,"pageId":"/pages/preload-images","routeParams":{}}</script>
         <script id="vike_globalContext" type="application/json">{}</script>
         <script type="module" async>
-import RefreshRuntime from "/@react-refresh"
-RefreshRuntime.injectIntoGlobalHook(window)
-window.$RefreshReg$ = () => {}
-window.$RefreshSig$ = () => (type) => type
-window.__vite_plugin_react_preamble_installed__ = true
+import { injectIntoGlobalHook } from "/@react-refresh"
+injectIntoGlobalHook(window);
+window.$RefreshReg$ = () => {};
+window.$RefreshSig$ = () => (type) => type;
 import "/@vite/client";
 import "/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js";
 </script>
