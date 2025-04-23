@@ -67,7 +67,7 @@ function createGetGlobalContextClient<GlobalContextAddendum extends object>(
       objectAssign(globalContextAddendum, await addGlobalContext?.(globalContext))
       return globalContextAddendum
     })
-    globalObject.globalContext = globalContext
+    assert(globalObject.globalContext)
     globalObject.globalContextPromiseResolve(globalObject.globalContext)
 
     // Return
