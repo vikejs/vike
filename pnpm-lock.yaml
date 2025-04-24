@@ -234,8 +234,8 @@ importers:
         specifier: 0.0.28
         version: 0.0.28
       '@brillout/docpress':
-        specifier: ^0.12.5
-        version: 0.12.5(@algolia/client-search@5.21.0)(@types/react@19.0.8)(@vitejs/plugin-react-swc@3.7.2(vite@6.3.2(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2)))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.40.0)(search-insights@2.17.3)(typescript@5.8.3)(vike@vike)(vite@6.3.2(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2))
+        specifier: ^0.12.6
+        version: 0.12.6(@algolia/client-search@5.21.0)(@types/react@19.0.8)(@vitejs/plugin-react-swc@3.7.2(vite@6.3.2(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2)))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.40.0)(search-insights@2.17.3)(typescript@5.8.3)(vike@vike)(vite@6.3.2(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2))
       '@types/react':
         specifier: ^19.0.2
         version: 19.0.8
@@ -2157,8 +2157,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@brillout/docpress@0.12.5':
-    resolution: {integrity: sha512-2x0wyL4EFVcf+HDR91Lt5IwcD2RJta6eWazSM1I5x9i8zKF3YnAcuWt/s3D4gknRMAH6GL0Sjy0OUv2oUfuhGg==}
+  '@brillout/docpress@0.12.6':
+    resolution: {integrity: sha512-kjXCyKAdkBYaNz+vCRWcAhWeCFYlinUYQMY9pINJaxXb3Kld2yYBERKEP0WYefx+03VtmKIvJiOHFzGYFcN6aQ==}
     peerDependencies:
       '@vitejs/plugin-react-swc': '>=3.0.0'
       react: '>=18.0.0'
@@ -8232,7 +8232,7 @@ snapshots:
   '@biomejs/cli-win32-x64@1.9.4':
     optional: true
 
-  '@brillout/docpress@0.12.5(@algolia/client-search@5.21.0)(@types/react@19.0.8)(@vitejs/plugin-react-swc@3.7.2(vite@6.3.2(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2)))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.40.0)(search-insights@2.17.3)(typescript@5.8.3)(vike@vike)(vite@6.3.2(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2))':
+  '@brillout/docpress@0.12.6(@algolia/client-search@5.21.0)(@types/react@19.0.8)(@vitejs/plugin-react-swc@3.7.2(vite@6.3.2(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2)))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.40.0)(search-insights@2.17.3)(typescript@5.8.3)(vike@vike)(vite@6.3.2(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2))':
     dependencies:
       '@brillout/picocolors': 1.0.26
       '@docsearch/css': 3.9.0
@@ -8951,7 +8951,7 @@ snapshots:
 
   '@mdx-js/mdx@3.0.1':
     dependencies:
-      '@types/estree': 1.0.6
+      '@types/estree': 1.0.7
       '@types/estree-jsx': 1.0.5
       '@types/hast': 3.0.4
       '@types/mdx': 2.0.13
@@ -11785,7 +11785,7 @@ snapshots:
 
   is-reference@3.0.3:
     dependencies:
-      '@types/estree': 1.0.6
+      '@types/estree': 1.0.7
 
   is-stream@1.1.0: {}
 
@@ -12803,7 +12803,7 @@ snapshots:
 
   periscopic@3.1.0:
     dependencies:
-      '@types/estree': 1.0.6
+      '@types/estree': 1.0.7
       estree-walker: 3.0.3
       is-reference: 3.0.3
 

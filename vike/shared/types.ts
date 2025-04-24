@@ -56,21 +56,25 @@ type PageContextBuiltInCommon<Data> = {
   /** The `export { Page }` of your `.page.js` file.
    *
    * https://vike.dev/Page
+   * https://vike.dev/pageContext#Page
    */
   Page: Config['Page']
   /** Route Parameters, e.g. `pageContext.routeParams.productId` for a Route String `/product/@productId`.
    *
    * https://vike.dev/route-string
+   * https://vike.dev/pageContext#routeParams
    */
   routeParams: Record<string, string>
   /** The page's data which was fetched using the data() hook.
    *
    * https://vike.dev/data
+   * https://vike.dev/pageContext#data
    */
   data: Data
   /** The page's configuration values.
    *
    * https://vike.dev/config
+   * https://vike.dev/pageContext#config
    */
   config: PageContextConfig
   /** The page's configuration, including the configs origin and overriden configs.
@@ -99,9 +103,8 @@ type PageContextBuiltInCommon<Data> = {
    *
    * As a string object normalized by Vike.
    *
-   * See also:
-   * - https://vike.dev/headers
-   * - `pageContext.headersOriginal`
+   * https://vike.dev/headers
+   * https://vike.dev/pageContext#headers
    */
   headers: Record<string, string> | null
   /**
@@ -109,9 +112,8 @@ type PageContextBuiltInCommon<Data> = {
    *
    * The original object provided by the server.
    *
-   * See also:
-   * - https://vike.dev/headers
-   * - `pageContext.headers`
+   * https://vike.dev/headers
+   * https://vike.dev/pageContext#headersOriginal
    */
   headersOriginal?: unknown
   /** If an error occurs, whether the error is a `404 Page Not Found`.
@@ -122,7 +124,7 @@ type PageContextBuiltInCommon<Data> = {
   /**
    * Whether the page was navigated by the client-side router.
    *
-   * https://vike.dev/pageContext
+   * https://vike.dev/pageContext#isClientSideNavigation
    */
   isClientSideNavigation: boolean
 
@@ -130,6 +132,7 @@ type PageContextBuiltInCommon<Data> = {
    * The reason why the original page was aborted. Usually used for showing a custom message on the error page.
    *
    * https://vike.dev/render
+   * https://vike.dev/pageContext#abortReason
    */
   abortReason?: unknown
 
@@ -137,6 +140,7 @@ type PageContextBuiltInCommon<Data> = {
    * The status code set by `throw render(abortStatusCode)`.
    *
    * https://vike.dev/render
+   * https://vike.dev/pageContext#abortStatusCode
    */
   abortStatusCode?: AbortStatusCode
 
@@ -144,6 +148,7 @@ type PageContextBuiltInCommon<Data> = {
    * Error that occured while rendering.
    *
    * https://vike.dev/error-tracking
+   * https://vike.dev/pageContext#errorWhileRendering
    */
   errorWhileRendering?: unknown
 
@@ -171,6 +176,7 @@ type PageContextBuiltInCommon<Data> = {
    * Whether the Base URL is missing in the URL of the HTTP request made to the SSR server.
    *
    * https://vike.dev/base-url#setup
+   * https://vike.dev/pageContext#isBaseMissing
    */
   isBaseMissing?: true
 }
@@ -180,7 +186,9 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
     /**
      * Whether the page is being rendered on the client-side or server-side / pre-rendered.
      *
-     * We recommend using `import.meta.env.SSR` instead, see https://vike.dev/pageContext
+     * We recommend using `import.meta.env.SSR` instead, see https://vike.dev/pageContext#isClientSide
+     *
+     * https://vike.dev/pageContext#isClientSide
      */
     isClientSide: false
     /**
@@ -189,13 +197,14 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
      * The value is always `false` in development.
      *
      * https://vike.dev/pre-rendering
-     * https://vike.dev/pageContext
+     * https://vike.dev/pageContext#isPrerendering
      */
     isPrerendering: boolean
     /**
      * Runtime information about your app.
      *
      * https://vike.dev/getGlobalContext
+     * https://vike.dev/pageContext#globalContext
      */
     globalContext: GlobalContextServer
 
@@ -228,12 +237,14 @@ type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltI
      * Whether the user is navigating back in history.
      *
      * The value is `true` when the user clicks on his browser's backward navigation button, or when invoking `history.back()`.
+     *
+     * https://vike.dev/pageContext#isBackwardNavigation
      */
     isBackwardNavigation: boolean | null
     /**
      * Upon client-side page navigation, you can use `pageContext.previousPageContext` to access the `pageContext` of the previous page.
      *
-     * https://vike.dev/pageContext
+     * https://vike.dev/pageContext#previousPageContext
      */
     previousPageContext: PageContextClient<Data> | null
     globalContext: GlobalContextClient
@@ -246,12 +257,16 @@ type PageContextBuiltInClientWithServerRouting<Data> = Partial<PageContextBuiltI
      * Whether the current page is already rendered to HTML.
      *
      * The `isHydration` value is always `true` when using Server Routing.
+     *
+     * https://vike.dev/pageContext#isHydration
      */
     isHydration: true
     /**
      * Whether the user is navigating back in history.
      *
      * The `isBackwardNavigation` property only works with Client Routing. (The value is always `null` when using Server Routing.)
+     *
+     * https://vike.dev/pageContext#isBackwardNavigation
      */
     isBackwardNavigation: null
     globalContext: GlobalContextClientWithServerRouting
@@ -261,7 +276,9 @@ type PageContextClientCommon = {
   /**
    * Whether the page is being rendered on the client-side, or rendered on the server-side / pre-rendered.
    *
-   * In order to save client-side KBs, we recommend using `import.meta.env.SSR` whenever possible instead, see https://vike.dev/pageContext
+   * In order to save client-side KBs, we recommend using `import.meta.env.SSR` whenever possible instead, see https://vike.dev/pageContext#isClientSide
+   *
+   * https://vike.dev/pageContext#isClientSide
    */
   isClientSide: true
   /**
@@ -270,7 +287,7 @@ type PageContextClientCommon = {
    * The value is always `false` in development.
    *
    * https://vike.dev/pre-rendering
-   * https://vike.dev/pageContext
+   * https://vike.dev/pageContext#isPrerendering
    */
   isPrerendering: false
 }

@@ -10,7 +10,7 @@ Hook called at the beginning of rendering the page on the client-side. It's usua
 
 It's called upon rendering the first page (e.g. <Link href="/hydration">hydration</Link> when using <Link href="/ssr">SSR</Link>) and upon page navigation.
 
-> If you want to perform an action only upon hydration then use <Link href="/pageContext#:~:text=pageContext.isHydration,-%3A">`pageContext.isHydration`</Link>:
+> If you want to perform an action only upon hydration then use <Link href="/pageContext#isHydration">`pageContext.isHydration`</Link>:
 >
 > ```js
 > // +onBeforeRenderClient.js

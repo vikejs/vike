@@ -8,7 +8,7 @@ The `useData()` component hook allows you to access the value returned by the <L
 
 > See <Link href="/data-fetching" /> for an introduction about `useData()` and fetching data in general.
 
-> You can also access the data over <Link href="/pageContext#:~:text=pageContext.data,-%3A">`pageContext.data`</Link>. In fact <Link href="/usePageContext">`const { data } = usePageContext()`</Link> returns the same value as `useData()`.
+> You can also access the data over <Link href="/pageContext#data">`pageContext.data`</Link>. In fact <Link href="/usePageContext">`const { data } = usePageContext()`</Link> returns the same value as `useData()`.
 >
 > Using `pageContext.data` instead of `useData()` makes sense if you want to access the data in <Link href="/hooks">Vike hooks</Link> since `useData()` only works inside UI components (not inside Vike hooks).
 
@@ -109,4 +109,4 @@ Examples:
 - <Link href="/data-fetching" />
 - <Link href="/data" />
 - <Link href="/usePageContext" />
-- <Link href="/pageContext#:~:text=pageContext.data,-%3A">API > `pageContext.data`</Link>
+- <Link href="/pageContext#data">API > `pageContext.data`</Link>
