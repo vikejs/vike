@@ -151,7 +151,7 @@ manipulate localized URLs and set `pageContext.locale`.
 > `onPrerenderStart()` is a global hook you can define only once, while `onBeforePrerenderStart()` is a per-page hook you can define multiple times.
 
 Alternatively, if you need to load data that depends on localization, instead of `onPrerenderStart()` you can use
-`onBeforePrerenderStart()` to localize <Link href="/pageContext#:~:text=pageContext.data,-%3A">`pageContext.data`</Link>:
+`onBeforePrerenderStart()` to localize <Link href="/pageContext#data">`pageContext.data`</Link>:
 
 ```js
 // pages/product/+onBeforePrerenderStart.js
