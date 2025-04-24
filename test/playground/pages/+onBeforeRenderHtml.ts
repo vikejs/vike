@@ -1,7 +1,7 @@
 export { onBeforeRenderHtml }
 
 import type { PageContextServer } from 'vike/types'
-import { assert } from './utils/assert'
+import { assert } from '../utils/assert'
 import { getGlobalContext, getGlobalContextAsync } from 'vike'
 
 async function onBeforeRenderHtml(pageContext: PageContextServer) {
