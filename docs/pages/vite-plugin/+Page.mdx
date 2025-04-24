@@ -1,12 +1,16 @@
-Environment: Node.js.
+import { Link } from '@brillout/docpress'
+
+Environment: Node.js (or Deno/Bun).
 
 ```js
 // vite.config.js
 
 import vike from 'vike/plugin'
 
-module.exports = {
+export default {
   // Make sure to include `vike()` and not `vike`
   plugins: [vike()]
 }
 ```
+
+Vike's Vite plugin doesn't have any options: <Link href="/settings">all settings</Link> are defined in <Link href="/config#files">`+` files</Link>.

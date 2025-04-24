@@ -1,0 +1,123 @@
+import { Link } from '@brillout/docpress'
+
+When running Vitest consider either:
+ - Using Vike's JavaScript API, see <Link href="#with-vike" />.
+ - Removing Vike's Vite plugin, see <Link href="#without-vike" />.
+
+## With Vike
+
+If you want to use Vitest to test your Vike app, then you can use <Link href="/api">Vike's JavaScript API</Link>:
+
+```ts
+// dev.spec.ts
+
+import { afterAll, beforeAll } from 'vitest'
+import { testApp, viteConfig } from './testApp'
+import { dev } from 'vike/api'
+
+let viteServer: Awaited<ReturnType<typeof dev>>['viteServer']
+
+beforeAll(async () => {
+  const { viteServer } = await dev({ viteConfig })
+  await viteServer.listen()
+  await sleep(10) // avoid race condition of server not actually being ready
+}, 10 * 1000)
+
+afterAll(async () => {
+  await viteServer.close()
+})
+
+testApp()
+
+function sleep(milliseconds: number): Promise<void> {
+  return new Promise((r) => setTimeout(r, milliseconds))
+}
+```
+
+```ts
+// preview.spec.ts
+
+import { afterAll, beforeAll } from 'vitest'
+import { testApp, viteConfig } from './testApp'
+import { build, preview } from 'vike/api'
+
+let viteServer: Awaited<ReturnType<typeof preview>>['viteServer']
+
+beforeAll(async () => {
+  await build({ viteConfig })
+  const { viteServer } = await preview({ viteConfig })
+  // If you want to replicate Vite's startup log:
+  viteServer!.printUrls()
+  // For the preview server, no need to call server.listen()
+}, 40 * 1000)
+
+afterAll(async () => {
+  await viteServer!.close()
+})
+
+testApp()
+```
+
+```ts
+// testApp.ts
+
+export { testApp }
+export { viteConfig }
+
+import { expect, describe, it } from 'vitest'
+
+const viteConfig = {
+  logLevel: 'warn' as const,
+  root: __dirname,
+  configFile: __dirname + '/vite.config.js'
+}
+const urlBase = 'http://localhost:3000'
+
+function testApp() {
+  describe('Vitest', () => {
+    it('run Vitest with Vike', { timeout: 10 * 1000 }, async () => {
+      {
+        const html = await fetchHtml('/')
+        expect(html).toContain('<h1>Welcome</h1>')
+        expect(html).toContain('<li>Rendered to HTML.</li>')
+      }
+      {
+        const html = await fetchHtml('/about')
+        expect(html).toContain('<h1>About</h1>')
+        expect(html).toContain('<p>Example of using Vike.</p>')
+      }
+    })
+  })
+}
+
+async function fetchHtml(urlPathname: string) {
+  const ret = await fetch(urlBase + urlPathname)
+  const html = await ret.text()
+  return html
+}
+```
+
+> Feel free to [reach out on GitHub Discussions](https://github.com/vikejs/vike/discussions) if you want help setting up Vitest with Vike differently.
+
+
+## Without Vike
+
+If you want to test JavaScript code without testing your Vike app, then remove <Link href="/vite-plugin">Vike's Vite plugin</Link> when running Vitest:
+
+```js
+// vite.config.js
+
+import vike from 'vike/plugin'
+
+export default {
+  plugin: [
+    // Always add Vike's Vite plugin // [!code --]
+    vike(), // [!code --]
+    // Don't add Vike's Vite plugin when running Vitest // [!code ++]
+    !process.env.VITEST && vike(), // [!code ++]
+    // ...
+  ]
+}
+```
+
+So that you can share your `vite.config.js` settings between Vitest and your Vike app.

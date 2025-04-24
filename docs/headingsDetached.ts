@@ -276,6 +276,10 @@ function tools(): HeadingDetachedDefinition[] {
     {
       title: 'React Router',
       url: '/react-router'
+    },
+    {
+      title: 'Vitest',
+      url: '/vitest'
     }
   ].map((h) => ({ ...h, category: 'Guide (tools)' }))
 }

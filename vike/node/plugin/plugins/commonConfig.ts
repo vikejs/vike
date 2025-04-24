@@ -211,11 +211,19 @@ function assertSingleInstance(config: ResolvedConfig) {
 
 function assertVikeCliOrApi(config: ResolvedConfig) {
   if (isVikeCliOrApi()) return
-  if (isVitest()) return
   if (isViteCliCall()) {
+    assert(!isVitest())
     assertWarning(false, `Vite's CLI is deprecated ${pc.underline('https://vike.dev/migration/cli')}`, {
       onlyOnce: true
     })
+    return
+  }
+  if (isVitest()) {
+    assertWarning(
+      false,
+      `Unexpected Vitest setup: you seem to be using Vitest together with Vike's Vite plugin but without using Vike's JavaScript API which is unexpected, see ${pc.underline('https://vike.dev/vitest')}`,
+      { onlyOnce: true }
+    )
     return
   }
   if (config.server.middlewareMode) {
