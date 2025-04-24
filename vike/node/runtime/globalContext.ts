@@ -125,7 +125,7 @@ function assertGlobalContextIsDefined() {
   assert(globalObject.globalContext_public)
 }
 
-// We purposely return GlobalContext instead of GlobalContextServer because `import { getGlobalContext } from 'vike'` can resolve to the client-side version.
+// We purposely return GlobalContext instead of GlobalContextServer because `import { getGlobalContext } from 'vike'` can resolve to the client-side implementation.
 /**
  * Get runtime information about your app.
  *
