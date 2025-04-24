@@ -1,3 +1,48 @@
+## [0.4.229](https://github.com/vikejs/vike/compare/v0.4.228...v0.4.229) (2025-04-24)
+
+
+### Bug Fixes
+
+* [vike:pluginModuleBanner] escape star in path (fix [#2377](https://github.com/vikejs/vike/issues/2377)) ([f3eb7f0](https://github.com/vikejs/vike/commit/f3eb7f05f8d74bfe4dd727aa751635edd27adf02))
+* @brillout/vite-plugin-server-entry@^0.7.6 ([1522ab1](https://github.com/vikejs/vike/commit/1522ab1c4fa020c68e1c0f8f5294ce6f52f2a072))
+* @brillout/vite-plugin-server-entry@^0.7.8 ([#2399](https://github.com/vikejs/vike/issues/2399)) ([37d5eed](https://github.com/vikejs/vike/commit/37d5eed07c02f13fe6735736c4a91422996c97b7))
+* add safe  operations to decodeURI. ([#2367](https://github.com/vikejs/vike/issues/2367)) ([6ee96a7](https://github.com/vikejs/vike/commit/6ee96a7f190b9e17059162ac5ee7b6f2bbf75b03))
+* add warning upon unexpected Vitest setup + docs ([a72f1a3](https://github.com/vikejs/vike/commit/a72f1a3776adbd48ceafa4d815b14b17fd4c7ffe))
+* don't show server entry warning upon pre-rendering ([4d4a0e1](https://github.com/vikejs/vike/commit/4d4a0e19a73fa3b0cc442f4c830a5863afa37d8c))
+* don't show Vite CLI/API deprecation warning upon Vitest ([333f22c](https://github.com/vikejs/vike/commit/333f22c178434da26b30bbce21dd886944a11713))
+* don't throw error upon side exports (fix [#2359](https://github.com/vikejs/vike/issues/2359)) ([#2360](https://github.com/vikejs/vike/issues/2360)) ([d423e4f](https://github.com/vikejs/vike/commit/d423e4f000b63019922c341b5142ee26fb6a9e2c))
+* fix unknown config error message (vikejs/vike-cloudflare[#56](https://github.com/vikejs/vike/issues/56)) ([13824ea](https://github.com/vikejs/vike/commit/13824eab7af6dedfaabe499e574eb2ddcac62f21))
+* fix windows path bug at transpileWithEsbuild() (fix [#2362](https://github.com/vikejs/vike/issues/2362)) ([67e28cd](https://github.com/vikejs/vike/commit/67e28cd536f70abb53065f9dc32617047cd3fcea))
+* ignore .history/ from crawling ([a6f1033](https://github.com/vikejs/vike/commit/a6f103347955c514bb0799e021751560691ae0d1))
+* improve error message upon wrong getVikeConfig() usage ([1bb742f](https://github.com/vikejs/vike/commit/1bb742f808c97210071c20bc06b49176da4470fe))
+* improve error upon infinite rendering loop (fix [#2386](https://github.com/vikejs/vike/issues/2386)) ([5edda14](https://github.com/vikejs/vike/commit/5edda1465e8ba78ead46de16069ef59d578ce83e))
+* inject module banners if build.minify is false ([33ab2a3](https://github.com/vikejs/vike/commit/33ab2a3f26811edf25e7f8b503bd3997d0bd561d))
+* more robust import resolving ([#2401](https://github.com/vikejs/vike/issues/2401)) ([2b33e36](https://github.com/vikejs/vike/commit/2b33e36d7bb197e8d1fb2b946e076e600c5697d7))
+* optimistic esbuild semver range (fix [#2356](https://github.com/vikejs/vike/issues/2356)) ([#2357](https://github.com/vikejs/vike/issues/2357)) ([51f0080](https://github.com/vikejs/vike/commit/51f0080f4fe3676f5738fa72e5350d32b521154f))
+* pageContext.globalContext only defined on server-side ([aea95e3](https://github.com/vikejs/vike/commit/aea95e313a5c9af5f8afb96a97ed71480964f48d))
+* remove faulty assertion (fix [#2410](https://github.com/vikejs/vike/issues/2410)) ([1bb55f1](https://github.com/vikejs/vike/commit/1bb55f1342d540e4e930eefaa9d916cc90b8b1fc))
+* show stack traces upon infinite rendering loop warning ([#2386](https://github.com/vikejs/vike/issues/2386)) ([b13b2fc](https://github.com/vikejs/vike/commit/b13b2fc91335a03219b43e070a108c61381aea35))
+* simplify Vike namespace JSDocs ([d75ed11](https://github.com/vikejs/vike/commit/d75ed1153b071c5549e05d6bf8db0fc2425809ff))
+* tolerate missing __VITE_ASSETS_MANIFEST__ in server builds ([1553dee](https://github.com/vikejs/vike/commit/1553dee70d624800bcc623273fa3441d798b3016))
+* workaround monorepo resolve quirk ([#2395](https://github.com/vikejs/vike/issues/2395)) ([9121415](https://github.com/vikejs/vike/commit/9121415e4803b8732839f70359aecac60a80cd8c))
+
+
+### Features
+
+* [`onCreatePageContext()` hook](https://vike.dev/onCreatePageContext) ([#2381](https://github.com/vikejs/vike/issues/2381)) ([732a36e](https://github.com/vikejs/vike/commit/732a36edc5ab5fcf0e9357838ad536c6d6d0e448))
+* [+onCreateGlobalContext](vike.dev/onCreateGlobalContext) ([4dc6a4a](https://github.com/vikejs/vike/commit/4dc6a4a14b39eaa971bae58e01b627848022bbc7))
+* `pageContext.isPageContext` & `globalContext.isGlobalContext` ([#2403](https://github.com/vikejs/vike/issues/2403)) ([f9cd0fc](https://github.com/vikejs/vike/commit/f9cd0fcc046bc629d3272aec69bd4e61deced8dc))
+* `pageContext.runtime` (vike-server) ([#2373](https://github.com/vikejs/vike/issues/2373)) ([3433913](https://github.com/vikejs/vike/commit/3433913541443e22ef187559c468a5cc62adccf2))
+* apply passToClient to globalContext ([#2391](https://github.com/vikejs/vike/issues/2391)) ([558224a](https://github.com/vikejs/vike/commit/558224ac0b78c174cac6e43130e91e6f68560d0e))
+* client-side pageContext.globalContext ([aa9dce6](https://github.com/vikejs/vike/commit/aa9dce686d8bccf7ef5ea78f41cbd6a037758cbd))
+* globalContext.isClientSide ([59a7c1e](https://github.com/vikejs/vike/commit/59a7c1eaae96da1b52f87147b7f853158e66e9ff))
+* isomorphic `getGlobalContext()` ([#2409](https://github.com/vikejs/vike/issues/2409)) ([3861e6f](https://github.com/vikejs/vike/commit/3861e6f2a30ed9960e3cb55c5383353c8d117a8e))
+* make pageContext.config with only global configs available early ([41c89ab](https://github.com/vikejs/vike/commit/41c89abb3bd2dc5b9a5a6637147574761720d91b))
+* Vike.{Page,Global}Context{Client,Server} ([9c8e591](https://github.com/vikejs/vike/commit/9c8e591b173a7b830b26d871ce3f16e809b541bc))
+* Vike.GlobalContext ([90b48ad](https://github.com/vikejs/vike/commit/90b48ad60e49888a7caa93bd377dd1ba5e3b59a6))
+
+
+
 ## [0.4.228](https://github.com/vikejs/vike/compare/v0.4.227...v0.4.228) (2025-04-04)
 
 
