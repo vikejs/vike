@@ -277,7 +277,7 @@ See <Link href="#lifecycle" /> to understand whether using `pageContext` can mak
 
 ### Can I check whether SSR is enabled?
 
-On the server-side, you can tell <Link href="/ssr">whether SSR is enabled</Link> by checking whether <Link href="#:~:text=pageContext.Page,-%3A">`pageContext.Page`</Link> is set:
+On the server-side, you can tell <Link href="/ssr">whether SSR is enabled</Link> by checking whether <Link href="#Page" skipCheck>`pageContext.Page`</Link> is set:
 
 ```js
 // +onAfterRenderHtml.js
@@ -345,7 +345,7 @@ function assert(condition: unknown): asserts condition {
 ```
 
 <Warning>
-While the following is more succinct, the server code isn't eliminated when building client-side production code (see warning <Link href="#:~:text=pageContext.isClientSide,-%3A">here</Link>). Thus we recommend the approach using `import.meta.env.SSR` and `assert()` instead.
+While the following is more succinct, the server code isn't eliminated when building client-side production code (see warning <Link href="#isClientSide" skipCheck>here</Link>). Thus we recommend the approach using `import.meta.env.SSR` and `assert()` instead.
 ```ts
 import type { PageContext } from 'vike/types'
 
