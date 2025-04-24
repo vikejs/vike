@@ -115,13 +115,13 @@ Built-in properties:
    <Warning>
      We recommend using [Vite's `import.meta.env.SSR`](https://vite.dev/guide/env-and-mode.html#built-in-constants) instead.
 
-     The advantage is that, when building client-side code, Vite eliminates all code defined inside `import.meta.env.SSR` if-blocks. Potentially saving a *lot* of KBs and reducing the risk of exposing sensitive server-side information. Unlike `import.meta.env.SSR` code isn't eliminated inside `!pageContext.isClientSide` if-blocks.
+     The advantage is that, when building client-side production code, Vite eliminates all code defined inside `import.meta.env.SSR` if-blocks. Potentially saving a *lot* of KBs.
      ```js
      // This import is also removed if it's used only inside import.meta.env.SSR if-blocks
      import someImport from './somewhere'
 
      if (import.meta.env.SSR) {
-       // Vite removes this code block from client-side bundles
+       // Vite removes this code block from client-side production bundles
        // ... server code ...
      }
      ```
@@ -279,16 +279,16 @@ function assert(condition: unknown): asserts condition {
 ```
 
 <Warning>
-While the following is more succinct, it doesn't eliminate server code on the client-side (see warning <Link href="#:~:text=pageContext.isClientSide,-%3A">here</Link>). Thus we recommend the approach using `import.meta.env.SSR` and `assert()` instead.
+While the following is more succinct, the server code isn't eliminated when building client-side production code (see warning <Link href="#:~:text=pageContext.isClientSide,-%3A">here</Link>). Thus we recommend the approach using `import.meta.env.SSR` and `assert()` instead.
 ```ts
 import type { PageContext } from 'vike/types'
 
 // ❌ Discouraged
-function someFunction(someObject: PageContext) {
-  if (someObject.isClientSide) {
-    // someObject is `PageContextClient`
+function someFunction(pageContext: PageContext) {
+  if (pageContext.isClientSide) {
+    // pageContext is `PageContextClient`
   } else {
-    // someObject is `PageContextServer`
+    // pageContext is `PageContextServer`
   }
 }
 ```
