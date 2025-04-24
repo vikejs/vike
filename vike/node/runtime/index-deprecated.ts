@@ -1,4 +1,5 @@
-// TO-DO: point package.json#exports['./server'] to this file.
+// TODO/soon: point package.json#exports['./server'] to this file.
+// - Write migration guide, see comment below.
 export * from './index.js'
 
 import { assertWarning } from './utils.js'
