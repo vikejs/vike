@@ -249,9 +249,9 @@ import type { PageContext, GlobalContext } from 'vike/types'
 
 function someFunction(someObject: PageContext | GlobalContext) {
   if (someObject.isPageContext) {
-    // someObject is `PageContext`
+    // someObject is PageContext
   } else {
-    // someObject is `GlobalContext`
+    // someObject is GlobalContext
   }
 }
 ```
@@ -261,13 +261,13 @@ import type { PageContext } from 'vike/types'
 
 function someFunction(pageContext: PageContext) {
   if (import.meta.env.SSR) {
-    // pageContext is `PageContext`
+    // pageContext is PageContext
     assert(!pageContext.isClientSide)
-    // pageContext is `PageContextServer`
+    // pageContext is PageContextServer
   } else {
-    // pageContext is `PageContext`
+    // pageContext is PageContext
     assert(pageContext.isClientSide)
-    // pageContext is `PageContextClient`
+    // pageContext is PageContextClient
   }
 }
 
@@ -286,9 +286,9 @@ import type { PageContext } from 'vike/types'
 // ❌ Discouraged
 function someFunction(pageContext: PageContext) {
   if (pageContext.isClientSide) {
-    // pageContext is `PageContextClient`
+    // pageContext is PageContextClient
   } else {
-    // pageContext is `PageContextServer`
+    // pageContext is PageContextServer
   }
 }
 ```
