@@ -59,7 +59,12 @@ import { assertV1Design } from '../shared/assertV1Design.js'
 import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
 import { resolveBase } from '../shared/resolveBase.js'
 import type { ViteConfigRuntime } from '../plugin/shared/getViteConfigRuntime.js'
-import { createGlobalContextShared, type GlobalContextShared } from '../../shared/createGlobalContextShared.js'
+import {
+  createGlobalContextShared,
+  getGlobalContextSyncErrMsg,
+  type GlobalContextShared
+} from '../../shared/createGlobalContextShared.js'
+import type { GlobalContext } from '../../shared/types.js'
 type PageConfigsRuntime = ReturnType<typeof getPageConfigsRuntime>
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
@@ -120,12 +125,13 @@ function assertGlobalContextIsDefined() {
   assert(globalObject.globalContext_public)
 }
 
+// We purposely return GlobalContext instead of GlobalContextServer because `import { getGlobalContext } from 'vike'` can resolve to the client-side implementation.
 /**
  * Get runtime information about your app.
  *
  * https://vike.dev/getGlobalContext
  */
-async function getGlobalContext(): Promise<GlobalContextServer> {
+async function getGlobalContext(): Promise<GlobalContext> {
   debug('getGlobalContext()')
   const { isProduction } = globalObject
   // This assertion cannot fail for vike-server users (because when using vike-server it's guaranteed that globalObject.isProduction is set before executing any user-land code and any Vike extension code).
@@ -138,7 +144,7 @@ async function getGlobalContext(): Promise<GlobalContextServer> {
  *
  * https://vike.dev/getGlobalContext
  */
-async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalContextServer> {
+async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalContext> {
   debug('getGlobalContextAsync()')
   assertUsage(
     typeof isProduction === 'boolean',
@@ -161,13 +167,10 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
  *
  * @deprecated
  */
-function getGlobalContextSync(): GlobalContextServer {
+function getGlobalContextSync(): GlobalContext {
   debug('getGlobalContextSync()')
   const { globalContext_public } = globalObjectTyped
-  assertUsage(
-    globalContext_public,
-    "The global context isn't set yet, call getGlobalContextSync() later or use getGlobalContext() instead."
-  )
+  assertUsage(globalContext_public, getGlobalContextSyncErrMsg)
   assertWarning(
     false,
     // We discourage users from using it because `pageContext.globalContext` is safer: I ain't sure but there could be race conditions when using `getGlobalContextSync()` inside React/Vue components upon HMR.

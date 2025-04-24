@@ -1,13 +1,34 @@
+// Public usage
+export { getGlobalContext }
+export { getGlobalContextSync }
+
+// Internal usage
 export { createGetGlobalContextClient }
 
-import { createGlobalContextShared, type GlobalContextShared } from '../../shared/createGlobalContextShared.js'
+import {
+  createGlobalContextShared,
+  getGlobalContextSyncErrMsg,
+  type GlobalContextShared
+} from '../../shared/createGlobalContextShared.js'
 import { getGlobalContextSerializedInHtml } from './getJsonSerializedInHtml.js'
-import { assert, getGlobalObject, objectAssign } from './utils.js'
+import { assert, assertUsage, genPromise, getGlobalObject, objectAssign } from './utils.js'
 
+type GlobalContextNotTyped = Record<string, unknown>
 const globalObject = getGlobalObject<{
-  globalContext?: Record<string, unknown>
+  globalContext?: GlobalContextNotTyped
   isClientRouting?: boolean
-}>('createGetGlobalContextClient.ts', {})
+  globalContextPromise: Promise<GlobalContextNotTyped>
+  globalContextPromiseResolve: (globalContext: GlobalContextNotTyped) => void
+}>(
+  'createGetGlobalContextClient.ts',
+  (() => {
+    const { promise: globalContextPromise, resolve: globalContextPromiseResolve } = genPromise<GlobalContextNotTyped>()
+    return {
+      globalContextPromise,
+      globalContextPromiseResolve
+    }
+  })()
+)
 
 function createGetGlobalContextClient<GlobalContextAddendum extends object>(
   virtualFileExports: unknown,
@@ -46,8 +67,21 @@ function createGetGlobalContextClient<GlobalContextAddendum extends object>(
       objectAssign(globalContextAddendum, await addGlobalContext?.(globalContext))
       return globalContextAddendum
     })
+    assert(globalObject.globalContext)
+    globalObject.globalContextPromiseResolve(globalObject.globalContext)
 
     // Return
     return globalContext
   }
+}
+
+// The type is never used: it's the type of the server-side getGlobalContext() that is used.
+async function getGlobalContext(): Promise<never> {
+  const globalContext = await globalObject.globalContextPromise
+  return globalContext as never
+}
+function getGlobalContextSync(): never {
+  const { globalContext } = globalObject
+  assertUsage(globalContext, getGlobalContextSyncErrMsg)
+  return globalContext as never
 }
