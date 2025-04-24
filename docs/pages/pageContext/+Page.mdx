@@ -44,26 +44,37 @@ The `export { Page }` or `export default` of the <Link href="/Page">`+Page.js` f
 
 The value returned by the <Link href="/data">`data()` hook</Link>, see also <Link href="/useData" />.
 
- - **`pageContext.routeParams`**: the route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/@movieId`.)
- - **`pageContext.urlOriginal`**: the current URL.
+<Prop name="routeParams" />
 
-   On the server-side, `pageContext.urlOriginal` is the value you passed at the server middleware:
-    ```js
-    // Server middleware
-    app.get('*', async (req) => {
-      const pageContextInit = {}
-      // `pageContext.urlOriginal` is defined here
-      pageContextInit.urlOriginal = req.url
-      const pageContext = await renderPage(pageContextInit)
-      /* ... */
-    })
-    ```
+The route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/@movieId`.)
 
-    On the client-side:
-     - When using <Link href="/client-routing">Client Routing</Link>, the value of `pageContext.urlOriginal` is the browser's current URL (`window.location.href`).
-     - When using <Link href="/server-routing">Server Routing</Link>, the value of `pageContext.urlOriginal` is `undefined` (unless you use [`passToClient`](/passToClient)).
- - **`pageContext.urlPathname`**: alias for `pageContext.urlParsed.pathname`.
- - **`pageContext.urlParsed`**: URL information:
+<Prop name="urlOriginal" />
+
+The current URL.
+
+On the server-side, `pageContext.urlOriginal` is the value you passed at the server middleware:
+ ```js
+ // Server middleware
+ app.get('*', async (req) => {
+   const pageContextInit = {}
+   // `pageContext.urlOriginal` is defined here
+   pageContextInit.urlOriginal = req.url
+   const pageContext = await renderPage(pageContextInit)
+   /* ... */
+ })
+ ```
+
+On the client-side:
+ - When using <Link href="/client-routing">Client Routing</Link>, the value of `pageContext.urlOriginal` is the browser's current URL (`window.location.href`).
+ - When using <Link href="/server-routing">Server Routing</Link>, the value of `pageContext.urlOriginal` is `undefined` (unless you use [`passToClient`](/passToClient)).
+
+<Prop name="urlPathname" />
+
+Alias for `pageContext.urlParsed.pathname`.
+
+<Prop name="urlParsed" />
+
+URL information:
    ```ts
    {
      pathname: string
@@ -104,16 +115,31 @@ The value returned by the <Link href="/data">`data()` hook</Link>, see also <Lin
      port: null // 3000 if http://localhost:3000
    }
    ```
- - **`pageContext.headers`**: The headers of the HTTP Request. As a string object (`Record<string, string>`) normalized by Vike, see <Link href="/headers"/>.
- - **`pageContext.headersOriginal`**: The headers of the HTTP Request. The original object provided by the server, see <Link href="/headers"/>.
- - **`pageContext.config`**: See <Link href="/meta" />.
- - **`pageContext.isHydration`**: Whether the page is rendered to HTML.
+
+<Prop name="headers" />
+
+The headers of the HTTP Request. As a string object (`Record<string, string>`) normalized by Vike, see <Link href="/headers"/>.
+
+<Prop name="headersOriginal" />
+
+The headers of the HTTP Request. The original object provided by the server, see <Link href="/headers"/>.
+
+<Prop name="config" />
+
+See <Link href="/meta" />.
+
+<Prop name="isHydration" />
+
+Whether the page is rendered to HTML.
 
    When using <Link href="/client-routing" noBreadcrumb={true} />, the value is `true` for the first page the user navigates to, and `false` for any subsequent navigation. When using <Link href="/server-routing" noBreadcrumb={true} />, the value is always `true`.
 
    If the page doesn't throw an error then it's equivalent to <code>{'pageContext.isHydration\u00A0===\u00A0!pageContext.isClientSideNavigation'}</code>. If there is an error, the error page is rendered and both `pageContext.isHydration` `pageContext.isClientSideNavigation` are `false`.
 
- - **`pageContext.isClientSide`**: Whether the page is being rendered on the client-side or server-side / <Link href="/pre-rendering">pre-rendered</Link>.
+
+<Prop name="isClientSide" />
+
+Whether the page is being rendered on the client-side or server-side / <Link href="/pre-rendering">pre-rendered</Link>.
 
    Also useful for narrowing down the type `PageContext` to either `PageContextClient` or `PageContextServer`, see <Link href="#narrowing-down" />.
 
@@ -133,23 +159,56 @@ The value returned by the <Link href="/data">`data()` hook</Link>, see also <Lin
      }
      ```
    </Warning>
- - **`pageContext.isPrerendering`**: Whether the page is being <Link href="/pre-rendering">pre-rendered</Link>. The value is always `false` in development.
- - **`pageContext.isBackwardNavigation`**: Whether the user is navigating back in history.
+
+<Prop name="isPrerendering" />
+
+Whether the page is being <Link href="/pre-rendering">pre-rendered</Link>. The value is always `false` in development.
+
+<Prop name="isBackwardNavigation" />
+
+Whether the user is navigating back in history.
 
    The value is `true` when the user clicks on his browser's backward navigation button, or when invoking `history.back()`.
 
    The `isBackwardNavigation` property is only defined when using <Link href="/client-routing" noBreadcrumb={true} />.
- - **`pageContext.previousPageContext`**: Upon client-side page navigation, you can use `pageContext.previousPageContext` to access the `pageContext` of the previous page. See <Link href="#lifecycle" />.
- - **`pageContext.is404`**: If an error occurs, whether the error is a `404 Page Not Found` or a `500 Internal Error`, see <Link href="/error-page" />.
- - **`pageContext.isClientSideNavigation`**: Whether the page was navigated by the client-side router.
+
+<Prop name="previousPageContext" />
+
+Upon client-side page navigation, you can use `pageContext.previousPageContext` to access the `pageContext` of the previous page. See <Link href="#lifecycle" />.
+
+<Prop name="is404" />
+
+If an error occurs, whether the error is a `404 Page Not Found` or a `500 Internal Error`, see <Link href="/error-page" />.
+
+<Prop name="isClientSideNavigation" />
+
+Whether the page was navigated by the client-side router.
 
    In other words, when using <Link href="/client-routing" noBreadcrumb={true} />, the value is `false` for the first page the user visits, and `true` for any subsequent navigation. (When using <Link href="/server-routing" noBreadcrumb={true} />, the value is always `false`.)
- - **`pageContext.abortReason`**: Set by <Link href="/render" text={<code>throw render()</code>} /> and used by the <Link text="error page" href="/error-page" />.
- - **`pageContext.abortStatusCode`**: Set by <Link href="/render" text={<code>throw render()</code>} /> and used by the <Link text="error page" href="/error-page" />.
- - **`pageContext.errorWhileRendering`**: The first error (if there is any) that occurred while rendering the page, see <Link href="/error-tracking" />.
- - **`pageContext.isBaseMissing`**: Whether the Base URL is missing in the URL of the HTTP request made to the SSR server, see <Link href="/base-url#setup" />.
- - **`pageContext.globalContext`**: Runtime information about your app, see <Link href="/getGlobalContext" />.
- - **`pageContext.isPageContext`**: Always `true`, useful for distinguishing `pageContext` from other objects and narrowing down TypeScript unions.
+
+<Prop name="abortReason" />
+
+Set by <Link href="/render" text={<code>throw render()</code>} /> and used by the <Link text="error page" href="/error-page" />.
+
+<Prop name="abortStatusCode" />
+
+Set by <Link href="/render" text={<code>throw render()</code>} /> and used by the <Link text="error page" href="/error-page" />.
+
+<Prop name="errorWhileRendering" />
+
+The first error (if there is any) that occurred while rendering the page, see <Link href="/error-tracking" />.
+
+<Prop name="isBaseMissing" />
+
+Whether the Base URL is missing in the URL of the HTTP request made to the SSR server, see <Link href="/base-url#setup" />.
+
+<Prop name="globalContext" />
+
+Runtime information about your app, see <Link href="/getGlobalContext" />.
+
+<Prop name="isPageContext" />
+
+Always `true`, useful for distinguishing `pageContext` from other objects and narrowing down TypeScript unions.
 
 
 ## Custom
