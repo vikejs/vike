@@ -1,8 +1,8 @@
-export { ContextProp }
+export { createPropComponent }
 
 import React from 'react'
 
-function ContextProp({
+function createPropComponent({
   children,
   prop,
   obj
