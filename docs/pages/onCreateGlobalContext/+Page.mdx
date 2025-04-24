@@ -1,0 +1,70 @@
+import { Link, RepoLink } from '@brillout/docpress'
+
+Environment: `server`, `client`.  
+Cumulative: `true`.  
+Global: `true`.  
+
+Hook called whenever the <Link href="/globalContext">`global` object</Link> is created.
+
+It's typically used for initializing `globalContext` properties:
+
+```ts
+// pages/+onCreateGlobalContext.server.ts
+// Environment: server
+
+import type { GlobalContextServer } from 'vike/types'
+
+export async function onCreateGlobalContext(globalContext: GlobalContextServer) {
+  // Common use case: fetch initial data
+  globalContext.someInitialData = await fetchSomeData()
+}
+```
+
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+
+export default {
+   passToClient: ['someInitialData']
+} satisfies Config
+```
+
+> <Link href="/passToClient" noBreadcrumb /> also works for `globalContext`.
+
+```ts
+// pages/+onCreateGlobalContext.client.ts
+// Environment: client
+
+import type { GlobalContextClient } from 'vike/types'
+
+export async function onCreateGlobalContext(globalContext: GlobalContextClient) {
+  // Common use case: initialize user object
+  globalContext.loggedInUser = retrieveUserFromCookie()
+}
+```
+
+> To understand when the `onCreateGlobalContext()` hook is called, see <Link href="/globalContext#lifecycle" />.
+
+You can also define a single hook, `pages/+onCreateGlobalContext.ts`, which is called on both the client- and server-side — but this is a very rare use case in practice.
+
+Another common use case is to initialize a <Link href="/store">store</Link>:
+
+```ts
+// pages/+onCreateGlobalContext.client.ts
+// Environment: client
+
+import { Store } from 'some-state-management-library'
+import type { GlobalContextServer } from 'vike/types'
+
+export async function onCreateGlobalContext(globalContext: GlobalContextServer) {
+  globalContext.store = new Store()
+}
+```
+
+On the server-side, the store is typically initialized by using a <Link href="/onCreatePageContext" noBreadcrumb />.
+
+## See also
+
+- <Link href="/globalContext" />
+- <Link href="/onCreatePageContext" />

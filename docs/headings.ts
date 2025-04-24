@@ -320,6 +320,11 @@ const headings = [
   },
   {
     level: 2,
+    title: '`globalContext`',
+    url: '/globalContext'
+  },
+  {
+    level: 2,
     titleInNav: '`Page`',
     title: '`<Page>`',
     url: '/Page'
@@ -443,6 +448,12 @@ const headings = [
   },
   {
     level: 2,
+    title: '`onCreateGlobalContext()` hook',
+    titleInNav: '`onCreateGlobalContext()`',
+    url: '/onCreateGlobalContext'
+  },
+  {
+    level: 2,
     title: '`onBeforePrerenderStart()` hook',
     titleInNav: '`onBeforePrerenderStart()`',
     url: '/onBeforePrerenderStart'
@@ -481,6 +492,11 @@ const headings = [
   },
   {
     level: 2,
+    title: '`getGlobalContext()`',
+    url: '/getGlobalContext'
+  },
+  {
+    level: 2,
     title: '`throw redirect()`',
     url: '/redirect'
   },
@@ -498,11 +514,6 @@ const headings = [
     level: 2,
     title: '`modifyUrl()`',
     url: '/modifyUrl'
-  },
-  {
-    level: 2,
-    title: '`getGlobalContext()`',
-    url: '/getGlobalContext'
   },
   {
     level: 4,

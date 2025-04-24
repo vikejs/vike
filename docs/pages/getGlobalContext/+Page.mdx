@@ -1,11 +1,15 @@
 import { Warning, Link } from '@brillout/docpress'
 
-Environment: server.
+Environment: server, client.
 
-Access global information about your app, such as <Link href="/preloading#assets-manifest">the assets manifest</Link>.
+Access global information about your app, see <Link href="/globalContext" />.
+
+For example, on the server-side, it can be used to access <Link href="/preloading#assets-manifest">the assets manifest</Link>:
 
 ```js
-import { getGlobalContext } from 'vike/server'
+// Environment: server
+
+import { getGlobalContext } from 'vike'
 
 const globalContext = await getGlobalContext()
 
@@ -17,19 +21,15 @@ console.log(globalContext.assetsManifest)
 console.log(globalContext.viteRuntimeInfo)
 ```
 
-> It only provides information loaded at runtime. To get information loaded at build-time, see <Link href="/getVikeConfig" />.
-
 The `getGlobalContext()` can be called at any time (independently of rendering pages). For example, it can be one of the first functions called upon starting your server (before even receving any HTTP request).
 
 > You can also access it <Link href="/pageContext">over `pageContext.globalContext`</Link>.
-
-> The `globalContext` object also contains many internals (they are prefixed with `_`, e.g. `globalContext._viteDevServer`). You should use them only if strictly needed and, if you do, then let us know so that we can add official support for your use case (otherwise you'll expose yourself to breaking changes upon any version update).
 
 
 ## `getGlobalContextAsync()`
 
 ```js
-import { getGlobalContextAsync } from 'vike/server'
+import { getGlobalContextAsync } from 'vike'
 const globalContext = await getGlobalContextAsync(process.env.NODE_ENV==='production')
 ```
 
@@ -47,12 +47,12 @@ The returned `globalContext` is the same as the one returned by `getGlobalContex
 
 ## `getGlobalContextSync()`
 
-<Warning>Don't use this: it will be deprecated in the next major release, <Link href="/pageContext">use `pageContext.globalContext`</Link> instead.</Warning>
+<Warning>Don't use this: it will be deprecated in the next major release. Use `getGlobalContext()` or <Link href="/pageContext">`pageContext.globalContext`</Link> instead.</Warning>
 
 Same as `getGlobalContext()` but synchronous.
 
 
 ## See also
 
-- <Link href="/preloading#assets-manifest" />
+- <Link href="/globalContext" />
 - <Link href="/getVikeConfig" />

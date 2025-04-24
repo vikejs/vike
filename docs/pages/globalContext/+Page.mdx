@@ -1,0 +1,159 @@
+import { Link } from '@brillout/docpress'
+import { PropGlobalContext as Prop } from '../../components'
+
+The `globalContext` object is used for storing global information (typically used by all/many pages).
+
+For example, it can be used to hold a list of URLs for generating a navigation menu, such as the list of links of `vike.dev`'s navigation menu.
+
+It's commonly used for storing custom properties, see <Link href="#custom" />.
+
+Each process (either a server process or a browser tab) has exactly one and unique `globalContext` object which is created when the process starts, see <Link href="#lifecycle" />.
+
+If you store information (e.g. `globalContext.someData = 42`) then it's available anywhere in your app until the process is terminated. You can acess `globalContext` anywhere by using <Link href="/getGlobalContext" noBreadcrumb /> and <Link href="/pageContext#globalContext">`pageContext.globalContext`</Link>.
+
+See also: <Link href="/pageContext" />.
+
+> It only provides information at runtime. To get information loaded at build-time, see <Link href="/getVikeConfig" /> instead.
+
+
+## Built-in
+
+While `globalContext` has some built-in properties, it's mostly used to store <Link href="#custom">custom properties</Link>.
+
+> The `globalContext` object also contains many internals (they are prefixed with `_`, e.g. `globalContext._viteDevServer`). You should use them only if strictly needed and, if you do, then let us know so that we can add official support for your use case (otherwise you'll expose yourself to breaking changes upon any version update).
+
+<Prop name="pages" />
+
+Environment: server, client
+
+All runtime information about your <Link href="/config">pages's configuration</Link> (for example each page's route).
+
+<Prop name="config" />
+
+Environment: server, client
+
+All runtime information about your <Link href="/config">app configuration</Link>.
+
+<Prop name="isClientSide" />
+
+Environment: server, client
+
+Same as <Link href="/pageContext#isClientSide">`pageContext.isClientSide`</Link>.
+
+<Prop name="isGlobalContext" />
+
+Environment: server, client
+
+Like <Link href="/pageContext#isPageContext">`pageContext.isPageContext`</Link>.
+
+<Prop name="assetsManifest" />
+
+Environment: server
+
+The <Link href="/preloading#assets-manifest">assets manifest</Link>.
+
+<Prop name="viteConfig" />
+
+Environment: server
+
+The entire Vite's config, only available at development and during <Link href="/pre-rendering">pre-rendering</Link>.
+
+<Prop name="viteConfigRuntime" />
+
+Environment: server
+
+A tiny subset of Vite's config that is also available in production.
+
+<Prop name="baseAssets" />
+
+Environment: server
+
+The <Link href="/base-url#baseassets">assets Base URL</Link>.
+
+<Prop name="baseServer" />
+
+Environment: server
+
+The <Link href="/base-url#baseserver">server Base URL</Link>.
+
+## Custom
+
+Custom properties are usually initialized using <Link href="/onCreateGlobalContext">`onCreateGlobalContext()` hooks</Link>.
+
+You can also initialize new and modify existing `globalContext` properties at any time and anywhere in your app, for example using <Link href="/pageContext#globalContext">`pageContext.globalContext`</Link>.
+
+
+## Lifecycle
+
+The lifecycle of the `globalContext` object is completely different between the client- and server-side.
+
+### Server-side
+
+The `globalContext` is created when the server starts and lives until the server process is shut down.
+
+If your JavaScript server runs in a single process, then you have a single `globalContext` object for your entire server-side. If that server process stays alive for many days at a time, then the `globalContext` object does too.
+
+On edge environments, where there can be multiple server processes/workers, you can have multiple server-side `globalContext` object — one per process/worker.
+
+### Client-side
+
+When a user starts visting your website, a new `globalContext` object is created that lives until the user closes your website. If the user opens your website in multiple tabs, there is one `globalContext` per tab.
+
+Given multiple users visiting your website, there can be a lot of client-side `globalContext` objects, which are, by their very nature, ephemeral.
+
+### Pre-rendering
+
+Upon <Link href="/pre-rendering">pre-rendering</Link>, there is exactly one `globalContext` object that lives from the beginning until the end of the pre-rendering process.
+
+
+## TypeScript
+
+### Basics
+
+```ts
+import type {
+  // For code loaded in client and server
+  GlobalContext,
+  // For code loaded in client only
+  GlobalContextClient,
+  // For code loaded in server only
+  GlobalContextServer
+} from 'vike/types'
+```
+
+### Narrowing down
+
+You can use `globalContext.isClientSide` and `globalContext.isGlobalContext` to narrow down TypeScript unions, see <Link href="/pageContext#narrowing-down" />.
+
+### Extend
+
+To extend `GlobalContext`/`GlobalContextServer`/`GlobalContextClient`, use the global interface `Vike.GlobalContext`:
+
+```ts
+declare global {
+  namespace Vike {
+    interface GlobalContext {
+      // Type of globalContext.user
+      user?: {
+        name: string
+        id: string
+        isAdmin: boolean
+      }
+    }
+  }
+}
+
+// If you define Vike.GlobalContext in a .d.ts file then
+// make sure there is at least one export/import statement.
+// Tell TypeScript this file isn't an ambient module:
+export {}
+```
+
+To define properties only for the server-/client-side, use the interfaces `Vike.GlobalContextServer` and `Vike.GlobalContextClient` instead.
+
+
+## See also
+
+- <Link href="/pageContext" />
+- <Link href="/getGlobalContext" />
+- <Link href="/onCreateGlobalContext" />

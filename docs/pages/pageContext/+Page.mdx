@@ -31,10 +31,14 @@ It includes:
 
 When the user navigates to a new page, a completely new `pageContext` object is created and the previous `pageContext` becomes obsolete &mdash; that's why it's called **page**Context, not **app**Context. See <Link href="#lifecycle" /> for more information.
 
+See also: <Link href="/globalContext" />.
+
 
 ## Built-in
 
 Built-in properties.
+
+> The `pageContext` object also contains many internals (they are prefixed with `_`, e.g. `pageContext._httpRequestId`). You should use them only if strictly needed and, if you do, then let us know so that we can add official support for your use case (otherwise you'll expose yourself to breaking changes upon any version update).
 
 <Prop name="Page" />
 
@@ -126,7 +130,7 @@ The headers of the HTTP Request. The original object provided by the server, see
 
 <Prop name="config" />
 
-See <Link href="/meta" />.
+All runtime information about the <Link href="/config">page's configuration</Link> (for example the page's route and all its hooks).
 
 <Prop name="isHydration" />
 
@@ -204,12 +208,11 @@ Whether the Base URL is missing in the URL of the HTTP request made to the SSR s
 
 <Prop name="globalContext" />
 
-Runtime information about your app, see <Link href="/getGlobalContext" />.
+Runtime information about your app, see <Link href="/globalContext" />.
 
 <Prop name="isPageContext" />
 
-Always `true`, useful for distinguishing `pageContext` from other objects and narrowing down TypeScript unions.
-
+Always `true`, useful for distinguishing `pageContext` from other objects and narrowing down TypeScript unions, see <Link href="#narrowing-down" />.
 
 ## Custom
 
@@ -464,6 +467,7 @@ To workaround the issue you can either:
 
 ## See also
 
+- <Link href="/onCreatePageContext" />
 - <Link href="/usePageContext" />
 - <Link href="/useData" />
-- <Link href="/renderPage" />
+- <Link href="/globalContext" />
