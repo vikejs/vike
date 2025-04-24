@@ -1,4 +1,5 @@
 import { Link, Warning } from '@brillout/docpress'
+import { PropPageContext as Prop } from '../../components'
 
 The `pageContext` object provides contextual information about the current page.
 
@@ -33,10 +34,16 @@ When the user navigates to a new page, a completely new `pageContext` object is 
 
 ## Built-in
 
-Built-in properties:
+Built-in properties.
 
- - **`pageContext.Page`**: the `export { Page }` or `export default` of the <Link href="/Page">`+Page.js` file</Link>.
- - **`pageContext.data`**: the value returned by the <Link href="/data">`data()` hook</Link>, see also <Link href="/useData" />.
+<Prop name="Page" />
+
+The `export { Page }` or `export default` of the <Link href="/Page">`+Page.js` file</Link>.
+
+<Prop name="data" />
+
+The value returned by the <Link href="/data">`data()` hook</Link>, see also <Link href="/useData" />.
+
  - **`pageContext.routeParams`**: the route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/@movieId`.)
  - **`pageContext.urlOriginal`**: the current URL.
 
