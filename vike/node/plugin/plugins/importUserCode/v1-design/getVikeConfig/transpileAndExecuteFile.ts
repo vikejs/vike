@@ -289,7 +289,6 @@ async function transpileWithEsbuild(
               //   - Vike doesn't resolve path aliases at all.
               //   - Node.js doesn't support `tsconfig.js#compilerOptions.paths`.
               // - Esbuild path alias resolution seems reliable, e.g. it supports `tsconfig.js#compilerOptions.paths`.
-              assert(!isImportPathNpmPackageOrPathAlias(importPathOriginal))
               importPathTranspiled = importPathResolved
             } else {
               // `importPathOriginal` is most likely an npm package import.
