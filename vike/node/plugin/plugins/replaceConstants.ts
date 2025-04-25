@@ -37,11 +37,6 @@ function replaceConstants(): Plugin {
       constantsMap.forEach(({ constants, replacement }) => {
         if (!constants.some((c) => code.includes(c))) return
         const regExp = getConstantRegExp(constants)
-        console.log()
-        console.log(code)
-        console.log('id', id)
-        console.log('regExp', regExp)
-        console.log('replacement', replacement)
         applyRegExpWithMagicString(magicString, regExp, replacement)
       })
 
