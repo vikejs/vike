@@ -32,14 +32,14 @@ function pluginModuleBanner(): Plugin {
         id = removeVirtualIdTag(id)
         if (id.startsWith(config.root)) id = id.slice(config.root.length + 1)
         id = id.replaceAll('*/', '*\\/') // https://github.com/vikejs/vike/issues/2377
-        const s = new MagicString(code)
+        const magicString = new MagicString(code)
         // Use legal comment so that esbuild doesn't remove it.
         // - Terser still removes the comment, but I guess users use terser to minify JavaScript so I guess it's a good thing that comment is removed.
         // - https://esbuild.github.io/api/#legal-comments
-        s.prepend(`/*! ${id} [vike:pluginModuleBanner] */\n`)
+        magicString.prepend(`/*! ${id} [vike:pluginModuleBanner] */\n`)
         return {
-          code: s.toString(),
-          map: s.generateMap({ hires: true, source: id })
+          code: magicString.toString(),
+          map: magicString.generateMap({ hires: true, source: id })
         }
       }
     }

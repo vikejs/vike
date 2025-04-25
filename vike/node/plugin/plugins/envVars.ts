@@ -44,7 +44,7 @@ function envVarsPlugin(): Plugin {
       const isBuild = config.command === 'build'
       const isClientSide = !isViteServerBuild_safe(config, options)
 
-      const s = new MagicString(code)
+      const magicString = new MagicString(code)
 
       Object.entries(envsAll)
         .filter(([key]) => {
@@ -79,23 +79,23 @@ function envVarsPlugin(): Plugin {
           }
 
           // Apply
-          applyEnvVar(s, envStatementRegExStr, envVal)
+          applyEnvVar(magicString, envStatementRegExStr, envVal)
         })
 
-      if (!s.hasChanged()) return null
+      if (!magicString.hasChanged()) return null
 
       return {
-        code: s.toString(),
-        map: s.generateMap({ hires: true, source: id })
+        code: magicString.toString(),
+        map: magicString.generateMap({ hires: true, source: id })
       }
     }
   }
 }
 
-function applyEnvVar(s: MagicString, envStatementRegExStr: string, envVal: string) {
+function applyEnvVar(magicString: MagicString, envStatementRegExStr: string, envVal: string) {
   const envStatementRegEx = new RegExp(envStatementRegExStr, 'g')
   let match: RegExpExecArray | null
-  while ((match = envStatementRegEx.exec(s.original))) {
-    s.overwrite(match.index, match.index + match[0].length, JSON.stringify(envVal))
+  while ((match = envStatementRegEx.exec(magicString.original))) {
+    magicString.overwrite(match.index, match.index + match[0].length, JSON.stringify(envVal))
   }
 }
