@@ -18,7 +18,7 @@ import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerBuild_safe } from '../shared/isViteServerBuild.js'
 import { applyRegExpWithMagicString } from '../shared/applyRegExWithMagicString.js'
 
-// TODO/enventually: (after we implemented vike.config.js)
+// TODO/enventually:
 // - Make import.meta.env work inside +config.js
 //   - For it to work, we'll probably need the user to define the settings (e.g. `envDir`) for loadEnv() inside vike.config.js instead of vite.config.js
 //   - Or stop using Vite's `mode` implemention and have Vike implement its own `mode` feature? (So that the only dependencies are `$ vike build --mode staging` and `$ MODE=staging vike build`.)
