@@ -8,5 +8,5 @@ export default {
     svgr()
   ],
   // @ts-expect-error
-  _skipVikeReplaceConstants: true
+  _skipVikeReplaceConstants: (id: string) => id.endsWith('.mdx')
 } satisfies UserConfig

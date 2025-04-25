@@ -27,7 +27,7 @@ function replaceConstants(): Plugin {
       assert(isBuild)
 
       // @ts-expect-error
-      if (config._skipVikeReplaceConstants) return
+      if (config._skipVikeReplaceConstants?.(id)) return
 
       const magicString = new MagicString(code)
 
