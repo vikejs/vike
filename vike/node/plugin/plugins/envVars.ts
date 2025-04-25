@@ -54,13 +54,13 @@ function envVarsPlugin(): Plugin {
         })
         .forEach(([envName, envVal]) => {
           const envStatement = `import.meta.env.${envName}` as const
-          const envStatementRegExStr = escapeRegex(envStatement) + '\\b'
+          const envStatementRegExpStr = escapeRegex(envStatement) + '\\b'
 
           // Security check
           {
             const isPrivate = !envName.startsWith(PUBLIC_ENV_PREFIX) && !PUBLIC_ENV_ALLOWLIST.includes(envName)
             if (isPrivate && isClientSide) {
-              if (!new RegExp(envStatementRegExStr).test(code)) return
+              if (!new RegExp(envStatementRegExpStr).test(code)) return
               const modulePath = getModuleFilePathAbsolute(id, config)
               const errMsgAddendum: string = isBuild ? '' : ' (Vike will prevent your app from building for production)'
               const keyPublic = `${PUBLIC_ENV_PREFIX}${envName}` as const
@@ -79,7 +79,7 @@ function envVarsPlugin(): Plugin {
           }
 
           // Apply
-          applyEnvVar(magicString, envStatementRegExStr, envVal)
+          applyRegExpWithMagicString(magicString, envStatementRegExpStr, envVal)
         })
 
       if (!magicString.hasChanged()) return null
@@ -92,7 +92,7 @@ function envVarsPlugin(): Plugin {
   }
 }
 
-function applyEnvVar(magicString: MagicString, envStatementRegExStr: string, envVal: string) {
+function applyRegExpWithMagicString(magicString: MagicString, envStatementRegExStr: string, envVal: string) {
   const envStatementRegEx = new RegExp(envStatementRegExStr, 'g')
   let match: RegExpExecArray | null
   while ((match = envStatementRegEx.exec(magicString.original))) {
