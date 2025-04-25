@@ -26,6 +26,8 @@ function replaceConstants(): Plugin {
       const isBuild = config.command === 'build'
       assert(isBuild)
 
+      // Used by vike.dev
+      // https://github.com/vikejs/vike/blob/c05419613fa900d6e14aa1f1e8a68e8b350deb61/docs/vite.config.ts#L11
       // @ts-expect-error
       if (config._skipVikeReplaceConstants?.(id)) return
 
