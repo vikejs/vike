@@ -7,6 +7,7 @@ import { assert, assertPosixPath, assertUsage, assertWarning, escapeRegex, isArr
 import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerBuild_safe } from '../shared/isViteServerBuild.js'
+import { applyRegExpWithMagicString } from '../shared/applyRegExWithMagicString.js'
 
 // TODO/enventually: (after we implemented vike.config.js)
 // - Make import.meta.env work inside +config.js
@@ -89,13 +90,5 @@ function envVarsPlugin(): Plugin {
         map: magicString.generateMap({ hires: true, source: id })
       }
     }
-  }
-}
-
-function applyRegExpWithMagicString(magicString: MagicString, envStatementRegExStr: string, envVal: string) {
-  const envStatementRegEx = new RegExp(envStatementRegExStr, 'g')
-  let match: RegExpExecArray | null
-  while ((match = envStatementRegEx.exec(magicString.original))) {
-    magicString.overwrite(match.index, match.index + match[0].length, JSON.stringify(envVal))
   }
 }
