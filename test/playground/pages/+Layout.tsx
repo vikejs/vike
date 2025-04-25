@@ -23,7 +23,7 @@ function Layout({ children }: { children: React.ReactNode }) {
     const syntaxReplacementActual = 'pageContext.isClientSide'
     assert(syntaxReplacementActual === syntaxReplacementExpect)
   } else {
-    // Is only replacement prod
+    // Is only replaced in prod
     assert('pageContext.isClientSide' === 'pageContext' + '.isClientSide')
   }
 
