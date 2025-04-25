@@ -3,7 +3,16 @@ export { envVarsPlugin }
 import type { Plugin, ResolvedConfig } from 'vite'
 import MagicString from 'magic-string'
 import { loadEnv } from 'vite'
-import { assert, assertPosixPath, assertUsage, assertWarning, escapeRegex, isArray, lowerFirst } from '../utils.js'
+import {
+  assert,
+  assertPosixPath,
+  assertUsage,
+  assertWarning,
+  escapeRegex,
+  isArray,
+  isNotNullish,
+  lowerFirst
+} from '../utils.js'
 import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerBuild_safe } from '../shared/isViteServerBuild.js'
@@ -47,13 +56,14 @@ function envVarsPlugin(): Plugin {
 
       const magicString = new MagicString(code)
 
-      Object.entries(envsAll)
+      // Find & check
+      const replacements = Object.entries(envsAll)
         .filter(([key]) => {
           // Already handled by Vite
           const envPrefix = !config.envPrefix ? [] : isArray(config.envPrefix) ? config.envPrefix : [config.envPrefix]
           return !envPrefix.some((prefix) => key.startsWith(prefix))
         })
-        .forEach(([envName, envVal]) => {
+        .map(([envName, envVal]) => {
           const envStatement = `import.meta.env.${envName}` as const
           const envStatementRegExpStr = escapeRegex(envStatement) + '\\b'
 
@@ -79,10 +89,14 @@ function envVarsPlugin(): Plugin {
             assert(!(isPrivate && isClientSide) || !isBuild)
           }
 
-          // Apply
-          applyRegExpWithMagicString(magicString, envStatementRegExpStr, envVal)
+          return { regExpStr: envStatementRegExpStr, replacement: envVal }
         })
+        .filter(isNotNullish)
 
+      // Apply
+      replacements.forEach(({ regExpStr, replacement }) => {
+        applyRegExpWithMagicString(magicString, regExpStr, replacement)
+      })
       if (!magicString.hasChanged()) return null
 
       return {
