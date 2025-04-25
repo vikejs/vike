@@ -27,7 +27,7 @@ function replaceConstants(): Plugin {
       assert(isBuild)
 
       // Used by vike.dev
-      // https://github.com/vikejs/vike/blob/c05419613fa900d6e14aa1f1e8a68e8b350deb61/docs/vite.config.ts#L11
+      // https://github.com/vikejs/vike/blob/08a1ff55c80ddca64ca6d4417fefd45fefeb4ffb/docs/vite.config.ts#L12
       // @ts-expect-error
       if (config._skipVikeReplaceConstants?.(id)) return
 
