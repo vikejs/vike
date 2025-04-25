@@ -3,12 +3,22 @@ export { envVarsPlugin }
 import type { Plugin, ResolvedConfig } from 'vite'
 import MagicString from 'magic-string'
 import { loadEnv } from 'vite'
-import { assert, assertPosixPath, assertUsage, assertWarning, escapeRegex, isArray, lowerFirst } from '../utils.js'
+import {
+  assert,
+  assertPosixPath,
+  assertUsage,
+  assertWarning,
+  escapeRegex,
+  isArray,
+  isNotNullish,
+  lowerFirst
+} from '../utils.js'
 import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerBuild_safe } from '../shared/isViteServerBuild.js'
+import { applyRegExpWithMagicString } from '../shared/applyRegExWithMagicString.js'
 
-// TODO/enventually: (after we implemented vike.config.js)
+// TODO/enventually:
 // - Make import.meta.env work inside +config.js
 //   - For it to work, we'll probably need the user to define the settings (e.g. `envDir`) for loadEnv() inside vike.config.js instead of vite.config.js
 //   - Or stop using Vite's `mode` implemention and have Vike implement its own `mode` feature? (So that the only dependencies are `$ vike build --mode staging` and `$ MODE=staging vike build`.)
@@ -27,7 +37,6 @@ function envVarsPlugin(): Plugin {
     enforce: 'post',
     configResolved(config_) {
       config = config_
-      config.command
       envsAll = loadEnv(config.mode, config.envDir || config.root, '')
       // Vite's built-in plugin vite:define needs to apply after this plugin.
       //  - This plugin vike:env needs to apply after vike:extractAssets and vike:extractExportNames which need to apply after @vitejs/plugin-vue
@@ -44,23 +53,24 @@ function envVarsPlugin(): Plugin {
       const isBuild = config.command === 'build'
       const isClientSide = !isViteServerBuild_safe(config, options)
 
-      const s = new MagicString(code)
+      const magicString = new MagicString(code)
 
-      Object.entries(envsAll)
+      // Find & check
+      const replacements = Object.entries(envsAll)
         .filter(([key]) => {
           // Already handled by Vite
           const envPrefix = !config.envPrefix ? [] : isArray(config.envPrefix) ? config.envPrefix : [config.envPrefix]
           return !envPrefix.some((prefix) => key.startsWith(prefix))
         })
-        .forEach(([envName, envVal]) => {
+        .map(([envName, envVal]) => {
           const envStatement = `import.meta.env.${envName}` as const
-          const envStatementRegExStr = escapeRegex(envStatement) + '\\b'
+          const envStatementRegExpStr = escapeRegex(envStatement) + '\\b'
 
           // Security check
           {
             const isPrivate = !envName.startsWith(PUBLIC_ENV_PREFIX) && !PUBLIC_ENV_ALLOWLIST.includes(envName)
             if (isPrivate && isClientSide) {
-              if (!new RegExp(envStatementRegExStr).test(code)) return
+              if (!new RegExp(envStatementRegExpStr).test(code)) return
               const modulePath = getModuleFilePathAbsolute(id, config)
               const errMsgAddendum: string = isBuild ? '' : ' (Vike will prevent your app from building for production)'
               const keyPublic = `${PUBLIC_ENV_PREFIX}${envName}` as const
@@ -78,24 +88,20 @@ function envVarsPlugin(): Plugin {
             assert(!(isPrivate && isClientSide) || !isBuild)
           }
 
-          // Apply
-          applyEnvVar(s, envStatementRegExStr, envVal)
+          return { regExpStr: envStatementRegExpStr, replacement: envVal }
         })
+        .filter(isNotNullish)
 
-      if (!s.hasChanged()) return null
+      // Apply
+      replacements.forEach(({ regExpStr, replacement }) => {
+        applyRegExpWithMagicString(magicString, regExpStr, replacement)
+      })
+      if (!magicString.hasChanged()) return null
 
       return {
-        code: s.toString(),
-        map: s.generateMap({ hires: true, source: id })
+        code: magicString.toString(),
+        map: magicString.generateMap({ hires: true, source: id })
       }
     }
-  }
-}
-
-function applyEnvVar(s: MagicString, envStatementRegExStr: string, envVal: string) {
-  const envStatementRegEx = new RegExp(envStatementRegExStr, 'g')
-  let match: RegExpExecArray | null
-  while ((match = envStatementRegEx.exec(s.original))) {
-    s.overwrite(match.index, match.index + match[0].length, JSON.stringify(envVal))
   }
 }
