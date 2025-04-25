@@ -37,7 +37,6 @@ function envVarsPlugin(): Plugin {
     enforce: 'post',
     configResolved(config_) {
       config = config_
-      config.command
       envsAll = loadEnv(config.mode, config.envDir || config.root, '')
       // Vite's built-in plugin vite:define needs to apply after this plugin.
       //  - This plugin vike:env needs to apply after vike:extractAssets and vike:extractExportNames which need to apply after @vitejs/plugin-vue
