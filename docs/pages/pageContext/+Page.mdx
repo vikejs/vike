@@ -147,7 +147,7 @@ Whether the page is being rendered on the client-side or server-side / <Link hre
 
    Also useful for narrowing down the type `PageContext` to either `PageContextClient` or `PageContextServer`, see <Link href="#narrowing-down" />.
 
-   It's equivalent to <code>{'pageContext'+'.isClientSide\u00A0===\u00A0!import.meta.env.SSR'}</code>.
+   It's equivalent to <code>{'pageContext.isClientSide\u00A0===\u00A0!import.meta.env.SSR'}</code>.
 
    <Warning>
      We recommend using [Vite's `import.meta.env.SSR`](https://vite.dev/guide/env-and-mode.html#built-in-constants) instead.
@@ -311,7 +311,7 @@ import type {
 
 ### Narrowing down
 
-You can use <code>{'pageContext'+'.isClientSide'}</code> and `pageContext.isPageContext` to narrow down TypeScript unions.
+You can use `pageContext.isClientSide` and `pageContext.isPageContext` to narrow down TypeScript unions.
 
 ```ts
 import type { PageContext, GlobalContext } from 'vike/types'
