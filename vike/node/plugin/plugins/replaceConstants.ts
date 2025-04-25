@@ -26,6 +26,9 @@ function replaceConstants(): Plugin {
       const isBuild = config.command === 'build'
       assert(isBuild)
 
+      // @ts-expect-error
+      if (config._skipVikeReplaceConstants) return
+
       const magicString = new MagicString(code)
 
       const constantsMap: { constants: string[]; replacement: unknown }[] = []

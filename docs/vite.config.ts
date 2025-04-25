@@ -6,5 +6,7 @@ export default {
   plugins: [
     // Used by the landing page, see `.svg?react` imports
     svgr()
-  ]
+  ],
+  // @ts-expect-error
+  _skipVikeReplaceConstants: true
 } satisfies UserConfig
