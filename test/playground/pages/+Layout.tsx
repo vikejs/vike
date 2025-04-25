@@ -9,13 +9,28 @@ import { getGlobalContextSync } from 'vike'
 
 function Layout({ children }: { children: React.ReactNode }) {
   const pageContext = usePageContext()
+  const globalContext = pageContext.globalContext
 
-  if (import.meta.env.SSR) {
-    assert(!pageContext.globalContext.isClientSide)
-    assert(pageContext.globalContext.someWrapperObj.neverPassedToClient === 123)
+  // TEST: pageContext.isClientSide + Vite plugin vike:replaceConstants
+  assert(import.meta.env.SSR === !pageContext.isClientSide)
+  assert(import.meta.env.SSR === !globalContext.isClientSide)
+  assert(import.meta.env.SSR === !pageContext.globalContext.isClientSide)
+  // import.meta.env.SSR is AST based whereas pageContext.isClientSide isn't
+  // https://github.com/rolldown/rolldown/issues/4300
+  assert('import.meta.env.SSR' === 'import.meta.env' + '.SSR')
+  if (import.meta.env.PROD) {
+    const syntaxReplacementExpect: string = import.meta.env.SSR ? 'false' : 'true'
+    const syntaxReplacementActual = 'pageContext.isClientSide'
+    assert(syntaxReplacementActual === syntaxReplacementExpect)
   } else {
-    assert(pageContext.globalContext.isClientSide)
-    assert(!('neverPassedToClient' in pageContext.globalContext.someWrapperObj))
+    // Is only replaced in prod
+    assert('pageContext.isClientSide' === 'pageContext' + '.isClientSide')
+  }
+
+  if (!globalContext.isClientSide) {
+    assert(globalContext.someWrapperObj.neverPassedToClient === 123)
+  } else {
+    assert(!('neverPassedToClient' in globalContext.someWrapperObj))
   }
 
   // TEST: getGlobalContextSync()

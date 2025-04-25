@@ -1,4 +1,6 @@
-export function assert(condition: unknown): asserts condition {
+export function assert(condition: unknown, debugInfo?: unknown): asserts condition {
   if (condition) return
-  throw new Error('Assertion failed')
+  let errMsg = 'Assertion failure.'
+  if (debugInfo) errMsg += ' ' + JSON.stringify({ debugInfo })
+  throw new Error(errMsg)
 }

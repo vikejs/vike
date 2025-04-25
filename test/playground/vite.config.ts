@@ -10,6 +10,9 @@ export default {
     assetsDir: '/nested-dir/assets',
     // TEST: https://github.com/vikejs/vike/issues/2315
     minify: 'terser'
+    /* Inspect dist/client/
+    minify: false
+    //*/
   },
   plugins: [react(), testPlugin()]
 }
