@@ -6,6 +6,7 @@ import { usePageContext } from 'vike-react/usePageContext'
 import { assert } from '../utils/assert'
 import type { GlobalContextClient } from 'vike/types'
 import { getGlobalContextSync } from 'vike'
+import { someFnClient, someFnServer } from './someFn'
 
 function Layout({ children }: { children: React.ReactNode }) {
   const pageContext = usePageContext()
@@ -29,8 +30,10 @@ function Layout({ children }: { children: React.ReactNode }) {
 
   if (!globalContext.isClientSide) {
     assert(globalContext.someWrapperObj.neverPassedToClient === 123)
+    someFnServer()
   } else {
     assert(!('neverPassedToClient' in globalContext.someWrapperObj))
+    someFnClient()
   }
 
   // TEST: getGlobalContextSync()

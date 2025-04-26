@@ -143,26 +143,29 @@ Whether the page is rendered to HTML.
 
 <Prop name="isClientSide" />
 
-Whether the page is being rendered on the client-side or server-side / <Link href="/pre-rendering">pre-rendered</Link>.
+Whether the page is being rendered on the client-side, or server-side / <Link href="/pre-rendering">pre-rendered</Link>.
 
-   Also useful for narrowing down the type `PageContext` to either `PageContextClient` or `PageContextServer`, see <Link href="#narrowing-down" />.
+Also useful for narrowing down the `PageContext` type to either `PageContextClient` or `PageContextServer`, see <Link href="#narrowing-down" />.
 
-   It's equivalent to <code>{'pageContext.isClientSide\u00A0===\u00A0!import.meta.env.SSR'}</code>.
+It's equivalent to <code>{'pageContext.isClientSide\u00A0===\u00A0!import.meta.env.SSR'}</code>.
 
-   <Warning>
-     We recommend using [Vite's `import.meta.env.SSR`](https://vite.dev/guide/env-and-mode.html#built-in-constants) instead.
-
-     The advantage is that, when building client-side production code, Vite eliminates all code defined inside `import.meta.env.SSR` if-blocks. Potentially saving a *lot* of KBs.
-     ```js
-     // This import is also removed if it's used only inside import.meta.env.SSR if-blocks
-     import someImport from './somewhere'
-
-     if (import.meta.env.SSR) {
-       // Vite removes this code block from client-side production bundles
-       // ... server code ...
-     }
-     ```
-   </Warning>
+> [Like `import.meta.env.SSR`](https://vite.dev/guide/ssr.html#conditional-logic), code in if/else blocks is eliminated when building production client/server bundles (using [Rollup's tree-shaking](https://rollupjs.org/faqs/#what-is-tree-shaking)).
+> ```js
+> // This import is also removed when building for the server-side
+> import someClientImport from '../../client'
+> // This import is also removed when building for the client-side
+> import someServerImport from '.././server'
+>
+> if (pageContext.isClientSide) {
+>   // This code block is removed when building for the server-side
+>   someClientImport()
+>   // ... client code ...
+> } else {
+>   // This code block is removed when building for the client-side
+>   someServerImport()
+>   // ... server code ...
+> }
+> ```
 
 <Prop name="isPrerendering" />
 
@@ -311,7 +314,9 @@ import type {
 
 ### Narrowing down
 
-You can use `pageContext.isClientSide` and `pageContext.isPageContext` to narrow down TypeScript unions.
+You can use
+<Link href="#isClientSide" noWarning>`pageContext.isClientSide`</Link> and <Link href="#isPageContext" noWarning>`pageContext.isPageContext`</Link>
+to narrow down TypeScript unions.
 
 ```ts
 import type { PageContext, GlobalContext } from 'vike/types'
@@ -329,31 +334,6 @@ function someFunction(someObject: PageContext | GlobalContext) {
 import type { PageContext } from 'vike/types'
 
 function someFunction(pageContext: PageContext) {
-  if (import.meta.env.SSR) {
-    // pageContext is PageContext
-    assert(!pageContext.isClientSide)
-    // pageContext is PageContextServer
-  } else {
-    // pageContext is PageContext
-    assert(pageContext.isClientSide)
-    // pageContext is PageContextClient
-  }
-}
-
-// Some assertion implementation
-function assert(condition: unknown): asserts condition {
-  if (condition) return
-  throw new Error('Bug')
-}
-```
-
-<Warning>
-While the following is more succinct, the server code isn't eliminated when building client-side production code (see warning <Link href="#isClientSide" noWarning>here</Link>). Thus we recommend the approach using `import.meta.env.SSR` and `assert()` instead.
-```ts
-import type { PageContext } from 'vike/types'
-
-// ❌ Discouraged
-function someFunction(pageContext: PageContext) {
   if (pageContext.isClientSide) {
     // pageContext is PageContextClient
   } else {
@@ -361,7 +341,6 @@ function someFunction(pageContext: PageContext) {
   }
 }
 ```
-</Warning>
 
 ### Extend
 
@@ -467,7 +446,7 @@ To workaround the issue you can either:
 
 ## See also
 
+- <Link href="/globalContext" />
 - <Link href="/onCreatePageContext" />
 - <Link href="/usePageContext" />
 - <Link href="/useData" />
-- <Link href="/globalContext" />
