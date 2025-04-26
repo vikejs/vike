@@ -48,7 +48,7 @@ const data: {
   },
   {
     website: 'https://ecosia.org',
-    desc: 'Popular Google alternative',
+    desc: 'Google alternative',
     name: 'Ecosia',
     logo: usedByEcosia,
     shrink: 55,
@@ -64,7 +64,7 @@ const data: {
   },
   {
     website: 'https://dia.es',
-    desc: "Spain's largest supermarket (number of stores)",
+    desc: "Spain's supermarket with the most stores",
     name: 'Dia.es',
     logo: usedByDia,
     order: 100

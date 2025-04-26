@@ -20,7 +20,7 @@ function Button({
   if (readingRecommendation) {
     children = (
       <>
-        <span style={{ opacity: 0.6 }}>Read: Why Vike &gt; </span>
+        <span style={{ opacity: 0.6 }}>Read Why Vike: </span>
         <span style={{ fontWeight: 500 }}>{children}</span>
       </>
     )
