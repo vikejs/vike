@@ -21,7 +21,7 @@ console.log(globalContext.assetsManifest)
 console.log(globalContext.viteRuntimeInfo)
 ```
 
-The `getGlobalContext()` can be called at any time (independently of rendering pages). For example, it can be one of the first functions called upon starting your server (before even receving any HTTP request).
+`getGlobalContext()` can be invoked at any time, independent of page rendering. For example, it can be one of the first functions called when your server starts — before it even receives any HTTP requests.
 
 > You can also access it <Link href="/pageContext">over `pageContext.globalContext`</Link>.
 
