@@ -3,11 +3,7 @@
   align-items: center;
 }
 .quote-team-author {
-  padding: 7px;
-  /*
-  margin-left: 7px;
-  */
-  margin-right: -7px;
+  margin-left: 10px;
 }
 
 @media screen and (max-width: 768px) {
