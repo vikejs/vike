@@ -39,21 +39,25 @@ function QuoteTeam({ children }: { children: React.ReactNode }) {
         <div>
           {maintainersList
             .filter((m) => m.isCoreTeam)
-            .map((maintainer, i) => (
-              <img
-                style={{
-                  width: avatarSize,
-                  height: avatarSize,
-                  verticalAlign: 'middle',
-                  borderRadius: '50%',
-                  marginLeft: i !== 0 ? -7 : 0,
-                  position: 'relative',
-                  zIndex: Math.abs(8 - i)
-                }}
-                src={getMaintainerAvatar(maintainer, avatarSize)}
-                key={i}
-              />
-            ))}
+            .map((maintainer, i) => {
+              return (
+                <>
+                  <img
+                    style={{
+                      width: avatarSize,
+                      height: avatarSize,
+                      verticalAlign: 'middle',
+                      borderRadius: '50%',
+                      marginLeft: i !== 0 ? -7 : 0,
+                      position: 'relative',
+                      zIndex: Math.abs(8 - i)
+                    }}
+                    src={getMaintainerAvatar(maintainer, avatarSize)}
+                    key={i}
+                  />
+                </>
+              )
+            })}
         </div>
         <div style={{ opacity: 0.6, fontSize: '0.94em', marginTop: 4, marginBottom: -7 }}>Vike Team</div>
       </a>
