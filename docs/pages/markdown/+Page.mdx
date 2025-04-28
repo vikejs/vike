@@ -34,14 +34,6 @@ There are several techniques for defining the metadata (title, publishing date, 
 
 The preferred technique depends on whether the metadata is global or local.
 
-#### Local metadata
-
- > **What is local metadata?**  For example, if you want to show detailed information below a blog post such as the author's name. This metadata is only shown for that one page and, therefore, it's and only needed for rendering that page: the metadata needs to be accessible only *locally*.
-
-For local metadata, we recommend:
-- [With custom settings](#with-custom-settings)
-- [With frontmatter](#with-frontmatter)
-
 #### Global metadata
 
 > **What is global metadata?** For example, if you want to show a list of all your blog posts, and you want to always show that list on the left side of your website.
@@ -58,6 +50,15 @@ For global metadata, we recommend:
 <Warning>
  You may be tempted to use [`import.meta.glob()`](https://vitejs.dev/guide/features.html#glob-import) to retrieve the metadata of all pages, but we discourage this approach: loading all markdown files at once <ViteLazyTranspilingContradiction />.
 </Warning>
+
+#### Local metadata
+
+ > **What is local metadata?**  For example, if you want to show detailed information below a blog post such as the author's name. This metadata is only shown for that one page and, therefore, it's and only needed for rendering that page: the metadata needs to be accessible only *locally*.
+
+For local metadata, we recommend:
+- [With custom settings](#with-custom-settings)
+- [With frontmatter](#with-frontmatter)
+
 
 ### With a `metadata.js` file
 
