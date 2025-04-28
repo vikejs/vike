@@ -1,0 +1,42 @@
+import { Link } from '@brillout/docpress'
+import { QuoteTeam } from '../../../components'
+
+We're excited to release (starting from `0.4.229`) a new foundational and first-class feature `globalContext` and related utilities.
+- <Link href="/globalContext" />
+- <Link href="/getGlobalContext" />
+- <Link href="/pageContext#globalContext">API > `pageContext.globalContext`</Link>
+- <Link href="/onCreateGlobalContext" />
+- <Link href="/onCreatePageContext" />
+
+These utilities unlocks new use cases and facilities existing ones.
+
+foundational primitive that unlco, most notably:
+
+provides the primitives to build whatever you want.
+
+This double downs on Vike's vision to be a unopinonated core with a set of low-level primitives for unprecedented user freedom.
+
+<QuoteTeam>Vike gives you the confidence you can build whatever you want.</QuoteTeam>
+
+It's already used by <Link href="/blog/vike-server">`vike-server`</Link> to automatically add the server middlewares of other Vike extensions (such as the upcoming `vike-trpc`, `vike-telefunc`, and `vike-better-auth`).
+
+We also care a lot about zero-config, and that's why everything we released can also be used by Vike extensions.
+
+> We're working towards complete feature parity between Vike extensions and the user-land, so that we can have powerful zero-config <Link href="/extensions">Vike extensions</Link> that are <Link href="/eject">ejectable</Link>.
+
+
+## Roadmap
+
+Vike's:
+1. `vike-react-zustand` (@nitedani)
+2. `vike-react-redux` (@phonzammi)
+3. Internal Vike TODOs (@brillout)
+4. Open Source Pricing
+5. Lot's of polishing small details (e.g. move all, codemods)
+6. V1 Release
+
+We also want to work
+
+We're getting close to Vike's first stable release! (Although Vike can clearly already be considered stable given that `0.4.x` has been around since now almost 3 years and still supports the old design `.page.{client,server}.js` design. Needless to say we care about backwards compatibility.)
+
+Also we're making a lot of progress with (@magne4000)
