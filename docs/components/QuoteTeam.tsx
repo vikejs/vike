@@ -4,10 +4,13 @@ import './QuoteTeam.css'
 import { getMaintainerAvatar, maintainersList } from '../pages/team/maintainersList'
 import React from 'react'
 
+const overlap = -7
+const lineSize = 4
+
 function QuoteTeam({ children }: { children: React.ReactNode }) {
   const avatarSize = 25
   return (
-    <div className="quote-team" style={{ display: 'flex', alignItems: 'center' }}>
+    <div className="quote-team" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <span style={{ display: 'flex', alignItems: 'center' }}>
         <QuoteIcon
           style={{
@@ -20,42 +23,62 @@ function QuoteTeam({ children }: { children: React.ReactNode }) {
             flexShrink: 0
           }}
         />
-        <span style={{ maxWidth: 550 }}>{children}</span>
+        <i style={{ maxWidth: 550 }}>{children}</i>
       </span>
       <a
         className="quote-team-author"
         href="/team"
         style={{
+          /*
+          paddingTop: -1 * overlap,
+          padding: -1 * overlap,
+          margin: -1 * overlap,
+          */
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           flexShrink: 0,
           lineHeight: 1.2,
-          color: 'inherit',
+          color: 'inherit'
+          /*
           position: 'relative',
-          top: -3
+          top: -1
+          */
         }}
       >
         <div>
           {maintainersList
             .filter((m) => m.isCoreTeam)
-            .map((maintainer, i) => (
-              <img
-                style={{
-                  width: avatarSize,
-                  height: avatarSize,
-                  verticalAlign: 'middle',
-                  borderRadius: '50%',
-                  marginLeft: i !== 0 ? -7 : 0,
-                  position: 'relative',
-                  zIndex: Math.abs(8 - i)
-                }}
-                src={getMaintainerAvatar(maintainer, avatarSize)}
-                key={i}
-              />
-            ))}
+            .map((maintainer, i) => {
+              const line = Math.floor(i / lineSize)
+              const column = i % lineSize
+              const newLine = ((i + 1) / lineSize) % 1 === 0
+              /*
+              console.log('i', i)
+              console.log('line', line)
+              console.log('column', column)
+              console.log('newLine', newLine)
+              //*/
+              return (
+                <React.Fragment key={i}>
+                  <img
+                    style={{
+                      width: avatarSize,
+                      height: avatarSize,
+                      verticalAlign: 'middle',
+                      borderRadius: '50%',
+                      marginLeft: column !== 0 ? overlap : 0,
+                      marginTop: line !== 0 ? overlap : 0,
+                      position: 'relative',
+                      zIndex: Math.abs(8 - i)
+                    }}
+                    src={getMaintainerAvatar(maintainer, avatarSize)}
+                  />
+                  {newLine && <br />}
+                </React.Fragment>
+              )
+            })}
         </div>
-        <div style={{ opacity: 0.6, fontSize: '0.94em', marginTop: 4, marginBottom: -7 }}>Vike Team</div>
       </a>
     </div>
   )

@@ -502,6 +502,10 @@ function guides(): HeadingDetachedDefinition[] {
 function blog(): HeadingDetachedDefinition[] {
   return [
     {
+      title: 'Introducing `globalContext`',
+      url: '/blog/globalContext'
+    },
+    {
       title: 'Introducing `vike-server`',
       url: '/blog/vike-server'
     },

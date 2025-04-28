@@ -190,7 +190,7 @@ export const metadata = {
 import type { GlobalContextServer } from 'vike/types'
 
 export async function onCreateGlobalContext(globalContext: GlobalContextServer) {
-  const { pages } = globalContext
+  const pages = globalContext.pages
   const posts = Object.values(pages)
     .map((page) => {
       const { metadata } = page.config
@@ -215,7 +215,9 @@ declare global {
 }
 ```
 
-> See also: <Link href="/onCreateGlobalContext" />.
+> See also:
+> - <Link href="/onCreateGlobalContext" />
+> - <Link href="/globalContext#pages">API > `globalContext.pages`</Link>
 
 ```jsx
 // /pages/+Layout.jsx
