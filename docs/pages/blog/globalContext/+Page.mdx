@@ -1,42 +1,56 @@
 import { Link } from '@brillout/docpress'
 import { QuoteTeam } from '../../../components'
 
-We're excited to release (starting from `0.4.229`) a new foundational and first-class feature `globalContext` and related utilities.
+We are thrilled to unveil `globalContext`, available starting from `0.4.229`.
 - <Link href="/globalContext" />
 - <Link href="/getGlobalContext" />
 - <Link href="/pageContext#globalContext">API > `pageContext.globalContext`</Link>
 - <Link href="/onCreateGlobalContext" />
 - <Link href="/onCreatePageContext" />
 
-These utilities unlocks new use cases and facilities existing ones.
+It's a foundational new primitive that unlocks new use cases and facilitates many existing onces.
 
-foundational primitive that unlco, most notably:
+For example, integrating <Link href="/store">a state management store</Link> is now a even more natural process:
 
-provides the primitives to build whatever you want.
+```js
+// 
+```
 
-This double downs on Vike's vision to be a unopinonated core with a set of low-level primitives for unprecedented user freedom.
+Another example is that it's used by <Link href="/blog/vike-server">`vike-server`</Link> to automatically add the server middlewares of other <Link href="/extensions">Vike extensions</Link> (for upcoming extensions such as `vike-trpc`, `vike-telefunc`, and `vike-better-auth`).
 
-<QuoteTeam>Vike gives you the confidence you can build whatever you want.</QuoteTeam>
+We've also update the documentation of:
+ - <Link href="/auth" />
 
-It's already used by <Link href="/blog/vike-server">`vike-server`</Link> to automatically add the server middlewares of other Vike extensions (such as the upcoming `vike-trpc`, `vike-telefunc`, and `vike-better-auth`).
 
-We also care a lot about zero-config, and that's why everything we released can also be used by Vike extensions.
 
-> We're working towards complete feature parity between Vike extensions and the user-land, so that we can have powerful zero-config <Link href="/extensions">Vike extensions</Link> that are <Link href="/eject">ejectable</Link>.
+## Vision
+
+This double downs on Vike's vision to be a unopinonated core with low-level primitives, enabling unprecedented user freedom.
+
+<QuoteTeam>Vike gives you confidence you can build whatever you want.</QuoteTeam>
+
+We also care about zero-config, and that's why everything we released can also be used by Vike extensions.
+
+> We're working towards feature parity between Vike extensions and the user-land, enanling powerful zero-config <Link href="/extensions">Vike extensions</Link>.
+
+> To preserve user freedom, extensions are <Link href="/eject">ejectable</Link>.
 
 
 ## Roadmap
 
-Vike's:
-1. `vike-react-zustand` (@nitedani)
-2. `vike-react-redux` (@phonzammi)
-3. Internal Vike TODOs (@brillout)
-4. Open Source Pricing
-5. Lot's of polishing small details (e.g. move all, codemods)
-6. V1 Release
+Thanks to `globalContext`, we'll be able to soon release:
+- [`vike-react-zustand`](https://github.com/vikejs/vike-react/pull/171) ([@nitedani](https://github.com/nitedani))
+- [`vike-react-redux`](https://github.com/vikejs/vike-react/pull/161) ([@phonzammi](https://github.com/phonzammi))
 
-We also want to work
+We are then going to work on the following:
+1. <Link href="/pricing">Open Source Pricing</Link>
+1. TypeSafe routing (see [`topic:routing`](https://github.com/vikejs/vike/issues?q=is%3Aissue%20state%3Aopen%20label%3Atopic%3Arouting))
+1. Improve SSG support (see [`topic:ssg`](https://github.com/vikejs/vike/issues?q=is%3Aissue%20state%3Aopen%20label%3Atopic%3Assg))
+1. Polish small details (move all export paths to `vike`, e.g. `vike/client/router` to `vike`, powered by automatic codemods)
+1. V1 Release
 
-We're getting close to Vike's first stable release! (Although Vike can already be considered stable given that `0.4.x` has been around since almost 3 years now.)
+We also want to make a lot of reach out and talk in meetup and conferences and (better) explain our Vision.
 
-Also we're making a lot of progress with (@magne4000)
+So we slowly but surely getting close to Vike's first stable release! (Although Vike can already be considered stable given that `0.4.x` has been around since almost 3 years now.)
+
+Also, we're making a lot of progress with our work on <Link href="/blog/vike-server#sharing-with-other-frameworks">making `vike-server` agnostic</Link> ([@magne4000](https://github.com/magne4000)) so that any Vite-based framework can use it.
