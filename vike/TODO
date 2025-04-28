@@ -1,6 +1,4 @@
 - Mention `onCreatePageContext()` and `onCreateGlobalContext`.
-  - `/pageContext#custom`
-  - Authentication
   - Markdown
   - Store
   - ... ?
