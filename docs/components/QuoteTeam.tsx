@@ -58,7 +58,7 @@ function QuoteTeam({ children }: { children: React.ReactNode }) {
               console.log('line', line)
               console.log('column', column)
               console.log('newLine', newLine)
-              */
+              //*/
               return (
                 <React.Fragment key={i}>
                   <img
