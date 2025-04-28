@@ -53,10 +53,12 @@ function QuoteTeam({ children }: { children: React.ReactNode }) {
               const line = Math.floor(i / lineSize)
               const column = i % lineSize
               const newLine = ((i + 1) / lineSize) % 1 === 0
+              /*
               console.log('i', i)
               console.log('line', line)
               console.log('column', column)
               console.log('newLine', newLine)
+              */
               return (
                 <>
                   <img
