@@ -1,17 +1,57 @@
 import { Link, RepoLink } from '@brillout/docpress'
 
-To make information about the authenticated user available to your pages and UI components, you usually define `pageContext.user` at [`renderPage()`](/renderPage):
+You can make information about the authenticated user available to your pages and UI components by defining a <Link href="/pageContext#custom">custom `pageContext` property</Link>, such as `pageContext.user`.
+
+You can then access `pageContext.user` from any UI component using <Link href="/usePageContext" >`usePageContext()`</Link> and <Link href="/passToClient">`+passToClient`</Link>.
+
+In principle, you can use Vike with any authentication tool such as:
+- [Better Auth](https://github.com/better-auth/better-auth)
+- <Link text="Auth.js" href="/Auth.js" />
+- [Grant](https://github.com/simov/grant)
+- [Passport.js](https://github.com/jaredhanson/passport)
+- [Auth0](https://auth0.com/)
+- ...
+
+
+## With `vike-server`
+
+You can use <Link href="/onCreatePageContext">`+onCreatePageContext.server.js`</Link>:
 
 ```js
+// pages/+onCreatePageContext.server.js
+// Environment: server
+
+// On the server-side, this hook is called upon new incoming HTTP requests
+export async function onCreatePageContext(pageContext) {
+  // vike-server defines pageContext.runtime
+  const { req } = pageContext.runtime
+
+  // Authentication middlewares (e.g. Passport.js and Grant) usually provide
+  // information about the logged-in user at req.user
+  pageContext.user = req.user
+
+  // Or when using a third-party authentication provider (e.g. Auth0)
+  pageContext.user = await someAuthApi.getUser(req.headers)
+}
+```
+
+You may also simply directly access `pageContext.runtime.req.user` instead.
+
+## Without `vike-server`
+
+If you don't use <Link href="/server">`vike-server`</Link>, then you can use <Link href="/renderPage">`renderPage()`</Link>:
+
+```js
+// server/index.js
+
 // Vike server middleware
 app.get('*', async (req, res) => {
-  // Authentication middlewares (e.g. Passport.js and Grant) provide information about the
-  // logged-in user at req.user
+  // Authentication middlewares (e.g. Passport.js and Grant) usually provide
+  // information about the logged-in user at req.user
   const user = req.user
 
-  /* Or when using a third-party authentication provider (e.g. Auth0):
-  const user = await authProviderApi.getUser(req.headers)
-  */
+  // Or when using a third-party authentication provider (e.g. Auth0)
+  const user = await someAuthApi.getUser(req.headers)
 
   const pageContextInit = {
     urlOriginal: req.url,
@@ -24,20 +64,29 @@ app.get('*', async (req, res) => {
 })
 ```
 
-You can then access `pageContext.user` from any UI component using <Link href="/usePageContext" >`usePageContext()`</Link>.
+## SSG
 
-> You can pass any custom `pageContext` property to `renderPage()`, see <Link href="/pageContext#custom" />.
+<Link href="/pre-rendering">SSG apps</Link> don't have a server and, therefore, a custom property such as `pageContext.user` cannot be defined on the server-side.
 
-In principle, you can use Vike with any authentication tool such as:
-- <Link text="Auth.js" href="/Auth.js" />
-- [Grant](https://github.com/simov/grant)
-- [Passport.js](https://github.com/jaredhanson/passport)
-- [Auth0](https://auth0.com/)
+Instead, you can use <Link href="/onCreateGlobalContext">`+onCreateGlobalContext.client.js`</Link>:
+
+```js
+// pages/+onCreateGlobalContext.client.js
+
+export async function onCreateGlobalContext(globalContext) {
+  // Fetch user information from your backend (or an authentication SaaS platform)
+  const user = await fetchUseInfo()
+  globalContext.user = user
+}
+```
+
+You can then use <Link href="/pageContext#globalContext">`pageContext.globalContext`</Link> and/or <Link href="/getGlobalContext">`getGlobalContext()`</Link> to access `globalContext.user` anywhere.
+
 
 
 ## Login flow
 
-By using [`guard()`](/guard) with [`throw redirect()`](/redirect) or [`throw render()`](/render) you can:
+By using <Link href="/guard">+guard</Link> with [`throw redirect()`](/redirect) or [`throw render()`](/render) you can:
  - Implement login flows.
  - Protect private pages from unprivileged access.
 

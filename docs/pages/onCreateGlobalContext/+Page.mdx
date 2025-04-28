@@ -4,7 +4,7 @@ Environment: `server`, `client`.
 Cumulative: `true`.  
 Global: `true`.  
 
-Hook called whenever the <Link href="/globalContext">`global` object</Link> is created.
+Hook called whenever the <Link href="/globalContext">`globalContext` object</Link> is created.
 
 It's typically used for initializing `globalContext` properties:
 
@@ -19,6 +19,8 @@ export async function onCreateGlobalContext(globalContext: GlobalContextServer) 
   globalContext.someInitialData = await fetchSomeData()
 }
 ```
+
+> See also: <Link href="/file-env" />.
 
 ```ts
 // pages/+config.ts
@@ -43,6 +45,7 @@ export async function onCreateGlobalContext(globalContext: GlobalContextClient) 
   globalContext.loggedInUser = retrieveUserFromCookie()
 }
 ```
+> See also: <Link href="/auth#ssg" doNotInferSectionTitle />.
 
 > To understand when the `onCreateGlobalContext()` hook is called, see <Link href="/globalContext#lifecycle" />.
 
@@ -64,7 +67,10 @@ export async function onCreateGlobalContext(globalContext: GlobalContextServer) 
 
 On the server-side, the store is typically initialized by using a <Link href="/onCreatePageContext" noBreadcrumb />.
 
+See also: <Link href="/store#ssr" doNotInferSectionTitle />.
+
 ## See also
 
 - <Link href="/globalContext" />
+- <Link href="/getGlobalContext" />
 - <Link href="/onCreatePageContext" />

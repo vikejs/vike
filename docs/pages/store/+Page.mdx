@@ -5,7 +5,7 @@ import { UiFrameworkExtension, Advanced } from '../../components'
 >
 > A store (aka state management) is a tool that helps you manage complex UI state.
 >
-> Not properly managing UI state is one of the most common cause for buggy user interfaces. A store enables you to get under control even the most complex UI state logic.
+> Not properly managing UI state is one of the most common causes of buggy user interfaces. A store enables you to get even the most complex UI state logic under control.
 >
 > A store works by representing state changes as atomic changes to an immutable data structure, enabling a fundamentally more robust state management.
 
@@ -33,61 +33,85 @@ When using <Link href="/ssr">SSR</Link>, the initial state of the store is deter
 
 ### Initial state
 
-If you're using SSR, you need to ensure that the store's initial state is exactly the same between the client- and server-side (otherwise you may get a <Link href="/hydration-mismatch">hydration mismatch</Link>). Here's how you typically achieve this:
+If you're using SSR, you must ensure that the store's initial state is exactly the same on both the client and the server (otherwise, you'll get a <Link href="/hydration-mismatch">hydration mismatch</Link>).
 
-1. Determine the store's initial state on the server-side (during SSR) and <Link href="/pageContext#custom">make it available as `pageContext.storeInitialState`</Link>.
-   > You typically create the store at <Link href="/onBeforeRenderHtml">`onBeforeRenderHtml()`</Link>  and then retrieve its initial sate at <Link href="/onAfterRenderHtml">`onAfterRenderHtml()`</Link>:
-   > ```js
-   > // pages/+onBeforeRenderHtml.js
-   >
-   > import { createStore } from 'awesome-store'
-   >
-   > export function onBeforeRenderHtml(pageContext) {
-   >   pageContext.store = createStore()
-   > }
-   > ```
-   > ```js
-   > // pages/+onAfterRenderHtml.js
-   >
-   > export function onAfterRenderHtml(pageContext) {
-   >   pageContext.storeInitialState = pageContext.store.getState()
-   > }
-   > ```
-   > If you use React then you may also need to use <Link href="/Wrapper">`+Wrapper`</Link>:
-   > ```js
-   > // pages/+Wrapper.jsx
-   >
-   > import { Provider } from 'awesome-store/react'
-   > import { usePageContext } from 'vike-react/usePageContext'
-   >
-   > export default function StoreProvider({ children }) {
-   >   const pageContext = usePageContext()
-   >   return <Provider store={pageContext.store}>{children}</Provider>
-   > }
-   > ```
-1. Make `pageContext.storeInitialState` available to the client-side by using <Link href="/passToClient">`passToClient`</Link>.
-   > At `pages/+config.js`:
-   > ```js
-   > // pages/+config.js
-   >
-   > export default {
-   >   passToClient: ['storeInitialState']
-   > }
-   > ```
-1. On the client-side, initialize the store with `pageContext.storeInitialState`.
-   > Typically at <Link href="/onBeforeRenderClient">`onBeforeRenderClient()`</Link>:
-   > ```js
-   > // pages/+onBeforeRenderClient.js
-   >
-   > import { createStore } from 'awesome-store'
-   >
-   > export function onBeforeRenderClient(pageContext) {
-   >   pageContext.store = createStore(pageContext.storeInitialState)
-   > }
-   > ```
+
+**1. SSR**
+
+Determine the store's initial state on the server-side (during SSR) and <Link href="/pageContext#custom">make it available as `pageContext.storeInitialState`</Link>.
+
+To achieve that, you can create the store at <Link href="/onCreatePageContext">`+onCreatePageContext.server.js`</Link>  and then retrieve its initial sate at <Link href="/onAfterRenderHtml">`+onAfterRenderHtml.js`</Link>:
+```js
+// pages/+onCreatePageContext.server.js
+// Environment: server
+
+import { createStore } from 'awesome-store'
+
+export function onCreatePageContext(pageContext) {
+  pageContext.store = createStore()
+}
+```
+```js
+// pages/+onAfterRenderHtml.js
+// Environment: server
+
+export function onAfterRenderHtml(pageContext) {
+  pageContext.storeInitialState = pageContext.store.getState()
+}
+```
+If you use React then you may also need to use <Link href="/Wrapper">`+Wrapper`</Link>:
+```js
+// pages/+Wrapper.jsx
+// Environment: server, client
+
+import { Provider } from 'awesome-store/react'
+import { usePageContext } from 'vike-react/usePageContext'
+
+export default function StoreProvider({ children }) {
+  const pageContext = usePageContext()
+  return <Provider store={pageContext.store}>{children}</Provider>
+}
+```
+
+**2. `passToClient`**
+
+Make `pageContext.storeInitialState` available on the client-side by using <Link href="/passToClient">`passToClient`</Link>:
+ ```js
+ // pages/+config.js
+
+ export default {
+   passToClient: ['storeInitialState']
+ }
+ ```
+
+**3. Hydration**
+
+On the client-side, initialize the store with `pageContext.storeInitialState` upon hydration, for example at <Link href="/onBeforeRenderClient">`+onBeforeRenderClient`</Link>:
+```js
+// pages/+onBeforeRenderClient.js
+// Environment: client
+
+import { createStore } from 'awesome-store'
+
+export function onBeforeRenderClient(pageContext) {
+  if (pageContext.isHydration) {
+    // Hydration. We must use the same state than on the server-side.
+    pageContext.globalContext.store = createStore(pageContext.storeInitialState)
+  } else {
+    // Client-side navigation. Nothing to do: the store was already initialized at hydration.
+    assert(pageContext.globalContext.store)
+  }
+}
+```
+
+> You can also use <Link href="/onCreateGlobalContext">`+onCreateGlobalContext.client.js`</Link> instead to create the store earlier.
+
+> See also:
+> - <Link href="/pageContext#isHydration">API > `pageContext.isHydration`</Link>
+> - <Link href="/pageContext#globalContext">API > `pageContext.globalContext`</Link>
 
 ### Data fetching
 
-Typically, when using a store, your components never directly access fetched data: instead they only interact with the store and access data over the store.
+When using a store, your components may not directly access fetched data: instead they interact with the store and access data over the store.
 
 If you're using SSR, you typically populate the store with <Link href="/data-fetching#initial-data">initial data fetched on the server-side</Link>. You can achieve this by using `pageContext.storeInitialState` as shown <Link href="#initial-state">above</Link>.

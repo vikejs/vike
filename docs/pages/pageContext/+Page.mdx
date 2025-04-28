@@ -130,7 +130,7 @@ The headers of the HTTP Request. The original object provided by the server, see
 
 <Prop name="config" />
 
-All runtime information about the <Link href="/config">page's configuration</Link> (for example the page's route and all its hooks).
+All runtime information about the <Link href="/config">page's configuration</Link> (the page's route, hooks, settings, ...).
 
 <Prop name="isHydration" />
 
@@ -217,59 +217,100 @@ Runtime information about your app, see <Link href="/globalContext" />.
 
 Always `true`, useful for distinguishing `pageContext` from other objects and narrowing down TypeScript unions, see <Link href="#narrowing-down" />.
 
+
 ## Custom
 
-You can define custom `pageContext` properties. (See <Link href="#typescript" /> for how to define their types.)
+You can define custom `pageContext` properties.
 
- - At <Link href="/renderPage">`renderPage()`</Link>:
-    ```js
-    // Your Vike server middleware integration
-    app.get('*', async (req) => {
-      const pageContextInit = {
-        urlOriginal: req.url,
-        headersOriginal: req.headers,
+```js
+pageContext.myCustomProp = someValue // Add or modify property
+```
 
-        // ***************************************
-        // **** Custom pageContext properties ****
-        // ***************************************
+> See the section <Link href="#typescript" /> for how to define the type of `pageContext.myCustomProp`.
 
-        // Common use case: make information about logged-in user available at pageContext.user
-        user: req.user,
 
-        // Or any other value:
-        // pageContext.someCustomProp
-        someCustomProp: 'some-value'
-      }
-      const pageContext = await renderPage(pageContextInit)
-      // ...
-    })
-    ```
-    > Setting `pageContext.user` is a common use case for integrating authentication tools, see <Link href="/auth#integration" />.
+### Hooks
 
- - At any <Link href="/">Vike hook</Link>.
-   ```js
-   // +someHook.js
-   export function someHook(pageContext) {
-     pageContext.someCustomProp = 'some-value' // Add or modify property
-   }
-   ```
- - At any UI component, by using <Link href="/usePageContext">`usePageContext()`</Link>.
-   ```js
-   // Inside a UI component
-   const pageContext = usePageContext()
-   pageContext.someCustomProp = 'some-value' // Add or modify property
-   ```
- - At <Link href="/navigate#options">`navigate({ pageContext: { someExtra: 'value' } })`</Link>.
+You can use <Link href="/hooks">any Vike hook</Link> to define custom properties.
+
+For example <Link href="/onCreatePageContext">`+onCreatePageContext`</Link>:
+
+```js
+// pages/+onCreatePageContext.js
+
+export async function onCreatePageContext(pageContext) {
+  pageContext.myCustomProp = someValue
+}
+```
+
+> See concrete use case at <Link href="/auth" />.
+
+Or <Link href="/data">`+data`</Link>:
+
+```js
+// pages/product/@id/+data.js
+
+export async function data(pageContext) {
+  const { data, queryDuration } = await fetchSomeData()
+  pageContext.queryDuration = queryDuration
+  return data
+}
+```
+
+
+### UI components
+
+You can define custom properties inside your UI components, by using <Link href="/usePageContext">`usePageContext()`</Link>:
+
+```js
+// Inside a UI component
+const pageContext = usePageContext()
+pageContext.myCustomProp = someValue // Add or modify property
+```
+
+
+### `navigate()`
+
+Custom properties can be defined at <Link href="/navigate#options">`navigate({ pageContext: { someExtra: 'value' } })`</Link>.
+
+
+### `renderPage()`
+
+If you don't use <Link href="/server">`vike-server`</Link>, then you can define custom properties at <Link href="/renderPage">`renderPage()`</Link>:
+
+```js
+// Your Vike server middleware integration
+app.get('*', async (req) => {
+  const pageContextInit = {
+    // ***************************************
+    // *** Built-in pageContext properties ***
+    // ***************************************
+    urlOriginal: req.url,
+    headersOriginal: req.headers,
+
+    // ***************************************
+    // **** Custom pageContext properties ****
+    // ***************************************
+    // Common use case: make information about logged-in user available at pageContext.user
+    user: req.user,
+    // Or any other value:
+    // pageContext.myCustomProp
+    myCustomProp: someValue
+  }
+  const pageContext = await renderPage(pageContextInit)
+  // ...
+})
+```
+> Setting `pageContext.user` is a common use case for integrating authentication tools, see <Link href="/auth" />.
 
 
 ## FAQ
 
 ### Can I mutate `pageContext`?
 
-Yes, it's a common practice to change/add `pageContext` properties at any time.
+Yes, it's a common practice to change/add `pageContext` properties. See <Link href="#custom" />.
 
 ```js
-// Anywhere
 pageContext.someProp = someValue
 ```
 

@@ -1,9 +1,3 @@
-- Mention `onCreatePageContext()` and `onCreateGlobalContext`.
-  - `/pageContext#custom`
-  - Authentication
-  - Markdown
-  - Store
-  - ... ?
 - Fix error test/playground
   ```console
   [11:09:43.072][/test-preview.test.ts][npm run preview][stderr] Error: [vike][Wrong Usage] /+onBeforeRenderClient.ts sets the value of the config onBeforeRenderClient which is a custom config that is defined with https://vike.dev/meta at a path that doesn't apply to / — see https://vike.dev/config#inheritance
