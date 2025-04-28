@@ -13,7 +13,7 @@ import { UsedBy } from './UsedBy'
 import { Quote } from '../../../../components'
 
 const quoteSentence =
-  'Vike is the next generation of framework architecture, for an open and dependable foundation that companies'
+  'Vike is the next generation of framework architecture, for an open and dependable foundation that companies can build upon with confidence.'
 
 function Hero() {
   return (

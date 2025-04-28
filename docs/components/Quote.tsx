@@ -19,10 +19,7 @@ function Quote({ children }: { children: React.ReactNode }) {
             flexShrink: 0
           }}
         />
-        <span style={{ maxWidth: 550 }}>
-          {children}
-          can build upon with confidence.
-        </span>
+        <span style={{ maxWidth: 550 }}>{children}</span>
       </span>
       <a
         id="hero-quote-author"
