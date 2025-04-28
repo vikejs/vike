@@ -36,7 +36,7 @@ The preferred technique depends on whether the metadata is global or local.
 
 #### Local metadata
 
- > **What is local metadata?**  For example, if you want to show some detailed information below the blog post, such as the author's name and country. This metadata is only shown and only needed for that page.
+ > **What is local metadata?**  For example, if you want to show detailed information below a blog post such as the author's name. This metadata is only shown for that one page and, therefore, it's and only needed for rendering that page: the metadata needs to be accessible only *locally*.
 
 For local metadata, we recommend:
 - [With custom settings](#with-custom-settings)
@@ -50,13 +50,13 @@ For local metadata, we recommend:
 > 2023-12-20 Wrapping up 2023
 > 2023-06-15 My summer 2023
 > ```
-> Because this list is shown in the sidebar of every page, the publishing date and the title of all blog posts is always needed regardless of which page is rendered. This metadata is needed for every page.
+> Because this list is shown on the left of every page, the publishing date and the title of all blog posts is needed for rendering any page: the metadata needs to be accessible *globally*.
 
 For global metadata, we recommend:
 - <Link href="#with-a-metadata-js-file" />
 
 <Warning>
- You may be tempted to use [`import.meta.glob()`](https://vitejs.dev/guide/features.html#glob-import) to retrieve the metadata of all your pages, but we discourage this approach: loading all markdown files at once <ViteLazyTranspilingContradiction />.
+ You may be tempted to use [`import.meta.glob()`](https://vitejs.dev/guide/features.html#glob-import) to retrieve the metadata of all pages, but we discourage this approach: loading all markdown files at once <ViteLazyTranspilingContradiction />.
 </Warning>
 
 ### With a `metadata.js` file
@@ -152,8 +152,8 @@ This page uses [markdown](https://en.wikipedia.org/wiki/Markdown).
 
 > [MDX](https://mdxjs.com/) allows you to export JavaScript values in `.mdx` files.
 
-> Usually, Vike forbids `+Page.js` files to have "side exports": the `+Page.js` should only export the value of the `Page` setting.
-> But, for improved DX, Vike allows markdown files such as `+Page.mdx` to export the value of other settings.
+> Usually, Vike forbids `+Page.js` files to have "side exports": the `+Page.js` should only export the value of the <Link href="/Page">`Page` setting</Link>.
+> But, for improved DX, Vike allows markdown files (such as `+Page.mdx`) to export the value of <Link href="/settings">other settings</Link>.
 
 ```ts
 // /pages/+config.js
