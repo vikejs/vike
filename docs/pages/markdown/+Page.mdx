@@ -53,7 +53,7 @@ For global metadata, we recommend:
 
 #### Local metadata
 
-> **What is local metadata?**  For example, you want to show detailed information below a blog post, such as the author's name. This metadata is only shown for that page and, therefore, it's only needed for rendering that one page: the metadata only needs to be accessible *locally*.
+> **What is local metadata?**  For example, you want to show detailed information below a blog post, such as the author's name. This metadata is shown only for that page and, therefore, needs to be accessible only *locally*.
 
 For local metadata, we recommend:
 - [With custom settings](#with-custom-settings)
@@ -67,7 +67,7 @@ A simple way to define metadata is to define a `metadata.js` file that contains 
 ```js
 // /pages/metadata.js
 
-// This metadata is always available for every page
+// This metadata is available to every page
 export const metadata = [
   {
     url: '/blog/introducing-vike',
@@ -77,7 +77,7 @@ export const metadata = [
   {
     url: '/blog/v1',
     title: 'v1.0.0 release',
-    date: new Date('2024-06-01')
+    date: new Date('2025-07-01')
   }
 ]
 ```
@@ -176,12 +176,12 @@ See <Link href="/meta"/>.
 
 ### With frontmatter
 
-Some markdown processors have support for a so-called *frontmatter* to define the page's metadata.
+Some markdown processors have support for a so-called *frontmatter*:
 
-```
+```mdx
 ---
 title: A Markdown Page
-description: Example of using markdown with some frontmatter data
+author: John Smith
 ---
 
 ## Some Markdown
@@ -189,9 +189,42 @@ description: Example of using markdown with some frontmatter data
 This page uses [markdown](https://en.wikipedia.org/wiki/Markdown).
 ```
 
-The frontmatter data is usually exposed as an export,
-which you can access by making the export `nameOfTheFrontmatterExport` a custom setting, see <Link href="/meta" />.
+You can use such frontmatter to define <Link href="#metadata:~:text=What%20is%20local%20metadata">local metadata</Link>.
 
+The markdown processor exposes the data defined by the frontmatter as an export, for example `export { frontmatter }`. You can access it by using <Link href="/meta">`meta`</Link> to define a `+frontmatter` setting (or whatever the name of the export is).
+
+```jsx
+// pages/+config.js
+
+export default {
+  meta: {
+    // Create new setting +frontmatter
+    frontmatter: {
+      env: { server: true, client: true }
+    }
+  }
+}
+```
+
+You can then use <Link href="/pageContext#config">`pageContext.config`</Link> to access it:
+
+```jsx
+// /pages/+Layout.jsx
+
+import { usePageContext } from 'vike-react/usePageContext' // or vike-{vue,solid}
+
+export function Layout({ children }) {
+   const pageContext = usePageContext()
+   const { frontmatter } = pageContext.config
+   return <>
+     <h1>{frontmatter.title}</h1>
+     {children}
+     <footer>
+       <p>Written by {frontmatter.author}.</p>
+     </footer>
+   </>
+}
+```
 
 ## See also
 
