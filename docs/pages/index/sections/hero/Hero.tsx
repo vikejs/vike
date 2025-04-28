@@ -32,7 +32,7 @@ function Hero() {
       <div style={{ height: 46 }} id="hero-margin-mid-1"></div>
       <GetStartedBtn />
       <div style={{ height: 52 }} id="hero-margin-mid-2"></div>
-      <Quote>quoteSentence</Quote>
+      <Quote>{quoteSentence}</Quote>
       <div style={{ height: 100 }} id="hero-margin-mid-3"></div>
       <UsedBy />
       <div style={{ height: 120 }} id="hero-margin-bot"></div>
