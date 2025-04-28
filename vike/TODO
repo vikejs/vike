@@ -1,5 +1,4 @@
 - Mention `onCreatePageContext()` and `onCreateGlobalContext`.
-  - Markdown
   - Store
   - ... ?
 - Fix error test/playground
