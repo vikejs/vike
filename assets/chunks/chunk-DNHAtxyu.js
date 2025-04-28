@@ -1,1 +1,0 @@
-import{j as t}from"./chunk-BHFR-i-w.js";const p=n("pageContext"),x=n("globalContext");function n(e){return function({name:o}){return t.jsx("h3",{id:o,children:t.jsxs("code",{children:[e,".",o]})})}}export{x as P,p as a};
