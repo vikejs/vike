@@ -12,6 +12,9 @@ import '../../Page.css'
 import { getMaintainerAvatar, maintainersList } from '../../../team/maintainersList'
 import { UsedBy } from './UsedBy'
 
+const quoteSentence =
+  'Vike is the next generation of framework architecture, for an open and dependable foundation that companies'
+
 function Hero() {
   return (
     <div
@@ -29,7 +32,7 @@ function Hero() {
       <div style={{ height: 46 }} id="hero-margin-mid-1"></div>
       <GetStartedBtn />
       <div style={{ height: 52 }} id="hero-margin-mid-2"></div>
-      <Quote />
+      <Quote>quoteSentence</Quote>
       <div style={{ height: 100 }} id="hero-margin-mid-3"></div>
       <UsedBy />
       <div style={{ height: 120 }} id="hero-margin-bot"></div>
@@ -102,7 +105,7 @@ function HeroTagline({ taglineSecondaryStyle }: { taglineSecondaryStyle?: React.
   )
 }
 
-function Quote() {
+function Quote({ children }: { children: React.ReactNode }) {
   const avatarSize = 25
   return (
     <div id="hero-quote" style={{ display: 'flex', alignItems: 'center' }}>
@@ -119,7 +122,7 @@ function Quote() {
           }}
         />
         <span style={{ maxWidth: 550 }}>
-          Vike is the next generation of framework architecture, for an open and dependable foundation that companies
+          {children}
           can build upon with confidence.
         </span>
       </span>
