@@ -108,6 +108,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   onCreatePageContext: {
     env: { server: true, client: true },
+    // Required because `onCreatePageContext()` is called before routing
     global: true,
     cumulative: true
   },
