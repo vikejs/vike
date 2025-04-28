@@ -7,7 +7,7 @@ import React from 'react'
 function QuoteTeam({ children }: { children: React.ReactNode }) {
   const avatarSize = 25
   return (
-    <div className="quote-team" style={{ display: 'flex', alignItems: 'center' }}>
+    <div className="quote-team" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <span style={{ display: 'flex', alignItems: 'center' }}>
         <QuoteIcon
           style={{
@@ -20,7 +20,7 @@ function QuoteTeam({ children }: { children: React.ReactNode }) {
             flexShrink: 0
           }}
         />
-        <span style={{ maxWidth: 550 }}>{children}</span>
+        <i style={{ maxWidth: 550 }}>{children}</i>
       </span>
       <a
         className="quote-team-author"
