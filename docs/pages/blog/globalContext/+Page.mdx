@@ -10,13 +10,13 @@ We are thrilled to unveil `globalContext`, available starting from `0.4.229`.
 
 It's a foundational new primitive that unlocks new use cases and facilitates many existing onces.
 
-For example, integrating <Link href="/store">a state management store</Link> is now an even more natural process:
+For example:
+ - Integrating a state management store is now <Link href="/store">an even more natural process</Link>.
+ - You can use <Link href="/markdown#with-a-custom-setting-eager">`globalContext.pages` to access the metadata</Link> of all your pages.
+ - You can <Link href="/auth#ssg">integrate authentication for SSG apps in a straightforward fashion</Link>.
 
-```js
-// 
-```
 
-It also unlocks feature for Vike extensions. It's already used by <Link href="/blog/vike-server">`vike-server`</Link> to automatically add the server middlewares of <Link href="/extensions">Vike extensions</Link> (for upcoming extensions such as `vike-trpc`, `vike-telefunc`, and `vike-better-auth`).
+It also unlocks features for Vike extensions. For example, it's already used by <Link href="/blog/vike-server">`vike-server`</Link> to automatically add the server middlewares of <Link href="/extensions">Vike extensions</Link> (for upcoming extensions such as `vike-trpc`, `vike-telefunc`, and `vike-better-auth`).
 
 We've updated Vike's documentation to use `globalContext`, most notably:
  - <Link href="/auth" />
