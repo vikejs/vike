@@ -267,7 +267,8 @@ const headings = [
   {
     level: 2,
     title: 'Authentication',
-    url: '/auth'
+    url: '/auth',
+    sectionTitles: ['SSG']
   },
   {
     level: 2,
