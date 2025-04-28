@@ -60,7 +60,7 @@ function QuoteTeam({ children }: { children: React.ReactNode }) {
               console.log('newLine', newLine)
               */
               return (
-                <>
+                <React.Fragment key={i}>
                   <img
                     style={{
                       width: avatarSize,
@@ -73,10 +73,9 @@ function QuoteTeam({ children }: { children: React.ReactNode }) {
                       zIndex: Math.abs(8 - i)
                     }}
                     src={getMaintainerAvatar(maintainer, avatarSize)}
-                    key={i}
                   />
                   {newLine && <br />}
-                </>
+                </React.Fragment>
               )
             })}
         </div>
