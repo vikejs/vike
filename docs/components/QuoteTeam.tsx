@@ -1,12 +1,13 @@
-export { Quote }
+export { QuoteTeam }
 
+import './QuoteTeam.css'
 import { getMaintainerAvatar, maintainersList } from '../pages/team/maintainersList'
 import React from 'react'
 
-function Quote({ children }: { children: React.ReactNode }) {
+function QuoteTeam({ children }: { children: React.ReactNode }) {
   const avatarSize = 25
   return (
-    <div id="hero-quote" style={{ display: 'flex', alignItems: 'center' }}>
+    <div className="quote-team" style={{ display: 'flex', alignItems: 'center' }}>
       <span style={{ display: 'flex', alignItems: 'center' }}>
         <QuoteIcon
           style={{
@@ -22,7 +23,7 @@ function Quote({ children }: { children: React.ReactNode }) {
         <span style={{ maxWidth: 550 }}>{children}</span>
       </span>
       <a
-        id="hero-quote-author"
+        className="quote-team-author"
         href="/team"
         style={{
           display: 'flex',
