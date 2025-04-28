@@ -1,0 +1,18 @@
+.quote-team {
+  display: flex;
+  align-items: center;
+}
+.quote-team-author {
+  padding: 7px;
+  margin-right: -7px;
+}
+
+@media screen and (max-width: 768px) {
+  .quote-team {
+    flex-direction: column;
+  }
+  .quote-team-author {
+    margin: 0;
+    margin-top: 19px;
+  }
+}
