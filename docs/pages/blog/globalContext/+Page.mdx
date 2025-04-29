@@ -8,7 +8,7 @@ We are thrilled to unveil `globalContext`, available starting from `0.4.229`.
 - <Link href="/onCreateGlobalContext" />
 - <Link href="/onCreatePageContext" />
 
-It's a foundational new primitive that unlocks new use cases and facilitates many existing onces.
+It's a foundational new primitive that unlocks new use cases and facilitates existing onces.
 
 For example:
  - Integrating a state management store is now <Link href="/store#initial-state">an even more natural process</Link>.
@@ -16,11 +16,11 @@ For example:
  - You can <Link href="/auth#ssg">integrate authentication for SSG apps in a straightforward fashion</Link>.
 
 
-It also unlocks features for Vike extensions. For example, it's already used by <Link href="/blog/vike-server">`vike-server`</Link> to automatically add the server middlewares of upcoming <Link href="/extensions">Vike extensions</Link> such as `vike-trpc`, `vike-telefunc`, and `vike-better-auth`.
+It also unlocks features for Vike extensions. For example, it enables <Link href="/blog/vike-server">`vike-server`</Link> to automatically add the server middlewares of upcoming <Link href="/extensions">Vike extensions</Link> such as `vike-trpc`, `vike-telefunc`, and `vike-better-auth`.
 
 We've updated Vike's documentation to feature `globalContext`, most notably:
- - <Link href="/auth" />
  - <Link href="/store" />
+ - <Link href="/auth" />
  - <Link href="/markdown#metadata" />
 
 
@@ -30,14 +30,14 @@ We've updated Vike's documentation to feature `globalContext`, most notably:
 The new `globalContext` primitive doubles down on Vike's philosophy of being an unopinionated core with low-level primitives, enabling unprecedented user freedom.
 
 <div style={{marginBottom: 30, marginTop: 35}}>
-<QuoteTeam>Vike gives you confidence you can build whatever you want.</QuoteTeam>
+<QuoteTeam>Vike empowers you to build whatever you want.</QuoteTeam>
 </div>
 
 We also care about zero-config, and that's why everything we released can also be used by Vike extensions.
 
 > In general, we're working towards full feature parity between Vike extensions and the user land, enabling powerful <Link href="/extensions">Vike extensions</Link>.
 
-> To preserve user freedom, extensions are <Link href="/eject">ejectable</Link>.
+> To foster user freedom, extensions are <Link href="/eject">ejectable</Link>.
 
 
 ## Roadmap
@@ -46,13 +46,13 @@ Thanks to `globalContext`, we will soon be able to merge and release our work on
 - [`vike-react-zustand`](https://github.com/vikejs/vike-react/pull/171) ([@nitedani](https://github.com/nitedani))
 - [`vike-react-redux`](https://github.com/vikejs/vike-react/pull/161) ([@phonzammi](https://github.com/phonzammi))
 
-Vike's roadmap will then be to implement:
+We will then implement:
 1. <Link href="/pricing">Open Source Pricing</Link>
 1. Type-safe routing (see [`topic:routing`](https://github.com/vikejs/vike/issues?q=is%3Aissue%20state%3Aopen%20label%3Atopic%3Arouting))
-1. Improve SSG support (see [`topic:ssg`](https://github.com/vikejs/vike/issues?q=is%3Aissue%20state%3Aopen%20label%3Atopic%3Assg))
+1. Improved SSG support (see [`topic:ssg`](https://github.com/vikejs/vike/issues?q=is%3Aissue%20state%3Aopen%20label%3Atopic%3Assg))
 1. A lot of polishing ✨
 1. V1 release ⭐
 
-In parallel to Vike's roadmap:
- - We are making progress on <Link href="/blog/vike-server#sharing-with-other-frameworks">making `vike-server` agnostic</Link> ([@magne4000](https://github.com/magne4000)) so that any Vite-based framework can use it.
- - We are going to do a lot of outreach to (better) explain Vike's vision.
+In parallel to Vike's roadmap, we are:
+ - Working on <Link href="/blog/vike-server#sharing-with-other-frameworks">making `vike-server` agnostic</Link> ([@magne4000](https://github.com/magne4000)) so that any Vite-based framework can use it.
+ - Doing outreach to (better) explain Vike's vision.
