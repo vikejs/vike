@@ -11,7 +11,8 @@ We are thrilled to unveil `globalContext`, available starting from `0.4.229`.
 It's a foundational new primitive that unlocks new use cases and facilitates existing onces.
 
 For example:
- - Integrating a state management store is now <Link href="/store#initial-state">an even more natural process</Link>.
+ - Global initial data can now <Link href="/data-fetching#global-data">simply be fetched in `+onCreateGlobalContext`</Link>.
+ - Integrating a state management store with SSR is now <Link href="/store#manual-integration">an even more natural process</Link>.
  - You can use <Link href="/markdown#with-a-custom-setting-eager">`globalContext.pages` to access the metadata</Link> of all your pages.
  - You can <Link href="/auth#ssg">integrate authentication for SSG apps in a straightforward fashion</Link>.
 
@@ -19,6 +20,7 @@ For example:
 It also unlocks features for Vike extensions. For example, it enables <Link href="/blog/vike-server">`vike-server`</Link> to automatically add the server middlewares of upcoming <Link href="/extensions">Vike extensions</Link> such as `vike-trpc`, `vike-telefunc`, and `vike-better-auth`.
 
 We've updated Vike's documentation to feature `globalContext`, most notably:
+ - <Link href="/data-fetching" />
  - <Link href="/store" />
  - <Link href="/auth" />
  - <Link href="/markdown#metadata" />
