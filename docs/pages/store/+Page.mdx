@@ -9,32 +9,51 @@ import { UiFrameworkExtension, Advanced } from '../../components'
 >
 > A store works by representing state changes as atomic changes to an immutable data structure, enabling a fundamentally more robust state management.
 
-In principle, you can use Vike with any store.
+You can use Vike with any store.
 - <Link href="/redux" />
 - <Link href="/pinia" />
 - <Link href="/vuex" />
 - <Link href="/tools#stores">... more</Link>
 
-The documentation on this page is about manually integrating stores.
-
-<Advanced>
-  Instead of manually integrating stores, we generally recommend using <Link href="/extensions">Vike extensions</Link> such as [`vike-vue-pinia`](https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-pinia#readme).
-</Advanced>
-
-<Contribution>
-Contribution welcome to [create Vike extensions](https://github.com/vikejs/vike/issues/1715) integrating stores.
-</Contribution>
+If you don't use your store on the server-side, then you can use it independently of Vike — no integration is needed. If you do, see <Link href="#ssr" />.
 
 ## SSR
 
+> **When do I need to use my store on the server-side?**
+>
+> In general, we recommend using a store only on the client-side. A store is used for highly interactive user interfaces — using it on the server-side is usually superfluous (there isn't any interactivity on the server-side).
+>
+> That said, there are use cases where it can make sense. Most notably, when <Link href="/data-fetching#page-data">the page's initial data</Link> is subject to mutations: it can make sense to have your components access the data through the store rather than directly. In that case, you must initialize the store on the server-side so that components can access the data through the store during Server-Side Rendering (SSR).
+>
+> For example, with a to-do list app, the initial to-do list is likely to change — tasks can be added, removed, or updated. Using a store ensures components stay in sync with those changes. (Note that this isn't a realistic example because a to-do list app usually doesn't need SSR.)
+
+If you use your store on the server side and have <Link href="/ssr">SSR enabled</Link>, you must integrate your store with SSR.
+
+### Extensions
+
+We recommend using a <Link href="/extensions">Vike extension</Link> for automatically integrating your store with SSR.
+
+- [`vike-vue-pinia`](https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-pinia)
+
+<Contribution>
+Contribution welcome to [create Vike extensions](https://github.com/vikejs/vike/issues/1715) integrating stores with SSR.
+</Contribution>
+
+### Manual integration
+
+<Advanced>
+  Instead of manually integrating your store, we generally recommend <Link href="#extensions">using a Vike extension</Link> instead.
+</Advanced>
+
+> <Link href="/faq#how-can-i-reach-out-for-help">Feel free to reach out</Link> if you want help integrating a store.
+
 {/* Similar text at https://vike.dev/integration#data-fetching */ }
 
-When using <Link href="/ssr">SSR</Link>, the initial state of the store is determined on the server side (during SSR) and then passed to the client side.
+When using a store with SSR, the initial state of the store is determined on the server side (during SSR) and then passed to the client side.
 
-### Initial state
+You must ensure that the store's initial state is exactly the same on both the client- and the server-side (otherwise, you'll get a <Link href="/hydration-mismatch">hydration mismatch</Link>).
 
-If you're using SSR, you must ensure that the store's initial state is exactly the same on both the client and the server (otherwise, you'll get a <Link href="/hydration-mismatch">hydration mismatch</Link>).
-
+The integration can be broken down into three steps:
 
 **1. SSR**
 
@@ -109,9 +128,3 @@ export function onBeforeRenderClient(pageContext) {
 > See also:
 > - <Link href="/pageContext#isHydration">API > `pageContext.isHydration`</Link>
 > - <Link href="/pageContext#globalContext">API > `pageContext.globalContext`</Link>
-
-### Data fetching
-
-When using a store, your components may not directly access fetched data: instead they interact with the store and access data over the store.
-
-If you're using SSR, you typically populate the store with <Link href="/data-fetching#initial-data">initial data fetched on the server-side</Link>. You can achieve this by using `pageContext.storeInitialState` as shown <Link href="#initial-state">above</Link>.

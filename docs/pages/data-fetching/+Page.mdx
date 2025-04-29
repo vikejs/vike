@@ -1,19 +1,21 @@
 import { RepoLink, Link } from '@brillout/docpress'
 import { UiFrameworkExtension } from '../../components'
 
-The usual recommendation is to use Vike's `data()` hook for fetching initial data, and another dedicated tool for data mutations and subsequent data (such as pagination data).
+The usual recommendation is:
+ - For fetching the page's initial data, use <Link href="/data">Vike's `+data` hook</Link>.
+ - For data mutations and subsequent data (e.g., pagination), use a dedicated tool like tRPC or TanStack Query.
 
 
-## Initial data
+## Page data
 
-For fetching the initial data of a page you can use Vike's `data()` hook, or you can use tools such as TanStack Query instead.
+For fetching the page's initial data we generally recommend using Vike's `+data` hook. But you can also use tools such as TanStack Query instead.
 
-- <Link href="#data-hook" /><br/>
-- <Link href="#tools" /><br/>
+<Link href="#data" /><br/>
+<Link href="#tools" /><br/>
 
-### `data()` hook
+### `+data`
 
-You can fetch the initial data of a page by using the <Link href="/data">Vike hook `data()`</Link> together with the <Link href="/useData">component hook `useData()`</Link>.
+You can fetch the initial data of a page by using <Link href="/data">Vike's `+data` hook</Link>, then access it by using the <Link href="/useData">component hook `useData()`</Link>.
 
 ```js
 // /pages/movies/@id/+data.js
@@ -65,7 +67,7 @@ import { useData } from 'vike-solid/useData'
 
 > `useData()` is implemented by the <UiFrameworkExtension name />. If you don't use <UiFrameworkExtension name noLink /> then see <Link href="/useData#without-vike-react-vue-solid" doNotInferSectionTitle />.
 
-The `data()` hook can only be used for fetching the initial data of the page. For other use cases, such as data mutations and pagination data, use a data tool.
+The `data()` hook can only be used for fetching the initial data of the page. For other use cases, see <Link href="#data-mutation-subsequent-data" />.
 
 ### Tools
 
@@ -123,21 +125,7 @@ If you use <Link href="/pre-rendering">pre-rendering</Link> then see the workaro
 
 ## State management
 
-For managing complex UI state logic, you can use a store (Redux/Pinia/Zustand/...).
-
-When using a store, all fetched data, including the initial data, is typically managed by the store. We recommend using an extension for automatic integration.
-
-### Extensions
-
-<Link href="/extensions">Vike extensions</Link> for state management tools:
-
-- [`vike-vue-pinia`](https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-pinia)
-
-> [Contributions welcome to create extensions](https://github.com/vikejs/vike/issues/1715).
-
-### Custom integration
-
-For complete control over integration, instead of using an extension, you can manually integrate a store yourself. See <Link href="/store" />.
+See <Link href="/store" />.
 
 
 
