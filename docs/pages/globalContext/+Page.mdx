@@ -76,11 +76,22 @@ Environment: server
 
 The <Link href="/base-url#baseserver">server Base URL</Link>.
 
+
 ## Custom
 
-Custom properties are usually initialized using <Link href="/onCreateGlobalContext">`onCreateGlobalContext()` hooks</Link>.
+You can define custom `globalContext` properties.
 
-You can also initialize new and modify existing `globalContext` properties at any time and anywhere in your app, for example using <Link href="/pageContext#globalContext">`pageContext.globalContext`</Link>.
+```js
+globalContext.myCustomProp = someValue // Add or modify
+```
+
+Custom properties are typically initialized using one or several <Link href="/onCreateGlobalContext">`onCreateGlobalContext()` hooks</Link>.
+
+You can also create and modify `globalContext` properties at any time and anywhere in your app — for example, in your UI components, using <Link href="/pageContext#globalContext">`pageContext.globalContext`</Link>.
+
+> See the section <Link href="#extend">TypeScript > Extend</Link> for how to define the type of `globalContext.myCustomProp`.
+
+See also: <Link href="/pageContext#custom" />.
 
 
 ## Lifecycle

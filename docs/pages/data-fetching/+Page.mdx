@@ -108,13 +108,13 @@ For <Link href="/pre-rendering">pre-rendered pages / SSG apps</Link>, in order t
 
 ## Global data
 
-A common use case is to fetch global data that is needed by all pages. (For example i18n data.)
+A common use case is fetching global initial data needed by all or several pages — for example, <Link href="/auth">information about the logged-in user</Link> or <Link href="/i18n">i18n data</Link>.
 
-You can <Link href="/pageContext#custom">add your initial data to `pageContext` at `renderPage()`</Link>.
+You can add such data <Link href="/globalContext#custom">to `globalContext`</Link> and/or <Link href="/pageContext#custom">to `pageContext`</Link>.
 
-The <Link href="/pageContext">`pageContext` object is accessible from any Vike hook and any UI component</Link>, thus you can access your initialization data there as well.
-
-If you use <Link href="/pre-rendering">pre-rendering</Link> then see the workaround described at [#962 - New hook `onBoot()`](https://github.com/vikejs/vike/issues/962).
+The `globalContext` object is accessible anywhere, while `pageContext` is accessible from any <Link href="/hooks">Vike hook</Link> or UI component. See:
+ - <Link href="/pageContext" />
+ - <Link href="/globalContext" />
 
 
 ## State management

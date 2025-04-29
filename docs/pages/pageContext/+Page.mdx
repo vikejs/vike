@@ -223,11 +223,18 @@ Always `true`, useful for distinguishing `pageContext` from other objects and na
 You can define custom `pageContext` properties.
 
 ```js
-pageContext.myCustomProp = someValue // Add or modify property
+pageContext.myCustomProp = someValue // Add or modify
 ```
 
-> See the section <Link href="#typescript" /> for how to define the type of `pageContext.myCustomProp`.
+> See the section <Link href="#extend">TypeScript > Extend</Link> for how to define the type of `pageContext.myCustomProp`.
 
+See also: <Link href="/globalContext#custom" />.
+
+You can create/modify `pageContext` properties at:
+- <Link href="#hooks" />
+- <Link href="#ui-components" />
+- <Link href="#navigate" />
+- <Link href="#renderpage" />
 
 ### Hooks
 
