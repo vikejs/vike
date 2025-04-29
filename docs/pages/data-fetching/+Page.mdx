@@ -2,18 +2,11 @@ import { RepoLink, Link } from '@brillout/docpress'
 import { UiFrameworkExtension } from '../../components'
 
 The usual recommendation is:
- - For fetching the page's initial data, use <Link href="/data">Vike's `+data` hook</Link>.
- - For data mutations and subsequent data (e.g., pagination), use a dedicated tool like tRPC or TanStack Query.
+ - For fetching a page's initial data, use Vike's `+data` hook. See <Link href="#page-data-with-data" />.
+ - For data mutations and subsequent data (e.g. pagination), use a tool like tRPC or TanStack Query. See <Link href="#data-mutation-subsequent-data" />.
 
 
-## Page data
-
-For fetching the page's initial data we generally recommend using Vike's `+data` hook. But you can also use tools such as TanStack Query instead.
-
-<Link href="#data" /><br/>
-<Link href="#tools" /><br/>
-
-### `+data`
+## Page data with `+data`
 
 You can fetch the initial data of a page by using <Link href="/data">Vike's `+data` hook</Link>, then access it by using the <Link href="/useData">component hook `useData()`</Link>.
 
@@ -48,7 +41,7 @@ async function data(pageContext) {
 
 > `pageContext` holds contextual information, see <Link href="/pageContext" />.
 
-> The `@id` in the file path `/pages/movie/@id/+data.js` denotes a route parameter which value is available at `pageContext.routeParams.id`, see <Link href="/routing" />.
+> The `@id` in the file path `/pages/movie/@id/+data.js` denotes a route parameter which value is available at <Link href="/pageContext#routeParams">`pageContext.routeParams.id`</Link>, see <Link href="/routing" />.
 
 ```js
 // SomeComponent.js
@@ -67,17 +60,18 @@ import { useData } from 'vike-solid/useData'
 
 > `useData()` is implemented by the <UiFrameworkExtension name />. If you don't use <UiFrameworkExtension name noLink /> then see <Link href="/useData#without-vike-react-vue-solid" doNotInferSectionTitle />.
 
-The `data()` hook can only be used for fetching the initial data of the page. For other use cases, see <Link href="#data-mutation-subsequent-data" />.
+The `+data` hook can only be used for fetching the initial data of the page. For other use cases, see <Link href="#data-mutation-subsequent-data" />.
 
-### Tools
 
-Some data-fetching tools have Vike extensions that enable your components to fetch their initial data:
+## Page data with tools
+
+Some data-fetching tools have Vike extensions that enable your components to fetch initial data:
  - [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#readme) - [TanStack Query](https://tanstack.com/query) integration for <Link href="/vike-react">`vike-react`</Link>
  - [`vike-vue-query`](https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-query#readme) - [TanStack Query](https://tanstack.com/query) integration for <Link href="/vike-vue">`vike-vue`</Link>
  - [`vike-solid-query`](https://github.com/vikejs/vike-solid/tree/main/packages/vike-solid-query#readme) - [TanStack Query](https://tanstack.com/query) integration for <Link href="/vike-solid">`vike-solid`</Link>
  - 🚧 `vike-react-telefunc` - [Telefunc](https://telefunc.com/) integration for <Link href="/vike-react">`vike-react`</Link>
 
-> Instead of using the `+data` hook, you can then use any of your components to fetch data, including your <Link href="/Layout">`<Layout>` components</Link>.
+> With these tools, instead of using Vike's `+data` hook, you can directly fetch data in components, including your <Link href="/Layout">`<Layout>` components</Link>.
 
 
 ## Data mutation & subsequent data

@@ -23,7 +23,7 @@ If you don't use your store on the server-side, then you can use it independentl
 >
 > In general, we recommend using a store only on the client-side. A store is used for highly interactive user interfaces — using it on the server-side is usually superfluous (there isn't any interactivity on the server-side).
 >
-> That said, there are use cases where it can make sense. Most notably, when <Link href="/data-fetching#page-data">the page's initial data</Link> is subject to mutations: it can make sense to have your components access the data through the store rather than directly. In that case, you must initialize the store on the server-side so that components can access the data through the store during Server-Side Rendering (SSR).
+> That said, there are use cases where it can make sense. Most notably, when <Link href="/data-fetching">the page's initial data</Link> is subject to mutations: it can make sense to have your components access the data through the store rather than directly. In that case, you must initialize the store on the server-side so that components can access the data through the store during Server-Side Rendering (SSR).
 >
 > For example, with a to-do list app, the initial to-do list is likely to change — tasks can be added, removed, or updated. Using a store ensures components stay in sync with those changes. (Note that this isn't a realistic example because a to-do list app usually doesn't need SSR.)
 
