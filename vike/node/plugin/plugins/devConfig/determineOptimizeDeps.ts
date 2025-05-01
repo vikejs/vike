@@ -2,7 +2,14 @@ export { determineOptimizeDeps }
 
 import type { ResolvedConfig } from 'vite'
 import { findPageFiles } from '../../shared/findPageFiles.js'
-import { assert, assertIsImportPathNpmPackage, createDebugger, isArray, unique } from '../../utils.js'
+import {
+  assert,
+  assertIsImportPathNpmPackage,
+  createDebugger,
+  getNpmPackageName,
+  isArray,
+  unique
+} from '../../utils.js'
 import { getVikeConfig, isOverriden } from '../importUserCode/v1-design/getVikeConfig.js'
 import { analyzeClientEntries } from '../build/pluginBuildConfig.js'
 import type { PageConfigBuildTime } from '../../../../shared/page-configs/PageConfig.js'
@@ -67,6 +74,11 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
 
             if (!configEnv.client) return
             if (definedAt.definedBy) return
+
+            if (definedAt.importPathAbsolute) {
+              const npmPackageName = getNpmPackageName(definedAt.importPathAbsolute)
+              if (npmPackageName && config.optimizeDeps.exclude?.includes(npmPackageName)) return
+            }
 
             if (definedAt.filePathAbsoluteUserRootDir !== null) {
               // Vite expects entries to be filesystem absolute paths (surprisingly so).
