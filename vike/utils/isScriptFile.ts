@@ -18,22 +18,22 @@ import { assert } from './assert.js'
 
 // prettier-ignore
 // biome-ignore format:
-const extJavaScript = [
+const extJs = [
   'js',
   'cjs',
   'mjs',
 ]
 // prettier-ignore
 // biome-ignore format:
-const extTypeScript = [
+const extTs = [
   'ts',
   'cts',
   'mts',
 ]
-const extScript = [...extJavaScript, ...extTypeScript]
+const extJsOrTs = [...extJs, ...extTs]
 // prettier-ignore
 // biome-ignore format:
-const extJsx = [
+const extJsxOrTsx = [
   'jsx',
   'tsx',
   'cjsx',
@@ -50,7 +50,7 @@ const extTemplates = [
   'md',
   'mdx'
 ] as const
-const scriptFileExtensionList = [...extScript, ...extJsx, ...extTemplates] as const
+const scriptFileExtensionList = [...extJsOrTs, ...extJsxOrTsx, ...extTemplates] as const
 const scriptFileExtensions: string = '(' + scriptFileExtensionList.join('|') + ')'
 
 function isScriptFile(filePath: string): boolean {
@@ -61,7 +61,7 @@ function isScriptFile(filePath: string): boolean {
 
 function isPlainScriptFile(filePath: string) {
   const yes1 = /\.(c|m)?(j|t)s$/.test(filePath)
-  const yes2 = extScript.some((ext) => filePath.endsWith('.' + ext))
+  const yes2 = extJsOrTs.some((ext) => filePath.endsWith('.' + ext))
   assert(yes1 === yes2)
   return yes1
 }
