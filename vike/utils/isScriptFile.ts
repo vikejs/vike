@@ -20,12 +20,17 @@ import { assert } from './assert.js'
 // biome-ignore format:
 const extJavaScript = [
   'js',
-  'ts',
   'cjs',
-  'cts',
   'mjs',
+]
+// prettier-ignore
+// biome-ignore format:
+const extTypeScript = [
+  'ts',
+  'cts',
   'mts',
 ]
+const extScript = [...extJavaScript, ...extTypeScript]
 // prettier-ignore
 // biome-ignore format:
 const extJsx = [
@@ -45,7 +50,7 @@ const extTemplates = [
   'md',
   'mdx'
 ] as const
-const scriptFileExtensionList = [...extJavaScript, ...extJsx, ...extTemplates] as const
+const scriptFileExtensionList = [...extScript, ...extJsx, ...extTemplates] as const
 const scriptFileExtensions: string = '(' + scriptFileExtensionList.join('|') + ')'
 
 function isScriptFile(filePath: string): boolean {
@@ -56,7 +61,7 @@ function isScriptFile(filePath: string): boolean {
 
 function isPlainJavaScriptFile(filePath: string) {
   const yes1 = /\.(c|m)?(j|t)s$/.test(filePath)
-  const yes2 = extJavaScript.some((ext) => filePath.endsWith('.' + ext))
+  const yes2 = extScript.some((ext) => filePath.endsWith('.' + ext))
   assert(yes1 === yes2)
   return yes1
 }
