@@ -1,5 +1,5 @@
 export { isScriptFile }
-export { isPlainJavaScriptFile }
+export { isPlainScriptFile }
 export { isTemplateFile }
 export { scriptFileExtensions }
 export { scriptFileExtensionList }
@@ -55,11 +55,11 @@ const scriptFileExtensions: string = '(' + scriptFileExtensionList.join('|') + '
 
 function isScriptFile(filePath: string): boolean {
   const yes = scriptFileExtensionList.some((ext) => filePath.endsWith('.' + ext))
-  if (isPlainJavaScriptFile(filePath)) assert(yes)
+  if (isPlainScriptFile(filePath)) assert(yes)
   return yes
 }
 
-function isPlainJavaScriptFile(filePath: string) {
+function isPlainScriptFile(filePath: string) {
   const yes1 = /\.(c|m)?(j|t)s$/.test(filePath)
   const yes2 = extScript.some((ext) => filePath.endsWith('.' + ext))
   assert(yes1 === yes2)
