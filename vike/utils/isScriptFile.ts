@@ -4,8 +4,6 @@ export { isTemplateFile }
 export { scriptFileExtensions }
 export { scriptFileExtensionList }
 
-import { assert } from './assert.js'
-
 // We can't use a RegExp:
 //  - Needs to work with Micromatch: https://github.com/micromatch/micromatch because:
 //    - Vite's `import.meta.glob()` uses Micromatch
@@ -53,16 +51,11 @@ const scriptFileExtensionList = [...extJsOrTs, ...extJsxOrTsx, ...extTemplates] 
 const scriptFileExtensions: string = '(' + scriptFileExtensionList.join('|') + ')'
 
 function isScriptFile(filePath: string): boolean {
-  const yes = scriptFileExtensionList.some((ext) => filePath.endsWith('.' + ext))
-  if (isPlainScriptFile(filePath)) assert(yes)
-  return yes
+  return scriptFileExtensionList.some((ext) => filePath.endsWith('.' + ext))
 }
 
 function isPlainScriptFile(filePath: string) {
-  const yes1 = /\.(c|m)?(j|t)s$/.test(filePath)
-  const yes2 = extJsOrTs.some((ext) => filePath.endsWith('.' + ext))
-  assert(yes1 === yes2)
-  return yes1
+  return extJsOrTs.some((ext) => filePath.endsWith('.' + ext))
 }
 
 function isTemplateFile(filePath: string) {
