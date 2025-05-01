@@ -1,10 +1,8 @@
 export { isScriptFile }
-export { isPlainJavaScriptFile }
+export { isPlainScriptFile }
 export { isTemplateFile }
-export { scriptFileExtensions }
+export { scriptFileExtensionPattern }
 export { scriptFileExtensionList }
-
-import { assert } from './assert.js'
 
 // We can't use a RegExp:
 //  - Needs to work with Micromatch: https://github.com/micromatch/micromatch because:
@@ -18,24 +16,36 @@ import { assert } from './assert.js'
 
 // prettier-ignore
 // biome-ignore format:
-const extJavaScript = [
+const extJs = [
   'js',
-  'ts',
   'cjs',
-  'cts',
   'mjs',
+] as const
+// prettier-ignore
+// biome-ignore format:
+const extTs = [
+  'ts',
+  'cts',
   'mts',
-]
+] as const
+const extJsOrTs = [...extJs, ...extTs] as const
+
 // prettier-ignore
 // biome-ignore format:
 const extJsx = [
   'jsx',
-  'tsx',
   'cjsx',
-  'ctsx',
   'mjsx',
-  'mtsx',
 ] as const
+// prettier-ignore
+// biome-ignore format:
+const extTsx = [
+  'tsx',
+  'ctsx',
+  'mtsx'
+] as const
+const extJsxOrTsx = [...extJsx, ...extTsx] as const
+
 // prettier-ignore
 // biome-ignore format:
 const extTemplates = [
@@ -45,20 +55,16 @@ const extTemplates = [
   'md',
   'mdx'
 ] as const
-const scriptFileExtensionList = [...extJavaScript, ...extJsx, ...extTemplates] as const
-const scriptFileExtensions: string = '(' + scriptFileExtensionList.join('|') + ')'
+
+const scriptFileExtensionList = [...extJsOrTs, ...extJsxOrTsx, ...extTemplates] as const
+const scriptFileExtensionPattern = '(' + scriptFileExtensionList.join('|') + ')'
 
 function isScriptFile(filePath: string): boolean {
-  const yes = scriptFileExtensionList.some((ext) => filePath.endsWith('.' + ext))
-  if (isPlainJavaScriptFile(filePath)) assert(yes)
-  return yes
+  return scriptFileExtensionList.some((ext) => filePath.endsWith('.' + ext))
 }
 
-function isPlainJavaScriptFile(filePath: string) {
-  const yes1 = /\.(c|m)?(j|t)s$/.test(filePath)
-  const yes2 = extJavaScript.some((ext) => filePath.endsWith('.' + ext))
-  assert(yes1 === yes2)
-  return yes1
+function isPlainScriptFile(filePath: string) {
+  return extJsOrTs.some((ext) => filePath.endsWith('.' + ext))
 }
 
 function isTemplateFile(filePath: string) {

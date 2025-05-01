@@ -5,7 +5,7 @@ export { getPlusFileValueConfigName }
 import {
   assertPosixPath,
   assert,
-  scriptFileExtensions,
+  scriptFileExtensionPattern,
   assertIsSingleModuleInstance,
   assertIsNotProductionRuntime,
   isVersionOrAbove,
@@ -149,7 +149,7 @@ async function gitLsFiles(userRootDir: string, ignorePatterns: string[], ignoreM
 }
 // Same as gitLsFiles() but using tinyglobby
 async function tinyglobby(userRootDir: string, ignorePatterns: string[]): Promise<string[]> {
-  const pattern = `**/+*.${scriptFileExtensions}`
+  const pattern = `**/+*.${scriptFileExtensionPattern}`
   const options = {
     ignore: ignorePatterns,
     cwd: userRootDir,

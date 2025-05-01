@@ -10,7 +10,7 @@ import type { ResolvedConfig } from 'vite'
 import {
   assert,
   assertPosixPath,
-  scriptFileExtensions,
+  scriptFileExtensionPattern,
   debugGlob,
   isVersionOrAbove,
   assertWarning
@@ -260,7 +260,9 @@ function getGlobRoots(config: ResolvedConfig): GlobRoot[] {
 
 function getGlobPath(globRootDir: string, fileType: FileType): string {
   assertPosixPath(globRootDir)
-  let globPath = [...globRootDir.split('/'), '**', `*${fileType}.${scriptFileExtensions}`].filter(Boolean).join('/')
+  let globPath = [...globRootDir.split('/'), '**', `*${fileType}.${scriptFileExtensionPattern}`]
+    .filter(Boolean)
+    .join('/')
   if (!globPath.startsWith('/')) {
     globPath = '/' + globPath
   }

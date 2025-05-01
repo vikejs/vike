@@ -27,7 +27,7 @@ import {
   isObject,
   toPosixPath,
   assertUsage,
-  isPlainJavaScriptFile,
+  isPlainScriptFile,
   createDebugger,
   assertFilePathAbsoluteFilesystem,
   assertIsImportPathNpmPackage,
@@ -74,7 +74,7 @@ async function transpileAndExecuteFile(
   esbuildCache.transpileCache[filePathAbsoluteFilesystem] = promise
 
   assertUsage(
-    isPlainJavaScriptFile(filePathAbsoluteFilesystem),
+    isPlainScriptFile(filePathAbsoluteFilesystem),
     `${filePathToShowToUserResolved} has file extension .${fileExtension} but a config file can only be a JavaScript/TypeScript file`
   )
   const isHeader = isHeaderFile(filePathAbsoluteFilesystem)
@@ -230,7 +230,7 @@ async function transpileWithEsbuild(
           const isPointerImport =
             transformImports === 'all' ||
             // .jsx, .vue, .svg, ... => obviously not config code => pointer import
-            !isPlainJavaScriptFile(importPathResolved) ||
+            !isPlainScriptFile(importPathResolved) ||
             // Import of a Vike extension config => make it a pointer import because we want to show nice error messages (that can display whether a config has been set by the user or by a Vike extension).
             //  - Should we stop doing this? (And instead let Node.js directly load Vike extensions.)
             //    - In principle, we can use the setting 'name' value of Vike extensions.

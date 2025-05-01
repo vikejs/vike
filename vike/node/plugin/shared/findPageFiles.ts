@@ -2,7 +2,7 @@ export { findPageFiles }
 
 import { glob } from 'tinyglobby'
 import type { ResolvedConfig } from 'vite'
-import { assertWarning, toPosixPath, scriptFileExtensions } from '../utils.js'
+import { assertWarning, toPosixPath, scriptFileExtensionPattern } from '../utils.js'
 import type { FileType } from '../../../shared/getPageFiles/fileTypes.js'
 import pc from '@brillout/picocolors'
 import { getOutDirs } from './getOutDirs.js'
@@ -12,7 +12,7 @@ async function findPageFiles(config: ResolvedConfig, fileTypes: FileType[], isDe
   const { outDirRoot } = getOutDirs(config)
   const timeBase = new Date().getTime()
   let pageFiles = await glob(
-    fileTypes.map((fileType) => `**/*${fileType}.${scriptFileExtensions}`),
+    fileTypes.map((fileType) => `**/*${fileType}.${scriptFileExtensionPattern}`),
     { ignore: ['**/node_modules/**', `${outDirRoot}/**`], cwd, dot: false, expandDirectories: false }
   )
   pageFiles = pageFiles.map((p) => '/' + toPosixPath(p))
