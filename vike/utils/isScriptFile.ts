@@ -29,6 +29,7 @@ const extTs = [
   'mts',
 ] as const
 const extJsOrTs = [...extJs, ...extTs] as const
+
 // prettier-ignore
 // biome-ignore format:
 const extJsx = [
@@ -36,8 +37,15 @@ const extJsx = [
   'cjsx',
   'mjsx',
 ] as const
-const extTsx = ['tsx', 'ctsx', 'mtsx'] as const
+// prettier-ignore
+// biome-ignore format:
+const extTsx = [
+  'tsx',
+  'ctsx',
+  'mtsx'
+] as const
 const extJsxOrTsx = [...extJsx, ...extTsx] as const
+
 // prettier-ignore
 // biome-ignore format:
 const extTemplates = [
@@ -47,6 +55,7 @@ const extTemplates = [
   'md',
   'mdx'
 ] as const
+
 const scriptFileExtensionList = [...extJsOrTs, ...extJsxOrTsx, ...extTemplates] as const
 const scriptFileExtensions: string = '(' + scriptFileExtensionList.join('|') + ')'
 
