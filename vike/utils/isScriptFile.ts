@@ -22,25 +22,24 @@ const extJs = [
   'js',
   'cjs',
   'mjs',
-]
+] as const
 // prettier-ignore
 // biome-ignore format:
 const extTs = [
   'ts',
   'cts',
   'mts',
-]
-const extJsOrTs = [...extJs, ...extTs]
+] as const
+const extJsOrTs = [...extJs, ...extTs] as const
 // prettier-ignore
 // biome-ignore format:
-const extJsxOrTsx = [
+const extJsx = [
   'jsx',
-  'tsx',
   'cjsx',
-  'ctsx',
   'mjsx',
-  'mtsx',
 ] as const
+const extTsx = ['tsx', 'ctsx', 'mtsx'] as const
+const extJsxOrTsx = [...extJsx, ...extTsx] as const
 // prettier-ignore
 // biome-ignore format:
 const extTemplates = [
