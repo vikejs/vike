@@ -2,9 +2,9 @@ export { isImportPathNpmPackage }
 export { isImportPathNpmPackageOrPathAlias }
 export { assertIsImportPathNpmPackage }
 export { isPathAliasRecommended }
+export { getNpmPackageName }
 /* Currently not used
 export { isNpmPackageName }
-export { getNpmPackageName }
 export { getNpmPackageImportPath }
 */
 
