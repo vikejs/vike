@@ -86,12 +86,6 @@ function tolerateError({ logSource, logText, testInfo }) {
       // (node:4117) [DEP0180] DeprecationWarning: fs.Stats constructor is deprecated.
       'fs.Stats constructor is deprecated.',
 
-      // [15:31:51.518][/docs/.test-dev.test.ts][pnpm run dev][stderr] Cannot optimize dependency: @brillout/docpress/renderer/onRenderClient, present in 'optimizeDeps.include'
-      'Cannot optimize dependency: @brillout/docpress/renderer/onRenderClient',
-
-      // [21:29:57.330][/docs/.test-dev.test.ts][pnpm run dev][stderr] Cannot optimize dependency: @brillout/docpress/Layout, present in 'optimizeDeps.include'
-      'Cannot optimize dependency: @brillout/docpress/Layout',
-
       'The glob option "as" has been deprecated in favour of "query"',
 
       // [vike][request(1)][Warning] The onBeforeRender() hook defined by /renderer/+onBeforeRender.js is slow: it's taking more than 4 seconds (https://vike.dev/hooksTimeout)
