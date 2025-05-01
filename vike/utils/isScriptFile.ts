@@ -1,7 +1,7 @@
 export { isScriptFile }
 export { isPlainScriptFile }
 export { isTemplateFile }
-export { scriptFileExtensions }
+export { scriptFileExtensionPattern }
 export { scriptFileExtensionList }
 
 // We can't use a RegExp:
@@ -57,7 +57,7 @@ const extTemplates = [
 ] as const
 
 const scriptFileExtensionList = [...extJsOrTs, ...extJsxOrTsx, ...extTemplates] as const
-const scriptFileExtensions = '(' + scriptFileExtensionList.join('|') + ')'
+const scriptFileExtensionPattern = '(' + scriptFileExtensionList.join('|') + ')'
 
 function isScriptFile(filePath: string): boolean {
   return scriptFileExtensionList.some((ext) => filePath.endsWith('.' + ext))
