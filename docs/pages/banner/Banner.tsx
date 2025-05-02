@@ -52,33 +52,30 @@ function BannerCommon({
           flexDirection: 'column',
           alignItems: 'center',
           // Don't center completely
-          marginTop: -8,
-          // Needs to have the right size upon 600x315 (that's the viewport we use to generate banner.png as explained in the HOW-TO above)
-          scale: logoScale
+          marginTop: -8
         }}
       >
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
-            marginBottom: -14,
+            marginBottom: -7,
             marginLeft: -25
           }}
         >
           <img
             src={vikeLogo}
             style={{
-              height: 60,
+              height: 60 * logoScale,
               objectFit: 'contain',
-              marginRight: 11,
-              position: 'relative',
-              top: -4
+              marginTop: -8,
+              marginRight: 14
             }}
           />
           <span
             className="logo-font"
             style={{
-              fontSize: '2.85em',
+              fontSize: 45.6 * logoScale,
               fontWeight: 440,
               fontStyle: 'italic',
               color: '#707070',
@@ -89,7 +86,18 @@ function BannerCommon({
             {logoText}
           </span>
         </div>
-        {!logoOnly && <HeroTagline taglineSecondaryStyle={{ marginTop: 19 }} />}
+        {!logoOnly && (
+          <HeroTagline
+            style={{ marginTop: -0 }}
+            taglineStyle={{ fontSize: 50 * logoScale, marginBottom: 25 }}
+            taglineSecondaryStyle={{
+              marginTop: 19,
+              fontSize: 28 * logoScale,
+              maxWidth: 600 * logoScale,
+              lineHeight: 1.3
+            }}
+          />
+        )}
       </div>
     </div>
   )

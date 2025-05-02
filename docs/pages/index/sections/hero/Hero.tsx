@@ -40,9 +40,17 @@ function Hero() {
   )
 }
 
-function HeroTagline({ taglineSecondaryStyle }: { taglineSecondaryStyle?: React.CSSProperties } = {}) {
+function HeroTagline({
+  style,
+  taglineStyle,
+  taglineSecondaryStyle
+}: {
+  style?: React.CSSProperties
+  taglineStyle?: React.CSSProperties
+  taglineSecondaryStyle?: React.CSSProperties
+} = {}) {
   return (
-    <div id="hero-taglines">
+    <div id="hero-taglines" style={style}>
       <div
         className="landingpage-hero-headline"
         style={{
@@ -64,7 +72,8 @@ function HeroTagline({ taglineSecondaryStyle }: { taglineSecondaryStyle?: React.
           <div
             id="tagline-main"
             style={{
-              opacity: 0.9
+              opacity: 0.9,
+              ...taglineStyle
             }}
           >
             The Framework{' '}
