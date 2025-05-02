@@ -1,13 +1,33 @@
 import { Link } from '@brillout/docpress'
 import vikeLogo from '../../assets/logo/vike.svg'
+import vikeDarkLogo from '../../assets/logo/vike-dark.svg'
 import './press.css'
 
 
 ## Logo
 
-**vike.svg**
+<div style={{position: 'relative', marginBottom: 30}}>
 
-<img src={vikeLogo} height={48} />
+  **vike.svg**
+  <img src={vikeLogo} height={48} />
+
+  <div style={{
+      position: 'absolute',
+      right: 0,
+      top: -16,
+      width: '50%',
+      height: 'calc(100% + 35px)',
+      paddingLeft: 40,
+      color: 'white',
+      background: 'black',
+      float: 'right'
+    }}
+  >
+    **vike-dark.svg**
+    <img src={vikeDarkLogo} height={48} />
+  </div>
+
+</div>
 
 > See [GitHub > `vikejs/vike-assets`](https://github.com/vikejs/vike-assets) for alternative logos. (Animated, favicon size, variants for different contexts, ...)
 
