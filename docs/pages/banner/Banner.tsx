@@ -1,11 +1,20 @@
 export { Banner }
+export { BannerVikings }
 
 import React from 'react'
 import { heroBgColor, HeroTagline } from '../index/sections/hero/Hero'
 import vikeLogo from '../../assets/logo/vike.svg'
 import './Banner.css'
 
-function Banner({ showLogo }: { showLogo: boolean }) {
+function BannerVikings() {
+  return <BannerCommon logoOnly logoText="Vikings" />
+}
+
+function Banner() {
+  return <BannerCommon />
+}
+
+function BannerCommon({ logoOnly, logoText = 'Vike' }: { logoOnly?: boolean; logoText?: string }) {
   return (
     <div
       style={{
@@ -28,7 +37,7 @@ function Banner({ showLogo }: { showLogo: boolean }) {
           scale: '1.3'
         }}
       >
-        {showLogo && (
+        <>
           <div
             style={{
               display: 'flex',
@@ -65,11 +74,11 @@ function Banner({ showLogo }: { showLogo: boolean }) {
                 //*/
               }}
             >
-              Vike
+              {logoText}
             </span>
           </div>
-        )}
-        <HeroTagline taglineSecondaryStyle={!showLogo ? undefined : { marginTop: 19 }} />
+        </>
+        {!logoOnly && <HeroTagline taglineSecondaryStyle={{ marginTop: 19 }} />}
       </div>
     </div>
   )
