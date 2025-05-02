@@ -52,8 +52,7 @@ function BannerCommon({
           flexDirection: 'column',
           alignItems: 'center',
           // Don't center completely
-          position: 'relative',
-          top: -4,
+          marginTop: -8,
           // Needs to have the right size upon 600x315 (that's the viewport we use to generate banner.png as explained in the HOW-TO above)
           scale: logoScale
         }}
