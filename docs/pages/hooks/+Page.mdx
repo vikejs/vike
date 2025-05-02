@@ -11,6 +11,8 @@ See also: <Link href="/settings" />.
 
 - [**`data()`**](/data): <TextEnv>server (configurable)</TextEnv> Called before the page is rendered, for fetching data.
 - [**`guard()`**](/guard): <TextEnv>server (configurable)</TextEnv> Protect pages from unprivileged access.
+- [**`onCreatePageContext()`**](/onCreatePageContext): <TextEnv>server & client</TextEnv> Hook called when a <Link href="/pageContext">`pageContext` object</Link> is created.
+- [**`onCreateGlobalContext()`**](/onCreateGlobalContext): <TextEnv>server & client</TextEnv> Hook called when the <Link href="/globalContext">`globalContext` object</Link> is created.
 - [**`onHydrationEnd()`**](/onHydrationEnd): <TextEnv>client</TextEnv> Called after the page is <Link href="/hydration">hydrated</Link>.
 - [**`onPageTransitionStart()`**](/onPageTransitionStart): <TextEnv>client</TextEnv> Called upon page navigation, before the new page starts rendering.
 - [**`onPageTransitionEnd()`**](/onPageTransitionEnd): <TextEnv>client</TextEnv> Called upon page navigation, after the new page has finished rendering.
@@ -37,8 +39,6 @@ See also: <Link href="/settings" />.
 ## Upcoming
 
 Potentially upcoming hooks:
-- [New hook `onBoot()`](https://github.com/vikejs/vike/issues/962)
-- [New hook `onRequestStart()`](https://github.com/vikejs/vike/issues/2361)
 - [New hook `onLog()`](https://github.com/vikejs/vike/issues/1438)
 - [New hook `onRenderContent()`: generate non-HTML files with arbitrary content](https://github.com/vikejs/vike/issues/1525)
 
