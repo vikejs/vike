@@ -7,10 +7,10 @@ import React from 'react'
 const overlap = -7
 const lineSize = 4
 
-function QuoteTeam({ children }: { children: React.ReactNode }) {
+function QuoteTeam({ children, style }: { children: React.ReactNode; style: React.CSSProperties }) {
   const avatarSize = 25
   return (
-    <div className="quote-team" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div className="quote-team" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', ...style }}>
       <span style={{ display: 'flex', alignItems: 'center' }}>
         <QuoteIcon
           style={{
