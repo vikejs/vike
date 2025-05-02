@@ -12,6 +12,13 @@ function BannerVikings() {
       logoOnly
       logoText="Viking"
       logoScale={1.1}
+      logoStyle={{
+        position: 'absolute',
+        top: 30,
+        right: 30,
+        height: 80,
+        margin: 0
+      }}
       logoTextStyle={{
         fontWeight: 496,
         marginLeft: 11,
@@ -34,8 +41,15 @@ function BannerCommon({
   logoOnly,
   logoText = 'Vike',
   logoScale = 1.3,
+  logoStyle,
   logoTextStyle
-}: { logoOnly?: boolean; logoText?: string; logoScale?: number; logoTextStyle?: React.CSSProperties }) {
+}: {
+  logoOnly?: boolean
+  logoText?: string
+  logoScale?: number
+  logoStyle?: React.CSSProperties
+  logoTextStyle?: React.CSSProperties
+}) {
   return (
     <div
       style={{
@@ -69,7 +83,8 @@ function BannerCommon({
               height: 60 * logoScale,
               objectFit: 'contain',
               marginTop: -8,
-              marginRight: 14
+              marginRight: 14,
+              ...logoStyle
             }}
           />
           <span
