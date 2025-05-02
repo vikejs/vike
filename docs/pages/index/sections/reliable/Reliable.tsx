@@ -16,7 +16,7 @@ import forkableExtensions from './forkable-extensions.svg'
 import { Icon, iconSizeDefault } from '../../components/Icon'
 
 const data = {
-  caption: 'Dependable',
+  caption: 'Stable',
   title: 'Adopt the Future',
   description: [
     <>

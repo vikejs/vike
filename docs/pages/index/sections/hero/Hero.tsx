@@ -13,7 +13,7 @@ import { UsedBy } from './UsedBy'
 import { QuoteTeam } from '../../../../components'
 
 const quoteSentence =
-  'Vike is the next generation of framework architecture, for an open and dependable foundation that companies can build upon with confidence.'
+  'Vike is the next generation of framework architecture, for an open and stable foundation that companies can build upon with confidence.'
 
 function Hero() {
   return (
@@ -97,7 +97,7 @@ function HeroTagline({ taglineSecondaryStyle }: { taglineSecondaryStyle?: React.
               ...taglineSecondaryStyle
             }}
           >
-            Next.js & Nuxt alternative for unprecedented flexibility and dependability
+            Next.js & Nuxt alternative for unprecedented flexibility and stability
           </div>
         </h1>
       </div>
