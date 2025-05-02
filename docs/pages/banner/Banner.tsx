@@ -10,11 +10,14 @@ function BannerVikings() {
   return (
     <BannerCommon
       logoOnly
-      logoText="Viking"
+      logoText="Vikings"
       logoScale={1.1}
       logoStyle={{
+        //*
+        display: 'none',
+        //*/
         position: 'absolute',
-        top: 30,
+        top: 40,
         right: 30,
         height: 80,
         margin: 0
