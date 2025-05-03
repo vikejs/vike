@@ -134,7 +134,12 @@ async function renderHtmlStream(
       return injectAtStreamAfterFirstChunk()
     }
   }
+  let resume = () => {}
+  if (isStreamFromReactStreamingPackage(streamOriginal)) {
+    resume = streamOriginal.doNotClose()
+  }
   const streamWrapper = await processStream(streamOriginal, processStreamOptions)
+  resume()
   return streamWrapper
 }
 
