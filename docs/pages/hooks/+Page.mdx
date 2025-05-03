@@ -49,6 +49,8 @@ The order in which the hooks are called.
 
 > The following doesn't contain the hooks of the Vike extensions <UiFrameworkExtension name /> such as <Link href="/onAfterRenderHtml">`onAfterRenderHtml()`</Link> or <Link href="/onAfterRenderClient">`onAfterRenderClient()`</Link>.
 
+> The <Link href="/onCreateGlobalContext">`onCreateGlobalContext()` hook</Link> is called when the `globalContext` object is created, see <Link href="/globalContext#lifecycle" />.
+
 ### Default
 
 If you didn't change the environment of `data()` nor `onBeforeRender()`:
@@ -56,6 +58,7 @@ If you didn't change the environment of `data()` nor `onBeforeRender()`:
 **First render**
 
 1. <TextEnv2>server</TextEnv2> <Link href="/renderPage">`renderPage()`</Link>
+1. <TextEnv2>server</TextEnv2> <Link href="/onCreatePageContext">`onCreatePageContext()`</Link>
 1. <TextEnv2>server</TextEnv2> <Link href="/onBeforeRoute">`onBeforeRoute()`</Link>
 1. <TextEnv2>server</TextEnv2> <Link href="/routing">Routing</Link>
    > The routing executes your <Link href="/route-function">Route Functions</Link> (of all your pages).
@@ -66,8 +69,9 @@ If you didn't change the environment of `data()` nor `onBeforeRender()`:
 1. <TextEnv2>client</TextEnv2> <Link href="/onRenderClient">`onRenderClient()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onHydrationEnd">`onHydrationEnd()`</Link>
 
-**Page navigation**
+**Client-side navigation**
 
+1. <TextEnv2>client</TextEnv2> <Link href="/onCreatePageContext">`onCreatePageContext()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onPageTransitionStart">`onPageTransitionStart()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onBeforeRoute">`onBeforeRoute()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/routing">Routing</Link>
@@ -87,6 +91,7 @@ If you <Link href="/data#environment">configured `data()`</Link> and <Link href=
 **First render**
 
 1. <TextEnv2>server</TextEnv2> <Link href="/renderPage">`renderPage()`</Link>
+1. <TextEnv2>server</TextEnv2> <Link href="/onCreatePageContext">`onCreatePageContext()`</Link>
 1. <TextEnv2>server</TextEnv2> <Link href="/onBeforeRoute">`onBeforeRoute()`</Link>
 1. <TextEnv2>server</TextEnv2> <Link href="/routing">Routing</Link>
    > The routing executes your <Link href="/route-function">Route Functions</Link> (of all your pages).
@@ -97,8 +102,9 @@ If you <Link href="/data#environment">configured `data()`</Link> and <Link href=
 1. <TextEnv2>client</TextEnv2> <Link href="/onRenderClient">`onRenderClient()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onHydrationEnd">`onHydrationEnd()`</Link>
 
-**Page navigation**
+**Client-side navigation**
 
+1. <TextEnv2>client</TextEnv2> <Link href="/onCreatePageContext">`onCreatePageContext()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onPageTransitionStart">`onPageTransitionStart()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onBeforeRoute">`onBeforeRoute()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/routing">Routing</Link>
