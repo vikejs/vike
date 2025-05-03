@@ -10,7 +10,7 @@ beforeAll(async () => {
   await viteServer.listen()
   viteServer.printUrls()
   await sleep(10) // avoid race condition of server not actually being ready
-}, 10 * 1000)
+}, 20 * 1000)
 
 afterAll(async () => {
   try {

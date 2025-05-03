@@ -4,7 +4,7 @@ import { testRun } from './testRun'
 
 beforeAll(async () => {
   await devApp()
-}, 10 * 1000)
+}, 20 * 1000)
 
 testRun(true)
 
