@@ -114,6 +114,7 @@ async function renderHtmlStream(
     onErrorWhileStreaming,
     enableEagerStreaming: pageContext.enableEagerStreaming
   }
+
   if (injectString) {
     let streamFromReactStreamingPackage: null | StreamFromReactStreamingPackage = null
     if (isStreamFromReactStreamingPackage(streamOriginal) && !streamOriginal.disabled) {
@@ -134,12 +135,14 @@ async function renderHtmlStream(
       return injectAtStreamAfterFirstChunk()
     }
   }
-  let resume = () => {}
+
+  let makeClosableAgain = () => {}
   if (isStreamFromReactStreamingPackage(streamOriginal)) {
-    resume = streamOriginal.doNotClose()
+    // Make sure Vike injects its HTML fragments, such as `<script id="vike_pageContext" type="application/json">`, before the stream is closed
+    makeClosableAgain = streamOriginal.doNotClose()
   }
   const streamWrapper = await processStream(streamOriginal, processStreamOptions)
-  resume()
+  makeClosableAgain()
   return streamWrapper
 }
 
