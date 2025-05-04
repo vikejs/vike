@@ -62,6 +62,7 @@ type HookNamePage =
   | 'onRenderClient'
   | 'guard'
   | 'data'
+  | 'onData'
 type HookNameGlobal =
   | 'onBeforePrerender'
   | 'onBeforeRoute'
@@ -421,6 +422,12 @@ type ConfigBuiltIn = {
    *  https://vike.dev/data
    */
   data?: DataAsync<unknown> | DataSync<unknown> | ImportString | null
+
+  /** TODO/now
+   *
+   *  https://vike.dev/onData
+   */
+  onData?: Function
 
   /** Determines what pageContext properties are sent to the client-side.
    *
