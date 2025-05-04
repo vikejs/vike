@@ -62,19 +62,23 @@ Update your production `script` in `package.json`:
 Create (or update) your server entry:
 <CodeSnippets filePath={"server/index"} framework={"backend"}>
   <div framework={"Express.js"} lang={"js"}>
-      ```js
-      import express from 'express'
-      import { apply } from 'vike-server/express'
-      import { serve } from 'vike-server/express/serve'
+    ```js
+    import express from 'express'
+    import { apply } from 'vike-server/express'
+    import { serve } from 'vike-server/express/serve'
 
-      function startServer() {
-        const app = express()
-        apply(app)
-        return serve(app, { port: 3000 })
-      }
+    function startServer() {
+      const app = express()
+      apply(app)
+      return serve(app, {
+        // options
+        port: 3000,
+        hostname: 'localhost'
+      })
+    }
 
-      export default startServer()
-      ```
+    export default startServer()
+    ```
   </div>
   <div framework={"Express.js"} lang={"ts"}>
     ```ts
@@ -85,7 +89,11 @@ Create (or update) your server entry:
     function startServer() {
       const app = express()
       apply(app)
-      return serve(app, { port: 3000 })
+      return serve(app, {
+        // options
+        port: 3000,
+        hostname: 'localhost'
+      })
     }
 
     export default startServer()
@@ -100,7 +108,11 @@ Create (or update) your server entry:
     function startServer() {
       const app = new Hono()
       apply(app)
-      return serve(app, { port: 3000 })
+      return serve(app, {
+        // options
+        port: 3000,
+        hostname: 'localhost'
+      })
     }
 
     export default startServer()
@@ -115,7 +127,11 @@ Create (or update) your server entry:
     function startServer() {
       const app = new Hono()
       apply(app)
-      return serve(app, { port: 3000 })
+      return serve(app, {
+        // options
+        port: 3000,
+        hostname: 'localhost'
+      })
     }
 
     export default startServer()
@@ -137,7 +153,11 @@ Create (or update) your server entry:
       // ⚠️ Mandatory for Vike middlewares to operate properly
       await app.register(rawBody)
       await apply(app)
-      return serve(app, { port: 3000 })
+      return serve(app, {
+        // options
+        port: 3000,
+        hostname: 'localhost'
+      })
     }
 
     export default startServer()
@@ -159,7 +179,11 @@ Create (or update) your server entry:
       // ⚠️ Mandatory for Vike middlewares to operate properly
       await app.register(rawBody)
       await apply(app)
-      return serve(app, { port: 3000 })
+      return serve(app, {
+        // options
+        port: 3000,
+        hostname: 'localhost'
+      })
     }
 
     export default startServer()
@@ -174,7 +198,11 @@ Create (or update) your server entry:
     function startServer() {
       const app = createApp()
       apply(app)
-      return serve(app, { port: 3000 })
+      return serve(app, {
+        // options
+        port: 3000,
+        hostname: 'localhost'
+      })
     }
 
     export default startServer()
@@ -189,7 +217,11 @@ Create (or update) your server entry:
     function startServer() {
       const app = createApp()
       apply(app)
-      return serve(app, { port: 3000 })
+      return serve(app, {
+        // options
+        port: 3000,
+        hostname: 'localhost'
+      })
     }
 
     export default startServer()
@@ -203,7 +235,11 @@ Create (or update) your server entry:
 
     function startServer() {
       const app = apply(new Elysia())
-      return serve(app, { port: 3000 })
+      return serve(app, {
+        // options
+        port: 3000,
+        hostname: 'localhost'
+      })
     }
 
     export default startServer()
@@ -217,7 +253,11 @@ Create (or update) your server entry:
 
     function startServer() {
       const app = apply(new Elysia())
-      return serve(app, { port: 3000 })
+      return serve(app, {
+        // options
+        port: 3000,
+        hostname: 'localhost'
+      })
     }
 
     export default startServer()
