@@ -10,6 +10,7 @@ import { checkType } from './checkType.js'
 import { getTerminalWidth } from './getTerminWidth.js'
 import pc from '@brillout/picocolors'
 import { isArray } from './isArray.js'
+import { isObject } from './isObject.js'
 import { setCreateDebugger } from '../shared/route/debug.js'
 
 assert(!isBrowser())
@@ -76,9 +77,10 @@ function debug_(flag: Flag, options: Options, ...msgs: unknown[]) {
   let logFirst: unknown[]
   let logsRest: unknown[]
   const noNewLine =
-    msgsRest.length <= 1 && [msgFirst, ...msgsRest].every((m) => typeof m === 'string' && !m.includes('\n'))
+    msgsRest.length <= 1 &&
+    [msgFirst, ...msgsRest].every((m) => (typeof m === 'string' ? !m.includes('\n') : !isObject(m)))
   if (noNewLine) {
-    logFirst = [msgFirst, ...msgsRest].map((m) => String(m).trim())
+    logFirst = [msgFirst, ...msgsRest].map((m) => (typeof m !== 'string' ? m : m.trim()))
     logsRest = []
   } else {
     logFirst = [msgFirst]
