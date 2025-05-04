@@ -141,9 +141,12 @@ async function renderHtmlStream(
     // Make sure Vike injects its HTML fragments, such as `<script id="vike_pageContext" type="application/json">`, before the stream is closed (if React/Vue finishes its stream before the promise below resolves).
     makeClosableAgain = streamOriginal.doNotClose()
   }
-  const streamWrapper = await processStream(streamOriginal, processStreamOptions)
-  makeClosableAgain()
-  return streamWrapper
+  try {
+    const streamWrapper = await processStream(streamOriginal, processStreamOptions)
+    return streamWrapper
+  } finally {
+    makeClosableAgain()
+  }
 }
 
 function isTemplateWrapped(something: unknown): something is TemplateWrapped {
