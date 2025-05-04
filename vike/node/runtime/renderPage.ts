@@ -93,8 +93,8 @@ async function renderPage<PageContextUserAdded extends {}, PageContextInitUser e
   assert(hasProp(pageContextInit, 'urlOriginal', 'string')) // assertUsage() already implemented at assertArguments()
   assertIsUrl(pageContextInit.urlOriginal)
   onSetupRuntime()
-  const pageContextInvalidRequest = getPageContextSkipRequest(pageContextInit)
-  if (pageContextInvalidRequest) return pageContextInvalidRequest as any
+  const pageContextSkipRequest = getPageContextSkipRequest(pageContextInit)
+  if (pageContextSkipRequest) return pageContextSkipRequest as any
 
   const httpRequestId = getRequestId()
   const urlOriginalPretty = getUrlPretty(pageContextInit.urlOriginal)
