@@ -10,10 +10,10 @@ import { checkType } from './checkType.js'
 import { getTerminalWidth } from './getTerminWidth.js'
 import pc from '@brillout/picocolors'
 import { isArray } from './isArray.js'
+import { setCreateDebugger } from '../shared/route/debug.js'
 
-// Avoid this to be loaded in the browser. For isomorphic code: instead of `import { createDebugger } from './utils.js'`, use `globalThis.createDebugger()`.
 assert(!isBrowser())
-;(globalThis as any).__brillout_debug_createDebugger = createDebugger
+setCreateDebugger(createDebugger) // for isomorphic code
 
 // We purposely read process.env.DEBUG early, in order to avoid users from the temptation to set process.env.DEBUG with JavaScript, since reading & writing process.env.DEBUG dynamically leads to inconsistencies: for example https://github.com/vikejs/vike/issues/2239
 const DEBUG = getDEBUG() ?? ''
