@@ -31,6 +31,7 @@ const flags = [
   'vike:outDir',
   'vike:pageFiles',
   'vike:pointer-imports',
+  'vike:resolve',
   'vike:routing',
   'vike:setup',
   'vike:stream',

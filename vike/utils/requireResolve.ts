@@ -13,12 +13,15 @@ import { createRequire } from 'node:module'
 import path from 'node:path'
 import { assertIsImportPathNpmPackage, isImportPathNpmPackageOrPathAlias } from './parseNpmPackage.js'
 import { isNotNullish } from './isNullish.js'
+import { createDebugger } from './debug.js'
 // @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
 const importMetaUrl: string = import.meta.url
 assertPosixPath(importMetaUrl)
 
 assertIsNotBrowser()
 assertIsNotProductionRuntime()
+
+const debug = createDebugger('vike:resolve')
 
 // - We still can't use import.meta.resolve() as of 23.1.0 (November 2024) because `parent` argument requires an experimental flag.
 //   - https://stackoverflow.com/questions/54977743/do-require-resolve-for-es-modules#comment139581675_62272600
@@ -43,9 +46,10 @@ function requireResolve_(
 
   let importPathResolvedFilePath: string | undefined
   let failure: undefined | { err: unknown }
-  for (const context of contexts) {
+  for (let context of contexts) {
     assertPosixPath(context)
-    const require_ = createRequire(ensureFilePrefix(context))
+    context = ensureFilePrefix(context)
+    const require_ = createRequire(context)
     if (!doNotHandleFileExtension) {
       addFileExtensionsToRequireResolve(require_)
       importPath = removeFileExtention(importPath)
@@ -54,14 +58,11 @@ function requireResolve_(
     try {
       importPathResolvedFilePath = require_.resolve(importPath)
     } catch (err) {
-      /* DEBUG
-      console.log('err', err)
-      console.log('importPath', importPath)
-      console.log('importerFilePath', importerFilePath)
-      console.log('context', context)
-      console.log('importMetaUrl', importMetaUrl)
-      console.log('paths', paths)
-      //*/
+      if (debug.isActivated) {
+        debug('err', err)
+        debug('importPath', importPath)
+        debug('context', context)
+      }
       failure ??= { err }
     }
 
@@ -70,8 +71,22 @@ function requireResolve_(
 
   if (!importPathResolvedFilePath) {
     assert(failure)
+    if (debug.isActivated) {
+      debug('FAILURE')
+      debug('importPath', importPath)
+      debug('importerFilePath', importerFilePath)
+      debug('userRootDir', userRootDir)
+      debug('doNotHandleFileExtension', doNotHandleFileExtension)
+      debug('importMetaUrl', importMetaUrl)
+      debug('contexts', contexts)
+    }
     return { importPathResolvedFilePath: undefined, err: failure.err, hasFailed: true as const }
   } else {
+    if (failure && debug.isActivated) {
+      debug('SUCCESS')
+      debug('importPath', importPath)
+      debug('contexts', contexts)
+    }
     assert(importPathResolvedFilePath)
     importPathResolvedFilePath = toPosixPath(importPathResolvedFilePath)
     return { importPathResolvedFilePath, err: undefined, hasFailed: false as const }
