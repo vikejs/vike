@@ -47,8 +47,8 @@ async function getPageAssets(
   let clientEntriesSrc: string[]
   if (isDev) {
     const { _viteDevServer: viteDevServer } = globalContext
-    clientEntriesSrc = await Promise.all(
-      clientEntries.map((clientEntry) => globalObject.resolveClientEntriesDev!(clientEntry, viteDevServer))
+    clientEntriesSrc = clientEntries.map((clientEntry) =>
+      globalObject.resolveClientEntriesDev!(clientEntry, viteDevServer)
     )
     assetUrls = await retrieveAssetsDev(clientDependencies, viteDevServer)
   } else {

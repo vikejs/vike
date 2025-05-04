@@ -15,7 +15,7 @@ import type { ViteDevServer } from 'vite'
 
 assertIsNotProductionRuntime()
 
-async function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteDevServer): Promise<string> {
+function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteDevServer): string {
   let userRootDir = viteDevServer.config.root
   assert(userRootDir)
   userRootDir = toPosixPath(userRootDir)
