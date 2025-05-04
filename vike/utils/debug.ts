@@ -15,9 +15,6 @@ import { setCreateDebugger } from '../shared/route/debug.js'
 assert(!isBrowser())
 setCreateDebugger(createDebugger) // for isomorphic code
 
-// We purposely read process.env.DEBUG early, in order to avoid users from the temptation to set process.env.DEBUG with JavaScript, since reading & writing process.env.DEBUG dynamically leads to inconsistencies: for example https://github.com/vikejs/vike/issues/2239
-const DEBUG = getDEBUG() ?? ''
-
 const flags = [
   'vike:crawl',
   'vike:error',
@@ -39,7 +36,9 @@ const flags = [
 ] as const
 const flagsSkipWildcard = ['vike:log']
 const flagRegex = /\bvike:[a-zA-Z-]+/g
-
+// We purposely read process.env.DEBUG early, in order to avoid users from the temptation to set process.env.DEBUG with JavaScript, since reading & writing process.env.DEBUG dynamically leads to inconsistencies such as https://github.com/vikejs/vike/issues/2239
+const DEBUG = getDEBUG() ?? ''
+if (isDebug()) Error.stackTraceLimit = Infinity
 assertFlagsActivated()
 
 type Flag = (typeof flags)[number]
@@ -182,6 +181,11 @@ function getFlagsActivated() {
   const flagsActivated: string[] = DEBUG.match(flagRegex) ?? []
   const all = DEBUG.includes('vike:*')
   return { flagsActivated, all }
+}
+
+function isDebug() {
+  const { flagsActivated, all } = getFlagsActivated()
+  return all || flagsActivated.length > 0
 }
 
 function getDEBUG() {
