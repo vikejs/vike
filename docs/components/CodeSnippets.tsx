@@ -9,13 +9,19 @@ const frameworks = {
   backend: backendFrameworks
 }
 
-interface ChildProps extends React.PropsWithChildren {
-  lang: string
-  framework?: string
-  ext?: string
-  style?: Partial<HTMLElement['style']>
-  children: string | React.ReactNode
-}
+type DeepPartial<T> = T extends object
+  ? {
+      [P in keyof T]?: DeepPartial<T[P]>
+    }
+  : T
+
+type ChildProps = React.PropsWithChildren &
+  DeepPartial<HTMLDivElement> & {
+    lang: string
+    framework?: string
+    ext?: string
+    children: React.ReactNode
+  }
 
 function CodeSnippets({
   children,
@@ -35,33 +41,48 @@ function CodeSnippets({
     return selectedLang
   }, [selectedFramework, selectedLang])
 
-  const handleFrameworkChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedFramework(e.target.value)
+  const selectedId = useMemo(
+    () => `${framework ? `${selectedFramework}-` : ''}${filePath}-${selectedLang}`,
+    [framework, selectedFramework, selectedLang, filePath]
+  )
+
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    if (e.target.name === 'framework') {
+      setSelectedFramework(e.target.value)
+    }
+    if (e.target.name === 'lang') {
+      setSelectedLang(e.target.value)
+    }
   }
 
-  const filteredChildren = React.Children.toArray(children).map((child) => {
-    if (React.isValidElement<ChildProps>(child)) {
-      return React.cloneElement(child, {
-        style: {
-          display:
-            child.props.lang === selectedLang && (child.props.framework === selectedFramework || !child.props.framework)
-              ? 'block'
-              : 'none'
-        }
+  const copyToClipboard = () => {
+    const selectedDiv = document.getElementById(selectedId)
+    navigator.clipboard.writeText(selectedDiv?.textContent ?? '')
+  }
+
+  const clonedChildren = React.Children.toArray(children).map((children, index) => {
+    if (React.isValidElement<ChildProps>(children)) {
+      const selected =
+        children.props.lang === selectedLang &&
+        (children.props.framework === selectedFramework || !children.props.framework)
+      const id = `${framework ? `${children.props.framework}-` : ''}${filePath}-${children.props.lang}`
+      return React.cloneElement(children, {
+        id,
+        style: { display: !selected ? 'none' : 'block' }
       })
     }
     return null
   })
 
   return (
-    <div>
+    <>
       <div style={{ display: 'flex', margin: '0.25rem 1rem' }}>
         <span style={{ flexGrow: 1 }}>
           {filePath}.{ext}
         </span>
-        <div style={{ display: 'flex', columnGap: '5px' }}>
+        <form style={{ display: 'flex', columnGap: '5px' }}>
           {framework && (
-            <select name="framework" id="framework" onChange={handleFrameworkChange}>
+            <select name="framework" id="framework" onChange={handleChange}>
               {frameworks[`${framework}`].map((framework, index) => (
                 <option key={index} defaultValue={selectedFramework} value={framework}>
                   {framework}
@@ -69,13 +90,16 @@ function CodeSnippets({
               ))}
             </select>
           )}
-          <select name="lang" id="lang" onChange={(e) => setSelectedLang(e.target.value)}>
+          <select name="lang" id="lang" onChange={handleChange}>
             <option value="js">Javascript</option>
             <option value="ts">Typescript</option>
           </select>
-        </div>
+        </form>
       </div>
-      <div>{filteredChildren}</div>
-    </div>
+      <div>
+        <button onClick={copyToClipboard}>Copy</button>
+        {clonedChildren}
+      </div>
+    </>
   )
 }
