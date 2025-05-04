@@ -160,7 +160,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     // Route
     if (isFirstRender) {
       const pageContextSerialized = getPageContextFromHooks_serialized()
-      // TODO/eventually: create helper assertPageContextFromHook()
+      // TO-DO/eventually: create helper assertPageContextFromHook()
       assert(!('urlOriginal' in pageContextSerialized))
       objectAssign(pageContext, pageContextSerialized)
       // TODO/pageContext-prefetch: remove or change, because this only makes sense for a pre-rendered page
@@ -206,7 +206,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         return
       }
 
-      // TODO/eventually: create helper assertPageContextFromHook()
+      // TO-DO/eventually: create helper assertPageContextFromHook()
       assert(!('urlOriginal' in pageContextFromRoute))
       objectAssign(pageContext, pageContextFromRoute)
     }
@@ -280,7 +280,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         }
       }
       if (isRenderOutdated()) return
-      // TODO/eventually: create helper assertPageContextFromHook()
+      // TO-DO/eventually: create helper assertPageContextFromHook()
       assert(!('urlOriginal' in pageContextFromServerHooks))
       objectAssign(pageContext, pageContextFromServerHooks)
 
@@ -459,7 +459,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       return
     }
     if (isRenderOutdated()) return
-    // TODO/eventually: create helper assertPageContextFromHook()
+    // TO-DO/eventually: create helper assertPageContextFromHook()
     assert(!('urlOriginal' in pageContextFromServerHooks))
     objectAssign(pageContext, pageContextFromServerHooks)
 
