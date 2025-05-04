@@ -46,7 +46,7 @@ import {
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl.js'
 import {
   type HttpResponse,
-  createHttpResponseFavicon404,
+  createHttpResponse404,
   createHttpResponseRedirect,
   createHttpResponsePageContextJson,
   createHttpResponseError,
@@ -93,7 +93,7 @@ async function renderPage<PageContextUserAdded extends {}, PageContextInitUser e
   assert(hasProp(pageContextInit, 'urlOriginal', 'string')) // assertUsage() already implemented at assertArguments()
   assertIsUrl(pageContextInit.urlOriginal)
   onSetupRuntime()
-  const pageContextInvalidRequest = getPageContextInvalidRequest(pageContextInit)
+  const pageContextInvalidRequest = getPageContextSkipRequest(pageContextInit)
   if (pageContextInvalidRequest) return pageContextInvalidRequest as any
 
   const httpRequestId = getRequestId()
@@ -643,12 +643,16 @@ async function checkBaseUrl(pageContextBegin: PageContextBegin, globalContext: G
   return pageContext
 }
 
-function getPageContextInvalidRequest(pageContextInit: PageContextInit) {
+function getPageContextSkipRequest(pageContextInit: PageContextInit) {
   const urlPathnameWithBase = parseUrl(pageContextInit.urlOriginal, '/').pathname
   assertIsNotViteRequest(urlPathnameWithBase, pageContextInit.urlOriginal)
-  if (!urlPathnameWithBase.endsWith('/favicon.ico')) return
+  let errMsg404: string | undefined
+  if (urlPathnameWithBase.endsWith('/favicon.ico')) {
+    errMsg404 = 'No favicon.ico found'
+  }
+  if (!errMsg404) return
   const pageContext = createPageContextServerSideWithoutGlobalContext(pageContextInit)
-  const httpResponse = createHttpResponseFavicon404()
+  const httpResponse = createHttpResponse404(errMsg404)
   objectAssign(pageContext, { httpResponse })
   checkType<PageContextAfterRender>(pageContext)
   return pageContext
