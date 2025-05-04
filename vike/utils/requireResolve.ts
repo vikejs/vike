@@ -46,17 +46,20 @@ function requireResolve_(
 
   let importPathResolvedFilePath: string | undefined
   let failure: undefined | { err: unknown }
-  for (let context of contexts) {
+  for (const context of contexts) {
     assertPosixPath(context)
-    context = ensureFilePrefix(context)
-    const require_ = createRequire(context)
+    const contextNode = makeNodeFriendly(ensureFilePrefix(context))
+    let importPathNode = makeNodeFriendly(importPath)
+
+    const require_ = createRequire(contextNode)
+
     if (!doNotHandleFileExtension) {
       addFileExtensionsToRequireResolve(require_)
-      importPath = removeFileExtention(importPath)
+      importPathNode = removeFileExtention(importPathNode)
     }
 
     try {
-      importPathResolvedFilePath = require_.resolve(importPath)
+      importPathResolvedFilePath = require_.resolve(importPathNode)
     } catch (err) {
       if (debug.isActivated) {
         debug('err', err)
@@ -125,7 +128,7 @@ function requireResolveVikeDistFile(vikeDistFile: `dist/esm/${string}`) {
   const vikeNodeModulesRoot = getVikeNodeModulesRoot()
   assertPosixPath(vikeNodeModulesRoot)
   assertPosixPath(vikeDistFile)
-  const importPathResolvedFilePath = path.posix.join(vikeNodeModulesRoot, vikeDistFile)
+  const importPathResolvedFilePath = makeNodeFriendly(path.posix.join(vikeNodeModulesRoot, vikeDistFile))
 
   // Double check
   {
@@ -229,4 +232,9 @@ function getFilePrefix() {
   let prefix = 'file://'
   if (process.platform === 'win32') prefix += '/'
   return prefix
+}
+
+function makeNodeFriendly(filePath: string) {
+  // https://github.com/vikejs/vike/issues/2436#issuecomment-2849145340
+  return decodeURIComponent(filePath)
 }
