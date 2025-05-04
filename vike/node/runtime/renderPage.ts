@@ -650,6 +650,11 @@ function getPageContextSkipRequest(pageContextInit: PageContextInit) {
   if (urlPathnameWithBase.endsWith('/favicon.ico')) {
     errMsg404 = 'No favicon.ico found'
   }
+  if (urlPathnameWithBase.endsWith('.well-known/appspecific/com.chrome.devtools.json')) {
+    // https://chromium.googlesource.com/devtools/devtools-frontend/+/main/docs/ecosystem/automatic_workspace_folders.md
+    // https://www.reddit.com/r/node/comments/1kcr0wh/odd_request_coming_into_my_localhost_server_from/
+    errMsg404 = 'Not spported'
+  }
   if (!errMsg404) return
   const pageContext = createPageContextServerSideWithoutGlobalContext(pageContextInit)
   const httpResponse = createHttpResponse404(errMsg404)
