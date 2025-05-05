@@ -16,6 +16,7 @@ import { testHistoryPushState } from './pages/pushState/e2e-test'
 import { testRedirectMailto } from './pages/redirects.e2e-tests'
 import { testGlobalContext, testHMRPlusValueFile } from './pages/e2e-test'
 import { testOnCreateGlobalContext } from './onCreateGlobalContext.e2e-tests'
+import { testStarWars } from './pages/star-wars/e2e-test'
 
 const rootDir = path.dirname(fileURLToPath(import.meta.url))
 
@@ -38,4 +39,5 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   testDynamicImportFileEnv({ isDev })
   testNestedLayout()
   testHistoryPushState()
+  testStarWars()
 }
