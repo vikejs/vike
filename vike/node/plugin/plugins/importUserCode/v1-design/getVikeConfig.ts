@@ -78,11 +78,11 @@ import type { FilePath } from '../../../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
 import { assertExtensionsRequire } from './getVikeConfig/assertExtensions.js'
 import {
-  getConfigsUserFriendlyGlobal,
-  getConfigsUserFriendlyPageEager,
+  getUserFriendlyConfigsGlobal,
+  getUserFriendlyConfigsPageEager,
   type PageConfigUserFriendly,
   type PageConfigsUserFriendly
-} from '../../../../../shared/page-configs/getConfigsUserFriendly.js'
+} from '../../../../../shared/page-configs/getUserFriendlyConfigs.js'
 import { getConfigValuesBase, isJsonValue } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
 import { getPlusFilesAll, type PlusFile, type PlusFilesByLocationId } from './getVikeConfig/getPlusFilesAll.js'
 import { getEnvVarObject } from '../../../shared/getEnvVarObject.js'
@@ -226,7 +226,7 @@ async function loadVikeConfig_withErrorHandling(
           configDefinitions: {},
           configValueSources: {}
         },
-        global: getConfigsUserFriendlyGlobal({ pageConfigGlobalValues: {} }),
+        global: getUserFriendlyConfigsGlobal({ pageConfigGlobalValues: {} }),
         pages: {},
         vikeConfigDependencies: new Set()
       }
@@ -257,13 +257,13 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
 
   // global
   const pageConfigGlobalValues = getConfigValues(pageConfigGlobal)
-  const global = getConfigsUserFriendlyGlobal({ pageConfigGlobalValues })
+  const global = getUserFriendlyConfigsGlobal({ pageConfigGlobalValues })
 
   // pages
   const pages = objectFromEntries(
     pageConfigs.map((pageConfig) => {
       const pageConfigValues = getConfigValues(pageConfig, true)
-      return getConfigsUserFriendlyPageEager(pageConfigGlobalValues, pageConfig, pageConfigValues)
+      return getUserFriendlyConfigsPageEager(pageConfigGlobalValues, pageConfig, pageConfigValues)
     })
   )
 
