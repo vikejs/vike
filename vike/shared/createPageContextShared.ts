@@ -1,21 +1,18 @@
 export { createPageContextShared }
 
 import { executeHookGenericGlobalCumulative } from './hooks/executeHookGeneric.js'
-import { getUserFriendlyConfigsGlobal } from './page-configs/getUserFriendlyConfigs.js'
+import type { PageConfigUserFriendly } from './page-configs/getUserFriendlyConfigs.js'
 import type { PageConfigGlobalRuntime } from './page-configs/PageConfig.js'
 import { objectAssign } from './utils.js'
 
 async function createPageContextShared<T extends object>(
   pageContextCreated: T,
-  pageConfigGlobal: PageConfigGlobalRuntime
+  pageConfigGlobal: PageConfigGlobalRuntime,
+  userFriendlyConfigsGlobal: PageConfigUserFriendly
 ) {
-  const pageConfigGlobalUserFriendly = getUserFriendlyConfigsGlobal({
-    pageConfigGlobalValues: pageConfigGlobal.configValues
-  })
-
   objectAssign(pageContextCreated, { isPageContext: true as const }, true)
 
-  objectAssign(pageContextCreated, pageConfigGlobalUserFriendly)
+  objectAssign(pageContextCreated, userFriendlyConfigsGlobal)
 
   await executeHookGenericGlobalCumulative(
     'onCreatePageContext',

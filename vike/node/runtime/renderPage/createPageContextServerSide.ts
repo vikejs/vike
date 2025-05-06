@@ -61,6 +61,8 @@ async function createPageContextServerSide(
     isClientSideNavigation
   })
 
+  objectAssign(pageContextCreated, globalContext._userFriendlyConfigsGlobal)
+
   // pageContext.urlParsed
   const pageContextUrlComputed = getPageContextUrlComputed(pageContextCreated)
   objectAssign(pageContextCreated, pageContextUrlComputed)
@@ -88,7 +90,11 @@ async function createPageContextServerSide(
     objectAssign(pageContextCreated, { headers })
   }
 
-  const pageContextAugmented = await createPageContextShared(pageContextCreated, globalContext._pageConfigGlobal)
+  const pageContextAugmented = await createPageContextShared(
+    pageContextCreated,
+    globalContext._pageConfigGlobal,
+    globalContext._userFriendlyConfigsGlobal
+  )
   augmentType(pageContextCreated, pageContextAugmented)
 
   return pageContextCreated

@@ -74,6 +74,7 @@ function createGlobalContextBase(virtualFileExports: unknown) {
     _pageConfigs: pageConfigs,
     _pageConfigGlobal: pageConfigGlobal,
     _allPageIds: allPageIds,
+    _userFriendlyConfigsGlobal: userFriendlyConfigsGlobal,
     config: userFriendlyConfigsGlobal.config,
     pages: pageConfigsUserFriendly
   }
@@ -84,7 +85,6 @@ function getConfigsAll(virtualFileExports: unknown) {
   const { pageFilesAll, pageConfigs, pageConfigGlobal } = parseGlobResults(virtualFileExports)
   const allPageIds = getAllPageIds(pageFilesAll, pageConfigs)
 
-  // TODO/now: re-use this call, instead of calling it twice
   const userFriendlyConfigsGlobal = getUserFriendlyConfigsGlobal({
     pageConfigGlobalValues: pageConfigGlobal.configValues
   })

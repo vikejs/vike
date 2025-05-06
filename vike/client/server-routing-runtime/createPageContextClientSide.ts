@@ -32,7 +32,11 @@ async function createPageContextClientSide() {
   objectAssign(pageContextCreated, getPageContextSerializedInHtml())
 
   // Sets pageContext.config to global configs
-  const pageContextAugmented = await createPageContextShared(pageContextCreated, globalContext._pageConfigGlobal)
+  const pageContextAugmented = await createPageContextShared(
+    pageContextCreated,
+    globalContext._pageConfigGlobal,
+    globalContext._userFriendlyConfigsGlobal
+  )
   augmentType(pageContextCreated, pageContextAugmented)
 
   // Sets pageContext.config to local configs (overrides the pageContext.config set above)
