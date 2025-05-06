@@ -1,6 +1,6 @@
+export { getUserFriendlyConfigsGlobal }
 export { getUserFriendlyConfigsPageEager }
 export { getUserFriendlyConfigsPageLazy }
-export { getUserFriendlyConfigsGlobal }
 export type { PageConfigsUserFriendly }
 export type { PageConfigUserFriendly }
 export type { PageConfigUserFriendlyOld }
