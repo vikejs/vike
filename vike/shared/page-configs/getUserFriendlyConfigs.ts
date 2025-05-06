@@ -198,20 +198,6 @@ function getUserFriendlyConfigs_base({
   return getUserFriendlyConfigs_V1Design({ configValues })
 }
 
-function getUserFriendlyConfigsEager(pageConfigs: PageConfigRuntime[] | PageConfigBuildTime[]) {
-  const userFriendlyConfigsGlobal = getUserFriendlyConfigsGlobal({
-    pageConfigGlobalValues: pageConfigGlobal.configValues
-  })
-
-  const userFriendlyConfigsPageEager = Object.fromEntries(
-    pageConfigs.map((pageConfig) => {
-      return getUserFriendlyConfigsPageEager(pageConfigGlobal.configValues, pageConfig, pageConfig.configValues)
-    })
-  )
-
-  return { userFriendlyConfigsGlobal, userFriendlyConfigsPageEager }
-}
-
 function getUserFriendlyConfigsGlobal({
   pageConfigGlobalValues
 }: { pageConfigGlobalValues: ConfigValues }): PageConfigUserFriendly {
