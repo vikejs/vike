@@ -1,8 +1,8 @@
 export { createPageContextClientSide }
 
-import { assertUsage, assertWarning, augmentType, objectAssign } from './utils.js'
+import { assertUsage, augmentType, objectAssign } from './utils.js'
 import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtml.js'
-import { loadUserFilesClientSide, type PageContextUserFiles } from '../shared/loadUserFilesClientSide.js'
+import { loadUserFilesClientSide } from '../shared/loadUserFilesClientSide.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 
 import { createPageContextShared } from '../../shared/createPageContextShared.js'
@@ -30,7 +30,15 @@ async function createPageContextClientSide() {
     _hasPageContextFromClient: false as const
   }
   objectAssign(pageContextCreated, getPageContextSerializedInHtml())
-  objectAssign(pageContextCreated, await loadPageUserFiles(pageContextCreated.pageId, pageContextCreated))
+  objectAssign(
+    pageContextCreated,
+    await loadUserFilesClientSide(
+      pageContextCreated.pageId,
+      pageContextCreated._pageFilesAll,
+      pageContextCreated._pageConfigs,
+      pageContextCreated._pageConfigGlobal
+    )
+  )
 
   const pageContextAugmented = await createPageContextShared(pageContextCreated, globalContext._pageConfigGlobal)
   augmentType(pageContextCreated, pageContextAugmented)
@@ -45,18 +53,4 @@ function assertPristineUrl() {
     urlFirst === urlCurrent,
     `The URL was manipulated before the hydration finished ('${urlFirst}' to '${urlCurrent}'). Ensure the hydration has finished before manipulating the URL. Consider using the onHydrationEnd() hook.`
   )
-}
-
-async function loadPageUserFiles(pageId: string, pageContext: PageContextUserFiles) {
-  const pageContextAddendum = {}
-  objectAssign(
-    pageContextAddendum,
-    await loadUserFilesClientSide(
-      pageId,
-      pageContext._pageFilesAll,
-      pageContext._pageConfigs,
-      pageContext._pageConfigGlobal
-    )
-  )
-  return pageContextAddendum
 }
