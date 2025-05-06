@@ -19,8 +19,8 @@ import {
 import {
   type PageContextUserFiles,
   isErrorFetchingStaticAssets,
-  loadPageConfigLazyClientSide
-} from '../shared/loadPageConfigLazyClientSide.js'
+  loadPageConfigsLazyClientSide
+} from '../shared/loadPageConfigsLazyClientSide.js'
 import { skipLink } from './skipLink.js'
 import { disableClientRouting } from './renderPageClientSide.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
@@ -88,7 +88,7 @@ function getPageContextPrefetched(
 
 async function prefetchAssets(pageContextLink: { pageId: string } & PageContextUserFiles): Promise<void> {
   try {
-    await loadPageConfigLazyClientSide(
+    await loadPageConfigsLazyClientSide(
       pageContextLink.pageId,
       pageContextLink._pageFilesAll,
       pageContextLink._pageConfigs,

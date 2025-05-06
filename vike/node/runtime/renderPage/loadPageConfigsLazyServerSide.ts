@@ -1,6 +1,6 @@
-export { loadPageConfigLazyServerSide }
+export { loadPageConfigsLazyServerSide }
 export type { PageFiles }
-export type { PageContext_loadPageConfigLazyServerSide }
+export type { PageContext_loadPageConfigsLazyServerSide }
 
 import { type PageFile, getPageFilesServerSide } from '../../../shared/getPageFiles.js'
 import { getUserFriendlyConfigsPageLazy } from '../../../shared/page-configs/getUserFriendlyConfigs.js'
@@ -24,16 +24,16 @@ import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { MediaType } from './inferMediaType.js'
 import { loadConfigValues } from '../../../shared/page-configs/loadConfigValues.js'
 
-type PageContext_loadPageConfigLazyServerSide = PageContextGetPageAssets &
+type PageContext_loadPageConfigsLazyServerSide = PageContextGetPageAssets &
   PageContextDebugRouteMatches & {
     urlOriginal: string
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfigRuntime[]
     _globalContext: GlobalContextServerInternal
   }
-type PageFiles = PromiseType<ReturnType<typeof loadPageConfigLazyServerSide>>
-async function loadPageConfigLazyServerSide(
-  pageContext: { pageId: string } & PageContext_loadPageConfigLazyServerSide
+type PageFiles = PromiseType<ReturnType<typeof loadPageConfigsLazyServerSide>>
+async function loadPageConfigsLazyServerSide(
+  pageContext: { pageId: string } & PageContext_loadPageConfigsLazyServerSide
 ) {
   const pageConfig = findPageConfig(pageContext._pageConfigs, pageContext.pageId) // Make pageConfig globally available as pageContext._pageConfig?
 

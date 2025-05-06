@@ -36,7 +36,7 @@ import {
 import { assertInfo, assertWarning, isReact } from './utils.js'
 import { type PageContextBeforeRenderClient, executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
 import { assertHook, getHookFromPageContext } from '../../shared/hooks/getHook.js'
-import { isErrorFetchingStaticAssets, loadPageConfigLazyClientSide } from '../shared/loadPageConfigLazyClientSide.js'
+import { isErrorFetchingStaticAssets, loadPageConfigsLazyClientSide } from '../shared/loadPageConfigsLazyClientSide.js'
 import { pushHistoryState } from './history.js'
 import {
   assertNoInfiniteAbortLoop,
@@ -214,7 +214,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     try {
       objectAssign(
         pageContext,
-        await loadPageConfigLazyClientSide(
+        await loadPageConfigsLazyClientSide(
           pageContext.pageId,
           pageContext._pageFilesAll,
           pageContext._pageConfigs,
@@ -430,7 +430,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     try {
       objectAssign(
         pageContext,
-        await loadPageConfigLazyClientSide(
+        await loadPageConfigsLazyClientSide(
           pageContext.pageId,
           pageContext._pageFilesAll,
           pageContext._pageConfigs,

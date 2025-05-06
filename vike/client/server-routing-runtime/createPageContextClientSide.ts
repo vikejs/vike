@@ -2,7 +2,7 @@ export { createPageContextClientSide }
 
 import { assertUsage, augmentType, objectAssign } from './utils.js'
 import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtml.js'
-import { loadPageConfigLazyClientSide } from '../shared/loadPageConfigLazyClientSide.js'
+import { loadPageConfigsLazyClientSide } from '../shared/loadPageConfigsLazyClientSide.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 
 import { createPageContextShared } from '../../shared/createPageContextShared.js'
@@ -42,7 +42,7 @@ async function createPageContextClientSide() {
   // Sets pageContext.config to local configs (overrides the pageContext.config set above)
   objectAssign(
     pageContextCreated,
-    await loadPageConfigLazyClientSide(
+    await loadPageConfigsLazyClientSide(
       pageContextCreated.pageId,
       pageContextCreated._pageFilesAll,
       pageContextCreated._pageConfigs,

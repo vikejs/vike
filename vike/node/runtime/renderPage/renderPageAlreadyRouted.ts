@@ -9,10 +9,10 @@ import { getPageContextClientSerialized } from '../html/serializeContext.js'
 import { type PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
 import { createHttpResponsePage, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponse.js'
 import {
-  loadPageConfigLazyServerSide,
-  PageContext_loadPageConfigLazyServerSide,
+  loadPageConfigsLazyServerSide,
+  PageContext_loadPageConfigsLazyServerSide,
   type PageFiles
-} from './loadPageConfigLazyServerSide.js'
+} from './loadPageConfigsLazyServerSide.js'
 import { executeOnRenderHtmlHook } from './executeOnRenderHtmlHook.js'
 import { executeOnBeforeRenderAndDataHooks } from './executeOnBeforeRenderAndDataHooks.js'
 import { logRuntimeError } from './loggerRuntime.js'
@@ -35,7 +35,7 @@ async function renderPageAlreadyRouted<
     _httpRequestId: number
   } & PageContextCreatedServerSide &
     PageContextUrlInternal &
-    PageContext_loadPageConfigLazyServerSide
+    PageContext_loadPageConfigsLazyServerSide
 >(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {
   // pageContext.pageId can either be the:
   //  - ID of the page matching the routing, or the
@@ -45,7 +45,7 @@ async function renderPageAlreadyRouted<
   const isError: boolean = pageContext.is404 || !!pageContext.errorWhileRendering
   assert(isError === (pageContext.pageId === getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)))
 
-  objectAssign(pageContext, await loadPageConfigLazyServerSide(pageContext))
+  objectAssign(pageContext, await loadPageConfigsLazyServerSide(pageContext))
 
   if (!isError) {
     await executeGuardHook(pageContext, (pageContext) => preparePageContextForUserConsumptionServerSide(pageContext))
