@@ -25,7 +25,7 @@ import {
   setPageContextInitIsPassedToClient,
   PageContextFromClientHooks
 } from './getPageContextFromHooks.js'
-import { createPageContextClientSide } from './createPageContext.js'
+import { createPageContextClientSide } from './createPageContextClientSide.js'
 import {
   addLinkPrefetchHandlers,
   addLinkPrefetchHandlers_unwatch,
