@@ -1,4 +1,4 @@
-export { loadUserFilesClientSide }
+export { loadPageConfigLazyClientSide }
 export { isErrorFetchingStaticAssets }
 export type { PageContextUserFiles }
 
@@ -21,7 +21,7 @@ type PageContextUserFiles = {
   _pageConfigs: PageConfigRuntime[]
   _pageConfigGlobal: PageConfigGlobalRuntime
 }
-async function loadUserFilesClientSide(
+async function loadPageConfigLazyClientSide(
   pageId: string,
   pageFilesAll: PageFile[],
   pageConfigs: PageConfigRuntime[],
