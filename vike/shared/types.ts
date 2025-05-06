@@ -20,7 +20,7 @@ export type { PageContextBuiltInClientWithClientRouting_deprecated as PageContex
 export type { PageContextBuiltInClientWithServerRouting_deprecated as PageContextBuiltInClientWithServerRouting }
 
 import type { PageContextUrlInternal, PageContextUrlClient, PageContextUrlServer } from './getPageContextUrlComputed.js'
-import type { ConfigEntries, ExportsAll, From, Source, Sources } from './page-configs/getPageConfigUserFriendly.js'
+import type { ConfigEntries, ExportsAll, From, Source, Sources } from './page-configs/getConfigsUserFriendly.js'
 import type { Config } from './page-configs/Config.js'
 import type { PageContextConfig } from './page-configs/Config/PageContextConfig.js'
 import type { AbortStatusCode } from './route/abort.js'

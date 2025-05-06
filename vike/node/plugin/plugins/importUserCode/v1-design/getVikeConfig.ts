@@ -79,10 +79,10 @@ import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getC
 import { assertExtensionsRequire } from './getVikeConfig/assertExtensions.js'
 import {
   getPageConfigGlobalUserFriendly,
-  getPageConfigUserFriendly,
+  getConfigsUserFriendly,
   type PageConfigUserFriendly,
   type PageConfigsUserFriendly
-} from '../../../../../shared/page-configs/getPageConfigUserFriendly.js'
+} from '../../../../../shared/page-configs/getConfigsUserFriendly.js'
 import { getConfigValuesBase, isJsonValue } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
 import { getPlusFilesAll, type PlusFile, type PlusFilesByLocationId } from './getVikeConfig/getPlusFilesAll.js'
 import { getEnvVarObject } from '../../../shared/getEnvVarObject.js'
@@ -263,7 +263,7 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
   const pages = objectFromEntries(
     pageConfigs.map((pageConfig) => {
       const pageConfigValues = getConfigValues(pageConfig, true)
-      return getPageConfigUserFriendly(pageConfigGlobalValues, pageConfig, pageConfigValues)
+      return getConfigsUserFriendly(pageConfigGlobalValues, pageConfig, pageConfigValues)
     })
   )
 

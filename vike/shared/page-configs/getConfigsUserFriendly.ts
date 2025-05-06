@@ -1,5 +1,5 @@
-export { getPageConfigUserFriendly }
-export { getPageConfigUserFriendly_oldDesign }
+export { getConfigsUserFriendly }
+export { getConfigsUserFriendly_oldDesign }
 export { getPageConfigGlobalUserFriendly }
 export type { PageConfigsUserFriendly }
 export type { PageConfigUserFriendly }
@@ -151,12 +151,12 @@ type WithRoute =
       isErrorPage: true
     }
 type PageConfigUserFriendlyWithRoute = PageConfigUserFriendly & WithRoute
-function getPageConfigUserFriendly(
+function getConfigsUserFriendly(
   pageConfigGlobalValues: ConfigValues,
   pageConfig: PageConfigRuntime | PageConfigBuildTime,
   pageConfigValues: ConfigValues
 ): [string, PageConfigUserFriendlyWithRoute] {
-  const pageConfigUserFriendly = getPageConfigUserFriendly_public({ pageConfigGlobalValues, pageConfigValues })
+  const pageConfigUserFriendly = getConfigsUserFriendly_public({ pageConfigGlobalValues, pageConfigValues })
   let page: PageConfigUserFriendlyWithRoute
   if (!pageConfig.isErrorPage) {
     const route = pageConfigUserFriendly.config.route ?? pageConfig.routeFilesystem.routeString
@@ -172,15 +172,15 @@ function getPageConfigUserFriendly(
   }
   return [pageConfig.pageId, page]
 }
-function getPageConfigUserFriendly_public({
+function getConfigsUserFriendly_public({
   pageConfigGlobalValues,
   pageConfigValues
 }: { pageConfigGlobalValues: ConfigValues; pageConfigValues: ConfigValues }) {
-  const pageConfigUserFriendly = getPageConfigUserFriendly_base({ pageConfigGlobalValues, pageConfigValues })
+  const pageConfigUserFriendly = getConfigsUserFriendly_base({ pageConfigGlobalValues, pageConfigValues })
   return getPublicCopy(pageConfigUserFriendly)
 }
 function getPublicCopy(
-  pageConfigUserFriendly: ReturnType<typeof getPageConfigUserFriendly_V1Design>
+  pageConfigUserFriendly: ReturnType<typeof getConfigsUserFriendly_V1Design>
 ): PageConfigUserFriendly {
   const p = pageConfigUserFriendly
   return {
@@ -190,22 +190,22 @@ function getPublicCopy(
     _from: p.from
   }
 }
-function getPageConfigUserFriendly_base({
+function getConfigsUserFriendly_base({
   pageConfigGlobalValues,
   pageConfigValues
 }: { pageConfigGlobalValues: ConfigValues; pageConfigValues: ConfigValues }) {
   const configValues = { ...pageConfigGlobalValues, ...pageConfigValues }
-  return getPageConfigUserFriendly_V1Design({ configValues })
+  return getConfigsUserFriendly_V1Design({ configValues })
 }
 
 function getPageConfigGlobalUserFriendly({
   pageConfigGlobalValues
 }: { pageConfigGlobalValues: ConfigValues }): PageConfigUserFriendly {
-  const pageConfigGlobalUserFriendly = getPageConfigUserFriendly_V1Design({ configValues: pageConfigGlobalValues })
+  const pageConfigGlobalUserFriendly = getConfigsUserFriendly_V1Design({ configValues: pageConfigGlobalValues })
   return getPublicCopy(pageConfigGlobalUserFriendly)
 }
 
-function getPageConfigUserFriendly_oldDesign(
+function getConfigsUserFriendly_oldDesign(
   pageFiles: PageFile[],
   pageConfig: PageConfigRuntimeLoaded | null,
   pageConfigGlobal: PageConfigGlobalRuntime
@@ -238,7 +238,7 @@ function getPageConfigUserFriendly_oldDesign(
   let sources: Sources
   let from: From
   if (pageConfig) {
-    const res = getPageConfigUserFriendly_base({
+    const res = getConfigsUserFriendly_base({
       pageConfigGlobalValues: pageConfigGlobal.configValues,
       pageConfigValues: pageConfig.configValues
     })
@@ -292,7 +292,7 @@ function getPageConfigUserFriendly_oldDesign(
 }
 
 // V1 design
-function getPageConfigUserFriendly_V1Design(pageConfig: { configValues: ConfigValues }) {
+function getConfigsUserFriendly_V1Design(pageConfig: { configValues: ConfigValues }) {
   const config: Record<string, unknown> = {}
   const configEntries: ConfigEntries = {}
   const exportsAll: ExportsAll = {}
