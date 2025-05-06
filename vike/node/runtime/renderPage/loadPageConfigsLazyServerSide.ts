@@ -1,9 +1,9 @@
-export { loadUserFilesServerSide }
+export { loadPageConfigsLazyServerSide }
 export type { PageFiles }
-export type { PageContext_loadUserFilesServerSide }
+export type { PageContext_loadPageConfigsLazyServerSide }
 
 import { type PageFile, getPageFilesServerSide } from '../../../shared/getPageFiles.js'
-import { getPageConfigUserFriendly_oldDesign } from '../../../shared/page-configs/getPageConfigUserFriendly.js'
+import { getUserFriendlyConfigsPageLazy } from '../../../shared/page-configs/getUserFriendlyConfigs.js'
 import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide.js'
 import {
   assert,
@@ -24,15 +24,17 @@ import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { MediaType } from './inferMediaType.js'
 import { loadConfigValues } from '../../../shared/page-configs/loadConfigValues.js'
 
-type PageContext_loadUserFilesServerSide = PageContextGetPageAssets &
+type PageContext_loadPageConfigsLazyServerSide = PageContextGetPageAssets &
   PageContextDebugRouteMatches & {
     urlOriginal: string
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfigRuntime[]
     _globalContext: GlobalContextServerInternal
   }
-type PageFiles = PromiseType<ReturnType<typeof loadUserFilesServerSide>>
-async function loadUserFilesServerSide(pageContext: { pageId: string } & PageContext_loadUserFilesServerSide) {
+type PageFiles = PromiseType<ReturnType<typeof loadPageConfigsLazyServerSide>>
+async function loadPageConfigsLazyServerSide(
+  pageContext: { pageId: string } & PageContext_loadPageConfigsLazyServerSide
+) {
   const pageConfig = findPageConfig(pageContext._pageConfigs, pageContext.pageId) // Make pageConfig globally available as pageContext._pageConfig?
 
   const globalContext = pageContext._globalContext
@@ -148,11 +150,7 @@ async function loadPageUserFiles(
   const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
   const pageConfigLoaded = !pageConfig ? null : await loadConfigValues(pageConfig, isDev)
   await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))
-  const pageContextExports = getPageConfigUserFriendly_oldDesign(
-    pageFilesServerSide,
-    pageConfigLoaded,
-    pageConfigGlobal
-  )
+  const pageContextExports = getUserFriendlyConfigsPageLazy(pageFilesServerSide, pageConfigLoaded, pageConfigGlobal)
   return {
     pageContextExports,
     pageFilesLoaded: pageFilesServerSide

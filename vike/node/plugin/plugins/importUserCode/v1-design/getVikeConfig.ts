@@ -78,11 +78,11 @@ import type { FilePath } from '../../../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
 import { assertExtensionsRequire } from './getVikeConfig/assertExtensions.js'
 import {
-  getPageConfigGlobalUserFriendly,
-  getPageConfigUserFriendly,
+  getUserFriendlyConfigsGlobal,
+  getUserFriendlyConfigsPageEager,
   type PageConfigUserFriendly,
   type PageConfigsUserFriendly
-} from '../../../../../shared/page-configs/getPageConfigUserFriendly.js'
+} from '../../../../../shared/page-configs/getUserFriendlyConfigs.js'
 import { getConfigValuesBase, isJsonValue } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
 import { getPlusFilesAll, type PlusFile, type PlusFilesByLocationId } from './getVikeConfig/getPlusFilesAll.js'
 import { getEnvVarObject } from '../../../shared/getEnvVarObject.js'
@@ -226,7 +226,7 @@ async function loadVikeConfig_withErrorHandling(
           configDefinitions: {},
           configValueSources: {}
         },
-        global: getPageConfigGlobalUserFriendly({ pageConfigGlobalValues: {} }),
+        global: getUserFriendlyConfigsGlobal({ pageConfigGlobalValues: {} }),
         pages: {},
         vikeConfigDependencies: new Set()
       }
@@ -257,17 +257,23 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
 
   // global
   const pageConfigGlobalValues = getConfigValues(pageConfigGlobal)
-  const global = getPageConfigGlobalUserFriendly({ pageConfigGlobalValues })
+  const userFriendlyConfigsGlobal = getUserFriendlyConfigsGlobal({ pageConfigGlobalValues })
 
   // pages
-  const pages = objectFromEntries(
+  const userFriendlyConfigsPageEager = objectFromEntries(
     pageConfigs.map((pageConfig) => {
       const pageConfigValues = getConfigValues(pageConfig, true)
-      return getPageConfigUserFriendly(pageConfigGlobalValues, pageConfig, pageConfigValues)
+      return getUserFriendlyConfigsPageEager(pageConfigGlobalValues, pageConfig, pageConfigValues)
     })
   )
 
-  return { pageConfigs, pageConfigGlobal, global, pages, vikeConfigDependencies: esbuildCache.vikeConfigDependencies }
+  return {
+    pageConfigs,
+    pageConfigGlobal,
+    global: userFriendlyConfigsGlobal,
+    pages: userFriendlyConfigsPageEager,
+    vikeConfigDependencies: esbuildCache.vikeConfigDependencies
+  }
 }
 type ConfigDefinitionsResolved = Awaited<ReturnType<typeof resolveConfigDefinitions>>
 async function resolveConfigDefinitions(

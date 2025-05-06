@@ -48,7 +48,7 @@ import { getConfigValueRuntime } from '../../shared/page-configs/getConfigValueR
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
 import { getErrorPageId, isErrorPage } from '../../shared/error-page.js'
 import { isAbortError } from '../../shared/route/abort.js'
-import { loadUserFilesServerSide } from '../runtime/renderPage/loadUserFilesServerSide.js'
+import { loadPageConfigsLazyServerSide } from '../runtime/renderPage/loadPageConfigsLazyServerSide.js'
 import {
   getHookFromPageConfig,
   getHookFromPageConfigGlobal,
@@ -593,7 +593,7 @@ async function createPageContextPrerendering(
     })
   }
 
-  objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
+  objectAssign(pageContext, await loadPageConfigsLazyServerSide(pageContext))
 
   let usesClientRouter: boolean
   {

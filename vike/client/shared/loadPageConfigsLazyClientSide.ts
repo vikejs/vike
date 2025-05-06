@@ -1,9 +1,9 @@
-export { loadUserFilesClientSide }
+export { loadPageConfigsLazyClientSide }
 export { isErrorFetchingStaticAssets }
 export type { PageContextUserFiles }
 
 import { getPageFilesClientSide, type PageFile, type PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
-import { getPageConfigUserFriendly_oldDesign } from '../../shared/page-configs/getPageConfigUserFriendly.js'
+import { getUserFriendlyConfigsPageLazy } from '../../shared/page-configs/getUserFriendlyConfigs.js'
 import { findPageConfig } from '../../shared/page-configs/findPageConfig.js'
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
 import type {
@@ -21,7 +21,7 @@ type PageContextUserFiles = {
   _pageConfigs: PageConfigRuntime[]
   _pageConfigGlobal: PageConfigGlobalRuntime
 }
-async function loadUserFilesClientSide(
+async function loadPageConfigsLazyClientSide(
   pageId: string,
   pageFilesAll: PageFile[],
   pageConfigs: PageConfigRuntime[],
@@ -48,11 +48,7 @@ async function loadUserFilesClientSide(
     }
     throw err
   }
-  const pageContextExports = getPageConfigUserFriendly_oldDesign(
-    pageFilesClientSide,
-    pageConfigLoaded,
-    pageConfigGlobal
-  )
+  const pageContextExports = getUserFriendlyConfigsPageLazy(pageFilesClientSide, pageConfigLoaded, pageConfigGlobal)
   const pageContextAddendum = {}
   objectAssign(pageContextAddendum, pageContextExports)
   objectAssign(pageContextAddendum, { _pageFilesLoaded: pageFilesClientSide })

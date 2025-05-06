@@ -53,10 +53,9 @@ import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
 import { virtualFileIdImportUserCodeServer } from '../shared/virtual-files/virtualFileImportUserCode.js'
 import pc from '@brillout/picocolors'
-import type { PageConfigUserFriendly } from '../../shared/page-configs/getPageConfigUserFriendly.js'
+import type { PageConfigUserFriendly } from '../../shared/page-configs/getUserFriendlyConfigs.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { assertV1Design } from '../shared/assertV1Design.js'
-import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
 import { resolveBase } from '../shared/resolveBase.js'
 import type { ViteConfigRuntime } from '../plugin/shared/getViteConfigRuntime.js'
 import {
@@ -65,7 +64,6 @@ import {
   type GlobalContextShared
 } from '../../shared/createGlobalContextShared.js'
 import type { GlobalContext } from '../../shared/types.js'
-type PageConfigsRuntime = ReturnType<typeof getPageConfigsRuntime>
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
   {
@@ -78,7 +76,6 @@ const globalObject = getGlobalObject<
     initGlobalContext_runPrerender_alreadyCalled?: true
     buildEntry?: unknown
     buildEntryPrevious?: unknown
-    pageConfigsRuntime?: PageConfigsRuntime
     waitForUserFilesUpdate?: Promise<void>
     isProduction?: boolean
     buildInfo?: BuildInfo

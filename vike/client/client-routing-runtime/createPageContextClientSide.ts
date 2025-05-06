@@ -33,7 +33,11 @@ async function createPageContextClientSide(urlOriginal: string) {
   const pageContextUrlComputed = getPageContextUrlComputed(pageContextCreated)
   objectAssign(pageContextCreated, pageContextUrlComputed)
 
-  const pageContextAugmented = await createPageContextShared(pageContextCreated, globalContext._pageConfigGlobal)
+  const pageContextAugmented = await createPageContextShared(
+    pageContextCreated,
+    globalContext._pageConfigGlobal,
+    globalContext._userFriendlyConfigsGlobal
+  )
   augmentType(pageContextCreated, pageContextAugmented)
 
   return pageContextCreated
