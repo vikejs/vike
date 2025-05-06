@@ -257,17 +257,23 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
 
   // global
   const pageConfigGlobalValues = getConfigValues(pageConfigGlobal)
-  const global = getUserFriendlyConfigsGlobal({ pageConfigGlobalValues })
+  const userFriendlyConfigsGlobal = getUserFriendlyConfigsGlobal({ pageConfigGlobalValues })
 
   // pages
-  const pages = objectFromEntries(
+  const userFriendlyConfigsPageEager = objectFromEntries(
     pageConfigs.map((pageConfig) => {
       const pageConfigValues = getConfigValues(pageConfig, true)
       return getUserFriendlyConfigsPageEager(pageConfigGlobalValues, pageConfig, pageConfigValues)
     })
   )
 
-  return { pageConfigs, pageConfigGlobal, global, pages, vikeConfigDependencies: esbuildCache.vikeConfigDependencies }
+  return {
+    pageConfigs,
+    pageConfigGlobal,
+    global: userFriendlyConfigsGlobal,
+    pages: userFriendlyConfigsPageEager,
+    vikeConfigDependencies: esbuildCache.vikeConfigDependencies
+  }
 }
 type ConfigDefinitionsResolved = Awaited<ReturnType<typeof resolveConfigDefinitions>>
 async function resolveConfigDefinitions(

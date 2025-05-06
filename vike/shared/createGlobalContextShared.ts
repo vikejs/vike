@@ -60,7 +60,7 @@ function createGlobalContextBase(virtualFileExports: unknown) {
     pageConfigs,
     pageConfigGlobal,
     userFriendlyConfigsGlobal,
-    pageConfigsUserFriendly
+    userFriendlyConfigsPageEager
   } = getConfigsAll(virtualFileExports)
   const globalContext = {
     /**
@@ -76,7 +76,7 @@ function createGlobalContextBase(virtualFileExports: unknown) {
     _allPageIds: allPageIds,
     _userFriendlyConfigsGlobal: userFriendlyConfigsGlobal,
     config: userFriendlyConfigsGlobal.config,
-    pages: pageConfigsUserFriendly
+    pages: userFriendlyConfigsPageEager
   }
   return globalContext
 }
@@ -89,13 +89,20 @@ function getConfigsAll(virtualFileExports: unknown) {
     pageConfigGlobalValues: pageConfigGlobal.configValues
   })
 
-  const pageConfigsUserFriendly = Object.fromEntries(
+  const userFriendlyConfigsPageEager = Object.fromEntries(
     pageConfigs.map((pageConfig) => {
       return getUserFriendlyConfigsPageEager(pageConfigGlobal.configValues, pageConfig, pageConfig.configValues)
     })
   )
 
-  return { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal, userFriendlyConfigsGlobal, pageConfigsUserFriendly }
+  return {
+    pageFilesAll,
+    allPageIds,
+    pageConfigs,
+    pageConfigGlobal,
+    userFriendlyConfigsGlobal,
+    userFriendlyConfigsPageEager
+  }
 }
 function getAllPageIds(pageFilesAll: PageFile[], pageConfigs: PageConfigRuntime[]): string[] {
   const fileIds = pageFilesAll.filter(({ isDefaultPageFile }) => !isDefaultPageFile).map(({ pageId }) => pageId)
