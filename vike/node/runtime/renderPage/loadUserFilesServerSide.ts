@@ -3,7 +3,7 @@ export type { PageFiles }
 export type { PageContext_loadUserFilesServerSide }
 
 import { type PageFile, getPageFilesServerSide } from '../../../shared/getPageFiles.js'
-import { getConfigsUserFriendly_oldDesign } from '../../../shared/page-configs/getConfigsUserFriendly.js'
+import { getConfigsUserFriendlyPageLazy } from '../../../shared/page-configs/getConfigsUserFriendly.js'
 import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide.js'
 import {
   assert,
@@ -148,7 +148,7 @@ async function loadPageUserFiles(
   const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
   const pageConfigLoaded = !pageConfig ? null : await loadConfigValues(pageConfig, isDev)
   await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))
-  const pageContextExports = getConfigsUserFriendly_oldDesign(pageFilesServerSide, pageConfigLoaded, pageConfigGlobal)
+  const pageContextExports = getConfigsUserFriendlyPageLazy(pageFilesServerSide, pageConfigLoaded, pageConfigGlobal)
   return {
     pageContextExports,
     pageFilesLoaded: pageFilesServerSide

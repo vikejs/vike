@@ -1,5 +1,5 @@
 export { getConfigsUserFriendly }
-export { getConfigsUserFriendly_oldDesign }
+export { getConfigsUserFriendlyPageLazy }
 export { getConfigsUserFriendlyGlobal }
 export type { PageConfigsUserFriendly }
 export type { PageConfigUserFriendly }
@@ -205,7 +205,7 @@ function getConfigsUserFriendlyGlobal({
   return getPublicCopy(pageConfigGlobalUserFriendly)
 }
 
-function getConfigsUserFriendly_oldDesign(
+function getConfigsUserFriendlyPageLazy(
   pageFiles: PageFile[],
   pageConfig: PageConfigRuntimeLoaded | null,
   pageConfigGlobal: PageConfigGlobalRuntime
