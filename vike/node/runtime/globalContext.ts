@@ -56,16 +56,15 @@ import pc from '@brillout/picocolors'
 import type { PageConfigUserFriendly } from '../../shared/page-configs/getUserFriendlyConfigs.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { assertV1Design } from '../shared/assertV1Design.js'
-import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
 import { resolveBase } from '../shared/resolveBase.js'
 import type { ViteConfigRuntime } from '../plugin/shared/getViteConfigRuntime.js'
 import {
   createGlobalContextShared,
   getGlobalContextSyncErrMsg,
+  PageConfigsRuntime,
   type GlobalContextShared
 } from '../../shared/createGlobalContextShared.js'
 import type { GlobalContext } from '../../shared/types.js'
-type PageConfigsRuntime = ReturnType<typeof getPageConfigsRuntime>
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
   {

@@ -2,13 +2,21 @@ export { createGlobalContextShared }
 export { getGlobalContextSyncErrMsg }
 export type { GlobalContextShared }
 export type { GlobalContextSharedPublic }
+export type { PageConfigsRuntime }
 
+import { executeHookGenericGlobalCumulative } from './hooks/executeHookGeneric.js'
+import { objectAssign, unique } from './utils.js'
+import type { PageFile } from './getPageFiles.js'
+import { parseGlobResults } from './getPageFiles/parseGlobResults.js'
+import {
+  type PageConfigUserFriendly,
+  getUserFriendlyConfigsGlobal,
+  getUserFriendlyConfigsPageEager,
+  type PageConfigsUserFriendly
+} from './page-configs/getUserFriendlyConfigs.js'
+import type { PageConfigGlobalRuntime, PageConfigRuntime } from './page-configs/PageConfig.js'
 const getGlobalContextSyncErrMsg =
   "The global context isn't set yet, call getGlobalContextSync() later or use getGlobalContext() instead."
-
-import { getPageConfigsRuntime } from './getPageConfigsRuntime.js'
-import { executeHookGenericGlobalCumulative } from './hooks/executeHookGeneric.js'
-import { objectAssign } from './utils.js'
 
 async function createGlobalContextShared<GlobalContextAddendum extends object>(
   virtualFileExports: unknown,
@@ -70,4 +78,34 @@ function createGlobalContextBase(virtualFileExports: unknown) {
     pages: pageConfigsUserFriendly
   }
   return globalContext
+}
+
+type PageConfigsRuntime = ReturnType<typeof getPageConfigsRuntime>
+function getPageConfigsRuntime(virtualFileExports: unknown): {
+  pageFilesAll: PageFile[]
+  allPageIds: string[]
+  pageConfigs: PageConfigRuntime[]
+  pageConfigGlobal: PageConfigGlobalRuntime
+  globalConfig: PageConfigUserFriendly
+  pageConfigsUserFriendly: PageConfigsUserFriendly
+} {
+  const { pageFilesAll, pageConfigs, pageConfigGlobal } = parseGlobResults(virtualFileExports)
+  const allPageIds = getAllPageIds(pageFilesAll, pageConfigs)
+
+  // TODO/now: re-use this call, instead of calling it twice
+  const globalConfig = getUserFriendlyConfigsGlobal({ pageConfigGlobalValues: pageConfigGlobal.configValues })
+
+  const pageConfigsUserFriendly = Object.fromEntries(
+    pageConfigs.map((pageConfig) => {
+      return getUserFriendlyConfigsPageEager(pageConfigGlobal.configValues, pageConfig, pageConfig.configValues)
+    })
+  )
+
+  return { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal, globalConfig, pageConfigsUserFriendly }
+}
+function getAllPageIds(pageFilesAll: PageFile[], pageConfigs: PageConfigRuntime[]): string[] {
+  const fileIds = pageFilesAll.filter(({ isDefaultPageFile }) => !isDefaultPageFile).map(({ pageId }) => pageId)
+  const allPageIds = unique(fileIds)
+  const allPageIds2 = pageConfigs.map((p) => p.pageId)
+  return [...allPageIds, ...allPageIds2]
 }
