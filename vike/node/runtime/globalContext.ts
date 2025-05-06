@@ -61,7 +61,6 @@ import type { ViteConfigRuntime } from '../plugin/shared/getViteConfigRuntime.js
 import {
   createGlobalContextShared,
   getGlobalContextSyncErrMsg,
-  PageConfigsRuntime,
   type GlobalContextShared
 } from '../../shared/createGlobalContextShared.js'
 import type { GlobalContext } from '../../shared/types.js'
@@ -77,7 +76,6 @@ const globalObject = getGlobalObject<
     initGlobalContext_runPrerender_alreadyCalled?: true
     buildEntry?: unknown
     buildEntryPrevious?: unknown
-    pageConfigsRuntime?: PageConfigsRuntime
     waitForUserFilesUpdate?: Promise<void>
     isProduction?: boolean
     buildInfo?: BuildInfo

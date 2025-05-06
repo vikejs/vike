@@ -2,7 +2,6 @@ export { createGlobalContextShared }
 export { getGlobalContextSyncErrMsg }
 export type { GlobalContextShared }
 export type { GlobalContextSharedPublic }
-export type { PageConfigsRuntime }
 
 import { executeHookGenericGlobalCumulative } from './hooks/executeHookGeneric.js'
 import { objectAssign, unique } from './utils.js'
@@ -80,7 +79,6 @@ function createGlobalContextBase(virtualFileExports: unknown) {
   return globalContext
 }
 
-type PageConfigsRuntime = ReturnType<typeof getPageConfigsRuntime>
 function getPageConfigsRuntime(virtualFileExports: unknown): {
   pageFilesAll: PageFile[]
   allPageIds: string[]
