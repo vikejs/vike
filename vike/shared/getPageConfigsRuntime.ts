@@ -5,7 +5,7 @@ import type { PageFile } from './getPageFiles.js'
 import { parseGlobResults } from './getPageFiles/parseGlobResults.js'
 import {
   type PageConfigUserFriendly,
-  getPageConfigGlobalUserFriendly,
+  getConfigsUserFriendlyGlobal,
   getConfigsUserFriendly,
   type PageConfigsUserFriendly
 } from './page-configs/getConfigsUserFriendly.js'
@@ -23,7 +23,7 @@ function getPageConfigsRuntime(virtualFileExports: unknown): {
   const { pageFilesAll, pageConfigs, pageConfigGlobal } = parseGlobResults(virtualFileExports)
   const allPageIds = getAllPageIds(pageFilesAll, pageConfigs)
   // TODO/now: re-use this call, instead of calling it twice
-  const globalConfig = getPageConfigGlobalUserFriendly({ pageConfigGlobalValues: pageConfigGlobal.configValues })
+  const globalConfig = getConfigsUserFriendlyGlobal({ pageConfigGlobalValues: pageConfigGlobal.configValues })
 
   const pageConfigsUserFriendly = Object.fromEntries(
     pageConfigs.map((pageConfig) => {

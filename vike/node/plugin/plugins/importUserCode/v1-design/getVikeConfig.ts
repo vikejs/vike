@@ -78,7 +78,7 @@ import type { FilePath } from '../../../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
 import { assertExtensionsRequire } from './getVikeConfig/assertExtensions.js'
 import {
-  getPageConfigGlobalUserFriendly,
+  getConfigsUserFriendlyGlobal,
   getConfigsUserFriendly,
   type PageConfigUserFriendly,
   type PageConfigsUserFriendly
@@ -226,7 +226,7 @@ async function loadVikeConfig_withErrorHandling(
           configDefinitions: {},
           configValueSources: {}
         },
-        global: getPageConfigGlobalUserFriendly({ pageConfigGlobalValues: {} }),
+        global: getConfigsUserFriendlyGlobal({ pageConfigGlobalValues: {} }),
         pages: {},
         vikeConfigDependencies: new Set()
       }
@@ -257,7 +257,7 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
 
   // global
   const pageConfigGlobalValues = getConfigValues(pageConfigGlobal)
-  const global = getPageConfigGlobalUserFriendly({ pageConfigGlobalValues })
+  const global = getConfigsUserFriendlyGlobal({ pageConfigGlobalValues })
 
   // pages
   const pages = objectFromEntries(

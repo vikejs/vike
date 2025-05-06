@@ -1,6 +1,6 @@
 export { getConfigsUserFriendly }
 export { getConfigsUserFriendly_oldDesign }
-export { getPageConfigGlobalUserFriendly }
+export { getConfigsUserFriendlyGlobal }
 export type { PageConfigsUserFriendly }
 export type { PageConfigUserFriendly }
 export type { PageConfigUserFriendlyOld }
@@ -198,7 +198,7 @@ function getConfigsUserFriendly_base({
   return getConfigsUserFriendly_V1Design({ configValues })
 }
 
-function getPageConfigGlobalUserFriendly({
+function getConfigsUserFriendlyGlobal({
   pageConfigGlobalValues
 }: { pageConfigGlobalValues: ConfigValues }): PageConfigUserFriendly {
   const pageConfigGlobalUserFriendly = getConfigsUserFriendly_V1Design({ configValues: pageConfigGlobalValues })
