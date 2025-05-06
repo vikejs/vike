@@ -206,8 +206,8 @@ function getConfigsUserFriendlyGlobal({
 }
 
 function getConfigsUserFriendlyPageLazy(
-  pageFiles: PageFile[],
-  pageConfig: PageConfigRuntimeLoaded | null,
+  pageFiles: PageFile[], // V0.4 design
+  pageConfig: PageConfigRuntimeLoaded | null, // V1 design
   pageConfigGlobal: PageConfigGlobalRuntime
 ): PageConfigUserFriendlyOld {
   const config: Record<string, unknown> = {}
