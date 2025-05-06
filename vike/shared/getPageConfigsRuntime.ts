@@ -6,7 +6,7 @@ import { parseGlobResults } from './getPageFiles/parseGlobResults.js'
 import {
   type PageConfigUserFriendly,
   getConfigsUserFriendlyGlobal,
-  getConfigsUserFriendly,
+  getConfigsUserFriendlyPageEager,
   type PageConfigsUserFriendly
 } from './page-configs/getConfigsUserFriendly.js'
 import type { PageConfigGlobalRuntime, PageConfigRuntime } from './page-configs/PageConfig.js'
@@ -27,7 +27,7 @@ function getPageConfigsRuntime(virtualFileExports: unknown): {
 
   const pageConfigsUserFriendly = Object.fromEntries(
     pageConfigs.map((pageConfig) => {
-      return getConfigsUserFriendly(pageConfigGlobal.configValues, pageConfig, pageConfig.configValues)
+      return getConfigsUserFriendlyPageEager(pageConfigGlobal.configValues, pageConfig, pageConfig.configValues)
     })
   )
 

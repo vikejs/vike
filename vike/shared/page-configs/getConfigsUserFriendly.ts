@@ -1,4 +1,4 @@
-export { getConfigsUserFriendly }
+export { getConfigsUserFriendlyPageEager }
 export { getConfigsUserFriendlyPageLazy }
 export { getConfigsUserFriendlyGlobal }
 export type { PageConfigsUserFriendly }
@@ -151,7 +151,7 @@ type WithRoute =
       isErrorPage: true
     }
 type PageConfigUserFriendlyWithRoute = PageConfigUserFriendly & WithRoute
-function getConfigsUserFriendly(
+function getConfigsUserFriendlyPageEager(
   pageConfigGlobalValues: ConfigValues,
   pageConfig: PageConfigRuntime | PageConfigBuildTime,
   pageConfigValues: ConfigValues
