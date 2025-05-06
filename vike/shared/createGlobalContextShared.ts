@@ -60,7 +60,7 @@ type GlobalContextSharedPublic = Pick<GlobalContextShared, 'config' | 'pages' | 
 type GlobalContextShared = ReturnType<typeof createGlobalContextBase>
 function createGlobalContextBase(virtualFileExports: unknown) {
   const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal, globalConfig, pageConfigsUserFriendly } =
-    getPageConfigsRuntime(virtualFileExports)
+    getConfigsAll(virtualFileExports)
   const globalContext = {
     /**
      * Useful for distinguishing `globalContext` from other objects and narrowing down TypeScript unions.
@@ -79,7 +79,7 @@ function createGlobalContextBase(virtualFileExports: unknown) {
   return globalContext
 }
 
-function getPageConfigsRuntime(virtualFileExports: unknown): {
+function getConfigsAll(virtualFileExports: unknown): {
   pageFilesAll: PageFile[]
   allPageIds: string[]
   pageConfigs: PageConfigRuntime[]
