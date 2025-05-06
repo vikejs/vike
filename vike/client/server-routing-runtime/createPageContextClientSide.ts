@@ -30,6 +30,12 @@ async function createPageContextClientSide() {
     _hasPageContextFromClient: false as const
   }
   objectAssign(pageContextCreated, getPageContextSerializedInHtml())
+
+  // Sets pageContext.config to global configs
+  const pageContextAugmented = await createPageContextShared(pageContextCreated, globalContext._pageConfigGlobal)
+  augmentType(pageContextCreated, pageContextAugmented)
+
+  // Sets pageContext.config to local configs (overrides the pageContext.config set above)
   objectAssign(
     pageContextCreated,
     await loadUserFilesClientSide(
@@ -39,9 +45,6 @@ async function createPageContextClientSide() {
       pageContextCreated._pageConfigGlobal
     )
   )
-
-  const pageContextAugmented = await createPageContextShared(pageContextCreated, globalContext._pageConfigGlobal)
-  augmentType(pageContextCreated, pageContextAugmented)
 
   assertPristineUrl()
   return pageContextCreated
