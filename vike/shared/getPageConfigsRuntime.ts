@@ -1,5 +1,4 @@
 export { getPageConfigsRuntime }
-export { getAllPageIds }
 
 import type { PageFile } from './getPageFiles.js'
 import { parseGlobResults } from './getPageFiles/parseGlobResults.js'
@@ -34,7 +33,6 @@ function getPageConfigsRuntime(virtualFileExports: unknown): {
 
   return { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal, globalConfig, pageConfigsUserFriendly }
 }
-
 function getAllPageIds(pageFilesAll: PageFile[], pageConfigs: PageConfigRuntime[]): string[] {
   const fileIds = pageFilesAll.filter(({ isDefaultPageFile }) => !isDefaultPageFile).map(({ pageId }) => pageId)
   const allPageIds = unique(fileIds)
