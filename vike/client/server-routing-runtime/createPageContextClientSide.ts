@@ -58,16 +58,5 @@ async function loadPageUserFiles(pageId: string, pageContext: PageContextUserFil
       pageContext._pageConfigGlobal
     )
   )
-
-  pageContext._pageFilesAll
-    .filter((p) => p.fileType !== '.page.server')
-    .forEach((p) => {
-      assertWarning(
-        !p.fileExports?.onBeforeRender,
-        `export { onBeforeRender } of ${p.filePath} is loaded in the browser but never executed (because you are using Server-side Routing). In order to reduce the size of you browser-side JavaScript, define onBeforeRender() in a .page.server.js file instead, see https://vike.dev/onBeforeRender-isomorphic#server-routing`,
-        { onlyOnce: true }
-      )
-    })
-
   return pageContextAddendum
 }
