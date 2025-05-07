@@ -5,6 +5,7 @@ export type { ConfigNameBuiltIn }
 export type { ConfigNameGlobal }
 export type { ConfigMeta }
 export type { HookName }
+export type { HookNameOld }
 export type { HookNamePage }
 export type { HookNameGlobal }
 export type { ImportString }
@@ -49,7 +50,8 @@ import type { HooksTimeoutProvidedByUser } from '../hooks/getHook.js'
 import type { GlobalContext, PageContextClient, PageContextServer } from '../types.js'
 import type { InlineConfig } from 'vite'
 
-type HookName = HookNamePage | HookNameGlobal | HookNameOldDesign
+type HookNameOld = HookName | HookNameOldDesign
+type HookName = HookNamePage | HookNameGlobal
 type HookNamePage =
   | 'onHydrationEnd'
   | 'onBeforePrerenderStart'
@@ -67,7 +69,7 @@ type HookNameGlobal =
   | 'onCreatePageContext'
   | 'onCreateGlobalContext'
 // v0.4 design TODO/v1-release: remove
-type HookNameOldDesign = 'render' | 'prerender'
+type HookNameOldDesign = 'render' | 'prerender' | 'onBeforePrerender'
 
 type ConfigNameBuiltIn =
   | Exclude<keyof Config, keyof VikeVitePluginOptions | 'onBeforeRoute' | 'onPrerenderStart' | 'vite' | 'redirects'>

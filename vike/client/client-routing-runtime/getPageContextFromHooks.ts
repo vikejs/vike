@@ -20,7 +20,10 @@ import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtm
 import type { PageConfigUserFriendlyOld, PageFile } from '../../shared/getPageFiles.js'
 import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide.js'
 import { getHookFromPageContext } from '../../shared/hooks/getHook.js'
-import { preparePageContextForUserConsumptionClientSide } from '../shared/preparePageContextForUserConsumptionClientSide.js'
+import {
+  type PageContextForUserConsumptionClientSide,
+  preparePageContextForUserConsumptionClientSide
+} from '../shared/preparePageContextForUserConsumptionClientSide.js'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
 import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
@@ -31,13 +34,14 @@ import { executeGuardHook } from '../../shared/route/executeGuardHook.js'
 import { AbortRender, isAbortPageContext } from '../../shared/route/abort.js'
 import { pageContextInitIsPassedToClient } from '../../shared/misc/pageContextInitIsPassedToClient.js'
 import { isServerSideError } from '../../shared/misc/isServerSideError.js'
-import { executeHook } from '../../shared/hooks/executeHook.js'
+import { executeHook, executeHookNew } from '../../shared/hooks/executeHook.js'
+import type { HookName } from '../../shared/page-configs/Config.js'
 const globalObject = getGlobalObject<{ pageContextInitIsPassedToClient?: true }>(
   'client-routing-runtime/getPageContextFromHooks.ts',
   {}
 )
 
-// TODO/eventually: rename
+// TO-DO/eventually: rename
 type PageContext = {
   urlOriginal: string
   _urlRewrite: string | null
@@ -49,7 +53,7 @@ type PageContextSerialized = {
   pageId: string
   _hasPageContextFromServer: true
 }
-// TODO/eventually: rename
+// TO-DO/eventually: rename
 function getPageContextFromHooks_serialized(): PageContextSerialized & {
   routeParams: Record<string, string>
   _hasPageContextFromServer: true
@@ -68,9 +72,7 @@ async function getPageContextFromHooks_isHydration(
 ) {
   for (const hookName of ['data', 'onBeforeRender'] as const) {
     if (hookClientOnlyExists(hookName, pageContext)) {
-      const pageContextFromHook = await executeHookClientSide(hookName, pageContext)
-      assert(!('urlOriginal' in pageContextFromHook))
-      Object.assign(pageContext, pageContextFromHook)
+      await executeDataLikeHook(hookName, pageContext)
     }
   }
   return pageContext
@@ -142,9 +144,7 @@ async function getPageContextFromClientHooks(
       assert(hookName === 'data' || hookName === 'onBeforeRender')
       if (hookClientOnlyExists(hookName, pageContext) || !pageContext._hasPageContextFromServer) {
         // This won't do anything if no hook has been defined or if the hook's env.client is false.
-        const pageContextFromHook = await executeHookClientSide(hookName, pageContext)
-        assert(!('urlOriginal' in pageContextFromHook))
-        Object.assign(pageContext, pageContextFromHook)
+        await executeDataLikeHook(hookName, pageContext)
       }
     }
   }
@@ -153,37 +153,39 @@ async function getPageContextFromClientHooks(
   return pageContextFromClientHooks
 }
 
-async function executeHookClientSide(
-  hookName: 'data' | 'onBeforeRender',
-  pageContext: {
-    pageId: string
-    _hasPageContextFromServer: boolean
-  } & PageConfigUserFriendlyOld &
-    PageContext
-) {
-  const hook = getHookFromPageContext(pageContext, hookName)
-  if (!hook) {
-    // No hook defined or hook's env.client is false
-    return {}
-  }
-  const pageContextForUserConsumption = preparePageContextForUserConsumptionClientSide(pageContext, true)
-  const hookResult = await executeHook(() => hook.hookFn(pageContextForUserConsumption), hook, pageContext)
+type PageContextExecuteHookClient = PageConfigUserFriendlyOld & PageContextForUserConsumptionClientSide
+async function executeHookClient(hookName: HookName, pageContext: PageContextExecuteHookClient) {
+  return await executeHookNew(hookName, pageContext, (p) => preparePageContextForUserConsumptionClientSide(p, true))
+}
 
-  const pageContextFromHook = {}
-  if (hookName === 'onBeforeRender') {
-    assertOnBeforeRenderHookReturn(hookResult, hook.hookFilePath)
-    // Note: hookResult looks like { pageContext: { ... } }
-    const pageContextFromOnBeforeRender = hookResult?.pageContext
-    if (pageContextFromOnBeforeRender) {
-      objectAssign(pageContextFromHook, pageContextFromOnBeforeRender)
-    }
+async function executeDataLikeHook(hookName: 'data' | 'onBeforeRender', pageContext: PageContextExecuteHookClient) {
+  let pageContextFromHook: Record<string, unknown> | undefined
+  if (hookName === 'data') {
+    pageContextFromHook = await executeDataHook(pageContext)
   } else {
-    assert(hookName === 'data')
-    // Note: hookResult can be anything (e.g. an object) and is to be assigned to pageContext.data
-    const pageContextFromData = {
-      data: hookResult
-    }
-    objectAssign(pageContextFromHook, pageContextFromData)
+    pageContextFromHook = await executeOnBeforeRenderHook(pageContext)
+  }
+  Object.assign(pageContext, pageContextFromHook)
+}
+async function executeDataHook(pageContext: PageContextExecuteHookClient) {
+  const res = await executeHookClient('data', pageContext)
+  const hook = res[0] // TO-DO/soon: support cumulative
+  if (!hook) return
+  const { hookResult } = hook
+  const pageContextAddendum = { data: hookResult }
+  return pageContextAddendum
+}
+async function executeOnBeforeRenderHook(pageContext: PageContextExecuteHookClient) {
+  const res = await executeHookClient('onBeforeRender', pageContext)
+  const hook = res[0] // TO-DO/soon: support cumulative
+  if (!hook) return
+  const { hookResult, hookFilePath } = hook
+  const pageContextFromHook = {}
+  assertOnBeforeRenderHookReturn(hookResult, hookFilePath)
+  // Note: hookResult looks like { pageContext: { ... } }
+  const pageContextFromOnBeforeRender = hookResult?.pageContext
+  if (pageContextFromOnBeforeRender) {
+    objectAssign(pageContextFromHook, pageContextFromOnBeforeRender)
   }
   return pageContextFromHook
 }

@@ -1,11 +1,10 @@
 export { getHookFromPageContext }
+export { getHookFromPageContextNew }
 export { getHookFromPageConfig }
 export { getHookFromPageConfigGlobal }
 export { getHookFromPageConfigGlobalCumulative }
-export { assertHook }
 export { getHook_setIsPrerenderering }
 export type { Hook }
-export type { HookName }
 export type { HookLoc }
 export type { HookTimeout }
 export type { HooksTimeoutProvidedByUser }
@@ -16,7 +15,7 @@ export { getHookTimeoutDefault }
 
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import type { PageConfigUserFriendlyOld } from '../getPageFiles.js'
-import type { HookName, HookNamePage, HookNameGlobal } from '../page-configs/Config.js'
+import type { HookNameOld, HookNamePage, HookNameGlobal, HookName } from '../page-configs/Config.js'
 import type { ConfigValue, PageConfigGlobalRuntime, PageConfigRuntime } from '../page-configs/PageConfig.js'
 import { getHookFilePathToShowToUser } from '../page-configs/helpers.js'
 import { getConfigValueRuntime } from '../page-configs/getConfigValueRuntime.js'
@@ -26,7 +25,7 @@ const globalObject = getGlobalObject<{ isPrerendering?: true }>('hooks/getHook.t
 
 type Hook = HookLoc & { hookFn: HookFn; hookTimeout: HookTimeout }
 type HookLoc = {
-  hookName: HookName
+  hookName: HookNameOld
   /* Once we remove the old design, we'll be able to use the full path information.
    * Le'ts then do this:
    * ```diff
@@ -44,10 +43,10 @@ type HookTimeout = {
   warning: number | false
 }
 // User Interface
-type HooksTimeoutProvidedByUser = false | Partial<Record<HookName, false | Partial<HookTimeout>>>
-type HooksTimeoutProvidedByUserNormalized = false | Partial<Record<HookName, Partial<HookTimeout>>>
+type HooksTimeoutProvidedByUser = false | Partial<Record<HookNameOld, false | Partial<HookTimeout>>>
+type HooksTimeoutProvidedByUserNormalized = false | Partial<Record<HookNameOld, Partial<HookTimeout>>>
 
-function getHookFromPageContext(pageContext: PageConfigUserFriendlyOld, hookName: HookName): null | Hook {
+function getHookFromPageContext(pageContext: PageConfigUserFriendlyOld, hookName: HookNameOld): null | Hook {
   if (!(hookName in pageContext.exports)) {
     return null
   }
@@ -55,11 +54,32 @@ function getHookFromPageContext(pageContext: PageConfigUserFriendlyOld, hookName
   const hookTimeout = getHookTimeout(hooksTimeout, hookName)
   const hookFn = pageContext.exports[hookName]
   if (hookFn === null) return null
+  // TO-DO/eventually: use pageContext.configEntries in favor of pageContext.exportsAll once V0.4 is removed
   const file = pageContext.exportsAll[hookName]![0]!
   assert(file.exportValue === hookFn)
   const hookFilePath = file.filePath
   assert(hookFilePath)
   return getHook(hookFn, hookName, hookFilePath, hookTimeout)
+}
+// TO-DO/eventually: remove getHookFromPageContext() in favor of getHookFromPageContextNew()
+function getHookFromPageContextNew(hookName: HookName, pageContext: PageConfigUserFriendlyOld): Hook[] {
+  const { hooksTimeout } = pageContext.config
+  const hookTimeout = getHookTimeout(hooksTimeout, hookName)
+  const hooks: Hook[] = []
+  /* TO-DO/eventually: use pageContext.configEntries in favor of pageContext.exportsAll once V0.4 is removed
+  pageContext.configEntries[hookName]?.forEach((val) => {
+    const hookFn = val.configValue
+    if (hookFn === null) return
+    const hookFilePath = val.configDefinedByFile
+  */
+  pageContext.exportsAll[hookName]?.forEach((val) => {
+    const hookFn = val.exportValue
+    if (hookFn === null) return
+    const hookFilePath = val.filePath
+    assert(hookFilePath)
+    hooks.push(getHook(hookFn, hookName, hookFilePath, hookTimeout))
+  })
+  return hooks
 }
 function getHookFromPageConfig(pageConfig: PageConfigRuntime, hookName: HookNamePage): null | Hook {
   const configValue = getConfigValueRuntime(pageConfig, hookName)
@@ -92,12 +112,12 @@ function getHookFromPageConfigGlobalCumulative(
     return getHook(hookFn, hookName, hookFilePath, hookTimeout)
   })
 }
-function getHookTimeoutGlobal(hookName: HookName) {
+function getHookTimeoutGlobal(hookName: HookNameOld) {
   // TO-DO/perfection: we could use the global value of configooksTimeout but it requires some non-trivial refactoring
   const hookTimeout = getHookTimeoutDefault(hookName)
   return hookTimeout
 }
-function getHook(hookFn: unknown, hookName: HookName, hookFilePath: string, hookTimeout: HookTimeout): Hook {
+function getHook(hookFn: unknown, hookName: HookNameOld, hookFilePath: string, hookTimeout: HookTimeout): Hook {
   assert(hookFilePath)
   assertHookFn(hookFn, { hookName, hookFilePath })
   const hook = { hookFn, hookName, hookFilePath, hookTimeout }
@@ -111,16 +131,9 @@ function getHookFromConfigValue(configValue: ConfigValue) {
   return { hookFn, hookFilePath }
 }
 
-function assertHook<TPageContext extends PageConfigUserFriendlyOld, THookName extends PropertyKey & HookName>(
-  pageContext: TPageContext,
-  hookName: THookName
-): asserts pageContext is TPageContext & { exports: Record<THookName, Function | undefined> } {
-  getHookFromPageContext(pageContext, hookName)
-}
-
 function assertHookFn(
   hookFn: unknown,
-  { hookName, hookFilePath }: { hookName: HookName; hookFilePath: string }
+  { hookName, hookFilePath }: { hookName: HookNameOld; hookFilePath: string }
 ): asserts hookFn is HookFn {
   assert(hookName && hookFilePath)
   assert(!hookName.endsWith(')'))
@@ -129,7 +142,7 @@ function assertHookFn(
   checkType<HookFn>(hookFn)
 }
 
-function getHookTimeout(hooksTimeoutProvidedByUser: unknown, hookName: HookName): HookTimeout {
+function getHookTimeout(hooksTimeoutProvidedByUser: unknown, hookName: HookNameOld): HookTimeout {
   const hooksTimeoutProvidedbyUserNormalized = getHooksTimeoutProvidedByUserNormalized(hooksTimeoutProvidedByUser)
   if (hooksTimeoutProvidedbyUserNormalized === false) return { error: false, warning: false }
   const providedbyUser = hooksTimeoutProvidedbyUserNormalized[hookName]
@@ -153,7 +166,7 @@ function getHooksTimeoutProvidedByUserNormalized(
   const hooksTimeoutProvidedByUserNormalized: HooksTimeoutProvidedByUserNormalized = {}
   Object.entries(hooksTimeoutProvidedByUser).forEach(([hookName, hookTimeoutProvidedbyUser]) => {
     if (hookTimeoutProvidedbyUser === false) {
-      hooksTimeoutProvidedByUserNormalized[hookName as HookName] = { error: false, warning: false }
+      hooksTimeoutProvidedByUserNormalized[hookName as HookNameOld] = { error: false, warning: false }
       return
     }
     assertUsage(
@@ -168,12 +181,12 @@ function getHooksTimeoutProvidedByUserNormalized(
       assertUsage(timeoutVal > 0, `${errPrefix} a positive number`)
       return timeoutVal
     })
-    hooksTimeoutProvidedByUserNormalized[hookName as HookName] = { error, warning }
+    hooksTimeoutProvidedByUserNormalized[hookName as HookNameOld] = { error, warning }
   })
   return hooksTimeoutProvidedByUserNormalized
 }
 
-function getHookTimeoutDefault(hookName: HookName): HookTimeout {
+function getHookTimeoutDefault(hookName: HookNameOld): HookTimeout {
   if (hookName === 'onBeforeRoute') {
     return {
       error: 5 * 1000,
