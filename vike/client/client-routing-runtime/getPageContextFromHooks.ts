@@ -3,6 +3,7 @@ export { getPageContextFromHooks_serialized }
 export { getPageContextFromServerHooks }
 export { getPageContextFromClientHooks }
 export { setPageContextInitIsPassedToClient }
+export { executeHookClient }
 export type { PageContextFromServerHooks }
 
 import {
@@ -19,7 +20,6 @@ import { parse } from '@brillout/json-serializer/parse'
 import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtml.js'
 import type { PageConfigUserFriendlyOld, PageFile } from '../../shared/getPageFiles.js'
 import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide.js'
-import { getHookFromPageContext } from '../../shared/hooks/getHook.js'
 import {
   type PageContextForUserConsumptionClientSide,
   preparePageContextForUserConsumptionClientSide
@@ -34,7 +34,7 @@ import { executeGuardHook } from '../../shared/route/executeGuardHook.js'
 import { AbortRender, isAbortPageContext } from '../../shared/route/abort.js'
 import { pageContextInitIsPassedToClient } from '../../shared/misc/pageContextInitIsPassedToClient.js'
 import { isServerSideError } from '../../shared/misc/isServerSideError.js'
-import { executeHook, executeHookNew } from '../../shared/hooks/executeHook.js'
+import { executeHookNew } from '../../shared/hooks/executeHook.js'
 import type { HookName } from '../../shared/page-configs/Config.js'
 const globalObject = getGlobalObject<{ pageContextInitIsPassedToClient?: true }>(
   'client-routing-runtime/getPageContextFromHooks.ts',
@@ -152,11 +152,7 @@ async function getPageContextFromClientHooks(
 
   // Execute +onData
   if (dataHookExists) {
-    const hook = getHookFromPageContext(pageContext, 'onData')
-    if (hook) {
-      const pageContextForUserConsumption = preparePageContextForUserConsumptionClientSide(pageContext, true)
-      await executeHook(() => hook.hookFn(pageContextForUserConsumption), hook, pageContext)
-    }
+    await executeHookClient('onData', pageContext)
   }
 
   const pageContextFromClientHooks = pageContext

@@ -146,10 +146,8 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { server: true }
   },
   onData: {
-    env: { server: true, client: true }
-    /* TODO/now
+    env: { server: true, client: true },
     cumulative: true
-    */
   },
   iKnowThePerformanceRisksOfAsyncRouteFunctions: {
     env: { server: true, client: 'if-client-routing' },

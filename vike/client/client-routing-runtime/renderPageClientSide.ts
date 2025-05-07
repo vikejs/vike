@@ -22,7 +22,8 @@ import {
   getPageContextFromHooks_isHydration,
   getPageContextFromHooks_serialized,
   type PageContextFromServerHooks,
-  setPageContextInitIsPassedToClient
+  setPageContextInitIsPassedToClient,
+  executeHookClient
 } from './getPageContextFromHooks.js'
 import { createPageContextClientSide } from './createPageContextClientSide.js'
 import {
@@ -283,17 +284,13 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       objectAssign(pageContext, pageContextFromServerHooks)
 
       // Execute +onData
-      const hook = getHookFromPageContext(pageContext, 'onData')
-      if (hook) {
-        const { hookFn } = hook
-        try {
-          await executeHook(() => hookFn(pageContext), hook, pageContext)
-        } catch (err) {
-          await onError(err)
-          return
-        }
-        if (isRenderOutdated()) return
+      try {
+        await executeHookClient('onData', pageContext)
+      } catch (err) {
+        await onError(err)
+        return
       }
+      if (isRenderOutdated()) return
 
       // Get pageContext from client-side hooks
       let pageContextFromClientHooks: Awaited<ReturnType<typeof getPageContextFromClientHooks>>
