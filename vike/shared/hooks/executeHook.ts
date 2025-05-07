@@ -41,7 +41,7 @@ async function executeHookNew<PageContext extends PageConfigUserFriendlyOld>(
 async function executeHookGlobalCumulative(
   hookName: HookNameGlobal,
   pageConfigGlobal: PageConfigGlobalRuntime,
-  pageContext: object | null,
+  pageContext: PageContextUnknown | null,
   arg: object
 ) {
   const hooks = getHookFromPageConfigGlobalCumulative(pageConfigGlobal, hookName)
@@ -52,7 +52,7 @@ async function executeHookGlobalCumulative(
   )
 }
 
-type PageContextUnknown = null | Record<string, any>
+type PageContextUnknown = null | Record<string, unknown>
 
 function isUserHookError(err: unknown): false | HookLoc {
   if (!isObject(err)) return false
