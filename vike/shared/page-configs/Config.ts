@@ -5,6 +5,7 @@ export type { ConfigNameBuiltIn }
 export type { ConfigNameGlobal }
 export type { ConfigMeta }
 export type { HookName }
+export type { HookNameOld }
 export type { HookNamePage }
 export type { HookNameGlobal }
 export type { ImportString }
@@ -49,8 +50,8 @@ import type { HooksTimeoutProvidedByUser } from '../hooks/getHook.js'
 import type { GlobalContext, PageContextClient, PageContextServer } from '../types.js'
 import type { InlineConfig } from 'vite'
 
-type HookName = HookNameNew | HookNameOldDesign
-type HookNameNew = HookNamePage | HookNameGlobal
+type HookNameOld = HookName | HookNameOldDesign
+type HookName = HookNamePage | HookNameGlobal
 type HookNamePage =
   | 'onHydrationEnd'
   | 'onBeforePrerenderStart'

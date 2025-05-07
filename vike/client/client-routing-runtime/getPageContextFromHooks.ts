@@ -19,7 +19,7 @@ import { parse } from '@brillout/json-serializer/parse'
 import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtml.js'
 import type { PageConfigUserFriendlyOld, PageFile } from '../../shared/getPageFiles.js'
 import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide.js'
-import { getHookFromPageContext, HookName } from '../../shared/hooks/getHook.js'
+import { getHookFromPageContext } from '../../shared/hooks/getHook.js'
 import {
   type PageContextForUserConsumptionClientSide,
   preparePageContextForUserConsumptionClientSide
@@ -36,6 +36,7 @@ import { pageContextInitIsPassedToClient } from '../../shared/misc/pageContextIn
 import { isServerSideError } from '../../shared/misc/isServerSideError.js'
 import { executeHook } from '../../shared/hooks/executeHook.js'
 import { executeHookGeneric } from '../../shared/hooks/executeHookGeneric.js'
+import type { HookNameOld } from '../../shared/page-configs/Config.js'
 const globalObject = getGlobalObject<{ pageContextInitIsPassedToClient?: true }>(
   'client-routing-runtime/getPageContextFromHooks.ts',
   {}
@@ -154,7 +155,7 @@ async function getPageContextFromClientHooks(
 }
 
 type PageContextExecuteHook = PageConfigUserFriendlyOld & PageContextForUserConsumptionClientSide
-async function executeHookClientSide(hookName: HookName, pageContext: PageContextExecuteHook) {
+async function executeHookClientSide(hookName: HookNameOld, pageContext: PageContextExecuteHook) {
   return await executeHookGeneric(hookName, pageContext, (p) => preparePageContextForUserConsumptionClientSide(p, true))
 }
 

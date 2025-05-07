@@ -3,12 +3,12 @@ export { executeHookGenericGlobalCumulative }
 
 import type { PageConfigUserFriendlyOld } from '../getPageFiles.js'
 import { executeHook } from './executeHook.js'
-import { getHookFromPageContext, type HookName, getHookFromPageConfigGlobalCumulative } from './getHook.js'
-import type { HookNameGlobal } from '../page-configs/Config.js'
+import { getHookFromPageContext, getHookFromPageConfigGlobalCumulative } from './getHook.js'
+import type { HookNameOld, HookNameGlobal } from '../page-configs/Config.js'
 import type { PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
 
 async function executeHookGeneric<PageContext extends PageConfigUserFriendlyOld>(
-  hookName: HookName,
+  hookName: HookNameOld,
   pageContext: PageContext,
   prepare: (pageContext: PageContext) => PageContext
 ) {
