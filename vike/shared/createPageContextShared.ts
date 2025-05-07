@@ -1,6 +1,6 @@
 export { createPageContextShared }
 
-import { executeHookGenericGlobalCumulative } from './hooks/executeHookGeneric.js'
+import { executeHookGenericGlobalCumulative } from './hooks/executeHook.js'
 import type { PageConfigUserFriendly } from './page-configs/getUserFriendlyConfigs.js'
 import type { PageConfigGlobalRuntime } from './page-configs/PageConfig.js'
 import { objectAssign } from './utils.js'

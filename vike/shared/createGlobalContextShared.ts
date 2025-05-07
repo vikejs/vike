@@ -3,12 +3,12 @@ export { getGlobalContextSyncErrMsg }
 export type { GlobalContextShared }
 export type { GlobalContextSharedPublic }
 
-import { executeHookGenericGlobalCumulative } from './hooks/executeHookGeneric.js'
 import { objectAssign, unique } from './utils.js'
 import type { PageFile } from './getPageFiles.js'
 import { parseGlobResults } from './getPageFiles/parseGlobResults.js'
 import { getUserFriendlyConfigsGlobal, getUserFriendlyConfigsPageEager } from './page-configs/getUserFriendlyConfigs.js'
 import type { PageConfigRuntime } from './page-configs/PageConfig.js'
+import { executeHookGenericGlobalCumulative } from './hooks/executeHook.js'
 const getGlobalContextSyncErrMsg =
   "The global context isn't set yet, call getGlobalContextSync() later or use getGlobalContext() instead."
 
