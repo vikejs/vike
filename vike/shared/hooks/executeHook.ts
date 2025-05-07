@@ -1,6 +1,6 @@
 export { executeHook }
 export { executeHookGeneric }
-export { executeHookGenericGlobalCumulative }
+export { executeHookGlobalCumulative }
 export { getPageContext }
 export { providePageContext }
 export { isUserHookError }
@@ -38,7 +38,7 @@ async function executeHookGeneric<PageContext extends PageConfigUserFriendlyOld>
   return hooksWithResult
 }
 
-async function executeHookGenericGlobalCumulative(
+async function executeHookGlobalCumulative(
   hookName: HookNameGlobal,
   pageConfigGlobal: PageConfigGlobalRuntime,
   pageContext: object | null,
