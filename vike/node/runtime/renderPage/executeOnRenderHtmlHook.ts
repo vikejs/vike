@@ -83,7 +83,7 @@ function getRenderHook(pageContext: PageContextForUserConsumptionServerSide) {
     | undefined
     | {
         renderHook: RenderHook
-        hookFn: Function
+        hookFn: (arg: object) => unknown
       }
   {
     let hook: null | Hook
