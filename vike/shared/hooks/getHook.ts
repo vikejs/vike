@@ -1,4 +1,5 @@
 export { getHookFromPageContext }
+export { getHookFromPageContextNew }
 export { getHookFromPageConfig }
 export { getHookFromPageConfigGlobal }
 export { getHookFromPageConfigGlobalCumulative }
@@ -14,7 +15,7 @@ export { getHookTimeoutDefault }
 
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import type { PageConfigUserFriendlyOld } from '../getPageFiles.js'
-import type { HookNameOld, HookNamePage, HookNameGlobal } from '../page-configs/Config.js'
+import type { HookNameOld, HookNamePage, HookNameGlobal, HookName } from '../page-configs/Config.js'
 import type { ConfigValue, PageConfigGlobalRuntime, PageConfigRuntime } from '../page-configs/PageConfig.js'
 import { getHookFilePathToShowToUser } from '../page-configs/helpers.js'
 import { getConfigValueRuntime } from '../page-configs/getConfigValueRuntime.js'
@@ -53,11 +54,28 @@ function getHookFromPageContext(pageContext: PageConfigUserFriendlyOld, hookName
   const hookTimeout = getHookTimeout(hooksTimeout, hookName)
   const hookFn = pageContext.exports[hookName]
   if (hookFn === null) return null
+  // TO-DO/eventually: use pageContext.configEntries in favor of pageContext.exportsAll once V0.4 is removed
   const file = pageContext.exportsAll[hookName]![0]!
   assert(file.exportValue === hookFn)
   const hookFilePath = file.filePath
   assert(hookFilePath)
   return getHook(hookFn, hookName, hookFilePath, hookTimeout)
+}
+// TO-DO/eventually: remove getHookFromPageContext() in favor of getHookFromPageContextNew()
+function getHookFromPageContextNew(hookName: HookName, pageContext: PageConfigUserFriendlyOld): Hook[] {
+  const { hooksTimeout } = pageContext.config
+  const hookTimeout = getHookTimeout(hooksTimeout, hookName)
+  /* TO-DO/eventually: use pageContext.configEntries in favor of pageContext.exportsAll once V0.4 is removed
+  return (pageContext.configEntries[hookName] ?? []).map((val) => {
+    const hookFn = val.configValue
+    const hookFilePath = val.configDefinedByFile
+  */
+  return (pageContext.exportsAll[hookName] ?? []).map((val) => {
+    const hookFn = val.exportValue
+    const hookFilePath = val.filePath
+    assert(hookFilePath)
+    return getHook(hookFn, hookName, hookFilePath, hookTimeout)
+  })
 }
 function getHookFromPageConfig(pageConfig: PageConfigRuntime, hookName: HookNamePage): null | Hook {
   const configValue = getConfigValueRuntime(pageConfig, hookName)

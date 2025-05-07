@@ -36,7 +36,7 @@ import { pageContextInitIsPassedToClient } from '../../shared/misc/pageContextIn
 import { isServerSideError } from '../../shared/misc/isServerSideError.js'
 import { executeHook } from '../../shared/hooks/executeHook.js'
 import { executeHookGeneric } from '../../shared/hooks/executeHookGeneric.js'
-import type { HookNameOld } from '../../shared/page-configs/Config.js'
+import type { HookName } from '../../shared/page-configs/Config.js'
 const globalObject = getGlobalObject<{ pageContextInitIsPassedToClient?: true }>(
   'client-routing-runtime/getPageContextFromHooks.ts',
   {}
@@ -155,7 +155,7 @@ async function getPageContextFromClientHooks(
 }
 
 type PageContextExecuteHook = PageConfigUserFriendlyOld & PageContextForUserConsumptionClientSide
-async function executeHookClientSide(hookName: HookNameOld, pageContext: PageContextExecuteHook) {
+async function executeHookClientSide(hookName: HookName, pageContext: PageContextExecuteHook) {
   return await executeHookGeneric(hookName, pageContext, (p) => preparePageContextForUserConsumptionClientSide(p, true))
 }
 
@@ -170,17 +170,19 @@ async function executeDataLikeHook(hookName: 'data' | 'onBeforeRender', pageCont
 }
 async function executeDataHook(pageContext: PageContextExecuteHook) {
   const res = await executeHookClientSide('data', pageContext)
-  if (!res) return
-  const { hookResult } = res
+  const hook = res[0] // TO-DO/soon support cumulative
+  if (!hook) return
+  const { hookResult } = hook
   const pageContextAddendum = { data: hookResult }
   return pageContextAddendum
 }
 async function executeOnBeforeRenderHook(pageContext: PageContextExecuteHook) {
   const res = await executeHookClientSide('onBeforeRender', pageContext)
-  if (!res) return
-  const { hookResult, hook } = res
+  const hook = res[0] // TO-DO/soon support cumulative
+  if (!hook) return
+  const { hookResult, hookFilePath } = hook
   const pageContextFromHook = {}
-  assertOnBeforeRenderHookReturn(hookResult, hook.hookFilePath)
+  assertOnBeforeRenderHookReturn(hookResult, hookFilePath)
   // Note: hookResult looks like { pageContext: { ... } }
   const pageContextFromOnBeforeRender = hookResult?.pageContext
   if (pageContextFromOnBeforeRender) {

@@ -1,22 +1,28 @@
-export { executeHookGeneric } // TO-DO/refactor: start using executeHookGeneric() and, eventually, prominently use it
+export { executeHookGeneric }
 export { executeHookGenericGlobalCumulative }
 
 import type { PageConfigUserFriendlyOld } from '../getPageFiles.js'
 import { executeHook } from './executeHook.js'
-import { getHookFromPageContext, getHookFromPageConfigGlobalCumulative } from './getHook.js'
-import type { HookNameOld, HookNameGlobal } from '../page-configs/Config.js'
+import { getHookFromPageConfigGlobalCumulative, getHookFromPageContextNew } from './getHook.js'
+import type { HookName, HookNameGlobal } from '../page-configs/Config.js'
 import type { PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
 
+// TO-DO/eventually: use executeHookGeneric() more prominently
 async function executeHookGeneric<PageContext extends PageConfigUserFriendlyOld>(
-  hookName: HookNameOld,
+  hookName: HookName,
   pageContext: PageContext,
   prepare: (pageContext: PageContext) => PageContext
 ) {
-  const hook = getHookFromPageContext(pageContext, hookName)
-  if (!hook) return // no hook defined or hook's meta.env isn't matching environment
+  const hooks = getHookFromPageContextNew(hookName, pageContext)
+  if (!hooks.length) return []
   const pageContextPrepared = prepare(pageContext)
-  const hookResult = await executeHook(() => hook.hookFn(pageContextPrepared), hook, pageContext)
-  return { hookResult, hook }
+  const hooksWithResult = await Promise.all(
+    hooks.map(async (hook) => {
+      const hookResult = await executeHook(() => hook.hookFn(pageContextPrepared), hook, pageContext)
+      return { ...hook, hookResult }
+    })
+  )
+  return hooksWithResult
 }
 
 async function executeHookGenericGlobalCumulative(
