@@ -2,7 +2,6 @@ export { getHookFromPageContext }
 export { getHookFromPageConfig }
 export { getHookFromPageConfigGlobal }
 export { getHookFromPageConfigGlobalCumulative }
-export { assertHook }
 export { getHook_setIsPrerenderering }
 export type { Hook }
 export type { HookLoc }
@@ -108,13 +107,6 @@ function getHookFromConfigValue(configValue: ConfigValue) {
   assert(hookFn)
   const hookFilePath = getHookFilePathToShowToUser(configValue.definedAtData)
   return { hookFn, hookFilePath }
-}
-
-function assertHook<TPageContext extends PageConfigUserFriendlyOld, THookName extends PropertyKey & HookNameOld>(
-  pageContext: TPageContext,
-  hookName: THookName
-): asserts pageContext is TPageContext & { exports: Record<THookName, Function | undefined> } {
-  getHookFromPageContext(pageContext, hookName)
 }
 
 function assertHookFn(

@@ -34,7 +34,7 @@ import {
 } from './prefetch.js'
 import { assertInfo, assertWarning, isReact } from './utils.js'
 import { type PageContextBeforeRenderClient, executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
-import { assertHook, getHookFromPageContext } from '../../shared/hooks/getHook.js'
+import { getHookFromPageContext } from '../../shared/hooks/getHook.js'
 import { isErrorFetchingStaticAssets, loadPageConfigsLazyClientSide } from '../shared/loadPageConfigsLazyClientSide.js'
 import { pushHistoryState } from './history.js'
 import {
@@ -138,7 +138,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       assert(previousPageContext)
       // We use the hook of the previous page in order to be able to call onPageTransitionStart() before fetching the files of the next page.
       // https://github.com/vikejs/vike/issues/1560
-      assertHook(previousPageContext, 'onPageTransitionStart')
       if (!globalObject.isTransitioning) {
         globalObject.isTransitioning = true
         const onPageTransitionStartHook = getHookFromPageContext(previousPageContext, 'onPageTransitionStart')
@@ -525,7 +524,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
     // onHydrationEnd()
     if (isFirstRender && !onRenderClientError) {
-      assertHook(pageContext, 'onHydrationEnd')
       const hook = getHookFromPageContext(pageContext, 'onHydrationEnd')
       if (hook) {
         const { hookFn } = hook
@@ -546,7 +544,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     if (globalObject.isTransitioning) {
       globalObject.isTransitioning = undefined
       assert(previousPageContext)
-      assertHook(previousPageContext, 'onPageTransitionEnd')
       const hook = getHookFromPageContext(previousPageContext, 'onPageTransitionEnd')
       if (hook) {
         const { hookFn } = hook
