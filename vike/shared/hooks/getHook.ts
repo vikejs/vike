@@ -65,17 +65,21 @@ function getHookFromPageContext(pageContext: PageConfigUserFriendlyOld, hookName
 function getHookFromPageContextNew(hookName: HookName, pageContext: PageConfigUserFriendlyOld): Hook[] {
   const { hooksTimeout } = pageContext.config
   const hookTimeout = getHookTimeout(hooksTimeout, hookName)
+  const hooks: Hook[] = []
   /* TO-DO/eventually: use pageContext.configEntries in favor of pageContext.exportsAll once V0.4 is removed
-  return (pageContext.configEntries[hookName] ?? []).map((val) => {
+  pageContext.configEntries[hookName]?.forEach((val) => {
     const hookFn = val.configValue
+    if (hookFn === null) return
     const hookFilePath = val.configDefinedByFile
   */
-  return (pageContext.exportsAll[hookName] ?? []).map((val) => {
+  pageContext.exportsAll[hookName]?.forEach((val) => {
     const hookFn = val.exportValue
+    if (hookFn === null) return
     const hookFilePath = val.filePath
     assert(hookFilePath)
-    return getHook(hookFn, hookName, hookFilePath, hookTimeout)
+    hooks.push(getHook(hookFn, hookName, hookFilePath, hookTimeout))
   })
+  return hooks
 }
 function getHookFromPageConfig(pageConfig: PageConfigRuntime, hookName: HookNamePage): null | Hook {
   const configValue = getConfigValueRuntime(pageConfig, hookName)
