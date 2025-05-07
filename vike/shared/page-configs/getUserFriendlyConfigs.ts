@@ -316,8 +316,6 @@ function getUserFriendlyConfigs_V1Design(pageConfig: { configValues: ConfigValue
     const configDefinedAt = getConfigDefinedAtOptional('Config', configName, definedAtData)
 
     configEntries[configName] = configEntries[configName] ?? []
-    // Currently each configName has only one entry. Adding an entry for each overriden config value isn't implemented yet. (This is an isomorphic file and it isn't clear whether this can/should be implemented on the client-side. We should load a minimum amount of code on the client-side.)
-    assert(configEntries[configName]!.length === 0)
     configEntries[configName]!.push({
       configValue: value,
       configDefinedAt,
@@ -350,6 +348,7 @@ function getUserFriendlyConfigs_V1Design(pageConfig: { configValues: ConfigValue
       }
       addSrc(src, configName)
       from.configsStandard[configName] = src
+      addLegacy(configName, value, configValue.definedAtData)
     }
     if (configValue.type === 'cumulative') {
       const src: SourceConfigsCumulative = {
@@ -358,6 +357,7 @@ function getUserFriendlyConfigs_V1Design(pageConfig: { configValues: ConfigValue
           const definedAtFile = configValue.definedAtData[i]
           assert(definedAtFile)
           const definedAt = getDefinedAtString(definedAtFile, configName)
+          addLegacy(configName, value, definedAtFile)
           return {
             value,
             definedAt
@@ -374,9 +374,8 @@ function getUserFriendlyConfigs_V1Design(pageConfig: { configValues: ConfigValue
       }
       addSrc(src, configName)
       from.configsComputed[configName] = src
+      addLegacy(configName, value, configValue.definedAtData)
     }
-
-    addLegacy(configName, value, configValue.definedAtData)
   })
 
   return {
