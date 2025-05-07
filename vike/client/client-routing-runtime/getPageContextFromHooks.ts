@@ -37,7 +37,7 @@ const globalObject = getGlobalObject<{ pageContextInitIsPassedToClient?: true }>
   {}
 )
 
-// TODO/eventually: rename
+// TO-DO/eventually: rename
 type PageContext = {
   urlOriginal: string
   _urlRewrite: string | null
@@ -49,7 +49,7 @@ type PageContextSerialized = {
   pageId: string
   _hasPageContextFromServer: true
 }
-// TODO/eventually: rename
+// TO-DO/eventually: rename
 function getPageContextFromHooks_serialized(): PageContextSerialized & {
   routeParams: Record<string, string>
   _hasPageContextFromServer: true
@@ -68,9 +68,7 @@ async function getPageContextFromHooks_isHydration(
 ) {
   for (const hookName of ['data', 'onBeforeRender'] as const) {
     if (hookClientOnlyExists(hookName, pageContext)) {
-      const pageContextFromHook = await executeHookClientSide(hookName, pageContext)
-      assert(!('urlOriginal' in pageContextFromHook))
-      Object.assign(pageContext, pageContextFromHook)
+      await executeDataLikeHook(hookName, pageContext)
     }
   }
   return pageContext
@@ -142,9 +140,7 @@ async function getPageContextFromClientHooks(
       assert(hookName === 'data' || hookName === 'onBeforeRender')
       if (hookClientOnlyExists(hookName, pageContext) || !pageContext._hasPageContextFromServer) {
         // This won't do anything if no hook has been defined or if the hook's env.client is false.
-        const pageContextFromHook = await executeHookClientSide(hookName, pageContext)
-        assert(!('urlOriginal' in pageContextFromHook))
-        Object.assign(pageContext, pageContextFromHook)
+        await executeDataLikeHook(hookName, pageContext)
       }
     }
   }
@@ -153,37 +149,48 @@ async function getPageContextFromClientHooks(
   return pageContextFromClientHooks
 }
 
-async function executeHookClientSide(
-  hookName: 'data' | 'onBeforeRender',
-  pageContext: {
-    pageId: string
-    _hasPageContextFromServer: boolean
-  } & PageConfigUserFriendlyOld &
-    PageContext
-) {
+type PageContextExecuteHook = {
+  pageId: string
+  _hasPageContextFromServer: boolean
+} & PageConfigUserFriendlyOld &
+  PageContext
+async function executeHookClientSide(hookName: 'data' | 'onBeforeRender', pageContext: PageContextExecuteHook) {
   const hook = getHookFromPageContext(pageContext, hookName)
   if (!hook) {
     // No hook defined or hook's env.client is false
-    return {}
+    return null
   }
   const pageContextForUserConsumption = preparePageContextForUserConsumptionClientSide(pageContext, true)
   const hookResult = await executeHook(() => hook.hookFn(pageContextForUserConsumption), hook, pageContext)
+  return { hookResult, hook }
+}
 
-  const pageContextFromHook = {}
-  if (hookName === 'onBeforeRender') {
-    assertOnBeforeRenderHookReturn(hookResult, hook.hookFilePath)
-    // Note: hookResult looks like { pageContext: { ... } }
-    const pageContextFromOnBeforeRender = hookResult?.pageContext
-    if (pageContextFromOnBeforeRender) {
-      objectAssign(pageContextFromHook, pageContextFromOnBeforeRender)
-    }
+async function executeDataLikeHook(hookName: 'data' | 'onBeforeRender', pageContext: PageContextExecuteHook) {
+  let pageContextFromHook: Record<string, unknown> | undefined
+  if (hookName === 'data') {
+    pageContextFromHook = await executeDataHook(pageContext)
   } else {
-    assert(hookName === 'data')
-    // Note: hookResult can be anything (e.g. an object) and is to be assigned to pageContext.data
-    const pageContextFromData = {
-      data: hookResult
-    }
-    objectAssign(pageContextFromHook, pageContextFromData)
+    pageContextFromHook = await executeOnBeforeRenderHook(pageContext)
+  }
+  Object.assign(pageContext, pageContextFromHook)
+}
+async function executeDataHook(pageContext: PageContextExecuteHook) {
+  const res = await executeHookClientSide('data', pageContext)
+  if (!res) return
+  const { hookResult } = res
+  const pageContextAddendum = { data: hookResult }
+  return pageContextAddendum
+}
+async function executeOnBeforeRenderHook(pageContext: PageContextExecuteHook) {
+  const res = await executeHookClientSide('onBeforeRender', pageContext)
+  if (!res) return
+  const { hookResult, hook } = res
+  const pageContextFromHook = {}
+  assertOnBeforeRenderHookReturn(hookResult, hook.hookFilePath)
+  // Note: hookResult looks like { pageContext: { ... } }
+  const pageContextFromOnBeforeRender = hookResult?.pageContext
+  if (pageContextFromOnBeforeRender) {
+    objectAssign(pageContextFromHook, pageContextFromOnBeforeRender)
   }
   return pageContextFromHook
 }
