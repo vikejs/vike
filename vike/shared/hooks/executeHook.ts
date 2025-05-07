@@ -20,7 +20,7 @@ const globalObject = getGlobalObject('utils/executeHook.ts', {
   pageContext: null as PageContextUnknown
 })
 
-// TO-DO/eventually: use executeHookGeneric() more prominently
+// TO-DO/eventually: use this variant more prominently
 async function executeHookNew<PageContext extends PageConfigUserFriendlyOld>(
   hookName: HookName,
   pageContext: PageContext,
