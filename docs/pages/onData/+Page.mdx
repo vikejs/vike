@@ -3,7 +3,7 @@ import { Link } from '@brillout/docpress'
 Environment: `server`, `client`.  
 Cumulative: `true`.  
 
-Hook called when <Link href="/pageContext#data">`pageContext.data`</Link> is available.
+Hook called as soon as <Link href="/pageContext#data">`pageContext.data`</Link> is available.
 
 ```ts
 // Environment: server, client
@@ -23,7 +23,6 @@ function onData(pageContext: PageContext & { data: Data }) {
 export { data }
 export type Data = Awaited<ReturnType<typeof data>>
 
-import { fetchCountInit } from '../../components/Counter/fetchCountInit'
 import type { PageContextServer } from 'vike/types'
 
 async function data(pageContext: PageContextServer) {
@@ -32,8 +31,8 @@ async function data(pageContext: PageContextServer) {
 }
 ```
 
-Note how <Link href="/data">`+data`</Link> is only called on the server-side while `+onData` is also called on the client-side:
- - Upon SSR, `+useData` is called on the server-side right after `+data` is called.
+The <Link href="/data">`+data` hook</Link> is only called on the server-side while `+onData` is also called on the client-side:
+ - Upon <Link href="/ssr">SSR</Link> (or <Link href="/pre-rendering">pre-rendering</Link>), `+useData` is called on the server-side right after `+data` is called.
  - Upon client-side navigation, is called on the client-side right after the client-side received `pageContext.data` from the server.
 
 It's usually used for populating <Link href="/store">a store</Link> with `pageContext.data`.
