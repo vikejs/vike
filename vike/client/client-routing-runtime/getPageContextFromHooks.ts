@@ -20,7 +20,10 @@ import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtm
 import type { PageConfigUserFriendlyOld, PageFile } from '../../shared/getPageFiles.js'
 import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide.js'
 import { getHookFromPageContext } from '../../shared/hooks/getHook.js'
-import { preparePageContextForUserConsumptionClientSide } from '../shared/preparePageContextForUserConsumptionClientSide.js'
+import {
+  type PageContextForUserConsumptionClientSide,
+  preparePageContextForUserConsumptionClientSide
+} from '../shared/preparePageContextForUserConsumptionClientSide.js'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
 import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
@@ -149,17 +152,10 @@ async function getPageContextFromClientHooks(
   return pageContextFromClientHooks
 }
 
-type PageContextExecuteHook = {
-  pageId: string
-  _hasPageContextFromServer: boolean
-} & PageConfigUserFriendlyOld &
-  PageContext
+type PageContextExecuteHook = PageConfigUserFriendlyOld & PageContextForUserConsumptionClientSide
 async function executeHookClientSide(hookName: 'data' | 'onBeforeRender', pageContext: PageContextExecuteHook) {
   const hook = getHookFromPageContext(pageContext, hookName)
-  if (!hook) {
-    // No hook defined or hook's env.client is false
-    return null
-  }
+  if (!hook) return // no hook defined or hook's env.client is false
   const pageContextForUserConsumption = preparePageContextForUserConsumptionClientSide(pageContext, true)
   const hookResult = await executeHook(() => hook.hookFn(pageContextForUserConsumption), hook, pageContext)
   return { hookResult, hook }
