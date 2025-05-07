@@ -19,7 +19,7 @@ import { parse } from '@brillout/json-serializer/parse'
 import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtml.js'
 import type { PageConfigUserFriendlyOld, PageFile } from '../../shared/getPageFiles.js'
 import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide.js'
-import { getHookFromPageContext } from '../../shared/hooks/getHook.js'
+import { getHookFromPageContext, HookName } from '../../shared/hooks/getHook.js'
 import {
   type PageContextForUserConsumptionClientSide,
   preparePageContextForUserConsumptionClientSide
@@ -35,6 +35,7 @@ import { AbortRender, isAbortPageContext } from '../../shared/route/abort.js'
 import { pageContextInitIsPassedToClient } from '../../shared/misc/pageContextInitIsPassedToClient.js'
 import { isServerSideError } from '../../shared/misc/isServerSideError.js'
 import { executeHook } from '../../shared/hooks/executeHook.js'
+import { executeHookGeneric } from '../../shared/hooks/executeHookGeneric.js'
 const globalObject = getGlobalObject<{ pageContextInitIsPassedToClient?: true }>(
   'client-routing-runtime/getPageContextFromHooks.ts',
   {}
@@ -153,12 +154,8 @@ async function getPageContextFromClientHooks(
 }
 
 type PageContextExecuteHook = PageConfigUserFriendlyOld & PageContextForUserConsumptionClientSide
-async function executeHookClientSide(hookName: 'data' | 'onBeforeRender', pageContext: PageContextExecuteHook) {
-  const hook = getHookFromPageContext(pageContext, hookName)
-  if (!hook) return // no hook defined or hook's env.client is false
-  const pageContextForUserConsumption = preparePageContextForUserConsumptionClientSide(pageContext, true)
-  const hookResult = await executeHook(() => hook.hookFn(pageContextForUserConsumption), hook, pageContext)
-  return { hookResult, hook }
+async function executeHookClientSide(hookName: HookName, pageContext: PageContextExecuteHook) {
+  return await executeHookGeneric(hookName, pageContext, (p) => preparePageContextForUserConsumptionClientSide(p, true))
 }
 
 async function executeDataLikeHook(hookName: 'data' | 'onBeforeRender', pageContext: PageContextExecuteHook) {

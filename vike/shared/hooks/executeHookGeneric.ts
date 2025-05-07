@@ -7,10 +7,16 @@ import { getHookFromPageContext, type HookName, getHookFromPageConfigGlobalCumul
 import type { HookNameGlobal } from '../page-configs/Config.js'
 import type { PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
 
-async function executeHookGeneric(hookName: HookName, pageContext: PageConfigUserFriendlyOld) {
+async function executeHookGeneric<PageContext extends PageConfigUserFriendlyOld>(
+  hookName: HookName,
+  pageContext: PageContext,
+  prepare: (pageContext: PageContext) => PageContext
+) {
   const hook = getHookFromPageContext(pageContext, hookName)
-  if (!hook) return
-  await executeHook(() => hook.hookFn(pageContext), hook, pageContext)
+  if (!hook) return // no hook defined or hook's meta.env isn't matching environment
+  const pageContextPrepared = prepare(pageContext)
+  const hookResult = await executeHook(() => hook.hookFn(pageContextPrepared), hook, pageContext)
+  return { hookResult, hook }
 }
 
 async function executeHookGenericGlobalCumulative(
