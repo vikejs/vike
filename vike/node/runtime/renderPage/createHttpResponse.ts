@@ -65,7 +65,6 @@ async function createHttpResponsePage(
   const earlyHints = getEarlyHints(await pageContext.__getPageAssets())
 
   const headers: ResponseHeaders = []
-  assert(pageContext.pageId)
   const cacheControl = getCacheControl(pageContext.pageId, pageContext._pageConfigs, statusCode)
   if (cacheControl) {
     headers.push(['Cache-Control', cacheControl])

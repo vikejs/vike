@@ -9,16 +9,18 @@ type StatusCode = HttpResponse['statusCode']
 
 const defaultValue = 'no-store, max-age=0'
 
-function getCacheControl(pageId: string, pageConfigs: PageConfigRuntime[], statusCode: StatusCode): string {
+function getCacheControl(pageId: string | null, pageConfigs: PageConfigRuntime[], statusCode: StatusCode): string {
   // TODO/v1-release: remove
   if (pageConfigs.length === 0) return defaultValue
 
   if (statusCode > 499) return defaultValue
 
-  const pageConfig = getPageConfig(pageId, pageConfigs)
-  const configValue = getConfigValueRuntime(pageConfig, 'cacheControl', 'string')
-  const value = configValue?.value
-  if (value) return value
+  if (pageId) {
+    const pageConfig = getPageConfig(pageId, pageConfigs)
+    const configValue = getConfigValueRuntime(pageConfig, 'cacheControl', 'string')
+    const value = configValue?.value
+    if (value) return value
+  }
 
   // - Disabling caching by default is the safest strategy, because caching is problematic with authentication as described in https://github.com/vikejs/vike/issues/1275#issuecomment-1824366875
   // - Are there use cases when we don't need to disable caching?
