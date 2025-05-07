@@ -423,7 +423,7 @@ type ConfigBuiltIn = {
    */
   data?: DataAsync<unknown> | DataSync<unknown> | ImportString | null
 
-  /** TODO/now
+  /** Hook called as soon as `pageContext.data` is available.
    *
    *  https://vike.dev/onData
    */
