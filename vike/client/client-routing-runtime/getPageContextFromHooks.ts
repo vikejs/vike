@@ -4,7 +4,6 @@ export { getPageContextFromServerHooks }
 export { getPageContextFromClientHooks }
 export { setPageContextInitIsPassedToClient }
 export type { PageContextFromServerHooks }
-export type { PageContextFromClientHooks }
 
 import {
   assert,
@@ -67,9 +66,6 @@ function getPageContextFromHooks_serialized(): PageContextSerialized & {
 async function getPageContextFromHooks_isHydration(
   pageContext: PageContextSerialized & PageContext & PageConfigUserFriendlyOld & { _hasPageContextFromServer: true }
 ) {
-  objectAssign(pageContext, {
-    _hasPageContextFromClient: false
-  })
   for (const hookName of ['data', 'onBeforeRender'] as const) {
     if (hookClientOnlyExists(hookName, pageContext)) {
       const pageContextFromHook = await executeHookClientSide(hookName, pageContext)
@@ -120,15 +116,10 @@ async function getPageContextFromServerHooks(
   return { pageContextFromServerHooks }
 }
 
-type PageContextFromClientHooks = { _hasPageContextFromClient: boolean }
 async function getPageContextFromClientHooks(
   pageContext: { pageId: string; _hasPageContextFromServer: boolean } & PageContext & PageConfigUserFriendlyOld,
   isErrorPage: boolean
-): Promise<PageContextFromClientHooks> {
-  objectAssign(pageContext, {
-    _hasPageContextFromClient: false
-  })
-
+) {
   // At this point, we need to call the client-side guard(), data() and onBeforeRender() hooks, if they exist on client
   // env. However if we have fetched pageContext from the server, some of them might have run already on the
   // server-side, so we run only the client-only ones in this case.
@@ -167,7 +158,6 @@ async function executeHookClientSide(
   pageContext: {
     pageId: string
     _hasPageContextFromServer: boolean
-    _hasPageContextFromClient: boolean
   } & PageConfigUserFriendlyOld &
     PageContext
 ) {
@@ -185,7 +175,6 @@ async function executeHookClientSide(
     // Note: hookResult looks like { pageContext: { ... } }
     const pageContextFromOnBeforeRender = hookResult?.pageContext
     if (pageContextFromOnBeforeRender) {
-      objectAssign(pageContextFromHook, { _hasPageContextFromClient: true })
       objectAssign(pageContextFromHook, pageContextFromOnBeforeRender)
     }
   } else {
@@ -193,9 +182,6 @@ async function executeHookClientSide(
     // Note: hookResult can be anything (e.g. an object) and is to be assigned to pageContext.data
     const pageContextFromData = {
       data: hookResult
-    }
-    if (hookResult) {
-      objectAssign(pageContextFromHook, { _hasPageContextFromClient: true })
     }
     objectAssign(pageContextFromHook, pageContextFromData)
   }

@@ -22,8 +22,7 @@ import {
   getPageContextFromHooks_isHydration,
   getPageContextFromHooks_serialized,
   type PageContextFromServerHooks,
-  setPageContextInitIsPassedToClient,
-  PageContextFromClientHooks
+  setPageContextInitIsPassedToClient
 } from './getPageContextFromHooks.js'
 import { createPageContextClientSide } from './createPageContextClientSide.js'
 import {
@@ -285,7 +284,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       objectAssign(pageContext, pageContextFromServerHooks)
 
       // Get pageContext from client-side hooks
-      let pageContextFromClientHooks: PageContextFromClientHooks
+      let pageContextFromClientHooks: Awaited<ReturnType<typeof getPageContextFromClientHooks>>
       try {
         pageContextFromClientHooks = await getPageContextFromClientHooks(pageContext, false)
       } catch (err) {
@@ -463,7 +462,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     assert(!('urlOriginal' in pageContextFromServerHooks))
     objectAssign(pageContext, pageContextFromServerHooks)
 
-    let pageContextFromClientHooks: PageContextFromClientHooks
+    let pageContextFromClientHooks: Awaited<ReturnType<typeof getPageContextFromClientHooks>>
     try {
       pageContextFromClientHooks = await getPageContextFromClientHooks(pageContext, true)
     } catch (err: unknown) {

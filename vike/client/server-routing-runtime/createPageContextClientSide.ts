@@ -26,8 +26,7 @@ async function createPageContextClientSide() {
     isClientSide: true,
     isHydration: true as const,
     isBackwardNavigation: null,
-    _hasPageContextFromServer: true as const,
-    _hasPageContextFromClient: false as const
+    _hasPageContextFromServer: true as const
   }
   objectAssign(pageContextCreated, getPageContextSerializedInHtml())
 
