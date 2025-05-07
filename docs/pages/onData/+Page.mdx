@@ -31,9 +31,8 @@ async function data(pageContext: PageContextServer) {
 }
 ```
 
-The <Link href="/data">`+data` hook</Link> is only called on the server-side while `+onData` is also called on the client-side:
- - Upon <Link href="/ssr">SSR</Link> (or <Link href="/pre-rendering">pre-rendering</Link>), `+useData` is called on the server-side right after `+data` is called.
- - Upon client-side navigation, is called on the client-side right after the client-side received `pageContext.data` from the server.
+Unlike <Link href="/data">`+data`</Link>, which is only called on the server-side, `+onData` is also called on the client-side:
+ - Upon <Link href="/ssr">SSR</Link> (or <Link href="/pre-rendering">pre-rendering</Link>), `+onData` is called on the server-side right after `+data`.
+ - Upon client-side navigation, it is called on the client-side right after `pageContext.data` is received from the server.
 
-It's usually used for populating <Link href="/store">a store</Link> with `pageContext.data`.
-
+It's typically used to populate <Link href="/store">a store</Link> with `pageContext.data`.
