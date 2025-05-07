@@ -1,5 +1,5 @@
 export { executeHook }
-export { executeHookGeneric }
+export { executeHookNew }
 export { executeHookGlobalCumulative }
 export { getPageContext }
 export { providePageContext }
@@ -21,7 +21,7 @@ const globalObject = getGlobalObject('utils/executeHook.ts', {
 })
 
 // TO-DO/eventually: use executeHookGeneric() more prominently
-async function executeHookGeneric<PageContext extends PageConfigUserFriendlyOld>(
+async function executeHookNew<PageContext extends PageConfigUserFriendlyOld>(
   hookName: HookName,
   pageContext: PageContext,
   prepare: (pageContext: PageContext) => PageContext
