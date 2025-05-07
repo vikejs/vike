@@ -310,12 +310,12 @@ function getUserFriendlyConfigs_V1Design(pageConfig: { configValues: ConfigValue
     sources[configName]!.push(src)
   }
 
-  Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
-    const { value } = configValue
-    const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser(configValue.definedAtData)
-    const configDefinedAt = getConfigDefinedAtOptional('Config', configName, configValue.definedAtData)
-
-    config[configName] = config[configName] ?? value
+  const addLegacy = (
+    configName: string,
+    value: unknown,
+    configDefinedAt: ConfigDefinedAtOptional,
+    configValueFilePathToShowToUser: string | null
+  ) => {
     configEntries[configName] = configEntries[configName] ?? []
     // Currently each configName has only one entry. Adding an entry for each overriden config value isn't implemented yet. (This is an isomorphic file and it isn't clear whether this can/should be implemented on the client-side. We should load a minimum amount of code on the client-side.)
     assert(configEntries[configName]!.length === 0)
@@ -324,6 +324,26 @@ function getUserFriendlyConfigs_V1Design(pageConfig: { configValues: ConfigValue
       configDefinedAt,
       configDefinedByFile: configValueFilePathToShowToUser
     })
+
+    // TODO/v1-release: remove
+    const exportName = configName
+    exportsAll[exportName] = exportsAll[exportName] ?? []
+    exportsAll[exportName]!.push({
+      exportValue: value,
+      exportSource: configDefinedAt,
+      filePath: configValueFilePathToShowToUser,
+      _filePath: configValueFilePathToShowToUser,
+      _fileType: null,
+      _isFromDefaultExport: null
+    })
+  }
+
+  Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
+    const { value } = configValue
+    const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser(configValue.definedAtData)
+    const configDefinedAt = getConfigDefinedAtOptional('Config', configName, configValue.definedAtData)
+
+    config[configName] = config[configName] ?? value
 
     if (configValue.type === 'standard') {
       const src: SourceConfigsStandard = {
@@ -359,17 +379,7 @@ function getUserFriendlyConfigs_V1Design(pageConfig: { configValues: ConfigValue
       from.configsComputed[configName] = src
     }
 
-    // TODO/v1-release: remove
-    const exportName = configName
-    exportsAll[exportName] = exportsAll[exportName] ?? []
-    exportsAll[exportName]!.push({
-      exportValue: value,
-      exportSource: configDefinedAt,
-      filePath: configValueFilePathToShowToUser,
-      _filePath: configValueFilePathToShowToUser,
-      _fileType: null,
-      _isFromDefaultExport: null
-    })
+    addLegacy(configName, value, configDefinedAt, configValueFilePathToShowToUser)
   })
 
   return {
