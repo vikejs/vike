@@ -3,6 +3,7 @@ export { getPageContextFromHooks_serialized }
 export { getPageContextFromServerHooks }
 export { getPageContextFromClientHooks }
 export { setPageContextInitIsPassedToClient }
+export { executeHookClient }
 export type { PageContextFromServerHooks }
 
 import {
@@ -19,7 +20,6 @@ import { parse } from '@brillout/json-serializer/parse'
 import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtml.js'
 import type { PageConfigUserFriendlyOld, PageFile } from '../../shared/getPageFiles.js'
 import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide.js'
-import { getHookFromPageContext } from '../../shared/hooks/getHook.js'
 import {
   type PageContextForUserConsumptionClientSide,
   preparePageContextForUserConsumptionClientSide
@@ -34,7 +34,7 @@ import { executeGuardHook } from '../../shared/route/executeGuardHook.js'
 import { AbortRender, isAbortPageContext } from '../../shared/route/abort.js'
 import { pageContextInitIsPassedToClient } from '../../shared/misc/pageContextInitIsPassedToClient.js'
 import { isServerSideError } from '../../shared/misc/isServerSideError.js'
-import { executeHook, executeHookNew } from '../../shared/hooks/executeHook.js'
+import { executeHookNew } from '../../shared/hooks/executeHook.js'
 import type { HookName } from '../../shared/page-configs/Config.js'
 const globalObject = getGlobalObject<{ pageContextInitIsPassedToClient?: true }>(
   'client-routing-runtime/getPageContextFromHooks.ts',
@@ -122,6 +122,7 @@ async function getPageContextFromClientHooks(
   pageContext: { pageId: string; _hasPageContextFromServer: boolean } & PageContext & PageConfigUserFriendlyOld,
   isErrorPage: boolean
 ) {
+  let dataHookExists = false
   // At this point, we need to call the client-side guard(), data() and onBeforeRender() hooks, if they exist on client
   // env. However if we have fetched pageContext from the server, some of them might have run already on the
   // server-side, so we run only the client-only ones in this case.
@@ -141,12 +142,17 @@ async function getPageContextFromClientHooks(
         )
       }
     } else {
-      assert(hookName === 'data' || hookName === 'onBeforeRender')
+      if (hookName === 'data') dataHookExists = true
       if (hookClientOnlyExists(hookName, pageContext) || !pageContext._hasPageContextFromServer) {
         // This won't do anything if no hook has been defined or if the hook's env.client is false.
         await executeDataLikeHook(hookName, pageContext)
       }
     }
+  }
+
+  // Execute +onData
+  if (dataHookExists) {
+    await executeHookClient('onData', pageContext)
   }
 
   const pageContextFromClientHooks = pageContext

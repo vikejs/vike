@@ -1,0 +1,44 @@
+import { Link } from '@brillout/docpress'
+
+Environment: `server`, `client`.  
+Cumulative: `true`.  
+
+Hook called as soon as <Link href="/pageContext#data">`pageContext.data`</Link> is available.
+
+```ts
+// Environment: server, client
+export { onData }
+
+import type { PageContext } from 'vike/types'
+import type { Data } from './+data'
+
+function onData(pageContext: PageContext & { data: Data }) {
+  // Do something with pageContext.data
+  console.log(pageContext.data)
+}
+```
+
+```ts
+// Environment: server
+export { data }
+export type Data = Awaited<ReturnType<typeof data>>
+
+import type { PageContextServer } from 'vike/types'
+
+async function data(pageContext: PageContextServer) {
+  const data = await fetchSomeData()
+  return data
+}
+```
+
+Unlike <Link href="/data">`+data`</Link>, which is only called on the server-side, `+onData` is also called on the client-side:
+ - Upon <Link href="/ssr">SSR</Link> (or <Link href="/pre-rendering">pre-rendering</Link>), `+onData` is called on the server-side right after `+data`.
+ - Upon client-side navigation, it is called on the client-side right after `pageContext.data` is received from the server.
+
+It's typically used to populate <Link href="/store">a store</Link> with `pageContext.data`.
+
+
+## See also
+
+- <Link href="/data" />
+- <Link href="/hooks" />

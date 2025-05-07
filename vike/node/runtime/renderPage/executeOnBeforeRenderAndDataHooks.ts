@@ -1,6 +1,5 @@
 export { executeOnBeforeRenderAndDataHooks }
 
-import { getHookFromPageContext } from '../../../shared/hooks/getHook.js'
 import { assertOnBeforeRenderHookReturn } from '../../../shared/assertOnBeforeRenderHookReturn.js'
 import { executeHookServer, type PageContextExecuteHookServer } from './executeHookServer.js'
 
@@ -22,6 +21,11 @@ async function executeOnBeforeRenderAndDataHooks(
       data: dataHook.hookResult
     }
     Object.assign(pageContext, pageContextFromHook)
+
+    // Execute +onData
+    if (!pageContext.isClientSideNavigation) {
+      await executeHookServer('onData', pageContext)
+    }
   }
 
   const res = await executeHookServer('onBeforeRender', pageContext)
