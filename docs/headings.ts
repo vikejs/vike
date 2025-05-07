@@ -412,6 +412,12 @@ const headings = [
   },
   {
     level: 2,
+    title: '`onData()` hook',
+    titleInNav: '`onData()`',
+    url: '/onData'
+  },
+  {
+    level: 2,
     title: '`guard()` hook',
     titleInNav: '`guard()`',
     url: '/guard'
