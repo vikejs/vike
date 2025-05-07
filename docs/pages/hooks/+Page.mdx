@@ -19,6 +19,7 @@ See also: <Link href="/settings" />.
 - [**`onBeforePrerenderStart()`**](/onBeforePrerenderStart): <TextEnv>server</TextEnv> Called before the whole pre-rendering process starts.
 - [**`onPrerenderStart()`**](/onPrerenderStart): <TextEnv>server</TextEnv> Global hook called when pre-rendering starts.
 - [**`onCreateApp()`**](/onCreateApp): <TextEnv>server & client</TextEnv> `vike-vue` Called after creating Vue's `app` instance.
+- [**`onData()`**](/onData): <TextEnv>server & client</TextEnv> Called as soon as <Link href="/pageContext#data">`pageContext.data`</Link> is available.
 
 
 ## Advanced
@@ -64,6 +65,7 @@ If you didn't change the environment of `data()` nor `onBeforeRender()`:
    > The routing executes your <Link href="/route-function">Route Functions</Link> (of all your pages).
 1. <TextEnv2>server</TextEnv2> <Link href="/guard">`guard()`</Link>
 1. <TextEnv2>server</TextEnv2> <Link href="/data">`data()`</Link>
+1. <TextEnv2>server</TextEnv2> <Link href="/onData">`onData()`</Link>
 1. <TextEnv2>server</TextEnv2> <Link href="/onBeforeRender">`onBeforeRender()`</Link>
 1. <TextEnv2>server</TextEnv2> <Link href="/onRenderHtml">`onRenderHtml()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onRenderClient">`onRenderClient()`</Link>
@@ -81,6 +83,7 @@ If you didn't change the environment of `data()` nor `onBeforeRender()`:
 1. <TextEnv2>server</TextEnv2> <Link href="/guard">`guard()`</Link>
 1. <TextEnv2>server</TextEnv2> <Link href="/data">`data()`</Link>
 1. <TextEnv2>server</TextEnv2> <Link href="/onBeforeRender">`onBeforeRender()`</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/onData">`onData()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onRenderClient">`onRenderClient()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onPageTransitionEnd">`onPageTransitionEnd()`</Link>
 
@@ -98,6 +101,7 @@ If you <Link href="/data#environment">configured `data()`</Link> and <Link href=
 1. <TextEnv2>server</TextEnv2> <Link href="/onRenderHtml">`onRenderHtml()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/guard">`guard()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/data">`data()`</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/onData">`onData()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onBeforeRender">`onBeforeRender()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onRenderClient">`onRenderClient()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onHydrationEnd">`onHydrationEnd()`</Link>
@@ -110,6 +114,7 @@ If you <Link href="/data#environment">configured `data()`</Link> and <Link href=
 1. <TextEnv2>client</TextEnv2> <Link href="/routing">Routing</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/guard">`guard()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/data">`data()`</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/onData">`onData()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onBeforeRender">`onBeforeRender()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onRenderClient">`onRenderClient()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onPageTransitionEnd">`onPageTransitionEnd()`</Link>
