@@ -153,12 +153,12 @@ async function getPageContextFromClientHooks(
   return pageContextFromClientHooks
 }
 
-type PageContextExecuteHook = PageConfigUserFriendlyOld & PageContextForUserConsumptionClientSide
-async function executeHookClient(hookName: HookName, pageContext: PageContextExecuteHook) {
+type PageContextExecuteHookClient = PageConfigUserFriendlyOld & PageContextForUserConsumptionClientSide
+async function executeHookClient(hookName: HookName, pageContext: PageContextExecuteHookClient) {
   return await executeHookNew(hookName, pageContext, (p) => preparePageContextForUserConsumptionClientSide(p, true))
 }
 
-async function executeDataLikeHook(hookName: 'data' | 'onBeforeRender', pageContext: PageContextExecuteHook) {
+async function executeDataLikeHook(hookName: 'data' | 'onBeforeRender', pageContext: PageContextExecuteHookClient) {
   let pageContextFromHook: Record<string, unknown> | undefined
   if (hookName === 'data') {
     pageContextFromHook = await executeDataHook(pageContext)
@@ -167,7 +167,7 @@ async function executeDataLikeHook(hookName: 'data' | 'onBeforeRender', pageCont
   }
   Object.assign(pageContext, pageContextFromHook)
 }
-async function executeDataHook(pageContext: PageContextExecuteHook) {
+async function executeDataHook(pageContext: PageContextExecuteHookClient) {
   const res = await executeHookClient('data', pageContext)
   const hook = res[0] // TO-DO/soon support cumulative
   if (!hook) return
@@ -175,7 +175,7 @@ async function executeDataHook(pageContext: PageContextExecuteHook) {
   const pageContextAddendum = { data: hookResult }
   return pageContextAddendum
 }
-async function executeOnBeforeRenderHook(pageContext: PageContextExecuteHook) {
+async function executeOnBeforeRenderHook(pageContext: PageContextExecuteHookClient) {
   const res = await executeHookClient('onBeforeRender', pageContext)
   const hook = res[0] // TO-DO/soon support cumulative
   if (!hook) return
