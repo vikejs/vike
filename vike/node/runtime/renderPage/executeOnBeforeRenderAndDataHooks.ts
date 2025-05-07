@@ -1,43 +1,33 @@
 export { executeOnBeforeRenderAndDataHooks }
 
-import { type PageConfigUserFriendlyOld } from '../../../shared/getPageFiles.js'
 import { getHookFromPageContext } from '../../../shared/hooks/getHook.js'
-import {
-  preparePageContextForUserConsumptionServerSide,
-  type PageContextForUserConsumptionServerSide
-} from './preparePageContextForUserConsumptionServerSide.js'
 import { assertOnBeforeRenderHookReturn } from '../../../shared/assertOnBeforeRenderHookReturn.js'
-import { executeHook } from '../../../shared/hooks/executeHook.js'
+import { executeHookServer, type PageContextExecuteHookServer } from './executeHookServer.js'
 
 async function executeOnBeforeRenderAndDataHooks(
   pageContext: {
     pageId: string
     _pageContextAlreadyProvidedByOnPrerenderHook?: true
-  } & PageConfigUserFriendlyOld &
-    PageContextForUserConsumptionServerSide
+  } & PageContextExecuteHookServer
 ): Promise<void> {
   if (pageContext._pageContextAlreadyProvidedByOnPrerenderHook) {
     return
   }
-  const dataHook = getHookFromPageContext(pageContext, 'data')
-  const onBeforeRenderHook = getHookFromPageContext(pageContext, 'onBeforeRender')
-  if (!dataHook && !onBeforeRenderHook) {
-    return
-  }
 
-  preparePageContextForUserConsumptionServerSide(pageContext)
-
+  const hooks = await executeHookServer('data', pageContext)
+  const dataHook = hooks[0] // TO-DO/soon: support cumulative
   if (dataHook) {
-    const hookResult = await executeHook(() => dataHook.hookFn(pageContext), dataHook, pageContext)
     // Note: hookResult can be anything (e.g. an object) and is to be assigned to pageContext.data
     const pageContextFromHook = {
-      data: hookResult
+      data: dataHook.hookResult
     }
     Object.assign(pageContext, pageContextFromHook)
   }
 
+  const res = await executeHookServer('onBeforeRender', pageContext)
+  const onBeforeRenderHook = res[0] // TO-DO/soon: support cumulative
   if (onBeforeRenderHook) {
-    const hookResult = await executeHook(() => onBeforeRenderHook.hookFn(pageContext), onBeforeRenderHook, pageContext)
+    const { hookResult } = onBeforeRenderHook
     assertOnBeforeRenderHookReturn(hookResult, onBeforeRenderHook.hookFilePath)
     const pageContextFromHook = hookResult?.pageContext
     Object.assign(pageContext, pageContextFromHook)
