@@ -92,6 +92,15 @@ export default {
   </TabPanel>
 </Tabs>
 
+### Examples
+
+Example of using Vike with Cloudflare Pages with a Cloudflare worker:
+ - <Example timestamp="2024.06" repo="vikejs/vike-cloudflare" /> - `vike-cloudflare` demos, with support for Plain Vike and Servers like <Link href="/hono" />.
+ - <Example timestamp="2024.01" repo="travis-r6s/vike-cf-pages" /> - Advanced demo showcasing a lot of integrations such as REST, tRPC, GraphQL, Sentry, and Thumbprint.
+ - <Example timestamp="2024.01" repo="osseonews/vike-app-cfp" />
+ - <Example timestamp="2022.04" repo="Immortalin/vite-plugin-ssr-cloudflare-pages-demo" />
+   > vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike).
+
 ## Static
 
 <StaticHostDocIntro
@@ -103,12 +112,3 @@ export default {
 If you let Cloudflare Pages build your app, note that Vike requires Node.js `>=12.19.0` and you may need to change <a href="https://developers.cloudflare.com/pages/platform/build-configuration#language-support-and-tools">Cloudflare Pages' default Node.js version</a>.
 
 <StaticHostDocOutro />
-
-## Examples
-
-Example of using Vike with Cloudflare Pages with a Cloudflare worker:
- - <Example timestamp="2024.06" repo="vikejs/vike-cloudflare" /> - `vike-cloudflare` demos, with support for Plain Vike and Servers like <Link href="/hono" />.
- - <Example timestamp="2024.01" repo="travis-r6s/vike-cf-pages" /> - Advanced demo showcasing a lot of integrations such as REST, tRPC, GraphQL, Sentry, and Thumbprint.
- - <Example timestamp="2024.01" repo="osseonews/vike-app-cfp" />
- - <Example timestamp="2022.04" repo="Immortalin/vite-plugin-ssr-cloudflare-pages-demo" />
-   > vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike).
