@@ -1,6 +1,6 @@
 export * from './UiFrameworkExtension'
 export * from './IntegrationHelp'
-export * from './UseBati'
+export * from './UseScaffolder'
 export * from './UseVikeExtensionUiFramework'
 export * from './Figure'
 export { default as DefaultRouting } from './DefaultRouting.mdx'
