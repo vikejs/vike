@@ -104,8 +104,11 @@ v0.5 breaking changes:
 - Simplify pageContext return type?
 - Deprecate returning `pageContext` from `onBeforeRender()`
   - Depecrate all return values of `onBeforeRender()`, `onRenderHtml`, and all hooks?
+    - Including `documentHtml` and `injectFiter()`
   - Remove hook types such as `OnBeforeRenderAsync` https://vike.dev/onBeforeRender#typescript
+== Dismissed
 - Move hooks from `vike-{react,vue,solid}` to Vike core? E.g. `onRender{Client,Html}{Before,After}()`?
+  - So far I don't see a need for this. The only upside would be to simplify the implementation of `vike-{react,vue,solid}` and, maybe, increased compatibility of Vike extensions (if some UI-framework-agnostic Vike extensions need those hooks then it could make sense to move hooks to Vike core).
 
 
 pageContext prefetching
