@@ -234,8 +234,8 @@ importers:
         specifier: ^0.0.47
         version: 0.0.47
       '@brillout/docpress':
-        specifier: ^0.12.6
-        version: 0.12.6(@algolia/client-search@5.21.0)(@types/react@19.0.8)(@vitejs/plugin-react-swc@3.7.2(vite@6.3.4(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2)))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.40.0)(search-insights@2.17.3)(typescript@5.8.3)(vike@vike)(vite@6.3.4(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2))
+        specifier: ^0.13.0
+        version: 0.13.0(@algolia/client-search@5.21.0)(@types/react@19.0.8)(@vitejs/plugin-react-swc@3.7.2(vite@6.3.4(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2)))(acorn@8.14.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.40.0)(search-insights@2.17.3)(typescript@5.8.3)(vike@vike)(vite@6.3.4(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2))
       '@types/react':
         specifier: ^19.0.2
         version: 19.0.8
@@ -2163,14 +2163,14 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@brillout/docpress@0.12.6':
-    resolution: {integrity: sha512-kjXCyKAdkBYaNz+vCRWcAhWeCFYlinUYQMY9pINJaxXb3Kld2yYBERKEP0WYefx+03VtmKIvJiOHFzGYFcN6aQ==}
+  '@brillout/docpress@0.13.0':
+    resolution: {integrity: sha512-eUXh56AII/zNktCs0935SdC9Ax3UN3kYJlNsWyU3g/qb+XosUtiX4hqY2470rli0pglkiv5oIPp6lu/wF7ncKA==}
     peerDependencies:
       '@vitejs/plugin-react-swc': '>=3.0.0'
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
       typescript: '>=5.0.0'
-      vike: link:/home/rom/tmp/vike/vike/
+      vike: link:/home/rom/code/vike/vike/
       vite: '>=5.2.0'
     peerDependenciesMeta:
       '@vitejs/plugin-react-swc':
@@ -7502,7 +7502,7 @@ packages:
     resolution: {integrity: sha512-W+xmy2lCVa9dQOmnFx8qVgznh822QYYT2VVD/f2/65XlSi59Ab20/3wr56zMNthxz3QO3g85yUpSUt0ZJTvXxA==}
     deprecated: This package has been superseded by vike-server. Please check https://github.com/vikejs/vike-server/blob/main/MIGRATION.md#migration-from-vike-node.
     peerDependencies:
-      vike: link:/home/rom/tmp/vike/vike/
+      vike: link:/home/rom/code/vike/vike/
       vite: '>=5.0.10'
     peerDependenciesMeta:
       vite:
@@ -7513,12 +7513,12 @@ packages:
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
-      vike: link:/home/rom/tmp/vike/vike/
+      vike: link:/home/rom/code/vike/vike/
 
   vike-vue@0.8.6:
     resolution: {integrity: sha512-DT2PsxqfvMdkyuR3zdHPBcwrKjqpN7mIYeSIZ0WZsN+cEsY467nznyoZltq5vMQiQcEeQtQI0WrZTyBWKA7S5A==}
     peerDependencies:
-      vike: link:/home/rom/tmp/vike/vike/
+      vike: link:/home/rom/code/vike/vike/
       vue: '>=3.0.0'
 
   vite-node@3.1.1:
@@ -7540,7 +7540,7 @@ packages:
     resolution: {integrity: sha512-tNLg5fuMCF6nVfMlttstKt54VQ7KhqHh7/xahZdjGsbP8Z5ANCwy2WlIdrgkrwB752HMPyJnBXGSdg/O3UT3gg==}
     peerDependencies:
       '@vite-plugin-vercel/vike': 9.0.3
-      vike: link:/home/rom/tmp/vike/vike/
+      vike: link:/home/rom/code/vike/vike/
       vite: ^4.4 || ^5.0.2 || ^6
     peerDependenciesMeta:
       '@vite-plugin-vercel/vike':
@@ -8297,14 +8297,14 @@ snapshots:
   '@biomejs/cli-win32-x64@1.9.4':
     optional: true
 
-  '@brillout/docpress@0.12.6(@algolia/client-search@5.21.0)(@types/react@19.0.8)(@vitejs/plugin-react-swc@3.7.2(vite@6.3.4(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2)))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.40.0)(search-insights@2.17.3)(typescript@5.8.3)(vike@vike)(vite@6.3.4(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2))':
+  '@brillout/docpress@0.13.0(@algolia/client-search@5.21.0)(@types/react@19.0.8)(@vitejs/plugin-react-swc@3.7.2(vite@6.3.4(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2)))(acorn@8.14.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.40.0)(search-insights@2.17.3)(typescript@5.8.3)(vike@vike)(vite@6.3.4(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2))':
     dependencies:
       '@brillout/picocolors': 1.0.26
       '@docsearch/css': 3.9.0
       '@docsearch/react': 3.9.0(@algolia/client-search@5.21.0)(@types/react@19.0.8)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(search-insights@2.17.3)
       '@mdx-js/mdx': 3.0.1
       '@mdx-js/react': 3.0.1(@types/react@19.0.8)(react@19.0.0)
-      '@mdx-js/rollup': 3.0.1(rollup@4.40.0)
+      '@mdx-js/rollup': 3.0.1(acorn@8.14.0)(rollup@4.40.0)
       '@shikijs/transformers': 1.2.0
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
@@ -9090,7 +9090,7 @@ snapshots:
       '@types/react': 19.0.8
       react: 19.0.0
 
-  '@mdx-js/rollup@3.0.1(rollup@4.40.0)':
+  '@mdx-js/rollup@3.0.1(acorn@8.14.0)(rollup@4.40.0)':
     dependencies:
       '@mdx-js/mdx': 3.1.0(acorn@8.14.0)
       '@rollup/pluginutils': 5.1.4(rollup@4.40.0)
