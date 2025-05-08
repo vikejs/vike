@@ -215,8 +215,8 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Cloudflare Workers',
-    url: '/cloudflare-workers',
+    title: 'Cloudflare',
+    url: '/cloudflare',
     sectionTitles: ['Cloudflare Pages']
   },
   {

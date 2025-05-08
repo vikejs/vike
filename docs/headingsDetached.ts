@@ -980,6 +980,10 @@ function redirects(): HeadingDetachedDefinition[] {
     {
       title: '`vike-server`',
       url: '/vike-server'
+    },
+    {
+      title: 'Cloudflare Workers',
+      url: '/cloudflare-workers'
     }
   ].map((h) => ({ ...h, category: 'Page Redirection' }))
 }
