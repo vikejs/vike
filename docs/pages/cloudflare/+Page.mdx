@@ -1,0 +1,183 @@
+import { RepoLink, Link } from '@brillout/docpress'
+import { Example, UseBati } from '../../components'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+import '../../components/tabs.css'
+import Examples from './Examples.mdx'
+
+We recommend using the <Link href="#vike-cloudflare" /> extension to deploy your app to [Cloudflare](https://www.cloudflare.com).
+
+> <UseBati>`vike-cloudflare`</UseBati>
+
+
+## `vike-cloudflare`
+
+The [`vike-cloudflare`](https://github.com/vikejs/vike-cloudflare) extension enables zero-configuration deployment to
+ - [Cloudflare Workers](https://workers.cloudflare.com) for the server-side (if you have any), and
+ - [Cloudflare Pages](https://pages.cloudflare.com) for static assets.
+
+<Link href="/pre-rendering">Pre-rendered pages</Link> are deployed as static files, and <Link href="/ssr">SSR</Link>'d pages as [Pages Functions](https://developers.cloudflare.com/pages/functions/advanced-mode/) (which use Cloudflare Workers under the hood).
+
+### Without a server
+
+```js
+// +config.js
+
+import vikeCloudflare from "vike-cloudflare/config";
+
+export default {
+  plugins: [vikeCloudflare]
+}
+```
+
+### With a server
+
+`vike-cloudflare` currently supports <Link href="/hono" /> and <Link href="/hattip" />.
+
+```js
+// +config.js
+
+import vikeCloudflare from "vike-cloudflare/config";
+
+export default {
+  plugins: [vikeCloudflare],
+  server: {
+    entry: "server/index.js"
+  }
+}
+```
+
+<Tabs>
+  <TabList>
+    <Tab>Hono</Tab>
+    <Tab>Hattip</Tab>
+  </TabList>
+
+  <TabPanel>
+    ```js
+    // server/index.js
+
+    import { Hono } from "hono";
+    import { apply } from "vike-cloudflare/hono";
+    import { serve } from "vike-cloudflare/hono/serve";
+
+    function startServer() {
+      const app = new Hono();
+      const port = process.env.PORT || 3000;
+
+      apply(app);
+
+      return serve(app, { port: +port });
+    }
+
+    export default startServer();
+
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```js
+    // server/index.js
+
+    import { createRouter } from "@hattip/router";
+    import { apply } from "vike-cloudflare/hattip";
+    import { serve } from "vike-cloudflare/hattip/serve";
+
+    function startServer() {
+      const router = createRouter();
+      const port = process.env.PORT || 3000;
+
+      apply(router);
+
+      return serve(router, { port: +port });
+    }
+
+    export default startServer();
+    ```
+  </TabPanel>
+</Tabs>
+
+
+## Accessing Cloudflare APIs in development
+
+You can use `wrangler`'s [`getPlatformProxy()`](https://developers.cloudflare.com/workers/wrangler/api/#getplatformproxy) to access Cloudflare APIs (such as D1 and KV) in development.
+
+For example, this is what <Link href="/new">`pnpm create vike@latest --react --hono --drizzle --cloudflare`</Link> uses to access [Cloudflare D1](https://developers.cloudflare.com/d1/) during development:
+
+```ts
+import type { D1Database } from "@cloudflare/workers-types";
+import type { RuntimeAdapter } from "@universal-middleware/core";
+
+/**
+ * Retrieve Cloudflare `env.DB` from `universal-middleware` runtime
+ */
+export async function getDbFromRuntime(runtime: RuntimeAdapter): Promise<D1Database> {
+  if (runtime.runtime === "workerd") {
+    return runtime.env!.DB as D1Database;
+  }
+
+  // When running on node, simulate Cloudflare environment with "wrangler"
+  const { getPlatformProxy } = await import("wrangler");
+
+  const { env } = await getPlatformProxy();
+  return env.DB as D1Database;
+}
+```
+
+## Extend 3MB limit
+
+By default the bundle size of your worker cannot exceed 3MB, but you can request sizes of up to 100MB and beyond.
+ - [Cloudflare Workers > Larger Scripts](https://www.cloudflare.com/larger-scripts-on-workers-early-access/)
+ - [Cloudflare Workers > Limits > Worker Size](https://developers.cloudflare.com/workers/platform/limits/#worker-size)
+
+
+## Manual integration
+
+Instead of using `vike-cloudflare`, you can manually integrate your app with Cloudflare yourself.
+
+### Cloudflare Pages
+
+For a manual integration, we generally recommend using:
+ - [Cloudflare Pages](https://developers.cloudflare.com/pages/) for static assets and <Link href="/pre-rendering">pre-rendered pages</Link>, and
+ - [Pages Functions](https://developers.cloudflare.com/pages/platform/functions/) for <Link href="/ssr">SSR'd pages</Link>.
+
+Examples:
+ - <Example timestamp="2024.01" repo="travis-r6s/vike-cf-pages" /> - Advanced demo showcasing a lot of integrations such as REST, tRPC, GraphQL, Sentry, and Thumbprint.
+ - <Example timestamp="2024.01" repo="osseonews/vike-app-cfp" />
+ - <Example timestamp="2022.04" repo="Immortalin/vite-plugin-ssr-cloudflare-pages-demo" />
+   > vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike).
+
+### Wrangler
+
+You can also directly use [Cloudflare Workers](https://workers.cloudflare.com) instead of using Cloudflare Pages.
+
+Cloudflare Workers requires your entire worker code to be bundled into a single file — you can use [Wrangler](https://github.com/cloudflare/workers-sdk) to achieve that (it uses [esbuild](https://esbuild.github.io/) under the hood).
+
+> Cloudflare uses the term "worker code" to denote server code that is run on its edge infrastructure.
+
+<Examples />
+
+### Development
+
+For a significantly faster development experience we recommend, whenever possible, using Vite's development server (or a server such as <Link href="/express">Express.js</Link> or <Link href="/hono">Hono</Link>) instead of Wrangler.
+
+In other words:
+ - Skip `wrangler` / Cloudflare Workers altogether while developing your app.
+ - Use `wrangler dev` to preview your worker.
+ - Use `wrangler publish` to deploy your worker to Cloudflare Workers.
+
+<Examples />
+
+#### Universal `fetch()`
+
+When using Node.js(/Bun/Deno) for development and Cloudflare Workers for production, you may need a `fetch()` function that works in both environments.
+
+You can define a fetch function at `pageContext.fetch` that works in all environments.
+The trick is to add a different `fetch()` implementation to `pageContextInit` at <Link text={<code>renderPage(pageContextInit)</code>} href="/renderPage" />.
+
+Example: <RepoLink path='/examples/cloudflare-workers-react-full#universal-fetch' />.
+
+> Libraries such as `node-fetch` or `cross-fetch` typically don't work with Cloudflare Workers.
+
+
+## See also
+
+- <Link href="/cloudflare-pages" />
