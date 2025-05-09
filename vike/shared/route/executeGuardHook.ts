@@ -8,12 +8,12 @@ import { executeHook } from '../hooks/executeHook.js'
 const errIntro = 'The guard() hook defined by'
 
 async function executeGuardHook<
-  T extends PageConfigUserFriendlyOld & {
+  PageContext extends PageConfigUserFriendlyOld & {
     pageId: string
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfigRuntime[]
   }
->(pageContext: T, prepareForUserConsumption: (pageConfig: T) => T | void): Promise<void> {
+>(pageContext: PageContext, prepareForUserConsumption: (pageConfig: PageContext) => PageContext | void): Promise<void> {
   let hook: Hook | null
   if (pageContext._pageFilesAll.length > 0) {
     // V0.4 design
