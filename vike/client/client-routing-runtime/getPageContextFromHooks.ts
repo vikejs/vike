@@ -138,7 +138,7 @@ async function getPageContextFromClientHooks(
         // Should we really call the guard() hook on the client-side? Shouldn't we make the guard() hook a server-side
         // only hook? Or maybe make its env configurable like data() and onBeforeRender()?
         await executeGuardHook(pageContext, (pageContext) =>
-          preparePageContextForUserConsumptionClientSide(pageContext, true)
+          preparePageContextForUserConsumptionClientSide(pageContext)
         )
       }
     } else {
@@ -161,7 +161,7 @@ async function getPageContextFromClientHooks(
 
 type PageContextExecuteHookClient = PageConfigUserFriendlyOld & PageContextForUserConsumptionClientSide
 async function executeHookClient(hookName: HookName, pageContext: PageContextExecuteHookClient) {
-  return await executeHookNew(hookName, pageContext, (p) => preparePageContextForUserConsumptionClientSide(p, true))
+  return await executeHookNew(hookName, pageContext, (p) => preparePageContextForUserConsumptionClientSide(p))
 }
 
 async function executeDataLikeHook(hookName: 'data' | 'onBeforeRender', pageContext: PageContextExecuteHookClient) {

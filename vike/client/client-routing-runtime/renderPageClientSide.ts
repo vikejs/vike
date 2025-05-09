@@ -513,7 +513,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     const onRenderClientPromise = (async () => {
       let onRenderClientError: unknown
       try {
-        await executeOnRenderClientHook(pageContext, true)
+        await executeOnRenderClientHook(pageContext)
       } catch (err) {
         onRenderClientError = err
       }

@@ -14,8 +14,7 @@ type PageContextForUserConsumptionClientSide = PageConfigUserFriendlyOld & {
 }
 
 function preparePageContextForUserConsumptionClientSide<T extends PageContextForUserConsumptionClientSide>(
-  pageContext: T,
-  isClientRouting: boolean
+  pageContext: T
 ): T & { Page: unknown } {
   const Page =
     pageContext.config.Page ||

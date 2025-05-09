@@ -20,11 +20,8 @@ type PageContextBeforeRenderClient = {
 } & PageConfigUserFriendlyOld &
   PageContextForUserConsumptionClientSide
 
-async function executeOnRenderClientHook<PC extends PageContextBeforeRenderClient>(
-  pageContext: PC,
-  isClientRouting: boolean
-): Promise<void> {
-  const pageContextForUserConsumption = preparePageContextForUserConsumptionClientSide(pageContext, isClientRouting)
+async function executeOnRenderClientHook<PC extends PageContextBeforeRenderClient>(pageContext: PC): Promise<void> {
+  const pageContextForUserConsumption = preparePageContextForUserConsumptionClientSide(pageContext)
 
   let hook: null | Hook = null
   let hookName: 'render' | 'onRenderClient'

@@ -17,7 +17,7 @@ hydrate()
 
 async function hydrate() {
   const pageContext = await createPageContextClientSide()
-  await executeOnRenderClientHook(pageContext, false)
+  await executeOnRenderClientHook(pageContext)
   const hook = getHookFromPageContext(pageContext, 'onHydrationEnd')
   if (hook) await executeHook(() => hook.hookFn(pageContext), hook, pageContext)
 }
