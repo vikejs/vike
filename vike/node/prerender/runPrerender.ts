@@ -70,7 +70,7 @@ import { isVikeCli } from '../cli/context.js'
 import { isViteCliCall } from '../plugin/shared/isViteCliCall.js'
 import { getVikeConfigInternal } from '../plugin/plugins/commonConfig.js'
 import fs from 'node:fs'
-import { preparePageContextForUserConsumptionServer } from '../runtime/renderPage/preparePageContextForUserConsumptionServer.js'
+const docLink = 'https://vike.dev/i18n#pre-rendering'
 
 type HtmlFile = {
   pageContext: PageContextPrerendered
@@ -265,7 +265,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   await warnMissingPages(prerenderContext._prerenderedPageContexts, globalContext, doNotPrerenderList, partial)
 
-  const prerenderContextPublic = makePublic(prerenderContext)
+  const prerenderContextPublic = preparePrerenderContextForUserConsumption(prerenderContext)
   objectAssign(vike.prerenderContext, prerenderContextPublic)
 
   if (prerenderConfigGlobal.isPrerenderingEnabledForAllPages && !prerenderConfigGlobal.keepDistServer) {
@@ -757,32 +757,14 @@ async function callOnPrerenderStartHook(
     pageContext._urlOriginalBeforeHook = pageContext.urlOriginal
   })
 
-  const docLink = 'https://vike.dev/i18n#pre-rendering'
-
   prerenderContext.pageContexts.forEach((pageContext) => {
     // Preserve URL computed properties when the user is copying pageContext is his onPrerenderStart() hook, e.g. /examples/i18n/
     // https://vike.dev/i18n#pre-rendering
     preservePropertyGetters(pageContext)
   })
 
-  let result: unknown = await executeHook(
-    () => {
-      const prerenderContextPublic = makePublic(prerenderContext)
-      // TODO/v1-release: remove warning
-      Object.defineProperty(prerenderContextPublic, 'prerenderPageContexts', {
-        get() {
-          assertWarning(false, `prerenderPageContexts has been renamed pageContexts, see ${docLink}`, {
-            showStackTrace: true,
-            onlyOnce: true
-          })
-          return prerenderContext.pageContexts
-        }
-      })
-      return hookFn(prerenderContextPublic)
-    },
-    onPrerenderStartHook,
-    null
-  )
+  const prerenderContextPublic = preparePrerenderContextForUserConsumption(prerenderContext)
+  let result: unknown = await executeHook(() => hookFn(prerenderContextPublic), onPrerenderStartHook, null)
 
   // Before applying result
   prerenderContext.pageContexts.forEach((pageContext) => {
@@ -1206,6 +1188,20 @@ function assertIsNotAbort(err: unknown, urlOriginal: string) {
   )
 }
 
+function preparePrerenderContextForUserConsumption(prerenderContext: PrerenderContext) {
+  const prerenderContextPublic = makePublic(prerenderContext)
+  // TODO/v1-release: remove warning
+  Object.defineProperty(prerenderContextPublic, 'prerenderPageContexts', {
+    get() {
+      assertWarning(false, `prerenderPageContexts has been renamed pageContexts, see ${pc.underline(docLink)}`, {
+        showStackTrace: true,
+        onlyOnce: true
+      })
+      return prerenderContext.pageContexts
+    }
+  })
+  return prerenderContextPublic
+}
 type PrerenderContextPublic = Pick<PrerenderContext, 'output' | 'pageContexts'>
 function makePublic(prerenderContext: PrerenderContext): PrerenderContextPublic {
   const prerenderContextPublic = getPublicProxy(prerenderContext, 'prerenderContext', [
