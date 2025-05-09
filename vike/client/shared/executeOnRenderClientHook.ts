@@ -4,10 +4,7 @@ export type { PageContextBeforeRenderClient }
 import { assert, assertUsage } from '../server-routing-runtime/utils.js'
 import { getHookFromPageContext, type Hook } from '../../shared/hooks/getHook.js'
 import type { PageFile, PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
-import {
-  type PageContextForUserConsumptionClientShared,
-  preparePageContextForUserConsumptionClientShared
-} from './preparePageContextForUserConsumptionClientShared.js'
+import { type PageContextForUserConsumptionClientShared } from './preparePageContextForUserConsumptionClientShared.js'
 import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 import { executeHook } from '../../shared/hooks/executeHook.js'
 
@@ -20,8 +17,11 @@ type PageContextBeforeRenderClient = {
 } & PageConfigUserFriendlyOld &
   PageContextForUserConsumptionClientShared
 
-async function executeOnRenderClientHook<PageContext extends PageContextBeforeRenderClient>(pageContext: PageContext): Promise<void> {
-  const pageContextForUserConsumption = preparePageContextForUserConsumptionClientShared(pageContext)
+async function executeOnRenderClientHook<PageContext extends PageContextBeforeRenderClient>(
+  pageContext: PageContext,
+  prepareForUserConsumption: (pageConfig: PageContext) => PageContext
+): Promise<void> {
+  const pageContextForUserConsumption = prepareForUserConsumption(pageContext)
 
   let hook: null | Hook = null
   let hookName: 'render' | 'onRenderClient'

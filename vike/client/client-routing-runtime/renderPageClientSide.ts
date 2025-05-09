@@ -57,6 +57,7 @@ import { getRouteStringParameterList } from '../../shared/route/resolveRouteStri
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 import type { PageContextClient } from '../../shared/types.js'
 import { executeHook } from '../../shared/hooks/executeHook.js'
+import { preparePageContextForUserConsumptionClient } from './preparePageContextForUserConsumptionClient.js'
 
 const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
@@ -498,7 +499,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     const onRenderClientPromise = (async () => {
       let onRenderClientError: unknown
       try {
-        await executeOnRenderClientHook(pageContext)
+        await executeOnRenderClientHook(pageContext, preparePageContextForUserConsumptionClient)
       } catch (err) {
         onRenderClientError = err
       }
