@@ -227,7 +227,6 @@ function assertPageContextUrlComputed(pageContext: object) {
   ```
   */
   if ('urlPathname' in pageContext) {
-    assert(typeof pageContext.urlPathname === 'string')
     assert(isPropertyGetter(pageContext, 'urlPathname'))
     assert(isPropertyGetter(pageContext, 'urlParsed'))
     assert(isPropertyGetter(pageContext, 'url'))
