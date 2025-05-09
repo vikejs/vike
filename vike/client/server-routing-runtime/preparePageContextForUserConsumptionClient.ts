@@ -5,8 +5,7 @@ import { preparePageContextForUserConsumptionClientShared } from '../shared/prep
 import type { PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
 import type { PageContextBuiltInClientInternalServerRouting } from '../../shared/types.js'
 
-type PageContextForUserConsumptionClient = PageContextBuiltInClientInternalServerRouting &
-  PageConfigUserFriendlyOld & { urlOriginal: string }
+type PageContextForUserConsumptionClient = PageContextBuiltInClientInternalServerRouting & PageConfigUserFriendlyOld
 
 function preparePageContextForUserConsumptionClient<PageContext extends PageContextForUserConsumptionClient>(
   pageContext: PageContext

@@ -8,10 +8,7 @@ import { preparePageContextForUserConsumption } from '../../shared/preparePageCo
 import { assertPageContextUrls } from '../../shared/getPageContextUrlComputed.js'
 import type { PageContextBuiltInClientInternal } from '../../shared/types.js'
 
-type PageContextForUserConsumptionClientShared = PageContextBuiltInClientInternal &
-  PageConfigUserFriendlyOld & {
-    urlOriginal: string
-  }
+type PageContextForUserConsumptionClientShared = PageContextBuiltInClientInternal & PageConfigUserFriendlyOld
 
 function preparePageContextForUserConsumptionClientShared<
   PageContext extends PageContextForUserConsumptionClientShared
