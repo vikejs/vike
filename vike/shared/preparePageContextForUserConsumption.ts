@@ -1,7 +1,7 @@
 export { preparePageContextForUserConsumption }
 
 import { assert, assertWarning, compareString } from './utils.js'
-import type { PageContextForUserConsumptionClientSide } from '../client/shared/preparePageContextForUserConsumptionClientSide.js'
+import type { PageContextForUserConsumptionClientSide } from '../client/shared/preparePageContextForUserConsumptionClientShared.js'
 import type { PageContextForUserConsumptionServerSide } from '../node/runtime/renderPage/preparePageContextForUserConsumptionServerSide.js'
 import { addIs404ToPageProps } from './addIs404ToPageProps.js'
 

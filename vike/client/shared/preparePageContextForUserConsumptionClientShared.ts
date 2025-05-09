@@ -1,4 +1,4 @@
-export { preparePageContextForUserConsumptionClientSide }
+export { preparePageContextForUserConsumptionClientShared }
 export type { PageContextForUserConsumptionClientSide }
 
 import { objectAssign } from '../server-routing-runtime/utils.js'
@@ -13,7 +13,7 @@ type PageContextForUserConsumptionClientSide = PageContextBuiltInClientInternal 
     urlOriginal: string
   }
 
-function preparePageContextForUserConsumptionClientSide<T extends PageContextForUserConsumptionClientSide>(
+function preparePageContextForUserConsumptionClientShared<T extends PageContextForUserConsumptionClientSide>(
   pageContext: T
 ): T & { Page: unknown } {
   // TODO/now

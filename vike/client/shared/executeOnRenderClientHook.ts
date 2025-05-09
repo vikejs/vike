@@ -6,8 +6,8 @@ import { getHookFromPageContext, type Hook } from '../../shared/hooks/getHook.js
 import type { PageFile, PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
 import {
   type PageContextForUserConsumptionClientSide,
-  preparePageContextForUserConsumptionClientSide
-} from './preparePageContextForUserConsumptionClientSide.js'
+  preparePageContextForUserConsumptionClientShared
+} from './preparePageContextForUserConsumptionClientShared.js'
 import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 import { executeHook } from '../../shared/hooks/executeHook.js'
 
@@ -21,7 +21,7 @@ type PageContextBeforeRenderClient = {
   PageContextForUserConsumptionClientSide
 
 async function executeOnRenderClientHook<PC extends PageContextBeforeRenderClient>(pageContext: PC): Promise<void> {
-  const pageContextForUserConsumption = preparePageContextForUserConsumptionClientSide(pageContext)
+  const pageContextForUserConsumption = preparePageContextForUserConsumptionClientShared(pageContext)
 
   let hook: null | Hook = null
   let hookName: 'render' | 'onRenderClient'

@@ -15,7 +15,7 @@ import type { PageConfigUserFriendlyOld } from '../getPageFiles.js'
 import { getHookFromPageConfigGlobalCumulative, getHookFromPageContextNew } from './getHook.js'
 import type { HookName, HookNameGlobal } from '../page-configs/Config.js'
 import type { PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
-import type { PageContextForUserConsumptionClientSide } from '../../client/shared/preparePageContextForUserConsumptionClientSide.js'
+import type { PageContextForUserConsumptionClientSide } from '../../client/shared/preparePageContextForUserConsumptionClientShared.js'
 import type { PageContextForUserConsumptionServerSide } from '../../node/runtime/renderPage/preparePageContextForUserConsumptionServerSide.js'
 const globalObject = getGlobalObject('utils/executeHook.ts', {
   userHookErrors: new WeakMap<object, HookLoc>(),
