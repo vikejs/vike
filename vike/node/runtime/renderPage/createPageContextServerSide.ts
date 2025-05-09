@@ -105,13 +105,11 @@ function createPageContextServerSideWithoutGlobalContext(pageContextInit: PageCo
 }
 function createPageContext(pageContextInit: PageContextInit | null, isPrerendering: boolean) {
   const pageContext = {
-    isPageContext: true as const,
     _isOriginalObject: true as const,
+    isPageContext: true as const,
     isClientSide: false as const,
     isPrerendering
   }
   objectAssign(pageContext, pageContextInit)
   return pageContext
 }
-
-type Flatten<T> = Pick<T, keyof T>
