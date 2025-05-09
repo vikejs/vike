@@ -9,8 +9,6 @@ import { assertPageContextUrls } from './getPageContextUrlComputed.js'
 type PageContextForUserConsumption = PageContextForUserConsumptionServerSide | PageContextForUserConsumptionClientSide
 
 function preparePageContextForUserConsumption(pageContext: PageContextForUserConsumption) {
-  assertPageContextUrls(pageContext)
-
   addIs404ToPageProps(pageContext)
 
   // TODO/next-major-release: remove
