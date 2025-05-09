@@ -63,20 +63,20 @@ function isUserHookError(err: unknown): false | HookLoc {
   return globalObject.userHookErrors.get(err) ?? false
 }
 
-function executeHook<T = unknown>(
-  hookFnCaller: () => T,
+function executeHook<HookReturn = unknown>(
+  hookFnCaller: () => HookReturn,
   hook: Omit<Hook, 'hookFn'>,
   pageContext: PageContextUnknown
-): Promise<T> {
+): Promise<HookReturn> {
   const {
     hookName,
     hookFilePath,
     hookTimeout: { error: timeoutErr, warning: timeoutWarn }
   } = hook
 
-  let resolve!: (ret: T) => void
+  let resolve!: (ret: HookReturn) => void
   let reject!: (err: unknown) => void
-  const promise = new Promise<T>((resolve_, reject_) => {
+  const promise = new Promise<HookReturn>((resolve_, reject_) => {
     resolve = (ret) => {
       clearTimeouts()
       resolve_(ret)
