@@ -4,7 +4,6 @@ export { disableClientRouting }
 export { firstRenderStartPromise }
 export { getPageContextClient }
 export type { PageContextBegin }
-export type { PreviousPageContext }
 
 import {
   assert,
