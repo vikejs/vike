@@ -131,7 +131,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       await renderErrorPage({ err })
     }
 
-    const pageContext = await getPageContextBegin(false)
+    const pageContext = await getPageContextBegin(renderArgs, isFirstRender, false)
     if (isRenderOutdated()) return
 
     // onPageTransitionStart()
@@ -307,36 +307,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
   }
 
-  async function getPageContextBegin(isForErrorPage: boolean) {
-    const pageContext = await createPageContextClientSide(urlOriginal)
-    objectAssign(pageContext, {
-      isBackwardNavigation,
-      isClientSideNavigation,
-      isHydration: isFirstRender && !isForErrorPage,
-      previousPageContext,
-      ...pageContextInitClient
-    })
-
-    // TODO/next-major-release: remove
-    Object.defineProperty(pageContext, '_previousPageContext', {
-      get() {
-        assertWarning(false, 'pageContext._previousPageContext has been renamed pageContext.previousPageContext', {
-          showStackTrace: true,
-          onlyOnce: true
-        })
-        return previousPageContext
-      },
-      enumerable: false
-    })
-
-    {
-      const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
-      assert(!('urlOriginal' in pageContextFromAllRewrites))
-      objectAssign(pageContext, pageContextFromAllRewrites)
-    }
-    return pageContext
-  }
-
   async function renderErrorPage(args: { err?: unknown; pageContextError?: Record<string, unknown>; is404?: boolean }) {
     const onError = (err: unknown) => {
       if (!isSameErrorMessage(err, args.err)) {
@@ -364,7 +334,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       }
     }
 
-    const pageContext = await getPageContextBegin(true)
+    const pageContext = await getPageContextBegin(renderArgs, isFirstRender, true)
     if (isRenderOutdated()) return
 
     if (args.is404) objectAssign(pageContext, { is404: true })
@@ -596,6 +566,47 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
     stampFinished(urlOriginal)
   }
+}
+
+async function getPageContextBegin(renderArgs: RenderArgs, isFirstRender: boolean, isForErrorPage: boolean) {
+  const {
+    urlOriginal = getCurrentUrl(),
+    overwriteLastHistoryEntry = false,
+    isBackwardNavigation,
+    pageContextsFromRewrite = [],
+    redirectCount = 0,
+    doNotRenderIfSamePage,
+    isClientSideNavigation = true,
+    pageContextInitClient
+  } = renderArgs
+  const { previousPageContext } = globalObject
+  const pageContext = await createPageContextClientSide(urlOriginal)
+  objectAssign(pageContext, {
+    isBackwardNavigation,
+    isClientSideNavigation,
+    isHydration: isFirstRender && !isForErrorPage,
+    previousPageContext,
+    ...pageContextInitClient
+  })
+
+  // TODO/next-major-release: remove
+  Object.defineProperty(pageContext, '_previousPageContext', {
+    get() {
+      assertWarning(false, 'pageContext._previousPageContext has been renamed pageContext.previousPageContext', {
+        showStackTrace: true,
+        onlyOnce: true
+      })
+      return previousPageContext
+    },
+    enumerable: false
+  })
+
+  {
+    const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
+    assert(!('urlOriginal' in pageContextFromAllRewrites))
+    objectAssign(pageContext, pageContextFromAllRewrites)
+  }
+  return pageContext
 }
 
 // For Vike tests (but also potentially for Vike users)
