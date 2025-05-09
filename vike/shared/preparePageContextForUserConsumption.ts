@@ -1,4 +1,5 @@
 export { preparePageContextForUserConsumption }
+export type { PageContextForUserConsumption }
 
 import { assert, assertWarning, compareString } from './utils.js'
 import type { PageContextForUserConsumptionClient } from '../client/shared/preparePageContextForUserConsumptionClientShared.js'
