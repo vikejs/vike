@@ -487,7 +487,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   }
 
   async function renderPageView(
-    pageContext: PageContextBeforeRenderClient & { urlPathname: string } & PageContextRouted,
+    pageContext: PageContextBeforeRenderClient & { urlPathname: string, _hasPageContextFromServer: boolean } & PageContextRouted,
     isErrorPage?: { err?: unknown }
   ) {
     const onError = async (err: unknown) => {

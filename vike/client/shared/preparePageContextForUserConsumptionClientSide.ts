@@ -8,7 +8,6 @@ import { preparePageContextForUserConsumption } from '../../shared/preparePageCo
 
 type PageContextForUserConsumptionClientSide = PageConfigUserFriendlyOld & {
   urlOriginal: string
-  _hasPageContextFromServer: boolean
 }
 
 function preparePageContextForUserConsumptionClientSide<T extends PageContextForUserConsumptionClientSide>(
