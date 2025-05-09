@@ -15,7 +15,6 @@ import {
   assert,
   parseUrl,
   assertWarning,
-  isPlainObject,
   isPropertyGetter,
   isBrowser,
   changeEnumerable,
@@ -208,10 +207,6 @@ function urlParsedGetter(this: PageContextUrlSource) {
 }
 
 function assertPageContextUrl(pageContext: { urlOriginal: string } & PageContextUrlClient) {
-  assert(typeof pageContext.urlOriginal === 'string')
-  assert(typeof pageContext.urlPathname === 'string')
-  assert(isPlainObject(pageContext.urlParsed))
-  assert(pageContext.urlPathname === pageContext.urlParsed.pathname)
   assertPageContextUrlComputed(pageContext)
 }
 
