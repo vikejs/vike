@@ -1189,10 +1189,9 @@ function assertIsNotAbort(err: unknown, urlOriginal: string) {
 }
 
 function preparePrerenderContextForUserConsumption(prerenderContext: PrerenderContext) {
-  const prerenderContextPublic = makePublic(prerenderContext)
   // TODO/v1-release: remove warning
-  if (!('prerenderPageContexts' in prerenderContextPublic)) {
-    Object.defineProperty(prerenderContextPublic, 'prerenderPageContexts', {
+  if (!('prerenderPageContexts' in prerenderContext)) {
+    Object.defineProperty(prerenderContext, 'prerenderPageContexts', {
       get() {
         assertWarning(false, `prerenderPageContexts has been renamed pageContexts, see ${pc.underline(docLink)}`, {
           showStackTrace: true,
@@ -1202,6 +1201,7 @@ function preparePrerenderContextForUserConsumption(prerenderContext: PrerenderCo
       }
     })
   }
+  const prerenderContextPublic = makePublic(prerenderContext)
   return prerenderContextPublic
 }
 type PrerenderContextPublic = Pick<PrerenderContext, 'output' | 'pageContexts'>
