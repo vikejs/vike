@@ -63,7 +63,7 @@ function isUserHookError(err: unknown): false | HookLoc {
   return globalObject.userHookErrors.get(err) ?? false
 }
 
-function executeHook<HookReturn = unknown>(
+function executeHook<HookReturn>(
   hookFnCaller: () => HookReturn,
   hook: Omit<Hook, 'hookFn'>,
   pageContext: PageContextUnknown
