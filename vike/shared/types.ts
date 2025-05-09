@@ -14,8 +14,8 @@ export type { GlobalContextClientWithServerRouting }
 // Internal
 export type { PageContextInternalServer }
 export type { PageContextInternalClient }
-export type { PageContextBuiltInClientInternalServerRouting }
-export type { PageContextBuiltInClientInternalClientRouting }
+export type { PageContextInternalClient_ServerRouting }
+export type { PageContextInternalClient_ClientRouting }
 
 // TODO/v1-release: remove these three exports
 export type { PageContextBuiltInServer_deprecated as PageContextBuiltInServer }
@@ -298,20 +298,17 @@ type PageContextClientCommon = {
 // For Vike internal use
 type PageContextInternalServer = Omit<PageContextBuiltInCommon<unknown> & PageContextUrlInternal, 'data'>
 type PageContextInternalClient = Omit<
-  PageContextBuiltInClientInternalClientRouting | PageContextBuiltInClientInternalServerRouting,
+  PageContextInternalClient_ClientRouting | PageContextInternalClient_ServerRouting,
   // I don't know why Omit is needed again
   'data' | 'Page'
 >
-type PageContextBuiltInClientInternalClientRouting = Omit<
+type PageContextInternalClient_ClientRouting = Omit<
   PageContextBuiltInClientWithClientRouting<unknown>,
   'data' | 'Page' | 'previousPageContext'
 > & {
   previousPageContext: { pageId: string } | null
 }
-type PageContextBuiltInClientInternalServerRouting = Omit<
-  PageContextBuiltInClientWithServerRouting<unknown>,
-  'data' | 'Page'
->
+type PageContextInternalClient_ServerRouting = Omit<PageContextBuiltInClientWithServerRouting<unknown>, 'data' | 'Page'>
 
 /** @deprecated
  * Replace:
