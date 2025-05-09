@@ -6,9 +6,9 @@ import type { PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
 import { getPageContextProxyForUser } from './getPageContextProxyForUser.js'
 import { preparePageContextForUserConsumption } from '../../shared/preparePageContextForUserConsumption.js'
 import { assertPageContextUrls } from '../../shared/getPageContextUrlComputed.js'
-import type { PageContextBuiltInClientInternal } from '../../shared/types.js'
+import type { PageContextInternalClient } from '../../shared/types.js'
 
-type PageContextForUserConsumptionClientShared = PageContextBuiltInClientInternal & PageConfigUserFriendlyOld
+type PageContextForUserConsumptionClientShared = PageContextInternalClient & PageConfigUserFriendlyOld
 
 function preparePageContextForUserConsumptionClientShared<
   PageContext extends PageContextForUserConsumptionClientShared
