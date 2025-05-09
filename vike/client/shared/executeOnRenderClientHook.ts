@@ -4,7 +4,7 @@ export type { PageContextBeforeRenderClient }
 import { assert, assertUsage } from '../server-routing-runtime/utils.js'
 import { getHookFromPageContext, type Hook } from '../../shared/hooks/getHook.js'
 import type { PageFile, PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
-import { type PageContextForUserConsumptionClientShared } from './preparePageContextForUserConsumptionClientShared.js'
+import type { PageContextForUserConsumptionClientShared } from './preparePageContextForUserConsumptionClientShared.js'
 import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 import { executeHook } from '../../shared/hooks/executeHook.js'
 
@@ -21,8 +21,6 @@ async function executeOnRenderClientHook<PageContext extends PageContextBeforeRe
   pageContext: PageContext,
   prepareForUserConsumption: (pageConfig: PageContext) => PageContext
 ): Promise<void> {
-  const pageContextForUserConsumption = prepareForUserConsumption(pageContext)
-
   let hook: null | Hook = null
   let hookName: 'render' | 'onRenderClient'
 
@@ -68,6 +66,7 @@ async function executeOnRenderClientHook<PageContext extends PageContextBeforeRe
   const renderHook = hook.hookFn
   assert(hookName)
 
+  const pageContextForUserConsumption = prepareForUserConsumption(pageContext)
   // We don't use a try-catch wrapper because rendering errors are usually handled by the UI framework. (E.g. React's Error Boundaries.)
   const hookResult = await executeHook(() => renderHook(pageContextForUserConsumption), hook, pageContext)
   assertUsage(
