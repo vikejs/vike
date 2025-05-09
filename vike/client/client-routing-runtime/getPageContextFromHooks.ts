@@ -21,7 +21,7 @@ import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtm
 import type { PageConfigUserFriendlyOld, PageFile } from '../../shared/getPageFiles.js'
 import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide.js'
 import {
-  type PageContextForUserConsumptionClientSide,
+  type PageContextForUserConsumptionClient,
   preparePageContextForUserConsumptionClientShared
 } from '../shared/preparePageContextForUserConsumptionClientShared.js'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides.js'
@@ -155,7 +155,7 @@ async function getPageContextFromClientHooks(
   return pageContextFromClientHooks
 }
 
-type PageContextExecuteHookClient = PageConfigUserFriendlyOld & PageContextForUserConsumptionClientSide
+type PageContextExecuteHookClient = PageConfigUserFriendlyOld & PageContextForUserConsumptionClient
 async function executeHookClient(hookName: HookName, pageContext: PageContextExecuteHookClient) {
   return await executeHookNew(hookName, pageContext, (p) => preparePageContextForUserConsumptionClientShared(p))
 }

@@ -1,5 +1,5 @@
 export { preparePageContextForUserConsumptionClientShared }
-export type { PageContextForUserConsumptionClientSide }
+export type { PageContextForUserConsumptionClient }
 
 import { objectAssign } from '../server-routing-runtime/utils.js'
 import type { PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
@@ -8,12 +8,12 @@ import { preparePageContextForUserConsumption } from '../../shared/preparePageCo
 import { assertPageContextUrls } from '../../shared/getPageContextUrlComputed.js'
 import type { PageContextBuiltInClientInternal } from '../../shared/types.js'
 
-type PageContextForUserConsumptionClientSide = PageContextBuiltInClientInternal &
+type PageContextForUserConsumptionClient = PageContextBuiltInClientInternal &
   PageConfigUserFriendlyOld & {
     urlOriginal: string
   }
 
-function preparePageContextForUserConsumptionClientShared<T extends PageContextForUserConsumptionClientSide>(
+function preparePageContextForUserConsumptionClientShared<T extends PageContextForUserConsumptionClient>(
   pageContext: T
 ): T & { Page: unknown } {
   // TODO/now

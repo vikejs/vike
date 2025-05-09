@@ -5,7 +5,7 @@ import { assert, assertUsage } from '../server-routing-runtime/utils.js'
 import { getHookFromPageContext, type Hook } from '../../shared/hooks/getHook.js'
 import type { PageFile, PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
 import {
-  type PageContextForUserConsumptionClientSide,
+  type PageContextForUserConsumptionClient,
   preparePageContextForUserConsumptionClientShared
 } from './preparePageContextForUserConsumptionClientShared.js'
 import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
@@ -18,7 +18,7 @@ type PageContextBeforeRenderClient = {
   pageId: string
   _pageConfigs: PageConfigRuntime[]
 } & PageConfigUserFriendlyOld &
-  PageContextForUserConsumptionClientSide
+  PageContextForUserConsumptionClient
 
 async function executeOnRenderClientHook<PC extends PageContextBeforeRenderClient>(pageContext: PC): Promise<void> {
   const pageContextForUserConsumption = preparePageContextForUserConsumptionClientShared(pageContext)

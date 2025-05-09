@@ -15,14 +15,14 @@ import type { PageConfigUserFriendlyOld } from '../getPageFiles.js'
 import { getHookFromPageConfigGlobalCumulative, getHookFromPageContextNew } from './getHook.js'
 import type { HookName, HookNameGlobal } from '../page-configs/Config.js'
 import type { PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
-import type { PageContextForUserConsumptionClientSide } from '../../client/shared/preparePageContextForUserConsumptionClientShared.js'
+import type { PageContextForUserConsumptionClient } from '../../client/shared/preparePageContextForUserConsumptionClientShared.js'
 import type { PageContextForUserConsumptionServerSide } from '../../node/runtime/renderPage/preparePageContextForUserConsumptionServerSide.js'
 const globalObject = getGlobalObject('utils/executeHook.ts', {
   userHookErrors: new WeakMap<object, HookLoc>(),
   pageContext: null as PageContextUnknown
 })
 
-type PageContextForUserConsumption = PageContextForUserConsumptionClientSide | PageContextForUserConsumptionServerSide
+type PageContextForUserConsumption = PageContextForUserConsumptionClient | PageContextForUserConsumptionServerSide
 
 // TO-DO/eventually: use this variant more prominently
 async function executeHookNew<PageContext extends PageConfigUserFriendlyOld & PageContextForUserConsumption>(
