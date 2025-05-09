@@ -3,19 +3,18 @@ export type { PageContextForUserConsumptionClientSide }
 
 import { objectAssign } from '../server-routing-runtime/utils.js'
 import type { PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
-import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 import { getPageContextProxyForUser } from './getPageContextProxyForUser.js'
 import { preparePageContextForUserConsumption } from '../../shared/preparePageContextForUserConsumption.js'
 
 type PageContextForUserConsumptionClientSide = PageConfigUserFriendlyOld & {
-  pageId: string
+  urlOriginal: string
   _hasPageContextFromServer: boolean
-  _pageConfigs: PageConfigRuntime[]
 }
 
 function preparePageContextForUserConsumptionClientSide<T extends PageContextForUserConsumptionClientSide>(
   pageContext: T
 ): T & { Page: unknown } {
+  // TODO/now
   const Page =
     pageContext.config.Page ||
     // TODO/next-major-release: remove

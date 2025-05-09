@@ -1,8 +1,7 @@
 export { preparePageContextForUserConsumptionServerSide }
 export type { PageContextForUserConsumptionServerSide }
 
-import { assert, isPlainObject } from '../utils.js'
-import { assertPageContextUrl, PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
+import { PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
 import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import type { PageConfigUserFriendlyOld } from '../../../shared/page-configs/getUserFriendlyConfigs.js'
 import { PageContextBuiltInServerInternal } from '../../../shared/types.js'

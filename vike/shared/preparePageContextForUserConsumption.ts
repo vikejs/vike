@@ -4,6 +4,7 @@ import { assertWarning, compareString } from './utils.js'
 import type { PageContextForUserConsumptionClientSide } from '../client/shared/preparePageContextForUserConsumptionClientSide.js'
 import type { PageContextForUserConsumptionServerSide } from '../node/runtime/renderPage/preparePageContextForUserConsumptionServerSide.js'
 import { addIs404ToPageProps } from './addIs404ToPageProps.js'
+import { assertPageContextUrl } from './getPageContextUrlComputed.js'
 
 type PageContextForUserConsumption = PageContextForUserConsumptionServerSide | PageContextForUserConsumptionClientSide
 
@@ -18,7 +19,7 @@ function preparePageContextForUserConsumption(pageContext: PageContextForUserCon
           showStackTrace: true,
           onlyOnce: true
         })
-        return pageContext.pageId
+        return (pageContext as any).pageId
       },
       enumerable: false
     })

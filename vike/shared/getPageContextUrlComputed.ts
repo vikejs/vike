@@ -206,7 +206,7 @@ function urlParsedGetter(this: PageContextUrlSource) {
   return urlParsedEnhanced
 }
 
-function assertPageContextUrl(pageContext: { urlOriginal: string } & PageContextUrlClient) {
+function assertPageContextUrl(pageContext: object) {
   assertPageContextUrlComputed(pageContext)
 }
 
