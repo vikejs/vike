@@ -6,7 +6,9 @@ Cumulative: `true`.
 Hook called as soon as <Link href="/pageContext#data">`pageContext.data`</Link> is available.
 
 ```ts
+// pages/movies/+onData.ts
 // Environment: server, client
+
 export { onData }
 
 import type { PageContext } from 'vike/types'
@@ -19,7 +21,9 @@ function onData(pageContext: PageContext & { data: Data }) {
 ```
 
 ```ts
+// pages/movies/+data.ts
 // Environment: server
+
 export { data }
 export type Data = Awaited<ReturnType<typeof data>>
 
@@ -31,11 +35,21 @@ async function data(pageContext: PageContextServer) {
 }
 ```
 
-Unlike <Link href="/data">`+data`</Link>, which is only called on the server-side, `+onData` is also called on the client-side:
+The purpose of `+onData` is that, unlike <Link href="/data">`+data`</Link> which is called only on the server-side, it's also called on the client-side:
  - Upon <Link href="/ssr">SSR</Link> (or <Link href="/pre-rendering">pre-rendering</Link>), `+onData` is called on the server-side right after `+data`.
- - Upon client-side navigation, it is called on the client-side right after `pageContext.data` is received from the server.
+ - Upon client-side navigation, it is called on the client-side right after `pageContext.data` was received from the server.
 
-It's typically used to populate <Link href="/store">a store</Link> with `pageContext.data`.
+You typically use `+onData` when you want to do something with `pageContext.data` on the client-side.
+
+For example, a common use case is to populate <Link href="/store">a store</Link> using `pageContext.data`.
+
+It's <Link href="/config#inheritance">cumulative</Link>, so you can define multiple `+onData`:
+
+```bash
+pages/+onData.js # Global hook called after every +data
+pages/movies/+onData.js
+pages/movies/+data.js # Both +onData hooks are called after this +data hook
+```
 
 
 ## See also
