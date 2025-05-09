@@ -20,7 +20,7 @@ type PageContextBeforeRenderClient = {
 } & PageConfigUserFriendlyOld &
   PageContextForUserConsumptionClientShared
 
-async function executeOnRenderClientHook<PC extends PageContextBeforeRenderClient>(pageContext: PC): Promise<void> {
+async function executeOnRenderClientHook<PageContext extends PageContextBeforeRenderClient>(pageContext: PageContext): Promise<void> {
   const pageContextForUserConsumption = preparePageContextForUserConsumptionClientShared(pageContext)
 
   let hook: null | Hook = null
