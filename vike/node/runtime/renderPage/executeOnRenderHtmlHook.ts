@@ -25,6 +25,7 @@ import { logRuntimeError } from './loggerRuntime.js'
 import type { PageContextSerialization } from '../html/serializeContext.js'
 import pc from '@brillout/picocolors'
 import { executeHook } from '../../../shared/hooks/executeHook.js'
+import type { GlobalContextServerInternal } from '../globalContext.js'
 
 type GetPageAssets = () => Promise<PageAsset[]>
 
@@ -38,6 +39,7 @@ async function executeOnRenderHtmlHook(
   pageContext: PageContextForUserConsumptionServerSide &
     PageContextSerialization & {
       pageId: string
+      _globalContext: GlobalContextServerInternal
       _pageConfigs: PageConfigRuntime[]
       __getPageAssets: GetPageAssets
       _isHtmlOnly: boolean
@@ -78,7 +80,11 @@ async function executeOnRenderHtmlHook(
   return { htmlRender, renderHook }
 }
 
-function getRenderHook(pageContext: PageContextForUserConsumptionServerSide) {
+function getRenderHook(
+  pageContext: PageContextForUserConsumptionServerSide & {
+    _pageConfigs: PageConfigRuntime[]
+  }
+) {
   let hookFound:
     | undefined
     | {
