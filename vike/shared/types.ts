@@ -12,7 +12,7 @@ export type { PageContextClientWithServerRouting }
 export type { GlobalContextClientWithServerRouting }
 
 // Internal
-export type { PageContextBuiltInServerInternal }
+export type { PageContextInternalServer }
 export type { PageContextBuiltInClientInternal }
 export type { PageContextBuiltInClientInternalServerRouting }
 export type { PageContextBuiltInClientInternalClientRouting }
@@ -296,7 +296,7 @@ type PageContextClientCommon = {
 }
 
 // For Vike internal use
-type PageContextBuiltInServerInternal = Omit<PageContextBuiltInCommon<unknown> & PageContextUrlInternal, 'data'>
+type PageContextInternalServer = Omit<PageContextBuiltInCommon<unknown> & PageContextUrlInternal, 'data'>
 type PageContextBuiltInClientInternal = Omit<
   PageContextBuiltInClientInternalClientRouting | PageContextBuiltInClientInternalServerRouting,
   // I don't know why Omit is needed again

@@ -3,11 +3,11 @@ export type { PageContextForUserConsumptionServer }
 
 import { assertPageContextUrls, type PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
 import type { PageConfigUserFriendlyOld } from '../../../shared/page-configs/getUserFriendlyConfigs.js'
-import { PageContextBuiltInServerInternal } from '../../../shared/types.js'
+import { PageContextInternalServer } from '../../../shared/types.js'
 import { preparePageContextForUserConsumption } from '../../../shared/preparePageContextForUserConsumption.js'
 import type { GlobalContextServer } from '../globalContext.js'
 
-type PageContextForUserConsumptionServer = PageContextBuiltInServerInternal &
+type PageContextForUserConsumptionServer = PageContextInternalServer &
   PageConfigUserFriendlyOld & {
     urlOriginal: string
     /** @deprecated */
