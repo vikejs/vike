@@ -22,8 +22,8 @@ async function createPageContextClientSide() {
     _pageConfigs: globalContext._pageConfigs,
     _pageConfigGlobal: globalContext._pageConfigGlobal,
     _allPageIds: globalContext._allPageIds,
-    isPrerendering: false,
-    isClientSide: true,
+    isPrerendering: false as const,
+    isClientSide: true as const,
     isHydration: true as const,
     isBackwardNavigation: null,
     _hasPageContextFromServer: true as const
