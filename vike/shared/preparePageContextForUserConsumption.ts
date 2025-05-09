@@ -2,10 +2,10 @@ export { preparePageContextForUserConsumption }
 
 import { assert, assertWarning, compareString } from './utils.js'
 import type { PageContextForUserConsumptionClient } from '../client/shared/preparePageContextForUserConsumptionClientShared.js'
-import type { PageContextForUserConsumptionServerSide } from '../node/runtime/renderPage/preparePageContextForUserConsumptionServerSide.js'
+import type { PageContextForUserConsumptionServer } from '../node/runtime/renderPage/preparePageContextForUserConsumptionServer.js'
 import { addIs404ToPageProps } from './addIs404ToPageProps.js'
 
-type PageContextForUserConsumption = PageContextForUserConsumptionServerSide | PageContextForUserConsumptionClient
+type PageContextForUserConsumption = PageContextForUserConsumptionServer | PageContextForUserConsumptionClient
 
 function preparePageContextForUserConsumption(pageContext: PageContextForUserConsumption) {
   assert((pageContext as any)._isOriginalObject) // ensure we preserve the original object reference
