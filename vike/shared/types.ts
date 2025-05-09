@@ -1,4 +1,4 @@
-// Public
+// Public usage
 export type { PageContext }
 export type { PageContextServer }
 export type { PageContextClient }
@@ -11,7 +11,7 @@ export type { PageContextWithServerRouting }
 export type { PageContextClientWithServerRouting }
 export type { GlobalContextClientWithServerRouting }
 
-// Internal
+// Internal usage
 export type { PageContextInternalServer }
 export type { PageContextInternalClient }
 export type { PageContextInternalClient_ServerRouting }
@@ -295,7 +295,6 @@ type PageContextClientCommon = {
   isPrerendering: false
 }
 
-// For Vike internal use
 type PageContextInternalServer = Omit<PageContextBuiltInCommon<unknown> & PageContextUrlInternal, 'data'>
 type PageContextInternalClient = Omit<
   PageContextInternalClient_ClientRouting | PageContextInternalClient_ServerRouting,
