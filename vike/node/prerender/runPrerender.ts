@@ -1191,15 +1191,17 @@ function assertIsNotAbort(err: unknown, urlOriginal: string) {
 function preparePrerenderContextForUserConsumption(prerenderContext: PrerenderContext) {
   const prerenderContextPublic = makePublic(prerenderContext)
   // TODO/v1-release: remove warning
-  Object.defineProperty(prerenderContextPublic, 'prerenderPageContexts', {
-    get() {
-      assertWarning(false, `prerenderPageContexts has been renamed pageContexts, see ${pc.underline(docLink)}`, {
-        showStackTrace: true,
-        onlyOnce: true
-      })
-      return prerenderContext.pageContexts
-    }
-  })
+  if (!('prerenderPageContexts' in prerenderContextPublic)) {
+    Object.defineProperty(prerenderContextPublic, 'prerenderPageContexts', {
+      get() {
+        assertWarning(false, `prerenderPageContexts has been renamed pageContexts, see ${pc.underline(docLink)}`, {
+          showStackTrace: true,
+          onlyOnce: true
+        })
+        return prerenderContext.pageContexts
+      }
+    })
+  }
   return prerenderContextPublic
 }
 type PrerenderContextPublic = Pick<PrerenderContext, 'output' | 'pageContexts'>
