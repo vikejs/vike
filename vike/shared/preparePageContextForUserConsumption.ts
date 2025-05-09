@@ -1,6 +1,6 @@
 export { preparePageContextForUserConsumption }
 
-import { assert, assertWarning, compareString } from './utils.js'
+import { assertWarning, compareString } from './utils.js'
 import type { PageContextForUserConsumptionClientSide } from '../client/shared/preparePageContextForUserConsumptionClientSide.js'
 import type { PageContextForUserConsumptionServerSide } from '../node/runtime/renderPage/preparePageContextForUserConsumptionServerSide.js'
 import { addIs404ToPageProps } from './addIs404ToPageProps.js'
@@ -8,10 +8,6 @@ import { addIs404ToPageProps } from './addIs404ToPageProps.js'
 type PageContextForUserConsumption = PageContextForUserConsumptionServerSide | PageContextForUserConsumptionClientSide
 
 function preparePageContextForUserConsumption(pageContext: PageContextForUserConsumption) {
-  assert(pageContext.pageId)
-  assert('config' in pageContext)
-  assert('configEntries' in pageContext)
-
   addIs404ToPageProps(pageContext)
 
   // TODO/next-major-release: remove
