@@ -15,20 +15,24 @@ import type { PageConfigUserFriendlyOld } from '../getPageFiles.js'
 import { getHookFromPageConfigGlobalCumulative, getHookFromPageContextNew } from './getHook.js'
 import type { HookName, HookNameGlobal } from '../page-configs/Config.js'
 import type { PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
+import type { PageContextForUserConsumptionClientSide } from '../../client/shared/preparePageContextForUserConsumptionClientSide.js'
+import type { PageContextForUserConsumptionServerSide } from '../../node/runtime/renderPage/preparePageContextForUserConsumptionServerSide.js'
 const globalObject = getGlobalObject('utils/executeHook.ts', {
   userHookErrors: new WeakMap<object, HookLoc>(),
   pageContext: null as PageContextUnknown
 })
 
+type PageContextForUserConsumption = PageContextForUserConsumptionClientSide | PageContextForUserConsumptionServerSide
+
 // TO-DO/eventually: use this variant more prominently
-async function executeHookNew<PageContext extends PageConfigUserFriendlyOld>(
+async function executeHookNew<PageContext extends PageConfigUserFriendlyOld & PageContextForUserConsumption>(
   hookName: HookName,
   pageContext: PageContext,
-  prepare: (pageContext: PageContext) => PageContext
+  preparePageContextForUserConsumption: (pageContext: PageContext) => PageContext
 ) {
   const hooks = getHookFromPageContextNew(hookName, pageContext)
   if (!hooks.length) return []
-  const pageContextPrepared = prepare(pageContext)
+  const pageContextPrepared = preparePageContextForUserConsumption(pageContext)
   const hooksWithResult = await Promise.all(
     hooks.map(async (hook) => {
       const hookResult = await executeHook(() => hook.hookFn(pageContextPrepared), hook, pageContext)
