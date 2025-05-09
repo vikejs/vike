@@ -1,4 +1,5 @@
 export { createPageContextClientSide }
+export type PageContextCreated = Awaited<ReturnType<typeof createPageContextClientSide>>
 
 import { createPageContextShared } from '../../shared/createPageContextShared.js'
 import { getPageContextUrlComputed } from '../../shared/getPageContextUrlComputed.js'
@@ -27,7 +28,7 @@ async function createPageContextClientSide(urlOriginal: string) {
     isPrerendering: false as const,
     urlOriginal,
     _urlHandler: null,
-    _urlRewrite: null,
+    _urlRewrite: null as null | string,
     _baseServer: baseServer
   }
   const pageContextUrlComputed = getPageContextUrlComputed(pageContextCreated)

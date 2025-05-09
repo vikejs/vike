@@ -24,7 +24,7 @@ import {
 import { skipLink } from './skipLink.js'
 import { disableClientRouting } from './renderPageClientSide.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
-import { createPageContextClientSide } from './createPageContextClientSide.js'
+import { createPageContextClientSide, type PageContextCreated } from './createPageContextClientSide.js'
 import { route, type PageContextFromRoute } from '../../shared/route/index.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import { type PageContextFromServerHooks, getPageContextFromServerHooks } from './getPageContextFromHooks.js'
@@ -58,13 +58,8 @@ type PrefetchedPageContext = {
   resultMaxAge: number
   result: ResultPageContextFromServer
 }
-type PageContextForPrefetch = {
-  urlOriginal: string
-  urlPathname: string
+type PageContextForPrefetch = PageContextCreated & {
   pageId: string
-  _urlRewrite: null
-  _pageFilesAll: PageFile[]
-  _pageConfigs: PageConfigRuntime[]
 }
 
 function getPageContextPrefetched(

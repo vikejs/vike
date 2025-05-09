@@ -36,18 +36,11 @@ import { pageContextInitIsPassedToClient } from '../../shared/misc/pageContextIn
 import { isServerSideError } from '../../shared/misc/isServerSideError.js'
 import { executeHookNew } from '../../shared/hooks/executeHook.js'
 import type { HookName } from '../../shared/page-configs/Config.js'
+import type { PageContextCreated as PageContext } from './createPageContextClientSide.js'
 const globalObject = getGlobalObject<{ pageContextInitIsPassedToClient?: true }>(
   'client-routing-runtime/getPageContextFromHooks.ts',
   {}
 )
-
-// TO-DO/eventually: rename
-type PageContext = {
-  urlOriginal: string
-  _urlRewrite: string | null
-  _pageFilesAll: PageFile[]
-  _pageConfigs: PageConfigRuntime[]
-}
 
 type PageContextSerialized = {
   pageId: string
