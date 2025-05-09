@@ -22,7 +22,9 @@ type PageContextForUserConsumptionServer = PageContextBuiltInServerInternal &
     globalContext: GlobalContextServer
   }
 
-function preparePageContextForUserConsumptionServer(pageContext: PageContextForUserConsumptionServer) {
+function preparePageContextForUserConsumptionServer<PageContext extends PageContextForUserConsumptionServer>(
+  pageContext: PageContext
+) {
   // TODO/next-major-release: after we remove supportVueReactiviy() we can call this later inside the agnostic preparePageContextForUserConsumption()
   assertPageContextUrls(pageContext)
   preparePageContextForUserConsumption(pageContext)
