@@ -60,7 +60,7 @@ import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.j
 import { getVikeConfig } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import type { HookTimeout } from '../../shared/hooks/getHook.js'
 import { logErrorHint } from '../runtime/renderPage/logErrorHint.js'
-import { executeHook, isUserHookError } from '../../shared/hooks/executeHook.js'
+import { executeHook, executeHookWithoutPageContext, isUserHookError } from '../../shared/hooks/executeHook.js'
 import type { APIOptions } from '../api/types.js'
 import { prepareViteApiCall } from '../api/prepareViteApiCall.js'
 import { setContextIsPrerendering } from './context.js'
@@ -70,6 +70,7 @@ import { isVikeCli } from '../cli/context.js'
 import { isViteCliCall } from '../plugin/shared/isViteCliCall.js'
 import { getVikeConfigInternal } from '../plugin/plugins/commonConfig.js'
 import fs from 'node:fs'
+import { preparePageContextForUserConsumptionServer } from '../runtime/renderPage/preparePageContextForUserConsumptionServer.js'
 
 type HtmlFile = {
   pageContext: PageContextPrerendered
@@ -419,15 +420,12 @@ async function callOnBeforePrerenderStartHooks(
   )
 
   await Promise.all(
-    onBeforePrerenderStartHooks.map(({ hookFn, hookName, hookFilePath, pageId, hookTimeout }) =>
+    onBeforePrerenderStartHooks.map(({ pageId, ...hook }) =>
       concurrencyLimit(async () => {
         if (doNotPrerenderList.find((p) => p.pageId === pageId)) return
+        const { hookName, hookFilePath } = hook
 
-        const prerenderResult: unknown = await executeHook(
-          () => hookFn(),
-          { hookName, hookFilePath, hookTimeout },
-          null
-        )
+        const prerenderResult = await executeHookWithoutPageContext(hook)
         const result = normalizeOnPrerenderHookResult(prerenderResult, hookFilePath, hookName)
 
         // Handle result

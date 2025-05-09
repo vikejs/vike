@@ -1,6 +1,7 @@
 export { executeHook }
 export { executeHookNew }
 export { executeHookGlobalCumulative }
+export { executeHookWithoutPageContext }
 export { getPageContext }
 export { providePageContext }
 export { isUserHookError }
@@ -60,6 +61,11 @@ function isUserHookError(err: unknown): false | HookLoc {
   return globalObject.userHookErrors.get(err) ?? false
 }
 
+async function executeHookWithoutPageContext(hook: Omit<Hook, 'hookFn'> & { hookFn: Function }) {
+  const { hookFn, hookName, hookFilePath, hookTimeout } = hook
+  const hookResult: unknown = await executeHook(() => hookFn(), { hookName, hookFilePath, hookTimeout }, null)
+  return hookResult
+}
 function executeHook<HookReturn>(
   hookFnCaller: () => HookReturn,
   hook: Omit<Hook, 'hookFn'>,
