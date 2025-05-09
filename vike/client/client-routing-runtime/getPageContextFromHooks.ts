@@ -20,10 +20,6 @@ import { parse } from '@brillout/json-serializer/parse'
 import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtml.js'
 import type { PageConfigUserFriendlyOld, PageFile } from '../../shared/getPageFiles.js'
 import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide.js'
-import {
-  type PageContextForUserConsumptionClient,
-  preparePageContextForUserConsumptionClientShared
-} from '../shared/preparePageContextForUserConsumptionClientShared.js'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
 import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
@@ -38,6 +34,10 @@ import { executeHookNew } from '../../shared/hooks/executeHook.js'
 import type { HookName } from '../../shared/page-configs/Config.js'
 import type { PageContextCreated } from './createPageContextClientSide.js'
 import type { PageContextBegin } from './renderPageClientSide.js'
+import {
+  type PageContextForUserConsumptionClient,
+  preparePageContextForUserConsumptionClient
+} from './preparePageContextForUserConsumptionClient.js'
 const globalObject = getGlobalObject<{ pageContextInitIsPassedToClient?: true }>(
   'client-routing-runtime/getPageContextFromHooks.ts',
   {}
@@ -133,9 +133,7 @@ async function getPageContextFromClientHooks(
       ) {
         // Should we really call the guard() hook on the client-side? Shouldn't we make the guard() hook a server-side
         // only hook? Or maybe make its env configurable like data() and onBeforeRender()?
-        await executeGuardHook(pageContext, (pageContext) =>
-          preparePageContextForUserConsumptionClientShared(pageContext)
-        )
+        await executeGuardHook(pageContext, (pageContext) => preparePageContextForUserConsumptionClient(pageContext))
       }
     } else {
       if (hookName === 'data') dataHookExists = true
@@ -157,7 +155,7 @@ async function getPageContextFromClientHooks(
 
 type PageContextExecuteHookClient = PageConfigUserFriendlyOld & PageContextForUserConsumptionClient
 async function executeHookClient(hookName: HookName, pageContext: PageContextExecuteHookClient) {
-  return await executeHookNew(hookName, pageContext, (p) => preparePageContextForUserConsumptionClientShared(p))
+  return await executeHookNew(hookName, pageContext, (p) => preparePageContextForUserConsumptionClient(p))
 }
 
 async function executeDataLikeHook(hookName: 'data' | 'onBeforeRender', pageContext: PageContextExecuteHookClient) {
