@@ -15,9 +15,9 @@ import { isStream } from '../html/stream.js'
 import { assertPageContextProvidedByUser } from '../../../shared/assertPageContextProvidedByUser.js'
 import type { PreloadFilter } from '../html/injectAssets/getHtmlTags.js'
 import {
-  preparePageContextForUserConsumptionServer,
-  type PageContextForUserConsumptionServer
-} from './preparePageContextForUserConsumptionServer.js'
+  preparePageContextForPublicUsageServer,
+  type PageContextForPublicUsageServer
+} from './preparePageContextForPublicUsageServer.js'
 import type { PageContextPromise } from '../html/injectAssets.js'
 import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { assertHookReturnedObject } from '../../../shared/assertHookReturnedObject.js'
@@ -36,7 +36,7 @@ type HookName =
   | 'render'
 
 async function executeOnRenderHtmlHook(
-  pageContext: PageContextForUserConsumptionServer &
+  pageContext: PageContextForPublicUsageServer &
     PageContextSerialization & {
       pageId: string
       _globalContext: GlobalContextServerInternal
@@ -54,7 +54,7 @@ async function executeOnRenderHtmlHook(
   const { renderHook, hookFn } = getRenderHook(pageContext)
   objectAssign(pageContext, { _renderHook: renderHook })
 
-  preparePageContextForUserConsumptionServer(pageContext)
+  preparePageContextForPublicUsageServer(pageContext)
   const hookReturnValue = await executeHook(() => hookFn(pageContext), renderHook, pageContext)
   const { documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter } = processHookReturnValue(
     hookReturnValue,
@@ -81,7 +81,7 @@ async function executeOnRenderHtmlHook(
 }
 
 function getRenderHook(
-  pageContext: PageContextForUserConsumptionServer & {
+  pageContext: PageContextForPublicUsageServer & {
     _pageConfigs: PageConfigRuntime[]
   }
 ) {

@@ -17,7 +17,7 @@ import { executeOnRenderHtmlHook } from './executeOnRenderHtmlHook.js'
 import { executeOnBeforeRenderAndDataHooks } from './executeOnBeforeRenderAndDataHooks.js'
 import { logRuntimeError } from './loggerRuntime.js'
 import { isNewError } from './isNewError.js'
-import { preparePageContextForUserConsumptionServer } from './preparePageContextForUserConsumptionServer.js'
+import { preparePageContextForPublicUsageServer } from './preparePageContextForPublicUsageServer.js'
 import { executeGuardHook } from '../../../shared/route/executeGuardHook.js'
 import pc from '@brillout/picocolors'
 import { isServerSideError } from '../../../shared/misc/isServerSideError.js'
@@ -48,7 +48,7 @@ async function renderPageAlreadyRouted<
   objectAssign(pageContext, await loadPageConfigsLazyServerSide(pageContext))
 
   if (!isError) {
-    await executeGuardHook(pageContext, (pageContext) => preparePageContextForUserConsumptionServer(pageContext))
+    await executeGuardHook(pageContext, (pageContext) => preparePageContextForPublicUsageServer(pageContext))
   }
 
   if (!isError) {
@@ -100,7 +100,7 @@ async function prerenderPage(
 
   /* Should we execute the guard() hook upon pre-rendering? Is there a use case for this?
    *  - It isn't trivial to implement, as it requires to duplicate / factor out the isAbortError() handling
-  await executeGuardHook(pageContext, (pageContext) => preparePageContextForUserConsumptionServer(pageContext))
+  await executeGuardHook(pageContext, (pageContext) => preparePageContextForPublicUsageServer(pageContext))
   */
 
   await executeOnBeforeRenderAndDataHooks(pageContext)

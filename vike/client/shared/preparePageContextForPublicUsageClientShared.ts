@@ -1,18 +1,18 @@
-export { preparePageContextForUserConsumptionClientShared }
-export type { PageContextForUserConsumptionClientShared }
+export { preparePageContextForPublicUsageClientShared }
+export type { PageContextForPublicUsageClientShared }
 
 import { objectAssign } from '../server-routing-runtime/utils.js'
 import type { PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
 import { getPageContextProxyForUser } from './getPageContextProxyForUser.js'
-import { preparePageContextForUserConsumption } from '../../shared/preparePageContextForUserConsumption.js'
+import { preparePageContextForPublicUsage } from '../../shared/preparePageContextForPublicUsage.js'
 import { assertPageContextUrls } from '../../shared/getPageContextUrlComputed.js'
 import type { PageContextInternalClient } from '../../shared/types.js'
 
-type PageContextForUserConsumptionClientShared = PageContextInternalClient & PageConfigUserFriendlyOld
+type PageContextForPublicUsageClientShared = PageContextInternalClient & PageConfigUserFriendlyOld
 
-function preparePageContextForUserConsumptionClientShared<
-  PageContext extends PageContextForUserConsumptionClientShared
->(pageContext: PageContext): PageContext & { Page: unknown } {
+function preparePageContextForPublicUsageClientShared<PageContext extends PageContextForPublicUsageClientShared>(
+  pageContext: PageContext
+): PageContext & { Page: unknown } {
   // TODO/now
   const Page =
     pageContext.config.Page ||
@@ -20,14 +20,14 @@ function preparePageContextForUserConsumptionClientShared<
     pageContext.exports.Page
   objectAssign(pageContext, { Page })
 
-  // TODO/next-major-release: after we remove supportVueReactiviy() we can call this later inside the agnostic preparePageContextForUserConsumption()
+  // TODO/next-major-release: after we remove supportVueReactiviy() we can call this later inside the agnostic preparePageContextForPublicUsage()
   assertPageContextUrls(pageContext)
   // TODO/next-major-release: remove
   // - Requires https://github.com/vikejs/vike-vue/issues/198
   // - Last time I tried to remove it (https://github.com/vikejs/vike/commit/705fd23598d9d69bf46a52c8550216cd7117ce71) the tests were failing as expected: only the Vue integrations that used shallowReactive() failed.
   supportVueReactiviy(pageContext)
 
-  preparePageContextForUserConsumption(pageContext)
+  preparePageContextForPublicUsage(pageContext)
 
   const pageContextProxy = getPageContextProxyForUser(pageContext)
   return pageContextProxy

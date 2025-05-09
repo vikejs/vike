@@ -13,7 +13,7 @@ async function executeGuardHook<
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfigRuntime[]
   }
->(pageContext: PageContext, prepareForUserConsumption: (pageConfig: PageContext) => PageContext): Promise<void> {
+>(pageContext: PageContext, prepareForPublicUsage: (pageConfig: PageContext) => PageContext): Promise<void> {
   let hook: Hook | null
   if (pageContext._pageFilesAll.length > 0) {
     // V0.4 design
@@ -27,9 +27,9 @@ async function executeGuardHook<
   if (!hook) return
   const guard = hook.hookFn
 
-  const pageContextForUserConsumption = prepareForUserConsumption(pageContext)
+  const pageContextForPublicUsage = prepareForPublicUsage(pageContext)
 
-  const hookResult = await executeHook(() => guard(pageContextForUserConsumption), hook, pageContext)
+  const hookResult = await executeHook(() => guard(pageContextForPublicUsage), hook, pageContext)
   assertUsage(
     hookResult === undefined,
     `${errIntro} ${hook.hookFilePath} returns a value, but guard() shouldn't return any value`

@@ -1,14 +1,14 @@
-export { preparePageContextForUserConsumption }
-export type { PageContextForUserConsumption }
+export { preparePageContextForPublicUsage }
+export type { PageContextForPublicUsage }
 
 import { assert, assertWarning, compareString } from './utils.js'
-import type { PageContextForUserConsumptionClientShared } from '../client/shared/preparePageContextForUserConsumptionClientShared.js'
-import type { PageContextForUserConsumptionServer } from '../node/runtime/renderPage/preparePageContextForUserConsumptionServer.js'
+import type { PageContextForPublicUsageClientShared } from '../client/shared/preparePageContextForPublicUsageClientShared.js'
+import type { PageContextForPublicUsageServer } from '../node/runtime/renderPage/preparePageContextForPublicUsageServer.js'
 import { addIs404ToPageProps } from './addIs404ToPageProps.js'
 
-type PageContextForUserConsumption = PageContextForUserConsumptionServer | PageContextForUserConsumptionClientShared
+type PageContextForPublicUsage = PageContextForPublicUsageServer | PageContextForPublicUsageClientShared
 
-function preparePageContextForUserConsumption(pageContext: PageContextForUserConsumption) {
+function preparePageContextForPublicUsage(pageContext: PageContextForPublicUsage) {
   assert((pageContext as any)._isOriginalObject) // ensure we preserve the original object reference
 
   addIs404ToPageProps(pageContext)

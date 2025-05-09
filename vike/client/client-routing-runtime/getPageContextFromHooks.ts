@@ -35,9 +35,9 @@ import type { HookName } from '../../shared/page-configs/Config.js'
 import type { PageContextCreated } from './createPageContextClientSide.js'
 import type { PageContextBegin } from './renderPageClientSide.js'
 import {
-  type PageContextForUserConsumptionClient,
-  preparePageContextForUserConsumptionClient
-} from './preparePageContextForUserConsumptionClient.js'
+  type PageContextForPublicUsageClient,
+  preparePageContextForPublicUsageClient
+} from './preparePageContextForPublicUsageClient.js'
 const globalObject = getGlobalObject<{ pageContextInitIsPassedToClient?: true }>(
   'client-routing-runtime/getPageContextFromHooks.ts',
   {}
@@ -64,7 +64,7 @@ function getPageContextFromHooks_serialized(): PageContextSerialized & {
 async function getPageContextFromHooks_isHydration(
   pageContext: PageContextSerialized &
     PageContextBegin &
-    PageConfigUserFriendlyOld & { _hasPageContextFromServer: true } & PageContextForUserConsumptionClient
+    PageConfigUserFriendlyOld & { _hasPageContextFromServer: true } & PageContextForPublicUsageClient
 ) {
   for (const hookName of ['data', 'onBeforeRender'] as const) {
     if (hookClientOnlyExists(hookName, pageContext)) {
@@ -117,7 +117,7 @@ async function getPageContextFromServerHooks(
 async function getPageContextFromClientHooks(
   pageContext: { pageId: string; _hasPageContextFromServer: boolean } & PageContextBegin &
     PageConfigUserFriendlyOld &
-    PageContextForUserConsumptionClient,
+    PageContextForPublicUsageClient,
   isErrorPage: boolean
 ) {
   let dataHookExists = false
@@ -135,7 +135,7 @@ async function getPageContextFromClientHooks(
       ) {
         // Should we really call the guard() hook on the client-side? Shouldn't we make the guard() hook a server-side
         // only hook? Or maybe make its env configurable like data() and onBeforeRender()?
-        await executeGuardHook(pageContext, (pageContext) => preparePageContextForUserConsumptionClient(pageContext))
+        await executeGuardHook(pageContext, (pageContext) => preparePageContextForPublicUsageClient(pageContext))
       }
     } else {
       if (hookName === 'data') dataHookExists = true
@@ -155,9 +155,9 @@ async function getPageContextFromClientHooks(
   return pageContextFromClientHooks
 }
 
-type PageContextExecuteHookClient = PageConfigUserFriendlyOld & PageContextForUserConsumptionClient
+type PageContextExecuteHookClient = PageConfigUserFriendlyOld & PageContextForPublicUsageClient
 async function executeHookClient(hookName: HookName, pageContext: PageContextExecuteHookClient) {
-  return await executeHookNew(hookName, pageContext, (p) => preparePageContextForUserConsumptionClient(p))
+  return await executeHookNew(hookName, pageContext, (p) => preparePageContextForPublicUsageClient(p))
 }
 
 async function executeDataLikeHook(hookName: 'data' | 'onBeforeRender', pageContext: PageContextExecuteHookClient) {

@@ -1,13 +1,13 @@
-export { preparePageContextForUserConsumptionServer }
-export type { PageContextForUserConsumptionServer }
+export { preparePageContextForPublicUsageServer }
+export type { PageContextForPublicUsageServer }
 
 import { assertPageContextUrls, type PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
 import type { PageConfigUserFriendlyOld } from '../../../shared/page-configs/getUserFriendlyConfigs.js'
 import { PageContextInternalServer } from '../../../shared/types.js'
-import { preparePageContextForUserConsumption } from '../../../shared/preparePageContextForUserConsumption.js'
+import { preparePageContextForPublicUsage } from '../../../shared/preparePageContextForPublicUsage.js'
 import type { GlobalContextServer } from '../globalContext.js'
 
-type PageContextForUserConsumptionServer = PageContextInternalServer &
+type PageContextForPublicUsageServer = PageContextInternalServer &
   PageConfigUserFriendlyOld & {
     urlOriginal: string
     /** @deprecated */
@@ -22,11 +22,11 @@ type PageContextForUserConsumptionServer = PageContextInternalServer &
     globalContext: GlobalContextServer
   }
 
-function preparePageContextForUserConsumptionServer<PageContext extends PageContextForUserConsumptionServer>(
+function preparePageContextForPublicUsageServer<PageContext extends PageContextForPublicUsageServer>(
   pageContext: PageContext
 ) {
-  // TODO/next-major-release: after we remove supportVueReactiviy() we can call this later inside the agnostic preparePageContextForUserConsumption()
+  // TODO/next-major-release: after we remove supportVueReactiviy() we can call this later inside the agnostic preparePageContextForPublicUsage()
   assertPageContextUrls(pageContext)
-  preparePageContextForUserConsumption(pageContext)
+  preparePageContextForPublicUsage(pageContext)
   return pageContext
 }

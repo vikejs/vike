@@ -6,7 +6,7 @@ import { executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.j
 import { assertSingleInstance_onClientEntryServerRouting } from './utils.js'
 import { removeFoucBuster } from '../shared/removeFoucBuster.js'
 import { executeHookNew } from '../../shared/hooks/executeHook.js'
-import { preparePageContextForUserConsumptionClient } from './preparePageContextForUserConsumptionClient.js'
+import { preparePageContextForPublicUsageClient } from './preparePageContextForPublicUsageClient.js'
 // @ts-ignore Since dist/cjs/client/ is never used, we can ignore this error.
 const isProd: boolean = import.meta.env.PROD
 assertSingleInstance_onClientEntryServerRouting(isProd)
@@ -17,6 +17,6 @@ hydrate()
 
 async function hydrate() {
   const pageContext = await createPageContextClientSide()
-  await executeOnRenderClientHook(pageContext, preparePageContextForUserConsumptionClient)
-  await executeHookNew('onHydrationEnd', pageContext, preparePageContextForUserConsumptionClient)
+  await executeOnRenderClientHook(pageContext, preparePageContextForPublicUsageClient)
+  await executeHookNew('onHydrationEnd', pageContext, preparePageContextForPublicUsageClient)
 }
