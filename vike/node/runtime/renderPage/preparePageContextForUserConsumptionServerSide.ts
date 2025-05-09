@@ -20,7 +20,7 @@ type PageContextForUserConsumptionServerSide = PageContextBuiltInServerInternal 
     is404: null | boolean
     isClientSideNavigation: boolean
     globalContext: GlobalContextServer
-  } & Record<string, unknown>
+  }
 
 function preparePageContextForUserConsumptionServerSide(pageContext: PageContextForUserConsumptionServerSide): void {
   preparePageContextForUserConsumption(pageContext)
