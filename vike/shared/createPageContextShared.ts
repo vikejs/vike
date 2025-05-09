@@ -10,8 +10,6 @@ async function createPageContextShared<T extends object>(
   pageConfigGlobal: PageConfigGlobalRuntime,
   userFriendlyConfigsGlobal: PageConfigUserFriendly
 ) {
-  objectAssign(pageContextCreated, { isPageContext: true as const }, true)
-
   objectAssign(pageContextCreated, userFriendlyConfigsGlobal)
 
   await executeHookGlobalCumulative('onCreatePageContext', pageConfigGlobal, pageContextCreated, pageContextCreated)

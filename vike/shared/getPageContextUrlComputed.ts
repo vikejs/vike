@@ -206,7 +206,7 @@ function urlParsedGetter(this: PageContextUrlSource) {
   return urlParsedEnhanced
 }
 
-function assertPageContextUrls(pageContext: object) {
+function assertPageContextUrls(pageContext: Record<string, unknown>) {
   /*
   If the isPropertyGetter() assertions fail then it's most likely because Object.assign() was used instead of `objectAssign()`:
   ```js
@@ -222,12 +222,10 @@ function assertPageContextUrls(pageContext: object) {
   objectAssign(pageContext, pageContextUrlComputed)
   ```
   */
-  if ('urlPathname' in pageContext) {
-    assert(isPropertyGetter(pageContext, 'urlPathname'))
-    assert(isPropertyGetter(pageContext, 'urlParsed'))
-    assert(isPropertyGetter(pageContext, 'url'))
-  } else {
-    assert(!('urlParsed' in pageContext))
-    assert(!('url' in pageContext))
-  }
+  assertPropertyGetter(pageContext, 'urlParsed')
+  assertPropertyGetter(pageContext, 'urlPathname')
+  assertPropertyGetter(pageContext, 'url')
+}
+function assertPropertyGetter(pageContext: Record<string, unknown>, prop: string) {
+  if (pageContext.prop) assert(isPropertyGetter(pageContext, 'urlPathname'))
 }

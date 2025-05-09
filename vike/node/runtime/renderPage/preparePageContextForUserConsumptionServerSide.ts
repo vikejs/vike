@@ -1,7 +1,7 @@
 export { preparePageContextForUserConsumptionServerSide }
 export type { PageContextForUserConsumptionServerSide }
 
-import { PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
+import { assertPageContextUrls, type PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
 import type { PageConfigUserFriendlyOld } from '../../../shared/page-configs/getUserFriendlyConfigs.js'
 import { PageContextBuiltInServerInternal } from '../../../shared/types.js'
 import { preparePageContextForUserConsumption } from '../../../shared/preparePageContextForUserConsumption.js'
@@ -23,5 +23,7 @@ type PageContextForUserConsumptionServerSide = PageContextBuiltInServerInternal 
   }
 
 function preparePageContextForUserConsumptionServerSide(pageContext: PageContextForUserConsumptionServerSide): void {
+  // TODO/next-major-release: after we remove supportVueReactiviy() we can call this later inside the agnostic preparePageContextForUserConsumption()
+  assertPageContextUrls(pageContext)
   preparePageContextForUserConsumption(pageContext)
 }
