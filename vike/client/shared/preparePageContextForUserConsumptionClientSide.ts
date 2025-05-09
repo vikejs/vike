@@ -6,10 +6,12 @@ import type { PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
 import { getPageContextProxyForUser } from './getPageContextProxyForUser.js'
 import { preparePageContextForUserConsumption } from '../../shared/preparePageContextForUserConsumption.js'
 import { assertPageContextUrls } from '../../shared/getPageContextUrlComputed.js'
+import type { PageContextBuiltInClientInternal } from '../../shared/types.js'
 
-type PageContextForUserConsumptionClientSide = PageConfigUserFriendlyOld & {
-  urlOriginal: string
-}
+type PageContextForUserConsumptionClientSide = PageContextBuiltInClientInternal &
+  PageConfigUserFriendlyOld & {
+    urlOriginal: string
+  }
 
 function preparePageContextForUserConsumptionClientSide<T extends PageContextForUserConsumptionClientSide>(
   pageContext: T

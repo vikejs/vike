@@ -37,6 +37,7 @@ import { isServerSideError } from '../../shared/misc/isServerSideError.js'
 import { executeHookNew } from '../../shared/hooks/executeHook.js'
 import type { HookName } from '../../shared/page-configs/Config.js'
 import type { PageContextCreated } from './createPageContextClientSide.js'
+import type { PageContextBegin } from './renderPageClientSide.js'
 const globalObject = getGlobalObject<{ pageContextInitIsPassedToClient?: true }>(
   'client-routing-runtime/getPageContextFromHooks.ts',
   {}
@@ -62,7 +63,7 @@ function getPageContextFromHooks_serialized(): PageContextSerialized & {
 // TO-DO/eventually: rename
 async function getPageContextFromHooks_isHydration(
   pageContext: PageContextSerialized &
-    PageContextCreated &
+    PageContextBegin &
     PageConfigUserFriendlyOld & { _hasPageContextFromServer: true }
 ) {
   for (const hookName of ['data', 'onBeforeRender'] as const) {
@@ -114,7 +115,7 @@ async function getPageContextFromServerHooks(
 }
 
 async function getPageContextFromClientHooks(
-  pageContext: { pageId: string; _hasPageContextFromServer: boolean } & PageContextCreated & PageConfigUserFriendlyOld,
+  pageContext: { pageId: string; _hasPageContextFromServer: boolean } & PageContextBegin & PageConfigUserFriendlyOld,
   isErrorPage: boolean
 ) {
   let dataHookExists = false

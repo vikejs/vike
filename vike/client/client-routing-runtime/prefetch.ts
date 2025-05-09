@@ -28,8 +28,7 @@ import { createPageContextClientSide, type PageContextCreated } from './createPa
 import { route, type PageContextFromRoute } from '../../shared/route/index.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import { type PageContextFromServerHooks, getPageContextFromServerHooks } from './getPageContextFromHooks.js'
-import type { PageConfigUserFriendlyOld, PageFile } from '../../shared/getPageFiles.js'
-import { type PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
+import type { PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
 import { getPageContextCurrent } from './getPageContextCurrent.js'
 import {
   PAGE_CONTEXT_MAX_AGE_DEFAULT,

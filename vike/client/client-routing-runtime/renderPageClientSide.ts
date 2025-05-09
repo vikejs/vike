@@ -3,6 +3,7 @@ export { getRenderCount }
 export { disableClientRouting }
 export { firstRenderStartPromise }
 export { getPageContextClient }
+export type { PageContextBegin }
 
 import {
   assert,
@@ -81,6 +82,8 @@ const globalObject = getGlobalObject<{
 const { firstRenderStartPromise } = globalObject
 type PreviousPageContext = { pageId: string } & PageConfigUserFriendlyOld & PageContextRouted
 type PageContextRouted = { pageId: string; routeParams: Record<string, string> }
+
+type PageContextBegin = Awaited<ReturnType<typeof getPageContextBegin>>
 
 type RenderArgs = {
   scrollTarget: ScrollTarget

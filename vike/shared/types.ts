@@ -13,6 +13,7 @@ export type { GlobalContextClientWithServerRouting }
 
 // Internal
 export type { PageContextBuiltInServerInternal }
+export type { PageContextBuiltInClientInternal }
 
 // TODO/v1-release: remove these three exports
 export type { PageContextBuiltInServer_deprecated as PageContextBuiltInServer }
@@ -292,8 +293,12 @@ type PageContextClientCommon = {
   isPrerendering: false
 }
 
-/** For Vike internal use */
+// For Vike internal use
 type PageContextBuiltInServerInternal = Omit<PageContextBuiltInCommon<unknown> & PageContextUrlInternal, 'data'>
+type PageContextBuiltInClientInternal = Omit<
+  PageContextBuiltInClientWithClientRouting<unknown> | PageContextBuiltInClientWithServerRouting<unknown>,
+  'data' | 'Page'
+>
 
 /** @deprecated
  * Replace:
