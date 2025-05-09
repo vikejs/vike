@@ -30,6 +30,7 @@ import type { AbortStatusCode } from './route/abort.js'
 import type { GlobalContextServer } from '../node/runtime/globalContext.js'
 import type { GlobalContextClient } from '../client/client-routing-runtime/globalContext.js'
 import type { GlobalContextClientWithServerRouting } from '../client/server-routing-runtime/globalContext.js'
+import type { PreviousPageContext } from '../client/client-routing-runtime/renderPageClientSide.js'
 
 type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & Vike.PageContext & Vike.PageContextServer
 
@@ -304,8 +305,10 @@ type PageContextBuiltInClientInternal = Omit<
 >
 type PageContextBuiltInClientInternalClientRouting = Omit<
   PageContextBuiltInClientWithClientRouting<unknown>,
-  'data' | 'Page'
->
+  'data' | 'Page' | 'previousPageContext'
+> & {
+  previousPageContext: PreviousPageContext | null
+}
 type PageContextBuiltInClientInternalServerRouting = Omit<
   PageContextBuiltInClientWithServerRouting<unknown>,
   'data' | 'Page'

@@ -64,7 +64,7 @@ function getPageContextFromHooks_serialized(): PageContextSerialized & {
 async function getPageContextFromHooks_isHydration(
   pageContext: PageContextSerialized &
     PageContextBegin &
-    PageConfigUserFriendlyOld & { _hasPageContextFromServer: true }
+    PageConfigUserFriendlyOld & { _hasPageContextFromServer: true } & PageContextForUserConsumptionClient
 ) {
   for (const hookName of ['data', 'onBeforeRender'] as const) {
     if (hookClientOnlyExists(hookName, pageContext)) {
@@ -115,7 +115,9 @@ async function getPageContextFromServerHooks(
 }
 
 async function getPageContextFromClientHooks(
-  pageContext: { pageId: string; _hasPageContextFromServer: boolean } & PageContextBegin & PageConfigUserFriendlyOld,
+  pageContext: { pageId: string; _hasPageContextFromServer: boolean } & PageContextBegin &
+    PageConfigUserFriendlyOld &
+    PageContextForUserConsumptionClient,
   isErrorPage: boolean
 ) {
   let dataHookExists = false

@@ -4,6 +4,7 @@ export { disableClientRouting }
 export { firstRenderStartPromise }
 export { getPageContextClient }
 export type { PageContextBegin }
+export type { PreviousPageContext }
 
 import {
   assert,
@@ -350,6 +351,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     const pageContext = await getPageContextBegin(true, pageContextBeginArgs)
     if (isRenderOutdated()) return
 
+    objectAssign(pageContext, { routeParams: {} })
     if (args.is404) objectAssign(pageContext, { is404: true })
     if (args.pageContextError) objectAssign(pageContext, args.pageContextError)
 
@@ -464,16 +466,15 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     if (isRenderOutdated()) return
     augmentType(pageContext, pageContextFromClientHooks)
 
-    objectAssign(pageContext, { routeParams: {} })
-
     await renderPageView(pageContext, args)
   }
 
   async function renderPageView(
-    pageContext: PageContextBeforeRenderClient & {
-      urlPathname: string
-      _hasPageContextFromServer: boolean
-    } & PageContextRouted,
+    pageContext: PageContextBeforeRenderClient &
+      PageContextBegin & {
+        urlPathname: string
+        _hasPageContextFromServer: boolean
+      } & PageContextRouted,
     isErrorPage?: { err?: unknown }
   ) {
     const onError = async (err: unknown) => {
@@ -599,7 +600,7 @@ async function getPageContextBegin(
     isFirstRender: boolean
   }
 ) {
-  const { previousPageContext } = globalObject
+  const previousPageContext = globalObject.previousPageContext ?? null
   const pageContext = await createPageContextClientSide(urlOriginal)
   objectAssign(pageContext, {
     isBackwardNavigation,
