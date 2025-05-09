@@ -1189,7 +1189,7 @@ function assertIsNotAbort(err: unknown, urlOriginal: string) {
 }
 
 function preparePrerenderContextForUserConsumption(prerenderContext: PrerenderContext) {
-  // TODO/v1-release: remove warning
+  // TODO/v1-release: remove
   if (!('prerenderPageContexts' in prerenderContext)) {
     Object.defineProperty(prerenderContext, 'prerenderPageContexts', {
       get() {
@@ -1201,6 +1201,7 @@ function preparePrerenderContextForUserConsumption(prerenderContext: PrerenderCo
       }
     })
   }
+
   const prerenderContextPublic = makePublic(prerenderContext)
   return prerenderContextPublic
 }
