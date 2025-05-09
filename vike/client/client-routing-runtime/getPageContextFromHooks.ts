@@ -61,7 +61,9 @@ function getPageContextFromHooks_serialized(): PageContextSerialized & {
 }
 // TO-DO/eventually: rename
 async function getPageContextFromHooks_isHydration(
-  pageContext: PageContextSerialized & PageContextCreated & PageConfigUserFriendlyOld & { _hasPageContextFromServer: true }
+  pageContext: PageContextSerialized &
+    PageContextCreated &
+    PageConfigUserFriendlyOld & { _hasPageContextFromServer: true }
 ) {
   for (const hookName of ['data', 'onBeforeRender'] as const) {
     if (hookClientOnlyExists(hookName, pageContext)) {
