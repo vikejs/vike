@@ -114,6 +114,15 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   const { isRenderOutdated, setHydrationCanBeAborted, isFirstRender } = getIsRenderOutdated()
   assertNoInfiniteAbortLoop(pageContextsFromRewrite.length, redirectCount)
 
+  const pageContextBeginArgs = {
+    urlOriginal,
+    isBackwardNavigation,
+    pageContextsFromRewrite,
+    isClientSideNavigation,
+    pageContextInitClient,
+    isFirstRender
+  }
+
   if (globalObject.clientRoutingIsDisabled) {
     redirectHard(urlOriginal)
     return
@@ -131,7 +140,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       await renderErrorPage({ err })
     }
 
-    const pageContext = await getPageContextBegin(renderArgs, isFirstRender, false)
+    const pageContext = await getPageContextBegin(false, pageContextBeginArgs)
     if (isRenderOutdated()) return
 
     // onPageTransitionStart()
@@ -334,7 +343,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       }
     }
 
-    const pageContext = await getPageContextBegin(renderArgs, isFirstRender, true)
+    const pageContext = await getPageContextBegin(true, pageContextBeginArgs)
     if (isRenderOutdated()) return
 
     if (args.is404) objectAssign(pageContext, { is404: true })
@@ -568,17 +577,24 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   }
 }
 
-async function getPageContextBegin(renderArgs: RenderArgs, isFirstRender: boolean, isForErrorPage: boolean) {
-  const {
-    urlOriginal = getCurrentUrl(),
-    overwriteLastHistoryEntry = false,
+async function getPageContextBegin(
+  isForErrorPage: boolean,
+  {
+    urlOriginal,
     isBackwardNavigation,
-    pageContextsFromRewrite = [],
-    redirectCount = 0,
-    doNotRenderIfSamePage,
-    isClientSideNavigation = true,
-    pageContextInitClient
-  } = renderArgs
+    pageContextsFromRewrite,
+    isClientSideNavigation,
+    pageContextInitClient,
+    isFirstRender
+  }: {
+    urlOriginal: string
+    isBackwardNavigation: boolean | null
+    pageContextsFromRewrite: PageContextFromRewrite[]
+    isClientSideNavigation: boolean
+    pageContextInitClient: Record<string, unknown> | undefined
+    isFirstRender: boolean
+  }
+) {
   const { previousPageContext } = globalObject
   const pageContext = await createPageContextClientSide(urlOriginal)
   objectAssign(pageContext, {
