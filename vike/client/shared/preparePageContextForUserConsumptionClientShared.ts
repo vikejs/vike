@@ -13,9 +13,9 @@ type PageContextForUserConsumptionClient = PageContextBuiltInClientInternal &
     urlOriginal: string
   }
 
-function preparePageContextForUserConsumptionClientShared<T extends PageContextForUserConsumptionClient>(
-  pageContext: T
-): T & { Page: unknown } {
+function preparePageContextForUserConsumptionClientShared<PageContext extends PageContextForUserConsumptionClient>(
+  pageContext: PageContext
+): PageContext & { Page: unknown } {
   // TODO/now
   const Page =
     pageContext.config.Page ||
