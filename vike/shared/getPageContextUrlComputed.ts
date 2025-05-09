@@ -1,5 +1,5 @@
 export { getPageContextUrlComputed }
-export { assertPageContextUrl }
+export { assertPageContextUrls }
 export type { PageContextUrlInternal }
 export type { PageContextUrlClient }
 export type { PageContextUrlServer }
@@ -53,7 +53,7 @@ type HashProps = 'hash' | 'hashString' | 'hashOriginal'
 
 function getPageContextUrlComputed(pageContext: PageContextUrlSource): PageContextUrlComputed {
   assert(typeof pageContext.urlOriginal === 'string')
-  assertPageContextUrlComputed(pageContext)
+  assertPageContextUrlsComputed(pageContext)
 
   const pageContextUrlComputed = {}
   objectDefineProperty(pageContextUrlComputed, 'urlPathname', {
@@ -206,11 +206,11 @@ function urlParsedGetter(this: PageContextUrlSource) {
   return urlParsedEnhanced
 }
 
-function assertPageContextUrl(pageContext: object) {
-  assertPageContextUrlComputed(pageContext)
+function assertPageContextUrls(pageContext: object) {
+  assertPageContextUrlsComputed(pageContext)
 }
 
-function assertPageContextUrlComputed(pageContext: object) {
+function assertPageContextUrlsComputed(pageContext: object) {
   /*
   If the isPropertyGetter() assertions fail then it's most likely because Object.assign() was used instead of `objectAssign()`:
   ```js
