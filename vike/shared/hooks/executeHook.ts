@@ -61,9 +61,12 @@ function isUserHookError(err: unknown): false | HookLoc {
   return globalObject.userHookErrors.get(err) ?? false
 }
 
-async function executeHookWithoutPageContext(hook: Omit<Hook, 'hookFn'> & { hookFn: Function }) {
-  const { hookFn, hookName, hookFilePath, hookTimeout } = hook
-  const hookResult: unknown = await executeHook(() => hookFn(), { hookName, hookFilePath, hookTimeout }, null)
+async function executeHookWithoutPageContext<HookReturn>(
+  hookFnCaller: () => HookReturn,
+  hook: Omit<Hook, 'hookFn'>
+): Promise<HookReturn> {
+  const { hookName, hookFilePath, hookTimeout } = hook
+  const hookResult = await executeHook(hookFnCaller, { hookName, hookFilePath, hookTimeout }, null)
   return hookResult
 }
 function executeHook<HookReturn>(
