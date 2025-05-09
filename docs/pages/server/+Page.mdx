@@ -1,5 +1,5 @@
 import { Link, Warning } from '@brillout/docpress'
-import { CodeSnippets } from '../../components'
+import { CodeVariantsServer, CodeVariant } from '../../components'
 
 To integrate Vike with your server we recommend using `vike-server` which comes with many benefits such as:
 - Out-of-the-box support for popular servers (Express, Hono, Hattip, Elysia, etc.)
@@ -21,31 +21,17 @@ This page contains the entire `vike-server` documentation.
 
 To add `vike-server` to an existing Vike app: install the `vike-server` npm package (e.g. `$ npm install vike-server`) then extend your existing <Link href="/config#files">`+config.js`</Link> file (or create one) with `vike-server`:
 
-<CodeSnippets filePath={"+config"}>
-  <div lang={"js"}>
-    ```js
-    import vikeServer from 'vike-server/config' // [!code ++]
+```js
+// +config.js
 
-    export const config = {
-      extends: [vikeServer], // [!code ++]
-      // Points to your server entry // [!code ++]
-      server: 'server/index.js' // [!code ++]
-    }
-    ```
-  </div>
-  <div lang={"ts"}>
-    ```ts
-    import vikeServer from 'vike-server/config' // [!code ++]
-    import type { Config } from "vike/types";
+import vikeServer from 'vike-server/config' // [!code ++]
 
-    export const config = {
-      extends: [vikeServer], // [!code ++]
-      // Points to your server entry // [!code ++]
-      server: 'server/index.ts' // [!code ++]
-    } satisfies Config;
-    ```
-  </div>
-</CodeSnippets>
+export const config = {
+  extends: [vikeServer], // [!code ++]
+  // Points to your server entry // [!code ++]
+  server: 'server/index.js' // [!code ++]
+}
+```
 
 Update your production `script` in `package.json`:
 
@@ -60,8 +46,9 @@ Update your production `script` in `package.json`:
 ```
 
 Create (or update) your server entry:
-<CodeSnippets filePath={"server/index"} framework={"backend"}>
-  <div framework={"Express.js"} lang={"js"}>
+
+<CodeVariantsServer filePath={"server/index"}>
+  <CodeVariant framework={"Express.js"}>
     ```js
     import express from 'express'
     import { apply } from 'vike-server/express'
@@ -79,27 +66,8 @@ Create (or update) your server entry:
 
     export default startServer()
     ```
-  </div>
-  <div framework={"Express.js"} lang={"ts"}>
-    ```ts
-    import express from 'express'
-    import { apply } from 'vike-server/express'
-    import { serve } from 'vike-server/express/serve'
-
-    function startServer() {
-      const app = express()
-      apply(app)
-      return serve(app, {
-        // options
-        port: 3000,
-        hostname: 'localhost'
-      })
-    }
-
-    export default startServer()
-    ```
-  </div>
-  <div framework={"Hono"} lang={"js"}>
+  </CodeVariant>
+  <CodeVariant framework={"Hono"}>
     ```js
     import { Hono } from 'hono'
     import { apply } from 'vike-server/hono'
@@ -117,27 +85,8 @@ Create (or update) your server entry:
 
     export default startServer()
     ```
-  </div>
-  <div framework={"Hono"} lang={"ts"}>
-    ```ts
-    import { Hono } from 'hono'
-    import { apply } from 'vike-server/hono'
-    import { serve } from 'vike-server/hono/serve'
-
-    function startServer() {
-      const app = new Hono()
-      apply(app)
-      return serve(app, {
-        // options
-        port: 3000,
-        hostname: 'localhost'
-      })
-    }
-
-    export default startServer()
-    ```
-  </div>
-  <div framework={"Fastify"} lang={"js"}>
+  </CodeVariant>
+  <CodeVariant framework={"Fastify"}>
     ```js
     import fastify from 'fastify'
     import rawBody from 'fastify-raw-body'
@@ -162,34 +111,8 @@ Create (or update) your server entry:
 
     export default startServer()
     ```
-  </div>
-  <div framework={"Fastify"} lang={"ts"}>
-    ```ts
-    import fastify from 'fastify'
-    import rawBody from 'fastify-raw-body'
-    import { apply } from 'vike-server/fastify'
-    import { serve } from 'vike-server/fastify/serve'
-
-    async function startServer() {
-      const app = fastify({
-        // ⚠️ Mandatory for HMR support
-        forceCloseConnections: true
-      })
-
-      // ⚠️ Mandatory for Vike middlewares to operate properly
-      await app.register(rawBody)
-      await apply(app)
-      return serve(app, {
-        // options
-        port: 3000,
-        hostname: 'localhost'
-      })
-    }
-
-    export default startServer()
-    ```
-  </div>
-  <div framework={"h3"} lang={"js"}>
+  </CodeVariant>
+  <CodeVariant framework={"h3"}>
     ```js
     import { createApp } from 'h3'
     import { apply } from 'vike-server/h3'
@@ -207,45 +130,8 @@ Create (or update) your server entry:
 
     export default startServer()
     ```
-  </div>
-  <div framework={"h3"} lang={"ts"}>
-    ```ts
-    import { createApp } from 'h3'
-    import { apply } from 'vike-server/h3'
-    import { serve } from 'vike-server/h3/serve'
-
-    function startServer() {
-      const app = createApp()
-      apply(app)
-      return serve(app, {
-        // options
-        port: 3000,
-        hostname: 'localhost'
-      })
-    }
-
-    export default startServer()
-    ```
-  </div>
-  <div framework={"Elysia"} lang={"js"}>
-    ```js
-    import { Elysia } from 'elysia'
-    import { apply } from 'vike-server/elysia'
-    import { serve } from 'vike-server/elysia/serve'
-
-    function startServer() {
-      const app = apply(new Elysia())
-      return serve(app, {
-        // options
-        port: 3000,
-        hostname: 'localhost'
-      })
-    }
-
-    export default startServer()
-    ```
-  </div>
-  <div framework={"Elysia"} lang={"ts"}>
+  </CodeVariant>
+  <CodeVariant framework={"Elysia"}>
     ```ts
     import { Elysia } from 'elysia'
     import { apply } from 'vike-server/elysia'
@@ -262,8 +148,8 @@ Create (or update) your server entry:
 
     export default startServer()
     ```
-  </div>
-</CodeSnippets>
+  </CodeVariant>
+</CodeVariantsServer>
 
 Where:
  - `apply()` installs the middleware of Vike and Vike extensions.
