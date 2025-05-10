@@ -2,20 +2,21 @@ export { executeGuardHook }
 
 import { getHookFromPageContext, getHookTimeoutDefault, type Hook } from '../hooks/getHook.js'
 import { assert, assertUsage, isCallable } from './utils.js'
-import type { PageConfigUserFriendlyOld, PageFile } from '../getPageFiles.js'
+import type { PageFile } from '../getPageFiles.js'
 import type { PageConfigRuntime } from '../page-configs/PageConfig.js'
-import { executeHook } from '../hooks/executeHook.js'
+import { executeHookSingle, type PageContextExecuteHook } from '../hooks/executeHook.js'
 const errIntro = 'The guard() hook defined by'
 
 async function executeGuardHook<
-  PageContext extends PageConfigUserFriendlyOld & {
+  PageContext extends {
     pageId: string
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfigRuntime[]
-  }
+  } & PageContextExecuteHook
 >(pageContext: PageContext, prepareForPublicUsage: (pageConfig: PageContext) => PageContext): Promise<void> {
   let hook: Hook | null
   if (pageContext._pageFilesAll.length > 0) {
+    // TODO/v1-release: remove
     // V0.4 design
     assert(pageContext._pageConfigs.length === 0)
     hook = findPageGuard(pageContext.pageId, pageContext._pageFilesAll)
@@ -25,15 +26,8 @@ async function executeGuardHook<
   }
 
   if (!hook) return
-  const guard = hook.hookFn
 
-  const pageContextForPublicUsage = prepareForPublicUsage(pageContext)
-
-  const hookResult = await executeHook(() => guard(pageContextForPublicUsage), hook, pageContext)
-  assertUsage(
-    hookResult === undefined,
-    `${errIntro} ${hook.hookFilePath} returns a value, but guard() shouldn't return any value`
-  )
+  await executeHookSingle(hook, pageContext, prepareForPublicUsage)
 }
 
 // We cannot easily use pageContext.exports for the V0.4 design
