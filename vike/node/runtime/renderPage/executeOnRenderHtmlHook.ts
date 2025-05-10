@@ -24,7 +24,7 @@ import { assertHookReturnedObject } from '../../../shared/assertHookReturnedObje
 import { logRuntimeError } from './loggerRuntime.js'
 import type { PageContextSerialization } from '../html/serializeContext.js'
 import pc from '@brillout/picocolors'
-import { executeHook, executeHookSingleWithReturn } from '../../../shared/hooks/executeHook.js'
+import { executeHookSingleWithReturn } from '../../../shared/hooks/executeHook.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 
 type GetPageAssets = () => Promise<PageAsset[]>
@@ -52,18 +52,13 @@ async function executeOnRenderHtmlHook(
   htmlRender: HtmlRender
 }> {
   const hook = getRenderHook(pageContext)
-  const { renderHook } = hook
-  objectAssign(pageContext, { _renderHook: renderHook })
+  objectAssign(pageContext, { _renderHook: hook })
 
-  const { hookResult } = await executeHookSingleWithReturn(
-    hook.renderHook,
-    pageContext,
-    preparePageContextForPublicUsageServer
-  )
+  const { hookResult } = await executeHookSingleWithReturn(hook, pageContext, preparePageContextForPublicUsageServer)
 
   const { documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter } = processHookReturnValue(
     hookResult,
-    renderHook
+    hook
   )
 
   Object.assign(pageContext, pageContextProvidedByRenderHook)
@@ -82,7 +77,7 @@ async function executeOnRenderHtmlHook(
 
   const htmlRender = await renderDocumentHtml(documentHtml, pageContext, onErrorWhileStreaming, injectFilter)
   assert(typeof htmlRender === 'string' || isStream(htmlRender))
-  return { htmlRender, renderHook }
+  return { htmlRender, renderHook: hook }
 }
 
 function getRenderHook(
@@ -90,11 +85,7 @@ function getRenderHook(
     _pageConfigs: PageConfigRuntime[]
   }
 ) {
-  let hookFound:
-    | undefined
-    | {
-        renderHook: RenderHook
-      }
+  let hookFound: RenderHook | undefined
   {
     let hook: null | Hook
     let hookName: undefined | HookName = undefined
@@ -110,9 +101,7 @@ function getRenderHook(
     if (hook) {
       assert(hookName)
       const { hookFilePath, hookFn, hookTimeout } = hook
-      hookFound = {
-        renderHook: { hookFn, hookFilePath, hookName, hookTimeout }
-      }
+      hookFound = { hookFn, hookFilePath, hookName, hookTimeout }
     }
   }
   if (!hookFound) {
