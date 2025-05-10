@@ -56,8 +56,15 @@ import { setPageContextCurrent } from './getPageContextCurrent.js'
 import { getRouteStringParameterList } from '../../shared/route/resolveRouteString.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 import type { PageContextClient } from '../../shared/types.js'
-import { executeHook, executeHookWithErrorHandling } from '../../shared/hooks/executeHook.js'
-import { preparePageContextForPublicUsageClient } from './preparePageContextForPublicUsageClient.js'
+import {
+  executeHook,
+  executeHookWithErrorHandling,
+  type PageContextExecuteHook
+} from '../../shared/hooks/executeHook.js'
+import {
+  type PageContextForPublicUsageClient,
+  preparePageContextForPublicUsageClient
+} from './preparePageContextForPublicUsageClient.js'
 
 const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
@@ -81,7 +88,10 @@ const globalObject = getGlobalObject<{
   })()
 )
 const { firstRenderStartPromise } = globalObject
-type PreviousPageContext = { pageId: string } & PageConfigUserFriendlyOld & PageContextRouted
+type PreviousPageContext = { pageId: string } & PageConfigUserFriendlyOld &
+  PageContextRouted &
+  PageContextExecuteHook &
+  PageContextForPublicUsageClient
 type PageContextRouted = { pageId: string; routeParams: Record<string, string> }
 
 type PageContextBegin = Awaited<ReturnType<typeof getPageContextBegin>>
@@ -539,17 +549,17 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     if (globalObject.isTransitioning) {
       globalObject.isTransitioning = undefined
       assert(previousPageContext)
-      const hook = getHookFromPageContext(previousPageContext, 'onPageTransitionEnd')
-      if (hook) {
-        const { hookFn } = hook
-        try {
-          await executeHook(() => hookFn(pageContext), hook, pageContext)
-        } catch (err) {
-          await onError(err)
-          if (!isErrorPage) return
-        }
-        if (isRenderOutdated(true)) return
+      const res = await executeHookWithErrorHandling(
+        'onPageTransitionEnd',
+        pageContext,
+        preparePageContextForPublicUsageClient,
+        previousPageContext
+      )
+      if ('err' in res) {
+        await onError(res.err)
+        if (!isErrorPage) return
       }
+      if (isRenderOutdated(true)) return
     }
 
     if (!scrollTarget && previousPageContext) {

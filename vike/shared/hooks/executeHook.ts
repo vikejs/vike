@@ -6,6 +6,7 @@ export { executeHookWithoutPageContext }
 export { getPageContext }
 export { providePageContext }
 export { isUserHookError }
+export type { PageContextExecuteHook }
 
 import { getProjectError, assertWarning } from '../../utils/assert.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
@@ -42,9 +43,10 @@ async function executeHookNew<PageContext extends PageContextExecuteHook>(
 async function executeHookWithErrorHandling<PageContext extends PageContextExecuteHook>(
   hookName: HookName,
   pageContext: PageContext,
-  preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext
+  preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
+  pageContextHook?: PageConfigUserFriendlyOld
 ) {
-  const hooks = getHookFromPageContextNew(hookName, pageContext)
+  const hooks = getHookFromPageContextNew(hookName, pageContextHook ?? pageContext)
   if (!hooks.length) return { hooks: [] as HookWithResult[] }
   const pageContextPrepared = preparePageContextForPublicUsage(pageContext)
   let hooksWithResult: HookWithResult[] | undefined
