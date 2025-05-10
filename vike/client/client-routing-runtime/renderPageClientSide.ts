@@ -65,6 +65,7 @@ import {
   preparePageContextForPublicUsageClient
 } from './preparePageContextForPublicUsageClient.js'
 import { getHookFromPageContextNew } from '../../shared/hooks/getHook.js'
+import { preparePageContextForPublicUsageClientMinimal } from '../shared/preparePageContextForPublicUsageClientShared.js'
 
 const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
@@ -167,9 +168,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         const hooks = getHookFromPageContextNew('onPageTransitionStart', previousPageContext)
         const res = await executeHooksWithErrorHandling(
           hooks,
-          // TODO/now
-          pageContext as any,
-          preparePageContextForPublicUsageClient
+          pageContext,
+          preparePageContextForPublicUsageClientMinimal
         )
         if ('err' in res) {
           await onError(res.err)

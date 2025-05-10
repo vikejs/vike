@@ -20,13 +20,15 @@ import type { PageConfigUserFriendlyOld } from '../getPageFiles.js'
 import { getHookFromPageConfigGlobalCumulative, getHookFromPageContextNew } from './getHook.js'
 import type { HookName, HookNameGlobal } from '../page-configs/Config.js'
 import type { PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
-import type { PageContextForPublicUsage } from '../preparePageContextForPublicUsage.js'
+import type { PageContextForPublicUsageServer } from '../../node/runtime/renderPage/preparePageContextForPublicUsageServer.js'
+import type { PageContextForPublicUsageClientShared } from '../../client/shared/preparePageContextForPublicUsageClientShared.js'
 const globalObject = getGlobalObject('utils/executeHook.ts', {
   userHookErrors: new WeakMap<object, HookLoc>(),
   pageContext: null as PageContextUnknown
 })
 
 type PageContextExecuteHook = PageConfigUserFriendlyOld & PageContextForPublicUsage
+type PageContextForPublicUsage = PageContextForPublicUsageServer | PageContextForPublicUsageClientShared
 
 type HookWithResult = Hook & {
   hookResult: unknown
@@ -65,7 +67,7 @@ async function executeHookWithErrorHandling<PageContext extends PageContextExecu
   return executeHooksWithErrorHandling(hooks, pageContext, preparePageContextForPublicUsage)
 }
 
-async function executeHooksWithErrorHandling<PageContext extends PageContextExecuteHook>(
+async function executeHooksWithErrorHandling<PageContext extends Record<string, unknown>>(
   hooks: Hook[],
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext

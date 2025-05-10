@@ -1,4 +1,5 @@
 export { preparePageContextForPublicUsageClientShared }
+export { preparePageContextForPublicUsageClientMinimal }
 export type { PageContextForPublicUsageClientShared }
 
 import { objectAssign } from '../server-routing-runtime/utils.js'
@@ -27,8 +28,13 @@ function preparePageContextForPublicUsageClientShared<PageContext extends PageCo
   // - Last time I tried to remove it (https://github.com/vikejs/vike/commit/705fd23598d9d69bf46a52c8550216cd7117ce71) the tests were failing as expected: only the Vue integrations that used shallowReactive() failed.
   supportVueReactiviy(pageContext)
 
-  preparePageContextForPublicUsage(pageContext)
+  return preparePageContextForPublicUsageClientMinimal(pageContext)
+}
 
+function preparePageContextForPublicUsageClientMinimal<PageContext extends Record<string, unknown>>(
+  pageContext: PageContext
+) {
+  preparePageContextForPublicUsage(pageContext)
   const pageContextProxy = getPageContextProxyForUser(pageContext)
   return pageContextProxy
 }

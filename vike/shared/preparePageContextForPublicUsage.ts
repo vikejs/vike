@@ -1,14 +1,9 @@
 export { preparePageContextForPublicUsage }
-export type { PageContextForPublicUsage }
 
 import { assert, assertWarning, compareString } from './utils.js'
-import type { PageContextForPublicUsageClientShared } from '../client/shared/preparePageContextForPublicUsageClientShared.js'
-import type { PageContextForPublicUsageServer } from '../node/runtime/renderPage/preparePageContextForPublicUsageServer.js'
 import { addIs404ToPageProps } from './addIs404ToPageProps.js'
 
-type PageContextForPublicUsage = PageContextForPublicUsageServer | PageContextForPublicUsageClientShared
-
-function preparePageContextForPublicUsage(pageContext: PageContextForPublicUsage) {
+function preparePageContextForPublicUsage(pageContext: Record<string, unknown>) {
   assert((pageContext as any)._isOriginalObject) // ensure we preserve the original object reference
 
   addIs404ToPageProps(pageContext)
