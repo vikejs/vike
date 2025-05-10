@@ -56,8 +56,8 @@ import { getRouteStringParameterList } from '../../shared/route/resolveRouteStri
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 import type { PageContextClient } from '../../shared/types.js'
 import {
-  executeHooksWithErrorHandling,
-  executeHookWithErrorHandling,
+  executeHooksErrorHandling,
+  executeHookErrorHandling,
   type PageContextExecuteHook
 } from '../../shared/hooks/executeHook.js'
 import {
@@ -166,11 +166,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       if (!globalObject.isTransitioning) {
         globalObject.isTransitioning = true
         const hooks = getHookFromPageContextNew('onPageTransitionStart', previousPageContext)
-        const res = await executeHooksWithErrorHandling(
-          hooks,
-          pageContext,
-          preparePageContextForPublicUsageClientMinimal
-        )
+        const res = await executeHooksErrorHandling(hooks, pageContext, preparePageContextForPublicUsageClientMinimal)
         if ('err' in res) {
           await onError(res.err)
           return
@@ -530,11 +526,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
     // onHydrationEnd()
     if (isFirstRender && !onRenderClientError) {
-      const res = await executeHookWithErrorHandling(
-        'onHydrationEnd',
-        pageContext,
-        preparePageContextForPublicUsageClient
-      )
+      const res = await executeHookErrorHandling('onHydrationEnd', pageContext, preparePageContextForPublicUsageClient)
       if ('err' in res) {
         await onError(res.err)
         if (!isErrorPage) return
@@ -550,7 +542,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       globalObject.isTransitioning = undefined
       assert(previousPageContext)
       const hooks = getHookFromPageContextNew('onPageTransitionEnd', previousPageContext)
-      const res = await executeHooksWithErrorHandling(hooks, pageContext, preparePageContextForPublicUsageClient)
+      const res = await executeHooksErrorHandling(hooks, pageContext, preparePageContextForPublicUsageClient)
       if ('err' in res) {
         await onError(res.err)
         if (!isErrorPage) return

@@ -1,8 +1,8 @@
 export { executeHook }
 export { executeHookSingle }
 export { executeHookSingleWithReturn }
-export { executeHookWithErrorHandling }
-export { executeHooksWithErrorHandling }
+export { executeHookErrorHandling }
+export { executeHooksErrorHandling }
 export { executeHookWithoutPageContext }
 export { executeHookGlobalCumulative }
 export { executeHookSync }
@@ -40,7 +40,7 @@ async function executeHookSingle<PageContext extends PageContextExecuteHook>(
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext
 ) {
-  const res = await executeHooksWithErrorHandling([hook], pageContext, preparePageContextForPublicUsage)
+  const res = await executeHooksErrorHandling([hook], pageContext, preparePageContextForPublicUsage)
   if ('err' in res) throw res.err
   const { hookReturn } = res.hooks[0]!
   assertUsage(
@@ -54,7 +54,7 @@ async function executeHookSingleWithReturn<PageContext extends PageContextExecut
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext
 ) {
-  const res = await executeHooksWithErrorHandling([hook], pageContext, preparePageContextForPublicUsage)
+  const res = await executeHooksErrorHandling([hook], pageContext, preparePageContextForPublicUsage)
   if ('err' in res) throw res.err
   const { hookReturn } = res.hooks[0]!
   return { hookReturn }
@@ -65,21 +65,21 @@ async function executeHook<PageContext extends PageContextExecuteHook>(
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext
 ) {
-  const res = await executeHookWithErrorHandling(hookName, pageContext, preparePageContextForPublicUsage)
+  const res = await executeHookErrorHandling(hookName, pageContext, preparePageContextForPublicUsage)
   if ('err' in res) throw res.err
   return res.hooks
 }
 
-async function executeHookWithErrorHandling<PageContext extends PageContextExecuteHook>(
+async function executeHookErrorHandling<PageContext extends PageContextExecuteHook>(
   hookName: HookName,
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext
 ) {
   const hooks = getHookFromPageContextNew(hookName, pageContext)
-  return executeHooksWithErrorHandling(hooks, pageContext, preparePageContextForPublicUsage)
+  return executeHooksErrorHandling(hooks, pageContext, preparePageContextForPublicUsage)
 }
 
-async function executeHooksWithErrorHandling<PageContext extends Record<string, unknown>>(
+async function executeHooksErrorHandling<PageContext extends Record<string, unknown>>(
   hooks: Hook[],
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext
