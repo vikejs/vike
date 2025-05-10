@@ -91,7 +91,7 @@ async function executeHooksWithErrorHandling<PageContext extends Record<string, 
   try {
     hooksWithResult = await Promise.all(
       hooks.map(async (hook) => {
-        const hookReturn = await executeHook(
+        const hookReturn = await executeHookAsync(
           () => hook.hookFn(pageContextForPublicUsage),
           hook,
           pageContextForPublicUsage
@@ -118,7 +118,7 @@ async function executeHookGlobalCumulative(
   const hooks = getHookFromPageConfigGlobalCumulative(pageConfigGlobal, hookName)
   await Promise.all(
     hooks.map(async (hook) => {
-      await executeHook(() => hook.hookFn(arg), hook, pageContext)
+      await executeHookAsync(() => hook.hookFn(arg), hook, pageContext)
     })
   )
 }
@@ -135,13 +135,13 @@ async function executeHookWithoutPageContext<HookReturn>(
   hook: Omit<Hook, 'hookFn'>
 ): Promise<HookReturn> {
   const { hookName, hookFilePath, hookTimeout } = hook
-  const hookReturn = await executeHook(hookFnCaller, { hookName, hookFilePath, hookTimeout }, null)
+  const hookReturn = await executeHookAsync(hookFnCaller, { hookName, hookFilePath, hookTimeout }, null)
   return hookReturn
 }
-function executeHook<HookReturn>(
+function executeHookAsync<HookReturn>(
   hookFnCaller: () => HookReturn,
   hook: Omit<Hook, 'hookFn'>,
-  pageContext: PageContextUnknown
+  pageContextForPublicUsage: PageContextUnknown
 ): Promise<HookReturn> {
   const {
     hookName,
@@ -189,7 +189,7 @@ function executeHook<HookReturn>(
     }, timeoutErr)
   ;(async () => {
     try {
-      providePageContext(pageContext)
+      providePageContext(pageContextForPublicUsage)
       const ret = await hookFnCaller()
       resolve(ret)
     } catch (err) {
