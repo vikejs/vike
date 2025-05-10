@@ -54,7 +54,7 @@ async function executeHookWithErrorHandling<PageContext extends PageContextExecu
   try {
     hooksWithResult = await Promise.all(
       hooks.map(async (hook) => {
-        const hookResult = await executeHook(() => hook.hookFn(pageContextPrepared), hook, pageContext)
+        const hookResult = await executeHook(() => hook.hookFn(pageContextPrepared), hook, pageContextPrepared)
         return { ...hook, hookResult }
       })
     )
