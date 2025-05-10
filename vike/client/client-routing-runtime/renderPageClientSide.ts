@@ -161,6 +161,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         globalObject.isTransitioning = true
         const res = await executeHookWithErrorHandling(
           'onPageTransitionStart',
+          // TODO/now
           pageContext as any,
           preparePageContextForPublicUsageClient,
           previousPageContext
