@@ -1,7 +1,7 @@
 export { executeHookSync }
 export { executeHookSingle }
 export { executeHookSingleWithReturn }
-export { executeHookNew }
+export { executeHook }
 export { executeHookWithErrorHandling }
 export { executeHookGlobalCumulative }
 export { executeHookWithoutPageContext }
@@ -60,7 +60,7 @@ async function executeHookSingleWithReturn<PageContext extends PageContextExecut
   return { hookReturn }
 }
 
-async function executeHookNew<PageContext extends PageContextExecuteHook>(
+async function executeHook<PageContext extends PageContextExecuteHook>(
   hookName: HookName,
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext

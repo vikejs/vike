@@ -30,7 +30,7 @@ import { executeGuardHook } from '../../shared/route/executeGuardHook.js'
 import { AbortRender, isAbortPageContext } from '../../shared/route/abort.js'
 import { pageContextInitIsPassedToClient } from '../../shared/misc/pageContextInitIsPassedToClient.js'
 import { isServerSideError } from '../../shared/misc/isServerSideError.js'
-import { executeHookNew } from '../../shared/hooks/executeHook.js'
+import { executeHook } from '../../shared/hooks/executeHook.js'
 import type { HookName } from '../../shared/page-configs/Config.js'
 import type { PageContextCreated } from './createPageContextClientSide.js'
 import type { PageContextBegin } from './renderPageClientSide.js'
@@ -157,7 +157,7 @@ async function getPageContextFromClientHooks(
 
 type PageContextExecuteHookClient = PageConfigUserFriendlyOld & PageContextForPublicUsageClient
 async function executeHookClient(hookName: HookName, pageContext: PageContextExecuteHookClient) {
-  return await executeHookNew(hookName, pageContext, (p) => preparePageContextForPublicUsageClient(p))
+  return await executeHook(hookName, pageContext, (p) => preparePageContextForPublicUsageClient(p))
 }
 
 async function executeDataLikeHook(hookName: 'data' | 'onBeforeRender', pageContext: PageContextExecuteHookClient) {
