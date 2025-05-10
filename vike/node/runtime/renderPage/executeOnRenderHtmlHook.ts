@@ -54,10 +54,10 @@ async function executeOnRenderHtmlHook(
   const hook = getRenderHook(pageContext)
   objectAssign(pageContext, { _renderHook: hook })
 
-  const { hookResult } = await executeHookSingleWithReturn(hook, pageContext, preparePageContextForPublicUsageServer)
+  const { hookReturn } = await executeHookSingleWithReturn(hook, pageContext, preparePageContextForPublicUsageServer)
 
   const { documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter } = processHookReturnValue(
-    hookResult,
+    hookReturn,
     hook
   )
 

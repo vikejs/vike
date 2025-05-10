@@ -16,9 +16,9 @@ async function executeOnBeforeRenderAndDataHooks(
   const hooks = await executeHookServer('data', pageContext)
   const dataHook = hooks[0] // TO-DO/soon: support cumulative
   if (dataHook) {
-    // Note: hookResult can be anything (e.g. an object) and is to be assigned to pageContext.data
+    // Note: hookReturn can be anything (e.g. an object) and is to be assigned to pageContext.data
     const pageContextFromHook = {
-      data: dataHook.hookResult
+      data: dataHook.hookReturn
     }
     Object.assign(pageContext, pageContextFromHook)
 
@@ -31,9 +31,9 @@ async function executeOnBeforeRenderAndDataHooks(
   const res = await executeHookServer('onBeforeRender', pageContext)
   const onBeforeRenderHook = res[0] // TO-DO/soon: support cumulative
   if (onBeforeRenderHook) {
-    const { hookResult } = onBeforeRenderHook
-    assertOnBeforeRenderHookReturn(hookResult, onBeforeRenderHook.hookFilePath)
-    const pageContextFromHook = hookResult?.pageContext
+    const { hookReturn } = onBeforeRenderHook
+    assertOnBeforeRenderHookReturn(hookReturn, onBeforeRenderHook.hookFilePath)
+    const pageContextFromHook = hookReturn?.pageContext
     Object.assign(pageContext, pageContextFromHook)
   }
 }

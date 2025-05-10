@@ -32,7 +32,7 @@ type PageContextExecuteHook = PageConfigUserFriendlyOld & PageContextForPublicUs
 type PageContextForPublicUsage = PageContextForPublicUsageServer | PageContextForPublicUsageClientShared
 
 type HookWithResult = Hook & {
-  hookResult: unknown
+  hookReturn: unknown
 }
 
 async function executeHookSingle<PageContext extends PageContextExecuteHook>(
@@ -42,9 +42,9 @@ async function executeHookSingle<PageContext extends PageContextExecuteHook>(
 ) {
   const res = await executeHooksWithErrorHandling([hook], pageContext, preparePageContextForPublicUsage)
   if ('err' in res) throw res.err
-  const { hookResult } = res.hooks[0]!
+  const { hookReturn } = res.hooks[0]!
   assertUsage(
-    hookResult === undefined,
+    hookReturn === undefined,
     `The ${hook.hookName}() hook defined by ${hook.hookFilePath} isn't allowed to return a value`
   )
 }
@@ -56,8 +56,8 @@ async function executeHookSingleWithReturn<PageContext extends PageContextExecut
 ) {
   const res = await executeHooksWithErrorHandling([hook], pageContext, preparePageContextForPublicUsage)
   if ('err' in res) throw res.err
-  const { hookResult } = res.hooks[0]!
-  return { hookResult }
+  const { hookReturn } = res.hooks[0]!
+  return { hookReturn }
 }
 
 async function executeHookNew<PageContext extends PageContextExecuteHook>(
@@ -91,12 +91,12 @@ async function executeHooksWithErrorHandling<PageContext extends Record<string, 
   try {
     hooksWithResult = await Promise.all(
       hooks.map(async (hook) => {
-        const hookResult = await executeHook(
+        const hookReturn = await executeHook(
           () => hook.hookFn(pageContextForPublicUsage),
           hook,
           pageContextForPublicUsage
         )
-        return { ...hook, hookResult }
+        return { ...hook, hookReturn }
       })
     )
   } catch (err_) {
@@ -135,8 +135,8 @@ async function executeHookWithoutPageContext<HookReturn>(
   hook: Omit<Hook, 'hookFn'>
 ): Promise<HookReturn> {
   const { hookName, hookFilePath, hookTimeout } = hook
-  const hookResult = await executeHook(hookFnCaller, { hookName, hookFilePath, hookTimeout }, null)
-  return hookResult
+  const hookReturn = await executeHook(hookFnCaller, { hookName, hookFilePath, hookTimeout }, null)
+  return hookReturn
 }
 function executeHook<HookReturn>(
   hookFnCaller: () => HookReturn,

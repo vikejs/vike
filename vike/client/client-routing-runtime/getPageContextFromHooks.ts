@@ -173,19 +173,19 @@ async function executeDataHook(pageContext: PageContextExecuteHookClient) {
   const res = await executeHookClient('data', pageContext)
   const hook = res[0] // TO-DO/soon: support cumulative
   if (!hook) return
-  const { hookResult } = hook
-  const pageContextAddendum = { data: hookResult }
+  const { hookReturn } = hook
+  const pageContextAddendum = { data: hookReturn }
   return pageContextAddendum
 }
 async function executeOnBeforeRenderHook(pageContext: PageContextExecuteHookClient) {
   const res = await executeHookClient('onBeforeRender', pageContext)
   const hook = res[0] // TO-DO/soon: support cumulative
   if (!hook) return
-  const { hookResult, hookFilePath } = hook
+  const { hookReturn, hookFilePath } = hook
   const pageContextFromHook = {}
-  assertOnBeforeRenderHookReturn(hookResult, hookFilePath)
-  // Note: hookResult looks like { pageContext: { ... } }
-  const pageContextFromOnBeforeRender = hookResult?.pageContext
+  assertOnBeforeRenderHookReturn(hookReturn, hookFilePath)
+  // Note: hookReturn looks like { pageContext: { ... } }
+  const pageContextFromOnBeforeRender = hookReturn?.pageContext
   if (pageContextFromOnBeforeRender) {
     objectAssign(pageContextFromHook, pageContextFromOnBeforeRender)
   }
