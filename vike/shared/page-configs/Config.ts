@@ -63,6 +63,7 @@ type HookNamePage =
   | 'guard'
   | 'data'
   | 'onData'
+  | 'route'
 type HookNameGlobal =
   | 'onBeforePrerender'
   | 'onBeforeRoute'

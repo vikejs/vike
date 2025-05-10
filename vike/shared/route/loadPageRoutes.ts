@@ -19,7 +19,7 @@ type PageRoute = {
 } & (
   | { routeString: string; routeDefinedAtString: null; routeType: 'FILESYSTEM'; routeFilesystemDefinedBy: string }
   | { routeString: string; routeDefinedAtString: string; routeType: 'STRING' }
-  | { routeFunction: Function; routeDefinedAtString: string; routeType: 'FUNCTION' }
+  | { routeFunction: (arg: unknown) => unknown; routeDefinedAtString: string; routeType: 'FUNCTION' }
 )
 type PageRoutes = PageRoute[]
 type RouteType = 'STRING' | 'FUNCTION' | 'FILESYSTEM'

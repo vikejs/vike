@@ -204,7 +204,7 @@ function executeHook<HookReturn>(
 }
 
 function executeHookSync<PageContext extends Record<string, unknown>>(
-  hook: Hook,
+  hook: Omit<Hook, 'hookTimeout'>,
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext
 ) {

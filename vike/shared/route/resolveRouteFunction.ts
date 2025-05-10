@@ -4,11 +4,13 @@ export { assertSyncRouting }
 export { warnDeprecatedAllowKey }
 
 import { assertPageContextUrls, PageContextUrlInternal } from '../getPageContextUrlComputed.js'
+import { executeHookSync } from '../hooks/executeHook.js'
+import { preparePageContextForPublicUsage } from '../preparePageContextForPublicUsage.js'
 import { assert, assertUsage, assertWarning, hasProp, isPlainObject, isPromise } from './utils.js'
 import pc from '@brillout/picocolors'
 
 async function resolveRouteFunction(
-  routeFunction: Function,
+  routeFunction: (arg: unknown) => unknown,
   pageContext: PageContextUrlInternal,
   routeDefinedAtString: string
 ): Promise<null | {
@@ -16,7 +18,15 @@ async function resolveRouteFunction(
   routeParams: Record<string, string>
 }> {
   assertPageContextUrls(pageContext)
-  let result: unknown = routeFunction(pageContext)
+  let { hookReturn: result } = executeHookSync(
+    {
+      hookFn: routeFunction,
+      hookFilePath: routeDefinedAtString,
+      hookName: 'route'
+    },
+    pageContext,
+    preparePageContextForPublicUsage
+  )
   assertSyncRouting(result, `The Route Function ${routeDefinedAtString}`)
   // TODO/v1-release: make resolveRouteFunction() and route() sync
   //* We disallow asynchronous routing, because we need to check whether a link is a Vike link in a synchronous fashion before calling ev.preventDefault() in the 'click' event listener
