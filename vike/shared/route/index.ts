@@ -113,8 +113,8 @@ async function route(pageContext: PageContextForRoute, skipOnBeforeRouteHook?: t
 
       // Route Function defined in `.page.route.js`
       if (pageRoute.routeType === 'FUNCTION') {
-        const { routeFunction, routeDefinedAtString } = pageRoute
-        const match = await resolveRouteFunction(routeFunction, pageContext, routeDefinedAtString)
+        const { routeFunction, routeFunctionFilePath } = pageRoute
+        const match = await resolveRouteFunction(routeFunction, pageContext, routeFunctionFilePath)
         if (match) {
           const { routeParams, precedence } = match
           routeMatches.push({ pageId, precedence, routeParams, routeType })

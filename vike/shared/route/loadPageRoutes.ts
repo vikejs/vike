@@ -6,7 +6,7 @@ import type { PageFile } from '../getPageFiles.js'
 import { isErrorPageId } from '../error-page.js'
 import { assert, assertUsage, hasProp, slice } from './utils.js'
 import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath.js'
-import { isCallable } from '../utils.js'
+import { isArray, isCallable } from '../utils.js'
 import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
 import { getConfigValueRuntime } from '../page-configs/getConfigValueRuntime.js'
 import { getDefinedAtString } from '../page-configs/getConfigDefinedAt.js'
@@ -19,7 +19,12 @@ type PageRoute = {
 } & (
   | { routeString: string; routeDefinedAtString: null; routeType: 'FILESYSTEM'; routeFilesystemDefinedBy: string }
   | { routeString: string; routeDefinedAtString: string; routeType: 'STRING' }
-  | { routeFunction: (arg: unknown) => unknown; routeDefinedAtString: string; routeType: 'FUNCTION' }
+  | {
+      routeFunction: (arg: unknown) => unknown
+      routeFunctionFilePath: string
+      routeDefinedAtString: string
+      routeType: 'FUNCTION'
+    }
 )
 type PageRoutes = PageRoute[]
 type RouteType = 'STRING' | 'FUNCTION' | 'FILESYSTEM'
@@ -72,6 +77,10 @@ function getPageRoutes(
                 routeType: 'STRING'
               }
             } else {
+              const { definedAtData } = configValue
+              assert(!isArray(definedAtData) && !definedAtData.definedBy)
+              const { filePathToShowToUser } = definedAtData
+              assert(filePathToShowToUser)
               assert(isCallable(route))
               // TODO/next-major: remove
               if (getConfigValueRuntime(pageConfig, 'iKnowThePerformanceRisksOfAsyncRouteFunctions', 'boolean'))
@@ -80,6 +89,7 @@ function getPageRoutes(
                 pageId,
                 comesFromV1PageConfig,
                 routeFunction: route,
+                routeFunctionFilePath: filePathToShowToUser,
                 routeDefinedAtString: definedAtString,
                 routeType: 'FUNCTION'
               }
@@ -158,6 +168,7 @@ function getPageRoutes(
               pageId,
               comesFromV1PageConfig,
               routeFunction,
+              routeFunctionFilePath: filePath,
               routeDefinedAtString: filePath,
               routeType: 'FUNCTION'
             })
