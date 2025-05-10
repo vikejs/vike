@@ -15,9 +15,9 @@ function preparePageContextForPublicUsageClientShared<PageContext extends PageCo
 ): PageContext & { Page: unknown } {
   // TODO/now
   const Page =
-    pageContext.config.Page ||
+    pageContext.config?.Page ||
     // TODO/next-major-release: remove
-    pageContext.exports.Page
+    pageContext.exports?.Page
   objectAssign(pageContext, { Page })
 
   // TODO/next-major-release: after we remove supportVueReactiviy() we can call this later inside the agnostic preparePageContextForPublicUsage()
