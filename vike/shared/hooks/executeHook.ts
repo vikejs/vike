@@ -48,13 +48,17 @@ async function executeHookWithErrorHandling<PageContext extends PageContextExecu
 ) {
   const hooks = getHookFromPageContextNew(hookName, pageContextHook ?? pageContext)
   if (!hooks.length) return { hooks: [] as HookWithResult[] }
-  const pageContextPrepared = preparePageContextForPublicUsage(pageContext)
+  const pageContextForPublicUsage = preparePageContextForPublicUsage(pageContext)
   let hooksWithResult: HookWithResult[] | undefined
   let err: unknown
   try {
     hooksWithResult = await Promise.all(
       hooks.map(async (hook) => {
-        const hookResult = await executeHook(() => hook.hookFn(pageContextPrepared), hook, pageContextPrepared)
+        const hookResult = await executeHook(
+          () => hook.hookFn(pageContextForPublicUsage),
+          hook,
+          pageContextForPublicUsage
+        )
         return { ...hook, hookResult }
       })
     )
