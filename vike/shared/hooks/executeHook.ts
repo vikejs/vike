@@ -22,22 +22,47 @@ const globalObject = getGlobalObject('utils/executeHook.ts', {
   pageContext: null as PageContextUnknown
 })
 
-// TO-DO/eventually: use this variant more prominently
-async function executeHookNew<PageContext extends PageConfigUserFriendlyOld & PageContextForPublicUsage>(
+type PageContextExecuteHook = PageConfigUserFriendlyOld & PageContextForPublicUsage
+
+type HookWithResult = Hook & {
+  hookResult: unknown
+}
+
+async function executeHookNew<PageContext extends PageContextExecuteHook>(
+  hookName: HookName,
+  pageContext: PageContext,
+  preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext
+) {
+  const res = await executeHookWithErrorHandling(hookName, pageContext, preparePageContextForPublicUsage)
+  if ('err' in res) throw res.err
+  return res.hooks
+}
+
+async function executeHookWithErrorHandling<PageContext extends PageContextExecuteHook>(
   hookName: HookName,
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext
 ) {
   const hooks = getHookFromPageContextNew(hookName, pageContext)
-  if (!hooks.length) return []
+  if (!hooks.length) return { hooks: [] as HookWithResult[] }
   const pageContextPrepared = preparePageContextForPublicUsage(pageContext)
-  const hooksWithResult = await Promise.all(
-    hooks.map(async (hook) => {
-      const hookResult = await executeHook(() => hook.hookFn(pageContextPrepared), hook, pageContext)
-      return { ...hook, hookResult }
-    })
-  )
-  return hooksWithResult
+  let hooksWithResult: HookWithResult[] | undefined
+  let err: unknown
+  try {
+    hooksWithResult = await Promise.all(
+      hooks.map(async (hook) => {
+        const hookResult = await executeHook(() => hook.hookFn(pageContextPrepared), hook, pageContext)
+        return { ...hook, hookResult }
+      })
+    )
+  } catch (err_) {
+    err = err_
+  }
+  if (hooksWithResult) {
+    return { hooks: hooksWithResult }
+  } else {
+    return { hooks, err }
+  }
 }
 
 async function executeHookGlobalCumulative(
