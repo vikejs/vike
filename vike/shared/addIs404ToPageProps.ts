@@ -1,19 +1,9 @@
 export { addIs404ToPageProps }
 
-import { assert, assertWarning, hasProp, isObject } from './utils.js'
-import { isErrorPage } from './error-page.js'
-import type { PageConfigRuntime } from './page-configs/PageConfig.js'
+import { assertWarning, isObject } from './utils.js'
 
-function addIs404ToPageProps(pageContext: Record<string, unknown> & PageContextAssertIs404) {
-  assertIs404(pageContext)
+function addIs404ToPageProps(pageContext: Record<string, unknown>) {
   addIs404(pageContext)
-}
-
-type PageContextAssertIs404 = { pageId: string; _pageConfigs: PageConfigRuntime[] }
-function assertIs404(pageContext: PageContextAssertIs404) {
-  if (isErrorPage(pageContext.pageId, pageContext._pageConfigs)) {
-    assert(hasProp(pageContext, 'is404', 'boolean'))
-  }
 }
 
 function addIs404(pageContext: Record<string, unknown>) {

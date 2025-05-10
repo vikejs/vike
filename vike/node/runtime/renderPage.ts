@@ -66,14 +66,14 @@ import { getErrorPageId } from '../../shared/error-page.js'
 import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErrorPage.js'
 import { loadPageConfigsLazyServerSide } from './renderPage/loadPageConfigsLazyServerSide.js'
 import { resolveRedirects } from './renderPage/resolveRedirects.js'
-import type { PageContextBuiltInServerInternal } from '../../shared/types.js'
+import type { PageContextInternalServer } from '../../shared/types.js'
 
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
   httpRequestsCount: 0
 })
 
-type PageContextAfterRender = { httpResponse: HttpResponse } & Partial<PageContextBuiltInServerInternal>
-type PageContextInit = Pick<PageContextBuiltInServerInternal, 'urlOriginal' | 'headersOriginal'> & {
+type PageContextAfterRender = { httpResponse: HttpResponse } & Partial<PageContextInternalServer>
+type PageContextInit = Pick<PageContextInternalServer, 'urlOriginal' | 'headersOriginal'> & {
   /** @deprecated Set `pageContextInit.urlOriginal` instead  */ // TODO/next-major: remove
   url?: string
   /** @deprecated Set pageContextInit.headersOriginal instead */ // TODO/next-major: remove

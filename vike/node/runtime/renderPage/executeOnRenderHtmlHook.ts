@@ -15,16 +15,17 @@ import { isStream } from '../html/stream.js'
 import { assertPageContextProvidedByUser } from '../../../shared/assertPageContextProvidedByUser.js'
 import type { PreloadFilter } from '../html/injectAssets/getHtmlTags.js'
 import {
-  preparePageContextForUserConsumptionServerSide,
-  type PageContextForUserConsumptionServerSide
-} from './preparePageContextForUserConsumptionServerSide.js'
+  preparePageContextForPublicUsageServer,
+  type PageContextForPublicUsageServer
+} from './preparePageContextForPublicUsageServer.js'
 import type { PageContextPromise } from '../html/injectAssets.js'
 import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { assertHookReturnedObject } from '../../../shared/assertHookReturnedObject.js'
 import { logRuntimeError } from './loggerRuntime.js'
 import type { PageContextSerialization } from '../html/serializeContext.js'
 import pc from '@brillout/picocolors'
-import { executeHook } from '../../../shared/hooks/executeHook.js'
+import { execHookSingleWithReturn } from '../../../shared/hooks/execHook.js'
+import type { GlobalContextServerInternal } from '../globalContext.js'
 
 type GetPageAssets = () => Promise<PageAsset[]>
 
@@ -35,9 +36,10 @@ type HookName =
   | 'render'
 
 async function executeOnRenderHtmlHook(
-  pageContext: PageContextForUserConsumptionServerSide &
+  pageContext: PageContextForPublicUsageServer &
     PageContextSerialization & {
       pageId: string
+      _globalContext: GlobalContextServerInternal
       _pageConfigs: PageConfigRuntime[]
       __getPageAssets: GetPageAssets
       _isHtmlOnly: boolean
@@ -49,14 +51,14 @@ async function executeOnRenderHtmlHook(
   renderHook: RenderHook
   htmlRender: HtmlRender
 }> {
-  const { renderHook, hookFn } = getRenderHook(pageContext)
-  objectAssign(pageContext, { _renderHook: renderHook })
+  const hook = getRenderHook(pageContext)
+  objectAssign(pageContext, { _renderHook: hook })
 
-  preparePageContextForUserConsumptionServerSide(pageContext)
-  const hookReturnValue = await executeHook(() => hookFn(pageContext), renderHook, pageContext)
+  const { hookReturn } = await execHookSingleWithReturn(hook, pageContext, preparePageContextForPublicUsageServer)
+
   const { documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter } = processHookReturnValue(
-    hookReturnValue,
-    renderHook
+    hookReturn,
+    hook
   )
 
   Object.assign(pageContext, pageContextProvidedByRenderHook)
@@ -75,16 +77,15 @@ async function executeOnRenderHtmlHook(
 
   const htmlRender = await renderDocumentHtml(documentHtml, pageContext, onErrorWhileStreaming, injectFilter)
   assert(typeof htmlRender === 'string' || isStream(htmlRender))
-  return { htmlRender, renderHook }
+  return { htmlRender, renderHook: hook }
 }
 
-function getRenderHook(pageContext: PageContextForUserConsumptionServerSide) {
-  let hookFound:
-    | undefined
-    | {
-        renderHook: RenderHook
-        hookFn: (arg: object) => unknown
-      }
+function getRenderHook(
+  pageContext: PageContextForPublicUsageServer & {
+    _pageConfigs: PageConfigRuntime[]
+  }
+) {
+  let hookFound: RenderHook | undefined
   {
     let hook: null | Hook
     let hookName: undefined | HookName = undefined
@@ -100,10 +101,7 @@ function getRenderHook(pageContext: PageContextForUserConsumptionServerSide) {
     if (hook) {
       assert(hookName)
       const { hookFilePath, hookFn, hookTimeout } = hook
-      hookFound = {
-        hookFn,
-        renderHook: { hookFn, hookFilePath, hookName, hookTimeout }
-      }
+      hookFound = { hookFn, hookFilePath, hookName, hookTimeout }
     }
   }
   if (!hookFound) {

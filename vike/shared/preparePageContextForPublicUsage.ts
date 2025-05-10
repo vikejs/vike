@@ -1,16 +1,11 @@
-export { preparePageContextForUserConsumption }
+export { preparePageContextForPublicUsage }
 
 import { assert, assertWarning, compareString } from './utils.js'
-import type { PageContextForUserConsumptionClientSide } from '../client/shared/preparePageContextForUserConsumptionClientSide.js'
-import type { PageContextForUserConsumptionServerSide } from '../node/runtime/renderPage/preparePageContextForUserConsumptionServerSide.js'
 import { addIs404ToPageProps } from './addIs404ToPageProps.js'
 
-type PageContextForUserConsumption = PageContextForUserConsumptionServerSide | PageContextForUserConsumptionClientSide
-
-function preparePageContextForUserConsumption(pageContext: PageContextForUserConsumption) {
-  assert(pageContext.pageId)
-  assert('config' in pageContext)
-  assert('configEntries' in pageContext)
+// TODO/now define proxy here because of direct preparePageContextForPublicUsage() calls
+function preparePageContextForPublicUsage(pageContext: Record<string, unknown>) {
+  assert((pageContext as any)._isOriginalObject) // ensure we preserve the original object reference
 
   addIs404ToPageProps(pageContext)
 
@@ -22,7 +17,7 @@ function preparePageContextForUserConsumption(pageContext: PageContextForUserCon
           showStackTrace: true,
           onlyOnce: true
         })
-        return pageContext.pageId
+        return (pageContext as any).pageId
       },
       enumerable: false
     })
@@ -30,6 +25,8 @@ function preparePageContextForUserConsumption(pageContext: PageContextForUserCon
 
   // For a more readable `console.log(pageContext)` output
   sortPageContext(pageContext)
+
+  return pageContext
 }
 
 // Sort `pageContext` keys alphabetically, in order to make reading the `console.log(pageContext)` output easier

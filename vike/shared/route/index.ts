@@ -14,7 +14,7 @@ if (isBrowser()) {
 import type { PageFile } from '../getPageFiles.js'
 import { assert, assertUsage, isPlainObject, objectAssign } from './utils.js'
 import {
-  assertPageContextUrl,
+  assertPageContextUrls,
   type PageContextUrlInternal,
   type PageContextUrlSource
 } from '../getPageContextUrlComputed.js'
@@ -53,7 +53,7 @@ type RouteMatches = 'CUSTOM_ROUTING' | RouteMatch[]
 
 async function route(pageContext: PageContextForRoute, skipOnBeforeRouteHook?: true): Promise<PageContextFromRoute> {
   debug('Pages routes:', pageContext._pageRoutes)
-  assertPageContextUrl(pageContext)
+  assertPageContextUrls(pageContext)
   const pageContextFromRoute = {}
 
   // onBeforeRoute()
@@ -113,8 +113,8 @@ async function route(pageContext: PageContextForRoute, skipOnBeforeRouteHook?: t
 
       // Route Function defined in `.page.route.js`
       if (pageRoute.routeType === 'FUNCTION') {
-        const { routeFunction, routeDefinedAtString } = pageRoute
-        const match = await resolveRouteFunction(routeFunction, pageContext, routeDefinedAtString)
+        const { routeFunction, routeFunctionFilePath } = pageRoute
+        const match = await resolveRouteFunction(routeFunction, pageContext, routeFunctionFilePath)
         if (match) {
           const { routeParams, precedence } = match
           routeMatches.push({ pageId, precedence, routeParams, routeType })

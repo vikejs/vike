@@ -1,5 +1,5 @@
 export { getPageContextUrlComputed }
-export { assertPageContextUrl }
+export { assertPageContextUrls }
 export type { PageContextUrlInternal }
 export type { PageContextUrlClient }
 export type { PageContextUrlServer }
@@ -15,7 +15,6 @@ import {
   assert,
   parseUrl,
   assertWarning,
-  isPlainObject,
   isPropertyGetter,
   isBrowser,
   changeEnumerable,
@@ -54,7 +53,7 @@ type HashProps = 'hash' | 'hashString' | 'hashOriginal'
 
 function getPageContextUrlComputed(pageContext: PageContextUrlSource): PageContextUrlComputed {
   assert(typeof pageContext.urlOriginal === 'string')
-  assertPageContextUrlComputed(pageContext)
+  assertPageContextUrls(pageContext)
 
   const pageContextUrlComputed = {}
   objectDefineProperty(pageContextUrlComputed, 'urlPathname', {
@@ -207,15 +206,7 @@ function urlParsedGetter(this: PageContextUrlSource) {
   return urlParsedEnhanced
 }
 
-function assertPageContextUrl(pageContext: { urlOriginal: string } & PageContextUrlClient) {
-  assert(typeof pageContext.urlOriginal === 'string')
-  assert(typeof pageContext.urlPathname === 'string')
-  assert(isPlainObject(pageContext.urlParsed))
-  assert(pageContext.urlPathname === pageContext.urlParsed.pathname)
-  assertPageContextUrlComputed(pageContext)
-}
-
-function assertPageContextUrlComputed(pageContext: object) {
+function assertPageContextUrls(pageContext: Record<string, unknown>) {
   /*
   If the isPropertyGetter() assertions fail then it's most likely because Object.assign() was used instead of `objectAssign()`:
   ```js
@@ -231,13 +222,10 @@ function assertPageContextUrlComputed(pageContext: object) {
   objectAssign(pageContext, pageContextUrlComputed)
   ```
   */
-  if ('urlPathname' in pageContext) {
-    assert(typeof pageContext.urlPathname === 'string')
-    assert(isPropertyGetter(pageContext, 'urlPathname'))
-    assert(isPropertyGetter(pageContext, 'urlParsed'))
-    assert(isPropertyGetter(pageContext, 'url'))
-  } else {
-    assert(!('urlParsed' in pageContext))
-    assert(!('url' in pageContext))
-  }
+  assertPropertyGetter(pageContext, 'urlParsed')
+  assertPropertyGetter(pageContext, 'urlPathname')
+  assertPropertyGetter(pageContext, 'url')
+}
+function assertPropertyGetter(pageContext: Record<string, unknown>, prop: string) {
+  if (pageContext.prop) assert(isPropertyGetter(pageContext, 'urlPathname'))
 }

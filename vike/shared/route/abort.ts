@@ -13,7 +13,7 @@ export type { ErrorAbort }
 export type { PageContextFromRewrite }
 export type { UrlRedirect }
 
-import { isUserHookError } from '../hooks/executeHook.js'
+import { isUserHookError } from '../hooks/execHook.js'
 import {
   assert,
   assertInfo,

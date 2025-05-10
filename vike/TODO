@@ -68,7 +68,10 @@ v0.5 breaking changes:
 - See v1-release tickets https://github.com/vikejs/vike/labels/v1%20release%20%3Astar2%3A such as:
   - https://github.com/vikejs/vike/issues/2107
   - https://github.com/vikejs/vike/issues/1851
-- Make `onHydrationEnd()` cumulative (make more built-in hooks cumulative?)
+- Make cumulative by default:
+ - +onHydrationEnd
+ - +guard
+ - more/most?
 - Move `dist/assets.json` to `dist/server/assets.json`
   - Or move it `dist/server/assets-client.json` to?
   - Or remove it altogether in favor of `globalContext.assetsManifest`?

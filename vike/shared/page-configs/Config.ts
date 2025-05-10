@@ -63,12 +63,8 @@ type HookNamePage =
   | 'guard'
   | 'data'
   | 'onData'
-type HookNameGlobal =
-  | 'onBeforePrerender'
-  | 'onBeforeRoute'
-  | 'onPrerenderStart'
-  | 'onCreatePageContext'
-  | 'onCreateGlobalContext'
+  | 'route'
+type HookNameGlobal = 'onBeforeRoute' | 'onPrerenderStart' | 'onCreatePageContext' | 'onCreateGlobalContext'
 // v0.4 design TODO/v1-release: remove
 type HookNameOldDesign = 'render' | 'prerender' | 'onBeforePrerender'
 

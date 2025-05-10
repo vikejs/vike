@@ -4,12 +4,9 @@ export type { PageContextBeforeRenderClient }
 import { assert, assertUsage } from '../server-routing-runtime/utils.js'
 import { getHookFromPageContext, type Hook } from '../../shared/hooks/getHook.js'
 import type { PageFile, PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
-import {
-  type PageContextForUserConsumptionClientSide,
-  preparePageContextForUserConsumptionClientSide
-} from './preparePageContextForUserConsumptionClientSide.js'
+import type { PageContextForPublicUsageClientShared } from './preparePageContextForPublicUsageClientShared.js'
 import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
-import { executeHook } from '../../shared/hooks/executeHook.js'
+import { execHookSingle } from '../../shared/hooks/execHook.js'
 
 type PageContextBeforeRenderClient = {
   _pageFilesLoaded: PageFile[]
@@ -18,27 +15,22 @@ type PageContextBeforeRenderClient = {
   pageId: string
   _pageConfigs: PageConfigRuntime[]
 } & PageConfigUserFriendlyOld &
-  PageContextForUserConsumptionClientSide
+  PageContextForPublicUsageClientShared
 
-async function executeOnRenderClientHook<PC extends PageContextBeforeRenderClient>(
-  pageContext: PC,
-  isClientRouting: boolean
+async function executeOnRenderClientHook<PageContext extends PageContextBeforeRenderClient>(
+  pageContext: PageContext,
+  prepareForPublicUsage: (pageConfig: PageContext) => PageContext
 ): Promise<void> {
-  const pageContextForUserConsumption = preparePageContextForUserConsumptionClientSide(pageContext, isClientRouting)
-
   let hook: null | Hook = null
-  let hookName: 'render' | 'onRenderClient'
 
   {
     const renderHook = getHookFromPageContext(pageContext, 'render')
     hook = renderHook
-    hookName = 'render'
   }
   {
     const renderHook = getHookFromPageContext(pageContext, 'onRenderClient')
     if (renderHook) {
       hook = renderHook
-      hookName = 'onRenderClient'
     }
   }
 
@@ -67,21 +59,13 @@ async function executeOnRenderClientHook<PC extends PageContextBeforeRenderClien
     }
   }
 
-  assert(hook)
-  const renderHook = hook.hookFn
-  assert(hookName)
-
   // We don't use a try-catch wrapper because rendering errors are usually handled by the UI framework. (E.g. React's Error Boundaries.)
-  const hookResult = await executeHook(() => renderHook(pageContextForUserConsumption), hook, pageContext)
-  assertUsage(
-    hookResult === undefined,
-    `The ${hookName}() hook defined by ${hook.hookFilePath} isn't allowed to return a value`
-  )
+  await execHookSingle(hook, pageContext, prepareForPublicUsage)
 }
 
 function getUrlToShowToUser(pageContext: { urlOriginal?: string; urlPathname?: string }): string {
   let url: string | undefined
-  // try/catch to avoid passToClient assertUsage() (although: this may not be needed anymore, since we're now accessing pageContext and not pageContextForUserConsumption)
+  // try/catch to avoid passToClient assertUsage() (although: this may not be needed anymore, since we're now accessing pageContext and not pageContextForPublicUsage)
   try {
     url =
       // Client Routing

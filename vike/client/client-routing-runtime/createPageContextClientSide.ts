@@ -1,4 +1,5 @@
 export { createPageContextClientSide }
+export type PageContextCreated = Awaited<ReturnType<typeof createPageContextClientSide>>
 
 import { createPageContextShared } from '../../shared/createPageContextShared.js'
 import { getPageContextUrlComputed } from '../../shared/getPageContextUrlComputed.js'
@@ -13,6 +14,11 @@ async function createPageContextClientSide(urlOriginal: string) {
   assert(isBaseServer(baseServer))
 
   const pageContextCreated = {
+    _isOriginalObject: true as const,
+    isPageContext: true as const,
+    isClientSide: true as const,
+    isPrerendering: false as const,
+    urlOriginal,
     /* Don't spread globalContext for now? Or never spread it as it leads to confusion? The convenience isn't worth the added confusion?
     ...globalContext, // least precedence
     */
@@ -23,11 +29,8 @@ async function createPageContextClientSide(urlOriginal: string) {
     _allPageIds: globalContext._allPageIds,
     _pageRoutes: globalContext._pageRoutes,
     _onBeforeRouteHook: globalContext._onBeforeRouteHook,
-    isClientSide: true,
-    isPrerendering: false,
-    urlOriginal,
     _urlHandler: null,
-    _urlRewrite: null,
+    _urlRewrite: null as null | string,
     _baseServer: baseServer
   }
   const pageContextUrlComputed = getPageContextUrlComputed(pageContextCreated)

@@ -92,7 +92,9 @@ const globalObjectTyped = globalObject as typeof globalObject & {
 }
 
 // Public type
-type GlobalContextServer = ReturnType<typeof makePublic> & Vike.GlobalContext & Vike.GlobalContextServer
+type GlobalContextServer = ReturnType<typeof prepareGlobalContextForPublicUsage> &
+  Vike.GlobalContext &
+  Vike.GlobalContextServer
 // Private type
 type GlobalContextServerInternal = Awaited<ReturnType<typeof setGlobalContext>>
 
@@ -178,7 +180,7 @@ function getGlobalContextSync(): GlobalContext {
   return globalContext_public
 }
 
-function makePublic(globalContext: GlobalContextServerInternal) {
+function prepareGlobalContextForPublicUsage(globalContext: GlobalContextServerInternal) {
   const globalContextPublic = getPublicProxy(
     globalContext,
     'globalContext',
@@ -439,7 +441,7 @@ async function setGlobalContext(virtualFileExports: unknown) {
   )
 
   // Public usage
-  globalObject.globalContext_public = makePublic(globalContext)
+  globalObject.globalContext_public = prepareGlobalContextForPublicUsage(globalContext)
 
   assertGlobalContextIsDefined()
   onSetupRuntime()
