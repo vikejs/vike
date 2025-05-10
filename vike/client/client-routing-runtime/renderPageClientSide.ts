@@ -36,7 +36,6 @@ import {
 } from './prefetch.js'
 import { assertInfo, assertWarning, isReact } from './utils.js'
 import { type PageContextBeforeRenderClient, executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
-import { getHookFromPageContext } from '../../shared/hooks/getHook.js'
 import { isErrorFetchingStaticAssets, loadPageConfigsLazyClientSide } from '../shared/loadPageConfigsLazyClientSide.js'
 import { pushHistoryState } from './history.js'
 import {
@@ -56,11 +55,7 @@ import { setPageContextCurrent } from './getPageContextCurrent.js'
 import { getRouteStringParameterList } from '../../shared/route/resolveRouteString.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 import type { PageContextClient } from '../../shared/types.js'
-import {
-  executeHook,
-  executeHookWithErrorHandling,
-  type PageContextExecuteHook
-} from '../../shared/hooks/executeHook.js'
+import { executeHookWithErrorHandling, type PageContextExecuteHook } from '../../shared/hooks/executeHook.js'
 import {
   type PageContextForPublicUsageClient,
   preparePageContextForPublicUsageClient
@@ -164,18 +159,17 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       // https://github.com/vikejs/vike/issues/1560
       if (!globalObject.isTransitioning) {
         globalObject.isTransitioning = true
-        const onPageTransitionStartHook = getHookFromPageContext(previousPageContext, 'onPageTransitionStart')
-        if (onPageTransitionStartHook) {
-          const hook = onPageTransitionStartHook
-          const { hookFn } = hook
-          try {
-            await executeHook(() => hookFn(pageContext), hook, pageContext)
-          } catch (err) {
-            await onError(err)
-            return
-          }
-          if (isRenderOutdated()) return
+        const res = await executeHookWithErrorHandling(
+          'onPageTransitionStart',
+          pageContext as any,
+          preparePageContextForPublicUsageClient,
+          previousPageContext
+        )
+        if ('err' in res) {
+          await onError(res.err)
+          return
         }
+        if (isRenderOutdated()) return
       }
     }
 
