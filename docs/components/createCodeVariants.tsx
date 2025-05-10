@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 export const CodeVariantsServer = createCodeVariants('server', ['Express.js', 'Hono', 'Fastify', 'h3', 'Elysia'])
 export const CodeVariantsJsxOrVue = createCodeVariants('jsx-or-vue', ['JSX', 'Vue'])
@@ -9,6 +9,21 @@ function createCodeVariants(
 ) {
   return function CodeVariants({ children, filePath }: { children: React.ReactNode; filePath: string }) {
     const [selectedChoice, setSelectedChoice] = useState(choices[0])
+
+    const handleOnChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+      setSelectedChoice(e.target.value)
+      localStorage.setItem(`vike_${storageKey}_snippet`, e.target.value)
+    }
+
+    useEffect(() => {
+      let saved_choice = localStorage.getItem(`vike_${storageKey}_snippet`)
+
+      if (!saved_choice) {
+        localStorage.setItem(`vike_${storageKey}_snippet`, selectedChoice)
+        saved_choice = localStorage.getItem(`vike_${storageKey}_snippet`)
+      }
+      setSelectedChoice(saved_choice ?? choices[0])
+    }, [storageKey, selectedChoice])
 
     const copyToClipboard = () => {
       const selectedCodeVariant = document.getElementById(`${selectedChoice.toLocaleLowerCase()}-code`)
@@ -32,9 +47,9 @@ function createCodeVariants(
         <div style={{ display: 'flex', margin: '0.25rem 1rem' }}>
           <span style={{ flexGrow: 1 }}>{filePath}</span>
           <form style={{ display: 'flex', columnGap: '5px' }}>
-            <select name="choice" id="choice" onChange={(e) => setSelectedChoice(e.target.value)}>
+            <select name="choice" id="choice" onChange={handleOnChange} value={selectedChoice}>
               {choices.map((choice, index) => (
-                <option key={index} defaultValue={selectedChoice} value={choice}>
+                <option key={index} value={choice}>
                   {choice}
                 </option>
               ))}
