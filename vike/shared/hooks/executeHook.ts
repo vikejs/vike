@@ -1,5 +1,6 @@
 export { executeHook }
 export { executeHookSingle }
+export { executeHookSingleWithReturn }
 export { executeHookNew }
 export { executeHookWithErrorHandling }
 export { executeHookGlobalCumulative }
@@ -46,6 +47,17 @@ async function executeHookSingle<PageContext extends PageContextExecuteHook>(
     hookResult === undefined,
     `The ${hook.hookName}() hook defined by ${hook.hookFilePath} isn't allowed to return a value`
   )
+}
+
+async function executeHookSingleWithReturn<PageContext extends PageContextExecuteHook>(
+  hook: Hook,
+  pageContext: PageContext,
+  preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext
+) {
+  const res = await executeHooksWithErrorHandling([hook], pageContext, preparePageContextForPublicUsage)
+  if ('err' in res) throw res.err
+  const { hookResult } = res.hooks[0]!
+  return { hookResult }
 }
 
 async function executeHookNew<PageContext extends PageContextExecuteHook>(

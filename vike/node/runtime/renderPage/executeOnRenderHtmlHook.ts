@@ -24,7 +24,7 @@ import { assertHookReturnedObject } from '../../../shared/assertHookReturnedObje
 import { logRuntimeError } from './loggerRuntime.js'
 import type { PageContextSerialization } from '../html/serializeContext.js'
 import pc from '@brillout/picocolors'
-import { executeHook } from '../../../shared/hooks/executeHook.js'
+import { executeHook, executeHookSingleWithReturn } from '../../../shared/hooks/executeHook.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 
 type GetPageAssets = () => Promise<PageAsset[]>
@@ -51,13 +51,18 @@ async function executeOnRenderHtmlHook(
   renderHook: RenderHook
   htmlRender: HtmlRender
 }> {
-  const { renderHook, hookFn } = getRenderHook(pageContext)
+  const hook = getRenderHook(pageContext)
+  const { renderHook } = hook
   objectAssign(pageContext, { _renderHook: renderHook })
 
-  preparePageContextForPublicUsageServer(pageContext)
-  const hookReturnValue = await executeHook(() => hookFn(pageContext), renderHook, pageContext)
+  const { hookResult } = await executeHookSingleWithReturn(
+    hook.renderHook,
+    pageContext,
+    preparePageContextForPublicUsageServer
+  )
+
   const { documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter } = processHookReturnValue(
-    hookReturnValue,
+    hookResult,
     renderHook
   )
 
@@ -89,7 +94,6 @@ function getRenderHook(
     | undefined
     | {
         renderHook: RenderHook
-        hookFn: (arg: object) => unknown
       }
   {
     let hook: null | Hook
@@ -107,7 +111,6 @@ function getRenderHook(
       assert(hookName)
       const { hookFilePath, hookFn, hookTimeout } = hook
       hookFound = {
-        hookFn,
         renderHook: { hookFn, hookFilePath, hookName, hookTimeout }
       }
     }
