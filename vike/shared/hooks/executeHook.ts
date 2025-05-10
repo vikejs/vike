@@ -1,4 +1,5 @@
 export { executeHook }
+export { executeHookSingle }
 export { executeHookNew }
 export { executeHookWithErrorHandling }
 export { executeHookGlobalCumulative }
@@ -8,7 +9,7 @@ export { providePageContext }
 export { isUserHookError }
 export type { PageContextExecuteHook }
 
-import { getProjectError, assertWarning } from '../../utils/assert.js'
+import { getProjectError, assertWarning, assertUsage } from '../../utils/assert.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { humanizeTime } from '../../utils/humanizeTime.js'
 import { isObject } from '../../utils/isObject.js'
@@ -28,6 +29,20 @@ type PageContextExecuteHook = PageConfigUserFriendlyOld & PageContextForPublicUs
 
 type HookWithResult = Hook & {
   hookResult: unknown
+}
+
+async function executeHookSingle<PageContext extends PageContextExecuteHook>(
+  hook: Hook,
+  pageContext: PageContext,
+  preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext
+) {
+  const res = await executeHooks([hook], pageContext, preparePageContextForPublicUsage)
+  if ('err' in res) throw res.err
+  const { hookResult } = res.hooks[0]!
+  assertUsage(
+    hookResult === undefined,
+    `The ${hook.hookName}() hook defined by ${hook.hookFilePath} isn't allowed to return a value`
+  )
 }
 
 async function executeHookNew<PageContext extends PageContextExecuteHook>(

@@ -6,7 +6,7 @@ import { getHookFromPageContext, type Hook } from '../../shared/hooks/getHook.js
 import type { PageFile, PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
 import type { PageContextForPublicUsageClientShared } from './preparePageContextForPublicUsageClientShared.js'
 import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
-import { executeHook } from '../../shared/hooks/executeHook.js'
+import { executeHookSingle } from '../../shared/hooks/executeHook.js'
 
 type PageContextBeforeRenderClient = {
   _pageFilesLoaded: PageFile[]
@@ -22,18 +22,15 @@ async function executeOnRenderClientHook<PageContext extends PageContextBeforeRe
   prepareForPublicUsage: (pageConfig: PageContext) => PageContext
 ): Promise<void> {
   let hook: null | Hook = null
-  let hookName: 'render' | 'onRenderClient'
 
   {
     const renderHook = getHookFromPageContext(pageContext, 'render')
     hook = renderHook
-    hookName = 'render'
   }
   {
     const renderHook = getHookFromPageContext(pageContext, 'onRenderClient')
     if (renderHook) {
       hook = renderHook
-      hookName = 'onRenderClient'
     }
   }
 
@@ -62,17 +59,8 @@ async function executeOnRenderClientHook<PageContext extends PageContextBeforeRe
     }
   }
 
-  assert(hook)
-  const renderHook = hook.hookFn
-  assert(hookName)
-
-  const pageContextForPublicUsage = prepareForPublicUsage(pageContext)
   // We don't use a try-catch wrapper because rendering errors are usually handled by the UI framework. (E.g. React's Error Boundaries.)
-  const hookResult = await executeHook(() => renderHook(pageContextForPublicUsage), hook, pageContext)
-  assertUsage(
-    hookResult === undefined,
-    `The ${hookName}() hook defined by ${hook.hookFilePath} isn't allowed to return a value`
-  )
+  await executeHookSingle(hook, pageContext, prepareForPublicUsage)
 }
 
 function getUrlToShowToUser(pageContext: { urlOriginal?: string; urlPathname?: string }): string {
