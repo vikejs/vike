@@ -66,8 +66,9 @@ async function getPageContextFromHook(
 }> {
   let hookReturn: unknown = onBeforeRouteHook.hookFn(pageContext)
   assertSyncRouting(hookReturn, `The onBeforeRoute() hook ${onBeforeRouteHook.hookFilePath}`)
+  hookReturn = executeHook(() => hookReturn, onBeforeRouteHook, pageContext)
   // TODO/v1-release: make executeOnBeforeRouteHook() and route() sync
-  hookReturn = await executeHook(() => hookReturn, onBeforeRouteHook, pageContext)
+  hookReturn = await hookReturn
 
   const errPrefix = `The onBeforeRoute() hook defined by ${onBeforeRouteHook.hookFilePath}`
 
