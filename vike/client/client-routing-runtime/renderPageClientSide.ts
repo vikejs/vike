@@ -55,11 +55,16 @@ import { setPageContextCurrent } from './getPageContextCurrent.js'
 import { getRouteStringParameterList } from '../../shared/route/resolveRouteString.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 import type { PageContextClient } from '../../shared/types.js'
-import { executeHookWithErrorHandling, type PageContextExecuteHook } from '../../shared/hooks/executeHook.js'
+import {
+  executeHooksWithErrorHandling,
+  executeHookWithErrorHandling,
+  type PageContextExecuteHook
+} from '../../shared/hooks/executeHook.js'
 import {
   type PageContextForPublicUsageClient,
   preparePageContextForPublicUsageClient
 } from './preparePageContextForPublicUsageClient.js'
+import { getHookFromPageContextNew } from '../../shared/hooks/getHook.js'
 
 const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
@@ -159,12 +164,12 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       // https://github.com/vikejs/vike/issues/1560
       if (!globalObject.isTransitioning) {
         globalObject.isTransitioning = true
-        const res = await executeHookWithErrorHandling(
-          'onPageTransitionStart',
+        const hooks = getHookFromPageContextNew('onPageTransitionStart', previousPageContext)
+        const res = await executeHooksWithErrorHandling(
+          hooks,
           // TODO/now
           pageContext as any,
-          preparePageContextForPublicUsageClient,
-          previousPageContext
+          preparePageContextForPublicUsageClient
         )
         if ('err' in res) {
           await onError(res.err)
@@ -544,12 +549,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     if (globalObject.isTransitioning) {
       globalObject.isTransitioning = undefined
       assert(previousPageContext)
-      const res = await executeHookWithErrorHandling(
-        'onPageTransitionEnd',
-        pageContext,
-        preparePageContextForPublicUsageClient,
-        previousPageContext
-      )
+      const hooks = getHookFromPageContextNew('onPageTransitionEnd', previousPageContext)
+      const res = await executeHooksWithErrorHandling(hooks, pageContext, preparePageContextForPublicUsageClient)
       if ('err' in res) {
         await onError(res.err)
         if (!isErrorPage) return

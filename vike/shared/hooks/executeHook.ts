@@ -4,6 +4,7 @@ export { executeHookNew }
 export { executeHookWithErrorHandling }
 export { executeHookGlobalCumulative }
 export { executeHookWithoutPageContext }
+export { executeHooksWithErrorHandling }
 export { getPageContext }
 export { providePageContext }
 export { isUserHookError }
@@ -36,7 +37,7 @@ async function executeHookSingle<PageContext extends PageContextExecuteHook>(
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext
 ) {
-  const res = await executeHooks([hook], pageContext, preparePageContextForPublicUsage)
+  const res = await executeHooksWithErrorHandling([hook], pageContext, preparePageContextForPublicUsage)
   if ('err' in res) throw res.err
   const { hookResult } = res.hooks[0]!
   assertUsage(
@@ -58,14 +59,13 @@ async function executeHookNew<PageContext extends PageContextExecuteHook>(
 async function executeHookWithErrorHandling<PageContext extends PageContextExecuteHook>(
   hookName: HookName,
   pageContext: PageContext,
-  preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
-  pageContextHook?: PageConfigUserFriendlyOld
+  preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext
 ) {
-  const hooks = getHookFromPageContextNew(hookName, pageContextHook ?? pageContext)
-  return executeHooks(hooks, pageContext, preparePageContextForPublicUsage)
+  const hooks = getHookFromPageContextNew(hookName, pageContext)
+  return executeHooksWithErrorHandling(hooks, pageContext, preparePageContextForPublicUsage)
 }
 
-async function executeHooks<PageContext extends PageContextExecuteHook>(
+async function executeHooksWithErrorHandling<PageContext extends PageContextExecuteHook>(
   hooks: Hook[],
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext
