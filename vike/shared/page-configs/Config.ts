@@ -65,7 +65,6 @@ type HookNamePage =
   | 'onData'
   | 'route'
 type HookNameGlobal =
-  | 'onBeforePrerender'
   | 'onBeforeRoute'
   | 'onPrerenderStart'
   | 'onCreatePageContext'
