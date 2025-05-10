@@ -1,5 +1,6 @@
 export { executeHook }
 export { executeHookNew }
+export { executeHookWithErrorHandling }
 export { executeHookGlobalCumulative }
 export { executeHookWithoutPageContext }
 export { getPageContext }

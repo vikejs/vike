@@ -56,7 +56,7 @@ import { setPageContextCurrent } from './getPageContextCurrent.js'
 import { getRouteStringParameterList } from '../../shared/route/resolveRouteString.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 import type { PageContextClient } from '../../shared/types.js'
-import { executeHook } from '../../shared/hooks/executeHook.js'
+import { executeHook, executeHookWithErrorHandling } from '../../shared/hooks/executeHook.js'
 import { preparePageContextForPublicUsageClient } from './preparePageContextForPublicUsageClient.js'
 
 const globalObject = getGlobalObject<{
@@ -520,17 +520,16 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
     // onHydrationEnd()
     if (isFirstRender && !onRenderClientError) {
-      const hook = getHookFromPageContext(pageContext, 'onHydrationEnd')
-      if (hook) {
-        const { hookFn } = hook
-        try {
-          await executeHook(() => hookFn(pageContext), hook, pageContext)
-        } catch (err) {
-          await onError(err)
-          if (!isErrorPage) return
-        }
-        if (isRenderOutdated(true)) return
+      const res = await executeHookWithErrorHandling(
+        'onHydrationEnd',
+        pageContext,
+        preparePageContextForPublicUsageClient
+      )
+      if ('err' in res) {
+        await onError(res.err)
+        if (!isErrorPage) return
       }
+      if (isRenderOutdated(true)) return
     }
 
     // We purposely abort *after* onHydrationEnd() is called (see comment above).
