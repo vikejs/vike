@@ -1,6 +1,5 @@
 import { Link, Warning } from '@brillout/docpress'
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
-import '../../components/tabs.css'
+import { CodeVariantsServer, CodeVariant } from '../../components'
 
 To integrate Vike with your server we recommend using `vike-server` which comes with many benefits such as:
 - Out-of-the-box support for popular servers (Express, Hono, Hattip, Elysia, etc.)
@@ -48,19 +47,9 @@ Update your production `script` in `package.json`:
 
 Create (or update) your server entry:
 
-<Tabs>
-  <TabList>
-    <Tab>Express.js</Tab>
-    <Tab>Hono</Tab>
-    <Tab>Fastify</Tab>
-    <Tab>H3</Tab>
-    <Tab>Elysia</Tab>
-  </TabList>
-
-  <TabPanel>
+<CodeVariantsServer filePath={"server/index"}>
+  <CodeVariant framework={"Express.js"}>
     ```js
-    // server/index.js
-
     import express from 'express'
     import { apply } from 'vike-server/express'
     import { serve } from 'vike-server/express/serve'
@@ -77,11 +66,9 @@ Create (or update) your server entry:
 
     export default startServer()
     ```
-  </TabPanel>
-  <TabPanel>
+  </CodeVariant>
+  <CodeVariant framework={"Hono"}>
     ```js
-    // server/index.js
-
     import { Hono } from 'hono'
     import { apply } from 'vike-server/hono'
     import { serve } from 'vike-server/hono/serve'
@@ -98,11 +85,9 @@ Create (or update) your server entry:
 
     export default startServer()
     ```
-  </TabPanel>
-  <TabPanel>
+  </CodeVariant>
+  <CodeVariant framework={"Fastify"}>
     ```js
-    // server/index.js
-
     import fastify from 'fastify'
     import rawBody from 'fastify-raw-body'
     import { apply } from 'vike-server/fastify'
@@ -126,11 +111,9 @@ Create (or update) your server entry:
 
     export default startServer()
     ```
-  </TabPanel>
-  <TabPanel>
+  </CodeVariant>
+  <CodeVariant framework={"h3"}>
     ```js
-    // server/index.js
-
     import { createApp } from 'h3'
     import { apply } from 'vike-server/h3'
     import { serve } from 'vike-server/h3/serve'
@@ -147,11 +130,9 @@ Create (or update) your server entry:
 
     export default startServer()
     ```
-  </TabPanel>
-  <TabPanel>
-    ```js
-    // server/index.js
-
+  </CodeVariant>
+  <CodeVariant framework={"Elysia"}>
+    ```ts
     import { Elysia } from 'elysia'
     import { apply } from 'vike-server/elysia'
     import { serve } from 'vike-server/elysia/serve'
@@ -167,8 +148,8 @@ Create (or update) your server entry:
 
     export default startServer()
     ```
-  </TabPanel>
-</Tabs>
+  </CodeVariant>
+</CodeVariantsServer>
 
 Where:
  - `apply()` installs the middleware of Vike and Vike extensions.
