@@ -47,6 +47,14 @@ async function executeHookWithErrorHandling<PageContext extends PageContextExecu
   pageContextHook?: PageConfigUserFriendlyOld
 ) {
   const hooks = getHookFromPageContextNew(hookName, pageContextHook ?? pageContext)
+  return executeHooks(hooks, pageContext, preparePageContextForPublicUsage)
+}
+
+async function executeHooks<PageContext extends PageContextExecuteHook>(
+  hooks: Hook[],
+  pageContext: PageContext,
+  preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext
+) {
   if (!hooks.length) return { hooks: [] as HookWithResult[] }
   const pageContextForPublicUsage = preparePageContextForPublicUsage(pageContext)
   let hooksWithResult: HookWithResult[] | undefined
