@@ -24,7 +24,7 @@ import {
   getPageContextFromHooks_serialized,
   type PageContextFromServerHooks,
   setPageContextInitIsPassedToClient,
-  executeHookClient
+  execHookClient
 } from './getPageContextFromHooks.js'
 import { createPageContextClientSide } from './createPageContextClientSide.js'
 import {
@@ -56,10 +56,10 @@ import { getRouteStringParameterList } from '../../shared/route/resolveRouteStri
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 import type { PageContextClient } from '../../shared/types.js'
 import {
-  executeHooksErrorHandling,
-  executeHookErrorHandling,
+  execHooksErrorHandling,
+  execHookErrorHandling,
   type PageContextExecuteHook
-} from '../../shared/hooks/executeHook.js'
+} from '../../shared/hooks/execHook.js'
 import {
   type PageContextForPublicUsageClient,
   preparePageContextForPublicUsageClient
@@ -166,7 +166,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       if (!globalObject.isTransitioning) {
         globalObject.isTransitioning = true
         const hooks = getHookFromPageContextNew('onPageTransitionStart', previousPageContext)
-        const res = await executeHooksErrorHandling(hooks, pageContext, preparePageContextForPublicUsageClientMinimal)
+        const res = await execHooksErrorHandling(hooks, pageContext, preparePageContextForPublicUsageClientMinimal)
         if ('err' in res) {
           await onError(res.err)
           return
@@ -304,7 +304,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
       // Execute +onData
       try {
-        await executeHookClient('onData', pageContext)
+        await execHookClient('onData', pageContext)
       } catch (err) {
         await onError(err)
         return
@@ -526,7 +526,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
     // onHydrationEnd()
     if (isFirstRender && !onRenderClientError) {
-      const res = await executeHookErrorHandling('onHydrationEnd', pageContext, preparePageContextForPublicUsageClient)
+      const res = await execHookErrorHandling('onHydrationEnd', pageContext, preparePageContextForPublicUsageClient)
       if ('err' in res) {
         await onError(res.err)
         if (!isErrorPage) return
@@ -542,7 +542,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       globalObject.isTransitioning = undefined
       assert(previousPageContext)
       const hooks = getHookFromPageContextNew('onPageTransitionEnd', previousPageContext)
-      const res = await executeHooksErrorHandling(hooks, pageContext, preparePageContextForPublicUsageClient)
+      const res = await execHooksErrorHandling(hooks, pageContext, preparePageContextForPublicUsageClient)
       if ('err' in res) {
         await onError(res.err)
         if (!isErrorPage) return

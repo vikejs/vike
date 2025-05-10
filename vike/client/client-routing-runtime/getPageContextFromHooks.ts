@@ -3,7 +3,7 @@ export { getPageContextFromHooks_serialized }
 export { getPageContextFromServerHooks }
 export { getPageContextFromClientHooks }
 export { setPageContextInitIsPassedToClient }
-export { executeHookClient }
+export { execHookClient }
 export type { PageContextFromServerHooks }
 
 import {
@@ -30,7 +30,7 @@ import { executeGuardHook } from '../../shared/route/executeGuardHook.js'
 import { AbortRender, isAbortPageContext } from '../../shared/route/abort.js'
 import { pageContextInitIsPassedToClient } from '../../shared/misc/pageContextInitIsPassedToClient.js'
 import { isServerSideError } from '../../shared/misc/isServerSideError.js'
-import { executeHook } from '../../shared/hooks/executeHook.js'
+import { execHook } from '../../shared/hooks/execHook.js'
 import type { HookName } from '../../shared/page-configs/Config.js'
 import type { PageContextCreated } from './createPageContextClientSide.js'
 import type { PageContextBegin } from './renderPageClientSide.js'
@@ -148,7 +148,7 @@ async function getPageContextFromClientHooks(
 
   // Execute +onData
   if (dataHookExists) {
-    await executeHookClient('onData', pageContext)
+    await execHookClient('onData', pageContext)
   }
 
   const pageContextFromClientHooks = pageContext
@@ -156,8 +156,8 @@ async function getPageContextFromClientHooks(
 }
 
 type PageContextExecuteHookClient = PageConfigUserFriendlyOld & PageContextForPublicUsageClient
-async function executeHookClient(hookName: HookName, pageContext: PageContextExecuteHookClient) {
-  return await executeHook(hookName, pageContext, (p) => preparePageContextForPublicUsageClient(p))
+async function execHookClient(hookName: HookName, pageContext: PageContextExecuteHookClient) {
+  return await execHook(hookName, pageContext, (p) => preparePageContextForPublicUsageClient(p))
 }
 
 async function executeDataLikeHook(hookName: 'data' | 'onBeforeRender', pageContext: PageContextExecuteHookClient) {
@@ -170,7 +170,7 @@ async function executeDataLikeHook(hookName: 'data' | 'onBeforeRender', pageCont
   Object.assign(pageContext, pageContextFromHook)
 }
 async function executeDataHook(pageContext: PageContextExecuteHookClient) {
-  const res = await executeHookClient('data', pageContext)
+  const res = await execHookClient('data', pageContext)
   const hook = res[0] // TO-DO/soon: support cumulative
   if (!hook) return
   const { hookReturn } = hook
@@ -178,7 +178,7 @@ async function executeDataHook(pageContext: PageContextExecuteHookClient) {
   return pageContextAddendum
 }
 async function executeOnBeforeRenderHook(pageContext: PageContextExecuteHookClient) {
-  const res = await executeHookClient('onBeforeRender', pageContext)
+  const res = await execHookClient('onBeforeRender', pageContext)
   const hook = res[0] // TO-DO/soon: support cumulative
   if (!hook) return
   const { hookReturn, hookFilePath } = hook

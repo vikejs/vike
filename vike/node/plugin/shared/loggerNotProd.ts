@@ -41,7 +41,7 @@ import { logWithVikeTag, logWithViteTag, logDirectly, applyViteSourceMapToStackT
 import pc from '@brillout/picocolors'
 import { setAlreadyLogged } from '../../runtime/renderPage/isNewError.js'
 import { onRuntimeError } from '../../runtime/renderPage/loggerProd.js'
-import { isUserHookError } from '../../../shared/hooks/executeHook.js'
+import { isUserHookError } from '../../../shared/hooks/execHook.js'
 
 assertIsNotProductionRuntime()
 overwriteRuntimeProductionLogger(logRuntimeError, logRuntimeInfo)

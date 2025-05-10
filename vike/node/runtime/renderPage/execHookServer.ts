@@ -1,7 +1,7 @@
-export { executeHookServer }
+export { execHookServer }
 export type { PageContextExecuteHookServer }
 
-import { executeHook } from '../../../shared/hooks/executeHook.js'
+import { execHook } from '../../../shared/hooks/execHook.js'
 import {
   preparePageContextForPublicUsageServer,
   type PageContextForPublicUsageServer
@@ -10,8 +10,8 @@ import type { PageConfigUserFriendlyOld } from '../../../shared/getPageFiles.js'
 import type { HookName } from '../../../shared/page-configs/Config.js'
 
 type PageContextExecuteHookServer = PageConfigUserFriendlyOld & PageContextForPublicUsageServer
-async function executeHookServer(hookName: HookName, pageContext: PageContextExecuteHookServer) {
-  return await executeHook(hookName, pageContext, (p) => {
+async function execHookServer(hookName: HookName, pageContext: PageContextExecuteHookServer) {
+  return await execHook(hookName, pageContext, (p) => {
     preparePageContextForPublicUsageServer(p)
     return p
   })

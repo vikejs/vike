@@ -1,7 +1,7 @@
 export { executeOnBeforeRenderAndDataHooks }
 
 import { assertOnBeforeRenderHookReturn } from '../../../shared/assertOnBeforeRenderHookReturn.js'
-import { executeHookServer, type PageContextExecuteHookServer } from './executeHookServer.js'
+import { execHookServer, type PageContextExecuteHookServer } from './execHookServer.js'
 
 async function executeOnBeforeRenderAndDataHooks(
   pageContext: {
@@ -13,7 +13,7 @@ async function executeOnBeforeRenderAndDataHooks(
     return
   }
 
-  const hooks = await executeHookServer('data', pageContext)
+  const hooks = await execHookServer('data', pageContext)
   const dataHook = hooks[0] // TO-DO/soon: support cumulative
   if (dataHook) {
     // Note: hookReturn can be anything (e.g. an object) and is to be assigned to pageContext.data
@@ -24,11 +24,11 @@ async function executeOnBeforeRenderAndDataHooks(
 
     // Execute +onData
     if (!pageContext.isClientSideNavigation) {
-      await executeHookServer('onData', pageContext)
+      await execHookServer('onData', pageContext)
     }
   }
 
-  const res = await executeHookServer('onBeforeRender', pageContext)
+  const res = await execHookServer('onBeforeRender', pageContext)
   const onBeforeRenderHook = res[0] // TO-DO/soon: support cumulative
   if (onBeforeRenderHook) {
     const { hookReturn } = onBeforeRenderHook

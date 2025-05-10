@@ -4,7 +4,7 @@ export { assertSyncRouting }
 export { warnDeprecatedAllowKey }
 
 import { assertPageContextUrls, PageContextUrlInternal } from '../getPageContextUrlComputed.js'
-import { executeHookSync } from '../hooks/executeHook.js'
+import { execHookSync } from '../hooks/execHook.js'
 import { preparePageContextForPublicUsage } from '../preparePageContextForPublicUsage.js'
 import { assert, assertUsage, assertWarning, hasProp, isPlainObject, isPromise } from './utils.js'
 import pc from '@brillout/picocolors'
@@ -18,7 +18,7 @@ async function resolveRouteFunction(
   routeParams: Record<string, string>
 }> {
   assertPageContextUrls(pageContext)
-  let { hookReturn: result } = executeHookSync(
+  let { hookReturn: result } = execHookSync(
     {
       hookFn: routeFunction,
       hookFilePath: routeFunctionFilePath,

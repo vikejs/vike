@@ -6,7 +6,7 @@ import { getHookFromPageContext, type Hook } from '../../shared/hooks/getHook.js
 import type { PageFile, PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
 import type { PageContextForPublicUsageClientShared } from './preparePageContextForPublicUsageClientShared.js'
 import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
-import { executeHookSingle } from '../../shared/hooks/executeHook.js'
+import { execHookSingle } from '../../shared/hooks/execHook.js'
 
 type PageContextBeforeRenderClient = {
   _pageFilesLoaded: PageFile[]
@@ -60,7 +60,7 @@ async function executeOnRenderClientHook<PageContext extends PageContextBeforeRe
   }
 
   // We don't use a try-catch wrapper because rendering errors are usually handled by the UI framework. (E.g. React's Error Boundaries.)
-  await executeHookSingle(hook, pageContext, prepareForPublicUsage)
+  await execHookSingle(hook, pageContext, prepareForPublicUsage)
 }
 
 function getUrlToShowToUser(pageContext: { urlOriginal?: string; urlPathname?: string }): string {
