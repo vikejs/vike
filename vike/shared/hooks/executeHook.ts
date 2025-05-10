@@ -109,16 +109,18 @@ async function executeHooksWithErrorHandling<PageContext extends Record<string, 
   }
 }
 
-async function executeHookGlobalCumulative(
+async function executeHookGlobalCumulative<HookArg extends Record<string, unknown>>(
   hookName: HookNameGlobal,
   pageConfigGlobal: PageConfigGlobalRuntime,
   pageContext: PageContextUnknown | null,
-  arg: object
+  hookArg: HookArg,
+  prepareForPublicUsage: (hookArg: HookArg) => HookArg
 ) {
   const hooks = getHookFromPageConfigGlobalCumulative(pageConfigGlobal, hookName)
+  const hookArgForPublicUsage = prepareForPublicUsage(hookArg)
   await Promise.all(
     hooks.map(async (hook) => {
-      await executeHookAsync(() => hook.hookFn(arg), hook, pageContext)
+      await executeHookAsync(() => hook.hookFn(hookArgForPublicUsage), hook, pageContext)
     })
   )
 }

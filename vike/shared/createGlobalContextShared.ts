@@ -36,7 +36,14 @@ async function createGlobalContextShared<GlobalContextAddendum extends object>(
     //      - globalContext._viteDevServer.hot.send()
     //        - Send 'full-server-reload' signal whenever a onCreateGlobalContext() function is modified => we need a globalObject to track all hooks and see if one of them is new/modified.
     //        - Seems less idiomatic
-    await executeHookGlobalCumulative('onCreateGlobalContext', globalContext._pageConfigGlobal, null, globalContext)
+    await executeHookGlobalCumulative(
+      'onCreateGlobalContext',
+      globalContext._pageConfigGlobal,
+      null,
+      globalContext,
+      // TO-DO/eventually: also wrap it with a ES proxy
+      (globalContext) => globalContext
+    )
   } else {
     // Singleton: ensure all `globalContext` user-land references are preserved & updated.
     // We don't use objectReplace() in order to keep user-land properties.
