@@ -1,4 +1,4 @@
-export { executeHook }
+export { executeHookSync }
 export { executeHookSingle }
 export { executeHookSingleWithReturn }
 export { executeHookNew }
@@ -201,6 +201,17 @@ function executeHook<HookReturn>(
   })()
 
   return promise
+}
+
+function executeHookSync<PageContext extends Record<string, unknown>>(
+  hook: Hook,
+  pageContext: PageContext,
+  preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext
+) {
+  const pageContextForPublicUsage = preparePageContextForPublicUsage(pageContext)
+  providePageContext(pageContextForPublicUsage)
+  const hookReturn = hook.hookFn(pageContextForPublicUsage)
+  return { hookReturn }
 }
 
 function isNotDisabled(timeout: false | number): timeout is number {

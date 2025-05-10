@@ -3,6 +3,7 @@ export { preparePageContextForPublicUsage }
 import { assert, assertWarning, compareString } from './utils.js'
 import { addIs404ToPageProps } from './addIs404ToPageProps.js'
 
+// TODO/now define proxy here because of executeHookSync() calls
 function preparePageContextForPublicUsage(pageContext: Record<string, unknown>) {
   assert((pageContext as any)._isOriginalObject) // ensure we preserve the original object reference
 
@@ -24,6 +25,8 @@ function preparePageContextForPublicUsage(pageContext: Record<string, unknown>) 
 
   // For a more readable `console.log(pageContext)` output
   sortPageContext(pageContext)
+
+  return pageContext
 }
 
 // Sort `pageContext` keys alphabetically, in order to make reading the `console.log(pageContext)` output easier
