@@ -9,6 +9,7 @@ import { parseGlobResults } from './getPageFiles/parseGlobResults.js'
 import { getUserFriendlyConfigsGlobal, getUserFriendlyConfigsPageEager } from './page-configs/getUserFriendlyConfigs.js'
 import type { PageConfigRuntime } from './page-configs/PageConfig.js'
 import { execHookGlobalCumulative } from './hooks/execHook.js'
+import { prepareGlobalContextForPublicUsage } from './prepareGlobalContextForPublicUsage.js'
 const getGlobalContextSyncErrMsg =
   "The global context isn't set yet, call getGlobalContextSync() later or use getGlobalContext() instead."
 
@@ -41,8 +42,7 @@ async function createGlobalContextShared<GlobalContextAddendum extends object>(
       globalContext._pageConfigGlobal,
       null,
       globalContext,
-      // TO-DO/eventually: also wrap it with a ES proxy
-      (globalContext) => globalContext
+      prepareGlobalContextForPublicUsage
     )
   } else {
     // Singleton: ensure all `globalContext` user-land references are preserved & updated.
