@@ -414,14 +414,14 @@ importers:
   examples/cloudflare-workers-react-full:
     dependencies:
       '@cloudflare/kv-asset-handler':
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: ^0.4.0
+        version: 0.4.0
       '@vitejs/plugin-react':
         specifier: ^4.4.1
-        version: 4.4.1(vite@6.3.2(@types/node@22.15.17)(terser@5.38.1)(tsx@4.19.4))
+        version: 4.4.1(vite@6.3.5(@types/node@22.15.17)(terser@5.38.1)(tsx@4.19.4))
       compression:
-        specifier: ^1.7.4
-        version: 1.7.5
+        specifier: ^1.8.0
+        version: 1.8.0
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -444,11 +444,11 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: ^6.3.2
-        version: 6.3.2(@types/node@22.15.17)(terser@5.38.1)(tsx@4.19.4)
+        specifier: ^6.3.5
+        version: 6.3.5(@types/node@22.15.17)(terser@5.38.1)(tsx@4.19.4)
       wrangler:
-        specifier: ^2.9.1
-        version: 2.21.2(cron-schedule@3.0.6)
+        specifier: ^4.14.4
+        version: 4.14.4(@cloudflare/workers-types@4.20250510.0)
 
   examples/cloudflare-workers-vue:
     dependencies:
@@ -5045,6 +5045,10 @@ packages:
 
   compression@1.7.5:
     resolution: {integrity: sha512-bQJ0YRck5ak3LgtnpKkiabX5pNF7tMUh1BSy2ZBOTh0Dim0BUu6aPPwByIns6/A5Prh8PufSPerMDUklpzes2Q==}
+    engines: {node: '>= 0.8.0'}
+
+  compression@1.8.0:
+    resolution: {integrity: sha512-k6WLKfunuqCYD3t6AsuPGvQWaKwuLLh2/xHNcX4qE+vIfDNXpSqnrhwA7O53R7WVQUnt8dVAIW+YHr7xTgOgGA==}
     engines: {node: '>= 0.8.0'}
 
   computeds@0.0.1:
@@ -11429,6 +11433,18 @@ snapshots:
       - supports-color
 
   compression@1.7.5:
+    dependencies:
+      bytes: 3.1.2
+      compressible: 2.0.18
+      debug: 2.6.9
+      negotiator: 0.6.4
+      on-headers: 1.0.2
+      safe-buffer: 5.2.1
+      vary: 1.1.2
+    transitivePeerDependencies:
+      - supports-color
+
+  compression@1.8.0:
     dependencies:
       bytes: 3.1.2
       compressible: 2.0.18
