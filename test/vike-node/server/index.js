@@ -1,11 +1,12 @@
 import express from 'express'
-import vike from 'vike-node/express'
-
-startServer()
+import { apply } from 'vike-server/express'
+import { serve } from 'vike-server/express/serve'
 
 function startServer() {
   const app = express()
-  app.use(vike())
+  apply(app)
   const port = process.env.PORT || 3000
-  app.listen(port, () => console.log(`Server running at http://localhost:${port}`))
+  return serve(app, { port })
 }
+
+export default startServer()
