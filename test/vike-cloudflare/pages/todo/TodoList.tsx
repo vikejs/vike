@@ -1,8 +1,8 @@
-import { createSignal, For, untrack } from "solid-js";
+import { createSignal, For, untrack } from 'solid-js'
 
 export function TodoList(props: { initialTodoItems: { text: string }[] }) {
-  const [todoItems, setTodoItems] = createSignal(props.initialTodoItems);
-  const [newTodo, setNewTodo] = createSignal("");
+  const [todoItems, setTodoItems] = createSignal(props.initialTodoItems)
+  const [newTodo, setNewTodo] = createSignal('')
   return (
     <>
       <ul>
@@ -11,31 +11,31 @@ export function TodoList(props: { initialTodoItems: { text: string }[] }) {
       <div>
         <form
           onSubmit={async (ev) => {
-            ev.preventDefault();
+            ev.preventDefault()
 
             // Optimistic UI update
-            setTodoItems((prev) => [...prev, { text: untrack(newTodo) }]);
+            setTodoItems((prev) => [...prev, { text: untrack(newTodo) }])
             try {
-              const response = await fetch("/api/todo/create", {
-                method: "POST",
+              const response = await fetch('/api/todo/create', {
+                method: 'POST',
                 body: JSON.stringify({ text: untrack(newTodo) }),
                 headers: {
-                  "Content-Type": "application/json",
-                },
-              });
-              await response.blob();
-              setNewTodo("");
+                  'Content-Type': 'application/json'
+                }
+              })
+              await response.blob()
+              setNewTodo('')
             } catch (e) {
-              console.error(e);
+              console.error(e)
               // rollback
-              setTodoItems((prev) => prev.slice(0, -1));
+              setTodoItems((prev) => prev.slice(0, -1))
             }
           }}
         >
-          <input type="text" onChange={(ev) => setNewTodo(ev.target.value)} value={newTodo()} />{" "}
+          <input type="text" onChange={(ev) => setNewTodo(ev.target.value)} value={newTodo()} />{' '}
           <button type="submit">Add to-do</button>
         </form>
       </div>
     </>
-  );
+  )
 }

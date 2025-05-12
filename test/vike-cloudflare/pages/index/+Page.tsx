@@ -1,8 +1,8 @@
-import { usePageContext } from "vike-solid/usePageContext";
-import { Counter } from "./Counter.js";
+import { usePageContext } from 'vike-solid/usePageContext'
+import { Counter } from './Counter.js'
 
 export default function Page() {
-  const ctx = usePageContext();
+  const ctx = usePageContext()
 
   return (
     <>
@@ -10,11 +10,11 @@ export default function Page() {
       This page is:
       <ul>
         <li>Rendered to HTML.</li>
-        {typeof ctx?.ctx?.waitUntil === "function" ? <li>SSR running on Cloudflare</li> : null}
+        {typeof ctx?.ctx?.waitUntil === 'function' ? <li>SSR running on Cloudflare</li> : null}
         <li>
           Interactive. <Counter />
         </li>
       </ul>
     </>
-  );
+  )
 }

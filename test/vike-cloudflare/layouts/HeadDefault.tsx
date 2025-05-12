@@ -2,7 +2,7 @@
 
 // Default <head> (can be overridden by pages)
 
-import logoUrl from "../assets/logo.svg";
+import logoUrl from '../assets/logo.svg'
 
 export default function HeadDefault() {
   return (
@@ -11,5 +11,5 @@ export default function HeadDefault() {
       <meta name="description" content="Demo showcasing Vike" />
       <link rel="icon" href={logoUrl} />
     </>
-  );
+  )
 }

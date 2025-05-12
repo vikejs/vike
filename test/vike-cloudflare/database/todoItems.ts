@@ -1,5 +1,5 @@
 interface TodoItem {
-  text: string;
+  text: string
 }
 
-export type { TodoItem };
+export type { TodoItem }
