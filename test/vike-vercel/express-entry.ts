@@ -40,11 +40,7 @@ async function startServer() {
     })()
   )
 
-  /**
-   * Vike route
-   *
-   * @link {@see https://vike.dev}
-   **/
+  // @ts-ignore
   app.all('/{*vikeCatchAll}', createHandler(() => vikeHandler)())
 
   app.listen(port, () => {
