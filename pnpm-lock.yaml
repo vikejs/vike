@@ -589,7 +589,7 @@ importers:
         version: 3.1.0(acorn@8.14.0)
       '@mdx-js/react':
         specifier: ^3.1.0
-        version: 3.1.0(@types/react@19.0.8)(react@18.2.0)
+        version: 3.1.0(@types/react@19.0.8)(react@19.1.0)
       '@mdx-js/rollup':
         specifier: ^3.1.0
         version: 3.1.0(acorn@8.14.0)(rollup@4.40.0)
@@ -615,14 +615,14 @@ importers:
         specifier: ^3.3.2
         version: 3.3.2
       react:
-        specifier: 18.2.0
-        version: 18.2.0
+        specifier: ^19.1.0
+        version: 19.1.0
       react-dom:
-        specifier: 18.2.0
-        version: 18.2.0(react@18.2.0)
+        specifier: ^19.1.0
+        version: 19.1.0(react@19.1.0)
       react-streaming:
         specifier: ^0.3.47
-        version: 0.3.47(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        version: 0.3.47(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -666,14 +666,14 @@ importers:
         specifier: ^5.1.0
         version: 5.1.0
       react:
-        specifier: ^19.1.0
-        version: 19.1.0
+        specifier: ^18.2.0
+        version: 18.2.0
       react-dom:
-        specifier: ^19.1.0
-        version: 19.1.0(react@19.1.0)
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
       react-streaming:
         specifier: ^0.3.47
-        version: 0.3.47(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 0.3.47(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       sirv:
         specifier: ^2.0.2
         version: 2.0.4
@@ -9212,11 +9212,11 @@ snapshots:
       '@types/react': 18.3.18
       react: 19.1.0
 
-  '@mdx-js/react@3.1.0(@types/react@19.0.8)(react@18.2.0)':
+  '@mdx-js/react@3.1.0(@types/react@19.0.8)(react@19.1.0)':
     dependencies:
       '@types/mdx': 2.0.13
       '@types/react': 19.0.8
-      react: 18.2.0
+      react: 19.1.0
 
   '@mdx-js/rollup@3.0.1(rollup@4.40.0)':
     dependencies:
