@@ -13,7 +13,7 @@
     "vite": "^6.3.2",
     "vike": "0.4.229",
     "vue": "^3.4.27",
-    "wrangler": "^3.58.0"
+    "wrangler": "^2.9.1"
   },
   "type": "module"
 }
