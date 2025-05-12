@@ -1634,7 +1634,7 @@ importers:
         specifier: ^0.4.4
         version: 0.4.7(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)
       typescript:
-        specifier: ^5.8.2
+        specifier: ^5.8.3
         version: 5.8.3
       vike-cloudflare:
         specifier: ^0.2.3
