@@ -5,15 +5,15 @@
     "deploy": "vike build && cross-env NODE_ENV=production && wrangler publish"
   },
   "dependencies": {
-    "@cloudflare/kv-asset-handler": "^0.3.2",
-    "@vitejs/plugin-vue": "^5.2.1",
-    "@vue/compiler-sfc": "^3.4.27",
-    "@vue/server-renderer": "^3.4.27",
+    "@cloudflare/kv-asset-handler": "^0.4.0",
+    "@vitejs/plugin-vue": "^5.2.4",
+    "@vue/compiler-sfc": "^3.5.13",
+    "@vue/server-renderer": "^3.5.13",
     "cross-env": "^7.0.3",
-    "vite": "^6.3.2",
+    "vite": "^6.3.5",
     "vike": "0.4.229",
-    "vue": "^3.4.27",
-    "wrangler": "^2.9.1"
+    "vue": "^3.5.13",
+    "wrangler": "^4.14.4"
   },
   "type": "module"
 }
