@@ -392,6 +392,9 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^4.4.1
         version: 4.4.1(vite@6.3.2(@types/node@22.15.17)(terser@5.38.1)(tsx@4.19.4))
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       react:
         specifier: ^19.1.0
         version: 19.1.0
@@ -419,6 +422,9 @@ importers:
       compression:
         specifier: ^1.7.4
         version: 1.7.5
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       express:
         specifier: ^5.1.0
         version: 5.1.0
@@ -458,6 +464,9 @@ importers:
       '@vue/server-renderer':
         specifier: ^3.4.27
         version: 3.5.13(vue@3.5.13(typescript@5.8.3))
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       vike:
         specifier: link:../../vike
         version: link:../../vike
@@ -899,6 +908,9 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^4.4.1
         version: 4.4.1(vite@5.1.0(@types/node@22.15.17)(terser@5.38.1))
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       react:
         specifier: ^19.1.0
         version: 19.1.0
@@ -926,6 +938,9 @@ importers:
       compression:
         specifier: ^1.7.4
         version: 1.7.5
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       express:
         specifier: ^5.1.0
         version: 5.1.0
@@ -965,6 +980,9 @@ importers:
       '@vue/server-renderer':
         specifier: ^3.2.47
         version: 3.5.13(vue@3.5.13(typescript@5.8.3))
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       vike:
         specifier: link:../../vike
         version: link:../../vike
