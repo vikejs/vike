@@ -1,15 +1,22 @@
 export { preparePageContextForPublicUsage }
 export type { PageContextMinimum }
 
-import { assert, assertWarning, compareString } from './utils.js'
+import { assert, assertWarning, compareString, objectAssign } from './utils.js'
 import { addIs404ToPageProps } from './addIs404ToPageProps.js'
+import { prepareGlobalContextForPublicUsage } from './prepareGlobalContextForPublicUsage.js'
 
 // TODO/now rename to PageContextPrepareMinimum
 type PageContextMinimum = { _globalContext: Record<string, unknown>; _isOriginalObject: true; isPageContext: true }
 
 // TODO/now define proxy here because of direct preparePageContextForPublicUsage() calls
+// TODO/now revive pageContext.globalContext
 function preparePageContextForPublicUsage(pageContext: PageContextMinimum) {
   assert(pageContext._isOriginalObject) // ensure we preserve the original object reference
+
+  const globalContextPublic = prepareGlobalContextForPublicUsage(pageContext._globalContext)
+  objectAssign(pageContext, {
+    globalContext: globalContextPublic
+  })
 
   addIs404ToPageProps(pageContext)
 

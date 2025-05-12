@@ -68,7 +68,6 @@ const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
   {
     globalContext?: Record<string, unknown>
-    globalContext_public?: Record<string, unknown>
     viteDevServer?: ViteDevServer
     viteConfig?: ResolvedConfig
     viteConfigRuntime?: ViteConfigRuntime
@@ -88,7 +87,6 @@ const globalObject = getGlobalObject<
 // https://chat.deepseek.com/a/chat/s/d7e9f90a-c7f3-4108-9cd5-4ad6caed3539
 const globalObjectTyped = globalObject as typeof globalObject & {
   globalContext?: GlobalContextServerInternal
-  globalContext_public?: GlobalContextServer
 }
 
 // Public type
@@ -114,10 +112,9 @@ async function getGlobalContextServerInternal() {
   assert(globalObject.isInitialized)
   assertGlobalContextIsDefined()
   if (globalObject.isProduction !== true) await globalObject.waitForUserFilesUpdate
-  const { globalContext, globalContext_public } = globalObjectTyped
+  const { globalContext } = globalObjectTyped
   assertIsDefined(globalContext)
-  assert(globalContext_public)
-  return { globalContext, globalContext_public }
+  return { globalContext }
 }
 
 function assertIsDefined<T extends GlobalContextServerInternal>(
@@ -132,7 +129,6 @@ function assertIsDefined<T extends GlobalContextServerInternal>(
 function assertGlobalContextIsDefined() {
   assertIsDefined(globalObjectTyped.globalContext)
   assert(globalObject.globalContext)
-  assert(globalObject.globalContext_public)
 }
 
 // We purposely return GlobalContext instead of GlobalContextServer because `import { getGlobalContext } from 'vike'` can resolve to the client-side implementation.
@@ -191,7 +187,9 @@ function getGlobalContextSync(): GlobalContext {
 function getGlobalContextForPublicUsage(): GlobalContextServer {
   const { globalContext } = globalObjectTyped
   assert(globalContext)
+  globalContext.baseServer
   const globalContextForPublicUsage = prepareGlobalContextForPublicUsage(globalContext)
+  globalContext.baseServer
   return globalContextForPublicUsage
 }
 
@@ -435,9 +433,6 @@ async function setGlobalContext(virtualFileExports: unknown) {
     globalContext._pageConfigs.length > 0,
     globalContext._pageFilesAll
   )
-
-  // Public usage
-  globalObject.globalContext_public = prepareGlobalContextForPublicUsage(globalContext)
 
   assertGlobalContextIsDefined()
   onSetupRuntime()

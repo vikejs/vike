@@ -211,7 +211,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   )
 
   await initGlobalContext_runPrerender()
-  const { globalContext, globalContext_public } = await getGlobalContextServerInternal()
+  const { globalContext } = await getGlobalContextServerInternal()
   globalContext._pageFilesAll.forEach(assertExportNames)
 
   const prerenderContext: PrerenderContext = {
@@ -233,21 +233,15 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   // Allow user to create `pageContext` for parameterized routes and/or bulk data fetching
   // https://vike.dev/onBeforePrerenderStart
-  await callOnBeforePrerenderStartHooks(
-    prerenderContext,
-    globalContext,
-    globalContext_public,
-    concurrencyLimit,
-    doNotPrerenderList
-  )
+  await callOnBeforePrerenderStartHooks(prerenderContext, globalContext, concurrencyLimit, doNotPrerenderList)
 
   // Create `pageContext` for each page with a static route
   const urlList = getUrlListFromPagesWithStaticRoute(globalContext, doNotPrerenderList)
-  await createPageContexts(urlList, prerenderContext, globalContext, globalContext_public, concurrencyLimit, false)
+  await createPageContexts(urlList, prerenderContext, globalContext, concurrencyLimit, false)
 
   // Create `pageContext` for 404 page
   const urlList404 = getUrlList404(globalContext)
-  await createPageContexts(urlList404, prerenderContext, globalContext, globalContext_public, concurrencyLimit, true)
+  await createPageContexts(urlList404, prerenderContext, globalContext, concurrencyLimit, true)
 
   // Allow user to duplicate the list of `pageContext` for i18n
   // https://vike.dev/onPrerenderStart
@@ -356,7 +350,6 @@ function assertExportNames(pageFile: PageFile) {
 async function callOnBeforePrerenderStartHooks(
   prerenderContext: PrerenderContext,
   globalContext: GlobalContextServerInternal,
-  globalContext_public: GlobalContextServer,
   concurrencyLimit: PLimit,
   doNotPrerenderList: DoNotPrerenderList
 ) {
@@ -462,7 +455,6 @@ async function callOnBeforePrerenderStartHooks(
               url,
               prerenderContext,
               globalContext,
-              globalContext_public,
               false,
               undefined,
               providedByHook
@@ -529,7 +521,6 @@ async function createPageContexts(
   urlList: UrlListEntry[],
   prerenderContext: PrerenderContext,
   globalContext: GlobalContextServerInternal,
-  globalContext_public: GlobalContextServer,
   concurrencyLimit: PLimit,
   is404: boolean
 ) {
@@ -544,7 +535,6 @@ async function createPageContexts(
           urlOriginal,
           prerenderContext,
           globalContext,
-          globalContext_public,
           is404,
           pageId,
           null
@@ -559,7 +549,6 @@ async function createPageContextPrerendering(
   urlOriginal: string,
   prerenderContext: PrerenderContext,
   globalContext: GlobalContextServerInternal,
-  globalContext_public: GlobalContextServer,
   is404: boolean,
   pageId: string | undefined,
   providedByHook: ProvidedByHook
@@ -568,7 +557,7 @@ async function createPageContextPrerendering(
     urlOriginal,
     ...prerenderContext._pageContextInit
   }
-  const pageContext = await createPageContextServerSide(pageContextInit, globalContext, globalContext_public, {
+  const pageContext = await createPageContextServerSide(pageContextInit, globalContext, {
     isPrerendering: true
   })
   assert(pageContext.isPrerendering === true)
