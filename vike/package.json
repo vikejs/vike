@@ -254,7 +254,7 @@
     "@types/resolve": "^1.20.6",
     "@types/semver": "^7.5.8",
     "@types/source-map-support": "^0.5.10",
-    "react-streaming": "^0.3.50",
+    "react-streaming": "^0.4.2",
     "rimraf": "^5.0.5",
     "typescript": "^5.8.3",
     "vite": "^6.3.2"

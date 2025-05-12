@@ -432,8 +432,8 @@ importers:
         specifier: ^19.1.0
         version: 19.1.0(react@19.1.0)
       react-streaming:
-        specifier: ^0.3.50
-        version: 0.3.50(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: ^0.4.2
+        version: 0.4.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       vike:
         specifier: link:../../vike
         version: link:../../vike
@@ -621,8 +621,8 @@ importers:
         specifier: ^19.1.0
         version: 19.1.0(react@19.1.0)
       react-streaming:
-        specifier: ^0.3.50
-        version: 0.3.50(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: ^0.4.2
+        version: 0.4.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -672,8 +672,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       react-streaming:
-        specifier: ^0.3.50
-        version: 0.3.50(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: ^0.4.2
+        version: 0.4.2(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       sirv:
         specifier: ^2.0.2
         version: 2.0.4
@@ -939,8 +939,8 @@ importers:
         specifier: ^19.1.0
         version: 19.1.0(react@19.1.0)
       react-streaming:
-        specifier: ^0.3.50
-        version: 0.3.50(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: ^0.4.2
+        version: 0.4.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       vike:
         specifier: link:../../vike
         version: link:../../vike
@@ -1113,8 +1113,8 @@ importers:
         specifier: ^19.1.0
         version: 19.1.0(react@19.1.0)
       react-streaming:
-        specifier: ^0.3.50
-        version: 0.3.50(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: ^0.4.2
+        version: 0.4.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       sirv:
         specifier: ^2.0.2
         version: 2.0.4
@@ -1697,8 +1697,8 @@ importers:
         specifier: ^19.1.0
         version: 19.1.0(react@19.1.0)
       react-streaming:
-        specifier: ^0.3.50
-        version: 0.3.50(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: ^0.4.2
+        version: 0.4.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -1936,8 +1936,8 @@ importers:
         specifier: ^0.5.10
         version: 0.5.10
       react-streaming:
-        specifier: ^0.3.50
-        version: 0.3.50(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: ^0.4.2
+        version: 0.4.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       rimraf:
         specifier: ^5.0.5
         version: 5.0.10
@@ -14452,15 +14452,6 @@ snapshots:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
 
-  react-streaming@0.3.50(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
-    dependencies:
-      '@brillout/import': 0.2.6
-      '@brillout/json-serializer': 0.5.15
-      '@brillout/picocolors': 1.0.26
-      isbot-fast: 1.2.0
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-
   react-streaming@0.3.50(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
       '@brillout/import': 0.2.6
@@ -14469,6 +14460,16 @@ snapshots:
       isbot-fast: 1.2.0
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
+    optional: true
+
+  react-streaming@0.4.2(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
+    dependencies:
+      '@brillout/import': 0.2.6
+      '@brillout/json-serializer': 0.5.15
+      '@brillout/picocolors': 1.0.26
+      isbot-fast: 1.2.0
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
 
   react-streaming@0.4.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
