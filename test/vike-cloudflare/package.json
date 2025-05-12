@@ -14,20 +14,20 @@
   "keywords": [],
   "author": "Joël Charles <joel.charles91@gmail.com>",
   "devDependencies": {
-    "@auth/core": "^0.38.0",
-    "@types/node": "^18.19.70",
-    "@universal-middleware/core": "^0.4.4",
+    "@auth/core": "^0.39.1",
+    "@types/node": "^22.15.17",
+    "@universal-middleware/core": "^0.4.7",
     "typescript": "^5.8.3",
     "vike-cloudflare": "^0.2.3",
-    "vike-server": "^1.0.5",
-    "wrangler": "^4.4.0"
+    "vike-server": "^1.0.16",
+    "wrangler": "^4.14.4"
   },
   "dependencies": {
     "cross-env": "^7.0.3",
-    "solid-js": "^1.9.5",
-    "tsx": "^4.19.3",
+    "solid-js": "^1.9.6",
+    "tsx": "^4.19.4",
     "vike": "0.4.229",
     "vike-solid": "^0.7.9",
-    "vite": "^6.2.5"
+    "vite": "^6.3.5"
   }
 }
