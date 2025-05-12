@@ -1646,36 +1646,6 @@ importers:
         specifier: ^4.4.0
         version: 4.14.4(@cloudflare/workers-types@4.20250510.0)
 
-  test/vike-node:
-    dependencies:
-      '@vitejs/plugin-react':
-        specifier: ^4.4.1
-        version: 4.4.1(vite@6.3.5(@types/node@22.15.17)(terser@5.38.1)(tsx@4.19.4))
-      cross-env:
-        specifier: ^7.0.3
-        version: 7.0.3
-      express:
-        specifier: ^5.1.0
-        version: 5.1.0
-      react:
-        specifier: ^19.1.0
-        version: 19.1.0
-      react-dom:
-        specifier: ^19.1.0
-        version: 19.1.0(react@19.1.0)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vike-react:
-        specifier: ^0.6.1
-        version: 0.6.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@vike)
-      vike-server:
-        specifier: ^1.0.16
-        version: 1.0.16(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)(vike@vike)(vite@6.3.5(@types/node@22.15.17)(terser@5.38.1)(tsx@4.19.4))
-      vite:
-        specifier: ^6.3.5
-        version: 6.3.5(@types/node@22.15.17)(terser@5.38.1)(tsx@4.19.4)
-
   test/vike-react:
     dependencies:
       '@types/react':
@@ -1708,6 +1678,36 @@ importers:
       vike-react:
         specifier: ^0.6.1
         version: 0.6.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@vike)
+      vite:
+        specifier: ^6.3.5
+        version: 6.3.5(@types/node@22.15.17)(terser@5.38.1)(tsx@4.19.4)
+
+  test/vike-server:
+    dependencies:
+      '@vitejs/plugin-react':
+        specifier: ^4.4.1
+        version: 4.4.1(vite@6.3.5(@types/node@22.15.17)(terser@5.38.1)(tsx@4.19.4))
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      express:
+        specifier: ^5.1.0
+        version: 5.1.0
+      react:
+        specifier: ^19.1.0
+        version: 19.1.0
+      react-dom:
+        specifier: ^19.1.0
+        version: 19.1.0(react@19.1.0)
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
+      vike-react:
+        specifier: ^0.6.1
+        version: 0.6.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@vike)
+      vike-server:
+        specifier: ^1.0.16
+        version: 1.0.16(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)(vike@vike)(vite@6.3.5(@types/node@22.15.17)(terser@5.38.1)(tsx@4.19.4))
       vite:
         specifier: ^6.3.5
         version: 6.3.5(@types/node@22.15.17)(terser@5.38.1)(tsx@4.19.4)
