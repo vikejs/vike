@@ -2,10 +2,10 @@ export { config }
 
 import vikeReact from 'vike-react/config'
 import { Layout } from './Layout'
+import vikeServer from 'vike-server/config'
 
 const config = {
-  // https://vike.dev/Layout
   Layout: Layout,
-  // https://vike.dev/extends
-  extends: vikeReact
+  server: 'server/index.js',
+  extends: [vikeReact, vikeServer]
 }

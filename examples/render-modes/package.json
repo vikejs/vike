@@ -11,8 +11,8 @@
     "compression": "^1.7.4",
     "cross-env": "^7.0.3",
     "express": "^5.1.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "sirv": "^2.0.0",
     "vike": "0.4.229",
     "vite": "^6.3.2"

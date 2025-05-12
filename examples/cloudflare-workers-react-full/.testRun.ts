@@ -11,8 +11,9 @@ import { testCounter } from '../../test/utils'
 function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { hasStarWarsPage: boolean }) {
   const isWrangler = cmd === 'npm run preview'
 
-  //*
-  // Update(13.12.2024): permanently disabling wrangler tests, because wrangler requests to Cloudflare are painfully flaky. Let's eventually enable wrangler tests again, at some point later.
+  /*
+  // update(12.05.2025): Enabling wrangler tests again.
+  // update(13.12.2024): Permanently disabling wrangler tests, because wrangler requests to Cloudflare are painfully flaky. Let's eventually enable wrangler tests again, at some point later.
   // Manually disabled because of exceeded rate limit
   if (isWrangler) {
     skip('SKIPPED: temporarily skip wrangler tests.')
