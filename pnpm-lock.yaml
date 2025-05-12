@@ -387,11 +387,11 @@ importers:
   examples/cloudflare-workers-react:
     dependencies:
       '@cloudflare/kv-asset-handler':
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: ^0.4.0
+        version: 0.4.0
       '@vitejs/plugin-react':
         specifier: ^4.4.1
-        version: 4.4.1(vite@6.3.2(@types/node@22.15.17)(terser@5.38.1)(tsx@4.19.4))
+        version: 4.4.1(vite@6.3.5(@types/node@22.15.17)(terser@5.38.1)(tsx@4.19.4))
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -405,11 +405,11 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: ^6.3.2
-        version: 6.3.2(@types/node@22.15.17)(terser@5.38.1)(tsx@4.19.4)
+        specifier: ^6.3.5
+        version: 6.3.5(@types/node@22.15.17)(terser@5.38.1)(tsx@4.19.4)
       wrangler:
-        specifier: ^2.9.1
-        version: 2.21.2(cron-schedule@3.0.6)
+        specifier: ^4.14.4
+        version: 4.14.4(@cloudflare/workers-types@4.20250510.0)
 
   examples/cloudflare-workers-react-full:
     dependencies:
