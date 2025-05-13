@@ -1,3 +1,4 @@
+// TODO/now: rename to getProxyForPublicUsage()
 export { getPublicProxy }
 
 // We use a proxy instead of property getters.
@@ -18,7 +19,7 @@ function getPublicProxy<Obj extends Record<string, unknown>>(obj: Obj, objName: 
         assertWarning(
           false,
           `Using internal ${objName}.${propStr} which may break in any minor version update. Reach out on GitHub to request official support for your use case.`,
-          { onlyOnce: true }
+          { onlyOnce: true, showStackTrace: true }
         )
       }
       // @ts-ignore Seems to be TypeScript bug
