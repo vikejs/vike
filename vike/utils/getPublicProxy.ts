@@ -9,21 +9,32 @@ export { getPublicProxy }
 // - Previous implementation using property getters: https://github.com/vikejs/vike/blob/main/vike/utils/makePublicCopy.ts
 
 import { assertWarning } from './assert.js'
+import { isBrowser } from './isBrowser.js'
 
 // Show warning when user is accessing internal `_` properties.
 function getPublicProxy<Obj extends Record<string, unknown>>(obj: Obj, objName: string): Obj {
   return new Proxy(obj, {
     get(_, prop) {
-      const propStr = String(prop)
-      if (propStr.startsWith('_')) {
-        assertWarning(
-          false,
-          `Using internal ${objName}.${propStr} which may break in any minor version update. Reach out on GitHub to request official support for your use case.`,
-          { onlyOnce: true, showStackTrace: true }
-        )
-      }
+      warnIfInternal(prop, objName)
       // @ts-ignore Seems to be TypeScript bug
       return Reflect.get(...arguments)
     }
   })
+}
+
+function warnIfInternal(prop: string | symbol, objName: string) {
+  // - We must skip it in the client-side because of the reactivity mechanism of UI frameworks like Solid.
+  // - TO-DO/eventually: use import.meta.CLIENT instead
+  //   - Where import.meta.CLIENT is defined by Vike
+  //   - Using import.meta.env.CLIENT (note `.env.`) doesn't seem possible: https://github.com/brillout/playground_node_import.meta.env
+  if (isBrowser()) return
+
+  const propStr = String(prop)
+  if (propStr.startsWith('_')) {
+    assertWarning(
+      false,
+      `Using internal ${objName}.${propStr} which may break in any minor version update. Reach out on GitHub to request official support for your use case.`,
+      { onlyOnce: true, showStackTrace: true }
+    )
+  }
 }
