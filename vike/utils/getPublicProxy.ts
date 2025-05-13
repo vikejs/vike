@@ -24,9 +24,10 @@ function getPublicProxy<Obj extends Record<string, unknown>>(obj: Obj, objName: 
 
 function warnIfInternal(prop: string | symbol, objName: string) {
   // - We must skip it in the client-side because of the reactivity mechanism of UI frameworks like Solid.
-  // - TO-DO/eventually: use import.meta.CLIENT instead
+  // - TO-DO/eventually: use import.meta.CLIENT instead of isBrowser()
   //   - Where import.meta.CLIENT is defined by Vike
   //   - Using import.meta.env.CLIENT (note `.env.`) doesn't seem possible: https://github.com/brillout/playground_node_import.meta.env
+  //     - If Rolldown Vite + Rolldowns always transpiles node_modules/ then we can simply use import.meta.env.SSR
   if (isBrowser()) return
 
   const propStr = String(prop)
