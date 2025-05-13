@@ -17,7 +17,7 @@ function getPublicProxy<Obj extends Record<string, unknown>>(obj: Obj, objName: 
       if (propStr.startsWith('_')) {
         assertWarning(
           false,
-          `Using internal ${objName}.${propStr} which may break in any minor version update. Reach out on GitHub and elaborate your use case so that the Vike team can add official support for your use case.`,
+          `Using internal ${objName}.${propStr} which may break in any minor version update. Reach out on GitHub to request official support for your use case.`,
           { onlyOnce: true }
         )
       }
