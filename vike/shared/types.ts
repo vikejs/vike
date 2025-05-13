@@ -299,24 +299,20 @@ type PageContextInternalServer = Omit<
   PageContextBuiltInCommon<unknown> & PageContextUrlInternal,
   'data' | 'globalContext'
 >
-type InternalClientOmit =
-  // The following is only accessible to users over the public ES proxy
-  'Page' | 'globalContext'
+// The following is only accessible to users over the public ES proxies
+type OnlyUsers = 'Page' | 'globalContext'
 type PageContextInternalClient = Omit<
   PageContextInternalClient_ClientRouting | PageContextInternalClient_ServerRouting,
   // I don't know why Omit is needed again
-  InternalClientOmit
+  OnlyUsers
 >
 type PageContextInternalClient_ClientRouting = Omit<
   PageContextBuiltInClientWithClientRouting<unknown>,
-  InternalClientOmit | 'previousPageContext'
+  OnlyUsers | 'previousPageContext'
 > & {
   previousPageContext: { pageId: string } | null
 }
-type PageContextInternalClient_ServerRouting = Omit<
-  PageContextBuiltInClientWithServerRouting<unknown>,
-  InternalClientOmit
->
+type PageContextInternalClient_ServerRouting = Omit<PageContextBuiltInClientWithServerRouting<unknown>, OnlyUsers>
 
 /** @deprecated
  * Replace:
