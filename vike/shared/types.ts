@@ -299,7 +299,12 @@ type PageContextInternalServer = Omit<
   PageContextBuiltInCommon<unknown> & PageContextUrlInternal,
   'data' | 'globalContext'
 >
-type InternalClientOmit = 'data' | 'Page' | 'globalContext'
+type InternalClientOmit =
+  // The correct type should be `type PageContext = { data?: unknown }`
+  | 'data'
+  // The following is only accessible to users over the public ES proxy
+  | 'Page'
+  | 'globalContext'
 type PageContextInternalClient = Omit<
   PageContextInternalClient_ClientRouting | PageContextInternalClient_ServerRouting,
   // I don't know why Omit is needed again
