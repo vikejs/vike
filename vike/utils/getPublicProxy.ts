@@ -7,20 +7,10 @@ export { getPublicProxy }
 //   ```
 // - Previous implementation using property getters: https://github.com/vikejs/vike/blob/main/vike/utils/makePublicCopy.ts
 
-import { assert, assertWarning } from './assert.js'
+import { assertWarning } from './assert.js'
 
 // Show warning when user is accessing internal `_` properties.
-function getPublicProxy<Obj extends Record<string, unknown>, PropsPublic extends readonly (keyof Obj)[]>(
-  obj: Obj,
-  objName: string,
-  propsPublic: PropsPublic,
-  expectCustomUserLandProps?: true
-): Pick<Obj, PropsPublic[number]> {
-  if (!expectCustomUserLandProps) {
-    Object.keys(obj).forEach((key) => assert(key.startsWith('_') || propsPublic.includes(key)))
-    propsPublic.forEach((prop) => prop in obj)
-  }
-
+function getPublicProxy<Obj extends Record<string, unknown>>(obj: Obj, objName: string): Obj {
   return new Proxy(obj, {
     get(_, prop) {
       const propStr = String(prop)

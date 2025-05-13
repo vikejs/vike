@@ -91,6 +91,13 @@ type ProvidedByHookTransformer = null | {
 type PageContextPrerendered = { urlOriginal: string; _providedByHook?: ProvidedByHook; pageId: string }
 type PrerenderedPageContexts = Record<string, PageContextPrerendered>
 
+type PrerenderContextPublic = Pick<
+  PrerenderContext,
+  // Needed by https://vike.dev/i18n#pre-rendering
+  | 'pageContexts'
+  // Needed by vite-plugin-vercel
+  | 'output'
+>
 type PrerenderContext = {
   pageContexts: PageContext[]
   output: Output
@@ -1205,11 +1212,7 @@ function preparePrerenderContextForPublicUsage(prerenderContext: PrerenderContex
   const prerenderContextPublic = makePublic(prerenderContext)
   return prerenderContextPublic
 }
-type PrerenderContextPublic = Pick<PrerenderContext, 'output' | 'pageContexts'>
 function makePublic(prerenderContext: PrerenderContext): PrerenderContextPublic {
-  const prerenderContextPublic = getPublicProxy(prerenderContext, 'prerenderContext', [
-    'output', // vite-plugin-vercel
-    'pageContexts' // https://vike.dev/i18n#pre-rendering
-  ]) as any as PrerenderContextPublic
+  const prerenderContextPublic = getPublicProxy(prerenderContext, 'prerenderContext')
   return prerenderContextPublic
 }

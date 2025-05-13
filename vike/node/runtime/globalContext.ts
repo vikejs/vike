@@ -92,7 +92,18 @@ const globalObjectTyped = globalObject as typeof globalObject & {
 }
 
 // Public type
-type GlobalContextServer = ReturnType<typeof prepareGlobalContextForPublicUsage> &
+type GlobalContextServer = Pick<
+  GlobalContextServerInternal,
+  | 'assetsManifest'
+  | 'config'
+  | 'viteConfig'
+  | 'viteConfigRuntime'
+  | 'pages'
+  | 'baseServer'
+  | 'baseAssets'
+  | 'isClientSide'
+> &
+  // https://vike.dev/globalContext#typescript
   Vike.GlobalContext &
   Vike.GlobalContextServer
 // Private type
@@ -181,21 +192,7 @@ function getGlobalContextSync(): GlobalContext {
 }
 
 function prepareGlobalContextForPublicUsage(globalContext: GlobalContextServerInternal) {
-  const globalContextPublic = getPublicProxy(
-    globalContext,
-    'globalContext',
-    [
-      'assetsManifest',
-      'config',
-      'viteConfig',
-      'viteConfigRuntime',
-      'pages',
-      'baseServer',
-      'baseAssets',
-      'isClientSide'
-    ],
-    true
-  )
+  const globalContextPublic = getPublicProxy(globalContext, 'globalContext')
   return globalContextPublic
 }
 
