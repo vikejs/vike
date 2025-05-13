@@ -5,9 +5,7 @@ import { assert, assertWarning, compareString } from './utils.js'
 import { addIs404ToPageProps } from './addIs404ToPageProps.js'
 
 // TODO/now rename to PageContextPrepareMinimum
-type PageContextMinimum =
-  // Record<string, unknown> &
-  { _globalContext: Record<string, unknown> }
+type PageContextMinimum = { _globalContext: Record<string, unknown> }
 
 // TODO/now define proxy here because of direct preparePageContextForPublicUsage() calls
 function preparePageContextForPublicUsage(pageContext: PageContextMinimum) {
