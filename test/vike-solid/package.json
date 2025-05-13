@@ -1,0 +1,20 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "vike dev",
+    "build": "vike build",
+    "preview": "vike build && vike preview",
+    "test": "tsc --noEmit"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2",
+    "solid-js": "^1.9.5",
+    "vike": "0.4.229",
+    "vike-solid": "^0.7.9"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.2",
+    "vite": "^6.2.1"
+  },
+  "type": "module"
+}
