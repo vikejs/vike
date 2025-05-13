@@ -4,7 +4,7 @@ export type { PageContextCreated }
 
 import { assert, assertUsage, assertWarning, augmentType, normalizeHeaders, objectAssign } from '../utils.js'
 import { getPageContextUrlComputed } from '../../../shared/getPageContextUrlComputed.js'
-import type { GlobalContextServerInternal, GlobalContextServer } from '../globalContext.js'
+import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { PageContextInit } from '../renderPage.js'
 import { createPageContextShared } from '../../../shared/createPageContextShared.js'
 
@@ -12,7 +12,6 @@ type PageContextCreated = Awaited<ReturnType<typeof createPageContextServerSide>
 async function createPageContextServerSide(
   pageContextInit: PageContextInit,
   globalContext: GlobalContextServerInternal,
-  globalObject_public: GlobalContextServer,
   {
     isPrerendering,
     ssr: { urlHandler, isClientSideNavigation } = {
@@ -37,11 +36,6 @@ async function createPageContextServerSide(
   const pageContextCreated = createPageContext(pageContextInit, isPrerendering)
 
   objectAssign(pageContextCreated, {
-    /* Don't spread globalContext for now? Or never spread it as it leads to confusion? The convenience isn't worth the added confusion?
-    // We must use Flatten<T> otherwise TypeScript complains upon assigning types
-    ...(globalContext as Flatten<typeof globalContext>), // least precedence
-    */
-    globalContext: globalObject_public,
     _globalContext: globalContext,
     // The following is defined on `pageContext` because we can eventually make these non-global
     _baseServer: globalContext.baseServer,

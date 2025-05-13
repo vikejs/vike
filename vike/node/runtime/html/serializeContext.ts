@@ -39,7 +39,7 @@ type PageContextSerialization = {
   is404: null | boolean
   pageProps?: Record<string, unknown>
   _pageContextInit: Record<string, unknown>
-  globalContext: Record<string, any>
+  _globalContext: Record<string, any>
 }
 function getPageContextClientSerialized(pageContext: PageContextSerialization) {
   const passToClientPageContext = getPassToClientPageContext(pageContext)
@@ -53,7 +53,7 @@ function getPageContextClientSerialized(pageContext: PageContextSerialization) {
 
 function getGlobalContextClientSerialized(pageContext: PageContextSerialization) {
   const passToClient = pageContext._passToClient
-  const globalContextClient = applyPassToClient(passToClient, pageContext.globalContext)
+  const globalContextClient = applyPassToClient(passToClient, pageContext._globalContext)
   const globalContextClientSerialized = serializeObject(globalContextClient, 'globalContext', passToClient)
   return globalContextClientSerialized
 }

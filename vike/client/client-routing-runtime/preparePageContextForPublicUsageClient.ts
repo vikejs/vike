@@ -4,8 +4,10 @@ export type { PageContextForPublicUsageClient }
 import { preparePageContextForPublicUsageClientShared } from '../shared/preparePageContextForPublicUsageClientShared.js'
 import type { PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
 import type { PageContextInternalClient_ClientRouting } from '../../shared/types.js'
+import type { PageContextMinimum } from '../../shared/preparePageContextForPublicUsage.js'
 
-type PageContextForPublicUsageClient = PageContextInternalClient_ClientRouting &
+type PageContextForPublicUsageClient = PageContextMinimum &
+  PageContextInternalClient_ClientRouting &
   PageConfigUserFriendlyOld & { urlOriginal: string }
 
 function preparePageContextForPublicUsageClient<PageContext extends PageContextForPublicUsageClient>(

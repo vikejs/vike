@@ -1730,6 +1730,28 @@ importers:
         specifier: ^6.3.5
         version: 6.3.5(@types/node@22.15.17)(terser@5.38.1)(tsx@4.19.4)
 
+  test/vike-solid:
+    dependencies:
+      node-fetch:
+        specifier: ^3.3.2
+        version: 3.3.2
+      solid-js:
+        specifier: ^1.9.5
+        version: 1.9.6
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
+      vike-solid:
+        specifier: ^0.7.9
+        version: 0.7.9(solid-js@1.9.6)(vike@vike)(vite@6.3.5(@types/node@22.15.17)(terser@5.38.1)(tsx@4.19.4))
+    devDependencies:
+      typescript:
+        specifier: ^5.8.2
+        version: 5.8.3
+      vite:
+        specifier: ^6.2.1
+        version: 6.3.5(@types/node@22.15.17)(terser@5.38.1)(tsx@4.19.4)
+
   test/vike-vercel:
     dependencies:
       vite-plugin-vercel:

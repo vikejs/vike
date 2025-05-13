@@ -5,11 +5,14 @@ export type { PageContextForPublicUsageClientShared }
 import { objectAssign } from '../server-routing-runtime/utils.js'
 import type { PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
 import { getPageContextProxyForUser } from './getPageContextProxyForUser.js'
-import { preparePageContextForPublicUsage } from '../../shared/preparePageContextForPublicUsage.js'
+import {
+  type PageContextMinimum,
+  preparePageContextForPublicUsage
+} from '../../shared/preparePageContextForPublicUsage.js'
 import { assertPageContextUrls } from '../../shared/getPageContextUrlComputed.js'
 import type { PageContextInternalClient } from '../../shared/types.js'
 
-type PageContextForPublicUsageClientShared = PageContextInternalClient & PageConfigUserFriendlyOld
+type PageContextForPublicUsageClientShared = PageContextMinimum & PageContextInternalClient & PageConfigUserFriendlyOld
 
 function preparePageContextForPublicUsageClientShared<PageContext extends PageContextForPublicUsageClientShared>(
   pageContext: PageContext
@@ -31,7 +34,7 @@ function preparePageContextForPublicUsageClientShared<PageContext extends PageCo
   return preparePageContextForPublicUsageClientMinimal(pageContext)
 }
 
-function preparePageContextForPublicUsageClientMinimal<PageContext extends Record<string, unknown>>(
+function preparePageContextForPublicUsageClientMinimal<PageContext extends PageContextMinimum>(
   pageContext: PageContext
 ) {
   preparePageContextForPublicUsage(pageContext)

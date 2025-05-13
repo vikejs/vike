@@ -151,14 +151,9 @@ async function renderPagePrepare(
   } else {
     // `globalContext` now contains the entire Vike config and getVikeConfig() isn't called anymore for this request.
   }
-  const { globalContext, globalContext_public } = await getGlobalContextServerInternal()
+  const { globalContext } = await getGlobalContextServerInternal()
 
-  const pageContextBegin = await getPageContextBegin(
-    pageContextInit,
-    globalContext,
-    globalContext_public,
-    httpRequestId
-  )
+  const pageContextBegin = await getPageContextBegin(pageContextInit, globalContext, httpRequestId)
 
   // Check Base URL
   {
@@ -441,11 +436,10 @@ async function getPageContextErrorPageInit(
 async function getPageContextBegin(
   pageContextInit: PageContextInit,
   globalContext: GlobalContextServerInternal,
-  globalContext_public: GlobalContextServer,
   httpRequestId: number
 ) {
   const { isClientSideNavigation, _urlHandler } = handlePageContextUrl(pageContextInit.urlOriginal)
-  const pageContextBegin = await createPageContextServerSide(pageContextInit, globalContext, globalContext_public, {
+  const pageContextBegin = await createPageContextServerSide(pageContextInit, globalContext, {
     isPrerendering: false,
     ssr: {
       urlHandler: _urlHandler,

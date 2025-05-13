@@ -3,9 +3,9 @@ export type { PageContextForPublicUsageServer }
 
 import { assertPageContextUrls, type PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
 import type { PageConfigUserFriendlyOld } from '../../../shared/page-configs/getUserFriendlyConfigs.js'
-import { PageContextInternalServer } from '../../../shared/types.js'
+import type { PageContextInternalServer } from '../../../shared/types.js'
 import { preparePageContextForPublicUsage } from '../../../shared/preparePageContextForPublicUsage.js'
-import type { GlobalContextServer } from '../globalContext.js'
+import type { GlobalContextServerInternal } from '../globalContext.js'
 
 type PageContextForPublicUsageServer = PageContextInternalServer &
   PageConfigUserFriendlyOld & {
@@ -19,7 +19,7 @@ type PageContextForPublicUsageServer = PageContextInternalServer &
     pageId: string
     is404: null | boolean
     isClientSideNavigation: boolean
-    globalContext: GlobalContextServer
+    _globalContext: GlobalContextServerInternal
   }
 
 function preparePageContextForPublicUsageServer<PageContext extends PageContextForPublicUsageServer>(

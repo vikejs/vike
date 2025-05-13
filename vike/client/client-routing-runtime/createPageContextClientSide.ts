@@ -19,10 +19,7 @@ async function createPageContextClientSide(urlOriginal: string) {
     isClientSide: true as const,
     isPrerendering: false as const,
     urlOriginal,
-    /* Don't spread globalContext for now? Or never spread it as it leads to confusion? The convenience isn't worth the added confusion?
-    ...globalContext, // least precedence
-    */
-    globalContext,
+    _globalContext: globalContext,
     _pageFilesAll: globalContext._pageFilesAll,
     _pageConfigs: globalContext._pageConfigs,
     _pageConfigGlobal: globalContext._pageConfigGlobal,

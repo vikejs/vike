@@ -295,19 +295,28 @@ type PageContextClientCommon = {
   isPrerendering: false
 }
 
-type PageContextInternalServer = Omit<PageContextBuiltInCommon<unknown> & PageContextUrlInternal, 'data'>
+type PageContextInternalServer = Omit<
+  PageContextBuiltInCommon<unknown> & PageContextUrlInternal,
+  'data' | 'globalContext'
+>
+type OnlyUsers =
+  // For convenience we set `type PageContext = { data: Data }` (which is incorrect because it should be `type PageContext = { data?: Data }` instead).
+  | 'data'
+  // The following are only accessible to users over the public ES proxies.
+  | 'Page'
+  | 'globalContext'
 type PageContextInternalClient = Omit<
   PageContextInternalClient_ClientRouting | PageContextInternalClient_ServerRouting,
   // I don't know why Omit is needed again
-  'data' | 'Page'
+  OnlyUsers
 >
 type PageContextInternalClient_ClientRouting = Omit<
   PageContextBuiltInClientWithClientRouting<unknown>,
-  'data' | 'Page' | 'previousPageContext'
+  OnlyUsers | 'previousPageContext'
 > & {
   previousPageContext: { pageId: string } | null
 }
-type PageContextInternalClient_ServerRouting = Omit<PageContextBuiltInClientWithServerRouting<unknown>, 'data' | 'Page'>
+type PageContextInternalClient_ServerRouting = Omit<PageContextBuiltInClientWithServerRouting<unknown>, OnlyUsers>
 
 /** @deprecated
  * Replace:

@@ -11,6 +11,7 @@ export type { PageContextUrlSource }
 // =====================
 
 import { objectDefineProperty } from '../utils/objectDefineProperty.js'
+import type { PageContextMinimum } from './preparePageContextForPublicUsage.js'
 import {
   assert,
   parseUrl,
@@ -35,9 +36,10 @@ type PageContextUrl = {
   /** The URL of the HTTP request */
   urlOriginal: string
 } & PageContextUrlComputed
-type PageContextUrlInternal = PageContextUrl & {
-  _urlRewrite: string | null
-}
+type PageContextUrlInternal = PageContextMinimum &
+  PageContextUrl & {
+    _urlRewrite: string | null
+  }
 type PageContextUrlClient = PageContextUrl
 type PageContextUrlServer = PageContextUrl & {
   urlParsed: Omit<PageContextUrl['urlParsed'], HashProps> & {

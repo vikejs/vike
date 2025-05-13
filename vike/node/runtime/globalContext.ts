@@ -44,7 +44,6 @@ import {
   getGlobalObject,
   genPromise,
   createDebugger,
-  getPublicProxy,
   checkType,
   PROJECT_VERSION
 } from './utils.js'
@@ -64,11 +63,11 @@ import {
   type GlobalContextShared
 } from '../../shared/createGlobalContextShared.js'
 import type { GlobalContext } from '../../shared/types.js'
+import { prepareGlobalContextForPublicUsage } from '../../shared/prepareGlobalContextForPublicUsage.js'
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
   {
     globalContext?: Record<string, unknown>
-    globalContext_public?: Record<string, unknown>
     viteDevServer?: ViteDevServer
     viteConfig?: ResolvedConfig
     viteConfigRuntime?: ViteConfigRuntime
@@ -88,11 +87,21 @@ const globalObject = getGlobalObject<
 // https://chat.deepseek.com/a/chat/s/d7e9f90a-c7f3-4108-9cd5-4ad6caed3539
 const globalObjectTyped = globalObject as typeof globalObject & {
   globalContext?: GlobalContextServerInternal
-  globalContext_public?: GlobalContextServer
 }
 
 // Public type
-type GlobalContextServer = ReturnType<typeof prepareGlobalContextForPublicUsage> &
+type GlobalContextServer = Pick<
+  GlobalContextServerInternal,
+  | 'assetsManifest'
+  | 'config'
+  | 'viteConfig'
+  | 'viteConfigRuntime'
+  | 'pages'
+  | 'baseServer'
+  | 'baseAssets'
+  | 'isClientSide'
+> &
+  // https://vike.dev/globalContext#typescript
   Vike.GlobalContext &
   Vike.GlobalContextServer
 // Private type
@@ -103,10 +112,9 @@ async function getGlobalContextServerInternal() {
   assert(globalObject.isInitialized)
   assertGlobalContextIsDefined()
   if (globalObject.isProduction !== true) await globalObject.waitForUserFilesUpdate
-  const { globalContext, globalContext_public } = globalObjectTyped
+  const { globalContext } = globalObjectTyped
   assertIsDefined(globalContext)
-  assert(globalContext_public)
-  return { globalContext, globalContext_public }
+  return { globalContext }
 }
 
 function assertIsDefined<T extends GlobalContextServerInternal>(
@@ -121,7 +129,6 @@ function assertIsDefined<T extends GlobalContextServerInternal>(
 function assertGlobalContextIsDefined() {
   assertIsDefined(globalObjectTyped.globalContext)
   assert(globalObject.globalContext)
-  assert(globalObject.globalContext_public)
 }
 
 // We purposely return GlobalContext instead of GlobalContextServer because `import { getGlobalContext } from 'vike'` can resolve to the client-side implementation.
@@ -155,9 +162,7 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
   if (!globalObject.globalContext) await initGlobalContext_getGlobalContextAsync()
   if (!isProduction) await globalObject.waitForUserFilesUpdate
   assertGlobalContextIsDefined()
-  const { globalContext_public } = globalObjectTyped
-  assert(globalContext_public)
-  return globalContext_public
+  return getGlobalContextForPublicUsage()
 }
 /**
  * Get runtime information about your app.
@@ -168,8 +173,8 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
  */
 function getGlobalContextSync(): GlobalContext {
   debug('getGlobalContextSync()')
-  const { globalContext_public } = globalObjectTyped
-  assertUsage(globalContext_public, getGlobalContextSyncErrMsg)
+  const { globalContext } = globalObjectTyped
+  assertUsage(globalContext, getGlobalContextSyncErrMsg)
   assertWarning(
     false,
     // We discourage users from using it because `pageContext.globalContext` is safer: I ain't sure but there could be race conditions when using `getGlobalContextSync()` inside React/Vue components upon HMR.
@@ -177,26 +182,13 @@ function getGlobalContextSync(): GlobalContext {
     'getGlobalContextSync() is going to be deprecated in the next major release, see https://vike.dev/getGlobalContext',
     { onlyOnce: true }
   )
-  return globalContext_public
+  return getGlobalContextForPublicUsage()
 }
-
-function prepareGlobalContextForPublicUsage(globalContext: GlobalContextServerInternal) {
-  const globalContextPublic = getPublicProxy(
-    globalContext,
-    'globalContext',
-    [
-      'assetsManifest',
-      'config',
-      'viteConfig',
-      'viteConfigRuntime',
-      'pages',
-      'baseServer',
-      'baseAssets',
-      'isClientSide'
-    ],
-    true
-  )
-  return globalContextPublic
+function getGlobalContextForPublicUsage(): GlobalContextServer {
+  const { globalContext } = globalObjectTyped
+  assert(globalContext)
+  const globalContextForPublicUsage = prepareGlobalContextForPublicUsage(globalContext)
+  return globalContextForPublicUsage
 }
 
 async function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
@@ -439,9 +431,6 @@ async function setGlobalContext(virtualFileExports: unknown) {
     globalContext._pageConfigs.length > 0,
     globalContext._pageFilesAll
   )
-
-  // Public usage
-  globalObject.globalContext_public = prepareGlobalContextForPublicUsage(globalContext)
 
   assertGlobalContextIsDefined()
   onSetupRuntime()

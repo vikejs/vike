@@ -226,6 +226,7 @@ function isNotDisabled(timeout: false | number): timeout is number {
  * https://vike.dev/getPageContext
  */
 function getPageContext<PageContext = PageContextClient | PageContextServer>(): null | PageContext {
+  // TODO/now: prepareForPublicUsage
   return globalObject.pageContext as any
 }
 /**

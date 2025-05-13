@@ -1,11 +1,27 @@
 export { preparePageContextForPublicUsage }
+export type { PageContextMinimum }
 
-import { assert, assertWarning, compareString } from './utils.js'
+import { assert, assertWarning, compareString, objectAssign } from './utils.js'
 import { addIs404ToPageProps } from './addIs404ToPageProps.js'
+import { prepareGlobalContextForPublicUsage } from './prepareGlobalContextForPublicUsage.js'
+
+// TODO/now rename to PageContextPrepareMinimum
+type PageContextMinimum = {
+  _isOriginalObject: true
+  isPageContext: true
+  _globalContext: Record<string, unknown>
+  // pageContext.globalContext should only be available to users — Vike itself should use pageContext._globalContext instead
+  globalContext?: never
+}
 
 // TODO/now define proxy here because of direct preparePageContextForPublicUsage() calls
-function preparePageContextForPublicUsage(pageContext: Record<string, unknown>) {
-  assert((pageContext as any)._isOriginalObject) // ensure we preserve the original object reference
+function preparePageContextForPublicUsage(pageContext: PageContextMinimum) {
+  assert(pageContext._isOriginalObject) // ensure we preserve the original object reference
+
+  const globalContextPublic = prepareGlobalContextForPublicUsage(pageContext._globalContext)
+  objectAssign(pageContext, {
+    globalContext: globalContextPublic
+  })
 
   addIs404ToPageProps(pageContext)
 
