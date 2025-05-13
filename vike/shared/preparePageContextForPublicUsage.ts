@@ -9,7 +9,6 @@ import { prepareGlobalContextForPublicUsage } from './prepareGlobalContextForPub
 type PageContextMinimum = { _globalContext: Record<string, unknown>; _isOriginalObject: true; isPageContext: true }
 
 // TODO/now define proxy here because of direct preparePageContextForPublicUsage() calls
-// TODO/now revive pageContext.globalContext
 function preparePageContextForPublicUsage(pageContext: PageContextMinimum) {
   assert(pageContext._isOriginalObject) // ensure we preserve the original object reference
 

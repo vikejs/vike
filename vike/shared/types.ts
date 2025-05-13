@@ -295,19 +295,26 @@ type PageContextClientCommon = {
   isPrerendering: false
 }
 
-type PageContextInternalServer = Omit<PageContextBuiltInCommon<unknown> & PageContextUrlInternal, 'data'>
+type PageContextInternalServer = Omit<
+  PageContextBuiltInCommon<unknown> & PageContextUrlInternal,
+  'data' | 'globalContext'
+>
+type InternalClientOmit = 'data' | 'Page' | 'globalContext'
 type PageContextInternalClient = Omit<
   PageContextInternalClient_ClientRouting | PageContextInternalClient_ServerRouting,
   // I don't know why Omit is needed again
-  'data' | 'Page'
+  InternalClientOmit
 >
 type PageContextInternalClient_ClientRouting = Omit<
   PageContextBuiltInClientWithClientRouting<unknown>,
-  'data' | 'Page' | 'previousPageContext'
+  InternalClientOmit | 'previousPageContext'
 > & {
   previousPageContext: { pageId: string } | null
 }
-type PageContextInternalClient_ServerRouting = Omit<PageContextBuiltInClientWithServerRouting<unknown>, 'data' | 'Page'>
+type PageContextInternalClient_ServerRouting = Omit<
+  PageContextBuiltInClientWithServerRouting<unknown>,
+  InternalClientOmit
+>
 
 /** @deprecated
  * Replace:

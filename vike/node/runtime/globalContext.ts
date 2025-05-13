@@ -187,9 +187,7 @@ function getGlobalContextSync(): GlobalContext {
 function getGlobalContextForPublicUsage(): GlobalContextServer {
   const { globalContext } = globalObjectTyped
   assert(globalContext)
-  globalContext.baseServer
   const globalContextForPublicUsage = prepareGlobalContextForPublicUsage(globalContext)
-  globalContext.baseServer
   return globalContextForPublicUsage
 }
 
