@@ -1,6 +1,10 @@
 export { prepareGlobalContextForPublicUsage }
 
-// TO-DO/eventually: also wrap globalContext with a ES proxy
-function prepareGlobalContextForPublicUsage(globalContext: Record<string, unknown>) {
-  return globalContext
+import { getPublicProxy } from './utils.js'
+
+function prepareGlobalContextForPublicUsage<GlobalContext extends Record<string, unknown>>(
+  globalContext: GlobalContext
+) {
+  const globalContextPublic = getPublicProxy(globalContext, 'globalContext')
+  return globalContextPublic
 }

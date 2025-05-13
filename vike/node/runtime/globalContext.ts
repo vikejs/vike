@@ -44,7 +44,6 @@ import {
   getGlobalObject,
   genPromise,
   createDebugger,
-  getPublicProxy,
   checkType,
   PROJECT_VERSION
 } from './utils.js'
@@ -64,6 +63,7 @@ import {
   type GlobalContextShared
 } from '../../shared/createGlobalContextShared.js'
 import type { GlobalContext } from '../../shared/types.js'
+import { prepareGlobalContextForPublicUsage } from '../../shared/prepareGlobalContextForPublicUsage.js'
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
   {
@@ -189,11 +189,6 @@ function getGlobalContextSync(): GlobalContext {
     { onlyOnce: true }
   )
   return globalContext_public
-}
-
-function prepareGlobalContextForPublicUsage(globalContext: GlobalContextServerInternal) {
-  const globalContextPublic = getPublicProxy(globalContext, 'globalContext')
-  return globalContextPublic
 }
 
 async function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
