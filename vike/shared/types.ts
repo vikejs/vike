@@ -73,7 +73,7 @@ type PageContextBuiltInCommon<Data> = {
    * https://vike.dev/data
    * https://vike.dev/pageContext#data
    */
-  data: Data
+  data?: Data
   /** The page's configuration values.
    *
    * https://vike.dev/config
@@ -300,11 +300,8 @@ type PageContextInternalServer = Omit<
   'data' | 'globalContext'
 >
 type InternalClientOmit =
-  // The correct type should be `type PageContext = { data?: unknown }`
-  | 'data'
   // The following is only accessible to users over the public ES proxy
-  | 'Page'
-  | 'globalContext'
+  'Page' | 'globalContext'
 type PageContextInternalClient = Omit<
   PageContextInternalClient_ClientRouting | PageContextInternalClient_ServerRouting,
   // I don't know why Omit is needed again
