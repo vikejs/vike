@@ -166,9 +166,7 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
   if (!globalObject.globalContext) await initGlobalContext_getGlobalContextAsync()
   if (!isProduction) await globalObject.waitForUserFilesUpdate
   assertGlobalContextIsDefined()
-  const { globalContext_public } = globalObjectTyped
-  assert(globalContext_public)
-  return globalContext_public
+  return getGlobalContextForPublicUsage()
 }
 /**
  * Get runtime information about your app.
@@ -179,8 +177,8 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
  */
 function getGlobalContextSync(): GlobalContext {
   debug('getGlobalContextSync()')
-  const { globalContext_public } = globalObjectTyped
-  assertUsage(globalContext_public, getGlobalContextSyncErrMsg)
+  const { globalContext } = globalObjectTyped
+  assertUsage(globalContext, getGlobalContextSyncErrMsg)
   assertWarning(
     false,
     // We discourage users from using it because `pageContext.globalContext` is safer: I ain't sure but there could be race conditions when using `getGlobalContextSync()` inside React/Vue components upon HMR.
@@ -188,7 +186,13 @@ function getGlobalContextSync(): GlobalContext {
     'getGlobalContextSync() is going to be deprecated in the next major release, see https://vike.dev/getGlobalContext',
     { onlyOnce: true }
   )
-  return globalContext_public
+  return getGlobalContextForPublicUsage()
+}
+function getGlobalContextForPublicUsage(): GlobalContextServer {
+  const { globalContext } = globalObjectTyped
+  assert(globalContext)
+  const globalContextForPublicUsage = prepareGlobalContextForPublicUsage(globalContext)
+  return globalContextForPublicUsage
 }
 
 async function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
