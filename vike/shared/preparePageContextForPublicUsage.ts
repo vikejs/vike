@@ -6,7 +6,13 @@ import { addIs404ToPageProps } from './addIs404ToPageProps.js'
 import { prepareGlobalContextForPublicUsage } from './prepareGlobalContextForPublicUsage.js'
 
 // TODO/now rename to PageContextPrepareMinimum
-type PageContextMinimum = { _globalContext: Record<string, unknown>; _isOriginalObject: true; isPageContext: true }
+type PageContextMinimum = {
+  _isOriginalObject: true
+  isPageContext: true
+  _globalContext: Record<string, unknown>
+  // pageContext.globalContext should only be available to users — Vike itself should use pageContext._globalContext instead
+  globalContext?: never
+}
 
 // TODO/now define proxy here because of direct preparePageContextForPublicUsage() calls
 function preparePageContextForPublicUsage(pageContext: PageContextMinimum) {
