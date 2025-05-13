@@ -23,7 +23,7 @@ import {
   PLimit,
   isArray,
   onSetupPrerender,
-  getPublicProxy,
+  getProxyForPublicUsage,
   PROJECT_VERSION,
   preservePropertyGetters
 } from './utils.js'
@@ -1202,6 +1202,6 @@ function preparePrerenderContextForPublicUsage(prerenderContext: PrerenderContex
   return prerenderContextPublic
 }
 function makePublic(prerenderContext: PrerenderContext): PrerenderContextPublic {
-  const prerenderContextPublic = getPublicProxy(prerenderContext, 'prerenderContext')
+  const prerenderContextPublic = getProxyForPublicUsage(prerenderContext, 'prerenderContext')
   return prerenderContextPublic
 }
