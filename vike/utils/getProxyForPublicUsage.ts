@@ -1,4 +1,5 @@
-// TODO/now: rename to getProxyForPublicUsage()
+// TODO/now: use a single ES proxy instead of recusrive ES proxies
+// TODO/now: check TODOs of https://github.com/vikejs/vike/commit/601e86d968b7ad25b65869b19e6652d4870e6409
 export { getProxyForPublicUsage }
 
 // We use a proxy instead of property getters.
