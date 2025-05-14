@@ -39,8 +39,8 @@ function preparePageContextForPublicUsageClientShared<PageContext extends PageCo
 function preparePageContextForPublicUsageClientMinimal<PageContext extends PageContextPrepareMinimum>(
   pageContext: PageContext
 ) {
-  preparePageContextForPublicUsage(pageContext)
-  const pageContextProxy = getPageContextProxyForUser(pageContext)
+  const pageContextPublic = preparePageContextForPublicUsage(pageContext)
+  const pageContextProxy = getPageContextProxyForUser(pageContextPublic)
   return pageContextProxy
 }
 
