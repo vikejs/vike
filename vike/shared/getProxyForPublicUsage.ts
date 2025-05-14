@@ -1,6 +1,6 @@
 export { getProxyForPublicUsage }
 
-import { NOT_SERIALIZABLE } from '../shared/NOT_SERIALIZABLE.js'
+import { NOT_SERIALIZABLE } from './NOT_SERIALIZABLE.js'
 // We use a proxy instead of property getters.
 // - The issue with property getters is that they can't be `writable: true` but we do want the user to be able to modify the value of internal properties.
 //   ```console
@@ -8,9 +8,9 @@ import { NOT_SERIALIZABLE } from '../shared/NOT_SERIALIZABLE.js'
 //   ```
 // - Previous implementation using property getters: https://github.com/vikejs/vike/blob/main/vike/utils/makePublicCopy.ts
 
-import { assert, assertUsage, assertWarning } from './assert.js'
-import { getPropAccessNotation } from './getPropAccessNotation.js'
-import { isBrowser } from './isBrowser.js'
+import { assert, assertUsage, assertWarning } from '../utils/assert.js'
+import { getPropAccessNotation } from '../utils/getPropAccessNotation.js'
+import { isBrowser } from '../utils/isBrowser.js'
 
 // Show warning when user is accessing internal `_` properties.
 function getProxyForPublicUsage<Obj extends Record<string, unknown>>(obj: Obj, objName: string): Obj {
