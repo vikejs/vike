@@ -79,10 +79,7 @@ function assertPropertyGetters(pageContext: Record<string, unknown>) {
   objectAssign(pageContext, pageContextUrlComputed)
   ```
   */
-  assertPropertyGetter(pageContext, 'urlParsed')
-  assertPropertyGetter(pageContext, 'urlPathname')
-  assertPropertyGetter(pageContext, 'url')
-}
-function assertPropertyGetter(pageContext: Record<string, unknown>, prop: string) {
-  if (pageContext.prop) assert(isPropertyGetter(pageContext, prop))
+  ;['urlParsed', 'urlPathname', 'url'].forEach((prop) => {
+    if (pageContext.prop) assert(isPropertyGetter(pageContext, prop))
+  })
 }
