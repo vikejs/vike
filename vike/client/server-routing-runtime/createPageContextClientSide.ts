@@ -1,6 +1,6 @@
 export { createPageContextClientSide }
 
-import { assertUsage, augmentType, objectAssign } from './utils.js'
+import { assertUsage, augmentType, changeEnumerable, objectAssign } from './utils.js'
 import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtml.js'
 import { loadPageConfigsLazyClientSide } from '../shared/loadPageConfigsLazyClientSide.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
@@ -27,6 +27,7 @@ async function createPageContextClientSide() {
     isBackwardNavigation: null,
     _hasPageContextFromServer: true as const
   }
+  changeEnumerable(pageContextCreated, '_isOriginalObject', false)
   objectAssign(pageContextCreated, getPageContextSerializedInHtml())
 
   // Sets pageContext.config to global configs

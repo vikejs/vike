@@ -3,7 +3,7 @@ export { getGlobalContextSyncErrMsg }
 export type { GlobalContextShared }
 export type { GlobalContextSharedPublic }
 
-import { objectAssign, unique } from './utils.js'
+import { changeEnumerable, objectAssign, unique } from './utils.js'
 import type { PageFile } from './getPageFiles.js'
 import { parseGlobResults } from './getPageFiles/parseGlobResults.js'
 import { getUserFriendlyConfigsGlobal, getUserFriendlyConfigsPageEager } from './page-configs/getUserFriendlyConfigs.js'
@@ -81,6 +81,7 @@ function createGlobalContextBase(virtualFileExports: unknown) {
     config: userFriendlyConfigsGlobal.config,
     pages: userFriendlyConfigsPageEager
   }
+  changeEnumerable(globalContext, '_isOriginalObject', false)
   return globalContext
 }
 
