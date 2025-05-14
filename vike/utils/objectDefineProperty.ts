@@ -1,4 +1,4 @@
-/** Like Object.defineProperty() but with type inference */
+// Same as Object.defineProperty() but with type inference
 export function objectDefineProperty<Obj extends object, Prop extends PropertyKey, PropertyType>(
   obj: Obj,
   prop: Prop,
