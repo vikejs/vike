@@ -1,5 +1,4 @@
 export { getPageContextUrlComputed }
-export { assertPageContextUrls }
 export type { PageContextUrlInternal }
 export type { PageContextUrlClient }
 export type { PageContextUrlServer }
@@ -11,16 +10,8 @@ export type { PageContextUrlSource }
 // =====================
 
 import { objectDefineProperty } from '../utils/objectDefineProperty.js'
-import type { PageContextPrepareMinimum } from './preparePageContextForPublicUsage.js'
-import {
-  assert,
-  parseUrl,
-  assertWarning,
-  isPropertyGetter,
-  isBrowser,
-  changeEnumerable,
-  type UrlPublic
-} from './utils.js'
+import { assertPropertyGetters, type PageContextPrepareMinimum } from './preparePageContextForPublicUsage.js'
+import { assert, parseUrl, assertWarning, isBrowser, changeEnumerable, type UrlPublic } from './utils.js'
 
 // TODO/v1-release: move pageContext.urlParsed to pageContext.url
 type PageContextUrlComputed = {
@@ -55,7 +46,7 @@ type HashProps = 'hash' | 'hashString' | 'hashOriginal'
 
 function getPageContextUrlComputed(pageContext: PageContextUrlSource): PageContextUrlComputed {
   assert(typeof pageContext.urlOriginal === 'string')
-  assertPageContextUrls(pageContext)
+  assertPropertyGetters(pageContext)
 
   const pageContextUrlComputed = {}
   objectDefineProperty(pageContextUrlComputed, 'urlPathname', {
@@ -206,28 +197,4 @@ function urlParsedGetter(this: PageContextUrlSource) {
   }
 
   return urlParsedEnhanced
-}
-
-function assertPageContextUrls(pageContext: Record<string, unknown>) {
-  /*
-  If the isPropertyGetter() assertions fail then it's most likely because Object.assign() was used instead of `objectAssign()`:
-  ```js
-  const PageContextUrlComputed = getPageContextUrlComputed(pageContext)
-
-  // ❌ Breaks the property descriptors/getters of pageContext defined by getPageContextUrlComputed() such as pageContext.urlPathname
-  Object.assign(pageContext, pageContextUrlComputed)
-
-  // ❌ Also breaks property descriptors/getters
-  const pageContext = { ...pageContextUrlComputed }
-
-  // ✅ Preserves property descriptors/getters (see objectAssign() implementation)
-  objectAssign(pageContext, pageContextUrlComputed)
-  ```
-  */
-  assertPropertyGetter(pageContext, 'urlParsed')
-  assertPropertyGetter(pageContext, 'urlPathname')
-  assertPropertyGetter(pageContext, 'url')
-}
-function assertPropertyGetter(pageContext: Record<string, unknown>, prop: string) {
-  if (pageContext.prop) assert(isPropertyGetter(pageContext, prop))
 }
