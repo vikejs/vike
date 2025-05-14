@@ -9,9 +9,8 @@ export { getProxyForPublicUsage }
 
 // Show warning when user is accessing internal `_` properties.
 
-import assert from 'assert'
 import { NOT_SERIALIZABLE } from './NOT_SERIALIZABLE.js'
-import { assertUsage, assertWarning, getPropAccessNotation, isBrowser } from './utils.js'
+import { assert, assertUsage, assertWarning, getPropAccessNotation, isBrowser } from './utils.js'
 
 function getProxyForPublicUsage<Obj extends Record<string, unknown>>(obj: Obj, objName: string): Obj {
   return new Proxy(obj, {
