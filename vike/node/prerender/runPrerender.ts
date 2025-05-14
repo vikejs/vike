@@ -69,6 +69,7 @@ import { isVikeCli } from '../cli/context.js'
 import { isViteCliCall } from '../plugin/shared/isViteCliCall.js'
 import { getVikeConfigInternal } from '../plugin/plugins/commonConfig.js'
 import fs from 'node:fs'
+import { changeEnumerable } from '../runtime/utils.js'
 const docLink = 'https://vike.dev/i18n#pre-rendering'
 
 type HtmlFile = {
@@ -1196,6 +1197,10 @@ function preparePrerenderContextForPublicUsage(prerenderContext: PrerenderContex
       }
     })
   }
+
+  prerenderContext.pageContexts.forEach((pageContext) => {
+    changeEnumerable(pageContext, '_isOriginalObject', true)
+  })
 
   const prerenderContextPublic = makePublic(prerenderContext)
   return prerenderContextPublic
