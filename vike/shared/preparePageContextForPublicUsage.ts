@@ -2,19 +2,13 @@ export { preparePageContextForPublicUsage }
 export { assertPropertyGetters }
 export type { PageContextPrepareMinimum }
 
-import {
-  assert,
-  assertWarning,
-  compareString,
-  getProxyForPublicUsage,
-  isPropertyGetter,
-  objectAssign
-} from './utils.js'
+import { assert, assertWarning, compareString, isPropertyGetter, objectAssign } from './utils.js'
 import { addIs404ToPageProps } from './addIs404ToPageProps.js'
 import {
   type GlobalContextPrepareMinimum,
   prepareGlobalContextForPublicUsage
 } from './prepareGlobalContextForPublicUsage.js'
+import { getProxyForPublicUsage } from './getProxyForPublicUsage.js'
 
 type PageContextPrepareMinimum = {
   _isOriginalObject: true

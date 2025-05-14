@@ -1,7 +1,8 @@
 export { prepareGlobalContextForPublicUsage }
 export type { GlobalContextPrepareMinimum }
 
-import { assert, getProxyForPublicUsage } from './utils.js'
+import { getProxyForPublicUsage } from './getProxyForPublicUsage.js'
+import { assert } from './utils.js'
 
 type GlobalContextPrepareMinimum = { _isOriginalObject: true; isGlobalContext: true }
 
