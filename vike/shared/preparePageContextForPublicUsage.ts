@@ -16,7 +16,6 @@ type PageContextPrepareMinimum = {
   globalContext?: never
 }
 
-// TODO/now define proxy here because of direct preparePageContextForPublicUsage() calls
 function preparePageContextForPublicUsage(pageContext: PageContextPrepareMinimum) {
   assert(pageContext._isOriginalObject) // ensure we preserve the original object reference
 
