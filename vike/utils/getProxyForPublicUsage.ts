@@ -15,8 +15,7 @@ function getProxyForPublicUsage<Obj extends Record<string, unknown>>(obj: Obj, o
   return new Proxy(obj, {
     get(_, prop) {
       warnIfInternal(prop, objName)
-      // @ts-ignore Seems to be TypeScript bug
-      return Reflect.get(...arguments)
+      return obj[prop as keyof Obj]
     }
   })
 }
