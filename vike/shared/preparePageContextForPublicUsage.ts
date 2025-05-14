@@ -1,12 +1,14 @@
 export { preparePageContextForPublicUsage }
+export { assertPropertyGetters }
 export type { PageContextPrepareMinimum }
 
-import { assert, assertWarning, compareString, getProxyForPublicUsage, objectAssign } from './utils.js'
+import { assert, assertWarning, compareString, isPropertyGetter, objectAssign } from './utils.js'
 import { addIs404ToPageProps } from './addIs404ToPageProps.js'
 import {
   type GlobalContextPrepareMinimum,
   prepareGlobalContextForPublicUsage
 } from './prepareGlobalContextForPublicUsage.js'
+import { getProxyForPublicUsage } from './getProxyForPublicUsage.js'
 
 type PageContextPrepareMinimum = {
   _isOriginalObject: true
@@ -53,4 +55,33 @@ function sortPageContext(pageContext: Record<string, unknown>): void {
   for (const key of Object.keys(pageContext)) delete pageContext[key]
   descriptors = Object.fromEntries(Object.entries(descriptors).sort(([key1], [key2]) => compareString(key1, key2)))
   Object.defineProperties(pageContext, descriptors)
+}
+
+function assertPropertyGetters(pageContext: Record<string, unknown>) {
+  /*
+  If the isPropertyGetter() assertions fail then it's most likely because Object.assign() was used instead of `objectAssign()`:
+  ```js
+  const PageContextUrlComputed = getPageContextUrlComputed(pageContext)
+
+  // ❌ Breaks the property descriptors/getters of pageContext defined by getPageContextUrlComputed() such as pageContext.urlPathname
+  Object.assign(pageContext, pageContextUrlComputed)
+
+  // ❌ Also breaks property descriptors/getters
+  const pageContext = { ...pageContextUrlComputed }
+
+  // ✅ Preserves property descriptors/getters (see objectAssign() implementation)
+  objectAssign(pageContext, pageContextUrlComputed)
+  ```
+  */
+  ;[
+    'urlPathname',
+    // TODO/v1-release: remove
+    'urlParsed',
+    // TODO/v1-release: remove
+    'url',
+    // TODO/v1-release: remove
+    'pageExports'
+  ].forEach((prop) => {
+    if (pageContext.prop) assert(isPropertyGetter(pageContext, prop))
+  })
 }

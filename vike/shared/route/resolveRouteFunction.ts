@@ -3,7 +3,7 @@ export { assertRouteParams }
 export { assertSyncRouting }
 export { warnDeprecatedAllowKey }
 
-import { assertPageContextUrls, PageContextUrlInternal } from '../getPageContextUrlComputed.js'
+import type { PageContextUrlInternal } from '../getPageContextUrlComputed.js'
 import { execHookSync } from '../hooks/execHook.js'
 import { preparePageContextForPublicUsage } from '../preparePageContextForPublicUsage.js'
 import { assert, assertUsage, assertWarning, hasProp, isPlainObject, isPromise } from './utils.js'
@@ -17,7 +17,6 @@ async function resolveRouteFunction(
   precedence: number | null
   routeParams: Record<string, string>
 }> {
-  assertPageContextUrls(pageContext)
   let { hookReturn: result } = execHookSync(
     {
       hookFn: routeFunction,

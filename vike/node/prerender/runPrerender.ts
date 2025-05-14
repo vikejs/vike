@@ -23,7 +23,6 @@ import {
   PLimit,
   isArray,
   onSetupPrerender,
-  getProxyForPublicUsage,
   PROJECT_VERSION,
   preservePropertyGetters,
   changeEnumerable
@@ -70,6 +69,7 @@ import { isVikeCli } from '../cli/context.js'
 import { isViteCliCall } from '../plugin/shared/isViteCliCall.js'
 import { getVikeConfigInternal } from '../plugin/plugins/commonConfig.js'
 import fs from 'node:fs'
+import { getProxyForPublicUsage } from '../../shared/getProxyForPublicUsage.js'
 const docLink = 'https://vike.dev/i18n#pre-rendering'
 
 type HtmlFile = {

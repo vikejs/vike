@@ -31,7 +31,8 @@ import {
   makeLast,
   isBrowser,
   isScriptFile,
-  isTemplateFile
+  isTemplateFile,
+  objectDefineProperty
 } from '../utils.js'
 import pc from '@brillout/picocolors'
 import type { ConfigResolved } from './Config/PageContextConfig.js'
@@ -259,7 +260,7 @@ function getUserFriendlyConfigsPageLazy(
     }
   }
 
-  const pageExports = createObjectWithDeprecationWarning()
+  const pageExports: Record<string, unknown> = {}
   const exports: Record<string, unknown> = {}
   Object.entries(exportsAll).forEach(([exportName, values]) => {
     values.forEach(({ exportValue, _fileType, _isFromDefaultExport }) => {
@@ -286,9 +287,24 @@ function getUserFriendlyConfigsPageLazy(
     // TODO/eventually: deprecate/remove every prop below
     configEntries,
     exports,
-    exportsAll,
-    pageExports
+    exportsAll
   }
+
+  // TODO/v1-release: remove
+  objectDefineProperty(pageContextExports, 'pageExports', {
+    get: () => {
+      // We only show the warning in Node.js because when using Client Routing Vue integration uses `Object.assign(pageContextReactive, pageContext)` which will wrongully trigger the warning. There is no cross-browser way to catch whether the property accessor was initiated by an `Object.assign()` call.
+      if (!isBrowser()) {
+        assertWarning(false, 'pageContext.pageExports is outdated, use pageContext.exports instead', {
+          onlyOnce: true,
+          showStackTrace: true
+        })
+      }
+      return pageExports
+    },
+    enumerable: false
+  })
+
   return pageContextExports
 }
 
@@ -433,24 +449,4 @@ function getExportValues(pageFile: PageFile) {
   })
 
   return exportValues
-}
-
-// TODO/v1-release: remove
-function createObjectWithDeprecationWarning(): Record<string, unknown> {
-  return new Proxy(
-    {},
-    {
-      get(...args) {
-        // We only show the warning in Node.js because when using Client Routing Vue integration uses `Object.assign(pageContextReactive, pageContext)` which will wrongully trigger the warning. There is no cross-browser way to catch whether the property accessor was initiated by an `Object.assign()` call.
-        if (!isBrowser()) {
-          assertWarning(
-            false,
-            '`pageContext.pageExports` is outdated. Use `pageContext.exports` instead, see https://vike.dev/exports',
-            { onlyOnce: true, showStackTrace: true }
-          )
-        }
-        return Reflect.get(...args)
-      }
-    }
-  )
 }

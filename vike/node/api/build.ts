@@ -3,10 +3,9 @@ export { build }
 import { prepareViteApiCall } from './prepareViteApiCall.js'
 import { build as buildVite, version, createBuilder } from 'vite'
 import type { APIOptions } from './types.js'
-import assert from 'assert'
 import { isVikeCli } from '../cli/context.js'
 import { isPrerendering } from '../prerender/context.js'
-import { assertVersion } from './utils.js'
+import { assert, assertVersion } from './utils.js'
 
 /**
  * Programmatically trigger `$ vike build`

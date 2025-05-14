@@ -1,10 +1,13 @@
 export { preparePageContextForPublicUsageServer }
 export type { PageContextForPublicUsageServer }
 
-import { assertPageContextUrls, type PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
+import type { PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
 import type { PageConfigUserFriendlyOld } from '../../../shared/page-configs/getUserFriendlyConfigs.js'
 import type { PageContextInternalServer } from '../../../shared/types.js'
-import { preparePageContextForPublicUsage } from '../../../shared/preparePageContextForPublicUsage.js'
+import {
+  assertPropertyGetters,
+  preparePageContextForPublicUsage
+} from '../../../shared/preparePageContextForPublicUsage.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 
 type PageContextForPublicUsageServer = PageContextInternalServer &
@@ -26,7 +29,7 @@ function preparePageContextForPublicUsageServer<PageContext extends PageContextF
   pageContext: PageContext
 ) {
   // TODO/next-major-release: after we remove supportVueReactiviy() we can call this later inside the agnostic preparePageContextForPublicUsage()
-  assertPageContextUrls(pageContext)
+  assertPropertyGetters(pageContext)
   preparePageContextForPublicUsage(pageContext)
   return pageContext
 }
