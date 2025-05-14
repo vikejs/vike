@@ -229,5 +229,5 @@ function assertPageContextUrls(pageContext: Record<string, unknown>) {
   assertPropertyGetter(pageContext, 'url')
 }
 function assertPropertyGetter(pageContext: Record<string, unknown>, prop: string) {
-  if (pageContext.prop) assert(isPropertyGetter(pageContext, 'urlPathname'))
+  if (pageContext.prop) assert(isPropertyGetter(pageContext, prop))
 }
