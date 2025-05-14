@@ -4,9 +4,9 @@ export type { PageContextForPublicUsageClient }
 import { preparePageContextForPublicUsageClientShared } from '../shared/preparePageContextForPublicUsageClientShared.js'
 import type { PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
 import type { PageContextInternalClient_ServerRouting } from '../../shared/types.js'
-import type { PageContextMinimum } from '../../shared/preparePageContextForPublicUsage.js'
+import type { PageContextPrepareMinimum } from '../../shared/preparePageContextForPublicUsage.js'
 
-type PageContextForPublicUsageClient = PageContextMinimum &
+type PageContextForPublicUsageClient = PageContextPrepareMinimum &
   PageContextInternalClient_ServerRouting &
   PageConfigUserFriendlyOld
 

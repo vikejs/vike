@@ -16,7 +16,10 @@ import pc from '@brillout/picocolors'
 import type { PageContextForRoute, PageContextFromRoute } from './index.js'
 import type { Hook } from '../hooks/getHook.js'
 import { execHookSync } from '../hooks/execHook.js'
-import { type PageContextMinimum, preparePageContextForPublicUsage } from '../preparePageContextForPublicUsage.js'
+import {
+  type PageContextPrepareMinimum,
+  preparePageContextForPublicUsage
+} from '../preparePageContextForPublicUsage.js'
 
 async function executeOnBeforeRouteHook(
   pageContext: PageContextForRoute
@@ -55,7 +58,7 @@ async function executeOnBeforeRouteHook(
 
 async function getPageContextFromHook(
   onBeforeRouteHook: Hook,
-  pageContext: PageContextMinimum & {
+  pageContext: PageContextPrepareMinimum & {
     urlOriginal: string
     _allPageIds: string[]
   }

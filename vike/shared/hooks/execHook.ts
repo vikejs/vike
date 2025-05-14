@@ -23,11 +23,14 @@ import type { HookName, HookNameGlobal } from '../page-configs/Config.js'
 import type { PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
 import type { PageContextForPublicUsageServer } from '../../node/runtime/renderPage/preparePageContextForPublicUsageServer.js'
 import type { PageContextForPublicUsageClientShared } from '../../client/shared/preparePageContextForPublicUsageClientShared.js'
-import { type PageContextMinimum, preparePageContextForPublicUsage } from '../preparePageContextForPublicUsage.js'
+import {
+  type PageContextPrepareMinimum,
+  preparePageContextForPublicUsage
+} from '../preparePageContextForPublicUsage.js'
 import type { GlobalContextPrepareMinimum } from '../prepareGlobalContextForPublicUsage.js'
 const globalObject = getGlobalObject('utils/execHook.ts', {
   userHookErrors: new WeakMap<object, HookLoc>(),
-  pageContext: null as null | PageContextMinimum
+  pageContext: null as null | PageContextPrepareMinimum
 })
 
 type PageContextExecuteHook = PageConfigUserFriendlyOld & PageContextForPublicUsage
@@ -81,7 +84,7 @@ async function execHookErrorHandling<PageContext extends PageContextExecuteHook>
   return execHooksErrorHandling(hooks, pageContext, preparePageContextForPublicUsage)
 }
 
-async function execHooksErrorHandling<PageContext extends PageContextMinimum>(
+async function execHooksErrorHandling<PageContext extends PageContextPrepareMinimum>(
   hooks: Hook[],
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext
@@ -111,10 +114,10 @@ async function execHooksErrorHandling<PageContext extends PageContextMinimum>(
   }
 }
 
-async function execHookGlobal<HookArg extends PageContextMinimum | GlobalContextPrepareMinimum>(
+async function execHookGlobal<HookArg extends PageContextPrepareMinimum | GlobalContextPrepareMinimum>(
   hookName: HookNameGlobal,
   pageConfigGlobal: PageConfigGlobalRuntime,
-  pageContext: PageContextMinimum | null,
+  pageContext: PageContextPrepareMinimum | null,
   hookArg: HookArg,
   prepareForPublicUsage: (hookArg: HookArg) => HookArg
 ) {
@@ -143,7 +146,7 @@ async function execHookWithoutPageContext<HookReturn>(
 function execHookAsync<HookReturn>(
   hookFnCaller: () => HookReturn,
   hook: Omit<Hook, 'hookFn'>,
-  pageContextForPublicUsage: null | PageContextMinimum
+  pageContextForPublicUsage: null | PageContextPrepareMinimum
 ): Promise<HookReturn> {
   const {
     hookName,
@@ -205,7 +208,7 @@ function execHookAsync<HookReturn>(
   return promise
 }
 
-function execHookSync<PageContext extends PageContextMinimum>(
+function execHookSync<PageContext extends PageContextPrepareMinimum>(
   hook: Omit<Hook, 'hookTimeout'>,
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext
@@ -236,7 +239,7 @@ function getPageContext<PageContext = PageContextClient | PageContextServer>(): 
  *
  * https://vike.dev/getPageContext
  */
-function providePageContext(pageContext: null | PageContextMinimum) {
+function providePageContext(pageContext: null | PageContextPrepareMinimum) {
   globalObject.pageContext = pageContext
   // Promise.resolve() is quicker than process.nextTick() and setImmediate()
   // https://stackoverflow.com/questions/67949576/process-nexttick-before-promise-resolve-then
