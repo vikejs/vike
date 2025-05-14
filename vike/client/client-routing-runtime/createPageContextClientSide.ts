@@ -1,11 +1,11 @@
 export { createPageContextClientSide }
 export type PageContextCreated = Awaited<ReturnType<typeof createPageContextClientSide>>
 
-import { createPageContextShared } from '../../shared/createPageContextShared.js'
+import { createPageContextObject, createPageContextShared } from '../../shared/createPageContextShared.js'
 import { getPageContextUrlComputed } from '../../shared/getPageContextUrlComputed.js'
 import { getBaseServer } from './getBaseServer.js'
 import { getGlobalContextClientInternal } from './globalContext.js'
-import { assert, augmentType, changeEnumerable, isBaseServer, objectAssign } from './utils.js'
+import { assert, augmentType, isBaseServer, objectAssign } from './utils.js'
 
 async function createPageContextClientSide(urlOriginal: string) {
   const globalContext = await getGlobalContextClientInternal()
@@ -13,9 +13,8 @@ async function createPageContextClientSide(urlOriginal: string) {
   const baseServer = getBaseServer()
   assert(isBaseServer(baseServer))
 
-  const pageContextCreated = {
-    _isOriginalObject: true as const,
-    isPageContext: true as const,
+  const pageContextCreated = createPageContextObject()
+  objectAssign(pageContextCreated, {
     isClientSide: true as const,
     isPrerendering: false as const,
     urlOriginal,
@@ -29,8 +28,7 @@ async function createPageContextClientSide(urlOriginal: string) {
     _urlHandler: null,
     _urlRewrite: null as null | string,
     _baseServer: baseServer
-  }
-  changeEnumerable(pageContextCreated, '_isOriginalObject', false)
+  })
   const pageContextUrlComputed = getPageContextUrlComputed(pageContextCreated)
   objectAssign(pageContextCreated, pageContextUrlComputed)
 

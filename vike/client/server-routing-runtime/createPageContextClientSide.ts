@@ -1,11 +1,11 @@
 export { createPageContextClientSide }
 
-import { assertUsage, augmentType, changeEnumerable, objectAssign } from './utils.js'
+import { assertUsage, augmentType, objectAssign } from './utils.js'
 import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtml.js'
 import { loadPageConfigsLazyClientSide } from '../shared/loadPageConfigsLazyClientSide.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 
-import { createPageContextShared } from '../../shared/createPageContextShared.js'
+import { createPageContextObject, createPageContextShared } from '../../shared/createPageContextShared.js'
 import { getGlobalContextClientInternal } from './globalContext.js'
 
 const urlFirst = getCurrentUrl({ withoutHash: true })
@@ -13,9 +13,8 @@ const urlFirst = getCurrentUrl({ withoutHash: true })
 async function createPageContextClientSide() {
   const globalContext = await getGlobalContextClientInternal()
 
-  const pageContextCreated = {
-    _isOriginalObject: true as const,
-    isPageContext: true as const,
+  const pageContextCreated = createPageContextObject()
+  objectAssign(pageContextCreated, {
     isClientSide: true as const,
     isPrerendering: false as const,
     isHydration: true as const,
@@ -26,8 +25,7 @@ async function createPageContextClientSide() {
     _allPageIds: globalContext._allPageIds,
     isBackwardNavigation: null,
     _hasPageContextFromServer: true as const
-  }
-  changeEnumerable(pageContextCreated, '_isOriginalObject', false)
+  })
   objectAssign(pageContextCreated, getPageContextSerializedInHtml())
 
   // Sets pageContext.config to global configs
