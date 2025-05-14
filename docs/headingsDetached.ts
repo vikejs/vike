@@ -643,6 +643,10 @@ function api(): HeadingDetachedDefinition[] {
       url: '/reactStrictMode'
     },
     {
+      title: '`onPageTransitionEnd()` hook',
+      url: '/onPageTransitionEnd'
+    },
+    {
       title: '`onBeforeRenderClient()` hook',
       url: '/onBeforeRenderClient'
     },

@@ -442,12 +442,6 @@ const headings = [
   },
   {
     level: 2,
-    title: '`onPageTransitionEnd()` hook',
-    titleInNav: '`onPageTransitionEnd()`',
-    url: '/onPageTransitionEnd'
-  },
-  {
-    level: 2,
     title: '`onCreatePageContext()` hook',
     titleInNav: '`onCreatePageContext()`',
     url: '/onCreatePageContext'

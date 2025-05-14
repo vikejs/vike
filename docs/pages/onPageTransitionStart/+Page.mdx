@@ -1,41 +1,33 @@
 import { Link } from '@brillout/docpress'
 import { HookTypeScriptHints, UiFrameworkExtension } from '../../components'
 
-The `onPageTransitionStart()` hook, together with <Link href="/onPageTransitionEnd">`onPageTransitionEnd()`</Link>, enables you to implement page transition animations.
+The `onPageTransitionStart()` hook, together with `onPageTransitionEnd()`, enables you to implement page transition animations.
 
-```js
-// /pages/+onPageTransitionStart.js
+```ts
+// /pages/+onPageTransitionStart.ts
 // Environment: browser
 
-export { onPageTransitionStart }
+import type { PageContextClient } from 'vike/types'
 
-// Create custom page transition animations
-async function onPageTransitionStart(pageContext) {
+export async function onPageTransitionStart(pageContext: Partial<PageContextClient>) {
   console.log('Page transition start')
   console.log('Is backwards navigation?', pageContext.isBackwardNavigation)
   document.body.classList.add('page-transition')
 }
 ```
 
-
-## TypeScript
-
 ```ts
-// /pages/+onPageTransitionStart.ts
+// /pages/+onPageTransitionEnd.ts
 // Environment: browser
 
-export { onPageTransitionStart }
+import type { PageContextClient } from 'vike/types'
 
-import type { OnPageTransitionStartAsync } from 'vike/types'
-
-const onPageTransitionStart: OnPageTransitionStartAsync = async (
-  pageContext
-): ReturnType<OnPageTransitionStartAsync> => {
-  // ...
+export async function onPageTransitionEnd(pageContext: PageContextClient) {
+  console.log('Page transition end')
+  console.log('Is backwards navigation?', pageContext.isBackwardNavigation)
+  document.body.classList.remove('page-transition')
 }
 ```
-
-<HookTypeScriptHints hookTypeName="OnPageTransitionStartAsync" />
 
 
 ## Without `vike-{react,vue,solid}`
@@ -45,7 +37,7 @@ If you don't use a <UiFrameworkExtension />, then make sure to use <Link href="/
 
 ## See also
 
-- <Link href="/onPageTransitionEnd" />
+- <Link href="/pageContext#isBackwardNavigation" />
 - <Link href="/onHydrationEnd" />
 - <Link href="/onAfterRenderClient"/>
 - <Link href="/hooks" />

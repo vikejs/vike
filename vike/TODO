@@ -71,6 +71,7 @@ v0.5 breaking changes:
 - Make cumulative by default:
  - +onHydrationEnd
  - +guard
+ - +onPageTransitionStart ?
  - more/most?
 - Move `dist/assets.json` to `dist/server/assets.json`
   - Or move it `dist/server/assets-client.json` to?
