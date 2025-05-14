@@ -24,6 +24,7 @@ import type { PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
 import type { PageContextForPublicUsageServer } from '../../node/runtime/renderPage/preparePageContextForPublicUsageServer.js'
 import type { PageContextForPublicUsageClientShared } from '../../client/shared/preparePageContextForPublicUsageClientShared.js'
 import { type PageContextMinimum, preparePageContextForPublicUsage } from '../preparePageContextForPublicUsage.js'
+import type { GlobalContextPrepareMinimum } from '../prepareGlobalContextForPublicUsage.js'
 const globalObject = getGlobalObject('utils/execHook.ts', {
   userHookErrors: new WeakMap<object, HookLoc>(),
   pageContext: null as null | PageContextMinimum
@@ -110,7 +111,7 @@ async function execHooksErrorHandling<PageContext extends PageContextMinimum>(
   }
 }
 
-async function execHookGlobalCumulative<HookArg extends Record<string, unknown>>(
+async function execHookGlobalCumulative<HookArg extends PageContextMinimum | GlobalContextPrepareMinimum>(
   hookName: HookNameGlobal,
   pageConfigGlobal: PageConfigGlobalRuntime,
   pageContext: PageContextMinimum | null,
@@ -225,7 +226,6 @@ function isNotDisabled(timeout: false | number): timeout is number {
  * https://vike.dev/getPageContext
  */
 function getPageContext<PageContext = PageContextClient | PageContextServer>(): null | PageContext {
-  // TODO/now: prepareForPublicUsage
   const { pageContext } = globalObject
   if (!pageContext) return pageContext
   const pageContextForPublicUsage = preparePageContextForPublicUsage(pageContext)

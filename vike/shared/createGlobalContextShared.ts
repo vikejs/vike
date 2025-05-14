@@ -71,6 +71,7 @@ function createGlobalContextBase(virtualFileExports: unknown) {
      * https://vike.dev/globalContext#typescript
      */
     isGlobalContext: true as const,
+    _isOriginalObject: true as const,
     _virtualFileExports: virtualFileExports,
     _pageFilesAll: pageFilesAll,
     _pageConfigs: pageConfigs,
