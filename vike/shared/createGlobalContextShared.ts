@@ -47,7 +47,7 @@ async function createGlobalContextShared<GlobalContextAddendum extends object>(
   } else {
     // Singleton: ensure all `globalContext` user-land references are preserved & updated.
     // We don't use objectReplace() in order to keep user-land properties.
-    objectAssign(globalObject.globalContext, globalContext)
+    objectAssign(globalObject.globalContext, globalContext, true)
   }
 
   return globalObject.globalContext as typeof globalContext

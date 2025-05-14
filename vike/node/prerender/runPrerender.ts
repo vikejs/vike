@@ -35,7 +35,6 @@ import type { PageFile } from '../../shared/getPageFiles.js'
 import {
   getGlobalContextServerInternal,
   type GlobalContextServerInternal,
-  type GlobalContextServer,
   initGlobalContext_runPrerender,
   setGlobalContext_isPrerendering
 } from '../runtime/globalContext.js'
@@ -267,7 +266,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   await warnMissingPages(prerenderContext._prerenderedPageContexts, globalContext, doNotPrerenderList, partial)
 
   const prerenderContextPublic = preparePrerenderContextForPublicUsage(prerenderContext)
-  objectAssign(vike.prerenderContext, prerenderContextPublic)
+  objectAssign(vike.prerenderContext, prerenderContextPublic, true)
 
   if (prerenderConfigGlobal.isPrerenderingEnabledForAllPages && !prerenderConfigGlobal.keepDistServer) {
     fs.rmSync(outDirServer, { recursive: true })
