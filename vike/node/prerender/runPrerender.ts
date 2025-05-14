@@ -1204,10 +1204,6 @@ function preparePrerenderContextForPublicUsage(prerenderContext: PrerenderContex
     changeEnumerable(pageContext, '_isOriginalObject', true)
   })
 
-  const prerenderContextPublic = makePublic(prerenderContext)
-  return prerenderContextPublic
-}
-function makePublic(prerenderContext: PrerenderContext): PrerenderContextPublic {
   const prerenderContextPublic = getProxyForPublicUsage(prerenderContext, 'prerenderContext')
   return prerenderContextPublic
 }
