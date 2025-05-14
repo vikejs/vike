@@ -25,7 +25,8 @@ import {
   onSetupPrerender,
   getProxyForPublicUsage,
   PROJECT_VERSION,
-  preservePropertyGetters
+  preservePropertyGetters,
+  changeEnumerable
 } from './utils.js'
 import { prerenderPage } from '../runtime/renderPage/renderPageAlreadyRouted.js'
 import { createPageContextServerSide } from '../runtime/renderPage/createPageContextServerSide.js'
@@ -69,7 +70,6 @@ import { isVikeCli } from '../cli/context.js'
 import { isViteCliCall } from '../plugin/shared/isViteCliCall.js'
 import { getVikeConfigInternal } from '../plugin/plugins/commonConfig.js'
 import fs from 'node:fs'
-import { changeEnumerable } from '../runtime/utils.js'
 const docLink = 'https://vike.dev/i18n#pre-rendering'
 
 type HtmlFile = {
@@ -1198,6 +1198,8 @@ function preparePrerenderContextForPublicUsage(prerenderContext: PrerenderContex
     })
   }
 
+  // Required because of https://vike.dev/i18n#pre-rendering
+  // - Thus, we have to let users access the original pageContext object => we cannot use ES proxies and we cannot use preparePageContextForPublicUsage()
   prerenderContext.pageContexts.forEach((pageContext) => {
     changeEnumerable(pageContext, '_isOriginalObject', true)
   })
