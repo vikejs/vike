@@ -1,7 +1,7 @@
 export { preparePageContextForPublicUsage }
 export type { PageContextPrepareMinimum }
 
-import { assert, assertWarning, compareString, objectAssign } from './utils.js'
+import { assert, assertWarning, compareString, getProxyForPublicUsage, objectAssign } from './utils.js'
 import { addIs404ToPageProps } from './addIs404ToPageProps.js'
 import {
   type GlobalContextPrepareMinimum,
@@ -43,7 +43,8 @@ function preparePageContextForPublicUsage(pageContext: PageContextPrepareMinimum
   // For a more readable `console.log(pageContext)` output
   sortPageContext(pageContext)
 
-  return pageContext
+  const pageContextPublic = getProxyForPublicUsage(pageContext, 'pageContext')
+  return pageContextPublic
 }
 
 // Sort `pageContext` keys alphabetically, in order to make reading the `console.log(pageContext)` output easier
