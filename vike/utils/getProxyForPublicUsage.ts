@@ -17,7 +17,7 @@ function getProxyForPublicUsage<Obj extends Record<string, unknown>>(obj: Obj, o
   return new Proxy(obj, {
     get(_, prop) {
       const propStr = String(prop)
-      warnIfInternal(propStr, objName)
+      onInternalProp(propStr, objName)
       const val = obj[prop as keyof Obj]
       onNotSerializable(propStr, val, objName)
       return val
@@ -35,7 +35,7 @@ function onNotSerializable(propStr: string, val: unknown, objName: string) {
   )
 }
 
-function warnIfInternal(propStr: string, objName: string) {
+function onInternalProp(propStr: string, objName: string) {
   // - We must skip it in the client-side because of the reactivity mechanism of UI frameworks like Solid.
   // - TO-DO/eventually: use import.meta.CLIENT instead of isBrowser()
   //   - Where import.meta.CLIENT is defined by Vike
