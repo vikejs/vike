@@ -1,6 +1,5 @@
 import { parseUrl } from './parseUrl.js'
-import { expect, describe, it } from 'vitest'
-import assert from 'assert'
+import { assert, expect, describe, it } from 'vitest'
 
 describe('parseUrl', () => {
   it('basics', () => {
