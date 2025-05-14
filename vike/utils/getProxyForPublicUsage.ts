@@ -27,6 +27,8 @@ function warnIfInternal(prop: string | symbol, objName: string) {
   //   - Using import.meta.env.CLIENT (note `.env.`) doesn't seem possible: https://github.com/brillout/playground_node_import.meta.env
   //     - If Rolldown Vite + Rolldowns always transpiles node_modules/ then we can simply use import.meta.env.SSR
   if (isBrowser()) return
+  // TODO/now remove this and only warn on built-in access instead
+  if (prop === '_configFromHook') return
 
   const propStr = String(prop)
   if (propStr.startsWith('_')) {
