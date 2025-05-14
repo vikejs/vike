@@ -1,5 +1,6 @@
 export { getProxyForPublicUsage }
 
+import { NOT_SERIALIZABLE } from '../shared/NOT_SERIALIZABLE.js'
 // We use a proxy instead of property getters.
 // - The issue with property getters is that they can't be `writable: true` but we do want the user to be able to modify the value of internal properties.
 //   ```console
@@ -7,20 +8,34 @@ export { getProxyForPublicUsage }
 //   ```
 // - Previous implementation using property getters: https://github.com/vikejs/vike/blob/main/vike/utils/makePublicCopy.ts
 
-import { assertWarning } from './assert.js'
+import { assert, assertUsage, assertWarning } from './assert.js'
+import { getPropAccessNotation } from './getPropAccessNotation.js'
 import { isBrowser } from './isBrowser.js'
 
 // Show warning when user is accessing internal `_` properties.
 function getProxyForPublicUsage<Obj extends Record<string, unknown>>(obj: Obj, objName: string): Obj {
   return new Proxy(obj, {
     get(_, prop) {
-      warnIfInternal(prop, objName)
-      return obj[prop as keyof Obj]
+      const propStr = String(prop)
+      warnIfInternal(propStr, objName)
+      const val = obj[prop as keyof Obj]
+      onNotSerializable(propStr, val, objName)
+      return val
     }
   })
 }
 
-function warnIfInternal(prop: string | symbol, objName: string) {
+function onNotSerializable(propStr: string, val: unknown, objName: string) {
+  if (val !== NOT_SERIALIZABLE) return
+  const propName = getPropAccessNotation(propStr)
+  assert(isBrowser())
+  assertUsage(
+    false,
+    `Can't access ${objName}${propName} on the client side. Because it can't be serialized, see server logs.`
+  )
+}
+
+function warnIfInternal(propStr: string, objName: string) {
   // - We must skip it in the client-side because of the reactivity mechanism of UI frameworks like Solid.
   // - TO-DO/eventually: use import.meta.CLIENT instead of isBrowser()
   //   - Where import.meta.CLIENT is defined by Vike
@@ -28,9 +43,8 @@ function warnIfInternal(prop: string | symbol, objName: string) {
   //     - If Rolldown Vite + Rolldowns always transpiles node_modules/ then we can simply use import.meta.env.SSR
   if (isBrowser()) return
   // TODO/now remove this and only warn on built-in access instead
-  if (prop === '_configFromHook') return
+  if (propStr === '_configFromHook') return
 
-  const propStr = String(prop)
   if (propStr.startsWith('_')) {
     assertWarning(
       false,

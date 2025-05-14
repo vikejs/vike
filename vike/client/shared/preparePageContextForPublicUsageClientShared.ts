@@ -4,7 +4,6 @@ export type { PageContextForPublicUsageClientShared }
 
 import { objectAssign } from '../server-routing-runtime/utils.js'
 import type { PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
-import { getPageContextProxyForUser } from './getPageContextProxyForUser.js'
 import {
   assertPropertyGetters,
   type PageContextPrepareMinimum,
@@ -40,8 +39,7 @@ function preparePageContextForPublicUsageClientMinimal<PageContext extends PageC
   pageContext: PageContext
 ) {
   const pageContextPublic = preparePageContextForPublicUsage(pageContext)
-  const pageContextProxy = getPageContextProxyForUser(pageContextPublic)
-  return pageContextProxy
+  return pageContextPublic
 }
 
 // With Vue + Cient Routing, the `pageContext` is made reactive:
