@@ -8,7 +8,6 @@ import {
   prepareGlobalContextForPublicUsage
 } from './prepareGlobalContextForPublicUsage.js'
 
-// TODO/now rename to PageContextPrepareMinimum
 type PageContextPrepareMinimum = {
   _isOriginalObject: true
   isPageContext: true
