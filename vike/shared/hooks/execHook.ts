@@ -4,7 +4,7 @@ export { execHookSingleWithReturn }
 export { execHookErrorHandling }
 export { execHooksErrorHandling }
 export { execHookWithoutPageContext }
-export { execHookGlobalCumulative }
+export { execHookGlobal }
 export { execHookSync }
 export { getPageContext }
 export { providePageContext }
@@ -111,7 +111,7 @@ async function execHooksErrorHandling<PageContext extends PageContextMinimum>(
   }
 }
 
-async function execHookGlobalCumulative<HookArg extends PageContextMinimum | GlobalContextPrepareMinimum>(
+async function execHookGlobal<HookArg extends PageContextMinimum | GlobalContextPrepareMinimum>(
   hookName: HookNameGlobal,
   pageConfigGlobal: PageConfigGlobalRuntime,
   pageContext: PageContextMinimum | null,
