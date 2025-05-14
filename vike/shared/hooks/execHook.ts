@@ -4,7 +4,7 @@ export { execHookSingleWithReturn }
 export { execHookErrorHandling }
 export { execHooksErrorHandling }
 export { execHookWithoutPageContext }
-export { execHookGlobalCumulative }
+export { execHookGlobal }
 export { execHookSync }
 export { getPageContext }
 export { providePageContext }
@@ -23,9 +23,14 @@ import type { HookName, HookNameGlobal } from '../page-configs/Config.js'
 import type { PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
 import type { PageContextForPublicUsageServer } from '../../node/runtime/renderPage/preparePageContextForPublicUsageServer.js'
 import type { PageContextForPublicUsageClientShared } from '../../client/shared/preparePageContextForPublicUsageClientShared.js'
+import {
+  type PageContextPrepareMinimum,
+  preparePageContextForPublicUsage
+} from '../preparePageContextForPublicUsage.js'
+import type { GlobalContextPrepareMinimum } from '../prepareGlobalContextForPublicUsage.js'
 const globalObject = getGlobalObject('utils/execHook.ts', {
   userHookErrors: new WeakMap<object, HookLoc>(),
-  pageContext: null as PageContextUnknown
+  pageContext: null as null | PageContextPrepareMinimum
 })
 
 type PageContextExecuteHook = PageConfigUserFriendlyOld & PageContextForPublicUsage
@@ -79,7 +84,7 @@ async function execHookErrorHandling<PageContext extends PageContextExecuteHook>
   return execHooksErrorHandling(hooks, pageContext, preparePageContextForPublicUsage)
 }
 
-async function execHooksErrorHandling<PageContext extends Record<string, unknown>>(
+async function execHooksErrorHandling<PageContext extends PageContextPrepareMinimum>(
   hooks: Hook[],
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext
@@ -109,10 +114,10 @@ async function execHooksErrorHandling<PageContext extends Record<string, unknown
   }
 }
 
-async function execHookGlobalCumulative<HookArg extends Record<string, unknown>>(
+async function execHookGlobal<HookArg extends PageContextPrepareMinimum | GlobalContextPrepareMinimum>(
   hookName: HookNameGlobal,
   pageConfigGlobal: PageConfigGlobalRuntime,
-  pageContext: PageContextUnknown | null,
+  pageContext: PageContextPrepareMinimum | null,
   hookArg: HookArg,
   prepareForPublicUsage: (hookArg: HookArg) => HookArg
 ) {
@@ -124,8 +129,6 @@ async function execHookGlobalCumulative<HookArg extends Record<string, unknown>>
     })
   )
 }
-
-type PageContextUnknown = null | Record<string, unknown>
 
 function isUserHookError(err: unknown): false | HookLoc {
   if (!isObject(err)) return false
@@ -143,7 +146,7 @@ async function execHookWithoutPageContext<HookReturn>(
 function execHookAsync<HookReturn>(
   hookFnCaller: () => HookReturn,
   hook: Omit<Hook, 'hookFn'>,
-  pageContextForPublicUsage: PageContextUnknown
+  pageContextForPublicUsage: null | PageContextPrepareMinimum
 ): Promise<HookReturn> {
   const {
     hookName,
@@ -205,7 +208,7 @@ function execHookAsync<HookReturn>(
   return promise
 }
 
-function execHookSync<PageContext extends Record<string, unknown>>(
+function execHookSync<PageContext extends PageContextPrepareMinimum>(
   hook: Omit<Hook, 'hookTimeout'>,
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext
@@ -226,15 +229,17 @@ function isNotDisabled(timeout: false | number): timeout is number {
  * https://vike.dev/getPageContext
  */
 function getPageContext<PageContext = PageContextClient | PageContextServer>(): null | PageContext {
-  // TODO/now: prepareForPublicUsage
-  return globalObject.pageContext as any
+  const { pageContext } = globalObject
+  if (!pageContext) return pageContext
+  const pageContextForPublicUsage = preparePageContextForPublicUsage(pageContext)
+  return pageContextForPublicUsage
 }
 /**
  * Provide `pageContext` for universal hooks.
  *
  * https://vike.dev/getPageContext
  */
-function providePageContext(pageContext: PageContextUnknown) {
+function providePageContext(pageContext: null | PageContextPrepareMinimum) {
   globalObject.pageContext = pageContext
   // Promise.resolve() is quicker than process.nextTick() and setImmediate()
   // https://stackoverflow.com/questions/67949576/process-nexttick-before-promise-resolve-then

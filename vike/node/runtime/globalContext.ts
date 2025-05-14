@@ -460,7 +460,6 @@ async function addGlobalContext(globalContext: GlobalContextShared) {
     assert(viteConfigRuntime)
     assert(!isPrerendering)
     return {
-      ...globalContext,
       ...globalContextBase,
       ...resolveBaseRuntime(viteConfigRuntime, globalContext.config),
       _isProduction: false as const,
@@ -477,7 +476,6 @@ async function addGlobalContext(globalContext: GlobalContextShared) {
     assert(buildInfo)
     assert(assetsManifest)
     const globalContextBase2 = {
-      ...globalContext,
       ...globalContextBase,
       ...resolveBaseRuntime(buildInfo.viteConfigRuntime, globalContext.config),
       _isProduction: true as const,

@@ -2,7 +2,15 @@ export { createPageContextServerSide }
 export { createPageContextServerSideWithoutGlobalContext }
 export type { PageContextCreated }
 
-import { assert, assertUsage, assertWarning, augmentType, normalizeHeaders, objectAssign } from '../utils.js'
+import {
+  assert,
+  assertUsage,
+  assertWarning,
+  augmentType,
+  changeEnumerable,
+  normalizeHeaders,
+  objectAssign
+} from '../utils.js'
 import { getPageContextUrlComputed } from '../../../shared/getPageContextUrlComputed.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { PageContextInit } from '../renderPage.js'
@@ -104,6 +112,7 @@ function createPageContext(pageContextInit: PageContextInit | null, isPrerenderi
     isClientSide: false as const,
     isPrerendering
   }
+  changeEnumerable(pageContext, '_isOriginalObject', false)
   objectAssign(pageContext, pageContextInit)
   return pageContext
 }

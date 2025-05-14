@@ -21,6 +21,8 @@ import { getHookFilePathToShowToUser } from '../page-configs/helpers.js'
 import { getConfigValueRuntime } from '../page-configs/getConfigValueRuntime.js'
 import { assert, assertUsage, checkType, isArray, isCallable, isObject } from '../utils.js'
 import pc from '@brillout/picocolors'
+import type { GlobalContextPrepareMinimum } from '../prepareGlobalContextForPublicUsage.js'
+import type { PageContextPrepareMinimum } from '../preparePageContextForPublicUsage.js'
 const globalObject = getGlobalObject<{ isPrerendering?: true }>('hooks/getHook.ts', {})
 
 type Hook = HookLoc & { hookFn: HookFn; hookTimeout: HookTimeout }
@@ -37,7 +39,7 @@ import type {FilePath} from '../page-configs/FilePath.js'
   */
   hookFilePath: string
 }
-type HookFn = (arg: object) => unknown
+type HookFn = (arg: PageContextPrepareMinimum | GlobalContextPrepareMinimum) => unknown
 type HookTimeout = {
   error: number | false
   warning: number | false

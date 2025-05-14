@@ -3,12 +3,12 @@ export { getGlobalContextSyncErrMsg }
 export type { GlobalContextShared }
 export type { GlobalContextSharedPublic }
 
-import { objectAssign, unique } from './utils.js'
+import { changeEnumerable, objectAssign, unique } from './utils.js'
 import type { PageFile } from './getPageFiles.js'
 import { parseGlobResults } from './getPageFiles/parseGlobResults.js'
 import { getUserFriendlyConfigsGlobal, getUserFriendlyConfigsPageEager } from './page-configs/getUserFriendlyConfigs.js'
 import type { PageConfigRuntime } from './page-configs/PageConfig.js'
-import { execHookGlobalCumulative } from './hooks/execHook.js'
+import { execHookGlobal } from './hooks/execHook.js'
 import { prepareGlobalContextForPublicUsage } from './prepareGlobalContextForPublicUsage.js'
 const getGlobalContextSyncErrMsg =
   "The global context isn't set yet, call getGlobalContextSync() later or use getGlobalContext() instead."
@@ -37,7 +37,7 @@ async function createGlobalContextShared<GlobalContextAddendum extends object>(
     //      - globalContext._viteDevServer.hot.send()
     //        - Send 'full-server-reload' signal whenever a onCreateGlobalContext() function is modified => we need a globalObject to track all hooks and see if one of them is new/modified.
     //        - Seems less idiomatic
-    await execHookGlobalCumulative(
+    await execHookGlobal(
       'onCreateGlobalContext',
       globalContext._pageConfigGlobal,
       null,
@@ -47,7 +47,7 @@ async function createGlobalContextShared<GlobalContextAddendum extends object>(
   } else {
     // Singleton: ensure all `globalContext` user-land references are preserved & updated.
     // We don't use objectReplace() in order to keep user-land properties.
-    objectAssign(globalObject.globalContext, globalContext)
+    objectAssign(globalObject.globalContext, globalContext, true)
   }
 
   return globalObject.globalContext as typeof globalContext
@@ -71,6 +71,7 @@ function createGlobalContextBase(virtualFileExports: unknown) {
      * https://vike.dev/globalContext#typescript
      */
     isGlobalContext: true as const,
+    _isOriginalObject: true as const,
     _virtualFileExports: virtualFileExports,
     _pageFilesAll: pageFilesAll,
     _pageConfigs: pageConfigs,
@@ -80,6 +81,7 @@ function createGlobalContextBase(virtualFileExports: unknown) {
     config: userFriendlyConfigsGlobal.config,
     pages: userFriendlyConfigsPageEager
   }
+  changeEnumerable(globalContext, '_isOriginalObject', false)
   return globalContext
 }
 

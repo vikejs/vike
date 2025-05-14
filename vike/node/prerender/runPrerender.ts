@@ -23,9 +23,10 @@ import {
   PLimit,
   isArray,
   onSetupPrerender,
-  getPublicProxy,
+  getProxyForPublicUsage,
   PROJECT_VERSION,
-  preservePropertyGetters
+  preservePropertyGetters,
+  changeEnumerable
 } from './utils.js'
 import { prerenderPage } from '../runtime/renderPage/renderPageAlreadyRouted.js'
 import { createPageContextServerSide } from '../runtime/renderPage/createPageContextServerSide.js'
@@ -35,7 +36,6 @@ import type { PageFile } from '../../shared/getPageFiles.js'
 import {
   getGlobalContextServerInternal,
   type GlobalContextServerInternal,
-  type GlobalContextServer,
   initGlobalContext_runPrerender,
   setGlobalContext_isPrerendering
 } from '../runtime/globalContext.js'
@@ -267,7 +267,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   await warnMissingPages(prerenderContext._prerenderedPageContexts, globalContext, doNotPrerenderList, partial)
 
   const prerenderContextPublic = preparePrerenderContextForPublicUsage(prerenderContext)
-  objectAssign(vike.prerenderContext, prerenderContextPublic)
+  objectAssign(vike.prerenderContext, prerenderContextPublic, true)
 
   if (prerenderConfigGlobal.isPrerenderingEnabledForAllPages && !prerenderConfigGlobal.keepDistServer) {
     fs.rmSync(outDirServer, { recursive: true })
@@ -1198,10 +1198,12 @@ function preparePrerenderContextForPublicUsage(prerenderContext: PrerenderContex
     })
   }
 
-  const prerenderContextPublic = makePublic(prerenderContext)
-  return prerenderContextPublic
-}
-function makePublic(prerenderContext: PrerenderContext): PrerenderContextPublic {
-  const prerenderContextPublic = getPublicProxy(prerenderContext, 'prerenderContext')
+  // Required because of https://vike.dev/i18n#pre-rendering
+  // - Thus, we have to let users access the original pageContext object => we cannot use ES proxies and we cannot use preparePageContextForPublicUsage()
+  prerenderContext.pageContexts.forEach((pageContext) => {
+    changeEnumerable(pageContext, '_isOriginalObject', true)
+  })
+
+  const prerenderContextPublic = getProxyForPublicUsage(prerenderContext, 'prerenderContext')
   return prerenderContextPublic
 }
