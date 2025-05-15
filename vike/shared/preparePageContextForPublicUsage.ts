@@ -8,7 +8,7 @@ import {
   type GlobalContextPrepareMinimum,
   prepareGlobalContextForPublicUsage
 } from './prepareGlobalContextForPublicUsage.js'
-import { getProxyForPublicUsageFlat } from './getProxyForPublicUsage.js'
+import { getProxyForPublicUsage } from './getProxyForPublicUsage.js'
 
 type PageContextPrepareMinimum = {
   _isOriginalObject: true
@@ -45,7 +45,7 @@ function preparePageContextForPublicUsage(pageContext: PageContextPrepareMinimum
   // For a more readable `console.log(pageContext)` output
   sortPageContext(pageContext)
 
-  const pageContextPublic = getProxyForPublicUsageFlat(
+  const pageContextPublic = getProxyForPublicUsage(
     pageContext,
     'pageContext',
     // We must skip it in the client-side because of the reactivity mechanism of UI frameworks like Solid.
@@ -57,7 +57,6 @@ function preparePageContextForPublicUsage(pageContext: PageContextPrepareMinimum
 
 // Sort `pageContext` keys alphabetically, in order to make reading the `console.log(pageContext)` output easier
 function sortPageContext(pageContext: Record<string, unknown>): void {
-  return
   let descriptors = Object.getOwnPropertyDescriptors(pageContext)
   for (const key of Object.keys(pageContext)) delete pageContext[key]
   descriptors = Object.fromEntries(Object.entries(descriptors).sort(([key1], [key2]) => compareString(key1, key2)))

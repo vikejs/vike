@@ -67,7 +67,6 @@ import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErro
 import { loadPageConfigsLazyServerSide } from './renderPage/loadPageConfigsLazyServerSide.js'
 import { resolveRedirects } from './renderPage/resolveRedirects.js'
 import type { PageContextInternalServer } from '../../shared/types.js'
-import { getProxyForMutationTracking } from '../../shared/getProxyForPublicUsage.js'
 
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
   httpRequestsCount: 0
@@ -668,6 +667,5 @@ function getPageContextInvalidVikeConfig(err: unknown, pageContextInit: PageCont
 function forkPageContext(pageContextBegin: PageContextBegin) {
   const pageContext = {}
   objectAssign(pageContext, pageContextBegin, true)
-  const pageContextWithProxy = getProxyForMutationTracking(pageContext)
-  return pageContextWithProxy
+  return pageContext
 }
