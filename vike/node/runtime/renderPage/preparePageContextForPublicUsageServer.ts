@@ -30,6 +30,6 @@ function preparePageContextForPublicUsageServer<PageContext extends PageContextF
 ) {
   // TODO/next-major-release: after we remove supportVueReactiviy() we can call this later inside the agnostic preparePageContextForPublicUsage()
   assertPropertyGetters(pageContext)
-  preparePageContextForPublicUsage(pageContext)
+  pageContext = preparePageContextForPublicUsage(pageContext)
   return pageContext
 }
