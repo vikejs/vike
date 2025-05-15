@@ -302,7 +302,8 @@ function getUserFriendlyConfigsPageLazy(
       }
       return pageExports
     },
-    enumerable: false
+    enumerable: false,
+    configurable: true
   })
 
   return pageContextExports
