@@ -45,7 +45,13 @@ function preparePageContextForPublicUsage(pageContext: PageContextPrepareMinimum
   // For a more readable `console.log(pageContext)` output
   sortPageContext(pageContext)
 
-  const pageContextPublic = getProxyForPublicUsage(pageContext, 'pageContext', true)
+  const pageContextPublic = getProxyForPublicUsage(
+    pageContext,
+    'pageContext',
+    // We must skip it in the client-side because of the reactivity mechanism of UI frameworks like Solid.
+    // - TODO/now: double check whether that's true
+    true
+  )
   return pageContextPublic
 }
 
