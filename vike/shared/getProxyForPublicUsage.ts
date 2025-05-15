@@ -12,20 +12,22 @@ export { getProxyForPublicUsage }
 import { NOT_SERIALIZABLE } from './NOT_SERIALIZABLE.js'
 import { assert, assertUsage, assertWarning, getPropAccessNotation, isBrowser } from './utils.js'
 
-function getProxyForPublicUsage<Obj extends Record<string, unknown>>(
-  obj: Obj,
-  objName: string,
-  skipOnInternalProp?: true
-): Obj {
+type Target = Record<string, unknown>
+
+function getProxyForPublicUsage<Obj extends Target>(obj: Obj, objName: string, skipOnInternalProp?: true): Obj {
   return new Proxy(obj, {
-    get(_, prop) {
-      const propStr = String(prop)
-      if (!skipOnInternalProp) onInternalProp(propStr, objName)
-      const val = obj[prop as keyof Obj]
-      onNotSerializable(propStr, val, objName)
-      return val
-    }
+    get: getTrapGet(obj, objName, skipOnInternalProp)
   })
+}
+
+function getTrapGet(obj: Record<string, unknown>, objName: string, skipOnInternalProp?: true) {
+  return function (_: any, prop: string | symbol) {
+    const propStr = String(prop)
+    if (!skipOnInternalProp) onInternalProp(propStr, objName)
+    const val = obj[prop as any]
+    onNotSerializable(propStr, val, objName)
+    return val
+  }
 }
 
 function onNotSerializable(propStr: string, val: unknown, objName: string) {
