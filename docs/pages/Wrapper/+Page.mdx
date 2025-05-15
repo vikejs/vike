@@ -3,7 +3,7 @@ import { UiFrameworkExtension, ProvidedBy } from '../../components'
 
 Environment: client, and server (if <Link href="/ssr">`ssr: true`</Link>).
 
-<ProvidedBy list={['vike-react', 'vike-solid']}>the `+Wrapper` setting</ProvidedBy>
+<ProvidedBy list={['vike-react', 'vike-solid']} noCustomGuide>the `+Wrapper` setting</ProvidedBy>
 
 The `+Wrapper` component wraps the <Link href="/Page">`+Page` component</Link> and all <Link href="/Layout">`+Layout` components</Link>.
 
@@ -50,14 +50,6 @@ A page can be wrapped by multiple `+Wrapper` components:
   </Wrapper2>
 </Wrapper1>
 ```
-
-## Without `vike-{react,vue,solid}`
-
-In case you don't use a <UiFrameworkExtension />, you can implement the `+Wrapper` setting yourself by using <Link href="/meta">meta</Link>.
-
-Example:
-
- - [`vike-react` source code](https://github.com/vikejs/vike-react/blob/main/packages/vike-react)
 
 
 ## See also
