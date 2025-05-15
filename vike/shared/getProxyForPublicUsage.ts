@@ -1,4 +1,5 @@
 export { getProxyForPublicUsage }
+export { getProxyForPublicUsageFlat }
 export { getProxyForMutationTracking }
 
 // We use a proxy instead of property getters.
@@ -11,13 +12,62 @@ export { getProxyForMutationTracking }
 // Show warning when user is accessing internal `_` properties.
 
 import { NOT_SERIALIZABLE } from './NOT_SERIALIZABLE.js'
-import { assert, assertUsage, assertWarning, getPropAccessNotation, isBrowser } from './utils.js'
+import {
+  assert,
+  assertUsage,
+  assertWarning,
+  getPropAccessNotation,
+  isBrowser,
+  objectAssign,
+  objectReplace
+} from './utils.js'
 
-type Target = Record<string, unknown> & { _onChange?: () => void }
+type Target = Record<string, unknown> & {
+  _onChange?: () => void
+  _proxyTarget?: any
+  _userMods?: any
+  _proxyTargetPublic?: any
+}
 
 function getProxyForPublicUsage<Obj extends Target>(obj: Obj, objName: string, skipOnInternalProp?: true): Obj {
   return new Proxy(obj, {
     get: getTrapGet(obj, objName, skipOnInternalProp)
+  })
+}
+
+function getProxyForPublicUsageFlat<Obj extends Target>(obj: Obj, objName: string, skipOnInternalProp?: true): Obj {
+  assert(obj._isOriginalObject)
+  assert(obj._proxyTarget)
+  obj._proxyTargetPublic ??= {}
+  const target = obj._proxyTargetPublic
+  obj._userMods ??= {}
+  const objUserMods = obj._userMods
+  const update = () => {
+    assert(obj._proxyTarget)
+    objectReplace(target, obj._proxyTarget)
+    objectAssign(target, objUserMods)
+  }
+  obj._onChange = () => {
+    update()
+  }
+  update()
+  return new Proxy(target, {
+    // get: getTrapGet(target, objName, skipOnInternalProp),
+    set(_, prop, val) {
+      const ret = Reflect.set(objUserMods, prop, val)
+      update()
+      return ret
+    },
+    defineProperty(_, ...args) {
+      const ret = Reflect.defineProperty(objUserMods, ...args)
+      update()
+      return ret
+    },
+    deleteProperty(_, ...args) {
+      const ret = Reflect.deleteProperty(objUserMods, ...args)
+      update()
+      return ret
+    }
   })
 }
 
@@ -32,6 +82,7 @@ function getTrapGet(obj: Record<string, unknown>, objName: string, skipOnInterna
 }
 
 function getProxyForMutationTracking<Obj extends Target>(obj: Obj): Obj {
+  objectAssign(obj, { _proxyTarget: obj })
   return new Proxy(obj, {
     set(...args) {
       const ret = Reflect.set(...args)
