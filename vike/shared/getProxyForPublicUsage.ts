@@ -12,11 +12,15 @@ export { getProxyForPublicUsage }
 import { NOT_SERIALIZABLE } from './NOT_SERIALIZABLE.js'
 import { assert, assertUsage, assertWarning, getPropAccessNotation, isBrowser } from './utils.js'
 
-function getProxyForPublicUsage<Obj extends Record<string, unknown>>(obj: Obj, objName: string): Obj {
+function getProxyForPublicUsage<Obj extends Record<string, unknown>>(
+  obj: Obj,
+  objName: string,
+  skipOnInternalProp?: true
+): Obj {
   return new Proxy(obj, {
     get(_, prop) {
       const propStr = String(prop)
-      onInternalProp(propStr, objName)
+      if (!skipOnInternalProp) onInternalProp(propStr, objName)
       const val = obj[prop as keyof Obj]
       onNotSerializable(propStr, val, objName)
       return val

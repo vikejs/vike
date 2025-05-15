@@ -45,7 +45,7 @@ function preparePageContextForPublicUsage(pageContext: PageContextPrepareMinimum
   // For a more readable `console.log(pageContext)` output
   sortPageContext(pageContext)
 
-  const pageContextPublic = getProxyForPublicUsage(pageContext, 'pageContext')
+  const pageContextPublic = getProxyForPublicUsage(pageContext, 'pageContext', true)
   return pageContextPublic
 }
 
