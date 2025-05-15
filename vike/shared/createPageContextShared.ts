@@ -1,6 +1,7 @@
 export { createPageContextShared }
 export { createPageContextObject }
 
+import { getProxyForMutationTracking } from './getProxyForPublicUsage.js'
 import { execHookGlobal } from './hooks/execHook.js'
 import type { PageConfigUserFriendly } from './page-configs/getUserFriendlyConfigs.js'
 import type { PageConfigGlobalRuntime } from './page-configs/PageConfig.js'
@@ -31,5 +32,6 @@ function createPageContextObject() {
     isPageContext: true as const
   }
   changeEnumerable(pageContext, '_isOriginalObject', false)
-  return pageContext
+  const pageContextWithProxy = getProxyForMutationTracking(pageContext)
+  return pageContextWithProxy
 }

@@ -54,6 +54,7 @@ function supportVueReactiviy(pageContext: Record<string, unknown>) {
 // Remove propery descriptor getters because they break Vue's reactivity.
 // E.g. resolve the `pageContext.urlPathname` getter.
 function resolveGetters(pageContext: Record<string, unknown>) {
+  return
   Object.entries(pageContext).forEach(([key, val]) => {
     delete pageContext[key]
     pageContext[key] = val
