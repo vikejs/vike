@@ -1,4 +1,5 @@
 export { getProxyForPublicUsage }
+export { getProxyForMutationTracking }
 
 // We use a proxy instead of property getters.
 // - The issue with property getters is that they can't be `writable: true` but we do want the user to be able to modify the value of internal properties.
@@ -12,7 +13,7 @@ export { getProxyForPublicUsage }
 import { NOT_SERIALIZABLE } from './NOT_SERIALIZABLE.js'
 import { assert, assertUsage, assertWarning, getPropAccessNotation, isBrowser } from './utils.js'
 
-type Target = Record<string, unknown>
+type Target = Record<string, unknown> & { _onChange?: () => void }
 
 function getProxyForPublicUsage<Obj extends Target>(obj: Obj, objName: string, skipOnInternalProp?: true): Obj {
   return new Proxy(obj, {
@@ -28,6 +29,26 @@ function getTrapGet(obj: Record<string, unknown>, objName: string, skipOnInterna
     onNotSerializable(propStr, val, objName)
     return val
   }
+}
+
+function getProxyForMutationTracking<Obj extends Target>(obj: Obj): Obj {
+  return new Proxy(obj, {
+    set(...args) {
+      const ret = Reflect.set(...args)
+      obj._onChange?.()
+      return ret
+    },
+    defineProperty(...args) {
+      const ret = Reflect.defineProperty(...args)
+      obj._onChange?.()
+      return ret
+    },
+    deleteProperty(...args) {
+      const ret = Reflect.deleteProperty(...args)
+      obj._onChange?.()
+      return ret
+    }
+  })
 }
 
 function onNotSerializable(propStr: string, val: unknown, objName: string) {
