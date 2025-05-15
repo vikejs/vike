@@ -1,11 +1,11 @@
-export { ImplementedBy }
+export { ProvidedBy }
 
 import { Link } from '@brillout/docpress'
 import { UiFrameworkExtension, type UiFrameworkExtensionList } from '../components/UiFrameworkExtension'
 import React from 'react'
-import './ImplementedBy.css'
+import './ProvidedBy.css'
 
-function ImplementedBy({
+function ProvidedBy({
   children,
   list,
   noCustomGuide
