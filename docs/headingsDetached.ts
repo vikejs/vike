@@ -599,10 +599,6 @@ function api(): HeadingDetachedDefinition[] {
       url: '/lang'
     },
     {
-      title: '`<Wrapper>`',
-      url: '/Wrapper'
-    },
-    {
       title: '`onCreateApp()` hook',
       url: '/onCreateApp'
     },

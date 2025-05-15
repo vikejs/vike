@@ -349,6 +349,12 @@ const headings = [
   },
   {
     level: 2,
+    titleInNav: '`Wrapper`',
+    title: '`<Wrapper>`',
+    url: '/Wrapper'
+  },
+  {
+    level: 2,
     title: 'Config Files',
     url: '/config',
     sectionTitles: ['`+` files']
