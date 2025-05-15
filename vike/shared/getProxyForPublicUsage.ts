@@ -13,18 +13,34 @@ import { NOT_SERIALIZABLE } from './NOT_SERIALIZABLE.js'
 import { assert, assertUsage, assertWarning, getPropAccessNotation, isBrowser } from './utils.js'
 
 type Target = Record<string, unknown>
+type Fallback = (prop: string | symbol) => unknown
 
-function getProxyForPublicUsage<Obj extends Target>(obj: Obj, objName: string, skipOnInternalProp?: true): Obj {
+function getProxyForPublicUsage<Obj extends Target>(
+  obj: Obj,
+  objName: string,
+  skipOnInternalProp?: true,
+  fallback?: Fallback
+): Obj {
   return new Proxy(obj, {
-    get: getTrapGet(obj, objName, skipOnInternalProp)
+    get: getTrapGet(obj, objName, skipOnInternalProp, fallback)
   })
 }
 
-function getTrapGet(obj: Record<string, unknown>, objName: string, skipOnInternalProp?: true) {
+function getTrapGet(
+  obj: Record<string | symbol, unknown>,
+  objName: string,
+  skipOnInternalProp?: true,
+  fallback?: Fallback
+) {
   return function (_: any, prop: string | symbol) {
     const propStr = String(prop)
     if (!skipOnInternalProp) onInternalProp(propStr, objName)
-    const val = obj[prop as any]
+    if (fallback && !(prop in obj)) {
+      // Rudimentary flat pageContext implementation https://github.com/vikejs/vike/issues/1268
+      // Failed full-fledged implementation: https://github.com/vikejs/vike/pull/2458
+      return fallback(prop)
+    }
+    const val = obj[prop]
     onNotSerializable(propStr, val, objName)
     return val
   }

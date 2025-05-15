@@ -2,7 +2,7 @@ export { preparePageContextForPublicUsage }
 export { assertPropertyGetters }
 export type { PageContextPrepareMinimum }
 
-import { assert, assertWarning, compareString, isPropertyGetter, objectAssign } from './utils.js'
+import { assert, assertWarning, compareString, isPropertyGetter } from './utils.js'
 import { addIs404ToPageProps } from './addIs404ToPageProps.js'
 import {
   type GlobalContextPrepareMinimum,
@@ -14,17 +14,11 @@ type PageContextPrepareMinimum = {
   _isOriginalObject: true
   isPageContext: true
   _globalContext: GlobalContextPrepareMinimum
-  // pageContext.globalContext should only be available to users — Vike itself should use pageContext._globalContext instead
-  globalContext?: never
 }
 
-function preparePageContextForPublicUsage(pageContext: PageContextPrepareMinimum) {
+function preparePageContextForPublicUsage<PageContext extends PageContextPrepareMinimum>(pageContext: PageContext) {
+  assert(!(pageContext as Record<string, unknown>).globalContext) // pageContext.globalContext should only be available to users — Vike itself should use pageContext._globalContext instead
   assert(pageContext._isOriginalObject) // ensure we preserve the original object reference
-
-  const globalContextPublic = prepareGlobalContextForPublicUsage(pageContext._globalContext)
-  objectAssign(pageContext, {
-    globalContext: globalContextPublic
-  })
 
   addIs404ToPageProps(pageContext)
 
@@ -45,12 +39,21 @@ function preparePageContextForPublicUsage(pageContext: PageContextPrepareMinimum
   // For a more readable `console.log(pageContext)` output
   sortPageContext(pageContext)
 
+  const globalContextPublic = prepareGlobalContextForPublicUsage(pageContext._globalContext)
   const pageContextPublic = getProxyForPublicUsage(
     pageContext,
     'pageContext',
     // We must skip it in the client-side because of the reactivity mechanism of UI frameworks like Solid.
     // - TODO/now: double check whether that's true
-    true
+    true,
+    (prop) => {
+      if (prop === 'globalContext') {
+        return globalContextPublic
+      }
+      if (prop in globalContextPublic) {
+        return (globalContextPublic as Record<string | symbol, unknown>)[prop]
+      }
+    }
   )
   return pageContextPublic
 }

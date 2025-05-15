@@ -232,7 +232,7 @@ function getPageContext<PageContext = PageContextClient | PageContextServer>(): 
   const { pageContext } = globalObject
   if (!pageContext) return pageContext
   const pageContextForPublicUsage = preparePageContextForPublicUsage(pageContext)
-  return pageContextForPublicUsage
+  return pageContextForPublicUsage as any
 }
 /**
  * Provide `pageContext` for universal hooks.
