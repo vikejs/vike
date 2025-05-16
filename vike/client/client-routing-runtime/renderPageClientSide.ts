@@ -302,15 +302,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       assert(!('urlOriginal' in pageContextFromServerHooks))
       objectAssign(pageContext, pageContextFromServerHooks)
 
-      // Execute +onData
-      try {
-        await execHookClient('onData', pageContext)
-      } catch (err) {
-        await onError(err)
-        return
-      }
-      if (isRenderOutdated()) return
-
       // Get pageContext from client-side hooks
       let pageContextFromClientHooks: Awaited<ReturnType<typeof getPageContextFromClientHooks>>
       try {
