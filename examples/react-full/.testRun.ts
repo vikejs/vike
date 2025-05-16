@@ -148,7 +148,7 @@ function testRun(uiFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run pre
         expect(await page.textContent('h1')).toBe('404 Page Not Found')
       }
       expectLog('Failed to load resource: the server responded with a status of 404 (Not Found)', {
-        filter: (log) => log.logSource === 'Browser Error' && log.logText.includes('http://localhost:3000/hello/bob')
+        filter: (log) => log.logSource === 'Browser Error' && log.logInfo.includes('http://localhost:3000/hello/bob')
       })
       if (!isV1Design) {
         expectLog(
@@ -168,13 +168,13 @@ function testRun(uiFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run pre
           expect(await page.textContent('h1')).toBe('Forbidden')
           expectLog('Failed to load resource: the server responded with a status of 404 (Not Found)', {
             filter: (log) =>
-              log.logSource === 'Browser Error' && log.logText.includes('http://localhost:3000/hello/forbidden')
+              log.logSource === 'Browser Error' && log.logInfo.includes('http://localhost:3000/hello/forbidden')
           })
         } else {
           expectLog('HTTP response /hello/forbidden 401', { filter: (log) => log.logSource === 'stderr' })
           expectLog('Failed to load resource: the server responded with a status of 401 (Unauthorized)', {
             filter: (log) =>
-              log.logSource === 'Browser Error' && log.logText.includes('http://localhost:3000/hello/forbidden')
+              log.logSource === 'Browser Error' && log.logInfo.includes('http://localhost:3000/hello/forbidden')
           })
         }
         const txt = 'This page is forbidden.'
