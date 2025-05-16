@@ -194,7 +194,7 @@ function execHookAsync<HookReturn>(
     }, timeoutErr)
   ;(async () => {
     try {
-      providePageContext(pageContextForPublicUsage)
+      providePageContextInternal(pageContextForPublicUsage)
       const ret = await hookFnCaller()
       resolve(ret)
     } catch (err) {
@@ -214,7 +214,7 @@ function execHookSync<PageContext extends PageContextPrepareMinimum>(
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext
 ) {
   const pageContextForPublicUsage = preparePageContextForPublicUsage(pageContext)
-  providePageContext(pageContextForPublicUsage)
+  providePageContextInternal(pageContextForPublicUsage)
   const hookReturn = hook.hookFn(pageContextForPublicUsage)
   return { hookReturn }
 }
@@ -232,7 +232,7 @@ function getPageContext<PageContext = PageContextClient | PageContextServer>(): 
   const { pageContext } = globalObject
   if (!pageContext) return null
   const pageContextForPublicUsage = (pageContext as Record<string, unknown>)._isProxyObject
-    ? // providePageContext() can be called on the user-land (e.g. it's called by `vike-{react,vue,solid}`) thus it may already be a proxy
+    ? // providePageContext() is called on the user-land (e.g. it's called by `vike-{react,vue,solid}`) thus it's already a proxy
       pageContext
     : preparePageContextForPublicUsage(pageContext)
   return pageContextForPublicUsage as any
@@ -242,7 +242,10 @@ function getPageContext<PageContext = PageContextClient | PageContextServer>(): 
  *
  * https://vike.dev/getPageContext
  */
-function providePageContext(pageContext: null | PageContextPrepareMinimum) {
+function providePageContext(pageContext: null | PageContextClient | PageContextServer) {
+  providePageContextInternal(pageContext as any)
+}
+function providePageContextInternal(pageContext: null | PageContextPrepareMinimum) {
   globalObject.pageContext = pageContext
   // Promise.resolve() is quicker than process.nextTick() and setImmediate()
   // https://stackoverflow.com/questions/67949576/process-nexttick-before-promise-resolve-then
