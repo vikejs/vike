@@ -34,6 +34,7 @@ function getTrapGet(
 ) {
   return function (_: any, prop: string | symbol) {
     const propStr = String(prop)
+    if (prop === '_isProxyObject') return true
     if (!skipOnInternalProp) onInternalProp(propStr, objName)
     if (fallback && !(prop in obj)) {
       // Rudimentary flat pageContext implementation https://github.com/vikejs/vike/issues/1268

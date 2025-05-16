@@ -230,8 +230,11 @@ function isNotDisabled(timeout: false | number): timeout is number {
  */
 function getPageContext<PageContext = PageContextClient | PageContextServer>(): null | PageContext {
   const { pageContext } = globalObject
-  if (!pageContext) return pageContext
-  const pageContextForPublicUsage = preparePageContextForPublicUsage(pageContext)
+  if (!pageContext) return null
+  const pageContextForPublicUsage = (pageContext as Record<string, unknown>)._isProxyObject
+    ? // providePageContext() can be called on the user-land (e.g. it's called by `vike-{react,vue,solid}`) thus it may already be a proxy
+      pageContext
+    : preparePageContextForPublicUsage(pageContext)
   return pageContextForPublicUsage as any
 }
 /**

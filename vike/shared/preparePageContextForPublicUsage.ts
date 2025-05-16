@@ -17,6 +17,7 @@ type PageContextPrepareMinimum = {
 }
 
 function preparePageContextForPublicUsage<PageContext extends PageContextPrepareMinimum>(pageContext: PageContext) {
+  assert(!(pageContext as Record<string, unknown>)._isProxyObject)
   assert(!(pageContext as Record<string, unknown>).globalContext) // pageContext.globalContext should only be available to users — Vike itself should use pageContext._globalContext instead
   assert(pageContext._isOriginalObject) // ensure we preserve the original object reference
 
