@@ -38,6 +38,7 @@ import {
   type PageContextForPublicUsageClient,
   preparePageContextForPublicUsageClient
 } from './preparePageContextForPublicUsageClient.js'
+import type { ConfigEnv } from '../../types/index.js'
 const globalObject = getGlobalObject<{ pageContextInitIsPassedToClient?: true }>(
   'client-routing-runtime/getPageContextFromHooks.ts',
   {}
@@ -260,11 +261,6 @@ async function hookServerOnlyExists(
   }
 }
 
-/**
- * @param hookName
- * @param pageContext
- * @returns `true` if the given page has a `hookName` hook defined with a client-only env.
- */
 function hookClientOnlyExists(
   hookName: 'data' | 'onBeforeRender',
   pageContext: {
@@ -272,16 +268,26 @@ function hookClientOnlyExists(
     _pageConfigs: PageConfigRuntime[]
   }
 ): boolean {
+  const hookEnv = getHookEnv(hookName, pageContext)
+  return !!hookEnv.client && !hookEnv.server
+}
+function getHookEnv(
+  hookName: 'data' | 'onBeforeRender',
+  pageContext: {
+    pageId: string
+    _pageConfigs: PageConfigRuntime[]
+  }
+) {
   if (pageContext._pageConfigs.length > 0) {
     // V1
     const pageConfig = getPageConfig(pageContext.pageId, pageContext._pageConfigs)
-    const hookEnv = getConfigValueRuntime(pageConfig, `${hookName}Env`)?.value ?? {}
-    assert(isObject(hookEnv))
-    return !!hookEnv.client && !hookEnv.server
+    // No runtime validation to save client-side KBs
+    const hookEnv = (getConfigValueRuntime(pageConfig, `${hookName}Env`)?.value ?? {}) as ConfigEnv
+    return hookEnv
   } else {
     // TODO/v1-release: remove
     // Client-only onBeforeRender() or data() hooks were never supported for the V0.4 design
-    return false
+    return { client: false, server: true }
   }
 }
 
