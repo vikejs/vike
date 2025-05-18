@@ -7,25 +7,32 @@ List of built-in hooks. (You can also <Link href="/meta">create your own</Link>.
 See also: <Link href="/settings" />.
 
 
-## Basic
+## Basics
 
 - [**`data()`**](/data): <TextEnv>server (configurable)</TextEnv> Called before the page is rendered, for fetching data.
 - [**`guard()`**](/guard): <TextEnv>server (configurable)</TextEnv> Protect pages from unprivileged access.
-- [**`onCreatePageContext()`**](/onCreatePageContext): <TextEnv>server & client</TextEnv> Hook called when a <Link href="/pageContext">`pageContext` object</Link> is created.
-- [**`onCreateGlobalContext()`**](/onCreateGlobalContext): <TextEnv>server & client</TextEnv> Hook called when the <Link href="/globalContext">`globalContext` object</Link> is created.
 - [**`onHydrationEnd()`**](/onHydrationEnd): <TextEnv>client</TextEnv> Called after the page is <Link href="/hydration">hydrated</Link>.
 - [**`onPageTransitionStart()`**](/onPageTransitionStart): <TextEnv>client</TextEnv> Called upon page navigation, before the new page starts rendering.
 - [**`onPageTransitionEnd()`**](/onPageTransitionEnd): <TextEnv>client</TextEnv> Called upon page navigation, after the new page has finished rendering.
-- [**`onBeforePrerenderStart()`**](/onBeforePrerenderStart): <TextEnv>server</TextEnv> Called before the whole pre-rendering process starts.
-- [**`onPrerenderStart()`**](/onPrerenderStart): <TextEnv>server</TextEnv> Global hook called when pre-rendering starts.
-- [**`onCreateApp()`**](/onCreateApp): <TextEnv>server & client</TextEnv> `vike-vue` Called after creating Vue's `app` instance.
-- [**`onData()`**](/onData): <TextEnv>server & client</TextEnv> Called as soon as <Link href="/pageContext#data">`pageContext.data`</Link> is available.
+- [**`onCreatePageContext()`**](/onCreatePageContext): <TextEnv>server & client</TextEnv> Hook called when a <Link href="/pageContext">`pageContext` object</Link> is created.
+- [**`onCreateGlobalContext()`**](/onCreateGlobalContext): <TextEnv>server & client</TextEnv> Hook called when the <Link href="/globalContext">`globalContext` object</Link> is created.
+
+**Pre-rendering**
+
+- [**`onBeforePrerenderStart()`**](/onBeforePrerenderStart): <TextEnv>server</TextEnv> Called before the whole <Link href="/pre-rendering">Pre-rendering</Link> process starts.
+- [**`onPrerenderStart()`**](/onPrerenderStart): <TextEnv>server</TextEnv> Global hook called when <Link href="/pre-rendering">Pre-rendering</Link> starts.
+
+**`vike-vue`**
+
+- [**`onCreateApp()`**](/onCreateApp): <TextEnv>server & client</TextEnv> <Link href="/vike-vue">`vike-vue`</Link> Called after creating Vue's `app` instance.
+
 
 
 ## Advanced
 
 > Most users don't need to know about these hooks.
 
+- [**`onData()`**](/onData): <TextEnv>server & client</TextEnv> Called as soon as <Link href="/pageContext#data">`pageContext.data`</Link> is available.
 - [**`onBeforeRender()`**](/onBeforeRender): <TextEnv>server (configurable)</TextEnv> Called before the page is rendered, lower-level and usually for advanced integrations with data fetching tools.
 - [**`onRenderHtml()`**](/onRenderHtml): <TextEnv>server</TextEnv> Called when a page is rendered to HTML on the server-side.
 - [**`onRenderClient()`**](/onRenderClient): <TextEnv>client</TextEnv> Called when a page is rendered on the client-side.
