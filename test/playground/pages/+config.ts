@@ -6,7 +6,10 @@ export default {
   prerender: true,
   redirects: {
     // TEST: redirect to email
-    '/mail': 'mailto:some@example.com'
+    '/mail': 'mailto:some@example.com',
+    // TEST: external redirection
+    '/chat': 'https://discord.com/invite/hfHhnJyVg8',
+    '/external-redirect': 'https://app.nmrium.org#?toc=https://cheminfo.github.io/nmr-dataset-demo/samples.json'
   },
   extends: [vikeReact],
   meta: {

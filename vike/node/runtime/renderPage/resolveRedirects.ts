@@ -2,7 +2,6 @@ export { resolveRedirects }
 
 // For ./resolveRedirects.spec.ts
 export { resolveRouteStringRedirect }
-export { redirectsErrPrefix }
 
 import { assertIsNotBrowser } from '../../../utils/assertIsNotBrowser.js'
 import { assert, assertUsage, assertUsageUrlRedirectTarget, isUrlRedirectTarget } from '../../../shared/utils.js'

@@ -39,7 +39,6 @@ import {
 } from '../../shared/route/abort.js'
 import {
   getGlobalContextServerInternal,
-  type GlobalContextServer,
   initGlobalContext_renderPage,
   type GlobalContextServerInternal
 } from './globalContext.js'

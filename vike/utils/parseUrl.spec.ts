@@ -1377,6 +1377,7 @@ describe('parseUrl', () => {
     `)
   })
 })
+
 /* Doesn't work
 declare global {
   var document: Document & { baseURI: string }
