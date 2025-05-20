@@ -9,32 +9,28 @@ import { UiFrameworkExtension, Advanced } from '../../components'
 >
 > A store works by representing state changes as atomic changes to an immutable data structure, enabling a fundamentally more robust state management.
 
-You can use Vike with any store.
-- <Link href="/redux" />
-- <Link href="/pinia" />
-- <Link href="/vuex" />
-- <Link href="/tools#stores">... more</Link>
+We recommend using <Link href="/extensions">Vike extensions</Link> for automatically integrating state management tools.
 
-If you don't use your store on the server-side, then you can use it independently of Vike — no integration is needed. If you do, see <Link href="#ssr" />.
+**React**
 
-## SSR
+- [`vike-react-redux`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-redux#readme)
+- [`vike-react-zustand`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-zustand#readme)
 
-If you use your store on the server side and have <Link href="/ssr">SSR enabled</Link>, you must integrate your store with SSR.
+**Vue**
 
-### Extensions
-
-We recommend using a <Link href="/extensions">Vike extension</Link> for automatically integrating your store with SSR.
-
-- [`vike-vue-pinia`](https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-pinia)
+- [`vike-vue-pinia`](https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-pinia#readme)
 
 <Contribution>
 Contribution welcome to [create Vike extensions](https://github.com/vikejs/vike/issues/1715) integrating stores with SSR.
 </Contribution>
 
-### Manual integration
+You can also manually integrate any state management tool you want.
+
+
+## Manual integration
 
 <Advanced>
-  Instead of manually integrating your store, we generally recommend <Link href="#extensions">using a Vike extension</Link> instead.
+  Instead of manually integrating your store, we generally recommend using a <Link href="/extensions">Vike extension</Link> instead.
 </Advanced>
 
 > <Link href="/faq#how-can-i-reach-out-for-help">Feel free to reach out</Link> if you want help integrating a store.
@@ -120,3 +116,10 @@ export function onBeforeRenderClient(pageContext) {
 > See also:
 > - <Link href="/pageContext#isHydration">API > `pageContext.isHydration`</Link>
 > - <Link href="/pageContext#globalContext">API > `pageContext.globalContext`</Link>
+
+
+## See also
+
+- <Link href="/redux" />
+- <Link href="/pinia" />
+- <Link href="/tools#stores" />
