@@ -19,14 +19,6 @@ If you don't use your store on the server-side, then you can use it independentl
 
 ## SSR
 
-> **When do I need to use my store on the server-side?**
->
-> In general, we recommend using a store only on the client-side. A store is used for highly interactive user interfaces — using it on the server-side is usually superfluous (there isn't any interactivity on the server-side).
->
-> That said, there are use cases where it can make sense, for example:
->  - **Dark-mode toggle**: While it's client-side state, it's needed during SSR to render the correct theme (e.g. by reading the user's preference from cookies). You could manage it only on the client, but that would cause a light/dark mode flash on load if the user's setting differs from the default.
->  - **To-do list app using SSR**: the initial to-do list (<Link href="/data-fetching#page-data-with-data">fetched with `+data`</Link> on the server) is expected to change — tasks can be added, removed, or updated. Therefore, it might make sense for components to access the data via the store rather than directly. In that case, you must initialize the store on the server so that components can access it during SSR.
-
 If you use your store on the server side and have <Link href="/ssr">SSR enabled</Link>, you must integrate your store with SSR.
 
 ### Extensions
