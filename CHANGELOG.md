@@ -1,3 +1,32 @@
+## [0.4.230](https://github.com/vikejs/vike/compare/v0.4.229...v0.4.230) (2025-05-20)
+
+
+### Bug Fixes
+
+* [Server Routing] make local configs override global configs (fix [#2420](https://github.com/vikejs/vike/issues/2420)) ([58f7ed0](https://github.com/vikejs/vike/commit/58f7ed04515cab5e9273b399a91ce400e66b6236))
+* do not close web stream prematurly ([#2435](https://github.com/vikejs/vike/issues/2435)) ([3128b28](https://github.com/vikejs/vike/commit/3128b2867cbad0a89ed46dc0cc63fa2bc341cbfa))
+* don't execute +onData twice ([e1ca16d](https://github.com/vikejs/vike/commit/e1ca16d880d67f37e4fb3e1aa873c840ca2a5b41))
+* fix configEntries and exportsAll for cumulative values ([a60ad89](https://github.com/vikejs/vike/commit/a60ad8987e4c56201ed138758095bc874c14568e))
+* fix providePageContext() type ([847f1b6](https://github.com/vikejs/vike/commit/847f1b6bced868e4dddc409b25eba31245951689))
+* further respect optimizeDeps.exclude ([#2429](https://github.com/vikejs/vike/issues/2429)) ([44bc6f3](https://github.com/vikejs/vike/commit/44bc6f3848965889264b1a3727347d6916c18aee))
+* improve redirection support (closes [#2462](https://github.com/vikejs/vike/issues/2462)) ([b8889db](https://github.com/vikejs/vike/commit/b8889dbcf4fa7255231957b61ccc113fd5eb235b))
+* new debug flag DEBUG=vike:resolve ([#2436](https://github.com/vikejs/vike/issues/2436)) ([a19745d](https://github.com/vikejs/vike/commit/a19745da745975586531551a17460e9d8006fe60))
+* polish DEBUG logs ([d5f03ab](https://github.com/vikejs/vike/commit/d5f03ab3955c422ecd94a5481672329e07b9891d))
+* skip  requests .well-known/appspecific/com.chrome.devtools.json ([79b14d4](https://github.com/vikejs/vike/commit/79b14d4b39055cb4c2e5bbe49ec228c8c8973c40))
+* support resolving paths with white spaces (fix [#2436](https://github.com/vikejs/vike/issues/2436)) ([2dbbc8d](https://github.com/vikejs/vike/commit/2dbbc8d332dd27590d6111d17e3aec5d750f4d8f))
+* tolerate missing pageId for cache control header ([26460c9](https://github.com/vikejs/vike/commit/26460c9353f4ed16eb6c7ceee6ee0a556adeedfc))
+* upon DEBUG flag maximize stack trace length ([69af823](https://github.com/vikejs/vike/commit/69af823a3968318695ecdfd06854866d103121d2))
+* warn when accessing internal `pageContext` properties ([#2451](https://github.com/vikejs/vike/issues/2451)) ([c9311ce](https://github.com/vikejs/vike/commit/c9311ce83004402442cc09db8a8f70b5039db540))
+
+
+### Features
+
+* [+onData](http://vike.dev/onData) ([#2443](https://github.com/vikejs/vike/issues/2443)) ([5846ebc](https://github.com/vikejs/vike/commit/5846ebce792813e0ff6867e99ca03a707fbdae0b))
+* add globalContext fallback upon pageContext access ([a46271b](https://github.com/vikejs/vike/commit/a46271baf60c413d68d12571ee9de8e5a0ba0f9c))
+* tree-shake pageContext.isClientSide (fix [#2413](https://github.com/vikejs/vike/issues/2413)) ([#2417](https://github.com/vikejs/vike/issues/2417)) ([08a1ff5](https://github.com/vikejs/vike/commit/08a1ff55c80ddca64ca6d4417fefd45fefeb4ffb))
+
+
+
 ## [0.4.229](https://github.com/vikejs/vike/compare/v0.4.228...v0.4.229) (2025-04-24)
 
 
