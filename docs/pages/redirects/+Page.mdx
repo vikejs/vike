@@ -12,13 +12,23 @@ Permanent redirections (HTTP status code `301`):
 
 export default {
   redirects: {
+    // Internal
     '/about-us': '/about',
+    '/products/computer': '/produkte/komputer',
+
+    // External
+    '/chat': 'https://discord.com/invite/hfHhnJyVg8',
+    '/mail': 'mailto:some@example.com',
+    '/download': 'magnet:?xt=urn:btih:example',
+
     // Parameterized redirections
     '/product/@id': '/buy/@id',
-    // Glob redirections
+
+    // Glob
     '/admin/*': '/private/*',
-    // External redirections
-    '/admin/*': 'https://admin.example.org/*'
+
+    // Gloab + external
+    '/admins/*': 'https://admin.example.org/*',
   }
 }
 ```

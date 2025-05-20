@@ -1,6 +1,9 @@
 import { resolveRouteStringRedirect } from './resolveRedirects.js'
 import { expect, describe, it } from 'vitest'
 
+// E2E tests at /test/playground/pages/redirects.e2e-tests.ts
+// https://github.com/vikejs/vike/blob/0e260ad6e64e98952138a90950e10e2d59d94a36/test/playground/pages/redirects.e2e-tests.ts
+
 describe('resolveRouteStringRedirect', () => {
   it('basics', () => {
     expect(resolveRouteStringRedirect('/a', '/b', '/a')).toEqual('/b')
