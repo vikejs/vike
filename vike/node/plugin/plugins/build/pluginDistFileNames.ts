@@ -57,6 +57,7 @@ function pluginDistFileNames(): Plugin {
             }
 
             // Disable CSS bundling to workaround https://github.com/vikejs/vike/issues/1815
+            // TO-DO/eventually: let's bundle CSS again once Rolldown replaces Rollup
             if (id.endsWith('.css')) {
               const userRootDir = config.root
               if (id.startsWith(userRootDir)) {
