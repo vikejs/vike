@@ -1,5 +1,5 @@
 name: "🚀 Feature"
-description: Request a new feature.
+description: Suggest a new feature.
 labels: ["enhancement :rocket:"]
 body:
   - type: textarea
