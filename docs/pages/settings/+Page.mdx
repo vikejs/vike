@@ -27,18 +27,23 @@ See also: <Link href="/hooks" />.
 
 ### HTML
 
-- [**`Head`**](/Head): Add arbitrary `<head>` tags.
+Settings that add `<head>` tags (aka document metadata):
+
 - [**`title`**](/title): Set the page's title.
 - [**`description`**](/description): Set the page's description.
 - [**`image`**](/image): Set the page's preview image upon URL sharing.
 - [**`viewport`**](/viewport): Set the page's viewport size on mobile devices.
+- [**`Head`**](/Head): Add arbitrary `<head>` tags.
+
+> You create your own document metadata settings, see <Link href="/head-tags#custom-settings" />.
+
+Settings that modify the page's HTML shell:
+
 - [**`lang`**](/lang): Set the page's language (`<html lang>`).
-- [**`htmlAttributes`**](/htmlAttributes): Add tag attributes such as `<html class="dark">`.
-- [**`bodyAttributes`**](/bodyAttributes): Add tag attributes such as `<body class="dark">`.
+- [**`htmlAttributes`**](/htmlAttributes): Add `<html>` attributes (e.g. `<html class="dark">`).
+- [**`bodyAttributes`**](/bodyAttributes): Add `<body>` attributes (e.g. `<body class="dark">`).
 - [**`bodyHtmlBegin`**](/bodyHtmlBegin): Insert HTML at the beginning of `<body>`.
 - [**`bodyHtmlEnd`**](/bodyHtmlEnd): Insert HTML at the end of `<body>`.
-
-> You create your own custom HTML settings, see <Link href="/head-tags#custom-settings" />.
 
 
 ## Advanced
