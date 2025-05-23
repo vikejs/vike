@@ -8,13 +8,10 @@ Environment: server.
 
 The `+Head` setting allows you to add `<head>` tags to your pages.
 
-> See <Link href="/head-tags" /> for a general introduction and for other ways to add `<head>` tags.
-
-> As explained <Link href="#only-html">below</Link>, it's only used when rendering the HTML of the first page the user visits. Consequently, it usually cannot be used for setting the `<title>` tag.
+> See <Link href="/head-tags" /> for a general introduction about `<head>` tags.
 
 ```jsx
-// /pages/+Head.jsx
-// /pages/+Head.vue
+// /pages/+Head.{jsx,vue}
 // Environment: server
 
 import previewImage from './previewImage.jpg'
@@ -23,9 +20,6 @@ import iconMobile from './iconMobile.png'
 
 export function Head() {
   return <>
-    {/* Adding a script tag */}
-    <script type="text/javascript" src="https://example.com/some-script.js"></script>
-
     {/* Icon shown in the browser tab (aka favicon) */
     <link rel="icon" href={favicon}>
 
@@ -34,9 +28,21 @@ export function Head() {
 
     {/* Image shown when sharing on social sites (Twitter, WhatsApp, ...) */}
     <meta property="og:image" content={previewImage}>
+
+    {/* Adding a script tag */}
+    <script type="text/javascript" src="https://example.com/some-script.js"></script>
   </>
 }
 ```
+
+> The `+Head` setting **only applies to the HTML** of the first page the user visits.
+>
+> As explained at <Link href="#only-html" />, you should use `+Head` only for `<head>` tags that are either:
+> - intended for **crawlers** (e.g. SEO or social sharing tags), or
+> - **static** (e.g. favicon or PWA settings that don't change between pages).
+>
+> You cannot use it for dynamic tags intended for the user's browser such as `<title>` (use <Link href="/title">`+title`</Link> instead).
+
 
 ## Using data
 
@@ -123,22 +129,25 @@ export function Head() {
 
 ## Only HTML
 
-### Only renders for the first page's HTML
+**Only rendered for the first page's HTML**
 
 The `<Head>` component is only used when rendering the HTML of the first page the user visits: the tags set by `<Head>` aren't updated upon <Link href="/client-routing">client-side page navigation</Link>.
 
-### Limitation
+<div style={{height: 16}} />
+
+**Limitation**
 
 The most notable limitation is that the `+Head` setting cannot be used to set the `<title>` value, because the title isn't updated when navigating to a page with a different title.
 
-> See <Link href="#example">example below</Link> for a more detailed explanation.
+> See the example below for a more detailed explanation.
 
 Instead use the <Link href="/title">`+title`</Link> setting.
 
 > For use cases where the `+Head` setting cannot be used, Vike offers tailored settings that update upon client-side navigation.
 
+<div style={{height: 16}} />
 
-### A small limitation
+**Only a small limitation**
 
 This may seem like a major limitation but it actually isn't: you can use the `+Head` setting for the vast majority of use cases.
 
@@ -158,7 +167,9 @@ You can use `+Head` for setting `<head>` tags that are global (they have the sam
 - `<script>`
   > Assuming the script applies to all your pages.
 
-### Example
+<div style={{height: 16}} />
+
+**Example**
 
 The following example showcases that using `+Head` for setting `<title>` doesn't work, while it does work for setting `<meta name="description">`.
 
@@ -201,7 +212,7 @@ If the user then clicks on a link `<a href="/about">About us</a>`, then Vike doe
 
 > The `<Head>` component is only loaded on the server-side and only used when rendering HTML of the first page by design.
 
-This isn't an issue for `<meta name="description">` tag because it's meant for search engines bots which
+This isn't an issue for the `<meta name="description">` tag because it's intended for search engines bots which
 crawl your website using HTML.
 
 

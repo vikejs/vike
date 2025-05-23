@@ -2,7 +2,7 @@ import { Link } from '@brillout/docpress'
 import { UiFrameworkExtension } from '../../components'
 import { TableStyle } from './TableStyle'
 
-You can define meta tags inside `<head>` by using following settings.
+Use following settings to add `<head>` tags (aka document metadata):
 
 <TableStyle>
 Setting | HTML
@@ -14,15 +14,11 @@ Setting | HTML
 <Link href="/Head">`+Head`</Link> | Other `<head>` tags such as: <ul> <li>[`<link rel="icon">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link) (favicon)</li> <li>[`<link rel="apple-touch-icon">`](https://stackoverflow.com/questions/20440512/why-use-link-rel-apple-touch-icon-image-src/20440627#20440627) (mobile icon)</li> <li>[`<script>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script)</li> <li>...</li> </ul>
 </TableStyle>
 
-> You can set these settings dynamically:
-> - Inside your `+data` hook, by using the <Link href="/useConfig">`useConfig()` hook</Link>.
-> - Inside your components, by using the <Link href="/useConfig#config-head">`<Config>` and `<Head>` components</Link>.
+See also: <Link href="/settings#html-shell" doNotInferSectionTitle />.
 
-> See <Link href="/settings#html-shell" /> for other HTML settings (most notably `bodyAttributes`, `htmlAttributes`, `lang`).
+> You can dynamically set them via `useConfig()`, `<Config>`, or `<Head>`. See <Link href="/useConfig"/>.
 
 > These settings are provided by <UiFrameworkExtension name />. If you don't use <UiFrameworkExtension name noLink /> then see <Link href="/head-manual" />.
-
-> You can <Link href="#custom-settings">create your own custom settings</Link>.
 
 
 ## Defaults
