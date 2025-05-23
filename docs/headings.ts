@@ -655,6 +655,6 @@ const headings = [
     title: 'Settings',
     titleInNav: '... more',
     url: '/settings',
-    sectionTitles: ['HTML']
+    sectionTitles: ['HTML shell']
   }
 ] satisfies HeadingDefinition[]
