@@ -5,23 +5,13 @@ Environment: server, client.
 
 <ProvidedBy noCustomGuide={true}>`useConfig()`</ProvidedBy>
 
-The `useConfig()` hook enables you to set configurations inside UI components, as well as inside Vike hooks such as <Link href="/data">`+data`</Link>.
+The `useConfig()` hook enables you to define <Link href="/settings#html" doNotInferSectionTitle>these settings</Link> inside UI components and Vike hooks.
 
-> We call it a *universal hook*: a hook that can be used in both UI components and Vike hooks. (Currently, `useConfig()` is the only universal hook.)
+## Vike hooks
 
-It currently supports following configs:
-- <Link href="/Head" noBreadcrumb />
-- <Link href="/title" noBreadcrumb />
-- <Link href="/description" noBreadcrumb />
-- <Link href="/image" noBreadcrumb />
-- <Link href="/bodyAttributes" noBreadcrumb />
-- <Link href="/htmlAttributes" noBreadcrumb />
-- <Link href="/lang" noBreadcrumb />
-- <Link href="/viewport" noBreadcrumb />
-- <Link href="/favicon" noBreadcrumb />
+You can use `useConfig()` inside any Vike hook, most notably <Link href="/data">`+data`</Link>.
 
-
-## Inside `+data`
+> Normally, hooks can only be used inside UI components. But this one is different — it can also be used inside Vike hooks. We call it a *universal hook* (`useConfig()` is the only universal hook so far).
 
 ```jsx
 // pages/movies/+data.jsx
@@ -52,7 +42,7 @@ async function data(pageContext) {
 > ```
 
 
-## Inside components
+## UI components
 
 ```jsx
 import { useConfig } from 'vike-react/useConfig' // or vike-vue / vike-solid
@@ -81,7 +71,7 @@ function Movies() {
 
 ## `<Config>` & `<Head>`
 
-Inside components, you can also use `<Config>` and `<Head>`:
+For a more declarative usage, you can use `<Config>` and `<Head>` instead of `useConfig()`:
 
 ```jsx
 import { Config } from 'vike-react/Config' // or vike-vue / vike-solid
@@ -106,17 +96,41 @@ function Movies() {
 }
 ```
 
-> Both achieve the same:
-> - `<Head><something/></Head>`
-> - `<Config Head={<something/>}/>`
+> The `<Config>` and `<Head>` components are only `useConfig()` wrappers: the result is the same — they are just for convenience.
 >
-> There in't a `<Title>` component because it's expected to be a string: e.g. `<Title><span>hello</span></Title>` doesn't make sense.
+> For example, the following doesn't make any difference:
+> ```js
+> function Movies() {
+>   const data = useSomeDataFetchingTool()
+>
+>   useConfig({ // [!code ++]
+>     title: data.title, // [!code ++]
+>     Head: <meta property="og:image" content={data.previewImage} /> // [!code ++]
+>   }) // [!code ++]
+>
+>   return (
+>     <Config title={data.title} /> // [!code --]
+>     <Head>// [!code --]
+>       <meta property="og:image" content={data.previewImage} />// [!code --]
+>     </Head>// [!code --]
+>     {/* ... */}
+>   )
+> }
+> ```
+>
+> Likewise, `<Head><something/></Head>` and `<Config Head={<something/>}/>` are equivalent as well.
+
+> Unlike other frameworks, we didn't implement a `<Title>` component because its value must be a string — `<Title><b>Hello</b> World</Title>` doesn't make sense.
 
 
 ## Example: React Query
 
-The `useConfig()` hook is particularly relevant when using integrations that enables components to fetch data
-such as [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#readme) and [`vike-react-apollo`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-apollo#readme). Your components can then use the data they fetch to set `<head>` tags.
+The `useConfig()` hook is especially useful when using extensions such as
+[`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#readme)
+and
+[`vike-react-apollo`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-apollo#readme)
+that enable components to fetch data.
+It enables your components to use the data they fetch to set `<head>` tags.
 
 ```jsx
 import { useConfig } from 'vike-react/useConfig'
