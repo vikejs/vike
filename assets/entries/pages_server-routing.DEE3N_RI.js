@@ -1,0 +1,15 @@
+import{j as e,i as a,L as n,o as s}from"../chunks/chunk-ha9AVuwu.js";import{L as i}from"../chunks/chunk-CuZT7Xta.js";/* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      */import"../chunks/chunk-Bsj05D-O.js";import{M as l}from"../chunks/chunk-zVL297hs.js";/* empty css                      *//* empty css                      *//* empty css                      */import"../chunks/chunk-1kzUdxnp.js";const d=[{pageSectionId:"see-also",pageSectionLevel:2,pageSectionTitle:"See also"}];function r(o){const t={li:"li",p:"p",ul:"ul",...o.components};return e.jsxs(e.Fragment,{children:[e.jsx(t.p,{children:`Server(-side) Routing is the "old school way" of doing routing:
+when the user navigates to a new page,
+the old page is completely discarded and the HTML of the new page is loaded.`}),`
+`,e.jsx(l,{}),`
+`,e.jsx(t.p,{children:"The advantage of Server Routing is that it leads to a simpler architecture. The drawback is that some use cases aren't implementable with Server Routing."}),`
+`,e.jsxs(t.p,{children:["We further discuss the pros and cons of Server Routing at ",e.jsx(i,{href:"/server-routing-vs-client-routing#which-one-to-choose"}),"."]}),`
+`,e.jsx("h2",{id:"see-also",children:"See also"}),`
+`,e.jsxs(t.ul,{children:[`
+`,e.jsxs(t.li,{children:[`
+`,e.jsx(i,{href:"/client-routing"}),`
+`]}),`
+`,e.jsxs(t.li,{children:[`
+`,e.jsx(i,{href:"/server-routing-vs-client-routing"}),`
+`]}),`
+`]})]})}function p(o={}){const{wrapper:t}=o.components||{};return t?e.jsx(t,{...o,children:e.jsx(r,{...o})}):r(o)}const u=Object.freeze(Object.defineProperty({__proto__:null,default:p,pageSectionsExport:d},Symbol.toStringTag,{value:"Module"})),b={isClientRuntimeLoaded:{type:"computed",definedAtData:null,valueSerialized:{type:"js-serialized",value:!0}},onBeforeRenderEnv:{type:"computed",definedAtData:null,valueSerialized:{type:"js-serialized",value:{server:!0}}},dataEnv:{type:"computed",definedAtData:null,valueSerialized:{type:"js-serialized",value:null}},onRenderClient:{type:"standard",definedAtData:{filePathToShowToUser:"@brillout/docpress/renderer/onRenderClient",fileExportPathToShowToUser:[]},valueSerialized:{type:"pointer-import",value:s}},Page:{type:"standard",definedAtData:{filePathToShowToUser:"/pages/server-routing/+Page.mdx",fileExportPathToShowToUser:[]},valueSerialized:{type:"plus-file",exportValues:u}},hydrationCanBeAborted:{type:"standard",definedAtData:{filePathToShowToUser:"@brillout/docpress/config",fileExportPathToShowToUser:["default","hydrationCanBeAborted"]},valueSerialized:{type:"js-serialized",value:!0}},Layout:{type:"standard",definedAtData:{filePathToShowToUser:"@brillout/docpress/Layout",fileExportPathToShowToUser:[]},valueSerialized:{type:"pointer-import",value:n}},TopNavigation:{type:"standard",definedAtData:{filePathToShowToUser:"/pages/+TopNavigation.tsx",fileExportPathToShowToUser:[]},valueSerialized:{type:"plus-file",exportValues:a}}};export{b as configValuesSerialized};
