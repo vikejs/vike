@@ -493,7 +493,8 @@ const headings = [
   {
     level: 2,
     title: '`useConfig()`',
-    url: '/useConfig'
+    url: '/useConfig',
+    sectionTitles: ['UI components']
   },
   {
     level: 2,

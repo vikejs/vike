@@ -3,8 +3,8 @@ import { Link } from '@brillout/docpress'
 import { UiFrameworkExtension, ProvidedBy } from '../../components'
 
 Type: `string | null | ((pageContext) => string | null | undefined)`  
-Kind: overridable.  
-Environment: server, client.
+Environment: server, client  
+Cumulative: `false`  
 
 <ProvidedBy noCustomGuide />
 
@@ -29,12 +29,7 @@ export default {
 > </head>
 > ```
 
-As shown at:
- - <Link href="/head-tags#page-specific" /> you can override it.
- - <Link href="/head-tags#data" /> you can set it based on fetched data.
-
-
-## TypeScript
+You can set its value using a <Link href="/pageContext">`pageContext`</Link> function:
 
 ```tsx
 // pages/some-page/+title.js

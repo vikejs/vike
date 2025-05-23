@@ -1,8 +1,8 @@
 import { UiFrameworkExtension, ProvidedBy } from '../../components'
 import { Link, Warning } from '@brillout/docpress'
 
-Kind: cumulative.  
-Environment: server.
+Environment: server.  
+Cumulative: `true`.  
 
 <ProvidedBy noCustomGuide />
 
@@ -10,8 +10,10 @@ The `+Head` setting allows you to add `<head>` tags to your pages.
 
 > See <Link href="/head-tags" /> for a general introduction about `<head>` tags.
 
+Common use cases:
+
 ```jsx
-// /pages/+Head.{jsx,vue}
+// /pages/+Head.js
 // Environment: server
 
 import previewImage from './previewImage.jpg'
@@ -21,16 +23,29 @@ import iconMobile from './iconMobile.png'
 export function Head() {
   return <>
     {/* Icon shown in the browser tab (aka favicon) */
-    <link rel="icon" href={favicon}>
+    <link rel="icon" href={favicon} type="image/svg+xml">
 
     {/* Icon shown on mobile homescreens (PWA) */
-    <link rel="apple-touch-icon" href={iconMobile}>
+    <link rel="apple-touch-icon" href={iconMobile} type="image/svg+xml">
+
+    {/* Add script tag */}
+    <script type="text/javascript" src="https://example.com/some-script.js"></script>
 
     {/* Image shown when sharing on social sites (Twitter, WhatsApp, ...) */}
     <meta property="og:image" content={previewImage}>
+    {/* More Open Graph tags */}
+    <meta property="og:type" content="website">
+    <meta property="article:author" content="https://example.com/author">
 
-    {/* Adding a script tag */}
-    <script type="text/javascript" src="https://example.com/some-script.js"></script>
+    {/* Settings for search engine crawlers */}
+    <meta name="robots" content="index, follow">
+
+    {/* PWA settings */}
+    <meta name="theme-color" content="#00f">
+    <link rel="manifest" href="/manifest.webmanifest">
+
+    {/* CSP setting */}
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self'">
   </>
 }
 ```
@@ -38,106 +53,23 @@ export function Head() {
 > The `+Head` setting **only applies to the HTML** of the first page the user visits.
 >
 > As explained at <Link href="#only-html" />, you should use `+Head` only for `<head>` tags that are either:
-> - intended for **crawlers** (e.g. SEO or social sharing tags), or
-> - **static** (e.g. favicon or PWA settings that don't change between pages).
+> - **global** (e.g. favicon or PWA settings that don't change between pages), or
+> - intended for **crawlers** (e.g. SEO or social sharing tags).
 >
-> You cannot use it for dynamic tags intended for the user's browser such as `<title>` (use <Link href="/title">`+title`</Link> instead).
-
-
-## Using data
-
-You can set `<head>` tags based on <Link href="/data-fetching">fetched data</Link> (or <Link href="/pageContext">`pageContext`</Link>) by using:
-
-- <Link href="#head-inside-components">`<Head>` inside components</Link>
-- <Link href="#useconfig-inside-data">`useConfig()` inside `+data`</Link>
-- <Link href="#usedata-usepagecontext-inside-head">`useData()`/`usePageContext()` inside `+Head`</Link>
-
-### `<Head>` inside components
-
-You can use the <Link href="/Head">`<Head>` component</Link> inside your components:
-
-```jsx
-// Product.jsx
-
-import { Head } from 'vike-react/Head' // or vike-{vue,solid}
-
-function Product({ data }) {
-  return <>
-    <Head>
-      {/* Image shown when sharing on social sites (Twitter, WhatsApp, ...) */}
-      <meta property="og:image" content={data.product.image}>
-    </Head>
-    <h1>{data.product.name}</h1>
-    <p>{data.product.description}</p>
-  </>
-}
-```
-> Here `data` comes from the props passed from the parent component, but it can also come from a data-fetching component hook such as [`const { data } = useSuspenseQuery()`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#head-tags) when using [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#readme).
-
-> It also works inside `.vue` files (when using <Link href="/vike-vue">`vike-vue`</Link>).
-
-
-### `useConfig()` inside `+data`
-
-You can use the <Link href="/useConfig">`useConfig()` universal hook</Link> inside your <Link href="/data">`+data` hook</Link>.
-
-```jsx
-// pages/product/@id/+data.jsx
-
-import { useConfig } from 'vike-react/useConfig' // or vike-{vue,solid}
-
-export async function data() {
-  const config = useConfig()
-  const data = await fetchSomeData()
-  config({
-    Head: <>
-      {/* Image shown when sharing on social sites (Twitter, WhatsApp, ...) */}
-      <meta property="og:image" content={data.product.image}>
-    </>
-  })
-}
-```
-> For Vue you can use the following:
-> ```js
-> import { h } from 'vue'
-> config({
->   Head: h('meta', {
->     property: 'og:image',
->     content: data.product.image
->   })
-> })
-> ```
-
-### `useData()`/`usePageContext()` inside `+Head`
-
-The value defined by `+Head` is a component and thus you can use <Link href="/useData">`useData()`</Link> and <Link href="/usePageContext">`usePageContext()`</Link> as usual:
-
-```jsx
-// pages/product/@id/+Head.js
-
-import { useData } from 'vike-react/useData' // or vike-{vue,solid}
-
-export function Head() {
-  const data = useData()
-  return <>
-    {/* Image shown when sharing on social sites (Twitter, WhatsApp, ...) */}
-    <meta property="og:image" content={data.product.image}>
-  </>
-}
-```
+> You cannot use `+Head` for per-page tags intended for the user's browser such as `<title>` (use <Link href="/title">`+title`</Link> instead).
 
 
 ## Only HTML
 
-**Only rendered for the first page's HTML**
+**Only applies to the first page's HTML**
 
-The `<Head>` component is only used when rendering the HTML of the first page the user visits: the tags set by `<Head>` aren't updated upon <Link href="/client-routing">client-side page navigation</Link>.
+The `+Head` component is only rendered for the HTML of the first page the user visits: the tags set by `+Head` aren't updated upon <Link href="/client-routing">client-side page navigation</Link>.
 
 <div style={{height: 16}} />
 
 **Limitation**
 
-The most notable limitation is that the `+Head` setting cannot be used to set the `<title>` value, because the title isn't updated when navigating to a page with a different title.
+The most notable limitation is that the `+Head` setting cannot be used to set the value of the `<title>` tag, because its value won't update when navigating to a page with a different title.
 
 > See the example below for a more detailed explanation.
 
@@ -210,7 +142,7 @@ If the first URL the user visits is `/` then the rendered HTML is:
 
 If the user then clicks on a link `<a href="/about">About us</a>`, then Vike does client-side navigation and the page's title isn't updated: the browser sill shows `Welcome` even though the URL is now `/about`. That's because the <Link href="/client-routing">HTML isn't used upon client-side navigation (DOM manipulations are made instead)</Link> while `+Head` is only used when generating HTML.
 
-> The `<Head>` component is only loaded on the server-side and only used when rendering HTML of the first page by design.
+> The `+Head` component is only loaded on the server-side and only used when rendering HTML of the first page by design.
 
 This isn't an issue for the `<meta name="description">` tag because it's intended for search engines bots which
 crawl your website using HTML.
@@ -226,9 +158,10 @@ The `+Head` setting is cumulative. For example:
 
 import favicon from './favicon.png'
 
+// Applies to all pages (cannot be overridden)
 export const Head = () =>
-  // This favicon applies to all pages
-  <link rel="icon" href={favicon}>
+  // All pages share the same favicon
+  <link rel="icon" href={favicon} type="image/svg+xml">
 ```
 
 ```jsx
@@ -251,7 +184,7 @@ To apply different `+Head` settings to different pages:
 import favicon from './favicon.png'
 
 // Applies to all marketing pages
-export const Head = () => <link rel="icon" href={favicon}>
+export const Head = () => <link rel="icon" href={favicon} type="image/svg+xml">
 ```
 
 ```jsx
@@ -261,7 +194,7 @@ export const Head = () => <link rel="icon" href={favicon}>
 import favicon from './favicon.png'
 
 // Applies to all admin pages
-export const Head = () => <link rel="icon" href={favicon}>
+export const Head = () => <link rel="icon" href={favicon} type="image/svg+xml">
 ```
 
 > See: <Link href="/config#inheritance"/>
