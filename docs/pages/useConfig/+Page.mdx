@@ -210,6 +210,30 @@ function Movies() {
 }
 ```
 
+## HTML Streaming
+
+If you use <Link href="/stream">HTML Streaming</Link> together with <Link href="#ui-components">`useConfig()` inside a UI component</Link>, some `<head>` tags may be missing from the streamed HTML.
+
+This happens when a component calls `useConfig()` after the HTML stream has already started and the entire `<head>` block has already been sent to the client — it's too late to inject additional `<head>` tags.
+
+#### Bots
+
+If you use <Link href="/vike-react">`vike-react`</Link> then note that it uses [`react-streaming`](https://github.com/brillout/react-streaming) which automatically disables HTML Streaming for crawlers (e.g. Googlebot), ensuring crawlers always get all `<head>` tags. See [`react-streaming` Docs > Bots](https://github.com/brillout/react-streaming#bots).
+
+You can use `$ curl` to see the HTML response that bots and crawlers receive:
+
+```bash
+# What bots and crawls get: no HTML Streaming, just "classic SSR"
+$ curl http://localhost:3000/movies
+# What human users get: HTML Streaming
+$ curl http://localhost:3000/movies -N -H "User-Agent: chrome"
+```
+
+#### `+title`
+
+If `<Config title={'some-title'}>` runs after the `<head>` block has already been sent, the HTML snippet `<script>document.title = 'some-title'</script>` is injected to dynamically update the page title.
+
+Currently, `+title` is the only setting that uses this mechanism.
 
 ## See also
 
