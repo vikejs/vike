@@ -177,30 +177,3 @@ function Movies() {
   )
 }
 ```
-
-
-## Serialization Error
-
-You may get a serialization error while using `useConfig()`.
-
-```
-Cannot serialize config set by useConfig()
-```
-
-The most common reason is because you're using `useConfig()` in a `+data.js` to modify a non-serializable config.
-
-The workaround is to define <Link href="/data#environment">`+data.shared.js` instead of `+data.js`</Link>.
-
-```js
-// pages/some-page/+data.js // [!code --]
-// pages/some-page/+data.shared.js // [!code ++]
-
-import { useConfig } from 'vike-react/useConfig' // or vike-vue / vike-solid
-
-export async function data (pageContext) {
-  const config = useConfig()
-  // ...
-}
-```
-
-> The issue here is that defining the <Link href="/data">`data()` hook</Link> inside a `+data.js` file means that it's always called on the server-side, even upon client-side page navigation. Consequently, upon client-side page navigation, the data fetched on the server-side needs to be serialized and passed to the client-side.
