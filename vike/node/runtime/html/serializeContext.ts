@@ -86,12 +86,9 @@ function serializeObject(
           if (isJsonSerializerError(err)) {
             pathString = err.pathString
           }
-          assertUsage(
-            false,
-            `Cannot serialize config ${h(
-              pathString
-            )} set by useConfig(), see https://vike.dev/useConfig#serialization-error`
-          )
+          // There used to be a `## Serialization Error` section in the docs but we removed it at:
+          // https://github.com/vikejs/vike/commit/c9da2f577db01bd1c8f72265ff83e78484ddc2c0
+          assertUsage(false, `Cannot serialize config value ${h(pathString)} set by useConfig()`)
         }
 
         // Non-serializable property set by the user
