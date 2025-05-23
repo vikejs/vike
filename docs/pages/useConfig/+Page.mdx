@@ -220,7 +220,7 @@ This happens when a component calls `useConfig()` after the HTML stream has alre
 
 If you use <Link href="/vike-react">`vike-react`</Link> then note that it uses [`react-streaming`](https://github.com/brillout/react-streaming) which automatically disables HTML Streaming for crawlers (e.g. Googlebot), ensuring crawlers always get all `<head>` tags. See [`react-streaming` Docs > Bots](https://github.com/brillout/react-streaming#bots).
 
-You can use `$ curl` to see the HTML response that bots and crawlers receive:
+You can use [`$ curl`](https://curl.se) to see the HTML response that bots and crawlers receive:
 
 ```bash
 # What bots and crawls get: no HTML Streaming, just "classic SSR"
