@@ -2,24 +2,25 @@ import { Link, Warning } from '@brillout/docpress'
 
 By design Vike doesn't include built-in support for [API routes](https://nextjs.org/docs/api-routes/introduction).
 
-> We believe API tools should be developed independently of the frontend framework.
+> We believe API tools <Link href="/why#flourishing-do-one-thing-do-it-well-ecosystem">should be developed independently</Link> of Vike.
 
 > See <Link href="/data-fetching" /> for a general introduction about fetching data with Vike.
 
 We generally recommend using [Telefunc](https://telefunc.com) (or another RPC tool) instead of API routes, see <Link href="/RPC" />.
 
 That said, creating API routes can make sense:
-- For specific needs where Telefunc doesn't fit, most notably file upload.
-- If you only need a handful of endpoints, creating a couple of API routes can be simpler than using Telefunc and thus adding yet another tool to your stack.
+- For specific needs where Telefunc doesn't fit, such as file uploads or fine-grained HTTP cache control.
+- If you only need a handful of endpoints, creating a couple of API routes can be simpler than adding a new tool to your stack.
 
-To create API routes, we recommend to simply use your server (such as [Express.js](https://expressjs.com) or [Hono](https://hono.dev)) to create new HTTP `GET`/`POST` endpoints.
+To achieve a similar DX as API routes, you can use a server like [Express.js](https://expressjs.com) or [Hono](https://hono.dev) to create server routes that handle HTTP `GET`/`POST` endpoints.
 
->  Make sure Vike's middleware is your last middleware. (Otherwise <Link href="/renderPage">Vike's middleware</Link>, being a catch-all middleware, overrides your API routes.)
+>  Make sure <Link href="/renderPage">Vike's middleware</Link> is your last middleware. (It's a catch-all middleware so it would override your API routes.)
 
->  You may need to manually restart your server for changes to take effect, see [#562](https://github.com/vikejs/vike/issues/562).
+>  If you don't use <Link href="/server">`vike-server`</Link>, then you may need to manually restart your server for changes to take effect.
 
 
 ## See also
 
 - <Link href="/RPC" />
 - <Link href="/data-fetching" />
+- <Link href="/server" />
