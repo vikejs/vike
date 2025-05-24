@@ -212,9 +212,11 @@ function Movies() {
 
 ## HTML Streaming
 
-If you use <Link href="/stream">HTML Streaming</Link> together with <Link href="#ui-components">`useConfig()` inside a UI component</Link>, some `<head>` tags may be missing from the streamed HTML.
+If you use <Link href="/stream">HTML Streaming</Link> together with <Link href="#ui-components">`useConfig()` inside UI components</Link>, some `<head>` tags may be missing from the streamed HTML.
 
-This happens when a component calls `useConfig()` after the HTML stream has already started and the entire `<head>` block has already been sent to the client — it's too late to inject additional `<head>` tags.
+This happens when a component calls `useConfig()` after the HTML stream has already started and the whole `<head>` block has already been sent to the client — it's too late to inject additional `<head>` tags.
+
+This might seem like an issue, but it actually isn't — as we explain below.
 
 #### Bots
 
@@ -229,11 +231,15 @@ $ curl http://localhost:3000/movies
 $ curl http://localhost:3000/movies -N -H "User-Agent: chrome"
 ```
 
+> Consequently, `<head>` tags intended for bots (SEO, PWA settings, ...) are guaranteed to be included in the HTML. They might be missing for human users, but that isn't an issue.
+
 #### `+title`
 
 If `<Config title={'some-title'}>` runs after the `<head>` block has already been sent, the HTML snippet `<script>document.title = 'some-title'</script>` is injected to dynamically update the page title.
 
 Currently, `+title` is the only setting that uses such mechanism.
+
+> Consequently, the `<title>` tag is guaranteed to be included in the HTML for bots (see section above), while human users see an up-to-date page title.
 
 ## See also
 
