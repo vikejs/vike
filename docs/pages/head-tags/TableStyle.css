@@ -1,3 +1,14 @@
-#head-settings-table ul {
-  margin: 5px !important;
+#head-settings-table {
+  & pre {
+    margin: 0px !important;
+    & code {
+      margin: 0px !important;
+      padding: 6px 0 !important;
+    }
+  }
+  & p {
+    margin: 0px !important;
+    margin-bottom: 4px !important;
+    font-size: 0.95em !important;
+  }
 }
