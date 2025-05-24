@@ -82,4 +82,8 @@ Misc:
   - https://github.com/vikejs/vike-react/issues/105#issuecomment-2061601329
 - Text fragments https://github.com/vikejs/vike/issues/2114
 - Inifinte loop guards, e.g. for infinite redirections
-- "Open Internals"
+- "Open Internals" (e.g. `pageContext._*`)
+- Out-of-the-box state management support with Vike extensions
+  - Compare with:
+    - https://redux.js.org/usage/nextjs
+    - https://zustand.docs.pmnd.rs/guides/nextjs
