@@ -5,13 +5,42 @@ import { TableStyle } from './TableStyle'
 Use following settings to set `<head>` tags (aka document metadata).
 
 <TableStyle>
-| Setting                                         | HTML
-|------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| <Link href="/title">`+title`</Link>             | `<title>` <br /> `<meta property="og:title">`                                      |
-| <Link href="/description">`+description`</Link> | `<meta name="description">` <br /> `<meta property="og:description">`                          |
-| <Link href="/image">`+image`</Link>             | `<meta property="og:image">` (preview image upon URL sharing) <br /> `<meta name="twitter:card" content="summary_large_image">` |
-| <Link href="/viewport">`+viewport`</Link>       | `<meta name="viewport">`                                                                                              |
-| <Link href="/Head">`+Head`</Link>               | Other `<head>` tags such as: <br /> `<link rel="icon">` (favicon) <br /> `<link rel="apple-touch-icon">` (mobile icon) <br /> `<script>` <br /> ... |
+<table>
+  <thead>
+    <tr>
+      <th>Setting</th>
+      <th>HTML</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><Link href="/title">`+title`</Link></td>
+      <td>`<title>` <br /> `<meta property="og:title">`</td>
+    </tr>
+    <tr>
+      <td><Link href="/description">`+description`</Link></td>
+      <td>`<meta name="description">` <br /> `<meta property="og:description">`</td>
+    </tr>
+    <tr>
+      <td><Link href="/image">`+image`</Link></td>
+      <td>`<meta property="og:image">` (preview image upon URL sharing) <br /> `<meta name="twitter:card" content="summary_large_image">`</td>
+    </tr>
+    <tr>
+      <td><Link href="/viewport">`+viewport`</Link></td>
+      <td>`<meta name="viewport">`</td>
+    </tr>
+    <tr>
+      <td><Link href="/Head">`+Head`</Link></td>
+      <td>
+        Other `<head>` tags such as: <br />
+        `<link rel="icon">` (favicon) <br />
+        `<link rel="apple-touch-icon">` (mobile icon) <br />
+        `<script>` <br />
+        ...
+      </td>
+    </tr>
+  </tbody>
+</table>
 </TableStyle>
 
 > See <Link href="/settings#html-shell" doNotInferSectionTitle /> for other settings that also modify the page's HTML shell.
