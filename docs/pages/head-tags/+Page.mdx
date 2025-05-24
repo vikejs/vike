@@ -16,32 +16,50 @@ Use following settings to set `<head>` tags (aka document metadata).
     <tr>
       <td><Link href="/title">`+title`</Link></td>
       <td>
-      ```html
-      <title>
-      <meta property="og:title">
-      ```
+        ```html
+        <title>
+        <meta property="og:title">
+        ```
       </td>
     </tr>
     <tr>
       <td><Link href="/description">`+description`</Link></td>
-      <td>`<meta name="description">` <br /> `<meta property="og:description">`</td>
+      <td>
+        ```html
+        <meta name="description">
+        <meta property="og:description">
+        ```
+      </td>
     </tr>
     <tr>
       <td><Link href="/image">`+image`</Link></td>
-      <td>`<meta property="og:image">` (preview image upon URL sharing) <br /> `<meta name="twitter:card" content="summary_large_image">`</td>
+      <td>
+        ```html
+        <meta property="og:image">
+        <meta name="twitter:card" content="summary_large_image">
+        ```
+        (Preview image upon sharing URLs.)
+      </td>
     </tr>
     <tr>
       <td><Link href="/viewport">`+viewport`</Link></td>
-      <td>`<meta name="viewport">`</td>
+      <td>
+        ```html
+        <meta name="viewport">
+        ```
+        (For mobile responsive design.)
+      </td>
     </tr>
     <tr>
       <td><Link href="/Head">`+Head`</Link></td>
       <td>
-        Other `<head>` tags such as: <br />
-        `<link rel="icon">` (favicon) <br />
-        `<link rel="apple-touch-icon">` (mobile icon) <br />
-        `<script>` <br />
-        ...
+        Other `<head>` tags such as:
+        ```html
+        <link rel="icon"> <!-- Favicon -->
+        <link rel="apple-touch-icon"> <!-- Mobile icon -->
+        <script></script>
+        <!-- ... -->
+        ```
       </td>
     </tr>
   </tbody>
