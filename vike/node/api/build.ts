@@ -19,6 +19,7 @@ async function build(options: APIOptions = {}): Promise<{}> {
   if (viteConfigFromUserEnhanced) viteConfigFromUserEnhanced._viteConfigFromUserEnhanced = viteConfigFromUserEnhanced
 
   if (vikeConfig.global.config.vite6BuilderApp) {
+    // This assertion isn't reliable: the user may still use a Vite version older than 6.0.0 — see https://github.com/vitejs/vite/pull/19355
     assertVersion('Vite', version, '6.0.0')
     const builder = await createBuilder(viteConfigFromUserEnhanced)
     // See Vite plugin vike:build:pluginBuildApp
