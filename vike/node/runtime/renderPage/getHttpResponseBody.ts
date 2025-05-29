@@ -168,7 +168,7 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
     assert(['a ', 'an ', 'the '].some((s) => streamName.startsWith(s)))
     assert(renderHook)
     const { hookFilePath, hookName } = renderHook
-    return `Make sure the ${hookName}() defined by ${hookFilePath} hook provides ${streamName} instead`
+    return `Make sure the ${hookName}() hook defined by ${hookFilePath} provides ${streamName} instead`
   }
 }
 
