@@ -24,7 +24,7 @@ export type { DefinedAtFilePath }
 import type { ConfigValueSerialized } from './serialize/PageConfigSerialized.js'
 import type { LocationId } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/filesystemRouting.js'
 import type { FilePath } from './FilePath.js'
-import type { ConfigDefinitions } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
+import type { ConfigDefinitionsInternal } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
 import type { PlusFile } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/getPlusFilesAll.js'
 import type { Operation } from '../../node/api/types.js'
 
@@ -61,7 +61,7 @@ type PageConfigGlobalRuntime = {
 
 /** Page config, build-time data structure */
 type PageConfigBuildTime = PageConfigCommon & {
-  configDefinitions: ConfigDefinitions
+  configDefinitions: ConfigDefinitionsInternal
   plusFiles: PlusFile[]
   configValueSources: ConfigValueSources
   configValuesComputed: ConfigValuesComputed
@@ -69,7 +69,7 @@ type PageConfigBuildTime = PageConfigCommon & {
 /** Global config that applies to all pages, build-time data structure */
 type PageConfigGlobalBuildTime = {
   configValueSources: ConfigValueSources
-  configDefinitions: ConfigDefinitions
+  configDefinitions: ConfigDefinitionsInternal
   configValuesComputed?: undefined
 }
 

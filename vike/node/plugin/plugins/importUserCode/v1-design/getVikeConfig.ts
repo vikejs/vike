@@ -47,7 +47,7 @@ import type {
 import type { Config } from '../../../../../shared/page-configs/Config.js'
 import {
   configDefinitionsBuiltIn,
-  type ConfigDefinitions,
+  type ConfigDefinitionsInternal,
   type ConfigDefinitionInternal,
   type ConfigDefinition
 } from './getVikeConfig/configDefinitionsBuiltIn.js'
@@ -298,7 +298,7 @@ async function resolveConfigDefinitions(
   const configDefinitionsLocal: Record<
     LocationId,
     {
-      configDefinitions: ConfigDefinitions
+      configDefinitions: ConfigDefinitionsInternal
       // plusFiles that live at locationId
       plusFiles: PlusFile[]
       // plusFiles that influence locationId
@@ -342,7 +342,7 @@ async function resolveConfigDefinitions(
 // - The value files of *built-in* configs are already loaded at `getPlusFilesAll()`.
 async function loadCustomConfigBuildTimeFiles(
   plusFiles: PlusFilesByLocationId | PlusFile[],
-  configDefinitions: ConfigDefinitions,
+  configDefinitions: ConfigDefinitionsInternal,
   userRootDir: string,
   esbuildCache: EsbuildCache
 ): Promise<void> {
@@ -444,7 +444,7 @@ function assertGlobalConfigLocation(
   configName: string,
   sources: ConfigValueSource[],
   plusFilesAll: PlusFilesByLocationId,
-  configDefinitionsGlobal: ConfigDefinitions
+  configDefinitionsGlobal: ConfigDefinitionsInternal
 ) {
   // Determine existing global +config.js files
   const configFilePathsGlobal: string[] = []
@@ -933,8 +933,8 @@ function getConfigNamesSetByPlusFile(plusFile: PlusFile): string[] {
 function getConfigDefinitions(
   plusFilesRelevant: PlusFile[],
   filter?: (configDef: ConfigDefinitionInternal) => boolean
-): ConfigDefinitions {
-  let configDefinitions: ConfigDefinitions = { ...configDefinitionsBuiltIn }
+): ConfigDefinitionsInternal {
+  let configDefinitions: ConfigDefinitionsInternal = { ...configDefinitionsBuiltIn }
 
   // Add user-land meta configs
   plusFilesRelevant
@@ -978,7 +978,7 @@ function getConfigDefinitions(
 function assertMetaUsage(
   metaVal: unknown,
   metaConfigDefinedAt: `Config meta defined at ${string}` | null
-): asserts metaVal is ConfigDefinitions {
+): asserts metaVal is ConfigDefinitionsInternal {
   if (!isObject(metaVal)) {
     assert(metaConfigDefinedAt) // We expect internal effects to return a valid meta value
     assertUsage(
@@ -1039,7 +1039,7 @@ function assertMetaUsage(
 // Test: https://github.com/vikejs/vike/blob/441a37c4c1a3b07bb8f6efb1d1f7be297a53974a/test/playground/vite.config.ts#L39
 function applyEffectsConfVal(
   configValueSources: ConfigValueSources,
-  configDefinitions: ConfigDefinitions,
+  configDefinitions: ConfigDefinitionsInternal,
   plusFilesAll: PlusFilesByLocationId
 ) {
   objectEntries(configDefinitions).forEach(([configNameEffect, configDefEffect]) => {
@@ -1060,7 +1060,7 @@ function applyEffectsConfVal(
   })
 }
 // Test: https://github.com/vikejs/vike/blob/441a37c4c1a3b07bb8f6efb1d1f7be297a53974a/test/playground/pages/config-meta/effect/e2e-test.ts#L16
-function applyEffectsMetaEnv(configValueSources: ConfigValueSources, configDefinitions: ConfigDefinitions) {
+function applyEffectsMetaEnv(configValueSources: ConfigValueSources, configDefinitions: ConfigDefinitionsInternal) {
   objectEntries(configDefinitions).forEach(([configNameEffect, configDefEffect]) => {
     const sourceEffect = configValueSources[configNameEffect]?.[0]
     if (!sourceEffect) return
@@ -1096,7 +1096,7 @@ function applyEffectConfVal(
   configValueSources: ConfigValueSources,
   configNameEffect: string,
   configDefEffect: ConfigDefinitionInternal,
-  configDefinitions: ConfigDefinitions,
+  configDefinitions: ConfigDefinitionsInternal,
   plusFilesAll: PlusFilesByLocationId
 ) {
   objectEntries(configModFromEffect).forEach(([configNameTarget, configValue]) => {
@@ -1159,7 +1159,7 @@ function applyEffectMetaEnv(
   })
 }
 
-function getComputed(configValueSources: ConfigValueSources, configDefinitions: ConfigDefinitions) {
+function getComputed(configValueSources: ConfigValueSources, configDefinitions: ConfigDefinitionsInternal) {
   const configValuesComputed: ConfigValuesComputed = {}
   objectEntries(configDefinitions).forEach(([configName, configDef]) => {
     if (!configDef._computed) return
@@ -1371,7 +1371,7 @@ function getConfigEnvValue(
   return val
 }
 
-function getConfigDefinitionOptional(configDefinitions: ConfigDefinitions, configName: string) {
+function getConfigDefinitionOptional(configDefinitions: ConfigDefinitionsInternal, configName: string) {
   return configDefinitions[configName] ?? null
 }
 

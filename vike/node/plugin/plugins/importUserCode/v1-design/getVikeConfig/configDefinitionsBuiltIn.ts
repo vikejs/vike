@@ -1,6 +1,6 @@
 export { configDefinitionsBuiltIn }
 export type { ConfigDefinition }
-export type { ConfigDefinitions }
+export type { ConfigDefinitionsInternal }
 export type { ConfigDefinitionInternal }
 export type { ConfigEffect }
 
@@ -85,7 +85,7 @@ type ConfigDefinitionInternal = Omit<ConfigDefinition, 'env'> & {
   env: ConfigEnvInternal
 }
 
-type ConfigDefinitions = Record<
+type ConfigDefinitionsInternal = Record<
   string, // configName
   ConfigDefinitionInternal
 >

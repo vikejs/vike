@@ -16,7 +16,7 @@ import pc from '@brillout/picocolors'
 import { type PointerImportData, parsePointerImportData } from './pointerImports.js'
 import { getConfigFileExport } from './getConfigFileExport.js'
 import { PointerImport, resolvePointerImportData } from './resolvePointerImport.js'
-import type { ConfigDefinitionInternal, ConfigDefinitions } from './configDefinitionsBuiltIn.js'
+import type { ConfigDefinitionInternal, ConfigDefinitionsInternal } from './configDefinitionsBuiltIn.js'
 import { getConfigDefinedAt } from '../../../../../../shared/page-configs/getConfigDefinedAt.js'
 
 assertIsNotProductionRuntime()
@@ -32,7 +32,7 @@ async function loadPointerImport(
   pointerImport: PointerImportLoaded,
   userRootDir: string,
   configName: string,
-  configDefinitions: ConfigDefinitions,
+  configDefinitions: ConfigDefinitionsInternal,
   esbuildCache: EsbuildCache
 ): Promise<unknown> {
   // The value of `extends` was already loaded and already used: we don't need the value of `extends` anymore
@@ -67,7 +67,7 @@ type PointerImportLoaded = PointerImport &
 // Load +{configName}.js
 async function loadValueFile(
   interfaceValueFile: PlusFileValue,
-  configDefinitions: ConfigDefinitions,
+  configDefinitions: ConfigDefinitionsInternal,
   userRootDir: string,
   esbuildCache: EsbuildCache
 ): Promise<void> {
