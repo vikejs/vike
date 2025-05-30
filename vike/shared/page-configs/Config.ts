@@ -642,7 +642,7 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/require
    */
-  require?: Record<string, string>
+  require?: Record<string, string | { version: string; optional?: boolean }>
 
   /** Whether the page scrolls to the top upon navigation.
    *

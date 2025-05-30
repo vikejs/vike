@@ -2,13 +2,11 @@ export { assertExtensionsConventions }
 export { assertExtensionsRequire }
 
 import pc from '@brillout/picocolors'
-import { isObjectOfStrings } from '../../../../../../utils/isObjectOfStrings.js'
-import { PROJECT_VERSION, assert, assertUsage, assertWarning, findPackageJson } from '../../../../utils.js'
+import { PROJECT_VERSION, assert, assertUsage, assertWarning, findPackageJson, isObject } from '../../../../utils.js'
 import { getConfVal } from '../getVikeConfig.js'
 import type { PlusFile } from './getPlusFilesAll.js'
 import path from 'path'
 import semver from 'semver'
-import { PageConfigBuildTime } from '../../../../../../shared/page-configs/PageConfig.js'
 
 function assertExtensionsConventions(plusFile: PlusFile): void {
   assertExtensionName(plusFile)
@@ -59,7 +57,7 @@ function assertExtensionsRequire(plusFiles: PlusFile[]): void {
 
   // Enforce `require`
   plusFilesRelevantList.forEach((plusFile) => {
-    const require = getConfigRequireValue(plusFile)
+    const require = resolveRequireSetting(plusFile)
     if (!require) return
     const name = getNameValue(plusFile)
     const filePathToShowToUser = getFilePathToShowToUser(plusFile)
@@ -69,41 +67,57 @@ function assertExtensionsRequire(plusFiles: PlusFile[]): void {
         'require'
       )} in ${filePathToShowToUser}.`
     )
-    Object.entries(require).forEach(([reqName, reqVersion]) => {
-      const errBase = `${pc.bold(name)} requires ${pc.bold(reqName)}`
+    Object.entries(require).forEach(([reqName, req]) => {
+      const errBase = `${pc.bold(name)} requires ${pc.bold(reqName)}` as const
       if (reqName === 'vike') {
-        assertUsage(
-          isVersionRange(PROJECT_VERSION, reqVersion),
-          `${errBase} version ${pc.bold(reqVersion)}, but ${pc.bold(PROJECT_VERSION)} is installed.`
-        )
+        let errMsg = `${errBase} version ${pc.bold(req.version)}, but ${pc.bold(PROJECT_VERSION)} is installed.`
+        if (req.optional) {
+          errMsg += " Either update it, or remove it (it's an optional peer dependency)."
+        }
+        assertUsage(isVersionRange(PROJECT_VERSION, req.version), errMsg)
         return
       }
       const extensionVersion = extensions[reqName]
-      assertUsage(extensionVersion, `${errBase}.`)
+      if (!extensionVersion) {
+        if (req.optional) {
+          return
+        } else {
+          assertUsage(false, `${errBase}.`)
+        }
+      }
       assertUsage(
-        isVersionRange(extensionVersion, reqVersion),
-        `${errBase} version ${pc.bold(reqVersion)}, but ${pc.bold(extensionVersion)} is installed.`
+        isVersionRange(extensionVersion, req.version),
+        `${errBase} version ${pc.bold(req.version)}, but ${pc.bold(extensionVersion)} is installed.`
       )
     })
   })
 }
 
-function getConfigRequireValue(plusFile: PlusFile): null | Record<string, string> {
+type RequireSetting = Record<string, { version: string; optional: boolean }>
+function resolveRequireSetting(plusFile: PlusFile): null | RequireSetting {
   const confVal = getConfVal(plusFile, 'require')
   if (!confVal) return null
   assert(confVal.valueIsLoaded)
-  const require = confVal.value
+  const requireValue = confVal.value
   const { filePathToShowToUserResolved } = plusFile.filePath
   assert(filePathToShowToUserResolved)
   assertUsage(
-    isObjectOfStrings(require),
-    `The setting ${pc.bold(
-      'require'
-    )} defined at ${filePathToShowToUserResolved} should be an object with string values (${pc.bold(
-      'Record<string, string>'
-    )}).`
+    isObject(requireValue),
+    `The setting ${pc.bold('+require')} defined at ${filePathToShowToUserResolved} should be an object`
   )
-  return require
+  const requireSetting: RequireSetting = {}
+  Object.entries(requireValue).forEach(([reqName, req]) => {
+    if (typeof req === 'string') {
+      requireSetting[reqName] = { version: req, optional: false }
+      return
+    }
+    if (isObject(req)) {
+      requireSetting[reqName] = req as any
+      return
+    }
+    assertUsage(false, `Invalid +require[${JSON.stringify(reqName)}] value ${pc.cyan(JSON.stringify(req))}`)
+  })
+  return requireSetting
 }
 
 function getNameValue(plusFile: PlusFile): null | string {
