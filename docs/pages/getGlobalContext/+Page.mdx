@@ -7,18 +7,18 @@ Access global information about your app, see <Link href="/globalContext" />.
 For example, on the server-side, it can be used to access <Link href="/preloading#assets-manifest">the assets manifest</Link>:
 
 ```js
-// Environment: server
+// Environment: server, client
 
 import { getGlobalContext } from 'vike'
 
 const globalContext = await getGlobalContext()
 
 // The assets manifest
-console.log(globalContext.assetsManifest)
+if (!globalContext.isClientSide) console.log(globalContext.assetsManifest)
 
 // Subset of the Vite configuration passed to the runtime. (By default the
 // Vite configuration is available only at build-time.)
-console.log(globalContext.viteRuntimeInfo)
+if (!globalContext.isClientSide) console.log(globalContext.viteRuntimeInfo)
 ```
 
 `getGlobalContext()` can be invoked at any time, independent of page rendering. For example, it can be one of the first functions called when your server starts — before it even receives any HTTP requests.
