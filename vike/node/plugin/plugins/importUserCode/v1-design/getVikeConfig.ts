@@ -49,7 +49,8 @@ import {
   configDefinitionsBuiltIn,
   type ConfigDefinitionsInternal,
   type ConfigDefinitionInternal,
-  type ConfigDefinition
+  type ConfigDefinition,
+  type ConfigDefinitions
 } from './getVikeConfig/configDefinitionsBuiltIn.js'
 import {
   type LocationId,
@@ -907,7 +908,7 @@ function isDefiningPageConfig(configName: string): boolean {
   return ['Page', 'route'].includes(configName)
 }
 function resolveIsGlobalValue(
-  configDefGlobal: ConfigDefinition['global'],
+  configDefGlobal: ConfigDefinitionInternal['global'],
   source: ConfigValueSource,
   plusFilesAll: PlusFilesByLocationId
 ) {
@@ -949,15 +950,22 @@ function getConfigDefinitions(
 
       // Set configDef._userEffectDefinedAtFilePath
       Object.entries(meta).forEach(([configName, configDef]) => {
+        if ('isDefinedByPeerDependency' in configDef) return
         if (!configDef.effect) return
         assert(plusFile.isConfigFile)
-        configDef._userEffectDefinedAtFilePath = {
+        ;(configDef as ConfigDefinitionInternal)._userEffectDefinedAtFilePath = {
           ...plusFile.filePath,
           fileExportPathToShowToUser: ['default', 'meta', configName, 'effect']
         }
       })
 
       objectEntries(meta).forEach(([configName, configDefinitionUserLand]) => {
+        if ('isDefinedByPeerDependency' in configDefinitionUserLand) {
+          configDefinitionUserLand = {
+            env: { client: false, server: false, config: false },
+            ...(configDefinitionUserLand as Record<string, unknown>)
+          }
+        }
         // User can override an existing config definition
         configDefinitions[configName] = {
           ...configDefinitions[configName],
@@ -978,7 +986,7 @@ function getConfigDefinitions(
 function assertMetaUsage(
   metaVal: unknown,
   metaConfigDefinedAt: `Config meta defined at ${string}` | null
-): asserts metaVal is ConfigDefinitionsInternal {
+): asserts metaVal is ConfigDefinitions {
   if (!isObject(metaVal)) {
     assert(metaConfigDefinedAt) // We expect internal effects to return a valid meta value
     assertUsage(
@@ -996,6 +1004,8 @@ function assertMetaUsage(
         )}: it should be an object instead.`
       )
     }
+
+    if (def.isDefinedByPeerDependency) return
 
     // env
     let configEnv: ConfigEnvInternal
@@ -1144,6 +1154,7 @@ function applyEffectMetaEnv(
     }
     assertMetaUsage(configValue, configDefinedAt)
     objectEntries(configValue).forEach(([configTargetName, configTargetDef]) => {
+      assert(!('isDefinedByPeerDependency' in configTargetDef))
       {
         const keys = Object.keys(configTargetDef)
         assertUsage(keys.includes('env'), notSupported)

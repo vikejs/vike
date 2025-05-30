@@ -1,5 +1,6 @@
 export { configDefinitionsBuiltIn }
 export type { ConfigDefinition }
+export type { ConfigDefinitions }
 export type { ConfigDefinitionsInternal }
 export type { ConfigDefinitionInternal }
 export type { ConfigEffect }
@@ -20,7 +21,8 @@ import { getConfigDefinedAt, type ConfigDefinedAt } from '../../../../../../shar
  *
  * https://vike.dev/meta
  */
-type ConfigDefinition = {
+type ConfigDefinition = ConfigDefinition_ | ConfigDefinitionDefinedByPeerDependency
+type ConfigDefinition_ = {
   /** In what environment(s) the config value is loaded.
    *
    * https://vike.dev/meta
@@ -58,6 +60,12 @@ type ConfigDefinition = {
   // TODO/now implement
   type?: string | string[]
 }
+type ConfigDefinitionDefinedByPeerDependency = {
+  /**
+   * Omit the "unknown config" error without defining the config — useful for optional peer dependencies: for example, vike-server sets +stream.require which is defined by vike-{react,vue,solid} but some users don't use vike-{react,vue,solid}
+   */
+  isDefinedByPeerDependency: true
+}
 
 /**
  * Function called when the config value is defined.
@@ -78,13 +86,17 @@ type ConfigEffect = (config: {
 }) => Config | undefined
 
 /** For Vike internal use */
-type ConfigDefinitionInternal = Omit<ConfigDefinition, 'env'> & {
+type ConfigDefinitionInternal = Omit<ConfigDefinition_, 'env'> & {
   _computed?: (configValueSources: ConfigValueSources) => unknown
   _valueIsFilePath?: true
   _userEffectDefinedAtFilePath?: DefinedAtFilePath
   env: ConfigEnvInternal
 }
 
+type ConfigDefinitions = Record<
+  string, // configName
+  ConfigDefinition
+>
 type ConfigDefinitionsInternal = Record<
   string, // configName
   ConfigDefinitionInternal
