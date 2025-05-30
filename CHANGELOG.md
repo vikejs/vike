@@ -1,3 +1,19 @@
+## [0.4.231](https://github.com/vikejs/vike/compare/v0.4.230...v0.4.231) (2025-05-30)
+
+
+### Bug Fixes
+
+* apply +require earlier ([dd11364](https://github.com/vikejs/vike/commit/dd113643a315603e1acf5edbe2dcc4d692331f67))
+* simplify useConfig() serialization error message ([653fc76](https://github.com/vikejs/vike/commit/653fc76adb7fdbd4db54b3fabc2af9d622ec192f))
+
+
+### Features
+
+* +meta.isDefinedByPeerDependency ([f07cc20](https://github.com/vikejs/vike/commit/f07cc203e4428823da7c9dbc6e6e9ff3495a1c1c))
+* +require.optional ([9b1a5c3](https://github.com/vikejs/vike/commit/9b1a5c30f25e1bbe7afcb39176b56e7d76480f43))
+
+
+
 ## [0.4.230](https://github.com/vikejs/vike/compare/v0.4.229...v0.4.230) (2025-05-20)
 
 
