@@ -44,8 +44,8 @@ function assertExtensionName(plusFile: PlusFile): void {
   )
 }
 
-function assertExtensionsRequire(pageConfig: PageConfigBuildTime): void {
-  const plusFilesRelevantList = pageConfig.plusFiles
+function assertExtensionsRequire(plusFiles: PlusFile[]): void {
+  const plusFilesRelevantList = plusFiles
 
   // Collect extensions
   const extensions: Record<string, string> = {}

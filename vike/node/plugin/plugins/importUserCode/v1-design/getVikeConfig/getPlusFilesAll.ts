@@ -13,7 +13,7 @@ import { type ConfigFile, loadConfigFile, loadValueFile, PointerImportLoaded } f
 import { resolvePointerImport } from './resolvePointerImport.js'
 import { getFilePathResolved } from '../../../../shared/getFilePath.js'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
-import { assertExtensionsConventions } from './assertExtensions.js'
+import { assertExtensionsConventions, assertExtensionsRequire } from './assertExtensions.js'
 
 type PlusFile = PlusFileConfig | PlusFileValue
 type PlusFileCommons = {
@@ -137,7 +137,13 @@ async function getPlusFilesAll(userRootDir: string, esbuildCache: EsbuildCache):
     plusFiles.sort(sortMakeDeterministic)
   })
 
+  assertPlusFiles(plusFilesAll)
   return plusFilesAll
+}
+function assertPlusFiles(plusFilesAll: PlusFilesByLocationId) {
+  const plusFiles = Object.values(plusFilesAll).flat()
+  // The earlier we call it the better, so that +require can be used by Vike extensions to depend on new Vike features
+  assertExtensionsRequire(plusFiles)
 }
 
 function getPlusFileFromConfigFile(

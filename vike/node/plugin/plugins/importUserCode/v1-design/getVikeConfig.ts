@@ -76,7 +76,6 @@ import { resolvePointerImport } from './getVikeConfig/resolvePointerImport.js'
 import { getFilePathResolved } from '../../../shared/getFilePath.js'
 import type { FilePath } from '../../../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
-import { assertExtensionsRequire } from './getVikeConfig/assertExtensions.js'
 import {
   getUserFriendlyConfigsGlobal,
   getUserFriendlyConfigsPageEager,
@@ -494,7 +493,6 @@ function assertGlobalConfigLocation(
 }
 function assertPageConfigs(pageConfigs: PageConfigBuildTime[]) {
   pageConfigs.forEach((pageConfig) => {
-    assertExtensionsRequire(pageConfig)
     assertOnBeforeRenderEnv(pageConfig)
   })
 }
