@@ -108,7 +108,7 @@ type VikeConfigObject = {
   vikeConfigDependencies: Set<string>
 }
 
-function reloadVikeConfig(config: ResolvedConfig) {
+function reloadVikeConfig() {
   assert(vikeConfigCtx)
   const { userRootDir, vikeVitePluginOptions } = vikeConfigCtx
   assert(vikeVitePluginOptions)

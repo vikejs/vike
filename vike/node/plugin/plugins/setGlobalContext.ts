@@ -1,24 +1,17 @@
 export { setGlobalContext }
 
-import type { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin } from 'vite'
 import {
   setGlobalContext_viteDevServer,
   setGlobalContext_viteConfig,
   setGlobalContext_isProduction
 } from '../../runtime/globalContext.js'
-import {
-  assert,
-  isDevCheck,
-  markSetup_isViteDev,
-  markSetup_viteDevServer,
-  markSetup_vitePreviewServer
-} from '../utils.js'
+import { isDevCheck, markSetup_isViteDev, markSetup_viteDevServer, markSetup_vitePreviewServer } from '../utils.js'
 import { reloadVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
 import { getViteConfigRuntime } from '../shared/getViteConfigRuntime.js'
 
 function setGlobalContext(): Plugin[] {
   let isServerReload = false
-  let config: ResolvedConfig
   return [
     {
       name: 'vike:setGlobalContext:pre',
@@ -27,8 +20,7 @@ function setGlobalContext(): Plugin[] {
       configureServer: {
         order: 'pre',
         handler(viteDevServer) {
-          assert(config)
-          if (isServerReload) reloadVikeConfig(config)
+          if (isServerReload) reloadVikeConfig()
           isServerReload = true
           setGlobalContext_viteDevServer(viteDevServer)
           markSetup_viteDevServer()
@@ -51,8 +43,7 @@ function setGlobalContext(): Plugin[] {
       enforce: 'post',
       configResolved: {
         order: 'post',
-        async handler(config_) {
-          config = config_
+        async handler(config) {
           const viteConfigRuntime = getViteConfigRuntime(config)
           setGlobalContext_viteConfig(config, viteConfigRuntime)
         }

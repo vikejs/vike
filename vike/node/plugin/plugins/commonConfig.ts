@@ -33,7 +33,6 @@ const pluginName = 'vike:commonConfig'
 declare module 'vite' {
   interface UserConfig {
     _isDev?: boolean
-    _vikeVitePluginOptions?: unknown
     vitePluginServerEntry?: VitePluginServerEntryOptions
     _root?: string
     _baseViteOriginal?: string
@@ -86,7 +85,6 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
           return {
             _isDev: isDev,
             _root: root,
-            _vikeVitePluginOptions: vikeVitePluginOptions,
             _vikeConfigObject: vikeConfig,
             _vike: {
               pages: vikeConfig.pages,

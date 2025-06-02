@@ -135,7 +135,7 @@ function reloadConfig(filePath: string, config: ResolvedConfig, op: 'modified' |
     const msg = `${op} ${pc.dim(filePathToShowToUserResolved)}`
     logConfigInfo(msg, 'info')
   }
-  reloadVikeConfig(config)
+  reloadVikeConfig()
   updateUserFiles()
 }
 
