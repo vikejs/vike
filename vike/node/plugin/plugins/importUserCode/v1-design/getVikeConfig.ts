@@ -149,10 +149,7 @@ async function handleReloadSideEffects() {
 // TODO/now-1: predominantly use getVikeConfigInternal() instead of getVikeConfig() then maybe refector?
 async function getVikeConfig(
   config: ResolvedConfig,
-  {
-    // TODO/now-later: is this really needed?
-    doNotRestartViteOnError
-  }: { doNotRestartViteOnError?: true } = {}
+  { doNotRestartViteOnError }: { doNotRestartViteOnError?: true } = {}
 ): Promise<VikeConfigObject> {
   const userRootDir = config.root
   const vikeVitePluginOptions = config._vikeVitePluginOptions
@@ -161,10 +158,13 @@ async function getVikeConfig(
   assert(typeof isDev === 'boolean')
   return await getOrResolveVikeConfig(userRootDir, isDev, vikeVitePluginOptions, doNotRestartViteOnError ?? false)
 }
-async function getVikeConfig3(): Promise<VikeConfigObject> {
+async function getVikeConfig3(
+  // TODO/now-later: is this really needed?
+  doNotRestartViteOnError = false
+): Promise<VikeConfigObject> {
   assert(vikeConfigCtx)
   const { userRootDir, isDev, vikeVitePluginOptions } = vikeConfigCtx
-  return await getOrResolveVikeConfig(userRootDir, isDev, vikeVitePluginOptions, false)
+  return await getOrResolveVikeConfig(userRootDir, isDev, vikeVitePluginOptions, doNotRestartViteOnError)
 }
 function setVikeConfigCtx(vikeConfigCtx_: VikeConfigCtx) {
   // If the user changes Vite's `config.root` => Vite completely reloads itself => setVikeConfigCtx() is called again

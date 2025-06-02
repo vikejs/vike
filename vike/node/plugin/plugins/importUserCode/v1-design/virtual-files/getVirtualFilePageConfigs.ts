@@ -6,22 +6,20 @@ import type {
 } from '../../../../../../shared/page-configs/PageConfig.js'
 import { getVirtualFileIdPageConfigValuesAll } from '../../../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { debug } from './debug.js'
-import { getVikeConfig } from '../getVikeConfig.js'
+import { getVikeConfig3 } from '../getVikeConfig.js'
 import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
 import {
   FilesEnv,
   serializeConfigValues
 } from '../../../../../../shared/page-configs/serialize/serializeConfigValues.js'
-import type { ResolvedConfig } from 'vite'
 
 async function getVirtualFilePageConfigs(
   isForClientSide: boolean,
   isDev: boolean,
   id: string,
-  isClientRouting: boolean,
-  config: ResolvedConfig
+  isClientRouting: boolean
 ): Promise<string> {
-  const vikeConfig = await getVikeConfig(config, { doNotRestartViteOnError: true })
+  const vikeConfig = await getVikeConfig3(true)
   const { pageConfigs, pageConfigGlobal } = vikeConfig
   return getCode(pageConfigs, pageConfigGlobal, isForClientSide, isDev, id, isClientRouting)
 }

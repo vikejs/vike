@@ -39,7 +39,9 @@ declare module 'vite' {
     _baseViteOriginal?: string
     // We'll be able to remove once we have one Rolldown build instead of two Rollup builds
     _viteConfigFromUserEnhanced?: InlineConfig
+    // TODO/now-1: remove / add comment
     _vike?: VikeConfigPublic
+    // TODO/now-1: remove?
     _vikeConfigObject?: VikeConfigObject
   }
 }

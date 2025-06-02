@@ -119,7 +119,7 @@ export const pageFilesExportNamesEager = {};
 export const pageFilesList = [];
 export const neverLoaded = {};
 
-${await getVirtualFilePageConfigs(isForClientSide, isDev, id, isClientRouting, config)}
+${await getVirtualFilePageConfigs(isForClientSide, isDev, id, isClientRouting)}
 
 `
 
