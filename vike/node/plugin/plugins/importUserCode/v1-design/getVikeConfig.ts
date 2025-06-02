@@ -97,7 +97,7 @@ assertIsSingleModuleInstance('v1-design/getVikeConfig.ts')
 let restartVite = false
 let wasConfigInvalid: boolean | null = null
 let vikeConfigPromise: Promise<VikeConfigObject> | null = null
-let vikeConfigCtx: VikeConfigCtx | null = null // information provided by Vite's `config` and Vike's CLI
+let vikeConfigCtx: VikeConfigCtx | null = null // Information provided by Vite's `config` and Vike's CLI. We could, if we want or need to, completely remove the dependency on Vite.
 type VikeConfigCtx = { userRootDir: string; isDev: boolean; vikeVitePluginOptions: unknown }
 
 type VikeConfigObject = {
