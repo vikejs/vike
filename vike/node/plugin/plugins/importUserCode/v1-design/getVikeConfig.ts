@@ -49,7 +49,6 @@ import {
   configDefinitionsBuiltIn,
   type ConfigDefinitionsInternal,
   type ConfigDefinitionInternal,
-  type ConfigDefinition,
   type ConfigDefinitions
 } from './getVikeConfig/configDefinitionsBuiltIn.js'
 import {
