@@ -32,8 +32,8 @@ const pluginName = 'vike:commonConfig'
 
 declare module 'vite' {
   interface UserConfig {
-    _isDev?: boolean
     vitePluginServerEntry?: VitePluginServerEntryOptions
+    _isDev?: boolean
     _rootResolvedEarly?: string
     _baseViteOriginal?: string
     // We'll be able to remove once we have one Rolldown build instead of two Rollup builds
