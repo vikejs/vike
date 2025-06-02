@@ -133,9 +133,9 @@ function findVikeVitePlugin(viteConfig: InlineConfig | UserConfig | undefined | 
   let vikeVitePluginOptions: Record<string, unknown> | undefined
   let vikeVitePuginFound = false
   viteConfig?.plugins?.forEach((p) => {
-    if (p && '__vikeVitePluginOptions' in p) {
+    if (p && '_vikeVitePluginOptions' in p) {
       vikeVitePuginFound = true
-      const options = p.__vikeVitePluginOptions
+      const options = p._vikeVitePluginOptions
       vikeVitePluginOptions ??= {}
       Object.assign(vikeVitePluginOptions, options)
     }

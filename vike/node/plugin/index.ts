@@ -49,7 +49,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginIntero
     workaroundVite6HmrRegression(),
     replaceConstants()
   ]
-  Object.assign(plugins, { __vikeVitePluginOptions: vikeVitePluginOptions })
+  Object.assign(plugins, { _vikeVitePluginOptions: vikeVitePluginOptions })
   return plugins as any
 }
 
