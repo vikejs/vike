@@ -1,6 +1,8 @@
 export { getVikeConfig }
 export { getVikeConfigOptional }
 export { getVikeConfig2 }
+export { getVikeConfig3 }
+export { setViteInfo }
 export { reloadVikeConfig }
 export { isV1Design }
 export { getConfVal }
@@ -96,6 +98,8 @@ assertIsSingleModuleInstance('v1-design/getVikeConfig.ts')
 let restartVite = false
 let wasConfigInvalid: boolean | null = null
 let vikeConfigPromise: Promise<VikeConfigObject> | null = null
+let viteInfo: ViteInfo | null = null // information provided by Vite
+type ViteInfo = { userRootDir: string; isDev: boolean; vikeVitePluginOptions: unknown }
 
 type VikeConfigObject = {
   pageConfigs: PageConfigBuildTime[]
@@ -164,6 +168,15 @@ async function getVikeConfig2(
 ): Promise<VikeConfigObject> {
   assert(vikeVitePluginOptions)
   return await getVikeConfig_(userRootDir, isDev, vikeVitePluginOptions, false)
+}
+async function getVikeConfig3(): Promise<VikeConfigObject> {
+  assert(viteInfo)
+  const { userRootDir, isDev, vikeVitePluginOptions } = viteInfo
+  return await getVikeConfig_(userRootDir, isDev, vikeVitePluginOptions, false)
+}
+function setViteInfo(viteInfo_: ViteInfo) {
+  // If the user changes Vite's `config.root` => Vite completely reloads itself => setViteInfo() is called again
+  viteInfo = viteInfo_
 }
 async function getVikeConfig_(
   userRootDir: string,

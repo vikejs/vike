@@ -22,7 +22,7 @@ import path from 'path'
 import { assertResolveAlias } from './commonConfig/assertResolveAlias.js'
 import { isViteCliCall } from '../shared/isViteCliCall.js'
 import { isVikeCliOrApi } from '../../api/context.js'
-import { getVikeConfig2, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
+import { getVikeConfig3, setViteInfo, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
 import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/prepareViteApiCall.js'
 import { temp_disablePrerenderAutoRun } from '../../prerender/context.js'
 import type { PrerenderContextPublic } from '../../prerender/runPrerender.js'
@@ -70,7 +70,8 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
           const operation = env.command === 'build' ? 'build' : env.isPreview ? 'preview' : 'dev'
           const root = configFromUser.root ? normalizeViteRoot(configFromUser.root) : await getViteRoot(operation)
           assert(root)
-          const vikeConfig = await getVikeConfig2(root, isDev, vikeVitePluginOptions)
+          setViteInfo({ userRootDir: root, isDev, vikeVitePluginOptions })
+          const vikeConfig = await getVikeConfig3()
           const { isPrerenderingEnabled, isPrerenderingEnabledForAllPages } = resolvePrerenderConfigGlobal(vikeConfig)
           prerenderContext ??= {
             isPrerenderingEnabled,
