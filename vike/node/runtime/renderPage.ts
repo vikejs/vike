@@ -148,7 +148,7 @@ async function renderPagePrepare(
   if (isVikeConfigInvalid) {
     return getPageContextInvalidVikeConfig(isVikeConfigInvalid.err, pageContextInit, httpRequestId)
   } else {
-    // `globalContext` now contains the entire Vike config and getVikeConfig() isn't called anymore for this request.
+    // `globalContext` now contains the entire Vike config and resolveVikeConfig() isn't called anymore for this request.
   }
   const { globalContext } = await getGlobalContextServerInternal()
 

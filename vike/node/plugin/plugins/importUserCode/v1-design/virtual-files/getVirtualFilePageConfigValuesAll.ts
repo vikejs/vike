@@ -6,7 +6,7 @@ import {
   getVirtualFileIdPageConfigValuesAll,
   isVirtualFileIdPageConfigValuesAll
 } from '../../../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
-import { getVikeConfig } from '../getVikeConfig.js'
+import { resolveVikeConfig } from '../resolveVikeConfig.js'
 import { extractAssetsAddQuery } from '../../../../../shared/extractAssetsQuery.js'
 import { debug } from './debug.js'
 import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
@@ -28,7 +28,7 @@ async function getVirtualFilePageConfigValuesAll(id: string, isDev: boolean, con
   }
   */
   const { pageId, isForClientSide } = result
-  const vikeConfig = await getVikeConfig(config, { doNotRestartViteOnError: true })
+  const vikeConfig = await resolveVikeConfig(config, { doNotRestartViteOnError: true })
   const { pageConfigs } = vikeConfig
   const pageConfig = pageConfigs.find((pageConfig) => pageConfig.pageId === pageId)
   assert(pageConfig, { id, pageId })

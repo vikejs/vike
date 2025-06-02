@@ -6,12 +6,12 @@ import type { Environment, InlineConfig, Plugin, ResolvedConfig } from 'vite'
 import { assert, assertIsSingleModuleInstance, assertWarning, onSetupBuild } from '../../utils.js'
 import { runPrerenderFromAutoRun, runPrerender_forceExit } from '../../../prerender/runPrerender.js'
 import { isPrerenderAutoRunEnabled } from '../../../prerender/context.js'
-import type { VikeConfigObject } from '../importUserCode/v1-design/getVikeConfig.js'
+import type { VikeConfigObject } from '../importUserCode/v1-design/resolveVikeConfig.js'
 import { isViteCliCall, getViteConfigFromCli } from '../../shared/isViteCliCall.js'
 import pc from '@brillout/picocolors'
 import { logErrorHint } from '../../../runtime/renderPage/logErrorHint.js'
 import { manifestTempFile } from './pluginBuildConfig.js'
-import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
+import { resolveVikeConfig } from '../importUserCode/v1-design/resolveVikeConfig.js'
 import { isVikeCliOrApi } from '../../../api/context.js'
 import { handleAssetsManifest, handleAssetsManifest_assertUsageCssTarget } from './handleAssetsManifest.js'
 import { isViteClientBuild, isViteServerBuild_onlySsrEnv } from '../../shared/isViteServerBuild.js'
@@ -27,7 +27,7 @@ function pluginAutoFullBuild(): Plugin[] {
       apply: 'build',
       enforce: 'pre',
       async configResolved(config_) {
-        vikeConfig = await getVikeConfig(config_)
+        vikeConfig = await resolveVikeConfig(config_)
         config = config_
         abortViteBuildSsr(vikeConfig)
       },

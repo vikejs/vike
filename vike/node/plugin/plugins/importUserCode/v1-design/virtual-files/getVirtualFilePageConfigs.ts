@@ -6,7 +6,7 @@ import type {
 } from '../../../../../../shared/page-configs/PageConfig.js'
 import { getVirtualFileIdPageConfigValuesAll } from '../../../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { debug } from './debug.js'
-import { getVikeConfig } from '../getVikeConfig.js'
+import { resolveVikeConfig } from '../resolveVikeConfig.js'
 import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
 import {
   FilesEnv,
@@ -21,7 +21,7 @@ async function getVirtualFilePageConfigs(
   isClientRouting: boolean,
   config: ResolvedConfig
 ): Promise<string> {
-  const vikeConfig = await getVikeConfig(config, { doNotRestartViteOnError: true })
+  const vikeConfig = await resolveVikeConfig(config, { doNotRestartViteOnError: true })
   const { pageConfigs, pageConfigGlobal } = vikeConfig
   return getCode(pageConfigs, pageConfigGlobal, isForClientSide, isDev, id, isClientRouting)
 }

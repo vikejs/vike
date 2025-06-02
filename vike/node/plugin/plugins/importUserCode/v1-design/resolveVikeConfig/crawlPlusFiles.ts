@@ -32,7 +32,7 @@ const execA = promisify(exec)
 const debug = createDebugger('vike:crawl')
 
 assertIsNotProductionRuntime()
-assertIsSingleModuleInstance('getVikeConfig/crawlPlusFiles.ts')
+assertIsSingleModuleInstance('resolveVikeConfig/crawlPlusFiles.ts')
 let gitIsNotUsable = false
 
 async function crawlPlusFiles(userRootDir: string): Promise<{ filePathAbsoluteUserRootDir: string }[]> {
