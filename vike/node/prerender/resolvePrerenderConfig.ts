@@ -1,7 +1,7 @@
 export { resolvePrerenderConfigGlobal }
 export { resolvePrerenderConfigLocal }
 
-import { VikeConfigObject } from '../plugin/plugins/importUserCode/v1-design/resolveVikeConfig.js'
+import { VikeConfigObject } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import { assert, isArray, isObject, objectAssign } from './utils.js'
 import { getConfigValueBuildTime } from '../../shared/page-configs/getConfigValueBuildTime.js'
 import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'

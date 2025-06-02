@@ -1,4 +1,4 @@
-export { resolveVikeConfig }
+export { getVikeConfig }
 export { getVikeConfigOptional }
 export { getVikeConfig2 }
 export { reloadVikeConfig }
@@ -51,7 +51,7 @@ import {
   type ConfigDefinitionInternal,
   type ConfigDefinition,
   type ConfigDefinitions
-} from './resolveVikeConfig/configDefinitionsBuiltIn.js'
+} from './getVikeConfig/configDefinitionsBuiltIn.js'
 import {
   type LocationId,
   getLocationId,
@@ -60,8 +60,8 @@ import {
   isInherited,
   sortAfterInheritanceOrder,
   applyFilesystemRoutingRootEffect
-} from './resolveVikeConfig/filesystemRouting.js'
-import type { EsbuildCache } from './resolveVikeConfig/transpileAndExecuteFile.js'
+} from './getVikeConfig/filesystemRouting.js'
+import type { EsbuildCache } from './getVikeConfig/transpileAndExecuteFile.js'
 import { isVikeConfigInvalid, isVikeConfigInvalid_set } from '../../../../runtime/renderPage/isVikeConfigInvalid.js'
 import { getViteDevServer } from '../../../../runtime/globalContext.js'
 import { logConfigError, logConfigErrorRecover } from '../../../shared/loggerNotProd.js'
@@ -72,8 +72,8 @@ import {
 import pc from '@brillout/picocolors'
 import { getConfigDefinedAt, getDefinedByString } from '../../../../../shared/page-configs/getConfigDefinedAt.js'
 import type { ResolvedConfig, UserConfig } from 'vite'
-import { loadPointerImport, loadValueFile } from './resolveVikeConfig/loadFileAtConfigTime.js'
-import { resolvePointerImport } from './resolveVikeConfig/resolvePointerImport.js'
+import { loadPointerImport, loadValueFile } from './getVikeConfig/loadFileAtConfigTime.js'
+import { resolvePointerImport } from './getVikeConfig/resolvePointerImport.js'
 import { getFilePathResolved } from '../../../shared/getFilePath.js'
 import type { FilePath } from '../../../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
@@ -84,12 +84,12 @@ import {
   type PageConfigsUserFriendly
 } from '../../../../../shared/page-configs/getUserFriendlyConfigs.js'
 import { getConfigValuesBase, isJsonValue } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
-import { getPlusFilesAll, type PlusFile, type PlusFilesByLocationId } from './resolveVikeConfig/getPlusFilesAll.js'
+import { getPlusFilesAll, type PlusFile, type PlusFilesByLocationId } from './getVikeConfig/getPlusFilesAll.js'
 import { getEnvVarObject } from '../../../shared/getEnvVarObject.js'
 import { getApiOperation } from '../../../../api/context.js'
 import { getCliOptions } from '../../../../cli/context.js'
 assertIsNotProductionRuntime()
-assertIsSingleModuleInstance('v1-design/resolveVikeConfig.ts')
+assertIsSingleModuleInstance('v1-design/getVikeConfig.ts')
 let restartVite = false
 let wasConfigInvalid: boolean | null = null
 let vikeConfigPromise: Promise<VikeConfigObject> | null = null
@@ -139,8 +139,8 @@ async function handleReloadSideEffects() {
     }
   }
 }
-// TODO/soon: predominantly use getVikeConfigInternal() instead of resolveVikeConfig() then maybe refector?
-async function resolveVikeConfig(
+// TODO/soon: predominantly use getVikeConfigInternal() instead of getVikeConfig() then maybe refector?
+async function getVikeConfig(
   config: ResolvedConfig,
   { doNotRestartViteOnError }: { doNotRestartViteOnError?: true } = {}
 ): Promise<VikeConfigObject> {

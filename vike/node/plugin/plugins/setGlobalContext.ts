@@ -13,7 +13,7 @@ import {
   markSetup_viteDevServer,
   markSetup_vitePreviewServer
 } from '../utils.js'
-import { reloadVikeConfig } from './importUserCode/v1-design/resolveVikeConfig.js'
+import { reloadVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
 import { getViteConfigRuntime } from '../shared/getViteConfigRuntime.js'
 
 function setGlobalContext(): Plugin[] {

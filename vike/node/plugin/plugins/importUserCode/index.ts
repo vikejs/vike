@@ -2,24 +2,19 @@ export { importUserCode }
 
 import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode, ModuleGraph } from 'vite'
 import { normalizePath } from 'vite'
-import type { VikeConfigObject } from './v1-design/resolveVikeConfig.js'
+import type { VikeConfigObject } from './v1-design/getVikeConfig.js'
 import { getVirtualFilePageConfigValuesAll } from './v1-design/virtual-files/getVirtualFilePageConfigValuesAll.js'
 import { getVirtualFileImportUserCode } from './getVirtualFileImportUserCode.js'
 import { assert, assertPosixPath } from '../../utils.js'
 import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../../shared/virtual-files.js'
 import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
-import {
-  reloadVikeConfig,
-  isV1Design,
-  resolveVikeConfig,
-  getVikeConfigOptional
-} from './v1-design/resolveVikeConfig.js'
+import { reloadVikeConfig, isV1Design, getVikeConfig, getVikeConfigOptional } from './v1-design/getVikeConfig.js'
 import pc from '@brillout/picocolors'
 import { logConfigInfo } from '../../shared/loggerNotProd.js'
 import { getModuleFilePathAbsolute } from '../../shared/getFilePath.js'
 import { updateUserFiles } from '../../../runtime/globalContext.js'
-import { isPlusFile } from './v1-design/resolveVikeConfig/crawlPlusFiles.js'
+import { isPlusFile } from './v1-design/getVikeConfig/crawlPlusFiles.js'
 
 function importUserCode(): Plugin {
   let config: ResolvedConfig
@@ -27,7 +22,7 @@ function importUserCode(): Plugin {
   return {
     name: 'vike:importUserCode',
     async configResolved(config_) {
-      vikeConfig = await resolveVikeConfig(config_)
+      vikeConfig = await getVikeConfig(config_)
       config = config_
       // TODO/v1-release: remove
       if (!isV1Design(config)) config.experimental.importGlobRestoreExtension = true

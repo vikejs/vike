@@ -50,7 +50,7 @@ export type { ConfigEnv } from '../shared/page-configs/PageConfig.js'
 export type {
   ConfigDefinition,
   ConfigEffect
-} from '../node/plugin/plugins/importUserCode/v1-design/resolveVikeConfig/configDefinitionsBuiltIn.js'
+} from '../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
 export type { ConfigEntries } from '../shared/page-configs/getUserFriendlyConfigs.js'
 
 export type { VikeConfigPublic as VikeConfig } from '../node/plugin/plugins/commonConfig.js'
@@ -71,7 +71,7 @@ import type { ConfigEnv } from '../shared/page-configs/PageConfig.js'
 type Env = ConfigEnv
 export type { Env }
 
-import type { ConfigEffect } from '../node/plugin/plugins/importUserCode/v1-design/resolveVikeConfig/configDefinitionsBuiltIn.js'
+import type { ConfigEffect } from '../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
 // TODO/v1-release: remove
 /** @deprecated Replace:
  *   `import type { Effect } from 'vike/types'`

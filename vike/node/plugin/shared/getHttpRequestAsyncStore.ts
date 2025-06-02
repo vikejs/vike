@@ -15,7 +15,7 @@ export { installHttpRequestAsyncStore }
 import { renderPage_addAsyncHookwrapper } from '../../runtime/renderPage.js'
 import { assert, assertIsNotProductionRuntime, isObject, unique } from '../utils.js'
 import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hooks'
-import { getConfigBuildErrorFormatted } from '../plugins/importUserCode/v1-design/resolveVikeConfig/transpileAndExecuteFile.js'
+import { getConfigBuildErrorFormatted } from '../plugins/importUserCode/v1-design/getVikeConfig/transpileAndExecuteFile.js'
 import { logErrorDebugNote } from './loggerNotProd.js'
 import { isEquivalentErrorWithCodeSnippet } from './loggerNotProd/errorWithCodeSnippet.js'
 import { isDeepStrictEqual } from 'node:util'

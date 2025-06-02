@@ -30,7 +30,7 @@ function previewConfig(): Plugin {
     async configResolved(config_) {
       config = config_
       logDockerHint(config.preview.host)
-      // vikeConfig = await resolveVikeConfig(config)
+      // vikeConfig = await getVikeConfig(config)
     },
     configurePreviewServer(server) {
       /* - Couldn't make `appType: 'mpa'` work as of npm:@brillout/vite@5.0.0-beta.14.0426910c

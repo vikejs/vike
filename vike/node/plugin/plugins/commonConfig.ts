@@ -22,7 +22,7 @@ import path from 'path'
 import { assertResolveAlias } from './commonConfig/assertResolveAlias.js'
 import { isViteCliCall } from '../shared/isViteCliCall.js'
 import { isVikeCliOrApi } from '../../api/context.js'
-import { getVikeConfig2, type VikeConfigObject } from './importUserCode/v1-design/resolveVikeConfig.js'
+import { getVikeConfig2, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
 import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/prepareViteApiCall.js'
 import { temp_disablePrerenderAutoRun } from '../../prerender/context.js'
 import type { PrerenderContextPublic } from '../../prerender/runPrerender.js'
@@ -263,8 +263,8 @@ function temp_supportOldInterface(config: ResolvedConfig) {
 }
 
 // TODO/soon rename:
-// - `resolveVikeConfig()` => `resolveVikeConfig()` ?
-// - `getVikeConfigInternal()` => `resolveVikeConfig()`
+// - `getVikeConfig()` => `resolveVikeConfig()` ?
+// - `getVikeConfigInternal()` => `getVikeConfig()`
 // - `VikeConfigPublic` => `VikeConfig` ?
 // - `VikeConfigObject` => `VikeConfigInternal` ?
 function getVikeConfigInternal(config: ResolvedConfig | UserConfig): VikeConfigPublic {
@@ -275,11 +275,11 @@ function getVikeConfigInternal(config: ResolvedConfig | UserConfig): VikeConfigP
 /**
  * Get all the information Vike knows about the app in your Vite plugin.
  *
- * https://vike.dev/resolveVikeConfig
+ * https://vike.dev/getVikeConfig
  */
 function getVikeConfigPublic(config: ResolvedConfig | UserConfig): VikeConfigPublic {
   const vikeConfig = config._vike
-  assertUsage(vikeConfig, "resolveVikeConfig() can only be used when Vite is running with Vike's Vite plugin")
+  assertUsage(vikeConfig, "getVikeConfig() can only be used when Vite is running with Vike's Vite plugin")
   return vikeConfig
 }
 
