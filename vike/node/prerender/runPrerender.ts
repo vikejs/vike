@@ -38,7 +38,7 @@ import {
   initGlobalContext_runPrerender,
   setGlobalContext_isPrerendering
 } from '../runtime/globalContext.js'
-import { resolveConfig } from 'vite'
+import { resolveConfig as resolveViteConfig } from 'vite'
 import type { InlineConfig, ResolvedConfig } from 'vite'
 import { getPageFilesServerSide } from '../../shared/getPageFiles.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
@@ -187,7 +187,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   await disableReactStreaming()
 
-  const viteConfig = await resolveConfig(options.viteConfig || {}, 'build', 'production')
+  const viteConfig = await resolveViteConfig(options.viteConfig || {}, 'build', 'production')
   const vikeConfig = await getVikeConfig(viteConfig)
   const vike = getVikeConfigInternal(viteConfig)
 
