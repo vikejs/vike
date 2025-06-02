@@ -3,7 +3,7 @@ export { baseUrls }
 import type { Plugin, ResolvedConfig } from 'vite'
 import { resolveBase } from '../../shared/resolveBase.js'
 import { assert } from '../utils.js'
-import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
+import { getVikeConfig3 } from './importUserCode/v1-design/getVikeConfig.js'
 import { getVikeConfigInternal } from './commonConfig.js'
 
 function baseUrls(): Plugin {
@@ -31,7 +31,7 @@ function baseUrls(): Plugin {
       }
     },
     async configResolved(config) {
-      const vikeConfig = await getVikeConfig(config)
+      const vikeConfig = await getVikeConfig3()
       const basesResolved2 = resolveBaseFromResolvedConfig(
         vikeConfig.global.config.baseServer ?? null,
         vikeConfig.global.config.baseAssets ?? null,
