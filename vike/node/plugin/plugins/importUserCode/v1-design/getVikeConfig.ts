@@ -98,7 +98,7 @@ assertIsSingleModuleInstance('v1-design/getVikeConfig.ts')
 let restartVite = false
 let wasConfigInvalid: boolean | null = null
 let vikeConfigPromise: Promise<VikeConfigObject> | null = null
-let vikeConfigCtx: VikeConfigCtx | null = null // information provided by Vite
+let vikeConfigCtx: VikeConfigCtx | null = null // information provided by Vite's `config` and Vike's CLI
 type VikeConfigCtx = { userRootDir: string; isDev: boolean; vikeVitePluginOptions: unknown }
 
 type VikeConfigObject = {
@@ -175,7 +175,7 @@ async function getVikeConfig3(): Promise<VikeConfigObject> {
   return await getOrResolveVikeConfig(userRootDir, isDev, vikeVitePluginOptions, false)
 }
 function setVikeConfigCtx(vikeConfigCtx_: VikeConfigCtx) {
-  // If the user changes Vite's `config.root` => Vite completely reloads itself => setViteInfo() is called again
+  // If the user changes Vite's `config.root` => Vite completely reloads itself => setVikeConfigCtx() is called again
   vikeConfigCtx = vikeConfigCtx_
 }
 async function getOrResolveVikeConfig(
