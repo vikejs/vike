@@ -73,6 +73,7 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
             ? normalizeViteRoot(configFromUser.root)
             : await getViteRoot(operation)
           assert(rootResolvedEarly)
+          // TODO/v1-release: we can remove setVikeConfigCtx() call here since with Vike's CLI it's already called at vike/node/api/prepareViteApiCall.ts
           setVikeConfigCtx({ userRootDir: rootResolvedEarly, isDev, vikeVitePluginOptions })
           const vikeConfig = await getVikeConfig3()
           const { isPrerenderingEnabled, isPrerenderingEnabledForAllPages } = resolvePrerenderConfigGlobal(vikeConfig)
