@@ -34,7 +34,7 @@ declare module 'vite' {
   interface UserConfig {
     _isDev?: boolean
     vitePluginServerEntry?: VitePluginServerEntryOptions
-    _root?: string
+    _rootResolvedEarly?: string
     _baseViteOriginal?: string
     // We'll be able to remove once we have one Rolldown build instead of two Rollup builds
     _viteConfigFromUserEnhanced?: InlineConfig
@@ -69,9 +69,11 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
         async handler(configFromUser, env) {
           const isDev = isDevCheck(env)
           const operation = env.command === 'build' ? 'build' : env.isPreview ? 'preview' : 'dev'
-          const root = configFromUser.root ? normalizeViteRoot(configFromUser.root) : await getViteRoot(operation)
-          assert(root)
-          setVikeConfigCtx({ userRootDir: root, isDev, vikeVitePluginOptions })
+          const rootResolvedEarly = configFromUser.root
+            ? normalizeViteRoot(configFromUser.root)
+            : await getViteRoot(operation)
+          assert(rootResolvedEarly)
+          setVikeConfigCtx({ userRootDir: rootResolvedEarly, isDev, vikeVitePluginOptions })
           const vikeConfig = await getVikeConfig3()
           const { isPrerenderingEnabled, isPrerenderingEnabledForAllPages } = resolvePrerenderConfigGlobal(vikeConfig)
           prerenderContext ??= {
@@ -84,7 +86,7 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
           assert(prerenderContext.isPrerenderingEnabledForAllPages === isPrerenderingEnabledForAllPages)
           return {
             _isDev: isDev,
-            _root: root,
+            _rootResolvedEarly: rootResolvedEarly,
             _vikeConfigObject: vikeConfig,
             _vike: {
               pages: vikeConfig.pages,
@@ -102,7 +104,7 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
     {
       name: pluginName,
       configResolved(config) {
-        assertViteRoot(config._root!, config)
+        assertViteRoot(config._rootResolvedEarly!, config)
         assertSingleInstance(config)
         installRequireShim_setUserRootDir(config.root)
       }
