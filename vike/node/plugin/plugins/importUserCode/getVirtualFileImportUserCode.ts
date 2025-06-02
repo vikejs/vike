@@ -58,15 +58,7 @@ async function getCode(
   {
     const globRoots = getGlobRoots(config)
     debugGlob('Glob roots: ', globRoots)
-    content += await generateGlobImports(
-      globRoots,
-      isBuild,
-      isForClientSide,
-      isClientRouting,
-      config,
-      isDev,
-      id
-    )
+    content += await generateGlobImports(globRoots, isBuild, isForClientSide, isClientRouting, config, isDev, id)
   }
   debugGlob(`Glob imports for ${isForClientSide ? 'client' : 'server'}:\n`, content)
   return content
