@@ -141,7 +141,10 @@ async function handleReloadSideEffects() {
 // TODO/soon: predominantly use getVikeConfigInternal() instead of getVikeConfig() then maybe refector?
 async function getVikeConfig(
   config: ResolvedConfig,
-  { doNotRestartViteOnError }: { doNotRestartViteOnError?: true } = {}
+  {
+    // TODO/now: is this really needed?
+    doNotRestartViteOnError
+  }: { doNotRestartViteOnError?: true } = {}
 ): Promise<VikeConfigObject> {
   const userRootDir = config.root
   const vikeVitePluginOptions = config._vikeVitePluginOptions
