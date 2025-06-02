@@ -106,7 +106,7 @@ function reloadVikeConfig(config: ResolvedConfig) {
   const userRootDir = config.root
   const vikeVitePluginOptions = config._vikeVitePluginOptions
   assert(vikeVitePluginOptions)
-  vikeConfigPromise = loadVikeConfig_withErrorHandling(userRootDir, true, vikeVitePluginOptions)
+  vikeConfigPromise = resolveVikeConfig_withErrorHandling(userRootDir, true, vikeVitePluginOptions)
   handleReloadSideEffects()
 }
 async function handleReloadSideEffects() {
@@ -169,7 +169,7 @@ async function getVikeConfig_(
   doNotRestartViteOnError: boolean
 ) {
   if (!vikeConfigPromise) {
-    vikeConfigPromise = loadVikeConfig_withErrorHandling(
+    vikeConfigPromise = resolveVikeConfig_withErrorHandling(
       userRootDir,
       isDev,
       vikeVitePluginOptions,
@@ -191,7 +191,7 @@ function isV1Design(config: ResolvedConfig | UserConfig): boolean {
   return isV1Design
 }
 
-async function loadVikeConfig_withErrorHandling(
+async function resolveVikeConfig_withErrorHandling(
   userRootDir: string,
   isDev: boolean,
   vikeVitePluginOptions: unknown,
