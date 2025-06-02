@@ -10,7 +10,7 @@ import { clearContextApiOperation, setContextApiOperation } from './context.js'
 import {
   getVikeConfig3,
   getVikeConfigFromCliOrEnv,
-  setViteInfo,
+  setVikeConfigCtx,
   type VikeConfigObject
 } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import path from 'path'
@@ -36,7 +36,7 @@ function clear() {
 
 async function resolveConfigs(viteConfigFromUserApiOptions: InlineConfig | undefined, operation: Operation) {
   const viteInfo = await getViteInfo(viteConfigFromUserApiOptions, operation)
-  setViteInfo({
+  setVikeConfigCtx({
     userRootDir: viteInfo.root,
     isDev: operation === 'dev',
     vikeVitePluginOptions: viteInfo.vikeVitePluginOptions
