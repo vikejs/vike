@@ -11,11 +11,12 @@ import { logDockerHint } from './devConfig/index.js'
 import { getOutDirs, resolveOutDir } from '../shared/getOutDirs.js'
 import sirv from 'sirv'
 import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderConfig.js'
+import { getVikeConfig3, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
 type ConnectServer = ViteDevServer['middlewares']
 
 function previewConfig(): Plugin {
   let config: ResolvedConfig
-  // let vikeConfig: VikeConfigObject
+  let vikeConfig: VikeConfigObject
   return {
     name: 'vike:previewConfig',
     apply: applyPreview,
@@ -29,6 +30,7 @@ function previewConfig(): Plugin {
     },
     async configResolved(config_) {
       config = config_
+      vikeConfig = await getVikeConfig3()
       logDockerHint(config.preview.host)
       // vikeConfig = await getVikeConfig(config)
     },
@@ -38,7 +40,7 @@ function previewConfig(): Plugin {
       config.appType = 'mpa'
       */
       return () => {
-        const prerenderConfigGlobal = resolvePrerenderConfigGlobal(config._vikeConfigObject!)
+        const prerenderConfigGlobal = resolvePrerenderConfigGlobal(vikeConfig)
         const { isPrerenderingEnabledForAllPages, isPrerenderingEnabled } = prerenderConfigGlobal
         assertDist(isPrerenderingEnabledForAllPages)
 
