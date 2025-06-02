@@ -22,7 +22,7 @@ function importUserCode(): Plugin {
     async configResolved(config_) {
       config = config_
       // TODO/v1-release: remove
-      if (!isV1Design(config)) config.experimental.importGlobRestoreExtension = true
+      if (!isV1Design()) config.experimental.importGlobRestoreExtension = true
     },
     resolveId(id) {
       if (isVirtualFileId(id)) {

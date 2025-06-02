@@ -37,7 +37,7 @@ let assetsJsonFilePath: string | undefined
 // false => use workaround extractAssets plugin
 function handleAssetsManifest_isFixEnabled(config: ResolvedConfig | UserConfig): boolean {
   // Allow user to toggle between the two workarounds? E.g. based on https://vike.dev/includeAssetsImportedByServer.
-  return isV1Design(config)
+  return isV1Design()
 }
 
 /** https://github.com/vikejs/vike/issues/1339 */

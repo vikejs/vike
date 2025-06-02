@@ -58,7 +58,7 @@ async function getCode(
   {
     const globRoots = getGlobRoots(config)
     debugGlob('Glob roots: ', globRoots)
-    content += await generateGlobImports(globRoots, isBuild, isForClientSide, isClientRouting, config, isDev, id)
+    content += await generateGlobImports(globRoots, isBuild, isForClientSide, isClientRouting, isDev, id)
   }
   debugGlob(`Glob imports for ${isForClientSide ? 'client' : 'server'}:\n`, content)
   return content
@@ -106,7 +106,6 @@ async function generateGlobImports(
   isBuild: boolean,
   isForClientSide: boolean,
   isClientRouting: boolean,
-  config: ResolvedConfig,
   isDev: boolean,
   id: string
 ) {
@@ -124,7 +123,7 @@ ${await getVirtualFilePageConfigs(isForClientSide, isDev, id, isClientRouting)}
 `
 
   // We still use import.meta.glob() when using th V1 design in order to not break the V1 design deprecation warning
-  const isV1Design = isV1Design_(config)
+  const isV1Design = isV1Design_()
 
   const vikeConfig = await getVikeConfig3()
 

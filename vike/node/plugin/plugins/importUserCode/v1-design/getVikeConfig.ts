@@ -180,7 +180,7 @@ async function getVikeConfigOptional(): Promise<null | VikeConfigObject> {
   return await vikeConfigPromise
 }
 
-function isV1Design(config: ResolvedConfig | UserConfig): boolean {
+function isV1Design(): boolean {
   assert(typeof isV1Design_ === 'boolean')
   return isV1Design_
 }
