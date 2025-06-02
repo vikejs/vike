@@ -15,13 +15,12 @@ import {
   isVersionOrAbove,
   assertWarning
 } from '../../utils.js'
-import type { VikeConfigObject } from './v1-design/getVikeConfig.js'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
 import { version as viteVersion } from 'vite'
 import { type FileType, fileTypes } from '../../../../shared/getPageFiles/fileTypes.js'
 import path from 'path'
 import { getVirtualFilePageConfigs } from './v1-design/virtual-files/getVirtualFilePageConfigs.js'
-import { isV1Design as isV1Design_ } from './v1-design/getVikeConfig.js'
+import { getVikeConfig3, isV1Design as isV1Design_ } from './v1-design/getVikeConfig.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
 import { isViteServerBuild_options } from '../../shared/isViteServerBuild.js'
 
@@ -33,7 +32,6 @@ type GlobRoot = {
 async function getVirtualFileImportUserCode(
   id: string,
   options: { ssr?: boolean } | undefined,
-  vikeConfig: VikeConfigObject,
   config: ResolvedConfig,
   isDev: boolean
 ) {
@@ -41,13 +39,12 @@ async function getVirtualFileImportUserCode(
   assert(idParsed)
   const { isForClientSide, isClientRouting } = idParsed
   assert(isForClientSide === !isViteServerBuild_options(options))
-  const code = await getCode(config, vikeConfig, isForClientSide, isClientRouting, isDev, id)
+  const code = await getCode(config, isForClientSide, isClientRouting, isDev, id)
   return code
 }
 
 async function getCode(
   config: ResolvedConfig,
-  vikeConfig: VikeConfigObject,
   isForClientSide: boolean,
   isClientRouting: boolean,
   isDev: boolean,
@@ -66,7 +63,6 @@ async function getCode(
       isBuild,
       isForClientSide,
       isClientRouting,
-      vikeConfig,
       config,
       isDev,
       id
@@ -118,7 +114,6 @@ async function generateGlobImports(
   isBuild: boolean,
   isForClientSide: boolean,
   isClientRouting: boolean,
-  vikeConfig: VikeConfigObject,
   config: ResolvedConfig,
   isDev: boolean,
   id: string
@@ -138,6 +133,8 @@ ${await getVirtualFilePageConfigs(isForClientSide, isDev, id, isClientRouting, c
 
   // We still use import.meta.glob() when using th V1 design in order to not break the V1 design deprecation warning
   const isV1Design = isV1Design_(config)
+
+  const vikeConfig = await getVikeConfig3()
 
   // Old design => no + files => only to enable pre-rendering is setting `vike({prerender})` in vite.config.js
   const isPrerendering = !!vikeConfig.global.config.prerender
