@@ -95,6 +95,7 @@ assertIsNotProductionRuntime()
 assertIsSingleModuleInstance('v1-design/getVikeConfig.ts')
 let restartVite = false
 let wasConfigInvalid: boolean | null = null
+let isV1Design_: boolean | null = null
 let vikeConfigPromise: Promise<VikeConfigObject> | null = null
 let vikeConfigCtx: VikeConfigCtx | null = null // Information provided by Vite's `config` and Vike's CLI. We could, if we want or need to, completely remove the dependency on Vite.
 type VikeConfigCtx = { userRootDir: string; isDev: boolean; vikeVitePluginOptions: unknown }
@@ -180,11 +181,8 @@ async function getVikeConfigOptional(): Promise<null | VikeConfigObject> {
 }
 
 function isV1Design(config: ResolvedConfig | UserConfig): boolean {
-  const vikeConfig = config._vikeConfigObject
-  assert(vikeConfig)
-  const { pageConfigs } = vikeConfig
-  const isV1Design = pageConfigs.length > 0
-  return isV1Design
+  assert(typeof isV1Design_ === 'boolean')
+  return isV1Design_
 }
 
 async function resolveVikeConfig_withErrorHandling(
@@ -248,6 +246,7 @@ async function resolveVikeConfig(userRootDir: string, vikeVitePluginOptions: unk
     plusFilesAll,
     userRootDir
   )
+  if (!isV1Design_) isV1Design_ = pageConfigs.length > 0
 
   // Backwards compatibility for vike(options) in vite.config.js
   temp_interopVikeVitePlugin(pageConfigGlobal, vikeVitePluginOptions, userRootDir)
