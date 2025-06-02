@@ -89,6 +89,9 @@ import { getApiOperation } from '../../../../api/context.js'
 import { getCliOptions } from '../../../../cli/context.js'
 assertIsNotProductionRuntime()
 
+// We can simply use global variables since Vike's config is:
+//  - gobal
+//  - independent of Vite (therefore we don't need to tie Vike's config with Vite's config)
 assertIsSingleModuleInstance('v1-design/getVikeConfig.ts')
 let restartVite = false
 let wasConfigInvalid: boolean | null = null
