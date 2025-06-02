@@ -159,7 +159,7 @@ async function getVikeConfig(
   assert(vikeVitePluginOptions)
   const isDev = config._isDev
   assert(typeof isDev === 'boolean')
-  return await getVikeConfig_(userRootDir, isDev, vikeVitePluginOptions, doNotRestartViteOnError ?? false)
+  return await getOrResolveVikeConfig(userRootDir, isDev, vikeVitePluginOptions, doNotRestartViteOnError ?? false)
 }
 async function getVikeConfig2(
   userRootDir: string,
@@ -167,18 +167,18 @@ async function getVikeConfig2(
   vikeVitePluginOptions: unknown
 ): Promise<VikeConfigObject> {
   assert(vikeVitePluginOptions)
-  return await getVikeConfig_(userRootDir, isDev, vikeVitePluginOptions, false)
+  return await getOrResolveVikeConfig(userRootDir, isDev, vikeVitePluginOptions, false)
 }
 async function getVikeConfig3(): Promise<VikeConfigObject> {
   assert(viteInfo)
   const { userRootDir, isDev, vikeVitePluginOptions } = viteInfo
-  return await getVikeConfig_(userRootDir, isDev, vikeVitePluginOptions, false)
+  return await getOrResolveVikeConfig(userRootDir, isDev, vikeVitePluginOptions, false)
 }
 function setViteInfo(viteInfo_: ViteInfo) {
   // If the user changes Vite's `config.root` => Vite completely reloads itself => setViteInfo() is called again
   viteInfo = viteInfo_
 }
-async function getVikeConfig_(
+async function getOrResolveVikeConfig(
   userRootDir: string,
   isDev: boolean,
   vikeVitePluginOptions: unknown,
