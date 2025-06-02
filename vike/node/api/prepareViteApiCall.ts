@@ -8,8 +8,9 @@ import type { InlineConfig, ResolvedConfig, UserConfig } from 'vite'
 import type { APIOptions, Operation } from './types.js'
 import { clearContextApiOperation, setContextApiOperation } from './context.js'
 import {
-  getVikeConfig2,
+  getVikeConfig3,
   getVikeConfigFromCliOrEnv,
+  setViteInfo,
   type VikeConfigObject
 } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import path from 'path'
@@ -35,7 +36,12 @@ function clear() {
 
 async function resolveConfigs(viteConfigFromUserApiOptions: InlineConfig | undefined, operation: Operation) {
   const viteInfo = await getViteInfo(viteConfigFromUserApiOptions, operation)
-  const vikeConfig = await getVikeConfig2(viteInfo.root, operation === 'dev', viteInfo.vikeVitePluginOptions)
+  setViteInfo({
+    userRootDir: viteInfo.root,
+    isDev: operation === 'dev',
+    vikeVitePluginOptions: viteInfo.vikeVitePluginOptions
+  })
+  const vikeConfig = await getVikeConfig3()
   const viteConfigFromUserEnhanced = applyVikeViteConfig(viteInfo.viteConfigFromUserEnhanced, vikeConfig)
   const { viteConfigResolved } = await assertViteRoot2(viteInfo.root, viteConfigFromUserEnhanced, operation)
   return {
