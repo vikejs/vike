@@ -1,4 +1,3 @@
-export { getVikeConfig }
 export { getVikeConfigOptional }
 export { getVikeConfig3 }
 export { setVikeConfigCtx }
@@ -147,17 +146,6 @@ async function handleReloadSideEffects() {
   }
 }
 // TODO/now-1: predominantly use getVikeConfigInternal() instead of getVikeConfig() then maybe refector?
-async function getVikeConfig(
-  config: ResolvedConfig,
-  { doNotRestartViteOnError }: { doNotRestartViteOnError?: true } = {}
-): Promise<VikeConfigObject> {
-  const userRootDir = config.root
-  const vikeVitePluginOptions = config._vikeVitePluginOptions
-  assert(vikeVitePluginOptions)
-  const isDev = config._isDev
-  assert(typeof isDev === 'boolean')
-  return await getOrResolveVikeConfig(userRootDir, isDev, vikeVitePluginOptions, doNotRestartViteOnError ?? false)
-}
 async function getVikeConfig3(
   // TODO/now-later: is this really needed?
   doNotRestartViteOnError = false
