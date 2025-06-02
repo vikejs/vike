@@ -201,7 +201,7 @@ async function loadVikeConfig_withErrorHandling(
   let ret: VikeConfigObject | undefined
   let err: unknown
   try {
-    ret = await loadVikeConfig(userRootDir, vikeVitePluginOptions)
+    ret = await resolveVikeConfig(userRootDir, vikeVitePluginOptions)
   } catch (err_) {
     hasError = true
     err = err_
@@ -237,7 +237,7 @@ async function loadVikeConfig_withErrorHandling(
     }
   }
 }
-async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknown): Promise<VikeConfigObject> {
+async function resolveVikeConfig(userRootDir: string, vikeVitePluginOptions: unknown): Promise<VikeConfigObject> {
   const esbuildCache: EsbuildCache = {
     transpileCache: {},
     vikeConfigDependencies: new Set()
