@@ -100,6 +100,7 @@ let vikeConfigPromise: Promise<VikeConfigObject> | null = null
 let vikeConfigCtx: VikeConfigCtx | null = null // Information provided by Vite's `config` and Vike's CLI. We could, if we want or need to, completely remove the dependency on Vite.
 type VikeConfigCtx = { userRootDir: string; isDev: boolean; vikeVitePluginOptions: unknown }
 
+// TODO/now-1: rename
 type VikeConfigObject = {
   pageConfigs: PageConfigBuildTime[]
   pageConfigGlobal: PageConfigGlobalBuildTime
@@ -145,11 +146,11 @@ async function handleReloadSideEffects() {
     }
   }
 }
-// TODO/soon: predominantly use getVikeConfigInternal() instead of getVikeConfig() then maybe refector?
+// TODO/now-1: predominantly use getVikeConfigInternal() instead of getVikeConfig() then maybe refector?
 async function getVikeConfig(
   config: ResolvedConfig,
   {
-    // TODO/now: is this really needed?
+    // TODO/now-later: is this really needed?
     doNotRestartViteOnError
   }: { doNotRestartViteOnError?: true } = {}
 ): Promise<VikeConfigObject> {

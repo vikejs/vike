@@ -44,7 +44,7 @@ declare module 'vite' {
   }
 }
 
-// TODO/now: rename
+// TODO/now-1: rename
 type VikeConfigPublic = {
   config: VikeConfigObject['global']['config']
   pages: VikeConfigObject['pages']
