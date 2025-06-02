@@ -1,6 +1,5 @@
 export { getVikeConfig }
 export { getVikeConfigOptional }
-export { getVikeConfig2 }
 export { getVikeConfig3 }
 export { setVikeConfigCtx }
 export { reloadVikeConfig }
@@ -160,14 +159,6 @@ async function getVikeConfig(
   const isDev = config._isDev
   assert(typeof isDev === 'boolean')
   return await getOrResolveVikeConfig(userRootDir, isDev, vikeVitePluginOptions, doNotRestartViteOnError ?? false)
-}
-async function getVikeConfig2(
-  userRootDir: string,
-  isDev: boolean,
-  vikeVitePluginOptions: unknown
-): Promise<VikeConfigObject> {
-  assert(vikeVitePluginOptions)
-  return await getOrResolveVikeConfig(userRootDir, isDev, vikeVitePluginOptions, false)
 }
 async function getVikeConfig3(): Promise<VikeConfigObject> {
   assert(vikeConfigCtx)
