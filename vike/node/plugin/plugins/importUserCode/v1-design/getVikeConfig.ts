@@ -109,8 +109,8 @@ type VikeConfigObject = {
 }
 
 function reloadVikeConfig(config: ResolvedConfig) {
-  const userRootDir = config.root
-  const vikeVitePluginOptions = config._vikeVitePluginOptions
+  assert(vikeConfigCtx)
+  const { userRootDir, vikeVitePluginOptions } = vikeConfigCtx
   assert(vikeVitePluginOptions)
   vikeConfigPromise = resolveVikeConfig_withErrorHandling(userRootDir, true, vikeVitePluginOptions)
   handleReloadSideEffects()
