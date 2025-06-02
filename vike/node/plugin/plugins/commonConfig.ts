@@ -40,8 +40,6 @@ declare module 'vite' {
     _viteConfigFromUserEnhanced?: InlineConfig
     // TODO/now-1: remove / add comment
     _vike?: VikeConfigPublic
-    // TODO/now-1: remove?
-    _vikeConfigObject?: VikeConfigObject
   }
 }
 
@@ -88,7 +86,6 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
           return {
             _isDev: isDev,
             _rootResolvedEarly: rootResolvedEarly,
-            _vikeConfigObject: vikeConfig,
             _vike: {
               pages: vikeConfig.pages,
               config: vikeConfig.global.config,
@@ -115,7 +112,7 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
       enforce: 'post',
       configResolved: {
         order: 'post',
-        handler(config) {
+        async handler(config) {
           /* TODO: do this after implementing vike.config.js and new setting transformLinkedDependencies (or probably a better name like transpileLinkedDependencies/bundleLinkedDependencies or something else)
           overrideViteDefaultSsrExternal(config)
           //*/
@@ -125,7 +122,7 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
           assertEsm(config.root)
           assertVikeCliOrApi(config)
           temp_supportOldInterface(config)
-          emitServerEntryOnlyIfNeeded(config)
+          await emitServerEntryOnlyIfNeeded(config)
         }
       },
       config: {
@@ -288,11 +285,9 @@ function getVikeConfigPublic(config: ResolvedConfig | UserConfig): VikeConfigPub
 }
 
 // Only emit dist/server/entry.mjs if necessary
-function emitServerEntryOnlyIfNeeded(config: ResolvedConfig) {
-  if (
-    config.vitePluginServerEntry?.inject &&
-    !resolvePrerenderConfigGlobal(config._vikeConfigObject!).isPrerenderingEnabled
-  ) {
+async function emitServerEntryOnlyIfNeeded(config: ResolvedConfig) {
+  const vikeConfig = await getVikeConfig3()
+  if (config.vitePluginServerEntry?.inject && !resolvePrerenderConfigGlobal(vikeConfig).isPrerenderingEnabled) {
     config.vitePluginServerEntry.disableServerEntryEmit = true
   }
 }
