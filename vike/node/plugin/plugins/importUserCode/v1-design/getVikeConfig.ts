@@ -152,7 +152,7 @@ async function getVikeConfig(
   assert(vikeVitePluginOptions)
   const isDev = config._isDev
   assert(typeof isDev === 'boolean')
-  return await resolveVikeConfig_(userRootDir, isDev, vikeVitePluginOptions, doNotRestartViteOnError ?? false)
+  return await getVikeConfig_(userRootDir, isDev, vikeVitePluginOptions, doNotRestartViteOnError ?? false)
 }
 async function getVikeConfig2(
   userRootDir: string,
@@ -160,9 +160,9 @@ async function getVikeConfig2(
   vikeVitePluginOptions: unknown
 ): Promise<VikeConfigObject> {
   assert(vikeVitePluginOptions)
-  return await resolveVikeConfig_(userRootDir, isDev, vikeVitePluginOptions, false)
+  return await getVikeConfig_(userRootDir, isDev, vikeVitePluginOptions, false)
 }
-async function resolveVikeConfig_(
+async function getVikeConfig_(
   userRootDir: string,
   isDev: boolean,
   vikeVitePluginOptions: unknown,
