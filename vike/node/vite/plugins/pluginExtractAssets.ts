@@ -3,7 +3,7 @@
 
 // Workaround to make client-side bundles include the CSS imports living in server-side-only code.
 //  - This is needed for HTML-only pages, and React Server Components.
-//  - We recommend using the debug flag to get an idea of how this plugin works: `$ DEBUG=vike:extractAssets pnpm exec vike build`. Then have a look at `dist/client/manifest.json` and see how `.page.server.js` entries have zero JavaScript but only CSS.
+//  - We recommend using the debug flag to get an idea of how this plugin works: `$ DEBUG=vike:pluginExtractAssets pnpm exec vike build`. Then have a look at `dist/client/manifest.json` and see how `.page.server.js` entries have zero JavaScript but only CSS.
 //  - This appraoch supports import path aliases `vite.config.js#resolve.alias` https://vitejs.dev/config/#resolve-alias
 
 export { pluginExtractAssets }
@@ -37,7 +37,7 @@ const rawRE = /(\?|&)raw(?:&|$)/
 const urlRE = /(\?|&)url(?:&|$)/
 const EMPTY_MODULE_ID = 'virtual:vike:empty-module'
 
-const debug = createDebugger('vike:extractAssets')
+const debug = createDebugger('vike:pluginExtractAssets')
 
 function pluginExtractAssets(): Plugin[] {
   let config: ResolvedConfig
@@ -46,7 +46,7 @@ function pluginExtractAssets(): Plugin[] {
   return [
     // This plugin removes all JavaScript from server-side only code, so that only CSS imports remains. (And also satic files imports e.g. `import logoURL from './logo.svg.js'`).
     {
-      name: 'vike:extractAssets:remove-javaScript',
+      name: 'vike:pluginExtractAssets:remove-javaScript',
       // In dev, things just work. (Because Vite's module graph erroneously conflates the Vite server-side importees with the client-side importees.)
       apply: 'build',
       enforce: 'post',
@@ -72,7 +72,7 @@ function pluginExtractAssets(): Plugin[] {
     },
     // This plugin appends `?extractAssets` to module IDs
     {
-      name: 'vike:extractAssets:append-extractAssets-query',
+      name: 'vike:pluginExtractAssets:append-extractAssets-query',
       apply: 'build',
       // We ensure this plugin to be run before:
       //  - rollup's `alias` plugin; https://github.com/rollup/plugins/blob/5363f55aa1933b6c650832b08d6a54cb9ea64539/packages/alias/src/index.ts
@@ -143,14 +143,14 @@ function pluginExtractAssets(): Plugin[] {
       }
     },
     {
-      name: 'vike:extractAssets-3',
+      name: 'vike:pluginExtractAssets-3',
       apply: 'build',
       load(id) {
         if (!isVirtualFileId(id)) return undefined
         id = getVirtualFileId(id)
 
         if (id === EMPTY_MODULE_ID) {
-          return '// Erased by vike:extractAssets'
+          return '// Erased by vike:pluginExtractAssets'
         }
       },
       config() {
@@ -160,7 +160,7 @@ function pluginExtractAssets(): Plugin[] {
       }
     },
     {
-      name: 'vike:extractAssets-4',
+      name: 'vike:pluginExtractAssets-4',
       async configResolved(config_) {
         config = config_
         vikeConfig = await getVikeConfigInternal()

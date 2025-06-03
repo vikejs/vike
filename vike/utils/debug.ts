@@ -20,7 +20,7 @@ const flags = [
   'vike:crawl',
   'vike:error',
   'vike:esbuild-resolve',
-  'vike:extractAssets',
+  'vike:pluginExtractAssets',
   'vike:pluginExtractExportNames',
   'vike:glob',
   'vike:globalContext',
