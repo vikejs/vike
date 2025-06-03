@@ -11,7 +11,7 @@ import { isViteCliCall, getViteConfigFromCli } from '../../shared/isViteCliCall.
 import pc from '@brillout/picocolors'
 import { logErrorHint } from '../../../runtime/renderPage/logErrorHint.js'
 import { manifestTempFile } from './pluginBuildConfig.js'
-import { getVikeConfig3 } from '../importUserCode/v1-design/getVikeConfig.js'
+import { getVikeConfigInternal } from '../importUserCode/v1-design/getVikeConfig.js'
 import { isVikeCliOrApi } from '../../../api/context.js'
 import { handleAssetsManifest, handleAssetsManifest_assertUsageCssTarget } from './handleAssetsManifest.js'
 import { isViteClientBuild, isViteServerBuild_onlySsrEnv } from '../../shared/isViteServerBuild.js'
@@ -50,7 +50,7 @@ function pluginAutoFullBuild(): Plugin[] {
         async handler() {
           onSetupBuild()
           handleAssetsManifest_assertUsageCssTarget(config)
-          const vikeConfig = await getVikeConfig3()
+          const vikeConfig = await getVikeConfigInternal()
           if (
             forceExit &&
             // Let vike:build:pluginBuildApp force exit
@@ -66,7 +66,7 @@ function pluginAutoFullBuild(): Plugin[] {
 }
 
 async function triggerFullBuild(config: ResolvedConfig, viteEnv: Environment, bundle: Record<string, unknown>) {
-  const vikeConfig = await getVikeConfig3()
+  const vikeConfig = await getVikeConfigInternal()
   // Whether builder.buildApp() is being used, see plugin:build:pluginBuildApp
   const isBuilderApp = vikeConfig.global.config.vite6BuilderApp
   // If builder.buildApp() => trigger at end of `this.environment.name === 'ssr'`.
@@ -111,7 +111,7 @@ function setSSR(configInline: InlineConfig): InlineConfig {
 }
 
 async function abortViteBuildSsr() {
-  const vikeConfig = await getVikeConfig3()
+  const vikeConfig = await getVikeConfigInternal()
   if (vikeConfig.global.config.disableAutoFullBuild !== true && isViteCliCall() && getViteConfigFromCli()?.build.ssr) {
     assertWarning(
       false,

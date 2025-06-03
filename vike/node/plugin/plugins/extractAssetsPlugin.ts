@@ -26,7 +26,7 @@ import { getImportStatements, type ImportStatement } from '../shared/parseEsModu
 import type { Rollup } from 'vite'
 import pc from '@brillout/picocolors'
 import { handleAssetsManifest_isFixEnabled } from './build/handleAssetsManifest.js'
-import { getVikeConfig3, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
+import { getVikeConfigInternal, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
 import { assertV1Design } from '../../shared/assertV1Design.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerBuild_safe } from '../shared/isViteServerBuild.js'
@@ -163,7 +163,7 @@ function extractAssetsPlugin(): Plugin[] {
       name: 'vike:extractAssets-4',
       async configResolved(config_) {
         config = config_
-        vikeConfig = await getVikeConfig3()
+        vikeConfig = await getVikeConfigInternal()
         isFixEnabled = handleAssetsManifest_isFixEnabled(config)
         if (!isFixEnabled) {
           // https://github.com/vikejs/vike/issues/1060

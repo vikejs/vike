@@ -20,7 +20,7 @@ import { version as viteVersion } from 'vite'
 import { type FileType, fileTypes } from '../../../../shared/getPageFiles/fileTypes.js'
 import path from 'path'
 import { getVirtualFilePageConfigs } from './v1-design/virtual-files/getVirtualFilePageConfigs.js'
-import { getVikeConfig3, isV1Design as isV1Design_ } from './v1-design/getVikeConfig.js'
+import { getVikeConfigInternal, isV1Design as isV1Design_ } from './v1-design/getVikeConfig.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
 import { isViteServerBuild_options } from '../../shared/isViteServerBuild.js'
 
@@ -125,7 +125,7 @@ ${await getVirtualFilePageConfigs(isForClientSide, isDev, id, isClientRouting)}
   // We still use import.meta.glob() when using th V1 design in order to not break the V1 design deprecation warning
   const isV1Design = isV1Design_()
 
-  const vikeConfig = await getVikeConfig3()
+  const vikeConfig = await getVikeConfigInternal()
 
   // Old design => no + files => only to enable pre-rendering is setting `vike({prerender})` in vite.config.js
   const isPrerendering = !!vikeConfig.global.config.prerender

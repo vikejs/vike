@@ -10,7 +10,7 @@ import {
   isArray,
   unique
 } from '../../utils.js'
-import { getVikeConfig3, isOverriden } from '../importUserCode/v1-design/getVikeConfig.js'
+import { getVikeConfigInternal, isOverriden } from '../importUserCode/v1-design/getVikeConfig.js'
 import { analyzeClientEntries } from '../build/pluginBuildConfig.js'
 import type { PageConfigBuildTime } from '../../../../shared/page-configs/PageConfig.js'
 import {
@@ -22,7 +22,7 @@ import { getFilePathResolved } from '../../shared/getFilePath.js'
 const debug = createDebugger('vike:optimizeDeps')
 
 async function determineOptimizeDeps(config: ResolvedConfig) {
-  const vikeConfig = await getVikeConfig3()
+  const vikeConfig = await getVikeConfigInternal()
   const { pageConfigs } = vikeConfig
 
   const { entries, include } = await getPageDeps(config, pageConfigs)

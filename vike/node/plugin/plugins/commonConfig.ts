@@ -19,7 +19,7 @@ import path from 'path'
 import { assertResolveAlias } from './commonConfig/assertResolveAlias.js'
 import { isViteCliCall } from '../shared/isViteCliCall.js'
 import { isVikeCliOrApi } from '../../api/context.js'
-import { getVikeConfig3, setVikeConfigCtx } from './importUserCode/v1-design/getVikeConfig.js'
+import { getVikeConfigInternal, setVikeConfigCtx } from './importUserCode/v1-design/getVikeConfig.js'
 import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/prepareViteApiCall.js'
 import { temp_disablePrerenderAutoRun } from '../../prerender/context.js'
 import type { VitePluginServerEntryOptions } from '@brillout/vite-plugin-server-entry/plugin'
@@ -52,7 +52,7 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
           assert(rootResolvedEarly)
           // TODO/v1-release: we can remove setVikeConfigCtx() call here since with Vike's CLI it's already called at vike/node/api/prepareViteApiCall.ts
           setVikeConfigCtx({ userRootDir: rootResolvedEarly, isDev, vikeVitePluginOptions })
-          const vikeConfig = await getVikeConfig3()
+          const vikeConfig = await getVikeConfigInternal()
           return {
             _isDev: isDev,
             _rootResolvedEarly: rootResolvedEarly,
@@ -94,7 +94,7 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
         order: 'post',
         async handler(configFromUser) {
           let configFromVike: UserConfig = { server: {}, preview: {} }
-          const vikeConfig = await getVikeConfig3()
+          const vikeConfig = await getVikeConfigInternal()
 
           if (vikeConfig.global.config.port !== undefined) {
             // https://vike.dev/port
@@ -230,7 +230,7 @@ function temp_supportOldInterface(config: ResolvedConfig) {
 
 // Only emit dist/server/entry.mjs if necessary
 async function emitServerEntryOnlyIfNeeded(config: ResolvedConfig) {
-  const vikeConfig = await getVikeConfig3()
+  const vikeConfig = await getVikeConfigInternal()
   if (config.vitePluginServerEntry?.inject && !vikeConfig.prerenderContext.isPrerenderingEnabled) {
     config.vitePluginServerEntry.disableServerEntryEmit = true
   }

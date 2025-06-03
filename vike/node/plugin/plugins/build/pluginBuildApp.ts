@@ -5,7 +5,7 @@ import type { Plugin } from 'vite'
 import { resolveOutDir } from '../../shared/getOutDirs.js'
 import { assert } from '../../utils.js'
 import { isPrerenderForceExit } from './pluginAutoFullBuild.js'
-import { getVikeConfig3 } from '../importUserCode/v1-design/getVikeConfig.js'
+import { getVikeConfigInternal } from '../importUserCode/v1-design/getVikeConfig.js'
 
 function pluginBuildApp(): Plugin[] {
   return [
@@ -13,7 +13,7 @@ function pluginBuildApp(): Plugin[] {
       name: 'vike:build:pluginBuildApp',
       apply: 'build',
       async config(config) {
-        const vikeConfig = await getVikeConfig3()
+        const vikeConfig = await getVikeConfigInternal()
         if (!vikeConfig.global.config.vite6BuilderApp) return
 
         return {

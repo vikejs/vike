@@ -1,5 +1,5 @@
 export { getVikeConfigOptional }
-export { getVikeConfig3 }
+export { getVikeConfigInternal }
 export { getVikeConfigInternalSync }
 export { getVikeConfigPublic }
 export { setVikeConfigCtx }
@@ -176,7 +176,7 @@ async function handleReloadSideEffects() {
 // - `VikeConfigPublic` => `VikeConfig` ?
 // - `VikeConfigObject` => `VikeConfigInternal` ?
 // TODO/now-1: predominantly use getVikeConfigInternal() instead of getVikeConfig() then maybe refector?
-async function getVikeConfig3(
+async function getVikeConfigInternal(
   // TODO/now-later: is this really needed?
   doNotRestartViteOnError = false
 ): Promise<VikeConfigObject> {

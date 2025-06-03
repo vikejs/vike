@@ -56,7 +56,7 @@ import {
 } from '../../shared/hooks/getHook.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
-import { getVikeConfig3 } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
+import { getVikeConfigInternal } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import type { HookTimeout } from '../../shared/hooks/getHook.js'
 import { logErrorHint } from '../runtime/renderPage/logErrorHint.js'
 import { execHookWithoutPageContext, isUserHookError } from '../../shared/hooks/execHook.js'
@@ -187,7 +187,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   await disableReactStreaming()
 
   const viteConfig = await resolveViteConfig(options.viteConfig || {}, 'build', 'production')
-  const vikeConfig = await getVikeConfig3()
+  const vikeConfig = await getVikeConfigInternal()
 
   const { outDirClient, outDirServer } = getOutDirs(viteConfig)
   const { root } = viteConfig

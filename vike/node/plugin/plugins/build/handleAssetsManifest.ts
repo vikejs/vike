@@ -23,7 +23,7 @@ import { manifestTempFile } from './pluginBuildConfig.js'
 import type { Environment, ResolvedConfig, Rollup, UserConfig } from 'vite'
 import { getAssetsDir } from '../../shared/getAssetsDir.js'
 import pc from '@brillout/picocolors'
-import { getVikeConfig3, isV1Design } from '../importUserCode/v1-design/getVikeConfig.js'
+import { getVikeConfigInternal, isV1Design } from '../importUserCode/v1-design/getVikeConfig.js'
 import { getOutDirs, OutDirs } from '../../shared/getOutDirs.js'
 import { isViteServerBuild_onlySsrEnv, isViteServerBuild } from '../../shared/isViteServerBuild.js'
 import { set_macro_ASSETS_MANIFEST } from './pluginBuildEntry.js'
@@ -347,7 +347,7 @@ async function writeManifestFile(manifest: ViteManifest, manifestFilePath: strin
 }
 
 async function handleAssetsManifest_getBuildConfig(config: UserConfig) {
-  const vikeConfig = await getVikeConfig3()
+  const vikeConfig = await getVikeConfigInternal()
   const isFixEnabled = handleAssetsManifest_isFixEnabled(config)
   return {
     // https://github.com/vikejs/vike/issues/1339
