@@ -18,16 +18,16 @@ import {
   assertWarning,
   hasProp,
   isNotNullish
-} from '../../../../utils.js'
+} from '../../utils.js'
 import path from 'path'
 import { glob } from 'tinyglobby'
 import { exec } from 'child_process'
 import { promisify } from 'util'
-import { isTemporaryBuildFile } from './transpileAndExecuteFile.js'
-import { getEnvVarObject } from '../../../../shared/getEnvVarObject.js'
+import { isTemporaryBuildFile } from '../../plugins/importUserCode/v1-design/resolveVikeConfig/transpileAndExecuteFile.js'
+import { getEnvVarObject } from '../getEnvVarObject.js'
 import pc from '@brillout/picocolors'
 import picomatch, { type Matcher } from 'picomatch'
-import { ignorePatternsBuiltIn } from '../../../../shared/resolveVikeConfig/crawlPlusFiles/ignorePatternsBuiltIn.js'
+import { ignorePatternsBuiltIn } from './crawlPlusFiles/ignorePatternsBuiltIn.js'
 const execA = promisify(exec)
 const debug = createDebugger('vike:crawl')
 

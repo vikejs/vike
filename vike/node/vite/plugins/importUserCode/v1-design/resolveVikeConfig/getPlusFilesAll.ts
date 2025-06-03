@@ -7,13 +7,13 @@ import { assert } from '../../../../utils.js'
 import { configDefinitionsBuiltIn } from '../../../../shared/resolveVikeConfig/configDefinitionsBuiltIn.js'
 import { type LocationId, getLocationId } from './filesystemRouting.js'
 import { type EsbuildCache } from './transpileAndExecuteFile.js'
-import { crawlPlusFiles, getPlusFileValueConfigName } from './crawlPlusFiles.js'
+import { crawlPlusFiles, getPlusFileValueConfigName } from '../../../../shared/resolveVikeConfig/crawlPlusFiles.js'
 import { getConfigFileExport } from './getConfigFileExport.js'
 import { type ConfigFile, loadConfigFile, loadValueFile, PointerImportLoaded } from './loadFileAtConfigTime.js'
 import { resolvePointerImport } from './resolvePointerImport.js'
 import { getFilePathResolved } from '../../../../shared/getFilePath.js'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
-import { assertExtensionsConventions, assertExtensionsRequire } from './assertExtensions.js'
+import { assertExtensionsConventions, assertExtensionsRequire } from '../../../../shared/resolveVikeConfig/assertExtensions.js'
 
 type PlusFile = PlusFileConfig | PlusFileValue
 type PlusFileCommons = {
