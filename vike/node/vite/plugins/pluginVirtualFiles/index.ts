@@ -18,7 +18,7 @@ import { isPlusFile } from '../../shared/resolveVikeConfig/crawlPlusFiles.js'
 function pluginVirtualFiles(): Plugin {
   let config: ResolvedConfig
   return {
-    name: 'vike:virtualFiles',
+    name: 'vike:pluginVirtualFiles',
     async configResolved(config_) {
       config = config_
       // TODO/v1-release: remove
