@@ -1,4 +1,4 @@
-export { getVirtualFileImportUserCode }
+export { getVirtualFileEntry }
 
 // TODO/v1-release:
 //  - Remove this file
@@ -15,7 +15,7 @@ import {
   isVersionOrAbove,
   assertWarning
 } from '../../utils.js'
-import { isVirtualFileIdImportUserCode } from '../../../shared/virtualFiles/virtualFileImportUserCode.js'
+import { isVirtualFileIdEntry } from '../../../shared/virtualFiles/virtualFileEntry.js'
 import { version as viteVersion } from 'vite'
 import { type FileType, fileTypes } from '../../../../shared/getPageFiles/fileTypes.js'
 import path from 'path'
@@ -29,13 +29,13 @@ type GlobRoot = {
   excludeDir?: string // slash-terminated, no leading exclamation mark
 }
 
-async function getVirtualFileImportUserCode(
+async function getVirtualFileEntry(
   id: string,
   options: { ssr?: boolean } | undefined,
   config: ResolvedConfig,
   isDev: boolean
 ) {
-  const idParsed = isVirtualFileIdImportUserCode(id)
+  const idParsed = isVirtualFileIdEntry(id)
   assert(idParsed)
   const { isForClientSide, isClientRouting } = idParsed
   assert(isForClientSide === !isViteServerBuild_options(options))

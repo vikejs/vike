@@ -14,9 +14,9 @@ import { getVikeConfigInternal, isOverriden } from '../../shared/resolveVikeConf
 import { analyzeClientEntries } from '../build/pluginBuildConfig.js'
 import type { PageConfigBuildTime } from '../../../../shared/page-configs/PageConfig.js'
 import {
-  virtualFileIdImportUserCodeClientCR,
-  virtualFileIdImportUserCodeClientSR
-} from '../../../shared/virtualFiles/virtualFileImportUserCode.js'
+  virtualFileIdEntryClientCR,
+  virtualFileIdEntryClientSR
+} from '../../../shared/virtualFiles/virtualFileEntry.js'
 import { getFilePathResolved } from '../../shared/getFilePath.js'
 
 const debug = createDebugger('vike:optimizeDeps')
@@ -113,8 +113,8 @@ function getVirtualFiles(config: ResolvedConfig, pageConfigs: PageConfigBuildTim
   const { hasClientRouting, hasServerRouting, clientEntries } = analyzeClientEntries(pageConfigs, config)
 
   const entriesVirtualFiles = Object.values(clientEntries)
-  if (hasClientRouting) entriesVirtualFiles.push(virtualFileIdImportUserCodeClientCR)
-  if (hasServerRouting) entriesVirtualFiles.push(virtualFileIdImportUserCodeClientSR)
+  if (hasClientRouting) entriesVirtualFiles.push(virtualFileIdEntryClientCR)
+  if (hasServerRouting) entriesVirtualFiles.push(virtualFileIdEntryClientSR)
 
   return entriesVirtualFiles
 }

@@ -50,7 +50,7 @@ import {
 import type { ViteManifest } from '../shared/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
-import { virtualFileIdImportUserCodeServer } from '../shared/virtualFiles/virtualFileImportUserCode.js'
+import { virtualFileIdEntryServer } from '../shared/virtualFiles/virtualFileEntry.js'
 import pc from '@brillout/picocolors'
 import type { PageConfigUserFriendly } from '../../shared/page-configs/getUserFriendlyConfigs.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
@@ -408,9 +408,9 @@ async function updateUserFiles() {
   assert(viteDevServer)
   let virtualFileExports: Record<string, unknown>
   try {
-    virtualFileExports = await viteDevServer.ssrLoadModule(virtualFileIdImportUserCodeServer)
+    virtualFileExports = await viteDevServer.ssrLoadModule(virtualFileIdEntryServer)
   } catch (err) {
-    debugGlob(`Glob error: ${virtualFileIdImportUserCodeServer} transpile error: `, err)
+    debugGlob(`Glob error: ${virtualFileIdEntryServer} transpile error: `, err)
     throw err
   }
   virtualFileExports = (virtualFileExports as any).default || virtualFileExports

@@ -3,11 +3,11 @@ export { pluginVirtualFiles }
 import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode, ModuleGraph } from 'vite'
 import { normalizePath } from 'vite'
 import { getVirtualFilePageConfigValuesAll } from './getVirtualFilePageConfigValuesAll.js'
-import { getVirtualFileImportUserCode } from './getVirtualFileImportUserCode.js'
+import { getVirtualFileEntry } from './getVirtualFileEntry.js'
 import { assert, assertPosixPath } from '../../utils.js'
 import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../../shared/virtualFiles.js'
 import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtualFiles/virtualFilePageConfigValuesAll.js'
-import { isVirtualFileIdImportUserCode } from '../../../shared/virtualFiles/virtualFileImportUserCode.js'
+import { isVirtualFileIdEntry } from '../../../shared/virtualFiles/virtualFileEntry.js'
 import { reloadVikeConfig, isV1Design, getVikeConfigInternalOptional } from '../../shared/resolveVikeConfig.js'
 import pc from '@brillout/picocolors'
 import { logConfigInfo } from '../../shared/loggerNotProd.js'
@@ -49,8 +49,8 @@ function pluginVirtualFiles(): Plugin {
         return code
       }
 
-      if (isVirtualFileIdImportUserCode(id)) {
-        const code = await getVirtualFileImportUserCode(id, options, config, isDev)
+      if (isVirtualFileIdEntry(id)) {
+        const code = await getVirtualFileEntry(id, options, config, isDev)
         return code
       }
     },
@@ -141,7 +141,7 @@ function reloadConfig(filePath: string, config: ResolvedConfig, op: 'modified' |
 
 function getVikeVirtualFiles(server: ViteDevServer): ModuleNode[] {
   const vikeVirtualFiles = Array.from(server.moduleGraph.urlToModuleMap.keys())
-    .filter((url) => isVirtualFileIdPageConfigValuesAll(url) || isVirtualFileIdImportUserCode(url))
+    .filter((url) => isVirtualFileIdPageConfigValuesAll(url) || isVirtualFileIdEntry(url))
     .map((url) => {
       const mod = server.moduleGraph.urlToModuleMap.get(url)
       assert(mod)
