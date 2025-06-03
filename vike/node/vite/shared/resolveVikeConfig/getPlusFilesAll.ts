@@ -13,10 +13,7 @@ import { type ConfigFile, loadConfigFile, loadValueFile, PointerImportLoaded } f
 import { resolvePointerImport } from './resolvePointerImport.js'
 import { getFilePathResolved } from '../getFilePath.js'
 import type { FilePathResolved } from '../../../../shared/page-configs/FilePath.js'
-import {
-  assertExtensionsConventions,
-  assertExtensionsRequire
-} from './assertExtensions.js'
+import { assertExtensionsConventions, assertExtensionsRequire } from './assertExtensions.js'
 
 type PlusFile = PlusFileConfig | PlusFileValue
 type PlusFileCommons = {
