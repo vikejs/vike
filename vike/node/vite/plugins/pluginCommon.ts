@@ -1,4 +1,4 @@
-export { commonPlugin }
+export { pluginCommon }
 
 import { type InlineConfig, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
 import {
@@ -16,14 +16,14 @@ import { assertRollupInput } from './build/pluginBuildConfig.js'
 import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
 import pc from '@brillout/picocolors'
 import path from 'path'
-import { assertResolveAlias } from './commonPlugin/assertResolveAlias.js'
+import { assertResolveAlias } from './pluginCommon/assertResolveAlias.js'
 import { isViteCliCall } from '../shared/isViteCliCall.js'
 import { isVikeCliOrApi } from '../../api/context.js'
 import { getVikeConfigInternal, setVikeConfigContext } from '../shared/resolveVikeConfig.js'
 import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/prepareViteApiCall.js'
 import { temp_disablePrerenderAutoRun } from '../../prerender/context.js'
 import type { VitePluginServerEntryOptions } from '@brillout/vite-plugin-server-entry/plugin'
-const pluginName = 'vike:commonPlugin'
+const pluginName = 'vike:pluginCommon'
 
 declare module 'vite' {
   interface UserConfig {
@@ -36,7 +36,7 @@ declare module 'vite' {
   }
 }
 
-function commonPlugin(vikeVitePluginOptions: unknown): Plugin[] {
+function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
   return [
     {
       name: `${pluginName}:pre`,
