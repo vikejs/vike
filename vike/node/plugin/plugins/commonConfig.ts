@@ -19,7 +19,7 @@ import path from 'path'
 import { assertResolveAlias } from './commonConfig/assertResolveAlias.js'
 import { isViteCliCall } from '../shared/isViteCliCall.js'
 import { isVikeCliOrApi } from '../../api/context.js'
-import { getVikeConfigInternal, setVikeConfigCtx } from './importUserCode/v1-design/getVikeConfig.js'
+import { getVikeConfigInternal, setVikeConfigContext } from './importUserCode/v1-design/getVikeConfig.js'
 import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/prepareViteApiCall.js'
 import { temp_disablePrerenderAutoRun } from '../../prerender/context.js'
 import type { VitePluginServerEntryOptions } from '@brillout/vite-plugin-server-entry/plugin'
@@ -50,8 +50,8 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
             ? normalizeViteRoot(configFromUser.root)
             : await getViteRoot(operation)
           assert(rootResolvedEarly)
-          // TODO/v1-release: we can remove setVikeConfigCtx() call here since with Vike's CLI it's already called at vike/node/api/prepareViteApiCall.ts
-          setVikeConfigCtx({ userRootDir: rootResolvedEarly, isDev, vikeVitePluginOptions })
+          // TODO/v1-release: we can remove setVikeConfigContext() call here since with Vike's CLI it's already called at vike/node/api/prepareViteApiCall.ts
+          setVikeConfigContext({ userRootDir: rootResolvedEarly, isDev, vikeVitePluginOptions })
           const vikeConfig = await getVikeConfigInternal()
           return {
             _isDev: isDev,

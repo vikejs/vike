@@ -2,7 +2,7 @@ export { getVikeConfigInternal }
 export { getVikeConfigInternalOptional }
 export { getVikeConfigInternalSync }
 export { getVikeConfigPublic }
-export { setVikeConfigCtx }
+export { setVikeConfigContext }
 export { reloadVikeConfig }
 export { isV1Design }
 export { getConfVal }
@@ -107,8 +107,8 @@ let isV1Design_: boolean | null = null
 let vikeConfigPromise: Promise<VikeConfigInternal> | null = null
 // TODO/v1-release: remove
 let vikeConfigSync: VikeConfigInternal | null = null
-let vikeConfigCtx: VikeConfigCtx | null = null // Information provided by Vite's `config` and Vike's CLI. We could, if we want or need to, completely remove the dependency on Vite.
-type VikeConfigCtx = { userRootDir: string; isDev: boolean; vikeVitePluginOptions: unknown }
+let vikeConfigCtx: VikeConfigContext | null = null // Information provided by Vite's `config` and Vike's CLI. We could, if we want or need to, completely remove the dependency on Vite.
+type VikeConfigContext = { userRootDir: string; isDev: boolean; vikeVitePluginOptions: unknown }
 let prerenderContext: PrerenderContext
 type PrerenderContext = {
   isPrerenderingEnabled: boolean
@@ -204,8 +204,8 @@ function getVikeConfigPublic(config: ResolvedConfig | UserConfig): VikeConfigPub
     prerenderContext
   }
 }
-function setVikeConfigCtx(vikeConfigCtx_: VikeConfigCtx) {
-  // If the user changes Vite's `config.root` => Vite completely reloads itself => setVikeConfigCtx() is called again
+function setVikeConfigContext(vikeConfigCtx_: VikeConfigContext) {
+  // If the user changes Vite's `config.root` => Vite completely reloads itself => setVikeConfigContext() is called again
   vikeConfigCtx = vikeConfigCtx_
 }
 async function getOrResolveVikeConfig(
