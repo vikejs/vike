@@ -2,6 +2,7 @@ export { createGlobalContextShared }
 export { getGlobalContextSyncErrMsg }
 export type { GlobalContextBase }
 export type { GlobalContextBasePublic }
+export type GlobalContextInternal = GlobalContextServerInternal | GlobalContextClientInternal
 
 import { changeEnumerable, objectAssign, unique } from './utils.js'
 import type { PageFile } from './getPageFiles.js'
@@ -10,6 +11,8 @@ import { getUserFriendlyConfigsGlobal, getUserFriendlyConfigsPageEager } from '.
 import type { PageConfigRuntime } from './page-configs/PageConfig.js'
 import { execHookGlobal } from './hooks/execHook.js'
 import { prepareGlobalContextForPublicUsage } from './prepareGlobalContextForPublicUsage.js'
+import type { GlobalContextServerInternal } from '../node/runtime/globalContext.js'
+import type { GlobalContextClientInternal } from '../client/runtime-client-routing/globalContext.js'
 const getGlobalContextSyncErrMsg =
   "The global context isn't set yet, call getGlobalContextSync() later or use getGlobalContext() instead."
 
