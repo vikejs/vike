@@ -21,7 +21,7 @@ const flags = [
   'vike:error',
   'vike:esbuild-resolve',
   'vike:extractAssets',
-  'vike:extractExportNames',
+  'vike:pluginExtractExportNames',
   'vike:glob',
   'vike:globalContext',
   'vike:log',

@@ -15,13 +15,13 @@ import { getExportNames } from '../shared/parseEsModule.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerBuild_options } from '../shared/isViteServerBuild.js'
 const extractExportNamesRE = /(\?|&)extractExportNames(?:&|$)/
-const debug = createDebugger('vike:extractExportNames')
+const debug = createDebugger('vike:pluginExtractExportNames')
 const globalObject = getGlobalObject<{ usesClientRouter?: true }>('plugins/pluginExtractExportNames.ts', {})
 
 function pluginExtractExportNames(): Plugin {
   let isDev = false
   return {
-    name: 'vike:extractExportNames',
+    name: 'vike:pluginExtractExportNames',
     enforce: 'post',
     async transform(src, id, options) {
       id = normalizeId(id)
