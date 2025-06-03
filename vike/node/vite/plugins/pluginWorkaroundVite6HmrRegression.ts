@@ -1,4 +1,4 @@
-export { workaroundVite6HmrRegression }
+export { pluginWorkaroundVite6HmrRegression }
 
 import type { Plugin } from 'vite'
 
@@ -6,9 +6,9 @@ import type { Plugin } from 'vite'
 // https://v6.vite.dev/guide/migration (will exist after vite@7 release) > search for `hmrReload()`
 // Workaround seems to work for docs page /banner (which is HTML-only)
 // But doesn't seem to work for /examples/render-modes/ (see https://github.com/vikejs/vike/pull/2069 commit `renable HMR test for HTML-only`)
-function workaroundVite6HmrRegression(): Plugin {
+function pluginWorkaroundVite6HmrRegression(): Plugin {
   return {
-    name: 'vike:workaroundVite6HmrRegression',
+    name: 'vike:pluginWorkaroundVite6HmrRegression',
     enforce: 'post',
     hotUpdate: {
       order: 'post',
