@@ -33,7 +33,7 @@ async function getVirtualFilePageConfigLazy(id: string, isDev: boolean, config: 
     pageConfig,
     isForClientSide,
     pageId,
-    // TODO/now: add meta.default
+    // TODO/now-1: add meta.default
     vikeConfig.global.config.includeAssetsImportedByServer ?? true,
     config,
     isDev

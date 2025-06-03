@@ -79,7 +79,7 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
   // TODO/v1-release: remove
   const pageFileEntries = await getPageFileEntries(
     config,
-    // TODO/now: add meta.default
+    // TODO/now-1: add meta.default
     vikeConfig.global.config.includeAssetsImportedByServer ?? true
   )
   assertUsage(

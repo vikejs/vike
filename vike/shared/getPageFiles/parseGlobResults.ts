@@ -13,7 +13,7 @@ import type {
   PageConfigRuntimeSerialized
 } from '../page-configs/serialize/PageConfigSerialized.js'
 
-// TODO/now: rename
+// TODO/now-3: rename
 function parseGlobResults(pageFilesExports: unknown): {
   pageFilesAll: PageFile[]
   pageConfigs: PageConfigRuntime[]

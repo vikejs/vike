@@ -57,7 +57,7 @@ type ConfigDefinition_ = {
    * https://vike.dev/extends#inheritance
    */
   global?: boolean | ((value: unknown, moreInfo: { isGlobalLocation: boolean }) => boolean)
-  // TODO/now implement
+  // TODO/now-2 implement
   type?: string | string[]
 }
 type ConfigDefinitionDefinedByPeerDependency = {

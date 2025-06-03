@@ -60,7 +60,7 @@ function pluginExtractAssets(): Plugin[] {
           assertV1Design(vikeConfig.pageConfigs, true)
           assert(false)
         }
-        // TODO/now: add meta.default
+        // TODO/now-1: add meta.default
         assert(vikeConfig.global.config.includeAssetsImportedByServer ?? true)
         assert(!isViteServerBuild_safe(config, options))
         const importStatements = await getImportStatements(src)
@@ -96,7 +96,7 @@ function pluginExtractAssets(): Plugin[] {
         if (!extractAssetsRE.test(importer)) {
           return
         }
-        // TODO/now: add meta.default
+        // TODO/now-1: add meta.default
         assert(vikeConfig.global.config.includeAssetsImportedByServer ?? true)
 
         let resolution: null | ResolvedId = null

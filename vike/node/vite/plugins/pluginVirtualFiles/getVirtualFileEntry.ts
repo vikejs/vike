@@ -146,7 +146,7 @@ ${await getVirtualFilePageConfigsEager(isForClientSide, isDev, id, isClientRouti
         fileContent += getGlobs(globRoots, isBuild, fileType, 'extractExportNames', isV1Design)
       }
     })
-  // TODO/now: add meta.default
+  // TODO/now-1: add meta.default
   const includeAssetsImportedByServer = vikeConfig.global.config.includeAssetsImportedByServer ?? true
   if (includeAssetsImportedByServer && isForClientSide) {
     fileContent += getGlobs(globRoots, isBuild, '.page.server', 'extractAssets', isV1Design)
