@@ -90,7 +90,7 @@ assertIsNotProductionRuntime()
 
 // We can simply use global variables since Vike's config is:
 //  - gobal
-//  - independent of Vite (therefore we don't need to tie Vike's config with Vite's config)
+//  - independent of Vite (therefore we don't need to tie Vike's config with Vite's `config` object)
 assertIsSingleModuleInstance('v1-design/getVikeConfig.ts')
 let restartVite = false
 let wasConfigInvalid: boolean | null = null
