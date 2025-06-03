@@ -40,7 +40,7 @@ import {
 } from './preparePageContextForPublicUsageClient.js'
 import type { ConfigEnv } from '../../types/index.js'
 const globalObject = getGlobalObject<{ pageContextInitIsPassedToClient?: true }>(
-  'client-routing-runtime/getPageContextFromHooks.ts',
+  'runtime-client-routing/getPageContextFromHooks.ts',
   {}
 )
 
