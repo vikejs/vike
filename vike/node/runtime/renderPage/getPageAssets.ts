@@ -14,6 +14,7 @@ import { sortPageAssetsForEarlyHintsHeader } from './getPageAssets/sortPageAsset
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { ViteManifest } from '../../shared/ViteManifest.js'
 import type { ResolveClientEntriesDev } from '../../vite/shared/resolveClientEntriesDev.js'
+import type { ConfigResolved } from '../../../types/index.js'
 
 const globalObject = getGlobalObject('renderPage/getPageAssets.ts', {
   resolveClientEntriesDev: null as null | ResolveClientEntriesDev
@@ -53,11 +54,10 @@ async function getPageAssets(
   } else {
     const { assetsManifest } = globalContext
     clientEntriesSrc = clientEntries.map((clientEntry) => resolveClientEntriesProd(clientEntry, assetsManifest))
-    // TODO/now-1: add meta.default
     assetUrls = retrieveAssetsProd(
       clientDependencies,
       assetsManifest,
-      pageContext._globalContext.config.includeAssetsImportedByServer ?? true
+      resolveIncludeAssetsImportedByServer(pageContext._globalContext.config)
     )
   }
 
@@ -113,4 +113,8 @@ function resolveClientEntriesProd(clientEntry: string, assetsManifest: ViteManif
 
 function setResolveClientEntriesDev(resolveClientEntriesDev: ResolveClientEntriesDev) {
   globalObject.resolveClientEntriesDev = resolveClientEntriesDev
+}
+
+function resolveIncludeAssetsImportedByServer(config: ConfigResolved): boolean {
+  return config.includeAssetsImportedByServer ?? true
 }
