@@ -1,7 +1,4 @@
 export { commonConfig }
-export { getVikeConfigPublic }
-export { getVikeConfigInternal }
-export type { VikeConfigPublic }
 
 import { type InlineConfig, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
 import {
@@ -22,43 +19,24 @@ import path from 'path'
 import { assertResolveAlias } from './commonConfig/assertResolveAlias.js'
 import { isViteCliCall } from '../shared/isViteCliCall.js'
 import { isVikeCliOrApi } from '../../api/context.js'
-import { getVikeConfig2, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
+import { getVikeConfigInternal, setVikeConfigContext } from './importUserCode/v1-design/getVikeConfig.js'
 import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/prepareViteApiCall.js'
 import { temp_disablePrerenderAutoRun } from '../../prerender/context.js'
-import type { PrerenderContextPublic } from '../../prerender/runPrerender.js'
 import type { VitePluginServerEntryOptions } from '@brillout/vite-plugin-server-entry/plugin'
-import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderConfig.js'
 const pluginName = 'vike:commonConfig'
 
 declare module 'vite' {
   interface UserConfig {
-    _isDev?: boolean
-    _vikeVitePluginOptions?: unknown
     vitePluginServerEntry?: VitePluginServerEntryOptions
-    _root?: string
+    _isDev?: boolean
+    _rootResolvedEarly?: string
     _baseViteOriginal?: string
     // We'll be able to remove once we have one Rolldown build instead of two Rollup builds
     _viteConfigFromUserEnhanced?: InlineConfig
-    _vike?: VikeConfigPublic
-    _vikeConfigObject?: VikeConfigObject
   }
 }
 
-// TODO/now: rename
-type VikeConfigPublic = {
-  config: VikeConfigObject['global']['config']
-  pages: VikeConfigObject['pages']
-  prerenderContext: PrerenderContext
-}
-
-type PrerenderContext = {
-  isPrerenderingEnabled: boolean
-  isPrerenderingEnabledForAllPages: boolean
-} & ({ [K in keyof PrerenderContextPublic]: null } | PrerenderContextPublic)
-
 function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
-  // We cache it => makes sure we only generate one object => we can mutate it at runPrerender()
-  let prerenderContext: PrerenderContext
   return [
     {
       name: `${pluginName}:pre`,
@@ -68,31 +46,19 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
         async handler(configFromUser, env) {
           const isDev = isDevCheck(env)
           const operation = env.command === 'build' ? 'build' : env.isPreview ? 'preview' : 'dev'
-          const root = configFromUser.root ? normalizeViteRoot(configFromUser.root) : await getViteRoot(operation)
-          assert(root)
-          const vikeConfig = await getVikeConfig2(root, isDev, vikeVitePluginOptions)
-          const { isPrerenderingEnabled, isPrerenderingEnabledForAllPages } = resolvePrerenderConfigGlobal(vikeConfig)
-          prerenderContext ??= {
-            isPrerenderingEnabled,
-            isPrerenderingEnabledForAllPages,
-            output: null,
-            pageContexts: null
-          }
-          assert(prerenderContext.isPrerenderingEnabled === isPrerenderingEnabled)
-          assert(prerenderContext.isPrerenderingEnabledForAllPages === isPrerenderingEnabledForAllPages)
+          const rootResolvedEarly = configFromUser.root
+            ? normalizeViteRoot(configFromUser.root)
+            : await getViteRoot(operation)
+          assert(rootResolvedEarly)
+          // TODO/v1-release: we can remove setVikeConfigContext() call here since with Vike's CLI it's already called at vike/node/api/prepareViteApiCall.ts
+          setVikeConfigContext({ userRootDir: rootResolvedEarly, isDev, vikeVitePluginOptions })
+          const vikeConfig = await getVikeConfigInternal()
           return {
             _isDev: isDev,
-            _root: root,
-            _vikeVitePluginOptions: vikeVitePluginOptions,
-            _vikeConfigObject: vikeConfig,
-            _vike: {
-              pages: vikeConfig.pages,
-              config: vikeConfig.global.config,
-              prerenderContext
-            },
+            _rootResolvedEarly: rootResolvedEarly,
             // TODO/v1-release: remove https://github.com/vikejs/vike/issues/2122
             configVikePromise: Promise.resolve({
-              prerender: isPrerenderingEnabled
+              prerender: vikeConfig.prerenderContext.isPrerenderingEnabled
             })
           }
         }
@@ -101,7 +67,7 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
     {
       name: pluginName,
       configResolved(config) {
-        assertViteRoot(config._root!, config)
+        assertViteRoot(config._rootResolvedEarly!, config)
         assertSingleInstance(config)
         installRequireShim_setUserRootDir(config.root)
       }
@@ -111,7 +77,7 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
       enforce: 'post',
       configResolved: {
         order: 'post',
-        handler(config) {
+        async handler(config) {
           /* TODO: do this after implementing vike.config.js and new setting transformLinkedDependencies (or probably a better name like transpileLinkedDependencies/bundleLinkedDependencies or something else)
           overrideViteDefaultSsrExternal(config)
           //*/
@@ -121,26 +87,26 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
           assertEsm(config.root)
           assertVikeCliOrApi(config)
           temp_supportOldInterface(config)
-          emitServerEntryOnlyIfNeeded(config)
+          await emitServerEntryOnlyIfNeeded(config)
         }
       },
       config: {
         order: 'post',
-        handler(configFromUser) {
+        async handler(configFromUser) {
           let configFromVike: UserConfig = { server: {}, preview: {} }
-          const vike = getVikeConfigInternal(configFromUser)
+          const vikeConfig = await getVikeConfigInternal()
 
-          if (vike.config.port !== undefined) {
+          if (vikeConfig.global.config.port !== undefined) {
             // https://vike.dev/port
-            setDefault('port', vike.config.port, configFromUser, configFromVike)
+            setDefault('port', vikeConfig.global.config.port, configFromUser, configFromVike)
           } else {
             // Change Vite's default port
             setDefault('port', 3000, configFromUser, configFromVike)
           }
 
-          if (vike.config.host) {
+          if (vikeConfig.global.config.host) {
             // https://vike.dev/host
-            setDefault('host', vike.config.host, configFromUser, configFromVike)
+            setDefault('host', vikeConfig.global.config.host, configFromUser, configFromVike)
           } else if (isDocker()) {
             // Set `--host` for Docker/Podman
             setDefault('host', true, configFromUser, configFromVike)
@@ -262,33 +228,10 @@ function temp_supportOldInterface(config: ResolvedConfig) {
   assert(false)
 }
 
-// TODO/soon rename:
-// - `getVikeConfig()` => `resolveVikeConfig()` ?
-// - `getVikeConfigInternal()` => `getVikeConfig()`
-// - `VikeConfigPublic` => `VikeConfig` ?
-// - `VikeConfigObject` => `VikeConfigInternal` ?
-/**
- * Get all the information Vike knows about the app in your Vite plugin.
- *
- * https://vike.dev/getVikeConfig
- */
-function getVikeConfigInternal(config: ResolvedConfig | UserConfig): VikeConfigPublic {
-  const vikeConfig = config._vike
-  assert(vikeConfig)
-  return vikeConfig
-}
-function getVikeConfigPublic(config: ResolvedConfig | UserConfig): VikeConfigPublic {
-  const vikeConfig = config._vike
-  assertUsage(vikeConfig, "getVikeConfig() can only be used when Vite is running with Vike's Vite plugin")
-  return vikeConfig
-}
-
 // Only emit dist/server/entry.mjs if necessary
-function emitServerEntryOnlyIfNeeded(config: ResolvedConfig) {
-  if (
-    config.vitePluginServerEntry?.inject &&
-    !resolvePrerenderConfigGlobal(config._vikeConfigObject!).isPrerenderingEnabled
-  ) {
+async function emitServerEntryOnlyIfNeeded(config: ResolvedConfig) {
+  const vikeConfig = await getVikeConfigInternal()
+  if (config.vitePluginServerEntry?.inject && !vikeConfig.prerenderContext.isPrerenderingEnabled) {
     config.vitePluginServerEntry.disableServerEntryEmit = true
   }
 }

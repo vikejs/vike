@@ -2,14 +2,13 @@ export { importUserCode }
 
 import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode, ModuleGraph } from 'vite'
 import { normalizePath } from 'vite'
-import type { VikeConfigObject } from './v1-design/getVikeConfig.js'
 import { getVirtualFilePageConfigValuesAll } from './v1-design/virtual-files/getVirtualFilePageConfigValuesAll.js'
 import { getVirtualFileImportUserCode } from './getVirtualFileImportUserCode.js'
 import { assert, assertPosixPath } from '../../utils.js'
 import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../../shared/virtual-files.js'
 import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
-import { reloadVikeConfig, isV1Design, getVikeConfig, getVikeConfigOptional } from './v1-design/getVikeConfig.js'
+import { reloadVikeConfig, isV1Design, getVikeConfigInternalOptional } from './v1-design/getVikeConfig.js'
 import pc from '@brillout/picocolors'
 import { logConfigInfo } from '../../shared/loggerNotProd.js'
 import { getModuleFilePathAbsolute } from '../../shared/getFilePath.js'
@@ -18,14 +17,12 @@ import { isPlusFile } from './v1-design/getVikeConfig/crawlPlusFiles.js'
 
 function importUserCode(): Plugin {
   let config: ResolvedConfig
-  let vikeConfig: VikeConfigObject
   return {
     name: 'vike:importUserCode',
     async configResolved(config_) {
-      vikeConfig = await getVikeConfig(config_)
       config = config_
       // TODO/v1-release: remove
-      if (!isV1Design(config)) config.experimental.importGlobRestoreExtension = true
+      if (!isV1Design()) config.experimental.importGlobRestoreExtension = true
     },
     resolveId(id) {
       if (isVirtualFileId(id)) {
@@ -53,7 +50,7 @@ function importUserCode(): Plugin {
       }
 
       if (isVirtualFileIdImportUserCode(id)) {
-        const code = await getVirtualFileImportUserCode(id, options, vikeConfig, config, isDev)
+        const code = await getVirtualFileImportUserCode(id, options, config, isDev)
         return code
       }
     },
@@ -116,7 +113,7 @@ async function isVikeConfigDependency(
 ): Promise<null | { modifiesVikeVirtualFiles: boolean }> {
   // Check config-only files, for example all pages/+config.js dependencies. (There aren't part of Vite's module graph.)
   assertPosixPath(filePathAbsoluteFilesystem)
-  const vikeConfigObject = await getVikeConfigOptional()
+  const vikeConfigObject = await getVikeConfigInternalOptional()
   if (vikeConfigObject) {
     const { vikeConfigDependencies } = vikeConfigObject
     vikeConfigDependencies.forEach((f) => assertPosixPath(f))
@@ -138,7 +135,7 @@ function reloadConfig(filePath: string, config: ResolvedConfig, op: 'modified' |
     const msg = `${op} ${pc.dim(filePathToShowToUserResolved)}`
     logConfigInfo(msg, 'info')
   }
-  reloadVikeConfig(config)
+  reloadVikeConfig()
   updateUserFiles()
 }
 

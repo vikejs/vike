@@ -4,17 +4,17 @@ import { runPrerender_forceExit } from '../../../prerender/runPrerender.js'
 import type { Plugin } from 'vite'
 import { resolveOutDir } from '../../shared/getOutDirs.js'
 import { assert } from '../../utils.js'
-import { getVikeConfigInternal } from '../commonConfig.js'
 import { isPrerenderForceExit } from './pluginAutoFullBuild.js'
+import { getVikeConfigInternal } from '../importUserCode/v1-design/getVikeConfig.js'
 
 function pluginBuildApp(): Plugin[] {
   return [
     {
       name: 'vike:build:pluginBuildApp',
       apply: 'build',
-      config(config) {
-        const vike = getVikeConfigInternal(config)
-        if (!vike.config.vite6BuilderApp) return
+      async config(config) {
+        const vikeConfig = await getVikeConfigInternal()
+        if (!vikeConfig.global.config.vite6BuilderApp) return
 
         return {
           builder: {

@@ -15,7 +15,7 @@ import {
   assertIsImportPathNpmPackage,
   requireResolveVikeDistFile
 } from '../../utils.js'
-import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
+import { getVikeConfigInternal } from '../importUserCode/v1-design/getVikeConfig.js'
 import { findPageFiles } from '../../shared/findPageFiles.js'
 import type { ResolvedConfig, Plugin } from 'vite'
 import { getVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
@@ -56,12 +56,12 @@ function pluginBuildConfig(): Plugin[] {
       },
       config: {
         order: 'post',
-        handler(config) {
+        async handler(config) {
           onSetupBuild()
           return {
             build: {
               outDir: resolveOutDir(config),
-              ...handleAssetsManifest_getBuildConfig(config)
+              ...(await handleAssetsManifest_getBuildConfig(config))
             }
           }
         }
@@ -74,7 +74,7 @@ function pluginBuildConfig(): Plugin[] {
 }
 
 async function getEntries(config: ResolvedConfig): Promise<Record<string, string>> {
-  const vikeConfig = await getVikeConfig(config)
+  const vikeConfig = await getVikeConfigInternal()
   const { pageConfigs } = vikeConfig
   // TODO/v1-release: remove
   const pageFileEntries = await getPageFileEntries(

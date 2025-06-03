@@ -2,7 +2,7 @@ export default plugin
 export { plugin }
 // TODO/v1-release: remove
 export { plugin as ssr }
-export { getVikeConfigPublic as getVikeConfig } from './plugins/commonConfig.js'
+export { getVikeConfig } from './plugins/importUserCode/v1-design/getVikeConfig.js'
 export { PROJECT_VERSION as version } from './utils.js'
 export type { VikeVitePluginOptions as UserConfig }
 export type { VikeVitePluginOptions }
@@ -49,7 +49,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginIntero
     workaroundVite6HmrRegression(),
     replaceConstants()
   ]
-  Object.assign(plugins, { __vikeVitePluginOptions: vikeVitePluginOptions })
+  Object.assign(plugins, { _vikeVitePluginOptions: vikeVitePluginOptions })
   return plugins as any
 }
 

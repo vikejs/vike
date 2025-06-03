@@ -1,13 +1,19 @@
+export { getVikeConfigInternal }
+export { getVikeConfigInternalOptional }
+export { getVikeConfigInternalSync }
 export { getVikeConfig }
-export { getVikeConfigOptional }
-export { getVikeConfig2 }
+export { setVikeConfigContext }
 export { reloadVikeConfig }
 export { isV1Design }
 export { getConfVal }
 export { getConfigDefinitionOptional }
 export { getVikeConfigFromCliOrEnv }
 export { isOverriden }
-export type { VikeConfigObject }
+export type { VikeConfigInternal }
+export type { VikeConfig }
+
+// TODO/now-1: rename this file
+// TODO/now-1: remove v1-design/ dir
 
 import {
   assertPosixPath,
@@ -49,7 +55,6 @@ import {
   configDefinitionsBuiltIn,
   type ConfigDefinitionsInternal,
   type ConfigDefinitionInternal,
-  type ConfigDefinition,
   type ConfigDefinitions
 } from './getVikeConfig/configDefinitionsBuiltIn.js'
 import {
@@ -71,7 +76,6 @@ import {
 } from '../../../shared/loggerVite/removeSuperfluousViteLog.js'
 import pc from '@brillout/picocolors'
 import { getConfigDefinedAt, getDefinedByString } from '../../../../../shared/page-configs/getConfigDefinedAt.js'
-import type { ResolvedConfig, UserConfig } from 'vite'
 import { loadPointerImport, loadValueFile } from './getVikeConfig/loadFileAtConfigTime.js'
 import { resolvePointerImport } from './getVikeConfig/resolvePointerImport.js'
 import { getFilePathResolved } from '../../../shared/getFilePath.js'
@@ -88,25 +92,43 @@ import { getPlusFilesAll, type PlusFile, type PlusFilesByLocationId } from './ge
 import { getEnvVarObject } from '../../../shared/getEnvVarObject.js'
 import { getApiOperation } from '../../../../api/context.js'
 import { getCliOptions } from '../../../../cli/context.js'
+import type { PrerenderContextPublic } from '../../../../prerender/runPrerender.js'
+import { resolvePrerenderConfigGlobal } from '../../../../prerender/resolvePrerenderConfig.js'
+import type { ResolvedConfig, UserConfig } from 'vite'
 assertIsNotProductionRuntime()
+
+// We can simply use global variables since Vike's config is:
+//  - gobal
+//  - independent of Vite (therefore we don't need to tie Vike's config with Vite's `config` object)
 assertIsSingleModuleInstance('v1-design/getVikeConfig.ts')
 let restartVite = false
 let wasConfigInvalid: boolean | null = null
-let vikeConfigPromise: Promise<VikeConfigObject> | null = null
+let isV1Design_: boolean | null = null
+let vikeConfigPromise: Promise<VikeConfigInternal> | null = null
+// TODO/v1-release: remove
+let vikeConfigSync: VikeConfigInternal | null = null
+let vikeConfigCtx: VikeConfigContext | null = null // Information provided by Vite's `config` and Vike's CLI. We could, if we want or need to, completely remove the dependency on Vite.
+type VikeConfigContext = { userRootDir: string; isDev: boolean; vikeVitePluginOptions: unknown }
+let prerenderContext: PrerenderContext
+type PrerenderContext = {
+  isPrerenderingEnabled: boolean
+  isPrerenderingEnabledForAllPages: boolean
+} & ({ [K in keyof PrerenderContextPublic]: null } | PrerenderContextPublic)
 
-type VikeConfigObject = {
+type VikeConfigInternal = {
   pageConfigs: PageConfigBuildTime[]
   pageConfigGlobal: PageConfigGlobalBuildTime
   global: PageConfigUserFriendly
   pages: PageConfigsUserFriendly
   vikeConfigDependencies: Set<string>
+  prerenderContext: PrerenderContext
 }
 
-function reloadVikeConfig(config: ResolvedConfig) {
-  const userRootDir = config.root
-  const vikeVitePluginOptions = config._vikeVitePluginOptions
+function reloadVikeConfig() {
+  assert(vikeConfigCtx)
+  const { userRootDir, vikeVitePluginOptions } = vikeConfigCtx
   assert(vikeVitePluginOptions)
-  vikeConfigPromise = loadVikeConfig_withErrorHandling(userRootDir, true, vikeVitePluginOptions)
+  vikeConfigPromise = resolveVikeConfig_withErrorHandling(userRootDir, true, vikeVitePluginOptions)
   handleReloadSideEffects()
 }
 async function handleReloadSideEffects() {
@@ -139,34 +161,62 @@ async function handleReloadSideEffects() {
     }
   }
 }
-// TODO/soon: predominantly use getVikeConfigInternal() instead of getVikeConfig() then maybe refector?
-async function getVikeConfig(
-  config: ResolvedConfig,
-  { doNotRestartViteOnError }: { doNotRestartViteOnError?: true } = {}
-): Promise<VikeConfigObject> {
-  const userRootDir = config.root
-  const vikeVitePluginOptions = config._vikeVitePluginOptions
-  assert(vikeVitePluginOptions)
-  const isDev = config._isDev
-  assert(typeof isDev === 'boolean')
-  return await getVikeConfigEntry(userRootDir, isDev, vikeVitePluginOptions, doNotRestartViteOnError ?? false)
+
+async function getVikeConfigInternal(
+  // TODO/now-later: is this really needed?
+  doNotRestartViteOnError = false
+): Promise<VikeConfigInternal> {
+  assert(vikeConfigCtx)
+  const { userRootDir, isDev, vikeVitePluginOptions } = vikeConfigCtx
+  const vikeConfig = await getOrResolveVikeConfig(userRootDir, isDev, vikeVitePluginOptions, doNotRestartViteOnError)
+  return vikeConfig
 }
-async function getVikeConfig2(
-  userRootDir: string,
-  isDev: boolean,
-  vikeVitePluginOptions: unknown
-): Promise<VikeConfigObject> {
-  assert(vikeVitePluginOptions)
-  return await getVikeConfigEntry(userRootDir, isDev, vikeVitePluginOptions, false)
+// TODO/v1-release: remove
+function getVikeConfigInternalSync(): VikeConfigInternal {
+  assert(vikeConfigSync)
+  return vikeConfigSync
 }
-async function getVikeConfigEntry(
+
+// TO-DO/eventually: this maybe(/probably?) isn't safe against race conditions upon file changes in development, thus:
+// - Like getGlobalContext() and getGlobalContextSync() — make getVikeConfig() async and provide a getVikeConfigSync() while discourage using it
+// Public usage
+/**
+ * Get all the information Vike knows about the app in your Vite plugin.
+ *
+ * https://vike.dev/getVikeConfig
+ */
+function getVikeConfig(
+  // TO-DO/eventually: remove unused arguments (older versions used it and we didn't remove it yet to avoid a TypeScript breaking change)
+  // - No rush: we can do it later since it's getVikeConfig() is a beta feature as documented at https://vike.dev/getVikeConfig
+  config: ResolvedConfig | UserConfig
+): VikeConfig {
+  const vikeConfig = getVikeConfigInternalSync()
+  assertUsage(vikeConfig, "getVikeConfig() can only be used when Vite is running with Vike's Vite plugin")
+  return {
+    pages: vikeConfig.pages,
+    config: vikeConfig.global.config,
+    prerenderContext
+  }
+}
+// Public usage
+type VikeConfig = {
+  config: VikeConfigInternal['global']['config']
+  pages: VikeConfigInternal['pages']
+  prerenderContext: VikeConfigInternal['prerenderContext']
+}
+
+function setVikeConfigContext(vikeConfigCtx_: VikeConfigContext) {
+  // If the user changes Vite's `config.root` => Vite completely reloads itself => setVikeConfigContext() is called again
+  vikeConfigCtx = vikeConfigCtx_
+}
+async function getOrResolveVikeConfig(
   userRootDir: string,
   isDev: boolean,
   vikeVitePluginOptions: unknown,
   doNotRestartViteOnError: boolean
 ) {
   if (!vikeConfigPromise) {
-    vikeConfigPromise = loadVikeConfig_withErrorHandling(
+    vikeConfigPromise = resolveVikeConfig_withErrorHandling(
       userRootDir,
       isDev,
       vikeVitePluginOptions,
@@ -175,30 +225,27 @@ async function getVikeConfigEntry(
   }
   return await vikeConfigPromise
 }
-async function getVikeConfigOptional(): Promise<null | VikeConfigObject> {
+async function getVikeConfigInternalOptional(): Promise<null | VikeConfigInternal> {
   if (!vikeConfigPromise) return null
   return await vikeConfigPromise
 }
 
-function isV1Design(config: ResolvedConfig | UserConfig): boolean {
-  const vikeConfig = config._vikeConfigObject
-  assert(vikeConfig)
-  const { pageConfigs } = vikeConfig
-  const isV1Design = pageConfigs.length > 0
-  return isV1Design
+function isV1Design(): boolean {
+  assert(typeof isV1Design_ === 'boolean')
+  return isV1Design_
 }
 
-async function loadVikeConfig_withErrorHandling(
+async function resolveVikeConfig_withErrorHandling(
   userRootDir: string,
   isDev: boolean,
   vikeVitePluginOptions: unknown,
   doNotRestartViteOnError?: boolean
-): Promise<VikeConfigObject> {
+): Promise<VikeConfigInternal> {
   let hasError = false
-  let ret: VikeConfigObject | undefined
+  let ret: VikeConfigInternal | undefined
   let err: unknown
   try {
-    ret = await loadVikeConfig(userRootDir, vikeVitePluginOptions)
+    ret = await resolveVikeConfig(userRootDir, vikeVitePluginOptions)
   } catch (err_) {
     hasError = true
     err = err_
@@ -220,21 +267,28 @@ async function loadVikeConfig_withErrorHandling(
       if (!doNotRestartViteOnError) {
         restartVite = true
       }
-      const dummyData: VikeConfigObject = {
-        pageConfigs: [],
+      const globalDummy = getUserFriendlyConfigsGlobal({ pageConfigGlobalValues: {} })
+      const pageConfigsDummy: VikeConfigInternal['pageConfigs'] = []
+      const prerenderContextDummy = resolvePrerenderContext({
+        global: globalDummy,
+        pageConfigs: pageConfigsDummy
+      })
+      const dummyData: VikeConfigInternal = {
+        pageConfigs: pageConfigsDummy,
         pageConfigGlobal: {
           configDefinitions: {},
           configValueSources: {}
         },
-        global: getUserFriendlyConfigsGlobal({ pageConfigGlobalValues: {} }),
+        global: globalDummy,
         pages: {},
+        prerenderContext: prerenderContextDummy,
         vikeConfigDependencies: new Set()
       }
       return dummyData
     }
   }
 }
-async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknown): Promise<VikeConfigObject> {
+async function resolveVikeConfig(userRootDir: string, vikeVitePluginOptions: unknown): Promise<VikeConfigInternal> {
   const esbuildCache: EsbuildCache = {
     transpileCache: {},
     vikeConfigDependencies: new Set()
@@ -249,6 +303,7 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
     plusFilesAll,
     userRootDir
   )
+  if (!isV1Design_) isV1Design_ = pageConfigs.length > 0
 
   // Backwards compatibility for vike(options) in vite.config.js
   temp_interopVikeVitePlugin(pageConfigGlobal, vikeVitePluginOptions, userRootDir)
@@ -267,13 +322,22 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
     })
   )
 
-  return {
+  const prerenderContext = resolvePrerenderContext({
+    global: userFriendlyConfigsGlobal,
+    pageConfigs
+  })
+
+  const vikeConfig: VikeConfigInternal = {
     pageConfigs,
     pageConfigGlobal,
     global: userFriendlyConfigsGlobal,
     pages: userFriendlyConfigsPageEager,
+    prerenderContext,
     vikeConfigDependencies: esbuildCache.vikeConfigDependencies
   }
+  vikeConfigSync = vikeConfig
+
+  return vikeConfig
 }
 type ConfigDefinitionsResolved = Awaited<ReturnType<typeof resolveConfigDefinitions>>
 async function resolveConfigDefinitions(
@@ -1438,4 +1502,19 @@ function isOverriden(
   const idx = sources.indexOf(source)
   assert(idx >= 0)
   return idx > 0
+}
+
+function resolvePrerenderContext(vikeConfig: Parameters<typeof resolvePrerenderConfigGlobal>[0]) {
+  const { isPrerenderingEnabled, isPrerenderingEnabledForAllPages } = resolvePrerenderConfigGlobal(vikeConfig)
+  prerenderContext ??= {
+    isPrerenderingEnabled: false,
+    isPrerenderingEnabledForAllPages: false,
+    // Set at runPrerender()
+    output: null,
+    // Set at runPrerender()
+    pageContexts: null
+  }
+  prerenderContext.isPrerenderingEnabled = isPrerenderingEnabled
+  prerenderContext.isPrerenderingEnabledForAllPages = isPrerenderingEnabledForAllPages
+  return prerenderContext
 }

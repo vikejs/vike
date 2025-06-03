@@ -38,7 +38,7 @@ import {
   initGlobalContext_runPrerender,
   setGlobalContext_isPrerendering
 } from '../runtime/globalContext.js'
-import { resolveConfig } from 'vite'
+import { resolveConfig as resolveViteConfig } from 'vite'
 import type { InlineConfig, ResolvedConfig } from 'vite'
 import { getPageFilesServerSide } from '../../shared/getPageFiles.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
@@ -56,7 +56,7 @@ import {
 } from '../../shared/hooks/getHook.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
-import { getVikeConfig } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
+import { getVikeConfigInternal } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import type { HookTimeout } from '../../shared/hooks/getHook.js'
 import { logErrorHint } from '../runtime/renderPage/logErrorHint.js'
 import { execHookWithoutPageContext, isUserHookError } from '../../shared/hooks/execHook.js'
@@ -67,7 +67,6 @@ import { resolvePrerenderConfigGlobal, resolvePrerenderConfigLocal } from './res
 import { getOutDirs } from '../plugin/shared/getOutDirs.js'
 import { isVikeCli } from '../cli/context.js'
 import { isViteCliCall } from '../plugin/shared/isViteCliCall.js'
-import { getVikeConfigInternal } from '../plugin/plugins/commonConfig.js'
 import fs from 'node:fs'
 import { getProxyForPublicUsage } from '../../shared/getProxyForPublicUsage.js'
 const docLink = 'https://vike.dev/i18n#pre-rendering'
@@ -187,9 +186,8 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   await disableReactStreaming()
 
-  const viteConfig = await resolveConfig(options.viteConfig || {}, 'build', 'production')
-  const vikeConfig = await getVikeConfig(viteConfig)
-  const vike = getVikeConfigInternal(viteConfig)
+  const viteConfig = await resolveViteConfig(options.viteConfig || {}, 'build', 'production')
+  const vikeConfig = await getVikeConfigInternal()
 
   const { outDirClient, outDirServer } = getOutDirs(viteConfig)
   const { root } = viteConfig
@@ -267,7 +265,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   await warnMissingPages(prerenderContext._prerenderedPageContexts, globalContext, doNotPrerenderList, partial)
 
   const prerenderContextPublic = preparePrerenderContextForPublicUsage(prerenderContext)
-  objectAssign(vike.prerenderContext, prerenderContextPublic, true)
+  objectAssign(vikeConfig.prerenderContext, prerenderContextPublic, true)
 
   if (prerenderConfigGlobal.isPrerenderingEnabledForAllPages && !prerenderConfigGlobal.keepDistServer) {
     fs.rmSync(outDirServer, { recursive: true })

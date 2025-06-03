@@ -8,9 +8,10 @@ import type { InlineConfig, ResolvedConfig, UserConfig } from 'vite'
 import type { APIOptions, Operation } from './types.js'
 import { clearContextApiOperation, setContextApiOperation } from './context.js'
 import {
-  getVikeConfig2,
+  getVikeConfigInternal,
   getVikeConfigFromCliOrEnv,
-  type VikeConfigObject
+  setVikeConfigContext,
+  type VikeConfigInternal
 } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import path from 'path'
 import { assert, assertUsage, getGlobalObject, isObject, pick, toPosixPath } from './utils.js'
@@ -35,7 +36,12 @@ function clear() {
 
 async function resolveConfigs(viteConfigFromUserApiOptions: InlineConfig | undefined, operation: Operation) {
   const viteInfo = await getViteInfo(viteConfigFromUserApiOptions, operation)
-  const vikeConfig = await getVikeConfig2(viteInfo.root, operation === 'dev', viteInfo.vikeVitePluginOptions)
+  setVikeConfigContext({
+    userRootDir: viteInfo.root,
+    isDev: operation === 'dev',
+    vikeVitePluginOptions: viteInfo.vikeVitePluginOptions
+  })
+  const vikeConfig = await getVikeConfigInternal()
   const viteConfigFromUserEnhanced = applyVikeViteConfig(viteInfo.viteConfigFromUserEnhanced, vikeConfig)
   const { viteConfigResolved } = await assertViteRoot2(viteInfo.root, viteConfigFromUserEnhanced, operation)
   return {
@@ -47,7 +53,7 @@ async function resolveConfigs(viteConfigFromUserApiOptions: InlineConfig | undef
 
 // Apply +vite
 // - For example, Vike extensions adding Vite plugins
-function applyVikeViteConfig(viteConfigFromUserEnhanced: InlineConfig | undefined, vikeConfig: VikeConfigObject) {
+function applyVikeViteConfig(viteConfigFromUserEnhanced: InlineConfig | undefined, vikeConfig: VikeConfigInternal) {
   const viteConfigs = vikeConfig.global._from.configsCumulative.vite
   if (!viteConfigs) return viteConfigFromUserEnhanced
   viteConfigs.values.forEach((v) => {
@@ -127,9 +133,9 @@ function findVikeVitePlugin(viteConfig: InlineConfig | UserConfig | undefined | 
   let vikeVitePluginOptions: Record<string, unknown> | undefined
   let vikeVitePuginFound = false
   viteConfig?.plugins?.forEach((p) => {
-    if (p && '__vikeVitePluginOptions' in p) {
+    if (p && '_vikeVitePluginOptions' in p) {
       vikeVitePuginFound = true
-      const options = p.__vikeVitePluginOptions
+      const options = p._vikeVitePluginOptions
       vikeVitePluginOptions ??= {}
       Object.assign(vikeVitePluginOptions, options)
     }
