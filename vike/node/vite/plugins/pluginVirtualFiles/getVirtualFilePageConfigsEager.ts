@@ -1,4 +1,4 @@
-export { getVirtualFilePageConfigs }
+export { getVirtualFilePageConfigsEager }
 
 import type { PageConfigBuildTime, PageConfigGlobalBuildTime } from '../../../../shared/page-configs/PageConfig.js'
 import { getVirtualFileIdPageConfigLazy } from '../../../shared/virtualFiles/virtualFilePageConfigLazy.js'
@@ -7,7 +7,7 @@ import { getVikeConfigInternal } from '../../shared/resolveVikeConfig.js'
 import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
 import { FilesEnv, serializeConfigValues } from '../../../../shared/page-configs/serialize/serializeConfigValues.js'
 
-async function getVirtualFilePageConfigs(
+async function getVirtualFilePageConfigsEager(
   isForClientSide: boolean,
   isDev: boolean,
   id: string,
