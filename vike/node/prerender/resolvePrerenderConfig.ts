@@ -9,7 +9,7 @@ import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.j
 // When setting +prerender to an object => it also enables pre-rendering
 const defaultValueForObject = true
 
-function resolvePrerenderConfigGlobal(vikeConfig: VikeConfigObject) {
+function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigObject, 'global' | 'pageConfigs'>) {
   const prerenderConfigs = vikeConfig.global.config.prerender || []
 
   const prerenderSettings = prerenderConfigs.filter(isObject2)

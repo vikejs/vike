@@ -1,5 +1,7 @@
 export { getVikeConfigOptional }
 export { getVikeConfig3 }
+export { getVikeConfigInternalSync }
+export { getVikeConfigPublicSync }
 export { setVikeConfigCtx }
 export { reloadVikeConfig }
 export { isV1Design }
@@ -8,6 +10,7 @@ export { getConfigDefinitionOptional }
 export { getVikeConfigFromCliOrEnv }
 export { isOverriden }
 export type { VikeConfigObject }
+export type { VikeConfigPublic }
 
 // TODO/now-1: rename this file
 // TODO/now-1: remove v1-design/ dir
@@ -89,6 +92,8 @@ import { getPlusFilesAll, type PlusFile, type PlusFilesByLocationId } from './ge
 import { getEnvVarObject } from '../../../shared/getEnvVarObject.js'
 import { getApiOperation } from '../../../../api/context.js'
 import { getCliOptions } from '../../../../cli/context.js'
+import type { PrerenderContextPublic } from '../../../../prerender/runPrerender.js'
+import { resolvePrerenderConfigGlobal } from '../../../../prerender/resolvePrerenderConfig.js'
 assertIsNotProductionRuntime()
 
 // We can simply use global variables since Vike's config is:
@@ -99,8 +104,22 @@ let restartVite = false
 let wasConfigInvalid: boolean | null = null
 let isV1Design_: boolean | null = null
 let vikeConfigPromise: Promise<VikeConfigObject> | null = null
+// TODO/v1-release: remove
+let vikeConfigSync: VikeConfigObject | null = null
 let vikeConfigCtx: VikeConfigCtx | null = null // Information provided by Vite's `config` and Vike's CLI. We could, if we want or need to, completely remove the dependency on Vite.
 type VikeConfigCtx = { userRootDir: string; isDev: boolean; vikeVitePluginOptions: unknown }
+let prerenderContext: PrerenderContext
+type PrerenderContext = {
+  isPrerenderingEnabled: boolean
+  isPrerenderingEnabledForAllPages: boolean
+} & ({ [K in keyof PrerenderContextPublic]: null } | PrerenderContextPublic)
+
+// TODO/now-1: rename
+type VikeConfigPublic = {
+  config: VikeConfigObject['global']['config']
+  pages: VikeConfigObject['pages']
+  prerenderContext: VikeConfigObject['prerenderContext']
+}
 
 // TODO/now-1: rename
 type VikeConfigObject = {
@@ -109,6 +128,7 @@ type VikeConfigObject = {
   global: PageConfigUserFriendly
   pages: PageConfigsUserFriendly
   vikeConfigDependencies: Set<string>
+  prerenderContext: PrerenderContext
 }
 
 function reloadVikeConfig() {
@@ -157,6 +177,19 @@ async function getVikeConfig3(
   const { userRootDir, isDev, vikeVitePluginOptions } = vikeConfigCtx
   const vikeConfig = await getOrResolveVikeConfig(userRootDir, isDev, vikeVitePluginOptions, doNotRestartViteOnError)
   return vikeConfig
+}
+// TODO/v1-release: remove
+function getVikeConfigInternalSync(): VikeConfigObject {
+  assert(vikeConfigSync)
+  return vikeConfigSync
+}
+function getVikeConfigPublicSync(): VikeConfigPublic {
+  const vikeConfig = getVikeConfigInternalSync()
+  return {
+    pages: vikeConfig.pages,
+    config: vikeConfig.global.config,
+    prerenderContext
+  }
 }
 function setVikeConfigCtx(vikeConfigCtx_: VikeConfigCtx) {
   // If the user changes Vite's `config.root` => Vite completely reloads itself => setVikeConfigCtx() is called again
@@ -220,14 +253,21 @@ async function resolveVikeConfig_withErrorHandling(
       if (!doNotRestartViteOnError) {
         restartVite = true
       }
+      const globalDummy = getUserFriendlyConfigsGlobal({ pageConfigGlobalValues: {} })
+      const pageConfigsDummy: VikeConfigObject['pageConfigs'] = []
+      const prerenderContextDummy = resolvePrerenderContext({
+        global: globalDummy,
+        pageConfigs: pageConfigsDummy
+      })
       const dummyData: VikeConfigObject = {
-        pageConfigs: [],
+        pageConfigs: pageConfigsDummy,
         pageConfigGlobal: {
           configDefinitions: {},
           configValueSources: {}
         },
-        global: getUserFriendlyConfigsGlobal({ pageConfigGlobalValues: {} }),
+        global: globalDummy,
         pages: {},
+        prerenderContext: prerenderContextDummy,
         vikeConfigDependencies: new Set()
       }
       return dummyData
@@ -268,13 +308,20 @@ async function resolveVikeConfig(userRootDir: string, vikeVitePluginOptions: unk
     })
   )
 
-  const vikeConfig = {
+  const prerenderContext = resolvePrerenderContext({
+    global: userFriendlyConfigsGlobal,
+    pageConfigs
+  })
+
+  const vikeConfig: VikeConfigObject = {
     pageConfigs,
     pageConfigGlobal,
     global: userFriendlyConfigsGlobal,
     pages: userFriendlyConfigsPageEager,
+    prerenderContext,
     vikeConfigDependencies: esbuildCache.vikeConfigDependencies
   }
+  vikeConfigSync = vikeConfig
 
   return vikeConfig
 }
@@ -1441,4 +1488,19 @@ function isOverriden(
   const idx = sources.indexOf(source)
   assert(idx >= 0)
   return idx > 0
+}
+
+function resolvePrerenderContext(vikeConfig: Parameters<typeof resolvePrerenderConfigGlobal>[0]) {
+  const { isPrerenderingEnabled, isPrerenderingEnabledForAllPages } = resolvePrerenderConfigGlobal(vikeConfig)
+  prerenderContext ??= {
+    isPrerenderingEnabled: false,
+    isPrerenderingEnabledForAllPages: false,
+    // Set at runPrerender()
+    output: null,
+    // Set at runPrerender()
+    pageContexts: null
+  }
+  prerenderContext.isPrerenderingEnabled = isPrerenderingEnabled
+  prerenderContext.isPrerenderingEnabledForAllPages = isPrerenderingEnabledForAllPages
+  return prerenderContext
 }

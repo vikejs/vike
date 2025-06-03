@@ -1,7 +1,6 @@
 export { commonConfig }
 export { getVikeConfigPublic }
 export { getVikeConfigInternal }
-export type { VikeConfigPublic }
 
 import { type InlineConfig, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
 import {
@@ -22,10 +21,14 @@ import path from 'path'
 import { assertResolveAlias } from './commonConfig/assertResolveAlias.js'
 import { isViteCliCall } from '../shared/isViteCliCall.js'
 import { isVikeCliOrApi } from '../../api/context.js'
-import { getVikeConfig3, setVikeConfigCtx, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
+import {
+  getVikeConfig3,
+  getVikeConfigPublicSync,
+  setVikeConfigCtx,
+  type VikeConfigPublic
+} from './importUserCode/v1-design/getVikeConfig.js'
 import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/prepareViteApiCall.js'
 import { temp_disablePrerenderAutoRun } from '../../prerender/context.js'
-import type { PrerenderContextPublic } from '../../prerender/runPrerender.js'
 import type { VitePluginServerEntryOptions } from '@brillout/vite-plugin-server-entry/plugin'
 import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderConfig.js'
 const pluginName = 'vike:commonConfig'
@@ -38,26 +41,10 @@ declare module 'vite' {
     _baseViteOriginal?: string
     // We'll be able to remove once we have one Rolldown build instead of two Rollup builds
     _viteConfigFromUserEnhanced?: InlineConfig
-    // TODO/now-1: remove / add comment
-    _vikeConfig?: VikeConfigPublic
   }
 }
 
-// TODO/now-1: rename
-type VikeConfigPublic = {
-  config: VikeConfigObject['global']['config']
-  pages: VikeConfigObject['pages']
-  prerenderContext: PrerenderContext
-}
-
-type PrerenderContext = {
-  isPrerenderingEnabled: boolean
-  isPrerenderingEnabledForAllPages: boolean
-} & ({ [K in keyof PrerenderContextPublic]: null } | PrerenderContextPublic)
-
 function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
-  // We cache it => makes sure we only generate one object => we can mutate it at runPrerender()
-  let prerenderContext: PrerenderContext
   return [
     {
       name: `${pluginName}:pre`,
@@ -74,26 +61,12 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
           // TODO/v1-release: we can remove setVikeConfigCtx() call here since with Vike's CLI it's already called at vike/node/api/prepareViteApiCall.ts
           setVikeConfigCtx({ userRootDir: rootResolvedEarly, isDev, vikeVitePluginOptions })
           const vikeConfig = await getVikeConfig3()
-          const { isPrerenderingEnabled, isPrerenderingEnabledForAllPages } = resolvePrerenderConfigGlobal(vikeConfig)
-          prerenderContext ??= {
-            isPrerenderingEnabled,
-            isPrerenderingEnabledForAllPages,
-            output: null,
-            pageContexts: null
-          }
-          assert(prerenderContext.isPrerenderingEnabled === isPrerenderingEnabled)
-          assert(prerenderContext.isPrerenderingEnabledForAllPages === isPrerenderingEnabledForAllPages)
           return {
             _isDev: isDev,
             _rootResolvedEarly: rootResolvedEarly,
-            _vikeConfig: {
-              pages: vikeConfig.pages,
-              config: vikeConfig.global.config,
-              prerenderContext
-            },
             // TODO/v1-release: remove https://github.com/vikejs/vike/issues/2122
             configVikePromise: Promise.resolve({
-              prerender: isPrerenderingEnabled
+              prerender: vikeConfig.prerenderContext.isPrerenderingEnabled
             })
           }
         }
@@ -269,7 +242,7 @@ function temp_supportOldInterface(config: ResolvedConfig) {
 // - `VikeConfigPublic` => `VikeConfig` ?
 // - `VikeConfigObject` => `VikeConfigInternal` ?
 function getVikeConfigInternal(config: ResolvedConfig | UserConfig): VikeConfigPublic {
-  const vikeConfig = config._vikeConfig
+  const vikeConfig = getVikeConfigPublicSync()
   assert(vikeConfig)
   return vikeConfig
 }
@@ -279,7 +252,7 @@ function getVikeConfigInternal(config: ResolvedConfig | UserConfig): VikeConfigP
  * https://vike.dev/getVikeConfig
  */
 function getVikeConfigPublic(config: ResolvedConfig | UserConfig): VikeConfigPublic {
-  const vikeConfig = config._vikeConfig
+  const vikeConfig = getVikeConfigPublicSync()
   assertUsage(vikeConfig, "getVikeConfig() can only be used when Vite is running with Vike's Vite plugin")
   return vikeConfig
 }
