@@ -10,7 +10,7 @@ export { getConfigDefinitionOptional }
 export { getVikeConfigFromCliOrEnv }
 export { isOverriden }
 export type { VikeConfigInternal }
-export type { VikeConfigPublic }
+export type { VikeConfig }
 
 // TODO/now-1: rename this file
 // TODO/now-1: remove v1-design/ dir
@@ -116,13 +116,6 @@ type PrerenderContext = {
 } & ({ [K in keyof PrerenderContextPublic]: null } | PrerenderContextPublic)
 
 // TODO/now-1: rename
-type VikeConfigPublic = {
-  config: VikeConfigInternal['global']['config']
-  pages: VikeConfigInternal['pages']
-  prerenderContext: VikeConfigInternal['prerenderContext']
-}
-
-// TODO/now-1: rename
 type VikeConfigInternal = {
   pageConfigs: PageConfigBuildTime[]
   pageConfigGlobal: PageConfigGlobalBuildTime
@@ -197,7 +190,7 @@ function getVikeConfigInternalSync(): VikeConfigInternal {
  *
  * https://vike.dev/getVikeConfig
  */
-function getVikeConfig(config: ResolvedConfig | UserConfig): VikeConfigPublic {
+function getVikeConfig(config: ResolvedConfig | UserConfig): VikeConfig {
   const vikeConfig = getVikeConfigInternalSync()
   assertUsage(vikeConfig, "getVikeConfig() can only be used when Vite is running with Vike's Vite plugin")
   return {
@@ -205,6 +198,12 @@ function getVikeConfig(config: ResolvedConfig | UserConfig): VikeConfigPublic {
     config: vikeConfig.global.config,
     prerenderContext
   }
+}
+// Public usage
+type VikeConfig = {
+  config: VikeConfigInternal['global']['config']
+  pages: VikeConfigInternal['pages']
+  prerenderContext: VikeConfigInternal['prerenderContext']
 }
 
 function setVikeConfigContext(vikeConfigCtx_: VikeConfigContext) {

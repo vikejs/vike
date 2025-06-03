@@ -53,7 +53,7 @@ export type {
 } from '../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
 export type { ConfigEntries } from '../shared/page-configs/getUserFriendlyConfigs.js'
 
-export type { VikeConfigPublic as VikeConfig } from '../node/plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
+export type { VikeConfig } from '../node/plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 
 export type { UrlPublic as Url } from '../utils/parseUrl.js'
 
