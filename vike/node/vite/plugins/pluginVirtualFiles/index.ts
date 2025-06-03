@@ -2,11 +2,11 @@ export { pluginVirtualFiles }
 
 import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode, ModuleGraph } from 'vite'
 import { normalizePath } from 'vite'
-import { getVirtualFilePageConfigValuesAll } from './getVirtualFilePageConfigValuesAll.js'
+import { getVirtualFilePageConfigValuesLazy } from './getVirtualFilePageConfigValuesLazy.js'
 import { getVirtualFileEntry } from './getVirtualFileEntry.js'
 import { assert, assertPosixPath } from '../../utils.js'
 import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../../shared/virtualFiles.js'
-import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtualFiles/virtualFilePageConfigValuesAll.js'
+import { isVirtualFileIdPageConfigValuesLazy } from '../../../shared/virtualFiles/virtualFilePageConfigValuesLazy.js'
 import { isVirtualFileIdEntry } from '../../../shared/virtualFiles/virtualFileEntry.js'
 import { reloadVikeConfig, isV1Design, getVikeConfigInternalOptional } from '../../shared/resolveVikeConfig.js'
 import pc from '@brillout/picocolors'
@@ -44,8 +44,8 @@ function pluginVirtualFiles(): Plugin {
       const isDev = config._isDev
       assert(typeof isDev === 'boolean')
 
-      if (isVirtualFileIdPageConfigValuesAll(id)) {
-        const code = await getVirtualFilePageConfigValuesAll(id, isDev, config)
+      if (isVirtualFileIdPageConfigValuesLazy(id)) {
+        const code = await getVirtualFilePageConfigValuesLazy(id, isDev, config)
         return code
       }
 
@@ -141,7 +141,7 @@ function reloadConfig(filePath: string, config: ResolvedConfig, op: 'modified' |
 
 function getVikeVirtualFiles(server: ViteDevServer): ModuleNode[] {
   const vikeVirtualFiles = Array.from(server.moduleGraph.urlToModuleMap.keys())
-    .filter((url) => isVirtualFileIdPageConfigValuesAll(url) || isVirtualFileIdEntry(url))
+    .filter((url) => isVirtualFileIdPageConfigValuesLazy(url) || isVirtualFileIdEntry(url))
     .map((url) => {
       const mod = server.moduleGraph.urlToModuleMap.get(url)
       assert(mod)

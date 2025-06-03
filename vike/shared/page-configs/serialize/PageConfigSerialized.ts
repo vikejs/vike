@@ -15,7 +15,7 @@ import type {
 type PageConfigRuntimeSerialized = PageConfigCommon & {
   /** Config values that are serializable and loaded eagerly such as config.passToClient */
   configValuesSerialized: Record<string, ConfigValueSerialized>
-  loadConfigValuesAll: PageConfigRuntime['loadConfigValuesAll']
+  loadConfigValuesLazy: PageConfigRuntime['loadConfigValuesLazy']
 }
 
 type PageConfigGlobalRuntimeSerialized = {

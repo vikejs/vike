@@ -1,19 +1,19 @@
-export { isVirtualFileIdPageConfigValuesAll }
-export { getVirtualFileIdPageConfigValuesAll }
+export { isVirtualFileIdPageConfigValuesLazy }
+export { getVirtualFileIdPageConfigValuesLazy }
 
 import { extractAssetsRemoveQuery } from '../extractAssetsQuery.js'
 import { assert } from '../utils.js'
 import { getVirtualFileId } from '../virtualFiles.js'
 
-const idBase = 'virtual:vike:pageConfigValuesAll:'
+const idBase = 'virtual:vike:pageConfigValuesLazy:'
 const idBaseClient = `${idBase}client:` as const
 const idBaseServer = `${idBase}server:` as const
 
-function getVirtualFileIdPageConfigValuesAll(pageId: string, isForClientSide: boolean): `${typeof idBase}${string}` {
+function getVirtualFileIdPageConfigValuesLazy(pageId: string, isForClientSide: boolean): `${typeof idBase}${string}` {
   const id = `${isForClientSide ? idBaseClient : idBaseServer}${pageId}` as const
   return id
 }
-function isVirtualFileIdPageConfigValuesAll(
+function isVirtualFileIdPageConfigValuesLazy(
   id: string
 ): false | { isForClientSide: boolean; pageId: string; isExtractAssets: boolean } {
   id = getVirtualFileId(id)

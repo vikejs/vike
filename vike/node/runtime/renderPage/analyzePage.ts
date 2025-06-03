@@ -5,7 +5,7 @@ import { getVikeClientEntry } from '../../../shared/getPageFiles/analyzePageClie
 import type { PageFile } from '../../../shared/getPageFiles/getPageFileObject.js'
 import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { type AnalysisResult, analyzePageClientSide } from '../../../shared/getPageFiles/analyzePageClientSide.js'
-import { getVirtualFileIdPageConfigValuesAll } from '../../shared/virtualFiles/virtualFilePageConfigValuesAll.js'
+import { getVirtualFileIdPageConfigValuesLazy } from '../../shared/virtualFiles/virtualFilePageConfigValuesLazy.js'
 import { analyzeClientSide } from '../../../shared/getPageFiles/analyzeClientSide.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import { getConfigValueRuntime } from '../../../shared/page-configs/getConfigValueRuntime.js'
@@ -24,14 +24,14 @@ async function analyzePage(
     if (isClientRuntimeLoaded) clientEntries.push(getVikeClientEntry(isClientRouting))
     const clientDependencies: ClientDependency[] = []
     clientDependencies.push({
-      id: getVirtualFileIdPageConfigValuesAll(pageConfig.pageId, true),
+      id: getVirtualFileIdPageConfigValuesLazy(pageConfig.pageId, true),
       onlyAssets: isClientRuntimeLoaded ? false : true,
       eagerlyImported: false
     })
     // In production we inject the import of the server virtual module with ?extractAssets inside the client virtual module
     if (!globalContext._isProduction) {
       clientDependencies.push({
-        id: getVirtualFileIdPageConfigValuesAll(pageConfig.pageId, false),
+        id: getVirtualFileIdPageConfigValuesLazy(pageConfig.pageId, false),
         onlyAssets: true,
         eagerlyImported: false
       })

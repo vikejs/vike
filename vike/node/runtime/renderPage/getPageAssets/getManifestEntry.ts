@@ -2,7 +2,7 @@ export { getManifestEntry }
 
 import type { ViteManifest, ViteManifestEntry } from '../../../shared/ViteManifest.js'
 import { assert, slice, assertIsImportPathNpmPackage } from '../../utils.js'
-import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtualFiles/virtualFilePageConfigValuesAll.js'
+import { isVirtualFileIdPageConfigValuesLazy } from '../../../shared/virtualFiles/virtualFilePageConfigValuesLazy.js'
 import { prependEntriesDir } from '../../../shared/prependEntriesDir.js'
 
 function getManifestEntry(
@@ -20,7 +20,7 @@ function getManifestEntry(
   }
 
   // Page code importer
-  if (isVirtualFileIdPageConfigValuesAll(id)) {
+  if (isVirtualFileIdPageConfigValuesLazy(id)) {
     {
       const manifestKey = id
       const manifestEntry = assetsManifest[manifestKey]
@@ -30,9 +30,9 @@ function getManifestEntry(
     }
     // Workaround for what seems to be a Vite bug when process.cwd() !== config.root
     //  - Manifest key is:
-    //       ../../virtual:vike:pageConfigValuesAll:client:/pages/index
+    //       ../../virtual:vike:pageConfigValuesLazy:client:/pages/index
     //    But it should be this instead:
-    //      virtual:vike:pageConfigValuesAll:client:/pages/index
+    //      virtual:vike:pageConfigValuesLazy:client:/pages/index
     //  - This workaround was implemented to support Vitest runnung /tests/*
     //    - I don't know whether end users actually need this workaround? (I'm not sure what the bug actually is.)
     const manifestKeyEnd = id

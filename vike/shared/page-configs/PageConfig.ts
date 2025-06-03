@@ -52,7 +52,7 @@ type PageConfigRoute =
 type PageConfigRuntime = PageConfigCommon & {
   configValues: ConfigValues
   /** Load config values that are lazily loaded such as config.Page */
-  loadConfigValuesAll: LoadConfigValuesAll
+  loadConfigValuesLazy: LoadConfigValuesLazy
 }
 /** Global config that applies to all pages, runtime data structure */
 type PageConfigGlobalRuntime = {
@@ -75,10 +75,10 @@ type PageConfigGlobalBuildTime = {
 
 /** Same as PageConfigRuntime but also contains all lazily loaded config values such as config.Page */
 type PageConfigRuntimeLoaded = PageConfigRuntime & {
-  /** Whether loadConfigValuesAll() was called */
+  /** Whether loadConfigValuesLazy() was called */
   isAllLoaded: true
 }
-type LoadConfigValuesAll = () => {
+type LoadConfigValuesLazy = () => {
   moduleId: string
   moduleExports: Promise<{
     configValuesSerialized: Record<string, ConfigValueSerialized>
