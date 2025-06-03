@@ -37,7 +37,7 @@ async function createPageContextServerSide(
 
   objectAssign(pageContextCreated, {
     _globalContext: globalContext,
-    // The following is defined on `pageContext` because we can eventually make these non-global
+    // We use pageContext._baseServer and pageContext._baseAssets instead of pageContext._globalContext.baseServer and pageContext._globalContext.baseAssets because the Base URLs can (eventually one day if needed) be made non-global
     _baseServer: globalContext.baseServer,
     _baseAssets: globalContext.baseAssets,
     _pageContextInit: pageContextInit,
