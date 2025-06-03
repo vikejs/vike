@@ -10,7 +10,6 @@ import pc from '@brillout/picocolors'
 import { logDockerHint } from './devConfig/index.js'
 import { getOutDirs, resolveOutDir } from '../shared/getOutDirs.js'
 import sirv from 'sirv'
-import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderConfig.js'
 import { getVikeConfig3, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
 type ConnectServer = ViteDevServer['middlewares']
 
@@ -40,8 +39,7 @@ function previewConfig(): Plugin {
       config.appType = 'mpa'
       */
       return () => {
-        const prerenderConfigGlobal = resolvePrerenderConfigGlobal(vikeConfig)
-        const { isPrerenderingEnabledForAllPages, isPrerenderingEnabled } = prerenderConfigGlobal
+        const { isPrerenderingEnabledForAllPages, isPrerenderingEnabled } = vikeConfig.prerenderContext
         assertDist(isPrerenderingEnabledForAllPages)
 
         // We cannot re-use Vite's static middleware: https://github.com/vitejs/vite/pull/14836#issuecomment-1788540300

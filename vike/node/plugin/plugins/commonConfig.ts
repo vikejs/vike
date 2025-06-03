@@ -30,7 +30,6 @@ import {
 import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/prepareViteApiCall.js'
 import { temp_disablePrerenderAutoRun } from '../../prerender/context.js'
 import type { VitePluginServerEntryOptions } from '@brillout/vite-plugin-server-entry/plugin'
-import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderConfig.js'
 const pluginName = 'vike:commonConfig'
 
 declare module 'vite' {
@@ -260,7 +259,7 @@ function getVikeConfigPublic(config: ResolvedConfig | UserConfig): VikeConfigPub
 // Only emit dist/server/entry.mjs if necessary
 async function emitServerEntryOnlyIfNeeded(config: ResolvedConfig) {
   const vikeConfig = await getVikeConfig3()
-  if (config.vitePluginServerEntry?.inject && !resolvePrerenderConfigGlobal(vikeConfig).isPrerenderingEnabled) {
+  if (config.vitePluginServerEntry?.inject && !vikeConfig.prerenderContext.isPrerenderingEnabled) {
     config.vitePluginServerEntry.disableServerEntryEmit = true
   }
 }
