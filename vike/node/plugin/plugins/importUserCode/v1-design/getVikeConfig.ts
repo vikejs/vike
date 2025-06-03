@@ -155,7 +155,8 @@ async function getVikeConfig3(
 ): Promise<VikeConfigObject> {
   assert(vikeConfigCtx)
   const { userRootDir, isDev, vikeVitePluginOptions } = vikeConfigCtx
-  return await getOrResolveVikeConfig(userRootDir, isDev, vikeVitePluginOptions, doNotRestartViteOnError)
+  const vikeConfig = await getOrResolveVikeConfig(userRootDir, isDev, vikeVitePluginOptions, doNotRestartViteOnError)
+  return vikeConfig
 }
 function setVikeConfigCtx(vikeConfigCtx_: VikeConfigCtx) {
   // If the user changes Vite's `config.root` => Vite completely reloads itself => setVikeConfigCtx() is called again
