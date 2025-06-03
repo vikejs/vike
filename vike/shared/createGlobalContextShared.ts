@@ -5,7 +5,7 @@ export type { GlobalContextSharedPublic }
 
 import { changeEnumerable, objectAssign, unique } from './utils.js'
 import type { PageFile } from './getPageFiles.js'
-import { parseGlobResults } from './getPageFiles/parseGlobResults.js'
+import { parseVirtualFileExports } from './getPageFiles/parseVirtualFileExports.js'
 import { getUserFriendlyConfigsGlobal, getUserFriendlyConfigsPageEager } from './page-configs/getUserFriendlyConfigs.js'
 import type { PageConfigRuntime } from './page-configs/PageConfig.js'
 import { execHookGlobal } from './hooks/execHook.js'
@@ -86,7 +86,7 @@ function createGlobalContextBase(virtualFileExports: unknown) {
 }
 
 function getConfigsAll(virtualFileExports: unknown) {
-  const { pageFilesAll, pageConfigs, pageConfigGlobal } = parseGlobResults(virtualFileExports)
+  const { pageFilesAll, pageConfigs, pageConfigGlobal } = parseVirtualFileExports(virtualFileExports)
   const allPageIds = getAllPageIds(pageFilesAll, pageConfigs)
 
   const userFriendlyConfigsGlobal = getUserFriendlyConfigsGlobal({

@@ -1,4 +1,4 @@
-export { parseGlobResults }
+export { parseVirtualFileExports }
 
 // TODO/v1-release: remove old design code, and remove all assertions.
 
@@ -14,7 +14,7 @@ import type {
 } from '../page-configs/serialize/PageConfigSerialized.js'
 
 // TODO/now-3: rename
-function parseGlobResults(virtualFileExports: unknown): {
+function parseVirtualFileExports(virtualFileExports: unknown): {
   pageFilesAll: PageFile[]
   pageConfigs: PageConfigRuntime[]
   pageConfigGlobal: PageConfigGlobalRuntime
