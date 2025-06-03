@@ -27,7 +27,6 @@ import type { GlobalContextServerInternal } from '../../node/runtime/globalConte
 import type { GlobalContextClientInternal } from '../../client/runtime-client-routing/globalContext.js'
 
 type PageContextForRoute = PageContextUrlInternal & {
-  _pageFilesAll: PageFile[]
   _pageConfigs: PageConfigRuntime[]
   _allPageIds: string[]
   _pageConfigGlobal: PageConfigGlobalRuntime
@@ -72,7 +71,7 @@ async function route(pageContext: PageContextForRoute, skipOnBeforeRouteHook?: t
   // Vike's routing
   const allPageIds = pageContext._allPageIds
   assertUsage(allPageIds.length > 0, 'No page found. You must create at least one page.')
-  assert(pageContext._pageFilesAll.length > 0 || pageContext._pageConfigs.length > 0)
+  assert(pageContext._globalContext._pageFilesAll.length > 0 || pageContext._pageConfigs.length > 0)
   const { urlPathname } = pageContext
   assert(urlPathname.startsWith('/'))
 
