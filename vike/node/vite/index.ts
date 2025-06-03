@@ -16,7 +16,7 @@ import { virtualFilesPlugin } from './plugins/virtualFilesPlugin/index.js'
 import { extractAssetsPlugin } from './plugins/extractAssetsPlugin.js'
 import { extractExportNamesPlugin } from './plugins/extractExportNamesPlugin.js'
 import { setGlobalContext } from './plugins/setGlobalContext.js'
-import { commonConfig } from './plugins/commonConfig.js'
+import { commonPlugin } from './plugins/commonPlugin.js'
 import { baseUrls } from './plugins/baseUrls.js'
 import { envVarsPlugin } from './plugins/envVarsPlugin.js'
 import pc from '@brillout/picocolors'
@@ -34,7 +34,7 @@ type PluginInterop = Record<string, unknown> & { name: string }
 // Return `PluginInterop` instead of `Plugin` to avoid type mismatch upon different Vite versions
 function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginInterop[] {
   const plugins: Plugin[] = [
-    ...commonConfig(vikeVitePluginOptions),
+    ...commonPlugin(vikeVitePluginOptions),
     virtualFilesPlugin(),
     ...devConfig(),
     ...build(),
