@@ -1,7 +1,7 @@
 export { getVikeConfigInternal }
 export { getVikeConfigInternalOptional }
 export { getVikeConfigInternalSync }
-export { getVikeConfigPublic }
+export { getVikeConfig }
 export { setVikeConfigContext }
 export { reloadVikeConfig }
 export { isV1Design }
@@ -190,12 +190,14 @@ function getVikeConfigInternalSync(): VikeConfigInternal {
   assert(vikeConfigSync)
   return vikeConfigSync
 }
+
+// Public usage
 /**
  * Get all the information Vike knows about the app in your Vite plugin.
  *
  * https://vike.dev/getVikeConfig
  */
-function getVikeConfigPublic(config: ResolvedConfig | UserConfig): VikeConfigPublic {
+function getVikeConfig(config: ResolvedConfig | UserConfig): VikeConfigPublic {
   const vikeConfig = getVikeConfigInternalSync()
   assertUsage(vikeConfig, "getVikeConfig() can only be used when Vite is running with Vike's Vite plugin")
   return {
@@ -204,6 +206,7 @@ function getVikeConfigPublic(config: ResolvedConfig | UserConfig): VikeConfigPub
     prerenderContext
   }
 }
+
 function setVikeConfigContext(vikeConfigCtx_: VikeConfigContext) {
   // If the user changes Vite's `config.root` => Vite completely reloads itself => setVikeConfigContext() is called again
   vikeConfigCtx = vikeConfigCtx_
