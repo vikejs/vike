@@ -11,7 +11,7 @@ import {
   getVikeConfigInternal,
   getVikeConfigFromCliOrEnv,
   setVikeConfigCtx,
-  type VikeConfigObject
+  type VikeConfigInternal
 } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import path from 'path'
 import { assert, assertUsage, getGlobalObject, isObject, pick, toPosixPath } from './utils.js'
@@ -53,7 +53,7 @@ async function resolveConfigs(viteConfigFromUserApiOptions: InlineConfig | undef
 
 // Apply +vite
 // - For example, Vike extensions adding Vite plugins
-function applyVikeViteConfig(viteConfigFromUserEnhanced: InlineConfig | undefined, vikeConfig: VikeConfigObject) {
+function applyVikeViteConfig(viteConfigFromUserEnhanced: InlineConfig | undefined, vikeConfig: VikeConfigInternal) {
   const viteConfigs = vikeConfig.global._from.configsCumulative.vite
   if (!viteConfigs) return viteConfigFromUserEnhanced
   viteConfigs.values.forEach((v) => {

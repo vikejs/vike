@@ -6,7 +6,7 @@ import type { Environment, InlineConfig, Plugin, ResolvedConfig } from 'vite'
 import { assert, assertIsSingleModuleInstance, assertWarning, onSetupBuild } from '../../utils.js'
 import { runPrerenderFromAutoRun, runPrerender_forceExit } from '../../../prerender/runPrerender.js'
 import { isPrerenderAutoRunEnabled } from '../../../prerender/context.js'
-import type { VikeConfigObject } from '../importUserCode/v1-design/getVikeConfig.js'
+import type { VikeConfigInternal } from '../importUserCode/v1-design/getVikeConfig.js'
 import { isViteCliCall, getViteConfigFromCli } from '../../shared/isViteCliCall.js'
 import pc from '@brillout/picocolors'
 import { logErrorHint } from '../../../runtime/renderPage/logErrorHint.js'
@@ -126,7 +126,7 @@ async function abortViteBuildSsr() {
   }
 }
 
-function isEntirelyDisabled(vikeConfig: VikeConfigObject): boolean {
+function isEntirelyDisabled(vikeConfig: VikeConfigInternal): boolean {
   const { disableAutoFullBuild } = vikeConfig.global.config
   if (disableAutoFullBuild === undefined || disableAutoFullBuild === 'prerender') {
     const isUserUsingViteApi = !isViteCliCall() && !isVikeCliOrApi()

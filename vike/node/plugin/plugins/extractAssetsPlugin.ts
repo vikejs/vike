@@ -26,7 +26,7 @@ import { getImportStatements, type ImportStatement } from '../shared/parseEsModu
 import type { Rollup } from 'vite'
 import pc from '@brillout/picocolors'
 import { handleAssetsManifest_isFixEnabled } from './build/handleAssetsManifest.js'
-import { getVikeConfigInternal, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
+import { getVikeConfigInternal, type VikeConfigInternal } from './importUserCode/v1-design/getVikeConfig.js'
 import { assertV1Design } from '../../shared/assertV1Design.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerBuild_safe } from '../shared/isViteServerBuild.js'
@@ -41,7 +41,7 @@ const debug = createDebugger('vike:extractAssets')
 
 function extractAssetsPlugin(): Plugin[] {
   let config: ResolvedConfig
-  let vikeConfig: VikeConfigObject
+  let vikeConfig: VikeConfigInternal
   let isFixEnabled: boolean
   return [
     // This plugin removes all JavaScript from server-side only code, so that only CSS imports remains. (And also satic files imports e.g. `import logoURL from './logo.svg.js'`).

@@ -1,7 +1,7 @@
 export { resolvePrerenderConfigGlobal }
 export { resolvePrerenderConfigLocal }
 
-import { VikeConfigObject } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
+import { VikeConfigInternal } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import { assert, isArray, isObject, objectAssign } from './utils.js'
 import { getConfigValueBuildTime } from '../../shared/page-configs/getConfigValueBuildTime.js'
 import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
@@ -9,7 +9,7 @@ import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.j
 // When setting +prerender to an object => it also enables pre-rendering
 const defaultValueForObject = true
 
-function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigObject, 'global' | 'pageConfigs'>) {
+function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal, 'global' | 'pageConfigs'>) {
   const prerenderConfigs = vikeConfig.global.config.prerender || []
 
   const prerenderSettings = prerenderConfigs.filter(isObject2)
