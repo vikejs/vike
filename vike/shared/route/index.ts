@@ -21,13 +21,12 @@ import type { PageRoutes, RouteType } from './loadPageRoutes.js'
 import { debug } from './debug.js'
 import pc from '@brillout/picocolors'
 import type { Hook } from '../hooks/getHook.js'
-import type { GlobalContextServerInternal } from '../../node/runtime/globalContext.js'
-import type { GlobalContextClientInternal } from '../../client/runtime-client-routing/globalContext.js'
+import type { GlobalContextInternal } from '../createGlobalContextShared.js'
 
 type PageContextForRoute = PageContextUrlInternal & {
   _pageRoutes: PageRoutes
   _onBeforeRouteHook: Hook | null
-  _globalContext: GlobalContextServerInternal | GlobalContextClientInternal
+  _globalContext: GlobalContextInternal
 } & PageContextUrlSource
 type PageContextFromRoute = {
   pageId: string | null

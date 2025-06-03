@@ -20,8 +20,7 @@ import {
   type PageContextPrepareMinimum,
   preparePageContextForPublicUsage
 } from '../preparePageContextForPublicUsage.js'
-import type { GlobalContextServerInternal } from '../../node/runtime/globalContext.js'
-import type { GlobalContextClientInternal } from '../../client/runtime-client-routing/globalContext.js'
+import type { GlobalContextInternal } from '../createGlobalContextShared.js'
 
 async function executeOnBeforeRouteHook(
   pageContext: PageContextForRoute
@@ -62,7 +61,7 @@ async function getPageContextFromHook(
   onBeforeRouteHook: Hook,
   pageContext: PageContextPrepareMinimum & {
     urlOriginal: string
-    _globalContext: GlobalContextServerInternal | GlobalContextClientInternal
+    _globalContext: GlobalContextInternal
   }
 ): Promise<null | {
   urlOriginal?: string
