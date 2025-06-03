@@ -36,11 +36,11 @@ import {
   isImportPathNpmPackageOrPathAlias,
   isImportPathRelative,
   requireResolveOptionalDir
-} from '../../../../utils.js'
-import { transformPointerImports } from '../../../../shared/resolveVikeConfig/pointerImports.js'
+} from '../../utils.js'
+import { transformPointerImports } from './pointerImports.js'
 import sourceMapSupport from 'source-map-support'
-import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
-import { getFilePathAbsoluteUserRootDir } from '../../../../shared/getFilePath.js'
+import type { FilePathResolved } from '../../../../shared/page-configs/FilePath.js'
+import { getFilePathAbsoluteUserRootDir } from '../getFilePath.js'
 
 assertIsNotProductionRuntime()
 installSourceMapSupport()

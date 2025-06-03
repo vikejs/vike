@@ -36,7 +36,7 @@ import { isErrorWithCodeSnippet, getPrettyErrorWithCodeSnippet } from './loggerN
 import {
   getConfigExecutionErrorIntroMsg,
   getConfigBuildErrorFormatted
-} from '../plugins/importUserCode/v1-design/resolveVikeConfig/transpileAndExecuteFile.js'
+} from './resolveVikeConfig/transpileAndExecuteFile.js'
 import { logWithVikeTag, logWithViteTag, logDirectly, applyViteSourceMapToStackTrace } from './loggerNotProd/log.js'
 import pc from '@brillout/picocolors'
 import { setAlreadyLogged } from '../../runtime/renderPage/isNewError.js'

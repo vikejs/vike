@@ -63,7 +63,7 @@ import {
   sortAfterInheritanceOrder,
   applyFilesystemRoutingRootEffect
 } from './resolveVikeConfig/filesystemRouting.js'
-import type { EsbuildCache } from '../plugins/importUserCode/v1-design/resolveVikeConfig/transpileAndExecuteFile.js'
+import type { EsbuildCache } from './resolveVikeConfig/transpileAndExecuteFile.js'
 import { isVikeConfigInvalid, isVikeConfigInvalid_set } from '../../runtime/renderPage/isVikeConfigInvalid.js'
 import { getViteDevServer } from '../../runtime/globalContext.js'
 import { logConfigError, logConfigErrorRecover } from './loggerNotProd.js'
@@ -76,8 +76,8 @@ import { getConfigDefinedAt, getDefinedByString } from '../../../shared/page-con
 import {
   loadPointerImport,
   loadValueFile
-} from '../plugins/importUserCode/v1-design/resolveVikeConfig/loadFileAtConfigTime.js'
-import { resolvePointerImport } from '../plugins/importUserCode/v1-design/resolveVikeConfig/resolvePointerImport.js'
+} from './resolveVikeConfig/loadFileAtConfigTime.js'
+import { resolvePointerImport } from './resolveVikeConfig/resolvePointerImport.js'
 import { getFilePathResolved } from './getFilePath.js'
 import type { FilePath } from '../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
@@ -92,7 +92,7 @@ import {
   getPlusFilesAll,
   type PlusFile,
   type PlusFilesByLocationId
-} from '../plugins/importUserCode/v1-design/resolveVikeConfig/getPlusFilesAll.js'
+} from './resolveVikeConfig/getPlusFilesAll.js'
 import { getEnvVarObject } from './getEnvVarObject.js'
 import { getApiOperation } from '../../api/context.js'
 import { getCliOptions } from '../../cli/context.js'

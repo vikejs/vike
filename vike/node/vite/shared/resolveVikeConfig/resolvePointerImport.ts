@@ -3,7 +3,7 @@ export { resolvePointerImportData }
 export type { PointerImport }
 
 import pc from '@brillout/picocolors'
-import type { DefinedAtFilePath } from '../../../../../../shared/page-configs/PageConfig.js'
+import type { DefinedAtFilePath } from '../../../../shared/page-configs/PageConfig.js'
 import {
   assert,
   assertPosixPath,
@@ -12,14 +12,14 @@ import {
   isImportPathRelative,
   isImportPathNpmPackageOrPathAlias,
   requireResolveOptional
-} from '../../../../utils.js'
-import { type PointerImportData, assertPointerImportPath, parsePointerImportData } from '../../../../shared/resolveVikeConfig/pointerImports.js'
+} from '../../utils.js'
+import { type PointerImportData, assertPointerImportPath, parsePointerImportData } from './pointerImports.js'
 import {
   getFilePathAbsoluteUserRootDir,
   getFilePathResolved,
   getFilePathUnresolved
-} from '../../../../shared/getFilePath.js'
-import type { FilePath, FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
+} from '../getFilePath.js'
+import type { FilePath, FilePathResolved } from '../../../../shared/page-configs/FilePath.js'
 
 type PointerImport = { fileExportPath: FileExportPath }
 type FileExportPath = DefinedAtFilePath & Required<Pick<DefinedAtFilePath, 'fileExportName'>>
