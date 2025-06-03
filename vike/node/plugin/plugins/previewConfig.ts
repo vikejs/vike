@@ -10,7 +10,7 @@ import pc from '@brillout/picocolors'
 import { logDockerHint } from './devConfig/index.js'
 import { getOutDirs, resolveOutDir } from '../shared/getOutDirs.js'
 import sirv from 'sirv'
-import { getVikeConfigInternal, type VikeConfigInternal } from './importUserCode/v1-design/getVikeConfig.js'
+import { getVikeConfigInternal, type VikeConfigInternal } from './importUserCode/v1-design/resolveVikeConfig.js'
 type ConnectServer = ViteDevServer['middlewares']
 
 function previewConfig(): Plugin {

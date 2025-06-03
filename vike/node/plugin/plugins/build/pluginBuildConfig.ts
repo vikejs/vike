@@ -15,7 +15,7 @@ import {
   assertIsImportPathNpmPackage,
   requireResolveVikeDistFile
 } from '../../utils.js'
-import { getVikeConfigInternal } from '../importUserCode/v1-design/getVikeConfig.js'
+import { getVikeConfigInternal } from '../importUserCode/v1-design/resolveVikeConfig.js'
 import { findPageFiles } from '../../shared/findPageFiles.js'
 import type { ResolvedConfig, Plugin } from 'vite'
 import { getVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'

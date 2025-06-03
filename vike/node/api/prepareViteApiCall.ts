@@ -12,7 +12,7 @@ import {
   getVikeConfigFromCliOrEnv,
   setVikeConfigContext,
   type VikeConfigInternal
-} from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
+} from '../plugin/plugins/importUserCode/v1-design/resolveVikeConfig.js'
 import path from 'path'
 import { assert, assertUsage, getGlobalObject, isObject, pick, toPosixPath } from './utils.js'
 import pc from '@brillout/picocolors'

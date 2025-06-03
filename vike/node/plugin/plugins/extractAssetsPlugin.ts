@@ -26,7 +26,7 @@ import { getImportStatements, type ImportStatement } from '../shared/parseEsModu
 import type { Rollup } from 'vite'
 import pc from '@brillout/picocolors'
 import { handleAssetsManifest_isFixEnabled } from './build/handleAssetsManifest.js'
-import { getVikeConfigInternal, type VikeConfigInternal } from './importUserCode/v1-design/getVikeConfig.js'
+import { getVikeConfigInternal, type VikeConfigInternal } from './importUserCode/v1-design/resolveVikeConfig.js'
 import { assertV1Design } from '../../shared/assertV1Design.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerBuild_safe } from '../shared/isViteServerBuild.js'

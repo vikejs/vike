@@ -27,7 +27,7 @@ import { parsePointerImportData } from '../../../node/plugin/plugins/importUserC
 import { getConfigValueFilePathToShowToUser } from '../helpers.js'
 import { stringify } from '@brillout/json-serializer/stringify'
 import pc from '@brillout/picocolors'
-import { isOverriden } from '../../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
+import { isOverriden } from '../../../node/plugin/plugins/importUserCode/v1-design/resolveVikeConfig.js'
 const stringifyOptions = { forbidReactElements: true as const }
 const REPLACE_ME_BEFORE = '__VIKE__REPLACE_ME_BEFORE__'
 const REPLACE_ME_AFTER = '__VIKE__REPLACE_ME_AFTER__'

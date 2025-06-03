@@ -20,7 +20,7 @@ import { version as viteVersion } from 'vite'
 import { type FileType, fileTypes } from '../../../../shared/getPageFiles/fileTypes.js'
 import path from 'path'
 import { getVirtualFilePageConfigs } from './v1-design/virtual-files/getVirtualFilePageConfigs.js'
-import { getVikeConfigInternal, isV1Design as isV1Design_ } from './v1-design/getVikeConfig.js'
+import { getVikeConfigInternal, isV1Design as isV1Design_ } from './v1-design/resolveVikeConfig.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
 import { isViteServerBuild_options } from '../../shared/isViteServerBuild.js'
 
