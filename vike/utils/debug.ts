@@ -20,8 +20,8 @@ const flags = [
   'vike:crawl',
   'vike:error',
   'vike:esbuild-resolve',
-  'vike:extractAssets',
-  'vike:extractExportNames',
+  'vike:pluginExtractAssets',
+  'vike:pluginExtractExportNames',
   'vike:glob',
   'vike:globalContext',
   'vike:log',
@@ -33,7 +33,7 @@ const flags = [
   'vike:routing',
   'vike:setup',
   'vike:stream',
-  'vike:virtual-files'
+  'vike:virtualFiles'
 ] as const
 const flagsSkipWildcard = ['vike:log']
 const flagRegex = /\bvike:[a-zA-Z-]+/g

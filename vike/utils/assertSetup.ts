@@ -102,7 +102,7 @@ function markSetup_vitePreviewServer(): void | undefined {
   if (debug.isActivated) debug('markSetup_vitePreviewServer()', new Error().stack)
   setup.vitePreviewServer = true
 }
-// Called by ../node/plugin/index.ts
+// Called by ../node/vite/index.ts
 function markSetup_vikeVitePlugin() {
   if (debug.isActivated) debug('markSetup_vikeVitePlugin()', new Error().stack)
   setup.vikeVitePlugin = true

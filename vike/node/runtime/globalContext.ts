@@ -50,13 +50,13 @@ import {
 import type { ViteManifest } from '../shared/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
-import { virtualFileIdImportUserCodeServer } from '../shared/virtual-files/virtualFileImportUserCode.js'
+import { virtualFileIdEntryServer } from '../shared/virtualFiles/virtualFileEntry.js'
 import pc from '@brillout/picocolors'
 import type { PageConfigUserFriendly } from '../../shared/page-configs/getUserFriendlyConfigs.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { assertV1Design } from '../shared/assertV1Design.js'
 import { resolveBase } from '../shared/resolveBase.js'
-import type { ViteConfigRuntime } from '../plugin/shared/getViteConfigRuntime.js'
+import type { ViteConfigRuntime } from '../vite/shared/getViteConfigRuntime.js'
 import {
   createGlobalContextShared,
   getGlobalContextSyncErrMsg,
@@ -408,9 +408,9 @@ async function updateUserFiles() {
   assert(viteDevServer)
   let virtualFileExports: Record<string, unknown>
   try {
-    virtualFileExports = await viteDevServer.ssrLoadModule(virtualFileIdImportUserCodeServer)
+    virtualFileExports = await viteDevServer.ssrLoadModule(virtualFileIdEntryServer)
   } catch (err) {
-    debugGlob(`Glob error: ${virtualFileIdImportUserCodeServer} transpile error: `, err)
+    debugGlob(`Glob error: ${virtualFileIdEntryServer} transpile error: `, err)
     throw err
   }
   virtualFileExports = (virtualFileExports as any).default || virtualFileExports

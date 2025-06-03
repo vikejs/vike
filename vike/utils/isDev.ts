@@ -8,7 +8,7 @@ import type { ConfigEnv } from 'vite'
 function isDevCheck(configEnv: ConfigEnv): boolean {
   const { isPreview, command } = configEnv
   // Note that:
-  // - `assertVersion('Vite', version, '5.1.0')` at node/plugin/onLoad.ts isn't enough: https://github.com/vitejs/vite/pull/19355
+  // - `assertVersion('Vite', version, '5.1.0')` at node/vite/onLoad.ts isn't enough: https://github.com/vitejs/vite/pull/19355
   // - We'll eventually be able to make this an assert() instead of assertUsage() once Vike requires a Vite version that supports this.meta.viteVersion
   assertUsage(
     typeof isPreview === 'boolean',

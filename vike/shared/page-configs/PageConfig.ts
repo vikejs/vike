@@ -22,10 +22,10 @@ export type { DefinedBy }
 export type { DefinedAtFilePath }
 
 import type { ConfigValueSerialized } from './serialize/PageConfigSerialized.js'
-import type { LocationId } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/filesystemRouting.js'
+import type { LocationId } from '../../node/vite/shared/resolveVikeConfig/filesystemRouting.js'
 import type { FilePath } from './FilePath.js'
-import type { ConfigDefinitionsInternal } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
-import type { PlusFile } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/getPlusFilesAll.js'
+import type { ConfigDefinitionsInternal } from '../../node/vite/shared/resolveVikeConfig/configDefinitionsBuiltIn.js'
+import type { PlusFile } from '../../node/vite/shared/resolveVikeConfig/getPlusFilesAll.js'
 import type { Operation } from '../../node/api/types.js'
 
 type PageConfigCommon = {
@@ -52,7 +52,7 @@ type PageConfigRoute =
 type PageConfigRuntime = PageConfigCommon & {
   configValues: ConfigValues
   /** Load config values that are lazily loaded such as config.Page */
-  loadConfigValuesAll: LoadConfigValuesAll
+  loadConfigLazy: LoadConfigLazy
 }
 /** Global config that applies to all pages, runtime data structure */
 type PageConfigGlobalRuntime = {
@@ -75,10 +75,10 @@ type PageConfigGlobalBuildTime = {
 
 /** Same as PageConfigRuntime but also contains all lazily loaded config values such as config.Page */
 type PageConfigRuntimeLoaded = PageConfigRuntime & {
-  /** Whether loadConfigValuesAll() was called */
+  /** Whether loadConfigLazy() was called */
   isAllLoaded: true
 }
-type LoadConfigValuesAll = () => {
+type LoadConfigLazy = () => {
   moduleId: string
   moduleExports: Promise<{
     configValuesSerialized: Record<string, ConfigValueSerialized>
