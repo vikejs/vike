@@ -24,8 +24,6 @@ async function createPageContextClientSide(urlOriginal: string) {
     _pageFilesAll: globalContext._pageFilesAll,
     _pageConfigs: globalContext._pageConfigs,
     _pageConfigGlobal: globalContext._pageConfigGlobal,
-    _allPageIds: globalContext._allPageIds,
-    _pageRoutes: globalContext._pageRoutes,
 
     _onBeforeRouteHook: globalContext._onBeforeRouteHook,
     _urlHandler: null,

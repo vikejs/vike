@@ -24,7 +24,6 @@ async function createPageContextClientSide() {
     _pageFilesAll: globalContext._pageFilesAll,
     _pageConfigs: globalContext._pageConfigs,
     _pageConfigGlobal: globalContext._pageConfigGlobal,
-    _allPageIds: globalContext._allPageIds,
 
     isBackwardNavigation: null,
     _hasPageContextFromServer: true as const
