@@ -12,8 +12,6 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { 
   const isWrangler = cmd === 'npm run preview'
 
   /*
-  // update(12.05.2025): Enabling wrangler tests again.
-  // update(13.12.2024): Permanently disabling wrangler tests, because wrangler requests to Cloudflare are painfully flaky. Let's eventually enable wrangler tests again, at some point later.
   // Manually disabled because of exceeded rate limit
   if (isWrangler) {
     skip('SKIPPED: temporarily skip wrangler tests.')
