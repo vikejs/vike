@@ -1,5 +1,5 @@
-// TODO/now-5: rename all this?
-// TODO/now-5: use public API internally?
+// TODO/now-4: rename all this?
+// TODO/now-4: use public API internally?
 export { getUserFriendlyConfigsGlobal }
 export { getUserFriendlyConfigsPageEager }
 export { getUserFriendlyConfigsPageLazy }
