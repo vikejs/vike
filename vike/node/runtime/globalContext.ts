@@ -89,7 +89,7 @@ const globalObjectTyped = globalObject as typeof globalObject & {
   globalContext?: GlobalContextServerInternal
 }
 
-// Public type
+// Public usge
 type GlobalContextServer = Pick<
   GlobalContextServerInternal,
   | 'assetsManifest'
@@ -104,7 +104,8 @@ type GlobalContextServer = Pick<
   // https://vike.dev/globalContext#typescript
   Vike.GlobalContext &
   Vike.GlobalContextServer
-// Private type
+
+// Internal usage
 type GlobalContextServerInternal = Awaited<ReturnType<typeof setGlobalContext>>
 
 async function getGlobalContextServerInternal() {
