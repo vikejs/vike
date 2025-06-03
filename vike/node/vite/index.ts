@@ -25,7 +25,7 @@ import { setResolveClientEntriesDev } from '../runtime/renderPage/getPageAssets.
 import { resolveClientEntriesDev } from './shared/resolveClientEntriesDev.js'
 import { workaroundCssModuleHmr } from './plugins/workaroundCssModuleHmr.js'
 import { workaroundVite6HmrRegression } from './plugins/workaroundVite6HmrRegression.js'
-import { replaceConstants } from './plugins/replaceConstants.js'
+import { pluginReplaceConstants } from './plugins/pluginReplaceConstants.js'
 
 // We don't call this in ./onLoad.ts to avoid a cyclic dependency with utils.ts
 setResolveClientEntriesDev(resolveClientEntriesDev)
@@ -47,7 +47,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginIntero
     fileEnv(),
     workaroundCssModuleHmr(),
     workaroundVite6HmrRegression(),
-    replaceConstants()
+    pluginReplaceConstants()
   ]
   Object.assign(plugins, { _vikeVitePluginOptions: vikeVitePluginOptions })
   return plugins as any

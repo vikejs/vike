@@ -1,4 +1,4 @@
-export { replaceConstants }
+export { pluginReplaceConstants }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import MagicString from 'magic-string'
@@ -7,10 +7,10 @@ import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerBuild_safe } from '../shared/isViteServerBuild.js'
 import { applyRegExpWithMagicString } from '../shared/applyRegExWithMagicString.js'
 
-function replaceConstants(): Plugin {
+function pluginReplaceConstants(): Plugin {
   let config: ResolvedConfig
   return {
-    name: 'vike:replaceConstants',
+    name: 'vike:pluginReplaceConstants',
     enforce: 'post',
     apply: 'build',
     configResolved(config_) {
