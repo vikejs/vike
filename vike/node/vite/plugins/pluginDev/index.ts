@@ -1,4 +1,4 @@
-export { devConfig }
+export { pluginDev }
 export { logDockerHint }
 
 import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
@@ -15,11 +15,11 @@ if (isErrorDebug()) {
   Error.stackTraceLimit = Infinity
 }
 
-function devConfig(): Plugin[] {
+function pluginDev(): Plugin[] {
   let config: ResolvedConfig
   return [
     {
-      name: 'vike:devConfig',
+      name: 'vike:pluginDev',
       apply: applyDev,
       config() {
         return {
@@ -75,7 +75,7 @@ function devConfig(): Plugin[] {
       }
     },
     {
-      name: 'vike:devConfig:addSsrMiddleware',
+      name: 'vike:pluginDev:addSsrMiddleware',
       apply: applyDev,
       // The SSR middleware should be last middleware
       enforce: 'post',

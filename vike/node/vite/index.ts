@@ -11,7 +11,7 @@ import { type Plugin } from 'vite'
 import { assertUsage } from './utils.js'
 import { build } from './plugins/build.js'
 import { pluginPreview } from './plugins/pluginPreview.js'
-import { devConfig } from './plugins/devConfig/index.js'
+import { pluginDev } from './plugins/pluginDev/index.js'
 import { pluginVirtualFiles } from './plugins/pluginVirtualFiles/index.js'
 import { pluginExtractAssets } from './plugins/pluginExtractAssets.js'
 import { pluginExtractExportNames } from './plugins/pluginExtractExportNames.js'
@@ -36,7 +36,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginIntero
   const plugins: Plugin[] = [
     ...pluginCommon(vikeVitePluginOptions),
     pluginVirtualFiles(),
-    ...devConfig(),
+    ...pluginDev(),
     ...build(),
     pluginPreview(),
     ...pluginExtractAssets(),
