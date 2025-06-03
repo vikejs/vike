@@ -19,11 +19,14 @@ async function createPageContextClientSide(urlOriginal: string) {
     isPrerendering: false as const,
     urlOriginal,
     _globalContext: globalContext,
+
+    // TODO/now: remove
     _pageFilesAll: globalContext._pageFilesAll,
     _pageConfigs: globalContext._pageConfigs,
     _pageConfigGlobal: globalContext._pageConfigGlobal,
     _allPageIds: globalContext._allPageIds,
     _pageRoutes: globalContext._pageRoutes,
+
     _onBeforeRouteHook: globalContext._onBeforeRouteHook,
     _urlHandler: null,
     _urlRewrite: null as null | string,
