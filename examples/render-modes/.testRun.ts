@@ -296,7 +296,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1De
         partRegex`<script src="/assets/entries/entry-client-routing.${hash}.js" type="module" async>`
       )
     } else {
-      expect(html).toMatch(partRegex`import "/@fs/${path}/vike/${path}/client-routing-runtime/${path}";`)
+      expect(html).toMatch(partRegex`import "/@fs/${path}/vike/${path}/runtime-client-routing/${path}";`)
     }
   }
 }
