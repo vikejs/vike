@@ -12,14 +12,10 @@ async function isClientSideRoutable(
     _globalContext: GlobalContextClientInternal
   }
 ): Promise<boolean> {
-  await analyzePageClientSideInit(pageContext._globalContext._pageFilesAll, pageId, {
+  await analyzePageClientSideInit(pageContext._pageFilesAll, pageId, {
     sharedPageFilesAlreadyLoaded: false
   })
   const pageConfig = findPageConfig(pageContext._globalContext._pageConfigs, pageId)
-  const { isClientRuntimeLoaded, isClientRouting } = analyzeClientSide(
-    pageConfig,
-    pageContext._globalContext._pageFilesAll,
-    pageId
-  )
+  const { isClientRuntimeLoaded, isClientRouting } = analyzeClientSide(pageConfig, pageContext._pageFilesAll, pageId)
   return isClientRuntimeLoaded && isClientRouting
 }

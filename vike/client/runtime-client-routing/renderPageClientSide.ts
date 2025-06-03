@@ -233,7 +233,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         pageContext,
         await loadPageConfigsLazyClientSide(
           pageContext.pageId,
-          pageContext._globalContext._pageFilesAll,
+          pageContext._pageFilesAll,
           pageContext._pageConfigs,
           pageContext._pageConfigGlobal
         )
@@ -402,7 +402,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       }
     }
 
-    const errorPageId = getErrorPageId(pageContext._globalContext._pageFilesAll, pageContext._pageConfigs)
+    const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
     if (!errorPageId) throw new Error('No error page defined.')
     objectAssign(pageContext, {
       pageId: errorPageId
@@ -420,7 +420,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         pageContext,
         await loadPageConfigsLazyClientSide(
           pageContext.pageId,
-          pageContext._globalContext._pageFilesAll,
+          pageContext._pageFilesAll,
           pageContext._pageConfigs,
           pageContext._pageConfigGlobal
         )
