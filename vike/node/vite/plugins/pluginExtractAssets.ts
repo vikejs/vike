@@ -19,7 +19,7 @@ import {
   assertUsage,
   rollupSourceMapRemove
 } from '../utils.js'
-import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../shared/virtual-files.js'
+import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../shared/virtualFiles.js'
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
 import { isAsset } from '../shared/isAsset.js'
 import { getImportStatements, type ImportStatement } from '../shared/parseEsModule.js'

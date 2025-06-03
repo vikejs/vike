@@ -33,7 +33,7 @@ const flags = [
   'vike:routing',
   'vike:setup',
   'vike:stream',
-  'vike:virtual-files'
+  'vike:virtualFiles'
 ] as const
 const flagsSkipWildcard = ['vike:log']
 const flagRegex = /\bvike:[a-zA-Z-]+/g

@@ -5,7 +5,7 @@ import type { PageConfigBuildTime } from '../../../../shared/page-configs/PageCo
 import {
   getVirtualFileIdPageConfigValuesAll,
   isVirtualFileIdPageConfigValuesAll
-} from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
+} from '../../../shared/virtualFiles/virtualFilePageConfigValuesAll.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfig.js'
 import { extractAssetsAddQuery } from '../../../shared/extractAssetsQuery.js'
 import { debug } from './debug.js'

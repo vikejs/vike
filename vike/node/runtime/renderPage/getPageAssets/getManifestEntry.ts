@@ -2,7 +2,7 @@ export { getManifestEntry }
 
 import type { ViteManifest, ViteManifestEntry } from '../../../shared/ViteManifest.js'
 import { assert, slice, assertIsImportPathNpmPackage } from '../../utils.js'
-import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
+import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtualFiles/virtualFilePageConfigValuesAll.js'
 import { prependEntriesDir } from '../../../shared/prependEntriesDir.js'
 
 function getManifestEntry(

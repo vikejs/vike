@@ -1,7 +1,7 @@
 export { getVirtualFilePageConfigs }
 
 import type { PageConfigBuildTime, PageConfigGlobalBuildTime } from '../../../../shared/page-configs/PageConfig.js'
-import { getVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
+import { getVirtualFileIdPageConfigValuesAll } from '../../../shared/virtualFiles/virtualFilePageConfigValuesAll.js'
 import { debug } from './debug.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfig.js'
 import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'

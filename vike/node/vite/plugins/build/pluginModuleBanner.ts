@@ -2,7 +2,7 @@ export { pluginModuleBanner }
 
 import type { ResolvedConfig, Plugin } from 'vite'
 import MagicString from 'magic-string'
-import { removeVirtualIdTag } from '../../../shared/virtual-files.js'
+import { removeVirtualIdTag } from '../../../shared/virtualFiles.js'
 import { isViteServerBuild_safe } from '../../shared/isViteServerBuild.js'
 
 // Rollup's banner feature doesn't work with Vite: https://github.com/vitejs/vite/issues/8412

@@ -50,7 +50,7 @@ import {
 import type { ViteManifest } from '../shared/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
-import { virtualFileIdImportUserCodeServer } from '../shared/virtual-files/virtualFileImportUserCode.js'
+import { virtualFileIdImportUserCodeServer } from '../shared/virtualFiles/virtualFileImportUserCode.js'
 import pc from '@brillout/picocolors'
 import type { PageConfigUserFriendly } from '../../shared/page-configs/getUserFriendlyConfigs.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'

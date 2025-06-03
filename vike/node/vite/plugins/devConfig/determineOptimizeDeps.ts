@@ -16,7 +16,7 @@ import type { PageConfigBuildTime } from '../../../../shared/page-configs/PageCo
 import {
   virtualFileIdImportUserCodeClientCR,
   virtualFileIdImportUserCodeClientSR
-} from '../../../shared/virtual-files/virtualFileImportUserCode.js'
+} from '../../../shared/virtualFiles/virtualFileImportUserCode.js'
 import { getFilePathResolved } from '../../shared/getFilePath.js'
 
 const debug = createDebugger('vike:optimizeDeps')

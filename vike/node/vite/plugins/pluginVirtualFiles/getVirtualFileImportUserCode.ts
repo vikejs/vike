@@ -15,7 +15,7 @@ import {
   isVersionOrAbove,
   assertWarning
 } from '../../utils.js'
-import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
+import { isVirtualFileIdImportUserCode } from '../../../shared/virtualFiles/virtualFileImportUserCode.js'
 import { version as viteVersion } from 'vite'
 import { type FileType, fileTypes } from '../../../../shared/getPageFiles/fileTypes.js'
 import path from 'path'

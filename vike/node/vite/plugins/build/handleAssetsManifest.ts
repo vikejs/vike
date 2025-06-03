@@ -18,7 +18,7 @@ import {
   pLimit,
   unique
 } from '../../utils.js'
-import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
+import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtualFiles/virtualFilePageConfigValuesAll.js'
 import { manifestTempFile } from './pluginBuildConfig.js'
 import type { Environment, ResolvedConfig, Rollup, UserConfig } from 'vite'
 import { getAssetsDir } from '../../shared/getAssetsDir.js'

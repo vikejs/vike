@@ -18,7 +18,7 @@ import {
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfig.js'
 import { findPageFiles } from '../../shared/findPageFiles.js'
 import type { ResolvedConfig, Plugin } from 'vite'
-import { getVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
+import { getVirtualFileIdPageConfigValuesAll } from '../../../shared/virtualFiles/virtualFilePageConfigValuesAll.js'
 import type { PageConfigBuildTime } from '../../../../shared/page-configs/PageConfig.js'
 import type { FileType } from '../../../../shared/getPageFiles/fileTypes.js'
 import { extractAssetsAddQuery } from '../../../shared/extractAssetsQuery.js'
