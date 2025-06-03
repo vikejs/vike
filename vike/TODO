@@ -78,7 +78,7 @@ v0.5 breaking changes:
   - Or remove it altogether in favor of `globalContext.assetsManifest`?
 - Make navigate() automatically add Base URL by default?
 - Make client entry be a single virtual file
-  - Remove `import * as virtualFileExports from 'virtual:vike:importUserCode:client:...'`
+  - Remove `import * as virtualFileExports from 'virtual:vike:entry:client:...'`
     - We can then avoid adding client runtime entry to optimizeDeps.exclude
   - Make +client.js cumulative https://github.com/vikejs/vike/issues/1834
   - Fix non-global +client.js

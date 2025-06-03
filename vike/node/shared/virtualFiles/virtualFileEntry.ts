@@ -6,7 +6,7 @@ export { isVirtualFileIdEntry }
 import { assert } from '../utils.js'
 import { getVirtualFileId } from '../virtualFiles.js'
 
-const idBase = 'virtual:vike:importUserCode'
+const idBase = 'virtual:vike:entry'
 const virtualFileIdEntryServer = `${idBase}:server`
 const virtualFileIdEntryClientSR = `${idBase}:client:server-routing`
 const virtualFileIdEntryClientCR = `${idBase}:client:client-routing`
