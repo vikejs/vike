@@ -1,5 +1,6 @@
 export { getGlobalContextClientInternal }
 export type { GlobalContextClient }
+export type { GlobalContextClientInternal }
 
 import { createGetGlobalContextClient } from '../shared/createGetGlobalContextClient.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
