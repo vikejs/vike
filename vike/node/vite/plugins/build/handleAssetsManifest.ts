@@ -18,7 +18,7 @@ import {
   pLimit,
   unique
 } from '../../utils.js'
-import { isVirtualFileIdPageConfigValuesLazy } from '../../../shared/virtualFiles/virtualFilePageConfigValuesLazy.js'
+import { isVirtualFileIdPageConfigLazy } from '../../../shared/virtualFiles/virtualFilePageConfigLazy.js'
 import { manifestTempFile } from './pluginBuildConfig.js'
 import type { Environment, ResolvedConfig, Rollup, UserConfig } from 'vite'
 import { getAssetsDir } from '../../shared/getAssetsDir.js'
@@ -210,12 +210,12 @@ function addServerAssets(clientManifest: ViteManifest, serverManifest: ViteManif
 
 function getPageId(key: string) {
   // Normalize from:
-  //   ../../virtual:vike:pageConfigValuesLazy:client:/pages/index
+  //   ../../virtual:vike:pageConfigLazy:client:/pages/index
   // to:
-  //   virtual:vike:pageConfigValuesLazy:client:/pages/index
+  //   virtual:vike:pageConfigLazy:client:/pages/index
   // (This seems to be needed only for vitest tests that use Vite's build() API with an inline config.)
   key = key.substring(key.indexOf('virtual:vike'))
-  const result = isVirtualFileIdPageConfigValuesLazy(key)
+  const result = isVirtualFileIdPageConfigLazy(key)
   return result && result.pageId
 }
 

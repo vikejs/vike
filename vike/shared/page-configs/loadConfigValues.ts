@@ -12,7 +12,7 @@ async function loadConfigValues(pageConfig: PageConfigRuntime, isDev: boolean): 
   ) {
     return pageConfig as PageConfigRuntimeLoaded
   }
-  const { moduleId, moduleExports } = pageConfig.loadConfigValuesLazy()
+  const { moduleId, moduleExports } = pageConfig.loadConfigLazy()
   const configValuesLoaded = await moduleExports
   // `configValuesLoaded` is sometimes `undefined` https://github.com/vikejs/vike/discussions/2092
   if (!configValuesLoaded) assert(false, { moduleExports, configValuesLoaded, moduleId })

@@ -1,7 +1,7 @@
 export { getVirtualFilePageConfigs }
 
 import type { PageConfigBuildTime, PageConfigGlobalBuildTime } from '../../../../shared/page-configs/PageConfig.js'
-import { getVirtualFileIdPageConfigValuesLazy } from '../../../shared/virtualFiles/virtualFilePageConfigValuesLazy.js'
+import { getVirtualFileIdPageConfigLazy } from '../../../shared/virtualFiles/virtualFilePageConfigLazy.js'
 import { debug } from './debug.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfig.js'
 import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
@@ -70,9 +70,9 @@ function getCodePageConfigsSerialized(
     lines.push(`    pageId: ${JSON.stringify(pageId)},`)
     lines.push(`    isErrorPage: ${JSON.stringify(isErrorPage)},`)
     lines.push(`    routeFilesystem: ${JSON.stringify(routeFilesystem)},`)
-    const virtualFileId = JSON.stringify(getVirtualFileIdPageConfigValuesLazy(pageId, isForClientSide))
+    const virtualFileId = JSON.stringify(getVirtualFileIdPageConfigLazy(pageId, isForClientSide))
     const load = `() => ({ moduleId: ${virtualFileId}, moduleExports: import(${virtualFileId}) })`
-    lines.push(`    loadConfigValuesLazy: ${load},`)
+    lines.push(`    loadConfigLazy: ${load},`)
     lines.push(`    configValuesSerialized: {`)
     lines.push(
       ...serializeConfigValues(

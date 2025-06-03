@@ -2,11 +2,11 @@ export { pluginVirtualFiles }
 
 import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode, ModuleGraph } from 'vite'
 import { normalizePath } from 'vite'
-import { getVirtualFilePageConfigValuesLazy } from './getVirtualFilePageConfigValuesLazy.js'
+import { getVirtualFilePageConfigLazy } from './getVirtualFilePageConfigLazy.js'
 import { getVirtualFileEntry } from './getVirtualFileEntry.js'
 import { assert, assertPosixPath } from '../../utils.js'
 import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../../shared/virtualFiles.js'
-import { isVirtualFileIdPageConfigValuesLazy } from '../../../shared/virtualFiles/virtualFilePageConfigValuesLazy.js'
+import { isVirtualFileIdPageConfigLazy } from '../../../shared/virtualFiles/virtualFilePageConfigLazy.js'
 import { isVirtualFileIdEntry } from '../../../shared/virtualFiles/virtualFileEntry.js'
 import { reloadVikeConfig, isV1Design, getVikeConfigInternalOptional } from '../../shared/resolveVikeConfig.js'
 import pc from '@brillout/picocolors'
@@ -44,8 +44,8 @@ function pluginVirtualFiles(): Plugin {
       const isDev = config._isDev
       assert(typeof isDev === 'boolean')
 
-      if (isVirtualFileIdPageConfigValuesLazy(id)) {
-        const code = await getVirtualFilePageConfigValuesLazy(id, isDev, config)
+      if (isVirtualFileIdPageConfigLazy(id)) {
+        const code = await getVirtualFilePageConfigLazy(id, isDev, config)
         return code
       }
 
@@ -141,7 +141,7 @@ function reloadConfig(filePath: string, config: ResolvedConfig, op: 'modified' |
 
 function getVikeVirtualFiles(server: ViteDevServer): ModuleNode[] {
   const vikeVirtualFiles = Array.from(server.moduleGraph.urlToModuleMap.keys())
-    .filter((url) => isVirtualFileIdPageConfigValuesLazy(url) || isVirtualFileIdEntry(url))
+    .filter((url) => isVirtualFileIdPageConfigLazy(url) || isVirtualFileIdEntry(url))
     .map((url) => {
       const mod = server.moduleGraph.urlToModuleMap.get(url)
       assert(mod)

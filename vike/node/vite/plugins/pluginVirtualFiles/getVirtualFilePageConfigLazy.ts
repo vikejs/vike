@@ -1,11 +1,11 @@
-export { getVirtualFilePageConfigValuesLazy }
+export { getVirtualFilePageConfigLazy }
 
 import { assert } from '../../utils.js'
 import type { PageConfigBuildTime } from '../../../../shared/page-configs/PageConfig.js'
 import {
-  getVirtualFileIdPageConfigValuesLazy,
-  isVirtualFileIdPageConfigValuesLazy
-} from '../../../shared/virtualFiles/virtualFilePageConfigValuesLazy.js'
+  getVirtualFileIdPageConfigLazy,
+  isVirtualFileIdPageConfigLazy
+} from '../../../shared/virtualFiles/virtualFilePageConfigLazy.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfig.js'
 import { extractAssetsAddQuery } from '../../../shared/extractAssetsQuery.js'
 import { debug } from './debug.js'
@@ -15,8 +15,8 @@ import type { ResolvedConfig } from 'vite'
 import { handleAssetsManifest_isFixEnabled } from '../build/handleAssetsManifest.js'
 import { getConfigValueBuildTime } from '../../../../shared/page-configs/getConfigValueBuildTime.js'
 
-async function getVirtualFilePageConfigValuesLazy(id: string, isDev: boolean, config: ResolvedConfig): Promise<string> {
-  const result = isVirtualFileIdPageConfigValuesLazy(id)
+async function getVirtualFilePageConfigLazy(id: string, isDev: boolean, config: ResolvedConfig): Promise<string> {
+  const result = isVirtualFileIdPageConfigLazy(id)
   assert(result)
   /* This assertion fails when using includeAssetsImportedByServer
   {
@@ -29,7 +29,7 @@ async function getVirtualFilePageConfigValuesLazy(id: string, isDev: boolean, co
   const { pageConfigs } = vikeConfig
   const pageConfig = pageConfigs.find((pageConfig) => pageConfig.pageId === pageId)
   assert(pageConfig, { id, pageId })
-  const code = getLoadConfigValuesLazy(
+  const code = getLoadConfigLazy(
     pageConfig,
     isForClientSide,
     pageId,
@@ -42,7 +42,7 @@ async function getVirtualFilePageConfigValuesLazy(id: string, isDev: boolean, co
   return code
 }
 
-function getLoadConfigValuesLazy(
+function getLoadConfigLazy(
   pageConfig: PageConfigBuildTime,
   isForClientSide: boolean,
   pageId: string,
@@ -69,7 +69,7 @@ function getLoadConfigValuesLazy(
   lines.push('};')
 
   if (!handleAssetsManifest_isFixEnabled(config) && includeAssetsImportedByServer && isForClientSide && !isDev) {
-    importStatements.push(`import '${extractAssetsAddQuery(getVirtualFileIdPageConfigValuesLazy(pageId, false))}'`)
+    importStatements.push(`import '${extractAssetsAddQuery(getVirtualFileIdPageConfigLazy(pageId, false))}'`)
   }
 
   const code = [...importStatements, ...lines].join('\n')
