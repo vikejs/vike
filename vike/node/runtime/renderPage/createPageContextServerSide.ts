@@ -38,6 +38,15 @@ async function createPageContextServerSide(
   objectAssign(pageContextCreated, {
     _globalContext: globalContext,
     // We use pageContext._baseServer and pageContext._baseAssets instead of pageContext._globalContext.baseServer and pageContext._globalContext.baseAssets because the Base URLs can (eventually one day if needed) be made non-global
+
+    // TODO/now: remove
+    _pageFilesAll: globalContext._pageFilesAll,
+    _pageConfigs: globalContext._pageConfigs,
+    _pageConfigGlobal: globalContext._pageConfigGlobal,
+    _allPageIds: globalContext._allPageIds,
+    _pageRoutes: globalContext._pageRoutes,
+    _onBeforeRouteHook: globalContext._onBeforeRouteHook,
+
     _baseServer: globalContext.baseServer,
     _baseAssets: globalContext.baseAssets,
     _pageContextInit: pageContextInit,
