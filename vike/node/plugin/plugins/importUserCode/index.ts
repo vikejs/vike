@@ -8,7 +8,7 @@ import { assert, assertPosixPath } from '../../utils.js'
 import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../../shared/virtual-files.js'
 import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
-import { reloadVikeConfig, isV1Design, getVikeConfigOptional } from './v1-design/getVikeConfig.js'
+import { reloadVikeConfig, isV1Design, getVikeConfigInternalOptional } from './v1-design/getVikeConfig.js'
 import pc from '@brillout/picocolors'
 import { logConfigInfo } from '../../shared/loggerNotProd.js'
 import { getModuleFilePathAbsolute } from '../../shared/getFilePath.js'
@@ -113,7 +113,7 @@ async function isVikeConfigDependency(
 ): Promise<null | { modifiesVikeVirtualFiles: boolean }> {
   // Check config-only files, for example all pages/+config.js dependencies. (There aren't part of Vite's module graph.)
   assertPosixPath(filePathAbsoluteFilesystem)
-  const vikeConfigObject = await getVikeConfigOptional()
+  const vikeConfigObject = await getVikeConfigInternalOptional()
   if (vikeConfigObject) {
     const { vikeConfigDependencies } = vikeConfigObject
     vikeConfigDependencies.forEach((f) => assertPosixPath(f))

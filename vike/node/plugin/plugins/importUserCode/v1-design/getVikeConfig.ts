@@ -1,4 +1,4 @@
-export { getVikeConfigOptional }
+export { getVikeConfigInternalOptional }
 export { getVikeConfigInternal }
 export { getVikeConfigInternalSync }
 export { getVikeConfigPublic }
@@ -224,7 +224,7 @@ async function getOrResolveVikeConfig(
   }
   return await vikeConfigPromise
 }
-async function getVikeConfigOptional(): Promise<null | VikeConfigInternal> {
+async function getVikeConfigInternalOptional(): Promise<null | VikeConfigInternal> {
   if (!vikeConfigPromise) return null
   return await vikeConfigPromise
 }
