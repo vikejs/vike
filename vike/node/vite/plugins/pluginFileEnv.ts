@@ -1,4 +1,4 @@
-export { fileEnv }
+export { pluginFileEnv }
 
 // Implementation for https://vike.dev/file-env
 // Alternative implementations:
@@ -22,11 +22,11 @@ import { getExportNames } from '../shared/parseEsModule.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isV1Design } from '../shared/resolveVikeConfig.js'
 
-function fileEnv(): Plugin {
+function pluginFileEnv(): Plugin {
   let config: ResolvedConfig
   let viteDevServer: ViteDevServer | undefined
   return {
-    name: 'vike:fileEnv',
+    name: 'vike:pluginFileEnv',
     load(id, options) {
       // In build, we use generateBundle() instead of the load() hook. Using load() works for dynamic imports in dev thanks to Vite's lazy transpiling, but it doesn't work in build because Rollup transpiles any dynamically imported module even if it's never actually imported.
       if (!viteDevServer) return
