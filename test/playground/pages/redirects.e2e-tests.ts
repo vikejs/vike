@@ -1,10 +1,9 @@
 export { testRedirectMailto }
 
-// Unit tests at /vike/node/runtime/renderPage/resolveRedirects.spec.ts
-// https://github.com/vikejs/vike/blob/0e260ad6e64e98952138a90950e10e2d59d94a36/vike/node/runtime/renderPage/resolveRedirects.spec.ts
-
 import { test, getServerUrl, expect } from '@brillout/test-e2e'
 
+// Unit tests at /vike/node/runtime/renderPage/resolveRedirects.spec.ts
+// https://github.com/vikejs/vike/blob/0e260ad6e64e98952138a90950e10e2d59d94a36/vike/node/runtime/renderPage/resolveRedirects.spec.ts
 function testRedirectMailto() {
   test('+redirects', async () => {
     await testRedirect('/about-us', '/about')
