@@ -5,15 +5,15 @@ import { assert, assertUsage } from '../runtime-server-routing/utils.js'
 import { getHookFromPageContext, type Hook } from '../../shared/hooks/getHook.js'
 import type { PageFile, PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
 import type { PageContextForPublicUsageClientShared } from './preparePageContextForPublicUsageClientShared.js'
-import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 import { execHookSingle } from '../../shared/hooks/execHook.js'
+import type { GlobalContextClientInternalShared } from './createGetGlobalContextClient.js'
 
 type PageContextBeforeRenderClient = {
   _pageFilesLoaded: PageFile[]
   urlOriginal?: string
   urlPathname?: string
   pageId: string
-  _pageConfigs: PageConfigRuntime[]
+  _globalContext: GlobalContextClientInternalShared
 } & PageConfigUserFriendlyOld &
   PageContextForPublicUsageClientShared
 
@@ -37,7 +37,7 @@ async function executeOnRenderClientHook<PageContext extends PageContextBeforeRe
   if (!hook) {
     const urlToShowToUser = getUrlToShowToUser(pageContext)
     assert(urlToShowToUser)
-    if (pageContext._pageConfigs.length > 0) {
+    if (pageContext._globalContext._pageConfigs.length > 0) {
       // V1 design
       assertUsage(
         false,

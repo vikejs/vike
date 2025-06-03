@@ -22,8 +22,6 @@ async function createPageContextClientSide() {
 
     // TODO/now-1: remove
     _pageFilesAll: globalContext._pageFilesAll,
-    _pageConfigs: globalContext._pageConfigs,
-    _pageConfigGlobal: globalContext._pageConfigGlobal,
 
     isBackwardNavigation: null,
     _hasPageContextFromServer: true as const

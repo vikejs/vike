@@ -4,12 +4,17 @@ export { getGlobalContextSync }
 
 // Internal usage
 export { createGetGlobalContextClient }
+export type GlobalContextClientInternalShared =
+  | GlobalContextClientInternal
+  | GlobalContextClientInternalWithServerRouting
 
 import {
   createGlobalContextShared,
   getGlobalContextSyncErrMsg,
   type GlobalContextBase
 } from '../../shared/createGlobalContextShared.js'
+import type { GlobalContextClientInternal } from '../runtime-client-routing/globalContext.js'
+import type { GlobalContextClientInternalWithServerRouting } from '../runtime-server-routing/globalContext.js'
 import { getGlobalContextSerializedInHtml } from './getJsonSerializedInHtml.js'
 import { assert, assertUsage, genPromise, getGlobalObject, objectAssign } from './utils.js'
 

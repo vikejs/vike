@@ -1,5 +1,6 @@
 export { getGlobalContextClientInternal }
 export type { GlobalContextClientWithServerRouting }
+export type { GlobalContextClientInternalWithServerRouting }
 
 import { createGetGlobalContextClient } from '../shared/createGetGlobalContextClient.js'
 import type { GlobalContextBasePublic } from '../../shared/createGlobalContextShared.js'
@@ -8,11 +9,11 @@ import * as virtualFileExports from 'virtual:vike:entry:client:server-routing'
 
 // Public type
 type GlobalContextClientWithServerRouting = GlobalContextBasePublic &
-  Pick<GlobalContextClientInternal, 'isClientSide'> &
+  Pick<GlobalContextClientInternalWithServerRouting, 'isClientSide'> &
   Vike.GlobalContext &
   Vike.GlobalContextClient & {
     // Nothing extra for now
   }
-type GlobalContextClientInternal = Awaited<ReturnType<typeof getGlobalContextClientInternal>>
+type GlobalContextClientInternalWithServerRouting = Awaited<ReturnType<typeof getGlobalContextClientInternal>>
 
 const getGlobalContextClientInternal = createGetGlobalContextClient(virtualFileExports, false)
