@@ -10,7 +10,6 @@ export type { HttpResponse }
 import type { GetPageAssets } from './getPageAssets.js'
 import { assert, assertWarning, escapeHtml } from '../utils.js'
 import type { HtmlRender } from '../html/renderHtml.js'
-import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { getErrorPageId, isErrorPage } from '../../../shared/error-page.js'
 import type { RenderHook } from './executeOnRenderHtmlHook.js'
 import type { RedirectStatusCode, AbortStatusCode, UrlRedirect } from '../../../shared/route/abort.js'

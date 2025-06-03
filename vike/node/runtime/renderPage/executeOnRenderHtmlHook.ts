@@ -40,7 +40,6 @@ async function executeOnRenderHtmlHook(
     PageContextSerialization & {
       pageId: string
       _globalContext: GlobalContextServerInternal
-      _pageConfigs: PageConfigRuntime[]
       __getPageAssets: GetPageAssets
       _isHtmlOnly: boolean
       _baseServer: string
@@ -82,7 +81,7 @@ async function executeOnRenderHtmlHook(
 
 function getRenderHook(
   pageContext: PageContextForPublicUsageServer & {
-    _pageConfigs: PageConfigRuntime[]
+    _globalContext: GlobalContextServerInternal
   }
 ) {
   let hookFound: RenderHook | undefined
@@ -105,7 +104,7 @@ function getRenderHook(
     }
   }
   if (!hookFound) {
-    const hookName = pageContext._pageConfigs.length > 0 ? 'onRenderHtml' : 'render'
+    const hookName = pageContext._globalContext._pageConfigs.length > 0 ? 'onRenderHtml' : 'render'
     assertUsage(
       false,
       [

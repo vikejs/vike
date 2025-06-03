@@ -391,7 +391,10 @@ async function renderPageNominal(pageContext: PageContextBegin) {
     objectAssign(pageContext, pageContextFromRoute)
     objectAssign(pageContext, { is404: pageContext.pageId ? null : true })
     if (pageContext.pageId === null) {
-      const errorPageId = getErrorPageId(pageContext._globalContext._pageFilesAll, pageContext._pageConfigs)
+      const errorPageId = getErrorPageId(
+        pageContext._globalContext._pageFilesAll,
+        pageContext._globalContext._pageConfigs
+      )
       if (!errorPageId) {
         assert(hasProp(pageContext, 'pageId', 'null'))
         return handleErrorWithoutErrorPage(pageContext)
