@@ -23,8 +23,7 @@ import {
   getPageContextFromHooks_isHydration,
   getPageContextFromHooks_serialized,
   type PageContextFromServerHooks,
-  setPageContextInitIsPassedToClient,
-  execHookClient
+  setPageContextInitIsPassedToClient
 } from './getPageContextFromHooks.js'
 import { createPageContextClientSide } from './createPageContextClientSide.js'
 import {
