@@ -53,7 +53,7 @@ import {
   type ConfigDefinitionsInternal,
   type ConfigDefinitionInternal,
   type ConfigDefinitions
-} from '../plugins/importUserCode/v1-design/resolveVikeConfig/configDefinitionsBuiltIn.js'
+} from './resolveVikeConfig/configDefinitionsBuiltIn.js'
 import {
   type LocationId,
   getLocationId,

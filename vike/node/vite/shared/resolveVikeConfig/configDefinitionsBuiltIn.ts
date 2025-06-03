@@ -11,10 +11,10 @@ import type {
   ConfigValueSources,
   DefinedAtFilePath,
   ConfigValueSource
-} from '../../../../../../shared/page-configs/PageConfig.js'
-import type { Config, ConfigNameBuiltIn, ConfigNameGlobal } from '../../../../../../shared/page-configs/Config.js'
-import { assert, assertUsage } from '../../../../utils.js'
-import { getConfigDefinedAt, type ConfigDefinedAt } from '../../../../../../shared/page-configs/getConfigDefinedAt.js'
+} from '../../../../shared/page-configs/PageConfig.js'
+import type { Config, ConfigNameBuiltIn, ConfigNameGlobal } from '../../../../shared/page-configs/Config.js'
+import { assert, assertUsage } from '../../utils.js'
+import { getConfigDefinedAt, type ConfigDefinedAt } from '../../../../shared/page-configs/getConfigDefinedAt.js'
 
 // For users
 /** The meta definition of a config.
