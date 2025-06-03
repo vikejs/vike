@@ -18,7 +18,7 @@ import {
 } from './utils.js'
 import { parse } from '@brillout/json-serializer/parse'
 import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtml.js'
-import type { PageConfigUserFriendlyOld, PageFile } from '../../shared/getPageFiles.js'
+import type { PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
 import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide.js'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
@@ -39,6 +39,7 @@ import {
   preparePageContextForPublicUsageClient
 } from './preparePageContextForPublicUsageClient.js'
 import type { ConfigEnv } from '../../types/index.js'
+import type { GlobalContextClientInternal } from './globalContext.js'
 const globalObject = getGlobalObject<{ pageContextInitIsPassedToClient?: true }>(
   'runtime-client-routing/getPageContextFromHooks.ts',
   {}
@@ -231,13 +232,12 @@ async function hookServerOnlyExists(
   hookName: 'data' | 'onBeforeRender',
   pageContext: {
     pageId: string
-    _pageFilesAll: PageFile[]
-    _pageConfigs: PageConfigRuntime[]
+    _globalContext: GlobalContextClientInternal
   }
 ): Promise<boolean> {
-  if (pageContext._pageConfigs.length > 0) {
+  if (pageContext._globalContext._pageConfigs.length > 0) {
     // V1
-    const pageConfig = getPageConfig(pageContext.pageId, pageContext._pageConfigs)
+    const pageConfig = getPageConfig(pageContext.pageId, pageContext._globalContext._pageConfigs)
     const hookEnv = getConfigValueRuntime(pageConfig, `${hookName}Env`)?.value
     if (hookEnv === null) return false
     assert(isObject(hookEnv))

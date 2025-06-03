@@ -18,8 +18,8 @@ import { getHttpResponseBody, getHttpResponseBodyStreamHandlers, HttpResponseBod
 import { getEarlyHints, type EarlyHint } from './getEarlyHints.js'
 import { getCacheControl } from './createHttpResponse/getCacheControl.js'
 import { assertNoInfiniteHttpRedirect } from './createHttpResponse/assertNoInfiniteHttpRedirect.js'
-import type { PageFile } from '../../../shared/getPageFiles.js'
 import type { PageContextBegin } from '../renderPage.js'
+import type { GlobalContextServerInternal } from '../globalContext.js'
 
 type HttpResponse = {
   statusCode: 200 | 404 | 500 | RedirectStatusCode | AbortStatusCode
@@ -111,11 +111,13 @@ function createHttpResponseBaseIsMissing(urlOriginal: string, baseServer: string
   return httpResponse
 }
 function createHttpResponseError(pageContext: {
-  _pageFilesAll: PageFile[]
-  _pageConfigs: PageConfigRuntime[]
+  _globalContext: GlobalContextServerInternal
 }) {
   const reason = (() => {
-    const errorPageId = getErrorPageId(pageContext._globalContext._pageFilesAll, pageContext._pageConfigs)
+    const errorPageId = getErrorPageId(
+      pageContext._globalContext._pageFilesAll,
+      pageContext._globalContext._pageConfigs
+    )
     if (errorPageId) {
       return "the error page (https://vike.dev/error-page) couldn't be rendered (for example if an error occurred while rendering the error page)" as const
     } else {
