@@ -12,7 +12,7 @@ import {
   isObject,
   isVitest
 } from '../utils.js'
-import { assertRollupInput } from './build/pluginBuildConfig.js'
+import { assertRollupInput } from './pluginBuild/pluginBuildConfig.js'
 import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
 import pc from '@brillout/picocolors'
 import path from 'path'
