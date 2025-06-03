@@ -1,5 +1,6 @@
 export { getPageAssets }
 export { setResolveClientEntriesDev }
+export { resolveIncludeAssetsImportedByServer }
 export type { PageAsset }
 export type { GetPageAssets }
 export type { PageContextGetPageAssets }

@@ -31,6 +31,7 @@ import {
   handleAssetsManifest_assertUsageCssCodeSplit,
   handleAssetsManifest_getBuildConfig
 } from './handleAssetsManifest.js'
+import { resolveIncludeAssetsImportedByServer } from '../../../runtime/renderPage/getPageAssets.js'
 const manifestTempFile = '_temp_manifest.json'
 
 function pluginBuildConfig(): Plugin[] {
@@ -79,8 +80,7 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
   // TODO/v1-release: remove
   const pageFileEntries = await getPageFileEntries(
     config,
-    // TODO/now-1: add meta.default
-    vikeConfig.global.config.includeAssetsImportedByServer ?? true
+    resolveIncludeAssetsImportedByServer(vikeConfig.global.config)
   )
   assertUsage(
     Object.keys(pageFileEntries).length !== 0 || pageConfigs.length !== 0,

@@ -30,6 +30,7 @@ import { getVikeConfigInternal, type VikeConfigInternal } from '../shared/resolv
 import { assertV1Design } from '../../shared/assertV1Design.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerBuild_safe } from '../shared/isViteServerBuild.js'
+import { resolveIncludeAssetsImportedByServer } from '../../runtime/renderPage/getPageAssets.js'
 type ResolvedId = Rollup.ResolvedId
 
 const extractAssetsRE = /(\?|&)extractAssets(?:&|$)/
@@ -60,8 +61,8 @@ function pluginExtractAssets(): Plugin[] {
           assertV1Design(vikeConfig.pageConfigs, true)
           assert(false)
         }
-        // TODO/now-1: add meta.default
-        assert(vikeConfig.global.config.includeAssetsImportedByServer ?? true)
+        const includeAssetsImportedByServer = resolveIncludeAssetsImportedByServer(vikeConfig.global.config)
+        assert(includeAssetsImportedByServer)
         assert(!isViteServerBuild_safe(config, options))
         const importStatements = await getImportStatements(src)
         const moduleNames = getImportedModules(importStatements)
@@ -96,8 +97,8 @@ function pluginExtractAssets(): Plugin[] {
         if (!extractAssetsRE.test(importer)) {
           return
         }
-        // TODO/now-1: add meta.default
-        assert(vikeConfig.global.config.includeAssetsImportedByServer ?? true)
+        const includeAssetsImportedByServer = resolveIncludeAssetsImportedByServer(vikeConfig.global.config)
+        assert(includeAssetsImportedByServer)
 
         let resolution: null | ResolvedId = null
         try {
