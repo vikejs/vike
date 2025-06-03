@@ -12,7 +12,7 @@ function pluginModuleBanner(): Plugin {
   let config: ResolvedConfig
 
   return {
-    name: 'vike:pluginModuleBanner',
+    name: 'vike:build:pluginModuleBanner',
     enforce: 'post',
     apply: 'build',
     configResolved(config_) {

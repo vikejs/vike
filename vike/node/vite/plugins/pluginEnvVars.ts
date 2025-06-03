@@ -33,13 +33,13 @@ function pluginEnvVars(): Plugin {
   let envsAll: Record<string, string>
   let config: ResolvedConfig
   return {
-    name: 'vike:envVars',
+    name: 'vike:pluginEnvVars',
     enforce: 'post',
     configResolved(config_) {
       config = config_
       envsAll = loadEnv(config.mode, config.envDir || config.root, '')
       // Vite's built-in plugin vite:define needs to apply after this plugin.
-      //  - This plugin vike:env needs to apply after vike:pluginExtractAssets and vike:pluginExtractExportNames which need to apply after @vitejs/plugin-vue
+      //  - This plugin vike:pluginEnvVars needs to apply after vike:pluginExtractAssets and vike:pluginExtractExportNames which need to apply after @vitejs/plugin-vue
       ;(config.plugins as Plugin[]).sort(lowerFirst<Plugin>((plugin) => (plugin.name === 'vite:define' ? 1 : 0)))
     },
     transform(code, id, options) {
