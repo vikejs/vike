@@ -57,8 +57,6 @@ type ConfigDefinition_ = {
    * https://vike.dev/extends#inheritance
    */
   global?: boolean | ((value: unknown, moreInfo: { isGlobalLocation: boolean }) => boolean)
-  // TODO/now-2 implement
-  type?: string | string[]
 }
 type ConfigDefinitionDefinedByPeerDependency = {
   /**
@@ -281,54 +279,41 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   prerender: {
     env: { config: true },
     global: (value, { isGlobalLocation }) => typeof value === 'object' || isGlobalLocation,
-    type: ['boolean', 'object'],
     cumulative: true
   },
-  vite: { env: { config: true }, global: true, cumulative: true, type: 'object' },
+  vite: { env: { config: true }, global: true, cumulative: true },
   disableAutoFullBuild: {
     env: { config: true },
-    global: true,
-    type: [
-      'boolean',
-      // Can be 'prerender'
-      'string'
-    ]
+    global: true
   },
   vite6BuilderApp: {
     env: { config: true },
-    global: true,
-    type: 'boolean'
+    global: true
   },
   includeAssetsImportedByServer: {
     env: { config: true },
-    global: true,
-    type: 'boolean'
+    global: true
   },
   baseAssets: {
     env: { config: true, server: true },
-    global: true,
-    type: 'string'
+    global: true
   },
   baseServer: {
     env: { config: true, server: true },
-    global: true,
-    type: 'string'
+    global: true
   },
   redirects: {
     env: { server: true },
     global: true,
-    type: 'string{}',
     cumulative: true
   },
   trailingSlash: {
     env: { server: true },
-    global: true,
-    type: 'boolean'
+    global: true
   },
   disableUrlNormalization: {
     env: { server: true },
-    global: true,
-    type: 'boolean'
+    global: true
   }
 }
 
