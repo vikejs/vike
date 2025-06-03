@@ -19,7 +19,6 @@ import {
   type PageContextForPublicUsageServer
 } from './preparePageContextForPublicUsageServer.js'
 import type { PageContextPromise } from '../html/injectAssets.js'
-import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { assertHookReturnedObject } from '../../../shared/assertHookReturnedObject.js'
 import { logRuntimeError } from './loggerRuntime.js'
 import type { PageContextSerialization } from '../html/serializeContext.js'

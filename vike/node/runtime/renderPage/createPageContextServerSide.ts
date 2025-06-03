@@ -40,11 +40,6 @@ async function createPageContextServerSide(
     // The following is defined on `pageContext` because we can eventually make these non-global
     _baseServer: globalContext.baseServer,
     _baseAssets: globalContext.baseAssets,
-    // TODO/soon: use GloablContext instead
-    _pageConfigGlobal: globalContext._pageConfigGlobal,
-    _allPageIds: globalContext._allPageIds,
-    _pageRoutes: globalContext._pageRoutes,
-    _onBeforeRouteHook: globalContext._onBeforeRouteHook,
     _pageContextInit: pageContextInit,
     _urlRewrite: null,
     _urlHandler: urlHandler,
