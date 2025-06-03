@@ -56,7 +56,7 @@ import type { PageConfigUserFriendly } from '../../shared/page-configs/getUserFr
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { assertV1Design } from '../shared/assertV1Design.js'
 import { resolveBase } from '../shared/resolveBase.js'
-import type { ViteConfigRuntime } from '../plugin/shared/getViteConfigRuntime.js'
+import type { ViteConfigRuntime } from '../vite/shared/getViteConfigRuntime.js'
 import {
   createGlobalContextShared,
   getGlobalContextSyncErrMsg,

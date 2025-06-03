@@ -4,7 +4,7 @@ export type { CliOptions }
 
 import pc from '@brillout/picocolors'
 import { assert, includes, PROJECT_VERSION } from './utils.js'
-import { parseJson5 } from '../plugin/shared/getEnvVarObject.js'
+import { parseJson5 } from '../vite/shared/getEnvVarObject.js'
 
 type CliOptions = Record<string, unknown>
 type Command = 'dev' | 'build' | 'preview' | 'prerender'

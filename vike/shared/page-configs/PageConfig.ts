@@ -22,10 +22,10 @@ export type { DefinedBy }
 export type { DefinedAtFilePath }
 
 import type { ConfigValueSerialized } from './serialize/PageConfigSerialized.js'
-import type { LocationId } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/filesystemRouting.js'
+import type { LocationId } from '../../node/vite/plugins/importUserCode/v1-design/getVikeConfig/filesystemRouting.js'
 import type { FilePath } from './FilePath.js'
-import type { ConfigDefinitionsInternal } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
-import type { PlusFile } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/getPlusFilesAll.js'
+import type { ConfigDefinitionsInternal } from '../../node/vite/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
+import type { PlusFile } from '../../node/vite/plugins/importUserCode/v1-design/getVikeConfig/getPlusFilesAll.js'
 import type { Operation } from '../../node/api/types.js'
 
 type PageConfigCommon = {
