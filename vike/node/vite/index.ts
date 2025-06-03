@@ -12,7 +12,7 @@ import { assertUsage } from './utils.js'
 import { build } from './plugins/build.js'
 import { previewConfig } from './plugins/previewConfig.js'
 import { devConfig } from './plugins/devConfig/index.js'
-import { importUserCode } from './plugins/virtualFilesPlugin/index.js'
+import { virtualFilesPlugin } from './plugins/virtualFilesPlugin/index.js'
 import { extractAssetsPlugin } from './plugins/extractAssetsPlugin.js'
 import { extractExportNamesPlugin } from './plugins/extractExportNamesPlugin.js'
 import { setGlobalContext } from './plugins/setGlobalContext.js'
@@ -35,7 +35,7 @@ type PluginInterop = Record<string, unknown> & { name: string }
 function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginInterop[] {
   const plugins: Plugin[] = [
     ...commonConfig(vikeVitePluginOptions),
-    importUserCode(),
+    virtualFilesPlugin(),
     ...devConfig(),
     ...build(),
     previewConfig(),
