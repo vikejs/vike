@@ -10,7 +10,7 @@ export type { LocationId }
 export { getLogicalPath }
 
 import pc from '@brillout/picocolors'
-import { assert, assertIsNotProductionRuntime, assertPosixPath, assertWarning, higherFirst } from '../../../../utils.js'
+import { assert, assertIsNotProductionRuntime, assertPosixPath, assertWarning, higherFirst } from '../../utils.js'
 assertIsNotProductionRuntime()
 
 /**

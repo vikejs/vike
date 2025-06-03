@@ -62,7 +62,7 @@ import {
   isInherited,
   sortAfterInheritanceOrder,
   applyFilesystemRoutingRootEffect
-} from '../plugins/importUserCode/v1-design/resolveVikeConfig/filesystemRouting.js'
+} from './resolveVikeConfig/filesystemRouting.js'
 import type { EsbuildCache } from '../plugins/importUserCode/v1-design/resolveVikeConfig/transpileAndExecuteFile.js'
 import { isVikeConfigInvalid, isVikeConfigInvalid_set } from '../../runtime/renderPage/isVikeConfigInvalid.js'
 import { getViteDevServer } from '../../runtime/globalContext.js'

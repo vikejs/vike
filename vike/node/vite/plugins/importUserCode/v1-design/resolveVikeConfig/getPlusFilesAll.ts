@@ -5,7 +5,7 @@ export type { PlusFilesByLocationId }
 
 import { assert } from '../../../../utils.js'
 import { configDefinitionsBuiltIn } from '../../../../shared/resolveVikeConfig/configDefinitionsBuiltIn.js'
-import { type LocationId, getLocationId } from './filesystemRouting.js'
+import { type LocationId, getLocationId } from '../../../../shared/resolveVikeConfig/filesystemRouting.js'
 import { type EsbuildCache } from './transpileAndExecuteFile.js'
 import { crawlPlusFiles, getPlusFileValueConfigName } from '../../../../shared/resolveVikeConfig/crawlPlusFiles.js'
 import { getConfigFileExport } from './getConfigFileExport.js'

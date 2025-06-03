@@ -3,7 +3,7 @@ import {
   isInherited as isInherited_,
   getLogicalPath as getLogicalPath_,
   type LocationId
-} from './filesystemRouting.js'
+} from '../../plugins/importUserCode/v1-design/resolveVikeConfig/filesystemRouting.js'
 import { expect, describe, it } from 'vitest'
 
 describe('getLocationId()', () => {
