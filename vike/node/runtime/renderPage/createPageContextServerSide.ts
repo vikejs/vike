@@ -40,8 +40,6 @@ async function createPageContextServerSide(
     // The following is defined on `pageContext` because we can eventually make these non-global
     _baseServer: globalContext.baseServer,
     _baseAssets: globalContext.baseAssets,
-    // TODO/now-1: add meta.default
-    _includeAssetsImportedByServer: globalContext.config.includeAssetsImportedByServer ?? true,
     // TODO/soon: use GloablContext instead
     _pageFilesAll: globalContext._pageFilesAll,
     _pageConfigs: globalContext._pageConfigs,

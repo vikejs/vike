@@ -30,7 +30,6 @@ type GetPageAssets = () => Promise<PageAsset[]>
 type PageContextGetPageAssets = {
   _baseServer: string
   _baseAssets: string | null
-  _includeAssetsImportedByServer: boolean
   _globalContext: GlobalContextServerInternal
 }
 
@@ -54,7 +53,12 @@ async function getPageAssets(
   } else {
     const { assetsManifest } = globalContext
     clientEntriesSrc = clientEntries.map((clientEntry) => resolveClientEntriesProd(clientEntry, assetsManifest))
-    assetUrls = retrieveAssetsProd(clientDependencies, assetsManifest, pageContext._includeAssetsImportedByServer)
+    // TODO/now-1: add meta.default
+    assetUrls = retrieveAssetsProd(
+      clientDependencies,
+      assetsManifest,
+      pageContext._globalContext.config.includeAssetsImportedByServer ?? true
+    )
   }
 
   let pageAssets: PageAsset[] = []
