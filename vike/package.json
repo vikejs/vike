@@ -12,7 +12,7 @@
       "default": "./dist/esm/node/runtime/index.js"
     },
     "./client": {
-      "types": "./dist/esm/client/server-routing-runtime/index.d.ts"
+      "types": "./dist/esm/client/runtime-server-routing/index.d.ts"
     },
     "./types": {
       "types": "./dist/esm/types/index.d.ts"
@@ -174,7 +174,7 @@
         "./dist/esm/node/runtime/index.d.ts"
       ],
       "client": [
-        "./dist/esm/client/server-routing-runtime/index.d.ts"
+        "./dist/esm/client/runtime-server-routing/index.d.ts"
       ],
       "client/router": [
         "./dist/esm/client/runtime-client-routing/index.d.ts"

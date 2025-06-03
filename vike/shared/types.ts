@@ -29,7 +29,7 @@ import type { PageContextConfig } from './page-configs/Config/PageContextConfig.
 import type { AbortStatusCode } from './route/abort.js'
 import type { GlobalContextServer } from '../node/runtime/globalContext.js'
 import type { GlobalContextClient } from '../client/runtime-client-routing/globalContext.js'
-import type { GlobalContextClientWithServerRouting } from '../client/server-routing-runtime/globalContext.js'
+import type { GlobalContextClientWithServerRouting } from '../client/runtime-server-routing/globalContext.js'
 
 type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & Vike.PageContext & Vike.PageContextServer
 
