@@ -43,7 +43,10 @@ async function renderPageAlreadyRouted<
   assert(hasProp(pageContext, 'pageId', 'string'))
 
   const isError: boolean = pageContext.is404 || !!pageContext.errorWhileRendering
-  assert(isError === (pageContext.pageId === getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)))
+  assert(
+    isError ===
+      (pageContext.pageId === getErrorPageId(pageContext._globalContext._pageFilesAll, pageContext._pageConfigs))
+  )
 
   objectAssign(pageContext, await loadPageConfigsLazyServerSide(pageContext))
 

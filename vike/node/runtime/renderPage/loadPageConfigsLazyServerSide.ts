@@ -40,16 +40,18 @@ async function loadPageConfigsLazyServerSide(
   const globalContext = pageContext._globalContext
   const [{ pageFilesLoaded, pageContextExports }] = await Promise.all([
     loadPageUserFiles(
-      pageContext._pageFilesAll,
+      pageContext._globalContext._pageFilesAll,
       pageConfig,
       globalContext._pageConfigGlobal,
       pageContext.pageId,
       !globalContext._isProduction
     ),
-    analyzePageClientSideInit(pageContext._pageFilesAll, pageContext.pageId, { sharedPageFilesAlreadyLoaded: true })
+    analyzePageClientSideInit(pageContext._globalContext._pageFilesAll, pageContext.pageId, {
+      sharedPageFilesAlreadyLoaded: true
+    })
   ])
   const { isHtmlOnly, isClientRouting, clientEntries, clientDependencies, pageFilesClientSide, pageFilesServerSide } =
-    await analyzePage(pageContext._pageFilesAll, pageConfig, pageContext.pageId, globalContext)
+    await analyzePage(pageContext._globalContext._pageFilesAll, pageConfig, pageContext.pageId, globalContext)
   const isV1Design = !!pageConfig
 
   const passToClient: string[] = []

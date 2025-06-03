@@ -255,7 +255,7 @@ async function hookServerOnlyExists(
 
     assert(hookName === 'onBeforeRender')
     const { hasOnBeforeRenderServerSideOnlyHook } = await analyzePageServerSide(
-      pageContext._pageFilesAll,
+      pageContext._globalContext._pageFilesAll,
       pageContext.pageId
     )
     return hasOnBeforeRenderServerSideOnlyHook

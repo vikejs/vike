@@ -38,7 +38,7 @@ function debugPageFiles({
   const debug = createDebugger('vike:pageFiles', { serialization: { emptyArray: 'None' } })
   const padding = '   - '
 
-  debug('All page files:', printPageFiles(pageContext._pageFilesAll, true)) // TODO
+  debug('All page files:', printPageFiles(pageContext._globalContext._pageFilesAll, true)) // TODO
   debug(`URL:`, pageContext.urlOriginal)
   debug.options({ serialization: { emptyArray: 'No match' } })(
     `Routing:`,

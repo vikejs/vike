@@ -115,7 +115,7 @@ function createHttpResponseError(pageContext: {
   _pageConfigs: PageConfigRuntime[]
 }) {
   const reason = (() => {
-    const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
+    const errorPageId = getErrorPageId(pageContext._globalContext._pageFilesAll, pageContext._pageConfigs)
     if (errorPageId) {
       return "the error page (https://vike.dev/error-page) couldn't be rendered (for example if an error occurred while rendering the error page)" as const
     } else {
