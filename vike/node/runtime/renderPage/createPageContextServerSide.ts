@@ -41,7 +41,6 @@ async function createPageContextServerSide(
     _baseServer: globalContext.baseServer,
     _baseAssets: globalContext.baseAssets,
     // TODO/soon: use GloablContext instead
-    _pageFilesAll: globalContext._pageFilesAll,
     _pageConfigs: globalContext._pageConfigs,
     _pageConfigGlobal: globalContext._pageConfigGlobal,
     _allPageIds: globalContext._allPageIds,

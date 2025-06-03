@@ -43,13 +43,13 @@ async function createHttpResponsePage(
     is404: null | boolean
     errorWhileRendering: null | Error
     __getPageAssets: GetPageAssets
-    _pageConfigs: PageConfigRuntime[]
+    _globalContext: GlobalContextServerInternal
     abortStatusCode?: AbortStatusCode
   }
 ): Promise<HttpResponse> {
   let statusCode: StatusCode | undefined = pageContext.abortStatusCode
   if (!statusCode) {
-    const isError = !pageContext.pageId || isErrorPage(pageContext.pageId, pageContext._pageConfigs)
+    const isError = !pageContext.pageId || isErrorPage(pageContext.pageId, pageContext._globalContext._pageConfigs)
     if (pageContext.errorWhileRendering) {
       assert(isError)
     }
@@ -65,7 +65,7 @@ async function createHttpResponsePage(
   const earlyHints = getEarlyHints(await pageContext.__getPageAssets())
 
   const headers: ResponseHeaders = []
-  const cacheControl = getCacheControl(pageContext.pageId, pageContext._pageConfigs, statusCode)
+  const cacheControl = getCacheControl(pageContext.pageId, pageContext._globalContext._pageConfigs, statusCode)
   if (cacheControl) {
     headers.push(['Cache-Control', cacheControl])
   }

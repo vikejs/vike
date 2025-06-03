@@ -17,8 +17,6 @@ async function handleErrorWithoutErrorPage<
     errorWhileRendering: null | Error
     is404: null | boolean
     pageId: null
-    _pageFilesAll: PageFile[]
-    _pageConfigs: PageConfigRuntime[]
     _globalContext: GlobalContextServerInternal
     urlOriginal: string
   }
@@ -27,7 +25,7 @@ async function handleErrorWithoutErrorPage<
   assert(pageContext.errorWhileRendering || pageContext.is404)
 
   {
-    const isV1 = pageContext._pageConfigs.length > 0
+    const isV1 = pageContext._globalContext._pageConfigs.length > 0
     await warnMissingErrorPage(isV1, pageContext._globalContext._isProduction)
   }
 
