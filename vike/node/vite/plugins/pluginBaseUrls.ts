@@ -1,14 +1,14 @@
-export { baseUrls }
+export { pluginBaseUrls }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { resolveBase } from '../../shared/resolveBase.js'
 import { assert } from '../utils.js'
 import { getVikeConfigInternal } from '../shared/resolveVikeConfig.js'
 
-function baseUrls(): Plugin {
+function pluginBaseUrls(): Plugin {
   let basesResolved: ReturnType<typeof resolveBase>
   return {
-    name: 'vike:baseUrls',
+    name: 'vike:pluginBaseUrls',
     enforce: 'post',
     async config(config) {
       const isDev = config._isDev

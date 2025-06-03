@@ -17,7 +17,7 @@ import { pluginExtractAssets } from './plugins/pluginExtractAssets.js'
 import { pluginExtractExportNames } from './plugins/pluginExtractExportNames.js'
 import { pluginSetGlobalContext } from './plugins/pluginSetGlobalContext.js'
 import { pluginCommon } from './plugins/pluginCommon.js'
-import { baseUrls } from './plugins/baseUrls.js'
+import { pluginBaseUrls } from './plugins/pluginBaseUrls.js'
 import { pluginEnvVars } from './plugins/pluginEnvVars.js'
 import pc from '@brillout/picocolors'
 import { pluginFileEnv } from './plugins/pluginFileEnv.js'
@@ -42,7 +42,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginIntero
     ...pluginExtractAssets(),
     pluginExtractExportNames(),
     ...pluginSetGlobalContext(),
-    baseUrls(),
+    pluginBaseUrls(),
     pluginEnvVars(),
     pluginFileEnv(),
     workaroundCssModuleHmr(),
