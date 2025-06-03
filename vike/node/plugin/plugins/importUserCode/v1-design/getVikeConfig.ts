@@ -1,7 +1,7 @@
 export { getVikeConfigOptional }
 export { getVikeConfig3 }
 export { getVikeConfigInternalSync }
-export { getVikeConfigPublicSync }
+export { getVikeConfigPublic }
 export { setVikeConfigCtx }
 export { reloadVikeConfig }
 export { isV1Design }
@@ -94,6 +94,7 @@ import { getApiOperation } from '../../../../api/context.js'
 import { getCliOptions } from '../../../../cli/context.js'
 import type { PrerenderContextPublic } from '../../../../prerender/runPrerender.js'
 import { resolvePrerenderConfigGlobal } from '../../../../prerender/resolvePrerenderConfig.js'
+import type { ResolvedConfig, UserConfig } from 'vite'
 assertIsNotProductionRuntime()
 
 // We can simply use global variables since Vike's config is:
@@ -189,8 +190,14 @@ function getVikeConfigInternalSync(): VikeConfigObject {
   assert(vikeConfigSync)
   return vikeConfigSync
 }
-function getVikeConfigPublicSync(): VikeConfigPublic {
+/**
+ * Get all the information Vike knows about the app in your Vite plugin.
+ *
+ * https://vike.dev/getVikeConfig
+ */
+function getVikeConfigPublic(config: ResolvedConfig | UserConfig): VikeConfigPublic {
   const vikeConfig = getVikeConfigInternalSync()
+  assertUsage(vikeConfig, "getVikeConfig() can only be used when Vite is running with Vike's Vite plugin")
   return {
     pages: vikeConfig.pages,
     config: vikeConfig.global.config,

@@ -1,5 +1,4 @@
 export { commonConfig }
-export { getVikeConfigPublic }
 
 import { type InlineConfig, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
 import {
@@ -20,12 +19,7 @@ import path from 'path'
 import { assertResolveAlias } from './commonConfig/assertResolveAlias.js'
 import { isViteCliCall } from '../shared/isViteCliCall.js'
 import { isVikeCliOrApi } from '../../api/context.js'
-import {
-  getVikeConfig3,
-  getVikeConfigPublicSync,
-  setVikeConfigCtx,
-  type VikeConfigPublic
-} from './importUserCode/v1-design/getVikeConfig.js'
+import { getVikeConfig3, setVikeConfigCtx } from './importUserCode/v1-design/getVikeConfig.js'
 import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/prepareViteApiCall.js'
 import { temp_disablePrerenderAutoRun } from '../../prerender/context.js'
 import type { VitePluginServerEntryOptions } from '@brillout/vite-plugin-server-entry/plugin'
@@ -232,16 +226,6 @@ function temp_supportOldInterface(config: ResolvedConfig) {
     return
   }
   assert(false)
-}
-/**
- * Get all the information Vike knows about the app in your Vite plugin.
- *
- * https://vike.dev/getVikeConfig
- */
-function getVikeConfigPublic(config: ResolvedConfig | UserConfig): VikeConfigPublic {
-  const vikeConfig = getVikeConfigPublicSync()
-  assertUsage(vikeConfig, "getVikeConfig() can only be used when Vite is running with Vike's Vite plugin")
-  return vikeConfig
 }
 
 // Only emit dist/server/entry.mjs if necessary
