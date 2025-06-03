@@ -70,7 +70,6 @@ import {
 } from '../../../shared/loggerVite/removeSuperfluousViteLog.js'
 import pc from '@brillout/picocolors'
 import { getConfigDefinedAt, getDefinedByString } from '../../../../../shared/page-configs/getConfigDefinedAt.js'
-import type { ResolvedConfig, UserConfig } from 'vite'
 import { loadPointerImport, loadValueFile } from './getVikeConfig/loadFileAtConfigTime.js'
 import { resolvePointerImport } from './getVikeConfig/resolvePointerImport.js'
 import { getFilePathResolved } from '../../../shared/getFilePath.js'
