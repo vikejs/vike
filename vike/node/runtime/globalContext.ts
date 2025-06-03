@@ -60,7 +60,7 @@ import type { ViteConfigRuntime } from '../vite/shared/getViteConfigRuntime.js'
 import {
   createGlobalContextShared,
   getGlobalContextSyncErrMsg,
-  type GlobalContextShared
+  type GlobalContextBase
 } from '../../shared/createGlobalContextShared.js'
 import type { GlobalContext } from '../../shared/types.js'
 import { prepareGlobalContextForPublicUsage } from '../../shared/prepareGlobalContextForPublicUsage.js'
@@ -440,7 +440,7 @@ async function setGlobalContext(virtualFileExports: unknown) {
   return globalContext
 }
 
-async function addGlobalContext(globalContext: GlobalContextShared) {
+async function addGlobalContext(globalContext: GlobalContextBase) {
   const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
     globalContext._pageFilesAll,
     globalContext._pageConfigs,

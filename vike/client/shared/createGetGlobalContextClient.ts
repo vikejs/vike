@@ -8,7 +8,7 @@ export { createGetGlobalContextClient }
 import {
   createGlobalContextShared,
   getGlobalContextSyncErrMsg,
-  type GlobalContextShared
+  type GlobalContextBase
 } from '../../shared/createGlobalContextShared.js'
 import { getGlobalContextSerializedInHtml } from './getJsonSerializedInHtml.js'
 import { assert, assertUsage, genPromise, getGlobalObject, objectAssign } from './utils.js'
@@ -33,7 +33,7 @@ const globalObject = getGlobalObject<{
 function createGetGlobalContextClient<GlobalContextAddendum extends object>(
   virtualFileExports: unknown,
   isClientRouting: boolean,
-  addGlobalContext?: (globalContext: GlobalContextShared) => Promise<GlobalContextAddendum>
+  addGlobalContext?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddendum>
 ) {
   assert(globalObject.isClientRouting === undefined || globalObject.isClientRouting === isClientRouting)
   globalObject.isClientRouting = isClientRouting

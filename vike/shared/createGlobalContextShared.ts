@@ -1,7 +1,7 @@
 export { createGlobalContextShared }
 export { getGlobalContextSyncErrMsg }
-export type { GlobalContextShared }
-export type { GlobalContextSharedPublic }
+export type { GlobalContextBase }
+export type { GlobalContextBasePublic }
 
 import { changeEnumerable, objectAssign, unique } from './utils.js'
 import type { PageFile } from './getPageFiles.js'
@@ -16,7 +16,7 @@ const getGlobalContextSyncErrMsg =
 async function createGlobalContextShared<GlobalContextAddendum extends object>(
   virtualFileExports: unknown,
   globalObject: { globalContext?: Record<string, unknown> },
-  addGlobalContext?: (globalContext: GlobalContextShared) => Promise<GlobalContextAddendum>
+  addGlobalContext?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddendum>
 ) {
   const globalContext = createGlobalContextBase(virtualFileExports)
 
@@ -53,8 +53,8 @@ async function createGlobalContextShared<GlobalContextAddendum extends object>(
   return globalObject.globalContext as typeof globalContext
 }
 
-type GlobalContextSharedPublic = Pick<GlobalContextShared, 'config' | 'pages' | 'isGlobalContext'>
-type GlobalContextShared = ReturnType<typeof createGlobalContextBase>
+type GlobalContextBasePublic = Pick<GlobalContextBase, 'config' | 'pages' | 'isGlobalContext'>
+type GlobalContextBase = ReturnType<typeof createGlobalContextBase>
 function createGlobalContextBase(virtualFileExports: unknown) {
   const {
     pageFilesAll,
