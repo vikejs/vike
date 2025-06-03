@@ -19,10 +19,7 @@ async function createPageContextClientSide() {
     isPrerendering: false as const,
     isHydration: true as const,
     _globalContext: globalContext,
-
-    // TODO/now-1: remove
     _pageFilesAll: globalContext._pageFilesAll,
-
     isBackwardNavigation: null,
     _hasPageContextFromServer: true as const
   })
