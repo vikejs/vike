@@ -3,7 +3,6 @@ export { executeGuardHook }
 import { getHookFromPageContext, getHookTimeoutDefault, type Hook } from '../hooks/getHook.js'
 import { assert, assertUsage, isCallable } from './utils.js'
 import type { PageFile } from '../getPageFiles.js'
-import type { PageConfigRuntime } from '../page-configs/PageConfig.js'
 import { execHookSingle, type PageContextExecuteHook } from '../hooks/execHook.js'
 import type { GlobalContextInternal } from '../createGlobalContextShared.js'
 const errIntro = 'The guard() hook defined by'
