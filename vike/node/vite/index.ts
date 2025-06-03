@@ -23,7 +23,7 @@ import pc from '@brillout/picocolors'
 import { pluginFileEnv } from './plugins/pluginFileEnv.js'
 import { setResolveClientEntriesDev } from '../runtime/renderPage/getPageAssets.js'
 import { resolveClientEntriesDev } from './shared/resolveClientEntriesDev.js'
-import { workaroundCssModuleHmr } from './plugins/workaroundCssModuleHmr.js'
+import { pluginWorkaroundCssModuleHmr } from './plugins/pluginWorkaroundCssModuleHmr.js'
 import { pluginWorkaroundVite6HmrRegression } from './plugins/pluginWorkaroundVite6HmrRegression.js'
 import { pluginReplaceConstants } from './plugins/pluginReplaceConstants.js'
 
@@ -45,7 +45,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginIntero
     pluginBaseUrls(),
     pluginEnvVars(),
     pluginFileEnv(),
-    workaroundCssModuleHmr(),
+    pluginWorkaroundCssModuleHmr(),
     pluginWorkaroundVite6HmrRegression(),
     pluginReplaceConstants()
   ]
