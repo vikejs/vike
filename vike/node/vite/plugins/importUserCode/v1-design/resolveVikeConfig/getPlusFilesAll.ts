@@ -13,7 +13,10 @@ import { type ConfigFile, loadConfigFile, loadValueFile, PointerImportLoaded } f
 import { resolvePointerImport } from './resolvePointerImport.js'
 import { getFilePathResolved } from '../../../../shared/getFilePath.js'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
-import { assertExtensionsConventions, assertExtensionsRequire } from '../../../../shared/resolveVikeConfig/assertExtensions.js'
+import {
+  assertExtensionsConventions,
+  assertExtensionsRequire
+} from '../../../../shared/resolveVikeConfig/assertExtensions.js'
 
 type PlusFile = PlusFileConfig | PlusFileValue
 type PlusFileCommons = {

@@ -16,7 +16,10 @@ import pc from '@brillout/picocolors'
 import { type PointerImportData, parsePointerImportData } from './pointerImports.js'
 import { getConfigFileExport } from './getConfigFileExport.js'
 import { PointerImport, resolvePointerImportData } from './resolvePointerImport.js'
-import type { ConfigDefinitionInternal, ConfigDefinitionsInternal } from '../../../../shared/resolveVikeConfig/configDefinitionsBuiltIn.js'
+import type {
+  ConfigDefinitionInternal,
+  ConfigDefinitionsInternal
+} from '../../../../shared/resolveVikeConfig/configDefinitionsBuiltIn.js'
 import { getConfigDefinedAt } from '../../../../../../shared/page-configs/getConfigDefinedAt.js'
 
 assertIsNotProductionRuntime()
