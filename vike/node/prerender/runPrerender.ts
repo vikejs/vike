@@ -67,7 +67,6 @@ import { resolvePrerenderConfigGlobal, resolvePrerenderConfigLocal } from './res
 import { getOutDirs } from '../plugin/shared/getOutDirs.js'
 import { isVikeCli } from '../cli/context.js'
 import { isViteCliCall } from '../plugin/shared/isViteCliCall.js'
-import { getVikeConfigInternal } from '../plugin/plugins/commonConfig.js'
 import fs from 'node:fs'
 import { getProxyForPublicUsage } from '../../shared/getProxyForPublicUsage.js'
 const docLink = 'https://vike.dev/i18n#pre-rendering'
@@ -189,7 +188,6 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   const viteConfig = await resolveViteConfig(options.viteConfig || {}, 'build', 'production')
   const vikeConfig = await getVikeConfig3()
-  const vike = getVikeConfigInternal(viteConfig)
 
   const { outDirClient, outDirServer } = getOutDirs(viteConfig)
   const { root } = viteConfig
@@ -267,7 +265,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   await warnMissingPages(prerenderContext._prerenderedPageContexts, globalContext, doNotPrerenderList, partial)
 
   const prerenderContextPublic = preparePrerenderContextForPublicUsage(prerenderContext)
-  objectAssign(vike.prerenderContext, prerenderContextPublic, true)
+  objectAssign(vikeConfig.prerenderContext, prerenderContextPublic, true)
 
   if (prerenderConfigGlobal.isPrerenderingEnabledForAllPages && !prerenderConfigGlobal.keepDistServer) {
     fs.rmSync(outDirServer, { recursive: true })

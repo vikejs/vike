@@ -23,10 +23,9 @@ import { manifestTempFile } from './pluginBuildConfig.js'
 import type { Environment, ResolvedConfig, Rollup, UserConfig } from 'vite'
 import { getAssetsDir } from '../../shared/getAssetsDir.js'
 import pc from '@brillout/picocolors'
-import { isV1Design } from '../importUserCode/v1-design/getVikeConfig.js'
+import { getVikeConfig3, isV1Design } from '../importUserCode/v1-design/getVikeConfig.js'
 import { getOutDirs, OutDirs } from '../../shared/getOutDirs.js'
 import { isViteServerBuild_onlySsrEnv, isViteServerBuild } from '../../shared/isViteServerBuild.js'
-import { getVikeConfigInternal } from '../commonConfig.js'
 import { set_macro_ASSETS_MANIFEST } from './pluginBuildEntry.js'
 type Bundle = Rollup.OutputBundle
 type Options = Rollup.NormalizedOutputOptions
@@ -347,8 +346,8 @@ async function writeManifestFile(manifest: ViteManifest, manifestFilePath: strin
   await fs.writeFile(manifestFilePath, manifestFileContent, 'utf-8')
 }
 
-function handleAssetsManifest_getBuildConfig(config: UserConfig) {
-  const vike = getVikeConfigInternal(config)
+async function handleAssetsManifest_getBuildConfig(config: UserConfig) {
+  const vikeConfig = await getVikeConfig3()
   const isFixEnabled = handleAssetsManifest_isFixEnabled(config)
   return {
     // https://github.com/vikejs/vike/issues/1339
@@ -356,7 +355,7 @@ function handleAssetsManifest_getBuildConfig(config: UserConfig) {
     // Required if `ssrEmitAssets: true`, see https://github.com/vitejs/vite/pull/11430#issuecomment-1454800934
     cssMinify: isFixEnabled ? 'esbuild' : undefined,
     manifest: manifestTempFile,
-    copyPublicDir: vike.config.vite6BuilderApp
+    copyPublicDir: vikeConfig.global.config.vite6BuilderApp
       ? // Already set by vike:build:pluginBuildApp
         undefined
       : !isViteServerBuild(config)

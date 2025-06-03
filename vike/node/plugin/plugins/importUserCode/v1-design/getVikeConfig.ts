@@ -168,6 +168,12 @@ async function handleReloadSideEffects() {
     }
   }
 }
+
+// TODO/now-1 rename:
+// - `getVikeConfig()` => `resolveVikeConfig()` ?
+// - `getVikeConfigInternal()` => `getVikeConfig()`
+// - `VikeConfigPublic` => `VikeConfig` ?
+// - `VikeConfigObject` => `VikeConfigInternal` ?
 // TODO/now-1: predominantly use getVikeConfigInternal() instead of getVikeConfig() then maybe refector?
 async function getVikeConfig3(
   // TODO/now-later: is this really needed?

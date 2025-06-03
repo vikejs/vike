@@ -1,6 +1,5 @@
 export { commonConfig }
 export { getVikeConfigPublic }
-export { getVikeConfigInternal }
 
 import { type InlineConfig, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
 import {
@@ -99,21 +98,21 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
       },
       config: {
         order: 'post',
-        handler(configFromUser) {
+        async handler(configFromUser) {
           let configFromVike: UserConfig = { server: {}, preview: {} }
-          const vike = getVikeConfigInternal(configFromUser)
+          const vikeConfig = await getVikeConfig3()
 
-          if (vike.config.port !== undefined) {
+          if (vikeConfig.global.config.port !== undefined) {
             // https://vike.dev/port
-            setDefault('port', vike.config.port, configFromUser, configFromVike)
+            setDefault('port', vikeConfig.global.config.port, configFromUser, configFromVike)
           } else {
             // Change Vite's default port
             setDefault('port', 3000, configFromUser, configFromVike)
           }
 
-          if (vike.config.host) {
+          if (vikeConfig.global.config.host) {
             // https://vike.dev/host
-            setDefault('host', vike.config.host, configFromUser, configFromVike)
+            setDefault('host', vikeConfig.global.config.host, configFromUser, configFromVike)
           } else if (isDocker()) {
             // Set `--host` for Docker/Podman
             setDefault('host', true, configFromUser, configFromVike)
@@ -233,17 +232,6 @@ function temp_supportOldInterface(config: ResolvedConfig) {
     return
   }
   assert(false)
-}
-
-// TODO/soon rename:
-// - `getVikeConfig()` => `resolveVikeConfig()` ?
-// - `getVikeConfigInternal()` => `getVikeConfig()`
-// - `VikeConfigPublic` => `VikeConfig` ?
-// - `VikeConfigObject` => `VikeConfigInternal` ?
-function getVikeConfigInternal(config: ResolvedConfig | UserConfig): VikeConfigPublic {
-  const vikeConfig = getVikeConfigPublicSync()
-  assert(vikeConfig)
-  return vikeConfig
 }
 /**
  * Get all the information Vike knows about the app in your Vite plugin.

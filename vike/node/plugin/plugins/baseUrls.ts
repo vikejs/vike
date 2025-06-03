@@ -4,7 +4,6 @@ import type { Plugin, ResolvedConfig } from 'vite'
 import { resolveBase } from '../../shared/resolveBase.js'
 import { assert } from '../utils.js'
 import { getVikeConfig3 } from './importUserCode/v1-design/getVikeConfig.js'
-import { getVikeConfigInternal } from './commonConfig.js'
 
 function baseUrls(): Plugin {
   let basesResolved: ReturnType<typeof resolveBase>
@@ -15,8 +14,12 @@ function baseUrls(): Plugin {
       const isDev = config._isDev
       assert(typeof isDev === 'boolean')
       const baseViteOriginal = config.base ?? '/__UNSET__' // '/__UNSET__' because Vite resolves `_baseViteOriginal: null` to `undefined`
-      const vike = getVikeConfigInternal(config)
-      basesResolved = resolveBase(baseViteOriginal, vike.config.baseServer ?? null, vike.config.baseAssets ?? null)
+      const vikeConfig = await getVikeConfig3()
+      basesResolved = resolveBase(
+        baseViteOriginal,
+        vikeConfig.global.config.baseServer ?? null,
+        vikeConfig.global.config.baseAssets ?? null
+      )
       // We cannot define these in configResolved() because Vite picks up the env variables before any configResolved() hook is called
       process.env.BASE_SERVER = basesResolved.baseServer
       process.env.BASE_ASSETS = basesResolved.baseAssets

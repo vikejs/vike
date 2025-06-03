@@ -56,12 +56,12 @@ function pluginBuildConfig(): Plugin[] {
       },
       config: {
         order: 'post',
-        handler(config) {
+        async handler(config) {
           onSetupBuild()
           return {
             build: {
               outDir: resolveOutDir(config),
-              ...handleAssetsManifest_getBuildConfig(config)
+              ...(await handleAssetsManifest_getBuildConfig(config))
             }
           }
         }
