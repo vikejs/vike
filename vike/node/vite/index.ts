@@ -9,7 +9,7 @@ export type { VikeVitePluginOptions }
 
 import { type Plugin } from 'vite'
 import { assertUsage } from './utils.js'
-import { build } from './plugins/pluginBuild.js'
+import { pluginBuild } from './plugins/pluginBuild.js'
 import { pluginPreview } from './plugins/pluginPreview.js'
 import { pluginDev } from './plugins/pluginDev.js'
 import { pluginVirtualFiles } from './plugins/pluginVirtualFiles.js'
@@ -37,7 +37,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginIntero
     ...pluginCommon(vikeVitePluginOptions),
     pluginVirtualFiles(),
     ...pluginDev(),
-    ...build(),
+    ...pluginBuild(),
     pluginPreview(),
     ...pluginExtractAssets(),
     pluginExtractExportNames(),

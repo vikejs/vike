@@ -1,4 +1,4 @@
-export { build }
+export { pluginBuild }
 
 import type { Plugin } from 'vite'
 import { pluginBuildApp } from './build/pluginBuildApp.js'
@@ -10,7 +10,7 @@ import { pluginBuildEntry } from './build/pluginBuildEntry.js'
 import { pluginBuildConfig } from './build/pluginBuildConfig.js'
 import { pluginModuleBanner } from './build/pluginModuleBanner.js'
 
-function build(): Plugin[] {
+function pluginBuild(): Plugin[] {
   return [
     ...pluginBuildConfig(),
     ...pluginBuildApp(),
