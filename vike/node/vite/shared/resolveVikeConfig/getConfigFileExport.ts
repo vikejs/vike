@@ -1,8 +1,8 @@
 export { getConfigFileExport }
 
 import pc from '@brillout/picocolors'
-import { assertPlusFileExport } from '../../../../../../shared/page-configs/assertPlusFileExport.js'
-import { assertUsage, isObject } from '../../../../utils.js'
+import { assertPlusFileExport } from '../../../../shared/page-configs/assertPlusFileExport.js'
+import { assertUsage, isObject } from '../../utils.js'
 
 function getConfigFileExport(
   fileExports: Record<string, unknown>,
