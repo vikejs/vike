@@ -1,6 +1,6 @@
 export { isRuntimeEnvMatch }
 
-import type { ConfigEnvInternal } from '../../../../../../shared/page-configs/PageConfig.js'
+import type { ConfigEnvInternal } from '../../../../shared/page-configs/PageConfig.js'
 
 function isRuntimeEnvMatch(
   configEnv: ConfigEnvInternal,
