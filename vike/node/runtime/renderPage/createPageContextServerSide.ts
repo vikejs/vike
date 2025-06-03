@@ -41,11 +41,6 @@ async function createPageContextServerSide(
 
     // TODO/now-1: remove
     _pageFilesAll: globalContext._pageFilesAll,
-    _pageConfigs: globalContext._pageConfigs,
-    _pageConfigGlobal: globalContext._pageConfigGlobal,
-    _allPageIds: globalContext._allPageIds,
-    _pageRoutes: globalContext._pageRoutes,
-    _onBeforeRouteHook: globalContext._onBeforeRouteHook,
 
     _baseServer: globalContext.baseServer,
     _baseAssets: globalContext.baseAssets,
