@@ -1,4 +1,4 @@
-export { previewConfig }
+export { pluginPreview }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { assertUsage, applyPreview } from '../utils.js'
@@ -13,11 +13,11 @@ import sirv from 'sirv'
 import { getVikeConfigInternal, type VikeConfigInternal } from '../shared/resolveVikeConfig.js'
 type ConnectServer = ViteDevServer['middlewares']
 
-function previewConfig(): Plugin {
+function pluginPreview(): Plugin {
   let config: ResolvedConfig
   let vikeConfig: VikeConfigInternal
   return {
-    name: 'vike:previewConfig',
+    name: 'vike:pluginPreview',
     apply: applyPreview,
     config(config) {
       return {
