@@ -22,8 +22,6 @@ async function createPageContextClientSide(urlOriginal: string) {
 
     // TODO/now-1: remove
     _pageFilesAll: globalContext._pageFilesAll,
-    _pageConfigs: globalContext._pageConfigs,
-    _pageConfigGlobal: globalContext._pageConfigGlobal,
 
     _onBeforeRouteHook: globalContext._onBeforeRouteHook,
     _urlHandler: null,

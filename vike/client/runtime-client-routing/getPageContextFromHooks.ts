@@ -267,7 +267,7 @@ function hookClientOnlyExists(
   hookName: 'data' | 'onBeforeRender',
   pageContext: {
     pageId: string
-    _pageConfigs: PageConfigRuntime[]
+    _globalContext: GlobalContextClientInternal
   }
 ): boolean {
   const hookEnv = getHookEnv(hookName, pageContext)
@@ -277,12 +277,12 @@ function getHookEnv(
   hookName: 'data' | 'onBeforeRender',
   pageContext: {
     pageId: string
-    _pageConfigs: PageConfigRuntime[]
+    _globalContext: GlobalContextClientInternal
   }
 ) {
-  if (pageContext._pageConfigs.length > 0) {
+  if (pageContext._globalContext._pageConfigs.length > 0) {
     // V1
-    const pageConfig = getPageConfig(pageContext.pageId, pageContext._pageConfigs)
+    const pageConfig = getPageConfig(pageContext.pageId, pageContext._globalContext._pageConfigs)
     // No runtime validation to save client-side KBs
     const hookEnv = (getConfigValueRuntime(pageConfig, `${hookName}Env`)?.value ?? {}) as ConfigEnv
     return hookEnv
