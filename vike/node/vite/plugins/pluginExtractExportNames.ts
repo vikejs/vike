@@ -1,4 +1,4 @@
-export { extractExportNamesPlugin }
+export { pluginExtractExportNames }
 export { isUsingClientRouter }
 export { extractExportNamesRE }
 
@@ -16,9 +16,9 @@ import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerBuild_options } from '../shared/isViteServerBuild.js'
 const extractExportNamesRE = /(\?|&)extractExportNames(?:&|$)/
 const debug = createDebugger('vike:extractExportNames')
-const globalObject = getGlobalObject<{ usesClientRouter?: true }>('plugins/extractExportNamesPlugin.ts', {})
+const globalObject = getGlobalObject<{ usesClientRouter?: true }>('plugins/pluginExtractExportNames.ts', {})
 
-function extractExportNamesPlugin(): Plugin {
+function pluginExtractExportNames(): Plugin {
   let isDev = false
   return {
     name: 'vike:extractExportNames',

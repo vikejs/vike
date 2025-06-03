@@ -7,7 +7,7 @@ import { assert, PROJECT_VERSION, requireResolveVikeDistFile } from '../../utils
 import fs from 'fs/promises'
 import path from 'path'
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
-import { isUsingClientRouter } from '../extractExportNamesPlugin.js'
+import { isUsingClientRouter } from '../pluginExtractExportNames.js'
 import { assertBuildInfo, type BuildInfo } from '../../../runtime/globalContext.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
 import { getViteConfigRuntime } from '../../shared/getViteConfigRuntime.js'
