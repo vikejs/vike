@@ -6,7 +6,7 @@ import type {
 } from '../../../../../../shared/page-configs/PageConfig.js'
 import { getVirtualFileIdPageConfigValuesAll } from '../../../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { debug } from './debug.js'
-import { getVikeConfigInternal } from '../resolveVikeConfig.js'
+import { getVikeConfigInternal } from '../../../../shared/resolveVikeConfig.js'
 import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
 import {
   FilesEnv,

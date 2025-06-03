@@ -34,7 +34,7 @@ import {
   makeLast,
   type SortReturn,
   assertIsSingleModuleInstance
-} from '../../../utils.js'
+} from '../utils.js'
 import type {
   PageConfigGlobalBuildTime,
   ConfigEnvInternal,
@@ -46,14 +46,14 @@ import type {
   ConfigValues,
   PageConfigRoute,
   DefinedBy
-} from '../../../../../shared/page-configs/PageConfig.js'
-import type { Config } from '../../../../../shared/page-configs/Config.js'
+} from '../../../shared/page-configs/PageConfig.js'
+import type { Config } from '../../../shared/page-configs/Config.js'
 import {
   configDefinitionsBuiltIn,
   type ConfigDefinitionsInternal,
   type ConfigDefinitionInternal,
   type ConfigDefinitions
-} from './resolveVikeConfig/configDefinitionsBuiltIn.js'
+} from '../plugins/importUserCode/v1-design/resolveVikeConfig/configDefinitionsBuiltIn.js'
 import {
   type LocationId,
   getLocationId,
@@ -62,35 +62,42 @@ import {
   isInherited,
   sortAfterInheritanceOrder,
   applyFilesystemRoutingRootEffect
-} from './resolveVikeConfig/filesystemRouting.js'
-import type { EsbuildCache } from './resolveVikeConfig/transpileAndExecuteFile.js'
-import { isVikeConfigInvalid, isVikeConfigInvalid_set } from '../../../../runtime/renderPage/isVikeConfigInvalid.js'
-import { getViteDevServer } from '../../../../runtime/globalContext.js'
-import { logConfigError, logConfigErrorRecover } from '../../../shared/loggerNotProd.js'
+} from '../plugins/importUserCode/v1-design/resolveVikeConfig/filesystemRouting.js'
+import type { EsbuildCache } from '../plugins/importUserCode/v1-design/resolveVikeConfig/transpileAndExecuteFile.js'
+import { isVikeConfigInvalid, isVikeConfigInvalid_set } from '../../runtime/renderPage/isVikeConfigInvalid.js'
+import { getViteDevServer } from '../../runtime/globalContext.js'
+import { logConfigError, logConfigErrorRecover } from './loggerNotProd.js'
 import {
   removeSuperfluousViteLog_enable,
   removeSuperfluousViteLog_disable
-} from '../../../shared/loggerVite/removeSuperfluousViteLog.js'
+} from './loggerVite/removeSuperfluousViteLog.js'
 import pc from '@brillout/picocolors'
-import { getConfigDefinedAt, getDefinedByString } from '../../../../../shared/page-configs/getConfigDefinedAt.js'
-import { loadPointerImport, loadValueFile } from './resolveVikeConfig/loadFileAtConfigTime.js'
-import { resolvePointerImport } from './resolveVikeConfig/resolvePointerImport.js'
-import { getFilePathResolved } from '../../../shared/getFilePath.js'
-import type { FilePath } from '../../../../../shared/page-configs/FilePath.js'
-import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
+import { getConfigDefinedAt, getDefinedByString } from '../../../shared/page-configs/getConfigDefinedAt.js'
+import {
+  loadPointerImport,
+  loadValueFile
+} from '../plugins/importUserCode/v1-design/resolveVikeConfig/loadFileAtConfigTime.js'
+import { resolvePointerImport } from '../plugins/importUserCode/v1-design/resolveVikeConfig/resolvePointerImport.js'
+import { getFilePathResolved } from './getFilePath.js'
+import type { FilePath } from '../../../shared/page-configs/FilePath.js'
+import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
 import {
   getUserFriendlyConfigsGlobal,
   getUserFriendlyConfigsPageEager,
   type PageConfigUserFriendly,
   type PageConfigsUserFriendly
-} from '../../../../../shared/page-configs/getUserFriendlyConfigs.js'
-import { getConfigValuesBase, isJsonValue } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
-import { getPlusFilesAll, type PlusFile, type PlusFilesByLocationId } from './resolveVikeConfig/getPlusFilesAll.js'
-import { getEnvVarObject } from '../../../shared/getEnvVarObject.js'
-import { getApiOperation } from '../../../../api/context.js'
-import { getCliOptions } from '../../../../cli/context.js'
-import type { PrerenderContextPublic } from '../../../../prerender/runPrerender.js'
-import { resolvePrerenderConfigGlobal } from '../../../../prerender/resolvePrerenderConfig.js'
+} from '../../../shared/page-configs/getUserFriendlyConfigs.js'
+import { getConfigValuesBase, isJsonValue } from '../../../shared/page-configs/serialize/serializeConfigValues.js'
+import {
+  getPlusFilesAll,
+  type PlusFile,
+  type PlusFilesByLocationId
+} from '../plugins/importUserCode/v1-design/resolveVikeConfig/getPlusFilesAll.js'
+import { getEnvVarObject } from './getEnvVarObject.js'
+import { getApiOperation } from '../../api/context.js'
+import { getCliOptions } from '../../cli/context.js'
+import type { PrerenderContextPublic } from '../../prerender/runPrerender.js'
+import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderConfig.js'
 import type { ResolvedConfig, UserConfig } from 'vite'
 assertIsNotProductionRuntime()
 

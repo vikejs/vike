@@ -20,7 +20,7 @@ import pc from '@brillout/picocolors'
 import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
 import { getExportNames } from '../shared/parseEsModule.js'
 import { normalizeId } from '../shared/normalizeId.js'
-import { isV1Design } from './importUserCode/v1-design/resolveVikeConfig.js'
+import { isV1Design } from '../shared/resolveVikeConfig.js'
 
 function fileEnv(): Plugin {
   let config: ResolvedConfig

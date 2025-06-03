@@ -53,7 +53,7 @@ export type {
 } from '../node/vite/plugins/importUserCode/v1-design/resolveVikeConfig/configDefinitionsBuiltIn.js'
 export type { ConfigEntries } from '../shared/page-configs/getUserFriendlyConfigs.js'
 
-export type { VikeConfig } from '../node/vite/plugins/importUserCode/v1-design/resolveVikeConfig.js'
+export type { VikeConfig } from '../node/vite/shared/resolveVikeConfig.js'
 
 export type { UrlPublic as Url } from '../utils/parseUrl.js'
 

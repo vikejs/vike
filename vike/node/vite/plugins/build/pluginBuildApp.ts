@@ -5,7 +5,7 @@ import type { Plugin } from 'vite'
 import { resolveOutDir } from '../../shared/getOutDirs.js'
 import { assert } from '../../utils.js'
 import { isPrerenderForceExit } from './pluginAutoFullBuild.js'
-import { getVikeConfigInternal } from '../importUserCode/v1-design/resolveVikeConfig.js'
+import { getVikeConfigInternal } from '../../shared/resolveVikeConfig.js'
 
 function pluginBuildApp(): Plugin[] {
   return [

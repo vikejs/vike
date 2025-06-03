@@ -6,7 +6,7 @@ import {
   getVirtualFileIdPageConfigValuesAll,
   isVirtualFileIdPageConfigValuesAll
 } from '../../../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
-import { getVikeConfigInternal } from '../resolveVikeConfig.js'
+import { getVikeConfigInternal } from '../../../../shared/resolveVikeConfig.js'
 import { extractAssetsAddQuery } from '../../../../../shared/extractAssetsQuery.js'
 import { debug } from './debug.js'
 import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'

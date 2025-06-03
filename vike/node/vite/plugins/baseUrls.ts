@@ -3,7 +3,7 @@ export { baseUrls }
 import type { Plugin, ResolvedConfig } from 'vite'
 import { resolveBase } from '../../shared/resolveBase.js'
 import { assert } from '../utils.js'
-import { getVikeConfigInternal } from './importUserCode/v1-design/resolveVikeConfig.js'
+import { getVikeConfigInternal } from '../shared/resolveVikeConfig.js'
 
 function baseUrls(): Plugin {
   let basesResolved: ReturnType<typeof resolveBase>
