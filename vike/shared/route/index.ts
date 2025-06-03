@@ -20,12 +20,9 @@ import { executeOnBeforeRouteHook } from './executeOnBeforeRouteHook.js'
 import type { PageRoutes, RouteType } from './loadPageRoutes.js'
 import { debug } from './debug.js'
 import pc from '@brillout/picocolors'
-import type { Hook } from '../hooks/getHook.js'
 import type { GlobalContextInternal } from '../createGlobalContextShared.js'
 
 type PageContextForRoute = PageContextUrlInternal & {
-  _pageRoutes: PageRoutes
-  _onBeforeRouteHook: Hook | null
   _globalContext: GlobalContextInternal
 } & PageContextUrlSource
 type PageContextFromRoute = {
@@ -44,7 +41,7 @@ type RouteMatch = {
 type RouteMatches = 'CUSTOM_ROUTING' | RouteMatch[]
 
 async function route(pageContext: PageContextForRoute, skipOnBeforeRouteHook?: true): Promise<PageContextFromRoute> {
-  debug('Pages routes:', pageContext._pageRoutes)
+  debug('Pages routes:', pageContext._globalContext._pageRoutes)
   const pageContextFromRoute = {}
 
   // onBeforeRoute()
@@ -71,7 +68,7 @@ async function route(pageContext: PageContextForRoute, skipOnBeforeRouteHook?: t
 
   const routeMatches: RouteMatch[] = []
   await Promise.all(
-    pageContext._pageRoutes.map(async (pageRoute): Promise<void> => {
+    pageContext._globalContext._pageRoutes.map(async (pageRoute): Promise<void> => {
       const { pageId, routeType } = pageRoute
 
       // Filesytem Routing
