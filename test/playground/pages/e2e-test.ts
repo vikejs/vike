@@ -1,5 +1,3 @@
-// TODO/now move other tests here
-
 export { testGlobalContext }
 export { testHMRPlusValueFile }
 export { testRedirectMailto }
