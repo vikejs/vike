@@ -18,7 +18,7 @@ import {
 } from './utils.js'
 import { parse } from '@brillout/json-serializer/parse'
 import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtml.js'
-import type { PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
+import type { PageConfigUserFriendlyOld, PageFile } from '../../shared/getPageFiles.js'
 import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide.js'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
@@ -233,6 +233,7 @@ async function hookServerOnlyExists(
   pageContext: {
     pageId: string
     _globalContext: GlobalContextClientInternal
+    _pageFilesAll: PageFile[]
   }
 ): Promise<boolean> {
   if (pageContext._globalContext._pageConfigs.length > 0) {

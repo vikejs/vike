@@ -4,12 +4,14 @@ import { analyzePageClientSideInit } from '../../shared/getPageFiles/analyzePage
 import { findPageConfig } from '../../shared/page-configs/findPageConfig.js'
 import { analyzeClientSide } from '../../shared/getPageFiles/analyzeClientSide.js'
 import type { GlobalContextClientInternal } from './globalContext.js'
+import type { PageFile } from '../../shared/getPageFiles.js'
 
 // TODO/next-major-release: make it sync
 async function isClientSideRoutable(
   pageId: string,
   pageContext: {
     _globalContext: GlobalContextClientInternal
+    _pageFilesAll: PageFile[]
   }
 ): Promise<boolean> {
   await analyzePageClientSideInit(pageContext._pageFilesAll, pageId, {
