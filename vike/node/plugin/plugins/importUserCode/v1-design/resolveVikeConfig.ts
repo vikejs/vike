@@ -12,8 +12,6 @@ export { isOverriden }
 export type { VikeConfigInternal }
 export type { VikeConfig }
 
-// TODO/now-1: remove v1-design/ dir
-
 import {
   assertPosixPath,
   assert,
