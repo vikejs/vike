@@ -13,7 +13,7 @@ import { getConfigDefinitionOptional } from '../../../../shared/resolveVikeConfi
 import type { PlusFileValue } from './getPlusFilesAll.js'
 import { assertPlusFileExport } from '../../../../../../shared/page-configs/assertPlusFileExport.js'
 import pc from '@brillout/picocolors'
-import { type PointerImportData, parsePointerImportData } from './pointerImports.js'
+import { type PointerImportData, parsePointerImportData } from '../../../../shared/resolveVikeConfig/pointerImports.js'
 import { getConfigFileExport } from './getConfigFileExport.js'
 import { PointerImport, resolvePointerImportData } from './resolvePointerImport.js'
 import type {

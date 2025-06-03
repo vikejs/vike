@@ -23,7 +23,7 @@ export type { PointerImportData }
 
 import { parse } from 'acorn'
 import type { Program, Identifier, ImportDeclaration } from 'estree'
-import { assert, assertUsage, assertWarning, isFilePathAbsolute, isImportPath, styleFileRE } from '../../../../utils.js'
+import { assert, assertUsage, assertWarning, isFilePathAbsolute, isImportPath, styleFileRE } from '../../utils.js'
 import pc from '@brillout/picocolors'
 
 function transformPointerImports(

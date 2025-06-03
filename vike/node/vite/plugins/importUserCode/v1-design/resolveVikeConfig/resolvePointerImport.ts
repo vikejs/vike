@@ -13,7 +13,7 @@ import {
   isImportPathNpmPackageOrPathAlias,
   requireResolveOptional
 } from '../../../../utils.js'
-import { type PointerImportData, assertPointerImportPath, parsePointerImportData } from './pointerImports.js'
+import { type PointerImportData, assertPointerImportPath, parsePointerImportData } from '../../../../shared/resolveVikeConfig/pointerImports.js'
 import {
   getFilePathAbsoluteUserRootDir,
   getFilePathResolved,
