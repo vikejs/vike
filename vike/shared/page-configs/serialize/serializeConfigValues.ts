@@ -23,7 +23,7 @@ import type {
   PageConfigGlobalBuildTime
 } from '../PageConfig.js'
 import type { ValueSerialized } from './PageConfigSerialized.js'
-import { parsePointerImportData } from '../../../node/vite/plugins/importUserCode/v1-design/getVikeConfig/pointerImports.js'
+import { parsePointerImportData } from '../../../node/vite/plugins/importUserCode/v1-design/resolveVikeConfig/pointerImports.js'
 import { getConfigValueFilePathToShowToUser } from '../helpers.js'
 import { stringify } from '@brillout/json-serializer/stringify'
 import pc from '@brillout/picocolors'

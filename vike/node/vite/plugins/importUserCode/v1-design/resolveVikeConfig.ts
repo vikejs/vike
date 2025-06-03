@@ -53,7 +53,7 @@ import {
   type ConfigDefinitionsInternal,
   type ConfigDefinitionInternal,
   type ConfigDefinitions
-} from './getVikeConfig/configDefinitionsBuiltIn.js'
+} from './resolveVikeConfig/configDefinitionsBuiltIn.js'
 import {
   type LocationId,
   getLocationId,
@@ -62,8 +62,8 @@ import {
   isInherited,
   sortAfterInheritanceOrder,
   applyFilesystemRoutingRootEffect
-} from './getVikeConfig/filesystemRouting.js'
-import type { EsbuildCache } from './getVikeConfig/transpileAndExecuteFile.js'
+} from './resolveVikeConfig/filesystemRouting.js'
+import type { EsbuildCache } from './resolveVikeConfig/transpileAndExecuteFile.js'
 import { isVikeConfigInvalid, isVikeConfigInvalid_set } from '../../../../runtime/renderPage/isVikeConfigInvalid.js'
 import { getViteDevServer } from '../../../../runtime/globalContext.js'
 import { logConfigError, logConfigErrorRecover } from '../../../shared/loggerNotProd.js'
@@ -73,8 +73,8 @@ import {
 } from '../../../shared/loggerVite/removeSuperfluousViteLog.js'
 import pc from '@brillout/picocolors'
 import { getConfigDefinedAt, getDefinedByString } from '../../../../../shared/page-configs/getConfigDefinedAt.js'
-import { loadPointerImport, loadValueFile } from './getVikeConfig/loadFileAtConfigTime.js'
-import { resolvePointerImport } from './getVikeConfig/resolvePointerImport.js'
+import { loadPointerImport, loadValueFile } from './resolveVikeConfig/loadFileAtConfigTime.js'
+import { resolvePointerImport } from './resolveVikeConfig/resolvePointerImport.js'
 import { getFilePathResolved } from '../../../shared/getFilePath.js'
 import type { FilePath } from '../../../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
@@ -85,7 +85,7 @@ import {
   type PageConfigsUserFriendly
 } from '../../../../../shared/page-configs/getUserFriendlyConfigs.js'
 import { getConfigValuesBase, isJsonValue } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
-import { getPlusFilesAll, type PlusFile, type PlusFilesByLocationId } from './getVikeConfig/getPlusFilesAll.js'
+import { getPlusFilesAll, type PlusFile, type PlusFilesByLocationId } from './resolveVikeConfig/getPlusFilesAll.js'
 import { getEnvVarObject } from '../../../shared/getEnvVarObject.js'
 import { getApiOperation } from '../../../../api/context.js'
 import { getCliOptions } from '../../../../cli/context.js'

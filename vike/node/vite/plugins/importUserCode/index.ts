@@ -13,7 +13,7 @@ import pc from '@brillout/picocolors'
 import { logConfigInfo } from '../../shared/loggerNotProd.js'
 import { getModuleFilePathAbsolute } from '../../shared/getFilePath.js'
 import { updateUserFiles } from '../../../runtime/globalContext.js'
-import { isPlusFile } from './v1-design/getVikeConfig/crawlPlusFiles.js'
+import { isPlusFile } from './v1-design/resolveVikeConfig/crawlPlusFiles.js'
 
 function importUserCode(): Plugin {
   let config: ResolvedConfig
