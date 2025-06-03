@@ -268,13 +268,15 @@ async function resolveVikeConfig(userRootDir: string, vikeVitePluginOptions: unk
     })
   )
 
-  return {
+  const vikeConfig = {
     pageConfigs,
     pageConfigGlobal,
     global: userFriendlyConfigsGlobal,
     pages: userFriendlyConfigsPageEager,
     vikeConfigDependencies: esbuildCache.vikeConfigDependencies
   }
+
+  return vikeConfig
 }
 type ConfigDefinitionsResolved = Awaited<ReturnType<typeof resolveConfigDefinitions>>
 async function resolveConfigDefinitions(
