@@ -9,6 +9,9 @@ export { getVikeConfigFromCliOrEnv }
 export { isOverriden }
 export type { VikeConfigObject }
 
+// TODO/now-1: rename this file
+// TODO/now-1: remove v1-design/ dir
+
 import {
   assertPosixPath,
   assert,
