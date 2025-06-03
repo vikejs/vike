@@ -52,10 +52,10 @@
       "default": "./dist/esm/node/prerender/index.js"
     },
     "./plugin": {
-      "require": "./dist/cjs/node/plugin/index.js",
-      "node": "./dist/esm/node/plugin/index.js",
-      "types": "./dist/esm/node/plugin/index.d.ts",
-      "default": "./dist/esm/node/plugin/index.js"
+      "require": "./dist/cjs/node/vite/index.js",
+      "node": "./dist/esm/node/vite/index.js",
+      "types": "./dist/esm/node/vite/index.d.ts",
+      "default": "./dist/esm/node/vite/index.js"
     },
     "./RenderErrorPage": {
       "worker": "./dist/esm/shared/RenderErrorPage.js",
@@ -192,7 +192,7 @@
         "./dist/esm/node/prerender/index.d.ts"
       ],
       "plugin": [
-        "./dist/esm/node/plugin/index.d.ts"
+        "./dist/esm/node/vite/index.d.ts"
       ],
       "RenderErrorPage": [
         "./dist/esm/shared/RenderErrorPage.d.ts"
