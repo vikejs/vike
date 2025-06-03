@@ -1,4 +1,4 @@
-export { virtualFilesPlugin }
+export { pluginVirtualFiles }
 
 import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode, ModuleGraph } from 'vite'
 import { normalizePath } from 'vite'
@@ -15,7 +15,7 @@ import { getModuleFilePathAbsolute } from '../../shared/getFilePath.js'
 import { updateUserFiles } from '../../../runtime/globalContext.js'
 import { isPlusFile } from '../../shared/resolveVikeConfig/crawlPlusFiles.js'
 
-function virtualFilesPlugin(): Plugin {
+function pluginVirtualFiles(): Plugin {
   let config: ResolvedConfig
   return {
     name: 'vike:virtualFiles',
