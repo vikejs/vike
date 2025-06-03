@@ -6,7 +6,7 @@
 //  - We recommend using the debug flag to get an idea of how this plugin works: `$ DEBUG=vike:extractAssets pnpm exec vike build`. Then have a look at `dist/client/manifest.json` and see how `.page.server.js` entries have zero JavaScript but only CSS.
 //  - This appraoch supports import path aliases `vite.config.js#resolve.alias` https://vitejs.dev/config/#resolve-alias
 
-export { extractAssetsPlugin }
+export { pluginExtractAssets }
 export { extractAssetsRE }
 
 import type { Plugin, ResolvedConfig } from 'vite'
@@ -39,7 +39,7 @@ const EMPTY_MODULE_ID = 'virtual:vike:empty-module'
 
 const debug = createDebugger('vike:extractAssets')
 
-function extractAssetsPlugin(): Plugin[] {
+function pluginExtractAssets(): Plugin[] {
   let config: ResolvedConfig
   let vikeConfig: VikeConfigInternal
   let isFixEnabled: boolean

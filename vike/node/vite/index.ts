@@ -13,7 +13,7 @@ import { build } from './plugins/build.js'
 import { previewConfig } from './plugins/previewConfig.js'
 import { devConfig } from './plugins/devConfig/index.js'
 import { virtualFilesPlugin } from './plugins/virtualFilesPlugin/index.js'
-import { extractAssetsPlugin } from './plugins/extractAssetsPlugin.js'
+import { pluginExtractAssets } from './plugins/pluginExtractAssets.js'
 import { extractExportNamesPlugin } from './plugins/extractExportNamesPlugin.js'
 import { setGlobalContext } from './plugins/setGlobalContext.js'
 import { pluginCommon } from './plugins/pluginCommon.js'
@@ -39,7 +39,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginIntero
     ...devConfig(),
     ...build(),
     previewConfig(),
-    ...extractAssetsPlugin(),
+    ...pluginExtractAssets(),
     extractExportNamesPlugin(),
     ...setGlobalContext(),
     baseUrls(),

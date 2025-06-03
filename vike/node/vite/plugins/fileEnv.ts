@@ -14,7 +14,7 @@ import {
   joinEnglish,
   rollupSourceMapRemove
 } from '../utils.js'
-import { extractAssetsRE } from './extractAssetsPlugin.js'
+import { extractAssetsRE } from './pluginExtractAssets.js'
 import { extractExportNamesRE } from './extractExportNamesPlugin.js'
 import pc from '@brillout/picocolors'
 import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
