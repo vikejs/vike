@@ -115,7 +115,6 @@ type PrerenderContext = {
   isPrerenderingEnabledForAllPages: boolean
 } & ({ [K in keyof PrerenderContextPublic]: null } | PrerenderContextPublic)
 
-// TODO/now-1: rename
 type VikeConfigInternal = {
   pageConfigs: PageConfigBuildTime[]
   pageConfigGlobal: PageConfigGlobalBuildTime
@@ -163,12 +162,6 @@ async function handleReloadSideEffects() {
   }
 }
 
-// TODO/now-1 rename:
-// - `getVikeConfig()` => `resolveVikeConfig()` ?
-// - `getVikeConfigInternal()` => `getVikeConfig()`
-// - `VikeConfigPublic` => `VikeConfig` ?
-// - `VikeConfigInternal` => `VikeConfigInternal` ?
-// TODO/now-1: predominantly use getVikeConfigInternal() instead of getVikeConfig() then maybe refector?
 async function getVikeConfigInternal(
   // TODO/now-later: is this really needed?
   doNotRestartViteOnError = false
@@ -184,13 +177,19 @@ function getVikeConfigInternalSync(): VikeConfigInternal {
   return vikeConfigSync
 }
 
+// TO-DO/eventually: this maybe(/probably?) isn't safe against race conditions upon file changes in development, thus:
+// - Like getGlobalContext() and getGlobalContextSync() — make getVikeConfig() async and provide a getVikeConfigSync() while discourage using it
 // Public usage
 /**
  * Get all the information Vike knows about the app in your Vite plugin.
  *
  * https://vike.dev/getVikeConfig
  */
-function getVikeConfig(config: ResolvedConfig | UserConfig): VikeConfig {
+function getVikeConfig(
+  // TO-DO/eventually: remove unused arguments (older versions used it and we didn't remove it yet to avoid a TypeScript breaking change)
+  // - No rush: we can do it later since it's getVikeConfig() is a beta feature as documented at https://vike.dev/getVikeConfig
+  config: ResolvedConfig | UserConfig
+): VikeConfig {
   const vikeConfig = getVikeConfigInternalSync()
   assertUsage(vikeConfig, "getVikeConfig() can only be used when Vite is running with Vike's Vite plugin")
   return {
