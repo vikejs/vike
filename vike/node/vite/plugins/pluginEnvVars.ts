@@ -1,4 +1,4 @@
-export { envVarsPlugin }
+export { pluginEnvVars }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import MagicString from 'magic-string'
@@ -29,7 +29,7 @@ const PUBLIC_ENV_ALLOWLIST = [
   'STORYBOOK'
 ]
 
-function envVarsPlugin(): Plugin {
+function pluginEnvVars(): Plugin {
   let envsAll: Record<string, string>
   let config: ResolvedConfig
   return {
