@@ -7,7 +7,7 @@ import type { PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
 type PageContextCurrent = PageConfigUserFriendlyOld & {
   urlPathname: string
 }
-const globalObject = getGlobalObject('client-routing-runtime/getPageContextCurrent.ts', {
+const globalObject = getGlobalObject('runtime-client-routing/getPageContextCurrent.ts', {
   pageContextCurrent: null as null | PageContextCurrent
 })
 

@@ -104,8 +104,8 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
       ...clientEntries,
       ...pageFileEntries
     }
-    const clientRoutingEntry = requireResolveVikeDistFile('dist/esm/client/client-routing-runtime/entry.js')
-    const serverRoutingEntry = requireResolveVikeDistFile('dist/esm/client/server-routing-runtime/entry.js')
+    const clientRoutingEntry = requireResolveVikeDistFile('dist/esm/client/runtime-client-routing/entry.js')
+    const serverRoutingEntry = requireResolveVikeDistFile('dist/esm/client/runtime-server-routing/entry.js')
     if (hasClientRouting) {
       entries['entries/entry-client-routing'] = clientRoutingEntry
     }

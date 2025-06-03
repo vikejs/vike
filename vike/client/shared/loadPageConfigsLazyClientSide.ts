@@ -11,7 +11,7 @@ import type {
   PageConfigRuntime,
   PageConfigRuntimeLoaded
 } from '../../shared/page-configs/PageConfig.js'
-import { objectAssign } from '../server-routing-runtime/utils.js'
+import { objectAssign } from '../runtime-server-routing/utils.js'
 
 const stamp = '__whileFetchingAssets'
 

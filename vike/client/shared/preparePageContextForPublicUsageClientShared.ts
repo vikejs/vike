@@ -2,7 +2,7 @@ export { preparePageContextForPublicUsageClientShared }
 export { preparePageContextForPublicUsageClientMinimal }
 export type { PageContextForPublicUsageClientShared }
 
-import { objectAssign } from '../server-routing-runtime/utils.js'
+import { objectAssign } from '../runtime-server-routing/utils.js'
 import type { PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
 import {
   assertPropertyGetters,

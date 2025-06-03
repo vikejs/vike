@@ -4,10 +4,10 @@ exports[`preload tags > Preload Default 1`] = `
 [
   {
     "assetType": "script",
-    "earlyHintLink": "</@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js>; rel=modulepreload; as=script",
+    "earlyHintLink": "</@fs/$ROOT/vike/dist/esm/client/runtime-server-routing/entry.js>; rel=modulepreload; as=script",
     "isEntry": true,
     "mediaType": "text/javascript",
-    "src": "/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js",
+    "src": "/@fs/$ROOT/vike/dist/esm/client/runtime-server-routing/entry.js",
   },
   {
     "assetType": "style",
@@ -35,7 +35,7 @@ injectIntoGlobalHook(window);
 window.$RefreshReg$ = () => {};
 window.$RefreshSig$ = () => (type) => type;
 import "/@vite/client";
-import "/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js";
+import "/@fs/$ROOT/vike/dist/esm/client/runtime-server-routing/entry.js";
 </script>
       </body>
     </html>"
@@ -45,10 +45,10 @@ exports[`preload tags > Preload Disabled 1`] = `
 [
   {
     "assetType": "script",
-    "earlyHintLink": "</@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js>; rel=modulepreload; as=script",
+    "earlyHintLink": "</@fs/$ROOT/vike/dist/esm/client/runtime-server-routing/entry.js>; rel=modulepreload; as=script",
     "isEntry": true,
     "mediaType": "text/javascript",
-    "src": "/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js",
+    "src": "/@fs/$ROOT/vike/dist/esm/client/runtime-server-routing/entry.js",
   },
   {
     "assetType": "style",
@@ -76,7 +76,7 @@ injectIntoGlobalHook(window);
 window.$RefreshReg$ = () => {};
 window.$RefreshSig$ = () => (type) => type;
 import "/@vite/client";
-import "/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js";
+import "/@fs/$ROOT/vike/dist/esm/client/runtime-server-routing/entry.js";
 </script>
       </body>
     </html>"
@@ -86,10 +86,10 @@ exports[`preload tags > Preload Eager 1`] = `
 [
   {
     "assetType": "script",
-    "earlyHintLink": "</@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js>; rel=modulepreload; as=script",
+    "earlyHintLink": "</@fs/$ROOT/vike/dist/esm/client/runtime-server-routing/entry.js>; rel=modulepreload; as=script",
     "isEntry": true,
     "mediaType": "text/javascript",
-    "src": "/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js",
+    "src": "/@fs/$ROOT/vike/dist/esm/client/runtime-server-routing/entry.js",
   },
   {
     "assetType": "style",
@@ -117,7 +117,7 @@ injectIntoGlobalHook(window);
 window.$RefreshReg$ = () => {};
 window.$RefreshSig$ = () => (type) => type;
 import "/@vite/client";
-import "/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js";
+import "/@fs/$ROOT/vike/dist/esm/client/runtime-server-routing/entry.js";
 </script>
       </body>
     </html>"
@@ -127,10 +127,10 @@ exports[`preload tags > Preload Images 1`] = `
 [
   {
     "assetType": "script",
-    "earlyHintLink": "</@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js>; rel=modulepreload; as=script",
+    "earlyHintLink": "</@fs/$ROOT/vike/dist/esm/client/runtime-server-routing/entry.js>; rel=modulepreload; as=script",
     "isEntry": true,
     "mediaType": "text/javascript",
-    "src": "/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js",
+    "src": "/@fs/$ROOT/vike/dist/esm/client/runtime-server-routing/entry.js",
   },
   {
     "assetType": "style",
@@ -158,7 +158,7 @@ injectIntoGlobalHook(window);
 window.$RefreshReg$ = () => {};
 window.$RefreshSig$ = () => (type) => type;
 import "/@vite/client";
-import "/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js";
+import "/@fs/$ROOT/vike/dist/esm/client/runtime-server-routing/entry.js";
 </script>
       </body>
     </html>"
