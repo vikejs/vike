@@ -1,5 +1,5 @@
-export { getVikeConfigInternalOptional }
 export { getVikeConfigInternal }
+export { getVikeConfigInternalOptional }
 export { getVikeConfigInternalSync }
 export { getVikeConfigPublic }
 export { setVikeConfigCtx }
