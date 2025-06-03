@@ -20,6 +20,7 @@ import {
   type PageContextPrepareMinimum,
   preparePageContextForPublicUsage
 } from '../preparePageContextForPublicUsage.js'
+import type { GlobalContextInternal } from '../createGlobalContextShared.js'
 
 async function executeOnBeforeRouteHook(
   pageContext: PageContextForRoute
@@ -29,8 +30,8 @@ async function executeOnBeforeRouteHook(
   | { _routingProvidedByOnBeforeRouteHook: false }
 > {
   const pageContextFromOnBeforeRouteHook = {}
-  if (!pageContext._onBeforeRouteHook) return null
-  const pageContextFromHook = await getPageContextFromHook(pageContext._onBeforeRouteHook, pageContext)
+  if (!pageContext._globalContext._onBeforeRouteHook) return null
+  const pageContextFromHook = await getPageContextFromHook(pageContext._globalContext._onBeforeRouteHook, pageContext)
   if (pageContextFromHook) {
     objectAssign(pageContextFromOnBeforeRouteHook, pageContextFromHook)
     if (
@@ -60,7 +61,7 @@ async function getPageContextFromHook(
   onBeforeRouteHook: Hook,
   pageContext: PageContextPrepareMinimum & {
     urlOriginal: string
-    _allPageIds: string[]
+    _globalContext: GlobalContextInternal
   }
 ): Promise<null | {
   urlOriginal?: string
@@ -99,9 +100,9 @@ async function getPageContextFromHook(
     )} should be` as const
     assertUsage(hasProp(hookReturn.pageContext, 'pageId', 'string'), `${errPrefix2} a string or null`)
     assertUsage(
-      pageContext._allPageIds.includes(hookReturn.pageContext.pageId),
+      pageContext._globalContext._allPageIds.includes(hookReturn.pageContext.pageId),
       `${errPrefix2} ${joinEnglish(
-        pageContext._allPageIds.map((s) => pc.cyan(s)),
+        pageContext._globalContext._allPageIds.map((s) => pc.cyan(s)),
         'or'
       )}`
     )

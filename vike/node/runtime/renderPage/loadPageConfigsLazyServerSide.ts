@@ -27,29 +27,29 @@ import { loadConfigValues } from '../../../shared/page-configs/loadConfigValues.
 type PageContext_loadPageConfigsLazyServerSide = PageContextGetPageAssets &
   PageContextDebugRouteMatches & {
     urlOriginal: string
-    _pageFilesAll: PageFile[]
-    _pageConfigs: PageConfigRuntime[]
     _globalContext: GlobalContextServerInternal
   }
 type PageFiles = PromiseType<ReturnType<typeof loadPageConfigsLazyServerSide>>
 async function loadPageConfigsLazyServerSide(
   pageContext: { pageId: string } & PageContext_loadPageConfigsLazyServerSide
 ) {
-  const pageConfig = findPageConfig(pageContext._pageConfigs, pageContext.pageId) // Make pageConfig globally available as pageContext._pageConfig?
+  const pageConfig = findPageConfig(pageContext._globalContext._pageConfigs, pageContext.pageId) // Make pageConfig globally available as pageContext._pageConfig ?
 
   const globalContext = pageContext._globalContext
   const [{ pageFilesLoaded, pageContextExports }] = await Promise.all([
     loadPageUserFiles(
-      pageContext._pageFilesAll,
+      pageContext._globalContext._pageFilesAll,
       pageConfig,
       globalContext._pageConfigGlobal,
       pageContext.pageId,
       !globalContext._isProduction
     ),
-    analyzePageClientSideInit(pageContext._pageFilesAll, pageContext.pageId, { sharedPageFilesAlreadyLoaded: true })
+    analyzePageClientSideInit(pageContext._globalContext._pageFilesAll, pageContext.pageId, {
+      sharedPageFilesAlreadyLoaded: true
+    })
   ])
   const { isHtmlOnly, isClientRouting, clientEntries, clientDependencies, pageFilesClientSide, pageFilesServerSide } =
-    await analyzePage(pageContext._pageFilesAll, pageConfig, pageContext.pageId, globalContext)
+    await analyzePage(pageContext._globalContext._pageFilesAll, pageConfig, pageContext.pageId, globalContext)
   const isV1Design = !!pageConfig
 
   const passToClient: string[] = []

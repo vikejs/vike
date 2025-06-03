@@ -21,12 +21,11 @@ async function log404(pageContext: {
   urlPathname: string
   errorWhileRendering: null | Error
   isClientSideNavigation: boolean
-  _pageRoutes: PageRoutes
   _globalContext: GlobalContextServerInternal
 }) {
   const { urlPathname } = pageContext
 
-  const pageRoutes = pageContext._pageRoutes
+  const pageRoutes = pageContext._globalContext._pageRoutes
   assertUsage(
     pageRoutes.length > 0,
     'No page found.'

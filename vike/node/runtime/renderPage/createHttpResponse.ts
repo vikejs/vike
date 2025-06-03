@@ -10,7 +10,6 @@ export type { HttpResponse }
 import type { GetPageAssets } from './getPageAssets.js'
 import { assert, assertWarning, escapeHtml } from '../utils.js'
 import type { HtmlRender } from '../html/renderHtml.js'
-import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { getErrorPageId, isErrorPage } from '../../../shared/error-page.js'
 import type { RenderHook } from './executeOnRenderHtmlHook.js'
 import type { RedirectStatusCode, AbortStatusCode, UrlRedirect } from '../../../shared/route/abort.js'
@@ -18,8 +17,8 @@ import { getHttpResponseBody, getHttpResponseBodyStreamHandlers, HttpResponseBod
 import { getEarlyHints, type EarlyHint } from './getEarlyHints.js'
 import { getCacheControl } from './createHttpResponse/getCacheControl.js'
 import { assertNoInfiniteHttpRedirect } from './createHttpResponse/assertNoInfiniteHttpRedirect.js'
-import type { PageFile } from '../../../shared/getPageFiles.js'
 import type { PageContextBegin } from '../renderPage.js'
+import type { GlobalContextServerInternal } from '../globalContext.js'
 
 type HttpResponse = {
   statusCode: 200 | 404 | 500 | RedirectStatusCode | AbortStatusCode
@@ -43,13 +42,13 @@ async function createHttpResponsePage(
     is404: null | boolean
     errorWhileRendering: null | Error
     __getPageAssets: GetPageAssets
-    _pageConfigs: PageConfigRuntime[]
+    _globalContext: GlobalContextServerInternal
     abortStatusCode?: AbortStatusCode
   }
 ): Promise<HttpResponse> {
   let statusCode: StatusCode | undefined = pageContext.abortStatusCode
   if (!statusCode) {
-    const isError = !pageContext.pageId || isErrorPage(pageContext.pageId, pageContext._pageConfigs)
+    const isError = !pageContext.pageId || isErrorPage(pageContext.pageId, pageContext._globalContext._pageConfigs)
     if (pageContext.errorWhileRendering) {
       assert(isError)
     }
@@ -65,7 +64,7 @@ async function createHttpResponsePage(
   const earlyHints = getEarlyHints(await pageContext.__getPageAssets())
 
   const headers: ResponseHeaders = []
-  const cacheControl = getCacheControl(pageContext.pageId, pageContext._pageConfigs, statusCode)
+  const cacheControl = getCacheControl(pageContext.pageId, pageContext._globalContext._pageConfigs, statusCode)
   if (cacheControl) {
     headers.push(['Cache-Control', cacheControl])
   }
@@ -111,11 +110,13 @@ function createHttpResponseBaseIsMissing(urlOriginal: string, baseServer: string
   return httpResponse
 }
 function createHttpResponseError(pageContext: {
-  _pageFilesAll: PageFile[]
-  _pageConfigs: PageConfigRuntime[]
+  _globalContext: GlobalContextServerInternal
 }) {
   const reason = (() => {
-    const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
+    const errorPageId = getErrorPageId(
+      pageContext._globalContext._pageFilesAll,
+      pageContext._globalContext._pageConfigs
+    )
     if (errorPageId) {
       return "the error page (https://vike.dev/error-page) couldn't be rendered (for example if an error occurred while rendering the error page)" as const
     } else {

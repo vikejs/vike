@@ -1,3 +1,5 @@
+// TODO/now-4: rename all this?
+// TODO/now-4: use public API internally?
 export { getUserFriendlyConfigsGlobal }
 export { getUserFriendlyConfigsPageEager }
 export { getUserFriendlyConfigsPageLazy }
@@ -134,7 +136,7 @@ type SourceConfigsComputed = {
 // See: [Flat `pageContext`](https://github.com/vikejs/vike/issues/1268)
 type PageConfigUserFriendly = {
   config: ConfigResolved
-  // TODO/now expose publicly?
+  // TODO/now-4 expose publicly?
   _source: Source
   _sources: Sources
   _from: From

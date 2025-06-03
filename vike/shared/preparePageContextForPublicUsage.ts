@@ -45,7 +45,7 @@ function preparePageContextForPublicUsage<PageContext extends PageContextPrepare
     pageContext,
     'pageContext',
     // We must skip it in the client-side because of the reactivity mechanism of UI frameworks like Solid.
-    // - TODO/now: double check whether that's true
+    // - TODO/now-proxy: double check whether that's true
     true,
     (prop) => {
       if (prop === 'globalContext') {

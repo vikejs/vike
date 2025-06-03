@@ -37,18 +37,10 @@ async function createPageContextServerSide(
 
   objectAssign(pageContextCreated, {
     _globalContext: globalContext,
-    // The following is defined on `pageContext` because we can eventually make these non-global
+    _pageFilesAll: globalContext._pageFilesAll, // TODO/v1-release: remove
+    // We use pageContext._baseServer and pageContext._baseAssets instead of pageContext._globalContext.baseServer and pageContext._globalContext.baseAssets because the Base URLs can (eventually one day if needed) be made non-global
     _baseServer: globalContext.baseServer,
     _baseAssets: globalContext.baseAssets,
-    // TODO/now: add meta.default
-    _includeAssetsImportedByServer: globalContext.config.includeAssetsImportedByServer ?? true,
-    // TODO/soon: use GloablContext instead
-    _pageFilesAll: globalContext._pageFilesAll,
-    _pageConfigs: globalContext._pageConfigs,
-    _pageConfigGlobal: globalContext._pageConfigGlobal,
-    _allPageIds: globalContext._allPageIds,
-    _pageRoutes: globalContext._pageRoutes,
-    _onBeforeRouteHook: globalContext._onBeforeRouteHook,
     _pageContextInit: pageContextInit,
     _urlRewrite: null,
     _urlHandler: urlHandler,

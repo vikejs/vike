@@ -1,4 +1,4 @@
-// TODO/soon: point package.json#exports['./server'] to this file.
+// TO-DO/soon: point package.json#exports['./server'] to this file.
 // - Write migration guide, see comment below.
 export * from './index.js'
 

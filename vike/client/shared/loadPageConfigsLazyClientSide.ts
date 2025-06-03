@@ -1,6 +1,5 @@
 export { loadPageConfigsLazyClientSide }
 export { isErrorFetchingStaticAssets }
-export type { PageContextUserFiles }
 
 import { getPageFilesClientSide, type PageFile, type PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
 import { getUserFriendlyConfigsPageLazy } from '../../shared/page-configs/getUserFriendlyConfigs.js'
@@ -16,11 +15,6 @@ import { objectAssign } from '../runtime-server-routing/utils.js'
 const stamp = '__whileFetchingAssets'
 
 type PageContextUserFilesLoaded = PageConfigUserFriendlyOld & { _pageFilesLoaded: PageFile[] }
-type PageContextUserFiles = {
-  _pageFilesAll: PageFile[]
-  _pageConfigs: PageConfigRuntime[]
-  _pageConfigGlobal: PageConfigGlobalRuntime
-}
 async function loadPageConfigsLazyClientSide(
   pageId: string,
   pageFilesAll: PageFile[],

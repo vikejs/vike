@@ -160,7 +160,7 @@ async function handleReloadSideEffects() {
 }
 
 async function getVikeConfigInternal(
-  // TODO/now-later: is this really needed?
+  // TODO/now-hmr: is this really needed?
   doNotRestartViteOnError = false
 ): Promise<VikeConfigInternal> {
   assert(vikeConfigCtx)

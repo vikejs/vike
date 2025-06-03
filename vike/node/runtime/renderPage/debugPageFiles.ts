@@ -6,7 +6,7 @@ import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageC
 import type { PageFile } from '../../../shared/getPageFiles.js'
 import pc from '@brillout/picocolors'
 import { assert, makeFirst, createDebugger } from '../utils.js'
-import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
+import type { GlobalContextServerInternal } from '../globalContext.js'
 
 type PageContextDebugRouteMatches = {
   _debugRouteMatches: 'ROUTING_ERROR' | RouteMatches
@@ -24,8 +24,7 @@ function debugPageFiles({
   pageContext: {
     urlOriginal: string
     pageId: string
-    _pageFilesAll: PageFile[]
-    _pageConfigs: PageConfigRuntime[]
+    _globalContext: GlobalContextServerInternal
   } & PageContextDebugRouteMatches
   isHtmlOnly: boolean
   isClientRouting: boolean
@@ -38,7 +37,7 @@ function debugPageFiles({
   const debug = createDebugger('vike:pageFiles', { serialization: { emptyArray: 'None' } })
   const padding = '   - '
 
-  debug('All page files:', printPageFiles(pageContext._pageFilesAll, true)) // TODO
+  debug('All page files:', printPageFiles(pageContext._globalContext._pageFilesAll, true))
   debug(`URL:`, pageContext.urlOriginal)
   debug.options({ serialization: { emptyArray: 'No match' } })(
     `Routing:`,

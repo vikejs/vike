@@ -23,8 +23,7 @@ import {
   getPageContextFromHooks_isHydration,
   getPageContextFromHooks_serialized,
   type PageContextFromServerHooks,
-  setPageContextInitIsPassedToClient,
-  execHookClient
+  setPageContextInitIsPassedToClient
 } from './getPageContextFromHooks.js'
 import { createPageContextClientSide } from './createPageContextClientSide.js'
 import {
@@ -235,8 +234,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         await loadPageConfigsLazyClientSide(
           pageContext.pageId,
           pageContext._pageFilesAll,
-          pageContext._pageConfigs,
-          pageContext._pageConfigGlobal
+          pageContext._globalContext._pageConfigs,
+          pageContext._globalContext._pageConfigGlobal
         )
       )
     } catch (err) {
@@ -403,7 +402,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       }
     }
 
-    const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
+    const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._globalContext._pageConfigs)
     if (!errorPageId) throw new Error('No error page defined.')
     objectAssign(pageContext, {
       pageId: errorPageId
@@ -422,8 +421,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         await loadPageConfigsLazyClientSide(
           pageContext.pageId,
           pageContext._pageFilesAll,
-          pageContext._pageConfigs,
-          pageContext._pageConfigGlobal
+          pageContext._globalContext._pageConfigs,
+          pageContext._globalContext._pageConfigGlobal
         )
       )
     } catch (err) {

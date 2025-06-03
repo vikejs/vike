@@ -16,11 +16,7 @@ import {
   hasProp,
   objectAssign
 } from './utils.js'
-import {
-  type PageContextUserFiles,
-  isErrorFetchingStaticAssets,
-  loadPageConfigsLazyClientSide
-} from '../shared/loadPageConfigsLazyClientSide.js'
+import { isErrorFetchingStaticAssets, loadPageConfigsLazyClientSide } from '../shared/loadPageConfigsLazyClientSide.js'
 import { skipLink } from './skipLink.js'
 import { disableClientRouting } from './renderPageClientSide.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
@@ -28,7 +24,7 @@ import { createPageContextClientSide, type PageContextCreated } from './createPa
 import { route, type PageContextFromRoute } from '../../shared/route/index.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import { type PageContextFromServerHooks, getPageContextFromServerHooks } from './getPageContextFromHooks.js'
-import type { PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
+import type { PageConfigUserFriendlyOld, PageFile } from '../../shared/getPageFiles.js'
 import { getPageContextCurrent } from './getPageContextCurrent.js'
 import {
   PAGE_CONTEXT_MAX_AGE_DEFAULT,
@@ -37,6 +33,7 @@ import {
 } from './prefetch/getPrefetchSettings.js'
 import pc from '@brillout/picocolors'
 import { normalizeUrlArgument } from './normalizeUrlArgument.js'
+import type { GlobalContextClientInternal } from './globalContext.js'
 
 assertClientRouting()
 const globalObject = getGlobalObject('runtime-client-routing/prefetch.ts', {
@@ -80,13 +77,17 @@ function getPageContextPrefetched(
   return pageContextPrefetched
 }
 
-async function prefetchAssets(pageContextLink: { pageId: string } & PageContextUserFiles): Promise<void> {
+async function prefetchAssets(pageContextLink: {
+  pageId: string
+  _pageFilesAll: PageFile[]
+  _globalContext: GlobalContextClientInternal
+}): Promise<void> {
   try {
     await loadPageConfigsLazyClientSide(
       pageContextLink.pageId,
       pageContextLink._pageFilesAll,
-      pageContextLink._pageConfigs,
-      pageContextLink._pageConfigGlobal
+      pageContextLink._globalContext._pageConfigs,
+      pageContextLink._globalContext._pageConfigGlobal
     )
   } catch (err) {
     if (isErrorFetchingStaticAssets(err)) {

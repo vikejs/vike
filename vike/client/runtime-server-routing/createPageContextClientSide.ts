@@ -19,10 +19,7 @@ async function createPageContextClientSide() {
     isPrerendering: false as const,
     isHydration: true as const,
     _globalContext: globalContext,
-    _pageFilesAll: globalContext._pageFilesAll,
-    _pageConfigs: globalContext._pageConfigs,
-    _pageConfigGlobal: globalContext._pageConfigGlobal,
-    _allPageIds: globalContext._allPageIds,
+    _pageFilesAll: globalContext._pageFilesAll, // TODO/v1-release: remove
     isBackwardNavigation: null,
     _hasPageContextFromServer: true as const
   })
@@ -41,9 +38,9 @@ async function createPageContextClientSide() {
     pageContextCreated,
     await loadPageConfigsLazyClientSide(
       pageContextCreated.pageId,
-      pageContextCreated._pageFilesAll,
-      pageContextCreated._pageConfigs,
-      pageContextCreated._pageConfigGlobal
+      globalContext._pageFilesAll,
+      globalContext._pageConfigs,
+      globalContext._pageConfigGlobal
     )
   )
 

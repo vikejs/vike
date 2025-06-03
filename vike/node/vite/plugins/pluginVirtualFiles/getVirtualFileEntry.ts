@@ -23,6 +23,7 @@ import { getVirtualFilePageConfigsEager } from './getVirtualFilePageConfigsEager
 import { getVikeConfigInternal, isV1Design as isV1Design_ } from '../../shared/resolveVikeConfig.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
 import { isViteServerBuild_options } from '../../shared/isViteServerBuild.js'
+import { resolveIncludeAssetsImportedByServer } from '../../../runtime/renderPage/getPageAssets.js'
 
 type GlobRoot = {
   includeDir: string // slash-terminated
@@ -146,8 +147,7 @@ ${await getVirtualFilePageConfigsEager(isForClientSide, isDev, id, isClientRouti
         fileContent += getGlobs(globRoots, isBuild, fileType, 'extractExportNames', isV1Design)
       }
     })
-  // TODO/now: add meta.default
-  const includeAssetsImportedByServer = vikeConfig.global.config.includeAssetsImportedByServer ?? true
+  const includeAssetsImportedByServer = resolveIncludeAssetsImportedByServer(vikeConfig.global.config)
   if (includeAssetsImportedByServer && isForClientSide) {
     fileContent += getGlobs(globRoots, isBuild, '.page.server', 'extractAssets', isV1Design)
   }

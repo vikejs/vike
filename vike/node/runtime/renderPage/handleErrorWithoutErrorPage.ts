@@ -7,8 +7,6 @@ import { createHttpResponsePage, createHttpResponseError } from './createHttpRes
 import pc from '@brillout/picocolors'
 import type { GetPageAssets } from './getPageAssets.js'
 import type { PageContextAfterRender } from './renderPageAlreadyRouted.js'
-import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
-import type { PageFile } from '../../../shared/getPageFiles.js'
 
 // When the user hasn't defined _error.page.js
 async function handleErrorWithoutErrorPage<
@@ -17,8 +15,6 @@ async function handleErrorWithoutErrorPage<
     errorWhileRendering: null | Error
     is404: null | boolean
     pageId: null
-    _pageFilesAll: PageFile[]
-    _pageConfigs: PageConfigRuntime[]
     _globalContext: GlobalContextServerInternal
     urlOriginal: string
   }
@@ -27,7 +23,7 @@ async function handleErrorWithoutErrorPage<
   assert(pageContext.errorWhileRendering || pageContext.is404)
 
   {
-    const isV1 = pageContext._pageConfigs.length > 0
+    const isV1 = pageContext._globalContext._pageConfigs.length > 0
     await warnMissingErrorPage(isV1, pageContext._globalContext._isProduction)
   }
 

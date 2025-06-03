@@ -1,22 +1,25 @@
 export { createGlobalContextShared }
 export { getGlobalContextSyncErrMsg }
-export type { GlobalContextShared }
-export type { GlobalContextSharedPublic }
+export type { GlobalContextBase }
+export type { GlobalContextBasePublic }
+export type GlobalContextInternal = GlobalContextServerInternal | GlobalContextClientInternal
 
 import { changeEnumerable, objectAssign, unique } from './utils.js'
 import type { PageFile } from './getPageFiles.js'
-import { parseGlobResults } from './getPageFiles/parseGlobResults.js'
+import { parseVirtualFileExports } from './getPageFiles/parseVirtualFileExports.js'
 import { getUserFriendlyConfigsGlobal, getUserFriendlyConfigsPageEager } from './page-configs/getUserFriendlyConfigs.js'
 import type { PageConfigRuntime } from './page-configs/PageConfig.js'
 import { execHookGlobal } from './hooks/execHook.js'
 import { prepareGlobalContextForPublicUsage } from './prepareGlobalContextForPublicUsage.js'
+import type { GlobalContextServerInternal } from '../node/runtime/globalContext.js'
+import type { GlobalContextClientInternal } from '../client/runtime-client-routing/globalContext.js'
 const getGlobalContextSyncErrMsg =
   "The global context isn't set yet, call getGlobalContextSync() later or use getGlobalContext() instead."
 
 async function createGlobalContextShared<GlobalContextAddendum extends object>(
   virtualFileExports: unknown,
   globalObject: { globalContext?: Record<string, unknown> },
-  addGlobalContext?: (globalContext: GlobalContextShared) => Promise<GlobalContextAddendum>
+  addGlobalContext?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddendum>
 ) {
   const globalContext = createGlobalContextBase(virtualFileExports)
 
@@ -53,8 +56,8 @@ async function createGlobalContextShared<GlobalContextAddendum extends object>(
   return globalObject.globalContext as typeof globalContext
 }
 
-type GlobalContextSharedPublic = Pick<GlobalContextShared, 'config' | 'pages' | 'isGlobalContext'>
-type GlobalContextShared = ReturnType<typeof createGlobalContextBase>
+type GlobalContextBasePublic = Pick<GlobalContextBase, 'config' | 'pages' | 'isGlobalContext'>
+type GlobalContextBase = ReturnType<typeof createGlobalContextBase>
 function createGlobalContextBase(virtualFileExports: unknown) {
   const {
     pageFilesAll,
@@ -86,7 +89,7 @@ function createGlobalContextBase(virtualFileExports: unknown) {
 }
 
 function getConfigsAll(virtualFileExports: unknown) {
-  const { pageFilesAll, pageConfigs, pageConfigGlobal } = parseGlobResults(virtualFileExports)
+  const { pageFilesAll, pageConfigs, pageConfigGlobal } = parseVirtualFileExports(virtualFileExports)
   const allPageIds = getAllPageIds(pageFilesAll, pageConfigs)
 
   const userFriendlyConfigsGlobal = getUserFriendlyConfigsGlobal({

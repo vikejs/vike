@@ -5,7 +5,6 @@ export type { PageContextSerialization }
 
 import { stringify, isJsonSerializerError } from '@brillout/json-serializer/stringify'
 import { assert, assertUsage, assertWarning, getPropAccessNotation, hasProp, unique } from '../utils.js'
-import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { isErrorPage } from '../../../shared/error-page.js'
 import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps.js'
 import pc from '@brillout/picocolors'
@@ -14,6 +13,7 @@ import type { UrlRedirect } from '../../../shared/route/abort.js'
 import { pageContextInitIsPassedToClient } from '../../../shared/misc/pageContextInitIsPassedToClient.js'
 import { isServerSideError } from '../../../shared/misc/isServerSideError.js'
 import { getPropKeys, getPropVal, setPropVal } from './propKeys.js'
+import type { GlobalContextServerInternal } from '../globalContext.js'
 
 const passToClientBuiltInPageContext = [
   'abortReason',
@@ -35,11 +35,10 @@ type PageContextSerialization = {
   pageId: string
   routeParams: Record<string, string>
   _passToClient: string[]
-  _pageConfigs: PageConfigRuntime[]
   is404: null | boolean
   pageProps?: Record<string, unknown>
   _pageContextInit: Record<string, unknown>
-  _globalContext: Record<string, any>
+  _globalContext: GlobalContextServerInternal
 }
 function getPageContextClientSerialized(pageContext: PageContextSerialization) {
   const passToClientPageContext = getPassToClientPageContext(pageContext)
@@ -127,11 +126,11 @@ function serializeValue(value: unknown, varName?: `pageContext${string}` | `glob
 function getPassToClientPageContext(pageContext: {
   pageId: string
   _passToClient: string[]
-  _pageConfigs: PageConfigRuntime[]
+  _globalContext: GlobalContextServerInternal
   is404: null | boolean
 }): string[] {
   let passToClient = [...pageContext._passToClient, ...passToClientBuiltInPageContext]
-  if (isErrorPage(pageContext.pageId, pageContext._pageConfigs)) {
+  if (isErrorPage(pageContext.pageId, pageContext._globalContext._pageConfigs)) {
     assert(hasProp(pageContext, 'is404', 'boolean'))
     addIs404ToPageProps(pageContext)
     passToClient.push(...pageToClientBuiltInPageContextError)

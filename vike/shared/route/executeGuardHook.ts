@@ -3,23 +3,23 @@ export { executeGuardHook }
 import { getHookFromPageContext, getHookTimeoutDefault, type Hook } from '../hooks/getHook.js'
 import { assert, assertUsage, isCallable } from './utils.js'
 import type { PageFile } from '../getPageFiles.js'
-import type { PageConfigRuntime } from '../page-configs/PageConfig.js'
 import { execHookSingle, type PageContextExecuteHook } from '../hooks/execHook.js'
+import type { GlobalContextInternal } from '../createGlobalContextShared.js'
 const errIntro = 'The guard() hook defined by'
 
 async function executeGuardHook<
   PageContext extends {
     pageId: string
-    _pageFilesAll: PageFile[]
-    _pageConfigs: PageConfigRuntime[]
+  } & {
+    _globalContext: GlobalContextInternal
   } & PageContextExecuteHook
 >(pageContext: PageContext, prepareForPublicUsage: (pageConfig: PageContext) => PageContext): Promise<void> {
   let hook: Hook | null
-  if (pageContext._pageFilesAll.length > 0) {
+  if (pageContext._globalContext._pageFilesAll.length > 0) {
     // TODO/v1-release: remove
     // V0.4 design
-    assert(pageContext._pageConfigs.length === 0)
-    hook = findPageGuard(pageContext.pageId, pageContext._pageFilesAll)
+    assert(pageContext._globalContext._pageConfigs.length === 0)
+    hook = findPageGuard(pageContext.pageId, pageContext._globalContext._pageFilesAll)
   } else {
     // V1 design
     hook = getHookFromPageContext(pageContext, 'guard')

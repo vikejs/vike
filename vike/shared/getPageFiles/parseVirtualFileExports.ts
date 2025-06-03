@@ -1,4 +1,4 @@
-export { parseGlobResults }
+export { parseVirtualFileExports }
 
 // TODO/v1-release: remove old design code, and remove all assertions.
 
@@ -13,31 +13,31 @@ import type {
   PageConfigRuntimeSerialized
 } from '../page-configs/serialize/PageConfigSerialized.js'
 
-// TODO/now: rename
-function parseGlobResults(pageFilesExports: unknown): {
+function parseVirtualFileExports(virtualFileExports: unknown): {
   pageFilesAll: PageFile[]
   pageConfigs: PageConfigRuntime[]
   pageConfigGlobal: PageConfigGlobalRuntime
 } {
-  assert(hasProp(pageFilesExports, 'pageFilesLazy', 'object'))
-  assert(hasProp(pageFilesExports, 'pageFilesEager', 'object'))
-  assert(hasProp(pageFilesExports, 'pageFilesExportNamesLazy', 'object'))
-  assert(hasProp(pageFilesExports, 'pageFilesExportNamesEager', 'object'))
-  assert(hasProp(pageFilesExports.pageFilesLazy, '.page'))
+  assert(hasProp(virtualFileExports, 'pageFilesLazy', 'object'))
+  assert(hasProp(virtualFileExports, 'pageFilesEager', 'object'))
+  assert(hasProp(virtualFileExports, 'pageFilesExportNamesLazy', 'object'))
+  assert(hasProp(virtualFileExports, 'pageFilesExportNamesEager', 'object'))
+  assert(hasProp(virtualFileExports.pageFilesLazy, '.page'))
   assert(
-    hasProp(pageFilesExports.pageFilesLazy, '.page.client') || hasProp(pageFilesExports.pageFilesLazy, '.page.server')
+    hasProp(virtualFileExports.pageFilesLazy, '.page.client') ||
+      hasProp(virtualFileExports.pageFilesLazy, '.page.server')
   )
-  assert(hasProp(pageFilesExports, 'pageFilesList', 'string[]'))
+  assert(hasProp(virtualFileExports, 'pageFilesList', 'string[]'))
 
-  assert(hasProp(pageFilesExports, 'pageConfigsSerialized'))
-  assert(hasProp(pageFilesExports, 'pageConfigGlobalSerialized'))
-  const { pageConfigsSerialized, pageConfigGlobalSerialized } = pageFilesExports
+  assert(hasProp(virtualFileExports, 'pageConfigsSerialized'))
+  assert(hasProp(virtualFileExports, 'pageConfigGlobalSerialized'))
+  const { pageConfigsSerialized, pageConfigGlobalSerialized } = virtualFileExports
   assertPageConfigsSerialized(pageConfigsSerialized)
   assertPageConfigGlobalSerialized(pageConfigGlobalSerialized)
   const { pageConfigs, pageConfigGlobal } = parsePageConfigs(pageConfigsSerialized, pageConfigGlobalSerialized)
 
   const pageFilesMap: Record<string, PageFile> = {}
-  parseGlobResult(pageFilesExports.pageFilesLazy).forEach(({ filePath, pageFile, globValue }) => {
+  parseGlobResult(virtualFileExports.pageFilesLazy).forEach(({ filePath, pageFile, globValue }) => {
     pageFile = pageFilesMap[filePath] = pageFilesMap[filePath] ?? pageFile
     const loadModule = globValue
     assertLoadModule(loadModule)
@@ -48,7 +48,7 @@ function parseGlobResults(pageFilesExports: unknown): {
       }
     }
   })
-  parseGlobResult(pageFilesExports.pageFilesExportNamesLazy).forEach(({ filePath, pageFile, globValue }) => {
+  parseGlobResult(virtualFileExports.pageFilesExportNamesLazy).forEach(({ filePath, pageFile, globValue }) => {
     pageFile = pageFilesMap[filePath] = pageFilesMap[filePath] ?? pageFile
     const loadModule = globValue
     assertLoadModule(loadModule)
@@ -61,13 +61,13 @@ function parseGlobResults(pageFilesExports: unknown): {
     }
   })
   // `pageFilesEager` contains `.page.route.js` files
-  parseGlobResult(pageFilesExports.pageFilesEager).forEach(({ filePath, pageFile, globValue }) => {
+  parseGlobResult(virtualFileExports.pageFilesEager).forEach(({ filePath, pageFile, globValue }) => {
     pageFile = pageFilesMap[filePath] = pageFilesMap[filePath] ?? pageFile
     const moduleExports = globValue
     assert(isObject(moduleExports))
     pageFile.fileExports = moduleExports
   })
-  parseGlobResult(pageFilesExports.pageFilesExportNamesEager).forEach(({ filePath, pageFile, globValue }) => {
+  parseGlobResult(virtualFileExports.pageFilesExportNamesEager).forEach(({ filePath, pageFile, globValue }) => {
     pageFile = pageFilesMap[filePath] = pageFilesMap[filePath] ?? pageFile
     const moduleExports = globValue
     assert(isObject(moduleExports))
@@ -75,7 +75,7 @@ function parseGlobResults(pageFilesExports: unknown): {
     pageFile.exportNames = moduleExports.exportNames
   })
 
-  pageFilesExports.pageFilesList.forEach((filePath) => {
+  virtualFileExports.pageFilesList.forEach((filePath) => {
     pageFilesMap[filePath] = pageFilesMap[filePath] ?? getPageFileObject(filePath)
   })
 
