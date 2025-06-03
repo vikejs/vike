@@ -27,7 +27,7 @@ import { isTemporaryBuildFile } from './transpileAndExecuteFile.js'
 import { getEnvVarObject } from '../../../../shared/getEnvVarObject.js'
 import pc from '@brillout/picocolors'
 import picomatch, { type Matcher } from 'picomatch'
-import { ignorePatternsBuiltIn } from './crawlPlusFiles/ignorePatternsBuiltIn.js'
+import { ignorePatternsBuiltIn } from '../../../../shared/resolveVikeConfig/crawlPlusFiles/ignorePatternsBuiltIn.js'
 const execA = promisify(exec)
 const debug = createDebugger('vike:crawl')
 
