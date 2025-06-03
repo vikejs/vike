@@ -15,7 +15,7 @@ import { devConfig } from './plugins/devConfig/index.js'
 import { pluginVirtualFiles } from './plugins/pluginVirtualFiles/index.js'
 import { pluginExtractAssets } from './plugins/pluginExtractAssets.js'
 import { pluginExtractExportNames } from './plugins/pluginExtractExportNames.js'
-import { setGlobalContext } from './plugins/setGlobalContext.js'
+import { pluginSetGlobalContext } from './plugins/pluginSetGlobalContext.js'
 import { pluginCommon } from './plugins/pluginCommon.js'
 import { baseUrls } from './plugins/baseUrls.js'
 import { pluginEnvVars } from './plugins/pluginEnvVars.js'
@@ -41,7 +41,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginIntero
     pluginPreview(),
     ...pluginExtractAssets(),
     pluginExtractExportNames(),
-    ...setGlobalContext(),
+    ...pluginSetGlobalContext(),
     baseUrls(),
     pluginEnvVars(),
     fileEnv(),

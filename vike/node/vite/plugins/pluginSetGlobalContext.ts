@@ -1,4 +1,4 @@
-export { setGlobalContext }
+export { pluginSetGlobalContext }
 
 import type { Plugin } from 'vite'
 import {
@@ -10,11 +10,11 @@ import { isDevCheck, markSetup_isViteDev, markSetup_viteDevServer, markSetup_vit
 import { reloadVikeConfig } from '../shared/resolveVikeConfig.js'
 import { getViteConfigRuntime } from '../shared/getViteConfigRuntime.js'
 
-function setGlobalContext(): Plugin[] {
+function pluginSetGlobalContext(): Plugin[] {
   let isServerReload = false
   return [
     {
-      name: 'vike:setGlobalContext:pre',
+      name: 'vike:pluginSetGlobalContext:pre',
       enforce: 'pre',
       // This hook is called not only at server start but also at server restart (a new `viteDevServer` instance is created)
       configureServer: {
@@ -39,7 +39,7 @@ function setGlobalContext(): Plugin[] {
       }
     },
     {
-      name: 'vike:setGlobalContext:post',
+      name: 'vike:pluginSetGlobalContext:post',
       enforce: 'post',
       configResolved: {
         order: 'post',
