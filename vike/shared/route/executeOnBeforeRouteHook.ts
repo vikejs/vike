@@ -20,6 +20,8 @@ import {
   type PageContextPrepareMinimum,
   preparePageContextForPublicUsage
 } from '../preparePageContextForPublicUsage.js'
+import type { GlobalContextServerInternal } from '../../node/runtime/globalContext.js'
+import type { GlobalContextClientInternal } from '../../client/runtime-client-routing/globalContext.js'
 
 async function executeOnBeforeRouteHook(
   pageContext: PageContextForRoute
@@ -60,7 +62,7 @@ async function getPageContextFromHook(
   onBeforeRouteHook: Hook,
   pageContext: PageContextPrepareMinimum & {
     urlOriginal: string
-    _allPageIds: string[]
+    _globalContext: GlobalContextServerInternal | GlobalContextClientInternal
   }
 ): Promise<null | {
   urlOriginal?: string
@@ -99,9 +101,9 @@ async function getPageContextFromHook(
     )} should be` as const
     assertUsage(hasProp(hookReturn.pageContext, 'pageId', 'string'), `${errPrefix2} a string or null`)
     assertUsage(
-      pageContext._allPageIds.includes(hookReturn.pageContext.pageId),
+      pageContext._globalContext._allPageIds.includes(hookReturn.pageContext.pageId),
       `${errPrefix2} ${joinEnglish(
-        pageContext._allPageIds.map((s) => pc.cyan(s)),
+        pageContext._globalContext._allPageIds.map((s) => pc.cyan(s)),
         'or'
       )}`
     )

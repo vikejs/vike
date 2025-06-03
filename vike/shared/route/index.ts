@@ -11,7 +11,6 @@ if (isBrowser()) {
   assertClientRouting()
 }
 
-import type { PageFile } from '../getPageFiles.js'
 import { assert, assertUsage, isPlainObject, objectAssign } from './utils.js'
 import { type PageContextUrlInternal, type PageContextUrlSource } from '../getPageContextUrlComputed.js'
 import { resolvePrecendence } from './resolvePrecedence.js'
@@ -20,16 +19,12 @@ import { resolveRouteFunction } from './resolveRouteFunction.js'
 import { executeOnBeforeRouteHook } from './executeOnBeforeRouteHook.js'
 import type { PageRoutes, RouteType } from './loadPageRoutes.js'
 import { debug } from './debug.js'
-import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
 import pc from '@brillout/picocolors'
 import type { Hook } from '../hooks/getHook.js'
 import type { GlobalContextServerInternal } from '../../node/runtime/globalContext.js'
 import type { GlobalContextClientInternal } from '../../client/runtime-client-routing/globalContext.js'
 
 type PageContextForRoute = PageContextUrlInternal & {
-  _pageConfigs: PageConfigRuntime[]
-  _allPageIds: string[]
-  _pageConfigGlobal: PageConfigGlobalRuntime
   _pageRoutes: PageRoutes
   _onBeforeRouteHook: Hook | null
   _globalContext: GlobalContextServerInternal | GlobalContextClientInternal
@@ -69,9 +64,9 @@ async function route(pageContext: PageContextForRoute, skipOnBeforeRouteHook?: t
   }
 
   // Vike's routing
-  const allPageIds = pageContext._allPageIds
+  const allPageIds = pageContext._globalContext._allPageIds
   assertUsage(allPageIds.length > 0, 'No page found. You must create at least one page.')
-  assert(pageContext._globalContext._pageFilesAll.length > 0 || pageContext._pageConfigs.length > 0)
+  assert(pageContext._globalContext._pageFilesAll.length > 0 || pageContext._globalContext._pageConfigs.length > 0)
   const { urlPathname } = pageContext
   assert(urlPathname.startsWith('/'))
 
