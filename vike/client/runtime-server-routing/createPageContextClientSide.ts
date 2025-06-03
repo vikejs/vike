@@ -43,9 +43,9 @@ async function createPageContextClientSide() {
     pageContextCreated,
     await loadPageConfigsLazyClientSide(
       pageContextCreated.pageId,
-      pageContextCreated._pageFilesAll,
-      pageContextCreated._pageConfigs,
-      pageContextCreated._pageConfigGlobal
+      globalContext._pageFilesAll,
+      globalContext._pageConfigs,
+      globalContext._pageConfigGlobal
     )
   )
 
