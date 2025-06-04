@@ -37,7 +37,7 @@ import {
   objectDefineProperty
 } from '../utils.js'
 import pc from '@brillout/picocolors'
-import type { ConfigResolved } from './Config/PageContextConfig.js'
+import type { ConfigResolved } from '../../types/Config/PageContextConfig.js'
 import type { Route } from '../../types/Config.js'
 
 // TODO/v1-release: remove
