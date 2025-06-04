@@ -1,4 +1,3 @@
-// TODO/now-4: rename all this?
 // TODO/now-4: use public API internally?
 // TODO/now-4: rename definedAt => definedBy
 export { getVikeConfigPublicGlobal }
