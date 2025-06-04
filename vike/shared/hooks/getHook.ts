@@ -14,9 +14,9 @@ export type { HooksTimeoutProvidedByUser }
 export { getHookTimeoutDefault }
 
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
-import type { PageConfigUserFriendlyOld } from '../getPageFiles.js'
-import type { HookNameOld, HookNamePage, HookNameGlobal, HookName } from '../page-configs/Config.js'
-import type { ConfigValue, PageConfigGlobalRuntime, PageConfigRuntime } from '../page-configs/PageConfig.js'
+import type { VikeConfigPublicPageLazy } from '../getPageFiles.js'
+import type { HookNameOld, HookNamePage, HookNameGlobal, HookName } from '../../types/Config.js'
+import type { ConfigValue, PageConfigGlobalRuntime, PageConfigRuntime } from '../../types/PageConfig.js'
 import { getHookFilePathToShowToUser } from '../page-configs/helpers.js'
 import { getConfigValueRuntime } from '../page-configs/getConfigValueRuntime.js'
 import { assert, assertUsage, checkType, isArray, isCallable, isObject } from '../utils.js'
@@ -48,7 +48,7 @@ type HookTimeout = {
 type HooksTimeoutProvidedByUser = false | Partial<Record<HookNameOld, false | Partial<HookTimeout>>>
 type HooksTimeoutProvidedByUserNormalized = false | Partial<Record<HookNameOld, Partial<HookTimeout>>>
 
-function getHookFromPageContext(pageContext: PageConfigUserFriendlyOld, hookName: HookNameOld): null | Hook {
+function getHookFromPageContext(pageContext: VikeConfigPublicPageLazy, hookName: HookNameOld): null | Hook {
   if (!(hookName in pageContext.exports)) {
     return null
   }
@@ -64,7 +64,7 @@ function getHookFromPageContext(pageContext: PageConfigUserFriendlyOld, hookName
   return getHook(hookFn, hookName, hookFilePath, hookTimeout)
 }
 // TO-DO/eventually: remove getHookFromPageContext() in favor of getHookFromPageContextNew()
-function getHookFromPageContextNew(hookName: HookName, pageContext: PageConfigUserFriendlyOld): Hook[] {
+function getHookFromPageContextNew(hookName: HookName, pageContext: VikeConfigPublicPageLazy): Hook[] {
   const { hooksTimeout } = pageContext.config
   const hookTimeout = getHookTimeout(hooksTimeout, hookName)
   const hooks: Hook[] = []

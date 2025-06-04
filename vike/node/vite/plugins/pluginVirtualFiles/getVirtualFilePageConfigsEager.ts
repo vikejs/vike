@@ -1,6 +1,6 @@
 export { getVirtualFilePageConfigsEager }
 
-import type { PageConfigBuildTime, PageConfigGlobalBuildTime } from '../../../../shared/page-configs/PageConfig.js'
+import type { PageConfigBuildTime, PageConfigGlobalBuildTime } from '../../../../types/PageConfig.js'
 import { getVirtualFileIdPageConfigLazy } from '../../../shared/virtualFiles/virtualFilePageConfigLazy.js'
 import { debug } from './debug.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfig.js'
@@ -14,7 +14,7 @@ async function getVirtualFilePageConfigsEager(
   isClientRouting: boolean
 ): Promise<string> {
   const vikeConfig = await getVikeConfigInternal(true)
-  const { pageConfigs, pageConfigGlobal } = vikeConfig
+  const { _pageConfigs: pageConfigs, _pageConfigGlobal: pageConfigGlobal } = vikeConfig
   return getCode(pageConfigs, pageConfigGlobal, isForClientSide, isDev, id, isClientRouting)
 }
 

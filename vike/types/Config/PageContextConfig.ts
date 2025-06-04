@@ -1,7 +1,7 @@
 export type { PageContextConfig }
 export type { ConfigResolved }
 
-import type { VikePackages } from '../../VikeNamespace.js'
+import type { VikePackages } from '../VikeNamespace.js'
 import type { ConfigBuiltIn, ConfigBuiltInResolved, ImportString } from '../Config.js'
 import type { Combine, IsNotEmpty, XOR5 } from './helpers.js'
 

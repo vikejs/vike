@@ -1,7 +1,7 @@
 export { getVirtualFilePageConfigLazy }
 
 import { assert } from '../../utils.js'
-import type { PageConfigBuildTime } from '../../../../shared/page-configs/PageConfig.js'
+import type { PageConfigBuildTime } from '../../../../types/PageConfig.js'
 import {
   getVirtualFileIdPageConfigLazy,
   isVirtualFileIdPageConfigLazy
@@ -27,14 +27,14 @@ async function getVirtualFilePageConfigLazy(id: string, isDev: boolean, config: 
   */
   const { pageId, isForClientSide } = result
   const vikeConfig = await getVikeConfigInternal(true)
-  const { pageConfigs } = vikeConfig
+  const { _pageConfigs: pageConfigs } = vikeConfig
   const pageConfig = pageConfigs.find((pageConfig) => pageConfig.pageId === pageId)
   assert(pageConfig, { id, pageId })
   const code = getLoadConfigLazy(
     pageConfig,
     isForClientSide,
     pageId,
-    resolveIncludeAssetsImportedByServer(vikeConfig.global.config),
+    resolveIncludeAssetsImportedByServer(vikeConfig.config),
     config,
     isDev
   )

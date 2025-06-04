@@ -47,12 +47,12 @@ import {
   checkType,
   PROJECT_VERSION
 } from './utils.js'
-import type { ViteManifest } from '../shared/ViteManifest.js'
+import type { ViteManifest } from '../../types/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
 import { virtualFileIdEntryServer } from '../shared/virtualFiles/virtualFileEntry.js'
 import pc from '@brillout/picocolors'
-import type { PageConfigUserFriendly } from '../../shared/page-configs/getUserFriendlyConfigs.js'
+import type { VikeConfigPublicGlobal } from '../../shared/page-configs/getVikeConfigPublic.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { assertV1Design } from '../shared/assertV1Design.js'
 import { resolveBase } from '../shared/resolveBase.js'
@@ -62,7 +62,7 @@ import {
   getGlobalContextSyncErrMsg,
   type GlobalContextBase
 } from '../../shared/createGlobalContextShared.js'
-import type { GlobalContext } from '../../shared/types.js'
+import type { GlobalContext } from '../../types/PageContext.js'
 import { prepareGlobalContextForPublicUsage } from '../../shared/prepareGlobalContextForPublicUsage.js'
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
@@ -518,7 +518,7 @@ function getInitialGlobalContext() {
 
 function resolveBaseRuntime(
   viteConfigRuntime: BuildInfo['viteConfigRuntime'],
-  config: PageConfigUserFriendly['config']
+  config: VikeConfigPublicGlobal['config']
 ) {
   const baseViteOriginal = viteConfigRuntime._baseViteOriginal
   const baseServerUnresolved = config.baseServer ?? null

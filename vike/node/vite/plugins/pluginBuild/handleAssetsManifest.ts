@@ -8,7 +8,7 @@ import fs from 'fs/promises'
 import fs_sync from 'fs'
 import path from 'path'
 import { existsSync } from 'fs'
-import type { ViteManifest, ViteManifestEntry } from '../../../shared/ViteManifest.js'
+import type { ViteManifest, ViteManifestEntry } from '../../../../types/ViteManifest.js'
 import {
   assert,
   assertIsSingleModuleInstance,
@@ -355,7 +355,7 @@ async function handleAssetsManifest_getBuildConfig(config: UserConfig) {
     // Required if `ssrEmitAssets: true`, see https://github.com/vitejs/vite/pull/11430#issuecomment-1454800934
     cssMinify: isFixEnabled ? 'esbuild' : undefined,
     manifest: manifestTempFile,
-    copyPublicDir: vikeConfig.global.config.vite6BuilderApp
+    copyPublicDir: vikeConfig.config.vite6BuilderApp
       ? // Already set by vike:build:pluginBuildApp
         undefined
       : !isViteServerBuild(config)

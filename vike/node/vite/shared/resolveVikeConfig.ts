@@ -1,7 +1,7 @@
+// Internal usage
 export { getVikeConfigInternal }
 export { getVikeConfigInternalOptional }
 export { getVikeConfigInternalSync }
-export { getVikeConfig }
 export { setVikeConfigContext }
 export { reloadVikeConfig }
 export { isV1Design }
@@ -10,6 +10,9 @@ export { getConfigDefinitionOptional }
 export { getVikeConfigFromCliOrEnv }
 export { isOverriden }
 export type { VikeConfigInternal }
+
+// Public usage
+export { getVikeConfig }
 export type { VikeConfig }
 
 import {
@@ -46,8 +49,8 @@ import type {
   ConfigValues,
   PageConfigRoute,
   DefinedBy
-} from '../../../shared/page-configs/PageConfig.js'
-import type { Config } from '../../../shared/page-configs/Config.js'
+} from '../../../types/PageConfig.js'
+import type { Config } from '../../../types/Config.js'
 import {
   configDefinitionsBuiltIn,
   type ConfigDefinitionsInternal,
@@ -76,14 +79,14 @@ import { getConfigDefinedAt, getDefinedByString } from '../../../shared/page-con
 import { loadPointerImport, loadValueFile } from './resolveVikeConfig/loadFileAtConfigTime.js'
 import { resolvePointerImport } from './resolveVikeConfig/resolvePointerImport.js'
 import { getFilePathResolved } from './getFilePath.js'
-import type { FilePath } from '../../../shared/page-configs/FilePath.js'
+import type { FilePath } from '../../../types/FilePath.js'
 import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
 import {
-  getUserFriendlyConfigsGlobal,
-  getUserFriendlyConfigsPageEager,
-  type PageConfigUserFriendly,
-  type PageConfigsUserFriendly
-} from '../../../shared/page-configs/getUserFriendlyConfigs.js'
+  getVikeConfigPublicGlobal,
+  getVikeConfigPublicPageEager,
+  type VikeConfigPublicGlobal,
+  type VikeConfigPublicPageEager
+} from '../../../shared/page-configs/getVikeConfigPublic.js'
 import { getConfigValuesBase, isJsonValue } from '../../../shared/page-configs/serialize/serializeConfigValues.js'
 import { getPlusFilesAll, type PlusFile, type PlusFilesByLocationId } from './resolveVikeConfig/getPlusFilesAll.js'
 import { getEnvVarObject } from './getEnvVarObject.js'
@@ -92,6 +95,7 @@ import { getCliOptions } from '../../cli/context.js'
 import type { PrerenderContextPublic } from '../../prerender/runPrerender.js'
 import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderConfig.js'
 import type { ResolvedConfig, UserConfig } from 'vite'
+import { getProxyForPublicUsage } from '../../../shared/getProxyForPublicUsage.js'
 assertIsNotProductionRuntime()
 
 // We can simply use global variables since Vike's config is:
@@ -113,11 +117,15 @@ type PrerenderContext = {
 } & ({ [K in keyof PrerenderContextPublic]: null } | PrerenderContextPublic)
 
 type VikeConfigInternal = {
-  pageConfigs: PageConfigBuildTime[]
-  pageConfigGlobal: PageConfigGlobalBuildTime
-  global: PageConfigUserFriendly
-  pages: PageConfigsUserFriendly
-  vikeConfigDependencies: Set<string>
+  _pageConfigs: PageConfigBuildTime[]
+  _pageConfigGlobal: PageConfigGlobalBuildTime
+  config: VikeConfigPublicGlobal['config']
+  _from: VikeConfigPublicGlobal['_from']
+  pages: Record<
+    string, // pageId
+    VikeConfigPublicPageEager
+  >
+  _vikeConfigDependencies: Set<string>
   prerenderContext: PrerenderContext
 }
 
@@ -188,19 +196,15 @@ function getVikeConfig(
   config: ResolvedConfig | UserConfig
 ): VikeConfig {
   const vikeConfig = getVikeConfigInternalSync()
-  assertUsage(vikeConfig, "getVikeConfig() can only be used when Vite is running with Vike's Vite plugin")
-  return {
-    pages: vikeConfig.pages,
-    config: vikeConfig.global.config,
-    prerenderContext
-  }
+  assertUsage(
+    vikeConfig,
+    'getVikeConfig() can only be used when Vite is loaded (i.e. during development or build) — Vite is never loaded in production.'
+  )
+  const vikeConfigPublic = getProxyForPublicUsage(vikeConfig, 'vikeConfig')
+  return vikeConfigPublic
 }
 // Public usage
-type VikeConfig = {
-  config: VikeConfigInternal['global']['config']
-  pages: VikeConfigInternal['pages']
-  prerenderContext: VikeConfigInternal['prerenderContext']
-}
+type VikeConfig = Pick<VikeConfigInternal, 'config' | 'pages' | 'prerenderContext'>
 
 function setVikeConfigContext(vikeConfigCtx_: VikeConfigContext) {
   // If the user changes Vite's `config.root` => Vite completely reloads itself => setVikeConfigContext() is called again
@@ -264,22 +268,24 @@ async function resolveVikeConfig_withErrorHandling(
       if (!doNotRestartViteOnError) {
         restartVite = true
       }
-      const globalDummy = getUserFriendlyConfigsGlobal({ pageConfigGlobalValues: {} })
-      const pageConfigsDummy: VikeConfigInternal['pageConfigs'] = []
+      const globalDummy = getVikeConfigPublicGlobal({ pageConfigGlobalValues: {} })
+      const pageConfigsDummy: VikeConfigInternal['_pageConfigs'] = []
       const prerenderContextDummy = resolvePrerenderContext({
-        global: globalDummy,
-        pageConfigs: pageConfigsDummy
+        config: globalDummy.config,
+        _from: globalDummy._from,
+        _pageConfigs: pageConfigsDummy
       })
       const dummyData: VikeConfigInternal = {
-        pageConfigs: pageConfigsDummy,
-        pageConfigGlobal: {
+        _pageConfigs: pageConfigsDummy,
+        _pageConfigGlobal: {
           configDefinitions: {},
           configValueSources: {}
         },
-        global: globalDummy,
+        config: globalDummy.config,
+        _from: globalDummy._from,
         pages: {},
         prerenderContext: prerenderContextDummy,
-        vikeConfigDependencies: new Set()
+        _vikeConfigDependencies: new Set()
       }
       return dummyData
     }
@@ -309,28 +315,30 @@ async function resolveVikeConfig(userRootDir: string, vikeVitePluginOptions: unk
 
   // global
   const pageConfigGlobalValues = getConfigValues(pageConfigGlobal)
-  const userFriendlyConfigsGlobal = getUserFriendlyConfigsGlobal({ pageConfigGlobalValues })
+  const vikeConfigPublicGlobal = getVikeConfigPublicGlobal({ pageConfigGlobalValues })
 
   // pages
-  const userFriendlyConfigsPageEager = objectFromEntries(
+  const vikeConfigPublicPagesEager = objectFromEntries(
     pageConfigs.map((pageConfig) => {
       const pageConfigValues = getConfigValues(pageConfig, true)
-      return getUserFriendlyConfigsPageEager(pageConfigGlobalValues, pageConfig, pageConfigValues)
+      return getVikeConfigPublicPageEager(pageConfigGlobalValues, pageConfig, pageConfigValues)
     })
   )
 
   const prerenderContext = resolvePrerenderContext({
-    global: userFriendlyConfigsGlobal,
-    pageConfigs
+    config: vikeConfigPublicGlobal.config,
+    _from: vikeConfigPublicGlobal._from,
+    _pageConfigs: pageConfigs
   })
 
   const vikeConfig: VikeConfigInternal = {
-    pageConfigs,
-    pageConfigGlobal,
-    global: userFriendlyConfigsGlobal,
-    pages: userFriendlyConfigsPageEager,
+    _pageConfigs: pageConfigs,
+    _pageConfigGlobal: pageConfigGlobal,
+    config: vikeConfigPublicGlobal.config,
+    _from: vikeConfigPublicGlobal._from,
+    pages: vikeConfigPublicPagesEager,
     prerenderContext,
-    vikeConfigDependencies: esbuildCache.vikeConfigDependencies
+    _vikeConfigDependencies: esbuildCache.vikeConfigDependencies
   }
   vikeConfigSync = vikeConfig
 

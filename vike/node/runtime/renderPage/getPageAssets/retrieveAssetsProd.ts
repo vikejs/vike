@@ -1,7 +1,7 @@
 export { retrieveAssetsProd }
 
 import { assert, isImportPathNpmPackage } from '../../utils.js'
-import type { ViteManifest } from '../../../shared/ViteManifest.js'
+import type { ViteManifest } from '../../../../types/ViteManifest.js'
 import { getManifestEntry } from './getManifestEntry.js'
 import { extractAssetsAddQuery } from '../../../shared/extractAssetsQuery.js'
 import type { ClientDependency } from '../../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'

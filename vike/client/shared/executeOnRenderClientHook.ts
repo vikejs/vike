@@ -3,7 +3,7 @@ export type { PageContextBeforeRenderClient }
 
 import { assert, assertUsage } from '../runtime-server-routing/utils.js'
 import { getHookFromPageContext, type Hook } from '../../shared/hooks/getHook.js'
-import type { PageFile, PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
+import type { PageFile, VikeConfigPublicPageLazy } from '../../shared/getPageFiles.js'
 import type { PageContextForPublicUsageClientShared } from './preparePageContextForPublicUsageClientShared.js'
 import { execHookSingle } from '../../shared/hooks/execHook.js'
 import type { GlobalContextClientInternalShared } from './createGetGlobalContextClient.js'
@@ -14,7 +14,7 @@ type PageContextBeforeRenderClient = {
   urlPathname?: string
   pageId: string
   _globalContext: GlobalContextClientInternalShared
-} & PageConfigUserFriendlyOld &
+} & VikeConfigPublicPageLazy &
   PageContextForPublicUsageClientShared
 
 async function executeOnRenderClientHook<PageContext extends PageContextBeforeRenderClient>(

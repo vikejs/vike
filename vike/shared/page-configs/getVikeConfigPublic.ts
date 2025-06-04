@@ -1,11 +1,11 @@
-// TODO/now-4: rename all this?
-// TODO/now-4: use public API internally?
-export { getUserFriendlyConfigsGlobal }
-export { getUserFriendlyConfigsPageEager }
-export { getUserFriendlyConfigsPageLazy }
-export type { PageConfigsUserFriendly }
-export type { PageConfigUserFriendly }
-export type { PageConfigUserFriendlyOld }
+// TODO/now-flat-pageContext: use public API internally?
+// TODO/now-flat-pageContext: rename definedAt => definedBy
+export { getVikeConfigPublicGlobal }
+export { getVikeConfigPublicPageEager }
+export { getVikeConfigPublicPageLazy }
+export type { VikeConfigPublicGlobal }
+export type { VikeConfigPublicPageEager }
+export type { VikeConfigPublicPageLazy }
 export type { Source }
 export type { Sources }
 export type { From }
@@ -22,7 +22,7 @@ import type {
   PageConfigGlobalRuntime,
   PageConfigRuntime,
   PageConfigRuntimeLoaded
-} from './PageConfig.js'
+} from '../../types/PageConfig.js'
 import { type ConfigDefinedAtOptional, getConfigDefinedAtOptional, getDefinedAtString } from './getConfigDefinedAt.js'
 import { getConfigValueFilePathToShowToUser } from './helpers.js'
 import {
@@ -37,8 +37,8 @@ import {
   objectDefineProperty
 } from '../utils.js'
 import pc from '@brillout/picocolors'
-import type { ConfigResolved } from './Config/PageContextConfig.js'
-import type { Route } from './Config.js'
+import type { ConfigResolved } from '../../types/Config/PageContextConfig.js'
+import type { Route } from '../../types/Config.js'
 
 // TODO/v1-release: remove
 type ExportsAll = Record<
@@ -67,7 +67,7 @@ type ConfigEntries = Record<
     configDefinedByFile: string | null
   }[]
 >
-type PageConfigUserFriendlyOld = {
+type VikeConfigPublicPageLazy = {
   config: ConfigResolved
   source: Source
   sources: Sources
@@ -104,18 +104,34 @@ type Sources = Record<
   string, // configName
   SourceAny[]
 >
-type SourceAny = SourceConfigs
-/* TODO/eventually: https://github.com/vikejs/vike/issues/1268
+type SourceAny = SourceConfigsStandard | SourceConfigsCumulative | SourceConfigsComputed
+/* TO-DO/eventually: https://github.com/vikejs/vike/issues/1268
   | SourceHooks
-  | SourceRenderFailure
-  | SourceVikeInternal
-  */
+  | SourceRequest
+  | SourceVike
+// Defined by user hook
+type SourceHooks = {
+  type: 'hooks'
+  value: unknown
+  // Whether the value comes from previously aborted (e.g. `throw render()`) or failed render (e.g. hook throwing an error).
+  // https://github.com/vikejs/vike/issues/1112
+  isFromPreviousRender?: number
+  definedAt: string
+}
+// Defined by renderPage(pageContextInit)
+type SourceRequest = {
+  type: 'request'
+  value: unknown
+  definedAt: 'renderPage()'
+}
+// Defined by Vike (Vike built-ins)
+type SourceVike = {
+  type: 'vike'
+  value: unknown
+  definedAt: 'Vike'
+}
+//*/
 
-type SourceConfigs = SourceConfigsStandard | SourceConfigsCumulative | SourceConfigsComputed
-/* Potential upcoming feature: resolve cumulative values at config-time instead of runtime,
-   in order to save KBs on the client-side.
- | SourceConfigsResolved
- */
 type SourceConfigsStandard = {
   type: 'configsStandard'
   value: unknown
@@ -123,6 +139,7 @@ type SourceConfigsStandard = {
 }
 type SourceConfigsCumulative = {
   type: 'configsCumulative'
+  definedAt: string
   values: {
     value: unknown
     definedAt: string
@@ -130,21 +147,17 @@ type SourceConfigsCumulative = {
 }
 type SourceConfigsComputed = {
   type: 'configsComputed'
+  definedAt: 'Vike'
   value: unknown
 }
 
-// See: [Flat `pageContext`](https://github.com/vikejs/vike/issues/1268)
-type PageConfigUserFriendly = {
+type VikeConfigPublic = {
   config: ConfigResolved
-  // TODO/now-4 expose publicly?
+  // TODO/now-flat-pageContext: expose publicly?
   _source: Source
   _sources: Sources
   _from: From
 }
-type PageConfigsUserFriendly = Record<
-  string, // pageId
-  PageConfigUserFriendlyWithRoute
->
 type WithRoute =
   | {
       route: Route
@@ -154,66 +167,58 @@ type WithRoute =
       route?: undefined
       isErrorPage: true
     }
-type PageConfigUserFriendlyWithRoute = PageConfigUserFriendly & WithRoute
-function getUserFriendlyConfigsPageEager(
+type VikeConfigPublicPageEager = VikeConfigPublic & WithRoute
+type VikeConfigPublicGlobal = VikeConfigPublic
+function getVikeConfigPublicPageEager(
   pageConfigGlobalValues: ConfigValues,
   pageConfig: PageConfigRuntime | PageConfigBuildTime,
   pageConfigValues: ConfigValues
-): [string, PageConfigUserFriendlyWithRoute] {
-  const pageConfigUserFriendly = getUserFriendlyConfigs_public({ pageConfigGlobalValues, pageConfigValues })
-  let page: PageConfigUserFriendlyWithRoute
+): [string, VikeConfigPublicPageEager] {
+  const vikeConfigPublicPage_ = getVikeConfigPublic_base({ pageConfigGlobalValues, pageConfigValues })
+  const vikeConfigPublicPage = getPublicCopy(vikeConfigPublicPage_)
+  let page: VikeConfigPublicPageEager
   if (!pageConfig.isErrorPage) {
-    const route = pageConfigUserFriendly.config.route ?? pageConfig.routeFilesystem.routeString
+    const route = vikeConfigPublicPage.config.route ?? pageConfig.routeFilesystem.routeString
     page = {
-      ...pageConfigUserFriendly,
+      ...vikeConfigPublicPage,
       route
     }
   } else {
     page = {
-      ...pageConfigUserFriendly,
+      ...vikeConfigPublicPage,
       isErrorPage: true
     }
   }
   return [pageConfig.pageId, page]
 }
-function getUserFriendlyConfigs_public({
-  pageConfigGlobalValues,
-  pageConfigValues
-}: { pageConfigGlobalValues: ConfigValues; pageConfigValues: ConfigValues }) {
-  const pageConfigUserFriendly = getUserFriendlyConfigs_base({ pageConfigGlobalValues, pageConfigValues })
-  return getPublicCopy(pageConfigUserFriendly)
-}
-function getPublicCopy(
-  pageConfigUserFriendly: ReturnType<typeof getUserFriendlyConfigs_V1Design>
-): PageConfigUserFriendly {
-  const p = pageConfigUserFriendly
+function getPublicCopy(vikeConfigPublic: ReturnType<typeof getVikeConfigPublic_V1Design>): VikeConfigPublic {
   return {
-    config: p.config,
-    _source: p.source,
-    _sources: p.sources,
-    _from: p.from
+    config: vikeConfigPublic.config,
+    _source: vikeConfigPublic.source,
+    _sources: vikeConfigPublic.sources,
+    _from: vikeConfigPublic.from
   }
 }
-function getUserFriendlyConfigs_base({
+function getVikeConfigPublic_base({
   pageConfigGlobalValues,
   pageConfigValues
 }: { pageConfigGlobalValues: ConfigValues; pageConfigValues: ConfigValues }) {
   const configValues = { ...pageConfigGlobalValues, ...pageConfigValues }
-  return getUserFriendlyConfigs_V1Design({ configValues })
+  return getVikeConfigPublic_V1Design({ configValues })
 }
 
-function getUserFriendlyConfigsGlobal({
+function getVikeConfigPublicGlobal({
   pageConfigGlobalValues
-}: { pageConfigGlobalValues: ConfigValues }): PageConfigUserFriendly {
-  const pageConfigGlobalUserFriendly = getUserFriendlyConfigs_V1Design({ configValues: pageConfigGlobalValues })
-  return getPublicCopy(pageConfigGlobalUserFriendly)
+}: { pageConfigGlobalValues: ConfigValues }): VikeConfigPublicGlobal {
+  const vikeConfigPublicGlobal = getVikeConfigPublic_V1Design({ configValues: pageConfigGlobalValues })
+  return getPublicCopy(vikeConfigPublicGlobal)
 }
 
-function getUserFriendlyConfigsPageLazy(
+function getVikeConfigPublicPageLazy(
   pageFiles: PageFile[], // V0.4 design
   pageConfig: PageConfigRuntimeLoaded | null, // V1 design
   pageConfigGlobal: PageConfigGlobalRuntime
-): PageConfigUserFriendlyOld {
+): VikeConfigPublicPageLazy {
   const config: Record<string, unknown> = {}
   const configEntries: ConfigEntries = {} // TODO/v1-release: remove
   const exportsAll: ExportsAll = {} // TODO/v1-release: remove
@@ -242,7 +247,7 @@ function getUserFriendlyConfigsPageLazy(
   let sources: Sources
   let from: From
   if (pageConfig) {
-    const res = getUserFriendlyConfigs_base({
+    const res = getVikeConfigPublic_base({
       pageConfigGlobalValues: pageConfigGlobal.configValues,
       pageConfigValues: pageConfig.configValues
     })
@@ -286,7 +291,7 @@ function getUserFriendlyConfigsPageLazy(
     source,
     sources,
 
-    // TODO/eventually: deprecate/remove every prop below
+    // TODO/now-flat-pageContext: deprecate every prop below
     configEntries,
     exports,
     exportsAll
@@ -312,7 +317,7 @@ function getUserFriendlyConfigsPageLazy(
 }
 
 // V1 design
-function getUserFriendlyConfigs_V1Design(pageConfig: { configValues: ConfigValues }) {
+function getVikeConfigPublic_V1Design(pageConfig: { configValues: ConfigValues }) {
   const config: Record<string, unknown> = {}
   const configEntries: ConfigEntries = {}
   const exportsAll: ExportsAll = {}
@@ -372,6 +377,7 @@ function getUserFriendlyConfigs_V1Design(pageConfig: { configValues: ConfigValue
     if (configValue.type === 'cumulative') {
       const src: SourceConfigsCumulative = {
         type: 'configsCumulative',
+        definedAt: getDefinedAtString(configValue.definedAtData, configName),
         values: configValue.value.map((value, i) => {
           const definedAtFile = configValue.definedAtData[i]
           assert(definedAtFile)
@@ -389,6 +395,7 @@ function getUserFriendlyConfigs_V1Design(pageConfig: { configValues: ConfigValue
     if (configValue.type === 'computed') {
       const src: SourceConfigsComputed = {
         type: 'configsComputed',
+        definedAt: 'Vike', // Vike currently doesn't support user-land computed configs => computed configs are always defined by Vike => there isn't any file path to show.
         value: configValue.value
       }
       addSrc(src, configName)

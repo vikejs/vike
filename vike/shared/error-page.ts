@@ -5,7 +5,7 @@ export { isErrorPage }
 // TODO/v1-release: consider loading this file only for Client Routing
 
 import { assert, assertUsage, unique } from './utils.js'
-import type { PageConfigRuntime } from './page-configs/PageConfig.js'
+import type { PageConfigRuntime } from '../types/PageConfig.js'
 import type { PageFile } from './getPageFiles.js'
 
 function getErrorPageId(pageFilesAll: PageFile[], pageConfigs: PageConfigRuntime[]): string | null {

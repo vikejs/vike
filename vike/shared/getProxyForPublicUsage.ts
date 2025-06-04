@@ -17,7 +17,7 @@ type Fallback = (prop: string | symbol) => unknown
 
 function getProxyForPublicUsage<Obj extends Target>(
   obj: Obj,
-  objName: string,
+  objName: 'pageContext' | 'globalContext' | 'prerenderContext' | 'vikeConfig',
   skipOnInternalProp?: true,
   fallback?: Fallback
 ): Obj {

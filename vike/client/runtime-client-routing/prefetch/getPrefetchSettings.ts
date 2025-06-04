@@ -5,7 +5,7 @@ export { PAGE_CONTEXT_MAX_AGE_DEFAULT }
 export type { PrefetchSettingResolved }
 
 import { assertUsage, assertInfo } from '../utils.js'
-import type { PageConfigUserFriendlyOld } from '../../../shared/getPageFiles.js'
+import type { VikeConfigPublicPageLazy } from '../../../shared/getPageFiles.js'
 import type { PrefetchSetting, PrefetchStaticAssets } from './PrefetchSetting.js'
 
 // TODO/pageContext-prefetch: Make it `Infinity` for pre-rendered pages.
@@ -27,7 +27,7 @@ type PrefetchSettingResolved = {
 }
 
 function getPrefetchSettings(
-  pageContext: PageConfigUserFriendlyOld,
+  pageContext: VikeConfigPublicPageLazy,
   linkTag: null | HTMLElement
 ): PrefetchSettingResolved {
   let prefetchSetting: PrefetchSettingResolved = prefetchSettingDefault

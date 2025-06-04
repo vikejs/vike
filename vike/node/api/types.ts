@@ -2,7 +2,7 @@ export type { APIOptions }
 export type { Operation }
 
 import type { InlineConfig } from 'vite'
-import type { Config } from '../../shared/page-configs/Config.js'
+import type { Config } from '../../types/Config.js'
 
 type APIOptions = {
   /**

@@ -29,7 +29,7 @@ async function createPageContextClientSide() {
   const pageContextAugmented = await createPageContextShared(
     pageContextCreated,
     globalContext._pageConfigGlobal,
-    globalContext._userFriendlyConfigsGlobal
+    globalContext._vikeConfigPublicGlobal
   )
   augmentType(pageContextCreated, pageContextAugmented)
 

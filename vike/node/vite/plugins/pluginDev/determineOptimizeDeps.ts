@@ -12,7 +12,7 @@ import {
 } from '../../utils.js'
 import { getVikeConfigInternal, isOverriden } from '../../shared/resolveVikeConfig.js'
 import { analyzeClientEntries } from '../pluginBuild/pluginBuildConfig.js'
-import type { PageConfigBuildTime } from '../../../../shared/page-configs/PageConfig.js'
+import type { PageConfigBuildTime } from '../../../../types/PageConfig.js'
 import {
   virtualFileIdEntryClientCR,
   virtualFileIdEntryClientSR
@@ -23,7 +23,7 @@ const debug = createDebugger('vike:optimizeDeps')
 
 async function determineOptimizeDeps(config: ResolvedConfig) {
   const vikeConfig = await getVikeConfigInternal()
-  const { pageConfigs } = vikeConfig
+  const { _pageConfigs: pageConfigs } = vikeConfig
 
   const { entries, include } = await getPageDeps(config, pageConfigs)
   {

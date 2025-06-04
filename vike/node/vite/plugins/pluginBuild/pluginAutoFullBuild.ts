@@ -54,7 +54,7 @@ function pluginAutoFullBuild(): Plugin[] {
           if (
             forceExit &&
             // Let vike:build:pluginBuildApp force exit
-            !vikeConfig.global.config.vite6BuilderApp
+            !vikeConfig.config.vite6BuilderApp
           ) {
             runPrerender_forceExit()
             assert(false)
@@ -68,7 +68,7 @@ function pluginAutoFullBuild(): Plugin[] {
 async function triggerFullBuild(config: ResolvedConfig, viteEnv: Environment, bundle: Record<string, unknown>) {
   const vikeConfig = await getVikeConfigInternal()
   // Whether builder.buildApp() is being used, see plugin:build:pluginBuildApp
-  const isBuilderApp = vikeConfig.global.config.vite6BuilderApp
+  const isBuilderApp = vikeConfig.config.vite6BuilderApp
   // If builder.buildApp() => trigger at end of `this.environment.name === 'ssr'`.
   // Else => trigger at end of client-side build.
   if (isBuilderApp ? !isViteServerBuild_onlySsrEnv(config, viteEnv) : !isViteClientBuild(config, viteEnv)) return
@@ -112,7 +112,7 @@ function setSSR(configInline: InlineConfig): InlineConfig {
 
 async function abortViteBuildSsr() {
   const vikeConfig = await getVikeConfigInternal()
-  if (vikeConfig.global.config.disableAutoFullBuild !== true && isViteCliCall() && getViteConfigFromCli()?.build.ssr) {
+  if (vikeConfig.config.disableAutoFullBuild !== true && isViteCliCall() && getViteConfigFromCli()?.build.ssr) {
     assertWarning(
       false,
       `The CLI call ${pc.cyan('$ vite build --ssr')} is superfluous since ${pc.cyan(
@@ -127,7 +127,7 @@ async function abortViteBuildSsr() {
 }
 
 function isEntirelyDisabled(vikeConfig: VikeConfigInternal): boolean {
-  const { disableAutoFullBuild } = vikeConfig.global.config
+  const { disableAutoFullBuild } = vikeConfig.config
   if (disableAutoFullBuild === undefined || disableAutoFullBuild === 'prerender') {
     const isUserUsingViteApi = !isViteCliCall() && !isVikeCliOrApi()
     return isUserUsingViteApi

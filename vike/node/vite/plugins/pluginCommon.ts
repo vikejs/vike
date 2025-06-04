@@ -96,17 +96,17 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
           let configFromVike: UserConfig = { server: {}, preview: {} }
           const vikeConfig = await getVikeConfigInternal()
 
-          if (vikeConfig.global.config.port !== undefined) {
+          if (vikeConfig.config.port !== undefined) {
             // https://vike.dev/port
-            setDefault('port', vikeConfig.global.config.port, configFromUser, configFromVike)
+            setDefault('port', vikeConfig.config.port, configFromUser, configFromVike)
           } else {
             // Change Vite's default port
             setDefault('port', 3000, configFromUser, configFromVike)
           }
 
-          if (vikeConfig.global.config.host) {
+          if (vikeConfig.config.host) {
             // https://vike.dev/host
-            setDefault('host', vikeConfig.global.config.host, configFromUser, configFromVike)
+            setDefault('host', vikeConfig.config.host, configFromUser, configFromVike)
           } else if (isDocker()) {
             // Set `--host` for Docker/Podman
             setDefault('host', true, configFromUser, configFromVike)

@@ -7,8 +7,8 @@ export type GlobalContextInternal = GlobalContextServerInternal | GlobalContextC
 import { changeEnumerable, objectAssign, unique } from './utils.js'
 import type { PageFile } from './getPageFiles.js'
 import { parseVirtualFileExports } from './getPageFiles/parseVirtualFileExports.js'
-import { getUserFriendlyConfigsGlobal, getUserFriendlyConfigsPageEager } from './page-configs/getUserFriendlyConfigs.js'
-import type { PageConfigRuntime } from './page-configs/PageConfig.js'
+import { getVikeConfigPublicGlobal, getVikeConfigPublicPageEager } from './page-configs/getVikeConfigPublic.js'
+import type { PageConfigRuntime } from '../types/PageConfig.js'
 import { execHookGlobal } from './hooks/execHook.js'
 import { prepareGlobalContextForPublicUsage } from './prepareGlobalContextForPublicUsage.js'
 import type { GlobalContextServerInternal } from '../node/runtime/globalContext.js'
@@ -64,8 +64,8 @@ function createGlobalContextBase(virtualFileExports: unknown) {
     allPageIds,
     pageConfigs,
     pageConfigGlobal,
-    userFriendlyConfigsGlobal,
-    userFriendlyConfigsPageEager
+    vikeConfigPublicGlobal,
+    vikeConfigPublicPagesEager
   } = getConfigsAll(virtualFileExports)
   const globalContext = {
     /**
@@ -80,9 +80,9 @@ function createGlobalContextBase(virtualFileExports: unknown) {
     _pageConfigs: pageConfigs,
     _pageConfigGlobal: pageConfigGlobal,
     _allPageIds: allPageIds,
-    _userFriendlyConfigsGlobal: userFriendlyConfigsGlobal,
-    config: userFriendlyConfigsGlobal.config,
-    pages: userFriendlyConfigsPageEager
+    _vikeConfigPublicGlobal: vikeConfigPublicGlobal,
+    config: vikeConfigPublicGlobal.config,
+    pages: vikeConfigPublicPagesEager
   }
   changeEnumerable(globalContext, '_isOriginalObject', false)
   return globalContext
@@ -92,13 +92,13 @@ function getConfigsAll(virtualFileExports: unknown) {
   const { pageFilesAll, pageConfigs, pageConfigGlobal } = parseVirtualFileExports(virtualFileExports)
   const allPageIds = getAllPageIds(pageFilesAll, pageConfigs)
 
-  const userFriendlyConfigsGlobal = getUserFriendlyConfigsGlobal({
+  const vikeConfigPublicGlobal = getVikeConfigPublicGlobal({
     pageConfigGlobalValues: pageConfigGlobal.configValues
   })
 
-  const userFriendlyConfigsPageEager = Object.fromEntries(
+  const vikeConfigPublicPagesEager = Object.fromEntries(
     pageConfigs.map((pageConfig) => {
-      return getUserFriendlyConfigsPageEager(pageConfigGlobal.configValues, pageConfig, pageConfig.configValues)
+      return getVikeConfigPublicPageEager(pageConfigGlobal.configValues, pageConfig, pageConfig.configValues)
     })
   )
 
@@ -107,8 +107,8 @@ function getConfigsAll(virtualFileExports: unknown) {
     allPageIds,
     pageConfigs,
     pageConfigGlobal,
-    userFriendlyConfigsGlobal,
-    userFriendlyConfigsPageEager
+    vikeConfigPublicGlobal,
+    vikeConfigPublicPagesEager
   }
 }
 function getAllPageIds(pageFilesAll: PageFile[], pageConfigs: PageConfigRuntime[]): string[] {

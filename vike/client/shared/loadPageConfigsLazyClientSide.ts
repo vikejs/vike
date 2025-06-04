@@ -1,20 +1,16 @@
 export { loadPageConfigsLazyClientSide }
 export { isErrorFetchingStaticAssets }
 
-import { getPageFilesClientSide, type PageFile, type PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
-import { getUserFriendlyConfigsPageLazy } from '../../shared/page-configs/getUserFriendlyConfigs.js'
+import { getPageFilesClientSide, type PageFile, type VikeConfigPublicPageLazy } from '../../shared/getPageFiles.js'
+import { getVikeConfigPublicPageLazy } from '../../shared/page-configs/getVikeConfigPublic.js'
 import { findPageConfig } from '../../shared/page-configs/findPageConfig.js'
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
-import type {
-  PageConfigGlobalRuntime,
-  PageConfigRuntime,
-  PageConfigRuntimeLoaded
-} from '../../shared/page-configs/PageConfig.js'
+import type { PageConfigGlobalRuntime, PageConfigRuntime, PageConfigRuntimeLoaded } from '../../types/PageConfig.js'
 import { objectAssign } from '../runtime-server-routing/utils.js'
 
 const stamp = '__whileFetchingAssets'
 
-type PageContextUserFilesLoaded = PageConfigUserFriendlyOld & { _pageFilesLoaded: PageFile[] }
+type PageContextUserFilesLoaded = VikeConfigPublicPageLazy & { _pageFilesLoaded: PageFile[] }
 async function loadPageConfigsLazyClientSide(
   pageId: string,
   pageFilesAll: PageFile[],
@@ -42,7 +38,7 @@ async function loadPageConfigsLazyClientSide(
     }
     throw err
   }
-  const pageContextExports = getUserFriendlyConfigsPageLazy(pageFilesClientSide, pageConfigLoaded, pageConfigGlobal)
+  const pageContextExports = getVikeConfigPublicPageLazy(pageFilesClientSide, pageConfigLoaded, pageConfigGlobal)
   const pageContextAddendum = {}
   objectAssign(pageContextAddendum, pageContextExports)
   objectAssign(pageContextAddendum, { _pageFilesLoaded: pageFilesClientSide })

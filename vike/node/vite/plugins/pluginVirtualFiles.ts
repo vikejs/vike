@@ -115,7 +115,7 @@ async function isVikeConfigDependency(
   assertPosixPath(filePathAbsoluteFilesystem)
   const vikeConfigObject = await getVikeConfigInternalOptional()
   if (vikeConfigObject) {
-    const { vikeConfigDependencies } = vikeConfigObject
+    const { _vikeConfigDependencies: vikeConfigDependencies } = vikeConfigObject
     vikeConfigDependencies.forEach((f) => assertPosixPath(f))
     if (vikeConfigDependencies.has(filePathAbsoluteFilesystem)) return { modifiesVikeVirtualFiles: true }
   }

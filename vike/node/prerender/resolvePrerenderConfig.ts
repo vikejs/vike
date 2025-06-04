@@ -4,13 +4,13 @@ export { resolvePrerenderConfigLocal }
 import { VikeConfigInternal } from '../vite/shared/resolveVikeConfig.js'
 import { assert, isArray, isObject, objectAssign } from './utils.js'
 import { getConfigValueBuildTime } from '../../shared/page-configs/getConfigValueBuildTime.js'
-import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
+import type { PageConfigBuildTime } from '../../types/PageConfig.js'
 
 // When setting +prerender to an object => it also enables pre-rendering
 const defaultValueForObject = true
 
-function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal, 'global' | 'pageConfigs'>) {
-  const prerenderConfigs = vikeConfig.global.config.prerender || []
+function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal, 'config' | '_pageConfigs' | '_from'>) {
+  const prerenderConfigs = vikeConfig.config.prerender || []
 
   const prerenderSettings = prerenderConfigs.filter(isObject2)
   const prerenderConfigGlobal = {
@@ -31,7 +31,7 @@ function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal, 'glob
   // TODO/next-major: remove
   // Backwards compatibility for `vike({prerender:true})` in vite.config.js
   {
-    const valuesWithDefinedAt = vikeConfig.global._from.configsCumulative.prerender?.values ?? []
+    const valuesWithDefinedAt = vikeConfig._from.configsCumulative.prerender?.values ?? []
     if (valuesWithDefinedAt.some((v) => v.definedAt.includes('vite.config.js') && v.value)) {
       defaultLocalValue = true
     }
@@ -40,15 +40,17 @@ function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal, 'glob
   objectAssign(prerenderConfigGlobal, {
     defaultLocalValue,
     isPrerenderingEnabledForAllPages:
-      vikeConfig.pageConfigs.length > 0 &&
-      vikeConfig.pageConfigs.every((pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value ?? defaultLocalValue),
+      vikeConfig._pageConfigs.length > 0 &&
+      vikeConfig._pageConfigs.every(
+        (pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value ?? defaultLocalValue
+      ),
     isPrerenderingEnabled:
-      vikeConfig.pageConfigs.length > 0 &&
-      vikeConfig.pageConfigs.some((pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value ?? defaultLocalValue)
+      vikeConfig._pageConfigs.length > 0 &&
+      vikeConfig._pageConfigs.some((pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value ?? defaultLocalValue)
   })
 
   // TODO/next-major remove
-  if (vikeConfig.pageConfigs.length === 0 && defaultLocalValue) prerenderConfigGlobal.isPrerenderingEnabled = true
+  if (vikeConfig._pageConfigs.length === 0 && defaultLocalValue) prerenderConfigGlobal.isPrerenderingEnabled = true
 
   return prerenderConfigGlobal
 }

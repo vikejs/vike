@@ -12,7 +12,7 @@ import { getConfigFileExport } from './getConfigFileExport.js'
 import { type ConfigFile, loadConfigFile, loadValueFile, PointerImportLoaded } from './loadFileAtConfigTime.js'
 import { resolvePointerImport } from './resolvePointerImport.js'
 import { getFilePathResolved } from '../getFilePath.js'
-import type { FilePathResolved } from '../../../../shared/page-configs/FilePath.js'
+import type { FilePathResolved } from '../../../../types/FilePath.js'
 import { assertExtensionsConventions, assertExtensionsRequire } from './assertExtensions.js'
 
 type PlusFile = PlusFileConfig | PlusFileValue

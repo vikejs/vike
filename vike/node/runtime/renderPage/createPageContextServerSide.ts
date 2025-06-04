@@ -47,7 +47,7 @@ async function createPageContextServerSide(
     isClientSideNavigation
   })
 
-  objectAssign(pageContextCreated, globalContext._userFriendlyConfigsGlobal)
+  objectAssign(pageContextCreated, globalContext._vikeConfigPublicGlobal)
 
   // pageContext.urlParsed
   const pageContextUrlComputed = getPageContextUrlComputed(pageContextCreated)
@@ -79,7 +79,7 @@ async function createPageContextServerSide(
   const pageContextAugmented = await createPageContextShared(
     pageContextCreated,
     globalContext._pageConfigGlobal,
-    globalContext._userFriendlyConfigsGlobal
+    globalContext._vikeConfigPublicGlobal
   )
   augmentType(pageContextCreated, pageContextAugmented)
 

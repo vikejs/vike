@@ -3,7 +3,7 @@ export type { PageFiles }
 export type { PageContext_loadPageConfigsLazyServerSide }
 
 import { type PageFile, getPageFilesServerSide } from '../../../shared/getPageFiles.js'
-import { getUserFriendlyConfigsPageLazy } from '../../../shared/page-configs/getUserFriendlyConfigs.js'
+import { getVikeConfigPublicPageLazy } from '../../../shared/page-configs/getVikeConfigPublic.js'
 import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide.js'
 import {
   assert,
@@ -17,7 +17,7 @@ import {
 } from '../utils.js'
 import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './getPageAssets.js'
 import { debugPageFiles, type PageContextDebugRouteMatches } from './debugPageFiles.js'
-import type { PageConfigGlobalRuntime, PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
+import type { PageConfigGlobalRuntime, PageConfigRuntime } from '../../../types/PageConfig.js'
 import { findPageConfig } from '../../../shared/page-configs/findPageConfig.js'
 import { analyzePage } from './analyzePage.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
@@ -150,7 +150,7 @@ async function loadPageUserFiles(
   const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
   const pageConfigLoaded = !pageConfig ? null : await loadConfigValues(pageConfig, isDev)
   await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))
-  const pageContextExports = getUserFriendlyConfigsPageLazy(pageFilesServerSide, pageConfigLoaded, pageConfigGlobal)
+  const pageContextExports = getVikeConfigPublicPageLazy(pageFilesServerSide, pageConfigLoaded, pageConfigGlobal)
   return {
     pageContextExports,
     pageFilesLoaded: pageFilesServerSide

@@ -2,17 +2,17 @@ export { createPageContextShared }
 export { createPageContextObject }
 
 import { execHookGlobal } from './hooks/execHook.js'
-import type { PageConfigUserFriendly } from './page-configs/getUserFriendlyConfigs.js'
-import type { PageConfigGlobalRuntime } from './page-configs/PageConfig.js'
+import type { VikeConfigPublicGlobal } from './page-configs/getVikeConfigPublic.js'
+import type { PageConfigGlobalRuntime } from '../types/PageConfig.js'
 import { type PageContextPrepareMinimum, preparePageContextForPublicUsage } from './preparePageContextForPublicUsage.js'
 import { changeEnumerable, objectAssign } from './utils.js'
 
 async function createPageContextShared<T extends PageContextPrepareMinimum>(
   pageContextCreated: T,
   pageConfigGlobal: PageConfigGlobalRuntime,
-  userFriendlyConfigsGlobal: PageConfigUserFriendly
+  vikeConfigPublicGlobal: VikeConfigPublicGlobal
 ) {
-  objectAssign(pageContextCreated, userFriendlyConfigsGlobal)
+  objectAssign(pageContextCreated, vikeConfigPublicGlobal)
 
   await execHookGlobal(
     'onCreatePageContext',

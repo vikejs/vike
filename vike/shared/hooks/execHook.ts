@@ -15,12 +15,12 @@ import { getProjectError, assertWarning, assertUsage } from '../../utils/assert.
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { humanizeTime } from '../../utils/humanizeTime.js'
 import { isObject } from '../../utils/isObject.js'
-import type { PageContextClient, PageContextServer } from '../types.js'
+import type { PageContextClient, PageContextServer } from '../../types/PageContext.js'
 import type { Hook, HookLoc } from './getHook.js'
-import type { PageConfigUserFriendlyOld } from '../getPageFiles.js'
+import type { VikeConfigPublicPageLazy } from '../getPageFiles.js'
 import { getHookFromPageConfigGlobalCumulative, getHookFromPageContextNew } from './getHook.js'
-import type { HookName, HookNameGlobal } from '../page-configs/Config.js'
-import type { PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
+import type { HookName, HookNameGlobal } from '../../types/Config.js'
+import type { PageConfigGlobalRuntime } from '../../types/PageConfig.js'
 import type { PageContextForPublicUsageServer } from '../../node/runtime/renderPage/preparePageContextForPublicUsageServer.js'
 import type { PageContextForPublicUsageClientShared } from '../../client/shared/preparePageContextForPublicUsageClientShared.js'
 import {
@@ -33,7 +33,7 @@ const globalObject = getGlobalObject('utils/execHook.ts', {
   pageContext: null as null | PageContextPrepareMinimum
 })
 
-type PageContextExecuteHook = PageConfigUserFriendlyOld & PageContextForPublicUsage
+type PageContextExecuteHook = VikeConfigPublicPageLazy & PageContextForPublicUsage
 type PageContextForPublicUsage = PageContextForPublicUsageServer | PageContextForPublicUsageClientShared
 
 type HookWithResult = Hook & {

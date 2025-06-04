@@ -1,6 +1,6 @@
 export { getCacheControl }
 
-import type { PageConfigRuntime } from '../../../../shared/page-configs/PageConfig.js'
+import type { PageConfigRuntime } from '../../../../types/PageConfig.js'
 import type { HttpResponse } from '../createHttpResponse.js'
 import { getPageConfig } from '../../../../shared/page-configs/helpers.js'
 import { getConfigValueRuntime } from '../../../../shared/page-configs/getConfigValueRuntime.js'

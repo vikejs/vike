@@ -21,7 +21,7 @@ import type {
   DefinedAtFile,
   PageConfigBuildTime,
   PageConfigGlobalBuildTime
-} from '../PageConfig.js'
+} from '../../../types/PageConfig.js'
 import type { ValueSerialized } from './PageConfigSerialized.js'
 import { parsePointerImportData } from '../../../node/vite/shared/resolveVikeConfig/pointerImports.js'
 import { getConfigValueFilePathToShowToUser } from '../helpers.js'

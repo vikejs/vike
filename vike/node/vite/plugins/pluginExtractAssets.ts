@@ -58,10 +58,10 @@ function pluginExtractAssets(): Plugin[] {
         }
         if (isFixEnabled) {
           // I'm guessing isFixEnabled can only be true when mixing both designs: https://github.com/vikejs/vike/issues/1480
-          assertV1Design(vikeConfig.pageConfigs, true)
+          assertV1Design(vikeConfig._pageConfigs, true)
           assert(false)
         }
-        const includeAssetsImportedByServer = resolveIncludeAssetsImportedByServer(vikeConfig.global.config)
+        const includeAssetsImportedByServer = resolveIncludeAssetsImportedByServer(vikeConfig.config)
         assert(includeAssetsImportedByServer)
         assert(!isViteServerBuild_safe(config, options))
         const importStatements = await getImportStatements(src)
@@ -97,7 +97,7 @@ function pluginExtractAssets(): Plugin[] {
         if (!extractAssetsRE.test(importer)) {
           return
         }
-        const includeAssetsImportedByServer = resolveIncludeAssetsImportedByServer(vikeConfig.global.config)
+        const includeAssetsImportedByServer = resolveIncludeAssetsImportedByServer(vikeConfig.config)
         assert(includeAssetsImportedByServer)
 
         let resolution: null | ResolvedId = null

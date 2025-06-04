@@ -18,11 +18,11 @@ import {
 } from './utils.js'
 import { parse } from '@brillout/json-serializer/parse'
 import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtml.js'
-import type { PageConfigUserFriendlyOld, PageFile } from '../../shared/getPageFiles.js'
+import type { VikeConfigPublicPageLazy, PageFile } from '../../shared/getPageFiles.js'
 import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide.js'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
-import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
+import type { PageConfigRuntime } from '../../types/PageConfig.js'
 import { getPageConfig } from '../../shared/page-configs/helpers.js'
 import { getConfigValueRuntime } from '../../shared/page-configs/getConfigValueRuntime.js'
 import { assertOnBeforeRenderHookReturn } from '../../shared/assertOnBeforeRenderHookReturn.js'
@@ -31,7 +31,7 @@ import { AbortRender, isAbortPageContext } from '../../shared/route/abort.js'
 import { pageContextInitIsPassedToClient } from '../../shared/misc/pageContextInitIsPassedToClient.js'
 import { isServerSideError } from '../../shared/misc/isServerSideError.js'
 import { execHook } from '../../shared/hooks/execHook.js'
-import type { HookName } from '../../shared/page-configs/Config.js'
+import type { HookName } from '../../types/Config.js'
 import type { PageContextCreated } from './createPageContextClientSide.js'
 import type { PageContextBegin } from './renderPageClientSide.js'
 import {
@@ -66,7 +66,7 @@ function getPageContextFromHooks_serialized(): PageContextSerialized & {
 async function getPageContextFromHooks_isHydration(
   pageContext: PageContextSerialized &
     PageContextBegin &
-    PageConfigUserFriendlyOld & { _hasPageContextFromServer: true } & PageContextForPublicUsageClient
+    VikeConfigPublicPageLazy & { _hasPageContextFromServer: true } & PageContextForPublicUsageClient
 ) {
   for (const hookName of ['data', 'onBeforeRender'] as const) {
     if (hookClientOnlyExists(hookName, pageContext)) {
@@ -118,7 +118,7 @@ async function getPageContextFromServerHooks(
 
 async function getPageContextFromClientHooks(
   pageContext: { pageId: string; _hasPageContextFromServer: boolean } & PageContextBegin &
-    PageConfigUserFriendlyOld &
+    VikeConfigPublicPageLazy &
     PageContextForPublicUsageClient,
   isErrorPage: boolean
 ) {
@@ -158,7 +158,7 @@ async function getPageContextFromClientHooks(
   return pageContextFromClientHooks
 }
 
-type PageContextExecuteHookClient = PageConfigUserFriendlyOld & PageContextForPublicUsageClient
+type PageContextExecuteHookClient = VikeConfigPublicPageLazy & PageContextForPublicUsageClient
 async function execHookClient(hookName: HookName, pageContext: PageContextExecuteHookClient) {
   return await execHook(hookName, pageContext, (p) => preparePageContextForPublicUsageClient(p))
 }
