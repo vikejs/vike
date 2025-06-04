@@ -47,7 +47,7 @@ import {
   checkType,
   PROJECT_VERSION
 } from './utils.js'
-import type { ViteManifest } from '../shared/ViteManifest.js'
+import type { ViteManifest } from '../../types/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
 import { virtualFileIdEntryServer } from '../shared/virtualFiles/virtualFileEntry.js'

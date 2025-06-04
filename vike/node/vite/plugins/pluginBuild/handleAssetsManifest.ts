@@ -8,7 +8,7 @@ import fs from 'fs/promises'
 import fs_sync from 'fs'
 import path from 'path'
 import { existsSync } from 'fs'
-import type { ViteManifest, ViteManifestEntry } from '../../../shared/ViteManifest.js'
+import type { ViteManifest, ViteManifestEntry } from '../../../../types/ViteManifest.js'
 import {
   assert,
   assertIsSingleModuleInstance,

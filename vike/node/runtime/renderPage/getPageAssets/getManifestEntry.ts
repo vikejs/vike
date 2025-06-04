@@ -1,6 +1,6 @@
 export { getManifestEntry }
 
-import type { ViteManifest, ViteManifestEntry } from '../../../shared/ViteManifest.js'
+import type { ViteManifest, ViteManifestEntry } from '../../../../types/ViteManifest.js'
 import { assert, slice, assertIsImportPathNpmPackage } from '../../utils.js'
 import { isVirtualFileIdPageConfigLazy } from '../../../shared/virtualFiles/virtualFilePageConfigLazy.js'
 import { prependEntriesDir } from '../../../shared/prependEntriesDir.js'
