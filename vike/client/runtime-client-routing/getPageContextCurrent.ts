@@ -2,9 +2,9 @@ export { setPageContextCurrent }
 export { getPageContextCurrent }
 
 import { getGlobalObject } from './utils.js'
-import type { PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
+import type { PublicVikeConfigPageLazy } from '../../shared/getPageFiles.js'
 
-type PageContextCurrent = PageConfigUserFriendlyOld & {
+type PageContextCurrent = PublicVikeConfigPageLazy & {
   urlPathname: string
 }
 const globalObject = getGlobalObject('runtime-client-routing/getPageContextCurrent.ts', {

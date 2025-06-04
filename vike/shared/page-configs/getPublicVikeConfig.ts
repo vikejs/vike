@@ -6,7 +6,7 @@ export { getPublicVikeConfigPageEager }
 export { getPublicVikeConfigPageLazy }
 export type { PageConfigsUserFriendly }
 export type { PageConfigUserFriendly }
-export type { PageConfigUserFriendlyOld }
+export type { PublicVikeConfigPageLazy }
 export type { Source }
 export type { Sources }
 export type { From }
@@ -68,7 +68,7 @@ type ConfigEntries = Record<
     configDefinedByFile: string | null
   }[]
 >
-type PageConfigUserFriendlyOld = {
+type PublicVikeConfigPageLazy = {
   config: ConfigResolved
   source: Source
   sources: Sources
@@ -216,7 +216,7 @@ function getPublicVikeConfigPageLazy(
   pageFiles: PageFile[], // V0.4 design
   pageConfig: PageConfigRuntimeLoaded | null, // V1 design
   pageConfigGlobal: PageConfigGlobalRuntime
-): PageConfigUserFriendlyOld {
+): PublicVikeConfigPageLazy {
   const config: Record<string, unknown> = {}
   const configEntries: ConfigEntries = {} // TODO/v1-release: remove
   const exportsAll: ExportsAll = {} // TODO/v1-release: remove
