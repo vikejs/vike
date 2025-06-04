@@ -3,7 +3,7 @@ export type { TypeAsString }
 
 import { type ResolveTypeAsString, assert, assertUsage, getValuePrintable } from '../utils.js'
 import type { ConfigValue, DefinedAtData } from './PageConfig.js'
-import type { ConfigNameBuiltIn } from './Config.js'
+import type { ConfigNameBuiltIn } from '../../types/Config.js'
 import pc from '@brillout/picocolors'
 import { getConfigDefinedAtOptional } from './getConfigDefinedAt.js'
 type TypeAsString = 'string' | 'boolean' | undefined

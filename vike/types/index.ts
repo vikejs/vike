@@ -44,7 +44,7 @@ export type {
   RouteAsync,
   RouteSync,
   KeepScrollPosition
-} from '../shared/page-configs/Config.js'
+} from './Config.js'
 export type { ConfigResolved } from '../shared/page-configs/Config/PageContextConfig.js'
 export type { ConfigEnv } from '../shared/page-configs/PageConfig.js'
 export type {

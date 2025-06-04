@@ -50,7 +50,7 @@ import type {
   PageConfigRoute,
   DefinedBy
 } from '../../../shared/page-configs/PageConfig.js'
-import type { Config } from '../../../shared/page-configs/Config.js'
+import type { Config } from '../../../types/Config.js'
 import {
   configDefinitionsBuiltIn,
   type ConfigDefinitionsInternal,

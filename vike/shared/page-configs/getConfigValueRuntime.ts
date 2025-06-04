@@ -2,7 +2,7 @@ export { getConfigValueRuntime }
 
 import { type ResolveTypeAsString } from '../utils.js'
 import type { PageConfigRuntime, ConfigValue } from './PageConfig.js'
-import type { ConfigNameBuiltIn } from './Config.js'
+import type { ConfigNameBuiltIn } from '../../types/Config.js'
 import { getConfigValueTyped, type TypeAsString } from './getConfigValueTyped.js'
 
 function getConfigValueRuntime<Type extends TypeAsString = undefined>(

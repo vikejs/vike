@@ -31,7 +31,7 @@ import { AbortRender, isAbortPageContext } from '../../shared/route/abort.js'
 import { pageContextInitIsPassedToClient } from '../../shared/misc/pageContextInitIsPassedToClient.js'
 import { isServerSideError } from '../../shared/misc/isServerSideError.js'
 import { execHook } from '../../shared/hooks/execHook.js'
-import type { HookName } from '../../shared/page-configs/Config.js'
+import type { HookName } from '../../types/Config.js'
 import type { PageContextCreated } from './createPageContextClientSide.js'
 import type { PageContextBegin } from './renderPageClientSide.js'
 import {

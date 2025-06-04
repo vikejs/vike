@@ -19,7 +19,7 @@ import type { PageContextClient, PageContextServer } from '../../types/PageConte
 import type { Hook, HookLoc } from './getHook.js'
 import type { VikeConfigPublicPageLazy } from '../getPageFiles.js'
 import { getHookFromPageConfigGlobalCumulative, getHookFromPageContextNew } from './getHook.js'
-import type { HookName, HookNameGlobal } from '../page-configs/Config.js'
+import type { HookName, HookNameGlobal } from '../../types/Config.js'
 import type { PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
 import type { PageContextForPublicUsageServer } from '../../node/runtime/renderPage/preparePageContextForPublicUsageServer.js'
 import type { PageContextForPublicUsageClientShared } from '../../client/shared/preparePageContextForPublicUsageClientShared.js'
