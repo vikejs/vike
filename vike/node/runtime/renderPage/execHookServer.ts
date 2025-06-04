@@ -6,10 +6,10 @@ import {
   preparePageContextForPublicUsageServer,
   type PageContextForPublicUsageServer
 } from './preparePageContextForPublicUsageServer.js'
-import type { PublicVikeConfigPageLazy } from '../../../shared/getPageFiles.js'
+import type { VikeConfigPublicPageLazy } from '../../../shared/getPageFiles.js'
 import type { HookName } from '../../../shared/page-configs/Config.js'
 
-type PageContextExecuteHookServer = PublicVikeConfigPageLazy & PageContextForPublicUsageServer
+type PageContextExecuteHookServer = VikeConfigPublicPageLazy & PageContextForPublicUsageServer
 async function execHookServer(hookName: HookName, pageContext: PageContextExecuteHookServer) {
   return await execHook(hookName, pageContext, (p) => {
     preparePageContextForPublicUsageServer(p)

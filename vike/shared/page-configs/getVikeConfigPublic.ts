@@ -1,12 +1,12 @@
 // TODO/now-4: rename all this?
 // TODO/now-4: use public API internally?
 // TODO/now-4: rename definedAt => definedBy
-export { getPublicVikeConfigGlobal }
-export { getPublicVikeConfigPageEager }
-export { getPublicVikeConfigPageLazy }
-export type { PublicVikeConfigGlobal }
-export type { PublicVikeConfigPageEager }
-export type { PublicVikeConfigPageLazy }
+export { getVikeConfigPublicGlobal }
+export { getVikeConfigPublicPageEager }
+export { getVikeConfigPublicPageLazy }
+export type { VikeConfigPublicGlobal }
+export type { VikeConfigPublicPageEager }
+export type { VikeConfigPublicPageLazy }
 export type { Source }
 export type { Sources }
 export type { From }
@@ -68,7 +68,7 @@ type ConfigEntries = Record<
     configDefinedByFile: string | null
   }[]
 >
-type PublicVikeConfigPageLazy = {
+type VikeConfigPublicPageLazy = {
   config: ConfigResolved
   source: Source
   sources: Sources
@@ -137,7 +137,7 @@ type SourceConfigsComputed = {
 }
 
 // See: [Flat `pageContext`](https://github.com/vikejs/vike/issues/1268)
-type PublicVikeConfig = {
+type VikeConfigPublic = {
   config: ConfigResolved
   // TODO/now-4 expose publicly?
   _source: Source
@@ -153,16 +153,16 @@ type WithRoute =
       route?: undefined
       isErrorPage: true
     }
-type PublicVikeConfigPageEager = PublicVikeConfig & WithRoute
-type PublicVikeConfigGlobal = PublicVikeConfig
-function getPublicVikeConfigPageEager(
+type VikeConfigPublicPageEager = VikeConfigPublic & WithRoute
+type VikeConfigPublicGlobal = VikeConfigPublic
+function getVikeConfigPublicPageEager(
   pageConfigGlobalValues: ConfigValues,
   pageConfig: PageConfigRuntime | PageConfigBuildTime,
   pageConfigValues: ConfigValues
-): [string, PublicVikeConfigPageEager] {
-  const vikeConfigPublicPage_ = getPublicVikeConfig_base({ pageConfigGlobalValues, pageConfigValues })
+): [string, VikeConfigPublicPageEager] {
+  const vikeConfigPublicPage_ = getVikeConfigPublic_base({ pageConfigGlobalValues, pageConfigValues })
   const vikeConfigPublicPage = getPublicCopy(vikeConfigPublicPage_)
-  let page: PublicVikeConfigPageEager
+  let page: VikeConfigPublicPageEager
   if (!pageConfig.isErrorPage) {
     const route = vikeConfigPublicPage.config.route ?? pageConfig.routeFilesystem.routeString
     page = {
@@ -177,7 +177,7 @@ function getPublicVikeConfigPageEager(
   }
   return [pageConfig.pageId, page]
 }
-function getPublicCopy(vikeConfigPublic: ReturnType<typeof getPublicVikeConfig_V1Design>): PublicVikeConfig {
+function getPublicCopy(vikeConfigPublic: ReturnType<typeof getVikeConfigPublic_V1Design>): VikeConfigPublic {
   return {
     config: vikeConfigPublic.config,
     _source: vikeConfigPublic.source,
@@ -185,26 +185,26 @@ function getPublicCopy(vikeConfigPublic: ReturnType<typeof getPublicVikeConfig_V
     _from: vikeConfigPublic.from
   }
 }
-function getPublicVikeConfig_base({
+function getVikeConfigPublic_base({
   pageConfigGlobalValues,
   pageConfigValues
 }: { pageConfigGlobalValues: ConfigValues; pageConfigValues: ConfigValues }) {
   const configValues = { ...pageConfigGlobalValues, ...pageConfigValues }
-  return getPublicVikeConfig_V1Design({ configValues })
+  return getVikeConfigPublic_V1Design({ configValues })
 }
 
-function getPublicVikeConfigGlobal({
+function getVikeConfigPublicGlobal({
   pageConfigGlobalValues
-}: { pageConfigGlobalValues: ConfigValues }): PublicVikeConfigGlobal {
-  const vikeConfigPublicGlobal = getPublicVikeConfig_V1Design({ configValues: pageConfigGlobalValues })
+}: { pageConfigGlobalValues: ConfigValues }): VikeConfigPublicGlobal {
+  const vikeConfigPublicGlobal = getVikeConfigPublic_V1Design({ configValues: pageConfigGlobalValues })
   return getPublicCopy(vikeConfigPublicGlobal)
 }
 
-function getPublicVikeConfigPageLazy(
+function getVikeConfigPublicPageLazy(
   pageFiles: PageFile[], // V0.4 design
   pageConfig: PageConfigRuntimeLoaded | null, // V1 design
   pageConfigGlobal: PageConfigGlobalRuntime
-): PublicVikeConfigPageLazy {
+): VikeConfigPublicPageLazy {
   const config: Record<string, unknown> = {}
   const configEntries: ConfigEntries = {} // TODO/v1-release: remove
   const exportsAll: ExportsAll = {} // TODO/v1-release: remove
@@ -233,7 +233,7 @@ function getPublicVikeConfigPageLazy(
   let sources: Sources
   let from: From
   if (pageConfig) {
-    const res = getPublicVikeConfig_base({
+    const res = getVikeConfigPublic_base({
       pageConfigGlobalValues: pageConfigGlobal.configValues,
       pageConfigValues: pageConfig.configValues
     })
@@ -303,7 +303,7 @@ function getPublicVikeConfigPageLazy(
 }
 
 // V1 design
-function getPublicVikeConfig_V1Design(pageConfig: { configValues: ConfigValues }) {
+function getVikeConfigPublic_V1Design(pageConfig: { configValues: ConfigValues }) {
   const config: Record<string, unknown> = {}
   const configEntries: ConfigEntries = {}
   const exportsAll: ExportsAll = {}

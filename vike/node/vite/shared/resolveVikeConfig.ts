@@ -82,11 +82,11 @@ import { getFilePathResolved } from './getFilePath.js'
 import type { FilePath } from '../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
 import {
-  getPublicVikeConfigGlobal,
-  getPublicVikeConfigPageEager,
-  type PublicVikeConfigGlobal,
-  type PublicVikeConfigPageEager
-} from '../../../shared/page-configs/getPublicVikeConfig.js'
+  getVikeConfigPublicGlobal,
+  getVikeConfigPublicPageEager,
+  type VikeConfigPublicGlobal,
+  type VikeConfigPublicPageEager
+} from '../../../shared/page-configs/getVikeConfigPublic.js'
 import { getConfigValuesBase, isJsonValue } from '../../../shared/page-configs/serialize/serializeConfigValues.js'
 import { getPlusFilesAll, type PlusFile, type PlusFilesByLocationId } from './resolveVikeConfig/getPlusFilesAll.js'
 import { getEnvVarObject } from './getEnvVarObject.js'
@@ -119,11 +119,11 @@ type PrerenderContext = {
 type VikeConfigInternal = {
   _pageConfigs: PageConfigBuildTime[]
   _pageConfigGlobal: PageConfigGlobalBuildTime
-  config: PublicVikeConfigGlobal['config']
-  _from: PublicVikeConfigGlobal['_from']
+  config: VikeConfigPublicGlobal['config']
+  _from: VikeConfigPublicGlobal['_from']
   pages: Record<
     string, // pageId
-    PublicVikeConfigPageEager
+    VikeConfigPublicPageEager
   >
   _vikeConfigDependencies: Set<string>
   prerenderContext: PrerenderContext
@@ -268,7 +268,7 @@ async function resolveVikeConfig_withErrorHandling(
       if (!doNotRestartViteOnError) {
         restartVite = true
       }
-      const globalDummy = getPublicVikeConfigGlobal({ pageConfigGlobalValues: {} })
+      const globalDummy = getVikeConfigPublicGlobal({ pageConfigGlobalValues: {} })
       const pageConfigsDummy: VikeConfigInternal['_pageConfigs'] = []
       const prerenderContextDummy = resolvePrerenderContext({
         config: globalDummy.config,
@@ -315,13 +315,13 @@ async function resolveVikeConfig(userRootDir: string, vikeVitePluginOptions: unk
 
   // global
   const pageConfigGlobalValues = getConfigValues(pageConfigGlobal)
-  const userFriendlyConfigsGlobal = getPublicVikeConfigGlobal({ pageConfigGlobalValues })
+  const userFriendlyConfigsGlobal = getVikeConfigPublicGlobal({ pageConfigGlobalValues })
 
   // pages
   const userFriendlyConfigsPageEager = objectFromEntries(
     pageConfigs.map((pageConfig) => {
       const pageConfigValues = getConfigValues(pageConfig, true)
-      return getPublicVikeConfigPageEager(pageConfigGlobalValues, pageConfig, pageConfigValues)
+      return getVikeConfigPublicPageEager(pageConfigGlobalValues, pageConfig, pageConfigValues)
     })
   )
 

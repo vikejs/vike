@@ -24,7 +24,7 @@ import { createPageContextClientSide, type PageContextCreated } from './createPa
 import { route, type PageContextFromRoute } from '../../shared/route/index.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import { type PageContextFromServerHooks, getPageContextFromServerHooks } from './getPageContextFromHooks.js'
-import type { PublicVikeConfigPageLazy, PageFile } from '../../shared/getPageFiles.js'
+import type { VikeConfigPublicPageLazy, PageFile } from '../../shared/getPageFiles.js'
 import { getPageContextCurrent } from './getPageContextCurrent.js'
 import {
   PAGE_CONTEXT_MAX_AGE_DEFAULT,
@@ -61,7 +61,7 @@ type PageContextForPrefetch = PageContextCreated & {
 function getPageContextPrefetched(
   pageContext: {
     urlPathname: string
-  } & PublicVikeConfigPageLazy
+  } & VikeConfigPublicPageLazy
 ): null | PageContextFromServerHooks {
   const prefetchSettings = getPrefetchSettings(pageContext, null)
   // TODO/pageContext-prefetch: I guess we need linkTag to make this condition work
@@ -106,10 +106,10 @@ async function prefetchPageContextFromServerHooks(
   setPageContextPrefetchCache(pageContextLink, result, resultMaxAge)
 }
 function populatePageContextPrefetchCache(
-  pageContext: PageContextForPrefetch /*& PublicVikeConfigPageLazy*/,
+  pageContext: PageContextForPrefetch /*& VikeConfigPublicPageLazy*/,
   result: ResultPageContextFromServer
 ): void {
-  // TODO/pageContext-prefetch: replace with using pageContext.config.prerender instead. (For being able to do that: eager configs need to be accessible without have to use PublicVikeConfigPageLazy as it isn't available here.)
+  // TODO/pageContext-prefetch: replace with using pageContext.config.prerender instead. (For being able to do that: eager configs need to be accessible without have to use VikeConfigPublicPageLazy as it isn't available here.)
   if (!isBrilloutDocpress()) return
   setPageContextPrefetchCache(pageContext, result, null)
 }
