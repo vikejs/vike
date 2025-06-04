@@ -160,7 +160,8 @@ function getPublicVikeConfigPageEager(
   pageConfig: PageConfigRuntime | PageConfigBuildTime,
   pageConfigValues: ConfigValues
 ): [string, PublicVikeConfigPageEager] {
-  const pageConfigUserFriendly = getPublicVikeConfig_public({ pageConfigGlobalValues, pageConfigValues })
+  const pageConfigUserFriendly_ = getPublicVikeConfig_base({ pageConfigGlobalValues, pageConfigValues })
+  const pageConfigUserFriendly = getPublicCopy(pageConfigUserFriendly_)
   let page: PublicVikeConfigPageEager
   if (!pageConfig.isErrorPage) {
     const route = pageConfigUserFriendly.config.route ?? pageConfig.routeFilesystem.routeString
@@ -175,13 +176,6 @@ function getPublicVikeConfigPageEager(
     }
   }
   return [pageConfig.pageId, page]
-}
-function getPublicVikeConfig_public({
-  pageConfigGlobalValues,
-  pageConfigValues
-}: { pageConfigGlobalValues: ConfigValues; pageConfigValues: ConfigValues }) {
-  const pageConfigUserFriendly = getPublicVikeConfig_base({ pageConfigGlobalValues, pageConfigValues })
-  return getPublicCopy(pageConfigUserFriendly)
 }
 function getPublicCopy(pageConfigUserFriendly: ReturnType<typeof getPublicVikeConfig_V1Design>): PublicVikeConfig {
   const p = pageConfigUserFriendly
