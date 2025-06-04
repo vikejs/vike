@@ -157,11 +157,11 @@ type ConfigValueCumulative = {
   value: unknown[]
   definedAtData: DefinedAt[]
 }
-/** Defined internally by Vike (currently, Vike doesn't support computed configs created by users). */
+/** Defined by Vike. */
 type ConfigValueComputed = {
   type: 'computed'
   value: unknown
-  definedAtData: null
+  definedAtData: null // Vike currently doesn't support user-land computed configs => computed configs are always defined by Vike => there isn't any file path to show.
 }
 
 type DefinedAtData = DefinedAt | DefinedAt[] | null

@@ -123,6 +123,7 @@ type SourceConfigsStandard = {
 }
 type SourceConfigsCumulative = {
   type: 'configsCumulative'
+  definedAt: string
   values: {
     value: unknown
     definedAt: string
@@ -130,6 +131,7 @@ type SourceConfigsCumulative = {
 }
 type SourceConfigsComputed = {
   type: 'configsComputed'
+  definedAt: string
   value: unknown
 }
 
@@ -372,6 +374,7 @@ function getPublicVikeConfig_V1Design(pageConfig: { configValues: ConfigValues }
     if (configValue.type === 'cumulative') {
       const src: SourceConfigsCumulative = {
         type: 'configsCumulative',
+        definedAt: getDefinedAtString(configValue.definedAtData, configName),
         values: configValue.value.map((value, i) => {
           const definedAtFile = configValue.definedAtData[i]
           assert(definedAtFile)
@@ -389,6 +392,7 @@ function getPublicVikeConfig_V1Design(pageConfig: { configValues: ConfigValues }
     if (configValue.type === 'computed') {
       const src: SourceConfigsComputed = {
         type: 'configsComputed',
+        definedAt: 'Vike', // Vike currently doesn't support user-land computed configs => computed configs are always defined by Vike => there isn't any file path to show.
         value: configValue.value
       }
       addSrc(src, configName)
