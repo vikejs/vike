@@ -197,6 +197,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
     assert(standaloneTrigger)
     /* TODO/v1-release: use this assertUsage() again.
      * - Make sure https://github.com/magne4000/vite-plugin-vercel/pull/156 is merged before using this assertUsage() again. (Otherwise vite-plugin-vercel will trigger this assertUsage() call.)
+     *   - Done: PR is merged as of June 20205
     assertUsage(
       false,
       `You're executing ${pc.cyan(standaloneTrigger)} but you didn't enable pre-rendering. Use the ${pc.cyan('prerender')} setting (${pc.underline('https://vike.dev/prerender')}) to enable pre-rendering for at least one page.`

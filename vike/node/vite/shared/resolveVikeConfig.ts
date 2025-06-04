@@ -1,7 +1,7 @@
+// Internal usage
 export { getVikeConfigInternal }
 export { getVikeConfigInternalOptional }
 export { getVikeConfigInternalSync }
-export { getVikeConfig }
 export { setVikeConfigContext }
 export { reloadVikeConfig }
 export { isV1Design }
@@ -10,6 +10,9 @@ export { getConfigDefinitionOptional }
 export { getVikeConfigFromCliOrEnv }
 export { isOverriden }
 export type { VikeConfigInternal }
+
+// Public usage
+export { getVikeConfig }
 export type { VikeConfig }
 
 import {
