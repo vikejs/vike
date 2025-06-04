@@ -2,7 +2,7 @@ export { createPageContextShared }
 export { createPageContextObject }
 
 import { execHookGlobal } from './hooks/execHook.js'
-import type { PageConfigUserFriendly } from './page-configs/getUserFriendlyConfigs.js'
+import type { PageConfigUserFriendly } from './page-configs/getPublicVikeConfig.js'
 import type { PageConfigGlobalRuntime } from './page-configs/PageConfig.js'
 import { type PageContextPrepareMinimum, preparePageContextForPublicUsage } from './preparePageContextForPublicUsage.js'
 import { changeEnumerable, objectAssign } from './utils.js'

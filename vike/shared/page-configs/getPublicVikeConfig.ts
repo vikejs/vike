@@ -1,8 +1,8 @@
 // TODO/now-4: rename all this?
 // TODO/now-4: use public API internally?
-export { getUserFriendlyConfigsGlobal }
-export { getUserFriendlyConfigsPageEager }
-export { getUserFriendlyConfigsPageLazy }
+export { getPublicVikeConfigGlobal }
+export { getPublicVikeConfigPageEager }
+export { getPublicVikeConfigPageLazy }
 export type { PageConfigsUserFriendly }
 export type { PageConfigUserFriendly }
 export type { PageConfigUserFriendlyOld }
@@ -155,12 +155,12 @@ type WithRoute =
       isErrorPage: true
     }
 type PageConfigUserFriendlyWithRoute = PageConfigUserFriendly & WithRoute
-function getUserFriendlyConfigsPageEager(
+function getPublicVikeConfigPageEager(
   pageConfigGlobalValues: ConfigValues,
   pageConfig: PageConfigRuntime | PageConfigBuildTime,
   pageConfigValues: ConfigValues
 ): [string, PageConfigUserFriendlyWithRoute] {
-  const pageConfigUserFriendly = getUserFriendlyConfigs_public({ pageConfigGlobalValues, pageConfigValues })
+  const pageConfigUserFriendly = getPublicVikeConfig_public({ pageConfigGlobalValues, pageConfigValues })
   let page: PageConfigUserFriendlyWithRoute
   if (!pageConfig.isErrorPage) {
     const route = pageConfigUserFriendly.config.route ?? pageConfig.routeFilesystem.routeString
@@ -176,15 +176,15 @@ function getUserFriendlyConfigsPageEager(
   }
   return [pageConfig.pageId, page]
 }
-function getUserFriendlyConfigs_public({
+function getPublicVikeConfig_public({
   pageConfigGlobalValues,
   pageConfigValues
 }: { pageConfigGlobalValues: ConfigValues; pageConfigValues: ConfigValues }) {
-  const pageConfigUserFriendly = getUserFriendlyConfigs_base({ pageConfigGlobalValues, pageConfigValues })
+  const pageConfigUserFriendly = getPublicVikeConfig_base({ pageConfigGlobalValues, pageConfigValues })
   return getPublicCopy(pageConfigUserFriendly)
 }
 function getPublicCopy(
-  pageConfigUserFriendly: ReturnType<typeof getUserFriendlyConfigs_V1Design>
+  pageConfigUserFriendly: ReturnType<typeof getPublicVikeConfig_V1Design>
 ): PageConfigUserFriendly {
   const p = pageConfigUserFriendly
   return {
@@ -194,22 +194,22 @@ function getPublicCopy(
     _from: p.from
   }
 }
-function getUserFriendlyConfigs_base({
+function getPublicVikeConfig_base({
   pageConfigGlobalValues,
   pageConfigValues
 }: { pageConfigGlobalValues: ConfigValues; pageConfigValues: ConfigValues }) {
   const configValues = { ...pageConfigGlobalValues, ...pageConfigValues }
-  return getUserFriendlyConfigs_V1Design({ configValues })
+  return getPublicVikeConfig_V1Design({ configValues })
 }
 
-function getUserFriendlyConfigsGlobal({
+function getPublicVikeConfigGlobal({
   pageConfigGlobalValues
 }: { pageConfigGlobalValues: ConfigValues }): PageConfigUserFriendly {
-  const pageConfigGlobalUserFriendly = getUserFriendlyConfigs_V1Design({ configValues: pageConfigGlobalValues })
+  const pageConfigGlobalUserFriendly = getPublicVikeConfig_V1Design({ configValues: pageConfigGlobalValues })
   return getPublicCopy(pageConfigGlobalUserFriendly)
 }
 
-function getUserFriendlyConfigsPageLazy(
+function getPublicVikeConfigPageLazy(
   pageFiles: PageFile[], // V0.4 design
   pageConfig: PageConfigRuntimeLoaded | null, // V1 design
   pageConfigGlobal: PageConfigGlobalRuntime
@@ -242,7 +242,7 @@ function getUserFriendlyConfigsPageLazy(
   let sources: Sources
   let from: From
   if (pageConfig) {
-    const res = getUserFriendlyConfigs_base({
+    const res = getPublicVikeConfig_base({
       pageConfigGlobalValues: pageConfigGlobal.configValues,
       pageConfigValues: pageConfig.configValues
     })
@@ -312,7 +312,7 @@ function getUserFriendlyConfigsPageLazy(
 }
 
 // V1 design
-function getUserFriendlyConfigs_V1Design(pageConfig: { configValues: ConfigValues }) {
+function getPublicVikeConfig_V1Design(pageConfig: { configValues: ConfigValues }) {
   const config: Record<string, unknown> = {}
   const configEntries: ConfigEntries = {}
   const exportsAll: ExportsAll = {}

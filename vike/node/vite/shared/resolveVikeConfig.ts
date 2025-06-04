@@ -82,11 +82,11 @@ import { getFilePathResolved } from './getFilePath.js'
 import type { FilePath } from '../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
 import {
-  getUserFriendlyConfigsGlobal,
-  getUserFriendlyConfigsPageEager,
+  getPublicVikeConfigGlobal,
+  getPublicVikeConfigPageEager,
   type PageConfigUserFriendly,
   type PageConfigsUserFriendly
-} from '../../../shared/page-configs/getUserFriendlyConfigs.js'
+} from '../../../shared/page-configs/getPublicVikeConfig.js'
 import { getConfigValuesBase, isJsonValue } from '../../../shared/page-configs/serialize/serializeConfigValues.js'
 import { getPlusFilesAll, type PlusFile, type PlusFilesByLocationId } from './resolveVikeConfig/getPlusFilesAll.js'
 import { getEnvVarObject } from './getEnvVarObject.js'
@@ -265,7 +265,7 @@ async function resolveVikeConfig_withErrorHandling(
       if (!doNotRestartViteOnError) {
         restartVite = true
       }
-      const globalDummy = getUserFriendlyConfigsGlobal({ pageConfigGlobalValues: {} })
+      const globalDummy = getPublicVikeConfigGlobal({ pageConfigGlobalValues: {} })
       const pageConfigsDummy: VikeConfigInternal['_pageConfigs'] = []
       const prerenderContextDummy = resolvePrerenderContext({
         config: globalDummy.config,
@@ -312,13 +312,13 @@ async function resolveVikeConfig(userRootDir: string, vikeVitePluginOptions: unk
 
   // global
   const pageConfigGlobalValues = getConfigValues(pageConfigGlobal)
-  const userFriendlyConfigsGlobal = getUserFriendlyConfigsGlobal({ pageConfigGlobalValues })
+  const userFriendlyConfigsGlobal = getPublicVikeConfigGlobal({ pageConfigGlobalValues })
 
   // pages
   const userFriendlyConfigsPageEager = objectFromEntries(
     pageConfigs.map((pageConfig) => {
       const pageConfigValues = getConfigValues(pageConfig, true)
-      return getUserFriendlyConfigsPageEager(pageConfigGlobalValues, pageConfig, pageConfigValues)
+      return getPublicVikeConfigPageEager(pageConfigGlobalValues, pageConfig, pageConfigValues)
     })
   )
 

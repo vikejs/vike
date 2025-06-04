@@ -2,7 +2,7 @@ export { preparePageContextForPublicUsageServer }
 export type { PageContextForPublicUsageServer }
 
 import type { PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
-import type { PageConfigUserFriendlyOld } from '../../../shared/page-configs/getUserFriendlyConfigs.js'
+import type { PageConfigUserFriendlyOld } from '../../../shared/page-configs/getPublicVikeConfig.js'
 import type { PageContextInternalServer } from '../../../shared/types.js'
 import {
   assertPropertyGetters,
