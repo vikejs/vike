@@ -79,7 +79,7 @@ import { getConfigDefinedAt, getDefinedByString } from '../../../shared/page-con
 import { loadPointerImport, loadValueFile } from './resolveVikeConfig/loadFileAtConfigTime.js'
 import { resolvePointerImport } from './resolveVikeConfig/resolvePointerImport.js'
 import { getFilePathResolved } from './getFilePath.js'
-import type { FilePath } from '../../../shared/page-configs/FilePath.js'
+import type { FilePath } from '../../../types/FilePath.js'
 import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
 import {
   getVikeConfigPublicGlobal,

@@ -15,7 +15,7 @@ import {
   assertPosixPath,
   toPosixPath
 } from '../utils.js'
-import type { FilePathResolved, FilePathUnresolved } from '../../../shared/page-configs/FilePath.js'
+import type { FilePathResolved, FilePathUnresolved } from '../../../types/FilePath.js'
 import type { ResolvedConfig } from 'vite'
 
 function getFilePathResolved(

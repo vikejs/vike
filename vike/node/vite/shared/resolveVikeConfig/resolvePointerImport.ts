@@ -15,7 +15,7 @@ import {
 } from '../../utils.js'
 import { type PointerImportData, assertPointerImportPath, parsePointerImportData } from './pointerImports.js'
 import { getFilePathAbsoluteUserRootDir, getFilePathResolved, getFilePathUnresolved } from '../getFilePath.js'
-import type { FilePath, FilePathResolved } from '../../../../shared/page-configs/FilePath.js'
+import type { FilePath, FilePathResolved } from '../../../../types/FilePath.js'
 
 type PointerImport = { fileExportPath: FileExportPath }
 type FileExportPath = DefinedAtFilePath & Required<Pick<DefinedAtFilePath, 'fileExportName'>>

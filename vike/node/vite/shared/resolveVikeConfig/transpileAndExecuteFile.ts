@@ -39,7 +39,7 @@ import {
 } from '../../utils.js'
 import { transformPointerImports } from './pointerImports.js'
 import sourceMapSupport from 'source-map-support'
-import type { FilePathResolved } from '../../../../shared/page-configs/FilePath.js'
+import type { FilePathResolved } from '../../../../types/FilePath.js'
 import { getFilePathAbsoluteUserRootDir } from '../getFilePath.js'
 
 assertIsNotProductionRuntime()

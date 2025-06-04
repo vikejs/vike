@@ -7,7 +7,7 @@ export type { ConfigFile }
 export type { PointerImportLoaded }
 
 import { assert, assertUsage, assertIsNotProductionRuntime, isArrayOfStrings, isObject } from '../../utils.js'
-import type { FilePathResolved } from '../../../../shared/page-configs/FilePath.js'
+import type { FilePathResolved } from '../../../../types/FilePath.js'
 import { type EsbuildCache, transpileAndExecuteFile } from './transpileAndExecuteFile.js'
 import { getConfigDefinitionOptional } from '../resolveVikeConfig.js'
 import type { PlusFileValue } from './getPlusFilesAll.js'
