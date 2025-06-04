@@ -27,7 +27,7 @@ async function getVirtualFilePageConfigLazy(id: string, isDev: boolean, config: 
   */
   const { pageId, isForClientSide } = result
   const vikeConfig = await getVikeConfigInternal(true)
-  const { pageConfigs } = vikeConfig
+  const { _pageConfigs: pageConfigs } = vikeConfig
   const pageConfig = pageConfigs.find((pageConfig) => pageConfig.pageId === pageId)
   assert(pageConfig, { id, pageId })
   const code = getLoadConfigLazy(

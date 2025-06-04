@@ -58,7 +58,7 @@ function pluginExtractAssets(): Plugin[] {
         }
         if (isFixEnabled) {
           // I'm guessing isFixEnabled can only be true when mixing both designs: https://github.com/vikejs/vike/issues/1480
-          assertV1Design(vikeConfig.pageConfigs, true)
+          assertV1Design(vikeConfig._pageConfigs, true)
           assert(false)
         }
         const includeAssetsImportedByServer = resolveIncludeAssetsImportedByServer(vikeConfig.global.config)

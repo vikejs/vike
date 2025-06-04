@@ -116,7 +116,7 @@ type PrerenderContext = {
 } & ({ [K in keyof PrerenderContextPublic]: null } | PrerenderContextPublic)
 
 type VikeConfigInternal = {
-  pageConfigs: PageConfigBuildTime[]
+  _pageConfigs: PageConfigBuildTime[]
   pageConfigGlobal: PageConfigGlobalBuildTime
   global: PageConfigUserFriendly
   pages: PageConfigsUserFriendly
@@ -268,13 +268,13 @@ async function resolveVikeConfig_withErrorHandling(
         restartVite = true
       }
       const globalDummy = getUserFriendlyConfigsGlobal({ pageConfigGlobalValues: {} })
-      const pageConfigsDummy: VikeConfigInternal['pageConfigs'] = []
+      const pageConfigsDummy: VikeConfigInternal['_pageConfigs'] = []
       const prerenderContextDummy = resolvePrerenderContext({
         global: globalDummy,
-        pageConfigs: pageConfigsDummy
+        _pageConfigs: pageConfigsDummy
       })
       const dummyData: VikeConfigInternal = {
-        pageConfigs: pageConfigsDummy,
+        _pageConfigs: pageConfigsDummy,
         pageConfigGlobal: {
           configDefinitions: {},
           configValueSources: {}
@@ -324,11 +324,11 @@ async function resolveVikeConfig(userRootDir: string, vikeVitePluginOptions: unk
 
   const prerenderContext = resolvePrerenderContext({
     global: userFriendlyConfigsGlobal,
-    pageConfigs
+    _pageConfigs: pageConfigs
   })
 
   const vikeConfig: VikeConfigInternal = {
-    pageConfigs,
+    _pageConfigs: pageConfigs,
     pageConfigGlobal,
     global: userFriendlyConfigsGlobal,
     pages: userFriendlyConfigsPageEager,

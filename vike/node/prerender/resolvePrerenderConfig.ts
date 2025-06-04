@@ -9,7 +9,7 @@ import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.j
 // When setting +prerender to an object => it also enables pre-rendering
 const defaultValueForObject = true
 
-function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal, 'global' | 'pageConfigs'>) {
+function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal, 'global' | '_pageConfigs'>) {
   const prerenderConfigs = vikeConfig.global.config.prerender || []
 
   const prerenderSettings = prerenderConfigs.filter(isObject2)
@@ -40,15 +40,17 @@ function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal, 'glob
   objectAssign(prerenderConfigGlobal, {
     defaultLocalValue,
     isPrerenderingEnabledForAllPages:
-      vikeConfig.pageConfigs.length > 0 &&
-      vikeConfig.pageConfigs.every((pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value ?? defaultLocalValue),
+      vikeConfig._pageConfigs.length > 0 &&
+      vikeConfig._pageConfigs.every(
+        (pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value ?? defaultLocalValue
+      ),
     isPrerenderingEnabled:
-      vikeConfig.pageConfigs.length > 0 &&
-      vikeConfig.pageConfigs.some((pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value ?? defaultLocalValue)
+      vikeConfig._pageConfigs.length > 0 &&
+      vikeConfig._pageConfigs.some((pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value ?? defaultLocalValue)
   })
 
   // TODO/next-major remove
-  if (vikeConfig.pageConfigs.length === 0 && defaultLocalValue) prerenderConfigGlobal.isPrerenderingEnabled = true
+  if (vikeConfig._pageConfigs.length === 0 && defaultLocalValue) prerenderConfigGlobal.isPrerenderingEnabled = true
 
   return prerenderConfigGlobal
 }

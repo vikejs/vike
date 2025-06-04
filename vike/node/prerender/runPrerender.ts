@@ -224,7 +224,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   const doNotPrerenderList: DoNotPrerenderList = []
   await collectDoNoPrerenderList(
-    vikeConfig.pageConfigs,
+    vikeConfig._pageConfigs,
     doNotPrerenderList,
     defaultLocalValue,
     concurrencyLimit,

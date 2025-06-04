@@ -76,7 +76,7 @@ function pluginBuildConfig(): Plugin[] {
 
 async function getEntries(config: ResolvedConfig): Promise<Record<string, string>> {
   const vikeConfig = await getVikeConfigInternal()
-  const { pageConfigs } = vikeConfig
+  const { _pageConfigs: pageConfigs } = vikeConfig
   // TODO/v1-release: remove
   const pageFileEntries = await getPageFileEntries(
     config,

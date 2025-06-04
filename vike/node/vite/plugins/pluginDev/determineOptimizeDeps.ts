@@ -23,7 +23,7 @@ const debug = createDebugger('vike:optimizeDeps')
 
 async function determineOptimizeDeps(config: ResolvedConfig) {
   const vikeConfig = await getVikeConfigInternal()
-  const { pageConfigs } = vikeConfig
+  const { _pageConfigs: pageConfigs } = vikeConfig
 
   const { entries, include } = await getPageDeps(config, pageConfigs)
   {
