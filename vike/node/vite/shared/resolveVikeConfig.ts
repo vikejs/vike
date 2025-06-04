@@ -118,7 +118,8 @@ type PrerenderContext = {
 type VikeConfigInternal = {
   _pageConfigs: PageConfigBuildTime[]
   _pageConfigGlobal: PageConfigGlobalBuildTime
-  global: PageConfigUserFriendly
+  config: PageConfigUserFriendly['config']
+  _from: PageConfigUserFriendly['_from']
   pages: PageConfigsUserFriendly
   _vikeConfigDependencies: Set<string>
   prerenderContext: PrerenderContext
@@ -194,13 +195,13 @@ function getVikeConfig(
   assertUsage(vikeConfig, "getVikeConfig() can only be used when Vite is running with Vike's Vite plugin")
   return {
     pages: vikeConfig.pages,
-    config: vikeConfig.global.config,
+    config: vikeConfig.config,
     prerenderContext
   }
 }
 // Public usage
 type VikeConfig = {
-  config: VikeConfigInternal['global']['config']
+  config: VikeConfigInternal['config']
   pages: VikeConfigInternal['pages']
   prerenderContext: VikeConfigInternal['prerenderContext']
 }
@@ -279,7 +280,8 @@ async function resolveVikeConfig_withErrorHandling(
           configDefinitions: {},
           configValueSources: {}
         },
-        global: globalDummy,
+        config: globalDummy.config,
+        _from: globalDummy._from,
         pages: {},
         prerenderContext: prerenderContextDummy,
         _vikeConfigDependencies: new Set()
@@ -330,7 +332,8 @@ async function resolveVikeConfig(userRootDir: string, vikeVitePluginOptions: unk
   const vikeConfig: VikeConfigInternal = {
     _pageConfigs: pageConfigs,
     _pageConfigGlobal: pageConfigGlobal,
-    global: userFriendlyConfigsGlobal,
+    config: userFriendlyConfigsGlobal.config,
+    _from: userFriendlyConfigsGlobal._from,
     pages: userFriendlyConfigsPageEager,
     prerenderContext,
     _vikeConfigDependencies: esbuildCache.vikeConfigDependencies
