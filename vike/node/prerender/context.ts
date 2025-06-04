@@ -14,7 +14,7 @@ function isPrerenderAutoRunEnabled(vikeConfig: VikeConfigInternal) {
     prerenderConfigGlobal.isPrerenderingEnabled &&
     !(prerenderConfigGlobal || {}).disableAutoRun &&
     !globalObject.isDisabled &&
-    vikeConfig.global.config.disableAutoFullBuild !== 'prerender'
+    vikeConfig.config.disableAutoFullBuild !== 'prerender'
   )
 }
 

@@ -14,7 +14,7 @@ function pluginBuildApp(): Plugin[] {
       apply: 'build',
       async config(config) {
         const vikeConfig = await getVikeConfigInternal()
-        if (!vikeConfig.global.config.vite6BuilderApp) return
+        if (!vikeConfig.config.vite6BuilderApp) return
 
         return {
           builder: {

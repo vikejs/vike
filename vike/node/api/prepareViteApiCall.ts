@@ -54,7 +54,7 @@ async function resolveConfigs(viteConfigFromUserApiOptions: InlineConfig | undef
 // Apply +vite
 // - For example, Vike extensions adding Vite plugins
 function applyVikeViteConfig(viteConfigFromUserEnhanced: InlineConfig | undefined, vikeConfig: VikeConfigInternal) {
-  const viteConfigs = vikeConfig.global._from.configsCumulative.vite
+  const viteConfigs = vikeConfig._from.configsCumulative.vite
   if (!viteConfigs) return viteConfigFromUserEnhanced
   viteConfigs.values.forEach((v) => {
     assertUsage(isObject(v.value), `${v.definedAt} should be an object`)

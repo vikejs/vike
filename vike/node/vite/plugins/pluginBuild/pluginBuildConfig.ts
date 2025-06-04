@@ -78,10 +78,7 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
   const vikeConfig = await getVikeConfigInternal()
   const { _pageConfigs: pageConfigs } = vikeConfig
   // TODO/v1-release: remove
-  const pageFileEntries = await getPageFileEntries(
-    config,
-    resolveIncludeAssetsImportedByServer(vikeConfig.global.config)
-  )
+  const pageFileEntries = await getPageFileEntries(config, resolveIncludeAssetsImportedByServer(vikeConfig.config))
   assertUsage(
     Object.keys(pageFileEntries).length !== 0 || pageConfigs.length !== 0,
     'At least one page should be defined, see https://vike.dev/add'

@@ -34,7 +34,7 @@ async function getVirtualFilePageConfigLazy(id: string, isDev: boolean, config: 
     pageConfig,
     isForClientSide,
     pageId,
-    resolveIncludeAssetsImportedByServer(vikeConfig.global.config),
+    resolveIncludeAssetsImportedByServer(vikeConfig.config),
     config,
     isDev
   )

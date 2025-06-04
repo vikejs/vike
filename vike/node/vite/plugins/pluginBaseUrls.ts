@@ -17,8 +17,8 @@ function pluginBaseUrls(): Plugin {
       const vikeConfig = await getVikeConfigInternal()
       basesResolved = resolveBase(
         baseViteOriginal,
-        vikeConfig.global.config.baseServer ?? null,
-        vikeConfig.global.config.baseAssets ?? null
+        vikeConfig.config.baseServer ?? null,
+        vikeConfig.config.baseAssets ?? null
       )
       // We cannot define these in configResolved() because Vite picks up the env variables before any configResolved() hook is called
       process.env.BASE_SERVER = basesResolved.baseServer
@@ -36,8 +36,8 @@ function pluginBaseUrls(): Plugin {
     async configResolved(config) {
       const vikeConfig = await getVikeConfigInternal()
       const basesResolved2 = resolveBaseFromResolvedConfig(
-        vikeConfig.global.config.baseServer ?? null,
-        vikeConfig.global.config.baseAssets ?? null,
+        vikeConfig.config.baseServer ?? null,
+        vikeConfig.config.baseAssets ?? null,
         config
       )
       assert(basesResolved2.baseServer === basesResolved.baseServer)

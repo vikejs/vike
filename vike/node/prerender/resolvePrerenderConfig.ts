@@ -10,7 +10,7 @@ import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.j
 const defaultValueForObject = true
 
 function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal, 'global' | '_pageConfigs'>) {
-  const prerenderConfigs = vikeConfig.global.config.prerender || []
+  const prerenderConfigs = vikeConfig.config.prerender || []
 
   const prerenderSettings = prerenderConfigs.filter(isObject2)
   const prerenderConfigGlobal = {
@@ -31,7 +31,7 @@ function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal, 'glob
   // TODO/next-major: remove
   // Backwards compatibility for `vike({prerender:true})` in vite.config.js
   {
-    const valuesWithDefinedAt = vikeConfig.global._from.configsCumulative.prerender?.values ?? []
+    const valuesWithDefinedAt = vikeConfig._from.configsCumulative.prerender?.values ?? []
     if (valuesWithDefinedAt.some((v) => v.definedAt.includes('vite.config.js') && v.value)) {
       defaultLocalValue = true
     }

@@ -61,7 +61,7 @@ function pluginExtractAssets(): Plugin[] {
           assertV1Design(vikeConfig._pageConfigs, true)
           assert(false)
         }
-        const includeAssetsImportedByServer = resolveIncludeAssetsImportedByServer(vikeConfig.global.config)
+        const includeAssetsImportedByServer = resolveIncludeAssetsImportedByServer(vikeConfig.config)
         assert(includeAssetsImportedByServer)
         assert(!isViteServerBuild_safe(config, options))
         const importStatements = await getImportStatements(src)
@@ -97,7 +97,7 @@ function pluginExtractAssets(): Plugin[] {
         if (!extractAssetsRE.test(importer)) {
           return
         }
-        const includeAssetsImportedByServer = resolveIncludeAssetsImportedByServer(vikeConfig.global.config)
+        const includeAssetsImportedByServer = resolveIncludeAssetsImportedByServer(vikeConfig.config)
         assert(includeAssetsImportedByServer)
 
         let resolution: null | ResolvedId = null

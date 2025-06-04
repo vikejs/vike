@@ -129,7 +129,7 @@ ${await getVirtualFilePageConfigsEager(isForClientSide, isDev, id, isClientRouti
   const vikeConfig = await getVikeConfigInternal()
 
   // Old design => no + files => only to enable pre-rendering is setting `vike({prerender})` in vite.config.js
-  const isPrerendering = !!vikeConfig.global.config.prerender
+  const isPrerendering = !!vikeConfig.config.prerender
   fileTypes
     .filter((fileType) => fileType !== '.css')
     .forEach((fileType) => {
@@ -147,7 +147,7 @@ ${await getVirtualFilePageConfigsEager(isForClientSide, isDev, id, isClientRouti
         fileContent += getGlobs(globRoots, isBuild, fileType, 'extractExportNames', isV1Design)
       }
     })
-  const includeAssetsImportedByServer = resolveIncludeAssetsImportedByServer(vikeConfig.global.config)
+  const includeAssetsImportedByServer = resolveIncludeAssetsImportedByServer(vikeConfig.config)
   if (includeAssetsImportedByServer && isForClientSide) {
     fileContent += getGlobs(globRoots, isBuild, '.page.server', 'extractAssets', isV1Design)
   }
