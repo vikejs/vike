@@ -318,7 +318,7 @@ async function resolveVikeConfig(userRootDir: string, vikeVitePluginOptions: unk
   const vikeConfigPublicGlobal = getVikeConfigPublicGlobal({ pageConfigGlobalValues })
 
   // pages
-  const vikeConfigPublicPageEager = objectFromEntries(
+  const vikeConfigPublicPagesEager = objectFromEntries(
     pageConfigs.map((pageConfig) => {
       const pageConfigValues = getConfigValues(pageConfig, true)
       return getVikeConfigPublicPageEager(pageConfigGlobalValues, pageConfig, pageConfigValues)
@@ -336,7 +336,7 @@ async function resolveVikeConfig(userRootDir: string, vikeVitePluginOptions: unk
     _pageConfigGlobal: pageConfigGlobal,
     config: vikeConfigPublicGlobal.config,
     _from: vikeConfigPublicGlobal._from,
-    pages: vikeConfigPublicPageEager,
+    pages: vikeConfigPublicPagesEager,
     prerenderContext,
     _vikeConfigDependencies: esbuildCache.vikeConfigDependencies
   }

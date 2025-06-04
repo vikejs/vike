@@ -59,8 +59,14 @@ async function createGlobalContextShared<GlobalContextAddendum extends object>(
 type GlobalContextBasePublic = Pick<GlobalContextBase, 'config' | 'pages' | 'isGlobalContext'>
 type GlobalContextBase = ReturnType<typeof createGlobalContextBase>
 function createGlobalContextBase(virtualFileExports: unknown) {
-  const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal, vikeConfigPublicGlobal, vikeConfigPublicPageEager } =
-    getConfigsAll(virtualFileExports)
+  const {
+    pageFilesAll,
+    allPageIds,
+    pageConfigs,
+    pageConfigGlobal,
+    vikeConfigPublicGlobal,
+    vikeConfigPublicPagesEager
+  } = getConfigsAll(virtualFileExports)
   const globalContext = {
     /**
      * Useful for distinguishing `globalContext` from other objects and narrowing down TypeScript unions.
@@ -76,7 +82,7 @@ function createGlobalContextBase(virtualFileExports: unknown) {
     _allPageIds: allPageIds,
     _vikeConfigPublicGlobal: vikeConfigPublicGlobal,
     config: vikeConfigPublicGlobal.config,
-    pages: vikeConfigPublicPageEager
+    pages: vikeConfigPublicPagesEager
   }
   changeEnumerable(globalContext, '_isOriginalObject', false)
   return globalContext
@@ -90,7 +96,7 @@ function getConfigsAll(virtualFileExports: unknown) {
     pageConfigGlobalValues: pageConfigGlobal.configValues
   })
 
-  const vikeConfigPublicPageEager = Object.fromEntries(
+  const vikeConfigPublicPagesEager = Object.fromEntries(
     pageConfigs.map((pageConfig) => {
       return getVikeConfigPublicPageEager(pageConfigGlobal.configValues, pageConfig, pageConfig.configValues)
     })
@@ -102,7 +108,7 @@ function getConfigsAll(virtualFileExports: unknown) {
     pageConfigs,
     pageConfigGlobal,
     vikeConfigPublicGlobal,
-    vikeConfigPublicPageEager
+    vikeConfigPublicPagesEager
   }
 }
 function getAllPageIds(pageFilesAll: PageFile[], pageConfigs: PageConfigRuntime[]): string[] {
