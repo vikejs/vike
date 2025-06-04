@@ -271,7 +271,8 @@ async function resolveVikeConfig_withErrorHandling(
       const globalDummy = getUserFriendlyConfigsGlobal({ pageConfigGlobalValues: {} })
       const pageConfigsDummy: VikeConfigInternal['_pageConfigs'] = []
       const prerenderContextDummy = resolvePrerenderContext({
-        global: globalDummy,
+        config: globalDummy.config,
+        _from: globalDummy._from,
         _pageConfigs: pageConfigsDummy
       })
       const dummyData: VikeConfigInternal = {
@@ -325,7 +326,8 @@ async function resolveVikeConfig(userRootDir: string, vikeVitePluginOptions: unk
   )
 
   const prerenderContext = resolvePrerenderContext({
-    global: userFriendlyConfigsGlobal,
+    config: userFriendlyConfigsGlobal.config,
+    _from: userFriendlyConfigsGlobal._from,
     _pageConfigs: pageConfigs
   })
 
