@@ -45,7 +45,7 @@ import type { ConfigDefinition } from '../node/vite/shared/resolveVikeConfig/con
 import type { DocumentHtml } from '../node/runtime/html/renderHtml.js'
 import type { InjectFilterEntry } from './index.js'
 import type { VikeVitePluginOptions } from '../node/vite/index.js'
-import type { Vike, VikePackages } from '../shared/VikeNamespace.js'
+import type { Vike, VikePackages } from './VikeNamespace.js'
 import type { HooksTimeoutProvidedByUser } from '../shared/hooks/getHook.js'
 import type { GlobalContext, PageContextClient, PageContextServer } from './PageContext.js'
 import type { InlineConfig } from 'vite'
