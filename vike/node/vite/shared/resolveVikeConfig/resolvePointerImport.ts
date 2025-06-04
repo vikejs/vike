@@ -3,7 +3,7 @@ export { resolvePointerImportData }
 export type { PointerImport }
 
 import pc from '@brillout/picocolors'
-import type { DefinedAtFilePath } from '../../../../shared/page-configs/PageConfig.js'
+import type { DefinedAtFilePath } from '../../../../types/PageConfig.js'
 import {
   assert,
   assertPosixPath,

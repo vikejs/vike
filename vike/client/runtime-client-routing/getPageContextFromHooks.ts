@@ -22,7 +22,7 @@ import type { VikeConfigPublicPageLazy, PageFile } from '../../shared/getPageFil
 import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide.js'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
-import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
+import type { PageConfigRuntime } from '../../types/PageConfig.js'
 import { getPageConfig } from '../../shared/page-configs/helpers.js'
 import { getConfigValueRuntime } from '../../shared/page-configs/getConfigValueRuntime.js'
 import { assertOnBeforeRenderHookReturn } from '../../shared/assertOnBeforeRenderHookReturn.js'

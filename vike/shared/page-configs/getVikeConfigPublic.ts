@@ -22,7 +22,7 @@ import type {
   PageConfigGlobalRuntime,
   PageConfigRuntime,
   PageConfigRuntimeLoaded
-} from './PageConfig.js'
+} from '../../types/PageConfig.js'
 import { type ConfigDefinedAtOptional, getConfigDefinedAtOptional, getDefinedAtString } from './getConfigDefinedAt.js'
 import { getConfigValueFilePathToShowToUser } from './helpers.js'
 import {

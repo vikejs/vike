@@ -11,7 +11,7 @@ import type {
   ConfigValueSources,
   DefinedAtFilePath,
   ConfigValueSource
-} from '../../../../shared/page-configs/PageConfig.js'
+} from '../../../../types/PageConfig.js'
 import type { Config, ConfigNameBuiltIn, ConfigNameGlobal } from '../../../../types/Config.js'
 import { assert, assertUsage } from '../../utils.js'
 import { getConfigDefinedAt, type ConfigDefinedAt } from '../../../../shared/page-configs/getConfigDefinedAt.js'

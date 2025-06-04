@@ -9,7 +9,7 @@ import { route as routeInternal, type PageRoutes } from '../shared/route/index.j
 import type { PageFile } from '../shared/getPageFiles/getPageFileObject.js'
 import { getGlobalContextServerInternal, initGlobalContext_getPagesAndRoutes } from '../node/runtime/globalContext.js'
 import { setNodeEnvProduction } from '../utils/assertSetup.js'
-import { PageConfigRuntime } from '../shared/page-configs/PageConfig.js'
+import { PageConfigRuntime } from '../types/PageConfig.js'
 
 /**
  * Used by {@link https://github.com/magne4000/vite-plugin-vercel|vite-plugin-vercel} to compute some rewrite rules and extract { isr } configs.

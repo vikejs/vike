@@ -3,7 +3,7 @@ export { analyzePage }
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { getVikeClientEntry } from '../../../shared/getPageFiles/analyzePageClientSide/determineClientEntry.js'
 import type { PageFile } from '../../../shared/getPageFiles/getPageFileObject.js'
-import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
+import type { PageConfigRuntime } from '../../../types/PageConfig.js'
 import { type AnalysisResult, analyzePageClientSide } from '../../../shared/getPageFiles/analyzePageClientSide.js'
 import { getVirtualFileIdPageConfigLazy } from '../../shared/virtualFiles/virtualFilePageConfigLazy.js'
 import { analyzeClientSide } from '../../../shared/getPageFiles/analyzeClientSide.js'

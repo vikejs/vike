@@ -21,12 +21,12 @@ export type { DefinedAt }
 export type { DefinedBy }
 export type { DefinedAtFilePath }
 
-import type { ConfigValueSerialized } from './serialize/PageConfigSerialized.js'
-import type { LocationId } from '../../node/vite/shared/resolveVikeConfig/filesystemRouting.js'
-import type { FilePath } from './FilePath.js'
-import type { ConfigDefinitionsInternal } from '../../node/vite/shared/resolveVikeConfig/configDefinitionsBuiltIn.js'
-import type { PlusFile } from '../../node/vite/shared/resolveVikeConfig/getPlusFilesAll.js'
-import type { Operation } from '../../node/api/types.js'
+import type { ConfigValueSerialized } from '../shared/page-configs/serialize/PageConfigSerialized.js'
+import type { LocationId } from '../node/vite/shared/resolveVikeConfig/filesystemRouting.js'
+import type { FilePath } from '../shared/page-configs/FilePath.js'
+import type { ConfigDefinitionsInternal } from '../node/vite/shared/resolveVikeConfig/configDefinitionsBuiltIn.js'
+import type { PlusFile } from '../node/vite/shared/resolveVikeConfig/getPlusFilesAll.js'
+import type { Operation } from '../node/api/types.js'
 
 type PageConfigCommon = {
   pageId: string

@@ -4,7 +4,7 @@ export { resolvePrerenderConfigLocal }
 import { VikeConfigInternal } from '../vite/shared/resolveVikeConfig.js'
 import { assert, isArray, isObject, objectAssign } from './utils.js'
 import { getConfigValueBuildTime } from '../../shared/page-configs/getConfigValueBuildTime.js'
-import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
+import type { PageConfigBuildTime } from '../../types/PageConfig.js'
 
 // When setting +prerender to an object => it also enables pre-rendering
 const defaultValueForObject = true

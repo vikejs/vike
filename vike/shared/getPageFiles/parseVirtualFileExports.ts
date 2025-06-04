@@ -6,7 +6,7 @@ import { assert, hasProp, isCallable, isObject, cast, isArray } from '../utils.j
 import { assertExportValues } from './assert_exports_old_design.js'
 import { getPageFileObject, type PageFile } from './getPageFileObject.js'
 import { fileTypes, type FileType } from './fileTypes.js'
-import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
+import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../../types/PageConfig.js'
 import { parsePageConfigs } from '../page-configs/serialize/parsePageConfigs.js'
 import type {
   PageConfigGlobalRuntimeSerialized,

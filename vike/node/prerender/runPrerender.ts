@@ -55,7 +55,7 @@ import {
   getHook_setIsPrerenderering
 } from '../../shared/hooks/getHook.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
-import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
+import type { PageConfigBuildTime } from '../../types/PageConfig.js'
 import { getVikeConfigInternal } from '../vite/shared/resolveVikeConfig.js'
 import type { HookTimeout } from '../../shared/hooks/getHook.js'
 import { logErrorHint } from '../runtime/renderPage/logErrorHint.js'

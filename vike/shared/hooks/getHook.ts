@@ -16,7 +16,7 @@ export { getHookTimeoutDefault }
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import type { VikeConfigPublicPageLazy } from '../getPageFiles.js'
 import type { HookNameOld, HookNamePage, HookNameGlobal, HookName } from '../../types/Config.js'
-import type { ConfigValue, PageConfigGlobalRuntime, PageConfigRuntime } from '../page-configs/PageConfig.js'
+import type { ConfigValue, PageConfigGlobalRuntime, PageConfigRuntime } from '../../types/PageConfig.js'
 import { getHookFilePathToShowToUser } from '../page-configs/helpers.js'
 import { getConfigValueRuntime } from '../page-configs/getConfigValueRuntime.js'
 import { assert, assertUsage, checkType, isArray, isCallable, isObject } from '../utils.js'

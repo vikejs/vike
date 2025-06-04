@@ -46,7 +46,7 @@ export type {
   KeepScrollPosition
 } from './Config.js'
 export type { ConfigResolved } from './Config/PageContextConfig.js'
-export type { ConfigEnv } from '../shared/page-configs/PageConfig.js'
+export type { ConfigEnv } from './PageConfig.js'
 export type {
   ConfigDefinition,
   ConfigEffect
@@ -62,7 +62,7 @@ export type { InjectFilterEntry } from '../node/runtime/html/injectAssets/getHtm
 export { defineConfig } from './defineConfig.js'
 
 // TODO/v1-release: remove
-import type { ConfigEnv } from '../shared/page-configs/PageConfig.js'
+import type { ConfigEnv } from './PageConfig.js'
 /** @deprecated Replace:
  *   `import type { Env } from 'vike/types'`
  * With:

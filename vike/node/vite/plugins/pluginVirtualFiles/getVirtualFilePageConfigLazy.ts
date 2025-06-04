@@ -1,7 +1,7 @@
 export { getVirtualFilePageConfigLazy }
 
 import { assert } from '../../utils.js'
-import type { PageConfigBuildTime } from '../../../../shared/page-configs/PageConfig.js'
+import type { PageConfigBuildTime } from '../../../../types/PageConfig.js'
 import {
   getVirtualFileIdPageConfigLazy,
   isVirtualFileIdPageConfigLazy

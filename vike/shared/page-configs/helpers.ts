@@ -3,7 +3,7 @@ export { getConfigValueFilePathToShowToUser }
 export { getHookFilePathToShowToUser }
 
 import { assert, isArray } from '../utils.js'
-import type { PageConfigRuntime, DefinedAtData } from './PageConfig.js'
+import type { PageConfigRuntime, DefinedAtData } from '../../types/PageConfig.js'
 
 function getPageConfig(pageId: string, pageConfigs: PageConfigRuntime[]): PageConfigRuntime {
   const pageConfig = pageConfigs.find((p) => p.pageId === pageId)

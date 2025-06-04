@@ -1,7 +1,13 @@
 export { parsePageConfigs }
 export { parseConfigValuesSerialized }
 
-import type { ConfigValues, PageConfigRuntime, PageConfigGlobalRuntime, ConfigValue, DefinedAt } from '../PageConfig.js'
+import type {
+  ConfigValues,
+  PageConfigRuntime,
+  PageConfigGlobalRuntime,
+  ConfigValue,
+  DefinedAt
+} from '../../../types/PageConfig.js'
 import type {
   PageConfigGlobalRuntimeSerialized,
   PageConfigRuntimeSerialized,

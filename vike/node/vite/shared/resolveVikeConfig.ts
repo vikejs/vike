@@ -49,7 +49,7 @@ import type {
   ConfigValues,
   PageConfigRoute,
   DefinedBy
-} from '../../../shared/page-configs/PageConfig.js'
+} from '../../../types/PageConfig.js'
 import type { Config } from '../../../types/Config.js'
 import {
   configDefinitionsBuiltIn,

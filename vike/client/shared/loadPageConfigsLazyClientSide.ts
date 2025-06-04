@@ -5,11 +5,7 @@ import { getPageFilesClientSide, type PageFile, type VikeConfigPublicPageLazy } 
 import { getVikeConfigPublicPageLazy } from '../../shared/page-configs/getVikeConfigPublic.js'
 import { findPageConfig } from '../../shared/page-configs/findPageConfig.js'
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
-import type {
-  PageConfigGlobalRuntime,
-  PageConfigRuntime,
-  PageConfigRuntimeLoaded
-} from '../../shared/page-configs/PageConfig.js'
+import type { PageConfigGlobalRuntime, PageConfigRuntime, PageConfigRuntimeLoaded } from '../../types/PageConfig.js'
 import { objectAssign } from '../runtime-server-routing/utils.js'
 
 const stamp = '__whileFetchingAssets'
