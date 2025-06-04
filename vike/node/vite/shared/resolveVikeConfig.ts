@@ -120,7 +120,7 @@ type VikeConfigInternal = {
   pageConfigGlobal: PageConfigGlobalBuildTime
   global: PageConfigUserFriendly
   pages: PageConfigsUserFriendly
-  vikeConfigDependencies: Set<string>
+  _vikeConfigDependencies: Set<string>
   prerenderContext: PrerenderContext
 }
 
@@ -282,7 +282,7 @@ async function resolveVikeConfig_withErrorHandling(
         global: globalDummy,
         pages: {},
         prerenderContext: prerenderContextDummy,
-        vikeConfigDependencies: new Set()
+        _vikeConfigDependencies: new Set()
       }
       return dummyData
     }
@@ -333,7 +333,7 @@ async function resolveVikeConfig(userRootDir: string, vikeVitePluginOptions: unk
     global: userFriendlyConfigsGlobal,
     pages: userFriendlyConfigsPageEager,
     prerenderContext,
-    vikeConfigDependencies: esbuildCache.vikeConfigDependencies
+    _vikeConfigDependencies: esbuildCache.vikeConfigDependencies
   }
   vikeConfigSync = vikeConfig
 
