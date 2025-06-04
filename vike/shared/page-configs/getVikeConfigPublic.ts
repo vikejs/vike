@@ -1,5 +1,5 @@
-// TODO/now-4: use public API internally?
-// TODO/now-4: rename definedAt => definedBy
+// TODO/now-flat-pageContext: use public API internally?
+// TODO/now-flat-pageContext: rename definedAt => definedBy
 export { getVikeConfigPublicGlobal }
 export { getVikeConfigPublicPageEager }
 export { getVikeConfigPublicPageLazy }
@@ -104,18 +104,34 @@ type Sources = Record<
   string, // configName
   SourceAny[]
 >
-type SourceAny = SourceConfigs
-/* TODO/eventually: https://github.com/vikejs/vike/issues/1268
+type SourceAny = SourceConfigsStandard | SourceConfigsCumulative | SourceConfigsComputed
+/* TO-DO/eventually: https://github.com/vikejs/vike/issues/1268
   | SourceHooks
-  | SourceRenderFailure
-  | SourceVikeInternal
-  */
+  | SourceRequest
+  | SourceVike
+// Defined by user hook
+type SourceHooks = {
+  type: 'hooks'
+  value: unknown
+  // Whether the value comes from previously aborted (e.g. `throw render()`) or failed render (e.g. hook throwing an error).
+  // https://github.com/vikejs/vike/issues/1112
+  isFromPreviousRender?: number
+  definedAt: string
+}
+// Defined by renderPage(pageContextInit)
+type SourceRequest = {
+  type: 'request'
+  value: unknown
+  definedAt: 'renderPage()'
+}
+// Defined by Vike (Vike built-ins)
+type SourceVike = {
+  type: 'vike'
+  value: unknown
+  definedAt: 'Vike'
+}
+//*/
 
-type SourceConfigs = SourceConfigsStandard | SourceConfigsCumulative | SourceConfigsComputed
-/* Potential upcoming feature: resolve cumulative values at config-time instead of runtime,
-   in order to save KBs on the client-side.
- | SourceConfigsResolved
- */
 type SourceConfigsStandard = {
   type: 'configsStandard'
   value: unknown
@@ -135,10 +151,9 @@ type SourceConfigsComputed = {
   value: unknown
 }
 
-// See: [Flat `pageContext`](https://github.com/vikejs/vike/issues/1268)
 type VikeConfigPublic = {
   config: ConfigResolved
-  // TODO/now-4 expose publicly?
+  // TODO/now-flat-pageContext: expose publicly?
   _source: Source
   _sources: Sources
   _from: From
@@ -276,7 +291,7 @@ function getVikeConfigPublicPageLazy(
     source,
     sources,
 
-    // TODO/eventually: deprecate/remove every prop below
+    // TODO/now-flat-pageContext: deprecate every prop below
     configEntries,
     exports,
     exportsAll
