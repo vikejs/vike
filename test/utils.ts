@@ -40,12 +40,17 @@ async function testCounter(currentValue = 0) {
   )
 }
 
-function expectUrl(pathname: string) {
-  expect(page.url()).toBe(getServerUrl() + pathname)
-  /* Same?
-  const url = await page.evaluate(() => location.href)
-  expect(url.endsWith(endsWith)).toBe(true)
-  */
+async function expectUrl(pathname: string) {
+  await autoRetry(
+    async () => {
+      expect(page.url()).toBe(getServerUrl() + pathname)
+      /* Same?
+    const url = await page.evaluate(() => location.href)
+    expect(url.endsWith(pathname)).toBe(true)
+    //*/
+    },
+    { timeout: 3000 }
+  )
 }
 
 /** Ensure page wasn't server-side routed.

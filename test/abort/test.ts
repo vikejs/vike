@@ -46,18 +46,16 @@ function testRun(
 
   test('redirect - server-side', async () => {
     await page.goto(getServerUrl() + '/redirect')
-    expectUrl('/')
+    await expectUrl('/')
   })
 
   test('redirect - client-side (with Client Routing)', async () => {
     await page.goto(getServerUrl() + '/about')
-    expectUrl('/about')
+    await expectUrl('/about')
     await hydrationDone()
     const done = expectPageContextJsonRequest(pageContextInitIsPassedToClient)
     await page.click('a[href="/redirect"]')
-    await autoRetry(async () => {
-      expectUrl('/')
-    })
+    await expectUrl('/')
     await testCounter()
     done()
     await ensureWasClientSideRouted('/pages/about')
@@ -90,19 +88,19 @@ function testRun(
       expectErrServer()
       expectErrClient()
       await testCounter()
-      expectUrl('/show-error-page')
+      await expectUrl('/show-error-page')
     })
 
     test('render error page - client-side routing', async () => {
       await page.goto(getServerUrl() + '/about')
-      expectUrl('/about')
+      await expectUrl('/about')
       await hydrationDone()
       const done = expectPageContextJsonRequest(pageContextInitIsPassedToClient)
       await page.click('a[href="/show-error-page"]')
       await testCounter()
       done()
       expect(await page.textContent('p')).toBe('Testing throw render error page.')
-      expectUrl('/show-error-page')
+      await expectUrl('/show-error-page')
       await ensureWasClientSideRouted('/pages/about')
     })
   }
@@ -114,7 +112,7 @@ function testRun(
     expect(resp.status).toBe(301)
     // client-side
     await page.click('a[href="/permanent-redirect"]')
-    expectUrl('/')
+    await expectUrl('/')
   })
 
   test('external redirect - client-side', async () => {
