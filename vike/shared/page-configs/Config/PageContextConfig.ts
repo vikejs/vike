@@ -3,7 +3,7 @@ export type { ConfigResolved }
 
 import type { VikePackages } from '../../VikeNamespace.js'
 import type { ConfigBuiltIn, ConfigBuiltInResolved, ImportString } from '../../../types/Config.js'
-import type { Combine, IsNotEmpty, XOR5 } from './helpers.js'
+import type { Combine, IsNotEmpty, XOR5 } from '../../../types/Config/helpers.js'
 
 type PageContextConfig = ConfigResolved &
   // TODO/eventually: remove the whole XOR logic
