@@ -10,9 +10,9 @@ import { changeEnumerable, objectAssign } from './utils.js'
 async function createPageContextShared<T extends PageContextPrepareMinimum>(
   pageContextCreated: T,
   pageConfigGlobal: PageConfigGlobalRuntime,
-  userFriendlyConfigsGlobal: VikeConfigPublicGlobal
+  vikeConfigPublicGlobal: VikeConfigPublicGlobal
 ) {
-  objectAssign(pageContextCreated, userFriendlyConfigsGlobal)
+  objectAssign(pageContextCreated, vikeConfigPublicGlobal)
 
   await execHookGlobal(
     'onCreatePageContext',

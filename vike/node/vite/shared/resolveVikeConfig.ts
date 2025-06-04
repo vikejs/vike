@@ -315,10 +315,10 @@ async function resolveVikeConfig(userRootDir: string, vikeVitePluginOptions: unk
 
   // global
   const pageConfigGlobalValues = getConfigValues(pageConfigGlobal)
-  const userFriendlyConfigsGlobal = getVikeConfigPublicGlobal({ pageConfigGlobalValues })
+  const vikeConfigPublicGlobal = getVikeConfigPublicGlobal({ pageConfigGlobalValues })
 
   // pages
-  const userFriendlyConfigsPageEager = objectFromEntries(
+  const vikeConfigPublicPageEager = objectFromEntries(
     pageConfigs.map((pageConfig) => {
       const pageConfigValues = getConfigValues(pageConfig, true)
       return getVikeConfigPublicPageEager(pageConfigGlobalValues, pageConfig, pageConfigValues)
@@ -326,17 +326,17 @@ async function resolveVikeConfig(userRootDir: string, vikeVitePluginOptions: unk
   )
 
   const prerenderContext = resolvePrerenderContext({
-    config: userFriendlyConfigsGlobal.config,
-    _from: userFriendlyConfigsGlobal._from,
+    config: vikeConfigPublicGlobal.config,
+    _from: vikeConfigPublicGlobal._from,
     _pageConfigs: pageConfigs
   })
 
   const vikeConfig: VikeConfigInternal = {
     _pageConfigs: pageConfigs,
     _pageConfigGlobal: pageConfigGlobal,
-    config: userFriendlyConfigsGlobal.config,
-    _from: userFriendlyConfigsGlobal._from,
-    pages: userFriendlyConfigsPageEager,
+    config: vikeConfigPublicGlobal.config,
+    _from: vikeConfigPublicGlobal._from,
+    pages: vikeConfigPublicPageEager,
     prerenderContext,
     _vikeConfigDependencies: esbuildCache.vikeConfigDependencies
   }
