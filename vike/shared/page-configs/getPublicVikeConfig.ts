@@ -146,7 +146,7 @@ type PageConfigUserFriendly = {
 }
 type PageConfigsUserFriendly = Record<
   string, // pageId
-  PageConfigUserFriendlyWithRoute
+  PublicVikeConfigPageEager
 >
 type WithRoute =
   | {
@@ -157,14 +157,14 @@ type WithRoute =
       route?: undefined
       isErrorPage: true
     }
-type PageConfigUserFriendlyWithRoute = PageConfigUserFriendly & WithRoute
+type PublicVikeConfigPageEager = PageConfigUserFriendly & WithRoute
 function getPublicVikeConfigPageEager(
   pageConfigGlobalValues: ConfigValues,
   pageConfig: PageConfigRuntime | PageConfigBuildTime,
   pageConfigValues: ConfigValues
-): [string, PageConfigUserFriendlyWithRoute] {
+): [string, PublicVikeConfigPageEager] {
   const pageConfigUserFriendly = getPublicVikeConfig_public({ pageConfigGlobalValues, pageConfigValues })
-  let page: PageConfigUserFriendlyWithRoute
+  let page: PublicVikeConfigPageEager
   if (!pageConfig.isErrorPage) {
     const route = pageConfigUserFriendly.config.route ?? pageConfig.routeFilesystem.routeString
     page = {
