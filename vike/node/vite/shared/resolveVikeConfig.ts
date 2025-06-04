@@ -117,7 +117,7 @@ type PrerenderContext = {
 
 type VikeConfigInternal = {
   _pageConfigs: PageConfigBuildTime[]
-  pageConfigGlobal: PageConfigGlobalBuildTime
+  _pageConfigGlobal: PageConfigGlobalBuildTime
   global: PageConfigUserFriendly
   pages: PageConfigsUserFriendly
   _vikeConfigDependencies: Set<string>
@@ -275,7 +275,7 @@ async function resolveVikeConfig_withErrorHandling(
       })
       const dummyData: VikeConfigInternal = {
         _pageConfigs: pageConfigsDummy,
-        pageConfigGlobal: {
+        _pageConfigGlobal: {
           configDefinitions: {},
           configValueSources: {}
         },
@@ -329,7 +329,7 @@ async function resolveVikeConfig(userRootDir: string, vikeVitePluginOptions: unk
 
   const vikeConfig: VikeConfigInternal = {
     _pageConfigs: pageConfigs,
-    pageConfigGlobal,
+    _pageConfigGlobal: pageConfigGlobal,
     global: userFriendlyConfigsGlobal,
     pages: userFriendlyConfigsPageEager,
     prerenderContext,
