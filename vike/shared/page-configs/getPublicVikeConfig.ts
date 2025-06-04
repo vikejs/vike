@@ -4,8 +4,8 @@
 export { getPublicVikeConfigGlobal }
 export { getPublicVikeConfigPageEager }
 export { getPublicVikeConfigPageLazy }
-export type { PageConfigsUserFriendly }
 export type { PageConfigUserFriendly }
+export type { PublicVikeConfigPageEager }
 export type { PublicVikeConfigPageLazy }
 export type { Source }
 export type { Sources }
@@ -144,10 +144,6 @@ type PageConfigUserFriendly = {
   _sources: Sources
   _from: From
 }
-type PageConfigsUserFriendly = Record<
-  string, // pageId
-  PublicVikeConfigPageEager
->
 type WithRoute =
   | {
       route: Route

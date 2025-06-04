@@ -85,7 +85,7 @@ import {
   getPublicVikeConfigGlobal,
   getPublicVikeConfigPageEager,
   type PageConfigUserFriendly,
-  type PageConfigsUserFriendly
+  type PublicVikeConfigPageEager
 } from '../../../shared/page-configs/getPublicVikeConfig.js'
 import { getConfigValuesBase, isJsonValue } from '../../../shared/page-configs/serialize/serializeConfigValues.js'
 import { getPlusFilesAll, type PlusFile, type PlusFilesByLocationId } from './resolveVikeConfig/getPlusFilesAll.js'
@@ -121,7 +121,10 @@ type VikeConfigInternal = {
   _pageConfigGlobal: PageConfigGlobalBuildTime
   config: PageConfigUserFriendly['config']
   _from: PageConfigUserFriendly['_from']
-  pages: PageConfigsUserFriendly
+  pages: Record<
+    string, // pageId
+    PublicVikeConfigPageEager
+  >
   _vikeConfigDependencies: Set<string>
   prerenderContext: PrerenderContext
 }
