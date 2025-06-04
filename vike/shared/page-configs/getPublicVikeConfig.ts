@@ -137,7 +137,7 @@ type SourceConfigsComputed = {
 }
 
 // See: [Flat `pageContext`](https://github.com/vikejs/vike/issues/1268)
-type PublicVikeConfigGlobal = {
+type PublicVikeConfig = {
   config: ConfigResolved
   // TODO/now-4 expose publicly?
   _source: Source
@@ -153,7 +153,8 @@ type WithRoute =
       route?: undefined
       isErrorPage: true
     }
-type PublicVikeConfigPageEager = PublicVikeConfigGlobal & WithRoute
+type PublicVikeConfigPageEager = PublicVikeConfig & WithRoute
+type PublicVikeConfigGlobal = PublicVikeConfig
 function getPublicVikeConfigPageEager(
   pageConfigGlobalValues: ConfigValues,
   pageConfig: PageConfigRuntime | PageConfigBuildTime,
@@ -182,9 +183,7 @@ function getPublicVikeConfig_public({
   const pageConfigUserFriendly = getPublicVikeConfig_base({ pageConfigGlobalValues, pageConfigValues })
   return getPublicCopy(pageConfigUserFriendly)
 }
-function getPublicCopy(
-  pageConfigUserFriendly: ReturnType<typeof getPublicVikeConfig_V1Design>
-): PublicVikeConfigGlobal {
+function getPublicCopy(pageConfigUserFriendly: ReturnType<typeof getPublicVikeConfig_V1Design>): PublicVikeConfig {
   const p = pageConfigUserFriendly
   return {
     config: p.config,
