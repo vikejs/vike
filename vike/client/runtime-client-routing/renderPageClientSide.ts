@@ -53,7 +53,7 @@ import type { VikeConfigPublicPageLazy } from '../../shared/getPageFiles.js'
 import { setPageContextCurrent } from './getPageContextCurrent.js'
 import { getRouteStringParameterList } from '../../shared/route/resolveRouteString.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
-import type { PageContextClient } from '../../shared/types.js'
+import type { PageContextClient } from '../../types/PageContext.js'
 import {
   execHooksErrorHandling,
   execHookErrorHandling,

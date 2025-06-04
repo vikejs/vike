@@ -47,7 +47,7 @@ import type { InjectFilterEntry } from '../../types/index.js'
 import type { VikeVitePluginOptions } from '../../node/vite/index.js'
 import type { Vike, VikePackages } from '../VikeNamespace.js'
 import type { HooksTimeoutProvidedByUser } from '../hooks/getHook.js'
-import type { GlobalContext, PageContextClient, PageContextServer } from '../types.js'
+import type { GlobalContext, PageContextClient, PageContextServer } from '../../types/PageContext.js'
 import type { InlineConfig } from 'vite'
 
 type HookNameOld = HookName | HookNameOldDesign

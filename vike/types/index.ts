@@ -8,12 +8,12 @@ export type {
   PageContextWithServerRouting,
   PageContextClientWithServerRouting,
   GlobalContextClientWithServerRouting
-} from '../shared/types.js'
+} from './PageContext.js'
 
 // TODO/v1-release: remove these three exports
-export type { PageContextBuiltInServer } from '../shared/types.js'
-export type { PageContextBuiltInClientWithClientRouting } from '../shared/types.js'
-export type { PageContextBuiltInClientWithServerRouting } from '../shared/types.js'
+export type { PageContextBuiltInServer } from './PageContext.js'
+export type { PageContextBuiltInClientWithClientRouting } from './PageContext.js'
+export type { PageContextBuiltInClientWithServerRouting } from './PageContext.js'
 
 export type {
   Config,
@@ -83,7 +83,7 @@ export type { Effect }
 
 // TODO/v1-release: remove
 // Ancient Vike versions used to have `import type { PageContextBuiltInClient } from 'vike/types'`
-import { PageContextBuiltInClientWithServerRouting } from '../shared/types.js'
+import { PageContextBuiltInClientWithServerRouting } from './PageContext.js'
 /** @deprecated Replace:
  *   `import type { PageContextBuiltInClient } from 'vike/types'`
  * With:
@@ -95,7 +95,7 @@ type PageContextBuiltInClient<Page = any> = PageContextBuiltInClientWithServerRo
 export type { PageContextBuiltInClient }
 
 // TODO/v1-release: remove
-import { PageContextBuiltInServer } from '../shared/types.js'
+import { PageContextBuiltInServer } from './PageContext.js'
 /** @deprecated Replace:
  *   `import type { PageContextBuiltIn } from 'vike/types'`
  * With:

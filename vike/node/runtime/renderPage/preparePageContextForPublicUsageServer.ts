@@ -3,7 +3,7 @@ export type { PageContextForPublicUsageServer }
 
 import type { PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
 import type { VikeConfigPublicPageLazy } from '../../../shared/page-configs/getVikeConfigPublic.js'
-import type { PageContextInternalServer } from '../../../shared/types.js'
+import type { PageContextInternalServer } from '../../../types/PageContext.js'
 import {
   assertPropertyGetters,
   preparePageContextForPublicUsage

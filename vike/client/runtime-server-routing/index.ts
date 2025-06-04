@@ -1,6 +1,6 @@
 // TODO/v1-release: remove this file
 
-import type { PageContextBuiltInClientWithServerRouting } from '../../shared/types.js'
+import type { PageContextBuiltInClientWithServerRouting } from '../../types/PageContext.js'
 /** @deprecated
  * Replace:
  *   ```

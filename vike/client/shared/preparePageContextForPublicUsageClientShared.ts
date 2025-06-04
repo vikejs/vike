@@ -9,7 +9,7 @@ import {
   type PageContextPrepareMinimum,
   preparePageContextForPublicUsage
 } from '../../shared/preparePageContextForPublicUsage.js'
-import type { PageContextInternalClient } from '../../shared/types.js'
+import type { PageContextInternalClient } from '../../types/PageContext.js'
 
 type PageContextForPublicUsageClientShared = PageContextPrepareMinimum &
   PageContextInternalClient &

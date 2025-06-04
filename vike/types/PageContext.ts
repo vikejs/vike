@@ -23,11 +23,15 @@ export type { PageContextBuiltInServer_deprecated as PageContextBuiltInServer }
 export type { PageContextBuiltInClientWithClientRouting_deprecated as PageContextBuiltInClientWithClientRouting }
 export type { PageContextBuiltInClientWithServerRouting_deprecated as PageContextBuiltInClientWithServerRouting }
 
-import type { PageContextUrlInternal, PageContextUrlClient, PageContextUrlServer } from './getPageContextUrlComputed.js'
-import type { ConfigEntries, ExportsAll, From, Source, Sources } from './page-configs/getVikeConfigPublic.js'
-import type { Config } from './page-configs/Config.js'
-import type { PageContextConfig } from './page-configs/Config/PageContextConfig.js'
-import type { AbortStatusCode } from './route/abort.js'
+import type {
+  PageContextUrlInternal,
+  PageContextUrlClient,
+  PageContextUrlServer
+} from '../shared/getPageContextUrlComputed.js'
+import type { ConfigEntries, ExportsAll, From, Source, Sources } from '../shared/page-configs/getVikeConfigPublic.js'
+import type { Config } from '../shared/page-configs/Config.js'
+import type { PageContextConfig } from '../shared/page-configs/Config/PageContextConfig.js'
+import type { AbortStatusCode } from '../shared/route/abort.js'
 import type { GlobalContextServer } from '../node/runtime/globalContext.js'
 import type { GlobalContextClient } from '../client/runtime-client-routing/globalContext.js'
 import type { GlobalContextClientWithServerRouting } from '../client/runtime-server-routing/globalContext.js'

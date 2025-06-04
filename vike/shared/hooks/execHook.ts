@@ -15,7 +15,7 @@ import { getProjectError, assertWarning, assertUsage } from '../../utils/assert.
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { humanizeTime } from '../../utils/humanizeTime.js'
 import { isObject } from '../../utils/isObject.js'
-import type { PageContextClient, PageContextServer } from '../types.js'
+import type { PageContextClient, PageContextServer } from '../../types/PageContext.js'
 import type { Hook, HookLoc } from './getHook.js'
 import type { VikeConfigPublicPageLazy } from '../getPageFiles.js'
 import { getHookFromPageConfigGlobalCumulative, getHookFromPageContextNew } from './getHook.js'

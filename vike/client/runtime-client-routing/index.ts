@@ -10,7 +10,7 @@ export { getPageContextClient } from './renderPageClientSide.js'
 export { PROJECT_VERSION as version } from './utils.js'
 
 // TODO/v1-release: remove this
-import type { PageContextBuiltInClientWithClientRouting } from '../../shared/types.js'
+import type { PageContextBuiltInClientWithClientRouting } from '../../types/PageContext.js'
 /** @deprecated
  * Replace:
  *   ```

@@ -62,7 +62,7 @@ import {
   getGlobalContextSyncErrMsg,
   type GlobalContextBase
 } from '../../shared/createGlobalContextShared.js'
-import type { GlobalContext } from '../../shared/types.js'
+import type { GlobalContext } from '../../types/PageContext.js'
 import { prepareGlobalContextForPublicUsage } from '../../shared/prepareGlobalContextForPublicUsage.js'
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
