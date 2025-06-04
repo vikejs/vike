@@ -160,30 +160,29 @@ function getPublicVikeConfigPageEager(
   pageConfig: PageConfigRuntime | PageConfigBuildTime,
   pageConfigValues: ConfigValues
 ): [string, PublicVikeConfigPageEager] {
-  const pageConfigUserFriendly_ = getPublicVikeConfig_base({ pageConfigGlobalValues, pageConfigValues })
-  const pageConfigUserFriendly = getPublicCopy(pageConfigUserFriendly_)
+  const vikeConfigPublicPage_ = getPublicVikeConfig_base({ pageConfigGlobalValues, pageConfigValues })
+  const vikeConfigPublicPage = getPublicCopy(vikeConfigPublicPage_)
   let page: PublicVikeConfigPageEager
   if (!pageConfig.isErrorPage) {
-    const route = pageConfigUserFriendly.config.route ?? pageConfig.routeFilesystem.routeString
+    const route = vikeConfigPublicPage.config.route ?? pageConfig.routeFilesystem.routeString
     page = {
-      ...pageConfigUserFriendly,
+      ...vikeConfigPublicPage,
       route
     }
   } else {
     page = {
-      ...pageConfigUserFriendly,
+      ...vikeConfigPublicPage,
       isErrorPage: true
     }
   }
   return [pageConfig.pageId, page]
 }
-function getPublicCopy(pageConfigUserFriendly: ReturnType<typeof getPublicVikeConfig_V1Design>): PublicVikeConfig {
-  const p = pageConfigUserFriendly
+function getPublicCopy(vikeConfigPublic: ReturnType<typeof getPublicVikeConfig_V1Design>): PublicVikeConfig {
   return {
-    config: p.config,
-    _source: p.source,
-    _sources: p.sources,
-    _from: p.from
+    config: vikeConfigPublic.config,
+    _source: vikeConfigPublic.source,
+    _sources: vikeConfigPublic.sources,
+    _from: vikeConfigPublic.from
   }
 }
 function getPublicVikeConfig_base({
@@ -197,8 +196,8 @@ function getPublicVikeConfig_base({
 function getPublicVikeConfigGlobal({
   pageConfigGlobalValues
 }: { pageConfigGlobalValues: ConfigValues }): PublicVikeConfigGlobal {
-  const pageConfigGlobalUserFriendly = getPublicVikeConfig_V1Design({ configValues: pageConfigGlobalValues })
-  return getPublicCopy(pageConfigGlobalUserFriendly)
+  const vikeConfigPublicGlobal = getPublicVikeConfig_V1Design({ configValues: pageConfigGlobalValues })
+  return getPublicCopy(vikeConfigPublicGlobal)
 }
 
 function getPublicVikeConfigPageLazy(
