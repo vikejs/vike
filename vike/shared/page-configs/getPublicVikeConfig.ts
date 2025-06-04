@@ -4,7 +4,7 @@
 export { getPublicVikeConfigGlobal }
 export { getPublicVikeConfigPageEager }
 export { getPublicVikeConfigPageLazy }
-export type { PageConfigUserFriendly }
+export type { PublicVikeConfigGlobal }
 export type { PublicVikeConfigPageEager }
 export type { PublicVikeConfigPageLazy }
 export type { Source }
@@ -137,7 +137,7 @@ type SourceConfigsComputed = {
 }
 
 // See: [Flat `pageContext`](https://github.com/vikejs/vike/issues/1268)
-type PageConfigUserFriendly = {
+type PublicVikeConfigGlobal = {
   config: ConfigResolved
   // TODO/now-4 expose publicly?
   _source: Source
@@ -153,7 +153,7 @@ type WithRoute =
       route?: undefined
       isErrorPage: true
     }
-type PublicVikeConfigPageEager = PageConfigUserFriendly & WithRoute
+type PublicVikeConfigPageEager = PublicVikeConfigGlobal & WithRoute
 function getPublicVikeConfigPageEager(
   pageConfigGlobalValues: ConfigValues,
   pageConfig: PageConfigRuntime | PageConfigBuildTime,
@@ -184,7 +184,7 @@ function getPublicVikeConfig_public({
 }
 function getPublicCopy(
   pageConfigUserFriendly: ReturnType<typeof getPublicVikeConfig_V1Design>
-): PageConfigUserFriendly {
+): PublicVikeConfigGlobal {
   const p = pageConfigUserFriendly
   return {
     config: p.config,
@@ -203,7 +203,7 @@ function getPublicVikeConfig_base({
 
 function getPublicVikeConfigGlobal({
   pageConfigGlobalValues
-}: { pageConfigGlobalValues: ConfigValues }): PageConfigUserFriendly {
+}: { pageConfigGlobalValues: ConfigValues }): PublicVikeConfigGlobal {
   const pageConfigGlobalUserFriendly = getPublicVikeConfig_V1Design({ configValues: pageConfigGlobalValues })
   return getPublicCopy(pageConfigGlobalUserFriendly)
 }

@@ -84,7 +84,7 @@ import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigV
 import {
   getPublicVikeConfigGlobal,
   getPublicVikeConfigPageEager,
-  type PageConfigUserFriendly,
+  type PublicVikeConfigGlobal,
   type PublicVikeConfigPageEager
 } from '../../../shared/page-configs/getPublicVikeConfig.js'
 import { getConfigValuesBase, isJsonValue } from '../../../shared/page-configs/serialize/serializeConfigValues.js'
@@ -119,8 +119,8 @@ type PrerenderContext = {
 type VikeConfigInternal = {
   _pageConfigs: PageConfigBuildTime[]
   _pageConfigGlobal: PageConfigGlobalBuildTime
-  config: PageConfigUserFriendly['config']
-  _from: PageConfigUserFriendly['_from']
+  config: PublicVikeConfigGlobal['config']
+  _from: PublicVikeConfigGlobal['_from']
   pages: Record<
     string, // pageId
     PublicVikeConfigPageEager
