@@ -193,7 +193,10 @@ function getVikeConfig(
   config: ResolvedConfig | UserConfig
 ): VikeConfig {
   const vikeConfig = getVikeConfigInternalSync()
-  assertUsage(vikeConfig, "getVikeConfig() can only be used when Vite is running with Vike's Vite plugin")
+  assertUsage(
+    vikeConfig,
+    'getVikeConfig() can only be used when Vite is loaded (i.e. during development or build) — Vite is never loaded in production.'
+  )
   const vikeConfigPublic = getProxyForPublicUsage(vikeConfig, 'vikeConfig')
   return vikeConfigPublic
 }
