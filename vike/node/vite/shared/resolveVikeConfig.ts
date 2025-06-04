@@ -95,6 +95,7 @@ import { getCliOptions } from '../../cli/context.js'
 import type { PrerenderContextPublic } from '../../prerender/runPrerender.js'
 import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderConfig.js'
 import type { ResolvedConfig, UserConfig } from 'vite'
+import { getProxyForPublicUsage } from '../../../shared/getProxyForPublicUsage.js'
 assertIsNotProductionRuntime()
 
 // We can simply use global variables since Vike's config is:
@@ -193,18 +194,11 @@ function getVikeConfig(
 ): VikeConfig {
   const vikeConfig = getVikeConfigInternalSync()
   assertUsage(vikeConfig, "getVikeConfig() can only be used when Vite is running with Vike's Vite plugin")
-  return {
-    pages: vikeConfig.pages,
-    config: vikeConfig.config,
-    prerenderContext
-  }
+  const vikeConfigPublic = getProxyForPublicUsage(vikeConfig, 'vikeConfig')
+  return vikeConfigPublic
 }
 // Public usage
-type VikeConfig = {
-  config: VikeConfigInternal['config']
-  pages: VikeConfigInternal['pages']
-  prerenderContext: VikeConfigInternal['prerenderContext']
-}
+type VikeConfig = Pick<VikeConfigInternal, 'config' | 'pages' | 'prerenderContext'>
 
 function setVikeConfigContext(vikeConfigCtx_: VikeConfigContext) {
   // If the user changes Vite's `config.root` => Vite completely reloads itself => setVikeConfigContext() is called again
