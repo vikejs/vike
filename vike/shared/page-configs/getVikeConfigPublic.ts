@@ -131,7 +131,7 @@ type SourceConfigsCumulative = {
 }
 type SourceConfigsComputed = {
   type: 'configsComputed'
-  definedAt: string
+  definedAt: 'Vike'
   value: unknown
 }
 
