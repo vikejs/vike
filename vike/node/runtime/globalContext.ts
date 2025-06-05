@@ -206,11 +206,11 @@ async function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
   }
   assert(globalObject.viteConfig)
   globalObject.viteDevServer = viteDevServer
+  globalObject.viteDevServerPromiseResolve(viteDevServer)
 
   const { success } = await updateUserFiles()
-  if (success) assertGlobalContextIsDefined()
-
-  globalObject.viteDevServerPromiseResolve(viteDevServer)
+  if (!success) return
+  assertGlobalContextIsDefined()
 }
 function setGlobalContext_viteConfig(viteConfig: ResolvedConfig, viteConfigRuntime: ViteConfigRuntime): void {
   if (globalObject.viteConfig) return
@@ -295,6 +295,8 @@ async function initGlobalContext(): Promise<void> {
   assert(typeof isProduction === 'boolean')
   if (!isProduction) {
     await waitForViteDevServer()
+    assert(globalObject.waitForUserFilesUpdate)
+    await globalObject.waitForUserFilesUpdate
   } else {
     await loadBuildEntry(globalObject.viteConfigRuntime?.build.outDir)
   }
