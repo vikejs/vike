@@ -68,7 +68,6 @@ import {
   applyFilesystemRoutingRootEffect
 } from './resolveVikeConfig/filesystemRouting.js'
 import type { EsbuildCache } from './resolveVikeConfig/transpileAndExecuteFile.js'
-import { isVikeConfigInvalid_set } from '../../runtime/renderPage/isVikeConfigInvalid.js'
 import { getViteDevServer } from '../../runtime/globalContext.js'
 import { logConfigError, logConfigErrorRecover } from './loggerNotProd.js'
 import {
@@ -97,6 +96,7 @@ import type { PrerenderContextPublic } from '../../prerender/runPrerender.js'
 import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderConfig.js'
 import type { ResolvedConfig, UserConfig } from 'vite'
 import { getProxyForPublicUsage } from '../../../shared/getProxyForPublicUsage.js'
+import { renderPage_hasVikeConfigError } from '../../runtime/renderPage.js'
 assertIsNotProductionRuntime()
 
 // We can simply use global variables since Vike's config is:
@@ -247,7 +247,7 @@ async function resolveVikeConfig_withErrorHandling(
       }
     }
     hasVikeConfigBuildError = false
-    isVikeConfigInvalid_set(false)
+    renderPage_hasVikeConfigError(false)
 
     resolve(ret)
   } else {
@@ -255,7 +255,7 @@ async function resolveVikeConfig_withErrorHandling(
     assert(err)
 
     hasVikeConfigBuildError = true
-    isVikeConfigInvalid_set({ err })
+    renderPage_hasVikeConfigError({ err })
     if (!doNotRestartViteOnError) restartVite = true
 
     if (!isDev) {

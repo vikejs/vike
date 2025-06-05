@@ -1,5 +1,6 @@
 export { renderPage }
 export { renderPage_addAsyncHookwrapper }
+export { renderPage_hasVikeConfigError }
 export type { PageContextInit }
 export type { PageContextBegin }
 
@@ -57,7 +58,6 @@ import { isNewError } from './renderPage/isNewError.js'
 import { assertArguments } from './renderPage/assertArguments.js'
 import type { PageContextDebugRouteMatches } from './renderPage/debugPageFiles.js'
 import { log404 } from './renderPage/log404/index.js'
-import { isVikeConfigInvalid } from './renderPage/isVikeConfigInvalid.js'
 import pc from '@brillout/picocolors'
 import type { PageContextServer } from '../../types/index.js'
 import { getPageContextClientSerializedAbort, getPageContextClientSerialized } from './html/serializeContext.js'
@@ -68,7 +68,8 @@ import { resolveRedirects } from './renderPage/resolveRedirects.js'
 import type { PageContextInternalServer } from '../../types/PageContext.js'
 
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
-  httpRequestsCount: 0
+  httpRequestsCount: 0,
+  hasVikeConfigError: false as false | { err: unknown }
 })
 
 type PageContextAfterRender = { httpResponse: HttpResponse } & Partial<PageContextInternalServer>
@@ -125,10 +126,10 @@ async function renderPagePrepare(
 ): Promise<PageContextAfterRender> {
   // Invalid config
   if (
-    isVikeConfigInvalid &&
+    globalObject.hasVikeConfigError &&
     (true as boolean) // Make TS happy
   ) {
-    return getPageContextInvalidVikeConfig(isVikeConfigInvalid.err, pageContextInit, httpRequestId)
+    return getPageContextInvalidVikeConfig(globalObject.hasVikeConfigError.err, pageContextInit, httpRequestId)
   }
 
   // Prepare context
@@ -145,8 +146,8 @@ async function renderPagePrepare(
     const pageContextWithError = getPageContextHttpResponseErrorWithoutGlobalContext(err, pageContextInit)
     return pageContextWithError
   }
-  if (isVikeConfigInvalid) {
-    return getPageContextInvalidVikeConfig(isVikeConfigInvalid.err, pageContextInit, httpRequestId)
+  if (globalObject.hasVikeConfigError) {
+    return getPageContextInvalidVikeConfig(globalObject.hasVikeConfigError.err, pageContextInit, httpRequestId)
   } else {
     // `globalContext` now contains the entire Vike config and getVikeConfig() isn't called anymore for this request.
   }
@@ -670,4 +671,9 @@ function forkPageContext(pageContextBegin: PageContextBegin) {
   const pageContext = {}
   objectAssign(pageContext, pageContextBegin, true)
   return pageContext
+}
+
+function renderPage_hasVikeConfigError(val: false | { err: unknown }) {
+  assert(val === false || val.err)
+  globalObject.hasVikeConfigError = val
 }
