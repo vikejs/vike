@@ -116,12 +116,12 @@
 * globalContext.viteConfigRuntime.build.outDir (vikejs/vike-server[#102](https://github.com/vikejs/vike/issues/102)) ([0cee16c](https://github.com/vikejs/vike/commit/0cee16ce35f219e62ab0f0d470fd8195b6da64c9))
 
 
-### Negligible breaking changes
+### MINOR BREAKING CHANGES
 
 > [!NOTE]
-> We recommend ignoring "negligible breaking changes" unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
+> We recommend ignoring "MINOR BREAKING CHANGES" unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
 
-* [[**Negligible**](https://vike.dev/versioning)][[i18n](https://vike.dev/i18n)][[pre-rendering](https://vike.dev/pre-rendering)][[`onPrerenderStart()`](https://vike.dev/onPrerenderStart)] A 404 `pageContext` is added to `prerenderContext.pageContexts` (using your `pages/_error/+Page.js`). This most likely won't break your app: the only difference is that you now generate not only `/dist/client/404.html` but also `/dist/client/fr-FR/404.html`, `/dist/client/de-DE/404.html`, ...
+* [[i18n](https://vike.dev/i18n)][[pre-rendering](https://vike.dev/pre-rendering)][[`onPrerenderStart()`](https://vike.dev/onPrerenderStart)] A 404 `pageContext` is added to `prerenderContext.pageContexts` (using your `pages/_error/+Page.js`). This most likely won't break your app: the only difference is that you now generate not only `/dist/client/404.html` but also `/dist/client/fr-FR/404.html`, `/dist/client/de-DE/404.html`, ...
 
 
 
@@ -832,7 +832,10 @@
 * streamReadableWebToString encoding ([#1799](https://github.com/vikejs/vike/issues/1799)) ([6268228](https://github.com/vikejs/vike/commit/62682283574d0c83914a4e470dbef9057e1cd1d0))
 
 
-### BREAKING CHANGES
+### MINOR BREAKING CHANGES
+
+> [!NOTE]
+> We recommend ignoring "MINOR BREAKING CHANGES" unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
 
 * Update to `vite@5.1.0` or above.
 
@@ -2865,10 +2868,12 @@
 ## [0.4.41](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.40...v0.4.41) (2022-10-15)
 
 
-### BREAKING CHANGES
+### MINOR BREAKING CHANGES
+
+> [!NOTE]
+> We recommend ignoring "MINOR BREAKING CHANGES" unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
 
 * [disableAutoFullBuild](https://vite-plugin-ssr.com/disableAutoFullBuild) defaults to `true` when using Vite's `build()` API.
-  > We introduce this breaking change in a minor because it affects only very small number of users.
 
 
 ### Bug Fixes
@@ -3000,7 +3005,10 @@
 * use Vite's built-in `import.meta.glob()` instead of `vite-plugin-glob` (fix [#431](https://github.com/brillout/vite-plugin-ssr/issues/431)) ([19385ef](https://github.com/brillout/vite-plugin-ssr/commit/19385ef06bd4997955e267c72bc4f416fbf8dcb1))
 
 
-### BREAKING CHANGES
+### MINOR BREAKING CHANGES
+
+> [!NOTE]
+> We recommend ignoring "MINOR BREAKING CHANGES" unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
 
 * `vite-plugin-ssr@0.4.29` doesn't work with Vite 2 anymore: make sure to update to Vite 3.
 
