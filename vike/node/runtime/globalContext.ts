@@ -410,13 +410,13 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
   assert(!globalObject.isProduction)
   const { promise, resolve } = genPromise<void>()
   globalObject.waitForUserFilesUpdate = promise
+  globalObject.waitForUserFilesUpdatePrevious ??= []
+  globalObject.waitForUserFilesUpdatePrevious.push(resolve)
 
   const onError = (err: unknown) => {
     console.error(err)
     renderPage_hasVikeConfigError({ err })
     globalObject.hasVikeConfigRuntimeError = true
-    globalObject.waitForUserFilesUpdatePrevious ??= []
-    globalObject.waitForUserFilesUpdatePrevious.push(resolve)
     return { success: false }
   }
   const onSuccess = () => {
@@ -426,8 +426,8 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
     }
     globalObject.hasVikeConfigRuntimeError = false
     renderPage_hasVikeConfigError(false)
-    globalObject.waitForUserFilesUpdatePrevious?.forEach((resolve) => resolve())
-    globalObject.waitForUserFilesUpdatePrevious = undefined
+    globalObject.waitForUserFilesUpdatePrevious!.forEach((resolve) => resolve())
+    globalObject.waitForUserFilesUpdatePrevious = []
     resolve()
     return { success: true }
   }
