@@ -36,7 +36,8 @@ import {
   lowerFirst,
   makeLast,
   type SortReturn,
-  assertIsSingleModuleInstance
+  assertIsSingleModuleInstance,
+  genPromise
 } from '../utils.js'
 import type {
   PageConfigGlobalBuildTime,
@@ -67,7 +68,7 @@ import {
   applyFilesystemRoutingRootEffect
 } from './resolveVikeConfig/filesystemRouting.js'
 import type { EsbuildCache } from './resolveVikeConfig/transpileAndExecuteFile.js'
-import { isVikeConfigInvalid, isVikeConfigInvalid_set } from '../../runtime/renderPage/isVikeConfigInvalid.js'
+import { isVikeConfigInvalid_set } from '../../runtime/renderPage/isVikeConfigInvalid.js'
 import { getViteDevServer } from '../../runtime/globalContext.js'
 import { logConfigError, logConfigErrorRecover } from './loggerNotProd.js'
 import {
@@ -103,7 +104,7 @@ assertIsNotProductionRuntime()
 //  - independent of Vite (therefore we don't need to tie Vike's config with Vite's `config` object)
 assertIsSingleModuleInstance('v1-design/getVikeConfig.ts')
 let restartVite = false
-let wasConfigInvalid: boolean | null = null
+let hasVikeConfigBuildError: boolean | null = null
 let isV1Design_: boolean | null = null
 let vikeConfigPromise: Promise<VikeConfigInternal> | null = null
 // TODO/v1-release: remove
@@ -133,38 +134,7 @@ function reloadVikeConfig() {
   assert(vikeConfigCtx)
   const { userRootDir, vikeVitePluginOptions } = vikeConfigCtx
   assert(vikeVitePluginOptions)
-  vikeConfigPromise = resolveVikeConfig_withErrorHandling(userRootDir, true, vikeVitePluginOptions)
-  handleReloadSideEffects()
-}
-async function handleReloadSideEffects() {
-  wasConfigInvalid = !!isVikeConfigInvalid
-  const vikeConfigPromisePrevious = vikeConfigPromise
-  try {
-    await vikeConfigPromise
-  } catch (err) {
-    // handleReloadSideEffects() is only called in dev.
-    // In dev, if loadVikeConfig_withErrorHandling() throws an error, then it's a vike bug.
-    console.error(err)
-    assert(false)
-  }
-  if (vikeConfigPromise !== vikeConfigPromisePrevious) {
-    // Let the next handleReloadSideEffects() call handle side effects
-    return
-  }
-  if (!isVikeConfigInvalid) {
-    if (wasConfigInvalid) {
-      wasConfigInvalid = false
-      logConfigErrorRecover()
-    }
-    if (restartVite) {
-      restartVite = false
-      const viteDevServer = getViteDevServer()
-      assert(viteDevServer)
-      removeSuperfluousViteLog_enable()
-      await viteDevServer.restart(true)
-      removeSuperfluousViteLog_disable()
-    }
-  }
+  resolveVikeConfig_withErrorHandling(userRootDir, true, vikeVitePluginOptions)
 }
 
 async function getVikeConfigInternal(
@@ -217,18 +187,16 @@ async function getOrResolveVikeConfig(
   doNotRestartViteOnError: boolean
 ) {
   if (!vikeConfigPromise) {
-    vikeConfigPromise = resolveVikeConfig_withErrorHandling(
-      userRootDir,
-      isDev,
-      vikeVitePluginOptions,
-      doNotRestartViteOnError
-    )
+    resolveVikeConfig_withErrorHandling(userRootDir, isDev, vikeVitePluginOptions, doNotRestartViteOnError)
   }
-  return await vikeConfigPromise
+  assert(vikeConfigPromise)
+  const vikeConfig = await vikeConfigPromise
+  return vikeConfig
 }
 async function getVikeConfigInternalOptional(): Promise<null | VikeConfigInternal> {
   if (!vikeConfigPromise) return null
-  return await vikeConfigPromise
+  const vikeConfig = await vikeConfigPromise
+  return vikeConfig
 }
 
 function isV1Design(): boolean {
@@ -241,7 +209,10 @@ async function resolveVikeConfig_withErrorHandling(
   isDev: boolean,
   vikeVitePluginOptions: unknown,
   doNotRestartViteOnError?: boolean
-): Promise<VikeConfigInternal> {
+): Promise<void> {
+  const { promise, resolve, reject } = genPromise<VikeConfigInternal>()
+  vikeConfigPromise = promise
+
   let hasError = false
   let ret: VikeConfigInternal | undefined
   let err: unknown
@@ -251,43 +222,47 @@ async function resolveVikeConfig_withErrorHandling(
     hasError = true
     err = err_
   }
+
+  // There is a newer call — let the new call supersede the old one.
+  // We deliberately swallow the intermetidate state (including any potential error) — it's now outdated and has existed only for a very short period of time.
+  if (vikeConfigPromise !== promise) {
+    // vikeConfigPromise.then(resolve).catch(reject)
+    try {
+      resolve(await vikeConfigPromise)
+    } catch (err) {
+      reject(err)
+    }
+    return
+  }
+
   if (!hasError) {
     assert(ret)
     assert(err === undefined)
+
+    if (hasVikeConfigBuildError) {
+      logConfigErrorRecover()
+      if (restartVite) {
+        restartVite = false
+        await restartViteDevServer()
+      }
+    }
+    hasVikeConfigBuildError = false
     isVikeConfigInvalid_set(false)
-    return ret
+
+    resolve(ret)
   } else {
     assert(ret === undefined)
     assert(err)
+
+    hasVikeConfigBuildError = true
     isVikeConfigInvalid_set({ err })
+    if (!doNotRestartViteOnError) restartVite = true
+
     if (!isDev) {
-      assert(getViteDevServer() === null)
-      throw err
+      reject(err)
     } else {
       logConfigError(err)
-      if (!doNotRestartViteOnError) {
-        restartVite = true
-      }
-      const globalDummy = getVikeConfigPublicGlobal({ pageConfigGlobalValues: {} })
-      const pageConfigsDummy: VikeConfigInternal['_pageConfigs'] = []
-      const prerenderContextDummy = resolvePrerenderContext({
-        config: globalDummy.config,
-        _from: globalDummy._from,
-        _pageConfigs: pageConfigsDummy
-      })
-      const dummyData: VikeConfigInternal = {
-        _pageConfigs: pageConfigsDummy,
-        _pageConfigGlobal: {
-          configDefinitions: {},
-          configValueSources: {}
-        },
-        config: globalDummy.config,
-        _from: globalDummy._from,
-        pages: {},
-        prerenderContext: prerenderContextDummy,
-        _vikeConfigDependencies: new Set()
-      }
-      return dummyData
+      resolve(getVikeConfigDummy())
     }
   }
 }
@@ -1522,4 +1497,35 @@ function resolvePrerenderContext(vikeConfig: Parameters<typeof resolvePrerenderC
   prerenderContext.isPrerenderingEnabled = isPrerenderingEnabled
   prerenderContext.isPrerenderingEnabledForAllPages = isPrerenderingEnabledForAllPages
   return prerenderContext
+}
+
+async function restartViteDevServer() {
+  const viteDevServer = getViteDevServer()
+  assert(viteDevServer)
+  removeSuperfluousViteLog_enable()
+  await viteDevServer.restart(true)
+  removeSuperfluousViteLog_disable()
+}
+
+function getVikeConfigDummy(): VikeConfigInternal {
+  const globalDummy = getVikeConfigPublicGlobal({ pageConfigGlobalValues: {} })
+  const pageConfigsDummy: VikeConfigInternal['_pageConfigs'] = []
+  const prerenderContextDummy = resolvePrerenderContext({
+    config: globalDummy.config,
+    _from: globalDummy._from,
+    _pageConfigs: pageConfigsDummy
+  })
+  const vikeConfigDummy: VikeConfigInternal = {
+    _pageConfigs: pageConfigsDummy,
+    _pageConfigGlobal: {
+      configDefinitions: {},
+      configValueSources: {}
+    },
+    config: globalDummy.config,
+    _from: globalDummy._from,
+    pages: {},
+    prerenderContext: prerenderContextDummy,
+    _vikeConfigDependencies: new Set()
+  }
+  return vikeConfigDummy
 }
