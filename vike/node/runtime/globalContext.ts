@@ -287,7 +287,6 @@ async function waitForViteDevServer() {
   }, waitFor * 1000)
   await globalObject.viteDevServerPromise
   clearTimeout(timeout)
-  assertGlobalContextIsDefined()
 }
 
 async function initGlobalContext(): Promise<void> {
