@@ -78,7 +78,7 @@ const globalObject = getGlobalObject<
     buildEntry?: unknown
     buildEntryPrevious?: unknown
     waitForUserFilesUpdate?: Promise<void>
-    waitForUserFilesUpdatePrevious?: (() => void)[]
+    waitForUserFilesUpdateResolve?: (() => void)[]
     hasVikeConfigRuntimeError?: boolean
     isProduction?: boolean
     buildInfo?: BuildInfo
@@ -410,8 +410,8 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
   assert(!globalObject.isProduction)
   const { promise, resolve } = genPromise<void>()
   globalObject.waitForUserFilesUpdate = promise
-  globalObject.waitForUserFilesUpdatePrevious ??= []
-  globalObject.waitForUserFilesUpdatePrevious.push(resolve)
+  globalObject.waitForUserFilesUpdateResolve ??= []
+  globalObject.waitForUserFilesUpdateResolve.push(resolve)
 
   const onError = (err: unknown) => {
     console.error(err)
@@ -426,8 +426,8 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
     }
     globalObject.hasVikeConfigRuntimeError = false
     renderPage_hasVikeConfigError(false)
-    globalObject.waitForUserFilesUpdatePrevious!.forEach((resolve) => resolve())
-    globalObject.waitForUserFilesUpdatePrevious = []
+    globalObject.waitForUserFilesUpdateResolve!.forEach((resolve) => resolve())
+    globalObject.waitForUserFilesUpdateResolve = []
     resolve()
     return { success: true }
   }
