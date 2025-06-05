@@ -5,7 +5,7 @@ import { assert } from '../utils.js'
 
 let isVikeConfigInvalid: false | { err: unknown }
 
-const isVikeConfigInvalid_set = (val: typeof isVikeConfigInvalid) => {
+function isVikeConfigInvalid_set(val: typeof isVikeConfigInvalid): void {
   assert(val === false || val.err)
   isVikeConfigInvalid = val
 }
