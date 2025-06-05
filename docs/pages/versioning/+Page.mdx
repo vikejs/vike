@@ -1,16 +1,16 @@
 For increased robustness and agility, Vike doesn't strictly follow [semver](https://semver.org):
 1. **Features can be introduced in any version update**.
-2. **Negligible breaking changes can be introduced in any version update**.
+2. **Minor breaking changes can be introduced in any version update**.
    <blockquote>
-   These "negligible breaking changes" are rare and expected to affect only very few users.
+   These [`MINOR BREAKING CHANGES`](https://github.com/vikejs/vike/blob/main/CHANGELOG.md) are rare and expected to affect only very few users.
    </blockquote>
    <blockquote>
    It gives Vike more flexibility, for example, in [quickly fixing bugs](https://github.com/vikejs/vike/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22bug%20%3Aboom%3A%22): if Vike has an incorrect behavior, and fixing it benefits almost all users but is a regression for a handful (and thus, strictly speaking, a breaking change), we prioritize fixing it over strict semver adherence.
    </blockquote>
 
-Similarly to semver, you can assume that upgrading from `0.4.x` to `0.4.y` or from `1.x.y` to `1.z.w` won't break your app. (Expect of the very rare situation you are affected by a negligible breaking change.)
+Similarly to semver, you can assume that upgrading from `0.4.x` to `0.4.y` or from `1.x.y` to `1.z.w` won't break your app. (Expect of the very rare situation you are affected by a minor breaking change.)
 
-> Don't hesitate to reach out if updating Vike breaks your app, we will fix the regression. (Or at least provide guidance if we believe it's one of these negligible breaking changes.)
+> Don't hesitate to reach out if updating Vike breaks your app, we will fix the regression. (Or provide guidance if it's a `MINOR BREAKING CHANGE`.)
 
 
 ## Warnings
