@@ -206,6 +206,7 @@ async function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
   }
   assert(globalObject.viteConfig)
   globalObject.viteDevServer = viteDevServer
+
   const { success } = await updateUserFiles()
   if (success) assertGlobalContextIsDefined()
 
