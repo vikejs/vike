@@ -72,7 +72,7 @@ function logConfigInfo(msg: string, logType: LogType): void {
   logWithVikeTag(msg, logType, category)
 }
 function logConfigErrorRecover(): void {
-  const msg = pc.bold(pc.green('Configuration successfully loaded'))
+  const msg = pc.bold(pc.green('Vike config loaded'))
   const category = getConfigCategory()
   logWithVikeTag(msg, 'error-recover', category)
 }
