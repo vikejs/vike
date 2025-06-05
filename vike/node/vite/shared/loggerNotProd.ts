@@ -19,7 +19,7 @@ export type { LogType }
 export type { LogCategory }
 
 import { isAbortError } from '../../../shared/route/abort.js'
-import { getViteConfig } from '../../runtime/globalContext.js'
+import { getViteConfig, vikeConfigErrorRecoverMsg } from '../../runtime/globalContext.js'
 import { overwriteRuntimeProductionLogger } from '../../runtime/renderPage/loggerRuntime.js'
 import {
   assert,
@@ -72,9 +72,8 @@ function logConfigInfo(msg: string, logType: LogType): void {
   logWithVikeTag(msg, logType, category)
 }
 function logConfigErrorRecover(): void {
-  const msg = pc.bold(pc.green('Vike config loaded'))
   const category = getConfigCategory()
-  logWithVikeTag(msg, 'error-recover', category)
+  logWithVikeTag(vikeConfigErrorRecoverMsg, 'error-recover', category)
 }
 
 function logRuntimeError(

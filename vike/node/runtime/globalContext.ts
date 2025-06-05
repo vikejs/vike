@@ -18,6 +18,7 @@ export { setGlobalContext_buildEntry }
 export { clearGlobalContext }
 export { assertBuildInfo }
 export { updateUserFiles }
+export { vikeConfigErrorRecoverMsg }
 export type { BuildInfo }
 export type { GlobalContextServerInternal as GlobalContextServerInternal }
 export type { GlobalContextServer }
@@ -40,7 +41,6 @@ import {
   objectReplace,
   isObject,
   hasProp,
-  debugGlob,
   getGlobalObject,
   genPromise,
   createDebugger,
@@ -64,6 +64,7 @@ import {
 } from '../../shared/createGlobalContextShared.js'
 import type { GlobalContext } from '../../types/PageContext.js'
 import { prepareGlobalContextForPublicUsage } from '../../shared/prepareGlobalContextForPublicUsage.js'
+import { renderPage_hasVikeConfigError } from './renderPage.js'
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
   {
@@ -76,6 +77,8 @@ const globalObject = getGlobalObject<
     buildEntry?: unknown
     buildEntryPrevious?: unknown
     waitForUserFilesUpdate?: Promise<void>
+    waitForUserFilesUpdatePrevious?: (() => void)[]
+    hasVikeConfigRuntimeError?: boolean
     isProduction?: boolean
     buildInfo?: BuildInfo
     // Move to buildInfo.assetsManifest ?
@@ -88,6 +91,7 @@ const globalObject = getGlobalObject<
 const globalObjectTyped = globalObject as typeof globalObject & {
   globalContext?: GlobalContextServerInternal
 }
+const vikeConfigErrorRecoverMsg = pc.bold(pc.green('Vike config loaded'))
 
 // Public usge
 type GlobalContextServer = Pick<
@@ -201,8 +205,9 @@ async function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
   }
   assert(globalObject.viteConfig)
   globalObject.viteDevServer = viteDevServer
-  await updateUserFiles()
-  assertGlobalContextIsDefined()
+  const { success } = await updateUserFiles()
+  if (success) assertGlobalContextIsDefined()
+
   globalObject.viteDevServerPromiseResolve(viteDevServer)
 }
 function setGlobalContext_viteConfig(viteConfig: ResolvedConfig, viteConfigRuntime: ViteConfigRuntime): void {
@@ -400,28 +405,62 @@ function assertVersionAtBuildTime(versionAtBuildTime: string) {
   )
 }
 
-async function updateUserFiles() {
-  const { promise, resolve } = genPromise<void>()
+async function updateUserFiles(): Promise<{ success: boolean }> {
   assert(!globalObject.isProduction)
+  const { promise, resolve } = genPromise<void>()
   globalObject.waitForUserFilesUpdate = promise
+
+  const onError = (err: unknown) => {
+    console.error(err)
+    renderPage_hasVikeConfigError({ err })
+    globalObject.hasVikeConfigRuntimeError = true
+    globalObject.waitForUserFilesUpdatePrevious ??= []
+    globalObject.waitForUserFilesUpdatePrevious.push(resolve)
+    return { success: false }
+  }
+  const onSuccess = () => {
+    if (globalObject.hasVikeConfigRuntimeError) {
+      console.log(vikeConfigErrorRecoverMsg) // TODO/now: add [vike] tag
+    }
+    globalObject.hasVikeConfigRuntimeError = false
+    renderPage_hasVikeConfigError(false)
+    globalObject.waitForUserFilesUpdatePrevious?.forEach((resolve) => resolve())
+    globalObject.waitForUserFilesUpdatePrevious = undefined
+    resolve()
+    return { success: true }
+  }
+
+  const isOutdated = () =>
+    // There is a newer call — let the new call supersede the old one.
+    // We deliberately swallow the intermetidate state (including any potential error) — it's now outdated and has existed only for a very short period of time.
+    globalObject.waitForUserFilesUpdate !== promise ||
+    // Avoid race condition: abort if there is a new globalObject.viteDevServer (happens when vite.config.js is modified => Vite's dev server is fully reloaded).
+    viteDevServer !== globalObject.viteDevServer
 
   const { viteDevServer } = globalObject
   assert(viteDevServer)
-  let virtualFileExports: Record<string, unknown>
+  let hasError = false
+  let virtualFileExports: Record<string, unknown> | undefined
+  let err: unknown
   try {
     virtualFileExports = await viteDevServer.ssrLoadModule(virtualFileIdEntryServer)
-  } catch (err) {
-    debugGlob(`Glob error: ${virtualFileIdEntryServer} transpile error: `, err)
-    throw err
+  } catch (err_) {
+    hasError = true
+    err = err_
   }
+  if (isOutdated()) return { success: false }
+  if (hasError) return onError(err)
   virtualFileExports = (virtualFileExports as any).default || virtualFileExports
-  debugGlob('Glob result: ', virtualFileExports)
 
-  // Avoid race condition: abort if there is a new globalObject.viteDevServer (happens when vite.config.js is modified => Vite's dev server is fully reloaded).
-  if (viteDevServer !== globalObject.viteDevServer) return
-
-  await setGlobalContext(virtualFileExports)
-  resolve()
+  try {
+    await setGlobalContext(virtualFileExports)
+  } catch (err_) {
+    hasError = true
+    err = err_
+  }
+  if (isOutdated()) return { success: false }
+  if (hasError) return onError(err)
+  return onSuccess()
 }
 
 async function setGlobalContext(virtualFileExports: unknown) {
