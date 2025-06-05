@@ -21,7 +21,7 @@ function assertPlusFileExport(fileExports: Record<string, unknown>, filePathToSh
   const exportDefault = pc.code('export default')
   const exportNamed = pc.code(`export { ${configName} }`)
   if (exportNamesValid.length === 0) {
-    assertUsage(false, `${filePathToShowToUser} should have ${exportNamed} or ${exportDefault}`)
+    assertUsage(false, `${filePathToShowToUser} should define ${exportNamed} or ${exportDefault}`)
   }
   if (exportNamesValid.length === 2) {
     assertUsage(false, `${filePathToShowToUser} is ambiguous: remove ${exportDefault} or ${exportNamed}`)
