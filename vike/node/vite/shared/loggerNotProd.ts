@@ -54,9 +54,8 @@ type LogInfoArgs = Parameters<typeof logRuntimeInfo>
 type LogError = (...args: LogErrorArgs) => void
 type LogErrorArgs = Parameters<typeof logRuntimeError>
 
-function logRuntimeInfo(msg: string, httpRequestId: number, logType: LogType) {
+function logRuntimeInfo(msg: string, httpRequestId: number | null, logType: LogType) {
   const category = getCategory(httpRequestId)
-  assert(category)
   logWithVikeTag(msg, logType, category)
 }
 function logViteAny(msg: string, logType: LogType, httpRequestId: number | null, prependViteTag: boolean): void {

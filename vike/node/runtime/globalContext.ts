@@ -65,6 +65,7 @@ import {
 import type { GlobalContext } from '../../types/PageContext.js'
 import { prepareGlobalContextForPublicUsage } from '../../shared/prepareGlobalContextForPublicUsage.js'
 import { renderPage_hasVikeConfigError } from './renderPage.js'
+import { logRuntimeInfo } from './renderPage/loggerRuntime.js'
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
   {
@@ -420,7 +421,8 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
   }
   const onSuccess = () => {
     if (globalObject.hasVikeConfigRuntimeError) {
-      console.log(vikeConfigErrorRecoverMsg) // TODO/now: add [vike] tag
+      assert(logRuntimeInfo) // always defined in dev
+      logRuntimeInfo(vikeConfigErrorRecoverMsg, null, 'error-recover')
     }
     globalObject.hasVikeConfigRuntimeError = false
     renderPage_hasVikeConfigError(false)
