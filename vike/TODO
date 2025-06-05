@@ -14,7 +14,6 @@
     }
     ```
 - config auto-reload not working
-  - https://github.com/vikejs/vike/commit/1478c151ed895d466d1800339ef9e4a98a0a3fdc
   - Throw error in crawlPlusFiles.ts
 - config auto-reload not working (duplicate or other?)
   1. Add `bla: 12` to examples/react-full/renderer/+config.ts => `9:22:30 AM [vike][config][Wrong Usage] /renderer/+config.ts sets an unknown config bla`
