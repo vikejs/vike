@@ -119,7 +119,7 @@
 ### MINOR BREAKING CHANGES
 
 > [!NOTE]
-> We recommend ignoring "MINOR BREAKING CHANGES" unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
+> We recommend ignoring `MINOR BREAKING CHANGES` unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
 
 * [[i18n](https://vike.dev/i18n)][[pre-rendering](https://vike.dev/pre-rendering)][[`onPrerenderStart()`](https://vike.dev/onPrerenderStart)] A 404 `pageContext` is added to `prerenderContext.pageContexts` (using your `pages/_error/+Page.js`). This most likely won't break your app: the only difference is that you now generate not only `/dist/client/404.html` but also `/dist/client/fr-FR/404.html`, `/dist/client/de-DE/404.html`, ...
 
@@ -835,7 +835,7 @@
 ### MINOR BREAKING CHANGES
 
 > [!NOTE]
-> We recommend ignoring "MINOR BREAKING CHANGES" unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
+> We recommend ignoring `MINOR BREAKING CHANGES` unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
 
 * Update to `vite@5.1.0` or above.
 
@@ -2868,14 +2868,6 @@
 ## [0.4.41](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.40...v0.4.41) (2022-10-15)
 
 
-### MINOR BREAKING CHANGES
-
-> [!NOTE]
-> We recommend ignoring "MINOR BREAKING CHANGES" unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
-
-* [disableAutoFullBuild](https://vite-plugin-ssr.com/disableAutoFullBuild) defaults to `true` when using Vite's `build()` API.
-
-
 ### Bug Fixes
 
 * avoid Rollup handling chained build errors ([#472](https://github.com/brillout/vite-plugin-ssr/issues/472)) ([70d90a2](https://github.com/brillout/vite-plugin-ssr/commit/70d90a26a21bf526520b0fc77abd84007f77e4ca))
@@ -2885,6 +2877,14 @@
 ### Performance Improvements
 
 * faster script injection ([#474](https://github.com/brillout/vite-plugin-ssr/pull/474))
+
+
+### MINOR BREAKING CHANGES
+
+> [!NOTE]
+> We recommend ignoring `MINOR BREAKING CHANGES` unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
+
+* [disableAutoFullBuild](https://vite-plugin-ssr.com/disableAutoFullBuild) defaults to `true` when using Vite's `build()` API.
 
 
 
@@ -3008,7 +3008,7 @@
 ### MINOR BREAKING CHANGES
 
 > [!NOTE]
-> We recommend ignoring "MINOR BREAKING CHANGES" unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
+> We recommend ignoring `MINOR BREAKING CHANGES` unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
 
 * `vite-plugin-ssr@0.4.29` doesn't work with Vite 2 anymore: make sure to update to Vite 3.
 
