@@ -104,6 +104,7 @@ assertIsNotProductionRuntime()
 //  - independent of Vite (therefore we don't need to tie Vike's config with Vite's `config` object)
 assertIsSingleModuleInstance('v1-design/getVikeConfig.ts')
 let restartVite = false
+// TODO/now-1: rename hasVikeConfig vikeConfigHas
 let hasVikeConfigBuildError: boolean | null = null
 let isV1Design_: boolean | null = null
 let vikeConfigPromise: Promise<VikeConfigInternal> | null = null

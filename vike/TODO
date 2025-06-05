@@ -13,8 +13,6 @@
       class: htmlClass
     }
     ```
-- config auto-reload not working
-  - Throw error in crawlPlusFiles.ts
 - config auto-reload not working (duplicate or other?)
   1. Add `bla: 12` to examples/react-full/renderer/+config.ts => `9:22:30 AM [vike][config][Wrong Usage] /renderer/+config.ts sets an unknown config bla`
   2. `$ git checkout .`
