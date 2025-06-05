@@ -1527,5 +1527,7 @@ function getVikeConfigDummy(): VikeConfigInternal {
     prerenderContext: prerenderContextDummy,
     _vikeConfigDependencies: new Set()
   }
+  vikeConfigSync = vikeConfigDummy
+  isV1Design_ = true
   return vikeConfigDummy
 }
