@@ -82,11 +82,11 @@ import { getFilePathResolved } from './getFilePath.js'
 import type { FilePath } from '../../../types/FilePath.js'
 import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
 import {
-  getVikeConfigPublicGlobal,
-  getVikeConfigPublicPageEager,
+  resolveVikeConfigPublicGlobal,
+  resolveVikeConfigPublicPageEager,
   type VikeConfigPublicGlobal,
   type VikeConfigPublicPageEager
-} from '../../../shared/page-configs/getVikeConfigPublic.js'
+} from '../../../shared/page-configs/resolveVikeConfigPublic.js'
 import { getConfigValuesBase, isJsonValue } from '../../../shared/page-configs/serialize/serializeConfigValues.js'
 import {
   getPlusFilesAll,
@@ -298,13 +298,13 @@ async function resolveVikeConfigInternal(
 
   // global
   const pageConfigGlobalValues = getConfigValues(pageConfigGlobal)
-  const vikeConfigPublicGlobal = getVikeConfigPublicGlobal({ pageConfigGlobalValues })
+  const vikeConfigPublicGlobal = resolveVikeConfigPublicGlobal({ pageConfigGlobalValues })
 
   // pages
   const vikeConfigPublicPagesEager = objectFromEntries(
     pageConfigs.map((pageConfig) => {
       const pageConfigValues = getConfigValues(pageConfig, true)
-      return getVikeConfigPublicPageEager(pageConfigGlobalValues, pageConfig, pageConfigValues)
+      return resolveVikeConfigPublicPageEager(pageConfigGlobalValues, pageConfig, pageConfigValues)
     })
   )
 
@@ -1516,7 +1516,7 @@ async function restartViteDevServer() {
 }
 
 function getVikeConfigDummy(): VikeConfigInternal {
-  const globalDummy = getVikeConfigPublicGlobal({ pageConfigGlobalValues: {} })
+  const globalDummy = resolveVikeConfigPublicGlobal({ pageConfigGlobalValues: {} })
   const pageConfigsDummy: VikeConfigInternal['_pageConfigs'] = []
   const prerenderContextDummy = resolvePrerenderContext({
     config: globalDummy.config,
