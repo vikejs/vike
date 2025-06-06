@@ -66,7 +66,7 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
   return
   async function listener(file: string, isRemove: boolean) {
     file = normalizePath(file)
-    if (isPlusFile(file) || (await isVikeConfigDependency(file, server.moduleGraph))?.modifiesVikeVirtualFiles) {
+    if (isPlusFile(file) || (await isVikeConfigDependency(file, server.moduleGraph))?.isNotProcessedByVite) {
       invalidateVikeVirtualFiles(server)
       reloadConfig(file, config, isRemove ? 'removed' : 'created')
     }
@@ -80,12 +80,13 @@ function invalidateVikeVirtualFiles(server: ViteDevServer) {
   })
 }
 
+// Vite calls its hook handleHotUpdate() whenever *any file* is modified — including files that aren't in Vite's module graph such as `pages/+config.js`
 async function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
   const { file, server } = ctx
   const isVikeConfig = await isVikeConfigDependency(ctx.file, ctx.server.moduleGraph)
 
   if (isVikeConfig) {
-    if (isVikeConfig.modifiesVikeVirtualFiles) {
+    if (isVikeConfig.isNotProcessedByVite) {
       /* Tailwind breaks this assertion, see https://github.com/vikejs/vike/discussions/1330#discussioncomment-7787238
       const isViteModule = ctx.modules.length > 0
       assert(!isViteModule)
@@ -95,12 +96,13 @@ async function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
       invalidateVikeVirtualFiles(server)
       reloadConfig(file, config, 'modified')
 
+      // Files such as `pages/+config.js` can potentially modify Vike's virtual files.
       // Triggers a full page reload
       const vikeVirtualFiles = getVikeVirtualFiles(server)
       return vikeVirtualFiles
     } else {
       // Ensure we invalidate `file` *before* server.ssrLoadModule() in updateUserFiles()
-      // Vite already invalidates it, but possibly *after* handleHotUpdate() and thus after server.ssrLoadModule()
+      // Vite already invalidates it, but *after* handleHotUpdate() and thus after server.ssrLoadModule()
       ctx.modules.forEach((mod) => server.moduleGraph.invalidateModule(mod))
       updateUserFiles()
     }
@@ -110,21 +112,26 @@ async function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
 async function isVikeConfigDependency(
   filePathAbsoluteFilesystem: string,
   moduleGraph: ModuleGraph
-): Promise<null | { modifiesVikeVirtualFiles: boolean }> {
-  // Check config-only files, for example all pages/+config.js dependencies. (There aren't part of Vite's module graph.)
+): Promise<null | { isNotProcessedByVite: boolean }> {
+  // Non-runtime Vike config files such as `pages/+config.js` which aren't processed by Vite.
+  // - They're missing in Vite's module graph.
+  // - Potentially modifies Vike's virtual files.
+  // - Same for all `pages/+config.js` dependencies.
   assertPosixPath(filePathAbsoluteFilesystem)
   const vikeConfigObject = await getVikeConfigInternalOptional()
   if (vikeConfigObject) {
     const { _vikeConfigDependencies: vikeConfigDependencies } = vikeConfigObject
     vikeConfigDependencies.forEach((f) => assertPosixPath(f))
-    if (vikeConfigDependencies.has(filePathAbsoluteFilesystem)) return { modifiesVikeVirtualFiles: true }
+    if (vikeConfigDependencies.has(filePathAbsoluteFilesystem)) return { isNotProcessedByVite: true }
   }
 
-  // Check using Vite's module graph, for example all +htmlAttributes dependencies.
-  // Alternatively, simply call updateUserFiles() on every handleHotUpdate() call.
+  // Runtime Vike config files such as +data.js which are processed by Vite.
+  // - They're included in Vite's module graph.
+  // - They never modify Vike's virtual files.
+  // - Same for all `+data.js` dependencies.
   const importers = getImporters(filePathAbsoluteFilesystem, moduleGraph)
   const isPlusValueFileDependency = Array.from(importers).some((importer) => importer.file && isPlusFile(importer.file))
-  if (isPlusValueFileDependency) return { modifiesVikeVirtualFiles: false }
+  if (isPlusValueFileDependency) return { isNotProcessedByVite: false }
 
   return null
 }
