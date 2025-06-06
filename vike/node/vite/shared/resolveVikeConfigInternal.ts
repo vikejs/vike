@@ -250,7 +250,7 @@ async function resolveVikeConfigInternal_withErrorHandling(
       logConfigErrorRecover()
       if (restartVite) {
         restartVite = false
-        await restartViteDevServer()
+        restartViteDevServer()
       }
     }
 
@@ -1507,11 +1507,21 @@ function resolvePrerenderContext(vikeConfig: Parameters<typeof resolvePrerenderC
   return prerenderContext
 }
 
-async function restartViteDevServer() {
+function restartViteDevServer() {
   const viteDevServer = getViteDevServer()
   assert(viteDevServer)
   removeSuperfluousViteLog_enable()
-  await viteDevServer.restart(true)
+  // We don't `await` because it never resolves it if we await it here => it hangs Vike's config resolving.
+  // - I don't know why but I suspect there is a dead lock of a mutual dependency between Vite's restart() and Vike's config resolving.
+  // - To reproduce: add `bla: 12` to examples/react-full/renderer/+config.ts => `9:22:30 AM [vike][config][Wrong Usage] /renderer/+config.ts sets an unknown config bla`
+  ;(async () => {
+    try {
+      await viteDevServer.restart(true)
+    } catch (err) {
+      console.error('Vite restart error:')
+      console.error(err)
+    }
+  })()
   removeSuperfluousViteLog_disable()
 }
 
