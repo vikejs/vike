@@ -117,6 +117,7 @@ async function transpileFile(
   assert(filePathAbsoluteFilesystem)
   assertPosixPath(filePathAbsoluteFilesystem)
   esbuildCache.vikeConfigDependencies.add(filePathAbsoluteFilesystem)
+  console.log('a1', filePathAbsoluteFilesystem)
 
   if (debug.isActivated) debug('transpile', filePathToShowToUserResolved)
   let { code, pointerImports } = await transpileWithEsbuild(filePath, userRootDir, transformImports, esbuildCache)
@@ -321,6 +322,7 @@ async function transpileWithEsbuild(
           let { path } = args
           path = toPosixPath(path)
           esbuildCache.vikeConfigDependencies.add(path)
+          console.log('a2', path)
           return undefined
         })
         /* To exhaustively collect all dependencies upon build failure, we would also need to use onResolve().
