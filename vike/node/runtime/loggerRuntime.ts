@@ -1,7 +1,5 @@
 // Logger used by the the server runtime. (Also during pre-rendering since it uses the sever runtime.)
 
-// TODO/now-1: move to ../
-
 export let logRuntimeError: LogError
 export let logRuntimeInfo: null | LogInfo = null // logInfo is null in production
 export { overwriteRuntimeProductionLogger }
