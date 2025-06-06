@@ -10,7 +10,7 @@
     "@types/express": "^5.0.1",
     "@types/react": "^18.0.8",
     "@types/react-dom": "^18.0.3",
-    "@vitejs/plugin-react": "^4.4.1",
+    "@vitejs/plugin-react": "^4.5.1",
     "cookie-parser": "^1.4.6",
     "cross-env": "^7.0.3",
     "express": "5.0.1",

@@ -30,7 +30,7 @@ exports[`preload tags > Preload Default 2`] = `
         <script id="vike_pageContext" type="application/json">{"_urlRewrite":null,"pageId":"/pages/index","routeParams":{}}</script>
         <script id="vike_globalContext" type="application/json">{}</script>
         <script type="module" async>
-import { injectIntoGlobalHook } from "/@react-refresh"
+import { injectIntoGlobalHook } from "/@react-refresh";
 injectIntoGlobalHook(window);
 window.$RefreshReg$ = () => {};
 window.$RefreshSig$ = () => (type) => type;
@@ -71,7 +71,7 @@ exports[`preload tags > Preload Disabled 2`] = `
         <script id="vike_pageContext" type="application/json">{"_urlRewrite":null,"pageId":"/pages/preload-disabled","routeParams":{}}</script>
         <script id="vike_globalContext" type="application/json">{}</script>
         <script type="module" async>
-import { injectIntoGlobalHook } from "/@react-refresh"
+import { injectIntoGlobalHook } from "/@react-refresh";
 injectIntoGlobalHook(window);
 window.$RefreshReg$ = () => {};
 window.$RefreshSig$ = () => (type) => type;
@@ -112,7 +112,7 @@ exports[`preload tags > Preload Eager 2`] = `
         <script id="vike_pageContext" type="application/json">{"_urlRewrite":null,"pageId":"/pages/preload-eager","routeParams":{}}</script>
         <script id="vike_globalContext" type="application/json">{}</script>
         <script type="module" async>
-import { injectIntoGlobalHook } from "/@react-refresh"
+import { injectIntoGlobalHook } from "/@react-refresh";
 injectIntoGlobalHook(window);
 window.$RefreshReg$ = () => {};
 window.$RefreshSig$ = () => (type) => type;
@@ -153,7 +153,7 @@ exports[`preload tags > Preload Images 2`] = `
         <script id="vike_pageContext" type="application/json">{"_urlRewrite":null,"pageId":"/pages/preload-images","routeParams":{}}</script>
         <script id="vike_globalContext" type="application/json">{}</script>
         <script type="module" async>
-import { injectIntoGlobalHook } from "/@react-refresh"
+import { injectIntoGlobalHook } from "/@react-refresh";
 injectIntoGlobalHook(window);
 window.$RefreshReg$ = () => {};
 window.$RefreshSig$ = () => (type) => type;
