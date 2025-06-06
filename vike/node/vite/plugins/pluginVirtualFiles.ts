@@ -4,7 +4,7 @@ import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode, Mod
 import { normalizePath } from 'vite'
 import { getVirtualFilePageConfigLazy } from './pluginVirtualFiles/getVirtualFilePageConfigLazy.js'
 import { getVirtualFileEntry } from './pluginVirtualFiles/getVirtualFileEntry.js'
-import { assert, assertPosixPath } from '../utils.js'
+import { assert, assertPosixPath, isScriptFile } from '../utils.js'
 import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../shared/virtualFiles.js'
 import { isVirtualFileIdPageConfigLazy } from '../../shared/virtualFiles/virtualFilePageConfigLazy.js'
 import { isVirtualFileIdEntry } from '../../shared/virtualFiles/virtualFileEntry.js'
@@ -14,6 +14,8 @@ import { logConfigInfo } from '../shared/loggerNotProd.js'
 import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
 import { updateUserFiles } from '../../runtime/globalContext.js'
 import { isPlusFile } from '../shared/resolveVikeConfigInternal/crawlPlusFiles.js'
+import { vikeConfigHasError } from '../../runtime/renderPage.js'
+import { isTemporaryBuildFile } from '../shared/resolveVikeConfigInternal/transpileAndExecuteFile.js'
 
 function pluginVirtualFiles(): Plugin {
   let config: ResolvedConfig
@@ -66,15 +68,27 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
   return
   async function listener(file: string, isRemove: boolean) {
     file = normalizePath(file)
-    if (isPlusFile(file)) {
-      const isVikeConfig = await isVikeConfigDependency(file, server.moduleGraph)
-      if (isVikeConfig) {
-        if (isVikeConfig.isNotProcessedByVite) {
-          invalidateVikeVirtualFiles(server)
-          reloadConfig(file, config, isRemove ? 'removed' : 'created')
-        } else {
-          // Let Vite handle it
-        }
+    if (isTemporaryBuildFile(file)) return
+    const { moduleGraph } = server
+    const isVikeConfig = await isVikeConfigDependency(file, moduleGraph)
+    const reload = () => reloadConfig(file, config, isRemove ? 'removed' : 'created', server)
+    if (isVikeConfig) {
+      if (isVikeConfig.isNotProcessedByVite) {
+        reload()
+      } else {
+        // Let Vite handle it
+        assert(existsInViteModuleGraph(file, moduleGraph))
+      }
+    } else {
+      // Trick: when importing a file that doesn't exist => we don't know whether `file` is that missing file => we take a leap of faith when the conditions below are met.
+      // - Not sure how reliable that trick is.
+      // - Reloading Vike's config is cheap and file creation/removal is rare => the trick is worth it.
+      // - Reproduction:
+      //   ```bash
+      //   rm someDep.js && sleep 2 && git checkout someDep.js
+      //   ```
+      if (vikeConfigHasError() && !existsInViteModuleGraph(file, moduleGraph) && isScriptFile(file)) {
+        reload()
       }
     }
   }
@@ -99,9 +113,7 @@ async function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
       assert(!isViteModule)
       */
 
-      // Ensure server.ssrLoadModule() loads fresh Vike virtual files (`reloadConfig()` > `updateUserFiles()` > `server.ssrLoadModule()`)
-      invalidateVikeVirtualFiles(server)
-      reloadConfig(file, config, 'modified')
+      reloadConfig(file, config, 'modified', server)
 
       // Files such as `pages/+config.js` can potentially modify Vike's virtual files.
       // Triggers a full page reload
@@ -143,13 +155,23 @@ async function isVikeConfigDependency(
   return null
 }
 
-function reloadConfig(filePath: string, config: ResolvedConfig, op: 'modified' | 'created' | 'removed') {
+function reloadConfig(
+  filePath: string,
+  config: ResolvedConfig,
+  op: 'modified' | 'created' | 'removed',
+  server: ViteDevServer
+) {
+  // Ensure server.ssrLoadModule() loads fresh Vike virtual files (`reloadConfig()` > `updateUserFiles()` > `server.ssrLoadModule()`)
+  invalidateVikeVirtualFiles(server)
+
   {
     const filePathToShowToUserResolved = getModuleFilePathAbsolute(filePath, config)
     const msg = `${op} ${pc.dim(filePathToShowToUserResolved)}`
     logConfigInfo(msg, 'info')
   }
+
   reloadVikeConfig()
+
   updateUserFiles()
 }
 
@@ -194,4 +216,8 @@ function getModuleImporters(mod: ModuleNode, seen: Set<ModuleNode> = new Set()):
   }
 
   return importers
+}
+
+function existsInViteModuleGraph(file: string, moduleGraph: ModuleGraph): boolean {
+  return !!moduleGraph.getModulesByFile(file)
 }
