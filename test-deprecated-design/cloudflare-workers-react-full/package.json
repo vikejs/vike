@@ -6,7 +6,7 @@
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.2.0",
-    "@vitejs/plugin-react": "^4.4.1",
+    "@vitejs/plugin-react": "^4.5.1",
     "compression": "^1.7.4",
     "cross-env": "^7.0.3",
     "express": "^5.1.0",

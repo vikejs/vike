@@ -5,7 +5,7 @@
   },
   "dependencies": {
     "@types/react": "^18.0.8",
-    "@vitejs/plugin-react": "^4.4.1",
+    "@vitejs/plugin-react": "^4.5.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "vike": "0.4.231",
