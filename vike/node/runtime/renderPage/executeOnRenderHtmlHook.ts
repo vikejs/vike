@@ -20,7 +20,7 @@ import {
 } from './preparePageContextForPublicUsageServer.js'
 import type { PageContextPromise } from '../html/injectAssets.js'
 import { assertHookReturnedObject } from '../../../shared/assertHookReturnedObject.js'
-import { logRuntimeError } from './loggerRuntime.js'
+import { logRuntimeError } from '../loggerRuntime.js'
 import type { PageContextSerialization } from '../html/serializeContext.js'
 import pc from '@brillout/picocolors'
 import { execHookSingleWithReturn } from '../../../shared/hooks/execHook.js'

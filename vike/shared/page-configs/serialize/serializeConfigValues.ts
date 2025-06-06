@@ -23,11 +23,11 @@ import type {
   PageConfigGlobalBuildTime
 } from '../../../types/PageConfig.js'
 import type { ValueSerialized } from './PageConfigSerialized.js'
-import { parsePointerImportData } from '../../../node/vite/shared/resolveVikeConfig/pointerImports.js'
+import { parsePointerImportData } from '../../../node/vite/shared/resolveVikeConfigInternal/pointerImports.js'
 import { getConfigValueFilePathToShowToUser } from '../helpers.js'
 import { stringify } from '@brillout/json-serializer/stringify'
 import pc from '@brillout/picocolors'
-import { isOverriden } from '../../../node/vite/shared/resolveVikeConfig.js'
+import { isOverriden } from '../../../node/vite/shared/resolveVikeConfigInternal.js'
 const stringifyOptions = { forbidReactElements: true as const }
 const REPLACE_ME_BEFORE = '__VIKE__REPLACE_ME_BEFORE__'
 const REPLACE_ME_AFTER = '__VIKE__REPLACE_ME_AFTER__'

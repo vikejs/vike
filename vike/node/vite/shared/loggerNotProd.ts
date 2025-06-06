@@ -20,7 +20,7 @@ export type { LogCategory }
 
 import { isAbortError } from '../../../shared/route/abort.js'
 import { getViteConfig, vikeConfigErrorRecoverMsg } from '../../runtime/globalContext.js'
-import { overwriteRuntimeProductionLogger } from '../../runtime/renderPage/loggerRuntime.js'
+import { overwriteRuntimeProductionLogger } from '../../runtime/loggerRuntime.js'
 import {
   assert,
   assertIsNotProductionRuntime,
@@ -36,7 +36,7 @@ import { isErrorWithCodeSnippet, getPrettyErrorWithCodeSnippet } from './loggerN
 import {
   getConfigExecutionErrorIntroMsg,
   getConfigBuildErrorFormatted
-} from './resolveVikeConfig/transpileAndExecuteFile.js'
+} from './resolveVikeConfigInternal/transpileAndExecuteFile.js'
 import { logWithVikeTag, logWithViteTag, logDirectly, applyViteSourceMapToStackTrace } from './loggerNotProd/log.js'
 import pc from '@brillout/picocolors'
 import { setAlreadyLogged } from '../../runtime/renderPage/isNewError.js'

@@ -15,7 +15,7 @@ import {
 } from './loadPageConfigsLazyServerSide.js'
 import { executeOnRenderHtmlHook } from './executeOnRenderHtmlHook.js'
 import { executeOnBeforeRenderAndDataHooks } from './executeOnBeforeRenderAndDataHooks.js'
-import { logRuntimeError } from './loggerRuntime.js'
+import { logRuntimeError } from '../loggerRuntime.js'
 import { isNewError } from './isNewError.js'
 import { preparePageContextForPublicUsageServer } from './preparePageContextForPublicUsageServer.js'
 import { executeGuardHook } from '../../../shared/route/executeGuardHook.js'

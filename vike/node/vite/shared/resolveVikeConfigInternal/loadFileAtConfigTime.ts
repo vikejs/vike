@@ -9,7 +9,7 @@ export type { PointerImportLoaded }
 import { assert, assertUsage, assertIsNotProductionRuntime, isArrayOfStrings, isObject } from '../../utils.js'
 import type { FilePathResolved } from '../../../../types/FilePath.js'
 import { type EsbuildCache, transpileAndExecuteFile } from './transpileAndExecuteFile.js'
-import { getConfigDefinitionOptional } from '../resolveVikeConfig.js'
+import { getConfigDefinitionOptional } from '../resolveVikeConfigInternal.js'
 import type { PlusFileValue } from './getPlusFilesAll.js'
 import { assertPlusFileExport } from '../../../../shared/page-configs/assertPlusFileExport.js'
 import pc from '@brillout/picocolors'

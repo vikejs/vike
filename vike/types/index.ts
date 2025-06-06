@@ -50,10 +50,10 @@ export type { ConfigEnv } from './PageConfig.js'
 export type {
   ConfigDefinition,
   ConfigEffect
-} from '../node/vite/shared/resolveVikeConfig/configDefinitionsBuiltIn.js'
-export type { ConfigEntries } from '../shared/page-configs/getVikeConfigPublic.js'
+} from '../node/vite/shared/resolveVikeConfigInternal/configDefinitionsBuiltIn.js'
+export type { ConfigEntries } from '../shared/page-configs/resolveVikeConfigPublic.js'
 
-export type { VikeConfig } from '../node/vite/shared/resolveVikeConfig.js'
+export type { VikeConfig } from '../node/vite/shared/resolveVikeConfigInternal.js'
 
 export type { UrlPublic as Url } from '../utils/parseUrl.js'
 
@@ -71,7 +71,7 @@ import type { ConfigEnv } from './PageConfig.js'
 type Env = ConfigEnv
 export type { Env }
 
-import type { ConfigEffect } from '../node/vite/shared/resolveVikeConfig/configDefinitionsBuiltIn.js'
+import type { ConfigEffect } from '../node/vite/shared/resolveVikeConfigInternal/configDefinitionsBuiltIn.js'
 // TODO/v1-release: remove
 /** @deprecated Replace:
  *   `import type { Effect } from 'vike/types'`

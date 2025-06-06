@@ -10,7 +10,7 @@ import {
   isArray,
   unique
 } from '../../utils.js'
-import { getVikeConfigInternal, isOverriden } from '../../shared/resolveVikeConfig.js'
+import { getVikeConfigInternal, isOverriden } from '../../shared/resolveVikeConfigInternal.js'
 import { analyzeClientEntries } from '../pluginBuild/pluginBuildConfig.js'
 import type { PageConfigBuildTime } from '../../../../types/PageConfig.js'
 import {

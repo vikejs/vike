@@ -8,12 +8,12 @@ import { assert, assertPosixPath } from '../utils.js'
 import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../shared/virtualFiles.js'
 import { isVirtualFileIdPageConfigLazy } from '../../shared/virtualFiles/virtualFilePageConfigLazy.js'
 import { isVirtualFileIdEntry } from '../../shared/virtualFiles/virtualFileEntry.js'
-import { reloadVikeConfig, isV1Design, getVikeConfigInternalOptional } from '../shared/resolveVikeConfig.js'
+import { reloadVikeConfig, isV1Design, getVikeConfigInternalOptional } from '../shared/resolveVikeConfigInternal.js'
 import pc from '@brillout/picocolors'
 import { logConfigInfo } from '../shared/loggerNotProd.js'
 import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
 import { updateUserFiles } from '../../runtime/globalContext.js'
-import { isPlusFile } from '../shared/resolveVikeConfig/crawlPlusFiles.js'
+import { isPlusFile } from '../shared/resolveVikeConfigInternal/crawlPlusFiles.js'
 
 function pluginVirtualFiles(): Plugin {
   let config: ResolvedConfig

@@ -3,7 +3,7 @@ export { assertExtensionsRequire }
 
 import pc from '@brillout/picocolors'
 import { PROJECT_VERSION, assert, assertUsage, assertWarning, findPackageJson, isObject } from '../../utils.js'
-import { getConfVal } from '../resolveVikeConfig.js'
+import { getConfVal } from '../resolveVikeConfigInternal.js'
 import type { PlusFile } from './getPlusFilesAll.js'
 import path from 'path'
 import semver from 'semver'

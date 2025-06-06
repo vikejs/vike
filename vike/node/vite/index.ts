@@ -2,7 +2,7 @@ export default plugin
 export { plugin }
 // TODO/v1-release: remove
 export { plugin as ssr }
-export { getVikeConfig } from './shared/resolveVikeConfig.js'
+export { getVikeConfig } from './shared/resolveVikeConfigInternal.js'
 export { PROJECT_VERSION as version } from './utils.js'
 export type { VikeVitePluginOptions as UserConfig }
 export type { VikeVitePluginOptions }

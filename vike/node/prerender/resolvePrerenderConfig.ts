@@ -1,7 +1,7 @@
 export { resolvePrerenderConfigGlobal }
 export { resolvePrerenderConfigLocal }
 
-import { VikeConfigInternal } from '../vite/shared/resolveVikeConfig.js'
+import { VikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
 import { assert, isArray, isObject, objectAssign } from './utils.js'
 import { getConfigValueBuildTime } from '../../shared/page-configs/getConfigValueBuildTime.js'
 import type { PageConfigBuildTime } from '../../types/PageConfig.js'
