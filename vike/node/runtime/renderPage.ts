@@ -1,6 +1,7 @@
 export { renderPage }
 export { renderPage_addAsyncHookwrapper }
 export { renderPage_vikeConfigHasError }
+export { vikeConfigHasError }
 export type { PageContextInit }
 export type { PageContextBegin }
 
@@ -686,4 +687,7 @@ function renderPage_vikeConfigHasError(
 }
 function getVikeConfigError() {
   return globalObject.vikeConfigHasBuildError || globalObject.vikeConfigHasRuntimeError
+}
+function vikeConfigHasError(): boolean {
+  return !!getVikeConfigError()
 }
