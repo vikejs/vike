@@ -1,4 +1,4 @@
-// TODO/now-1: rename to resolveVikeConfigPublic
+// TODO/now-1: rename to resolveVikeConfigInternalPublic
 // TODO/now-same-api: use public API internally?
 // TODO/now-flat-pageContext: rename definedAt => definedBy
 export { getVikeConfigPublicGlobal }

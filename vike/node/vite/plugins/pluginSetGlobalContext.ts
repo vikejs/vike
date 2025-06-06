@@ -7,7 +7,7 @@ import {
   setGlobalContext_isProduction
 } from '../../runtime/globalContext.js'
 import { isDevCheck, markSetup_isViteDev, markSetup_viteDevServer, markSetup_vitePreviewServer } from '../utils.js'
-import { reloadVikeConfig } from '../shared/resolveVikeConfig.js'
+import { reloadVikeConfig } from '../shared/resolveVikeConfigInternal.js'
 import { getViteConfigRuntime } from '../shared/getViteConfigRuntime.js'
 
 function pluginSetGlobalContext(): Plugin[] {

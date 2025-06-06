@@ -3,7 +3,7 @@ export { getVirtualFilePageConfigsEager }
 import type { PageConfigBuildTime, PageConfigGlobalBuildTime } from '../../../../types/PageConfig.js'
 import { getVirtualFileIdPageConfigLazy } from '../../../shared/virtualFiles/virtualFilePageConfigLazy.js'
 import { debug } from './debug.js'
-import { getVikeConfigInternal } from '../../shared/resolveVikeConfig.js'
+import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
 import { FilesEnv, serializeConfigValues } from '../../../../shared/page-configs/serialize/serializeConfigValues.js'
 

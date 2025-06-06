@@ -6,7 +6,7 @@ import {
   getVirtualFileIdPageConfigLazy,
   isVirtualFileIdPageConfigLazy
 } from '../../../shared/virtualFiles/virtualFilePageConfigLazy.js'
-import { getVikeConfigInternal } from '../../shared/resolveVikeConfig.js'
+import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { extractAssetsAddQuery } from '../../../shared/extractAssetsQuery.js'
 import { debug } from './debug.js'
 import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
