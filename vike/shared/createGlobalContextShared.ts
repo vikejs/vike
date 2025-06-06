@@ -7,10 +7,7 @@ export type GlobalContextInternal = GlobalContextServerInternal | GlobalContextC
 import { changeEnumerable, objectAssign, unique } from './utils.js'
 import type { PageFile } from './getPageFiles.js'
 import { parseVirtualFileExports } from './getPageFiles/parseVirtualFileExports.js'
-import {
-  resolveVikeConfigPublicGlobal,
-  resolveVikeConfigPublicPageEager
-} from './page-configs/resolveVikeConfigPublic.js'
+import { getVikeConfigPublicGlobal, getVikeConfigPublicPageEager } from './page-configs/getVikeConfigPublic.js'
 import type { PageConfigRuntime } from '../types/PageConfig.js'
 import { execHookGlobal } from './hooks/execHook.js'
 import { prepareGlobalContextForPublicUsage } from './prepareGlobalContextForPublicUsage.js'
@@ -95,13 +92,13 @@ function getConfigsAll(virtualFileExports: unknown) {
   const { pageFilesAll, pageConfigs, pageConfigGlobal } = parseVirtualFileExports(virtualFileExports)
   const allPageIds = getAllPageIds(pageFilesAll, pageConfigs)
 
-  const vikeConfigPublicGlobal = resolveVikeConfigPublicGlobal({
+  const vikeConfigPublicGlobal = getVikeConfigPublicGlobal({
     pageConfigGlobalValues: pageConfigGlobal.configValues
   })
 
   const vikeConfigPublicPagesEager = Object.fromEntries(
     pageConfigs.map((pageConfig) => {
-      return resolveVikeConfigPublicPageEager(pageConfigGlobal.configValues, pageConfig, pageConfig.configValues)
+      return getVikeConfigPublicPageEager(pageConfigGlobal.configValues, pageConfig, pageConfig.configValues)
     })
   )
 

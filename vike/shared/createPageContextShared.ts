@@ -2,7 +2,7 @@ export { createPageContextShared }
 export { createPageContextObject }
 
 import { execHookGlobal } from './hooks/execHook.js'
-import type { VikeConfigPublicGlobal } from './page-configs/resolveVikeConfigPublic.js'
+import type { VikeConfigPublicGlobal } from './page-configs/getVikeConfigPublic.js'
 import type { PageConfigGlobalRuntime } from '../types/PageConfig.js'
 import { type PageContextPrepareMinimum, preparePageContextForPublicUsage } from './preparePageContextForPublicUsage.js'
 import { changeEnumerable, objectAssign } from './utils.js'

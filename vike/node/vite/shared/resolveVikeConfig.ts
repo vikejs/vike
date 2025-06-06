@@ -82,11 +82,11 @@ import { getFilePathResolved } from './getFilePath.js'
 import type { FilePath } from '../../../types/FilePath.js'
 import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
 import {
-  resolveVikeConfigPublicGlobal,
-  resolveVikeConfigPublicPageEager,
+  getVikeConfigPublicGlobal,
+  getVikeConfigPublicPageEager,
   type VikeConfigPublicGlobal,
   type VikeConfigPublicPageEager
-} from '../../../shared/page-configs/resolveVikeConfigPublic.js'
+} from '../../../shared/page-configs/getVikeConfigPublic.js'
 import { getConfigValuesBase, isJsonValue } from '../../../shared/page-configs/serialize/serializeConfigValues.js'
 import { getPlusFilesAll, type PlusFile, type PlusFilesByLocationId } from './resolveVikeConfig/getPlusFilesAll.js'
 import { getEnvVarObject } from './getEnvVarObject.js'
@@ -291,13 +291,13 @@ async function resolveVikeConfig(userRootDir: string, vikeVitePluginOptions: unk
 
   // global
   const pageConfigGlobalValues = getConfigValues(pageConfigGlobal)
-  const vikeConfigPublicGlobal = resolveVikeConfigPublicGlobal({ pageConfigGlobalValues })
+  const vikeConfigPublicGlobal = getVikeConfigPublicGlobal({ pageConfigGlobalValues })
 
   // pages
   const vikeConfigPublicPagesEager = objectFromEntries(
     pageConfigs.map((pageConfig) => {
       const pageConfigValues = getConfigValues(pageConfig, true)
-      return resolveVikeConfigPublicPageEager(pageConfigGlobalValues, pageConfig, pageConfigValues)
+      return getVikeConfigPublicPageEager(pageConfigGlobalValues, pageConfig, pageConfigValues)
     })
   )
 
@@ -1509,7 +1509,7 @@ async function restartViteDevServer() {
 }
 
 function getVikeConfigDummy(): VikeConfigInternal {
-  const globalDummy = resolveVikeConfigPublicGlobal({ pageConfigGlobalValues: {} })
+  const globalDummy = getVikeConfigPublicGlobal({ pageConfigGlobalValues: {} })
   const pageConfigsDummy: VikeConfigInternal['_pageConfigs'] = []
   const prerenderContextDummy = resolvePrerenderContext({
     config: globalDummy.config,
