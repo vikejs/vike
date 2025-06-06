@@ -217,11 +217,16 @@ async function resolveVikeConfigInternal_withErrorHandling(
   const { promise, resolve, reject } = genPromise<VikeConfigInternal>()
   vikeConfigPromise = promise
 
+  const esbuildCache: EsbuildCache = {
+    transpileCache: {},
+    vikeConfigDependencies: new Set()
+  }
+
   let hasError = false
   let ret: VikeConfigInternal | undefined
   let err: unknown
   try {
-    ret = await resolveVikeConfigInternal(userRootDir, vikeVitePluginOptions)
+    ret = await resolveVikeConfigInternal(userRootDir, vikeVitePluginOptions, esbuildCache)
   } catch (err_) {
     hasError = true
     err = err_
@@ -267,19 +272,15 @@ async function resolveVikeConfigInternal_withErrorHandling(
       reject(err)
     } else {
       logConfigError(err)
-      resolve(getVikeConfigDummy())
+      resolve(getVikeConfigDummy(esbuildCache))
     }
   }
 }
 async function resolveVikeConfigInternal(
   userRootDir: string,
-  vikeVitePluginOptions: unknown
+  vikeVitePluginOptions: unknown,
+  esbuildCache: EsbuildCache
 ): Promise<VikeConfigInternal> {
-  const esbuildCache: EsbuildCache = {
-    transpileCache: {},
-    vikeConfigDependencies: new Set()
-  }
-
   const plusFilesAll = await getPlusFilesAll(userRootDir, esbuildCache)
 
   const configDefinitionsResolved = await resolveConfigDefinitions(plusFilesAll, userRootDir, esbuildCache)
@@ -1525,7 +1526,7 @@ function restartViteDevServer() {
   removeSuperfluousViteLog_disable()
 }
 
-function getVikeConfigDummy(): VikeConfigInternal {
+function getVikeConfigDummy(esbuildCache: EsbuildCache): VikeConfigInternal {
   const globalDummy = resolveVikeConfigPublicGlobal({ pageConfigGlobalValues: {} })
   const pageConfigsDummy: VikeConfigInternal['_pageConfigs'] = []
   const prerenderContextDummy = resolvePrerenderContext({
@@ -1543,7 +1544,7 @@ function getVikeConfigDummy(): VikeConfigInternal {
     _from: globalDummy._from,
     pages: {},
     prerenderContext: prerenderContextDummy,
-    _vikeConfigDependencies: new Set()
+    _vikeConfigDependencies: esbuildCache.vikeConfigDependencies
   }
   vikeConfigSync = vikeConfigDummy
   isV1Design_ = true
