@@ -214,8 +214,6 @@ async function resolveVikeConfigInternal_withErrorHandling(
   vikeVitePluginOptions: unknown,
   doNotRestartViteOnError?: boolean
 ): Promise<void> {
-  const r = Math.random()
-  console.log(`resolveVikeConfigInternal_withErrorHandling — START — 1 — ${r}`)
   const { promise, resolve, reject } = genPromise<VikeConfigInternal>()
   vikeConfigPromise = promise
 
@@ -233,25 +231,20 @@ async function resolveVikeConfigInternal_withErrorHandling(
     hasError = true
     err = err_
   }
-  console.log(`resolveVikeConfigInternal_withErrorHandling — 2.1 — ${r}`)
 
   // There is a newer call — let the new call supersede the old one.
   // We deliberately swallow the intermetidate state (including any potential error) — it's now outdated and has existed only for a very short period of time.
   if (vikeConfigPromise !== promise) {
-    console.log(`resolveVikeConfigInternal_withErrorHandling — 3.1 — ${r}`)
     // vikeConfigPromise.then(resolve).catch(reject)
     try {
       resolve(await vikeConfigPromise)
     } catch (err) {
       reject(err)
     }
-    console.log(`resolveVikeConfigInternal_withErrorHandling — END — 3.2 — ${r}`)
     return
   }
-  console.log(`resolveVikeConfigInternal_withErrorHandling — 2.2 — ${r}`)
 
   if (!hasError) {
-    console.log(`resolveVikeConfigInternal_withErrorHandling — 4.1 — ${r}`)
     assert(ret)
     assert(err === undefined)
 
@@ -266,7 +259,6 @@ async function resolveVikeConfigInternal_withErrorHandling(
       }
     }
 
-    console.log(`resolveVikeConfigInternal_withErrorHandling — END — 4.2 — ${r}`)
     resolve(ret)
   } else {
     assert(ret === undefined)
@@ -277,11 +269,9 @@ async function resolveVikeConfigInternal_withErrorHandling(
     if (!doNotRestartViteOnError) restartVite = true
 
     if (!isDev) {
-      console.log(`resolveVikeConfigInternal_withErrorHandling — END — 5.1 — ${r}`)
       reject(err)
     } else {
       logConfigError(err)
-      console.log(`resolveVikeConfigInternal_withErrorHandling — END — 5.2 — ${r}`)
       resolve(getVikeConfigDummy(esbuildCache))
     }
   }
