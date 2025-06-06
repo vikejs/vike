@@ -1,10 +1,8 @@
 import type { Config } from 'vike/types'
 
-import prerender from './p'
-
 // https://vike.dev/config
 export const config = {
-  prerender,
+  prerender: true,
   passToClient: ['someAsyncProps'],
   clientRouting: true,
   hydrationCanBeAborted: true,
