@@ -20,7 +20,7 @@ export type { LogCategory }
 
 import { isAbortError } from '../../../shared/route/abort.js'
 import { getViteConfig, vikeConfigErrorRecoverMsg } from '../../runtime/globalContext.js'
-import { overwriteRuntimeProductionLogger } from '../../runtime/renderPage/loggerRuntime.js'
+import { overwriteRuntimeProductionLogger } from '../../runtime/loggerRuntime.js'
 import {
   assert,
   assertIsNotProductionRuntime,

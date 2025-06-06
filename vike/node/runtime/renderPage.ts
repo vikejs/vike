@@ -53,7 +53,7 @@ import {
   createHttpResponseErrorWithoutGlobalContext,
   createHttpResponseBaseIsMissing
 } from './renderPage/createHttpResponse.js'
-import { logRuntimeError, logRuntimeInfo } from './renderPage/loggerRuntime.js'
+import { logRuntimeError, logRuntimeInfo } from './loggerRuntime.js'
 import { isNewError } from './renderPage/isNewError.js'
 import { assertArguments } from './renderPage/assertArguments.js'
 import type { PageContextDebugRouteMatches } from './renderPage/debugPageFiles.js'
