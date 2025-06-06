@@ -68,9 +68,13 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
     file = normalizePath(file)
     if (isPlusFile(file)) {
       const isVikeConfig = await isVikeConfigDependency(file, server.moduleGraph)
-      if (isVikeConfig && isVikeConfig.isNotProcessedByVite) {
-        invalidateVikeVirtualFiles(server)
-        reloadConfig(file, config, isRemove ? 'removed' : 'created')
+      if (isVikeConfig) {
+        if (isVikeConfig.isNotProcessedByVite) {
+          invalidateVikeVirtualFiles(server)
+          reloadConfig(file, config, isRemove ? 'removed' : 'created')
+        } else {
+          // Let Vite handle it
+        }
       }
     }
   }
