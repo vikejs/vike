@@ -243,15 +243,16 @@ async function resolveVikeConfigInternal_withErrorHandling(
     assert(ret)
     assert(err === undefined)
 
-    if (vikeConfigHasBuildError) {
+    const hadError = vikeConfigHasBuildError
+    vikeConfigHasBuildError = false
+    renderPage_vikeConfigHasError({ hasBuildError: false })
+    if (hadError) {
       logConfigErrorRecover()
       if (restartVite) {
         restartVite = false
         await restartViteDevServer()
       }
     }
-    vikeConfigHasBuildError = false
-    renderPage_vikeConfigHasError(false)
 
     resolve(ret)
   } else {
@@ -259,7 +260,7 @@ async function resolveVikeConfigInternal_withErrorHandling(
     assert(err)
 
     vikeConfigHasBuildError = true
-    renderPage_vikeConfigHasError({ err })
+    renderPage_vikeConfigHasError({ hasBuildError: { err } })
     if (!doNotRestartViteOnError) restartVite = true
 
     if (!isDev) {

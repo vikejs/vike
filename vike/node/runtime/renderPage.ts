@@ -69,7 +69,8 @@ import type { PageContextInternalServer } from '../../types/PageContext.js'
 
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
   httpRequestsCount: 0,
-  vikeConfigHasError: false as false | { err: unknown }
+  vikeConfigHasRuntimeError: false as VikeConfigHasError,
+  vikeConfigHasBuildError: false as VikeConfigHasError
 })
 
 type PageContextAfterRender = { httpResponse: HttpResponse } & Partial<PageContextInternalServer>
@@ -125,11 +126,11 @@ async function renderPagePrepare(
   httpRequestId: number
 ): Promise<PageContextAfterRender> {
   // Invalid config
-  if (
-    globalObject.vikeConfigHasError &&
-    (true as boolean) // Make TS happy
-  ) {
-    return getPageContextInvalidVikeConfig(globalObject.vikeConfigHasError.err, pageContextInit, httpRequestId)
+  {
+    const vikeConfigError = getVikeConfigError()
+    if (vikeConfigError) {
+      return getPageContextInvalidVikeConfig(vikeConfigError.err, pageContextInit, httpRequestId)
+    }
   }
 
   // Prepare context
@@ -146,10 +147,13 @@ async function renderPagePrepare(
     const pageContextWithError = getPageContextHttpResponseErrorWithoutGlobalContext(err, pageContextInit)
     return pageContextWithError
   }
-  if (globalObject.vikeConfigHasError) {
-    return getPageContextInvalidVikeConfig(globalObject.vikeConfigHasError.err, pageContextInit, httpRequestId)
-  } else {
-    // `globalContext` now contains the entire Vike config and getVikeConfig() isn't called anymore for this request.
+  {
+    const vikeConfigError = getVikeConfigError()
+    if (vikeConfigError) {
+      return getPageContextInvalidVikeConfig(vikeConfigError.err, pageContextInit, httpRequestId)
+    } else {
+      // `globalContext` now contains the entire Vike config and getVikeConfig() isn't called anymore for this request.
+    }
   }
   const { globalContext } = await getGlobalContextServerInternal()
 
@@ -673,7 +677,13 @@ function forkPageContext(pageContextBegin: PageContextBegin) {
   return pageContext
 }
 
-function renderPage_vikeConfigHasError(val: false | { err: unknown }) {
-  assert(val === false || val.err)
-  globalObject.vikeConfigHasError = val
+type VikeConfigHasError = false | { err: unknown }
+function renderPage_vikeConfigHasError(
+  val: { hasRuntimeError: VikeConfigHasError } | { hasBuildError: VikeConfigHasError }
+) {
+  if ('hasRuntimeError' in val) globalObject.vikeConfigHasRuntimeError = val.hasRuntimeError
+  if ('hasBuildError' in val) globalObject.vikeConfigHasBuildError = val.hasBuildError
+}
+function getVikeConfigError() {
+  return globalObject.vikeConfigHasBuildError || globalObject.vikeConfigHasRuntimeError
 }
