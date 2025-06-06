@@ -100,7 +100,7 @@ import type { PrerenderContextPublic } from '../../prerender/runPrerender.js'
 import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderConfig.js'
 import type { ResolvedConfig, UserConfig } from 'vite'
 import { getProxyForPublicUsage } from '../../../shared/getProxyForPublicUsage.js'
-import { renderPage_hasVikeConfigError } from '../../runtime/renderPage.js'
+import { renderPage_vikeConfigHasError } from '../../runtime/renderPage.js'
 assertIsNotProductionRuntime()
 
 // We can simply use global variables since Vike's config is:
@@ -108,8 +108,8 @@ assertIsNotProductionRuntime()
 //  - independent of Vite (therefore we don't need to tie Vike's config with Vite's `config` object)
 assertIsSingleModuleInstance('v1-design/getVikeConfig.ts')
 let restartVite = false
-// TODO/now-1: rename hasVikeConfig vikeConfigHas
-let hasVikeConfigBuildError: boolean | null = null
+// TODO/now-1: rename vikeConfigHas vikeConfigHas
+let vikeConfigHasBuildError: boolean | null = null
 let isV1Design_: boolean | null = null
 let vikeConfigPromise: Promise<VikeConfigInternal> | null = null
 // TODO/v1-release: remove
@@ -244,23 +244,23 @@ async function resolveVikeConfigInternal_withErrorHandling(
     assert(ret)
     assert(err === undefined)
 
-    if (hasVikeConfigBuildError) {
+    if (vikeConfigHasBuildError) {
       logConfigErrorRecover()
       if (restartVite) {
         restartVite = false
         await restartViteDevServer()
       }
     }
-    hasVikeConfigBuildError = false
-    renderPage_hasVikeConfigError(false)
+    vikeConfigHasBuildError = false
+    renderPage_vikeConfigHasError(false)
 
     resolve(ret)
   } else {
     assert(ret === undefined)
     assert(err)
 
-    hasVikeConfigBuildError = true
-    renderPage_hasVikeConfigError({ err })
+    vikeConfigHasBuildError = true
+    renderPage_vikeConfigHasError({ err })
     if (!doNotRestartViteOnError) restartVite = true
 
     if (!isDev) {

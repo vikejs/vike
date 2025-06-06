@@ -64,7 +64,7 @@ import {
 } from '../../shared/createGlobalContextShared.js'
 import type { GlobalContext } from '../../types/PageContext.js'
 import { prepareGlobalContextForPublicUsage } from '../../shared/prepareGlobalContextForPublicUsage.js'
-import { renderPage_hasVikeConfigError } from './renderPage.js'
+import { renderPage_vikeConfigHasError } from './renderPage.js'
 import { logRuntimeInfo } from './loggerRuntime.js'
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
@@ -79,7 +79,7 @@ const globalObject = getGlobalObject<
     buildEntryPrevious?: unknown
     waitForUserFilesUpdate?: Promise<void>
     waitForUserFilesUpdateResolve?: (() => void)[]
-    hasVikeConfigRuntimeError?: boolean
+    vikeConfigHasRuntimeError?: boolean
     isProduction?: boolean
     buildInfo?: BuildInfo
     // Move to buildInfo.assetsManifest ?
@@ -417,17 +417,17 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
 
   const onError = (err: unknown) => {
     console.error(err)
-    renderPage_hasVikeConfigError({ err })
-    globalObject.hasVikeConfigRuntimeError = true
+    renderPage_vikeConfigHasError({ err })
+    globalObject.vikeConfigHasRuntimeError = true
     return { success: false }
   }
   const onSuccess = () => {
-    if (globalObject.hasVikeConfigRuntimeError) {
+    if (globalObject.vikeConfigHasRuntimeError) {
       assert(logRuntimeInfo) // always defined in dev
       logRuntimeInfo(vikeConfigErrorRecoverMsg, null, 'error-recover')
     }
-    globalObject.hasVikeConfigRuntimeError = false
-    renderPage_hasVikeConfigError(false)
+    globalObject.vikeConfigHasRuntimeError = false
+    renderPage_vikeConfigHasError(false)
     globalObject.waitForUserFilesUpdateResolve!.forEach((resolve) => resolve())
     globalObject.waitForUserFilesUpdateResolve = []
     resolve()
