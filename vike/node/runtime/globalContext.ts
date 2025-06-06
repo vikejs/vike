@@ -276,24 +276,11 @@ async function initGlobalContext_getPagesAndRoutes(): Promise<void> {
   setIsProduction(true)
   await initGlobalContext()
 }
-async function waitForViteDevServer() {
-  debug('waitForViteDevServer()')
-  const waitFor = 20
-  const timeout = setTimeout(() => {
-    assertWarning(false, `Vite's development server still not created after ${waitFor} seconds.`, {
-      onlyOnce: false,
-      showStackTrace: true
-    })
-  }, waitFor * 1000)
-  await globalObject.viteDevServerPromise
-  clearTimeout(timeout)
-}
-
 async function initGlobalContext(): Promise<void> {
   const { isProduction } = globalObject
   assert(typeof isProduction === 'boolean')
   if (!isProduction) {
-    await waitForViteDevServer()
+    await globalObject.viteDevServerPromise
     assert(globalObject.waitForUserFilesUpdate)
     await globalObject.waitForUserFilesUpdate
   } else {
