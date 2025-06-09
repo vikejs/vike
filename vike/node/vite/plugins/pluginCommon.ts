@@ -23,6 +23,7 @@ import { getVikeConfigInternal, setVikeConfigContext } from '../shared/resolveVi
 import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/prepareViteApiCall.js'
 import { temp_disablePrerenderAutoRun } from '../../prerender/context.js'
 import type { VitePluginServerEntryOptions } from '@brillout/vite-plugin-server-entry/plugin'
+import { runPrerenderExec_isChildProcess } from '../../prerender/runPrerenderEntry.js'
 const pluginName = 'vike:pluginCommon'
 
 declare module 'vite' {
@@ -177,6 +178,7 @@ function assertSingleInstance(config: ResolvedConfig) {
 
 function assertVikeCliOrApi(config: ResolvedConfig) {
   if (isVikeCliOrApi()) return
+  if (runPrerenderExec_isChildProcess()) return
   if (isViteCliCall()) {
     assert(!isVitest())
     assertWarning(false, `Vite's CLI is deprecated ${pc.underline('https://vike.dev/migration/cli')}`, {

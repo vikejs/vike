@@ -1,10 +1,8 @@
 export { pluginBuildApp }
 
-import { runPrerender_forceExit } from '../../../prerender/runPrerenderEntry.js'
 import type { Plugin } from 'vite'
 import { resolveOutDir } from '../../shared/getOutDirs.js'
 import { assert } from '../../utils.js'
-import { isPrerenderForceExit } from './pluginAutoFullBuild.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 
 function pluginBuildApp(): Plugin[] {
@@ -24,11 +22,6 @@ function pluginBuildApp(): Plugin[] {
               assert(builder.environments.ssr)
               await builder.build(builder.environments.client)
               await builder.build(builder.environments.ssr)
-
-              if (isPrerenderForceExit()) {
-                runPrerender_forceExit()
-                assert(false)
-              }
             }
           },
           environments: {

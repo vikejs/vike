@@ -3,9 +3,7 @@ export { build }
 import { prepareViteApiCall } from './prepareViteApiCall.js'
 import { build as buildVite, version, createBuilder } from 'vite'
 import type { APIOptions } from './types.js'
-import { isVikeCli } from '../cli/context.js'
-import { isPrerenderingRun } from '../prerender/context.js'
-import { assert, assertVersion } from './utils.js'
+import { assertVersion } from './utils.js'
 
 /**
  * Programmatically trigger `$ vike build`
@@ -34,8 +32,6 @@ async function build(options: APIOptions = {}): Promise<{}> {
     //    > We purposely don't start the pre-rendering in this `build()` function but in a Rollup hook instead.
     //    > Rationale: https://github.com/vikejs/vike/issues/2123
     await buildVite(viteConfigFromUserEnhanced)
-    // After pre-rendering, when using the Vike CLI, the process is forcefully exited at the end of the buildVite() call above.
-    if (isVikeCli() && isPrerenderingRun()) assert(false)
   }
 
   return {

@@ -1,7 +1,5 @@
 export { isPrerenderAutoRunEnabled }
 export { temp_disablePrerenderAutoRun }
-export { isPrerenderingRun }
-export { setIsPrerenderingRun }
 
 import type { VikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
@@ -21,11 +19,4 @@ function isPrerenderAutoRunEnabled(vikeConfig: VikeConfigInternal) {
 // TODO/v1-release: remove
 function temp_disablePrerenderAutoRun() {
   globalObject.isDisabled = true
-}
-
-function isPrerenderingRun(): boolean {
-  return !!globalObject.isPrerenderingRun
-}
-function setIsPrerenderingRun(): void {
-  globalObject.isPrerenderingRun = true
 }
