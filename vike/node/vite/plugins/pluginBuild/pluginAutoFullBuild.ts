@@ -50,7 +50,7 @@ function pluginAutoFullBuild(): Plugin[] {
       }
     },
     {
-      name: 'vike:build:pluginAutoFullBuild:forceExit',
+      name: 'vike:build:pluginAutoFullBuild:post',
       apply: 'build',
       enforce: 'post',
       closeBundle: {
