@@ -4,7 +4,7 @@ export { isPrerenderForceExit }
 import { build } from 'vite'
 import type { Environment, InlineConfig, Plugin, ResolvedConfig } from 'vite'
 import { assert, assertIsSingleModuleInstance, assertWarning, onSetupBuild } from '../../utils.js'
-import { isPrerenderAutoRunEnabled, isPrerenderingRun } from '../../../prerender/context.js'
+import { isPrerenderAutoRunEnabled, wasPrerenderRun } from '../../../prerender/context.js'
 import type { VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { isViteCliCall, getViteConfigFromCli } from '../../shared/isViteCliCall.js'
 import pc from '@brillout/picocolors'
@@ -99,7 +99,7 @@ async function triggerFullBuild(config: ResolvedConfig, viteEnv: Environment, bu
   if (isPrerenderAutoRunEnabled(vikeConfig)) {
     const res = await runPrerenderFromAutoRun(configInline)
     forceExit = res.forceExit
-    assert(isPrerenderingRun())
+    assert(wasPrerenderRun())
   }
 }
 

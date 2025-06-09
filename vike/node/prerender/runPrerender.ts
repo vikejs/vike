@@ -60,7 +60,7 @@ import { getVikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.
 import type { HookTimeout } from '../../shared/hooks/getHook.js'
 import { execHookWithoutPageContext, isUserHookError } from '../../shared/hooks/execHook.js'
 import type { APIOptions } from '../api/types.js'
-import { setIsPrerenderingRun } from './context.js'
+import { setWasPrerenderRun } from './context.js'
 import { resolvePrerenderConfigGlobal, resolvePrerenderConfigLocal } from './resolvePrerenderConfig.js'
 import { getOutDirs } from '../vite/shared/getOutDirs.js'
 import fs from 'node:fs'
@@ -138,8 +138,8 @@ type PrerenderOptions = APIOptions & {
   base?: string
 }
 
-async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: '$ vike prerender' | 'prerender()') {
-  setIsPrerenderingRun()
+async function runPrerender(options: PrerenderOptions = {}, trigger: '$ vike prerender' | 'prerender()' | 'auto-run') {
+  setWasPrerenderRun()
   checkOutdatedOptions(options)
   onSetupPrerender()
   setGlobalContext_isPrerendering()
@@ -160,7 +160,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   const prerenderConfigGlobal = resolvePrerenderConfigGlobal(vikeConfig)
   const { partial, noExtraDir, parallel, defaultLocalValue, isPrerenderingEnabled } = prerenderConfigGlobal
   if (!isPrerenderingEnabled) {
-    assert(standaloneTrigger)
+    assert(trigger !== 'auto-run')
     /* TODO/v1-release: use this assertUsage() again.
      * - Make sure https://github.com/magne4000/vite-plugin-vercel/pull/156 is merged before using this assertUsage() again. (Otherwise vite-plugin-vercel will trigger this assertUsage() call.)
      *   - Done: PR is merged as of June 20205
