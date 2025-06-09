@@ -60,7 +60,7 @@ import { getVikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.
 import type { HookTimeout } from '../../shared/hooks/getHook.js'
 import { execHookWithoutPageContext, isUserHookError } from '../../shared/hooks/execHook.js'
 import type { APIOptions } from '../api/types.js'
-import { setIsPrerenderingRun } from './context.js'
+import { setWasPrerenderRun } from './context.js'
 import { resolvePrerenderConfigGlobal, resolvePrerenderConfigLocal } from './resolvePrerenderConfig.js'
 import { getOutDirs } from '../vite/shared/getOutDirs.js'
 import fs from 'node:fs'
@@ -139,7 +139,7 @@ type PrerenderOptions = APIOptions & {
 }
 
 async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: '$ vike prerender' | 'prerender()') {
-  setIsPrerenderingRun()
+  setWasPrerenderRun()
   checkOutdatedOptions(options)
   onSetupPrerender()
   setGlobalContext_isPrerendering()
