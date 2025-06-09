@@ -38,7 +38,7 @@ function pluginDistFileNames(): Plugin {
           //    - If rollupOutput.assetFileNames is a function then use a wrapper function to apply the assertUsage()
           assertUsage(
             false,
-            "Setting Vite's configuration build.rollupOptions.output.assetFileNames is currently forbidden. Reach out if you need to use."
+            "Setting Vite's configuration build.rollupOptions.output.assetFileNames is currently forbidden. Reach out if you need to use it."
           )
         }
         {
