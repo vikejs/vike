@@ -80,7 +80,7 @@ async function cmdPreview() {
 }
 
 async function cmdPrerender() {
-  const { runPrerenderFromCLIPrerenderCommand } = await import('../prerender/runPrerender.js')
+  const { runPrerenderFromCLIPrerenderCommand } = await import('../prerender/runPrerenderEntry.js')
   await runPrerenderFromCLIPrerenderCommand()
 }
 

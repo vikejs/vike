@@ -4,7 +4,6 @@ export { isPrerenderForceExit }
 import { build } from 'vite'
 import type { Environment, InlineConfig, Plugin, ResolvedConfig } from 'vite'
 import { assert, assertIsSingleModuleInstance, assertWarning, onSetupBuild } from '../../utils.js'
-import { runPrerenderFromAutoRun, runPrerender_forceExit } from '../../../prerender/runPrerender.js'
 import { isPrerenderAutoRunEnabled, isPrerenderingRun } from '../../../prerender/context.js'
 import type { VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { isViteCliCall, getViteConfigFromCli } from '../../shared/isViteCliCall.js'
@@ -15,6 +14,7 @@ import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js
 import { isVikeCliOrApi } from '../../../api/context.js'
 import { handleAssetsManifest, handleAssetsManifest_assertUsageCssTarget } from './handleAssetsManifest.js'
 import { isViteClientBuild, isViteServerBuild_onlySsrEnv } from '../../shared/isViteServerBuild.js'
+import { runPrerender_forceExit, runPrerenderFromAutoRun } from '../../../prerender/runPrerenderEntry.js'
 assertIsSingleModuleInstance('build/pluginAutoFullBuild.ts')
 let forceExit = false
 
