@@ -1,6 +1,6 @@
 export { pluginBuildApp }
 
-import { runPrerender_forceExit } from '../../../prerender/runPrerender.js'
+import { runPrerender_forceExit } from '../../../prerender/runPrerenderEntry.js'
 import type { Plugin } from 'vite'
 import { resolveOutDir } from '../../shared/getOutDirs.js'
 import { assert } from '../../utils.js'

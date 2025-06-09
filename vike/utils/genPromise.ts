@@ -4,9 +4,11 @@ export { genPromise }
 
 import { assert, assertWarning } from './assert.js'
 
-const timeoutSeconds = 25
+const timeoutSecondsDefault = 25
 
-function genPromise<T = void>(): {
+function genPromise<T = void>({
+  timeout: timeoutSeconds = timeoutSecondsDefault as number | null
+} = {}): {
   promise: Promise<T>
   resolve: (val: T) => void
   reject: (err: unknown) => void
@@ -29,21 +31,26 @@ function genPromise<T = void>(): {
 
   const timeoutClear = () => timeouts.forEach((t) => clearTimeout(t))
   const timeouts: ReturnType<typeof setTimeout>[] = []
-  const promise = new Proxy(promise_internal, {
-    get(target, prop) {
-      if (prop === 'then' && !finished) {
-        const err = new Error(`Promise hasn't resolved after ${timeoutSeconds} seconds`)
-        timeouts.push(
-          setTimeout(() => {
-            assert(err.stack)
-            assertWarning(false, removeStackErrorPrefix(err.stack), { onlyOnce: false })
-          }, timeoutSeconds * 1000)
-        )
+  let promise: typeof promise_internal
+  if (!timeoutSeconds) {
+    promise = promise_internal
+  } else {
+    promise = new Proxy(promise_internal, {
+      get(target, prop) {
+        if (prop === 'then' && !finished) {
+          const err = new Error(`Promise hasn't resolved after ${timeoutSeconds} seconds`)
+          timeouts.push(
+            setTimeout(() => {
+              assert(err.stack)
+              assertWarning(false, removeStackErrorPrefix(err.stack), { onlyOnce: false })
+            }, timeoutSeconds * 1000)
+          )
+        }
+        const value = Reflect.get(target, prop)
+        return typeof value === 'function' ? value.bind(target) : value
       }
-      const value = Reflect.get(target, prop)
-      return typeof value === 'function' ? value.bind(target) : value
-    }
-  })
+    })
+  }
 
   return { promise, resolve, reject }
 }

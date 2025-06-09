@@ -1,7 +1,4 @@
-export { runPrerenderFromAPI }
-export { runPrerenderFromCLIPrerenderCommand }
-export { runPrerenderFromAutoRun }
-export { runPrerender_forceExit }
+export { runPrerender }
 export type { PrerenderOptions }
 export type { PrerenderContextPublic }
 
@@ -39,7 +36,6 @@ import {
   setGlobalContext_isPrerendering
 } from '../runtime/globalContext.js'
 import { resolveConfig as resolveViteConfig } from 'vite'
-import type { InlineConfig, ResolvedConfig } from 'vite'
 import { getPageFilesServerSide } from '../../shared/getPageFiles.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
 import { getUrlFromRouteString } from '../../shared/route/resolveRouteString.js'
@@ -58,15 +54,11 @@ import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../types/PageConfig.js'
 import { getVikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
 import type { HookTimeout } from '../../shared/hooks/getHook.js'
-import { logErrorHint } from '../runtime/renderPage/logErrorHint.js'
 import { execHookWithoutPageContext, isUserHookError } from '../../shared/hooks/execHook.js'
 import type { APIOptions } from '../api/types.js'
-import { prepareViteApiCall } from '../api/prepareViteApiCall.js'
-import { setContextIsPrerendering } from './context.js'
+import { setIsPrerenderingRun } from './context.js'
 import { resolvePrerenderConfigGlobal, resolvePrerenderConfigLocal } from './resolvePrerenderConfig.js'
 import { getOutDirs } from '../vite/shared/getOutDirs.js'
-import { isVikeCli } from '../cli/context.js'
-import { isViteCliCall } from '../vite/shared/isViteCliCall.js'
 import fs from 'node:fs'
 import { getProxyForPublicUsage } from '../../shared/getProxyForPublicUsage.js'
 const docLink = 'https://vike.dev/i18n#pre-rendering'
@@ -142,38 +134,8 @@ type PrerenderOptions = APIOptions & {
   base?: string
 }
 
-async function runPrerenderFromAPI(options: PrerenderOptions = {}): Promise<{ viteConfig: ResolvedConfig }> {
-  return await runPrerender(options, 'prerender()')
-  // - We purposely propagate the error to the user land, so that the error interrupts the user land. It's also, I guess, a nice-to-have that the user has control over the error.
-  // - We don't use logErrorHint() because we don't have control over what happens with the error. For example, if the user land purposely swallows the error then the hint shouldn't be logged. Also, it's best if the hint is shown to the user *after* the error, but we cannot do/guarentee that.
-}
-async function runPrerenderFromCLIPrerenderCommand(): Promise<void> {
-  try {
-    const { viteConfigFromUserEnhanced } = await prepareViteApiCall({}, 'prerender')
-    await runPrerender({ viteConfig: viteConfigFromUserEnhanced }, '$ vike prerender')
-  } catch (err) {
-    console.error(err)
-    // Error may come from user-land; we need to use logErrorHint()
-    logErrorHint(err)
-    process.exit(1)
-  }
-  runPrerender_forceExit()
-  assert(false)
-}
-async function runPrerenderFromAutoRun(viteConfig: InlineConfig | undefined): Promise<{ forceExit: boolean }> {
-  try {
-    await runPrerender({ viteConfig })
-  } catch (err) {
-    // Avoid Rollup prefixing the error with [vike:build:pluginAutoFullBuild], see for example https://github.com/vikejs/vike/issues/472#issuecomment-1276274203
-    console.error(err)
-    logErrorHint(err)
-    process.exit(1)
-  }
-  const forceExit = isVikeCli() || isViteCliCall()
-  return { forceExit }
-}
 async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: '$ vike prerender' | 'prerender()') {
-  setContextIsPrerendering()
+  setIsPrerenderingRun()
   checkOutdatedOptions(options)
   onSetupPrerender()
   setGlobalContext_isPrerendering()
@@ -1148,18 +1110,6 @@ function isSameUrl(url1: string, url2: string) {
 }
 function normalizeUrl(url: string) {
   return '/' + url.split('/').filter(Boolean).join('/')
-}
-
-function runPrerender_forceExit() {
-  // Force exit; known situations where pre-rendering is hanging:
-  //  - https://github.com/vikejs/vike/discussions/774#discussioncomment-5584551
-  //  - https://github.com/vikejs/vike/issues/807#issuecomment-1519010902
-  process.exit(0)
-
-  /* I guess there is no need to tell the user about it? Let's see if a user complains.
-   * I don't known whether there is a way to call process.exit(0) only if needed, thus I'm not sure if there is a way to conditionally show a assertInfo().
-  assertInfo(false, "Pre-rendering was forced exit. (Didn't gracefully exit because the event queue isn't empty. This is usally fine, see ...", { onlyOnce: false })
-  */
 }
 
 function assertIsNotAbort(err: unknown, urlOriginal: string) {
