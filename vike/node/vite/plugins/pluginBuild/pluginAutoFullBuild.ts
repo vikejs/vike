@@ -1,9 +1,10 @@
 export { pluginAutoFullBuild }
+export { isPrerenderForceExit }
 
 import { build } from 'vite'
 import type { Environment, InlineConfig, Plugin, ResolvedConfig } from 'vite'
-import { assertIsSingleModuleInstance, assertWarning, onSetupBuild } from '../../utils.js'
-import { isPrerenderAutoRunEnabled } from '../../../prerender/context.js'
+import { assert, assertIsSingleModuleInstance, assertWarning, onSetupBuild } from '../../utils.js'
+import { isPrerenderAutoRunEnabled, isPrerenderingRun } from '../../../prerender/context.js'
 import type { VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { isViteCliCall, getViteConfigFromCli } from '../../shared/isViteCliCall.js'
 import pc from '@brillout/picocolors'
@@ -13,8 +14,9 @@ import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js
 import { isVikeCliOrApi } from '../../../api/context.js'
 import { handleAssetsManifest, handleAssetsManifest_assertUsageCssTarget } from './handleAssetsManifest.js'
 import { isViteClientBuild, isViteServerBuild_onlySsrEnv } from '../../shared/isViteServerBuild.js'
-import { runPrerenderFromAutoRun } from '../../../prerender/runPrerenderEntry.js'
+import { runPrerender_forceExit, runPrerenderFromAutoRun } from '../../../prerender/runPrerenderEntry.js'
 assertIsSingleModuleInstance('build/pluginAutoFullBuild.ts')
+let forceExit = false
 
 function pluginAutoFullBuild(): Plugin[] {
   let config: ResolvedConfig
@@ -57,6 +59,15 @@ function pluginAutoFullBuild(): Plugin[] {
         async handler() {
           onSetupBuild()
           handleAssetsManifest_assertUsageCssTarget(config)
+          const vikeConfig = await getVikeConfigInternal()
+          if (
+            forceExit &&
+            // Let vike:build:pluginBuildApp force exit
+            !vikeConfig.config.vite6BuilderApp
+          ) {
+            runPrerender_forceExit()
+            assert(false)
+          }
         }
       }
     }
@@ -86,7 +97,9 @@ async function triggerFullBuild(config: ResolvedConfig, viteEnv: Environment, bu
   }
 
   if (isPrerenderAutoRunEnabled(vikeConfig)) {
-    await runPrerenderFromAutoRun(configInline)
+    const res = await runPrerenderFromAutoRun(configInline)
+    forceExit = res.forceExit
+    assert(isPrerenderingRun())
   }
 }
 
@@ -124,6 +137,10 @@ function isEntirelyDisabled(vikeConfig: VikeConfigInternal): boolean {
   } else {
     return disableAutoFullBuild
   }
+}
+
+function isPrerenderForceExit(): boolean {
+  return forceExit
 }
 
 function getFullBuildInlineConfig(config: ResolvedConfig): InlineConfig {

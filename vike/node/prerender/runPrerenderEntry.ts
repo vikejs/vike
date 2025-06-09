@@ -1,51 +1,21 @@
 export { runPrerenderFromAPI }
 export { runPrerenderFromCLIPrerenderCommand }
 export { runPrerenderFromAutoRun }
-export { runPrerenderExec_isChildProcess }
-export type { PrerenderOptionsAPI }
+export { runPrerender_forceExit }
 
-import { assert, assertPosixPath } from './utils.js'
+import { assert } from './utils.js'
 import type { InlineConfig, ResolvedConfig } from 'vite'
 import { logErrorHint } from '../runtime/renderPage/logErrorHint.js'
 import { prepareViteApiCall } from '../api/prepareViteApiCall.js'
-import { PrerenderArgs, runPrerender, type PrerenderOptions, type RunPrerender } from './runPrerender.js'
-import { fork } from 'node:child_process'
-import { fileURLToPath } from 'node:url'
-import path from 'node:path'
-import { genPromise } from '../runtime/utils.js'
-// @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
-const importMetaUrl: string = import.meta.url
-assertPosixPath(importMetaUrl)
-const __dirname_ = path.posix.dirname(fileURLToPath(importMetaUrl))
-assertPosixPath(__dirname_)
-const runPrerenderPath = 'runPrerender.js'
-const child = fork(path.join(__dirname_, runPrerenderPath))
+import { isVikeCli } from '../cli/context.js'
+import { isViteCliCall } from '../vite/shared/isViteCliCall.js'
+import { PrerenderOptions, runPrerender } from './runPrerender.js'
 
-type RunPrerenderReturn = Awaited<ReturnType<RunPrerender>>
-const runPrerenderWithSeparateProcess = (...args: PrerenderArgs) => {
-  const { promise, resolve } = genPromise<void>({ timeout: null })
-  child.send({ action: 'runPrerenderExec', args })
-  child.on('message', (msg: { result: RunPrerenderReturn } | { failed: true }) => {
-    if ('failed' in msg) process.exit(1)
-    resolve()
-  })
-  return promise
-}
-function runPrerenderExec_isChildProcess(): boolean {
-  return !!process.argv[1]?.endsWith(runPrerenderPath)
-}
-
-type PrerenderOptionsAPI = PrerenderOptions & { doNotRunInSeparateProcess?: boolean }
-async function runPrerenderFromAPI(options: PrerenderOptionsAPI = {}): Promise<{ viteConfig: ResolvedConfig | null }> {
+async function runPrerenderFromAPI(options: PrerenderOptions = {}): Promise<{ viteConfig: ResolvedConfig }> {
   // - We purposely propagate the error to the user land, so that the error interrupts the user land. It's also, I guess, a nice-to-have that the user has control over the error.
   // - We don't use logErrorHint() because we don't have control over what happens with the error. For example, if the user land purposely swallows the error then the hint shouldn't be logged. Also, it's best if the hint is shown to the user *after* the error, but we cannot do/guarentee that.
-  if (options.doNotRunInSeparateProcess) {
-    const { viteConfig } = await runPrerender(options, 'prerender()')
-    return { viteConfig }
-  } else {
-    await runPrerenderWithSeparateProcess(options, 'prerender()')
-    return { viteConfig: null }
-  }
+  const { viteConfig } = await runPrerender(options, 'prerender()')
+  return { viteConfig }
 }
 async function runPrerenderFromCLIPrerenderCommand(): Promise<void> {
   try {
@@ -60,8 +30,17 @@ async function runPrerenderFromCLIPrerenderCommand(): Promise<void> {
   runPrerender_forceExit()
   assert(false)
 }
-async function runPrerenderFromAutoRun(viteConfig: InlineConfig | undefined): Promise<void> {
-  await runPrerenderWithSeparateProcess({ viteConfig }, null)
+async function runPrerenderFromAutoRun(viteConfig: InlineConfig | undefined): Promise<{ forceExit: boolean }> {
+  try {
+    await runPrerender({ viteConfig })
+  } catch (err) {
+    // Avoid Rollup prefixing the error with [vike:build:pluginAutoFullBuild], see for example https://github.com/vikejs/vike/issues/472#issuecomment-1276274203
+    console.error(err)
+    logErrorHint(err)
+    process.exit(1)
+  }
+  const forceExit = isVikeCli() || isViteCliCall()
+  return { forceExit }
 }
 
 function runPrerender_forceExit() {

@@ -1,7 +1,5 @@
 export { runPrerender }
-export type RunPrerender = typeof runPrerender
 export type { PrerenderOptions }
-export type { PrerenderArgs }
 export type { PrerenderContextPublic }
 
 import path from 'path'
@@ -58,12 +56,12 @@ import { getVikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.
 import type { HookTimeout } from '../../shared/hooks/getHook.js'
 import { execHookWithoutPageContext, isUserHookError } from '../../shared/hooks/execHook.js'
 import type { APIOptions } from '../api/types.js'
+import { setIsPrerenderingRun } from './context.js'
 import { resolvePrerenderConfigGlobal, resolvePrerenderConfigLocal } from './resolvePrerenderConfig.js'
 import { getOutDirs } from '../vite/shared/getOutDirs.js'
 import fs from 'node:fs'
 import { getProxyForPublicUsage } from '../../shared/getProxyForPublicUsage.js'
 const docLink = 'https://vike.dev/i18n#pre-rendering'
-runPrerenderExec_listenParent()
 
 type HtmlFile = {
   pageContext: PageContextPrerendered
@@ -136,12 +134,8 @@ type PrerenderOptions = APIOptions & {
   base?: string
 }
 
-type PrerenderArgs = Parameters<typeof runPrerender>
-
-async function runPrerender(
-  options: PrerenderOptions = {},
-  standaloneTrigger: '$ vike prerender' | 'prerender()' | null
-) {
+async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: '$ vike prerender' | 'prerender()') {
+  setIsPrerenderingRun()
   checkOutdatedOptions(options)
   onSetupPrerender()
   setGlobalContext_isPrerendering()
@@ -1162,19 +1156,4 @@ function preparePrerenderContextForPublicUsage(prerenderContext: PrerenderContex
 
   const prerenderContextPublic = getProxyForPublicUsage(prerenderContext, 'prerenderContext')
   return prerenderContextPublic
-}
-
-function runPrerenderExec_listenParent() {
-  process.on('message', async ({ action, args }: { action: string; args: PrerenderArgs }) => {
-    if (action !== 'runPrerenderExec') return
-    try {
-      const result = await runPrerender(...args)
-      process.send!({ result })
-    } catch (err) {
-      console.error(err)
-      process.send!({ failed: true })
-    } finally {
-      process.exit(0)
-    }
-  })
 }
