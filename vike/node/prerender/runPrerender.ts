@@ -2,6 +2,10 @@ export { runPrerender }
 export type { PrerenderOptions }
 export type { PrerenderContextPublic }
 
+// Failed attempt to run this file (i.e. pre-rendering) in a separate process: https://github.com/vikejs/vike/commit/48feda87012115b32a5c9701da354cb8c138dfd2
+// - The issue is that prerenderContext needs to be serialized for being able to pass it from the child process to the parent process.
+// - The prerenderContext is used by vike-vercel
+
 import path from 'path'
 import { route } from '../../shared/route/index.js'
 import {
