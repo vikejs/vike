@@ -62,7 +62,7 @@ import { logErrorHint } from '../runtime/renderPage/logErrorHint.js'
 import { execHookWithoutPageContext, isUserHookError } from '../../shared/hooks/execHook.js'
 import type { APIOptions } from '../api/types.js'
 import { prepareViteApiCall } from '../api/prepareViteApiCall.js'
-import { setContextIsPrerendering } from './context.js'
+import { setIsPrerenderingRun } from './context.js'
 import { resolvePrerenderConfigGlobal, resolvePrerenderConfigLocal } from './resolvePrerenderConfig.js'
 import { getOutDirs } from '../vite/shared/getOutDirs.js'
 import { isVikeCli } from '../cli/context.js'
@@ -173,7 +173,7 @@ async function runPrerenderFromAutoRun(viteConfig: InlineConfig | undefined): Pr
   return { forceExit }
 }
 async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: '$ vike prerender' | 'prerender()') {
-  setContextIsPrerendering()
+  setIsPrerenderingRun()
   checkOutdatedOptions(options)
   onSetupPrerender()
   setGlobalContext_isPrerendering()
