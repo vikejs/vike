@@ -30,6 +30,11 @@ function pluginDistFileNames(): Plugin {
         }
         if (!('assetFileNames' in rollupOutput)) {
           rollupOutput.assetFileNames = (chunkInfo) => getAssetFileName(chunkInfo, config)
+
+          // This Vite plugin is sometimes applied twice => avoid assertUsage() error below
+          // - I don't know why this plugin can be applied twice for the same config. It happened when there was multipe Vike instances installed with one instance being a link to ~/code/vike/vike/
+          ;(rollupOutput.assetFileNames as any).isTheOneSetByVike = true
+          assert((rollupOutput.assetFileNames as any).isTheOneSetByVike)
         } else {
           // If a user needs this:
           //  - assertUsage() that the naming provided by the user ends with `.[hash][extname]`
@@ -37,7 +42,7 @@ function pluginDistFileNames(): Plugin {
           //    - Asset URLs should always contain a hash: it's paramount for caching assets.
           //    - If rollupOutput.assetFileNames is a function then use a wrapper function to apply the assertUsage()
           assertUsage(
-            false,
+            (rollupOutput.assetFileNames as any).isTheOneSetByVike,
             "Setting Vite's configuration build.rollupOptions.output.assetFileNames is currently forbidden. Reach out if you need to use it."
           )
         }
