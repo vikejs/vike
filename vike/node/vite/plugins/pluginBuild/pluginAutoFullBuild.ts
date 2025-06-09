@@ -95,9 +95,9 @@ async function triggerFullBuild(config: ResolvedConfig, viteEnv: Environment, bu
   }
 
   if (isPrerenderAutoRunEnabled(vikeConfig)) {
-    assert(isPrerendering())
     const res = await runPrerenderFromAutoRun(configInline)
     forceExit = res.forceExit
+    assert(isPrerendering())
   }
 }
 
