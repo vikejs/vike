@@ -131,7 +131,7 @@ function pluginFileEnv(): Plugin {
       envExpect
     )}-only file ${modulePathPretty} (https://vike.dev/file-env) imported on the ${envActual}-side`
 
-    if (importers.length > 0) {
+    {
       const importPaths = importers
         .filter((importer) =>
           // Can be Vike's virtual module: https://github.com/vikejs/vike/issues/2483
