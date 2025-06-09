@@ -4,7 +4,7 @@ import { prepareViteApiCall } from './prepareViteApiCall.js'
 import { build as buildVite, version, createBuilder } from 'vite'
 import type { APIOptions } from './types.js'
 import { isVikeCli } from '../cli/context.js'
-import { isPrerenderingRun } from '../prerender/context.js'
+import { wasPrerenderRun } from '../prerender/context.js'
 import { assert, assertVersion } from './utils.js'
 
 /**
@@ -35,7 +35,7 @@ async function build(options: APIOptions = {}): Promise<{}> {
     //    > Rationale: https://github.com/vikejs/vike/issues/2123
     await buildVite(viteConfigFromUserEnhanced)
     // After pre-rendering, when using the Vike CLI, the process is forcefully exited at the end of the buildVite() call above.
-    if (isVikeCli() && isPrerenderingRun()) assert(false)
+    if (isVikeCli() && wasPrerenderRun()) assert(false)
   }
 
   return {
