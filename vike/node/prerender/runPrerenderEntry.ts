@@ -32,7 +32,7 @@ async function runPrerenderFromCLIPrerenderCommand(): Promise<void> {
 }
 async function runPrerenderFromAutoRun(viteConfig: InlineConfig | undefined): Promise<{ forceExit: boolean }> {
   try {
-    await runPrerender({ viteConfig }, null)
+    await runPrerender({ viteConfig }, 'auto-run')
   } catch (err) {
     // Avoid Rollup prefixing the error with [vike:build:pluginAutoFullBuild], see for example https://github.com/vikejs/vike/issues/472#issuecomment-1276274203
     console.error(err)

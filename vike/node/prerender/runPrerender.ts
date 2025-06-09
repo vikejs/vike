@@ -138,10 +138,7 @@ type PrerenderOptions = APIOptions & {
   base?: string
 }
 
-async function runPrerender(
-  options: PrerenderOptions = {},
-  standaloneTrigger: '$ vike prerender' | 'prerender()' | null
-) {
+async function runPrerender(options: PrerenderOptions = {}, trigger: '$ vike prerender' | 'prerender()' | 'auto-run') {
   setWasPrerenderRun()
   checkOutdatedOptions(options)
   onSetupPrerender()
@@ -163,7 +160,7 @@ async function runPrerender(
   const prerenderConfigGlobal = resolvePrerenderConfigGlobal(vikeConfig)
   const { partial, noExtraDir, parallel, defaultLocalValue, isPrerenderingEnabled } = prerenderConfigGlobal
   if (!isPrerenderingEnabled) {
-    assert(standaloneTrigger)
+    assert(trigger !== 'auto-run')
     /* TODO/v1-release: use this assertUsage() again.
      * - Make sure https://github.com/magne4000/vite-plugin-vercel/pull/156 is merged before using this assertUsage() again. (Otherwise vite-plugin-vercel will trigger this assertUsage() call.)
      *   - Done: PR is merged as of June 20205
