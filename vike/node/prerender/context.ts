@@ -6,7 +6,11 @@ export { setWasPrerenderRun }
 import type { VikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { resolvePrerenderConfigGlobal } from './resolvePrerenderConfig.js'
-const globalObject = getGlobalObject<{ isDisabled?: true; wasPrerenderRun?: true }>('prerender/context.ts', {})
+import type { PrerenderTrigger } from './runPrerender.js'
+const globalObject = getGlobalObject<{ isDisabled?: true; wasPrerenderRun?: PrerenderTrigger }>(
+  'prerender/context.ts',
+  {}
+)
 
 function isPrerenderAutoRunEnabled(vikeConfig: VikeConfigInternal) {
   const prerenderConfigGlobal = resolvePrerenderConfigGlobal(vikeConfig)
@@ -23,9 +27,9 @@ function temp_disablePrerenderAutoRun() {
   globalObject.isDisabled = true
 }
 
-function wasPrerenderRun(): boolean {
-  return !!globalObject.wasPrerenderRun
+function wasPrerenderRun() {
+  return globalObject.wasPrerenderRun
 }
-function setWasPrerenderRun(): void {
-  globalObject.wasPrerenderRun = true
+function setWasPrerenderRun(trigger: PrerenderTrigger): void {
+  globalObject.wasPrerenderRun = trigger
 }
