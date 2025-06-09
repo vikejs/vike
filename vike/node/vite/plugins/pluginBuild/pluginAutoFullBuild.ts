@@ -30,13 +30,22 @@ function pluginAutoFullBuild(): Plugin[] {
         await abortViteBuildSsr()
       },
       writeBundle: {
-        /* We can't use this because it breaks Vite's logging. TODO/eventually: try again with latest Vite version.
+        /* We can't use this because it breaks Vite's logging. TO-DO/eventually: try again with latest Vite version.
         sequential: true,
         order: 'pre',
         */
         async handler(options, bundle) {
-          await handleAssetsManifest(config, this.environment, options, bundle)
-          await triggerFullBuild(config, this.environment, bundle)
+          try {
+            await handleAssetsManifest(config, this.environment, options, bundle)
+            await triggerFullBuild(config, this.environment, bundle)
+          } catch (err) {
+            // We use try-catch also because:
+            // - Vite/Rollup swallows errors thrown inside the writeBundle() hook. (It doesn't swallow errors thrown inside the first writeBundle() hook while building the client-side, but it does swallow errors thrown inside the second writeBundle() while building the server-side triggered after Vike calls Vite's `build()` API.)
+            // - Avoid Rollup prefixing the error with [vike:build:pluginAutoFullBuild], see for example https://github.com/vikejs/vike/issues/472#issuecomment-1276274203
+            console.error(err)
+            logErrorHint(err)
+            process.exit(1)
+          }
         }
       }
     },
@@ -82,14 +91,7 @@ async function triggerFullBuild(config: ResolvedConfig, viteEnv: Environment, bu
   const configInline = getFullBuildInlineConfig(config)
 
   if (!isBuilderApp) {
-    try {
-      await build(setSSR(configInline))
-    } catch (err) {
-      // Avoid Rollup prefixing the error with [vike:build:pluginAutoFullBuild], see for example https://github.com/vikejs/vike/issues/472#issuecomment-1276274203
-      console.error(err)
-      logErrorHint(err)
-      process.exit(1)
-    }
+    await build(setSSR(configInline))
   } else {
     // The server bulid is already called by builder.buildApp()
   }
