@@ -138,7 +138,10 @@ type PrerenderOptions = APIOptions & {
   base?: string
 }
 
-async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: '$ vike prerender' | 'prerender()') {
+async function runPrerender(
+  options: PrerenderOptions = {},
+  standaloneTrigger: '$ vike prerender' | 'prerender()' | null
+) {
   setWasPrerenderRun()
   checkOutdatedOptions(options)
   onSetupPrerender()
