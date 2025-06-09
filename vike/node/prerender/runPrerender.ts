@@ -1,6 +1,7 @@
 export { runPrerender }
 export type { PrerenderOptions }
 export type { PrerenderContextPublic }
+export type { PrerenderTrigger }
 
 // Failed attempt to run this file (i.e. pre-rendering) in a separate process: https://github.com/vikejs/vike/commit/48feda87012115b32a5c9701da354cb8c138dfd2
 // - The issue is that prerenderContext needs to be serialized for being able to pass it from the child process to the parent process.
@@ -138,8 +139,9 @@ type PrerenderOptions = APIOptions & {
   base?: string
 }
 
-async function runPrerender(options: PrerenderOptions = {}, trigger: '$ vike prerender' | 'prerender()' | 'auto-run') {
-  setWasPrerenderRun()
+type PrerenderTrigger = '$ vike prerender' | 'prerender()' | 'auto-run'
+async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTrigger) {
+  setWasPrerenderRun(trigger)
   checkOutdatedOptions(options)
   onSetupPrerender()
   setGlobalContext_isPrerendering()
