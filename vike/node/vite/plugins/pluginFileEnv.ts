@@ -11,6 +11,7 @@ import {
   assertUsage,
   assertWarning,
   capitalizeFirstLetter,
+  isFilePathAbsolute,
   joinEnglish,
   rollupSourceMapRemove
 } from '../utils.js'
@@ -130,9 +131,16 @@ function pluginFileEnv(): Plugin {
       envExpect
     )}-only file ${modulePathPretty} (https://vike.dev/file-env) imported on the ${envActual}-side`
 
-    if (importers.length > 0) {
-      const importPaths = importers.map((importer) => getModuleFilePathAbsolute(importer, config))
-      errMsg += ` by ${joinEnglish(importPaths, 'and')}`
+    {
+      const importPaths = importers
+        .filter((importer) =>
+          // Can be Vike's virtual module: https://github.com/vikejs/vike/issues/2483
+          isFilePathAbsolute(importer)
+        )
+        .map((importer) => getModuleFilePathAbsolute(importer, config))
+      if (importPaths.length > 0) {
+        errMsg += ` by ${joinEnglish(importPaths, 'and')}`
+      }
     }
 
     if (onlyWarn) {
