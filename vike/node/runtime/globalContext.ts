@@ -404,7 +404,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
 
   const onError = (err: unknown) => {
     console.error(err)
-    setVikeConfigError({ runtimeError: { err } })
+    setVikeConfigError({ errorRuntime: { err } })
     globalObject.vikeConfigHasRuntimeError = true
     return { success: false }
   }
@@ -414,7 +414,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
       logRuntimeInfo(vikeConfigErrorRecoverMsg, null, 'error-recover')
     }
     globalObject.vikeConfigHasRuntimeError = false
-    setVikeConfigError({ runtimeError: false })
+    setVikeConfigError({ errorRuntime: false })
     globalObject.waitForUserFilesUpdateResolve!.forEach((resolve) => resolve())
     globalObject.waitForUserFilesUpdateResolve = []
     resolve()
