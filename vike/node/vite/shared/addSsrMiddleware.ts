@@ -44,9 +44,9 @@ function addSsrMiddleware(
     } catch (err) {
       // Throwing an error in a connect middleware shut downs the server
       console.error(err)
-      // - next(err) automatically uses errorBuildMessage() (pretty formatting of Rollup errors)
+      // - next(err) automatically uses buildErrorMessage() (pretty formatting of Rollup errors)
       //   - But it only works for users using Vite's standalone dev server (it doesn't work for users using Vite's dev middleware)
-      // - We purposely don't use next(err) to align behavior: we use our own/copied implementation of errorBuildMessage() regardless of whether the user uses Vite's dev middleware or Vite's standalone dev server
+      // - We purposely don't use next(err) to align behavior: we use our own/copied implementation of buildErrorMessage() regardless of whether the user uses Vite's dev middleware or Vite's standalone dev server
       return next()
     }
 
