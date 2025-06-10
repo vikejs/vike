@@ -1,7 +1,8 @@
 export { getVikeConfigError }
 export { setVikeConfigError }
 
-import { getGlobalObject } from '../../utils.js'
+// This file is used by the server runtime => import utils from runtime/utils.js instead of vite/utils.js
+import { getGlobalObject } from '../../../runtime/utils.js'
 
 const globalObject = getGlobalObject('resolveVikeConfigInternal/getVikeConfigError.ts', {
   runtimeError: false as VikeConfigHasError,
