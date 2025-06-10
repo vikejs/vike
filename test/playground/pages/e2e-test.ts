@@ -2,8 +2,19 @@ export { testGlobalContext }
 export { testHMRPlusValueFile }
 export { testRedirectMailto }
 export { testOnCreateGlobalContext }
+export { testHooksCalled }
 
-import { autoRetry, editFile, editFileRevert, expect, fetchHtml, getServerUrl, page, test } from '@brillout/test-e2e'
+import {
+  autoRetry,
+  editFile,
+  editFileRevert,
+  expect,
+  expectLog,
+  fetchHtml,
+  getServerUrl,
+  page,
+  test
+} from '@brillout/test-e2e'
 import { sleepBeforeEditFile, testCounter } from '../../../test/utils'
 
 function testHMRPlusValueFile(isDev: boolean) {
@@ -128,4 +139,13 @@ function expectNumbers(setGloballyClient: string | null, setGloballyServer: stri
   expect(isNaN(parseInt(setGloballyServer!, 10))).toBe(false)
   expect(isNaN(parseInt(setGloballyClient!, 10))).toBe(false)
   expect(isNaN(parseInt('hydrating...', 10))).toBe(true)
+}
+
+function testHooksCalled() {
+  test('+onBeforeRenderHtml and +onBeforeRenderClient called', async () => {
+    await page.goto(getServerUrl() + '/')
+    expectLog('+onBeforeRenderHtml hook called', { filter: (logEntry) => logEntry.logSource === 'stdout' })
+    await testCounter()
+    expectLog('+onBeforeRenderClient hook called', { filter: (logEntry) => logEntry.logSource === 'Browser Log' })
+  })
 }
