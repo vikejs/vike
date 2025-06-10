@@ -1,6 +1,6 @@
 export { getVirtualFilePageConfigLazy }
 
-import { assert } from '../../utils.js'
+import { assert, getProjectError } from '../../utils.js'
 import type { PageConfigBuildTime } from '../../../../types/PageConfig.js'
 import {
   getVirtualFileIdPageConfigLazy,
@@ -29,7 +29,17 @@ async function getVirtualFilePageConfigLazy(id: string, isDev: boolean, config: 
   const vikeConfig = await getVikeConfigInternal(true)
   const { _pageConfigs: pageConfigs } = vikeConfig
   const pageConfig = pageConfigs.find((pageConfig) => pageConfig.pageId === pageId)
-  assert(pageConfig, { id, pageId })
+
+  if (!isDev) {
+    assert(pageConfig)
+  } else {
+    /* This assertion sometimes fail. It happens very seldomly and I couldn't reproduce it (https://gist.github.com/brillout/9e212ce829f4d62a912ca163ffa8881a). I suspect some kind of HMR race condition.
+    assert(pageConfig, { id, pageId })
+    /*/
+    if (!pageConfig) throw getProjectError('Outdated request')
+    //*/
+  }
+
   const code = getLoadConfigLazy(
     pageConfig,
     isForClientSide,
