@@ -251,7 +251,7 @@ async function resolveVikeConfigInternal_withErrorHandling(
 
     const hadError = vikeConfigHasBuildError
     vikeConfigHasBuildError = false
-    setVikeConfigError({ buildError: false })
+    setVikeConfigError({ errorBuild: false })
     if (hadError) {
       logConfigErrorRecover()
       if (restartVite) {
@@ -266,7 +266,7 @@ async function resolveVikeConfigInternal_withErrorHandling(
     assert(err)
 
     vikeConfigHasBuildError = true
-    setVikeConfigError({ buildError: { err } })
+    setVikeConfigError({ errorBuild: { err } })
     if (!doNotRestartViteOnError) restartVite = true
 
     if (!isDev) {
