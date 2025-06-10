@@ -60,7 +60,11 @@ function getFilesystemRouteString(locationId: LocationId): string {
 }
 /** Filesystem Inheritance: get the apply root */
 function getInheritanceRoot(locationId: LocationId): string {
-  return getLogicalPath(locationId, ['renderer'])
+  return getLogicalPath(locationId, [
+    'renderer',
+    //
+    'pages'
+  ])
 }
 /**
  * getLogicalPath('/pages/some-page', ['pages']) => '/some-page'
