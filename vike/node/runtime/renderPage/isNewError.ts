@@ -1,5 +1,6 @@
 export { isNewError }
 export { setAlreadyLogged }
+export { hasAlreadyLogged }
 
 import { getGlobalObject, isObject, isSameErrorMessage, warnIfErrorIsNotObject } from '../utils.js'
 

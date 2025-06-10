@@ -2,15 +2,6 @@
   ```console
   [11:09:43.072][/test-preview.test.ts][npm run preview][stderr] Error: [vike][Wrong Usage] /+onBeforeRenderClient.ts sets the value of the config onBeforeRenderClient which is a custom config that is defined with https://vike.dev/meta at a path that doesn't apply to / — see https://vike.dev/config#inheritance
   ```
-- Prettify build error
-  - Also test following syntax error at `/home/rom/code/vike/test/playground/+htmlAttributes.ts`.
-    ```ts
-    // TEST: define vike-react setting at root `/` despite vike-react being applied at `pages/`
-    import { htmlClass } from './htmlAttrs'
-    eexport const config = {
-      class: htmlClass
-    }
-    ```
 
 - head settings
   - name setting?

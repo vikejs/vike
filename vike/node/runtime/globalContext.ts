@@ -64,8 +64,9 @@ import {
 } from '../../shared/createGlobalContextShared.js'
 import type { GlobalContext } from '../../types/PageContext.js'
 import { prepareGlobalContextForPublicUsage } from '../../shared/prepareGlobalContextForPublicUsage.js'
-import { logRuntimeInfo } from './loggerRuntime.js'
+import { logRuntimeError, logRuntimeInfo } from './loggerRuntime.js'
 import { getVikeConfigErrorBuild, setVikeConfigError } from '../shared/getVikeConfigError.js'
+import { hasAlreadyLogged } from './renderPage/isNewError.js'
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
   {
@@ -403,7 +404,9 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
   globalObject.waitForUserFilesUpdateResolve.push(resolve)
 
   const onError = (err: unknown) => {
-    console.error(err)
+    if (!hasAlreadyLogged(err)) {
+      logRuntimeError(err, null)
+    }
     setVikeConfigError({ errorRuntime: { err } })
     globalObject.vikeConfigHasRuntimeError = true
     return { success: false }
