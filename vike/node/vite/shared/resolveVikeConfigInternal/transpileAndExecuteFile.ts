@@ -209,7 +209,7 @@ async function transpileWithEsbuild(
             return { external: true }
             */
             // Let esbuild throw the error
-            cleanEserrorBuilds(resolved.errors)
+            cleanEsbuildErrors(resolved.errors)
             return resolved
           }
 
@@ -480,7 +480,7 @@ function getErrIntroMsg(operation: 'transpile' | 'execute', filePath: FilePathRe
   return msg
 }
 
-function cleanEserrorBuilds(errors: Message[]) {
+function cleanEsbuildErrors(errors: Message[]) {
   errors.forEach(
     (e) =>
       (e.notes = e.notes.filter(
