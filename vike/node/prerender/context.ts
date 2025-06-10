@@ -27,8 +27,8 @@ function temp_disablePrerenderAutoRun() {
   globalObject.isDisabled = true
 }
 
-function wasPrerenderRun() {
-  return globalObject.wasPrerenderRun
+function wasPrerenderRun(): false | PrerenderTrigger {
+  return globalObject.wasPrerenderRun || false
 }
 function setWasPrerenderRun(trigger: PrerenderTrigger): void {
   globalObject.wasPrerenderRun = trigger
