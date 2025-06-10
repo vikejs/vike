@@ -100,7 +100,7 @@ import type { PrerenderContextPublic } from '../../prerender/runPrerender.js'
 import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderConfig.js'
 import type { ResolvedConfig, UserConfig } from 'vite'
 import { getProxyForPublicUsage } from '../../../shared/getProxyForPublicUsage.js'
-import { setVikeConfigError } from './resolveVikeConfigInternal/getVikeConfigError.js'
+import { setVikeConfigError } from '../../shared/getVikeConfigError.js'
 assertIsNotProductionRuntime()
 
 // We can simply use global variables since Vike's config is:

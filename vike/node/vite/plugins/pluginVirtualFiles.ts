@@ -15,7 +15,7 @@ import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
 import { updateUserFiles } from '../../runtime/globalContext.js'
 import { isPlusFile } from '../shared/resolveVikeConfigInternal/crawlPlusFiles.js'
 import { isTemporaryBuildFile } from '../shared/resolveVikeConfigInternal/transpileAndExecuteFile.js'
-import { getVikeConfigError } from '../shared/resolveVikeConfigInternal/getVikeConfigError.js'
+import { getVikeConfigError } from '../../shared/getVikeConfigError.js'
 
 function pluginVirtualFiles(): Plugin {
   let config: ResolvedConfig

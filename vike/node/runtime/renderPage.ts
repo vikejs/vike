@@ -65,7 +65,7 @@ import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErro
 import { loadPageConfigsLazyServerSide } from './renderPage/loadPageConfigsLazyServerSide.js'
 import { resolveRedirects } from './renderPage/resolveRedirects.js'
 import type { PageContextInternalServer } from '../../types/PageContext.js'
-import { getVikeConfigError } from '../vite/shared/resolveVikeConfigInternal/getVikeConfigError.js'
+import { getVikeConfigError } from '../shared/getVikeConfigError.js'
 
 const globalObject = getGlobalObject('runtime/renderPage.ts', { httpRequestsCount: 0 })
 

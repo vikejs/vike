@@ -65,7 +65,7 @@ import {
 import type { GlobalContext } from '../../types/PageContext.js'
 import { prepareGlobalContextForPublicUsage } from '../../shared/prepareGlobalContextForPublicUsage.js'
 import { logRuntimeInfo } from './loggerRuntime.js'
-import { setVikeConfigError } from '../vite/shared/resolveVikeConfigInternal/getVikeConfigError.js'
+import { setVikeConfigError } from '../shared/getVikeConfigError.js'
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
   {

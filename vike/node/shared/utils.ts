@@ -1,6 +1,10 @@
 import { assertIsNotBrowser } from '../../utils/assertIsNotBrowser.js'
 assertIsNotBrowser()
 
+// - Server-side bloat is negligible
+// - The Vite plugin imports the server runtime anyways
+export * from '../runtime/utils.js'
+
 export * from '../../utils/assert.js'
 export * from '../../utils/getFileExtension.js'
 export * from '../../utils/isPlainObject.js'

@@ -4,7 +4,8 @@
 import { onLoad } from './onLoad.js'
 onLoad()
 
-// It's common practice for Vike's Vite plugin to import from Vike's sever runtime
+// - Server-side bloat is negligible
+// - The Vite plugin imports the server runtime anyways
 export * from '../runtime/utils.js'
 
 // Utils only needed by `plugin/*`
