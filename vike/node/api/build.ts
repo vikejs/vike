@@ -37,7 +37,7 @@ async function build(options: APIOptions = {}): Promise<{}> {
 
     // After pre-rendering, when using the Vike CLI, the process is forcefully exited at the end of the buildVite() call above.
     const prerenderTrigger = wasPrerenderRun()
-    if (prerenderTrigger && prerenderTrigger !== 'prerender()') assert(false)
+    if (isVikeCli() && prerenderTrigger && prerenderTrigger !== 'prerender()') assert(false)
   }
 
   return {
