@@ -4,7 +4,7 @@ export type { GlobalContextBase }
 export type { GlobalContextBasePublic }
 export type GlobalContextInternal = GlobalContextServerInternal | GlobalContextClientInternal
 
-import { changeEnumerable, objectAssign, unique } from './utils.js'
+import { changeEnumerable, objectAssign, objectReplace, unique } from './utils.js'
 import type { PageFile } from './getPageFiles.js'
 import { parseVirtualFileExports } from './getPageFiles/parseVirtualFileExports.js'
 import {
@@ -16,12 +16,13 @@ import { execHookGlobal } from './hooks/execHook.js'
 import { prepareGlobalContextForPublicUsage } from './prepareGlobalContextForPublicUsage.js'
 import type { GlobalContextServerInternal } from '../node/runtime/globalContext.js'
 import type { GlobalContextClientInternal } from '../client/runtime-client-routing/globalContext.js'
+import { getHookFromPageConfigGlobalCumulative, type Hook } from './hooks/getHook.js'
 const getGlobalContextSyncErrMsg =
   "The global context isn't set yet, call getGlobalContextSync() later or use getGlobalContext() instead."
 
 async function createGlobalContextShared<GlobalContextAddendum extends object>(
   virtualFileExports: unknown,
-  globalObject: { globalContext?: Record<string, unknown> },
+  globalObject: { globalContext?: Record<string, unknown>; onCreateGlobalContextHooks?: Hook[] },
   addGlobalContext?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddendum>
 ) {
   const globalContext = createGlobalContextBase(virtualFileExports)
@@ -29,20 +30,13 @@ async function createGlobalContextShared<GlobalContextAddendum extends object>(
   const globalContextAddendum = await addGlobalContext?.(globalContext)
   objectAssign(globalContext, globalContextAddendum)
 
-  if (!globalObject.globalContext) {
-    globalObject.globalContext = globalContext
-
-    // - We deliberately call onCreateGlobalContext() only at the beginning and only once per process.
-    // - TO-DO/eventually: HMR
-    //    - Once Photon supports it: `server.hot.send({ type: 'full-server-reload' })`
-    //    - Either use:
-    //      - import.meta.hot
-    //        - https://vite.dev/guide/api-hmr.html
-    //        - Use a Vite transformer to inject import.meta.hot code into each user-land `+onCreateGlobalContext.js` file
-    //        - Seems more idiomatic
-    //      - globalContext._viteDevServer.hot.send()
-    //        - Send 'full-server-reload' signal whenever a onCreateGlobalContext() function is modified => we need a globalObject to track all hooks and see if one of them is new/modified.
-    //        - Seems less idiomatic
+  const onCreateGlobalContextHooks = getHookFromPageConfigGlobalCumulative(
+    globalContext._pageConfigGlobal,
+    'onCreateGlobalContext'
+  )
+  let hooksCalled = false
+  if (!hooksAreEqual(globalObject.onCreateGlobalContextHooks ?? [], onCreateGlobalContextHooks)) {
+    globalObject.onCreateGlobalContextHooks = onCreateGlobalContextHooks
     await execHookGlobal(
       'onCreateGlobalContext',
       globalContext._pageConfigGlobal,
@@ -50,10 +44,19 @@ async function createGlobalContextShared<GlobalContextAddendum extends object>(
       globalContext,
       prepareGlobalContextForPublicUsage
     )
+    hooksCalled = true
+  }
+
+  if (!globalObject.globalContext) {
+    globalObject.globalContext = globalContext
   } else {
     // Singleton: ensure all `globalContext` user-land references are preserved & updated.
-    // We don't use objectReplace() in order to keep user-land properties.
-    objectAssign(globalObject.globalContext, globalContext, true)
+    if (hooksCalled) {
+      objectReplace(globalObject.globalContext, globalContext)
+    } else {
+      // We don't use objectReplace() in order to keep user-land properties.
+      objectAssign(globalObject.globalContext, globalContext, true)
+    }
   }
 
   return globalObject.globalContext as typeof globalContext
@@ -119,4 +122,14 @@ function getAllPageIds(pageFilesAll: PageFile[], pageConfigs: PageConfigRuntime[
   const allPageIds = unique(fileIds)
   const allPageIds2 = pageConfigs.map((p) => p.pageId)
   return [...allPageIds, ...allPageIds2]
+}
+
+function hooksAreEqual(hooks1: Hook[], hooks2: Hook[]): boolean {
+  const hooksFn1 = hooks1.map((hook) => hook.hookFn)
+  const hooksFn2 = hooks2.map((hook) => hook.hookFn)
+  return (
+    hooksFn1.every((hook) => hooksFn2.includes(hook)) &&
+    //
+    hooksFn2.every((hook) => hooksFn1.includes(hook))
+  )
 }

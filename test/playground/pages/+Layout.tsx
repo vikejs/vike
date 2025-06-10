@@ -28,6 +28,7 @@ function Layout({ children }: { children: React.ReactNode }) {
   }
 
   if (!globalContext.isClientSide) {
+    assert(globalContext.notPassedToClient === 123)
     assert(globalContext.someWrapperObj.neverPassedToClient === 123)
     someFnServer()
   } else {

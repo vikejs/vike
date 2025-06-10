@@ -6,6 +6,7 @@
 export * from '../utils/assert.js'
 export * from '../utils/parseUrl.js'
 export * from '../utils/objectAssign.js'
+export * from '../utils/objectReplace.js'
 export * from '../utils/isCallable.js'
 export * from '../utils/isObject.js'
 export * from '../utils/unique.js'
