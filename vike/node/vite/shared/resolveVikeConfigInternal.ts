@@ -100,7 +100,7 @@ import type { PrerenderContextPublic } from '../../prerender/runPrerender.js'
 import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderConfig.js'
 import type { ResolvedConfig, UserConfig } from 'vite'
 import { getProxyForPublicUsage } from '../../../shared/getProxyForPublicUsage.js'
-import { renderPage_vikeConfigHasError } from '../../runtime/renderPage.js'
+import { setVikeConfigError } from './resolveVikeConfigInternal/getVikeConfigError.js'
 assertIsNotProductionRuntime()
 
 // We can simply use global variables since Vike's config is:
@@ -251,7 +251,7 @@ async function resolveVikeConfigInternal_withErrorHandling(
 
     const hadError = vikeConfigHasBuildError
     vikeConfigHasBuildError = false
-    renderPage_vikeConfigHasError({ hasBuildError: false })
+    setVikeConfigError({ hasBuildError: false })
     if (hadError) {
       logConfigErrorRecover()
       if (restartVite) {
@@ -266,7 +266,7 @@ async function resolveVikeConfigInternal_withErrorHandling(
     assert(err)
 
     vikeConfigHasBuildError = true
-    renderPage_vikeConfigHasError({ hasBuildError: { err } })
+    setVikeConfigError({ hasBuildError: { err } })
     if (!doNotRestartViteOnError) restartVite = true
 
     if (!isDev) {
