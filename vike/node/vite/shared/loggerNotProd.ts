@@ -112,7 +112,7 @@ function logErr(err: unknown, httpRequestId: number | null = null, errorComesFro
       // We handle transpile errors globally because wrapping viteDevServer.ssrLoadModule() wouldn't be enough: transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when loading user code with import() (since Vite lazy-transpiles import() calls)
       const viteConfig = getViteConfig()
       assert(viteConfig)
-      let prettyErr = getPrettyErrorWithCodeSnippet(err, viteConfig.root)
+      const prettyErr = getPrettyErrorWithCodeSnippet(err, viteConfig.root)
       assert(stripAnsi(prettyErr).startsWith('Failed to transpile'))
       logWithViteTag(prettyErr, 'error', category)
       logErrorDebugNote()
