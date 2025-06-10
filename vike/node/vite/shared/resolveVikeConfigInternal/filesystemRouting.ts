@@ -66,7 +66,7 @@ function getInheritanceRoot(locationId: LocationId): string {
     //   ```bash
     //   [11:09:43.072][/test-preview.test.ts][npm run preview][stderr] Error: [vike][Wrong Usage] /+onBeforeRenderClient.ts sets the value of the config onBeforeRenderClient which is a custom config that is defined with https://vike.dev/meta at a path that doesn't apply to / — see https://vike.dev/config#inheritance
     //   ```
-    // - Not sure if it's a good idea? Could it make config inheritance confusing? Let's try for now and see how it works out.
+    // - Not sure if it's a good idea? Could it make config inheritance confusing? Let's try for now and see how it goes.
     // - TO-DO/eventually: update docs https://github.com/vikejs/vike/blob/5fcdc4d5094f1a4dcbefc0b481cdd30a205aef2d/docs/pages/filesystem-routing/%2BPage.mdx?plain=1#L98
     'pages'
   ])
