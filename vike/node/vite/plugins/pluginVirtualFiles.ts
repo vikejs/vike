@@ -87,7 +87,7 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
       //   ```bash
       //   rm someDep.js && sleep 2 && git checkout someDep.js
       //   ```
-      if (isScriptFile(file) && !!getVikeConfigError() && !existsInViteModuleGraph(file, moduleGraph)) {
+      if (isScriptFile(file) && getVikeConfigError() && !existsInViteModuleGraph(file, moduleGraph)) {
         reload()
       }
     }
