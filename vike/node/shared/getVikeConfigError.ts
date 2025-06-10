@@ -1,4 +1,5 @@
 export { getVikeConfigError }
+export { getVikeConfigErrorBuild }
 export { setVikeConfigError }
 
 import { getGlobalObject } from './utils.js'
@@ -15,4 +16,7 @@ function setVikeConfigError(val: { runtimeError: VikeConfigHasError } | { buildE
 }
 function getVikeConfigError() {
   return globalObject.buildError || globalObject.runtimeError
+}
+function getVikeConfigErrorBuild() {
+  return globalObject.buildError
 }
