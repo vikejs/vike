@@ -65,7 +65,7 @@ import {
 import type { GlobalContext } from '../../types/PageContext.js'
 import { prepareGlobalContextForPublicUsage } from '../../shared/prepareGlobalContextForPublicUsage.js'
 import { logRuntimeInfo } from './loggerRuntime.js'
-import { setVikeConfigError } from '../shared/getVikeConfigError.js'
+import { getVikeConfigError, setVikeConfigError } from '../shared/getVikeConfigError.js'
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
   {
@@ -443,6 +443,10 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
   if (hasError) return onError(err)
   virtualFileExports = (virtualFileExports as any).default || virtualFileExports
 
+  if (getVikeConfigError()) {
+    return { success: false }
+  }
+
   try {
     await setGlobalContext(virtualFileExports)
   } catch (err_) {
@@ -455,6 +459,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
 }
 
 async function setGlobalContext(virtualFileExports: unknown) {
+  assert(!getVikeConfigError())
   const globalContext = await createGlobalContextShared(virtualFileExports, globalObject, addGlobalContext)
 
   assertV1Design(
