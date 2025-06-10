@@ -64,8 +64,8 @@ import {
 } from '../../shared/createGlobalContextShared.js'
 import type { GlobalContext } from '../../types/PageContext.js'
 import { prepareGlobalContextForPublicUsage } from '../../shared/prepareGlobalContextForPublicUsage.js'
-import { renderPage_vikeConfigHasError } from './renderPage.js'
 import { logRuntimeInfo } from './loggerRuntime.js'
+import { getVikeConfigErrorBuild, setVikeConfigError } from '../shared/getVikeConfigError.js'
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
   {
@@ -404,7 +404,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
 
   const onError = (err: unknown) => {
     console.error(err)
-    renderPage_vikeConfigHasError({ hasRuntimeError: { err } })
+    setVikeConfigError({ errorRuntime: { err } })
     globalObject.vikeConfigHasRuntimeError = true
     return { success: false }
   }
@@ -414,7 +414,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
       logRuntimeInfo(vikeConfigErrorRecoverMsg, null, 'error-recover')
     }
     globalObject.vikeConfigHasRuntimeError = false
-    renderPage_vikeConfigHasError({ hasRuntimeError: false })
+    setVikeConfigError({ errorRuntime: false })
     globalObject.waitForUserFilesUpdateResolve!.forEach((resolve) => resolve())
     globalObject.waitForUserFilesUpdateResolve = []
     resolve()
@@ -443,6 +443,10 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
   if (hasError) return onError(err)
   virtualFileExports = (virtualFileExports as any).default || virtualFileExports
 
+  if (getVikeConfigErrorBuild()) {
+    return { success: false }
+  }
+
   try {
     await setGlobalContext(virtualFileExports)
   } catch (err_) {
@@ -455,6 +459,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
 }
 
 async function setGlobalContext(virtualFileExports: unknown) {
+  assert(!getVikeConfigErrorBuild())
   const globalContext = await createGlobalContextShared(virtualFileExports, globalObject, addGlobalContext)
 
   assertV1Design(

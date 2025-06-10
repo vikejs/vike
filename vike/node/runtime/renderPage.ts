@@ -1,7 +1,5 @@
 export { renderPage }
 export { renderPage_addAsyncHookwrapper }
-export { renderPage_vikeConfigHasError }
-export { vikeConfigHasError }
 export type { PageContextInit }
 export type { PageContextBegin }
 
@@ -67,12 +65,9 @@ import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErro
 import { loadPageConfigsLazyServerSide } from './renderPage/loadPageConfigsLazyServerSide.js'
 import { resolveRedirects } from './renderPage/resolveRedirects.js'
 import type { PageContextInternalServer } from '../../types/PageContext.js'
+import { getVikeConfigError } from '../shared/getVikeConfigError.js'
 
-const globalObject = getGlobalObject('runtime/renderPage.ts', {
-  httpRequestsCount: 0,
-  vikeConfigHasRuntimeError: false as VikeConfigHasError,
-  vikeConfigHasBuildError: false as VikeConfigHasError
-})
+const globalObject = getGlobalObject('runtime/renderPage.ts', { httpRequestsCount: 0 })
 
 type PageContextAfterRender = { httpResponse: HttpResponse } & Partial<PageContextInternalServer>
 type PageContextInit = Pick<PageContextInternalServer, 'urlOriginal' | 'headersOriginal'> & {
@@ -676,18 +671,4 @@ function forkPageContext(pageContextBegin: PageContextBegin) {
   const pageContext = {}
   objectAssign(pageContext, pageContextBegin, true)
   return pageContext
-}
-
-type VikeConfigHasError = false | { err: unknown }
-function renderPage_vikeConfigHasError(
-  val: { hasRuntimeError: VikeConfigHasError } | { hasBuildError: VikeConfigHasError }
-) {
-  if ('hasRuntimeError' in val) globalObject.vikeConfigHasRuntimeError = val.hasRuntimeError
-  if ('hasBuildError' in val) globalObject.vikeConfigHasBuildError = val.hasBuildError
-}
-function getVikeConfigError() {
-  return globalObject.vikeConfigHasBuildError || globalObject.vikeConfigHasRuntimeError
-}
-function vikeConfigHasError(): boolean {
-  return !!getVikeConfigError()
 }

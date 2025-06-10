@@ -14,8 +14,8 @@ import { logConfigInfo } from '../shared/loggerNotProd.js'
 import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
 import { updateUserFiles } from '../../runtime/globalContext.js'
 import { isPlusFile } from '../shared/resolveVikeConfigInternal/crawlPlusFiles.js'
-import { vikeConfigHasError } from '../../runtime/renderPage.js'
 import { isTemporaryBuildFile } from '../shared/resolveVikeConfigInternal/transpileAndExecuteFile.js'
+import { getVikeConfigError } from '../../shared/getVikeConfigError.js'
 
 function pluginVirtualFiles(): Plugin {
   let config: ResolvedConfig
@@ -87,7 +87,7 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
       //   ```bash
       //   rm someDep.js && sleep 2 && git checkout someDep.js
       //   ```
-      if (isScriptFile(file) && vikeConfigHasError() && !existsInViteModuleGraph(file, moduleGraph)) {
+      if (isScriptFile(file) && getVikeConfigError() && !existsInViteModuleGraph(file, moduleGraph)) {
         reload()
       }
     }
