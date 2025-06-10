@@ -4,15 +4,15 @@ export { setVikeConfigError }
 import { getGlobalObject } from '../../utils.js'
 
 const globalObject = getGlobalObject('resolveVikeConfigInternal/getVikeConfigError.ts', {
-  vikeConfigHasRuntimeError: false as VikeConfigHasError,
-  vikeConfigHasBuildError: false as VikeConfigHasError
+  runtimeError: false as VikeConfigHasError,
+  buildError: false as VikeConfigHasError
 })
 
 type VikeConfigHasError = false | { err: unknown }
-function setVikeConfigError(val: { hasRuntimeError: VikeConfigHasError } | { hasBuildError: VikeConfigHasError }) {
-  if ('hasRuntimeError' in val) globalObject.vikeConfigHasRuntimeError = val.hasRuntimeError
-  if ('hasBuildError' in val) globalObject.vikeConfigHasBuildError = val.hasBuildError
+function setVikeConfigError(val: { runtimeError: VikeConfigHasError } | { buildError: VikeConfigHasError }) {
+  if ('runtimeError' in val) globalObject.runtimeError = val.runtimeError
+  if ('buildError' in val) globalObject.buildError = val.buildError
 }
 function getVikeConfigError() {
-  return globalObject.vikeConfigHasBuildError || globalObject.vikeConfigHasRuntimeError
+  return globalObject.buildError || globalObject.runtimeError
 }
