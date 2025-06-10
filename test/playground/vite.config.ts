@@ -3,6 +3,10 @@ import assert from 'node:assert'
 import { getVikeConfig } from 'vike/plugin'
 import type { PluginOption } from 'vite'
 
+/* TO-DO/eventually: find a way to avoid an initial vite.config.js error to prevent the server from starting.
+throw new Error('erri')
+//*/
+
 export default {
   // TEST: funky build output directory
   build: {

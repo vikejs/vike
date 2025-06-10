@@ -8,6 +8,7 @@ import { testRunClassic } from '../../test/utils'
 import {
   testGlobalContext,
   testHMRPlusValueFile,
+  testHooksCalled,
   testOnCreateGlobalContext,
   testRedirectMailto
 } from './pages/e2e-test'
@@ -35,6 +36,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   testMarkdownSideExports()
   testGlobalContext()
   testOnCreateGlobalContext(isDev)
+  testHooksCalled()
   testHMRPlusValueFile(isDev)
   testSettingOnlyAvailableInCorrectEnv()
   testSettingInheritedByDescendants()
