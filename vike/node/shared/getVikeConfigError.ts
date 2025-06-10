@@ -3,7 +3,7 @@ export { setVikeConfigError }
 
 import { getGlobalObject } from './utils.js'
 
-const globalObject = getGlobalObject('resolveVikeConfigInternal/getVikeConfigError.ts', {
+const globalObject = getGlobalObject('node/shared/getVikeConfigError.ts', {
   runtimeError: false as VikeConfigHasError,
   buildError: false as VikeConfigHasError
 })
