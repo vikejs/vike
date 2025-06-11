@@ -16,6 +16,15 @@
     }
   },
   "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": false,
+      "style": {
+        "useNodejsImportProtocol": "error"
+      }
+    }
+  },
+  "organizeImports": {
     "enabled": false
   },
   "vcs": {
