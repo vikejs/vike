@@ -236,7 +236,7 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
   await prerenderPages(prerenderContext, concurrencyLimit, onComplete)
   warnContradictoryNoPrerenderList(prerenderContext._prerenderedPageContexts, doNotPrerenderList)
 
-  prerenderRedirects(globalContext, onComplete)
+  await prerenderRedirects(globalContext, onComplete)
 
   if (logLevel === 'info') {
     console.log(`${pc.green(`✓`)} ${prerenderedCount} HTML documents pre-rendered.`)
