@@ -606,8 +606,9 @@ const headings = [
   {
     level: 2,
     title: '`+prerender`',
+    titleInNav: '`prerender`',
     url: '/prerender',
-    sectionTitles: ['`disableAutoRun`']
+    sectionTitles: ['`disableAutoRun`', '`redirects`']
   },
   {
     level: 2,
