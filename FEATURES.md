@@ -87,3 +87,4 @@ Misc:
   - Compare with:
     - https://redux.js.org/usage/nextjs
     - https://zustand.docs.pmnd.rs/guides/nextjs
+- +prerender.redirects
