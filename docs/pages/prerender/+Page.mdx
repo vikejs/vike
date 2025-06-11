@@ -16,6 +16,7 @@ export default {
   // The following are the default values.
   prerender: {
     partial: false,
+    redirects: isFullyPrerendered,
     noExtraDir: false,
     parallel: os.cpus.length, // Number of CPUs
     disableAutoRun: false,
@@ -120,6 +121,7 @@ const onBeforePrerenderStart = someCondition()
 ## Settings
 
 - <Link href="#partial" />
+- <Link href="#redirects" />
 - <Link href="#noextradir" />
 - <Link href="#parallel" />
 - <Link href="#disableautorun" />
@@ -141,6 +143,29 @@ This setting doesn't affect the pre-rendering process: it merely suppresses the 
 > Also, by using <Link text={<code>vite-plugin-vercel</code>} href="/vercel#vite-plugin-vercel" />, you can statically deploy your pre-rendered pages while using a production server for your non-pre-rendered pages.
 
 > Vike shows a warning that a page cannot be pre-rendered when the page has a parameterized route (e.g. a  <Link text="Route String" href="/route-string" /> `/movie/@movieId`, or a <Link text="Route Function" href="/route-function" />) while there isn't any <Link text={<><code>onBeforePrerenderStart()</code> hook</>} href="/onBeforePrerenderStart" /> that provides at least one URL matching the page's route (e.g. `/movie/42`).
+
+
+### `redirects`
+
+Type: `boolean`.  
+Default: `true` if app is fully-prerendered.  
+
+Whether <Link href="/redirects">`+redirects`</Link> should be pre-rendered to HTML documents that redirect the user:
+
+```html
+<!-- HTML redirecting user to https://example.org/path (real HTML has styles and meta data) -->
+<html>
+<head>
+  <!-- Tell browser to redirect user -->
+  <meta http-equiv="refresh" content="0;url=https://example.org/path">
+</head>
+<body>
+  <!-- Fallback -->
+  <h1>Redirect <a href="https://example.org/path">https://example.org/path</a></h1>
+  <p>If you aren't redirected, click the link above.</p>
+</body>
+</html>
+```
 
 
 ### `noExtraDir`
