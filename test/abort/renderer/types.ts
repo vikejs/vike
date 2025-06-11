@@ -5,7 +5,7 @@ export type { PageProps }
 
 import type {
   PageContextBuiltInServer,
-  PageContextBuiltInClientWithClientRouting as PageContextBuiltInClient
+  PageContextBuiltInClientWithClientRouting as PageContextBuiltInClient,
 } from 'vike/types'
 import React from 'react'
 

@@ -7,11 +7,11 @@ export default {
     // Used for testing different merge behaviors
     settingStandard: {
       env: { server: true, client: true, config: true },
-      cumulative: false
+      cumulative: false,
     },
     settingCumulative: {
       env: { server: true, client: true, config: true },
-      cumulative: true
-    }
-  }
+      cumulative: true,
+    },
+  },
 } satisfies Config

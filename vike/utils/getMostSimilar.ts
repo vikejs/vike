@@ -18,7 +18,7 @@ function getMostSimilar(word: string, words: string[]): null | string {
   const mostSimilar = words
     .map((w) => ({
       word: w,
-      similarity: getSimilarity(w, word)
+      similarity: getSimilarity(w, word),
     }))
     .sort(higherFirst(({ similarity }) => similarity))[0]
   assert(mostSimilar)

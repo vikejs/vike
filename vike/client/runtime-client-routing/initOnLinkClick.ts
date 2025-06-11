@@ -38,7 +38,7 @@ async function onLinkClick(ev: MouseEvent) {
   await renderPageClientSide({
     scrollTarget,
     urlOriginal: href,
-    isBackwardNavigation: false
+    isBackwardNavigation: false,
   })
 }
 

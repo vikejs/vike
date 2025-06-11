@@ -10,7 +10,7 @@ assertIsNotProductionRuntime()
 function getConfigValueBuildTime<Type extends TypeAsString = undefined>(
   pageConfig: PageConfigBuildTime,
   configName: ConfigNameBuiltIn,
-  type?: Type
+  type?: Type,
 ): null | (ConfigValue & { value: ResolveTypeAsString<Type> }) {
   const configValue = getConfigValue(pageConfig, configName)
   if (!configValue) return null
@@ -25,7 +25,7 @@ function getConfigValue(pageConfig: PageConfigBuildTime, configName: ConfigNameB
     return {
       type: 'computed',
       value: configValueComputed.value,
-      definedAtData: null
+      definedAtData: null,
     }
   }
 
@@ -40,7 +40,7 @@ function getConfigValue(pageConfig: PageConfigBuildTime, configName: ConfigNameB
     return {
       type: 'standard',
       value: configValueSource.value,
-      definedAtData: getDefinedAt(configValueSource)
+      definedAtData: getDefinedAt(configValueSource),
     }
   } else {
     const { value, definedAtData } = mergeCumulative(sources)
@@ -48,7 +48,7 @@ function getConfigValue(pageConfig: PageConfigBuildTime, configName: ConfigNameB
     return {
       type: 'cumulative',
       value,
-      definedAtData
+      definedAtData,
     }
   }
 }
@@ -71,6 +71,6 @@ function getDefinedAt(configValueSource: ConfigValueSource) {
   if (definedAt.definedBy) return definedAt
   return {
     filePathToShowToUser: definedAt.filePathToShowToUser,
-    fileExportPathToShowToUser: definedAt.fileExportPathToShowToUser
+    fileExportPathToShowToUser: definedAt.fileExportPathToShowToUser,
   }
 }

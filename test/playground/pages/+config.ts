@@ -9,7 +9,7 @@ export default {
     // ```bash
     // [11:27:09.496][/test/playground/test-preview.test.ts][npm run preview][stderr] 11:27:09 AM [vike][Warning] Dynamic redirect /product/@id -> /buy/@id cannot be pre-rendered
     // ```
-    partial: true
+    partial: true,
   },
   redirects: {
     // TEST: +redirects as documented at https://vike.dev/redirects
@@ -25,18 +25,18 @@ export default {
     '/admin/*': '/private/*',
     '/admins/*': 'https://admin.example.org/*',
     // TEST: redirect edge cases
-    '/external-redirect': 'https://app.nmrium.org#?toc=https://cheminfo.github.io/nmr-dataset-demo/samples.json'
+    '/external-redirect': 'https://app.nmrium.org#?toc=https://cheminfo.github.io/nmr-dataset-demo/samples.json',
   },
   extends: [vikeReact],
   meta: {
     frontmatter: {
-      env: { server: true }
-    }
+      env: { server: true },
+    },
   },
   passToClient: [
     // TEST: pass nested prop
     'someWrapperObj.staticUrls',
     // TEST: use passToClient for globalContext
-    'setGloballyServer'
-  ]
+    'setGloballyServer',
+  ],
 } satisfies Config

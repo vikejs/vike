@@ -21,7 +21,7 @@ async function createPageContextClientSide() {
     _globalContext: globalContext,
     _pageFilesAll: globalContext._pageFilesAll, // TODO/v1-release: remove
     isBackwardNavigation: null,
-    _hasPageContextFromServer: true as const
+    _hasPageContextFromServer: true as const,
   })
   objectAssign(pageContextCreated, getPageContextSerializedInHtml())
 
@@ -29,7 +29,7 @@ async function createPageContextClientSide() {
   const pageContextAugmented = await createPageContextShared(
     pageContextCreated,
     globalContext._pageConfigGlobal,
-    globalContext._vikeConfigPublicGlobal
+    globalContext._vikeConfigPublicGlobal,
   )
   augmentType(pageContextCreated, pageContextAugmented)
 
@@ -40,8 +40,8 @@ async function createPageContextClientSide() {
       pageContextCreated.pageId,
       globalContext._pageFilesAll,
       globalContext._pageConfigs,
-      globalContext._pageConfigGlobal
-    )
+      globalContext._pageConfigGlobal,
+    ),
   )
 
   assertPristineUrl()
@@ -52,6 +52,6 @@ function assertPristineUrl() {
   const urlCurrent = getCurrentUrl({ withoutHash: true })
   assertUsage(
     urlFirst === urlCurrent,
-    `The URL was manipulated before the hydration finished ('${urlFirst}' to '${urlCurrent}'). Ensure the hydration has finished before manipulating the URL. Consider using the onHydrationEnd() hook.`
+    `The URL was manipulated before the hydration finished ('${urlFirst}' to '${urlCurrent}'). Ensure the hydration has finished before manipulating the URL. Consider using the onHydrationEnd() hook.`,
   )
 }

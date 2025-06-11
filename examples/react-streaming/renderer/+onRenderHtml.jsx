@@ -12,7 +12,7 @@ async function onRenderHtml(pageContext) {
     <Layout>
       <Page {...pageProps} />
     </Layout>,
-    { userAgent: headers['user-agent'] }
+    { userAgent: headers['user-agent'] },
   )
 
   return escapeInject`<!DOCTYPE html>

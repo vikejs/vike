@@ -31,7 +31,7 @@ function pluginWorkaroundVite6HmrRegression(): Plugin {
           server.ws.send({ type: 'full-reload' })
           return []
         }
-      }
-    }
+      },
+    },
   }
 }

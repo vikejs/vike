@@ -16,7 +16,7 @@ function onRenderHtml(pageContext) {
     pageHtml = ReactDOMServer.renderToString(
       <Layout>
         <Page {...pageProps} />
-      </Layout>
+      </Layout>,
     )
   }
 

@@ -24,10 +24,10 @@ async function addGlobalContext(globalContext: GlobalContextBase) {
     globalContext._pageFilesAll,
     globalContext._pageConfigs,
     globalContext._pageConfigGlobal,
-    globalContext._allPageIds
+    globalContext._allPageIds,
   )
   return {
     _pageRoutes: pageRoutes,
-    _onBeforeRouteHook: onBeforeRouteHook
+    _onBeforeRouteHook: onBeforeRouteHook,
   }
 }

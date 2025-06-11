@@ -16,8 +16,8 @@ const props = withDefaults(
     status?: boolean | null
   }>(),
   {
-    status: false
-  }
+    status: false,
+  },
 )
 
 const emit = defineEmits<{
@@ -37,13 +37,13 @@ watch(
   (val) => {
     state.status = val
   },
-  { immediate: true }
+  { immediate: true },
 )
 
 watch(
   () => state.status,
   (val) => {
     emit('toggle', val)
-  }
+  },
 )
 </script>

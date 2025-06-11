@@ -5,7 +5,7 @@ export default {
   plugins: [
     react(),
     vike({
-      baseAssets: 'http://localhost:8080/cdn/'
-    })
-  ]
+      baseAssets: 'http://localhost:8080/cdn/',
+    }),
+  ],
 }

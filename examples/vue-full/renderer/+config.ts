@@ -11,9 +11,9 @@ const config = {
   meta: {
     // Define new setting 'title'
     title: {
-      env: { server: true, client: true }
-    }
-  }
+      env: { server: true, client: true },
+    },
+  },
 } satisfies Config
 
 // https://vike.dev/meta#typescript

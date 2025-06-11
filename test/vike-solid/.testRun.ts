@@ -8,7 +8,7 @@ let isProd: boolean
 
 function testRun(cmd: `pnpm run ${'dev' | 'preview'}`) {
   run(cmd, {
-    serverIsReadyMessage: 'Local:'
+    serverIsReadyMessage: 'Local:',
   })
 
   isProd = cmd !== 'pnpm run dev'
@@ -18,7 +18,7 @@ function testRun(cmd: `pnpm run ${'dev' | 'preview'}`) {
     title: 'My Vike + Solid App',
     text: 'Rendered to HTML.',
     counter: true,
-    image: true
+    image: true,
   })
 
   testUrl({
@@ -26,14 +26,14 @@ function testRun(cmd: `pnpm run ${'dev' | 'preview'}`) {
     title: '6 Star Wars Movies',
     description: 'All the 6 movies from the Star Wars franchise',
     text: 'A New Hope',
-    image: true
+    image: true,
   })
 
   testUrl({
     url: '/star-wars/3',
     title: 'Return of the Jedi',
     description: 'Star Wars Movie Return of the Jedi from Richard Marquand',
-    text: '1983-05-25'
+    text: '1983-05-25',
   })
 
   const textNoSSR = 'This page is rendered only in the browser'
@@ -42,7 +42,7 @@ function testRun(cmd: `pnpm run ${'dev' | 'preview'}`) {
     title: 'No SSR',
     text: textNoSSR,
     counter: true,
-    noSSR: true
+    noSSR: true,
   })
 
   testNavigationBetweenWithSSRAndWithoutSSR()
@@ -98,7 +98,7 @@ function testUrl({
   text,
   counter,
   noSSR,
-  image
+  image,
 }: {
   url: string
   title: string
@@ -141,13 +141,13 @@ function testUseConfig() {
     const html = await fetchHtml('/images')
     expect(html).toMatch(
       partRegex`<script ${dataHk} type="application/ld+json">{"@context":"https://schema.org/","contentUrl":{"src":"${getAssetUrl(
-        'logo-new.svg'
-      )}"},"creator":{"@type":"Person","name":"brillout"}}</script>`
+        'logo-new.svg',
+      )}"},"creator":{"@type":"Person","name":"brillout"}}</script>`,
     )
     expect(html).toMatch(
       partRegex`<script ${dataHk} type="application/ld+json">{"@context":"https://schema.org/","contentUrl":{"src":"${getAssetUrl(
-        'logo.svg'
-      )}"},"creator":{"@type":"Person","name":"Romuald Brillout"}}</script>`
+        'logo.svg',
+      )}"},"creator":{"@type":"Person","name":"Romuald Brillout"}}</script>`,
     )
   })
   test('useConfig() hydration', async () => {
@@ -175,7 +175,7 @@ async function testCounter() {
       await page.click('button')
       expect(await page.textContent('button')).toContain('Counter 1')
     },
-    { timeout: 5 * 1000 }
+    { timeout: 5 * 1000 },
   )
 }
 

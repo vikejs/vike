@@ -6,7 +6,7 @@ import { Link, Warning } from '@brillout/docpress'
 function RecommendationRouterLibraries({
   libraryName,
   githubRepo,
-  link
+  link,
 }: { libraryName: string; githubRepo: string; link: string }) {
   const onBeforeRouteLink = (
     <Link href="/onBeforeRoute">

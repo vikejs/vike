@@ -13,12 +13,12 @@ function getViteConfigRuntime(config: ResolvedConfig) {
   const viteConfigRuntime = {
     root: config.root,
     build: {
-      outDir: outDirRoot
+      outDir: outDirRoot,
     },
     _baseViteOriginal: config._baseViteOriginal,
     vitePluginServerEntry: {
-      inject: config.vitePluginServerEntry?.inject
-    }
+      inject: config.vitePluginServerEntry?.inject,
+    },
   }
   return viteConfigRuntime
 }

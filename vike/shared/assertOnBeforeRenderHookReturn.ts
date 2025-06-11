@@ -7,7 +7,7 @@ import pc from '@brillout/picocolors'
 
 function assertOnBeforeRenderHookReturn<Keys extends readonly string[]>(
   hookReturnValue: unknown,
-  hookFilePath: string
+  hookFilePath: string,
 ): asserts hookReturnValue is undefined | null | { [key in Keys[number]]?: unknown } {
   if (hookReturnValue === undefined || hookReturnValue === null) {
     return
@@ -15,7 +15,7 @@ function assertOnBeforeRenderHookReturn<Keys extends readonly string[]>(
   const errPrefix = `The onBeforeRender() hook defined by ${hookFilePath}` as const
   assertUsage(
     isPlainObject(hookReturnValue),
-    `${errPrefix} should return a plain JavaScript object, ${pc.cyan('undefined')}, or ${pc.cyan('null')}`
+    `${errPrefix} should return a plain JavaScript object, ${pc.cyan('undefined')}, or ${pc.cyan('null')}`,
   )
   assertHookReturnedObject(hookReturnValue, ['pageContext'] as const, errPrefix)
   if (hookReturnValue.pageContext) {

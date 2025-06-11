@@ -13,7 +13,7 @@ import {
   compareString,
   stripAnsi,
   getTerminalWidth,
-  truncateString
+  truncateString,
 } from '../../utils.js'
 import pc from '@brillout/picocolors'
 
@@ -28,7 +28,7 @@ async function log404(pageContext: {
   const pageRoutes = pageContext._globalContext._pageRoutes
   assertUsage(
     pageRoutes.length > 0,
-    'No page found.'
+    'No page found.',
     /* TODO/v1-release: use this
     'No page found. Create at least one /pages/some-page/+Page.js file.'
     */
@@ -86,9 +86,9 @@ function getRoutesInfo(pageRoutes: PageRoutes): string | null {
     {
       routeStr: 'ROUTE',
       routeTypeSrc: 'TYPE' as const,
-      routeDefinedBy: 'DEFINED BY'
+      routeDefinedBy: 'DEFINED BY',
     },
-    ...entries
+    ...entries,
   ]
 
   const terminalWidth = getTerminalWidth() || 134
@@ -139,7 +139,7 @@ function getRoutesInfo(pageRoutes: PageRoutes): string | null {
     lines[0]!,
     pc.dim(`├${'─'.repeat(width1)}┼${'─'.repeat(width2)}┼${'─'.repeat(width3)}┤`),
     ...lines.slice(1),
-    pc.dim(`└${'─'.repeat(width1)}┴${'─'.repeat(width2)}┴${'─'.repeat(width3)}┘`)
+    pc.dim(`└${'─'.repeat(width1)}┴${'─'.repeat(width2)}┴${'─'.repeat(width3)}┘`),
   ]
 
   lines.forEach((line) => {

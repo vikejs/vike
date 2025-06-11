@@ -2,8 +2,8 @@ export { pluginPreview }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { assertUsage, applyPreview } from '../utils.js'
-import fs from 'fs'
-import path from 'path'
+import fs from 'node:fs'
+import path from 'node:path'
 import type { ViteDevServer } from 'vite'
 import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
 import pc from '@brillout/picocolors'
@@ -23,8 +23,8 @@ function pluginPreview(): Plugin {
       return {
         appType: 'custom',
         build: {
-          outDir: resolveOutDir(config)
-        }
+          outDir: resolveOutDir(config),
+        },
       }
     },
     async configResolved(config_) {
@@ -51,7 +51,7 @@ function pluginPreview(): Plugin {
 
         addStatic404Middleware(server.middlewares)
       }
-    }
+    },
   }
   function assertDist(isPrerenderingEnabledForAllPages: boolean) {
     const { outDirRoot, outDirClient, outDirServer } = getOutDirs(config)
@@ -61,8 +61,8 @@ function pluginPreview(): Plugin {
       assertUsage(
         fs.existsSync(outDirAny),
         `Cannot run ${pc.cyan('$ vike preview')}: your app isn't built (the build directory ${pc.cyan(
-          outDirAny
-        )} is missing). Make sure to run ${pc.cyan('$ vike build')} before running ${pc.cyan('$ vike preview')}.`
+          outDirAny,
+        )} is missing). Make sure to run ${pc.cyan('$ vike build')} before running ${pc.cyan('$ vike preview')}.`,
       )
     })
   }

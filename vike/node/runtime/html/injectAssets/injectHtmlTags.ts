@@ -25,7 +25,7 @@ function injectHtmlTags(htmlString: string, htmlTags: HtmlTag[], position: Posit
 // Is it worth it? Should we remove this? https://github.com/vikejs/vike/pull/1740#issuecomment-2230540892
 function injectHtmlTagsUsingStream(
   htmlTags: HtmlTag[],
-  streamFromReactStreamingPackage: StreamFromReactStreamingPackage
+  streamFromReactStreamingPackage: StreamFromReactStreamingPackage,
 ): void {
   const htmlFragment = joinHtmlTags(htmlTags.filter((h) => h.position === 'HTML_STREAM'))
   if (htmlFragment) {

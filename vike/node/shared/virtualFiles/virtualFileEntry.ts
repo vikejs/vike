@@ -21,7 +21,7 @@ function isVirtualFileIdEntry(id: string): false | { isForClientSide: boolean; i
       virtualFileIdEntryServer,
       virtualFileIdEntryClientCR,
       virtualFileIdEntryClientSR
-    ].includes(id)
+    ].includes(id),
   )
   const isForClientSide = id !== virtualFileIdEntryServer
   const isClientRouting = id === virtualFileIdEntryClientCR

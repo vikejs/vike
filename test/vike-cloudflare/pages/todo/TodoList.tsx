@@ -20,8 +20,8 @@ export function TodoList(props: { initialTodoItems: { text: string }[] }) {
                 method: 'POST',
                 body: JSON.stringify({ text: untrack(newTodo) }),
                 headers: {
-                  'Content-Type': 'application/json'
-                }
+                  'Content-Type': 'application/json',
+                },
               })
               await response.blob()
               setNewTodo('')

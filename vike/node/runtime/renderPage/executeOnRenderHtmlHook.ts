@@ -6,7 +6,7 @@ import {
   isDocumentHtml,
   renderDocumentHtml,
   DocumentHtml,
-  dangerouslySkipEscape
+  dangerouslySkipEscape,
 } from '../html/renderHtml.js'
 import { getHookFromPageContext, type Hook } from '../../../shared/hooks/getHook.js'
 import { assert, assertUsage, assertWarning, isObject, objectAssign, isPromise, isCallable } from '../utils.js'
@@ -16,7 +16,7 @@ import { assertPageContextProvidedByUser } from '../../../shared/assertPageConte
 import type { PreloadFilter } from '../html/injectAssets/getHtmlTags.js'
 import {
   preparePageContextForPublicUsageServer,
-  type PageContextForPublicUsageServer
+  type PageContextForPublicUsageServer,
 } from './preparePageContextForPublicUsageServer.js'
 import type { PageContextPromise } from '../html/injectAssets.js'
 import { assertHookReturnedObject } from '../../../shared/assertHookReturnedObject.js'
@@ -44,7 +44,7 @@ async function executeOnRenderHtmlHook(
       _baseServer: string
       _pageFilePathsLoaded: string[]
       _httpRequestId: number | null
-    }
+    },
 ): Promise<{
   renderHook: RenderHook
   htmlRender: HtmlRender
@@ -56,7 +56,7 @@ async function executeOnRenderHtmlHook(
 
   const { documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter } = processHookReturnValue(
     hookReturn,
-    hook
+    hook,
   )
 
   Object.assign(pageContext, pageContextProvidedByRenderHook)
@@ -81,7 +81,7 @@ async function executeOnRenderHtmlHook(
 function getRenderHook(
   pageContext: PageContextForPublicUsageServer & {
     _globalContext: GlobalContextServerInternal
-  }
+  },
 ) {
   let hookFound: RenderHook | undefined
   {
@@ -107,7 +107,7 @@ function getRenderHook(
     assertUsage(
       false,
       [
-        `No ${hookName}() hook found, see https://vike.dev/${hookName}`
+        `No ${hookName}() hook found, see https://vike.dev/${hookName}`,
         /*
         'See https://vike.dev/render-modes for more information.',
         [
@@ -116,7 +116,7 @@ function getRenderHook(
           ...pageContext._pageFilePathsLoaded.map((f, i) => ` (${i + 1}): ${f}`)
         ].join('\n')
         */
-      ].join(' ')
+      ].join(' '),
     )
   }
   return hookFound
@@ -124,7 +124,7 @@ function getRenderHook(
 
 function processHookReturnValue(
   hookReturnValue: unknown,
-  renderHook: RenderHook
+  renderHook: RenderHook,
 ): {
   documentHtml: DocumentHtml
   pageContextPromise: PageContextPromise
@@ -143,7 +143,7 @@ function processHookReturnValue(
 
   const errPrefix = `The ${renderHook.hookName as string}() hook defined at ${renderHook.hookFilePath}` as const
   const errSuffix = `a string generated with ${pc.cyan(
-    'escapeInject`<html>...</html>`'
+    'escapeInject`<html>...</html>`',
   )} or the value returned by ${pc.cyan('dangerouslySkipEscape()')}, see https://vike.dev/escapeInject` as const
   if (typeof hookReturnValue === 'string') {
     assertWarning(
@@ -151,20 +151,20 @@ function processHookReturnValue(
       [
         errPrefix,
         `returned a plain JavaScript string which is ${pc.red(pc.bold('dangerous'))}: it should instead return`,
-        errSuffix
+        errSuffix,
       ].join(' '),
-      { onlyOnce: true }
+      { onlyOnce: true },
     )
     hookReturnValue = dangerouslySkipEscape(hookReturnValue)
   }
   const wrongReturnValue = `should return the value ${pc.cyan('documentHtml')} or an object ${pc.cyan(
-    '{ documentHtml }'
+    '{ documentHtml }',
   )} where ${pc.cyan('documentHtml')} is ${errSuffix}` as const
   assertUsage(isObject(hookReturnValue), `${errPrefix} ${wrongReturnValue}`)
   assertHookReturnedObject(hookReturnValue, ['documentHtml', 'pageContext', 'injectFilter'] as const, errPrefix)
   assertUsage(
     hookReturnValue.documentHtml,
-    `${errPrefix} returned an object that is missing the ${pc.code('documentHtml')} property: it ${wrongReturnValue}`
+    `${errPrefix} returned an object that is missing the ${pc.code('documentHtml')} property: it ${wrongReturnValue}`,
   )
 
   if (hookReturnValue.injectFilter) {
@@ -181,9 +181,9 @@ function processHookReturnValue(
         [
           errBegin,
           `is a plain JavaScript string which is ${pc.bold(pc.red('dangerous'))}: ${pc.cyan('documentHtml')} should be`,
-          errSuffix
+          errSuffix,
         ].join(' '),
-        { onlyOnce: true }
+        { onlyOnce: true },
       )
       val = dangerouslySkipEscape(val)
     }
@@ -198,13 +198,13 @@ function processHookReturnValue(
       assertWarning(
         !isPromise(val),
         `${errBegin} is a promise which is deprecated in favor of async functions, see https://vike.dev/streaming#initial-data-after-stream-end`,
-        { onlyOnce: true }
+        { onlyOnce: true },
       )
       pageContextPromise = val
     } else {
       assertUsage(
         isObject(val),
-        `${errBegin} should be an object or an async function, see https://vike.dev/streaming#initial-data-after-stream-end`
+        `${errBegin} should be an object or an async function, see https://vike.dev/streaming#initial-data-after-stream-end`,
       )
       assertPageContextProvidedByUser(val, renderHook)
       pageContextProvidedByRenderHook = val

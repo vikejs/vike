@@ -11,7 +11,7 @@ import './Layout.css'
 
 Layout.propTypes = {
   pageContext: PropTypes.any,
-  children: childrenPropType
+  children: childrenPropType,
 }
 function Layout({ pageContext, children }) {
   return (
@@ -32,7 +32,7 @@ function Layout({ pageContext, children }) {
 }
 
 Frame.propTypes = {
-  children: childrenPropType
+  children: childrenPropType,
 }
 function Frame({ children }) {
   return (
@@ -40,7 +40,7 @@ function Frame({ children }) {
       style={{
         display: 'flex',
         maxWidth: 900,
-        margin: 'auto'
+        margin: 'auto',
       }}
     >
       {children}
@@ -49,7 +49,7 @@ function Frame({ children }) {
 }
 
 Sidebar.propTypes = {
-  children: childrenPropType
+  children: childrenPropType,
 }
 function Sidebar({ children }) {
   return (
@@ -61,7 +61,7 @@ function Sidebar({ children }) {
         display: 'flex',
         flexDirection: 'column',
         lineHeight: '1.8em',
-        borderRight: '2px solid #eee'
+        borderRight: '2px solid #eee',
       }}
     >
       {children}
@@ -70,7 +70,7 @@ function Sidebar({ children }) {
 }
 
 Content.propTypes = {
-  children: childrenPropType
+  children: childrenPropType,
 }
 function Content({ children }) {
   return (
@@ -80,7 +80,7 @@ function Content({ children }) {
         style={{
           padding: 20,
           paddingBottom: 50,
-          minHeight: '100vh'
+          minHeight: '100vh',
         }}
       >
         {children}
@@ -94,7 +94,7 @@ function Logo() {
     <div
       style={{
         marginTop: 20,
-        marginBottom: 10
+        marginBottom: 10,
       }}
     >
       <a href="/">

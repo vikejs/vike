@@ -33,6 +33,6 @@ async function sortPageAssetsForEarlyHintsHeader(pageAssets: PageAsset[], isProd
 
       // JavaScript has lowest priority
       return priority
-    })
+    }),
   )
 }

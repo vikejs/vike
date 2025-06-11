@@ -11,7 +11,7 @@ type PageContextForPublicUsageClient = PageContextPrepareMinimum &
   VikeConfigPublicPageLazy & { urlOriginal: string }
 
 function preparePageContextForPublicUsageClient<PageContext extends PageContextForPublicUsageClient>(
-  pageContext: PageContext
+  pageContext: PageContext,
 ) {
   return preparePageContextForPublicUsageClientShared(pageContext)
 }

@@ -7,13 +7,13 @@ export { getModuleFilePathRelative }
 export { cleanFilePathUnkown }
 export { assertModuleId }
 
-import path from 'path'
+import path from 'node:path'
 import {
   assert,
   assertIsImportPathNpmPackage,
   assertFilePathAbsoluteFilesystem,
   assertPosixPath,
-  toPosixPath
+  toPosixPath,
 } from '../utils.js'
 import type { FilePathResolved, FilePathUnresolved } from '../../../types/FilePath.js'
 import type { ResolvedConfig } from 'vite'
@@ -24,7 +24,7 @@ function getFilePathResolved(
   } & (
     | { filePathAbsoluteFilesystem: string; importPathAbsolute: string }
     | { filePathAbsoluteUserRootDir: string; importPathAbsolute?: string }
-  )
+  ),
 ): FilePathResolved {
   const { userRootDir } = args
 
@@ -50,13 +50,13 @@ function getFilePathResolved(
     ...getComputedProps(args),
     filePathAbsoluteFilesystem,
     filePathToShowToUserResolved,
-    fileName
+    fileName,
   }
   return filePathResolved
 }
 
 function getComputedProps(
-  args: { importPathAbsolute: string } | { filePathAbsoluteUserRootDir: string; importPathAbsolute?: string }
+  args: { importPathAbsolute: string } | { filePathAbsoluteUserRootDir: string; importPathAbsolute?: string },
 ) {
   if ('filePathAbsoluteUserRootDir' in args) {
     const importPathAbsolute = args.importPathAbsolute ?? null
@@ -66,7 +66,7 @@ function getComputedProps(
       importPathAbsolute,
       filePathAbsoluteUserRootDir,
       filePathAbsoluteVite: filePathAbsoluteUserRootDir,
-      filePathToShowToUser: filePathAbsoluteUserRootDir
+      filePathToShowToUser: filePathAbsoluteUserRootDir,
     }
   } else {
     return getComputedPropsImportPathAbsolute(args)
@@ -79,20 +79,20 @@ function getComputedPropsImportPathAbsolute(args: { importPathAbsolute: string }
     filePathAbsoluteUserRootDir: null,
     importPathAbsolute,
     filePathAbsoluteVite: importPathAbsolute,
-    filePathToShowToUser: importPathAbsolute
+    filePathToShowToUser: importPathAbsolute,
   }
 }
 
 function getFilePathUnresolved(args: { importPathAbsolute: string }): FilePathUnresolved {
   return {
     ...getComputedPropsImportPathAbsolute(args),
-    filePathAbsoluteFilesystem: null
+    filePathAbsoluteFilesystem: null,
   }
 }
 
 function getFilePathAbsoluteUserFilesystem({
   filePathAbsoluteUserRootDir,
-  userRootDir
+  userRootDir,
 }: {
   filePathAbsoluteUserRootDir: string
   userRootDir: string
@@ -107,20 +107,20 @@ function getFilePathAbsoluteUserFilesystem({
 }
 function getFilePathAbsoluteUserRootDir({
   filePathAbsoluteFilesystem,
-  userRootDir
+  userRootDir,
 }: {
   filePathAbsoluteFilesystem: string
   userRootDir: string
 }): string | null {
   const { filePathAbsoluteUserRootDir } = getFilePathRelative({
     filePathAbsoluteFilesystem,
-    userRootDir
+    userRootDir,
   })
   return filePathAbsoluteUserRootDir
 }
 function getFilePathRelative({
   filePathAbsoluteFilesystem,
-  userRootDir
+  userRootDir,
 }: {
   filePathAbsoluteFilesystem: string
   userRootDir: string
@@ -136,7 +136,7 @@ function getFilePathRelative({
     assert(filePathRelativeUserRootDir.startsWith('../'))
     return {
       filePathAbsoluteUserRootDir: null,
-      filePathRelativeUserRootDir
+      filePathRelativeUserRootDir,
     }
   } else {
     assert(
@@ -145,7 +145,7 @@ function getFilePathRelative({
         !filePathRelative.startsWith('.') &&
         */
         !filePathRelativeUserRootDir.startsWith('./') &&
-        !filePathRelativeUserRootDir.startsWith('../')
+        !filePathRelativeUserRootDir.startsWith('../'),
     )
     const filePathAbsoluteUserRootDir = `/${filePathRelativeUserRootDir}`
     assert(filePathAbsoluteUserRootDir === getFilePathAbsoluteUserRootDir2(filePathAbsoluteFilesystem, userRootDir))
@@ -172,7 +172,7 @@ function getModuleFilePath(moduleId: string, config: ResolvedConfig) {
 
   const { filePathAbsoluteUserRootDir, filePathRelativeUserRootDir } = getFilePathRelative({
     filePathAbsoluteFilesystem,
-    userRootDir
+    userRootDir,
   })
 
   return { filePathAbsoluteFilesystem, filePathAbsoluteUserRootDir, filePathRelativeUserRootDir }
@@ -185,7 +185,7 @@ function assertModuleId(moduleId: string) {
 function getFilePathToShowToUserFromUnkown(
   // We don't have any guarentee about filePath, e.g. about whether is filePathAbsoluteFilesystem or filePathAbsoluteUserRootDir
   filePathUnkown: string,
-  userRootDir: string
+  userRootDir: string,
 ): string {
   assertPosixPath(userRootDir)
   assertFilePathAbsoluteFilesystem(userRootDir)

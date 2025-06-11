@@ -4,7 +4,7 @@ export default {
   prerender: {
     enable: null,
     parallel: 4,
-    noExtraDir: true
+    noExtraDir: true,
   },
   someNeverUsedConfig: 'never-used-value',
   meta: {
@@ -12,15 +12,15 @@ export default {
       env: { config: true },
       effect({ configValue }) {
         return {
-          prerender: configValue as boolean
+          prerender: configValue as boolean,
         }
-      }
+      },
     },
     // TEST: omit the "unknown config" error without defining the config — useful for optional peer dependencies: for example, vike-server sets +stream.require which is defined by vike-{react,vue,solid} but some users don't use vike-{react,vue,solid}
     someNeverUsedConfig: {
-      isDefinedByPeerDependency: true
-    }
-  }
+      isDefinedByPeerDependency: true,
+    },
+  },
 } satisfies Config
 
 declare global {

@@ -43,7 +43,7 @@ function assertResolveAlias(config: ResolvedConfig) {
       {
         const msg = `${errPrefix} defines resolve.alias with a regular expression ${errSuffix2}` as const
         assertWarning(false, msg, {
-          onlyOnce: true
+          onlyOnce: true,
         })
       }
     } else {
@@ -55,7 +55,7 @@ function assertResolveAlias(config: ResolvedConfig) {
 
       {
         const msg = `${errPrefix} defines an invalid ${pc.cyan(
-          'resolve.alias'
+          'resolve.alias',
         )}: a path alias cannot be the empty string ${pc.cyan("''")}` as const
         assertUsage(find !== '', msg)
       }
@@ -68,7 +68,7 @@ function assertResolveAlias(config: ResolvedConfig) {
         if (find.startsWith('@')) {
           const msg =
             `${errPrefix} defines an invalid resolve.alias ${deprecation}: a path alias cannot start with ${pc.cyan(
-              '@'
+              '@',
             )}, ${errSuffix1}` as const
           assertWarning(false, msg, { onlyOnce: true })
         } else {

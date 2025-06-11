@@ -12,7 +12,7 @@ function injectRollupInputs(inputsNew: InputsMap, config: ResolvedConfig): Input
   const inputsCurrent = normalizeRollupInput(config.build.rollupOptions.input)
   const input = {
     ...inputsNew,
-    ...inputsCurrent
+    ...inputsCurrent,
   }
   return input
 }

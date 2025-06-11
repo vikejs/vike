@@ -13,6 +13,6 @@ function pluginWorkaroundCssModuleHmr(): Plugin {
       if (ctx.file.includes('module.css')) {
         return ctx.modules.filter((m) => !m.id?.includes('?direct'))
       }
-    }
+    },
   }
 }

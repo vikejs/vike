@@ -11,7 +11,7 @@ import {
   escapeRegex,
   isArray,
   isNotNullish,
-  lowerFirst
+  lowerFirst,
 } from '../utils.js'
 import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
 import { normalizeId } from '../shared/normalizeId.js'
@@ -26,7 +26,7 @@ import { applyRegExpWithMagicString } from '../shared/applyRegExWithMagicString.
 const PUBLIC_ENV_PREFIX = 'PUBLIC_ENV__'
 const PUBLIC_ENV_ALLOWLIST = [
   // https://github.com/vikejs/vike/issues/1724
-  'STORYBOOK'
+  'STORYBOOK',
 ]
 
 function pluginEnvVars(): Plugin {
@@ -100,8 +100,8 @@ function pluginEnvVars(): Plugin {
 
       return {
         code: magicString.toString(),
-        map: magicString.generateMap({ hires: true, source: id })
+        map: magicString.generateMap({ hires: true, source: id }),
       }
-    }
+    },
   }
 }

@@ -17,10 +17,10 @@ export default {
         if (!env) throw new Error(`${configDefinedAt} should be 'SSR', 'SPA', or 'HTML'`)
         return {
           meta: {
-            Page: { env }
-          }
+            Page: { env },
+          },
         }
-      }
-    }
-  }
+      },
+    },
+  },
 } satisfies Config

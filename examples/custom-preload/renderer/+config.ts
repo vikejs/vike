@@ -7,7 +7,7 @@ export default {
   meta: {
     // Define new setting 'preloadStrategy'
     preloadStrategy: {
-      env: { server: true }
-    }
-  }
+      env: { server: true },
+    },
+  },
 } satisfies Config

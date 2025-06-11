@@ -13,7 +13,7 @@ import {
   isArrayOfStrings,
   objectAssign,
   PromiseType,
-  isArray
+  isArray,
 } from '../utils.js'
 import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './getPageAssets.js'
 import { debugPageFiles, type PageContextDebugRouteMatches } from './debugPageFiles.js'
@@ -31,7 +31,7 @@ type PageContext_loadPageConfigsLazyServerSide = PageContextGetPageAssets &
   }
 type PageFiles = PromiseType<ReturnType<typeof loadPageConfigsLazyServerSide>>
 async function loadPageConfigsLazyServerSide(
-  pageContext: { pageId: string } & PageContext_loadPageConfigsLazyServerSide
+  pageContext: { pageId: string } & PageContext_loadPageConfigsLazyServerSide,
 ) {
   const pageConfig = findPageConfig(pageContext._globalContext._pageConfigs, pageContext.pageId) // Make pageConfig globally available as pageContext._pageConfig ?
 
@@ -42,11 +42,11 @@ async function loadPageConfigsLazyServerSide(
       pageConfig,
       globalContext._pageConfigGlobal,
       pageContext.pageId,
-      !globalContext._isProduction
+      !globalContext._isProduction,
     ),
     analyzePageClientSideInit(pageContext._globalContext._pageFilesAll, pageContext.pageId, {
-      sharedPageFilesAlreadyLoaded: true
-    })
+      sharedPageFilesAlreadyLoaded: true,
+    }),
   ])
   const { isHtmlOnly, isClientRouting, clientEntries, clientDependencies, pageFilesClientSide, pageFilesServerSide } =
     await analyzePage(pageContext._globalContext._pageFilesAll, pageConfig, pageContext.pageId, globalContext)
@@ -76,7 +76,7 @@ async function loadPageConfigsLazyServerSide(
     Page: pageContextExports.exports.Page,
     _isHtmlOnly: isHtmlOnly,
     _passToClient: passToClient,
-    _pageFilePathsLoaded: pageFilesLoaded.map((p) => p.filePath)
+    _pageFilePathsLoaded: pageFilesLoaded.map((p) => p.filePath),
   })
 
   objectAssign(pageContextAddendum, {
@@ -88,7 +88,7 @@ async function loadPageConfigsLazyServerSide(
         objectAssign(pageContext, { _pageAssets: pageAssets })
         return pageContext._pageAssets
       }
-    }
+    },
   })
 
   // TODO/v1-release: remove
@@ -96,7 +96,7 @@ async function loadPageConfigsLazyServerSide(
     _getPageAssets: async () => {
       assertWarning(false, 'pageContext._getPageAssets() deprecated, see https://vike.dev/preloading', {
         onlyOnce: true,
-        showStackTrace: true
+        showStackTrace: true,
       })
       const pageAssetsOldFormat: {
         src: string
@@ -110,18 +110,18 @@ async function loadPageConfigsLazyServerSide(
             src: p.src,
             preloadType: null,
             assetType: 'script',
-            mediaType: p.mediaType
+            mediaType: p.mediaType,
           })
         }
         pageAssetsOldFormat.push({
           src: p.src,
           preloadType: p.assetType,
           assetType: p.assetType === 'style' ? 'style' : 'preload',
-          mediaType: p.mediaType
+          mediaType: p.mediaType,
         })
       })
       return pageAssetsOldFormat
-    }
+    },
   })
 
   {
@@ -133,7 +133,7 @@ async function loadPageConfigsLazyServerSide(
       pageFilesClientSide,
       pageFilesServerSide,
       clientEntries,
-      clientDependencies
+      clientDependencies,
     })
   }
 
@@ -145,7 +145,7 @@ async function loadPageUserFiles(
   pageConfig: null | PageConfigRuntime,
   pageConfigGlobal: PageConfigGlobalRuntime,
   pageId: string,
-  isDev: boolean
+  isDev: boolean,
 ) {
   const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
   const pageConfigLoaded = !pageConfig ? null : await loadConfigValues(pageConfig, isDev)
@@ -153,6 +153,6 @@ async function loadPageUserFiles(
   const pageContextExports = resolveVikeConfigPublicPageLazy(pageFilesServerSide, pageConfigLoaded, pageConfigGlobal)
   return {
     pageContextExports,
-    pageFilesLoaded: pageFilesServerSide
+    pageFilesLoaded: pageFilesServerSide,
   }
 }

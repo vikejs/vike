@@ -30,9 +30,9 @@ function pluginDistPackageJsonFile(): Plugin {
       this.emitFile({
         fileName,
         type: 'asset',
-        source: getPackageJsonContent(isEsm)
+        source: getPackageJsonContent(isEsm),
       })
-    }
+    },
   }
 }
 

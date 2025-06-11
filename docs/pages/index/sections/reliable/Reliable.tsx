@@ -25,8 +25,8 @@ const data = {
     </>,
     <>
       <b>Progressively migrate</b> one stack component and one page at a time, instead of big endless migrations.
-    </>
-  ]
+    </>,
+  ],
 }
 
 const benefits = [
@@ -36,7 +36,7 @@ const benefits = [
     href: '/pricing',
     description:
       "Vike's pricing keeps code 100% open source (MIT licence) and 100% gratis for engineers while asking companies to pay a small amount, for a transparent and sustainable relationship.",
-    image: <img src={OpenSourcePricingIllustration} style={{ maxWidth: '100%' }} />
+    image: <img src={OpenSourcePricingIllustration} style={{ maxWidth: '100%' }} />,
   },
   {
     icon: (
@@ -58,8 +58,8 @@ const benefits = [
         within 24 hours).
       </>
     ),
-    image: <BugFixSVG />
-  }
+    image: <BugFixSVG />,
+  },
 ]
 
 function Reliable() {
@@ -69,7 +69,7 @@ function Reliable() {
         <div className={`landingpage-reliable-flexbox`}>
           <div
             style={{
-              flex: 1
+              flex: 1,
             }}
           >
             <TextBox className={`landingpage-reliable-customTextBox`}>
@@ -102,7 +102,7 @@ function Reliable() {
         style={{
           width: '100%',
           borderTop: `3px solid #FFFFFF`,
-          borderBottom: `3px solid #FFFFFF`
+          borderBottom: `3px solid #FFFFFF`,
         }}
       >
         {benefits.map((benefit, i) => (
@@ -110,14 +110,14 @@ function Reliable() {
             key={i}
             style={{
               width: '100%',
-              borderTop: i === 0 ? undefined : `3px solid #FFF`
+              borderTop: i === 0 ? undefined : `3px solid #FFF`,
             }}
           >
             <Grid>
               <div
                 className={`landingpage-reliable-benefitWrapper`}
                 style={{
-                  flexDirection: i % 2 ? 'row' : 'row-reverse'
+                  flexDirection: i % 2 ? 'row' : 'row-reverse',
                 }}
               >
                 <a href={benefit.href} className={`landingpage-reliable-benefit`}>
@@ -134,7 +134,7 @@ function Reliable() {
                   className={`landingpage-reliable-benefitImageWrapper`}
                   style={{
                     borderRight: i % 2 ? '0px' : '3px solid #FFF',
-                    borderLeft: i % 2 ? '3px solid #FFF' : '0px'
+                    borderLeft: i % 2 ? '3px solid #FFF' : '0px',
                   }}
                 >
                   {benefit.image}

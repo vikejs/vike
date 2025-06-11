@@ -15,7 +15,7 @@ const data = async (pageContext: PageContextServer) => {
 
   config({
     title: movie.title,
-    description: `Star Wars Movie ${movie.title} from ${movie.director}`
+    description: `Star Wars Movie ${movie.title} from ${movie.director}`,
   })
 
   // We remove data we don't need because we pass `pageContext.movie` to

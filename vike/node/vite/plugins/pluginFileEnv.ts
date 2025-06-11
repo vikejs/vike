@@ -13,7 +13,7 @@ import {
   capitalizeFirstLetter,
   isFilePathAbsolute,
   joinEnglish,
-  rollupSourceMapRemove
+  rollupSourceMapRemove,
 } from '../utils.js'
 import { extractAssetsRE } from './pluginExtractAssets.js'
 import { extractExportNamesRE } from './pluginExtractExportNames.js'
@@ -45,7 +45,7 @@ function pluginFileEnv(): Plugin {
         !!options?.ssr,
         importers,
         // In dev, we only show a warning because we don't want to disrupt when the user plays with settings such as [ssr](https://vike.dev/ssr).
-        true
+        true,
       )
     },
     // In production, we have to use transform() to replace modules with a runtime error because generateBundle() doesn't work for dynamic imports. In production, dynamic imports can only be verified at runtime.
@@ -65,9 +65,9 @@ function pluginFileEnv(): Plugin {
         [
           `throw new Error(${JSON.stringify(errMsg)});`,
           ...exportNames.map((name) =>
-            name === 'default' ? 'export default undefined;' : `export const ${name} = undefined;`
-          )
-        ].join('\n')
+            name === 'default' ? 'export default undefined;' : `export const ${name} = undefined;`,
+          ),
+        ].join('\n'),
       )
     },
     generateBundle() {
@@ -91,14 +91,14 @@ function pluginFileEnv(): Plugin {
     },
     configureServer(viteDevServer_) {
       viteDevServer = viteDevServer_
-    }
+    },
   }
 
   function assertFileEnv(
     moduleId: string,
     isServerSide: boolean,
     importers: string[] | readonly string[],
-    onlyWarn: boolean
+    onlyWarn: boolean,
   ) {
     if (!isWrongEnv(moduleId, isServerSide)) return
     const errMsg = getErrorMessage(moduleId, isServerSide, importers, onlyWarn, false)
@@ -114,7 +114,7 @@ function pluginFileEnv(): Plugin {
     isServerSide: boolean,
     importers: string[] | readonly string[],
     onlyWarn: boolean,
-    noColor: boolean
+    noColor: boolean,
   ) {
     const modulePath = getModulePath(moduleId)
 
@@ -128,14 +128,14 @@ function pluginFileEnv(): Plugin {
       modulePathPretty = modulePathPretty.replaceAll(suffix, pc.bold(suffix))
     }
     errMsg = `${capitalizeFirstLetter(
-      envExpect
+      envExpect,
     )}-only file ${modulePathPretty} (https://vike.dev/file-env) imported on the ${envActual}-side`
 
     {
       const importPaths = importers
         .filter((importer) =>
           // Can be Vike's virtual module: https://github.com/vikejs/vike/issues/2483
-          isFilePathAbsolute(importer)
+          isFilePathAbsolute(importer),
         )
         .map((importer) => getModuleFilePathAbsolute(importer, config))
       if (importPaths.length > 0) {

@@ -124,7 +124,7 @@ function assertOutDirResolved(outDir: string, config: UserConfig | ResolvedConfi
   assert('/client'.length === '/server'.length)
   const outDirCorrected = outDir.slice(0, -1 * '/client'.length)
   const wrongUsage = `You've set Vite's config.build.outDir to ${pc.cyan(outDir)} but you should set it to ${pc.cyan(
-    outDirCorrected
+    outDirCorrected,
   )} instead.`
 
   if (isViteServerBuild(config)) {

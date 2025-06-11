@@ -12,7 +12,7 @@ function isDevCheck(configEnv: ConfigEnv): boolean {
   // - We'll eventually be able to make this an assert() instead of assertUsage() once Vike requires a Vite version that supports this.meta.viteVersion
   assertUsage(
     typeof isPreview === 'boolean',
-    'You are using an old Vite version; make sure to use Vite 5.1.0 or above.'
+    'You are using an old Vite version; make sure to use Vite 5.1.0 or above.',
   )
   return command === 'serve' && !isPreview
 }

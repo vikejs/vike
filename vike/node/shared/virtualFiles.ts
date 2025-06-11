@@ -17,8 +17,8 @@ function isVirtualFileId(id: string): boolean {
   assertUsage(
     !id.includes(idBase),
     `Encountered a module ID ${pc.cyan(
-      id
-    )} that is unexpected. Are you using a tool that modifies the ID of modules? For example, the baseUrl setting in tsconfig.json cannot be used.`
+      id,
+    )} that is unexpected. Are you using a tool that modifies the ID of modules? For example, the baseUrl setting in tsconfig.json cannot be used.`,
   )
   return false
 }

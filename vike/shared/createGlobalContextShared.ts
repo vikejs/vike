@@ -9,7 +9,7 @@ import type { PageFile } from './getPageFiles.js'
 import { parseVirtualFileExports } from './getPageFiles/parseVirtualFileExports.js'
 import {
   resolveVikeConfigPublicGlobal,
-  resolveVikeConfigPublicPageEager
+  resolveVikeConfigPublicPageEager,
 } from './page-configs/resolveVikeConfigPublic.js'
 import type { PageConfigRuntime } from '../types/PageConfig.js'
 import { execHookGlobal } from './hooks/execHook.js'
@@ -23,7 +23,7 @@ const getGlobalContextSyncErrMsg =
 async function createGlobalContextShared<GlobalContextAddendum extends object>(
   virtualFileExports: unknown,
   globalObject: { globalContext?: Record<string, unknown>; onCreateGlobalContextHooks?: Hook[] },
-  addGlobalContext?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddendum>
+  addGlobalContext?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddendum>,
 ) {
   const globalContext = createGlobalContextBase(virtualFileExports)
 
@@ -32,7 +32,7 @@ async function createGlobalContextShared<GlobalContextAddendum extends object>(
 
   const onCreateGlobalContextHooks = getHookFromPageConfigGlobalCumulative(
     globalContext._pageConfigGlobal,
-    'onCreateGlobalContext'
+    'onCreateGlobalContext',
   )
   let hooksCalled = false
   if (!hooksAreEqual(globalObject.onCreateGlobalContextHooks ?? [], onCreateGlobalContextHooks)) {
@@ -42,7 +42,7 @@ async function createGlobalContextShared<GlobalContextAddendum extends object>(
       globalContext._pageConfigGlobal,
       null,
       globalContext,
-      prepareGlobalContextForPublicUsage
+      prepareGlobalContextForPublicUsage,
     )
     hooksCalled = true
   }
@@ -71,7 +71,7 @@ function createGlobalContextBase(virtualFileExports: unknown) {
     pageConfigs,
     pageConfigGlobal,
     vikeConfigPublicGlobal,
-    vikeConfigPublicPagesEager
+    vikeConfigPublicPagesEager,
   } = getConfigsAll(virtualFileExports)
   const globalContext = {
     /**
@@ -88,7 +88,7 @@ function createGlobalContextBase(virtualFileExports: unknown) {
     _allPageIds: allPageIds,
     _vikeConfigPublicGlobal: vikeConfigPublicGlobal,
     config: vikeConfigPublicGlobal.config,
-    pages: vikeConfigPublicPagesEager
+    pages: vikeConfigPublicPagesEager,
   }
   changeEnumerable(globalContext, '_isOriginalObject', false)
   return globalContext
@@ -99,13 +99,13 @@ function getConfigsAll(virtualFileExports: unknown) {
   const allPageIds = getAllPageIds(pageFilesAll, pageConfigs)
 
   const vikeConfigPublicGlobal = resolveVikeConfigPublicGlobal({
-    pageConfigGlobalValues: pageConfigGlobal.configValues
+    pageConfigGlobalValues: pageConfigGlobal.configValues,
   })
 
   const vikeConfigPublicPagesEager = Object.fromEntries(
     pageConfigs.map((pageConfig) => {
       return resolveVikeConfigPublicPageEager(pageConfigGlobal.configValues, pageConfig, pageConfig.configValues)
-    })
+    }),
   )
 
   return {
@@ -114,7 +114,7 @@ function getConfigsAll(virtualFileExports: unknown) {
     pageConfigs,
     pageConfigGlobal,
     vikeConfigPublicGlobal,
-    vikeConfigPublicPagesEager
+    vikeConfigPublicPagesEager,
   }
 }
 function getAllPageIds(pageFilesAll: PageFile[], pageConfigs: PageConfigRuntime[]): string[] {

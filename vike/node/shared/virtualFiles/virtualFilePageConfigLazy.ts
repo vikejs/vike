@@ -14,7 +14,7 @@ function getVirtualFileIdPageConfigLazy(pageId: string, isForClientSide: boolean
   return id
 }
 function isVirtualFileIdPageConfigLazy(
-  id: string
+  id: string,
 ): false | { isForClientSide: boolean; pageId: string; isExtractAssets: boolean } {
   id = getVirtualFileId(id)
   if (!id.includes(idBase)) return false
@@ -27,14 +27,14 @@ function isVirtualFileIdPageConfigLazy(
     return {
       pageId: id.slice(idBaseClient.length),
       isForClientSide: true,
-      isExtractAssets
+      isExtractAssets,
     }
   }
   if (id.startsWith(idBaseServer)) {
     return {
       pageId: id.slice(idBaseServer.length),
       isForClientSide: false,
-      isExtractAssets
+      isExtractAssets,
     }
   }
   assert(false)

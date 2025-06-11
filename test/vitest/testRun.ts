@@ -6,7 +6,7 @@ import { expect, describe, it } from 'vitest'
 const viteConfig = {
   logLevel: 'warn' as const,
   root: __dirname,
-  configFile: __dirname + '/vite.config.js'
+  configFile: __dirname + '/vite.config.js',
 }
 const urlBase = 'http://localhost:3000'
 

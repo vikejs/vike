@@ -7,6 +7,6 @@ import { GlobalData } from '../renderer/types'
 const data: DataAsync = async (pageContext): Promise<GlobalData> => {
   return {
     globalDataWasCalled: true,
-    globalDataWasCalledInEnv: typeof window === 'undefined' ? 'server' : 'client'
+    globalDataWasCalledInEnv: typeof window === 'undefined' ? 'server' : 'client',
   }
 }

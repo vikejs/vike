@@ -13,7 +13,7 @@ const End = () => {
   return (
     <div
       style={{
-        paddingBottom: 30
+        paddingBottom: 30,
       }}
     >
       <Grid>
@@ -24,7 +24,7 @@ const End = () => {
               style={{
                 display: 'flex',
                 gap: '8px',
-                margin: '20px 0'
+                margin: '20px 0',
               }}
             >
               <Link href="/faq">

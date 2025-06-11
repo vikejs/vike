@@ -32,7 +32,7 @@ async function startServer() {
 
   app.get('/{*vikeCatchAll}', async (req, res) => {
     const pageContextInit = {
-      urlOriginal: req.originalUrl
+      urlOriginal: req.originalUrl,
     }
     const pageContext = await renderPage(pageContextInit)
     const { httpResponse } = pageContext

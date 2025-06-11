@@ -5,7 +5,7 @@ import { assert, assertUsage, stringifyStringArray } from './utils.js'
 function assertHookReturnedObject<Keys extends readonly string[]>(
   obj: Record<string, unknown>,
   keysExpected: Keys,
-  errPrefix: string
+  errPrefix: string,
 ): asserts obj is { [key in Keys[number]]?: unknown } {
   assert(!errPrefix.endsWith(' '))
   const keysUnknown: string[] = []
@@ -22,7 +22,7 @@ function assertHookReturnedObject<Keys extends readonly string[]>(
       'returned an object with following unknown keys:',
       stringifyStringArray(keysUnknown) + '.',
       'Only following keys are allowed:',
-      stringifyStringArray(keysExpected) + '.'
-    ].join(' ')
+      stringifyStringArray(keysExpected) + '.',
+    ].join(' '),
   )
 }

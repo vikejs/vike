@@ -17,12 +17,12 @@ const errorsMisc: Errors[] = [
   {
     errMsg: 'window is not defined',
     link: 'https://vike.dev/hints#window-is-not-defined',
-    mustMentionNodeModules: false
+    mustMentionNodeModules: false,
   },
   {
     errMsg: 'jsxDEV is not a function',
     link: 'https://github.com/vikejs/vike/issues/1469#issuecomment-1919518096',
-    mustMentionNodeModules: false
+    mustMentionNodeModules: false,
   },
   {
     // ```
@@ -30,12 +30,12 @@ const errorsMisc: Errors[] = [
     // ```
     errMsg: 'assets.json',
     link: 'https://vike.dev/getGlobalContext',
-    mustMentionNodeModules: false
+    mustMentionNodeModules: false,
   },
   {
     errMsg: 'ERR_UNKNOWN_FILE_EXTENSION',
-    link: 'https://vike.dev/broken-npm-package#err-unknown-file-extension'
-  }
+    link: 'https://vike.dev/broken-npm-package#err-unknown-file-extension',
+  },
 ]
 const reactInvalidEelement = 'https://vike.dev/broken-npm-package#react-invalid-component'
 const errorsReact: Errors[] = [
@@ -44,17 +44,17 @@ const errorsReact: Errors[] = [
       'Element type is invalid: expected a string (for built-in components) or a class/function (for composite components)',
     link: reactInvalidEelement,
     // The stack trace can be user-land while the import is coming from node_modules
-    mustMentionNodeModules: false
+    mustMentionNodeModules: false,
   },
   {
     errMsg: 'Objects are not valid as a React child',
     link: reactInvalidEelement,
-    mustMentionNodeModules: false
+    mustMentionNodeModules: false,
   },
   {
     // React's "Invalid hook call.", see https://github.com/vikejs/vike/discussions/1637#discussioncomment-9424712
-    errMsg: "Cannot read properties of null (reading 'useContext')"
-  }
+    errMsg: "Cannot read properties of null (reading 'useContext')",
+  },
 ]
 const errorsCjsEsm_withPreciseLink: Errors[] = [
   {
@@ -62,8 +62,8 @@ const errorsCjsEsm_withPreciseLink: Errors[] = [
     errMsg: /Named export.*not found/i,
     link: 'https://vike.dev/broken-npm-package#named-export-not-found',
     // It seems that this always points to an npm package import.
-    mustMentionNodeModules: false
-  }
+    mustMentionNodeModules: false,
+  },
 ]
 const errorsCjsEsm: Errors[] = [
   { errMsg: 'ERR_UNSUPPORTED_DIR_IMPORT' },
@@ -79,7 +79,7 @@ const errorsCjsEsm: Errors[] = [
   {
     errMsg: 'Cannot use import statement',
     // Since user code is always ESM, this error must always originate from an npm package.
-    mustMentionNodeModules: false
+    mustMentionNodeModules: false,
   },
 
   { errMsg: 'is not exported' },
@@ -94,7 +94,7 @@ const errorsCjsEsm: Errors[] = [
   { errMsg: 'not defined in ES' },
   { errMsg: "Unexpected token 'export'" },
 
-  { errMsg: 'Failed to resolve entry for package' }
+  { errMsg: 'Failed to resolve entry for package' },
 ]
 
 function logErrorHint(error: unknown): void {
@@ -131,7 +131,7 @@ function isKnownError(error: unknown) {
     ...errorsMisc,
     ...errorsReact,
     ...errorsCjsEsm_withPreciseLink,
-    ...errorsCjsEsm
+    ...errorsCjsEsm,
   ].find((knownErorr) => {
     if (!includesLowercase(anywhere, knownErorr.errMsg)) return false
     if (knownErorr.mustMentionNodeModules !== false && !includesLowercase(anywhere, 'node_modules')) return false
@@ -187,8 +187,8 @@ function collectError(err: any) {
       `  message: ${JSON.stringify(err.message)},`,
       `  code: ${JSON.stringify(err.code)},`,
       '  stack: `\n' + err.stack + '\n`',
-      '}'
-    ].join('\n')
+      '}',
+    ].join('\n'),
   )
   /* For reproductions using older vite-plugin-ssr versions, do one of the following.
       - If upon pre-rendering:https: //github.com/brillout/repro_node-syntax-error#error-catched-by-vite-plugin-ssr

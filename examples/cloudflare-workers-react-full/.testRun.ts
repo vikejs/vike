@@ -28,7 +28,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { 
     expect(process.env['CLOUDFLARE_API_TOKEN']).toBeFalsy()
     if ((isCI() || process.env.VITE_ECOSYSTEM_CI) && isWrangler) {
       skip(
-        "SKIPPED: wrangler tests cannot be run. Because missing environment variables `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN`. (This is expected in Pull Requests and Vite's ecosystem CI.)"
+        "SKIPPED: wrangler tests cannot be run. Because missing environment variables `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN`. (This is expected in Pull Requests and Vite's ecosystem CI.)",
       )
       return
     }
@@ -50,7 +50,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { 
       additionalTimeout,
       serverIsReadyMessage,
       // Randomly fails because of Cloudflare: it seems like uploading assets to Cloudflare sometimes fails.
-      isFlaky: true
+      isFlaky: true,
     })
   }
 

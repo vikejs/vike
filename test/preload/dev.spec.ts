@@ -21,9 +21,9 @@ async function devApp() {
           // ```
           // Error: listen EADDRINUSE: address already in use :::24678
           // ```
-          port: 11323
-        }
-      }
-    }
+          port: 11323,
+        },
+      },
+    },
   })
 }

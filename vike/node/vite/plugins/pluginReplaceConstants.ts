@@ -36,7 +36,7 @@ function pluginReplaceConstants(): Plugin {
       const constantsMap: { constants: string[]; replacement: unknown }[] = []
       constantsMap.push({
         constants: ['pageContext.isClientSide', 'globalContext.isClientSide', 'pageContext.globalContext.isClientSide'],
-        replacement: !isViteServerBuild_safe(config, options)
+        replacement: !isViteServerBuild_safe(config, options),
       })
 
       constantsMap.forEach(({ constants, replacement }) => {
@@ -49,9 +49,9 @@ function pluginReplaceConstants(): Plugin {
 
       return {
         code: magicString.toString(),
-        map: magicString.generateMap({ hires: true, source: id })
+        map: magicString.generateMap({ hires: true, source: id }),
       }
-    }
+    },
   }
 }
 

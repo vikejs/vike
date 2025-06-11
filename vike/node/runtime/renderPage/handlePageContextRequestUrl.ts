@@ -17,7 +17,7 @@ function handlePageContextRequestUrl(url: string): {
 function hasSuffix(url: string) {
   const { pathnameOriginal, pathname } = parseUrl(url, baseServer)
   assert(pathnameOriginal.endsWith(pageContextJsonFileExtension) === pathname.endsWith(pageContextJsonFileExtension), {
-    url
+    url,
   })
   return pathnameOriginal.endsWith(pageContextJsonFileExtension)
 }

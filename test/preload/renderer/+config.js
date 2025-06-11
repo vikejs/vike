@@ -2,7 +2,7 @@ export default {
   passToClient: ['pageProps'],
   meta: {
     preloadStrategy: {
-      env: { server: true }
-    }
-  }
+      env: { server: true },
+    },
+  },
 }

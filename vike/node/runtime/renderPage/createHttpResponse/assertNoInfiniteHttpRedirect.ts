@@ -5,7 +5,7 @@ import pc from '@brillout/picocolors'
 
 type Graph = Record<string, Set<string>>
 const globalObject = getGlobalObject<{ redirectGraph: Graph }>('createHttpResponse/assertNoInfiniteHttpRedirect.ts', {
-  redirectGraph: {}
+  redirectGraph: {},
 })
 
 function assertNoInfiniteHttpRedirect(
@@ -15,7 +15,7 @@ function assertNoInfiniteHttpRedirect(
   // Rationale for checking against `pageContextInit.urlOriginal`: https://github.com/vikejs/vike/pull/2264#issuecomment-2713890263
   pageContextInit: {
     urlOriginal: string
-  }
+  },
 ) {
   // TO-DO/eventually: use cookie as described at https://github.com/vikejs/vike/pull/2273
   if (true as boolean) return 'DISABLED' // Disabled until we make it reliable.

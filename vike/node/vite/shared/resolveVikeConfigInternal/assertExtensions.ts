@@ -5,7 +5,7 @@ import pc from '@brillout/picocolors'
 import { PROJECT_VERSION, assert, assertUsage, assertWarning, findPackageJson, isObject } from '../../utils.js'
 import { getConfVal } from '../resolveVikeConfigInternal.js'
 import type { PlusFile } from './getPlusFilesAll.js'
-import path from 'path'
+import path from 'node:path'
 import semver from 'semver'
 
 function assertExtensionsConventions(plusFile: PlusFile): void {
@@ -28,9 +28,9 @@ function assertConfigExportPath(plusFile: PlusFile): void {
   assertWarning(
     importPathAbsolute === importPathAbsoluteExpected,
     `The Vike configuration of ${pc.bold(name)} is exported at ${pc.bold(
-      importPathAbsolute
+      importPathAbsolute,
     )}, but it should be exported at ${pc.bold(importPathAbsoluteExpected)} instead.`,
-    { onlyOnce: true }
+    { onlyOnce: true },
   )
 }
 function assertExtensionName(plusFile: PlusFile): void {
@@ -38,7 +38,7 @@ function assertExtensionName(plusFile: PlusFile): void {
   const name = getNameValue(plusFile)
   assertUsage(
     name,
-    `Vike extension name missing: the config ${filePathToShowToUser} must define the setting ${pc.cyan('name')}`
+    `Vike extension name missing: the config ${filePathToShowToUser} must define the setting ${pc.cyan('name')}`,
   )
 }
 
@@ -64,8 +64,8 @@ function assertExtensionsRequire(plusFiles: PlusFile[]): void {
     assertUsage(
       name,
       `Setting ${pc.bold('name')} is required for being able to use setting ${pc.bold(
-        'require'
-      )} in ${filePathToShowToUser}.`
+        'require',
+      )} in ${filePathToShowToUser}.`,
     )
     Object.entries(require).forEach(([reqName, req]) => {
       const errBase = `${pc.bold(name)} requires ${pc.bold(reqName)}` as const
@@ -87,7 +87,7 @@ function assertExtensionsRequire(plusFiles: PlusFile[]): void {
       }
       assertUsage(
         isVersionRange(extensionVersion, req.version),
-        `${errBase} version ${pc.bold(req.version)}, but ${pc.bold(extensionVersion)} is installed.`
+        `${errBase} version ${pc.bold(req.version)}, but ${pc.bold(extensionVersion)} is installed.`,
       )
     })
   })
@@ -103,7 +103,7 @@ function resolveRequireSetting(plusFile: PlusFile): null | RequireSetting {
   assert(filePathToShowToUserResolved)
   assertUsage(
     isObject(requireValue),
-    `The setting ${pc.bold('+require')} defined at ${filePathToShowToUserResolved} should be an object`
+    `The setting ${pc.bold('+require')} defined at ${filePathToShowToUserResolved} should be an object`,
   )
   const requireSetting: RequireSetting = {}
   Object.entries(requireValue).forEach(([reqName, req]) => {
@@ -128,7 +128,7 @@ function getNameValue(plusFile: PlusFile): null | string {
   const filePathToShowToUser = getFilePathToShowToUser(plusFile)
   assertUsage(
     typeof name === 'string',
-    `The setting ${pc.bold('name')} defined at ${filePathToShowToUser} should be a string.`
+    `The setting ${pc.bold('name')} defined at ${filePathToShowToUser} should be a string.`,
   )
   return name
 }
@@ -146,11 +146,11 @@ function getExtensionVersion(name: string, plusFile: PlusFile): string {
     assertWarning(
       name === nameExpected,
       `The setting ${pc.bold('name')} defined at ${filePathToShowToUser} is ${pc.bold(
-        JSON.stringify(name)
+        JSON.stringify(name),
       )}, but it should be equal to ${pc.bold(JSON.stringify(nameExpected))} (the value of ${packageJsonPath}${pc.dim(
-        '#'
+        '#',
       )}${pc.bold('name')})`,
-      { onlyOnce: true }
+      { onlyOnce: true },
     )
     const { version } = packageJson
     assert(typeof version === 'string')

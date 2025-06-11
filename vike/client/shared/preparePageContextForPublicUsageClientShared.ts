@@ -7,7 +7,7 @@ import type { VikeConfigPublicPageLazy } from '../../shared/getPageFiles.js'
 import {
   assertPropertyGetters,
   type PageContextPrepareMinimum,
-  preparePageContextForPublicUsage
+  preparePageContextForPublicUsage,
 } from '../../shared/preparePageContextForPublicUsage.js'
 import type { PageContextInternalClient } from '../../types/PageContext.js'
 
@@ -16,7 +16,7 @@ type PageContextForPublicUsageClientShared = PageContextPrepareMinimum &
   VikeConfigPublicPageLazy
 
 function preparePageContextForPublicUsageClientShared<PageContext extends PageContextForPublicUsageClientShared>(
-  pageContext: PageContext
+  pageContext: PageContext,
 ): PageContext & { Page: unknown } {
   // TODO/now-proxy use proxy
   const Page =
@@ -36,7 +36,7 @@ function preparePageContextForPublicUsageClientShared<PageContext extends PageCo
 }
 
 function preparePageContextForPublicUsageClientMinimal<PageContext extends PageContextPrepareMinimum>(
-  pageContext: PageContext
+  pageContext: PageContext,
 ) {
   const pageContextPublic = preparePageContextForPublicUsage(pageContext)
   return pageContextPublic

@@ -24,7 +24,7 @@ function TopNavigation() {
           display: 'flex',
           alignItems: 'center',
           cursor: 'pointer',
-          padding: '0 var(--padding-side)'
+          padding: '0 var(--padding-side)',
         }}
       >
         <img

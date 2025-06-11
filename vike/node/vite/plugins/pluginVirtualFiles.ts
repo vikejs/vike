@@ -58,7 +58,7 @@ function pluginVirtualFiles(): Plugin {
     },
     configureServer(server) {
       handleFileAddRemove(server, config)
-    }
+    },
   }
 }
 
@@ -130,7 +130,7 @@ async function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
 
 async function isVikeConfigDependency(
   filePathAbsoluteFilesystem: string,
-  moduleGraph: ModuleGraph
+  moduleGraph: ModuleGraph,
 ): Promise<null | { isNotProcessedByVite: boolean }> {
   // Non-runtime Vike config files such as `pages/+config.js` which aren't processed by Vite.
   // - They're missing in Vite's module graph.
@@ -159,7 +159,7 @@ function reloadConfig(
   filePath: string,
   config: ResolvedConfig,
   op: 'modified' | 'created' | 'removed',
-  server: ViteDevServer
+  server: ViteDevServer,
 ) {
   // Ensure server.ssrLoadModule() loads fresh Vike virtual files (`reloadConfig()` > `updateUserFiles()` > `server.ssrLoadModule()`)
   invalidateVikeVirtualFiles(server)

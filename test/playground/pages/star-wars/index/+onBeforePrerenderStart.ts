@@ -23,9 +23,9 @@ const onBeforePrerenderStart: OnBeforePrerenderStartAsync<Data> = async (): Retu
       pageContext: {
         data: {
           movies: filterMoviesData(movies),
-          title: getTitle(movies)
-        }
-      }
+          title: getTitle(movies),
+        },
+      },
     },
     ...movies.map((movie) => {
       const url = `/star-wars/${movie.id}`
@@ -38,10 +38,10 @@ const onBeforePrerenderStart: OnBeforePrerenderStartAsync<Data> = async (): Retu
         pageContext: {
           data: {
             movie: filterMovieData(movie),
-            title: movie.title
-          }
-        }
+            title: movie.title,
+          },
+        },
       }
-    })
+    }),
   ]
 }

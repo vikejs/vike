@@ -47,7 +47,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginIntero
     pluginFileEnv(),
     pluginWorkaroundCssModuleHmr(),
     pluginWorkaroundVite6HmrRegression(),
-    pluginReplaceConstants()
+    pluginReplaceConstants(),
   ]
   Object.assign(plugins, { _vikeVitePluginOptions: vikeVitePluginOptions })
   return plugins as any
@@ -60,11 +60,11 @@ Object.defineProperty(plugin, 'apply', {
     assertUsage(
       false,
       `Add ${pc.cyan('vike()')} instead of ${pc.cyan(
-        'vike'
+        'vike',
       )} to vite.config.js#plugins (i.e. call the function and add the return value instead of adding the function itself)`,
-      { showStackTrace: true }
+      { showStackTrace: true },
     )
-  }
+  },
 })
 
 /** @deprecated Define Vike settings in +config.js instead of vite.config.js */

@@ -7,7 +7,7 @@ async function executeOnBeforeRenderAndDataHooks(
   pageContext: {
     pageId: string
     _pageContextAlreadyProvidedByOnPrerenderHook?: true
-  } & PageContextExecuteHookServer
+  } & PageContextExecuteHookServer,
 ): Promise<void> {
   if (pageContext._pageContextAlreadyProvidedByOnPrerenderHook) {
     return
@@ -18,7 +18,7 @@ async function executeOnBeforeRenderAndDataHooks(
   if (dataHook) {
     // Note: hookReturn can be anything (e.g. an object) and is to be assigned to pageContext.data
     const pageContextFromHook = {
-      data: dataHook.hookReturn
+      data: dataHook.hookReturn,
     }
     Object.assign(pageContext, pageContextFromHook)
 

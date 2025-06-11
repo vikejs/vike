@@ -12,7 +12,7 @@ import pc from '@brillout/picocolors'
 async function resolveRouteFunction(
   routeFunction: (arg: unknown) => unknown,
   pageContext: PageContextUrlInternal,
-  routeFunctionFilePath: string
+  routeFunctionFilePath: string,
 ): Promise<null | {
   precedence: number | null
   routeParams: Record<string, string>
@@ -21,10 +21,10 @@ async function resolveRouteFunction(
     {
       hookFn: routeFunction,
       hookFilePath: routeFunctionFilePath,
-      hookName: 'route'
+      hookName: 'route',
     },
     pageContext,
-    preparePageContextForPublicUsage
+    preparePageContextForPublicUsage,
   )
   assertSyncRouting(result, `The Route Function ${routeFunctionFilePath}`)
   // TODO/v1-release: make resolveRouteFunction() and route() sync
@@ -40,8 +40,8 @@ async function resolveRouteFunction(
   assertUsage(
     isPlainObject(result),
     `The Route Function ${routeFunctionFilePath} should return a boolean or a plain JavaScript object (but it's ${pc.cyan(
-      `typeof result === ${JSON.stringify(typeof result)}`
-    )} instead)`
+      `typeof result === ${JSON.stringify(typeof result)}`,
+    )} instead)`,
   )
 
   // AFAICT this return interface is superfluous. Should we soft-deprecate it and remove it?
@@ -49,7 +49,7 @@ async function resolveRouteFunction(
     const { match } = result
     assertUsage(
       typeof match === 'boolean',
-      `The ${pc.cyan('match')} value returned by the Route Function ${routeFunctionFilePath} should be a boolean.`
+      `The ${pc.cyan('match')} value returned by the Route Function ${routeFunctionFilePath} should be a boolean.`,
     )
     if (!match) {
       return null
@@ -61,21 +61,21 @@ async function resolveRouteFunction(
     precedence = result.precedence
     assertUsage(
       typeof precedence === 'number',
-      `The ${pc.cyan('precedence')} value returned by the Route Function ${routeFunctionFilePath} should be a number.`
+      `The ${pc.cyan('precedence')} value returned by the Route Function ${routeFunctionFilePath} should be a number.`,
     )
   }
 
   assertRouteParams(
     result,
-    `The ${pc.cyan('routeParams')} object returned by the Route Function ${routeFunctionFilePath} should`
+    `The ${pc.cyan('routeParams')} object returned by the Route Function ${routeFunctionFilePath} should`,
   )
   const routeParams: Record<string, string> = result.routeParams || {}
 
   assertUsage(
     !('pageContext' in result),
     `Providing ${pc.cyan(
-      'pageContext'
-    )} in Route Functions is prohibited, see https://vike.dev/route-function#cannot-provide-pagecontext`
+      'pageContext',
+    )} in Route Functions is prohibited, see https://vike.dev/route-function#cannot-provide-pagecontext`,
   )
 
   assert(isPlainObject(routeParams))
@@ -83,14 +83,14 @@ async function resolveRouteFunction(
     assertUsage(
       key === 'match' || key === 'routeParams' || key === 'precedence',
       `The Route Function ${routeFunctionFilePath} returned an object with an unknown property ${pc.cyan(
-        key
-      )} (the known properties are ${pc.cyan('match')}, ${pc.cyan('routeParams')}, and ${pc.cyan('precedence')})`
+        key,
+      )} (the known properties are ${pc.cyan('match')}, ${pc.cyan('routeParams')}, and ${pc.cyan('precedence')})`,
     )
   })
 
   return {
     precedence,
-    routeParams
+    routeParams,
   }
 }
 
@@ -99,7 +99,7 @@ function assertSyncRouting(res: unknown, errPrefix: string) {
   assertWarning(
     !isPromise(res),
     `${errPrefix} returned a promise, but asynchronous routing is deprecated and will be removed in the next major release, see https://vike.dev/route-function#async`,
-    { onlyOnce: true }
+    { onlyOnce: true },
   )
 }
 // TODO/v1-release: remove
@@ -110,7 +110,7 @@ function warnDeprecatedAllowKey() {
 
 function assertRouteParams<T>(
   result: T,
-  errPrefix: string
+  errPrefix: string,
 ): asserts result is T & { routeParams?: Record<string, string> } {
   assert(errPrefix.endsWith(' should'))
   if (!hasProp(result, 'routeParams')) {

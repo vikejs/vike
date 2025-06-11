@@ -7,7 +7,7 @@ const SIDE_EXPORTS_TOLERATE = [
   // vite-plugin-solid adds `export { $$registrations }`
   '$$registrations',
   // @vitejs/plugin-vue adds `export { _rerender_only }`
-  '_rerender_only'
+  '_rerender_only',
 ]
 // Tolerate `export { frontmatter }` in .mdx files
 const SIDE_EXPORTS_DO_NOT_CHECK = ['.md', '.mdx'] as const
@@ -38,8 +38,8 @@ function assertPlusFileExport(fileExports: Record<string, unknown>, filePathToSh
         false,
         `${filePathToShowToUser} unexpected ${pc.cyan(`export { ${exportInvalid} }`)}, see https://vike.dev/no-side-exports`,
         {
-          onlyOnce: true
-        }
+          onlyOnce: true,
+        },
       )
     })
   }

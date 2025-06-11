@@ -18,7 +18,7 @@ const data = async (pageContext) => {
   return {
     movies,
     // The page's <title>
-    title: `${movies.length} Star Wars Movies`
+    title: `${movies.length} Star Wars Movies`,
   }
 }
 

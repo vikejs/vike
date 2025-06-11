@@ -10,7 +10,7 @@ import {
   joinHtmlTags,
   injectHtmlTags,
   createHtmlHeadIfMissing,
-  injectHtmlTagsUsingStream
+  injectHtmlTagsUsingStream,
 } from './injectAssets/injectHtmlTags.js'
 import type { HtmlPart } from './renderHtml.js'
 import { getHtmlTags, type PreloadFilter, type HtmlTag } from './injectAssets/getHtmlTags.js'
@@ -37,7 +37,7 @@ type PageContextInjectAssets = {
 async function injectHtmlTagsToString(
   htmlParts: HtmlPart[],
   pageContext: PageContextInjectAssets & { _isStream: false },
-  injectFilter: PreloadFilter
+  injectFilter: PreloadFilter,
 ): Promise<string> {
   const pageAssets = await pageContext.__getPageAssets()
   const viteDevScript = await getViteDevScript(pageContext)
@@ -52,14 +52,14 @@ async function injectHtmlTagsToString(
 function injectHtmlTagsToStream(
   pageContext: PageContextInjectAssets & { _isStream: true },
   streamFromReactStreamingPackage: null | StreamFromReactStreamingPackage,
-  injectFilter: PreloadFilter
+  injectFilter: PreloadFilter,
 ) {
   let htmlTags: HtmlTag[] | undefined
 
   return {
     injectAtStreamBegin,
     injectAtStreamAfterFirstChunk,
-    injectAtStreamEnd
+    injectAtStreamEnd,
   }
 
   async function injectAtStreamBegin(htmlPartsBegin: HtmlPart[]): Promise<string> {
@@ -71,7 +71,7 @@ function injectHtmlTagsToStream(
       injectFilter,
       pageAssets,
       viteDevScript,
-      true
+      true,
     )
 
     let htmlBegin = htmlPartsToString(htmlPartsBegin, pageAssets)

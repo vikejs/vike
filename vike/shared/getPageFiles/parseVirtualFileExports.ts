@@ -10,7 +10,7 @@ import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../../types/Pag
 import { parsePageConfigs } from '../page-configs/serialize/parsePageConfigs.js'
 import type {
   PageConfigGlobalRuntimeSerialized,
-  PageConfigRuntimeSerialized
+  PageConfigRuntimeSerialized,
 } from '../page-configs/serialize/PageConfigSerialized.js'
 
 function parseVirtualFileExports(virtualFileExports: unknown): {
@@ -25,7 +25,7 @@ function parseVirtualFileExports(virtualFileExports: unknown): {
   assert(hasProp(virtualFileExports.pageFilesLazy, '.page'))
   assert(
     hasProp(virtualFileExports.pageFilesLazy, '.page.client') ||
-      hasProp(virtualFileExports.pageFilesLazy, '.page.server')
+      hasProp(virtualFileExports.pageFilesLazy, '.page.server'),
   )
   assert(hasProp(virtualFileExports, 'pageFilesList', 'string[]'))
 
@@ -108,7 +108,7 @@ function assertLoadModule(globValue: unknown): asserts globValue is () => Promis
 }
 
 function assertPageConfigsSerialized(
-  pageConfigsSerialized: unknown
+  pageConfigsSerialized: unknown,
 ): asserts pageConfigsSerialized is PageConfigRuntimeSerialized[] {
   assert(isArray(pageConfigsSerialized))
   pageConfigsSerialized.forEach((pageConfigSerialized) => {
@@ -120,7 +120,7 @@ function assertPageConfigsSerialized(
 }
 
 function assertPageConfigGlobalSerialized(
-  pageConfigGlobalSerialized: unknown
+  pageConfigGlobalSerialized: unknown,
 ): asserts pageConfigGlobalSerialized is PageConfigGlobalRuntimeSerialized {
   assert(hasProp(pageConfigGlobalSerialized, 'configValuesSerialized'))
 }

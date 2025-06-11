@@ -17,6 +17,6 @@ async function prerender(options: PrerenderOptions = {}): Promise<{
   options.viteConfig = viteConfigFromUserEnhanced
   const { viteConfig } = await runPrerenderFromAPI(options)
   return {
-    viteConfig
+    viteConfig,
   }
 }

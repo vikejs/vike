@@ -1,7 +1,7 @@
 export { cmd }
 export { isObject }
 
-import { execSync } from 'child_process'
+import { execSync } from 'node:child_process'
 
 /** @type { (command: string, options?: { cwd?: string }) => string } */
 function cmd(command, { cwd } = { cwd: undefined }) {

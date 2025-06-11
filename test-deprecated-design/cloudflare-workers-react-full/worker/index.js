@@ -6,7 +6,7 @@ addEventListener('fetch', (event) => {
     event.respondWith(
       handleFetchEvent(event).catch((err) => {
         console.error(err.stack)
-      })
+      }),
     )
   } catch (err) {
     console.error(err.stack)

@@ -7,7 +7,7 @@ export default {
     react(),
     vike({
       baseAssets,
-      baseServer
-    })
-  ]
+      baseServer,
+    }),
+  ],
 }

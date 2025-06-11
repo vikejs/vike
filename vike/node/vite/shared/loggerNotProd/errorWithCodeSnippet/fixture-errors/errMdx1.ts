@@ -6,7 +6,7 @@ export const errMdx1 = {
   column: 5,
   position: {
     start: { line: 5, column: 5, offset: 109, _index: 6, _bufferIndex: 4 },
-    end: { line: 5, column: 6, offset: 110, _index: 6, _bufferIndex: 5 }
+    end: { line: 5, column: 6, offset: 110, _index: 6, _bufferIndex: 5 },
   },
   source: 'mdast-util-mdx-jsx',
   ruleId: 'unexpected-closing-slash',
@@ -17,8 +17,8 @@ export const errMdx1 = {
   loc: {
     file: '/home/rom/code/vike/docs/pages/dynamic-import.page.server.mdx',
     start: { line: 5, column: 5, offset: 109, _index: 6, _bufferIndex: 4 },
-    end: { line: 5, column: 6, offset: 110, _index: 6, _bufferIndex: 5 }
+    end: { line: 5, column: 6, offset: 110, _index: 6, _bufferIndex: 5 },
   },
   frame: '',
-  stack: ''
+  stack: '',
 }

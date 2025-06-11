@@ -22,21 +22,21 @@ async function getViteDevScript(pageContext: {
   assertUsage(
     !fakeHtml.includes('vite-plugin-pwa'),
     `The HTML transformer of ${pc.cyan(
-      'vite-plugin-pwa'
-    )} cannot be applied, see workaround at https://github.com/vikejs/vike/issues/388#issuecomment-1199280084`
+      'vite-plugin-pwa',
+    )} cannot be applied, see workaround at https://github.com/vikejs/vike/issues/388#issuecomment-1199280084`,
   )
   assertUsage(
     !fakeHtml.startsWith(fakeHtmlBegin.replace(' ', '')),
-    `Vite plugins that minify the HTML cannot be applied, see https://github.com/vikejs/vike/issues/224`
+    `Vite plugins that minify the HTML cannot be applied, see https://github.com/vikejs/vike/issues/224`,
   )
   assertUsage(
     fakeHtml.startsWith(fakeHtmlBegin) && fakeHtml.endsWith(fakeHtmlEnd),
-    `You are using a Vite Plugin that transforms the HTML in a way that conflicts with Vike. ${reachOutCTA}`
+    `You are using a Vite Plugin that transforms the HTML in a way that conflicts with Vike. ${reachOutCTA}`,
   )
   const viteInjection = fakeHtml.slice(fakeHtmlBegin.length, -1 * fakeHtmlEnd.length)
   assert(viteInjection.includes('script'))
   assertWarning(!viteInjection.includes('import('), `Unexpected Vite injected HMR code. ${reachOutCTA}`, {
-    onlyOnce: true
+    onlyOnce: true,
   })
 
   const viteDevScript = viteInjection

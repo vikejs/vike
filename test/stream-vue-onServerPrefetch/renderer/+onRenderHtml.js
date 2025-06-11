@@ -16,7 +16,7 @@ async function onRenderHtml(pageContext) {
   return {
     documentHtml,
     pageContext: {
-      enableEagerStreaming: true
-    }
+      enableEagerStreaming: true,
+    },
   }
 }

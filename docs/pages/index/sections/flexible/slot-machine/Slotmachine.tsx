@@ -36,125 +36,125 @@ const slotMachineRegistry: slotMachineRegistryType[] = [
     name: 'React',
     group: 'ui',
     bgColor: '#FFFFFF',
-    logo: <ReactLogo />
+    logo: <ReactLogo />,
   },
   {
     id: 'vue',
     name: 'Vue',
     group: 'ui',
     bgColor: '#FFFFFF',
-    logo: <VueLogo />
+    logo: <VueLogo />,
   },
   {
     id: 'solid',
     name: 'Solid',
     group: 'ui',
     bgColor: '#E2EFF9',
-    logo: <SolidLogo />
+    logo: <SolidLogo />,
   },
   {
     id: 'spa',
     name: 'SPA',
     group: 'rendering',
     bgColor: '#E2EFF9',
-    logo: <SpaLogo />
+    logo: <SpaLogo />,
   },
   {
     id: 'ssr',
     name: 'SSR',
     group: 'rendering',
     bgColor: '#EEEEEE',
-    logo: <SsrLogo />
+    logo: <SsrLogo />,
   },
   {
     id: 'ssg',
     name: 'SSG',
     group: 'rendering',
     bgColor: '#EEEEEE',
-    logo: <SsgLogo />
+    logo: <SsgLogo />,
   },
   {
     id: 'tsrest',
     name: 'tsRest',
     group: 'data',
     bgColor: '#F3E9F7',
-    logo: <TsrestLogo />
+    logo: <TsrestLogo />,
   },
   {
     id: 'graphql',
     name: 'GraphQL',
     group: 'data',
     bgColor: '#F7E9F3',
-    logo: <GraphqlLogo />
+    logo: <GraphqlLogo />,
   },
   {
     id: 'rest',
     name: 'Rest',
     group: 'data',
     bgColor: '#FFFFFF',
-    logo: <RestLogo />
+    logo: <RestLogo />,
   },
   {
     id: 'trpc',
     name: 'tRPC',
     group: 'data',
     bgColor: '#E2EFF9',
-    logo: <TrpcLogo />
+    logo: <TrpcLogo />,
   },
   {
     id: 'telefunc',
     name: 'Telefunc',
     group: 'data',
     bgColor: '#EEEEEE',
-    logo: <TelefuncLogo />
+    logo: <TelefuncLogo />,
   },
   {
     id: 'elysia',
     name: 'Elysia',
     group: 'backend',
     bgColor: '#FFFFFF',
-    logo: <ElysiaLogo />
+    logo: <ElysiaLogo />,
   },
   {
     id: 'fastify',
     name: 'Fastify',
     group: 'backend',
     bgColor: '#EEEEEE',
-    logo: <FastifyLogo />
+    logo: <FastifyLogo />,
   },
   {
     id: 'express',
     name: 'Express',
     group: 'backend',
     bgColor: '#FFFFFF',
-    logo: <ExpressLogo />
+    logo: <ExpressLogo />,
   },
   {
     id: 'hono',
     name: 'Hono',
     group: 'backend',
     bgColor: 'F7E9E9',
-    logo: <HonoLogo />
+    logo: <HonoLogo />,
   },
   {
     id: 'server',
     name: 'Server',
     group: 'deployment',
     bgColor: '#EEEEEE',
-    logo: <ServerLogo />
+    logo: <ServerLogo />,
   },
   {
     id: 'edge',
     name: 'Edge',
     group: 'deployment',
     bgColor: '#EEEEEE',
-    logo: <EdgeLogo />
+    logo: <EdgeLogo />,
   },
   {
     id: 'static',
     name: 'Static',
     group: 'deployment',
     bgColor: '#EEEEEE',
-    logo: <StaticLogo />
-  }
+    logo: <StaticLogo />,
+  },
 ]

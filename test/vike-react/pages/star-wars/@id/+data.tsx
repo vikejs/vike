@@ -20,7 +20,7 @@ const data = async (pageContext: PageContextServer) => {
       <>
         <meta name="description" content={`Star Wars Movie ${title} from ${movie.director}`} />
       </>
-    )
+    ),
   })
 
   // We remove data we don't need because the data is passed to the client; we should

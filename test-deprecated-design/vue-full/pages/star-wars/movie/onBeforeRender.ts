@@ -19,12 +19,12 @@ async function onBeforeRender(pageContext: PageContextBuiltInServer) {
   return {
     pageContext: {
       pageProps: {
-        movie
+        movie,
       },
       documentProps: {
         // The page's <title>
-        title
-      }
-    }
+        title,
+      },
+    },
   }
 }

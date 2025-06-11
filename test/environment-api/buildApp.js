@@ -1,8 +1,8 @@
 export { buildApp }
 
 import { build } from 'vike/api'
-import { fileURLToPath } from 'url'
-import { dirname } from 'path'
+import { fileURLToPath } from 'node:url'
+import { dirname } from 'node:path'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
 async function buildApp() {
@@ -10,7 +10,7 @@ async function buildApp() {
   await build({
     viteConfig: {
       root: __dirname,
-      configFile: __dirname + '/vite.config.js'
-    }
+      configFile: __dirname + '/vite.config.js',
+    },
   })
 }

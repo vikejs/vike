@@ -21,7 +21,7 @@ import type {
   PageConfigBuildTime,
   PageConfigGlobalRuntime,
   PageConfigRuntime,
-  PageConfigRuntimeLoaded
+  PageConfigRuntimeLoaded,
 } from '../../types/PageConfig.js'
 import { type ConfigDefinedAtOptional, getConfigDefinedAtOptional, getDefinedAtString } from './getConfigDefinedAt.js'
 import { getConfigValueFilePathToShowToUser } from './helpers.js'
@@ -34,7 +34,7 @@ import {
   isBrowser,
   isScriptFile,
   isTemplateFile,
-  objectDefineProperty
+  objectDefineProperty,
 } from '../utils.js'
 import pc from '@brillout/picocolors'
 import type { ConfigResolved } from '../../types/Config/PageContextConfig.js'
@@ -172,7 +172,7 @@ type VikeConfigPublicGlobal = VikeConfigPublic
 function resolveVikeConfigPublicPageEager(
   pageConfigGlobalValues: ConfigValues,
   pageConfig: PageConfigRuntime | PageConfigBuildTime,
-  pageConfigValues: ConfigValues
+  pageConfigValues: ConfigValues,
 ): [string, VikeConfigPublicPageEager] {
   const vikeConfigPublicPage_ = resolveVikeConfigPublic_base({ pageConfigGlobalValues, pageConfigValues })
   const vikeConfigPublicPage = getPublicCopy(vikeConfigPublicPage_)
@@ -181,12 +181,12 @@ function resolveVikeConfigPublicPageEager(
     const route = vikeConfigPublicPage.config.route ?? pageConfig.routeFilesystem.routeString
     page = {
       ...vikeConfigPublicPage,
-      route
+      route,
     }
   } else {
     page = {
       ...vikeConfigPublicPage,
-      isErrorPage: true
+      isErrorPage: true,
     }
   }
   return [pageConfig.pageId, page]
@@ -196,19 +196,19 @@ function getPublicCopy(vikeConfigPublic: ReturnType<typeof resolveVikeConfigPubl
     config: vikeConfigPublic.config,
     _source: vikeConfigPublic.source,
     _sources: vikeConfigPublic.sources,
-    _from: vikeConfigPublic.from
+    _from: vikeConfigPublic.from,
   }
 }
 function resolveVikeConfigPublic_base({
   pageConfigGlobalValues,
-  pageConfigValues
+  pageConfigValues,
 }: { pageConfigGlobalValues: ConfigValues; pageConfigValues: ConfigValues }) {
   const configValues = { ...pageConfigGlobalValues, ...pageConfigValues }
   return resolveVikeConfigPublic_V1Design({ configValues })
 }
 
 function resolveVikeConfigPublicGlobal({
-  pageConfigGlobalValues
+  pageConfigGlobalValues,
 }: { pageConfigGlobalValues: ConfigValues }): VikeConfigPublicGlobal {
   const vikeConfigPublicGlobal = resolveVikeConfigPublic_V1Design({ configValues: pageConfigGlobalValues })
   return getPublicCopy(vikeConfigPublicGlobal)
@@ -217,7 +217,7 @@ function resolveVikeConfigPublicGlobal({
 function resolveVikeConfigPublicPageLazy(
   pageFiles: PageFile[], // V0.4 design
   pageConfig: PageConfigRuntimeLoaded | null, // V1 design
-  pageConfigGlobal: PageConfigGlobalRuntime
+  pageConfigGlobal: PageConfigGlobalRuntime,
 ): VikeConfigPublicPageLazy {
   const config: Record<string, unknown> = {}
   const configEntries: ConfigEntries = {} // TODO/v1-release: remove
@@ -238,7 +238,7 @@ function resolveVikeConfigPublicPageLazy(
         filePath: pageFile.filePath,
         _filePath: pageFile.filePath, // TODO/next-major-release: remove
         _fileType: pageFile.fileType,
-        _isFromDefaultExport: isFromDefaultExport
+        _isFromDefaultExport: isFromDefaultExport,
       })
     })
   })
@@ -249,7 +249,7 @@ function resolveVikeConfigPublicPageLazy(
   if (pageConfig) {
     const res = resolveVikeConfigPublic_base({
       pageConfigGlobalValues: pageConfigGlobal.configValues,
-      pageConfigValues: pageConfig.configValues
+      pageConfigValues: pageConfig.configValues,
     })
     source = res.source
     sources = res.sources
@@ -263,7 +263,7 @@ function resolveVikeConfigPublicPageLazy(
     from = {
       configsStandard: {},
       configsCumulative: {},
-      configsComputed: {}
+      configsComputed: {},
     }
   }
 
@@ -294,7 +294,7 @@ function resolveVikeConfigPublicPageLazy(
     // TODO/now-flat-pageContext: deprecate every prop below
     configEntries,
     exports,
-    exportsAll
+    exportsAll,
   }
 
   // TODO/v1-release: remove
@@ -304,13 +304,13 @@ function resolveVikeConfigPublicPageLazy(
       if (!isBrowser()) {
         assertWarning(false, 'pageContext.pageExports is outdated, use pageContext.exports instead', {
           onlyOnce: true,
-          showStackTrace: true
+          showStackTrace: true,
         })
       }
       return pageExports
     },
     enumerable: false,
-    configurable: true
+    configurable: true,
   })
 
   return pageContextExports
@@ -326,7 +326,7 @@ function resolveVikeConfigPublic_V1Design(pageConfig: { configValues: ConfigValu
   const from: From = {
     configsStandard: {},
     configsCumulative: {},
-    configsComputed: {}
+    configsComputed: {},
   }
 
   const addSrc = (src: SourceAny, configName: string) => {
@@ -343,7 +343,7 @@ function resolveVikeConfigPublic_V1Design(pageConfig: { configValues: ConfigValu
     configEntries[configName]!.push({
       configValue: value,
       configDefinedAt,
-      configDefinedByFile: configValueFilePathToShowToUser
+      configDefinedByFile: configValueFilePathToShowToUser,
     })
 
     // TODO/v1-release: remove
@@ -355,7 +355,7 @@ function resolveVikeConfigPublic_V1Design(pageConfig: { configValues: ConfigValu
       filePath: configValueFilePathToShowToUser,
       _filePath: configValueFilePathToShowToUser,
       _fileType: null,
-      _isFromDefaultExport: null
+      _isFromDefaultExport: null,
     })
   }
 
@@ -368,7 +368,7 @@ function resolveVikeConfigPublic_V1Design(pageConfig: { configValues: ConfigValu
       const src: SourceConfigsStandard = {
         type: 'configsStandard',
         value: configValue.value,
-        definedAt: getDefinedAtString(configValue.definedAtData, configName)
+        definedAt: getDefinedAtString(configValue.definedAtData, configName),
       }
       addSrc(src, configName)
       from.configsStandard[configName] = src
@@ -385,9 +385,9 @@ function resolveVikeConfigPublic_V1Design(pageConfig: { configValues: ConfigValu
           addLegacy(configName, value, definedAtFile)
           return {
             value,
-            definedAt
+            definedAt,
           }
-        })
+        }),
       }
       addSrc(src, configName)
       from.configsCumulative[configName] = src
@@ -396,7 +396,7 @@ function resolveVikeConfigPublic_V1Design(pageConfig: { configValues: ConfigValu
       const src: SourceConfigsComputed = {
         type: 'configsComputed',
         definedAt: 'Vike', // Vike currently doesn't support user-land computed configs => computed configs are always defined by Vike => there isn't any file path to show.
-        value: configValue.value
+        value: configValue.value,
       }
       addSrc(src, configName)
       from.configsComputed[configName] = src
@@ -410,7 +410,7 @@ function resolveVikeConfigPublic_V1Design(pageConfig: { configValues: ConfigValu
     exportsAll,
     source,
     sources,
-    from
+    from,
   }
 }
 
@@ -440,7 +440,7 @@ function getExportValues(pageFile: PageFile) {
             exportValues.push({
               exportName: defaultExportName,
               exportValue: defaultExportValue,
-              isFromDefaultExport
+              isFromDefaultExport,
             })
           })
           return
@@ -450,7 +450,7 @@ function getExportValues(pageFile: PageFile) {
       exportValues.push({
         exportName,
         exportValue,
-        isFromDefaultExport
+        isFromDefaultExport,
       })
     })
 

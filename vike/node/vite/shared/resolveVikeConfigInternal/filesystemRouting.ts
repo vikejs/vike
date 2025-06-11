@@ -46,7 +46,7 @@ type LocationId = string & { __brand: 'LocationId' }
  */
 function getLocationId(
   // We always determine `locationId` from a real user-land file: the `locationId` for Vike extensions is the `locationId` of the the user's `+config.js` that extends the Vike extension.
-  filePathAbsoluteUserRootDir: string
+  filePathAbsoluteUserRootDir: string,
 ): LocationId {
   assertPosixPath(filePathAbsoluteUserRootDir)
   assert(filePathAbsoluteUserRootDir.startsWith('/'))
@@ -68,7 +68,7 @@ function getInheritanceRoot(locationId: LocationId): string {
     //   ```
     // - Not sure if it's a good idea? Could it make config inheritance confusing? Let's try for now and see how it goes.
     // - TO-DO/eventually: update docs https://github.com/vikejs/vike/blob/5fcdc4d5094f1a4dcbefc0b481cdd30a205aef2d/docs/pages/filesystem-routing/%2BPage.mdx?plain=1#L98
-    'pages'
+    'pages',
   ])
 }
 /**
@@ -84,7 +84,7 @@ function getLogicalPath(locationId: LocationId, ignoredDirs: string[], removePar
 function sortAfterInheritanceOrder(
   locationId1: LocationId,
   locationId2: LocationId,
-  locationIdPage: LocationId
+  locationIdPage: LocationId,
 ): -1 | 1 | 0 {
   assertLocationId(locationId1)
   assertLocationId(locationId2)
@@ -169,9 +169,9 @@ function assertRedundantParentheses(dir: string, ignoredDirs: string[], somePath
     [
       `The directories ${logDir(dirnameCorect)} are always ignored by Vike's Filesystem Routing`,
       '(https://vike.dev/filesystem-routing):',
-      `rename directory ${logDir(dirpathActual)} to ${logDir(dirpathCorect)}`
+      `rename directory ${logDir(dirpathActual)} to ${logDir(dirpathCorect)}`,
     ].join(' '),
-    { onlyOnce: true }
+    { onlyOnce: true },
   )
 }
 
@@ -196,7 +196,7 @@ function getFilesystemRouteDefinedBy(locationId: LocationId): string {
 
 function applyFilesystemRoutingRootEffect(
   routeFilesystem: string,
-  filesystemRoutingRootEffect: { before: string; after: string }
+  filesystemRoutingRootEffect: { before: string; after: string },
 ): string {
   const { before, after } = filesystemRoutingRootEffect
   assert(after.startsWith('/'))

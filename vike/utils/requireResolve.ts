@@ -36,7 +36,7 @@ function requireResolve_(
   importPath: string,
   importerFilePath: string | null,
   userRootDir: string | null,
-  doNotHandleFileExtension: boolean = false
+  doNotHandleFileExtension: boolean = false,
 ) {
   assertPosixPath(importPath)
 
@@ -81,7 +81,7 @@ function requireResolve_(
         userRootDir,
         doNotHandleFileExtension,
         importMetaUrl,
-        contexts
+        contexts,
       })
     }
     return { importPathResolvedFilePath: undefined, err: failure.err, hasFailed: true as const }
@@ -89,7 +89,7 @@ function requireResolve_(
     if (failure && debug.isActivated) {
       debug('SUCCESS', {
         importPath,
-        contexts
+        contexts,
       })
     }
     assert(importPathResolvedFilePath)
@@ -100,7 +100,7 @@ function requireResolve_(
 function requireResolveOptional({
   importPath,
   importerFilePath,
-  userRootDir
+  userRootDir,
 }: { importPath: string; importerFilePath: string; userRootDir: string }): string | null {
   const res = requireResolve_(importPath, importerFilePath, userRootDir)
   if (res.hasFailed) return null
@@ -109,7 +109,7 @@ function requireResolveOptional({
 function requireResolveOptionalDir({
   importPath,
   importerDir,
-  userRootDir
+  userRootDir,
 }: { importPath: string; importerDir: string; userRootDir: string }): string | null {
   const importerFilePath = getFakeImporterFile(importerDir)
   const res = requireResolve_(importPath, importerFilePath, userRootDir)
@@ -118,7 +118,7 @@ function requireResolveOptionalDir({
 }
 function requireResolveNpmPackage({
   importPathNpmPackage,
-  userRootDir
+  userRootDir,
 }: { importPathNpmPackage: string; userRootDir: string }): string {
   assertIsImportPathNpmPackage(importPathNpmPackage)
   const importerFilePath = getFakeImporterFile(userRootDir)
@@ -139,7 +139,7 @@ function requireResolveVikeDistFile(vikeDistFile: `dist/esm/${string}`) {
       // No context needed: importPathResolvedFilePath is already resolved and absolute
       null,
       null,
-      true
+      true,
     )
     if (res.hasFailed) throw res.err
     assert(res.importPathResolvedFilePath === importPathResolvedFilePath)
@@ -157,7 +157,7 @@ function addExtraContextForNpmPackageImport(contexts: string[], importPath: stri
     // Workaround for monorepo resolve issue: https://github.com/vikejs/vike-react/pull/161/commits/dbaa6643e78015ac2797c237552800fef29b72a7
     userRootDirFakeFile,
     // I can't think of a use case where this would be needed, but let's add one extra last chance to sucessfully resolve some complex monorepo setups
-    importMetaUrl
+    importMetaUrl,
   ]
     .filter(isNotNullish)
     .forEach((context) => {

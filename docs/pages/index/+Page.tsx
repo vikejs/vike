@@ -17,7 +17,7 @@ function Page() {
       <Block
         style={{
           marginTop: 0,
-          backgroundColor: heroBgColor
+          backgroundColor: heroBgColor,
         }}
       >
         <Hero />
@@ -25,7 +25,7 @@ function Page() {
       <Block
         noGrid
         style={{
-          padding: 0
+          padding: 0,
         }}
       >
         <Flexible />
@@ -34,21 +34,21 @@ function Page() {
         noGrid
         style={{
           padding: 0,
-          backgroundColor: '#f9f9f9'
+          backgroundColor: '#f9f9f9',
         }}
       >
         <Reliable />
       </Block>
       <Block
         style={{
-          backgroundColor: '#EEEEF2'
+          backgroundColor: '#EEEEF2',
         }}
       >
         <Features />
       </Block>
       <Block
         style={{
-          padding: 0
+          padding: 0,
         }}
         noGrid
       >
@@ -60,7 +60,7 @@ function Page() {
       <Block
         style={{
           padding: 0,
-          backgroundColor: '#fbfbfb'
+          backgroundColor: '#fbfbfb',
         }}
       >
         <End />
@@ -72,7 +72,7 @@ function Page() {
 function Block({
   children,
   style,
-  noGrid
+  noGrid,
 }: {
   children?: React.ReactNode
   style?: React.CSSProperties
@@ -85,7 +85,7 @@ function Block({
         display: 'flex',
         justifyContent: 'center',
         marginTop: 'var(--block-margin)',
-        ...style
+        ...style,
       }}
     >
       {noGrid ? children : <Grid>{children}</Grid>}

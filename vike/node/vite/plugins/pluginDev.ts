@@ -58,9 +58,9 @@ function pluginDev(): Plugin[] {
               // // ../../node_modules/.pnpm/react-streaming@0.3.16_react-dom@18.2.0_react@18.2.0/node_modules/react-streaming/dist/esm/client/useAsync.js
               // import { parse as parse2 } from "@brillout/json-serializer/parse";
               // ```
-              'react-streaming'
-            ]
-          }
+              'react-streaming',
+            ],
+          },
         } satisfies UserConfig
       },
       async configResolved(config_) {
@@ -72,7 +72,7 @@ function pluginDev(): Plugin[] {
           improveViteLogs(config)
         }
         logDockerHint(config.server.host)
-      }
+      },
     },
     {
       name: 'vike:pluginDev:addSsrMiddleware',
@@ -87,7 +87,7 @@ function pluginDev(): Plugin[] {
           return () => {
             addSsrMiddleware(server.middlewares, config, false, null)
           }
-        }
+        },
       },
       // Setting `configResolved.clearScreen = false` doesn't work
       config: {
@@ -96,9 +96,9 @@ function pluginDev(): Plugin[] {
           if (isErrorDebug()) {
             return { clearScreen: false }
           }
-        }
-      }
-    }
+        },
+      },
+    },
   ]
 }
 
@@ -107,7 +107,7 @@ function logDockerHint(configHost: ResolvedConfig['server']['host']) {
     assertWarning(
       configHost,
       `Your app seems to be running inside a Docker or Podman container but ${pc.cyan('--host')} isn't set which means that your Vike app won't be accessible from outside the container, see https://vike.dev/docker`,
-      { onlyOnce: true }
+      { onlyOnce: true },
     )
   }
 }

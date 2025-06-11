@@ -41,7 +41,7 @@ describe('removeUrlOrigin() / setUrlOrigin()', () => {
       'http://a.b/c/d?a=b#c',
       '/a/b/?c=d#e',
       'http://a.b.c//d/e',
-      '//a/c/cwabehiwqehqwueh'
+      '//a/c/cwabehiwqehqwueh',
     ].forEach((url) => {
       const { urlModified, origin } = removeUrlOrigin(url)
       expect(urlModified[0]).toBe('/')

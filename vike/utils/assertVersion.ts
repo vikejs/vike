@@ -6,13 +6,13 @@ import { assert, assertUsage } from './assert.js'
 function assertVersion(
   dependencyName: 'Vite' | 'Node.js',
   versionActual: string,
-  versionExpected: `${number}.${number}.${number}`
+  versionExpected: `${number}.${number}.${number}`,
 ) {
   assert(versionActual)
   assert(versionExpected)
   assertUsage(
     isVersionOrAbove(versionActual, versionExpected),
-    `${dependencyName} ${versionActual} isn't supported, use ${dependencyName} >= ${versionExpected} instead.`
+    `${dependencyName} ${versionActual} isn't supported, use ${dependencyName} >= ${versionExpected} instead.`,
   )
 }
 

@@ -7,7 +7,7 @@ import { prependEntriesDir } from '../../../shared/prependEntriesDir.js'
 
 function getManifestEntry(
   id: string,
-  assetsManifest: ViteManifest
+  assetsManifest: ViteManifest,
 ): { manifestKey: string; manifestEntry: ViteManifestEntry } {
   const debugInfo = getDebugInfo(id, assetsManifest)
 

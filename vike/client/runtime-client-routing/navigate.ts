@@ -40,7 +40,7 @@ async function navigate(url: string, options?: Options): Promise<void> {
     urlOriginal: url,
     overwriteLastHistoryEntry,
     isBackwardNavigation: false,
-    pageContextInitClient: pageContext
+    pageContextInitClient: pageContext,
   })
 }
 

@@ -19,7 +19,7 @@ function getErrorPageId(pageFilesAll: PageFile[], pageConfigs: PageConfigRuntime
   const errorPageIds = unique(pageFilesAll.map(({ pageId }) => pageId).filter((pageId) => isErrorPageId(pageId, false)))
   assertUsage(
     errorPageIds.length <= 1,
-    `Only one _error.page.js is allowed, but found several: ${errorPageIds.join(' ')}`
+    `Only one _error.page.js is allowed, but found several: ${errorPageIds.join(' ')}`,
   )
   if (errorPageIds.length > 0) {
     const errorPageId = errorPageIds[0]

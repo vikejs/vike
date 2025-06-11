@@ -9,7 +9,7 @@ export default function LayoutDefault(props: { children?: JSX.Element }) {
       style={{
         display: 'flex',
         'max-width': '900px',
-        margin: 'auto'
+        margin: 'auto',
       }}
     >
       <Sidebar>
@@ -33,7 +33,7 @@ function Sidebar(props: { children: JSX.Element }) {
         display: 'flex',
         'flex-direction': 'column',
         'line-height': '1.8em',
-        'border-right': '2px solid #eee'
+        'border-right': '2px solid #eee',
       }}
     >
       {props.children}
@@ -49,7 +49,7 @@ function Content(props: { children: JSX.Element }) {
         style={{
           padding: '20px',
           'padding-bottom': '50px',
-          'min-height': '100vh'
+          'min-height': '100vh',
         }}
       >
         {props.children}
@@ -63,7 +63,7 @@ function Logo() {
     <div
       style={{
         'margin-top': '20px',
-        'margin-bottom': '10px'
+        'margin-bottom': '10px',
       }}
     >
       <a href="/">

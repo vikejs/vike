@@ -48,7 +48,7 @@ function enhance(stateNotEnhanced: StateNotEnhanced): StateEnhanced {
       timestamp,
       scrollPosition,
       triggeredBy,
-      _isVikeEnhanced: true
+      _isVikeEnhanced: true,
     }
   } else {
     // State information may be incomplete if `window.history.state` is set by an old Vike version. (E.g. `state.timestamp` was introduced for `pageContext.isBackwardNavigation` in `0.4.19`.)
@@ -56,7 +56,7 @@ function enhance(stateNotEnhanced: StateNotEnhanced): StateEnhanced {
       timestamp: stateNotEnhanced.timestamp ?? timestamp,
       scrollPosition: stateNotEnhanced.scrollPosition ?? scrollPosition,
       triggeredBy: stateNotEnhanced.triggeredBy ?? triggeredBy,
-      _isVikeEnhanced: true
+      _isVikeEnhanced: true,
     }
   }
   assert(isVikeEnhanced(stateVikeEnhanced))
@@ -99,7 +99,7 @@ function pushHistoryState(url: string, overwriteLastHistoryEntry: boolean) {
       // I don't remember why I set it to `null`, maybe because setting it now would be too early? (Maybe there is a delay between renderPageClientSide() is finished and the browser updating the scroll position.) Anyways, it seems like autoSaveScrollPosition() is enough.
       scrollPosition: null,
       triggeredBy: 'vike',
-      _isVikeEnhanced: true
+      _isVikeEnhanced: true,
     }
     // Calling the monkey patched history.pushState() (and not the orignal) so that other tools (e.g. user tracking) can listen to Vike's pushState() calls.
     // - https://github.com/vikejs/vike/issues/1582
@@ -127,7 +127,7 @@ function monkeyPatchHistoryAPI() {
     window.history[funcName] = (stateOriginal: unknown = {}, ...rest) => {
       assertUsage(
         stateOriginal === undefined || stateOriginal === null || isObject(stateOriginal),
-        `history.${funcName}(state) argument state must be an object`
+        `history.${funcName}(state) argument state must be an object`,
       )
       const stateEnhanced: StateEnhanced = isVikeEnhanced(stateOriginal)
         ? stateOriginal
@@ -136,7 +136,7 @@ function monkeyPatchHistoryAPI() {
             scrollPosition: getScrollPosition(),
             timestamp: getTimestamp(),
             triggeredBy: 'user',
-            ...stateOriginal
+            ...stateOriginal,
           }
       assert(isVikeEnhanced(stateEnhanced))
       const ret = funcOriginal(stateEnhanced, ...rest)
@@ -169,7 +169,7 @@ type HistoryInfo = {
 function getHistoryInfo(): HistoryInfo {
   return {
     url: getCurrentUrl(),
-    state: getState()
+    state: getState(),
   }
 }
 function onPopStateBegin() {

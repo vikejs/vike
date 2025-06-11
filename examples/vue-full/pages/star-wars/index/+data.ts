@@ -11,6 +11,6 @@ const data = async () => {
     // minimize what is sent over the network.
     movies: filterMoviesData(movies),
     // The page's <title>
-    title: getTitle(movies)
+    title: getTitle(movies),
   }
 }

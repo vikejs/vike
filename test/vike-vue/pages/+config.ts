@@ -18,12 +18,12 @@ export default {
   bodyHtmlEnd: '<div id="bodyHtmlEnd-test"></div>',
   meta: {
     baseCanonicalUrl: {
-      env: { server: true, client: true }
-    }
+      env: { server: true, client: true },
+    },
   },
   bodyAttributes: {
-    class: 'dark'
-  }
+    class: 'dark',
+  },
 } satisfies Config
 
 declare global {

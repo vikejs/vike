@@ -4,7 +4,7 @@ export type { PageContextExecuteHookServer }
 import { execHook } from '../../../shared/hooks/execHook.js'
 import {
   preparePageContextForPublicUsageServer,
-  type PageContextForPublicUsageServer
+  type PageContextForPublicUsageServer,
 } from './preparePageContextForPublicUsageServer.js'
 import type { VikeConfigPublicPageLazy } from '../../../shared/getPageFiles.js'
 import type { HookName } from '../../../types/Config.js'

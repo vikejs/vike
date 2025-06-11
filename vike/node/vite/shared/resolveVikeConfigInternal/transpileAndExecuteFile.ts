@@ -12,10 +12,10 @@ import {
   type Message,
   version,
   type ResolveResult,
-  type OnResolveResult
+  type OnResolveResult,
 } from 'esbuild'
-import fs from 'fs'
-import path from 'path'
+import fs from 'node:fs'
+import path from 'node:path'
 import pc from '@brillout/picocolors'
 import { import_ } from '@brillout/import'
 import {
@@ -35,7 +35,7 @@ import {
   isVitest,
   isImportPathNpmPackageOrPathAlias,
   isImportPathRelative,
-  requireResolveOptionalDir
+  requireResolveOptionalDir,
 } from '../../utils.js'
 import { transformPointerImports } from './pointerImports.js'
 import sourceMapSupport from 'source-map-support'
@@ -61,7 +61,7 @@ async function transpileAndExecuteFile(
   filePath: FilePathResolved,
   userRootDir: string,
   isExtensionConfig: boolean,
-  esbuildCache: EsbuildCache
+  esbuildCache: EsbuildCache,
 ): Promise<FileExports> {
   const { filePathAbsoluteFilesystem, filePathToShowToUserResolved } = filePath
   assert(filePathAbsoluteFilesystem)
@@ -75,20 +75,20 @@ async function transpileAndExecuteFile(
 
   assertUsage(
     isPlainScriptFile(filePathAbsoluteFilesystem),
-    `${filePathToShowToUserResolved} has file extension .${fileExtension} but a config file can only be a JavaScript/TypeScript file`
+    `${filePathToShowToUserResolved} has file extension .${fileExtension} but a config file can only be a JavaScript/TypeScript file`,
   )
   const isHeader = isHeaderFile(filePathAbsoluteFilesystem)
   if (isHeader) {
     assertWarning(
       false,
       `${pc.cyan(
-        '.h.js'
+        '.h.js',
       )} files are deprecated: simply renaming ${filePathToShowToUserResolved} to ${removeHeaderFileExtension(
-        filePathToShowToUserResolved
+        filePathToShowToUserResolved,
       )} is usually enough, although you may occasionally need to use ${pc.cyan(
-        "with { type: 'pointer' }"
+        "with { type: 'pointer' }",
       )} as explained at https://vike.dev/config#pointer-imports`,
-      { onlyOnce: true }
+      { onlyOnce: true },
     )
   }
 
@@ -110,7 +110,7 @@ async function transpileFile(
   filePath: FilePathResolved,
   transformImports: boolean | 'all',
   userRootDir: string,
-  esbuildCache: EsbuildCache
+  esbuildCache: EsbuildCache,
 ) {
   const { filePathAbsoluteFilesystem, filePathToShowToUserResolved } = filePath
 
@@ -141,7 +141,7 @@ async function transpileWithEsbuild(
   filePath: FilePathResolved,
   userRootDir: string,
   transformImports: boolean | 'all',
-  esbuildCache: EsbuildCache
+  esbuildCache: EsbuildCache,
 ) {
   const entryFilePath = filePath.filePathAbsoluteFilesystem
   const entryFileDir = path.posix.dirname(entryFilePath)
@@ -155,7 +155,7 @@ async function transpileWithEsbuild(
       // Needed for correct inline source map
       entryFileDir,
       // `write: false` => no file is actually emitted
-      'NEVER_EMITTED.js'
+      'NEVER_EMITTED.js',
     ),
     logLevel: 'silent',
     format: 'esm',
@@ -165,7 +165,7 @@ async function transpileWithEsbuild(
     treeShaking: false,
     minify: false,
     metafile: true,
-    bundle: true
+    bundle: true,
   }
 
   const pointerImports: Record<string, boolean> = {}
@@ -197,7 +197,7 @@ async function transpileWithEsbuild(
             const resolvedWithNode = requireResolveOptionalDir({
               importPath: path,
               importerDir: toPosixPath(args.resolveDir),
-              userRootDir
+              userRootDir,
             })
             if (debugEsbuildResolve.isActivated) debugEsbuildResolve('resolvedWithNode', resolvedWithNode)
             if (resolvedWithNode) resolved = { path: resolvedWithNode }
@@ -281,7 +281,7 @@ async function transpileWithEsbuild(
             //  - Path alias
             const filePathAbsoluteUserRootDir = getFilePathAbsoluteUserRootDir({
               filePathAbsoluteFilesystem: importPathResolved,
-              userRootDir
+              userRootDir,
             })
             if (filePathAbsoluteUserRootDir && !isNpmPkgImport) {
               // `importPathOriginal` is most likely a path alias.
@@ -305,12 +305,12 @@ async function transpileWithEsbuild(
             // Import of runtime code => handled by Vike
             isPointerImport ||
               // Import of config code => loaded by Node.js at build-time
-              isNpmPkgImport
+              isNpmPkgImport,
           )
           pointerImports[importPathTranspiled] = isPointerImport
           return { external: true, path: importPathTranspiled }
         })
-      }
+      },
     },
     // Track dependencies
     {
@@ -332,8 +332,8 @@ async function transpileWithEsbuild(
          *  - But implementing a fix is complex and isn't worth it.
         b.onResolve(...)
         */
-      }
-    }
+      },
+    },
   ]
 
   let result: BuildResult
@@ -404,7 +404,7 @@ async function formatBuildErr(err: unknown, filePath: FilePathResolved): Promise
   const msgEsbuild = (
     await formatMessages(err.errors as any, {
       kind: 'error',
-      color: true
+      color: true,
     })
   )
     .map((m) => m.trim())
@@ -475,7 +475,7 @@ function getErrIntroMsg(operation: 'transpile' | 'execute', filePath: FilePathRe
     // prettier ignore
     pc.red(`Failed to ${operation}`),
     pc.bold(pc.red(filePathToShowToUserResolved)),
-    pc.red(`because:`)
+    pc.red(`because:`),
   ].join(' ')
   return msg
 }
@@ -501,8 +501,8 @@ function cleanEsbuildErrors(errors: Message[]) {
           //  You can mark the path "#root/renderer/onRenderHtml_typo" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
           //
           // ```
-          !note.text.includes('as external to exclude it from the bundle')
-      ))
+          !note.text.includes('as external to exclude it from the bundle'),
+      )),
   )
 }
 

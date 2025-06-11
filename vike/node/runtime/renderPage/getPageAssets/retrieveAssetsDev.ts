@@ -24,7 +24,7 @@ async function retrieveAssetsDev(clientDependencies: ClientDependency[], viteDev
       }
       assert(mod, { id })
       collectCss(mod, assetUrls, new Set())
-    })
+    }),
   )
   return Array.from(assetUrls)
 }

@@ -9,7 +9,7 @@ import {
   assertIsImportPathNpmPackage,
   assertIsNotProductionRuntime,
   requireResolveNpmPackage,
-  requireResolveVikeDistFile
+  requireResolveVikeDistFile,
 } from '../utils.js'
 import type { ViteDevServer } from 'vite'
 

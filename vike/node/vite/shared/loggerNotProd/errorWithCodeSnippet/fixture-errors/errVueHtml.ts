@@ -9,5 +9,5 @@ export const errVueHtml = {
   pluginCode:
     "<template>\n  <h1>Welcome to Vike<h1>\n  This page is:\n  <ul>\n    <li>Rendered to HTML.</li>\n    <li>Interactive. <Counter /></li>\n  </ul>\n  <p>\n    <button @click=\"randomNavigation\">Random Page</button>\n  </p>\n</template>\n\n<script lang=\"ts\" setup>\nimport Counter from '../../components/Counter.vue'\nimport { navigate } from 'vike/client/router'\n\nconst randomNavigation = () => {\n  const randomIndex = Math.floor(Math.random() * 3)\n  navigate(['/markdown', '/star-wars', '/hello/alice.js'][randomIndex])\n}\n</script>\n",
   frame:
-    '1  |  <template>\n2  |    <h1>Welcome to Vike<h1>\n   |                                                ^\n3  |    This page is:\n4  |    <ul>'
+    '1  |  <template>\n2  |    <h1>Welcome to Vike<h1>\n   |                                                ^\n3  |    This page is:\n4  |    <ul>',
 }

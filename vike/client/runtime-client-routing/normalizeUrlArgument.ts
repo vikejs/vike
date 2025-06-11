@@ -13,7 +13,7 @@ function normalizeUrlArgument(url: string, fnName: 'prefetch' | 'navigate'): str
   assertUsage(
     url.startsWith('/') || isUrlRelative(url),
     // `errMsg` used the original `url` value
-    errMsg
+    errMsg,
   )
   return url
 }

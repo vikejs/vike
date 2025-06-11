@@ -17,7 +17,7 @@ import {
   createDebugger,
   isScriptFile,
   assertUsage,
-  rollupSourceMapRemove
+  rollupSourceMapRemove,
 } from '../utils.js'
 import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../shared/virtualFiles.js'
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
@@ -69,7 +69,7 @@ function pluginExtractAssets(): Plugin[] {
         const code = moduleNames.map((moduleName) => `import '${moduleName}';`).join('\n')
         debugTransformResult(id, code, importStatements)
         return rollupSourceMapRemove(code)
-      }
+      },
     },
     // This plugin appends `?extractAssets` to module IDs
     {
@@ -141,7 +141,7 @@ function pluginExtractAssets(): Plugin[] {
         }
 
         return appendExtractAssetsQuery(file, importer)
-      }
+      },
     },
     {
       name: 'vike:pluginExtractAssets-3',
@@ -158,7 +158,7 @@ function pluginExtractAssets(): Plugin[] {
         if (debug.isActivated) {
           return { logLevel: 'silent' }
         }
-      }
+      },
     },
     {
       name: 'vike:pluginExtractAssets-4',
@@ -170,11 +170,11 @@ function pluginExtractAssets(): Plugin[] {
           // https://github.com/vikejs/vike/issues/1060
           assertUsage(
             !config.plugins.find((p) => p.name === 'vite-tsconfig-paths'),
-            'vite-tsconfig-paths not supported, remove it and use vite.config.js#resolve.alias instead'
+            'vite-tsconfig-paths not supported, remove it and use vite.config.js#resolve.alias instead',
           )
         }
-      }
-    }
+      },
+    },
   ]
 }
 

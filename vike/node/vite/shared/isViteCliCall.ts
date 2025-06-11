@@ -62,7 +62,7 @@ function getViteConfigFromCli(): null | ConfigFromCli {
         logLevel: options.logLevel,
         clearScreen: options.clearScreen,
         optimizeDeps: { force: options.force },
-        build: buildOptions
+        build: buildOptions,
       }
     })
 

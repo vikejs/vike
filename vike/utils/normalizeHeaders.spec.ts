@@ -11,7 +11,7 @@ describe('normalizeHeaders()', () => {
 
     const headersNormalized = {
       'accept-encoding': 'deflate, gzip, br',
-      'content-type': 'iMAge/jpeg'
+      'content-type': 'iMAge/jpeg',
     }
     const headers1 = normalizeHeaders(myHeaders)
     const headers2 = normalizeHeaders(headers1)
@@ -60,7 +60,7 @@ describe('normalizeHeaders()', () => {
       'sec-fetch-user': '?1',
       'sec-fetch-dest': 'document',
       'accept-encoding': 'gzip, deflate, br, zstd',
-      'accept-language': 'en-US,en;q=0.9,fr;q=0.8'
+      'accept-language': 'en-US,en;q=0.9,fr;q=0.8',
     }
     const headers = normalizeHeaders(headersOriginal)
     expect(headers).toStrictEqual(headersOriginal)
@@ -76,7 +76,7 @@ function getCloudflareHeaders() {
     headersData: [
       [
         'accept',
-        'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7'
+        'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
       ],
       ['accept-encoding', 'gzip, br'],
       ['accept-language', 'en-US,en;q=0.9,fr;q=0.8'],
@@ -98,10 +98,10 @@ function getCloudflareHeaders() {
       ['upgrade-insecure-requests', '1'],
       [
         'user-agent',
-        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
       ],
       ['x-forwarded-proto', 'https'],
-      ['x-real-ip', '92.195.254.253']
+      ['x-real-ip', '92.195.254.253'],
     ],
     headersNormalized: {
       accept:
@@ -127,7 +127,7 @@ function getCloudflareHeaders() {
       'user-agent':
         'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
       'x-forwarded-proto': 'https',
-      'x-real-ip': '92.195.254.253'
-    }
+      'x-real-ip': '92.195.254.253',
+    },
   }
 }

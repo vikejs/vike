@@ -7,5 +7,5 @@ import vikeServer from 'vike-server/config'
 const config = {
   Layout: Layout,
   server: 'server/index.js',
-  extends: [vikeReact, vikeServer]
+  extends: [vikeReact, vikeServer],
 }

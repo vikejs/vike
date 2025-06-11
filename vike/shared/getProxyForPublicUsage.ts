@@ -19,10 +19,10 @@ function getProxyForPublicUsage<Obj extends Target>(
   obj: Obj,
   objName: 'pageContext' | 'globalContext' | 'prerenderContext' | 'vikeConfig',
   skipOnInternalProp?: true,
-  fallback?: Fallback
+  fallback?: Fallback,
 ): Obj {
   return new Proxy(obj, {
-    get: getTrapGet(obj, objName, skipOnInternalProp, fallback)
+    get: getTrapGet(obj, objName, skipOnInternalProp, fallback),
   })
 }
 
@@ -30,7 +30,7 @@ function getTrapGet(
   obj: Record<string | symbol, unknown>,
   objName: string,
   skipOnInternalProp?: true,
-  fallback?: Fallback
+  fallback?: Fallback,
 ) {
   return function (_: any, prop: string | symbol) {
     const propStr = String(prop)
@@ -53,7 +53,7 @@ function onNotSerializable(propStr: string, val: unknown, objName: string) {
   assert(isBrowser())
   assertUsage(
     false,
-    `Can't access ${objName}${propName} on the client side. Because it can't be serialized, see server logs.`
+    `Can't access ${objName}${propName} on the client side. Because it can't be serialized, see server logs.`,
   )
 }
 
@@ -71,7 +71,7 @@ function onInternalProp(propStr: string, objName: string) {
     assertWarning(
       false,
       `Using internal ${objName}.${propStr} which may break in any minor version update. Reach out on GitHub to request official support for your use case.`,
-      { onlyOnce: true, showStackTrace: true }
+      { onlyOnce: true, showStackTrace: true },
     )
   }
 }

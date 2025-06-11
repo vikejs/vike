@@ -13,7 +13,7 @@ import {
   fetchHtml,
   getServerUrl,
   page,
-  test
+  test,
 } from '@brillout/test-e2e'
 import { sleepBeforeEditFile, testCounter } from '../../../test/utils'
 
@@ -36,7 +36,7 @@ async function expectHtmlAttr(val: 'dark' | 'light') {
       const html = await fetchHtml('/')
       expect(html).toContain(`<html class="${val}" lang="en">`)
     },
-    { timeout: 5 * 1000 }
+    { timeout: 5 * 1000 },
   )
 }
 
@@ -67,12 +67,12 @@ function testRedirectMailto(isDev: boolean) {
     await testRedirect(
       '/admins/some/nested-page?with&some-args',
       'https://admin.example.org/some/nested-page?with&some-args',
-      isDev
+      isDev,
     )
     await testRedirect(
       '/external-redirect',
       'https://app.nmrium.org#?toc=https://cheminfo.github.io/nmr-dataset-demo/samples.json',
-      isDev
+      isDev,
     )
   })
 }

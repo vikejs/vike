@@ -7,5 +7,5 @@ export const projectInfo = {
   githubDiscussions: 'https://github.com/vikejs/vike/discussions' as const,
   discordInvite: 'https://discord.com/invite/hfHhnJyVg8' as const,
   twitterProfile: 'https://x.com/vike_js' as const,
-  blueskyHandle: 'vike.dev' as const
+  blueskyHandle: 'vike.dev' as const,
 }

@@ -13,10 +13,10 @@ function createVueApp(pageContext) {
         {
           default() {
             return h(Page, pageProps || {})
-          }
-        }
+          },
+        },
       )
-    }
+    },
   }
   const app = createSSRApp(PageWithLayout)
   return app

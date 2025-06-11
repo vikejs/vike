@@ -8,13 +8,13 @@ export default {
   settingConfigOnly: { nested: 'configOnly @ /env' },
   meta: {
     settingServerOnly: {
-      env: { server: true }
+      env: { server: true },
     },
     settingClientOnly: {
-      env: { client: true }
+      env: { client: true },
     },
     settingConfigOnly: {
-      env: { config: true }
-    }
-  }
+      env: { config: true },
+    },
+  },
 } satisfies Config

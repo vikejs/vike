@@ -39,9 +39,9 @@ function Image({ src, author }: { src: string; author: string }) {
               contentUrl: { src },
               creator: {
                 '@type': 'Person',
-                name: author
-              }
-            })
+                name: author,
+              },
+            }),
           }}
         ></script>
       </Head>

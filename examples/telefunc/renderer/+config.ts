@@ -4,5 +4,5 @@ import type { Config } from 'vike/types'
 export default {
   clientRouting: true,
   hydrationCanBeAborted: true,
-  passToClient: ['pageProps']
+  passToClient: ['pageProps'],
 } satisfies Config

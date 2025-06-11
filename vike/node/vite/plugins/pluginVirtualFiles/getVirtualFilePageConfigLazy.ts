@@ -4,7 +4,7 @@ import { assert, getProjectError } from '../../utils.js'
 import type { PageConfigBuildTime } from '../../../../types/PageConfig.js'
 import {
   getVirtualFileIdPageConfigLazy,
-  isVirtualFileIdPageConfigLazy
+  isVirtualFileIdPageConfigLazy,
 } from '../../../shared/virtualFiles/virtualFilePageConfigLazy.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { extractAssetsAddQuery } from '../../../shared/extractAssetsQuery.js'
@@ -46,7 +46,7 @@ async function getVirtualFilePageConfigLazy(id: string, isDev: boolean, config: 
     pageId,
     resolveIncludeAssetsImportedByServer(vikeConfig.config),
     config,
-    isDev
+    isDev,
   )
   debug(id, isForClientSide ? 'CLIENT-SIDE' : 'SERVER-SIDE', code)
   return code
@@ -58,7 +58,7 @@ function getLoadConfigLazy(
   pageId: string,
   includeAssetsImportedByServer: boolean,
   config: ResolvedConfig,
-  isDev: boolean
+  isDev: boolean,
 ): string {
   const lines: string[] = []
   const importStatements: string[] = []
@@ -73,8 +73,8 @@ function getLoadConfigLazy(
       filesEnv,
       (configEnv) => isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isDev }),
       '',
-      false
-    )
+      false,
+    ),
   )
   lines.push('};')
 

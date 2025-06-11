@@ -15,7 +15,7 @@ function onRenderHtml(pageContext) {
   const pageHtml = ReactDOMServer.renderToString(
     <Layout>
       <Page {...pageProps} />
-    </Layout>
+    </Layout>,
   )
 
   // The assets base URL is automatically injected to `logoUrl`.

@@ -22,7 +22,7 @@ function Hero() {
       style={{
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center'
+        alignItems: 'center',
       }}
     >
       <div style={{ height: 90 }} id="hero-margin-top-1"></div>
@@ -43,7 +43,7 @@ function Hero() {
 function HeroTagline({
   style,
   taglineStyle,
-  taglineSecondaryStyle
+  taglineSecondaryStyle,
 }: {
   style?: React.CSSProperties
   taglineStyle?: React.CSSProperties
@@ -56,7 +56,7 @@ function HeroTagline({
         style={{
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center'
+          alignItems: 'center',
         }}
       >
         <h1
@@ -66,14 +66,14 @@ function HeroTagline({
             width: '100%',
             marginBottom: 0,
             fontWeight: 500,
-            lineHeight: 1.1
+            lineHeight: 1.1,
           }}
         >
           <div
             id="tagline-main"
             style={{
               opacity: 0.9,
-              ...taglineStyle
+              ...taglineStyle,
             }}
           >
             The Framework{' '}
@@ -85,7 +85,7 @@ function HeroTagline({
                 background: '-webkit-linear-gradient(315deg, #42d392 25%, #647eff)',
                 backgroundClip: 'text',
                 WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent'
+                WebkitTextFillColor: 'transparent',
               }}
             >
               You
@@ -103,7 +103,7 @@ function HeroTagline({
               fontWeight: 400,
               opacity: 0.45,
               maxWidth: 550,
-              ...taglineSecondaryStyle
+              ...taglineSecondaryStyle,
             }}
           >
             Next.js & Nuxt alternative for unprecedented flexibility and stability
@@ -132,7 +132,7 @@ function VideoTalkLink() {
         paddingRight: '16px',
         paddingLeft: '8px',
         borderRadius: '18px',
-        cursor: 'pointer'
+        cursor: 'pointer',
       }}
     >
       <svg width="24" height="24" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -159,7 +159,7 @@ function GetStartedBtn() {
     <div
       style={{
         display: 'flex',
-        gap: 8
+        gap: 8,
       }}
     >
       <Link href={linkGetStarted}>

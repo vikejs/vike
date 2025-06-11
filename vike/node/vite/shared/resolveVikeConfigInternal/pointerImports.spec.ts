@@ -9,7 +9,7 @@ describe('transformPointerImports()', () => {
   it('basics', () => {
     expect(t('bla')).toMatchInlineSnapshot(`null`)
     expect(t("import { something } from './bla.js'")).toMatchInlineSnapshot(
-      `"const something = '​import:./bla.js:something';"`
+      `"const something = '​import:./bla.js:something';"`,
     )
     expect(t("import def from './bla.js'")).toMatchInlineSnapshot(`"const def = '​import:./bla.js:default';"`)
   })

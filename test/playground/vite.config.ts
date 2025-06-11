@@ -15,10 +15,10 @@ export default {
     // TEST: https://github.com/vikejs/vike/issues/2315
     //minify: 'terser'
     //* Inspect dist/client/
-    minify: false
+    minify: false,
     //*/
   },
-  plugins: [react(), testPlugin()]
+  plugins: [react(), testPlugin()],
 }
 
 function testPlugin(): PluginOption {
@@ -31,7 +31,7 @@ function testPlugin(): PluginOption {
     },
     closeBundle() {
       testPrerenderSettings(vike)
-    }
+    },
   }
 }
 type Vike = ReturnType<typeof getVikeConfig>
@@ -53,25 +53,25 @@ function testPrerenderSettings(vike: Vike) {
   ;(globalThis as any).prerenderContextWasTested = true
   const pageIds = Object.keys(vike.pages)
   const pageIdsPrerendered = unique(
-    prerenderContext.output.map((file) => file.pageContext.pageId).filter((pageId) => pageId !== null)
+    prerenderContext.output.map((file) => file.pageContext.pageId).filter((pageId) => pageId !== null),
   )
   ;[
     {
       pageId: '/pages/markdown',
-      prerendered: true
+      prerendered: true,
     },
     {
       pageId: '/pages/navigate-early',
-      prerendered: true
+      prerendered: true,
     },
     {
       pageId: '/pages/index',
-      prerendered: false
+      prerendered: false,
     },
     {
       pageId: '/pages/about-page',
-      prerendered: false
-    }
+      prerendered: false,
+    },
   ].forEach(({ pageId, prerendered }) => {
     const debug = JSON.stringify({ pageIds, pageIdsPrerendered, pageId }, null, 2)
     assert(pageIds.includes(pageId), debug)

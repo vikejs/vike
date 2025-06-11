@@ -9,13 +9,13 @@ function testDynamicImportFileEnv({ isDev }: { isDev: boolean }) {
     expectLog('hello from server', {
       filter: (log) => log.logSource === 'stdout',
       // If `isDev===false` then log is printed upon pre-rendering (not when the test is running).
-      allLogs: !isDev
+      allLogs: !isDev,
     })
     await autoRetry(
       () => {
         expectLog('hello from client', { filter: (log) => log.logSource === 'Browser Log' })
       },
-      { timeout: 5000 }
+      { timeout: 5000 },
     )
   })
 }

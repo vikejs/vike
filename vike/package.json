@@ -245,7 +245,7 @@
     "./universal-middleware.js"
   ],
   "devDependencies": {
-    "@biomejs/biome": "^1.5.3",
+    "@biomejs/biome": "^1.9.4",
     "@brillout/release-me": "^0.4.2",
     "@types/estree": "^1.0.5",
     "@types/jest": "^29.5.11",

@@ -5,8 +5,8 @@ export { pluginDistFileNames }
 //  - Blocker: https://github.com/rollup/rollup/issues/4724
 
 import { assertPosixPath, assert, assertUsage, isArray, isCallable } from '../../utils.js'
-import path from 'path'
-import crypto from 'crypto'
+import path from 'node:path'
+import crypto from 'node:crypto'
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
 import { getAssetsDir } from '../../shared/getAssetsDir.js'
 import { assertModuleId, getModuleFilePathAbsolute } from '../../shared/getFilePath.js'
@@ -43,7 +43,7 @@ function pluginDistFileNames(): Plugin {
           //    - If rollupOutput.assetFileNames is a function then use a wrapper function to apply the assertUsage()
           assertUsage(
             (rollupOutput.assetFileNames as any).isTheOneSetByVike,
-            "Setting Vite's configuration build.rollupOptions.output.assetFileNames is currently forbidden. Reach out if you need to use it."
+            "Setting Vite's configuration build.rollupOptions.output.assetFileNames is currently forbidden. Reach out if you need to use it.",
           )
         }
         {
@@ -56,7 +56,7 @@ function pluginDistFileNames(): Plugin {
               } else {
                 assertUsage(
                   false,
-                  "The Vite's configuration build.rollupOptions.output.manualChunks must be a function. Reach out if you need to set it to another value."
+                  "The Vite's configuration build.rollupOptions.output.manualChunks must be a function. Reach out if you need to set it to another value.",
                 )
               }
             }
@@ -107,7 +107,7 @@ function pluginDistFileNames(): Plugin {
           }
         }
       })
-    }
+    },
   }
 }
 
@@ -166,7 +166,7 @@ function getEntryFileName(chunkInfo: PreRenderedChunk, config: ResolvedConfig, i
     name,
     true,
     // Not needed for client-side because dist/ filenames contain `.[hash].js`
-    !isForClientSide
+    !isForClientSide,
   )
 
   if (isForClientSide) {

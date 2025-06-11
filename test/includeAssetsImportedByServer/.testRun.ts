@@ -11,7 +11,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
     const html = await fetchHtml('/')
 
     expect(html).toContain(
-      '<svg width="46.72" height="46.72" fill="none" version="1.1" viewBox="0 0 46.72 46.72" xmlns="http://www.w3.org/2000/svg">'
+      '<svg width="46.72" height="46.72" fill="none" version="1.1" viewBox="0 0 46.72 46.72" xmlns="http://www.w3.org/2000/svg">',
     )
 
     const hash = /[a-zA-Z0-9_-]+/
@@ -22,7 +22,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
 
     const logoSrc: string = await (await fetch(getServerUrl() + logoUrl)).text()
     expect(logoSrc).toContain(
-      '<svg width="175" height="175" fill="none" version="1.1" viewBox="0 0 175 175" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">'
+      '<svg width="175" height="175" fill="none" version="1.1" viewBox="0 0 175 175" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">',
     )
   })
 }

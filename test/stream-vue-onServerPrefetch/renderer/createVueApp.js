@@ -11,7 +11,7 @@ function createVueApp(pageContext) {
   const app = createSSRApp({
     render() {
       return h(pageRef.value, pagePropsRef.value)
-    }
+    },
   })
 
   const store = createPinia()
@@ -23,7 +23,7 @@ function createVueApp(pageContext) {
       Object.assign(pageContextReactive, pageContext)
       pageRef.value = markRaw(pageContext.Page)
       pagePropsRef.value = markRaw(pageContext.pageProps || {})
-    }
+    },
   })
 
   // When doing Client Routing, we mutate pageContext (see usage of `app.changePage()` in `_default.page.client.js`).

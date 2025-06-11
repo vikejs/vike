@@ -7,7 +7,7 @@ const onBeforeRender: OnBeforeRenderAsync = async (pageContext): ReturnType<OnBe
   return {
     pageContext: {
       perPageOnBeforeRenderWasCalled: true,
-      perPageOnBeforeRenderWasCalledInEnv: typeof window === 'undefined' ? 'server' : 'client'
-    }
+      perPageOnBeforeRenderWasCalledInEnv: typeof window === 'undefined' ? 'server' : 'client',
+    },
   }
 }

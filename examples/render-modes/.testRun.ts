@@ -8,9 +8,9 @@ import {
   autoRetry,
   partRegex,
   editFile,
-  editFileRevert
+  editFileRevert,
 } from '@brillout/test-e2e'
-import assert from 'assert'
+import assert from 'node:assert'
 import { waitForNavigation, sleepBeforeEditFile } from '../../test/utils'
 
 export { testRun }
@@ -24,7 +24,7 @@ const disableTestHtmlOnlyHMR = true
 function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1Design?: true) {
   run(cmd, {
     // HMR tests are flaky (I couldn't make them reliable)
-    isFlaky: true
+    isFlaky: true,
   })
 
   const isProd = cmd !== 'npm run dev'
@@ -41,10 +41,10 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1De
       expect(html).not.toContain('as="rel="modulepreload""')
       expect(html).not.toContain('as="script"')
       expect(html).toMatch(
-        partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/pages_html-only_index-bda8e411.${hash}.css">`
+        partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/pages_html-only_index-bda8e411.${hash}.css">`,
       )
       expect(html).toMatch(
-        partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/renderer_Layout-031b266d.${hash}.css">`
+        partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/renderer_Layout-031b266d.${hash}.css">`,
       )
     } else {
       expect(html).toContain('<script')
@@ -65,7 +65,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1De
             predicate: (consoleMessage) => {
               const text = consoleMessage.text()
               return text === '[vite] connected.'
-            }
+            },
           })
           await page.goto(url)
           expect(await page.textContent('h1')).toBe('HTML-only')
@@ -293,7 +293,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1De
   function testClientRouting(html: string) {
     if (isProd) {
       expect(html).toMatch(
-        partRegex`<script src="/assets/entries/entry-client-routing.${hash}.js" type="module" async>`
+        partRegex`<script src="/assets/entries/entry-client-routing.${hash}.js" type="module" async>`,
       )
     } else {
       expect(html).toMatch(partRegex`import "/@fs/${path}/vike/${path}/runtime-client-routing/${path}";`)

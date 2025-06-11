@@ -9,7 +9,7 @@ export type {
   InjectFilterEntry,
   Config,
   Env,
-  ConfigEntries
+  ConfigEntries,
 }
 import type {
   PageContextBuiltInServer,
@@ -18,7 +18,7 @@ import type {
   InjectFilterEntry as InjectFilterEntry_,
   Config as Config_,
   Env as Env_,
-  ConfigEntries as ConfigEntries_
+  ConfigEntries as ConfigEntries_,
 } from './index.js'
 
 /** @deprecated All types have been moved to `vike/types`.

@@ -12,7 +12,7 @@ async function data() {
     // minimize what is sent over the network.
     movies: filterMoviesData(movies),
     // The page's <title>
-    title: getTitle(movies)
+    title: getTitle(movies),
   }
 }
 

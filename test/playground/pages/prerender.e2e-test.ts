@@ -1,12 +1,12 @@
 export { testPrerenderSettings }
 
-import fs from 'fs'
-import path from 'path'
+import fs from 'node:fs'
+import path from 'node:path'
 import { expect, test } from '@brillout/test-e2e'
 
 function testPrerenderSettings({
   isDev,
-  rootDir
+  rootDir,
 }: {
   isDev: boolean
   rootDir: string
@@ -17,7 +17,7 @@ function testPrerenderSettings({
         ['markdown', true],
         ['pushState', false],
         ['index', false],
-        ['about', false]
+        ['about', false],
       ].forEach(([page, exists]) => {
         expect(fs.existsSync(path.join(rootDir, `./dist/nested/client/${page}.html`))).toBe(exists)
         expect(fs.existsSync(path.join(rootDir, `./dist/nested/client/${page}/index.pageContext.json`))).toBe(exists)

@@ -16,8 +16,8 @@ async function createPageContextServerSide(
     isPrerendering,
     ssr: { urlHandler, isClientSideNavigation } = {
       urlHandler: null,
-      isClientSideNavigation: false
-    }
+      isClientSideNavigation: false,
+    },
   }:
     | {
         isPrerendering: false
@@ -29,7 +29,7 @@ async function createPageContextServerSide(
     | {
         isPrerendering: true
         ssr?: undefined
-      }
+      },
 ) {
   assert(pageContextInit.urlOriginal)
 
@@ -44,7 +44,7 @@ async function createPageContextServerSide(
     _pageContextInit: pageContextInit,
     _urlRewrite: null,
     _urlHandler: urlHandler,
-    isClientSideNavigation
+    isClientSideNavigation,
   })
 
   objectAssign(pageContextCreated, globalContext._vikeConfigPublicGlobal)
@@ -60,7 +60,7 @@ async function createPageContextServerSide(
       headers = normalizeHeaders(pageContextInit.headersOriginal)
       assertUsage(
         !('headers' in pageContextInit),
-        "You're defining pageContextInit.headersOriginal as well as pageContextInit.headers but you should only define pageContextInit.headersOriginal instead, see https://vike.dev/headers"
+        "You're defining pageContextInit.headersOriginal as well as pageContextInit.headers but you should only define pageContextInit.headersOriginal instead, see https://vike.dev/headers",
       )
     } else if (pageContextInit.headers) {
       headers = pageContextInit.headers as Record<string, string>
@@ -68,7 +68,7 @@ async function createPageContextServerSide(
       assertWarning(
         false,
         'Setting pageContextInit.headers is deprecated: set pageContextInit.headersOriginal instead, see https://vike.dev/headers',
-        { onlyOnce: true }
+        { onlyOnce: true },
       )
     } else {
       headers = null
@@ -79,7 +79,7 @@ async function createPageContextServerSide(
   const pageContextAugmented = await createPageContextShared(
     pageContextCreated,
     globalContext._pageConfigGlobal,
-    globalContext._vikeConfigPublicGlobal
+    globalContext._vikeConfigPublicGlobal,
   )
   augmentType(pageContextCreated, pageContextAugmented)
 
@@ -93,7 +93,7 @@ function createPageContext(pageContextInit: PageContextInit | null, isPrerenderi
   const pageContext = createPageContextObject()
   objectAssign(pageContext, {
     isClientSide: false as const,
-    isPrerendering
+    isPrerendering,
   })
   objectAssign(pageContext, pageContextInit)
   return pageContext

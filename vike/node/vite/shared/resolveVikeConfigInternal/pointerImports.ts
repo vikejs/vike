@@ -34,7 +34,7 @@ function transformPointerImports(
     // Used by ./transformPointerImports.spec.ts
     | 'all',
   // For ./transformPointerImports.spec.ts
-  skipWarnings?: true
+  skipWarnings?: true,
 ): string | null {
   const spliceOperations: SpliceOperation[] = []
 
@@ -78,7 +78,7 @@ function transformPointerImports(
       const errMsg = [
         `The following import in ${filePathToShowToUser2} has no effect:`,
         quote,
-        'See https://vike.dev/config#pointer-imports'
+        'See https://vike.dev/config#pointer-imports',
       ].join('\n')
       if (!skipWarnings) {
         if (!isWarning) {
@@ -93,7 +93,7 @@ function transformPointerImports(
       assert(
         specifier.type === 'ImportSpecifier' ||
           specifier.type === 'ImportDefaultSpecifier' ||
-          specifier.type === 'ImportNamespaceSpecifier'
+          specifier.type === 'ImportNamespaceSpecifier',
       )
       const importLocalName = specifier.local.name
       const exportName = (() => {
@@ -112,7 +112,7 @@ function transformPointerImports(
     spliceOperations.push({
       start,
       end,
-      replacement
+      replacement,
     })
   })
 
@@ -122,7 +122,7 @@ function transformPointerImports(
 function getImports(code: string): ImportDeclaration[] {
   const { body } = parse(code, {
     ecmaVersion: 'latest',
-    sourceType: 'module'
+    sourceType: 'module',
     // https://github.com/acornjs/acorn/issues/1136
   }) as any as Program
   const imports: ImportDeclaration[] = []
@@ -156,7 +156,7 @@ type PointerImportData = {
 function serializePointerImportData({
   importPath,
   exportName,
-  importStringWasGenerated
+  importStringWasGenerated,
 }: Omit<PointerImportData, 'importString'>): string {
   const tag = importStringWasGenerated ? zeroWidthSpace : ''
   // `import:${importPath}:${importPath}`
@@ -191,7 +191,7 @@ function parsePointerImportData(importString: string): null | PointerImportData 
     assert(!importStringWasGenerated)
     assertUsage(
       false,
-      `Invalid relative import path ${pc.code(importPath)} defined by ${pc.code(JSON.stringify(importString))} because it should start with ${pc.code('./')} or ${pc.code('../')}, or use an npm package import instead.`
+      `Invalid relative import path ${pc.code(importPath)} defined by ${pc.code(JSON.stringify(importString))} because it should start with ${pc.code('./')} or ${pc.code('../')}, or use an npm package import instead.`,
     )
   }
   assertPointerImportPath(importPath)

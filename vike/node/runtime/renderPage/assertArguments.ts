@@ -10,19 +10,19 @@ function assertArguments(...args: unknown[]): void {
   assertUsage(
     pageContextInit !== undefined && pageContextInit !== null,
     prefix + ` argument ${pc.cyan('pageContextInit')} is missing`,
-    { showStackTrace: true }
+    { showStackTrace: true },
   )
   const len = args.length
   assertUsage(len === 1, `${prefix} called with ${len} arguments but renderPage() accepts only one argument.'`, {
-    showStackTrace: true
+    showStackTrace: true,
   })
 
   assertUsage(
     isObject(pageContextInit),
     `${prefix} called with ${pc.code(
-      `typeof pageContextInit === ${JSON.stringify(typeof pageContextInit)}`
+      `typeof pageContextInit === ${JSON.stringify(typeof pageContextInit)}`,
     )} but ${pc.code('pageContextInit')} should be an object.`,
-    { showStackTrace: true }
+    { showStackTrace: true },
   )
 
   // TODO/v1-release: remove
@@ -30,7 +30,7 @@ function assertArguments(...args: unknown[]): void {
     assertWarning(
       false,
       '`pageContextInit.url` has been renamed to `pageContextInit.urlOriginal`: replace `renderPage({ url })` with `renderPage({ urlOriginal })`. (See https://vike.dev/migration/0.4.23 for more information.)',
-      { showStackTrace: true, onlyOnce: true }
+      { showStackTrace: true, onlyOnce: true },
     )
     pageContextInit.urlOriginal = pageContextInit.url
     delete pageContextInit.url
@@ -40,26 +40,26 @@ function assertArguments(...args: unknown[]): void {
   assertUsage(
     hasProp(pageContextInit, 'urlOriginal'),
     prefix + ` ${pc.cyan('pageContextInit')} is missing the property ${pc.cyan('pageContextInit.urlOriginal')}`,
-    { showStackTrace: true }
+    { showStackTrace: true },
   )
   const { urlOriginal } = pageContextInit
   assertUsage(
     typeof urlOriginal === 'string',
     prefix +
       ` ${pc.cyan('pageContextInit.urlOriginal')} should be a string but ${pc.cyan(
-        `typeof pageContextInit.urlOriginal === ${JSON.stringify(typeof urlOriginal)}`
+        `typeof pageContextInit.urlOriginal === ${JSON.stringify(typeof urlOriginal)}`,
       )}`,
-    { showStackTrace: true }
+    { showStackTrace: true },
   )
   assertUsage(
     urlOriginal.startsWith('/') || urlOriginal.startsWith('https://') || urlOriginal.startsWith('http://'),
     prefix +
       ` ${pc.cyan('pageContextInit.urlOriginal')} should start with ${pc.cyan('/')} (e.g. ${pc.cyan(
-        '/product/42'
+        '/product/42',
       )}), ${pc.cyan('http://')}, or ${pc.cyan('https://')} (e.g. ${pc.cyan(
-        'https://example.com/product/42'
+        'https://example.com/product/42',
       )}), but ${pc.cyan(`pageContextInit.urlOriginal === ${JSON.stringify(urlOriginal)}`)}`,
-    { showStackTrace: true }
+    { showStackTrace: true },
   )
 
   const urlOriginalWithoutOrigin = urlOriginal.startsWith('http')
@@ -73,9 +73,9 @@ function assertArguments(...args: unknown[]): void {
       false,
       prefix +
         ` ${pc.cyan('pageContextInit.urlOriginal')} should be a URL but ${pc.cyan(
-          `pageContextInit.urlOriginal === ${JSON.stringify(urlOriginal)}`
+          `pageContextInit.urlOriginal === ${JSON.stringify(urlOriginal)}`,
         )}`,
-      { showStackTrace: true }
+      { showStackTrace: true },
     )
   }
 }

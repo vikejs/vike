@@ -18,7 +18,7 @@ import type { ResolveClientEntriesDev } from '../../vite/shared/resolveClientEnt
 import type { ConfigResolved } from '../../../types/index.js'
 
 const globalObject = getGlobalObject('renderPage/getPageAssets.ts', {
-  resolveClientEntriesDev: null as null | ResolveClientEntriesDev
+  resolveClientEntriesDev: null as null | ResolveClientEntriesDev,
 })
 
 type PageAsset = {
@@ -38,7 +38,7 @@ type PageContextGetPageAssets = {
 async function getPageAssets(
   pageContext: PageContextGetPageAssets,
   clientDependencies: ClientDependency[],
-  clientEntries: string[]
+  clientEntries: string[],
 ): Promise<PageAsset[]> {
   const globalContext = pageContext._globalContext
   const { _isProduction: isProduction } = globalContext
@@ -49,7 +49,7 @@ async function getPageAssets(
   if (isDev) {
     const { _viteDevServer: viteDevServer } = globalContext
     clientEntriesSrc = clientEntries.map((clientEntry) =>
-      globalObject.resolveClientEntriesDev!(clientEntry, viteDevServer)
+      globalObject.resolveClientEntriesDev!(clientEntry, viteDevServer),
     )
     assetUrls = await retrieveAssetsDev(clientDependencies, viteDevServer)
   } else {
@@ -58,7 +58,7 @@ async function getPageAssets(
     assetUrls = retrieveAssetsProd(
       clientDependencies,
       assetsManifest,
-      resolveIncludeAssetsImportedByServer(pageContext._globalContext.config)
+      resolveIncludeAssetsImportedByServer(pageContext._globalContext.config),
     )
   }
 
@@ -85,7 +85,7 @@ async function getPageAssets(
       src,
       assetType,
       mediaType,
-      isEntry
+      isEntry,
     })
   })
 

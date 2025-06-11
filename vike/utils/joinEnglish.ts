@@ -6,7 +6,7 @@ import { assert } from './assert.js'
 function joinEnglish(
   arr: string[] | readonly string[],
   conjunction: 'or' | 'and',
-  colorizer: (s: string) => string = (s) => s
+  colorizer: (s: string) => string = (s) => s,
 ): string {
   assert(arr.length > 0)
   if (arr.length === 1) return colorizer(arr[0]!)

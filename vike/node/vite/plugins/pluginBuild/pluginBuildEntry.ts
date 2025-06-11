@@ -4,8 +4,8 @@ export { set_macro_ASSETS_MANIFEST }
 import { serverProductionEntryPlugin } from '@brillout/vite-plugin-server-entry/plugin'
 import { virtualFileIdEntryServer } from '../../../shared/virtualFiles/virtualFileEntry.js'
 import { assert, PROJECT_VERSION, requireResolveVikeDistFile } from '../../utils.js'
-import fs from 'fs/promises'
-import path from 'path'
+import fs from 'node:fs/promises'
+import path from 'node:path'
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
 import { isUsingClientRouter } from '../pluginExtractExportNames.js'
 import { assertBuildInfo, type BuildInfo } from '../../../runtime/globalContext.js'
@@ -24,14 +24,14 @@ function pluginBuildEntry(): Plugin[] {
       enforce: 'post',
       async configResolved(config_) {
         config = config_
-      }
+      },
     },
     ...serverProductionEntryPlugin({
       getServerProductionEntry: () => {
         return getServerProductionEntryCode(config)
       },
-      libraryName: 'Vike'
-    })
+      libraryName: 'Vike',
+    }),
   ]
 }
 
@@ -40,7 +40,7 @@ function getServerProductionEntryCode(config: ResolvedConfig): string {
   const buildInfo: BuildInfo = {
     versionAtBuildTime: PROJECT_VERSION,
     usesClientRouter: isUsingClientRouter(), // TODO/v1-release: remove
-    viteConfigRuntime: getViteConfigRuntime(config)
+    viteConfigRuntime: getViteConfigRuntime(config),
   }
   assertBuildInfo(buildInfo)
   // After the old design is removed, let's maybe simplify and move everything into a single virtual module
@@ -58,7 +58,7 @@ function getServerProductionEntryCode(config: ResolvedConfig): string {
     `      buildInfo,`,
     '    });',
     `  }`,
-    ''
+    '',
   ].join('\n')
   return importerCode
 }
@@ -76,7 +76,7 @@ async function set_macro_ASSETS_MANIFEST(options: Options, bundle: Bundle, asset
   const chunkFilePath = path.join(dir, chunkPath)
   const [assetsJsonString, chunkFileContent] = await Promise.all([
     await fs.readFile(assetsJsonFilePath, 'utf8'),
-    await fs.readFile(chunkFilePath, 'utf8')
+    await fs.readFile(chunkFilePath, 'utf8'),
   ])
   const serverEntryFileContentPatched = chunkFileContent.replace(ASSETS_MANIFEST, assetsJsonString)
   assert(serverEntryFileContentPatched !== chunkFileContent)

@@ -12,7 +12,7 @@ import { setGlobalContext_isProduction } from '../runtime/globalContext.js'
  * https://vike.dev/createDevMiddleware
  */
 async function createDevMiddleware(
-  options: { root?: string } & APIOptions = {}
+  options: { root?: string } & APIOptions = {},
 ): Promise<{ devMiddleware: Connect.Server; viteServer: ViteDevServer; viteConfig: ResolvedConfig }> {
   setGlobalContext_isProduction(false, true)
   const optionsMod = {
@@ -22,9 +22,9 @@ async function createDevMiddleware(
       root: options.root ?? options.viteConfig?.root,
       server: {
         ...options.viteConfig?.server,
-        middlewareMode: options.viteConfig?.server?.middlewareMode ?? true
-      }
-    }
+        middlewareMode: options.viteConfig?.server?.middlewareMode ?? true,
+      },
+    },
   }
   const { viteConfigFromUserEnhanced } = await prepareViteApiCall(optionsMod, 'dev')
   const server = await createServer(viteConfigFromUserEnhanced)

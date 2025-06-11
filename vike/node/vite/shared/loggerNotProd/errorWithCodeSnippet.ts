@@ -60,7 +60,7 @@ function getPrettyErrorWithCodeSnippet(err: ErrorWithCodeSnippet, userRootDir: s
   const msgFirstLine = [
     pc.red('Failed to transpile'),
     pc.bold(pc.red(getFilePathToShowToUserFromUnkown(id, userRootDir))),
-    pc.red('because:')
+    pc.red('because:'),
   ].join(' ')
 
   const errMsg = getPrettyErrMessage(err)

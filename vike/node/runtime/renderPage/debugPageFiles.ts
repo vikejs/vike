@@ -19,7 +19,7 @@ function debugPageFiles({
   pageFilesServerSide,
   pageFilesClientSide,
   clientEntries,
-  clientDependencies
+  clientDependencies,
 }: {
   pageContext: {
     urlOriginal: string
@@ -41,7 +41,7 @@ function debugPageFiles({
   debug(`URL:`, pageContext.urlOriginal)
   debug.options({ serialization: { emptyArray: 'No match' } })(
     `Routing:`,
-    printRouteMatches(pageContext._debugRouteMatches)
+    printRouteMatches(pageContext._debugRouteMatches),
   )
   debug(`pageId:`, pageContext.pageId)
   debug('Page type:', isHtmlOnly ? 'HTML-only' : 'SSR/SPA')

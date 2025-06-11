@@ -27,7 +27,7 @@ function Center({ style, ...props }) {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        ...style
+        ...style,
       }}
       {...props}
     ></div>

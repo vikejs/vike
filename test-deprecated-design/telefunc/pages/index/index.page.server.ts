@@ -8,8 +8,8 @@ function onBeforeRender() {
   return {
     pageContext: {
       pageProps: {
-        todoItemsInitial
-      }
-    }
+        todoItemsInitial,
+      },
+    },
   }
 }

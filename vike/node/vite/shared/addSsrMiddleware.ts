@@ -10,7 +10,7 @@ function addSsrMiddleware(
   middlewares: ConnectServer,
   config: ResolvedConfig,
   isPreview: boolean,
-  isPrerenderingEnabled: boolean | null
+  isPrerenderingEnabled: boolean | null,
 ) {
   middlewares.use(async (req, res, next) => {
     if (res.headersSent) return next()
@@ -19,7 +19,7 @@ function addSsrMiddleware(
     const { headers } = req
     const pageContextInit = {
       urlOriginal: url,
-      headersOriginal: headers
+      headersOriginal: headers,
     }
     Object.defineProperty(pageContextInit, 'userAgent', {
       get() {
@@ -27,16 +27,16 @@ function addSsrMiddleware(
         assertWarning(
           false,
           `${pc.cyan('pageContext.userAgent')} is deprecated: use ${pc.cyan(
-            "pageContext.headers['user-agent']"
+            "pageContext.headers['user-agent']",
           )} instead.`,
           {
             showStackTrace: true,
-            onlyOnce: true
-          }
+            onlyOnce: true,
+          },
         )
         return headers['user-agent']
       },
-      enumerable: false
+      enumerable: false,
     })
     let pageContext: Awaited<ReturnType<typeof renderPage>>
     try {

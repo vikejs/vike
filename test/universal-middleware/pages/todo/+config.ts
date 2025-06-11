@@ -1,3 +1,3 @@
 export const config = {
-  prerender: false
+  prerender: false,
 }

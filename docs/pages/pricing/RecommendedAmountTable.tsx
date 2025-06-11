@@ -6,7 +6,7 @@ import './RecommendedAmountTable.css'
 const amounts = [
   ['1$ - 50$', '1$ - 100$', '1$ - 200$'],
   ['50$ - 100$', '100$ - 200$', '200$ - 500$'],
-  ['100$ - 200$', '200$ - 500$', '500$ - 1000$']
+  ['100$ - 200$', '200$ - 500$', '500$ - 1000$'],
 ].map((row) => row.map((str) => str.replaceAll(' ', '\u00a0')))
 
 const columns = ['Small organization', 'Midsize organization', 'Large organization']

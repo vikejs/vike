@@ -9,7 +9,7 @@ import { resolvePrerenderConfigGlobal } from './resolvePrerenderConfig.js'
 import type { PrerenderTrigger } from './runPrerender.js'
 const globalObject = getGlobalObject<{ isDisabled?: true; wasPrerenderRun?: PrerenderTrigger }>(
   'prerender/context.ts',
-  {}
+  {},
 )
 
 function isPrerenderAutoRunEnabled(vikeConfig: VikeConfigInternal) {

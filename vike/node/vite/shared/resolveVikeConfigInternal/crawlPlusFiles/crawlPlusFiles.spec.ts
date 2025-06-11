@@ -1,9 +1,9 @@
 import { expect, describe, it, assert } from 'vitest'
-import path from 'path'
-import fs from 'fs'
+import path from 'node:path'
+import fs from 'node:fs'
 // process.env.DEBUG = 'vike:crawl'
 const { crawlPlusFiles } = await import('../crawlPlusFiles')
-import { fileURLToPath } from 'url'
+import { fileURLToPath } from 'node:url'
 const __dirname_ = path.dirname(fileURLToPath(import.meta.url))
 const userRootDir = path.join(__dirname_, './test-file-structure')
 
@@ -17,7 +17,7 @@ describe('crawlPlusFiles()', () => {
       'pages/ejected/+ignored.js',
       'pages/node_modules/+ignored.js',
       'pages/manually/+ignored.js',
-      'pages/manually-2/+ignored.js'
+      'pages/manually-2/+ignored.js',
     ])
     onTestFinished(() => clean())
 
@@ -68,7 +68,7 @@ function createFiles(files: string[]) {
         fs.unlinkSync(filePath) // Remove filePath
       })
       removeEmptyDirectories(userRootDir)
-    }
+    },
   }
 }
 

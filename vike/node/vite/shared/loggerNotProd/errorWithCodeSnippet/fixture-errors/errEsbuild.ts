@@ -9,12 +9,12 @@ export const errEsbuild = {
         line: 7,
         lineText: 'export { Layout }}',
         namespace: '',
-        suggestion: ''
+        suggestion: '',
       },
       notes: [],
       pluginName: '',
-      text: 'Unexpected "}"'
-    }
+      text: 'Unexpected "}"',
+    },
   ],
   warnings: [],
   frame:
@@ -26,7 +26,7 @@ export const errEsbuild = {
     line: 7,
     lineText: 'export { Layout }}',
     namespace: '',
-    suggestion: ''
+    suggestion: '',
   },
   plugin: 'vite:esbuild',
   id: '/home/rom/code/vike/examples/react-full/renderer/Layout.tsx',
@@ -35,5 +35,5 @@ export const errEsbuild = {
   message:
     'Transform failed with 1 error:\n/home/rom/code/vike/examples/react-full/renderer/Layout.tsx:7:20: ERROR: Unexpected "}"',
   stack:
-    'Error: Transform failed with 1 error:\n/home/rom/code/vike/examples/react-full/renderer/Layout.tsx:7:20: ERROR: Unexpected "}"\n    at failureErrorWithLog (/home/rom/code/vike/node_modules/.pnpm/esbuild@0.17.18/node_modules/esbuild/lib/main.js:1636:15)\n    at /home/rom/code/vike/node_modules/.pnpm/esbuild@0.17.18/node_modules/esbuild/lib/main.js:837:29\n    at responseCallbacks.<computed> (/home/rom/code/vike/node_modules/.pnpm/esbuild@0.17.18/node_modules/esbuild/lib/main.js:697:9)\n    at handleIncomingPacket (/home/rom/code/vike/node_modules/.pnpm/esbuild@0.17.18/node_modules/esbuild/lib/main.js:752:9)\n    at Socket.readFromStdout (/home/rom/code/vike/node_modules/.pnpm/esbuild@0.17.18/node_modules/esbuild/lib/main.js:673:7)\n    at Socket.emit (node:events:513:28)\n    at addChunk (node:internal/streams/readable:324:12)\n    at readableAddChunk (node:internal/streams/readable:297:9)\n    at Socket.Readable.push (node:internal/streams/readable:234:10)\n    at Pipe.onStreamRead (node:internal/stream_base_commons:190:23)'
+    'Error: Transform failed with 1 error:\n/home/rom/code/vike/examples/react-full/renderer/Layout.tsx:7:20: ERROR: Unexpected "}"\n    at failureErrorWithLog (/home/rom/code/vike/node_modules/.pnpm/esbuild@0.17.18/node_modules/esbuild/lib/main.js:1636:15)\n    at /home/rom/code/vike/node_modules/.pnpm/esbuild@0.17.18/node_modules/esbuild/lib/main.js:837:29\n    at responseCallbacks.<computed> (/home/rom/code/vike/node_modules/.pnpm/esbuild@0.17.18/node_modules/esbuild/lib/main.js:697:9)\n    at handleIncomingPacket (/home/rom/code/vike/node_modules/.pnpm/esbuild@0.17.18/node_modules/esbuild/lib/main.js:752:9)\n    at Socket.readFromStdout (/home/rom/code/vike/node_modules/.pnpm/esbuild@0.17.18/node_modules/esbuild/lib/main.js:673:7)\n    at Socket.emit (node:events:513:28)\n    at addChunk (node:internal/streams/readable:324:12)\n    at readableAddChunk (node:internal/streams/readable:297:9)\n    at Socket.Readable.push (node:internal/streams/readable:234:10)\n    at Pipe.onStreamRead (node:internal/stream_base_commons:190:23)',
 }

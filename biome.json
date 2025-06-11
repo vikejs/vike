@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "files": {
-    "ignore": ["dist/", "package.json", ".vercel/"]
+    "ignore": ["package.json", "dist/", ".vercel/"]
   },
   "formatter": {
     "indentWidth": 2,
@@ -12,19 +12,28 @@
       "semicolons": "asNeeded",
       "lineWidth": 120,
       "quoteStyle": "single",
-      "trailingCommas": "none"
-    }
-  },
-  "css": {
-    "formatter": {
-      "quoteStyle": "single"
+      "trailingCommas": "all"
     }
   },
   "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": false,
+      "style": {
+        "useNodejsImportProtocol": "error"
+      }
+    }
+  },
+  "organizeImports": {
     "enabled": false
   },
   "vcs": {
     "enabled": true,
     "clientKind": "git"
+  },
+  "css": {
+    "formatter": {
+      "quoteStyle": "single"
+    }
   }
 }

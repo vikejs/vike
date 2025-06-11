@@ -8,7 +8,7 @@ export function rollupIsEsm(rollupOptions: { format: string }) {
       format === 'es' ||
       format === 'iife' ||
       format === 'system' ||
-      format === 'umd'
+      format === 'umd',
   )
   return format === 'es'
 }

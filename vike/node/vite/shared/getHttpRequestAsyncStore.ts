@@ -65,7 +65,7 @@ async function installHttpRequestAsyncStore(): Promise<void> {
       httpRequestId,
       markErrorAsLogged,
       shouldErrorBeSwallowed,
-      errorDebugNoteAlreadyShown: false
+      errorDebugNoteAlreadyShown: false,
     }
     const pageContextReturn = await asyncLocalStorage.run(store, renderPage)
     return { pageContextReturn }
@@ -98,7 +98,7 @@ function isEquivalent(err1: unknown, err2: unknown) {
       'message',
       'stack',
       ...Object.keys(err1),
-      ...Object.keys(err2)
+      ...Object.keys(err2),
     ]).every((k) => {
       // isDeepStrictEqual() need to compare error.position wich is an object.
       if (isDeepStrictEqual(err1[k], err2[k])) return true

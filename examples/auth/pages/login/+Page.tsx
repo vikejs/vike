@@ -44,7 +44,7 @@ async function onSubmit(ev: React.FormEvent) {
   const response = await fetch('/_auth/login', {
     method: 'POST',
     body: JSON.stringify({ username, password }),
-    headers: [['Content-Type', 'application/json']]
+    headers: [['Content-Type', 'application/json']],
   })
   const { success } = await response.json()
   if (success) {

@@ -2,7 +2,7 @@ import {
   getLocationId,
   isInherited as isInherited_,
   getLogicalPath as getLogicalPath_,
-  type LocationId
+  type LocationId,
 } from './filesystemRouting.js'
 import { expect, describe, it } from 'vitest'
 

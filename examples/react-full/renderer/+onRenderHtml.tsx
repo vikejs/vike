@@ -16,7 +16,7 @@ const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRender
       <Page />
     </Layout>,
     // We don't need react-streaming for this app. (We use it merely to showcase that Vike can handle react-streaming with a pre-rendered app. Note that using react-streaming with pre-rendering can make sense if we want to be able to use React's latest <Suspense> techniques.)
-    { disable: true }
+    { disable: true },
   )
 
   const title = getPageTitle(pageContext)
@@ -36,8 +36,8 @@ const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRender
     // See https://vike.dev/streaming#initial-data-after-stream-end
     pageContext: async () => {
       return {
-        someAsyncProps: 42
+        someAsyncProps: 42,
       }
-    }
+    },
   }
 }

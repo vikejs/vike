@@ -5,7 +5,7 @@ function onBeforeRender() {
   const data = `begin-${import.meta.env.SOME_THIRD_ENV}-end`
   return {
     pageContext: {
-      pageProps: { data }
-    }
+      pageProps: { data },
+    },
   }
 }

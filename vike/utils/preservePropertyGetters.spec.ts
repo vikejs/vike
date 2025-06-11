@@ -14,7 +14,7 @@ describe('preservePropertyGetters', () => {
       get computed() {
         return this.value * 2
       },
-      normal: 'plain property'
+      normal: 'plain property',
     }
   })
 
@@ -50,7 +50,7 @@ describe('preservePropertyGetters', () => {
       },
       get product() {
         return this.a * this.b
-      }
+      },
     }
 
     preservePropertyGetters(multiObj)

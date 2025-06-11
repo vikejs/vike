@@ -100,7 +100,7 @@ function getHookFromPageConfigGlobal(pageConfigGlobal: PageConfigGlobalRuntime, 
 }
 function getHookFromPageConfigGlobalCumulative(
   pageConfigGlobal: PageConfigGlobalRuntime,
-  hookName: HookNameGlobal
+  hookName: HookNameGlobal,
 ): Hook[] {
   const configValue = pageConfigGlobal.configValues[hookName]
   if (!configValue?.value) return []
@@ -135,7 +135,7 @@ function getHookFromConfigValue(configValue: ConfigValue) {
 
 function assertHookFn(
   hookFn: unknown,
-  { hookName, hookFilePath }: { hookName: HookNameOld; hookFilePath: string }
+  { hookName, hookFilePath }: { hookName: HookNameOld; hookFilePath: string },
 ): asserts hookFn is HookFn {
   assert(hookName && hookFilePath)
   assert(!hookName.endsWith(')'))
@@ -156,13 +156,13 @@ function getHookTimeout(hooksTimeoutProvidedByUser: unknown, hookName: HookNameO
 
 // Ideally this should be called only once and at build-time (to avoid bloating the client-side bundle), but we didn't implement any mechanism to valide config values at build-time yet
 function getHooksTimeoutProvidedByUserNormalized(
-  hooksTimeoutProvidedByUser: unknown
+  hooksTimeoutProvidedByUser: unknown,
 ): HooksTimeoutProvidedByUserNormalized {
   if (hooksTimeoutProvidedByUser === undefined) return {}
   if (hooksTimeoutProvidedByUser === false) return false
   assertUsage(
     isObject(hooksTimeoutProvidedByUser),
-    `Setting ${pc.cyan('hooksTimeout')} should be ${pc.cyan('false')} or an object`
+    `Setting ${pc.cyan('hooksTimeout')} should be ${pc.cyan('false')} or an object`,
   )
 
   const hooksTimeoutProvidedByUserNormalized: HooksTimeoutProvidedByUserNormalized = {}
@@ -173,7 +173,7 @@ function getHooksTimeoutProvidedByUserNormalized(
     }
     assertUsage(
       isObject(hookTimeoutProvidedbyUser),
-      `Setting ${pc.cyan(`hooksTimeout.${hookName}`)} should be ${pc.cyan('false')} or an object`
+      `Setting ${pc.cyan(`hooksTimeout.${hookName}`)} should be ${pc.cyan('false')} or an object`,
     )
     const [error, warning] = ['error', 'warning'].map((timeoutName) => {
       const timeoutVal = hookTimeoutProvidedbyUser[timeoutName]
@@ -192,14 +192,14 @@ function getHookTimeoutDefault(hookName: HookNameOld): HookTimeout {
   if (hookName === 'onBeforeRoute') {
     return {
       error: 5 * 1000,
-      warning: 1 * 1000
+      warning: 1 * 1000,
     }
   }
 
   if (globalObject.isPrerendering) {
     return {
       error: 2 * 60 * 1000,
-      warning: 30 * 1000
+      warning: 30 * 1000,
     }
   } else {
     assert(!hookName.toLowerCase().includes('prerender'))
@@ -207,7 +207,7 @@ function getHookTimeoutDefault(hookName: HookNameOld): HookTimeout {
 
   return {
     error: 30 * 1000,
-    warning: 4 * 1000
+    warning: 4 * 1000,
   }
 }
 function getHook_setIsPrerenderering() {

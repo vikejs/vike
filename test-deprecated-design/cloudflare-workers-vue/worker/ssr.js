@@ -4,7 +4,7 @@ export { handleSsr }
 
 async function handleSsr(url) {
   const pageContextInit = {
-    urlOriginal: url
+    urlOriginal: url,
   }
   const pageContext = await renderPage(pageContextInit)
   const { httpResponse } = pageContext

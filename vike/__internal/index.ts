@@ -25,13 +25,13 @@ async function getPagesAndRoutes() {
     _pageRoutes: pageRoutes,
     _pageFilesAll: pageFilesAll,
     _pageConfigs: pageConfigs,
-    _allPageIds: allPageIds
+    _allPageIds: allPageIds,
   } = globalContext
   return {
     pageRoutes,
     pageFilesAll,
     pageConfigs,
-    allPageIds
+    allPageIds,
   }
 }
 

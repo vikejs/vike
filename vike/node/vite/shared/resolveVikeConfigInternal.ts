@@ -37,7 +37,7 @@ import {
   makeLast,
   type SortReturn,
   assertIsSingleModuleInstance,
-  genPromise
+  genPromise,
 } from '../utils.js'
 import type {
   PageConfigGlobalBuildTime,
@@ -49,14 +49,14 @@ import type {
   ConfigValuesComputed,
   ConfigValues,
   PageConfigRoute,
-  DefinedBy
+  DefinedBy,
 } from '../../../types/PageConfig.js'
 import type { Config } from '../../../types/Config.js'
 import {
   configDefinitionsBuiltIn,
   type ConfigDefinitionsInternal,
   type ConfigDefinitionInternal,
-  type ConfigDefinitions
+  type ConfigDefinitions,
 } from './resolveVikeConfigInternal/configDefinitionsBuiltIn.js'
 import {
   type LocationId,
@@ -65,14 +65,14 @@ import {
   getFilesystemRouteDefinedBy,
   isInherited,
   sortAfterInheritanceOrder,
-  applyFilesystemRoutingRootEffect
+  applyFilesystemRoutingRootEffect,
 } from './resolveVikeConfigInternal/filesystemRouting.js'
 import type { EsbuildCache } from './resolveVikeConfigInternal/transpileAndExecuteFile.js'
 import { getViteDevServer } from '../../runtime/globalContext.js'
 import { logConfigError, logConfigErrorRecover } from './loggerNotProd.js'
 import {
   removeSuperfluousViteLog_enable,
-  removeSuperfluousViteLog_disable
+  removeSuperfluousViteLog_disable,
 } from './loggerVite/removeSuperfluousViteLog.js'
 import pc from '@brillout/picocolors'
 import { getConfigDefinedAt, getDefinedByString } from '../../../shared/page-configs/getConfigDefinedAt.js'
@@ -85,13 +85,13 @@ import {
   resolveVikeConfigPublicGlobal,
   resolveVikeConfigPublicPageEager,
   type VikeConfigPublicGlobal,
-  type VikeConfigPublicPageEager
+  type VikeConfigPublicPageEager,
 } from '../../../shared/page-configs/resolveVikeConfigPublic.js'
 import { getConfigValuesBase, isJsonValue } from '../../../shared/page-configs/serialize/serializeConfigValues.js'
 import {
   getPlusFilesAll,
   type PlusFile,
-  type PlusFilesByLocationId
+  type PlusFilesByLocationId,
 } from './resolveVikeConfigInternal/getPlusFilesAll.js'
 import { getEnvVarObject } from './getEnvVarObject.js'
 import { getApiOperation } from '../../api/context.js'
@@ -144,7 +144,7 @@ function reloadVikeConfig() {
 async function getVikeConfigInternal(
   // I don't remember the logic behind it — neither why we restart Vite's dev server, nor why we sometimes don't.
   // TO-DO: eventually rethink all that. Some + settings are expected to influence Vite's config (restarting Vite's dev server is needed) while some don't.
-  doNotRestartViteOnError = false
+  doNotRestartViteOnError = false,
 ): Promise<VikeConfigInternal> {
   assert(vikeConfigCtx)
   const { userRootDir, isDev, vikeVitePluginOptions } = vikeConfigCtx
@@ -168,12 +168,12 @@ function getVikeConfigInternalSync(): VikeConfigInternal {
 function getVikeConfig(
   // TO-DO/eventually: remove unused arguments (older versions used it and we didn't remove it yet to avoid a TypeScript breaking change)
   // - No rush: we can do it later since it's getVikeConfig() is a beta feature as documented at https://vike.dev/getVikeConfig
-  config: ResolvedConfig | UserConfig
+  config: ResolvedConfig | UserConfig,
 ): VikeConfig {
   const vikeConfig = getVikeConfigInternalSync()
   assertUsage(
     vikeConfig,
-    'getVikeConfig() can only be used when Vite is loaded (i.e. during development or build) — Vite is never loaded in production.'
+    'getVikeConfig() can only be used when Vite is loaded (i.e. during development or build) — Vite is never loaded in production.',
   )
   const vikeConfigPublic = getProxyForPublicUsage(vikeConfig, 'vikeConfig')
   return vikeConfigPublic
@@ -189,7 +189,7 @@ async function getOrResolveVikeConfig(
   userRootDir: string,
   isDev: boolean,
   vikeVitePluginOptions: unknown,
-  doNotRestartViteOnError: boolean
+  doNotRestartViteOnError: boolean,
 ) {
   if (!vikeConfigPromise) {
     resolveVikeConfigInternal_withErrorHandling(userRootDir, isDev, vikeVitePluginOptions, doNotRestartViteOnError)
@@ -213,14 +213,14 @@ async function resolveVikeConfigInternal_withErrorHandling(
   userRootDir: string,
   isDev: boolean,
   vikeVitePluginOptions: unknown,
-  doNotRestartViteOnError?: boolean
+  doNotRestartViteOnError?: boolean,
 ): Promise<void> {
   const { promise, resolve, reject } = genPromise<VikeConfigInternal>()
   vikeConfigPromise = promise
 
   const esbuildCache: EsbuildCache = {
     transpileCache: {},
-    vikeConfigDependencies: new Set()
+    vikeConfigDependencies: new Set(),
   }
 
   let hasError = false
@@ -280,7 +280,7 @@ async function resolveVikeConfigInternal_withErrorHandling(
 async function resolveVikeConfigInternal(
   userRootDir: string,
   vikeVitePluginOptions: unknown,
-  esbuildCache: EsbuildCache
+  esbuildCache: EsbuildCache,
 ): Promise<VikeConfigInternal> {
   const plusFilesAll = await getPlusFilesAll(userRootDir, esbuildCache)
 
@@ -289,7 +289,7 @@ async function resolveVikeConfigInternal(
   const { pageConfigGlobal, pageConfigs } = getPageConfigsBuildTime(
     configDefinitionsResolved,
     plusFilesAll,
-    userRootDir
+    userRootDir,
   )
   if (!isV1Design_) isV1Design_ = pageConfigs.length > 0
 
@@ -307,13 +307,13 @@ async function resolveVikeConfigInternal(
     pageConfigs.map((pageConfig) => {
       const pageConfigValues = getConfigValues(pageConfig, true)
       return resolveVikeConfigPublicPageEager(pageConfigGlobalValues, pageConfig, pageConfigValues)
-    })
+    }),
   )
 
   const prerenderContext = resolvePrerenderContext({
     config: vikeConfigPublicGlobal.config,
     _from: vikeConfigPublicGlobal._from,
-    _pageConfigs: pageConfigs
+    _pageConfigs: pageConfigs,
   })
 
   const vikeConfig: VikeConfigInternal = {
@@ -323,7 +323,7 @@ async function resolveVikeConfigInternal(
     _from: vikeConfigPublicGlobal._from,
     pages: vikeConfigPublicPagesEager,
     prerenderContext,
-    _vikeConfigDependencies: esbuildCache.vikeConfigDependencies
+    _vikeConfigDependencies: esbuildCache.vikeConfigDependencies,
   }
   vikeConfigSync = vikeConfig
 
@@ -333,7 +333,7 @@ type ConfigDefinitionsResolved = Awaited<ReturnType<typeof resolveConfigDefiniti
 async function resolveConfigDefinitions(
   plusFilesAll: PlusFilesByLocationId,
   userRootDir: string,
-  esbuildCache: EsbuildCache
+  esbuildCache: EsbuildCache,
 ) {
   const plusFilesAllOrdered = Object.values(plusFilesAll)
     .flat()
@@ -341,7 +341,7 @@ async function resolveConfigDefinitions(
   const configDefinitionsGlobal = getConfigDefinitions(
     // We use `plusFilesAll` in order to allow local Vike extensions to create global configs, and to set the value of global configs such as `+vite` (enabling Vike extensions to add Vite plugins).
     plusFilesAllOrdered,
-    (configDef) => !!configDef.global
+    (configDef) => !!configDef.global,
   )
   await loadCustomConfigBuildTimeFiles(plusFilesAll, configDefinitionsGlobal, userRootDir, esbuildCache)
 
@@ -376,9 +376,9 @@ async function resolveConfigDefinitions(
         configDefinitions,
         plusFiles,
         plusFilesRelevant,
-        configNamesKnownLocal
+        configNamesKnownLocal,
       }
-    })
+    }),
   )
 
   const configDefinitionsResolved = {
@@ -386,7 +386,7 @@ async function resolveConfigDefinitions(
     configDefinitionsLocal,
     configDefinitionsAll,
     configNamesKnownAll,
-    configNamesKnownGlobal
+    configNamesKnownGlobal,
   }
 
   assertKnownConfigs(configDefinitionsResolved)
@@ -399,7 +399,7 @@ async function loadCustomConfigBuildTimeFiles(
   plusFiles: PlusFilesByLocationId | PlusFile[],
   configDefinitions: ConfigDefinitionsInternal,
   userRootDir: string,
-  esbuildCache: EsbuildCache
+  esbuildCache: EsbuildCache,
 ): Promise<void> {
   const plusFileList: PlusFile[] = Object.values(plusFiles).flat(1)
   await Promise.all(
@@ -410,20 +410,20 @@ async function loadCustomConfigBuildTimeFiles(
         await Promise.all(
           Object.entries(plusFile.pointerImportsByConfigName).map(async ([configName, pointerImport]) => {
             await loadPointerImport(pointerImport, userRootDir, configName, configDefinitions, esbuildCache)
-          })
+          }),
         )
       }
-    })
+    }),
   )
 }
 function getPageConfigsBuildTime(
   configDefinitionsResolved: ConfigDefinitionsResolved,
   plusFilesAll: PlusFilesByLocationId,
-  userRootDir: string
+  userRootDir: string,
 ) {
   const pageConfigGlobal: PageConfigGlobalBuildTime = {
     configDefinitions: configDefinitionsResolved.configDefinitionsGlobal,
-    configValueSources: {}
+    configValueSources: {},
   }
   objectEntries(configDefinitionsResolved.configDefinitionsGlobal).forEach(([configName, configDef]) => {
     const sources = resolveConfigValueSources(
@@ -433,7 +433,7 @@ function getPageConfigsBuildTime(
       Object.values(plusFilesAll).flat(),
       userRootDir,
       true,
-      plusFilesAll
+      plusFilesAll,
     )
     if (sources.length === 0) return
     pageConfigGlobal.configValueSources[configName] = sources
@@ -442,7 +442,7 @@ function getPageConfigsBuildTime(
   applyEffectsConfVal(
     pageConfigGlobal.configValueSources,
     configDefinitionsResolved.configDefinitionsGlobal,
-    plusFilesAll
+    plusFilesAll,
   )
   sortConfigValueSources(pageConfigGlobal.configValueSources, null)
   assertPageConfigGlobal(pageConfigGlobal, plusFilesAll)
@@ -462,7 +462,7 @@ function getPageConfigsBuildTime(
             plusFilesRelevant,
             userRootDir,
             false,
-            plusFilesAll
+            plusFilesAll,
           )
           if (sources.length === 0) return
           configValueSources[configName] = sources
@@ -482,7 +482,7 @@ function getPageConfigsBuildTime(
         configDefinitions: configDefinitionsLocal,
         plusFiles: plusFilesRelevant,
         configValueSources,
-        configValuesComputed
+        configValuesComputed,
       }
       return pageConfig
     })
@@ -499,12 +499,12 @@ function assertGlobalConfigLocation(
   configName: string,
   sources: ConfigValueSource[],
   plusFilesAll: PlusFilesByLocationId,
-  configDefinitionsGlobal: ConfigDefinitionsInternal
+  configDefinitionsGlobal: ConfigDefinitionsInternal,
 ) {
   // Determine existing global +config.js files
   const configFilePathsGlobal: string[] = []
   const plusFilesGlobal: PlusFile[] = Object.values(
-    objectFromEntries(objectEntries(plusFilesAll).filter(([locationId]) => isGlobalLocation(locationId, plusFilesAll)))
+    objectFromEntries(objectEntries(plusFilesAll).filter(([locationId]) => isGlobalLocation(locationId, plusFilesAll))),
   ).flat()
   plusFilesGlobal
     .filter((i) => i.isConfigFile)
@@ -560,8 +560,8 @@ function assertOnBeforeRenderEnv(pageConfig: PageConfigBuildTime) {
   assertUsage(
     !(onBeforeRenderEnv.client && !isClientRouting),
     `Page ${pageConfig.pageId} has an onBeforeRender() hook with env ${pc.cyan(
-      JSON.stringify(onBeforeRenderEnv)
-    )} which doesn't make sense because the page is using Server Routing: onBeforeRender() can be run in the client only when using Client Routing.`
+      JSON.stringify(onBeforeRenderEnv),
+    )} which doesn't make sense because the page is using Server Routing: onBeforeRender() can be run in the client only when using Client Routing.`,
   )
 }
 
@@ -606,13 +606,13 @@ function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuild
 function temp_interopVikeVitePlugin(
   pageConfigGlobal: PageConfigGlobalBuildTime,
   vikeVitePluginOptions: unknown,
-  userRootDir: string
+  userRootDir: string,
 ) {
   assert(isObject(vikeVitePluginOptions))
   assertWarning(
     Object.keys(vikeVitePluginOptions).length === 0,
     `Define Vike settings in +config.js instead of vite.config.js ${pc.underline('https://vike.dev/migration/settings')}`,
-    { onlyOnce: true }
+    { onlyOnce: true },
   )
   Object.entries(vikeVitePluginOptions).forEach(([configName, value]) => {
     const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
@@ -620,16 +620,16 @@ function temp_interopVikeVitePlugin(
       getSourceNonConfigFile(configName, value, {
         ...getFilePathResolved({
           userRootDir,
-          filePathAbsoluteUserRootDir: '/vite.config.js'
+          filePathAbsoluteUserRootDir: '/vite.config.js',
         }),
-        fileExportPathToShowToUser: null
-      })
+        fileExportPathToShowToUser: null,
+      }),
     )
   })
 }
 function setCliAndApiOptions(
   pageConfigGlobal: PageConfigGlobalBuildTime,
-  configDefinitionsResolved: ConfigDefinitionsResolved
+  configDefinitionsResolved: ConfigDefinitionsResolved,
 ) {
   // Vike API — passed options [lowest precedence]
   const apiOperation = getApiOperation()
@@ -637,7 +637,7 @@ function setCliAndApiOptions(
     addSources(
       apiOperation.options.vikeConfig as Record<string, unknown>,
       { definedBy: 'api', operation: apiOperation.operation },
-      false
+      false,
     )
   }
 
@@ -663,7 +663,7 @@ function setCliAndApiOptions(
         '/' as LocationId,
         false,
         sourceName,
-        exitOnError
+        exitOnError,
       )
       const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
       sources.unshift(getSourceNonConfigFile(configName, value, definedBy))
@@ -675,19 +675,19 @@ function getVikeConfigFromCliOrEnv() {
   const configFromEnvVar = getEnvVarObject('VIKE_CONFIG')
   const vikeConfigFromCliOrEnv = {
     ...configFromCliOptions, // Lower precedence
-    ...configFromEnvVar // Higher precedence
+    ...configFromEnvVar, // Higher precedence
   }
   return {
     vikeConfigFromCliOrEnv,
     configFromCliOptions,
-    configFromEnvVar
+    configFromEnvVar,
   }
 }
 
 function getSourceNonConfigFile(
   configName: string,
   value: unknown,
-  definedAt: DefinedAtFilePath | DefinedBy
+  definedAt: DefinedAtFilePath | DefinedBy,
 ): ConfigValueSource {
   assert(includes(objectKeys(configDefinitionsBuiltIn), configName))
   const configDef = configDefinitionsBuiltIn[configName]
@@ -699,7 +699,7 @@ function getSourceNonConfigFile(
     locationId: '/' as LocationId,
     plusFile: null,
     valueIsLoadedWithImport: false,
-    valueIsDefinedByPlusValueFile: false
+    valueIsDefinedByPlusValueFile: false,
   }
   return source
 }
@@ -725,7 +725,7 @@ function sortAfterInheritanceOrderPage(
   plusFile1: PlusFile,
   plusFile2: PlusFile,
   locationIdPage: LocationId,
-  configName: string | null
+  configName: string | null,
 ): SortReturn {
   {
     const ret = sortAfterInheritanceOrder(plusFile1.locationId, plusFile2.locationId, locationIdPage)
@@ -742,12 +742,12 @@ function sortAfterInheritanceOrderGlobal(
   plusFile1: PlusFile,
   plusFile2: PlusFile,
   plusFilesAll: PlusFilesByLocationId | null,
-  configName: string | null
+  configName: string | null,
 ): SortReturn {
   if (plusFilesAll) {
     const ret = makeFirst((plusFile: PlusFile) => isGlobalLocation(plusFile.locationId, plusFilesAll))(
       plusFile1,
-      plusFile2
+      plusFile2,
     )
     if (ret !== 0) return ret
   }
@@ -785,7 +785,7 @@ function sortPlusFilesSameLocationId(plusFile1: PlusFile, plusFile2: PlusFile, c
       (plusFile: PlusFile) =>
         !plusFile.isConfigFile &&
         // Is side-export
-        plusFile.configName !== configName
+        plusFile.configName !== configName,
     )(plusFile1, plusFile2)
     if (ret !== 0) return ret
   }
@@ -807,7 +807,7 @@ function resolveConfigValueSources(
   plusFilesRelevant: PlusFile[],
   userRootDir: string,
   isGlobal: boolean,
-  plusFilesAll: PlusFilesByLocationId
+  plusFilesAll: PlusFilesByLocationId,
 ): ConfigValueSource[] {
   let sources: ConfigValueSource[] = plusFilesRelevant
     .filter((plusFile) => isDefiningConfig(plusFile, configName))
@@ -837,19 +837,19 @@ function getConfigValueSource(
   configName: string,
   plusFile: PlusFile,
   configDef: ConfigDefinitionInternal,
-  userRootDir: string
+  userRootDir: string,
 ): ConfigValueSource {
   const confVal = getConfVal(plusFile, configName)
   assert(confVal)
 
   const configValueSourceCommon = {
     locationId: plusFile.locationId,
-    plusFile
+    plusFile,
   }
 
   const definedAtFilePath_: DefinedAtFilePath = {
     ...plusFile.filePath,
-    fileExportPathToShowToUser: ['default', configName]
+    fileExportPathToShowToUser: ['default', configName],
   }
 
   // +client.js
@@ -870,7 +870,7 @@ function getConfigValueSource(
       valueFilePath = plusFile.filePath.filePathAbsoluteVite
       definedAtFilePath = {
         ...plusFile.filePath,
-        fileExportPathToShowToUser: []
+        fileExportPathToShowToUser: [],
       }
     }
     const configValueSource: ConfigValueSource = {
@@ -881,7 +881,7 @@ function getConfigValueSource(
       configEnv: configDef.env,
       valueIsLoadedWithImport: false,
       valueIsDefinedByPlusValueFile: false,
-      definedAt: definedAtFilePath
+      definedAt: definedAtFilePath,
     }
     return configValueSource
   }
@@ -896,10 +896,10 @@ function getConfigValueSource(
       const value = pointerImport.fileExportValueLoaded
         ? {
             valueIsLoaded: true as const,
-            value: pointerImport.fileExportValue
+            value: pointerImport.fileExportValue,
           }
         : {
-            valueIsLoaded: false as const
+            valueIsLoaded: false as const,
           }
       const configValueSource: ConfigValueSource = {
         ...configValueSourceCommon,
@@ -907,7 +907,7 @@ function getConfigValueSource(
         configEnv: resolveConfigEnv(configDef.env, pointerImport.fileExportPath),
         valueIsLoadedWithImport: true,
         valueIsDefinedByPlusValueFile: false,
-        definedAt: pointerImport.fileExportPath
+        definedAt: pointerImport.fileExportPath,
       }
       return configValueSource
     }
@@ -920,7 +920,7 @@ function getConfigValueSource(
       configEnv: configDef.env,
       valueIsLoadedWithImport: false,
       valueIsDefinedByPlusValueFile: false,
-      definedAt: definedAtFilePath_
+      definedAt: definedAtFilePath_,
     }
     return configValueSource
   }
@@ -941,8 +941,8 @@ function getConfigValueSource(
           configName === plusFile.configName
             ? []
             : // Side-effect config (e.g. `export { frontmatter }` of .md files)
-              [configName]
-      }
+              [configName],
+      },
     }
     return configValueSource
   }
@@ -964,13 +964,13 @@ function isDefiningPageConfig(configName: string): boolean {
 function resolveIsGlobalValue(
   configDefGlobal: ConfigDefinitionInternal['global'],
   source: ConfigValueSource,
-  plusFilesAll: PlusFilesByLocationId
+  plusFilesAll: PlusFilesByLocationId,
 ) {
   assert(source.valueIsLoaded)
   let isGlobal: boolean
   if (isCallable(configDefGlobal))
     isGlobal = configDefGlobal(source.value, {
-      isGlobalLocation: isGlobalLocation(source.locationId, plusFilesAll)
+      isGlobalLocation: isGlobalLocation(source.locationId, plusFilesAll),
     })
   else isGlobal = configDefGlobal ?? false
   assert(typeof isGlobal === 'boolean')
@@ -987,7 +987,7 @@ function getConfigNamesSetByPlusFile(plusFile: PlusFile): string[] {
 
 function getConfigDefinitions(
   plusFilesRelevant: PlusFile[],
-  filter?: (configDef: ConfigDefinitionInternal) => boolean
+  filter?: (configDef: ConfigDefinitionInternal) => boolean,
 ): ConfigDefinitionsInternal {
   let configDefinitions: ConfigDefinitionsInternal = { ...configDefinitionsBuiltIn }
 
@@ -1009,7 +1009,7 @@ function getConfigDefinitions(
         assert(plusFile.isConfigFile)
         ;(configDef as ConfigDefinitionInternal)._userEffectDefinedAtFilePath = {
           ...plusFile.filePath,
-          fileExportPathToShowToUser: ['default', 'meta', configName, 'effect']
+          fileExportPathToShowToUser: ['default', 'meta', configName, 'effect'],
         }
       })
 
@@ -1017,20 +1017,20 @@ function getConfigDefinitions(
         if ('isDefinedByPeerDependency' in configDefinitionUserLand) {
           configDefinitionUserLand = {
             env: { client: false, server: false, config: false },
-            ...(configDefinitionUserLand as Record<string, unknown>)
+            ...(configDefinitionUserLand as Record<string, unknown>),
           }
         }
         // User can override an existing config definition
         configDefinitions[configName] = {
           ...configDefinitions[configName],
-          ...configDefinitionUserLand
+          ...configDefinitionUserLand,
         }
       })
     })
 
   if (filter) {
     configDefinitions = Object.fromEntries(
-      Object.entries(configDefinitions).filter(([_configName, configDef]) => filter(configDef))
+      Object.entries(configDefinitions).filter(([_configName, configDef]) => filter(configDef)),
     )
   }
 
@@ -1039,13 +1039,13 @@ function getConfigDefinitions(
 
 function assertMetaUsage(
   metaVal: unknown,
-  metaConfigDefinedAt: `Config meta defined at ${string}` | null
+  metaConfigDefinedAt: `Config meta defined at ${string}` | null,
 ): asserts metaVal is ConfigDefinitions {
   if (!isObject(metaVal)) {
     assert(metaConfigDefinedAt) // We expect internal effects to return a valid meta value
     assertUsage(
       false,
-      `${metaConfigDefinedAt} has an invalid type ${pc.cyan(typeof metaVal)}: it should be an object instead.`
+      `${metaConfigDefinedAt} has an invalid type ${pc.cyan(typeof metaVal)}: it should be an object instead.`,
     )
   }
   objectEntries(metaVal).forEach(([configName, def]) => {
@@ -1054,8 +1054,8 @@ function assertMetaUsage(
       assertUsage(
         false,
         `${metaConfigDefinedAt} sets ${pc.cyan(`meta.${configName}`)} to a value with an invalid type ${pc.cyan(
-          typeof def
-        )}: it should be an object instead.`
+          typeof def,
+        )}: it should be an object instead.`,
       )
     }
 
@@ -1081,8 +1081,8 @@ function assertMetaUsage(
         assertUsage(
           false,
           `${metaConfigDefinedAt} sets ${pc.cyan(`meta.${configName}.effect`)} to an invalid type ${pc.cyan(
-            typeof def.effect
-          )}: it should be a function instead`
+            typeof def.effect,
+          )}: it should be a function instead`,
         )
       }
       if (!configEnv.config) {
@@ -1090,10 +1090,10 @@ function assertMetaUsage(
         assertUsage(
           false,
           `${metaConfigDefinedAt} sets ${pc.cyan(
-            `meta.${configName}.effect`
+            `meta.${configName}.effect`,
           )} but it's only supported if meta.${configName}.env has ${pc.cyan('{ config: true }')} (but it's ${pc.cyan(
-            JSON.stringify(configEnv)
-          )} instead)`
+            JSON.stringify(configEnv),
+          )} instead)`,
         )
       }
     }
@@ -1104,7 +1104,7 @@ function assertMetaUsage(
 function applyEffectsConfVal(
   configValueSources: ConfigValueSources,
   configDefinitions: ConfigDefinitionsInternal,
-  plusFilesAll: PlusFilesByLocationId
+  plusFilesAll: PlusFilesByLocationId,
 ) {
   objectEntries(configDefinitions).forEach(([configNameEffect, configDefEffect]) => {
     const sourceEffect = configValueSources[configNameEffect]?.[0]
@@ -1119,7 +1119,7 @@ function applyEffectsConfVal(
       configNameEffect,
       configDefEffect,
       configDefinitions,
-      plusFilesAll
+      plusFilesAll,
     )
   })
 }
@@ -1141,15 +1141,15 @@ function runEffect(configName: string, configDef: ConfigDefinitionInternal, sour
     configDef.env.config,
     [
       `Cannot add meta.effect to ${pc.cyan(configName)} because its meta.env is ${pc.cyan(
-        JSON.stringify(configDef.env)
-      )} but an effect can only be added to a config that has a meta.env with ${pc.cyan('{ config: true }')}.`
-    ].join(' ')
+        JSON.stringify(configDef.env),
+      )} but an effect can only be added to a config that has a meta.env with ${pc.cyan('{ config: true }')}.`,
+    ].join(' '),
   )
   assert(source.valueIsLoaded)
   // Call effect
   const configModFromEffect = configDef.effect({
     configValue: source.value,
-    configDefinedAt: getConfigDefinedAt('Config', configName, source.definedAt)
+    configDefinedAt: getConfigDefinedAt('Config', configName, source.definedAt),
   })
   if (!configModFromEffect) return null
   return configModFromEffect
@@ -1161,7 +1161,7 @@ function applyEffectConfVal(
   configNameEffect: string,
   configDefEffect: ConfigDefinitionInternal,
   configDefinitions: ConfigDefinitionsInternal,
-  plusFilesAll: PlusFilesByLocationId
+  plusFilesAll: PlusFilesByLocationId,
 ) {
   objectEntries(configModFromEffect).forEach(([configNameTarget, configValue]) => {
     if (configNameTarget === 'meta') return
@@ -1176,7 +1176,7 @@ function applyEffectConfVal(
       valueIsLoadedWithImport: false,
       valueIsDefinedByPlusValueFile: false,
       valueIsLoaded: true,
-      value: configValue
+      value: configValue,
     }
     assert(sourceEffect.valueIsLoaded)
     const isValueGlobalSource = resolveIsGlobalValue(configDefEffect.global, sourceEffect, plusFilesAll)
@@ -1185,7 +1185,7 @@ function applyEffectConfVal(
     // The error message make it sound like it's an inherent limitation, it actually isn't (both ways can make senses).
     assertUsage(
       isValueGlobalSource === isValueGlobalTarget,
-      `The configuration ${pc.cyan(configNameEffect)} is set to ${pc.cyan(JSON.stringify(sourceEffect.value))} which is considered ${isGlobalHumanReadable(isValueGlobalSource)}. However, it has a meta.effect that sets the configuration ${pc.cyan(configNameTarget)} to ${pc.cyan(JSON.stringify(configValue))} which is considered ${isGlobalHumanReadable(isValueGlobalTarget)}. This is contradictory: make sure the values are either both non-global or both global.`
+      `The configuration ${pc.cyan(configNameEffect)} is set to ${pc.cyan(JSON.stringify(sourceEffect.value))} which is considered ${isGlobalHumanReadable(isValueGlobalSource)}. However, it has a meta.effect that sets the configuration ${pc.cyan(configNameTarget)} to ${pc.cyan(JSON.stringify(configValue))} which is considered ${isGlobalHumanReadable(isValueGlobalTarget)}. This is contradictory: make sure the values are either both non-global or both global.`,
     )
     configValueSources[configNameTarget] ??= []
     configValueSources[configNameTarget].push(configValueSource)
@@ -1194,7 +1194,7 @@ function applyEffectConfVal(
 function applyEffectMetaEnv(
   configModFromEffect: Config,
   configValueSources: ConfigValueSources,
-  configDefEffect: ConfigDefinitionInternal
+  configDefEffect: ConfigDefinitionInternal,
 ) {
   const notSupported =
     `${pc.cyan('meta.effect')} currently only supports setting the value of a config, or modifying the ${pc.cyan('meta.env')} of a config.` as const
@@ -1232,7 +1232,7 @@ function getComputed(configValueSources: ConfigValueSources, configDefinitions: 
     if (value === undefined) return
     configValuesComputed[configName] = {
       value,
-      configEnv: configDef.env
+      configEnv: configDef.env,
     }
   })
   return configValuesComputed
@@ -1254,11 +1254,11 @@ function assertKnownConfigs(configDefinitionsResolved: ConfigDefinitionsResolved
             locationId,
             true,
             sourceName,
-            false
+            false,
           )
         })
       })
-    }
+    },
   )
 }
 function assertKnownConfig(
@@ -1268,7 +1268,7 @@ function assertKnownConfig(
   locationId: LocationId,
   isPlusFile: boolean,
   sourceName: string,
-  exitOnError: boolean
+  exitOnError: boolean,
 ): void {
   const { configNamesKnownAll } = configDefinitionsResolved
 
@@ -1284,7 +1284,7 @@ function assertKnownConfig(
     assertUsage(
       false,
       `${sourceName} sets the value of the config ${configNameColored} which is a custom config that is defined with ${pc.underline('https://vike.dev/meta')} at a path that doesn't apply to ${locationId} — see ${pc.underline('https://vike.dev/config#inheritance')}` as const,
-      { exitOnError }
+      { exitOnError },
     )
   }
 
@@ -1305,12 +1305,12 @@ function assertKnownConfig(
       title: ui,
       ssr: ui,
       stream: ui,
-      Wrapper: ui
+      Wrapper: ui,
     } as const
     if (configName in knownVikeExntensionConfigs) {
       const requiredVikeExtension = joinEnglish(
         knownVikeExntensionConfigs[configName as keyof typeof knownVikeExntensionConfigs].map((e) => pc.bold(e)),
-        'or'
+        'or',
       )
       const errMsgEnhanced =
         `${errMsg}. If you want to use the configuration ${configNameColored} documented at ${pc.underline(`https://vike.dev/${configName}`)} then make sure to install ${requiredVikeExtension}. (Alternatively, you can define ${configNameColored} yourself by using ${pc.cyan('meta')}, see ${pc.underline('https://vike.dev/meta')} for more information.)` as const
@@ -1330,7 +1330,7 @@ function assertKnownConfig(
     let errMsgEnhanced = `${errMsg}. Did you mean ${pc.cyan(configNameSimilar)} instead?` as const
     if (configName === 'page') {
       errMsgEnhanced += ` (The name of the config ${pc.cyan('Page')} starts with a capital letter ${pc.cyan(
-        'P'
+        'P',
       )} because it defines a UI component: a ubiquitous JavaScript convention is that the name of UI components start with a capital letter.)` as const
     }
     assertUsage(false, errMsgEnhanced, { exitOnError })
@@ -1360,13 +1360,13 @@ function determineRouteFilesystem(locationId: LocationId, configValueSources: Co
   assert(filesystemRouteString.startsWith('/'))
   const routeFilesystem = {
     routeString: filesystemRouteString,
-    definedAtLocation: filesystemRouteDefinedBy
+    definedAtLocation: filesystemRouteDefinedBy,
   }
   return { routeFilesystem, isErrorPage: undefined }
 }
 function getFilesystemRoutingRootEffect(
   configFilesystemRoutingRoot: ConfigValueSource,
-  configName: 'filesystemRoutingRoot'
+  configName: 'filesystemRoutingRoot',
 ) {
   assert(configFilesystemRoutingRoot.configEnv.config)
   // Eagerly loaded since it's config-only
@@ -1376,7 +1376,7 @@ function getFilesystemRoutingRootEffect(
   assertUsage(typeof value === 'string', `${configDefinedAt} should be a string`)
   assertUsage(
     value.startsWith('/'),
-    `${configDefinedAt} is ${pc.cyan(value)} but it should start with a leading slash ${pc.cyan('/')}`
+    `${configDefinedAt} is ${pc.cyan(value)} but it should start with a leading slash ${pc.cyan('/')}`,
   )
   const { definedAt } = configFilesystemRoutingRoot
   assert(!definedAt.definedBy)
@@ -1396,7 +1396,7 @@ function getConfigEnvValue(
   val: unknown,
   errMsgIntro: `Config meta defined at ${string} sets meta.${
     string // configName
-  }.env to`
+  }.env to`,
 ): ConfigEnvInternal {
   const errInvalidValue = `${errMsgIntro} an invalid value ${pc.cyan(JSON.stringify(val))}`
 
@@ -1415,7 +1415,7 @@ function getConfigEnvValue(
     assertWarning(
       false,
       `${errMsgIntro} ${pc.cyan(val)} which is deprecated and will be removed in the next major release`,
-      { onlyOnce: true }
+      { onlyOnce: true },
     )
     return valConverted
   }
@@ -1442,7 +1442,7 @@ function getConfigDefinitionOptional(configDefinitions: ConfigDefinitionsInterna
 
 function getConfVal(
   plusFile: PlusFile,
-  configName: string
+  configName: string,
 ): null | { value: unknown; valueIsLoaded: true } | { valueIsLoaded: false } {
   const configNames = getConfigNamesSetByPlusFile(plusFile)
   if (!configNames.includes(configName)) return null
@@ -1482,7 +1482,7 @@ function isGlobalLocation(locationId: LocationId, plusFilesAll: PlusFilesByLocat
 function isOverriden(
   source: ConfigValueSource,
   configName: string,
-  pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime
+  pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime,
 ): boolean {
   const configDef = pageConfig.configDefinitions[configName]
   assert(configDef)
@@ -1502,7 +1502,7 @@ function resolvePrerenderContext(vikeConfig: Parameters<typeof resolvePrerenderC
     // Set at runPrerender()
     output: null,
     // Set at runPrerender()
-    pageContexts: null
+    pageContexts: null,
   }
   prerenderContext.isPrerenderingEnabled = isPrerenderingEnabled
   prerenderContext.isPrerenderingEnabledForAllPages = isPrerenderingEnabledForAllPages
@@ -1533,19 +1533,19 @@ function getVikeConfigDummy(esbuildCache: EsbuildCache): VikeConfigInternal {
   const prerenderContextDummy = resolvePrerenderContext({
     config: globalDummy.config,
     _from: globalDummy._from,
-    _pageConfigs: pageConfigsDummy
+    _pageConfigs: pageConfigsDummy,
   })
   const vikeConfigDummy: VikeConfigInternal = {
     _pageConfigs: pageConfigsDummy,
     _pageConfigGlobal: {
       configDefinitions: {},
-      configValueSources: {}
+      configValueSources: {},
     },
     config: globalDummy.config,
     _from: globalDummy._from,
     pages: {},
     prerenderContext: prerenderContextDummy,
-    _vikeConfigDependencies: esbuildCache.vikeConfigDependencies
+    _vikeConfigDependencies: esbuildCache.vikeConfigDependencies,
   }
   vikeConfigSync = vikeConfigDummy
   isV1Design_ = true

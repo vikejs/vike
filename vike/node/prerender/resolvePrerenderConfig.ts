@@ -19,7 +19,7 @@ function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal, 'conf
     noExtraDir: pickFirst(prerenderSettings.map((c) => c.noExtraDir)) ?? null,
     keepDistServer: pickFirst(prerenderSettings.map((c) => c.keepDistServer)) ?? false,
     parallel: pickFirst(prerenderSettings.map((c) => c.parallel)) ?? true,
-    disableAutoRun: pickFirst(prerenderSettings.map((c) => c.disableAutoRun)) ?? false
+    disableAutoRun: pickFirst(prerenderSettings.map((c) => c.disableAutoRun)) ?? false,
   } satisfies Record<string, boolean | number | null>
 
   let defaultLocalValue = false
@@ -43,11 +43,11 @@ function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal, 'conf
     isPrerenderingEnabledForAllPages:
       vikeConfig._pageConfigs.length > 0 &&
       vikeConfig._pageConfigs.every(
-        (pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value ?? defaultLocalValue
+        (pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value ?? defaultLocalValue,
       ),
     isPrerenderingEnabled:
       vikeConfig._pageConfigs.length > 0 &&
-      vikeConfig._pageConfigs.some((pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value ?? defaultLocalValue)
+      vikeConfig._pageConfigs.some((pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value ?? defaultLocalValue),
   })
 
   // TODO/next-major remove

@@ -17,7 +17,7 @@ async function handleErrorWithoutErrorPage<
     pageId: null
     _globalContext: GlobalContextServerInternal
     urlOriginal: string
-  }
+  },
 >(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {
   assert(pageContext.pageId === null)
   assert(pageContext.errorWhileRendering || pageContext.is404)
@@ -45,7 +45,7 @@ async function warnMissingErrorPage(isV1: boolean, isProduction: boolean) {
     const msg = [
       `No ${isV1 ? 'error page' : pc.cyan('_error.page.js')} found,`,
       'we recommend defining one',
-      'https://vike.dev/error-page'
+      'https://vike.dev/error-page',
     ].join(' ')
     assertWarning(false, msg, { onlyOnce: true })
   }

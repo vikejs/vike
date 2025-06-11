@@ -1,7 +1,7 @@
 import { defineWorkspace } from 'vitest/config'
 
 const env = {
-  NO_COLOR: '1'
+  NO_COLOR: '1',
 }
 
 export default defineWorkspace([
@@ -9,15 +9,15 @@ export default defineWorkspace([
     test: {
       include: ['vike/**/*.spec.ts'],
       name: 'unit',
-      env
-    }
+      env,
+    },
   },
   {
     test: {
       // test/**/*.test.ts => @brillout/test-e2e
       include: ['test/**/*.spec.ts'],
       name: 'e2e',
-      env
-    }
-  }
+      env,
+    },
+  },
 ])

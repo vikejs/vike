@@ -6,7 +6,7 @@ function IllustrationNote({
   className,
   click,
   children,
-  style
+  style,
 }: { className?: string; click?: boolean; children: React.ReactNode; style?: React.CSSProperties }) {
   const iconMouse = click && (
     <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24">
@@ -26,13 +26,13 @@ function IllustrationNote({
       style={{
         opacity: 0.6,
         textAlign: 'center',
-        ...style
+        ...style,
       }}
     >
       {iconMouse}
       <p
         style={{
-          fontSize: '14px'
+          fontSize: '14px',
         }}
       >
         {children}

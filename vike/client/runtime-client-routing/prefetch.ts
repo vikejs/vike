@@ -14,7 +14,7 @@ import {
   checkIfClientRouting,
   getGlobalObject,
   hasProp,
-  objectAssign
+  objectAssign,
 } from './utils.js'
 import { isErrorFetchingStaticAssets, loadPageConfigsLazyClientSide } from '../shared/loadPageConfigsLazyClientSide.js'
 import { skipLink } from './skipLink.js'
@@ -29,7 +29,7 @@ import { getPageContextCurrent } from './getPageContextCurrent.js'
 import {
   PAGE_CONTEXT_MAX_AGE_DEFAULT,
   type PrefetchSettingResolved,
-  getPrefetchSettings
+  getPrefetchSettings,
 } from './prefetch/getPrefetchSettings.js'
 import pc from '@brillout/picocolors'
 import { normalizeUrlArgument } from './normalizeUrlArgument.js'
@@ -45,7 +45,7 @@ const globalObject = getGlobalObject('runtime-client-routing/prefetch.ts', {
   prefetchedPageContexts: {} as Record<
     string, // URL
     PrefetchedPageContext
-  >
+  >,
 })
 
 type ResultPageContextFromServer = Awaited<ReturnType<typeof getPageContextFromServerHooks>>
@@ -61,7 +61,7 @@ type PageContextForPrefetch = PageContextCreated & {
 function getPageContextPrefetched(
   pageContext: {
     urlPathname: string
-  } & VikeConfigPublicPageLazy
+  } & VikeConfigPublicPageLazy,
 ): null | PageContextFromServerHooks {
   const prefetchSettings = getPrefetchSettings(pageContext, null)
   // TODO/pageContext-prefetch: I guess we need linkTag to make this condition work
@@ -87,7 +87,7 @@ async function prefetchAssets(pageContextLink: {
       pageContextLink.pageId,
       pageContextLink._pageFilesAll,
       pageContextLink._globalContext._pageConfigs,
-      pageContextLink._globalContext._pageConfigGlobal
+      pageContextLink._globalContext._pageConfigGlobal,
     )
   } catch (err) {
     if (isErrorFetchingStaticAssets(err)) {
@@ -100,14 +100,14 @@ async function prefetchAssets(pageContextLink: {
 
 async function prefetchPageContextFromServerHooks(
   pageContextLink: PageContextForPrefetch,
-  resultMaxAge: number | null
+  resultMaxAge: number | null,
 ): Promise<void> {
   const result = await getPageContextFromServerHooks(pageContextLink, false)
   setPageContextPrefetchCache(pageContextLink, result, resultMaxAge)
 }
 function populatePageContextPrefetchCache(
   pageContext: PageContextForPrefetch /*& VikeConfigPublicPageLazy*/,
-  result: ResultPageContextFromServer
+  result: ResultPageContextFromServer,
 ): void {
   // TODO/pageContext-prefetch: replace with using pageContext.config.prerender instead. (For being able to do that: eager configs need to be accessible without have to use VikeConfigPublicPageLazy as it isn't available here.)
   if (!isBrilloutDocpress()) return
@@ -116,7 +116,7 @@ function populatePageContextPrefetchCache(
 function setPageContextPrefetchCache(
   pageContext: PageContextForPrefetch,
   result: ResultPageContextFromServer,
-  resultMaxAge: number | null
+  resultMaxAge: number | null,
 ) {
   if (resultMaxAge === null) resultMaxAge = getResultMaxAge()
   const key = getCacheKey(pageContext.urlPathname)
@@ -124,7 +124,7 @@ function setPageContextPrefetchCache(
   globalObject.prefetchedPageContexts[key] = {
     resultFetchedAt: Date.now(),
     resultMaxAge,
-    result
+    result,
   }
 }
 function getResultMaxAge(): number {
@@ -154,15 +154,15 @@ async function prefetch(
   */
   options_?: {
     pageContext?: boolean
-  }
+  },
 ): Promise<void> {
   const options = {
     staticAssets: true,
-    pageContext: options_?.pageContext ?? false
+    pageContext: options_?.pageContext ?? false,
   }
 
   assertUsage(checkIfClientRouting(), 'prefetch() only works with Client Routing, see https://vike.dev/prefetch', {
-    showStackTrace: true
+    showStackTrace: true,
   })
   url = normalizeUrlArgument(url, 'prefetch')
 
@@ -170,7 +170,7 @@ async function prefetch(
   if (!pageContextLink?.pageId) {
     assertWarning(false, `[prefetch(url)] ${pc.string(url)} ${noRouteMatch}`, {
       showStackTrace: true,
-      onlyOnce: false
+      onlyOnce: false,
     })
     return
   }
@@ -188,7 +188,7 @@ async function prefetch(
         const resultMaxAge = typeof options?.pageContext === 'number' ? options.pageContext : null
         await prefetchPageContextFromServerHooks(pageContextLink, resultMaxAge)
       }
-    })()
+    })(),
   ])
 }
 
@@ -216,7 +216,7 @@ function addLinkPrefetchHandlers_watch(): void {
   // - https://stackoverflow.com/questions/55046093/listening-for-changes-in-htmlcollection-or-achieving-a-similar-effect
   globalObject.mutationObserver.observe(document.body, {
     childList: true,
-    subtree: true
+    subtree: true,
   })
 }
 function addLinkPrefetchHandlers_unwatch(): void {
@@ -234,7 +234,7 @@ function addLinkPrefetchHandlers_apply(): void {
       () => {
         prefetchOnEvent(linkTag, 'hover')
       },
-      { passive: true }
+      { passive: true },
     )
 
     linkTag.addEventListener(
@@ -242,7 +242,7 @@ function addLinkPrefetchHandlers_apply(): void {
       () => {
         prefetchOnEvent(linkTag, 'hover')
       },
-      { passive: true }
+      { passive: true },
     )
 
     const observer = new IntersectionObserver((entries) => {
@@ -297,7 +297,7 @@ async function prefetchOnEvent(linkTag: HTMLAnchorElement, event: 'hover' | 'vie
           await prefetchPageContextFromServerHooks(pageContextLink, resultMaxAge)
         }
       }
-    })()
+    })(),
   ])
 }
 

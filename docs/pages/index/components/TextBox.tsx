@@ -8,7 +8,7 @@ const TextBox = ({ children, className }: { children: React.ReactNode; className
       className={className}
       style={{
         padding: '0 20px',
-        width: '100%'
+        width: '100%',
       }}
     >
       {children}

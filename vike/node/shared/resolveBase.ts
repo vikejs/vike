@@ -12,27 +12,27 @@ type BaseUrlsResolved = {
 function resolveBase(
   baseViteOriginal: string | null,
   baseServerUnresolved: string | null,
-  baseAssetsUnresolved: string | null
+  baseAssetsUnresolved: string | null,
 ): BaseUrlsResolved {
   if (baseViteOriginal === '/__UNSET__') baseViteOriginal = null
   {
     const wrongBase = (val: string) =>
       `should start with ${pc.cyan('/')}, ${pc.cyan('http://')}, or ${pc.cyan('https://')} (it's ${pc.cyan(
-        val
+        val,
       )} instead)`
     assertUsage(
       baseViteOriginal === null || isBaseAssets(baseViteOriginal),
-      `vite.config.js#base ${wrongBase(baseViteOriginal!)}`
+      `vite.config.js#base ${wrongBase(baseViteOriginal!)}`,
     )
     assertUsage(
       baseAssetsUnresolved === null || isBaseAssets(baseAssetsUnresolved),
-      `Config ${pc.cyan('baseAssets')} ${wrongBase(baseAssetsUnresolved!)}`
+      `Config ${pc.cyan('baseAssets')} ${wrongBase(baseAssetsUnresolved!)}`,
     )
     assertUsage(
       baseServerUnresolved === null || baseServerUnresolved.startsWith('/'),
       `Config ${pc.cyan('baseServer')} should start with a leading slash ${pc.cyan('/')} (it's ${pc.cyan(
-        String(baseServerUnresolved)
-      )} instead)`
+        String(baseServerUnresolved),
+      )} instead)`,
     )
   }
   if (baseViteOriginal) {
@@ -49,6 +49,6 @@ function resolveBase(
   assert(isBaseServer(baseServer))
   return {
     baseServer,
-    baseAssets
+    baseAssets,
   }
 }

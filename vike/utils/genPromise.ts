@@ -7,7 +7,7 @@ import { assert, assertWarning } from './assert.js'
 const timeoutSecondsDefault = 25
 
 function genPromise<T = void>({
-  timeout: timeoutSeconds = timeoutSecondsDefault as number | null
+  timeout: timeoutSeconds = timeoutSecondsDefault as number | null,
 } = {}): {
   promise: Promise<T>
   resolve: (val: T) => void
@@ -43,12 +43,12 @@ function genPromise<T = void>({
             setTimeout(() => {
               assert(err.stack)
               assertWarning(false, removeStackErrorPrefix(err.stack), { onlyOnce: false })
-            }, timeoutSeconds * 1000)
+            }, timeoutSeconds * 1000),
           )
         }
         const value = Reflect.get(target, prop)
         return typeof value === 'function' ? value.bind(target) : value
-      }
+      },
     })
   }
 

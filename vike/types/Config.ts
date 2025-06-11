@@ -39,7 +39,7 @@ export type { KeepScrollPosition }
 
 import type {
   PrefetchSetting,
-  PrefetchStaticAssets
+  PrefetchStaticAssets,
 } from '../client/runtime-client-routing/prefetch/PrefetchSetting.js'
 import type { ConfigDefinition } from '../node/vite/shared/resolveVikeConfigInternal/configDefinitionsBuiltIn.js'
 import type { DocumentHtml } from '../node/runtime/html/renderHtml.js'
@@ -151,7 +151,7 @@ type OnBeforePrerenderStartSync<Data = unknown> = () => (
  *  https://vike.dev/onBeforeRender
  */
 type OnBeforeRenderAsync = (
-  pageContext: PageContextServer
+  pageContext: PageContextServer,
 ) => Promise<{ pageContext: Partial<Vike.PageContext> } | void>
 /** Hook called before the page is rendered.
  *
@@ -272,14 +272,14 @@ type OnRenderHtmlPageContextReturn = Partial<
 >
 /** @deprecated Use a sync route() with an async guard() instead */
 type RouteAsync = (
-  pageContext: PageContextServer | PageContextClient
+  pageContext: PageContextServer | PageContextClient,
 ) => Promise<{ routeParams?: Record<string, string>; precedence?: number } | boolean>
 /** The page's URL(s).
  *
  *  https://vike.dev/route
  */
 type RouteSync = (
-  pageContext: PageContextServer | PageContextClient
+  pageContext: PageContextServer | PageContextClient,
 ) => { routeParams?: Record<string, string>; precedence?: number } | boolean
 type Route = string | RouteSync | RouteAsync
 

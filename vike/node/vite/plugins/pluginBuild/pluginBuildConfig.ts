@@ -13,7 +13,7 @@ import {
   normalizeRollupInput,
   onSetupBuild,
   assertIsImportPathNpmPackage,
-  requireResolveVikeDistFile
+  requireResolveVikeDistFile,
 } from '../../utils.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { findPageFiles } from '../../shared/findPageFiles.js'
@@ -29,7 +29,7 @@ import { isViteServerBuild } from '../../shared/isViteServerBuild.js'
 import { resolveOutDir } from '../../shared/getOutDirs.js'
 import {
   handleAssetsManifest_assertUsageCssCodeSplit,
-  handleAssetsManifest_getBuildConfig
+  handleAssetsManifest_getBuildConfig,
 } from './handleAssetsManifest.js'
 import { resolveIncludeAssetsImportedByServer } from '../../../runtime/renderPage/getPageAssets.js'
 const manifestTempFile = '_temp_manifest.json'
@@ -53,7 +53,7 @@ function pluginBuildConfig(): Plugin[] {
           config.build.rollupOptions.input = injectRollupInputs(entries, config)
           addLogHook()
           handleAssetsManifest_assertUsageCssCodeSplit(config)
-        }
+        },
       },
       config: {
         order: 'post',
@@ -62,15 +62,15 @@ function pluginBuildConfig(): Plugin[] {
           return {
             build: {
               outDir: resolveOutDir(config),
-              ...(await handleAssetsManifest_getBuildConfig(config))
-            }
+              ...(await handleAssetsManifest_getBuildConfig(config)),
+            },
           }
-        }
+        },
       },
       buildStart() {
         onSetupBuild()
-      }
-    }
+      },
+    },
   ]
 }
 
@@ -81,14 +81,14 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
   const pageFileEntries = await getPageFileEntries(config, resolveIncludeAssetsImportedByServer(vikeConfig.config))
   assertUsage(
     Object.keys(pageFileEntries).length !== 0 || pageConfigs.length !== 0,
-    'At least one page should be defined, see https://vike.dev/add'
+    'At least one page should be defined, see https://vike.dev/add',
   )
   if (isViteServerBuild(config)) {
     const pageEntries = getPageEntries(pageConfigs)
     const entries = {
       ...pageFileEntries,
       // Ensure Rollup generates a bundle per page: https://github.com/vikejs/vike/issues/349#issuecomment-1166247275
-      ...pageEntries
+      ...pageEntries,
     }
     return entries
   } else {
@@ -99,7 +99,7 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
     }
     const entries: Record<string, string> = {
       ...clientEntries,
-      ...pageFileEntries
+      ...pageFileEntries,
     }
     const clientRoutingEntry = requireResolveVikeDistFile('dist/esm/client/runtime-client-routing/entry.js')
     const serverRoutingEntry = requireResolveVikeDistFile('dist/esm/client/runtime-server-routing/entry.js')
@@ -189,7 +189,7 @@ function getEntryFromClientEntry(clientEntry: string, config: ResolvedConfig, ad
 
   const filePath = getFilePathResolved({
     filePathAbsoluteUserRootDir,
-    userRootDir: config.root
+    userRootDir: config.root,
   })
   let entryTarget = filePath.filePathAbsoluteFilesystem
   if (addExtractAssetsQuery) entryTarget = extractAssetsAddQuery(entryTarget)
@@ -250,6 +250,6 @@ function assertRollupInput(config: ResolvedConfig): void {
   const htmlInput = htmlInputs[0]
   assertUsage(
     htmlInput === undefined,
-    `The entry ${htmlInput} of config build.rollupOptions.input is an HTML entry which is forbidden when using Vike, instead follow https://vike.dev/add`
+    `The entry ${htmlInput} of config build.rollupOptions.input is an HTML entry which is forbidden when using Vike, instead follow https://vike.dev/add`,
   )
 }

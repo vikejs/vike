@@ -10,15 +10,15 @@ export default [
       return new Response(JSON.stringify({ status: 'OK' }), {
         status: 200,
         headers: {
-          'content-type': 'application/json'
-        }
+          'content-type': 'application/json',
+        },
       })
     },
     {
       name: 'todo-handler',
       method: 'POST',
       path: '/api/todo/create',
-      immutable: false
-    }
-  )
+      immutable: false,
+    },
+  ),
 ]
