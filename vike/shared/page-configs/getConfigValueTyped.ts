@@ -11,7 +11,7 @@ type TypeAsString = 'string' | 'boolean' | undefined
 function getConfigValueTyped<Type extends TypeAsString = undefined>(
   configValue: ConfigValue,
   configName: ConfigNameBuiltIn,
-  type?: Type
+  type?: Type,
 ): null | (ConfigValue & { value: ResolveTypeAsString<Type> }) {
   /* [NULL_HANDLING] Do we really need this? This doesn't seem to make sense, let's eventually (re)move this.
   // Enable users to suppress global config values by setting the local config value to null
@@ -26,7 +26,7 @@ function assertConfigValueType(
   value: unknown,
   type: 'string' | 'boolean',
   configName: string,
-  definedAtData: DefinedAtData
+  definedAtData: DefinedAtData,
 ) {
   assert(value !== null)
   const typeActual = typeof value

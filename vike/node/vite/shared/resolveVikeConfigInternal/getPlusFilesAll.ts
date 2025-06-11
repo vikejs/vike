@@ -120,7 +120,7 @@ async function getPlusFilesAll(userRootDir: string, esbuildCache: EsbuildCache):
         filePath,
         isConfigFile: false,
         isNotLoaded: true,
-        configName
+        configName,
       }
       plusFilesAll[locationId] = plusFilesAll[locationId] ?? []
       plusFilesAll[locationId]!.push(plusFile)
@@ -129,7 +129,7 @@ async function getPlusFilesAll(userRootDir: string, esbuildCache: EsbuildCache):
       //  - If `configDef` is `undefined` => we load the file +{configName}.js later.
       //  - We already need to load +meta.js here (to get the custom config definitions defined by the user)
       await loadValueFile(plusFile, configDefinitionsBuiltIn, userRootDir, esbuildCache)
-    })
+    }),
   ])
 
   // Make lists element order deterministic
@@ -150,7 +150,7 @@ function getPlusFileFromConfigFile(
   configFile: ConfigFile,
   isExtensionConfig: boolean,
   locationId: LocationId,
-  userRootDir: string
+  userRootDir: string,
 ): PlusFile {
   const { fileExports, filePath, extendsFilePaths } = configFile
 
@@ -163,7 +163,7 @@ function getPlusFileFromConfigFile(
     if (pointerImport) {
       pointerImportsByConfigName[configName] = {
         ...pointerImport,
-        fileExportValueLoaded: false
+        fileExportValueLoaded: false,
       }
     }
   })
@@ -175,7 +175,7 @@ function getPlusFileFromConfigFile(
     pointerImportsByConfigName,
     isConfigFile: true,
     isExtensionConfig,
-    extendsFilePaths
+    extendsFilePaths,
   }
   return plusFile
 }
@@ -189,7 +189,7 @@ async function findPlusFiles(userRootDir: string): Promise<FilePathResolved[]> {
   const files = await crawlPlusFiles(userRootDir)
 
   const plusFiles: FilePathResolved[] = files.map(({ filePathAbsoluteUserRootDir }) =>
-    getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir })
+    getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir }),
   )
 
   return plusFiles

@@ -28,14 +28,14 @@ import {
   getAssertErrMsg,
   overwriteAssertProductionLogger,
   stripAnsi,
-  warnIfErrorIsNotObject
+  warnIfErrorIsNotObject,
 } from '../utils.js'
 import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore.js'
 import { isErrorDebug } from '../../shared/isErrorDebug.js'
 import { isErrorWithCodeSnippet, getPrettyErrorWithCodeSnippet } from './loggerNotProd/errorWithCodeSnippet.js'
 import {
   getConfigExecutionErrorIntroMsg,
-  getConfigBuildErrorFormatted
+  getConfigBuildErrorFormatted,
 } from './resolveVikeConfigInternal/transpileAndExecuteFile.js'
 import { logWithVikeTag, logWithViteTag, logDirectly, applyViteSourceMapToStackTrace } from './loggerNotProd/log.js'
 import pc from '@brillout/picocolors'
@@ -78,14 +78,14 @@ function logConfigErrorRecover(): void {
 function logRuntimeError(
   err: unknown,
   // httpRequestId is `null` when pre-rendering
-  httpRequestId: number | null
+  httpRequestId: number | null,
 ): void {
   logErr(err, httpRequestId, false)
 }
 function logViteError(
   err: unknown,
   // httpRequestId is `undefined` if development environment doesn't support async stores
-  httpRequestId: number | undefined
+  httpRequestId: number | undefined,
 ): void {
   logErr(err, httpRequestId, true)
 }
@@ -132,7 +132,7 @@ function logErr(err: unknown, httpRequestId: number | null = null, errorComesFro
     logWithVikeTag(
       pc.red(`Following error was thrown by the ${hookName}() hook defined at ${hookFilePath}`),
       'error',
-      category
+      category,
     )
   } else if (category) {
     logFallbackErrIntro(category, errorComesFromVite)

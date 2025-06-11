@@ -7,7 +7,7 @@ export type {
   GlobalContextClient,
   PageContextWithServerRouting,
   PageContextClientWithServerRouting,
-  GlobalContextClientWithServerRouting
+  GlobalContextClientWithServerRouting,
 } from './PageContext.js'
 
 // TODO/v1-release: remove these three exports
@@ -43,13 +43,13 @@ export type {
   OnRenderHtmlSync,
   RouteAsync,
   RouteSync,
-  KeepScrollPosition
+  KeepScrollPosition,
 } from './Config.js'
 export type { ConfigResolved } from './Config/PageContextConfig.js'
 export type { ConfigEnv } from './PageConfig.js'
 export type {
   ConfigDefinition,
-  ConfigEffect
+  ConfigEffect,
 } from '../node/vite/shared/resolveVikeConfigInternal/configDefinitionsBuiltIn.js'
 export type { ConfigEntries } from '../shared/page-configs/resolveVikeConfigPublic.js'
 

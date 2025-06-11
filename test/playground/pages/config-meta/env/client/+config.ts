@@ -1,5 +1,5 @@
 import { Config } from 'vike/types'
 
 export default {
-  prerenderSetOverEffect: false
+  prerenderSetOverEffect: false,
 } satisfies Config

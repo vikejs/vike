@@ -55,12 +55,12 @@ type ResolveTypeAsString<Type extends TypeAsString = undefined> =
 function hasProp<ObjectType, PropName extends PropertyKey, Type extends TypeAsString = undefined>(
   obj: ObjectType,
   prop: PropName,
-  type?: Type
+  type?: Type,
 ): obj is ObjectType & Record<PropName, ResolveTypeAsString<Type>>
 function hasProp<ObjectType, PropName extends PropertyKey, Enum>(
   obj: ObjectType,
   prop: PropName,
-  type: Enum[]
+  type: Enum[],
 ): obj is ObjectType & Record<PropName, Enum>
 function hasProp(
   obj: Record<string, unknown>,
@@ -68,7 +68,7 @@ function hasProp(
   type?:
     | TypeAsString
     //  Enum[]
-    | string[]
+    | string[],
 ): boolean {
   if (!isObject(obj)) return false
   if (!(prop in obj)) {

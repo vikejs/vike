@@ -13,12 +13,12 @@ const vikeUniversalMiddleware: UniversalMiddleware = async (request, context, ru
 
   return new Response(readable, {
     status: response.statusCode,
-    headers: response.headers
+    headers: response.headers,
   })
 }
 
 const middlewareVike = enhance(vikeUniversalMiddleware, {
   name: 'vike',
   method: 'GET',
-  path: '/**'
+  path: '/**',
 })

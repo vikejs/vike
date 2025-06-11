@@ -27,7 +27,7 @@ async function startServer() {
 
   app.get('/{*vikeCatchAll}', async (req, res) => {
     const pageContextInit = {
-      urlOriginal: req.originalUrl
+      urlOriginal: req.originalUrl,
     }
     const pageContext = await renderPage(pageContextInit)
     const { statusCode, headers, earlyHints, pipe } = pageContext.httpResponse
@@ -39,11 +39,11 @@ async function startServer() {
       const { urlPathname } = pageContext
       assert(
         !hasJavaScriptEarlyHint === [htmlOnlyPage, '/'].includes(urlPathname),
-        `Unexpected early hints for the page ${urlPathname}`
+        `Unexpected early hints for the page ${urlPathname}`,
       )
       assert(
         [htmlOnlyPage, '/', '/html-js', '/spa', '/ssr'].includes(urlPathname),
-        'Assertion at server/index.js needs to be updated'
+        'Assertion at server/index.js needs to be updated',
       )
     }
 

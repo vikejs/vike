@@ -93,7 +93,7 @@ async function route(pageContext: PageContextForRoute, skipOnBeforeRouteHook?: t
             pageId,
             routeString,
             routeParams,
-            routeType
+            routeType,
           })
         }
         return
@@ -111,7 +111,7 @@ async function route(pageContext: PageContextForRoute, skipOnBeforeRouteHook?: t
       }
 
       assert(false)
-    })
+    }),
   )
 
   resolvePrecendence(routeMatches)
@@ -126,7 +126,7 @@ async function route(pageContext: PageContextForRoute, skipOnBeforeRouteHook?: t
   if (!winner) {
     objectAssign(pageContextFromRoute, {
       pageId: null,
-      routeParams: {}
+      routeParams: {},
     })
     return pageContextFromRoute
   }
@@ -136,7 +136,7 @@ async function route(pageContext: PageContextForRoute, skipOnBeforeRouteHook?: t
     assert(isPlainObject(routeParams))
     objectAssign(pageContextFromRoute, {
       pageId: winner.pageId,
-      routeParams: winner.routeParams
+      routeParams: winner.routeParams,
     })
   }
 

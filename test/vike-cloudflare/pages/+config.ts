@@ -10,5 +10,5 @@ export default {
   Head,
   // <title>
   title: 'My Vike App',
-  extends: [vikeSolid, vikeCloudflare]
+  extends: [vikeSolid, vikeCloudflare],
 } satisfies Config

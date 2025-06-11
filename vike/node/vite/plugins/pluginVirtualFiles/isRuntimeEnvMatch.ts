@@ -4,7 +4,7 @@ import type { ConfigEnvInternal } from '../../../../types/PageConfig.js'
 
 function isRuntimeEnvMatch(
   configEnv: ConfigEnvInternal,
-  runtime: { isForClientSide: boolean; isClientRouting: boolean; isDev: boolean }
+  runtime: { isForClientSide: boolean; isClientRouting: boolean; isDev: boolean },
 ): boolean {
   // Runtime
   if (!runtime.isForClientSide) {

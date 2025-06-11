@@ -10,7 +10,7 @@ function BatiNote() {
       style={{
         color: '#888',
         fontSize: '14px',
-        textAlign: 'center'
+        textAlign: 'center',
       }}
     >
       Powered by{' '}
@@ -22,7 +22,7 @@ function BatiNote() {
             width: batiLogoSize,
             height: batiLogoSize,
             display: 'inline-block',
-            verticalAlign: 'text-top'
+            verticalAlign: 'text-top',
           }}
         />
       </a>

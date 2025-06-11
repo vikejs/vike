@@ -33,7 +33,7 @@ function CommunityNote({ tool, url, hasExtension }: { tool?: string; url: string
 function HasExtension({
   toolName,
   toolTitle,
-  hasExtension
+  hasExtension,
 }: { toolName?: string; toolTitle: string; hasExtension: UIFramework }) {
   if (hasExtension === false) {
     return (

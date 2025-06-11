@@ -10,7 +10,7 @@ import {
   assertUsage,
   deepEqual,
   getPropAccessNotation,
-  isImportPathRelative
+  isImportPathRelative,
 } from '../../../node/vite/utils.js'
 import type {
   ConfigEnvInternal,
@@ -20,7 +20,7 @@ import type {
   DefinedAtData,
   DefinedAtFile,
   PageConfigBuildTime,
-  PageConfigGlobalBuildTime
+  PageConfigGlobalBuildTime,
 } from '../../../types/PageConfig.js'
 import type { ValueSerialized } from './PageConfigSerialized.js'
 import { parsePointerImportData } from '../../../node/vite/shared/resolveVikeConfigInternal/pointerImports.js'
@@ -43,7 +43,7 @@ function serializeConfigValues(
   filesEnv: FilesEnv,
   isEnvMatch: (configEnv: ConfigEnvInternal) => boolean,
   tabspace: string,
-  isEager: boolean | null
+  isEager: boolean | null,
 ): string[] {
   const lines: string[] = []
   tabspace += '  '
@@ -58,7 +58,7 @@ function serializeConfigValues(
         configValueBase.definedAtData,
         importStatements,
         filesEnv,
-        configEnv
+        configEnv,
       )
       serializeConfigValue(configValueBase, valueData, configName, lines, tabspace)
     }
@@ -87,7 +87,7 @@ function getValueSerializedFromSource(
   configValueSource: ConfigValueSource,
   configName: string,
   importStatements: string[],
-  filesEnv: FilesEnv
+  filesEnv: FilesEnv,
 ) {
   let valueData: ValueData
   if (configValueSource.valueIsLoaded && !configValueSource.valueIsLoadedWithImport) {
@@ -97,7 +97,7 @@ function getValueSerializedFromSource(
       configValueSource.definedAt,
       importStatements,
       filesEnv,
-      configValueSource.configEnv
+      configValueSource.configEnv,
     )
   } else {
     valueData = getValueSerializedWithImport(configValueSource, importStatements, filesEnv, configName)
@@ -114,7 +114,7 @@ function serializeConfigValue(
   valueData: ValueData | ValueData[],
   configName: string,
   lines: string[],
-  tabspace: string
+  tabspace: string,
 ) {
   lineAdd(`[${JSON.stringify(configName)}]: {`)
   {
@@ -167,7 +167,7 @@ function getValueSerializedWithImport(
   configValueSource: ConfigValueSource,
   importStatements: string[],
   filesEnv: FilesEnv,
-  configName: string
+  configName: string,
 ): ValueData {
   assert(!configValueSource.valueIsFilePath)
 
@@ -182,12 +182,12 @@ function getValueSerializedWithImport(
     fileExportName || '*',
     filesEnv,
     configEnv,
-    configName
+    configName,
   )
 
   return {
     type: valueIsDefinedByPlusValueFile ? 'plus-file' : 'pointer-import',
-    valueAsJsCode: importName
+    valueAsJsCode: importName,
   }
 }
 
@@ -197,12 +197,12 @@ function getValueSerializedWithJson(
   definedAtData: DefinedAtData,
   importStatements: string[],
   filesEnv: FilesEnv,
-  configEnv: ConfigEnvInternal
+  configEnv: ConfigEnvInternal,
 ): ValueData {
   const valueAsJsCode = valueToJson(value, configName, definedAtData, importStatements, filesEnv, configEnv)
   return {
     type: 'js-serialized',
-    valueAsJsCode
+    valueAsJsCode,
   }
 }
 function valueToJson(
@@ -211,7 +211,7 @@ function valueToJson(
   definedAtData: DefinedAtData,
   importStatements: string[],
   filesEnv: FilesEnv,
-  configEnv: ConfigEnvInternal
+  configEnv: ConfigEnvInternal,
 ): string {
   const valueName = `config${getPropAccessNotation(configName)}`
 
@@ -234,13 +234,13 @@ function valueToJson(
               importData.exportName,
               filesEnv,
               configEnv,
-              configName
+              configName,
             )
             const replacement = [REPLACE_ME_BEFORE, importName, REPLACE_ME_AFTER].join('')
             return { replacement }
           }
         }
-      }
+      },
     })
   } catch (err) {
     logJsonSerializeError(err, configName, definedAtData)
@@ -280,15 +280,15 @@ function logJsonSerializeError(err: unknown, configName: string, definedAtData: 
   assertUsage(
     false,
     `${pc.cyan(
-      configName
-    )} defined by ${configValueFilePathToShowToUser} must be defined over a so-called "pointer import", see https://vike.dev/config#pointer-imports`
+      configName,
+    )} defined by ${configValueFilePathToShowToUser} must be defined over a so-called "pointer import", see https://vike.dev/config#pointer-imports`,
   )
 }
 
 function getConfigValuesBase(
   pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime,
   isEnvMatch: (configEnv: ConfigEnvInternal) => boolean,
-  isEager: boolean | null
+  isEager: boolean | null,
 ): ConfigValuesBase {
   const fromComputed = Object.entries(pageConfig.configValuesComputed ?? {}).map(([configName, valueInfo]) => {
     const { configEnv, value } = valueInfo
@@ -297,7 +297,7 @@ function getConfigValuesBase(
     if (pageConfig.configValueSources[configName]) return 'SKIP'
     const configValueBase = {
       type: 'computed',
-      definedAtData: null
+      definedAtData: null,
     } as const
     return { configValueBase, value, configName, configEnv } as const
   })
@@ -312,7 +312,7 @@ function getConfigValuesBase(
       const definedAtFile = getDefinedAtFileSource(source)
       const configValueBase = {
         type: 'standard',
-        definedAtData: definedAtFile
+        definedAtData: definedAtFile,
       } as const
       return { configValueBase, sourceRelevant: source, configName }
     } else {
@@ -327,7 +327,7 @@ function getConfigValuesBase(
       })
       const configValueBase = {
         type: 'cumulative',
-        definedAtData
+        definedAtData,
       } as const
       return { configValueBase, sourcesRelevant, configName }
     }
@@ -368,7 +368,7 @@ function getDefinedAtFileSource(source: ConfigValueSource) {
   if (definedAt.definedBy) return definedAt
   const definedAtFile: DefinedAtFile = {
     filePathToShowToUser: definedAt.filePathToShowToUser,
-    fileExportPathToShowToUser: definedAt.fileExportPathToShowToUser
+    fileExportPathToShowToUser: definedAt.fileExportPathToShowToUser,
   }
   return definedAtFile
 }
@@ -389,7 +389,7 @@ function addImportStatement(
   exportName: string,
   filesEnv: FilesEnv,
   configEnv: ConfigEnvInternal,
-  configName: string
+  configName: string,
 ): { importName: string } {
   const importCounter = importStatements.length + 1
   const importName = `import${importCounter}` as const
@@ -429,11 +429,11 @@ function assertFileEnv(importPath: string, configEnv: ConfigEnvInternal, configN
         ...[fileEnvDiff, fileEnvNew].map(
           (c) =>
             `  - config ${pc.code(c.configName)} which value lives in environment ${pc.code(
-              JSON.stringify(c.configEnv)
-            )}`
+              JSON.stringify(c.configEnv),
+            )}`,
         ),
-        'Defining config values in the same file is allowed only if they live in the same environment, see https://vike.dev/config#pointer-imports'
-      ].join('\n')
+        'Defining config values in the same file is allowed only if they live in the same environment, see https://vike.dev/config#pointer-imports',
+      ].join('\n'),
     )
   }
 }

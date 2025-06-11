@@ -11,7 +11,7 @@ import {
   getVikeConfigInternal,
   getVikeConfigFromCliOrEnv,
   setVikeConfigContext,
-  type VikeConfigInternal
+  type VikeConfigInternal,
 } from '../vite/shared/resolveVikeConfigInternal.js'
 import path from 'path'
 import { assert, assertUsage, getGlobalObject, isObject, pick, toPosixPath } from './utils.js'
@@ -39,7 +39,7 @@ async function resolveConfigs(viteConfigFromUserApiOptions: InlineConfig | undef
   setVikeConfigContext({
     userRootDir: viteInfo.root,
     isDev: operation === 'dev',
-    vikeVitePluginOptions: viteInfo.vikeVitePluginOptions
+    vikeVitePluginOptions: viteInfo.vikeVitePluginOptions,
   })
   const vikeConfig = await getVikeConfigInternal()
   const viteConfigFromUserEnhanced = applyVikeViteConfig(viteInfo.viteConfigFromUserEnhanced, vikeConfig)
@@ -47,7 +47,7 @@ async function resolveConfigs(viteConfigFromUserApiOptions: InlineConfig | undef
   return {
     vikeConfig,
     viteConfigResolved, // ONLY USE if strictly necessary. (We plan to remove assertViteRoot2() as explained in the comments of that function.)
-    viteConfigFromUserEnhanced
+    viteConfigFromUserEnhanced,
   }
 }
 
@@ -61,7 +61,7 @@ function applyVikeViteConfig(viteConfigFromUserEnhanced: InlineConfig | undefine
     viteConfigFromUserEnhanced = mergeConfig(viteConfigFromUserEnhanced ?? {}, v.value)
     assertUsage(
       !findVikeVitePlugin(v.value as InlineConfig),
-      "Using the +vite setting to add Vike's Vite plugin is forbidden"
+      "Using the +vite setting to add Vike's Vite plugin is forbidden",
     )
   })
   return viteConfigFromUserEnhanced
@@ -118,7 +118,7 @@ async function getViteInfo(viteConfigFromUserApiOptions: InlineConfig | undefine
     const { plugin: vikePlugin } = await import('../vite/index.js')
     viteConfigFromUserEnhanced = {
       ...viteConfigFromUserEnhanced,
-      plugins: [...(viteConfigFromUserEnhanced?.plugins ?? []), vikePlugin()]
+      plugins: [...(viteConfigFromUserEnhanced?.plugins ?? []), vikePlugin()],
     }
     const res = findVikeVitePlugin(viteConfigFromUserEnhanced)
     assert(res)
@@ -148,7 +148,7 @@ function findVikeVitePlugin(viteConfig: InlineConfig | UserConfig | undefined | 
 async function loadViteConfigFile(viteConfigFromUserApiOptions: InlineConfig | undefined, operation: Operation) {
   const [inlineConfig, command, defaultMode, _defaultNodeEnv, isPreview] = getResolveConfigArgs(
     viteConfigFromUserApiOptions,
-    operation
+    operation,
   )
 
   let config = inlineConfig
@@ -158,7 +158,7 @@ async function loadViteConfigFile(viteConfigFromUserApiOptions: InlineConfig | u
     mode,
     command,
     isSsrBuild: command === 'build' && !!config.build?.ssr,
-    isPreview
+    isPreview,
   }
 
   let { configFile } = config
@@ -168,7 +168,7 @@ async function loadViteConfigFile(viteConfigFromUserApiOptions: InlineConfig | u
       configFile,
       config.root,
       config.logLevel,
-      config.customLogger
+      config.customLogger,
     )
     return loadResult?.config
   }
@@ -189,7 +189,7 @@ function normalizeViteRoot(root: string) {
   // https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L1063
   return toPosixPath(
     // Equivalent to `path.resolve(process.cwd(), root)`
-    path.resolve(root)
+    path.resolve(root),
   )
 }
 
@@ -197,7 +197,7 @@ const errMsg = `A Vite plugin is modifying Vite's setting ${pc.cyan('root')} whi
 async function assertViteRoot2(
   root: string,
   viteConfigFromUserEnhanced: InlineConfig | undefined,
-  operation: Operation
+  operation: Operation,
 ) {
   const args = getResolveConfigArgs(viteConfigFromUserEnhanced, operation)
   // We can eventually remove this resolveConfig() call (along with removing the whole assertViteRoot2() function which is redundant with the assertViteRoot() function) so that Vike doesn't make any resolveConfig() (except for pre-rendering and preview which is required). But let's keep it for now, just to see whether calling resolveConfig() can be problematic.

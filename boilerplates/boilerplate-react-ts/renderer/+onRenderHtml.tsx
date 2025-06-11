@@ -19,7 +19,7 @@ const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRender
   const pageHtml = ReactDOMServer.renderToString(
     <Layout pageContext={pageContext}>
       <Page />
-    </Layout>
+    </Layout>,
   )
 
   const title = getPageTitle(pageContext)
@@ -43,6 +43,6 @@ const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRender
     documentHtml,
     pageContext: {
       // We can add custom pageContext properties here, see https://vike.dev/pageContext#custom
-    }
+    },
   }
 }

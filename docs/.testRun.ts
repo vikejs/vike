@@ -8,7 +8,7 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   const isDev = cmd === 'pnpm run dev'
 
   run(cmd, {
-    additionalTimeout: isDev ? undefined : 120 * 1000
+    additionalTimeout: isDev ? undefined : 120 * 1000,
   })
 
   test('HTML', async () => {

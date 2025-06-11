@@ -46,8 +46,8 @@ function pluginAutoFullBuild(): Plugin[] {
             logErrorHint(err)
             process.exit(1)
           }
-        }
-      }
+        },
+      },
     },
     {
       name: 'vike:build:pluginAutoFullBuild:post',
@@ -68,9 +68,9 @@ function pluginAutoFullBuild(): Plugin[] {
             runPrerender_forceExit()
             assert(false)
           }
-        }
-      }
-    }
+        },
+      },
+    },
   ]
 }
 
@@ -108,8 +108,8 @@ function setSSR(configInline: InlineConfig): InlineConfig {
     ...configInline,
     build: {
       ...configInline.build,
-      ssr: true
-    }
+      ssr: true,
+    },
   }
 }
 
@@ -119,11 +119,11 @@ async function abortViteBuildSsr() {
     assertWarning(
       false,
       `The CLI call ${pc.cyan('$ vite build --ssr')} is superfluous since ${pc.cyan(
-        '$ vite build'
+        '$ vite build',
       )} also builds the server-side. If you want two separate build steps then use https://vike.dev/disableAutoFullBuild or use Vite's ${pc.cyan(
-        'build()'
+        'build()',
       )} API.`,
-      { onlyOnce: true }
+      { onlyOnce: true },
     )
     process.exit(0)
   }
@@ -153,8 +153,8 @@ function getFullBuildInlineConfig(config: ResolvedConfig): InlineConfig {
       configFile: configFromCli?.configFile || config.configFile,
       root: config.root,
       build: {
-        ...configFromCli?.build
-      }
+        ...configFromCli?.build,
+      },
     }
   }
 }

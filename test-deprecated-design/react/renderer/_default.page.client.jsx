@@ -10,6 +10,6 @@ async function render(pageContext) {
     document.getElementById('root'),
     <Layout>
       <Page />
-    </Layout>
+    </Layout>,
   )
 }

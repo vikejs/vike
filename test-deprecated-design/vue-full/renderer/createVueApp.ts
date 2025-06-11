@@ -14,7 +14,7 @@ function createVueApp(pageContext: PageContext) {
   const PageWithWrapper = defineComponent({
     render() {
       return h(Layout, {}, { default: () => h(pageRef.value, pagePropsRef.value) })
-    }
+    },
   })
 
   const app = createSSRApp(PageWithWrapper)
@@ -25,7 +25,7 @@ function createVueApp(pageContext: PageContext) {
       Object.assign(pageContextReactive, pageContext)
       pageRef.value = markRaw(pageContext.Page)
       pagePropsRef.value = markRaw(pageContext.pageProps || {})
-    }
+    },
   })
 
   // When doing Client Routing, we mutate pageContext (see usage of `app.changePage()` in `_default.page.client.js`).
@@ -41,7 +41,7 @@ function createVueApp(pageContext: PageContext) {
 // Same as `Object.assign()` but with type inference
 function objectAssign<Obj extends object, ObjAddendum>(
   obj: Obj,
-  objAddendum: ObjAddendum
+  objAddendum: ObjAddendum,
 ): asserts obj is Obj & ObjAddendum {
   Object.assign(obj, objAddendum)
 }

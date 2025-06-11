@@ -8,14 +8,14 @@ import {
   createDebugger,
   getNpmPackageName,
   isArray,
-  unique
+  unique,
 } from '../../utils.js'
 import { getVikeConfigInternal, isOverriden } from '../../shared/resolveVikeConfigInternal.js'
 import { analyzeClientEntries } from '../pluginBuild/pluginBuildConfig.js'
 import type { PageConfigBuildTime } from '../../../../types/PageConfig.js'
 import {
   virtualFileIdEntryClientCR,
-  virtualFileIdEntryClientSR
+  virtualFileIdEntryClientSR,
 } from '../../../shared/virtualFiles/virtualFileEntry.js'
 import { getFilePathResolved } from '../../shared/getFilePath.js'
 
@@ -44,7 +44,7 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
   if (debug.isActivated)
     debug('config.optimizeDeps', {
       'config.optimizeDeps.entries': config.optimizeDeps.entries,
-      'config.optimizeDeps.include': config.optimizeDeps.include
+      'config.optimizeDeps.include': config.optimizeDeps.include,
     })
 }
 

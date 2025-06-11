@@ -11,7 +11,7 @@ async function getVirtualFilePageConfigsEager(
   isForClientSide: boolean,
   isDev: boolean,
   id: string,
-  isClientRouting: boolean
+  isClientRouting: boolean,
 ): Promise<string> {
   const vikeConfig = await getVikeConfigInternal(true)
   const { _pageConfigs: pageConfigs, _pageConfigGlobal: pageConfigGlobal } = vikeConfig
@@ -24,7 +24,7 @@ function getCode(
   isForClientSide: boolean,
   isDev: boolean,
   id: string,
-  isClientRouting: boolean
+  isClientRouting: boolean,
 ): string {
   const lines: string[] = []
   const importStatements: string[] = []
@@ -32,7 +32,7 @@ function getCode(
 
   lines.push('export const pageConfigsSerialized = [')
   lines.push(
-    getCodePageConfigsSerialized(pageConfigs, isForClientSide, isClientRouting, isDev, importStatements, filesEnv)
+    getCodePageConfigsSerialized(pageConfigs, isForClientSide, isClientRouting, isDev, importStatements, filesEnv),
   )
   lines.push('];')
 
@@ -44,8 +44,8 @@ function getCode(
       isClientRouting,
       isDev,
       importStatements,
-      filesEnv
-    )
+      filesEnv,
+    ),
   )
   lines.push('};')
 
@@ -60,7 +60,7 @@ function getCodePageConfigsSerialized(
   isClientRouting: boolean,
   isDev: boolean,
   importStatements: string[],
-  filesEnv: FilesEnv
+  filesEnv: FilesEnv,
 ): string {
   const lines: string[] = []
 
@@ -81,8 +81,8 @@ function getCodePageConfigsSerialized(
         filesEnv,
         (configEnv) => isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isDev }),
         '    ',
-        true
-      )
+        true,
+      ),
     )
     lines.push(`    },`)
     lines.push(`  },`)
@@ -98,7 +98,7 @@ function getCodePageConfigGlobalSerialized(
   isClientRouting: boolean,
   isDev: boolean,
   importStatements: string[],
-  filesEnv: FilesEnv
+  filesEnv: FilesEnv,
 ) {
   const lines: string[] = []
 
@@ -110,8 +110,8 @@ function getCodePageConfigGlobalSerialized(
       filesEnv,
       (configEnv) => isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isDev }),
       '    ',
-      null
-    )
+      null,
+    ),
   )
   lines.push(`  },`)
 

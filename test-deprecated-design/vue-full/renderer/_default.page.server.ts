@@ -29,7 +29,7 @@ async function render(pageContext: PageContextBuiltInServer & PageContext) {
   return {
     documentHtml,
     pageContext: {
-      enableEagerStreaming: true
-    }
+      enableEagerStreaming: true,
+    },
   }
 }

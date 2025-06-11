@@ -10,7 +10,7 @@ describe('build', () => {
     } catch (err) {
       stripAnsi
       expect(stripAnsi(err.message)).toContain(
-        'Server-only file /pages/index/secret.server.js (https://vike.dev/file-env) imported on the client-side by /pages/index/+Page.jsx'
+        'Server-only file /pages/index/secret.server.js (https://vike.dev/file-env) imported on the client-side by /pages/index/+Page.jsx',
       )
       return
     }
@@ -23,7 +23,7 @@ async function buildApp() {
     viteConfig: {
       logLevel: 'warn',
       root: __dirname,
-      configFile: __dirname + '/vite.config.js'
-    }
+      configFile: __dirname + '/vite.config.js',
+    },
   })
 }

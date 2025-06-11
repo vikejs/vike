@@ -18,7 +18,7 @@ function onRenderHtml(pageContext) {
   const pageHtml = ReactDOMServer.renderToString(
     <Layout pageContext={pageContext}>
       <Page />
-    </Layout>
+    </Layout>,
   )
 
   const title = getPageTitle(pageContext)
@@ -42,6 +42,6 @@ function onRenderHtml(pageContext) {
     documentHtml,
     pageContext: {
       // We can add custom pageContext properties here, see https://vike.dev/pageContext#custom
-    }
+    },
   }
 }

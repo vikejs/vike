@@ -11,13 +11,13 @@ const data = async (pageContext: PageContextServer) => {
   const config = useConfig()
 
   const response = await fetch(
-    `https://brillout.github.io/star-wars/api/films/${pageContext.routeParams?.movieId}.json`
+    `https://brillout.github.io/star-wars/api/films/${pageContext.routeParams?.movieId}.json`,
   )
   let movie = (await response.json()) as MovieDetails
 
   config({
     title: movie.title,
-    description: `Star Wars Movie ${movie.title} from ${movie.director}`
+    description: `Star Wars Movie ${movie.title} from ${movie.director}`,
   })
 
   // We remove data we don't need because the data is passed to the client; we should

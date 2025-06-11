@@ -37,7 +37,7 @@ describe('getPrettyErrMessage()', () => {
         // biome-ignore format:
         '  | some',
         '> | fake',
-        '  | code'
+        '  | code',
       ].join('\n')
       const message = `(1:2)\n${codeSnippet}`
       const err = { message, id, frame }

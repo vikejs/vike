@@ -27,7 +27,7 @@ function showWarnings(options: Options) {
   assertWarning(
     false,
     '`createPageRenderer()` is outdated, use `renderPage()` instead. See https://vike.dev/renderPage',
-    { onlyOnce: true, showStackTrace: true }
+    { onlyOnce: true, showStackTrace: true },
   )
 
   const { viteDevServer, root, outDir, isProduction, base, baseAssets } = options
@@ -37,14 +37,14 @@ function showWarnings(options: Options) {
       viteDevServer !== undefined && 'viteDevServer',
       root !== undefined && 'root',
       outDir !== undefined && 'outDir',
-      isProduction !== undefined && 'isProduction'
+      isProduction !== undefined && 'isProduction',
     ].filter(notFalse)
     assertWarning(
       opts.length === 0,
       `The options ${str(
-        opts
+        opts,
       )} you passed to \`createPageRenderer()\` have no effect anymore: they are now automatically determined.`,
-      { onlyOnce: true }
+      { onlyOnce: true },
     )
   }
   {
@@ -52,9 +52,9 @@ function showWarnings(options: Options) {
     assertWarning(
       opts.length === 0,
       `The options ${str(
-        opts
+        opts,
       )} you passed to \`createPageRenderer()\` have no effect. See https://vike.dev/migration-0.4`,
-      { onlyOnce: true }
+      { onlyOnce: true },
     )
   }
 }

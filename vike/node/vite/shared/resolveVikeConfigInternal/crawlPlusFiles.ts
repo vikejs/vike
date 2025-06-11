@@ -17,7 +17,7 @@ import {
   assertFilePathAbsoluteFilesystem,
   assertWarning,
   hasProp,
-  isNotNullish
+  isNotNullish,
 } from '../../utils.js'
 import path from 'path'
 import { glob } from 'tinyglobby'
@@ -57,7 +57,7 @@ async function crawlPlusFiles(userRootDir: string): Promise<{ filePathAbsoluteUs
     assertWarning(
       deepEqual(filesGlob.slice().sort(), filesGit.slice().sort()),
       "Git and glob results aren't matching.",
-      { onlyOnce: false }
+      { onlyOnce: false },
     )
   }
 
@@ -102,7 +102,7 @@ async function gitLsFiles(userRootDir: string, ignorePatterns: string[], ignoreM
 
     // --others --exclude-standard => list untracked files (--others) while using .gitignore (--exclude-standard)
     // --cached => list tracked files
-    '--others --exclude-standard --cached'
+    '--others --exclude-standard --cached',
   ].join(' ')
 
   let filesAll: string[]
@@ -112,7 +112,7 @@ async function gitLsFiles(userRootDir: string, ignorePatterns: string[], ignoreM
       // Main command
       runCmd1(cmd, userRootDir),
       // Get tracked but deleted files
-      runCmd1('git ls-files --deleted', userRootDir)
+      runCmd1('git ls-files --deleted', userRootDir),
     ])
   } catch (err) {
     if (await isGitNotUsable(userRootDir)) {
@@ -153,7 +153,7 @@ async function tinyglobby(userRootDir: string, ignorePatterns: string[]): Promis
   const options = {
     ignore: ignorePatterns,
     cwd: userRootDir,
-    dot: false
+    dot: false,
   }
   const files = await glob(pattern, options)
   // Make build deterministic, in order to get a stable generated hash for dist/client/assets/entries/entry-client-routing.${hash}.js
@@ -199,7 +199,7 @@ async function runCmd1(cmd: string, cwd: string): Promise<string[]> {
   const { stdout } = await execA(cmd, {
     cwd,
     // https://github.com/vikejs/vike/issues/1982
-    maxBuffer: Infinity
+    maxBuffer: Infinity,
   })
   /* Not always true: https://github.com/vikejs/vike/issues/1440#issuecomment-1892831303
   assert(res.stderr === '')
@@ -226,17 +226,17 @@ function getUserSettings() {
     `Setting ${pc.cyan(settingName)} in VIKE_CRAWL should be a ${pc.cyan(settingType)}`
   assertUsage(
     hasProp(userSettings, 'git', 'boolean') || hasProp(userSettings, 'git', 'undefined'),
-    wrongUsage('git', 'boolean')
+    wrongUsage('git', 'boolean'),
   )
   assertUsage(
     hasProp(userSettings, 'ignore', 'string[]') ||
       hasProp(userSettings, 'ignore', 'string') ||
       hasProp(userSettings, 'ignore', 'undefined'),
-    wrongUsage('git', 'string or an array of strings')
+    wrongUsage('git', 'string or an array of strings'),
   )
   assertUsage(
     hasProp(userSettings, 'ignoreBuiltIn', 'boolean') || hasProp(userSettings, 'ignoreBuiltIn', 'undefined'),
-    wrongUsage('ignoreBuiltIn', 'boolean')
+    wrongUsage('ignoreBuiltIn', 'boolean'),
   )
   const settingNames = ['git', 'ignore', 'ignoreBuiltIn']
   Object.keys(userSettings).forEach((name) => {
@@ -289,8 +289,8 @@ function getIgnore(userSettings: UserSettings) {
       // We must pass the same settings than tinyglobby
       // https://github.com/SuperchupuDev/tinyglobby/blob/fcfb08a36c3b4d48d5488c21000c95a956d9797c/src/index.ts#L191-L194
       dot: false,
-      nocase: false
-    })
+      nocase: false,
+    }),
   )
   return { ignorePatterns, ignoreMatchers }
 }

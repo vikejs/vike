@@ -17,7 +17,7 @@ const data = async () => {
   config({
     title: `${n} Star Wars Movies`, // <title>
     description: `All the ${n} movies from the Star Wars franchise`, // <meta name="description">
-    image // <meta property="og:image">
+    image, // <meta property="og:image">
   })
 
   // We remove data we don't need because the data is passed to the client; we should

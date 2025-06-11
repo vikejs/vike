@@ -6,7 +6,7 @@ import { assertUsage, isObject } from '../../utils.js'
 
 function getConfigFileExport(
   fileExports: Record<string, unknown>,
-  filePathToShowToUser: string
+  filePathToShowToUser: string,
 ): Record<string, unknown> {
   assertPlusFileExport(fileExports, filePathToShowToUser, 'config')
   const usesNamedExport = !!fileExports.config
@@ -15,8 +15,8 @@ function getConfigFileExport(
   assertUsage(
     isObject(fileExport),
     `The ${exportName} of ${filePathToShowToUser} should be an object (but it's ${pc.cyan(
-      `typeof exportedValue === ${JSON.stringify(typeof fileExport)}`
-    )} instead)`
+      `typeof exportedValue === ${JSON.stringify(typeof fileExport)}`,
+    )} instead)`,
   )
   return fileExport
 }

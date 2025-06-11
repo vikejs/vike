@@ -5,7 +5,7 @@ export { Link }
 
 Link.propTypes = {
   className: PropTypes.string,
-  href: PropTypes.string.isRequired
+  href: PropTypes.string.isRequired,
 }
 function Link(props) {
   const pageContext = usePageContext()

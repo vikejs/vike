@@ -8,5 +8,5 @@ const config = {
   baseServer,
   clientRouting: true,
   hydrationCanBeAborted: true,
-  passToClient: ['pageProps']
+  passToClient: ['pageProps'],
 }

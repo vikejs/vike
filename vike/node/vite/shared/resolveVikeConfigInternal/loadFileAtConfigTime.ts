@@ -33,7 +33,7 @@ async function loadPointerImport(
   userRootDir: string,
   configName: string,
   configDefinitions: ConfigDefinitionsInternal,
-  esbuildCache: EsbuildCache
+  esbuildCache: EsbuildCache,
 ): Promise<unknown> {
   // The value of `extends` was already loaded and already used: we don't need the value of `extends` anymore
   if (configName === 'extends') return
@@ -44,7 +44,7 @@ async function loadPointerImport(
   const configDefinedAt = getConfigDefinedAt('Config', configName, pointerImport.fileExportPath)
   assertUsage(
     pointerImport.fileExportPath.filePathAbsoluteFilesystem,
-    `${configDefinedAt} cannot be defined over an aliased import`
+    `${configDefinedAt} cannot be defined over an aliased import`,
   )
   const { fileExports } = await transpileAndExecuteFile(pointerImport.fileExportPath, userRootDir, false, esbuildCache)
   const fileExportValue = fileExports[pointerImport.fileExportPath.fileExportName]
@@ -69,7 +69,7 @@ async function loadValueFile(
   interfaceValueFile: PlusFileValue,
   configDefinitions: ConfigDefinitionsInternal,
   userRootDir: string,
-  esbuildCache: EsbuildCache
+  esbuildCache: EsbuildCache,
 ): Promise<void> {
   const { configName } = interfaceValueFile
   const configDef = getConfigDefinitionOptional(configDefinitions, configName)
@@ -93,7 +93,7 @@ async function loadConfigFile(
   userRootDir: string,
   visited: string[],
   isExtensionConfig: boolean,
-  esbuildCache: EsbuildCache
+  esbuildCache: EsbuildCache,
 ): Promise<{ configFile: ConfigFile; extendsConfigs: ConfigFile[] }> {
   const { filePathAbsoluteFilesystem } = configFilePath
   assertNoInfiniteLoop(visited, filePathAbsoluteFilesystem)
@@ -103,13 +103,13 @@ async function loadConfigFile(
     configFilePath,
     userRootDir,
     [...visited, filePathAbsoluteFilesystem],
-    esbuildCache
+    esbuildCache,
   )
 
   const configFile: ConfigFile = {
     fileExports,
     filePath: configFilePath,
-    extendsFilePaths
+    extendsFilePaths,
   }
   return { configFile, extendsConfigs }
 }
@@ -125,7 +125,7 @@ async function loadExtendsConfigs(
   configFilePath: FilePathResolved,
   userRootDir: string,
   visited: string[],
-  esbuildCache: EsbuildCache
+  esbuildCache: EsbuildCache,
 ) {
   const { extendsPointerImportData, extendsConfigs } = getExtendsPointerImportData(configFileExports, configFilePath)
   const extendsConfigFiles: FilePathResolved[] = []
@@ -137,8 +137,8 @@ async function loadExtendsConfigs(
 
   const results = await Promise.all(
     extendsConfigFiles.map(
-      async (configFilePath) => await loadConfigFile(configFilePath, userRootDir, visited, true, esbuildCache)
-    )
+      async (configFilePath) => await loadConfigFile(configFilePath, userRootDir, visited, true, esbuildCache),
+    ),
   )
   results.forEach((result) => {
     extendsConfigs.push(result.configFile)
@@ -158,7 +158,7 @@ function getExtendsPointerImportData(configFileExports: Record<string, unknown>,
     const extendsValue = configFileExport.extends
     const extendList: string[] = []
     const wrongUsage = `${filePathToShowToUser} sets the config ${pc.cyan(
-      'extends'
+      'extends',
     )} to an invalid value, see https://vike.dev/extends`
     if (typeof extendsValue === 'string') {
       extendList.push(extendsValue)
@@ -180,7 +180,7 @@ function getExtendsPointerImportData(configFileExports: Record<string, unknown>,
         const pointerImportData = parsePointerImportData(importString)
         assertUsage(pointerImportData, wrongUsage)
         return pointerImportData
-      })
+      }),
     )
   }
   return { extendsPointerImportData, extendsConfigs }

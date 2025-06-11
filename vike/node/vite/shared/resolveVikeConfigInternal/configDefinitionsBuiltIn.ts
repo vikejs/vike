@@ -10,7 +10,7 @@ import type {
   ConfigEnv,
   ConfigValueSources,
   DefinedAtFilePath,
-  ConfigValueSource
+  ConfigValueSource,
 } from '../../../../types/PageConfig.js'
 import type { Config, ConfigNameBuiltIn, ConfigNameGlobal } from '../../../../types/Config.js'
 import { assert, assertUsage } from '../../utils.js'
@@ -102,99 +102,99 @@ type ConfigDefinitionsInternal = Record<
 type ConfigDefinitionsBuiltIn = Record<ConfigNameBuiltIn | ConfigNameGlobal, ConfigDefinitionInternal>
 const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   onRenderHtml: {
-    env: { server: true }
+    env: { server: true },
   },
   onRenderClient: {
-    env: { client: true }
+    env: { client: true },
   },
   onHydrationEnd: {
-    env: { client: true }
+    env: { client: true },
   },
   onPageTransitionStart: {
-    env: { client: true }
+    env: { client: true },
   },
   onPageTransitionEnd: {
-    env: { client: true }
+    env: { client: true },
   },
   onCreatePageContext: {
     env: { server: true, client: true },
     // Required because `onCreatePageContext()` is called before routing
     global: true,
-    cumulative: true
+    cumulative: true,
   },
   onCreateGlobalContext: {
     env: { server: true, client: true },
     global: true,
-    cumulative: true
+    cumulative: true,
   },
   onBeforeRender: {
-    env: { server: true }
+    env: { server: true },
   },
   onBeforePrerenderStart: {
-    env: { server: true, production: true }
+    env: { server: true, production: true },
   },
   Page: {
-    env: { server: true, client: true }
+    env: { server: true, client: true },
   },
   passToClient: {
     env: { server: true },
-    cumulative: true
+    cumulative: true,
   },
   route: {
     env: {
       server: true,
       client: 'if-client-routing',
       // For vite-plugin-vercel
-      config: true
+      config: true,
     },
-    eager: true
+    eager: true,
   },
   guard: {
-    env: { server: true, client: 'if-client-routing' }
+    env: { server: true, client: 'if-client-routing' },
   },
   data: {
-    env: { server: true }
+    env: { server: true },
   },
   onData: {
     env: { server: true, client: true },
-    cumulative: true
+    cumulative: true,
   },
   iKnowThePerformanceRisksOfAsyncRouteFunctions: {
     env: { server: true, client: 'if-client-routing' },
-    eager: true
+    eager: true,
   },
   filesystemRoutingRoot: {
-    env: { config: true }
+    env: { config: true },
   },
   client: {
     // The value of the client config is merely the file path to the client entry file, which is only needed on the sever-side
     env: { server: true, config: true },
-    _valueIsFilePath: true
+    _valueIsFilePath: true,
   },
   clientRouting: {
     // We could make it { client: false } but we don't yet because of some legacy V0.4 design code
     env: { server: true, client: true, config: true },
-    eager: true
+    eager: true,
   },
   clientHooks: {
-    env: { config: true }
+    env: { config: true },
   },
   hydrationCanBeAborted: {
-    env: { client: true }
+    env: { client: true },
   },
   prefetch: {
     env: { client: true },
-    eager: true
+    eager: true,
   },
   // TODO/v1-release: remove
   prefetchStaticAssets: {
-    env: { client: true }
+    env: { client: true },
   },
   extends: {
-    env: { config: true }
+    env: { config: true },
   },
   meta: {
-    env: { config: true }
+    env: { config: true },
   },
   // Whether the page loads:
   //  - Vike's client runtime
@@ -221,100 +221,100 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
         isConfigSet(configValueSources, 'Page') &&
         !!getConfigEnv(configValueSources, 'Page')?.client
       )
-    }
+    },
   },
   onBeforeRenderEnv: {
     env: { client: true },
     eager: true,
     _computed: (configValueSources): null | ConfigEnvInternal =>
-      !isConfigSet(configValueSources, 'onBeforeRender') ? null : getConfigEnv(configValueSources, 'onBeforeRender')
+      !isConfigSet(configValueSources, 'onBeforeRender') ? null : getConfigEnv(configValueSources, 'onBeforeRender'),
   },
   dataEnv: {
     env: { client: true },
     eager: true,
     _computed: (configValueSources): null | ConfigEnvInternal =>
-      !isConfigSet(configValueSources, 'data') ? null : getConfigEnv(configValueSources, 'data')
+      !isConfigSet(configValueSources, 'data') ? null : getConfigEnv(configValueSources, 'data'),
   },
   hooksTimeout: {
-    env: { server: true, client: true }
+    env: { server: true, client: true },
   },
   cacheControl: {
-    env: { server: true }
+    env: { server: true },
   },
   host: {
     env: { config: true },
-    global: true
+    global: true,
   },
   port: {
     env: { config: true },
-    global: true
+    global: true,
   },
   mode: {
     env: { config: true },
-    global: true
+    global: true,
   },
   injectScriptsAt: {
-    env: { server: true }
+    env: { server: true },
   },
   name: {
-    env: { config: true }
+    env: { config: true },
   },
   require: {
-    env: { config: true }
+    env: { config: true },
   },
   keepScrollPosition: {
-    env: { client: true }
+    env: { client: true },
   },
   middleware: { env: { server: true }, cumulative: true, eager: true, global: true },
   onPrerenderStart: {
     env: { server: true, production: true },
     eager: true,
-    global: true
+    global: true,
   },
   onBeforeRoute: {
     env: { server: true, client: 'if-client-routing' },
     eager: true,
-    global: true
+    global: true,
   },
   prerender: {
     env: { config: true },
     global: (value, { isGlobalLocation }) => typeof value === 'object' || isGlobalLocation,
-    cumulative: true
+    cumulative: true,
   },
   vite: { env: { config: true }, global: true, cumulative: true },
   disableAutoFullBuild: {
     env: { config: true },
-    global: true
+    global: true,
   },
   vite6BuilderApp: {
     env: { config: true },
-    global: true
+    global: true,
   },
   includeAssetsImportedByServer: {
     env: { config: true },
-    global: true
+    global: true,
   },
   baseAssets: {
     env: { config: true, server: true },
-    global: true
+    global: true,
   },
   baseServer: {
     env: { config: true, server: true },
-    global: true
+    global: true,
   },
   redirects: {
     env: { server: true },
     global: true,
-    cumulative: true
+    cumulative: true,
   },
   trailingSlash: {
     env: { server: true },
-    global: true
+    global: true,
   },
   disableUrlNormalization: {
     env: { server: true },
-    global: true
-  }
+    global: true,
+  },
 }
 
 function getConfigEnv(configValueSources: ConfigValueSources, configName: string): null | ConfigEnvInternal {

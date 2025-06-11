@@ -22,7 +22,7 @@ async function startServer() {
     const pageContextInit = {
       urlOriginal: req.originalUrl,
       headersOriginal: req.headers,
-      fetch
+      fetch,
     }
     const pageContext = await renderPage(pageContextInit)
     const { httpResponse } = pageContext

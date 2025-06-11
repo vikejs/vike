@@ -8,15 +8,15 @@ export const errMdx2 = {
       column: 450,
       offset: 1967,
       _index: 0,
-      _bufferIndex: 444
+      _bufferIndex: 444,
     },
     end: {
       line: 23,
       column: 451,
       offset: 1968,
       _index: 0,
-      _bufferIndex: 445
-    }
+      _bufferIndex: 445,
+    },
   },
   source: 'mdast-util-mdx-jsx',
   ruleId: 'unexpected-closing-slash',
@@ -69,15 +69,15 @@ export const errMdx2 = {
       column: 450,
       offset: 1967,
       _index: 0,
-      _bufferIndex: 444
+      _bufferIndex: 444,
     },
     end: {
       line: 23,
       column: 451,
       offset: 1968,
       _index: 0,
-      _bufferIndex: 445
-    }
+      _bufferIndex: 445,
+    },
   },
-  frame: ''
+  frame: '',
 }

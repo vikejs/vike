@@ -5,7 +5,7 @@ import React from 'react'
 function Grid({
   children,
   style,
-  className
+  className,
 }: {
   children: React.ReactNode
   style?: React.CSSProperties
@@ -17,7 +17,7 @@ function Grid({
       style={{
         width: '100%',
         padding: '0 20px',
-        ...style
+        ...style,
       }}
     >
       <div style={{ maxWidth: 1100, width: '100%', margin: '0 auto' }}>{children}</div>

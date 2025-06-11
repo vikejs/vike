@@ -8,13 +8,13 @@ const config: UserConfig = {
   plugins: [
     vike(),
     vue({
-      include: [/\.vue$/, /\.md$/]
+      include: [/\.vue$/, /\.md$/],
     }),
     md({}),
     cjsInterop({
-      dependencies: ['vue-toast-notification']
-    })
-  ]
+      dependencies: ['vue-toast-notification'],
+    }),
+  ],
 }
 
 export default config

@@ -1,3 +1,3 @@
 export default {
-  Page: null
+  Page: null,
 }

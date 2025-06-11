@@ -6,7 +6,7 @@ import { assert, assertWarning, compareString, isPropertyGetter } from './utils.
 import { addIs404ToPageProps } from './addIs404ToPageProps.js'
 import {
   type GlobalContextPrepareMinimum,
-  prepareGlobalContextForPublicUsage
+  prepareGlobalContextForPublicUsage,
 } from './prepareGlobalContextForPublicUsage.js'
 import { getProxyForPublicUsage } from './getProxyForPublicUsage.js'
 
@@ -29,11 +29,11 @@ function preparePageContextForPublicUsage<PageContext extends PageContextPrepare
       get() {
         assertWarning(false, 'pageContext._pageId has been renamed to pageContext.pageId', {
           showStackTrace: true,
-          onlyOnce: true
+          onlyOnce: true,
         })
         return (pageContext as any).pageId
       },
-      enumerable: false
+      enumerable: false,
     })
   }
 
@@ -54,7 +54,7 @@ function preparePageContextForPublicUsage<PageContext extends PageContextPrepare
       if (prop in globalContextPublic) {
         return (globalContextPublic as Record<string | symbol, unknown>)[prop]
       }
-    }
+    },
   )
   return pageContextPublic
 }
@@ -90,7 +90,7 @@ function assertPropertyGetters(pageContext: Record<string, unknown>) {
     // TODO/v1-release: remove
     'url',
     // TODO/v1-release: remove
-    'pageExports'
+    'pageExports',
   ].forEach((prop) => {
     if (pageContext.prop) assert(isPropertyGetter(pageContext, prop))
   })

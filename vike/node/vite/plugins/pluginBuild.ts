@@ -19,6 +19,6 @@ function pluginBuild(): Plugin[] {
     pluginDistPackageJsonFile(),
     pluginSuppressRollupWarning(),
     pluginDistFileNames(),
-    pluginModuleBanner()
+    pluginModuleBanner(),
   ]
 }

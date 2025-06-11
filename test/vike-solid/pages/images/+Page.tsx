@@ -38,8 +38,8 @@ function Image(props: { src: string; author: string }) {
             contentUrl: { src: props.src },
             creator: {
               '@type': 'Person',
-              name: props.author
-            }
+              name: props.author,
+            },
           })}
         />
       </Head>

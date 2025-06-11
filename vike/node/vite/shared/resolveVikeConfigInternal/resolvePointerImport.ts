@@ -11,7 +11,7 @@ import {
   isFilePathAbsolute,
   isImportPathRelative,
   isImportPathNpmPackageOrPathAlias,
-  requireResolveOptional
+  requireResolveOptional,
 } from '../../utils.js'
 import { type PointerImportData, assertPointerImportPath, parsePointerImportData } from './pointerImports.js'
 import { getFilePathAbsoluteUserRootDir, getFilePathResolved, getFilePathUnresolved } from '../getFilePath.js'
@@ -23,7 +23,7 @@ function resolvePointerImport(
   configValue: unknown,
   importerFilePath: FilePathResolved,
   userRootDir: string,
-  configName: string
+  configName: string,
 ): null | PointerImport {
   if (typeof configValue !== 'string') return null
   const pointerImportData = parsePointerImportData(configValue)
@@ -36,7 +36,7 @@ function resolvePointerImport(
   const fileExportPath: FileExportPath = {
     ...filePath,
     fileExportName: exportName,
-    fileExportPathToShowToUser
+    fileExportPathToShowToUser,
   }
   return { fileExportPath }
 }
@@ -44,7 +44,7 @@ function resolvePointerImport(
 function resolvePointerImportData(
   pointerImportData: PointerImportData,
   importerFilePath: FilePathResolved,
-  userRootDir: string
+  userRootDir: string,
 ): FilePath {
   const { importPath } = pointerImportData
   assertPointerImportPath(importPath)
@@ -65,19 +65,19 @@ function resolvePointerImportData(
         filePathAbsoluteUserRootDir,
         `The relative import ${pc.cyan(importPath)} defined by ${
           importerFilePath.filePathToShowToUser
-        } resolves to ${filePathAbsoluteFilesystem} ${errSuffix}`
+        } resolves to ${filePathAbsoluteFilesystem} ${errSuffix}`,
       )
     } else {
       assert(isFilePathAbsolute(importPath))
       assertUsage(
         filePathAbsoluteUserRootDir,
-        `The import path ${importPath} defined by ${importerFilePath.filePathToShowToUser} is ${errSuffix}`
+        `The import path ${importPath} defined by ${importerFilePath.filePathToShowToUser} is ${errSuffix}`,
       )
     }
     // Forbid node_modules/ because it's brittle: if node_modules/ lives outside of userRootDir then it crashes.
     assertUsage(
       !filePathAbsoluteUserRootDir.includes('/node_modules/'),
-      `The import path ${importPath} defined by ${importerFilePath.filePathToShowToUser} resolves to ${filePathAbsoluteFilesystem} inside of node_modules/ which is forbbiden: use an npm package import instead.`
+      `The import path ${importPath} defined by ${importerFilePath.filePathToShowToUser} resolves to ${filePathAbsoluteFilesystem} inside of node_modules/ which is forbbiden: use an npm package import instead.`,
     )
 
     filePath = getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir })
@@ -88,12 +88,12 @@ function resolvePointerImportData(
       filePath = getFilePathResolved({
         userRootDir,
         filePathAbsoluteFilesystem,
-        importPathAbsolute
+        importPathAbsolute,
       })
     } else {
       // We cannot resolve path aliases defined only in Vite
       filePath = getFilePathUnresolved({
-        importPathAbsolute
+        importPathAbsolute,
       })
     }
   }
@@ -104,7 +104,7 @@ function resolvePointerImportData(
 function resolveImportPathWithNode(
   pointerImportData: PointerImportData,
   importerFilePath: FilePathResolved,
-  userRootDir: string
+  userRootDir: string,
 ): string | null {
   const importerFilePathAbsolute = importerFilePath.filePathAbsoluteFilesystem
   assertPosixPath(importerFilePathAbsolute)
@@ -112,7 +112,7 @@ function resolveImportPathWithNode(
   const filePathAbsoluteFilesystem = requireResolveOptional({
     importPath: pointerImportData.importPath,
     importerFilePath: importerFilePathAbsolute,
-    userRootDir
+    userRootDir,
   })
   if (!filePathAbsoluteFilesystem) {
     assert(!isImportPathRelative(pointerImportData.importPath))
@@ -125,7 +125,7 @@ function resolveImportPathWithNode(
 function assertUsageResolutionSuccess(
   filePathAbsoluteFilesystem: string | null,
   pointerImportData: PointerImportData,
-  importerFilePath: FilePathResolved
+  importerFilePath: FilePathResolved,
 ): asserts filePathAbsoluteFilesystem is string {
   const { importPath: importPath, importStringWasGenerated, importString } = pointerImportData
   const { filePathToShowToUser } = importerFilePath

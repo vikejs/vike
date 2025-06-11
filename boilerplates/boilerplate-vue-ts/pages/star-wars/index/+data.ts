@@ -21,7 +21,7 @@ const data = async (pageContext: PageContextServer) => {
   return {
     movies,
     // The page's <title>
-    title: `${movies.length} Star Wars Movies`
+    title: `${movies.length} Star Wars Movies`,
   }
 }
 

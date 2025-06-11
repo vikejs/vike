@@ -18,61 +18,61 @@ const sponsorsList: Sponsor[] = [
     companyName: 'Alignable',
     companyLogo: alignableLogo,
     website: 'https://www.alignable.com',
-    github: 'AlignableUser'
+    github: 'AlignableUser',
   },
   {
     companyName: 'Sourcegraph',
     companyLogo: sourcegraphLogo,
     website: 'https://sourcegraph.com',
-    github: 'sourcegraph'
+    github: 'sourcegraph',
   },
   {
     companyName: 'BurdaForward',
     companyLogo: burdaforwardLogo,
     website: 'https://www.burda-forward.de',
-    github: 'BurdaForward'
+    github: 'BurdaForward',
   },
   {
     companyName: 'Optimizers',
     companyLogo: optimizersLogo,
     companyLogoStyle: {
-      height: '60%'
+      height: '60%',
     },
     website: 'https://www.optimizers.nl',
-    github: 'OptimizersGroup'
+    github: 'OptimizersGroup',
   },
   {
     companyName: 'Ecosia',
     companyLogo: ecosiaLogo,
     website: 'https://ecosia.org',
-    github: 'ecosia'
+    github: 'ecosia',
   },
   {
     companyName: 'Bluefin',
     companyLogo: bluefinLogo,
     website: 'https://www.bluefin.one',
-    github: 'bluefin-clinical'
+    github: 'bluefin-clinical',
   },
   {
     isPast: true,
     companyName: 'CREPE',
     companyLogo: crepeLogo,
     website: 'https://crepe.cm',
-    github: 'cookieplace'
+    github: 'cookieplace',
   },
   {
     isPast: true,
     companyName: 'Contra',
     companyLogo: contraLogo,
     website: 'https://contra.com',
-    github: 'contra'
+    github: 'contra',
   },
   {
     isPast: true,
     companyName: 'Inlang',
     companyLogo: inlangLogo,
     website: 'https://inlang.com',
-    github: 'opral'
+    github: 'opral',
   },
   {
     isPast: true,
@@ -82,13 +82,13 @@ const sponsorsList: Sponsor[] = [
     website: 'https://www.repora.com',
     */
     website: 'https://github.com/DannyZB?tab=sponsoring',
-    github: 'DannyZB'
+    github: 'DannyZB',
   },
   {
     isPast: true,
     companyName: 'My Favorite Quilt Store',
     companyLogo: mfqsLogo,
     website: 'https://myfavoritequiltstore.com',
-    github: 'pieperz'
-  }
+    github: 'pieperz',
+  },
 ]

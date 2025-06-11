@@ -8,7 +8,7 @@ import './ProvidedBy.css'
 function ProvidedBy({
   children,
   list,
-  noCustomGuide
+  noCustomGuide,
 }: { children: React.ReactNode; list?: UiFrameworkExtensionList; noCustomGuide?: true }) {
   return (
     <>

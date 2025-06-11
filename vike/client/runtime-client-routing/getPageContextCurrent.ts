@@ -8,7 +8,7 @@ type PageContextCurrent = VikeConfigPublicPageLazy & {
   urlPathname: string
 }
 const globalObject = getGlobalObject('runtime-client-routing/getPageContextCurrent.ts', {
-  pageContextCurrent: null as null | PageContextCurrent
+  pageContextCurrent: null as null | PageContextCurrent,
 })
 
 function getPageContextCurrent(): null | PageContextCurrent {

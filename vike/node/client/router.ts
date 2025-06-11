@@ -14,6 +14,6 @@ const onPopState: never = (() => {}) as never
 function warnNoEffect(caller: string) {
   assertWarning(false, `Calling ${caller}() on the server-side has no effect`, {
     showStackTrace: true,
-    onlyOnce: false
+    onlyOnce: false,
   })
 }

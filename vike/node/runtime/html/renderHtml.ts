@@ -18,7 +18,7 @@ import {
   hasProp,
   isHtml,
   isPromise,
-  objectAssign
+  objectAssign,
 } from '../utils.js'
 import { injectHtmlTagsToString, injectHtmlTagsToStream } from './injectAssets.js'
 import type { PageContextInjectAssets } from './injectAssets.js'
@@ -28,7 +28,7 @@ import {
   StreamProviderAny,
   streamToString,
   StreamTypePatch,
-  StreamProviderNormalized
+  StreamProviderNormalized,
 } from './stream.js'
 import { isStreamFromReactStreamingPackage } from './stream/react-streaming.js'
 import type { StreamFromReactStreamingPackage } from './stream/react-streaming.js'
@@ -61,7 +61,7 @@ async function renderDocumentHtml(
   documentHtml: DocumentHtml,
   pageContext: PageContextInjectAssets,
   onErrorWhileStreaming: (err: unknown) => void,
-  injectFilter: PreloadFilter
+  injectFilter: PreloadFilter,
 ): Promise<HtmlRender> {
   if (isEscapedString(documentHtml)) {
     objectAssign(pageContext, { _isStream: false as const })
@@ -90,11 +90,11 @@ async function renderDocumentHtml(
         htmlStream,
         {
           htmlPartsBegin: render.htmlPartsBegin,
-          htmlPartsEnd: render.htmlPartsEnd
+          htmlPartsEnd: render.htmlPartsEnd,
         },
         pageContext,
         onErrorWhileStreaming,
-        injectFilter
+        injectFilter,
       )
       return streamWrapper
     }
@@ -108,11 +108,11 @@ async function renderHtmlStream(
   injectString: null | { htmlPartsBegin: HtmlPart[]; htmlPartsEnd: HtmlPart[] },
   pageContext: PageContextInjectAssets & { enableEagerStreaming?: boolean; _isStream: true },
   onErrorWhileStreaming: (err: unknown) => void,
-  injectFilter: PreloadFilter
+  injectFilter: PreloadFilter,
 ) {
   const processStreamOptions: Parameters<typeof processStream>[1] = {
     onErrorWhileStreaming,
-    enableEagerStreaming: pageContext.enableEagerStreaming
+    enableEagerStreaming: pageContext.enableEagerStreaming,
   }
 
   if (injectString) {
@@ -123,7 +123,7 @@ async function renderHtmlStream(
     const { injectAtStreamBegin, injectAtStreamAfterFirstChunk, injectAtStreamEnd } = injectHtmlTagsToStream(
       pageContext,
       streamFromReactStreamingPackage,
-      injectFilter
+      injectFilter,
     )
     processStreamOptions.injectStringAtBegin = async () => {
       return await injectAtStreamBegin(injectString.htmlPartsBegin)
@@ -176,15 +176,15 @@ function escapeInject(
   assertUsage(
     templateStrings.length === templateVariables.length + 1 && templateStrings.every((str) => typeof str === 'string'),
     `You're using ${pc.cyan('escapeInject')} as a function, but ${pc.cyan(
-      'escapeInject'
+      'escapeInject',
     )} is a string template tag, see https://vike.dev/escapeInject`,
-    { showStackTrace: true }
+    { showStackTrace: true },
   )
   return {
     _template: {
       templateStrings,
-      templateVariables: templateVariables as TemplateVariable[]
-    }
+      templateVariables: templateVariables as TemplateVariable[],
+    },
   }
 }
 type EscapedString = { _escaped: string }
@@ -199,9 +199,9 @@ function _dangerouslySkipEscape(arg: unknown): EscapedString {
   assertUsage(
     !isPromise(arg),
     `[dangerouslySkipEscape(${pc.cyan('str')})] Argument ${pc.cyan(
-      'str'
+      'str',
     )} is a promise. It should be a string instead (or a stream). Make sure to ${pc.cyan('await str')}.`,
-    { showStackTrace: true }
+    { showStackTrace: true },
   )
   if (typeof arg === 'string') {
     return { _escaped: arg }
@@ -209,12 +209,12 @@ function _dangerouslySkipEscape(arg: unknown): EscapedString {
   assertWarning(
     false,
     `[dangerouslySkipEscape(${pc.cyan('str')})] Argument ${pc.cyan('str')} should be a string but we got ${pc.cyan(
-      `typeof str === "${typeof arg}"`
+      `typeof str === "${typeof arg}"`,
     )}.`,
     {
       onlyOnce: false,
-      showStackTrace: true
-    }
+      showStackTrace: true,
+    },
   )
   return { _escaped: String(arg) }
 }
@@ -224,7 +224,7 @@ type HtmlPart = string | ((pageAssets: PageAsset[]) => string)
 
 function renderTemplate(
   templateContent: TemplateContent,
-  pageContext: PageContextInjectAssets
+  pageContext: PageContextInjectAssets,
 ):
   | { htmlPartsAll: HtmlPart[] }
   | { htmlStream: StreamProviderAny; htmlPartsBegin: HtmlPart[]; htmlPartsEnd: HtmlPart[] } {
@@ -245,8 +245,8 @@ function renderTemplate(
     assertUsage(
       !htmlStream,
       `Injecting two streams in ${pc.cyan(
-        'escapeInject'
-      )} template tag of ${hookName}() hook defined by ${hookFilePath}. Inject only one stream instead.`
+        'escapeInject',
+      )} template tag of ${hookName}() hook defined by ${hookFilePath}. Inject only one stream instead.`,
     )
     htmlStream = stream
   }
@@ -288,7 +288,7 @@ function renderTemplate(
       const nth: string = (i === 0 && '1st') || (i === 1 && '2nd') || (i === 2 && '3rd') || `${i}-th`
       return [
         `The ${nth} HTML variable is ${msg}`,
-        `The HTML was provided by the ${hookName}() hook at ${hookFilePath}.`
+        `The HTML was provided by the ${hookName}() hook at ${hookFilePath}.`,
       ]
         .filter(Boolean)
         .join(' ')
@@ -338,14 +338,14 @@ function renderTemplate(
   if (htmlStream === null) {
     assert(htmlPartsEnd.length === 0)
     return {
-      htmlPartsAll: htmlPartsBegin
+      htmlPartsAll: htmlPartsBegin,
     }
   }
 
   return {
     htmlStream,
     htmlPartsBegin,
-    htmlPartsEnd
+    htmlPartsEnd,
   }
 }
 

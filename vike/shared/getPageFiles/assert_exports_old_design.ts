@@ -15,11 +15,11 @@ function assertExportValues(pageFile: PageFile) {
     const explainer = `The value of \`${exportName}\` is only allowed to be \`true\`.`
     assertUsage(
       pageFile.fileExports[exportName] !== false,
-      `${pageFile.filePath} has \`export { ${exportName} }\` with the value \`false\` which is prohibited: remove \`export { ${exportName} }\` instead. (${explainer})`
+      `${pageFile.filePath} has \`export { ${exportName} }\` with the value \`false\` which is prohibited: remove \`export { ${exportName} }\` instead. (${explainer})`,
     )
     assertUsage(
       pageFile.fileExports[exportName] === true,
-      `${pageFile.filePath} has \`export { ${exportName} }\` with a forbidden value. ${explainer}`
+      `${pageFile.filePath} has \`export { ${exportName} }\` with a forbidden value. ${explainer}`,
     )
   })
 }
@@ -29,6 +29,6 @@ const forbiddenDefaultExports = ['render', 'clientRouting', 'prerender', 'doNotP
 function assertDefaultExports(defaultExportName: string, filePath: string) {
   assertUsage(
     !forbiddenDefaultExports.includes(defaultExportName),
-    `${filePath} has \`export default { ${defaultExportName} }\` which is prohibited, use \`export { ${defaultExportName} }\` instead.`
+    `${filePath} has \`export default { ${defaultExportName} }\` which is prohibited, use \`export { ${defaultExportName} }\` instead.`,
   )
 }

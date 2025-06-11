@@ -45,7 +45,7 @@ async function startServer() {
   app.get('/{*vikeCatchAll}', async (req, res) => {
     const pageContextInit = {
       urlOriginal: req.originalUrl,
-      headersOriginal: req.headers
+      headersOriginal: req.headers,
     }
     const pageContext = await renderPage(pageContextInit)
     if (pageContext.errorWhileRendering) {

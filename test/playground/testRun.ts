@@ -10,7 +10,7 @@ import {
   testHMRPlusValueFile,
   testHooksCalled,
   testOnCreateGlobalContext,
-  testRedirectMailto
+  testRedirectMailto,
 } from './pages/e2e-test'
 
 import { testSettingsInheritance } from './pages/about-page/e2e-test'

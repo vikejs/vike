@@ -5,7 +5,7 @@ import { ensureWasClientSideRouted, expectUrl, testCounter, expectPageContextJso
 
 function testRun(
   cmd: 'npm run dev:server' | 'npm run dev' | 'npm run preview' | 'npm run prod',
-  pageContextInitIsPassedToClient = false
+  pageContextInitIsPassedToClient = false,
 ) {
   run(cmd)
 
@@ -71,7 +71,7 @@ function testRun(
     const expectErrClient = () =>
       expectLog('Failed to load resource: the server responded with a status of 503 (Service Unavailable)', {
         filter: (log) =>
-          log.logSource === 'Browser Error' && partRegex`http://${/[^\/]+/}:3000/show-error-page`.test(log.logInfo)
+          log.logSource === 'Browser Error' && partRegex`http://${/[^\/]+/}:3000/show-error-page`.test(log.logInfo),
       })
     test('render error page - HTML', async () => {
       const response = await fetch(url)

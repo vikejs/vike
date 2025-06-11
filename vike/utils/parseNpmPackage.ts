@@ -29,9 +29,9 @@ function assertIsImportPathNpmPackage(str: string): void {
   assert(
     isImportPathNpmPackage(str, {
       // If `str` is a path alias that looks like an npm package => assertIsImportPathNpmPackage() is erroneous but that's okay because the assertion will eventually fail for some other user using a disambiguated path alias.
-      cannotBePathAlias: true
+      cannotBePathAlias: true,
     }),
-    str
+    str,
   )
 }
 
@@ -105,7 +105,7 @@ function parseNpmPackage(str: string | undefined): null | { pkgName: string; imp
 
   return {
     pkgName: scope ? `${scope}/${name}` : name,
-    importPath
+    importPath,
   }
 }
 function invalid(s: string) {

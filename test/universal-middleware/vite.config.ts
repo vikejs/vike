@@ -4,5 +4,5 @@ import { defineConfig } from 'vite'
 import vike from 'vike/plugin'
 
 export default defineConfig({
-  plugins: [vike(), react(), telefunc()]
+  plugins: [vike(), react(), telefunc()],
 })

@@ -6,7 +6,7 @@ import {
   isNotNullish_keyVal,
   parseUrl,
   objectFilter,
-  assertUsageUrlPathnameAbsolute
+  assertUsageUrlPathnameAbsolute,
 } from './utils.js'
 
 type ModifyUrlSameOriginOptions = {

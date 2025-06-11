@@ -7,11 +7,11 @@ function assertPageContextProvidedByUser(
   pageContextProvidedByUser: unknown,
   {
     hookName,
-    hookFilePath
+    hookFilePath,
   }: {
     hookFilePath: string
     hookName: 'onBeforeRender' | 'onRenderHtml' | 'render' | 'onBeforeRoute'
-  }
+  },
 ): asserts pageContextProvidedByUser is Record<string, unknown> {
   if (pageContextProvidedByUser === undefined || pageContextProvidedByUser === null) return
 
@@ -23,15 +23,15 @@ function assertPageContextProvidedByUser(
   assertUsage(
     isObject(pageContextProvidedByUser),
     `${errPrefix} should be an object (but it's ${pc.cyan(
-      `typeof pageContext === ${JSON.stringify(typeof pageContextProvidedByUser)}`
-    )} instead)`
+      `typeof pageContext === ${JSON.stringify(typeof pageContextProvidedByUser)}`,
+    )} instead)`,
   )
 
   assertUsage(
     !('isPageContext' in pageContextProvidedByUser),
     `${errPrefix} shouldn't be the whole ${pc.cyan(
-      'pageContext'
-    )} object, see https://vike.dev/pageContext-manipulation#do-not-return-entire-pagecontext`
+      'pageContext',
+    )} object, see https://vike.dev/pageContext-manipulation#do-not-return-entire-pagecontext`,
   )
 
   // In principle, it's possible to use onBeforeRoute()` to override and define the whole routing.
@@ -39,15 +39,15 @@ function assertPageContextProvidedByUser(
   assertWarning(
     !('pageId' in pageContextProvidedByUser),
     `${errPrefix} sets ${pc.cyan(
-      'pageContext.pageId'
+      'pageContext.pageId',
     )} which means that Vike's routing is overriden. This is an experimental feature: make sure to contact a vike maintainer before using this.`,
-    { onlyOnce: true }
+    { onlyOnce: true },
   )
 
   assertUsage(
     !('is404' in pageContextProvidedByUser),
     `${errPrefix} sets ${pc.cyan('pageContext.is404')} which is forbidden, use ${pc.cyan(
-      'throw render()'
-    )} instead, see https://vike.dev/render`
+      'throw render()',
+    )} instead, see https://vike.dev/render`,
   )
 }

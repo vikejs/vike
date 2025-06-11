@@ -15,7 +15,7 @@ async function loadPageConfigsLazyClientSide(
   pageId: string,
   pageFilesAll: PageFile[],
   pageConfigs: PageConfigRuntime[],
-  pageConfigGlobal: PageConfigGlobalRuntime
+  pageConfigGlobal: PageConfigGlobalRuntime,
 ): Promise<PageContextUserFilesLoaded> {
   const pageFilesClientSide = getPageFilesClientSide(pageFilesAll, pageId)
   const pageConfig = findPageConfig(pageConfigs, pageId)
@@ -67,7 +67,7 @@ function isFetchError(err: unknown): boolean {
     // ??
     'error resolving module specifier',
     // ??
-    'failed to resolve module'
+    'failed to resolve module',
   ]
   return FAILED_TO_FETCH_MESSAGES.some((s) => err.message.toLowerCase().includes(s.toLowerCase()))
 }

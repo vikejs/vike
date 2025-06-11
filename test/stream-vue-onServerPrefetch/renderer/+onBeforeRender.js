@@ -14,7 +14,7 @@ async function onBeforeRender(pageContext) {
   return {
     pageContext: {
       initialStoreState,
-      stream
-    }
+      stream,
+    },
   }
 }

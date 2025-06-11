@@ -4,7 +4,7 @@ const BugFixSVG = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     style={{
-      width: 'min(410px, 100%)'
+      width: 'min(410px, 100%)',
     }}
     viewBox="0 0 406 155"
     fill="none"

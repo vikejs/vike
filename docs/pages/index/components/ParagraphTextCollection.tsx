@@ -7,7 +7,7 @@ const ParagraphTextCollection = ({
   title,
   description,
   icon,
-  buttonLable
+  buttonLable,
 }: {
   title: string
   description: string | React.JSX.Element
@@ -19,7 +19,7 @@ const ParagraphTextCollection = ({
       <div
         style={{
           color: '#000000',
-          paddingBottom: 22
+          paddingBottom: 22,
         }}
       >
         {icon}
@@ -31,7 +31,7 @@ const ParagraphTextCollection = ({
           width: '100%',
           margin: 0,
           lineHeight: 1.5,
-          minWidth: '240px'
+          minWidth: '240px',
         }}
       >
         {title}
@@ -46,7 +46,7 @@ const ParagraphTextCollection = ({
           lineHeight: 1.5,
           minWidth: '240px',
           paddingTop: '8px',
-          paddingBottom: '4px'
+          paddingBottom: '4px',
         }}
       >
         {description}
@@ -54,7 +54,7 @@ const ParagraphTextCollection = ({
       {buttonLable && (
         <div
           style={{
-            paddingTop: '18px'
+            paddingTop: '18px',
           }}
         >
           <ButtonLearnMore />

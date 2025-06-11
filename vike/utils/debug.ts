@@ -33,7 +33,7 @@ const flags = [
   'vike:routing',
   'vike:setup',
   'vike:stream',
-  'vike:virtualFiles'
+  'vike:virtualFiles',
 ] as const
 const flagsSkipWildcard = ['vike:log']
 const flagRegex = /\bvike:[a-zA-Z-]+/g
@@ -104,7 +104,7 @@ function formatMsg(
   info: unknown,
   options: Options,
   padding: string,
-  position?: 'FIRST' | 'MIDDLE' | 'LAST'
+  position?: 'FIRST' | 'MIDDLE' | 'LAST',
 ): string | undefined {
   if (info === undefined) {
     return undefined
@@ -174,7 +174,7 @@ function assertFlagsActivated() {
   flagsActivated.forEach((flag) => {
     assertUsage(
       (flags as readonly string[]).includes(flag),
-      `Unknown DEBUG flag ${pc.cyan(flag)}. Valid flags:\n${flags.map((f) => `  ${pc.cyan(f)}`).join('\n')}`
+      `Unknown DEBUG flag ${pc.cyan(flag)}. Valid flags:\n${flags.map((f) => `  ${pc.cyan(f)}`).join('\n')}`,
     )
   })
 }

@@ -18,7 +18,7 @@ function pluginBaseUrls(): Plugin {
       basesResolved = resolveBase(
         baseViteOriginal,
         vikeConfig.config.baseServer ?? null,
-        vikeConfig.config.baseAssets ?? null
+        vikeConfig.config.baseAssets ?? null,
       )
       // We cannot define these in configResolved() because Vite picks up the env variables before any configResolved() hook is called
       process.env.BASE_SERVER = basesResolved.baseServer
@@ -27,10 +27,10 @@ function pluginBaseUrls(): Plugin {
         envPrefix: [
           'VITE_', // Vite doesn't seem to merge in its default, see https://github.com/vikejs/vike/issues/554
           'BASE_SERVER',
-          'BASE_ASSETS'
+          'BASE_ASSETS',
         ],
         base: basesResolved.baseAssets, // Make Vite inject baseAssets to imports e.g. `import logoUrl from './logo.svg.js'`
-        _baseViteOriginal: baseViteOriginal
+        _baseViteOriginal: baseViteOriginal,
       }
     },
     async configResolved(config) {
@@ -38,7 +38,7 @@ function pluginBaseUrls(): Plugin {
       const basesResolved2 = resolveBaseFromResolvedConfig(
         vikeConfig.config.baseServer ?? null,
         vikeConfig.config.baseAssets ?? null,
-        config
+        config,
       )
       assert(basesResolved2.baseServer === basesResolved.baseServer)
       assert(basesResolved2.baseAssets === basesResolved.baseAssets)
@@ -47,14 +47,14 @@ function pluginBaseUrls(): Plugin {
        *  - Instead of having an internal Vike assertion fail, we let the user discover Vite's buggy behavior.
       assert(config.base === baseAssets)
       */
-    }
+    },
   }
 }
 
 function resolveBaseFromResolvedConfig(
   baseServer: string | null,
   baseAssets: string | null,
-  config: ResolvedConfig
+  config: ResolvedConfig,
 ): {
   baseServer: string
   baseAssets: string

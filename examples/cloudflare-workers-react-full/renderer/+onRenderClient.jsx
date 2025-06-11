@@ -11,6 +11,6 @@ async function onRenderClient(pageContext) {
     document.getElementById('root'),
     <Layout pageContext={pageContext}>
       <Page {...pageProps} />
-    </Layout>
+    </Layout>,
   )
 }

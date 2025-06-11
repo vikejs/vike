@@ -15,7 +15,7 @@ function render(pageContext) {
   const pageHtml = ReactDOMServer.renderToString(
     <Layout pageContext={pageContext}>
       <Page {...pageProps} />
-    </Layout>
+    </Layout>,
   )
 
   return escapeInject`<!DOCTYPE html>
@@ -44,13 +44,13 @@ function onBeforePrerender(prerenderContext) {
         ...pageContext,
         urlOriginal,
         // Set pageContext.locale
-        locale
+        locale,
       })
     })
   })
   return {
     prerenderContext: {
-      pageContexts
-    }
+      pageContexts,
+    },
   }
 }

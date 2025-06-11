@@ -14,7 +14,7 @@ async function analyzePage(
   pageFilesAll: PageFile[],
   pageConfig: null | PageConfigRuntime,
   pageId: string,
-  globalContext: GlobalContextServerInternal
+  globalContext: GlobalContextServerInternal,
 ): Promise<AnalysisResult> {
   if (pageConfig) {
     const { isClientRuntimeLoaded, isClientRouting } = analyzeClientSide(pageConfig, pageFilesAll, pageId)
@@ -26,14 +26,14 @@ async function analyzePage(
     clientDependencies.push({
       id: getVirtualFileIdPageConfigLazy(pageConfig.pageId, true),
       onlyAssets: isClientRuntimeLoaded ? false : true,
-      eagerlyImported: false
+      eagerlyImported: false,
     })
     // In production we inject the import of the server virtual module with ?extractAssets inside the client virtual module
     if (!globalContext._isProduction) {
       clientDependencies.push({
         id: getVirtualFileIdPageConfigLazy(pageConfig.pageId, false),
         onlyAssets: true,
-        eagerlyImported: false
+        eagerlyImported: false,
       })
     }
     /* Remove?
@@ -57,7 +57,7 @@ async function analyzePage(
       clientDependencies.push({
         id: clientEntry,
         onlyAssets: false,
-        eagerlyImported: false
+        eagerlyImported: false,
       })
     })
     return {
@@ -67,7 +67,7 @@ async function analyzePage(
       clientDependencies,
       // pageFilesClientSide and pageFilesServerSide are only used for debugging
       pageFilesClientSide: [],
-      pageFilesServerSide: []
+      pageFilesServerSide: [],
     }
   } else {
     return analyzePageClientSide(pageFilesAll, pageId)

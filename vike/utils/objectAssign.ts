@@ -8,7 +8,7 @@ import { assert } from './assert.js'
 function objectAssign<Obj extends object, ObjAddendum extends Record<string, any> | null | undefined>(
   obj: Obj,
   objAddendum: ObjAddendum,
-  objAddendumCanBeOriginalObject?: true
+  objAddendumCanBeOriginalObject?: true,
 ): asserts obj is Obj & ObjAddendum {
   if (!objAddendum) return
   if (!objAddendumCanBeOriginalObject) assert(!objAddendum._isOriginalObject)

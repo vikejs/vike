@@ -22,7 +22,7 @@ async function createPageContextClientSide(urlOriginal: string) {
     _pageFilesAll: globalContext._pageFilesAll, // TODO/v1-release: remove
     _urlHandler: null,
     _urlRewrite: null as null | string,
-    _baseServer: baseServer
+    _baseServer: baseServer,
   })
   const pageContextUrlComputed = getPageContextUrlComputed(pageContextCreated)
   objectAssign(pageContextCreated, pageContextUrlComputed)
@@ -30,7 +30,7 @@ async function createPageContextClientSide(urlOriginal: string) {
   const pageContextAugmented = await createPageContextShared(
     pageContextCreated,
     globalContext._pageConfigGlobal,
-    globalContext._vikeConfigPublicGlobal
+    globalContext._vikeConfigPublicGlobal,
   )
   augmentType(pageContextCreated, pageContextAugmented)
 

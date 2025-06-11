@@ -57,7 +57,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
       expect(await page.textContent('h1')).toBe('Admin Panel')
     })
     expect(await page.textContent('body')).toContain(
-      "You're able to access this page because you're logged in as Alan Turing."
+      "You're able to access this page because you're logged in as Alan Turing.",
     )
     await testCounter()
     await ensureWasClientSideRouted('/pages/index')

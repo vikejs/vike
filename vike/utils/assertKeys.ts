@@ -7,7 +7,7 @@ import { joinEnglish } from './joinEnglish.js'
 function assertKeys<Keys extends readonly string[]>(
   obj: Record<string, unknown>,
   keysExpected: Keys,
-  errPrefix: string
+  errPrefix: string,
 ): asserts obj is { [key in Keys[number]]?: unknown } {
   const keysUnknown: string[] = []
   const keys = Object.keys(obj)
@@ -24,8 +24,8 @@ function assertKeys<Keys extends readonly string[]>(
         `unknown key${keysUnknown.length === 1 ? '' : 's'}`,
         joinEnglish(keysUnknown, 'and', pc.cyan) + '.',
         'Only following keys are allowed:',
-        joinEnglish(keysExpected, 'and', pc.cyan) + '.'
-      ].join(' ')
+        joinEnglish(keysExpected, 'and', pc.cyan) + '.',
+      ].join(' '),
     )
   }
 }

@@ -23,8 +23,8 @@ const maintainersList: Maintainer[] = [
       </>,
       <>
         <code>vike-vue</code> (Contributor)
-      </>
-    ]
+      </>,
+    ],
   },
   {
     username: 'magne4000',
@@ -38,8 +38,8 @@ const maintainersList: Maintainer[] = [
       <>
         <code>vike-solid</code> (Lead Maintainer, Creator)
       </>,
-      <>Vike Core (Contributor)</>
-    ]
+      <>Vike Core (Contributor)</>,
+    ],
   },
   {
     username: 'nitedani',
@@ -55,8 +55,8 @@ const maintainersList: Maintainer[] = [
       <>
         <code>vike-server</code> (Creator)
       </>,
-      <>Vike Core (Contributor)</>
-    ]
+      <>Vike Core (Contributor)</>,
+    ],
   },
   {
     username: 'phonzammi',
@@ -72,13 +72,13 @@ const maintainersList: Maintainer[] = [
       <>
         <code>vike-react</code> (Contributor)
       </>,
-      <>Bati (Contributor)</>
-    ]
+      <>Bati (Contributor)</>,
+    ],
   },
   {
     username: 'NilsJacobsen',
     firstName: 'Nils',
-    roles: [<>Vike's landing page</>]
+    roles: [<>Vike's landing page</>],
   },
   {
     username: 'AurelienLourot',
@@ -90,8 +90,8 @@ const maintainersList: Maintainer[] = [
       <>
         <code>vike-react</code> (Contributor)
       </>,
-      <>Vike Core (Contributor)</>
-    ]
+      <>Vike Core (Contributor)</>,
+    ],
   },
   {
     username: '4350pChris',
@@ -105,8 +105,8 @@ const maintainersList: Maintainer[] = [
       </>,
       <>
         <code>vike-vue-query</code> (Creator)
-      </>
-    ]
+      </>,
+    ],
   },
   {
     username: 'Blankeos',
@@ -114,9 +114,9 @@ const maintainersList: Maintainer[] = [
     roles: [
       <>
         <code>vike-solid</code> (Contributor)
-      </>
-    ]
-  }
+      </>,
+    ],
+  },
 ]
 
 function getMaintainerAvatar(maintainer: Maintainer, imgSize: number) {

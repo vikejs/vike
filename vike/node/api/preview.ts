@@ -25,16 +25,16 @@ async function preview(options: APIOptions = {}): Promise<{ viteServer?: Preview
     assertWarning(
       false,
       `Never run ${pc.cyan('$ vike preview')} in production, run ${pc.cyan(`$ node ${outServerIndexRelative}`)} instead (or Bun/Deno).`,
-      { onlyOnce: true }
+      { onlyOnce: true },
     )
     return {
-      viteConfig: viteConfigResolved
+      viteConfig: viteConfigResolved,
     }
   } else {
     const server = await previewVite(viteConfigFromUserEnhanced)
     return {
       viteServer: server,
-      viteConfig: server.config
+      viteConfig: server.config,
     }
   }
 }

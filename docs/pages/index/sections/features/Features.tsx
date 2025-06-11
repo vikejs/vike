@@ -15,7 +15,7 @@ export const Features = () => {
             descriptions={[
               <>
                 Vike is a general-purpose core that includes everything you can expect from a modern framework and more.
-              </>
+              </>,
             ]}
           />
         </TextBox>

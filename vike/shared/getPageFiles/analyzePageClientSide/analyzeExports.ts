@@ -8,7 +8,7 @@ import type { PageFile } from '../getPageFileObject.js'
 function analyzeExports({
   pageFilesClientSide,
   pageFilesServerSide,
-  pageId
+  pageId,
 }: {
   pageFilesClientSide: PageFile[]
   pageFilesServerSide: PageFile[]
@@ -34,7 +34,7 @@ function analyzeExports({
 
     {
       const definesClientRenderer = pageFilesClientSide.some(
-        (p) => p.pageId === pageId && p.fileType === '.page.client' && getExportNames(p).includes('render')
+        (p) => p.pageId === pageId && p.fileType === '.page.client' && getExportNames(p).includes('render'),
       )
       if (definesClientRenderer) {
         return false
@@ -55,9 +55,9 @@ function analyzeExports({
         'See https://vike.dev/render-modes for more information.',
         [
           'Loaded client-side page files (none of them `export { render }`):',
-          ...pageFilesClientSide.map((p, i) => ` (${i + 1}): ${p.filePath}`)
-        ].join('\n')
-      ].join(' ')
+          ...pageFilesClientSide.map((p, i) => ` (${i + 1}): ${p.filePath}`),
+        ].join('\n'),
+      ].join(' '),
     )
   }
 

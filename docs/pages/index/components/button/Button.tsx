@@ -9,7 +9,7 @@ function Button({
   type,
   readingRecommendation,
   fullWidth,
-  big
+  big,
 }: {
   children: React.ReactNode
   type: 'default' | 'secondary' | 'ghost'
@@ -31,7 +31,7 @@ function Button({
         'landingpage-button',
         'landingpage-button-' + type,
         fullWidth && 'landingpage-button-fullWidth',
-        big && 'landingpage-button-big'
+        big && 'landingpage-button-big',
       ]
         .filter(Boolean)
         .join(' ')}

@@ -15,7 +15,7 @@ const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRender
   const pageHtml = renderToString(
     <Layout>
       <Page {...pageProps} />
-    </Layout>
+    </Layout>,
   )
 
   const documentHtml = escapeInject`<!DOCTYPE html>
@@ -52,6 +52,6 @@ const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRender
           }
         })
       }
-    }
+    },
   }
 }

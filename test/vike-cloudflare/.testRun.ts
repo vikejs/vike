@@ -13,19 +13,19 @@ function testRun(cmd: `pnpm run ${'dev' | 'preview'}${string}`, options?: Parame
     url: '/',
     title: 'My Vike App',
     text: isProd ? 'SSR running on Cloudflare' : 'Rendered to HTML',
-    textHydration: 'Rendered to HTML'
+    textHydration: 'Rendered to HTML',
   })
 
   testUrl({
     url: '/star-wars',
     title: '6 Star Wars Movies',
-    text: 'A New Hope'
+    text: 'A New Hope',
   })
 
   testUrl({
     url: '/star-wars/3',
     title: 'Return of the Jedi',
-    text: '1983-05-25'
+    text: '1983-05-25',
   })
 }
 
@@ -34,7 +34,7 @@ function testUrl({
   title,
   text,
   textHydration,
-  noSSR
+  noSSR,
 }: {
   url: string
   title: string

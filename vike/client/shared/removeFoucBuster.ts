@@ -28,7 +28,7 @@ function removeFoucBuster() {
 function clean() {
   const VITE_ID = 'data-vite-dev-id'
   const injectedByVite = [...document.querySelectorAll(`style[${VITE_ID}]`)].map(
-    (style) => style.getAttribute(VITE_ID)!
+    (style) => style.getAttribute(VITE_ID)!,
   )
 
   // ```
@@ -51,7 +51,7 @@ function clean() {
       filePathAbsoluteUserRootDir = filePathAbsoluteUserRootDir.slice(prefix.length)
     if (
       injectedByVite.some((filePathAbsoluteFilesystem) =>
-        filePathAbsoluteFilesystem.endsWith(filePathAbsoluteUserRootDir)
+        filePathAbsoluteFilesystem.endsWith(filePathAbsoluteUserRootDir),
       )
     ) {
       linkVike.remove()

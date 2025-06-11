@@ -18,11 +18,11 @@ function assertRouteString(routeString: string, errPrefix: `${string}Invalid` | 
   assertUsage(routeString !== '', `${errPrefix2} (empty string): set it to ${highlight('/')} instead`)
   assertUsage(
     ['/', '*'].includes(routeString[0]!),
-    `${errPrefix2}: it should start with ${highlight('/')} or ${highlight('*')}`
+    `${errPrefix2}: it should start with ${highlight('/')} or ${highlight('*')}`,
   )
   assertUsage(
     !routeString.includes('**'),
-    `${errPrefix2}: set it to ${highlight(routeString.split('**').join('*'))} instead`
+    `${errPrefix2}: set it to ${highlight(routeString.split('**').join('*'))} instead`,
   )
 }
 
@@ -106,9 +106,9 @@ function parseRouteString(routeString: string) {
       assertWarning(
         !s.startsWith(PARAM_TOKEN_OLD),
         `Outdated Route String ${highlight(routeString)}, use ${highlight(
-          routeString.split(PARAM_TOKEN_OLD).join(PARAM_TOKEN_NEW)
+          routeString.split(PARAM_TOKEN_OLD).join(PARAM_TOKEN_NEW),
         )} instead`,
-        { onlyOnce: true }
+        { onlyOnce: true },
       )
       segments.push({ param: s.slice(1) })
     } else {

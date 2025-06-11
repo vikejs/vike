@@ -9,7 +9,7 @@ import {
   createDebugger,
   getGlobalObject,
   assertUsage,
-  rollupSourceMapRemove
+  rollupSourceMapRemove,
 } from '../utils.js'
 import { getExportNames } from '../shared/parseEsModule.js'
 import { normalizeId } from '../shared/normalizeId.js'
@@ -39,7 +39,7 @@ function pluginExtractExportNames(): Plugin {
       if (debug.isActivated) {
         return { logLevel: 'silent' }
       }
-    }
+    },
   }
 }
 
@@ -57,7 +57,7 @@ function getCode(
   wildcardReExports: string[],
   isClientSide: boolean,
   isProduction: boolean,
-  id: string
+  id: string,
 ) {
   let code = ''
   const reExportVarNames = wildcardReExports.map((reExportedModuleName, i) => {
@@ -70,7 +70,7 @@ function getCode(
   code += '\n'
   code += `export const exportNames = [${[
     ...exportNames.map((n) => JSON.stringify(n)),
-    ...reExportVarNames.map((varName) => `...${varName}`)
+    ...reExportVarNames.map((varName) => `...${varName}`),
   ].join(', ')}];`
 
   code = injectHmr(code, isClientSide, isProduction)
@@ -89,7 +89,7 @@ function addQuery(moduleName: string, id: string) {
       const idReal = id.split('?')[0]!
       assertUsage(
         false,
-        `Modify the re-export of ${idReal}, see https://github.com/vikejs/vike/issues/864#issuecomment-1537202290`
+        `Modify the re-export of ${idReal}, see https://github.com/vikejs/vike/issues/864#issuecomment-1537202290`,
       )
     }
     moduleName = `${moduleName}?extractExportNames&lang.${fileExtension}`

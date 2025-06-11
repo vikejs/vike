@@ -1,5 +1,5 @@
 const config = {
-  prerender: false
+  prerender: false,
 }
 
 export default config

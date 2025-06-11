@@ -14,7 +14,7 @@ export const data = async () => {
 
   config({
     // Set <title>
-    title: `${moviesData.length} Star Wars Movies`
+    title: `${moviesData.length} Star Wars Movies`,
   })
 
   // We remove data we don't need because the data is passed to the client; we should

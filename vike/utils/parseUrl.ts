@@ -113,7 +113,7 @@ function parseUrl(url: string, baseServer: string): UrlInternal {
     searchAll,
     searchOriginal,
     hash,
-    hashOriginal
+    hashOriginal,
   }
 }
 
@@ -148,7 +148,7 @@ function decodePathname(urlPathname: string) {
 
 function getPathnameAbsoluteWithBase(
   url: string,
-  baseServer: string
+  baseServer: string,
 ): { origin: null | string; pathnameAbsoluteWithBase: string; protocol: null | string } {
   // Search and hash already extracted
   assert(!url.includes('?') && !url.includes('#'))
@@ -242,7 +242,7 @@ function isUrlProtocol(protocol: string) {
   const blocklist = [
     // https://docs.ipfs.tech/how-to/address-ipfs-on-web
     'ipfs://',
-    'ipns://'
+    'ipns://',
   ]
   if (blocklist.includes(protocol)) return false
   return protocol.endsWith('://')
@@ -274,7 +274,7 @@ function resolveUrlPathnameRelative(pathnameRelative: string, base: string) {
 
 function removeBaseServer(
   pathnameAbsoluteWithBase: string,
-  baseServer: string
+  baseServer: string,
 ): { pathname: string; isBaseMissing: boolean } {
   assert(pathnameAbsoluteWithBase.startsWith('/'))
   assert(isBaseServer(baseServer))
@@ -318,7 +318,7 @@ function assertUrlComponents(
   origin: string | null,
   pathnameOriginal: string,
   searchOriginal: string | null,
-  hashOriginal: string | null
+  hashOriginal: string | null,
 ): void {
   const urlRecreated = createUrlFromComponents(origin, pathnameOriginal, searchOriginal, hashOriginal)
   assert(url === urlRecreated)
@@ -327,7 +327,7 @@ function createUrlFromComponents(
   origin: string | null,
   pathname: string,
   search: string | null,
-  hash: string | null
+  hash: string | null,
 ): string {
   const urlRecreated = `${origin || ''}${pathname}${search || ''}${hash || ''}`
   return urlRecreated
@@ -391,7 +391,7 @@ function assertUsageUrlRedirectTarget(url: string, errPrefix: string, isUnresolv
 function assertUsageUrl(
   url: string,
   errPrefix: string,
-  { isRedirectTarget }: { isRedirectTarget?: true | 'unresolved' } = {}
+  { isRedirectTarget }: { isRedirectTarget?: true | 'unresolved' } = {},
 ) {
   if (url.startsWith('/')) return
 

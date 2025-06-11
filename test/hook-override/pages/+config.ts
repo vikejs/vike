@@ -1,6 +1,6 @@
 export default {
   redirects: {
-    '/permanent-redirect': '/'
+    '/permanent-redirect': '/',
   },
   // prettier-ignore
   // biome-ignore format:
@@ -9,5 +9,5 @@ export default {
     'globalOnBeforeRenderWasCalledInEnv',
     'perPageOnBeforeRenderWasCalled',
     'perPageOnBeforeRenderWasCalledInEnv'
-  ]
+  ],
 }

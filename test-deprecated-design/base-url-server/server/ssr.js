@@ -6,7 +6,7 @@ const { app, startApp } = createExpressApp({ base: baseServer, port: 3000 })
 
 app.get('/{*vikeCatchAll}', async (req, res, next) => {
   const pageContextInit = {
-    urlOriginal: req.originalUrl
+    urlOriginal: req.originalUrl,
   }
   const pageContext = await renderPage(pageContextInit)
   const { httpResponse } = pageContext

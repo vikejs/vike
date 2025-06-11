@@ -6,10 +6,10 @@ describe('freezePartial', () => {
   it('works', () => {
     const obj = {
       question: 42,
-      changeme: 'hello'
+      changeme: 'hello',
     }
     freezePartial(obj, {
-      changeme: (val) => ['bonjour', 'hello'].includes(val as any)
+      changeme: (val) => ['bonjour', 'hello'].includes(val as any),
     })
 
     expect(obj.question).toBe(42)

@@ -19,13 +19,13 @@ function warnIfErrorIsNotObject(err: unknown): void {
     assertWarning(
       false,
       `One of your hooks threw an error ${pc.cyan('throw someValue')} but ${pc.cyan(
-        'someValue'
+        'someValue',
       )} isn't an object (it's ${pc.cyan(
-        `typeof someValue === ${typeof err}`
+        `typeof someValue === ${typeof err}`,
       )} instead). Make sure thrown values are always wrapped with ${pc.cyan('new Error()')}, in other words: ${pc.cyan(
-        'throw someValue'
+        'throw someValue',
       )} should be replaced with ${pc.cyan('throw new Error(someValue)')}. The thrown value is printed above.`,
-      { onlyOnce: false }
+      { onlyOnce: false },
     )
   }
 }

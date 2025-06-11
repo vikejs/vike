@@ -18,9 +18,9 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
         filter: (log) =>
           log.logSource === 'stderr' &&
           log.logText.includes(
-            'The 2nd HTML variable is <b>I was defined without an HTML Fragment</b> which seems to be HTML code'
+            'The 2nd HTML variable is <b>I was defined without an HTML Fragment</b> which seems to be HTML code',
           ) &&
-          log.logText.includes('Did you forget to wrap the value with dangerouslySkipEscape')
+          log.logText.includes('Did you forget to wrap the value with dangerouslySkipEscape'),
       })
     }
   })

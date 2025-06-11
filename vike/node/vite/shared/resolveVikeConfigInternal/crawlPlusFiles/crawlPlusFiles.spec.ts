@@ -17,7 +17,7 @@ describe('crawlPlusFiles()', () => {
       'pages/ejected/+ignored.js',
       'pages/node_modules/+ignored.js',
       'pages/manually/+ignored.js',
-      'pages/manually-2/+ignored.js'
+      'pages/manually-2/+ignored.js',
     ])
     onTestFinished(() => clean())
 
@@ -68,7 +68,7 @@ function createFiles(files: string[]) {
         fs.unlinkSync(filePath) // Remove filePath
       })
       removeEmptyDirectories(userRootDir)
-    }
+    },
   }
 }
 

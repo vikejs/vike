@@ -12,11 +12,11 @@ import type { PrefetchSetting, PrefetchStaticAssets } from './PrefetchSetting.js
 const PAGE_CONTEXT_MAX_AGE_DEFAULT = 5000
 const prefetchSettingTrue = {
   staticAssets: 'hover',
-  pageContext: PAGE_CONTEXT_MAX_AGE_DEFAULT
+  pageContext: PAGE_CONTEXT_MAX_AGE_DEFAULT,
 } satisfies PrefetchSettingResolved
 const prefetchSettingFalse = {
   staticAssets: 'hover',
-  pageContext: false
+  pageContext: false,
 } satisfies PrefetchSettingResolved
 // TODO/v1-release: change to `prefetchSettingTrue`?
 const prefetchSettingDefault = prefetchSettingFalse
@@ -28,7 +28,7 @@ type PrefetchSettingResolved = {
 
 function getPrefetchSettings(
   pageContext: VikeConfigPublicPageLazy,
-  linkTag: null | HTMLElement
+  linkTag: null | HTMLElement,
 ): PrefetchSettingResolved {
   let prefetchSetting: PrefetchSettingResolved = prefetchSettingDefault
 

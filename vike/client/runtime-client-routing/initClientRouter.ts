@@ -31,7 +31,7 @@ async function renderFirstPage() {
   await renderPageClientSide({
     scrollTarget: { preserveScroll: true },
     isBackwardNavigation: null,
-    isClientSideNavigation: false
+    isClientSideNavigation: false,
   })
 }
 

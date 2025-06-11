@@ -20,7 +20,7 @@ function BannerVikings() {
         top: 40,
         right: 30,
         height: 80,
-        margin: 0
+        margin: 0,
       }}
       logoTextStyle={{
         fontWeight: 496,
@@ -30,7 +30,7 @@ function BannerVikings() {
         background: '-webkit-linear-gradient(300deg, #973636 20%, #cb4545)',
         backgroundClip: 'text',
         WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent'
+        WebkitTextFillColor: 'transparent',
       }}
     />
   )
@@ -45,7 +45,7 @@ function BannerCommon({
   logoText = 'Vike',
   logoScale = 1.3,
   logoStyle,
-  logoTextStyle
+  logoTextStyle,
 }: {
   logoOnly?: boolean
   logoText?: string
@@ -60,7 +60,7 @@ function BannerCommon({
         alignItems: 'center',
         justifyContent: 'center',
         height: '100vh',
-        background: heroBgColor
+        background: heroBgColor,
       }}
     >
       <div
@@ -69,7 +69,7 @@ function BannerCommon({
           flexDirection: 'column',
           alignItems: 'center',
           // Don't center completely
-          marginTop: -8
+          marginTop: -8,
         }}
       >
         <div
@@ -77,7 +77,7 @@ function BannerCommon({
             display: 'flex',
             alignItems: 'center',
             marginBottom: -7,
-            marginLeft: -25
+            marginLeft: -25,
           }}
         >
           <img
@@ -87,7 +87,7 @@ function BannerCommon({
               objectFit: 'contain',
               marginTop: -8,
               marginRight: 14,
-              ...logoStyle
+              ...logoStyle,
             }}
           />
           <span
@@ -98,7 +98,7 @@ function BannerCommon({
               fontStyle: 'italic',
               color: '#707070',
               lineHeight: '1.2em',
-              ...logoTextStyle
+              ...logoTextStyle,
             }}
           >
             {logoText}
@@ -112,7 +112,7 @@ function BannerCommon({
               marginTop: 19,
               fontSize: 28 * logoScale,
               maxWidth: 600 * logoScale,
-              lineHeight: 1.3
+              lineHeight: 1.3,
             }}
           />
         )}

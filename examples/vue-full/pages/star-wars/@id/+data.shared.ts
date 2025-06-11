@@ -28,6 +28,6 @@ async function data(pageContext: PageContextServer | PageContextClient) {
   return {
     movie,
     // The page's <title>
-    title
+    title,
   }
 }

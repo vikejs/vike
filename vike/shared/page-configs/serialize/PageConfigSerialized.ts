@@ -8,7 +8,7 @@ import type {
   ConfigValueComputed,
   ConfigValueCumulative,
   PageConfigCommon,
-  PageConfigRuntime
+  PageConfigRuntime,
 } from '../../../types/PageConfig.js'
 
 /** Page config data structure serialized in virtual files: parsing it results in PageConfigRuntime */

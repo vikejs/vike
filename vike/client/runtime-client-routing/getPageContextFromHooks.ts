@@ -14,7 +14,7 @@ import {
   getProjectError,
   redirectHard,
   isObject,
-  getGlobalObject
+  getGlobalObject,
 } from './utils.js'
 import { parse } from '@brillout/json-serializer/parse'
 import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtml.js'
@@ -35,13 +35,13 @@ import type { PageContextCreated } from './createPageContextClientSide.js'
 import type { PageContextBegin } from './renderPageClientSide.js'
 import {
   type PageContextForPublicUsageClient,
-  preparePageContextForPublicUsageClient
+  preparePageContextForPublicUsageClient,
 } from './preparePageContextForPublicUsageClient.js'
 import type { ConfigEnv } from '../../types/index.js'
 import type { GlobalContextClientInternal } from './globalContext.js'
 const globalObject = getGlobalObject<{ pageContextInitIsPassedToClient?: true }>(
   'runtime-client-routing/getPageContextFromHooks.ts',
-  {}
+  {},
 )
 
 type PageContextSerialized = {
@@ -57,7 +57,7 @@ function getPageContextFromHooks_serialized(): PageContextSerialized & {
   assertUsage(!('urlOriginal' in pageContextSerialized), "Adding 'urlOriginal' to passToClient is forbidden")
   processPageContextFromServer(pageContextSerialized)
   objectAssign(pageContextSerialized, {
-    _hasPageContextFromServer: true as const
+    _hasPageContextFromServer: true as const,
   })
   return pageContextSerialized
 }
@@ -65,7 +65,7 @@ function getPageContextFromHooks_serialized(): PageContextSerialized & {
 async function getPageContextFromHooks_isHydration(
   pageContext: PageContextSerialized &
     PageContextBegin &
-    VikeConfigPublicPageLazy & { _hasPageContextFromServer: true } & PageContextForPublicUsageClient
+    VikeConfigPublicPageLazy & { _hasPageContextFromServer: true } & PageContextForPublicUsageClient,
 ) {
   for (const hookName of ['data', 'onBeforeRender'] as const) {
     if (hookClientOnlyExists(hookName, pageContext)) {
@@ -78,7 +78,7 @@ async function getPageContextFromHooks_isHydration(
 type PageContextFromServerHooks = { _hasPageContextFromServer: boolean }
 async function getPageContextFromServerHooks(
   pageContext: { pageId: string } & PageContextCreated,
-  isErrorPage: boolean
+  isErrorPage: boolean,
 ): Promise<
   | { is404ServerSideRouted: true }
   | {
@@ -87,7 +87,7 @@ async function getPageContextFromServerHooks(
     }
 > {
   const pageContextFromServerHooks = {
-    _hasPageContextFromServer: false
+    _hasPageContextFromServer: false,
   }
 
   // If pageContextInit has some client data or if one of the hooks guard(), data() or onBeforeRender() is server-side
@@ -119,7 +119,7 @@ async function getPageContextFromClientHooks(
   pageContext: { pageId: string; _hasPageContextFromServer: boolean } & PageContextBegin &
     VikeConfigPublicPageLazy &
     PageContextForPublicUsageClient,
-  isErrorPage: boolean
+  isErrorPage: boolean,
 ) {
   let dataHookExec = false
   // At this point, we need to call the client-side guard(), data() and onBeforeRender() hooks, if they exist on client
@@ -233,7 +233,7 @@ async function hookServerOnlyExists(
     pageId: string
     _globalContext: GlobalContextClientInternal
     _pageFilesAll: PageFile[]
-  }
+  },
 ): Promise<boolean> {
   if (pageContext._globalContext._pageConfigs.length > 0) {
     // V1
@@ -256,7 +256,7 @@ async function hookServerOnlyExists(
     assert(hookName === 'onBeforeRender')
     const { hasOnBeforeRenderServerSideOnlyHook } = await analyzePageServerSide(
       pageContext._pageFilesAll,
-      pageContext.pageId
+      pageContext.pageId,
     )
     return hasOnBeforeRenderServerSideOnlyHook
   }
@@ -267,7 +267,7 @@ function hookClientOnlyExists(
   pageContext: {
     pageId: string
     _globalContext: GlobalContextClientInternal
-  }
+  },
 ): boolean {
   const hookEnv = getHookEnv(hookName, pageContext)
   return !!hookEnv.client && !hookEnv.server
@@ -277,7 +277,7 @@ function getHookEnv(
   pageContext: {
     pageId: string
     _globalContext: GlobalContextClientInternal
-  }
+  },
 ) {
   if (pageContext._globalContext._pageConfigs.length > 0) {
     // V1
@@ -309,7 +309,7 @@ async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _u
 
     assertUsage(
       isCorrect,
-      `Wrong Content-Type for ${pageContextUrl}: it should be ${contentTypeCorrect} but it's ${contentType} instead. Make sure to properly use pageContext.httpResponse.headers, see https://vike.dev/renderPage`
+      `Wrong Content-Type for ${pageContextUrl}: it should be ${contentTypeCorrect} but it's ${contentType} instead. Make sure to properly use pageContext.httpResponse.headers, see https://vike.dev/renderPage`,
     )
   }
 

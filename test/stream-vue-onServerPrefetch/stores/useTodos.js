@@ -2,10 +2,10 @@ import { defineStore } from 'pinia'
 
 export const useTodos = defineStore('todos', {
   state: () => ({
-    todoList: []
+    todoList: [],
   }),
   getters: {
-    todoById: (state) => (id) => state.todoList.find((todo) => todo.id === id)
+    todoById: (state) => (id) => state.todoList.find((todo) => todo.id === id),
   },
   actions: {
     async fetchTodoList() {
@@ -16,17 +16,17 @@ export const useTodos = defineStore('todos', {
     async fetchTodoById(id) {
       const result = await new Promise((resolve) => setTimeout(() => resolve(todos.find((todo) => todo.id === id))))
       this.todoList = [result]
-    }
-  }
+    },
+  },
 })
 
 const todos = [
   {
     id: 0,
-    text: 'Buy milk'
+    text: 'Buy milk',
   },
   {
     id: 1,
-    text: 'Buy chocolate'
-  }
+    text: 'Buy chocolate',
+  },
 ]

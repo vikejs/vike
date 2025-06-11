@@ -5,5 +5,5 @@ assert(isBrowser())
 export {
   getGlobalContext,
   getGlobalContext as getGlobalContextAsync,
-  getGlobalContextSync
+  getGlobalContextSync,
 } from './shared/createGetGlobalContextClient.js'

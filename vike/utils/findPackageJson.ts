@@ -12,6 +12,6 @@ function findPackageJson(cwd: string): null | { packageJson: Record<string, unkn
   const packageJson = require_(packageJsonPath)
   return {
     packageJson,
-    packageJsonPath
+    packageJsonPath,
   }
 }

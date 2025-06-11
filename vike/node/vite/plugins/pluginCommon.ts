@@ -10,7 +10,7 @@ import {
   isDevCheck,
   isDocker,
   isObject,
-  isVitest
+  isVitest,
 } from '../utils.js'
 import { assertRollupInput } from './pluginBuild/pluginBuildConfig.js'
 import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
@@ -58,11 +58,11 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
             _rootResolvedEarly: rootResolvedEarly,
             // TODO/v1-release: remove https://github.com/vikejs/vike/issues/2122
             configVikePromise: Promise.resolve({
-              prerender: vikeConfig.prerenderContext.isPrerenderingEnabled
-            })
+              prerender: vikeConfig.prerenderContext.isPrerenderingEnabled,
+            }),
           }
-        }
-      }
+        },
+      },
     },
     {
       name: pluginName,
@@ -70,7 +70,7 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
         assertViteRoot(config._rootResolvedEarly!, config)
         assertSingleInstance(config)
         installRequireShim_setUserRootDir(config.root)
-      }
+      },
     },
     {
       name: `${pluginName}:post`,
@@ -88,7 +88,7 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
           assertVikeCliOrApi(config)
           temp_supportOldInterface(config)
           await emitServerEntryOnlyIfNeeded(config)
-        }
+        },
       },
       config: {
         order: 'post',
@@ -113,9 +113,9 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
           }
 
           return configFromVike
-        }
-      }
-    }
+        },
+      },
+    },
   ]
 }
 
@@ -124,7 +124,7 @@ function setDefault<Setting extends 'port' | 'host'>(
   setting: Setting,
   value: NonNullable<UserConfig['server'] | UserConfig['preview']>[Setting],
   configFromUser: UserConfig,
-  configFromVike: UserConfig
+  configFromVike: UserConfig,
 ) {
   if (configFromUser.server?.[setting] === undefined) configFromVike.server![setting] = value
   if (configFromUser.preview?.[setting] === undefined) configFromVike.preview![setting] = value
@@ -161,7 +161,7 @@ function assertEsm(userViteRoot: string) {
   assertWarning(
     packageJson.type === 'module',
     `We recommend setting ${dir}package.json#type to "module", see https://vike.dev/CJS`,
-    { onlyOnce: true }
+    { onlyOnce: true },
   )
 }
 
@@ -170,8 +170,8 @@ function assertSingleInstance(config: ResolvedConfig) {
   assertUsage(
     numberOfInstances === 1,
     `Vike's Vite plugin (${pc.cyan(
-      "import vike from 'vike/plugin'"
-    )}) is being added ${numberOfInstances} times to the list of Vite plugins. Make sure to add it only once instead.`
+      "import vike from 'vike/plugin'",
+    )}) is being added ${numberOfInstances} times to the list of Vite plugins. Make sure to add it only once instead.`,
   )
 }
 
@@ -180,7 +180,7 @@ function assertVikeCliOrApi(config: ResolvedConfig) {
   if (isViteCliCall()) {
     assert(!isVitest())
     assertWarning(false, `Vite's CLI is deprecated ${pc.underline('https://vike.dev/migration/cli')}`, {
-      onlyOnce: true
+      onlyOnce: true,
     })
     return
   }
@@ -188,7 +188,7 @@ function assertVikeCliOrApi(config: ResolvedConfig) {
     assertWarning(
       false,
       `Unexpected Vitest setup: you seem to be using Vitest together with Vike's Vite plugin but without using Vike's JavaScript API which is unexpected, see ${pc.underline('https://vike.dev/vitest')}`,
-      { onlyOnce: true }
+      { onlyOnce: true },
     )
     return
   }
@@ -197,13 +197,13 @@ function assertVikeCliOrApi(config: ResolvedConfig) {
       false,
       `${pc.cyan('vite.createServer()')} is deprecated ${pc.underline('https://vike.dev/migration/cli#api')}`,
       {
-        onlyOnce: true
-      }
+        onlyOnce: true,
+      },
     )
     return
   }
   assertWarning(false, `Vite's JavaScript API is deprecated ${pc.underline('https://vike.dev/migration/cli#api')}`, {
-    onlyOnce: true
+    onlyOnce: true,
   })
 }
 

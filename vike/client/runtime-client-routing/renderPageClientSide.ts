@@ -15,7 +15,7 @@ import {
   augmentType,
   genPromise,
   isCallable,
-  catchInfiniteLoop
+  catchInfiniteLoop,
 } from './utils.js'
 import {
   getPageContextFromClientHooks,
@@ -23,7 +23,7 @@ import {
   getPageContextFromHooks_isHydration,
   getPageContextFromHooks_serialized,
   type PageContextFromServerHooks,
-  setPageContextInitIsPassedToClient
+  setPageContextInitIsPassedToClient,
 } from './getPageContextFromHooks.js'
 import { createPageContextClientSide } from './createPageContextClientSide.js'
 import {
@@ -31,7 +31,7 @@ import {
   addLinkPrefetchHandlers_unwatch,
   addLinkPrefetchHandlers_watch,
   getPageContextPrefetched,
-  populatePageContextPrefetchCache
+  populatePageContextPrefetchCache,
 } from './prefetch.js'
 import { assertInfo, assertWarning, isReact } from './utils.js'
 import { type PageContextBeforeRenderClient, executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
@@ -42,7 +42,7 @@ import {
   getPageContextFromAllRewrites,
   isAbortError,
   logAbortErrorHandled,
-  type PageContextFromRewrite
+  type PageContextFromRewrite,
 } from '../../shared/route/abort.js'
 import { route } from '../../shared/route/index.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
@@ -57,11 +57,11 @@ import type { PageContextClient } from '../../types/PageContext.js'
 import {
   execHooksErrorHandling,
   execHookErrorHandling,
-  type PageContextExecuteHook
+  type PageContextExecuteHook,
 } from '../../shared/hooks/execHook.js'
 import {
   type PageContextForPublicUsageClient,
-  preparePageContextForPublicUsageClient
+  preparePageContextForPublicUsageClient,
 } from './preparePageContextForPublicUsageClient.js'
 import { getHookFromPageContextNew } from '../../shared/hooks/getHook.js'
 import { preparePageContextForPublicUsageClientMinimal } from '../shared/preparePageContextForPublicUsageClientShared.js'
@@ -83,9 +83,9 @@ const globalObject = getGlobalObject<{
     return {
       renderCounter: 0,
       firstRenderStartPromise,
-      firstRenderStartPromiseResolve
+      firstRenderStartPromiseResolve,
     }
-  })()
+  })(),
 )
 const { firstRenderStartPromise } = globalObject
 type PreviousPageContext = { pageId: string } & VikeConfigPublicPageLazy &
@@ -118,7 +118,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     redirectCount = 0,
     doNotRenderIfSamePage,
     isClientSideNavigation = true,
-    pageContextInitClient
+    pageContextInitClient,
   } = renderArgs
   let { scrollTarget } = renderArgs
   const { previousPageContext } = globalObject
@@ -134,7 +134,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     pageContextsFromRewrite,
     isClientSideNavigation,
     pageContextInitClient,
-    isFirstRender
+    isFirstRender,
   }
 
   if (globalObject.clientRoutingIsDisabled) {
@@ -235,8 +235,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
           pageContext.pageId,
           pageContext._pageFilesAll,
           pageContext._globalContext._pageConfigs,
-          pageContext._globalContext._pageConfigGlobal
-        )
+          pageContext._globalContext._pageConfigGlobal,
+        ),
       )
     } catch (err) {
       if (handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) {
@@ -257,7 +257,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       assertWarning(
         !isReact(),
         'You seem to be using React; we recommend setting hydrationCanBeAborted to true, see https://vike.dev/hydrationCanBeAborted',
-        { onlyOnce: true }
+        { onlyOnce: true },
       )
     }
     // There wasn't any `await` but the isRenderOutdated() return value may have changed because we called setHydrationCanBeAborted()
@@ -365,7 +365,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
           await renderPageClientSide({
             ...renderArgs,
             scrollTarget: undefined,
-            pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAbort]
+            pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAbort],
           })
           return
         }
@@ -384,7 +384,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
               urlOriginal: urlRedirect,
               overwriteLastHistoryEntry: false,
               isBackwardNavigation: false,
-              redirectCount: redirectCount + 1
+              redirectCount: redirectCount + 1,
             })
           }
           return
@@ -405,7 +405,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._globalContext._pageConfigs)
     if (!errorPageId) throw new Error('No error page defined.')
     objectAssign(pageContext, {
-      pageId: errorPageId
+      pageId: errorPageId,
     })
 
     const isClientRoutable = await isClientSideRoutable(pageContext.pageId, pageContext)
@@ -422,8 +422,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
           pageContext.pageId,
           pageContext._pageFilesAll,
           pageContext._globalContext._pageConfigs,
-          pageContext._globalContext._pageConfigGlobal
-        )
+          pageContext._globalContext._pageConfigGlobal,
+        ),
       )
     } catch (err) {
       if (handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) {
@@ -470,7 +470,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         urlPathname: string
         _hasPageContextFromServer: boolean
       } & PageContextRouted,
-    isErrorPage?: { err?: unknown }
+    isErrorPage?: { err?: unknown },
   ) {
     const onError = async (err: unknown) => {
       if (!isErrorPage) {
@@ -576,7 +576,7 @@ async function getPageContextBegin(
     pageContextsFromRewrite,
     isClientSideNavigation,
     pageContextInitClient,
-    isFirstRender
+    isFirstRender,
   }: {
     urlOriginal: string
     isBackwardNavigation: boolean | null
@@ -584,7 +584,7 @@ async function getPageContextBegin(
     isClientSideNavigation: boolean
     pageContextInitClient: Record<string, unknown> | undefined
     isFirstRender: boolean
-  }
+  },
 ) {
   const previousPageContext = globalObject.previousPageContext ?? null
   const pageContext = await createPageContextClientSide(urlOriginal)
@@ -593,7 +593,7 @@ async function getPageContextBegin(
     isClientSideNavigation,
     isHydration: isFirstRender && !isForErrorPage,
     previousPageContext,
-    ...pageContextInitClient
+    ...pageContextInitClient,
   })
 
   // TODO/next-major-release: remove
@@ -601,11 +601,11 @@ async function getPageContextBegin(
     get() {
       assertWarning(false, 'pageContext._previousPageContext has been renamed pageContext.previousPageContext', {
         showStackTrace: true,
-        onlyOnce: true
+        onlyOnce: true,
       })
       return previousPageContext
     },
-    enumerable: false
+    enumerable: false,
   })
 
   {
@@ -634,7 +634,7 @@ function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
 function handleErrorFetchingStaticAssets(
   err: unknown,
   pageContext: { urlOriginal: string },
-  isFirstRender: boolean
+  isFirstRender: boolean,
 ): boolean {
   if (!isErrorFetchingStaticAssets(err)) {
     return false
@@ -671,11 +671,11 @@ function disableClientRouting(err: unknown, log: boolean) {
       'Failed to fetch static asset.',
       isProd ? 'This usually happens when a new frontend is deployed.' : null,
       'Falling back to Server Routing.',
-      '(The next page navigation will use Server Routing instead of Client Routing.)'
+      '(The next page navigation will use Server Routing instead of Client Routing.)',
     ]
       .filter(Boolean)
       .join(' '),
-    { onlyOnce: true }
+    { onlyOnce: true },
   )
 }
 
@@ -705,7 +705,7 @@ function getIsRenderOutdated() {
   return {
     isRenderOutdated,
     setHydrationCanBeAborted,
-    isFirstRender: renderNumber === 1
+    isFirstRender: renderNumber === 1,
   }
 }
 function getRenderCount(): number {
@@ -713,7 +713,7 @@ function getRenderCount(): number {
 }
 
 function getKeepScrollPositionSetting(
-  pageContext: VikeConfigPublicPageLazy & PageContextRouted & Record<string, unknown>
+  pageContext: VikeConfigPublicPageLazy & PageContextRouted & Record<string, unknown>,
 ): false | string | string[] {
   const c = pageContext.from.configsStandard.keepScrollPosition
   if (!c) return false
@@ -723,7 +723,7 @@ function getKeepScrollPositionSetting(
   const routeParameterList = getRouteStringParameterList(configDefinedAt)
   if (isCallable(val))
     val = val(pageContext, {
-      configDefinedAt: c.definedAt
+      configDefinedAt: c.definedAt,
       /* We don't pass routeParameterList because it's useless: the user knows the parameter list.
       routeParameterList
       */
@@ -735,7 +735,7 @@ function getKeepScrollPositionSetting(
         const val = pageContext.routeParams[param]
         assert(val)
         return val
-      })
+      }),
     ]
   }
   // We skip validation and type-cast instead of assertUsage() in order to save client-side KBs

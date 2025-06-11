@@ -39,5 +39,5 @@ const assetFileExtensions = [
   // other
   'webmanifest',
   'pdf',
-  'txt'
+  'txt',
 ]

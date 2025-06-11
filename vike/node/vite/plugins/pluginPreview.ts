@@ -23,8 +23,8 @@ function pluginPreview(): Plugin {
       return {
         appType: 'custom',
         build: {
-          outDir: resolveOutDir(config)
-        }
+          outDir: resolveOutDir(config),
+        },
       }
     },
     async configResolved(config_) {
@@ -51,7 +51,7 @@ function pluginPreview(): Plugin {
 
         addStatic404Middleware(server.middlewares)
       }
-    }
+    },
   }
   function assertDist(isPrerenderingEnabledForAllPages: boolean) {
     const { outDirRoot, outDirClient, outDirServer } = getOutDirs(config)
@@ -61,8 +61,8 @@ function pluginPreview(): Plugin {
       assertUsage(
         fs.existsSync(outDirAny),
         `Cannot run ${pc.cyan('$ vike preview')}: your app isn't built (the build directory ${pc.cyan(
-          outDirAny
-        )} is missing). Make sure to run ${pc.cyan('$ vike build')} before running ${pc.cyan('$ vike preview')}.`
+          outDirAny,
+        )} is missing). Make sure to run ${pc.cyan('$ vike build')} before running ${pc.cyan('$ vike preview')}.`,
       )
     })
   }

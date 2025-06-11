@@ -39,9 +39,9 @@ function pluginModuleBanner(): Plugin {
         magicString.prepend(`/*! ${id} [vike:pluginModuleBanner] */\n`)
         return {
           code: magicString.toString(),
-          map: magicString.generateMap({ hires: true, source: id })
+          map: magicString.generateMap({ hires: true, source: id }),
         }
-      }
-    }
+      },
+    },
   }
 }

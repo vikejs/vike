@@ -26,7 +26,7 @@ type GlobalObject = {
 function genGlobalConfig() {
   return getGlobalObject<GlobalObject>('utils/assertSingleInstance.ts', {
     instances: [],
-    alreadyLogged: new Set()
+    alreadyLogged: new Set(),
   })
 }
 // We need getGlobalObjectSafe() because globalObject is `undefined` when exported functions are called before globalObject is initialized
@@ -48,7 +48,7 @@ function assertSingleInstance() {
       // Do *NOT* patch Vike to remove this warning: you *will* eventually encounter the issues listed at https://vike.dev/warning/version-mismatch
       // - This happened before: https://github.com/vikejs/vike/issues/1108#issuecomment-1719061509
       `vike@${pc.bold(versions[0]!)} and vike@${pc.bold(versions[1]!)} loaded which is highly discouraged, see ${pc.underline('https://vike.dev/warning/version-mismatch')}`,
-      { onlyOnce: true, showStackTrace: false }
+      { onlyOnce: true, showStackTrace: false },
     )
   }
 
@@ -65,11 +65,11 @@ function assertSingleInstance_onClientEntryServerRouting(isProduction: boolean) 
   const globalObject = getGlobalObjectSafe()
   assertWarning(globalObject.isClientRouting !== true, clientRuntimesClonflict, {
     onlyOnce: true,
-    showStackTrace: true
+    showStackTrace: true,
   })
   assertWarning(globalObject.isClientRouting === undefined, clientNotSingleInstance, {
     onlyOnce: true,
-    showStackTrace: true
+    showStackTrace: true,
   })
   globalObject.isClientRouting = false
   if (isProduction) globalObject.checkSingleInstance = true
@@ -79,11 +79,11 @@ function assertSingleInstance_onClientEntryClientRouting(isProduction: boolean) 
   const globalObject = getGlobalObjectSafe()
   assertWarning(globalObject.isClientRouting !== false, clientRuntimesClonflict, {
     onlyOnce: true,
-    showStackTrace: true
+    showStackTrace: true,
   })
   assertWarning(globalObject.isClientRouting === undefined, clientNotSingleInstance, {
     onlyOnce: true,
-    showStackTrace: true
+    showStackTrace: true,
   })
   globalObject.isClientRouting = true
   if (isProduction) globalObject.checkSingleInstance = true
@@ -100,7 +100,7 @@ function assertSingleInstance_onAssertModuleLoad() {
 function assertWarning(
   condition: unknown,
   errorMessage: string,
-  { onlyOnce, showStackTrace }: { onlyOnce: boolean | string; showStackTrace: boolean }
+  { onlyOnce, showStackTrace }: { onlyOnce: boolean | string; showStackTrace: boolean },
 ): void {
   const globalObject = getGlobalObjectSafe()
   if (condition) {

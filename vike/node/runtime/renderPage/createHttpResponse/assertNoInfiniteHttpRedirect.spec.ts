@@ -18,7 +18,7 @@ describe('assertNoInfiniteHttpRedirect()', () => {
       },
       (msg) => {
         expect(msg).toMatchInlineSnapshot('"[vike][Wrong Usage] Infinite loop of HTTP URL redirects: /a -> /a"')
-      }
+      },
     )
     call('/a', '/b')
     expectErr(
@@ -27,7 +27,7 @@ describe('assertNoInfiniteHttpRedirect()', () => {
       },
       (msg) => {
         expect(msg).toMatchInlineSnapshot('"[vike][Wrong Usage] Infinite loop of HTTP URL redirects: /a -> /a"')
-      }
+      },
     )
     expectErr(
       () => {
@@ -35,7 +35,7 @@ describe('assertNoInfiniteHttpRedirect()', () => {
       },
       (msg) => {
         expect(msg).toMatchInlineSnapshot('"[vike][Wrong Usage] Infinite loop of HTTP URL redirects: /a -> /b -> /a"')
-      }
+      },
     )
     call('/a', '/c')
     call('/b', '/c')
@@ -46,9 +46,9 @@ describe('assertNoInfiniteHttpRedirect()', () => {
       },
       (msg) => {
         expect(msg).toMatchInlineSnapshot(
-          '"[vike][Wrong Usage] Infinite loop of HTTP URL redirects: /b -> /c -> /d -> /b"'
+          '"[vike][Wrong Usage] Infinite loop of HTTP URL redirects: /b -> /c -> /d -> /b"',
         )
-      }
+      },
     )
     call('/a', '/e')
     call('/e', '/c')
@@ -58,9 +58,9 @@ describe('assertNoInfiniteHttpRedirect()', () => {
       },
       (msg) => {
         expect(msg).toMatchInlineSnapshot(
-          '"[vike][Wrong Usage] Infinite loop of HTTP URL redirects: /a -> /b -> /c -> /d -> /a"'
+          '"[vike][Wrong Usage] Infinite loop of HTTP URL redirects: /a -> /b -> /c -> /d -> /a"',
         )
-      }
+      },
     )
   })
 })

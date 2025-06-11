@@ -10,30 +10,30 @@ const pages = {
     title: titleDefault,
     text: 'Rendered to HTML.',
     counter: true,
-    image: true
+    image: true,
   },
   '/star-wars': {
     title: '6 Star Wars Movies',
     description: 'All the 6 movies from the Star Wars franchise',
     text: 'A New Hope',
-    image: true
+    image: true,
   },
   '/star-wars/3': {
     title: 'Return of the Jedi',
     description: 'Star Wars Movie Return of the Jedi from Richard Marquand',
-    text: '1983-05-25'
+    text: '1983-05-25',
   },
   '/streaming': {
     title: titleDefault,
     text: 'Progressive Rendering',
-    counter: true
+    counter: true,
   },
   '/without-ssr': {
     title: 'No SSR',
     text: 'This page is rendered only in the browser',
     counter: true,
-    noSSR: true
-  }
+    noSSR: true,
+  },
 } as const
 
 function testRun(cmd: `pnpm run ${'dev' | 'preview'}`) {
@@ -131,7 +131,7 @@ function testPage({
   text,
   counter,
   noSSR,
-  image
+  image,
 }: {
   url: string
   title: string
@@ -184,7 +184,7 @@ async function testCounter() {
       await page.click('button')
       expect(await page.textContent('button')).toContain('Counter 1')
     },
-    { timeout: 5 * 1000 }
+    { timeout: 5 * 1000 },
   )
 }
 
@@ -193,13 +193,13 @@ function testUseConfig() {
     const html = await fetchHtml('/images')
     expect(html).toMatch(
       partRegex`<script type="application/ld+json">{"@context":"https://schema.org/","contentUrl":{"src":"${getAssetUrl(
-        'logo-new.svg'
-      )}"},"creator":{"@type":"Person","name":"brillout"}}</script>`
+        'logo-new.svg',
+      )}"},"creator":{"@type":"Person","name":"brillout"}}</script>`,
     )
     expect(html).toMatch(
       partRegex`<script type="application/ld+json">{"@context":"https://schema.org/","contentUrl":{"src":"${getAssetUrl(
-        'logo.svg'
-      )}"},"creator":{"@type":"Person","name":"Romuald Brillout"}}</script>`
+        'logo.svg',
+      )}"},"creator":{"@type":"Person","name":"Romuald Brillout"}}</script>`,
     )
   })
   test('useConfig() hydration', async () => {

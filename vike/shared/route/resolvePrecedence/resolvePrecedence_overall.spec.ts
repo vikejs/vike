@@ -3,38 +3,38 @@ import { expect, describe, it } from 'vitest'
 
 const routeFilesystemStatic = {
   routeType: 'FILESYSTEM' as const,
-  routeString: '/product/lolipop'
+  routeString: '/product/lolipop',
 }
 const routeFilesystemParam = {
   routeType: 'FILESYSTEM' as const,
-  routeString: '/product/@name'
+  routeString: '/product/@name',
 }
 const routeStringStatic = {
   routeType: 'STRING' as const,
-  routeString: '/product/lolipop'
+  routeString: '/product/lolipop',
 }
 const routeStringParam = {
   routeType: 'STRING' as const,
-  routeString: '/product/@name'
+  routeString: '/product/@name',
 }
 const routeFunction = {
-  routeType: 'FUNCTION' as const
+  routeType: 'FUNCTION' as const,
 }
 const routeFunctionLowestPrio = {
   routeType: 'FUNCTION' as const,
-  precedence: -10
+  precedence: -10,
 }
 const routeFunctionLowPrio = {
   routeType: 'FUNCTION' as const,
-  precedence: -1
+  precedence: -1,
 }
 const routeFunctionHighPrio = {
   routeType: 'FUNCTION' as const,
-  precedence: 1
+  precedence: 1,
 }
 const routeFunctionHighestPrio = {
   routeType: 'FUNCTION' as const,
-  precedence: 10
+  precedence: 10,
 }
 
 const routeStrings = [routeStringStatic, routeStringParam]

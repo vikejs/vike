@@ -3,5 +3,5 @@ import type { UserConfig } from 'vite'
 
 export default {
   // TEST: use +vite to add Vite plugin
-  plugins: [mdx()]
+  plugins: [mdx()],
 } satisfies UserConfig

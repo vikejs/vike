@@ -11,7 +11,7 @@ export type GlobalContextClientInternalShared =
 import {
   createGlobalContextShared,
   getGlobalContextSyncErrMsg,
-  type GlobalContextBase
+  type GlobalContextBase,
 } from '../../shared/createGlobalContextShared.js'
 import type { GlobalContextClientInternal } from '../runtime-client-routing/globalContext.js'
 import type { GlobalContextClientInternalWithServerRouting } from '../runtime-server-routing/globalContext.js'
@@ -30,15 +30,15 @@ const globalObject = getGlobalObject<{
     const { promise: globalContextPromise, resolve: globalContextPromiseResolve } = genPromise<GlobalContextNotTyped>()
     return {
       globalContextPromise,
-      globalContextPromiseResolve
+      globalContextPromiseResolve,
     }
-  })()
+  })(),
 )
 
 function createGetGlobalContextClient<GlobalContextAddendum extends object>(
   virtualFileExports: unknown,
   isClientRouting: boolean,
-  addGlobalContext?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddendum>
+  addGlobalContext?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddendum>,
 ) {
   assert(globalObject.isClientRouting === undefined || globalObject.isClientRouting === isClientRouting)
   globalObject.isClientRouting = isClientRouting
@@ -66,7 +66,7 @@ function createGetGlobalContextClient<GlobalContextAddendum extends object>(
          *
          * We recommend using `import.meta.env.SSR` instead, see https://vike.dev/globalContext
          */
-        isClientSide: true as const
+        isClientSide: true as const,
       }
       objectAssign(globalContextAddendum, getGlobalContextSerializedInHtml())
       objectAssign(globalContextAddendum, await addGlobalContext?.(globalContext))

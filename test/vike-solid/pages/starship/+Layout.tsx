@@ -28,7 +28,7 @@ function Layout(props: FlowProps) {
         style={{
           'margin-top': '20px',
           border: '1px solid black',
-          padding: '10px 40px'
+          padding: '10px 40px',
         }}
       >
         {props.children}

@@ -50,7 +50,7 @@ function getPageFileObject(filePath: string): PageFile {
     isDefaultPageFile: isDefaultFilePath(filePath),
     isRendererPageFile: fileType !== '.css' && isDefaultFilePath(filePath) && isRendererFilePath(filePath),
     isErrorPageFile: isErrorPageId(filePath, false),
-    pageId: determinePageIdOld(filePath)
+    pageId: determinePageIdOld(filePath),
   }
   return pageFile
 }

@@ -7,7 +7,7 @@ function onBeforeRoute(pageContext) {
   return {
     pageContext: {
       locale,
-      urlLogical: urlWithoutLocale
-    }
+      urlLogical: urlWithoutLocale,
+    },
   }
 }

@@ -11,26 +11,26 @@ const { execSync } = require('child_process')
 const BOILERPLATES = [
   {
     name: 'vue',
-    color: green
+    color: green,
   },
   {
     name: 'vue-ts',
-    color: green
+    color: green,
   },
   {
     name: 'react',
-    color: cyan
+    color: cyan,
   },
   {
     name: 'react-ts',
-    color: cyan
-  }
+    color: cyan,
+  },
 ]
 const IGNORE_FILES = ['.prettierrc', '.test-dev.test.ts', '.test-prod.test.ts', '.testCiJob.json']
 //const IGNORE_PACKAGE_JSON = ['name', 'version', '// Needed for Yarn workspaces']
 const IGNORE_PACKAGE_JSON = []
 const RENAME_FILES = {
-  _gitignore: '.gitignore'
+  _gitignore: '.gitignore',
 }
 
 const cwd = process.cwd()
@@ -45,7 +45,7 @@ async function init() {
       type: 'input',
       name: 'name',
       message: `Project name:`,
-      initial: 'vike-app'
+      initial: 'vike-app',
     })
     targetDir = name
   }
@@ -65,7 +65,7 @@ async function init() {
         type: 'confirm',
         name: 'yes',
         initial: 'Y',
-        message: `Target directory ${targetDir} is not empty.\n` + `Remove existing files and continue?`
+        message: `Target directory ${targetDir} is not empty.\n` + `Remove existing files and continue?`,
       })
       if (yes) {
         emptyDir(root)
@@ -97,8 +97,8 @@ async function init() {
       message,
       choices: BOILERPLATES.map((b) => ({
         message: b.color(b.name),
-        name: b.name
-      }))
+        name: b.name,
+      })),
     })
     boilerplate = t
   }
@@ -184,7 +184,7 @@ function initGitRepo(cwd) {
     execSync('git init', {
       cwd,
       // See https://github.com/vikejs/vike/issues/478
-      stdio: 'ignore'
+      stdio: 'ignore',
     })
 
     execSync('git add .', { cwd, stdio: 'ignore' })
@@ -195,9 +195,9 @@ function initGitRepo(cwd) {
         '-c user.email="no-reply@vike.dev"',
         'commit',
         '--no-gpg-sign',
-        '--message="scaffold Vike app"'
+        '--message="scaffold Vike app"',
       ].join(' '),
-      { cwd, stdio: 'ignore' }
+      { cwd, stdio: 'ignore' },
     )
   } catch {
     try {

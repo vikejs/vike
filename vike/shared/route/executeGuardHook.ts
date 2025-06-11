@@ -12,7 +12,7 @@ async function executeGuardHook<
     pageId: string
   } & {
     _globalContext: GlobalContextInternal
-  } & PageContextExecuteHook
+  } & PageContextExecuteHook,
 >(pageContext: PageContext, prepareForPublicUsage: (pageConfig: PageContext) => PageContext): Promise<void> {
   let hook: Hook | null
   if (pageContext._globalContext._pageFilesAll.length > 0) {

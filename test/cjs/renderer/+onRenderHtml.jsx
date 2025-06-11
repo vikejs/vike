@@ -12,8 +12,8 @@ async function onRenderHtml(pageContext) {
     renderToString(
       <Layout>
         <Page />
-      </Layout>
-    )
+      </Layout>,
+    ),
   )
 
   return escapeInject`<!DOCTYPE html>

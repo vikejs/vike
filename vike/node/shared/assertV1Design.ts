@@ -22,10 +22,10 @@ function assertV1Design(pageConfigs: PageConfigBuildTime[] | boolean, pageFilesA
                 .map((c) => c.definedAt)
                 .map((definedAt) => (definedAt.definedBy ? null : definedAt.filePathAbsoluteUserRootDir))
                 .filter(isNotNullish)
-                .map((filePathToShowToUser) => indent + filePathToShowToUser)
-            )
+                .map((filePathToShowToUser) => indent + filePathToShowToUser),
+            ),
           )
-          .flat(2)
+          .flat(2),
       )
       lines.push(...['V1 design files:', ...filesV1])
     }
@@ -39,6 +39,6 @@ function assertV1Design(pageConfigs: PageConfigBuildTime[] | boolean, pageFilesA
   assertWarning(
     !isOldDesign,
     "You are using Vike's deprecated design. Update to the new V1 design, see https://vike.dev/migration/v1-design for how to migrate.",
-    { onlyOnce: true }
+    { onlyOnce: true },
   )
 }

@@ -27,7 +27,7 @@ function findAndParseJson(id: string) {
   assertUsage(
     elem,
     // It seems like it can be missing when HTML is malformed: https://github.com/vikejs/vike/issues/913
-    `Couldn't find #${id} (which Vike automatically injects in the HTML): make sure it exists (i.e. don't remove it and make sure your HTML isn't malformed)`
+    `Couldn't find #${id} (which Vike automatically injects in the HTML): make sure it exists (i.e. don't remove it and make sure your HTML isn't malformed)`,
   )
   const jsonStr = elem.textContent
   assert(jsonStr)

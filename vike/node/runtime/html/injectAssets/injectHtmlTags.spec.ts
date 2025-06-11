@@ -25,10 +25,10 @@ const tag2 = '<script src="/foo.js"></script>'
 describe('injectHtmlTags', () => {
   it('injectAtOpeningTag()', () => {
     expect(injectAtOpeningTag('head', htmlHead1, tag1)).toMatchInlineSnapshot(
-      `"<html><head><link href="/foo.ttf"></head></html>"`
+      `"<html><head><link href="/foo.ttf"></head></html>"`,
     )
     expect(injectAtOpeningTag('head', htmlHead1, `${tag1}${tag1}`)).toMatchInlineSnapshot(
-      `"<html><head><link href="/foo.ttf"><link href="/foo.ttf"></head></html>"`
+      `"<html><head><link href="/foo.ttf"><link href="/foo.ttf"></head></html>"`,
     )
     expect(injectAtOpeningTag('head', htmlHead2, `${tag1}${tag1}`)).toMatchInlineSnapshot(
       `
@@ -38,7 +38,7 @@ describe('injectHtmlTags', () => {
           <link href="/foo.ttf">
         </head>
       </html>"
-    `
+    `,
     )
     expect(injectAtOpeningTag('head', htmlHead3, `${tag2}${tag2}${tag1}`)).toMatchInlineSnapshot(
       `
@@ -49,16 +49,16 @@ describe('injectHtmlTags', () => {
           <link href="/foo.ttf">
         </head>
       </html>"
-    `
+    `,
     )
   })
 
   it('injectAtClosingTag()', () => {
     expect(injectAtClosingTag('body', htmlBody1, tag1)).toMatchInlineSnapshot(
-      `"<html><body><link href="/foo.ttf"></body></html>"`
+      `"<html><body><link href="/foo.ttf"></body></html>"`,
     )
     expect(injectAtClosingTag('body', htmlBody1, `${tag1}${tag1}`)).toMatchInlineSnapshot(
-      `"<html><body><link href="/foo.ttf"><link href="/foo.ttf"></body></html>"`
+      `"<html><body><link href="/foo.ttf"><link href="/foo.ttf"></body></html>"`,
     )
     expect(injectAtClosingTag('body', htmlBody2, `${tag1}${tag1}`)).toMatchInlineSnapshot(
       `
@@ -68,7 +68,7 @@ describe('injectHtmlTags', () => {
           <link href="/foo.ttf">
         </body>
       </html>"
-    `
+    `,
     )
     expect(injectAtClosingTag('body', htmlBody3, `${tag1}${tag2}${tag1}${tag2}`)).toMatchInlineSnapshot(
       `
@@ -80,7 +80,7 @@ describe('injectHtmlTags', () => {
           <script src="/foo.js"></script>
         </body>
       </html>"
-    `
+    `,
     )
   })
 })

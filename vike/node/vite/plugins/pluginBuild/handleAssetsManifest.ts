@@ -16,7 +16,7 @@ import {
   isEqualStringList,
   isObject,
   pLimit,
-  unique
+  unique,
 } from '../../utils.js'
 import { isVirtualFileIdPageConfigLazy } from '../../../shared/virtualFiles/virtualFilePageConfigLazy.js'
 import { manifestTempFile } from './pluginBuildConfig.js'
@@ -41,7 +41,7 @@ function handleAssetsManifest_isFixEnabled(config: ResolvedConfig | UserConfig):
 
 /** https://github.com/vikejs/vike/issues/1339 */
 async function fixServerAssets(
-  config: ResolvedConfig
+  config: ResolvedConfig,
 ): Promise<{ clientManifestMod: ViteManifest; serverManifestMod: ViteManifest }> {
   const outDirs = getOutDirs(config)
   const clientManifest = await readManifestFile(outDirs.outDirClient)
@@ -49,7 +49,7 @@ async function fixServerAssets(
 
   const { clientManifestMod, serverManifestMod, filesToMove, filesToRemove } = addServerAssets(
     clientManifest,
-    serverManifest
+    serverManifest,
   )
   await copyAssets(filesToMove, filesToRemove, config)
 
@@ -69,8 +69,8 @@ async function copyAssets(filesToMove: string[], filesToRemove: string[], config
         const target = path.posix.join(outDirClient, file)
         await fs.mkdir(path.posix.dirname(target), { recursive: true })
         await fs.rename(source, target)
-      })
-    )
+      }),
+    ),
   )
   filesToRemove.forEach((file) => {
     const filePath = path.posix.join(outDirServer, file)
@@ -195,7 +195,7 @@ function addServerAssets(clientManifest: ViteManifest, serverManifest: ViteManif
           css,
           assets,
           dynamicImports: undefined,
-          imports: undefined
+          imports: undefined,
         }
       }
     }
@@ -265,9 +265,9 @@ function handleAssetsManifest_assertUsageCssCodeSplit(config: ResolvedConfig) {
   assertWarning(
     config.build.cssCodeSplit,
     `${pc.cyan('build.cssCodeSplit')} shouldn't be set to ${pc.cyan(
-      'false'
+      'false',
     )} (https://github.com/vikejs/vike/issues/1993)`,
-    { onlyOnce: true }
+    { onlyOnce: true },
   )
 }
 
@@ -293,12 +293,12 @@ function handleAssetsManifest_assertUsageCssTarget(config: ResolvedConfig) {
           'The CSS browser target should be the same for both client and server, but we got:',
           `Client: ${pc.cyan(JSON.stringify(targetCssResolvedClient))}`,
           `Server: ${pc.cyan(JSON.stringify(targetCssResolvedServer))}`,
-          `Different targets lead to CSS duplication, see ${pc.underline('https://github.com/vikejs/vike/issues/1815#issuecomment-2507002979')} for more information.`
+          `Different targets lead to CSS duplication, see ${pc.underline('https://github.com/vikejs/vike/issues/1815#issuecomment-2507002979')} for more information.`,
         ].join('\n'),
         {
           showStackTrace: true,
-          onlyOnce: 'different-css-target'
-        }
+          onlyOnce: 'different-css-target',
+        },
       )
     })
   })
@@ -358,7 +358,7 @@ async function handleAssetsManifest_getBuildConfig(config: UserConfig) {
     copyPublicDir: vikeConfig.config.vite6BuilderApp
       ? // Already set by vike:build:pluginBuildApp
         undefined
-      : !isViteServerBuild(config)
+      : !isViteServerBuild(config),
   } as const
 }
 
@@ -366,7 +366,7 @@ async function handleAssetsManifest(
   config: ResolvedConfig,
   viteEnv: Environment | undefined,
   options: Options,
-  bundle: Bundle
+  bundle: Bundle,
 ) {
   const isSsREnv = isViteServerBuild_onlySsrEnv(config, viteEnv)
   if (isSsREnv) {

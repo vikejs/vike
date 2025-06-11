@@ -6,7 +6,7 @@ import type { VikeConfigPublicPageLazy } from '../../../shared/page-configs/reso
 import type { PageContextInternalServer } from '../../../types/PageContext.js'
 import {
   assertPropertyGetters,
-  preparePageContextForPublicUsage
+  preparePageContextForPublicUsage,
 } from '../../../shared/preparePageContextForPublicUsage.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 
@@ -26,7 +26,7 @@ type PageContextForPublicUsageServer = PageContextInternalServer &
   }
 
 function preparePageContextForPublicUsageServer<PageContext extends PageContextForPublicUsageServer>(
-  pageContext: PageContext
+  pageContext: PageContext,
 ) {
   // TODO/next-major-release: after we remove supportVueReactiviy() we can call this later inside the agnostic preparePageContextForPublicUsage()
   assertPropertyGetters(pageContext)

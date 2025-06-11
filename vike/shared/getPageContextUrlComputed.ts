@@ -52,17 +52,17 @@ function getPageContextUrlComputed(pageContext: PageContextUrlSource): PageConte
   objectDefineProperty(pageContextUrlComputed, 'urlPathname', {
     get: urlPathnameGetter,
     enumerable: true,
-    configurable: true
+    configurable: true,
   })
   objectDefineProperty(pageContextUrlComputed, 'url', {
     get: urlGetter,
     enumerable: false,
-    configurable: true
+    configurable: true,
   })
   objectDefineProperty(pageContextUrlComputed, 'urlParsed', {
     get: urlParsedGetter,
     enumerable: true,
-    configurable: true
+    configurable: true,
   })
 
   return pageContextUrlComputed
@@ -92,7 +92,7 @@ function getUrlParsed(pageContext: PageContextUrlSource) {
       // TODO/eventually: remove debug logs, see:
       // - https://github.com/vikejs/vike/issues/2138#issuecomment-2631713411
       // - https://github.com/vikejs/vike/commit/5c7810f3080ab62536950f26e019bb2a3a517082
-      { src, urlResolved }
+      { src, urlResolved },
     )
   let urlResolved: string
   let isBaseToBeRemoved: boolean
@@ -139,7 +139,7 @@ function urlGetter(this: PageContextUrlSource) {
   assertWarning(
     false,
     '`pageContext.url` is outdated. Use `pageContext.urlPathname`, `pageContext.urlParsed`, or `pageContext.urlOriginal` instead. (See https://vike.dev/migration/0.4.23 for more information.)',
-    { onlyOnce: true, showStackTrace: true }
+    { onlyOnce: true, showStackTrace: true },
   )
   return urlPathnameGetter.call(this)
 }
@@ -155,7 +155,7 @@ function urlParsedGetter(this: PageContextUrlSource) {
     assertWarning(
       hashIsAvailable,
       `pageContext.urlParsed.${prop} isn't available on the server-side (HTTP requests don't include the URL hash)`,
-      { onlyOnce: true, showStackTrace: true }
+      { onlyOnce: true, showStackTrace: true },
     )
   }
 
@@ -173,7 +173,7 @@ function urlParsedGetter(this: PageContextUrlSource) {
     get hashString() {
       assertWarning(false, 'pageContext.urlParsed.hashString has been renamed to pageContext.urlParsed.hashOriginal', {
         onlyOnce: true,
-        showStackTrace: true
+        showStackTrace: true,
       })
       warnHashNotAvailable('hashString')
       return urlParsed.hashOriginal
@@ -183,10 +183,10 @@ function urlParsedGetter(this: PageContextUrlSource) {
       assertWarning(
         false,
         'pageContext.urlParsed.searchString has been renamed to pageContext.urlParsed.searchOriginal',
-        { onlyOnce: true, showStackTrace: true }
+        { onlyOnce: true, showStackTrace: true },
       )
       return urlParsed.searchOriginal
-    }
+    },
   }
 
   changeEnumerable(urlParsedEnhanced, 'hashString', false)

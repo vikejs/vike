@@ -13,7 +13,7 @@ function UiFrameworkExtension({
   succinct,
   plural,
   comma,
-  list = extensionList
+  list = extensionList,
 }: {
   succinct?: true
   name?: true

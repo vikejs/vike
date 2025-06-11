@@ -7,7 +7,7 @@ export { rollupSourceMapPassthrough }
 function rollupSourceMapRemove(code: string): { code: string; map: { mappings: '' } } {
   return {
     code,
-    map: { mappings: '' }
+    map: { mappings: '' },
   }
 }
 
@@ -15,6 +15,6 @@ function rollupSourceMapRemove(code: string): { code: string; map: { mappings: '
 function rollupSourceMapPassthrough(code: string): { code: string; map: null } {
   return {
     code,
-    map: null
+    map: null,
   }
 }

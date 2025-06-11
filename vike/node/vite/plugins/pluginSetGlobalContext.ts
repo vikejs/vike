@@ -4,7 +4,7 @@ import type { Plugin } from 'vite'
 import {
   setGlobalContext_viteDevServer,
   setGlobalContext_viteConfig,
-  setGlobalContext_isProduction
+  setGlobalContext_isProduction,
 } from '../../runtime/globalContext.js'
 import { isDevCheck, markSetup_isViteDev, markSetup_viteDevServer, markSetup_vitePreviewServer } from '../utils.js'
 import { reloadVikeConfig } from '../shared/resolveVikeConfigInternal.js'
@@ -24,7 +24,7 @@ function pluginSetGlobalContext(): Plugin[] {
           isServerReload = true
           setGlobalContext_viteDevServer(viteDevServer)
           markSetup_viteDevServer()
-        }
+        },
       },
       configurePreviewServer() {
         markSetup_vitePreviewServer()
@@ -35,8 +35,8 @@ function pluginSetGlobalContext(): Plugin[] {
           const isViteDev = isDevCheck(env)
           setGlobalContext_isProduction(!isViteDev)
           markSetup_isViteDev(isViteDev)
-        }
-      }
+        },
+      },
     },
     {
       name: 'vike:pluginSetGlobalContext:post',
@@ -46,8 +46,8 @@ function pluginSetGlobalContext(): Plugin[] {
         async handler(config) {
           const viteConfigRuntime = getViteConfigRuntime(config)
           setGlobalContext_viteConfig(config, viteConfigRuntime)
-        }
-      }
-    }
+        },
+      },
+    },
   ]
 }

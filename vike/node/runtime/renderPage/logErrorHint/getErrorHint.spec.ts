@@ -35,8 +35,8 @@ Did you mean to import lodash@4.17.21/node_modules/lodash/debounce.js?
     at new NodeError (node:internal/errors:372:5)
   code: 'ERR_MODULE_NOT_FOUND'
 }
-`)
-      )
+`),
+      ),
     ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     expect(
@@ -59,8 +59,8 @@ Error: Cannot find package '/test/node_modules/@mdxeditor/editor/dist/node_modul
     at ESMLoader.getModuleJob (node:internal/modules/esm/loader:424:18)
     at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:77:40)
     at link (node:internal/modules/esm/module_job:76:36)
-`)
-      )
+`),
+      ),
     ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     expect(
@@ -88,9 +88,9 @@ Error: Cannot find module '/home/romu/code/vike/node_modules/.pnpm/vike-react@0.
     at ESMLoader.getModuleJob (node:internal/modules/esm/loader:424:18)
     at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:77:40)
     at link (node:internal/modules/esm/module_job:76:36)
-`
-        }
-      )
+`,
+        },
+      ),
     ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     expect(
@@ -105,9 +105,9 @@ Error: Cannot find module '/home/romu/code/vike/node_modules/.pnpm/vike-react@0.
 Error: Failed to load url ../../components/does-not-exist/Counter (resolved id: ../../components/does-not-exist/Counter) in /home/romu/code/vike/examples/react-full/pages/index/+Page.tsx. Does the file exist?
     at loadAndTransform (file:///home/romu/code/vike/node_modules/.pnpm/vite@5.0.10_@types+node@20.10.5/node_modules/vite/dist/node/chunks/dep-R0I0XnyH.js:49376:21)
     at instantiateModule (file:///home/romu/code/vike/node_modules/.pnpm/vite@5.0.10_@types+node@20.10.5/node_modules/vite/dist/node/chunks/dep-R0I0XnyH.js:50404:10)
-`
-        }
-      )
+`,
+        },
+      ),
     ).toMatchInlineSnapshot(`null`)
 
     expect(
@@ -128,9 +128,9 @@ Cannot find package 'some-not-installed-package' imported from /home/romu/code/v
     at ESMLoader.getModuleJob (node:internal/modules/esm/loader:424:18)
     at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:77:40)
     at link (node:internal/modules/esm/module_job:76:36)
-`
-        }
-      )
+`,
+        },
+      ),
     ).toMatchInlineSnapshot(`null`)
 
     expect(
@@ -146,9 +146,9 @@ Error: Cannot find module 'some-not-installed-package' imported from '/home/romu
     at ssrImport (file:///home/romu/code/vike/node_modules/.pnpm/vite@4.5.1_@types+node@20.10.4/node_modules/vite/dist/node/chunks/dep-68d1a114.js:55990:30)
     at eval (/home/romu/code/vike/examples/react-full/pages/index/+Page.tsx:7:37)
     at instantiateModule (file:///home/romu/code/vike/node_modules/.pnpm/vite@4.5.1_@types+node@20.10.4/node_modules/vite/dist/node/chunks/dep-68d1a114.js:56052:9)
-`
-        }
-      )
+`,
+        },
+      ),
     )
       // False positive, but it's okay.
       .toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
@@ -163,8 +163,8 @@ Error: Cannot find module 'some-not-installed-package' imported from '/home/romu
         stack: `
 Error: Failed to load url some-not-installed-package (resolved id: some-not-installed-package) in /home/romu/code/vike/examples/react-full/pages/index/+Page.tsx. Does the file exist?
     at loadAndTransform (file:///home/romu/code/vike/node_modules/.pnpm/vite@4.5.1_@types+node@20.10.4/node_modules/vite/dist/node/chunks/dep-68d1a114.js:55015:21)
-`
-      })
+`,
+      }),
     ).toMatchInlineSnapshot(`null`)
 
     /* I don't remember when I stumbled upon this error, but it seems like it most likely won't occur again.
@@ -224,9 +224,9 @@ TypeError: Unknown file extension ".css" for /home/romu/code/vike/node_modules/.
     at new ModuleJob (node:internal/modules/esm/module_job:64:26)
     at ESMLoader.#createModuleJob (node:internal/modules/esm/loader:480:17)
     at ESMLoader.getModuleJob (node:internal/modules/esm/loader:434:34)
-`
-        }
-      )
+`,
+        },
+      ),
     ).toMatchInlineSnapshot(`"To fix this error, see https://vike.dev/broken-npm-package#err-unknown-file-extension"`)
 
     expect(
@@ -244,8 +244,8 @@ TypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension ".css" for /Users
     at new ModuleJob (node:internal/modules/esm/module_job:63:26)
     at ESMLoader.#createModuleJob (node:internal/modules/esm/loader:483:17)
     at ESMLoader.getModuleJob (node:internal/modules/esm/loader:441:34)
-`)
-      )
+`),
+      ),
     ).toMatchInlineSnapshot(`"To fix this error, see https://vike.dev/broken-npm-package#err-unknown-file-extension"`)
 
     expect(
@@ -263,8 +263,8 @@ Error: ERR_UNKNOWN_FILE_EXTENSION .css /home/stuart/tmp/vite-ssr-example/node_mo
     at load (/home/stuart/tmp/vite-ssr-example/node_modules/.pnpm/ts-node@10.9.1_@types+node@18.15.11_typescript@4.9.5/node_modules/ts-node/src/child/child-loader.ts:18:36)
     at nextLoad (node:internal/modules/esm/loader:163:28)
     at ESMLoader.load (node:internal/modules/esm/loader:605:26)
-`)
-      )
+`),
+      ),
     ).toMatchInlineSnapshot(`"To fix this error, see https://vike.dev/broken-npm-package#err-unknown-file-extension"`)
 
     expect(
@@ -284,8 +284,8 @@ at #createModuleJob (node:internal/modules/esm/loader:480:17)
 at ESMLoader.getModuleJob (node:internal/modules/esm/loader:434:34) {
 code: 'ERR_UNKNOWN_FILE_EXTENSION'
 }
-`)
-      )
+`),
+      ),
     ).toMatchInlineSnapshot(`null`)
 
     expect(
@@ -294,9 +294,9 @@ code: 'ERR_UNKNOWN_FILE_EXTENSION'
         // https://github.com/vikejs/vike/discussions/1067
         // https://github.com/vikejs/vike/issues/877
         createErr(
-          `TypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension ".ts" for /media/oem/MyFiles/8_DEVELOPMENT/vite-ssr-ts-project/server/index.ts`
-        )
-      )
+          `TypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension ".ts" for /media/oem/MyFiles/8_DEVELOPMENT/vite-ssr-ts-project/server/index.ts`,
+        ),
+      ),
     ).toMatchInlineSnapshot(`null`)
   })
 }
@@ -319,8 +319,8 @@ Error: ERR_UNSUPPORTED_DIR_IMPORT /Users/xxx/Documents/Github/xxx/node_modules/@
     at resolve (/Users/xxx/Documents/Github/xxx/node_modules/ts-node/src/esm.ts:197:12)
     at resolve (/Users/xxx/Documents/Github/xxx/node_modules/ts-node/src/child/child-loader.ts:15:39)
     at nextResolve (node:internal/modules/esm/loader:165:28)
-`)
-      )
+`),
+      ),
     ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     expect(
@@ -328,8 +328,8 @@ Error: ERR_UNSUPPORTED_DIR_IMPORT /Users/xxx/Documents/Github/xxx/node_modules/@
         // https://github.com/vikejs/vike/discussions/700#discussioncomment-5283034
         createErr(`
 Error: ERR_UNSUPPORTED_DIR_IMPORT ...\\vite-ssr-app\\node_modules\\@mui\\material\\styles from ...\\vite-ssr-app\\dist\\server\\renderer\\default-page-server.js
-    `)
-      )
+    `),
+      ),
     ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     expect(
@@ -347,8 +347,8 @@ Error [ERR_UNSUPPORTED_DIR_IMPORT]: Directory import '/Users/xxx/xxx/src/models'
 code: 'ERR_UNSUPPORTED_DIR_IMPORT',
 url: 'file:///Users/xxx/xxx/src/models'
 }
-`)
-      )
+`),
+      ),
     ).toMatchInlineSnapshot(`null`)
 
     // More similar errors:
@@ -388,9 +388,9 @@ TypeError: Cannot read properties of undefined (reading 'foo')
     at renderPageAlreadyPrepared (file:///home/romu/code/vike/vike/dist/esm/node/runtime/renderPage.js:121:45)
     at renderPageAndPrepare (file:///home/romu/code/vike/vike/dist/esm/node/runtime/renderPage.js:101:12)
     at file:///home/romu/code/vike/vike/dist/esm/node/plugin/shared/getHttpRequestAsyncStore.js:68:35
-`
-        }
-      )
+`,
+        },
+      ),
     ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     expect(
@@ -418,8 +418,8 @@ TypeError: Cannot read properties of undefined (reading '__H')
     at file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/plugin/shared/getHttpRequestAsyncStore.js:68:35
     at renderPage (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPage.js:46:50)
     at file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/plugin/shared/addSsrMiddleware.js:18:27
-`)
-      )
+`),
+      ),
     ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     expect(
@@ -434,8 +434,8 @@ TypeError: Cannot read properties of undefined (reading 'b')
     at startServer (file:///home/xxx/projects/vike/xxx/server/index.js:20:17)
     at file:///home/xxx/projects/vike/xxx/server/index.js:13:1
     at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
-`)
-      )
+`),
+      ),
     ).toMatchInlineSnapshot(`null`)
 
     expect(
@@ -447,8 +447,8 @@ TypeError: Cannot read properties of undefined (reading 'b')
 TypeError: Cannot read properties of undefined (reading 'extendTheme')
     at eval (/home/projects/llqijrlvr.github/src/entry.js:5:35)
     at async instantiateModule (file://file:///home/projects/llqijrlvr.github/node_modules/.pnpm/vite@4.0.0/node_modules/vite/dist/node/chunks/dep-ed9cb113.js:53295:9)
-`)
-      )
+`),
+      ),
     ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
   })
 }
@@ -464,8 +464,8 @@ function default_is_not() {
 TypeError: __vite_ssr_import_0__.default is not a function
     at /home/rom/tmp/vike-react-native-web-bug/node_modules/.pnpm/react-native-web@0.19.11_react-dom@18.3.1_react@18.3.1/node_modules/react-native-web/dist/modules/prefixStyles/index.js:3:31
     at instantiateModule (file:///home/rom/tmp/vike-react-native-web-bug/node_modules/.pnpm/vite@5.2.11/node_modules/vite/dist/node/chunks/dep-cNe07EU9.js:55058:9)
-`
-      })
+`,
+      }),
     ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
   })
 }
@@ -490,9 +490,9 @@ function ERR_REQUIRE_ESM() {
 Error [ERR_REQUIRE_ESM]: require() of ES Module /home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/getPageElement.js from /home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/onRenderHtml.js not supported.
 Instead change the require of getPageElement.js in /home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/onRenderHtml.js to a dynamic import() which is available in all CommonJS modules.
     at file:///home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/onRenderHtml.js:10:1
-`
-        }
-      )
+`,
+        },
+      ),
     ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     // Make sure the right package is picked: the issue is the importer, not the importee
@@ -507,9 +507,9 @@ Instead change the require of getPageElement.js in /home/romu/code/vike/node_mod
 Error [ERR_REQUIRE_ESM]: require() of ES Module /home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/getPageElement.js from /home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/onRenderHtml.js not supported.
 Instead change the require of getPageElement.js in /home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/onRenderHtml.js to a dynamic import() which is available in all CommonJS modules.
     at file:///home/romu/code/vike/node_modules/.pnpm/vike-react-foo@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react-foo/dist/renderer/onRenderHtml.js:10:1
-`
-        }
-      )
+`,
+        },
+      ),
     ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     expect(
@@ -521,8 +521,8 @@ Error [ERR_REQUIRE_ESM]: require() of ES Module
 from
 /home/rom/code/vite-plugin-ssr/examples/graphql-apollo-react/server/index.js
 not supported.
-      `)
-      )
+      `),
+      ),
     ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     expect(
@@ -545,8 +545,8 @@ Instead rename index.js to end in .cjs, change the requiring code to use import(
     at Module._compile (internal/modules/cjs/loader.js:1063:30)
     at Object.require.extensions.<computed> [as .js] (E:\\Javascript\\xxx\\node_modules\\vite\\dist\\node\\chunks\\dep-36bf480c.js:77283:20)
     at Module.load (internal/modules/cjs/loader.js:928:32)
-`)
-      )
+`),
+      ),
     ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     expect(
@@ -568,9 +568,9 @@ Instead change the require of +config.js in /home/romu/code/vike/node_modules/.p
     at async ssrImport (file:///home/romu/code/vike/node_modules/.pnpm/vite@5.0.10_@types+node@17.0.45/node_modules/vite/dist/node/chunks/dep-R0I0XnyH.js:50444:24)
     at async eval (virtual:vike:pageConfigLazy:server:/pages/index:3:44)
     at async instantiateModule (file:///home/romu/code/vike/node_modules/.pnpm/vite@5.0.10_@types+node@17.0.45/node_modules/vite/dist/node/chunks/dep-R0I0XnyH.js:50506:9)
-`
-        }
-      )
+`,
+        },
+      ),
     ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
   })
 }
@@ -606,9 +606,9 @@ const { ApolloClient } = pkg;
     at async loadPageFilesServerSide (file:///home/romu/tmp/vite-ssr-test/node_modules/.pnpm/vite-plugin-ssr@0.4.142_vite@4.0.3/node_modules/vite-plugin-ssr/dist/esm/node/runtime/renderPage/loadPageFilesServerSide.js:13:110)
     at async renderPageAlreadyRouted (file:///home/romu/tmp/vite-ssr-test/node_modules/.pnpm/vite-plugin-ssr@0.4.142_vite@4.0.3/node_modules/vite-plugin-ssr/dist/esm/node/runtime/renderPage/renderPageAlreadyRouted.js:30:31)
     at async renderPageNominal (file:///home/romu/tmp/vite-ssr-test/node_modules/.pnpm/vite-plugin-ssr@0.4.142_vite@4.0.3/node_modules/vite-plugin-ssr/dist/esm/node/runtime/renderPage.js:267:36)
-`
-        }
-      )
+`,
+        },
+      ),
     ).toMatchInlineSnapshot(`"To fix this error, see https://vike.dev/broken-npm-package#named-export-not-found"`)
 
     expect(
@@ -638,9 +638,9 @@ const { LiveProvider, LiveEditor } = pkg;
     at async Promise.all (index 0)
     at async loadPageFilesServer (/home/romu/tmp/vite-ssr-redux-react-live-runner-example/node_modules/.pnpm/vite-plugin-ssr@0.4.131_vite@4.3.9/node_modules/vite-plugin-ssr/dist/cjs/node/runtime/renderPage/loadPageFilesServer.js:15:110)
     at async /home/romu/tmp/vite-ssr-redux-react-live-runner-example/node_modules/.pnpm/vite-plugin-ssr@0.4.131_vite@4.3.9/node_modules/vite-plugin-ssr/dist/cjs/node/prerender/runPrerender.js:247:48
-`
-        }
-      )
+`,
+        },
+      ),
     ).toMatchInlineSnapshot(`"To fix this error, see https://vike.dev/broken-npm-package#named-export-not-found"`)
 
     expect(
@@ -655,8 +655,8 @@ CommonJS modules can always be imported via the default export, for example usin
 
 import pkg from 'vue-i18n/dist/vue-i18n.runtime.esm-bundler.js';
 const { useI18n, createI18n } = pkg;
-`)
-      )
+`),
+      ),
     ).toMatchInlineSnapshot(`"To fix this error, see https://vike.dev/broken-npm-package#named-export-not-found"`)
 
     // More similar errors:
@@ -691,13 +691,13 @@ import{useRunner as e}from"react-runner";export*from"react-runner";import t,{use
         at ModuleJob.run (node:internal/modules/esm/module_job:193:25)
         at processTicksAndRejections (node:internal/process/task_queues:96:5)
       at async Promise.all (index 0)
-`)
-      )
+`),
+      ),
     ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     // https://github.com/vikejs/vike/discussions/571#discussioncomment-6137618
     expect(getErrorHint(createErr(errror_cannot_use_import_outside_of_module))).toMatchInlineSnapshot(
-      `"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`
+      `"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`,
     )
 
     // More similar errors:
@@ -714,8 +714,8 @@ function is_not_defined() {
 ReferenceError: exports is not defined
     at eval (/Users/xxx/git/xxx/xxx/node_modules/react-simple-code-editor/lib/index.js:64:23)
     at instantiateModule (file:///Users/xxx/git/xxx/xxx/node_modules/vite/dist/node/chunks/dep-e8f070e8.js:54405:15)
-`)
-      )
+`),
+      ),
     ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     expect(
@@ -725,8 +725,8 @@ ReferenceError: exports is not defined
 ReferenceError: exports is not defined
     at /node_modules/.pnpm/@adobe+react-spectrum-ui@1.2.0_react-dom@18.2.0_react@18.2.0/node_modules/@adobe/react-spectrum-ui/dist/CornerTriangle.js:12:23
     at instantiateModule (file:///home/stuart/tmp/vite-ssr-example/node_modules/.pnpm/vite@4.2.1_@types+node@18.15.11/node_modules/vite/dist/node/chunks/dep-79892de8.js:53996:15)
-      `)
-      )
+      `),
+      ),
     ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     expect(
@@ -737,8 +737,8 @@ ReferenceError: exports is not defined in ES module scope
 This file is being treated as an ES module because it has a '.js' file extension and '/home/xxx/projects/vike/xxx/package.json' contains "type": "module". To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
     at file:///home/xxx/projects/vike/xxx/server/index.js:14:1
     at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
-`)
-      )
+`),
+      ),
     ).toMatchInlineSnapshot(`null`)
 
     // More similar errors:
@@ -758,9 +758,9 @@ TypeError: require is not a function
     at eval (/home/romu/tmp/vps-mui/node_modules/.pnpm/@mui+icons-material@5.11.16_@mui+material@5.13.2_@types+react@18.2.6_react@18.2.0/node_modules/@mui/icons-material/Menu.js:5:30)
     at instantiateModule (file:///home/romu/tmp/vps-mui/node_modules/.pnpm/vite@4.3.8_@types+node@18.16.14/node_modules/vite/dist/node/chunks/dep-4d3eff22.js:54399:15)
     at processTicksAndRejections (node:internal/process/task_queues:95:5)
-`
-        }
-      )
+`,
+        },
+      ),
     ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
   })
 
@@ -772,8 +772,8 @@ TypeError: require is not a function
     ReferenceError: module is not defined
     at eval (/@fs/home/rui/Projects/binedge-website/node_modules/@mdi/react/Icon.js:3:14)
     at instantiateModule (file:///home/rui/Projects/binedge-website/node_modules/vite/dist/node/chunks/dep-24daf00c.js:54351:15)
-`)
-      )
+`),
+      ),
     ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     // More similar errors:
@@ -795,9 +795,9 @@ TypeError: require is not a function
 ReferenceError: window is not defined
     at file:///home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/onRenderHtml.js:10:1
     at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
-`
-        }
-      )
+`,
+        },
+      ),
     ).toMatchInlineSnapshot(`"To fix this error, see https://vike.dev/hints#window-is-not-defined"`)
     expect(
       getErrorHint(
@@ -813,8 +813,8 @@ ReferenceError: window is not defined
     at renderElement (/home/rom/code/docpress/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5961:7)
     at renderNodeDestructiveImpl (/home/rom/code/docpress/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6119:11)
     at renderNodeDestructive (/home/rom/code/docpress/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6091:14)
-      `)
-      )
+      `),
+      ),
     ).toMatchInlineSnapshot(`"To fix this error, see https://vike.dev/hints#window-is-not-defined"`)
   })
 
@@ -838,9 +838,9 @@ ReferenceError: __dirname is not defined in ES module scope
 This file is being treated as an ES module because it has a '.js' file extension and '/home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/package.json' contains "type": "module". To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
     at file:///home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/onRenderHtml.js:10:1
     at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
-`
-        }
-      )
+`,
+        },
+      ),
     ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
   })
 }
@@ -863,8 +863,8 @@ RollupError: "MenuIcon" is not exported by "node_modules/.pnpm/@mui+icons-materi
     at Program.bind (file:///home/rom/tmp/vps-mui/node_modules/.pnpm/rollup@3.23.0/node_modules/rollup/dist/es/shared/node-entry.js:5734:28)
     at Module.bindReferences (file:///home/rom/tmp/vps-mui/node_modules/.pnpm/rollup@3.23.0/node_modules/rollup/dist/es/shared/node-entry.js:13459:18)
  ELIFECYCLE  Command failed with exit code 1.
-`)
-      )
+`),
+      ),
     ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
   })
 }
@@ -894,9 +894,9 @@ SyntaxError: Unexpected token 'export'
     at Module._load (node:internal/modules/cjs/loader:958:12)
     at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:169:29)
     at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
-`
-        }
-      )
+`,
+        },
+      ),
     ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
   })
 }
@@ -934,25 +934,25 @@ Error: Element type is invalid: expected a string (for built-in components) or a
     at performWork (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6580:7)
     at /home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6904:12
     at scheduleWork (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:78:3)
-`
-        }
-      )
+`,
+        },
+      ),
     ).toMatchInlineSnapshot(`"To fix this error, see https://vike.dev/broken-npm-package#react-invalid-component"`)
     expect(
       getErrorHint(
         // Also catch `but got: object`
         createErr(
-          "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: object. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports."
-        )
-      )
+          "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: object. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.",
+        ),
+      ),
     ).toMatchInlineSnapshot(`"To fix this error, see https://vike.dev/broken-npm-package#react-invalid-component"`)
     expect(
       getErrorHint(
         // Or any other invalid value
         createErr(
-          "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: foo. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports."
-        )
-      )
+          "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: foo. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.",
+        ),
+      ),
     ).toMatchInlineSnapshot(`"To fix this error, see https://vike.dev/broken-npm-package#react-invalid-component"`)
     expect(
       getErrorHint(
@@ -967,9 +967,9 @@ Error: Element type is invalid: expected a string (for built-in components) or a
     at renderNode (/home/rom/code/docpress/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6274:12)
     at renderChildrenArray (/home/rom/code/docpress/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6226:7)
     at renderNodeDestructiveImpl (/home/rom/code/docpress/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6156:7)
-    at renderNodeDestructive (/home/rom/code/docpress/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6091:14)`
-        )
-      )
+    at renderNodeDestructive (/home/rom/code/docpress/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6091:14)`,
+        ),
+      ),
     ).toMatchInlineSnapshot(`"To fix this error, see https://vike.dev/broken-npm-package#react-invalid-component"`)
   })
 }
@@ -994,8 +994,8 @@ TypeError: Cannot read properties of null (reading 'useContext')
     at renderNode (/home/rom/tmp/vike-react-native-web-bug/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6274:12)
     at renderHostElement (/home/rom/tmp/vike-react-native-web-bug/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5646:3)
     at renderElement (/home/rom/tmp/vike-react-native-web-bug/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5967:5)
-`
-      })
+`,
+      }),
     ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
   })
 }
@@ -1014,8 +1014,8 @@ Error: [vike][Wrong Usage] The guard() hook of /pages/maps/ingestion/@id/+guard.
     at async renderPage_wrapper (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/node/runtime/renderPage.js:26:24)
     at async renderPage (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/node/runtime/renderPage.js:46:50)
     at async file:///usr/src/app/server/index.js:75:25
-      `)
-      )
+      `),
+      ),
     ).toMatchInlineSnapshot(`null`)
 
     expect(
@@ -1038,9 +1038,9 @@ Error: [vike][Wrong Usage] The guard() hook of /pages/maps/ingestion/@id/+guard.
           code: 'PLUGIN_ERROR',
           pluginCode: 'ERR_RESOLVE_PACKAGE_ENTRY_FAIL',
           plugin: 'commonjs--resolver',
-          hook: 'resolveId'
-        }
-      )
+          hook: 'resolveId',
+        },
+      ),
     ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
   })
 }

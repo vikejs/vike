@@ -16,25 +16,25 @@ const principles = [
   {
     icon: <Icon icon={<SeparationIcon />} size={iconSizeDefault + 0} color="#444" />,
     title: 'Separation of concerns',
-    href: '/why#separation-of-concerns'
+    href: '/why#separation-of-concerns',
   },
   {
     icon: <Icon icon={<ForestIcon />} size={iconSizeDefault + 5} color={iconColor} />,
     title: 'Flourishing do-one-thing-do-it-well ecosystem',
-    href: '/why#flourishing-do-one-thing-do-it-well-ecosystem'
+    href: '/why#flourishing-do-one-thing-do-it-well-ecosystem',
   },
   {
     icon: (
       <Icon icon={<EarIcon />} size={iconSizeDefault + 8} color="#222" style={{ position: 'relative', left: -1 }} />
     ),
     title: 'Listening to users',
-    href: '/why#listening-to-users'
+    href: '/why#listening-to-users',
   },
   {
     icon: <Icon icon={<CompassIcon />} size={iconSizeDefault + 2} color={iconColor} />,
     title: 'Passionate leadership',
-    href: '/why#passionate-leadership'
-  }
+    href: '/why#passionate-leadership',
+  },
 ]
 
 export const Philosophy = () => {
@@ -46,7 +46,7 @@ export const Philosophy = () => {
             <SectionTextCollection caption="Philosophy" title="How Vike is Built" />
             <div
               style={{
-                marginBottom: '20px'
+                marginBottom: '20px',
               }}
             >
               <a href="/why#philosophy">
@@ -61,7 +61,7 @@ export const Philosophy = () => {
       <div
         style={{
           borderTop: `3px solid #FFFFFF`,
-          marginTop: '24px'
+          marginTop: '24px',
         }}
       >
         <Grid>
@@ -76,7 +76,7 @@ export const Philosophy = () => {
                   href={principle.href}
                   className="landingpage-philosophy-principle"
                   style={{
-                    borderTop: i === 0 ? undefined : `3px solid #FFF`
+                    borderTop: i === 0 ? undefined : `3px solid #FFF`,
                   }}
                 >
                   <div
@@ -84,7 +84,7 @@ export const Philosophy = () => {
                       marginRight: 20,
                       display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'center'
+                      justifyContent: 'center',
                     }}
                   >
                     {principle.icon}
@@ -94,7 +94,7 @@ export const Philosophy = () => {
                     style={{
                       fontSize: '18px',
                       fontWeight: 500,
-                      margin: 0
+                      margin: 0,
                     }}
                   >
                     {principle.title}

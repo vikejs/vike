@@ -50,7 +50,7 @@ function cleanApiResult(moviesFromApi) {
     return {
       id: String(i + 1),
       title,
-      release_date
+      release_date,
     }
   })
   return movies

@@ -25,7 +25,7 @@ function PageLayout({ children }) {
       style={{
         display: 'flex',
         maxWidth: 900,
-        margin: 'auto'
+        margin: 'auto',
       }}
     >
       {children}
@@ -43,7 +43,7 @@ function Sidebar({ children }) {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        lineHeight: '1.8em'
+        lineHeight: '1.8em',
       }}
     >
       {children}
@@ -58,7 +58,7 @@ function Content({ children }) {
         padding: 20,
         paddingBottom: 50,
         borderLeft: '2px solid #eee',
-        minHeight: '100vh'
+        minHeight: '100vh',
       }}
     >
       {children}

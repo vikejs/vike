@@ -10,7 +10,7 @@ const Context = React.createContext(undefined)
 
 PageContextProvider.propTypes = {
   pageContext: PropTypes.any,
-  children: childrenPropType
+  children: childrenPropType,
 }
 function PageContextProvider({ pageContext, children }) {
   return <Context.Provider value={pageContext}>{children}</Context.Provider>

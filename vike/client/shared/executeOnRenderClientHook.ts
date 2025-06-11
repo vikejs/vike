@@ -19,7 +19,7 @@ type PageContextBeforeRenderClient = {
 
 async function executeOnRenderClientHook<PageContext extends PageContextBeforeRenderClient>(
   pageContext: PageContext,
-  prepareForPublicUsage: (pageConfig: PageContext) => PageContext
+  prepareForPublicUsage: (pageConfig: PageContext) => PageContext,
 ): Promise<void> {
   let hook: null | Hook = null
 
@@ -41,7 +41,7 @@ async function executeOnRenderClientHook<PageContext extends PageContextBeforeRe
       // V1 design
       assertUsage(
         false,
-        `No onRenderClient() hook defined for URL '${urlToShowToUser}', but it's needed, see https://vike.dev/onRenderClient`
+        `No onRenderClient() hook defined for URL '${urlToShowToUser}', but it's needed, see https://vike.dev/onRenderClient`,
       )
     } else {
       // TODO/v1-release: remove

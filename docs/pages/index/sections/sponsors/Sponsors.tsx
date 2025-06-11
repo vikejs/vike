@@ -25,7 +25,7 @@ function Sponsors() {
       <div className="landingpage-sponsors-textContainer">
         <div
           style={{
-            gridColumn: '3 / span 8'
+            gridColumn: '3 / span 8',
           }}
         >
           <TextBox>
@@ -44,7 +44,7 @@ function Sponsors() {
               />
               <a
                 style={{
-                  marginTop: '12px'
+                  marginTop: '12px',
                 }}
                 href="https://github.com/vikejs/vike/issues/1350"
               >
@@ -59,7 +59,7 @@ function Sponsors() {
         style={{
           display: 'flex',
           flexDirection: 'column',
-          gap: 4
+          gap: 4,
         }}
       >
         <div className="landingpage-sponsors-sponsorList">
@@ -89,7 +89,7 @@ function SponsorLink({ sponsor }: { sponsor: Sponsor }) {
         style={{
           maxWidth: '90%',
           height: '40%',
-          ...sponsor.companyLogoStyle
+          ...sponsor.companyLogoStyle,
         }}
         src={sponsor.companyLogo}
         alt={sponsor.companyName}

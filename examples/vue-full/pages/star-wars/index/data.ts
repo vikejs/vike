@@ -8,7 +8,7 @@ async function fetchStarWarsMovies(): Promise<MovieDetails[]> {
   let movies: MovieDetails[] = ((await response.json()) as any).results
   movies = movies.map((movie: MovieDetails, i: number) => ({
     ...movie,
-    id: String(i + 1)
+    id: String(i + 1),
   }))
   return movies
 }

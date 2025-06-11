@@ -3,7 +3,7 @@ import vike from 'vike/plugin'
 import { UserConfig } from 'vite'
 
 const config: UserConfig = {
-  plugins: [react(), vike()]
+  plugins: [react(), vike()],
 }
 
 export default config

@@ -12,7 +12,7 @@ const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRender
   const pageHtml = ReactDOMServer.renderToString(
     <Layout>
       <Page />
-    </Layout>
+    </Layout>,
   )
   return escapeInject`<!DOCTYPE html>
     <html>

@@ -25,14 +25,14 @@ export type { PageContextBuiltInClientWithServerRouting_deprecated as PageContex
 import type {
   PageContextUrlInternal,
   PageContextUrlClient,
-  PageContextUrlServer
+  PageContextUrlServer,
 } from '../shared/getPageContextUrlComputed.js'
 import type {
   ConfigEntries,
   ExportsAll,
   From,
   Source,
-  Sources
+  Sources,
 } from '../shared/page-configs/resolveVikeConfigPublic.js'
 import type { Config } from './Config.js'
 import type { PageContextConfig } from './Config/PageContextConfig.js'

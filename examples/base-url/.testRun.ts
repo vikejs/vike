@@ -8,11 +8,11 @@ function testRun(
   cmd: 'npm run dev' | 'npm run preview' | 'npm run start',
   {
     baseServer,
-    baseAssets
+    baseAssets,
   }: {
     baseServer: '/' | '/some/base-url/' | '/some/base-url'
     baseAssets: '/' | '/some/base-url/' | '/some/base-url' | 'http://localhost:8080/cdn/'
-  }
+  },
 ) {
   const addBaseServer = (url: string) => join(baseServer, url)
   const addBaseAssets = (url: string) => join(baseAssets, url)

@@ -27,7 +27,7 @@ const passToClientBuiltInPageContext = [
   pageContextInitIsPassedToClient,
   'pageId',
   'routeParams',
-  'data' // for data() hook
+  'data', // for data() hook
 ]
 const pageToClientBuiltInPageContextError = ['pageProps', 'is404', isServerSideError]
 
@@ -60,7 +60,7 @@ function getGlobalContextClientSerialized(pageContext: PageContextSerialization)
 function serializeObject(
   obj: Record<string, unknown>,
   objName: 'pageContext' | 'globalContext',
-  passToClient: string[]
+  passToClient: string[],
 ) {
   let serialized: string
   try {
@@ -93,7 +93,7 @@ function serializeObject(
         // Non-serializable property set by the user
         let msg = [
           `${h(varName)} can't be serialized and, therefore, can't be passed to the client side.`,
-          `Make sure ${h(varName)} is serializable, or remove ${h(JSON.stringify(prop))} from ${h('passToClient')}.`
+          `Make sure ${h(varName)} is serializable, or remove ${h(JSON.stringify(prop))} from ${h('passToClient')}.`,
         ].join(' ')
         if (isJsonSerializerError(err)) {
           msg = `${msg} Serialization error: ${err.messageCore}.`
@@ -141,7 +141,7 @@ function getPassToClientPageContext(pageContext: {
 
 function getPageContextClientSerializedAbort(
   pageContext: Record<string, unknown> &
-    ({ _urlRedirect: UrlRedirect } | { _urlRewrite: string } | { abortStatusCode: number })
+    ({ _urlRedirect: UrlRedirect } | { _urlRewrite: string } | { abortStatusCode: number }),
 ): string {
   assert(pageContext._urlRedirect || pageContext._urlRewrite || pageContext.abortStatusCode)
   assert(pageContext._abortCall)
@@ -162,8 +162,8 @@ function getPageContextClientSerializedAbort(
         'abortStatusCode',
         'abortReason',
         'is404',
-        'pageProps'
-      ].includes(prop)
+        'pageProps',
+      ].includes(prop),
   )
   if (!pageContext._isLegacyRenderErrorPage) {
     assert(unknownProps.length === 0)
@@ -174,11 +174,11 @@ function getPageContextClientSerializedAbort(
       [
         "The following pageContext values won't be available on the client-side:",
         unknownProps.map((p) => `  pageContext[${JSON.stringify(p)}]`),
-        'Use `throw render()` instead of `throw RenderErrorPage()`'
+        'Use `throw render()` instead of `throw RenderErrorPage()`',
       ].join('\n'),
       {
-        onlyOnce: false
-      }
+        onlyOnce: false,
+      },
     )
   }
   return serializeValue(pageContext)

@@ -29,26 +29,26 @@ function pluginBuildApp(): Plugin[] {
                 runPrerender_forceExit()
                 assert(false)
               }
-            }
+            },
           },
           environments: {
             ssr: {
               consumer: 'server',
               build: {
                 outDir: resolveOutDir(config, true),
-                ssr: true
-              }
+                ssr: true,
+              },
             },
             client: {
               consumer: 'client',
               build: {
                 copyPublicDir: true,
-                ssr: false
-              }
-            }
-          }
+                ssr: false,
+              },
+            },
+          },
         }
-      }
-    }
+      },
+    },
   ]
 }

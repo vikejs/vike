@@ -8,7 +8,7 @@ import { getConfigValueTyped, type TypeAsString } from './getConfigValueTyped.js
 function getConfigValueRuntime<Type extends TypeAsString = undefined>(
   pageConfig: PageConfigRuntime,
   configName: ConfigNameBuiltIn,
-  type?: Type
+  type?: Type,
 ): null | (ConfigValue & { value: ResolveTypeAsString<Type> }) {
   const configValue = pageConfig.configValues[configName]
   if (!configValue) return null

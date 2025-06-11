@@ -9,7 +9,7 @@ export default {
   // https://vike.dev/meta
   meta: {
     Page: {
-      env
-    }
-  }
+      env,
+    },
+  },
 }

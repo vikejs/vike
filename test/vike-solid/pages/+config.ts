@@ -6,7 +6,7 @@ export default {
   title: 'My Vike + Solid App', // <title>
   description: 'Demo showcasing Vike + Solid', // <meta name="description">
   bodyAttributes: {
-    class: 'dark'
+    class: 'dark',
   },
-  extends: vikeSolid
+  extends: vikeSolid,
 } satisfies Config

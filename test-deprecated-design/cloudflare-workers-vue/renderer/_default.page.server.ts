@@ -34,8 +34,8 @@ async function render(pageContext: any) {
   return {
     documentHtml,
     pageContext: {
-      enableEagerStreaming: true
-    }
+      enableEagerStreaming: true,
+    },
   }
 }
 

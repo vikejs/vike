@@ -24,7 +24,7 @@ async function startServer() {
     const viteDevMiddleware = (
       await vite.createServer({
         root,
-        server: { middlewareMode: true }
+        server: { middlewareMode: true },
       })
     ).middlewares
     app.use(viteDevMiddleware)
@@ -32,7 +32,7 @@ async function startServer() {
 
   app.get('/{*vikeCatchAll}', async (req, res, next) => {
     const pageContextInit = {
-      urlOriginal: req.originalUrl
+      urlOriginal: req.originalUrl,
     }
     const pageContext = await renderPage(pageContextInit)
     const { httpResponse } = pageContext

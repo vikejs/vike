@@ -10,7 +10,7 @@ async function buildApp() {
   await build({
     viteConfig: {
       root: __dirname,
-      configFile: __dirname + '/vite.config.js'
-    }
+      configFile: __dirname + '/vite.config.js',
+    },
   })
 }

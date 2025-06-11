@@ -13,5 +13,5 @@ export default {
   title: 'My Vike App',
   description: 'Demo showcasing Vike',
 
-  extends: vikeReact
+  extends: vikeReact,
 } satisfies Config

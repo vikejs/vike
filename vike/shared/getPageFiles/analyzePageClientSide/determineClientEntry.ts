@@ -10,7 +10,7 @@ function determineClientEntry({
   pageFilesClientSide,
   pageFilesServerSide,
   isHtmlOnly,
-  isClientRouting
+  isClientRouting,
 }: {
   pageFilesClientSide: PageFile[]
   pageFilesServerSide: PageFile[]
@@ -23,11 +23,11 @@ function determineClientEntry({
 
   const clientDependencies: ClientDependency[] = []
   clientDependencies.push(
-    ...pageFilesClientSide.map((p) => ({ id: p.filePath, onlyAssets: false, eagerlyImported: false }))
+    ...pageFilesClientSide.map((p) => ({ id: p.filePath, onlyAssets: false, eagerlyImported: false })),
   )
   // CSS & assets
   clientDependencies.push(
-    ...pageFilesServerSideOnly.map((p) => ({ id: p.filePath, onlyAssets: true, eagerlyImported: false }))
+    ...pageFilesServerSideOnly.map((p) => ({ id: p.filePath, onlyAssets: true, eagerlyImported: false })),
   )
 
   // Handle SPA & SSR pages.

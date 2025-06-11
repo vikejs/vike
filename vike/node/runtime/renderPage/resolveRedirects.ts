@@ -10,7 +10,7 @@ import {
   assertUsage,
   assertUsageUrlRedirectTarget,
   assertWarning,
-  isUrlRedirectTarget
+  isUrlRedirectTarget,
 } from '../../../shared/utils.js'
 import { resolveUrlPathname } from '../../../shared/route/resolveUrlPathname.js'
 import { assertRouteString, isStaticRouteString, resolveRouteString } from '../../../shared/route/resolveRouteString.js'
@@ -30,7 +30,7 @@ function resolveRedirects(redirectsAll: Record<string, string>[], urlPathname: s
 
 function getStaticRedirectsForPrerender(
   redirectsAll: Record<string, string>[],
-  showWarningUponDynamicRedirects: boolean
+  showWarningUponDynamicRedirects: boolean,
 ): Record<string, string> {
   const redirects = merge(redirectsAll)
   const redirectsStatic: Record<string, string> = {}
@@ -42,7 +42,7 @@ function getStaticRedirectsForPrerender(
       assertWarning(
         false,
         `Dynamic redirect ${pc.cyan(urlSource)} -> ${pc.cyan(urlTarget)} cannot be pre-rendered. You can remove this warning by setting +prerender.partial to true (https://vike.dev/prerender#partial).`,
-        { onlyOnce: true }
+        { onlyOnce: true },
       )
     }
   }
@@ -74,8 +74,8 @@ function assertParams(urlSource: string, urlTarget: string) {
       assertUsage(
         segments.includes(routeSegment),
         `${redirectsErrPrefix} The redirection source URL ${pc.string(urlSource)} is missing the URL parameter ${pc.string(
-          routeSegment
-        )} used by the redirection target URL ${pc.string(urlTarget)}`
+          routeSegment,
+        )} used by the redirection target URL ${pc.string(urlTarget)}`,
       )
     }
   })

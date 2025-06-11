@@ -28,7 +28,7 @@ function testMarkdownClientFile(isDev: boolean) {
     await page.goto(getServerUrl() + '/markdown')
     await autoRetry(() => {
       expectLog('Hello from +client.ts with viewport height', {
-        filter: (logEntry) => logEntry.logSource === 'Browser Log'
+        filter: (logEntry) => logEntry.logSource === 'Browser Log',
       })
     })
     await workaroundPlaywrightRaceCondition()

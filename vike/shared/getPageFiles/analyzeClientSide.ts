@@ -8,7 +8,7 @@ import { analyzePageClientSide } from './analyzePageClientSide.js'
 function analyzeClientSide(
   pageConfig: PageConfigRuntime | null,
   pageFilesAll: PageFile[],
-  pageId: string
+  pageId: string,
 ): { isClientRuntimeLoaded: boolean; isClientRouting: boolean } {
   // V1 design
   if (pageConfig) {

@@ -31,7 +31,7 @@ function isStreamFromReactStreamingPackage(thing: unknown): thing is StreamFromR
       isVikeReactApp()
         ? //
           'Update vike-react to its latest version'
-        : 'Update react-streaming to its latest version'
+        : 'Update react-streaming to its latest version',
     )
     return true
   }
