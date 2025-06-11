@@ -1949,7 +1949,7 @@ importers:
         version: 6.1.0(@types/node@20.17.17)(terser@5.38.1)(tsx@4.19.4)
     devDependencies:
       '@biomejs/biome':
-        specifier: ^1.5.3
+        specifier: ^1.9.4
         version: 1.9.4
       '@brillout/release-me':
         specifier: ^0.4.2
