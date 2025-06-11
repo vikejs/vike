@@ -29,7 +29,7 @@
     "format": "pnpm run format:biome",
     "format:prettier": "git ls-files | egrep '\\.(json|js|jsx|css|ts|tsx|vue|mjs|cjs)$' | grep --invert-match package.json | xargs pnpm exec prettier --write",
     "format:biome": "biome check --write --unsafe",
-    "format:check": "biome check || (echo '\\033[1;34mFix errors by running `$ pnpm run -w format`.\\033[0m' && exit 1)",
+    "format:check": "biome ci || (echo '\\033[1;34mFix errors by running `$ pnpm run -w format`.\\033[0m' && exit 1)",
     "========= Reset": "",
     "reset": "git clean -Xdf && pnpm install && pnpm run build",
     "========= Only allow pnpm; forbid yarn & npm": "",
