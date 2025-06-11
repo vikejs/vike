@@ -126,8 +126,7 @@ function createHttpResponseError(pageContext: {
   return createHttpResponseError_(reason)
 }
 function createHttpResponseErrorWithoutGlobalContext() {
-  const reason = 'no error page (https://vike.dev/error-page) could be rendered' as const
-  return createHttpResponseError_(reason)
+  return createHttpResponseError_('no error page (https://vike.dev/error-page) could be rendered')
 }
 function createHttpResponseError_(reason: string): HttpResponse {
   const httpResponse = createHttpResponse(
