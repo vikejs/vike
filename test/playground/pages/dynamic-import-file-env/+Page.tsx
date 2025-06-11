@@ -31,7 +31,7 @@ function Page() {
   }
   return (
     <>
-      <p>Dyanmic import() of .client.js and .server.js</p>
+      <p>Dynamic import() of .client.js and .server.js</p>
     </>
   )
 }

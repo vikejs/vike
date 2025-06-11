@@ -36,7 +36,7 @@ function getStaticRedirectsForPrerender(redirectsAll: Record<string, string>[]):
     if (isStaticRouteString(urlSource)) {
       redirectsStatic[urlSource] = urlTarget
     } else {
-      assertWarning(false, `Dyanmic redirect ${pc.cyan(urlSource)} -> ${pc.cyan(urlTarget)} cannot be pre-rendered`, {
+      assertWarning(false, `Dynamic redirect ${pc.cyan(urlSource)} -> ${pc.cyan(urlTarget)} cannot be pre-rendered`, {
         onlyOnce: true
       })
     }
