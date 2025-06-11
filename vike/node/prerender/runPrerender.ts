@@ -1172,6 +1172,7 @@ async function prerenderRedirects(
 }
 function getRedirectHtml(urlTarget: string) {
   const urlTargetSafe = escapeHtml(urlTarget)
+  // To test it: /test/playground => http://localhost:3000/download
   const htmlString = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1179,7 +1180,8 @@ function getRedirectHtml(urlTarget: string) {
   <meta http-equiv="refresh" content="0;url=${urlTargetSafe}">
   <title>Redirect ${urlTargetSafe}</title>
 </head>
-<body style="min-height: 100vh; margin: 0; font-family: sans-serif; display: flex; justify-content: center; align-items: center;">
+<body style="min-height: 100vh; margin: 0; font-family: sans-serif; display: flex; justify-content: center; align-items: center; transition: opacity 0.3s;">
+  <script>document.body.style.opacity=0; setTimeout(()=>{document.body.style.opacity=1},1000);</script>
   <div>
     <h1>Redirect <a href="${urlTargetSafe}"><code style="background-color: #eaeaea; padding: 3px 5px; border-radius: 4px;">${urlTargetSafe}</code></a></h1>
     <p>If you aren't redirected, click the link above.</p>
