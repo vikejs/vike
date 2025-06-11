@@ -72,7 +72,6 @@ type HtmlFile = {
   pageContext: PageContextPrerendered
   htmlString: string
   pageContextSerialized: string | null
-  doNotCreateExtraDirectory: boolean
 }
 
 type DoNotPrerenderList = { pageId: string }[]
@@ -84,7 +83,12 @@ type ProvidedByHookTransformer = null | {
   hookFilePath: string
   hookName: 'onPrerenderStart' | 'onBeforePrerender'
 }
-type PageContextPrerendered = { urlOriginal: string; _providedByHook?: ProvidedByHook; pageId: string }
+type PageContextPrerendered = {
+  urlOriginal: string
+  _providedByHook?: ProvidedByHook
+  pageId: string
+  is404: boolean
+}
 type PrerenderedPageContexts = Record<string, PageContextPrerendered>
 
 type PrerenderContextPublic = Pick<
@@ -221,7 +225,7 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
     const { pageId } = htmlFile.pageContext
     assert(pageId)
     prerenderContext._prerenderedPageContexts[pageId] = htmlFile.pageContext
-    await writeFiles(htmlFile, viteConfig, options.onPagePrerender, prerenderContext.output, logLevel)
+    await writeFiles(htmlFile, viteConfig, options.onPagePrerender, prerenderContext, logLevel)
   }
 
   await prerenderPages(prerenderContext, concurrencyLimit, onComplete)
@@ -833,8 +837,7 @@ async function prerenderPages(
         await onComplete({
           pageContext,
           htmlString: documentHtml,
-          pageContextSerialized,
-          doNotCreateExtraDirectory: prerenderContext._noExtraDir ?? pageContext.is404
+          pageContextSerialized
         })
       })
     )
@@ -889,11 +892,29 @@ async function warnMissingPages(
 }
 
 async function writeFiles(
-  { pageContext, htmlString, pageContextSerialized, doNotCreateExtraDirectory }: HtmlFile,
+  { pageContext, htmlString, pageContextSerialized }: HtmlFile,
   viteConfig: ResolvedConfig,
   onPagePrerender: Function | undefined,
-  output: Output,
+  prerenderContext: PrerenderContext,
   logLevel: 'warn' | 'info'
+) {
+  const writeJobs = [write(pageContext, 'HTML', htmlString, viteConfig, onPagePrerender, prerenderContext, logLevel)]
+  if (pageContextSerialized !== null) {
+    writeJobs.push(
+      write(pageContext, 'JSON', pageContextSerialized, viteConfig, onPagePrerender, prerenderContext, logLevel)
+    )
+  }
+  await Promise.all(writeJobs)
+}
+
+async function write(
+  pageContext: PageContextPrerendered,
+  fileType: FileType,
+  fileContent: string,
+  viteConfig: ResolvedConfig,
+  onPagePrerender: Function | undefined,
+  prerenderContext: PrerenderContext,
+  logLevel: 'info' | 'warn'
 ) {
   const { urlOriginal } = pageContext
   assert(urlOriginal.startsWith('/'))
@@ -901,53 +922,9 @@ async function writeFiles(
   const { outDirClient } = getOutDirs(viteConfig)
   const { root } = viteConfig
 
-  const writeJobs = [
-    write(
-      urlOriginal,
-      pageContext,
-      'HTML',
-      htmlString,
-      root,
-      outDirClient,
-      doNotCreateExtraDirectory,
-      onPagePrerender,
-      output,
-      logLevel
-    )
-  ]
-  if (pageContextSerialized !== null) {
-    writeJobs.push(
-      write(
-        urlOriginal,
-        pageContext,
-        'JSON',
-        pageContextSerialized,
-        root,
-        outDirClient,
-        doNotCreateExtraDirectory,
-        onPagePrerender,
-        output,
-        logLevel
-      )
-    )
-  }
-  await Promise.all(writeJobs)
-}
-
-async function write(
-  urlOriginal: string,
-  pageContext: PageContextPrerendered,
-  fileType: FileType,
-  fileContent: string,
-  root: string,
-  outDirClient: string,
-  doNotCreateExtraDirectory: boolean,
-  onPagePrerender: Function | undefined,
-  output: Output,
-  logLevel: 'info' | 'warn'
-) {
   let fileUrl: string
   if (fileType === 'HTML') {
+    const doNotCreateExtraDirectory = prerenderContext._noExtraDir ?? pageContext.is404
     fileUrl = urlToFile(urlOriginal, '.html', doNotCreateExtraDirectory)
   } else {
     assert(fileType === 'JSON')
@@ -972,7 +949,7 @@ async function write(
       fileContent
     }
   })
-  output.push({
+  prerenderContext.output.push({
     filePath,
     fileType,
     fileContent,
