@@ -28,17 +28,22 @@ function resolveRedirects(redirectsAll: Record<string, string>[], urlPathname: s
   return null
 }
 
-function getStaticRedirectsForPrerender(redirectsAll: Record<string, string>[]): Record<string, string> {
+function getStaticRedirectsForPrerender(
+  redirectsAll: Record<string, string>[],
+  showWarningUponDynamicRedirects: boolean
+): Record<string, string> {
   const redirects = merge(redirectsAll)
   const redirectsStatic: Record<string, string> = {}
   for (const [urlSource, urlTarget] of Object.entries(redirects)) {
     assertRedirect(urlSource, urlTarget)
     if (isStaticRouteString(urlSource)) {
       redirectsStatic[urlSource] = urlTarget
-    } else {
-      assertWarning(false, `Dynamic redirect ${pc.cyan(urlSource)} -> ${pc.cyan(urlTarget)} cannot be pre-rendered`, {
-        onlyOnce: true
-      })
+    } else if (showWarningUponDynamicRedirects) {
+      assertWarning(
+        false,
+        `Dynamic redirect ${pc.cyan(urlSource)} -> ${pc.cyan(urlTarget)} cannot be pre-rendered. You can remove this warning by setting +prerender.partial to true (https://vike.dev/prerender#partial).`,
+        { onlyOnce: true }
+      )
     }
   }
   return redirectsStatic

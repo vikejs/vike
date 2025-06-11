@@ -90,8 +90,6 @@ function tolerateError({ logSource, logText, testInfo }) {
       // [vike][request(1)][Warning] The onBeforeRender() hook defined by /renderer/+onBeforeRender.js is slow: it's taking more than 4 seconds (https://vike.dev/hooksTimeout)
       "is slow: it's taking more than"
     ].some((t) => logText.includes(t)) ||
-    // [11:27:09.496][/test/playground/test-preview.test.ts][npm run preview][stderr] 11:27:09 AM [vike][Warning] Dynamic redirect /product/@id -> /buy/@id cannot be pre-rendered
-    (logText.includes('Dynamic redirect') && logText.includes('cannot be pre-rendered')) ||
     //
     // TO-DO/eventually: move everything to the array above
     isViteCjsWarning() ||

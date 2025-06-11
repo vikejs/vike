@@ -15,6 +15,7 @@ function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal, 'conf
   const prerenderSettings = prerenderConfigs.filter(isObject2)
   const prerenderConfigGlobal = {
     partial: pickFirst(prerenderSettings.map((c) => c.partial)) ?? false,
+    redirects: pickFirst(prerenderSettings.map((c) => c.redirects)) ?? null,
     noExtraDir: pickFirst(prerenderSettings.map((c) => c.noExtraDir)) ?? null,
     keepDistServer: pickFirst(prerenderSettings.map((c) => c.keepDistServer)) ?? false,
     parallel: pickFirst(prerenderSettings.map((c) => c.parallel)) ?? true,

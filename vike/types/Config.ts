@@ -335,6 +335,12 @@ type ConfigBuiltIn = {
          */
         partial?: boolean
         /**
+         * Whether +redirects should be pre-rendered to HTML documents that redirect the user.
+         *
+         * https://vike.dev/prerender#redirects
+         */
+        redirects?: boolean
+        /**
          * Don't create a new directory for each HTML file.
          *
          * For example, generate `dist/client/about.html` instead of `dist/client/about/index.html`.
