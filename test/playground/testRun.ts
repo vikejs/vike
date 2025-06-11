@@ -42,7 +42,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   testSettingInheritedByDescendants()
   testSettingEffect()
   testPrerenderSettings({ isDev, rootDir })
-  testRedirectMailto()
+  testRedirectMailto(isDev)
   testNavigateEarly()
   testDynamicImportFileEnv({ isDev })
   testNestedLayout()

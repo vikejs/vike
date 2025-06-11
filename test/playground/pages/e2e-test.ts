@@ -52,32 +52,41 @@ function testGlobalContext() {
 
 // Unit tests at /vike/node/runtime/renderPage/resolveRedirects.spec.ts
 // https://github.com/vikejs/vike/blob/0e260ad6e64e98952138a90950e10e2d59d94a36/vike/node/runtime/renderPage/resolveRedirects.spec.ts
-function testRedirectMailto() {
+function testRedirectMailto(isDev: boolean) {
   test('+redirects', async () => {
-    await testRedirect('/about-us', '/about')
-    await testRedirect('/products/computer', '/produkte/komputer')
+    await testRedirect('/about-us', '/about', isDev)
+    await testRedirect('/products/computer', '/produkte/komputer', isDev)
     /* TO-DO/eventually: it doesn't work — make it work
     '/product?category=computer': '/produkte?kategorie=komputer',
     */
-    await testRedirect('/chat', 'https://discord.com/invite/hfHhnJyVg8')
-    await testRedirect('/mail', 'mailto:some@example.com')
-    await testRedirect('/download', 'magnet:?xt=urn:btih:example')
-    await testRedirect('/product/42', '/buy/42')
-    await testRedirect('/admin/some/nested-page?with&some-args', '/private/some/nested-page?with&some-args')
+    await testRedirect('/chat', 'https://discord.com/invite/hfHhnJyVg8', isDev)
+    await testRedirect('/mail', 'mailto:some@example.com', isDev)
+    await testRedirect('/download', 'magnet:?xt=urn:btih:example', isDev)
+    await testRedirect('/product/42', '/buy/42', isDev)
+    await testRedirect('/admin/some/nested-page?with&some-args', '/private/some/nested-page?with&some-args', isDev)
     await testRedirect(
       '/admins/some/nested-page?with&some-args',
-      'https://admin.example.org/some/nested-page?with&some-args'
+      'https://admin.example.org/some/nested-page?with&some-args',
+      isDev
     )
     await testRedirect(
       '/external-redirect',
-      'https://app.nmrium.org#?toc=https://cheminfo.github.io/nmr-dataset-demo/samples.json'
+      'https://app.nmrium.org#?toc=https://cheminfo.github.io/nmr-dataset-demo/samples.json',
+      isDev
     )
   })
 }
 
-async function testRedirect(source: string, target: string) {
+async function testRedirect(source: string, target: string, isDev: boolean) {
   const resp = await fetch(getServerUrl() + source, { redirect: 'manual' })
-  expect(resp.headers.get('Location')).toBe(target)
+  const redirectsTo = resp.headers.get('Location')
+  if (redirectsTo !== null) {
+    expect(redirectsTo).toBe(target)
+  } else {
+    const html = await resp.text()
+    expect(html).toContain(`<meta http-equiv="refresh" content="0;url=${target}">`)
+    expect(isDev).toBe(false)
+  }
 }
 
 function testOnCreateGlobalContext(isDev: boolean) {
