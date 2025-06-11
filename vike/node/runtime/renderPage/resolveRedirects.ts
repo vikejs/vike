@@ -22,16 +22,20 @@ function resolveRedirects(redirectsAll: Record<string, string>[], urlPathname: s
 }
 
 function resolveRouteStringRedirect(urlSource: string, urlTarget: string, urlPathname: string): null | string {
-  assertRouteString(urlSource, `${redirectsErrPrefix} Invalid`)
-  // Is allowing any protocol a safety issue? https://github.com/vikejs/vike/pull/1292#issuecomment-1828043917
-  assertUsageUrlRedirectTarget(urlTarget, `${redirectsErrPrefix} The URL redirection target`, true)
-  assertParams(urlSource, urlTarget)
+  assertRedirect(urlSource, urlTarget)
   const match = resolveRouteString(urlSource, urlPathname)
   if (!match) return null
   const urlResolved = resolveUrlPathname(urlTarget, match.routeParams)
   if (urlResolved === urlPathname) return null
   assert(isUrlRedirectTarget(urlResolved))
   return urlResolved
+}
+
+function assertRedirect(urlSource: string, urlTarget: string) {
+  assertRouteString(urlSource, `${redirectsErrPrefix} Invalid`)
+  // Is allowing any protocol a safety issue? https://github.com/vikejs/vike/pull/1292#issuecomment-1828043917
+  assertUsageUrlRedirectTarget(urlTarget, `${redirectsErrPrefix} The URL redirection target`, true)
+  assertParams(urlSource, urlTarget)
 }
 
 function assertParams(urlSource: string, urlTarget: string) {

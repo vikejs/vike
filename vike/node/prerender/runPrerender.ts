@@ -40,7 +40,7 @@ import {
   initGlobalContext_runPrerender,
   setGlobalContext_isPrerendering
 } from '../runtime/globalContext.js'
-import { resolveConfig as resolveViteConfig } from 'vite'
+import { type ResolvedConfig, resolveConfig as resolveViteConfig } from 'vite'
 import { getPageFilesServerSide } from '../../shared/getPageFiles.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
 import { getUrlFromRouteString } from '../../shared/route/resolveRouteString.js'
@@ -72,7 +72,6 @@ type HtmlFile = {
   pageContext: PageContextPrerendered
   htmlString: string
   pageContextSerialized: string | null
-  doNotCreateExtraDirectory: boolean
 }
 
 type DoNotPrerenderList = { pageId: string }[]
@@ -84,7 +83,12 @@ type ProvidedByHookTransformer = null | {
   hookFilePath: string
   hookName: 'onPrerenderStart' | 'onBeforePrerender'
 }
-type PageContextPrerendered = { urlOriginal: string; _providedByHook?: ProvidedByHook; pageId: string }
+type PageContextPrerendered = {
+  urlOriginal: string
+  _providedByHook?: ProvidedByHook
+  pageId: string
+  is404: boolean
+}
 type PrerenderedPageContexts = Record<string, PageContextPrerendered>
 
 type PrerenderContextPublic = Pick<
@@ -157,8 +161,7 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
   const viteConfig = await resolveViteConfig(options.viteConfig || {}, 'build', 'production')
   const vikeConfig = await getVikeConfigInternal()
 
-  const { outDirClient, outDirServer } = getOutDirs(viteConfig)
-  const { root } = viteConfig
+  const { outDirServer } = getOutDirs(viteConfig)
   const prerenderConfigGlobal = resolvePrerenderConfigGlobal(vikeConfig)
   const { partial, noExtraDir, parallel, defaultLocalValue, isPrerenderingEnabled } = prerenderConfigGlobal
   if (!isPrerenderingEnabled) {
@@ -222,7 +225,7 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
     const { pageId } = htmlFile.pageContext
     assert(pageId)
     prerenderContext._prerenderedPageContexts[pageId] = htmlFile.pageContext
-    await writeFiles(htmlFile, root, outDirClient, options.onPagePrerender, prerenderContext.output, logLevel)
+    await writeFiles(htmlFile, viteConfig, options.onPagePrerender, prerenderContext, logLevel)
   }
 
   await prerenderPages(prerenderContext, concurrencyLimit, onComplete)
@@ -834,8 +837,7 @@ async function prerenderPages(
         await onComplete({
           pageContext,
           htmlString: documentHtml,
-          pageContextSerialized,
-          doNotCreateExtraDirectory: prerenderContext._noExtraDir ?? pageContext.is404
+          pageContextSerialized
         })
       })
     )
@@ -890,63 +892,39 @@ async function warnMissingPages(
 }
 
 async function writeFiles(
-  { pageContext, htmlString, pageContextSerialized, doNotCreateExtraDirectory }: HtmlFile,
-  root: string,
-  outDirClient: string,
+  { pageContext, htmlString, pageContextSerialized }: HtmlFile,
+  viteConfig: ResolvedConfig,
   onPagePrerender: Function | undefined,
-  output: Output,
+  prerenderContext: PrerenderContext,
   logLevel: 'warn' | 'info'
 ) {
-  const { urlOriginal } = pageContext
-  assert(urlOriginal.startsWith('/'))
-
-  const writeJobs = [
-    write(
-      urlOriginal,
-      pageContext,
-      'HTML',
-      htmlString,
-      root,
-      outDirClient,
-      doNotCreateExtraDirectory,
-      onPagePrerender,
-      output,
-      logLevel
-    )
-  ]
+  const writeJobs = [write(pageContext, 'HTML', htmlString, viteConfig, onPagePrerender, prerenderContext, logLevel)]
   if (pageContextSerialized !== null) {
     writeJobs.push(
-      write(
-        urlOriginal,
-        pageContext,
-        'JSON',
-        pageContextSerialized,
-        root,
-        outDirClient,
-        doNotCreateExtraDirectory,
-        onPagePrerender,
-        output,
-        logLevel
-      )
+      write(pageContext, 'JSON', pageContextSerialized, viteConfig, onPagePrerender, prerenderContext, logLevel)
     )
   }
   await Promise.all(writeJobs)
 }
 
 async function write(
-  urlOriginal: string,
   pageContext: PageContextPrerendered,
   fileType: FileType,
   fileContent: string,
-  root: string,
-  outDirClient: string,
-  doNotCreateExtraDirectory: boolean,
+  viteConfig: ResolvedConfig,
   onPagePrerender: Function | undefined,
-  output: Output,
+  prerenderContext: PrerenderContext,
   logLevel: 'info' | 'warn'
 ) {
+  const { urlOriginal } = pageContext
+  assert(urlOriginal.startsWith('/'))
+
+  const { outDirClient } = getOutDirs(viteConfig)
+  const { root } = viteConfig
+
   let fileUrl: string
   if (fileType === 'HTML') {
+    const doNotCreateExtraDirectory = prerenderContext._noExtraDir ?? pageContext.is404
     fileUrl = urlToFile(urlOriginal, '.html', doNotCreateExtraDirectory)
   } else {
     assert(fileType === 'JSON')
@@ -958,7 +936,7 @@ async function write(
   const filePathRelative = fileUrl.slice(1)
   assert(
     !filePathRelative.startsWith('/'),
-    // Let's remove this debug info after we add a assertUsage() avoiding https://github.com/vikejs/vike/issues/1929
+    // https://github.com/vikejs/vike/issues/1929
     { urlOriginal, fileUrl }
   )
   assertPosixPath(outDirClient)
@@ -971,7 +949,7 @@ async function write(
       fileContent
     }
   })
-  output.push({
+  prerenderContext.output.push({
     filePath,
     fileType,
     fileContent,
