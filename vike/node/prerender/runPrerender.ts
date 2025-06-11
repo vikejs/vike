@@ -40,7 +40,7 @@ import {
   initGlobalContext_runPrerender,
   setGlobalContext_isPrerendering
 } from '../runtime/globalContext.js'
-import { resolveConfig as resolveViteConfig } from 'vite'
+import { type ResolvedConfig, resolveConfig as resolveViteConfig } from 'vite'
 import { getPageFilesServerSide } from '../../shared/getPageFiles.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
 import { getUrlFromRouteString } from '../../shared/route/resolveRouteString.js'
@@ -157,8 +157,7 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
   const viteConfig = await resolveViteConfig(options.viteConfig || {}, 'build', 'production')
   const vikeConfig = await getVikeConfigInternal()
 
-  const { outDirClient, outDirServer } = getOutDirs(viteConfig)
-  const { root } = viteConfig
+  const { outDirServer } = getOutDirs(viteConfig)
   const prerenderConfigGlobal = resolvePrerenderConfigGlobal(vikeConfig)
   const { partial, noExtraDir, parallel, defaultLocalValue, isPrerenderingEnabled } = prerenderConfigGlobal
   if (!isPrerenderingEnabled) {
@@ -222,7 +221,7 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
     const { pageId } = htmlFile.pageContext
     assert(pageId)
     prerenderContext._prerenderedPageContexts[pageId] = htmlFile.pageContext
-    await writeFiles(htmlFile, root, outDirClient, options.onPagePrerender, prerenderContext.output, logLevel)
+    await writeFiles(htmlFile, viteConfig, options.onPagePrerender, prerenderContext.output, logLevel)
   }
 
   await prerenderPages(prerenderContext, concurrencyLimit, onComplete)
@@ -891,14 +890,16 @@ async function warnMissingPages(
 
 async function writeFiles(
   { pageContext, htmlString, pageContextSerialized, doNotCreateExtraDirectory }: HtmlFile,
-  root: string,
-  outDirClient: string,
+  viteConfig: ResolvedConfig,
   onPagePrerender: Function | undefined,
   output: Output,
   logLevel: 'warn' | 'info'
 ) {
   const { urlOriginal } = pageContext
   assert(urlOriginal.startsWith('/'))
+
+  const { outDirClient } = getOutDirs(viteConfig)
+  const { root } = viteConfig
 
   const writeJobs = [
     write(
