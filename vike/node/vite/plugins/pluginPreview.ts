@@ -2,8 +2,8 @@ export { pluginPreview }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { assertUsage, applyPreview } from '../utils.js'
-import fs from 'fs'
-import path from 'path'
+import fs from 'node:fs'
+import path from 'node:path'
 import type { ViteDevServer } from 'vite'
 import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
 import pc from '@brillout/picocolors'

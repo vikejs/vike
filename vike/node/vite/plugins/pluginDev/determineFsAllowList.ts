@@ -4,7 +4,7 @@ import { searchForWorkspaceRoot } from 'vite'
 import type { ResolvedConfig } from 'vite'
 import path from 'node:path'
 import { assert, assertPosixPath, getVikeNodeModulesRoot } from '../../utils.js'
-import { fileURLToPath } from 'url'
+import { fileURLToPath } from 'node:url'
 // @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
 const importMetaUrl: string = import.meta.url
 assertPosixPath(importMetaUrl)

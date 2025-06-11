@@ -13,7 +13,7 @@ import {
   setVikeConfigContext,
   type VikeConfigInternal,
 } from '../vite/shared/resolveVikeConfigInternal.js'
-import path from 'path'
+import path from 'node:path'
 import { assert, assertUsage, getGlobalObject, isObject, pick, toPosixPath } from './utils.js'
 import pc from '@brillout/picocolors'
 import { clearGlobalContext } from '../runtime/globalContext.js'

@@ -1,7 +1,7 @@
 export { testRun }
 
 import { expect, describe, it } from 'vitest'
-import path from 'path'
+import path from 'node:path'
 import { renderPage } from 'vike/server'
 import { stabilizeHashs } from './utils/stabilizeHashs'
 

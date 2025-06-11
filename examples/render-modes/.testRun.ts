@@ -10,7 +10,7 @@ import {
   editFile,
   editFileRevert,
 } from '@brillout/test-e2e'
-import assert from 'assert'
+import assert from 'node:assert'
 import { waitForNavigation, sleepBeforeEditFile } from '../../test/utils'
 
 export { testRun }

@@ -5,7 +5,7 @@ import pc from '@brillout/picocolors'
 import { PROJECT_VERSION, assert, assertUsage, assertWarning, findPackageJson, isObject } from '../../utils.js'
 import { getConfVal } from '../resolveVikeConfigInternal.js'
 import type { PlusFile } from './getPlusFilesAll.js'
-import path from 'path'
+import path from 'node:path'
 import semver from 'semver'
 
 function assertExtensionsConventions(plusFile: PlusFile): void {

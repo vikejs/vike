@@ -5,8 +5,8 @@ export { pluginDistFileNames }
 //  - Blocker: https://github.com/rollup/rollup/issues/4724
 
 import { assertPosixPath, assert, assertUsage, isArray, isCallable } from '../../utils.js'
-import path from 'path'
-import crypto from 'crypto'
+import path from 'node:path'
+import crypto from 'node:crypto'
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
 import { getAssetsDir } from '../../shared/getAssetsDir.js'
 import { assertModuleId, getModuleFilePathAbsolute } from '../../shared/getFilePath.js'

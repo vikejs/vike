@@ -7,7 +7,7 @@ export type { PrerenderTrigger }
 // - The issue is that prerenderContext needs to be serialized for being able to pass it from the child process to the parent process.
 // - The prerenderContext is used by vike-vercel
 
-import path from 'path'
+import path from 'node:path'
 import { route } from '../../shared/route/index.js'
 import {
   assert,
@@ -33,7 +33,7 @@ import {
 import { prerenderPage } from '../runtime/renderPage/renderPageAlreadyRouted.js'
 import { createPageContextServerSide } from '../runtime/renderPage/createPageContextServerSide.js'
 import pc from '@brillout/picocolors'
-import { cpus } from 'os'
+import { cpus } from 'node:os'
 import type { PageFile } from '../../shared/getPageFiles.js'
 import {
   getGlobalContextServerInternal,
@@ -970,7 +970,7 @@ async function write(
   if (onPagePrerender) {
     await onPagePrerender(pageContext)
   } else {
-    const { promises } = await import('fs')
+    const { promises } = await import('node:fs')
     const { writeFile, mkdir } = promises
     await mkdir(path.posix.dirname(filePath), { recursive: true })
     await writeFile(filePath, fileContent)

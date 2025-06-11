@@ -4,10 +4,10 @@ export { handleAssetsManifest_isFixEnabled }
 export { handleAssetsManifest_assertUsageCssCodeSplit }
 export { handleAssetsManifest_assertUsageCssTarget }
 
-import fs from 'fs/promises'
-import fs_sync from 'fs'
-import path from 'path'
-import { existsSync } from 'fs'
+import fs from 'node:fs/promises'
+import fs_sync from 'node:fs'
+import path from 'node:path'
+import { existsSync } from 'node:fs'
 import type { ViteManifest, ViteManifestEntry } from '../../../../types/ViteManifest.js'
 import {
   assert,

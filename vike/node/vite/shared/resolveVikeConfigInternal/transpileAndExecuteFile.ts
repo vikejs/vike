@@ -14,8 +14,8 @@ import {
   type ResolveResult,
   type OnResolveResult,
 } from 'esbuild'
-import fs from 'fs'
-import path from 'path'
+import fs from 'node:fs'
+import path from 'node:path'
 import pc from '@brillout/picocolors'
 import { import_ } from '@brillout/import'
 import {

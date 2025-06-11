@@ -1,9 +1,9 @@
 import { expect, describe, it, assert } from 'vitest'
-import path from 'path'
-import fs from 'fs'
+import path from 'node:path'
+import fs from 'node:fs'
 // process.env.DEBUG = 'vike:crawl'
 const { crawlPlusFiles } = await import('../crawlPlusFiles')
-import { fileURLToPath } from 'url'
+import { fileURLToPath } from 'node:url'
 const __dirname_ = path.dirname(fileURLToPath(import.meta.url))
 const userRootDir = path.join(__dirname_, './test-file-structure')
 

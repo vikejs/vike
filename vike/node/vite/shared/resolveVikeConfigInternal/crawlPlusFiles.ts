@@ -19,10 +19,10 @@ import {
   hasProp,
   isNotNullish,
 } from '../../utils.js'
-import path from 'path'
+import path from 'node:path'
 import { glob } from 'tinyglobby'
-import { exec } from 'child_process'
-import { promisify } from 'util'
+import { exec } from 'node:child_process'
+import { promisify } from 'node:util'
 import { isTemporaryBuildFile } from './transpileAndExecuteFile.js'
 import { getEnvVarObject } from '../getEnvVarObject.js'
 import pc from '@brillout/picocolors'

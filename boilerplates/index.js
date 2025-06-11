@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
 // @ts-check
-const fs = require('fs')
-const path = require('path')
+const fs = require('node:fs')
+const path = require('node:path')
 const argv = require('minimist')(process.argv.slice(2))
 const { prompt } = require('enquirer')
 const { green, cyan, bold } = require('picocolors')
-const { execSync } = require('child_process')
+const { execSync } = require('node:child_process')
 
 const BOILERPLATES = [
   {

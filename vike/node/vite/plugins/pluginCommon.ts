@@ -15,7 +15,7 @@ import {
 import { assertRollupInput } from './pluginBuild/pluginBuildConfig.js'
 import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
 import pc from '@brillout/picocolors'
-import path from 'path'
+import path from 'node:path'
 import { assertResolveAlias } from './pluginCommon/assertResolveAlias.js'
 import { isViteCliCall } from '../shared/isViteCliCall.js'
 import { isVikeCliOrApi } from '../../api/context.js'

@@ -7,7 +7,7 @@ export { getModuleFilePathRelative }
 export { cleanFilePathUnkown }
 export { assertModuleId }
 
-import path from 'path'
+import path from 'node:path'
 import {
   assert,
   assertIsImportPathNpmPackage,

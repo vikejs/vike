@@ -14,7 +14,7 @@ import {
   expect,
   sleep,
 } from '@brillout/test-e2e'
-import assert from 'assert'
+import assert from 'node:assert'
 
 function testRun(
   cmd: 'npm run dev' | 'npm run prod' | 'npm run preview',

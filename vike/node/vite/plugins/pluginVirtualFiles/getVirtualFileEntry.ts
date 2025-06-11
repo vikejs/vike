@@ -18,7 +18,7 @@ import {
 import { isVirtualFileIdEntry } from '../../../shared/virtualFiles/virtualFileEntry.js'
 import { version as viteVersion } from 'vite'
 import { type FileType, fileTypes } from '../../../../shared/getPageFiles/fileTypes.js'
-import path from 'path'
+import path from 'node:path'
 import { getVirtualFilePageConfigsEager } from './getVirtualFilePageConfigsEager.js'
 import { getVikeConfigInternal, isV1Design as isV1Design_ } from '../../shared/resolveVikeConfigInternal.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
