@@ -55,7 +55,6 @@ function getCiJobs() {
 
 function tolerateError({ logSource, logText, testInfo }) {
   return (
-    // TODO/eventually: move everything to this array
     [
       // [23:54:58.279][/test-preview.test.ts][npm run preview][stderr] 11:54:58 PM [vike][Warning] getGlobalContextSync() is going to be deprecated in the next major release, see https://vike.dev/getGlobalContext
       'getGlobalContextSync() is going to be deprecated',
@@ -91,6 +90,10 @@ function tolerateError({ logSource, logText, testInfo }) {
       // [vike][request(1)][Warning] The onBeforeRender() hook defined by /renderer/+onBeforeRender.js is slow: it's taking more than 4 seconds (https://vike.dev/hooksTimeout)
       "is slow: it's taking more than"
     ].some((t) => logText.includes(t)) ||
+    // [11:27:09.496][/test/playground/test-preview.test.ts][npm run preview][stderr] 11:27:09 AM [vike][Warning] Dyanmic redirect /product/@id -> /buy/@id cannot be pre-rendered
+    (logText.includes('Dyanmic redirect') && logText.includes('cannot be pre-rendered')) ||
+    //
+    // TO-DO/eventually: move everything to the array above
     isViteCjsWarning() ||
     isRenderErrorPageDeprecationWarning() ||
     isSlowHookWarning() ||

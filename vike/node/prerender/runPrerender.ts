@@ -27,7 +27,8 @@ import {
   onSetupPrerender,
   PROJECT_VERSION,
   preservePropertyGetters,
-  changeEnumerable
+  changeEnumerable,
+  escapeHtml
 } from './utils.js'
 import { prerenderPage } from '../runtime/renderPage/renderPageAlreadyRouted.js'
 import { createPageContextServerSide } from '../runtime/renderPage/createPageContextServerSide.js'
@@ -66,6 +67,7 @@ import { resolvePrerenderConfigGlobal, resolvePrerenderConfigLocal } from './res
 import { getOutDirs } from '../vite/shared/getOutDirs.js'
 import fs from 'node:fs'
 import { getProxyForPublicUsage } from '../../shared/getProxyForPublicUsage.js'
+import { getStaticRedirectsForPrerender } from '../runtime/renderPage/resolveRedirects.js'
 const docLink = 'https://vike.dev/i18n#pre-rendering'
 
 type HtmlFile = {
@@ -86,7 +88,8 @@ type ProvidedByHookTransformer = null | {
 type PageContextPrerendered = {
   urlOriginal: string
   _providedByHook?: ProvidedByHook
-  pageId: string
+  pageId: string | null
+  isRedirect?: true
   is404: boolean
 }
 type PrerenderedPageContexts = Record<string, PageContextPrerendered>
@@ -223,13 +226,17 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
   const onComplete = async (htmlFile: HtmlFile) => {
     prerenderedCount++
     const { pageId } = htmlFile.pageContext
-    assert(pageId)
-    prerenderContext._prerenderedPageContexts[pageId] = htmlFile.pageContext
+    assert((typeof pageId === 'string' && pageId) || pageId === null)
+    if (pageId) {
+      prerenderContext._prerenderedPageContexts[pageId] = htmlFile.pageContext
+    }
     await writeFiles(htmlFile, viteConfig, options.onPagePrerender, prerenderContext, logLevel)
   }
 
   await prerenderPages(prerenderContext, concurrencyLimit, onComplete)
   warnContradictoryNoPrerenderList(prerenderContext._prerenderedPageContexts, doNotPrerenderList)
+
+  prerenderRedirects(globalContext, onComplete)
 
   if (logLevel === 'info') {
     console.log(`${pc.green(`✓`)} ${prerenderedCount} HTML documents pre-rendered.`)
@@ -1140,4 +1147,32 @@ function preparePrerenderContextForPublicUsage(prerenderContext: PrerenderContex
 
   const prerenderContextPublic = getProxyForPublicUsage(prerenderContext, 'prerenderContext')
   return prerenderContextPublic
+}
+
+async function prerenderRedirects(
+  globalContext: GlobalContextServerInternal,
+  onComplete: (htmlFile: HtmlFile) => Promise<void>
+) {
+  const redirects = globalContext.config.redirects ?? []
+  const redirectsStatic = getStaticRedirectsForPrerender(redirects)
+  for (const [urlSource, urlTarget] of Object.entries(redirectsStatic)) {
+    const urlTargetSafe = escapeHtml(urlTarget)
+    const htmlString = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="0;url=${urlTargetSafe}">
+  <title>Redirect to ${urlTargetSafe}</title>
+</head>
+<body>
+  <p>If you aren't redirected, <a href="${urlTargetSafe}">click here</a>.</p>
+</body>
+</html>`
+    const urlOriginal = urlSource
+    await onComplete({
+      pageContext: { urlOriginal, pageId: null, is404: false, isRedirect: true },
+      htmlString,
+      pageContextSerialized: null
+    })
+  }
 }
