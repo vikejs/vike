@@ -12,7 +12,7 @@
       "semicolons": "asNeeded",
       "lineWidth": 120,
       "quoteStyle": "single",
-      "trailingCommas": "none"
+      "trailingCommas": "all"
     }
   },
   "css": {
