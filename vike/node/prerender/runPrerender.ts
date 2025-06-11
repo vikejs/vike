@@ -1156,8 +1156,18 @@ async function prerenderRedirects(
   const redirects = globalContext.config.redirects ?? []
   const redirectsStatic = getStaticRedirectsForPrerender(redirects)
   for (const [urlSource, urlTarget] of Object.entries(redirectsStatic)) {
-    const urlTargetSafe = escapeHtml(urlTarget)
-    const htmlString = `<!DOCTYPE html>
+    const urlOriginal = urlSource
+    const htmlString = getRedirectHtml(urlTarget)
+    await onComplete({
+      pageContext: { urlOriginal, pageId: null, is404: false, isRedirect: true },
+      htmlString,
+      pageContextSerialized: null
+    })
+  }
+}
+function getRedirectHtml(urlTarget: string) {
+  const urlTargetSafe = escapeHtml(urlTarget)
+  const htmlString = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -1172,11 +1182,5 @@ async function prerenderRedirects(
   </div>
 </body>
 </html>`
-    const urlOriginal = urlSource
-    await onComplete({
-      pageContext: { urlOriginal, pageId: null, is404: false, isRedirect: true },
-      htmlString,
-      pageContextSerialized: null
-    })
-  }
+  return htmlString
 }
