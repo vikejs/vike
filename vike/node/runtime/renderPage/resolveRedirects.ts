@@ -1,12 +1,19 @@
 export { resolveRedirects }
+export { getStaticRedirectsForPrerender }
 
 // For ./resolveRedirects.spec.ts
 export { resolveRouteStringRedirect }
 
 import { assertIsNotBrowser } from '../../../utils/assertIsNotBrowser.js'
-import { assert, assertUsage, assertUsageUrlRedirectTarget, isUrlRedirectTarget } from '../../../shared/utils.js'
+import {
+  assert,
+  assertUsage,
+  assertUsageUrlRedirectTarget,
+  assertWarning,
+  isUrlRedirectTarget
+} from '../../../shared/utils.js'
 import { resolveUrlPathname } from '../../../shared/route/resolveUrlPathname.js'
-import { assertRouteString, resolveRouteString } from '../../../shared/route/resolveRouteString.js'
+import { assertRouteString, isStaticRouteString, resolveRouteString } from '../../../shared/route/resolveRouteString.js'
 import pc from '@brillout/picocolors'
 assertIsNotBrowser() // Don't bloat the client
 
@@ -19,6 +26,27 @@ function resolveRedirects(redirectsAll: Record<string, string>[], urlPathname: s
     if (urlResolved) return urlResolved
   }
   return null
+}
+
+function getStaticRedirectsForPrerender(
+  redirectsAll: Record<string, string>[],
+  showWarningUponDynamicRedirects: boolean
+): Record<string, string> {
+  const redirects = merge(redirectsAll)
+  const redirectsStatic: Record<string, string> = {}
+  for (const [urlSource, urlTarget] of Object.entries(redirects)) {
+    assertRedirect(urlSource, urlTarget)
+    if (isStaticRouteString(urlSource)) {
+      redirectsStatic[urlSource] = urlTarget
+    } else if (showWarningUponDynamicRedirects) {
+      assertWarning(
+        false,
+        `Dynamic redirect ${pc.cyan(urlSource)} -> ${pc.cyan(urlTarget)} cannot be pre-rendered. You can remove this warning by setting +prerender.partial to true (https://vike.dev/prerender#partial).`,
+        { onlyOnce: true }
+      )
+    }
+  }
+  return redirectsStatic
 }
 
 function resolveRouteStringRedirect(urlSource: string, urlTarget: string, urlPathname: string): null | string {

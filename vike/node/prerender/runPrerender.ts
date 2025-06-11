@@ -27,7 +27,8 @@ import {
   onSetupPrerender,
   PROJECT_VERSION,
   preservePropertyGetters,
-  changeEnumerable
+  changeEnumerable,
+  escapeHtml
 } from './utils.js'
 import { prerenderPage } from '../runtime/renderPage/renderPageAlreadyRouted.js'
 import { createPageContextServerSide } from '../runtime/renderPage/createPageContextServerSide.js'
@@ -66,6 +67,7 @@ import { resolvePrerenderConfigGlobal, resolvePrerenderConfigLocal } from './res
 import { getOutDirs } from '../vite/shared/getOutDirs.js'
 import fs from 'node:fs'
 import { getProxyForPublicUsage } from '../../shared/getProxyForPublicUsage.js'
+import { getStaticRedirectsForPrerender } from '../runtime/renderPage/resolveRedirects.js'
 const docLink = 'https://vike.dev/i18n#pre-rendering'
 
 type HtmlFile = {
@@ -86,7 +88,8 @@ type ProvidedByHookTransformer = null | {
 type PageContextPrerendered = {
   urlOriginal: string
   _providedByHook?: ProvidedByHook
-  pageId: string
+  pageId: string | null
+  isRedirect?: true
   is404: boolean
 }
 type PrerenderedPageContexts = Record<string, PageContextPrerendered>
@@ -223,13 +226,21 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
   const onComplete = async (htmlFile: HtmlFile) => {
     prerenderedCount++
     const { pageId } = htmlFile.pageContext
-    assert(pageId)
-    prerenderContext._prerenderedPageContexts[pageId] = htmlFile.pageContext
+    assert((typeof pageId === 'string' && pageId) || pageId === null)
+    if (pageId) {
+      prerenderContext._prerenderedPageContexts[pageId] = htmlFile.pageContext
+    }
     await writeFiles(htmlFile, viteConfig, options.onPagePrerender, prerenderContext, logLevel)
   }
 
   await prerenderPages(prerenderContext, concurrencyLimit, onComplete)
   warnContradictoryNoPrerenderList(prerenderContext._prerenderedPageContexts, doNotPrerenderList)
+
+  const { redirects, isPrerenderingEnabledForAllPages } = prerenderConfigGlobal
+  if (redirects !== null ? redirects : isPrerenderingEnabledForAllPages) {
+    const showWarningUponDynamicRedirects = !prerenderConfigGlobal.partial
+    await prerenderRedirects(globalContext, onComplete, showWarningUponDynamicRedirects)
+  }
 
   if (logLevel === 'info') {
     console.log(`${pc.green(`✓`)} ${prerenderedCount} HTML documents pre-rendered.`)
@@ -885,7 +896,7 @@ async function warnMissingPages(
       const pageAt = isV1 ? pageId : `\`${pageId}.page.*\``
       assertWarning(
         partial,
-        `Cannot pre-render page ${pageAt} because it has a non-static route, while no ${hookName}() hook returned any URL matching the page's route. You need to use a ${hookName}() hook (https://vike.dev/${hookName}) providing a list of URLs for ${pageAt} that should be pre-rendered. If you don't want to pre-render ${pageAt} then use the option prerender.partial (https://vike.dev/prerender#partial) to suppress this warning.`,
+        `Cannot pre-render page ${pageAt} because it has a non-static route, while there isn't any ${hookName}() hook returning an URL matching the page's route. You must use a ${hookName}() hook (https://vike.dev/${hookName}) for providing the list of URLs to be pre-rendered for that page. If you want to skip pre-rendering that page, you can remove this warning by setting +prerender to false at ${pageAt} (https://vike.dev/prerender#toggle) or by setting +prerender.partial to true (https://vike.dev/prerender#partial).`,
         { onlyOnce: true }
       )
     })
@@ -1140,4 +1151,43 @@ function preparePrerenderContextForPublicUsage(prerenderContext: PrerenderContex
 
   const prerenderContextPublic = getProxyForPublicUsage(prerenderContext, 'prerenderContext')
   return prerenderContextPublic
+}
+
+async function prerenderRedirects(
+  globalContext: GlobalContextServerInternal,
+  onComplete: (htmlFile: HtmlFile) => Promise<void>,
+  showWarningUponDynamicRedirects: boolean
+) {
+  const redirects = globalContext.config.redirects ?? []
+  const redirectsStatic = getStaticRedirectsForPrerender(redirects, showWarningUponDynamicRedirects)
+  for (const [urlSource, urlTarget] of Object.entries(redirectsStatic)) {
+    const urlOriginal = urlSource
+    const htmlString = getRedirectHtml(urlTarget)
+    await onComplete({
+      pageContext: { urlOriginal, pageId: null, is404: false, isRedirect: true },
+      htmlString,
+      pageContextSerialized: null
+    })
+  }
+}
+function getRedirectHtml(urlTarget: string) {
+  const urlTargetSafe = escapeHtml(urlTarget)
+  // To test it: /test/playground => http://localhost:3000/download
+  const htmlString = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="0;url=${urlTargetSafe}">
+  <title>Redirect ${urlTargetSafe}</title>
+</head>
+<body style="min-height: 100vh; margin: 0; font-family: sans-serif; display: flex; justify-content: center; align-items: center; transition: opacity 0.3s;">
+  <script>document.body.style.opacity=0; setTimeout(()=>{document.body.style.opacity=1},1000);</script>
+  <div>
+    <h1>Redirect <a href="${urlTargetSafe}"><code style="background-color: #eaeaea; padding: 3px 5px; border-radius: 4px;">${urlTargetSafe}</code></a></h1>
+    <p>If you aren't redirected, click the link above.</p>
+    <!-- This HTML was generated by Vike. -->
+  </div>
+</body>
+</html>`
+  return htmlString
 }

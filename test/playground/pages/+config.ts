@@ -3,7 +3,14 @@ import vikeReact from 'vike-react/config'
 
 export default {
   title: 'Big Playground',
-  prerender: true,
+  prerender: {
+    redirects: true,
+    // Suppress warning:
+    // ```bash
+    // [11:27:09.496][/test/playground/test-preview.test.ts][npm run preview][stderr] 11:27:09 AM [vike][Warning] Dynamic redirect /product/@id -> /buy/@id cannot be pre-rendered
+    // ```
+    partial: true
+  },
   redirects: {
     // TEST: +redirects as documented at https://vike.dev/redirects
     '/about-us': '/about',

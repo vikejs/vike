@@ -34,14 +34,6 @@ export default {
 ```
 
 
-## Client-side navigation
-
-During client-side navigation, the `redirects` setting is ignored. Instead, make sure your links don't point to deprecated URLs.
-
-The `redirects` setting is mostly meant for redirecting external links (from third-party websites you don't control) that point to deprecated URLs.
-
-> In order to save client-side KBs, the `redirects` setting isn't loaded on the client-side.
-
 ## Alias
 
 You can also use the `redirects` setting to alias links:
@@ -95,6 +87,22 @@ export default {
 }
 ```
 
-> As explained at <Link href="#client-side-navigation" />, the `redirects` setting doesn't work upon client-side navigation, that's why you have to implement it yourself on the client-side.
+> As explained at <Link href="#client-navigation" />, the `redirects` setting doesn't work upon client-side navigation, that's why you have to implement it yourself on the client-side.
 >
 > See also: [#2376 - Setting `+redirects` improve alias support](https://github.com/vikejs/vike/issues/2376).
+
+
+## Pre-rendering
+
+See <Link href="/prerender#redirects" doNotInferSectionTitle />.
+
+
+## Client navigation
+
+The `+redirects` setting doesn't apply to <Link href="/client-routing">client-side navigation</Link>.
+
+> To save client-side KBs, the `+redirects` setting isn't loaded on the client.
+
+The `+redirects` setting is primarily intended for redirecting links living on external websites (third-party websites you don't control and can't update) that point to deprecated URLs.
+
+Make sure to update internal links within your own website so they don't point to deprecated URLs.
