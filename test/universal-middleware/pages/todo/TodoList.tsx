@@ -8,7 +8,7 @@ export function TodoList({ initialTodoItems }: { initialTodoItems: { text: strin
     <>
       <ul>
         {todoItems.map((todoItem, index) => (
-          // biome-ignore lint:
+          // biome-ignore:
           <li key={index}>{todoItem.text}</li>
         ))}
       </ul>
