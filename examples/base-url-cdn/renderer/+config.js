@@ -3,5 +3,5 @@ export default {
   baseAssets: 'http://localhost:8080/cdn/',
   clientRouting: true,
   hydrationCanBeAborted: true,
-  passToClient: ['pageProps']
+  passToClient: ['pageProps'],
 }

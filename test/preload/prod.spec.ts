@@ -13,7 +13,7 @@ async function buildApp() {
     viteConfig: {
       logLevel: 'warn' as const,
       root: __dirname,
-      configFile: __dirname + '/vite.config.js'
-    }
+      configFile: __dirname + '/vite.config.js',
+    },
   })
 }

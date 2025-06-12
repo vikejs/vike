@@ -1,21 +1,43 @@
 import { Link } from '@brillout/docpress'
-import { UiFrameworkExtension, ImplementedBy } from '../../components'
+import { UiFrameworkExtension, ProvidedBy } from '../../components'
 
-Environment: client, and server if <Link href="/ssr">`ssr: true`</Link>.
+Environment: client, and server (if <Link href="/ssr">`ssr: true`</Link>).
 
-<ImplementedBy list={['vike-react']}>the `Wrapper` setting</ImplementedBy>
+<ProvidedBy list={['vike-react', 'vike-solid']} noCustomGuide>the `+Wrapper` setting</ProvidedBy>
 
-The component defined by the  `Wrapper` setting wraps the <Link href="/Page">`<Page>` component</Link>.
+The `+Wrapper` component wraps the <Link href="/Page">`+Page` component</Link> and all <Link href="/Layout">`+Layout` components</Link>.
 
 ```jsx
-<Wrapper>     ⟸ component defined by the setting "Wrapper"
-  <Layout>    ⟸ component defined by the setting "Layout"
-    <Page />  ⟸ component defined by the setting "Page"
+<Wrapper>     ⟸ component defined by +Wrapper
+  <Layout>    ⟸ component defined by +Layout
+    <Page />  ⟸ component defined by +Page
   </Layout>
 </Wrapper>
 ```
 
-A page can be wrapped by multiple `<Wrapper>` components:
+```jsx
+// pages/+Wrapper.jsx
+
+// `children` includes +Page and all +Layout components
+export default function Wrapper({ children }) {
+  return <>
+    <MyWrapper>
+      {children}
+    </MyWrapper>
+  </>
+}
+```
+
+The `+Wrapper` component is usually used for integrating tools, such as <Link href="/integration#data-fetching">tools for data fetching</Link> and <Link href="/store">state management</Link>.
+
+> The only difference between `+Wrapper` and  <Link href="/Layout">`+Layout`</Link> is that `+Wrapper` wraps `+Layout`.
+
+> To integrate tools, we generally recommend `+Wrapper` over `+Layout`, as it ensures that all `+Layout` components are also wrapped.
+>
+> To define your pages' visual appearance, we generally recommend `+Layout`.
+
+
+A page can be wrapped by multiple `+Wrapper` components:
 
 ```jsx
 <Wrapper1>
@@ -28,23 +50,6 @@ A page can be wrapped by multiple `<Wrapper>` components:
   </Wrapper2>
 </Wrapper1>
 ```
-
-The `<Wrapper>` component is usually used for integrating tools, such as data fetching and state management tools.
-
-> Both `<Wrapper>` and <Link href="/Layout">`<Layout>`</Link> achieve the same, except that `<Wrapper>` is guaranteed to also wrap all `<Layout>` components.
->
-> Since the wrapper component of tools usually want to wrap as much as possible, we generally recommend using `<Wrapper>` for integrating tools and using `<Layout>` for defining the visual appearance of your pages.
->
-> It's also more idiomatic and common to use `<Wrapper>` for tool integration and `<Layout>` for visual appearance.
-
-
-## Without `vike-{react,vue,solid}`
-
-In case you don't use a <UiFrameworkExtension />, you can implement the `Wrapper` setting yourself by using <Link href="/meta">meta</Link>.
-
-Example:
-
- - [`vike-react` source code](https://github.com/vikejs/vike-react/blob/main/packages/vike-react)
 
 
 ## See also

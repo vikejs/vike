@@ -6,5 +6,5 @@ export default {
   Page: 'import:./Page.jsx',
   // TEST: route defined over `+config.js > export default { route }`
   route: '/about',
-  prerenderSetOverEffect: false
+  prerenderSetOverEffect: false,
 } satisfies Config

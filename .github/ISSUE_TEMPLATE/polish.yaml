@@ -1,5 +1,5 @@
 name: "✨ Polish"
-description: Docs unclear? Error message confusing? Feature hard to use? Let us know so that we can polish Vike.
+description: Unclear API or docs? Let us know — we'll polish Vike's DX.
 labels: ["polish :sparkles:"]
 body:
   - type: textarea

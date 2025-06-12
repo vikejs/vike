@@ -8,7 +8,7 @@ describe('parseNpmPackage()', () => {
     expect(parseNpmPackage('@scope/name/path')).toStrictEqual({ pkgName: '@scope/name', importPath: 'path' })
     expect(parseNpmPackage('@scope/name/some/deep/path.js')).toStrictEqual({
       pkgName: '@scope/name',
-      importPath: 'some/deep/path.js'
+      importPath: 'some/deep/path.js',
     })
   })
   it('no', () => {

@@ -40,14 +40,14 @@ import {
   assertWarning,
   isCallable,
   createDebugger,
-  isBug
+  isBug,
 } from '../utils.js'
 import { HtmlRender } from './renderHtml.js'
 import {
   getStreamOfReactStreamingPackage,
   isStreamFromReactStreamingPackage,
   StreamFromReactStreamingPackagePublic,
-  streamFromReactStreamingPackageToString
+  streamFromReactStreamingPackageToString,
 } from './stream/react-streaming.js'
 import { import_ } from '@brillout/import'
 import type { Readable as Readable_, Writable as Writable_ } from 'node:stream'
@@ -137,7 +137,7 @@ function stringToStreamReadableWeb(str: string): StreamReadableWeb {
     start(controller) {
       controller.enqueue(encodeForWebStream(str))
       controller.close()
-    }
+    },
   })
   return readableStream
 }
@@ -181,7 +181,7 @@ async function streamPipeNodeToString(streamPipeNode: StreamPipeNode): Promise<s
       } else {
         resolve()
       }
-    }
+    },
   })
   streamPipeNode(writable)
   return promise
@@ -198,7 +198,7 @@ function streamPipeWebToString(streamPipeWeb: StreamPipeWeb): Promise<string> {
     close() {
       str += getClosingChunk()
       resolve(str)
-    }
+    },
   })
   streamPipeWeb(writable)
   return promise
@@ -283,14 +283,14 @@ async function processStream(
     injectStringAfterFirstChunk,
     injectStringAtEnd,
     onErrorWhileStreaming,
-    enableEagerStreaming
+    enableEagerStreaming,
   }: {
     injectStringAtBegin?: () => Promise<string>
     injectStringAfterFirstChunk?: () => string | null
     injectStringAtEnd?: () => Promise<string>
     onErrorWhileStreaming: (err: unknown) => void
     enableEagerStreaming?: boolean
-  }
+  },
 ): Promise<StreamProviderNormalized> {
   const buffer: unknown[] = []
   let streamOriginalHasStartedEmitting = false
@@ -358,7 +358,7 @@ async function processStream(
     },
     async onEnd(
       // Should we use this `isCancel`? Maybe we can skip `injectStringAtEnd()`?
-      isCancel
+      isCancel,
     ) {
       try {
         assert(!onEndWasCalled)
@@ -391,7 +391,7 @@ async function processStream(
     },
     onFlush() {
       flushStream()
-    }
+    },
   })
   wrapperCreated = true
 
@@ -468,7 +468,7 @@ async function createStreamWrapper({
   onData,
   onEnd,
   onFlush,
-  onReadyToWrite
+  onReadyToWrite,
 }: {
   streamOriginal: StreamProviderAny
   onError: (err: unknown) => void
@@ -538,14 +538,14 @@ async function createStreamWrapper({
         }
         callback(err)
         endStream()
-      }
+      },
     })
 
     // Forward the flush() call
     objectAssign(writableProxy, {
       flush: () => {
         onFlush()
-      }
+      },
     })
     assert(typeof writableProxy.flush === 'function')
 
@@ -607,7 +607,7 @@ async function createStreamWrapper({
         abort(err) {
           onError(err)
           endStream()
-        }
+        },
       })
     } else {
       const { readable, writable } = new TransformStream()
@@ -621,7 +621,7 @@ async function createStreamWrapper({
         async onEnd() {
           await onEnd()
           endStream()
-        }
+        },
       })
     }
 
@@ -658,7 +658,7 @@ async function createStreamWrapper({
           },
           async onEnd() {
             await closeStream()
-          }
+          },
         })
       },
       async cancel(...args) {
@@ -666,7 +666,7 @@ async function createStreamWrapper({
         await readableOriginal.cancel(...args)
         // If readableOriginal has implemented readableOriginal.cancel() then the onEnd() callback and therfore closeStream() may already have been called at this point
         await closeStream()
-      }
+      },
     })
 
     const writeChunk = (chunk: unknown) => {
@@ -685,7 +685,7 @@ async function createStreamWrapper({
 
     return {
       streamWrapper: readableProxy as typeof streamOriginal,
-      streamWrapperOperations: { writeChunk, flushStream }
+      streamWrapperOperations: { writeChunk, flushStream },
     }
   }
 
@@ -727,7 +727,7 @@ async function createStreamWrapper({
 
     return {
       streamWrapper: readableProxy as typeof streamOriginal,
-      streamWrapperOperations: { writeChunk, flushStream }
+      streamWrapperOperations: { writeChunk, flushStream },
     }
   }
 
@@ -739,8 +739,8 @@ async function handleReadableWeb(
   {
     onData,
     onError,
-    onEnd
-  }: { onData: (chunk: unknown) => void; onError: (err: unknown) => void; onEnd: () => Promise<void> }
+    onEnd,
+  }: { onData: (chunk: unknown) => void; onError: (err: unknown) => void; onEnd: () => Promise<void> },
 ) {
   const reader = readable.getReader()
   while (true) {
@@ -780,7 +780,7 @@ type StreamPipeWebWrapped = { [__streamPipeWeb]: StreamPipeWeb }
 function pipeWebStream(pipe: StreamPipeWeb): StreamPipeWebWrapped {
   assertWarning(false, 'pipeWebStream() is outdated, use stampPipe() instead. See https://vike.dev/streaming', {
     onlyOnce: true,
-    showStackTrace: true
+    showStackTrace: true,
   })
   return { [__streamPipeWeb]: pipe }
 }
@@ -818,7 +818,7 @@ type StreamPipeNodeWrapped = { [__streamPipeNode]: StreamPipeNode }
 function pipeNodeStream(pipe: StreamPipeNode): StreamPipeNodeWrapped {
   assertWarning(false, 'pipeNodeStream() is outdated, use stampPipe() instead. See https://vike.dev/streaming', {
     onlyOnce: true,
-    showStackTrace: true
+    showStackTrace: true,
   })
   return { [__streamPipeNode]: pipe }
 }
@@ -852,14 +852,14 @@ function isStreamPipeNode(thing: unknown): thing is StreamPipeNodeWrapped | Stre
 
 function stampPipe(pipe: StreamPipeNode | StreamPipeWeb, pipeType: 'web-stream' | 'node-stream') {
   assertUsage(pipeType, `stampPipe(pipe, pipeType): argument ${pc.cyan('pipeType')} is missing.)`, {
-    showStackTrace: true
+    showStackTrace: true,
   })
   assertUsage(
     ['web-stream', 'node-stream'].includes(pipeType),
     `stampPipe(pipe, pipeType): argument ${pc.cyan('pipeType')} should be either ${pc.cyan(
-      "'web-stream'"
+      "'web-stream'",
     )} or ${pc.cyan("'node-stream'")}.`,
-    { showStackTrace: true }
+    { showStackTrace: true },
   )
   if (pipeType === 'node-stream') {
     Object.assign(pipe, { isNodeStreamPipe: true })
@@ -900,7 +900,7 @@ function assertReadableStreamConstructor() {
     // Error message copied from vue's renderToWebStream() implementation
     "ReadableStream constructor isn't available in the global scope. " +
       'If the target environment does support web streams, consider using ' +
-      'pipeToWebWritable() with an existing WritableStream instance instead.'
+      'pipeToWebWritable() with an existing WritableStream instance instead.',
   )
 }
 
@@ -927,7 +927,7 @@ async function loadStreamNodeModule(): Promise<{
 
 function getStreamName(
   kind: 'pipe' | 'readable' | 'writable',
-  type: 'web' | 'node'
+  type: 'web' | 'node',
 ): `a ${string} Stream` | `a ${string} Stream Pipe` {
   let typeName = capitalizeFirstLetter(type)
   if (typeName === 'Node') {

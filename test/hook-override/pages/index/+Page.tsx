@@ -11,7 +11,7 @@ function Page() {
     globalOnBeforeRenderWasCalled,
     globalOnBeforeRenderWasCalledInEnv,
     perPageOnBeforeRenderWasCalled,
-    perPageOnBeforeRenderWasCalledInEnv
+    perPageOnBeforeRenderWasCalledInEnv,
   } = pageContext
   const data = useData<GlobalData & PerPageData>() || {}
   const { globalDataWasCalled, globalDataWasCalledInEnv, perPageDataWasCalled, perPageDataWasCalledInEnv } = data

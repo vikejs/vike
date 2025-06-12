@@ -9,8 +9,8 @@ async function onBeforeRender(pageContext: PageContextBuiltInServer) {
   const pageProps = { name }
   return {
     pageContext: {
-      pageProps
-    }
+      pageProps,
+    },
   }
 }
 

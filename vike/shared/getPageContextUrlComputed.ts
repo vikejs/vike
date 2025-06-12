@@ -1,5 +1,4 @@
 export { getPageContextUrlComputed }
-export { assertPageContextUrl }
 export type { PageContextUrlInternal }
 export type { PageContextUrlClient }
 export type { PageContextUrlServer }
@@ -11,16 +10,8 @@ export type { PageContextUrlSource }
 // =====================
 
 import { objectDefineProperty } from '../utils/objectDefineProperty.js'
-import {
-  assert,
-  parseUrl,
-  assertWarning,
-  isPlainObject,
-  isPropertyGetter,
-  isBrowser,
-  changeEnumerable,
-  type UrlPublic
-} from './utils.js'
+import { assertPropertyGetters, type PageContextPrepareMinimum } from './preparePageContextForPublicUsage.js'
+import { assert, parseUrl, assertWarning, isBrowser, changeEnumerable, type UrlPublic } from './utils.js'
 
 // TODO/v1-release: move pageContext.urlParsed to pageContext.url
 type PageContextUrlComputed = {
@@ -36,9 +27,10 @@ type PageContextUrl = {
   /** The URL of the HTTP request */
   urlOriginal: string
 } & PageContextUrlComputed
-type PageContextUrlInternal = PageContextUrl & {
-  _urlRewrite: string | null
-}
+type PageContextUrlInternal = PageContextPrepareMinimum &
+  PageContextUrl & {
+    _urlRewrite: string | null
+  }
 type PageContextUrlClient = PageContextUrl
 type PageContextUrlServer = PageContextUrl & {
   urlParsed: Omit<PageContextUrl['urlParsed'], HashProps> & {
@@ -54,23 +46,23 @@ type HashProps = 'hash' | 'hashString' | 'hashOriginal'
 
 function getPageContextUrlComputed(pageContext: PageContextUrlSource): PageContextUrlComputed {
   assert(typeof pageContext.urlOriginal === 'string')
-  assertPageContextUrlComputed(pageContext)
+  assertPropertyGetters(pageContext)
 
   const pageContextUrlComputed = {}
   objectDefineProperty(pageContextUrlComputed, 'urlPathname', {
     get: urlPathnameGetter,
     enumerable: true,
-    configurable: true
+    configurable: true,
   })
   objectDefineProperty(pageContextUrlComputed, 'url', {
     get: urlGetter,
     enumerable: false,
-    configurable: true
+    configurable: true,
   })
   objectDefineProperty(pageContextUrlComputed, 'urlParsed', {
     get: urlParsedGetter,
     enumerable: true,
-    configurable: true
+    configurable: true,
   })
 
   return pageContextUrlComputed
@@ -100,7 +92,7 @@ function getUrlParsed(pageContext: PageContextUrlSource) {
       // TODO/eventually: remove debug logs, see:
       // - https://github.com/vikejs/vike/issues/2138#issuecomment-2631713411
       // - https://github.com/vikejs/vike/commit/5c7810f3080ab62536950f26e019bb2a3a517082
-      { src, urlResolved }
+      { src, urlResolved },
     )
   let urlResolved: string
   let isBaseToBeRemoved: boolean
@@ -147,7 +139,7 @@ function urlGetter(this: PageContextUrlSource) {
   assertWarning(
     false,
     '`pageContext.url` is outdated. Use `pageContext.urlPathname`, `pageContext.urlParsed`, or `pageContext.urlOriginal` instead. (See https://vike.dev/migration/0.4.23 for more information.)',
-    { onlyOnce: true, showStackTrace: true }
+    { onlyOnce: true, showStackTrace: true },
   )
   return urlPathnameGetter.call(this)
 }
@@ -163,7 +155,7 @@ function urlParsedGetter(this: PageContextUrlSource) {
     assertWarning(
       hashIsAvailable,
       `pageContext.urlParsed.${prop} isn't available on the server-side (HTTP requests don't include the URL hash)`,
-      { onlyOnce: true, showStackTrace: true }
+      { onlyOnce: true, showStackTrace: true },
     )
   }
 
@@ -181,7 +173,7 @@ function urlParsedGetter(this: PageContextUrlSource) {
     get hashString() {
       assertWarning(false, 'pageContext.urlParsed.hashString has been renamed to pageContext.urlParsed.hashOriginal', {
         onlyOnce: true,
-        showStackTrace: true
+        showStackTrace: true,
       })
       warnHashNotAvailable('hashString')
       return urlParsed.hashOriginal
@@ -191,10 +183,10 @@ function urlParsedGetter(this: PageContextUrlSource) {
       assertWarning(
         false,
         'pageContext.urlParsed.searchString has been renamed to pageContext.urlParsed.searchOriginal',
-        { onlyOnce: true, showStackTrace: true }
+        { onlyOnce: true, showStackTrace: true },
       )
       return urlParsed.searchOriginal
-    }
+    },
   }
 
   changeEnumerable(urlParsedEnhanced, 'hashString', false)
@@ -205,39 +197,4 @@ function urlParsedGetter(this: PageContextUrlSource) {
   }
 
   return urlParsedEnhanced
-}
-
-function assertPageContextUrl(pageContext: { urlOriginal: string } & PageContextUrlClient) {
-  assert(typeof pageContext.urlOriginal === 'string')
-  assert(typeof pageContext.urlPathname === 'string')
-  assert(isPlainObject(pageContext.urlParsed))
-  assert(pageContext.urlPathname === pageContext.urlParsed.pathname)
-  assertPageContextUrlComputed(pageContext)
-}
-
-function assertPageContextUrlComputed(pageContext: object) {
-  /*
-  If the isPropertyGetter() assertions fail then it's most likely because Object.assign() was used instead of `objectAssign()`:
-  ```js
-  const PageContextUrlComputed = getPageContextUrlComputed(pageContext)
-
-  // ❌ Breaks the property descriptors/getters of pageContext defined by getPageContextUrlComputed() such as pageContext.urlPathname
-  Object.assign(pageContext, pageContextUrlComputed)
-
-  // ❌ Also breaks property descriptors/getters
-  const pageContext = { ...pageContextUrlComputed }
-
-  // ✅ Preserves property descriptors/getters (see objectAssign() implementation)
-  objectAssign(pageContext, pageContextUrlComputed)
-  ```
-  */
-  if ('urlPathname' in pageContext) {
-    assert(typeof pageContext.urlPathname === 'string')
-    assert(isPropertyGetter(pageContext, 'urlPathname'))
-    assert(isPropertyGetter(pageContext, 'urlParsed'))
-    assert(isPropertyGetter(pageContext, 'url'))
-  } else {
-    assert(!('urlParsed' in pageContext))
-    assert(!('url' in pageContext))
-  }
 }

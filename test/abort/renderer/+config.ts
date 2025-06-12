@@ -4,6 +4,6 @@ export default {
   passToClient: ['user'],
   redirects: {
     '/permanent-redirect': '/',
-    '/star-wars-api/*': 'https://brillout.github.io/star-wars/api/*'
-  }
+    '/star-wars-api/*': 'https://brillout.github.io/star-wars/api/*',
+  },
 }

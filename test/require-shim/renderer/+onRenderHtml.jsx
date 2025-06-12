@@ -27,7 +27,7 @@ async function onRenderHtml(pageContext) {
   return {
     documentHtml,
     pageContext: {
-      apolloIntialState
-    }
+      apolloIntialState,
+    },
   }
 }

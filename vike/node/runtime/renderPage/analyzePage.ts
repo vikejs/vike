@@ -3,9 +3,9 @@ export { analyzePage }
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { getVikeClientEntry } from '../../../shared/getPageFiles/analyzePageClientSide/determineClientEntry.js'
 import type { PageFile } from '../../../shared/getPageFiles/getPageFileObject.js'
-import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
+import type { PageConfigRuntime } from '../../../types/PageConfig.js'
 import { type AnalysisResult, analyzePageClientSide } from '../../../shared/getPageFiles/analyzePageClientSide.js'
-import { getVirtualFileIdPageConfigValuesAll } from '../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
+import { getVirtualFileIdPageConfigLazy } from '../../shared/virtualFiles/virtualFilePageConfigLazy.js'
 import { analyzeClientSide } from '../../../shared/getPageFiles/analyzeClientSide.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import { getConfigValueRuntime } from '../../../shared/page-configs/getConfigValueRuntime.js'
@@ -14,7 +14,7 @@ async function analyzePage(
   pageFilesAll: PageFile[],
   pageConfig: null | PageConfigRuntime,
   pageId: string,
-  globalContext: GlobalContextServerInternal
+  globalContext: GlobalContextServerInternal,
 ): Promise<AnalysisResult> {
   if (pageConfig) {
     const { isClientRuntimeLoaded, isClientRouting } = analyzeClientSide(pageConfig, pageFilesAll, pageId)
@@ -24,16 +24,16 @@ async function analyzePage(
     if (isClientRuntimeLoaded) clientEntries.push(getVikeClientEntry(isClientRouting))
     const clientDependencies: ClientDependency[] = []
     clientDependencies.push({
-      id: getVirtualFileIdPageConfigValuesAll(pageConfig.pageId, true),
+      id: getVirtualFileIdPageConfigLazy(pageConfig.pageId, true),
       onlyAssets: isClientRuntimeLoaded ? false : true,
-      eagerlyImported: false
+      eagerlyImported: false,
     })
     // In production we inject the import of the server virtual module with ?extractAssets inside the client virtual module
     if (!globalContext._isProduction) {
       clientDependencies.push({
-        id: getVirtualFileIdPageConfigValuesAll(pageConfig.pageId, false),
+        id: getVirtualFileIdPageConfigLazy(pageConfig.pageId, false),
         onlyAssets: true,
-        eagerlyImported: false
+        eagerlyImported: false,
       })
     }
     /* Remove?
@@ -57,7 +57,7 @@ async function analyzePage(
       clientDependencies.push({
         id: clientEntry,
         onlyAssets: false,
-        eagerlyImported: false
+        eagerlyImported: false,
       })
     })
     return {
@@ -67,7 +67,7 @@ async function analyzePage(
       clientDependencies,
       // pageFilesClientSide and pageFilesServerSide are only used for debugging
       pageFilesClientSide: [],
-      pageFilesServerSide: []
+      pageFilesServerSide: [],
     }
   } else {
     return analyzePageClientSide(pageFilesAll, pageId)

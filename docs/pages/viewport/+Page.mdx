@@ -1,12 +1,13 @@
 import { Link } from '@brillout/docpress'
 
-import { ImplementedBy } from '../../components'
+import { ProvidedBy } from '../../components'
 
 Type: `'responsive' | number | null | ((pageContext) => 'responsive' | number | null | undefined)`  
 Default: `'responsive'`  
-Environment: server.
+Environment: server  
+Cumulative: `false`  
 
-<ImplementedBy noCustomGuide />
+<ProvidedBy noCustomGuide />
 
 The `viewport` setting sets [the page's shown width on mobile/tablet devices](https://developer.mozilla.org/en-US/docs/Web/HTML/Viewport_meta_tag).
 
@@ -39,7 +40,9 @@ export default {
 >
 > The user will be able to manually change the viewport size with pinch gestures.
 
-> If `viewport` is a number, for example `1200`, then Vike injects the following:
+> It adds
+> [`<meta name="viewport">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Viewport_meta_tag)
+> to `<head>`.
 >
 > ```html
 > <head>
@@ -78,4 +81,4 @@ export default () => <>
 - [StackOverflow > Is the viewport meta tag really necessary? > [Accepted Answer]](https://stackoverflow.com/questions/14775195/is-the-viewport-meta-tag-really-necessary/14775557#14775557)
   > Elaborate explanation of the `<meta name="viewport">` tag.
 - <Link href="/head-tags" />
-- <Link href="/settings#html" doNotInferSectionTitle />
+- <Link href="/settings#html-shell" doNotInferSectionTitle />

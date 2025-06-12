@@ -12,7 +12,7 @@ function onBeforeRoute(pageContext) {
       // Make `locale` available as pageContext.locale
       locale,
       // Vike's router will use pageContext.urlLogical instead of pageContext.urlOriginal
-      urlLogical
-    }
+      urlLogical,
+    },
   }
 }

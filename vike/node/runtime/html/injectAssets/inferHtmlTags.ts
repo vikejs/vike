@@ -18,7 +18,7 @@ function inferPreloadTag(pageAsset: PageAsset): string {
     !assetType ? null : `as="${assetType}"`,
     !mediaType ? null : `type="${mediaType}"`,
     // `crossorigin` is needed for fonts, see https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types/preload#cors-enabled_fetches
-    !isCrossOrigin(pageAsset) ? null : 'crossorigin'
+    !isCrossOrigin(pageAsset) ? null : 'crossorigin',
   ]
     .filter(Boolean)
     .join(' ')

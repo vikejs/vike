@@ -6,7 +6,7 @@ export type { ConfigDefinedAt }
 export type { ConfigDefinedAtOptional }
 
 import { assert, checkType, isArray } from '../utils.js'
-import type { DefinedAt, DefinedAtData, DefinedBy } from './PageConfig.js'
+import type { DefinedAt, DefinedAtData, DefinedBy } from '../../types/PageConfig.js'
 import pc from '@brillout/picocolors'
 import { getExportPath } from './getExportPath.js'
 
@@ -16,14 +16,14 @@ type ConfigDefinedAt = `Config ${string} defined at ${string}`
 function getConfigDefinedAt<SentenceBegin extends 'Config' | 'config' /*| 'Hook'*/, ConfigName extends string>(
   sentenceBegin: SentenceBegin,
   configName: ConfigName,
-  definedAtData: NonNullable<DefinedAtData>
+  definedAtData: NonNullable<DefinedAtData>,
 ): `${SentenceBegin} ${ConfigName} defined at ${string}` {
   return `${begin(sentenceBegin, configName)} at ${getDefinedAtString(definedAtData, configName)}`
 }
 function getConfigDefinedAtOptional<SentenceBegin extends 'Config' | 'config' /*| 'Hook'*/, ConfigName extends string>(
   sentenceBegin: SentenceBegin,
   configName: ConfigName,
-  definedAtData: DefinedAtData
+  definedAtData: DefinedAtData,
 ): `${SentenceBegin} ${ConfigName} defined ${'internally' | `at ${string}`}` {
   if (!definedAtData) {
     return `${begin(sentenceBegin, configName)} internally`
@@ -33,7 +33,7 @@ function getConfigDefinedAtOptional<SentenceBegin extends 'Config' | 'config' /*
 }
 function begin<ConfigName extends string, SentenceBegin extends string>(
   sentenceBegin: SentenceBegin,
-  configName: ConfigName
+  configName: ConfigName,
 ) {
   return `${sentenceBegin} ${pc.cyan(configName)} defined` as const
 }

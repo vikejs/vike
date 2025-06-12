@@ -23,7 +23,7 @@ async function startServer() {
 
     const pageContextInit = {
       urlOriginal: req.originalUrl,
-      apolloClient
+      apolloClient,
     }
     const pageContext = await renderPage(pageContextInit)
 
@@ -43,9 +43,9 @@ function makeApolloClient() {
     ssrMode: true,
     link: createHttpLink({
       uri: 'https://countries.trevorblades.com',
-      fetch
+      fetch,
     }),
-    cache: new InMemoryCache()
+    cache: new InMemoryCache(),
   })
   return apolloClient
 }

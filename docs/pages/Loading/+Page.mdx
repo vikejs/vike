@@ -1,16 +1,16 @@
 import { Link, Contribution } from '@brillout/docpress'
-import { UiFrameworkExtension, ImplementedBy, Figure } from '../../components'
+import { UiFrameworkExtension, ProvidedBy, Figure } from '../../components'
 import { LoadingComponent } from './LoadingComponent'
 
-Environment: client, and server if <Link href="/ssr">`ssr: true`</Link>.
+Environment: client, and server (if <Link href="/ssr">`ssr: true`</Link>).
 
-<ImplementedBy list={['vike-react']} noCustomGuide={true}>the `+Loading` setting</ImplementedBy>
+<ProvidedBy list={['vike-react']} noCustomGuide={true}>the `+Loading` setting</ProvidedBy>
 
 <Contribution>
   Contributions welcome to implement the `+Loading` setting for `vike-vue` and `vike-solid`.
 </Contribution>
 
-The `+Loading` setting allows you to define a loading animation.
+The `+Loading` setting adds `<Suspense>` fallbacks, with the purpose of showing loading animations.
 
 ```jsx
 // pages/+Loading.jsx
@@ -31,6 +31,27 @@ function LoadingComponent() {
 }
 ```
 
+This is how `+Loading` is embedded:
+
+```jsx
+<Suspense fallback={Loading.layout}>             ⟸ component defined by +Loading.layout
+  <Layout>                                       ⟸ component defined by +Layout
+    <Page>                                       ⟸ component defined by +Page
+      {/* ... */}
+      <Suspense fallback={Loading.component}>    ⟸ component defined by +Loading.component
+        <SomeComponent />
+      </Suspense>
+      {/* ... */}
+    </Page>
+  </Layout>
+</Suspense>
+```
+
+> This means that `+Loading` is only used if components suspend. Consequently:
+> - If your app doesn't include any suspending components, then `+Loading` has no effect.
+> - If you use <Link href="/data">`+data`</Link>, then `+Loading` has no effect — because `+data` pauses the entire rendering process (it doesn't suspend any component).
+>
+> The `+Loading` component is commonly used by [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#readme) and [`vike-react-apollo`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-apollo#readme) users, as these extensions suspend components.
 
 ## Default
 

@@ -9,8 +9,8 @@ export default {
     vike(),
     vercel({
       // You usually want the server to handle all routes
-      source: '/.*'
-    })
+      source: '/.*',
+    }),
   ],
   vercel: {
     additionalEndpoints: [
@@ -20,8 +20,8 @@ export default {
         // replaces default Vike target
         destination: 'ssr_',
         // already added by default Vike route
-        route: false
-      }
-    ]
-  }
+        route: false,
+      },
+    ],
+  },
 } as UserConfig

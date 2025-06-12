@@ -15,7 +15,7 @@ export const data = async (pageContext: PageContextServer) => {
 
   config({
     // Set <title>
-    title: movie.title
+    title: movie.title,
   })
 
   // We remove data we don't need because the data is passed to

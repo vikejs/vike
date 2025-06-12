@@ -11,8 +11,8 @@ function onPrerenderStart(prerenderContext) {
   })
   return {
     prerenderContext: {
-      pageContexts
-    }
+      pageContexts,
+    },
   }
 }
 
@@ -28,7 +28,7 @@ function duplicateWithLocale(pageContext, pageContexts) {
       ...pageContext,
       urlOriginal,
       // Set pageContext.locale
-      locale
+      locale,
     })
   })
 }

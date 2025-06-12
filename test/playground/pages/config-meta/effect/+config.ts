@@ -4,7 +4,7 @@ export default {
   dependentSetting: 'default @ /effect',
   meta: {
     dependentSetting: {
-      env: { server: false, client: false }
+      env: { server: false, client: false },
     },
     settingWithEffect: {
       env: { server: false, client: false, config: true },
@@ -13,12 +13,12 @@ export default {
           ? {
               meta: {
                 dependentSetting: {
-                  env: { server: true, client: true }
-                }
-              }
+                  env: { server: true, client: true },
+                },
+              },
             }
           : {}
-      }
-    }
-  }
+      },
+    },
+  },
 } satisfies Config

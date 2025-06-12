@@ -6,15 +6,15 @@ const config: UserConfig = {
   resolve: {
     alias: {
       // We prefix path aliases with '#', see https://vike.dev/path-aliases#vite
-      '#root': __dirname
-    }
+      '#root': __dirname,
+    },
   },
   plugins: [
     react(),
     vike({
-      prerender: true
-    })
-  ]
+      prerender: true,
+    }),
+  ],
 }
 
 export default config

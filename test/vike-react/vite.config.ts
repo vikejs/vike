@@ -3,5 +3,5 @@ import vike from 'vike/plugin'
 import { UserConfig } from 'vite'
 
 export default {
-  plugins: [react(), vike()]
+  plugins: [react(), vike()],
 } satisfies UserConfig

@@ -7,7 +7,7 @@ const SectionTextCollection = ({
   caption,
   title,
   descriptions,
-  style
+  style,
 }: {
   caption: string
   title: string | React.JSX.Element
@@ -17,13 +17,13 @@ const SectionTextCollection = ({
   return (
     <div
       style={{
-        ...style
+        ...style,
       }}
     >
       <p
         style={{
           color: primaryColor,
-          fontSize: '18px'
+          fontSize: '18px',
         }}
       >
         {caption}
@@ -34,7 +34,7 @@ const SectionTextCollection = ({
           width: '100%',
           margin: 0,
           lineHeight: 1.3,
-          paddingBottom: 16
+          paddingBottom: 16,
         }}
       >
         {title}
@@ -45,7 +45,7 @@ const SectionTextCollection = ({
             key={i}
             style={{
               fontSize: '16px',
-              lineHeight: 1.5
+              lineHeight: 1.5,
             }}
           >
             {text}

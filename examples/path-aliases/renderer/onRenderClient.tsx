@@ -12,6 +12,6 @@ const onRenderClient: OnRenderClientAsync = async (pageContext): ReturnType<OnRe
     document.getElementById('root')!,
     <Layout>
       <Page />
-    </Layout>
+    </Layout>,
   )
 }

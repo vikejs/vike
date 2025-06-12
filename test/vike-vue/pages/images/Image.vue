@@ -27,7 +27,7 @@ import { Head } from 'vike-vue/Head'
 
 defineOptions({
   name: 'Image',
-  inheritAttrs: false
+  inheritAttrs: false,
 })
 
 const { src, author, ...otherAttrs } = useAttrs() as { src: string; author: string }
@@ -41,10 +41,10 @@ config({
       contentUrl: { src },
       creator: {
         '@type': 'Person',
-        name: author
-      }
-    })
-  })
+        name: author,
+      },
+    }),
+  }),
 })
 
 const headTag = h('meta', { property: 'og:author', content: author })

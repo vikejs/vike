@@ -13,7 +13,7 @@ async function onRenderHtml(pageContext: any) {
   const pageHtml = renderToString(
     <Layout>
       <Page {...pageProps} />
-    </Layout>
+    </Layout>,
   )
 
   const documentHtml = escapeInject`<!DOCTYPE html>
@@ -50,6 +50,6 @@ async function onRenderHtml(pageContext: any) {
           }
         })
       }
-    }
+    },
   }
 }

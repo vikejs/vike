@@ -1,12 +1,12 @@
 import { Link } from '@brillout/docpress'
 
-import { UiFrameworkExtension, ImplementedBy, OnlyHtmlNote } from '../../components'
+import { UiFrameworkExtension, ProvidedBy, OnlyHtmlNote } from '../../components'
 
 Type: `string | null | ((pageContext) => string | null | undefined)`  
-Kind: overridable.  
-Environment: server.
+Environment: server  
+Cumulative: `false`  
 
-<ImplementedBy noCustomGuide />
+<ProvidedBy noCustomGuide />
 
 > See <Link href="/head-tags" /> for a general introduction about `<head>` tags.
 
@@ -20,7 +20,12 @@ export default {
 }
 ```
 
-> It adds the following tags to `<head>`:
+> It adds
+> [`<meta name="description">`](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content/Webpage_metadata)
+> and
+> [`<meta property="og:description">`](https://ogp.me)
+> to `<head>`:
+>
 >
 > ```html
 > <head>
@@ -29,12 +34,7 @@ export default {
 > </head>
 > ```
 
-As shown at:
- - <Link href="/head-tags#page-specific" /> you can override it.
- - <Link href="/head-tags#data" /> you can set it based on fetched data.
-
-
-## TypeScript
+You can set its value using a <Link href="/pageContext">`pageContext`</Link> function:
 
 ```tsx
 // pages/some-page/+description.js
@@ -58,4 +58,4 @@ export function description(pageContext: PageContextServer<Data>) {
 
 - [Moz > Learn SEO > What Are Meta Descriptions and How to Write Them](https://moz.com/learn/seo/meta-description)
 - <Link href="/head-tags" />
-- <Link href="/settings#html" doNotInferSectionTitle />
+- <Link href="/settings#html-shell" doNotInferSectionTitle />

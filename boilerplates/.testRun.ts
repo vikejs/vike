@@ -12,20 +12,20 @@ import {
   editFileRevert,
   test,
   expect,
-  sleep
+  sleep,
 } from '@brillout/test-e2e'
-import assert from 'assert'
+import assert from 'node:assert'
 
 function testRun(
   cmd: 'npm run dev' | 'npm run prod' | 'npm run preview',
   {
     uiFramewok,
-    lang
+    lang,
   }: {
     uiFramewok: 'react' | 'vue' | 'preact' | 'solid'
     lang?: 'ts'
     isSPA?: true
-  }
+  },
 ) {
   const isProd = cmd === 'npm run prod' || cmd === 'npm run preview'
   const isDev = !isProd
@@ -33,7 +33,7 @@ function testRun(
 
   run(cmd, {
     // HMR tests are flaky (I couldn't make them reliable)
-    isFlaky: testHMR
+    isFlaky: testHMR,
   })
 
   test('page content is rendered to HTML', async () => {
@@ -102,7 +102,7 @@ function testRun(
     // Not sure why `autoRetry()` is needed here; isn't the CSS loading already awaited for in the previous `test()` call?
     await autoRetry(async () => {
       expect(await page.$eval('a[href="/about"]', (e) => getComputedStyle(e).backgroundColor)).toBe(
-        'rgb(238, 238, 238)'
+        'rgb(238, 238, 238)',
       )
       expect(await page.$eval('a[href="/"]', (e) => getComputedStyle(e).backgroundColor)).toBe('rgba(0, 0, 0, 0)')
     })
@@ -113,7 +113,7 @@ function testRun(
     expect(await page.textContent('#page-content')).toBe('Page not found.')
     expectLog('Failed to load resource: the server responded with a status of 404 (Not Found)', {
       filter: (log) =>
-        log.logSource === 'Browser Error' && partRegex`http://${/[^\/]+/}:3000/does-not-exist`.test(log.logText)
+        log.logSource === 'Browser Error' && partRegex`http://${/[^\/]+/}:3000/does-not-exist`.test(log.logInfo),
     })
   })
 

@@ -10,7 +10,7 @@ function determineClientEntry({
   pageFilesClientSide,
   pageFilesServerSide,
   isHtmlOnly,
-  isClientRouting
+  isClientRouting,
 }: {
   pageFilesClientSide: PageFile[]
   pageFilesServerSide: PageFile[]
@@ -23,11 +23,11 @@ function determineClientEntry({
 
   const clientDependencies: ClientDependency[] = []
   clientDependencies.push(
-    ...pageFilesClientSide.map((p) => ({ id: p.filePath, onlyAssets: false, eagerlyImported: false }))
+    ...pageFilesClientSide.map((p) => ({ id: p.filePath, onlyAssets: false, eagerlyImported: false })),
   )
   // CSS & assets
   clientDependencies.push(
-    ...pageFilesServerSideOnly.map((p) => ({ id: p.filePath, onlyAssets: true, eagerlyImported: false }))
+    ...pageFilesServerSideOnly.map((p) => ({ id: p.filePath, onlyAssets: true, eagerlyImported: false })),
   )
 
   // Handle SPA & SSR pages.
@@ -46,6 +46,6 @@ function determineClientEntry({
 
 function getVikeClientEntry(isClientRouting: boolean) {
   return isClientRouting
-    ? '@@vike/dist/esm/client/client-routing-runtime/entry.js'
-    : '@@vike/dist/esm/client/server-routing-runtime/entry.js'
+    ? '@@vike/dist/esm/client/runtime-client-routing/entry.js'
+    : '@@vike/dist/esm/client/runtime-server-routing/entry.js'
 }

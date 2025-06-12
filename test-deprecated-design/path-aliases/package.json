@@ -17,16 +17,16 @@
     "@types/node": "^17.0.31",
     "@types/react": "^18.0.8",
     "@types/react-dom": "^18.0.3",
-    "@vitejs/plugin-react": "^4.4.1",
+    "@vitejs/plugin-react": "^4.5.1",
     "cross-env": "^7.0.3",
     "express": "^5.1.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "serve": "^13.0.2",
     "ts-node": "^10.9.1",
     "typescript": "^5.8.3",
     "vite": "^6.3.2",
-    "vike": "0.4.229"
+    "vike": "0.4.231"
   },
   "type": "module"
 }

@@ -25,7 +25,7 @@ function freezePartial(obj: Record<string, unknown>, allowList: Record<string, (
         throw new Error(`You aren't allowed to mutate property ${pc.cyan(key)}`)
       },
       configurable: false,
-      enumerable: true
+      enumerable: true,
     })
   })
   Object.preventExtensions(obj)

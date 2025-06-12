@@ -4,6 +4,6 @@ import vike from 'vike/plugin'
 export default {
   plugins: [react(), vike()],
   ssr: {
-    noExternal: ['@apollo/client']
-  }
+    noExternal: ['@apollo/client'],
+  },
 }

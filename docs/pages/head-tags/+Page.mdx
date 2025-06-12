@@ -2,38 +2,85 @@ import { Link } from '@brillout/docpress'
 import { UiFrameworkExtension } from '../../components'
 import { TableStyle } from './TableStyle'
 
-You can define meta tags inside `<head>` by using following settings.
+Use following settings to set `<head>` tags (aka document metadata).
 
 <TableStyle>
-Setting | HTML
--- | --
-<Link href="/title">`+title`</Link> | <ul><li>[`<title>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/title)</li> <li>[`<meta property="og:title">`](https://ogp.me/#metadata:~:text=every%20page%20are%3A-,og%3Atitle,-%2D%20The%20title%20of)</li></ul>
-<Link href="/description">`+description`</Link> | <ul><li>[`<meta name="description">`](https://moz.com/learn/seo/meta-description)</li> <li>[`<meta property="og:description">`](https://ogp.me/#optional:~:text=accompany%20this%20object.-,og%3Adescription,-%2D%20A%20one%20to)</li></ul>
-<Link href="/image">`+image`</Link> | <ul> <li>[`<meta property="og:image">`](https://ahrefs.com/blog/open-graph-meta-tags/#:~:text=8%20simple%20steps.%22%20/%3E-,%3Cmeta%20property%3D%22og%3Aimage%22,-content%3D%22https%3A//ahrefs) (preview image upon URL sharing)</li> <li>[`<meta name="twitter:card" content="summary_large_image">`](https://ogp.me/#optional:~:text=accompany%20this%20object.-,og%3Adescription,-%2D%20A%20one%20to)</li></ul>
-<Link href="/viewport">`+viewport`</Link> | <ul><li>[`<meta name="viewport">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Viewport_meta_tag)</li></ul>
-<Link href="/Head">`+Head`</Link> | Other `<head>` tags such as: <ul> <li>[`<link rel="icon">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link) (favicon)</li> <li>[`<link rel="apple-touch-icon">`](https://stackoverflow.com/questions/20440512/why-use-link-rel-apple-touch-icon-image-src/20440627#20440627) (mobile icon)</li> <li>[`<script>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script)</li> <li>...</li> </ul>
+<table>
+  <thead>
+    <tr>
+      <th>Setting</th>
+      <th>HTML `<head>` tags</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><Link href="/title">`+title`</Link></td>
+      <td>
+        ```html
+        <title>
+        <meta property="og:title">
+        ```
+      </td>
+    </tr>
+    <tr>
+      <td><Link href="/description">`+description`</Link></td>
+      <td>
+        ```html
+        <meta name="description">
+        <meta property="og:description">
+        ```
+      </td>
+    </tr>
+    <tr>
+      <td><Link href="/image">`+image`</Link></td>
+      <td>
+        Preview image upon sharing URLs:
+        ```html
+        <meta property="og:image">
+        <meta name="twitter:card" content="summary_large_image">
+        ```
+      </td>
+    </tr>
+    <tr>
+      <td><Link href="/viewport">`+viewport`</Link></td>
+      <td>
+        For mobile responsive design:
+        ```html
+        <meta name="viewport">
+        ```
+      </td>
+    </tr>
+    <tr>
+      <td><Link href="/Head">`+Head`</Link></td>
+      <td>
+        Other `<head>` tags, for example:
+        ```html
+        <link rel="icon"> <!-- Favicon -->
+        <link rel="apple-touch-icon"> <!-- Mobile icon -->
+        <script></script>
+        <!-- ... -->
+        ```
+      </td>
+    </tr>
+  </tbody>
+</table>
 </TableStyle>
 
-> You can set these settings dynamically:
-> - Inside your `+data` hook, by using the <Link href="/useConfig">`useConfig()` hook</Link>.
-> - Inside your components, by using the <Link href="/useConfig#config-head">`<Config>` and `<Head>` components</Link>.
-
-> See <Link href="/settings#html" /> for other HTML settings (most notably `bodyAttributes`, `htmlAttributes`, `lang`).
+> See <Link href="/settings#html-shell" doNotInferSectionTitle /> for other settings that also modify the page's HTML shell.
 
 > These settings are provided by <UiFrameworkExtension name />. If you don't use <UiFrameworkExtension name noLink /> then see <Link href="/head-manual" />.
 
-> You can <Link href="#custom-settings">create your own custom settings</Link>.
 
+## Global / per-page
 
-## Defaults
-
-You can set defaults (that pages can override).
+You can set `<head>` tags that apply globally to all pages:
 
 ```js
 // pages/+config.js
 
 import image from './previewImage.jpg'
 
+// Applies to all pages (can be overridden)
 export default {
   // Default <title>
   title: 'Awesome Rockets',
@@ -44,69 +91,126 @@ export default {
 }
 ```
 
-## Page-specific
-
-You can set values for one page or a group of pages (potentially overriding defaults).
-
-```js
-// pages/starship/+config.js
-
-export default {
-  title: 'Rocket: Starship',
-  description: 'The Starship is the largest rocket ever built.'
-}
-```
-
-> See: <Link href="/config#inheritance"/>
-
-
-## `Head` setting
-
-For other `<head>` tags, you can use the `Head` setting:
-
 ```jsx
-// pages/+Head.jsx or
-// pages/+Head.vue
+// pages/+Head.js
+// Environment: server
 
-import favicon from './favicon.svg'
+import favicon from './favicon.png'
 
 // Applies to all pages (cannot be overridden)
 export function Head() {
-  // All pages share the same favicon
   return <>
+    {/* Icon shown in the browser tab (aka favicon) */
     <link rel="icon" href={favicon} type="image/svg+xml">
   </>
 }
 ```
 
-> Unlike `title`/`description`/`image`, the `Head` setting is cumulative which means that `pages/+Head.js` cannot be overridden, see <Link href="/Head#cumulative"></Link>.
+You can also set `<head>` tags only for a single page or a group of pages:
+
+```js
+// pages/movies/+config.js
+
+import previewImage from './previewImage.jpg'
+
+// Overrides the defaults defined above
+export default {
+  title: 'Movies',
+  description: 'List of movies.',
+  image
+}
+```
+
+```jsx
+// pages/movies/+Head.js
+// Environment: server
+
+import iconMobile from './iconMobile.jpg'
+
+// This doesn't override the favicon defined at /pages/+Head.js above
+export function Head() {
+  return <>
+    {/* Icon shown on mobile homescreens (PWA) */
+    <link rel="apple-touch-icon" href={iconMobile} type="image/svg+xml">
+  </>
+}
+```
+
+While `+title`, `+description`, and `+image` can be overriden (they aren't cumulative), the `+Head` setting is cumulative and cannot be overriden — see <Link href="/Head#cumulative"></Link>.
+
+> See also: <Link href="/config#inheritance"/>
 
 
 ## Data
 
-You can set `<head>` tags based on <Link href="/data-fetching">fetched data</Link>:
+You can set `<head>` tags based on <Link href="/data-fetching">fetched data</Link>, using either:
+ - `useConfig()`, or
+ - `pageContext` functions.
+
+<div style={{height:8}}/>
+
+**`useConfig()`**
+
+You can use the <Link href="/useConfig">`useConfig()` hook</Link> to set `<head>` tags dynamically inside your `+data` hook.
 
 ```js
-// pages/rocket/starship/+data.js
+// pages/movies/+data.js
 
-export async function data() {
-  const data = await sql.run(
-    'SELECT { title, description } FROM rockets WHERE name = "starship";'
-  )
-  return data
+import { useConfig } from 'vike-react/useConfig' // or vike-{vue,solid}
+
+export async function data(pageContext) {
+  const config = useConfig()
+
+  const response = await fetch('https://star-wars.brillout.com/api/films.json')
+  let { movies } = await response.json()
+
+  config({
+    title: `${movies.length} movies`,
+    description: `List of all ${movies.length} Star Wars movies.`
+  })
+
+  return { movies }
 }
 ```
+
+> Make sure to call `useConfig()` before any `await`:
+> ```js
+> export async function data(pageContext) {
+>   const response = await fetch('https://star-wars.brillout.com/api/films.json')
+>   // ❌ Doesn't work: useConfig() must be called before `await fetch()`
+>   const config = useConfig()
+> }
+> ```
+
+> You can also use it inside UI components, see <Link href="/useConfig#ui-components" doNotInferSectionTitle />.
+
+<div style={{height:28}}/>
+
+**`pageContext` functions**
+
+You can set `+title`, `+description` and `+image` using a <Link href="/pageContext">`pageContext`</Link> function.
+
 ```ts
-// pages/rocket/starship/+title.ts
+// pages/movies/+title.ts
 
 import type { PageContext } from 'vike/types'
 import type { Data } from './+data'
 
-// Overrides the default <title>
-export default (pageContext: PageContext<Data>) => pageContext.data.title
+export default (pageContext: PageContext<Data>) => `${pageContext.data.movies.length} movies`
 ```
 
-You can define the logic once and apply it to all pages:
+```js
+// pages/movies/+data.ts
+
+export type Data = Awaited<ReturnType<typeof data>>
+export async function data(pageContext) {
+  const response = await fetch('https://star-wars.brillout.com/api/films.json')
+  let { movies } = await response.json()
+  return { movies }
+}
+```
+
+You can define some default logic that applies to all pages:
 
 ```js
 // pages/+title.js
@@ -116,14 +220,21 @@ You can define the logic once and apply it to all pages:
 export default (pageContext) => pageContext.data?.title || 'Some Default Title'
 ```
 
-You can use:
-- <Link href="/useData">`useData()`</Link> and <Link href="/usePageContext">`usePageContext()`</Link> inside the `+Head` setting, see <Link href="/Head#using-data" />.
-- <Link href="/useConfig">The `useConfig()` hook</Link> to set `<head>` tags inside your `+data` hook (or any Vike hook).
-- <Link href="/useConfig#config-head">The `<Config>` and `<Head>` components</Link> to set `<head>` tags inside your components.
-  > The `<Config>` and `<Head>` components are particularly relevant when using integrations that enable data-fetching components,
-  > such as [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#readme) and [`vike-react-apollo`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-apollo#readme).
+The `+Head` setting is a UI component — you can use <Link href="/useData">`useData()`</Link> and <Link href="/usePageContext">`usePageContext()`</Link> as usual:
 
-> The settings `description` and `image` can also access the <Link href="/pageContext">`pageContext`</Link> like this.
+```jsx
+// pages/movie/@id/+Head.js
+
+import { useData } from 'vike-react/useData' // or vike-{vue,solid}
+
+export function Head() {
+  const data = useData()
+  return <>
+    {/* Image shown when sharing on social sites (Twitter, WhatsApp, ...) */}
+    <meta property="og:image" content={data.movie.image}>
+  </>
+}
+```
 
 
 ## Custom settings
@@ -132,7 +243,7 @@ You can create your own custom settings.
 
 > You can also create custom components hooks, see for example [`vike-metadata`](https://github.com/Blankeos/vike-metadata).
 
-For example, in the following, we create a new setting `+dynamicFavicon` that allows different favicons to be set for different pages. (Using `+Head` only works for setting a global favicon, see <Link href="/Head#only-html" />.)
+For example, in the following, we create a new setting `+dynamicFavicon` that allows different favicons to be set for different pages. (Note that `+Head` can only be used for setting a global favicon, see <Link href="/Head#only-html" />.)
 
 ### Setting creation
 
@@ -152,13 +263,13 @@ export default {
 ```js
 // pages/+Head.jsx
 
-import { usePageContext } from 'vike-react/usePageContext' // or vike-vue / vike-solid
+import { usePageContext } from 'vike-react/usePageContext' // or vike-{vue,solid}
 
 export default () => {
   const pageContext = usePageContext()
   const { dynamicFavicon } = pageContext.config
   return <>
-    { dynamicFavicon && <link rel="icon" href={dynamicFavicon}> }
+    { dynamicFavicon && <link rel="icon" href={dynamicFavicon} type="image/svg+xml"> }
   <>
 }
 ```
@@ -233,31 +344,31 @@ export {
 Example of internationalizing (i18n) `<head>` tags:
 
 ```jsx
-// pages/+Head.js
+// pages/movies/+Head.js
 // Environment: server
 
 export { Head }
 
-import { usePageContext } from 'vike-react/usePageContext' // or vike-vue / vike-solid
+import { usePageContext } from 'vike-react/usePageContext' // or vike-{vue,solid}
 
 function Head() {
   const pageContext = usePageContext()
   const description = pageContext.locale === 'de-DE' ?
-    'Wir liefern zum Weltall.' :
-    'We deliver payload to space.'
+    'List von Star Wars Filme.' :
+    'List of Star Wars Movies.'
   return <>
     <meta name="description" content={description}>
   </>
 }
 ```
 ```js
-// pages/+title.js
+// pages/movies/+title.js
 // Environment: server, client
 
 export function title(pageContext) {
   const title = pageContext.locale === 'de-DE' ?
-    'AwesomeRockets | Das Weltall Unternehmen' :
-    'AwesomeRockets | The space company'
+    'Star Wars Filme' :
+    'Star Wars Movies'
   return title
 }
 ```
@@ -274,7 +385,8 @@ See <Link href="/markdown#metadata" />.
 
 ## See also
 
-- <Link href="/settings#html" doNotInferSectionTitle />
+- <Link href="/settings#html-shell" doNotInferSectionTitle />
+- <Link href="/useConfig" />
 - [`vike-metadata`](https://github.com/Blankeos/vike-metadata)
 - [Blog post "My current HTML boilerplate" showcasing and explaining a common boilerplate](https://www.matuzo.at/blog/html-boilerplate/)
 - <Link href="/head-manual" />

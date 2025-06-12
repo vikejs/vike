@@ -18,6 +18,7 @@ export { setGlobalContext_buildEntry }
 export { clearGlobalContext }
 export { assertBuildInfo }
 export { updateUserFiles }
+export { vikeConfigErrorRecoverMsg }
 export type { BuildInfo }
 export type { GlobalContextServerInternal as GlobalContextServerInternal }
 export type { GlobalContextServer }
@@ -40,37 +41,36 @@ import {
   objectReplace,
   isObject,
   hasProp,
-  debugGlob,
   getGlobalObject,
   genPromise,
   createDebugger,
-  getPublicProxy,
   checkType,
-  PROJECT_VERSION
+  PROJECT_VERSION,
 } from './utils.js'
-import type { ViteManifest } from '../shared/ViteManifest.js'
+import type { ViteManifest } from '../../types/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
-import { virtualFileIdImportUserCodeServer } from '../shared/virtual-files/virtualFileImportUserCode.js'
+import { virtualFileIdEntryServer } from '../shared/virtualFiles/virtualFileEntry.js'
 import pc from '@brillout/picocolors'
-import type { PageConfigUserFriendly } from '../../shared/page-configs/getPageConfigUserFriendly.js'
+import type { VikeConfigPublicGlobal } from '../../shared/page-configs/resolveVikeConfigPublic.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { assertV1Design } from '../shared/assertV1Design.js'
-import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
 import { resolveBase } from '../shared/resolveBase.js'
-import type { ViteConfigRuntime } from '../plugin/shared/getViteConfigRuntime.js'
+import type { ViteConfigRuntime } from '../vite/shared/getViteConfigRuntime.js'
 import {
   createGlobalContextShared,
   getGlobalContextSyncErrMsg,
-  type GlobalContextShared
+  type GlobalContextBase,
 } from '../../shared/createGlobalContextShared.js'
-import type { GlobalContext } from '../../shared/types.js'
-type PageConfigsRuntime = ReturnType<typeof getPageConfigsRuntime>
+import type { GlobalContext } from '../../types/PageContext.js'
+import { prepareGlobalContextForPublicUsage } from '../../shared/prepareGlobalContextForPublicUsage.js'
+import { logRuntimeError, logRuntimeInfo } from './loggerRuntime.js'
+import { getVikeConfigErrorBuild, setVikeConfigError } from '../shared/getVikeConfigError.js'
+import { hasAlreadyLogged } from './renderPage/isNewError.js'
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
   {
     globalContext?: Record<string, unknown>
-    globalContext_public?: Record<string, unknown>
     viteDevServer?: ViteDevServer
     viteConfig?: ResolvedConfig
     viteConfigRuntime?: ViteConfigRuntime
@@ -78,8 +78,9 @@ const globalObject = getGlobalObject<
     initGlobalContext_runPrerender_alreadyCalled?: true
     buildEntry?: unknown
     buildEntryPrevious?: unknown
-    pageConfigsRuntime?: PageConfigsRuntime
     waitForUserFilesUpdate?: Promise<void>
+    waitForUserFilesUpdateResolve?: (() => void)[]
+    vikeConfigHasRuntimeError?: boolean
     isProduction?: boolean
     buildInfo?: BuildInfo
     // Move to buildInfo.assetsManifest ?
@@ -91,12 +92,26 @@ const globalObject = getGlobalObject<
 // https://chat.deepseek.com/a/chat/s/d7e9f90a-c7f3-4108-9cd5-4ad6caed3539
 const globalObjectTyped = globalObject as typeof globalObject & {
   globalContext?: GlobalContextServerInternal
-  globalContext_public?: GlobalContextServer
 }
+const vikeConfigErrorRecoverMsg = pc.bold(pc.green('Vike config loaded'))
 
-// Public type
-type GlobalContextServer = ReturnType<typeof makePublic> & Vike.GlobalContext & Vike.GlobalContextServer
-// Private type
+// Public usge
+type GlobalContextServer = Pick<
+  GlobalContextServerInternal,
+  | 'assetsManifest'
+  | 'config'
+  | 'viteConfig'
+  | 'viteConfigRuntime'
+  | 'pages'
+  | 'baseServer'
+  | 'baseAssets'
+  | 'isClientSide'
+> &
+  // https://vike.dev/globalContext#typescript
+  Vike.GlobalContext &
+  Vike.GlobalContextServer
+
+// Internal usage
 type GlobalContextServerInternal = Awaited<ReturnType<typeof setGlobalContext>>
 
 async function getGlobalContextServerInternal() {
@@ -104,14 +119,13 @@ async function getGlobalContextServerInternal() {
   assert(globalObject.isInitialized)
   assertGlobalContextIsDefined()
   if (globalObject.isProduction !== true) await globalObject.waitForUserFilesUpdate
-  const { globalContext, globalContext_public } = globalObjectTyped
+  const { globalContext } = globalObjectTyped
   assertIsDefined(globalContext)
-  assert(globalContext_public)
-  return { globalContext, globalContext_public }
+  return { globalContext }
 }
 
 function assertIsDefined<T extends GlobalContextServerInternal>(
-  globalContext: undefined | null | T
+  globalContext: undefined | null | T,
 ): asserts globalContext is T {
   if (!globalContext) {
     debug('globalContext', globalContext)
@@ -122,7 +136,6 @@ function assertIsDefined<T extends GlobalContextServerInternal>(
 function assertGlobalContextIsDefined() {
   assertIsDefined(globalObjectTyped.globalContext)
   assert(globalObject.globalContext)
-  assert(globalObject.globalContext_public)
 }
 
 // We purposely return GlobalContext instead of GlobalContextServer because `import { getGlobalContext } from 'vike'` can resolve to the client-side implementation.
@@ -150,15 +163,13 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
     typeof isProduction === 'boolean',
     `[getGlobalContextAsync(isProduction)] Argument ${pc.cyan('isProduction')} ${
       isProduction === undefined ? 'is missing' : `should be ${pc.cyan('true')} or ${pc.cyan('false')}`
-    }`
+    }`,
   )
   setIsProduction(isProduction)
   if (!globalObject.globalContext) await initGlobalContext_getGlobalContextAsync()
   if (!isProduction) await globalObject.waitForUserFilesUpdate
   assertGlobalContextIsDefined()
-  const { globalContext_public } = globalObjectTyped
-  assert(globalContext_public)
-  return globalContext_public
+  return getGlobalContextForPublicUsage()
 }
 /**
  * Get runtime information about your app.
@@ -169,35 +180,22 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
  */
 function getGlobalContextSync(): GlobalContext {
   debug('getGlobalContextSync()')
-  const { globalContext_public } = globalObjectTyped
-  assertUsage(globalContext_public, getGlobalContextSyncErrMsg)
+  const { globalContext } = globalObjectTyped
+  assertUsage(globalContext, getGlobalContextSyncErrMsg)
   assertWarning(
     false,
     // We discourage users from using it because `pageContext.globalContext` is safer: I ain't sure but there could be race conditions when using `getGlobalContextSync()` inside React/Vue components upon HMR.
     // We're lying about "is going to be deprecated in the next major release": let's keep it and see if users need it (so far I can't see a use case for it).
     'getGlobalContextSync() is going to be deprecated in the next major release, see https://vike.dev/getGlobalContext',
-    { onlyOnce: true }
+    { onlyOnce: true },
   )
-  return globalContext_public
+  return getGlobalContextForPublicUsage()
 }
-
-function makePublic(globalContext: GlobalContextServerInternal) {
-  const globalContextPublic = getPublicProxy(
-    globalContext,
-    'globalContext',
-    [
-      'assetsManifest',
-      'config',
-      'viteConfig',
-      'viteConfigRuntime',
-      'pages',
-      'baseServer',
-      'baseAssets',
-      'isClientSide'
-    ],
-    true
-  )
-  return globalContextPublic
+function getGlobalContextForPublicUsage(): GlobalContextServer {
+  const { globalContext } = globalObjectTyped
+  assert(globalContext)
+  const globalContextForPublicUsage = prepareGlobalContextForPublicUsage(globalContext)
+  return globalContextForPublicUsage
 }
 
 async function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
@@ -209,9 +207,11 @@ async function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
   }
   assert(globalObject.viteConfig)
   globalObject.viteDevServer = viteDevServer
-  await updateUserFiles()
-  assertGlobalContextIsDefined()
   globalObject.viteDevServerPromiseResolve(viteDevServer)
+
+  const { success } = await updateUserFiles()
+  if (!success) return
+  assertGlobalContextIsDefined()
 }
 function setGlobalContext_viteConfig(viteConfig: ResolvedConfig, viteConfigRuntime: ViteConfigRuntime): void {
   if (globalObject.viteConfig) return
@@ -277,25 +277,13 @@ async function initGlobalContext_getPagesAndRoutes(): Promise<void> {
   setIsProduction(true)
   await initGlobalContext()
 }
-async function waitForViteDevServer() {
-  debug('waitForViteDevServer()')
-  const waitFor = 20
-  const timeout = setTimeout(() => {
-    assertWarning(false, `Vite's development server still not created after ${waitFor} seconds.`, {
-      onlyOnce: false,
-      showStackTrace: true
-    })
-  }, waitFor * 1000)
-  await globalObject.viteDevServerPromise
-  clearTimeout(timeout)
-  assertGlobalContextIsDefined()
-}
-
 async function initGlobalContext(): Promise<void> {
   const { isProduction } = globalObject
   assert(typeof isProduction === 'boolean')
   if (!isProduction) {
-    await waitForViteDevServer()
+    await globalObject.viteDevServerPromise
+    assert(globalObject.waitForUserFilesUpdate)
+    await globalObject.waitForUserFilesUpdate
   } else {
     await loadBuildEntry(globalObject.viteConfigRuntime?.build.outDir)
   }
@@ -345,7 +333,7 @@ async function loadBuildEntry(outDir?: string) {
       // vike-node => `inject === [ 'index' ]` => we don't show the warning to vike-node users (I don't remember why).
       globalObject.buildInfo?.viteConfigRuntime.vitePluginServerEntry.inject !== true || globalObject.isPrerendering,
       `Run the built server entry (e.g. ${pc.cyan('$ node dist/server/index.mjs')}) instead of the original server entry (e.g. ${pc.cyan('$ ts-node server/index.ts')})`,
-      { onlyOnce: true }
+      { onlyOnce: true },
     )
   }
   const { buildEntry } = globalObject
@@ -404,45 +392,84 @@ function assertVersionAtBuildTime(versionAtBuildTime: string) {
   const pretty = (version: string) => pc.bold(`vike@${version}`)
   assertUsage(
     versionAtBuildTime === versionAtRuntime,
-    `Re-build your app (you're using ${pretty(versionAtRuntime)} but your app was built with ${pretty(versionAtBuildTime)})`
+    `Re-build your app (you're using ${pretty(versionAtRuntime)} but your app was built with ${pretty(versionAtBuildTime)})`,
   )
 }
 
-async function updateUserFiles() {
-  const { promise, resolve } = genPromise<void>()
+async function updateUserFiles(): Promise<{ success: boolean }> {
   assert(!globalObject.isProduction)
+  const { promise, resolve } = genPromise<void>()
   globalObject.waitForUserFilesUpdate = promise
+  globalObject.waitForUserFilesUpdateResolve ??= []
+  globalObject.waitForUserFilesUpdateResolve.push(resolve)
+
+  const onError = (err: unknown) => {
+    if (!hasAlreadyLogged(err)) {
+      logRuntimeError(err, null)
+    }
+    setVikeConfigError({ errorRuntime: { err } })
+    globalObject.vikeConfigHasRuntimeError = true
+    return { success: false }
+  }
+  const onSuccess = () => {
+    if (globalObject.vikeConfigHasRuntimeError) {
+      assert(logRuntimeInfo) // always defined in dev
+      logRuntimeInfo(vikeConfigErrorRecoverMsg, null, 'error-recover')
+    }
+    globalObject.vikeConfigHasRuntimeError = false
+    setVikeConfigError({ errorRuntime: false })
+    globalObject.waitForUserFilesUpdateResolve!.forEach((resolve) => resolve())
+    globalObject.waitForUserFilesUpdateResolve = []
+    resolve()
+    return { success: true }
+  }
+
+  const isOutdated = () =>
+    // There is a newer call — let the new call supersede the old one.
+    // We deliberately swallow the intermetidate state (including any potential error) — it's now outdated and has existed only for a very short period of time.
+    globalObject.waitForUserFilesUpdate !== promise ||
+    // Avoid race condition: abort if there is a new globalObject.viteDevServer (happens when vite.config.js is modified => Vite's dev server is fully reloaded).
+    viteDevServer !== globalObject.viteDevServer
 
   const { viteDevServer } = globalObject
   assert(viteDevServer)
-  let virtualFileExports: Record<string, unknown>
+  let hasError = false
+  let virtualFileExports: Record<string, unknown> | undefined
+  let err: unknown
   try {
-    virtualFileExports = await viteDevServer.ssrLoadModule(virtualFileIdImportUserCodeServer)
-  } catch (err) {
-    debugGlob(`Glob error: ${virtualFileIdImportUserCodeServer} transpile error: `, err)
-    throw err
+    virtualFileExports = await viteDevServer.ssrLoadModule(virtualFileIdEntryServer)
+  } catch (err_) {
+    hasError = true
+    err = err_
   }
+  if (isOutdated()) return { success: false }
+  if (hasError) return onError(err)
   virtualFileExports = (virtualFileExports as any).default || virtualFileExports
-  debugGlob('Glob result: ', virtualFileExports)
 
-  // Avoid race condition: abort if there is a new globalObject.viteDevServer (happens when vite.config.js is modified => Vite's dev server is fully reloaded).
-  if (viteDevServer !== globalObject.viteDevServer) return
+  if (getVikeConfigErrorBuild()) {
+    return { success: false }
+  }
 
-  await setGlobalContext(virtualFileExports)
-  resolve()
+  try {
+    await setGlobalContext(virtualFileExports)
+  } catch (err_) {
+    hasError = true
+    err = err_
+  }
+  if (isOutdated()) return { success: false }
+  if (hasError) return onError(err)
+  return onSuccess()
 }
 
 async function setGlobalContext(virtualFileExports: unknown) {
+  assert(!getVikeConfigErrorBuild())
   const globalContext = await createGlobalContextShared(virtualFileExports, globalObject, addGlobalContext)
 
   assertV1Design(
     // pageConfigs is PageConfigRuntime[] but assertV1Design() requires PageConfigBuildTime[]
     globalContext._pageConfigs.length > 0,
-    globalContext._pageFilesAll
+    globalContext._pageFilesAll,
   )
-
-  // Public usage
-  globalObject.globalContext_public = makePublic(globalContext)
 
   assertGlobalContextIsDefined()
   onSetupRuntime()
@@ -451,17 +478,17 @@ async function setGlobalContext(virtualFileExports: unknown) {
   return globalContext
 }
 
-async function addGlobalContext(globalContext: GlobalContextShared) {
+async function addGlobalContext(globalContext: GlobalContextBase) {
   const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
     globalContext._pageFilesAll,
     globalContext._pageConfigs,
     globalContext._pageConfigGlobal,
-    globalContext._allPageIds
+    globalContext._allPageIds,
   )
   const globalContextBase = {
     isClientSide: false as const,
     _pageRoutes: pageRoutes,
-    _onBeforeRouteHook: onBeforeRouteHook
+    _onBeforeRouteHook: onBeforeRouteHook,
   }
   const { viteDevServer, viteConfig, viteConfigRuntime, isPrerendering, isProduction } = globalObject
   assert(typeof isProduction === 'boolean')
@@ -472,7 +499,6 @@ async function addGlobalContext(globalContext: GlobalContextShared) {
     assert(viteConfigRuntime)
     assert(!isPrerendering)
     return {
-      ...globalContext,
       ...globalContextBase,
       ...resolveBaseRuntime(viteConfigRuntime, globalContext.config),
       _isProduction: false as const,
@@ -480,7 +506,7 @@ async function addGlobalContext(globalContext: GlobalContextShared) {
       assetsManifest: null,
       _viteDevServer: viteDevServer,
       viteConfig,
-      viteConfigRuntime
+      viteConfigRuntime,
     }
   } else {
     assert(globalObject.buildEntry)
@@ -489,27 +515,26 @@ async function addGlobalContext(globalContext: GlobalContextShared) {
     assert(buildInfo)
     assert(assetsManifest)
     const globalContextBase2 = {
-      ...globalContext,
       ...globalContextBase,
       ...resolveBaseRuntime(buildInfo.viteConfigRuntime, globalContext.config),
       _isProduction: true as const,
       assetsManifest,
       _viteDevServer: null,
       viteConfigRuntime: buildInfo.viteConfigRuntime,
-      _usesClientRouter: buildInfo.usesClientRouter
+      _usesClientRouter: buildInfo.usesClientRouter,
     }
     if (isPrerendering) {
       assert(viteConfig)
       return {
         ...globalContextBase2,
         _isPrerendering: true as const,
-        viteConfig
+        viteConfig,
       }
     } else {
       return {
         ...globalContextBase2,
         _isPrerendering: false as const,
-        viteConfig: null
+        viteConfig: null,
       }
     }
   }
@@ -525,13 +550,13 @@ function getInitialGlobalContext() {
   const { promise: viteDevServerPromise, resolve: viteDevServerPromiseResolve } = genPromise<ViteDevServer>()
   return {
     viteDevServerPromise,
-    viteDevServerPromiseResolve
+    viteDevServerPromiseResolve,
   }
 }
 
 function resolveBaseRuntime(
   viteConfigRuntime: BuildInfo['viteConfigRuntime'],
-  config: PageConfigUserFriendly['config']
+  config: VikeConfigPublicGlobal['config'],
 ) {
   const baseViteOriginal = viteConfigRuntime._baseViteOriginal
   const baseServerUnresolved = config.baseServer ?? null

@@ -2,7 +2,7 @@ import { pipeToWebWritable, pipeToNodeWritable } from '@vue/server-renderer'
 
 import { escapeInject, stampPipe } from 'vike/server'
 import { createVueApp } from './createVueApp'
-import type { Writable } from 'stream'
+import type { Writable } from 'node:stream'
 
 export { render }
 export { passToClient }
@@ -34,8 +34,8 @@ async function render(pageContext: any) {
   return {
     documentHtml,
     pageContext: {
-      enableEagerStreaming: true
-    }
+      enableEagerStreaming: true,
+    },
   }
 }
 

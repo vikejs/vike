@@ -4,7 +4,7 @@ export { testRun }
 
 function testRun(
   cmd: 'npm run dev' | 'npm run prod' | 'npm run prod:static',
-  { isOldDesign }: { isOldDesign?: true } = {}
+  { isOldDesign }: { isOldDesign?: true } = {},
 ) {
   run(cmd)
 

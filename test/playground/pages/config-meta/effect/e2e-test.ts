@@ -9,7 +9,7 @@ function testSettingEffect() {
 
     expect(json).to.deep.equal({
       settingWithEffect: 'undefined',
-      dependentSetting: 'undefined'
+      dependentSetting: 'undefined',
     })
   })
 
@@ -18,7 +18,7 @@ function testSettingEffect() {
 
     expect(json).to.deep.equal({
       settingWithEffect: 'undefined',
-      dependentSetting: 'default @ /effect'
+      dependentSetting: 'default @ /effect',
     })
   })
 }

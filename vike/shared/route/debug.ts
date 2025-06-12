@@ -1,17 +1,31 @@
 export { debug }
+export { setCreateDebugger }
 
-// Note how we only import `type`: we don't actually import/load the debug code.
+// Using createDebugger() for isomorphic code without bloating the client-side.
+// On the server-side, this is just a transparent proxy.
+// On the client-side, this is an emtpy shell.
+
+import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import type { createDebugger, Debug } from '../../utils/debug.js'
+type CreateDebugger = typeof createDebugger
 
-var _debug: undefined | typeof debug
+const globalObject = getGlobalObject<{
+  debug?: Debug
+  createDebugger?: CreateDebugger
+}>('route/debug.ts', {})
+
 function debug(...args: Parameters<Debug>) {
-  if (!_debug) {
-    // We use this trick instead of `import { createDebugger } from '../../utils/debug` in order to ensure that the `debug` mechanism is only loaded on the server-side
-    _debug = (
-      globalThis as any as { __brillout_debug_createDebugger?: typeof createDebugger }
-    ).__brillout_debug_createDebugger?.('vike:routing')
+  // Client-side => does nothing
+  if (!globalObject.createDebugger) return
+
+  // Server-side => just a proxy
+  if (!globalObject.debug) {
+    globalObject.debug = globalObject.createDebugger('vike:routing')
   }
-  if (_debug) {
-    _debug(...args)
-  }
+  globalObject.debug(...args)
+}
+
+// Called only on the server-side
+function setCreateDebugger(createDebugger: CreateDebugger) {
+  globalObject.createDebugger = createDebugger
 }

@@ -33,7 +33,7 @@ function auth(app) {
     if (user) {
       res.cookie('username', username, {
         maxAge: 24 * 60 * 60 * 1000, // One day
-        httpOnly: true // Only the server can read the cookie
+        httpOnly: true, // Only the server can read the cookie
       })
     }
     const success = !!user
@@ -60,7 +60,7 @@ function vike(app) {
       urlOriginal: req.originalUrl,
       headersOriginal: req.headers,
       user: req.user,
-      userFullName: req.user?.fullName
+      userFullName: req.user?.fullName,
     }
     const pageContext = await renderPage(pageContextInit)
     const { httpResponse } = pageContext

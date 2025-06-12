@@ -1,7 +1,7 @@
 export { testRun }
 
 import { expect, describe, it } from 'vitest'
-import path from 'path'
+import path from 'node:path'
 import { renderPage } from 'vike/server'
 import { stabilizeHashs } from './utils/stabilizeHashs'
 
@@ -14,7 +14,7 @@ function testRun(isDev: boolean) {
         expect(earlyHints).toMatchSnapshot()
         expect(body).toMatchSnapshot()
       },
-      15 * 1000
+      15 * 1000,
     )
     it('Preload Disabled', async () => {
       const { body, earlyHints } = await render('/preload-disabled', isDev)
@@ -43,8 +43,8 @@ async function render(urlOriginal: '/' | '/preload-disabled' | '/preload-images'
       Object.entries(hint).map(([key, val]: [string, null | boolean | string]) => {
         val = typeof val !== 'string' ? val : stabilzeReferences(val)
         return [key, val]
-      })
-    )
+      }),
+    ),
   )
   return { body, earlyHints }
 }

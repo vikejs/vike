@@ -5,7 +5,7 @@ import { assert } from './assert.js'
 function preservePropertyGetters<T extends object>(objOriginal: T) {
   // Store original getter descriptors
   const getters = Object.fromEntries(
-    Object.entries(Object.getOwnPropertyDescriptors(objOriginal)).filter(([_, desc]) => 'get' in desc)
+    Object.entries(Object.getOwnPropertyDescriptors(objOriginal)).filter(([_, desc]) => 'get' in desc),
   )
 
   // Make getters non-enumerable
@@ -31,6 +31,6 @@ function preservePropertyGetters<T extends object>(objOriginal: T) {
   Object.defineProperty(objOriginal, '_restorePropertyGetters', {
     value: restorePropertyGetters,
     enumerable: true,
-    configurable: true
+    configurable: true,
   })
 }

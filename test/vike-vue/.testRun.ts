@@ -15,21 +15,21 @@ function testRun(cmd: `pnpm run ${'dev' | 'preview'}`) {
     url: '/',
     title,
     text: textLandingPage,
-    counter: true
+    counter: true,
   })
 
   testUrl({
     url: '/star-wars',
     title: '6 Star Wars Movies',
     description: 'All the 6 movies from the Star Wars franchise',
-    text: 'A New Hope'
+    text: 'A New Hope',
   })
 
   testUrl({
     url: '/star-wars/3',
     title: 'Return of the Jedi',
     description: 'Star Wars Movie Return of the Jedi from Richard Marquand',
-    text: '1983-05-25'
+    text: '1983-05-25',
   })
 
   testUseConfig()
@@ -124,7 +124,7 @@ function testUrl({
   title,
   description,
   text,
-  counter
+  counter,
 }: { url: string; title: string; description?: string; text: string; counter?: true }) {
   test(url + ' (HTML)', async () => {
     const html = await fetchHtml(url)
@@ -153,13 +153,13 @@ function testUseConfig() {
     expect(getTitle(html)).toBe('Image created by Romuald Brillout')
     expect(html).toMatch(
       partRegex`<script type="application/ld+json">{"@context":"https://schema.org/","contentUrl":{"src":"${getAssetUrl(
-        'logo-new.svg'
-      )}"},"creator":{"@type":"Person","name":"brillout"}}</script>`
+        'logo-new.svg',
+      )}"},"creator":{"@type":"Person","name":"brillout"}}</script>`,
     )
     expect(html).toMatch(
       partRegex`<script type="application/ld+json">{"@context":"https://schema.org/","contentUrl":{"src":"${getAssetUrl(
-        'logo.svg'
-      )}"},"creator":{"@type":"Person","name":"Romuald Brillout"}}</script>`
+        'logo.svg',
+      )}"},"creator":{"@type":"Person","name":"Romuald Brillout"}}</script>`,
     )
   })
   test('useConfig() hydration', async () => {
@@ -185,8 +185,8 @@ function testConfigComponent() {
     // check that description is rendered in <head>
     expect(html).toMatch(
       partRegex`<meta name="description" content="Image at address ${getAssetUrl(
-        'logo.svg'
-      )} was created by Romuald Brillout">${/.*/s}</head>`
+        'logo.svg',
+      )} was created by Romuald Brillout">${/.*/s}</head>`,
     )
     // check that description is not rendered in <body>
     expect(html).not.toMatch(partRegex`<body>${/.*/s}<meta name="description"`)
@@ -229,7 +229,7 @@ async function testCounter() {
       await page.click('button')
       expect(await page.textContent('button')).toContain('Counter 1')
     },
-    { timeout: 5 * 1000 }
+    { timeout: 5 * 1000 },
   )
 }
 

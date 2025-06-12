@@ -3,5 +3,5 @@ import vike from 'vike/plugin'
 
 export default {
   base: '/some/base-url',
-  plugins: [react(), vike()]
+  plugins: [react(), vike()],
 }

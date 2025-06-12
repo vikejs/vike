@@ -11,8 +11,8 @@ async function render(pageContext) {
     renderToString(
       <Layout>
         <Page />
-      </Layout>
-    )
+      </Layout>,
+    ),
   )
 
   return escapeInject`<!DOCTYPE html>

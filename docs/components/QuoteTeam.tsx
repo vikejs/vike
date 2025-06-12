@@ -7,10 +7,10 @@ import React from 'react'
 const overlap = -7
 const lineSize = 4
 
-function QuoteTeam({ children }: { children: React.ReactNode }) {
+function QuoteTeam({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
   const avatarSize = 25
   return (
-    <div className="quote-team" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div className="quote-team" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', ...style }}>
       <span style={{ display: 'flex', alignItems: 'center' }}>
         <QuoteIcon
           style={{
@@ -20,7 +20,7 @@ function QuoteTeam({ children }: { children: React.ReactNode }) {
             top: -6,
             opacity: 0.2,
             marginRight: 12,
-            flexShrink: 0
+            flexShrink: 0,
           }}
         />
         <i style={{ maxWidth: 550 }}>{children}</i>
@@ -39,7 +39,7 @@ function QuoteTeam({ children }: { children: React.ReactNode }) {
           alignItems: 'center',
           flexShrink: 0,
           lineHeight: 1.2,
-          color: 'inherit'
+          color: 'inherit',
           /*
           position: 'relative',
           top: -1
@@ -70,7 +70,7 @@ function QuoteTeam({ children }: { children: React.ReactNode }) {
                       marginLeft: column !== 0 ? overlap : 0,
                       marginTop: line !== 0 ? overlap : 0,
                       position: 'relative',
-                      zIndex: Math.abs(8 - i)
+                      zIndex: Math.abs(8 - i),
                     }}
                     src={getMaintainerAvatar(maintainer, avatarSize)}
                   />

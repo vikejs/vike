@@ -13,7 +13,7 @@ export type { ErrorAbort }
 export type { PageContextFromRewrite }
 export type { UrlRedirect }
 
-import { isUserHookError } from '../hooks/executeHook.js'
+import { isUserHookError } from '../hooks/execHook.js'
 import {
   assert,
   assertInfo,
@@ -25,7 +25,7 @@ import {
   hasProp,
   joinEnglish,
   objectAssign,
-  truncateString
+  truncateString,
 } from './utils.js'
 import pc from '@brillout/picocolors'
 
@@ -68,8 +68,8 @@ function redirect(url: string, statusCode?: 301 | 302): AbortRedirect {
     _abortCall: `redirect(${args.join(', ')})` as const,
     _urlRedirect: {
       url,
-      statusCode
-    }
+      statusCode,
+    },
   })
   return AbortRender(pageContextAbort)
 }
@@ -113,12 +113,12 @@ function render_(
   abortReason: unknown | undefined,
   abortCall: `render(${string})` | `RenderErrorPage()`,
   abortCaller: 'throw render()' | 'throw RenderErrorPage()',
-  pageContextAddendum?: { _isLegacyRenderErrorPage: true } & Record<string, unknown>
+  pageContextAddendum?: { _isLegacyRenderErrorPage: true } & Record<string, unknown>,
 ): Error {
   const pageContextAbort = {
     abortReason,
     _abortCaller: abortCaller,
-    _abortCall: abortCall
+    _abortCall: abortCall,
   }
   if (pageContextAddendum) {
     assert(pageContextAddendum._isLegacyRenderErrorPage === true)
@@ -128,7 +128,7 @@ function render_(
     const url = urlOrStatusCode
     assertUsageUrlPathnameAbsolute(url, getErrPrefix(abortCaller))
     objectAssign(pageContextAbort, {
-      _urlRewrite: url
+      _urlRewrite: url,
     })
     return AbortRender(pageContextAbort)
   } else {
@@ -136,7 +136,7 @@ function render_(
     assertStatusCode(urlOrStatusCode, [401, 403, 404, 410, 429, 500, 503], 'render')
     objectAssign(pageContextAbort, {
       abortStatusCode,
-      is404: abortStatusCode === 404
+      is404: abortStatusCode === 404,
     })
     return AbortRender(pageContextAbort)
   }
@@ -187,9 +187,9 @@ function RenderErrorPage({ pageContext = {} }: { pageContext?: Record<string, un
   assertWarning(
     false,
     `${pc.cyan('throw RenderErrorPage()')} is deprecated and will be removed in the next major release. Use ${pc.cyan(
-      'throw render()'
+      'throw render()',
     )} or ${pc.cyan('throw redirect()')} instead, see https://vike.dev/render`,
-    { onlyOnce: false }
+    { onlyOnce: false },
   )
   let abortStatusCode: 404 | 500 = 404
   let abortReason = 'Page Not Found'
@@ -221,7 +221,7 @@ function isAbortPageContext(pageContext: Record<string, unknown>): pageContext i
 function logAbortErrorHandled(
   err: ErrorAbort,
   isProduction: boolean,
-  pageContext: { urlOriginal: string; _urlRewrite: null | string }
+  pageContext: { urlOriginal: string; _urlRewrite: null | string },
 ) {
   if (isProduction) return
   const urlCurrent = pageContext._urlRewrite ?? pageContext.urlOriginal
@@ -238,19 +238,19 @@ function logAbortErrorHandled(
   }
 
   assertInfo(false, `${pc.cyan(abortCall)} thrown${thrownBy} while rendering ${pc.cyan(urlCurrent)}`, {
-    onlyOnce: false
+    onlyOnce: false,
   })
 }
 
 function assertStatusCode(statusCode: number, expected: number[], caller: 'render' | 'redirect') {
   const expectedEnglish = joinEnglish(
     expected.map((s) => s.toString()),
-    'or'
+    'or',
   )
   assertWarning(
     expected.includes(statusCode),
     `Unepexected status code ${statusCode} passed to ${caller}(), we recommend ${expectedEnglish} instead. (Or reach out at https://github.com/vikejs/vike/issues/1008 if you believe ${statusCode} should be added.)`,
-    { onlyOnce: true }
+    { onlyOnce: true },
   )
 }
 
@@ -284,13 +284,13 @@ function assertNoInfiniteAbortLoop(rewriteCount: number, redirectCount: number) 
     // prettier-ignore
     // biome-ignore format:
     rewriteCount > 0 && pc.cyan("throw render('/some-url')"),
-    redirectCount > 0 && pc.cyan("throw redirect('/some-url')")
+    redirectCount > 0 && pc.cyan("throw redirect('/some-url')"),
   ]
     .filter(Boolean)
     .join(' and ')
   assertUsage(
     rewriteCount + redirectCount <= 7,
-    `Maximum chain length of 7 ${abortCalls} exceeded. Did you define an infinite loop of ${abortCalls}?`
+    `Maximum chain length of 7 ${abortCalls} exceeded. Did you define an infinite loop of ${abortCalls}?`,
   )
 }
 

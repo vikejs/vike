@@ -39,7 +39,7 @@ function catchInfiniteLoop(functionName: `${string}()`, maxNumberOfCalls = 100, 
 function createTracker(now: Date): Tracker {
   const tracker = {
     count: 0,
-    start: now
+    start: now,
   }
   return tracker
 }

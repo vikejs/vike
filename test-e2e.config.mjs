@@ -1,22 +1,22 @@
 export default {
   ci: {
-    jobs: getCiJobs()
+    jobs: getCiJobs(),
   },
-  tolerateError
+  tolerateError,
 }
 
 function getCiJobs() {
   const linux_nodeOld = {
     os: 'ubuntu-latest',
-    node_version: '18'
+    node_version: '18',
   }
   const linux_nodeNew = {
     os: 'ubuntu-latest',
-    node_version: '22'
+    node_version: '22',
   }
   const windows_nodeOld = {
     os: 'windows-latest',
-    node_version: '18'
+    node_version: '18',
   }
 
   const setupsExamples = [linux_nodeNew, windows_nodeOld]
@@ -24,38 +24,37 @@ function getCiJobs() {
   return [
     {
       name: 'Boilerplates',
-      setups: [linux_nodeOld]
+      setups: [linux_nodeOld],
     },
     {
       name: 'Examples React',
-      setups: setupsExamples
+      setups: setupsExamples,
     },
     {
       name: 'Examples Vue/Others',
-      setups: setupsExamples
+      setups: setupsExamples,
     },
     {
       name: 'Examples Misc',
-      setups: [linux_nodeOld, windows_nodeOld]
+      setups: [linux_nodeOld, windows_nodeOld],
     },
     {
       name: 'Unit Tests E2E',
-      setups: [linux_nodeNew, windows_nodeOld]
+      setups: [linux_nodeNew, windows_nodeOld],
     },
     {
       name: 'Cloudflare',
-      setups: [linux_nodeNew]
+      setups: [linux_nodeNew],
     },
     {
       name: 'https://vike.dev',
-      setups: [linux_nodeNew]
-    }
+      setups: [linux_nodeNew],
+    },
   ]
 }
 
 function tolerateError({ logSource, logText, testInfo }) {
   return (
-    // TODO/eventually: move everything to this array
     [
       // [23:54:58.279][/test-preview.test.ts][npm run preview][stderr] 11:54:58 PM [vike][Warning] getGlobalContextSync() is going to be deprecated in the next major release, see https://vike.dev/getGlobalContext
       'getGlobalContextSync() is going to be deprecated',
@@ -89,8 +88,10 @@ function tolerateError({ logSource, logText, testInfo }) {
       'The glob option "as" has been deprecated in favour of "query"',
 
       // [vike][request(1)][Warning] The onBeforeRender() hook defined by /renderer/+onBeforeRender.js is slow: it's taking more than 4 seconds (https://vike.dev/hooksTimeout)
-      "is slow: it's taking more than"
+      "is slow: it's taking more than",
     ].some((t) => logText.includes(t)) ||
+    //
+    // TO-DO/eventually: move everything to the array above
     isViteCjsWarning() ||
     isRenderErrorPageDeprecationWarning() ||
     isSlowHookWarning() ||
@@ -121,7 +122,7 @@ function tolerateError({ logSource, logText, testInfo }) {
       logText.includes('[Warning]') &&
       logText.includes('throw RenderErrorPage()') &&
       logText.includes(
-        'is deprecated and will be removed in the next major release. Use throw render() or throw redirect() instead'
+        'is deprecated and will be removed in the next major release. Use throw render() or throw redirect() instead',
       )
     )
   }
@@ -184,7 +185,7 @@ function tolerateError({ logSource, logText, testInfo }) {
     return (
       logSource === 'stderr' &&
       logText.includes(
-        'Enabling node.js compatibility mode for built-ins and globals. This is experimental and has serious tradeoffs.'
+        'Enabling node.js compatibility mode for built-ins and globals. This is experimental and has serious tradeoffs.',
       )
     )
   }
@@ -231,7 +232,7 @@ function tolerateError({ logSource, logText, testInfo }) {
     return (
       logSource === 'stderr' &&
       logText.includes(
-        "You are using Vike's deprecated design. Update to the new V1 design, see https://vike.dev/migration/v1-design for how to migrate."
+        "You are using Vike's deprecated design. Update to the new V1 design, see https://vike.dev/migration/v1-design for how to migrate.",
       )
     )
   }

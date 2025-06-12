@@ -24,8 +24,8 @@ const data = {
     <>
       Use <b>Vike extensions</b> for automatic integration and later, if the need arises, <b>eject for full control</b>{' '}
       over integration.
-    </>
-  ]
+    </>,
+  ],
 }
 
 const iconColor = '#333'
@@ -35,22 +35,22 @@ const benefits = [
     icon: <Icon icon={<OrigamiIcon />} size={iconSizeDefault + 13} color={iconColor}></Icon>,
     title: 'Flexible by design',
     href: '/why#flexible-by-design',
-    description: 'From high-level design to the smallest details, Vike is built with flexibility in mind.'
+    description: 'From high-level design to the smallest details, Vike is built with flexibility in mind.',
   },
   {
     icon: <Icon icon={<SignIcon />} size={iconSizeDefault + 12} color={iconColor}></Icon>,
     title: 'Cutting edge, at your own pace',
     href: '/why#conservative-or-cutting-edge-your-choice',
     description:
-      'Choose between stable and cutting-edge extensions; go with a conservative stack or live on the edge in unprecedented ways.'
+      'Choose between stable and cutting-edge extensions; go with a conservative stack or live on the edge in unprecedented ways.',
   },
   {
     icon: <Icon icon={<CraneIcon />} size={iconSizeDefault + 10} color="#444"></Icon>,
     title: 'Build Your Own Framework',
     href: '/why#build-your-own-framework',
     description:
-      'Create a company internal framework that empowers your Software Architects to own the architecture and your Product Developers to quickly iterate.'
-  }
+      'Create a company internal framework that empowers your Software Architects to own the architecture and your Product Developers to quickly iterate.',
+  },
 ]
 
 export const Flexible = () => {
@@ -60,13 +60,13 @@ export const Flexible = () => {
         <div className={`landingpage-flexible-flexbox`}>
           <div
             style={{
-              flex: 1
+              flex: 1,
             }}
           >
             <TextBox className={`landingpage-flexible-customTextBox`}>
               <SectionTextCollection
                 style={{
-                  maxWidth: '400px'
+                  maxWidth: '400px',
                 }}
                 caption={data.caption}
                 title={data.title}
@@ -83,13 +83,13 @@ export const Flexible = () => {
           </div>
           <div
             style={{
-              flex: 1
+              flex: 1,
             }}
           >
             <div
               className={`landingpage-flexible-slotMachine`}
               style={{
-                justifyContent: 'center'
+                justifyContent: 'center',
               }}
             >
               <div className={`landingpage-flexible-slotMachineImageContainer`}>

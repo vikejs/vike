@@ -309,7 +309,7 @@ async function onRenderHtml(pageContext) {
 
 ## Progressive Rendering
 
-Some UI frameworks, such as React, support *progressive rendering*: while some parts of the UI are being loaded, other parts are already rendered (and already <Link href="/hydration">hydrated</Link>).
+Some UI frameworks, such as React, support *progressive rendering*: while some parts of the UI are being loaded, other parts are already rendered (as well as <Link href="/hydration">hydrated</Link>).
 
 <video src={progressiveRenderingDemo} width="500" controls muted autoPlay loop></video>
 
@@ -318,7 +318,7 @@ Some UI frameworks, such as React, support *progressive rendering*: while some p
 > With HTML streaming, all content is rendered to HTML.
 
 
-Vike has first-class support for HTML streaming and progressive rendering.
+Vike has first-class support for progressive rendering.
 
 Example: [`vike-react` > `examples/full/`](https://github.com/vikejs/vike-react/tree/main/examples/full#readme).
 

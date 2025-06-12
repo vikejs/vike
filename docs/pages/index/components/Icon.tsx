@@ -9,7 +9,7 @@ function Icon({
   icon,
   size,
   color,
-  style
+  style,
 }: { icon: React.JSX.Element; size: number; color: string; style?: React.CSSProperties }) {
   const margin = (iconSizeDefault - size) / 2
   return (
@@ -19,7 +19,7 @@ function Icon({
         width: size,
         height: size,
         margin,
-        ...style
+        ...style,
       }}
     >
       {icon}

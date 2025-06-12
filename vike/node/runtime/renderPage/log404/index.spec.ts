@@ -37,7 +37,7 @@ const routeFunction = {
       return { routeParams: { name } }
     }
     // ...
-  }
+  },
 } as const
 const pageRoutes1 = [
   {
@@ -46,7 +46,7 @@ const pageRoutes1 = [
     comesFromV1PageConfig: true,
     routeString: '/',
     routeDefinedAtString: null,
-    routeType: 'FILESYSTEM'
+    routeType: 'FILESYSTEM',
   },
   {
     pageId: '/pages/markdown',
@@ -54,7 +54,7 @@ const pageRoutes1 = [
     comesFromV1PageConfig: true,
     routeString: '/markdown',
     routeDefinedAtString: null,
-    routeType: 'FILESYSTEM'
+    routeType: 'FILESYSTEM',
   },
   {
     pageId: '/pages/star-wars/@id',
@@ -62,7 +62,7 @@ const pageRoutes1 = [
     comesFromV1PageConfig: true,
     routeString: '/star-wars/@id',
     routeDefinedAtString: null,
-    routeType: 'FILESYSTEM'
+    routeType: 'FILESYSTEM',
   },
   {
     pageId: '/pages/star-wars/index',
@@ -70,7 +70,7 @@ const pageRoutes1 = [
     comesFromV1PageConfig: true,
     routeString: '/star-wars',
     routeDefinedAtString: null,
-    routeType: 'FILESYSTEM'
-  }
+    routeType: 'FILESYSTEM',
+  },
 ] satisfies PageRoutes
 const pageRoutes2 = [routeFunction, ...pageRoutes1] satisfies PageRoutes

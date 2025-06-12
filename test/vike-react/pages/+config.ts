@@ -14,5 +14,5 @@ const config = {
   bodyAttributes: { class: 'dark' },
   viewport: 999,
   // https://vike.dev/extends
-  extends: vikeReact
+  extends: vikeReact,
 } satisfies Config

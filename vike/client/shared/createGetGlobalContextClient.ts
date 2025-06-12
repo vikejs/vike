@@ -4,12 +4,17 @@ export { getGlobalContextSync }
 
 // Internal usage
 export { createGetGlobalContextClient }
+export type GlobalContextClientInternalShared =
+  | GlobalContextClientInternal
+  | GlobalContextClientInternalWithServerRouting
 
 import {
   createGlobalContextShared,
   getGlobalContextSyncErrMsg,
-  type GlobalContextShared
+  type GlobalContextBase,
 } from '../../shared/createGlobalContextShared.js'
+import type { GlobalContextClientInternal } from '../runtime-client-routing/globalContext.js'
+import type { GlobalContextClientInternalWithServerRouting } from '../runtime-server-routing/globalContext.js'
 import { getGlobalContextSerializedInHtml } from './getJsonSerializedInHtml.js'
 import { assert, assertUsage, genPromise, getGlobalObject, objectAssign } from './utils.js'
 
@@ -25,15 +30,15 @@ const globalObject = getGlobalObject<{
     const { promise: globalContextPromise, resolve: globalContextPromiseResolve } = genPromise<GlobalContextNotTyped>()
     return {
       globalContextPromise,
-      globalContextPromiseResolve
+      globalContextPromiseResolve,
     }
-  })()
+  })(),
 )
 
 function createGetGlobalContextClient<GlobalContextAddendum extends object>(
   virtualFileExports: unknown,
   isClientRouting: boolean,
-  addGlobalContext?: (globalContext: GlobalContextShared) => Promise<GlobalContextAddendum>
+  addGlobalContext?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddendum>,
 ) {
   assert(globalObject.isClientRouting === undefined || globalObject.isClientRouting === isClientRouting)
   globalObject.isClientRouting = isClientRouting
@@ -61,7 +66,7 @@ function createGetGlobalContextClient<GlobalContextAddendum extends object>(
          *
          * We recommend using `import.meta.env.SSR` instead, see https://vike.dev/globalContext
          */
-        isClientSide: true as const
+        isClientSide: true as const,
       }
       objectAssign(globalContextAddendum, getGlobalContextSerializedInHtml())
       objectAssign(globalContextAddendum, await addGlobalContext?.(globalContext))

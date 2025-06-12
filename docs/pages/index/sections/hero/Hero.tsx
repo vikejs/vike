@@ -13,7 +13,7 @@ import { UsedBy } from './UsedBy'
 import { QuoteTeam } from '../../../../components'
 
 const quoteSentence =
-  'Vike is the next generation of framework architecture, for an open and dependable foundation that companies can build upon with confidence.'
+  'Vike is the next generation of framework architecture, for an open and stable foundation that companies can build upon with confidence.'
 
 function Hero() {
   return (
@@ -22,7 +22,7 @@ function Hero() {
       style={{
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center'
+        alignItems: 'center',
       }}
     >
       <div style={{ height: 90 }} id="hero-margin-top-1"></div>
@@ -40,15 +40,23 @@ function Hero() {
   )
 }
 
-function HeroTagline({ taglineSecondaryStyle }: { taglineSecondaryStyle?: React.CSSProperties } = {}) {
+function HeroTagline({
+  style,
+  taglineStyle,
+  taglineSecondaryStyle,
+}: {
+  style?: React.CSSProperties
+  taglineStyle?: React.CSSProperties
+  taglineSecondaryStyle?: React.CSSProperties
+} = {}) {
   return (
-    <div id="hero-taglines">
+    <div id="hero-taglines" style={style}>
       <div
         className="landingpage-hero-headline"
         style={{
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center'
+          alignItems: 'center',
         }}
       >
         <h1
@@ -58,13 +66,14 @@ function HeroTagline({ taglineSecondaryStyle }: { taglineSecondaryStyle?: React.
             width: '100%',
             marginBottom: 0,
             fontWeight: 500,
-            lineHeight: 1.1
+            lineHeight: 1.1,
           }}
         >
           <div
             id="tagline-main"
             style={{
-              opacity: 0.9
+              opacity: 0.9,
+              ...taglineStyle,
             }}
           >
             The Framework{' '}
@@ -76,7 +85,7 @@ function HeroTagline({ taglineSecondaryStyle }: { taglineSecondaryStyle?: React.
                 background: '-webkit-linear-gradient(315deg, #42d392 25%, #647eff)',
                 backgroundClip: 'text',
                 WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent'
+                WebkitTextFillColor: 'transparent',
               }}
             >
               You
@@ -94,10 +103,10 @@ function HeroTagline({ taglineSecondaryStyle }: { taglineSecondaryStyle?: React.
               fontWeight: 400,
               opacity: 0.45,
               maxWidth: 550,
-              ...taglineSecondaryStyle
+              ...taglineSecondaryStyle,
             }}
           >
-            Next.js & Nuxt alternative for unprecedented flexibility and dependability
+            Next.js & Nuxt alternative for unprecedented flexibility and stability
           </div>
         </h1>
       </div>
@@ -123,7 +132,7 @@ function VideoTalkLink() {
         paddingRight: '16px',
         paddingLeft: '8px',
         borderRadius: '18px',
-        cursor: 'pointer'
+        cursor: 'pointer',
       }}
     >
       <svg width="24" height="24" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -150,7 +159,7 @@ function GetStartedBtn() {
     <div
       style={{
         display: 'flex',
-        gap: 8
+        gap: 8,
       }}
     >
       <Link href={linkGetStarted}>

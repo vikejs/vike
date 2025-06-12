@@ -47,7 +47,7 @@ function Maintainer({ maintainer }: { maintainer: (typeof maintainersList)[0] })
         flexWrap: 'wrap',
         padding: 20,
         gap: 20,
-        textAlign: 'left'
+        textAlign: 'left',
       }}
     >
       <a href={githubUrl}>
@@ -76,7 +76,7 @@ function Maintainer({ maintainer }: { maintainer: (typeof maintainersList)[0] })
                   backgroundColor: '#305090',
                   padding: '1px 5px 2px 5px',
                   verticalAlign: 'text-top',
-                  borderRadius: 3
+                  borderRadius: 3,
                 }}
               >
                 consulting

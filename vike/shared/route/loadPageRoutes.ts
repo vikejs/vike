@@ -6,8 +6,8 @@ import type { PageFile } from '../getPageFiles.js'
 import { isErrorPageId } from '../error-page.js'
 import { assert, assertUsage, hasProp, slice } from './utils.js'
 import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath.js'
-import { isCallable } from '../utils.js'
-import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
+import { isArray, isCallable } from '../utils.js'
+import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../../types/PageConfig.js'
 import { getConfigValueRuntime } from '../page-configs/getConfigValueRuntime.js'
 import { getDefinedAtString } from '../page-configs/getConfigDefinedAt.js'
 import { warnDeprecatedAllowKey } from './resolveRouteFunction.js'
@@ -19,7 +19,12 @@ type PageRoute = {
 } & (
   | { routeString: string; routeDefinedAtString: null; routeType: 'FILESYSTEM'; routeFilesystemDefinedBy: string }
   | { routeString: string; routeDefinedAtString: string; routeType: 'STRING' }
-  | { routeFunction: Function; routeDefinedAtString: string; routeType: 'FUNCTION' }
+  | {
+      routeFunction: (arg: unknown) => unknown
+      routeFunctionFilePath: string
+      routeDefinedAtString: string
+      routeType: 'FUNCTION'
+    }
 )
 type PageRoutes = PageRoute[]
 type RouteType = 'STRING' | 'FUNCTION' | 'FILESYSTEM'
@@ -29,7 +34,7 @@ async function loadPageRoutes(
   pageFilesAll: PageFile[],
   pageConfigs: PageConfigRuntime[],
   pageConfigGlobal: PageConfigGlobalRuntime,
-  allPageIds: string[]
+  allPageIds: string[],
 ): Promise<{ pageRoutes: PageRoutes; onBeforeRouteHook: null | Hook }> {
   // TODO/next-major: remove & make this function sync
   await Promise.all(pageFilesAll.filter((p) => p.fileType === '.page.route').map((p) => p.loadFile?.()))
@@ -42,7 +47,7 @@ function getPageRoutes(
   filesystemRoots: null | FilesystemRoot[],
   pageFilesAll: PageFile[],
   pageConfigs: PageConfigRuntime[],
-  allPageIds: string[]
+  allPageIds: string[],
 ): PageRoutes {
   const pageRoutes: PageRoutes = []
 
@@ -69,9 +74,13 @@ function getPageRoutes(
                 comesFromV1PageConfig,
                 routeString: route,
                 routeDefinedAtString: definedAtString,
-                routeType: 'STRING'
+                routeType: 'STRING',
               }
             } else {
+              const { definedAtData } = configValue
+              assert(!isArray(definedAtData) && !definedAtData.definedBy)
+              const { filePathToShowToUser } = definedAtData
+              assert(filePathToShowToUser)
               assert(isCallable(route))
               // TODO/next-major: remove
               if (getConfigValueRuntime(pageConfig, 'iKnowThePerformanceRisksOfAsyncRouteFunctions', 'boolean'))
@@ -80,8 +89,9 @@ function getPageRoutes(
                 pageId,
                 comesFromV1PageConfig,
                 routeFunction: route,
+                routeFunctionFilePath: filePathToShowToUser,
                 routeDefinedAtString: definedAtString,
-                routeType: 'FUNCTION'
+                routeType: 'FUNCTION',
               }
             }
           }
@@ -98,7 +108,7 @@ function getPageRoutes(
             comesFromV1PageConfig,
             routeString,
             routeDefinedAtString: null,
-            routeType: 'FILESYSTEM'
+            routeType: 'FILESYSTEM',
           }
         }
 
@@ -126,7 +136,7 @@ function getPageRoutes(
             routeString,
             routeDefinedAtString: null,
             routeFilesystemDefinedBy: `${pageId}.page.*`,
-            routeType: 'FILESYSTEM'
+            routeType: 'FILESYSTEM',
           })
         } else {
           const { filePath, fileExports } = pageRouteFile
@@ -135,14 +145,14 @@ function getPageRoutes(
             const routeString = fileExports.default
             assertUsage(
               routeString.startsWith('/'),
-              `A Route String should start with a leading slash '/' but ${filePath} has \`export default '${routeString}'\`. Make sure to \`export default '/${routeString}'\` instead.`
+              `A Route String should start with a leading slash '/' but ${filePath} has \`export default '${routeString}'\`. Make sure to \`export default '/${routeString}'\` instead.`,
             )
             pageRoutes.push({
               pageId,
               comesFromV1PageConfig,
               routeString,
               routeDefinedAtString: filePath,
-              routeType: 'STRING'
+              routeType: 'STRING',
             })
             return
           }
@@ -158,8 +168,9 @@ function getPageRoutes(
               pageId,
               comesFromV1PageConfig,
               routeFunction,
+              routeFunctionFilePath: filePath,
               routeDefinedAtString: filePath,
-              routeType: 'FUNCTION'
+              routeType: 'FUNCTION',
             })
             return
           }
@@ -174,7 +185,7 @@ function getPageRoutes(
 function getGlobalHooks(
   pageFilesAll: PageFile[],
   pageConfigs: PageConfigRuntime[],
-  pageConfigGlobal: PageConfigGlobalRuntime
+  pageConfigGlobal: PageConfigGlobalRuntime,
 ): {
   onBeforeRouteHook: null | Hook
   filesystemRoots: null | FilesystemRoot[]
@@ -196,7 +207,7 @@ function getGlobalHooks(
       if ('onBeforeRoute' in fileExports) {
         assertUsage(
           hasProp(fileExports, 'onBeforeRoute', 'function'),
-          `\`export { onBeforeRoute }\` of ${filePath} should be a function.`
+          `\`export { onBeforeRoute }\` of ${filePath} should be a function.`,
         )
         const { onBeforeRoute } = fileExports
         const hookName = 'onBeforeRoute'
@@ -204,21 +215,21 @@ function getGlobalHooks(
           hookFilePath: filePath,
           hookFn: onBeforeRoute,
           hookName,
-          hookTimeout: getHookTimeoutDefault(hookName)
+          hookTimeout: getHookTimeoutDefault(hookName),
         }
       }
       if ('filesystemRoutingRoot' in fileExports) {
         assertUsage(
           hasProp(fileExports, 'filesystemRoutingRoot', 'string'),
-          `\`export { filesystemRoutingRoot }\` of ${filePath} should be a string.`
+          `\`export { filesystemRoutingRoot }\` of ${filePath} should be a string.`,
         )
         assertUsage(
           hasProp(fileExports, 'filesystemRoutingRoot', 'string'),
-          `\`export { filesystemRoutingRoot }\` of ${filePath} is \`'${fileExports.filesystemRoutingRoot}'\` but it should start with a leading slash \`/\`.`
+          `\`export { filesystemRoutingRoot }\` of ${filePath} is \`'${fileExports.filesystemRoutingRoot}'\` but it should start with a leading slash \`/\`.`,
         )
         filesystemRoots.push({
           filesystemRoot: dirname(filePath),
-          urlRoot: fileExports.filesystemRoutingRoot
+          urlRoot: fileExports.filesystemRoutingRoot,
         })
       }
     })

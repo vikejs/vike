@@ -21,7 +21,7 @@ function createVueApp(pageContext) {
       pageContextRef.value = pageContext
       dataRef.value = pageContext.data
       pageRef.value = pageContext.Page
-    }
+    },
   })
 
   return app

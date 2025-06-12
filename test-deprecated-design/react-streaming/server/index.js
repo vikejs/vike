@@ -25,7 +25,7 @@ async function startServer() {
     const viteDevMiddleware = (
       await vite.createServer({
         root,
-        server: { middlewareMode: true }
+        server: { middlewareMode: true },
       })
     ).middlewares
     app.use(viteDevMiddleware)
@@ -35,7 +35,7 @@ async function startServer() {
     const userAgent = req.headers['user-agent']
     const pageContextInit = {
       urlOriginal: req.originalUrl,
-      userAgent
+      userAgent,
     }
     const pageContext = await renderPage(pageContextInit)
     const { httpResponse } = pageContext

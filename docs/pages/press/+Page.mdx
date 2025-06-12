@@ -1,13 +1,33 @@
 import { Link } from '@brillout/docpress'
 import vikeLogo from '../../assets/logo/vike.svg'
+import vikeDarkLogo from '../../assets/logo/vike-dark.svg'
 import './press.css'
 
 
 ## Logo
 
-**vike.svg**
+<div style={{position: 'relative', marginBottom: 30}}>
 
-<img src={vikeLogo} height={48} />
+  **vike.svg**
+  <img src={vikeLogo} height={48} />
+
+  <div style={{
+      position: 'absolute',
+      right: 0,
+      top: -16,
+      width: '60%',
+      height: 'calc(100% + 37px)',
+      paddingLeft: 'calc(50% - 200px)',
+      color: 'white',
+      background: 'black',
+      float: 'right'
+    }}
+  >
+    **vike-dark.svg**
+    <img src={vikeDarkLogo} height={48} />
+  </div>
+
+</div>
 
 > See [GitHub > `vikejs/vike-assets`](https://github.com/vikejs/vike-assets) for alternative logos. (Animated, favicon size, variants for different contexts, ...)
 
@@ -23,8 +43,6 @@ import './press.css'
 ## Banner
 
 <img src="/banner.jpg" height="250" />
-
-<img src="https://i.imgur.com/1rCTNcM.png" height="250" />
 
 > Generated from:
 > - Source: <a href="/banner" rel="external">`/banner`</a> and <a href="/banner/cover" rel="external">`/banner/cover`</a>

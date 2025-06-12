@@ -30,11 +30,11 @@ async function cmdDev() {
 
       const info = viteServer.config.logger.info
       const startupDurationString = pc.dim(
-        `ready in ${pc.reset(pc.bold(String(Math.ceil(performance.now() - startTime))))} ms`
+        `ready in ${pc.reset(pc.bold(String(Math.ceil(performance.now() - startTime))))} ms`,
       )
       const hasExistingLogs = process.stdout.bytesWritten > 0 || process.stderr.bytesWritten > 0
       info(`  ${pc.yellow(`${pc.bold('Vike')} v${PROJECT_VERSION}`)}  ${startupDurationString}\n`, {
-        clear: !hasExistingLogs
+        clear: !hasExistingLogs,
       })
 
       viteServer.printUrls()
@@ -80,7 +80,7 @@ async function cmdPreview() {
 }
 
 async function cmdPrerender() {
-  const { runPrerenderFromCLIPrerenderCommand } = await import('../prerender/runPrerender.js')
+  const { runPrerenderFromCLIPrerenderCommand } = await import('../prerender/runPrerenderEntry.js')
   await runPrerenderFromCLIPrerenderCommand()
 }
 

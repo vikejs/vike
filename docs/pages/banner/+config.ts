@@ -1,5 +1,5 @@
 import type { Config } from 'vike/types'
 
 export default {
-  clientHooks: false
+  clientHooks: false,
 } satisfies Config

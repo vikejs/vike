@@ -1,3 +1,48 @@
+## [0.4.231](https://github.com/vikejs/vike/compare/v0.4.230...v0.4.231) (2025-05-30)
+
+
+### Bug Fixes
+
+* apply +require earlier ([dd11364](https://github.com/vikejs/vike/commit/dd113643a315603e1acf5edbe2dcc4d692331f67))
+* simplify useConfig() serialization error message ([653fc76](https://github.com/vikejs/vike/commit/653fc76adb7fdbd4db54b3fabc2af9d622ec192f))
+
+
+### Features
+
+* +meta.isDefinedByPeerDependency ([f07cc20](https://github.com/vikejs/vike/commit/f07cc203e4428823da7c9dbc6e6e9ff3495a1c1c))
+* +require.optional ([9b1a5c3](https://github.com/vikejs/vike/commit/9b1a5c30f25e1bbe7afcb39176b56e7d76480f43))
+
+
+
+## [0.4.230](https://github.com/vikejs/vike/compare/v0.4.229...v0.4.230) (2025-05-20)
+
+
+### Bug Fixes
+
+* [Server Routing] make local configs override global configs (fix [#2420](https://github.com/vikejs/vike/issues/2420)) ([58f7ed0](https://github.com/vikejs/vike/commit/58f7ed04515cab5e9273b399a91ce400e66b6236))
+* do not close web stream prematurly ([#2435](https://github.com/vikejs/vike/issues/2435)) ([3128b28](https://github.com/vikejs/vike/commit/3128b2867cbad0a89ed46dc0cc63fa2bc341cbfa))
+* don't execute +onData twice ([e1ca16d](https://github.com/vikejs/vike/commit/e1ca16d880d67f37e4fb3e1aa873c840ca2a5b41))
+* fix configEntries and exportsAll for cumulative values ([a60ad89](https://github.com/vikejs/vike/commit/a60ad8987e4c56201ed138758095bc874c14568e))
+* fix providePageContext() type ([847f1b6](https://github.com/vikejs/vike/commit/847f1b6bced868e4dddc409b25eba31245951689))
+* further respect optimizeDeps.exclude ([#2429](https://github.com/vikejs/vike/issues/2429)) ([44bc6f3](https://github.com/vikejs/vike/commit/44bc6f3848965889264b1a3727347d6916c18aee))
+* improve redirection support (closes [#2462](https://github.com/vikejs/vike/issues/2462)) ([b8889db](https://github.com/vikejs/vike/commit/b8889dbcf4fa7255231957b61ccc113fd5eb235b))
+* new debug flag DEBUG=vike:resolve ([#2436](https://github.com/vikejs/vike/issues/2436)) ([a19745d](https://github.com/vikejs/vike/commit/a19745da745975586531551a17460e9d8006fe60))
+* polish DEBUG logs ([d5f03ab](https://github.com/vikejs/vike/commit/d5f03ab3955c422ecd94a5481672329e07b9891d))
+* skip  requests .well-known/appspecific/com.chrome.devtools.json ([79b14d4](https://github.com/vikejs/vike/commit/79b14d4b39055cb4c2e5bbe49ec228c8c8973c40))
+* support resolving paths with white spaces (fix [#2436](https://github.com/vikejs/vike/issues/2436)) ([2dbbc8d](https://github.com/vikejs/vike/commit/2dbbc8d332dd27590d6111d17e3aec5d750f4d8f))
+* tolerate missing pageId for cache control header ([26460c9](https://github.com/vikejs/vike/commit/26460c9353f4ed16eb6c7ceee6ee0a556adeedfc))
+* upon DEBUG flag maximize stack trace length ([69af823](https://github.com/vikejs/vike/commit/69af823a3968318695ecdfd06854866d103121d2))
+* warn when accessing internal `pageContext` properties ([#2451](https://github.com/vikejs/vike/issues/2451)) ([c9311ce](https://github.com/vikejs/vike/commit/c9311ce83004402442cc09db8a8f70b5039db540))
+
+
+### Features
+
+* [+onData](http://vike.dev/onData) ([#2443](https://github.com/vikejs/vike/issues/2443)) ([5846ebc](https://github.com/vikejs/vike/commit/5846ebce792813e0ff6867e99ca03a707fbdae0b))
+* add globalContext fallback upon pageContext access ([a46271b](https://github.com/vikejs/vike/commit/a46271baf60c413d68d12571ee9de8e5a0ba0f9c))
+* tree-shake pageContext.isClientSide (fix [#2413](https://github.com/vikejs/vike/issues/2413)) ([#2417](https://github.com/vikejs/vike/issues/2417)) ([08a1ff5](https://github.com/vikejs/vike/commit/08a1ff55c80ddca64ca6d4417fefd45fefeb4ffb))
+
+
+
 ## [0.4.229](https://github.com/vikejs/vike/compare/v0.4.228...v0.4.229) (2025-04-24)
 
 
@@ -71,12 +116,12 @@
 * globalContext.viteConfigRuntime.build.outDir (vikejs/vike-server[#102](https://github.com/vikejs/vike/issues/102)) ([0cee16c](https://github.com/vikejs/vike/commit/0cee16ce35f219e62ab0f0d470fd8195b6da64c9))
 
 
-### Negligible breaking changes
+### MINOR BREAKING CHANGES
 
 > [!NOTE]
-> We recommend ignoring "negligible breaking changes" unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
+> We recommend ignoring `MINOR BREAKING CHANGES` unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
 
-* [[**Negligible**](https://vike.dev/versioning)][[i18n](https://vike.dev/i18n)][[pre-rendering](https://vike.dev/pre-rendering)][[`onPrerenderStart()`](https://vike.dev/onPrerenderStart)] A 404 `pageContext` is added to `prerenderContext.pageContexts` (using your `pages/_error/+Page.js`). This most likely won't break your app: the only difference is that you now generate not only `/dist/client/404.html` but also `/dist/client/fr-FR/404.html`, `/dist/client/de-DE/404.html`, ...
+* [[i18n](https://vike.dev/i18n)][[pre-rendering](https://vike.dev/pre-rendering)][[`onPrerenderStart()`](https://vike.dev/onPrerenderStart)] A 404 `pageContext` is added to `prerenderContext.pageContexts` (using your `pages/_error/+Page.js`). This most likely won't break your app: the only difference is that you now generate not only `/dist/client/404.html` but also `/dist/client/fr-FR/404.html`, `/dist/client/de-DE/404.html`, ...
 
 
 
@@ -787,7 +832,10 @@
 * streamReadableWebToString encoding ([#1799](https://github.com/vikejs/vike/issues/1799)) ([6268228](https://github.com/vikejs/vike/commit/62682283574d0c83914a4e470dbef9057e1cd1d0))
 
 
-### BREAKING CHANGES
+### MINOR BREAKING CHANGES
+
+> [!NOTE]
+> We recommend ignoring `MINOR BREAKING CHANGES` unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
 
 * Update to `vite@5.1.0` or above.
 
@@ -2820,12 +2868,6 @@
 ## [0.4.41](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.40...v0.4.41) (2022-10-15)
 
 
-### BREAKING CHANGES
-
-* [disableAutoFullBuild](https://vite-plugin-ssr.com/disableAutoFullBuild) defaults to `true` when using Vite's `build()` API.
-  > We introduce this breaking change in a minor because it affects only very small number of users.
-
-
 ### Bug Fixes
 
 * avoid Rollup handling chained build errors ([#472](https://github.com/brillout/vite-plugin-ssr/issues/472)) ([70d90a2](https://github.com/brillout/vite-plugin-ssr/commit/70d90a26a21bf526520b0fc77abd84007f77e4ca))
@@ -2835,6 +2877,14 @@
 ### Performance Improvements
 
 * faster script injection ([#474](https://github.com/brillout/vite-plugin-ssr/pull/474))
+
+
+### MINOR BREAKING CHANGES
+
+> [!NOTE]
+> We recommend ignoring `MINOR BREAKING CHANGES` unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
+
+* [disableAutoFullBuild](https://vite-plugin-ssr.com/disableAutoFullBuild) defaults to `true` when using Vite's `build()` API.
 
 
 
@@ -2955,7 +3005,10 @@
 * use Vite's built-in `import.meta.glob()` instead of `vite-plugin-glob` (fix [#431](https://github.com/brillout/vite-plugin-ssr/issues/431)) ([19385ef](https://github.com/brillout/vite-plugin-ssr/commit/19385ef06bd4997955e267c72bc4f416fbf8dcb1))
 
 
-### BREAKING CHANGES
+### MINOR BREAKING CHANGES
+
+> [!NOTE]
+> We recommend ignoring `MINOR BREAKING CHANGES` unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
 
 * `vite-plugin-ssr@0.4.29` doesn't work with Vite 2 anymore: make sure to update to Vite 3.
 

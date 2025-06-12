@@ -44,11 +44,11 @@ function onSetupRuntime(): void | undefined {
     assertWarning(
       !isNodeEnvDev(),
       `The ${getEnvDescription()}, which is contradictory because the environment seems to be a production environment (Vite isn't loaded), see https://vike.dev/NODE_ENV`,
-      { onlyOnce: true }
+      { onlyOnce: true },
     )
     assertUsage(
       !setup.vikeVitePlugin,
-      `Loading Vike's Vite plugin (the ${pc.cyan('vike/plugin')} module) is prohibited in production.`
+      `Loading Vike's Vite plugin (the ${pc.cyan('vike/plugin')} module) is prohibited in production.`,
     )
     // This assert() one of the main goal of this file: it ensures assertIsNotProductionRuntime()
     assert(!setup.shouldNotBeProduction)
@@ -58,7 +58,7 @@ function onSetupRuntime(): void | undefined {
       assertWarning(
         isNodeEnvDev(),
         `The ${getEnvDescription()}, but Vite is loaded which is prohibited in production, see https://vike.dev/NODE_ENV`,
-        { onlyOnce: true }
+        { onlyOnce: true },
       )
     }
     assert(setup.vikeVitePlugin)
@@ -102,7 +102,7 @@ function markSetup_vitePreviewServer(): void | undefined {
   if (debug.isActivated) debug('markSetup_vitePreviewServer()', new Error().stack)
   setup.vitePreviewServer = true
 }
-// Called by ../node/plugin/index.ts
+// Called by ../node/vite/index.ts
 function markSetup_vikeVitePlugin() {
   if (debug.isActivated) debug('markSetup_vikeVitePlugin()', new Error().stack)
   setup.vikeVitePlugin = true
@@ -127,7 +127,7 @@ function assertUsageNodeEnvIsNotDev(operation: 'building' | 'pre-rendering') {
   assertWarning(
     false,
     `The ${getEnvDescription()} which is forbidden upon ${operation}, see https://vike.dev/NODE_ENV`,
-    { onlyOnce: true }
+    { onlyOnce: true },
   )
 }
 function getEnvDescription(): `environment is set to be a ${string} environment by process.env.NODE_ENV===${string}` {
@@ -144,7 +144,7 @@ function assertNodeEnvIsNotUndefinedString() {
   assertWarning(
     nodeEnv !== 'undefined',
     `${pc.cyan('process.env.NODE_ENV==="undefined"')} which is unexpected: ${pc.cyan('process.env.NODE_ENV')} is allowed to be the *value* ${pc.cyan('undefined')} (i.e. ${pc.cyan('process.env.NODE_ENV===undefined')}) but it shouldn't be the *string* ${pc.cyan('"undefined"')} ${pc.underline('https://vike.dev/NODE_ENV')}`,
-    { onlyOnce: true }
+    { onlyOnce: true },
   )
 }
 

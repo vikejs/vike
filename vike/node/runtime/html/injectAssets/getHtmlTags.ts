@@ -9,7 +9,7 @@ import { assert, assertWarning, assertUsage, isObject, freezePartial } from '../
 import {
   type PageContextSerialization,
   getGlobalContextClientSerialized,
-  getPageContextClientSerialized
+  getPageContextClientSerialized,
 } from '../serializeContext.js'
 import { sanitizeJson } from './sanitizeJson.js'
 import { inferAssetTag, inferPreloadTag } from './inferHtmlTags.js'
@@ -17,7 +17,7 @@ import { mergeScriptTags } from './mergeScriptTags.js'
 import type { PageContextInjectAssets } from '../injectAssets.js'
 import type { StreamFromReactStreamingPackage } from '../stream/react-streaming.js'
 import type { PageAsset } from '../../renderPage/getPageAssets.js'
-import type { PageConfigRuntime } from '../../../../shared/page-configs/PageConfig.js'
+import type { PageConfigRuntime } from '../../../../types/PageConfig.js'
 import { getPageConfig } from '../../../../shared/page-configs/helpers.js'
 import { getConfigValueRuntime } from '../../../../shared/page-configs/getConfigValueRuntime.js'
 import pc from '@brillout/picocolors'
@@ -55,12 +55,12 @@ async function getHtmlTags(
   injectFilter: PreloadFilter,
   pageAssets: PageAsset[],
   viteDevScript: string,
-  isStream: boolean
+  isStream: boolean,
 ) {
   assert([true, false].includes(pageContext._isHtmlOnly))
   const isHtmlOnly = pageContext._isHtmlOnly
   const { _isProduction: isProduction } = pageContext._globalContext
-  const injectScriptsAt = getInjectScriptsAt(pageContext.pageId, pageContext._pageConfigs)
+  const injectScriptsAt = getInjectScriptsAt(pageContext.pageId, pageContext._globalContext._pageConfigs)
 
   const injectFilterEntries: InjectFilterEntry[] = []
   pageAssets
@@ -96,7 +96,7 @@ async function getHtmlTags(
         ...asset,
         inject,
         // @ts-ignore
-        [stamp]: true
+        [stamp]: true,
       }
       injectFilterEntries.push(entry)
     })
@@ -108,13 +108,13 @@ async function getHtmlTags(
   if (injectFilter && isProduction) {
     Object.seal(injectFilterEntries) // `Object.seal()` instead of `Object.freeze()` to allow the user to `assets.sort()`
     Object.values(injectFilterEntries).forEach((entry) =>
-      freezePartial(entry, { inject: (val) => val === false || val === 'HTML_BEGIN' || val === 'HTML_END' })
+      freezePartial(entry, { inject: (val) => val === false || val === 'HTML_BEGIN' || val === 'HTML_END' }),
     )
     // Call the user's injectFilter() hook https://vike.dev/injectFilter
     const res = injectFilter(injectFilterEntries)
     assertUsage(
       res === undefined,
-      `injectFilter() should return ${pc.cyan('undefined')}, see https://vike.dev/injectFilter`
+      `injectFilter() should return ${pc.cyan('undefined')}, see https://vike.dev/injectFilter`,
     )
     assertInjectFilterUsage(injectFilterEntries)
   }
@@ -150,9 +150,9 @@ async function getHtmlTags(
         assertWarning(
           injectScriptsAt === 'HTML_END' || !isStream,
           `You're setting injectScriptsAt to ${pc.code(
-            JSON.stringify(injectScriptsAt)
+            JSON.stringify(injectScriptsAt),
           )} while using HTML streaming with a pageContext promise (https://vike.dev/streaming#initial-data-after-stream-end) which is contradictory: the pageContext promise is skipped.`,
-          { onlyOnce: true }
+          { onlyOnce: true },
         )
       }
       if (injectScriptsAt === 'HTML_STREAM' && !isStream) {
@@ -180,7 +180,7 @@ async function getHtmlTags(
     assertWarning(
       false,
       "We recommend against using HTML streaming and a pageContext promise (https://vike.dev/streaming#initial-data-after-stream-end) at the same time, because progressive hydration (https://vike.dev/streaming#progressive-rendering) won't work.",
-      { onlyOnce: true }
+      { onlyOnce: true },
     )
   }
   if (!isHtmlOnly) {
@@ -189,14 +189,14 @@ async function getHtmlTags(
       htmlTag: () =>
         // Needs to be called after resolvePageContextPromise()
         getPageContextJsonScriptTag(pageContext),
-      position: positionJavaScriptEntry
+      position: positionJavaScriptEntry,
     })
     // <script id="vike_globalContext" type="application/json">
     htmlTags.push({
       htmlTag: () =>
         // Needs to be called after resolvePageContextPromise()
         getGlobalContextJsonScriptTag(pageContext),
-      position: positionJavaScriptEntry
+      position: positionJavaScriptEntry,
     })
   }
   // The JavaScript entry <script> tag
@@ -204,7 +204,7 @@ async function getHtmlTags(
   if (scriptEntry) {
     htmlTags.push({
       htmlTag: scriptEntry,
-      position: positionJavaScriptEntry
+      position: positionJavaScriptEntry,
     })
   }
   // Preload tags
@@ -264,7 +264,7 @@ function checkForWrongUsage(injectFilterEntries: InjectFilterEntry[]) {
     assertUsage(typeof entry.src === 'string', `[injectFilter()] Entry ${i} is missing property ${pc.cyan('src')}`)
     assertUsage(
       (entry as Record<string, unknown>)[stamp] === true,
-      `[injectFilter()] Entry ${i} (${entry.src}) isn't the original object, see https://vike.dev/injectFilter`
+      `[injectFilter()] Entry ${i} (${entry.src}) isn't the original object, see https://vike.dev/injectFilter`,
     )
     assert([false, 'HTML_BEGIN', 'HTML_END'].includes(entry.inject))
     assert(entry.assetType === null || typeof entry.assetType === 'string')
@@ -285,12 +285,12 @@ function checkForWarnings(injectFilterEntries: InjectFilterEntry[]) {
       //  - https://github.com/vitejs/vite/issues/2282
       //  - https://github.com/vikejs/vike/issues/261
       assertWarning(a.inject, `[injectFilter()] We recommend against not injecting ${a.src}`, {
-        onlyOnce: true
+        onlyOnce: true,
       })
     }
     if (a.assetType === 'script') {
       assertWarning(a.inject, `[injectFilter()] We recommend against not preloading JavaScript (${a.src})`, {
-        onlyOnce: true
+        onlyOnce: true,
       })
     }
   })
@@ -308,7 +308,7 @@ function getInjectScriptsAt(pageId: string, pageConfigs: PageConfigRuntime[]): n
       injectScriptsAt === 'HTML_BEGIN' ||
       injectScriptsAt === 'HTML_END' ||
       injectScriptsAt === 'HTML_STREAM',
-    `${configDefinedAt} has an invalid value`
+    `${configDefinedAt} has an invalid value`,
   )
   return injectScriptsAt
 }

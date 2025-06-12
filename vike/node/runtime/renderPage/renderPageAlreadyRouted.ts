@@ -9,19 +9,19 @@ import { getPageContextClientSerialized } from '../html/serializeContext.js'
 import { type PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
 import { createHttpResponsePage, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponse.js'
 import {
-  loadUserFilesServerSide,
-  PageContext_loadUserFilesServerSide,
-  type PageFiles
-} from './loadUserFilesServerSide.js'
+  loadPageConfigsLazyServerSide,
+  PageContext_loadPageConfigsLazyServerSide,
+  type PageFiles,
+} from './loadPageConfigsLazyServerSide.js'
 import { executeOnRenderHtmlHook } from './executeOnRenderHtmlHook.js'
 import { executeOnBeforeRenderAndDataHooks } from './executeOnBeforeRenderAndDataHooks.js'
-import { logRuntimeError } from './loggerRuntime.js'
+import { logRuntimeError } from '../loggerRuntime.js'
 import { isNewError } from './isNewError.js'
-import { preparePageContextForUserConsumptionServerSide } from './preparePageContextForUserConsumptionServerSide.js'
+import { preparePageContextForPublicUsageServer } from './preparePageContextForPublicUsageServer.js'
 import { executeGuardHook } from '../../../shared/route/executeGuardHook.js'
 import pc from '@brillout/picocolors'
 import { isServerSideError } from '../../../shared/misc/isServerSideError.js'
-import type { PageContextCreatedServerSide } from './createPageContextServerSide.js'
+import type { PageContextCreated } from './createPageContextServerSide.js'
 
 type PageContextAfterRender = { httpResponse: HttpResponse; errorWhileRendering: null | Error }
 
@@ -33,9 +33,9 @@ async function renderPageAlreadyRouted<
     routeParams: Record<string, string>
     errorWhileRendering: null | Error
     _httpRequestId: number
-  } & PageContextCreatedServerSide &
+  } & PageContextCreated &
     PageContextUrlInternal &
-    PageContext_loadUserFilesServerSide
+    PageContext_loadPageConfigsLazyServerSide,
 >(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {
   // pageContext.pageId can either be the:
   //  - ID of the page matching the routing, or the
@@ -43,12 +43,16 @@ async function renderPageAlreadyRouted<
   assert(hasProp(pageContext, 'pageId', 'string'))
 
   const isError: boolean = pageContext.is404 || !!pageContext.errorWhileRendering
-  assert(isError === (pageContext.pageId === getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)))
+  assert(
+    isError ===
+      (pageContext.pageId ===
+        getErrorPageId(pageContext._globalContext._pageFilesAll, pageContext._globalContext._pageConfigs)),
+  )
 
-  objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
+  objectAssign(pageContext, await loadPageConfigsLazyServerSide(pageContext))
 
   if (!isError) {
-    await executeGuardHook(pageContext, (pageContext) => preparePageContextForUserConsumptionServerSide(pageContext))
+    await executeGuardHook(pageContext, (pageContext) => preparePageContextForPublicUsageServer(pageContext))
   }
 
   if (!isError) {
@@ -82,7 +86,7 @@ async function renderPageAlreadyRouted<
 }
 
 async function prerenderPage(
-  pageContext: PageContextCreatedServerSide &
+  pageContext: PageContextCreated &
     PageFiles & {
       routeParams: Record<string, string>
       pageId: string
@@ -91,16 +95,16 @@ async function prerenderPage(
       _usesClientRouter: boolean
       _pageContextAlreadyProvidedByOnPrerenderHook?: true
       is404: boolean
-    }
+    },
 ) {
   objectAssign(pageContext, {
     isClientSideNavigation: false,
-    _urlHandler: null
+    _urlHandler: null,
   })
 
   /* Should we execute the guard() hook upon pre-rendering? Is there a use case for this?
    *  - It isn't trivial to implement, as it requires to duplicate / factor out the isAbortError() handling
-  await executeGuardHook(pageContext, (pageContext) => preparePageContextForUserConsumptionServerSide(pageContext))
+  await executeGuardHook(pageContext, (pageContext) => preparePageContextForPublicUsageServer(pageContext))
   */
 
   await executeOnBeforeRenderAndDataHooks(pageContext)
@@ -110,7 +114,7 @@ async function prerenderPage(
     htmlRender !== null,
     `Cannot pre-render ${pc.cyan(pageContext.urlOriginal)} because the ${renderHook.hookName}() hook defined by ${
       renderHook.hookFilePath
-    } didn't return an HTML string.`
+    } didn't return an HTML string.`,
   )
   assert(pageContext.isClientSideNavigation === false)
   const documentHtml = await getHtmlString(htmlRender)

@@ -7,8 +7,6 @@ import { createHttpResponsePage, createHttpResponseError } from './createHttpRes
 import pc from '@brillout/picocolors'
 import type { GetPageAssets } from './getPageAssets.js'
 import type { PageContextAfterRender } from './renderPageAlreadyRouted.js'
-import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
-import type { PageFile } from '../../../shared/getPageFiles.js'
 
 // When the user hasn't defined _error.page.js
 async function handleErrorWithoutErrorPage<
@@ -17,17 +15,15 @@ async function handleErrorWithoutErrorPage<
     errorWhileRendering: null | Error
     is404: null | boolean
     pageId: null
-    _pageFilesAll: PageFile[]
-    _pageConfigs: PageConfigRuntime[]
     _globalContext: GlobalContextServerInternal
     urlOriginal: string
-  }
+  },
 >(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {
   assert(pageContext.pageId === null)
   assert(pageContext.errorWhileRendering || pageContext.is404)
 
   {
-    const isV1 = pageContext._pageConfigs.length > 0
+    const isV1 = pageContext._globalContext._pageConfigs.length > 0
     await warnMissingErrorPage(isV1, pageContext._globalContext._isProduction)
   }
 
@@ -49,7 +45,7 @@ async function warnMissingErrorPage(isV1: boolean, isProduction: boolean) {
     const msg = [
       `No ${isV1 ? 'error page' : pc.cyan('_error.page.js')} found,`,
       'we recommend defining one',
-      'https://vike.dev/error-page'
+      'https://vike.dev/error-page',
     ].join(' ')
     assertWarning(false, msg, { onlyOnce: true })
   }

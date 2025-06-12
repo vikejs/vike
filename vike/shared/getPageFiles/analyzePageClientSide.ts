@@ -29,7 +29,7 @@ function analyzePageClientSide(pageFilesAll: PageFile[], pageId: string): Analys
   if (isHtmlOnly) {
     // HTML-only pages don't need any client-side `render()` hook. For apps that have both HTML-only and SSR/SPA pages, we skip the `.page.client.js` file that defines `render()` for HTML-only pages.
     pageFilesClientSide = pageFilesClientSide.filter(
-      (p) => p.isEnv('CLIENT_ONLY') && !getExportNames(p).includes('render')
+      (p) => p.isEnv('CLIENT_ONLY') && !getExportNames(p).includes('render'),
     )
     pageFilesClientSide = removeOverridenPageFiles(pageFilesClientSide)
   }
@@ -38,7 +38,7 @@ function analyzePageClientSide(pageFilesAll: PageFile[], pageId: string): Analys
     pageFilesClientSide,
     pageFilesServerSide,
     isHtmlOnly,
-    isClientRouting
+    isClientRouting,
   })
   return { isHtmlOnly, isClientRouting, clientEntries, clientDependencies, pageFilesClientSide, pageFilesServerSide }
 }
@@ -47,7 +47,7 @@ function analyzePageClientSide(pageFilesAll: PageFile[], pageId: string): Analys
 async function analyzePageClientSideInit(
   pageFilesAll: PageFile[],
   pageId: string,
-  { sharedPageFilesAlreadyLoaded }: { sharedPageFilesAlreadyLoaded: boolean }
+  { sharedPageFilesAlreadyLoaded }: { sharedPageFilesAlreadyLoaded: boolean },
 ) {
   const pageFilesClientSide = getPageFilesClientSide(pageFilesAll, pageId)
 
@@ -57,7 +57,6 @@ async function analyzePageClientSideInit(
       if (sharedPageFilesAlreadyLoaded && p.isEnv('CLIENT_AND_SERVER')) {
         return
       }
-      // TODO: Is `loadExportNames()` cached ? Does it use filesExports if possible? HMR?
       await p.loadExportNames?.()
       /*
       if (pageFile.exportNames) {
@@ -67,7 +66,7 @@ async function analyzePageClientSideInit(
         return Object.keys(pageFile.fileExports).includes(clientRouting)
       }
       */
-    })
+    }),
   )
 }
 

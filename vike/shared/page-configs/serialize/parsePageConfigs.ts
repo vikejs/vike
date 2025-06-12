@@ -1,11 +1,17 @@
 export { parsePageConfigs }
 export { parseConfigValuesSerialized }
 
-import type { ConfigValues, PageConfigRuntime, PageConfigGlobalRuntime, ConfigValue, DefinedAt } from '../PageConfig.js'
+import type {
+  ConfigValues,
+  PageConfigRuntime,
+  PageConfigGlobalRuntime,
+  ConfigValue,
+  DefinedAt,
+} from '../../../types/PageConfig.js'
 import type {
   PageConfigGlobalRuntimeSerialized,
   PageConfigRuntimeSerialized,
-  ValueSerialized
+  ValueSerialized,
 } from './PageConfigSerialized.js'
 import { assert, assertUsage, isCallable } from '../../utils.js'
 import { getConfigDefinedAt } from '../getConfigDefinedAt.js'
@@ -15,7 +21,7 @@ import { assertPlusFileExport } from '../assertPlusFileExport.js'
 
 function parsePageConfigs(
   pageConfigsSerialized: PageConfigRuntimeSerialized[],
-  pageConfigGlobalSerialized: PageConfigGlobalRuntimeSerialized
+  pageConfigGlobalSerialized: PageConfigGlobalRuntimeSerialized,
 ): {
   pageConfigs: PageConfigRuntime[]
   pageConfigGlobal: PageConfigGlobalRuntime
@@ -48,7 +54,7 @@ function assertRouteConfigValue(configValues: ConfigValues) {
   const configDefinedAt = getConfigDefinedAt('Config', configName, definedAtData)
   assertUsage(
     configValueType === 'string' || isCallable(value),
-    `${configDefinedAt} has an invalid type '${configValueType}': it should be a string or a function instead, see https://vike.dev/route`
+    `${configDefinedAt} has an invalid type '${configValueType}': it should be a string or a function instead, see https://vike.dev/route`,
   )
   /* We don't use assertRouteString() in order to avoid unnecessarily bloating the client-side bundle when using Server Routing:
   * - When using Server Routing, this file is loaded => loading assertRouteString() would bloat the client bundle.
@@ -113,7 +119,7 @@ type SideExport = {
 function parseValueSerialized(
   valueSerialized: ValueSerialized,
   configName: string,
-  getDefinedAtFile: () => DefinedAt
+  getDefinedAtFile: () => DefinedAt,
 ): { value: unknown; sideExports: SideExport[] } {
   if (valueSerialized.type === 'js-serialized') {
     let { value } = valueSerialized
@@ -147,9 +153,9 @@ function parseValueSerialized(
             value: exportValue,
             definedAtData: {
               filePathToShowToUser: definedAtFile.filePathToShowToUser,
-              fileExportPathToShowToUser: [exportName]
-            }
-          }
+              fileExportPathToShowToUser: [exportName],
+            },
+          },
         })
       }
     })

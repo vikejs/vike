@@ -1,5 +1,6 @@
 export { getPageAssets }
 export { setResolveClientEntriesDev }
+export { resolveIncludeAssetsImportedByServer }
 export type { PageAsset }
 export type { GetPageAssets }
 export type { PageContextGetPageAssets }
@@ -12,11 +13,12 @@ import { getManifestEntry } from './getPageAssets/getManifestEntry.js'
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { sortPageAssetsForEarlyHintsHeader } from './getPageAssets/sortPageAssetsForEarlyHintsHeader.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
-import type { ViteManifest } from '../../shared/ViteManifest.js'
-import type { ResolveClientEntriesDev } from '../../plugin/shared/resolveClientEntriesDev.js'
+import type { ViteManifest } from '../../../types/ViteManifest.js'
+import type { ResolveClientEntriesDev } from '../../vite/shared/resolveClientEntriesDev.js'
+import type { ConfigResolved } from '../../../types/index.js'
 
 const globalObject = getGlobalObject('renderPage/getPageAssets.ts', {
-  resolveClientEntriesDev: null as null | ResolveClientEntriesDev
+  resolveClientEntriesDev: null as null | ResolveClientEntriesDev,
 })
 
 type PageAsset = {
@@ -30,14 +32,13 @@ type GetPageAssets = () => Promise<PageAsset[]>
 type PageContextGetPageAssets = {
   _baseServer: string
   _baseAssets: string | null
-  _includeAssetsImportedByServer: boolean
   _globalContext: GlobalContextServerInternal
 }
 
 async function getPageAssets(
   pageContext: PageContextGetPageAssets,
   clientDependencies: ClientDependency[],
-  clientEntries: string[]
+  clientEntries: string[],
 ): Promise<PageAsset[]> {
   const globalContext = pageContext._globalContext
   const { _isProduction: isProduction } = globalContext
@@ -47,14 +48,18 @@ async function getPageAssets(
   let clientEntriesSrc: string[]
   if (isDev) {
     const { _viteDevServer: viteDevServer } = globalContext
-    clientEntriesSrc = await Promise.all(
-      clientEntries.map((clientEntry) => globalObject.resolveClientEntriesDev!(clientEntry, viteDevServer))
+    clientEntriesSrc = clientEntries.map((clientEntry) =>
+      globalObject.resolveClientEntriesDev!(clientEntry, viteDevServer),
     )
     assetUrls = await retrieveAssetsDev(clientDependencies, viteDevServer)
   } else {
     const { assetsManifest } = globalContext
     clientEntriesSrc = clientEntries.map((clientEntry) => resolveClientEntriesProd(clientEntry, assetsManifest))
-    assetUrls = retrieveAssetsProd(clientDependencies, assetsManifest, pageContext._includeAssetsImportedByServer)
+    assetUrls = retrieveAssetsProd(
+      clientDependencies,
+      assetsManifest,
+      resolveIncludeAssetsImportedByServer(pageContext._globalContext.config),
+    )
   }
 
   let pageAssets: PageAsset[] = []
@@ -80,7 +85,7 @@ async function getPageAssets(
       src,
       assetType,
       mediaType,
-      isEntry
+      isEntry,
     })
   })
 
@@ -109,4 +114,8 @@ function resolveClientEntriesProd(clientEntry: string, assetsManifest: ViteManif
 
 function setResolveClientEntriesDev(resolveClientEntriesDev: ResolveClientEntriesDev) {
   globalObject.resolveClientEntriesDev = resolveClientEntriesDev
+}
+
+function resolveIncludeAssetsImportedByServer(config: ConfigResolved): boolean {
+  return config.includeAssetsImportedByServer ?? true
 }

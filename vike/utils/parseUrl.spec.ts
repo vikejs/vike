@@ -1,6 +1,5 @@
 import { parseUrl } from './parseUrl.js'
-import { expect, describe, it } from 'vitest'
-import assert from 'assert'
+import { assert, expect, describe, it } from 'vitest'
 
 describe('parseUrl', () => {
   it('basics', () => {
@@ -999,8 +998,8 @@ describe('parseUrl', () => {
     expect(
       parseUrl(
         'https://example.com/some-base-url/hello/s%C3%A9bastien?fruit=%C3%A2pple&fruit=orânge#%C3%A2ge',
-        '/some-base-url'
-      )
+        '/some-base-url',
+      ),
     ).toMatchInlineSnapshot(`
       {
         "hash": "âge",
@@ -1378,6 +1377,7 @@ describe('parseUrl', () => {
     `)
   })
 })
+
 /* Doesn't work
 declare global {
   var document: Document & { baseURI: string }

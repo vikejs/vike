@@ -22,7 +22,7 @@ function Center({ children }: { children: React.ReactNode }) {
         height: 'calc(100vh - 100px)',
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
       }}
     >
       {children}

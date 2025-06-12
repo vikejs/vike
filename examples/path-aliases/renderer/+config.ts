@@ -5,5 +5,5 @@ import { onRenderHtml } from '#root/renderer/onRenderHtml'
 export default {
   prerender: true,
   onRenderClient,
-  onRenderHtml
+  onRenderHtml,
 } satisfies Config

@@ -43,7 +43,7 @@ function testNestedLayout() {
       async () => {
         expect(await getScrollTop()).toBe(scroll)
       },
-      { timeout: 5000 }
+      { timeout: 5000 },
     )
   }
   async function getScrollTop() {
@@ -59,7 +59,7 @@ async function nav(href: `/${string}`) {
       const fullyRenderedUrl = await page.evaluate(() => window._vike.fullyRenderedUrl)
       expect(fullyRenderedUrl).toBe(href)
     },
-    { timeout: 5000 }
+    { timeout: 5000 },
   )
 }
 declare global {

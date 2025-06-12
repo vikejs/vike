@@ -12,6 +12,6 @@ function formatHintLog(msg: string) {
     // biome-ignore format:
     `┌─${sep}─┐`,
     `│ ${msg} │`,
-    `└─${sep}─┘`
+    `└─${sep}─┘`,
   ].join('\n')
 }

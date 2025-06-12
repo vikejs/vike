@@ -21,7 +21,7 @@ import {
   getStreamReadableNode,
   getStreamReadableWeb,
   pipeToStreamWritableWeb,
-  pipeToStreamWritableNode
+  pipeToStreamWritableNode,
 } from '../html/stream.js'
 import { assert, assertUsage, assertWarning } from '../utils.js'
 import { getHtmlString, type HtmlRender } from '../html/renderHtml.js'
@@ -50,7 +50,7 @@ function getHttpResponseBody(htmlRender: HtmlRender, renderHook: null | RenderHo
   if (typeof htmlRender !== 'string') {
     assertUsage(
       false,
-      getErrMsg(htmlRender, renderHook, 'body', `Use ${pc.cyan('pageContext.httpResponse.pipe()')} instead`)
+      getErrMsg(htmlRender, renderHook, 'body', `Use ${pc.cyan('pageContext.httpResponse.pipe()')} instead`),
     )
   }
   const body = htmlRender
@@ -85,8 +85,8 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
       assertUsage(
         false,
         `The argument ${pc.cyan('writable')} passed to ${pc.cyan(
-          'pageContext.httpResponse.pipe(writable)'
-        )} doesn't seem to be ${getStreamName('writable', 'web')} nor ${getStreamName('writable', 'node')}.`
+          'pageContext.httpResponse.pipe(writable)',
+        )} doesn't seem to be ${getStreamName('writable', 'web')} nor ${getStreamName('writable', 'node')}.`,
       )
     },
     getReadableWebStream() {
@@ -113,7 +113,7 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
         false,
         '`pageContext.httpResponse.getNodeStream()` is outdated, use `pageContext.httpResponse.getReadableNodeStream()` instead. ' +
           streamDocs,
-        { onlyOnce: true, showStackTrace: true }
+        { onlyOnce: true, showStackTrace: true },
       )
       const nodeStream = await getStreamReadableNode(htmlRender)
       if (nodeStream === null) {
@@ -127,7 +127,7 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
         false,
         '`pageContext.httpResponse.getWebStream(res)` is outdated, use `pageContext.httpResponse.getReadableWebStream(res)` instead. ' +
           streamDocs,
-        { onlyOnce: true, showStackTrace: true }
+        { onlyOnce: true, showStackTrace: true },
       )
       const webStream = getStreamReadableWeb(htmlRender)
       if (webStream === null) {
@@ -141,7 +141,7 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
         false,
         '`pageContext.httpResponse.pipeToWebWritable(res)` is outdated, use `pageContext.httpResponse.pipe(res)` instead. ' +
           streamDocs,
-        { onlyOnce: true, showStackTrace: true }
+        { onlyOnce: true, showStackTrace: true },
       )
       const success = pipeToStreamWritableWeb(htmlRender, writable)
       if (!success) {
@@ -154,13 +154,13 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
         false,
         '`pageContext.httpResponse.pipeToNodeWritable(res)` is outdated, use `pageContext.httpResponse.pipe(res)` instead. ' +
           streamDocs,
-        { onlyOnce: true, showStackTrace: true }
+        { onlyOnce: true, showStackTrace: true },
       )
       const success = pipeToStreamWritableNode(htmlRender, writable)
       if (!success) {
         assertUsage(false, getErrMsg(htmlRender, renderHook, 'pipeToNodeWritable()'))
       }
-    }
+    },
   }
 
   function getFixMsg(kind: 'pipe' | 'readable', type: 'web' | 'node') {
@@ -168,7 +168,7 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
     assert(['a ', 'an ', 'the '].some((s) => streamName.startsWith(s)))
     assert(renderHook)
     const { hookFilePath, hookName } = renderHook
-    return `Make sure the ${hookName}() defined by ${hookFilePath} hook provides ${streamName} instead`
+    return `Make sure the ${hookName}() hook defined by ${hookFilePath} provides ${streamName} instead`
   }
 }
 

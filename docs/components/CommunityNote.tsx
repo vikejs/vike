@@ -33,7 +33,7 @@ function CommunityNote({ tool, url, hasExtension }: { tool?: string; url: string
 function HasExtension({
   toolName,
   toolTitle,
-  hasExtension
+  hasExtension,
 }: { toolName?: string; toolTitle: string; hasExtension: UIFramework }) {
   if (hasExtension === false) {
     return (
@@ -47,7 +47,11 @@ function HasExtension({
   return (
     <>
       <p>
-        If you are using <Link href={`/vike-${hasExtension}`}>vike-{hasExtension}</Link> you can use{' '}
+        If you are using{' '}
+        <Link href={`/vike-${hasExtension}`}>
+          <code>vike-{hasExtension}</code>
+        </Link>{' '}
+        you can use{' '}
         <code>
           <a
             href={`https://github.com/vikejs/vike-${hasExtension}/tree/main/packages/vike-${hasExtension}-${toolName}#readme`}

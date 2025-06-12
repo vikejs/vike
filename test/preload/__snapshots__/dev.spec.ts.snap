@@ -4,10 +4,10 @@ exports[`preload tags > Preload Default 1`] = `
 [
   {
     "assetType": "script",
-    "earlyHintLink": "</@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js>; rel=modulepreload; as=script",
+    "earlyHintLink": "</@fs/$ROOT/vike/dist/esm/client/runtime-server-routing/entry.js>; rel=modulepreload; as=script",
     "isEntry": true,
     "mediaType": "text/javascript",
-    "src": "/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js",
+    "src": "/@fs/$ROOT/vike/dist/esm/client/runtime-server-routing/entry.js",
   },
   {
     "assetType": "style",
@@ -30,12 +30,12 @@ exports[`preload tags > Preload Default 2`] = `
         <script id="vike_pageContext" type="application/json">{"_urlRewrite":null,"pageId":"/pages/index","routeParams":{}}</script>
         <script id="vike_globalContext" type="application/json">{}</script>
         <script type="module" async>
-import { injectIntoGlobalHook } from "/@react-refresh"
+import { injectIntoGlobalHook } from "/@react-refresh";
 injectIntoGlobalHook(window);
 window.$RefreshReg$ = () => {};
 window.$RefreshSig$ = () => (type) => type;
 import "/@vite/client";
-import "/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js";
+import "/@fs/$ROOT/vike/dist/esm/client/runtime-server-routing/entry.js";
 </script>
       </body>
     </html>"
@@ -45,10 +45,10 @@ exports[`preload tags > Preload Disabled 1`] = `
 [
   {
     "assetType": "script",
-    "earlyHintLink": "</@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js>; rel=modulepreload; as=script",
+    "earlyHintLink": "</@fs/$ROOT/vike/dist/esm/client/runtime-server-routing/entry.js>; rel=modulepreload; as=script",
     "isEntry": true,
     "mediaType": "text/javascript",
-    "src": "/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js",
+    "src": "/@fs/$ROOT/vike/dist/esm/client/runtime-server-routing/entry.js",
   },
   {
     "assetType": "style",
@@ -71,12 +71,12 @@ exports[`preload tags > Preload Disabled 2`] = `
         <script id="vike_pageContext" type="application/json">{"_urlRewrite":null,"pageId":"/pages/preload-disabled","routeParams":{}}</script>
         <script id="vike_globalContext" type="application/json">{}</script>
         <script type="module" async>
-import { injectIntoGlobalHook } from "/@react-refresh"
+import { injectIntoGlobalHook } from "/@react-refresh";
 injectIntoGlobalHook(window);
 window.$RefreshReg$ = () => {};
 window.$RefreshSig$ = () => (type) => type;
 import "/@vite/client";
-import "/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js";
+import "/@fs/$ROOT/vike/dist/esm/client/runtime-server-routing/entry.js";
 </script>
       </body>
     </html>"
@@ -86,10 +86,10 @@ exports[`preload tags > Preload Eager 1`] = `
 [
   {
     "assetType": "script",
-    "earlyHintLink": "</@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js>; rel=modulepreload; as=script",
+    "earlyHintLink": "</@fs/$ROOT/vike/dist/esm/client/runtime-server-routing/entry.js>; rel=modulepreload; as=script",
     "isEntry": true,
     "mediaType": "text/javascript",
-    "src": "/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js",
+    "src": "/@fs/$ROOT/vike/dist/esm/client/runtime-server-routing/entry.js",
   },
   {
     "assetType": "style",
@@ -112,12 +112,12 @@ exports[`preload tags > Preload Eager 2`] = `
         <script id="vike_pageContext" type="application/json">{"_urlRewrite":null,"pageId":"/pages/preload-eager","routeParams":{}}</script>
         <script id="vike_globalContext" type="application/json">{}</script>
         <script type="module" async>
-import { injectIntoGlobalHook } from "/@react-refresh"
+import { injectIntoGlobalHook } from "/@react-refresh";
 injectIntoGlobalHook(window);
 window.$RefreshReg$ = () => {};
 window.$RefreshSig$ = () => (type) => type;
 import "/@vite/client";
-import "/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js";
+import "/@fs/$ROOT/vike/dist/esm/client/runtime-server-routing/entry.js";
 </script>
       </body>
     </html>"
@@ -127,10 +127,10 @@ exports[`preload tags > Preload Images 1`] = `
 [
   {
     "assetType": "script",
-    "earlyHintLink": "</@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js>; rel=modulepreload; as=script",
+    "earlyHintLink": "</@fs/$ROOT/vike/dist/esm/client/runtime-server-routing/entry.js>; rel=modulepreload; as=script",
     "isEntry": true,
     "mediaType": "text/javascript",
-    "src": "/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js",
+    "src": "/@fs/$ROOT/vike/dist/esm/client/runtime-server-routing/entry.js",
   },
   {
     "assetType": "style",
@@ -153,12 +153,12 @@ exports[`preload tags > Preload Images 2`] = `
         <script id="vike_pageContext" type="application/json">{"_urlRewrite":null,"pageId":"/pages/preload-images","routeParams":{}}</script>
         <script id="vike_globalContext" type="application/json">{}</script>
         <script type="module" async>
-import { injectIntoGlobalHook } from "/@react-refresh"
+import { injectIntoGlobalHook } from "/@react-refresh";
 injectIntoGlobalHook(window);
 window.$RefreshReg$ = () => {};
 window.$RefreshSig$ = () => (type) => type;
 import "/@vite/client";
-import "/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js";
+import "/@fs/$ROOT/vike/dist/esm/client/runtime-server-routing/entry.js";
 </script>
       </body>
     </html>"

@@ -1,6 +1,6 @@
 {
   "name": "vike",
-  "version": "0.4.229",
+  "version": "0.4.231",
   "repository": "https://github.com/vikejs/vike",
   "exports": {
     "./server": {
@@ -12,7 +12,7 @@
       "default": "./dist/esm/node/runtime/index.js"
     },
     "./client": {
-      "types": "./dist/esm/client/server-routing-runtime/index.d.ts"
+      "types": "./dist/esm/client/runtime-server-routing/index.d.ts"
     },
     "./types": {
       "types": "./dist/esm/types/index.d.ts"
@@ -21,9 +21,9 @@
       "worker": "./dist/esm/node/client/router.js",
       "require": "./dist/cjs/node/client/router.js",
       "node": "./dist/esm/node/client/router.js",
-      "browser": "./dist/esm/client/client-routing-runtime/index.js",
-      "types": "./dist/esm/client/client-routing-runtime/index.d.ts",
-      "default": "./dist/esm/client/client-routing-runtime/index.js"
+      "browser": "./dist/esm/client/runtime-client-routing/index.js",
+      "types": "./dist/esm/client/runtime-client-routing/index.d.ts",
+      "default": "./dist/esm/client/runtime-client-routing/index.js"
     },
     "./routing": {
       "worker": "./dist/esm/shared/route/routing.js",
@@ -52,10 +52,10 @@
       "default": "./dist/esm/node/prerender/index.js"
     },
     "./plugin": {
-      "require": "./dist/cjs/node/plugin/index.js",
-      "node": "./dist/esm/node/plugin/index.js",
-      "types": "./dist/esm/node/plugin/index.d.ts",
-      "default": "./dist/esm/node/plugin/index.js"
+      "require": "./dist/cjs/node/vite/index.js",
+      "node": "./dist/esm/node/vite/index.js",
+      "types": "./dist/esm/node/vite/index.d.ts",
+      "default": "./dist/esm/node/vite/index.js"
     },
     "./RenderErrorPage": {
       "worker": "./dist/esm/shared/RenderErrorPage.js",
@@ -174,10 +174,10 @@
         "./dist/esm/node/runtime/index.d.ts"
       ],
       "client": [
-        "./dist/esm/client/server-routing-runtime/index.d.ts"
+        "./dist/esm/client/runtime-server-routing/index.d.ts"
       ],
       "client/router": [
-        "./dist/esm/client/client-routing-runtime/index.d.ts"
+        "./dist/esm/client/runtime-client-routing/index.d.ts"
       ],
       "routing": [
         "./dist/esm/shared/route/routing.d.ts"
@@ -192,7 +192,7 @@
         "./dist/esm/node/prerender/index.d.ts"
       ],
       "plugin": [
-        "./dist/esm/node/plugin/index.d.ts"
+        "./dist/esm/node/vite/index.d.ts"
       ],
       "RenderErrorPage": [
         "./dist/esm/shared/RenderErrorPage.d.ts"
@@ -245,7 +245,7 @@
     "./universal-middleware.js"
   ],
   "devDependencies": {
-    "@biomejs/biome": "^1.5.3",
+    "@biomejs/biome": "^1.9.4",
     "@brillout/release-me": "^0.4.2",
     "@types/estree": "^1.0.5",
     "@types/jest": "^29.5.11",
@@ -254,7 +254,7 @@
     "@types/resolve": "^1.20.6",
     "@types/semver": "^7.5.8",
     "@types/source-map-support": "^0.5.10",
-    "react-streaming": "^0.3.47",
+    "react-streaming": "^0.4.2",
     "rimraf": "^5.0.5",
     "typescript": "^5.8.3",
     "vite": "^6.3.2"

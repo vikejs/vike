@@ -17,7 +17,7 @@ function getEarlyHints(assets: PageAsset[]): EarlyHint[] {
       if (isFontFallback(asset, earlyHints)) return
       earlyHints.push({
         ...asset,
-        earlyHintLink: inferEarlyHintLink(asset)
+        earlyHintLink: inferEarlyHintLink(asset),
       })
     })
   }

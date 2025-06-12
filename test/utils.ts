@@ -17,7 +17,7 @@ import {
   expectLog,
   partRegex,
   sleep,
-  skip
+  skip,
 } from '@brillout/test-e2e'
 
 async function testCounter(currentValue = 0) {
@@ -27,7 +27,7 @@ async function testCounter(currentValue = 0) {
       const btn = page.locator('button', { hasText: 'Counter' })
       expect(await btn.textContent()).toBe(`Counter ${currentValue}`)
     },
-    { timeout: 5 * 1000 }
+    { timeout: 5 * 1000 },
   )
   // autoRetry() in case page isn't hydrated yet
   await autoRetry(
@@ -36,16 +36,21 @@ async function testCounter(currentValue = 0) {
       await btn.click()
       expect(await btn.textContent()).toBe(`Counter ${currentValue + 1}`)
     },
-    { timeout: 5 * 1000 }
+    { timeout: 5 * 1000 },
   )
 }
 
-function expectUrl(pathname: string) {
-  expect(page.url()).toBe(getServerUrl() + pathname)
-  /* Same?
-  const url = await page.evaluate(() => location.href)
-  expect(url.endsWith(endsWith)).toBe(true)
-  */
+async function expectUrl(pathname: string) {
+  await autoRetry(
+    async () => {
+      expect(page.url()).toBe(getServerUrl() + pathname)
+      /* Same?
+    const url = await page.evaluate(() => location.href)
+    expect(url.endsWith(pathname)).toBe(true)
+    //*/
+    },
+    { timeout: 3000 },
+  )
 }
 
 /** Ensure page wasn't server-side routed.
@@ -107,7 +112,11 @@ declare global {
 
 function testRunClassic(
   cmd: 'npm run dev' | 'npm run preview' | 'npm run prod',
-  { isCJS, skipAboutPage, skipViteEcosystemCi }: { isCJS?: true; skipAboutPage?: true; skipViteEcosystemCi?: true } = {}
+  {
+    isCJS,
+    skipAboutPage,
+    skipViteEcosystemCi,
+  }: { isCJS?: true; skipAboutPage?: true; skipViteEcosystemCi?: true } = {},
 ) {
   if (skipViteEcosystemCi && process.env.VITE_ECOSYSTEM_CI) {
     skip("SKIPPED: skipping this test from Vite's ecosystem CI, see https://github.com/vikejs/vike/pull/2220")
@@ -121,7 +130,7 @@ function testRunClassic(
     expect(html).toContain('<h1>Welcome</h1>')
     if (isCJS) {
       expectLog('package.json#type to "module", see https://vike.dev/CJS', {
-        filter: (log) => log.logSource === 'stderr'
+        filter: (log) => log.logSource === 'stderr',
       })
     }
   })

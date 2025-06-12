@@ -12,13 +12,13 @@
     "@types/express": "^5.0.1",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
-    "@vitejs/plugin-react": "^4.4.1",
+    "@vitejs/plugin-react": "^4.5.1",
     "cross-env": "^7.0.3",
     "express": "^5.1.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "typescript": "^5.8.3",
-    "vike": "0.4.229",
+    "vike": "0.4.231",
     "vite": "^6.3.2"
   },
   "type": "module"

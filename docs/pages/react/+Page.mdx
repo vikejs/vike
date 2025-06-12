@@ -1,11 +1,11 @@
 import { Link, RepoLink } from '@brillout/docpress'
-import { Example, UseBati, CustomIntegrationWarning } from '../../components'
+import { Example, UseScaffolder, CustomIntegrationWarning } from '../../components'
 
 ## `vike-react`
 
 We recommend using <Link href="/vike-react">`vike-react`</Link> which integrates [React](https://react.dev) in a full-fledged manner.
 
-> <UseBati>`vike-react`</UseBati>
+> <UseScaffolder>`vike-react`</UseScaffolder>
 
 You can also <Link href="#custom-integration">integrate React yourself</Link> if you want full control over the React integration.
 
@@ -41,9 +41,9 @@ The design can be broken down into three parts:
 
 Vike already supports <Link href="/streaming#progressive-rendering">Progressive Rendering</Link> as well as <Link href="/RPC">RPC</Link>.
 
-> Instead of using [Server Actions using `'use server'`](https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations), we recommend using [Telefunc](https://telefunc.com/) which we believe to be a superior design. That said, a <Link href="/vike-react">`vike-react`</Link> fork can be developed that supports `'use server'`.
+> Instead of using [Server Actions using `'use server'`](https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations), we recommend using [Telefunc](https://telefunc.com/) which we believe to feature a superior design. That said, a <Link href="/vike-react">`vike-react`</Link> fork can be developed that supports `'use server'`.
 
-Being able to integrate Server Components is work-in-progress.
+Work on Server Components is in progress, see [`vike-react-rsc`](https://github.com/nitedani/vike-react-rsc).
 
 > While [we are thrilled about Server Components](https://github.com/reactjs/rfcs/pull/188#issuecomment-754815233), we believe it isn't production ready yet.
 >

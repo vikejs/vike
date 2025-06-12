@@ -3,6 +3,7 @@ assertIsNotBrowser()
 
 export * from '../../utils/assert.js'
 export * from '../../utils/getFileExtension.js'
+export * from '../../utils/getGlobalObject.js'
 export * from '../../utils/isPlainObject.js'
 export * from '../../utils/checkType.js'
 export * from '../../utils/hasProp.js'

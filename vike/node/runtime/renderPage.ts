@@ -6,7 +6,7 @@ export type { PageContextBegin }
 import { renderPageAlreadyRouted } from './renderPage/renderPageAlreadyRouted.js'
 import {
   createPageContextServerSide,
-  createPageContextServerSideWithoutGlobalContext
+  createPageContextServerSideWithoutGlobalContext,
 } from './renderPage/createPageContextServerSide.js'
 import { route } from '../../shared/route/index.js'
 import {
@@ -27,7 +27,7 @@ import {
   removeUrlOrigin,
   setUrlOrigin,
   isUri,
-  getUrlPretty
+  getUrlPretty,
 } from './utils.js'
 import {
   assertNoInfiniteAbortLoop,
@@ -35,45 +35,42 @@ import {
   getPageContextFromAllRewrites,
   isAbortError,
   logAbortErrorHandled,
-  PageContextFromRewrite
+  PageContextFromRewrite,
 } from '../../shared/route/abort.js'
 import {
   getGlobalContextServerInternal,
-  type GlobalContextServer,
   initGlobalContext_renderPage,
-  type GlobalContextServerInternal
+  type GlobalContextServerInternal,
 } from './globalContext.js'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl.js'
 import {
   type HttpResponse,
-  createHttpResponseFavicon404,
+  createHttpResponse404,
   createHttpResponseRedirect,
   createHttpResponsePageContextJson,
   createHttpResponseError,
   createHttpResponseErrorWithoutGlobalContext,
-  createHttpResponseBaseIsMissing
+  createHttpResponseBaseIsMissing,
 } from './renderPage/createHttpResponse.js'
-import { logRuntimeError, logRuntimeInfo } from './renderPage/loggerRuntime.js'
+import { logRuntimeError, logRuntimeInfo } from './loggerRuntime.js'
 import { isNewError } from './renderPage/isNewError.js'
 import { assertArguments } from './renderPage/assertArguments.js'
 import type { PageContextDebugRouteMatches } from './renderPage/debugPageFiles.js'
 import { log404 } from './renderPage/log404/index.js'
-import { isVikeConfigInvalid } from './renderPage/isVikeConfigInvalid.js'
 import pc from '@brillout/picocolors'
 import type { PageContextServer } from '../../types/index.js'
 import { getPageContextClientSerializedAbort, getPageContextClientSerialized } from './html/serializeContext.js'
 import { getErrorPageId } from '../../shared/error-page.js'
 import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErrorPage.js'
-import { loadUserFilesServerSide } from './renderPage/loadUserFilesServerSide.js'
+import { loadPageConfigsLazyServerSide } from './renderPage/loadPageConfigsLazyServerSide.js'
 import { resolveRedirects } from './renderPage/resolveRedirects.js'
-import type { PageContextBuiltInServerInternal } from '../../shared/types.js'
+import type { PageContextInternalServer } from '../../types/PageContext.js'
+import { getVikeConfigError } from '../shared/getVikeConfigError.js'
 
-const globalObject = getGlobalObject('runtime/renderPage.ts', {
-  httpRequestsCount: 0
-})
+const globalObject = getGlobalObject('runtime/renderPage.ts', { httpRequestsCount: 0 })
 
-type PageContextAfterRender = { httpResponse: HttpResponse } & Partial<PageContextBuiltInServerInternal>
-type PageContextInit = Pick<PageContextBuiltInServerInternal, 'urlOriginal' | 'headersOriginal'> & {
+type PageContextAfterRender = { httpResponse: HttpResponse } & Partial<PageContextInternalServer>
+type PageContextInit = Pick<PageContextInternalServer, 'urlOriginal' | 'headersOriginal'> & {
   /** @deprecated Set `pageContextInit.urlOriginal` instead  */ // TODO/next-major: remove
   url?: string
   /** @deprecated Set pageContextInit.headersOriginal instead */ // TODO/next-major: remove
@@ -83,7 +80,7 @@ type PageContextBegin = Awaited<ReturnType<typeof getPageContextBegin>>
 
 // `renderPage()` calls `renderPageNominal()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that Vike never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
 async function renderPage<PageContextUserAdded extends {}, PageContextInitUser extends PageContextInit>(
-  pageContextInit: PageContextInitUser
+  pageContextInit: PageContextInitUser,
 ): Promise<
   // Partial because rendering may fail at any user hook.
   // - `.pageContext.json` requests may fail while still returning the HTTP response `JSON.stringify({ serverSideError: true })`.
@@ -93,15 +90,15 @@ async function renderPage<PageContextUserAdded extends {}, PageContextInitUser e
   assert(hasProp(pageContextInit, 'urlOriginal', 'string')) // assertUsage() already implemented at assertArguments()
   assertIsUrl(pageContextInit.urlOriginal)
   onSetupRuntime()
-  const pageContextInvalidRequest = getPageContextInvalidRequest(pageContextInit)
-  if (pageContextInvalidRequest) return pageContextInvalidRequest as any
+  const pageContextSkipRequest = getPageContextSkipRequest(pageContextInit)
+  if (pageContextSkipRequest) return pageContextSkipRequest as any
 
   const httpRequestId = getRequestId()
   const urlOriginalPretty = getUrlPretty(pageContextInit.urlOriginal)
   logHttpRequest(urlOriginalPretty, httpRequestId)
 
   const { pageContextReturn } = await asyncHookWrapper(httpRequestId, () =>
-    renderPagePrepare(pageContextInit, httpRequestId)
+    renderPagePrepare(pageContextInit, httpRequestId),
   )
 
   logHttpResponse(urlOriginalPretty, httpRequestId, pageContextReturn)
@@ -113,7 +110,7 @@ async function renderPage<PageContextUserAdded extends {}, PageContextInitUser e
 
 // Fallback wrapper if node:async_hooks isn't available
 let asyncHookWrapper = async <PageContext>(_httpRequestId: number, ret: () => Promise<PageContext>) => ({
-  pageContextReturn: await ret()
+  pageContextReturn: await ret(),
 })
 // Add node:async_hooks wrapper
 function renderPage_addAsyncHookwrapper(wrapper: typeof asyncHookWrapper) {
@@ -122,14 +119,14 @@ function renderPage_addAsyncHookwrapper(wrapper: typeof asyncHookWrapper) {
 
 async function renderPagePrepare(
   pageContextInit: PageContextInit,
-  httpRequestId: number
+  httpRequestId: number,
 ): Promise<PageContextAfterRender> {
   // Invalid config
-  if (
-    isVikeConfigInvalid &&
-    (true as boolean) // Make TS happy
-  ) {
-    return getPageContextInvalidVikeConfig(isVikeConfigInvalid.err, pageContextInit, httpRequestId)
+  {
+    const vikeConfigError = getVikeConfigError()
+    if (vikeConfigError) {
+      return getPageContextInvalidVikeConfig(vikeConfigError.err, pageContextInit, httpRequestId)
+    }
   }
 
   // Prepare context
@@ -146,19 +143,17 @@ async function renderPagePrepare(
     const pageContextWithError = getPageContextHttpResponseErrorWithoutGlobalContext(err, pageContextInit)
     return pageContextWithError
   }
-  if (isVikeConfigInvalid) {
-    return getPageContextInvalidVikeConfig(isVikeConfigInvalid.err, pageContextInit, httpRequestId)
-  } else {
-    // `globalContext` now contains the entire Vike config and getVikeConfig() isn't called anymore for this request.
+  {
+    const vikeConfigError = getVikeConfigError()
+    if (vikeConfigError) {
+      return getPageContextInvalidVikeConfig(vikeConfigError.err, pageContextInit, httpRequestId)
+    } else {
+      // `globalContext` now contains the entire Vike config and getVikeConfig() isn't called anymore for this request.
+    }
   }
-  const { globalContext, globalContext_public } = await getGlobalContextServerInternal()
+  const { globalContext } = await getGlobalContextServerInternal()
 
-  const pageContextBegin = await getPageContextBegin(
-    pageContextInit,
-    globalContext,
-    globalContext_public,
-    httpRequestId
-  )
+  const pageContextBegin = await getPageContextBegin(pageContextInit, globalContext, httpRequestId)
 
   // Check Base URL
   {
@@ -185,14 +180,14 @@ async function renderPageAlreadyPrepared(
   pageContextBegin: PageContextBegin,
   globalContext: GlobalContextServerInternal,
   httpRequestId: number,
-  pageContextsFromRewrite: PageContextFromRewrite[]
+  pageContextsFromRewrite: PageContextFromRewrite[],
 ): Promise<PageContextAfterRender> {
   const pageContextNominalPageBegin = forkPageContext(pageContextBegin)
   assertNoInfiniteAbortLoop(
     pageContextsFromRewrite.length,
     // There doesn't seem to be a way to count the number of HTTP redirects (vike don't have access to the HTTP request headers/cookies)
     // https://stackoverflow.com/questions/9683007/detect-infinite-http-redirect-loop-on-server-side
-    0
+    0,
   )
   let pageContextNominalPageSuccess: undefined | Awaited<ReturnType<typeof renderPageNominal>>
   const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
@@ -234,7 +229,7 @@ async function renderPageAlreadyPrepared(
     const pageContextErrorPageInit = await getPageContextErrorPageInit(
       pageContextBegin,
       errNominalPage,
-      pageContextNominalPageBegin
+      pageContextNominalPageBegin,
     )
 
     // Handle `throw redirect()` and `throw render()` while rendering nominal page
@@ -246,7 +241,7 @@ async function renderPageAlreadyPrepared(
         pageContextNominalPageBegin,
         httpRequestId,
         pageContextErrorPageInit,
-        globalContext
+        globalContext,
       )
       if (handled.pageContextReturn) {
         // - throw redirect()
@@ -282,7 +277,7 @@ async function renderPageAlreadyPrepared(
           pageContextNominalPageBegin,
           httpRequestId,
           pageContextErrorPageInit,
-          globalContext
+          globalContext,
         )
         // throw render(abortStatusCode)
         if (!handled.pageContextReturn) {
@@ -290,11 +285,11 @@ async function renderPageAlreadyPrepared(
           assertWarning(
             false,
             `Failed to render error page because ${pc.cyan(
-              pageContextAbort._abortCall
+              pageContextAbort._abortCall,
             )} was called: make sure ${pc.cyan(
-              pageContextAbort._abortCaller
+              pageContextAbort._abortCaller,
             )} doesn't occur while the error page is being rendered.`,
-            { onlyOnce: false }
+            { onlyOnce: false },
           )
           const pageContextHttpWithError = getPageContextHttpResponseError(errNominalPage, pageContextBegin)
           return pageContextHttpWithError
@@ -371,19 +366,19 @@ function getPageContextHttpResponseError(err: unknown, pageContextBegin: PageCon
   const httpResponse = createHttpResponseError(pageContextBegin)
   objectAssign(pageContextWithError, {
     httpResponse,
-    errorWhileRendering: err
+    errorWhileRendering: err,
   })
   return pageContextWithError
 }
 function getPageContextHttpResponseErrorWithoutGlobalContext(
   err: unknown,
-  pageContextInit: PageContextInit
+  pageContextInit: PageContextInit,
 ): PageContextAfterRender {
   const pageContextWithError = createPageContextServerSideWithoutGlobalContext(pageContextInit)
   const httpResponse = createHttpResponseErrorWithoutGlobalContext()
   objectAssign(pageContextWithError, {
     httpResponse,
-    errorWhileRendering: err
+    errorWhileRendering: err,
   })
   return pageContextWithError
 }
@@ -397,7 +392,10 @@ async function renderPageNominal(pageContext: PageContextBegin) {
     objectAssign(pageContext, pageContextFromRoute)
     objectAssign(pageContext, { is404: pageContext.pageId ? null : true })
     if (pageContext.pageId === null) {
-      const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
+      const errorPageId = getErrorPageId(
+        pageContext._globalContext._pageFilesAll,
+        pageContext._globalContext._pageConfigs,
+      )
       if (!errorPageId) {
         assert(hasProp(pageContext, 'pageId', 'null'))
         return handleErrorWithoutErrorPage(pageContext)
@@ -418,7 +416,7 @@ type PageContextErrorPageInit = Awaited<ReturnType<typeof getPageContextErrorPag
 async function getPageContextErrorPageInit(
   pageContextBegin: PageContextBegin,
   errNominalPage: unknown,
-  pageContextNominalPagePartial: Record<string, unknown>
+  pageContextNominalPagePartial: Record<string, unknown>,
 ) {
   const pageContext = forkPageContext(pageContextBegin)
 
@@ -426,12 +424,12 @@ async function getPageContextErrorPageInit(
   objectAssign(pageContext, {
     is404: false,
     errorWhileRendering: errNominalPage as Error,
-    routeParams: {} as Record<string, string>
+    routeParams: {} as Record<string, string>,
   })
 
   objectAssign(pageContext, {
     _debugRouteMatches:
-      (pageContextNominalPagePartial as PageContextDebugRouteMatches)._debugRouteMatches || 'ROUTING_ERROR'
+      (pageContextNominalPagePartial as PageContextDebugRouteMatches)._debugRouteMatches || 'ROUTING_ERROR',
   })
 
   assert(pageContext.errorWhileRendering)
@@ -441,16 +439,15 @@ async function getPageContextErrorPageInit(
 async function getPageContextBegin(
   pageContextInit: PageContextInit,
   globalContext: GlobalContextServerInternal,
-  globalContext_public: GlobalContextServer,
-  httpRequestId: number
+  httpRequestId: number,
 ) {
   const { isClientSideNavigation, _urlHandler } = handlePageContextUrl(pageContextInit.urlOriginal)
-  const pageContextBegin = await createPageContextServerSide(pageContextInit, globalContext, globalContext_public, {
+  const pageContextBegin = await createPageContextServerSide(pageContextInit, globalContext, {
     isPrerendering: false,
     ssr: {
       urlHandler: _urlHandler,
-      isClientSideNavigation
-    }
+      isClientSideNavigation,
+    },
   })
   objectAssign(pageContextBegin, { _httpRequestId: httpRequestId })
   return pageContextBegin
@@ -463,7 +460,7 @@ function handlePageContextUrl(urlOriginal: string): {
   const { isPageContextRequest } = handlePageContextRequestUrl(urlOriginal)
   return {
     isClientSideNavigation: isPageContextRequest,
-    _urlHandler: (url: string) => handlePageContextRequestUrl(url).urlWithoutPageContextRequestSuffix
+    _urlHandler: (url: string) => handlePageContextRequestUrl(url).urlWithoutPageContextRequestSuffix,
   }
 }
 
@@ -477,8 +474,8 @@ function assertIsUrl(urlOriginal: string) {
   assertUsage(
     isUrl(urlOriginal),
     `${pc.code('renderPage(pageContextInit)')} (https://vike.dev/renderPage) called with ${pc.code(
-      `pageContextInit.urlOriginal===${JSON.stringify(urlOriginal)}`
-    )} which isn't a valid URL.`
+      `pageContextInit.urlOriginal===${JSON.stringify(urlOriginal)}`,
+    )} which isn't a valid URL.`,
   )
 }
 function assertIsNotViteRequest(urlPathname: string, urlOriginal: string) {
@@ -488,15 +485,15 @@ function assertIsNotViteRequest(urlPathname: string, urlOriginal: string) {
   assertUsage(
     false,
     `${pc.code('renderPage(pageContextInit)')} called with ${pc.code(
-      `pageContextInit.urlOriginal===${JSON.stringify(urlOriginal)}`
-    )} which is unexpected because the URL ${pc.bold(urlOriginal)} should have already been handled by the development middleware: make sure the ${pc.cyan('createDevMiddleware()')} middleware is executed *before* the ${pc.cyan('renderPage()')} middleware, see ${pc.underline('https://vike.dev/renderPage')}`
+      `pageContextInit.urlOriginal===${JSON.stringify(urlOriginal)}`,
+    )} which is unexpected because the URL ${pc.bold(urlOriginal)} should have already been handled by the development middleware: make sure the ${pc.cyan('createDevMiddleware()')} middleware is executed *before* the ${pc.cyan('renderPage()')} middleware, see ${pc.underline('https://vike.dev/renderPage')}`,
   )
 }
 
 async function normalizeUrl(
   pageContextBegin: PageContextBegin,
   globalContext: GlobalContextServerInternal,
-  httpRequestId: number
+  httpRequestId: number,
 ) {
   const pageContext = forkPageContext(pageContextBegin)
   const { trailingSlash, disableUrlNormalization } = globalContext.config
@@ -509,7 +506,7 @@ async function normalizeUrl(
   logRuntimeInfo?.(
     `URL normalized from ${pc.cyan(urlOriginal)} to ${pc.cyan(urlNormalized)} (https://vike.dev/url-normalization)`,
     httpRequestId,
-    'info'
+    'info',
   )
   const httpResponse = createHttpResponseRedirect({ url: urlNormalized, statusCode: 301 }, pageContext)
   objectAssign(pageContext, { httpResponse })
@@ -519,7 +516,7 @@ async function normalizeUrl(
 async function getPermanentRedirect(
   pageContextBegin: PageContextBegin,
   globalContext: GlobalContextServerInternal,
-  httpRequestId: number
+  httpRequestId: number,
 ) {
   const pageContext = forkPageContext(pageContextBegin)
   const urlWithoutBase = removeBaseServer(pageContext.urlOriginal, globalContext.baseServer)
@@ -556,7 +553,7 @@ async function getPermanentRedirect(
   logRuntimeInfo?.(
     `Permanent redirection defined by config.redirects (https://vike.dev/redirects)`,
     httpRequestId,
-    'info'
+    'info',
   )
   const httpResponse = createHttpResponseRedirect({ url: urlTarget, statusCode: 301 }, pageContext)
   objectAssign(pageContext, { httpResponse })
@@ -574,7 +571,7 @@ async function handleAbortError(
   pageContextNominalPageBegin: PageContextBegin,
   httpRequestId: number,
   pageContextErrorPageInit: PageContextErrorPageInit,
-  globalContext: GlobalContextServerInternal
+  globalContext: GlobalContextServerInternal,
 ): Promise<
   | { pageContextReturn: PageContextAfterRender; pageContextAbort?: never }
   | { pageContextReturn?: never; pageContextAbort: Record<string, unknown> }
@@ -591,14 +588,14 @@ async function handleAbortError(
       assertUsage(
         errorPageId,
         `You called ${pc.cyan(
-          abortCall
-        )} but you didn't define an error page, make sure to define one https://vike.dev/error-page`
+          abortCall,
+        )} but you didn't define an error page, make sure to define one https://vike.dev/error-page`,
       )
       const pageContext = forkPageContext(pageContextBegin)
       objectAssign(pageContext, { pageId: errorPageId })
       objectAssign(pageContext, pageContextAbort)
       objectAssign(pageContext, pageContextErrorPageInit, true)
-      objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
+      objectAssign(pageContext, await loadPageConfigsLazyServerSide(pageContext))
       // We include pageContextInit: we don't only serialize pageContextAbort because the error page may need to access pageContextInit
       pageContextSerialized = getPageContextClientSerialized(pageContext)
     } else {
@@ -612,7 +609,7 @@ async function handleAbortError(
   if (pageContextAbort._urlRewrite) {
     const pageContextReturn = await renderPageAlreadyPrepared(pageContextBegin, globalContext, httpRequestId, [
       ...pageContextsFromRewrite,
-      pageContextAbort
+      pageContextAbort,
     ])
     Object.assign(pageContextReturn, pageContextAbort)
     return { pageContextReturn }
@@ -637,25 +634,34 @@ async function checkBaseUrl(pageContextBegin: PageContextBegin, globalContext: G
   const httpResponse = createHttpResponseBaseIsMissing(urlOriginal, baseServer)
   objectAssign(pageContext, {
     httpResponse,
-    isBaseMissing: true as const
+    isBaseMissing: true as const,
   })
   checkType<PageContextAfterRender>(pageContext)
   return pageContext
 }
 
-function getPageContextInvalidRequest(pageContextInit: PageContextInit) {
+function getPageContextSkipRequest(pageContextInit: PageContextInit) {
   const urlPathnameWithBase = parseUrl(pageContextInit.urlOriginal, '/').pathname
   assertIsNotViteRequest(urlPathnameWithBase, pageContextInit.urlOriginal)
-  if (!urlPathnameWithBase.endsWith('/favicon.ico')) return
+  let errMsg404: string | undefined
+  if (urlPathnameWithBase.endsWith('/favicon.ico')) {
+    errMsg404 = 'No favicon.ico found'
+  }
+  if (urlPathnameWithBase.endsWith('.well-known/appspecific/com.chrome.devtools.json')) {
+    // https://chromium.googlesource.com/devtools/devtools-frontend/+/main/docs/ecosystem/automatic_workspace_folders.md
+    // https://www.reddit.com/r/node/comments/1kcr0wh/odd_request_coming_into_my_localhost_server_from/
+    errMsg404 = 'Not spported'
+  }
+  if (!errMsg404) return
   const pageContext = createPageContextServerSideWithoutGlobalContext(pageContextInit)
-  const httpResponse = createHttpResponseFavicon404()
+  const httpResponse = createHttpResponse404(errMsg404)
   objectAssign(pageContext, { httpResponse })
   checkType<PageContextAfterRender>(pageContext)
   return pageContext
 }
 
 function getPageContextInvalidVikeConfig(err: unknown, pageContextInit: PageContextInit, httpRequestId: number) {
-  logRuntimeInfo?.(pc.bold(pc.red('Error while loading a Vike config file, see error above.')), httpRequestId, 'error')
+  logRuntimeInfo?.(pc.bold(pc.red('Error loading Vike config — see error above')), httpRequestId, 'error')
   const pageContextWithError = getPageContextHttpResponseErrorWithoutGlobalContext(err, pageContextInit)
   return pageContextWithError
 }

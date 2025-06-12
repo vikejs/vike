@@ -5,7 +5,6 @@ import './Layout.css'
 import { usePageContext } from 'vike-react/usePageContext'
 import { assert } from '../utils/assert'
 import type { GlobalContextClient } from 'vike/types'
-import { getGlobalContextSync } from 'vike'
 import { someFnClient, someFnServer } from './someFn'
 
 function Layout({ children }: { children: React.ReactNode }) {
@@ -29,15 +28,13 @@ function Layout({ children }: { children: React.ReactNode }) {
   }
 
   if (!globalContext.isClientSide) {
+    assert(globalContext.notPassedToClient === 123)
     assert(globalContext.someWrapperObj.neverPassedToClient === 123)
     someFnServer()
   } else {
     assert(!('neverPassedToClient' in globalContext.someWrapperObj))
     someFnClient()
   }
-
-  // TEST: getGlobalContextSync()
-  assert(pageContext.globalContext === getGlobalContextSync())
 
   return (
     <React.StrictMode>
@@ -73,7 +70,7 @@ function Frame({ children }: { children: React.ReactNode }) {
       style={{
         display: 'flex',
         maxWidth: 900,
-        margin: 'auto'
+        margin: 'auto',
       }}
     >
       {children}
@@ -89,7 +86,7 @@ function Left({ children }: { children: React.ReactNode }) {
         flexShrink: 0,
         display: 'flex',
         flexDirection: 'column',
-        lineHeight: '1.8em'
+        lineHeight: '1.8em',
       }}
     >
       {children}
@@ -104,7 +101,7 @@ function Right({ children }: { children: React.ReactNode }) {
         padding: 20,
         paddingBottom: 50,
         borderLeft: '2px solid #eee',
-        minHeight: '100vh'
+        minHeight: '100vh',
       }}
     >
       {children}
@@ -128,7 +125,7 @@ function Footer() {
         fontSize: '0.88em',
         marginTop: 50,
         paddingTop: 20,
-        fontFamily: 'monospace'
+        fontFamily: 'monospace',
       }}
     >
       <div>

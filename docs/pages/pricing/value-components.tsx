@@ -34,7 +34,7 @@ function Gauge({ value }: { value: number }) {
         borderColor: '#ddd',
         borderRadius,
         display: 'flex',
-        padding: '1px 2px'
+        padding: '1px 2px',
       }}
     >
       <div
@@ -42,7 +42,7 @@ function Gauge({ value }: { value: number }) {
           height: '100%',
           width,
           backgroundColor: color,
-          borderRadius
+          borderRadius,
         }}
       />
     </div>
@@ -83,7 +83,7 @@ type FinancialModel = {
 }
 function ValueTable({
   entries,
-  skip_links
+  skip_links,
 }: {
   entries: FinancialModel[]
   skip_links: boolean

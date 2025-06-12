@@ -10,7 +10,7 @@ describe('Route Strings Precedence', () => {
       ['/about', '/about'],
       ['/about/team', '/about/team'],
       ['/about/company', '/about/@path'],
-      ['/about/some/nested/path', '/about/*']
+      ['/about/some/nested/path', '/about/*'],
     ].forEach(([url, routeString]) => testUrl(url!, routeString!, routes))
   })
 
@@ -20,7 +20,7 @@ describe('Route Strings Precedence', () => {
       ['/', '/'],
       ['/hello', '/*'],
       ['/hello/jon', '/hello/@name'],
-      ['/hello/jon/snow', '/*']
+      ['/hello/jon/snow', '/*'],
     ].forEach(([url, routeString]) => testUrl(url!, routeString!, routes))
   })
 
@@ -37,7 +37,7 @@ describe('Route Strings Precedence', () => {
       '/product/@productId',
       '/product/@productId/review',
       '/product/@productId/@view',
-      '/product/*'
+      '/product/*',
     ]
     ;[
       ['/', '/'],
@@ -49,7 +49,7 @@ describe('Route Strings Precedence', () => {
       ['/product/42', '/product/@productId'],
       ['/product/42/details', '/product/@productId/@view'],
       ['/product/42/review', '/product/@productId/review'],
-      ['/product/42/review/too-long', '/product/*']
+      ['/product/42/review/too-long', '/product/*'],
     ].forEach(([url, routeString]) => testUrl(url!, routeString!, routes))
   })
 
@@ -61,7 +61,7 @@ describe('Route Strings Precedence', () => {
       '/news/@page', // news paginated news results
       '/news/@year/@slug', // news articles
       '/news/press-releases*', // press releases landing and paginated news pages (nested in /news)
-      '/news/press-releases/@year/@slug' // press releases (nested in /news)
+      '/news/press-releases/@year/@slug', // press releases (nested in /news)
     ]
     ;[
       ['/', '/'],
@@ -71,7 +71,7 @@ describe('Route Strings Precedence', () => {
       ['/news/press-releases', '/news/press-releases*'],
       ['/news/press-releases/1', '/news/press-releases*'],
       ['/news/press-releases/2021/new-funding', '/news/press-releases/@year/@slug'],
-      ['/other', '/*']
+      ['/other', '/*'],
     ].forEach(([url, routeString]) => testUrl(url!, routeString!, routes))
   })
 })

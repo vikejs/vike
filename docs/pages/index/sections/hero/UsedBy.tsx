@@ -28,7 +28,7 @@ const data: {
     desc: 'Popular domain registrar',
     logo: usedByName,
     offset: 5,
-    order: 0
+    order: 0,
   },
   {
     website: 'https://contra.com',
@@ -37,14 +37,14 @@ const data: {
     logo: usedByContra,
     shrink: 40,
     offset: 4,
-    order: 200
+    order: 200,
   },
   {
     website: 'https://app.spline.design',
     desc: 'Advanced 3D design web app',
     name: 'Spline',
     logo: usedBySpline,
-    order: -200
+    order: -200,
   },
   {
     website: 'https://ecosia.org',
@@ -53,22 +53,22 @@ const data: {
     logo: usedByEcosia,
     shrink: 55,
     offset: -1,
-    order: -50
+    order: -50,
   },
   {
     website: 'https://bild.de',
     desc: "Germany's most read newspaper",
     name: 'Bild.de',
     logo: usedByBild,
-    order: -100
+    order: -100,
   },
   {
     website: 'https://dia.es',
     desc: "Spain's supermarket with the most stores",
     name: 'Dia.es',
     logo: usedByDia,
-    order: 100
-  }
+    order: 100,
+  },
   /*
   {
     website: 'https://chip.de',
@@ -96,7 +96,7 @@ function UsedBy() {
               display: 'inline-block',
               height,
               padding,
-              marginLeft: i === 0 ? 0 : 30
+              marginLeft: i === 0 ? 0 : 30,
             }}
             aria-label={e.desc}
             className="hero-usedby colorize-on-hover"
@@ -109,7 +109,7 @@ function UsedBy() {
                 height: height - 2 * padding,
                 position: 'relative',
                 top: e.offset,
-                objectFit: 'contain'
+                objectFit: 'contain',
               }}
             />
           </a>

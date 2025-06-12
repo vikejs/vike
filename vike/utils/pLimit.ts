@@ -58,16 +58,16 @@ function pLimit(concurrency: number): PLimit {
 
   Object.defineProperties(generator, {
     activeCount: {
-      get: () => activeCount
+      get: () => activeCount,
     },
     pendingCount: {
-      get: () => queue.size
+      get: () => queue.size,
     },
     clearQueue: {
       value: () => {
         queue.clear()
-      }
-    }
+      },
+    },
   })
 
   // @ts-ignore

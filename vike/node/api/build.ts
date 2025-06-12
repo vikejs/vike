@@ -3,10 +3,9 @@ export { build }
 import { prepareViteApiCall } from './prepareViteApiCall.js'
 import { build as buildVite, version, createBuilder } from 'vite'
 import type { APIOptions } from './types.js'
-import assert from 'assert'
 import { isVikeCli } from '../cli/context.js'
-import { isPrerendering } from '../prerender/context.js'
-import { assertVersion } from './utils.js'
+import { wasPrerenderRun } from '../prerender/context.js'
+import { assert, assertVersion } from './utils.js'
 
 /**
  * Programmatically trigger `$ vike build`
@@ -19,7 +18,8 @@ async function build(options: APIOptions = {}): Promise<{}> {
   // Pass it to pluginAutoFullBuild()
   if (viteConfigFromUserEnhanced) viteConfigFromUserEnhanced._viteConfigFromUserEnhanced = viteConfigFromUserEnhanced
 
-  if (vikeConfig.global.config.vite6BuilderApp) {
+  if (vikeConfig.config.vite6BuilderApp) {
+    // This assertion isn't reliable: the user may still use a Vite version older than 6.0.0 — see https://github.com/vitejs/vite/pull/19355
     assertVersion('Vite', version, '6.0.0')
     const builder = await createBuilder(viteConfigFromUserEnhanced)
     // See Vite plugin vike:build:pluginBuildApp
@@ -34,8 +34,16 @@ async function build(options: APIOptions = {}): Promise<{}> {
     //    > We purposely don't start the pre-rendering in this `build()` function but in a Rollup hook instead.
     //    > Rationale: https://github.com/vikejs/vike/issues/2123
     await buildVite(viteConfigFromUserEnhanced)
+
     // After pre-rendering, when using the Vike CLI, the process is forcefully exited at the end of the buildVite() call above.
-    if (isVikeCli() && isPrerendering()) assert(false)
+    if (
+      // When calling Vike's prerender() API pre-rendering is run without force exit
+      ![false, 'prerender()'].includes(wasPrerenderRun()) &&
+      // When calling Vike's build() API pre-rendering is auto run without force exit
+      isVikeCli()
+    ) {
+      assert(false)
+    }
   }
 
   return {

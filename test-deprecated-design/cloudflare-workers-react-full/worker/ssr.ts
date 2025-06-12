@@ -6,7 +6,7 @@ async function handleSsr(url: string, userAgent: string) {
   const pageContextInit = {
     urlOriginal: url,
     fetch: (...args: Parameters<typeof fetch>) => fetch(...args),
-    userAgent
+    userAgent,
   }
   const pageContext = await renderPage(pageContextInit)
   const { httpResponse } = pageContext

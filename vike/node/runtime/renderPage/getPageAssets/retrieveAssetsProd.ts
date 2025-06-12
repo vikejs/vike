@@ -1,7 +1,7 @@
 export { retrieveAssetsProd }
 
 import { assert, isImportPathNpmPackage } from '../../utils.js'
-import type { ViteManifest } from '../../../shared/ViteManifest.js'
+import type { ViteManifest } from '../../../../types/ViteManifest.js'
 import { getManifestEntry } from './getManifestEntry.js'
 import { extractAssetsAddQuery } from '../../../shared/extractAssetsQuery.js'
 import type { ClientDependency } from '../../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
@@ -9,7 +9,7 @@ import type { ClientDependency } from '../../../../shared/getPageFiles/analyzePa
 function retrieveAssetsProd(
   clientDependencies: ClientDependency[],
   assetsManifest: ViteManifest,
-  includeAssetsImportedByServer: boolean
+  includeAssetsImportedByServer: boolean,
 ): string[] {
   let assetUrls = new Set<string>()
   assert(assetsManifest)
@@ -25,7 +25,7 @@ function retrieveAssetsProd(
       // We assume that all npm packages have already built their files: bundlers (Rollup, esbuild, tsup, ...) extract the CSS out of JavaScript => we can assume JavaScript to not import any CSS/assets.
       !isImportPathNpmPackage(id, {
         // I presume Vite already resolves path aliases when Vite sets the module's id
-        cannotBePathAlias: true
+        cannotBePathAlias: true,
       })
     ) {
       id = extractAssetsAddQuery(id)
@@ -45,7 +45,7 @@ function collectAssets(
   assetUrls: Set<string>,
   visistedAssets: Set<string>,
   assetsManifest: ViteManifest,
-  onlyCollectStaticAssets: boolean
+  onlyCollectStaticAssets: boolean,
 ): void {
   if (visistedAssets.has(manifestKey)) return
   visistedAssets.add(manifestKey)

@@ -26,7 +26,7 @@ async function startServer() {
     const viteDevMiddleware = (
       await vite.createServer({
         root,
-        server: { middlewareMode: true, hmr: { port: hmrPort } }
+        server: { middlewareMode: true, hmr: { port: hmrPort } },
       })
     ).middlewares
     app.use(viteDevMiddleware)
@@ -37,14 +37,10 @@ async function startServer() {
     createMiddleware(() => () => {
       console.log('HELLO')
       return new Response('Hello')
-    })()
+    })(),
   )
 
-  /**
-   * Vike route
-   *
-   * @link {@see https://vike.dev}
-   **/
+  // @ts-ignore
   app.all('/{*vikeCatchAll}', createHandler(() => vikeHandler)())
 
   app.listen(port, () => {

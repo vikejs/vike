@@ -16,6 +16,6 @@ async function dev(options: APIOptions = {}): Promise<{ viteServer: ViteDevServe
   const server = await createServer(viteConfigFromUserEnhanced)
   return {
     viteServer: server,
-    viteConfig: server.config
+    viteConfig: server.config,
   }
 }

@@ -2,40 +2,32 @@ export { executeGuardHook }
 
 import { getHookFromPageContext, getHookTimeoutDefault, type Hook } from '../hooks/getHook.js'
 import { assert, assertUsage, isCallable } from './utils.js'
-import type { PageConfigUserFriendlyOld, PageFile } from '../getPageFiles.js'
-import type { PageConfigRuntime } from '../page-configs/PageConfig.js'
-import { executeHook } from '../hooks/executeHook.js'
+import type { PageFile } from '../getPageFiles.js'
+import { execHookSingle, type PageContextExecuteHook } from '../hooks/execHook.js'
+import type { GlobalContextInternal } from '../createGlobalContextShared.js'
 const errIntro = 'The guard() hook defined by'
 
 async function executeGuardHook<
-  T extends PageConfigUserFriendlyOld & {
+  PageContext extends {
     pageId: string
-    _pageFilesAll: PageFile[]
-    _pageConfigs: PageConfigRuntime[]
-  }
->(pageContext: T, prepareForUserConsumption: (pageConfig: T) => T | void): Promise<void> {
+  } & {
+    _globalContext: GlobalContextInternal
+  } & PageContextExecuteHook,
+>(pageContext: PageContext, prepareForPublicUsage: (pageConfig: PageContext) => PageContext): Promise<void> {
   let hook: Hook | null
-  if (pageContext._pageFilesAll.length > 0) {
+  if (pageContext._globalContext._pageFilesAll.length > 0) {
+    // TODO/v1-release: remove
     // V0.4 design
-    assert(pageContext._pageConfigs.length === 0)
-    hook = findPageGuard(pageContext.pageId, pageContext._pageFilesAll)
+    assert(pageContext._globalContext._pageConfigs.length === 0)
+    hook = findPageGuard(pageContext.pageId, pageContext._globalContext._pageFilesAll)
   } else {
     // V1 design
     hook = getHookFromPageContext(pageContext, 'guard')
   }
 
   if (!hook) return
-  const guard = hook.hookFn
 
-  let pageContextForUserConsumption = pageContext
-  const res = prepareForUserConsumption(pageContext)
-  if (res) pageContextForUserConsumption = res
-
-  const hookResult = await executeHook(() => guard(pageContextForUserConsumption), hook, pageContext)
-  assertUsage(
-    hookResult === undefined,
-    `${errIntro} ${hook.hookFilePath} returns a value, but guard() shouldn't return any value`
-  )
+  await execHookSingle(hook, pageContext, prepareForPublicUsage)
 }
 
 // We cannot easily use pageContext.exports for the V0.4 design

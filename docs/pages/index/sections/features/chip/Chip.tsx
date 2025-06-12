@@ -9,7 +9,7 @@ export const Chip = () => {
   return (
     <div
       style={{
-        width: '100%'
+        width: '100%',
       }}
     >
       <div
@@ -18,14 +18,14 @@ export const Chip = () => {
           display: 'grid',
           gridTemplateColumns: 'repeat(12, 1fr)',
           marginTop: '32px',
-          position: 'relative'
+          position: 'relative',
         }}
       >
         <div
           className="landingpage-chip-right"
           style={{
             position: 'relative',
-            top: 55
+            top: 55,
           }}
         >
           {ioGroups.map((group, parentIndex) => (
@@ -33,7 +33,7 @@ export const Chip = () => {
               key={group.name}
               style={{
                 color: `${group.color}`,
-                margin: '24px 0'
+                margin: '24px 0',
               }}
             >
               {ioData
@@ -46,7 +46,7 @@ export const Chip = () => {
                       position: 'relative',
                       zIndex: 5,
                       marginRight: '-32px',
-                      padding: '1px 0'
+                      padding: '1px 0',
                     }}
                     key={index}
                   >
@@ -55,7 +55,7 @@ export const Chip = () => {
                         width: 'fit-content',
                         textTransform: 'uppercase',
                         color: 'rgba(0,0,0,0.5)',
-                        textAlign: 'end'
+                        textAlign: 'end',
                       }}
                     >
                       {item.title}
@@ -65,7 +65,7 @@ export const Chip = () => {
                         width: '20px',
                         marginLeft: '24px',
                         textTransform: 'uppercase',
-                        fontVariantNumeric: 'tabular-nums'
+                        fontVariantNumeric: 'tabular-nums',
                       }}
                     >
                       {`${parentIndex + 1}${index + 1}`}
@@ -86,7 +86,7 @@ export const Chip = () => {
               height: '100%',
               display: 'flex',
               justifyContent: 'center',
-              alignItems: 'center'
+              alignItems: 'center',
             }}
           >
             <div
@@ -96,7 +96,7 @@ export const Chip = () => {
                 display: 'grid',
                 gridTemplateColumns: 'repeat(9, 1fr)',
                 gridTemplateRows: 'repeat(9, 1fr)',
-                gap: '4px'
+                gap: '4px',
               }}
             >
               {coreData.map((item, index) => (
@@ -110,7 +110,7 @@ export const Chip = () => {
                     justifyContent: 'center',
                     alignItems: 'center',
                     backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                    borderRadius: '6px'
+                    borderRadius: '6px',
                   }}
                 >
                   <div className="landingpage-chip-feature">
@@ -118,7 +118,7 @@ export const Chip = () => {
                       style={{
                         width: 'fit-content',
                         height: 'fit-content',
-                        textAlign: 'center'
+                        textAlign: 'center',
                       }}
                     >
                       {item.title}
@@ -136,7 +136,7 @@ export const Chip = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   padding: '3px',
-                  position: 'relative'
+                  position: 'relative',
                 }}
               >
                 <a
@@ -148,7 +148,7 @@ export const Chip = () => {
                     justifyContent: 'center',
                     alignItems: 'center',
                     backgroundColor: '#222',
-                    borderRadius: '28px'
+                    borderRadius: '28px',
                   }}
                 >
                   <img src={viteLogo} style={{ width: 'min(48px, 8vw)' }} />
@@ -161,7 +161,7 @@ export const Chip = () => {
                     top: '5px',
                     left: '5px',
                     backgroundColor: 'rgba(255, 255, 255, 0.3)',
-                    borderRadius: '50%'
+                    borderRadius: '50%',
                   }}
                 />
                 <div
@@ -172,7 +172,7 @@ export const Chip = () => {
                     top: '5px',
                     right: '5px',
                     backgroundColor: 'rgba(255, 255, 255, 0.3)',
-                    borderRadius: '50%'
+                    borderRadius: '50%',
                   }}
                 />
                 <div
@@ -183,7 +183,7 @@ export const Chip = () => {
                     bottom: '5px',
                     left: '5px',
                     backgroundColor: 'rgba(255, 255, 255, 0.3)',
-                    borderRadius: '50%'
+                    borderRadius: '50%',
                   }}
                 />
                 <div
@@ -194,7 +194,7 @@ export const Chip = () => {
                     bottom: '5px',
                     right: '5px',
                     backgroundColor: 'rgba(255, 255, 255, 0.3)',
-                    borderRadius: '50%'
+                    borderRadius: '50%',
                   }}
                 />
               </div>
@@ -205,7 +205,7 @@ export const Chip = () => {
           className="landingpage-chip-left"
           style={{
             position: 'relative',
-            top: 6
+            top: 6,
           }}
         >
           {ioGroups.map((group, parentIndex) => (
@@ -213,7 +213,7 @@ export const Chip = () => {
               key={group.name}
               style={{
                 color: `${group.color}`,
-                margin: '24px 0'
+                margin: '24px 0',
               }}
             >
               {ioData
@@ -226,7 +226,7 @@ export const Chip = () => {
                       position: 'relative',
                       zIndex: 5,
                       marginLeft: '-32px',
-                      padding: '1px 0'
+                      padding: '1px 0',
                     }}
                     key={index}
                   >
@@ -236,7 +236,7 @@ export const Chip = () => {
                         marginRight: '24px',
                         textTransform: 'uppercase',
                         fontVariantNumeric: 'tabular-nums',
-                        textAlign: 'end'
+                        textAlign: 'end',
                       }}
                     >
                       {`${parentIndex + 1}${index + 1}`}
@@ -246,7 +246,7 @@ export const Chip = () => {
                         width: 'fit-content',
                         textTransform: 'uppercase',
                         color: 'rgba(0,0,0,0.5)',
-                        textAlign: 'start'
+                        textAlign: 'start',
                       }}
                     >
                       {item.title}
@@ -264,7 +264,7 @@ export const Chip = () => {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          gap: 8
+          gap: 8,
         }}
       >
         Click on a component to learn more

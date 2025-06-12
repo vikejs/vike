@@ -20,7 +20,7 @@ function testRun() {
     expect(await page.textContent('h1')).toBe('Welcome')
     await testCounter()
     expectLog('import.meta.env.SOME_OTHER_ENV is used in client-side file /pages/index/+Page.jsx', {
-      filter: (log) => log.logSource === 'stderr'
+      filter: (log) => log.logSource === 'stderr',
     })
   })
 }

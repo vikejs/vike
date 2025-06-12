@@ -12,20 +12,20 @@ const telefuncUniversalMiddleware: UniversalMiddleware = async (request, context
     body: await request.text(),
     context: {
       ...context,
-      ...runtime
-    }
+      ...runtime,
+    },
   })
   const { body, statusCode, contentType } = httpResponse
   return new Response(body, {
     status: statusCode,
     headers: {
-      'content-type': contentType
-    }
+      'content-type': contentType,
+    },
   })
 }
 
 const middlewareTelefunc = enhance(telefuncUniversalMiddleware, {
   name: 'telefunc',
   method: 'POST',
-  path: '/_telefunc'
+  path: '/_telefunc',
 })

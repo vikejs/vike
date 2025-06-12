@@ -5,14 +5,14 @@ import React from 'react'
 function Figure({
   width,
   text,
-  children
+  children,
 }: { width: number; text: string | React.JSX.Element; children: React.ReactNode }) {
   return (
     <>
       <div
         style={{
           width,
-          margin: 'auto'
+          margin: 'auto',
         }}
       >
         {children}
@@ -22,7 +22,7 @@ function Figure({
           width: width * 1.5,
           margin: 'auto',
           textAlign: 'center',
-          marginTop: 5
+          marginTop: 5,
         }}
       >
         <span style={{ color: '#888', fontSize: '0.87em' }}>{text}</span>

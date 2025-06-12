@@ -6,7 +6,7 @@ import { pipeToWebWritable, pipeToNodeWritable } from '@vue/server-renderer'
 import { escapeInject, stampPipe } from 'vike/server'
 import { createVueApp } from './createVueApp'
 import type { OnRenderHtmlAsync } from 'vike/types'
-import type { Writable } from 'stream'
+import type { Writable } from 'node:stream'
 
 const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRenderHtmlAsync> => {
   const app = createVueApp(pageContext)
@@ -32,8 +32,8 @@ const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRender
   return {
     documentHtml,
     pageContext: {
-      enableEagerStreaming: true
-    }
+      enableEagerStreaming: true,
+    },
   }
 }
 

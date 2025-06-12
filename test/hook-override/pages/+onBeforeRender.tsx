@@ -7,7 +7,7 @@ const onBeforeRender: OnBeforeRenderAsync = async (pageContext): ReturnType<OnBe
   return {
     pageContext: {
       globalOnBeforeRenderWasCalled: true,
-      globalOnBeforeRenderWasCalledInEnv: typeof window === 'undefined' ? 'server' : 'client'
-    }
+      globalOnBeforeRenderWasCalledInEnv: typeof window === 'undefined' ? 'server' : 'client',
+    },
   }
 }

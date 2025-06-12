@@ -1,16 +1,16 @@
 import { Link } from '@brillout/docpress'
 
-import { UiFrameworkExtension, ImplementedBy, OnlyHtmlNote } from '../../components'
+import { UiFrameworkExtension, ProvidedBy, OnlyHtmlNote } from '../../components'
 
 Type: `string | null | ((pageContext) => string | null | undefined)`  
-Kind: overridable.  
-Environment: server.
+Environment: server  
+Cumulative: `false`  
 
-<ImplementedBy noCustomGuide />
+<ProvidedBy noCustomGuide />
 
 > See <Link href="/head-tags" /> for a general introduction about `<head>` tags.
 
-The `image` setting sets the [preview image upon URL sharing](https://ahrefs.com/blog/open-graph-meta-tags/#:~:text=8%20simple%20steps.%22%20/%3E-,%3Cmeta%20property%3D%22og%3Aimage%22,-content%3D%22https%3A//ahrefs).
+The `image` setting sets the [preview image upon URL sharing](https://ahrefs.com/blog/open-graph-meta-tags).
 
 ```js
 // pages/+config.js
@@ -22,7 +22,11 @@ export default {
 }
 ```
 
-> It adds the following tags to `<head>`:
+> It adds
+> [`<meta property="og:image">`](https://ogp.me) (preview image upon URL sharing)
+> and
+> [`<meta name="twitter:card" content="summary_large_image">`](https://developer.x.com/en/docs/x-for-websites/cards/overview/summary-card-with-large-image)
+> to `<head>`:
 >
 > ```html
 > <head>
@@ -31,12 +35,7 @@ export default {
 > </head>
 > ```
 
-As shown at:
- - <Link href="/head-tags#page-specific" /> you can override it.
- - <Link href="/head-tags#data" /> you can set it based on fetched data.
-
-
-## TypeScript
+You can set its value using a <Link href="/pageContext">`pageContext`</Link> function:
 
 ```tsx
 // pages/some-page/+image.js
@@ -60,4 +59,4 @@ export function image(pageContext: PageContextServer<Data>) {
 
 - [Ahrefs > Blog > Open Graph Meta Tags: Everything You Need to Know](https://ahrefs.com/blog/open-graph-meta-tags/)
 - <Link href="/head-tags" />
-- <Link href="/settings#html" doNotInferSectionTitle />
+- <Link href="/settings#html-shell" doNotInferSectionTitle />

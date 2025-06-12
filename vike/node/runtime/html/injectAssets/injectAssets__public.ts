@@ -10,26 +10,26 @@ async function injectAssets__public(htmlString: string, pageContext: Record<stri
   assertUsage(
     typeof htmlString === 'string',
     '[injectAssets(htmlString, pageContext)]: Argument `htmlString` should be a string.',
-    { showStackTrace: true }
+    { showStackTrace: true },
   )
   assertUsage(pageContext, '[injectAssets(htmlString, pageContext)]: Argument `pageContext` is missing.', {
-    showStackTrace: true
+    showStackTrace: true,
   })
   const errMsg = (body: string) =>
     '[injectAssets(htmlString, pageContext)]: ' +
     body +
     '. Make sure that `pageContext` is the object that Vike provided to your `render(pageContext)` hook.'
   assertUsage(hasProp(pageContext, 'urlPathname', 'string'), errMsg('`pageContext.urlPathname` should be a string'), {
-    showStackTrace: true
+    showStackTrace: true,
   })
   assertUsage(hasProp(pageContext, 'pageId', 'string'), errMsg('`pageContext.pageId` should be a string'), {
-    showStackTrace: true
+    showStackTrace: true,
   })
   assertUsage(hasProp(pageContext, '__getPageAssets'), errMsg('`pageContext.__getPageAssets` is missing'), {
-    showStackTrace: true
+    showStackTrace: true,
   })
   assertUsage(hasProp(pageContext, '_passToClient', 'string[]'), errMsg('`pageContext._passToClient` is missing'), {
-    showStackTrace: true
+    showStackTrace: true,
   })
   castProp<() => Promise<PageAsset[]>, typeof pageContext, '__getPageAssets'>(pageContext, '__getPageAssets')
   htmlString = await injectHtmlTagsToString([htmlString], pageContext as any, null)

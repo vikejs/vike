@@ -16,36 +16,36 @@ function testHistoryPushState() {
     expect(timestamp2 > timestamp1).toBe(true)
 
     // Calling history.pushState() doesn't trigger a re-render, thus timestamp doesn't change
-    expectUrl('/pushState')
+    await expectUrl('/pushState')
     {
       const btn = page.locator('button', { hasText: 'Change URL' })
       await btn.click()
     }
-    expectUrl('/pushState?query')
+    await expectUrl('/pushState?query')
     const timestamp3 = await getTimestamp()
     expect(timestamp3).toBe(timestamp2)
 
     // Navigating back doesn't trigger a re-render, thus timestamp doesn't change
     await page.goBack()
-    expectUrl('/pushState')
+    await expectUrl('/pushState')
     const timestamp4 = await getTimestamp()
     expect(timestamp4).toBe(timestamp2)
     await page.goForward()
-    expectUrl('/pushState?query')
+    await expectUrl('/pushState?query')
     const timestamp5 = await getTimestamp()
     expect(timestamp5).toBe(timestamp2)
 
     // Navigating outside the page does trigger a re-render
     await page.goBack()
     await page.goBack()
-    expectUrl('/markdown')
+    await expectUrl('/markdown')
     await page.goForward()
-    expectUrl('/pushState')
+    await expectUrl('/pushState')
     await sleep(100)
     const timestamp6 = await getTimestamp()
     expect(timestamp6 > timestamp2).toBe(true)
     await page.goForward()
-    expectUrl('/pushState?query')
+    await expectUrl('/pushState?query')
     const timestamp7 = await getTimestamp()
     expect(timestamp7).toBe(timestamp6)
   })

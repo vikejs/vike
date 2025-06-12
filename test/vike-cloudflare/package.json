@@ -1,0 +1,33 @@
+{
+  "name": "vike-app",
+  "private": true,
+  "version": "0.0.1",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "dev": "vike dev",
+    "build": "vike build",
+    "preview": "vike build && cross-env NODE_ENV=production wrangler pages dev",
+    "deploy": "vike build && cross-env NODE_ENV=production wrangler pages deploy",
+    "test": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "Joël Charles <joel.charles91@gmail.com>",
+  "devDependencies": {
+    "@auth/core": "^0.39.1",
+    "@types/node": "^22.15.17",
+    "@universal-middleware/core": "^0.4.7",
+    "typescript": "^5.8.3",
+    "vike-cloudflare": "^0.2.3",
+    "vike-server": "^1.0.16",
+    "wrangler": "^4.14.4"
+  },
+  "dependencies": {
+    "cross-env": "^7.0.3",
+    "solid-js": "^1.9.6",
+    "tsx": "^4.19.4",
+    "vike": "0.4.231",
+    "vike-solid": "^0.7.9",
+    "vite": "^6.3.5"
+  }
+}

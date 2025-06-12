@@ -4,5 +4,5 @@ import React from 'react'
 import { Banner } from './Banner'
 
 function Page() {
-  return <Banner showLogo={true} />
+  return <Banner />
 }

@@ -6,14 +6,14 @@ const users = [
     fullName: 'Alan Turing',
     username: 'turing',
     password: "I'm the creator of the Turing Machine",
-    isAdmin: true
+    isAdmin: true,
   },
   {
     fullName: 'John von Neumann',
     username: 'neumann',
     password: "I'm the creator of the Von Neumann Architecture",
-    isAdmin: false
-  }
+    isAdmin: false,
+  },
 ]
 
 function getUser(username) {

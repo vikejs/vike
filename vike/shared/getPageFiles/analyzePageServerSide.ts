@@ -15,7 +15,7 @@ async function analyzePageServerSide(pageFilesAll: PageFile[], pageId: string) {
       }
       assert(p.loadExportNames, pageId)
       await p.loadExportNames()
-    })
+    }),
   )
   const hasOnBeforeRenderServerSideOnlyHook = pageFilesServerSideOnly.some(({ exportNames }) => {
     assert(exportNames)

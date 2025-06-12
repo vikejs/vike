@@ -1,0 +1,13 @@
+export const errVueHtml = {
+  id: '/home/rom/code/vike/examples/vue-full/pages/index/+Page.vue',
+  plugin: 'vite:vue',
+  message: 'Element is missing end tag.',
+  name: 'SyntaxError',
+  stack:
+    'SyntaxError: Element is missing end tag.\n    at createCompilerError (/home/rom/code/vike/node_modules/.pnpm/@vue+compiler-core@3.2.33/node_modules/@vue/compiler-core/dist/compiler-core.cjs.js:19:19)\n    at emitError (/home/rom/code/vike/node_modules/.pnpm/@vue+compiler-core@3.2.33/node_modules/@vue/compiler-core/dist/compiler-core.cjs.js:1594:29)\n    at parseElement (/home/rom/code/vike/node_modules/.pnpm/@vue+compiler-core@3.2.33/node_modules/@vue/compiler-core/dist/compiler-core.cjs.js:1146:9)\n    at parseChildren (/home/rom/code/vike/node_modules/.pnpm/@vue+compiler-core@3.2.33/node_modules/@vue/compiler-core/dist/compiler-core.cjs.js:937:28)\n    at parseElement (/home/rom/code/vike/node_modules/.pnpm/@vue+compiler-core@3.2.33/node_modules/@vue/compiler-core/dist/compiler-core.cjs.js:1125:22)\n    at parseChildren (/home/rom/code/vike/node_modules/.pnpm/@vue+compiler-core@3.2.33/node_modules/@vue/compiler-core/dist/compiler-core.cjs.js:937:28)\n    at parseElement (/home/rom/code/vike/node_modules/.pnpm/@vue+compiler-core@3.2.33/node_modules/@vue/compiler-core/dist/compiler-core.cjs.js:1125:22)\n    at parseChildren (/home/rom/code/vike/node_modules/.pnpm/@vue+compiler-core@3.2.33/node_modules/@vue/compiler-core/dist/compiler-core.cjs.js:937:28)\n    at Object.baseParse (/home/rom/code/vike/node_modules/.pnpm/@vue+compiler-core@3.2.33/node_modules/@vue/compiler-core/dist/compiler-core.cjs.js:852:23)\n    at Object.parse (/home/rom/code/vike/node_modules/.pnpm/@vue+compiler-dom@3.2.33/node_modules/@vue/compiler-dom/dist/compiler-dom.cjs.js:3077:25)',
+  loc: { file: '/home/rom/code/vike/examples/vue-full/pages/index/+Page.vue', line: 2, column: 46 },
+  pluginCode:
+    "<template>\n  <h1>Welcome to Vike<h1>\n  This page is:\n  <ul>\n    <li>Rendered to HTML.</li>\n    <li>Interactive. <Counter /></li>\n  </ul>\n  <p>\n    <button @click=\"randomNavigation\">Random Page</button>\n  </p>\n</template>\n\n<script lang=\"ts\" setup>\nimport Counter from '../../components/Counter.vue'\nimport { navigate } from 'vike/client/router'\n\nconst randomNavigation = () => {\n  const randomIndex = Math.floor(Math.random() * 3)\n  navigate(['/markdown', '/star-wars', '/hello/alice.js'][randomIndex])\n}\n</script>\n",
+  frame:
+    '1  |  <template>\n2  |    <h1>Welcome to Vike<h1>\n   |                                                ^\n3  |    This page is:\n4  |    <ul>',
+}

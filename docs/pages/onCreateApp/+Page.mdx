@@ -1,9 +1,9 @@
 import { Link } from '@brillout/docpress'
-import { ImplementedBy } from '../../components'
+import { ProvidedBy } from '../../components'
 
 Environment: server, client.
 
-<ImplementedBy list={['vike-vue']} noCustomGuide={true}>`onCreateApp()`</ImplementedBy>
+<ProvidedBy list={['vike-vue']} noCustomGuide={true}>`onCreateApp()`</ProvidedBy>
 
 The `onCreateApp()` hook is called right after the
 [Vue app](https://vuejs.org/guide/essentials/application.html) is created, giving you the opportunity to extend it,
@@ -53,3 +53,4 @@ const onCreateApp: OnCreateAppSync = (pageContext): ReturnType<OnCreateAppSync> 
 ## See also
 
 - [Vue > The application instance](https://vuejs.org/guide/essentials/application)
+- <Link href="/hooks" />

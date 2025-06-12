@@ -10,20 +10,18 @@ import { checkType } from './checkType.js'
 import { getTerminalWidth } from './getTerminWidth.js'
 import pc from '@brillout/picocolors'
 import { isArray } from './isArray.js'
+import { isObject } from './isObject.js'
+import { setCreateDebugger } from '../shared/route/debug.js'
 
-// Avoid this to be loaded in the browser. For isomorphic code: instead of `import { createDebugger } from './utils.js'`, use `globalThis.createDebugger()`.
 assert(!isBrowser())
-;(globalThis as any).__brillout_debug_createDebugger = createDebugger
-
-// We purposely read process.env.DEBUG early, in order to avoid users from the temptation to set process.env.DEBUG with JavaScript, since reading & writing process.env.DEBUG dynamically leads to inconsistencies: for example https://github.com/vikejs/vike/issues/2239
-const DEBUG = getDEBUG() ?? ''
+setCreateDebugger(createDebugger) // for isomorphic code
 
 const flags = [
   'vike:crawl',
   'vike:error',
   'vike:esbuild-resolve',
-  'vike:extractAssets',
-  'vike:extractExportNames',
+  'vike:pluginExtractAssets',
+  'vike:pluginExtractExportNames',
   'vike:glob',
   'vike:globalContext',
   'vike:log',
@@ -31,14 +29,17 @@ const flags = [
   'vike:outDir',
   'vike:pageFiles',
   'vike:pointer-imports',
+  'vike:resolve',
   'vike:routing',
   'vike:setup',
   'vike:stream',
-  'vike:virtual-files'
+  'vike:virtualFiles',
 ] as const
 const flagsSkipWildcard = ['vike:log']
 const flagRegex = /\bvike:[a-zA-Z-]+/g
-
+// We purposely read process.env.DEBUG early, in order to avoid users from the temptation to set process.env.DEBUG with JavaScript, since reading & writing process.env.DEBUG dynamically leads to inconsistencies such as https://github.com/vikejs/vike/issues/2239
+const DEBUG = getDEBUG() ?? ''
+if (isDebug()) Error.stackTraceLimit = Infinity
 assertFlagsActivated()
 
 type Flag = (typeof flags)[number]
@@ -76,9 +77,10 @@ function debug_(flag: Flag, options: Options, ...msgs: unknown[]) {
   let logFirst: unknown[]
   let logsRest: unknown[]
   const noNewLine =
-    msgsRest.length <= 1 && [msgFirst, ...msgsRest].every((m) => typeof m === 'string' && !m.includes('\n'))
+    msgsRest.length <= 1 &&
+    [msgFirst, ...msgsRest].every((m) => (typeof m === 'string' ? !m.includes('\n') : !isObject(m)))
   if (noNewLine) {
-    logFirst = [msgFirst, ...msgsRest].map((m) => String(m).trim())
+    logFirst = [msgFirst, ...msgsRest].map((m) => (typeof m !== 'string' ? m : m.trim()))
     logsRest = []
   } else {
     logFirst = [msgFirst]
@@ -102,7 +104,7 @@ function formatMsg(
   info: unknown,
   options: Options,
   padding: string,
-  position?: 'FIRST' | 'MIDDLE' | 'LAST'
+  position?: 'FIRST' | 'MIDDLE' | 'LAST',
 ): string | undefined {
   if (info === undefined) {
     return undefined
@@ -172,7 +174,7 @@ function assertFlagsActivated() {
   flagsActivated.forEach((flag) => {
     assertUsage(
       (flags as readonly string[]).includes(flag),
-      `Unknown DEBUG flag ${pc.cyan(flag)}. Valid flags:\n${flags.map((f) => `  ${pc.cyan(f)}`).join('\n')}`
+      `Unknown DEBUG flag ${pc.cyan(flag)}. Valid flags:\n${flags.map((f) => `  ${pc.cyan(f)}`).join('\n')}`,
     )
   })
 }
@@ -181,6 +183,11 @@ function getFlagsActivated() {
   const flagsActivated: string[] = DEBUG.match(flagRegex) ?? []
   const all = DEBUG.includes('vike:*')
   return { flagsActivated, all }
+}
+
+function isDebug() {
+  const { flagsActivated, all } = getFlagsActivated()
+  return all || flagsActivated.length > 0
 }
 
 function getDEBUG() {

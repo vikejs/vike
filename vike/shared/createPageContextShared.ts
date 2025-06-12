@@ -1,33 +1,35 @@
 export { createPageContextShared }
+export { createPageContextObject }
 
-import { executeHookGenericGlobalCumulative } from './hooks/executeHookGeneric.js'
-import { getPageConfigGlobalUserFriendly } from './page-configs/getPageConfigUserFriendly.js'
-import type { PageConfigGlobalRuntime } from './page-configs/PageConfig.js'
-import { objectAssign } from './utils.js'
+import { execHookGlobal } from './hooks/execHook.js'
+import type { VikeConfigPublicGlobal } from './page-configs/resolveVikeConfigPublic.js'
+import type { PageConfigGlobalRuntime } from '../types/PageConfig.js'
+import { type PageContextPrepareMinimum, preparePageContextForPublicUsage } from './preparePageContextForPublicUsage.js'
+import { changeEnumerable, objectAssign } from './utils.js'
 
-async function createPageContextShared<T extends object>(
+async function createPageContextShared<T extends PageContextPrepareMinimum>(
   pageContextCreated: T,
-  pageConfigGlobal: PageConfigGlobalRuntime
+  pageConfigGlobal: PageConfigGlobalRuntime,
+  vikeConfigPublicGlobal: VikeConfigPublicGlobal,
 ) {
-  const pageConfigGlobalUserFriendly = getPageConfigGlobalUserFriendly({
-    pageConfigGlobalValues: pageConfigGlobal.configValues
-  })
+  objectAssign(pageContextCreated, vikeConfigPublicGlobal)
 
-  objectAssign(
-    pageContextCreated,
-    {
-      isPageContext: true as const,
-      ...pageConfigGlobalUserFriendly
-    },
-    true
-  )
-
-  await executeHookGenericGlobalCumulative(
+  await execHookGlobal(
     'onCreatePageContext',
     pageConfigGlobal,
     pageContextCreated,
-    pageContextCreated
+    pageContextCreated,
+    preparePageContextForPublicUsage,
   )
 
   return pageContextCreated
+}
+
+function createPageContextObject() {
+  const pageContext = {
+    _isOriginalObject: true as const,
+    isPageContext: true as const,
+  }
+  changeEnumerable(pageContext, '_isOriginalObject', false)
+  return pageContext
 }

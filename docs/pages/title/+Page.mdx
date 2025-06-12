@@ -1,12 +1,12 @@
 import { Link } from '@brillout/docpress'
 
-import { UiFrameworkExtension, ImplementedBy } from '../../components'
+import { UiFrameworkExtension, ProvidedBy } from '../../components'
 
 Type: `string | null | ((pageContext) => string | null | undefined)`  
-Kind: overridable.  
-Environment: server, client.
+Environment: server, client  
+Cumulative: `false`  
 
-<ImplementedBy noCustomGuide />
+<ProvidedBy noCustomGuide />
 
 > See <Link href="/head-tags" /> for a general introduction about `<head>` tags.
 
@@ -20,7 +20,11 @@ export default {
 }
 ```
 
-> It adds the following tags to `<head>`:
+> It adds
+> [`<title>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/title)
+> and
+> [`<meta property="og:title">`](https://ogp.me)
+> to `<head>`:
 >
 > ```html
 > <head>
@@ -29,12 +33,7 @@ export default {
 > </head>
 > ```
 
-As shown at:
- - <Link href="/head-tags#page-specific" /> you can override it.
- - <Link href="/head-tags#data" /> you can set it based on fetched data.
-
-
-## TypeScript
+You can set its value using a <Link href="/pageContext">`pageContext`</Link> function:
 
 ```tsx
 // pages/some-page/+title.js
@@ -60,4 +59,4 @@ On the client-side, upon <Link href="/client-routing">client-side page navigatio
 
 - [MDN > What's in the head? Metadata in HTML > Adding a title](https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/The_head_metadata_in_HTML#adding_a_title)
 - <Link href="/head-tags" />
-- <Link href="/settings#html" doNotInferSectionTitle />
+- <Link href="/settings#html-shell" doNotInferSectionTitle />

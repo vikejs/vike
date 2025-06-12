@@ -18,7 +18,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       v5: string,
       v6: string,
       v7: string,
-      v8: string
+      v8: string,
     ) => {
       const html = await fetchHtml(url)
       expect(html).toContain(`<p>global data() was called: <!-- -->${v1}</p>`)
@@ -40,7 +40,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       'undefined',
       'undefined',
       'undefined',
-      'undefined'
+      'undefined',
     )
     await t('/page-3', 'undefined', 'undefined', 'true', 'server', 'true', 'server', 'undefined', 'undefined')
     await t('/page-4', 'undefined', 'undefined', 'undefined', 'undefined', 'undefined', 'undefined', 'true', 'server')

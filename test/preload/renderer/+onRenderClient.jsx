@@ -10,6 +10,6 @@ async function onRenderClient(pageContext) {
     document.getElementById('root'),
     <Layout>
       <Page {...pageProps} />
-    </Layout>
+    </Layout>,
   )
 }

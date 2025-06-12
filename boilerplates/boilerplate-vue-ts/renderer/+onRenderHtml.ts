@@ -39,7 +39,7 @@ const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRender
     documentHtml,
     pageContext: {
       // We can add custom pageContext properties here, see https://vike.dev/pageContext#custom
-    }
+    },
   }
 }
 

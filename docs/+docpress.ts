@@ -12,14 +12,14 @@ export default {
   headings,
   headingsDetached,
   categories,
-  tagline: 'The Framework *You* Control - Next.js & Nuxt alternative for unprecedented flexibility and dependability.',
+  tagline: 'The Framework *You* Control - Next.js & Nuxt alternative for unprecedented flexibility and stability.',
   twitterHandle: '@vike_js',
   websiteUrl: 'https://vike.dev',
   sponsorGithubAccount: 'vikejs',
   algolia: {
     appId: 'YMV9Y4B58S',
     apiKey: '9ac178c1a29ba00e8afb98365015f677',
-    indexName: 'vike'
+    indexName: 'vike',
   },
   bannerUrl: 'https://vike.dev/banner.jpg',
   // i18n: true,
@@ -28,11 +28,11 @@ export default {
   navLogoSize: 41,
   navLogoStyle: {
     position: 'relative',
-    top: -1
+    top: -1,
   },
   navLogoTextStyle: {
     letterSpacing: '0.01em',
     fontWeight: 420,
-    color: '#444'
-  }
+    color: '#444',
+  },
 } satisfies Config

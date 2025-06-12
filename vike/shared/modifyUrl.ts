@@ -16,7 +16,7 @@ function modifyUrl(
     hostname?: string
     port?: number
     protocol?: string
-  }
+  },
 ): string {
   url = modifyUrlSameOrigin(url, modify)
   const urlParsed = parseUrl(url, '/')
@@ -24,7 +24,7 @@ function modifyUrl(
   // Origin
   const originParts: string[] = [
     modify.protocol ?? urlParsed.protocol ?? '',
-    modify.hostname ?? urlParsed.hostname ?? ''
+    modify.hostname ?? urlParsed.hostname ?? '',
   ]
   const port = modify.port ?? urlParsed.port
   if (port || port === 0) {
@@ -36,7 +36,7 @@ function modifyUrl(
     origin,
     urlParsed.pathname,
     urlParsed.searchOriginal,
-    urlParsed.hashOriginal
+    urlParsed.hashOriginal,
   )
   return urlModified
 }

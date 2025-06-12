@@ -28,11 +28,11 @@ function assertNoContradiction(noContradiction: boolean) {
   assertUsage(
     isBrowser(),
     `${pc.cyan("import { something } from 'vike/client/router'")} is forbidden on the server-side`,
-    { showStackTrace: true }
+    { showStackTrace: true },
   )
   assertWarning(
     noContradiction,
     "You shouldn't `import { something } from 'vike/client/router'` when using Server Routing. The 'vike/client/router' utilities work only with Client Routing. In particular, don't `import { navigate }` nor `import { prefetch }` as they unnecessarily bloat your client-side bundle sizes.",
-    { showStackTrace: true, onlyOnce: true }
+    { showStackTrace: true, onlyOnce: true },
   )
 }

@@ -5,7 +5,7 @@ export { isErrorPage }
 // TODO/v1-release: consider loading this file only for Client Routing
 
 import { assert, assertUsage, unique } from './utils.js'
-import type { PageConfigRuntime } from './page-configs/PageConfig.js'
+import type { PageConfigRuntime } from '../types/PageConfig.js'
 import type { PageFile } from './getPageFiles.js'
 
 function getErrorPageId(pageFilesAll: PageFile[], pageConfigs: PageConfigRuntime[]): string | null {
@@ -19,7 +19,7 @@ function getErrorPageId(pageFilesAll: PageFile[], pageConfigs: PageConfigRuntime
   const errorPageIds = unique(pageFilesAll.map(({ pageId }) => pageId).filter((pageId) => isErrorPageId(pageId, false)))
   assertUsage(
     errorPageIds.length <= 1,
-    `Only one _error.page.js is allowed, but found several: ${errorPageIds.join(' ')}`
+    `Only one _error.page.js is allowed, but found several: ${errorPageIds.join(' ')}`,
   )
   if (errorPageIds.length > 0) {
     const errorPageId = errorPageIds[0]

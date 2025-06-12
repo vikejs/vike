@@ -3,5 +3,5 @@ import vikeReact from 'vike-react/config'
 
 export default {
   passToClient: ['userFullName'],
-  extends: vikeReact
+  extends: vikeReact,
 } satisfies Config

@@ -37,9 +37,9 @@ export const RenderErrorPage = (...args: Parameters<typeof RenderErrorPage_>): E
       pc.red("  import { RenderErrorPage } from 'vike'"),
       'With:',
       pc.green("  import { render } from 'vike/abort'"),
-      'See https://vike.dev/render'
+      'See https://vike.dev/render',
     ].join('\n'),
-    { onlyOnce: true, showStackTrace: true }
+    { onlyOnce: true, showStackTrace: true },
   )
   return RenderErrorPage_(...args)
 }

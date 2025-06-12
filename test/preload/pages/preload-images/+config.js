@@ -1,3 +1,3 @@
 export default {
-  preloadStrategy: 'IMAGES'
+  preloadStrategy: 'IMAGES',
 }

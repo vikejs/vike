@@ -4,7 +4,7 @@ import type { PageContext } from './types'
 import type {
   //*
   // When using Client Routing https://vike.dev/clientRouting
-  PageContextBuiltInClientWithClientRouting as PageContextBuiltInClient
+  PageContextBuiltInClientWithClientRouting as PageContextBuiltInClient,
   /*/
   // When using Server Routing
   PageContextBuiltInClientWithServerRouting as PageContextBuiltInClient

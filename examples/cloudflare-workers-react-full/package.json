@@ -1,21 +1,22 @@
 {
   "scripts": {
     "dev": "node ./dev-server",
-    "preview": "vike build && wrangler dev",
-    "deploy": "vike build && wrangler publish"
+    "preview": "vike build && cross-env NODE_ENV=production && wrangler dev",
+    "deploy": "vike build && cross-env NODE_ENV=production && wrangler publish"
   },
   "dependencies": {
-    "@cloudflare/kv-asset-handler": "^0.2.0",
-    "@vitejs/plugin-react": "^4.4.1",
-    "compression": "^1.7.4",
+    "@cloudflare/kv-asset-handler": "^0.4.0",
+    "@vitejs/plugin-react": "^4.5.1",
+    "compression": "^1.8.0",
+    "cross-env": "^7.0.3",
     "express": "^5.1.0",
     "node-fetch": "^2.6.9",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-streaming": "^0.3.47",
-    "vite": "^6.3.2",
-    "vike": "0.4.229",
-    "wrangler": "^2.9.1"
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-streaming": "^0.4.2",
+    "vite": "^6.3.5",
+    "vike": "0.4.231",
+    "wrangler": "^4.14.4"
   },
   "type": "module"
 }

@@ -8,14 +8,14 @@ import type {
   ConfigValueComputed,
   ConfigValueCumulative,
   PageConfigCommon,
-  PageConfigRuntime
-} from '../PageConfig.js'
+  PageConfigRuntime,
+} from '../../../types/PageConfig.js'
 
 /** Page config data structure serialized in virtual files: parsing it results in PageConfigRuntime */
 type PageConfigRuntimeSerialized = PageConfigCommon & {
   /** Config values that are serializable and loaded eagerly such as config.passToClient */
   configValuesSerialized: Record<string, ConfigValueSerialized>
-  loadConfigValuesAll: PageConfigRuntime['loadConfigValuesAll']
+  loadConfigLazy: PageConfigRuntime['loadConfigLazy']
 }
 
 type PageConfigGlobalRuntimeSerialized = {

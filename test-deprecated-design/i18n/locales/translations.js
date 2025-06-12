@@ -1,42 +1,42 @@
 export const translations = {
   Hello: {
     'de-DE': 'Hallo',
-    'fr-FR': 'Bonjour'
+    'fr-FR': 'Bonjour',
   },
   Welcome: {
     'de-DE': 'Wilkommen',
-    'fr-FR': 'Bienvenue'
+    'fr-FR': 'Bienvenue',
   },
   'This page is': {
     'de-DE': 'Diese Seite ist',
-    'fr-FR': 'Cette page est'
+    'fr-FR': 'Cette page est',
   },
   Localized: {
     'de-DE': 'Loaklisiert',
-    'fr-FR': 'Localisé'
+    'fr-FR': 'Localisé',
   },
   'Change language': {
     'de-DE': 'Sprache wechseln',
-    'fr-FR': 'Changer la langue'
+    'fr-FR': 'Changer la langue',
   },
   'Rendered to HTML': {
     'de-DE': 'Zu HTML gerendert',
-    'fr-FR': 'Rendu en HTML'
+    'fr-FR': 'Rendu en HTML',
   },
   Interactive: {
     'de-DE': 'Interaktiv',
-    'fr-FR': 'Interactif'
+    'fr-FR': 'Interactif',
   },
   Counter: {
     'de-DE': 'Zähler',
-    'fr-FR': 'Compteur'
+    'fr-FR': 'Compteur',
   },
   Movies: {
     'de-DE': 'Filme',
-    'fr-FR': 'Les Films'
+    'fr-FR': 'Les Films',
   },
   'Another page': {
     'de-DE': 'Eine andere Seite',
-    'fr-FR': 'Une autre page'
-  }
+    'fr-FR': 'Une autre page',
+  },
 }
