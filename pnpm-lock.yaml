@@ -36,234 +36,6 @@ importers:
         specifier: ^5.8.3
         version: 5.8.3
 
-  boilerplates:
-    dependencies:
-      enquirer:
-        specifier: ^2.3.6
-        version: 2.4.1
-      minimist:
-        specifier: ^1.2.6
-        version: 1.2.8
-      picocolors:
-        specifier: ^1.0.0
-        version: 1.1.1
-
-  boilerplates/boilerplate-react:
-    dependencies:
-      '@vitejs/plugin-react':
-        specifier: ^4.5.1
-        version: 4.5.1(vite@6.3.2(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
-      compression:
-        specifier: ^1.7.5
-        version: 1.7.5
-      cross-env:
-        specifier: ^7.0.3
-        version: 7.0.3
-      express:
-        specifier: ^5.1.0
-        version: 5.1.0
-      node-fetch:
-        specifier: ^3.3.2
-        version: 3.3.2
-      prop-types:
-        specifier: 15.8.1
-        version: 15.8.1
-      react:
-        specifier: ^19.1.0
-        version: 19.1.0
-      react-dom:
-        specifier: ^19.1.0
-        version: 19.1.0(react@19.1.0)
-      sirv:
-        specifier: ^3.0.0
-        version: 3.0.0
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^6.3.2
-        version: 6.3.2(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
-
-  boilerplates/boilerplate-react-ts:
-    dependencies:
-      '@types/compression':
-        specifier: ^1.7.5
-        version: 1.7.5
-      '@types/express':
-        specifier: ^5.0.1
-        version: 5.0.1
-      '@types/node':
-        specifier: ^22.10.2
-        version: 22.13.1
-      '@types/react':
-        specifier: ^19.0.1
-        version: 19.0.8
-      '@types/react-dom':
-        specifier: ^19.0.2
-        version: 19.0.3(@types/react@19.0.8)
-      '@vitejs/plugin-react':
-        specifier: ^4.5.1
-        version: 4.5.1(vite@6.3.2(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.4))
-      compression:
-        specifier: ^1.7.5
-        version: 1.7.5
-      cross-env:
-        specifier: ^7.0.3
-        version: 7.0.3
-      express:
-        specifier: ^5.1.0
-        version: 5.1.0
-      node-fetch:
-        specifier: ^3.3.2
-        version: 3.3.2
-      react:
-        specifier: ^19.1.0
-        version: 19.1.0
-      react-dom:
-        specifier: ^19.1.0
-        version: 19.1.0(react@19.1.0)
-      sirv:
-        specifier: ^3.0.0
-        version: 3.0.0
-      ts-node:
-        specifier: ^10.9.2
-        version: 10.9.2(@swc/core@1.11.24)(@types/node@22.13.1)(typescript@5.8.3)
-      typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^6.3.2
-        version: 6.3.2(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.4)
-
-  boilerplates/boilerplate-vue:
-    dependencies:
-      '@vitejs/plugin-vue':
-        specifier: ^5.2.1
-        version: 5.2.1(vite@6.3.2(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))(vue@3.5.13(typescript@5.8.3))
-      '@vue/compiler-sfc':
-        specifier: ^3.5.13
-        version: 3.5.13
-      '@vue/server-renderer':
-        specifier: ^3.5.13
-        version: 3.5.13(vue@3.5.13(typescript@5.8.3))
-      compression:
-        specifier: ^1.7.5
-        version: 1.7.5
-      cross-env:
-        specifier: ^7.0.3
-        version: 7.0.3
-      express:
-        specifier: ^5.1.0
-        version: 5.1.0
-      node-fetch:
-        specifier: ^3.3.2
-        version: 3.3.2
-      sirv:
-        specifier: ^3.0.0
-        version: 3.0.0
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^6.3.2
-        version: 6.3.2(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
-      vue:
-        specifier: ^3.5.13
-        version: 3.5.13(typescript@5.8.3)
-
-  boilerplates/boilerplate-vue-ts:
-    dependencies:
-      '@types/compression':
-        specifier: ^1.7.5
-        version: 1.7.5
-      '@types/express':
-        specifier: ^5.0.1
-        version: 5.0.1
-      '@types/node':
-        specifier: ^22.10.2
-        version: 22.13.1
-      '@vitejs/plugin-vue':
-        specifier: ^5.2.1
-        version: 5.2.1(vite@6.3.2(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.4))(vue@3.5.13(typescript@5.8.3))
-      '@vue/compiler-sfc':
-        specifier: ^3.5.13
-        version: 3.5.13
-      '@vue/server-renderer':
-        specifier: ^3.5.13
-        version: 3.5.13(vue@3.5.13(typescript@5.8.3))
-      compression:
-        specifier: ^1.7.5
-        version: 1.7.5
-      cross-env:
-        specifier: ^7.0.3
-        version: 7.0.3
-      express:
-        specifier: ^5.1.0
-        version: 5.1.0
-      node-fetch:
-        specifier: ^3.3.2
-        version: 3.3.2
-      sirv:
-        specifier: ^3.0.0
-        version: 3.0.0
-      ts-node:
-        specifier: ^10.9.2
-        version: 10.9.2(@swc/core@1.11.24)(@types/node@22.13.1)(typescript@5.8.3)
-      typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^6.3.2
-        version: 6.3.2(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.4)
-      vue:
-        specifier: ^3.5.13
-        version: 3.5.13(typescript@5.8.3)
-      vue-tsc:
-        specifier: ^2.1.10
-        version: 2.2.0(typescript@5.8.3)
-
-  docs:
-    dependencies:
-      '@batijs/elements':
-        specifier: ^0.0.47
-        version: 0.0.47
-      '@brillout/docpress':
-        specifier: ^0.13.0
-        version: 0.13.0(@algolia/client-search@5.21.0)(@types/react@19.0.8)(@vitejs/plugin-react-swc@3.10.1(vite@6.3.4(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(rollup@4.40.0)(search-insights@2.17.3)(typescript@5.8.3)(vike@vike)(vite@6.3.4(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
-      '@types/react':
-        specifier: ^19.0.2
-        version: 19.0.8
-      '@types/react-dom':
-        specifier: ^19.0.2
-        version: 19.0.3(@types/react@19.0.8)
-      react:
-        specifier: ^19.1.0
-        version: 19.1.0
-      react-dom:
-        specifier: ^19.1.0
-        version: 19.1.0(react@19.1.0)
-      react-tabs:
-        specifier: ^6.1.0
-        version: 6.1.0(react@19.1.0)
-      typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
-      vike:
-        specifier: link:../vike
-        version: link:../vike
-      vite:
-        specifier: ^6.3.4
-        version: 6.3.4(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
-      vite-plugin-svgr:
-        specifier: ^4.3.0
-        version: 4.3.0(rollup@4.40.0)(typescript@5.8.3)(vite@6.3.4(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
-
   examples/auth:
     dependencies:
       '@types/express':
@@ -595,13 +367,13 @@ importers:
     dependencies:
       '@mdx-js/mdx':
         specifier: ^3.1.0
-        version: 3.1.0(acorn@8.14.0)
+        version: 3.1.0(acorn@8.14.1)
       '@mdx-js/react':
         specifier: ^3.1.0
         version: 3.1.0(@types/react@19.1.6)(react@19.1.0)
       '@mdx-js/rollup':
         specifier: ^3.1.0
-        version: 3.1.0(acorn@8.14.0)(rollup@4.40.0)
+        version: 3.1.0(acorn@8.14.1)(rollup@4.40.0)
       '@types/node':
         specifier: ^22.15.30
         version: 22.15.30
@@ -821,6 +593,145 @@ importers:
       vue:
         specifier: ^3.2.47
         version: 3.5.13(typescript@5.8.3)
+
+  packages/create-vike-core:
+    dependencies:
+      enquirer:
+        specifier: ^2.3.6
+        version: 2.4.1
+      minimist:
+        specifier: ^1.2.6
+        version: 1.2.8
+      picocolors:
+        specifier: ^1.0.0
+        version: 1.1.1
+
+  packages/vike:
+    dependencies:
+      '@brillout/import':
+        specifier: ^0.2.6
+        version: 0.2.6
+      '@brillout/json-serializer':
+        specifier: ^0.5.15
+        version: 0.5.15
+      '@brillout/picocolors':
+        specifier: ^1.0.26
+        version: 1.0.26
+      '@brillout/require-shim':
+        specifier: ^0.1.2
+        version: 0.1.2
+      '@brillout/vite-plugin-server-entry':
+        specifier: ^0.7.8
+        version: 0.7.9
+      acorn:
+        specifier: ^8.0.0
+        version: 8.14.1
+      cac:
+        specifier: ^6.0.0
+        version: 6.7.14
+      es-module-lexer:
+        specifier: ^1.0.0
+        version: 1.7.0
+      esbuild:
+        specifier: '>=0.19.0'
+        version: 0.25.4
+      json5:
+        specifier: ^2.0.0
+        version: 2.2.3
+      magic-string:
+        specifier: ^0.30.17
+        version: 0.30.17
+      picomatch:
+        specifier: ^4.0.2
+        version: 4.0.2
+      semver:
+        specifier: ^7.0.0
+        version: 7.7.1
+      sirv:
+        specifier: ^3.0.1
+        version: 3.0.1
+      source-map-support:
+        specifier: ^0.5.0
+        version: 0.5.21
+      tinyglobby:
+        specifier: ^0.2.10
+        version: 0.2.13
+      vite:
+        specifier: '>=5.1.0'
+        version: 6.3.5(@types/node@20.17.17)(terser@5.38.1)(tsx@4.19.4)
+    devDependencies:
+      '@biomejs/biome':
+        specifier: ^1.9.4
+        version: 1.9.4
+      '@brillout/release-me':
+        specifier: ^0.4.2
+        version: 0.4.3
+      '@types/estree':
+        specifier: ^1.0.5
+        version: 1.0.7
+      '@types/jest':
+        specifier: ^29.5.11
+        version: 29.5.14
+      '@types/node':
+        specifier: ^20.10.5
+        version: 20.17.17
+      '@types/picomatch':
+        specifier: ^3.0.2
+        version: 3.0.2
+      '@types/resolve':
+        specifier: ^1.20.6
+        version: 1.20.6
+      '@types/semver':
+        specifier: ^7.5.8
+        version: 7.5.8
+      '@types/source-map-support':
+        specifier: ^0.5.10
+        version: 0.5.10
+      react-streaming:
+        specifier: ^0.4.2
+        version: 0.4.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      rimraf:
+        specifier: ^5.0.5
+        version: 5.0.10
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
+
+  packages/vike.dev:
+    dependencies:
+      '@batijs/elements':
+        specifier: ^0.0.47
+        version: 0.0.47
+      '@brillout/docpress':
+        specifier: ^0.13.0
+        version: 0.13.0(@algolia/client-search@5.21.0)(@types/react@19.1.6)(@vitejs/plugin-react-swc@3.10.1(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(rollup@4.40.0)(search-insights@2.17.3)(typescript@5.8.3)(vike@vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
+      '@types/react':
+        specifier: ^19.0.2
+        version: 19.1.6
+      '@types/react-dom':
+        specifier: ^19.0.2
+        version: 19.1.6(@types/react@19.1.6)
+      react:
+        specifier: ^19.1.0
+        version: 19.1.0
+      react-dom:
+        specifier: ^19.1.0
+        version: 19.1.0(react@19.1.0)
+      react-tabs:
+        specifier: ^6.1.0
+        version: 6.1.0(react@19.1.0)
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
+      vite:
+        specifier: ^6.3.4
+        version: 6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
+      vite-plugin-svgr:
+        specifier: ^4.3.0
+        version: 4.3.0(rollup@4.40.0)(typescript@5.8.3)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
 
   test-deprecated-design/base-url:
     dependencies:
@@ -1894,97 +1805,6 @@ importers:
         specifier: ^5.0.1
         version: 5.1.4(webpack@5.97.1)
 
-  vike:
-    dependencies:
-      '@brillout/import':
-        specifier: ^0.2.6
-        version: 0.2.6
-      '@brillout/json-serializer':
-        specifier: ^0.5.15
-        version: 0.5.15
-      '@brillout/picocolors':
-        specifier: ^1.0.26
-        version: 1.0.26
-      '@brillout/require-shim':
-        specifier: ^0.1.2
-        version: 0.1.2
-      '@brillout/vite-plugin-server-entry':
-        specifier: ^0.7.8
-        version: 0.7.9
-      acorn:
-        specifier: ^8.0.0
-        version: 8.14.0
-      cac:
-        specifier: ^6.0.0
-        version: 6.7.14
-      es-module-lexer:
-        specifier: ^1.0.0
-        version: 1.6.0
-      esbuild:
-        specifier: '>=0.19.0'
-        version: 0.25.0
-      json5:
-        specifier: ^2.0.0
-        version: 2.2.3
-      magic-string:
-        specifier: ^0.30.17
-        version: 0.30.17
-      picomatch:
-        specifier: ^4.0.2
-        version: 4.0.2
-      semver:
-        specifier: ^7.0.0
-        version: 7.7.1
-      sirv:
-        specifier: ^3.0.1
-        version: 3.0.1
-      source-map-support:
-        specifier: ^0.5.0
-        version: 0.5.21
-      tinyglobby:
-        specifier: ^0.2.10
-        version: 0.2.10
-      vite:
-        specifier: '>=5.1.0'
-        version: 6.1.0(@types/node@20.17.17)(terser@5.38.1)(tsx@4.19.4)
-    devDependencies:
-      '@biomejs/biome':
-        specifier: ^1.9.4
-        version: 1.9.4
-      '@brillout/release-me':
-        specifier: ^0.4.2
-        version: 0.4.3
-      '@types/estree':
-        specifier: ^1.0.5
-        version: 1.0.6
-      '@types/jest':
-        specifier: ^29.5.11
-        version: 29.5.14
-      '@types/node':
-        specifier: ^20.10.5
-        version: 20.17.17
-      '@types/picomatch':
-        specifier: ^3.0.2
-        version: 3.0.2
-      '@types/resolve':
-        specifier: ^1.20.6
-        version: 1.20.6
-      '@types/semver':
-        specifier: ^7.5.8
-        version: 7.5.8
-      '@types/source-map-support':
-        specifier: ^0.5.10
-        version: 0.5.10
-      react-streaming:
-        specifier: ^0.4.2
-        version: 0.4.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      rimraf:
-        specifier: ^5.0.5
-        version: 5.0.10
-      typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
-
 packages:
 
   '@algolia/autocomplete-core@1.17.9':
@@ -2104,10 +1924,6 @@ packages:
     resolution: {integrity: sha512-vMqyb7XCDMPvJFFOaT9kxtiRh42GwlZEg1/uIgtZshS5a/8OaduUfCi7kynKgc3Tw/6Uo2D+db9qBttghhmxwQ==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/core@7.26.7':
-    resolution: {integrity: sha512-SRijHmF0PSPgLIBYlWnG0hyeJLwXE2CgpsXaMOrtt2yp9/86ALw6oUlj9KYuZ0JN07T4eBMVIW4li/9S1j2BGA==}
-    engines: {node: '>=6.9.0'}
-
   '@babel/generator@7.26.5':
     resolution: {integrity: sha512-2caSP6fN9I7HOe6nqhtft7V4g7/V/gfDsC3Ag4W7kEzzvRGKqiv0pu0HogPiZ3KaVSoNDhUws6IJjDjpfmYIXw==}
     engines: {node: '>=6.9.0'}
@@ -2148,10 +1964,6 @@ packages:
 
   '@babel/helper-validator-option@7.25.9':
     resolution: {integrity: sha512-e/zv1co8pp55dNdEcCynfj9X7nyUKUXoUEwfXqaZt0omVOmDe9oOTdKStH4GmAw6zxMFs50ZayuMfHDKlO7Tfw==}
-    engines: {node: '>=6.9.0'}
-
-  '@babel/helpers@7.26.7':
-    resolution: {integrity: sha512-8NHiL98vsi0mbPQmYAGWwfcFaOy4j2HY49fXJCfuDcdE7fMIsH9a7GdaeXpIBsbT7307WU8KCMp5pUVDNL4f9A==}
     engines: {node: '>=6.9.0'}
 
   '@babel/helpers@7.27.0':
@@ -4090,9 +3902,6 @@ packages:
   '@types/body-parser@1.19.5':
     resolution: {integrity: sha512-fB3Zu92ucau0iQ0JMCFQE7b/dv8Ot07NI3KaZIkIUNXq82k4eBAqUaneXfleGY9JWskeS9y+u0nXMyspcuQrCg==}
 
-  '@types/compression@1.7.5':
-    resolution: {integrity: sha512-AAQvK5pxMpaT+nDvhHrsBhLSYG5yQdtkaJE1WYieSNY2mVFKAgmU4ks65rkZD5oqnGCFLyQpUr1CqI4DmUMyDg==}
-
   '@types/connect@3.4.38':
     resolution: {integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==}
 
@@ -4186,9 +3995,6 @@ packages:
   '@types/node@20.17.17':
     resolution: {integrity: sha512-/WndGO4kIfMicEQLTi/mDANUu/iVUhT7KboZPdEqqHQ4aTS+3qT3U5gIqWDFV+XouorjfgGqvKILJeHhuQgFYg==}
 
-  '@types/node@22.13.1':
-    resolution: {integrity: sha512-jK8uzQlrvXqEU91UxiK5J7pKHyzgnI1Qnl0QDHIgVGuolJhRb9EEl28Cj9b3rGR8B2lhFCtvIm5os8lFnO/1Ew==}
-
   '@types/node@22.15.17':
     resolution: {integrity: sha512-wIX2aSZL5FE+MR0JlvF87BNVrtFWf6AE6rxSE9X7OwnVvoyCQjpzSRJ+M87se/4QCkCiebQAqrJ0y6fwIyi7nw==}
 
@@ -4215,11 +4021,6 @@ packages:
     peerDependencies:
       '@types/react': ^18.0.0
 
-  '@types/react-dom@19.0.3':
-    resolution: {integrity: sha512-0Knk+HJiMP/qOZgMyNFamlIjw9OFCsyC2ZbigmEEyXXixgre6IQpm/4V+r3qH4GC1JPvRJKInw+on2rV6YZLeA==}
-    peerDependencies:
-      '@types/react': ^19.0.0
-
   '@types/react-dom@19.1.4':
     resolution: {integrity: sha512-WxYAszDYgsMV31OVyoG4jbAgJI1Gw0Xq9V19zwhy6+hUUJlJIdZ3r/cbdmTqFv++SktQkZ/X+46yGFxp5XJBEg==}
     peerDependencies:
@@ -4232,9 +4033,6 @@ packages:
 
   '@types/react@18.3.18':
     resolution: {integrity: sha512-t4yC+vtgnkYjNSKlFx1jkAhH8LgTo2N/7Qvi83kdEaUtMDiwpbLAktKDaAMlRcJ5eSxZkH74eEGt1ky31d7kfQ==}
-
-  '@types/react@19.0.8':
-    resolution: {integrity: sha512-9P/o1IGdfmQxrujGbIMDyYaaCykhLKc0NGCtYcECNUr9UAaDe4gwvV9bR6tvd5Br1SG0j+PBpbKr2UYY8CwqSw==}
 
   '@types/react@19.1.3':
     resolution: {integrity: sha512-dLWQ+Z0CkIvK1J8+wrDPwGxEYFA4RAyHoZPxHVGspYmFVnwGSNT24cGIhFJrtfRnWVuW8X7NO52gCXmhkVUWGQ==}
@@ -7269,10 +7067,6 @@ packages:
     resolution: {integrity: sha512-94Bdh3cC2PKrbgSOUqTiGPWVZeSiXfKOVZNJniWoqrWrRkB1CJzBU3NEbiTsPcYy1lDsANA/THzS+9WBiy5nfQ==}
     engines: {node: '>= 10'}
 
-  sirv@3.0.0:
-    resolution: {integrity: sha512-BPwJGUeDaDCHihkORDchNyyTvWFhcusy1XMmhEVTQTwGeybFbp8YEmB+njbPnth1FibULBSBVwCQni25XlCUDg==}
-    engines: {node: '>=18'}
-
   sirv@3.0.1:
     resolution: {integrity: sha512-FoqMu0NCGBLCcAkS1qA+XJIQTR6/JHfQXl+uGteNCQ76T91DMUjPa9xfmeqMY3z80nLSg9yQmNjK0Px6RWsH/A==}
     engines: {node: '>=18'}
@@ -7517,10 +7311,6 @@ packages:
   tinyexec@0.3.2:
     resolution: {integrity: sha512-KQQR9yN7R5+OSwaK0XQoj22pwHoTlgYqmUscPYoknOoWCWfj/5/ABTMRi69FrKU5ffPVh5QcFikpWJI/P1ocHA==}
 
-  tinyglobby@0.2.10:
-    resolution: {integrity: sha512-Zc+8eJlFMvgatPZTl6A9L/yht8QqdmUNtURHaKZLmKBE12hNPSrqNkUp2cs3M/UKmNVVAMFQYSjYIVHDjW5zew==}
-    engines: {node: '>=12.0.0'}
-
   tinyglobby@0.2.13:
     resolution: {integrity: sha512-mEwzpUgrLySlveBwEVDMKk5B57bhLPYovRfPAXD5gA/98Opn0rCDj3GtLwFvCvH5RK9uPCExUROW5NjDwvqkxw==}
     engines: {node: '>=12.0.0'}
@@ -7668,9 +7458,6 @@ packages:
 
   undici-types@6.19.8:
     resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
-
-  undici-types@6.20.0:
-    resolution: {integrity: sha512-Ny6QZ2Nju20vw1SRHe3d9jVu6gJ+4e3+MMpqu7pqE5HT6WsTSlce++GQmK5UXS8mzV8DSYHrQH+Xrf2jVcuKNg==}
 
   undici-types@6.21.0:
     resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
@@ -7890,88 +7677,8 @@ packages:
       terser:
         optional: true
 
-  vite@6.1.0:
-    resolution: {integrity: sha512-RjjMipCKVoR4hVfPY6GQTgveinjNuyLw+qruksLDvA5ktI1150VmcMBKmQaEWJhg/j6Uaf6dNCNA0AfdzUb/hQ==}
-    engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
-    hasBin: true
-    peerDependencies:
-      '@types/node': ^18.0.0 || ^20.0.0 || >=22.0.0
-      jiti: '>=1.21.0'
-      less: '*'
-      lightningcss: ^1.21.0
-      sass: '*'
-      sass-embedded: '*'
-      stylus: '*'
-      sugarss: '*'
-      terser: ^5.16.0
-      tsx: ^4.8.1
-      yaml: ^2.4.2
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      jiti:
-        optional: true
-      less:
-        optional: true
-      lightningcss:
-        optional: true
-      sass:
-        optional: true
-      sass-embedded:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
-      tsx:
-        optional: true
-      yaml:
-        optional: true
-
   vite@6.3.2:
     resolution: {integrity: sha512-ZSvGOXKGceizRQIZSz7TGJ0pS3QLlVY/9hwxVh17W3re67je1RKYzFHivZ/t0tubU78Vkyb9WnHPENSBCzbckg==}
-    engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
-    hasBin: true
-    peerDependencies:
-      '@types/node': ^18.0.0 || ^20.0.0 || >=22.0.0
-      jiti: '>=1.21.0'
-      less: '*'
-      lightningcss: ^1.21.0
-      sass: '*'
-      sass-embedded: '*'
-      stylus: '*'
-      sugarss: '*'
-      terser: ^5.16.0
-      tsx: ^4.8.1
-      yaml: ^2.4.2
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      jiti:
-        optional: true
-      less:
-        optional: true
-      lightningcss:
-        optional: true
-      sass:
-        optional: true
-      sass-embedded:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
-      tsx:
-        optional: true
-      yaml:
-        optional: true
-
-  vite@6.3.4:
-    resolution: {integrity: sha512-BiReIiMS2fyFqbqNT/Qqt4CVITDU9M9vE+DKcVAsB+ZV0wvTKd+3hMbkpxz1b+NmEDMegpVbisKiAZOnvO92Sw==}
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
     peerDependencies:
@@ -8478,26 +8185,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@babel/core@7.26.7':
-    dependencies:
-      '@ampproject/remapping': 2.3.0
-      '@babel/code-frame': 7.26.2
-      '@babel/generator': 7.26.5
-      '@babel/helper-compilation-targets': 7.26.5
-      '@babel/helper-module-transforms': 7.26.0(@babel/core@7.26.7)
-      '@babel/helpers': 7.26.7
-      '@babel/parser': 7.26.7
-      '@babel/template': 7.25.9
-      '@babel/traverse': 7.26.7
-      '@babel/types': 7.26.7
-      convert-source-map: 2.0.0
-      debug: 4.4.0
-      gensync: 1.0.0-beta.2
-      json5: 2.2.3
-      semver: 6.3.1
-    transitivePeerDependencies:
-      - supports-color
-
   '@babel/generator@7.26.5':
     dependencies:
       '@babel/parser': 7.26.7
@@ -8542,15 +8229,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@babel/helper-module-transforms@7.26.0(@babel/core@7.26.7)':
-    dependencies:
-      '@babel/core': 7.26.7
-      '@babel/helper-module-imports': 7.25.9
-      '@babel/helper-validator-identifier': 7.25.9
-      '@babel/traverse': 7.26.7
-    transitivePeerDependencies:
-      - supports-color
-
   '@babel/helper-plugin-utils@7.27.1': {}
 
   '@babel/helper-string-parser@7.25.9': {}
@@ -8558,11 +8236,6 @@ snapshots:
   '@babel/helper-validator-identifier@7.25.9': {}
 
   '@babel/helper-validator-option@7.25.9': {}
-
-  '@babel/helpers@7.26.7':
-    dependencies:
-      '@babel/template': 7.25.9
-      '@babel/types': 7.26.7
 
   '@babel/helpers@7.27.0':
     dependencies:
@@ -8679,13 +8352,13 @@ snapshots:
   '@biomejs/cli-win32-x64@1.9.4':
     optional: true
 
-  '@brillout/docpress@0.13.0(@algolia/client-search@5.21.0)(@types/react@19.0.8)(@vitejs/plugin-react-swc@3.10.1(vite@6.3.4(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(rollup@4.40.0)(search-insights@2.17.3)(typescript@5.8.3)(vike@vike)(vite@6.3.4(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))':
+  '@brillout/docpress@0.13.0(@algolia/client-search@5.21.0)(@types/react@19.1.6)(@vitejs/plugin-react-swc@3.10.1(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(rollup@4.40.0)(search-insights@2.17.3)(typescript@5.8.3)(vike@vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))':
     dependencies:
       '@brillout/picocolors': 1.0.26
       '@docsearch/css': 3.9.0
-      '@docsearch/react': 3.9.0(@algolia/client-search@5.21.0)(@types/react@19.0.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(search-insights@2.17.3)
+      '@docsearch/react': 3.9.0(@algolia/client-search@5.21.0)(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(search-insights@2.17.3)
       '@mdx-js/mdx': 3.0.1
-      '@mdx-js/react': 3.0.1(@types/react@19.0.8)(react@19.1.0)
+      '@mdx-js/react': 3.0.1(@types/react@19.1.6)(react@19.1.0)
       '@mdx-js/rollup': 3.0.1(rollup@4.40.0)
       '@shikijs/transformers': 1.2.0
       react: 19.1.0
@@ -8696,8 +8369,8 @@ snapshots:
       typescript: 5.8.3
       vike: link:vike
     optionalDependencies:
-      '@vitejs/plugin-react-swc': 3.10.1(vite@6.3.4(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
-      vite: 6.3.4(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
+      '@vitejs/plugin-react-swc': 3.10.1(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
+      vite: 6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
     transitivePeerDependencies:
       - '@algolia/client-search'
       - '@types/react'
@@ -8808,14 +8481,14 @@ snapshots:
 
   '@docsearch/css@3.9.0': {}
 
-  '@docsearch/react@3.9.0(@algolia/client-search@5.21.0)(@types/react@19.0.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(search-insights@2.17.3)':
+  '@docsearch/react@3.9.0(@algolia/client-search@5.21.0)(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(search-insights@2.17.3)':
     dependencies:
       '@algolia/autocomplete-core': 1.17.9(@algolia/client-search@5.21.0)(algoliasearch@5.21.0)(search-insights@2.17.3)
       '@algolia/autocomplete-preset-algolia': 1.17.9(@algolia/client-search@5.21.0)(algoliasearch@5.21.0)
       '@docsearch/css': 3.9.0
       algoliasearch: 5.21.0
     optionalDependencies:
-      '@types/react': 19.0.8
+      '@types/react': 19.1.6
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
       search-insights: 2.17.3
@@ -9512,66 +9185,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@mdx-js/mdx@3.1.0':
-    dependencies:
-      '@types/estree': 1.0.6
-      '@types/estree-jsx': 1.0.5
-      '@types/hast': 3.0.4
-      '@types/mdx': 2.0.13
-      collapse-white-space: 2.1.0
-      devlop: 1.1.0
-      estree-util-is-identifier-name: 3.0.0
-      estree-util-scope: 1.0.0
-      estree-walker: 3.0.3
-      hast-util-to-jsx-runtime: 2.3.2
-      markdown-extensions: 2.0.0
-      recma-build-jsx: 1.0.0
-      recma-jsx: 1.0.0
-      recma-stringify: 1.0.0
-      rehype-recma: 1.0.0
-      remark-mdx: 3.1.0
-      remark-parse: 11.0.0
-      remark-rehype: 11.1.1
-      source-map: 0.7.4
-      unified: 11.0.5
-      unist-util-position-from-estree: 2.0.0
-      unist-util-stringify-position: 4.0.0
-      unist-util-visit: 5.0.0
-      vfile: 6.0.3
-    transitivePeerDependencies:
-      - acorn
-      - supports-color
-
-  '@mdx-js/mdx@3.1.0(acorn@8.14.0)':
-    dependencies:
-      '@types/estree': 1.0.6
-      '@types/estree-jsx': 1.0.5
-      '@types/hast': 3.0.4
-      '@types/mdx': 2.0.13
-      collapse-white-space: 2.1.0
-      devlop: 1.1.0
-      estree-util-is-identifier-name: 3.0.0
-      estree-util-scope: 1.0.0
-      estree-walker: 3.0.3
-      hast-util-to-jsx-runtime: 2.3.2
-      markdown-extensions: 2.0.0
-      recma-build-jsx: 1.0.0
-      recma-jsx: 1.0.0(acorn@8.14.0)
-      recma-stringify: 1.0.0
-      rehype-recma: 1.0.0
-      remark-mdx: 3.1.0
-      remark-parse: 11.0.0
-      remark-rehype: 11.1.1
-      source-map: 0.7.4
-      unified: 11.0.5
-      unist-util-position-from-estree: 2.0.0
-      unist-util-stringify-position: 4.0.0
-      unist-util-visit: 5.0.0
-      vfile: 6.0.3
-    transitivePeerDependencies:
-      - acorn
-      - supports-color
-
   '@mdx-js/mdx@3.1.0(acorn@8.14.1)':
     dependencies:
       '@types/estree': 1.0.6
@@ -9602,10 +9215,10 @@ snapshots:
       - acorn
       - supports-color
 
-  '@mdx-js/react@3.0.1(@types/react@19.0.8)(react@19.1.0)':
+  '@mdx-js/react@3.0.1(@types/react@19.1.6)(react@19.1.0)':
     dependencies:
       '@types/mdx': 2.0.13
-      '@types/react': 19.0.8
+      '@types/react': 19.1.6
       react: 19.1.0
 
   '@mdx-js/react@3.1.0(@types/react@19.1.3)(react@19.1.0)':
@@ -9622,18 +9235,7 @@ snapshots:
 
   '@mdx-js/rollup@3.0.1(rollup@4.40.0)':
     dependencies:
-      '@mdx-js/mdx': 3.1.0
-      '@rollup/pluginutils': 5.1.4(rollup@4.40.0)
-      rollup: 4.40.0
-      source-map: 0.7.4
-      vfile: 6.0.3
-    transitivePeerDependencies:
-      - acorn
-      - supports-color
-
-  '@mdx-js/rollup@3.1.0(acorn@8.14.0)(rollup@4.40.0)':
-    dependencies:
-      '@mdx-js/mdx': 3.1.0(acorn@8.14.0)
+      '@mdx-js/mdx': 3.1.0(acorn@8.14.1)
       '@rollup/pluginutils': 5.1.4(rollup@4.40.0)
       rollup: 4.40.0
       source-map: 0.7.4
@@ -9820,7 +9422,7 @@ snapshots:
 
   '@rollup/pluginutils@5.1.4(rollup@4.40.0)':
     dependencies:
-      '@types/estree': 1.0.6
+      '@types/estree': 1.0.7
       estree-walker: 2.0.2
       picomatch: 4.0.2
     optionalDependencies:
@@ -9951,54 +9553,54 @@ snapshots:
 
   '@sinclair/typebox@0.27.8': {}
 
-  '@svgr/babel-plugin-add-jsx-attribute@8.0.0(@babel/core@7.26.7)':
+  '@svgr/babel-plugin-add-jsx-attribute@8.0.0(@babel/core@7.26.10)':
     dependencies:
-      '@babel/core': 7.26.7
+      '@babel/core': 7.26.10
 
-  '@svgr/babel-plugin-remove-jsx-attribute@8.0.0(@babel/core@7.26.7)':
+  '@svgr/babel-plugin-remove-jsx-attribute@8.0.0(@babel/core@7.26.10)':
     dependencies:
-      '@babel/core': 7.26.7
+      '@babel/core': 7.26.10
 
-  '@svgr/babel-plugin-remove-jsx-empty-expression@8.0.0(@babel/core@7.26.7)':
+  '@svgr/babel-plugin-remove-jsx-empty-expression@8.0.0(@babel/core@7.26.10)':
     dependencies:
-      '@babel/core': 7.26.7
+      '@babel/core': 7.26.10
 
-  '@svgr/babel-plugin-replace-jsx-attribute-value@8.0.0(@babel/core@7.26.7)':
+  '@svgr/babel-plugin-replace-jsx-attribute-value@8.0.0(@babel/core@7.26.10)':
     dependencies:
-      '@babel/core': 7.26.7
+      '@babel/core': 7.26.10
 
-  '@svgr/babel-plugin-svg-dynamic-title@8.0.0(@babel/core@7.26.7)':
+  '@svgr/babel-plugin-svg-dynamic-title@8.0.0(@babel/core@7.26.10)':
     dependencies:
-      '@babel/core': 7.26.7
+      '@babel/core': 7.26.10
 
-  '@svgr/babel-plugin-svg-em-dimensions@8.0.0(@babel/core@7.26.7)':
+  '@svgr/babel-plugin-svg-em-dimensions@8.0.0(@babel/core@7.26.10)':
     dependencies:
-      '@babel/core': 7.26.7
+      '@babel/core': 7.26.10
 
-  '@svgr/babel-plugin-transform-react-native-svg@8.1.0(@babel/core@7.26.7)':
+  '@svgr/babel-plugin-transform-react-native-svg@8.1.0(@babel/core@7.26.10)':
     dependencies:
-      '@babel/core': 7.26.7
+      '@babel/core': 7.26.10
 
-  '@svgr/babel-plugin-transform-svg-component@8.0.0(@babel/core@7.26.7)':
+  '@svgr/babel-plugin-transform-svg-component@8.0.0(@babel/core@7.26.10)':
     dependencies:
-      '@babel/core': 7.26.7
+      '@babel/core': 7.26.10
 
-  '@svgr/babel-preset@8.1.0(@babel/core@7.26.7)':
+  '@svgr/babel-preset@8.1.0(@babel/core@7.26.10)':
     dependencies:
-      '@babel/core': 7.26.7
-      '@svgr/babel-plugin-add-jsx-attribute': 8.0.0(@babel/core@7.26.7)
-      '@svgr/babel-plugin-remove-jsx-attribute': 8.0.0(@babel/core@7.26.7)
-      '@svgr/babel-plugin-remove-jsx-empty-expression': 8.0.0(@babel/core@7.26.7)
-      '@svgr/babel-plugin-replace-jsx-attribute-value': 8.0.0(@babel/core@7.26.7)
-      '@svgr/babel-plugin-svg-dynamic-title': 8.0.0(@babel/core@7.26.7)
-      '@svgr/babel-plugin-svg-em-dimensions': 8.0.0(@babel/core@7.26.7)
-      '@svgr/babel-plugin-transform-react-native-svg': 8.1.0(@babel/core@7.26.7)
-      '@svgr/babel-plugin-transform-svg-component': 8.0.0(@babel/core@7.26.7)
+      '@babel/core': 7.26.10
+      '@svgr/babel-plugin-add-jsx-attribute': 8.0.0(@babel/core@7.26.10)
+      '@svgr/babel-plugin-remove-jsx-attribute': 8.0.0(@babel/core@7.26.10)
+      '@svgr/babel-plugin-remove-jsx-empty-expression': 8.0.0(@babel/core@7.26.10)
+      '@svgr/babel-plugin-replace-jsx-attribute-value': 8.0.0(@babel/core@7.26.10)
+      '@svgr/babel-plugin-svg-dynamic-title': 8.0.0(@babel/core@7.26.10)
+      '@svgr/babel-plugin-svg-em-dimensions': 8.0.0(@babel/core@7.26.10)
+      '@svgr/babel-plugin-transform-react-native-svg': 8.1.0(@babel/core@7.26.10)
+      '@svgr/babel-plugin-transform-svg-component': 8.0.0(@babel/core@7.26.10)
 
   '@svgr/core@8.1.0(typescript@5.8.3)':
     dependencies:
-      '@babel/core': 7.26.7
-      '@svgr/babel-preset': 8.1.0(@babel/core@7.26.7)
+      '@babel/core': 7.26.10
+      '@svgr/babel-preset': 8.1.0(@babel/core@7.26.10)
       camelcase: 6.3.0
       cosmiconfig: 8.3.6(typescript@5.8.3)
       snake-case: 3.0.4
@@ -10008,13 +9610,13 @@ snapshots:
 
   '@svgr/hast-util-to-babel-ast@8.0.0':
     dependencies:
-      '@babel/types': 7.26.7
+      '@babel/types': 7.27.0
       entities: 4.5.0
 
   '@svgr/plugin-jsx@8.1.0(@svgr/core@8.1.0(typescript@5.8.3))':
     dependencies:
-      '@babel/core': 7.26.7
-      '@svgr/babel-preset': 8.1.0(@babel/core@7.26.7)
+      '@babel/core': 7.26.10
+      '@svgr/babel-preset': 8.1.0(@babel/core@7.26.10)
       '@svgr/core': 8.1.0(typescript@5.8.3)
       '@svgr/hast-util-to-babel-ast': 8.0.0
       svg-parser: 2.0.4
@@ -10097,7 +9699,7 @@ snapshots:
 
   '@types/acorn@4.0.6':
     dependencies:
-      '@types/estree': 1.0.6
+      '@types/estree': 1.0.7
 
   '@types/babel__core@7.20.5':
     dependencies:
@@ -10129,10 +9731,6 @@ snapshots:
       '@types/connect': 3.4.38
       '@types/node': 22.15.30
 
-  '@types/compression@1.7.5':
-    dependencies:
-      '@types/express': 5.0.1
-
   '@types/connect@3.4.38':
     dependencies:
       '@types/node': 22.15.30
@@ -10144,16 +9742,16 @@ snapshots:
   '@types/eslint-scope@3.7.7':
     dependencies:
       '@types/eslint': 9.6.1
-      '@types/estree': 1.0.6
+      '@types/estree': 1.0.7
 
   '@types/eslint@9.6.1':
     dependencies:
-      '@types/estree': 1.0.6
+      '@types/estree': 1.0.7
       '@types/json-schema': 7.0.15
 
   '@types/estree-jsx@1.0.5':
     dependencies:
-      '@types/estree': 1.0.6
+      '@types/estree': 1.0.7
 
   '@types/estree@1.0.6': {}
 
@@ -10240,10 +9838,6 @@ snapshots:
     dependencies:
       undici-types: 6.19.8
 
-  '@types/node@22.13.1':
-    dependencies:
-      undici-types: 6.20.0
-
   '@types/node@22.15.17':
     dependencies:
       undici-types: 6.21.0
@@ -10266,10 +9860,6 @@ snapshots:
     dependencies:
       '@types/react': 18.3.18
 
-  '@types/react-dom@19.0.3(@types/react@19.0.8)':
-    dependencies:
-      '@types/react': 19.0.8
-
   '@types/react-dom@19.1.4(@types/react@19.1.3)':
     dependencies:
       '@types/react': 19.1.3
@@ -10281,10 +9871,6 @@ snapshots:
   '@types/react@18.3.18':
     dependencies:
       '@types/prop-types': 15.7.14
-      csstype: 3.1.3
-
-  '@types/react@19.0.8':
-    dependencies:
       csstype: 3.1.3
 
   '@types/react@19.1.3':
@@ -10430,8 +10016,8 @@ snapshots:
     dependencies:
       '@mapbox/node-pre-gyp': 2.0.0
       '@rollup/pluginutils': 5.1.4(rollup@4.40.0)
-      acorn: 8.14.0
-      acorn-import-attributes: 1.9.5(acorn@8.14.0)
+      acorn: 8.14.1
+      acorn-import-attributes: 1.9.5(acorn@8.14.1)
       async-sema: 3.1.1
       bindings: 1.5.0
       estree-walker: 2.0.2
@@ -10449,8 +10035,8 @@ snapshots:
     dependencies:
       '@mapbox/node-pre-gyp': 2.0.0
       '@rollup/pluginutils': 5.1.4(rollup@4.40.0)
-      acorn: 8.14.0
-      acorn-import-attributes: 1.9.5(acorn@8.14.0)
+      acorn: 8.14.1
+      acorn-import-attributes: 1.9.5(acorn@8.14.1)
       async-sema: 3.1.1
       bindings: 1.5.0
       estree-walker: 2.0.2
@@ -10506,15 +10092,6 @@ snapshots:
       json-schema-to-ts: 1.6.4
       ts-morph: 12.0.0
 
-  '@vitejs/plugin-react-swc@3.10.1(vite@6.3.4(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))':
-    dependencies:
-      '@rolldown/pluginutils': 1.0.0-beta.9
-      '@swc/core': 1.11.24
-      vite: 6.3.4(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
-    transitivePeerDependencies:
-      - '@swc/helpers'
-    optional: true
-
   '@vitejs/plugin-react-swc@3.10.1(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))':
     dependencies:
       '@rolldown/pluginutils': 1.0.0-beta.9
@@ -10554,18 +10131,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-react@4.5.1(vite@6.3.2(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.4))':
-    dependencies:
-      '@babel/core': 7.26.10
-      '@babel/plugin-transform-react-jsx-self': 7.25.9(@babel/core@7.26.10)
-      '@babel/plugin-transform-react-jsx-source': 7.25.9(@babel/core@7.26.10)
-      '@rolldown/pluginutils': 1.0.0-beta.9
-      '@types/babel__core': 7.20.5
-      react-refresh: 0.17.0
-      vite: 6.3.2(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.4)
-    transitivePeerDependencies:
-      - supports-color
-
   '@vitejs/plugin-react@4.5.1(vite@6.3.2(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))':
     dependencies:
       '@babel/core': 7.26.10
@@ -10598,11 +10163,6 @@ snapshots:
   '@vitejs/plugin-vue@5.2.1(vite@6.3.2(@types/node@20.17.17)(terser@5.38.1)(tsx@4.19.4))(vue@3.5.13(typescript@5.8.3))':
     dependencies:
       vite: 6.3.2(@types/node@20.17.17)(terser@5.38.1)(tsx@4.19.4)
-      vue: 3.5.13(typescript@5.8.3)
-
-  '@vitejs/plugin-vue@5.2.1(vite@6.3.2(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.4))(vue@3.5.13(typescript@5.8.3))':
-    dependencies:
-      vite: 6.3.2(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.4)
       vue: 3.5.13(typescript@5.8.3)
 
   '@vitejs/plugin-vue@5.2.1(vite@6.3.2(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))(vue@3.5.13(typescript@5.8.3))':
@@ -10975,15 +10535,9 @@ snapshots:
       mime-types: 3.0.1
       negotiator: 1.0.0
 
-  acorn-import-attributes@1.9.5(acorn@8.14.0):
+  acorn-import-attributes@1.9.5(acorn@8.14.1):
     dependencies:
-      acorn: 8.14.0
-
-  acorn-jsx@5.3.2: {}
-
-  acorn-jsx@5.3.2(acorn@8.14.0):
-    dependencies:
-      acorn: 8.14.0
+      acorn: 8.14.1
 
   acorn-jsx@5.3.2(acorn@8.14.1):
     dependencies:
@@ -10993,7 +10547,7 @@ snapshots:
 
   acorn-walk@8.3.4:
     dependencies:
-      acorn: 8.14.0
+      acorn: 8.14.1
 
   acorn@8.14.0: {}
 
@@ -11691,7 +11245,7 @@ snapshots:
   esast-util-from-js@2.0.1:
     dependencies:
       '@types/estree-jsx': 1.0.5
-      acorn: 8.14.0
+      acorn: 8.14.1
       esast-util-from-estree: 2.0.0
       vfile-message: 4.0.2
 
@@ -11969,7 +11523,7 @@ snapshots:
 
   estree-util-attach-comments@3.0.0:
     dependencies:
-      '@types/estree': 1.0.6
+      '@types/estree': 1.0.7
 
   estree-util-build-jsx@3.0.1:
     dependencies:
@@ -11982,7 +11536,7 @@ snapshots:
 
   estree-util-scope@1.0.0:
     dependencies:
-      '@types/estree': 1.0.6
+      '@types/estree': 1.0.7
       devlop: 1.1.0
 
   estree-util-to-js@2.0.0:
@@ -12002,7 +11556,7 @@ snapshots:
 
   estree-walker@3.0.3:
     dependencies:
-      '@types/estree': 1.0.6
+      '@types/estree': 1.0.7
 
   etag@1.8.1: {}
 
@@ -12371,7 +11925,7 @@ snapshots:
 
   hast-util-to-estree@3.1.1:
     dependencies:
-      '@types/estree': 1.0.6
+      '@types/estree': 1.0.7
       '@types/estree-jsx': 1.0.5
       '@types/hast': 3.0.4
       comma-separated-tokens: 2.0.3
@@ -12392,7 +11946,7 @@ snapshots:
 
   hast-util-to-jsx-runtime@2.3.2:
     dependencies:
-      '@types/estree': 1.0.6
+      '@types/estree': 1.0.7
       '@types/hast': 3.0.4
       '@types/unist': 3.0.3
       comma-separated-tokens: 2.0.3
@@ -13007,7 +12561,7 @@ snapshots:
 
   micromark-extension-mdx-expression@3.0.0:
     dependencies:
-      '@types/estree': 1.0.6
+      '@types/estree': 1.0.7
       devlop: 1.1.0
       micromark-factory-mdx-expression: 2.0.2
       micromark-factory-space: 2.0.1
@@ -13019,7 +12573,7 @@ snapshots:
   micromark-extension-mdx-jsx@3.0.1:
     dependencies:
       '@types/acorn': 4.0.6
-      '@types/estree': 1.0.6
+      '@types/estree': 1.0.7
       devlop: 1.1.0
       estree-util-is-identifier-name: 3.0.0
       micromark-factory-mdx-expression: 2.0.2
@@ -13036,7 +12590,7 @@ snapshots:
 
   micromark-extension-mdxjs-esm@3.0.0:
     dependencies:
-      '@types/estree': 1.0.6
+      '@types/estree': 1.0.7
       devlop: 1.1.0
       micromark-core-commonmark: 2.0.2
       micromark-util-character: 2.1.1
@@ -13048,8 +12602,8 @@ snapshots:
 
   micromark-extension-mdxjs@3.0.0:
     dependencies:
-      acorn: 8.14.0
-      acorn-jsx: 5.3.2(acorn@8.14.0)
+      acorn: 8.14.1
+      acorn-jsx: 5.3.2(acorn@8.14.1)
       micromark-extension-mdx-expression: 3.0.0
       micromark-extension-mdx-jsx: 3.0.1
       micromark-extension-mdx-md: 2.0.0
@@ -13072,7 +12626,7 @@ snapshots:
 
   micromark-factory-mdx-expression@2.0.2:
     dependencies:
-      '@types/estree': 1.0.6
+      '@types/estree': 1.0.7
       devlop: 1.1.0
       micromark-factory-space: 2.0.1
       micromark-util-character: 2.1.1
@@ -13137,7 +12691,7 @@ snapshots:
   micromark-util-events-to-acorn@2.0.2:
     dependencies:
       '@types/acorn': 4.0.6
-      '@types/estree': 1.0.6
+      '@types/estree': 1.0.7
       '@types/unist': 3.0.3
       devlop: 1.1.0
       estree-util-visit: 2.0.0
@@ -13693,9 +13247,9 @@ snapshots:
 
   react-streaming@0.3.47(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
-      '@brillout/import': 0.2.3
+      '@brillout/import': 0.2.6
       '@brillout/json-serializer': 0.5.15
-      '@brillout/picocolors': 1.0.15
+      '@brillout/picocolors': 1.0.26
       isbot-fast: 1.2.0
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
@@ -13763,29 +13317,9 @@ snapshots:
 
   recma-build-jsx@1.0.0:
     dependencies:
-      '@types/estree': 1.0.6
+      '@types/estree': 1.0.7
       estree-util-build-jsx: 3.0.1
       vfile: 6.0.3
-
-  recma-jsx@1.0.0:
-    dependencies:
-      acorn-jsx: 5.3.2
-      estree-util-to-js: 2.0.0
-      recma-parse: 1.0.0
-      recma-stringify: 1.0.0
-      unified: 11.0.5
-    transitivePeerDependencies:
-      - acorn
-
-  recma-jsx@1.0.0(acorn@8.14.0):
-    dependencies:
-      acorn-jsx: 5.3.2(acorn@8.14.0)
-      estree-util-to-js: 2.0.0
-      recma-parse: 1.0.0
-      recma-stringify: 1.0.0
-      unified: 11.0.5
-    transitivePeerDependencies:
-      - acorn
 
   recma-jsx@1.0.0(acorn@8.14.1):
     dependencies:
@@ -13799,14 +13333,14 @@ snapshots:
 
   recma-parse@1.0.0:
     dependencies:
-      '@types/estree': 1.0.6
+      '@types/estree': 1.0.7
       esast-util-from-js: 2.0.1
       unified: 11.0.5
       vfile: 6.0.3
 
   recma-stringify@1.0.0:
     dependencies:
-      '@types/estree': 1.0.6
+      '@types/estree': 1.0.7
       estree-util-to-js: 2.0.0
       unified: 11.0.5
       vfile: 6.0.3
@@ -13842,7 +13376,7 @@ snapshots:
 
   rehype-recma@1.0.0:
     dependencies:
-      '@types/estree': 1.0.6
+      '@types/estree': 1.0.7
       '@types/hast': 3.0.4
       hast-util-to-estree: 3.1.1
     transitivePeerDependencies:
@@ -14198,16 +13732,10 @@ snapshots:
       mrmime: 2.0.0
       totalist: 3.0.1
 
-  sirv@3.0.0:
-    dependencies:
-      '@polka/url': 1.0.0-next.28
-      mrmime: 2.0.0
-      totalist: 3.0.1
-
   sirv@3.0.1:
     dependencies:
       '@polka/url': 1.0.0-next.28
-      mrmime: 2.0.0
+      mrmime: 2.0.1
       totalist: 3.0.1
 
   slash@3.0.0: {}
@@ -14399,7 +13927,7 @@ snapshots:
   terser@5.38.1:
     dependencies:
       '@jridgewell/source-map': 0.3.6
-      acorn: 8.14.0
+      acorn: 8.14.1
       commander: 2.20.3
       source-map-support: 0.5.21
 
@@ -14414,11 +13942,6 @@ snapshots:
   tinybench@2.9.0: {}
 
   tinyexec@0.3.2: {}
-
-  tinyglobby@0.2.10:
-    dependencies:
-      fdir: 6.4.3(picomatch@4.0.2)
-      picomatch: 4.0.2
 
   tinyglobby@0.2.13:
     dependencies:
@@ -14479,7 +14002,7 @@ snapshots:
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.4
       '@types/node': 16.18.11
-      acorn: 8.14.0
+      acorn: 8.14.1
       acorn-walk: 8.3.4
       arg: 4.1.3
       create-require: 1.1.1
@@ -14499,26 +14022,6 @@ snapshots:
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.4
       '@types/node': 17.0.45
-      acorn: 8.14.0
-      acorn-walk: 8.3.4
-      arg: 4.1.3
-      create-require: 1.1.1
-      diff: 4.0.2
-      make-error: 1.3.6
-      typescript: 5.8.3
-      v8-compile-cache-lib: 3.0.1
-      yn: 3.1.1
-    optionalDependencies:
-      '@swc/core': 1.11.24
-
-  ts-node@10.9.2(@swc/core@1.11.24)(@types/node@22.13.1)(typescript@5.8.3):
-    dependencies:
-      '@cspotcode/source-map-support': 0.8.1
-      '@tsconfig/node10': 1.0.11
-      '@tsconfig/node12': 1.0.11
-      '@tsconfig/node14': 1.0.3
-      '@tsconfig/node16': 1.0.4
-      '@types/node': 22.13.1
       acorn: 8.14.0
       acorn-walk: 8.3.4
       arg: 4.1.3
@@ -14570,8 +14073,6 @@ snapshots:
     optional: true
 
   undici-types@6.19.8: {}
-
-  undici-types@6.20.0: {}
 
   undici-types@6.21.0: {}
 
@@ -14675,7 +14176,7 @@ snapshots:
 
   unplugin@1.16.1:
     dependencies:
-      acorn: 8.14.0
+      acorn: 8.14.1
       webpack-virtual-modules: 0.6.2
 
   unplugin@2.3.3:
@@ -14897,12 +14398,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  vite-plugin-svgr@4.3.0(rollup@4.40.0)(typescript@5.8.3)(vite@6.3.4(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)):
+  vite-plugin-svgr@4.3.0(rollup@4.40.0)(typescript@5.8.3)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)):
     dependencies:
       '@rollup/pluginutils': 5.1.4(rollup@4.40.0)
       '@svgr/core': 8.1.0(typescript@5.8.3)
       '@svgr/plugin-jsx': 8.1.0(@svgr/core@8.1.0(typescript@5.8.3))
-      vite: 6.3.4(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
+      vite: 6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
     transitivePeerDependencies:
       - rollup
       - supports-color
@@ -14947,17 +14448,6 @@ snapshots:
       fsevents: 2.3.3
       terser: 5.38.1
 
-  vite@6.1.0(@types/node@20.17.17)(terser@5.38.1)(tsx@4.19.4):
-    dependencies:
-      esbuild: 0.24.2
-      postcss: 8.5.1
-      rollup: 4.34.4
-    optionalDependencies:
-      '@types/node': 20.17.17
-      fsevents: 2.3.3
-      terser: 5.38.1
-      tsx: 4.19.4
-
   vite@6.3.2(@types/node@17.0.45)(terser@5.38.1)(tsx@4.19.4):
     dependencies:
       esbuild: 0.25.0
@@ -14986,20 +14476,6 @@ snapshots:
       terser: 5.38.1
       tsx: 4.19.4
 
-  vite@6.3.2(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.4):
-    dependencies:
-      esbuild: 0.25.0
-      fdir: 6.4.3(picomatch@4.0.2)
-      picomatch: 4.0.2
-      postcss: 8.5.3
-      rollup: 4.40.0
-      tinyglobby: 0.2.13
-    optionalDependencies:
-      '@types/node': 22.13.1
-      fsevents: 2.3.3
-      terser: 5.38.1
-      tsx: 4.19.4
-
   vite@6.3.2(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4):
     dependencies:
       esbuild: 0.25.0
@@ -15014,7 +14490,7 @@ snapshots:
       terser: 5.38.1
       tsx: 4.19.4
 
-  vite@6.3.4(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4):
+  vite@6.3.5(@types/node@20.17.17)(terser@5.38.1)(tsx@4.19.4):
     dependencies:
       esbuild: 0.25.0
       fdir: 6.4.4(picomatch@4.0.2)
@@ -15023,7 +14499,7 @@ snapshots:
       rollup: 4.40.0
       tinyglobby: 0.2.13
     optionalDependencies:
-      '@types/node': 22.15.30
+      '@types/node': 20.17.17
       fsevents: 2.3.3
       terser: 5.38.1
       tsx: 4.19.4
