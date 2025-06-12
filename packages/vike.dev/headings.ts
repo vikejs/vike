@@ -6,7 +6,7 @@ import {
   iconGear,
   type HeadingDefinition,
   iconSeedling,
-  iconGlob,
+  iconGlobe,
   iconPlug,
 } from '@brillout/docpress'
 
@@ -180,7 +180,7 @@ const headings = [
   {
     level: 1,
     title: 'Deploy',
-    titleIcon: iconGlob,
+    titleIcon: iconGlobe,
     color: '#2d81f1',
   },
   {
