@@ -1,7 +1,7 @@
 import react from '@vitejs/plugin-react'
 import assert from 'node:assert'
 import { getVikeConfig } from 'vike/plugin'
-import type { PluginOption } from 'vite'
+import type { PluginOption, UserConfig } from 'vite'
 
 /* TO-DO/eventually: find a way to avoid an initial vite.config.js error to prevent the server from starting.
 throw new Error('erri')
@@ -19,7 +19,7 @@ export default {
     //*/
   },
   plugins: [react(), testPlugin()],
-}
+} satisfies UserConfig
 
 function testPlugin(): PluginOption {
   let vike: Vike
