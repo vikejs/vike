@@ -13,13 +13,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
-
       - run: pnpm install
+      - run: pnpm run docs:spellcheck:check
       - run: pnpm run build
-      - run: pnpm run docs:build
-
       - run: pnpm run docs:test
-
+      - run: pnpm run docs:build
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
