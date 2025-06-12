@@ -1,6 +1,6 @@
 # 🔨 Vike
 
-*The Modular Framework — Next.js & Nuxt alternative for unprecedented flexibility and stability*
+*The Modular Framework — Next.js & Nuxt alternative for unprecedented flexibility and stability.*
 
 ## Monorepo
 
