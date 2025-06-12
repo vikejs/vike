@@ -1,0 +1,112 @@
+import { Link, RepoLink } from '@brillout/docpress'
+import { UiFrameworkExtension } from '../../components'
+
+Environment: server, client.  
+Implemented by: <UiFrameworkExtension /> (or <Link href="#without-vike-react-vue-solid">yourself</Link>).
+
+The `useData()` component hook allows you to access the value returned by the <Link href="/data">`data()` hook</Link>.
+
+> See <Link href="/data-fetching" /> for an introduction about `useData()` and fetching data in general.
+
+> You can also access the data over <Link href="/pageContext#data">`pageContext.data`</Link>. In fact <Link href="/usePageContext">`const { data } = usePageContext()`</Link> returns the same value as `useData()`.
+>
+> Using `pageContext.data` instead of `useData()` makes sense if you want to access the data in <Link href="/hooks">Vike hooks</Link> since `useData()` only works inside UI components (not inside Vike hooks).
+
+For example:
+
+```js
+// SomeComponent.js
+// Environment: server, client
+
+import { useData } from 'vike-react/useData' // or vike-vue / vike-solid
+
+  // Inside a React/Vue/Solid component
+  const data = useData()
+  const { name, price } = data
+```
+
+```js
+// /pages/product/@id/+data.js
+// Environment: server
+
+export { data }
+
+async function data(pageContext) {
+  let product = await Product.findById(pagContext.routeParams.id)
+
+  // `product` is serialized and passed to the client. Therefore, we pick only the
+  // data the client needs in order to minimize what is sent over the network.
+  product = { name: product.name, price: product.price }
+
+  return product
+}
+```
+
+See <Link href="/data-fetching" /> for more information about data fetching.
+
+
+## TypeScript
+
+```ts
+// /pages/product/SomeComponent.ts
+// Environment: server, client
+
+import type { Data } from './+data'
+
+  // Inside a React/Vue/Solid component
+  const data = useData<Data>()
+```
+
+```ts
+// /pages/product/+data.ts
+// Environment: server
+
+export { data }
+export type Data = Awaited<ReturnType<typeof data>>
+
+import type { PageContextServer } from 'vike/types'
+
+async function data(pageContext: PageContextServer) {
+  // ...
+}
+```
+
+Using type inference as shown above is usually what you want, but if you want to enforce a type instead:
+
+```ts
+// +data.ts
+
+export { data }
+export type { Data }
+
+type Data = /* the type you want to enforce */
+
+import type { DataAsync } from 'vike/types'
+
+const data: DataAsync = async (pageContext): Promise<Data> => {
+  // ...
+}
+```
+
+## Without `vike-{react,vue,solid}`
+
+In case you don't use a <UiFrameworkExtension />, you can implement `useData()` yourself.
+
+> In general, for improved DX, we recommend using a `useData()` implementation. But you don't have to as shown at <Link href="/data#without-vike-react-vue-solid" doNotInferSectionTitle />.
+
+Examples:
+ - <RepoLink path='/packages/create-vike-core/boilerplate-react/renderer/useData.js' /> (React + JavaScript)
+ - <RepoLink path='/packages/create-vike-core/boilerplate-react-ts/renderer/useData.ts' /> (React + TypeScript)
+ - <RepoLink path='/packages/create-vike-core/boilerplate-vue/renderer/useData.js' /> (Vue + JavaScript)
+ - <RepoLink path='/packages/create-vike-core/boilerplate-vue-ts/renderer/useData.ts' /> (Vue + TypeScript)
+ - [`vike-react` > /hooks/useData.tsx](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/src/hooks/useData.tsx)
+ - [`vike-vue` > /hooks/useData.ts](https://github.com/vikejs/vike-vue/blob/main/packages/vike-vue/src/hooks/useData.ts)
+ - [`vike-solid` > /hooks/useData.tsx](https://github.com/vikejs/vike-solid/blob/main/vike-solid/hooks/useData.tsx)
+
+
+## See also
+
+- <Link href="/data-fetching" />
+- <Link href="/data" />
+- <Link href="/usePageContext" />
+- <Link href="/pageContext#data">API > `pageContext.data`</Link>

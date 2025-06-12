@@ -1,0 +1,136 @@
+import { Link, RepoLink } from '@brillout/docpress'
+
+import { UiFrameworkExtension } from '../../components'
+
+Environment: server, client.  
+Implemented by: <UiFrameworkExtension /> (or <Link href="#without-vike-react-vue-solid">yourself</Link>).
+
+The `usePageContext()` hook enables any UI component to access the <Link href="/pageContext">`pageContext` object</Link>.
+
+```js
+import { usePageContext } from 'vike-react/usePageContext'
+/* Or:
+import { usePageContext } from 'vike-vue/usePageContext'
+import { usePageContext } from 'vike-solid/usePageContext'
+*/
+
+  // Inside any UI component
+  const pageContext = usePageContext()
+```
+
+## Without `vike-{react,vue,solid}`
+
+In case you don't use a <UiFrameworkExtension />, you can implement `usePageContext()` yourself.
+
+### React
+
+You can use [React Context](https://reactjs.org/docs/context.html) to make `pageContext` accessible from any React component.
+
+Examples:
+ - JavaScript: <RepoLink path='/packages/create-vike-core/boilerplate-react/renderer/usePageContext.jsx' />
+ - TypeScript: <RepoLink path='/packages/create-vike-core/boilerplate-react-ts/renderer/usePageContext.tsx' />
+
+### Vue 3 - Composition API
+
+You can use
+[`app.provide()`](https://v3.vuejs.org/api/application-api.html#provide)
+with
+[`inject()`](https://v3.vuejs.org/api/composition-api.html#provide-inject)
+to make `pageContext` accessible from any Vue component.
+
+```js
+// createVueApp.js
+
+const app = createSSRApp(/*...*/)
+app.provide('pageContext', pageContext)
+```
+
+```vue
+<!-- someComponent.vue -->
+
+<template>
+  <!-- We can access `pageContext` here -->
+  {{ pageContext.someProp }}
+</template>
+
+<script setup>
+import { inject } from 'vue'
+const pageContext = inject('pageContext')
+</script>
+```
+
+You can also implement a `usePageContext()` component hook:
+
+```js
+// usePageContext.js
+
+import { inject } from 'vue'
+
+export { usePageContext }
+export { setPageContext }
+
+const key = Symbol()
+
+function usePageContext() {
+  const pageContext = inject(key)
+  return pageContext
+}
+function setPageContext(app, pageContext) {
+  app.provide(key, pageContext)
+}
+```
+
+```js
+const app = createSSRApp(/*...*/)
+setPageContext(app, pageContext)
+```
+
+```vue
+<script setup>
+import { usePageContext } from './path/to/usePageContext'
+const pageContext = usePageContext()
+</script>
+```
+
+Examples:
+ - JavaScript: <RepoLink path='/packages/create-vike-core/boilerplate-vue/renderer/usePageContext.js' />
+ - TypeScript: <RepoLink path='/packages/create-vike-core/boilerplate-vue-ts/renderer/usePageContext.ts' />
+
+### Vue 3 - `globalProperties`
+
+Alternatively, you can make `pageContext` available to all Vue components by using [app.config.globalProperties](https://v3.vuejs.org/api/application-config.html#globalproperties).
+
+```js
+// createVueApp.js
+
+const app = createSSRApp(/*...*/)
+app.config.globalProperties.$pageContext = pageContext
+```
+
+```vue
+<!-- someComponent.vue -->
+
+<template>
+  <!-- We can access `pageContext` here -->
+  {{ $pageContext.someProp }}
+</template>
+
+<script setup>
+import { getCurrentInstance } from 'vue'
+// We can access `pageContext` here
+const pageContext = getCurrentInstance().appContext.config.globalProperties.$pageContext
+</script>
+```
+
+Example: [/packages/create-vike-core/boilerplate-vue/](https://github.com/vikejs/vike/tree/main/packages/create-vike-core/boilerplate-vue).
+
+### Vue 2
+
+For Vue 2 you can use [Vue.prototype](https://vuejs.org/v2/cookbook/adding-instance-properties.html#Base-Example).
+
+
+## See also
+
+ - <Link href="/pageContext" />
+ - <Link href="/passToClient" />
+ - <Link href="/useData" />

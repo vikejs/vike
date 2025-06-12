@@ -2,10 +2,10 @@
   "scripts": {
     "========= Dev": "",
     "// Develop Vike": "",
-    "dev": "cd vike/ && pnpm run dev",
+    "dev": "cd packages/vike/ && pnpm run dev",
     "========= Build": "",
     "// Build Vike": "",
-    "build": "cd vike/ && pnpm run build",
+    "build": "cd packages/vike/ && pnpm run build",
     "========= Test": "",
     "test": "vitest run && test-e2e && test-types",
     "test:units": "vitest --project unit",
@@ -15,16 +15,16 @@
     "test:vite-ecosystem-ci": "(export VITE_ECOSYSTEM_CI=true; vitest run && test-e2e --exclude test-deprecated-design && test-types)",
     "========= Docs": "",
     "// Develop website https://vike.dev": "",
-    "docs": "cd docs/ && pnpm run dev",
+    "docs": "cd packages/vike.dev/ && pnpm run dev",
     "// Build https://vike.dev for production": "",
-    "docs:build": "cd docs/ && pnpm run build",
+    "docs:build": "cd packages/vike.dev/ && pnpm run build",
     "// Try production build": "",
-    "docs:preview": "cd docs/ && pnpm run preview",
+    "docs:preview": "cd packages/vike.dev/ && pnpm run preview",
     "========= Release": "",
-    "release": "cd ./vike/ && pnpm run release",
-    "release:minor": "cd ./vike/ && pnpm run release:minor",
-    "release:major": "cd ./vike/ && pnpm run release:major",
-    "release:commit": "cd ./vike/ && pnpm run release:commit",
+    "release": "cd ./packages/vike/ && pnpm run release",
+    "release:minor": "cd ./packages/vike/ && pnpm run release:minor",
+    "release:major": "cd ./packages/vike/ && pnpm run release:major",
+    "release:commit": "cd ./packages/vike/ && pnpm run release:commit",
     "========= Formatting": "",
     "format": "pnpm run format:biome",
     "format:prettier": "git ls-files | egrep '\\.(json|js|jsx|css|ts|tsx|vue|mjs|cjs)$' | grep --invert-match package.json | xargs pnpm exec prettier --write",
@@ -45,7 +45,7 @@
   },
   "pnpm": {
     "overrides": {
-      "vike": "link:./vike/"
+      "vike": "link:./packages/vike/"
     }
   },
   "packageManager": "pnpm@9.15.9"

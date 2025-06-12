@@ -1,0 +1,153 @@
+import { Link } from '@brillout/docpress'
+
+In general, if you run into any issues with Vike, we recommend that you <Link href="/faq#how-can-i-reach-out-for-help">reach out to us</Link>.
+
+> If you report a Vike bug, then we quickly fix it (usually within 24 hours).
+
+That said, you can also dig into issues yourself.
+
+> In some situations, you may want to dig into a problem yourself. For example, in the rare case we ask you to provide a minimal reproduction, it might actually be quicker to dig into Vike's source code instead.
+
+
+## Verbose errors
+
+Vike prettifies transpilation errors, such as errors thrown by [esbuild](https://esbuild.github.io/) and [Babel](https://babeljs.io/).
+
+While Vike is careful about not removing relevant information, it may mistakenly do so. In that case [create a new GitHub issue](https://github.com/vikejs/vike/issues/new). Until a Vike maintainer fixes the issue you can use the debug flag `DEBUG=vike:error`.
+
+```shell
+# - Show verbose original errors
+# - Show infinite stack traces (`Error.stackTraceLimit = Infinity`)
+DEBUG=vike:error npm run dev
+```
+
+For even more information:
+
+```shell
+# Usually only used by Vike maintainers
+DEBUG=vike:error,vike:log npm run dev
+```
+
+
+## Digging into `node_modules/`
+
+The quickest way to dig into Vike is by:
+ - Directly modifying the built code at `node_modules/vike/dist/esm/**/*.js`, for example to:
+   - Inject `console.log()` to gather insights.
+   - Try to fix the bug.
+ - Reading the TypeScript source code (`$ git clone git@github.com:vikejs/vike`), to understand how the code works.
+
+The trick here is to directly modify the built code at `node_modules/`, while using the TypeScript source code to navigate and read code.
+
+> We recommend directly manipulating `node_modules/vike/dist/esm/**/*.js` because it's simpler and quicker than building Vike. That said, you can also build and then link Vike:
+> ```bash
+> $ git clone git@github.com:vikejs/vike
+> $ cd vike/
+> $ pnpm install
+> $ pnpm run dev
+> $ cd ../my-app/
+> $ pnpm link ../vike/packages/vike/
+> ```
+
+> It may sound scary to dig into foreign source code, but it's sometimes quicker to find the root cause of your problem than treating Vike as a black box. Also:
+> - It's more interesting. (Open Source is usually well-written and pleasurable to read.)
+> - You may end up being able to make a PR solving your problem and help the whole community.
+
+> We recommend this practice not only for Vike, but also for other tools such as Vite.
+
+
+## Digging into `dist/client/`
+
+By default, the client-side code in `dist/client/` is minified, which makes debugging difficult. You can temporarily disable minification:
+
+
+```js
+// vite.config.js
+
+export default {
+  build: { minify: false },
+  // ...
+}
+```
+
+You can then easily trace back where code in `dist/client/` originates from:
+
+```js
+// dist/client/assets/entries/pages_about.DrVcZv1W.js
+
+import { j as jsxRuntimeExports } from "../chunks/chunk-BXiwBnjM.js";
+import { i as isBrowser, a as assertClientRouting } from "../chunks/chunk-CSn_bGv_.js";
+
+/*! /home/rom/code/vike/packages/vike/dist/esm/shared/route/utils.js [vike:pluginModuleBanner] */
+if (isBrowser()) {
+  assertClientRouting();
+}
+
+/*! pages/about/+Page.jsx [vike:pluginModuleBanner] */
+function Page() {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { children: "About" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Example of using Vike." })
+  ] });
+}
+const import2 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  default: Page
+}, Symbol.toStringTag, { value: "Module" }));
+
+/*! virtual:vike:pageConfigValuesAll:client:/pages/about [vike:pluginModuleBanner] */
+const configValuesSerialized = {
+  ["Page"]: {
+    type: "standard",
+    definedAtData: { "filePathToShowToUser": "/pages/about/+Page.jsx" },
+    valueSerialized: {
+      type: "plus-file",
+      exportValues: import2
+    }
+  }
+};
+export {
+  configValuesSerialized
+};
+```
+
+
+## Debug flags
+
+### Vike flags
+
+You can use Vike's debug flags to gather insights.
+
+```shell
+# Verbose errors
+DEBUG=vike:error npm run dev
+# Inspect where logs come from (also non-Vike logs)
+DEBUG=vike:log npm run dev
+# Inspect Vike's routing
+DEBUG=vike:routing npm run dev
+# Inspect HTTP Streaming
+DEBUG=vike:stream npm run dev
+# Inspect Vike's crawling of + files
+DEBUG=vike:crawl npm run dev
+# Enabling multiple debug flags
+DEBUG=vike:log,vike:error npm run dev
+```
+
+> Most debug flags also work for build (e.g. `$ DEBUG=vike:error npm run build`) and production (e.g. `$ DEBUG=vike:log node dist/server/index.mjs`).
+
+> There are [more debug flags](https://github.com/vikejs/vike/blob/main/packages/vike/utils/debug.ts) but note that they are meant for Vike maintainers. Feel free to reach out if you want more debug logs.
+
+### Vite flags
+
+Enable and discover all Vite debug flags:
+
+```shell
+DEBUG=vite:* npm run dev
+```
+
+You can then cherry-pick a debug flag e.g. `$ DEBUG=vite:deps npm run dev`.
+
+
+## See also
+
+- <Link href="/error-tracking" />

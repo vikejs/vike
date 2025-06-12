@@ -7,7 +7,7 @@ const env = {
 export default defineWorkspace([
   {
     test: {
-      include: ['vike/**/*.spec.ts'],
+      include: ['packages/**/*.spec.ts'],
       name: 'unit',
       env,
     },

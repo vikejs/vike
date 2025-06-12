@@ -1,0 +1,22 @@
+{
+  "scripts": {
+    "dev": "vike dev",
+    "build": "vike build",
+    "preview": "vike build && vike preview",
+    "typecheck": "tsc --noEmit --watch"
+  },
+  "dependencies": {
+    "@batijs/elements": "^0.0.47",
+    "@brillout/docpress": "^0.13.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-tabs": "^6.1.0",
+    "typescript": "^5.8.3",
+    "vike": "0.4.231",
+    "vite": "^6.3.4",
+    "vite-plugin-svgr": "^4.3.0"
+  },
+  "type": "module"
+}

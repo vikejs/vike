@@ -1,0 +1,225 @@
+import { Link, RepoLink } from '@brillout/docpress'
+import { UseVikeExtensionUiFramework, UiFrameworkExtension } from '../../components'
+
+Environment: client.
+
+If you don't use a <UiFrameworkExtension /> then Vike does <Link text="Server Routing" href="/server-routing" /> by default.
+
+You can opt into <Link text="Client Routing" href="/client-routing" /> by using the `clientRouting` setting, see <Link href="#getting-started" />.
+
+<UseVikeExtensionUiFramework featureName="Client Routing" />
+
+
+## Examples
+
+React example:
+ - <RepoLink path='/packages/create-vike-core/boilerplate-react-ts/renderer/+onRenderClient.tsx' />
+
+Vue example:
+ - <RepoLink path='/packages/create-vike-core/boilerplate-vue-ts/renderer/+onRenderClient.ts' />
+ - <RepoLink path='/packages/create-vike-core/boilerplate-vue-ts/renderer/app.ts' />
+
+
+## Getting started
+
+1. Set `clientRouting` to `true`:
+   ```js
+   // /pages/+config.js
+   export default {
+     clientRouting: true
+   }
+   ```
+
+2. Adapt your <Link text={<><code>onRenderClient()</code></>} href="/onRenderClient" /> hook:
+
+   ```js
+   // /renderer/+onRenderClient.js
+   // Environment: browser
+
+   export { onRenderClient }
+
+   import { renderToDom, hydrateDom } from 'some-ui-framework'
+
+   async function onRenderClient(pageContext) {
+     // `pageContext.isHydration` is set by Vike and is `true` when the page
+     // is already rendered to HTML.
+     if (pageContext.isHydration) {
+       // We hydrate the first page. (Since we do SSR, the first page is already
+       // rendered to HTML and we merely have to hydrate it.)
+       await hydrateDom(pageContext.Page)
+     } else {
+       // We render a new page. (When the user navigates to a new page.)
+       await renderToDom(pageContext.Page)
+     }
+   }
+   ```
+
+   > Note that `pageContext` is completely discarded and created anew upon page navigation.
+   > That's why it's called *page*Context (and not *app*Context).
+
+   > See [Render Modes](/render-modes) for another illustration of conditional DOM hydration.
+
+
+## Links intercepting
+
+You can keep using `<a href="/some-url">` links: the Client Router automatically intercepts clicks on `<a>` elements.
+
+You can skip the Client Router for individual `<a>` links by adding the `rel="external"` attribute, e.g. `<a rel="external" href="/some/url">The Client Router won't intercept me</a>`.
+
+
+## Hooks
+
+You can use the following hook to implement initialization after the <Link href="/hydration">hydration</Link> has finished:
+ - <Link href="/onHydrationEnd" noBreadcrumb />
+
+And following hooks to implement page transition animations:
+ - <Link href="/onPageTransitionStart" noBreadcrumb />
+ - <Link href="/onPageTransitionEnd" noBreadcrumb />
+
+> These hooks are only available if you use Client Routing.
+
+
+## Settings
+
+Page settings:
+- `prefetchStaticAssets`: Link prefetching settings, see <Link href="/prefetchStaticAssets" />.
+- `hydrationCanBeAborted`: Whether the <Link text="UI framework" href="/ui-frameworks" /> allows the <Link href="/hydration">hydration</Link> to be aborted, see <Link href="/hydrationCanBeAborted" />.
+
+Anchor link options:
+- `<a href="/some/url" keep-scroll-position>`: Don't scroll to the top of the page, preserve the scroll position instead. See also:
+  - <Link href="/keepScrollPosition" />
+  - <Link href="/navigate#options">`navigate('/some-url', { keepScrollPosition: true })`</Link>
+- `<a href="/some/url" rel="external">`: Skip Client Routing, see <Link href="#links-intercepting" />.
+
+
+## Programmatic navigation
+
+You can use the function `navigate('/some/url')` to programmatically navigate the user to a new page.
+
+See <Link href="/navigate"/>.
+
+
+## State initialization
+
+Usually, when using tools such as Apollo GraphQL, Redux or Vuex, you determine the initial state of your UI on the server-side while rendering HTML, and then initialize the client-side with that initial state.
+
+Depending on the tool, you do either one of the following:
+ - You initialize the state once.
+ - You re-initialize the state on every page navigation.
+
+To initialize once:
+
+```js
+// /renderer/+onRenderHtml.js
+// Environment: server
+
+export { onRenderHtml }
+
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
+import { renderToHtml } from 'some-ui-framework'
+import { getInitialState } from './getInitialState'
+
+// The `onRenderHtml()` hook is called only for the first page.
+// (Whereas `onBeforeRender()` is called as well upon page navigation.)
+async function onRenderHtml(pageContext) {
+  const initialState = await getInitialState()
+
+  // We use `initialState` for rendering the HTML, so that the HTML contains
+  // the content of `initialState`.
+  const pageHtml = await renderToHtml(pageContext.Page, initialState)
+
+  const documentHtml = escapeInject`<!DOCTYPE html>
+    <html>
+      <body>
+        <div>${dangerouslySkipEscape(pageHtml)}</div>
+      </body>
+    </html>`
+
+  return {
+    documentHtml,
+    pageContext: {
+      initialState
+    }
+  }
+}
+```
+
+```js
+// /renderer/+config.js
+// Environment: config
+
+export default {
+  passToClient: ['initialState']
+}
+```
+
+```js
+// /renderer/+onRenderClient.js
+// Environment: browser
+
+export { onRenderClient }
+
+import { initClientSide } from './initClientSide'
+
+async function onRenderClient(pageContext) {
+  // The first page is rendered to HTML and `pageContext.isHydration === true`
+  if (pageContext.isHydration) {
+    // `pageContext.initialState` is available here
+    initClientSide(pageContext.initialState)
+  } else {
+    // Note that `pageContext.initialState` isn't available here,
+    // since our `onRenderHtml()` hook is only called for the first page.
+  }
+
+  // ...
+}
+```
+
+To initialize on every page navigation:
+
+```js
+// /renderer/+onBeforeRender.js
+// Environment: server
+
+export { onBeforeRender }
+
+import { getInitialState } from './getInitialState'
+
+// The `onBeforeRender()` hook is called for the first page as well as upon page navigation.
+// (Whereas `onRenderHtml()` is called only for the first page.)
+async function onBeforeRender() {
+  const initialState = await getInitialState()
+  return {
+    pageContext: {
+      initialState
+    }
+  }
+}
+```
+
+```js
+// /renderer/+onRenderClient.js
+// Environment: browser
+
+export { onRenderClient }
+
+import { initClientSide } from './initClientSide'
+
+async function onRenderClient(pageContext) {
+  // We initialize the state for every page rendering. So not only
+  // the first page but also any subsequent page navigation.
+  initClientSide(pageContext.initialState)
+
+  // ...
+}
+```
+
+
+## See also
+
+ - <Link href="/client-routing" />
+ - <Link href="/navigate" />
+ - <Link href="/onHydrationEnd" />
+ - <Link href="/onPageTransitionStart" />
+ - <Link href="/onPageTransitionEnd" />
+ - <Link href="/prefetchStaticAssets" />

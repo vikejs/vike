@@ -1,8 +1,6 @@
 packages:
-  - 'vike/'
-  - 'docs/'
-  - 'boilerplates/'
-  - 'boilerplates/*'
+  - 'packages/*'
+  - 'packages/create-vike-core/boilerplate-*'
   - 'examples/*'
   - 'test/*'
   - 'test-deprecated-design/*'
