@@ -340,7 +340,26 @@ apply(app, {
 
 ## HTTPS
 
-If you want to use HTTPS in development, then make sure to [pass the HTTPS certificates to Vite's dev server](https://vitejs.dev/config/server-options.html#server-https).
+If you want to use HTTPS in development, you need to pass `createServer` and the HTTPS certificates to `serve()`:
+
+```js
+// For https support
+import { createServer } from 'node:https'
+// Or for http2 support
+// import { createSecureServer as createServer } from 'node:http2'
+
+serve(app, {
+  createServer,
+
+  // [Node.js] Options forwarded to `createServer()`
+  serverOptions: {
+    // For example SSL/TLS key and certificate for HTTPS
+    key: fs.readFileSync('/etc/letsencrypt/live/example.com/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/example.com/fullchain.pem')
+    // ... other createServer() options ...
+  },
+})
+```
 
 
 ## See also
