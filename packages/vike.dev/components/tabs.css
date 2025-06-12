@@ -16,7 +16,7 @@
   padding: 6px 12px;
   cursor: pointer;
   font-weight: 500;
-  /* ligthen --color-text by 20% */
+  /* lighten --color-text by 20% */
   color: color-mix(in srgb, var(--color-text) 80%, white 20%);
 }
 

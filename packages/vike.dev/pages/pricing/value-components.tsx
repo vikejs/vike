@@ -1,4 +1,4 @@
-export { Seperator }
+export { Separator }
 export { TableRef }
 export { ValueTable }
 
@@ -9,7 +9,7 @@ const COLOR_RED = '#a00'
 const COLOR_GREEN = '#0a0'
 const COLOR_ORANGE = '#e90'
 
-function Seperator() {
+function Separator() {
   return <>&nbsp;&#124;</>
 }
 

@@ -1,7 +1,7 @@
 import { Link } from '@brillout/docpress'
 import { PropGlobalContext as Prop } from '../../components'
 
-The `globalContext` object is used for storing global information (i.e. information shared by mutliple pages).
+The `globalContext` object is used for storing global information (i.e. information shared by multiple pages).
 
 It has <Link href="#built-in">built-in properties</Link> set by Vike, and you can define <Link href="#custom">custom properties</Link>.
 
@@ -9,7 +9,7 @@ For example, you can use `globalContext` to save the list of URLs for a navigati
 
 Each environment has a single, unique `globalContext` object created when it starts — see <Link href="#lifecycle" />. An environment can be either a server-side process (Node.js, Bun, Deno, or a worker) or a browser session.
 
-If you store information (e.g. `globalContext.someData = 42`) then it's available anywhere in your app until the process is terminated. You can acess `globalContext` anywhere by using <Link href="/getGlobalContext" noBreadcrumb /> and <Link href="/pageContext#globalContext">`pageContext.globalContext`</Link>. You can define `globalContext` properties on the server-side while using <Link href="/passToClient">`+passToClient`</Link> for accessing them on the client-side.
+If you store information (e.g. `globalContext.someData = 42`) then it's available anywhere in your app until the process is terminated. You can access `globalContext` anywhere by using <Link href="/getGlobalContext" noBreadcrumb /> and <Link href="/pageContext#globalContext">`pageContext.globalContext`</Link>. You can define `globalContext` properties on the server-side while using <Link href="/passToClient">`+passToClient`</Link> for accessing them on the client-side.
 
 See also: <Link href="/pageContext" />.
 
