@@ -11,8 +11,8 @@ To implement active links:
  - `<Link>` checks whether `const isActive = href === pageContext.urlPathname` and sets a CSS class accordingly `<a class="is-active">`.
 
 Examples:
- - React: <RepoLink path='/boilerplates/boilerplate-react/renderer/Link.jsx' />
- - Vue: <RepoLink path='/boilerplates/boilerplate-vue/renderer/Link.vue' />
+ - React: <RepoLink path='/packages/create-vike-core/boilerplate-react/renderer/Link.jsx' />
+ - Vue: <RepoLink path='/packages/create-vike-core/boilerplate-vue/renderer/Link.vue' />
 
 > You cannot use `window.location.pathname` if you use SSR, because it isn't available when the page is rendered on the server-side.
 > If you have set <Link href="/ssr">`ssr: false`</Link>, then you can use `window.location.pathname` instead of `pageContext.urlPathname`.
