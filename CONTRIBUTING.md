@@ -1,3 +1,5 @@
+# Contributing
+
 To develop Vike's documentation (`https://vike.dev`):
 
 - [Docs](#docs)
