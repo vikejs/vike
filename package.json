@@ -45,7 +45,8 @@
   },
   "pnpm": {
     "overrides": {
-      "vike": "link:./packages/vike/"
+      "vike": "link:./packages/vike/",
+      "vite": "npm:rolldown-vite@6.3.19"
     }
   },
   "packageManager": "pnpm@9.15.9"
