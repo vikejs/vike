@@ -1,8 +1,5 @@
 packages:
-  - 'vike/'
-  - 'docs/'
-  - 'boilerplates/'
-  - 'boilerplates/*'
+  - 'packages/*'
   - 'examples/*'
   - 'test/*'
   - 'test-deprecated-design/*'
