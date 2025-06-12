@@ -1,1 +1,5 @@
-:green_heart: Contribute: [CONTRIBUTING.md > docs](/CONTRIBUTING.md#docs).
+# `vike.dev`
+
+Source code of [vike.dev](https://vike.dev)
+
+Contribute Welcome: [CONTRIBUTING.md > docs](/CONTRIBUTING.md#docs)
