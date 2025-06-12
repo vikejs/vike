@@ -1,4 +1,4 @@
-Source code of [`create-vike-core`](https://npmjs.com/package/create-vike-core) which powers:
+This package implements:
 
 ```shell
 npm create vike-core@latest
@@ -12,3 +12,5 @@ bun create vike-core
 ```shell
 yarn create vike-core
 ```
+
+See [vike.dev > Scaffold new Vike app without Vike extension](https://vike.dev/new/core).
