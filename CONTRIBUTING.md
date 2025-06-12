@@ -39,11 +39,12 @@ Or, if you want to watch & re-build upon modifications:
 pnpm run dev # At the monorepo root
 ```
 
-**3. Test**
+> [!NOTE]
+> When switching Git branches, you may need to run `$ pnpm reset` (at the monorepo root): it will re-install and re-build everything. It's required when switching to a branch that, for example, changes the `dependencies` list of `package.json`.
 
-You can now test your modifications.
+**3. Try**
 
-In a second shell:
+To try your modifications, open a second shell and run:
 
 ```shell
 cd examples/react-full/ # or another example
@@ -52,9 +53,6 @@ pnpm run dev
 
 > [!WARNING]
 > After changing the source code of Vike, make sure to **always clear Vite's client cache** with `$ rm -rf examples/some-example/node_modules/.vite/`. Otherwise you'll get a version mismatch between the server (using the latest build) and the client (using the previous cached build).
-
-> [!NOTE]
-> When switching Git branches, you may need to run `$ pnpm reset` (at the monorepo root): it will re-install and re-build everything. It's required when switching to a branch that, for example, changes the `dependencies` list of `package.json`.
 
 <br/>
 
