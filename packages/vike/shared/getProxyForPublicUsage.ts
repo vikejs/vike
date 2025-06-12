@@ -5,7 +5,7 @@ export { getProxyForPublicUsage }
 //   ```console
 //   TypeError: Invalid property descriptor. Cannot both specify accessors and a value or writable attribute, #<Object>
 //   ```
-// - Previous implementation using property getters: https://github.com/vikejs/vike/blob/main/vike/utils/makePublicCopy.ts
+// - Previous implementation using property getters: https://github.com/vikejs/vike/blob/4dbb354b0bcec04e862041fc9183fc4691bb8711/vike/utils/makePublicCopy.ts
 
 // Show warning when user is accessing internal `_` properties.
 
