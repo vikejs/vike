@@ -18,6 +18,8 @@ jobs:
       - run: pnpm run build
       - run: pnpm run docs:build
 
+      - run: pnpm run docs:test
+
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:

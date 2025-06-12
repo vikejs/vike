@@ -20,6 +20,8 @@
     "docs:build": "cd packages/vike.dev/ && pnpm run build",
     "// Try production build": "",
     "docs:preview": "cd packages/vike.dev/ && pnpm run preview",
+    "// Test": "",
+    "docs:test": "cd packages/vike.dev/ && test-e2e",
     "========= Release": "",
     "release": "cd ./packages/vike/ && pnpm run release",
     "release:minor": "cd ./packages/vike/ && pnpm run release:minor",
