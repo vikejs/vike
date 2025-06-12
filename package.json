@@ -25,7 +25,7 @@
     "// Spellchecking": "",
     "docs:spellcheck": " cd ./packages/vike.dev/ && pnpm dlx github:dalisoft/typos-rs-npm --write-changes",
     "docs:spellcheck:test": "cd ./packages/vike.dev/ && output=$(pnpm dlx github:dalisoft/typos-rs-npm --diff --color always 2>&1) ; echo \"$output\" && echo \"$output\" | grep -q . && (echo '\\033[1;34mFix typos by running `$ pnpm run docs:spellcheck`.\\033[0m' && exit 1)",
-    "t": "echo 'a' | grep -q . && echo 1 || echo 2",
+    "t": "echo 'a' | grep -q . && echo BLA && exit 1 || exit 0",
     "========= Release": "",
     "release": "cd ./packages/vike/ && pnpm run release",
     "release:minor": "cd ./packages/vike/ && pnpm run release:minor",
