@@ -7,6 +7,7 @@ import faviconUrl from './assets/logo/vike-favicon.svg'
 
 export default {
   projectInfo,
+  docsDir: 'packages/vike.dev',
   logoUrl,
   faviconUrl,
   headings,
