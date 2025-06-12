@@ -606,6 +606,186 @@ importers:
         specifier: ^1.0.0
         version: 1.1.1
 
+  packages/create-vike-core/boilerplate-react:
+    dependencies:
+      '@vitejs/plugin-react':
+        specifier: ^4.5.1
+        version: 4.5.1(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
+      compression:
+        specifier: ^1.7.5
+        version: 1.8.0
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      express:
+        specifier: ^5.1.0
+        version: 5.1.0
+      node-fetch:
+        specifier: ^3.3.2
+        version: 3.3.2
+      prop-types:
+        specifier: 15.8.1
+        version: 15.8.1
+      react:
+        specifier: ^19.1.0
+        version: 19.1.0
+      react-dom:
+        specifier: ^19.1.0
+        version: 19.1.0(react@19.1.0)
+      sirv:
+        specifier: ^3.0.0
+        version: 3.0.1
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
+      vite:
+        specifier: ^6.3.2
+        version: 6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
+
+  packages/create-vike-core/boilerplate-react-ts:
+    dependencies:
+      '@types/compression':
+        specifier: ^1.7.5
+        version: 1.8.1
+      '@types/express':
+        specifier: ^5.0.1
+        version: 5.0.1
+      '@types/node':
+        specifier: ^22.10.2
+        version: 22.15.30
+      '@types/react':
+        specifier: ^19.0.1
+        version: 19.1.6
+      '@types/react-dom':
+        specifier: ^19.0.2
+        version: 19.1.6(@types/react@19.1.6)
+      '@vitejs/plugin-react':
+        specifier: ^4.5.1
+        version: 4.5.1(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
+      compression:
+        specifier: ^1.7.5
+        version: 1.8.0
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      express:
+        specifier: ^5.1.0
+        version: 5.1.0
+      node-fetch:
+        specifier: ^3.3.2
+        version: 3.3.2
+      react:
+        specifier: ^19.1.0
+        version: 19.1.0
+      react-dom:
+        specifier: ^19.1.0
+        version: 19.1.0(react@19.1.0)
+      sirv:
+        specifier: ^3.0.0
+        version: 3.0.1
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@swc/core@1.11.24)(@types/node@22.15.30)(typescript@5.8.3)
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
+      vite:
+        specifier: ^6.3.2
+        version: 6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
+
+  packages/create-vike-core/boilerplate-vue:
+    dependencies:
+      '@vitejs/plugin-vue':
+        specifier: ^5.2.1
+        version: 5.2.4(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))(vue@3.5.13(typescript@5.8.3))
+      '@vue/compiler-sfc':
+        specifier: ^3.5.13
+        version: 3.5.13
+      '@vue/server-renderer':
+        specifier: ^3.5.13
+        version: 3.5.13(vue@3.5.13(typescript@5.8.3))
+      compression:
+        specifier: ^1.7.5
+        version: 1.8.0
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      express:
+        specifier: ^5.1.0
+        version: 5.1.0
+      node-fetch:
+        specifier: ^3.3.2
+        version: 3.3.2
+      sirv:
+        specifier: ^3.0.0
+        version: 3.0.1
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
+      vite:
+        specifier: ^6.3.2
+        version: 6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
+      vue:
+        specifier: ^3.5.13
+        version: 3.5.13(typescript@5.8.3)
+
+  packages/create-vike-core/boilerplate-vue-ts:
+    dependencies:
+      '@types/compression':
+        specifier: ^1.7.5
+        version: 1.8.1
+      '@types/express':
+        specifier: ^5.0.1
+        version: 5.0.1
+      '@types/node':
+        specifier: ^22.10.2
+        version: 22.15.30
+      '@vitejs/plugin-vue':
+        specifier: ^5.2.1
+        version: 5.2.4(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))(vue@3.5.13(typescript@5.8.3))
+      '@vue/compiler-sfc':
+        specifier: ^3.5.13
+        version: 3.5.13
+      '@vue/server-renderer':
+        specifier: ^3.5.13
+        version: 3.5.13(vue@3.5.13(typescript@5.8.3))
+      compression:
+        specifier: ^1.7.5
+        version: 1.8.0
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      express:
+        specifier: ^5.1.0
+        version: 5.1.0
+      node-fetch:
+        specifier: ^3.3.2
+        version: 3.3.2
+      sirv:
+        specifier: ^3.0.0
+        version: 3.0.1
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@swc/core@1.11.24)(@types/node@22.15.30)(typescript@5.8.3)
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
+      vite:
+        specifier: ^6.3.2
+        version: 6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
+      vue:
+        specifier: ^3.5.13
+        version: 3.5.13(typescript@5.8.3)
+      vue-tsc:
+        specifier: ^2.1.10
+        version: 2.2.10(typescript@5.8.3)
+
   packages/vike:
     dependencies:
       '@brillout/import':
@@ -3901,6 +4081,9 @@ packages:
 
   '@types/body-parser@1.19.5':
     resolution: {integrity: sha512-fB3Zu92ucau0iQ0JMCFQE7b/dv8Ot07NI3KaZIkIUNXq82k4eBAqUaneXfleGY9JWskeS9y+u0nXMyspcuQrCg==}
+
+  '@types/compression@1.8.1':
+    resolution: {integrity: sha512-kCFuWS0ebDbmxs0AXYn6e2r2nrGAb5KwQhknjSPSPgJcGd8+HVSILlUyFhGqML2gk39HcG7D1ydW9/qpYkN00Q==}
 
   '@types/connect@3.4.38':
     resolution: {integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==}
@@ -9731,6 +9914,11 @@ snapshots:
       '@types/connect': 3.4.38
       '@types/node': 22.15.30
 
+  '@types/compression@1.8.1':
+    dependencies:
+      '@types/express': 5.0.1
+      '@types/node': 22.15.30
+
   '@types/connect@3.4.38':
     dependencies:
       '@types/node': 22.15.30
@@ -14022,6 +14210,26 @@ snapshots:
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.4
       '@types/node': 17.0.45
+      acorn: 8.14.0
+      acorn-walk: 8.3.4
+      arg: 4.1.3
+      create-require: 1.1.1
+      diff: 4.0.2
+      make-error: 1.3.6
+      typescript: 5.8.3
+      v8-compile-cache-lib: 3.0.1
+      yn: 3.1.1
+    optionalDependencies:
+      '@swc/core': 1.11.24
+
+  ts-node@10.9.2(@swc/core@1.11.24)(@types/node@22.15.30)(typescript@5.8.3):
+    dependencies:
+      '@cspotcode/source-map-support': 0.8.1
+      '@tsconfig/node10': 1.0.11
+      '@tsconfig/node12': 1.0.11
+      '@tsconfig/node14': 1.0.3
+      '@tsconfig/node16': 1.0.4
+      '@types/node': 22.15.30
       acorn: 8.14.0
       acorn-walk: 8.3.4
       arg: 4.1.3
