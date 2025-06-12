@@ -119,7 +119,7 @@ export const Flexible = () => {
                     icon={benefit.icon}
                     title={benefit.title}
                     description={benefit.description}
-                    buttonLable="Learn More"
+                    buttonLabel="Learn More"
                   />
                 </TextBox>
               </a>
