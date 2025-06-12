@@ -1,5 +1,7 @@
 # 🔨 Vike
 
+*The Modular Framework — Next.js & Nuxt alternative for unprecedented flexibility and stability*
+
 ## Monorepo
 
 [packages/vike](packages/vike/) - source code of package [`vike`](https://npmjs.com/package/vike)  
