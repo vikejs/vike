@@ -5,7 +5,7 @@ export const CodeVariantsJsxOrVue = createCodeVariants('jsx-or-vue', ['JSX', 'Vu
 
 function createCodeVariants(
   storageKey: string, // for localStorage
-  choices: string[] // validation
+  choices: string[], // validation
 ) {
   return function CodeVariants({ children, filePath }: { children: React.ReactNode; filePath: string }) {
     const [selectedChoice, setSelectedChoice] = useState(choices[0])
@@ -35,7 +35,7 @@ function createCodeVariants(
         const selected = selectedChoice === child.props.framework
         const props = {
           _id: `${child.props.framework.toLocaleLowerCase()}-code`,
-          _selected: selected
+          _selected: selected,
         }
         return React.cloneElement(child, props)
       }
