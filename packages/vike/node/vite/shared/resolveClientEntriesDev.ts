@@ -24,8 +24,8 @@ function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteDevServ
   //   - Not transpiled: `/pages/markdown.page.mdx`
   //   - Transpiled: `/pages/markdown.page.mdx?import`
   // But `?import` doesn't work with `/@fs/`:
-  //   - Not transpiled: /@fs/home/runner/work/vike/vike/examples/react-full/pages/markdown.page.mdx
-  //   - Not transpiled: /@fs/home/runner/work/vike/vike/examples/react-full/pages/markdown.page.mdx?import
+  //   - Not transpiled: /@fs/home/runner/work/vike/packages/vike/examples/react-full/pages/markdown.page.mdx
+  //   - Not transpiled: /@fs/home/runner/work/vike/packages/vike/examples/react-full/pages/markdown.page.mdx?import
   if (clientEntry.endsWith('?import')) {
     assert(clientEntry.startsWith('/'))
     return clientEntry

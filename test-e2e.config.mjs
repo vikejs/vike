@@ -75,7 +75,7 @@ function tolerateError({ logSource, logText, testInfo }) {
       // Error: [DocPress][Warning] prop `text` is deprecated
       'prop `text` is deprecated',
 
-      // [11:00:51.986][/test/cjs/test-dev.test.ts][npm run dev][stderr] (node:3061) ExperimentalWarning: CommonJS module /home/runner/work/vike/vike/vike/dist/cjs/node/plugin/index.js is loading ES Module /home/runner/work/vike/vike/node_modules/.pnpm/vite@6.0.5_@types+node@20.13.0_terser@5.31.0_tsx@4.19.2/node_modules/vite/dist/node/index.js using require().
+      // [11:00:51.986][/test/cjs/test-dev.test.ts][npm run dev][stderr] (node:3061) ExperimentalWarning: CommonJS module /home/runner/work/vike/packages/vike/vike/dist/cjs/node/plugin/index.js is loading ES Module /home/runner/work/vike/packages/vike/node_modules/.pnpm/vite@6.0.5_@types+node@20.13.0_terser@5.31.0_tsx@4.19.2/node_modules/vite/dist/node/index.js using require().
       // Support for loading ES Module in require() is an experimental feature and might change at any time
       'loading ES Module in require() is an experimental feature',
 
@@ -141,7 +141,7 @@ function tolerateError({ logSource, logText, testInfo }) {
   // ```
   // [16:41:56.607][\examples\preact-server-routing][npm run preview][stderr] 4:41:56 PM [vite] Internal server error: The service was stopped
   //   Plugin: vite:esbuild
-  //   File: D:/a/vike/vike/examples/preact-server-routing/renderer/_error.page.jsx
+  //   File: D:/a/vike/packages/vike/examples/preact-server-routing/renderer/_error.page.jsx
   //       at D:\a\vike\vike\node_modules\.pnpm\esbuild@0.14.47\node_modules\esbuild\lib\main.js:1381:29
   // ```
   // [16:10:29.456][\examples\preact-client-routing][npm run preview][stderr] 4:10:29 PM [vite] Internal server error: The service is no longer running
@@ -168,7 +168,7 @@ function tolerateError({ logSource, logText, testInfo }) {
     )
   }
 
-  // /assets/Inter-Var-IOAEQULN.ttf referenced in /home/runner/work/vike/vike/node_modules/.pnpm/@brillout+docpress@0.1.12_6bdbsu2yzpeczxw5qylih75b3i/node_modules/@brillout/docpress/dist/renderer/_default.page.client.css?used didn't resolve at build time, it will remain unchanged to be resolved at runtime
+  // /assets/Inter-Var-IOAEQULN.ttf referenced in /home/runner/work/vike/packages/vike/node_modules/.pnpm/@brillout+docpress@0.1.12_6bdbsu2yzpeczxw5qylih75b3i/node_modules/@brillout/docpress/dist/renderer/_default.page.client.css?used didn't resolve at build time, it will remain unchanged to be resolved at runtime
   function isDocpressAssetWarning() {
     return (
       logSource === 'stderr' &&

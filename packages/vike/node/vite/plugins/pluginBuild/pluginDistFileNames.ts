@@ -32,7 +32,7 @@ function pluginDistFileNames(): Plugin {
           rollupOutput.assetFileNames = (chunkInfo) => getAssetFileName(chunkInfo, config)
 
           // This Vite plugin is sometimes applied twice => avoid assertUsage() error below
-          // - I don't know why this plugin can be applied twice for the same config. It happened when there was multipe Vike instances installed with one instance being a link to ~/code/vike/vike/
+          // - I don't know why this plugin can be applied twice for the same config. It happened when there was multipe Vike instances installed with one instance being a link to ~/code/vike/packages/vike/
           ;(rollupOutput.assetFileNames as any).isTheOneSetByVike = true
           assert((rollupOutput.assetFileNames as any).isTheOneSetByVike)
         } else {

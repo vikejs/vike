@@ -379,15 +379,15 @@ function cannot_read_property_of_undefined() {
           stack: `
 TypeError: Cannot read properties of undefined (reading 'foo')
     at onRenderHtml (file:///home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/onRenderHtml.js:21:49)
-    at file:///home/romu/code/vike/vike/dist/esm/node/runtime/renderPage/executeOnRenderHtmlHook.js:15:53
-    at file:///home/romu/code/vike/vike/dist/esm/shared/hooks/execHook.js:46:31
-    at execHook (file:///home/romu/code/vike/vike/dist/esm/shared/hooks/execHook.js:55:7)
-    at executeOnRenderHtmlHook (file:///home/romu/code/vike/vike/dist/esm/node/runtime/renderPage/executeOnRenderHtmlHook.js:15:35)
-    at renderPageAlreadyRouted (file:///home/romu/code/vike/vike/dist/esm/node/runtime/renderPage/renderPageAlreadyRouted.js:57:36)
-    at renderPageNominal (file:///home/romu/code/vike/vike/dist/esm/node/runtime/renderPage.js:266:36)
-    at renderPageAlreadyPrepared (file:///home/romu/code/vike/vike/dist/esm/node/runtime/renderPage.js:121:45)
-    at renderPageAndPrepare (file:///home/romu/code/vike/vike/dist/esm/node/runtime/renderPage.js:101:12)
-    at file:///home/romu/code/vike/vike/dist/esm/node/plugin/shared/getHttpRequestAsyncStore.js:68:35
+    at file:///home/romu/code/vike/packages/vike/dist/esm/node/runtime/renderPage/executeOnRenderHtmlHook.js:15:53
+    at file:///home/romu/code/vike/packages/vike/dist/esm/shared/hooks/execHook.js:46:31
+    at execHook (file:///home/romu/code/vike/packages/vike/dist/esm/shared/hooks/execHook.js:55:7)
+    at executeOnRenderHtmlHook (file:///home/romu/code/vike/packages/vike/dist/esm/node/runtime/renderPage/executeOnRenderHtmlHook.js:15:35)
+    at renderPageAlreadyRouted (file:///home/romu/code/vike/packages/vike/dist/esm/node/runtime/renderPage/renderPageAlreadyRouted.js:57:36)
+    at renderPageNominal (file:///home/romu/code/vike/packages/vike/dist/esm/node/runtime/renderPage.js:266:36)
+    at renderPageAlreadyPrepared (file:///home/romu/code/vike/packages/vike/dist/esm/node/runtime/renderPage.js:121:45)
+    at renderPageAndPrepare (file:///home/romu/code/vike/packages/vike/dist/esm/node/runtime/renderPage.js:101:12)
+    at file:///home/romu/code/vike/packages/vike/dist/esm/node/plugin/shared/getHttpRequestAsyncStore.js:68:35
 `,
         },
       ),
