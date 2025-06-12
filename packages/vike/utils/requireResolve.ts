@@ -56,7 +56,7 @@ function requireResolve_(
 
     if (!doNotHandleFileExtension) {
       addFileExtensionsToRequireResolve(require_)
-      importPathNode = removeFileExtention(importPathNode)
+      importPathNode = removeFileExtension(importPathNode)
     }
 
     try {
@@ -167,7 +167,7 @@ function addExtraContextForNpmPackageImport(contexts: string[], importPath: stri
     })
 }
 
-function removeFileExtention(importPath: string) {
+function removeFileExtension(importPath: string) {
   // Skip for Bun: https://github.com/vikejs/vike/issues/2204
   //@ts-ignore
   if (typeof Bun !== 'undefined') {

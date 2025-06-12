@@ -6,6 +6,6 @@ import type { Config } from 'vike/types'
 const config = {
   extends: docpress,
   redirects: {
-    '/common-problems': '/common-issues'
-  }
+    '/common-problems': '/common-issues',
+  },
 } satisfies Config
