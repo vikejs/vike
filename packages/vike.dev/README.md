@@ -2,4 +2,4 @@
 
 Source code of [vike.dev](https://vike.dev).
 
-Contribute Welcome: [CONTRIBUTING.md > docs](/CONTRIBUTING.md#docs).
+Contribution Welcome: [CONTRIBUTING.md > docs](/CONTRIBUTING.md#docs).
