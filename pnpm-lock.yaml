@@ -883,8 +883,8 @@ importers:
         specifier: ^0.0.47
         version: 0.0.47
       '@brillout/docpress':
-        specifier: ^0.13.0
-        version: 0.13.0(@algolia/client-search@5.21.0)(@types/react@19.1.6)(@vitejs/plugin-react-swc@3.10.1(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.8.3)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
+        specifier: ^0.13.1
+        version: 0.13.1(@algolia/client-search@5.21.0)(@types/react@19.1.6)(@vitejs/plugin-react-swc@3.10.1(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)))(acorn@8.14.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.8.3)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
       '@types/react':
         specifier: ^19.0.2
         version: 19.1.6
@@ -2262,8 +2262,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@brillout/docpress@0.13.0':
-    resolution: {integrity: sha512-eUXh56AII/zNktCs0935SdC9Ax3UN3kYJlNsWyU3g/qb+XosUtiX4hqY2470rli0pglkiv5oIPp6lu/wF7ncKA==}
+  '@brillout/docpress@0.13.1':
+    resolution: {integrity: sha512-/senCnK38zz83aFC3lrXipFJTRWoKSfRmaf+nnEu80EcCtDpyLBrsZu5wdAop0aKWcvAy9p3+eQUp91BpYOjXg==}
     peerDependencies:
       '@vitejs/plugin-react-swc': '>=3.0.0'
       react: '>=18.0.0'
@@ -8438,14 +8438,14 @@ snapshots:
   '@biomejs/cli-win32-x64@1.9.4':
     optional: true
 
-  '@brillout/docpress@0.13.0(@algolia/client-search@5.21.0)(@types/react@19.1.6)(@vitejs/plugin-react-swc@3.10.1(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.8.3)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))':
+  '@brillout/docpress@0.13.1(@algolia/client-search@5.21.0)(@types/react@19.1.6)(@vitejs/plugin-react-swc@3.10.1(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)))(acorn@8.14.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.8.3)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))':
     dependencies:
-      '@brillout/picocolors': 1.0.26
+      '@brillout/picocolors': 1.0.28
       '@docsearch/css': 3.9.0
       '@docsearch/react': 3.9.0(@algolia/client-search@5.21.0)(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(search-insights@2.17.3)
       '@mdx-js/mdx': 3.0.1
       '@mdx-js/react': 3.0.1(@types/react@19.1.6)(react@19.1.0)
-      '@mdx-js/rollup': 3.0.1(rollup@4.43.0)
+      '@mdx-js/rollup': 3.0.1(acorn@8.14.1)(rollup@4.43.0)
       '@shikijs/transformers': 1.2.0
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
@@ -8479,8 +8479,7 @@ snapshots:
 
   '@brillout/picocolors@1.0.26': {}
 
-  '@brillout/picocolors@1.0.28':
-    optional: true
+  '@brillout/picocolors@1.0.28': {}
 
   '@brillout/release-me@0.4.3':
     dependencies:
@@ -9322,7 +9321,7 @@ snapshots:
       '@types/react': 19.1.6
       react: 19.1.0
 
-  '@mdx-js/rollup@3.0.1(rollup@4.43.0)':
+  '@mdx-js/rollup@3.0.1(acorn@8.14.1)(rollup@4.43.0)':
     dependencies:
       '@mdx-js/mdx': 3.1.0(acorn@8.14.1)
       '@rollup/pluginutils': 5.1.4(rollup@4.43.0)
