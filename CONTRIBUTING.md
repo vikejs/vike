@@ -42,7 +42,7 @@ pnpm dev # At the monorepo root
 In a second shell:
 
 ```shell
-cd examples/some-example/ # or any other examples/*
+cd examples/react-full/ # or another example
 pnpm dev
 ```
 
