@@ -918,10 +918,6 @@ function redirects(): HeadingDetachedDefinition[] {
       url: '/vue-router-and-react-router',
     },
     {
-      title: 'Common Problems',
-      url: '/common-problems',
-    },
-    {
       title: 'React Query',
       url: '/react-query',
     },
