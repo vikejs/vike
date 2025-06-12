@@ -42,11 +42,11 @@ The trick here is to directly modify the built code at `node_modules/`, while us
 > We recommend directly manipulating `node_modules/vike/dist/esm/**/*.js` because it's simpler and quicker than building Vike. That said, you can also build and then link Vike:
 > ```bash
 > $ git clone git@github.com:vikejs/vike
-> $ cd vike/vike/
+> $ cd vike/
 > $ pnpm install
 > $ pnpm run dev
-> $ cd ../../my-app/
-> $ pnpm link ../vike/vike/
+> $ cd ../my-app/
+> $ pnpm link ../vike/packages/vike/
 > ```
 
 > It may sound scary to dig into foreign source code, but it's sometimes quicker to find the root cause of your problem than treating Vike as a black box. Also:
