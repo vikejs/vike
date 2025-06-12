@@ -7,11 +7,11 @@ const ParagraphTextCollection = ({
   title,
   description,
   icon,
-  buttonLable,
+  buttonLabel,
 }: {
   title: string
   description: string | React.JSX.Element
-  buttonLable?: string
+  buttonLabel?: string
   icon: React.JSX.Element
 }) => {
   return (
@@ -51,7 +51,7 @@ const ParagraphTextCollection = ({
       >
         {description}
       </p>
-      {buttonLable && (
+      {buttonLabel && (
         <div
           style={{
             paddingTop: '18px',
