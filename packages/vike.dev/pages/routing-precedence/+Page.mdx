@@ -7,7 +7,7 @@ Upon Route String conflicts, Vike chooses the first route from most specific to 
 1. `/about/*` (less specific: it also matches `/about/some/nested/path`)
 1. `/*` (least specific: it matches all URLs)
 
-> You can find more examples at [`resolvePrecedence_route-strings.spec.ts`](https://github.com/vikejs/vike/blob/main/vike/shared/route/resolvePrecedence/resolvePrecedence_route-strings.spec.ts).
+> You can find more examples at [`resolvePrecedence_route-strings.spec.ts`](https://github.com/vikejs/vike/blob/main/packages/vike/shared/route/resolvePrecedence/resolvePrecedence_route-strings.spec.ts).
 
 Upon conflicts between Filesystem Routing, Route Strings and Route Functions, Vike chooses the first route in following order:
 
@@ -106,4 +106,4 @@ URL                   pageContext.user       MATCHES                   WINNER
 1: Route Function, returned high positive `precedence` number  
 4: Route String, static (without `@param` segment, e.g. `/about/company`)  
 
-> More examples at [`resolvePrecedence_overall.spec.ts`](https://github.com/vikejs/vike/blob/main/vike/shared/route/resolvePrecedence/resolvePrecedence_overall.spec.ts).
+> More examples at [`resolvePrecedence_overall.spec.ts`](https://github.com/vikejs/vike/blob/main/packages/vike/shared/route/resolvePrecedence/resolvePrecedence_overall.spec.ts).
