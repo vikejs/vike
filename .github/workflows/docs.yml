@@ -22,7 +22,7 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
           branch: gh-pages
-          folder: docs/dist/client
+          folder: packages/vike.dev/dist/client
           # Remove previous build files
           clean: true
           # Remove history — avoiding exploding Git repository size
