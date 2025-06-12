@@ -12,7 +12,6 @@ import { assertBuildInfo, type BuildInfo } from '../../../runtime/globalContext.
 import { getOutDirs } from '../../shared/getOutDirs.js'
 import { getViteConfigRuntime } from '../../shared/getViteConfigRuntime.js'
 type Bundle = Rollup.OutputBundle
-type Options = Rollup.NormalizedOutputOptions
 const ASSETS_MANIFEST = '__VITE_ASSETS_MANIFEST__'
 
 function pluginBuildEntry(): Plugin[] {
@@ -63,9 +62,8 @@ function getServerProductionEntryCode(config: ResolvedConfig): string {
   return importerCode
 }
 // Set the value of the ASSETS_MANIFEST constant inside dist/server/entry.js (or dist/server/index.js)
-async function set_macro_ASSETS_MANIFEST(options: Options, bundle: Bundle, assetsJsonFilePath: string | undefined) {
-  const { dir } = options
-  assert(dir)
+async function set_macro_ASSETS_MANIFEST(assetsJsonFilePath: string | undefined, bundle: Bundle, outDir: string) {
+  assert(outDir)
   const chunkPath = find_ASSETS_MANIFEST(bundle)
   // Some server builds don't contain __VITE_ASSETS_MANIFEST__ such as dist/rsc/ from vike-react-rsc
   if (!chunkPath) {
@@ -73,7 +71,7 @@ async function set_macro_ASSETS_MANIFEST(options: Options, bundle: Bundle, asset
     return noop
   }
   assert(assetsJsonFilePath)
-  const chunkFilePath = path.join(dir, chunkPath)
+  const chunkFilePath = path.join(outDir, chunkPath)
   const [assetsJsonString, chunkFileContent] = await Promise.all([
     await fs.readFile(assetsJsonFilePath, 'utf8'),
     await fs.readFile(chunkFilePath, 'utf8'),

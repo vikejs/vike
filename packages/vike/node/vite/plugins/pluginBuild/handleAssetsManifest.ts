@@ -28,7 +28,6 @@ import { getOutDirs, OutDirs } from '../../shared/getOutDirs.js'
 import { isViteServerBuild_onlySsrEnv, isViteServerBuild } from '../../shared/isViteServerBuild.js'
 import { set_macro_ASSETS_MANIFEST } from './pluginBuildEntry.js'
 type Bundle = Rollup.OutputBundle
-type Options = Rollup.NormalizedOutputOptions
 assertIsSingleModuleInstance('build/handleAssetsManifest.ts')
 let assetsJsonFilePath: string | undefined
 
@@ -365,7 +364,7 @@ async function handleAssetsManifest_getBuildConfig(config: UserConfig) {
 async function handleAssetsManifest(
   config: ResolvedConfig,
   viteEnv: Environment | undefined,
-  options: Options,
+  options: { dir: string | undefined },
   bundle: Bundle,
 ) {
   const isSsREnv = isViteServerBuild_onlySsrEnv(config, viteEnv)
@@ -376,11 +375,13 @@ async function handleAssetsManifest(
     await writeAssetsManifestFile(outDirs, assetsJsonFilePath, config)
   }
   if (isViteServerBuild(config, viteEnv)) {
+    const outDir = options.dir
+    assert(outDir)
     // Replace __VITE_ASSETS_MANIFEST__ in server builds
     // - Always replace it in dist/server/
     // - Also in some other server builds such as dist/vercel/ from vike-vercel
     // - Don't replace it in dist/rsc/ from vike-react-rsc since __VITE_ASSETS_MANIFEST__ doesn't exist there
-    const noop = await set_macro_ASSETS_MANIFEST(options, bundle, assetsJsonFilePath)
+    const noop = await set_macro_ASSETS_MANIFEST(assetsJsonFilePath, bundle, outDir)
     if (isSsREnv) assert(!noop) // dist/server should always contain __VITE_ASSETS_MANIFEST__
   }
 }
