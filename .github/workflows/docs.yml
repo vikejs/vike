@@ -4,9 +4,9 @@ on:
     # We only run this GitHub action upon new commits to `main`
     branches:
       - main
-    # We only run this GitHub action if there are changes in the `docs/` directory
+    # We only run this GitHub action if there are changes in the docs directory
     paths:
-      - docs/**
+      - packages/vike.dev/**
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
