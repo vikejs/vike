@@ -33,6 +33,7 @@
     "========= Spellchecking": "",
     "// See also https://github.com/vikejs/vike/pull/1994": "",
     "spellcheck": " cd ./packages/vike.dev/ && pnpm dlx github:dalisoft/typos-rs-npm --write-changes",
+    "spellcheck:check": " cd ./packages/vike/ && pnpm dlx github:dalisoft/typos-rs-npm --diff 2>&1 | grep -q . && (echo '\\033[1;34mFix typos by running `$ pnpm run spellcheck`.\\033[0m' && exit 1) || exit 0",
     "========= Reset": "",
     "reset": "git clean -Xdf && pnpm install && pnpm run build",
     "========= Only allow pnpm; forbid yarn & npm": "",
