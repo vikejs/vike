@@ -1,4 +1,4 @@
-import { resolvePrecendence } from '../resolvePrecedence.js'
+import { resolvePrecedence } from '../resolvePrecedence.js'
 import { expect, describe, it } from 'vitest'
 
 const routeFilesystemStatic = {
@@ -42,7 +42,7 @@ const routeStrings = [routeStringStatic, routeStringParam]
 const routeFunctionsLowerPrio = [routeFunction, routeFunctionLowestPrio, routeFunctionLowPrio]
 const routeFunctions = [...routeFunctionsLowerPrio, routeFunctionHighPrio, routeFunctionHighestPrio]
 
-describe('routing - resolvePrecendence', () => {
+describe('routing - resolvePrecedence', () => {
   it('basics', () => {
     expect(resolve([routeFilesystemStatic])).toBe(routeFilesystemStatic)
 
@@ -66,7 +66,7 @@ describe('routing - resolvePrecendence', () => {
   })
 })
 
-function resolve(routeMatches: Parameters<typeof resolvePrecendence>[0]) {
-  resolvePrecendence(routeMatches)
+function resolve(routeMatches: Parameters<typeof resolvePrecedence>[0]) {
+  resolvePrecedence(routeMatches)
   return routeMatches[0]
 }

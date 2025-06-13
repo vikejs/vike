@@ -33,7 +33,7 @@ async function getVirtualFilePageConfigLazy(id: string, isDev: boolean, config: 
   if (!isDev) {
     assert(pageConfig)
   } else {
-    /* This assertion sometimes fail. It happens very seldomly and I couldn't reproduce it (https://gist.github.com/brillout/9e212ce829f4d62a912ca163ffa8881a). I suspect some kind of HMR race condition.
+    /* This assertion sometimes fail. It happens very seldom and I couldn't reproduce it (https://gist.github.com/brillout/9e212ce829f4d62a912ca163ffa8881a). I suspect some kind of HMR race condition.
     assert(pageConfig, { id, pageId })
     /*/
     if (!pageConfig) throw getProjectError('Outdated request')

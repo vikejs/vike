@@ -13,7 +13,7 @@ export { getPrettyErrMessage }
 
 import pc from '@brillout/picocolors'
 import { assert, escapeRegex, isObject, removeEmptyLines, stripAnsi } from '../../utils.js'
-import { cleanFilePathUnkown, getFilePathToShowToUserFromUnkown } from '../getFilePath.js'
+import { cleanFilePathUnknown, getFilePathToShowToUserFromUnknown } from '../getFilePath.js'
 
 // Subset of RollupError
 type ErrorWithCodeSnippet = { id: string; frame?: string; message?: string; plugin?: string }
@@ -59,7 +59,7 @@ function getPrettyErrorWithCodeSnippet(err: ErrorWithCodeSnippet, userRootDir: s
 
   const msgFirstLine = [
     pc.red('Failed to transpile'),
-    pc.bold(pc.red(getFilePathToShowToUserFromUnkown(id, userRootDir))),
+    pc.bold(pc.red(getFilePathToShowToUserFromUnknown(id, userRootDir))),
     pc.red('because:'),
   ].join(' ')
 
@@ -104,7 +104,7 @@ function getPrettyErrMessage(err: ErrorWithCodeSnippet): string | null {
   // Remove "/home/rom/code/vike/examples/react-full/components/Counter.tsx:1:8:" (redundant since we already print the filename)
   const pos = /(?:\:\d+|)/
   errMsg = errMsg.split(reg([id, pos, pos, trail], 'gi')).join('')
-  errMsg = errMsg.split(reg([cleanFilePathUnkown(id), pos, pos, trail], 'gi')).join('')
+  errMsg = errMsg.split(reg([cleanFilePathUnknown(id), pos, pos, trail], 'gi')).join('')
   // Remove "ERROR:" (useless)
   errMsg = errMsg.split(reg(['ERROR:', trail])).join('')
   // Remove "Internal server error:" (useless)

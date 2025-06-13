@@ -1,4 +1,4 @@
-export { resolvePrecendence }
+export { resolvePrecedence }
 // export type { RouteMatch }
 
 import { analyzeRouteString } from './resolveRouteString.js'
@@ -14,7 +14,7 @@ type RouteMatch = {
 }
 
 // See https://vike.dev/route-function#precedence
-function resolvePrecendence<T extends RouteMatch>(routeMatches: T[]): void {
+function resolvePrecedence<T extends RouteMatch>(routeMatches: T[]): void {
   // prettier-ignore
   // biome-ignore format:
   routeMatches

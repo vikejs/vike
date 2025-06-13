@@ -93,7 +93,7 @@ async function triggerFullBuild(config: ResolvedConfig, viteEnv: Environment, bu
   if (!isBuilderApp) {
     await build(setSSR(configInline))
   } else {
-    // The server bulid is already called by builder.buildApp()
+    // The server build is already called by builder.buildApp()
   }
 
   if (isPrerenderAutoRunEnabled(vikeConfig)) {

@@ -109,7 +109,7 @@ Docs:
  - Improve /nextjs
  - Add /{react,vue,solid} links under "Overview"
    - Add "Server Actions" section to /react
-   - UPDATE: actually, it's maybe a bad idea because there won't be much content at /vue and /solid if we apply the change described in the next bullet piont
+   - UPDATE: actually, it's maybe a bad idea because there won't be much content at /vue and /solid if we apply the change described in the next bullet point
      - Maybe we can move sections like "Server Actions" to /nextjs instead?
    - What should happen to the "Integration > React,Vue,Solid" links? How about making them a different page? E.g. moving `## Without Vike extension` there (while using <UseUiFrameworkVikeExtensionHint uiFrameworkName="React" noQuote={true} />).
    - Improve /{react,vue,solid}
@@ -121,12 +121,12 @@ Docs:
 After V1 design release:
  - Replace in docs:
    ```diff
-   - Environement: browser
-   + Environement: client.
+   - Environment: browser
+   + Environment: client.
    ```
    ```diff
-   - Environement: Node.js
-   + Environement: server.
+   - Environment: Node.js
+   + Environment: server.
    ```
  - improve passToClient warning: https://github.com/vikejs/vike/tree/brillout/wip
  - Remove 0.4 design examples
@@ -167,7 +167,7 @@ After V1 design release:
           - Maybe: allow user to assign a "cluster name" with `config.clientRouting: string`. Is this needed?
  - Check why some deps aren't discovered by Vite's depOptimizer:
    - https://github.com/brillout/vike-react-query => why does Vite discover `part-regex` only later?
- - Check why dev startup is fairly slow, e.g. for /examples/react-full/ (I belive it used to be faster, is it related to Vite's initial dep crawling?)
+ - Check why dev startup is fairly slow, e.g. for /examples/react-full/ (I believe it used to be faster, is it related to Vite's initial dep crawling?)
  - Transpile & bunlded server for production: https://github.com/vikejs/vike/issues/1165
  - Replace boilerplates with Bati
  - Rewrite documentation to assume usage of `vike-{react,vue,solid}` (while preserving custom integration docs)
@@ -183,7 +183,7 @@ Features:
     - `showTimestamp: true`
   - Never clear screen (it's complex with little benefit)
     - Add shortcut to clear screen
-    - Maybe rotate colors upon no requests wihtin 30s?
+    - Maybe rotate colors upon no requests within 30s?
   - Only show a one-liner init log (instead of Vite's multi-line log)
 
 Sometime:

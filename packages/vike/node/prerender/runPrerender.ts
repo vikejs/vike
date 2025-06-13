@@ -621,7 +621,7 @@ function assertRouteMatch(
       )} that ${noRouteMatch}. Make sure that the URLs returned by ${hookName}() always match the route of a page.`,
     )
   } else {
-    // `prerenderHookFile` is `null` when the URL was deduced by the Filesytem Routing of `.page.js` files. The `onBeforeRoute()` can override Filesystem Routing; it is therefore expected that the deduced URL may not match any page.
+    // `prerenderHookFile` is `null` when the URL was deduced by the Filesystem Routing of `.page.js` files. The `onBeforeRoute()` can override Filesystem Routing; it is therefore expected that the deduced URL may not match any page.
     assert(pageContextFromRoute._routingProvidedByOnBeforeRouteHook)
     // Abort since the URL doesn't correspond to any page
     return
@@ -676,7 +676,7 @@ async function callOnPrerenderStartHook(
       )
       assertUsage(
         p.isDefaultPageFile,
-        `${p.filePath} has \`export { onBeforePrerender }\` but it is only allowed in \`_defaut.page.\` files`,
+        `${p.filePath} has \`export { onBeforePrerender }\` but it is only allowed in \`_default.page.\` files`,
       )
       return true
     })
