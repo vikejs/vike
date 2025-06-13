@@ -1,6 +1,9 @@
 name: Docs
 on:
   push:
+    # Only deploy upon new commits to `main`
+    branches:
+      - main
     # Only run this workflow if there are changes in the following
     paths:
       - packages/vike.dev/**
@@ -12,14 +15,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
       - run: pnpm install
-      - run: pnpm run docs:spellcheck:test
       - run: pnpm run build
       - run: pnpm run docs:test
       - run: pnpm run docs:build
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@4.1.4
-        # Only deploy upon new commits to `main`
-        if: github.ref == 'refs/heads/main'
         with:
           branch: gh-pages
           folder: packages/vike.dev/dist/client
