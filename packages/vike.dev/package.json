@@ -6,7 +6,7 @@
     "typecheck": "tsc --noEmit --watch",
     "========= Spellcheck": "",
     "spellcheck": "tsx ./spellcheck.ts fix",
-    "spellcheck:test": "tsx ./spellcheck.ts check"
+    "spellcheck:check": "tsx ./spellcheck.ts check"
   },
   "dependencies": {
     "@batijs/elements": "^0.0.47",

@@ -24,7 +24,7 @@
     "docs:test": "cd packages/vike.dev/ && test-e2e",
     "// Spellchecking": "",
     "docs:spellcheck": " cd ./packages/vike.dev/ && pnpm run spellcheck",
-    "docs:spellcheck:test": "cd ./packages/vike.dev/ && pnpm run spellcheck:test",
+    "docs:spellcheck:check": "cd ./packages/vike.dev/ && pnpm run spellcheck:check",
     "========= Release": "",
     "release": "cd ./packages/vike/ && pnpm run release",
     "release:minor": "cd ./packages/vike/ && pnpm run release:minor",
