@@ -329,7 +329,7 @@ function logHttpResponse(urlOriginalPretty: string, httpRequestId: number, pageC
       //   - Maybe we can/should make the error available at pageContext.errorWhileRendering
       assert(errorWhileRendering === null || errorWhileRendering === undefined)
       msg = `HTTP response ${prettyUrl(urlOriginalPretty)} ${pc.dim('null')}`
-      // Erroneous value (it should sometimes be `false`) but it's fine as it doesn't seem to have much of an impact.
+      // Erroneous value (it shoud sometimes be `false`) but it's fine as it doesn't seem to have much of an impact.
       isNominal = true
     } else {
       const isSuccess = statusCode !== null && statusCode >= 200 && statusCode <= 399
@@ -650,7 +650,7 @@ function getPageContextSkipRequest(pageContextInit: PageContextInit) {
   if (urlPathnameWithBase.endsWith('.well-known/appspecific/com.chrome.devtools.json')) {
     // https://chromium.googlesource.com/devtools/devtools-frontend/+/main/docs/ecosystem/automatic_workspace_folders.md
     // https://www.reddit.com/r/node/comments/1kcr0wh/odd_request_coming_into_my_localhost_server_from/
-    errMsg404 = 'Not supported'
+    errMsg404 = 'Not spported'
   }
   if (!errMsg404) return
   const pageContext = createPageContextServerSideWithoutGlobalContext(pageContextInit)

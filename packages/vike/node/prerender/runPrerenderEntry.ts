@@ -51,6 +51,6 @@ function runPrerender_forceExit() {
 
   /* I guess there is no need to tell the user about it? Let's see if a user complains.
    * I don't known whether there is a way to call process.exit(0) only if needed, thus I'm not sure if there is a way to conditionally show a assertInfo().
-  assertInfo(false, "Pre-rendering was forced exit. (Didn't gracefully exit because the event queue isn't empty. This is usually fine, see ...", { onlyOnce: false })
+  assertInfo(false, "Pre-rendering was forced exit. (Didn't gracefully exit because the event queue isn't empty. This is usally fine, see ...", { onlyOnce: false })
   */
 }

@@ -53,7 +53,7 @@ async function installHttpRequestAsyncStore(): Promise<void> {
         Array.from(loggedErrors).some((errAlreadyLogged) => isEquivalent(err, errAlreadyLogged))
       ) {
         // In principle, some random message can be shown between the non-swallowed error and this logErrorDebugNote() call.
-        // We take a leap of faith that it happens only seldom and that it's worth the risk.
+        // We take a leap of faith that it happens only seldomly and that it's worth the risk.
         logErrorDebugNote()
         return true
       } else {
@@ -100,7 +100,7 @@ function isEquivalent(err1: unknown, err2: unknown) {
       ...Object.keys(err1),
       ...Object.keys(err2),
     ]).every((k) => {
-      // isDeepStrictEqual() need to compare error.position which is an object.
+      // isDeepStrictEqual() need to compare error.position wich is an object.
       if (isDeepStrictEqual(err1[k], err2[k])) return true
       // console.log('diff', k)
       return false

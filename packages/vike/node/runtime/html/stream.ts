@@ -664,7 +664,7 @@ async function createStreamWrapper({
       async cancel(...args) {
         isCancel = true
         await readableOriginal.cancel(...args)
-        // If readableOriginal has implemented readableOriginal.cancel() then the onEnd() callback and therefore closeStream() may already have been called at this point
+        // If readableOriginal has implemented readableOriginal.cancel() then the onEnd() callback and therfore closeStream() may already have been called at this point
         await closeStream()
       },
     })

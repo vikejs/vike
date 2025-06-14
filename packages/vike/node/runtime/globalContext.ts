@@ -203,7 +203,7 @@ async function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
   setIsProduction(false)
   // We cannot cache globalObject.viteDevServer because it's fully replaced when the user modifies vite.config.js => Vite's dev server is fully reloaded and a new viteDevServer replaces the previous one.
   if (!globalObject.viteDevServer) {
-    assertIsNotInitializedYet()
+    assertIsNotInitilizedYet()
   }
   assert(globalObject.viteConfig)
   globalObject.viteDevServer = viteDevServer
@@ -215,11 +215,11 @@ async function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
 }
 function setGlobalContext_viteConfig(viteConfig: ResolvedConfig, viteConfigRuntime: ViteConfigRuntime): void {
   if (globalObject.viteConfig) return
-  assertIsNotInitializedYet()
+  assertIsNotInitilizedYet()
   globalObject.viteConfig = viteConfig
   globalObject.viteConfigRuntime = viteConfigRuntime
 }
-function assertIsNotInitializedYet() {
+function assertIsNotInitilizedYet() {
   // In development, globalObject.viteDevServer always needs to be awaited for before initializing globalObject.globalContext
   assert(!globalObject.globalContext)
 }
@@ -244,7 +244,7 @@ function getViteConfig(): ResolvedConfig | null {
 async function initGlobalContext_renderPage(): Promise<void> {
   debug('initGlobalContext_renderPage()')
 
-  // `globalObject.isProduction === undefined` when using production server without `vike-server`. (There isn't any reliable signal we can use to determine early whether the environment is production or development.)
+  // `globalObject.isProduction === undefined` when using production server without `vike-server`. (There isn't any reliable signal we can use to determine early whether the environement is production or development.)
   if (globalObject.isProduction === undefined) setIsProduction(true)
 
   await initGlobalContext()
@@ -263,7 +263,7 @@ async function initGlobalContext_runPrerender(): Promise<void> {
   // We assume initGlobalContext_runPrerender() to be called before:
   // - initGlobalContext_renderPage()
   // - initGlobalContext_getGlobalContextAsync()
-  assertIsNotInitializedYet()
+  assertIsNotInitilizedYet()
 
   await initGlobalContext()
 }

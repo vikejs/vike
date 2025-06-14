@@ -1,4 +1,4 @@
-import { resolvePrecedence } from '../resolvePrecedence.js'
+import { resolvePrecendence } from '../resolvePrecedence.js'
 import { resolveRouteString } from '../resolveRouteString.js'
 import { expect, describe, it } from 'vitest'
 
@@ -91,6 +91,6 @@ function findRoute(url: string, routes: string[]): string | null {
       return { ...result, routeString, routeType: 'STRING' as const }
     })
     .filter(<T>(match: T | null): match is T => match !== null)
-  resolvePrecedence(candidates)
+  resolvePrecendence(candidates)
   return candidates[0]?.routeString || null
 }

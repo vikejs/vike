@@ -22,7 +22,7 @@ function removeBuiltInOverrides(pageContext: Record<string, unknown> & { [key in
       } else {
         assertWarning(
           false,
-          `pageContext.${prop} is a built-in that cannot be overridden; adding '${prop}' to passToClient has no effect`,
+          `pageContext.${prop} is a built-in that cannot be overriden; adding '${prop}' to passToClient has no effect`,
           { onlyOnce: true },
         )
       }

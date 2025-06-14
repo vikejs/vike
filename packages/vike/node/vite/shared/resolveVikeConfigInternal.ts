@@ -8,7 +8,7 @@ export { isV1Design }
 export { getConfVal }
 export { getConfigDefinitionOptional }
 export { getVikeConfigFromCliOrEnv }
-export { isOverridden }
+export { isOverriden }
 export type { VikeConfigInternal }
 
 // Public usage
@@ -104,7 +104,7 @@ import { setVikeConfigError } from '../../shared/getVikeConfigError.js'
 assertIsNotProductionRuntime()
 
 // We can simply use global variables since Vike's config is:
-//  - global
+//  - gobal
 //  - independent of Vite (therefore we don't need to tie Vike's config with Vite's `config` object)
 assertIsSingleModuleInstance('v1-design/getVikeConfig.ts')
 let restartVite = false
@@ -522,7 +522,7 @@ function assertGlobalConfigLocation(
     assert(plusFile)
     const { filePathAbsoluteUserRootDir } = plusFile.filePath
 
-    // Allow local Vike extensions to set global configs (`filePathAbsoluteUserRootDir===null` for Vike extension)
+    // Allow local Vike extensions to set gloabl configs (`filePathAbsoluteUserRootDir===null` for Vike extension)
     if (!filePathAbsoluteUserRootDir) return
     assert(!plusFile.isExtensionConfig)
 
@@ -797,7 +797,7 @@ function sortPlusFilesSameLocationId(plusFile1: PlusFile, plusFile2: PlusFile, c
   }
 
   // Config set by +{configName}.js (highest precedence)
-  // No need to make it deterministic: the overall order is already deterministic, see sortMakeDeterministic() at getPlusFilesAll()
+  // No need to make it deterministic: the overall order is arleady deterministic, see sortMakeDeterministic() at getPlusFilesAll()
   return 0
 }
 
@@ -1214,11 +1214,11 @@ function applyEffectMetaEnv(
         assertUsage(keys.includes('env'), notSupported)
         assertUsage(keys.length === 1, notSupported)
       }
-      const envOverridden = configTargetDef.env
+      const envOverriden = configTargetDef.env
       const sources = configValueSources[configTargetName]
       sources?.forEach((configValueSource) => {
         // Apply effect
-        configValueSource.configEnv = envOverridden
+        configValueSource.configEnv = envOverriden
       })
     })
   })
@@ -1479,7 +1479,7 @@ function isGlobalLocation(locationId: LocationId, plusFilesAll: PlusFilesByLocat
   return locationIdsPage.every((locId) => isInherited(locationId, locId))
 }
 
-function isOverridden(
+function isOverriden(
   source: ConfigValueSource,
   configName: string,
   pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime,

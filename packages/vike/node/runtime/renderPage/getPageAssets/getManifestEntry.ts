@@ -33,7 +33,7 @@ function getManifestEntry(
     //       ../../virtual:vike:pageConfigLazy:client:/pages/index
     //    But it should be this instead:
     //      virtual:vike:pageConfigLazy:client:/pages/index
-    //  - This workaround was implemented to support Vitest running /tests/*
+    //  - This workaround was implemented to support Vitest runnung /tests/*
     //    - I don't know whether end users actually need this workaround? (I'm not sure what the bug actually is.)
     const manifestKeyEnd = id
     const { manifestKey, manifestEntry } = getEntryWithKeyEnd(manifestKeyEnd, assetsManifest, id)

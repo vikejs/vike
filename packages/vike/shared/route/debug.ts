@@ -3,7 +3,7 @@ export { setCreateDebugger }
 
 // Using createDebugger() for isomorphic code without bloating the client-side.
 // On the server-side, this is just a transparent proxy.
-// On the client-side, this is an empty shell.
+// On the client-side, this is an emtpy shell.
 
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import type { createDebugger, Debug } from '../../utils/debug.js'

@@ -28,7 +28,7 @@ const debug = createDebugger('vike:resolve')
 // - Passing context to createRequire(context) isn't equivalent to passing it to the `paths` argument of require.resolve()
 //   - https://github.com/brillout/require-test
 //   - In practice, I guess it doesn't make a difference? It just seems to be small Node.js weirdness.
-// - The argument createRequire(argument) seems to be overridden by the `paths` argument require.resolve()
+// - The argument createRequire(argument) seems to be overriden by the `paths` argument require.resolve()
 //   - For example, passing an empty array to `paths` kills the argument passed to `createRequire()`
 //   - Thus, when `paths` is defined, then the context needs to be passed to both createRequire() as well as the `paths` argument of require.resolve()
 
@@ -156,7 +156,7 @@ function addExtraContextForNpmPackageImport(contexts: string[], importPath: stri
   ;[
     // Workaround for monorepo resolve issue: https://github.com/vikejs/vike-react/pull/161/commits/dbaa6643e78015ac2797c237552800fef29b72a7
     userRootDirFakeFile,
-    // I can't think of a use case where this would be needed, but let's add one extra last chance to successfully resolve some complex monorepo setups
+    // I can't think of a use case where this would be needed, but let's add one extra last chance to sucessfully resolve some complex monorepo setups
     importMetaUrl,
   ]
     .filter(isNotNullish)

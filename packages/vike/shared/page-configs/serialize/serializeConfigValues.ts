@@ -27,7 +27,7 @@ import { parsePointerImportData } from '../../../node/vite/shared/resolveVikeCon
 import { getConfigValueFilePathToShowToUser } from '../helpers.js'
 import { stringify } from '@brillout/json-serializer/stringify'
 import pc from '@brillout/picocolors'
-import { isOverridden } from '../../../node/vite/shared/resolveVikeConfigInternal.js'
+import { isOverriden } from '../../../node/vite/shared/resolveVikeConfigInternal.js'
 const stringifyOptions = { forbidReactElements: true as const }
 const REPLACE_ME_BEFORE = '__VIKE__REPLACE_ME_BEFORE__'
 const REPLACE_ME_AFTER = '__VIKE__REPLACE_ME_AFTER__'
@@ -317,7 +317,7 @@ function getConfigValuesBase(
       return { configValueBase, sourceRelevant: source, configName }
     } else {
       const sourcesRelevant = sources
-        .filter((source) => !isOverridden(source, configName, pageConfig))
+        .filter((source) => !isOverriden(source, configName, pageConfig))
         .filter((source) => isEnvMatch(source.configEnv))
       if (sourcesRelevant.length === 0) return 'SKIP'
       const definedAtData: DefinedAt[] = []

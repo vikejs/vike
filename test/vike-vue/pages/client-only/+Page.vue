@@ -26,7 +26,7 @@
       <p :style="attrs.style">Slow loading toggler...Time until load: {{ timeLeft / 1000 }}s</p>
     </template>
 
-    <template #fallback>Button is in limbo</template>
+    <template #fallback>Buton is in limbo</template>
 
     <template #prefix>Button is </template>
 
@@ -49,7 +49,7 @@
   <FastClientOnlyToggler :status="null">
     <template #client-only-fallback></template>
 
-    <template #fallback>Button is in limbo</template>
+    <template #fallback>Buton is in limbo</template>
   </FastClientOnlyToggler>
 </template>
 

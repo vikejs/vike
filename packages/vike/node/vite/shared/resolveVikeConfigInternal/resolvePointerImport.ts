@@ -77,7 +77,7 @@ function resolvePointerImportData(
     // Forbid node_modules/ because it's brittle: if node_modules/ lives outside of userRootDir then it crashes.
     assertUsage(
       !filePathAbsoluteUserRootDir.includes('/node_modules/'),
-      `The import path ${importPath} defined by ${importerFilePath.filePathToShowToUser} resolves to ${filePathAbsoluteFilesystem} inside of node_modules/ which is forbidden: use an npm package import instead.`,
+      `The import path ${importPath} defined by ${importerFilePath.filePathToShowToUser} resolves to ${filePathAbsoluteFilesystem} inside of node_modules/ which is forbbiden: use an npm package import instead.`,
     )
 
     filePath = getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir })

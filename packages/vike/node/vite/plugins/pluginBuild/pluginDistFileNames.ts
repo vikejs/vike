@@ -20,7 +20,7 @@ function pluginDistFileNames(): Plugin {
     enforce: 'post',
     configResolved(config) {
       const rollupOutputs = getRollupOutputs(config)
-      // We need to support multiple outputs: @vite/plugin-legacy adds an output, see https://github.com/vikejs/vike/issues/477#issuecomment-1406434802
+      // We need to support multiple outputs: @vite/plugin-legacy adds an ouput, see https://github.com/vikejs/vike/issues/477#issuecomment-1406434802
       rollupOutputs.forEach((rollupOutput) => {
         if (!('entryFileNames' in rollupOutput)) {
           rollupOutput.entryFileNames = (chunkInfo) => getEntryFileName(chunkInfo, config, true)
@@ -32,7 +32,7 @@ function pluginDistFileNames(): Plugin {
           rollupOutput.assetFileNames = (chunkInfo) => getAssetFileName(chunkInfo, config)
 
           // This Vite plugin is sometimes applied twice => avoid assertUsage() error below
-          // - I don't know why this plugin can be applied twice for the same config. It happened when there was multiple Vike instances installed with one instance being a link to ~/code/vike/packages/vike/
+          // - I don't know why this plugin can be applied twice for the same config. It happened when there was multipe Vike instances installed with one instance being a link to ~/code/vike/packages/vike/
           ;(rollupOutput.assetFileNames as any).isTheOneSetByVike = true
           assert((rollupOutput.assetFileNames as any).isTheOneSetByVike)
         } else {
@@ -176,7 +176,7 @@ function getEntryFileName(chunkInfo: PreRenderedChunk, config: ResolvedConfig, i
   }
 }
 
-function removePathSeparators(name: string) {
+function removePathSeperators(name: string) {
   assertPosixPath(name)
   assert(!name.startsWith('/'))
   const entryDir = 'entries/'
@@ -197,9 +197,9 @@ function clean(name: string, removePathSep?: boolean, fixGlob?: boolean): string
   if (fixGlob) {
     name = workaroundGlob(name)
   }
-  name = replaceNonLatinCharacters(name)
+  name = replaceNonLatinCharaters(name)
   if (removePathSep) {
-    name = removePathSeparators(name)
+    name = removePathSeperators(name)
   }
   name = removeLeadingUnderscoreInFilename(name)
   name = removeUnderscoreDoublets(name)
@@ -221,7 +221,7 @@ function removeUnderscoreDoublets(name: string): string {
   name = name.split(/__+/).join('_')
   return name
 }
-function replaceNonLatinCharacters(name: string): string {
+function replaceNonLatinCharaters(name: string): string {
   name = name.split('+').join('')
   name = name.replace(/[^a-zA-Z0-9\/\._]/g, '-')
   return name

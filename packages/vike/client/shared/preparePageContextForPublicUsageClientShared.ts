@@ -42,7 +42,7 @@ function preparePageContextForPublicUsageClientMinimal<PageContext extends PageC
   return pageContextPublic
 }
 
-// With Vue + Client Routing, the `pageContext` is made reactive:
+// With Vue + Cient Routing, the `pageContext` is made reactive:
 // ```js
 // import { reactive } from 'vue'
 // // See /examples/vue-full/renderer/createVueApp.ts

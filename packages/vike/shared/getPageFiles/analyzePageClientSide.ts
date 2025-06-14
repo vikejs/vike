@@ -31,7 +31,7 @@ function analyzePageClientSide(pageFilesAll: PageFile[], pageId: string): Analys
     pageFilesClientSide = pageFilesClientSide.filter(
       (p) => p.isEnv('CLIENT_ONLY') && !getExportNames(p).includes('render'),
     )
-    pageFilesClientSide = removeOverriddenPageFiles(pageFilesClientSide)
+    pageFilesClientSide = removeOverridenPageFiles(pageFilesClientSide)
   }
 
   const { clientEntries, clientDependencies } = determineClientEntry({
@@ -72,7 +72,7 @@ async function analyzePageClientSideInit(
 
 // [WIP] Just an experiment needed by https://vike.dev/banner
 //  - Not sure I want to make something like a public API: the CSS of `_default.page.server.js` are still loaded -> weird DX.
-function removeOverriddenPageFiles(pageFilesClientSide: PageFile[]) {
+function removeOverridenPageFiles(pageFilesClientSide: PageFile[]) {
   const pageFilesClientSide_: PageFile[] = []
   for (const p of pageFilesClientSide) {
     pageFilesClientSide_.push(p)

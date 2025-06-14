@@ -12,7 +12,7 @@ export type { PointerImportData }
 //   - Acorn plugin: https://github.com/acornjs/acorn/issues/983
 //   - Isn't stage 4 yet: https://github.com/tc39/proposal-import-attributes
 // - Using a import path suffix such as `import { Layout } from './Layout?real` breaks TypeScript, and TypeScript isn't working on supporting query params: https://github.com/microsoft/TypeScript/issues/10988#issuecomment-867135453
-// - Node.js >=21 supports import attributes: https://nodejs.org/api/esm.html#import-attributes
+// - Node.js >=21 supports import attribtues: https://nodejs.org/api/esm.html#import-attributes
 // - Esbuid supports
 //   - Blocker: https://github.com/evanw/esbuild/issues/3646
 //     - Ugly hack to make it work: https://github.com/brillout/esbuild-playground/tree/experiment/import-attribute

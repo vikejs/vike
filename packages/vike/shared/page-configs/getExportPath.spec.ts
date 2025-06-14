@@ -12,7 +12,7 @@ describe('getExportPath()', () => {
       'export default { meta { onBeforeRenderIsomorph { effect } } }',
     )
   })
-  it('succinct', () => {
+  it('succint', () => {
     expect(t(['default'])).toBe(null)
     expect(t(['route'], 'route')).toBe(null)
     expect(t(['route'], 'route2')).toBe('export { route }')

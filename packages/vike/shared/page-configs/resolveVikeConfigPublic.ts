@@ -55,7 +55,7 @@ type ExportsAll = Record<
     _filePath: string | null
   }[]
 >
-/** All the config's values (including overridden ones) and where they come from.
+/** All the config's values (including overriden ones) and where they come from.
  *
  * https://vike.dev/pageContext
  */

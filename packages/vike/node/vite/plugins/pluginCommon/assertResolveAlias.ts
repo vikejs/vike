@@ -25,7 +25,7 @@ function assertResolveAlias(config: ResolvedConfig) {
   const errPrefix = config.configFile || 'Your Vite configuration'
   const errSuffix1 = 'see https://vike.dev/path-aliases#vite'
   const deprecation = 'which will be deprecated in the next major release'
-  const errSuffix2 = `${deprecation}, use a string instead and ${errSuffix1}` as const
+  const errSuffix2 = `${deprecation}, use a string insead and ${errSuffix1}` as const
   aliases.forEach((alias) => {
     const { customResolver, find } = alias
     {

@@ -1,3 +1,3 @@
 export default {
-  passToClient: ['apolloInitialState'],
+  passToClient: ['apolloIntialState'],
 }

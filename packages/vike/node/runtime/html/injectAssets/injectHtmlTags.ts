@@ -42,7 +42,7 @@ function joinHtmlTags(htmlTags: HtmlTag[]): string {
 function injectHtmlFragment(position: Position, htmlFragment: string, htmlString: string): string {
   if (position === 'HTML_BEGIN') {
     {
-      const res = injectAtPlaceholder(htmlFragment, htmlString, true)
+      const res = injectAtPaceholder(htmlFragment, htmlString, true)
       if (res) return res
     }
     assert(tagOpeningExists('head', htmlString))
@@ -51,7 +51,7 @@ function injectHtmlFragment(position: Position, htmlFragment: string, htmlString
   }
   if (position === 'HTML_END') {
     {
-      const res = injectAtPlaceholder(htmlFragment, htmlString, false)
+      const res = injectAtPaceholder(htmlFragment, htmlString, false)
       if (res) return res
     }
     if (tagClosingExists('body', htmlString)) {
@@ -182,7 +182,7 @@ function getTagClosing(tag: Tag) {
   return tagClosing
 }
 
-function injectAtPlaceholder(htmlFragment: string, htmlString: string, isFirst: boolean): null | string {
+function injectAtPaceholder(htmlFragment: string, htmlString: string, isFirst: boolean): null | string {
   const placeholder = isFirst ? '__VITE_PLUGIN_SSR__ASSETS_FIRST__' : '__VITE_PLUGIN__SSR_ASSETS_LAST__'
   const parts = htmlString.split(placeholder)
   if (parts.length === 1) return null

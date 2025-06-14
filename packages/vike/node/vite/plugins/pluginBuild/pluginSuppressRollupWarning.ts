@@ -34,7 +34,7 @@ function suppressUseClientDirective(warning: RollupLog) {
   return warning.code === 'MODULE_LEVEL_DIRECTIVE' && warning.message.includes('"use client"')
 }
 
-/** Suppress warning about generating empty chunks in dist/ */
+/** Suppress warning about generating emtpy chunks in dist/ */
 function suppressEmptyBundle(warning: RollupLog) {
   return warning.code === 'EMPTY_BUNDLE'
 }
@@ -43,7 +43,7 @@ function suppressEmptyBundle(warning: RollupLog) {
 function suppressUnusedImport(warning: RollupLog & { ids?: string[] }): boolean {
   if (warning.code !== 'UNUSED_EXTERNAL_IMPORT') return false
 
-  // I guess it's expected that JSX contains unused `import React from 'react'`
+  // I guess it's expected that JSX contains unsused `import React from 'react'`
   if (warning.exporter === 'react' && warning.names?.includes('default')) {
     warning.names = warning.names.filter((n) => n !== 'default')
     if (warning.names.length === 0) return true

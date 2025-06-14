@@ -1,6 +1,6 @@
 import { getErrorHint } from '../logErrorHint'
 import { expect, describe, it } from 'vitest'
-import { error_cannot_use_import_outside_of_module } from './errors'
+import { errror_cannot_use_import_outside_of_module } from './errors'
 
 describe('getErrorHint()', () => {
   ERR_MODULE_NOT_FOUND()
@@ -674,7 +674,7 @@ function cannot_use_import_outside_of_module() {
   it('Cannot use import statement outside a module', () => {
     expect(
       getErrorHint(
-        // Same as error_cannot_use_import_outside_of_module but slimmed down
+        // Same as errror_cannot_use_import_outside_of_module but slimmed down
         // https://github.com/vikejs/vike/discussions/571#discussioncomment-6137618
         createErr(`
 import{useRunner as e}from"react-runner";export*from"react-runner";import t,{useState as r,useEffect as n,Fragment as a,useCallback as l,useRef as o,useMemo as c,createContext as s,useContext as i}from"react";import p from"react-simple-code-editor";
@@ -696,7 +696,7 @@ import{useRunner as e}from"react-runner";export*from"react-runner";import t,{use
     ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     // https://github.com/vikejs/vike/discussions/571#discussioncomment-6137618
-    expect(getErrorHint(createErr(error_cannot_use_import_outside_of_module))).toMatchInlineSnapshot(
+    expect(getErrorHint(createErr(errror_cannot_use_import_outside_of_module))).toMatchInlineSnapshot(
       `"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`,
     )
 
