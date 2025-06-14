@@ -4,10 +4,9 @@
     "build": "vike build",
     "preview": "vike build && vike preview",
     "typecheck": "tsc --noEmit --watch",
-    "========= Spellchecking": "",
-    "spellcheck": "pnpm run typos-rs-npm --write-changes",
-    "spellcheck:test": "output=$(pnpm run typos-rs-npm --diff --color always 2>&1) ; echo \"$output\" && echo \"$output\" | grep -q . && echo '\\033[1;34mFix typos by running `$ pnpm run docs:spellcheck`.\\033[0m' && exit 1 || echo '\\033[1;32mNo typos.\\033[0m' && exit 0",
-    "typos-rs-npm": "pnpm dlx github:dalisoft/typos-rs-npm#v1.33.1"
+    "========= Spellcheck": "",
+    "spellcheck": "tsx ./spellcheck.ts fix",
+    "spellcheck:test": "tsx ./spellcheck.ts check"
   },
   "dependencies": {
     "@batijs/elements": "^0.0.47",

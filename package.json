@@ -42,10 +42,13 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
+    "@brillout/picocolors": "^1.0.26",
+    "@brillout/shell": "^0.1.1",
     "@brillout/test-e2e": "^0.6.14",
     "@brillout/test-types": "^0.1.13",
     "playwright": "^1.50.1",
     "prettier": "^3.2.5",
+    "tsx": "^4.19.4",
     "vitest": "^3.1.3"
   },
   "pnpm": {
