@@ -8,5 +8,5 @@ jobs:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
       - run: pnpm install
-      - run: pnpm run format:test
+      - run: pnpm run format:check
 
