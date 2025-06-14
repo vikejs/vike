@@ -18,8 +18,8 @@ importers:
         specifier: ^1.0.26
         version: 1.0.28
       '@brillout/shell':
-        specifier: ^0.1.1
-        version: 0.1.1
+        specifier: ^0.2.0
+        version: 0.2.0
       '@brillout/test-e2e':
         specifier: ^0.6.14
         version: 0.6.14
@@ -2314,8 +2314,8 @@ packages:
   '@brillout/require-shim@0.1.2':
     resolution: {integrity: sha512-3I4LRHnVZXoSAsEoni5mosq9l6eiJED58d9V954W4CIZ88AUfYBanWGBGbJG3NztaRTpFHEA6wB3Hn93BmmJdg==}
 
-  '@brillout/shell@0.1.1':
-    resolution: {integrity: sha512-HfNfNNOwNCf9kJqwmu5nifZ6Zf5iS5Vqy0f5udLfFfLjNU1nRu+2lg4rsIQCv5DviNbryPokgVZWlctUTBrzgg==}
+  '@brillout/shell@0.2.0':
+    resolution: {integrity: sha512-PAUZOIePE9zdkYVUE1Ybpx5Q2ydNbTluTzQ4w5x4WuWMn+zQF3+DG4gRuQy76ZM1ScdiCK5gldgGJQrVx4w5lg==}
 
   '@brillout/test-e2e@0.6.14':
     resolution: {integrity: sha512-iOalgODAMl93f3v6MmQ25fNzhFp6UJtNRyl1OdREj/FMGNIi9tHl5hesmJXh24IME0NoJVeTJUFyxI49wgIHQA==}
@@ -8498,7 +8498,7 @@ snapshots:
 
   '@brillout/require-shim@0.1.2': {}
 
-  '@brillout/shell@0.1.1':
+  '@brillout/shell@0.2.0':
     dependencies:
       '@brillout/picocolors': 1.0.28
 
