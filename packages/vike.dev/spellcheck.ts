@@ -3,7 +3,7 @@
 // - Create temp config at /tmp/_typos.yml
 // - Show `stderr` of runTypos('--write-changes')
 
-import { run } from '@brillout/shell'
+import { shell } from '@brillout/shell'
 import pc from '@brillout/picocolors'
 import assert from 'node:assert'
 
@@ -26,8 +26,8 @@ async function fix() {
   await runTypos('--write-changes')
 
   if (await hasRepoChanges()) {
-    await run('git add -A')
-    await run("git commit -m 'fix typos'")
+    await shell('git add -A')
+    await shell("git commit -m 'fix typos'")
     console.log(pc.green(pc.bold('✅ Typos fixed.')))
   } else {
     console.log(pc.green(pc.bold('✅ No typos found.')))
@@ -49,7 +49,7 @@ async function check() {
 }
 
 async function hasRepoChanges() {
-  const res = await run('git status --porcelain')
+  const res = await shell('git status --porcelain')
   return res.stdout.trim().length > 0
 }
 
@@ -59,5 +59,5 @@ pnpm dlx github:dalisoft/typos-rs-npm#v1.33.1 --help
 ```
 */
 function runTypos(arg: '--diff' | '--write-changes') {
-  return run(`pnpm dlx github:dalisoft/typos-rs-npm#v1.33.1 --color always ${arg}`, { tolerateExitCode: true })
+  return shell(`pnpm dlx github:dalisoft/typos-rs-npm#v1.33.1 --color always ${arg}`, { tolerateExitCode: true })
 }
