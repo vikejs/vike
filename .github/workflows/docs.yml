@@ -1,23 +1,23 @@
 name: Docs
 on:
   push:
-    # We only run this GitHub action upon new commits to `main`
+    # Only deploy upon new commits to `main`
     branches:
       - main
-    # We only run this GitHub action if there are changes in the docs directory
+    # Only run this workflow if there are changes in the following
     paths:
       - packages/vike.dev/**
+      - .github/workflows/docs.yml
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
-
       - run: pnpm install
       - run: pnpm run build
+      - run: pnpm run docs:test
       - run: pnpm run docs:build
-
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
