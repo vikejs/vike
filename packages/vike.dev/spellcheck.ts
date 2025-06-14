@@ -40,7 +40,7 @@ async function check() {
   console.log(res.stdout)
   const noTypos = res.stdout.trim().length === 0
   if (noTypos) {
-    pc.green(pc.bold('✅ No typos found.'))
+    console.log(pc.green(pc.bold('✅ No typos found.')))
   } else {
     console.log(pc.red(pc.bold('❌ Typos found (see above)')))
     console.log(pc.blue(`➡️  Fix typos by running ${pc.bold('$ pnpm run docs:spellcheck')}`))
