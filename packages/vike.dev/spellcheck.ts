@@ -3,6 +3,8 @@
 // - Create temp config at /tmp/_typos.yml
 // - Show `stderr` of runTypos('--write-changes')
 
+// TO-DO/eventually: release as @brillout/spellcheck and also use for Telefunc
+
 import { shell } from '@brillout/shell'
 import pc from '@brillout/picocolors'
 import assert from 'node:assert'
