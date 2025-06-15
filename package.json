@@ -22,6 +22,9 @@
     "docs:preview": "cd packages/vike.dev/ && pnpm run preview",
     "// Test": "",
     "docs:test": "cd packages/vike.dev/ && test-e2e",
+    "// Spellchecking": "",
+    "docs:spellcheck": " cd ./packages/vike.dev/ && pnpm run spellcheck",
+    "docs:spellcheck:check": "cd ./packages/vike.dev/ && pnpm run spellcheck:check",
     "========= Release": "",
     "release": "cd ./packages/vike/ && pnpm run release",
     "release:minor": "cd ./packages/vike/ && pnpm run release:minor",
@@ -32,9 +35,6 @@
     "format:prettier": "git ls-files | egrep '\\.(json|js|jsx|css|ts|tsx|vue|mjs|cjs)$' | grep --invert-match package.json | xargs pnpm exec prettier --write",
     "format:biome": "biome check --write --unsafe",
     "format:check": "biome ci && echo '\\033[1;32mFormatting is correct.\\033[0m' || (echo '\\033[1;34mFix formatting by running `$ pnpm run format`.\\033[0m' && exit 1)",
-    "========= Spellchecking": "",
-    "// See also https://github.com/vikejs/vike/pull/1994": "",
-    "spellcheck": " cd ./packages/vike.dev/ && pnpm dlx github:dalisoft/typos-rs-npm --write-changes",
     "========= Reset": "",
     "reset": "git clean -Xdf && pnpm install && pnpm run build",
     "========= Only allow pnpm; forbid yarn & npm": "",
@@ -42,10 +42,13 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
+    "@brillout/picocolors": "^1.0.26",
+    "@brillout/shell": "^0.2.0",
     "@brillout/test-e2e": "^0.6.14",
     "@brillout/test-types": "^0.1.13",
     "playwright": "^1.50.1",
     "prettier": "^3.2.5",
+    "tsx": "^4.19.4",
     "vitest": "^3.1.3"
   },
   "pnpm": {
