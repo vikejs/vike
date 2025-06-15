@@ -20,7 +20,7 @@
 ### Bug Fixes
 
 * [Server Routing] make local configs override global configs (fix [#2420](https://github.com/vikejs/vike/issues/2420)) ([58f7ed0](https://github.com/vikejs/vike/commit/58f7ed04515cab5e9273b399a91ce400e66b6236))
-* do not close web stream prematurely ([#2435](https://github.com/vikejs/vike/issues/2435)) ([3128b28](https://github.com/vikejs/vike/commit/3128b2867cbad0a89ed46dc0cc63fa2bc341cbfa))
+* do not close web stream prematurly ([#2435](https://github.com/vikejs/vike/issues/2435)) ([3128b28](https://github.com/vikejs/vike/commit/3128b2867cbad0a89ed46dc0cc63fa2bc341cbfa))
 * don't execute +onData twice ([e1ca16d](https://github.com/vikejs/vike/commit/e1ca16d880d67f37e4fb3e1aa873c840ca2a5b41))
 * fix configEntries and exportsAll for cumulative values ([a60ad89](https://github.com/vikejs/vike/commit/a60ad8987e4c56201ed138758095bc874c14568e))
 * fix providePageContext() type ([847f1b6](https://github.com/vikejs/vike/commit/847f1b6bced868e4dddc409b25eba31245951689))
@@ -94,7 +94,7 @@
 ### Bug Fixes
 
 * add 404 page to prerenderContext.pageContexts ([#2330](https://github.com/vikejs/vike/issues/2330)) ([455f310](https://github.com/vikejs/vike/commit/455f3106965131e975ca7a6fe6a8b2993b3007f2))
-* disable pluginModuleBanner when build.minify isn't esbuild ([#2315](https://github.com/vikejs/vike/issues/2315)) ([e36b916](https://github.com/vikejs/vike/commit/e36b916af663aa39d8ec8575c91135839ac236c2))
+* disable pluginModuleBanner when buid.minify isn't esbuild ([#2315](https://github.com/vikejs/vike/issues/2315)) ([e36b916](https://github.com/vikejs/vike/commit/e36b916af663aa39d8ec8575c91135839ac236c2))
 * enable `noExtraDir: false` to force extra dir for 404 pages ([#2339](https://github.com/vikejs/vike/issues/2339)) ([00509b3](https://github.com/vikejs/vike/commit/00509b303b11576cee62f4e8613b42384f88c7f7))
 * error message typo ([44bdc9a](https://github.com/vikejs/vike/commit/44bdc9a399df68a9faa8cbd81d782a7dc1f609a6))
 * further ensure data isn't written after stream is closed (fix [#2334](https://github.com/vikejs/vike/issues/2334)) ([45216bc](https://github.com/vikejs/vike/commit/45216bcc261dc95f5ed8673dfafbd9fbe566a4eb))
@@ -185,7 +185,7 @@
 * `export type { VikeConfig }` ([e2bc010](https://github.com/vikejs/vike/commit/e2bc010856292f5ec0d29b8cbab281c57862de6b))
 * fix catch of infinite redirections (fix [#2262](https://github.com/vikejs/vike/issues/2262)) ([#2264](https://github.com/vikejs/vike/issues/2264)) ([00ed9fe](https://github.com/vikejs/vike/commit/00ed9fecac7cd0c4cd0682c574e6a26a3c52e0f5))
 * fix resolving of global enabled/disabled prerender ([#2267](https://github.com/vikejs/vike/issues/2267)) ([408a724](https://github.com/vikejs/vike/commit/408a724de10dcceeb062ed8229ca18f101ba5e28))
-* fix vite.config.js reload (fix [#2200](https://github.com/vikejs/vike/issues/2200)) ([f8safe0a](https://github.com/vikejs/vike/commit/f8afe0a00897e8b9dc3e13852cae02b86f6cb95a))
+* fix vite.config.js reload (fix [#2200](https://github.com/vikejs/vike/issues/2200)) ([f8afe0a](https://github.com/vikejs/vike/commit/f8afe0a00897e8b9dc3e13852cae02b86f6cb95a))
 * forbid setting process.env.DEBUG with JavaScript (fix [#2239](https://github.com/vikejs/vike/issues/2239)) ([20321b2](https://github.com/vikejs/vike/commit/20321b2d25418c7108a63f0a7006a8e7d73cb6eb))
 * further add error hint for broken npm package ([#2252](https://github.com/vikejs/vike/issues/2252)) ([060d71a](https://github.com/vikejs/vike/commit/060d71ac14347d805a530fc037024d082960078f))
 * improve error hint ([#2235](https://github.com/vikejs/vike/issues/2235)) ([5b80da0](https://github.com/vikejs/vike/commit/5b80da0c9f1584199d5c6a9e4dc8200e7dd005a2))
@@ -612,7 +612,7 @@
 
 ### Features
 
-* onPopstate() ([d7data00](https://github.com/vikejs/vike/commit/d7daa00db5b8810a36846ed0be0136f0d904d2a1))
+* onPopstate() ([d7daa00](https://github.com/vikejs/vike/commit/d7daa00db5b8810a36846ed0be0136f0d904d2a1))
 
 
 
@@ -847,7 +847,7 @@
 ### Bug Fixes
 
 * also exclude vike/getPageContext from optimizeDeps ([4405294](https://github.com/vikejs/vike/commit/4405294d03eddcc45a959bae45cd9b0b074209d4))
-* more lightweight and succinct client-side err msg ([83bd1b7](https://github.com/vikejs/vike/commit/83bd1b7f3f6cf700a6a8248637674e7b2e409e31))
+* more lightweight and succint client-side err msg ([83bd1b7](https://github.com/vikejs/vike/commit/83bd1b7f3f6cf700a6a8248637674e7b2e409e31))
 
 
 
@@ -928,7 +928,7 @@
 
 ### Bug Fixes
 
-* improve error message (fix [#1720](https://github.com/vikejs/vike/issues/1720)) ([36d13be](https://github.com/vikejs/vike/commit/36d13bec72a240999dc00d41f2d0f9e567ab87ae))
+* imporve error message (fix [#1720](https://github.com/vikejs/vike/issues/1720)) ([36d13be](https://github.com/vikejs/vike/commit/36d13bec72a240999dc00d41f2d0f9e567ab87ae))
 * improve DEBUG:vike-stream ([ef0eb3d](https://github.com/vikejs/vike/commit/ef0eb3d4fe9af2c39e2876c4431fed983a8b2ef3))
 * improve url protocol parsing ([#1719](https://github.com/vikejs/vike/issues/1719)) ([027858d](https://github.com/vikejs/vike/commit/027858d895b45b74fdc398e241e12bfe996ee962))
 * make env var STORYBOOK public (fix [#1724](https://github.com/vikejs/vike/issues/1724)) ([51d612a](https://github.com/vikejs/vike/commit/51d612a0a655e27b19338e3659f89a127a025c1e))
@@ -1027,9 +1027,9 @@
 * further preserve pageContext property getters ([155b2ea](https://github.com/vikejs/vike/commit/155b2ea045f9732991bfb8b5757d146a8f087cba))
 * improve & simplify passToClient error ([0c459cc](https://github.com/vikejs/vike/commit/0c459cc5b7f12372187a4e345f0d608ad8d0ee14))
 * improve cumulative support, and fix bugs ([c14c8d0](https://github.com/vikejs/vike/commit/c14c8d08a99053606fc3c199b1506cb79be24c13))
-* improve error hint message ([e02a1b6](https://github.com/vikejs/vike/commit/e02a1b632da3bb040ae3c97c7853b447079384ea))
+* improve error hint messag ([e02a1b6](https://github.com/vikejs/vike/commit/e02a1b632da3bb040ae3c97c7853b447079384ea))
 * improve warning stack traces ([9af790a](https://github.com/vikejs/vike/commit/9af790a11bd4183047f628837b932264f257373b))
-* make client-side script order deterministic also in dev ([#1468](https://github.com/vikejs/vike/issues/1468)) ([a3be198](https://github.com/vikejs/vike/commit/a3be1984ab8d80bff5a4048aeef18b3275334d94))
+* make client-side script order determinisic also in dev ([#1468](https://github.com/vikejs/vike/issues/1468)) ([a3be198](https://github.com/vikejs/vike/commit/a3be1984ab8d80bff5a4048aeef18b3275334d94))
 * pointer imports used anywhere in config object ([b4ba6b7](https://github.com/vikejs/vike/commit/b4ba6b70e6bdc2e1f460c0d2e4c3faae5d0a733c))
 * polish error message ([ff5af85](https://github.com/vikejs/vike/commit/ff5af85172ee25f2804a44824e1f4e1b1a1bd213))
 * polish HTML errors ([642566b](https://github.com/vikejs/vike/commit/642566be420a08e2badaf0310c3e5cf22f9effae))
@@ -1088,7 +1088,7 @@
 ### Bug Fixes
 
 * always use esbuild to resolve import paths (fix [#1580](https://github.com/vikejs/vike/issues/1580)) ([4996ef0](https://github.com/vikejs/vike/commit/4996ef0fe9c2f9fdb824f20c5c4388e80cfa2519))
-* clean esbuild errors ([ea598f8](https://github.com/vikejs/vike/commit/ea598f8e2e192510fa44e59ec189737911b0f439))
+* clean esbuild errros ([ea598f8](https://github.com/vikejs/vike/commit/ea598f8e2e192510fa44e59ec189737911b0f439))
 * don't send superfluous JavaScript Early Hint for HTML-only page (fix [#1574](https://github.com/vikejs/vike/issues/1574)) ([14e4b5e](https://github.com/vikejs/vike/commit/14e4b5e362841ad98a084927ba2a6ed344295b6b))
 * enable tools to monkey path `history.pushState()` to listen to Vike navigations ([#1582](https://github.com/vikejs/vike/issues/1582)) ([b4b3e0c](https://github.com/vikejs/vike/commit/b4b3e0ccaa0ab48864cae74a280632f7538c3815))
 * improve DX & docs upon using vike-{react,vue,solid} configs without installing (fix [#1578](https://github.com/vikejs/vike/issues/1578)) ([c08a6bb](https://github.com/vikejs/vike/commit/c08a6bbeb8edb2411504a3313ad9c8841fca0c6d))
@@ -1123,7 +1123,7 @@
 * conservatively preserve all assets in dist/server (fix [#1154](https://github.com/vikejs/vike/issues/1154)) ([6dfef11](https://github.com/vikejs/vike/commit/6dfef11d74c420b5d695f0897f1d292f3b8b7e95))
 * emphasize CJS/ESM error hint ([3e344b9](https://github.com/vikejs/vike/commit/3e344b9734c267bc43abd7e49402456aebc4cc18))
 * generate assets.json early (fix [#1527](https://github.com/vikejs/vike/issues/1527)) ([2598887](https://github.com/vikejs/vike/commit/259888792f8906282951f89d7602ce1c2a601cb8))
-* improve handling of unusable Git ([#1549](https://github.com/vikejs/vike/issues/1549)) ([42d58ff](https://github.com/vikejs/vike/commit/42d58ff9d9aa9eb27c7495e216ecaf3e29970614))
+* improve handling of unsuable Git ([#1549](https://github.com/vikejs/vike/issues/1549)) ([42d58ff](https://github.com/vikejs/vike/commit/42d58ff9d9aa9eb27c7495e216ecaf3e29970614))
 * improve HTTP request error message upon Vike config error ([e405b77](https://github.com/vikejs/vike/commit/e405b7795328582bef08d4a4e24b8fa5abb7170d))
 * improve logging upon skipped HTTP request ([0e4145b](https://github.com/vikejs/vike/commit/0e4145b03b2b5d6f6f6673ccc3d0a4084cfe674f))
 * improve package.json#exports by adding import export ([#1382](https://github.com/vikejs/vike/issues/1382)) ([c270210](https://github.com/vikejs/vike/commit/c27021060034f5245873cc196e700d5e54cbb427))
@@ -1131,7 +1131,7 @@
 * improve package.json#exports order ([#1382](https://github.com/vikejs/vike/issues/1382)) ([7def2dd](https://github.com/vikejs/vike/commit/7def2ddd8d5019e9f29cc23a9469d767fe8b8bdc))
 * injectBreakLines regex speedup ([b3cc3cb](https://github.com/vikejs/vike/commit/b3cc3cb82439a42e2d14ef5b34d70131f7c8e152))
 * package.json#exports replace "import" with "default" ([#1382](https://github.com/vikejs/vike/issues/1382)) ([6942f61](https://github.com/vikejs/vike/commit/6942f61589d038a4d3d51f3a7e08fbe1eddf5383))
-* rename `triggeredBy` to `triggeredBy` (fix [#1563](https://github.com/vikejs/vike/issues/1563)) ([a08160f](https://github.com/vikejs/vike/commit/a08160fb3465d126a49c41863308200e73960493))
+* rename `triggedBy` to `triggeredBy` (fix [#1563](https://github.com/vikejs/vike/issues/1563)) ([a08160f](https://github.com/vikejs/vike/commit/a08160fb3465d126a49c41863308200e73960493))
 * support Electron by adding 'file://' protocol (fix [#1557](https://github.com/vikejs/vike/issues/1557)) ([8eba585](https://github.com/vikejs/vike/commit/8eba58501bb593a26de94543e55145e6c4fa08a7))
 
 
@@ -1330,7 +1330,7 @@
 * mitigate risk of infinite reloading page ([c21cea2](https://github.com/vikejs/vike/commit/c21cea215cea832930563a1380f2e40f1b61ceea))
 * properly handle errors thrown in onHydrationEnd() and onPageTransition{Start,End}() ([ad532e0](https://github.com/vikejs/vike/commit/ad532e08272392afa150e2a25549657c8a346e24))
 * properly handle errors thrown in onRenderClient ([6f928f9](https://github.com/vikejs/vike/commit/6f928f9ee6c1eeaf8279e9ee3b8180d987ba10c0))
-* use simpler dynamic import (fix [#1393](https://github.com/vikejs/vike/issues/1393)) ([06c1fd5](https://github.com/vikejs/vike/commit/06c1fd57376891766792ecc2a3ae248ff0b231df))
+* use simplier dynamic import (fix [#1393](https://github.com/vikejs/vike/issues/1393)) ([06c1fd5](https://github.com/vikejs/vike/commit/06c1fd57376891766792ecc2a3ae248ff0b231df))
 
 
 
@@ -1346,7 +1346,7 @@
 
 * cacheControl setting ([bb7fd09](https://github.com/vikejs/vike/commit/bb7fd09c46730d638b45a89f5db35f2ac4188f6b))
 * generic `<Data>` type for `onBeforePrerenderStart()` ([29f265b](https://github.com/vikejs/vike/commit/29f265b35832c7b882ab1a6414afef88f5cbc0b4))
-* redirect to URI without http protocol (closes [#1380](https://github.com/vikejs/vike/issues/1380)) ([58f404c](https://github.com/vikejs/vike/commit/58f404c2ebf82ca86b56d6cc603603d2008cc9cf))
+* redirect to URI without http protocal (closes [#1380](https://github.com/vikejs/vike/issues/1380)) ([58f404c](https://github.com/vikejs/vike/commit/58f404c2ebf82ca86b56d6cc603603d2008cc9cf))
 
 
 
@@ -1482,8 +1482,8 @@
 * properly handle eager/lazy config values (fix [#1208](https://github.com/vikejs/vike/issues/1208)) ([e40e9b1](https://github.com/vikejs/vike/commit/e40e9b189068a8936f094c57cfb752207dc6bb02))
 * scroll to top upon client-side `throw render()` ([f16cbe5](https://github.com/vikejs/vike/commit/f16cbe53fa93bb41b78aa91f1bec36163dac6140))
 * set pageContext.isClientSideNavigation on the client-side (fix [#1243](https://github.com/vikejs/vike/issues/1243)) ([a9895e8](https://github.com/vikejs/vike/commit/a9895e89088bf73719bafc5bebd9ae22452889da))
-* show more succinct 404 table ([#1219](https://github.com/vikejs/vike/issues/1219)) ([aff81fa](https://github.com/vikejs/vike/commit/aff81fad2da918302ec9960bc7f1c564f1674cd1))
-* systematically abort client-side rendering if possible ([85207c9](https://github.com/vikejs/vike/commit/85207c9bec125b1d7b25f7ea87dad91a65d4d2ce))
+* show more succint 404 table ([#1219](https://github.com/vikejs/vike/issues/1219)) ([aff81fa](https://github.com/vikejs/vike/commit/aff81fad2da918302ec9960bc7f1c564f1674cd1))
+* systematically abort client-side renderering if possible ([85207c9](https://github.com/vikejs/vike/commit/85207c9bec125b1d7b25f7ea87dad91a65d4d2ce))
 * workaround regression introduced by vitejs/vite[#14756](https://github.com/vikejs/vike/issues/14756) ([c56391d](https://github.com/vikejs/vike/commit/c56391dd8d7b93443cb650ff3dd128f46ca441ab))
 
 
@@ -1934,7 +1934,7 @@
 
 ### Bug Fixes
 
-* auto-add VPS's middleware at last ([f0and07](https://github.com/brillout/vite-plugin-ssr/commit/f0abd07f242a4ac2db55ec1ed0999a375832ffa2))
+* auto-add VPS's middleware at last ([f0abd07](https://github.com/brillout/vite-plugin-ssr/commit/f0abd07f242a4ac2db55ec1ed0999a375832ffa2))
 * improve filesystem apply root (fix [#858](https://github.com/brillout/vite-plugin-ssr/issues/858)) ([173cca0](https://github.com/brillout/vite-plugin-ssr/commit/173cca062ebd37e051a8cf91263935eace203d1f))
 * make filesystem inheritance conflict resolution more robust (fix [#858](https://github.com/brillout/vite-plugin-ssr/issues/858)) ([a5d0d5d](https://github.com/brillout/vite-plugin-ssr/commit/a5d0d5d266e7f297d31997063c52d3541380cedc))
 * make filesystem root apply clearer ([4eb5f45](https://github.com/brillout/vite-plugin-ssr/commit/4eb5f4541e1518897bc6862481536bf790d3c4e3))
@@ -2029,7 +2029,7 @@
 * improve contradictory env warning ([#792](https://github.com/brillout/vite-plugin-ssr/issues/792)) ([58ccdcd](https://github.com/brillout/vite-plugin-ssr/commit/58ccdcd8fa0ad1bc7f45f9ab3ba037b72aa90c6e))
 * improve wrong NODE_ENV warning ([472a16d](https://github.com/brillout/vite-plugin-ssr/commit/472a16d55e3cb815fc48de015f6e846d046968bf))
 * skip warning when `process.env.NODE_ENV === "test"` ([3c910c0](https://github.com/brillout/vite-plugin-ssr/commit/3c910c0eb2de84b6315039be7d4e06218b8ee1b3))
-* support tauri:// protocol ([#808](https://github.com/brillout/vite-plugin-ssr/issues/808)) ([f7safe16](https://github.com/brillout/vite-plugin-ssr/commit/f7afe1609560d5b8badd1910315f69e98e37e953))
+* support tauri:// protocol ([#808](https://github.com/brillout/vite-plugin-ssr/issues/808)) ([f7afe16](https://github.com/brillout/vite-plugin-ssr/commit/f7afe1609560d5b8badd1910315f69e98e37e953))
 * tolerate URL with missing pathname ([#808](https://github.com/brillout/vite-plugin-ssr/issues/808)) ([fc76ffe](https://github.com/brillout/vite-plugin-ssr/commit/fc76ffe239128a0d55e2ffab1e957203e7c0706d))
 
 
@@ -2369,7 +2369,7 @@
 * add esbuild to list of dependencies (fix [#659](https://github.com/brillout/vite-plugin-ssr/issues/659)) ([535bc4b](https://github.com/brillout/vite-plugin-ssr/commit/535bc4b49c6d3ce23cc1cafdb2ef02ac911e35a4))
 * improve warning upon pre-render hook providing URL not matching any page route ([e933c00](https://github.com/brillout/vite-plugin-ssr/commit/e933c00762291cbc6cde658f1194b5d3a36ed0c7))
 * improve wording ([25903e3](https://github.com/brillout/vite-plugin-ssr/commit/25903e3128823aea8644e7ffc1c52308053f7b0f))
-* remove false positive of using pageContext.url ([#654](https://github.com/brillout/vite-plugin-ssr/issues/654)) ([edge98b3](https://github.com/brillout/vite-plugin-ssr/commit/ede98b33f27fdb601710d929cc2b7a44eb302778))
+* remove false positive of using pageContext.url ([#654](https://github.com/brillout/vite-plugin-ssr/issues/654)) ([ede98b3](https://github.com/brillout/vite-plugin-ssr/commit/ede98b33f27fdb601710d929cc2b7a44eb302778))
 * show stack trace upon pageContext.url usage warning ([44a21aa](https://github.com/brillout/vite-plugin-ssr/commit/44a21aa2ae6d94d8f8166a4b05b109a475949c19))
 
 
@@ -2753,7 +2753,7 @@
 * assert Stem packages to define package.json#exports ([55c40b8](https://github.com/brillout/vite-plugin-ssr/commit/55c40b86d1cedb9dfc29ffcee1dedb465f3a8490))
 * don't assume Stem packages to always define a VPS config ([f5c41d6](https://github.com/brillout/vite-plugin-ssr/commit/f5c41d6a24d68c917cc86e4e4a805dfa929b92c3))
 * fix resolving of Stem client entries ([cb2f359](https://github.com/brillout/vite-plugin-ssr/commit/cb2f35945d5644ef3961f0c6ba6fe0e80aac06d8))
-* refine wrong usage message ([#516](https://github.com/brillout/vite-plugin-ssr/issues/516)) ([1e4be6](https://github.com/brillout/vite-plugin-ssr/commit/1e4dbe65cf552665b388eac54e4dd3ad3f50db00))
+* refine wrong usage message ([#516](https://github.com/brillout/vite-plugin-ssr/issues/516)) ([1e4dbe6](https://github.com/brillout/vite-plugin-ssr/commit/1e4dbe65cf552665b388eac54e4dd3ad3f50db00))
 * workaround windows bug ([91393d7](https://github.com/brillout/vite-plugin-ssr/commit/91393d73ef4032059f3618fd652a09b0b80ee088))
 
 
@@ -2963,7 +2963,7 @@
 
 ### Bug Fixes
 
-* revert "fix: do not copy static assets to `dist/server/`" (fix [#447](https://github.com/brillout/vite-plugin-ssr/issues/447)) ([ec93safe](https://github.com/brillout/vite-plugin-ssr/commit/ec93afe7240aeb19e9ec8458c0579c995329f26a))
+* revert "fix: do not copy static assets to `dist/server/`" (fix [#447](https://github.com/brillout/vite-plugin-ssr/issues/447)) ([ec93afe](https://github.com/brillout/vite-plugin-ssr/commit/ec93afe7240aeb19e9ec8458c0579c995329f26a))
 
 
 
@@ -3141,7 +3141,7 @@
 * improve error message upon duplicated page files ([32bbdfd](https://github.com/brillout/vite-plugin-ssr/commit/32bbdfdbcf294aae3458b02c9fb4a59958d757eb))
 * improve error message upon failure fetching static assets ([1d134a7](https://github.com/brillout/vite-plugin-ssr/commit/1d134a7c168dc3e58bfe95b7550c7b123a39df5e))
 * improve error message upon wrong provided `pageContext.url` value in `onBeforeRoute()` ([cb50a55](https://github.com/brillout/vite-plugin-ssr/commit/cb50a556e055d3091470bc9cd6c9f5b8c911e607))
-* upon `onBeforeRoute()` overwriting `pageContext.url`, preserve and use original URL for `.pageContext.json` requests ([b9cca1b](https://github.com/brillout/vite-plugin-ssr/commit/b9cca1bd2247217350d51f733f31e80fe11248d1))
+* upon `onBeforeRoute()` overwriting `pageContext.url`, preserve and use original URL for `.pageContex.json` requests ([b9cca1b](https://github.com/brillout/vite-plugin-ssr/commit/b9cca1bd2247217350d51f733f31e80fe11248d1))
 
 
 
@@ -3424,7 +3424,7 @@ Minor features:
 * switch to server-routing if asset fail to load upon new deploy ([#292](https://github.com/brillout/vite-plugin-ssr/issues/292)) ([1f837d5](https://github.com/brillout/vite-plugin-ssr/commit/1f837d5cb8d8239d043227b4a832f3bbe461a6cd))
 * throw normalized client-side error upon new deploy handling ([e0163a8](https://github.com/brillout/vite-plugin-ssr/commit/e0163a80f1293306a48e6d9f5c46414335f3783a))
 * tolerate multiple vps instances ([74b8eb2](https://github.com/brillout/vite-plugin-ssr/commit/74b8eb20e270a1412af8452cb95ccfc9eb623720))
-* treat `Object.create(null)` as plain JavaScript object ([c9eb387](https://github.com/brillout/vite-plugin-ssr/commit/c9eb387ff2f878ee949441f4f1235ab9461e6d17))
+* treat `Object.ceate(null)` as plain JavaScript object ([c9eb387](https://github.com/brillout/vite-plugin-ssr/commit/c9eb387ff2f878ee949441f4f1235ab9461e6d17))
 * update pageContext.urlParsed type ([12261ac](https://github.com/brillout/vite-plugin-ssr/commit/12261ac06341b5a3db985d8ee2aa80df43d58291))
 
 
