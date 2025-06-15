@@ -39,11 +39,11 @@ async function fix() {
 
 async function check() {
   const res = await runTypos('--diff')
-  console.log(res.stdout)
   const noTypos = res.stdout.trim().length === 0
   if (noTypos) {
     console.log(pc.green(pc.bold('✅ No typos found.')))
   } else {
+    console.log(res.stdout)
     console.log(pc.red(pc.bold('❌ Typos found (see above)')))
     console.log(pc.blue(`➡️  Fix typos by running ${pc.bold('$ pnpm run docs:spellcheck')}`))
     process.exit(1)
