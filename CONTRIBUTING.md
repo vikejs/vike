@@ -92,7 +92,7 @@ Or:
 
 ```shell
 # Filter
-pnpm exec test-e2e ome-exampl # At the monorepo root
+pnpm exec test-e2e some-example # At the monorepo root
 ```
 
 <br/>
