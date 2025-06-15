@@ -15,7 +15,7 @@ async function onRenderHtml(pageContext) {
     </App>
   )
   const pageHtml = await getDataFromTree(tree)
-  const apolloIntialState = apolloClient.extract()
+  const apolloInitialState = apolloClient.extract()
 
   const documentHtml = escapeInject`<!DOCTYPE html>
     <html>
@@ -27,7 +27,7 @@ async function onRenderHtml(pageContext) {
   return {
     documentHtml,
     pageContext: {
-      apolloIntialState,
+      apolloInitialState,
     },
   }
 }

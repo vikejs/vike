@@ -137,7 +137,7 @@ async function renderPagePrepare(
     // ```bash
     // Re-build your app (you're using 1.2.3 but your app was built with 1.2.2)
     // ```
-    // initGlobalContext_renderPage() doens't call any user hook => err isn't thrown from user code.
+    // initGlobalContext_renderPage() doesn't call any user hook => err isn't thrown from user code.
     assert(!isAbortError(err))
     logRuntimeError(err, httpRequestId)
     const pageContextWithError = getPageContextHttpResponseErrorWithoutGlobalContext(err, pageContextInit)
@@ -329,7 +329,7 @@ function logHttpResponse(urlOriginalPretty: string, httpRequestId: number, pageC
       //   - Maybe we can/should make the error available at pageContext.errorWhileRendering
       assert(errorWhileRendering === null || errorWhileRendering === undefined)
       msg = `HTTP response ${prettyUrl(urlOriginalPretty)} ${pc.dim('null')}`
-      // Erroneous value (it shoud sometimes be `false`) but it's fine as it doesn't seem to have much of an impact.
+      // Erroneous value (it should sometimes be `false`) but it's fine as it doesn't seem to have much of an impact.
       isNominal = true
     } else {
       const isSuccess = statusCode !== null && statusCode >= 200 && statusCode <= 399
@@ -650,7 +650,7 @@ function getPageContextSkipRequest(pageContextInit: PageContextInit) {
   if (urlPathnameWithBase.endsWith('.well-known/appspecific/com.chrome.devtools.json')) {
     // https://chromium.googlesource.com/devtools/devtools-frontend/+/main/docs/ecosystem/automatic_workspace_folders.md
     // https://www.reddit.com/r/node/comments/1kcr0wh/odd_request_coming_into_my_localhost_server_from/
-    errMsg404 = 'Not spported'
+    errMsg404 = 'Not supported'
   }
   if (!errMsg404) return
   const pageContext = createPageContextServerSideWithoutGlobalContext(pageContextInit)

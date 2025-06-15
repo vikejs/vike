@@ -57,7 +57,7 @@ function pluginFileEnv(): Plugin {
       const isServerSide = !!options?.ssr
       if (!isWrongEnv(id, isServerSide)) return
       const { importers } = this.getModuleInfo(id)!
-      // Throwing a verbose error doesn't waste client-side KBs as dynamic imports are code splitted.
+      // Throwing a verbose error doesn't waste client-side KBs as dynamic imports are code split.
       const errMsg = getErrorMessage(id, isServerSide, importers, false, true)
       // We have to inject empty exports to avoid Rollup complaining about missing exports, see https://gist.github.com/brillout/5ea45776e65bd65100a52ecd7bfda3ff
       const { exportNames } = await getExportNames(code)

@@ -42,7 +42,7 @@ function preparePageContextForPublicUsageClientMinimal<PageContext extends PageC
   return pageContextPublic
 }
 
-// With Vue + Cient Routing, the `pageContext` is made reactive:
+// With Vue + Client Routing, the `pageContext` is made reactive:
 // ```js
 // import { reactive } from 'vue'
 // // See /examples/vue-full/renderer/createVueApp.ts
@@ -51,7 +51,7 @@ function preparePageContextForPublicUsageClientMinimal<PageContext extends PageC
 function supportVueReactiviy(pageContext: Record<string, unknown>) {
   resolveGetters(pageContext)
 }
-// Remove propery descriptor getters because they break Vue's reactivity.
+// Remove property descriptor getters because they break Vue's reactivity.
 // E.g. resolve the `pageContext.urlPathname` getter.
 function resolveGetters(pageContext: Record<string, unknown>) {
   Object.entries(pageContext).forEach(([key, val]) => {

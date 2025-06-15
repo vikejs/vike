@@ -3,7 +3,7 @@ export { pathIsRelative }
 export { toPosixPath }
 export { assertPosixPath }
 
-// Utilites for handling file paths.
+// Utilities for handling file paths.
 // - Shims `import * from "node:path"` for server runtime.
 //   - Robust shim reference: https://github.com/unjs/pathe
 
