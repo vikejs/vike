@@ -6,7 +6,7 @@ on:
       - packages/vike.dev/**
       - .github/workflows/spellcheck.yml
 jobs:
-  build-and-deploy:
+  main:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
