@@ -63,7 +63,7 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
     .join(' ')
   errMsg = addWhitespace(errMsg)
   errMsg = addPrefixAssertType(errMsg, bugTag)
-  errMsg = addPrefixProjctName(errMsg, true)
+  errMsg = addPrefixProjectName(errMsg, true)
   const internalError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
 
   globalObject.onBeforeLog?.()
@@ -79,7 +79,7 @@ function assertUsage(
   showStackTrace = showStackTrace || globalObject.alwaysShowStackTrace
   errMsg = addWhitespace(errMsg)
   errMsg = addPrefixAssertType(errMsg, 'Wrong Usage')
-  errMsg = addPrefixProjctName(errMsg)
+  errMsg = addPrefixProjectName(errMsg)
   const usageError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
   if (showStackTrace) {
     globalObject.showStackTraceList.add(usageError)
@@ -96,7 +96,7 @@ function assertUsage(
 function getProjectError(errMsg: string) {
   errMsg = addWhitespace(errMsg)
   errMsg = addPrefixAssertType(errMsg, 'Error')
-  errMsg = addPrefixProjctName(errMsg)
+  errMsg = addPrefixProjectName(errMsg)
   const projectError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
   return projectError
 }
@@ -110,7 +110,7 @@ function assertWarning(
   showStackTrace = showStackTrace || globalObject.alwaysShowStackTrace
   msg = addWhitespace(msg)
   msg = addPrefixAssertType(msg, 'Warning')
-  msg = addPrefixProjctName(msg)
+  msg = addPrefixProjectName(msg)
   if (onlyOnce) {
     const { alreadyLogged } = globalObject
     const key = onlyOnce === true ? msg : onlyOnce
@@ -132,7 +132,7 @@ function assertInfo(condition: unknown, msg: string, { onlyOnce }: { onlyOnce: b
     return
   }
   msg = addWhitespace(msg)
-  msg = addPrefixProjctName(msg)
+  msg = addPrefixProjectName(msg)
   if (onlyOnce) {
     const { alreadyLogged } = globalObject
     const key = msg
@@ -163,7 +163,7 @@ function addWhitespace(msg: string) {
     return ` ${msg}`
   }
 }
-function addPrefixProjctName(msg: string, showProjectVersion = false): string {
+function addPrefixProjectName(msg: string, showProjectVersion = false): string {
   const prefix = showProjectVersion ? projectTagWithVersion : projectTag
   return `${prefix}${msg}`
 }

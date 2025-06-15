@@ -154,7 +154,7 @@ function getHookTimeout(hooksTimeoutProvidedByUser: unknown, hookName: HookNameO
   return hookTimeout
 }
 
-// Ideally this should be called only once and at build-time (to avoid bloating the client-side bundle), but we didn't implement any mechanism to valide config values at build-time yet
+// Ideally this should be called only once and at build-time (to avoid bloating the client-side bundle), but we didn't implement any mechanism to valid config values at build-time yet
 function getHooksTimeoutProvidedByUserNormalized(
   hooksTimeoutProvidedByUser: unknown,
 ): HooksTimeoutProvidedByUserNormalized {

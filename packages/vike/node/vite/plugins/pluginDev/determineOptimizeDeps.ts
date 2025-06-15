@@ -10,7 +10,7 @@ import {
   isArray,
   unique,
 } from '../../utils.js'
-import { getVikeConfigInternal, isOverriden } from '../../shared/resolveVikeConfigInternal.js'
+import { getVikeConfigInternal, isOverridden } from '../../shared/resolveVikeConfigInternal.js'
 import { analyzeClientEntries } from '../pluginBuild/pluginBuildConfig.js'
 import type { PageConfigBuildTime } from '../../../../types/PageConfig.js'
 import {
@@ -68,7 +68,7 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
     pageConfigs.forEach((pageConfig) => {
       Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
         sources
-          .filter((source) => !isOverriden(source, configName, pageConfig))
+          .filter((source) => !isOverridden(source, configName, pageConfig))
           .forEach((configValueSource) => {
             if (!configValueSource.valueIsLoadedWithImport && !configValueSource.valueIsFilePath) return
             const { definedAt, configEnv } = configValueSource

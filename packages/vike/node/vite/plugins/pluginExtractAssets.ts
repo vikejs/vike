@@ -4,7 +4,7 @@
 // Workaround to make client-side bundles include the CSS imports living in server-side-only code.
 //  - This is needed for HTML-only pages, and React Server Components.
 //  - We recommend using the debug flag to get an idea of how this plugin works: `$ DEBUG=vike:pluginExtractAssets pnpm exec vike build`. Then have a look at `dist/client/manifest.json` and see how `.page.server.js` entries have zero JavaScript but only CSS.
-//  - This appraoch supports import path aliases `vite.config.js#resolve.alias` https://vitejs.dev/config/#resolve-alias
+//  - This approach supports import path aliases `vite.config.js#resolve.alias` https://vitejs.dev/config/#resolve-alias
 
 export { pluginExtractAssets }
 export { extractAssetsRE }
@@ -45,7 +45,7 @@ function pluginExtractAssets(): Plugin[] {
   let vikeConfig: VikeConfigInternal
   let isFixEnabled: boolean
   return [
-    // This plugin removes all JavaScript from server-side only code, so that only CSS imports remains. (And also satic files imports e.g. `import logoURL from './logo.svg.js'`).
+    // This plugin removes all JavaScript from server-side only code, so that only CSS imports remains. (And also static files imports e.g. `import logoURL from './logo.svg.js'`).
     {
       name: 'vike:pluginExtractAssets:remove-javaScript',
       // In dev, things just work. (Because Vite's module graph erroneously conflates the Vite server-side importees with the client-side importees.)

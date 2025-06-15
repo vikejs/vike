@@ -191,7 +191,7 @@ async function transpileWithEsbuild(
           if (debugEsbuildResolve.isActivated) debugEsbuildResolve('resolved', resolved)
 
           // Temporary workaround for https://github.com/evanw/esbuild/issues/3973
-          // - Sitll required for esbuild@0.24.0 (November 2024).
+          // - Still required for esbuild@0.24.0 (November 2024).
           // - Let's try to remove this workaround again later.
           if (resolved.errors.length > 0) {
             const resolvedWithNode = requireResolveOptionalDir({
@@ -317,7 +317,7 @@ async function transpileWithEsbuild(
       name: 'vike:dependency-tracker',
       setup(b) {
         b.onLoad({ filter: /./ }, (args) => {
-          // We collect the dependency `args.path` in case the bulid fails (upon build error => error is thrown => no metafile)
+          // We collect the dependency `args.path` in case the build fails (upon build error => error is thrown => no metafile)
           let { path } = args
           path = toPosixPath(path)
           esbuildCache.vikeConfigDependencies.add(path)

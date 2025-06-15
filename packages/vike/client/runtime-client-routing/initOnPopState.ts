@@ -5,7 +5,7 @@ import { renderPageClientSide } from './renderPageClientSide.js'
 import { type ScrollTarget, setScrollPosition } from './setScrollPosition.js'
 import { catchInfiniteLoop } from './utils.js'
 
-// The 'popstate' event is trigged when the browser doesn't fully load the new URL, for example:
+// The 'popstate' event is triggered when the browser doesn't fully load the new URL, for example:
 // - `location.hash='#foo'` triggers the popstate event while `location.href='/foo'` doesn't.
 // - Clicking on the browser's back-/forward button triggers a popstate event only if the history entry was generated with history.pushState() — no popstate event is fired upon Server Routing.
 

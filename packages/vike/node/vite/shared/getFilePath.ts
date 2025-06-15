@@ -1,10 +1,10 @@
 export { getFilePathResolved }
 export { getFilePathUnresolved }
 export { getFilePathAbsoluteUserRootDir }
-export { getFilePathToShowToUserFromUnkown }
+export { getFilePathToShowToUserFromUnknown }
 export { getModuleFilePathAbsolute }
 export { getModuleFilePathRelative }
-export { cleanFilePathUnkown }
+export { cleanFilePathUnknown }
 export { assertModuleId }
 
 import path from 'node:path'
@@ -182,20 +182,20 @@ function assertModuleId(moduleId: string) {
   assertFilePathAbsoluteFilesystem(moduleId) // Can moduleId be something else than the filesystem absolute path?
 }
 
-function getFilePathToShowToUserFromUnkown(
-  // We don't have any guarentee about filePath, e.g. about whether is filePathAbsoluteFilesystem or filePathAbsoluteUserRootDir
-  filePathUnkown: string,
+function getFilePathToShowToUserFromUnknown(
+  // We don't have any guarantee about filePath, e.g. about whether is filePathAbsoluteFilesystem or filePathAbsoluteUserRootDir
+  filePathUnknown: string,
   userRootDir: string,
 ): string {
   assertPosixPath(userRootDir)
   assertFilePathAbsoluteFilesystem(userRootDir)
 
-  filePathUnkown = cleanFilePathUnkown(filePathUnkown)
+  filePathUnknown = cleanFilePathUnknown(filePathUnknown)
 
-  if (!filePathUnkown.startsWith(userRootDir)) {
-    return filePathUnkown
+  if (!filePathUnknown.startsWith(userRootDir)) {
+    return filePathUnknown
   } else {
-    return getFilePathAbsoluteUserRootDir2(filePathUnkown, userRootDir)
+    return getFilePathAbsoluteUserRootDir2(filePathUnknown, userRootDir)
   }
 }
 
@@ -206,7 +206,7 @@ function getFilePathAbsoluteUserRootDir2(filePathAbsoluteFilesystem: string, use
   return filePathAbsoluteUserRootDir
 }
 
-function cleanFilePathUnkown(filePathUnknown: string) {
+function cleanFilePathUnknown(filePathUnknown: string) {
   filePathUnknown = toPosixPath(filePathUnknown)
   filePathUnknown = cleanModuleId(filePathUnknown)
   return filePathUnknown

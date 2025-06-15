@@ -44,7 +44,7 @@ import type { GlobalContextClientWithServerRouting } from '../client/runtime-ser
 type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & Vike.PageContext & Vike.PageContextServer
 
 // With Client Routing
-//  - Because of vike-{react/vue/solid} most users will eventually be using Client Routing => we give out the succint type names `PageContext` and `PageContextClient` to these users
+//  - Because of vike-{react/vue/solid} most users will eventually be using Client Routing => we give out the succinct type names `PageContext` and `PageContextClient` to these users
 type PageContext<Data = unknown> = PageContextClient<Data> | PageContextServer<Data>
 type PageContextClient<Data = unknown> = PageContextBuiltInClientWithClientRouting<Data> &
   Vike.PageContext &
@@ -90,7 +90,7 @@ type PageContextBuiltInCommon<Data> = {
    * https://vike.dev/pageContext#config
    */
   config: PageContextConfig
-  /** The page's configuration, including the configs origin and overriden configs.
+  /** The page's configuration, including the configs origin and overridden configs.
    *
    * https://vike.dev/config
    */
@@ -158,7 +158,7 @@ type PageContextBuiltInCommon<Data> = {
   abortStatusCode?: AbortStatusCode
 
   /**
-   * Error that occured while rendering.
+   * Error that occurred while rendering.
    *
    * https://vike.dev/error-tracking
    * https://vike.dev/pageContext#errorWhileRendering

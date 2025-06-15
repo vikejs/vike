@@ -19,7 +19,7 @@ type FilePathResolved = FilePathCommon & {
   /**
    * The file's path, shown to the user in logs.
    *
-   * Resolved: it always shows a file path. (It nevers shows an import path such as `vike-react/config`.)
+   * Resolved: it always shows a file path. (It never shows an import path such as `vike-react/config`.)
    *
    * Its value is equivalent to `filePath.filePathAbsoluteUserRootDir ?? filePath.filePathAbsoluteFilesystem`.
    */

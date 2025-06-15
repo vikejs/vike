@@ -18,7 +18,7 @@ function pluginBuildApp(): Plugin[] {
 
         return {
           builder: {
-            // Can be overriden by another plugin e.g vike-vercel https://github.com/vikejs/vike/pull/2184#issuecomment-2659425195
+            // Can be overridden by another plugin e.g vike-vercel https://github.com/vikejs/vike/pull/2184#issuecomment-2659425195
             async buildApp(builder) {
               assert(builder.environments.client)
               assert(builder.environments.ssr)

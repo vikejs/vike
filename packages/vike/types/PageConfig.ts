@@ -115,7 +115,7 @@ type ConfigValueSource = {
     | null
   // TODO/v1-release: remove `locationId` in favor of `plusFile.locationId`
   locationId: LocationId
-  /** Wether the config value is loaded at runtime, for example config.Page or config.onBeforeRender */
+  /** Whether the config value is loaded at runtime, for example config.Page or config.onBeforeRender */
   valueIsLoadedWithImport: boolean
   /** Whether the config value is a file path, this is currently only true for +client */
   valueIsFilePath?: true

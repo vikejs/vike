@@ -13,7 +13,7 @@ if (isBrowser()) {
 
 import { assert, assertUsage, isPlainObject, objectAssign } from './utils.js'
 import { type PageContextUrlInternal, type PageContextUrlSource } from '../getPageContextUrlComputed.js'
-import { resolvePrecendence } from './resolvePrecedence.js'
+import { resolvePrecedence } from './resolvePrecedence.js'
 import { resolveRouteString } from './resolveRouteString.js'
 import { resolveRouteFunction } from './resolveRouteFunction.js'
 import { executeOnBeforeRouteHook } from './executeOnBeforeRouteHook.js'
@@ -71,7 +71,7 @@ async function route(pageContext: PageContextForRoute, skipOnBeforeRouteHook?: t
     pageContext._globalContext._pageRoutes.map(async (pageRoute): Promise<void> => {
       const { pageId, routeType } = pageRoute
 
-      // Filesytem Routing
+      // Filesystem Routing
       if (pageRoute.routeType === 'FILESYSTEM') {
         const { routeString } = pageRoute
         const match = resolveRouteString(routeString, urlPathname)
@@ -114,7 +114,7 @@ async function route(pageContext: PageContextForRoute, skipOnBeforeRouteHook?: t
     }),
   )
 
-  resolvePrecendence(routeMatches)
+  resolvePrecedence(routeMatches)
   const winner = routeMatches[0] ?? null
 
   debug(`Route matches for URL ${pc.cyan(urlPathname)} (in precedence order):`, routeMatches)

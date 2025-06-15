@@ -37,7 +37,7 @@ function isFilePathAbsoluteFilesystem(filePath: string) {
     //   - File path absolute starting from filesystem root, e.g. /home/rom/code/my-app/pages/about/+Page.js
     //   - File path absolute starting from user root dir (Vite's `config.root`), e.g. /pages/about/+Page.js
     // - Checking whether `p` starts with the first directory of process.cwd() (or `userRootDir`) can be erroneous, most notably when using docker: https://github.com/vikejs/vike/issues/703
-    // - Using require.resolve() or node:fs to check wehther the file/dir exsits would be a solution, but maybe too slow?
+    // - Using require.resolve() or node:fs to check whether the file/dir exists would be a solution, but maybe too slow?
     return filePath.startsWith('/')
   } else {
     const yes = path.win32.isAbsolute(filePath)

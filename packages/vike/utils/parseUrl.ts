@@ -350,7 +350,7 @@ function isUrlExternal(url: string): boolean {
 URL with protocol.
 
   http://example.com
-  https://exmaple.com
+  https://example.com
   tauri://localhost
   file://example.com
   capacitor://localhost/assets/chunks/chunk-DJBYDrsP.js

@@ -7,7 +7,7 @@ import App from './App'
 
 async function onRenderClient(pageContext) {
   const { Page } = pageContext
-  const apolloClient = makeApolloClient(pageContext.apolloIntialState)
+  const apolloClient = makeApolloClient(pageContext.apolloInitialState)
   hydrateRoot(
     document.getElementById('page-content'),
     <App apolloClient={apolloClient}>
@@ -16,9 +16,9 @@ async function onRenderClient(pageContext) {
   )
 }
 
-function makeApolloClient(apolloIntialState) {
+function makeApolloClient(apolloInitialState) {
   return new ApolloClient({
     uri: 'https://countries.trevorblades.com',
-    cache: new InMemoryCache().restore(apolloIntialState),
+    cache: new InMemoryCache().restore(apolloInitialState),
   })
 }
