@@ -7,17 +7,19 @@ on:
     # Only run this workflow if there are changes in the following
     paths:
       - packages/vike.dev/**
-      - .github/workflows/docs.yml
+      - .github/workflows/website.yml
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
+
       - run: pnpm install
       - run: pnpm run build
       - run: pnpm run docs:test
       - run: pnpm run docs:build
+
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
