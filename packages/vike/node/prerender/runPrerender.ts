@@ -1179,9 +1179,13 @@ function getRedirectHtml(urlTarget: string) {
   <meta charset="UTF-8">
   <meta http-equiv="refresh" content="0;url=${urlTargetSafe}">
   <title>Redirect ${urlTargetSafe}</title>
+  <style>body{opacity:0}</style>
+  <noscript>
+  <style>body{opacity:1}</style>
+  </noscript>
 </head>
 <body style="min-height: 100vh; margin: 0; font-family: sans-serif; display: flex; justify-content: center; align-items: center; transition: opacity 0.3s;">
-  <script>document.body.style.opacity=0; setTimeout(()=>{document.body.style.opacity=1},1000);</script>
+  <script>setTimeout(()=>{document.body.style.opacity=1},2000)</script>
   <div>
     <h1>Redirect <a href="${urlTargetSafe}"><code style="background-color: #eaeaea; padding: 3px 5px; border-radius: 4px;">${urlTargetSafe}</code></a></h1>
     <p>If you aren't redirected, click the link above.</p>
