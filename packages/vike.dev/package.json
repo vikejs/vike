@@ -9,7 +9,7 @@
     "spellcheck:check": "tsx ./spellcheck.ts check"
   },
   "dependencies": {
-    "@batijs/elements": "^0.0.47",
+    "@batijs/elements": "^0.0.48",
     "@brillout/docpress": "^0.13.2",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
