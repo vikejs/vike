@@ -57,6 +57,7 @@ function Counter() {
 
 function DummyText() {
   return (
+    // spellcheck-ignore:on
     <>
       <p>
         Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum
@@ -117,5 +118,6 @@ function DummyText() {
         varius tincidunt libero. Phasellus dolor. Maecenas vestibulum mollis diam. Pellentesque ut neque.
       </p>
     </>
+    // spellcheck-ignore:off
   )
 }
