@@ -1,4 +1,4 @@
-name: Docs
+name: Website Deployment
 on:
   push:
     # Only deploy upon new commits to `main`
