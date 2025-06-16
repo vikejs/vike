@@ -6,6 +6,9 @@ extend-exclude = [
 ignore-hidden = false
 
 [default]
+# Ignore comments
+# https://github.com/crate-ci/typos/issues/316#issuecomment-2886204780
+# https://github.com/crate-ci/typos/blob/master/docs/reference.md#example-configurations
 extend-ignore-re = [
   # Ignore next line
   "(?s)spellcheck-ignore[^\\n]*\\n[^\\n]*",
