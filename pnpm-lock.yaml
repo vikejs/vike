@@ -12,8 +12,8 @@ importers:
         specifier: ^1.9.4
         version: 1.9.4
       '@brillout/spellcheck':
-        specifier: ^0.1.0
-        version: 0.1.0
+        specifier: ^0.1.1
+        version: 0.1.1
       '@brillout/test-e2e':
         specifier: ^0.6.14
         version: 0.6.14
@@ -2281,8 +2281,8 @@ packages:
   '@brillout/shell@0.2.0':
     resolution: {integrity: sha512-PAUZOIePE9zdkYVUE1Ybpx5Q2ydNbTluTzQ4w5x4WuWMn+zQF3+DG4gRuQy76ZM1ScdiCK5gldgGJQrVx4w5lg==}
 
-  '@brillout/spellcheck@0.1.0':
-    resolution: {integrity: sha512-OkOt6ArqI8U6DbMs3hrxmil5usJJQP16+lXpw9n98zQy4SK6qY2TkiM4n7O+IxNs0DgiWRUJXHge6sSKI4zXWg==}
+  '@brillout/spellcheck@0.1.1':
+    resolution: {integrity: sha512-Jf3+7bsPV+mJ6l2rRBAiIys7dDnkrlafTmBucBcUd0auJsEY2L/EzgmY4/AUteg02AEfIh6sNojqgSc8SGYmwg==}
     hasBin: true
 
   '@brillout/test-e2e@0.6.14':
@@ -8143,7 +8143,7 @@ snapshots:
     dependencies:
       '@brillout/picocolors': 1.0.28
 
-  '@brillout/spellcheck@0.1.0':
+  '@brillout/spellcheck@0.1.1':
     dependencies:
       '@brillout/picocolors': 1.0.28
       '@brillout/shell': 0.2.0
