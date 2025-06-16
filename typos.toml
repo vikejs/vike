@@ -12,7 +12,7 @@ ignore-hidden = false
 extend-ignore-re = [
   # Ignore next line
   "(?s)spellcheck-ignore[^\\n]*\\n[^\\n]*",
-  # Ignore between `spellcheck-ignore:on` and `spellcheck-ignore:off`
+  # Ignore between spellcheck-ignore:on and spellcheck-ignore:off
   "(?s)spellcheck-ignore:on.*?spellcheck-ignore:off",
   # Ignore whole file
   "(?s).*spellcheck-ignore:file.*",
