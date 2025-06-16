@@ -889,8 +889,8 @@ importers:
   packages/vike.dev:
     dependencies:
       '@batijs/elements':
-        specifier: ^0.0.47
-        version: 0.0.47
+        specifier: ^0.0.48
+        version: 0.0.48
       '@brillout/docpress':
         specifier: ^0.13.2
         version: 0.13.2(@algolia/client-search@5.21.0)(@types/react@19.1.6)(@vitejs/plugin-react-swc@3.10.1(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.8.3)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
@@ -2215,8 +2215,8 @@ packages:
     resolution: {integrity: sha512-H45s8fVLYjbhFH62dIJ3WtmJ6RSPt/3DRO0ZcT2SUiYiQyz3BLVb9ADEnLl91m74aQPS3AzzeajZHYOalWe3bg==}
     engines: {node: '>=6.9.0'}
 
-  '@batijs/elements@0.0.47':
-    resolution: {integrity: sha512-rF7PJz9Vq84OAIFn0BDMeyddTPBB4c8IpXzwmGzFTXNfiJEkHgqQab1v7Ns11UXEaoDOchRFpOIio6R23//1zQ==}
+  '@batijs/elements@0.0.48':
+    resolution: {integrity: sha512-4F/w/5+NyiP52cu8xthJko5dj8YZwQ6ocZhizOCDF+chQ5Tx59BGoQJH4vAow9/ON0eYFBNcFjeg7eVF/g2FgA==}
 
   '@biomejs/biome@1.9.4':
     resolution: {integrity: sha512-1rkd7G70+o9KkTn5KLmDYXihGoTaIGO9PIIN2ZB7UJxFrWw04CZHPYiMRjYsaDvVV7hP1dYNRLxSANLaBFGpog==}
@@ -2278,7 +2278,7 @@ packages:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
       typescript: '>=5.0.0'
-      vike: link:/home/rom/code/vike/packages/vike/
+      vike: link:/home/magne/workspace/vike/packages/vike/
       vite: '>=5.2.0'
     peerDependenciesMeta:
       '@vitejs/plugin-react-swc':
@@ -7668,7 +7668,7 @@ packages:
   vike-cloudflare@0.2.3:
     resolution: {integrity: sha512-CLl/EwO2aT50letOkKoYmdIgWG0SNizKaw7gdBSD8lZrB29C9HxyRtUeQdTne/UZwm0Yvw9lW4HjnZ1XcdHrtQ==}
     peerDependencies:
-      vike: link:/home/rom/code/vike/packages/vike/
+      vike: link:/home/magne/workspace/vike/packages/vike/
       vite: '>=5.3.0'
 
   vike-react@0.5.12:
@@ -7676,19 +7676,19 @@ packages:
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
-      vike: link:/home/rom/code/vike/packages/vike/
+      vike: link:/home/magne/workspace/vike/packages/vike/
 
   vike-react@0.6.1:
     resolution: {integrity: sha512-ruUsOoz6TcdeIP5ORmb4Y1PKBNvqRDtCGrry6rY9Dj9ZYFJe+f/xnaKD81itua5nVnKfTtLQ2J4szIfYwJ9KrA==}
     peerDependencies:
       react: '>=19'
       react-dom: '>=19'
-      vike: link:/home/rom/code/vike/packages/vike/
+      vike: link:/home/magne/workspace/vike/packages/vike/
 
   vike-server@1.0.16:
     resolution: {integrity: sha512-1xg8vLZv4yZoLlB7XVpMopND7kspjVnHNSbV3uHJs+bqEWPhM65PHzsz1VFATS8wFdaAQMmAStptskMfWAHXNw==}
     peerDependencies:
-      vike: link:/home/rom/code/vike/packages/vike/
+      vike: link:/home/magne/workspace/vike/packages/vike/
       vite: '>=6'
     peerDependenciesMeta:
       vite:
@@ -7698,13 +7698,13 @@ packages:
     resolution: {integrity: sha512-CiDvNNoEjHE9tAo/+Mc7FuJ3ocCWTxhVqNNwnYGfIe5sFERGaaN8qq9mvpAtAECH2T1bRMG9HYPEvGXgg1Vypg==}
     peerDependencies:
       solid-js: ^1.8.7
-      vike: link:/home/rom/code/vike/packages/vike/
+      vike: link:/home/magne/workspace/vike/packages/vike/
       vite: '>=5.0.0'
 
   vike-vue@0.9.0:
     resolution: {integrity: sha512-AnHMSJOR61msugu6qE2XApMDsqO2NH8IAghwjC20k3/jXxn+23CNPTe4Hz+l8v5BBGYNmb3/8Q203O0s1qs6Ow==}
     peerDependencies:
-      vike: link:/home/rom/code/vike/packages/vike/
+      vike: link:/home/magne/workspace/vike/packages/vike/
       vue: '>=3.0.0'
 
   vite-node@3.1.3:
@@ -7736,7 +7736,7 @@ packages:
     resolution: {integrity: sha512-LuqfwtxAGfyhktieACtvP5bbCOLGqY9kpCHHBANC/e5kGmM3nly7Qv8Rv4gHIAPMaDRGb5d9zzbbm/rGTBGR5w==}
     peerDependencies:
       '@vite-plugin-vercel/vike': 9.0.4
-      vike: link:/home/rom/code/vike/packages/vike/
+      vike: link:/home/magne/workspace/vike/packages/vike/
       vite: ^4.4 || ^5.0.2 || ^6
     peerDependenciesMeta:
       '@vite-plugin-vercel/vike':
@@ -8410,7 +8410,7 @@ snapshots:
       '@babel/helper-string-parser': 7.25.9
       '@babel/helper-validator-identifier': 7.25.9
 
-  '@batijs/elements@0.0.47': {}
+  '@batijs/elements@0.0.48': {}
 
   '@biomejs/biome@1.9.4':
     optionalDependencies:
