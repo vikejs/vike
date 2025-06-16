@@ -17,4 +17,5 @@ extend-ignore-re = [
     "scss\\|styl\\|stylus",
     "(?Rm)^.*(#|//)\\s*typos-ignore$",
     "(?Rm)^.*(#|//)\\s*spellchecker:disable-line$",
+    "(?s)//\\s*spellchecker:ignore-next-line[^\\n]*\\n[^\\n]*",
 ]

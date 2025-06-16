@@ -94,6 +94,7 @@ Or:
 # Filter
 # typos-ignore
 # spellchecker:disable-line
+# spellchecker:ignore-next-line
 pnpm exec test-e2e ome-exampl # At the monorepo root
 ```
 
