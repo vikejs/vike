@@ -92,6 +92,7 @@ Or:
 
 ```shell
 # Filter
+# typos-ignore
 pnpm exec test-e2e ome-exampl # At the monorepo root
 ```
 
