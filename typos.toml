@@ -2,19 +2,11 @@
 extend-exclude = [
     ".git/",
     "CHANGELOG.md",
-    "examples/i18n/locales/translations.js",
-    "test-deprecated-design/i18n/locales/translations.js",
-    # Lorem ipsum
-    "test/vike-react/pages/starship/+Layout.tsx",
-    "test/vike-solid/pages/starship/+Layout.tsx",
-    "test/vike-vue/pages/starship/DummyText.vue",
 ]
 ignore-hidden = false
 
 [default]
 extend-ignore-re = [
-    "\\[[0-9a-f]{7}\\]",
-    "scss\\|styl\\|stylus",
     "(?s)spellcheck-ignore[^\\n]*\\n[^\\n]*",
     "(?s)spellcheck-ignore:on.*?spellcheck-ignore:off",
     "(?s).*spellcheck-ignore:all.*",

@@ -1,3 +1,5 @@
+// spellcheck-ignore:all
+
 export const translations = {
   Hello: {
     'de-DE': 'Hallo',
