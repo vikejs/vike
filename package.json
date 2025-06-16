@@ -33,8 +33,8 @@
     "format:biome": "biome check --write --unsafe",
     "format:check": "biome ci && echo '\\033[1;32mFormatting is correct.\\033[0m' || (echo '\\033[1;34mFix formatting by running `$ pnpm run format`.\\033[0m' && exit 1)",
     "========= Spellchecking ": "",
-    "spellcheck": "tsx ./spellcheck.ts fix",
-    "spellcheck:check": "tsx ./spellcheck.ts check",
+    "spellcheck": "spellcheck fix --version 1.33.1",
+    "spellcheck:check": "spellcheck check --version 1.33.1",
     "========= Reset": "",
     "reset": "git clean -Xdf && pnpm install && pnpm run build",
     "========= Only allow pnpm; forbid yarn & npm": "",
@@ -42,13 +42,11 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@brillout/picocolors": "^1.0.26",
-    "@brillout/shell": "^0.2.0",
     "@brillout/test-e2e": "^0.6.14",
     "@brillout/test-types": "^0.1.13",
+    "@brillout/spellcheck": "^0.0.0",
     "playwright": "^1.50.1",
     "prettier": "^3.2.5",
-    "tsx": "^4.19.4",
     "vitest": "^3.1.3"
   },
   "packageManager": "pnpm@9.15.9"
