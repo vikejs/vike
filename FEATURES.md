@@ -88,3 +88,4 @@ Misc:
     - https://redux.js.org/usage/nextjs
     - https://zustand.docs.pmnd.rs/guides/nextjs
 - +prerender.redirects
+- @brillout/test-e2e => endcheck
