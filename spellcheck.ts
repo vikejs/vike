@@ -45,7 +45,7 @@ async function check() {
   } else {
     console.log(res.stdout)
     console.log(pc.red(pc.bold('❌ Typos found (see above)')))
-    console.log(pc.blue(`➡️  Fix typos by running ${pc.bold('$ pnpm run docs:spellcheck')}`))
+    console.log(pc.blue(`➡️  Fix typos by running ${pc.bold('$ pnpm run spellcheck')}`))
     process.exit(1)
   }
 }
