@@ -15,4 +15,5 @@ ignore-hidden = false
 extend-ignore-re = [
     "\\[[0-9a-f]{7}\\]",
     "scss\\|styl\\|stylus",
+    "(?Rm)^.*(#|//)\\s*typos-ignore$",
 ]
