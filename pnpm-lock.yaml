@@ -11,12 +11,9 @@ importers:
       '@biomejs/biome':
         specifier: ^1.9.4
         version: 1.9.4
-      '@brillout/picocolors':
-        specifier: ^1.0.26
-        version: 1.0.28
-      '@brillout/shell':
-        specifier: ^0.2.0
-        version: 0.2.0
+      '@brillout/spellcheck':
+        specifier: ^0.1.0
+        version: 0.1.0
       '@brillout/test-e2e':
         specifier: ^0.6.14
         version: 0.6.14
@@ -29,9 +26,6 @@ importers:
       prettier:
         specifier: ^3.2.5
         version: 3.4.2
-      tsx:
-        specifier: ^4.19.4
-        version: 4.19.4
       vitest:
         specifier: ^3.1.3
         version: 3.1.3(@edge-runtime/vm@3.2.0)(@types/debug@4.1.12)(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
@@ -2286,6 +2280,10 @@ packages:
 
   '@brillout/shell@0.2.0':
     resolution: {integrity: sha512-PAUZOIePE9zdkYVUE1Ybpx5Q2ydNbTluTzQ4w5x4WuWMn+zQF3+DG4gRuQy76ZM1ScdiCK5gldgGJQrVx4w5lg==}
+
+  '@brillout/spellcheck@0.1.0':
+    resolution: {integrity: sha512-OkOt6ArqI8U6DbMs3hrxmil5usJJQP16+lXpw9n98zQy4SK6qY2TkiM4n7O+IxNs0DgiWRUJXHge6sSKI4zXWg==}
+    hasBin: true
 
   '@brillout/test-e2e@0.6.14':
     resolution: {integrity: sha512-iOalgODAMl93f3v6MmQ25fNzhFp6UJtNRyl1OdREj/FMGNIi9tHl5hesmJXh24IME0NoJVeTJUFyxI49wgIHQA==}
@@ -8144,6 +8142,11 @@ snapshots:
   '@brillout/shell@0.2.0':
     dependencies:
       '@brillout/picocolors': 1.0.28
+
+  '@brillout/spellcheck@0.1.0':
+    dependencies:
+      '@brillout/picocolors': 1.0.28
+      '@brillout/shell': 0.2.0
 
   '@brillout/test-e2e@0.6.14':
     dependencies:
