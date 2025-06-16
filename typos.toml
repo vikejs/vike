@@ -15,7 +15,5 @@ ignore-hidden = false
 extend-ignore-re = [
     "\\[[0-9a-f]{7}\\]",
     "scss\\|styl\\|stylus",
-    "(?Rm)^.*(#|//)\\s*typos-ignore$",
-    # "(?Rm)^.*(#|//)\\s*spellchecker:disable-line$", # doesn't work
-    # "(?s)spellchecker:ignore-next-line[^\\n]*\\n[^\\n]*", # doesn't work
+    "(?s)typos-ignore[^\\n]*\\n[^\\n]*",
 ]
