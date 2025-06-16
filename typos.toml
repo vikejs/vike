@@ -9,5 +9,5 @@ ignore-hidden = false
 extend-ignore-re = [
     "(?s)spellcheck-ignore[^\\n]*\\n[^\\n]*",
     "(?s)spellcheck-ignore:on.*?spellcheck-ignore:off",
-    "(?s).*spellcheck-ignore:all.*",
+    "(?s).*spellcheck-ignore:file.*",
 ]

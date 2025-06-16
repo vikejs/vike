@@ -1,4 +1,4 @@
-// spellcheck-ignore:all
+// spellcheck-ignore:file
 
 export const translations = {
   Hello: {
