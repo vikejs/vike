@@ -16,4 +16,6 @@ extend-ignore-re = [
     "\\[[0-9a-f]{7}\\]",
     "scss\\|styl\\|stylus",
     "(?s)typos-ignore[^\\n]*\\n[^\\n]*",
+    "(?s)typos-ignore:on.*?typos-ignore:off",
+    "(?s).*typos-ignore:all.*",
 ]
