@@ -1,8 +1,8 @@
-name: 'Check formatting'
+name: Format
 on:
   push:
 jobs:
-  check_formatting:
+  main:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

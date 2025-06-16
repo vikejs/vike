@@ -1,10 +1,6 @@
 name: Spellcheck
 on:
   push:
-    # Only run this workflow if there are changes in the following
-    paths:
-      - packages/vike.dev/**
-      - .github/workflows/spellcheck.yml
 jobs:
   main:
     runs-on: ubuntu-latest
