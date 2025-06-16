@@ -1,3 +1,32 @@
+## [0.4.232](https://github.com/vikejs/vike/compare/v0.4.231...v0.4.232) (2025-06-16)
+
+
+### Bug Fixes
+
+* add promise timeout warning ([5930bc8](https://github.com/vikejs/vike/commit/5930bc84b538af98edaa54d9465b3c5f5b09914d))
+* allow Vike extension configs to be defined at root directory ([#2493](https://github.com/vikejs/vike/issues/2493)) ([c0e9710](https://github.com/vikejs/vike/commit/c0e97106948ae13a4de9023fde91866023a65e6a))
+* avoid build error swallowing ([0048696](https://github.com/vikejs/vike/commit/0048696fcf4585f1dd3f66f794e4e27b418f2fba))
+* avoid hanging upon Vike config changes ([e31b0e5](https://github.com/vikejs/vike/commit/e31b0e51622885d18605c5ec142a5f56726edb07))
+* avoid server shutdown upon config runtime error ([#2479](https://github.com/vikejs/vike/issues/2479)) ([ad755a3](https://github.com/vikejs/vike/commit/ad755a34eaf5e6f23158b347e9804e987ca466d6))
+* error message typo ([e3418a9](https://github.com/vikejs/vike/commit/e3418a929b832ca7a73b4e48f9bb149dbf9cee48))
+* fix file env error message (fix [#2483](https://github.com/vikejs/vike/issues/2483)) ([#2489](https://github.com/vikejs/vike/issues/2489)) ([e1c3295](https://github.com/vikejs/vike/commit/e1c329521c343c96a65cb118ecfe15509545978f))
+* fix HMR recover upon config error ([cc06ca9](https://github.com/vikejs/vike/commit/cc06ca971e121a0092f294957163d2cc52f1e4fd))
+* fix HMR recover upon config error concurrent ([b1a8dcd](https://github.com/vikejs/vike/commit/b1a8dcd012699bc7ce50b7c61473d807596db427))
+* fix pre-render force exit assert (fix [#2475](https://github.com/vikejs/vike/issues/2475)) ([#2488](https://github.com/vikejs/vike/issues/2488)) ([8978b32](https://github.com/vikejs/vike/commit/8978b325c6b87184f553338f010764ab8071242d))
+* implement HMR for +onCreateGlobalContext ([8656aa1](https://github.com/vikejs/vike/commit/8656aa1d20ab5b38b4cea546ff40ac3b70efb793))
+* improve error message upon HMR race condition ([506499b](https://github.com/vikejs/vike/commit/506499ba77f7434557bd733439503fcfdb18304b))
+* improve HMR upon vike config dependency file removal/creation ([#2482](https://github.com/vikejs/vike/issues/2482)) ([912fa75](https://github.com/vikejs/vike/commit/912fa75c1a501da24abeb90f681d7af0b4d54445))
+* polish bug error message ([ec77c11](https://github.com/vikejs/vike/commit/ec77c1187c8362bb3f0748191bda3064e6115cba))
+* prettify runtime config build error ([5fcdc4d](https://github.com/vikejs/vike/commit/5fcdc4d5094f1a4dcbefc0b481cdd30a205aef2d))
+* workaraound bug upon Vike's Vite plugin applied twice ([1997d53](https://github.com/vikejs/vike/commit/1997d53d2591d6ecb9dc9ab2847f5c2a3dce2fe2))
+
+
+### Features
+
+* pre-render static +redirects ([#2497](https://github.com/vikejs/vike/issues/2497)) ([4a6ad3e](https://github.com/vikejs/vike/commit/4a6ad3e19e50e743b2305e8c436b23d1619d2876))
+
+
+
 ## [0.4.231](https://github.com/vikejs/vike/compare/v0.4.230...v0.4.231) (2025-05-30)
 
 

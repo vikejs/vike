@@ -9,7 +9,7 @@
     "@vue/server-renderer": "^3.2.37",
     "pinia": "^2.0.14",
     "vite": "^6.3.2",
-    "vike": "0.4.231",
+    "vike": "0.4.232",
     "vue": "^3.2.37"
   },
   "type": "module"
