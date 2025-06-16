@@ -3,10 +3,7 @@
     "dev": "vike dev",
     "build": "vike build",
     "preview": "vike build && vike preview",
-    "typecheck": "tsc --noEmit --watch",
-    "========= Spellcheck": "",
-    "spellcheck": "tsx ./spellcheck.ts fix",
-    "spellcheck:check": "tsx ./spellcheck.ts check"
+    "typecheck": "tsc --noEmit --watch"
   },
   "dependencies": {
     "@batijs/elements": "^0.0.48",
