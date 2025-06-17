@@ -110,11 +110,15 @@ For <Link href="/pre-rendering">pre-rendered pages / SSG apps</Link>, in order t
 
 A common use case is fetching global initial data needed by all or several pages — for example, <Link href="/auth">information about the logged-in user</Link> or <Link href="/i18n">i18n data</Link>.
 
-You can add such data <Link href="/globalContext#custom">to `globalContext`</Link> and/or <Link href="/pageContext#custom">to `pageContext`</Link>.
+You can store such data in `globalContext` and/or `pageContext`, and fetch it in `+onCreateGlobalContext()` and/or `+onCreatePageContext()`.
 
-The `globalContext` object is accessible anywhere, while `pageContext` is accessible from any <Link href="/hooks">Vike hook</Link> or UI component. See:
+The `globalContext` object is accessible anywhere, while `pageContext` is accessible from any <Link href="/hooks">Vike hook</Link> or UI component.
+
+See:
  - <Link href="/pageContext" />
  - <Link href="/globalContext" />
+ - <Link href="/onCreatePageContext" />
+ - <Link href="/onCreateGlobalContext" />
 
 
 ## State management
