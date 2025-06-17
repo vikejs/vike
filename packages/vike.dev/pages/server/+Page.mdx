@@ -15,7 +15,7 @@ This page contains the entire `vike-server` documentation.
 
 > Alternatively, instead of using a server, you can <Link href="/pre-rendering">pre-render</Link> your pages and deploy to a <Link href="/static-hosts">static host</Link>.
 
-> If you want more control over server integration, see <Link href="/integration#server-manual-integration" doNotInferSectionTitle /> instead.
+> If you want more control over server integration, see <Link href="/integration#server-manual-integration">Server (manual integration)</Link>.
 
 
 ## Add `vike-server` to an existing Vike app
@@ -340,13 +340,13 @@ apply(app, {
 
 ## HTTPS
 
-If you want to use HTTPS in development, you need to pass `createServer` and the HTTPS certificates to `serve()`:
+If you want to use HTTPS in development, pass `createServer` and the HTTPS certificates to `serve()`:
 
 ```js
-// For https support
 import { createServer } from 'node:https'
-// Or for http2 support
-// import { createSecureServer as createServer } from 'node:http2'
+/* Or with HTTP2:
+import { createSecureServer as createServer } from 'node:http2'
+*/
 
 serve(app, {
   createServer,

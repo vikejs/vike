@@ -261,9 +261,13 @@ See also:
 
 ## Server (manual integration)
 
-In general, <Link href="/server">we recommend using `vike-server`</Link> which automatically integrates Vike with your JavaScript server (Express.js, Hono, Fastify, ...). But you can, instead, manually integrate Vike into your server if you prefer.
+You can manually integrate Vike into your server for full control over the server and deployment.
+
+> We generally recommend <Link href="/server">using `vike-server`</Link>, which automatically integrates Vike with your favorite JavaScript server (Express.js, Hono, Fastify, ...). But you can also manually integrate Vike if you need more control.
 
 <JustAMiddleware />
+
+> If you want to use HTTPS in development, [pass the HTTPS certificates to Vite's dev server](https://vitejs.dev/config/server-options.html#server-https).
 
 You can use:
 - Any server framework (Express, Fastify, Hono, Nitro, HatTip, Koa, Hapi, ...)
