@@ -273,6 +273,7 @@ const headings = [
     level: 2,
     title: 'Server',
     url: '/server',
+    sectionTitles: ['HTTPS'],
   },
   {
     level: 2,
