@@ -11,8 +11,5 @@ import type { HookName } from '../../../types/Config.js'
 
 type PageContextExecuteHookServer = VikeConfigPublicPageLazy & PageContextForPublicUsageServer
 async function execHookServer(hookName: HookName, pageContext: PageContextExecuteHookServer) {
-  return await execHook(hookName, pageContext, (p) => {
-    preparePageContextForPublicUsageServer(p)
-    return p
-  })
+  return await execHook(hookName, pageContext, preparePageContextForPublicUsageServer)
 }
