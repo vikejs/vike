@@ -276,6 +276,9 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     eager: true,
     global: true,
   },
+  onAfterRoute: {
+    env: { server: true, client: 'if-client-routing' },
+  },
   prerender: {
     env: { config: true },
     global: (value, { isGlobalLocation }) => typeof value === 'object' || isGlobalLocation,

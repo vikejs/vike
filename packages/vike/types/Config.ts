@@ -64,6 +64,7 @@ type HookNamePage =
   | 'data'
   | 'onData'
   | 'route'
+  | 'onAfterRoute'
 type HookNameGlobal = 'onBeforeRoute' | 'onPrerenderStart' | 'onCreatePageContext' | 'onCreateGlobalContext'
 // v0.4 design TODO/v1-release: remove
 type HookNameOldDesign = 'render' | 'prerender' | 'onBeforePrerender'
@@ -476,6 +477,12 @@ type ConfigBuiltIn = {
    * https://vike.dev/onBeforeRoute
    */
   onBeforeRoute?: OnBeforeRouteAsync | OnBeforeRouteSync | ImportString
+
+  /** Hook called after the URL is routed to a page.
+   *
+   * https://vike.dev/onAfterRoute
+   */
+  onAfterRoute?: (pageContext: PageContextClient | PageContextServer) => {}
 
   /** Hook called after the page is hydrated.
    *
