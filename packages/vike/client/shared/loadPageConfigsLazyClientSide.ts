@@ -11,6 +11,26 @@ import { objectAssign } from '../runtime-server-routing/utils.js'
 
 const stamp = '__whileFetchingAssets'
 
+async function loadPageConfigsLazyClientSide<
+  PageContext extends {
+    pageId: string
+    _pageFilesAll: PageFile[]
+    _globalContext: {
+      _pageConfigs: PageConfigRuntime[]
+      _pageConfigGlobal: PageConfigGlobalRuntime
+    }
+  },
+>(pageContext: PageContext) {
+  const pageContextAddendum = await loadPageConfigsLazyClientSideOnly(
+    pageContext.pageId,
+    pageContext._pageFilesAll,
+    pageContext._globalContext._pageConfigs,
+    pageContext._globalContext._pageConfigGlobal,
+  )
+  objectAssign(pageContext, pageContextAddendum)
+  return pageContext
+}
+
 type PageContextUserFilesLoaded = VikeConfigPublicPageLazy & { _pageFilesLoaded: PageFile[] }
 async function loadPageConfigsLazyClientSideOnly(
   pageId: string,
@@ -44,26 +64,6 @@ async function loadPageConfigsLazyClientSideOnly(
   objectAssign(pageContextAddendum, pageContextExports)
   objectAssign(pageContextAddendum, { _pageFilesLoaded: pageFilesClientSide })
   return pageContextAddendum
-}
-
-async function loadPageConfigsLazyClientSide<
-  PageContext extends {
-    pageId: string
-    _pageFilesAll: PageFile[]
-    _globalContext: {
-      _pageConfigs: PageConfigRuntime[]
-      _pageConfigGlobal: PageConfigGlobalRuntime
-    }
-  },
->(pageContext: PageContext) {
-  const pageContextAddendum = await loadPageConfigsLazyClientSideOnly(
-    pageContext.pageId,
-    pageContext._pageFilesAll,
-    pageContext._globalContext._pageConfigs,
-    pageContext._globalContext._pageConfigGlobal,
-  )
-  objectAssign(pageContext, pageContextAddendum)
-  return pageContext
 }
 
 function isErrorFetchingStaticAssets(err: unknown) {
