@@ -1,5 +1,5 @@
 export { loadPageConfigsLazyClientSide }
-export { loadPageConfigsLazy as loadPageConfigsLazyClientSideWithoutExecHook }
+export { loadPageConfigsLazy }
 export { isErrorFetchingStaticAssets }
 
 import { getPageFilesClientSide, type PageFile, type VikeConfigPublicPageLazy } from '../../shared/getPageFiles.js'
