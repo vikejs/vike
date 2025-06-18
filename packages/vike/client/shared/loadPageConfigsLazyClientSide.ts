@@ -1,5 +1,5 @@
 export { loadPageConfigsLazyClientSide }
-export { loadPageConfigsLazyClientSideOnly }
+export { loadPageConfigsLazy as loadPageConfigsLazyClientSideWithoutExecHook }
 export { isErrorFetchingStaticAssets }
 
 import { getPageFilesClientSide, type PageFile, type VikeConfigPublicPageLazy } from '../../shared/getPageFiles.js'
@@ -21,7 +21,7 @@ async function loadPageConfigsLazyClientSide<
     }
   },
 >(pageContext: PageContext) {
-  const pageContextAddendum = await loadPageConfigsLazyClientSideOnly(
+  const pageContextAddendum = await loadPageConfigsLazy(
     pageContext.pageId,
     pageContext._pageFilesAll,
     pageContext._globalContext._pageConfigs,
@@ -32,7 +32,7 @@ async function loadPageConfigsLazyClientSide<
 }
 
 type PageContextUserFilesLoaded = VikeConfigPublicPageLazy & { _pageFilesLoaded: PageFile[] }
-async function loadPageConfigsLazyClientSideOnly(
+async function loadPageConfigsLazy(
   pageId: string,
   pageFilesAll: PageFile[],
   pageConfigs: PageConfigRuntime[],

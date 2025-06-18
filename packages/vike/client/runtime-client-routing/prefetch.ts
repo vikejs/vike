@@ -18,7 +18,7 @@ import {
 } from './utils.js'
 import {
   isErrorFetchingStaticAssets,
-  loadPageConfigsLazyClientSideOnly,
+  loadPageConfigsLazyClientSideWithoutExecHook,
 } from '../shared/loadPageConfigsLazyClientSide.js'
 import { skipLink } from './skipLink.js'
 import { disableClientRouting } from './renderPageClientSide.js'
@@ -86,7 +86,7 @@ async function prefetchAssets(pageContextLink: {
   _globalContext: GlobalContextClientInternal
 }): Promise<void> {
   try {
-    await loadPageConfigsLazyClientSideOnly(
+    await loadPageConfigsLazyClientSideWithoutExecHook(
       pageContextLink.pageId,
       pageContextLink._pageFilesAll,
       pageContextLink._globalContext._pageConfigs,
