@@ -2,11 +2,19 @@ export { createPageContextClientSide }
 
 import { assertUsage, augmentType, objectAssign } from './utils.js'
 import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtml.js'
-import { loadPageConfigsLazyClientSide } from '../shared/loadPageConfigsLazyClientSide.js'
+import {
+  loadPageConfigsLazy,
+  PageContext_loadPageConfigsLazyClientSide,
+} from '../shared/loadPageConfigsLazyClientSide.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 
 import { createPageContextObject, createPageContextShared } from '../../shared/createPageContextShared.js'
 import { getGlobalContextClientInternal } from './globalContext.js'
+import {
+  preparePageContextForPublicUsageClient,
+  type PageContextForPublicUsageClient,
+} from './preparePageContextForPublicUsageClient.js'
+import { execHook } from '../../shared/hooks/execHook.js'
 
 const urlFirst = getCurrentUrl({ withoutHash: true })
 
@@ -48,4 +56,21 @@ function assertPristineUrl() {
     urlFirst === urlCurrent,
     `The URL was manipulated before the hydration finished ('${urlFirst}' to '${urlCurrent}'). Ensure the hydration has finished before manipulating the URL. Consider using the onHydrationEnd() hook.`,
   )
+}
+
+type PageContextExecute = Omit<PageContextForPublicUsageClient, keyof Awaited<ReturnType<typeof loadPageConfigsLazy>>>
+async function loadPageConfigsLazyClientSide<
+  PageContext extends PageContext_loadPageConfigsLazyClientSide & PageContextExecute,
+>(pageContext: PageContext) {
+  const pageContextAddendum = await loadPageConfigsLazy(
+    pageContext.pageId,
+    pageContext._pageFilesAll,
+    pageContext._globalContext._pageConfigs,
+    pageContext._globalContext._pageConfigGlobal,
+  )
+  objectAssign(pageContext, pageContextAddendum)
+
+  await execHook('onCreatePageContext', pageContext, preparePageContextForPublicUsageClient)
+
+  return pageContext
 }

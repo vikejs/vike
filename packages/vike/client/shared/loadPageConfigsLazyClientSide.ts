@@ -1,5 +1,5 @@
-export { loadPageConfigsLazyClientSide }
 export { loadPageConfigsLazy }
+export type { PageContext_loadPageConfigsLazyClientSide }
 export { isErrorFetchingStaticAssets }
 
 import { getPageFilesClientSide, type PageFile, type VikeConfigPublicPageLazy } from '../../shared/getPageFiles.js'
@@ -8,28 +8,27 @@ import { findPageConfig } from '../../shared/page-configs/findPageConfig.js'
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
 import type { PageConfigGlobalRuntime, PageConfigRuntime, PageConfigRuntimeLoaded } from '../../types/PageConfig.js'
 import { objectAssign } from '../runtime-server-routing/utils.js'
+import { execHook, type PageContextExecuteHook } from '../../shared/hooks/execHook.js'
+import type { PageContextForPublicUsageClientShared } from './preparePageContextForPublicUsageClientShared.js'
+import { PageContextPrepareMinimum } from '../../shared/preparePageContextForPublicUsage.js'
 
 const stamp = '__whileFetchingAssets'
 
-async function loadPageConfigsLazyClientSide<
-  PageContext extends {
-    pageId: string
-    _pageFilesAll: PageFile[]
-    _globalContext: {
-      _pageConfigs: PageConfigRuntime[]
-      _pageConfigGlobal: PageConfigGlobalRuntime
-    }
-  },
->(pageContext: PageContext) {
-  const pageContextAddendum = await loadPageConfigsLazy(
-    pageContext.pageId,
-    pageContext._pageFilesAll,
-    pageContext._globalContext._pageConfigs,
-    pageContext._globalContext._pageConfigGlobal,
-  )
-  objectAssign(pageContext, pageContextAddendum)
-  return pageContext
-}
+// type PageContextExecute = Omit<PageContextExecuteHook, keyof Awaited<ReturnType<typeof loadPageConfigsLazy>>>
+// type PageContextExecute = Omit<PageContextExecuteHook, keyof Awaited<ReturnType<typeof loadPageConfigsLazy>>>
+type PageContextExecute = Omit<
+  PageContextForPublicUsageClientShared,
+  keyof Awaited<ReturnType<typeof loadPageConfigsLazy>>
+>
+
+type PageContext_loadPageConfigsLazyClientSide = {
+  pageId: string
+  _pageFilesAll: PageFile[]
+  _globalContext: {
+    _pageConfigs: PageConfigRuntime[]
+    _pageConfigGlobal: PageConfigGlobalRuntime
+  }
+} & PageContextPrepareMinimum
 
 type PageContextUserFilesLoaded = VikeConfigPublicPageLazy & { _pageFilesLoaded: PageFile[] }
 async function loadPageConfigsLazy(
