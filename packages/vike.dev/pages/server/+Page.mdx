@@ -263,10 +263,7 @@ apply(app, {
 })
 ```
 
-> The `runtime` object is also available at `pageContext.runtime`. Thus, the `pageContext` function above isn't usually need: you can simply use `pageContext.runtime.req.user` instead, e.g. with <Link href="/usePageContext">`usePageContext()`</Link>.
-
-> The `runtime` object is a [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) (`vike-server` uses [universal-middleware](https://universal-middleware.dev/) under the hood).
-
+> The `runtime` object is also available at <Link href="/pageContext#runtime">`pageContext.runtime`</Link>. Thus, the `pageContext` function above usually isn't need: you can simply access `pageContext.runtime.req.user` instead.
 
 ## Standalone
 

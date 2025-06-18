@@ -128,6 +128,16 @@ The headers of the HTTP Request. As a string object (`Record<string, string>`) n
 
 The headers of the HTTP Request. The original object provided by the server, see <Link href="/headers"/>.
 
+<Prop name="runtime" />
+
+The `pageContext.runtime` object is the [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) and it contains:
+ - `pageContext.runtime.req` — the original HTTP request object, for example [IncomingMessage](https://nodejs.org/api/http.html#class-httpincomingmessage).
+ - `pageContext.runtime.res` — the original HTTP response object, for example [ServerResponse](https://nodejs.org/api/http.html#class-httpserverresponse).
+
+It's set by <Link href="/server">`vike-server`</Link> (which uses [`universal-middleware`](https://universal-middleware.dev/) under the hood).
+
+> It's only available if you use `vike-server`.
+
 <Prop name="config" />
 
 All runtime information about the <Link href="/config">page's configuration</Link> (the page's route, hooks, settings, ...).
