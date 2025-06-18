@@ -30,11 +30,13 @@
 - Add x-powered-by header and add warning if missing (likely means that pageContext.httpResponse.headers isn't used)
 
 v0.5 breaking changes:
-- pageContext.url
-- Forbid async Route Functions
+=== Hihgest Prio
 - Deprecate old design
 - Remove TS helpers such as OnRenderHtmlAsync https://vike.dev/onRenderHtml#typescript
+- Make routing fully sync
+  - Forbid async Route Functions
 === Prio
+- pageContext.url
 - Improve/clean import paths.
   - Either move all isomorphic exports to `import * from 'vike'` or create individual export path for each export e.g. `import { render } from 'vike/render'`
     - E.g. remove `import * from 'vike/abort'` and `import * from 'vike/client'`
