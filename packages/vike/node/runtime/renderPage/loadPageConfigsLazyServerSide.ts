@@ -1,6 +1,6 @@
 export { loadPageConfigsLazyServerSide }
-export type { PageConfigsLazy }
 export type { PageContext_loadPageConfigsLazyServerSide }
+export type { PageConfigsLazy }
 
 import { type PageFile, getPageFilesServerSide } from '../../../shared/getPageFiles.js'
 import { resolveVikeConfigPublicPageLazy } from '../../../shared/page-configs/resolveVikeConfigPublic.js'
