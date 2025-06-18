@@ -223,6 +223,25 @@ async function renderPageAlreadyPrepared(
   } else {
     assert(errNominalPage)
     assert(pageContextNominalPageSuccess === undefined)
+    return await renderPageError(
+      errNominalPage,
+      pageContextBegin,
+      pageContextNominalPageBegin,
+      globalContext,
+      httpRequestId,
+      pageContextsFromRewrite,
+    )
+  }
+}
+
+async function renderPageError(
+  errNominalPage: unknown,
+  pageContextBegin: PageContextBegin,
+  pageContextNominalPageBegin: PageContextBegin,
+  globalContext: GlobalContextServerInternal,
+  httpRequestId: number,
+  pageContextsFromRewrite: PageContextFromRewrite[],
+) {
     assert(pageContextNominalPageBegin)
     assert(hasProp(pageContextNominalPageBegin, 'urlOriginal', 'string'))
 
@@ -304,7 +323,6 @@ async function renderPageAlreadyPrepared(
       return pageContextWithError
     }
     return pageContextErrorPage
-  }
 }
 
 function logHttpRequest(urlOriginal: string, httpRequestId: number) {
