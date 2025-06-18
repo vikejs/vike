@@ -34,15 +34,7 @@ async function createPageContextClientSide() {
   augmentType(pageContextCreated, pageContextAugmented)
 
   // Sets pageContext.config to local configs (overrides the pageContext.config set above)
-  objectAssign(
-    pageContextCreated,
-    await loadPageConfigsLazyClientSide(
-      pageContextCreated.pageId,
-      globalContext._pageFilesAll,
-      globalContext._pageConfigs,
-      globalContext._pageConfigGlobal,
-    ),
-  )
+  augmentType(pageContextCreated, await loadPageConfigsLazyClientSide(pageContextCreated))
 
   assertPristineUrl()
   return pageContextCreated

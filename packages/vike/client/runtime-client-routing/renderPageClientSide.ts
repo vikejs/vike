@@ -228,16 +228,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       objectAssign(pageContext, pageContextFromRoute)
     }
 
+    let pageContextAugmented: Awaited<ReturnType<typeof loadPageConfigsLazyClientSide>>
     try {
-      objectAssign(
-        pageContext,
-        await loadPageConfigsLazyClientSide(
-          pageContext.pageId,
-          pageContext._pageFilesAll,
-          pageContext._globalContext._pageConfigs,
-          pageContext._globalContext._pageConfigGlobal,
-        ),
-      )
+      pageContextAugmented = await loadPageConfigsLazyClientSide(pageContext)
     } catch (err) {
       if (handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) {
         return
@@ -247,6 +240,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         return
       }
     }
+    augmentType(pageContext, pageContextAugmented)
     if (isRenderOutdated()) return
     setPageContextCurrent(pageContext)
 
@@ -418,16 +412,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       return
     }
 
+    let pageContextAugmented: Awaited<ReturnType<typeof loadPageConfigsLazyClientSide>>
     try {
-      objectAssign(
-        pageContext,
-        await loadPageConfigsLazyClientSide(
-          pageContext.pageId,
-          pageContext._pageFilesAll,
-          pageContext._globalContext._pageConfigs,
-          pageContext._globalContext._pageConfigGlobal,
-        ),
-      )
+      pageContextAugmented = await loadPageConfigsLazyClientSide(pageContext)
     } catch (err) {
       if (handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) {
         return
@@ -437,6 +424,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         return
       }
     }
+    augmentType(pageContext, pageContextAugmented)
     if (isRenderOutdated()) return
     setPageContextCurrent(pageContext)
 
