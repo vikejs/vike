@@ -26,13 +26,14 @@ import { loadConfigValues } from '../../../shared/page-configs/loadConfigValues.
 
 type PageContext_loadPageConfigsLazyServerSide = PageContextGetPageAssets &
   PageContextDebugRouteMatches & {
+    pageId: string
     urlOriginal: string
     _globalContext: GlobalContextServerInternal
   }
 type PageContextWithPageConfigsLazy = PromiseType<ReturnType<typeof loadPageConfigsLazyServerSide>>
 
 async function loadPageConfigsLazyServerSide<
-  PageContext extends { pageId: string } & PageContext_loadPageConfigsLazyServerSide,
+  PageContext extends PageContext_loadPageConfigsLazyServerSide,
 >(pageContext: PageContext) {
   const pageContextAddendum = await loadPageConfigsLazyServerSideOnly(pageContext)
   objectAssign(pageContext, pageContextAddendum)
@@ -41,7 +42,7 @@ async function loadPageConfigsLazyServerSide<
 }
 
 async function loadPageConfigsLazyServerSideOnly(
-  pageContext: { pageId: string } & PageContext_loadPageConfigsLazyServerSide,
+  pageContext: PageContext_loadPageConfigsLazyServerSide,
 ) {
   const pageConfig = findPageConfig(pageContext._globalContext._pageConfigs, pageContext.pageId) // Make pageConfig globally available as pageContext._pageConfig ?
 
