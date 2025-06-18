@@ -134,18 +134,16 @@ async function loadPageConfigsLazyServerSideOnly(
     },
   })
 
-  {
-    debugPageFiles({
-      pageContext,
-      isHtmlOnly,
-      isClientRouting,
-      pageFilesLoaded,
-      pageFilesClientSide,
-      pageFilesServerSide,
-      clientEntries,
-      clientDependencies,
-    })
-  }
+  debugPageFiles({
+    pageContext,
+    isHtmlOnly,
+    isClientRouting,
+    pageFilesLoaded,
+    pageFilesClientSide,
+    pageFilesServerSide,
+    clientEntries,
+    clientDependencies,
+  })
 
   return pageContextAddendum
 }
