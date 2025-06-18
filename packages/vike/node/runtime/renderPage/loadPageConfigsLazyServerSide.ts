@@ -1,5 +1,5 @@
 export { loadPageConfigsLazyServerSide }
-export type { PageContextWithPageConfigsLazy }
+export type { PageConfigsLazy }
 export type { PageContext_loadPageConfigsLazyServerSide }
 
 import { type PageFile, getPageFilesServerSide } from '../../../shared/getPageFiles.js'
@@ -30,7 +30,7 @@ type PageContext_loadPageConfigsLazyServerSide = PageContextGetPageAssets &
     urlOriginal: string
     _globalContext: GlobalContextServerInternal
   }
-type PageContextWithPageConfigsLazy = PromiseType<ReturnType<typeof loadPageConfigsLazyServerSide>>
+type PageConfigsLazy = PromiseType<ReturnType<typeof loadPageConfigsLazyServerSideOnly>>
 
 async function loadPageConfigsLazyServerSide<PageContext extends PageContext_loadPageConfigsLazyServerSide>(
   pageContext: PageContext,

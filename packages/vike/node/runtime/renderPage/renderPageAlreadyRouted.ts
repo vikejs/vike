@@ -11,7 +11,7 @@ import { createHttpResponsePage, createHttpResponsePageContextJson, HttpResponse
 import {
   loadPageConfigsLazyServerSide,
   PageContext_loadPageConfigsLazyServerSide,
-  type PageContextWithPageConfigsLazy,
+  type PageConfigsLazy,
 } from './loadPageConfigsLazyServerSide.js'
 import { executeOnRenderHtmlHook } from './executeOnRenderHtmlHook.js'
 import { executeOnBeforeRenderAndDataHooks } from './executeOnBeforeRenderAndDataHooks.js'
@@ -87,7 +87,7 @@ async function renderPageAlreadyRouted<
 
 async function prerenderPage(
   pageContext: PageContextCreated &
-    PageContextWithPageConfigsLazy & {
+    PageConfigsLazy & {
       routeParams: Record<string, string>
       pageId: string
       _urlRewrite: null
