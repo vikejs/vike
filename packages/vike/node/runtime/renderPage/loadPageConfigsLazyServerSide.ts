@@ -32,18 +32,16 @@ type PageContext_loadPageConfigsLazyServerSide = PageContextGetPageAssets &
   }
 type PageContextWithPageConfigsLazy = PromiseType<ReturnType<typeof loadPageConfigsLazyServerSide>>
 
-async function loadPageConfigsLazyServerSide<
-  PageContext extends PageContext_loadPageConfigsLazyServerSide,
->(pageContext: PageContext) {
+async function loadPageConfigsLazyServerSide<PageContext extends PageContext_loadPageConfigsLazyServerSide>(
+  pageContext: PageContext,
+) {
   const pageContextAddendum = await loadPageConfigsLazyServerSideOnly(pageContext)
   objectAssign(pageContext, pageContextAddendum)
 
   return pageContext
 }
 
-async function loadPageConfigsLazyServerSideOnly(
-  pageContext: PageContext_loadPageConfigsLazyServerSide,
-) {
+async function loadPageConfigsLazyServerSideOnly(pageContext: PageContext_loadPageConfigsLazyServerSide) {
   const pageConfig = findPageConfig(pageContext._globalContext._pageConfigs, pageContext.pageId) // Make pageConfig globally available as pageContext._pageConfig ?
 
   const globalContext = pageContext._globalContext
