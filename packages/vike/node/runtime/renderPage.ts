@@ -223,7 +223,7 @@ async function renderPageAlreadyPrepared(
   } else {
     assert(errNominalPage)
     assert(pageContextNominalPageSuccess === undefined)
-    return await renderPageError(
+    return await renderPageOnError(
       errNominalPage,
       pageContextBegin,
       pageContextNominalPageBegin,
@@ -234,7 +234,11 @@ async function renderPageAlreadyPrepared(
   }
 }
 
-async function renderPageError(
+// When the normal page threw an error
+// - Can be a URL rewrite upon `throw render('/some-url')`
+// - Can be rendering the error page
+// - Can be rendering Vike's generic error page (if no error page is defined, or if the error page throws an error)
+async function renderPageOnError(
   errNominalPage: unknown,
   pageContextBegin: PageContextBegin,
   pageContextNominalPageBegin: PageContextBegin,
