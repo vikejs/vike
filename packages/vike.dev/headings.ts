@@ -267,7 +267,7 @@ const headings = [
     level: 2,
     title: 'Authentication',
     url: '/auth',
-    sectionTitles: ['SSG'],
+    sectionTitles: ['SSG', 'With `vike-server`'],
   },
   {
     level: 2,
