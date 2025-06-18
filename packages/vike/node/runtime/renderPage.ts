@@ -242,19 +242,55 @@ async function renderPageError(
   httpRequestId: number,
   pageContextsFromRewrite: PageContextFromRewrite[],
 ) {
-    assert(pageContextNominalPageBegin)
-    assert(hasProp(pageContextNominalPageBegin, 'urlOriginal', 'string'))
+  assert(pageContextNominalPageBegin)
+  assert(hasProp(pageContextNominalPageBegin, 'urlOriginal', 'string'))
 
-    const pageContextErrorPageInit = await getPageContextErrorPageInit(
-      pageContextBegin,
+  const pageContextErrorPageInit = await getPageContextErrorPageInit(
+    pageContextBegin,
+    errNominalPage,
+    pageContextNominalPageBegin,
+  )
+
+  // Handle `throw redirect()` and `throw render()` while rendering nominal page
+  if (isAbortError(errNominalPage)) {
+    const handled = await handleAbortError(
       errNominalPage,
+      pageContextsFromRewrite,
+      pageContextBegin,
       pageContextNominalPageBegin,
+      httpRequestId,
+      pageContextErrorPageInit,
+      globalContext,
     )
+    if (handled.pageContextReturn) {
+      // - throw redirect()
+      // - throw render(url)
+      // - throw render(abortStatusCode) if .pageContext.json request
+      return handled.pageContextReturn
+    } else {
+      // - throw render(abortStatusCode) if not .pageContext.json request
+    }
+    Object.assign(pageContextErrorPageInit, handled.pageContextAbort)
+  }
 
-    // Handle `throw redirect()` and `throw render()` while rendering nominal page
-    if (isAbortError(errNominalPage)) {
+  {
+    const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
+    if (!errorPageId) {
+      objectAssign(pageContextErrorPageInit, { pageId: null })
+      return handleErrorWithoutErrorPage(pageContextErrorPageInit)
+    } else {
+      objectAssign(pageContextErrorPageInit, { pageId: errorPageId })
+    }
+  }
+
+  let pageContextErrorPage: undefined | Awaited<ReturnType<typeof renderPageAlreadyRouted>>
+  try {
+    pageContextErrorPage = await renderPageAlreadyRouted(pageContextErrorPageInit)
+  } catch (errErrorPage) {
+    // Handle `throw redirect()` and `throw render()` while rendering error page
+    if (isAbortError(errErrorPage)) {
       const handled = await handleAbortError(
-        errNominalPage,
+        errErrorPage,
         pageContextsFromRewrite,
         pageContextBegin,
         pageContextNominalPageBegin,
@@ -262,67 +298,29 @@ async function renderPageError(
         pageContextErrorPageInit,
         globalContext,
       )
-      if (handled.pageContextReturn) {
-        // - throw redirect()
-        // - throw render(url)
-        // - throw render(abortStatusCode) if .pageContext.json request
-        return handled.pageContextReturn
-      } else {
-        // - throw render(abortStatusCode) if not .pageContext.json request
-      }
-      Object.assign(pageContextErrorPageInit, handled.pageContextAbort)
-    }
-
-    {
-      const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
-      if (!errorPageId) {
-        objectAssign(pageContextErrorPageInit, { pageId: null })
-        return handleErrorWithoutErrorPage(pageContextErrorPageInit)
-      } else {
-        objectAssign(pageContextErrorPageInit, { pageId: errorPageId })
-      }
-    }
-
-    let pageContextErrorPage: undefined | Awaited<ReturnType<typeof renderPageAlreadyRouted>>
-    try {
-      pageContextErrorPage = await renderPageAlreadyRouted(pageContextErrorPageInit)
-    } catch (errErrorPage) {
-      // Handle `throw redirect()` and `throw render()` while rendering error page
-      if (isAbortError(errErrorPage)) {
-        const handled = await handleAbortError(
-          errErrorPage,
-          pageContextsFromRewrite,
-          pageContextBegin,
-          pageContextNominalPageBegin,
-          httpRequestId,
-          pageContextErrorPageInit,
-          globalContext,
+      // throw render(abortStatusCode)
+      if (!handled.pageContextReturn) {
+        const pageContextAbort = errErrorPage._pageContextAbort
+        assertWarning(
+          false,
+          `Failed to render error page because ${pc.cyan(pageContextAbort._abortCall)} was called: make sure ${pc.cyan(
+            pageContextAbort._abortCaller,
+          )} doesn't occur while the error page is being rendered.`,
+          { onlyOnce: false },
         )
-        // throw render(abortStatusCode)
-        if (!handled.pageContextReturn) {
-          const pageContextAbort = errErrorPage._pageContextAbort
-          assertWarning(
-            false,
-            `Failed to render error page because ${pc.cyan(
-              pageContextAbort._abortCall,
-            )} was called: make sure ${pc.cyan(
-              pageContextAbort._abortCaller,
-            )} doesn't occur while the error page is being rendered.`,
-            { onlyOnce: false },
-          )
-          const pageContextHttpWithError = getPageContextHttpResponseError(errNominalPage, pageContextBegin)
-          return pageContextHttpWithError
-        }
-        // `throw redirect()` / `throw render(url)`
-        return handled.pageContextReturn
+        const pageContextHttpWithError = getPageContextHttpResponseError(errNominalPage, pageContextBegin)
+        return pageContextHttpWithError
       }
-      if (isNewError(errErrorPage, errNominalPage)) {
-        logRuntimeError(errErrorPage, httpRequestId)
-      }
-      const pageContextWithError = getPageContextHttpResponseError(errNominalPage, pageContextBegin)
-      return pageContextWithError
+      // `throw redirect()` / `throw render(url)`
+      return handled.pageContextReturn
     }
-    return pageContextErrorPage
+    if (isNewError(errErrorPage, errNominalPage)) {
+      logRuntimeError(errErrorPage, httpRequestId)
+    }
+    const pageContextWithError = getPageContextHttpResponseError(errNominalPage, pageContextBegin)
+    return pageContextWithError
+  }
+  return pageContextErrorPage
 }
 
 function logHttpRequest(urlOriginal: string, httpRequestId: number) {
