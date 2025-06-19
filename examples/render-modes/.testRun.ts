@@ -156,8 +156,8 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1De
         expect(html).toMatch(jsImport)
       } else {
         const jsImport = isV1Design
-          ? partRegex`import "/@fs/${path}/pages/html-js/+client.js";`
-          : partRegex`import "/@fs/${path}/pages/html-js/_default.page.client.js";`
+          ? partRegex`import("/@fs/${path}/pages/html-js/+client.js");`
+          : partRegex`import("/@fs/${path}/pages/html-js/_default.page.client.js");`
         expect(html).toMatch(jsImport)
       }
     }
@@ -296,7 +296,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1De
         partRegex`<script src="/assets/entries/entry-client-routing.${hash}.js" type="module" async>`,
       )
     } else {
-      expect(html).toMatch(partRegex`import "/@fs/${path}/vike/${path}/runtime-client-routing/${path}";`)
+      expect(html).toMatch(partRegex`import("/@fs/${path}/vike/${path}/runtime-client-routing/${path}");`)
     }
   }
 }
