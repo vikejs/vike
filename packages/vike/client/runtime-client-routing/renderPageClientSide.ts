@@ -34,7 +34,7 @@ import {
   populatePageContextPrefetchCache,
 } from './prefetch.js'
 import { assertInfo, assertWarning, isReact } from './utils.js'
-import { type PageContextBeforeRenderClient, executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
+import { type PageContextBeforeRenderClient, execHookOnRenderClient } from '../shared/execHookOnRenderClient.js'
 import {
   isErrorFetchingStaticAssets,
   loadPageConfigsLazyClientSide,
@@ -479,7 +479,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     const onRenderClientPromise = (async () => {
       let onRenderClientError: unknown
       try {
-        await executeOnRenderClientHook(pageContext, preparePageContextForPublicUsageClient)
+        await execHookOnRenderClient(pageContext, preparePageContextForPublicUsageClient)
       } catch (err) {
         onRenderClientError = err
       }

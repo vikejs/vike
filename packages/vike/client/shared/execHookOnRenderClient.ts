@@ -1,4 +1,4 @@
-export { executeOnRenderClientHook }
+export { execHookOnRenderClient }
 export type { PageContextBeforeRenderClient }
 
 import { assert, assertUsage } from '../runtime-server-routing/utils.js'
@@ -17,7 +17,7 @@ type PageContextBeforeRenderClient = {
 } & VikeConfigPublicPageLazy &
   PageContextForPublicUsageClientShared
 
-async function executeOnRenderClientHook<PageContext extends PageContextBeforeRenderClient>(
+async function execHookOnRenderClient<PageContext extends PageContextBeforeRenderClient>(
   pageContext: PageContext,
   prepareForPublicUsage: (pageConfig: PageContext) => PageContext,
 ): Promise<void> {
