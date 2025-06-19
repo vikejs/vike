@@ -23,9 +23,9 @@ import { analyzePage } from './analyzePage.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { MediaType } from './inferMediaType.js'
 import { loadConfigValues } from '../../../shared/page-configs/loadConfigValues.js'
-import { execHookServer, type PageContextExecuteHookServer } from './execHookServer.js'
+import { execHookServer, type PageContextExecHookServer } from './execHookServer.js'
 
-type PageContextExecuteHook = Omit<PageContextExecuteHookServer, keyof Awaited<ReturnType<typeof loadPageConfigsLazy>>>
+type PageContextExecuteHook = Omit<PageContextExecHookServer, keyof Awaited<ReturnType<typeof loadPageConfigsLazy>>>
 type PageContext_loadPageConfigsLazyServerSide = PageContextGetPageAssets &
   PageContextDebugRouteMatches & {
     pageId: string
