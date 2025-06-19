@@ -165,13 +165,13 @@ async function execHookClient(hookName: HookName, pageContext: PageContextExecHo
 async function execHookDataLike(hookName: 'data' | 'onBeforeRender', pageContext: PageContextExecHookClient) {
   let pageContextFromHook: Record<string, unknown> | undefined
   if (hookName === 'data') {
-    pageContextFromHook = await executeDataHook(pageContext)
+    pageContextFromHook = await execHookData(pageContext)
   } else {
-    pageContextFromHook = await executeOnBeforeRenderHook(pageContext)
+    pageContextFromHook = await execHookOnBeforeRender(pageContext)
   }
   Object.assign(pageContext, pageContextFromHook)
 }
-async function executeDataHook(pageContext: PageContextExecHookClient) {
+async function execHookData(pageContext: PageContextExecHookClient) {
   const res = await execHookClient('data', pageContext)
   const hook = res[0] // TO-DO/soon: support cumulative
   if (!hook) return
@@ -179,7 +179,7 @@ async function executeDataHook(pageContext: PageContextExecHookClient) {
   const pageContextAddendum = { data: hookReturn }
   return pageContextAddendum
 }
-async function executeOnBeforeRenderHook(pageContext: PageContextExecHookClient) {
+async function execHookOnBeforeRender(pageContext: PageContextExecHookClient) {
   const res = await execHookClient('onBeforeRender', pageContext)
   const hook = res[0] // TO-DO/soon: support cumulative
   if (!hook) return
