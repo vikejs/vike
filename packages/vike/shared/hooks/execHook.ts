@@ -1,8 +1,8 @@
 export { execHook }
 export { execHookGlobal }
+export { execHookDirect }
 export { execHookDirectSingle }
 export { execHookDirectSingleWithReturn }
-export { execHookDirect }
 export { execHookDirectWithoutPageContext }
 export { execHookDirectSync }
 export { getPageContext }
@@ -64,6 +64,26 @@ async function execHookGlobal<HookArg extends PageContextPrepareMinimum | Global
   )
 }
 
+async function execHookDirect<PageContext extends PageContextPrepareMinimum>(
+  hooks: Hook[],
+  pageContext: PageContext,
+  preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
+) {
+  if (!hooks.length) return [] as HookWithResult[]
+  const pageContextForPublicUsage = preparePageContextForPublicUsage(pageContext)
+  const hooksWithResult = await Promise.all(
+    hooks.map(async (hook) => {
+      const hookReturn = await execHookDirectAsync(
+        () => hook.hookFn(pageContextForPublicUsage),
+        hook,
+        pageContextForPublicUsage,
+      )
+      return { ...hook, hookReturn }
+    }),
+  )
+  return hooksWithResult
+}
+
 async function execHookDirectSingle<PageContext extends PageContextExecuteHook>(
   hook: Hook,
   pageContext: PageContext,
@@ -85,26 +105,6 @@ async function execHookDirectSingleWithReturn<PageContext extends PageContextExe
   const hooksWithResult = await execHookDirect([hook], pageContext, preparePageContextForPublicUsage)
   const { hookReturn } = hooksWithResult[0]!
   return { hookReturn }
-}
-
-async function execHookDirect<PageContext extends PageContextPrepareMinimum>(
-  hooks: Hook[],
-  pageContext: PageContext,
-  preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
-) {
-  if (!hooks.length) return [] as HookWithResult[]
-  const pageContextForPublicUsage = preparePageContextForPublicUsage(pageContext)
-  const hooksWithResult = await Promise.all(
-    hooks.map(async (hook) => {
-      const hookReturn = await execHookDirectAsync(
-        () => hook.hookFn(pageContextForPublicUsage),
-        hook,
-        pageContextForPublicUsage,
-      )
-      return { ...hook, hookReturn }
-    }),
-  )
-  return hooksWithResult
 }
 
 function isUserHookError(err: unknown): false | HookLoc {
