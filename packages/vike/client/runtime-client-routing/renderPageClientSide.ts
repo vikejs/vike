@@ -720,12 +720,12 @@ function getPageContextClient(): PageContextClient | null {
   return globalObject.renderedPageContext ?? null
 }
 
-type PageContextExecute = Omit<
+type PageContextExecuteHook = Omit<
   PageContextForPublicUsageClient,
   keyof Awaited<ReturnType<typeof loadPageConfigsLazyClientSide>>
 >
 async function loadPageConfigsLazyClientSideAndExecHook<
-  PageContext extends PageContext_loadPageConfigsLazyClientSide & PageContextExecute,
+  PageContext extends PageContext_loadPageConfigsLazyClientSide & PageContextExecuteHook,
 >(pageContext: PageContext, isFirstRender: boolean, isRenderOutdated: () => boolean) {
   let hasErr = false
   let err: unknown
