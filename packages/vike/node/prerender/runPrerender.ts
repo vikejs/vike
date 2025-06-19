@@ -60,7 +60,7 @@ import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../types/PageConfig.js'
 import { getVikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
 import type { HookTimeout } from '../../shared/hooks/getHook.js'
-import { execHookWithoutPageContext, isUserHookError } from '../../shared/hooks/execHook.js'
+import { execHookDirectlyWithoutPageContext, isUserHookError } from '../../shared/hooks/execHook.js'
 import type { APIOptions } from '../api/types.js'
 import { setWasPrerenderRun } from './context.js'
 import { resolvePrerenderConfigGlobal, resolvePrerenderConfigLocal } from './resolvePrerenderConfig.js'
@@ -408,7 +408,7 @@ async function callOnBeforePrerenderStartHooks(
         if (doNotPrerenderList.find((p) => p.pageId === pageId)) return
         const { hookName, hookFilePath } = hook
 
-        const prerenderResult = await execHookWithoutPageContext(() => hook.hookFn(), hook)
+        const prerenderResult = await execHookDirectlyWithoutPageContext(() => hook.hookFn(), hook)
         const result = normalizeOnPrerenderHookResult(prerenderResult, hookFilePath, hookName)
 
         // Handle result
@@ -743,7 +743,10 @@ async function callOnPrerenderStartHook(
   })
 
   const prerenderContextPublic = preparePrerenderContextForPublicUsage(prerenderContext)
-  let result: unknown = await execHookWithoutPageContext(() => hookFn(prerenderContextPublic), onPrerenderStartHook)
+  let result: unknown = await execHookDirectlyWithoutPageContext(
+    () => hookFn(prerenderContextPublic),
+    onPrerenderStartHook,
+  )
 
   // Before applying result
   prerenderContext.pageContexts.forEach((pageContext) => {
