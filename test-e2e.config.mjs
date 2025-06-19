@@ -56,6 +56,14 @@ function getCiJobs() {
 function tolerateError({ logSource, logText, testInfo }) {
   return (
     [
+      // ```shell
+      // [23:57:18.027][/.test-preview.test.ts][pnpm run preview][stderr] (!) Some chunks are larger than 500 kB after minification. Consider:
+      // - Using dynamic import() to code-split the application
+      // - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+      // - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+      // ```
+      'Some chunks are larger than 500 kB after minification.',
+
       // [23:54:58.279][/test-preview.test.ts][npm run preview][stderr] 11:54:58 PM [vike][Warning] getGlobalContextSync() is going to be deprecated in the next major release, see https://vike.dev/getGlobalContext
       'getGlobalContextSync() is going to be deprecated',
 
