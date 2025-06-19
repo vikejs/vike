@@ -14,7 +14,7 @@ import {
   type PageConfigsLazy,
 } from './loadPageConfigsLazyServerSide.js'
 import { execHookOnRenderHtml } from './execHookOnRenderHtml.js'
-import { executeOnBeforeRenderAndDataHooks } from './executeOnBeforeRenderAndDataHooks.js'
+import { execHookDataAndOnBeforeRender } from './execHookDataAndOnBeforeRender.js'
 import { logRuntimeError } from '../loggerRuntime.js'
 import { isNewError } from './isNewError.js'
 import { preparePageContextForPublicUsageServer } from './preparePageContextForPublicUsageServer.js'
@@ -56,10 +56,10 @@ async function renderPageAlreadyRouted<
   }
 
   if (!isError) {
-    await executeOnBeforeRenderAndDataHooks(pageContext)
+    await execHookDataAndOnBeforeRender(pageContext)
   } else {
     try {
-      await executeOnBeforeRenderAndDataHooks(pageContext)
+      await execHookDataAndOnBeforeRender(pageContext)
     } catch (err) {
       if (isNewError(err, pageContext.errorWhileRendering)) {
         logRuntimeError(err, pageContext._httpRequestId)
@@ -107,7 +107,7 @@ async function prerenderPage(
   await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageServer(pageContext))
   */
 
-  await executeOnBeforeRenderAndDataHooks(pageContext)
+  await execHookDataAndOnBeforeRender(pageContext)
 
   const { htmlRender, renderHook } = await execHookOnRenderHtml(pageContext)
   assertUsage(
