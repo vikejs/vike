@@ -224,9 +224,9 @@ async function getHtmlTags(
 
 function mergeScriptEntries(pageAssets: PageAsset[], viteDevScript: string): null | string {
   const scriptEntries = pageAssets.filter((pageAsset) => pageAsset.isEntry && pageAsset.assetType === 'script')
-  const scriptTagsHtml = `${viteDevScript}${scriptEntries.map((asset) => inferAssetTag(asset)).join('')}`
-  const scriptTag = mergeScriptTags(scriptTagsHtml)
-  return scriptTag
+  let scriptEntry = `${viteDevScript}${scriptEntries.map((asset) => inferAssetTag(asset)).join('')}`
+  scriptEntry = mergeScriptTags(scriptEntry)
+  return scriptEntry
 }
 
 function getPageContextJsonScriptTag(pageContext: PageContextSerialization): string {
