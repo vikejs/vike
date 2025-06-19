@@ -4,7 +4,7 @@ export { execHookSingle }
 export { execHookSingleWithReturn }
 export { execHookDirectly }
 export { execHookDirectlyWithoutPageContext }
-export { execHookSync }
+export { execHookDirectlySync }
 export { getPageContext }
 export { providePageContext }
 export { isUserHookError }
@@ -185,7 +185,7 @@ function execHookAsync<HookReturn>(
   return promise
 }
 
-function execHookSync<PageContext extends PageContextPrepareMinimum>(
+function execHookDirectlySync<PageContext extends PageContextPrepareMinimum>(
   hook: Omit<Hook, 'hookTimeout'>,
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
