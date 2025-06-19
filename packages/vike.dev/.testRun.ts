@@ -18,7 +18,7 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
 
   test('DOM', async () => {
     await page.goto(getServerUrl() + '/')
-    await page.waitForFunction(() => !!(window as any)._vike.fullyRenderedUrl)
+    await page.waitForFunction(() => !!(window as any)._vike?.fullyRenderedUrl)
     expect(await page.textContent('body')).toContain(text)
   })
 

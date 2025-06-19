@@ -56,12 +56,12 @@ async function nav(href: `/${string}`) {
   await page.click(`a[href="${href}"]`)
   await autoRetry(
     async () => {
-      const fullyRenderedUrl = await page.evaluate(() => window._vike.fullyRenderedUrl)
+      const fullyRenderedUrl = await page.evaluate(() => window._vike?.fullyRenderedUrl)
       expect(fullyRenderedUrl).toBe(href)
     },
     { timeout: 5000 },
   )
 }
 declare global {
-  var _vike: { fullyRenderedUrl?: string }
+  var _vike: { fullyRenderedUrl?: string } | undefined
 }
