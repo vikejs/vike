@@ -58,7 +58,7 @@ import { setPageContextCurrent } from './getPageContextCurrent.js'
 import { getRouteStringParameterList } from '../../shared/route/resolveRouteString.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 import type { PageContextClient } from '../../types/PageContext.js'
-import { execHookDirect, type PageContextExecuteHook, execHook } from '../../shared/hooks/execHook.js'
+import { execHookDirect, type PageContextExecHook, execHook } from '../../shared/hooks/execHook.js'
 import {
   type PageContextForPublicUsageClient,
   preparePageContextForPublicUsageClient,
@@ -90,7 +90,7 @@ const globalObject = getGlobalObject<{
 const { firstRenderStartPromise } = globalObject
 type PreviousPageContext = { pageId: string } & VikeConfigPublicPageLazy &
   PageContextRouted &
-  PageContextExecuteHook &
+  PageContextExecHook &
   PageContextForPublicUsageClient
 type PageContextRouted = { pageId: string; routeParams: Record<string, string> }
 

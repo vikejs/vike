@@ -8,7 +8,7 @@ export { execHookDirectSync }
 export { getPageContext }
 export { providePageContext }
 export { isUserHookError }
-export type { PageContextExecuteHook }
+export type { PageContextExecHook }
 
 import { getProjectError, assertWarning, assertUsage } from '../../utils/assert.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
@@ -32,14 +32,14 @@ const globalObject = getGlobalObject('utils/execHook.ts', {
   pageContext: null as null | PageContextPrepareMinimum,
 })
 
-type PageContextExecuteHook = VikeConfigPublicPageLazy & PageContextForPublicUsage
+type PageContextExecHook = VikeConfigPublicPageLazy & PageContextForPublicUsage
 type PageContextForPublicUsage = PageContextForPublicUsageServer | PageContextForPublicUsageClientShared
 
 type HookWithResult = Hook & {
   hookReturn: unknown
 }
 
-async function execHook<PageContext extends PageContextExecuteHook>(
+async function execHook<PageContext extends PageContextExecHook>(
   hookName: HookName,
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
@@ -84,7 +84,7 @@ async function execHookDirect<PageContext extends PageContextPrepareMinimum>(
   return hooksWithResult
 }
 
-async function execHookDirectSingle<PageContext extends PageContextExecuteHook>(
+async function execHookDirectSingle<PageContext extends PageContextExecHook>(
   hook: Hook,
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
@@ -97,7 +97,7 @@ async function execHookDirectSingle<PageContext extends PageContextExecuteHook>(
   )
 }
 
-async function execHookDirectSingleWithReturn<PageContext extends PageContextExecuteHook>(
+async function execHookDirectSingleWithReturn<PageContext extends PageContextExecHook>(
   hook: Hook,
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
