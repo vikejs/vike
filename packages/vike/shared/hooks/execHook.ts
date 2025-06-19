@@ -33,8 +33,6 @@ const globalObject = getGlobalObject('utils/execHook.ts', {
   pageContext: null as null | PageContextPrepareMinimum,
 })
 
-type PageContextPrepareMinimum2 = PageContextPrepareMinimum & VikeConfigPublicPageLazy
-
 type PageContextExecuteHook = VikeConfigPublicPageLazy & PageContextForPublicUsage
 type PageContextForPublicUsage = PageContextForPublicUsageServer | PageContextForPublicUsageClientShared
 
@@ -66,7 +64,8 @@ async function execHookSingleWithReturn<PageContext extends PageContextExecuteHo
   const { hookReturn } = res.hooks[0]!
   return { hookReturn }
 }
-async function execHook<PageContext extends PageContextPrepareMinimum2>(
+
+async function execHook<PageContext extends PageContextExecuteHook>(
   hookName: HookName,
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
@@ -76,7 +75,7 @@ async function execHook<PageContext extends PageContextPrepareMinimum2>(
   return res.hooks
 }
 
-async function execHookErrorHandling<PageContext extends PageContextPrepareMinimum2>(
+async function execHookErrorHandling<PageContext extends PageContextExecuteHook>(
   hookName: HookName,
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,

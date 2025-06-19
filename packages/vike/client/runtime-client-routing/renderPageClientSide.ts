@@ -35,11 +35,7 @@ import {
 } from './prefetch.js'
 import { assertInfo, assertWarning, isReact } from './utils.js'
 import { type PageContextBeforeRenderClient, executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
-import {
-  isErrorFetchingStaticAssets,
-  loadPageConfigsLazy,
-  PageContext_loadPageConfigsLazyClientSide,
-} from '../shared/loadPageConfigsLazyClientSide.js'
+import { isErrorFetchingStaticAssets, loadPageConfigsLazyClientSide } from '../shared/loadPageConfigsLazyClientSide.js'
 import { pushHistoryState } from './history.js'
 import {
   assertNoInfiniteAbortLoop,
@@ -62,7 +58,6 @@ import {
   execHooksErrorHandling,
   execHookErrorHandling,
   type PageContextExecuteHook,
-  execHook,
 } from '../../shared/hooks/execHook.js'
 import {
   type PageContextForPublicUsageClient,
@@ -751,21 +746,4 @@ function areKeysEqual(key1: string | string[], key2: string | string[]): boolean
  */
 function getPageContextClient(): PageContextClient | null {
   return globalObject.renderedPageContext ?? null
-}
-
-type PageContextExecute = Omit<PageContextForPublicUsageClient, keyof Awaited<ReturnType<typeof loadPageConfigsLazy>>>
-async function loadPageConfigsLazyClientSide<
-  PageContext extends PageContext_loadPageConfigsLazyClientSide & PageContextExecute,
->(pageContext: PageContext) {
-  const pageContextAddendum = await loadPageConfigsLazy(
-    pageContext.pageId,
-    pageContext._pageFilesAll,
-    pageContext._globalContext._pageConfigs,
-    pageContext._globalContext._pageConfigGlobal,
-  )
-  objectAssign(pageContext, pageContextAddendum)
-
-  await execHook('onCreatePageContext', pageContext, preparePageContextForPublicUsageClient)
-
-  return pageContext
 }
