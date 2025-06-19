@@ -8,7 +8,7 @@
     "@vitejs/plugin-react": "^4.5.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "vike": "0.4.233",
+    "vike": "0.4.234",
     "vike-react": "^0.5.12",
     "vite": "^6.3.2"
   },

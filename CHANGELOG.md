@@ -1,3 +1,12 @@
+## [0.4.234](https://github.com/vikejs/vike/compare/v0.4.233...v0.4.234) (2025-06-19)
+
+
+### Bug Fixes
+
+* avoid HMR preamble race condition ([#2513](https://github.com/vikejs/vike/issues/2513)) ([e534fd6](https://github.com/vikejs/vike/commit/e534fd6a997745cc1bd7c72d9e599869bf32c71b))
+
+
+
 ## [0.4.233](https://github.com/vikejs/vike/compare/v0.4.232...v0.4.233) (2025-06-19)
 
 
