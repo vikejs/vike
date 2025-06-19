@@ -23,7 +23,7 @@ function mergeScriptTags(scriptTagsHtml: string): string {
         const hasInnerHtml = !!innerHtml.trim()
         if (src) {
           assert(!hasInnerHtml)
-          contents.push(`await import(${JSON.stringify(src)});`)
+          contents.push(`import(${JSON.stringify(src)});`)
         } else if (hasInnerHtml) {
           innerHtml = innerHtml.split('\n').filter(Boolean).join('\n')
           contents.push(innerHtml)
