@@ -7,20 +7,13 @@ import type { PageConfigGlobalRuntime } from '../types/PageConfig.js'
 import { type PageContextPrepareMinimum, preparePageContextForPublicUsage } from './preparePageContextForPublicUsage.js'
 import { changeEnumerable, objectAssign } from './utils.js'
 
+// TODO/now: make this and parents sync
 async function createPageContextShared<T extends PageContextPrepareMinimum>(
   pageContextCreated: T,
   pageConfigGlobal: PageConfigGlobalRuntime,
   vikeConfigPublicGlobal: VikeConfigPublicGlobal,
 ) {
   objectAssign(pageContextCreated, vikeConfigPublicGlobal)
-
-  await execHookGlobal(
-    'onCreatePageContext',
-    pageConfigGlobal,
-    pageContextCreated,
-    pageContextCreated,
-    preparePageContextForPublicUsage,
-  )
 
   return pageContextCreated
 }

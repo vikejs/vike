@@ -16,7 +16,7 @@ import { type PageContextUrlInternal, type PageContextUrlSource } from '../getPa
 import { resolvePrecedence } from './resolvePrecedence.js'
 import { resolveRouteString } from './resolveRouteString.js'
 import { resolveRouteFunction } from './resolveRouteFunction.js'
-import { executeOnBeforeRouteHook } from './executeOnBeforeRouteHook.js'
+import { execHookOnBeforeRoute } from './execHookOnBeforeRoute.js'
 import type { PageRoutes, RouteType } from './loadPageRoutes.js'
 import { debug } from './debug.js'
 import pc from '@brillout/picocolors'
@@ -40,13 +40,14 @@ type RouteMatch = {
 }
 type RouteMatches = 'CUSTOM_ROUTING' | RouteMatch[]
 
+// TODO/next-major-release: make it sync
 async function route(pageContext: PageContextForRoute, skipOnBeforeRouteHook?: true): Promise<PageContextFromRoute> {
   debug('Pages routes:', pageContext._globalContext._pageRoutes)
   const pageContextFromRoute = {}
 
   // onBeforeRoute()
   if (!skipOnBeforeRouteHook) {
-    const pageContextFromOnBeforeRouteHook = await executeOnBeforeRouteHook(pageContext)
+    const pageContextFromOnBeforeRouteHook = await execHookOnBeforeRoute(pageContext)
     if (pageContextFromOnBeforeRouteHook) {
       if (pageContextFromOnBeforeRouteHook._routingProvidedByOnBeforeRouteHook) {
         assert(pageContextFromOnBeforeRouteHook.pageId)

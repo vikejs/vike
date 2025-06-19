@@ -1,4 +1,4 @@
-export { executeOnBeforeRouteHook }
+export { execHookOnBeforeRoute }
 
 import { assertPageContextProvidedByUser } from '../assertPageContextProvidedByUser.js'
 import {
@@ -15,14 +15,14 @@ import { assertRouteParams, assertSyncRouting } from './resolveRouteFunction.js'
 import pc from '@brillout/picocolors'
 import type { PageContextForRoute, PageContextFromRoute } from './index.js'
 import type { Hook } from '../hooks/getHook.js'
-import { execHookSync } from '../hooks/execHook.js'
+import { execHookDirectSync } from '../hooks/execHook.js'
 import {
   type PageContextPrepareMinimum,
   preparePageContextForPublicUsage,
 } from '../preparePageContextForPublicUsage.js'
 import type { GlobalContextInternal } from '../createGlobalContextShared.js'
 
-async function executeOnBeforeRouteHook(
+async function execHookOnBeforeRoute(
   pageContext: PageContextForRoute,
 ): Promise<
   | null
@@ -69,9 +69,9 @@ async function getPageContextFromHook(
   pageId?: string | null
   routeParams?: Record<string, string>
 }> {
-  let { hookReturn } = execHookSync(onBeforeRouteHook, pageContext, preparePageContextForPublicUsage)
+  let { hookReturn } = execHookDirectSync(onBeforeRouteHook, pageContext, preparePageContextForPublicUsage)
   assertSyncRouting(hookReturn, `The onBeforeRoute() hook ${onBeforeRouteHook.hookFilePath}`)
-  // TODO/v1-release: make executeOnBeforeRouteHook() and route() sync
+  // TODO/v1-release: make execHookOnBeforeRoute() and route() sync
   hookReturn = await hookReturn
 
   const errPrefix = `The onBeforeRoute() hook defined by ${onBeforeRouteHook.hookFilePath}`

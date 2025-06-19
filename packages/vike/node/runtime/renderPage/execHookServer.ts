@@ -1,5 +1,5 @@
 export { execHookServer }
-export type { PageContextExecuteHookServer }
+export type { PageContextExecHookServer }
 
 import { execHook } from '../../../shared/hooks/execHook.js'
 import {
@@ -9,7 +9,7 @@ import {
 import type { VikeConfigPublicPageLazy } from '../../../shared/getPageFiles.js'
 import type { HookName } from '../../../types/Config.js'
 
-type PageContextExecuteHookServer = VikeConfigPublicPageLazy & PageContextForPublicUsageServer
-async function execHookServer(hookName: HookName, pageContext: PageContextExecuteHookServer) {
+type PageContextExecHookServer = VikeConfigPublicPageLazy & PageContextForPublicUsageServer
+async function execHookServer(hookName: HookName, pageContext: PageContextExecHookServer) {
   return await execHook(hookName, pageContext, preparePageContextForPublicUsageServer)
 }

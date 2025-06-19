@@ -1,6 +1,6 @@
-export { loadPageConfigsLazyServerSide }
-export type { PageFiles }
+export { loadPageConfigsLazyServerSideAndExecHook }
 export type { PageContext_loadPageConfigsLazyServerSide }
+export type { PageConfigsLazy }
 
 import { type PageFile, getPageFilesServerSide } from '../../../shared/getPageFiles.js'
 import { resolveVikeConfigPublicPageLazy } from '../../../shared/page-configs/resolveVikeConfigPublic.js'
@@ -23,16 +23,32 @@ import { analyzePage } from './analyzePage.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { MediaType } from './inferMediaType.js'
 import { loadConfigValues } from '../../../shared/page-configs/loadConfigValues.js'
+import { execHookServer, type PageContextExecHookServer } from './execHookServer.js'
 
+type PageContextExecuteHook = Omit<
+  PageContextExecHookServer,
+  keyof Awaited<ReturnType<typeof loadPageConfigsLazyServerSide>>
+>
 type PageContext_loadPageConfigsLazyServerSide = PageContextGetPageAssets &
   PageContextDebugRouteMatches & {
+    pageId: string
     urlOriginal: string
     _globalContext: GlobalContextServerInternal
   }
-type PageFiles = PromiseType<ReturnType<typeof loadPageConfigsLazyServerSide>>
-async function loadPageConfigsLazyServerSide(
-  pageContext: { pageId: string } & PageContext_loadPageConfigsLazyServerSide,
-) {
+type PageConfigsLazy = PromiseType<ReturnType<typeof loadPageConfigsLazyServerSide>>
+
+async function loadPageConfigsLazyServerSideAndExecHook<
+  PageContext extends PageContext_loadPageConfigsLazyServerSide & PageContextExecuteHook,
+>(pageContext: PageContext) {
+  const pageContextAddendum = await loadPageConfigsLazyServerSide(pageContext)
+  objectAssign(pageContext, pageContextAddendum)
+
+  await execHookServer('onCreatePageContext', pageContext)
+
+  return pageContext
+}
+
+async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageConfigsLazyServerSide) {
   const pageConfig = findPageConfig(pageContext._globalContext._pageConfigs, pageContext.pageId) // Make pageConfig globally available as pageContext._pageConfig ?
 
   const globalContext = pageContext._globalContext
@@ -124,18 +140,16 @@ async function loadPageConfigsLazyServerSide(
     },
   })
 
-  {
-    debugPageFiles({
-      pageContext,
-      isHtmlOnly,
-      isClientRouting,
-      pageFilesLoaded,
-      pageFilesClientSide,
-      pageFilesServerSide,
-      clientEntries,
-      clientDependencies,
-    })
-  }
+  debugPageFiles({
+    pageContext,
+    isHtmlOnly,
+    isClientRouting,
+    pageFilesLoaded,
+    pageFilesClientSide,
+    pageFilesServerSide,
+    clientEntries,
+    clientDependencies,
+  })
 
   return pageContextAddendum
 }

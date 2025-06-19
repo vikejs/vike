@@ -1,13 +1,13 @@
-export { executeOnBeforeRenderAndDataHooks }
+export { execHookDataAndOnBeforeRender }
 
 import { assertOnBeforeRenderHookReturn } from '../../../shared/assertOnBeforeRenderHookReturn.js'
-import { execHookServer, type PageContextExecuteHookServer } from './execHookServer.js'
+import { execHookServer, type PageContextExecHookServer } from './execHookServer.js'
 
-async function executeOnBeforeRenderAndDataHooks(
+async function execHookDataAndOnBeforeRender(
   pageContext: {
     pageId: string
     _pageContextAlreadyProvidedByOnPrerenderHook?: true
-  } & PageContextExecuteHookServer,
+  } & PageContextExecHookServer,
 ): Promise<void> {
   if (pageContext._pageContextAlreadyProvidedByOnPrerenderHook) {
     return

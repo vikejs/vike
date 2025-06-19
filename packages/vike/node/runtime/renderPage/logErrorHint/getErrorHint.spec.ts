@@ -379,10 +379,10 @@ function cannot_read_property_of_undefined() {
           stack: `
 TypeError: Cannot read properties of undefined (reading 'foo')
     at onRenderHtml (file:///home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/onRenderHtml.js:21:49)
-    at file:///home/romu/code/vike/packages/vike/dist/esm/node/runtime/renderPage/executeOnRenderHtmlHook.js:15:53
+    at file:///home/romu/code/vike/packages/vike/dist/esm/node/runtime/renderPage/execHookOnRenderHtml.js:15:53
     at file:///home/romu/code/vike/packages/vike/dist/esm/shared/hooks/execHook.js:46:31
     at execHook (file:///home/romu/code/vike/packages/vike/dist/esm/shared/hooks/execHook.js:55:7)
-    at executeOnRenderHtmlHook (file:///home/romu/code/vike/packages/vike/dist/esm/node/runtime/renderPage/executeOnRenderHtmlHook.js:15:35)
+    at execHookOnRenderHtml (file:///home/romu/code/vike/packages/vike/dist/esm/node/runtime/renderPage/execHookOnRenderHtml.js:15:35)
     at renderPageAlreadyRouted (file:///home/romu/code/vike/packages/vike/dist/esm/node/runtime/renderPage/renderPageAlreadyRouted.js:57:36)
     at renderPageNominal (file:///home/romu/code/vike/packages/vike/dist/esm/node/runtime/renderPage.js:266:36)
     at renderPageAlreadyPrepared (file:///home/romu/code/vike/packages/vike/dist/esm/node/runtime/renderPage.js:121:45)
@@ -406,10 +406,10 @@ TypeError: Cannot read properties of undefined (reading '__H')
     at _renderToString (file:///Users/xxx/Code/Repos/xxx/node_modules/preact-render-to-string/src/index.js:298:15)
     at Proxy.S (file:///Users/xxx/Code/Repos/xxx/node_modules/preact-render-to-string/src/index.js:80:9)
     at onRenderHtml (/Users/xxx/Code/Repos/xxx/renderer/+onRenderHtml.jsx:12:29)
-    at file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPage/executeOnRenderHtmlHook.js:16:53
+    at file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPage/execHookOnRenderHtml.js:16:53
     at file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/shared/hooks/execHook.js:42:31
     at execHook (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/shared/hooks/execHook.js:51:7)
-    at executeOnRenderHtmlHook (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPage/executeOnRenderHtmlHook.js:16:35)
+    at execHookOnRenderHtml (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPage/execHookOnRenderHtml.js:16:35)
     at renderPageAlreadyRouted (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPage/renderPageAlreadyRouted.js:56:36)
     at processTicksAndRejections (node:internal/process/task_queues:95:5)
     at renderPageNominal (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPage.js:257:36)
@@ -1006,7 +1006,7 @@ function misc() {
       getErrorHint(
         createErr(`
 Error: [vike][Wrong Usage] The guard() hook of /pages/maps/ingestion/@id/+guard.js returns a value, but guard() doesn't accept any return value
-    at executeGuardHook (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/shared/route/executeGuardHook.js:23:5)
+    at execHookGuard (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/shared/route/execHookGuard.js:23:5)
     at async renderPageAlreadyRouted (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/node/runtime/renderPage/renderPageAlreadyRouted.js:34:9)
     at async renderPageNominal (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/node/runtime/renderPage.js:268:36)
     at async renderPageAlreadyPrepared (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/node/runtime/renderPage.js:121:45)

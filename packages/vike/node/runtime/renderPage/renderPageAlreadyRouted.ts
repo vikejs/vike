@@ -4,21 +4,21 @@ export type { PageContextAfterRender }
 
 import { getErrorPageId } from '../../../shared/error-page.js'
 import { getHtmlString } from '../html/renderHtml.js'
-import { assert, assertUsage, hasProp, objectAssign } from '../utils.js'
+import { assert, assertUsage, augmentType, hasProp, objectAssign } from '../utils.js'
 import { getPageContextClientSerialized } from '../html/serializeContext.js'
 import { type PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
 import { createHttpResponsePage, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponse.js'
 import {
-  loadPageConfigsLazyServerSide,
+  loadPageConfigsLazyServerSideAndExecHook,
   PageContext_loadPageConfigsLazyServerSide,
-  type PageFiles,
+  type PageConfigsLazy,
 } from './loadPageConfigsLazyServerSide.js'
-import { executeOnRenderHtmlHook } from './executeOnRenderHtmlHook.js'
-import { executeOnBeforeRenderAndDataHooks } from './executeOnBeforeRenderAndDataHooks.js'
+import { execHookOnRenderHtml } from './execHookOnRenderHtml.js'
+import { execHookDataAndOnBeforeRender } from './execHookDataAndOnBeforeRender.js'
 import { logRuntimeError } from '../loggerRuntime.js'
 import { isNewError } from './isNewError.js'
 import { preparePageContextForPublicUsageServer } from './preparePageContextForPublicUsageServer.js'
-import { executeGuardHook } from '../../../shared/route/executeGuardHook.js'
+import { execHookGuard } from '../../../shared/route/execHookGuard.js'
 import pc from '@brillout/picocolors'
 import { isServerSideError } from '../../../shared/misc/isServerSideError.js'
 import type { PageContextCreated } from './createPageContextServerSide.js'
@@ -49,17 +49,17 @@ async function renderPageAlreadyRouted<
         getErrorPageId(pageContext._globalContext._pageFilesAll, pageContext._globalContext._pageConfigs)),
   )
 
-  objectAssign(pageContext, await loadPageConfigsLazyServerSide(pageContext))
+  augmentType(pageContext, await loadPageConfigsLazyServerSideAndExecHook(pageContext))
 
   if (!isError) {
-    await executeGuardHook(pageContext, (pageContext) => preparePageContextForPublicUsageServer(pageContext))
+    await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageServer(pageContext))
   }
 
   if (!isError) {
-    await executeOnBeforeRenderAndDataHooks(pageContext)
+    await execHookDataAndOnBeforeRender(pageContext)
   } else {
     try {
-      await executeOnBeforeRenderAndDataHooks(pageContext)
+      await execHookDataAndOnBeforeRender(pageContext)
     } catch (err) {
       if (isNewError(err, pageContext.errorWhileRendering)) {
         logRuntimeError(err, pageContext._httpRequestId)
@@ -77,7 +77,7 @@ async function renderPageAlreadyRouted<
     return pageContext
   }
 
-  const renderHookResult = await executeOnRenderHtmlHook(pageContext)
+  const renderHookResult = await execHookOnRenderHtml(pageContext)
 
   const { htmlRender, renderHook } = renderHookResult
   const httpResponse = await createHttpResponsePage(htmlRender, renderHook, pageContext)
@@ -87,7 +87,7 @@ async function renderPageAlreadyRouted<
 
 async function prerenderPage(
   pageContext: PageContextCreated &
-    PageFiles & {
+    PageConfigsLazy & {
       routeParams: Record<string, string>
       pageId: string
       _urlRewrite: null
@@ -104,12 +104,12 @@ async function prerenderPage(
 
   /* Should we execute the guard() hook upon pre-rendering? Is there a use case for this?
    *  - It isn't trivial to implement, as it requires to duplicate / factor out the isAbortError() handling
-  await executeGuardHook(pageContext, (pageContext) => preparePageContextForPublicUsageServer(pageContext))
+  await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageServer(pageContext))
   */
 
-  await executeOnBeforeRenderAndDataHooks(pageContext)
+  await execHookDataAndOnBeforeRender(pageContext)
 
-  const { htmlRender, renderHook } = await executeOnRenderHtmlHook(pageContext)
+  const { htmlRender, renderHook } = await execHookOnRenderHtml(pageContext)
   assertUsage(
     htmlRender !== null,
     `Cannot pre-render ${pc.cyan(pageContext.urlOriginal)} because the ${renderHook.hookName}() hook defined by ${

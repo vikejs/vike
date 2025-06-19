@@ -34,8 +34,12 @@ import {
   populatePageContextPrefetchCache,
 } from './prefetch.js'
 import { assertInfo, assertWarning, isReact } from './utils.js'
-import { type PageContextBeforeRenderClient, executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
-import { isErrorFetchingStaticAssets, loadPageConfigsLazyClientSide } from '../shared/loadPageConfigsLazyClientSide.js'
+import { type PageContextBeforeRenderClient, execHookOnRenderClient } from '../shared/execHookOnRenderClient.js'
+import {
+  isErrorFetchingStaticAssets,
+  loadPageConfigsLazyClientSide,
+  PageContext_loadPageConfigsLazyClientSide,
+} from '../shared/loadPageConfigsLazyClientSide.js'
 import { pushHistoryState } from './history.js'
 import {
   assertNoInfiniteAbortLoop,
@@ -54,11 +58,7 @@ import { setPageContextCurrent } from './getPageContextCurrent.js'
 import { getRouteStringParameterList } from '../../shared/route/resolveRouteString.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 import type { PageContextClient } from '../../types/PageContext.js'
-import {
-  execHooksErrorHandling,
-  execHookErrorHandling,
-  type PageContextExecuteHook,
-} from '../../shared/hooks/execHook.js'
+import { execHookDirect, type PageContextExecHook, execHook } from '../../shared/hooks/execHook.js'
 import {
   type PageContextForPublicUsageClient,
   preparePageContextForPublicUsageClient,
@@ -90,7 +90,7 @@ const globalObject = getGlobalObject<{
 const { firstRenderStartPromise } = globalObject
 type PreviousPageContext = { pageId: string } & VikeConfigPublicPageLazy &
   PageContextRouted &
-  PageContextExecuteHook &
+  PageContextExecHook &
   PageContextForPublicUsageClient
 type PageContextRouted = { pageId: string; routeParams: Record<string, string> }
 
@@ -151,7 +151,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
   async function renderPageNominal() {
     const onError = async (err: unknown) => {
-      await renderErrorPage({ err })
+      await renderPageOnError({ err })
     }
 
     const pageContext = await getPageContextBegin(false, pageContextBeginArgs)
@@ -165,9 +165,10 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       if (!globalObject.isTransitioning) {
         globalObject.isTransitioning = true
         const hooks = getHookFromPageContextNew('onPageTransitionStart', previousPageContext)
-        const res = await execHooksErrorHandling(hooks, pageContext, preparePageContextForPublicUsageClientMinimal)
-        if ('err' in res) {
-          await onError(res.err)
+        try {
+          await execHookDirect(hooks, pageContext, preparePageContextForPublicUsageClientMinimal)
+        } catch (err) {
+          await onError(err)
           return
         }
         if (isRenderOutdated()) return
@@ -228,26 +229,16 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       objectAssign(pageContext, pageContextFromRoute)
     }
 
-    try {
-      objectAssign(
-        pageContext,
-        await loadPageConfigsLazyClientSide(
-          pageContext.pageId,
-          pageContext._pageFilesAll,
-          pageContext._globalContext._pageConfigs,
-          pageContext._globalContext._pageConfigGlobal,
-        ),
-      )
-    } catch (err) {
-      if (handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) {
-        return
-      } else {
-        // A user file has a syntax error
-        await onError(err)
-        return
-      }
-    }
+    const res = await loadPageConfigsLazyClientSideAndExecHook(pageContext, isFirstRender, isRenderOutdated)
+    /* Already called inside loadPageConfigsLazyClientSideAndExecHook()
     if (isRenderOutdated()) return
+    */
+    if (res.skip) return
+    if ('err' in res) {
+      await onError(res.err)
+      return
+    }
+    augmentType(pageContext, res.pageContext)
     setPageContextCurrent(pageContext)
 
     // Set global hydrationCanBeAborted
@@ -316,7 +307,11 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
   }
 
-  async function renderErrorPage(args: { err?: unknown; pageContextError?: Record<string, unknown>; is404?: boolean }) {
+  // When the normal page threw an error
+  // - Can be a URL rewrite upon `throw render('/some-url')`
+  // - Can be rendering the error page
+  // - Can be rendering Vike's generic error page (if no error page is defined, or if the error page throws an error)
+  async function renderPageOnError(args: { err?: unknown; pageContextError?: Record<string, unknown> }) {
     const onError = (err: unknown) => {
       if (!isSameErrorMessage(err, args.err)) {
         /* When we can't render the error page, we prefer showing a blank page over letting the server-side try because otherwise:
@@ -347,7 +342,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     if (isRenderOutdated()) return
 
     objectAssign(pageContext, { routeParams: {} })
-    if (args.is404) objectAssign(pageContext, { is404: true })
     if (args.pageContextError) objectAssign(pageContext, args.pageContextError)
 
     if ('err' in args) {
@@ -415,26 +409,16 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       return
     }
 
-    try {
-      objectAssign(
-        pageContext,
-        await loadPageConfigsLazyClientSide(
-          pageContext.pageId,
-          pageContext._pageFilesAll,
-          pageContext._globalContext._pageConfigs,
-          pageContext._globalContext._pageConfigGlobal,
-        ),
-      )
-    } catch (err) {
-      if (handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) {
-        return
-      } else {
-        // A user file has a syntax error
-        onError(err)
-        return
-      }
-    }
+    const res = await loadPageConfigsLazyClientSideAndExecHook(pageContext, isFirstRender, isRenderOutdated)
+    /* Already called inside loadPageConfigsLazyClientSideAndExecHook()
     if (isRenderOutdated()) return
+    */
+    if (res.skip) return
+    if ('err' in res) {
+      onError(res.err)
+      return
+    }
+    augmentType(pageContext, res.pageContext)
     setPageContextCurrent(pageContext)
 
     let pageContextFromServerHooks: PageContextFromServerHooks
@@ -474,7 +458,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   ) {
     const onError = async (err: unknown) => {
       if (!isErrorPage) {
-        await renderErrorPage({ err })
+        await renderPageOnError({ err })
       } else {
         if (!isSameErrorMessage(err, isErrorPage.err)) {
           console.error(err)
@@ -495,7 +479,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     const onRenderClientPromise = (async () => {
       let onRenderClientError: unknown
       try {
-        await executeOnRenderClientHook(pageContext, preparePageContextForPublicUsageClient)
+        await execHookOnRenderClient(pageContext, preparePageContextForPublicUsageClient)
       } catch (err) {
         onRenderClientError = err
       }
@@ -516,9 +500,10 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
     // onHydrationEnd()
     if (isFirstRender && !onRenderClientError) {
-      const res = await execHookErrorHandling('onHydrationEnd', pageContext, preparePageContextForPublicUsageClient)
-      if ('err' in res) {
-        await onError(res.err)
+      try {
+        await execHook('onHydrationEnd', pageContext, preparePageContextForPublicUsageClient)
+      } catch (err) {
+        await onError(err)
         if (!isErrorPage) return
       }
       if (isRenderOutdated(true)) return
@@ -532,9 +517,10 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       globalObject.isTransitioning = undefined
       assert(previousPageContext)
       const hooks = getHookFromPageContextNew('onPageTransitionEnd', previousPageContext)
-      const res = await execHooksErrorHandling(hooks, pageContext, preparePageContextForPublicUsageClient)
-      if ('err' in res) {
-        await onError(res.err)
+      try {
+        await execHookDirect(hooks, pageContext, preparePageContextForPublicUsageClient)
+      } catch (err) {
+        await onError(err)
         if (!isErrorPage) return
       }
       if (isRenderOutdated(true)) return
@@ -629,29 +615,6 @@ declare global {
 function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
   if (getCurrentUrl() === url) return
   pushHistoryState(url, overwriteLastHistoryEntry)
-}
-
-function handleErrorFetchingStaticAssets(
-  err: unknown,
-  pageContext: { urlOriginal: string },
-  isFirstRender: boolean,
-): boolean {
-  if (!isErrorFetchingStaticAssets(err)) {
-    return false
-  }
-
-  if (isFirstRender) {
-    disableClientRouting(err, false)
-    // This may happen if the frontend was newly deployed during hydration.
-    // Ideally: re-try a couple of times by reloading the page (not entirely trivial to implement since `localStorage` is needed.)
-    throw err
-  } else {
-    disableClientRouting(err, true)
-  }
-
-  redirectHard(pageContext.urlOriginal)
-
-  return true
 }
 
 function disableClientRouting(err: unknown, log: boolean) {
@@ -755,4 +718,69 @@ function areKeysEqual(key1: string | string[], key2: string | string[]): boolean
  */
 function getPageContextClient(): PageContextClient | null {
   return globalObject.renderedPageContext ?? null
+}
+
+type PageContextExecuteHook = Omit<
+  PageContextForPublicUsageClient,
+  keyof Awaited<ReturnType<typeof loadPageConfigsLazyClientSide>>
+>
+async function loadPageConfigsLazyClientSideAndExecHook<
+  PageContext extends PageContext_loadPageConfigsLazyClientSide & PageContextExecuteHook,
+>(pageContext: PageContext, isFirstRender: boolean, isRenderOutdated: () => boolean) {
+  let hasErr = false
+  let err: unknown
+
+  let pageContextAddendum: Awaited<ReturnType<typeof loadPageConfigsLazyClientSide>>
+  try {
+    pageContextAddendum = await loadPageConfigsLazyClientSide(
+      pageContext.pageId,
+      pageContext._pageFilesAll,
+      pageContext._globalContext._pageConfigs,
+      pageContext._globalContext._pageConfigGlobal,
+    )
+  } catch (err_) {
+    err = err_
+    hasErr = true
+    if (handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) {
+      return { skip: true }
+    } else {
+      // Syntax error in user file
+    }
+  }
+  if (isRenderOutdated()) return { skip: true }
+  if (hasErr) return { err }
+  objectAssign(pageContext, pageContextAddendum!)
+
+  try {
+    await execHook('onCreatePageContext', pageContext, preparePageContextForPublicUsageClient)
+  } catch (err_) {
+    err = err
+    hasErr = true
+  }
+  if (isRenderOutdated()) return { skip: true }
+  if (hasErr) return { err }
+
+  return { pageContext }
+}
+function handleErrorFetchingStaticAssets(
+  err: unknown,
+  pageContext: { urlOriginal: string },
+  isFirstRender: boolean,
+): boolean {
+  if (!isErrorFetchingStaticAssets(err)) {
+    return false
+  }
+
+  if (isFirstRender) {
+    disableClientRouting(err, false)
+    // This may happen if the frontend was newly deployed during hydration.
+    // Ideally: re-try a couple of times by reloading the page (not entirely trivial to implement since `localStorage` is needed.)
+    throw err
+  } else {
+    disableClientRouting(err, true)
+  }
+
+  redirectHard(pageContext.urlOriginal)
+
+  return true
 }

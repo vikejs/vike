@@ -1,22 +1,31 @@
 export { loadPageConfigsLazyClientSide }
+export type { PageContext_loadPageConfigsLazyClientSide }
 export { isErrorFetchingStaticAssets }
 
-import { getPageFilesClientSide, type PageFile, type VikeConfigPublicPageLazy } from '../../shared/getPageFiles.js'
+import { getPageFilesClientSide, type PageFile } from '../../shared/getPageFiles.js'
 import { resolveVikeConfigPublicPageLazy } from '../../shared/page-configs/resolveVikeConfigPublic.js'
 import { findPageConfig } from '../../shared/page-configs/findPageConfig.js'
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
 import type { PageConfigGlobalRuntime, PageConfigRuntime, PageConfigRuntimeLoaded } from '../../types/PageConfig.js'
 import { objectAssign } from '../runtime-server-routing/utils.js'
 
-const stamp = '__whileFetchingAssets'
+const errStamp = '_isAssetsError'
 
-type PageContextUserFilesLoaded = VikeConfigPublicPageLazy & { _pageFilesLoaded: PageFile[] }
+type PageContext_loadPageConfigsLazyClientSide = {
+  pageId: string
+  _pageFilesAll: PageFile[]
+  _globalContext: {
+    _pageConfigs: PageConfigRuntime[]
+    _pageConfigGlobal: PageConfigGlobalRuntime
+  }
+}
+
 async function loadPageConfigsLazyClientSide(
   pageId: string,
   pageFilesAll: PageFile[],
   pageConfigs: PageConfigRuntime[],
   pageConfigGlobal: PageConfigGlobalRuntime,
-): Promise<PageContextUserFilesLoaded> {
+) {
   const pageFilesClientSide = getPageFilesClientSide(pageFilesAll, pageId)
   const pageConfig = findPageConfig(pageConfigs, pageId)
   let pageConfigLoaded: null | PageConfigRuntimeLoaded
@@ -30,11 +39,11 @@ async function loadPageConfigsLazyClientSide(
       ...pageFilesClientSide.map((p) => p.loadFile?.()),
     ])
     pageConfigLoaded = result[0]
-  } catch (err: any) {
+  } catch (err: unknown) {
     if (isFetchError(err)) {
-      Object.assign(err, { [stamp]: true })
+      Object.assign(err, { [errStamp]: true })
     } else {
-      // A user file has a syntax error
+      // Syntax error in user file
     }
     throw err
   }
@@ -49,11 +58,11 @@ function isErrorFetchingStaticAssets(err: unknown) {
   if (!err) {
     return false
   }
-  return (err as any)[stamp] === true
+  return (err as Record<string, unknown>)[errStamp] === true
 }
 
 // https://stackoverflow.com/questions/75928310/how-to-detect-that-import-some-url-failed-because-some-url-isnt-a-javasc
-function isFetchError(err: unknown): boolean {
+function isFetchError(err: unknown): err is Error {
   if (!(err instanceof Error)) return false
   // https://github.com/stacks-network/clarity-js-sdk/blob/e757666b59af00b5db04dd1bf0df016e3a459ea2/packages/clarity/src/providers/registry.ts#L40-L45
   // https://github.com/modernweb-dev/web/blob/0a59b56e4c1b50af81fbf4588f36a1ceb71f3976/integration/test-runner/tests/test-failure/runTestFailureTest.ts#L11-L18

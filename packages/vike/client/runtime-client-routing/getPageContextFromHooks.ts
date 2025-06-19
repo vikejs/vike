@@ -25,7 +25,7 @@ import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.
 import { getPageConfig } from '../../shared/page-configs/helpers.js'
 import { getConfigValueRuntime } from '../../shared/page-configs/getConfigValueRuntime.js'
 import { assertOnBeforeRenderHookReturn } from '../../shared/assertOnBeforeRenderHookReturn.js'
-import { executeGuardHook } from '../../shared/route/executeGuardHook.js'
+import { execHookGuard } from '../../shared/route/execHookGuard.js'
 import { AbortRender, isAbortPageContext } from '../../shared/route/abort.js'
 import { pageContextInitIsPassedToClient } from '../../shared/misc/pageContextInitIsPassedToClient.js'
 import { isServerSideError } from '../../shared/misc/isServerSideError.js'
@@ -69,7 +69,7 @@ async function getPageContextFromHooks_isHydration(
 ) {
   for (const hookName of ['data', 'onBeforeRender'] as const) {
     if (hookClientOnlyExists(hookName, pageContext)) {
-      await executeDataLikeHook(hookName, pageContext)
+      await execHookDataLike(hookName, pageContext)
     }
   }
   return pageContext
@@ -136,13 +136,13 @@ async function getPageContextFromClientHooks(
       ) {
         // Should we really call the guard() hook on the client-side? Shouldn't we make the guard() hook a server-side
         // only hook? Or maybe make its env configurable like data() and onBeforeRender()?
-        await executeGuardHook(pageContext, (pageContext) => preparePageContextForPublicUsageClient(pageContext))
+        await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageClient(pageContext))
       }
     } else {
       if (hookClientOnlyExists(hookName, pageContext) || !pageContext._hasPageContextFromServer) {
         if (hookName === 'data') dataHookExec = true
         // This won't do anything if no hook has been defined or if the hook's env.client is false.
-        await executeDataLikeHook(hookName, pageContext)
+        await execHookDataLike(hookName, pageContext)
       }
     }
   }
@@ -157,21 +157,21 @@ async function getPageContextFromClientHooks(
   return pageContextFromClientHooks
 }
 
-type PageContextExecuteHookClient = VikeConfigPublicPageLazy & PageContextForPublicUsageClient
-async function execHookClient(hookName: HookName, pageContext: PageContextExecuteHookClient) {
+type PageContextExecHookClient = VikeConfigPublicPageLazy & PageContextForPublicUsageClient
+async function execHookClient(hookName: HookName, pageContext: PageContextExecHookClient) {
   return await execHook(hookName, pageContext, (p) => preparePageContextForPublicUsageClient(p))
 }
 
-async function executeDataLikeHook(hookName: 'data' | 'onBeforeRender', pageContext: PageContextExecuteHookClient) {
+async function execHookDataLike(hookName: 'data' | 'onBeforeRender', pageContext: PageContextExecHookClient) {
   let pageContextFromHook: Record<string, unknown> | undefined
   if (hookName === 'data') {
-    pageContextFromHook = await executeDataHook(pageContext)
+    pageContextFromHook = await execHookData(pageContext)
   } else {
-    pageContextFromHook = await executeOnBeforeRenderHook(pageContext)
+    pageContextFromHook = await execHookOnBeforeRender(pageContext)
   }
   Object.assign(pageContext, pageContextFromHook)
 }
-async function executeDataHook(pageContext: PageContextExecuteHookClient) {
+async function execHookData(pageContext: PageContextExecHookClient) {
   const res = await execHookClient('data', pageContext)
   const hook = res[0] // TO-DO/soon: support cumulative
   if (!hook) return
@@ -179,7 +179,7 @@ async function executeDataHook(pageContext: PageContextExecuteHookClient) {
   const pageContextAddendum = { data: hookReturn }
   return pageContextAddendum
 }
-async function executeOnBeforeRenderHook(pageContext: PageContextExecuteHookClient) {
+async function execHookOnBeforeRender(pageContext: PageContextExecHookClient) {
   const res = await execHookClient('onBeforeRender', pageContext)
   const hook = res[0] // TO-DO/soon: support cumulative
   if (!hook) return

@@ -1,4 +1,4 @@
-export { executeOnRenderHtmlHook }
+export { execHookOnRenderHtml }
 export type { RenderHook }
 
 import {
@@ -23,7 +23,7 @@ import { assertHookReturnedObject } from '../../../shared/assertHookReturnedObje
 import { logRuntimeError } from '../loggerRuntime.js'
 import type { PageContextSerialization } from '../html/serializeContext.js'
 import pc from '@brillout/picocolors'
-import { execHookSingleWithReturn } from '../../../shared/hooks/execHook.js'
+import { execHookDirectSingleWithReturn } from '../../../shared/hooks/execHook.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 
 type GetPageAssets = () => Promise<PageAsset[]>
@@ -34,7 +34,7 @@ type HookName =
   // TODO/v1-release: remove this line + remove all occurrences of string literal 'render' in source code
   | 'render'
 
-async function executeOnRenderHtmlHook(
+async function execHookOnRenderHtml(
   pageContext: PageContextForPublicUsageServer &
     PageContextSerialization & {
       pageId: string
@@ -52,7 +52,7 @@ async function executeOnRenderHtmlHook(
   const hook = getRenderHook(pageContext)
   objectAssign(pageContext, { _renderHook: hook })
 
-  const { hookReturn } = await execHookSingleWithReturn(hook, pageContext, preparePageContextForPublicUsageServer)
+  const { hookReturn } = await execHookDirectSingleWithReturn(hook, pageContext, preparePageContextForPublicUsageServer)
 
   const { documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter } = processHookReturnValue(
     hookReturn,

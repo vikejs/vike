@@ -2,7 +2,7 @@ import { assertServerRouting } from '../../utils/assertRoutingType.js'
 assertServerRouting()
 
 import { createPageContextClientSide } from './createPageContextClientSide.js'
-import { executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
+import { execHookOnRenderClient } from '../shared/execHookOnRenderClient.js'
 import { assertSingleInstance_onClientEntryServerRouting } from './utils.js'
 import { removeFoucBuster } from '../shared/removeFoucBuster.js'
 import { execHook } from '../../shared/hooks/execHook.js'
@@ -17,6 +17,6 @@ hydrate()
 
 async function hydrate() {
   const pageContext = await createPageContextClientSide()
-  await executeOnRenderClientHook(pageContext, preparePageContextForPublicUsageClient)
+  await execHookOnRenderClient(pageContext, preparePageContextForPublicUsageClient)
   await execHook('onHydrationEnd', pageContext, preparePageContextForPublicUsageClient)
 }

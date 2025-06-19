@@ -1,15 +1,14 @@
 export { execHook }
-export { execHookSingle }
-export { execHookSingleWithReturn }
-export { execHookErrorHandling }
-export { execHooksErrorHandling }
-export { execHookWithoutPageContext }
 export { execHookGlobal }
-export { execHookSync }
+export { execHookDirect }
+export { execHookDirectSingle }
+export { execHookDirectSingleWithReturn }
+export { execHookDirectWithoutPageContext }
+export { execHookDirectSync }
 export { getPageContext }
 export { providePageContext }
 export { isUserHookError }
-export type { PageContextExecuteHook }
+export type { PageContextExecHook }
 
 import { getProjectError, assertWarning, assertUsage } from '../../utils/assert.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
@@ -33,85 +32,20 @@ const globalObject = getGlobalObject('utils/execHook.ts', {
   pageContext: null as null | PageContextPrepareMinimum,
 })
 
-type PageContextExecuteHook = VikeConfigPublicPageLazy & PageContextForPublicUsage
+type PageContextExecHook = VikeConfigPublicPageLazy & PageContextForPublicUsage
 type PageContextForPublicUsage = PageContextForPublicUsageServer | PageContextForPublicUsageClientShared
 
 type HookWithResult = Hook & {
   hookReturn: unknown
 }
 
-async function execHookSingle<PageContext extends PageContextExecuteHook>(
-  hook: Hook,
-  pageContext: PageContext,
-  preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
-) {
-  const res = await execHooksErrorHandling([hook], pageContext, preparePageContextForPublicUsage)
-  if ('err' in res) throw res.err
-  const { hookReturn } = res.hooks[0]!
-  assertUsage(
-    hookReturn === undefined,
-    `The ${hook.hookName}() hook defined by ${hook.hookFilePath} isn't allowed to return a value`,
-  )
-}
-
-async function execHookSingleWithReturn<PageContext extends PageContextExecuteHook>(
-  hook: Hook,
-  pageContext: PageContext,
-  preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
-) {
-  const res = await execHooksErrorHandling([hook], pageContext, preparePageContextForPublicUsage)
-  if ('err' in res) throw res.err
-  const { hookReturn } = res.hooks[0]!
-  return { hookReturn }
-}
-
-async function execHook<PageContext extends PageContextExecuteHook>(
-  hookName: HookName,
-  pageContext: PageContext,
-  preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
-) {
-  const res = await execHookErrorHandling(hookName, pageContext, preparePageContextForPublicUsage)
-  if ('err' in res) throw res.err
-  return res.hooks
-}
-
-async function execHookErrorHandling<PageContext extends PageContextExecuteHook>(
+async function execHook<PageContext extends PageContextExecHook>(
   hookName: HookName,
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
 ) {
   const hooks = getHookFromPageContextNew(hookName, pageContext)
-  return execHooksErrorHandling(hooks, pageContext, preparePageContextForPublicUsage)
-}
-
-async function execHooksErrorHandling<PageContext extends PageContextPrepareMinimum>(
-  hooks: Hook[],
-  pageContext: PageContext,
-  preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
-) {
-  if (!hooks.length) return { hooks: [] as HookWithResult[] }
-  const pageContextForPublicUsage = preparePageContextForPublicUsage(pageContext)
-  let hooksWithResult: HookWithResult[] | undefined
-  let err: unknown
-  try {
-    hooksWithResult = await Promise.all(
-      hooks.map(async (hook) => {
-        const hookReturn = await execHookAsync(
-          () => hook.hookFn(pageContextForPublicUsage),
-          hook,
-          pageContextForPublicUsage,
-        )
-        return { ...hook, hookReturn }
-      }),
-    )
-  } catch (err_) {
-    err = err_
-  }
-  if (hooksWithResult) {
-    return { hooks: hooksWithResult }
-  } else {
-    return { hooks, err }
-  }
+  return await execHookDirect(hooks, pageContext, preparePageContextForPublicUsage)
 }
 
 async function execHookGlobal<HookArg extends PageContextPrepareMinimum | GlobalContextPrepareMinimum>(
@@ -125,9 +59,52 @@ async function execHookGlobal<HookArg extends PageContextPrepareMinimum | Global
   const hookArgForPublicUsage = prepareForPublicUsage(hookArg)
   await Promise.all(
     hooks.map(async (hook) => {
-      await execHookAsync(() => hook.hookFn(hookArgForPublicUsage), hook, pageContext)
+      await execHookDirectAsync(() => hook.hookFn(hookArgForPublicUsage), hook, pageContext)
     }),
   )
+}
+
+async function execHookDirect<PageContext extends PageContextPrepareMinimum>(
+  hooks: Hook[],
+  pageContext: PageContext,
+  preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
+) {
+  if (!hooks.length) return [] as HookWithResult[]
+  const pageContextForPublicUsage = preparePageContextForPublicUsage(pageContext)
+  const hooksWithResult = await Promise.all(
+    hooks.map(async (hook) => {
+      const hookReturn = await execHookDirectAsync(
+        () => hook.hookFn(pageContextForPublicUsage),
+        hook,
+        pageContextForPublicUsage,
+      )
+      return { ...hook, hookReturn }
+    }),
+  )
+  return hooksWithResult
+}
+
+async function execHookDirectSingle<PageContext extends PageContextExecHook>(
+  hook: Hook,
+  pageContext: PageContext,
+  preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
+) {
+  const hooksWithResult = await execHookDirect([hook], pageContext, preparePageContextForPublicUsage)
+  const { hookReturn } = hooksWithResult[0]!
+  assertUsage(
+    hookReturn === undefined,
+    `The ${hook.hookName}() hook defined by ${hook.hookFilePath} isn't allowed to return a value`,
+  )
+}
+
+async function execHookDirectSingleWithReturn<PageContext extends PageContextExecHook>(
+  hook: Hook,
+  pageContext: PageContext,
+  preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
+) {
+  const hooksWithResult = await execHookDirect([hook], pageContext, preparePageContextForPublicUsage)
+  const { hookReturn } = hooksWithResult[0]!
+  return { hookReturn }
 }
 
 function isUserHookError(err: unknown): false | HookLoc {
@@ -135,15 +112,15 @@ function isUserHookError(err: unknown): false | HookLoc {
   return globalObject.userHookErrors.get(err) ?? false
 }
 
-async function execHookWithoutPageContext<HookReturn>(
+async function execHookDirectWithoutPageContext<HookReturn>(
   hookFnCaller: () => HookReturn,
   hook: Omit<Hook, 'hookFn'>,
 ): Promise<HookReturn> {
   const { hookName, hookFilePath, hookTimeout } = hook
-  const hookReturn = await execHookAsync(hookFnCaller, { hookName, hookFilePath, hookTimeout }, null)
+  const hookReturn = await execHookDirectAsync(hookFnCaller, { hookName, hookFilePath, hookTimeout }, null)
   return hookReturn
 }
-function execHookAsync<HookReturn>(
+function execHookDirectAsync<HookReturn>(
   hookFnCaller: () => HookReturn,
   hook: Omit<Hook, 'hookFn'>,
   pageContextForPublicUsage: null | PageContextPrepareMinimum,
@@ -208,7 +185,7 @@ function execHookAsync<HookReturn>(
   return promise
 }
 
-function execHookSync<PageContext extends PageContextPrepareMinimum>(
+function execHookDirectSync<PageContext extends PageContextPrepareMinimum>(
   hook: Omit<Hook, 'hookTimeout'>,
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,

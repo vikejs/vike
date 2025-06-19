@@ -49,7 +49,7 @@ import { getConfigValueRuntime } from '../../shared/page-configs/getConfigValueR
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
 import { getErrorPageId, isErrorPage } from '../../shared/error-page.js'
 import { isAbortError } from '../../shared/route/abort.js'
-import { loadPageConfigsLazyServerSide } from '../runtime/renderPage/loadPageConfigsLazyServerSide.js'
+import { loadPageConfigsLazyServerSideAndExecHook } from '../runtime/renderPage/loadPageConfigsLazyServerSide.js'
 import {
   getHookFromPageConfig,
   getHookFromPageConfigGlobal,
@@ -60,7 +60,7 @@ import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../types/PageConfig.js'
 import { getVikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
 import type { HookTimeout } from '../../shared/hooks/getHook.js'
-import { execHookWithoutPageContext, isUserHookError } from '../../shared/hooks/execHook.js'
+import { execHookDirectWithoutPageContext, isUserHookError } from '../../shared/hooks/execHook.js'
 import type { APIOptions } from '../api/types.js'
 import { setWasPrerenderRun } from './context.js'
 import { resolvePrerenderConfigGlobal, resolvePrerenderConfigLocal } from './resolvePrerenderConfig.js'
@@ -68,6 +68,7 @@ import { getOutDirs } from '../vite/shared/getOutDirs.js'
 import fs from 'node:fs'
 import { getProxyForPublicUsage } from '../../shared/getProxyForPublicUsage.js'
 import { getStaticRedirectsForPrerender } from '../runtime/renderPage/resolveRedirects.js'
+import { augmentType } from '../runtime/utils.js'
 const docLink = 'https://vike.dev/i18n#pre-rendering'
 
 type HtmlFile = {
@@ -407,7 +408,7 @@ async function callOnBeforePrerenderStartHooks(
         if (doNotPrerenderList.find((p) => p.pageId === pageId)) return
         const { hookName, hookFilePath } = hook
 
-        const prerenderResult = await execHookWithoutPageContext(() => hook.hookFn(), hook)
+        const prerenderResult = await execHookDirectWithoutPageContext(() => hook.hookFn(), hook)
         const result = normalizeOnPrerenderHookResult(prerenderResult, hookFilePath, hookName)
 
         // Handle result
@@ -569,7 +570,7 @@ async function createPageContextPrerendering(
     })
   }
 
-  objectAssign(pageContext, await loadPageConfigsLazyServerSide(pageContext))
+  augmentType(pageContext, await loadPageConfigsLazyServerSideAndExecHook(pageContext))
 
   let usesClientRouter: boolean
   {
@@ -742,7 +743,10 @@ async function callOnPrerenderStartHook(
   })
 
   const prerenderContextPublic = preparePrerenderContextForPublicUsage(prerenderContext)
-  let result: unknown = await execHookWithoutPageContext(() => hookFn(prerenderContextPublic), onPrerenderStartHook)
+  let result: unknown = await execHookDirectWithoutPageContext(
+    () => hookFn(prerenderContextPublic),
+    onPrerenderStartHook,
+  )
 
   // Before applying result
   prerenderContext.pageContexts.forEach((pageContext) => {
