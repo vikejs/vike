@@ -233,9 +233,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       objectAssign(pageContext, pageContextFromRoute)
     }
 
-    let pageContextAugmented: Awaited<ReturnType<typeof loadPageConfigsLazyClientSide>>
+    let pageContextAugmented: Awaited<ReturnType<typeof loadPageConfigsLazyClientSideAndExecHook>>
     try {
-      pageContextAugmented = await loadPageConfigsLazyClientSide(pageContext)
+      pageContextAugmented = await loadPageConfigsLazyClientSideAndExecHook(pageContext)
     } catch (err) {
       if (handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) {
         return
@@ -417,9 +417,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       return
     }
 
-    let pageContextAugmented: Awaited<ReturnType<typeof loadPageConfigsLazyClientSide>>
+    let pageContextAugmented: Awaited<ReturnType<typeof loadPageConfigsLazyClientSideAndExecHook>>
     try {
-      pageContextAugmented = await loadPageConfigsLazyClientSide(pageContext)
+      pageContextAugmented = await loadPageConfigsLazyClientSideAndExecHook(pageContext)
     } catch (err) {
       if (handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) {
         return
@@ -754,7 +754,7 @@ function getPageContextClient(): PageContextClient | null {
 }
 
 type PageContextExecute = Omit<PageContextForPublicUsageClient, keyof Awaited<ReturnType<typeof loadPageConfigsLazy>>>
-async function loadPageConfigsLazyClientSide<
+async function loadPageConfigsLazyClientSideAndExecHook<
   PageContext extends PageContext_loadPageConfigsLazyClientSide & PageContextExecute,
 >(pageContext: PageContext) {
   const pageContextAddendum = await loadPageConfigsLazy(

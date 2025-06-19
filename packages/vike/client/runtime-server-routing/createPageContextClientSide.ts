@@ -44,7 +44,7 @@ async function createPageContextClientSide() {
   )
 
   // Sets pageContext.config to local configs (overrides the pageContext.config set above)
-  augmentType(pageContextCreated, await loadPageConfigsLazyClientSide(pageContextCreated))
+  augmentType(pageContextCreated, await loadPageConfigsLazyClientSideAndExecHook(pageContextCreated))
 
   assertPristineUrl()
   return pageContextCreated
@@ -59,7 +59,7 @@ function assertPristineUrl() {
 }
 
 type PageContextExecHook = Omit<PageContextForPublicUsageClient, keyof Awaited<ReturnType<typeof loadPageConfigsLazy>>>
-async function loadPageConfigsLazyClientSide<
+async function loadPageConfigsLazyClientSideAndExecHook<
   PageContext extends PageContext_loadPageConfigsLazyClientSide & PageContextExecHook,
 >(pageContext: PageContext) {
   const pageContextAddendum = await loadPageConfigsLazy(
