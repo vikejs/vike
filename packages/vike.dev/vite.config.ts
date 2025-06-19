@@ -2,7 +2,6 @@ import svgr from 'vite-plugin-svgr'
 import type { UserConfig } from 'vite'
 
 export default {
-  build: { minify: false },
   optimizeDeps: { include: ['@batijs/elements'] },
   plugins: [
     // Used by the landing page, see `.svg?react` imports
