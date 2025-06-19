@@ -43,7 +43,7 @@ async function loadPageConfigsLazyClientSide(
     if (isFetchError(err)) {
       Object.assign(err, { [errStamp]: true })
     } else {
-      // A user file has a syntax error
+      // Syntax error in user file
     }
     throw err
   }

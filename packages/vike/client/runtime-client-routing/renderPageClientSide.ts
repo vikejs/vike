@@ -233,20 +233,16 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       objectAssign(pageContext, pageContextFromRoute)
     }
 
-    let pageContextAugmented: Awaited<ReturnType<typeof loadPageConfigsLazyClientSideAndExecHook>>
-    try {
-      pageContextAugmented = await loadPageConfigsLazyClientSideAndExecHook(pageContext)
-    } catch (err) {
-      if (handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) {
-        return
-      } else {
-        // A user file has a syntax error
-        await onError(err)
-        return
-      }
-    }
-    augmentType(pageContext, pageContextAugmented)
+    const res = await loadPageConfigsLazyClientSideAndExecHook(pageContext, isFirstRender, isRenderOutdated)
+    /* Already called inside loadPageConfigsLazyClientSideAndExecHook()
     if (isRenderOutdated()) return
+    */
+    if (res.skip) return
+    if (res.err) {
+      await onError(res.err)
+      return
+    }
+    augmentType(pageContext, res.pageContext)
     setPageContextCurrent(pageContext)
 
     // Set global hydrationCanBeAborted
@@ -417,20 +413,16 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       return
     }
 
-    let pageContextAugmented: Awaited<ReturnType<typeof loadPageConfigsLazyClientSideAndExecHook>>
-    try {
-      pageContextAugmented = await loadPageConfigsLazyClientSideAndExecHook(pageContext)
-    } catch (err) {
-      if (handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) {
-        return
-      } else {
-        // A user file has a syntax error
-        onError(err)
-        return
-      }
-    }
-    augmentType(pageContext, pageContextAugmented)
+    const res = await loadPageConfigsLazyClientSideAndExecHook(pageContext, isFirstRender, isRenderOutdated)
+    /* Already called inside loadPageConfigsLazyClientSideAndExecHook()
     if (isRenderOutdated()) return
+    */
+    if (res.skip) return
+    if (res.err) {
+      onError(res.err)
+      return
+    }
+    augmentType(pageContext, res.pageContext)
     setPageContextCurrent(pageContext)
 
     let pageContextFromServerHooks: PageContextFromServerHooks
@@ -736,18 +728,41 @@ type PageContextExecute = Omit<
 >
 async function loadPageConfigsLazyClientSideAndExecHook<
   PageContext extends PageContext_loadPageConfigsLazyClientSide & PageContextExecute,
->(pageContext: PageContext) {
-  const pageContextAddendum = await loadPageConfigsLazyClientSide(
-    pageContext.pageId,
-    pageContext._pageFilesAll,
-    pageContext._globalContext._pageConfigs,
-    pageContext._globalContext._pageConfigGlobal,
-  )
-  objectAssign(pageContext, pageContextAddendum)
+>(pageContext: PageContext, isFirstRender: boolean, isRenderOutdated: () => boolean) {
+  let hasErr = false
+  let err: unknown
 
-  await execHook('onCreatePageContext', pageContext, preparePageContextForPublicUsageClient)
+  let pageContextAddendum: Awaited<ReturnType<typeof loadPageConfigsLazyClientSide>>
+  try {
+    pageContextAddendum = await loadPageConfigsLazyClientSide(
+      pageContext.pageId,
+      pageContext._pageFilesAll,
+      pageContext._globalContext._pageConfigs,
+      pageContext._globalContext._pageConfigGlobal,
+    )
+  } catch (err_) {
+    err = err_
+    hasErr = true
+    if (handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) {
+      return { skip: true }
+    } else {
+      // Syntax error in user file
+    }
+  }
+  if (isRenderOutdated()) return { skip: true }
+  if (hasErr) return { err }
+  objectAssign(pageContext, pageContextAddendum!)
 
-  return pageContext
+  try {
+    await execHook('onCreatePageContext', pageContext, preparePageContextForPublicUsageClient)
+  } catch (err_) {
+    err = err
+    hasErr = true
+  }
+  if (isRenderOutdated()) return { skip: true }
+  if (hasErr) return { err }
+
+  return { pageContext }
 }
 function handleErrorFetchingStaticAssets(
   err: unknown,
