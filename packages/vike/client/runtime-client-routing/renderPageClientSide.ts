@@ -58,12 +58,7 @@ import { setPageContextCurrent } from './getPageContextCurrent.js'
 import { getRouteStringParameterList } from '../../shared/route/resolveRouteString.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 import type { PageContextClient } from '../../types/PageContext.js'
-import {
-  execHookDirectly,
-  execHookErrorHandling,
-  type PageContextExecuteHook,
-  execHook,
-} from '../../shared/hooks/execHook.js'
+import { execHookDirectly, type PageContextExecuteHook, execHook } from '../../shared/hooks/execHook.js'
 import {
   type PageContextForPublicUsageClient,
   preparePageContextForPublicUsageClient,
@@ -504,9 +499,10 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
     // onHydrationEnd()
     if (isFirstRender && !onRenderClientError) {
-      const res = await execHookErrorHandling('onHydrationEnd', pageContext, preparePageContextForPublicUsageClient)
-      if ('err' in res) {
-        await onError(res.err)
+      try {
+        await execHook('onHydrationEnd', pageContext, preparePageContextForPublicUsageClient)
+      } catch (err) {
+        await onError(err)
         if (!isErrorPage) return
       }
       if (isRenderOutdated(true)) return

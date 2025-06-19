@@ -1,7 +1,6 @@
 export { execHook }
 export { execHookSingle }
 export { execHookSingleWithReturn }
-export { execHookErrorHandling }
 export { execHookDirectly }
 export { execHookWithoutPageContext }
 export { execHookGlobal }
@@ -70,18 +69,10 @@ async function execHook<PageContext extends PageContextExecuteHook>(
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
 ) {
-  const res = await execHookErrorHandling(hookName, pageContext, preparePageContextForPublicUsage)
+  const hooks = getHookFromPageContextNew(hookName, pageContext)
+  const res = await execHookDirectly(hooks, pageContext, preparePageContextForPublicUsage)
   if ('err' in res) throw res.err
   return res.hooks
-}
-
-async function execHookErrorHandling<PageContext extends PageContextExecuteHook>(
-  hookName: HookName,
-  pageContext: PageContext,
-  preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
-) {
-  const hooks = getHookFromPageContextNew(hookName, pageContext)
-  return execHookDirectly(hooks, pageContext, preparePageContextForPublicUsage)
 }
 
 async function execHookDirectly<PageContext extends PageContextPrepareMinimum>(
