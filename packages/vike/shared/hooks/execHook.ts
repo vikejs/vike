@@ -1,7 +1,7 @@
 export { execHook }
 export { execHookGlobal }
-export { execHookSingle }
-export { execHookSingleWithReturn }
+export { execHookDirectlySingle }
+export { execHookDirectlySingleWithReturn }
 export { execHookDirectly }
 export { execHookDirectlyWithoutPageContext }
 export { execHookDirectlySync }
@@ -64,7 +64,7 @@ async function execHookGlobal<HookArg extends PageContextPrepareMinimum | Global
   )
 }
 
-async function execHookSingle<PageContext extends PageContextExecuteHook>(
+async function execHookDirectlySingle<PageContext extends PageContextExecuteHook>(
   hook: Hook,
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
@@ -77,7 +77,7 @@ async function execHookSingle<PageContext extends PageContextExecuteHook>(
   )
 }
 
-async function execHookSingleWithReturn<PageContext extends PageContextExecuteHook>(
+async function execHookDirectlySingleWithReturn<PageContext extends PageContextExecuteHook>(
   hook: Hook,
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
