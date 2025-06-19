@@ -1,4 +1,4 @@
-export { executeOnRenderHtmlHook }
+export { execHookOnRenderHtml }
 export type { RenderHook }
 
 import {
@@ -34,7 +34,7 @@ type HookName =
   // TODO/v1-release: remove this line + remove all occurrences of string literal 'render' in source code
   | 'render'
 
-async function executeOnRenderHtmlHook(
+async function execHookOnRenderHtml(
   pageContext: PageContextForPublicUsageServer &
     PageContextSerialization & {
       pageId: string

@@ -13,7 +13,7 @@ import {
   PageContext_loadPageConfigsLazyServerSide,
   type PageConfigsLazy,
 } from './loadPageConfigsLazyServerSide.js'
-import { executeOnRenderHtmlHook } from './executeOnRenderHtmlHook.js'
+import { execHookOnRenderHtml } from './execHookOnRenderHtml.js'
 import { executeOnBeforeRenderAndDataHooks } from './executeOnBeforeRenderAndDataHooks.js'
 import { logRuntimeError } from '../loggerRuntime.js'
 import { isNewError } from './isNewError.js'
@@ -77,7 +77,7 @@ async function renderPageAlreadyRouted<
     return pageContext
   }
 
-  const renderHookResult = await executeOnRenderHtmlHook(pageContext)
+  const renderHookResult = await execHookOnRenderHtml(pageContext)
 
   const { htmlRender, renderHook } = renderHookResult
   const httpResponse = await createHttpResponsePage(htmlRender, renderHook, pageContext)
@@ -109,7 +109,7 @@ async function prerenderPage(
 
   await executeOnBeforeRenderAndDataHooks(pageContext)
 
-  const { htmlRender, renderHook } = await executeOnRenderHtmlHook(pageContext)
+  const { htmlRender, renderHook } = await execHookOnRenderHtml(pageContext)
   assertUsage(
     htmlRender !== null,
     `Cannot pre-render ${pc.cyan(pageContext.urlOriginal)} because the ${renderHook.hookName}() hook defined by ${

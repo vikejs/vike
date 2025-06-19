@@ -25,7 +25,7 @@ import {
 } from '../html/stream.js'
 import { assert, assertUsage, assertWarning } from '../utils.js'
 import { getHtmlString, type HtmlRender } from '../html/renderHtml.js'
-import type { RenderHook } from './executeOnRenderHtmlHook.js'
+import type { RenderHook } from './execHookOnRenderHtml.js'
 import pc from '@brillout/picocolors'
 
 const streamDocs = 'See https://vike.dev/streaming for more information.'
