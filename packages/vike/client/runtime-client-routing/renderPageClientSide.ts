@@ -59,7 +59,7 @@ import { getRouteStringParameterList } from '../../shared/route/resolveRouteStri
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 import type { PageContextClient } from '../../types/PageContext.js'
 import {
-  execHooksErrorHandling,
+  execHookDirectly,
   execHookErrorHandling,
   type PageContextExecuteHook,
   execHook,
@@ -170,7 +170,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       if (!globalObject.isTransitioning) {
         globalObject.isTransitioning = true
         const hooks = getHookFromPageContextNew('onPageTransitionStart', previousPageContext)
-        const res = await execHooksErrorHandling(hooks, pageContext, preparePageContextForPublicUsageClientMinimal)
+        const res = await execHookDirectly(hooks, pageContext, preparePageContextForPublicUsageClientMinimal)
         if ('err' in res) {
           await onError(res.err)
           return
@@ -520,7 +520,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       globalObject.isTransitioning = undefined
       assert(previousPageContext)
       const hooks = getHookFromPageContextNew('onPageTransitionEnd', previousPageContext)
-      const res = await execHooksErrorHandling(hooks, pageContext, preparePageContextForPublicUsageClient)
+      const res = await execHookDirectly(hooks, pageContext, preparePageContextForPublicUsageClient)
       if ('err' in res) {
         await onError(res.err)
         if (!isErrorPage) return
