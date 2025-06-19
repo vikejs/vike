@@ -69,7 +69,7 @@ async function getPageContextFromHooks_isHydration(
 ) {
   for (const hookName of ['data', 'onBeforeRender'] as const) {
     if (hookClientOnlyExists(hookName, pageContext)) {
-      await executeDataLikeHook(hookName, pageContext)
+      await execHookDataLike(hookName, pageContext)
     }
   }
   return pageContext
@@ -142,7 +142,7 @@ async function getPageContextFromClientHooks(
       if (hookClientOnlyExists(hookName, pageContext) || !pageContext._hasPageContextFromServer) {
         if (hookName === 'data') dataHookExec = true
         // This won't do anything if no hook has been defined or if the hook's env.client is false.
-        await executeDataLikeHook(hookName, pageContext)
+        await execHookDataLike(hookName, pageContext)
       }
     }
   }
@@ -162,7 +162,7 @@ async function execHookClient(hookName: HookName, pageContext: PageContextExecut
   return await execHook(hookName, pageContext, (p) => preparePageContextForPublicUsageClient(p))
 }
 
-async function executeDataLikeHook(hookName: 'data' | 'onBeforeRender', pageContext: PageContextExecuteHookClient) {
+async function execHookDataLike(hookName: 'data' | 'onBeforeRender', pageContext: PageContextExecuteHookClient) {
   let pageContextFromHook: Record<string, unknown> | undefined
   if (hookName === 'data') {
     pageContextFromHook = await executeDataHook(pageContext)
