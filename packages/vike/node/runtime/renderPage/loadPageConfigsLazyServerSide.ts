@@ -25,19 +25,22 @@ import type { MediaType } from './inferMediaType.js'
 import { loadConfigValues } from '../../../shared/page-configs/loadConfigValues.js'
 import { execHookServer, type PageContextExecHookServer } from './execHookServer.js'
 
-type PageContextExecuteHook = Omit<PageContextExecHookServer, keyof Awaited<ReturnType<typeof loadPageConfigsLazy>>>
+type PageContextExecuteHook = Omit<
+  PageContextExecHookServer,
+  keyof Awaited<ReturnType<typeof loadPageConfigsLazyServerSide>>
+>
 type PageContext_loadPageConfigsLazyServerSide = PageContextGetPageAssets &
   PageContextDebugRouteMatches & {
     pageId: string
     urlOriginal: string
     _globalContext: GlobalContextServerInternal
   }
-type PageConfigsLazy = PromiseType<ReturnType<typeof loadPageConfigsLazy>>
+type PageConfigsLazy = PromiseType<ReturnType<typeof loadPageConfigsLazyServerSide>>
 
 async function loadPageConfigsLazyServerSideAndExecHook<
   PageContext extends PageContext_loadPageConfigsLazyServerSide & PageContextExecuteHook,
 >(pageContext: PageContext) {
-  const pageContextAddendum = await loadPageConfigsLazy(pageContext)
+  const pageContextAddendum = await loadPageConfigsLazyServerSide(pageContext)
   objectAssign(pageContext, pageContextAddendum)
 
   await execHookServer('onCreatePageContext', pageContext)
@@ -45,7 +48,7 @@ async function loadPageConfigsLazyServerSideAndExecHook<
   return pageContext
 }
 
-async function loadPageConfigsLazy(pageContext: PageContext_loadPageConfigsLazyServerSide) {
+async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageConfigsLazyServerSide) {
   const pageConfig = findPageConfig(pageContext._globalContext._pageConfigs, pageContext.pageId) // Make pageConfig globally available as pageContext._pageConfig ?
 
   const globalContext = pageContext._globalContext
