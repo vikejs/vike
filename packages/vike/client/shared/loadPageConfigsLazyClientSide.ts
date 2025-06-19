@@ -9,7 +9,7 @@ import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
 import type { PageConfigGlobalRuntime, PageConfigRuntime, PageConfigRuntimeLoaded } from '../../types/PageConfig.js'
 import { objectAssign } from '../runtime-server-routing/utils.js'
 
-const stamp = '__whileFetchingAssets'
+const errStamp = '_isAssetsError'
 
 type PageContext_loadPageConfigsLazyClientSide = {
   pageId: string
@@ -42,7 +42,7 @@ async function loadPageConfigsLazyClientSide(
     pageConfigLoaded = result[0]
   } catch (err: any) {
     if (isFetchError(err)) {
-      Object.assign(err, { [stamp]: true })
+      Object.assign(err, { [errStamp]: true })
     } else {
       // A user file has a syntax error
     }
@@ -59,7 +59,7 @@ function isErrorFetchingStaticAssets(err: unknown) {
   if (!err) {
     return false
   }
-  return (err as any)[stamp] === true
+  return (err as any)[errStamp] === true
 }
 
 // https://stackoverflow.com/questions/75928310/how-to-detect-that-import-some-url-failed-because-some-url-isnt-a-javasc
