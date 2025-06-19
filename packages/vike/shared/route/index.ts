@@ -16,7 +16,7 @@ import { type PageContextUrlInternal, type PageContextUrlSource } from '../getPa
 import { resolvePrecedence } from './resolvePrecedence.js'
 import { resolveRouteString } from './resolveRouteString.js'
 import { resolveRouteFunction } from './resolveRouteFunction.js'
-import { executeOnBeforeRouteHook } from './executeOnBeforeRouteHook.js'
+import { execHookOnBeforeRoute } from './execHookOnBeforeRoute.js'
 import type { PageRoutes, RouteType } from './loadPageRoutes.js'
 import { debug } from './debug.js'
 import pc from '@brillout/picocolors'
@@ -47,7 +47,7 @@ async function route(pageContext: PageContextForRoute, skipOnBeforeRouteHook?: t
 
   // onBeforeRoute()
   if (!skipOnBeforeRouteHook) {
-    const pageContextFromOnBeforeRouteHook = await executeOnBeforeRouteHook(pageContext)
+    const pageContextFromOnBeforeRouteHook = await execHookOnBeforeRoute(pageContext)
     if (pageContextFromOnBeforeRouteHook) {
       if (pageContextFromOnBeforeRouteHook._routingProvidedByOnBeforeRouteHook) {
         assert(pageContextFromOnBeforeRouteHook.pageId)

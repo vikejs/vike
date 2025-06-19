@@ -1,4 +1,4 @@
-export { executeOnBeforeRouteHook }
+export { execHookOnBeforeRoute }
 
 import { assertPageContextProvidedByUser } from '../assertPageContextProvidedByUser.js'
 import {
@@ -22,7 +22,7 @@ import {
 } from '../preparePageContextForPublicUsage.js'
 import type { GlobalContextInternal } from '../createGlobalContextShared.js'
 
-async function executeOnBeforeRouteHook(
+async function execHookOnBeforeRoute(
   pageContext: PageContextForRoute,
 ): Promise<
   | null
@@ -71,7 +71,7 @@ async function getPageContextFromHook(
 }> {
   let { hookReturn } = execHookDirectSync(onBeforeRouteHook, pageContext, preparePageContextForPublicUsage)
   assertSyncRouting(hookReturn, `The onBeforeRoute() hook ${onBeforeRouteHook.hookFilePath}`)
-  // TODO/v1-release: make executeOnBeforeRouteHook() and route() sync
+  // TODO/v1-release: make execHookOnBeforeRoute() and route() sync
   hookReturn = await hookReturn
 
   const errPrefix = `The onBeforeRoute() hook defined by ${onBeforeRouteHook.hookFilePath}`
