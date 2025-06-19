@@ -34,8 +34,8 @@ import { injectIntoGlobalHook } from "/@react-refresh";
 injectIntoGlobalHook(window);
 window.$RefreshReg$ = () => {};
 window.$RefreshSig$ = () => (type) => type;
-import "/@vite/client";
-import "/@fs/$ROOT/packages/vike/dist/esm/client/runtime-server-routing/entry.js";
+import("/@vite/client");
+import("/@fs/$ROOT/packages/vike/dist/esm/client/runtime-server-routing/entry.js");
 </script>
       </body>
     </html>"
@@ -75,8 +75,8 @@ import { injectIntoGlobalHook } from "/@react-refresh";
 injectIntoGlobalHook(window);
 window.$RefreshReg$ = () => {};
 window.$RefreshSig$ = () => (type) => type;
-import "/@vite/client";
-import "/@fs/$ROOT/packages/vike/dist/esm/client/runtime-server-routing/entry.js";
+import("/@vite/client");
+import("/@fs/$ROOT/packages/vike/dist/esm/client/runtime-server-routing/entry.js");
 </script>
       </body>
     </html>"
@@ -116,8 +116,8 @@ import { injectIntoGlobalHook } from "/@react-refresh";
 injectIntoGlobalHook(window);
 window.$RefreshReg$ = () => {};
 window.$RefreshSig$ = () => (type) => type;
-import "/@vite/client";
-import "/@fs/$ROOT/packages/vike/dist/esm/client/runtime-server-routing/entry.js";
+import("/@vite/client");
+import("/@fs/$ROOT/packages/vike/dist/esm/client/runtime-server-routing/entry.js");
 </script>
       </body>
     </html>"
@@ -157,8 +157,8 @@ import { injectIntoGlobalHook } from "/@react-refresh";
 injectIntoGlobalHook(window);
 window.$RefreshReg$ = () => {};
 window.$RefreshSig$ = () => (type) => type;
-import "/@vite/client";
-import "/@fs/$ROOT/packages/vike/dist/esm/client/runtime-server-routing/entry.js";
+import("/@vite/client");
+import("/@fs/$ROOT/packages/vike/dist/esm/client/runtime-server-routing/entry.js");
 </script>
       </body>
     </html>"

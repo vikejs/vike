@@ -609,7 +609,7 @@ function stampFinished(urlOriginal: string) {
   window._vike.fullyRenderedUrl = urlOriginal
 }
 declare global {
-  var _vike: { fullyRenderedUrl?: string }
+  var _vike: { fullyRenderedUrl?: string } | undefined
 }
 
 function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {

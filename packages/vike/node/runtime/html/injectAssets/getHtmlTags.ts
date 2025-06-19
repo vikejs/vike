@@ -224,9 +224,26 @@ async function getHtmlTags(
 
 function mergeScriptEntries(pageAssets: PageAsset[], viteDevScript: string): null | string {
   const scriptEntries = pageAssets.filter((pageAsset) => pageAsset.isEntry && pageAsset.assetType === 'script')
-  const scriptTagsHtml = `${viteDevScript}${scriptEntries.map((asset) => inferAssetTag(asset)).join('')}`
-  const scriptTag = mergeScriptTags(scriptTagsHtml)
-  return scriptTag
+  let scriptEntry = `${viteDevScript}${scriptEntries.map((asset) => inferAssetTag(asset)).join('')}`
+  // We merge scripts to avoid the infamous HMR preamble error.
+  // - Infamous HMR preamble error:
+  //   ```browser-console
+  //   usePageContext.tsx:10 Uncaught (in promise) Error: @vitejs/plugin-react can't detect preamble. Something is wrong.
+  //       at usePageContext.tsx:10:10
+  //   ```
+  // - Note the following race condition. Maybe making the second script non-async ensures execution order?
+  //   ```html
+  //   <script type="module">console.log("I can be printed *after* the other log")</script>
+  //   <script src="entry.js" type="module" async></script>
+  //   ```
+  //   ```js
+  //   // entry.js
+  //   console.log("I can be printed *before* the other log")
+  //   ```
+  // - Maybe an alternative would be to make Vike's client runtime entry <script> tag non-async. Would that work? Would it be a performance issue?
+  //   - The entry <script> shouldn't be `<script defer>` upon HTML streaming, otherwise progressive hydration while SSR streaming won't work.
+  scriptEntry = mergeScriptTags(scriptEntry)
+  return scriptEntry
 }
 
 function getPageContextJsonScriptTag(pageContext: PageContextSerialization): string {
