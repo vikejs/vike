@@ -15,7 +15,7 @@ import { assertRouteParams, assertSyncRouting } from './resolveRouteFunction.js'
 import pc from '@brillout/picocolors'
 import type { PageContextForRoute, PageContextFromRoute } from './index.js'
 import type { Hook } from '../hooks/getHook.js'
-import { execHookDirectlySync } from '../hooks/execHook.js'
+import { execHookDirectSync } from '../hooks/execHook.js'
 import {
   type PageContextPrepareMinimum,
   preparePageContextForPublicUsage,
@@ -69,7 +69,7 @@ async function getPageContextFromHook(
   pageId?: string | null
   routeParams?: Record<string, string>
 }> {
-  let { hookReturn } = execHookDirectlySync(onBeforeRouteHook, pageContext, preparePageContextForPublicUsage)
+  let { hookReturn } = execHookDirectSync(onBeforeRouteHook, pageContext, preparePageContextForPublicUsage)
   assertSyncRouting(hookReturn, `The onBeforeRoute() hook ${onBeforeRouteHook.hookFilePath}`)
   // TODO/v1-release: make executeOnBeforeRouteHook() and route() sync
   hookReturn = await hookReturn

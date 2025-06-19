@@ -5,7 +5,7 @@ import { assert, assertUsage } from '../runtime-server-routing/utils.js'
 import { getHookFromPageContext, type Hook } from '../../shared/hooks/getHook.js'
 import type { PageFile, VikeConfigPublicPageLazy } from '../../shared/getPageFiles.js'
 import type { PageContextForPublicUsageClientShared } from './preparePageContextForPublicUsageClientShared.js'
-import { execHookDirectlySingle } from '../../shared/hooks/execHook.js'
+import { execHookDirectSingle } from '../../shared/hooks/execHook.js'
 import type { GlobalContextClientInternalShared } from './createGetGlobalContextClient.js'
 
 type PageContextBeforeRenderClient = {
@@ -60,7 +60,7 @@ async function executeOnRenderClientHook<PageContext extends PageContextBeforeRe
   }
 
   // We don't use a try-catch wrapper because rendering errors are usually handled by the UI framework. (E.g. React's Error Boundaries.)
-  await execHookDirectlySingle(hook, pageContext, prepareForPublicUsage)
+  await execHookDirectSingle(hook, pageContext, prepareForPublicUsage)
 }
 
 function getUrlToShowToUser(pageContext: { urlOriginal?: string; urlPathname?: string }): string {
