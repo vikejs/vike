@@ -3,7 +3,7 @@ export { createPageContextClientSide }
 import { assertUsage, augmentType, objectAssign } from './utils.js'
 import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtml.js'
 import {
-  loadPageConfigsLazy,
+  loadPageConfigsLazyClientSide,
   type PageContext_loadPageConfigsLazyClientSide,
 } from '../shared/loadPageConfigsLazyClientSide.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
@@ -58,11 +58,14 @@ function assertPristineUrl() {
   )
 }
 
-type PageContextExecHook = Omit<PageContextForPublicUsageClient, keyof Awaited<ReturnType<typeof loadPageConfigsLazy>>>
+type PageContextExecHook = Omit<
+  PageContextForPublicUsageClient,
+  keyof Awaited<ReturnType<typeof loadPageConfigsLazyClientSide>>
+>
 async function loadPageConfigsLazyClientSideAndExecHook<
   PageContext extends PageContext_loadPageConfigsLazyClientSide & PageContextExecHook,
 >(pageContext: PageContext) {
-  const pageContextAddendum = await loadPageConfigsLazy(
+  const pageContextAddendum = await loadPageConfigsLazyClientSide(
     pageContext.pageId,
     pageContext._pageFilesAll,
     pageContext._globalContext._pageConfigs,

@@ -1,4 +1,4 @@
-export { loadPageConfigsLazy }
+export { loadPageConfigsLazyClientSide }
 export type { PageContext_loadPageConfigsLazyClientSide }
 export { isErrorFetchingStaticAssets }
 
@@ -21,7 +21,7 @@ type PageContext_loadPageConfigsLazyClientSide = {
 }
 
 type PageContextUserFilesLoaded = VikeConfigPublicPageLazy & { _pageFilesLoaded: PageFile[] }
-async function loadPageConfigsLazy(
+async function loadPageConfigsLazyClientSide(
   pageId: string,
   pageFilesAll: PageFile[],
   pageConfigs: PageConfigRuntime[],

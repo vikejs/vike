@@ -37,7 +37,7 @@ import { assertInfo, assertWarning, isReact } from './utils.js'
 import { type PageContextBeforeRenderClient, executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
 import {
   isErrorFetchingStaticAssets,
-  loadPageConfigsLazy,
+  loadPageConfigsLazyClientSide,
   PageContext_loadPageConfigsLazyClientSide,
 } from '../shared/loadPageConfigsLazyClientSide.js'
 import { pushHistoryState } from './history.js'
@@ -753,11 +753,14 @@ function getPageContextClient(): PageContextClient | null {
   return globalObject.renderedPageContext ?? null
 }
 
-type PageContextExecute = Omit<PageContextForPublicUsageClient, keyof Awaited<ReturnType<typeof loadPageConfigsLazy>>>
+type PageContextExecute = Omit<
+  PageContextForPublicUsageClient,
+  keyof Awaited<ReturnType<typeof loadPageConfigsLazyClientSide>>
+>
 async function loadPageConfigsLazyClientSideAndExecHook<
   PageContext extends PageContext_loadPageConfigsLazyClientSide & PageContextExecute,
 >(pageContext: PageContext) {
-  const pageContextAddendum = await loadPageConfigsLazy(
+  const pageContextAddendum = await loadPageConfigsLazyClientSide(
     pageContext.pageId,
     pageContext._pageFilesAll,
     pageContext._globalContext._pageConfigs,
