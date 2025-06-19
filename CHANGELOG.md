@@ -1,3 +1,19 @@
+## [0.4.233](https://github.com/vikejs/vike/compare/v0.4.232...v0.4.233) (2025-06-19)
+
+
+### Bug Fixes
+
+* execute +onCreatePageContext after routing ([#2512](https://github.com/vikejs/vike/issues/2512)) ([80769cd](https://github.com/vikejs/vike/commit/80769cd3838bff28bcbaa452e4f2ae864e246a7f))
+* fix pageContext.globalContext for +onBeforeRender and +data ([523eb02](https://github.com/vikejs/vike/commit/523eb0291d9ad3893139e596535097d8c2d698e9))
+* improve pre-rendered +redirects ([85d9057](https://github.com/vikejs/vike/commit/85d90570184794e621722a3f396d3b38951d811c))
+
+
+### BREAKING CHANGES
+
+* `+onCreatePageContext` is now called after routing
+
+
+
 ## [0.4.232](https://github.com/vikejs/vike/compare/v0.4.231...v0.4.232) (2025-06-16)
 
 
