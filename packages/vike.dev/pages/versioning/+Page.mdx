@@ -1,16 +1,16 @@
 Upgrades that keep the leading digit (e.g. `0.4.x` => `0.4.y` or `1.x.y` => `1.z.w`) are generally non-breaking.
 
-Vike doesn't strictly follow [semver](https://semver.org):
+But note that Vike doesn't strictly follow [semver](https://semver.org):
 1. Features can be introduced in any version update.
-2. [`MINOR BREAKING CHANGES`](https://github.com/vikejs/vike/blob/main/CHANGELOG.md) can be introduced in any version update.
+2. `MINOR BREAKING CHANGES` (see [`CHANGELOG.md`](https://github.com/vikejs/vike/blob/main/CHANGELOG.md)) can be introduced in any version update.
    <blockquote>
-   They are expected to affect very few users. You'll most likely never be affected by one. Thus, we recommend that you **ignore them unless the update breaks your app**.
+   They affect very few users, and you're highly unlikely to be one of them. So we recommend that you ignore them — unless the update breaks your app.
    </blockquote>
    <blockquote>
-   It considerably speeds up Vike’s development. For example, to [quickly fix bugs](https://github.com/vikejs/vike/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22bug%20%3Aboom%3A%22): if Vike has incorrect behavior and fixing it benefits almost all users but causes a breaking change for a handful of users, we still prioritize the fix over strict semver adherence.
+   It considerably speeds up Vike’s development. For example, it enables Vike to [quickly fix bugs](https://github.com/vikejs/vike/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22bug%20%3Aboom%3A%22): if Vike behaves incorrectly and fixing it helps nearly everyone but breaks things for very few users, we prioritize the fix over strict semver adherence.
    </blockquote>
 
-Don't hesitate to reach out if updating Vike breaks your app, we will fix the regression. (Or provide guidance if it's a `MINOR BREAKING CHANGE`.)
+If updating breaks your app, check the [`CHANGELOG.md`](https://github.com/vikejs/vike/blob/main/CHANGELOG.md) for any `MINOR BREAKING CHANGES`. If none are listed — or they don't apply to you — reach out: we'll consider it a regression and fix it.
 
 
 ## Warnings
