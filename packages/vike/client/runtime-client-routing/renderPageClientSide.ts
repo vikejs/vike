@@ -238,7 +238,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     if (isRenderOutdated()) return
     */
     if (res.skip) return
-    if (res.err) {
+    if ('err' in res) {
       await onError(res.err)
       return
     }
@@ -418,7 +418,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     if (isRenderOutdated()) return
     */
     if (res.skip) return
-    if (res.err) {
+    if ('err' in res) {
       onError(res.err)
       return
     }
