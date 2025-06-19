@@ -1,12 +1,22 @@
 import type { Config } from '@brillout/docpress'
 import { headings } from './headings'
 import { headingsDetached, categories } from './headingsDetached'
-import { projectInfo } from './utils'
 import logoUrl from './assets/logo/vike.svg'
 import faviconUrl from './assets/logo/vike-favicon.svg'
+import { PROJECT_VERSION } from './PROJECT_VERSION'
+import { discordInvite, githubDiscussions } from './links'
 
 export default {
-  projectInfo,
+  projectInfo: {
+    projectName: 'Vike',
+    projectVersion: PROJECT_VERSION,
+    githubRepository: 'https://github.com/vikejs/vike',
+    githubIssues: 'https://github.com/vikejs/vike/issues/new',
+    githubDiscussions: githubDiscussions,
+    discordInvite: discordInvite,
+    twitterProfile: 'https://x.com/vike_js',
+    blueskyHandle: 'vike.dev',
+  },
   docsDir: 'packages/vike.dev',
   logoUrl,
   faviconUrl,
