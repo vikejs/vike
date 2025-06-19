@@ -1,21 +1,21 @@
-For increased robustness and agility, Vike doesn't strictly follow [semver](https://semver.org):
+Upgrades that keep the leading digit (e.g. 0.4.x → 0.4.y or 1.x.y → 1.z.w) are generally non-breaking.
+
+Vike doesn't strictly follow [semver](https://semver.org):
 1. **Features can be introduced in any version update**.
 2. **Minor breaking changes can be introduced in any version update**.
    <blockquote>
-   These [`MINOR BREAKING CHANGES`](https://github.com/vikejs/vike/blob/main/CHANGELOG.md) are rare and expected to affect only very few users.
+   These [`MINOR BREAKING CHANGES`](https://github.com/vikejs/vike/blob/main/CHANGELOG.md) are expected to affect only *very* few users.
    </blockquote>
    <blockquote>
-   It gives Vike more flexibility, for example, in [quickly fixing bugs](https://github.com/vikejs/vike/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22bug%20%3Aboom%3A%22): if Vike has an incorrect behavior, and fixing it benefits almost all users but is a regression for a handful (and thus, strictly speaking, a breaking change), we prioritize fixing it over strict semver adherence.
+   It considerably speeds up Vike’s development. For example, to [quickly fix bugs](https://github.com/vikejs/vike/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22bug%20%3Aboom%3A%22): if Vike has incorrect behavior and fixing it benefits almost all users but causes a breaking change for a handful of users, we still prioritize the fix over strict semver adherence.
    </blockquote>
-
-Similarly to semver, you can assume that upgrading from `0.4.x` to `0.4.y` or from `1.x.y` to `1.z.w` won't break your app. (Expect of the very rare situation you are affected by a minor breaking change.)
 
 > Don't hesitate to reach out if updating Vike breaks your app, we will fix the regression. (Or provide guidance if it's a `MINOR BREAKING CHANGE`.)
 
 
 ## Warnings
 
-Vike sometimes adds a warning when an API will be deprecated in the next major release (e.g. from `1.x.y` to `2.0.0`).
+Vike sometimes adds a warning when an API will be deprecated in the next major release.
 
 For example:
 
@@ -24,6 +24,6 @@ For example:
 Vike's CLI instead.
 ```
 
-These warnings give you plenty of time to migrate at your own pace, as both the old and new API are supported simultaneously until the next major release.
+You can migrate whenever you want — the old API and the new API are both supported until the next major release.
 
-Since these aren't breaking changes, new warnings can be introduced in any version update.
+> It isn't a breaking change; therefore, such warnings can be introduced in any version update.
