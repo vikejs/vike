@@ -1,9 +1,9 @@
 export { execHook }
+export { execHookGlobal }
 export { execHookSingle }
 export { execHookSingleWithReturn }
 export { execHookDirectly }
 export { execHookWithoutPageContext }
-export { execHookGlobal }
 export { execHookSync }
 export { getPageContext }
 export { providePageContext }
@@ -39,6 +39,31 @@ type HookWithResult = Hook & {
   hookReturn: unknown
 }
 
+async function execHook<PageContext extends PageContextExecuteHook>(
+  hookName: HookName,
+  pageContext: PageContext,
+  preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
+) {
+  const hooks = getHookFromPageContextNew(hookName, pageContext)
+  return await execHookDirectly(hooks, pageContext, preparePageContextForPublicUsage)
+}
+
+async function execHookGlobal<HookArg extends PageContextPrepareMinimum | GlobalContextPrepareMinimum>(
+  hookName: HookNameGlobal,
+  pageConfigGlobal: PageConfigGlobalRuntime,
+  pageContext: PageContextPrepareMinimum | null,
+  hookArg: HookArg,
+  prepareForPublicUsage: (hookArg: HookArg) => HookArg,
+) {
+  const hooks = getHookFromPageConfigGlobalCumulative(pageConfigGlobal, hookName)
+  const hookArgForPublicUsage = prepareForPublicUsage(hookArg)
+  await Promise.all(
+    hooks.map(async (hook) => {
+      await execHookAsync(() => hook.hookFn(hookArgForPublicUsage), hook, pageContext)
+    }),
+  )
+}
+
 async function execHookSingle<PageContext extends PageContextExecuteHook>(
   hook: Hook,
   pageContext: PageContext,
@@ -62,15 +87,6 @@ async function execHookSingleWithReturn<PageContext extends PageContextExecuteHo
   return { hookReturn }
 }
 
-async function execHook<PageContext extends PageContextExecuteHook>(
-  hookName: HookName,
-  pageContext: PageContext,
-  preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
-) {
-  const hooks = getHookFromPageContextNew(hookName, pageContext)
-  return await execHookDirectly(hooks, pageContext, preparePageContextForPublicUsage)
-}
-
 async function execHookDirectly<PageContext extends PageContextPrepareMinimum>(
   hooks: Hook[],
   pageContext: PageContext,
@@ -89,22 +105,6 @@ async function execHookDirectly<PageContext extends PageContextPrepareMinimum>(
     }),
   )
   return hooksWithResult
-}
-
-async function execHookGlobal<HookArg extends PageContextPrepareMinimum | GlobalContextPrepareMinimum>(
-  hookName: HookNameGlobal,
-  pageConfigGlobal: PageConfigGlobalRuntime,
-  pageContext: PageContextPrepareMinimum | null,
-  hookArg: HookArg,
-  prepareForPublicUsage: (hookArg: HookArg) => HookArg,
-) {
-  const hooks = getHookFromPageConfigGlobalCumulative(pageConfigGlobal, hookName)
-  const hookArgForPublicUsage = prepareForPublicUsage(hookArg)
-  await Promise.all(
-    hooks.map(async (hook) => {
-      await execHookAsync(() => hook.hookFn(hookArgForPublicUsage), hook, pageContext)
-    }),
-  )
 }
 
 function isUserHookError(err: unknown): false | HookLoc {
