@@ -157,12 +157,12 @@ async function getPageContextFromClientHooks(
   return pageContextFromClientHooks
 }
 
-type PageContextExecuteHookClient = VikeConfigPublicPageLazy & PageContextForPublicUsageClient
-async function execHookClient(hookName: HookName, pageContext: PageContextExecuteHookClient) {
+type PageContextExecHookClient = VikeConfigPublicPageLazy & PageContextForPublicUsageClient
+async function execHookClient(hookName: HookName, pageContext: PageContextExecHookClient) {
   return await execHook(hookName, pageContext, (p) => preparePageContextForPublicUsageClient(p))
 }
 
-async function execHookDataLike(hookName: 'data' | 'onBeforeRender', pageContext: PageContextExecuteHookClient) {
+async function execHookDataLike(hookName: 'data' | 'onBeforeRender', pageContext: PageContextExecHookClient) {
   let pageContextFromHook: Record<string, unknown> | undefined
   if (hookName === 'data') {
     pageContextFromHook = await executeDataHook(pageContext)
@@ -171,7 +171,7 @@ async function execHookDataLike(hookName: 'data' | 'onBeforeRender', pageContext
   }
   Object.assign(pageContext, pageContextFromHook)
 }
-async function executeDataHook(pageContext: PageContextExecuteHookClient) {
+async function executeDataHook(pageContext: PageContextExecHookClient) {
   const res = await execHookClient('data', pageContext)
   const hook = res[0] // TO-DO/soon: support cumulative
   if (!hook) return
@@ -179,7 +179,7 @@ async function executeDataHook(pageContext: PageContextExecuteHookClient) {
   const pageContextAddendum = { data: hookReturn }
   return pageContextAddendum
 }
-async function executeOnBeforeRenderHook(pageContext: PageContextExecuteHookClient) {
+async function executeOnBeforeRenderHook(pageContext: PageContextExecHookClient) {
   const res = await execHookClient('onBeforeRender', pageContext)
   const hook = res[0] // TO-DO/soon: support cumulative
   if (!hook) return
