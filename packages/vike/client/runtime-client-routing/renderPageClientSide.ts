@@ -627,29 +627,6 @@ function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
   pushHistoryState(url, overwriteLastHistoryEntry)
 }
 
-function handleErrorFetchingStaticAssets(
-  err: unknown,
-  pageContext: { urlOriginal: string },
-  isFirstRender: boolean,
-): boolean {
-  if (!isErrorFetchingStaticAssets(err)) {
-    return false
-  }
-
-  if (isFirstRender) {
-    disableClientRouting(err, false)
-    // This may happen if the frontend was newly deployed during hydration.
-    // Ideally: re-try a couple of times by reloading the page (not entirely trivial to implement since `localStorage` is needed.)
-    throw err
-  } else {
-    disableClientRouting(err, true)
-  }
-
-  redirectHard(pageContext.urlOriginal)
-
-  return true
-}
-
 function disableClientRouting(err: unknown, log: boolean) {
   assert(isErrorFetchingStaticAssets(err))
 
@@ -771,4 +748,26 @@ async function loadPageConfigsLazyClientSideAndExecHook<
   await execHook('onCreatePageContext', pageContext, preparePageContextForPublicUsageClient)
 
   return pageContext
+}
+function handleErrorFetchingStaticAssets(
+  err: unknown,
+  pageContext: { urlOriginal: string },
+  isFirstRender: boolean,
+): boolean {
+  if (!isErrorFetchingStaticAssets(err)) {
+    return false
+  }
+
+  if (isFirstRender) {
+    disableClientRouting(err, false)
+    // This may happen if the frontend was newly deployed during hydration.
+    // Ideally: re-try a couple of times by reloading the page (not entirely trivial to implement since `localStorage` is needed.)
+    throw err
+  } else {
+    disableClientRouting(err, true)
+  }
+
+  redirectHard(pageContext.urlOriginal)
+
+  return true
 }
