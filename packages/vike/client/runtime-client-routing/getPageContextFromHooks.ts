@@ -25,7 +25,7 @@ import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.
 import { getPageConfig } from '../../shared/page-configs/helpers.js'
 import { getConfigValueRuntime } from '../../shared/page-configs/getConfigValueRuntime.js'
 import { assertOnBeforeRenderHookReturn } from '../../shared/assertOnBeforeRenderHookReturn.js'
-import { executeGuardHook } from '../../shared/route/executeGuardHook.js'
+import { execHookGuard } from '../../shared/route/execHookGuard.js'
 import { AbortRender, isAbortPageContext } from '../../shared/route/abort.js'
 import { pageContextInitIsPassedToClient } from '../../shared/misc/pageContextInitIsPassedToClient.js'
 import { isServerSideError } from '../../shared/misc/isServerSideError.js'
@@ -136,7 +136,7 @@ async function getPageContextFromClientHooks(
       ) {
         // Should we really call the guard() hook on the client-side? Shouldn't we make the guard() hook a server-side
         // only hook? Or maybe make its env configurable like data() and onBeforeRender()?
-        await executeGuardHook(pageContext, (pageContext) => preparePageContextForPublicUsageClient(pageContext))
+        await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageClient(pageContext))
       }
     } else {
       if (hookClientOnlyExists(hookName, pageContext) || !pageContext._hasPageContextFromServer) {

@@ -1,4 +1,4 @@
-export { executeGuardHook }
+export { execHookGuard }
 
 import { getHookFromPageContext, getHookTimeoutDefault, type Hook } from '../hooks/getHook.js'
 import { assert, assertUsage, isCallable } from './utils.js'
@@ -7,7 +7,7 @@ import { execHookDirectSingle, type PageContextExecuteHook } from '../hooks/exec
 import type { GlobalContextInternal } from '../createGlobalContextShared.js'
 const errIntro = 'The guard() hook defined by'
 
-async function executeGuardHook<
+async function execHookGuard<
   PageContext extends {
     pageId: string
   } & {
