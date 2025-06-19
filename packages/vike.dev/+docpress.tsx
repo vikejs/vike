@@ -1,3 +1,5 @@
+export { config as default }
+
 import type { Config } from '@brillout/docpress'
 import { headings } from './headings'
 import { headingsDetached, categories } from './headingsDetached'
@@ -5,8 +7,10 @@ import logoUrl from './assets/logo/vike.svg'
 import faviconUrl from './assets/logo/vike-favicon.svg'
 import { PROJECT_VERSION } from './PROJECT_VERSION'
 import { discordInvite, githubDiscussions } from './links'
+import { TopNavigation } from './TopNavigation'
+import React from 'react'
 
-export default {
+const config: Config = {
   projectInfo: {
     projectName: 'Vike',
     projectVersion: PROJECT_VERSION,
@@ -36,6 +40,7 @@ export default {
   // i18n: true,
   pressKit: true,
   navMaxWidth: 1140,
+  topNavigation: <TopNavigation />,
   navLogoSize: 41,
   navLogoStyle: {
     position: 'relative',
