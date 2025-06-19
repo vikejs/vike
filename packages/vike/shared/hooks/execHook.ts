@@ -44,9 +44,8 @@ async function execHookSingle<PageContext extends PageContextExecuteHook>(
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
 ) {
-  const res = await execHookDirectly([hook], pageContext, preparePageContextForPublicUsage)
-  if ('err' in res) throw res.err
-  const { hookReturn } = res.hooks[0]!
+  const hooksWithResult = await execHookDirectly([hook], pageContext, preparePageContextForPublicUsage)
+  const { hookReturn } = hooksWithResult[0]!
   assertUsage(
     hookReturn === undefined,
     `The ${hook.hookName}() hook defined by ${hook.hookFilePath} isn't allowed to return a value`,
@@ -58,9 +57,8 @@ async function execHookSingleWithReturn<PageContext extends PageContextExecuteHo
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
 ) {
-  const res = await execHookDirectly([hook], pageContext, preparePageContextForPublicUsage)
-  if ('err' in res) throw res.err
-  const { hookReturn } = res.hooks[0]!
+  const hooksWithResult = await execHookDirectly([hook], pageContext, preparePageContextForPublicUsage)
+  const { hookReturn } = hooksWithResult[0]!
   return { hookReturn }
 }
 
@@ -70,9 +68,7 @@ async function execHook<PageContext extends PageContextExecuteHook>(
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
 ) {
   const hooks = getHookFromPageContextNew(hookName, pageContext)
-  const res = await execHookDirectly(hooks, pageContext, preparePageContextForPublicUsage)
-  if ('err' in res) throw res.err
-  return res.hooks
+  return await execHookDirectly(hooks, pageContext, preparePageContextForPublicUsage)
 }
 
 async function execHookDirectly<PageContext extends PageContextPrepareMinimum>(
@@ -80,29 +76,19 @@ async function execHookDirectly<PageContext extends PageContextPrepareMinimum>(
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
 ) {
-  if (!hooks.length) return { hooks: [] as HookWithResult[] }
+  if (!hooks.length) return [] as HookWithResult[]
   const pageContextForPublicUsage = preparePageContextForPublicUsage(pageContext)
-  let hooksWithResult: HookWithResult[] | undefined
-  let err: unknown
-  try {
-    hooksWithResult = await Promise.all(
-      hooks.map(async (hook) => {
-        const hookReturn = await execHookAsync(
-          () => hook.hookFn(pageContextForPublicUsage),
-          hook,
-          pageContextForPublicUsage,
-        )
-        return { ...hook, hookReturn }
-      }),
-    )
-  } catch (err_) {
-    err = err_
-  }
-  if (hooksWithResult) {
-    return { hooks: hooksWithResult }
-  } else {
-    return { hooks, err }
-  }
+  const hooksWithResult = await Promise.all(
+    hooks.map(async (hook) => {
+      const hookReturn = await execHookAsync(
+        () => hook.hookFn(pageContextForPublicUsage),
+        hook,
+        pageContextForPublicUsage,
+      )
+      return { ...hook, hookReturn }
+    }),
+  )
+  return hooksWithResult
 }
 
 async function execHookGlobal<HookArg extends PageContextPrepareMinimum | GlobalContextPrepareMinimum>(

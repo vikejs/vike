@@ -165,9 +165,10 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       if (!globalObject.isTransitioning) {
         globalObject.isTransitioning = true
         const hooks = getHookFromPageContextNew('onPageTransitionStart', previousPageContext)
-        const res = await execHookDirectly(hooks, pageContext, preparePageContextForPublicUsageClientMinimal)
-        if ('err' in res) {
-          await onError(res.err)
+        try {
+          await execHookDirectly(hooks, pageContext, preparePageContextForPublicUsageClientMinimal)
+        } catch (err) {
+          await onError(err)
           return
         }
         if (isRenderOutdated()) return
@@ -516,9 +517,10 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       globalObject.isTransitioning = undefined
       assert(previousPageContext)
       const hooks = getHookFromPageContextNew('onPageTransitionEnd', previousPageContext)
-      const res = await execHookDirectly(hooks, pageContext, preparePageContextForPublicUsageClient)
-      if ('err' in res) {
-        await onError(res.err)
+      try {
+        await execHookDirectly(hooks, pageContext, preparePageContextForPublicUsageClient)
+      } catch (err) {
+        await onError(err)
         if (!isErrorPage) return
       }
       if (isRenderOutdated(true)) return
