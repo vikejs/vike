@@ -1,4 +1,4 @@
-export { loadPageConfigsLazyServerSide }
+export { loadPageConfigsLazyServerSideAndExecHook }
 export type { PageContext_loadPageConfigsLazyServerSide }
 export type { PageConfigsLazy }
 
@@ -34,7 +34,7 @@ type PageContext_loadPageConfigsLazyServerSide = PageContextGetPageAssets &
   }
 type PageConfigsLazy = PromiseType<ReturnType<typeof loadPageConfigsLazy>>
 
-async function loadPageConfigsLazyServerSide<
+async function loadPageConfigsLazyServerSideAndExecHook<
   PageContext extends PageContext_loadPageConfigsLazyServerSide & PageContextExecHook,
 >(pageContext: PageContext) {
   const pageContextAddendum = await loadPageConfigsLazy(pageContext)
