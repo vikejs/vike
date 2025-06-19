@@ -8,7 +8,10 @@
 * improve pre-rendered +redirects ([85d9057](https://github.com/vikejs/vike/commit/85d90570184794e621722a3f396d3b38951d811c))
 
 
-### BREAKING CHANGES
+### MINOR BREAKING CHANGES
+
+> [!NOTE]
+> We recommend ignoring `MINOR BREAKING CHANGES` unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
 
 * `+onCreatePageContext` is now called after routing
 
