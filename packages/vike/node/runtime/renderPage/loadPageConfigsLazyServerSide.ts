@@ -23,7 +23,9 @@ import { analyzePage } from './analyzePage.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { MediaType } from './inferMediaType.js'
 import { loadConfigValues } from '../../../shared/page-configs/loadConfigValues.js'
+import { execHookServer, type PageContextExecuteHookServer } from './execHookServer.js'
 
+type PageContextExecHook = Omit<PageContextExecuteHookServer, keyof Awaited<ReturnType<typeof loadPageConfigsLazy>>>
 type PageContext_loadPageConfigsLazyServerSide = PageContextGetPageAssets &
   PageContextDebugRouteMatches & {
     pageId: string
@@ -32,11 +34,13 @@ type PageContext_loadPageConfigsLazyServerSide = PageContextGetPageAssets &
   }
 type PageConfigsLazy = PromiseType<ReturnType<typeof loadPageConfigsLazy>>
 
-async function loadPageConfigsLazyServerSide<PageContext extends PageContext_loadPageConfigsLazyServerSide>(
-  pageContext: PageContext,
-) {
+async function loadPageConfigsLazyServerSide<
+  PageContext extends PageContext_loadPageConfigsLazyServerSide & PageContextExecHook,
+>(pageContext: PageContext) {
   const pageContextAddendum = await loadPageConfigsLazy(pageContext)
   objectAssign(pageContext, pageContextAddendum)
+
+  await execHookServer('onCreatePageContext', pageContext)
 
   return pageContext
 }
