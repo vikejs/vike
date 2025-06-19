@@ -23,6 +23,12 @@ function mergeScriptTags(scriptTagsHtml: string): string {
         const hasInnerHtml = !!innerHtml.trim()
         if (src) {
           assert(!hasInnerHtml)
+          // - We don't use a static import because static imports are hoisted => React's HMR preamble can be executed after user land code => triggering this error:
+          //   ```
+          //   [22:28:57.885][/test-dev.test.ts][pnpm run dev][Browser Error] Error: @vitejs/plugin-react-swc can't detect preamble. Something is wrong.
+          //       at http://localhost:3000/@fs/home/rom/code/docpress/src/renderer/usePageContext.tsx:9:11
+          //   ```
+          // - We don't use `await` the dynamic import() to avoid waterfall
           contents.push(`import(${JSON.stringify(src)});`)
         } else if (hasInnerHtml) {
           innerHtml = innerHtml.split('\n').filter(Boolean).join('\n')
