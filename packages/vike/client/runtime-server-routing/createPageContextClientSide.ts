@@ -58,12 +58,12 @@ function assertPristineUrl() {
   )
 }
 
-type PageContextExecHook_ = Omit<
+type PageContextExecuteHook = Omit<
   PageContextForPublicUsageClient,
   keyof Awaited<ReturnType<typeof loadPageConfigsLazyClientSide>>
 >
 async function loadPageConfigsLazyClientSideAndExecHook<
-  PageContext extends PageContext_loadPageConfigsLazyClientSide & PageContextExecHook_,
+  PageContext extends PageContext_loadPageConfigsLazyClientSide & PageContextExecuteHook,
 >(pageContext: PageContext) {
   const pageContextAddendum = await loadPageConfigsLazyClientSide(
     pageContext.pageId,

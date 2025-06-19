@@ -25,7 +25,7 @@ import type { MediaType } from './inferMediaType.js'
 import { loadConfigValues } from '../../../shared/page-configs/loadConfigValues.js'
 import { execHookServer, type PageContextExecuteHookServer } from './execHookServer.js'
 
-type PageContextExecHook_ = Omit<PageContextExecuteHookServer, keyof Awaited<ReturnType<typeof loadPageConfigsLazy>>>
+type PageContextExecuteHook = Omit<PageContextExecuteHookServer, keyof Awaited<ReturnType<typeof loadPageConfigsLazy>>>
 type PageContext_loadPageConfigsLazyServerSide = PageContextGetPageAssets &
   PageContextDebugRouteMatches & {
     pageId: string
@@ -35,7 +35,7 @@ type PageContext_loadPageConfigsLazyServerSide = PageContextGetPageAssets &
 type PageConfigsLazy = PromiseType<ReturnType<typeof loadPageConfigsLazy>>
 
 async function loadPageConfigsLazyServerSideAndExecHook<
-  PageContext extends PageContext_loadPageConfigsLazyServerSide & PageContextExecHook_,
+  PageContext extends PageContext_loadPageConfigsLazyServerSide & PageContextExecuteHook,
 >(pageContext: PageContext) {
   const pageContextAddendum = await loadPageConfigsLazy(pageContext)
   objectAssign(pageContext, pageContextAddendum)
