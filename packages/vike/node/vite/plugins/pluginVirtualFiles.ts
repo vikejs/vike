@@ -79,15 +79,15 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
       return
     }
 
-    // Runtime code => let Vite handle it
-    if (isVikeConfigDep && isVikeConfigDep.isProcessedByVite) {
-      assert(existsInViteModuleGraph(file, moduleGraph))
+    // New or deleted + file
+    if (isPlusFile(file)) {
+      reload()
       return
     }
 
-    // New + file
-    if (isPlusFile(file)) {
-      reload()
+    // Runtime code => let Vite handle it
+    if (isVikeConfigDep && isVikeConfigDep.isProcessedByVite) {
+      assert(existsInViteModuleGraph(file, moduleGraph))
       return
     }
 
