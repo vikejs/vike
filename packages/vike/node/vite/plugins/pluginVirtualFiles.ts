@@ -74,13 +74,13 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
     const reload = () => reloadConfig(file, config, isRemove ? 'removed' : 'created', server)
 
     // Config code
-    if (isVikeConfigDep?.isNotProcessedByVite) {
+    if (isVikeConfigDep && !isVikeConfigDep.isProcessedByVite) {
       reload()
       return
     }
 
     // Runtime code => let Vite handle it
-    if (isVikeConfigDep && !isVikeConfigDep.isNotProcessedByVite) {
+    if (isVikeConfigDep && isVikeConfigDep.isProcessedByVite) {
       assert(existsInViteModuleGraph(file, moduleGraph))
       return
     }
@@ -112,7 +112,7 @@ async function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
   const isVikeConfig = await isVikeConfigDependency(ctx.file, ctx.server.moduleGraph)
 
   if (isVikeConfig) {
-    if (isVikeConfig.isNotProcessedByVite) {
+    if (isVikeConfig.isProcessedByVite) {
       /* Tailwind breaks this assertion, see https://github.com/vikejs/vike/discussions/1330#discussioncomment-7787238
       const isViteModule = ctx.modules.length > 0
       assert(!isViteModule)
@@ -136,7 +136,7 @@ async function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
 async function isVikeConfigDependency(
   filePathAbsoluteFilesystem: string,
   moduleGraph: ModuleGraph,
-): Promise<null | { isNotProcessedByVite: boolean }> {
+): Promise<null | { isProcessedByVite: boolean }> {
   // Non-runtime Vike config files such as `pages/+config.js` which aren't processed by Vite.
   // - They're missing in Vite's module graph.
   // - Potentially modifies Vike's virtual files.
@@ -146,7 +146,7 @@ async function isVikeConfigDependency(
   if (vikeConfigObject) {
     const { _vikeConfigDependencies: vikeConfigDependencies } = vikeConfigObject
     vikeConfigDependencies.forEach((f) => assertPosixPath(f))
-    if (vikeConfigDependencies.has(filePathAbsoluteFilesystem)) return { isNotProcessedByVite: true }
+    if (vikeConfigDependencies.has(filePathAbsoluteFilesystem)) return { isProcessedByVite: false }
   }
 
   // Runtime Vike config files such as +data.js which are processed by Vite.
@@ -155,7 +155,7 @@ async function isVikeConfigDependency(
   // - Same for all `+data.js` dependencies.
   const importers = getImporters(filePathAbsoluteFilesystem, moduleGraph)
   const isPlusValueFileDependency = Array.from(importers).some((importer) => importer.file && isPlusFile(importer.file))
-  if (isPlusValueFileDependency) return { isNotProcessedByVite: false }
+  if (isPlusValueFileDependency) return { isProcessedByVite: true }
 
   return null
 }
