@@ -70,18 +70,21 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
     file = normalizePath(file)
     if (isTemporaryBuildFile(file)) return
     const { moduleGraph } = server
-    const isVikeConfig = await isVikeConfigDependency(file, moduleGraph)
+    const isVikeConfigDep = await isVikeConfigDependency(file, moduleGraph)
     const reload = () => reloadConfig(file, config, isRemove ? 'removed' : 'created', server)
 
-    if (isVikeConfig?.isNotProcessedByVite) {
+    // Config code
+    if (isVikeConfigDep?.isNotProcessedByVite) {
       reload()
       return
     }
-    if (isVikeConfig && !isVikeConfig.isNotProcessedByVite) {
-      // Let Vite handle it
+
+    // Runtime code => let Vite handle it
+    if (isVikeConfigDep && !isVikeConfigDep.isNotProcessedByVite) {
       assert(existsInViteModuleGraph(file, moduleGraph))
       return
     }
+
     // Trick: when importing a file that doesn't exist => we don't know whether `file` is that missing file => we take a leap of faith when the conditions below are met.
     // - Not sure how reliable that trick is.
     // - Reloading Vike's config is cheap and file creation/removal is rare => the trick is worth it.
