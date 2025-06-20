@@ -1,3 +1,12 @@
+## [0.4.235](https://github.com/vikejs/vike/compare/v0.4.234...v0.4.235) (2025-06-20)
+
+
+### Bug Fixes
+
+* reload Vike config upon new + file ([#2517](https://github.com/vikejs/vike/issues/2517)) ([a87c48e](https://github.com/vikejs/vike/commit/a87c48ef66f5b0b7a980746e522692687d6152ee))
+
+
+
 ## [0.4.234](https://github.com/vikejs/vike/compare/v0.4.233...v0.4.234) (2025-06-19)
 
 
