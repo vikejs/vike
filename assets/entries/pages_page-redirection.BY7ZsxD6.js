@@ -1,0 +1,11 @@
+import{o as i,a}from"../chunks/chunk-BA4CnQw4.js";import{j as e}from"../chunks/chunk-DJHPrgEG.js";import{L as o}from"../chunks/chunk-BVg2-x2q.js";/* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      */const l=[];function n(r){const t={li:"li",p:"p",ul:"ul",...r.components};return e.jsxs(e.Fragment,{children:[e.jsx(t.p,{children:"Page removed, see the following instead."}),`
+`,e.jsxs(t.ul,{children:[`
+`,e.jsxs(t.li,{children:[e.jsx(o,{href:"/auth#login-flow"}),"."]}),`
+`,e.jsxs(t.li,{children:[e.jsx(o,{href:"/data#error-handling"}),"."]}),`
+`,e.jsxs(t.li,{children:[`
+`,e.jsx(o,{href:"/render"}),`
+`]}),`
+`,e.jsxs(t.li,{children:[`
+`,e.jsx(o,{href:"/redirect"}),`
+`]}),`
+`]})]})}function d(r={}){const{wrapper:t}=r.components||{};return t?e.jsx(t,{...r,children:e.jsx(n,{...r})}):n(r)}const s=Object.freeze(Object.defineProperty({__proto__:null,default:d,pageSectionsExport:l},Symbol.toStringTag,{value:"Module"})),g={isClientRuntimeLoaded:{type:"computed",definedAtData:null,valueSerialized:{type:"js-serialized",value:!0}},onBeforeRenderEnv:{type:"computed",definedAtData:null,valueSerialized:{type:"js-serialized",value:null}},dataEnv:{type:"computed",definedAtData:null,valueSerialized:{type:"js-serialized",value:null}},onRenderClient:{type:"standard",definedAtData:{filePathToShowToUser:"@brillout/docpress/renderer/onRenderClient",fileExportPathToShowToUser:[]},valueSerialized:{type:"pointer-import",value:a}},onCreatePageContext:{type:"cumulative",definedAtData:[{filePathToShowToUser:"@brillout/docpress/renderer/onCreatePageContext",fileExportPathToShowToUser:[]}],valueSerialized:[{type:"pointer-import",value:i}]},Page:{type:"standard",definedAtData:{filePathToShowToUser:"/pages/page-redirection/+Page.mdx",fileExportPathToShowToUser:[]},valueSerialized:{type:"plus-file",exportValues:s}},hydrationCanBeAborted:{type:"standard",definedAtData:{filePathToShowToUser:"@brillout/docpress/config",fileExportPathToShowToUser:["default","hydrationCanBeAborted"]},valueSerialized:{type:"js-serialized",value:!0}}};export{g as configValuesSerialized};

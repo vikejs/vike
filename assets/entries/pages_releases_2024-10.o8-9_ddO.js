@@ -1,0 +1,28 @@
+import{o,a as d}from"../chunks/chunk-BA4CnQw4.js";import{j as e}from"../chunks/chunk-DJHPrgEG.js";import{L as t}from"../chunks/chunk-BVg2-x2q.js";/* empty css                      */import{a as l,C as r}from"../chunks/chunk-D62Yvjsi.js";/* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      */const a=[{pageSectionId:"new-bati-integrations",pageSectionLevel:2,pageSectionTitle:"New Bati integrations"},{pageSectionId:"see-also",pageSectionLevel:2,pageSectionTitle:"See also"}];function s(n){const i={a:"a",br:"br",code:"code",li:"li",p:"p",strong:"strong",ul:"ul",...n.components};return e.jsxs(e.Fragment,{children:[e.jsx(l,{children:e.jsx(i.p,{children:"This page is work-in-progress."})}),`
+`,e.jsx(r,{children:e.jsxs(i.p,{children:["We are ",e.jsx(i.a,{href:"https://github.com/vikejs/vike/issues/1350",children:"looking for sponsors"}),"."]})}),`
+`,e.jsxs(i.p,{children:[e.jsx(i.strong,{children:"Fixes:"})," ",e.jsx(i.code,{children:"n"})," (TODO)"]}),`
+`,e.jsx(i.p,{children:e.jsx(i.strong,{children:"Features"})}),`
+`,e.jsx(t,{href:"#new-bati-integrations"}),`
+`,e.jsx("br",{}),`
+`,e.jsx(i.p,{children:e.jsx(i.strong,{children:"Project"})}),`
+`,e.jsx(i.p,{children:e.jsx(i.strong,{children:"See also"})}),`
+`,e.jsxs(i.p,{children:[e.jsxs(i.a,{href:"https://github.com/vikejs/vike/blob/main/CHANGELOG.md",children:[e.jsx(i.code,{children:"vike"})," > ",e.jsx(i.code,{children:"CHANGELOG.md"})]}),e.jsx(i.br,{}),`
+`,e.jsxs(i.a,{href:"https://github.com/vikejs/vike-react/blob/main/packages/vike-react/CHANGELOG.md",children:[e.jsx(i.code,{children:"vike-react"})," > ",e.jsx(i.code,{children:"CHANGELOG.md"})]}),e.jsx(i.br,{}),`
+`,e.jsxs(i.a,{href:"https://github.com/vikejs/vike-vue/blob/main/packages/vike-vue/CHANGELOG.md",children:[e.jsx(i.code,{children:"vike-vue"})," > ",e.jsx(i.code,{children:"CHANGELOG.md"})]}),e.jsx(i.br,{}),`
+`,e.jsxs(i.a,{href:"https://github.com/vikejs/vike-solid/blob/main/CHANGELOG.md",children:[e.jsx(i.code,{children:"vike-solid"})," > ",e.jsx(i.code,{children:"CHANGELOG.md"})]})]}),`
+`,e.jsx("h2",{id:"new-bati-integrations",children:"New Bati integrations"}),`
+`,e.jsxs(i.p,{children:["New ",e.jsx(i.a,{href:"https://batijs.dev",children:"Bati"})," integrations:"]}),`
+`,e.jsxs(i.ul,{children:[`
+`,e.jsx(i.li,{children:"TODO"}),`
+`]}),`
+`,e.jsx(r,{children:e.jsxs(i.p,{children:["Author: ",e.jsx(i.a,{href:"https://github.com/phonzammi",children:e.jsx(i.code,{children:"phonzammi"})}),", ",e.jsx(i.a,{href:"https://github.com/magne4000",children:e.jsx(i.code,{children:"magne4000"})})]})}),`
+`,e.jsx("h2",{id:"see-also",children:"See also"}),`
+`,e.jsxs(i.ul,{children:[`
+`,e.jsx(i.li,{children:e.jsxs(i.a,{href:"https://github.com/vikejs/vike/blob/main/CHANGELOG.md",children:[e.jsx(i.code,{children:"vike"})," > ",e.jsx(i.code,{children:"CHANGELOG.md"})]})}),`
+`,e.jsx(i.li,{children:e.jsxs(i.a,{href:"https://github.com/vikejs/vike-react/blob/main/packages/vike-react/CHANGELOG.md",children:[e.jsx(i.code,{children:"vike-react"})," > ",e.jsx(i.code,{children:"CHANGELOG.md"})]})}),`
+`,e.jsx(i.li,{children:e.jsxs(i.a,{href:"https://github.com/vikejs/vike-vue/blob/main/packages/vike-vue/CHANGELOG.md",children:[e.jsx(i.code,{children:"vike-vue"})," > ",e.jsx(i.code,{children:"CHANGELOG.md"})]})}),`
+`,e.jsx(i.li,{children:e.jsxs(i.a,{href:"https://github.com/vikejs/vike-solid/blob/main/CHANGELOG.md",children:[e.jsx(i.code,{children:"vike-solid"})," > ",e.jsx(i.code,{children:"CHANGELOG.md"})]})}),`
+`,e.jsxs(i.li,{children:[`
+`,e.jsx(t,{href:"/releases"}),`
+`]}),`
+`]})]})}function c(n={}){const{wrapper:i}=n.components||{};return i?e.jsx(i,{...n,children:e.jsx(s,{...n})}):s(n)}const h=Object.freeze(Object.defineProperty({__proto__:null,default:c,pageSectionsExport:a},Symbol.toStringTag,{value:"Module"})),S={isClientRuntimeLoaded:{type:"computed",definedAtData:null,valueSerialized:{type:"js-serialized",value:!0}},onBeforeRenderEnv:{type:"computed",definedAtData:null,valueSerialized:{type:"js-serialized",value:null}},dataEnv:{type:"computed",definedAtData:null,valueSerialized:{type:"js-serialized",value:null}},onRenderClient:{type:"standard",definedAtData:{filePathToShowToUser:"@brillout/docpress/renderer/onRenderClient",fileExportPathToShowToUser:[]},valueSerialized:{type:"pointer-import",value:d}},onCreatePageContext:{type:"cumulative",definedAtData:[{filePathToShowToUser:"@brillout/docpress/renderer/onCreatePageContext",fileExportPathToShowToUser:[]}],valueSerialized:[{type:"pointer-import",value:o}]},Page:{type:"standard",definedAtData:{filePathToShowToUser:"/pages/releases/2024-10/+Page.mdx",fileExportPathToShowToUser:[]},valueSerialized:{type:"plus-file",exportValues:h}},hydrationCanBeAborted:{type:"standard",definedAtData:{filePathToShowToUser:"@brillout/docpress/config",fileExportPathToShowToUser:["default","hydrationCanBeAborted"]},valueSerialized:{type:"js-serialized",value:!0}}};export{S as configValuesSerialized};
