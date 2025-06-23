@@ -6,14 +6,12 @@
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.5.1",
-    "compression": "^1.7.5",
     "cross-env": "^7.0.3",
     "express": "^5.1.0",
     "node-fetch": "^3.3.2",
     "prop-types": "15.8.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "sirv": "^3.0.0",
     "vike": "^0.4.235",
     "vike-server": "^1.0.16",
     "vite": "^6.3.2"
