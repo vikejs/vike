@@ -1,11 +1,8 @@
 {
   "scripts": {
-    "dev": "npm run server:dev",
-    "prod": "npm run build && npm run server:prod",
+    "dev": "vike dev",
     "build": "vike build",
-    "server": "node --loader ts-node/esm ./server/index.ts",
-    "server:dev": "npm run server",
-    "server:prod": "cross-env NODE_ENV=production npm run server"
+    "prod": "vike build && cross-env NODE_ENV=production node dist/server/index.js"
   },
   "dependencies": {
     "@types/compression": "^1.7.5",
@@ -22,6 +19,7 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3",
     "vike": "^0.4.235",
+    "vike-server": "^1.0.16",
     "vite": "^6.3.2",
     "vue": "^3.5.13",
     "vue-tsc": "^2.1.10"
