@@ -130,14 +130,6 @@ After V1 design release:
    - Environment: Node.js
    + Environment: server.
    ```
- - improve passToClient warning: https://github.com/vikejs/vike/tree/brillout/wip
- - Remove 0.4 design examples
- - [docs] Rewrite /head
- - Go through all TODOs in source code
- - Ensure what client-side loads is minimal
- - improve ignoring of dist/
- - Implement vike.config.js
-   - Move all globals there and add migration warnings
  - Implement data() hook
    - Update `vike-{react,vue,solid}` +title.js config
    - New config requestPageContextOnNavigation
@@ -167,15 +159,6 @@ After V1 design release:
           - The list of +client.js file paths (if two pages have a different list of +client.js => they have different clusterId)
           - onRenderClient() file path (e.g. if a page uses vike-react while another page uses vike-vue => they have different onRenderClient() => they have different clusterId)
           - Maybe: allow user to assign a "cluster name" with `config.clientRouting: string`. Is this needed?
- - Check why some deps aren't discovered by Vite's depOptimizer:
-   - https://github.com/brillout/vike-react-query => why does Vite discover `part-regex` only later?
- - Check why dev startup is fairly slow, e.g. for /examples/react-full/ (I believe it used to be faster, is it related to Vite's initial dep crawling?)
- - Transpile & bunlded server for production: https://github.com/vikejs/vike/issues/1165
- - Replace boilerplates with Bati
- - Rewrite documentation to assume usage of `vike-{react,vue,solid}` (while preserving custom integration docs)
-
-Features:
- - multiple error pages
 
 - refactor logging
   - New hook onLog(): https://github.com/vikejs/vike/issues/1438
@@ -188,20 +171,7 @@ Features:
     - Maybe rotate colors upon no requests within 30s?
   - Only show a one-liner init log (instead of Vite's multi-line log)
 
-Sometime:
- - Make `.server.js` and `.client.js` change env?
- - Replace "isomorphic"/"isomorph" to "universal"
- - remove documentProps from examples and boilerplates
-
 Contact:
- - Bun
  - Payload CMS
    - Other CMS-related tools like Tina CMS
  - Shopify
- - https://gadget.dev/
-   - https://twitter.com/harrybrundage/status/1691760859935109125
-   - https://discord.com/channels/@me/1141741825871331408
- - Deno Deploy
- - Cloudflare Workers
- - UI frameworks like qwik (maybe even Angular)
-   - See `pnpm create vite@latest` for a list of UI frameworks
