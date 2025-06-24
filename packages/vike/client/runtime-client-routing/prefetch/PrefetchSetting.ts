@@ -11,7 +11,7 @@ type PrefetchSetting =
       pageContext?: boolean | number
     }
 
-// TODO/pageContext-prefetch: use and implement PrefetchSettingFuture
+// TO-DO/pageContext-prefetch: use and implement PrefetchSettingFuture
 type PrefetchSettingValue = {
   staticAssets?:
     | false

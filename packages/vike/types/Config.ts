@@ -576,7 +576,7 @@ type ConfigBuiltIn = {
    */
   baseAssets?: string
 
-  // TODO/pageContext-prefetch: remove experimental note
+  // TO-DO/pageContext-prefetch: remove experimental note
   /**
    * @experimental DON'T USE: the API *will* have breaking changes upon any minor version release.
    *
@@ -586,7 +586,7 @@ type ConfigBuiltIn = {
    */
   prefetch?: PrefetchSetting | ImportString
 
-  // TODO/pageContext-prefetch: use following JSDoc to deprecate old interface.
+  // TO-DO/pageContext-prefetch: use following JSDoc to deprecate old interface.
   /** @deprecated Use `prefetch` setting (https://vike.dev/prefetch) instead.  */
   /** Prefetch links.
    *
