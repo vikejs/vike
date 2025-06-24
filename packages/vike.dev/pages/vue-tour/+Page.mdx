@@ -5,7 +5,7 @@ we define a new page by creating a new `+Page.vue` file.
 
 ```vue
 <!-- /pages/index/+Page.vue -->
-<!-- Environment: browser and server -->
+<!-- Environment: client and server -->
 
 <template>
   This page is rendered to HTML and interactive: <Counter />
@@ -77,7 +77,7 @@ async function onRenderHtml(pageContext) {
 
 ```js
 // /renderer/+onRenderClient.js
-// Environment: browser
+// Environment: client
 
 import { createSSRApp, h } from 'vue'
 
@@ -115,7 +115,7 @@ Let's now have a look at how to fetch data.
 
 ```vue
 <!-- /pages/star-wars/movie/+Page.vue -->
-<!-- Environment: browser and server -->
+<!-- Environment: client and server -->
 
 <template>
   <h1>{{movie.title}}</h1>

@@ -5,7 +5,7 @@ The `onPageTransitionStart()` hook, together with `onPageTransitionEnd()`, enabl
 
 ```ts
 // /pages/+onPageTransitionStart.ts
-// Environment: browser
+// Environment: client
 
 import type { PageContextClient } from 'vike/types'
 
@@ -18,7 +18,7 @@ export async function onPageTransitionStart(pageContext: Partial<PageContextClie
 
 ```ts
 // /pages/+onPageTransitionEnd.ts
-// Environment: browser
+// Environment: client
 
 import type { PageContextClient } from 'vike/types'
 

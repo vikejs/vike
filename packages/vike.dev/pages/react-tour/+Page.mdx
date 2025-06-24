@@ -5,7 +5,7 @@ we define a new page by creating a new `+Page.jsx` file.
 
 ```jsx
 // /pages/index/+Page.jsx
-// Environment: browser and server
+// Environment: client and server
 
 import React from "react";
 import { Counter } from "../components/Counter";
@@ -78,7 +78,7 @@ async function onRenderHtml(pageContext) {
 
 ```jsx
 // /renderer/+onRenderClient.jsx
-// Environment: browser
+// Environment: client
 
 import ReactDOM from "react-dom/client";
 import React from "react";
@@ -110,7 +110,7 @@ Let's now have a look at how to fetch data.
 
 ```jsx
 // /pages/star-wars/movie/+Page.jsx
-// Environment: browser and server
+// Environment: client and server
 
 import React from "react";
 

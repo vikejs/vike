@@ -52,7 +52,7 @@ Here is a minimal example of manually integrating a UI framework:
 
 ```js
 // /pages/hello/+Page.js
-// Environment: browser and server (configurable)
+// Environment: client and server (configurable)
 
 export { Page }
 
@@ -91,7 +91,7 @@ async function onRenderHtml(pageContext) {
 
 ```js
 // /renderer/+onRenderClient.js
-// Environment: browser
+// Environment: client
 
 export { onRenderClient }
 
