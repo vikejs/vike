@@ -1,14 +1,10 @@
+- Update boilerplates to use Hono
+
 - head settings
   - name setting?
     - Appends `| ${name}` to title
       - No setting to opt-out, instead user should manually use config.head if all he wants is to inject the OG tag.
     - Sets OG tag
-  - image setting?
-    ```html
-    <meta property="og:image" content="https://www.mywebsite.com/image.jpg">
-    <meta property="og:image:alt" content="Image description">
-    <meta name="twitter:card" content="summary_large_image">
-    ```
   - Use escapeInject for bodyHtmlStart
     - Soft deprecate not using it
   - locale
@@ -23,11 +19,6 @@
     - https://github.com/vikejs/vike-react/pull/113/files#diff-43f0478bd822a071df19f8756e0833b975665ce5d118edde04ce1b7187cd63e2
   - Rename on{After}RenderClient to onRenderClient{Start,End}
     - Soft deprecate it (instead of adding a breaking change note)
-
-- Remove `pageContext.data.title` from boilerplates
-- +client https://github.com/vikejs/vike/commit/732568999c11bd2904d0e2aec19a370c40594315
-- New setting `cjsInterop` https://github.com/vikejs/vike/issues/1512
-- Add x-powered-by header and add warning if missing (likely means that pageContext.httpResponse.headers isn't used)
 
 v0.5 breaking changes:
 === Hihgest Prio
@@ -108,7 +99,6 @@ pageContext prefetching
 - Add cache cleanup interval loop
 
 Docs:
- - Improve /nextjs
  - Add /{react,vue,solid} links under "Overview"
    - Add "Server Actions" section to /react
    - UPDATE: actually, it's maybe a bad idea because there won't be much content at /vue and /solid if we apply the change described in the next bullet point
