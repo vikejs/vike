@@ -120,17 +120,6 @@ After V1 design release:
           - onRenderClient() file path (e.g. if a page uses vike-react while another page uses vike-vue => they have different onRenderClient() => they have different clusterId)
           - Maybe: allow user to assign a "cluster name" with `config.clientRouting: string`. Is this needed?
 
-- refactor logging
-  - New hook onLog(): https://github.com/vikejs/vike/issues/1438
-  - Exact same logs between prod and dev, only difference is that some log objects have:
-    - `isDevLog: true`
-    - `willBeLogged: false` in production
-    - `showTimestamp: true`
-  - Never clear screen (it's complex with little benefit)
-    - Add shortcut to clear screen
-    - Maybe rotate colors upon no requests within 30s?
-  - Only show a one-liner init log (instead of Vite's multi-line log)
-
 Contact:
  - Payload CMS
    - Other CMS-related tools like Tina CMS

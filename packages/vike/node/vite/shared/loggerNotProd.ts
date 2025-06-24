@@ -1,3 +1,14 @@
+// TO-DO/eventually:
+// - New hook onLog(): https://github.com/vikejs/vike/issues/1438
+// - Exact same logs between prod and dev, only difference is that some log objects have:
+//   - `isDevLog: true`
+//   - `willBeLogged: false` in production
+//   - `showTimestamp: true`
+// - Never clear screen (it's complex with little benefit)
+//   - Add shortcut to clear screen
+//   - Maybe rotate colors upon no requests within 30s?
+// - Only show a one-liner init log (instead of Vite's multi-line log)
+
 // Non-production logger used for:
 //  - Development
 //  - Preview
