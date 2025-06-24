@@ -1,4 +1,7 @@
 - Update boilerplates to use Hono
+- Add vike.dev/config#cumulative
+- Add vike.dev/config#global
+  - Remove all other #global sections
 
 - Rename +onData => +onAfterData ? Maybe not because it isn't strictly always called after +data
 - Rename +on{After}RenderClient to +onRenderClient{Start,End} ?
@@ -90,7 +93,6 @@ Docs:
   - `pageContext.configEntries`
 
 After V1 design release:
- - Implement data() hook
  - Make +client.js work for all render modes
    - In order to support [github.com/vikejs/vike-react#28 - Client-side init code](https://github.com/vikejs/vike-react/issues/28)
    - Use case: ad-hoc client-side scripts such as error tracking and analytics
