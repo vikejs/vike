@@ -121,15 +121,6 @@ Docs:
   - `pageContext.configEntries`
 
 After V1 design release:
- - Replace in docs:
-   ```diff
-   - Environment: browser
-   + Environment: client.
-   ```
-   ```diff
-   - Environment: Node.js
-   + Environment: server.
-   ```
  - Implement data() hook
    - Update `vike-{react,vue,solid}` +title.js config
    - New config requestPageContextOnNavigation
