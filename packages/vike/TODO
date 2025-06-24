@@ -91,21 +91,6 @@ Docs:
 
 After V1 design release:
  - Implement data() hook
-   - Update `vike-{react,vue,solid}` +title.js config
-   - New config requestPageContextOnNavigation
-     ```ts
-     type requestPageContextOnNavigation =
-       | true // default
-       | 'minimal' // Equivalent to `{ makeHooksUniversal: true }`. (Or maybe `{ makeHooksUniversal: ['data', 'onBeforeRender'] }`?)
-       | false // Equivalent to { makeHooksUniversal: true, skipPageContextInit: true }
-       | {
-           makeHooksUniversal: true | ('onBeforeRender' | 'data' | 'guard')[] // Change env of hooks from `{ client: false, server: true }` to `{ client: true, server: true }`
-           // Is `skipPageContextInit: true` too dangerous (the user may break its app)? I think it's ok and, so far, I think a warning in the docs is enough.
-           skipPageContextInit: true | string[] // e.g. ['user']
-         }
-     ```
-     - By default, only call guard() hooks on the server-side (if requestPageContextOnNavigation.minimal isn't true)
-     - Re-apply assertNotNull() when requestPageContextOnNavigation is set to 'minimal' or false, see https://github.com/vikejs/vike/blob/a1b1ab4a250c564789358f7892d829eab6b17d27/vike/shared/page-configs/serialize/parseConfigValuesImported.ts#L52-L58
  - Make +client.js work for all render modes
    - In order to support [github.com/vikejs/vike-react#28 - Client-side init code](https://github.com/vikejs/vike-react/issues/28)
    - Use case: ad-hoc client-side scripts such as error tracking and analytics
