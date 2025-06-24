@@ -24,7 +24,8 @@ This migration page is only for double checking that you applied all deprecation
    } from 'vike/types' // [!code ++]
    ```
 
-Changes that are relevant only for a (small) subset of users:
- 1. The server entry has been renamed from `dist/server/importBuild.js` to `dist/server/entry.js`. (If you manually import the server entry, then make sure to update your import accordingly.)
+## Dropped CJS support
 
-That's it! Welcome to the `v1` release.
+For TypeScript users:
+ - Make sure your `tsconfig.json` doesn't transpile to CJS (e.g. make sure `tsconfig.json#compilerOptions.module` isn't set to `CommonJS`).
+ - If you use `ts-node`, make sure your `tsconfig.json#ts-node` doesn't transpile to CJS (e.g. make sure `tsconfig.json#ts-node.compilerOptions.module` isn't set to `CommonJS`)

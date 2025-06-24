@@ -1,28 +1,35 @@
+= Now
+- Triage https://github.com/vikejs/vike/issues
+- Triage TODOs in source code
+- Use x-powered-by header to check & enforce usage of pageContext.httpResponse.headers
 - Make navigate() automatically add Base URL by default?
-
 - Update boilerplates to use Hono
 - Add vike.dev/config#cumulative
 - Add vike.dev/config#global
   - Remove all other #global sections
 - Move packages/{vike.dev,telefunc.com} to docs/ ?
-
 - Add assertWarning() deprecations:
   - `pageContext.exports`
   - `pageContext.configEntries`
 
-- Triage TODOs in source code
-
-===== Upcoming breaking changes ===
-=== Highest Prio
-- Deprecate old design
+= Upcoming breaking changes
+== Urgent (do it already in `0.4.x` release branch)
+- Soft depracate TS helpers such as OnRenderHtmlAsync https://vike.dev/onRenderHtml#typescript
+- Soft deprecate returning `pageContext` from `onBeforeRender()`
+  - Depecrate all return values of `onBeforeRender()`, `onRenderHtml`, and all hooks?
+    - Including `documentHtml` and `injectFilter()`
+      - Use pageContext.html and pageContext.injectFilter instead
+== Highest Prio
+- Remove old design
 - Remove TS helpers such as OnRenderHtmlAsync https://vike.dev/onRenderHtml#typescript
 - Make routing fully sync
   - Forbid async Route Functions
 - Make CJS warning an error
   - Keep the CJS build for a little while and if no one complains then remove the CJS build
-=== Prio
+== Prio
 - pageContext.url
 - Simplify import paths
+  - Migration script => not too annoying for the user? All the user has to do to update to `v1.0.0` is to 1. follow all soft deprecation warnings and 2. run `$ vike update`
   - Either move all isomorphic exports to `import * from 'vike'` or create individual export path for each export e.g. `import { render } from 'vike/render'`
     - E.g. remove `import * from 'vike/abort'` and `import * from 'vike/client'`
       ```diff
@@ -37,10 +44,12 @@
   - How about 'vike/types'? I guess move it to 'vike' iff. moving all isomorphics to 'vike'.
   - `import { navigate } from 'vike/navigate'`
 - Make hooks cumulative by default
+ - +data and +onBeforeRender https://github.com/vikejs/vike/issues/1833
  - +onHydrationEnd
  - +guard
  - +onPageTransitionStart ?
  - more/most?
+ - Works well with +data.noInherit.js and +onPageTransitionStart.default.js https://github.com/vikejs/vike/issues/1692
 - Cleanup after old design removal:
   - Make client entry be a single virtual file
     - Remove `import * as virtualFileExports from 'virtual:vike:entry:client:...'`
@@ -48,23 +57,10 @@
     - Make +client.js cumulative https://github.com/vikejs/vike/issues/1834
     - Fix non-global +client.js
       - For example, make `import '@batijs/elements'` work for Vike's docs.
-- Deprecate returning `pageContext` from `onBeforeRender()`
-  - Depecrate all return values of `onBeforeRender()`, `onRenderHtml`, and all hooks?
-    - Including `documentHtml` and `injectFilter()`
-  - Remove hook types such as `OnBeforeRenderAsync` https://vike.dev/onBeforeRender#typescript
-=== Maybe
-- Make +data and +onBeforeRender cumulative https://github.com/vikejs/vike/issues/1833
-- Forbid content-type
-  - Maybe use x-powered-by header to check & enforce usage of pageContext.httpResponse.headers
-- Remove dist/server/importBuild.{cjs,mjs,js}
-- See vike.dev/migration/v0.5
-  - See also vike.dev/migration/v1
-  - Shall all breaking changes be listed or is it enough to say "first update to latest 0.4.x then follow all warnings then update to 0.5"?
-- Make guard() hook server-side only by default?
-- Presrve scroll for route parameters other than the first one?
-  - https://github.com/vikejs/vike/issues/1459
-=== Probably later
+== Maybe
 - Rename hooks
-  - Soft deprecation + migration scripts?
+  - Soft deprecation + migration scripts => not too annoying for the user?
   - Rename +on{After}RenderClient to +onRenderClient{Start,End} ?
   - Rename +onData => +onAfterData ? Maybe not because it isn't strictly always called after +data
+- Preserve scroll for route parameters other than the first one?
+  - https://github.com/vikejs/vike/issues/1459
