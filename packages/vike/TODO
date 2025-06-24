@@ -19,6 +19,8 @@
   - Depecrate all return values of `onBeforeRender()`, `onRenderHtml`, and all hooks?
     - Including `documentHtml` and `injectFilter()`
       - Use pageContext.html and pageContext.injectFilter instead
+- pageContext.url + soft deprecate pageContext.urlParsed
+  - Maybe/eventually: `$ pnpm migrate pageContext.url`? Probably not for now: instead recommend `$ rename urlParsed url`.
 == Highest Prio
 - Remove old design
 - Remove TS helpers such as OnRenderHtmlAsync https://vike.dev/onRenderHtml#typescript
@@ -27,9 +29,12 @@
 - Make CJS warning an error
   - Keep the CJS build for a little while and if no one complains then remove the CJS build
 == Prio
-- pageContext.url
 - Simplify import paths
-  - Migration script => not too annoying for the user? All the user has to do to update to `v1.0.0` is to 1. follow all soft deprecation warnings and 2. run `$ vike update`
+  - Migration script => not too annoying for the user? All the user has to do to update to `v1.0.0` is:
+    1. Follow all soft deprecation warnings
+    2. Run `$ vike update`
+    > [!INFO]
+    > Although this would require +config.oldApiInterop.nonCumulativeHooks to avoid breaking change => but I think it isn't worth it? Let's be lazy?
   - Either move all isomorphic exports to `import * from 'vike'` or create individual export path for each export e.g. `import { render } from 'vike/render'`
     - E.g. remove `import * from 'vike/abort'` and `import * from 'vike/client'`
       ```diff
@@ -59,6 +64,6 @@
       - For example, make `import '@batijs/elements'` work for Vike's docs.
 == Maybe
 - Rename hooks
-  - Soft deprecation + migration scripts => not too annoying for the user?
+  - Soft deprecation + migration scripts => hook renaming not too annoying for the user?
   - Rename +on{After}RenderClient to +onRenderClient{Start,End} ?
   - Rename +onData => +onAfterData ? Maybe not because it isn't strictly always called after +data
