@@ -18,7 +18,7 @@ const prefetchSettingFalse = {
   staticAssets: 'hover',
   pageContext: false,
 } satisfies PrefetchSettingResolved
-// TODO/v1-release: change to `prefetchSettingTrue`?
+// TO-DO/eventually: change to `prefetchSettingTrue`
 const prefetchSettingDefault = prefetchSettingFalse
 
 type PrefetchSettingResolved = {

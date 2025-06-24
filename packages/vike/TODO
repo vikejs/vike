@@ -1,22 +1,28 @@
+- Make navigate() automatically add Base URL by default?
+
 - Update boilerplates to use Hono
 - Add vike.dev/config#cumulative
 - Add vike.dev/config#global
   - Remove all other #global sections
 - Move packages/{vike.dev,telefunc.com} to docs/ ?
 
-- Rename +onData => +onAfterData ? Maybe not because it isn't strictly always called after +data
-- Rename +on{After}RenderClient to +onRenderClient{Start,End} ?
-  - Soft deprecate it (instead of adding a breaking change note)
+- Add assertWarning() deprecations:
+  - `pageContext.exports`
+  - `pageContext.configEntries`
 
-v0.5 breaking changes:
-=== Hihgest Prio
+- Triage TODOs in source code
+
+===== Upcoming breaking changes ===
+=== Highest Prio
 - Deprecate old design
 - Remove TS helpers such as OnRenderHtmlAsync https://vike.dev/onRenderHtml#typescript
 - Make routing fully sync
   - Forbid async Route Functions
+- Make CJS warning an error
+  - Keep the CJS build for a little while and if no one complains then remove the CJS build
 === Prio
 - pageContext.url
-- Improve/clean import paths.
+- Simplify import paths
   - Either move all isomorphic exports to `import * from 'vike'` or create individual export path for each export e.g. `import { render } from 'vike/render'`
     - E.g. remove `import * from 'vike/abort'` and `import * from 'vike/client'`
       ```diff
@@ -30,25 +36,22 @@ v0.5 breaking changes:
       - This one can probably stay bundled as loaded superfluous code on the server-side is probably ok, but let's double check how big the loaded superfluous code can be.
   - How about 'vike/types'? I guess move it to 'vike' iff. moving all isomorphics to 'vike'.
   - `import { navigate } from 'vike/navigate'`
-- See & categorize/prioritize all TODOs in source code
-- See v1-release tickets https://github.com/vikejs/vike/labels/v1%20release%20%3Astar2%3A such as:
-  - https://github.com/vikejs/vike/issues/2107
-  - https://github.com/vikejs/vike/issues/1851
-- Make cumulative by default:
+- Make hooks cumulative by default
  - +onHydrationEnd
  - +guard
  - +onPageTransitionStart ?
  - more/most?
-- Move `dist/assets.json` to `dist/server/assets.json`
-  - Or move it `dist/server/assets-client.json` to?
-  - Or remove it altogether in favor of `globalContext.assetsManifest`?
-- Make navigate() automatically add Base URL by default?
-- Make client entry be a single virtual file
-  - Remove `import * as virtualFileExports from 'virtual:vike:entry:client:...'`
-    - We can then avoid adding client runtime entry to optimizeDeps.exclude
-  - Make +client.js cumulative https://github.com/vikejs/vike/issues/1834
-  - Fix non-global +client.js
-    - For example, make `import '@batijs/elements'` work for Vike's docs.
+- Cleanup after old design removal:
+  - Make client entry be a single virtual file
+    - Remove `import * as virtualFileExports from 'virtual:vike:entry:client:...'`
+      - We can then avoid adding client runtime entry to optimizeDeps.exclude
+    - Make +client.js cumulative https://github.com/vikejs/vike/issues/1834
+    - Fix non-global +client.js
+      - For example, make `import '@batijs/elements'` work for Vike's docs.
+- Deprecate returning `pageContext` from `onBeforeRender()`
+  - Depecrate all return values of `onBeforeRender()`, `onRenderHtml`, and all hooks?
+    - Including `documentHtml` and `injectFilter()`
+  - Remove hook types such as `OnBeforeRenderAsync` https://vike.dev/onBeforeRender#typescript
 === Maybe
 - Make +data and +onBeforeRender cumulative https://github.com/vikejs/vike/issues/1833
 - Forbid content-type
@@ -57,26 +60,11 @@ v0.5 breaking changes:
 - See vike.dev/migration/v0.5
   - See also vike.dev/migration/v1
   - Shall all breaking changes be listed or is it enough to say "first update to latest 0.4.x then follow all warnings then update to 0.5"?
-- Set `cjsInterop: true` by default?
-- Communicate that v0.5 essentially is the v1.0.0 in disguise: the plan is to eventually rename the latest `v0.5.x` to `v1.0.0`.
-  - The plan for releasing the v1.0.0 being:
-    - Implement feature requests considered essential, most notably: [#562 - Transpile server code](https://github.com/vikejs/vike/issues/562)
-    - Make a big release announcement and blog post with a completely rehauled landing page.
-      - Blog post: my personal journey towards building Vike (for rationle why Vike exists, see landing page instead of reading blog bost).
-- Make CJS warning an error.
-  - Keep the CJS build for a little while and if no one complains then remove the CJS build.
 - Make guard() hook server-side only by default?
 - Presrve scroll for route parameters other than the first one?
   - https://github.com/vikejs/vike/issues/1459
-- Remove deprecated API support in getPrefetchSettings.ts
-  - Remove all deprecated API, at least in client code?
-- New Base URL setting: https://github.com/vikejs/vike/issues/1794
-- Simplify pageContext return type?
-- Deprecate returning `pageContext` from `onBeforeRender()`
-  - Depecrate all return values of `onBeforeRender()`, `onRenderHtml`, and all hooks?
-    - Including `documentHtml` and `injectFilter()`
-  - Remove hook types such as `OnBeforeRenderAsync` https://vike.dev/onBeforeRender#typescript
-
-- Add assertWarning() deprecations:
-  - `pageContext.exports`
-  - `pageContext.configEntries`
+=== Probably later
+- Rename hooks
+  - Soft deprecation + migration scripts?
+  - Rename +on{After}RenderClient to +onRenderClient{Start,End} ?
+  - Rename +onData => +onAfterData ? Maybe not because it isn't strictly always called after +data
