@@ -62,5 +62,3 @@
   - Soft deprecation + migration scripts => not too annoying for the user?
   - Rename +on{After}RenderClient to +onRenderClient{Start,End} ?
   - Rename +onData => +onAfterData ? Maybe not because it isn't strictly always called after +data
-- Preserve scroll for route parameters other than the first one?
-  - https://github.com/vikejs/vike/issues/1459
