@@ -1,24 +1,8 @@
 - Update boilerplates to use Hono
 
-- head settings
-  - name setting?
-    - Appends `| ${name}` to title
-      - No setting to opt-out, instead user should manually use config.head if all he wants is to inject the OG tag.
-    - Sets OG tag
-  - Use escapeInject for bodyHtmlStart
-    - Soft deprecate not using it
-  - locale
-    - Instead of lang?
-    - ```html
-      <html lang="en">
-      <meta property="og:locale" content="en_GB">
-      ```
-  - Remove lang setting (soft deprecation) in favor of using htmlAttributes?
-    - I don't see a use case for lang yet, maybe for i18n?
-  - More document settings?
-    - https://github.com/vikejs/vike-react/pull/113/files#diff-43f0478bd822a071df19f8756e0833b975665ce5d118edde04ce1b7187cd63e2
-  - Rename on{After}RenderClient to onRenderClient{Start,End}
-    - Soft deprecate it (instead of adding a breaking change note)
+- Rename +onData => +onAfterData ? Maybe not because it isn't strictly always called after +data
+- Rename +on{After}RenderClient to +onRenderClient{Start,End} ?
+  - Soft deprecate it (instead of adding a breaking change note)
 
 v0.5 breaking changes:
 === Hihgest Prio
@@ -92,11 +76,6 @@ v0.5 breaking changes:
 - Move hooks from `vike-{react,vue,solid}` to Vike core? E.g. `onRender{Client,Html}{Before,After}()`?
   - So far I don't see a need for this. The only upside would be to simplify the implementation of `vike-{react,vue,solid}` and, maybe, increased compatibility of Vike extensions (if some UI-framework-agnostic Vike extensions need those hooks then it could make sense to move hooks to Vike core).
 
-
-pageContext prefetching
-- Early experimental support: https://github.com/vikejs/vike/pull/1617
-- Implement all TODO/pageContext-prefetch
-- Add cache cleanup interval loop
 
 Docs:
  - Add /{react,vue,solid} links under "Overview"
