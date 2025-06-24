@@ -2,6 +2,7 @@
 - Add vike.dev/config#cumulative
 - Add vike.dev/config#global
   - Remove all other #global sections
+- Move packages/{vike.dev,telefunc.com} to docs/ ?
 
 - Rename +onData => +onAfterData ? Maybe not because it isn't strictly always called after +data
 - Rename +on{After}RenderClient to +onRenderClient{Start,End} ?
