@@ -2,6 +2,8 @@ import { HookTypeScriptHints } from '../../components'
 import { Link, RepoLink } from '@brillout/docpress'
 import PreRenderDynamicRoutes from '../pre-rendering/PreRenderDynamicRoutes.mdx'
 
+Environment: build-time (Node.js/Bun/Deno).  
+
 The `onBeforePrerenderStart()` hook is executed upon <Link text="pre-rendering" href="/pre-rendering" /> your app.
 
 > It's *only* executed while pre-rendering and, consequently, never executed during development.
@@ -19,14 +21,13 @@ Most of the time, the `onBeforePrerenderStart()` hook is used for providing the 
 
 ```js
 // /pages/movie/+route.js
-// Environment: Node.js
 
 export default '/movie/@movieId'
 ```
 
 ```js
 // /pages/movie/+onBeforePrerenderStart.js
-// Environment: Node.js
+// Environment: build-time (Node.js/Bun/Deno)
 
 export { onBeforePrerenderStart }
 
@@ -51,14 +52,13 @@ You can make pre-rendering significantly faster by providing the <Link href="/pa
 
 ```js
 // /pages/movie/+route.js
-// Environment: Node.js
 
 export default '/movie/@movieId'
 ```
 
 ```js
 // /pages/movie/+onBeforePrerenderStart.js
-// Environment: Node.js
+// Environment: build-time (Node.js/Bun/Deno)
 
 export { onBeforePrerenderStart }
 
