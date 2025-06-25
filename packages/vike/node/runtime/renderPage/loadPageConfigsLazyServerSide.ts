@@ -5,16 +5,7 @@ export type { PageConfigsLazy }
 import { type PageFile, getPageFilesServerSide } from '../../../shared/getPageFiles.js'
 import { resolveVikeConfigPublicPageLazy } from '../../../shared/page-configs/resolveVikeConfigPublic.js'
 import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide.js'
-import {
-  assert,
-  assertUsage,
-  assertWarning,
-  hasProp,
-  isArrayOfStrings,
-  objectAssign,
-  PromiseType,
-  isArray,
-} from '../utils.js'
+import { assertUsage, assertWarning, hasProp, objectAssign, PromiseType, isArrayOfStrings } from '../utils.js'
 import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './getPageAssets.js'
 import { debugPageFiles, type PageContextDebugRouteMatches } from './debugPageFiles.js'
 import type { PageConfigGlobalRuntime, PageConfigRuntime } from '../../../types/PageConfig.js'
@@ -76,13 +67,10 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
       passToClient.push(...e.exportValue)
     })
   } else {
-    configPublicPageLazy.configEntries.passToClient?.forEach((e) => {
-      const { configValue } = e
-      assert(isArray(configValue))
-      const vals = configValue.flat(1)
-      // TODO: improve error message by using (upcoming) new data structure instead of configEntries
-      assertUsage(isArrayOfStrings(vals), `${e.configDefinedAt}${errMsg}`)
-      passToClient.push(...vals)
+    configPublicPageLazy.from.configsCumulative.passToClient?.values.forEach((v) => {
+      const { value, definedAt } = v
+      assertUsage(isArrayOfStrings(value), `+passToClient value defined at ${definedAt}${errMsg}`)
+      passToClient.push(...value)
     })
   }
 

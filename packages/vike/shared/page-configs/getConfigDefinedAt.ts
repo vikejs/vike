@@ -50,12 +50,12 @@ function getDefinedAtString(definedAtData: NonNullable<DefinedAtData>, configNam
     .map((definedAt) => {
       if (definedAt.definedBy) return getDefinedByString(definedAt, configName)
       const { filePathToShowToUser, fileExportPathToShowToUser } = definedAt
-      let s = filePathToShowToUser
       const exportPath = getExportPath(fileExportPathToShowToUser, configName)
       if (exportPath) {
-        s = `${s} > ${pc.cyan(exportPath)}`
+        return `${filePathToShowToUser} > ${pc.cyan(exportPath)}`
+      } else {
+        return filePathToShowToUser
       }
-      return s
     })
     .join(' / ')
   return definedAtString
