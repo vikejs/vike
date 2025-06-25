@@ -236,7 +236,7 @@ function resolveVikeConfigPublicPageLazy(
           isFromDefaultExport ? `\`export default { ${exportName} }\`` : `\`export { ${exportName} }\``
         }`,
         filePath: pageFile.filePath,
-        _filePath: pageFile.filePath, // TO-DO/next-major-release remove
+        _filePath: pageFile.filePath, // TO-DO/next-major-release: remove
         _fileType: pageFile.fileType,
         _isFromDefaultExport: isFromDefaultExport,
       })

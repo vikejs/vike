@@ -1,4 +1,4 @@
-// TO-DO/next-major-release - move:
+// TO-DO/next-major-release: - move:
 //   import { navigate, prefetch } from 'vike/client/router'
 // to:
 //   import { navigate, prefetch } from 'vike'

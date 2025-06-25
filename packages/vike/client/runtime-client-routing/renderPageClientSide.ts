@@ -582,7 +582,7 @@ async function getPageContextBegin(
     ...pageContextInitClient,
   })
 
-  // TO-DO/next-major-release remove
+  // TO-DO/next-major-release: remove
   Object.defineProperty(pageContext, '_previousPageContext', {
     get() {
       assertWarning(false, 'pageContext._previousPageContext has been renamed pageContext.previousPageContext', {

@@ -1,6 +1,6 @@
 export { assertV1Design }
 
-// TO-DO/next-major-release remove
+// TO-DO/next-major-release: remove
 
 import { PageFile } from '../../shared/getPageFiles.js'
 import type { PageConfigBuildTime } from '../../types/PageConfig.js'

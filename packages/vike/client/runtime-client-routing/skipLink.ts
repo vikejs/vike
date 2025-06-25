@@ -20,7 +20,7 @@ function skipLink(linkTag: HTMLElement): boolean {
   )
 }
 
-// TO-DO/next-major-release remove this in favor of synchronously checking whether URL matches the route of a page (possible since Async Route Functions will be deprecated)
+// TO-DO/next-major-release: remove this in favor of synchronously checking whether URL matches the route of a page (possible since Async Route Functions will be deprecated)
 function isVikeLink(linkTag: HTMLElement) {
   const disableAutomaticLinkInterception = isDisableAutomaticLinkInterception()
   if (!disableAutomaticLinkInterception) {

@@ -23,7 +23,7 @@ function preparePageContextForPublicUsage<PageContext extends PageContextPrepare
 
   addIs404ToPageProps(pageContext)
 
-  // TO-DO/next-major-release remove
+  // TO-DO/next-major-release: remove
   if (!('_pageId' in pageContext)) {
     Object.defineProperty(pageContext, '_pageId', {
       get() {

@@ -28,7 +28,7 @@ type PageContextForPublicUsageServer = PageContextInternalServer &
 function preparePageContextForPublicUsageServer<PageContext extends PageContextForPublicUsageServer>(
   pageContext: PageContext,
 ) {
-  // TO-DO/next-major-release after we remove supportVueReactiviy() we can call this later inside the agnostic preparePageContextForPublicUsage()
+  // TO-DO/next-major-release: after we remove supportVueReactiviy() we can call this later inside the agnostic preparePageContextForPublicUsage()
   assertPropertyGetters(pageContext)
   pageContext = preparePageContextForPublicUsage(pageContext)
   return pageContext
