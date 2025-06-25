@@ -1,4 +1,6 @@
 = Now
+- Analytics
+- vike.dev/onCreatePageContext => use case computed props
 - Triage https://github.com/vikejs/vike/issues
 - Triage TODOs in source code
 - Use x-powered-by header to check & enforce usage of pageContext.httpResponse.headers
