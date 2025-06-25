@@ -14,4 +14,11 @@ const redirects = {
   '/Head-setting': '/head-tags',
   '/head': '/head-tags',
   '/ClientOnly': '/clientOnly',
+  '/add-ssr-to-vite-app': '/add',
+  '/scaffold': '/new',
+  '/prerender-config': '/prerender',
+  '/pageContext-anywhere': '/pageContext',
+  '/client-only-components': '/clientOnly',
+  '/vike-packages': '/extensions',
+  '/page-redirection': '/redirect',
 } satisfies Config['redirects']
