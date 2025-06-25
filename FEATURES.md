@@ -47,7 +47,7 @@ No known bugs, most notably:
  - In general, things just work. No surprise of stumbling upon some bug.
 
 Things missing that some frameworks have (but is on the roadmap):
- - Nested Layouts (TODO: update ticket with latest design)
+ - Nested Layouts (TO-DO: update ticket with latest design)
  - Typesafe links ([#698](https://github.com/vikejs/vike/issues/698))
  - Single Route File
 
