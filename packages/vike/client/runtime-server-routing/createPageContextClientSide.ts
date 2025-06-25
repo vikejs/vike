@@ -34,14 +34,7 @@ async function createPageContextClientSide() {
   objectAssign(pageContextCreated, getPageContextSerializedInHtml())
 
   // Sets pageContext.config to global configs
-  augmentType(
-    pageContextCreated,
-    await createPageContextShared(
-      pageContextCreated,
-      globalContext._pageConfigGlobal,
-      globalContext._vikeConfigPublicGlobal,
-    ),
-  )
+  augmentType(pageContextCreated, createPageContextShared(pageContextCreated, globalContext._vikeConfigPublicGlobal))
 
   // Sets pageContext.config to local configs (overrides the pageContext.config set above)
   augmentType(pageContextCreated, await loadPageConfigsLazyClientSideAndExecHook(pageContextCreated))

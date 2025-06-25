@@ -9,7 +9,7 @@ import type { PageContextInit } from '../renderPage.js'
 import { createPageContextObject, createPageContextShared } from '../../../shared/createPageContextShared.js'
 
 type PageContextCreated = Awaited<ReturnType<typeof createPageContextServerSide>>
-async function createPageContextServerSide(
+function createPageContextServerSide(
   pageContextInit: PageContextInit,
   globalContext: GlobalContextServerInternal,
   {
@@ -76,11 +76,7 @@ async function createPageContextServerSide(
     objectAssign(pageContextCreated, { headers })
   }
 
-  const pageContextAugmented = await createPageContextShared(
-    pageContextCreated,
-    globalContext._pageConfigGlobal,
-    globalContext._vikeConfigPublicGlobal,
-  )
+  const pageContextAugmented = createPageContextShared(pageContextCreated, globalContext._vikeConfigPublicGlobal)
   augmentType(pageContextCreated, pageContextAugmented)
 
   return pageContextCreated

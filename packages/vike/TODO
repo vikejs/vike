@@ -1,6 +1,6 @@
 = Now
-- vike.dev/onCreatePageContext => use case computed props
 - Triage https://github.com/vikejs/vike/issues
+- vike.dev/onCreatePageContext => use case computed props
 - Use x-powered-by header to check & enforce usage of pageContext.httpResponse.headers
 - Make navigate() automatically add Base URL by default?
 - Update boilerplates to use Hono
@@ -12,7 +12,7 @@
   - `pageContext.exports`
   - `pageContext.configEntries`
 
-= Upcoming breaking changes
+= TO-DO/next-major-release:
 == Urgent (do it already in `0.4.x` release branch)
 - Soft depracate TS helpers such as OnRenderHtmlAsync https://vike.dev/onRenderHtml#typescript
 - Soft deprecate returning `pageContext` from `onBeforeRender()`
