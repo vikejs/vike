@@ -1,4 +1,5 @@
 export { headings }
+export { HeadingsURL }
 
 import {
   iconScroll,
@@ -9,6 +10,9 @@ import {
   iconGlobe,
   iconPlug,
 } from '@brillout/docpress'
+
+type HeadingUrl<C> = C extends { url: infer N extends string } ? N : C extends string ? C : never
+type HeadingsURL = HeadingUrl<(typeof headings)[number]>
 
 const headings = [
   {
@@ -660,4 +664,4 @@ const headings = [
     url: '/settings',
     sectionTitles: ['HTML shell'],
   },
-] satisfies HeadingDefinition[]
+] as const satisfies HeadingDefinition[]
