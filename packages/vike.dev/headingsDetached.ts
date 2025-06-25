@@ -30,7 +30,7 @@ const categories = [
   { name: 'Deprecated', hide: true },
 ] as const satisfies Config['categories']
 
-const headingsDetached: HeadingDetachedDefinition[] = [
+const headingsDetached = [
   ...api(),
   ...guides(),
   ...tools(),
@@ -40,10 +40,10 @@ const headingsDetached: HeadingDetachedDefinition[] = [
   ...getStarted(),
   ...deprecated(),
   ...workInProgress(),
-]
+] satisfies HeadingDetachedDefinition[]
 
-function tools(): HeadingDetachedDefinition[] {
-  return [
+function tools() {
+  return ([
     {
       title: 'Vue Query',
       url: '/vue-query',
@@ -167,7 +167,7 @@ function tools(): HeadingDetachedDefinition[] {
     {
       title: 'React',
       url: '/react',
-      sectionTitles: ['React Server Components'],
+      sectionTitles: ['React Server Components'] as string[],
     },
     {
       title: 'Vue',
@@ -272,7 +272,7 @@ function tools(): HeadingDetachedDefinition[] {
     {
       title: 'Tool guides & examples',
       url: '/tools',
-      sectionTitles: ['CSS-in-JS'],
+      sectionTitles: ['CSS-in-JS'] as string[],
     },
     {
       title: 'Vue Router',
@@ -286,7 +286,7 @@ function tools(): HeadingDetachedDefinition[] {
       title: 'Vitest',
       url: '/vitest',
     },
-  ].map((h) => ({ ...h, category: 'Guides (tools)' as const }))
+  ] as const).map((h) => ({ ...h, category: 'Guides (tools)' as const }))
 }
 
 function misc(): HeadingDetachedDefinition[] {
