@@ -888,10 +888,6 @@ async function warnMissingPages(
 ) {
   const isV1 = globalContext._pageConfigs.length > 0
   const hookName = isV1 ? 'onBeforePrerenderStart' : 'prerender'
-  /* TODO/after-v1-design-release: document setting `prerender: false` as an alternative to using prerender.partial (both in the warnings and the docs)
-  const optOutName = isV1 ? 'prerender' : 'doNotPrerender'
-  const msgAddendum = `Explicitly opt-out by setting the config ${optOutName} to ${isV1 ? 'false' : 'true'} or use the option prerender.partial`
-  */
   globalContext._allPageIds
     .filter((pageId) => !prerenderedPageContexts[pageId])
     .filter((pageId) => !doNotPrerenderList.find((p) => p.pageId === pageId))
