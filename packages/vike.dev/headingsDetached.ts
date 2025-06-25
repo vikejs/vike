@@ -1,9 +1,15 @@
 export { headingsDetached }
 export { categories }
 
-import type { Config, HeadingDetachedDefinition } from '@brillout/docpress'
+import type { Config, HeadingDetachedDefinition as HeadingDetachedDefinition_ } from '@brillout/docpress'
 
-const categories: Config['categories'] = [
+type CategoryName<C> = C extends { name: infer N extends string } ? N : C extends string ? C : never
+type CategoryNames = CategoryName<(typeof categories)[number]>
+type HeadingDetachedDefinition = Omit<HeadingDetachedDefinition_, 'category'> & {
+  category?: CategoryNames
+}
+
+const categories = [
   'Guides',
   'API',
   'Glossary',
@@ -14,6 +20,7 @@ const categories: Config['categories'] = [
   'Overview',
   'Get Started',
 
+  'Guides (tools)',
   'Guides (more)',
 
   'Blog',
@@ -22,7 +29,7 @@ const categories: Config['categories'] = [
   { name: 'Work-in-progress', hide: true },
   { name: 'Deprecated', hide: true },
   { name: 'Page Redirection', hide: true },
-]
+] as const satisfies Config['categories']
 
 const headingsDetached: HeadingDetachedDefinition[] = [
   ...api(),
@@ -281,7 +288,7 @@ function tools(): HeadingDetachedDefinition[] {
       title: 'Vitest',
       url: '/vitest',
     },
-  ].map((h) => ({ ...h, category: 'Guide (tools)' }))
+  ].map((h) => ({ ...h, category: 'Guides (tools)' as const }))
 }
 
 function misc(): HeadingDetachedDefinition[] {
