@@ -40,7 +40,7 @@ function onSetupRuntime(): void | undefined {
   if (isTest()) return
   assertNodeEnvIsNotUndefinedString()
   if (!setup.viteDevServer && setup.isViteDev === undefined) {
-    // TODO: make it assertUsage() again once https://github.com/vikejs/vike/issues/1528 is implemented.
+    // TO-DO/eventually: make it assertUsage() again once https://github.com/vikejs/vike/issues/1528 is implemented.
     assertWarning(
       !isNodeEnvDev(),
       `The ${getEnvDescription()}, which is contradictory because the environment seems to be a production environment (Vite isn't loaded), see https://vike.dev/NODE_ENV`,
@@ -54,7 +54,7 @@ function onSetupRuntime(): void | undefined {
     assert(!setup.shouldNotBeProduction)
   } else {
     if (!setup.isPreview && !setup.vitePreviewServer && !setup.isPrerendering) {
-      // TODO: make it assertUsage() again once https://github.com/vikejs/vike/issues/1528 is implemented.
+      // TO-DO/eventually: make it assertUsage() again once https://github.com/vikejs/vike/issues/1528 is implemented.
       assertWarning(
         isNodeEnvDev(),
         `The ${getEnvDescription()}, but Vite is loaded which is prohibited in production, see https://vike.dev/NODE_ENV`,
@@ -123,7 +123,7 @@ function markSetup_isPreview() {
 
 function assertUsageNodeEnvIsNotDev(operation: 'building' | 'pre-rendering') {
   if (!isNodeEnvDev()) return
-  // TODO: make it assertUsage() again once https://github.com/vikejs/vike/issues/1528 is implemented.
+  // TO-DO/eventually: make it assertUsage() again once https://github.com/vikejs/vike/issues/1528 is implemented.
   assertWarning(
     false,
     `The ${getEnvDescription()} which is forbidden upon ${operation}, see https://vike.dev/NODE_ENV`,
