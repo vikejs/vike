@@ -77,7 +77,7 @@ type PageContextInit = Pick<PageContextInternalServer, 'urlOriginal' | 'headersO
   /** @deprecated Set pageContextInit.headersOriginal instead */ // TO-DO/next-major-release: remove
   headers?: Record<string, string>
 }
-type PageContextBegin = Awaited<ReturnType<typeof getPageContextBegin>>
+type PageContextBegin = ReturnType<typeof getPageContextBegin>
 
 // `renderPage()` calls `renderPageNominal()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that Vike never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
 async function renderPage<PageContextUserAdded extends {}, PageContextInitUser extends PageContextInit>(
@@ -154,7 +154,7 @@ async function renderPagePrepare(
   }
   const { globalContext } = await getGlobalContextServerInternal()
 
-  const pageContextBegin = await getPageContextBegin(pageContextInit, globalContext, httpRequestId)
+  const pageContextBegin = getPageContextBegin(pageContextInit, globalContext, httpRequestId)
 
   // Check Base URL
   {
@@ -457,13 +457,13 @@ async function getPageContextErrorPageInit(
   return pageContext
 }
 
-async function getPageContextBegin(
+function getPageContextBegin(
   pageContextInit: PageContextInit,
   globalContext: GlobalContextServerInternal,
   httpRequestId: number,
 ) {
   const { isClientSideNavigation, _urlHandler } = handlePageContextUrl(pageContextInit.urlOriginal)
-  const pageContextBegin = await createPageContextServerSide(pageContextInit, globalContext, {
+  const pageContextBegin = createPageContextServerSide(pageContextInit, globalContext, {
     isPrerendering: false,
     ssr: {
       urlHandler: _urlHandler,

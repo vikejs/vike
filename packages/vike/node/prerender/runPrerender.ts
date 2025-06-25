@@ -540,7 +540,7 @@ async function createPageContextPrerendering(
     urlOriginal,
     ...prerenderContext._pageContextInit,
   }
-  const pageContext = await createPageContextServerSide(pageContextInit, globalContext, {
+  const pageContext = createPageContextServerSide(pageContextInit, globalContext, {
     isPrerendering: true,
   })
   assert(pageContext.isPrerendering === true)
