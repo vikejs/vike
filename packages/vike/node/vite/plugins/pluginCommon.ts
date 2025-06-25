@@ -78,7 +78,11 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
       configResolved: {
         order: 'post',
         async handler(config) {
-          /* TODO: do this after implementing vike.config.js and new setting transformLinkedDependencies (or probably a better name like transpileLinkedDependencies/bundleLinkedDependencies or something else)
+          /* Also externalize linked dependencies by default?
+           * - Can this be done while the user sets ssr.external to `string[]`? I guess not?
+           *   - If not then it's a problem: it makes the default inconsistent.
+           * - https://vite.dev/config/ssr-options.html#ssr-external
+           * - New setting +transpileLinkedDependencies ?
           overrideViteDefaultSsrExternal(config)
           //*/
           workaroundCI(config)

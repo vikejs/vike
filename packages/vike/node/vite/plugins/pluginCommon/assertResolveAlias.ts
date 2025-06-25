@@ -19,7 +19,7 @@ import pc from '@brillout/picocolors'
 //   - https://github.com/vikejs/vike/issues/1329
 
 function assertResolveAlias(config: ResolvedConfig) {
-  // TODO: re-implement warning https://github.com/vikejs/vike/issues/1567
+  // TO-DO/eventually: re-implement warning https://github.com/vikejs/vike/issues/1567
   return
   const aliases = getAliases(config)
   const errPrefix = config.configFile || 'Your Vite configuration'
