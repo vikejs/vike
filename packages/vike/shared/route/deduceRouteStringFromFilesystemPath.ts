@@ -10,7 +10,7 @@ type FilesystemRoot = {
   urlRoot: string
 }
 
-// TODO/next-major-update: remove this and whole filesystemRoot mechanism
+// TO-DO/next-major-release: remove this and whole filesystemRoot mechanism
 function deduceRouteStringFromFilesystemPath(pageId: string, filesystemRoots: FilesystemRoot[]): string {
   // Handle Filesystem Routing Root
   const filesystemRootsMatch = filesystemRoots
