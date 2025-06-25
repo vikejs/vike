@@ -132,17 +132,19 @@ const onBeforePrerenderStart = someCondition()
 
 `boolean` (default: `false`)
 
-Allow only some of your pages to be pre-rendered.
+Don't show a warning when a page cannot be pre-rendered.
 
 This setting doesn't affect the pre-rendering process: it merely suppresses the warning that some pages aren't pre-rendered.
+
+Alternatively, you can set `+prerender` to `false` for the pages that cannot be pre-rendered — this also suppresses the warning. See <Link href="#toggle" />.
+
+> Vike shows a warning when a page has a parameterized route (e.g. <Link text="Route String" href="/route-string" /> `/movie/@movieId`) while there isn't any <Link text={<><code>onBeforePrerenderStart()</code> hook</>} href="/onBeforePrerenderStart" /> that provides at least one URL matching the page's route (e.g. `/movie/42`).
 
 > As explained in <Link href="/pre-rendering" />, if you don't pre-render *all* your pages then you need a production server.
 >
 > That said, if you cannot or don't want to pre-render all your pages while still deploying to a <Link href="/static-hosts">static host</Link>, then see the workaround at [#1476 - Pre-rendered dynamic routes (static host deployment)](https://github.com/vikejs/vike/issues/1476).
 >
-> Also, by using <Link text={<code>vite-plugin-vercel</code>} href="/vercel#vite-plugin-vercel" />, you can statically deploy your pre-rendered pages while using a production server for your non-pre-rendered pages.
-
-> Vike shows a warning that a page cannot be pre-rendered when the page has a parameterized route (e.g. a  <Link text="Route String" href="/route-string" /> `/movie/@movieId`, or a <Link text="Route Function" href="/route-function" />) while there isn't any <Link text={<><code>onBeforePrerenderStart()</code> hook</>} href="/onBeforePrerenderStart" /> that provides at least one URL matching the page's route (e.g. `/movie/42`).
+> By using <Link text={<code>vite-plugin-vercel</code>} href="/vercel#vite-plugin-vercel" />, you can statically deploy your pre-rendered pages while using a production server for your non-pre-rendered pages.
 
 
 ### `redirects`
