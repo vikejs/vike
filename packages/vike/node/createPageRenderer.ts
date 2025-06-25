@@ -1,4 +1,4 @@
-// TODO/v1-release: remove this file
+// TO-DO/next-major-release: remove this file
 
 //import { SsrEnv, setSsrEnv } from './ssrEnv.js'
 import { renderPage } from './runtime/renderPage.js'

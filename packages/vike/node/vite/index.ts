@@ -1,6 +1,6 @@
 export default plugin
 export { plugin }
-// TODO/v1-release: remove
+// TO-DO/next-major-release: remove
 export { plugin as ssr }
 export { getVikeConfig } from './shared/resolveVikeConfigInternal.js'
 export { PROJECT_VERSION as version } from './utils.js'

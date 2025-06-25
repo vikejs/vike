@@ -47,7 +47,7 @@ type UrlPublic = {
   /** The URL hash string, e.g. `#reviews` in `https://example.com/product/42?details=yes#reviews` */
   hashOriginal: null | `#${string}`
 
-  // TODO/v1-release: remove
+  // TO-DO/next-major-release: remove
   /** @deprecated */
   hashString: null | string
   /** @deprecated */

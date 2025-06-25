@@ -1,6 +1,6 @@
 export { getVirtualFileEntry }
 
-// TODO/v1-release:
+// TO-DO/next-major-release:
 //  - Remove this file
 //    - Instead only generate getVirtualFilePageConfigsEager()
 //  - Remove old `.page.js`/`.page.client.js`/`.page.server.js` interface

@@ -1,4 +1,4 @@
-// TODO/v1-release - move:
+// TO-DO/next-major-release - move:
 //   import { resolveRoute } from 'vike/routing'
 // to:
 //   import { resolveRoute } from 'vike'

@@ -27,7 +27,7 @@ async function resolveRouteFunction(
     preparePageContextForPublicUsage,
   )
   assertSyncRouting(result, `The Route Function ${routeFunctionFilePath}`)
-  // TODO/v1-release: make resolveRouteFunction() and route() sync
+  // TO-DO/next-major-release: make resolveRouteFunction() and route() sync
   //* We disallow asynchronous routing, because we need to check whether a link is a Vike link in a synchronous fashion before calling ev.preventDefault() in the 'click' event listener
   result = await result
   //*/
@@ -94,7 +94,7 @@ async function resolveRouteFunction(
   }
 }
 
-// TODO/v1-release: remove, and make routing synchronous (enabling Vike to synchronously check whether a link is a Vike link before even calling ev.preventDefault())
+// TO-DO/next-major-release: remove, and make routing synchronous (enabling Vike to synchronously check whether a link is a Vike link before even calling ev.preventDefault())
 function assertSyncRouting(res: unknown, errPrefix: string) {
   assertWarning(
     !isPromise(res),
@@ -102,7 +102,7 @@ function assertSyncRouting(res: unknown, errPrefix: string) {
     { onlyOnce: true },
   )
 }
-// TODO/v1-release: remove
+// TO-DO/next-major-release: remove
 function warnDeprecatedAllowKey() {
   const allowKey = pc.cyan('iKnowThePerformanceRisksOfAsyncRouteFunctions')
   assertWarning(false, `${allowKey} is deprecated and will be removed in the next major release`, { onlyOnce: true })

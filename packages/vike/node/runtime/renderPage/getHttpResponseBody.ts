@@ -107,7 +107,7 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
       const body = await getHtmlString(htmlRender)
       return body
     },
-    // TODO/v1-release: remove
+    // TO-DO/next-major-release: remove
     async getNodeStream() {
       assertWarning(
         false,
@@ -121,7 +121,7 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
       }
       return nodeStream
     },
-    // TODO/v1-release: remove
+    // TO-DO/next-major-release: remove
     getWebStream() {
       assertWarning(
         false,
@@ -135,7 +135,7 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
       }
       return webStream
     },
-    // TODO/v1-release: remove
+    // TO-DO/next-major-release: remove
     pipeToWebWritable(writable: StreamWritableWeb) {
       assertWarning(
         false,
@@ -148,7 +148,7 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
         assertUsage(false, getErrMsg(htmlRender, renderHook, 'pipeToWebWritable()'))
       }
     },
-    // TODO/v1-release: remove
+    // TO-DO/next-major-release: remove
     pipeToNodeWritable(writable: StreamWritableNode) {
       assertWarning(
         false,

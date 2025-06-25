@@ -107,7 +107,7 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
     },
   })
 
-  // TODO/v1-release: remove
+  // TO-DO/next-major-release: remove
   Object.assign(pageContextAddendum, {
     _getPageAssets: async () => {
       assertWarning(false, 'pageContext._getPageAssets() deprecated, see https://vike.dev/preloading', {

@@ -29,7 +29,7 @@ async function log404(pageContext: {
   assertUsage(
     pageRoutes.length > 0,
     'No page found.',
-    /* TODO/v1-release: use this
+    /* TO-DO/next-major-release: use this
     'No page found. Create at least one /pages/some-page/+Page.js file.'
     */
   )

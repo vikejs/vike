@@ -16,7 +16,7 @@ function analyzeClientSide(
     const isClientRuntimeLoaded = getConfigValueRuntime(pageConfig, 'isClientRuntimeLoaded', 'boolean')?.value ?? false
     return { isClientRuntimeLoaded, isClientRouting }
   } else {
-    // TODO/v1-release: remove
+    // TO-DO/next-major-release: remove
     // V0.4 design
     const { isHtmlOnly, isClientRouting } = analyzePageClientSide(pageFilesAll, pageId)
     return { isClientRuntimeLoaded: !isHtmlOnly, isClientRouting }

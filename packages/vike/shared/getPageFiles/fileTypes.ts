@@ -1,4 +1,4 @@
-// TODO/v1-release: remove
+// TO-DO/next-major-release: remove
 
 export type { FileType }
 export { fileTypes }

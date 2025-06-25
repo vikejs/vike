@@ -85,11 +85,11 @@ function assertPropertyGetters(pageContext: Record<string, unknown>) {
   */
   ;[
     'urlPathname',
-    // TODO/v1-release: remove
+    // TO-DO/next-major-release: remove
     'urlParsed',
-    // TODO/v1-release: remove
+    // TO-DO/next-major-release: remove
     'url',
-    // TODO/v1-release: remove
+    // TO-DO/next-major-release: remove
     'pageExports',
   ].forEach((prop) => {
     if (pageContext.prop) assert(isPropertyGetter(pageContext, prop))

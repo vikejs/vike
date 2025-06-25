@@ -40,7 +40,7 @@ import pc from '@brillout/picocolors'
 import type { ConfigResolved } from '../../types/Config/PageContextConfig.js'
 import type { Route } from '../../types/Config.js'
 
-// TODO/v1-release: remove
+// TO-DO/next-major-release: remove
 type ExportsAll = Record<
   string,
   {
@@ -220,11 +220,11 @@ function resolveVikeConfigPublicPageLazy(
   pageConfigGlobal: PageConfigGlobalRuntime,
 ): VikeConfigPublicPageLazy {
   const config: Record<string, unknown> = {}
-  const configEntries: ConfigEntries = {} // TODO/v1-release: remove
-  const exportsAll: ExportsAll = {} // TODO/v1-release: remove
+  const configEntries: ConfigEntries = {} // TO-DO/next-major-release: remove
+  const exportsAll: ExportsAll = {} // TO-DO/next-major-release: remove
 
   // V0.4 design
-  // TODO/v1-release: remove
+  // TO-DO/next-major-release: remove
   pageFiles.forEach((pageFile) => {
     const exportValues = getExportValues(pageFile)
     exportValues.forEach(({ exportName, exportValue, isFromDefaultExport }) => {
@@ -297,7 +297,7 @@ function resolveVikeConfigPublicPageLazy(
     exportsAll,
   }
 
-  // TODO/v1-release: remove
+  // TO-DO/next-major-release: remove
   objectDefineProperty(pageContextExports, 'pageExports', {
     get: () => {
       // We only show the warning in Node.js because when using Client Routing Vue integration uses `Object.assign(pageContextReactive, pageContext)` which will wrongully trigger the warning. There is no cross-browser way to catch whether the property accessor was initiated by an `Object.assign()` call.
@@ -346,7 +346,7 @@ function resolveVikeConfigPublic_V1Design(pageConfig: { configValues: ConfigValu
       configDefinedByFile: configValueFilePathToShowToUser,
     })
 
-    // TODO/v1-release: remove
+    // TO-DO/next-major-release: remove
     const exportName = configName
     exportsAll[exportName] = exportsAll[exportName] ?? []
     exportsAll[exportName]!.push({

@@ -23,7 +23,7 @@ function pluginVirtualFiles(): Plugin {
     name: 'vike:pluginVirtualFiles',
     async configResolved(config_) {
       config = config_
-      // TODO/v1-release: remove
+      // TO-DO/next-major-release: remove
       if (!isV1Design()) config.experimental.importGlobRestoreExtension = true
     },
     resolveId(id) {

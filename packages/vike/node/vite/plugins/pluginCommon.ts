@@ -50,13 +50,13 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
             ? normalizeViteRoot(configFromUser.root)
             : await getViteRoot(operation)
           assert(rootResolvedEarly)
-          // TODO/v1-release: we can remove setVikeConfigContext() call here since with Vike's CLI it's already called at vike/node/api/prepareViteApiCall.ts
+          // TO-DO/next-major-release: we can remove setVikeConfigContext() call here since with Vike's CLI it's already called at vike/node/api/prepareViteApiCall.ts
           setVikeConfigContext({ userRootDir: rootResolvedEarly, isDev, vikeVitePluginOptions })
           const vikeConfig = await getVikeConfigInternal()
           return {
             _isDev: isDev,
             _rootResolvedEarly: rootResolvedEarly,
-            // TODO/v1-release: remove https://github.com/vikejs/vike/issues/2122
+            // TO-DO/next-major-release: remove https://github.com/vikejs/vike/issues/2122
             configVikePromise: Promise.resolve({
               prerender: vikeConfig.prerenderContext.isPrerenderingEnabled,
             }),
@@ -207,7 +207,7 @@ function assertVikeCliOrApi(config: ResolvedConfig) {
   })
 }
 
-// TODO/v1-release: remove https://github.com/vikejs/vike/issues/2122
+// TO-DO/next-major-release: remove https://github.com/vikejs/vike/issues/2122
 function temp_supportOldInterface(config: ResolvedConfig) {
   if (!('vitePluginSsr' in config)) return
   assert(isObject(config.vitePluginSsr))

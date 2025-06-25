@@ -9,7 +9,7 @@ export { PROJECT_VERSION as version } from './utils.js'
 export { getGlobalContext, getGlobalContextSync, getGlobalContextAsync } from './globalContext.js'
 export { createDevMiddleware } from '../runtime-dev/index.js'
 
-// TODO/v1-release: remove
+// TO-DO/next-major-release: remove
 // Deprecated exports
 export * from '../../types/index-dreprecated.js'
 export { injectAssets__public as _injectAssets } from './html/injectAssets/injectAssets__public.js'

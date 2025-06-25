@@ -16,7 +16,7 @@ async function execHookGuard<
 >(pageContext: PageContext, prepareForPublicUsage: (pageConfig: PageContext) => PageContext): Promise<void> {
   let hook: Hook | null
   if (pageContext._globalContext._pageFilesAll.length > 0) {
-    // TODO/v1-release: remove
+    // TO-DO/next-major-release: remove
     // V0.4 design
     assert(pageContext._globalContext._pageConfigs.length === 0)
     hook = findPageGuard(pageContext.pageId, pageContext._globalContext._pageFilesAll)
@@ -31,7 +31,7 @@ async function execHookGuard<
 }
 
 // We cannot easily use pageContext.exports for the V0.4 design
-// TODO/v1-release: remove
+// TO-DO/next-major-release: remove
 type PageGuard = Hook
 function findPageGuard(pageId: string, pageFilesAll: PageFile[]): null | PageGuard {
   const pageRouteFile = pageFilesAll.find((p) => p.pageId === pageId && p.fileType === '.page.route')

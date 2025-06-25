@@ -1,4 +1,4 @@
-// TODO/v1-release: Move all universal imports (when using Client Routing) to:
+// TO-DO/next-major-release: Move all universal imports (when using Client Routing) to:
 //   import {
 //     redirect,
 //     render,

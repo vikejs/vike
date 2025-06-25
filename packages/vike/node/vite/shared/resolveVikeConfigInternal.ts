@@ -111,7 +111,7 @@ let restartVite = false
 let vikeConfigHasBuildError: boolean | null = null
 let isV1Design_: boolean | null = null
 let vikeConfigPromise: Promise<VikeConfigInternal> | null = null
-// TODO/v1-release: remove
+// TO-DO/next-major-release: remove
 let vikeConfigSync: VikeConfigInternal | null = null
 let vikeConfigCtx: VikeConfigContext | null = null // Information provided by Vite's `config` and Vike's CLI. We could, if we want or need to, completely remove the dependency on Vite.
 type VikeConfigContext = { userRootDir: string; isDev: boolean; vikeVitePluginOptions: unknown }
@@ -151,7 +151,7 @@ async function getVikeConfigInternal(
   const vikeConfig = await getOrResolveVikeConfig(userRootDir, isDev, vikeVitePluginOptions, doNotRestartViteOnError)
   return vikeConfig
 }
-// TODO/v1-release: remove
+// TO-DO/next-major-release: remove
 function getVikeConfigInternalSync(): VikeConfigInternal {
   assert(vikeConfigSync)
   return vikeConfigSync
@@ -1070,7 +1070,7 @@ function assertMetaUsage(
       }
       configEnv = getConfigEnvValue(def.env, `${metaConfigDefinedAt} sets ${pc.cyan(`meta.${configName}.env`)} to`)
       // Overwrite deprecated value with valid value
-      // TODO/v1-release: remove once support for the deprecated values is removed
+      // TO-DO/next-major-release: remove once support for the deprecated values is removed
       if (typeof def.env === 'string') def.env = configEnv
     }
 
@@ -1401,7 +1401,7 @@ function getConfigEnvValue(
   const errInvalidValue = `${errMsgIntro} an invalid value ${pc.cyan(JSON.stringify(val))}`
 
   // Legacy outdated values
-  // TODO/v1-release: remove
+  // TO-DO/next-major-release: remove
   if (typeof val === 'string') {
     const valConverted: ConfigEnvInternal = (() => {
       if (val === 'client-only') return { client: true }

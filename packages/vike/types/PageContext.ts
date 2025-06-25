@@ -17,7 +17,7 @@ export type { PageContextInternalClient }
 export type { PageContextInternalClient_ServerRouting }
 export type { PageContextInternalClient_ClientRouting }
 
-// TODO/v1-release: remove these three exports
+// TO-DO/next-major-release: remove these three exports
 export type { PageContextBuiltInServer_deprecated as PageContextBuiltInServer }
 export type { PageContextBuiltInClientWithClientRouting_deprecated as PageContextBuiltInClientWithClientRouting }
 export type { PageContextBuiltInClientWithServerRouting_deprecated as PageContextBuiltInClientWithServerRouting }
@@ -177,11 +177,11 @@ type PageContextBuiltInCommon<Data> = {
   /** @experimental https://github.com/vikejs/vike/issues/1268 */
   sources: Sources
 
-  // TODO/v1-release: move pageContext.urlParsed to pageContext.url
+  // TO-DO/next-major-release: move pageContext.urlParsed to pageContext.url
   /** @deprecated */
   url: string
 
-  // TODO/v1-release: remove
+  // TO-DO/next-major-release: remove
   /** @deprecated */
   pageExports: Record<string, unknown>
 

@@ -4,7 +4,7 @@ import { getExportNames } from './getExportNames.js'
 import { assertUsage } from '../../utils.js'
 import type { PageFile } from '../getPageFileObject.js'
 
-// TODO/v1-release: remove
+// TO-DO/next-major-release: remove
 function analyzeExports({
   pageFilesClientSide,
   pageFilesServerSide,

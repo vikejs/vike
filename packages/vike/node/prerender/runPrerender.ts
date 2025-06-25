@@ -127,7 +127,7 @@ type PrerenderOptions = APIOptions & {
   /** @experimental Don't use without having talked to a vike maintainer. */
   onPagePrerender?: Function
 
-  // TODO/v1-release: remove
+  // TO-DO/next-major-release: remove
   // =====================
   // ==== Deprecated  ====
   // =====================
@@ -170,7 +170,7 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
   const { partial, noExtraDir, parallel, defaultLocalValue, isPrerenderingEnabled } = prerenderConfigGlobal
   if (!isPrerenderingEnabled) {
     assert(trigger !== 'auto-run')
-    /* TODO/v1-release: use this assertUsage() again.
+    /* TO-DO/next-major-release: use this assertUsage() again.
      * - Make sure https://github.com/magne4000/vite-plugin-vercel/pull/156 is merged before using this assertUsage() again. (Otherwise vite-plugin-vercel will trigger this assertUsage() call.)
      *   - Done: PR is merged as of June 20205
     assertUsage(
@@ -283,7 +283,7 @@ async function collectDoNoPrerenderList(
   })
 
   // Old design
-  // TODO/v1-release: remove
+  // TO-DO/next-major-release: remove
   await Promise.all(
     globalContext._pageFilesAll
       .filter((p) => {
@@ -664,7 +664,7 @@ async function callOnPrerenderStartHook(
   }
 
   // Old design
-  // TODO/v1-release: remove
+  // TO-DO/next-major-release: remove
   if (globalContext._pageConfigs.length === 0) {
     const hookTimeout = getHookTimeoutDefault('onBeforePrerender')
 
@@ -718,7 +718,7 @@ async function callOnPrerenderStartHook(
 
   prerenderContext.pageContexts.forEach((pageContext) => {
     Object.defineProperty(pageContext, 'url', {
-      // TODO/v1-release: remove warning
+      // TO-DO/next-major-release: remove warning
       get() {
         assertWarning(
           false,
@@ -762,7 +762,7 @@ async function callOnPrerenderStartHook(
     '{ prerenderContext: { pageContexts } }',
   )}`
 
-  // TODO/v1-release: remove
+  // TO-DO/next-major-release: remove
   if (hasProp(result, 'globalContext')) {
     assertUsage(
       isObjectWithKeys(result, ['globalContext'] as const) &&
@@ -793,7 +793,7 @@ async function callOnPrerenderStartHook(
   prerenderContext.pageContexts = result.prerenderContext.pageContexts as PageContext[]
 
   prerenderContext.pageContexts.forEach((pageContext: { urlOriginal?: string; url?: string }) => {
-    // TODO/v1-release: remove
+    // TO-DO/next-major-release: remove
     if (pageContext.url && !isPropertyGetter(pageContext, 'url')) {
       assertWarning(
         false,
@@ -1050,7 +1050,7 @@ function normalizeOnPrerenderHookResult(
   }
 }
 
-// TODO/v1-release: remove
+// TO-DO/next-major-release: remove
 function checkOutdatedOptions(options: {
   partial?: unknown
   noExtraDir?: unknown
@@ -1134,7 +1134,7 @@ function assertIsNotAbort(err: unknown, urlOriginal: string) {
 }
 
 function preparePrerenderContextForPublicUsage(prerenderContext: PrerenderContext) {
-  // TODO/v1-release: remove
+  // TO-DO/next-major-release: remove
   if (!('prerenderPageContexts' in prerenderContext)) {
     Object.defineProperty(prerenderContext, 'prerenderPageContexts', {
       get() {

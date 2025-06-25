@@ -10,7 +10,7 @@ export type {
   GlobalContextClientWithServerRouting,
 } from './PageContext.js'
 
-// TODO/v1-release: remove these three exports
+// TO-DO/next-major-release: remove these three exports
 export type { PageContextBuiltInServer } from './PageContext.js'
 export type { PageContextBuiltInClientWithClientRouting } from './PageContext.js'
 export type { PageContextBuiltInClientWithServerRouting } from './PageContext.js'
@@ -61,7 +61,7 @@ export type { InjectFilterEntry } from '../node/runtime/html/injectAssets/getHtm
 
 export { defineConfig } from './defineConfig.js'
 
-// TODO/v1-release: remove
+// TO-DO/next-major-release: remove
 import type { ConfigEnv } from './PageConfig.js'
 /** @deprecated Replace:
  *   `import type { Env } from 'vike/types'`
@@ -72,7 +72,7 @@ type Env = ConfigEnv
 export type { Env }
 
 import type { ConfigEffect } from '../node/vite/shared/resolveVikeConfigInternal/configDefinitionsBuiltIn.js'
-// TODO/v1-release: remove
+// TO-DO/next-major-release: remove
 /** @deprecated Replace:
  *   `import type { Effect } from 'vike/types'`
  * With:
@@ -81,7 +81,7 @@ import type { ConfigEffect } from '../node/vite/shared/resolveVikeConfigInternal
 type Effect = ConfigEffect
 export type { Effect }
 
-// TODO/v1-release: remove
+// TO-DO/next-major-release: remove
 // Ancient Vike versions used to have `import type { PageContextBuiltInClient } from 'vike/types'`
 import { PageContextBuiltInClientWithServerRouting } from './PageContext.js'
 /** @deprecated Replace:
@@ -94,7 +94,7 @@ import { PageContextBuiltInClientWithServerRouting } from './PageContext.js'
 type PageContextBuiltInClient<Page = any> = PageContextBuiltInClientWithServerRouting<Page>
 export type { PageContextBuiltInClient }
 
-// TODO/v1-release: remove
+// TO-DO/next-major-release: remove
 import { PageContextBuiltInServer } from './PageContext.js'
 /** @deprecated Replace:
  *   `import type { PageContextBuiltIn } from 'vike/types'`

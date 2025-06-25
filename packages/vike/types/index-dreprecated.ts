@@ -1,6 +1,6 @@
 // Same as ./index.ts but with deprecation notice.
 
-// TODO/v1-release: remove this file
+// TO-DO/next-major-release: remove this file
 
 export type {
   PageContextBuiltIn,

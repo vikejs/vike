@@ -1,4 +1,4 @@
-// TODO/v1-release - move:
+// TO-DO/next-major-release - move:
 //   import { navigate, prefetch } from 'vike/client/router'
 // to:
 //   import { navigate, prefetch } from 'vike'
@@ -9,7 +9,7 @@ export { prefetch } from './prefetch.js'
 export { getPageContextClient } from './renderPageClientSide.js'
 export { PROJECT_VERSION as version } from './utils.js'
 
-// TODO/v1-release: remove this
+// TO-DO/next-major-release: remove this
 import type { PageContextBuiltInClientWithClientRouting } from '../../types/PageContext.js'
 /** @deprecated
  * Replace:

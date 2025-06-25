@@ -184,7 +184,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { client: true },
     eager: true,
   },
-  // TODO/v1-release: remove
+  // TO-DO/next-major-release: remove
   prefetchStaticAssets: {
     env: { client: true },
   },
