@@ -33,6 +33,7 @@ const config: Config = {
     apiKey: '9ac178c1a29ba00e8afb98365015f677',
     indexName: 'vike',
   },
+  googleAnalytics: 'G-QW0N4TCTYF',
 
   pressKit: true,
   docsDir: 'packages/vike.dev',
