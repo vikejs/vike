@@ -1,4 +1,4 @@
-// TODO/v1-release: remove this
+// TO-DO/next-major-release: remove this
 
 export { assertDefaultExports }
 export { assertExportValues }

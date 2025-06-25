@@ -360,7 +360,7 @@ type BuildEntry = {
 }
 type BuildInfo = {
   versionAtBuildTime: string
-  usesClientRouter: boolean // TODO/v1-release: remove
+  usesClientRouter: boolean // TO-DO/next-major-release: remove
   viteConfigRuntime: ViteConfigRuntime
 }
 function assertBuildEntry(buildEntry: unknown): asserts buildEntry is BuildEntry {

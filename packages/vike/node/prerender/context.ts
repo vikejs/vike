@@ -22,7 +22,7 @@ function isPrerenderAutoRunEnabled(vikeConfig: VikeConfigInternal) {
   )
 }
 
-// TODO/v1-release: remove
+// TO-DO/next-major-release: remove
 function temp_disablePrerenderAutoRun() {
   globalObject.isDisabled = true
 }

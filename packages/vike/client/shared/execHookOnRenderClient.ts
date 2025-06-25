@@ -44,7 +44,7 @@ async function execHookOnRenderClient<PageContext extends PageContextBeforeRende
         `No onRenderClient() hook defined for URL '${urlToShowToUser}', but it's needed, see https://vike.dev/onRenderClient`,
       )
     } else {
-      // TODO/v1-release: remove
+      // TO-DO/next-major-release: remove
       // V0.4 design
       const pageClientsFilesLoaded = pageContext._pageFilesLoaded.filter((p) => p.fileType === '.page.client')
       let errMsg: string

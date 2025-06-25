@@ -20,7 +20,7 @@ type AnalysisResult = {
   pageFilesServerSide: PageFile[]
 }
 
-// TODO/v1-release: remove analyzePageClientSide(), use analyzeClientSide() instead
+// TO-DO/next-major-release: remove analyzePageClientSide(), use analyzeClientSide() instead
 function analyzePageClientSide(pageFilesAll: PageFile[], pageId: string): AnalysisResult {
   let pageFilesClientSide = getPageFilesClientSide(pageFilesAll, pageId)
   const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
@@ -43,7 +43,7 @@ function analyzePageClientSide(pageFilesAll: PageFile[], pageId: string): Analys
   return { isHtmlOnly, isClientRouting, clientEntries, clientDependencies, pageFilesClientSide, pageFilesServerSide }
 }
 
-// TODO:v1-release: remove
+// TO-DO/next-major-release: remove
 async function analyzePageClientSideInit(
   pageFilesAll: PageFile[],
   pageId: string,

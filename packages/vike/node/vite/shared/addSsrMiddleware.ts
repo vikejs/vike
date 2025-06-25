@@ -23,7 +23,7 @@ function addSsrMiddleware(
     }
     Object.defineProperty(pageContextInit, 'userAgent', {
       get() {
-        // TODO/next-major-release: assertUsage() instead of assertWarning()
+        // TO-DO/next-major-release: assertUsage() instead of assertWarning()
         assertWarning(
           false,
           `${pc.cyan('pageContext.userAgent')} is deprecated: use ${pc.cyan(

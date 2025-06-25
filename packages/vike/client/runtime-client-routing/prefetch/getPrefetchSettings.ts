@@ -32,12 +32,12 @@ function getPrefetchSettings(
 ): PrefetchSettingResolved {
   let prefetchSetting: PrefetchSettingResolved = prefetchSettingDefault
 
-  // TODO/v1-release: remove
+  // TO-DO/next-major-release: remove
   if ('prefetchLinks' in pageContext.exports) {
     assertUsage(false, '`export { prefetchLinks }` is deprecated, use `export { prefetchStaticAssets }` instead.')
   }
 
-  // TODO/v1-release: remove
+  // TO-DO/next-major-release: remove
   if ('prefetchStaticAssets' in pageContext.exports) {
     const prefetchStaticAssets = pageContext.exports.prefetchStaticAssets as PrefetchStaticAssets
     /* TO-DO/pageContext-prefetch: uncomment

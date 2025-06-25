@@ -106,7 +106,7 @@ async function getViteInfo(viteConfigFromUserApiOptions: InlineConfig | undefine
   globalObject.root = root
 
   // - Find options `vike(options)` set in vite.config.js
-  //   - TODO/next-major: remove
+  //   - TO-DO/next-major-release: remove
   // - Add Vike's Vite plugin if missing
   let vikeVitePluginOptions: Record<string, unknown> | undefined
   const found = findVikeVitePlugin(viteConfigResolved)

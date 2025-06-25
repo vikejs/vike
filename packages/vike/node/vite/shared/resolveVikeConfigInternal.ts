@@ -111,7 +111,7 @@ let restartVite = false
 let vikeConfigHasBuildError: boolean | null = null
 let isV1Design_: boolean | null = null
 let vikeConfigPromise: Promise<VikeConfigInternal> | null = null
-// TODO/v1-release: remove
+// TO-DO/next-major-release: remove
 let vikeConfigSync: VikeConfigInternal | null = null
 let vikeConfigCtx: VikeConfigContext | null = null // Information provided by Vite's `config` and Vike's CLI. We could, if we want or need to, completely remove the dependency on Vite.
 type VikeConfigContext = { userRootDir: string; isDev: boolean; vikeVitePluginOptions: unknown }
@@ -143,7 +143,7 @@ function reloadVikeConfig() {
 
 async function getVikeConfigInternal(
   // I don't remember the logic behind it — neither why we restart Vite's dev server, nor why we sometimes don't.
-  // TO-DO: eventually rethink all that. Some + settings are expected to influence Vite's config (restarting Vite's dev server is needed) while some don't.
+  // TO-DO/eventually: re-think all that. Some + settings are expected to influence Vite's config (restarting Vite's dev server is needed) while some don't.
   doNotRestartViteOnError = false,
 ): Promise<VikeConfigInternal> {
   assert(vikeConfigCtx)
@@ -151,7 +151,7 @@ async function getVikeConfigInternal(
   const vikeConfig = await getOrResolveVikeConfig(userRootDir, isDev, vikeVitePluginOptions, doNotRestartViteOnError)
   return vikeConfig
 }
-// TODO/v1-release: remove
+// TO-DO/next-major-release: remove
 function getVikeConfigInternalSync(): VikeConfigInternal {
   assert(vikeConfigSync)
   return vikeConfigSync
@@ -716,7 +716,7 @@ function sortConfigValueSources(configValueSources: ConfigValueSources, location
           return sortAfterInheritanceOrderPage(source1.plusFile, source2.plusFile, locationIdPage, configName)
         }
       })
-      // TODO/next-major: remove
+      // TO-DO/next-major-release: remove
       // Interop with vike(options) in vite.config.js — make it least precedence.
       .sort(makeLast((source) => !source.plusFile))
   })
@@ -1070,7 +1070,7 @@ function assertMetaUsage(
       }
       configEnv = getConfigEnvValue(def.env, `${metaConfigDefinedAt} sets ${pc.cyan(`meta.${configName}.env`)} to`)
       // Overwrite deprecated value with valid value
-      // TODO/v1-release: remove once support for the deprecated values is removed
+      // TO-DO/next-major-release: remove once support for the deprecated values is removed
       if (typeof def.env === 'string') def.env = configEnv
     }
 
@@ -1401,7 +1401,7 @@ function getConfigEnvValue(
   const errInvalidValue = `${errMsgIntro} an invalid value ${pc.cyan(JSON.stringify(val))}`
 
   // Legacy outdated values
-  // TODO/v1-release: remove
+  // TO-DO/next-major-release: remove
   if (typeof val === 'string') {
     const valConverted: ConfigEnvInternal = (() => {
       if (val === 'client-only') return { client: true }

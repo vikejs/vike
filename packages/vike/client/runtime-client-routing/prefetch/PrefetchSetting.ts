@@ -35,5 +35,5 @@ type PrefetchSettingFuture = PrefetchSettingValue & {
   links?: PrefetchSettingValue
 }
 
-// TODO/v1-release: remove
+// TO-DO/next-major-release: remove
 type PrefetchStaticAssets = false | 'hover' | 'viewport'

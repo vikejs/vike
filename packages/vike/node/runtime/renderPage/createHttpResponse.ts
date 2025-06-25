@@ -177,7 +177,7 @@ function createHttpResponse(
   return {
     statusCode,
     headers,
-    // TODO/v1-release: remove
+    // TO-DO/next-major-release: remove
     get contentType() {
       assertWarning(
         false,

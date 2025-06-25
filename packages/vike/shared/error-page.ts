@@ -2,7 +2,7 @@ export { getErrorPageId }
 export { isErrorPageId }
 export { isErrorPage }
 
-// TODO/v1-release: consider loading this file only for Client Routing
+// TO-DO/next-major-release: consider loading this file only for Client Routing
 
 import { assert, assertUsage, unique } from './utils.js'
 import type { PageConfigRuntime } from '../types/PageConfig.js'
@@ -15,7 +15,7 @@ function getErrorPageId(pageFilesAll: PageFile[], pageConfigs: PageConfigRuntime
     assertUsage(errorPageConfigs.length === 1, 'Only one error page can be defined')
     return errorPageConfigs[0]!.pageId
   }
-  // TODO/v1-release: remove
+  // TO-DO/next-major-release: remove
   const errorPageIds = unique(pageFilesAll.map(({ pageId }) => pageId).filter((pageId) => isErrorPageId(pageId, false)))
   assertUsage(
     errorPageIds.length <= 1,
@@ -29,7 +29,7 @@ function getErrorPageId(pageFilesAll: PageFile[], pageConfigs: PageConfigRuntime
   return null
 }
 
-// TODO/v1-release: remove
+// TO-DO/next-major-release: remove
 function isErrorPageId(pageId: string, _isV1Design: false): boolean {
   assert(!pageId.includes('\\'))
   return pageId.includes('/_error')

@@ -10,7 +10,7 @@ import { assert, assertUsage } from './utils.js'
 import pc from '@brillout/picocolors'
 
 const PARAM_TOKEN_NEW = '@'
-// TODO/v1-release: remove
+// TO-DO/next-major-release: remove
 const PARAM_TOKEN_OLD = ':'
 
 function assertRouteString(routeString: string, errPrefix: `${string}Invalid` | `${string}invalid` = 'Invalid') {

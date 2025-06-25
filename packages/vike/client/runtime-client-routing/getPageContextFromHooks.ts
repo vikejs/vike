@@ -173,7 +173,7 @@ async function execHookDataLike(hookName: 'data' | 'onBeforeRender', pageContext
 }
 async function execHookData(pageContext: PageContextExecHookClient) {
   const res = await execHookClient('data', pageContext)
-  const hook = res[0] // TO-DO/soon: support cumulative
+  const hook = res[0] // TO-DO/soon/cumulative-hooks: support cumulative
   if (!hook) return
   const { hookReturn } = hook
   const pageContextAddendum = { data: hookReturn }
@@ -181,7 +181,7 @@ async function execHookData(pageContext: PageContextExecHookClient) {
 }
 async function execHookOnBeforeRender(pageContext: PageContextExecHookClient) {
   const res = await execHookClient('onBeforeRender', pageContext)
-  const hook = res[0] // TO-DO/soon: support cumulative
+  const hook = res[0] // TO-DO/soon/cumulative-hooks: support cumulative
   if (!hook) return
   const { hookReturn, hookFilePath } = hook
   const pageContextFromHook = {}
@@ -212,7 +212,7 @@ function setPageContextInitIsPassedToClient(pageContext: Record<string, unknown>
   }
 }
 
-// TODO/v1-release: make it sync
+// TO-DO/next-major-release: make it sync
 async function hasPageContextServer(pageContext: Parameters<typeof hookServerOnlyExists>[1]): Promise<boolean> {
   return (
     !!globalObject.pageContextInitIsPassedToClient ||
@@ -221,7 +221,7 @@ async function hasPageContextServer(pageContext: Parameters<typeof hookServerOnl
   )
 }
 
-// TODO/v1-release: make it sync
+// TO-DO/next-major-release: make it sync
 /**
  * @param hookName
  * @param pageContext
@@ -247,7 +247,7 @@ async function hookServerOnlyExists(
     assert(client || server)
     return !!server && !client
   } else {
-    // TODO/v1-release: remove
+    // TO-DO/next-major-release: remove
     // V0.4
 
     // data() hooks didn't exist in the V0.4 design
@@ -286,7 +286,7 @@ function getHookEnv(
     const hookEnv = (getConfigValueRuntime(pageConfig, `${hookName}Env`)?.value ?? {}) as ConfigEnv
     return hookEnv
   } else {
-    // TODO/v1-release: remove
+    // TO-DO/next-major-release: remove
     // Client-only onBeforeRender() or data() hooks were never supported for the V0.4 design
     return { client: false, server: true }
   }

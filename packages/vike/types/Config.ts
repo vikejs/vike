@@ -65,7 +65,7 @@ type HookNamePage =
   | 'onData'
   | 'route'
 type HookNameGlobal = 'onBeforeRoute' | 'onPrerenderStart' | 'onCreatePageContext' | 'onCreateGlobalContext'
-// v0.4 design TODO/v1-release: remove
+// v0.4 design TO-DO/next-major-release: remove
 type HookNameOldDesign = 'render' | 'prerender' | 'onBeforePrerender'
 
 type ConfigNameBuiltIn =
@@ -550,11 +550,11 @@ type ConfigBuiltIn = {
    */
   disableUrlNormalization?: boolean
 
-  // TODO/v1-release: remove
+  // TO-DO/next-major-release: remove
   /** @deprecated It's now `true` by default. You can remove this option. */
   includeAssetsImportedByServer?: boolean
 
-  // TODO/v1-release: remove
+  // TO-DO/next-major-release: remove
   /** @deprecated See https://vike.dev/disableAutoFullBuild */
   disableAutoFullBuild?: boolean | 'prerender'
 

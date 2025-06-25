@@ -25,7 +25,7 @@ function assertArguments(...args: unknown[]): void {
     { showStackTrace: true },
   )
 
-  // TODO/v1-release: remove
+  // TO-DO/next-major-release: remove
   if ('url' in pageContextInit) {
     assertWarning(
       false,

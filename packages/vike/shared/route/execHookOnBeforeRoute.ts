@@ -71,7 +71,7 @@ async function getPageContextFromHook(
 }> {
   let { hookReturn } = execHookDirectSync(onBeforeRouteHook, pageContext, preparePageContextForPublicUsage)
   assertSyncRouting(hookReturn, `The onBeforeRoute() hook ${onBeforeRouteHook.hookFilePath}`)
-  // TODO/v1-release: make execHookOnBeforeRoute() and route() sync
+  // TO-DO/next-major-release: make execHookOnBeforeRoute() and route() sync
   hookReturn = await hookReturn
 
   const errPrefix = `The onBeforeRoute() hook defined by ${onBeforeRouteHook.hookFilePath}`

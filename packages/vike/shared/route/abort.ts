@@ -179,7 +179,7 @@ function AbortRender(pageContextAbort: PageContextAbort): Error {
   return err
 }
 
-// TODO/v1-release: remove
+// TO-DO/next-major-release: remove
 /**
  * @deprecated Use `throw render()` or `throw redirect()` instead, see https://vike.dev/render'
  */

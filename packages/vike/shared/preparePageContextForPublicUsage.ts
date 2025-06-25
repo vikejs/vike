@@ -23,7 +23,7 @@ function preparePageContextForPublicUsage<PageContext extends PageContextPrepare
 
   addIs404ToPageProps(pageContext)
 
-  // TODO/next-major-release: remove
+  // TO-DO/next-major-release: remove
   if (!('_pageId' in pageContext)) {
     Object.defineProperty(pageContext, '_pageId', {
       get() {
@@ -45,7 +45,7 @@ function preparePageContextForPublicUsage<PageContext extends PageContextPrepare
     pageContext,
     'pageContext',
     // We must skip it in the client-side because of the reactivity mechanism of UI frameworks like Solid.
-    // - TODO/now-proxy: double check whether that's true
+    // - TO-DO/soon/proxy: double check whether that's true
     true,
     (prop) => {
       if (prop === 'globalContext') {
@@ -85,11 +85,11 @@ function assertPropertyGetters(pageContext: Record<string, unknown>) {
   */
   ;[
     'urlPathname',
-    // TODO/v1-release: remove
+    // TO-DO/next-major-release: remove
     'urlParsed',
-    // TODO/v1-release: remove
+    // TO-DO/next-major-release: remove
     'url',
-    // TODO/v1-release: remove
+    // TO-DO/next-major-release: remove
     'pageExports',
   ].forEach((prop) => {
     if (pageContext.prop) assert(isPropertyGetter(pageContext, prop))

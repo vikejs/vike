@@ -146,7 +146,7 @@ function getResultMaxAge(): number {
  */
 async function prefetch(
   url: string,
-  /* TO-DO/pageContext-prefetch
+  /* TO-DO/pageContext-prefetch:
   options?: {
     pageContext?: boolean
     staticAssets?: boolean
@@ -305,7 +305,7 @@ function isExpired(found: PrefetchedPageContext) {
   return Date.now() - found.resultFetchedAt > found.resultMaxAge
 }
 
-// TODO/next-major-release: make it sync
+// TO-DO/next-major-release: make it sync
 async function getPageContextLink(urlOfLink: string) {
   const pageContextLink = await createPageContextClientSide(urlOfLink)
 

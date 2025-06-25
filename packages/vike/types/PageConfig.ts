@@ -111,9 +111,9 @@ type ConfigValueSource = {
   plusFile:
     | PlusFile
     // It's `null` when the config is defined by `vike(options)` in vite.config.js
-    // TODO/v1-release: remove `null`
+    // TO-DO/next-major-release: remove `null`
     | null
-  // TODO/v1-release: remove `locationId` in favor of `plusFile.locationId`
+  // TO-DO/next-major-release: remove `locationId` in favor of `plusFile.locationId`
   locationId: LocationId
   /** Whether the config value is loaded at runtime, for example config.Page or config.onBeforeRender */
   valueIsLoadedWithImport: boolean

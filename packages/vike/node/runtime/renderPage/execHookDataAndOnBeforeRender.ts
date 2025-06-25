@@ -14,7 +14,7 @@ async function execHookDataAndOnBeforeRender(
   }
 
   const hooks = await execHookServer('data', pageContext)
-  const dataHook = hooks[0] // TO-DO/soon: support cumulative
+  const dataHook = hooks[0] // TO-DO/soon/cumulative-hooks: support cumulative
   if (dataHook) {
     // Note: hookReturn can be anything (e.g. an object) and is to be assigned to pageContext.data
     const pageContextFromHook = {
@@ -29,7 +29,7 @@ async function execHookDataAndOnBeforeRender(
   }
 
   const res = await execHookServer('onBeforeRender', pageContext)
-  const onBeforeRenderHook = res[0] // TO-DO/soon: support cumulative
+  const onBeforeRenderHook = res[0] // TO-DO/soon/cumulative-hooks: support cumulative
   if (onBeforeRenderHook) {
     const { hookReturn } = onBeforeRenderHook
     assertOnBeforeRenderHookReturn(hookReturn, onBeforeRenderHook.hookFilePath)

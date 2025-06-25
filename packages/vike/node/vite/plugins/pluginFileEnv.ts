@@ -157,7 +157,7 @@ function pluginFileEnv(): Plugin {
   }
 
   function skip(id: string): boolean {
-    // TODO/v1-release: remove
+    // TO-DO/next-major-release: remove
     if (extractAssetsRE.test(id) || extractExportNamesRE.test(id)) return true
     if (!id.includes(getSuffix('client')) && !id.includes(getSuffix('server'))) return true
     if (getModulePath(id).endsWith('.css')) return true

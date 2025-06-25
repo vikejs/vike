@@ -6,7 +6,7 @@ import { analyzeClientSide } from '../../shared/getPageFiles/analyzeClientSide.j
 import type { GlobalContextClientInternal } from './globalContext.js'
 import type { PageFile } from '../../shared/getPageFiles.js'
 
-// TODO/next-major-release: make it sync
+// TO-DO/next-major-release: make it sync
 async function isClientSideRoutable(
   pageId: string,
   pageContext: {

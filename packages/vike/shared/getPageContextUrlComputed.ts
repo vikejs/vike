@@ -13,7 +13,7 @@ import { objectDefineProperty } from '../utils/objectDefineProperty.js'
 import { assertPropertyGetters, type PageContextPrepareMinimum } from './preparePageContextForPublicUsage.js'
 import { assert, parseUrl, assertWarning, isBrowser, changeEnumerable, type UrlPublic } from './utils.js'
 
-// TODO/v1-release: move pageContext.urlParsed to pageContext.url
+// TO-DO/next-major-release: move pageContext.urlParsed to pageContext.url
 type PageContextUrlComputed = {
   /** Parsed information about the current URL */
   urlParsed: UrlPublic
@@ -89,7 +89,7 @@ function getUrlParsed(pageContext: PageContextUrlSource) {
   const assertUrlResolved = (src: number) =>
     assert(
       typeof urlResolved === 'string',
-      // TODO/eventually: remove debug logs, see:
+      // TO-DO/eventually: remove debug logs, see:
       // - https://github.com/vikejs/vike/issues/2138#issuecomment-2631713411
       // - https://github.com/vikejs/vike/commit/5c7810f3080ab62536950f26e019bb2a3a517082
       { src, urlResolved },
@@ -135,7 +135,7 @@ function urlPathnameGetter(this: PageContextUrlSource) {
   return urlPathname
 }
 function urlGetter(this: PageContextUrlSource) {
-  // TODO/v1-release: remove
+  // TO-DO/next-major-release: remove
   assertWarning(
     false,
     '`pageContext.url` is outdated. Use `pageContext.urlPathname`, `pageContext.urlParsed`, or `pageContext.urlOriginal` instead. (See https://vike.dev/migration/0.4.23 for more information.)',
@@ -169,7 +169,7 @@ function urlParsedGetter(this: PageContextUrlSource) {
       warnHashNotAvailable('hashOriginal')
       return urlParsed.hashOriginal
     },
-    // TODO/next-major-release: remove
+    // TO-DO/next-major-release: remove
     get hashString() {
       assertWarning(false, 'pageContext.urlParsed.hashString has been renamed to pageContext.urlParsed.hashOriginal', {
         onlyOnce: true,
@@ -178,7 +178,7 @@ function urlParsedGetter(this: PageContextUrlSource) {
       warnHashNotAvailable('hashString')
       return urlParsed.hashOriginal
     },
-    // TODO/next-major-release: remove
+    // TO-DO/next-major-release: remove
     get searchString() {
       assertWarning(
         false,

@@ -40,7 +40,7 @@ type RouteMatch = {
 }
 type RouteMatches = 'CUSTOM_ROUTING' | RouteMatch[]
 
-// TODO/next-major-release: make it sync
+// TO-DO/next-major-release: make it sync
 async function route(pageContext: PageContextForRoute, skipOnBeforeRouteHook?: true): Promise<PageContextFromRoute> {
   debug('Pages routes:', pageContext._globalContext._pageRoutes)
   const pageContextFromRoute = {}

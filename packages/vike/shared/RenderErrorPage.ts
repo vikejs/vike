@@ -1,2 +1,2 @@
-// TODO/v1-release: remove
+// TO-DO/next-major-release: remove
 export { RenderErrorPage } from './route/abort.js'

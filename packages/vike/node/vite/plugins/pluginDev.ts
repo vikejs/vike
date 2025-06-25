@@ -24,7 +24,7 @@ function pluginDev(): Plugin[] {
       config() {
         return {
           appType: 'custom',
-          // TODO:v1-release: remove (AFAICT we only need to use config.optimizeDeps for the old design)
+          // TO-DO/next-major-release: remove (AFAICT we only need to use config.optimizeDeps for the old design)
           optimizeDeps: {
             exclude: [
               // We exclude Vike's client runtime to be able to use Vite's import.meta.glob()

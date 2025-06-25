@@ -1,6 +1,6 @@
 export { parseVirtualFileExports }
 
-// TODO/v1-release: remove old design code, and remove all assertions.
+// TO-DO/next-major-release: remove old design code, and remove all assertions.
 
 import { assert, hasProp, isCallable, isObject, cast, isArray } from '../utils.js'
 import { assertExportValues } from './assert_exports_old_design.js'

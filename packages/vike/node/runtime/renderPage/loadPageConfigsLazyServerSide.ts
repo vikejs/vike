@@ -5,16 +5,7 @@ export type { PageConfigsLazy }
 import { type PageFile, getPageFilesServerSide } from '../../../shared/getPageFiles.js'
 import { resolveVikeConfigPublicPageLazy } from '../../../shared/page-configs/resolveVikeConfigPublic.js'
 import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide.js'
-import {
-  assert,
-  assertUsage,
-  assertWarning,
-  hasProp,
-  isArrayOfStrings,
-  objectAssign,
-  PromiseType,
-  isArray,
-} from '../utils.js'
+import { assertUsage, assertWarning, hasProp, objectAssign, PromiseType, isArrayOfStrings } from '../utils.js'
 import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './getPageAssets.js'
 import { debugPageFiles, type PageContextDebugRouteMatches } from './debugPageFiles.js'
 import type { PageConfigGlobalRuntime, PageConfigRuntime } from '../../../types/PageConfig.js'
@@ -52,7 +43,7 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
   const pageConfig = findPageConfig(pageContext._globalContext._pageConfigs, pageContext.pageId) // Make pageConfig globally available as pageContext._pageConfig ?
 
   const globalContext = pageContext._globalContext
-  const [{ pageFilesLoaded, pageContextExports }] = await Promise.all([
+  const [{ pageFilesLoaded, configPublicPageLazy }] = await Promise.all([
     loadPageUserFiles(
       pageContext._globalContext._pageFilesAll,
       pageConfig,
@@ -71,25 +62,22 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
   const passToClient: string[] = []
   const errMsg = ' should be an array of strings.'
   if (!isV1Design) {
-    pageContextExports.exportsAll.passToClient?.forEach((e) => {
+    configPublicPageLazy.exportsAll.passToClient?.forEach((e) => {
       assertUsage(hasProp(e, 'exportValue', 'string[]'), `${e.exportSource}${errMsg}`)
       passToClient.push(...e.exportValue)
     })
   } else {
-    pageContextExports.configEntries.passToClient?.forEach((e) => {
-      const { configValue } = e
-      assert(isArray(configValue))
-      const vals = configValue.flat(1)
-      // TODO: improve error message by using (upcoming) new data structure instead of configEntries
-      assertUsage(isArrayOfStrings(vals), `${e.configDefinedAt}${errMsg}`)
-      passToClient.push(...vals)
+    configPublicPageLazy.from.configsCumulative.passToClient?.values.forEach((v) => {
+      const { value, definedAt } = v
+      assertUsage(isArrayOfStrings(value), `+passToClient value defined at ${definedAt}${errMsg}`)
+      passToClient.push(...value)
     })
   }
 
   const pageContextAddendum = {}
-  objectAssign(pageContextAddendum, pageContextExports)
+  objectAssign(pageContextAddendum, configPublicPageLazy)
   objectAssign(pageContextAddendum, {
-    Page: pageContextExports.exports.Page,
+    Page: configPublicPageLazy.exports.Page,
     _isHtmlOnly: isHtmlOnly,
     _passToClient: passToClient,
     _pageFilePathsLoaded: pageFilesLoaded.map((p) => p.filePath),
@@ -107,7 +95,7 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
     },
   })
 
-  // TODO/v1-release: remove
+  // TO-DO/next-major-release: remove
   Object.assign(pageContextAddendum, {
     _getPageAssets: async () => {
       assertWarning(false, 'pageContext._getPageAssets() deprecated, see https://vike.dev/preloading', {
@@ -164,9 +152,9 @@ async function loadPageUserFiles(
   const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
   const pageConfigLoaded = !pageConfig ? null : await loadConfigValues(pageConfig, isDev)
   await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))
-  const pageContextExports = resolveVikeConfigPublicPageLazy(pageFilesServerSide, pageConfigLoaded, pageConfigGlobal)
+  const configPublicPageLazy = resolveVikeConfigPublicPageLazy(pageFilesServerSide, pageConfigLoaded, pageConfigGlobal)
   return {
-    pageContextExports,
+    configPublicPageLazy,
     pageFilesLoaded: pageFilesServerSide,
   }
 }

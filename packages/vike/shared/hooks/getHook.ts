@@ -9,7 +9,7 @@ export type { HookLoc }
 export type { HookTimeout }
 export type { HooksTimeoutProvidedByUser }
 
-// TODO/v1-release: remove
+// TO-DO/next-major-release: remove
 // We export for old V0.4 design which doesn't support config.hooksTimeout
 export { getHookTimeoutDefault }
 

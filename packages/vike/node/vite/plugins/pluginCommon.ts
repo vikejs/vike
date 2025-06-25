@@ -50,13 +50,13 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
             ? normalizeViteRoot(configFromUser.root)
             : await getViteRoot(operation)
           assert(rootResolvedEarly)
-          // TODO/v1-release: we can remove setVikeConfigContext() call here since with Vike's CLI it's already called at vike/node/api/prepareViteApiCall.ts
+          // TO-DO/next-major-release: we can remove setVikeConfigContext() call here since with Vike's CLI it's already called at vike/node/api/prepareViteApiCall.ts
           setVikeConfigContext({ userRootDir: rootResolvedEarly, isDev, vikeVitePluginOptions })
           const vikeConfig = await getVikeConfigInternal()
           return {
             _isDev: isDev,
             _rootResolvedEarly: rootResolvedEarly,
-            // TODO/v1-release: remove https://github.com/vikejs/vike/issues/2122
+            // TO-DO/next-major-release: remove https://github.com/vikejs/vike/issues/2122
             configVikePromise: Promise.resolve({
               prerender: vikeConfig.prerenderContext.isPrerenderingEnabled,
             }),
@@ -78,7 +78,11 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
       configResolved: {
         order: 'post',
         async handler(config) {
-          /* TODO: do this after implementing vike.config.js and new setting transformLinkedDependencies (or probably a better name like transpileLinkedDependencies/bundleLinkedDependencies or something else)
+          /* Also externalize linked dependencies by default?
+           * - Can this be done while the user sets ssr.external to `string[]`? I guess not?
+           *   - If not then it's a problem: it makes the default inconsistent.
+           * - https://vite.dev/config/ssr-options.html#ssr-external
+           * - New setting +transpileLinkedDependencies ?
           overrideViteDefaultSsrExternal(config)
           //*/
           workaroundCI(config)
@@ -207,7 +211,7 @@ function assertVikeCliOrApi(config: ResolvedConfig) {
   })
 }
 
-// TODO/v1-release: remove https://github.com/vikejs/vike/issues/2122
+// TO-DO/next-major-release: remove https://github.com/vikejs/vike/issues/2122
 function temp_supportOldInterface(config: ResolvedConfig) {
   if (!('vitePluginSsr' in config)) return
   assert(isObject(config.vitePluginSsr))

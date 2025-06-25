@@ -1,7 +1,5 @@
 > :warning: This document is work-in-progress. It isn't exhaustive.
 
-> TO-DO: add the features missing in this list.
-
 # Features
 
 All essentials:
@@ -47,7 +45,7 @@ No known bugs, most notably:
  - In general, things just work. No surprise of stumbling upon some bug.
 
 Things missing that some frameworks have (but is on the roadmap):
- - Nested Layouts (TO-DO: update ticket with latest design)
+ - Nested Layouts
  - Typesafe links ([#698](https://github.com/vikejs/vike/issues/698))
  - Single Route File
 

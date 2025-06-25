@@ -36,7 +36,7 @@ async function loadPageRoutes(
   pageConfigGlobal: PageConfigGlobalRuntime,
   allPageIds: string[],
 ): Promise<{ pageRoutes: PageRoutes; onBeforeRouteHook: null | Hook }> {
-  // TODO/next-major: remove & make this function sync
+  // TO-DO/next-major-release: remove & make this function sync
   await Promise.all(pageFilesAll.filter((p) => p.fileType === '.page.route').map((p) => p.loadFile?.()))
   const { onBeforeRouteHook, filesystemRoots } = getGlobalHooks(pageFilesAll, pageConfigs, pageConfigGlobal)
   const pageRoutes = getPageRoutes(filesystemRoots, pageFilesAll, pageConfigs, allPageIds)
@@ -82,7 +82,7 @@ function getPageRoutes(
               const { filePathToShowToUser } = definedAtData
               assert(filePathToShowToUser)
               assert(isCallable(route))
-              // TODO/next-major: remove
+              // TO-DO/next-major-release: remove
               if (getConfigValueRuntime(pageConfig, 'iKnowThePerformanceRisksOfAsyncRouteFunctions', 'boolean'))
                 warnDeprecatedAllowKey()
               pageRoute = {
@@ -118,7 +118,7 @@ function getPageRoutes(
   }
 
   // Old design
-  // TODO/v1-release: remove
+  // TO-DO/next-major-release: remove
   if (pageConfigs.length === 0) {
     assert(filesystemRoots)
     const comesFromV1PageConfig = false
@@ -197,7 +197,7 @@ function getGlobalHooks(
   }
 
   // Old design
-  // TODO/v1-release: remove
+  // TO-DO/next-major-release: remove
   let onBeforeRouteHook: null | Hook = null
   const filesystemRoots: FilesystemRoot[] = []
   pageFilesAll

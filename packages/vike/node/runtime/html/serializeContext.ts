@@ -168,7 +168,7 @@ function getPageContextClientSerializedAbort(
   if (!pageContext._isLegacyRenderErrorPage) {
     assert(unknownProps.length === 0)
   } else {
-    // TODO/v1-release: remove
+    // TO-DO/next-major-release: remove
     assertWarning(
       unknownProps.length === 0,
       [

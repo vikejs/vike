@@ -6,7 +6,7 @@ import type { ConfigBuiltIn, ConfigBuiltInResolved, ImportString } from '../Conf
 import type { Combine, IsNotEmpty, XOR5 } from './helpers.js'
 
 type PageContextConfig = ConfigResolved &
-  // TODO/eventually: remove the whole XOR logic
+  // TO-DO/eventually: remove the whole XOR logic
   (ConfigVikePackagesNotEmptyXor extends true ? ConfigVikePackagesIntersection : ConfigVikePackagesCombined)
 
 // https://vike.dev/meta#typescript

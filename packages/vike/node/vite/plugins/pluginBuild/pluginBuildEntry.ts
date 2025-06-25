@@ -38,7 +38,7 @@ function getServerProductionEntryCode(config: ResolvedConfig): string {
   const importPath = getImportPath(config)
   const buildInfo: BuildInfo = {
     versionAtBuildTime: PROJECT_VERSION,
-    usesClientRouter: isUsingClientRouter(), // TODO/v1-release: remove
+    usesClientRouter: isUsingClientRouter(), // TO-DO/next-major-release: remove
     viteConfigRuntime: getViteConfigRuntime(config),
   }
   assertBuildInfo(buildInfo)
