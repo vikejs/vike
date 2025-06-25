@@ -12,7 +12,7 @@ function onLoad() {
   assertNodeVersion()
   // package.json#peerDependencies isn't enough as users often ignore it
   // This assertion isn't reliable: the user may still use a Vite version older than 5.1.0 — see https://github.com/vitejs/vite/pull/19355
-  // TO-DO/soon: let's also use this.meta.viteVersion https://github.com/vitejs/vite/pull/20088
+  // TO-DO/eventually: let's also use this.meta.viteVersion https://github.com/vitejs/vite/pull/20088
   assertVersion('Vite', version, '5.1.0')
   // Ensure we don't bloat the server runtime with heavy dependencies such Vite and esbuild
   assertIsNotProductionRuntime()

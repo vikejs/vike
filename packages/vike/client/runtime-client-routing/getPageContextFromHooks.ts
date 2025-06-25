@@ -173,7 +173,7 @@ async function execHookDataLike(hookName: 'data' | 'onBeforeRender', pageContext
 }
 async function execHookData(pageContext: PageContextExecHookClient) {
   const res = await execHookClient('data', pageContext)
-  const hook = res[0] // TO-DO/soon: support cumulative
+  const hook = res[0] // TO-DO/soon/cumulative-hooks: support cumulative
   if (!hook) return
   const { hookReturn } = hook
   const pageContextAddendum = { data: hookReturn }
@@ -181,7 +181,7 @@ async function execHookData(pageContext: PageContextExecHookClient) {
 }
 async function execHookOnBeforeRender(pageContext: PageContextExecHookClient) {
   const res = await execHookClient('onBeforeRender', pageContext)
-  const hook = res[0] // TO-DO/soon: support cumulative
+  const hook = res[0] // TO-DO/soon/cumulative-hooks: support cumulative
   if (!hook) return
   const { hookReturn, hookFilePath } = hook
   const pageContextFromHook = {}
