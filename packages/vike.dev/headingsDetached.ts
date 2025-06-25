@@ -6,7 +6,7 @@ import type { Config, HeadingDetachedDefinition as HeadingDetachedDefinition_ } 
 type CategoryName<C> = C extends { name: infer N extends string } ? N : C extends string ? C : never
 type CategoryNames = CategoryName<(typeof categories)[number]>
 type HeadingDetachedDefinition = Omit<HeadingDetachedDefinition_, 'category'> & {
-  category?: CategoryNames
+  category: CategoryNames | 'Miscellaneous'
 }
 
 const categories = [
@@ -384,7 +384,7 @@ function misc(): HeadingDetachedDefinition[] {
       title: 'Next.js Comparison',
       url: '/nextjs',
     },
-  ]
+  ].map((h) => ({ ...h, category: 'Miscellaneous' as const }))
 }
 
 function guides(): HeadingDetachedDefinition[] {
