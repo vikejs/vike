@@ -64,7 +64,7 @@ async function createPageContextServerSide(
       )
     } else if (pageContextInit.headers) {
       headers = pageContextInit.headers as Record<string, string>
-      // TODO/next-major-release: remove
+      // TO-DO/next-major-release remove
       assertWarning(
         false,
         'Setting pageContextInit.headers is deprecated: set pageContextInit.headersOriginal instead, see https://vike.dev/headers',

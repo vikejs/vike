@@ -169,7 +169,7 @@ function urlParsedGetter(this: PageContextUrlSource) {
       warnHashNotAvailable('hashOriginal')
       return urlParsed.hashOriginal
     },
-    // TODO/next-major-release: remove
+    // TO-DO/next-major-release remove
     get hashString() {
       assertWarning(false, 'pageContext.urlParsed.hashString has been renamed to pageContext.urlParsed.hashOriginal', {
         onlyOnce: true,
@@ -178,7 +178,7 @@ function urlParsedGetter(this: PageContextUrlSource) {
       warnHashNotAvailable('hashString')
       return urlParsed.hashOriginal
     },
-    // TODO/next-major-release: remove
+    // TO-DO/next-major-release remove
     get searchString() {
       assertWarning(
         false,
