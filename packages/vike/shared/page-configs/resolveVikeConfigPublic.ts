@@ -73,7 +73,7 @@ type VikeConfigPublicPageLazy = {
   sources: Sources
   from: From
 
-  // TODO/eventually: deprecate every prop below
+  // TO-DO/eventually: deprecate every prop below
   configEntries: ConfigEntries
   exports: Record<string, unknown>
   exportsAll: ExportsAll

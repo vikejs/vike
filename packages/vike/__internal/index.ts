@@ -14,7 +14,7 @@ import { PageConfigRuntime } from '../types/PageConfig.js'
 /**
  * Used by {@link https://github.com/magne4000/vite-plugin-vercel|vite-plugin-vercel} to compute some rewrite rules and extract { isr } configs.
  *
- * TODO/eventually: remove
+ * TO-DO/eventually: remove
  */
 async function getPagesAndRoutes() {
   setNodeEnvProduction()

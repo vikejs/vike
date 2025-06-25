@@ -89,7 +89,7 @@ function getUrlParsed(pageContext: PageContextUrlSource) {
   const assertUrlResolved = (src: number) =>
     assert(
       typeof urlResolved === 'string',
-      // TODO/eventually: remove debug logs, see:
+      // TO-DO/eventually: remove debug logs, see:
       // - https://github.com/vikejs/vike/issues/2138#issuecomment-2631713411
       // - https://github.com/vikejs/vike/commit/5c7810f3080ab62536950f26e019bb2a3a517082
       { src, urlResolved },
