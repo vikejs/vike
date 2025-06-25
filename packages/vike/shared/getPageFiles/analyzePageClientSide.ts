@@ -43,7 +43,7 @@ function analyzePageClientSide(pageFilesAll: PageFile[], pageId: string): Analys
   return { isHtmlOnly, isClientRouting, clientEntries, clientDependencies, pageFilesClientSide, pageFilesServerSide }
 }
 
-// TODO:v1-release: remove
+// TO-DO/next-major-release: remove
 async function analyzePageClientSideInit(
   pageFilesAll: PageFile[],
   pageId: string,
