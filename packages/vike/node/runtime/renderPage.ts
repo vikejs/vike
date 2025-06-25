@@ -72,9 +72,9 @@ const globalObject = getGlobalObject('runtime/renderPage.ts', { httpRequestsCoun
 
 type PageContextAfterRender = { httpResponse: HttpResponse } & Partial<PageContextInternalServer>
 type PageContextInit = Pick<PageContextInternalServer, 'urlOriginal' | 'headersOriginal'> & {
-  /** @deprecated Set `pageContextInit.urlOriginal` instead  */ // TODO/next-major: remove
+  /** @deprecated Set `pageContextInit.urlOriginal` instead  */ // TO-DO/next-major-release remove
   url?: string
-  /** @deprecated Set pageContextInit.headersOriginal instead */ // TODO/next-major: remove
+  /** @deprecated Set pageContextInit.headersOriginal instead */ // TO-DO/next-major-release remove
   headers?: Record<string, string>
 }
 type PageContextBegin = Awaited<ReturnType<typeof getPageContextBegin>>

@@ -716,7 +716,7 @@ function sortConfigValueSources(configValueSources: ConfigValueSources, location
           return sortAfterInheritanceOrderPage(source1.plusFile, source2.plusFile, locationIdPage, configName)
         }
       })
-      // TODO/next-major: remove
+      // TO-DO/next-major-release remove
       // Interop with vike(options) in vite.config.js — make it least precedence.
       .sort(makeLast((source) => !source.plusFile))
   })

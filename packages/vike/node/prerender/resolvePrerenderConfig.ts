@@ -29,7 +29,7 @@ function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal, 'conf
       defaultLocalValue = true
     }
   }
-  // TODO/next-major: remove
+  // TO-DO/next-major-release remove
   // Backwards compatibility for `vike({prerender:true})` in vite.config.js
   {
     const valuesWithDefinedAt = vikeConfig._from.configsCumulative.prerender?.values ?? []
