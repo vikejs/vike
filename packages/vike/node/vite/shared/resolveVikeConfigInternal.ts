@@ -143,7 +143,7 @@ function reloadVikeConfig() {
 
 async function getVikeConfigInternal(
   // I don't remember the logic behind it — neither why we restart Vite's dev server, nor why we sometimes don't.
-  // TO-DO: eventually rethink all that. Some + settings are expected to influence Vite's config (restarting Vite's dev server is needed) while some don't.
+  // TO-DO/eventually: re-think all that. Some + settings are expected to influence Vite's config (restarting Vite's dev server is needed) while some don't.
   doNotRestartViteOnError = false,
 ): Promise<VikeConfigInternal> {
   assert(vikeConfigCtx)
