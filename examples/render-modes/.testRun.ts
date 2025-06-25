@@ -20,7 +20,7 @@ export { testRun }
 // Workaround doesn't seem to work: see https://github.com/vikejs/vike/pull/2069 commit `renable HMR test for HTML-only`
 const disableTestHtmlOnlyHMR = true
 
-// TODO:v1/release: remove non-V1 design case
+// TO-DO/next-major: remove non-V1 design case
 function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1Design?: true) {
   run(cmd, {
     // HMR tests are flaky (I couldn't make them reliable)
