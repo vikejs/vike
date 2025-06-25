@@ -1,5 +1,5 @@
-// TODO/now-same-api: use public API internally?
-// TODO/now-flat-pageContext: rename definedAt => definedBy
+// TO-DO/soon/same-api: use public API internally?
+// TO-DO/soon/flat-pageContext: rename definedAt => definedBy
 export { resolveVikeConfigPublicGlobal }
 export { resolveVikeConfigPublicPageEager }
 export { resolveVikeConfigPublicPageLazy }
@@ -153,7 +153,7 @@ type SourceConfigsComputed = {
 
 type VikeConfigPublic = {
   config: ConfigResolved
-  // TODO/now-flat-pageContext: expose publicly?
+  // TO-DO/soon/flat-pageContext: expose publicly?
   _source: Source
   _sources: Sources
   _from: From
@@ -291,7 +291,7 @@ function resolveVikeConfigPublicPageLazy(
     source,
     sources,
 
-    // TODO/now-flat-pageContext: deprecate every prop below
+    // TO-DO/soon/flat-pageContext: deprecate every prop below
     configEntries,
     exports,
     exportsAll,

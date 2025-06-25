@@ -18,7 +18,7 @@ type PageContextForPublicUsageClientShared = PageContextPrepareMinimum &
 function preparePageContextForPublicUsageClientShared<PageContext extends PageContextForPublicUsageClientShared>(
   pageContext: PageContext,
 ): PageContext & { Page: unknown } {
-  // TODO/now-proxy use proxy
+  // TO-DO/soon/proxy use proxy
   const Page =
     pageContext.config?.Page ||
     // TO-DO/next-major-release remove
