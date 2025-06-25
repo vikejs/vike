@@ -245,13 +245,10 @@
     "./universal-middleware.js"
   ],
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
     "@brillout/release-me": "^0.4.2",
     "@types/estree": "^1.0.5",
-    "@types/jest": "^29.5.11",
     "@types/node": "^20.10.5",
     "@types/picomatch": "^3.0.2",
-    "@types/resolve": "^1.20.6",
     "@types/semver": "^7.5.8",
     "@types/source-map-support": "^0.5.10",
     "react-streaming": "^0.4.2",

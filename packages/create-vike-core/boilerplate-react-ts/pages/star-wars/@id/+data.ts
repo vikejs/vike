@@ -20,7 +20,7 @@ const data = async (pageContext: PageContextServer) => {
 
   return {
     movie,
-    // The page's <title>
+    // Set <title> (it's a convention we implemented in the getPageTitle() function)
     title: movie.title,
   }
 }

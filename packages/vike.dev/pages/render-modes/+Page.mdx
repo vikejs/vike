@@ -65,7 +65,7 @@ Client-side `onRenderClient()` hook:
 
 ```js
 // /renderer/+onRenderClient.js
-// Environment: browser
+// Environment: client
 
 import { renderToDom } from 'some-ui-framework'
 
@@ -200,7 +200,7 @@ async function onRenderHtml(pageContext) {
 
 ```js
 // /renderer/+onRenderClient.js
-// Environment: browser
+// Environment: client
 
 import { renderToDom, hydrateDom } from 'some-ui-framework'
 
@@ -299,7 +299,7 @@ function Page() {
 
 ```js
 // /pages/about/+client.js
-// Environment: browser
+// Environment: client
 
 // This file represents the entire browser-side JavaScript.
 // We can omit defining `+client.js` in which case the page has zero browser-side JavaScript.

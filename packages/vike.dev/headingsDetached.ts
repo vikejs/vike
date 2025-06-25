@@ -832,10 +832,6 @@ function migrations(): HeadingDetachedDefinition[] {
       url: '/migration/0.4.134',
     },
     {
-      title: 'Migration `0.5`',
-      url: '/migration/0.5',
-    },
-    {
       title: 'Migrate `vike-cloudflare`',
       url: '/migration/vike-cloudflare',
     },

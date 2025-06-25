@@ -16,10 +16,12 @@ Instead of using <Link href="/vike-react">`vike-react`</Link>, you can implement
 
 <CustomIntegrationWarning list={['vike-react']} />
 
+> You can use <Link href="/new/core">vike.dev/new/core</Link> to scaffold a Vike app showcasing a manual React integration.
+
 Official examples:
  - <RepoLink path="/packages/create-vike-core/boilerplate-react-ts" /> - Classic integration, using <Link href="/client-routing">Client Routing</Link>.
  - <RepoLink path="/examples/react-minimal" /> - Minimalistic integration, using <Link href="/server-routing">Server Routing</Link>.
- - [`vike-react` source code](https://github.com/vikejs/vike-react/tree/main/packages/vike-react) - Full-featured integration.
+ - [`vike-react` source code](https://github.com/vikejs/vike-react/tree/main/packages/vike-react) - Full-fledged integration.
  - <RepoLink path="/examples/render-modes" /> - Integration supporting all <Link href="/render-modes">render modes</Link> (SSR, SPA, and HTML-only).
 
 > For more official examples, see [GitHub > `vikejs/vike` > `examples/`](https://github.com/vikejs/vike/tree/main/examples).
@@ -43,7 +45,7 @@ Vike already supports <Link href="/streaming#progressive-rendering">Progressive 
 
 > Instead of using [Server Actions using `'use server'`](https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations), we recommend using [Telefunc](https://telefunc.com/) which we believe to feature a superior design. That said, a <Link href="/vike-react">`vike-react`</Link> fork can be developed that supports `'use server'`.
 
-Work on Server Components is in progress, see [`vike-react-rsc`](https://github.com/nitedani/vike-react-rsc).
+Experimental Server Components implementation: [`vike-react-rsc`](https://github.com/nitedani/vike-react-rsc).
 
 > While [we are thrilled about Server Components](https://github.com/reactjs/rfcs/pull/188#issuecomment-754815233), we believe it isn't production ready yet.
 >

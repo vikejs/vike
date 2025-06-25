@@ -11,7 +11,7 @@ The `onRenderClient()` and <Link href="/onRenderHtml">`onRenderHtml()`</Link> ho
 
 ```js
 // +onRenderClient.js
-// Environment: browser
+// Environment: client
 
 import { renderToDom, hydrateDom } from 'some-ui-framework'
 
@@ -63,7 +63,7 @@ By defining multiple `onRenderClient()` hooks, you can define different renderin
 
 ```ts
 // /**/+onRenderClient.ts (usually /renderer/+onRenderClient.ts)
-// Environment: browser
+// Environment: client
 
 export { onRenderClient }
 

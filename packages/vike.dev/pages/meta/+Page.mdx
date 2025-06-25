@@ -259,21 +259,21 @@ Another common use case for `meta` is to create a component `<Layout>` that defi
 
 ```js
 // /pages/product/+Layout.js
-// Environment: browser and server
+// Environment: client and server
 
 export { Layout } from '../layouts/Responsive'
 ```
 
 ```js
 // /pages/admin/+Layout.js
-// Environment: browser and server
+// Environment: client and server
 
 export { Layout } from '../layouts/Dashboard'
 ```
 
 ```js
 // /pages/+Layout.js
-// Environment: browser and server
+// Environment: client and server
 
 // The default layout in case the page doesn't set one
 export { Layout } from '../layouts/LayoutDefault'
@@ -320,7 +320,7 @@ async function onRenderHtml(pageContext) {
 
 ```js
 // /pages/+onRenderClient.jsx
-// Environment: browser
+// Environment: client
 
 export { onRenderClient }
 

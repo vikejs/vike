@@ -17,7 +17,7 @@ const data = async (pageContext) => {
 
   return {
     movies,
-    // The page's <title>
+    // Set <title> (it's a convention we implemented in the getPageTitle() function)
     title: `${movies.length} Star Wars Movies`,
   }
 }

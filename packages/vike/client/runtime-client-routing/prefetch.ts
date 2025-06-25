@@ -64,13 +64,13 @@ function getPageContextPrefetched(
   } & VikeConfigPublicPageLazy,
 ): null | PageContextFromServerHooks {
   const prefetchSettings = getPrefetchSettings(pageContext, null)
-  // TODO/pageContext-prefetch: I guess we need linkTag to make this condition work
+  // TO-DO/pageContext-prefetch: I guess we need linkTag to make this condition work
   if (!prefetchSettings.pageContext) return null
   const key = getCacheKey(pageContext.urlPathname)
   const found = globalObject.prefetchedPageContexts[key]
   if (!found || found.result.is404ServerSideRouted || isExpired(found)) return null
   const pageContextPrefetched = found.result.pageContextFromServerHooks
-  /* TODO/pageContext-prefetch: make it work for when resultMaxAge is Infinity.
+  /* TO-DO/pageContext-prefetch: make it work for when resultMaxAge is Infinity.
   // We discard the prefetched pageContext whenever we use it, so that the user always sees fresh data upon naivgating.
   delete globalObject.prefetchedPageContexts[key]
   */
@@ -109,7 +109,7 @@ function populatePageContextPrefetchCache(
   pageContext: PageContextForPrefetch /*& VikeConfigPublicPageLazy*/,
   result: ResultPageContextFromServer,
 ): void {
-  // TODO/pageContext-prefetch: replace with using pageContext.config.prerender instead. (For being able to do that: eager configs need to be accessible without have to use VikeConfigPublicPageLazy as it isn't available here.)
+  // TO-DO/pageContext-prefetch: replace with using pageContext.config.prerender instead. (For being able to do that: eager configs need to be accessible without have to use VikeConfigPublicPageLazy as it isn't available here.)
   if (!isBrilloutDocpress()) return
   setPageContextPrefetchCache(pageContext, result, null)
 }
@@ -129,7 +129,7 @@ function setPageContextPrefetchCache(
 }
 function getResultMaxAge(): number {
   const pageContextCurrent = getPageContextCurrent()
-  // TODO/pageContext-prefetch: remove this dirty hack used by @brillout/docpress and, instead, use Vike's default if pageContextCurrent isn't defined yet.
+  // TO-DO/pageContext-prefetch: remove this dirty hack used by @brillout/docpress and, instead, use Vike's default if pageContextCurrent isn't defined yet.
   if (!pageContextCurrent) return Infinity
   const prefetchSettings = getPrefetchSettings(pageContextCurrent, null)
   const resultMaxAge =
@@ -146,7 +146,7 @@ function getResultMaxAge(): number {
  */
 async function prefetch(
   url: string,
-  /* TODO/pageContext-prefetch
+  /* TO-DO/pageContext-prefetch
   options?: {
     pageContext?: boolean
     staticAssets?: boolean
@@ -263,10 +263,10 @@ async function prefetchOnEvent(linkTag: HTMLAnchorElement, event: 'hover' | 'vie
     prefetchSettings = getPrefetchSettings(pageContextCurrent, linkTag)
   } else {
     if (isBrilloutDocpress()) {
-      // TODO/pageContext-prefetch: remove this dirty hack used by @brillout/docpress and, instead, use Vike's default if pageContextCurrent isn't defined yet.
+      // TO-DO/pageContext-prefetch: remove this dirty hack used by @brillout/docpress and, instead, use Vike's default if pageContextCurrent isn't defined yet.
       prefetchSettings = { staticAssets: 'hover', pageContext: Infinity }
     } else {
-      // TODO/pageContext-prefetch: consider pageContextLink
+      // TO-DO/pageContext-prefetch: consider pageContextLink
       return
     }
   }
@@ -292,7 +292,7 @@ async function prefetchOnEvent(linkTag: HTMLAnchorElement, event: 'hover' | 'vie
         const key = getCacheKey(urlOfLink)
         const found = globalObject.prefetchedPageContexts[key]
         if (!found || isExpired(found)) {
-          // TODO/pageContext-prefetch: move this logic in getPrefetchSettings()
+          // TO-DO/pageContext-prefetch: move this logic in getPrefetchSettings()
           const resultMaxAge = prefetchSettings.pageContext
           await prefetchPageContextFromServerHooks(pageContextLink, resultMaxAge)
         }
@@ -328,7 +328,7 @@ function getCacheKey(url: string): string {
   return key
 }
 
-// TODO/pageContext-prefetch: remove
+// TO-DO/pageContext-prefetch: remove
 function isBrilloutDocpress(): boolean {
   return '_isBrilloutDocpress' in window
 }

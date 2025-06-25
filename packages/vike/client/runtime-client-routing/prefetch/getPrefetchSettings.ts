@@ -1,4 +1,4 @@
-// TODO/pageContext-prefetch: rename this file to getPrefetchSettingResolved.ts
+// TO-DO/pageContext-prefetch: rename this file to getPrefetchSettingResolved.ts
 
 export { getPrefetchSettings }
 export { PAGE_CONTEXT_MAX_AGE_DEFAULT }
@@ -8,7 +8,7 @@ import { assertUsage, assertInfo } from '../utils.js'
 import type { VikeConfigPublicPageLazy } from '../../../shared/getPageFiles.js'
 import type { PrefetchSetting, PrefetchStaticAssets } from './PrefetchSetting.js'
 
-// TODO/pageContext-prefetch: Make it `Infinity` for pre-rendered pages.
+// TO-DO/pageContext-prefetch: Make it `Infinity` for pre-rendered pages.
 const PAGE_CONTEXT_MAX_AGE_DEFAULT = 5000
 const prefetchSettingTrue = {
   staticAssets: 'hover',
@@ -18,7 +18,7 @@ const prefetchSettingFalse = {
   staticAssets: 'hover',
   pageContext: false,
 } satisfies PrefetchSettingResolved
-// TODO/v1-release: change to `prefetchSettingTrue`?
+// TO-DO/eventually: change to `prefetchSettingTrue`
 const prefetchSettingDefault = prefetchSettingFalse
 
 type PrefetchSettingResolved = {
@@ -40,7 +40,7 @@ function getPrefetchSettings(
   // TODO/v1-release: remove
   if ('prefetchStaticAssets' in pageContext.exports) {
     const prefetchStaticAssets = pageContext.exports.prefetchStaticAssets as PrefetchStaticAssets
-    /* TODO/pageContext-prefetch: uncomment
+    /* TO-DO/pageContext-prefetch: uncomment
     const msg = `The 'prefetchStaticAssets' setting is deprecated in favor of the 'prefetch' setting, see https://vike.dev/prefetch`
     assertWarning(false, msg, { onlyOnce: true })
     assertUsage(
