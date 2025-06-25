@@ -43,250 +43,252 @@ const headingsDetached = [
 ] satisfies HeadingDetachedDefinition[]
 
 function tools() {
-  return ([
-    {
-      title: 'Vue Query',
-      url: '/vue-query',
-    },
-    {
-      title: 'Vuex',
-      url: '/vuex',
-    },
-    {
-      title: 'PullState',
-      url: '/pullstate',
-    },
-    {
-      title: 'Panda CSS',
-      url: '/panda-css',
-    },
-    {
-      title: 'PM2',
-      url: '/PM2',
-    },
-    {
-      title: 'Koa',
-      url: '/koa',
-    },
-    {
-      title: 'hapi',
-      url: '/hapi',
-    },
-    {
-      title: 'HatTip',
-      url: '/hattip',
-    },
-    {
-      title: 'vue-i18n',
-      url: '/vue-i18n',
-    },
-    {
-      title: 'Windows Subsystem for Linux (WSL)',
-      url: '/wsl',
-    },
-    {
-      title: 'Redux',
-      url: '/redux',
-    },
-    {
-      title: 'Pinia',
-      url: '/pinia',
-    },
-    {
-      title: 'Effector',
-      url: '/effector',
-    },
-    {
-      title: 'Auth.js',
-      url: '/Auth.js',
-    },
-    {
-      title: 'Tailwind CSS',
-      url: '/tailwind-css',
-    },
-    {
-      title: 'daisyUI',
-      url: '/daisyui',
-    },
-    {
-      title: 'Compiled',
-      url: '/compiled',
-    },
-    {
-      title: 'Vuetify',
-      url: '/vuetify',
-    },
-    {
-      title: 'styled-components',
-      url: '/styled-components',
-    },
-    {
-      title: '`styled-jsx`',
-      url: '/styled-jsx',
-    },
-    {
-      title: 'MUI',
-      url: '/mui',
-    },
-    {
-      title: 'PrimeReact',
-      url: '/primereact',
-    },
-    {
-      title: 'NextUI',
-      url: '/nextui',
-    },
-    {
-      title: 'Bootstrap',
-      url: '/bootstrap',
-    },
-    {
-      title: 'Grommet',
-      url: '/grommet',
-    },
-    {
-      title: 'Mantine',
-      url: '/mantine',
-    },
-    {
-      title: 'Ant Design',
-      url: '/antd',
-    },
-    {
-      title: 'Sass / Less / Stylus',
-      url: '/sass',
-    },
-    {
-      title: 'Naive UI',
-      url: '/naive-ui',
-    },
-    {
-      title: 'Chakra UI',
-      url: '/chakra',
-    },
-    {
-      title: 'React',
-      url: '/react',
-      sectionTitles: ['React Server Components'] as string[],
-    },
-    {
-      title: 'Vue',
-      url: '/vue',
-    },
-    {
-      title: 'Svelte',
-      url: '/svelte',
-    },
-    {
-      title: 'Preact',
-      url: '/preact',
-    },
-    {
-      title: 'Solid',
-      url: '/solid',
-    },
-    {
-      title: 'Angular',
-      url: '/angular',
-    },
-    {
-      title: 'VanJS',
-      url: '/vanjs',
-    },
-    {
-      title: 'Express.js',
-      url: '/express',
-    },
-    {
-      title: 'Hono',
-      url: '/hono',
-    },
-    {
-      title: 'Deno',
-      url: '/deno',
-    },
-    {
-      title: 'Fastify',
-      url: '/fastify',
-    },
-    {
-      title: 'Nitro',
-      url: '/nitro',
-    },
-    {
-      title: 'H3',
-      url: '/h3',
-    },
-    {
-      title: 'Ruby on Rails',
-      url: '/ruby-on-rails',
-    },
-    {
-      title: 'Firebase',
-      url: '/firebase',
-    },
-    {
-      title: 'Nginx',
-      url: '/nginx',
-    },
-    {
-      title: 'MDXEditor',
-      url: '/MDXEditor',
-    },
-    {
-      title: 'Tauri',
-      url: '/tauri',
-    },
-    {
-      title: 'Telefunc (RPC)',
-      url: '/telefunc',
-    },
-    {
-      title: 'tRPC',
-      url: '/tRPC',
-    },
-    {
-      title: 'TanStack Query',
-      url: '/tanstack-query',
-    },
-    {
-      title: 'Apollo (GraphQL)',
-      url: '/apollo-graphql',
-    },
-    {
-      title: 'Relay (GraphQL)',
-      url: '/relay',
-    },
-    {
-      title: 'urql (GraphQL)',
-      url: '/urql',
-    },
-    {
-      title: 'gRPC',
-      url: '/grpc',
-    },
-    {
-      title: 'Socket.IO',
-      url: '/socket-io',
-    },
-    {
-      title: 'Tool guides & examples',
-      url: '/tools',
-      sectionTitles: ['CSS-in-JS'] as string[],
-    },
-    {
-      title: 'Vue Router',
-      url: '/vue-router',
-    },
-    {
-      title: 'React Router',
-      url: '/react-router',
-    },
-    {
-      title: 'Vitest',
-      url: '/vitest',
-    },
-  ] as const).map((h) => ({ ...h, category: 'Guides (tools)' as const }))
+  return (
+    [
+      {
+        title: 'Vue Query',
+        url: '/vue-query',
+      },
+      {
+        title: 'Vuex',
+        url: '/vuex',
+      },
+      {
+        title: 'PullState',
+        url: '/pullstate',
+      },
+      {
+        title: 'Panda CSS',
+        url: '/panda-css',
+      },
+      {
+        title: 'PM2',
+        url: '/PM2',
+      },
+      {
+        title: 'Koa',
+        url: '/koa',
+      },
+      {
+        title: 'hapi',
+        url: '/hapi',
+      },
+      {
+        title: 'HatTip',
+        url: '/hattip',
+      },
+      {
+        title: 'vue-i18n',
+        url: '/vue-i18n',
+      },
+      {
+        title: 'Windows Subsystem for Linux (WSL)',
+        url: '/wsl',
+      },
+      {
+        title: 'Redux',
+        url: '/redux',
+      },
+      {
+        title: 'Pinia',
+        url: '/pinia',
+      },
+      {
+        title: 'Effector',
+        url: '/effector',
+      },
+      {
+        title: 'Auth.js',
+        url: '/Auth.js',
+      },
+      {
+        title: 'Tailwind CSS',
+        url: '/tailwind-css',
+      },
+      {
+        title: 'daisyUI',
+        url: '/daisyui',
+      },
+      {
+        title: 'Compiled',
+        url: '/compiled',
+      },
+      {
+        title: 'Vuetify',
+        url: '/vuetify',
+      },
+      {
+        title: 'styled-components',
+        url: '/styled-components',
+      },
+      {
+        title: '`styled-jsx`',
+        url: '/styled-jsx',
+      },
+      {
+        title: 'MUI',
+        url: '/mui',
+      },
+      {
+        title: 'PrimeReact',
+        url: '/primereact',
+      },
+      {
+        title: 'NextUI',
+        url: '/nextui',
+      },
+      {
+        title: 'Bootstrap',
+        url: '/bootstrap',
+      },
+      {
+        title: 'Grommet',
+        url: '/grommet',
+      },
+      {
+        title: 'Mantine',
+        url: '/mantine',
+      },
+      {
+        title: 'Ant Design',
+        url: '/antd',
+      },
+      {
+        title: 'Sass / Less / Stylus',
+        url: '/sass',
+      },
+      {
+        title: 'Naive UI',
+        url: '/naive-ui',
+      },
+      {
+        title: 'Chakra UI',
+        url: '/chakra',
+      },
+      {
+        title: 'React',
+        url: '/react',
+        sectionTitles: ['React Server Components'] as string[],
+      },
+      {
+        title: 'Vue',
+        url: '/vue',
+      },
+      {
+        title: 'Svelte',
+        url: '/svelte',
+      },
+      {
+        title: 'Preact',
+        url: '/preact',
+      },
+      {
+        title: 'Solid',
+        url: '/solid',
+      },
+      {
+        title: 'Angular',
+        url: '/angular',
+      },
+      {
+        title: 'VanJS',
+        url: '/vanjs',
+      },
+      {
+        title: 'Express.js',
+        url: '/express',
+      },
+      {
+        title: 'Hono',
+        url: '/hono',
+      },
+      {
+        title: 'Deno',
+        url: '/deno',
+      },
+      {
+        title: 'Fastify',
+        url: '/fastify',
+      },
+      {
+        title: 'Nitro',
+        url: '/nitro',
+      },
+      {
+        title: 'H3',
+        url: '/h3',
+      },
+      {
+        title: 'Ruby on Rails',
+        url: '/ruby-on-rails',
+      },
+      {
+        title: 'Firebase',
+        url: '/firebase',
+      },
+      {
+        title: 'Nginx',
+        url: '/nginx',
+      },
+      {
+        title: 'MDXEditor',
+        url: '/MDXEditor',
+      },
+      {
+        title: 'Tauri',
+        url: '/tauri',
+      },
+      {
+        title: 'Telefunc (RPC)',
+        url: '/telefunc',
+      },
+      {
+        title: 'tRPC',
+        url: '/tRPC',
+      },
+      {
+        title: 'TanStack Query',
+        url: '/tanstack-query',
+      },
+      {
+        title: 'Apollo (GraphQL)',
+        url: '/apollo-graphql',
+      },
+      {
+        title: 'Relay (GraphQL)',
+        url: '/relay',
+      },
+      {
+        title: 'urql (GraphQL)',
+        url: '/urql',
+      },
+      {
+        title: 'gRPC',
+        url: '/grpc',
+      },
+      {
+        title: 'Socket.IO',
+        url: '/socket-io',
+      },
+      {
+        title: 'Tool guides & examples',
+        url: '/tools',
+        sectionTitles: ['CSS-in-JS'] as string[],
+      },
+      {
+        title: 'Vue Router',
+        url: '/vue-router',
+      },
+      {
+        title: 'React Router',
+        url: '/react-router',
+      },
+      {
+        title: 'Vitest',
+        url: '/vitest',
+      },
+    ] as const
+  ).map((h) => ({ ...h, category: 'Guides (tools)' as const }))
 }
 
 function misc(): HeadingDetachedDefinition[] {
