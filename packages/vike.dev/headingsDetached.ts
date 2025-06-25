@@ -829,10 +829,6 @@ function migrations(): HeadingDetachedDefinition[] {
       url: '/migration/cli',
     },
     {
-      title: 'Migration `0.4`',
-      url: '/migration-0.4',
-    },
-    {
       title: 'Migration `0.4.134`',
       url: '/migration/0.4.134',
     },

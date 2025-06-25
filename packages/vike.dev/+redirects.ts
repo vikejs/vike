@@ -40,4 +40,5 @@ const redirects = {
   '/.env-files': '/env',
   '/vike-server': '/server',
   '/cloudflare-workers': '/cloudflare',
+  '/migration-0.4': '/migration/0.4',
 } satisfies Config['redirects']
