@@ -28,7 +28,6 @@ const categories = [
 
   { name: 'Work-in-progress', hide: true },
   { name: 'Deprecated', hide: true },
-  { name: 'Page Redirection', hide: true },
 ] as const satisfies Config['categories']
 
 const headingsDetached: HeadingDetachedDefinition[] = [
@@ -848,10 +847,6 @@ function migrations(): HeadingDetachedDefinition[] {
 function redirects(): HeadingDetachedDefinition[] {
   // TODO/eventually: move all redirects here.
   return [
-    {
-      title: 'Data Tools',
-      url: '/data-tools',
-    },
     {
       title: 'CSS Tools',
       url: '/css-tools',
