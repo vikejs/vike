@@ -50,7 +50,7 @@ function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal, 'conf
       vikeConfig._pageConfigs.some((pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value ?? defaultLocalValue),
   })
 
-  // TODO/next-major remove
+  // TO-DO/next-major-release: remove
   if (vikeConfig._pageConfigs.length === 0 && defaultLocalValue) prerenderConfigGlobal.isPrerenderingEnabled = true
 
   return prerenderConfigGlobal
