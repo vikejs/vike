@@ -14,7 +14,7 @@ function CommunityNote({ tool, url, hasExtension }: { tool?: string; url: string
   return (
     <>
       <p>
-        Documentation about using Vike with <a href={url}>{parseMarkdownMini(pageContext.conf.pageTitle!)}</a>.
+        Documentation about using Vike with <a href={url}>{parseMarkdownMini(pageContext.resolved.pageTitle!)}</a>.
       </p>
       <Contribution>
         This page is maintained by the community and may contain outdated information;{' '}
@@ -24,7 +24,7 @@ function CommunityNote({ tool, url, hasExtension }: { tool?: string; url: string
         to update or improve it.
       </Contribution>
       {hasExtension !== undefined && (
-        <HasExtension toolName={tool} toolTitle={pageContext.conf.pageTitle!} hasExtension={hasExtension} />
+        <HasExtension toolName={tool} toolTitle={pageContext.resolved.pageTitle!} hasExtension={hasExtension} />
       )}
     </>
   )
