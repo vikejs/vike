@@ -52,7 +52,7 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
   const pageConfig = findPageConfig(pageContext._globalContext._pageConfigs, pageContext.pageId) // Make pageConfig globally available as pageContext._pageConfig ?
 
   const globalContext = pageContext._globalContext
-  const [{ pageFilesLoaded, pageContextExports }] = await Promise.all([
+  const [{ pageFilesLoaded, configPublicPageLazy }] = await Promise.all([
     loadPageUserFiles(
       pageContext._globalContext._pageFilesAll,
       pageConfig,
@@ -71,12 +71,12 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
   const passToClient: string[] = []
   const errMsg = ' should be an array of strings.'
   if (!isV1Design) {
-    pageContextExports.exportsAll.passToClient?.forEach((e) => {
+    configPublicPageLazy.exportsAll.passToClient?.forEach((e) => {
       assertUsage(hasProp(e, 'exportValue', 'string[]'), `${e.exportSource}${errMsg}`)
       passToClient.push(...e.exportValue)
     })
   } else {
-    pageContextExports.configEntries.passToClient?.forEach((e) => {
+    configPublicPageLazy.configEntries.passToClient?.forEach((e) => {
       const { configValue } = e
       assert(isArray(configValue))
       const vals = configValue.flat(1)
@@ -87,9 +87,9 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
   }
 
   const pageContextAddendum = {}
-  objectAssign(pageContextAddendum, pageContextExports)
+  objectAssign(pageContextAddendum, configPublicPageLazy)
   objectAssign(pageContextAddendum, {
-    Page: pageContextExports.exports.Page,
+    Page: configPublicPageLazy.exports.Page,
     _isHtmlOnly: isHtmlOnly,
     _passToClient: passToClient,
     _pageFilePathsLoaded: pageFilesLoaded.map((p) => p.filePath),
@@ -164,9 +164,9 @@ async function loadPageUserFiles(
   const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
   const pageConfigLoaded = !pageConfig ? null : await loadConfigValues(pageConfig, isDev)
   await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))
-  const pageContextExports = resolveVikeConfigPublicPageLazy(pageFilesServerSide, pageConfigLoaded, pageConfigGlobal)
+  const configPublicPageLazy = resolveVikeConfigPublicPageLazy(pageFilesServerSide, pageConfigLoaded, pageConfigGlobal)
   return {
-    pageContextExports,
+    configPublicPageLazy,
     pageFilesLoaded: pageFilesServerSide,
   }
 }

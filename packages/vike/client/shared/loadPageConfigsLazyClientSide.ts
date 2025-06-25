@@ -47,9 +47,9 @@ async function loadPageConfigsLazyClientSide(
     }
     throw err
   }
-  const pageContextExports = resolveVikeConfigPublicPageLazy(pageFilesClientSide, pageConfigLoaded, pageConfigGlobal)
+  const configPublicPageLazy = resolveVikeConfigPublicPageLazy(pageFilesClientSide, pageConfigLoaded, pageConfigGlobal)
   const pageContextAddendum = {}
-  objectAssign(pageContextAddendum, pageContextExports)
+  objectAssign(pageContextAddendum, configPublicPageLazy)
   objectAssign(pageContextAddendum, { _pageFilesLoaded: pageFilesClientSide })
   return pageContextAddendum
 }
