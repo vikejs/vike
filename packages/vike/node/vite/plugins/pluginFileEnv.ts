@@ -3,6 +3,7 @@ export { pluginFileEnv }
 // Implementation for https://vike.dev/file-env
 // Alternative implementations:
 // - Remix: https://github.com/remix-run/remix/blob/0e542779499b13ab9291cf20cd5e6b43e2905151/packages/remix-dev/vite/plugin.ts#L1504-L1594
+//   - Remix has an interesting approach: .client.js files can be imported from the server-side but they are redacted. It's potentially a neat DX? See https://github.com/remix-run/remix/blob/7dece0e4db691fc9e5dfce27ad6373c46b6ef56c/packages/remix-dev/vite/plugin.ts#L1570
 // - SvelteKit: https://github.com/sveltejs/kit/blob/6ea7abbc2f66e46cb83ff95cd459a5f548cb7e1e/packages/kit/src/exports/vite/index.js#L383-L401
 
 import type { Plugin, ResolvedConfig, ViteDevServer } from 'vite'

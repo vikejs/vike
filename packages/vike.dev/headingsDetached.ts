@@ -280,12 +280,12 @@ function tools() {
         sectionTitles: ['CSS-in-JS'],
       },
       {
-        title: 'Vue Router',
-        url: '/vue-router',
-      },
-      {
         title: 'React Router',
         url: '/react-router',
+      },
+      {
+        title: 'Vue Router',
+        url: '/vue-router',
       },
       {
         title: 'Vitest',
