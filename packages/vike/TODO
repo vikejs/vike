@@ -1,5 +1,4 @@
 = Now
-- Triage https://github.com/vikejs/vike/issues
 - vike.dev/onCreatePageContext => use case computed props
 - Use x-powered-by header to check & enforce usage of pageContext.httpResponse.headers
 - Make navigate() automatically add Base URL by default?
@@ -22,6 +21,7 @@
 - pageContext.url + soft deprecate pageContext.urlParsed
   - Maybe/eventually: `$ pnpm migrate pageContext.url`? Probably not for now: instead recommend `$ rename urlParsed url`.
 == Highest Prio
+- Triage https://github.com/vikejs/vike/issues?q=state%3Aopen%20label%3A%22v1%20release%20%3Astar2%3A%22 and remove non-breaking changes => release new feature in `1.x.x` release branch
 - Remove old design
 - Remove TS helpers such as OnRenderHtmlAsync https://vike.dev/onRenderHtml#typescript
 - Make routing fully sync
