@@ -131,6 +131,22 @@ To fetch data for your layouts see:
 - [#1833 - Make `+data` and `+onBeforeRender` cumulative](https://github.com/vikejs/vike/issues/1833)
 
 
+## `pageContext`
+
+You can access <Link href="/pageContext">the `pageContext` object</Link> by using <Link href="/usePageContext">`usePageContext()`</Link>.
+
+```jsx
+// /pages/+Layout.jsx
+
+import { usePageContext } from 'vike-react/usePageContext' // or vike-{vue,solid}
+
+export function Layout({ children }) {
+  const pageContext = usePageContext()
+  // ...
+}
+```
+
+
 ## Without `vike-{react,vue,solid}`
 
 The following is for users that don't use a <UiFrameworkExtension />.
@@ -190,5 +206,4 @@ See the <Link href="#nested" /> section above. For smooth nested layout navigati
 ## See also
 
 - <Link href="/Wrapper" />
-- <Link href="/usePageContext" />
 - <Link href="/Page" />

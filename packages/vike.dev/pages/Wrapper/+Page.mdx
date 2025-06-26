@@ -52,6 +52,22 @@ A page can be wrapped by multiple `+Wrapper` components:
 ```
 
 
+## `pageContext`
+
+You can access <Link href="/pageContext">the `pageContext` object</Link> by using <Link href="/usePageContext">`usePageContext()`</Link>.
+
+```jsx
+// /pages/+Layout.jsx
+
+import { usePageContext } from 'vike-react/usePageContext' // or vike-{vue,solid}
+
+export function Layout({ children }) {
+  const pageContext = usePageContext()
+  // ...
+}
+```
+
+
 ## See also
 
 - <Link href="/Layout" />
