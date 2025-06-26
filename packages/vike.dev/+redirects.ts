@@ -2,13 +2,10 @@ export { redirects }
 
 import type { Config } from 'vike/types'
 import type { HeadingsURL } from './headings'
-import type { HeadingsDetachedURL } from './headingsDetached'
-
-type HeadingsAllURL = HeadingsURL | HeadingsDetachedURL
 
 type RemoveHash<T extends string> = T extends `${infer Path}#${string}` ? Path : T
 type RedirectsURL = RemoveHash<(typeof redirects)[keyof typeof redirects]>
-const _typeCheck: HeadingsAllURL = 0 as any as RedirectsURL
+const _typeCheck: HeadingsURL = 0 as any as RedirectsURL
 
 const redirects = {
   '/common-problems': '/common-issues',

@@ -1,8 +1,7 @@
 export { config as default }
 
 import type { Config } from '@brillout/docpress'
-import { headings } from './headings'
-import { headingsDetached, categories } from './headingsDetached'
+import { headings, headingsDetached, categories } from './headings'
 import logo from './assets/logo/vike.svg'
 import favicon from './assets/logo/vike-favicon.svg'
 import { PROJECT_VERSION } from './PROJECT_VERSION'
