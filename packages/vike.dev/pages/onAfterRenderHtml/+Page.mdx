@@ -30,7 +30,7 @@ To access the page's HTML string/stream:
 ```js
 // +onAfterRenderHtml.js
 
-export function onAfterRenderHtml(pageContext) {
+export async function onAfterRenderHtml(pageContext) {
   // The +Page.js component rendered to an HTML string
   pageContext.pageHtmlString
   // The +Page.js component rendered to an HTML stream
@@ -43,7 +43,7 @@ You can mutate `pageContext.pageHtmlString` and `pageContext.pageHtmlStream`, fo
 ```js
 // +onAfterRenderHtml.js
 
-export function onAfterRenderHtml(pageContext) {
+export async function onAfterRenderHtml(pageContext) {
   // Apply some HTML transformation, e.g. HTML minification
   pageContext.pageHtmlString = minifyHtml(pageContext.pageHtmlString)
 }

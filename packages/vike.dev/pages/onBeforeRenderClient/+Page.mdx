@@ -15,7 +15,7 @@ It's called upon rendering the first page (e.g. <Link href="/hydration">hydratio
 > ```js
 > // +onBeforeRenderClient.js
 >
-> export function onBeforeRenderClient(pageContext) {
+> export async function onBeforeRenderClient(pageContext) {
 >   if (pageContext.isHydration) {
 >     // ...
 >   }
