@@ -7,7 +7,7 @@ function RecommendationRouterLibraries({
   libraryName,
   githubRepo,
   link,
-}: { libraryName: string; githubRepo: string; link: string }) {
+}: { libraryName: string; githubRepo?: string; link: string }) {
   const onBeforeRouteLink = (
     <Link href="/onBeforeRoute">
       <code>onBeforeRoute()</code>
@@ -33,20 +33,26 @@ function RecommendationRouterLibraries({
       <blockquote>
         <p>
           We believe routing should be completely owned by the frontend framework. Trying to separate concerns in that
-          regard leads to inherent DX degradations.
+          regard leads to a fundamental DX degradation.
         </p>
       </blockquote>
-      <p>
-        Example of using Vike with {libraryName} (shallow integration without using {onBeforeRouteLink}):
-      </p>
-      <ul>
-        <li>
-          <a href={'https://github.com/' + githubRepo}>
-            GitHub &gt; <code>{githubRepo}</code>
-          </a>
-        </li>
-      </ul>
-      <p>Contributions welcome to explore deep integration using {onBeforeRouteLink}.</p>
+      {githubRepo ? (
+        <>
+          <p>
+            Example of using Vike with {libraryName} (shallow integration without using {onBeforeRouteLink}):
+          </p>
+          <ul>
+            <li>
+              <a href={'https://github.com/' + githubRepo}>
+                GitHub &gt; <code>{githubRepo}</code>
+              </a>
+            </li>
+          </ul>
+          <p>Contributions welcome to explore deep integration using {onBeforeRouteLink}.</p>
+        </>
+      ) : (
+        <>Contributions welcome to create an example of using Vike with {libraryName}.</>
+      )}
     </>
   )
 }

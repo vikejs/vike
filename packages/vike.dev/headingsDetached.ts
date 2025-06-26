@@ -288,6 +288,10 @@ function tools() {
         url: '/vue-router',
       },
       {
+        title: 'TanStack Router',
+        url: '/tanstack-router',
+      },
+      {
         title: 'Vitest',
         url: '/vitest',
       },
