@@ -3,25 +3,23 @@ import { UiFrameworkExtension, ProvidedBy } from '../../components'
 
 Environment: client, and server (if <Link href="/ssr">`ssr: true`</Link>).
 
-<ProvidedBy>the `Layout` setting</ProvidedBy>
+<ProvidedBy>the `+Layout` setting</ProvidedBy>
 
 > **What are layouts?**
 >
-> Your pages will usually share a common visual design.
+> Pages usually share a common visual design; the `+Layout` setting enables you to define such shared visual appearance.
 >
-> Some pages may share a design while other pages share another design. (For example, two admin pages `/admin/product/@id` and `/admin/user/@id` sharing the same navigation sidebar, and two marketing pages `/` and `/about-us` not having any sidebar but sharing a sticky header instead.)
->
-> The `Layout` setting enables you to define such shared visual appearance.
+> It also enables you to define multiple designs: some pages can share a design while other pages share another one. (For example, admin pages might share the same navigation sidebar while marketing pages typically don't have any sidebar but might share a sticky header instead.)
 
-The component defined by the `Layout` setting wraps the <Link href="/Page">`<Page>` component</Link>.
+The component defined by the `+Layout` setting wraps the <Link href="/Page">`+Page` component</Link>.
 
 ```jsx
-<Layout>   ⟸ component defined by the setting "Layout"
-  <Page /> ⟸ component defined by the setting "Page"
+<Layout>     ⟸ component defined by +Layout
+  <Page />   ⟸ component defined by +Page
 </Layout>
 ```
 
-> For integrating tools, we generally recommend using <Link href="/Wrapper">`<Wrapper>`</Link> instead.
+> If you want to add a wrapper component required for installing a tool, we recommend using <Link href="/Wrapper">`<Wrapper>`</Link> instead.
 
 
 ## Global
