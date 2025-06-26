@@ -117,6 +117,44 @@ export const Head = () => <link rel="icon" href={favicon} type="image/svg+xml">
 > If you have a need for overriding, then add a comment at: [#1692 - Add `override` and `default` options for cumulative configs](https://github.com/vikejs/vike/issues/1692)
 
 
+## `<script>`
+
+If you don't use Vue (e.g. React), you can use `+Head` for adding `<script>` tags to all your pages:
+
+```jsx
+// /pages/+Head.jsx
+
+export function Head() {
+  return <>
+    <script type="text/javascript" src="https://example.com/some-script.js"></script>
+    <script>console.log("hello")</script>
+  </>
+}
+```
+
+Adding a `<script>` tag to only one/some pages isn't currently supported: [#2244 - Add `<script>` to only one/some pages](https://github.com/vikejs/vike/issues/2244).
+
+### Vue
+
+If you use Vue, [`<script>` tags cannot be defined inside Vue SFC `<template>`](https://stackoverflow.com/questions/71430887/running-script-tags-within-template-on-vue-js/71442718#71442718). Instead use <Link href="/useConfig">`useConfig()`</Link>:
+
+```vue
+<script setup>
+import { h } from 'vue'
+import { useConfig } from 'vike-vue/useConfig'
+const config = useConfig()
+config({
+  Head: h('script', {
+    type: 'text/javascript',
+    src: 'https://example.com/some-script.js'
+  })
+})
+</script>
+```
+
+See also: <Link href="#how-to-inject-raw-html" />
+
+
 ## How to inject raw HTML?
 
 You can inject any arbitrary HTML string to the page's `<head>`. Examples using:
@@ -163,7 +201,7 @@ function Image({ src, author }) {
 
 ### Vue
 
-You can use `innerHTML` to add raw HTML, for example:
+You can use <Link href="/useConfig">`useConfig()`</Link> with Vue's `innerHTML` to add raw HTML, for example:
 
 ```vue
 <template>
