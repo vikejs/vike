@@ -50,102 +50,16 @@ export function Head() {
 }
 ```
 
-> The `+Head` setting **only applies to the HTML** of the first page the user visits.
+> The `+Head` setting **only applies to the HTML of the first page the user visits** — it doesn't update upon client-side navigation. Therefore, you should use `+Head` only for `<head>` tags that are:
+> - Global (e.g. favicon and PWA settings) — their value is the same across all pages and therefore doesn't need to be updated upon navigation.
+> - Page-specific but intended for crawlers (e.g. SEO and SMO tags) — since crawlers extract information from the HTML of pages.
 >
-> As explained at <Link href="#only-html" />, you should use `+Head` only for `<head>` tags that are either:
-> - **global** (e.g. favicon or PWA settings that don't change between pages), or
-> - intended for **crawlers** (e.g. SEO or social sharing tags).
+> For example:
+> - You cannot use `+Head` for `<title>` (use <Link href="/title">`+title`</Link> instead), because `<title>` sets the title shown in the user's browser tab which typically changes upon client-side navigation.
+> - You can use `+Head` for `<meta property="og:image">`, as it's intended for crawlers (e.g. Bluesky, Twitter).
+> - You can use `+Head` for `<meta name="description">`, as it's also for crawlers (e.g. Google).
 >
-> You cannot use `+Head` for per-page tags intended for the user's browser such as `<title>` (use <Link href="/title">`+title`</Link> instead).
-
-
-## Only HTML
-
-**Only applies to the first page's HTML**
-
-The `+Head` component is only rendered for the HTML of the first page the user visits: the tags set by `+Head` aren't updated upon <Link href="/client-routing">client-side page navigation</Link>.
-
-<div style={{height: 16}} />
-
-**Limitation**
-
-The most notable limitation is that the `+Head` setting cannot be used to set the value of the `<title>` tag, because its value won't update when navigating to a page with a different title.
-
-> See the example below for a more detailed explanation.
-
-Instead use the <Link href="/title">`+title`</Link> setting.
-
-> For use cases where the `+Head` setting cannot be used, Vike offers tailored settings that update upon client-side navigation.
-
-<div style={{height: 16}} />
-
-**Only a small limitation**
-
-This may seem like a major limitation but it actually isn't: you can use the `+Head` setting for the vast majority of use cases.
-
-You can use `+Head` for setting `<head>` tags are read by HTML crawlers:
-
-- Tags for social sites (Twitter, Instagram, ...) such as `<meta property="og:image">` (the preview image upon URL sharing).
-  > Social site bots navigate your website only by using HTML requests: they don't execute client-side JavaScript and don't do client-side navigation.
-- Tags for SEO such as `<meta name="description">`.
-  > While Google can do client-side navigation, it still discovers `<head>` tags by using its HTML crawler.
-
-You can use `+Head` for setting `<head>` tags that are global (they have the same value for all pages):
-
-- Favicon.
-  > Assuming all your pages share the same favicon (`<link rel="icon">`), there isn't any need to update the favicon upon client-side navigation.
-- PWA settings.
-  > PWA settings are global and there isn't any need to update them upon client-side navigation.
-- `<script>`
-  > Assuming the script applies to all your pages.
-
-<div style={{height: 16}} />
-
-**Example**
-
-The following example showcases that using `+Head` for setting `<title>` doesn't work, while it does work for setting `<meta name="description">`.
-
-```js
-// /pages/index/+Head.jsx
-// Environment: server
-
-function Head() {
-  return <>
-    <title>AwesomeRockets</title>
-    <meta name="description" content="The rocket company.">
-  </>
-}
-```
-```js
-// /pages/about/+Head.jsx
-// Environment: server
-
-function Head() {
-  return <>
-    <title>About us</title>
-    <meta name="description" content="We deliver payload to space.">
-  </>
-}
-```
-
-If the first URL the user visits is `/` then the rendered HTML is:
-
-```html
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>AwesomeRockets</title>
-    <meta name="description" content="The rocket company.">
-  </head>
-</html>
-```
-
-If the user then clicks on a link `<a href="/about">About us</a>`, then Vike does client-side navigation and the page's title isn't updated: the browser sill shows `Welcome` even though the URL is now `/about`. That's because the <Link href="/client-routing">HTML isn't used upon client-side navigation (DOM manipulations are made instead)</Link> while `+Head` is only used when generating HTML.
-
-> The `+Head` component is only loaded on the server-side and only used when rendering HTML of the first page by design.
-
-This isn't an issue for the `<meta name="description">` tag because it's intended for search engines bots which
-crawl your website using HTML.
+> For a more detailed explanation, see <Link href="#only-html" />.
 
 
 ## Cumulative
@@ -307,6 +221,95 @@ function Image({ src, author }) {
   )
 }
 ```
+
+
+## Only HTML
+
+**Only applies to the first page's HTML**
+
+The `+Head` component is only rendered for the HTML of the first page the user visits: the tags set by `+Head` aren't updated upon <Link href="/client-routing">client-side page navigation</Link>.
+
+<div style={{height: 16}} />
+
+**Limitation**
+
+The most notable limitation is that the `+Head` setting cannot be used to set the value of the `<title>` tag, because its value won't update when navigating to a page with a different title.
+
+> See the example below for a more detailed explanation.
+
+Instead use the <Link href="/title">`+title`</Link> setting.
+
+> For use cases where the `+Head` setting cannot be used, Vike offers tailored settings that update upon client-side navigation.
+
+<div style={{height: 16}} />
+
+**Only a small limitation**
+
+This may seem like a major limitation but it actually isn't: you can use the `+Head` setting for the vast majority of use cases.
+
+You can use `+Head` for setting `<head>` tags are read by HTML crawlers:
+
+- Tags for social sites (Twitter, Instagram, ...) such as `<meta property="og:image">` (the preview image upon URL sharing).
+  > Social site bots navigate your website only by using HTML requests: they don't execute client-side JavaScript and don't do client-side navigation.
+- Tags for SEO such as `<meta name="description">`.
+  > While Google can do client-side navigation, it still discovers `<head>` tags by using its HTML crawler.
+
+You can use `+Head` for setting `<head>` tags that are global (they have the same value for all pages):
+
+- Favicon.
+  > Assuming all your pages share the same favicon (`<link rel="icon">`), there isn't any need to update the favicon upon client-side navigation.
+- PWA settings.
+  > PWA settings are global and there isn't any need to update them upon client-side navigation.
+- `<script>`
+  > Assuming the script applies to all your pages.
+
+<div style={{height: 16}} />
+
+**Example**
+
+The following example showcases that using `+Head` for setting `<title>` doesn't work, while it does work for setting `<meta name="description">`.
+
+```js
+// /pages/index/+Head.jsx
+// Environment: server
+
+function Head() {
+  return <>
+    <title>AwesomeRockets</title>
+    <meta name="description" content="The rocket company.">
+  </>
+}
+```
+```js
+// /pages/about/+Head.jsx
+// Environment: server
+
+function Head() {
+  return <>
+    <title>About us</title>
+    <meta name="description" content="We deliver payload to space.">
+  </>
+}
+```
+
+If the first URL the user visits is `/` then the rendered HTML is:
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>AwesomeRockets</title>
+    <meta name="description" content="The rocket company.">
+  </head>
+</html>
+```
+
+If the user then clicks on a link `<a href="/about">About us</a>`, then Vike does client-side navigation and the page's title isn't updated: the browser sill shows `Welcome` even though the URL is now `/about`. That's because the <Link href="/client-routing">HTML isn't used upon client-side navigation (DOM manipulations are made instead)</Link> while `+Head` is only used when generating HTML.
+
+> The `+Head` component is only loaded on the server-side and only used when rendering HTML of the first page by design.
+
+This isn't an issue for the `<meta name="description">` tag because it's intended for search engines bots which
+crawl your website using HTML.
 
 
 ## See also
