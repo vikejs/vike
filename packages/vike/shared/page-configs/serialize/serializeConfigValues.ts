@@ -281,7 +281,7 @@ function logJsonSerializeError(err: unknown, configName: string, definedAtData: 
     false,
     `${pc.cyan(
       configName,
-    )} defined by ${configValueFilePathToShowToUser} must be defined over a so-called "pointer import", see https://vike.dev/config#pointer-imports`,
+    )} defined by ${configValueFilePathToShowToUser} must be defined using a separate file ${pc.bold(`+${configName}.js`)}, see https://vike.dev/error/runtime-in-config`,
   )
 }
 

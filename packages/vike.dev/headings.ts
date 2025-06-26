@@ -967,6 +967,10 @@ function misc() {
         url: '/warning/version-mismatch',
       },
       {
+        title: '[Error] Runtime code defined in config file',
+        url: '/error/runtime-in-config',
+      },
+      {
         title: 'Consulting',
         url: '/consulting',
       },

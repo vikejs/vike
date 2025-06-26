@@ -1,0 +1,53 @@
+import { Link, Construction } from '@brillout/docpress'
+
+If you get an error like this:
+
+```
+[Wrong Usage] title defined by /pages/+config.js must be defined using a separate file +title.js
+```
+
+Then this means you're trying to define runtime code inside <Link href="/config">a config file (e.g. `+config.js`)</Link> which is forbidden.
+
+```js
+// pages/+config.js
+
+export default {
+  // ❌ Forbidden: the function title() is runtime code
+  title: (pageContext) => pageContext.data.title
+}
+```
+
+> The `title()` function is called at runtime (when the page is rendered) and *not* at config time (when Vike loads `+config.js` files).
+
+Instead do this:
+
+```js
+// pages/+title.js
+
+// ✅ Allowed: Vike is able to lazily load this function at runtime
+
+export default (pageContext) => pageContext.data.title
+```
+
+Or this:
+
+```js
+// pages/+config.js
+
+// ✅ Allowed: same as defining +title.js
+
+import title from './title' with { type: 'pointer' }
+
+export default {
+  title
+}
+```
+
+<Construction>The `with { type: 'pointer' }` import attribute isn't implement yet, see workaround at [#1500](https://github.com/vikejs/vike/issues/1500).</Construction>
+
+See <Link href="/config#pointer-imports" /> to understand why you cannot define runtime code inside `+config.js`.
+
+
+## See also
+
+- <Link href="/config#pointer-imports" />

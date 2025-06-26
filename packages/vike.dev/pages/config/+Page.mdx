@@ -271,51 +271,6 @@ import './some.css'
 console.log("I will never be logged in production")
 ```
 
-#### Forbidden runtime code
-
-If you get this error:
-
-```js
-[Wrong Usage] title defined by /pages/+config.js must be defined over a so-called "pointer import"
-```
-
-Then this means you're trying to define runtime code inside a `+config.js` file which is forbidden.
-
-```js
-// pages/+config.js
-
-export default {
-  // ❌ Forbidden: the function title() is runtime code
-  title: (pageContext) => pageContext.data.title
-}
-```
-
-> The `title()` function is called at runtime (when the page is rendered) and *not* at config time (when Vike loads `+config.js` files).
-
-Instead do this:
-
-```js
-// pages/+title.js
-
-// ✅ Allowed: Vike is able to lazily load this function at runtime
-
-export default (pageContext) => pageContext.data.title
-```
-
-Or this:
-
-```js
-// pages/+config.js
-
-// ✅ Allowed: same as defining +title.js
-
-import title from './title' with { type: 'pointer' }
-
-export default {
-  title
-}
-```
-
 #### Manually mark pointer imports
 
 You can manually mark an import to be a pointer import:
@@ -335,3 +290,4 @@ console.log(ssr) // Prints: import:./ssr:default
 
 - <Link href="/filesystem-routing" />
 - <Link href="/routing#domain-driven-file-structure" />
+- <Link href="/error/runtime-in-config" />
