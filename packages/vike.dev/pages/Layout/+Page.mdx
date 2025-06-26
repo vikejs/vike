@@ -7,11 +7,11 @@ Environment: client, and server (if <Link href="/ssr">`ssr: true`</Link>).
 
 > **What are layouts?**
 >
-> Pages usually share a common visual design; the `+Layout` setting enables you to define such shared visual appearance.
+> Pages usually share a common visual design. The `+Layout` setting enables you to define such shared visual appearance.
 >
-> It also enables you to define multiple designs: some pages can share a design while other pages share another one. (For example, admin pages might share the same navigation sidebar while marketing pages typically don't have any sidebar but might share a sticky header instead.)
+> You can also define multiple designs: some pages can share a design while other pages share another one. (For example, admin pages and marketing pages typically have a different design.)
 
-The component defined by the `+Layout` setting wraps the <Link href="/Page">`+Page` component</Link>.
+The component defined by the `+Layout` setting wraps the component defined by <Link href="/Page">`+Page`</Link>.
 
 ```jsx
 <Layout>     ⟸ component defined by +Layout
@@ -19,7 +19,7 @@ The component defined by the `+Layout` setting wraps the <Link href="/Page">`+Pa
 </Layout>
 ```
 
-> If you want to add a wrapper component required for installing a tool, we recommend using <Link href="/Wrapper">`<Wrapper>`</Link> instead.
+> If you want to add a wrapper component that is required for installing a tool, then we generally recommend using <Link href="/Wrapper">`<Wrapper>`</Link> instead.
 
 
 ## Global
@@ -42,7 +42,8 @@ function Navigation() { /* ... */ }
 function Content() { /* ... */ }
 ```
 
-> Why `/pages/+Layout.jsx` applies to all pages is explained at <Link href="/config#inheritance" />.
+> The reason `/pages/+Layout.jsx` applies to all pages is explained at <Link href="/config#inheritance" />.
+
 
 ## Multiple
 
