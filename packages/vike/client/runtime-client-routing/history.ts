@@ -187,5 +187,5 @@ function onPopStateBegin() {
 }
 
 function initHistory() {
-  enhanceHistoryState()
+  enhanceHistoryState() // enhance very first window.history.state which is `null`
 }
