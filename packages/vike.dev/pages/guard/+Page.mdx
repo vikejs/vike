@@ -27,7 +27,7 @@ Note that:
 
 ## Execution order
 
-The `guard()` hook is the first hook called after the routing is evaluated. Most notably, it's always called before the <Link href="/data">`data()` hook</Link>. See <Link href="/hooks#order" />.
+The `guard()` hook is the first hook called after the routing is evaluated. Most notably, it's always called before the <Link href="/data">`data()` hook</Link>. See <Link href="/hooks#lifecycle" />.
 
 > We recommend using `throw render()` / `throw redirect()` before fetching data, whenever possible. (Unauthorized/unexpected data fetching can be problematic.)
 
@@ -40,7 +40,7 @@ If you want to guard your pages after or during fetching data, then use <Link hr
 
 The `guard()` hook is called in the same environment as <Link href="/data">`data()`</Link>. In other words, it's always called on the server-side unless you <Link href="/data#environment">configure `data()` to run on the client-side</Link>.
 
-If the page doesn't have any `data()` hook, then `guard()` executes in the environment where the routing is evaluated. See <Link href="/hooks#order" />.
+If the page doesn't have any `data()` hook, then `guard()` executes in the environment where the routing is evaluated. See <Link href="/hooks#lifecycle" />.
 
 For more control on where and when your guarding logic is executed, consider using <Link href="/render">`throw render()`</Link> / <Link href="/redirect">`throw redirect()`</Link> inside another hook than `guard()`.
 
