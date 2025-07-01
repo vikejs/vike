@@ -128,6 +128,8 @@ function replaceHistoryStateOriginal(state: unknown, url: string) {
 function monkeyPatchHistoryAPI() {
   if (globalObject.monkeyPatched) return
   globalObject.monkeyPatched = true
+  // Ensure Vike's monkey patch is the first.
+  assert(window.history.pushState === History.prototype.pushState)
   ;(['pushState', 'replaceState'] as const).forEach((funcName) => {
     const funcOriginal = window.history[funcName].bind(window.history)
     window.history[funcName] = (stateOriginal: unknown = {}, ...rest) => {
@@ -150,6 +152,8 @@ function monkeyPatchHistoryAPI() {
       globalObject.previous = getHistoryInfo()
     }
     ;(window.history[funcName] as any as Record<string, unknown>)._isVikeMonkeyPatch = true
+    // Ensure assert() above isn't a false positive
+    assert(window.history.pushState !== History.prototype.pushState)
   })
 }
 
