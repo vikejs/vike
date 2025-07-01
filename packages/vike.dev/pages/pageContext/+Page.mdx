@@ -445,6 +445,10 @@ import type {
 
 ## Lifecycle
 
+> See also:
+> - <Link href="/globalContext#lifecycle" />
+> - <Link href="/hooks#lifecycle" />
+
 The `pageContext` object is tied to the rendering process of a single page: whenever a new page is rendered, a new `pageContext` object is created. (If the current page is re-rendered, a new `pageContext` object is created as well.)
 
 The lifecycle of the `pageContext` object is straightforward on the client and server. But for pre-rendered pages <Link href="#pre-rendering">it can be surprising (some `pageContext` properties may seem "outdated")</Link>.
