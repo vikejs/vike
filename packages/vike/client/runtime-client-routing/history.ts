@@ -149,6 +149,7 @@ function monkeyPatchHistoryAPI() {
       assertIsVikeEnhanced(getState())
       globalObject.previous = getHistoryInfo()
     }
+    ;(window.history[funcName] as any as Record<string, unknown>)._isVikeMonkeyPatch = true
   })
 }
 
@@ -169,7 +170,12 @@ function isVikeEnhanced(state: unknown): state is StateEnhanced {
 }
 function assertIsVikeEnhanced(state: unknown): asserts state is StateEnhanced {
   if (isVikeEnhanced(state)) return
-  assert(false, { state })
+  assert(false, {
+    state,
+    // TO-DO/eventually: remove _isVikeMonkeyPatch debug info to save KBs
+    pushStateIsVikeMonkeyPatch: (window.history.pushState as any as Record<string, unknown>)._isVikeMonkeyPatch,
+    replaceStateIsVikeMonkeyPatch: (window.history.replaceState as any as Record<string, unknown>)._isVikeMonkeyPatch,
+  })
 }
 
 type HistoryInfo = {
