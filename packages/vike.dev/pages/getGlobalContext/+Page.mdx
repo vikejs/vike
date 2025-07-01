@@ -47,9 +47,9 @@ The returned `globalContext` is the same as the one returned by `getGlobalContex
 
 ## `getGlobalContextSync()`
 
-<Warning>Don't use this: it will be deprecated in the next major release. Use `getGlobalContext()` or <Link href="/pageContext">`pageContext.globalContext`</Link> instead.</Warning>
+Same as `getGlobalContext()` but synchronous. Only works reliably in production.
 
-Same as `getGlobalContext()` but synchronous.
+<Warning>Don't use it in development: use `getGlobalContext()` or <Link href="/pageContext">`pageContext.globalContext`</Link> instead. If you need `getGlobalContextSync()` in development then reach out on GitHub.</Warning>
 
 
 ## See also

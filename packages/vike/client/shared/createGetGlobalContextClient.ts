@@ -80,12 +80,13 @@ function createGetGlobalContextClient<GlobalContextAddendum extends object>(
   }
 }
 
-// The type is never used: it's the type of the server-side getGlobalContext() that is used.
-async function getGlobalContext(): Promise<never> {
+// Type is never exported — it's the server-side getGlobalContext() type that is exported and exposed to the user
+type NeverExported = never
+async function getGlobalContext(): Promise<NeverExported> {
   const globalContext = await globalObject.globalContextPromise
   return globalContext as never
 }
-function getGlobalContextSync(): never {
+function getGlobalContextSync(): NeverExported {
   const { globalContext } = globalObject
   assertUsage(globalContext, getGlobalContextSyncErrMsg)
   return globalContext as never

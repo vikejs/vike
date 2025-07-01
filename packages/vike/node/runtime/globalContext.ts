@@ -175,18 +175,20 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
  * Get runtime information about your app.
  *
  * https://vike.dev/getGlobalContext
- *
- * @deprecated
  */
 function getGlobalContextSync(): GlobalContext {
   debug('getGlobalContextSync()')
   const { globalContext } = globalObjectTyped
   assertUsage(globalContext, getGlobalContextSyncErrMsg)
+  const isProd: boolean = globalContext._isProduction
+  assert(typeof isProd === 'boolean')
   assertWarning(
-    false,
-    // We discourage users from using it because `pageContext.globalContext` is safer: I ain't sure but there could be race conditions when using `getGlobalContextSync()` inside React/Vue components upon HMR.
-    // We're lying about "is going to be deprecated in the next major release": let's keep it and see if users need it (so far I can't see a use case for it).
-    'getGlobalContextSync() is going to be deprecated in the next major release, see https://vike.dev/getGlobalContext',
+    isProd,
+    // - We discourage users from using it in development because `pageContext.globalContext` is safer: I ain't sure but there could be race conditions when using `getGlobalContextSync()` inside React/Vue components upon HMR.
+    // - I don't see any issues with getGlobalContextSync() in production.
+    // - getGlobalContextSync() is used in production by vike-vercel
+    //   - https://discord.com/channels/@me/942519153502339072/1389546794676916344 (PM between Rom and Joël)
+    "getGlobalContextSync() shouldn't be used in development, see https://vike.dev/getGlobalContext",
     { onlyOnce: true },
   )
   return getGlobalContextForPublicUsage()
