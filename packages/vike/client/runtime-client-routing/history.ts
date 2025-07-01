@@ -140,10 +140,9 @@ function monkeyPatchHistoryAPI() {
             ...stateOriginal,
           }
       assert(isVikeEnhanced(stateEnhanced))
-      const ret = funcOriginal(stateEnhanced, ...rest)
+      funcOriginal(stateEnhanced, ...rest)
       assert(isVikeEnhanced(getState()))
       globalObject.previous = getHistoryInfo()
-      return ret
     }
   })
 }
