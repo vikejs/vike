@@ -111,6 +111,7 @@ function pushHistoryState(url: string, overwriteLastHistoryEntry: boolean) {
 function replaceHistoryState(state: StateEnhanced, url?: string) {
   const url_ = url ?? null // Passing `undefined` chokes older Edge versions.
   window.history.replaceState(state, '', url_)
+  assert(isVikeEnhanced(getState()))
 }
 function replaceHistoryStateOriginal(state: unknown, url: string) {
   // Bypass all monkey patches.
