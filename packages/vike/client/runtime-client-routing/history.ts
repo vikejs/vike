@@ -2,7 +2,7 @@ export { pushHistoryState }
 export { replaceHistoryStateOriginal }
 export { onPopStateBegin }
 export { saveScrollPosition }
-export { initHistoryState }
+export { initHistory }
 export { monkeyPatchHistoryAPI }
 export type { HistoryInfo }
 export type { ScrollPosition }
@@ -10,7 +10,7 @@ export type { ScrollPosition }
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 import { assert, assertUsage, getGlobalObject, isObject } from './utils.js'
 
-initHistoryState() // we redundantly call initHistoryState() to ensure it's called early
+initHistory() // we redundantly call initHistory() to ensure it's called early
 const globalObject = getGlobalObject('runtime-client-routing/history.ts', { previous: getHistoryInfo() })
 
 type StateEnhanced = {
@@ -186,6 +186,6 @@ function onPopStateBegin() {
   return { isHistoryStateEnhanced, previous, current }
 }
 
-function initHistoryState() {
+function initHistory() {
   enhanceHistoryState()
 }
