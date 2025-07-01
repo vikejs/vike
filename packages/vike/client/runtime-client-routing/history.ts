@@ -62,7 +62,7 @@ function enhance(stateNotEnhanced: StateNotEnhanced): StateEnhanced {
       _isVikeEnhanced: true,
     }
   }
-  assert(isVikeEnhanced(stateVikeEnhanced))
+  assertIsVikeEnhanced(stateVikeEnhanced)
   return stateVikeEnhanced
 }
 
@@ -73,7 +73,7 @@ function getState(): StateEnhanced {
   // - Therefore, we have to monkey patch history.pushState() and history.replaceState()
   // - Therefore, we need the assert() below to ensure history.state has been enhanced by Vike
   //   - If users stumble upon this assert() then let's make it a assertUsage()
-  assert(isVikeEnhanced(state), { state })
+  assertIsVikeEnhanced(state)
   return state
 }
 function getStateNotEnhanced(): StateNotEnhanced {
@@ -114,7 +114,7 @@ function pushHistoryState(url: string, overwriteLastHistoryEntry: boolean) {
 function replaceHistoryState(state: StateEnhanced, url?: string) {
   const url_ = url ?? null // Passing `undefined` chokes older Edge versions.
   window.history.replaceState(state, '', url_)
-  assert(isVikeEnhanced(getState()))
+  assertIsVikeEnhanced(getState())
 }
 function replaceHistoryStateOriginal(state: unknown, url: string) {
   // Bypass all monkey patches.
@@ -144,9 +144,9 @@ function monkeyPatchHistoryAPI() {
             triggeredBy: 'user',
             ...stateOriginal,
           }
-      assert(isVikeEnhanced(stateEnhanced))
+      assertIsVikeEnhanced(stateEnhanced)
       funcOriginal(stateEnhanced, ...rest)
-      assert(isVikeEnhanced(getState()))
+      assertIsVikeEnhanced(getState())
       globalObject.previous = getHistoryInfo()
     }
   })
@@ -167,6 +167,10 @@ function isVikeEnhanced(state: unknown): state is StateEnhanced {
   }
   return false
 }
+function assertIsVikeEnhanced(state: unknown): asserts state is StateEnhanced {
+  if (isVikeEnhanced(state)) return
+  assert(false, { state })
+}
 
 type HistoryInfo = {
   url: `/${string}`
@@ -183,7 +187,7 @@ function onPopStateBegin() {
 
   const isHistoryStateEnhanced = window.history.state !== null
   if (!isHistoryStateEnhanced) enhanceHistoryState()
-  assert(isVikeEnhanced(window.history.state))
+  assertIsVikeEnhanced(window.history.state)
 
   const current = getHistoryInfo()
   globalObject.previous = current
