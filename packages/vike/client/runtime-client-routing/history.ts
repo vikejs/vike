@@ -3,15 +3,18 @@ export { replaceHistoryStateOriginal }
 export { onPopStateBegin }
 export { saveScrollPosition }
 export { initHistory }
-export { monkeyPatchHistoryAPI }
 export type { HistoryInfo }
 export type { ScrollPosition }
 
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 import { assert, assertUsage, getGlobalObject, isObject } from './utils.js'
 
+const globalObject = getGlobalObject('history.ts', {
+  monkeyPatched: false,
+  previous: undefined as any as HistoryInfo,
+})
 initHistory() // we redundantly call initHistory() to ensure it's called early
-const globalObject = getGlobalObject('runtime-client-routing/history.ts', { previous: getHistoryInfo() })
+globalObject.previous = getHistoryInfo()
 
 type StateEnhanced = {
   timestamp: number
@@ -123,6 +126,8 @@ function replaceHistoryStateOriginal(state: unknown, url: string) {
 // - history.pushState()
 // - history.replaceState()
 function monkeyPatchHistoryAPI() {
+  if (globalObject.monkeyPatched) return
+  globalObject.monkeyPatched = true
   ;(['pushState', 'replaceState'] as const).forEach((funcName) => {
     const funcOriginal = window.history[funcName].bind(window.history)
     window.history[funcName] = (stateOriginal: unknown = {}, ...rest) => {
@@ -187,5 +192,6 @@ function onPopStateBegin() {
 }
 
 function initHistory() {
+  monkeyPatchHistoryAPI() // the earlier we call it the better (Vike can workaround erroneous library monkey patches if Vike is the last one in the monkey patch chain)
   enhanceHistoryState() // enhance very first window.history.state which is `null`
 }
