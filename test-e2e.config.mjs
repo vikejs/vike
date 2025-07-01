@@ -64,8 +64,8 @@ function tolerateError({ logSource, logText, testInfo }) {
       // ```
       'Some chunks are larger than 500 kB after minification.',
 
-      // [23:54:58.279][/test-preview.test.ts][npm run preview][stderr] 11:54:58 PM [vike][Warning] getGlobalContextSync() is going to be deprecated in the next major release, see https://vike.dev/getGlobalContext
-      'getGlobalContextSync() is going to be deprecated',
+      // [22:04:24.193][/test-dev.test.ts][npm run dev][stderr] 10:04:24 PM [vike][request(1)][Warning] getGlobalContextSync() shouldn't be used in development, see https://vike.dev/getGlobalContext
+      "getGlobalContextSync() shouldn't be used in development",
 
       // Required for Cloudflare tests
       // [14:00:34.879][/][npm run preview][stderr] [vike][Warning] process.env.NODE_ENV==="undefined" which is unexpected: process.env.NODE_ENV is allowed to be the *value* undefined (i.e. process.env.NODE_ENV===undefined) but it shouldn't be the *string* "undefined" https://vike.dev/NODE_ENV
