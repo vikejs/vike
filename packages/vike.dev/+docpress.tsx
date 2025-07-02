@@ -22,6 +22,7 @@ const config: Config = {
   discord: discordInvite,
   twitter: '@vike_js',
   bluesky: 'vike.dev',
+  linkedin: 'vikejs',
 
   headings,
   headingsDetached,
