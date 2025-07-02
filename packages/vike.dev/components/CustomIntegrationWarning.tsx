@@ -14,10 +14,10 @@ function CustomIntegrationWarning({ uiFramework }: { uiFramework?: 'react' | 'vu
   )
   return (
     <Advanced>
-      Custom integrations can be complex and we usually recommend using {uiFrameworkExtension} instead.
+      Custom integrations can be complex and we generally recommend using {uiFrameworkExtension} instead.
       <br />
       <br />
-      <span style={{ fontFamily: 'emoji' }}>👉</span> We generally recommend a custom integration only in following
+      <span style={{ fontFamily: 'emoji' }}>👉</span> That said, a custom integration can make sense in following
       scenarios:
       <ul>
         <li>
