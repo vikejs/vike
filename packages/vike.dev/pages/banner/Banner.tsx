@@ -2,7 +2,7 @@ export { Banner }
 export { BannerVikings }
 
 import React from 'react'
-import { heroBgColor, HeroTagline } from '../index/sections/hero/Hero'
+import { HeroTagline } from '../index/sections/hero/Hero'
 import vikeLogo from '../../assets/logo/vike.svg'
 import './Banner.css'
 
