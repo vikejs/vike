@@ -39,7 +39,7 @@ const config: Config = {
 
   topNavigation: <TopNavigation />,
   navMaxWidth: 1140,
-  navLogoSize: 41,
+  navLogoSize: 38,
   navLogoStyle: {
     position: 'relative',
     top: -1,
