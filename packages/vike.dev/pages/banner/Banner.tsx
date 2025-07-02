@@ -60,7 +60,7 @@ function BannerCommon({
         alignItems: 'center',
         justifyContent: 'center',
         height: '100vh',
-        background: heroBgColor,
+        background: '#f0f0f0',
       }}
     >
       <div

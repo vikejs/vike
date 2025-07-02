@@ -1,7 +1,7 @@
 export { Page }
 
 import React from 'react'
-import { Hero, heroBgColor } from './sections/hero/Hero'
+import { Hero } from './sections/hero/Hero'
 import { Sponsors } from './sections/sponsors/Sponsors'
 import { Flexible } from './sections/flexible/Flexible'
 import { Reliable } from './sections/reliable/Reliable'
@@ -14,18 +14,14 @@ import './Page.css'
 function Page() {
   return (
     <div id="landing-page">
-      <Block
-        style={{
-          marginTop: 0,
-          backgroundColor: heroBgColor,
-        }}
-      >
+      <Block style={{ marginTop: 0 }}>
         <Hero />
       </Block>
       <Block
         noGrid
         style={{
           padding: 0,
+          backgroundColor: '#f0f0f0',
         }}
       >
         <Flexible />

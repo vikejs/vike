@@ -412,12 +412,12 @@
 <stop offset="1" stop-opacity="0.4"/>
 </linearGradient>
 <linearGradient id="paint36_linear_459_976" x1="218.5" y1="204" x2="218.5" y2="317" gradientUnits="userSpaceOnUse">
-<stop stop-color="#F5F5F7" stop-opacity="0.5"/>
-<stop offset="1" stop-color="#F5F5F7"/>
+<stop stop-color="#F0F0F0" stop-opacity="0.5"/>
+<stop offset="1" stop-color="#F0F0F0"/>
 </linearGradient>
 <linearGradient id="paint37_linear_459_976" x1="218.5" y1="111" x2="218.5" y2="0" gradientUnits="userSpaceOnUse">
-<stop stop-color="#F5F5F7" stop-opacity="0.5"/>
-<stop offset="1" stop-color="#F5F5F7"/>
+<stop stop-color="#F0F0F0" stop-opacity="0.5"/>
+<stop offset="1" stop-color="#F0F0F0"/>
 </linearGradient>
 <clipPath id="clip0_459_976">
 <rect width="436.82" height="314.31" fill="white" transform="translate(0 1)"/>
