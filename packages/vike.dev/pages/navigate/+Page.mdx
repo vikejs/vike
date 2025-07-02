@@ -26,9 +26,11 @@ async function onSubmit() {
 }
 ```
 
-> If you want to redirect the user while rendering a page then use <Link href='/redirect'>`throw redirect()`</Link> instead. For example, when redirecting a non-authenticated user to a login page. See <Link href="/abort#throw-redirect-vs-throw-render-vs-navigate" doNotInferSectionTitle={true} />.
+> If you want to redirect the user before the page has fully rendered (e.g. redirecting a non-authenticated user), then use <Link href='/redirect'>`throw redirect()`</Link> instead. See: <Link href="/abort#throw-redirect-vs-throw-render-vs-navigate" doNotInferSectionTitle={true} noBreadcrumb />.
 
-> If you want to programmatically navigate back then use [`window.history.back()`](https://developer.mozilla.org/en-US/docs/Web/API/History/back).
+> To navigate back or forward in the user's browser history, use the [History API](https://developer.mozilla.org/en-US/docs/Web/API/History) instead:
+>  - To go back, use [`window.history.back()`](https://developer.mozilla.org/en-US/docs/Web/API/History/back).
+>  - To go forward, use [`window.history.forward()`](https://developer.mozilla.org/en-US/docs/Web/API/History/forward).
 
 
 ## Options
