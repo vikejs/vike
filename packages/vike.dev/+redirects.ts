@@ -44,4 +44,5 @@ const redirects = {
   '/vike-server': '/server',
   '/cloudflare-workers': '/cloudflare',
   '/migration-0.4': '/migration/0.4',
+  '/catch-all': '/route-string#catch-all',
 } as const satisfies Config['redirects']
