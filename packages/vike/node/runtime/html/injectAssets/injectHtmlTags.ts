@@ -183,6 +183,8 @@ function getTagClosing(tag: Tag) {
 }
 
 function injectAtPlaceholder(htmlFragment: string, htmlString: string, isFirst: boolean): null | string {
+  // TO-DO/eventually: soft deprecate in favor of https://github.com/vikejs/vike/issues/695
+  // Used by BurdaForward https://github.com/vikejs/vike/discussions/2528#discussioncomment-13637156
   const placeholder = isFirst ? '__VITE_PLUGIN_SSR__ASSETS_FIRST__' : '__VITE_PLUGIN__SSR_ASSETS_LAST__'
   const parts = htmlString.split(placeholder)
   if (parts.length === 1) return null
