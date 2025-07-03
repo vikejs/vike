@@ -2,7 +2,6 @@ export { Hero }
 export { HeroTagline }
 
 import React from 'react'
-import { primaryColor } from '../../primaryColor'
 import { Button } from '../../components/button/Button'
 import './Hero.css'
 import { linkGetStarted } from '../../links'
@@ -24,15 +23,15 @@ function Hero() {
         alignItems: 'center',
       }}
     >
-      <div style={{ height: 90 }} id="hero-margin-top-1"></div>
-      <VideoTalkLink />
+      <div style={{ height: 60 }} id="hero-margin-top-1"></div>
+      {/* <VideoTalkLink /> */}
       <div style={{ height: 16 }} id="hero-margin-top-2"></div>
       <HeroTagline />
       <div style={{ height: 46 }} id="hero-margin-mid-1"></div>
       <GetStartedBtn />
       <div style={{ height: 52 }} id="hero-margin-mid-2"></div>
       <QuoteTeam>{quoteSentence}</QuoteTeam>
-      <div style={{ height: 100 }} id="hero-margin-mid-3"></div>
+      <div style={{ height: 115 }} id="hero-margin-mid-3"></div>
       <UsedBy />
       <div style={{ height: 120 }} id="hero-margin-bot"></div>
     </div>
@@ -65,7 +64,6 @@ function HeroTagline({
             width: '100%',
             marginBottom: 0,
             fontWeight: 500,
-            lineHeight: 1.1,
           }}
         >
           <div
@@ -75,7 +73,7 @@ function HeroTagline({
               ...taglineStyle,
             }}
           >
-            The Framework{' '}
+            The{' '}
             <span
               style={{
                 fontWeight: 600,
@@ -87,9 +85,9 @@ function HeroTagline({
                 WebkitTextFillColor: 'transparent',
               }}
             >
-              You
+              Modular
             </span>{' '}
-            Control
+            Framework
           </div>
           <div
             id="tagline-secondary"
@@ -113,6 +111,7 @@ function HeroTagline({
   )
 }
 
+/*
 function VideoTalkLink() {
   return (
     <a
@@ -152,6 +151,7 @@ function VideoTalkLink() {
     </a>
   )
 }
+*/
 
 function GetStartedBtn() {
   return (

@@ -13,7 +13,7 @@ const config: Config = {
   name: 'Vike',
   version: PROJECT_VERSION,
   url: 'https://vike.dev',
-  tagline: 'The Framework *You* Control - Next.js & Nuxt alternative for unprecedented flexibility and stability.',
+  tagline: 'The Modular Framework — Next.js & Nuxt alternative for unprecedented flexibility and stability.',
   logo,
   favicon,
   banner: 'https://vike.dev/banner.jpg',
