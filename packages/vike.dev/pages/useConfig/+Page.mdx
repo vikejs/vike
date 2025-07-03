@@ -89,7 +89,7 @@ export function Page() {
 
 #### `<Config>` & `<Head>`
 
-For a more declarative usage, you can use `<Config>` and `<Head>` instead of `useConfig()`:
+For a more declarative usage, you can use the `<Config>` and `<Head>` components instead of `useConfig()`:
 
 ```jsx
 // pages/product/@id/+Page.jsx
@@ -136,9 +136,9 @@ export function Page() {
 > }
 > ```
 >
-> Likewise, `<Head><something/></Head>` and `<Config Head={<something/>}/>` are equivalent as well.
+> Likewise, both `<Head><something/></Head>` and `<Config Head={<something/>}/>` are also equivalent.
 
-> Unlike other frameworks, Vike doesn't implement a `<Title>` component because its value must be a string — `<Title><b>Hello</b> World</Title>` doesn't make sense.
+> Unlike other frameworks, Vike doesn't implement a `<Title>` component the title value must be a string — `<Title><b>Hello</b> World</Title>` wouldn't make sense.
 
 
 #### Example: React Query
