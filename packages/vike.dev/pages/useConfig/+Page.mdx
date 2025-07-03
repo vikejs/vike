@@ -113,9 +113,9 @@ export function Page() {
 }
 ```
 
-> The `<Config>` and `<Head>` components are only `useConfig()` wrappers and achieve the same result — they are just for convenience.
+> The `<Config>` and `<Head>` components are just `useConfig()` wrappers — they're only for convenience.
 >
-> For example, the following are equivalent:
+> For example, the following change achieves the same:
 > ```js
 > export function Page() {
 >   const data = useData()
@@ -135,10 +135,8 @@ export function Page() {
 >   )
 > }
 > ```
->
-> Likewise, both `<Head><something/></Head>` and `<Config Head={<something/>}/>` are also equivalent.
 
-> Unlike other frameworks, Vike doesn't implement a `<Title>` component the title value must be a string — `<Title><b>Hello</b> World</Title>` wouldn't make sense.
+> Unlike other frameworks, Vike doesn't implement a `<Title>` component because the title value must be a string — `<Title><b>Hello</b> World</Title>` wouldn't make sense.
 
 
 #### Example: React Query
