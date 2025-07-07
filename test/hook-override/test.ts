@@ -92,7 +92,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       const done = expectPageContextJsonRequest(false)
       await page.click('a[href="/page-4"]')
       await testCounter(5)
-      ensureWasClientSideRouted('/pages/index')
+      await ensureWasClientSideRouted('/pages/index')
       done()
     }
     expect(await page.textContent('body')).toContain('global data() was called: undefined')

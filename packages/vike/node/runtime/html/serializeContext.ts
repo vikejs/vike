@@ -121,7 +121,20 @@ function serializeObject(
   return serialized
 }
 function serializeValue(value: unknown, varName?: `pageContext${string}` | `globalContext${string}`): string {
-  return stringify(value, { forbidReactElements: true, valueName: varName })
+  return stringify(value, {
+    forbidReactElements: true,
+    valueName: varName,
+    // Prevent Google from crawling URLs in JSON:
+    //  - https://github.com/vikejs/vike/discussions/2541#discussioncomment-13660198
+    //  - https://github.com/vikejs/vike/discussions/2277
+    //  - https://github.com/vikejs/vike/pull/2542
+    replacer(_key, value) {
+      if (typeof value === 'string' && value.startsWith('/')) {
+        // No need to use a reviver: https://github.com/brillout/json-serializer/blob/70fc8ed3741306391b51655b05df24e6963d1fdb/test/main.spec.ts#L74-L80
+        return { replacement: (value = '!' + value) }
+      }
+    },
+  })
 }
 function getPassToClientPageContext(pageContext: {
   pageId: string
