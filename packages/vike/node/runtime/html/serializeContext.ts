@@ -121,7 +121,16 @@ function serializeObject(
   return serialized
 }
 function serializeValue(value: unknown, varName?: `pageContext${string}` | `globalContext${string}`): string {
-  return stringify(value, { forbidReactElements: true, valueName: varName })
+  return stringify(value, {
+    forbidReactElements: true,
+    valueName: varName,
+    // Prevent Google from crawling URLs in JSON
+    replacer(_key, value) {
+      if (typeof value === 'string' && value.startsWith('/')) {
+        return { replacement: (value = '!' + value) }
+      }
+    },
+  })
 }
 function getPassToClientPageContext(pageContext: {
   pageId: string
