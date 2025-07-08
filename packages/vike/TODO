@@ -1,8 +1,5 @@
 = Now
 - vike.dev/onCreatePageContext => use case computed props
-- Use x-powered-by header to check & enforce usage of pageContext.httpResponse.headers
-- Make navigate() automatically add Base URL by default?
-- Update boilerplates to use Hono
 - Add vike.dev/config#cumulative
 - Add vike.dev/config#global
   - Remove all other #global sections
