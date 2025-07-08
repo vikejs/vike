@@ -631,16 +631,13 @@ importers:
         version: link:../../vike
       vike-server:
         specifier: ^1.0.16
-        version: 1.0.16(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
+        version: 1.0.16(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
       vite:
         specifier: ^6.3.2
         version: 6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
 
   packages/create-vike-core/boilerplate-react-ts:
     dependencies:
-      '@types/express':
-        specifier: ^5.0.1
-        version: 5.0.1
       '@types/node':
         specifier: ^22.10.2
         version: 22.15.30
@@ -656,9 +653,9 @@ importers:
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
-      express:
-        specifier: ^5.1.0
-        version: 5.1.0
+      hono:
+        specifier: ^4.8.4
+        version: 4.8.4
       node-fetch:
         specifier: ^3.3.2
         version: 3.3.2
@@ -676,7 +673,7 @@ importers:
         version: link:../../vike
       vike-server:
         specifier: ^1.0.16
-        version: 1.0.16(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
+        version: 1.0.16(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
       vite:
         specifier: ^6.3.2
         version: 6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
@@ -706,7 +703,7 @@ importers:
         version: link:../../vike
       vike-server:
         specifier: ^1.0.16
-        version: 1.0.16(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
+        version: 1.0.16(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
       vite:
         specifier: ^6.3.2
         version: 6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
@@ -748,7 +745,7 @@ importers:
         version: link:../../vike
       vike-server:
         specifier: ^1.0.16
-        version: 1.0.16(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
+        version: 1.0.16(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
       vite:
         specifier: ^6.3.2
         version: 6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
@@ -1628,10 +1625,10 @@ importers:
     dependencies:
       '@universal-middleware/core':
         specifier: ^0.4.7
-        version: 0.4.7(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)
+        version: 0.4.7(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)
       '@universal-middleware/express':
         specifier: ^0.4.15
-        version: 0.4.15(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)
+        version: 0.4.15(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)
       '@vitejs/plugin-react':
         specifier: ^4.5.1
         version: 4.5.1(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
@@ -1705,7 +1702,7 @@ importers:
         version: 22.15.30
       '@universal-middleware/core':
         specifier: ^0.4.7
-        version: 0.4.7(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)
+        version: 0.4.7(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -1714,7 +1711,7 @@ importers:
         version: 0.2.3(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
       vike-server:
         specifier: ^1.0.16
-        version: 1.0.16(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
+        version: 1.0.16(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
       wrangler:
         specifier: ^4.14.4
         version: 4.14.4(@cloudflare/workers-types@4.20250510.0)
@@ -1780,7 +1777,7 @@ importers:
         version: 0.6.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
       vike-server:
         specifier: ^1.0.16
-        version: 1.0.16(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
+        version: 1.0.16(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
       vite:
         specifier: ^6.3.5
         version: 6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
@@ -1827,7 +1824,7 @@ importers:
         version: 19.1.6(@types/react@19.1.6)
       '@universal-middleware/express':
         specifier: ^0.4.15
-        version: 0.4.15(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)
+        version: 0.4.15(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)
       '@vercel/node':
         specifier: ^5.1.16
         version: 5.1.16(@swc/core@1.11.24)(rollup@4.43.0)
@@ -5436,6 +5433,10 @@ packages:
 
   hono@4.7.9:
     resolution: {integrity: sha512-/EsCoR5h7N4yu01TDu9GMCCJa6ZLk5ZJIWFFGNawAXmd1Tp53+Wir4xm0D2X19bbykWUlzQG0+BvPAji6p9E8Q==}
+    engines: {node: '>=16.9.0'}
+
+  hono@4.8.4:
+    resolution: {integrity: sha512-KOIBp1+iUs0HrKztM4EHiB2UtzZDTBihDtOF5K6+WaJjCPeaW4Q92R8j63jOhvJI5+tZSMuKD9REVEXXY9illg==}
     engines: {node: '>=16.9.0'}
 
   hosted-git-info@7.0.2:
@@ -9361,6 +9362,15 @@ snapshots:
       '@hattip/core': 0.0.49
       hono: 4.7.9
 
+  '@universal-middleware/core@0.4.7(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)':
+    dependencies:
+      regexparam: 3.0.0
+      tough-cookie: 5.1.2
+    optionalDependencies:
+      '@cloudflare/workers-types': 4.20250510.0
+      '@hattip/core': 0.0.49
+      hono: 4.8.4
+
   '@universal-middleware/elysia@0.4.8(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)':
     dependencies:
       '@universal-middleware/core': 0.4.7(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)
@@ -9373,9 +9383,33 @@ snapshots:
       - h3
       - hono
 
+  '@universal-middleware/elysia@0.4.8(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)':
+    dependencies:
+      '@universal-middleware/core': 0.4.7(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)
+    transitivePeerDependencies:
+      - '@cloudflare/workers-types'
+      - '@hattip/core'
+      - '@webroute/route'
+      - elysia
+      - fastify
+      - h3
+      - hono
+
   '@universal-middleware/express@0.4.15(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)':
     dependencies:
       '@universal-middleware/core': 0.4.7(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)
+    transitivePeerDependencies:
+      - '@cloudflare/workers-types'
+      - '@hattip/core'
+      - '@webroute/route'
+      - elysia
+      - fastify
+      - h3
+      - hono
+
+  '@universal-middleware/express@0.4.15(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)':
+    dependencies:
+      '@universal-middleware/core': 0.4.7(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
       - '@hattip/core'
@@ -9399,9 +9433,35 @@ snapshots:
       - h3
       - hono
 
+  '@universal-middleware/fastify@0.5.17(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)':
+    dependencies:
+      '@universal-middleware/core': 0.4.7(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)
+      '@universal-middleware/express': 0.4.15(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)
+      fastify-raw-body: 5.0.0
+    transitivePeerDependencies:
+      - '@cloudflare/workers-types'
+      - '@hattip/core'
+      - '@webroute/route'
+      - elysia
+      - fastify
+      - h3
+      - hono
+
   '@universal-middleware/h3@0.4.9(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)':
     dependencies:
       '@universal-middleware/core': 0.4.7(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)
+    transitivePeerDependencies:
+      - '@cloudflare/workers-types'
+      - '@hattip/core'
+      - '@webroute/route'
+      - elysia
+      - fastify
+      - h3
+      - hono
+
+  '@universal-middleware/h3@0.4.9(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)':
+    dependencies:
+      '@universal-middleware/core': 0.4.7(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
       - '@hattip/core'
@@ -9423,9 +9483,33 @@ snapshots:
       - h3
       - hono
 
+  '@universal-middleware/hattip@0.4.8(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)':
+    dependencies:
+      '@universal-middleware/core': 0.4.7(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)
+    transitivePeerDependencies:
+      - '@cloudflare/workers-types'
+      - '@hattip/core'
+      - '@webroute/route'
+      - elysia
+      - fastify
+      - h3
+      - hono
+
   '@universal-middleware/hono@0.4.10(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)':
     dependencies:
       '@universal-middleware/core': 0.4.7(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)
+    transitivePeerDependencies:
+      - '@cloudflare/workers-types'
+      - '@hattip/core'
+      - '@webroute/route'
+      - elysia
+      - fastify
+      - h3
+      - hono
+
+  '@universal-middleware/hono@0.4.10(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)':
+    dependencies:
+      '@universal-middleware/core': 0.4.7(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
       - '@hattip/core'
@@ -11315,6 +11399,8 @@ snapshots:
       react-is: 16.13.1
 
   hono@4.7.9: {}
+
+  hono@4.8.4: {}
 
   hosted-git-info@7.0.2:
     dependencies:
@@ -13506,6 +13592,32 @@ snapshots:
       '@universal-middleware/h3': 0.4.9(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)
       '@universal-middleware/hattip': 0.4.8(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)
       '@universal-middleware/hono': 0.4.10(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)
+      '@universal-middleware/sirv': 0.1.20
+      esbuild: 0.25.4
+      vike: link:packages/vike
+    optionalDependencies:
+      vite: 6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
+    transitivePeerDependencies:
+      - '@cloudflare/workers-types'
+      - '@hattip/core'
+      - '@webroute/route'
+      - elysia
+      - fastify
+      - h3
+      - hono
+
+  vike-server@1.0.16(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)):
+    dependencies:
+      '@brillout/picocolors': 1.0.28
+      '@brillout/vite-plugin-server-entry': 0.7.9
+      '@universal-middleware/compress': 0.2.30
+      '@universal-middleware/core': 0.4.7(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)
+      '@universal-middleware/elysia': 0.4.8(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)
+      '@universal-middleware/express': 0.4.15(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)
+      '@universal-middleware/fastify': 0.5.17(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)
+      '@universal-middleware/h3': 0.4.9(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)
+      '@universal-middleware/hattip': 0.4.8(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)
+      '@universal-middleware/hono': 0.4.10(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)
       '@universal-middleware/sirv': 0.1.20
       esbuild: 0.25.4
       vike: link:packages/vike
