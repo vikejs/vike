@@ -611,9 +611,6 @@ importers:
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
-      express:
-        specifier: ^5.1.0
-        version: 5.1.0
       node-fetch:
         specifier: ^3.3.2
         version: 3.3.2
@@ -692,9 +689,6 @@ importers:
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
-      express:
-        specifier: ^5.1.0
-        version: 5.1.0
       node-fetch:
         specifier: ^3.3.2
         version: 3.3.2
@@ -713,9 +707,6 @@ importers:
 
   packages/create-vike-core/boilerplate-vue-ts:
     dependencies:
-      '@types/express':
-        specifier: ^5.0.1
-        version: 5.0.1
       '@types/node':
         specifier: ^22.10.2
         version: 22.15.30
@@ -731,9 +722,6 @@ importers:
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
-      express:
-        specifier: ^5.1.0
-        version: 5.1.0
       node-fetch:
         specifier: ^3.3.2
         version: 3.3.2

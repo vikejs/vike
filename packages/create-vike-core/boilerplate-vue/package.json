@@ -9,7 +9,6 @@
     "@vue/compiler-sfc": "^3.5.13",
     "@vue/server-renderer": "^3.5.13",
     "cross-env": "^7.0.3",
-    "express": "^5.1.0",
     "node-fetch": "^3.3.2",
     "vike": "^0.4.235",
     "vike-server": "^1.0.16",
