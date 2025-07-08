@@ -611,6 +611,9 @@ importers:
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
+      hono:
+        specifier: ^4.8.4
+        version: 4.8.4
       node-fetch:
         specifier: ^3.3.2
         version: 3.3.2
@@ -689,6 +692,9 @@ importers:
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
+      hono:
+        specifier: ^4.8.4
+        version: 4.8.4
       node-fetch:
         specifier: ^3.3.2
         version: 3.3.2
@@ -722,6 +728,9 @@ importers:
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
+      hono:
+        specifier: ^4.8.4
+        version: 4.8.4
       node-fetch:
         specifier: ^3.3.2
         version: 3.3.2
@@ -5419,10 +5428,6 @@ packages:
   hoist-non-react-statics@3.3.2:
     resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
 
-  hono@4.7.9:
-    resolution: {integrity: sha512-/EsCoR5h7N4yu01TDu9GMCCJa6ZLk5ZJIWFFGNawAXmd1Tp53+Wir4xm0D2X19bbykWUlzQG0+BvPAji6p9E8Q==}
-    engines: {node: '>=16.9.0'}
-
   hono@4.8.4:
     resolution: {integrity: sha512-KOIBp1+iUs0HrKztM4EHiB2UtzZDTBihDtOF5K6+WaJjCPeaW4Q92R8j63jOhvJI5+tZSMuKD9REVEXXY9illg==}
     engines: {node: '>=16.9.0'}
@@ -9341,15 +9346,6 @@ snapshots:
 
   '@universal-middleware/compress@0.2.30': {}
 
-  '@universal-middleware/core@0.4.7(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)':
-    dependencies:
-      regexparam: 3.0.0
-      tough-cookie: 5.1.2
-    optionalDependencies:
-      '@cloudflare/workers-types': 4.20250510.0
-      '@hattip/core': 0.0.49
-      hono: 4.7.9
-
   '@universal-middleware/core@0.4.7(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)':
     dependencies:
       regexparam: 3.0.0
@@ -9358,18 +9354,6 @@ snapshots:
       '@cloudflare/workers-types': 4.20250510.0
       '@hattip/core': 0.0.49
       hono: 4.8.4
-
-  '@universal-middleware/elysia@0.4.8(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)':
-    dependencies:
-      '@universal-middleware/core': 0.4.7(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)
-    transitivePeerDependencies:
-      - '@cloudflare/workers-types'
-      - '@hattip/core'
-      - '@webroute/route'
-      - elysia
-      - fastify
-      - h3
-      - hono
 
   '@universal-middleware/elysia@0.4.8(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)':
     dependencies:
@@ -9383,35 +9367,9 @@ snapshots:
       - h3
       - hono
 
-  '@universal-middleware/express@0.4.15(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)':
-    dependencies:
-      '@universal-middleware/core': 0.4.7(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)
-    transitivePeerDependencies:
-      - '@cloudflare/workers-types'
-      - '@hattip/core'
-      - '@webroute/route'
-      - elysia
-      - fastify
-      - h3
-      - hono
-
   '@universal-middleware/express@0.4.15(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)':
     dependencies:
       '@universal-middleware/core': 0.4.7(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)
-    transitivePeerDependencies:
-      - '@cloudflare/workers-types'
-      - '@hattip/core'
-      - '@webroute/route'
-      - elysia
-      - fastify
-      - h3
-      - hono
-
-  '@universal-middleware/fastify@0.5.17(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)':
-    dependencies:
-      '@universal-middleware/core': 0.4.7(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)
-      '@universal-middleware/express': 0.4.15(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)
-      fastify-raw-body: 5.0.0
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
       - '@hattip/core'
@@ -9435,18 +9393,6 @@ snapshots:
       - h3
       - hono
 
-  '@universal-middleware/h3@0.4.9(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)':
-    dependencies:
-      '@universal-middleware/core': 0.4.7(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)
-    transitivePeerDependencies:
-      - '@cloudflare/workers-types'
-      - '@hattip/core'
-      - '@webroute/route'
-      - elysia
-      - fastify
-      - h3
-      - hono
-
   '@universal-middleware/h3@0.4.9(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)':
     dependencies:
       '@universal-middleware/core': 0.4.7(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)
@@ -9459,33 +9405,9 @@ snapshots:
       - h3
       - hono
 
-  '@universal-middleware/hattip@0.4.8(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)':
-    dependencies:
-      '@universal-middleware/core': 0.4.7(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)
-    transitivePeerDependencies:
-      - '@cloudflare/workers-types'
-      - '@hattip/core'
-      - '@webroute/route'
-      - elysia
-      - fastify
-      - h3
-      - hono
-
   '@universal-middleware/hattip@0.4.8(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)':
     dependencies:
       '@universal-middleware/core': 0.4.7(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)
-    transitivePeerDependencies:
-      - '@cloudflare/workers-types'
-      - '@hattip/core'
-      - '@webroute/route'
-      - elysia
-      - fastify
-      - h3
-      - hono
-
-  '@universal-middleware/hono@0.4.10(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)':
-    dependencies:
-      '@universal-middleware/core': 0.4.7(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
       - '@hattip/core'
@@ -11385,8 +11307,6 @@ snapshots:
   hoist-non-react-statics@3.3.2:
     dependencies:
       react-is: 16.13.1
-
-  hono@4.7.9: {}
 
   hono@4.8.4: {}
 
@@ -13540,9 +13460,9 @@ snapshots:
 
   vike-cloudflare@0.2.3(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)):
     dependencies:
-      hono: 4.7.9
+      hono: 4.8.4
       vike: link:packages/vike
-      vike-server: 1.0.16(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
+      vike-server: 1.0.16(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
       vite: 6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
     optionalDependencies:
       '@hattip/adapter-cloudflare-workers': 0.0.49
@@ -13567,32 +13487,6 @@ snapshots:
       react-dom: 19.1.0(react@19.1.0)
       react-streaming: 0.4.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       vike: link:packages/vike
-
-  vike-server@1.0.16(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)):
-    dependencies:
-      '@brillout/picocolors': 1.0.28
-      '@brillout/vite-plugin-server-entry': 0.7.9
-      '@universal-middleware/compress': 0.2.30
-      '@universal-middleware/core': 0.4.7(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)
-      '@universal-middleware/elysia': 0.4.8(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)
-      '@universal-middleware/express': 0.4.15(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)
-      '@universal-middleware/fastify': 0.5.17(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)
-      '@universal-middleware/h3': 0.4.9(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)
-      '@universal-middleware/hattip': 0.4.8(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)
-      '@universal-middleware/hono': 0.4.10(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.7.9)
-      '@universal-middleware/sirv': 0.1.20
-      esbuild: 0.25.4
-      vike: link:packages/vike
-    optionalDependencies:
-      vite: 6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
-    transitivePeerDependencies:
-      - '@cloudflare/workers-types'
-      - '@hattip/core'
-      - '@webroute/route'
-      - elysia
-      - fastify
-      - h3
-      - hono
 
   vike-server@1.0.16(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)):
     dependencies:
