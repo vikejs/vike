@@ -36,7 +36,7 @@ const config: Config = {
   googleAnalytics: 'G-QW0N4TCTYF',
 
   pressKit: true,
-  docsDir: 'packages/vike.dev',
+  docsDir: 'docs',
 
   topNavigation: <TopNavigation />,
   navMaxWidth: 1140,

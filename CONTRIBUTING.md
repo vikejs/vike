@@ -124,7 +124,7 @@ pnpm build # At the monorepo root
 **3. Develop docs**
 
 ```shell
-cd packages/vike.dev/ # From the monorepo root
+cd docs/ # From the monorepo root
 pnpm run dev
 ```
 
