@@ -7,7 +7,7 @@
   "dependencies": {
     "@vitejs/plugin-react": "^4.5.1",
     "cross-env": "^7.0.3",
-    "express": "^5.1.0",
+    "hono": "^4.8.4",
     "node-fetch": "^3.3.2",
     "prop-types": "15.8.1",
     "react": "^19.1.0",

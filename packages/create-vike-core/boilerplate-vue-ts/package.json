@@ -5,13 +5,12 @@
     "prod": "vike build && cross-env NODE_ENV=production node dist/server/index.js"
   },
   "dependencies": {
-    "@types/express": "^5.0.1",
     "@types/node": "^22.10.2",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/compiler-sfc": "^3.5.13",
     "@vue/server-renderer": "^3.5.13",
     "cross-env": "^7.0.3",
-    "express": "^5.1.0",
+    "hono": "^4.8.4",
     "node-fetch": "^3.3.2",
     "typescript": "^5.8.3",
     "vike": "^0.4.235",
