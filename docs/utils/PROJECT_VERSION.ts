@@ -1,1 +1,1 @@
-../../vike/utils/PROJECT_VERSION.ts
+../../packages/vike/utils/PROJECT_VERSION.ts
