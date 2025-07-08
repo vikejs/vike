@@ -1,22 +1,23 @@
-= Now
+= TODO/now
 - vike.dev/onCreatePageContext => use case computed props
 - Add vike.dev/config#cumulative
 - Add vike.dev/config#global
   - Remove all other #global sections
-- Move packages/{vike.dev,telefunc.com} to docs/ ?
+
+= TODO/soon
 - Add assertWarning() deprecations:
   - `pageContext.exports`
   - `pageContext.configEntries`
-
-= TO-DO/next-major-release:
-== Urgent (do it already in `0.4.x` release branch)
 - Soft depracate TS helpers such as OnRenderHtmlAsync https://vike.dev/onRenderHtml#typescript
 - Soft deprecate returning `pageContext` from `onBeforeRender()`
   - Depecrate all return values of `onBeforeRender()`, `onRenderHtml`, and all hooks?
     - Including `documentHtml` and `injectFilter()`
       - Use pageContext.html and pageContext.injectFilter instead
 - pageContext.url + soft deprecate pageContext.urlParsed
+  - Add negligible breaking change
   - Maybe/eventually: `$ pnpm migrate pageContext.url`? Probably not for now: instead recommend `$ rename urlParsed url`.
+
+= TO-DO/next-major-release:
 == Highest Prio
 - Triage https://github.com/vikejs/vike/issues?q=state%3Aopen%20label%3A%22v1%20release%20%3Astar2%3A%22 and remove non-breaking changes => release new feature in `1.x.x` release branch
 - Remove old design
