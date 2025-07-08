@@ -12,8 +12,8 @@ importers:
         specifier: ^1.9.4
         version: 1.9.4
       '@brillout/spellcheck':
-        specifier: ^0.1.1
-        version: 0.1.1
+        specifier: ^0.1.2
+        version: 0.1.2
       '@brillout/test-e2e':
         specifier: ^0.6.14
         version: 0.6.14
@@ -2239,11 +2239,11 @@ packages:
   '@brillout/require-shim@0.1.2':
     resolution: {integrity: sha512-3I4LRHnVZXoSAsEoni5mosq9l6eiJED58d9V954W4CIZ88AUfYBanWGBGbJG3NztaRTpFHEA6wB3Hn93BmmJdg==}
 
-  '@brillout/shell@0.2.0':
-    resolution: {integrity: sha512-PAUZOIePE9zdkYVUE1Ybpx5Q2ydNbTluTzQ4w5x4WuWMn+zQF3+DG4gRuQy76ZM1ScdiCK5gldgGJQrVx4w5lg==}
+  '@brillout/shell@0.2.1':
+    resolution: {integrity: sha512-l5PTMWw6rndD7vZcMvw1bv31sTzpz0qP3q409PD50ATsfxhvbMvDVySnV73Okoskfd673oClIlt6OnupbQJqHA==}
 
-  '@brillout/spellcheck@0.1.1':
-    resolution: {integrity: sha512-Jf3+7bsPV+mJ6l2rRBAiIys7dDnkrlafTmBucBcUd0auJsEY2L/EzgmY4/AUteg02AEfIh6sNojqgSc8SGYmwg==}
+  '@brillout/spellcheck@0.1.2':
+    resolution: {integrity: sha512-DNJKsGPRps/3rwezmtMMoNwrcIpqnDPkqArEK5eS3vpkRJGzVaSH8suGf1+TmgUIsHn2Y1bgLIz9jh7w0EqwHw==}
     hasBin: true
 
   '@brillout/test-e2e@0.6.14':
@@ -8018,14 +8018,14 @@ snapshots:
 
   '@brillout/require-shim@0.1.2': {}
 
-  '@brillout/shell@0.2.0':
+  '@brillout/shell@0.2.1':
     dependencies:
       '@brillout/picocolors': 1.0.28
 
-  '@brillout/spellcheck@0.1.1':
+  '@brillout/spellcheck@0.1.2':
     dependencies:
       '@brillout/picocolors': 1.0.28
-      '@brillout/shell': 0.2.0
+      '@brillout/shell': 0.2.1
 
   '@brillout/test-e2e@0.6.14':
     dependencies:
