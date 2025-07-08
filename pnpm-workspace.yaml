@@ -1,5 +1,6 @@
 packages:
   - 'packages/*'
+  - 'docs/'
   - 'packages/create-vike-core/boilerplate-*'
   - 'examples/*'
   - 'test/*'

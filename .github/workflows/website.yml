@@ -6,7 +6,7 @@ on:
       - main
     # Only run this workflow if there are changes in the following
     paths:
-      - packages/vike.dev/**
+      - docs/**
       - .github/workflows/website.yml
 jobs:
   build-and-deploy:
@@ -24,7 +24,7 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
           branch: gh-pages
-          folder: packages/vike.dev/dist/client
+          folder: docs/dist/client
           # Remove previous build files
           clean: true
           # Remove history — avoiding exploding Git repository size

@@ -1,0 +1,1 @@
+../../packages/vike/utils/PROJECT_VERSION.ts

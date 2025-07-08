@@ -33,6 +33,42 @@ importers:
         specifier: ^5.8.3
         version: 5.8.3
 
+  docs:
+    dependencies:
+      '@batijs/elements':
+        specifier: ^0.0.48
+        version: 0.0.48
+      '@brillout/docpress':
+        specifier: ^0.15.6
+        version: 0.15.6(@algolia/client-search@5.21.0)(@types/react@19.1.6)(@vitejs/plugin-react-swc@3.10.1(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)))(acorn@8.14.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.8.3)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
+      '@types/react':
+        specifier: ^19.0.2
+        version: 19.1.6
+      '@types/react-dom':
+        specifier: ^19.0.2
+        version: 19.1.6(@types/react@19.1.6)
+      react:
+        specifier: ^19.1.0
+        version: 19.1.0
+      react-dom:
+        specifier: ^19.1.0
+        version: 19.1.0(react@19.1.0)
+      react-tabs:
+        specifier: ^6.1.0
+        version: 6.1.0(react@19.1.0)
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
+      vike:
+        specifier: 0.4.235
+        version: link:../packages/vike
+      vite:
+        specifier: ^6.3.4
+        version: 6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
+      vite-plugin-svgr:
+        specifier: ^4.3.0
+        version: 4.3.0(rollup@4.43.0)(typescript@5.8.3)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
+
   examples/auth:
     dependencies:
       '@types/express':
@@ -834,42 +870,6 @@ importers:
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
-
-  packages/vike.dev:
-    dependencies:
-      '@batijs/elements':
-        specifier: ^0.0.48
-        version: 0.0.48
-      '@brillout/docpress':
-        specifier: ^0.15.6
-        version: 0.15.6(@algolia/client-search@5.21.0)(@types/react@19.1.6)(@vitejs/plugin-react-swc@3.10.1(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.8.3)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
-      '@types/react':
-        specifier: ^19.0.2
-        version: 19.1.6
-      '@types/react-dom':
-        specifier: ^19.0.2
-        version: 19.1.6(@types/react@19.1.6)
-      react:
-        specifier: ^19.1.0
-        version: 19.1.0
-      react-dom:
-        specifier: ^19.1.0
-        version: 19.1.0(react@19.1.0)
-      react-tabs:
-        specifier: ^6.1.0
-        version: 6.1.0(react@19.1.0)
-      typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
-      vike:
-        specifier: 0.4.235
-        version: link:../vike
-      vite:
-        specifier: ^6.3.4
-        version: 6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
-      vite-plugin-svgr:
-        specifier: ^4.3.0
-        version: 4.3.0(rollup@4.43.0)(typescript@5.8.3)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
 
   test-deprecated-design/base-url:
     dependencies:
@@ -7969,14 +7969,14 @@ snapshots:
   '@biomejs/cli-win32-x64@1.9.4':
     optional: true
 
-  '@brillout/docpress@0.15.6(@algolia/client-search@5.21.0)(@types/react@19.1.6)(@vitejs/plugin-react-swc@3.10.1(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.8.3)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))':
+  '@brillout/docpress@0.15.6(@algolia/client-search@5.21.0)(@types/react@19.1.6)(@vitejs/plugin-react-swc@3.10.1(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)))(acorn@8.14.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.8.3)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))':
     dependencies:
       '@brillout/picocolors': 1.0.28
       '@docsearch/css': 3.9.0
       '@docsearch/react': 3.9.0(@algolia/client-search@5.21.0)(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(search-insights@2.17.3)
       '@mdx-js/mdx': 3.0.1
       '@mdx-js/react': 3.0.1(@types/react@19.1.6)(react@19.1.0)
-      '@mdx-js/rollup': 3.0.1(rollup@4.43.0)
+      '@mdx-js/rollup': 3.0.1(acorn@8.14.1)(rollup@4.43.0)
       '@shikijs/transformers': 1.2.0
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
@@ -8759,7 +8759,7 @@ snapshots:
       '@types/react': 19.1.6
       react: 19.1.0
 
-  '@mdx-js/rollup@3.0.1(rollup@4.43.0)':
+  '@mdx-js/rollup@3.0.1(acorn@8.14.1)(rollup@4.43.0)':
     dependencies:
       '@mdx-js/mdx': 3.1.0(acorn@8.14.1)
       '@rollup/pluginutils': 5.1.4(rollup@4.43.0)

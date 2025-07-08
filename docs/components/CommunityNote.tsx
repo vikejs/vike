@@ -79,5 +79,5 @@ function HasExtension({
 }
 
 function getEditLink(path?: string) {
-  return `https://github.com/vikejs/vike/blob/main/packages/vike.dev/pages${path}/+Page.mdx?plain=1`
+  return `https://github.com/vikejs/vike/blob/main/docs/pages${path}/+Page.mdx?plain=1`
 }
