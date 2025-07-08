@@ -36,7 +36,6 @@ const config: Config = {
   googleAnalytics: 'G-QW0N4TCTYF',
 
   pressKit: true,
-  docsDir: 'docs',
 
   topNavigation: <TopNavigation />,
   navMaxWidth: 1140,
