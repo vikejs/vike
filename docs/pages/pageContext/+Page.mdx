@@ -140,7 +140,14 @@ It's set by <Link href="/server">`vike-server`</Link> (which uses [`universal-mi
 
 <Prop name="config" />
 
-All runtime information about the <Link href="/config">page's configuration</Link> (the page's route, hooks, settings, ...).
+The page's runtime <Link href="/config">configuration</Link> (both <Link href="/settings">settings</Link> and <Link href="/hooks">hooks</Link>).
+
+> Some configurations aren't available at runtime; they are only available at config-time.
+
+> See also:
+> - <Link href="/globalContext#config">`globalContext.config`</Link>
+> - <Link href="/globalContext#pages">`globalContext.pages`</Link>
+> - <Link href="/getVikeConfig" />
 
 <Prop name="isHydration" />
 
@@ -221,7 +228,7 @@ Whether the Base URL is missing in the URL of the HTTP request made to the SSR s
 
 <Prop name="globalContext" />
 
-Runtime information about your app, see <Link href="/globalContext" />.
+The <Link href="/globalContext">`globalContext` object</Link>.
 
 <Prop name="isPageContext" />
 

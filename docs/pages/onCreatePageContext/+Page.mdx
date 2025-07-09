@@ -4,24 +4,100 @@ Environment: `server`, `client`.
 Cumulative: `true`.  
 Global: `false`.  
 
-Hook called whenever a <Link href="/pageContext">`pageContext` object</Link> is created.
+Hook called when a <Link href="/pageContext">`pageContext` object</Link> is created.
 
-It's typically used for initializing `pageContext` properties:
-
-```ts
+```js
 // pages/+onCreatePageContext.ts
 // Environment: server & client
 
 import type { PageContext } from 'vike/types'
 
 export async function onCreatePageContext(pageContext: PageContext) {
-  pageContext.someInstance = new Instance({ some: 'initial-value' })
+  // The object pageContext was just created
 }
 ```
 
-You can define `+onCreatePageContext.server.js` or `+onCreatePageContext.client.js` to have `onCreatePageContext()` be called only on the server- or client-side. You can also define both for defining two different `onCreatePageContext()` hooks. See <Link href="/file-env" />.
+You can define:
+- `+onCreatePageContext.js` => called when a `pageContext` is created (both client and server).
+- `+onCreatePageContext.server.js` => called when a `pageContext` is created on the server.
+- `+onCreatePageContext.client.js` => called when a `pageContext` is created on the client.
+- `+onCreatePageContext.server.js` and `+onCreatePageContext.server.js` => two different `onCreatePageContext()` hooks for server and client.
 
-A common use case is to initialize a <Link href="/store">store</Link> on the server-side:
+> See also: <Link href="/file-env" />.
+
+> The `onCreatePageContext()` hook is called right after <Link href="/routing">routing</Link>, see <Link href="/hooks#lifecycle" />.
+
+
+## Use cases
+
+### Init
+
+Initializing a `pageContext` property:
+
+```ts
+// pages/+onCreatePageContext.client.ts
+// Environment: client
+
+import type { PageContextClient } from 'vike/types'
+
+export async function onCreatePageContext(pageContext: PageContextClient) {
+  pageContext.someInstance = new Instance()
+}
+
+declare global {
+  namespace Vike {
+    interface PageContextClient {
+      someInstance: Instance
+    }
+  }
+}
+```
+
+### Computed properties
+
+Defining a `pageContext` property derived from multiple other properties:
+
+```ts
+// pages/+onCreatePageContext.server.ts
+// Environment: server
+
+import type { PageContextServer } from 'vike/types'
+
+export async function onCreatePageContext(pageContext: PageContextServer) {
+  pageContext.pageURLs =
+    pageContext.globalContext.pages
+    .map(page => ({
+      url: page.route,
+      isActive: page.route === pageContext.urlParsed.pathname
+    }))
+}
+
+declare global {
+  namespace Vike {
+    // We extend PageContext instead of PageContextServer because pageURLs is passed to the client
+    interface PageContext {
+      pageURLs: { url: string, isActive: boolean }[]
+    }
+  }
+}
+```
+
+```ts
+// pages/+config.ts
+
+export default {
+  passToClient: ['pageURLs']
+}
+```
+
+> See also:
+> - <Link href="/globalContext#pages">API > `globalContext.pages`</Link>
+> - <Link href="/pageContext#urlParsed">API > `pageContext.urlParsed`</Link>
+> - <Link href="/markdown#with-a-custom-setting-eager" doNotInferSectionTitle />
+
+### Store
+
+Initializing a <Link href="/store">store</Link> on the server-side:
 
 ```ts
 // pages/+onCreatePageContext.server.ts
@@ -33,9 +109,21 @@ import type { PageContextServer } from 'vike/types'
 export async function onCreatePageContext(pageContext: PageContextServer) {
   pageContext.store = new Store()
 }
+
+declare global {
+  namespace Vike {
+    interface PageContextServer {
+      store: Store
+    }
+  }
+}
 ```
 
 On the client-side, the store is typically initialized by using a <Link href="/onCreateGlobalContext" noBreadcrumb/>.
+
+See also:
+ - <Link href="/onCreateGlobalContext#store" />
+ - <Link href="/store#manual-integration" />
 
 ## See also
 

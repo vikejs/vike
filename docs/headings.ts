@@ -317,6 +317,7 @@ const headings = [
     level: 2,
     title: 'Markdown',
     url: '/markdown',
+    sectionTitles: ['With a custom setting (eager)'],
   },
   {
     level: 2,

@@ -1,5 +1,4 @@
 = TODO/now
-- vike.dev/onCreatePageContext => use case computed props
 - Add vike.dev/config#cumulative
 - Add vike.dev/config#global
   - Remove all other #global sections

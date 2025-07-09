@@ -2,13 +2,11 @@ import { Warning, Link } from '@brillout/docpress'
 
 Environment: Vite.
 
-Get all the information Vike knows about the app in your Vite plugin.
+Get the app's <Link href="/config">configurations</Link> that are available at config-time.
 
 <Warning>It's a beta feature: expect breaking changes in any minor version update.</Warning>
 
-> It provides all configurations set by <Link href="/config#files">`+` files</Link> and <Link href="/extensions">Vike extensions</Link>.
->
-> It only provides configurations at build-time. To get configurations at runtime use <Link href="/globalContext#config">`globalContext.config`</Link> and <Link href="/globalContext#pages">`globalContext.pages`</Link> instead.
+> It only returns configurations that are available at config-time (i.e. at build- and dev-time). To get configurations at (production) runtime use <Link href="/globalContext#config">`globalContext.config`</Link> and <Link href="/globalContext#pages">`globalContext.pages`</Link> instead.
 
 ```js
 // vite.config.js
@@ -43,5 +41,7 @@ function myVitePlugin() {
 
 - <Link href="/config#files" />
 - <Link href="/getGlobalContext" />
+- <Link href="/globalContext#config">API > `globalContext.config`</Link>
+- <Link href="/globalContext#pages">API > `globalContext.pages`</Link>
 - [Vite > Plugin API > `configResolved`](https://vite.dev/guide/api-plugin.html#configresolved)
 - [Vite > Plugin API > `config`](https://vite.dev/guide/api-plugin.html#config)

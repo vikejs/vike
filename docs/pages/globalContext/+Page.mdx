@@ -24,55 +24,68 @@ While `globalContext` has some built-in properties, it's mostly used to store <L
 
 <Prop name="pages" />
 
-Environment: server, client
+Environment: server, client.
 
-Eagerly loaded runtime information about all your pages' <Link href="/config">configuration</Link> (e.g., all page routes).
+Eagerly loaded runtime <Link href="/config">configurations</Link> of all pages.
+
+> Most configurations of a page aren't eagerly loaded: they're only loaded when rendering that page and, consequently, aren't available to other pages. Only a few configurations are eagerly loaded — the notable ones being <Link href="/route">the page's route</Link> and <Link href="/prefetchStaticAssets">the page's prefetch setting</Link>.
+
+> Some page configurations aren't available at runtime; they are only available at config-time.
+
+> See also: [`globalContext.config`](#config)
 
 <Prop name="config" />
 
-Environment: server, client
+Environment: server, client.
 
-Runtime information about your app's global <Link href="/config">configuration</Link>.
+The app's global runtime <Link href="/config">configuration</Link> (such as <Link href="/base-url">the base URL setting</Link>).
+
+> Most global configurations aren't available at runtime; they are only available at config-time.
+
+> See also:
+> - <Link href="/pageContext#config">`pageContext.config`</Link>
+> - [`globalContext.pages`](#pages)
+> - <Link href="/getVikeConfig" />
 
 <Prop name="isClientSide" />
 
-Environment: server, client
+Environment: server, client.
 
 Same as <Link href="/pageContext#isClientSide">`pageContext.isClientSide`</Link>.
 
 <Prop name="isGlobalContext" />
 
-Environment: server, client
+Environment: server, client.
 
 Like <Link href="/pageContext#isPageContext">`pageContext.isPageContext`</Link>.
 
 <Prop name="assetsManifest" />
 
-Environment: server
+Environment: server.
 
 The <Link href="/preloading#assets-manifest">assets manifest</Link>.
 
 <Prop name="viteConfig" />
 
-Environment: server
+Environment: server.
 
 The entire Vite's config, only available at development and during <Link href="/pre-rendering">pre-rendering</Link>.
 
 <Prop name="viteConfigRuntime" />
 
-Environment: server
+Environment: server.
 
 A tiny subset of Vite's config that is also available in production.
 
 <Prop name="baseAssets" />
 
-Environment: server
+Environment: server.
 
 The <Link href="/base-url#baseassets">assets Base URL</Link>.
 
 <Prop name="baseServer" />
 
-Environment: server
+Environment: server.
 
 The <Link href="/base-url#baseserver">server Base URL</Link>.
 

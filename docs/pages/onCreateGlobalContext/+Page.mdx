@@ -4,35 +4,35 @@ Environment: `server`, `client`.
 Cumulative: `true`.  
 Global: `true`.  
 
-Hook called whenever the <Link href="/globalContext">`globalContext` object</Link> is created.
+Hook called when the <Link href="/globalContext">`globalContext` object</Link> is created.
 
-It's typically used for initializing `globalContext` properties:
+```js
+// pages/+onCreateGlobalContext.ts
+// Environment: server & client
 
-```ts
-// pages/+onCreateGlobalContext.server.ts
-// Environment: server
+import type { GlobalContext } from 'vike/types'
 
-import type { GlobalContextServer } from 'vike/types'
-
-export async function onCreateGlobalContext(globalContext: GlobalContextServer) {
-  // Common use case: fetch initial data
-  globalContext.someInitialData = await fetchSomeData()
+export async function onCreateGlobalContext(globalContext: GlobalContext) {
+  // The object globalContext was just created
 }
 ```
 
+You can define:
+- `+onCreateGlobalContext.js` => called when `globalContext` is created (both client and server).
+- `+onCreateGlobalContext.server.js` => called when `globalContext` is created on the server.
+- `+onCreateGlobalContext.client.js` => called when `globalContext` is created on the client.
+- `+onCreateGlobalContext.server.js` and `+onCreateGlobalContext.server.js` => two different `onCreateGlobalContext()` hooks for server and client.
+
 > See also: <Link href="/file-env" />.
 
-```ts
-// pages/+config.ts
+> See <Link href="/globalContext#lifecycle" /> for details when `onCreateGlobalContext()` called.
 
-import type { Config } from 'vike/types'
 
-export default {
-   passToClient: ['someInitialData']
-} satisfies Config
-```
+## Use cases
 
-> <Link href="/passToClient" noBreadcrumb /> also works for `globalContext`.
+### Init
+
+Initializing a `globalContext` property:
 
 ```ts
 // pages/+onCreateGlobalContext.client.ts
@@ -41,17 +41,82 @@ export default {
 import type { GlobalContextClient } from 'vike/types'
 
 export async function onCreateGlobalContext(globalContext: GlobalContextClient) {
-  // Common use case: initialize user object
-  globalContext.loggedInUser = retrieveUserFromCookie()
+  globalContext.someInstance = new Instance()
+}
+
+declare global {
+  namespace Vike {
+    interface GlobalContextClient {
+      someInstance: Instance
+    }
+  }
 }
 ```
+
+### Global data
+
+Fetching global data that is accessible to all pages:
+
+```ts
+// pages/+onCreateGlobalContext.server.ts
+// Environment: server
+
+import type { GlobalContextServer } from 'vike/types'
+
+export async function onCreateGlobalContext(globalContext: GlobalContextServer) {
+  globalContext.someData = await fetchSomeData()
+}
+
+declare global {
+  namespace Vike {
+    // Extend GlobalContext instead of GlobalContextServer because someData is passed to client
+    interface GlobalContext {
+      someData: Awaited<ReturnType<typeof fetchSomeData>>
+    }
+  }
+}
+```
+
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+
+export default {
+  passToClient: ['someData']
+} satisfies Config
+```
+
+> <Link href="/passToClient" noBreadcrumb /> also works for `globalContext`.
+
+### Authentication
+
+Client-side authentication:
+
+```ts
+// pages/+onCreateGlobalContext.client.ts
+// Environment: client
+
+import type { GlobalContextClient } from 'vike/types'
+
+export async function onCreateGlobalContext(globalContext: GlobalContextClient) {
+  globalContext.loggedInUser = retrieveUserFromCookie()
+}
+
+declare global {
+  namespace Vike {
+    interface GlobalContextClient {
+      loggedInUser: ReturnType<typeof retrieveUserFromCookie>
+    }
+  }
+}
+```
+
 > See also: <Link href="/auth#ssg" doNotInferSectionTitle />.
 
-> To understand when the `onCreateGlobalContext()` hook is called, see <Link href="/globalContext#lifecycle" />.
+### Store
 
-You can also define a single hook, `pages/+onCreateGlobalContext.ts`, which is called on both the client- and server-side — but this is a very rare use case in practice.
-
-Another common use case is to initialize a <Link href="/store">store</Link>:
+Initializing a <Link href="/store">store</Link> on the client-side:
 
 ```ts
 // pages/+onCreateGlobalContext.client.ts
@@ -63,11 +128,21 @@ import type { GlobalContextServer } from 'vike/types'
 export async function onCreateGlobalContext(globalContext: GlobalContextServer) {
   globalContext.store = new Store()
 }
+
+declare global {
+  namespace Vike {
+    interface GlobalContextServer {
+      store: Store
+    }
+  }
+}
 ```
 
 On the server-side, the store is typically initialized by using a <Link href="/onCreatePageContext" noBreadcrumb />.
 
-See also: <Link href="/store#manual-integration" />
+See also:
+ - <Link href="/onCreatePageContext#store" />
+ - <Link href="/store#manual-integration" />
 
 
 ## See also

@@ -181,7 +181,7 @@ export const metadata = {
 }
 ```
 
-> Unlike in the example <Link href="#with-a-custom-setting">below</Link>, you cannot define `+metadata` inside `+Page.mdx` files because each `+Page.mdx` is <Link href="/lazy-transpiling">loaded lazily</Link> when rendering the page. Consequently, the content of `+Page.mdx` isn't available to other pages — it's available only locally.
+> Unlike in the example <Link href="#with-a-custom-setting">below</Link> you cannot define `+metadata` inside `+Page.mdx`, because `+Page.mdx` is <Link href="/lazy-transpiling">only loaded when rendering that page</Link>. Consequently, the content of `+Page.mdx` isn't available when rendering another page.
 
 ```ts
 // /pages/+onCreateGlobalContext.server.ts
@@ -216,8 +216,18 @@ declare global {
 ```
 
 > See also:
-> - <Link href="/onCreateGlobalContext" />
 > - <Link href="/globalContext#pages">API > `globalContext.pages`</Link>
+> - <Link href="/onCreateGlobalContext" />
+
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+
+export default {
+   passToClient: ['posts']
+} satisfies Config
+```
 
 ```jsx
 // /pages/+Layout.jsx
