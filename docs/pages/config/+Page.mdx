@@ -105,7 +105,8 @@ export default {
 }
 ```
 
-> <Link href="#cumulative">Cumulative configurations</Link> don't get overriden.
+> To set defaults and override <Link href="#cumulative">cumulative configurations</Link>, see: [#1692 - New settings `inherit` and `default` for controlling inheritance of cumulative configs](https://github.com/vikejs/vike/issues/1692).
+
 
 ### Cumulative
 
@@ -130,8 +131,6 @@ pages/(marketing)/+Layout.js
 
 The `pages/(marketing)/+Layout.js` file doesn't override `pages/+Layout.js` — instead, multiple `<Layout>` components nest within each other.
 
-> See also: [#1692 - New settings `inherit` and `default` for controlling inheritance of cumulative configs](https://github.com/vikejs/vike/issues/1692)
-
 In contrast, the <Link href="/title">`+title` setting</Link> isn't cumulative — a page can only have one title.
 
 ```yaml
@@ -140,8 +139,6 @@ pages/+title.js
 # Defines the title of the product page, overriding pages/+title.js
 pages/product/@id/+title.js
 ```
-
-> See also: <Link href="#defaults" />
 
 ### Domain-driven File Structure
 
