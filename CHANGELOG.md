@@ -63,6 +63,14 @@
 * pre-render static +redirects ([#2497](https://github.com/vikejs/vike/issues/2497)) ([4a6ad3e](https://github.com/vikejs/vike/commit/4a6ad3e19e50e743b2305e8c436b23d1619d2876))
 
 
+### MINOR BREAKING CHANGES
+
+> [!NOTE]
+> We recommend ignoring `MINOR BREAKING CHANGES` unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
+
+* The `pages/` directories are now also ignored by config inheritance, see [Filesystem Routing > Ignored directories](https://vike.dev/filesystem-routing#ignored-directories)
+
+
 
 ## [0.4.231](https://github.com/vikejs/vike/compare/v0.4.230...v0.4.231) (2025-05-30)
 

@@ -8,33 +8,70 @@ For a quick overview see <Link href="/routing#filesystem-routing" doNotInferSect
 ## Ignored directories
 
 Following directories are ignored by Filesystem Routing:
+ - `src/`
  - `index/`
  - `pages/`
- - `src/`
- - `(someDir)/` (any directory inside parentheses)
-
-```
-FILESYSTEM                                                     URL
-=========================================================      ========
-pages/index/+Page.js                                           /
-(marketing)/src/pages/jobs/+Page.js                            /jobs
-(some)/(path)/src/pages/jobs/+Page.js                          /jobs
-contact/+Page.js                                               /contact
-pages/pages/src/(some-dir)/src/index/pages/about/+Page.js      /about
-```
-
-Note that they aren't ignored by <Link href="/config#inheritance">config inheritance</Link>:
+ - <Link href="/routing#groups">`(someDir)/`</Link> (any directory inside parentheses)
+ - <Link href="#renderer">`renderer/`</Link>
 
 ```yaml
-pages/about/+Page.js
-# This +config.js file doesn't apply to pages/about/+Page.js
-src/pages/+config.js
+FILESYSTEM                                                    URL
+========================================================      ========
+pages/index/+Page.js                                          /
+src/(marketing)/pages/jobs/+Page.js                           /jobs
+pages/pages/src/(some-dir)/about/renderer/index/+Page.js      /about
 ```
 
-See also:
- - <Link href="/routing#groups" />
- - <Link href="/routing#src" doNotInferSectionTitle />
- - <Link href="/routing#domain-driven-file-structure" />
+Note that, except of `pages/` and `renderer/`, these directories aren't ignored by <Link href="/config#inheritance">config inheritance</Link>:
+
+```yaml
+pages/index/+config.js
+# The +config.js above doesn't apply to pages/about/
+pages/about/+Page.js
+```
+
+```yaml
+# This +config.js file applies to admin-panel/**/*
+admin-panel/pages/+config.js
+# This +config.js file applies to (marketing)/**/*
+(marketing)/page/+config.js
+```
+
+> See also: <Link href="/routing#groups" />
+
+Unlike the other ignored directories, the `pages/` and `renderer/` directories are also ignored by config inheritance:
+
+```yaml
+###################
+## Configuration ##
+###################
+# This +config.js file applies everywhere (i.e. /**/* — including the root directory)
+pages/+config.js
+# This +onRenderClient.js hook applies everywhere (i.e. /**/* — including the root directory)
+renderer/+onRenderClient.js
+# This +onRenderHtml.js hook applies only to admin-panel/**/*
+admin-panel/renderer/+onRenderHtml.js
+# This +onRenderHtml.js hook applies only to (marketing)/**/*
+(marketing)/pages/+onRenderHtml.js
+
+###################
+###### Pages ######
+###################
+# This page is configured by:
+# - pages/+config.js
+# - renderer/+onRenderClient.js
+# - (marketing)/pages/+onRenderHtml.js
+(marketing)/pages/index/+Page.js
+# This page is configured by:
+# - pages/+config.js
+# - renderer/+onRenderClient.js
+# - admin-panel/renderer/+onRenderHtml.js
+admin-panel/pages/index/+Page.js
+```
+
+> See also:
+>  - <Link href="/onRenderHtml" />
+>  - <Link href="/onRenderClient" />
 
 
 ## Case sensitive
@@ -94,8 +131,6 @@ If you don't use a <UiFrameworkExtension /> then we recommend placing your UI fr
 The hooks `/renderer/+onRender{Html,Client}.js` apply as default to all pages `/pages/**/+Page.js`.
 
 The `renderer/` directory doesn't add any functionality: defining the hooks `+onRender{Html,Client}.js` at `/renderer/` is equivalent to defining them at `/pages/` or `/`. It's just an optional convenience for moving rendering logic outside of `pages/`: in order to avoid cluttering the `pages/` directory and to organize and put all rendering code in one place.
-
-> The `renderer/` directory is different from the <Link href="#ignored-directories">list of ignored directories</Link> because it's ignored not only by Filesystem Routing but also by <Link href="/config#inheritance">config inheritance</Link>. It's the only directory that is ignored by config inheritance.
 
 > We recommend defining a `renderer/` directory only if you are implementing a custom UI framework (React/Vue/Solid/...) integration.
 
