@@ -140,6 +140,21 @@ pages/+title.js
 pages/product/@id/+title.js
 ```
 
+### Global
+
+A configuration is called *global* when it always applies to all pages. Thus, config inheritance doesn't apply to global configs.
+
+For example, <Link href="/base-url">Base URL settings</Link> apply globally to your app.
+
+```yaml
+# Defining +baseAssets for a single page doesn't make sense — Vike logs a warning
+# since this +baseAssets.js file applies to all pages.
+/pages/about/+baseAssets.js
+/pages/about/+Page.js
+# No config inheritance — the +baseAssets.js file also applies to this page.
+/pages/index/+Page.js
+```
+
 ### Domain-driven File Structure
 
 You can use a <Link href="/routing#domain-driven-file-structure">domain-driven file structure</Link> to better organization configuration inheritance.
