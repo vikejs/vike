@@ -15,7 +15,7 @@ function ProvidedBy({
       <p className="no-top-margin">Provided by: {<UiFrameworkExtension name list={list} />}.</p>
       <blockquote>
         <p>
-          You need {<UiFrameworkExtension name list={list} />} to be able to use {children ?? 'this setting'}.
+          You need to install {<UiFrameworkExtension name list={list} />} to be able to use {children ?? 'this setting'}.
           {!noCustomGuide && (
             <>
               {' '}
