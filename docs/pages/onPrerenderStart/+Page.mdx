@@ -1,6 +1,10 @@
 import { HookTypeScriptHints } from '../../components'
 import { Link } from '@brillout/docpress'
 
+Environment: build-time (Node.js/Bun/Deno)  
+<Link href="/config#global">Global</Link>: true  
+<Link href="/config#cumulative">Cumulative</Link>: false  
+
 The `onPrerenderStart()` hook is called once when <Link href="/pre-rendering">pre-rendering</Link> starts.
 It receives as argument an array of all <Link href="/pageContext">page contexts</Link> to be pre-rendered, and returns
 a new array of page contexts, giving you a chance to add/remove/modify pages. This is usually used for
