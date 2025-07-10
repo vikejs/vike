@@ -13,7 +13,7 @@ function ProvidedBy({
   const uiFrameworkList = <UiFrameworkExtension name list={list} />
   return (
     <>
-      <p className="no-top-margin">Provided by: {uiFrameworkList}.</p>
+      <p className="no-top-margin">Provided by: {uiFrameworkList}</p>
       <blockquote>
         <p>
           You need to install {uiFrameworkList} to be able to use {children ?? 'this setting'}.
