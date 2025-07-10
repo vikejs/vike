@@ -1,9 +1,10 @@
 import { Link, Warning } from '@brillout/docpress'
-import { ProvidedBy, GlobalNote } from '../../components'
+import { ProvidedBy } from '../../components'
 
 Type: `string | null | ((pageContext) => string | null | undefined)`  
 Environment: server.  
-Global: `true`.  
+<Link href="/config#global">Global</Link>: true.  
+<Link href="/config#cumulative">Cumulative</Link>: false.  
 
 <ProvidedBy noCustomGuide />
 
@@ -23,10 +24,7 @@ export default {
 }
 ```
 
-
-## Global
-
-<GlobalNote />
+> If you want to set a different favicon for different pages, then consider creating a custom setting as shown at <Link href="/head-tags#custom-settings" />.
 
 
 ## See also

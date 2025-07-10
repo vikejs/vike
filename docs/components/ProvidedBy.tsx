@@ -10,12 +10,13 @@ function ProvidedBy({
   list,
   noCustomGuide,
 }: { children: React.ReactNode; list?: UiFrameworkExtensionList; noCustomGuide?: true }) {
+  const uiFrameworkList = <UiFrameworkExtension name list={list} />
   return (
     <>
-      <p className="no-top-margin">Provided by: {<UiFrameworkExtension name list={list} />}.</p>
+      <p className="no-top-margin">Provided by: {uiFrameworkList}.</p>
       <blockquote>
         <p>
-          You need {<UiFrameworkExtension name list={list} />} to be able to use {children ?? 'this setting'}.
+          You need to install {uiFrameworkList} to be able to use {children ?? 'this setting'}.
           {!noCustomGuide && (
             <>
               {' '}

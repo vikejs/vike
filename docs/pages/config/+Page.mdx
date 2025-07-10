@@ -1,6 +1,6 @@
 import { Link, Construction, FileRemoved } from '@brillout/docpress'
 
-All there is to know about how Vike's config files work.
+Detailed information about Vike's config files.
 
 For a list of configurations, see instead:
  - <Link href="/settings" />
@@ -9,7 +9,7 @@ For a list of configurations, see instead:
 
 ## `+` files
 
-You configure your Vike app by creating `+` files such as `+config.js`.
+You configure your Vike app by creating `+` files.
 
 For example, you can set the <Link href="/Page">`Page`</Link> and <Link href="/Layout">`Layout`</Link> settings of a page by defining `+config.js`:
 
@@ -35,35 +35,26 @@ export default /* ... */
 export default /* ... */
 ```
 
-For more convenience, you can prepend `+` to the file names:
+For more convenience, you can prepend `+` to the file names and do this:
 
 ```bash
+/pages/product/@id/+config.js # [!code --]
 /pages/product/@id/Page.jsx # [!code --]
-/pages/product/@id/+Page.jsx # [!code ++]
 /pages/product/@id/Layout.jsx # [!code --]
+/pages/product/@id/+Page.jsx # [!code ++]
 /pages/product/@id/+Layout.jsx # [!code ++]
 ```
 
-You then don't need to define `/pages/product/@id/+config.js` anymore: Vike will automatically pick up these `+` files.
-
-<FileRemoved>
-```js
-// /pages/product/@id/+config.js
-
-import Page from './Page'
-import Layout from './Layout'
-
-export default {
-  Page,
-  Layout
-}
-```
-</FileRemoved>
+Vike automatically picks up any such `+` file, and it doesn't make any difference whether you define `Page`/`Layout` via `+config.js > export default { Page, Layout }` or `+Page.jsx`/`+Layout.jsx`
 
 > Except of `+config.js`, any `+` file corresponds to a <Link href="/settings">Vike setting</Link> or <Link href="/hooks">Vike hook</Link>.
 
 
 ## Inheritance
+
+Vike comes with a powerful config inheritance system that enables great flexibility and control.
+
+### Basics
 
 You can apply configurations to all pages, a group of pages, or only one page. For example:
 
@@ -83,7 +74,7 @@ pages/product/@id/+Page.jsx
 pages/product/@id/+Layout.jsx
 ```
 
-> The directory `(marketing)` is ignored by <Link href="/filesystem-routing">Filesystem Routing</Link>: it's used for <Link href="/routing#groups">grouping</Link>.
+> The directory `(marketing)` is ignored by Filesystem Routing, see <Link href="/routing#groups" />.
 
 Where:
 
@@ -114,11 +105,59 @@ export default {
 }
 ```
 
-> Cumulative configurations, such as <Link href="/Layout">`<Layout>`</Link>, don't get overridden. See [#1692 - [Cumulative configs] New settings `override` and `default`](https://github.com/vikejs/vike/issues/1692).
+> To set defaults and override <Link href="#cumulative">cumulative configurations</Link>, see: [#1692 - New settings `inherit` and `default` for controlling inheritance of cumulative configs](https://github.com/vikejs/vike/issues/1692).
+
+
+### Cumulative
+
+A configuration is called *cumulative* when it can be defined multiple times.
+
+For example, the <Link href="/Layout">`+Layout` setting</Link> is cumulative — a page can be wrapped by multiple `<Layout>` components.
+
+```yaml
+# Defines the outer layout
+pages/+Layout.js
+# Defines the inner layout (aka nested layout)
+pages/(marketing)/+Layout.js
+```
+
+```jsx
+<Layout>      ⟸ pages/+Layout.js
+  <Layout>    ⟸ pages/(marketing)/+Layout.js
+    <Page />
+  </Layout>
+</Layout>
+```
+
+The `pages/(marketing)/+Layout.js` file doesn't override `pages/+Layout.js` — instead, multiple `<Layout>` components nest within each other.
+
+In contrast, the <Link href="/title">`+title` setting</Link> isn't cumulative — a page can only have one title.
+
+```yaml
+# Defines the default title
+pages/+title.js
+# Defines the title of the product page, overriding pages/+title.js
+pages/product/@id/+title.js
+```
+
+### Global
+
+A configuration is called *global* when it always applies to all pages. Thus, config inheritance doesn't apply to global configs.
+
+For example, <Link href="/base-url">Base URL settings</Link> apply globally to your app.
+
+```yaml
+# Defining +baseAssets for a single page doesn't make sense — Vike logs a warning
+# since this +baseAssets.js file applies to all pages, not just this one.
+/pages/about/+baseAssets.js
+/pages/about/+Page.js
+# No config inheritance — the +baseAssets.js file also applies to this page.
+/pages/index/+Page.js
+```
 
 ### Domain-driven File Structure
 
-You can use a <Link href="/routing#domain-driven-file-structure">domain-driven file structure</Link> for better organization and/or for improved configuration inheritance.
+You can use a <Link href="/routing#domain-driven-file-structure">domain-driven file structure</Link> to better organization configuration inheritance.
 
 ### Powerful
 
