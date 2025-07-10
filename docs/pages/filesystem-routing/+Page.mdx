@@ -1,4 +1,4 @@
-import { Link, Warning } from '@brillout/docpress'
+import { Link } from '@brillout/docpress'
 import { UiFrameworkExtension } from '../../components'
 
 Detailed information about Vike's Filesystem Routing.
@@ -97,9 +97,7 @@ The `renderer/` directory doesn't add any functionality: defining the hooks `+on
 
 > The `renderer/` directory is different from the <Link href="#ignored-directories">list of ignored directories</Link> because it's ignored not only by Filesystem Routing but also by <Link href="/config#inheritance">config inheritance</Link>. It's the only directory that is ignored by config inheritance.
 
-<Warning>
-We recommend defining a `renderer/` directory only if you are implementing a custom UI framework (React/Vue/Solid/...) integration.
-</Warning>
+> We recommend defining a `renderer/` directory only if you are implementing a custom UI framework (React/Vue/Solid/...) integration.
 
 
 ## See also
