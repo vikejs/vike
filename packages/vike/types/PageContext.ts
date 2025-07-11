@@ -128,7 +128,12 @@ type PageContextBuiltInCommon<Data> = {
    * https://vike.dev/headers
    * https://vike.dev/pageContext#headersOriginal
    */
-  headersOriginal?: unknown
+  headersOriginal?:
+    | Record<string, string>
+    | [string, string][]
+    // `string[][]` isn't accurate but we tolerate it for easier DX
+    | string[][]
+    | Headers
   /** If an error occurs, whether the error is a `404 Page Not Found`.
    *
    * https://vike.dev/error-page
