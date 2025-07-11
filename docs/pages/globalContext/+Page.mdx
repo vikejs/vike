@@ -117,17 +117,18 @@ The lifecycle of the `globalContext` object is completely different between the 
 
 ### Server-side
 
-The `globalContext` is created when the server starts and lives until the server process is shut down.
+The `globalContext` is created when the server starts, and lives until the server process shuts down. For example, if your server process runs for 5 days, then the `globalContext` object lives for 5 days.
 
-If your JavaScript server runs in a single process, then you have a single `globalContext` object for your entire server-side. If that server process stays alive for many days at a time, then the `globalContext` object does too.
+If your JavaScript server runs as a single process, then you have only one `globalContext` object for your entire server-side.
 
-On edge environments, where there can be multiple server processes/workers, you can have multiple server-side `globalContext` object — one per process/worker.
+On edge environments, there are typically multiple server processes/workers, so you get multiple server-side `globalContext` objects — one per process/worker.
 
 ### Client-side
 
-When a user starts visiting your website, a new `globalContext` object is created that lives until the user closes your website. If the user opens your website in multiple tabs, there is one `globalContext` per tab.
+When a user starts visiting your website, a new `globalContext` object is created that lives until the user closes your website. If the user opens your website in multiple tabs, then there is one `globalContext` per tab.
 
-Given multiple users visiting your website, there can be a lot of client-side `globalContext` objects, which are, by their very nature, ephemeral.
+For example, if 3 users are simultaneously visiting your website — two users with 1 tab and one user with 3 tabs — then there are 5 (`1 + 1 + 3 = 5`) client-side `globalContext` objects.
+
 
 ### Pre-rendering
 
