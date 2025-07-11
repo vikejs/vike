@@ -108,17 +108,11 @@ For <Link href="/pre-rendering">pre-rendered pages / SSG apps</Link>, in order t
 
 ## Global data
 
-A common use case is fetching global initial data needed by all or several pages — for example, <Link href="/auth">information about the logged-in user</Link> or <Link href="/i18n">i18n data</Link>.
+A common use case is fetching and/or initializing global data, for example:
+- <Link href="/auth">Authentication information about the logged-in user</Link>
+- <Link href="/i18n">Data for i18n</Link>
 
-You can store such data in `globalContext` and/or `pageContext`, and fetch it in `+onCreateGlobalContext()` and/or `+onCreatePageContext()`.
-
-The `globalContext` object is accessible anywhere, while `pageContext` is accessible from any <Link href="/hooks">Vike hook</Link> or UI component.
-
-See:
- - <Link href="/pageContext" />
- - <Link href="/globalContext" />
- - <Link href="/onCreatePageContext" />
- - <Link href="/onCreateGlobalContext" />
+You can store the data in the <Link href="/globalContext">`globalContext` object</Link> or the <Link href="/pageContext">`pageContext` object</Link>, while fetching/initializing the data using <Link href="/onCreateGlobalContext">`+onCreateGlobalContext()`</Link>/<Link href="/onCreatePageContext">`+onCreatePageContext()`</Link>. You can use <Link href="/passToClient">`+passToClient`</Link> if you want to use the data on the client-side.
 
 
 ## State management

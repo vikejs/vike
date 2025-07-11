@@ -1,6 +1,6 @@
 import { Link } from '@brillout/docpress'
 
-Most <Link href="/pageContext">`pageContext`</Link> properties are available only on the server-side, but you can use `passToClient` to make properties available on the client-side.
+Most <Link href="/pageContext">`pageContext`</Link> and <Link href="/globalContext">`globalContext`</Link> properties are available only on the server-side, but you can use `passToClient` to make properties available on the client-side.
 
 ```js
 // /pages/+config.js
@@ -32,11 +32,7 @@ async function onHydrationEnd(pageContext) {
 }
 ```
 
-Some values, such as `pageContext.data`, are already passed to the client-side <Link href="#default">by default</Link>.
-
-The nesting <Link href="#escape">delimiter `.` can be escaped</Link>.
-
-> It also applies to <Link href="/globalContext">`globalContext`</Link>.
+Some values, such as `pageContext.data`, are already passed to the client-side by default, see <Link href="#default" />.
 
 
 ## Default
@@ -83,7 +79,7 @@ console.log(obj instanceof MyClass) // false
 See [GitHub > `brillout/json-serializer` > #3 Support user-defined classes](https://github.com/brillout/json-serializer/issues/3).
 
 
-## Escape
+## Escape `.`
 
 In the (unlikely) event you need to pass properties that include `.` in their name:
 
