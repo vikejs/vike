@@ -1,0 +1,14 @@
+import{o as n,a}from"../chunks/chunk-B7DH6tOS.js";import{j as e}from"../chunks/chunk-DlOlD-Oy.js";import{L as r}from"../chunks/chunk-BY7lCs52.js";/* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      */import{C as l}from"../chunks/chunk-Do_VmnUu.js";import{E as s}from"../chunks/chunk-CfYsVmNe.js";/* empty css                      *//* empty css                      *//* empty css                      */import"../chunks/chunk-CVGmureL.js";const d=[];function i(o){const t={a:"a",code:"code",li:"li",p:"p",ul:"ul",...o.components};return e.jsxs(e.Fragment,{children:[e.jsx(l,{tool:"vuex",url:"https://vuex.vuejs.org",hasExtension:!1}),`
+`,e.jsx(t.p,{children:"To manually integrate Vuex, see:"}),`
+`,e.jsxs(t.ul,{children:[`
+`,e.jsxs(t.li,{children:[`
+`,e.jsx(r,{href:"/store#manual-integration"}),`
+`]}),`
+`,e.jsx(t.li,{children:e.jsx(t.a,{href:"https://vuejs.org/guide/scaling-up/ssr.html#cross-request-state-pollution",children:"Vue > SSR > Cross-Request State Pollution"})}),`
+`]}),`
+`,e.jsxs(t.p,{children:["Examples of integrating Vuex without using ",e.jsx(r,{href:"/vike-vue",children:e.jsx(t.code,{children:"vike-vue"})}),":"]}),`
+`,e.jsxs(t.ul,{children:[`
+`,e.jsxs(t.li,{children:[`
+`,e.jsx(s,{timestamp:"2023.10",repo:"brillout/vike-with-vuex"}),`
+`]}),`
+`]})]})}function u(o={}){const{wrapper:t}=o.components||{};return t?e.jsx(t,{...o,children:e.jsx(i,{...o})}):i(o)}const p=Object.freeze(Object.defineProperty({__proto__:null,default:u,pageSectionsExport:d},Symbol.toStringTag,{value:"Module"})),b={isClientRuntimeLoaded:{type:"computed",definedAtData:null,valueSerialized:{type:"js-serialized",value:!0}},onBeforeRenderEnv:{type:"computed",definedAtData:null,valueSerialized:{type:"js-serialized",value:null}},dataEnv:{type:"computed",definedAtData:null,valueSerialized:{type:"js-serialized",value:null}},onRenderClient:{type:"standard",definedAtData:{filePathToShowToUser:"@brillout/docpress/renderer/onRenderClient",fileExportPathToShowToUser:[]},valueSerialized:{type:"pointer-import",value:a}},onCreatePageContext:{type:"cumulative",definedAtData:[{filePathToShowToUser:"@brillout/docpress/renderer/onCreatePageContext",fileExportPathToShowToUser:[]}],valueSerialized:[{type:"pointer-import",value:n}]},Page:{type:"standard",definedAtData:{filePathToShowToUser:"/pages/vuex/+Page.mdx",fileExportPathToShowToUser:[]},valueSerialized:{type:"plus-file",exportValues:p}},hydrationCanBeAborted:{type:"standard",definedAtData:{filePathToShowToUser:"@brillout/docpress/config",fileExportPathToShowToUser:["default","hydrationCanBeAborted"]},valueSerialized:{type:"js-serialized",value:!0}}};export{b as configValuesSerialized};
