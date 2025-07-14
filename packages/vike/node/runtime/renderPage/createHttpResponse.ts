@@ -44,6 +44,7 @@ async function createHttpResponsePage(
     __getPageAssets: GetPageAssets
     _globalContext: GlobalContextServerInternal
     abortStatusCode?: AbortStatusCode
+    headersResponse?: HeadersInit
   },
 ): Promise<HttpResponse> {
   let statusCode: StatusCode | undefined = pageContext.abortStatusCode
@@ -64,9 +65,13 @@ async function createHttpResponsePage(
   const earlyHints = getEarlyHints(await pageContext.__getPageAssets())
 
   const headers: ResponseHeaders = []
-  const cacheControl = getCacheControl(pageContext.pageId, pageContext._globalContext._pageConfigs, statusCode)
-  if (cacheControl) {
-    headers.push(['Cache-Control', cacheControl])
+  const headersResponse = new Headers(pageContext.headersResponse)
+  if (!headersResponse.get('Cache-Control')) {
+    const cacheControl = getCacheControl(pageContext.pageId, pageContext._globalContext._pageConfigs, statusCode)
+    if (cacheControl) headers.push(['Cache-Control', cacheControl])
+  }
+  for (const entry of headersResponse.entries()) {
+    headers.push(entry)
   }
 
   return createHttpResponse(statusCode, 'text/html;charset=utf-8', headers, htmlRender, earlyHints, renderHook)
