@@ -112,7 +112,7 @@ type PageContextBuiltInCommon<Data> = {
    */
   urlOriginal: string
   /**
-   * The HTTP Headers of the incoming HTTP Request.
+   * The HTTP headers of the incoming HTTP request.
    *
    * As a string object normalized by Vike.
    *
@@ -121,7 +121,7 @@ type PageContextBuiltInCommon<Data> = {
    */
   headers: Record<string, string> | null
   /**
-   * The HTTP Headers of the incoming HTTP Request.
+   * The HTTP headers of the incoming HTTP request.
    *
    * The original object provided by the server.
    *
@@ -129,7 +129,12 @@ type PageContextBuiltInCommon<Data> = {
    * https://vike.dev/pageContext#headersOriginal
    */
   headersOriginal?: unknown // We set it to the type `unknown` instead of the type `HeadersInit` because `HeadersInit` isn't accurate: for example, `http.IncomingHttpHeaders` is a valid input for `new Headers()` but doesn't match the `HeadersInit` init.
-  // headersResponse?: [string, string][] | Record<string, string> | Headers // Corresponds to `HeadersInit`
+  /**
+   * Add HTTP headers to the HTTP response.
+   *
+   * https://vike.dev/headers
+   * https://vike.dev/pageContext.headersResponse
+   */
   headersResponse?: HeadersInit
   /** If an error occurs, whether the error is a `404 Page Not Found`.
    *
