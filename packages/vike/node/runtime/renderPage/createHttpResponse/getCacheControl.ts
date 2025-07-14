@@ -10,7 +10,7 @@ type StatusCode = HttpResponse['statusCode']
 const defaultValue = 'no-store, max-age=0'
 
 function getCacheControl(pageId: string | null, pageConfigs: PageConfigRuntime[], statusCode: StatusCode): string {
-  // TO-DO/next-major-release: remove
+  // TO-DO/next-major-release: remove this line
   if (pageConfigs.length === 0) return defaultValue
 
   if (statusCode > 499) return defaultValue

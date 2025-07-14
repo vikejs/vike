@@ -19,6 +19,7 @@ import { getCacheControl } from './createHttpResponse/getCacheControl.js'
 import { assertNoInfiniteHttpRedirect } from './createHttpResponse/assertNoInfiniteHttpRedirect.js'
 import type { PageContextBegin } from '../renderPage.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
+import type { VikeConfigInternal } from '../../vite/shared/resolveVikeConfigInternal.js'
 
 type HttpResponse = {
   statusCode: 200 | 404 | 500 | RedirectStatusCode | AbortStatusCode
@@ -45,7 +46,7 @@ async function createHttpResponsePage(
     _globalContext: GlobalContextServerInternal
     abortStatusCode?: AbortStatusCode
     headersResponse?: HeadersInit
-  },
+  } & Partial<VikeConfigInternal>,
 ): Promise<HttpResponse> {
   let statusCode: StatusCode | undefined = pageContext.abortStatusCode
   if (!statusCode) {
@@ -65,16 +66,28 @@ async function createHttpResponsePage(
   const earlyHints = getEarlyHints(await pageContext.__getPageAssets())
 
   const headers: ResponseHeaders = []
-  const headersResponse = new Headers(pageContext.headersResponse)
+  const headersResponse = pageContext.headersResponse
+    ? new Headers(pageContext.headersResponse)
+    : mergeHeaders(pageContext.config?.headersResponse)
   if (!headersResponse.get('Cache-Control')) {
     const cacheControl = getCacheControl(pageContext.pageId, pageContext._globalContext._pageConfigs, statusCode)
     if (cacheControl) headers.push(['Cache-Control', cacheControl])
   }
-  for (const entry of headersResponse.entries()) {
-    headers.push(entry)
-  }
+  headersResponse.forEach((value, key) => {
+    headers.push([key, value])
+  })
 
   return createHttpResponse(statusCode, 'text/html;charset=utf-8', headers, htmlRender, earlyHints, renderHook)
+}
+
+function mergeHeaders(headersList: HeadersInit[] = []): Headers {
+  const headersMerged = new Headers()
+  headersList.forEach((headers) => {
+    new Headers(headers).forEach((value, key) => {
+      headersMerged.append(key, value)
+    })
+  })
+  return headersMerged
 }
 
 function createHttpResponse404(errMsg404: string): HttpResponse {
