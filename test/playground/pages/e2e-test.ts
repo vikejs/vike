@@ -3,6 +3,7 @@ export { testHMRPlusValueFile }
 export { testRedirectMailto }
 export { testOnCreateGlobalContext }
 export { testHooksCalled }
+export { testHeadersResponse }
 
 import {
   autoRetry,
@@ -156,5 +157,12 @@ function testHooksCalled() {
     expectLog('+onBeforeRenderHtml hook called', { filter: (logEntry) => logEntry.logSource === 'stdout' })
     await testCounter()
     expectLog('+onBeforeRenderClient hook called', { filter: (logEntry) => logEntry.logSource === 'Browser Log' })
+  })
+}
+
+function testHeadersResponse() {
+  test('pageContext.headersResponse', async () => {
+    const resp = await fetch(getServerUrl() + '/about')
+    expect(resp.headers.get('Some-Header')).toBe('Some-Header-Value')
   })
 }
