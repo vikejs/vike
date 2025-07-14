@@ -128,7 +128,7 @@ type PageContextBuiltInCommon<Data> = {
    * https://vike.dev/headers
    * https://vike.dev/pageContext#headersOriginal
    */
-  headersOriginal?: unknown
+  headersOriginal?: unknown // We set it to the type `unknown` instead of the type `HeadersInit` because `HeadersInit` isn't accurate: for example, `http.IncomingHttpHeaders` is a valid input for `new Headers()` but doesn't match the `HeadersInit` init.
   /** If an error occurs, whether the error is a `404 Page Not Found`.
    *
    * https://vike.dev/error-page
