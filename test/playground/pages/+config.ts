@@ -39,4 +39,7 @@ export default {
     // TEST: use passToClient for globalContext
     'setGloballyServer',
   ],
+  headersResponse: {
+    'some-static-header': 'some-static-header-value',
+  },
 } satisfies Config

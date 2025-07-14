@@ -161,8 +161,14 @@ function testHooksCalled() {
 }
 
 function testHeadersResponse() {
-  test('pageContext.headersResponse', async () => {
-    const resp = await fetch(getServerUrl() + '/about')
-    expect(resp.headers.get('Some-Header')).toBe('Some-Header-Value')
+  test('+headersResponse and pageContext.headersResponse', async () => {
+    {
+      const resp = await fetch(getServerUrl() + '/about')
+      expect(resp.headers.get('Some-Header')).toBe('Some-Header-Value')
+    }
+    {
+      const resp = await fetch(getServerUrl() + '/')
+      expect(resp.headers.get('Some-staTIc-Header')).toBe('some-static-header-value')
+    }
   })
 }
