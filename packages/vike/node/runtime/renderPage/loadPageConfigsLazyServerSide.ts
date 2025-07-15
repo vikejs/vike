@@ -172,7 +172,7 @@ function resolveHeadersResponse(
   },
   pageContextAddendum: VikeConfigPublicPageLazy,
 ): Headers {
-  const headersResponse = mergeHeaders(pageContextAddendum.config?.headersResponse)
+  const headersResponse = mergeHeaders(pageContextAddendum.config.headersResponse)
   if (!headersResponse.get('Cache-Control')) {
     const cacheControl = getCacheControl(pageContext.pageId, pageContext._globalContext._pageConfigs)
     if (cacheControl) headersResponse.set('Cache-Control', cacheControl)
