@@ -38,6 +38,7 @@ export default {
     'someWrapperObj.staticUrls',
     // TEST: use passToClient for globalContext
     'setGloballyServer',
+    'someClientProp',
   ],
   headersResponse: {
     'some-static-header': 'some-static-header-value',
