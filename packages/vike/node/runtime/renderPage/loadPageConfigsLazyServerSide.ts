@@ -28,6 +28,7 @@ type PageContext_loadPageConfigsLazyServerSide = PageContextGetPageAssets &
   }
 type PageConfigsLazy = PromiseType<ReturnType<typeof loadPageConfigsLazyServerSide>>
 
+// TODO/now: rename?
 async function loadPageConfigsLazyServerSideAndExecHook<
   PageContext extends PageContext_loadPageConfigsLazyServerSide & PageContextExecuteHook,
 >(pageContext: PageContext) {
@@ -39,6 +40,7 @@ async function loadPageConfigsLazyServerSideAndExecHook<
   return pageContext
 }
 
+// TODO/now: rename?
 async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageConfigsLazyServerSide) {
   const pageConfig = findPageConfig(pageContext._globalContext._pageConfigs, pageContext.pageId) // Make pageConfig globally available as pageContext._pageConfig ?
 
@@ -81,6 +83,7 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
     _isHtmlOnly: isHtmlOnly,
     _passToClient: passToClient,
     _pageFilePathsLoaded: pageFilesLoaded.map((p) => p.filePath),
+    headersResponse: mergeHeaders(pageContextAddendum.config?.headersResponse),
   })
 
   objectAssign(pageContextAddendum, {
@@ -142,6 +145,7 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
   return pageContextAddendum
 }
 
+// TODO/now: rename?
 async function loadPageUserFiles(
   pageFilesAll: PageFile[],
   pageConfig: null | PageConfigRuntime,
@@ -157,4 +161,14 @@ async function loadPageUserFiles(
     configPublicPageLazy,
     pageFilesLoaded: pageFilesServerSide,
   }
+}
+
+function mergeHeaders(headersList: HeadersInit[] = []): Headers {
+  const headersMerged = new Headers()
+  headersList.forEach((headers) => {
+    new Headers(headers).forEach((value, key) => {
+      headersMerged.append(key, value)
+    })
+  })
+  return headersMerged
 }

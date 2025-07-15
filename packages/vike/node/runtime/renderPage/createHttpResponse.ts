@@ -45,7 +45,7 @@ async function createHttpResponsePage(
     __getPageAssets: GetPageAssets
     _globalContext: GlobalContextServerInternal
     abortStatusCode?: AbortStatusCode
-    headersResponse?: HeadersInit
+    headersResponse?: Headers
   } & Partial<VikeConfigInternal>,
 ): Promise<HttpResponse> {
   let statusCode: StatusCode | undefined = pageContext.abortStatusCode
@@ -66,9 +66,7 @@ async function createHttpResponsePage(
   const earlyHints = getEarlyHints(await pageContext.__getPageAssets())
 
   const headers: ResponseHeaders = []
-  const headersResponse = pageContext.headersResponse
-    ? new Headers(pageContext.headersResponse)
-    : mergeHeaders(pageContext.config?.headersResponse)
+  const headersResponse = pageContext.headersResponse ? pageContext.headersResponse : new Headers()
   if (!headersResponse.get('Cache-Control')) {
     const cacheControl = getCacheControl(pageContext.pageId, pageContext._globalContext._pageConfigs, statusCode)
     if (cacheControl) headers.push(['Cache-Control', cacheControl])
@@ -78,16 +76,6 @@ async function createHttpResponsePage(
   })
 
   return createHttpResponse(statusCode, 'text/html;charset=utf-8', headers, htmlRender, earlyHints, renderHook)
-}
-
-function mergeHeaders(headersList: HeadersInit[] = []): Headers {
-  const headersMerged = new Headers()
-  headersList.forEach((headers) => {
-    new Headers(headers).forEach((value, key) => {
-      headersMerged.append(key, value)
-    })
-  })
-  return headersMerged
 }
 
 function createHttpResponse404(errMsg404: string): HttpResponse {

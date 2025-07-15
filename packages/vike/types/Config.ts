@@ -672,7 +672,7 @@ type ConfigBuiltInResolved = {
   redirects?: Record<string, string>[]
   prerender?: Exclude<Config['prerender'], ImportString | undefined>[]
   middleware?: Function[]
-  headersResponse: HeadersInit[]
+  headersResponse?: HeadersInit[]
 }
 
 type ConfigMeta = Record<string, ConfigDefinition>

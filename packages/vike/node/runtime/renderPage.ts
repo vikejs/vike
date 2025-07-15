@@ -284,6 +284,7 @@ async function renderPageOnError(
       objectAssign(pageContextErrorPageInit, { pageId: null })
       return handleErrorWithoutErrorPage(pageContextErrorPageInit)
     } else {
+      // TODO/now: minor refactor
       objectAssign(pageContextErrorPageInit, { pageId: errorPageId })
     }
   }
