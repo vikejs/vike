@@ -37,7 +37,7 @@ You can convert it to a [standard `Headers` object](https://developer.mozilla.or
 const headers = new Headers(pageContext.headers)
 ```
 
-All values are merged; you can get the list of values as an array (`string[]`) by doing:
+All values are merged. You can get the list of values as an array (`string[]`):
 ```js
 const acceptLanguage = pageContext.headers['accept-language']
   .split(',')
