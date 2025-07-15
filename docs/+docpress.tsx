@@ -3,7 +3,6 @@ export { config as default }
 import type { Config } from '@brillout/docpress'
 import { headings, headingsDetached, categories } from './headings'
 import logo from './assets/logo/vike.svg'
-import favicon from './assets/logo/vike-favicon.svg'
 import { PROJECT_VERSION } from './utils/PROJECT_VERSION'
 import { discordInvite } from './links'
 import { TopNavigation } from './TopNavigation'
@@ -15,7 +14,6 @@ const config: Config = {
   url: 'https://vike.dev',
   tagline: 'The Modular Framework — Next.js & Nuxt alternative for unprecedented flexibility and stability.',
   logo,
-  favicon,
   banner: 'https://vike.dev/banner.jpg',
 
   github: 'https://github.com/vikejs/vike',
