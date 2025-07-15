@@ -20,6 +20,8 @@ export type { DefinedAtFile }
 export type { DefinedAt }
 export type { DefinedBy }
 export type { DefinedAtFilePath }
+export type { ConfigValueDefinition }
+export type { ConfigValueDefinitionObject }
 
 import type { ConfigValueSerialized } from '../shared/page-configs/serialize/PageConfigSerialized.js'
 import type { LocationId } from '../node/vite/shared/resolveVikeConfigInternal/filesystemRouting.js'
@@ -121,6 +123,12 @@ type ConfigValueSource = {
   valueIsFilePath?: true
   /** Whether the config value is defined by a +{configName}.js file */
   valueIsDefinedByPlusValueFile: boolean
+  /** Cumulative inheritance control - if true, this value is replaced by child configs instead of accumulated */
+  configValueDefault?: boolean
+  /** Cumulative inheritance control - if false, this config doesn't inherit from parents */
+  configValueInherit?: boolean
+  /** Cumulative inheritance control - group identifier for selective inheritance */
+  configValueGroup?: string
 } & (
   | {
       valueIsLoaded: false
@@ -171,4 +179,22 @@ type DefinedAtFile = {
   filePathToShowToUser: string
   fileExportPathToShowToUser: null | string[]
   definedBy?: undefined
+}
+
+/** Config value definition that supports inheritance control for cumulative configs */
+type ConfigValueDefinition =
+  | unknown  // Simple value (backward compatibility)
+  | ConfigValueDefinitionObject
+  | ConfigValueDefinition[]  // For arrays of values with mixed types
+
+/** Object form of config value definition with inheritance control */
+type ConfigValueDefinitionObject = {
+  /** The actual config value */
+  value: unknown
+  /** If true, this value is replaced by child configs instead of accumulated (for cumulative configs) */
+  default?: boolean
+  /** If false, this config doesn't inherit from parents (for cumulative configs) */
+  inherit?: boolean
+  /** Group identifier for selective inheritance (for cumulative configs) */
+  group?: string
 }

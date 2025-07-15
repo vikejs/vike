@@ -28,6 +28,7 @@ import { getConfigValueFilePathToShowToUser } from '../helpers.js'
 import { stringify } from '@brillout/json-serializer/stringify'
 import pc from '@brillout/picocolors'
 import { isOverridden } from '../../../node/vite/shared/resolveVikeConfigInternal.js'
+import { applyInheritanceRules } from '../inheritanceUtils.js'
 const stringifyOptions = { forbidReactElements: true as const }
 const REPLACE_ME_BEFORE = '__VIKE__REPLACE_ME_BEFORE__'
 const REPLACE_ME_AFTER = '__VIKE__REPLACE_ME_AFTER__'
@@ -82,6 +83,7 @@ function serializeConfigValues(
 
   return lines
 }
+
 
 function getValueSerializedFromSource(
   configValueSource: ConfigValueSource,
@@ -319,9 +321,12 @@ function getConfigValuesBase(
       const sourcesRelevant = sources
         .filter((source) => !isOverridden(source, configName, pageConfig))
         .filter((source) => isEnvMatch(source.configEnv))
+
       if (sourcesRelevant.length === 0) return 'SKIP'
+
+      const sourcesWithInheritance = applyInheritanceRules(sourcesRelevant)
       const definedAtData: DefinedAt[] = []
-      sourcesRelevant.forEach((source) => {
+      sourcesWithInheritance.forEach((source) => {
         const definedAtFile = getDefinedAtFileSource(source)
         definedAtData.push(definedAtFile)
       })
@@ -329,7 +334,7 @@ function getConfigValuesBase(
         type: 'cumulative',
         definedAtData,
       } as const
-      return { configValueBase, sourcesRelevant, configName }
+      return { configValueBase, sourcesRelevant: sourcesWithInheritance, configName }
     }
   })
 

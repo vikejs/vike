@@ -76,6 +76,7 @@ import {
 } from './loggerVite/removeSuperfluousViteLog.js'
 import pc from '@brillout/picocolors'
 import { getConfigDefinedAt, getDefinedByString } from '../../../shared/page-configs/getConfigDefinedAt.js'
+import { parseConfigValue, isArrayOfConfigValueDefinitions } from '../../../shared/page-configs/parseConfigValue.js'
 import { loadPointerImport, loadValueFile } from './resolveVikeConfigInternal/loadFileAtConfigTime.js'
 import { resolvePointerImport } from './resolveVikeConfigInternal/resolvePointerImport.js'
 import { getFilePathResolved } from './getFilePath.js'
@@ -168,7 +169,7 @@ function getVikeConfigInternalSync(): VikeConfigInternal {
 function getVikeConfig(
   // TO-DO/eventually: remove unused arguments (older versions used it and we didn't remove it yet to avoid a TypeScript breaking change)
   // - No rush: we can do it later since it's getVikeConfig() is a beta feature as documented at https://vike.dev/getVikeConfig
-  config: ResolvedConfig | UserConfig,
+  _config: ResolvedConfig | UserConfig,
 ): VikeConfig {
   const vikeConfig = getVikeConfigInternalSync()
   assertUsage(
@@ -812,6 +813,7 @@ function resolveConfigValueSources(
   let sources: ConfigValueSource[] = plusFilesRelevant
     .filter((plusFile) => isDefiningConfig(plusFile, configName))
     .map((plusFile) => getConfigValueSource(configName, plusFile, configDef, userRootDir))
+    .flatMap((source) => expandConfigValueSource(source))
 
   // Filter hydrid global-local configs
   if (!isCallable(configDef.global)) {
@@ -913,16 +915,12 @@ function getConfigValueSource(
     }
 
     // Defined inside +config.js
-    const configValueSource: ConfigValueSource = {
-      ...configValueSourceCommon,
-      valueIsLoaded: true,
-      value: confVal.value,
-      configEnv: configDef.env,
-      valueIsLoadedWithImport: false,
-      valueIsDefinedByPlusValueFile: false,
-      definedAt: definedAtFilePath_,
-    }
-    return configValueSource
+    return createConfigValueSourceFromConfigFile(
+      confVal.value,
+      configValueSourceCommon,
+      configDef.env,
+      definedAtFilePath_
+    )
   }
 
   // Defined by value file, i.e. +{configName}.js
@@ -948,6 +946,64 @@ function getConfigValueSource(
   }
 
   assert(false)
+}
+
+/**
+ * Creates a config value source from a value defined in a +config.js file.
+ * Handles both simple values and config value definitions with inheritance control.
+ */
+function createConfigValueSourceFromConfigFile(
+  value: unknown,
+  configValueSourceCommon: Omit<ConfigValueSource, 'valueIsLoaded' | 'value' | 'configEnv' | 'valueIsLoadedWithImport' | 'valueIsDefinedByPlusValueFile' | 'definedAt' | 'configValueDefault' | 'configValueInherit' | 'configValueGroup'>,
+  configEnv: ConfigEnvInternal,
+  definedAt: DefinedAtFilePath
+): ConfigValueSource {
+  if (isArrayOfConfigValueDefinitions(value)) {
+    return {
+      ...configValueSourceCommon,
+      valueIsLoaded: true,
+      value,
+      configEnv,
+      valueIsLoadedWithImport: false,
+      valueIsDefinedByPlusValueFile: false,
+      definedAt,
+    }
+  }
+  const parsedConfigValue = parseConfigValue(value)
+  return {
+    ...configValueSourceCommon,
+    valueIsLoaded: true,
+    value: parsedConfigValue.value,
+    configEnv,
+    valueIsLoadedWithImport: false,
+    valueIsDefinedByPlusValueFile: false,
+    definedAt,
+    configValueDefault: parsedConfigValue.default,
+    configValueInherit: parsedConfigValue.inherit,
+    configValueGroup: parsedConfigValue.group,
+  }
+}
+
+function expandConfigValueSource(source: ConfigValueSource): ConfigValueSource[] {
+  if (!source.valueIsLoaded) {
+    return [source]
+  }
+
+  if (!isArrayOfConfigValueDefinitions(source.value)) {
+    return [source]
+  }
+
+  return source.value.map((configValueDef) => {
+    const parsedConfigValue = parseConfigValue(configValueDef)
+
+    return {
+      ...source,
+      value: parsedConfigValue.value,
+      configValueDefault: parsedConfigValue.default,
+      configValueInherit: parsedConfigValue.inherit,
+      configValueGroup: parsedConfigValue.group,
+    }
+  })
 }
 function isDefiningPage(plusFiles: PlusFile[]): boolean {
   for (const plusFile of plusFiles) {
