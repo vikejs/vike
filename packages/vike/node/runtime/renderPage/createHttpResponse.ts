@@ -19,7 +19,7 @@ import { assertNoInfiniteHttpRedirect } from './createHttpResponse/assertNoInfin
 import type { PageContextBegin } from '../renderPage.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { VikeConfigInternal } from '../../vite/shared/resolveVikeConfigInternal.js'
-import { cacheControlDisableCache } from './createHttpResponse/getCacheControl.js'
+import { cacheControlDisable } from './createHttpResponse/getCacheControl.js'
 
 type HttpResponse = {
   statusCode: 200 | 404 | 500 | RedirectStatusCode | AbortStatusCode
@@ -70,7 +70,7 @@ async function createHttpResponsePage(
   headersResponse.forEach((value, key) => {
     headers.push([key, value])
   })
-  if (statusCode > 499) headersResponse.set('Cache-Control', cacheControlDisableCache)
+  if (statusCode > 499) headersResponse.set('Cache-Control', cacheControlDisable)
 
   return createHttpResponse(statusCode, 'text/html;charset=utf-8', headers, htmlRender, earlyHints, renderHook)
 }
