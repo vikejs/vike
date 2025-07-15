@@ -57,7 +57,7 @@ async function startServer() {
   app.get('*', async (req, res) => {
     const pageContextInit = {
       // Required: the URL of the page
-      urlOriginal: req.originalUrl
+      urlOriginal: req.originalUrl,
 
       // Optional: the HTTP Headers
       headersOriginal: req.headers,
