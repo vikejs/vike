@@ -67,10 +67,13 @@ app.get('*', async (req) => {
 
 You can modify the HTTP response headers by using `+headersResponse` and/or `pageContext.headersResponse`.
 
+<Warning>Both `+headersResponse` and `pageContext.headersResponse` are beta features: expect breaking changes in any minor version update. See [#2554 - Stabilize `+headersResponse` and `pageContext.headersResponse`](https://github.com/vikejs/vike/issues/2554).</Warning>
+
+
 ```js
 // pages/+config.js
 
-// Statically add headers
+// Statically adding header
 export default {
   headersResponse: {
     'X-Powered-By': 'my-vike-app'
@@ -79,9 +82,9 @@ export default {
 ```
 
 ```js
-// Dynamically add/modify headers
+// Dynamically adding/modifying header
 pageContext.headersResponse.set('Set-Cookie', 'sessionId=abc123')
-// Dynamically remove headers
+// Dynamically removing header
 pageContext.headersResponse.delete('X-Powered-By')
 ```
 
@@ -89,9 +92,7 @@ pageContext.headersResponse.delete('X-Powered-By')
 
 > You can access `pageContext` in any Vike hook and any UI component, see: <Link href="/pageContext" />.
 
-<Warning>Both `+headersResponse` and/or `pageContext.headersResponse` are beta features: expect breaking changes in any minor version update.</Warning>
-
-The final HTTP response headers that will be sent to the client are available at `pageContext.httpResponse.headers`.
+The final HTTP response headers sent to the client are available at `pageContext.httpResponse.headers`.
 
 ```js
 import { renderPage } from 'vike/server'
