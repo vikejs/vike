@@ -165,10 +165,12 @@ function testHeadersResponse() {
     {
       const resp = await fetch(getServerUrl() + '/about')
       expect(resp.headers.get('Some-Header')).toBe('Some-Header-Value')
+      expect(resp.headers.get('some-static-headER')).toBe(null)
     }
     {
       const resp = await fetch(getServerUrl() + '/')
-      expect(resp.headers.get('Some-staTIc-Header')).toBe('some-static-header-value')
+      expect(resp.headers.get('Some-Header')).toBe('Some-Header-Value')
+      expect(resp.headers.get('SOME-STaTIc-Header')).toBe('some-static-header-value')
     }
   })
 }
