@@ -1,4 +1,4 @@
-import { Link } from '@brillout/docpress'
+import { Link, Warning} from '@brillout/docpress'
 
 ## Request
 
@@ -31,7 +31,7 @@ For example:
 ]
 ```
 
-You can convert it to a [standard `Headers` object](https://developer.mozilla.org/en-US/docs/Web/API/Headers) using `new Headers()`:
+You can convert it to a [standard `Headers` object](https://developer.mozilla.org/en-US/docs/Web/API/Headers) by using `new Headers()`:
 
 ```js
 const headers = new Headers(pageContext.headers)
@@ -65,12 +65,12 @@ app.get('*', async (req) => {
 
 ## Response
 
-You can add HTTP response headers by using `+headersResponse` and/or `pageContext.headersResponse`.
-
+You can modify the HTTP response headers by using `+headersResponse` and/or `pageContext.headersResponse`.
 
 ```js
 // pages/+config.js
 
+// Statically add headers
 export default {
   headersResponse: {
     'X-Powered-By': 'my-vike-app'
@@ -79,8 +79,17 @@ export default {
 ```
 
 ```js
+// Dynamically add/modify headers
 pageContext.headersResponse.set('Set-Cookie', 'sessionId=abc123')
+// Dynamically remove headers
+pageContext.headersResponse.delete('X-Powered-By')
 ```
+
+> `pageContext.headersResponse` is a [standard `Headers` object](https://developer.mozilla.org/en-US/docs/Web/API/Headers).
+
+> You can access `pageContext` in any Vike hook and any UI component, see: <Link href="/pageContext" />.
+
+<Warning>Both `+headersResponse` and/or `pageContext.headersResponse` are beta features: expect breaking changes in any minor version update.</Warning>
 
 The final HTTP response headers that will be sent to the client are available at `pageContext.httpResponse.headers`.
 
@@ -97,9 +106,9 @@ app.get('*', async (req) => {
 })
 ```
 
-> See <Link href="/renderPage" />.
+> See: <Link href="/renderPage" />
 
-It's a list of string tuples (`[string, string][]`), for example:
+It's a list of string tuples `[string, string][]` — for example:
 
 ```json5
 [
@@ -108,7 +117,7 @@ It's a list of string tuples (`[string, string][]`), for example:
 ]
 ```
 
-You can convert it to a [standard `Headers` object](https://developer.mozilla.org/en-US/docs/Web/API/Headers) using `new Headers()`:
+You can convert it to a [standard `Headers` object](https://developer.mozilla.org/en-US/docs/Web/API/Headers) by using `new Headers()`:
 
 ```js
 const headers = new Headers(pageContext.httpResponse.headers)
