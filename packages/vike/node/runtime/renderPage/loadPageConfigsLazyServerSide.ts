@@ -2,7 +2,7 @@ export { loadPageConfigsLazyServerSideAndExecHook }
 export type { PageContext_loadPageConfigsLazyServerSide }
 export type { PageConfigsLazy }
 
-import { type PageFile, getPageFilesServerSide } from '../../../shared/getPageFiles.js'
+import { type PageFile, type VikeConfigPublicPageLazy, getPageFilesServerSide } from '../../../shared/getPageFiles.js'
 import { resolveVikeConfigPublicPageLazy } from '../../../shared/page-configs/resolveVikeConfigPublic.js'
 import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide.js'
 import { assertUsage, assertWarning, hasProp, objectAssign, PromiseType, isArrayOfStrings } from '../utils.js'
@@ -15,6 +15,7 @@ import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { MediaType } from './inferMediaType.js'
 import { loadConfigValues } from '../../../shared/page-configs/loadConfigValues.js'
 import { execHookServer, type PageContextExecHookServer } from './execHookServer.js'
+import { getCacheControl } from './createHttpResponse/getCacheControl.js'
 
 type PageContextExecuteHook = Omit<
   PageContextExecHookServer,
@@ -83,7 +84,7 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
     _isHtmlOnly: isHtmlOnly,
     _passToClient: passToClient,
     _pageFilePathsLoaded: pageFilesLoaded.map((p) => p.filePath),
-    headersResponse: mergeHeaders(pageContextAddendum.config?.headersResponse),
+    headersResponse: resolveHeadersResponse(pageContext, pageContextAddendum),
   })
 
   objectAssign(pageContextAddendum, {
@@ -161,6 +162,22 @@ async function loadPageUserFiles(
     configPublicPageLazy,
     pageFilesLoaded: pageFilesServerSide,
   }
+}
+
+function resolveHeadersResponse(
+  // TODO/now: merge pageContextAddendum with pageContext
+  pageContext: {
+    pageId: null | string
+    _globalContext: GlobalContextServerInternal
+  },
+  pageContextAddendum: VikeConfigPublicPageLazy,
+): Headers {
+  const headersResponse = mergeHeaders(pageContextAddendum.config?.headersResponse)
+  if (!headersResponse.get('Cache-Control')) {
+    const cacheControl = getCacheControl(pageContext.pageId, pageContext._globalContext._pageConfigs)
+    if (cacheControl) headersResponse.set('Cache-Control', cacheControl)
+  }
+  return headersResponse
 }
 
 function mergeHeaders(headersList: HeadersInit[] = []): Headers {
