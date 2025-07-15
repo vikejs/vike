@@ -610,7 +610,7 @@ type ConfigBuiltIn = {
   /**
    * Add HTTP headers to the HTTP response.
    *
-   * https://vike.dev/headers
+   * https://vike.dev/headers#response
    */
   headersResponse?: HeadersInit
 
