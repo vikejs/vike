@@ -69,7 +69,7 @@ async function createHttpResponsePage(
   headersResponse.forEach((value, key) => {
     headers.push([key, value])
   })
-  // The error page shouldn't be cached (it should be temporary)
+  // An 5xx error page shouldn't be cached (it should be temporary)
   if (statusCode >= 500) headersResponse.set('Cache-Control', cacheControlDisable)
 
   return createHttpResponse(statusCode, 'text/html;charset=utf-8', headers, htmlRender, earlyHints, renderHook)
