@@ -18,7 +18,6 @@ import { getEarlyHints, type EarlyHint } from './getEarlyHints.js'
 import { assertNoInfiniteHttpRedirect } from './createHttpResponse/assertNoInfiniteHttpRedirect.js'
 import type { PageContextBegin } from '../renderPage.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
-import type { VikeConfigInternal } from '../../vite/shared/resolveVikeConfigInternal.js'
 import { cacheControlDisable } from './createHttpResponse/getCacheControl.js'
 
 type HttpResponse = {
@@ -46,7 +45,7 @@ async function createHttpResponsePage(
     _globalContext: GlobalContextServerInternal
     abortStatusCode?: AbortStatusCode
     headersResponse?: Headers
-  } & Partial<VikeConfigInternal>,
+  },
 ): Promise<HttpResponse> {
   let statusCode: StatusCode | undefined = pageContext.abortStatusCode
   if (!statusCode) {
