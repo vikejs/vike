@@ -142,8 +142,7 @@ type PageContextBuiltInCommon<Data> = {
   /**
    * The HTTP response headers.
    *
-   * https://vike.dev/headers
-   * https://vike.dev/pageContext.headersResponse
+   * https://vike.dev/headers#response
    */
   headersResponse: Headers
 
