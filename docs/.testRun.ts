@@ -25,9 +25,7 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   test('favicon', async () => {
     const html = await fetchHtml('/')
     const hash = /[a-zA-Z0-9_-]+/
-    const logoUrl: string = isDev
-      ? '/assets/logo/vike.svg'
-      : html.match(partRegex`/assets/static/vike.${hash}.svg`)![0]
+    const logoUrl: string = isDev ? '/assets/logo/vike.svg' : html.match(partRegex`/assets/static/vike.${hash}.svg`)![0]
     expect(html).toContain(`<link rel="icon" href="${logoUrl}" />`)
     const logoSrc: string = await (await fetch(getServerUrl() + logoUrl)).text()
     expect(logoSrc).toContain('</svg>')
