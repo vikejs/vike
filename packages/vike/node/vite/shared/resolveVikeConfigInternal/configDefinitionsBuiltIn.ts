@@ -313,6 +313,10 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { server: true },
     global: true,
   },
+  headersResponse: {
+    env: { server: true },
+    cumulative: true,
+  },
 }
 
 function getConfigEnv(configValueSources: ConfigValueSources, configName: string): null | ConfigEnvInternal {

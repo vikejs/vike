@@ -15,10 +15,10 @@ import type { RenderHook } from './execHookOnRenderHtml.js'
 import type { RedirectStatusCode, AbortStatusCode, UrlRedirect } from '../../../shared/route/abort.js'
 import { getHttpResponseBody, getHttpResponseBodyStreamHandlers, HttpResponseBody } from './getHttpResponseBody.js'
 import { getEarlyHints, type EarlyHint } from './getEarlyHints.js'
-import { getCacheControl } from './createHttpResponse/getCacheControl.js'
 import { assertNoInfiniteHttpRedirect } from './createHttpResponse/assertNoInfiniteHttpRedirect.js'
 import type { PageContextBegin } from '../renderPage.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
+import { cacheControlDisable } from './createHttpResponse/getCacheControl.js'
 
 type HttpResponse = {
   statusCode: 200 | 404 | 500 | RedirectStatusCode | AbortStatusCode
@@ -44,6 +44,7 @@ async function createHttpResponsePage(
     __getPageAssets: GetPageAssets
     _globalContext: GlobalContextServerInternal
     abortStatusCode?: AbortStatusCode
+    headersResponse?: Headers
   },
 ): Promise<HttpResponse> {
   let statusCode: StatusCode | undefined = pageContext.abortStatusCode
@@ -64,10 +65,12 @@ async function createHttpResponsePage(
   const earlyHints = getEarlyHints(await pageContext.__getPageAssets())
 
   const headers: ResponseHeaders = []
-  const cacheControl = getCacheControl(pageContext.pageId, pageContext._globalContext._pageConfigs, statusCode)
-  if (cacheControl) {
-    headers.push(['Cache-Control', cacheControl])
-  }
+  const headersResponse = pageContext.headersResponse || new Headers()
+  headersResponse.forEach((value, key) => {
+    headers.push([key, value])
+  })
+  // An 5xx error page shouldn't be cached (it should be temporary)
+  if (statusCode >= 500) headersResponse.set('Cache-Control', cacheControlDisable)
 
   return createHttpResponse(statusCode, 'text/html;charset=utf-8', headers, htmlRender, earlyHints, renderHook)
 }

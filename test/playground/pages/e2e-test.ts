@@ -3,6 +3,7 @@ export { testHMRPlusValueFile }
 export { testRedirectMailto }
 export { testOnCreateGlobalContext }
 export { testHooksCalled }
+export { testHeadersResponse }
 
 import {
   autoRetry,
@@ -156,5 +157,22 @@ function testHooksCalled() {
     expectLog('+onBeforeRenderHtml hook called', { filter: (logEntry) => logEntry.logSource === 'stdout' })
     await testCounter()
     expectLog('+onBeforeRenderClient hook called', { filter: (logEntry) => logEntry.logSource === 'Browser Log' })
+  })
+}
+
+function testHeadersResponse() {
+  test('+headersResponse and pageContext.headersResponse', async () => {
+    {
+      const resp = await fetch(getServerUrl() + '/about')
+      expect(resp.headers.get('Some-Header')).toBe('Some-Header-Value')
+      expect(resp.headers.get('some-static-headER')).toBe(null)
+      expect(resp.headers.get('Cache-Control')).toBe('no-store, max-age=0')
+    }
+    {
+      const resp = await fetch(getServerUrl() + '/')
+      expect(resp.headers.get('Some-Header')).toBe('Some-Header-Value')
+      expect(resp.headers.get('SOME-STaTIc-Header')).toBe('some-static-header-value')
+      expect(resp.headers.get('Cache-Control')).toBe('no-store, max-age=0')
+    }
   })
 }

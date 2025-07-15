@@ -608,6 +608,13 @@ type ConfigBuiltIn = {
   cacheControl?: string
 
   /**
+   * Add HTTP headers to the HTTP response.
+   *
+   * https://vike.dev/headers#response
+   */
+  headersResponse?: HeadersInit
+
+  /**
    * Make development/preview server available over LAN and public addresses.
    *
    * Default: `false` (or `true` if running inside Docker/Podman).
@@ -665,6 +672,7 @@ type ConfigBuiltInResolved = {
   redirects?: Record<string, string>[]
   prerender?: Exclude<Config['prerender'], ImportString | undefined>[]
   middleware?: Function[]
+  headersResponse?: HeadersInit[]
 }
 
 type ConfigMeta = Record<string, ConfigDefinition>

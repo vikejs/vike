@@ -25,6 +25,7 @@ import type { PageContextCreated } from './createPageContextServerSide.js'
 
 type PageContextAfterRender = { httpResponse: HttpResponse; errorWhileRendering: null | Error }
 
+// TODO/now: rename?
 async function renderPageAlreadyRouted<
   PageContext extends {
     pageId: string

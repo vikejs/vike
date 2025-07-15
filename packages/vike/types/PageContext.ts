@@ -72,47 +72,55 @@ type PageContextBuiltInCommon<Data> = {
    * https://vike.dev/pageContext#Page
    */
   Page: Config['Page']
+
   /** Route Parameters, e.g. `pageContext.routeParams.productId` for a Route String `/product/@productId`.
    *
    * https://vike.dev/route-string
    * https://vike.dev/pageContext#routeParams
    */
   routeParams: Record<string, string>
+
   /** The page's data which was fetched using the data() hook.
    *
    * https://vike.dev/data
    * https://vike.dev/pageContext#data
    */
   data: Data
+
   /** The page's configuration values.
    *
    * https://vike.dev/config
    * https://vike.dev/pageContext#config
    */
   config: PageContextConfig
+
   /** The page's configuration, including the configs origin and overridden configs.
    *
    * https://vike.dev/config
    */
   configEntries: ConfigEntries
+
   /** Custom Exports/Hooks.
    *
    * https://vike.dev/exports
    */
   exports: Record<string, unknown>
+
   /**
    * Same as `pageContext.exports` but cumulative.
    *
    * https://vike.dev/exports
    */
   exportsAll: ExportsAll
+
   /** The URL you provided to Vike when calling `renderPage({ urlOriginal })` in your server middleware.
    *
    * https://vike.dev/renderPage
    */
   urlOriginal: string
+
   /**
-   * The HTTP Headers of the incoming HTTP Request.
+   * The HTTP request headers.
    *
    * As a string object normalized by Vike.
    *
@@ -120,20 +128,30 @@ type PageContextBuiltInCommon<Data> = {
    * https://vike.dev/pageContext#headers
    */
   headers: Record<string, string> | null
+
   /**
-   * The HTTP Headers of the incoming HTTP Request.
+   * The HTTP request headers.
    *
    * The original object provided by the server.
    *
    * https://vike.dev/headers
    * https://vike.dev/pageContext#headersOriginal
    */
-  headersOriginal?: unknown
+  headersOriginal?: unknown // We set it to the type `unknown` instead of the type `HeadersInit` because `HeadersInit` isn't accurate: for example, `http.IncomingHttpHeaders` is a valid input for `new Headers()` but doesn't match the `HeadersInit` init.
+
+  /**
+   * The HTTP response headers.
+   *
+   * https://vike.dev/headers#response
+   */
+  headersResponse: Headers
+
   /** If an error occurs, whether the error is a `404 Page Not Found`.
    *
    * https://vike.dev/error-page
    */
   is404: boolean | null
+
   /**
    * Whether the page was navigated by the client-side router.
    *
