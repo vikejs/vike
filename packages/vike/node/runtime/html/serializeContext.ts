@@ -213,7 +213,8 @@ function applyPassToClient(
   const objClient: Record<string, unknown> = {}
   const objClientProps: string[] = []
   passToClient.forEach((entry) => {
-    const { prop, once } = normalizePassToClientEntry(entry)
+    const entryNormalized = normalizePassToClientEntry(entry)
+    const { prop, once } = entryNormalized
 
     let objResolved = obj
     if (once) {
@@ -247,5 +248,5 @@ function normalizePassToClientEntry(entry: PassToClient[number]) {
     prop = entry.prop
     once = entry.once ?? false
   }
-  return { once, prop }
+  return { prop, once }
 }
