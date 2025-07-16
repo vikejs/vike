@@ -45,11 +45,8 @@ function getPageContextClientSerialized(pageContext: PageContextSerialization) {
   const passToClientPageContext = getPassToClientPageContext(pageContext)
   const res = applyPassToClient(passToClientPageContext, pageContext)
   const pageContextClient = res.objClient
-  if (
-    passToClientPageContext.some((entry) =>
-      getPropVal(pageContext._pageContextInit, normalizePassToClientEntry(entry).prop),
-    )
-  ) {
+  const pageContextClientProps = res.objClientProps
+  if (pageContextClientProps.some((prop) => getPropVal(pageContext._pageContextInit, prop))) {
     pageContextClient[pageContextInitIsPassedToClient] = true
   }
   const pageContextClientSerialized = serializeObject(pageContextClient, 'pageContext', passToClientPageContext)
@@ -209,6 +206,7 @@ function getPageContextClientSerializedAbort(
 
 function applyPassToClient(passToClient: PassToClient, obj: Record<string, unknown>) {
   const objClient: Record<string, unknown> = {}
+  const objClientProps: string[] = []
   passToClient.forEach((entry) => {
     const { prop } = normalizePassToClientEntry(entry)
 
@@ -219,8 +217,10 @@ function applyPassToClient(passToClient: PassToClient, obj: Record<string, unkno
 
     // Set value to pageContextClient
     setPropVal(objClient, prop, value)
+
+    objClientProps.push(prop)
   })
-  return { objClient }
+  return { objClient, objClientProps }
 }
 
 function normalizePassToClientEntry(entry: PassToClient[number]) {
