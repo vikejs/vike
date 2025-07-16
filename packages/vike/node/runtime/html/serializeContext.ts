@@ -85,9 +85,8 @@ function serializeObject(obj: Record<string, unknown>, passToClient: PassToClien
       const res = getPropVal(obj, prop)
       if (!res) return
       const { value } = res
-      const objInfo = getObj(entryNormalized)
-      assert(objInfo)
-      const { objName } = objInfo
+      const { objName } = getObj(entryNormalized) ?? {}
+      assert(objName)
       const varName = `${objName}${getPropKeys(prop).map(getPropAccessNotation).join('')}` as const
       try {
         serializeValue(value, varName)
@@ -223,10 +222,8 @@ function applyPassToClient(passToClient: PassToClient, getObj: GetObj) {
     const entryNormalized = normalizePassToClientEntry(entry)
     const { prop } = entryNormalized
 
-    const objInfo = getObj(entryNormalized)
-    if (!objInfo) return
-    const { obj } = objInfo
-    assert(obj)
+    const { obj } = getObj(entryNormalized) ?? {}
+    if (!obj) return
 
     // Get value from pageContext
     const res = getPropVal(obj, prop)
