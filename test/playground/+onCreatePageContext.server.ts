@@ -13,7 +13,6 @@ async function onCreatePageContext(pageContext: PageContextServer) {
 declare global {
   namespace Vike {
     interface PageContext {
-      // Passed to client
       someClientOnceProp: string
     }
   }
