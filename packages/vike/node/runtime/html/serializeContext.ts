@@ -44,7 +44,11 @@ type PageContextSerialization = {
 function getPageContextClientSerialized(pageContext: PageContextSerialization) {
   const passToClientPageContext = getPassToClientPageContext(pageContext)
   const pageContextClient = applyPassToClient(passToClientPageContext, pageContext)
-  if (passToClientPageContext.some((entry) => getPropVal(pageContext._pageContextInit, getPassToClientProp(entry)))) {
+  if (
+    passToClientPageContext.some((entry) =>
+      getPropVal(pageContext._pageContextInit, normalizePassToClientEntry(entry).prop),
+    )
+  ) {
     pageContextClient[pageContextInitIsPassedToClient] = true
   }
   const pageContextClientSerialized = serializeObject(pageContextClient, 'pageContext', passToClientPageContext)
@@ -72,7 +76,7 @@ function serializeObject(
     let hasWarned = false
     const propsNonSerializable: string[] = []
     passToClient.forEach((entry) => {
-      const prop = getPassToClientProp(entry)
+      const { prop } = normalizePassToClientEntry(entry)
       const res = getPropVal(obj, prop)
       if (!res) return
       const { value } = res
@@ -204,7 +208,7 @@ function getPageContextClientSerializedAbort(
 function applyPassToClient(passToClient: PassToClient, obj: Record<string, unknown>) {
   const pageContextClient: Record<string, unknown> = {}
   passToClient.forEach((entry) => {
-    const prop = getPassToClientProp(entry)
+    const { prop } = normalizePassToClientEntry(entry)
 
     // Get value from pageContext
     const res = getPropVal(obj, prop)
@@ -217,7 +221,15 @@ function applyPassToClient(passToClient: PassToClient, obj: Record<string, unkno
   return pageContextClient
 }
 
-function getPassToClientProp(passToClientEntry: PassToClient[number]): string {
-  const e = passToClientEntry
-  return typeof e === 'string' ? e : e.prop
+function normalizePassToClientEntry(entry: PassToClient[number]) {
+  let once: boolean
+  let prop: string
+  if (typeof entry === 'string') {
+    prop = entry
+    once = false
+  } else {
+    prop = entry.prop
+    once = entry.once ?? false
+  }
+  return { once, prop }
 }
