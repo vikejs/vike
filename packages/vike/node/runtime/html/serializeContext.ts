@@ -56,7 +56,7 @@ function getPageContextClientSerialized(pageContext: PageContextSerialization) {
 function getGlobalContextClientSerialized(pageContext: PageContextSerialization) {
   const passToClient = pageContext._passToClient
   const globalContext = pageContext._globalContext
-  const res = applyPassToClient(passToClient, globalContext)
+  const res = applyPassToClient(passToClient, globalContext, pageContext)
   const globalContextClient = res.objClient
   const globalContextClientSerialized = serializeObject(globalContextClient, 'globalContext', passToClient)
   return globalContextClientSerialized
@@ -75,6 +75,7 @@ function serializeObject(
     let hasWarned = false
     const propsNonSerializable: string[] = []
     passToClient.forEach((entry) => {
+      // TODO/now
       const { prop } = normalizePassToClientEntry(entry)
       const res = getPropVal(obj, prop)
       if (!res) return
@@ -204,14 +205,23 @@ function getPageContextClientSerializedAbort(
   return serializeValue(pageContext)
 }
 
-function applyPassToClient(passToClient: PassToClient, obj: Record<string, unknown>) {
+function applyPassToClient(passToClient: PassToClient, obj: Record<string, unknown>, pageContext?: Record<string, unknown>) {
   const objClient: Record<string, unknown> = {}
   const objClientProps: string[] = []
   passToClient.forEach((entry) => {
-    const { prop } = normalizePassToClientEntry(entry)
+    const { prop, once } = normalizePassToClientEntry(entry)
+
+    let objResolved = obj
+    if (once) {
+      if (!pageContext) {
+        return
+      } else {
+        objResolved = pageContext
+      }
+    }
 
     // Get value from pageContext
-    const res = getPropVal(obj, prop)
+    const res = getPropVal(objResolved, prop)
     if (!res) return
     const { value } = res
 
