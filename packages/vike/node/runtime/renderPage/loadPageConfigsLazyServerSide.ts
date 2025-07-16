@@ -16,6 +16,7 @@ import type { MediaType } from './inferMediaType.js'
 import { loadConfigValues } from '../../../shared/page-configs/loadConfigValues.js'
 import { execHookServer, type PageContextExecHookServer } from './execHookServer.js'
 import { getCacheControl } from './createHttpResponse/getCacheControl.js'
+import type { PassToClient } from '../html/serializeContext.js'
 
 type PageContextExecuteHook = Omit<
   PageContextExecHookServer,
@@ -62,7 +63,7 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
     await analyzePage(pageContext._globalContext._pageFilesAll, pageConfig, pageContext.pageId, globalContext)
   const isV1Design = !!pageConfig
 
-  const passToClient: string[] = []
+  const passToClient: PassToClient = []
   const errMsg = ' should be an array of strings.'
   if (!isV1Design) {
     configPublicPageLazy.exportsAll.passToClient?.forEach((e) => {
@@ -72,8 +73,8 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
   } else {
     configPublicPageLazy.from.configsCumulative.passToClient?.values.forEach((v) => {
       const { value, definedAt } = v
-      assertUsage(isArrayOfStrings(value), `+passToClient value defined at ${definedAt}${errMsg}`)
-      passToClient.push(...value)
+      // assertUsage(isArrayOfStrings(value), `+passToClient value defined at ${definedAt}${errMsg}`)
+      passToClient.push(...(value as PassToClient))
     })
   }
 
