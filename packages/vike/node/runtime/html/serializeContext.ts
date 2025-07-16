@@ -2,6 +2,7 @@ export { getPageContextClientSerialized }
 export { getPageContextClientSerializedAbort }
 export { getGlobalContextClientSerialized }
 export type { PageContextSerialization }
+export type { PassToClient }
 
 import { stringify, isJsonSerializerError } from '@brillout/json-serializer/stringify'
 import { assert, assertUsage, assertWarning, getPropAccessNotation, hasProp, unique } from '../utils.js'
@@ -34,7 +35,7 @@ const pageToClientBuiltInPageContextError = ['pageProps', 'is404', isServerSideE
 type PageContextSerialization = {
   pageId: string
   routeParams: Record<string, string>
-  _passToClient: string[]
+  _passToClient: PassToClient
   is404: null | boolean
   pageProps?: Record<string, unknown>
   _pageContextInit: Record<string, unknown>
@@ -43,7 +44,7 @@ type PageContextSerialization = {
 function getPageContextClientSerialized(pageContext: PageContextSerialization) {
   const passToClientPageContext = getPassToClientPageContext(pageContext)
   const pageContextClient = applyPassToClient(passToClientPageContext, pageContext)
-  if (passToClientPageContext.some((prop) => getPropVal(pageContext._pageContextInit, prop))) {
+  if (passToClientPageContext.some((entry) => getPropVal(pageContext._pageContextInit, getPassToClientProp(entry)))) {
     pageContextClient[pageContextInitIsPassedToClient] = true
   }
   const pageContextClientSerialized = serializeObject(pageContextClient, 'pageContext', passToClientPageContext)
@@ -60,7 +61,7 @@ function getGlobalContextClientSerialized(pageContext: PageContextSerialization)
 function serializeObject(
   obj: Record<string, unknown>,
   objName: 'pageContext' | 'globalContext',
-  passToClient: string[],
+  passToClient: PassToClient,
 ) {
   let serialized: string
   try {
@@ -69,7 +70,9 @@ function serializeObject(
     const h = (s: string) => pc.cyan(s)
     let hasWarned = false
     const propsNonSerializable: string[] = []
-    passToClient.forEach((prop) => {
+    passToClient.forEach((entry) => {
+      const prop = typeof entry === 'string' ? entry : entry.prop
+
       const res = getPropVal(obj, prop)
       if (!res) return
       const { value } = res
@@ -136,12 +139,13 @@ function serializeValue(value: unknown, varName?: `pageContext${string}` | `glob
     },
   })
 }
+type PassToClient = (string | { prop: string; once?: boolean })[]
 function getPassToClientPageContext(pageContext: {
   pageId: string
-  _passToClient: string[]
+  _passToClient: PassToClient
   _globalContext: GlobalContextServerInternal
   is404: null | boolean
-}): string[] {
+}): PassToClient {
   let passToClient = [...pageContext._passToClient, ...passToClientBuiltInPageContext]
   if (isErrorPage(pageContext.pageId, pageContext._globalContext._pageConfigs)) {
     assert(hasProp(pageContext, 'is404', 'boolean'))
@@ -197,9 +201,11 @@ function getPageContextClientSerializedAbort(
   return serializeValue(pageContext)
 }
 
-function applyPassToClient(passToClient: string[], pageContext: Record<string, unknown>) {
+function applyPassToClient(passToClient: PassToClient, pageContext: Record<string, unknown>) {
   const pageContextClient: Record<string, unknown> = {}
-  passToClient.forEach((prop) => {
+  passToClient.forEach((entry) => {
+    const prop = getPassToClientProp(entry)
+
     // Get value from pageContext
     const res = getPropVal(pageContext, prop)
     if (!res) return
@@ -209,4 +215,9 @@ function applyPassToClient(passToClient: string[], pageContext: Record<string, u
     setPropVal(pageContextClient, prop, value)
   })
   return pageContextClient
+}
+
+function getPassToClientProp(passToClientEntry: PassToClient[number]): string {
+  const e = passToClientEntry
+  return typeof e === 'string' ? e : e.prop
 }
