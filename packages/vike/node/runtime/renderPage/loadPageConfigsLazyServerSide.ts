@@ -72,7 +72,8 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
     })
   } else {
     configPublicPageLazy.from.configsCumulative.passToClient?.values.forEach((v) => {
-      const { value, definedAt } = v
+      const { value } = v
+      // const { definedAt } = v
       // assertUsage(isArrayOfStrings(value), `+passToClient value defined at ${definedAt}${errMsg}`)
       passToClient.push(...(value as PassToClient))
     })
