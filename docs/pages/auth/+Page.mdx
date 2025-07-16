@@ -1,9 +1,5 @@
 import { Link, RepoLink } from '@brillout/docpress'
 
-You can make information about the authenticated user available to your pages and UI components by defining a <Link href="/pageContext#custom">custom `pageContext` property</Link>, such as `pageContext.user`.
-
-You can then access `pageContext.user` from any UI component using <Link href="/usePageContext" >`usePageContext()`</Link> and <Link href="/passToClient">`+passToClient`</Link>.
-
 In principle, you can use Vike with any authentication tool such as:
 - [Better Auth](https://github.com/better-auth/better-auth)
 - <Link text="Auth.js" href="/Auth.js" />
@@ -13,54 +9,93 @@ In principle, you can use Vike with any authentication tool such as:
 - ...
 
 
-## With `vike-server`
+## `pageContext.user`
 
-If you use <Link href="/server">`vike-server`</Link>, you can:
- - directly access `pageContext.runtime.req.user` (see <Link href="/pageContext#runtime">`pageContext.runtime`</Link>), or
- - use <Link href="/onCreatePageContext">`+onCreatePageContext.server.js`</Link>:
-   ```js
-   // pages/+onCreatePageContext.server.js
-   // Environment: server
-
-   // This hook is called upon new incoming HTTP requests
-   export async function onCreatePageContext(pageContext) {
-     const { req } = pageContext.runtime
-
-     // Authentication middlewares (e.g. Passport.js and Grant) usually provide
-     // information about the logged-in user at req.user
-     pageContext.user = req.user
-
-     // Or when using a third-party authentication provider (e.g. Auth0)
-     pageContext.user = await someAuthApi.getUser(req.headers)
-   }
-   ```
-
-## Without `vike-server`
-
-If you don't use <Link href="/server">`vike-server`</Link>, then you can use <Link href="/renderPage">`renderPage()`</Link>:
+You can make information about the authenticated user available to your UI components and Vike hooks by defining a <Link href="/pageContext#custom">custom property `pageContext.user`</Link> in <Link href="/onCreatePageContext">`+onCreatePageContext.server.js`</Link>.
 
 ```js
-// server/index.js
+// pages/+onCreatePageContext.server.ts
+// Environment: server
 
-// Vike server middleware
-app.get('*', async (req, res) => {
-  // Authentication middlewares (e.g. Passport.js and Grant) usually provide
-  // information about the logged-in user at req.user
-  const user = req.user
+import type { PageContextServer } from 'vike/types'
 
-  // Or when using a third-party authentication provider (e.g. Auth0)
+// This hook is called upon new incoming HTTP requests
+export async function onCreatePageContext(pageContext: PageContextServer) {
+  // vike-server exposes the request object at pageContext.runtime.req
+  const { req } = pageContext.runtime
+
+  // Authentication middlewares (e.g. Passport.js and Grant) usually set req.user
+  // to expose information about the logged-in user.
+  const { user } = req
+  // Or, when using a third-party authentication provider (e.g. Auth0):
   const user = await someAuthApi.getUser(req.headers)
 
-  const pageContextInit = {
-    urlOriginal: req.url,
-    // Make the user object available at pageContext.user
-    user
+  // Select the properties you want to make available everywhere
+  pageContext.user = {
+    firstName: user.firstName,
+    email: user.email
   }
-  const result = await renderPage(pageContextInit)
+}
 
-  /* ... */
-})
+declare global {
+  namespace Vike {
+    interface PageContext {
+      user?: {
+        firstName: string
+        email: string
+      }
+    }
+  }
+}
 ```
+
+```js
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+
+export default {
+  // Make pageContext.user available on the client-side
+  passToClient: [{
+    prop: 'user',
+    // Send it only once: upon client-side navigation re-use the initial pageContext.user value
+    once: true
+  }]
+} satisfies Config
+```
+
+> See also: <Link href="/passToClient" />
+
+> You can access `pageContext` in any UI component and Vike hook — see <Link href="/pageContext" />.
+
+> If you use <Link href="/server">`vike-server`</Link>, you can access the request object at `pageContext.runtime.req.user` (see <Link href="/pageContext#runtime">`pageContext.runtime`</Link>).
+>
+> If you don't use `vike-server`, you can define a custom property `pageContext.req` at <Link href="/renderPage">`renderPage()`</Link>:
+> ```js
+> // server/index.ts
+>
+> import { renderPage } from 'vike/server'
+>
+> // Vike server middleware
+> app.get('*', async (req: Request, res: Response) => {
+>   const pageContextInit = {
+>     urlOriginal: req.url,
+>     // Make the request object available at pageContext.req
+>     req
+>   }
+>   const pageContext = await renderPage(pageContextInit)
+>   // ...
+> })
+>
+> declare global {
+>   namespace Vike {
+>     interface PageContextServer {
+>       req: Request
+>     }
+>   }
+> }
+> ```
+
 
 ## SSG
 
