@@ -79,7 +79,6 @@ function serializeObject(obj: Record<string, unknown>, passToClient: PassToClien
     let hasWarned = false
     const propsNonSerializable: string[] = []
     passToClient.forEach((entry) => {
-      // TODO/now
       const entryNormalized = normalizePassToClientEntry(entry)
       const { prop } = entryNormalized
       const res = getPropVal(obj, prop)
