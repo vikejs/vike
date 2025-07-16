@@ -53,7 +53,7 @@ function getPageContextClientSerialized(pageContext: PageContextSerialization) {
   if (pageContextClientProps.some((prop) => getPropVal(pageContext._pageContextInit, prop))) {
     pageContextClient[pageContextInitIsPassedToClient] = true
   }
-  const pageContextClientSerialized = serializeObject(pageContextClient, 'pageContext', passToClientPageContext)
+  const pageContextClientSerialized = serializeObject(pageContextClient, getObj, passToClientPageContext)
   return pageContextClientSerialized
 }
 
@@ -66,15 +66,11 @@ function getGlobalContextClientSerialized(pageContext: PageContextSerialization)
   }
   const res = applyPassToClient(passToClient, getObj)
   const globalContextClient = res.objClient
-  const globalContextClientSerialized = serializeObject(globalContextClient, 'globalContext', passToClient)
+  const globalContextClientSerialized = serializeObject(globalContextClient, getObj, passToClient)
   return globalContextClientSerialized
 }
 
-function serializeObject(
-  obj: Record<string, unknown>,
-  objName: 'pageContext' | 'globalContext',
-  passToClient: PassToClient,
-) {
+function serializeObject(obj: Record<string, unknown>, getObj: GetObj, passToClient: PassToClient) {
   let serialized: string
   try {
     serialized = serializeValue(obj)
@@ -89,6 +85,9 @@ function serializeObject(
       const res = getPropVal(obj, prop)
       if (!res) return
       const { value } = res
+      const objInfo = getObj(entryNormalized)
+      assert(objInfo)
+      const { objName } = objInfo
       const varName = `${objName}${getPropKeys(prop).map(getPropAccessNotation).join('')}` as const
       try {
         serializeValue(value, varName)
