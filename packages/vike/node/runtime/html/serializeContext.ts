@@ -200,13 +200,13 @@ function getPageContextClientSerializedAbort(
   return serializeValue(pageContext)
 }
 
-function applyPassToClient(passToClient: PassToClient, pageContext: Record<string, unknown>) {
+function applyPassToClient(passToClient: PassToClient, obj: Record<string, unknown>) {
   const pageContextClient: Record<string, unknown> = {}
   passToClient.forEach((entry) => {
     const prop = getPassToClientProp(entry)
 
     // Get value from pageContext
-    const res = getPropVal(pageContext, prop)
+    const res = getPropVal(obj, prop)
     if (!res) return
     const { value } = res
 
