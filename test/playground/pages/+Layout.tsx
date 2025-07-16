@@ -37,6 +37,8 @@ function Layout({ children }: { children: React.ReactNode }) {
   }
 
   assert(pageContext.someClientOnceProp === 'someValueSetOnce')
+  // @ts-expect-error
+  assert(globalContext.someClientOnceProp === 'someValueSetOnce')
 
   return (
     <React.StrictMode>
