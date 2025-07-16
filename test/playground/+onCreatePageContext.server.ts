@@ -7,12 +7,12 @@ async function onCreatePageContext(pageContext: PageContextServer) {
   if (pageContext.urlParsed.pathname === '/about') {
     pageContext.headersResponse.delete('sOMe-staTic-Header')
   }
-  pageContext.globalContext.someClientProp = 'someValueSetOnce'
+  pageContext.someClientProp = 'someValueSetOnce'
 }
 
 declare global {
   namespace Vike {
-    interface GlobalContext {
+    interface PageContext {
       // Passed to client
       someClientProp: string
     }
