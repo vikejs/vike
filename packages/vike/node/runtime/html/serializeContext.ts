@@ -43,7 +43,10 @@ type PageContextSerialization = {
 }
 function getPageContextClientSerialized(pageContext: PageContextSerialization) {
   const passToClientPageContext = getPassToClientPageContext(pageContext)
-  const res = applyPassToClient(passToClientPageContext, pageContext)
+  const res = applyPassToClient(passToClientPageContext, (passToClientEntry) => {
+    if (passToClientEntry.once) return undefined // pass it to client-side globalContext
+    return pageContext
+  })
   const pageContextClient = res.objClient
   const pageContextClientProps = res.objClientProps
   if (pageContextClientProps.some((prop) => getPropVal(pageContext._pageContextInit, prop))) {
@@ -56,7 +59,10 @@ function getPageContextClientSerialized(pageContext: PageContextSerialization) {
 function getGlobalContextClientSerialized(pageContext: PageContextSerialization) {
   const passToClient = pageContext._passToClient
   const globalContext = pageContext._globalContext
-  const res = applyPassToClient(passToClient, globalContext, pageContext)
+  const res = applyPassToClient(passToClient, (passToClientEntry) => {
+    if (passToClientEntry.once) return pageContext // pass it to client-side globalContext
+    return globalContext
+  })
   const globalContextClient = res.objClient
   const globalContextClientSerialized = serializeObject(globalContextClient, 'globalContext', passToClient)
   return globalContextClientSerialized
@@ -207,26 +213,19 @@ function getPageContextClientSerializedAbort(
 
 function applyPassToClient(
   passToClient: PassToClient,
-  obj: Record<string, unknown>,
-  pageContext?: Record<string, unknown>,
+  getObj: (passToClientEntry: PassToClientEntryNormalized) => Record<string, unknown> | undefined,
 ) {
   const objClient: Record<string, unknown> = {}
   const objClientProps: string[] = []
   passToClient.forEach((entry) => {
     const entryNormalized = normalizePassToClientEntry(entry)
-    const { prop, once } = entryNormalized
+    const { prop } = entryNormalized
 
-    let objResolved = obj
-    if (once) {
-      if (!pageContext) {
-        return
-      } else {
-        objResolved = pageContext
-      }
-    }
+    const obj = getObj(entryNormalized)
+    if (!obj) return
 
     // Get value from pageContext
-    const res = getPropVal(objResolved, prop)
+    const res = getPropVal(obj, prop)
     if (!res) return
     const { value } = res
 
@@ -238,7 +237,8 @@ function applyPassToClient(
   return { objClient, objClientProps }
 }
 
-function normalizePassToClientEntry(entry: PassToClient[number]) {
+type PassToClientEntryNormalized = { prop: string; once: boolean }
+function normalizePassToClientEntry(entry: PassToClient[number]): PassToClientEntryNormalized {
   let once: boolean
   let prop: string
   if (typeof entry === 'string') {
