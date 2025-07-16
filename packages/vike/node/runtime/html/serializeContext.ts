@@ -223,8 +223,10 @@ function applyPassToClient(passToClient: PassToClient, getObj: GetObj) {
     const entryNormalized = normalizePassToClientEntry(entry)
     const { prop } = entryNormalized
 
-    const obj = getObj(entryNormalized)
-    if (!obj) return
+    const objInfo = getObj(entryNormalized)
+    if (!objInfo) return
+    const { obj } = objInfo
+    assert(obj)
 
     // Get value from pageContext
     const res = getPropVal(obj, prop)
