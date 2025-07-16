@@ -53,7 +53,8 @@ function getPageContextClientSerialized(pageContext: PageContextSerialization) {
 
 function getGlobalContextClientSerialized(pageContext: PageContextSerialization) {
   const passToClient = pageContext._passToClient
-  const globalContextClient = applyPassToClient(passToClient, pageContext._globalContext)
+  const globalContext = pageContext._globalContext
+  const globalContextClient = applyPassToClient(passToClient, globalContext)
   const globalContextClientSerialized = serializeObject(globalContextClient, 'globalContext', passToClient)
   return globalContextClientSerialized
 }
