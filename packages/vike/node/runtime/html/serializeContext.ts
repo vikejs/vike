@@ -71,8 +71,7 @@ function serializeObject(
     let hasWarned = false
     const propsNonSerializable: string[] = []
     passToClient.forEach((entry) => {
-      const prop = typeof entry === 'string' ? entry : entry.prop
-
+      const prop = getPassToClientProp(entry)
       const res = getPropVal(obj, prop)
       if (!res) return
       const { value } = res
