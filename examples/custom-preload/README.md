@@ -1,7 +1,7 @@
 Example of implementing a custom preloading strategy.
 
 > [!NOTE]
-> For creating a new Vike app, we recommend using [Bati](https://batijs.dev) instead of copying this example. Because this example uses a custom React integration instead of using `vike-react` which [we generally don't recommend](https://vike.dev/new#without-vike-react-vue-solid).
+> For creating a new Vike app, we recommend using [Bati](https://batijs.dev) instead of copying this example. Because this example uses a custom React integration instead of using `vike-react` which [we generally don't recommend](https://vike.dev/new/core).
 
 See [vike.dev > Preloading](https://vike.dev/preloading).
 
