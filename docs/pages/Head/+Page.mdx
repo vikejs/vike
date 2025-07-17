@@ -158,6 +158,22 @@ config({
 See also: <Link href="#how-to-inject-raw-html" />
 
 
+## `pageContext`
+
+You can access <Link href="/pageContext">the `pageContext` object</Link> by using <Link href="/usePageContext">`usePageContext()`</Link>.
+
+```jsx
+// /pages/+Head.jsx
+
+import { usePageContext } from 'vike-react/usePageContext' // or vike-{vue,solid}
+
+export function Head({ children }) {
+  const pageContext = usePageContext()
+  // ...
+}
+```
+
+
 ## How to inject raw HTML?
 
 You can inject any arbitrary HTML string to the page's `<head>`. Examples using:

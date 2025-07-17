@@ -41,6 +41,22 @@ What happens with the `Page` value is determined by the <UiFrameworkExtension />
 
 
 
+## `pageContext`
+
+You can access <Link href="/pageContext">the `pageContext` object</Link> by using <Link href="/usePageContext">`usePageContext()`</Link>.
+
+```jsx
+// /pages/+Page.jsx
+
+import { usePageContext } from 'vike-react/usePageContext' // or vike-{vue,solid}
+
+export function Page({ children }) {
+  const pageContext = usePageContext()
+  // ...
+}
+```
+
+
 ## Without `vike-{react,vue,solid}`
 
 Vike itself never uses the `Page` value: it just makes the value available at `pageContext.Page`.
@@ -110,3 +126,4 @@ async function onRenderClient(pageContext) {
 ## See also
 
 - <Link href="/Layout" />
+- <Link href="/Wrapper" />
