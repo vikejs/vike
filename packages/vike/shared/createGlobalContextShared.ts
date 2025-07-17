@@ -36,7 +36,11 @@ async function createGlobalContextShared<GlobalContextAddendum extends Record<st
     isNewGlobalContext = true
   }
 
-  if (addGlobalContextSync && globalContext._pageConfigs.length > 0) {
+  if (
+    addGlobalContextSync &&
+    // TODO/next-major-release: remove
+    globalContext._pageConfigs.length > 0
+  ) {
     const globalContextAddendum = addGlobalContextSync?.(globalContext)
     objectAssign(globalContext, globalContextAddendum)
   } else {
