@@ -28,7 +28,7 @@ async function createGlobalContextShared<GlobalContextAddendum extends Record<st
 ) {
   const globalContext = createGlobalContextBase(virtualFileExports)
 
-  if (addGlobalContextSync && globalContext._pageConfigs) {
+  if (addGlobalContextSync && globalContext._pageConfigs.length > 0) {
     const globalContextAddendum = addGlobalContextSync?.(globalContext)
     objectAssign(globalContext, globalContextAddendum)
   } else {
