@@ -48,7 +48,7 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
 
   const globalContext = pageContext._globalContext
   const [{ pageFilesLoaded, configPublicPageLazy }] = await Promise.all([
-    loadPageUserFiles(
+    loadPageConfigFiles(
       pageContext._globalContext._pageFilesAll,
       pageConfig,
       globalContext._pageConfigGlobal,
@@ -148,8 +148,7 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
   return pageContextAddendum
 }
 
-// TODO/now: rename?
-async function loadPageUserFiles(
+async function loadPageConfigFiles(
   pageFilesAll: PageFile[],
   pageConfig: null | PageConfigRuntime,
   pageConfigGlobal: PageConfigGlobalRuntime,
