@@ -2,6 +2,7 @@ export { getPageContextClientSerialized }
 export { getPageContextClientSerializedAbort }
 export { getGlobalContextClientSerialized }
 export type { PageContextSerialization }
+export type { PassToClient }
 
 import { stringify, isJsonSerializerError } from '@brillout/json-serializer/stringify'
 import { assert, assertUsage, assertWarning, getPropAccessNotation, hasProp, unique } from '../utils.js'
@@ -34,34 +35,50 @@ const pageToClientBuiltInPageContextError = ['pageProps', 'is404', isServerSideE
 type PageContextSerialization = {
   pageId: string
   routeParams: Record<string, string>
-  _passToClient: string[]
+  _passToClient: PassToClient
   is404: null | boolean
   pageProps?: Record<string, unknown>
   _pageContextInit: Record<string, unknown>
   _globalContext: GlobalContextServerInternal
+  isClientSideNavigation: boolean
 }
 function getPageContextClientSerialized(pageContext: PageContextSerialization) {
   const passToClientPageContext = getPassToClientPageContext(pageContext)
-  const pageContextClient = applyPassToClient(passToClientPageContext, pageContext)
-  if (passToClientPageContext.some((prop) => getPropVal(pageContext._pageContextInit, prop))) {
+  const getObj = (passToClientEntry: PassToClientEntryNormalized) => {
+    if (passToClientEntry.once) return undefined // pass it to client-side globalContext
+    return { obj: pageContext, objName: 'pageContext' as const }
+  }
+  const res = applyPassToClient(passToClientPageContext, getObj)
+  const pageContextClient = res.objClient
+  const pageContextClientProps = res.objClientProps
+  if (pageContextClientProps.some((prop) => getPropVal(pageContext._pageContextInit, prop))) {
     pageContextClient[pageContextInitIsPassedToClient] = true
   }
-  const pageContextClientSerialized = serializeObject(pageContextClient, 'pageContext', passToClientPageContext)
+  const pageContextClientSerialized = serializeObject(pageContextClient, passToClientPageContext, getObj)
   return pageContextClientSerialized
 }
 
 function getGlobalContextClientSerialized(pageContext: PageContextSerialization) {
   const passToClient = pageContext._passToClient
-  const globalContextClient = applyPassToClient(passToClient, pageContext._globalContext)
-  const globalContextClientSerialized = serializeObject(globalContextClient, 'globalContext', passToClient)
+  const globalContext = pageContext._globalContext
+  const getObj = ({ prop, once }: PassToClientEntryNormalized) => {
+    if (once && getPropVal(pageContext, prop)) {
+      assert(typeof pageContext.isClientSideNavigation === 'boolean')
+      if (!pageContext.isClientSideNavigation) {
+        return { obj: pageContext, objName: 'pageContext' as const } // pass it to client-side globalContext
+      } else {
+        return undefined // already passed to client-side
+      }
+    }
+    return { obj: globalContext, objName: 'globalContext' as const }
+  }
+  const res = applyPassToClient(passToClient, getObj)
+  const globalContextClient = res.objClient
+  const globalContextClientSerialized = serializeObject(globalContextClient, passToClient, getObj)
   return globalContextClientSerialized
 }
 
-function serializeObject(
-  obj: Record<string, unknown>,
-  objName: 'pageContext' | 'globalContext',
-  passToClient: string[],
-) {
+function serializeObject(obj: Record<string, unknown>, passToClient: PassToClient, getObj: GetObj) {
   let serialized: string
   try {
     serialized = serializeValue(obj)
@@ -69,10 +86,14 @@ function serializeObject(
     const h = (s: string) => pc.cyan(s)
     let hasWarned = false
     const propsNonSerializable: string[] = []
-    passToClient.forEach((prop) => {
+    passToClient.forEach((entry) => {
+      const entryNormalized = normalizePassToClientEntry(entry)
+      const { prop } = entryNormalized
       const res = getPropVal(obj, prop)
       if (!res) return
       const { value } = res
+      const { objName } = getObj(entryNormalized) ?? {}
+      assert(objName)
       const varName = `${objName}${getPropKeys(prop).map(getPropAccessNotation).join('')}` as const
       try {
         serializeValue(value, varName)
@@ -136,12 +157,13 @@ function serializeValue(value: unknown, varName?: `pageContext${string}` | `glob
     },
   })
 }
+type PassToClient = (string | { prop: string; once?: boolean })[]
 function getPassToClientPageContext(pageContext: {
   pageId: string
-  _passToClient: string[]
+  _passToClient: PassToClient
   _globalContext: GlobalContextServerInternal
   is404: null | boolean
-}): string[] {
+}): PassToClient {
   let passToClient = [...pageContext._passToClient, ...passToClientBuiltInPageContext]
   if (isErrorPage(pageContext.pageId, pageContext._globalContext._pageConfigs)) {
     assert(hasProp(pageContext, 'is404', 'boolean'))
@@ -197,16 +219,42 @@ function getPageContextClientSerializedAbort(
   return serializeValue(pageContext)
 }
 
-function applyPassToClient(passToClient: string[], pageContext: Record<string, unknown>) {
-  const pageContextClient: Record<string, unknown> = {}
-  passToClient.forEach((prop) => {
+type GetObj = (
+  passToClientEntry: PassToClientEntryNormalized,
+) => { obj: Record<string, unknown>; objName: 'pageContext' | 'globalContext' } | undefined
+function applyPassToClient(passToClient: PassToClient, getObj: GetObj) {
+  const objClient: Record<string, unknown> = {}
+  const objClientProps: string[] = []
+  passToClient.forEach((entry) => {
+    const entryNormalized = normalizePassToClientEntry(entry)
+    const { prop } = entryNormalized
+
+    const { obj } = getObj(entryNormalized) ?? {}
+    if (!obj) return
+
     // Get value from pageContext
-    const res = getPropVal(pageContext, prop)
+    const res = getPropVal(obj, prop)
     if (!res) return
     const { value } = res
 
     // Set value to pageContextClient
-    setPropVal(pageContextClient, prop, value)
+    setPropVal(objClient, prop, value)
+
+    objClientProps.push(prop)
   })
-  return pageContextClient
+  return { objClient, objClientProps }
+}
+
+type PassToClientEntryNormalized = { prop: string; once: boolean }
+function normalizePassToClientEntry(entry: PassToClient[number]): PassToClientEntryNormalized {
+  let once: boolean
+  let prop: string
+  if (typeof entry === 'string') {
+    prop = entry
+    once = false
+  } else {
+    prop = entry.prop
+    once = entry.once ?? false
+  }
+  return { prop, once }
 }

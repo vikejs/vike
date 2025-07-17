@@ -88,13 +88,14 @@ declare global {
 // pages/+config.ts
 
 export default {
-  passToClient: ['pageURLs']
+  passToClient: [{ prop: 'pageURLs', once: true }]
 }
 ```
 
 > See also:
 > - <Link href="/globalContext#pages">API > `globalContext.pages`</Link>
 > - <Link href="/pageContext#urlParsed">API > `pageContext.urlParsed`</Link>
+> - <Link href="/passToClient#once" doNotInferSectionTitle />
 > - <Link href="/markdown#with-a-custom-setting-eager" doNotInferSectionTitle />
 
 ### Store
