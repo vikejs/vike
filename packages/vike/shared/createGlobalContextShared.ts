@@ -20,10 +20,10 @@ import { getHookFromPageConfigGlobalCumulative, type Hook } from './hooks/getHoo
 const getGlobalContextSyncErrMsg =
   "The global context isn't set yet, call getGlobalContextSync() later or use getGlobalContext() instead."
 
-async function createGlobalContextShared<GlobalContextAddendum extends Record<string, any>>(
+async function createGlobalContextShared<GlobalContextAddendumAsync extends Record<string, any>>(
   virtualFileExports: unknown,
   globalObject: { globalContext?: Record<string, unknown>; onCreateGlobalContextHooks?: Hook[] },
-  addGlobalContextAsync?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddendum>,
+  addGlobalContextAsync?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddendumAsync>,
 ) {
   const globalContext = createGlobalContextBase(virtualFileExports)
 
