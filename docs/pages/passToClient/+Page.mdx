@@ -44,7 +44,7 @@ Some values, such as `pageContext.data`, are already passed to the client-side b
 
 By default, upon <Link href="/client-routing">client-side navigation</Link>, properties are passed to the client again.
 
-By setting `once: true`, the property is sent only once, at the beginning of the user's browsing session.
+By setting `once: true`, the property is sent only once, at the beginning of the user's browsing session. The sent value is cached (saved in the <Link href="/globalContext">`globalContext`</Link>) and re-used on each subsequent client-side navigation.
 
 ```js
 // /pages/+config.js
