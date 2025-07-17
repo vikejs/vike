@@ -36,10 +36,10 @@ async function loadPageRoutes(
   pageConfigGlobal: PageConfigGlobalRuntime,
   allPageIds: string[],
 ): Promise<{ pageRoutes: PageRoutes; onBeforeRouteHook: null | Hook }> {
-  const { onBeforeRouteHook, filesystemRoots } = getGlobalHooks(pageFilesAll, pageConfigs, pageConfigGlobal)
-  const pageRoutes = getPageRoutes(filesystemRoots, pageFilesAll, pageConfigs, allPageIds)
   // TO-DO/next-major-release: remove & make this function sync
   await Promise.all(pageFilesAll.filter((p) => p.fileType === '.page.route').map((p) => p.loadFile?.()))
+  const { onBeforeRouteHook, filesystemRoots } = getGlobalHooks(pageFilesAll, pageConfigs, pageConfigGlobal)
+  const pageRoutes = getPageRoutes(filesystemRoots, pageFilesAll, pageConfigs, allPageIds)
   return { pageRoutes, onBeforeRouteHook }
 }
 
