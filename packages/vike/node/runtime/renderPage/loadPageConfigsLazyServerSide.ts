@@ -15,7 +15,7 @@ import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { MediaType } from './inferMediaType.js'
 import { loadConfigValues } from '../../../shared/page-configs/loadConfigValues.js'
 import { execHookServer, type PageContextExecHookServer } from './execHookServer.js'
-import { getCacheControl } from './createHttpResponse/getCacheControl.js'
+import { getCacheControl } from './getCacheControl.js'
 import type { PassToClient } from '../html/serializeContext.js'
 
 type PageContextExecuteHook = Omit<
@@ -30,7 +30,6 @@ type PageContext_loadPageConfigsLazyServerSide = PageContextGetPageAssets &
   }
 type PageConfigsLazy = PromiseType<ReturnType<typeof loadPageConfigsLazyServerSide>>
 
-// TODO/now: rename?
 async function loadPageConfigsLazyServerSideAndExecHook<
   PageContext extends PageContext_loadPageConfigsLazyServerSide & PageContextExecuteHook,
 >(pageContext: PageContext) {
@@ -42,13 +41,12 @@ async function loadPageConfigsLazyServerSideAndExecHook<
   return pageContext
 }
 
-// TODO/now: rename?
 async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageConfigsLazyServerSide) {
   const pageConfig = findPageConfig(pageContext._globalContext._pageConfigs, pageContext.pageId) // Make pageConfig globally available as pageContext._pageConfig ?
 
   const globalContext = pageContext._globalContext
   const [{ pageFilesLoaded, configPublicPageLazy }] = await Promise.all([
-    loadPageUserFiles(
+    loadPageConfigFiles(
       pageContext._globalContext._pageFilesAll,
       pageConfig,
       globalContext._pageConfigGlobal,
@@ -148,8 +146,7 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
   return pageContextAddendum
 }
 
-// TODO/now: rename?
-async function loadPageUserFiles(
+async function loadPageConfigFiles(
   pageFilesAll: PageFile[],
   pageConfig: null | PageConfigRuntime,
   pageConfigGlobal: PageConfigGlobalRuntime,
@@ -167,7 +164,6 @@ async function loadPageUserFiles(
 }
 
 function resolveHeadersResponse(
-  // TODO/now: merge pageContextAddendum with pageContext
   pageContext: {
     pageId: null | string
     _globalContext: GlobalContextServerInternal

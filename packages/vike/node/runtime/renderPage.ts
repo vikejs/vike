@@ -283,10 +283,8 @@ async function renderPageOnError(
     if (!errorPageId) {
       objectAssign(pageContextErrorPageInit, { pageId: null })
       return handleErrorWithoutErrorPage(pageContextErrorPageInit)
-    } else {
-      // TODO/now: minor refactor
-      objectAssign(pageContextErrorPageInit, { pageId: errorPageId })
     }
+    objectAssign(pageContextErrorPageInit, { pageId: errorPageId })
   }
 
   let pageContextErrorPage: undefined | Awaited<ReturnType<typeof renderPageAlreadyRouted>>

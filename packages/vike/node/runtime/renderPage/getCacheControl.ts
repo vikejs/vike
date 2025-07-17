@@ -1,10 +1,9 @@
-// TODO/now: move
 export { getCacheControl }
 export { cacheControlDisable }
 
-import type { PageConfigRuntime } from '../../../../types/PageConfig.js'
-import { getPageConfig } from '../../../../shared/page-configs/helpers.js'
-import { getConfigValueRuntime } from '../../../../shared/page-configs/getConfigValueRuntime.js'
+import type { PageConfigRuntime } from '../../../types/PageConfig.js'
+import { getPageConfig } from '../../../shared/page-configs/helpers.js'
+import { getConfigValueRuntime } from '../../../shared/page-configs/getConfigValueRuntime.js'
 
 const cacheControlDisable = 'no-store, max-age=0'
 
