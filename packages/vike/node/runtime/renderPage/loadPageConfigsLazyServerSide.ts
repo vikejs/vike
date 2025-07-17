@@ -30,7 +30,6 @@ type PageContext_loadPageConfigsLazyServerSide = PageContextGetPageAssets &
   }
 type PageConfigsLazy = PromiseType<ReturnType<typeof loadPageConfigsLazyServerSide>>
 
-// TODO/now: rename?
 async function loadPageConfigsLazyServerSideAndExecHook<
   PageContext extends PageContext_loadPageConfigsLazyServerSide & PageContextExecuteHook,
 >(pageContext: PageContext) {
@@ -42,7 +41,6 @@ async function loadPageConfigsLazyServerSideAndExecHook<
   return pageContext
 }
 
-// TODO/now: rename?
 async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageConfigsLazyServerSide) {
   const pageConfig = findPageConfig(pageContext._globalContext._pageConfigs, pageContext.pageId) // Make pageConfig globally available as pageContext._pageConfig ?
 
@@ -166,7 +164,6 @@ async function loadPageConfigFiles(
 }
 
 function resolveHeadersResponse(
-  // TODO/now: merge pageContextAddendum with pageContext
   pageContext: {
     pageId: null | string
     _globalContext: GlobalContextServerInternal
