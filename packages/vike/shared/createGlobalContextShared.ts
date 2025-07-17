@@ -23,11 +23,11 @@ const getGlobalContextSyncErrMsg =
 async function createGlobalContextShared<GlobalContextAddendum extends object>(
   virtualFileExports: unknown,
   globalObject: { globalContext?: Record<string, unknown>; onCreateGlobalContextHooks?: Hook[] },
-  addGlobalContext?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddendum>,
+  addGlobalContextAsync?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddendum>,
 ) {
   const globalContext = createGlobalContextBase(virtualFileExports)
 
-  const globalContextAddendum = await addGlobalContext?.(globalContext)
+  const globalContextAddendum = await addGlobalContextAsync?.(globalContext)
   objectAssign(globalContext, globalContextAddendum)
 
   const onCreateGlobalContextHooks = getHookFromPageConfigGlobalCumulative(
