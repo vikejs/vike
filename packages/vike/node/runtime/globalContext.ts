@@ -14,7 +14,7 @@ export { setGlobalContext_viteDevServer }
 export { setGlobalContext_viteConfig }
 export { setGlobalContext_isPrerendering }
 export { setGlobalContext_isProduction }
-export { setGlobalContext_buildEntry }
+export { setGlobalContext_buildEntry } // production entry
 export { clearGlobalContext }
 export { assertBuildInfo }
 export { updateUserFiles }
@@ -53,7 +53,7 @@ import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/
 import { virtualFileIdEntryServer } from '../shared/virtualFiles/virtualFileEntry.js'
 import pc from '@brillout/picocolors'
 import type { VikeConfigPublicGlobal } from '../../shared/page-configs/resolveVikeConfigPublic.js'
-import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
+import { loadPageRoutes, loadPageRoutesSync, type PageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { assertV1Design } from '../shared/assertV1Design.js'
 import { resolveBase } from '../shared/resolveBase.js'
 import type { ViteConfigRuntime } from '../vite/shared/getViteConfigRuntime.js'
@@ -67,6 +67,7 @@ import { prepareGlobalContextForPublicUsage } from '../../shared/prepareGlobalCo
 import { logRuntimeError, logRuntimeInfo } from './loggerRuntime.js'
 import { getVikeConfigErrorBuild, setVikeConfigError } from '../shared/getVikeConfigError.js'
 import { hasAlreadyLogged } from './renderPage/isNewError.js'
+import type { Hook } from '../../shared/hooks/getHook.js'
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
   {
@@ -86,8 +87,8 @@ const globalObject = getGlobalObject<
     // Move to buildInfo.assetsManifest ?
     assetsManifest?: ViteManifest
     isInitialized?: true
-  } & ReturnType<typeof getInitialGlobalContext>
->('runtime/globalContext.ts', getInitialGlobalContext())
+  } & ReturnType<typeof getInitialGlobalObject>
+>('runtime/globalContext.ts', getInitialGlobalObject())
 // Trick to break down TypeScript circular dependency
 // https://chat.deepseek.com/a/chat/s/d7e9f90a-c7f3-4108-9cd5-4ad6caed3539
 const globalObjectTyped = globalObject as typeof globalObject & {
@@ -316,6 +317,7 @@ function assertViteManifest(manifest: unknown): asserts manifest is ViteManifest
 async function loadBuildEntry(outDir?: string) {
   debug('loadBuildEntry()')
   if (globalObject.globalContext) {
+    debug('loadBuildEntry() - already done')
     return
   }
   if (!globalObject.buildEntry) {
@@ -344,6 +346,9 @@ async function loadBuildEntry(outDir?: string) {
   globalObject.buildInfo = buildEntry.buildInfo
   await setGlobalContext(buildEntry.virtualFileExports)
 }
+
+// This is the production entry, see:
+// https://github.com/vikejs/vike/blob/798e5465dc3e3e6723b38b601a50350c0a006fb8/packages/vike/node/vite/plugins/pluginBuild/pluginBuildEntry.ts#L47
 async function setGlobalContext_buildEntry(buildEntry: unknown) {
   debug('setGlobalContext_buildEntry()')
   setIsProduction(true)
@@ -353,6 +358,7 @@ async function setGlobalContext_buildEntry(buildEntry: unknown) {
   assert(globalObject.buildEntry) // ensure no infinite loop
   await loadBuildEntry()
   assertGlobalContextIsDefined()
+  debug('setGlobalContext_buildEntry() - done')
 }
 
 type BuildEntry = {
@@ -464,8 +470,14 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
 }
 
 async function setGlobalContext(virtualFileExports: unknown) {
+  debug('setGlobalContext()')
   assert(!getVikeConfigErrorBuild())
-  const globalContext = await createGlobalContextShared(virtualFileExports, globalObject, addGlobalContext)
+  const globalContext = await createGlobalContextShared(
+    virtualFileExports,
+    globalObject,
+    addGlobalContextAsync,
+    addGlobalContextSync,
+  )
 
   assertV1Design(
     // pageConfigs is PageConfigRuntime[] but assertV1Design() requires PageConfigBuildTime[]
@@ -476,17 +488,37 @@ async function setGlobalContext(virtualFileExports: unknown) {
   assertGlobalContextIsDefined()
   onSetupRuntime()
 
+  debug('setGlobalContext() - done')
+
   // Never actually used, only used for TypeScript `ReturnType<typeof setGlobalContext>`
   return globalContext
 }
 
-async function addGlobalContext(globalContext: GlobalContextBase) {
+async function addGlobalContextAsync(globalContext: GlobalContextBase) {
+  debug('addGlobalContextAsync()')
   const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
     globalContext._pageFilesAll,
     globalContext._pageConfigs,
     globalContext._pageConfigGlobal,
     globalContext._allPageIds,
   )
+  return addGlobalContextCommon(globalContext, pageRoutes, onBeforeRouteHook)
+}
+function addGlobalContextSync(globalContext: GlobalContextBase) {
+  debug('addGlobalContextSync()')
+  const { pageRoutes, onBeforeRouteHook } = loadPageRoutesSync(
+    globalContext._pageFilesAll,
+    globalContext._pageConfigs,
+    globalContext._pageConfigGlobal,
+    globalContext._allPageIds,
+  )
+  return addGlobalContextCommon(globalContext, pageRoutes, onBeforeRouteHook)
+}
+function addGlobalContextCommon(
+  globalContext: GlobalContextBase,
+  pageRoutes: PageRoutes,
+  onBeforeRouteHook: null | Hook,
+) {
   const globalContextBase = {
     isClientSide: false as const,
     _pageRoutes: pageRoutes,
@@ -544,11 +576,11 @@ async function addGlobalContext(globalContext: GlobalContextBase) {
 
 function clearGlobalContext() {
   debug('clearGlobalContext()')
-  objectReplace(globalObject, getInitialGlobalContext(), ['buildEntryPrevious'])
+  objectReplace(globalObject, getInitialGlobalObject(), ['buildEntryPrevious'])
 }
 
-function getInitialGlobalContext() {
-  debug('getInitialGlobalContext()')
+function getInitialGlobalObject() {
+  debug('getInitialGlobalObject()')
   const { promise: viteDevServerPromise, resolve: viteDevServerPromiseResolve } = genPromise<ViteDevServer>()
   return {
     viteDevServerPromise,

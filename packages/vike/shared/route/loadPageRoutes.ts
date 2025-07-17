@@ -1,4 +1,5 @@
 export { loadPageRoutes }
+export { loadPageRoutesSync }
 export type { PageRoutes }
 export type { RouteType }
 
@@ -36,8 +37,17 @@ async function loadPageRoutes(
   pageConfigGlobal: PageConfigGlobalRuntime,
   allPageIds: string[],
 ): Promise<{ pageRoutes: PageRoutes; onBeforeRouteHook: null | Hook }> {
-  // TO-DO/next-major-release: remove & make this function sync
+  // TO-DO/next-major-release: remove this line, remove this function, rename loadPageRoutesSync() to loadPageRoutes()
   await Promise.all(pageFilesAll.filter((p) => p.fileType === '.page.route').map((p) => p.loadFile?.()))
+  return loadPageRoutesSync(pageFilesAll, pageConfigs, pageConfigGlobal, allPageIds)
+}
+function loadPageRoutesSync(
+  // Remove all arguments and use GlobalContextServerInternal instead?
+  pageFilesAll: PageFile[],
+  pageConfigs: PageConfigRuntime[],
+  pageConfigGlobal: PageConfigGlobalRuntime,
+  allPageIds: string[],
+): { pageRoutes: PageRoutes; onBeforeRouteHook: null | Hook } {
   const { onBeforeRouteHook, filesystemRoots } = getGlobalHooks(pageFilesAll, pageConfigs, pageConfigGlobal)
   const pageRoutes = getPageRoutes(filesystemRoots, pageFilesAll, pageConfigs, allPageIds)
   return { pageRoutes, onBeforeRouteHook }

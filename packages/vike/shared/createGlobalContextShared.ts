@@ -20,15 +20,33 @@ import { getHookFromPageConfigGlobalCumulative, type Hook } from './hooks/getHoo
 const getGlobalContextSyncErrMsg =
   "The global context isn't set yet, call getGlobalContextSync() later or use getGlobalContext() instead."
 
-async function createGlobalContextShared<GlobalContextAddendum extends object>(
+async function createGlobalContextShared<GlobalContextAddendum extends Record<string, any>>(
   virtualFileExports: unknown,
   globalObject: { globalContext?: Record<string, unknown>; onCreateGlobalContextHooks?: Hook[] },
-  addGlobalContext?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddendum>,
+  addGlobalContextAsync?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddendum>,
+  addGlobalContextSync?: (globalContext: GlobalContextBase) => GlobalContextAddendum,
 ) {
   const globalContext = createGlobalContextBase(virtualFileExports)
 
-  const globalContextAddendum = await addGlobalContext?.(globalContext)
-  objectAssign(globalContext, globalContextAddendum)
+  let isNewGlobalContext: boolean
+  if (!globalObject.globalContext) {
+    globalObject.globalContext = globalContext
+    isNewGlobalContext = false
+  } else {
+    isNewGlobalContext = true
+  }
+
+  if (
+    addGlobalContextSync &&
+    // TODO/next-major-release: remove
+    globalContext._pageConfigs.length > 0
+  ) {
+    const globalContextAddendum = addGlobalContextSync?.(globalContext)
+    objectAssign(globalContext, globalContextAddendum)
+  } else {
+    const globalContextAddendum = await addGlobalContextAsync?.(globalContext)
+    objectAssign(globalContext, globalContextAddendum)
+  }
 
   const onCreateGlobalContextHooks = getHookFromPageConfigGlobalCumulative(
     globalContext._pageConfigGlobal,
@@ -47,9 +65,7 @@ async function createGlobalContextShared<GlobalContextAddendum extends object>(
     hooksCalled = true
   }
 
-  if (!globalObject.globalContext) {
-    globalObject.globalContext = globalContext
-  } else {
+  if (isNewGlobalContext) {
     // Singleton: ensure all `globalContext` user-land references are preserved & updated.
     if (hooksCalled) {
       objectReplace(globalObject.globalContext, globalContext)
