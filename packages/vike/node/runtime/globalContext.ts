@@ -316,6 +316,7 @@ function assertViteManifest(manifest: unknown): asserts manifest is ViteManifest
 async function loadBuildEntry(outDir?: string) {
   debug('loadBuildEntry()')
   if (globalObject.globalContext) {
+    debug('loadBuildEntry() - already done')
     return
   }
   if (!globalObject.buildEntry) {
@@ -356,6 +357,7 @@ async function setGlobalContext_buildEntry(buildEntry: unknown) {
   assert(globalObject.buildEntry) // ensure no infinite loop
   await loadBuildEntry()
   assertGlobalContextIsDefined()
+  debug('setGlobalContext_buildEntry() - done')
 }
 
 type BuildEntry = {
@@ -467,6 +469,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
 }
 
 async function setGlobalContext(virtualFileExports: unknown) {
+  debug('setGlobalContext()')
   assert(!getVikeConfigErrorBuild())
   const globalContext = await createGlobalContextShared(virtualFileExports, globalObject, addGlobalContext)
 
