@@ -86,8 +86,8 @@ const globalObject = getGlobalObject<
     // Move to buildInfo.assetsManifest ?
     assetsManifest?: ViteManifest
     isInitialized?: true
-  } & ReturnType<typeof getInitialGlobalContext>
->('runtime/globalContext.ts', getInitialGlobalContext())
+  } & ReturnType<typeof getInitialGlobalObject>
+>('runtime/globalContext.ts', getInitialGlobalObject())
 // Trick to break down TypeScript circular dependency
 // https://chat.deepseek.com/a/chat/s/d7e9f90a-c7f3-4108-9cd5-4ad6caed3539
 const globalObjectTyped = globalObject as typeof globalObject & {
@@ -547,11 +547,11 @@ async function addGlobalContext(globalContext: GlobalContextBase) {
 
 function clearGlobalContext() {
   debug('clearGlobalContext()')
-  objectReplace(globalObject, getInitialGlobalContext(), ['buildEntryPrevious'])
+  objectReplace(globalObject, getInitialGlobalObject(), ['buildEntryPrevious'])
 }
 
-function getInitialGlobalContext() {
-  debug('getInitialGlobalContext()')
+function getInitialGlobalObject() {
+  debug('getInitialGlobalObject()')
   const { promise: viteDevServerPromise, resolve: viteDevServerPromiseResolve } = genPromise<ViteDevServer>()
   return {
     viteDevServerPromise,
