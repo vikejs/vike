@@ -14,7 +14,9 @@ h1 #tagline-secondary {
 }
 @media screen and (max-width: 768px) {
   h1 #tagline-main {
-    font-size: 40px;
+    font-size: 45px;
+    line-height: 1.2;
+    margin-bottom: 30px;
   }
   h1 #tagline-secondary {
     font-size: 20px;
