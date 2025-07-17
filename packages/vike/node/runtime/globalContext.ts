@@ -53,7 +53,7 @@ import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/
 import { virtualFileIdEntryServer } from '../shared/virtualFiles/virtualFileEntry.js'
 import pc from '@brillout/picocolors'
 import type { VikeConfigPublicGlobal } from '../../shared/page-configs/resolveVikeConfigPublic.js'
-import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
+import { loadPageRoutes, loadPageRoutesSync, type PageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { assertV1Design } from '../shared/assertV1Design.js'
 import { resolveBase } from '../shared/resolveBase.js'
 import type { ViteConfigRuntime } from '../vite/shared/getViteConfigRuntime.js'
@@ -67,6 +67,7 @@ import { prepareGlobalContextForPublicUsage } from '../../shared/prepareGlobalCo
 import { logRuntimeError, logRuntimeInfo } from './loggerRuntime.js'
 import { getVikeConfigErrorBuild, setVikeConfigError } from '../shared/getVikeConfigError.js'
 import { hasAlreadyLogged } from './renderPage/isNewError.js'
+import type { Hook } from '../../shared/hooks/getHook.js'
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
   {
@@ -471,7 +472,12 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
 async function setGlobalContext(virtualFileExports: unknown) {
   debug('setGlobalContext()')
   assert(!getVikeConfigErrorBuild())
-  const globalContext = await createGlobalContextShared(virtualFileExports, globalObject, addGlobalContext)
+  const globalContext = await createGlobalContextShared(
+    virtualFileExports,
+    globalObject,
+    addGlobalContextAsync,
+    addGlobalContextSync,
+  )
 
   assertV1Design(
     // pageConfigs is PageConfigRuntime[] but assertV1Design() requires PageConfigBuildTime[]
@@ -486,13 +492,29 @@ async function setGlobalContext(virtualFileExports: unknown) {
   return globalContext
 }
 
-async function addGlobalContext(globalContext: GlobalContextBase) {
+async function addGlobalContextAsync(globalContext: GlobalContextBase) {
   const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
     globalContext._pageFilesAll,
     globalContext._pageConfigs,
     globalContext._pageConfigGlobal,
     globalContext._allPageIds,
   )
+  return addGlobalContextCommon(globalContext, pageRoutes, onBeforeRouteHook)
+}
+function addGlobalContextSync(globalContext: GlobalContextBase) {
+  const { pageRoutes, onBeforeRouteHook } = loadPageRoutesSync(
+    globalContext._pageFilesAll,
+    globalContext._pageConfigs,
+    globalContext._pageConfigGlobal,
+    globalContext._allPageIds,
+  )
+  return addGlobalContextCommon(globalContext, pageRoutes, onBeforeRouteHook)
+}
+function addGlobalContextCommon(
+  globalContext: GlobalContextBase,
+  pageRoutes: PageRoutes,
+  onBeforeRouteHook: null | Hook,
+) {
   const globalContextBase = {
     isClientSide: false as const,
     _pageRoutes: pageRoutes,

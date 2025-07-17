@@ -1,4 +1,5 @@
 export { loadPageRoutes }
+export { loadPageRoutesSync }
 export type { PageRoutes }
 export type { RouteType }
 
