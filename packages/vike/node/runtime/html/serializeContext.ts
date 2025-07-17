@@ -40,6 +40,7 @@ type PageContextSerialization = {
   pageProps?: Record<string, unknown>
   _pageContextInit: Record<string, unknown>
   _globalContext: GlobalContextServerInternal
+  isClientSideNavigation: boolean
 }
 function getPageContextClientSerialized(pageContext: PageContextSerialization) {
   const passToClientPageContext = getPassToClientPageContext(pageContext)
@@ -61,7 +62,14 @@ function getGlobalContextClientSerialized(pageContext: PageContextSerialization)
   const passToClient = pageContext._passToClient
   const globalContext = pageContext._globalContext
   const getObj = (passToClientEntry: PassToClientEntryNormalized) => {
-    if (passToClientEntry.once) return { obj: pageContext, objName: 'pageContext' as const } // pass it to client-side globalContext
+    if (passToClientEntry.once) {
+      assert(typeof pageContext.isClientSideNavigation === 'boolean')
+      if (!pageContext.isClientSideNavigation) {
+        return { obj: pageContext, objName: 'pageContext' as const } // pass it to client-side globalContext
+      } else {
+        return undefined // already passed to client-side
+      }
+    }
     return { obj: globalContext, objName: 'globalContext' as const }
   }
   const res = applyPassToClient(passToClient, getObj)
