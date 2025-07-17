@@ -488,11 +488,14 @@ async function setGlobalContext(virtualFileExports: unknown) {
   assertGlobalContextIsDefined()
   onSetupRuntime()
 
+  debug('setGlobalContext() - done')
+
   // Never actually used, only used for TypeScript `ReturnType<typeof setGlobalContext>`
   return globalContext
 }
 
 async function addGlobalContextAsync(globalContext: GlobalContextBase) {
+  debug('addGlobalContextAsync()')
   const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
     globalContext._pageFilesAll,
     globalContext._pageConfigs,
@@ -502,6 +505,7 @@ async function addGlobalContextAsync(globalContext: GlobalContextBase) {
   return addGlobalContextCommon(globalContext, pageRoutes, onBeforeRouteHook)
 }
 function addGlobalContextSync(globalContext: GlobalContextBase) {
+  debug('addGlobalContextSync()')
   const { pageRoutes, onBeforeRouteHook } = loadPageRoutesSync(
     globalContext._pageFilesAll,
     globalContext._pageConfigs,
