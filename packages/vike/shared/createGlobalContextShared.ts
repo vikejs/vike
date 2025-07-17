@@ -32,6 +32,10 @@ async function createGlobalContextShared<
   const globalContext = createGlobalContextBase(virtualFileExports)
 
   {
+    const globalContextAddendum = addGlobalContextSync?.(globalContext)
+    objectAssign(globalContext, globalContextAddendum)
+  }
+  {
     const globalContextAddendum = await addGlobalContextAsync?.(globalContext)
     objectAssign(globalContext, globalContextAddendum)
   }
