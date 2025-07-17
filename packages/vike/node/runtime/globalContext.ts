@@ -14,7 +14,7 @@ export { setGlobalContext_viteDevServer }
 export { setGlobalContext_viteConfig }
 export { setGlobalContext_isPrerendering }
 export { setGlobalContext_isProduction }
-export { setGlobalContext_buildEntry }
+export { setGlobalContext_buildEntry } // production entry
 export { clearGlobalContext }
 export { assertBuildInfo }
 export { updateUserFiles }
@@ -344,6 +344,9 @@ async function loadBuildEntry(outDir?: string) {
   globalObject.buildInfo = buildEntry.buildInfo
   await setGlobalContext(buildEntry.virtualFileExports)
 }
+
+// This is the production entry, see:
+// https://github.com/vikejs/vike/blob/798e5465dc3e3e6723b38b601a50350c0a006fb8/packages/vike/node/vite/plugins/pluginBuild/pluginBuildEntry.ts#L47
 async function setGlobalContext_buildEntry(buildEntry: unknown) {
   debug('setGlobalContext_buildEntry()')
   setIsProduction(true)
