@@ -28,6 +28,14 @@ async function createGlobalContextShared<GlobalContextAddendum extends Record<st
 ) {
   const globalContext = createGlobalContextBase(virtualFileExports)
 
+  let isNewGlobalContext: boolean
+  if (!globalObject.globalContext) {
+    globalObject.globalContext = globalContext
+    isNewGlobalContext = false
+  } else {
+    isNewGlobalContext = true
+  }
+
   if (addGlobalContextSync && globalContext._pageConfigs.length > 0) {
     const globalContextAddendum = addGlobalContextSync?.(globalContext)
     objectAssign(globalContext, globalContextAddendum)
@@ -53,9 +61,7 @@ async function createGlobalContextShared<GlobalContextAddendum extends Record<st
     hooksCalled = true
   }
 
-  if (!globalObject.globalContext) {
-    globalObject.globalContext = globalContext
-  } else {
+  if (isNewGlobalContext) {
     // Singleton: ensure all `globalContext` user-land references are preserved & updated.
     if (hooksCalled) {
       objectReplace(globalObject.globalContext, globalContext)
