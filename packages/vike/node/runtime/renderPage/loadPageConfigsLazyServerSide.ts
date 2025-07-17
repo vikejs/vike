@@ -15,7 +15,7 @@ import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { MediaType } from './inferMediaType.js'
 import { loadConfigValues } from '../../../shared/page-configs/loadConfigValues.js'
 import { execHookServer, type PageContextExecHookServer } from './execHookServer.js'
-import { getCacheControl } from './createHttpResponse/getCacheControl.js'
+import { getCacheControl } from './getCacheControl.js'
 import type { PassToClient } from '../html/serializeContext.js'
 
 type PageContextExecuteHook = Omit<
