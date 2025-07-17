@@ -56,7 +56,7 @@ describe('isPathAliasRecommended()', () => {
     expect(isPathAliasRecommended('@a/b/c')).toBe(false)
     expect(isPathAliasRecommended('@a/b/c/d')).toBe(false)
 
-    // Edge-case needed by contra.com
+    // Edge-case needed by contra.com and https://github.com/vikejs/vike/issues/1567#issuecomment-3076374243
     expect(isPathAliasRecommended('@/a')).toBe(true)
 
     // Starts with a special character

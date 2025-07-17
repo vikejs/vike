@@ -59,7 +59,7 @@ function isPathAliasRecommended(alias: string): boolean {
   // Ensure path alias starts with a special character.
   //  - In principle, we could allow path aliases that don't start with special character as long as they can be distinguished from npm package names.
   //    - But we still enforce path aliases to start with a special character because it's a much simpler rule to follow.
-  if (alias.startsWith('@/')) return true // Needed by contra.com
+  if (alias.startsWith('@/')) return true // Needed by contra.com and https://github.com/vikejs/vike/issues/1567#issuecomment-3076374243
   const firstLetter = alias[0]
   assert(firstLetter)
   if (firstLetter === '@' || /[0-9a-z]/.test(firstLetter.toLowerCase())) return false
