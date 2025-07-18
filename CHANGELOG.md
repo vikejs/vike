@@ -1,3 +1,21 @@
+## [0.4.236](https://github.com/vikejs/vike/compare/v0.4.235...v0.4.236) (2025-07-18)
+
+
+### Bug Fixes
+
+* eagerly set globalContext [enabling early `getGlobalContextSync()` calls] ([#2560](https://github.com/vikejs/vike/issues/2560)) ([7db9617](https://github.com/vikejs/vike/commit/7db9617d0836eeac630563f2d5c68d82712697e7))
+* improve error upon runtime code defined inside config file (fix [#1805](https://github.com/vikejs/vike/issues/1805)) ([dcb6976](https://github.com/vikejs/vike/commit/dcb69769e246002c625a77d0f71d9f51acd62f0b))
+* prevent Google from crawling URLs in JSON ([#2277](https://github.com/vikejs/vike/issues/2277), [#2541](https://github.com/vikejs/vike/issues/2541)) ([#2542](https://github.com/vikejs/vike/issues/2542)) ([8f42b16](https://github.com/vikejs/vike/commit/8f42b1628280ae41afda0795cd0a0603b3c94720))
+
+
+### Features
+
+* `+headersResponse` and `pageContext.headersResponse` ([#2555](https://github.com/vikejs/vike/issues/2555)) ([53eaa9b](https://github.com/vikejs/vike/commit/53eaa9be966f96116e793abb3e23d05d9f1fa7be))
+* allow getGlobalContextSync() to be used in production ([#2534](https://github.com/vikejs/vike/issues/2534)) ([16164c3](https://github.com/vikejs/vike/commit/16164c3b1f12a58f3972205a41dac4cece108aaa))
+* passToClient once (closes [#2551](https://github.com/vikejs/vike/issues/2551), [#1842](https://github.com/vikejs/vike/issues/1842)) ([#2557](https://github.com/vikejs/vike/issues/2557)) ([d2ac38a](https://github.com/vikejs/vike/commit/d2ac38a64b80198efdfeae6529d2d1d598ae73ba))
+
+
+
 ## [0.4.235](https://github.com/vikejs/vike/compare/v0.4.234...v0.4.235) (2025-06-20)
 
 
