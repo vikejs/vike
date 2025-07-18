@@ -1,4 +1,4 @@
-import { Link } from '@brillout/docpress'
+import { Link, Warning } from '@brillout/docpress'
 
 TypeScript: `(string | { prop: string; once?: boolean })[]`  
 <Link href="/config#cumulative">Cumulative</Link>: true  
@@ -41,6 +41,8 @@ Some values, such as `pageContext.data`, are already passed to the client-side b
 
 
 ## `once`
+
+<Warning>This is a beta feature: expect breaking changes in any minor version update. If we don't encounter issues over the next 1–2 months, we'll remove this warning and consider the feature stable.</Warning>
 
 By default, upon <Link href="/client-routing">client-side navigation</Link>, properties are passed to the client again.
 
