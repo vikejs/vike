@@ -1,5 +1,3 @@
-console.log('client/runtime-client-routing/index.ts')
-
 // TO-DO/next-major-release: move
 //   import { navigate, prefetch } from 'vike/client/router'
 // to:
