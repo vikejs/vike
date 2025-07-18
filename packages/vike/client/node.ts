@@ -1,4 +1,4 @@
-import { assertUsage } from './runtime-server-routing/utils.js'
+import { assertUsage } from '../utils/assert.js'
 assertUsage(
   false,
   [
