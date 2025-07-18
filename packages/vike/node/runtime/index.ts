@@ -1,3 +1,4 @@
+console.log('node/runtime/index.ts')
 import { isBrowser } from '../../utils/isBrowser.js'
 import { assert } from '../../utils/assert.js'
 assert(!isBrowser())
