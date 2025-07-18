@@ -211,8 +211,8 @@
 <g transform="translate(-.0015 -.0038489)" clip-path="url(#clipPath778)" mask="url(#mask19_13_108)">
 <path d="m287.45 170.96-39.987-3.7v-29.035l39.987 3.694z" fill="#f2f2f2"/>
 </g>
-<g transform="translate(-.0015 -.0038489)" clip-path="url(#clipPath772)" mask="url(#mask20_13_108)">
-<path d="m247.86 167.25-71.562 78.619-21.322-15.057 71.838-78.774 21.047 14.696z" fill="#9b9b9b"/>
+<g transform="translate(-.0015 -.0038489)" clip-path="url(#clipPath772)" fill="#a4a4a4" mask="url(#mask20_13_108)">
+<path d="m247.86 167.25-71.562 78.619-21.322-15.057 71.838-78.774 21.047 14.696z" fill="#a4a4a4"/>
 </g>
 <g transform="translate(-.0015 -.0038489)" clip-path="url(#clipPath766)" mask="url(#mask21_13_108)">
 <path d="m247.89 167.27v-29.034l-0.17-0.239-21.257 14.015 0.139 0.217z" fill="#a7a6a7"/>
