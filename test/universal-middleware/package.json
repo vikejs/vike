@@ -12,7 +12,7 @@
     "@vitejs/plugin-react": "^4.5.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "vike-react": "^0.6.1",
+    "vike-react": "^0.6.5",
     "@universal-middleware/core": "^0.4.7",
     "telefunc": "^0.2.5"
   },
