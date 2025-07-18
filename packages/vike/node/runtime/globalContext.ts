@@ -231,6 +231,7 @@ function setGlobalContext_isPrerendering() {
   setIsProduction(true)
 }
 function setGlobalContext_isProduction(isProduction: boolean, tolerateContraditction = false) {
+  if (true as boolean) return
   if (debug.isActivated) debug('setGlobalContext_isProduction()', { isProduction, tolerateContraditction })
   if (globalObject.isProduction === undefined) {
     setIsProduction(isProduction)
@@ -285,7 +286,8 @@ async function initGlobalContext(): Promise<void> {
   const { isProduction } = globalObject
   assert(typeof isProduction === 'boolean')
   if (!isProduction) {
-    await globalObject.viteDevServerPromise
+    // await globalObject.viteDevServerPromise
+    await updateUserFiles()
     assert(globalObject.waitForUserFilesUpdate)
     await globalObject.waitForUserFilesUpdate
   } else {
@@ -433,20 +435,25 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
     return { success: true }
   }
 
-  const isOutdated = () =>
+  const isOutdated = () => false
+  /*
     // There is a newer call — let the new call supersede the old one.
     // We deliberately swallow the intermetidate state (including any potential error) — it's now outdated and has existed only for a very short period of time.
     globalObject.waitForUserFilesUpdate !== promise ||
     // Avoid race condition: abort if there is a new globalObject.viteDevServer (happens when vite.config.js is modified => Vite's dev server is fully reloaded).
     viteDevServer !== globalObject.viteDevServer
+    */
 
+  /*
   const { viteDevServer } = globalObject
   assert(viteDevServer)
+  */
   let hasError = false
   let virtualFileExports: Record<string, unknown> | undefined
   let err: unknown
   try {
-    virtualFileExports = await viteDevServer.ssrLoadModule(virtualFileIdEntryServer)
+    virtualFileExports = await import('virtual:vike:entry:server' as string)
+    // virtualFileExports = await viteDevServer.ssrLoadModule(virtualFileIdEntryServer)
   } catch (err_) {
     hasError = true
     err = err_
@@ -528,14 +535,16 @@ function addGlobalContextCommon(
   const { viteDevServer, viteConfig, viteConfigRuntime, isPrerendering, isProduction } = globalObject
   assert(typeof isProduction === 'boolean')
   if (!isProduction) {
-    assert(viteDevServer)
+    // assert(viteDevServer)
     assert(globalContext) // main common requirement
-    assert(viteConfig)
-    assert(viteConfigRuntime)
+    // assert(viteConfig)
+    // assert(viteConfigRuntime)
     assert(!isPrerendering)
     return {
       ...globalContextBase,
-      ...resolveBaseRuntime(viteConfigRuntime, globalContext.config),
+      // ...resolveBaseRuntime(viteConfigRuntime, globalContext.config),
+      baseServer: '/',
+      baseAssets: '/',
       _isProduction: false as const,
       _isPrerendering: false as const,
       assetsManifest: null,
@@ -584,6 +593,7 @@ function getInitialGlobalObject() {
   debug('getInitialGlobalObject()')
   const { promise: viteDevServerPromise, resolve: viteDevServerPromiseResolve } = genPromise<ViteDevServer>()
   return {
+    isProduction: false,
     viteDevServerPromise,
     viteDevServerPromiseResolve,
   }

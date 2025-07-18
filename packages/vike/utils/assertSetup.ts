@@ -36,6 +36,7 @@ function assertIsNotProductionRuntime(): void | undefined {
 }
 
 function onSetupRuntime(): void | undefined {
+  if (true as boolean) return
   if (debug.isActivated) debug('assertSetup()', new Error().stack)
   if (isTest()) return
   assertNodeEnvIsNotUndefinedString()

@@ -97,10 +97,11 @@ async function getPageAssets(
 }
 
 async function retrievePageAssetsDev(
-  viteDevServer: ViteDevServer,
+  viteDevServer: ViteDevServer | undefined,
   clientDependencies: ClientDependency[],
   clientEntries: string[],
 ) {
+  if (!viteDevServer) return { clientEntriesSrc: [], assetUrls: [] }
   const clientEntriesSrc = clientEntries.map((clientEntry) =>
     globalObject.resolveClientEntriesDev!(clientEntry, viteDevServer),
   )

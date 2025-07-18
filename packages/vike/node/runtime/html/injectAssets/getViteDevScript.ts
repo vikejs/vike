@@ -13,12 +13,12 @@ async function getViteDevScript(pageContext: {
   if (globalContext._isProduction) {
     return ''
   }
-  const { _viteDevServer: viteDevServer } = globalContext
+  // const { _viteDevServer: viteDevServer } = globalContext
 
   const fakeHtmlBegin = '<html> <head>' // White space to test whether user is using a minifier
   const fakeHtmlEnd = '</head><body></body></html>'
   let fakeHtml = fakeHtmlBegin + fakeHtmlEnd
-  fakeHtml = await viteDevServer.transformIndexHtml('/', fakeHtml)
+  // fakeHtml = await viteDevServer.transformIndexHtml('/', fakeHtml)
   assertUsage(
     !fakeHtml.includes('vite-plugin-pwa'),
     `The HTML transformer of ${pc.cyan(
@@ -34,7 +34,7 @@ async function getViteDevScript(pageContext: {
     `You are using a Vite Plugin that transforms the HTML in a way that conflicts with Vike. ${reachOutCTA}`,
   )
   const viteInjection = fakeHtml.slice(fakeHtmlBegin.length, -1 * fakeHtmlEnd.length)
-  assert(viteInjection.includes('script'))
+  // assert(viteInjection.includes('script'))
   assertWarning(!viteInjection.includes('import('), `Unexpected Vite injected HMR code. ${reachOutCTA}`, {
     onlyOnce: true,
   })
