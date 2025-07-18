@@ -1,4 +1,3 @@
-console.log('client/runtime-client-routing/entry.ts')
 import { assertClientRouting } from '../../utils/assertRoutingType.js'
 assertClientRouting()
 

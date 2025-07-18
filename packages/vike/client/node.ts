@@ -1,4 +1,3 @@
-console.log('client/node.ts')
 import { assertUsage } from '../utils/assert.js'
 assertUsage(
   false,

@@ -1,4 +1,3 @@
-console.log('client/runtime-client-routing/utils.ts')
 // Utils needed by Vike's client runtime (with Client Routing)
 
 // We call onLoad() here so that it's called even when only a subset of the runtime is loaded. (Making the assert() calls inside onLoad() a lot stronger.)

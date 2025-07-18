@@ -1,4 +1,3 @@
-console.log('client/runtime-server-routing/index.ts')
 // TO-DO/next-major-release: remove this file
 
 import type { PageContextBuiltInClientWithServerRouting } from '../../types/PageContext.js'
