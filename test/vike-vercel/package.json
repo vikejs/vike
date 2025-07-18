@@ -22,7 +22,7 @@
     "tsx": "^4.19.4",
     "typescript": "^5.8.3",
     "vike": "0.4.236",
-    "vike-react": "^0.6.1",
+    "vike-react": "^0.6.5",
     "vite": "^6.3.5"
   },
   "dependencies": {

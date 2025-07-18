@@ -13,7 +13,7 @@
     "express": "^5.1.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-streaming": "^0.4.2",
+    "react-streaming": "^0.4.3",
     "sirv": "^2.0.2",
     "vite": "^6.3.2",
     "vike": "0.4.236"

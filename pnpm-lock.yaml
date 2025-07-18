@@ -105,8 +105,8 @@ importers:
         specifier: 0.4.236
         version: link:../../packages/vike
       vike-react:
-        specifier: ^0.5.12
-        version: 0.5.12(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
+        specifier: ^0.6.5
+        version: 0.6.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
       vite:
         specifier: ^6.3.2
         version: 6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
@@ -243,8 +243,8 @@ importers:
         specifier: ^19.1.0
         version: 19.1.0(react@19.1.0)
       react-streaming:
-        specifier: ^0.4.2
-        version: 0.4.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: ^0.4.3
+        version: 0.4.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       vike:
         specifier: 0.4.236
         version: link:../../packages/vike
@@ -435,8 +435,8 @@ importers:
         specifier: ^19.1.0
         version: 19.1.0(react@19.1.0)
       react-streaming:
-        specifier: ^0.4.2
-        version: 0.4.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: ^0.4.3
+        version: 0.4.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -486,8 +486,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       react-streaming:
-        specifier: ^0.4.2
-        version: 0.4.2(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: ^0.4.3
+        version: 0.4.3(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       sirv:
         specifier: ^2.0.2
         version: 2.0.4
@@ -862,8 +862,8 @@ importers:
         specifier: ^0.5.10
         version: 0.5.10
       react-streaming:
-        specifier: ^0.4.2
-        version: 0.4.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: ^0.4.3
+        version: 0.4.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       rimraf:
         specifier: ^5.0.5
         version: 5.0.10
@@ -1003,8 +1003,8 @@ importers:
         specifier: ^19.1.0
         version: 19.1.0(react@19.1.0)
       react-streaming:
-        specifier: ^0.4.2
-        version: 0.4.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: ^0.4.3
+        version: 0.4.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       vike:
         specifier: 0.4.236
         version: link:../../packages/vike
@@ -1180,8 +1180,8 @@ importers:
         specifier: ^19.1.0
         version: 19.1.0(react@19.1.0)
       react-streaming:
-        specifier: ^0.4.2
-        version: 0.4.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: ^0.4.3
+        version: 0.4.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       sirv:
         specifier: ^2.0.2
         version: 2.0.4
@@ -1363,8 +1363,8 @@ importers:
         specifier: 0.4.236
         version: link:../../packages/vike
       vike-react:
-        specifier: ^0.5.12
-        version: 0.5.12(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
+        specifier: ^0.6.5
+        version: 0.6.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
       vite:
         specifier: ^6.3.2
         version: 6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
@@ -1453,8 +1453,8 @@ importers:
         specifier: 0.4.236
         version: link:../../packages/vike
       vike-react:
-        specifier: ^0.6.1
-        version: 0.6.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
+        specifier: ^0.6.5
+        version: 0.6.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
       vite:
         specifier: ^6.3.2
         version: 6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
@@ -1534,8 +1534,8 @@ importers:
         specifier: 0.4.236
         version: link:../../packages/vike
       vike-react:
-        specifier: ^0.6.1
-        version: 0.6.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
+        specifier: ^0.6.5
+        version: 0.6.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
       vite:
         specifier: ^6.3.5
         version: 6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
@@ -1640,10 +1640,10 @@ importers:
         version: 19.1.0(react@19.1.0)
       telefunc:
         specifier: ^0.2.5
-        version: 0.2.5(@babel/core@7.26.10)(@babel/parser@7.27.0)(@babel/types@7.27.0)(react-streaming@0.4.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
+        version: 0.2.5(@babel/core@7.26.10)(@babel/parser@7.27.0)(@babel/types@7.27.0)(react-streaming@0.4.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
       vike-react:
-        specifier: ^0.6.1
-        version: 0.6.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
+        specifier: ^0.6.5
+        version: 0.6.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
     devDependencies:
       '@types/express':
         specifier: ^5.0.1
@@ -1734,8 +1734,8 @@ importers:
         specifier: ^19.1.0
         version: 19.1.0(react@19.1.0)
       react-streaming:
-        specifier: ^0.4.2
-        version: 0.4.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: ^0.4.3
+        version: 0.4.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -1743,8 +1743,8 @@ importers:
         specifier: 0.4.236
         version: link:../../packages/vike
       vike-react:
-        specifier: ^0.6.1
-        version: 0.6.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
+        specifier: ^0.6.5
+        version: 0.6.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
       vite:
         specifier: ^6.3.5
         version: 6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
@@ -1770,8 +1770,8 @@ importers:
         specifier: 0.4.236
         version: link:../../packages/vike
       vike-react:
-        specifier: ^0.6.1
-        version: 0.6.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
+        specifier: ^0.6.5
+        version: 0.6.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
       vike-server:
         specifier: ^1.0.16
         version: 1.0.16(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
@@ -1844,8 +1844,8 @@ importers:
         specifier: 0.4.236
         version: link:../../packages/vike
       vike-react:
-        specifier: ^0.6.1
-        version: 0.6.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
+        specifier: ^0.6.5
+        version: 0.6.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
       vite:
         specifier: ^6.3.5
         version: 6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
@@ -1910,8 +1910,8 @@ importers:
         specifier: 0.4.236
         version: link:../../packages/vike
       vike-react:
-        specifier: ^0.5.12
-        version: 0.5.12(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
+        specifier: ^0.6.5
+        version: 0.6.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
       vite:
         specifier: ^6.3.2
         version: 6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
@@ -6472,8 +6472,8 @@ packages:
       react: '>=18'
       react-dom: '>=18'
 
-  react-streaming@0.4.2:
-    resolution: {integrity: sha512-b192E9E0TnE9wWdc8uZg00MMY36btQmFV25cDOGcWQwl5qF8vzNcQPVJwWkljLOec5qIJWumH9cvEvAL1JlAGg==}
+  react-streaming@0.4.3:
+    resolution: {integrity: sha512-IGlnbchegC8RCoP0E8hnQiT4fBC7r4KmeKcZFb1PoAA5Yzfr9C+9PZh6i8o+PVSJq5YCptVX4YZDHkNIDCsaIA==}
     peerDependencies:
       react: '>=19'
       react-dom: '>=19'
@@ -7274,15 +7274,8 @@ packages:
       vike: '>=0.4.227'
       vite: '>=5.3.0'
 
-  vike-react@0.5.12:
-    resolution: {integrity: sha512-8sxD9QHPGE5dfC++gLlBpJoG+F3DWRXt3Q49VDbicIYdcB2dgO+2/IMDgtmM2BaS0VqDojDh4OaZJrE4SQaQug==}
-    peerDependencies:
-      react: '>=18.0.0'
-      react-dom: '>=18.0.0'
-      vike: '>=0.4.182'
-
-  vike-react@0.6.1:
-    resolution: {integrity: sha512-ruUsOoz6TcdeIP5ORmb4Y1PKBNvqRDtCGrry6rY9Dj9ZYFJe+f/xnaKD81itua5nVnKfTtLQ2J4szIfYwJ9KrA==}
+  vike-react@0.6.5:
+    resolution: {integrity: sha512-SRw/zOSZqdz7EvSyw8yIdy9iJOOMDP7Vra63NnI5L4xHx1Mmj4ebppfYEDcV2MRcCYzyQFv/xSmvI02pEJcT0A==}
     peerDependencies:
       react: '>=19'
       react-dom: '>=19'
@@ -12518,20 +12511,21 @@ snapshots:
       isbot-fast: 1.2.0
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
+    optional: true
 
-  react-streaming@0.4.2(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
+  react-streaming@0.4.3(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
       '@brillout/import': 0.2.6
-      '@brillout/json-serializer': 0.5.15
+      '@brillout/json-serializer': 0.5.16
       '@brillout/picocolors': 1.0.28
       isbot-fast: 1.2.0
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
 
-  react-streaming@0.4.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+  react-streaming@0.4.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
       '@brillout/import': 0.2.6
-      '@brillout/json-serializer': 0.5.15
+      '@brillout/json-serializer': 0.5.16
       '@brillout/picocolors': 1.0.28
       isbot-fast: 1.2.0
       react: 19.1.0
@@ -13123,7 +13117,7 @@ snapshots:
       react: 19.1.0
       react-streaming: 0.3.50(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
 
-  telefunc@0.2.5(@babel/core@7.26.10)(@babel/parser@7.27.0)(@babel/types@7.27.0)(react-streaming@0.4.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0):
+  telefunc@0.2.5(@babel/core@7.26.10)(@babel/parser@7.27.0)(@babel/types@7.27.0)(react-streaming@0.4.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0):
     dependencies:
       '@brillout/import': 0.2.6
       '@brillout/json-serializer': 0.5.15
@@ -13137,7 +13131,7 @@ snapshots:
       '@babel/parser': 7.27.0
       '@babel/types': 7.27.0
       react: 19.1.0
-      react-streaming: 0.4.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      react-streaming: 0.4.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
 
   terser-webpack-plugin@5.3.10(webpack@5.97.1):
     dependencies:
@@ -13474,18 +13468,11 @@ snapshots:
       - fastify
       - h3
 
-  vike-react@0.5.12(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike):
+  vike-react@0.6.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike):
     dependencies:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
-      react-streaming: 0.3.50(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      vike: link:packages/vike
-
-  vike-react@0.6.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike):
-    dependencies:
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
-      react-streaming: 0.4.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      react-streaming: 0.4.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       vike: link:packages/vike
 
   vike-server@1.0.16(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.4)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)):
