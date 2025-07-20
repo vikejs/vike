@@ -64,8 +64,6 @@ function getGlobalContextClientSerialized(pageContext: PageContextSerialization)
   const getObj = ({ prop, once }: PassToClientEntryNormalized) => {
     if (once && getPropVal(pageContext, prop)) {
       assert(typeof pageContext.isClientSideNavigation === 'boolean')
-      // TO-DO/eventually: show warning if pageContext[prop] wasn't defined by a global hook
-      // - We'll be able to implement it after [Flat `pageContext`](https://github.com/vikejs/vike/issues/1268) (it will track where pageContext properties come from).
       if (!pageContext.isClientSideNavigation) {
         return { obj: pageContext, objName: 'pageContext' as const } // pass it to client-side globalContext
       } else {
