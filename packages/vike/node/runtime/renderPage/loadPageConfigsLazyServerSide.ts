@@ -41,6 +41,8 @@ async function loadPageConfigsLazyServerSideAndExecHook<
   return pageContext
 }
 
+// TODO/now: define new function resolveAfterLoad() ?
+
 async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageConfigsLazyServerSide) {
   const pageConfig = findPageConfig(pageContext._globalContext._pageConfigs, pageContext.pageId) // Make pageConfig globally available as pageContext._pageConfig ?
 
