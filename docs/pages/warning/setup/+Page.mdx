@@ -1,0 +1,20 @@
+import { Link } from '@brillout/docpress'
+
+[Vite](https://vite.dev) should only be loaded in development (or when building). Loading it in production is unnecessary and significantly bloats the production process.
+
+In production:
+- Make sure you don't mistakenly load the [`vite` package](https://www.npmjs.com/package/vite) nor <Link href="/vite-plugin">Vike's Vite plugin</Link> in production.
+- Make sure you don't call <Link href="/createDevMiddleware">`createDevMiddleware()`</Link> in production: the development middleware isn't needed in production.
+  > You can still import it in production — just make sure you don't call it.
+  > ```js
+  > // Environment: production
+  > import { createDevMiddleware } from 'vike/server' // ✅ You can import it
+  > createDevMiddleware()                             // ❌ You shouldn't call it
+  > ```
+
+In development, if you use a server without <Link href="/server">`vike-server`</Link>, then make sure to use <Link href="/createDevMiddleware">`createDevMiddleware()`</Link> for adding the development middleware to your server.
+
+
+## See also
+
+- <Link href="/NODE_ENV" />

@@ -43,12 +43,12 @@ function onSetupRuntime(): void | undefined {
     // TO-DO/eventually: make it assertUsage() again once https://github.com/vikejs/vike/issues/1528 is implemented.
     assertWarning(
       !isNodeEnvDev(),
-      `The ${getEnvDescription()}, which is contradictory because the environment seems to be a production environment (Vite isn't loaded), see https://vike.dev/NODE_ENV`,
+      `The ${getEnvDescription()}, which is contradictory because the environment seems to be a production environment (Vite isn't loaded), see ${pc.underline('https://vike.dev/NODE_ENV')} and ${pc.underline('https://vike.dev/warning/setup')}`,
       { onlyOnce: true },
     )
     assertUsage(
       !setup.vikeVitePlugin,
-      `Loading Vike's Vite plugin (the ${pc.cyan('vike/plugin')} module) is prohibited in production.`,
+      `Vike's Vite plugin (the ${pc.cyan('vike/plugin')} module) shouldn't be loaded in production, see ${pc.underline('https://vike.dev/warning/setup')}`,
     )
     // This assert() one of the main goal of this file: it ensures assertIsNotProductionRuntime()
     assert(!setup.shouldNotBeProduction)
@@ -57,7 +57,7 @@ function onSetupRuntime(): void | undefined {
       // TO-DO/eventually: make it assertUsage() again once https://github.com/vikejs/vike/issues/1528 is implemented.
       assertWarning(
         isNodeEnvDev(),
-        `The ${getEnvDescription()}, but Vite is loaded which is prohibited in production, see https://vike.dev/NODE_ENV`,
+        `The ${getEnvDescription()} while Vite is loaded, but Vite shouldn't be loaded in production, see ${pc.underline('https://vike.dev/warning/setup')}`,
         { onlyOnce: true },
       )
     }
@@ -126,7 +126,7 @@ function assertUsageNodeEnvIsNotDev(operation: 'building' | 'pre-rendering') {
   // TO-DO/eventually: make it assertUsage() again once https://github.com/vikejs/vike/issues/1528 is implemented.
   assertWarning(
     false,
-    `The ${getEnvDescription()} which is forbidden upon ${operation}, see https://vike.dev/NODE_ENV`,
+    `The ${getEnvDescription()} upon ${operation} which shouldn't be the case, see ${pc.underline('https://vike.dev/NODE_ENV')}`,
     { onlyOnce: true },
   )
 }
@@ -143,7 +143,7 @@ function assertNodeEnvIsNotUndefinedString() {
   const nodeEnv = getNodeEnv()
   assertWarning(
     nodeEnv !== 'undefined',
-    `${pc.cyan('process.env.NODE_ENV==="undefined"')} which is unexpected: ${pc.cyan('process.env.NODE_ENV')} is allowed to be the *value* ${pc.cyan('undefined')} (i.e. ${pc.cyan('process.env.NODE_ENV===undefined')}) but it shouldn't be the *string* ${pc.cyan('"undefined"')} ${pc.underline('https://vike.dev/NODE_ENV')}`,
+    `${pc.cyan('process.env.NODE_ENV==="undefined"')} which is unexpected: ${pc.cyan('process.env.NODE_ENV')} is allowed to be the *value* ${pc.cyan('undefined')} (i.e. ${pc.cyan('process.env.NODE_ENV===undefined')}) but it shouldn't be the *string* ${pc.cyan('"undefined"')} — see ${pc.underline('https://vike.dev/NODE_ENV')}`,
     { onlyOnce: true },
   )
 }

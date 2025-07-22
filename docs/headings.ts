@@ -969,6 +969,14 @@ function misc() {
         url: '/warning/version-mismatch',
       },
       {
+        title: '`process.env.NODE_ENV`',
+        url: '/NODE_ENV',
+      },
+      {
+        title: '[Warning] Wrong setup',
+        url: '/warning/setup',
+      },
+      {
         title: '[Error] Runtime code defined in config file',
         url: '/error/runtime-in-config',
       },
@@ -1128,10 +1136,6 @@ function guides() {
       {
         title: 'Deployment synchronization',
         url: '/deploy-sync',
-      },
-      {
-        title: '`process.env.NODE_ENV`',
-        url: '/NODE_ENV',
       },
       {
         title: 'Client runtimes conflict',

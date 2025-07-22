@@ -1,26 +1,28 @@
 import { Link } from '@brillout/docpress'
 
-Setting `process.env.NODE_ENV` is a <Link href="#see-also">widespread convention</Link> to tell tools whether your app is being run in development or production.
+The `NODE_ENV` environment variable (`process.env.NODE_ENV`) is a <Link href="#see-also">widespread convention</Link> used by tools to distinguish between development and production environments.
 
-> It's important to respect the following convention: many tools run erroneously otherwise.
+In development, make sure `process.env.NODE_ENV` is one of:
 
-In development:
+```js
+// In development:
+process.env.NODE_ENV === 'development' // ✅
+process.env.NODE_ENV === 'dev'         // ✅
+process.env.NODE_ENV === ''            // ✅
+process.env.NODE_ENV === undefined     // ✅
+```
 
-- Make sure `process.env.NODE_ENV` is one of these values: `['development', 'dev', '', undefined]`.
-- If you use a server, make sure to use <Link href="/createDevMiddleware">`createDevMiddleware()`</Link> for adding the development middleware to your server.
+In production, it should be any other value.
 
-In production (and staging):
+> It's important to respect this convention: many tools run erroneously otherwise.
 
-- Make sure `process.env.NODE_ENV` is a value different than `['development', 'dev', '', undefined]`.
-  > Note that:
-  > - Upon starting your server in production, make sure to set `process.env.NODE_ENV`. (E.g. `$ NODE_ENV='production' node server/index.js`.)
-  > - Upon building (`$ vike build`/`$ vike prerender`), `process.env.NODE_ENV` is automatically set to `'production'`.
-- Make sure you don't call <Link href="/createDevMiddleware">`createDevMiddleware()`</Link> in production: the development middleware isn't needed in production. (It would unnecessarily bloat your production server.)
-- Make sure you don't mistakenly load [Vite](https://vitejs.dev) in production. (It would significantly bloat your production server.)
-
+> You can run `$ NODE_ENV='production' node server/index.js` to set a correct `NODE_ENV` value for production.
+>
+> During build (`$ vike build` and `$ vike prerender`), the `process.env.NODE_ENV` value is automatically set to `'production'`.
 
 ## See also
 
  - [Node.js Docs - The difference between development and production](https://nodejs.org/en/learn/getting-started/nodejs-the-difference-between-development-and-production#:~:text=You%20can%20signal%20Node.js%20that%20you%20are%20running%20in%20production%20by%20setting%20the%20NODE_ENV%3Dproduction%20environment%20variable.)
    > While the `process.env.NODE_ENV` convention was introduced by Node.js, it's used by tools regardless of whether you use Node.js. Thus, make sure to follow the convention even in non-Node.js environments.
  - [Stack Overflow - What is NODE_ENV and how to use it in Express?](https://stackoverflow.com/questions/16978256/what-is-node-env-and-how-to-use-it-in-express/16979503#16979503:~:text=NODE_ENV%20specifically%20is%20used%20(by%20convention)%20to%20state%20whether%20a%20particular%20environment%20is%20a%20production%20or%20a%20development%20environment.)
+- <Link href="/warning/setup" />
