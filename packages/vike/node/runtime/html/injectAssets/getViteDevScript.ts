@@ -18,6 +18,9 @@ async function getViteDevScript(pageContext: {
   const fakeHtmlBegin = '<html> <head>' // White space to test whether user is using a minifier
   const fakeHtmlEnd = '</head><body></body></html>'
   let fakeHtml = fakeHtmlBegin + fakeHtmlEnd
+  console.log("Sending event 'bla'")
+  import.meta.hot!.send('bla')
+  // import.meta.hot!.send('vike:rpc:transformIndexHtml', fakeHtml)
   // fakeHtml = await viteDevServer.transformIndexHtml('/', fakeHtml)
   assertUsage(
     !fakeHtml.includes('vite-plugin-pwa'),

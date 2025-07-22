@@ -20,6 +20,14 @@ function pluginSetGlobalContext(): Plugin[] {
       configureServer: {
         order: 'pre',
         handler(viteDevServer) {
+          const { environments } = viteDevServer
+          for (const envName in environments) {
+            console.log('envName', envName)
+            const env = environments[envName]
+            env!.hot.on('bla', () => {
+              console.log('Event received bla')
+            })
+          }
           if (isServerReload) reloadVikeConfig()
           isServerReload = true
           setGlobalContext_viteDevServer(viteDevServer)
