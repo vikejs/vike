@@ -230,7 +230,8 @@ function setGlobalContext_isPrerendering() {
   globalObject.isPrerendering = true
   setIsProduction(true)
 }
-function setGlobalContext_isProduction(isProduction: boolean, tolerateContraditction?: true) {
+function setGlobalContext_isProduction(isProduction: boolean, tolerateContraditction = false) {
+  if (debug.isActivated) debug('setGlobalContext_isProduction()', { isProduction, tolerateContraditction })
   if (globalObject.isProduction === undefined) {
     setIsProduction(isProduction)
   } else {
