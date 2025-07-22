@@ -18,11 +18,13 @@ export default {
     minify: false,
     //*/
   },
-  plugins: [react(), testPlugin()],
+  plugins: [react(), testPlugin() as any],
 } satisfies UserConfig
 
-function testPlugin(): PluginOption {
+// TEST: returning a promise
+async function testPlugin(): Promise<PluginOption> {
   let vike: Vike
+  await sleep(10)
   return {
     name: 'testPlugin',
     configResolved(config) {
@@ -85,4 +87,8 @@ function testPrerenderSettings(vike: Vike) {
 
 function unique<T>(arr: T[]): T[] {
   return Array.from(new Set(arr))
+}
+
+function sleep(milliseconds: number): Promise<void> {
+  return new Promise((r) => setTimeout(r, milliseconds))
 }
