@@ -6,7 +6,13 @@ import {
   setGlobalContext_viteConfig,
   setGlobalContext_isProduction,
 } from '../../runtime/globalContext.js'
-import { isDevCheck, markSetup_isViteDev, markSetup_viteDevServer, markSetup_vitePreviewServer } from '../utils.js'
+import {
+  assert,
+  isDevCheck,
+  markSetup_isViteDev,
+  markSetup_viteDevServer,
+  markSetup_vitePreviewServer,
+} from '../utils.js'
 import { reloadVikeConfig } from '../shared/resolveVikeConfigInternal.js'
 import { getViteConfigRuntime } from '../shared/getViteConfigRuntime.js'
 
@@ -21,13 +27,20 @@ function pluginSetGlobalContext(): Plugin[] {
         order: 'pre',
         handler(viteDevServer) {
           const { environments } = viteDevServer
+          //*
           for (const envName in environments) {
             console.log('envName', envName)
-            const env = environments[envName]
-            env!.hot.on('bla', () => {
-              console.log('Event received bla')
+            const env = environments[envName]!
+            env.hot.on('vike:rpc:request', async (data, send) => {
+              console.log('Event received vike:rpc:request')
+              console.log(data)
+              const { callId, arg } = data
+              const fakeHtml = await viteDevServer.transformIndexHtml('/', arg)
+              console.log('[vite] fakeHtml', fakeHtml)
+              env.hot.send('vike:rpc:response', { callId, ret: fakeHtml })
             })
           }
+          //*/
           if (isServerReload) reloadVikeConfig()
           isServerReload = true
           setGlobalContext_viteDevServer(viteDevServer)

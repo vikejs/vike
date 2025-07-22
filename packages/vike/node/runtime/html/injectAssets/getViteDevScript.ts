@@ -1,7 +1,7 @@
 export { getViteDevScript }
 
 import type { GlobalContextServerInternal } from '../../globalContext.js'
-import { assert, assertUsage, assertWarning } from '../../utils.js'
+import { assert, assertUsage, assertWarning, genPromise, getRandomId } from '../../utils.js'
 import pc from '@brillout/picocolors'
 
 const reachOutCTA = 'Create a new GitHub issue to discuss a solution.'
@@ -18,8 +18,9 @@ async function getViteDevScript(pageContext: {
   const fakeHtmlBegin = '<html> <head>' // White space to test whether user is using a minifier
   const fakeHtmlEnd = '</head><body></body></html>'
   let fakeHtml = fakeHtmlBegin + fakeHtmlEnd
-  console.log("Sending event 'bla'")
-  import.meta.hot!.send('bla')
+  console.log('fakeHtml 1', fakeHtml)
+  fakeHtml = await rpc('transformIndexHtml', fakeHtml)
+  console.log('fakeHtml 2', fakeHtml)
   // import.meta.hot!.send('vike:rpc:transformIndexHtml', fakeHtml)
   // fakeHtml = await viteDevServer.transformIndexHtml('/', fakeHtml)
   assertUsage(
@@ -45,3 +46,21 @@ async function getViteDevScript(pageContext: {
   const viteDevScript = viteInjection
   return viteDevScript
 }
+
+//*
+async function rpc(cmd: string, arg: string) {
+  assert(import.meta.hot)
+  const callId = getRandomId()
+  const { promise, resolve } = genPromise<any>({ timeout: 3 * 1000 })
+  const cb = (data: any) => {
+    console.log('Response received', data)
+    if (data.callId !== callId) return
+    import.meta.hot!.off(cmd, cb)
+    resolve(data.ret)
+  }
+  import.meta.hot.on(`vike:rpc:response`, cb)
+  console.log("Sending event 'vike:rpc:request'")
+  await import.meta.hot.send('vike:rpc:request', { callId, cmd, arg })
+  return promise
+}
+//*/
