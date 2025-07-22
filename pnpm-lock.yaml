@@ -205,8 +205,8 @@ importers:
         version: 0.6.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
     devDependencies:
       '@cloudflare/vite-plugin':
-        specifier: ^1.9.6
-        version: 1.9.6(rollup@4.43.0)(vite@7.0.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))(workerd@1.20250712.0)(wrangler@4.25.0)
+        specifier: https://pkg.pr.new/@cloudflare/vite-plugin@31c94b7
+        version: https://pkg.pr.new/@cloudflare/vite-plugin@31c94b7(rollup@4.43.0)(vite@7.0.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))(workerd@1.20250712.0)(wrangler@https://pkg.pr.new/wrangler@31c94b7)
       '@types/react':
         specifier: ^19.1.8
         version: 19.1.8
@@ -223,8 +223,8 @@ importers:
         specifier: ^7.0.4
         version: 7.0.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
       wrangler:
-        specifier: ^4.25.0
-        version: 4.25.0
+        specifier: https://pkg.pr.new/wrangler@31c94b7
+        version: https://pkg.pr.new/wrangler@31c94b7
 
   examples/cloudflare-workers-react:
     dependencies:
@@ -2389,6 +2389,11 @@ packages:
     resolution: {integrity: sha512-+tv3z+SPp+gqTIcImN9o0hqE9xyfQjI1XD9pL6NuKjua9B1y7mNYv0S9cP+QEbA4ppVgGZEmKOvHX5G5Ei1CVA==}
     engines: {node: '>=18.0.0'}
 
+  '@cloudflare/kv-asset-handler@https://pkg.pr.new/cloudflare/workers-sdk/@cloudflare/kv-asset-handler@31c94b7':
+    resolution: {tarball: https://pkg.pr.new/cloudflare/workers-sdk/@cloudflare/kv-asset-handler@31c94b7}
+    version: 0.4.0
+    engines: {node: '>=18.0.0'}
+
   '@cloudflare/unenv-preset@2.3.1':
     resolution: {integrity: sha512-Xq57Qd+ADpt6hibcVBO0uLG9zzRgyRhfCUgBT9s+g3+3Ivg5zDyVgLFy40ES1VdNcu8rPNSivm9A+kGP5IVaPg==}
     peerDependencies:
@@ -2398,20 +2403,22 @@ packages:
       workerd:
         optional: true
 
-  '@cloudflare/unenv-preset@2.3.3':
-    resolution: {integrity: sha512-/M3MEcj3V2WHIRSW1eAQBPRJ6JnGQHc6JKMAPLkDb7pLs3m6X9ES/+K3ceGqxI6TKeF32AWAi7ls0AYzVxCP0A==}
+  '@cloudflare/unenv-preset@https://pkg.pr.new/cloudflare/workers-sdk/@cloudflare/unenv-preset@31c94b7':
+    resolution: {tarball: https://pkg.pr.new/cloudflare/workers-sdk/@cloudflare/unenv-preset@31c94b7}
+    version: 2.3.3
     peerDependencies:
       unenv: 2.0.0-rc.17
-      workerd: ^1.20250508.0
+      workerd: ^1.20250521.0
     peerDependenciesMeta:
       workerd:
         optional: true
 
-  '@cloudflare/vite-plugin@1.9.6':
-    resolution: {integrity: sha512-8sUMJVHD3VY8J4HwovoKN87DP9zfV/jxhY7oAYZJO1MuiWJ0vZE614vyT3tMElRwu6d64yx5NTUwRGzWXarYPg==}
+  '@cloudflare/vite-plugin@https://pkg.pr.new/@cloudflare/vite-plugin@31c94b7':
+    resolution: {tarball: https://pkg.pr.new/@cloudflare/vite-plugin@31c94b7}
+    version: 1.9.5
     peerDependencies:
       vite: ^6.1.0 || ^7.0.0
-      wrangler: ^4.25.0
+      wrangler: ^4.24.4
 
   '@cloudflare/workerd-darwin-64@1.20250507.0':
     resolution: {integrity: sha512-xC+8hmQuOUUNCVT9DWpLMfxhR4Xs4kI8v7Bkybh4pzGC85moH6fMfCBNaP0YQCNAA/BR56aL/AwfvMVGskTK/A==}
@@ -6228,8 +6235,9 @@ packages:
     engines: {node: '>=18.0.0'}
     hasBin: true
 
-  miniflare@4.20250712.0:
-    resolution: {integrity: sha512-o7zYqG4pMi3gQTjiGhgZ82bQfexNwK+bzAaNlu8f7m3Kra4DcU5LC9nznfq2rfIBnUnMgwtU2VUfMlN1TuI8Og==}
+  miniflare@https://pkg.pr.new/cloudflare/workers-sdk/miniflare@31c94b7:
+    resolution: {tarball: https://pkg.pr.new/cloudflare/workers-sdk/miniflare@31c94b7}
+    version: 4.20250712.0
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -7898,8 +7906,9 @@ packages:
       '@cloudflare/workers-types':
         optional: true
 
-  wrangler@4.25.0:
-    resolution: {integrity: sha512-SepXQbzWkdp0O7qAx3i0go+fw5I0VkDqLV2G3ewbffO5k8kpvuCkhalS23KO+7+o8+Oa3vfC7x+16IL3rj2n4w==}
+  wrangler@https://pkg.pr.new/wrangler@31c94b7:
+    resolution: {tarball: https://pkg.pr.new/wrangler@31c94b7}
+    version: 4.24.4
     engines: {node: '>=18.0.0'}
     hasBin: true
     peerDependencies:
@@ -8500,30 +8509,34 @@ snapshots:
     dependencies:
       mime: 3.0.0
 
+  '@cloudflare/kv-asset-handler@https://pkg.pr.new/cloudflare/workers-sdk/@cloudflare/kv-asset-handler@31c94b7':
+    dependencies:
+      mime: 3.0.0
+
   '@cloudflare/unenv-preset@2.3.1(unenv@2.0.0-rc.15)(workerd@1.20250507.0)':
     dependencies:
       unenv: 2.0.0-rc.15
     optionalDependencies:
       workerd: 1.20250507.0
 
-  '@cloudflare/unenv-preset@2.3.3(unenv@2.0.0-rc.17)(workerd@1.20250712.0)':
+  '@cloudflare/unenv-preset@https://pkg.pr.new/cloudflare/workers-sdk/@cloudflare/unenv-preset@31c94b7(unenv@2.0.0-rc.17)(workerd@1.20250712.0)':
     dependencies:
       unenv: 2.0.0-rc.17
     optionalDependencies:
       workerd: 1.20250712.0
 
-  '@cloudflare/vite-plugin@1.9.6(rollup@4.43.0)(vite@7.0.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))(workerd@1.20250712.0)(wrangler@4.25.0)':
+  '@cloudflare/vite-plugin@https://pkg.pr.new/@cloudflare/vite-plugin@31c94b7(rollup@4.43.0)(vite@7.0.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))(workerd@1.20250712.0)(wrangler@https://pkg.pr.new/wrangler@31c94b7)':
     dependencies:
-      '@cloudflare/unenv-preset': 2.3.3(unenv@2.0.0-rc.17)(workerd@1.20250712.0)
+      '@cloudflare/unenv-preset': https://pkg.pr.new/cloudflare/workers-sdk/@cloudflare/unenv-preset@31c94b7(unenv@2.0.0-rc.17)(workerd@1.20250712.0)
       '@mjackson/node-fetch-server': 0.6.1
       '@rollup/plugin-replace': 6.0.2(rollup@4.43.0)
       get-port: 7.1.0
-      miniflare: 4.20250712.0
+      miniflare: https://pkg.pr.new/cloudflare/workers-sdk/miniflare@31c94b7
       picocolors: 1.1.1
-      tinyglobby: 0.2.13
+      tinyglobby: 0.2.14
       unenv: 2.0.0-rc.17
       vite: 7.0.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
-      wrangler: 4.25.0
+      wrangler: https://pkg.pr.new/wrangler@31c94b7
       ws: 8.18.0
     transitivePeerDependencies:
       - bufferutil
@@ -12730,7 +12743,7 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  miniflare@4.20250712.0:
+  miniflare@https://pkg.pr.new/cloudflare/workers-sdk/miniflare@31c94b7:
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       acorn: 8.14.0
@@ -14604,13 +14617,13 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  wrangler@4.25.0:
+  wrangler@https://pkg.pr.new/wrangler@31c94b7:
     dependencies:
-      '@cloudflare/kv-asset-handler': 0.4.0
-      '@cloudflare/unenv-preset': 2.3.3(unenv@2.0.0-rc.17)(workerd@1.20250712.0)
+      '@cloudflare/kv-asset-handler': https://pkg.pr.new/cloudflare/workers-sdk/@cloudflare/kv-asset-handler@31c94b7
+      '@cloudflare/unenv-preset': https://pkg.pr.new/cloudflare/workers-sdk/@cloudflare/unenv-preset@31c94b7(unenv@2.0.0-rc.17)(workerd@1.20250712.0)
       blake3-wasm: 2.1.5
       esbuild: 0.25.4
-      miniflare: 4.20250712.0
+      miniflare: https://pkg.pr.new/cloudflare/workers-sdk/miniflare@31c94b7
       path-to-regexp: 6.3.0
       unenv: 2.0.0-rc.17
       workerd: 1.20250712.0
