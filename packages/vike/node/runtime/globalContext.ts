@@ -459,6 +459,13 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
       hasError = true
       err = err_
     }
+  } else {
+    try {
+      virtualFileExports = await import('virtual:vike:entry:server' as string)
+    } catch (err_) {
+      hasError = true
+      err = err_
+    }
   }
   if (isOutdated()) return { success: false }
   if (hasError) return onError(err)
