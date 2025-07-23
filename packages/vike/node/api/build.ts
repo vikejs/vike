@@ -18,7 +18,6 @@ async function build(options: APIOptions = {}): Promise<{}> {
   // Pass it to pluginAutoFullBuild()
   if (viteConfigFromUserEnhanced) viteConfigFromUserEnhanced._viteConfigFromUserEnhanced = viteConfigFromUserEnhanced
 
-  assert(vikeConfig.config.vite6BuilderApp)
   if (vikeConfig.config.vite6BuilderApp) {
     // This assertion isn't reliable: the user may still use a Vite version older than 6.0.0 — see https://github.com/vitejs/vite/pull/19355
     assertVersion('Vite', version, '6.0.0')
