@@ -16,6 +16,7 @@ import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { ViteManifest } from '../../../types/ViteManifest.js'
 import type { ResolveClientEntriesDev } from '../../vite/shared/resolveClientEntriesDev.js'
 import type { ConfigResolved } from '../../../types/index.js'
+import type { ViteDevServer } from 'vite'
 
 const globalObject = getGlobalObject('renderPage/getPageAssets.ts', {
   resolveClientEntriesDev: null as null | ResolveClientEntriesDev,
@@ -45,8 +46,13 @@ async function getPageAssets(
   const isDev = !isProduction
 
   const { assetUrls, clientEntriesSrc } = isDev
-    ? await retrievePageAssetsDev(pageContext, clientDependencies, clientEntries)
-    : retrievePageAssetsProd(pageContext, clientDependencies, clientEntries)
+    ? await retrievePageAssetsDev(globalContext._viteDevServer, clientDependencies, clientEntries)
+    : retrievePageAssetsProd(
+        globalContext.assetsManifest,
+        clientDependencies,
+        clientEntries,
+        resolveIncludeAssetsImportedByServer(globalContext.config),
+      )
 
   let pageAssets: PageAsset[] = []
   unique([...clientEntriesSrc, ...assetUrls]).forEach((src: string) => {
@@ -91,13 +97,10 @@ async function getPageAssets(
 }
 
 async function retrievePageAssetsDev(
-  pageContext: PageContextGetPageAssets,
+  viteDevServer: ViteDevServer,
   clientDependencies: ClientDependency[],
   clientEntries: string[],
 ) {
-  const globalContext = pageContext._globalContext
-  assert(!globalContext._isProduction)
-  const { _viteDevServer: viteDevServer } = globalContext
   const clientEntriesSrc = clientEntries.map((clientEntry) =>
     globalObject.resolveClientEntriesDev!(clientEntry, viteDevServer),
   )
@@ -105,18 +108,16 @@ async function retrievePageAssetsDev(
   return { clientEntriesSrc, assetUrls }
 }
 function retrievePageAssetsProd(
-  pageContext: PageContextGetPageAssets,
+  assetsManifest: ViteManifest,
   clientDependencies: ClientDependency[],
   clientEntries: string[],
+  includeAssetsImportedByServer: boolean,
 ) {
-  const globalContext = pageContext._globalContext
-  assert(globalContext._isProduction)
-  const { assetsManifest } = globalContext
   const clientEntriesSrc = clientEntries.map((clientEntry) => resolveClientEntriesProd(clientEntry, assetsManifest))
   const assetUrls = retrieveAssetsProd(
     clientDependencies,
     assetsManifest,
-    resolveIncludeAssetsImportedByServer(pageContext._globalContext.config),
+    resolveIncludeAssetsImportedByServer(includeAssetsImportedByServer),
   )
   return { clientEntriesSrc, assetUrls }
 }
