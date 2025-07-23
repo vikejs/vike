@@ -7,7 +7,7 @@ import {
   setGlobalContext_isProduction,
 } from '../../runtime/globalContext.js'
 import {
-  assert,
+  createViteRPC,
   isDevCheck,
   markSetup_isViteDev,
   markSetup_viteDevServer,
@@ -35,22 +35,7 @@ function pluginSetGlobalContext(): Plugin[] {
       configureServer: {
         order: 'pre',
         handler(viteDevServer) {
-          createViteServerRPC(viteDevServer, getRpcFunctions)
-          /*
-          const { environments } = viteDevServer
-          for (const envName in environments) {
-            console.log('envName', envName)
-            const env = environments[envName]!
-            env.hot.on('vike:rpc:request', async (data, send) => {
-              console.log('Event received vike:rpc:request')
-              console.log(data)
-              const { callId, arg } = data
-              const fakeHtml = await viteDevServer.transformIndexHtml('/', arg)
-              console.log('[vite] fakeHtml', fakeHtml)
-              env.hot.send('vike:rpc:response', { callId, ret: fakeHtml })
-            })
-          }
-          //*/
+          createViteRPC(viteDevServer, getRpcFunctions)
           if (isServerReload) reloadVikeConfig()
           isServerReload = true
           setGlobalContext_viteDevServer(viteDevServer)
@@ -81,24 +66,4 @@ function pluginSetGlobalContext(): Plugin[] {
       },
     },
   ]
-}
-
-function createViteServerRPC(
-  viteDevServer: ViteDevServer,
-  getRpcFunctions: (viteDevServer: ViteDevServer) => Record<string, Function>,
-) {
-  const rpcFunctions = getRpcFunctions(viteDevServer)
-  const { environments } = viteDevServer
-  for (const envName in environments) {
-    console.log('envName', envName)
-    const env = environments[envName]!
-    env.hot.on('vike:rpc:request', async (data) => {
-      console.log('Request received', data)
-      const { callId, functionName, functionArgs } = data
-      const functionReturn = await rpcFunctions[functionName]!(...functionArgs)
-      const dataResponse = { callId, functionReturn }
-      console.log('Response sent', dataResponse)
-      env.hot.send('vike:rpc:response', dataResponse)
-    })
-  }
 }
