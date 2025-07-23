@@ -51,9 +51,7 @@ async function crawlPlusFiles(userRootDir: string): Promise<{ filePathAbsoluteUs
     : // Fallback to tinyglobby for users that dynamically generate plus files. (Assuming that no plus file is found because of the user's .gitignore list.)
       filesGlob
   assert(files)
-  if (debug.isActivated) {
-    assert(filesGit)
-    assert(filesGlob)
+  if (debug.isActivated && filesGit && filesGlob) {
     assertWarning(
       deepEqual(filesGlob.slice().sort(), filesGit.slice().sort()),
       "Git and glob results aren't matching.",
