@@ -53,13 +53,9 @@ async function getPageAssets(
     )
     assetUrls = await retrieveAssetsDev(clientDependencies, viteDevServer)
   } else {
-    const { assetsManifest } = globalContext
-    clientEntriesSrc = clientEntries.map((clientEntry) => resolveClientEntriesProd(clientEntry, assetsManifest))
-    assetUrls = retrieveAssetsProd(
-      clientDependencies,
-      assetsManifest,
-      resolveIncludeAssetsImportedByServer(pageContext._globalContext.config),
-    )
+    const ret = retrievePageAssetsProd(pageContext, clientDependencies, clientEntries)
+    assetUrls = ret.assetUrls
+    clientEntriesSrc = ret.clientEntriesSrc
   }
 
   let pageAssets: PageAsset[] = []
@@ -104,6 +100,22 @@ async function getPageAssets(
   return pageAssets
 }
 
+function retrievePageAssetsProd(
+  pageContext: PageContextGetPageAssets,
+  clientDependencies: ClientDependency[],
+  clientEntries: string[],
+) {
+  const globalContext = pageContext._globalContext
+  assert(globalContext._isProduction)
+  const { assetsManifest } = globalContext
+  const clientEntriesSrc = clientEntries.map((clientEntry) => resolveClientEntriesProd(clientEntry, assetsManifest))
+  const assetUrls = retrieveAssetsProd(
+    clientDependencies,
+    assetsManifest,
+    resolveIncludeAssetsImportedByServer(pageContext._globalContext.config),
+  )
+  return { clientEntriesSrc, assetUrls }
+}
 function resolveClientEntriesProd(clientEntry: string, assetsManifest: ViteManifest): string {
   const { manifestEntry } = getManifestEntry(clientEntry, assetsManifest)
   assert(manifestEntry.isEntry || manifestEntry.isDynamicEntry || clientEntry.endsWith('.css'), { clientEntry })
