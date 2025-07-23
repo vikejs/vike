@@ -1,7 +1,7 @@
 export { getViteDevScript }
 
 import { getViteRPC } from '../../../../utils/getViteRPC.js'
-import type { ViteRpcFunctions } from '../../../vite/plugins/pluginSetGlobalContext.js'
+import type { ViteRpc } from '../../../vite/plugins/pluginViteRPC.js'
 import type { GlobalContextServerInternal } from '../../globalContext.js'
 import { assertUsage, assertWarning } from '../../utils.js'
 import pc from '@brillout/picocolors'
@@ -21,7 +21,7 @@ async function getViteDevScript(pageContext: {
   const fakeHtmlEnd = '</head><body></body></html>'
   let fakeHtml = fakeHtmlBegin + fakeHtmlEnd
   console.log('fakeHtml 1', fakeHtml)
-  const rpc = getViteRPC<ViteRpcFunctions>()
+  const rpc = getViteRPC<ViteRpc>()
   fakeHtml = await rpc.transformIndexHtml(fakeHtml)
   console.log('fakeHtml 2', fakeHtml)
   // import.meta.hot!.send('vike:rpc:transformIndexHtml', fakeHtml)

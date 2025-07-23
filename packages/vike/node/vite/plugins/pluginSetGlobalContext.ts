@@ -1,29 +1,14 @@
 export { pluginSetGlobalContext }
 
-import type { Plugin, ViteDevServer } from 'vite'
+import type { Plugin } from 'vite'
 import {
   setGlobalContext_viteDevServer,
   setGlobalContext_viteConfig,
   setGlobalContext_isProduction,
 } from '../../runtime/globalContext.js'
-import {
-  createViteRPC,
-  isDevCheck,
-  markSetup_isViteDev,
-  markSetup_viteDevServer,
-  markSetup_vitePreviewServer,
-} from '../utils.js'
+import { isDevCheck, markSetup_isViteDev, markSetup_viteDevServer, markSetup_vitePreviewServer } from '../utils.js'
 import { reloadVikeConfig } from '../shared/resolveVikeConfigInternal.js'
 import { getViteConfigRuntime } from '../shared/getViteConfigRuntime.js'
-
-export type ViteRpcFunctions = ReturnType<typeof getRpcFunctions>
-function getRpcFunctions(viteDevServer: ViteDevServer) {
-  return {
-    async transformIndexHtml(html: string) {
-      return await viteDevServer.transformIndexHtml('/', html)
-    },
-  }
-}
 
 function pluginSetGlobalContext(): Plugin[] {
   let isServerReload = false
@@ -35,7 +20,6 @@ function pluginSetGlobalContext(): Plugin[] {
       configureServer: {
         order: 'pre',
         handler(viteDevServer) {
-          createViteRPC(viteDevServer, getRpcFunctions)
           if (isServerReload) reloadVikeConfig()
           isServerReload = true
           setGlobalContext_viteDevServer(viteDevServer)

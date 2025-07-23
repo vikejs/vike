@@ -1,15 +1,21 @@
-export { getViteRPC } // consumer (aka client)
-export { createViteRPC } // provider (aka server)
+export { getViteRPC } // consumer (aka RPC client)
+export { createViteRPC } // provider (aka RPC server)
 
 import type { ViteDevServer } from 'vite'
 import { assert } from './assert.js'
 import { genPromise } from './genPromise.js'
 import { getRandomId } from './getRandomId.js'
 import { getGlobalObject } from './getGlobalObject.js'
-
+import { createDebugger } from './debug.js'
+import { assertIsNotBrowser } from './assertIsNotBrowser.js'
+assertIsNotBrowser()
 const globalContext = getGlobalObject('utils/getViteRPC.ts', {
   rpc: null as null | object,
 })
+const debug = createDebugger('vike:vite-rpc')
+
+type DataRequest = { callId: string; functionName: string; functionArgs: unknown[] }
+type DataResponse = { callId: string; functionReturn: unknown }
 
 function getViteRPC<RpcFunctions>() {
   globalContext.rpc ??= createRpcClient()
@@ -18,22 +24,26 @@ function getViteRPC<RpcFunctions>() {
 
 function createRpcClient() {
   assert(import.meta.hot)
+
   const callbacks: { callId: string; cb: (ret: unknown) => void }[] = []
-  import.meta.hot.on(`vike:rpc:response`, (data) => {
-    console.log('Response received', data)
-    const { callId, functionReturn } = data
+  import.meta.hot.on(`vike:rpc:response`, (dataResponse: DataResponse) => {
+    if (debug.isActivated) debug('Response received', dataResponse)
+    const { callId, functionReturn } = dataResponse
     callbacks.forEach((c) => {
       if (callId !== c.callId) return
       c.cb(functionReturn)
       callbacks.splice(callbacks.indexOf(c), 1)
     })
   })
+
   const rpc = new Proxy(
     {},
     {
-      get(_, functionName) {
+      get(_, functionName: string) {
         return async (...functionArgs: unknown[]) => {
+          assert(import.meta.hot)
           const callId = getRandomId()
+
           const { promise, resolve } = genPromise<unknown>({ timeout: 3 * 1000 })
           callbacks.push({
             callId,
@@ -41,15 +51,19 @@ function createRpcClient() {
               resolve(functionReturn)
             },
           })
-          const data = { callId, functionName, functionArgs }
-          console.log('Request sent', data)
-          await import.meta.hot!.send('vike:rpc:request', data)
+
+          const dataRequest: DataRequest = { callId, functionName, functionArgs }
+          if (debug.isActivated) debug('Request sent', dataRequest)
+          // Vite's type is wrong; it import.meta.hot.send() does seem to return a promise
+          await import.meta.hot.send('vike:rpc:request', dataRequest)
+
           const functionReturn = await promise
           return functionReturn
         }
       },
     },
   )
+
   return rpc
 }
 
@@ -60,14 +74,16 @@ function createViteRPC(
   const rpcFunctions = getRpcFunctions(viteDevServer)
   const { environments } = viteDevServer
   for (const envName in environments) {
-    console.log('envName', envName)
+    debug('Listening to environment', envName)
     const env = environments[envName]!
-    env.hot.on('vike:rpc:request', async (data) => {
-      console.log('Request received', data)
-      const { callId, functionName, functionArgs } = data
+    env.hot.on('vike:rpc:request', async (dataRequest: DataRequest) => {
+      if (debug.isActivated) debug('Request received', dataRequest)
+      const { callId, functionName, functionArgs } = dataRequest
+
       const functionReturn = await rpcFunctions[functionName]!(...functionArgs)
-      const dataResponse = { callId, functionReturn }
-      console.log('Response sent', dataResponse)
+
+      const dataResponse: DataResponse = { callId, functionReturn }
+      if (debug.isActivated) debug('Response sent', dataResponse)
       env.hot.send('vike:rpc:response', dataResponse)
     })
   }
