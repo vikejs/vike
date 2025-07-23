@@ -1,7 +1,7 @@
 export { getViteDevScript }
 
 import { getViteRPC } from '../../../../utils/getViteRPC.js'
-import type { ViteRpc } from '../../../vite/plugins/pluginViteRPC.js'
+import type { ViteRPC } from '../../../vite/plugins/pluginViteRPC.js'
 import type { GlobalContextServerInternal } from '../../globalContext.js'
 import { assert, assertUsage, assertWarning } from '../../utils.js'
 import pc from '@brillout/picocolors'
@@ -23,7 +23,7 @@ async function getViteDevScript(pageContext: {
   if (viteDevServer) {
     fakeHtml = await viteDevServer.transformIndexHtml('/', fakeHtml)
   } else {
-    const rpc = getViteRPC<ViteRpc>()
+    const rpc = getViteRPC<ViteRPC>()
     fakeHtml = await rpc.transformIndexHtmlRPC(fakeHtml)
   }
   assertUsage(

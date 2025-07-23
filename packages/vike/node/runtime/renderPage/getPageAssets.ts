@@ -17,7 +17,7 @@ import type { ViteManifest } from '../../../types/ViteManifest.js'
 import type { ResolveClientEntriesDev } from '../../vite/shared/resolveClientEntriesDev.js'
 import type { ConfigResolved } from '../../../types/index.js'
 import type { ViteDevServer } from 'vite'
-import type { ViteRpc } from '../../vite/plugins/pluginViteRPC.js'
+import type { ViteRPC } from '../../vite/plugins/pluginViteRPC.js'
 
 const globalObject = getGlobalObject('renderPage/getPageAssets.ts', {
   resolveClientEntriesDev: null as null | ResolveClientEntriesDev,
@@ -48,7 +48,7 @@ async function getPageAssets(
 
   const { assetUrls, clientEntriesSrc } = isDev
     ? !globalContext._viteDevServer
-      ? await getViteRPC<ViteRpc>().retrievePageAssetsDevRPC(clientDependencies, clientEntries)
+      ? await getViteRPC<ViteRPC>().retrievePageAssetsDevRPC(clientDependencies, clientEntries)
       : await retrievePageAssetsDev(globalContext._viteDevServer, clientDependencies, clientEntries)
     : retrievePageAssetsProd(
         globalContext.assetsManifest,

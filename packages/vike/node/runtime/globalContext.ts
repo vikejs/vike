@@ -69,7 +69,7 @@ import { logRuntimeError, logRuntimeInfo } from './loggerRuntime.js'
 import { getVikeConfigErrorBuild, setVikeConfigError } from '../shared/getVikeConfigError.js'
 import { hasAlreadyLogged } from './renderPage/isNewError.js'
 import type { Hook } from '../../shared/hooks/getHook.js'
-import type { ViteRpc } from '../vite/plugins/pluginViteRPC.js'
+import type { ViteRPC } from '../vite/plugins/pluginViteRPC.js'
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
   {
@@ -594,7 +594,7 @@ async function addGlobalContextAsync(globalContext: GlobalContextBase) {
     } else {
       if (!isProcessSharedWithVite()) {
         if (!globalObject.isProduction) {
-          const rpc = getViteRPC<ViteRpc>()
+          const rpc = getViteRPC<ViteRPC>()
           viteConfigRuntime = await rpc.getViteConfigRuntimeRPC()
         } else {
           assert(false) // production => globalObject.buildInfo should be set

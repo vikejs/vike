@@ -8,8 +8,8 @@ import { retrieveAssetsDev } from '../../runtime/renderPage/getPageAssets/retrie
 import { getViteConfigRuntime } from '../shared/getViteConfigRuntime.js'
 assertIsNotProductionRuntime()
 
-export type ViteRpc = ReturnType<typeof getRpcFunctions>
-function getRpcFunctions(viteDevServer: ViteDevServer) {
+export type ViteRPC = ReturnType<typeof getViteRpcFunctions>
+function getViteRpcFunctions(viteDevServer: ViteDevServer) {
   return {
     async transformIndexHtmlRPC(html: string) {
       return await viteDevServer.transformIndexHtml('/', html)
@@ -30,7 +30,7 @@ function pluginViteRPC(): Plugin {
   return {
     name: 'vike:pluginViteRPC',
     configureServer(viteDevServer) {
-      createViteRPC(viteDevServer, getRpcFunctions)
+      createViteRPC(viteDevServer, getViteRpcFunctions)
     },
   }
 }
