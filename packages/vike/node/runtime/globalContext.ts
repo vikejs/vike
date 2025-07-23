@@ -636,11 +636,7 @@ function resolveBaseRuntime(
 }
 
 function getIsProductionStatic() {
-  // @ts-ignore
-  if (!import.meta.env) return undefined
-  // @ts-ignore
-  const PROD = import.meta.env.PROD
-  return PROD
+  return undefined as undefined | boolean
 }
 
 function isProcessSharedWithVite() {
