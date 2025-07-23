@@ -17,7 +17,8 @@
     "strict": true,
     "noUncheckedIndexedAccess": true,
     // Misc
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "noErrorTruncation": true
   },
   "exclude": ["**/*.spec.ts", "./node_modules/", "./dist/"]
 }
