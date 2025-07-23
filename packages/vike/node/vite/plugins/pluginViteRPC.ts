@@ -10,10 +10,10 @@ assertIsNotProductionRuntime()
 export type ViteRpc = ReturnType<typeof getRpcFunctions>
 function getRpcFunctions(viteDevServer: ViteDevServer) {
   return {
-    async transformIndexHtml(html: string) {
+    async transformIndexHtmlRPC(html: string) {
       return await viteDevServer.transformIndexHtml('/', html)
     },
-    async retrievePageAssetsDevRpc(clientDependencies: ClientDependency[], clientEntries: string[]) {
+    async retrievePageAssetsDevRPC(clientDependencies: ClientDependency[], clientEntries: string[]) {
       const clientEntriesSrc = clientEntries.map((clientEntry) => resolveClientEntriesDev(clientEntry, viteDevServer))
       const assetUrls = await retrieveAssetsDev(clientDependencies, viteDevServer)
       return { clientEntriesSrc, assetUrls }

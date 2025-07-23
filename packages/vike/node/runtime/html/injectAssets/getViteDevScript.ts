@@ -24,7 +24,7 @@ async function getViteDevScript(pageContext: {
     fakeHtml = await viteDevServer.transformIndexHtml('/', fakeHtml)
   } else {
     const rpc = getViteRPC<ViteRpc>()
-    fakeHtml = await rpc.transformIndexHtml(fakeHtml)
+    fakeHtml = await rpc.transformIndexHtmlRPC(fakeHtml)
   }
   assertUsage(
     !fakeHtml.includes('vite-plugin-pwa'),
