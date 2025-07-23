@@ -44,17 +44,9 @@ async function getPageAssets(
   const { _isProduction: isProduction } = globalContext
   const isDev = !isProduction
 
-  let assetUrls: string[]
-  let clientEntriesSrc: string[]
-  if (isDev) {
-    const ret = await retrievePageAssetsDev(pageContext, clientDependencies, clientEntries)
-    assetUrls = ret.assetUrls
-    clientEntriesSrc = ret.clientEntriesSrc
-  } else {
-    const ret = retrievePageAssetsProd(pageContext, clientDependencies, clientEntries)
-    assetUrls = ret.assetUrls
-    clientEntriesSrc = ret.clientEntriesSrc
-  }
+  const { assetUrls, clientEntriesSrc } = isDev
+    ? await retrievePageAssetsDev(pageContext, clientDependencies, clientEntries)
+    : retrievePageAssetsProd(pageContext, clientDependencies, clientEntries)
 
   let pageAssets: PageAsset[] = []
   unique([...clientEntriesSrc, ...assetUrls]).forEach((src: string) => {
