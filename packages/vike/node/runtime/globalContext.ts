@@ -291,6 +291,7 @@ async function initGlobalContext(): Promise<void> {
     if (isProcessSharedWithVite()) {
       await globalObject.viteDevServerPromise
     } else {
+      assert(false)
       await updateUserFiles()
     }
     assert(globalObject.waitForUserFilesUpdate)
@@ -619,7 +620,7 @@ function getInitialGlobalObject() {
   debug('getInitialGlobalObject()')
   const { promise: viteDevServerPromise, resolve: viteDevServerPromiseResolve } = genPromise<ViteDevServer>()
   return {
-    isProduction: getIsProductionStatic(),
+    isProduction: false,
     viteDevServerPromise,
     viteDevServerPromiseResolve,
   }
@@ -635,16 +636,6 @@ function resolveBaseRuntime(
   return resolveBase(baseViteOriginal, baseServerUnresolved, baseAssetsUnresolved)
 }
 
-function getIsProductionStatic() {
-  return undefined as undefined | boolean
-}
-
 function isProcessSharedWithVite() {
-  const ret = globalThis.__VIKE__IS_PROCESS_SHARED_WITH_VITE
-  if (globalObject.isProcessSharedWithVite !== undefined) {
-    assert(globalObject.isProcessSharedWithVite === ret)
-  } else {
-    globalObject.isProcessSharedWithVite = ret
-  }
-  return ret
+  return true
 }
