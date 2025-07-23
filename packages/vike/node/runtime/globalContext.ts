@@ -544,9 +544,7 @@ function addGlobalContextCommon(
   const { viteDevServer, viteConfig, isPrerendering, isProduction } = globalObject
   assert(typeof isProduction === 'boolean')
   if (!isProduction) {
-    // assert(viteDevServer)
     assert(globalContext) // main common requirement
-    // assert(viteConfig)
     assert(!isPrerendering)
     return {
       ...globalContextBase,
