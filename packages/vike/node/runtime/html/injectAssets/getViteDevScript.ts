@@ -3,7 +3,7 @@ export { getViteDevScript }
 import { getViteRPC } from '../../../../utils/getViteRPC.js'
 import type { ViteRpc } from '../../../vite/plugins/pluginViteRPC.js'
 import type { GlobalContextServerInternal } from '../../globalContext.js'
-import { assertUsage, assertWarning } from '../../utils.js'
+import { assert, assertUsage, assertWarning } from '../../utils.js'
 import pc from '@brillout/picocolors'
 
 const reachOutCTA = 'Create a new GitHub issue to discuss a solution.'
@@ -20,11 +20,8 @@ async function getViteDevScript(pageContext: {
   const fakeHtmlBegin = '<html> <head>' // White space to test whether user is using a minifier
   const fakeHtmlEnd = '</head><body></body></html>'
   let fakeHtml = fakeHtmlBegin + fakeHtmlEnd
-  console.log('fakeHtml 1', fakeHtml)
   const rpc = getViteRPC<ViteRpc>()
   fakeHtml = await rpc.transformIndexHtml(fakeHtml)
-  console.log('fakeHtml 2', fakeHtml)
-  // import.meta.hot!.send('vike:rpc:transformIndexHtml', fakeHtml)
   // fakeHtml = await viteDevServer.transformIndexHtml('/', fakeHtml)
   assertUsage(
     !fakeHtml.includes('vite-plugin-pwa'),
@@ -41,7 +38,7 @@ async function getViteDevScript(pageContext: {
     `You are using a Vite Plugin that transforms the HTML in a way that conflicts with Vike. ${reachOutCTA}`,
   )
   const viteInjection = fakeHtml.slice(fakeHtmlBegin.length, -1 * fakeHtmlEnd.length)
-  // assert(viteInjection.includes('script'))
+  assert(viteInjection.includes('script'))
   assertWarning(!viteInjection.includes('import('), `Unexpected Vite injected HMR code. ${reachOutCTA}`, {
     onlyOnce: true,
   })
