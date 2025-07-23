@@ -47,11 +47,9 @@ async function getPageAssets(
   let assetUrls: string[]
   let clientEntriesSrc: string[]
   if (isDev) {
-    const { _viteDevServer: viteDevServer } = globalContext
-    clientEntriesSrc = clientEntries.map((clientEntry) =>
-      globalObject.resolveClientEntriesDev!(clientEntry, viteDevServer),
-    )
-    assetUrls = await retrieveAssetsDev(clientDependencies, viteDevServer)
+    const ret = await retrievePageAssetsDev(pageContext, clientDependencies, clientEntries)
+    assetUrls = ret.assetUrls
+    clientEntriesSrc = ret.clientEntriesSrc
   } else {
     const ret = retrievePageAssetsProd(pageContext, clientDependencies, clientEntries)
     assetUrls = ret.assetUrls
@@ -100,6 +98,20 @@ async function getPageAssets(
   return pageAssets
 }
 
+async function retrievePageAssetsDev(
+  pageContext: PageContextGetPageAssets,
+  clientDependencies: ClientDependency[],
+  clientEntries: string[],
+) {
+  const globalContext = pageContext._globalContext
+  assert(!globalContext._isProduction)
+  const { _viteDevServer: viteDevServer } = globalContext
+  const clientEntriesSrc = clientEntries.map((clientEntry) =>
+    globalObject.resolveClientEntriesDev!(clientEntry, viteDevServer),
+  )
+  const assetUrls = await retrieveAssetsDev(clientDependencies, viteDevServer)
+  return { clientEntriesSrc, assetUrls }
+}
 function retrievePageAssetsProd(
   pageContext: PageContextGetPageAssets,
   clientDependencies: ClientDependency[],
