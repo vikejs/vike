@@ -16,6 +16,7 @@ import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { ViteManifest } from '../../../types/ViteManifest.js'
 import type { ResolveClientEntriesDev } from '../../vite/shared/resolveClientEntriesDev.js'
 import type { ConfigResolved } from '../../../types/index.js'
+import type { ViteDevServer } from 'vite'
 
 const globalObject = getGlobalObject('renderPage/getPageAssets.ts', {
   resolveClientEntriesDev: null as null | ResolveClientEntriesDev,
@@ -44,23 +45,14 @@ async function getPageAssets(
   const { _isProduction: isProduction } = globalContext
   const isDev = !isProduction
 
-  let assetUrls: string[]
-  let clientEntriesSrc: string[]
-  if (isDev) {
-    const { _viteDevServer: viteDevServer } = globalContext
-    clientEntriesSrc = clientEntries.map((clientEntry) =>
-      globalObject.resolveClientEntriesDev!(clientEntry, viteDevServer),
-    )
-    assetUrls = await retrieveAssetsDev(clientDependencies, viteDevServer)
-  } else {
-    const { assetsManifest } = globalContext
-    clientEntriesSrc = clientEntries.map((clientEntry) => resolveClientEntriesProd(clientEntry, assetsManifest))
-    assetUrls = retrieveAssetsProd(
-      clientDependencies,
-      assetsManifest,
-      resolveIncludeAssetsImportedByServer(pageContext._globalContext.config),
-    )
-  }
+  const { assetUrls, clientEntriesSrc } = isDev
+    ? await retrievePageAssetsDev(globalContext._viteDevServer, clientDependencies, clientEntries)
+    : retrievePageAssetsProd(
+        globalContext.assetsManifest,
+        clientDependencies,
+        clientEntries,
+        resolveIncludeAssetsImportedByServer(globalContext.config),
+      )
 
   let pageAssets: PageAsset[] = []
   unique([...clientEntriesSrc, ...assetUrls]).forEach((src: string) => {
@@ -104,6 +96,31 @@ async function getPageAssets(
   return pageAssets
 }
 
+async function retrievePageAssetsDev(
+  viteDevServer: ViteDevServer,
+  clientDependencies: ClientDependency[],
+  clientEntries: string[],
+) {
+  const clientEntriesSrc = clientEntries.map((clientEntry) =>
+    globalObject.resolveClientEntriesDev!(clientEntry, viteDevServer),
+  )
+  const assetUrls = await retrieveAssetsDev(clientDependencies, viteDevServer)
+  return { clientEntriesSrc, assetUrls }
+}
+function retrievePageAssetsProd(
+  assetsManifest: ViteManifest,
+  clientDependencies: ClientDependency[],
+  clientEntries: string[],
+  includeAssetsImportedByServer: boolean,
+) {
+  const clientEntriesSrc = clientEntries.map((clientEntry) => resolveClientEntriesProd(clientEntry, assetsManifest))
+  const assetUrls = retrieveAssetsProd(
+    clientDependencies,
+    assetsManifest,
+    resolveIncludeAssetsImportedByServer(includeAssetsImportedByServer),
+  )
+  return { clientEntriesSrc, assetUrls }
+}
 function resolveClientEntriesProd(clientEntry: string, assetsManifest: ViteManifest): string {
   const { manifestEntry } = getManifestEntry(clientEntry, assetsManifest)
   assert(manifestEntry.isEntry || manifestEntry.isDynamicEntry || clientEntry.endsWith('.css'), { clientEntry })
