@@ -444,19 +444,24 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
     viteDevServer !== globalObject.viteDevServer
     */
 
-  /*
   const { viteDevServer } = globalObject
-  assert(viteDevServer)
-  */
   let hasError = false
   let virtualFileExports: Record<string, unknown> | undefined
   let err: unknown
-  try {
-    virtualFileExports = await import('virtual:vike:entry:server' as string)
-    // virtualFileExports = await viteDevServer.ssrLoadModule(virtualFileIdEntryServer)
-  } catch (err_) {
-    hasError = true
-    err = err_
+  if (viteDevServer) {
+    try {
+      virtualFileExports = await viteDevServer.ssrLoadModule(virtualFileIdEntryServer)
+    } catch (err_) {
+      hasError = true
+      err = err_
+    }
+  } else {
+    try {
+      virtualFileExports = await import('virtual:vike:entry:server' as string)
+    } catch (err_) {
+      hasError = true
+      err = err_
+    }
   }
   if (isOutdated()) return { success: false }
   if (hasError) return onError(err)

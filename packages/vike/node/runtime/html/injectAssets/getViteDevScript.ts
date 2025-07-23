@@ -15,14 +15,17 @@ async function getViteDevScript(pageContext: {
   if (globalContext._isProduction) {
     return ''
   }
-  // const { _viteDevServer: viteDevServer } = globalContext
+  const { _viteDevServer: viteDevServer } = globalContext
 
   const fakeHtmlBegin = '<html> <head>' // White space to test whether user is using a minifier
   const fakeHtmlEnd = '</head><body></body></html>'
   let fakeHtml = fakeHtmlBegin + fakeHtmlEnd
-  const rpc = getViteRPC<ViteRpc>()
-  fakeHtml = await rpc.transformIndexHtml(fakeHtml)
-  // fakeHtml = await viteDevServer.transformIndexHtml('/', fakeHtml)
+  if (viteDevServer) {
+    fakeHtml = await viteDevServer.transformIndexHtml('/', fakeHtml)
+  } else {
+    const rpc = getViteRPC<ViteRpc>()
+    fakeHtml = await rpc.transformIndexHtml(fakeHtml)
+  }
   assertUsage(
     !fakeHtml.includes('vite-plugin-pwa'),
     `The HTML transformer of ${pc.cyan(
