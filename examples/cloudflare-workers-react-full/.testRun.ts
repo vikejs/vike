@@ -11,8 +11,7 @@ import { testCounter } from '../../test/utils'
 function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { hasStarWarsPage: boolean }) {
   const isWrangler = cmd === 'npm run preview'
 
-  //*
-  // Manually disabled because of exceeded rate limit
+  /* Manually disabled
   if (isWrangler) {
     skip('SKIPPED: temporarily skip wrangler tests.')
     return
