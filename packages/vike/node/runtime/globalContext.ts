@@ -476,8 +476,8 @@ async function setGlobalContext(virtualFileExports: unknown) {
   const globalContext = await createGlobalContextShared(
     virtualFileExports,
     globalObject,
-    addGlobalContextAsync,
-    addGlobalContextSync,
+    addGlobalContext,
+    addGlobalContextTmp,
   )
 
   assertV1Design(
@@ -495,8 +495,8 @@ async function setGlobalContext(virtualFileExports: unknown) {
   return globalContext
 }
 
-async function addGlobalContextAsync(globalContext: GlobalContextBase) {
-  debug('addGlobalContextAsync()')
+async function addGlobalContextTmp(globalContext: GlobalContextBase) {
+  debug('addGlobalContextTmp()')
   const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
     globalContext._pageFilesAll,
     globalContext._pageConfigs,
@@ -505,8 +505,8 @@ async function addGlobalContextAsync(globalContext: GlobalContextBase) {
   )
   return addGlobalContextCommon(globalContext, pageRoutes, onBeforeRouteHook)
 }
-function addGlobalContextSync(globalContext: GlobalContextBase) {
-  debug('addGlobalContextSync()')
+function addGlobalContext(globalContext: GlobalContextBase) {
+  debug('addGlobalContext()')
   const { pageRoutes, onBeforeRouteHook } = loadPageRoutesSync(
     globalContext._pageFilesAll,
     globalContext._pageConfigs,

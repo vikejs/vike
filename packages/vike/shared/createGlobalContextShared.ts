@@ -20,16 +20,19 @@ import { getHookFromPageConfigGlobalCumulative, type Hook } from './hooks/getHoo
 const getGlobalContextSyncErrMsg =
   "The global context isn't set yet, call getGlobalContextSync() later or use getGlobalContext() instead."
 
-async function createGlobalContextShared<GlobalContextAddendum extends Record<string, any>>(
+async function createGlobalContextShared<GlobalContextAdded extends Record<string, any>>(
   virtualFileExports: unknown,
   globalObject: { globalContext?: Record<string, unknown>; onCreateGlobalContextHooks?: Hook[] },
-  addGlobalContextAsync?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddendum>,
-  addGlobalContextSync?: (globalContext: GlobalContextBase) => GlobalContextAddendum,
+  addGlobalContext?: (globalContext: GlobalContextBase) => GlobalContextAdded,
+  // TO-DO/next-major-release: we'll be able to remove addGlobalContextTmp after loadPageRoutes() is sync (it will be sync after we remove the old design)
+  addGlobalContextTmp?: (globalContext: GlobalContextBase) => Promise<GlobalContextAdded>,
 ) {
   const globalContext = createGlobalContextBase(virtualFileExports)
 
   let isNewGlobalContext: boolean
   if (!globalObject.globalContext) {
+    // We set globalObject.globalContext early and before any async operations, so that getGlobalContextSync() can be used early.
+    // - Required by vike-vercel
     globalObject.globalContext = globalContext
     isNewGlobalContext = false
   } else {
@@ -37,14 +40,14 @@ async function createGlobalContextShared<GlobalContextAddendum extends Record<st
   }
 
   if (
-    addGlobalContextSync &&
+    addGlobalContext &&
     // TODO/next-major-release: remove
     globalContext._pageConfigs.length > 0
   ) {
-    const globalContextAddendum = addGlobalContextSync?.(globalContext)
+    const globalContextAddendum = addGlobalContext?.(globalContext)
     objectAssign(globalContext, globalContextAddendum)
   } else {
-    const globalContextAddendum = await addGlobalContextAsync?.(globalContext)
+    const globalContextAddendum = await addGlobalContextTmp?.(globalContext)
     objectAssign(globalContext, globalContextAddendum)
   }
 
