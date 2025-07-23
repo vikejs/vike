@@ -44,11 +44,11 @@ async function createGlobalContextShared<GlobalContextAdded extends Record<strin
     // TODO/next-major-release: remove
     globalContext._pageConfigs.length > 0
   ) {
-    const globalContextAddendum = addGlobalContext?.(globalContext)
-    objectAssign(globalContext, globalContextAddendum)
+    const globalContextAdded = addGlobalContext?.(globalContext)
+    objectAssign(globalContext, globalContextAdded)
   } else {
-    const globalContextAddendum = await addGlobalContextTmp?.(globalContext)
-    objectAssign(globalContext, globalContextAddendum)
+    const globalContextAdded = await addGlobalContextTmp?.(globalContext)
+    objectAssign(globalContext, globalContextAdded)
   }
 
   const onCreateGlobalContextHooks = getHookFromPageConfigGlobalCumulative(
