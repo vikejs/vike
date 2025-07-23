@@ -67,9 +67,10 @@ function createRpcClient() {
   return rpc
 }
 
+type AsyncFunction = (...args: any[]) => Promise<unknown>
 function createViteRPC(
   viteDevServer: ViteDevServer,
-  getRpcFunctions: (viteDevServer: ViteDevServer) => Record<string, Function>,
+  getRpcFunctions: (viteDevServer: ViteDevServer) => Record<string, AsyncFunction>,
 ) {
   const rpcFunctions = getRpcFunctions(viteDevServer)
   const { environments } = viteDevServer
