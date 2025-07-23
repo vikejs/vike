@@ -1,6 +1,6 @@
 export { pluginSetGlobalContext }
 
-import type { Plugin } from 'vite'
+import type { Plugin, ViteDevServer } from 'vite'
 import {
   setGlobalContext_viteDevServer,
   setGlobalContext_viteConfig,
@@ -16,6 +16,15 @@ import {
 import { reloadVikeConfig } from '../shared/resolveVikeConfigInternal.js'
 import { getViteConfigRuntime } from '../shared/getViteConfigRuntime.js'
 
+export type ViteRpcFunctions = ReturnType<typeof getRpcFunctions>
+function getRpcFunctions(viteDevServer: ViteDevServer) {
+  return {
+    async transformIndexHtml(html: string) {
+      return await viteDevServer.transformIndexHtml('/', html)
+    },
+  }
+}
+
 function pluginSetGlobalContext(): Plugin[] {
   let isServerReload = false
   return [
@@ -26,8 +35,9 @@ function pluginSetGlobalContext(): Plugin[] {
       configureServer: {
         order: 'pre',
         handler(viteDevServer) {
+          createViteServerRPC(viteDevServer, getRpcFunctions)
+          /*
           const { environments } = viteDevServer
-          //*
           for (const envName in environments) {
             console.log('envName', envName)
             const env = environments[envName]!
@@ -71,4 +81,24 @@ function pluginSetGlobalContext(): Plugin[] {
       },
     },
   ]
+}
+
+function createViteServerRPC(
+  viteDevServer: ViteDevServer,
+  getRpcFunctions: (viteDevServer: ViteDevServer) => Record<string, Function>,
+) {
+  const rpcFunctions = getRpcFunctions(viteDevServer)
+  const { environments } = viteDevServer
+  for (const envName in environments) {
+    console.log('envName', envName)
+    const env = environments[envName]!
+    env.hot.on('vike:rpc:request', async (data) => {
+      console.log('Request received', data)
+      const { callId, functionName, functionArgs } = data
+      const functionReturn = await rpcFunctions[functionName]!(...functionArgs)
+      const dataResponse = { callId, functionReturn }
+      console.log('Response sent', dataResponse)
+      env.hot.send('vike:rpc:response', dataResponse)
+    })
+  }
 }

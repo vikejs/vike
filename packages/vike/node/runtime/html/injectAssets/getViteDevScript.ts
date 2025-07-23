@@ -1,5 +1,6 @@
 export { getViteDevScript }
 
+import type { ViteRpcFunctions } from '../../../vite/plugins/pluginSetGlobalContext.js'
 import type { GlobalContextServerInternal } from '../../globalContext.js'
 import { assert, assertUsage, assertWarning, genPromise, getRandomId } from '../../utils.js'
 import pc from '@brillout/picocolors'
@@ -19,7 +20,8 @@ async function getViteDevScript(pageContext: {
   const fakeHtmlEnd = '</head><body></body></html>'
   let fakeHtml = fakeHtmlBegin + fakeHtmlEnd
   console.log('fakeHtml 1', fakeHtml)
-  fakeHtml = await rpc('transformIndexHtml', fakeHtml)
+  const rpc2 = createViteClientRPC<ViteRpcFunctions>()
+  fakeHtml = await rpc2.transformIndexHtml(fakeHtml)
   console.log('fakeHtml 2', fakeHtml)
   // import.meta.hot!.send('vike:rpc:transformIndexHtml', fakeHtml)
   // fakeHtml = await viteDevServer.transformIndexHtml('/', fakeHtml)
@@ -47,7 +49,44 @@ async function getViteDevScript(pageContext: {
   return viteDevScript
 }
 
-//*
+function createViteClientRPC<RpcFunctions>() {
+  assert(import.meta.hot)
+  const callbacks: { callId: string; cb: (ret: unknown) => void }[] = []
+  import.meta.hot.on(`vike:rpc:response`, (data) => {
+    console.log('Response received', data)
+    const { callId, functionReturn } = data
+    callbacks.forEach((c) => {
+      if (callId !== c.callId) return
+      c.cb(functionReturn)
+      callbacks.splice(callbacks.indexOf(c), 1)
+    })
+  })
+  const rpc = new Proxy(
+    {},
+    {
+      get(_, functionName) {
+        return async (...functionArgs: unknown[]) => {
+          const callId = getRandomId()
+          const { promise, resolve } = genPromise<unknown>({ timeout: 3 * 1000 })
+          callbacks.push({
+            callId,
+            cb: (functionReturn: unknown) => {
+              resolve(functionReturn)
+            },
+          })
+          const data = { callId, functionName, functionArgs }
+          console.log('Request sent', data)
+          await import.meta.hot!.send('vike:rpc:request', data)
+          const functionReturn = await promise
+          return functionReturn
+        }
+      },
+    },
+  )
+  return rpc as RpcFunctions
+}
+
+/*
 async function rpc(cmd: string, arg: string) {
   assert(import.meta.hot)
   const callId = getRandomId()
