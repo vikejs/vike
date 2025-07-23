@@ -23,10 +23,12 @@ function getViteRPC<RpcFunctions>() {
 }
 
 function createRpcClient() {
-  assert(import.meta.hot)
+  // @ts-ignore
+  const hot = import.meta.hot
+  assert(hot)
 
   const callbacks: { callId: string; cb: (ret: unknown) => void }[] = []
-  import.meta.hot.on(`vike:rpc:response`, (dataResponse: DataResponse) => {
+  hot.on(`vike:rpc:response`, (dataResponse: DataResponse) => {
     if (debug.isActivated) debug('Response received', dataResponse)
     const { callId, functionReturn } = dataResponse
     callbacks.forEach((c) => {
@@ -41,7 +43,9 @@ function createRpcClient() {
     {
       get(_, functionName: string) {
         return async (...functionArgs: unknown[]) => {
-          assert(import.meta.hot)
+          // @ts-ignore
+          const hot = import.meta.hot
+          assert(hot)
           const callId = getRandomId()
 
           const { promise, resolve } = genPromise<unknown>({ timeout: 3 * 1000 })
@@ -55,7 +59,7 @@ function createRpcClient() {
           const dataRequest: DataRequest = { callId, functionName, functionArgs }
           if (debug.isActivated) debug('Request sent', dataRequest)
           // Vite's type is wrong; it import.meta.hot.send() does seem to return a promise
-          await import.meta.hot.send('vike:rpc:request', dataRequest)
+          await hot.send('vike:rpc:request', dataRequest)
 
           const functionReturn = await promise
           return functionReturn
