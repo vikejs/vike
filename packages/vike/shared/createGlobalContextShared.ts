@@ -24,6 +24,7 @@ async function createGlobalContextShared<GlobalContextAddendum extends Record<st
   virtualFileExports: unknown,
   globalObject: { globalContext?: Record<string, unknown>; onCreateGlobalContextHooks?: Hook[] },
   addGlobalContext?: (globalContext: GlobalContextBase) => GlobalContextAddendum,
+  // TO-DO/next-major-release: we'll be able to remove addGlobalContextTmp after loadPageRoutes() is sync (it will be sync after we remove the old design)
   addGlobalContextTmp?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddendum>,
 ) {
   const globalContext = createGlobalContextBase(virtualFileExports)
