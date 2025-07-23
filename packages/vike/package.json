@@ -5,7 +5,6 @@
   "exports": {
     "./server": {
       "worker": "./dist/esm/node/runtime/index.js",
-      "workerd": "./dist/esm/node/runtime/index.js",
       "require": "./dist/cjs/node/runtime/index.js",
       "node": "./dist/esm/node/runtime/index.js",
       "browser": "./dist/esm/client/node.js",
@@ -20,7 +19,6 @@
     },
     "./client/router": {
       "worker": "./dist/esm/node/client/router.js",
-      "workerd": "./dist/esm/node/client/router.js",
       "require": "./dist/cjs/node/client/router.js",
       "node": "./dist/esm/node/client/router.js",
       "browser": "./dist/esm/client/runtime-client-routing/index.js",
@@ -29,7 +27,6 @@
     },
     "./routing": {
       "worker": "./dist/esm/shared/route/routing.js",
-      "workerd": "./dist/esm/shared/route/routing.js",
       "require": "./dist/cjs/shared/route/routing.js",
       "node": "./dist/esm/shared/route/routing.js",
       "browser": "./dist/esm/shared/route/routing.js",
@@ -62,7 +59,6 @@
     },
     "./RenderErrorPage": {
       "worker": "./dist/esm/shared/RenderErrorPage.js",
-      "workerd": "./dist/esm/shared/RenderErrorPage.js",
       "require": "./dist/cjs/shared/RenderErrorPage.js",
       "node": "./dist/esm/shared/RenderErrorPage.js",
       "browser": "./dist/esm/shared/RenderErrorPage.js",
@@ -71,7 +67,6 @@
     },
     "./abort": {
       "worker": "./dist/esm/shared/abort.js",
-      "workerd": "./dist/esm/shared/abort.js",
       "require": "./dist/cjs/shared/abort.js",
       "node": "./dist/esm/shared/abort.js",
       "browser": "./dist/esm/shared/abort.js",
@@ -80,7 +75,6 @@
     },
     "./getPageContext": {
       "worker": "./dist/esm/shared/getPageContext.js",
-      "workerd": "./dist/esm/shared/getPageContext.js",
       "require": "./dist/cjs/shared/getPageContext.js",
       "node": "./dist/esm/shared/getPageContext.js",
       "browser": "./dist/esm/shared/getPageContext.js",
@@ -89,7 +83,6 @@
     },
     "./modifyUrl": {
       "worker": "./dist/esm/shared/modifyUrl.js",
-      "workerd": "./dist/esm/shared/modifyUrl.js",
       "require": "./dist/cjs/shared/modifyUrl.js",
       "node": "./dist/esm/shared/modifyUrl.js",
       "browser": "./dist/esm/shared/modifyUrl.js",
@@ -98,7 +91,6 @@
     },
     "./universal-middleware": {
       "worker": "./dist/esm/node/runtime/universal-middleware.js",
-      "workerd": "./dist/esm/node/runtime/universal-middleware.js",
       "require": "./dist/cjs/node/runtime/universal-middleware.js",
       "node": "./dist/esm/node/runtime/universal-middleware.js",
       "browser": "./dist/esm/client/node.js",
@@ -119,7 +111,6 @@
     },
     ".": {
       "worker": "./dist/esm/node/runtime/index.js",
-      "workerd": "./dist/esm/node/runtime/index.js",
       "require": "./dist/cjs/node/runtime/index.js",
       "node": "./dist/esm/node/runtime/index.js",
       "browser": "./dist/esm/client/index.js",
