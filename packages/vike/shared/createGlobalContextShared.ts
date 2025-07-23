@@ -30,6 +30,8 @@ async function createGlobalContextShared<GlobalContextAddendum extends Record<st
 
   let isNewGlobalContext: boolean
   if (!globalObject.globalContext) {
+    // We set globalObject.globalContext early and before any async operations, so that getGlobalContextSync() can be used early.
+    // - Required by vike-vercel
     globalObject.globalContext = globalContext
     isNewGlobalContext = false
   } else {
