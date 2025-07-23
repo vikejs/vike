@@ -6,7 +6,7 @@ main()
 
 async function main() {
   await generatePackageJson()
-  await shimImportMetaUrl()
+  await shimImportMeta()
 }
 
 async function generatePackageJson() {
@@ -14,16 +14,18 @@ async function generatePackageJson() {
   console.log(`✅ ${distCjs}/package.json generated`)
 }
 
-async function shimImportMetaUrl() {
+async function shimImportMeta() {
   const files = await getFiles(distCjs)
-  files.forEach(replaceImportMetaWithFilename)
+  files.forEach(replaceImportMeta)
   console.log(`✅ ${distCjs}/ shimmed import.meta.url`)
 }
 
-async function replaceImportMetaWithFilename(filePath) {
-  const fileContent = await fs.readFile(filePath, 'utf8')
-  const fileContentMod = fileContent.replaceAll('import.meta.url', "`file:///${__filename.split('\\\\').join('/')}`")
-  await fs.writeFile(filePath, fileContentMod, 'utf8')
+async function replaceImportMeta(filePath) {
+  let fileContent = await fs.readFile(filePath, 'utf8')
+  fileContent = fileContent.replaceAll('import.meta.url', "`file:///${__filename.split('\\\\').join('/')}`")
+  // fileContent = fileContent.replaceAll('import.meta.env', '({})')
+  // fileContent = fileContent.replaceAll('import.meta.hot', '(undefined)')
+  await fs.writeFile(filePath, fileContent, 'utf8')
 }
 
 async function getFiles(directoryPath) {
