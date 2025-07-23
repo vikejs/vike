@@ -59,7 +59,7 @@ function createGetGlobalContextClient<GlobalContextAddendum extends object>(
     }
 
     // Create
-    const globalContext = await createGlobalContextShared(virtualFileExports, globalObject, async (globalContext) => {
+    const globalContext = await createGlobalContextShared(virtualFileExports, globalObject, undefined, async (globalContext) => {
       const globalContextAddendum = {
         /**
          * Whether the environment is client-side or server-side / pre-rendering.

@@ -476,8 +476,8 @@ async function setGlobalContext(virtualFileExports: unknown) {
   const globalContext = await createGlobalContextShared(
     virtualFileExports,
     globalObject,
-    addGlobalContextAsync,
     addGlobalContextSync,
+    addGlobalContextAsync,
   )
 
   assertV1Design(
