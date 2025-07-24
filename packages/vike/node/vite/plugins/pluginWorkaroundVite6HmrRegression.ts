@@ -12,7 +12,24 @@ function pluginWorkaroundVite6HmrRegression(): Plugin {
     enforce: 'post',
     hotUpdate: {
       order: 'post',
-      handler({ modules, server, timestamp }) {
+      handler(ctx) {
+        console.log(
+          'hotUpdate',
+          this.environment.name,
+          ctx.file,
+          // Object.keys(ctx)
+        )
+        console.log(
+          'ctx.modules',
+          ctx.modules.map((m) => m.id),
+        )
+        // console.log('ctx.modules.length', ctx.modules.length)
+        console.log(
+          'ctx.modules => importers',
+          ctx.modules.map((m) => Array.from(m.importers.values()).map((m) => m.id)),
+        )
+        // if (true as boolean) return [];
+        const { modules, server, timestamp } = ctx
         if (this.environment.name !== 'ssr') return
 
         let hasSsrOnlyModules = false
