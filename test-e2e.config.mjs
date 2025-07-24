@@ -56,6 +56,19 @@ function getCiJobs() {
 function tolerateError({ logSource, logText, testInfo }) {
   return (
     [
+      /*
+      ```shell
+      [12:12:28.624][/examples/cloudflare-workers-vue][npm run preview][stderr] ▲ [WARNING] "import.meta" is not available with the "iife" output format and will be empty [empty-import-meta]
+
+          ../../packages/vike/dist/esm/node/runtime/globalContext.js:511:17:
+            511 │     const PROD = import.meta.env.PROD;
+                ╵                  ~~~~~~~~~~~
+
+        You need to set the output format to "esm" for "import.meta" to work correctly.      
+      ```
+      */
+      '"import.meta" is not available with the "iife" output format and will be empty',
+
       // ```shell
       // [23:57:18.027][/.test-preview.test.ts][pnpm run preview][stderr] (!) Some chunks are larger than 500 kB after minification. Consider:
       // - Using dynamic import() to code-split the application
