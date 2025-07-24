@@ -460,7 +460,8 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
     }
   } else {
     try {
-      virtualFileExports = await import('virtual:vike:entry:server' as string)
+      // We don't directly use import() to workaround what seems to be a Vite HMR bug: using import() breaks the HMR of normal non-worker apps.
+      virtualFileExports = await __VIKE__DYNAMIC_IMPORT('virtual:vike:entry:server')
     } catch (err_) {
       hasError = true
       err = err_
