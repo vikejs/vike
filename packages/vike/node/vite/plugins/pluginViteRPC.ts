@@ -30,7 +30,7 @@ function pluginViteRPC(): Plugin {
   return {
     name: 'vike:pluginViteRPC',
     configureServer(viteDevServer) {
-      // createViteRPC(viteDevServer, getViteRpcFunctions)
+      createViteRPC(viteDevServer, getViteRpcFunctions)
     },
   }
 }

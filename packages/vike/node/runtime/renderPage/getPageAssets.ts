@@ -47,7 +47,9 @@ async function getPageAssets(
   const isDev = !isProduction
 
   const { assetUrls, clientEntriesSrc } = isDev
-    ? await retrievePageAssetsDev(globalContext._viteDevServer!, clientDependencies, clientEntries)
+    ? !globalContext._viteDevServer
+      ? await getViteRPC<ViteRPC>().retrievePageAssetsDevRPC(clientDependencies, clientEntries)
+      : await retrievePageAssetsDev(globalContext._viteDevServer, clientDependencies, clientEntries)
     : retrievePageAssetsProd(
         globalContext.assetsManifest,
         clientDependencies,

@@ -23,8 +23,8 @@ async function shimImportMeta() {
 async function replaceImportMeta(filePath) {
   let fileContent = await fs.readFile(filePath, 'utf8')
   fileContent = fileContent.replaceAll('import.meta.url', "`file:///${__filename.split('\\\\').join('/')}`")
-  // fileContent = fileContent.replaceAll('import.meta.env', '({})')
-  // fileContent = fileContent.replaceAll('import.meta.hot', '(undefined)')
+  fileContent = fileContent.replaceAll('import.meta.env', '({})')
+  fileContent = fileContent.replaceAll('import.meta.hot', '(undefined)')
   await fs.writeFile(filePath, fileContent, 'utf8')
 }
 
