@@ -116,6 +116,7 @@ function getIdHash(id: string) {
 }
 
 function getAssetFileName(assetInfo: PreRenderedAsset, config: ResolvedConfig): string {
+  const userRootDir = config.root
   const assetsDir = getAssetsDir(config)
   const dir = assetsDir + '/static'
   let { name } = assetInfo
@@ -137,12 +138,12 @@ function getAssetFileName(assetInfo: PreRenderedAsset, config: ResolvedConfig): 
     name?.endsWith('?extractAssets&lang.css')
   ) {
     name = name.split('.').slice(0, -2).join('.')
-    name = clean(name)
+    name = clean(name, userRootDir)
     return `${dir}/${name}.[hash][extname]`
   }
 
   name = name.split('.').slice(0, -1).join('.')
-  name = clean(name)
+  name = clean(name, userRootDir)
   return `${dir}/${name}.[hash][extname]`
 }
 
@@ -157,6 +158,7 @@ function getChunkFileName(_chunkInfo: PreRenderedChunk, config: ResolvedConfig):
 }
 
 function getEntryFileName(chunkInfo: PreRenderedChunk, config: ResolvedConfig, isEntry: boolean): string {
+  const userRootDir = config.root
   const assetsDir = getAssetsDir(config)
   const isForClientSide = !config.build.ssr
 
@@ -164,6 +166,7 @@ function getEntryFileName(chunkInfo: PreRenderedChunk, config: ResolvedConfig, i
   assertPosixPath(name)
   name = clean(
     name,
+    userRootDir,
     true,
     // Not needed for client-side because dist/ filenames contain `.[hash].js`
     !isForClientSide,
@@ -176,30 +179,37 @@ function getEntryFileName(chunkInfo: PreRenderedChunk, config: ResolvedConfig, i
   }
 }
 
-function removePathSeparators(name: string) {
+function removePathSeparators(name: string, userRootDir: string) {
   assertPosixPath(name)
-  assert(!name.startsWith('/'))
+  if (name.startsWith(userRootDir)) {
+    name = name.slice(userRootDir.length)
+    if (name.startsWith('/')) name = name.slice(1)
+  }
+  assert(!name.startsWith('/'), { name })
+
   const entryDir = 'entries/'
   const hasEntryDir = name.startsWith(entryDir)
   if (hasEntryDir) {
     name = name.slice(entryDir.length)
     assert(!name.startsWith('/'))
   }
+
   name = name.split('/').join('_')
   if (hasEntryDir) {
     name = `${entryDir}${name}`
   }
+
   return name
 }
 
-function clean(name: string, removePathSep?: boolean, fixGlob?: boolean): string {
+function clean(name: string, userRootDir: string, removePathSep?: boolean, fixGlob?: boolean): string {
   name = fixExtractAssetsQuery(name)
   if (fixGlob) {
     name = workaroundGlob(name)
   }
   name = replaceNonLatinCharacters(name)
   if (removePathSep) {
-    name = removePathSeparators(name)
+    name = removePathSeparators(name, userRootDir)
   }
   name = removeLeadingUnderscoreInFilename(name)
   name = removeUnderscoreDoublets(name)
