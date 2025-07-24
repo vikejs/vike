@@ -234,6 +234,9 @@ function setGlobalContext_isPrerendering() {
   setIsProduction(true)
 }
 function setGlobalContext_isProduction(isProduction: boolean, tolerateContraditction = false) {
+  // TODO/now: try to remove globalObject.isProduction ?
+  // TODO/now: `rename tolerateContraditction tolerateContradiction`
+  tolerateContraditction = true
   if (debug.isActivated) debug('setGlobalContext_isProduction()', { isProduction, tolerateContraditction })
   if (globalObject.isProduction === undefined) {
     setIsProduction(isProduction)
