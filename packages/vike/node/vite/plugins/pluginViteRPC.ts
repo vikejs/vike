@@ -40,8 +40,8 @@ function pluginViteRPC(): Plugin {
     },
     transform(code, id) {
       if (id !== runtimeFileWithDynamicImport) return
-      const envName = this.environment.name
-      if (['client', 'ssr'].includes(envName)) return
+      const envName = this.environment?.name
+      if (!envName || ['client', 'ssr'].includes(envName)) return
       // TODO/now use magic-string
       return code.replaceAll('__VIKE__DYNAMIC_IMPORT', 'import')
     },
