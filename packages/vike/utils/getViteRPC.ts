@@ -9,7 +9,7 @@ import { getGlobalObject } from './getGlobalObject.js'
 import { createDebugger } from './debug.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
 assertIsNotBrowser()
-const globalContext = getGlobalObject('utils/getViteRPC.ts', {
+const globalObject = getGlobalObject('utils/getViteRPC.ts', {
   rpc: null as null | object,
 })
 const debug = createDebugger('vike:vite-rpc')
@@ -18,8 +18,8 @@ type DataRequest = { callId: string; functionName: string; functionArgs: unknown
 type DataResponse = { callId: string; functionReturn: unknown }
 
 function getViteRPC<RpcFunctions>() {
-  globalContext.rpc ??= createRpcClient()
-  return globalContext.rpc as RpcFunctions
+  globalObject.rpc ??= createRpcClient()
+  return globalObject.rpc as RpcFunctions
 }
 
 function createRpcClient() {
