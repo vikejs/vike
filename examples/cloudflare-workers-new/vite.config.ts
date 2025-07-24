@@ -4,5 +4,12 @@ import vike from 'vike/plugin'
 import { cloudflare } from '@cloudflare/vite-plugin'
 
 export default defineConfig({
-  plugins: [react(), cloudflare(), vike()],
+  plugins: [
+    react(),
+    cloudflare({
+      // TODO/now: create GitHub issue to track progress on this
+      viteEnvironment: { name: 'ssr' },
+    }),
+    vike(),
+  ],
 })
