@@ -637,6 +637,7 @@ function resolveBaseRuntime(
 }
 
 function getIsProductionStatic() {
+  // TODO/now add @ts-ignore comments
   // @ts-ignore
   if (!import.meta.env) return undefined
   // @ts-ignore
