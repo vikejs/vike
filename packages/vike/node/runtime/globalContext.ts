@@ -617,10 +617,11 @@ function clearGlobalContext() {
 }
 
 function getInitialGlobalObject() {
-  debug('getInitialGlobalObject()')
+  const isProduction = getIsProductionStatic()
+  if (debug.isActivated) debug('getInitialGlobalObject()', { isProduction })
   const { promise: viteDevServerPromise, resolve: viteDevServerPromiseResolve } = genPromise<ViteDevServer>()
   return {
-    isProduction: getIsProductionStatic(),
+    isProduction,
     viteDevServerPromise,
     viteDevServerPromiseResolve,
   }
