@@ -8,7 +8,6 @@ describe('build', () => {
       await buildApp()
       expect('success').toBe(false)
     } catch (err) {
-      stripAnsi
       expect(stripAnsi(err.message)).toContain(
         'Server-only file /pages/index/secret.server.js (https://vike.dev/file-env) imported on the client-side by /pages/index/+Page.jsx',
       )
