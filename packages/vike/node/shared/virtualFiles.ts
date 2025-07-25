@@ -1,5 +1,5 @@
 export { isVirtualFileId }
-export { getVirtualFileId }
+export { removeVirtualFileIdPrefix }
 export { addVirtualFileIdPrefix }
 export { removeVirtualFileIdPrefix }
 
@@ -22,7 +22,7 @@ function isVirtualFileId(id: string): boolean {
   )
   return false
 }
-function getVirtualFileId(id: string): string {
+function removeVirtualFileIdPrefix(id: string): string {
   return removeVirtualFileIdPrefix(id)
 }
 function addVirtualFileIdPrefix(id: string): string {

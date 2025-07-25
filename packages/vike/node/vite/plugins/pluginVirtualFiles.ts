@@ -5,7 +5,7 @@ import { normalizePath } from 'vite'
 import { getVirtualFilePageConfigLazy } from './pluginVirtualFiles/getVirtualFilePageConfigLazy.js'
 import { getVirtualFileEntry } from './pluginVirtualFiles/getVirtualFileEntry.js'
 import { assert, assertPosixPath, isScriptFile } from '../utils.js'
-import { addVirtualFileIdPrefix, isVirtualFileId, getVirtualFileId } from '../../shared/virtualFiles.js'
+import { addVirtualFileIdPrefix, isVirtualFileId, removeVirtualFileIdPrefix } from '../../shared/virtualFiles.js'
 import { isVirtualFileIdPageConfigLazy } from '../../shared/virtualFiles/virtualFilePageConfigLazy.js'
 import { isVirtualFileIdEntry } from '../../shared/virtualFiles/virtualFileEntry.js'
 import { reloadVikeConfig, isV1Design, getVikeConfigInternalOptional } from '../shared/resolveVikeConfigInternal.js'
@@ -42,7 +42,7 @@ function pluginVirtualFiles(): Plugin {
     },
     async load(id, options) {
       if (!isVirtualFileId(id)) return undefined
-      id = getVirtualFileId(id)
+      id = removeVirtualFileIdPrefix(id)
       const isDev = config._isDev
       assert(typeof isDev === 'boolean')
 

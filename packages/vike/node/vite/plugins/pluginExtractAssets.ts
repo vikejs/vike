@@ -19,7 +19,7 @@ import {
   assertUsage,
   rollupSourceMapRemove,
 } from '../utils.js'
-import { addVirtualFileIdPrefix, isVirtualFileId, getVirtualFileId } from '../../shared/virtualFiles.js'
+import { addVirtualFileIdPrefix, isVirtualFileId, removeVirtualFileIdPrefix } from '../../shared/virtualFiles.js'
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
 import { isAsset } from '../shared/isAsset.js'
 import { getImportStatements, type ImportStatement } from '../shared/parseEsModule.js'
@@ -148,7 +148,7 @@ function pluginExtractAssets(): Plugin[] {
       apply: 'build',
       load(id) {
         if (!isVirtualFileId(id)) return undefined
-        id = getVirtualFileId(id)
+        id = removeVirtualFileIdPrefix(id)
 
         if (id === EMPTY_MODULE_ID) {
           return '// Erased by vike:pluginExtractAssets'
