@@ -1,5 +1,4 @@
 export { isVirtualFileId }
-export { removeVirtualFileIdPrefix }
 export { addVirtualFileIdPrefix }
 export { removeVirtualFileIdPrefix }
 
@@ -21,9 +20,6 @@ function isVirtualFileId(id: string): boolean {
     )} that is unexpected. Are you using a tool that modifies the ID of modules? For example, the baseUrl setting in tsconfig.json cannot be used.`,
   )
   return false
-}
-function removeVirtualFileIdPrefix(id: string): string {
-  return removeVirtualFileIdPrefix(id)
 }
 function addVirtualFileIdPrefix(id: string): string {
   assert(isVirtualFileId(id))
