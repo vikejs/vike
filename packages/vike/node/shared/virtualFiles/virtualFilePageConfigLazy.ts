@@ -5,9 +5,9 @@ import { extractAssetsRemoveQuery } from '../extractAssetsQuery.js'
 import { assert } from '../utils.js'
 import { getVirtualFileId } from '../virtualFiles.js'
 
+const idBaseClient = 'virtual:vike:pageConfigLazy:client:'
+const idBaseServer = 'virtual:vike:pageConfigLazy:server:'
 const idBase = 'virtual:vike:pageConfigLazy:'
-const idBaseClient = `${idBase}client:` as const
-const idBaseServer = `${idBase}server:` as const
 
 function getVirtualFileIdPageConfigLazy(pageId: string, isForClientSide: boolean): `${typeof idBase}${string}` {
   const id = `${isForClientSide ? idBaseClient : idBaseServer}${pageId}` as const
