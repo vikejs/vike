@@ -2,8 +2,9 @@ export { isVirtualFileIdPageConfigLazy }
 export { getVirtualFileIdPageConfigLazy }
 
 import { extractAssetsRemoveQuery } from '../extractAssetsQuery.js'
-import { assert } from '../utils.js'
+import { assert, assertIsNotBrowser } from '../utils.js'
 import { removeVirtualFileIdPrefix } from '../virtualFiles.js'
+assertIsNotBrowser()
 
 const idBaseClient = 'virtual:vike:pageConfigLazy:client:'
 const idBaseServer = 'virtual:vike:pageConfigLazy:server:'

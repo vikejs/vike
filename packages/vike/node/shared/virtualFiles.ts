@@ -3,7 +3,8 @@ export { addVirtualFileIdPrefix }
 export { removeVirtualFileIdPrefix }
 
 import pc from '@brillout/picocolors'
-import { assert, assertUsage } from './utils.js'
+import { assert, assertIsNotBrowser, assertUsage } from './utils.js'
+assertIsNotBrowser()
 
 const idBase = 'virtual:vike:'
 // https://vitejs.dev/guide/api-plugin.html#virtual-modules-convention
