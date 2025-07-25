@@ -3,8 +3,7 @@ export { virtualFileIdEntryClientSR }
 export { virtualFileIdEntryClientCR }
 export { isVirtualFileIdEntry }
 
-import { assert, assertIsNotBrowser } from '../utils.js'
-import { removeVirtualFileIdPrefix } from '../../../utils/virtualFileId.js'
+import { assert, assertIsNotBrowser, removeVirtualFileIdPrefix } from '../utils.js'
 assertIsNotBrowser()
 
 const virtualFileIdEntryServer = 'virtual:vike:entry:server'

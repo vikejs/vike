@@ -4,8 +4,14 @@ import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode, Mod
 import { normalizePath } from 'vite'
 import { getVirtualFilePageConfigLazy } from './pluginVirtualFiles/getVirtualFilePageConfigLazy.js'
 import { getVirtualFileEntry } from './pluginVirtualFiles/getVirtualFileEntry.js'
-import { assert, assertPosixPath, isScriptFile } from '../utils.js'
-import { addVirtualFileIdPrefix, isVirtualFileId, removeVirtualFileIdPrefix } from '../../../utils/virtualFileId.js'
+import {
+  assert,
+  assertPosixPath,
+  isScriptFile,
+  addVirtualFileIdPrefix,
+  isVirtualFileId,
+  removeVirtualFileIdPrefix,
+} from '../utils.js'
 import { isVirtualFileIdPageConfigLazy } from '../../shared/virtualFiles/virtualFilePageConfigLazy.js'
 import { isVirtualFileIdEntry } from '../../shared/virtualFiles/virtualFileEntry.js'
 import { reloadVikeConfig, isV1Design, getVikeConfigInternalOptional } from '../shared/resolveVikeConfigInternal.js'
