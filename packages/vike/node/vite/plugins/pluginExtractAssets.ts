@@ -19,7 +19,7 @@ import {
   assertUsage,
   rollupSourceMapRemove,
 } from '../utils.js'
-import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../shared/virtualFiles.js'
+import { addVirtualFileIdPrefix, isVirtualFileId, getVirtualFileId } from '../../shared/virtualFiles.js'
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
 import { isAsset } from '../shared/isAsset.js'
 import { getImportStatements, type ImportStatement } from '../shared/parseEsModule.js'
@@ -180,7 +180,7 @@ function pluginExtractAssets(): Plugin[] {
 
 function emptyModule(file: string, importer: string) {
   debugOperation('NUKED', file, importer)
-  return resolveVirtualFileId(EMPTY_MODULE_ID)
+  return addVirtualFileIdPrefix(EMPTY_MODULE_ID)
 }
 function appendExtractAssetsQuery(file: string, importer: string) {
   debugOperation('TRANSFORMED', file, importer)

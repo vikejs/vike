@@ -1,6 +1,6 @@
 export { isVirtualFileId }
 export { getVirtualFileId }
-export { resolveVirtualFileId }
+export { addVirtualFileIdPrefix }
 export { removeVirtualFileIdPrefix }
 
 import pc from '@brillout/picocolors'
@@ -25,7 +25,7 @@ function isVirtualFileId(id: string): boolean {
 function getVirtualFileId(id: string): string {
   return removeVirtualFileIdPrefix(id)
 }
-function resolveVirtualFileId(id: string): string {
+function addVirtualFileIdPrefix(id: string): string {
   assert(isVirtualFileId(id))
   if (!id.startsWith(prefix)) {
     id = prefix + id
