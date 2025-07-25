@@ -3,7 +3,7 @@ export { getVirtualFileIdPageConfigLazy }
 
 import { extractAssetsRemoveQuery } from '../extractAssetsQuery.js'
 import { assert } from '../utils.js'
-import { removeVirtualFileIdPrefix } from '../virtualFiles.js'
+import { removeVirtualFileIdPrefix } from '../../vite/shared/virtualFiles.js'
 
 const idBaseClient = 'virtual:vike:pageConfigLazy:client:'
 const idBaseServer = 'virtual:vike:pageConfigLazy:server:'

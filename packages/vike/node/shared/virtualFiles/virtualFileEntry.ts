@@ -4,7 +4,7 @@ export { virtualFileIdEntryClientCR }
 export { isVirtualFileIdEntry }
 
 import { assert } from '../utils.js'
-import { removeVirtualFileIdPrefix } from '../virtualFiles.js'
+import { removeVirtualFileIdPrefix } from '../../vite/shared/virtualFiles.js'
 
 const virtualFileIdEntryServer = 'virtual:vike:entry:server'
 const virtualFileIdEntryClientSR = 'virtual:vike:entry:client:server-routing'
