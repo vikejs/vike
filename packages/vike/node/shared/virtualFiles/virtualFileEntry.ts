@@ -3,9 +3,17 @@ export { virtualFileIdEntryClientSR }
 export { virtualFileIdEntryClientCR }
 export { isVirtualFileIdEntry }
 
+// TODO/now: merge virtualFileEntry.ts and virtualFilePageConfigLazy.ts
+// - One function parseVirtualFileIdEntry() to rule them all?
+
 import { assert, assertIsNotBrowser, removeVirtualFileIdPrefix } from '../utils.js'
 assertIsNotBrowser()
 
+// TODO/now: rename:
+// ```diff
+// - virtual:vike:entry:server
+// + virtual:vike:entry:global:server
+// ```
 const virtualFileIdEntryServer = 'virtual:vike:entry:server'
 const virtualFileIdEntryClientSR = 'virtual:vike:entry:client:server-routing'
 const virtualFileIdEntryClientCR = 'virtual:vike:entry:client:client-routing'
