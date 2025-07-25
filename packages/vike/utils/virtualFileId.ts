@@ -3,7 +3,7 @@ export { addVirtualFileIdPrefix }
 export { removeVirtualFileIdPrefix }
 
 import pc from '@brillout/picocolors'
-import { assert, assertIsNotBrowser, assertUsage } from './utils.js'
+import { assert, assertIsNotBrowser, assertUsage } from '../node/shared/utils.js'
 assertIsNotBrowser()
 
 const idBase = 'virtual:vike:'
