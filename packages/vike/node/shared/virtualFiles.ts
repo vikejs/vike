@@ -1,7 +1,7 @@
 export { isVirtualFileId }
 export { getVirtualFileId }
 export { resolveVirtualFileId }
-export { removeVirtualIdTag }
+export { removeVirtualFileIdPrefix }
 
 import pc from '@brillout/picocolors'
 import { assert, assertUsage } from './utils.js'
@@ -23,7 +23,7 @@ function isVirtualFileId(id: string): boolean {
   return false
 }
 function getVirtualFileId(id: string): string {
-  return removeVirtualIdTag(id)
+  return removeVirtualFileIdPrefix(id)
 }
 function resolveVirtualFileId(id: string): string {
   assert(isVirtualFileId(id))
@@ -34,7 +34,7 @@ function resolveVirtualFileId(id: string): string {
   return id
 }
 
-function removeVirtualIdTag(id: string): string {
+function removeVirtualFileIdPrefix(id: string): string {
   if (id.startsWith(prefix)) {
     id = id.slice(prefix.length)
   }
