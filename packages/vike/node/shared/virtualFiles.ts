@@ -8,11 +8,11 @@ import { assert, assertUsage } from './utils.js'
 
 const idBase = 'virtual:vike:'
 // https://vitejs.dev/guide/api-plugin.html#virtual-modules-convention
-const virtualIdTag = '\0'
+const prefix = '\0'
 
 function isVirtualFileId(id: string): boolean {
   if (id.startsWith(idBase)) return true
-  if (id.startsWith(virtualIdTag + idBase)) return true
+  if (id.startsWith(prefix + idBase)) return true
   // https://github.com/vikejs/vike/issues/1985
   assertUsage(
     !id.includes(idBase),
@@ -27,17 +27,17 @@ function getVirtualFileId(id: string): string {
 }
 function resolveVirtualFileId(id: string): string {
   assert(isVirtualFileId(id))
-  if (!id.startsWith(virtualIdTag)) {
-    id = virtualIdTag + id
+  if (!id.startsWith(prefix)) {
+    id = prefix + id
   }
-  assert(id.startsWith(virtualIdTag))
+  assert(id.startsWith(prefix))
   return id
 }
 
 function removeVirtualIdTag(id: string): string {
-  if (id.startsWith(virtualIdTag)) {
-    id = id.slice(virtualIdTag.length)
+  if (id.startsWith(prefix)) {
+    id = id.slice(prefix.length)
   }
-  assert(!id.startsWith(virtualIdTag))
+  assert(!id.startsWith(prefix))
   return id
 }
