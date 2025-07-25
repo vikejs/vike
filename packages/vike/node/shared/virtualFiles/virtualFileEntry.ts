@@ -3,26 +3,28 @@ export { virtualFileIdEntryClientSR }
 export { virtualFileIdEntryClientCR }
 export { isVirtualFileIdEntry }
 
-import { assert } from '../utils.js'
-import { getVirtualFileId } from '../virtualFiles.js'
+// TODO/now: merge virtualFileEntry.ts and virtualFilePageConfigLazy.ts
+// - One function parseVirtualFileIdEntry() to rule them all?
 
+import { assert, assertIsNotBrowser, removeVirtualFileIdPrefix } from '../utils.js'
+assertIsNotBrowser()
+
+// TODO/now: rename:
+// ```diff
+// - virtual:vike:entry:server
+// + virtual:vike:entry:global:server
+// ```
+const virtualFileIdEntryServer = 'virtual:vike:entry:server'
+const virtualFileIdEntryClientSR = 'virtual:vike:entry:client:server-routing'
+const virtualFileIdEntryClientCR = 'virtual:vike:entry:client:client-routing'
+const virtualFileIdEntries = [virtualFileIdEntryServer, virtualFileIdEntryClientCR, virtualFileIdEntryClientSR]
 const idBase = 'virtual:vike:entry'
-const virtualFileIdEntryServer = `${idBase}:server`
-const virtualFileIdEntryClientSR = `${idBase}:client:server-routing`
-const virtualFileIdEntryClientCR = `${idBase}:client:client-routing`
+assert(virtualFileIdEntries.every((v) => v.startsWith(`${idBase}:`)))
 
 function isVirtualFileIdEntry(id: string): false | { isForClientSide: boolean; isClientRouting: boolean } {
-  id = getVirtualFileId(id)
+  id = removeVirtualFileIdPrefix(id)
   if (!id.startsWith(idBase)) return false
-  assert(
-    // prettier-ignore
-    // biome-ignore format:
-    [
-      virtualFileIdEntryServer,
-      virtualFileIdEntryClientCR,
-      virtualFileIdEntryClientSR
-    ].includes(id),
-  )
+  assert(virtualFileIdEntries.includes(id))
   const isForClientSide = id !== virtualFileIdEntryServer
   const isClientRouting = id === virtualFileIdEntryClientCR
   return { isForClientSide, isClientRouting }

@@ -2,7 +2,7 @@ export { pluginModuleBanner }
 
 import type { ResolvedConfig, Plugin } from 'vite'
 import MagicString from 'magic-string'
-import { removeVirtualIdTag } from '../../../shared/virtualFiles.js'
+import { removeVirtualFileIdPrefix } from '../../utils.js'
 import { isViteServerBuild_safe } from '../../shared/isViteServerBuild.js'
 
 // Rollup's banner feature doesn't work with Vite: https://github.com/vitejs/vite/issues/8412
@@ -29,7 +29,7 @@ function pluginModuleBanner(): Plugin {
           return
         }
         if (id.startsWith('\0')) id = id
-        id = removeVirtualIdTag(id)
+        id = removeVirtualFileIdPrefix(id)
         if (id.startsWith(config.root)) id = id.slice(config.root.length + 1)
         id = id.replaceAll('*/', '*\\/') // https://github.com/vikejs/vike/issues/2377
         const magicString = new MagicString(code)

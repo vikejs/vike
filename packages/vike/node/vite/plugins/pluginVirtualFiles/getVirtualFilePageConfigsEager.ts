@@ -1,5 +1,7 @@
 export { getVirtualFilePageConfigsEager }
 
+// TODO/now: rename file to generateVirtualFileEntryGlobal.ts
+
 import type { PageConfigBuildTime, PageConfigGlobalBuildTime } from '../../../../types/PageConfig.js'
 import { getVirtualFileIdPageConfigLazy } from '../../../shared/virtualFiles/virtualFilePageConfigLazy.js'
 import { debug } from './debug.js'

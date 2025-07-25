@@ -2,13 +2,19 @@ export { isVirtualFileIdPageConfigLazy }
 export { getVirtualFileIdPageConfigLazy }
 
 import { extractAssetsRemoveQuery } from '../extractAssetsQuery.js'
-import { assert } from '../utils.js'
-import { getVirtualFileId } from '../virtualFiles.js'
+import { assert, assertIsNotBrowser, removeVirtualFileIdPrefix } from '../utils.js'
+assertIsNotBrowser()
 
+// TODO/now: rename:
+// ```diff
+// - virtual:vike:pageConfigLazy:server:
+// + virtual:vike:entry:page:server:
+// ```
+const idBaseClient = 'virtual:vike:pageConfigLazy:client:'
+const idBaseServer = 'virtual:vike:pageConfigLazy:server:'
 const idBase = 'virtual:vike:pageConfigLazy:'
-const idBaseClient = `${idBase}client:` as const
-const idBaseServer = `${idBase}server:` as const
 
+// TODO/now: rename to generateVirtualFileIdEntry()
 function getVirtualFileIdPageConfigLazy(pageId: string, isForClientSide: boolean): `${typeof idBase}${string}` {
   const id = `${isForClientSide ? idBaseClient : idBaseServer}${pageId}` as const
   return id
@@ -16,7 +22,7 @@ function getVirtualFileIdPageConfigLazy(pageId: string, isForClientSide: boolean
 function isVirtualFileIdPageConfigLazy(
   id: string,
 ): false | { isForClientSide: boolean; pageId: string; isExtractAssets: boolean } {
-  id = getVirtualFileId(id)
+  id = removeVirtualFileIdPrefix(id)
   if (!id.includes(idBase)) return false
   assert(id.startsWith(idBase))
   const idOriginal = id

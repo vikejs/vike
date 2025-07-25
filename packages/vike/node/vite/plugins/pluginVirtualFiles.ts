@@ -4,8 +4,14 @@ import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode, Mod
 import { normalizePath } from 'vite'
 import { getVirtualFilePageConfigLazy } from './pluginVirtualFiles/getVirtualFilePageConfigLazy.js'
 import { getVirtualFileEntry } from './pluginVirtualFiles/getVirtualFileEntry.js'
-import { assert, assertPosixPath, isScriptFile } from '../utils.js'
-import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../shared/virtualFiles.js'
+import {
+  assert,
+  assertPosixPath,
+  isScriptFile,
+  addVirtualFileIdPrefix,
+  isVirtualFileId,
+  removeVirtualFileIdPrefix,
+} from '../utils.js'
 import { isVirtualFileIdPageConfigLazy } from '../../shared/virtualFiles/virtualFilePageConfigLazy.js'
 import { isVirtualFileIdEntry } from '../../shared/virtualFiles/virtualFileEntry.js'
 import { reloadVikeConfig, isV1Design, getVikeConfigInternalOptional } from '../shared/resolveVikeConfigInternal.js'
@@ -28,7 +34,7 @@ function pluginVirtualFiles(): Plugin {
     },
     resolveId(id) {
       if (isVirtualFileId(id)) {
-        return resolveVirtualFileId(id)
+        return addVirtualFileIdPrefix(id)
       }
     },
     async handleHotUpdate(ctx) {
@@ -42,7 +48,7 @@ function pluginVirtualFiles(): Plugin {
     },
     async load(id, options) {
       if (!isVirtualFileId(id)) return undefined
-      id = getVirtualFileId(id)
+      id = removeVirtualFileIdPrefix(id)
       const isDev = config._isDev
       assert(typeof isDev === 'boolean')
 
