@@ -49,7 +49,7 @@ import {
   getViteRPC,
 } from './utils.js'
 import type { ViteManifest } from '../../types/ViteManifest.js'
-import type { ResolvedConfig, ViteDevServer } from 'vite'
+import type { ResolvedConfig, ViteDevServer, RunnableDevEnvironment } from 'vite'
 import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
 import { virtualFileIdEntryServer } from '../shared/virtualFiles/virtualFileEntry.js'
 import pc from '@brillout/picocolors'
@@ -456,7 +456,9 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
   let err: unknown
   if (viteDevServer) {
     try {
-      virtualFileExports = await viteDevServer.ssrLoadModule(virtualFileIdEntryServer)
+      virtualFileExports = await (viteDevServer.environments.ssr as RunnableDevEnvironment).runner.import(
+        'virtual:vike:entry:server',
+      )
     } catch (err_) {
       hasError = true
       err = err_
