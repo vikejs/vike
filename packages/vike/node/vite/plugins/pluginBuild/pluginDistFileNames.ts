@@ -19,6 +19,9 @@ function pluginDistFileNames(): Plugin {
     apply: 'build',
     enforce: 'post',
     configResolved(config) {
+      // TODO/now remove
+      // if (true as boolean) return
+
       const rollupOutputs = getRollupOutputs(config)
       // We need to support multiple outputs: @vite/plugin-legacy adds an output, see https://github.com/vikejs/vike/issues/477#issuecomment-1406434802
       rollupOutputs.forEach((rollupOutput) => {

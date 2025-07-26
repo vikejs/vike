@@ -26,6 +26,7 @@ import { resolveClientEntriesDev } from './shared/resolveClientEntriesDev.js'
 import { pluginWorkaroundCssModuleHmr } from './plugins/pluginWorkaroundCssModuleHmr.js'
 import { pluginWorkaroundVite6HmrRegression } from './plugins/pluginWorkaroundVite6HmrRegression.js'
 import { pluginReplaceConstants } from './plugins/pluginReplaceConstants.js'
+import { pluginViteRPC } from './plugins/pluginViteRPC.js'
 
 // We don't call this in ./onLoad.ts to avoid a cyclic dependency with utils.ts
 setResolveClientEntriesDev(resolveClientEntriesDev)
@@ -48,6 +49,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginIntero
     pluginWorkaroundCssModuleHmr(),
     pluginWorkaroundVite6HmrRegression(),
     pluginReplaceConstants(),
+    pluginViteRPC(),
   ]
   Object.assign(plugins, { _vikeVitePluginOptions: vikeVitePluginOptions })
   return plugins as any

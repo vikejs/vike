@@ -32,7 +32,8 @@ import {
   handleAssetsManifest_getBuildConfig,
 } from './handleAssetsManifest.js'
 import { resolveIncludeAssetsImportedByServer } from '../../../runtime/renderPage/getPageAssets.js'
-const manifestTempFile = '_temp_manifest.json'
+// TODO/now: stop setting `manifest` altogether and use the resolved value instead? So that other tools can easily read the manifest (e.g. @cloudflare/plugin-vite reads the manifest).
+const manifestTempFile = '.vite/manifest.json'
 
 function pluginBuildConfig(): Plugin[] {
   let config: ResolvedConfig

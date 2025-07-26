@@ -36,6 +36,11 @@ declare module 'vite' {
   }
 }
 
+declare global {
+  var __VIKE__IS_PROCESS_SHARED_WITH_VITE: undefined | boolean
+}
+globalThis.__VIKE__IS_PROCESS_SHARED_WITH_VITE = true
+
 function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
   return [
     {

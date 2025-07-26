@@ -46,9 +46,10 @@ import {
   createDebugger,
   checkType,
   PROJECT_VERSION,
+  getViteRPC,
 } from './utils.js'
 import type { ViteManifest } from '../../types/ViteManifest.js'
-import type { ResolvedConfig, ViteDevServer } from 'vite'
+import type { ResolvedConfig, ViteDevServer, RunnableDevEnvironment } from 'vite'
 import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
 import { virtualFileIdEntryServer } from '../shared/virtualFiles/virtualFileEntry.js'
 import pc from '@brillout/picocolors'
@@ -68,6 +69,7 @@ import { logRuntimeError, logRuntimeInfo } from './loggerRuntime.js'
 import { getVikeConfigErrorBuild, setVikeConfigError } from '../shared/getVikeConfigError.js'
 import { hasAlreadyLogged } from './renderPage/isNewError.js'
 import type { Hook } from '../../shared/hooks/getHook.js'
+import type { ViteRPC } from '../vite/plugins/pluginViteRPC.js'
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
   {
@@ -87,6 +89,7 @@ const globalObject = getGlobalObject<
     // Move to buildInfo.assetsManifest ?
     assetsManifest?: ViteManifest
     isInitialized?: true
+    isProcessSharedWithVite?: boolean
   } & ReturnType<typeof getInitialGlobalObject>
 >('runtime/globalContext.ts', getInitialGlobalObject())
 // Trick to break down TypeScript circular dependency
@@ -231,6 +234,9 @@ function setGlobalContext_isPrerendering() {
   setIsProduction(true)
 }
 function setGlobalContext_isProduction(isProduction: boolean, tolerateContraditction = false) {
+  // TODO/now: try to remove globalObject.isProduction ?
+  // TODO/now: `rename tolerateContraditction tolerateContradiction`
+  tolerateContraditction = true
   if (debug.isActivated) debug('setGlobalContext_isProduction()', { isProduction, tolerateContraditction })
   if (globalObject.isProduction === undefined) {
     setIsProduction(isProduction)
@@ -285,7 +291,11 @@ async function initGlobalContext(): Promise<void> {
   const { isProduction } = globalObject
   assert(typeof isProduction === 'boolean')
   if (!isProduction) {
-    await globalObject.viteDevServerPromise
+    if (isProcessSharedWithVite()) {
+      await globalObject.viteDevServerPromise
+    } else {
+      await updateUserFiles()
+    }
     assert(globalObject.waitForUserFilesUpdate)
     await globalObject.waitForUserFilesUpdate
   } else {
@@ -441,15 +451,26 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
     viteDevServer !== globalObject.viteDevServer
 
   const { viteDevServer } = globalObject
-  assert(viteDevServer)
   let hasError = false
   let virtualFileExports: Record<string, unknown> | undefined
   let err: unknown
-  try {
-    virtualFileExports = await viteDevServer.ssrLoadModule(virtualFileIdEntryServer)
-  } catch (err_) {
-    hasError = true
-    err = err_
+  if (viteDevServer) {
+    try {
+      virtualFileExports = await (viteDevServer.environments.ssr as RunnableDevEnvironment).runner.import(
+        'virtual:vike:entry:server',
+      )
+    } catch (err_) {
+      hasError = true
+      err = err_
+    }
+  } else {
+    try {
+      // We don't directly use import() to workaround what seems to be a Vite HMR bug: using import() breaks the HMR of normal non-worker apps.
+      virtualFileExports = await __VIKE__DYNAMIC_IMPORT('virtual:vike:entry:server')
+    } catch (err_) {
+      hasError = true
+      err = err_
+    }
   }
   if (isOutdated()) return { success: false }
   if (hasError) return onError(err)
@@ -478,6 +499,7 @@ async function setGlobalContext(virtualFileExports: unknown) {
     globalObject,
     addGlobalContext,
     addGlobalContextTmp,
+    addGlobalContextAsync,
   )
 
   assertV1Design(
@@ -525,23 +547,18 @@ function addGlobalContextCommon(
     _pageRoutes: pageRoutes,
     _onBeforeRouteHook: onBeforeRouteHook,
   }
-  const { viteDevServer, viteConfig, viteConfigRuntime, isPrerendering, isProduction } = globalObject
+  const { viteDevServer, viteConfig, isPrerendering, isProduction } = globalObject
   assert(typeof isProduction === 'boolean')
   if (!isProduction) {
-    assert(viteDevServer)
     assert(globalContext) // main common requirement
-    assert(viteConfig)
-    assert(viteConfigRuntime)
     assert(!isPrerendering)
     return {
       ...globalContextBase,
-      ...resolveBaseRuntime(viteConfigRuntime, globalContext.config),
       _isProduction: false as const,
       _isPrerendering: false as const,
       assetsManifest: null,
       _viteDevServer: viteDevServer,
       viteConfig,
-      viteConfigRuntime,
     }
   } else {
     assert(globalObject.buildEntry)
@@ -551,11 +568,9 @@ function addGlobalContextCommon(
     assert(assetsManifest)
     const globalContextBase2 = {
       ...globalContextBase,
-      ...resolveBaseRuntime(buildInfo.viteConfigRuntime, globalContext.config),
       _isProduction: true as const,
       assetsManifest,
       _viteDevServer: null,
-      viteConfigRuntime: buildInfo.viteConfigRuntime,
       _usesClientRouter: buildInfo.usesClientRouter,
     }
     if (isPrerendering) {
@@ -574,6 +589,32 @@ function addGlobalContextCommon(
     }
   }
 }
+async function addGlobalContextAsync(globalContext: GlobalContextBase) {
+  debug('addGlobalContextAsync()')
+  let { viteConfigRuntime, buildInfo } = globalObject
+  if (!viteConfigRuntime) {
+    if (buildInfo) {
+      viteConfigRuntime = buildInfo.viteConfigRuntime
+    } else {
+      if (!isProcessSharedWithVite()) {
+        if (!globalObject.isProduction) {
+          const rpc = getViteRPC<ViteRPC>()
+          viteConfigRuntime = await rpc.getViteConfigRuntimeRPC()
+        } else {
+          assert(false) // production => globalObject.buildInfo should be set
+        }
+      } else {
+        assert(false) // process shared with Vite => globalObject.viteConfigRuntime should be set
+      }
+    }
+  }
+  assert(viteConfigRuntime)
+
+  return {
+    viteConfigRuntime,
+    ...resolveBaseRuntime(viteConfigRuntime, globalContext.config),
+  }
+}
 
 function clearGlobalContext() {
   debug('clearGlobalContext()')
@@ -581,9 +622,11 @@ function clearGlobalContext() {
 }
 
 function getInitialGlobalObject() {
-  debug('getInitialGlobalObject()')
+  const isProduction = getIsProductionStatic()
+  if (debug.isActivated) debug('getInitialGlobalObject()', { isProduction })
   const { promise: viteDevServerPromise, resolve: viteDevServerPromiseResolve } = genPromise<ViteDevServer>()
   return {
+    isProduction,
     viteDevServerPromise,
     viteDevServerPromiseResolve,
   }
@@ -597,4 +640,23 @@ function resolveBaseRuntime(
   const baseServerUnresolved = config.baseServer ?? null
   const baseAssetsUnresolved = config.baseAssets ?? null
   return resolveBase(baseViteOriginal, baseServerUnresolved, baseAssetsUnresolved)
+}
+
+function getIsProductionStatic() {
+  // TODO/now add @ts-ignore comments
+  // @ts-ignore
+  if (!import.meta.env) return undefined
+  // @ts-ignore
+  const PROD = import.meta.env.PROD
+  return PROD
+}
+
+function isProcessSharedWithVite() {
+  const ret = globalThis.__VIKE__IS_PROCESS_SHARED_WITH_VITE
+  if (globalObject.isProcessSharedWithVite !== undefined) {
+    assert(globalObject.isProcessSharedWithVite === ret)
+  } else {
+    globalObject.isProcessSharedWithVite = ret
+  }
+  return ret
 }
