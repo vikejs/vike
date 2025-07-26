@@ -2,7 +2,7 @@ export { pluginViteRPC }
 
 // TODO/now: rename file
 
-import type { Plugin, ViteDevServer } from 'vite'
+import { isRunnableDevEnvironment, type Plugin, type ViteDevServer } from 'vite'
 import { createViteRPC, assertIsNotProductionRuntime, requireResolveVikeDistFile } from '../utils.js'
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { resolveClientEntriesDev } from '../shared/resolveClientEntriesDev.js'
@@ -33,17 +33,19 @@ declare global {
 }
 function pluginViteRPC(): Plugin {
   const runtimeFileWithDynamicImport = requireResolveVikeDistFile('dist/esm/node/runtime/globalContext.js')
+  let viteDevServer: ViteDevServer
   return {
     name: 'vike:pluginViteRPC',
-    configureServer(viteDevServer) {
+    configureServer(viteDevServer_) {
+      viteDevServer = viteDevServer_
       createViteRPC(viteDevServer, getViteRpcFunctions)
     },
     transform(code, id) {
       if (id !== runtimeFileWithDynamicImport) return
-      const envName = this.environment?.name
-      if (!envName || ['client', 'ssr'].includes(envName)) return
+      if (isRunnableDevEnvironment(this.environment)) return
       // TODO/now use magic-string
-      return code.replaceAll('__VIKE__DYNAMIC_IMPORT', 'import')
+      const codeMod = code.replaceAll('__VIKE__DYNAMIC_IMPORT', 'import')
+      return codeMod
     },
   }
 }
