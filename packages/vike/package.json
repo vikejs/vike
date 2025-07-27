@@ -144,7 +144,7 @@
     "sirv": "^3.0.1",
     "source-map-support": "^0.5.0",
     "tinyglobby": "^0.2.10",
-    "vite": ">=5.1.0"
+    "vite": "^7.0.6"
   },
   "peerDependencies": {
     "react-streaming": ">=0.3.42",
@@ -263,7 +263,7 @@
     "react-streaming": "^0.4.3",
     "rimraf": "^5.0.5",
     "typescript": "^5.8.3",
-    "vite": "^6.3.2"
+    "vite": "^7.0.6"
   },
   "scripts": {
     "dev": "tsc --watch",
