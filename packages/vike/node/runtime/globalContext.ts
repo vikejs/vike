@@ -455,24 +455,24 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
   let virtualFileExports: Record<string, unknown> | undefined
   let err: unknown
   if (viteDevServer) {
-    if (viteDevServer.environments) {
-      // Vite 6
-      try {
-        virtualFileExports = await (viteDevServer.environments.ssr as RunnableDevEnvironment).runner.import(
-          'virtual:vike:entry:server',
-        )
-      } catch (err_) {
-        hasError = true
-        err = err_
-      }
-    } else {
-      // Vite 5
-      try {
-        virtualFileExports = await viteDevServer.ssrLoadModule('virtual:vike:entry:server')
-      } catch (err_) {
-        hasError = true
-        err = err_
-      }
+    /* We don't use runner.import() yet, because as of vite@7.0.6 (July 2025) runner.import() unexpectedly invalidates the module graph, which is a unexpected behavior that doesn't happen with ssrLoadModule()
+    // Vite 6
+    try {
+      virtualFileExports = await (viteDevServer.environments.ssr as RunnableDevEnvironment).runner.import(
+        'virtual:vike:entry:server',
+      )
+    } catch (err_) {
+      hasError = true
+      err = err_
+    }
+    */
+
+    // Vite 5
+    try {
+      virtualFileExports = await viteDevServer.ssrLoadModule('virtual:vike:entry:server')
+    } catch (err_) {
+      hasError = true
+      err = err_
     }
   } else {
     try {
