@@ -55,6 +55,8 @@ function collectCss(mod: ModuleNode, styleUrls: Set<string>, visitedModules: Set
     }
   }
   mod.importedModules.forEach((dep) => {
+    console.log('\nmod.id', mod.id)
+    console.log('dep.id', dep.id)
     collectCss(dep, styleUrls, visitedModules, mod)
   })
 }
