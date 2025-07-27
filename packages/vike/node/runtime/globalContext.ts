@@ -455,13 +455,24 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
   let virtualFileExports: Record<string, unknown> | undefined
   let err: unknown
   if (viteDevServer) {
-    try {
-      virtualFileExports = await (viteDevServer.environments.ssr as RunnableDevEnvironment).runner.import(
-        'virtual:vike:entry:server',
-      )
-    } catch (err_) {
-      hasError = true
-      err = err_
+    if (viteDevServer.environments) {
+      // Vite 6
+      try {
+        virtualFileExports = await (viteDevServer.environments.ssr as RunnableDevEnvironment).runner.import(
+          'virtual:vike:entry:server',
+        )
+      } catch (err_) {
+        hasError = true
+        err = err_
+      }
+    } else {
+      // Vite 5
+      try {
+        virtualFileExports = await viteDevServer.ssrLoadModule('virtual:vike:entry:server')
+      } catch (err_) {
+        hasError = true
+        err = err_
+      }
     }
   } else {
     try {
