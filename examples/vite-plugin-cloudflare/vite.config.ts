@@ -12,23 +12,4 @@ export default defineConfig({
     }),
     vike(),
   ],
-  /*
-  ssr: {
-    external: [
-      '@brillout/vite-plugin-server-entry',
-      '@brillout/vite-plugin-server-entry/runtime',
-      '@brillout/vite-plugin-server-entry/plugin',
-    ]
-  },
-  */
-  optimizeDeps: {
-    exclude: [
-      'vike',
-      'vike/server',
-      '@brillout/vite-plugin-server-entry',
-      '@brillout/vite-plugin-server-entry/runtime',
-      '@brillout/vite-plugin-server-entry/plugin',
-      '../../../../../../../../../examples/react-full/dist/server/entry.mjs',
-    ],
-  },
 })
