@@ -38,8 +38,7 @@ function collectCss(mod: ModuleNode, styleUrls: Set<string>, visitedModules: Set
   if (!mod.url) return
   if (visitedModules.has(mod.url)) return
   visitedModules.add(mod.url)
-  assert(mod.id)
-  if (isVirtualFileIdEntry(mod.id)) return // virtual:vike:entry:server dependency list includes all pages
+  if (mod.id && isVirtualFileIdEntry(mod.id)) return // virtual:vike:entry:server dependency list includes all pages
   if (isStyle(mod) && (!importer || !isStyle(importer))) {
     if (mod.url.startsWith('/')) {
       styleUrls.add(mod.url)
