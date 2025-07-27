@@ -108,6 +108,8 @@ async function retrievePageAssetsDev(
     globalObject.resolveClientEntriesDev!(clientEntry, viteDevServer),
   )
   const assetUrls = await retrieveAssetsDev(clientDependencies, viteDevServer)
+  console.log('clientDependencies', clientDependencies)
+  console.log('assetUrls', assetUrls)
   return { clientEntriesSrc, assetUrls }
 }
 function retrievePageAssetsProd(
