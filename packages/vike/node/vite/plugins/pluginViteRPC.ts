@@ -42,7 +42,7 @@ function pluginViteRPC(): Plugin {
       if (id !== runtimeFileWithDynamicImport) return
       if (!this.environment) return
       if (isRunnableDevEnvironment(this.environment)) return
-      if (!(this.environment as RunnableDevEnvironment).runner) return
+      if ((this.environment as RunnableDevEnvironment).runner) return
       // TODO/now use magic-string
       const codeMod = code.replaceAll('__VIKE__DYNAMIC_IMPORT', 'import')
       return codeMod
