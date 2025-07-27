@@ -1,6 +1,6 @@
 export { retrieveAssetsDev }
 
-import { assert, styleFileRE } from '../../utils.js'
+import { assert, isVirtualFileId, styleFileRE } from '../../utils.js'
 import type { ModuleNode, ViteDevServer } from 'vite'
 import type { ClientDependency } from '../../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 
@@ -36,6 +36,8 @@ function collectCss(mod: ModuleNode, styleUrls: Set<string>, visitedModules: Set
   if (!mod.url) return
   if (visitedModules.has(mod.url)) return
   visitedModules.add(mod.url)
+  assert(mod.id)
+  if (isVirtualFileId(mod.id)) return // virtual:vike:entry:server dependency list may include all pages
   if (isStyle(mod) && (!importer || !isStyle(importer))) {
     if (mod.url.startsWith('/')) {
       styleUrls.add(mod.url)
