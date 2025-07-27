@@ -11,6 +11,7 @@ async function retrieveAssetsDev(clientDependencies: ClientDependency[], viteDev
     clientDependencies.map(async ({ id }) => {
       if (id.startsWith('@@vike')) return // vike doesn't have any CSS
       assert(id)
+      assert(!isVirtualFileIdEntry(id))
       const { moduleGraph } = viteDevServer
       const [_, graphId] = await moduleGraph.resolveUrl(id)
       assert(graphId, { id })
