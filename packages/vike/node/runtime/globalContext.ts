@@ -469,6 +469,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
 
     // Vite 5
     try {
+      // TODO/now use virtualFileIdEntryServer
       virtualFileExports = await viteDevServer.ssrLoadModule('virtual:vike:entry:server')
     } catch (err_) {
       hasError = true
