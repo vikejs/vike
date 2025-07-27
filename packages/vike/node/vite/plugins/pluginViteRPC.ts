@@ -33,11 +33,9 @@ declare global {
 }
 function pluginViteRPC(): Plugin {
   const runtimeFileWithDynamicImport = requireResolveVikeDistFile('dist/esm/node/runtime/globalContext.js')
-  let viteDevServer: ViteDevServer
   return {
     name: 'vike:pluginViteRPC',
-    configureServer(viteDevServer_) {
-      viteDevServer = viteDevServer_
+    configureServer(viteDevServer) {
       createViteRPC(viteDevServer, getViteRpcFunctions)
     },
     transform(code, id) {
