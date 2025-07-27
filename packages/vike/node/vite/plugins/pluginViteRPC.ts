@@ -2,14 +2,13 @@ export { pluginViteRPC }
 
 // TODO/now: rename file
 
+import type { RunnableDevEnvironment, Plugin, ViteDevServer, ResolvedConfig } from 'vite'
 import {
+  createViteRPC,
+  assertIsNotProductionRuntime,
+  requireResolveVikeDistFile,
   isRunnableDevEnvironment,
-  type RunnableDevEnvironment,
-  type Plugin,
-  type ViteDevServer,
-  type ResolvedConfig,
-} from 'vite'
-import { createViteRPC, assertIsNotProductionRuntime, requireResolveVikeDistFile } from '../utils.js'
+} from '../utils.js'
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { resolveClientEntriesDev } from '../shared/resolveClientEntriesDev.js'
 import { retrieveAssetsDev } from '../../runtime/renderPage/getPageAssets/retrieveAssetsDev.js'
@@ -51,9 +50,7 @@ function pluginViteRPC(): Plugin {
     transform(code, id) {
       if (!config._isDev) return
       if (id !== runtimeFileWithDynamicImport) return
-      if (!this.environment) return
-      // if (isRunnableDevEnvironment(this.environment)) return
-      if ((this.environment as RunnableDevEnvironment).runner) return
+      if (isRunnableDevEnvironment(this.environment)) return
       // TODO/now use magic-string
       const codeMod = code.replaceAll('__VIKE__DYNAMIC_IMPORT', 'import')
       return codeMod
