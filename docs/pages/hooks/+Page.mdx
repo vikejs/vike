@@ -1,11 +1,10 @@
 import { Link } from '@brillout/docpress'
 import { TextEnv, TextEnv2 } from './TextEnv'
-import { UiFrameworkExtension } from '../../components'
+import { UiFrameworkExtension, FrameworkToggle, EnvironmentToggle } from '../../components'
 
 List of built-in hooks. (You can <Link href="/meta">create your own</Link>.)
 
 See also: <Link href="/settings" />.
-
 
 ## Basics
 
@@ -22,11 +21,187 @@ See also: <Link href="/settings" />.
 - [**`onBeforePrerenderStart()`**](/onBeforePrerenderStart): <TextEnv>server</TextEnv> Called before the whole <Link href="/pre-rendering">Pre-rendering</Link> process starts.
 - [**`onPrerenderStart()`**](/onPrerenderStart): <TextEnv>server</TextEnv> Global hook called when <Link href="/pre-rendering">Pre-rendering</Link> starts.
 
-**`vike-vue`**
+## Framework-specific hooks
 
-- [**`onCreateApp()`**](/onCreateApp): <TextEnv>server & client</TextEnv> <Link href="/vike-vue">`vike-vue`</Link> Called after creating Vue's `app` instance.
+<FrameworkToggle>
+  {(framework) => {
+    if (framework === 'react') {
+      return (
+        <div>
+          <h4>React hooks (vike-react)</h4>
+          <ul>
+            <li>
+              <strong>
+                <Link href="/onBeforeRenderHtml">`onBeforeRenderHtml()`</Link>
+              </strong>
+              : <TextEnv>server</TextEnv> Called at the beginning of <Link href="/onRenderHtml">`onRenderHtml()`</Link>.
+            </li>
+            <li>
+              <strong>
+                <Link href="/onAfterRenderHtml">`onAfterRenderHtml()`</Link>
+              </strong>
+              : <TextEnv>server</TextEnv> Called at the end of <Link href="/onRenderHtml">`onRenderHtml()`</Link>.
+            </li>
+            <li>
+              <strong>
+                <Link href="/onBeforeRenderClient">`onBeforeRenderClient()`</Link>
+              </strong>
+              : <TextEnv>client</TextEnv> Called at the beginning of{' '}
+              <Link href="/onRenderClient">`onRenderClient()`</Link>.
+            </li>
+            <li>
+              <strong>
+                <Link href="/onAfterRenderClient">`onAfterRenderClient()`</Link>
+              </strong>
+              : <TextEnv>client</TextEnv> Called at the end of <Link href="/onRenderClient">`onRenderClient()`</Link>.
+            </li>
+          </ul>
+          <p>React-specific functionality is primarily handled through these hooks and the core Vike hooks.</p>
+        </div>
+      )
+    } else if (framework === 'vue') {
+      return (
+        <div>
+          <h4>Vue hooks (vike-vue)</h4>
+          <ul>
+            <li>
+              <strong>
+                <Link href="/onCreateApp">`onCreateApp()`</Link>
+              </strong>
+              : <TextEnv>server & client</TextEnv> Called after creating Vue's `app` instance.
+            </li>
+            <li>
+              <strong>
+                <Link href="/onBeforeRenderHtml">`onBeforeRenderHtml()`</Link>
+              </strong>
+              : <TextEnv>server</TextEnv> Called at the beginning of <Link href="/onRenderHtml">`onRenderHtml()`</Link>.
+            </li>
+            <li>
+              <strong>
+                <Link href="/onAfterRenderHtml">`onAfterRenderHtml()`</Link>
+              </strong>
+              : <TextEnv>server</TextEnv> Called at the end of <Link href="/onRenderHtml">`onRenderHtml()`</Link>.
+            </li>
+            <li>
+              <strong>
+                <Link href="/onBeforeRenderClient">`onBeforeRenderClient()`</Link>
+              </strong>
+              : <TextEnv>client</TextEnv> Called at the beginning of{' '}
+              <Link href="/onRenderClient">`onRenderClient()`</Link>.
+            </li>
+            <li>
+              <strong>
+                <Link href="/onAfterRenderClient">`onAfterRenderClient()`</Link>
+              </strong>
+              : <TextEnv>client</TextEnv> Called at the end of <Link href="/onRenderClient">`onRenderClient()`</Link>.
+            </li>
+          </ul>
+        </div>
+      )
+    } else {
+      return (
+        <div>
+          <h4>Solid hooks (vike-solid)</h4>
+          <ul>
+            <li>
+              <strong>
+                <Link href="/onAfterRenderClient">`onAfterRenderClient()`</Link>
+              </strong>
+              : <TextEnv>client</TextEnv> Called at the end of <Link href="/onRenderClient">`onRenderClient()`</Link>.
+            </li>
+          </ul>
+          <p>
+            Solid-specific functionality is primarily handled through the core hooks and this additional client-side
+            hook.
+          </p>
+        </div>
+      )
+    }
+  }}
+</FrameworkToggle>
 
+## Data hook environments
 
+<EnvironmentToggle>
+  {(environment) => {
+    if (environment === 'server') {
+      return (
+        <div>
+          <h4>Server-only data fetching</h4>
+          <p>
+            Use <code>+data.server.js</code> to fetch data only on the server-side:
+          </p>
+          <pre>
+            <code>{`// /pages/movies/+data.server.js
+export async function data() {
+  const response = await fetch('https://api.example.com/movies')
+  const movies = await response.json()
+  return { movies }
+}`}</code>
+          </pre>
+          <p>
+            <strong>Benefits:</strong>
+          </p>
+          <ul>
+            <li>Direct database access</li>
+            <li>Better security (API keys not exposed to client)</li>
+            <li>Faster initial page load</li>
+          </ul>
+        </div>
+      )
+    } else if (environment === 'client') {
+      return (
+        <div>
+          <h4>Client-only data fetching</h4>
+          <p>
+            Use <code>+data.client.js</code> to fetch data only on the client-side:
+          </p>
+          <pre>
+            <code>{`// /pages/movies/+data.client.js
+export async function data() {
+  const response = await fetch('/api/movies')
+  const movies = await response.json()
+  return { movies }
+}`}</code>
+          </pre>
+          <p>
+            <strong>Benefits:</strong>
+          </p>
+          <ul>
+            <li>Real-time data updates</li>
+            <li>Reduced server load</li>
+            <li>Better for dynamic content</li>
+          </ul>
+        </div>
+      )
+    } else {
+      return (
+        <div>
+          <h4>Shared data fetching (isomorphic)</h4>
+          <p>
+            Use <code>+data.js</code> to fetch data on both server and client:
+          </p>
+          <pre>
+            <code>{`// /pages/movies/+data.js
+export async function data() {
+  const response = await fetch('https://api.example.com/movies')
+  const movies = await response.json()
+  return { movies }
+}`}</code>
+          </pre>
+          <p>
+            <strong>Benefits:</strong>
+          </p>
+          <ul>
+            <li>Same code runs everywhere</li>
+            <li>Automatic SSR support</li>
+            <li>Consistent data fetching logic</li>
+          </ul>
+        </div>
+      )
+    }
+  }}
+</EnvironmentToggle>
 
 ## Advanced
 
@@ -42,18 +217,17 @@ See also: <Link href="/settings" />.
 - [**`onBeforeRenderHtml()`**](/onBeforeRenderHtml): <TextEnv>server</TextEnv> Called at the beginning of <Link href="/onRenderHtml">`onRenderHtml()`</Link>.
 - [**`onAfterRenderHtml()`**](/onAfterRenderHtml): <TextEnv>server</TextEnv> Called at the end of <Link href="/onRenderHtml">`onRenderHtml()`</Link>.
 
-
-
 ## Upcoming
 
 Potentially upcoming hooks:
+
 - [New hook `onLog()`](https://github.com/vikejs/vike/issues/1438)
 - [New hook `onRenderContent()`: generate non-HTML files with arbitrary content](https://github.com/vikejs/vike/issues/1525)
-
 
 ## Lifecycle
 
 > See also:
+>
 > - <Link href="/pageContext#lifecycle" />
 > - <Link href="/globalContext#lifecycle" />
 
@@ -71,8 +245,9 @@ If you didn't change the environment of `data()` nor `onBeforeRender()`:
 
 1. <TextEnv2>server</TextEnv2> <Link href="/renderPage">`renderPage()`</Link>
 1. <TextEnv2>server</TextEnv2> <Link href="/onBeforeRoute">`onBeforeRoute()`</Link>
-1. <TextEnv2>server</TextEnv2> <Link href="/routing">Routing</Link>
-   > The routing executes your <Link href="/route-function">Route Functions</Link> (of all your pages).
+1. <TextEnv2>server</TextEnv2> <Link href="/routing">Routing</Link>> The routing executes your <Link href="/route-function">
+     Route Functions
+   </Link> (of all your pages).
 1. <TextEnv2>server</TextEnv2> <Link href="/onCreatePageContext">`onCreatePageContext()`</Link>
 1. <TextEnv2>server</TextEnv2> <Link href="/guard">`guard()`</Link>
 1. <TextEnv2>server</TextEnv2> <Link href="/data">`data()`</Link>
@@ -91,8 +266,8 @@ If you didn't change the environment of `data()` nor `onBeforeRender()`:
 1. <TextEnv2>client</TextEnv2> <Link href="/onCreatePageContext">`onCreatePageContext()`</Link>
 1. <TextEnv2>server</TextEnv2> <Link href="/onBeforeRoute">`onBeforeRoute()`</Link>
 1. <TextEnv2>server</TextEnv2> <Link href="/routing">Routing</Link>
-1. <TextEnv2>server</TextEnv2> <Link href="/onCreatePageContext">`onCreatePageContext()`</Link>
-   > The routing is executed twice: once for the client and once for the server.
+1. <TextEnv2>server</TextEnv2> <Link href="/onCreatePageContext">`onCreatePageContext()`</Link>> The routing is executed
+   twice: once for the client and once for the server.
 1. <TextEnv2>server</TextEnv2> <Link href="/guard">`guard()`</Link>
 1. <TextEnv2>server</TextEnv2> <Link href="/data">`data()`</Link>
 1. <TextEnv2>server</TextEnv2> <Link href="/onBeforeRender">`onBeforeRender()`</Link>
@@ -102,14 +277,15 @@ If you didn't change the environment of `data()` nor `onBeforeRender()`:
 
 ### Client-side only `data()`
 
-If you <Link href="/data#environment">configured `data()`</Link> and <Link href="/onBeforeRender#environment">`onBeforeRender()` as well</Link> to run *only* on the client-side:
+If you <Link href="/data#environment">configured `data()`</Link> and <Link href="/onBeforeRender#environment">`onBeforeRender()` as well</Link> to run _only_ on the client-side:
 
 **First render**
 
 1. <TextEnv2>server</TextEnv2> <Link href="/renderPage">`renderPage()`</Link>
 1. <TextEnv2>server</TextEnv2> <Link href="/onBeforeRoute">`onBeforeRoute()`</Link>
-1. <TextEnv2>server</TextEnv2> <Link href="/routing">Routing</Link>
-   > The routing executes your <Link href="/route-function">Route Functions</Link> (of all your pages).
+1. <TextEnv2>server</TextEnv2> <Link href="/routing">Routing</Link>> The routing executes your <Link href="/route-function">
+     Route Functions
+   </Link> (of all your pages).
 1. <TextEnv2>server</TextEnv2> <Link href="/onCreatePageContext">`onCreatePageContext()`</Link>
 1. <TextEnv2>server</TextEnv2> <Link href="/onRenderHtml">`onRenderHtml()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onCreatePageContext">`onCreatePageContext()`</Link>
@@ -133,8 +309,7 @@ If you <Link href="/data#environment">configured `data()`</Link> and <Link href=
 1. <TextEnv2>client</TextEnv2> <Link href="/onRenderClient">`onRenderClient()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onPageTransitionEnd">`onPageTransitionEnd()`</Link>
 
-
 ## See also
 
- - <Link href="/settings" />
- - <Link href="/config" />
+- <Link href="/settings" />
+- <Link href="/config" />
