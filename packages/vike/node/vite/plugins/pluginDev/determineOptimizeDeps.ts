@@ -45,6 +45,7 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
     debug('config.optimizeDeps', {
       'config.optimizeDeps.entries': config.optimizeDeps.entries,
       'config.optimizeDeps.include': config.optimizeDeps.include,
+      'config.optimizeDeps.exclude': config.optimizeDeps.exclude,
     })
 }
 
