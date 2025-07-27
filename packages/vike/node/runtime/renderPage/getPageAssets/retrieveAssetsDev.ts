@@ -1,8 +1,9 @@
 export { retrieveAssetsDev }
 
-import { assert, isVirtualFileId, styleFileRE } from '../../utils.js'
+import { assert, styleFileRE } from '../../utils.js'
 import type { ModuleNode, ViteDevServer } from 'vite'
 import type { ClientDependency } from '../../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
+import { isVirtualFileIdEntry } from '../../../shared/virtualFiles/virtualFileEntry.js'
 
 async function retrieveAssetsDev(clientDependencies: ClientDependency[], viteDevServer: ViteDevServer) {
   const assetUrls = new Set<string>()
@@ -37,7 +38,7 @@ function collectCss(mod: ModuleNode, styleUrls: Set<string>, visitedModules: Set
   if (visitedModules.has(mod.url)) return
   visitedModules.add(mod.url)
   assert(mod.id)
-  if (isVirtualFileId(mod.id)) return // virtual:vike:entry:server dependency list includes all pages
+  if (isVirtualFileIdEntry(mod.id)) return // virtual:vike:entry:server dependency list includes all pages
   if (isStyle(mod) && (!importer || !isStyle(importer))) {
     if (mod.url.startsWith('/')) {
       styleUrls.add(mod.url)
