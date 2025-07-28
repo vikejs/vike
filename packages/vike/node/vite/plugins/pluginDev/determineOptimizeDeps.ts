@@ -34,6 +34,25 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
   // @ts-ignore — Vite doesn't seem to support ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
   config.ssr.optimizeDeps.entries = unique([...entriesServer, ...normalizeEntries(config.ssr.optimizeDeps.entries)])
 
+  // Workaround until https://github.com/vitejs/vite-plugin-react/issues/650
+  if (
+    config.optimizeDeps.include.includes('react/jsx-dev-runtime') &&
+    !config.ssr.optimizeDeps.include.includes('react/jsx-dev-runtime')
+  ) {
+    config.ssr.optimizeDeps.include.push('react/jsx-dev-runtime')
+  }
+
+  for (const envName in config.environments) {
+    const env = config.environments[envName]!
+    let optimizeDeps = env.consumer === 'server' ? config.ssr.optimizeDeps : config.optimizeDeps
+    if (env.optimizeDeps !== optimizeDeps) {
+      env.optimizeDeps.include = unique([...optimizeDeps.include!, ...normalizeInclude(env.optimizeDeps.include)])
+      // @ts-ignore — Vite doesn't seem to support ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
+      env.optimizeDeps.entries = unique([...optimizeDeps.entries!, ...normalizeEntries(env.optimizeDeps.entries)])
+      env.optimizeDeps.exclude = unique([...optimizeDeps.exclude!, ...normalizeInclude(env.optimizeDeps.exclude)])
+    }
+  }
+
   if (debug.isActivated)
     debug('optimizeDeps', {
       'config.optimizeDeps.entries': config.optimizeDeps.entries,
