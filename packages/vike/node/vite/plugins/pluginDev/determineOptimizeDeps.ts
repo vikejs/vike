@@ -80,13 +80,11 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
     }
   }
   const isRelevant = (e: string, server: boolean, configEnv?: ConfigEnvInternal, definedAt?: DefinedAtFilePath) => {
-    let yes: boolean
-    if (!server) {
-      yes = !configEnv || !!configEnv.client
+    if (server) {
+      if (!configEnv || !configEnv.server) return false
     } else {
-      yes = !!configEnv && !!configEnv.server
+      if (configEnv && !configEnv.client) return false
     }
-    if (!yes) return false
     return !isExcluded(e, server, definedAt)
   }
   const isExcluded = (e: string, server: boolean, definedAt?: DefinedAtFilePath) => {
