@@ -57,6 +57,14 @@ function tolerateError({ logSource, logText, testInfo }) {
   return (
     [
       /*
+      ```console
+      [19:47:21.367][/][npm run dev][stderr] The latest compatibility date supported by the installed Cloudflare Workers Runtime is "2025-07-12",
+but you've requested "2025-07-18". Falling back to "2025-07-12"...
+      ```
+      */
+      'compatibility date supported by the installed Cloudflare',
+
+      /*
       ```shell
       [12:12:28.624][/examples/cloudflare-workers-vue][npm run preview][stderr] ▲ [WARNING] "import.meta" is not available with the "iife" output format and will be empty [empty-import-meta]
 
