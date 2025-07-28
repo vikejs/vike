@@ -1,12 +1,14 @@
 {
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && pnpm run build:worker",
+    "build:worker": "build-worker --entry worker/index.ts --out dist/worker/index.js",
     "preview": "pnpm run build && vite preview",
     "deploy": "pnpm run build && wrangler deploy",
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
+    "build-worker": "^0.3.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "vike": "0.4.236",
