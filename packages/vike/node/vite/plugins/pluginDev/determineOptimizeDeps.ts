@@ -31,26 +31,24 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
   config.optimizeDeps.include = unique([...includeClient, ...normalizeInclude(config.optimizeDeps.include)])
   config.optimizeDeps.entries = unique([...entriesClient, ...normalizeEntries(config.optimizeDeps.entries)])
 
-  // TO-DO/eventually: use a check that is agnostic to @cloudflare/vite-plugin
-  const isNotRunnable = config.environments?.ssr?.resolve.conditions.includes('workerd')
-  if (isNotRunnable) {
+  if (isNotRunnable(config.environments.ssr)) {
     config.ssr.optimizeDeps.include = unique([...includeServer, ...normalizeInclude(config.ssr.optimizeDeps.include)])
     // @ts-ignore — Vite doesn't seem to support ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
     config.ssr.optimizeDeps.entries = unique([...entriesServer, ...normalizeEntries(config.ssr.optimizeDeps.entries)])
-  }
 
-  // Workaround until https://github.com/vitejs/vite-plugin-react/issues/650
-  if (
-    config.optimizeDeps.include.includes('react/jsx-dev-runtime') &&
-    !config.ssr.optimizeDeps.include.includes('react/jsx-dev-runtime')
-  ) {
-    config.ssr.optimizeDeps.include.push('react/jsx-dev-runtime')
+    // Workaround until https://github.com/vitejs/vite-plugin-react/issues/650
+    if (
+      config.optimizeDeps.include.includes('react/jsx-dev-runtime') &&
+      !config.ssr.optimizeDeps.include.includes('react/jsx-dev-runtime')
+    ) {
+      config.ssr.optimizeDeps.include.push('react/jsx-dev-runtime')
+    }
   }
 
   for (const envName in config.environments) {
     const env = config.environments[envName]!
     let optimizeDeps = env.consumer === 'server' ? config.ssr.optimizeDeps : config.optimizeDeps
-    if (env.optimizeDeps !== optimizeDeps) {
+    if (isNotRunnable(env) && env.optimizeDeps !== optimizeDeps) {
       env.optimizeDeps.include = unique([...optimizeDeps.include!, ...normalizeInclude(env.optimizeDeps.include)])
       // @ts-ignore — Vite doesn't seem to support ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
       env.optimizeDeps.entries = unique([...optimizeDeps.entries!, ...normalizeEntries(env.optimizeDeps.entries)])
@@ -198,4 +196,9 @@ function normalizeInclude(include: string[] | undefined) {
   if (isArray(include)) return include
   if (include === undefined) return []
   assert(false)
+}
+
+function isNotRunnable(environment: ResolvedConfig['environments'][string] | undefined) {
+  // TO-DO/eventually: use a check that is agnostic to @cloudflare/vite-plugin
+  return environment?.resolve.conditions.includes('workerd')
 }
