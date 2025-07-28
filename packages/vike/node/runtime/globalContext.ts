@@ -215,11 +215,9 @@ async function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
   globalObject.viteDevServer = viteDevServer
   globalObject.viteDevServerPromiseResolve(viteDevServer)
 
-  /*
   const { success } = await updateUserFiles()
   if (!success) return
   assertGlobalContextIsDefined()
-  */
 }
 function setGlobalContext_viteConfig(viteConfig: ResolvedConfig, viteConfigRuntime: ViteConfigRuntime): void {
   if (globalObject.viteConfig) return
@@ -456,7 +454,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
   let hasError = false
   let virtualFileExports: Record<string, unknown> | undefined
   let err: unknown
-  if (viteDevServer && (false as boolean)) {
+  if (viteDevServer) {
     /* We don't use runner.import() yet, because as of vite@7.0.6 (July 2025) runner.import() unexpectedly invalidates the module graph, which is a unexpected behavior that doesn't happen with ssrLoadModule()
     // Vite 6
     try {
