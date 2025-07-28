@@ -32,7 +32,7 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
   config.optimizeDeps.entries = unique([...entriesClient, ...normalizeEntries(config.optimizeDeps.entries)])
 
   // TO-DO/eventually: use a check that is agnostic to @cloudflare/vite-plugin
-  const isNotRunnable = config.environments.ssr?.resolve.conditions.includes('workerd')
+  const isNotRunnable = config.environments?.ssr?.resolve.conditions.includes('workerd')
   if (isNotRunnable) {
     config.ssr.optimizeDeps.include = unique([...includeServer, ...normalizeInclude(config.ssr.optimizeDeps.include)])
     // @ts-ignore — Vite doesn't seem to support ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
