@@ -116,14 +116,20 @@ function testRunClassic(
     isCJS,
     skipAboutPage,
     skipViteEcosystemCi,
-  }: { isCJS?: true; skipAboutPage?: true; skipViteEcosystemCi?: true } = {},
+    tolerateError,
+  }: {
+    isCJS?: true
+    skipAboutPage?: true
+    skipViteEcosystemCi?: true
+    tolerateError?: NonNullable<Parameters<typeof run>[1]>['tolerateError']
+  } = {},
 ) {
   if (skipViteEcosystemCi && process.env.VITE_ECOSYSTEM_CI) {
     skip("SKIPPED: skipping this test from Vite's ecosystem CI, see https://github.com/vikejs/vike/pull/2220")
     return
   }
 
-  run(cmd)
+  run(cmd, { tolerateError })
 
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
