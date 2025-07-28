@@ -80,10 +80,9 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
     }
   }
   const isExcluded = (e: string, server: boolean, definedAt?: DefinedAtFilePath) => {
-    if (!definedAt) return false
     const exclude = server ? config.ssr.optimizeDeps.exclude : config.optimizeDeps.exclude
     if (!exclude) return false
-    if (definedAt.importPathAbsolute) {
+    if (definedAt?.importPathAbsolute) {
       const npmPackageName = getNpmPackageName(definedAt.importPathAbsolute)
       if (npmPackageName && exclude.includes(npmPackageName)) return true
     }
