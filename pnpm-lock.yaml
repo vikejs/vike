@@ -581,7 +581,7 @@ importers:
     devDependencies:
       '@cloudflare/vite-plugin':
         specifier: https://pkg.pr.new/@cloudflare/vite-plugin@31c94b7
-        version: https://pkg.pr.new/@cloudflare/vite-plugin@31c94b7(rollup@4.43.0)(vite@7.0.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))(workerd@1.20250712.0)(wrangler@https://pkg.pr.new/wrangler@31c94b7)
+        version: https://pkg.pr.new/@cloudflare/vite-plugin@31c94b7(rollup@4.43.0)(vite@7.0.6(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))(workerd@1.20250712.0)(wrangler@https://pkg.pr.new/wrangler@31c94b7)
       '@types/react':
         specifier: ^19.1.8
         version: 19.1.8
@@ -590,13 +590,13 @@ importers:
         version: 19.1.6(@types/react@19.1.8)
       '@vitejs/plugin-react':
         specifier: ^4.6.0
-        version: 4.7.0(vite@7.0.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
+        version: 4.7.0(vite@7.0.6(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
       vite:
         specifier: ^7.0.4
-        version: 7.0.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
+        version: 7.0.6(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
       wrangler:
         specifier: https://pkg.pr.new/wrangler@31c94b7
         version: https://pkg.pr.new/wrangler@31c94b7
@@ -8537,7 +8537,7 @@ snapshots:
     optionalDependencies:
       workerd: 1.20250712.0
 
-  '@cloudflare/vite-plugin@https://pkg.pr.new/@cloudflare/vite-plugin@31c94b7(rollup@4.43.0)(vite@7.0.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))(workerd@1.20250712.0)(wrangler@https://pkg.pr.new/wrangler@31c94b7)':
+  '@cloudflare/vite-plugin@https://pkg.pr.new/@cloudflare/vite-plugin@31c94b7(rollup@4.43.0)(vite@7.0.6(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))(workerd@1.20250712.0)(wrangler@https://pkg.pr.new/wrangler@31c94b7)':
     dependencies:
       '@cloudflare/unenv-preset': https://pkg.pr.new/cloudflare/workers-sdk/@cloudflare/unenv-preset@31c94b7(unenv@2.0.0-rc.17)(workerd@1.20250712.0)
       '@mjackson/node-fetch-server': 0.6.1
@@ -8547,7 +8547,7 @@ snapshots:
       picocolors: 1.1.1
       tinyglobby: 0.2.14
       unenv: 2.0.0-rc.17
-      vite: 7.0.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
+      vite: 7.0.6(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
       wrangler: https://pkg.pr.new/wrangler@31c94b7
       ws: 8.18.0
     transitivePeerDependencies:
@@ -10184,7 +10184,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-react@4.7.0(vite@7.0.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))':
+  '@vitejs/plugin-react@4.7.0(vite@7.0.6(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))':
     dependencies:
       '@babel/core': 7.28.0
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.0)
@@ -10192,7 +10192,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.27
       '@types/babel__core': 7.20.5
       react-refresh: 0.17.0
-      vite: 7.0.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
+      vite: 7.0.6(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
     transitivePeerDependencies:
       - supports-color
 
