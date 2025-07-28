@@ -4,11 +4,12 @@ import type { ResolvedConfig } from 'vite'
 import { findPageFiles } from '../../shared/findPageFiles.js'
 import {
   assert,
-  assertFilePathAbsoluteFilesystem,
   assertIsImportPathNpmPackage,
   createDebugger,
   getNpmPackageName,
   isArray,
+  isFilePathAbsoluteFilesystem,
+  isVirtualFileId,
   unique,
 } from '../../utils.js'
 import { getVikeConfigInternal, isOverridden } from '../../shared/resolveVikeConfigInternal.js'
@@ -55,7 +56,7 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
   const addEntry = (e: string, configEnv?: ConfigEnvInternal, definedAt?: DefinedAtFilePath) => {
     assert(e)
     // optimizeDeps.entries expects filesystem absolute paths
-    assertFilePathAbsoluteFilesystem(e)
+    assert(isVirtualFileId(e) || isFilePathAbsoluteFilesystem(e))
 
     if ((!configEnv || configEnv.client) && !isExcluded(e, false, definedAt)) {
       entriesClient.push(e)

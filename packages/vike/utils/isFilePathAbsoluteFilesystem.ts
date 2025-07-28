@@ -1,4 +1,5 @@
 export { assertFilePathAbsoluteFilesystem }
+export { isFilePathAbsoluteFilesystem }
 export { isFilePathAbsolute }
 
 import path from 'node:path'
@@ -22,7 +23,7 @@ function assertFilePathAbsoluteFilesystem(filePath: string) {
   //   - But that's okay because the assertion will eventually fail for Windows users.
   //   - On Linux there doesn't seem to be a way to distinguish between an absolute path starting from the filesystem root or starting from the user root directory, see comment at isFilePathAbsoluteFilesystem()
   assertPosixPath(filePath)
-  assert(isFilePathAbsoluteFilesystem(filePath))
+  assert(isFilePathAbsoluteFilesystem(filePath), { filePath })
 }
 
 /**
