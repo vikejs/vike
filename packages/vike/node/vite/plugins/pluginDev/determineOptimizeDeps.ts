@@ -12,7 +12,7 @@ import {
 } from '../../utils.js'
 import { getVikeConfigInternal, isOverridden } from '../../shared/resolveVikeConfigInternal.js'
 import { analyzeClientEntries } from '../pluginBuild/pluginBuildConfig.js'
-import type { PageConfigBuildTime } from '../../../../types/PageConfig.js'
+import type { ConfigEnvInternal, PageConfigBuildTime } from '../../../../types/PageConfig.js'
 import {
   virtualFileIdEntryClientCR,
   virtualFileIdEntryClientSR,
@@ -51,22 +51,24 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
   let includeClient: string[] = []
   let includeServer: string[] = []
 
-  const addEntry = (e: string, server: boolean) => {
+  const addEntry = (e: string, configEnv?: ConfigEnvInternal) => {
     assert(e)
-    if (server) {
-      entriesServer.push(e)
-    } else {
+    if (!configEnv || configEnv.client) {
       entriesClient.push(e)
     }
+    if (configEnv && configEnv.server) {
+      entriesServer.push(e)
+    }
   }
-  const addInclude = (e: string, server: boolean) => {
+  const addInclude = (e: string, configEnv?: ConfigEnvInternal) => {
     assert(e)
     // Shouldn't be a path alias, as path aliases would need to be added to config.optimizeDeps.entries instead of config.optimizeDeps.include
     assertIsImportPathNpmPackage(e)
-    if (server) {
-      includeServer.push(e)
-    } else {
+    if (!configEnv || configEnv.client) {
       includeClient.push(e)
+    }
+    if (configEnv && configEnv.server) {
+      includeServer.push(e)
     }
   }
 
@@ -89,10 +91,10 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
 
             if (definedAt.filePathAbsoluteUserRootDir !== null) {
               // Vite expects entries to be filesystem absolute paths (surprisingly so).
-              addEntry(definedAt.filePathAbsoluteFilesystem, !configEnv.client)
+              addEntry(definedAt.filePathAbsoluteFilesystem, configEnv)
             } else {
               // Adding definedAtFilePath.filePathAbsoluteFilesystem doesn't work for npm packages, I guess because of Vite's config.server.fs.allow
-              addInclude(definedAt.importPathAbsolute, !configEnv.client)
+              addInclude(definedAt.importPathAbsolute, configEnv)
             }
           })
       })
@@ -106,7 +108,7 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
     pageFiles.forEach((filePathAbsoluteUserRootDir) => {
       const entry = getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir })
       const { filePathAbsoluteFilesystem } = entry
-      addEntry(filePathAbsoluteFilesystem, false)
+      addEntry(filePathAbsoluteFilesystem)
     })
   }
 
@@ -117,9 +119,9 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
   //     - If we do, then we need to adjust include/entries (maybe by making include === entries -> will Vite complain?)
   {
     const { hasClientRouting, hasServerRouting, clientEntries } = analyzeClientEntries(pageConfigs, config)
-    Object.values(clientEntries).forEach((e) => addEntry(e, false))
-    if (hasClientRouting) addEntry(virtualFileIdEntryClientCR, false)
-    if (hasServerRouting) addEntry(virtualFileIdEntryClientSR, false)
+    Object.values(clientEntries).forEach((e) => addEntry(e))
+    if (hasClientRouting) addEntry(virtualFileIdEntryClientCR)
+    if (hasServerRouting) addEntry(virtualFileIdEntryClientSR)
   }
 
   entriesClient = unique(entriesClient)
