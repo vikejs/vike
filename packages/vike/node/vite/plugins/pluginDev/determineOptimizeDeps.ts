@@ -12,7 +12,7 @@ import {
 } from '../../utils.js'
 import { getVikeConfigInternal, isOverridden } from '../../shared/resolveVikeConfigInternal.js'
 import { analyzeClientEntries } from '../pluginBuild/pluginBuildConfig.js'
-import type { ConfigEnvInternal, PageConfigBuildTime } from '../../../../types/PageConfig.js'
+import type { ConfigEnvInternal, DefinedAtFilePath, PageConfigBuildTime } from '../../../../types/PageConfig.js'
 import {
   virtualFileIdEntryClientCR,
   virtualFileIdEntryClientSR,
@@ -51,25 +51,35 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
   let includeClient: string[] = []
   let includeServer: string[] = []
 
-  const addEntry = (e: string, configEnv?: ConfigEnvInternal) => {
+  const addEntry = (e: string, configEnv?: ConfigEnvInternal, definedAt?: DefinedAtFilePath) => {
     assert(e)
-    if (!configEnv || configEnv.client) {
+    if ((!configEnv || configEnv.client) && !isExcluded(e, false, definedAt)) {
       entriesClient.push(e)
     }
-    if (configEnv && configEnv.server) {
+    if (configEnv && configEnv.server && !isExcluded(e, true, definedAt)) {
       entriesServer.push(e)
     }
   }
-  const addInclude = (e: string, configEnv?: ConfigEnvInternal) => {
+  const addInclude = (e: string, configEnv?: ConfigEnvInternal, definedAt?: DefinedAtFilePath) => {
     assert(e)
     // Shouldn't be a path alias, as path aliases would need to be added to config.optimizeDeps.entries instead of config.optimizeDeps.include
     assertIsImportPathNpmPackage(e)
-    if (!configEnv || configEnv.client) {
+    if ((!configEnv || configEnv.client) && !isExcluded(e, false, definedAt)) {
       includeClient.push(e)
     }
-    if (configEnv && configEnv.server) {
+    if (configEnv && configEnv.server && !isExcluded(e, true, definedAt)) {
       includeServer.push(e)
     }
+  }
+  const isExcluded = (e: string, server: boolean, definedAt?: DefinedAtFilePath) => {
+    if (!definedAt) return false
+    const exclude = server ? config.ssr.optimizeDeps.exclude : config.optimizeDeps.exclude
+    if (!exclude) return false
+    if (definedAt.importPathAbsolute) {
+      const npmPackageName = getNpmPackageName(definedAt.importPathAbsolute)
+      if (npmPackageName && exclude.includes(npmPackageName)) return true
+    }
+    return exclude.includes(e)
   }
 
   // V1 design
@@ -84,17 +94,12 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
 
             if (definedAt.definedBy) return
 
-            if (definedAt.importPathAbsolute) {
-              const npmPackageName = getNpmPackageName(definedAt.importPathAbsolute)
-              if (npmPackageName && config.optimizeDeps.exclude?.includes(npmPackageName)) return
-            }
-
             if (definedAt.filePathAbsoluteUserRootDir !== null) {
               // Vite expects entries to be filesystem absolute paths (surprisingly so).
-              addEntry(definedAt.filePathAbsoluteFilesystem, configEnv)
+              addEntry(definedAt.filePathAbsoluteFilesystem, configEnv, definedAt)
             } else {
               // Adding definedAtFilePath.filePathAbsoluteFilesystem doesn't work for npm packages, I guess because of Vite's config.server.fs.allow
-              addInclude(definedAt.importPathAbsolute, configEnv)
+              addInclude(definedAt.importPathAbsolute, configEnv, definedAt)
             }
           })
       })
