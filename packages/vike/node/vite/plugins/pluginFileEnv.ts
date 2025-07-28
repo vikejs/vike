@@ -29,11 +29,7 @@ function pluginFileEnv(): Plugin {
   let viteDevServer: ViteDevServer | undefined
   return {
     name: 'vike:pluginFileEnv',
-    resolveId() {
-      console.log('resolveId()')
-    },
     load(id, options) {
-      console.log('loda()', id)
       // In build, we use generateBundle() instead of the load() hook. Using load() works for dynamic imports in dev thanks to Vite's lazy transpiling, but it doesn't work in build because Rollup transpiles any dynamically imported module even if it's never actually imported.
       if (!viteDevServer) return
       if (!isV1Design()) return
