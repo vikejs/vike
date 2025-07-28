@@ -37,7 +37,9 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
       'config.optimizeDeps.entries': config.optimizeDeps.entries,
       'config.optimizeDeps.include': config.optimizeDeps.include,
       'config.optimizeDeps.exclude': config.optimizeDeps.exclude,
-      // 'config.ssr.optimizeDeps.entries': config.ssr.optimizeDeps.entries,
+      /* See comment above
+      'config.ssr.optimizeDeps.entries': config.ssr.optimizeDeps.entries,
+      //*/
       'config.ssr.optimizeDeps.include': config.ssr.optimizeDeps.include,
       'config.ssr.optimizeDeps.exclude': config.ssr.optimizeDeps.exclude,
     })
