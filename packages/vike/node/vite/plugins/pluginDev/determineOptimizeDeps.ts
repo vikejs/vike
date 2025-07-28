@@ -8,11 +8,13 @@ import {
   createDebugger,
   getNpmPackageName,
   isArray,
+  isFilePathAbsoluteFilesystem,
+  isVirtualFileId,
   unique,
 } from '../../utils.js'
 import { getVikeConfigInternal, isOverridden } from '../../shared/resolveVikeConfigInternal.js'
 import { analyzeClientEntries } from '../pluginBuild/pluginBuildConfig.js'
-import type { PageConfigBuildTime } from '../../../../types/PageConfig.js'
+import type { ConfigEnvInternal, DefinedAtFilePath, PageConfigBuildTime } from '../../../../types/PageConfig.js'
 import {
   virtualFileIdEntryClientCR,
   virtualFileIdEntryClientSR,
@@ -25,42 +27,74 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
   const vikeConfig = await getVikeConfigInternal()
   const { _pageConfigs: pageConfigs } = vikeConfig
 
-  const { entries, include } = await getPageDeps(config, pageConfigs)
-  {
-    // This actually doesn't work: Vite's dep optimizer doesn't seem to be able to crawl virtual files.
-    //  - Should we make it work? E.g. by creating a temporary file at node_modules/.vike/virtualFiles.js
-    //  - Or should we remove it? And make sure getPageDeps() also works for aliased import paths
-    //    - If we do, then we need to adjust include/entries (maybe by making include === entries -> will Vite complain?)
-    const entriesVirtualFiles = getVirtualFiles(config, pageConfigs)
-    entries.push(...entriesVirtualFiles)
-  }
-
-  /* Other Vite plugins may populate optimizeDeps, e.g. Cypress: https://github.com/vikejs/vike/issues/386
-  assert(config.optimizeDeps.entries === undefined)
-  */
-  config.optimizeDeps.include = [...include, ...normalizeInclude(config.optimizeDeps.include)]
-  config.optimizeDeps.entries = [...entries, ...normalizeEntries(config.optimizeDeps.entries)]
+  const { entriesClient, entriesServer, includeClient, includeServer } = await getPageDeps(config, pageConfigs)
+  config.optimizeDeps.include = [...includeClient, ...normalizeInclude(config.optimizeDeps.include)]
+  config.optimizeDeps.entries = [...entriesClient, ...normalizeEntries(config.optimizeDeps.entries)]
+  config.ssr.optimizeDeps.include = [...includeServer, ...normalizeInclude(config.ssr.optimizeDeps.include)]
+  // @ts-ignore — Vite doesn't seem to support ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
+  config.ssr.optimizeDeps.entries = [...entriesServer, ...normalizeEntries(config.ssr.optimizeDeps.entries)]
 
   if (debug.isActivated)
-    debug('config.optimizeDeps', {
+    debug('optimizeDeps', {
       'config.optimizeDeps.entries': config.optimizeDeps.entries,
       'config.optimizeDeps.include': config.optimizeDeps.include,
+      'config.optimizeDeps.exclude': config.optimizeDeps.exclude,
+      /* Vite doesn't seem to support ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
+      'config.ssr.optimizeDeps.entries': config.ssr.optimizeDeps.entries,
+      //*/
+      'config.ssr.optimizeDeps.include': config.ssr.optimizeDeps.include,
+      'config.ssr.optimizeDeps.exclude': config.ssr.optimizeDeps.exclude,
     })
 }
 
 async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildTime[]) {
-  let entries: string[] = []
-  let include: string[] = []
+  let entriesClient: string[] = []
+  let entriesServer: string[] = []
+  let includeClient: string[] = []
+  let includeServer: string[] = []
 
-  const addEntry = (e: string) => {
+  const addEntry = (e: string, configEnv?: ConfigEnvInternal, definedAt?: DefinedAtFilePath) => {
     assert(e)
-    entries.push(e)
+    // optimizeDeps.entries expects filesystem absolute paths
+    assert(isVirtualFileId(e) || isFilePathAbsoluteFilesystem(e))
+
+    if (isRelevant(e, false, configEnv, definedAt)) {
+      entriesClient.push(e)
+    }
+    if (isRelevant(e, true, configEnv, definedAt)) {
+      entriesServer.push(e)
+    }
   }
-  const addInclude = (e: string) => {
+  const addInclude = (e: string, configEnv?: ConfigEnvInternal, definedAt?: DefinedAtFilePath) => {
     assert(e)
-    // Shouldn't be a path alias, as path aliases would need to be added to config.optimizeDeps.entries instead of config.optimizeDeps.include
+    // optimizeDeps.include expects npm packages
+    assert(!e.startsWith('/'))
+    // Shouldn't be a path alias, as path aliases would need to be added to optimizeDeps.entries instead of optimizeDeps.include
     assertIsImportPathNpmPackage(e)
-    include.push(e)
+
+    if (isRelevant(e, false, configEnv, definedAt)) {
+      includeClient.push(e)
+    }
+    if (isRelevant(e, true, configEnv, definedAt)) {
+      includeServer.push(e)
+    }
+  }
+  const isRelevant = (e: string, server: boolean, configEnv?: ConfigEnvInternal, definedAt?: DefinedAtFilePath) => {
+    if (server) {
+      if (!configEnv || !configEnv.server) return false
+    } else {
+      if (configEnv && !configEnv.client) return false
+    }
+    return !isExcluded(e, server, definedAt)
+  }
+  const isExcluded = (e: string, server: boolean, definedAt?: DefinedAtFilePath) => {
+    const exclude = server ? config.ssr.optimizeDeps.exclude : config.optimizeDeps.exclude
+    if (!exclude) return false
+    if (definedAt?.importPathAbsolute) {
+      const npmPackageName = getNpmPackageName(definedAt.importPathAbsolute)
+      if (npmPackageName && exclude.includes(npmPackageName)) return true
+    }
+    return exclude.includes(e)
   }
 
   // V1 design
@@ -73,20 +107,22 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
             if (!configValueSource.valueIsLoadedWithImport && !configValueSource.valueIsFilePath) return
             const { definedAt, configEnv } = configValueSource
 
-            if (!configEnv.client) return
             if (definedAt.definedBy) return
 
-            if (definedAt.importPathAbsolute) {
-              const npmPackageName = getNpmPackageName(definedAt.importPathAbsolute)
-              if (npmPackageName && config.optimizeDeps.exclude?.includes(npmPackageName)) return
-            }
-
             if (definedAt.filePathAbsoluteUserRootDir !== null) {
-              // Vite expects entries to be filesystem absolute paths (surprisingly so).
-              addEntry(definedAt.filePathAbsoluteFilesystem)
+              addEntry(
+                // optimizeDeps.entries expects filesystem absolute paths
+                definedAt.filePathAbsoluteFilesystem,
+                configEnv,
+                definedAt,
+              )
             } else {
-              // Adding definedAtFilePath.filePathAbsoluteFilesystem doesn't work for npm packages, I guess because of Vite's config.server.fs.allow
-              addInclude(definedAt.importPathAbsolute)
+              addInclude(
+                // optimizeDeps.include expects npm packages
+                definedAt.importPathAbsolute,
+                configEnv,
+                definedAt,
+              )
             }
           })
       })
@@ -104,19 +140,28 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
     })
   }
 
-  entries = unique(entries)
-  include = unique(include)
-  return { entries, include }
-}
+  // Add virtual files.
+  // - This doesn't work: Vite's dep optimizer doesn't seem to be able to crawl virtual files.
+  //   - Should we make it work? E.g. by creating a temporary file at node_modules/.vike/virtualFiles.js
+  //   - Or should we remove it? And make sure getPageDeps() also works for aliased import paths
+  //     - If we do, then we need to adjust include/entries (maybe by making include === entries -> will Vite complain?)
+  {
+    const { hasClientRouting, hasServerRouting, clientEntries } = analyzeClientEntries(pageConfigs, config)
+    Object.values(clientEntries).forEach((e) => addEntry(e))
+    if (hasClientRouting) addEntry(virtualFileIdEntryClientCR)
+    if (hasServerRouting) addEntry(virtualFileIdEntryClientSR)
+  }
 
-function getVirtualFiles(config: ResolvedConfig, pageConfigs: PageConfigBuildTime[]): string[] {
-  const { hasClientRouting, hasServerRouting, clientEntries } = analyzeClientEntries(pageConfigs, config)
-
-  const entriesVirtualFiles = Object.values(clientEntries)
-  if (hasClientRouting) entriesVirtualFiles.push(virtualFileIdEntryClientCR)
-  if (hasServerRouting) entriesVirtualFiles.push(virtualFileIdEntryClientSR)
-
-  return entriesVirtualFiles
+  entriesClient = unique(entriesClient)
+  entriesServer = unique(entriesServer)
+  includeClient = unique(includeClient)
+  includeServer = unique(includeServer)
+  return {
+    entriesClient,
+    entriesServer,
+    includeClient,
+    includeServer,
+  }
 }
 
 function normalizeEntries(entries: string | string[] | undefined) {

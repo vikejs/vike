@@ -1,4 +1,5 @@
 export { assertFilePathAbsoluteFilesystem }
+export { isFilePathAbsoluteFilesystem }
 export { isFilePathAbsolute }
 
 import path from 'node:path'
