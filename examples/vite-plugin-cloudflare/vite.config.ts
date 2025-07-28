@@ -12,4 +12,21 @@ export default defineConfig({
     }),
     vike(),
   ],
+  optimizeDeps: {
+    esbuildOptions: {
+      plugins: [
+        {
+          name: 'TTTTTTTT',
+          setup(build) {
+            // https://github.com/brillout/esbuild-playground
+            build.onResolve({ filter: /.*/ }, async ({ path }) => {
+              console.log(path)
+              if (!path.includes('vite-plugin-server-entry')) return
+              return { path, external: true }
+            })
+          },
+        },
+      ],
+    },
+  },
 })
