@@ -10,7 +10,6 @@ import {
   isArray,
   isFilePathAbsoluteFilesystem,
   isVirtualFileId,
-  unique,
 } from '../../utils.js'
 import { getVikeConfigInternal, isOverridden } from '../../shared/resolveVikeConfigInternal.js'
 import { analyzeClientEntries } from '../pluginBuild/pluginBuildConfig.js'
@@ -28,15 +27,15 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
   const { _pageConfigs: pageConfigs } = vikeConfig
 
   const { entriesClient, entriesServer, includeClient, includeServer } = await getPageDeps(config, pageConfigs)
-  config.optimizeDeps.include = unique([...includeClient, ...normalizeInclude(config.optimizeDeps.include)])
-  config.optimizeDeps.entries = unique([...entriesClient, ...normalizeEntries(config.optimizeDeps.entries)])
+  config.optimizeDeps.include = add(config.optimizeDeps.include, includeClient)
+  config.optimizeDeps.entries = add(config.optimizeDeps.entries, entriesClient)
 
   // TO-DO/eventually: use a check that is agnostic to @cloudflare/vite-plugin
   const isNotRunnable = config.environments?.ssr?.resolve.conditions.includes('workerd')
   if (isNotRunnable) {
-    config.ssr.optimizeDeps.include = unique([...includeServer, ...normalizeInclude(config.ssr.optimizeDeps.include)])
+    config.ssr.optimizeDeps.include = add(config.ssr.optimizeDeps.include, includeServer)
     // @ts-ignore — Vite doesn't seem to support ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
-    config.ssr.optimizeDeps.entries = unique([...entriesServer, ...normalizeEntries(config.ssr.optimizeDeps.entries)])
+    config.ssr.optimizeDeps.entries = add(config.ssr.optimizeDeps.entries, entriesServer)
   }
 
   if (debug.isActivated)
@@ -169,14 +168,14 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
   }
 }
 
-function normalizeEntries(entries: string | string[] | undefined) {
-  if (isArray(entries)) return entries
-  if (typeof entries === 'string') return [entries]
-  if (entries === undefined) return []
-  assert(false)
+function add(input: string | string[] | undefined, listAddendum: string[]): string[] {
+  const list = !input ? [] : isArray(input) ? unique(input) : [input]
+  listAddendum.forEach((e) => {
+    if (!list.includes(e)) list.push(e)
+  })
+  return list
 }
-function normalizeInclude(include: string[] | undefined) {
-  if (isArray(include)) return include
-  if (include === undefined) return []
-  assert(false)
+function unique<T>(arr: T[]): T[] {
+  const arrUnique = Array.from(new Set(arr))
+  return arr.length !== arrUnique.length ? arrUnique : arr
 }
