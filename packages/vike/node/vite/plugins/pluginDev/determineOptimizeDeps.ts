@@ -31,7 +31,7 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
   config.optimizeDeps.include = unique([...includeClient, ...normalizeInclude(config.optimizeDeps.include)])
   config.optimizeDeps.entries = unique([...entriesClient, ...normalizeEntries(config.optimizeDeps.entries)])
 
-  if (isNotRunnable(config.environments.ssr)) {
+  if (isNotRunnable(config.environments?.ssr)) {
     config.ssr.optimizeDeps.include = unique([...includeServer, ...normalizeInclude(config.ssr.optimizeDeps.include)])
     // @ts-ignore — Vite doesn't seem to support ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
     config.ssr.optimizeDeps.entries = unique([...entriesServer, ...normalizeEntries(config.ssr.optimizeDeps.entries)])
