@@ -12,4 +12,9 @@ export default defineConfig({
     }),
     vike(),
   ],
+  ssr: {
+    optimizeDeps: {
+      exclude: ['@brillout/vite-plugin-server-entry'],
+    },
+  },
 })
