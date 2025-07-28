@@ -4,6 +4,7 @@ import type { Sponsor } from './Sponsors'
 import contraLogo from './sponsorsLogo/contra.svg'
 import optimizersLogo from './sponsorsLogo/optimizers.svg'
 import sourcegraphLogo from './sponsorsLogo/sourcegraph.svg'
+import betssonGroupLogo from './sponsorsLogo/betsson-group.svg'
 import burdaforwardLogo from './sponsorsLogo/burdaforward.png'
 import ecosiaLogo from './sponsorsLogo/ecosia.svg'
 import inlangLogo from './sponsorsLogo/inlang.png'
@@ -27,6 +28,17 @@ const sponsorsList: Sponsor[] = [
     github: 'sourcegraph',
   },
   {
+    companyName: 'Betsson Group',
+    companyLogo: betssonGroupLogo,
+    companyLogoStyle: {
+      position: 'relative',
+      top: 4,
+    },
+    website: 'https://www.betssongroup.com/',
+    github: 'betssongroup',
+  },
+  {
+    isPast: true,
     companyName: 'BurdaForward',
     companyLogo: burdaforwardLogo,
     website: 'https://www.burda-forward.de',
