@@ -69,7 +69,7 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
     assert(e)
     // optimizeDeps.include expects npm packages
     assert(!e.startsWith('/'))
-    // Shouldn't be a path alias, as path aliases would need to be added to config.optimizeDeps.entries instead of config.optimizeDeps.include
+    // Shouldn't be a path alias, as path aliases would need to be added to optimizeDeps.entries instead of optimizeDeps.include
     assertIsImportPathNpmPackage(e)
 
     if (isRelevant(e, false, configEnv, definedAt)) {
