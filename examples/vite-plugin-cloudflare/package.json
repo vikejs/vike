@@ -18,7 +18,7 @@
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.6.0",
     "typescript": "^5.8.3",
-    "vite": "^7.0.4",
+    "vite": "^7.0.6",
     "wrangler": "https://pkg.pr.new/wrangler@31c94b7"
   },
   "type": "module"

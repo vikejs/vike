@@ -595,7 +595,7 @@ importers:
         specifier: ^5.8.3
         version: 5.8.3
       vite:
-        specifier: ^7.0.4
+        specifier: ^7.0.6
         version: 7.0.6(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
       wrangler:
         specifier: https://pkg.pr.new/wrangler@31c94b7
