@@ -4,6 +4,7 @@ import type { ResolvedConfig } from 'vite'
 import { findPageFiles } from '../../shared/findPageFiles.js'
 import {
   assert,
+  assertFilePathAbsoluteFilesystem,
   assertIsImportPathNpmPackage,
   createDebugger,
   getNpmPackageName,
@@ -53,6 +54,9 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
 
   const addEntry = (e: string, configEnv?: ConfigEnvInternal, definedAt?: DefinedAtFilePath) => {
     assert(e)
+    // optimizeDeps.entries expects filesystem absolute paths
+    assertFilePathAbsoluteFilesystem(e)
+
     if ((!configEnv || configEnv.client) && !isExcluded(e, false, definedAt)) {
       entriesClient.push(e)
     }
@@ -62,8 +66,11 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
   }
   const addInclude = (e: string, configEnv?: ConfigEnvInternal, definedAt?: DefinedAtFilePath) => {
     assert(e)
+    // optimizeDeps.include expects npm packages
+    assert(!e.startsWith('/'))
     // Shouldn't be a path alias, as path aliases would need to be added to config.optimizeDeps.entries instead of config.optimizeDeps.include
     assertIsImportPathNpmPackage(e)
+
     if ((!configEnv || configEnv.client) && !isExcluded(e, false, definedAt)) {
       includeClient.push(e)
     }
@@ -95,11 +102,19 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
             if (definedAt.definedBy) return
 
             if (definedAt.filePathAbsoluteUserRootDir !== null) {
-              // Vite expects entries to be filesystem absolute paths (surprisingly so).
-              addEntry(definedAt.filePathAbsoluteFilesystem, configEnv, definedAt)
+              addEntry(
+                // optimizeDeps.entries expects filesystem absolute paths
+                definedAt.filePathAbsoluteFilesystem,
+                configEnv,
+                definedAt,
+              )
             } else {
-              // Adding definedAtFilePath.filePathAbsoluteFilesystem doesn't work for npm packages, I guess because of Vite's config.server.fs.allow
-              addInclude(definedAt.importPathAbsolute, configEnv, definedAt)
+              addInclude(
+                // optimizeDeps.include expects npm packages
+                definedAt.importPathAbsolute,
+                configEnv,
+                definedAt,
+              )
             }
           })
       })
