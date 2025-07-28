@@ -25,9 +25,9 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
   const vikeConfig = await getVikeConfigInternal()
   const { _pageConfigs: pageConfigs } = vikeConfig
 
-  const { entries, include } = await getPageDeps(config, pageConfigs)
-  config.optimizeDeps.include = [...include, ...normalizeInclude(config.optimizeDeps.include)]
-  config.optimizeDeps.entries = [...entries, ...normalizeEntries(config.optimizeDeps.entries)]
+  const { entriesClient, includeClient } = await getPageDeps(config, pageConfigs)
+  config.optimizeDeps.include = [...includeClient, ...normalizeInclude(config.optimizeDeps.include)]
+  config.optimizeDeps.entries = [...entriesClient, ...normalizeEntries(config.optimizeDeps.entries)]
 
   if (debug.isActivated)
     debug('config.optimizeDeps', {
@@ -38,18 +38,18 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
 }
 
 async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildTime[]) {
-  let entries: string[] = []
-  let include: string[] = []
+  let entriesClient: string[] = []
+  let includeClient: string[] = []
 
   const addEntry = (e: string) => {
     assert(e)
-    entries.push(e)
+    entriesClient.push(e)
   }
   const addInclude = (e: string) => {
     assert(e)
     // Shouldn't be a path alias, as path aliases would need to be added to config.optimizeDeps.entries instead of config.optimizeDeps.include
     assertIsImportPathNpmPackage(e)
-    include.push(e)
+    includeClient.push(e)
   }
 
   // V1 design
@@ -103,12 +103,12 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
     const entriesVirtualFiles = Object.values(clientEntries)
     if (hasClientRouting) entriesVirtualFiles.push(virtualFileIdEntryClientCR)
     if (hasServerRouting) entriesVirtualFiles.push(virtualFileIdEntryClientSR)
-    entries.push(...entriesVirtualFiles)
+    entriesClient.push(...entriesVirtualFiles)
   }
 
-  entries = unique(entries)
-  include = unique(include)
-  return { entries, include }
+  entriesClient = unique(entriesClient)
+  includeClient = unique(includeClient)
+  return { entriesClient, includeClient }
 }
 
 function normalizeEntries(entries: string | string[] | undefined) {
