@@ -30,28 +30,15 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
   config.optimizeDeps.include = add(config.optimizeDeps.include, includeClient)
   config.optimizeDeps.entries = add(config.optimizeDeps.entries, entriesClient)
 
-  if (isNotRunnable(config.environments?.ssr)) {
-    config.ssr.optimizeDeps.include = add(config.ssr.optimizeDeps.include, includeServer)
-    // @ts-ignore — Vite doesn't seem to support ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
-    config.ssr.optimizeDeps.entries = add(config.ssr.optimizeDeps.entries, entriesServer)
-
-    // Workaround until https://github.com/vitejs/vite-plugin-react/issues/650
-    if (
-      config.optimizeDeps.include.includes('react/jsx-dev-runtime') &&
-      !config.ssr.optimizeDeps.include.includes('react/jsx-dev-runtime')
-    ) {
-      config.ssr.optimizeDeps.include.push('react/jsx-dev-runtime')
-    }
-  }
+  // Workaround until https://github.com/vitejs/vite-plugin-react/issues/650
+  includeServer.push('react/jsx-dev-runtime')
 
   for (const envName in config.environments) {
     const env = config.environments[envName]!
-    let optimizeDeps = env.consumer === 'server' ? config.ssr.optimizeDeps : config.optimizeDeps
-    if (isNotRunnable(env) && env.optimizeDeps !== optimizeDeps) {
-      env.optimizeDeps.include = add(env.optimizeDeps.include, optimizeDeps.include!)
+    if (isNotRunnable(env)) {
+      env.optimizeDeps.include = add(env.optimizeDeps.include, includeServer)
       // @ts-ignore — Vite doesn't seem to support ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
-      env.optimizeDeps.entries = add(env.optimizeDeps.entries, optimizeDeps.entries!)
-      env.optimizeDeps.exclude = add(env.optimizeDeps.exclude, optimizeDeps.exclude!)
+      env.optimizeDeps.entries = add(env.optimizeDeps.entries, entriesServer)
     }
   }
 
