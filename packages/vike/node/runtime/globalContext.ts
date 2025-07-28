@@ -47,6 +47,7 @@ import {
   checkType,
   PROJECT_VERSION,
   getViteRPC,
+  isRunnableDevEnvironment,
 } from './utils.js'
 import type { ViteManifest } from '../../types/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer, RunnableDevEnvironment } from 'vite'
@@ -215,9 +216,11 @@ async function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
   globalObject.viteDevServer = viteDevServer
   globalObject.viteDevServerPromiseResolve(viteDevServer)
 
-  const { success } = await updateUserFiles()
-  if (!success) return
-  assertGlobalContextIsDefined()
+  if (isRunnable(viteDevServer)) {
+    const { success } = await updateUserFiles()
+    if (!success) return
+    assertGlobalContextIsDefined()
+  }
 }
 function setGlobalContext_viteConfig(viteConfig: ResolvedConfig, viteConfigRuntime: ViteConfigRuntime): void {
   if (globalObject.viteConfig) return
@@ -455,6 +458,8 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
   let virtualFileExports: Record<string, unknown> | undefined
   let err: unknown
   if (viteDevServer) {
+    assert(isRunnable(viteDevServer))
+
     /* We don't use runner.import() yet, because as of vite@7.0.6 (July 2025) runner.import() unexpectedly invalidates the module graph, which is a unexpected behavior that doesn't happen with ssrLoadModule()
     // Vite 6
     try {
@@ -671,4 +676,8 @@ function isProcessSharedWithVite() {
     globalObject.isProcessSharedWithVite = ret
   }
   return ret
+}
+
+function isRunnable(viteDevServer: ViteDevServer) {
+  return isRunnableDevEnvironment(viteDevServer.environments?.ssr)
 }
