@@ -58,10 +58,10 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
     // optimizeDeps.entries expects filesystem absolute paths
     assert(isVirtualFileId(e) || isFilePathAbsoluteFilesystem(e))
 
-    if ((!configEnv || configEnv.client) && !isExcluded(e, false, definedAt)) {
+    if (isRelevant(e, false, configEnv, definedAt)) {
       entriesClient.push(e)
     }
-    if (configEnv && configEnv.server && !isExcluded(e, true, definedAt)) {
+    if (isRelevant(e, true, configEnv, definedAt)) {
       entriesServer.push(e)
     }
   }
@@ -72,12 +72,22 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
     // Shouldn't be a path alias, as path aliases would need to be added to config.optimizeDeps.entries instead of config.optimizeDeps.include
     assertIsImportPathNpmPackage(e)
 
-    if ((!configEnv || configEnv.client) && !isExcluded(e, false, definedAt)) {
+    if (isRelevant(e, false, configEnv, definedAt)) {
       includeClient.push(e)
     }
-    if (configEnv && configEnv.server && !isExcluded(e, true, definedAt)) {
+    if (isRelevant(e, true, configEnv, definedAt)) {
       includeServer.push(e)
     }
+  }
+  const isRelevant = (e: string, server: boolean, configEnv?: ConfigEnvInternal, definedAt?: DefinedAtFilePath) => {
+    let yes: boolean
+    if (!server) {
+      yes = !configEnv || !!configEnv.client
+    } else {
+      yes = !!configEnv && !!configEnv.server
+    }
+    if (!yes) return false
+    return !isExcluded(e, server, definedAt)
   }
   const isExcluded = (e: string, server: boolean, definedAt?: DefinedAtFilePath) => {
     const exclude = server ? config.ssr.optimizeDeps.exclude : config.optimizeDeps.exclude
