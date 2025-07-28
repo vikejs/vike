@@ -840,8 +840,8 @@ importers:
         specifier: ^0.2.10
         version: 0.2.13
       vite:
-        specifier: ^7.0.6
-        version: 7.0.6(@types/node@20.17.17)(terser@5.38.1)(tsx@4.19.4)
+        specifier: '>=5.1.0'
+        version: 6.3.5(@types/node@20.17.17)(terser@5.38.1)(tsx@4.19.4)
     devDependencies:
       '@brillout/release-me':
         specifier: ^0.4.2
@@ -13813,20 +13813,6 @@ snapshots:
       tinyglobby: 0.2.14
     optionalDependencies:
       '@types/node': 22.15.30
-      fsevents: 2.3.3
-      terser: 5.38.1
-      tsx: 4.19.4
-
-  vite@7.0.6(@types/node@20.17.17)(terser@5.38.1)(tsx@4.19.4):
-    dependencies:
-      esbuild: 0.25.4
-      fdir: 6.4.6(picomatch@4.0.3)
-      picomatch: 4.0.3
-      postcss: 8.5.6
-      rollup: 4.43.0
-      tinyglobby: 0.2.14
-    optionalDependencies:
-      '@types/node': 20.17.17
       fsevents: 2.3.3
       terser: 5.38.1
       tsx: 4.19.4
