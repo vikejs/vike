@@ -2,7 +2,7 @@ export { isRunnableDevEnvironment }
 
 import type { Environment, RunnableDevEnvironment } from 'vite'
 
-// We use this instead of `limport { isRunnableDevEnvironment } from 'vite'` because:
+// We use this instead of `import { isRunnableDevEnvironment } from 'vite'` because:
 // - Vite's isRunnableDevEnvironment() isn't reliable in monorepos where multiple Vite instances can be used simultaneously (it's `instanceof RunnableDevEnvironment` check fails)
 // - We can use it Vike's server production runtime without having to load the 'vite' package
 function isRunnableDevEnvironment(environment: Environment | undefined): environment is RunnableDevEnvironment {
