@@ -39,7 +39,7 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
       'config.optimizeDeps.entries': config.optimizeDeps.entries,
       'config.optimizeDeps.include': config.optimizeDeps.include,
       'config.optimizeDeps.exclude': config.optimizeDeps.exclude,
-      /* See comment above
+      /* Vite doesn't seem to support ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
       'config.ssr.optimizeDeps.entries': config.ssr.optimizeDeps.entries,
       //*/
       'config.ssr.optimizeDeps.include': config.ssr.optimizeDeps.include,
