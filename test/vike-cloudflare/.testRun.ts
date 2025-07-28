@@ -1,10 +1,18 @@
-import { expect, fetchHtml, getServerUrl, page, run, test } from '@brillout/test-e2e'
+import { expect, fetchHtml, getServerUrl, page, run, skip, test } from '@brillout/test-e2e'
 
 export { testRun }
 
 let isProd: boolean
 
 function testRun(cmd: `pnpm run ${'dev' | 'preview'}${string}`, options?: Parameters<typeof run>[1]) {
+  if (process.env.VITE_ECOSYSTEM_CI) {
+    // https://github.com/solidjs/vite-plugin-solid/pull/218
+    skip(
+      "SKIPPED: vite-plugin-solid currently doesn't work with Vite 7, see https://github.com/solidjs/vite-plugin-solid/pull/218",
+    )
+    return
+  }
+
   run(cmd, options)
 
   isProd = !cmd.startsWith('pnpm run dev')

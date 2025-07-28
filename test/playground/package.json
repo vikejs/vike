@@ -19,7 +19,7 @@
     "typescript": "^5.8.3",
     "vike": "0.4.236",
     "vike-react": "^0.6.5",
-    "vite": "^7.0.5"
+    "vite": "^7.0.6"
   },
   "type": "module"
 }

@@ -132,7 +132,7 @@
     "@brillout/json-serializer": "^0.5.16",
     "@brillout/picocolors": "^1.0.26",
     "@brillout/require-shim": "^0.1.2",
-    "@brillout/vite-plugin-server-entry": "^0.7.8",
+    "@brillout/vite-plugin-server-entry": "^0.7.10",
     "acorn": "^8.0.0",
     "cac": "^6.0.0",
     "es-module-lexer": "^1.0.0",
@@ -263,7 +263,7 @@
     "react-streaming": "^0.4.3",
     "rimraf": "^5.0.5",
     "typescript": "^5.8.3",
-    "vite": "^6.3.2"
+    "vite": "^7.0.6"
   },
   "scripts": {
     "dev": "tsc --watch",

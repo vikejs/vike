@@ -451,7 +451,7 @@ importers:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.5.1
-        version: 4.5.1(vite@7.0.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
+        version: 4.5.1(vite@7.0.6(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -841,8 +841,8 @@ importers:
         specifier: ^0.1.2
         version: 0.1.2
       '@brillout/vite-plugin-server-entry':
-        specifier: ^0.7.8
-        version: 0.7.9
+        specifier: ^0.7.10
+        version: 0.7.10
       acorn:
         specifier: ^8.0.0
         version: 8.14.1
@@ -1551,7 +1551,7 @@ importers:
         version: 19.1.6(@types/react@19.1.6)
       '@vitejs/plugin-react':
         specifier: ^4.5.1
-        version: 4.5.1(vite@7.0.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
+        version: 4.5.1(vite@7.0.6(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))
       cross-fetch:
         specifier: ^4.1.0
         version: 4.1.0
@@ -1574,8 +1574,8 @@ importers:
         specifier: ^0.6.5
         version: 0.6.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
       vite:
-        specifier: ^7.0.5
-        version: 7.0.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
+        specifier: ^7.0.6
+        version: 7.0.6(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
 
   test/preload:
     dependencies:
@@ -2374,6 +2374,9 @@ packages:
 
   '@brillout/vite-plugin-server-entry@0.5.8':
     resolution: {integrity: sha512-Ug8CobLfbKJf3udr9v2PkzRkr69gn1jdE9k7u8n2Gizs/FhEM9Uudn3AsXXAikb4PONSGTqgj3CnEVchziDJQg==}
+
+  '@brillout/vite-plugin-server-entry@0.7.10':
+    resolution: {integrity: sha512-TgFQbFcvzTkfXcT4wquYtLN4SRFyziVCZV/0Gvs2jBPixJ2g0skVOb4L8x/zRgrqOT5/nqPeg9HRuhmFXWubLQ==}
 
   '@brillout/vite-plugin-server-entry@0.7.9':
     resolution: {integrity: sha512-mJrUakPTj8Zf3Pm4beKmHowfozHOLS/deMqheYYIlqK8FSR4Hd3vMeFQBL/rxLLd+svIlW/j2K3M2SVPDmvX7A==}
@@ -6589,6 +6592,10 @@ packages:
     resolution: {integrity: sha512-M7BAV6Rlcy5u+m6oPhAPFgJTzAioX/6B0DxyvDlo9l8+T3nLKbrczg2WLUyzd45L8RqfUMyGPzekbMvX2Ldkwg==}
     engines: {node: '>=12'}
 
+  picomatch@4.0.3:
+    resolution: {integrity: sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q==}
+    engines: {node: '>=12'}
+
   pinia@2.3.1:
     resolution: {integrity: sha512-khUlZSwt9xXCaTbbxFYBKDc/bWAGWJjOgvxETwkTN7KRm66EeT1ZdZj6i2ceh9sP2Pzqsbc704r2yngBrxBVug==}
     peerDependencies:
@@ -7679,8 +7686,8 @@ packages:
       yaml:
         optional: true
 
-  vite@7.0.5:
-    resolution: {integrity: sha512-1mncVwJxy2C9ThLwz0+2GKZyEXuC3MyWtAAlNftlZZXZDP3AJt5FmwcMit/IGGaNZ8ZOB2BNO/HFUB+CpN0NQw==}
+  vite@7.0.6:
+    resolution: {integrity: sha512-MHFiOENNBd+Bd9uvc8GEsIzdkn1JxMmEeYX35tI3fv0sJBUTfW5tQsoaOwuY4KhBI09A3dUJ/DXf2yxPVPUceg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
@@ -8487,6 +8494,11 @@ snapshots:
       typescript: 5.8.3
 
   '@brillout/vite-plugin-server-entry@0.5.8':
+    dependencies:
+      '@brillout/import': 0.2.6
+      '@brillout/picocolors': 1.0.28
+
+  '@brillout/vite-plugin-server-entry@0.7.10':
     dependencies:
       '@brillout/import': 0.2.6
       '@brillout/picocolors': 1.0.28
@@ -10160,7 +10172,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-react@4.5.1(vite@7.0.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))':
+  '@vitejs/plugin-react@4.5.1(vite@7.0.6(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4))':
     dependencies:
       '@babel/core': 7.26.10
       '@babel/plugin-transform-react-jsx-self': 7.25.9(@babel/core@7.26.10)
@@ -10168,7 +10180,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.9
       '@types/babel__core': 7.20.5
       react-refresh: 0.17.0
-      vite: 7.0.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
+      vite: 7.0.6(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4)
     transitivePeerDependencies:
       - supports-color
 
@@ -11675,9 +11687,9 @@ snapshots:
     optionalDependencies:
       picomatch: 4.0.2
 
-  fdir@6.4.6(picomatch@4.0.2):
+  fdir@6.4.6(picomatch@4.0.3):
     optionalDependencies:
-      picomatch: 4.0.2
+      picomatch: 4.0.3
 
   fetch-blob@3.2.0:
     dependencies:
@@ -13044,6 +13056,8 @@ snapshots:
 
   picomatch@4.0.2: {}
 
+  picomatch@4.0.3: {}
+
   pinia@2.3.1(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3)):
     dependencies:
       '@vue/devtools-api': 6.6.4
@@ -13856,8 +13870,8 @@ snapshots:
 
   tinyglobby@0.2.14:
     dependencies:
-      fdir: 6.4.6(picomatch@4.0.2)
-      picomatch: 4.0.2
+      fdir: 6.4.6(picomatch@4.0.3)
+      picomatch: 4.0.3
 
   tinypool@1.0.2: {}
 
@@ -14356,11 +14370,11 @@ snapshots:
       terser: 5.38.1
       tsx: 4.19.4
 
-  vite@7.0.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4):
+  vite@7.0.6(@types/node@22.15.30)(terser@5.38.1)(tsx@4.19.4):
     dependencies:
       esbuild: 0.25.4
-      fdir: 6.4.6(picomatch@4.0.2)
-      picomatch: 4.0.2
+      fdir: 6.4.6(picomatch@4.0.3)
+      picomatch: 4.0.3
       postcss: 8.5.6
       rollup: 4.43.0
       tinyglobby: 0.2.14
