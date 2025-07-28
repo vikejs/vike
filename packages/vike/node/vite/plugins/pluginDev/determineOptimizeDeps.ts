@@ -28,11 +28,11 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
   const { _pageConfigs: pageConfigs } = vikeConfig
 
   const { entriesClient, entriesServer, includeClient, includeServer } = await getPageDeps(config, pageConfigs)
-  config.optimizeDeps.include = [...includeClient, ...normalizeInclude(config.optimizeDeps.include)]
-  config.optimizeDeps.entries = [...entriesClient, ...normalizeEntries(config.optimizeDeps.entries)]
-  config.ssr.optimizeDeps.include = [...includeServer, ...normalizeInclude(config.ssr.optimizeDeps.include)]
+  config.optimizeDeps.include = unique([...includeClient, ...normalizeInclude(config.optimizeDeps.include)])
+  config.optimizeDeps.entries = unique([...entriesClient, ...normalizeEntries(config.optimizeDeps.entries)])
+  config.ssr.optimizeDeps.include = unique([...includeServer, ...normalizeInclude(config.ssr.optimizeDeps.include)])
   // @ts-ignore — Vite doesn't seem to support ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
-  config.ssr.optimizeDeps.entries = [...entriesServer, ...normalizeEntries(config.ssr.optimizeDeps.entries)]
+  config.ssr.optimizeDeps.entries = unique([...entriesServer, ...normalizeEntries(config.ssr.optimizeDeps.entries)])
 
   if (debug.isActivated)
     debug('optimizeDeps', {
@@ -152,10 +152,10 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
     if (hasServerRouting) addEntry(virtualFileIdEntryClientSR)
   }
 
-  entriesClient = unique(entriesClient)
-  entriesServer = unique(entriesServer)
-  includeClient = unique(includeClient)
-  includeServer = unique(includeServer)
+  entriesClient = entriesClient
+  entriesServer = entriesServer
+  includeClient = includeClient
+  includeServer = includeServer
   return {
     entriesClient,
     entriesServer,
