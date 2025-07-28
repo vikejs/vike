@@ -10,7 +10,6 @@ import {
   isArray,
   isFilePathAbsoluteFilesystem,
   isVirtualFileId,
-  unique,
 } from '../../utils.js'
 import { getVikeConfigInternal, isOverridden } from '../../shared/resolveVikeConfigInternal.js'
 import { analyzeClientEntries } from '../pluginBuild/pluginBuildConfig.js'
@@ -28,13 +27,13 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
   const { _pageConfigs: pageConfigs } = vikeConfig
 
   const { entriesClient, entriesServer, includeClient, includeServer } = await getPageDeps(config, pageConfigs)
-  config.optimizeDeps.include = unique([...includeClient, ...normalizeInclude(config.optimizeDeps.include)])
-  config.optimizeDeps.entries = unique([...entriesClient, ...normalizeEntries(config.optimizeDeps.entries)])
+  config.optimizeDeps.include = add(config.optimizeDeps.include, includeClient)
+  config.optimizeDeps.entries = add(config.optimizeDeps.entries, entriesClient)
 
   if (isNotRunnable(config.environments?.ssr)) {
-    config.ssr.optimizeDeps.include = unique([...includeServer, ...normalizeInclude(config.ssr.optimizeDeps.include)])
+    config.ssr.optimizeDeps.include = add(config.ssr.optimizeDeps.include, includeServer)
     // @ts-ignore — Vite doesn't seem to support ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
-    config.ssr.optimizeDeps.entries = unique([...entriesServer, ...normalizeEntries(config.ssr.optimizeDeps.entries)])
+    config.ssr.optimizeDeps.entries = add(config.ssr.optimizeDeps.entries, entriesServer)
 
     // Workaround until https://github.com/vitejs/vite-plugin-react/issues/650
     if (
@@ -49,10 +48,10 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
     const env = config.environments[envName]!
     let optimizeDeps = env.consumer === 'server' ? config.ssr.optimizeDeps : config.optimizeDeps
     if (isNotRunnable(env) && env.optimizeDeps !== optimizeDeps) {
-      env.optimizeDeps.include = unique([...optimizeDeps.include!, ...normalizeInclude(env.optimizeDeps.include)])
+      env.optimizeDeps.include = add(env.optimizeDeps.include, optimizeDeps.include!)
       // @ts-ignore — Vite doesn't seem to support ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
-      env.optimizeDeps.entries = unique([...optimizeDeps.entries!, ...normalizeEntries(env.optimizeDeps.entries)])
-      env.optimizeDeps.exclude = unique([...optimizeDeps.exclude!, ...normalizeInclude(env.optimizeDeps.exclude)])
+      env.optimizeDeps.entries = add(env.optimizeDeps.entries, optimizeDeps.entries!)
+      env.optimizeDeps.exclude = add(env.optimizeDeps.exclude, optimizeDeps.exclude!)
     }
   }
 
@@ -186,16 +185,16 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
   }
 }
 
-function normalizeEntries(entries: string | string[] | undefined) {
-  if (isArray(entries)) return entries
-  if (typeof entries === 'string') return [entries]
-  if (entries === undefined) return []
-  assert(false)
+function add(input: string | string[] | undefined, listAddendum: string[]): string[] {
+  const list = !input ? [] : isArray(input) ? unique(input) : [input]
+  listAddendum.forEach((e) => {
+    if (!list.includes(e)) list.push(e)
+  })
+  return list
 }
-function normalizeInclude(include: string[] | undefined) {
-  if (isArray(include)) return include
-  if (include === undefined) return []
-  assert(false)
+function unique<T>(arr: T[]): T[] {
+  const arrUnique = Array.from(new Set(arr))
+  return arr.length !== arrUnique.length ? arrUnique : arr
 }
 
 function isNotRunnable(environment: ResolvedConfig['environments'][string] | undefined) {
