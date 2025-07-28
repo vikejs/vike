@@ -679,5 +679,6 @@ function isProcessSharedWithVite() {
 }
 
 function isRunnable(viteDevServer: ViteDevServer) {
-  return isRunnableDevEnvironment(viteDevServer.environments?.ssr)
+  if (!viteDevServer.environments) return true
+  return isRunnableDevEnvironment(viteDevServer.environments.ssr)
 }
