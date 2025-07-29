@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [
     react(),
     cloudflare({
-      // TODO/now: create GitHub issue to track progress on this
+      // Remove this line depending on the outcome of https://github.com/cloudflare/workers-sdk/issues/10120
       viteEnvironment: { name: 'ssr' },
     }),
     vike(),
