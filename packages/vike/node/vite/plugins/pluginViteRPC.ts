@@ -1,7 +1,5 @@
 export { pluginViteRPC }
 
-// TODO/now: rename file
-
 import type { Plugin, ViteDevServer, ResolvedConfig } from 'vite'
 import {
   createViteRPC,
