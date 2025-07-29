@@ -303,6 +303,7 @@ async function initGlobalContext(): Promise<void> {
     if (isProcessSharedWithVite()) {
       await globalObject.viteDevServerPromise
     } else {
+      assert(isNonRunnableDev())
       await updateUserFiles()
     }
     assert(globalObject.waitForUserFilesUpdate)
