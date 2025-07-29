@@ -27,14 +27,14 @@ function createRpcClient() {
   const hot = import.meta.hot
   assert(hot)
 
-  const callbacks: { callId: string; cb: (ret: unknown) => void }[] = []
+  const listeners: { callId: string; cb: (ret: unknown) => void }[] = []
   hot.on(`vike:rpc:response`, (dataResponse: DataResponse) => {
     if (debug.isActivated) debug('Response received', dataResponse)
     const { callId, functionReturn } = dataResponse
-    callbacks.forEach((c) => {
-      if (callId !== c.callId) return
-      c.cb(functionReturn)
-      callbacks.splice(callbacks.indexOf(c), 1)
+    listeners.forEach((l) => {
+      if (callId !== l.callId) return
+      l.cb(functionReturn)
+      listeners.splice(listeners.indexOf(l), 1)
     })
   })
 
@@ -49,7 +49,7 @@ function createRpcClient() {
           const callId = getRandomId()
 
           const { promise, resolve } = genPromise<unknown>({ timeout: 3 * 1000 })
-          callbacks.push({
+          listeners.push({
             callId,
             cb: (functionReturn: unknown) => {
               resolve(functionReturn)
