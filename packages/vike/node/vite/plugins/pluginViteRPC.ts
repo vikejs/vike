@@ -8,6 +8,7 @@ import {
   assertIsNotProductionRuntime,
   requireResolveVikeDistFile,
   isRunnableDevEnvironment,
+  assert,
 } from '../utils.js'
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { resolveClientEntriesDev } from '../shared/resolveClientEntriesDev.js'
@@ -58,6 +59,7 @@ function pluginViteRPC(): Plugin {
         codeMod = codeMod.replaceAll('__VIKE__DYNAMIC_IMPORT', 'import')
       }
       codeMod = codeMod.replaceAll('__VIKE__IS_NON_RUNNABLE_DEV', JSON.stringify(isNonRunnableDev))
+      assert(codeMod !== code)
       return codeMod
     },
   }
