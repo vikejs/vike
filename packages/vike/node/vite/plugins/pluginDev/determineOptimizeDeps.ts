@@ -36,7 +36,7 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
 
   for (const envName in config.environments) {
     const env = config.environments[envName]!
-    if (isNotRunnable(env)) {
+    if (env.optimizeDeps.noDiscovery) {
       env.optimizeDeps.include = add(env.optimizeDeps.include, includeServer)
       env.optimizeDeps.entries = add(env.optimizeDeps.entries, entriesServer)
     }
@@ -181,9 +181,4 @@ function add(input: string | string[] | undefined, listAddendum: string[]): stri
 function unique<T>(arr: T[]): T[] {
   const arrUnique = Array.from(new Set(arr))
   return arr.length !== arrUnique.length ? arrUnique : arr
-}
-
-function isNotRunnable(environment: ResolvedConfig['environments'][string] | undefined) {
-  // TO-DO/eventually: use a check that is agnostic to @cloudflare/vite-plugin
-  return environment?.resolve.conditions.includes('workerd')
 }
