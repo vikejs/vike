@@ -98,7 +98,6 @@ const globalObject = getGlobalObject<
     // Move to buildInfo.assetsManifest ?
     assetsManifest?: ViteManifest
     isInitialized?: true
-    isProcessSharedWithVite?: boolean
   } & ReturnType<typeof getInitialGlobalObject>
 >('runtime/globalContext.ts', getInitialGlobalObject())
 // Trick to break down TypeScript circular dependency
@@ -666,18 +665,13 @@ function resolveBaseRuntime(
   return resolveBase(baseViteOriginal, baseServerUnresolved, baseAssetsUnresolved)
 }
 
-function isProcessSharedWithVite() {
-  const yes = globalThis.__VIKE__IS_PROCESS_SHARED_WITH_VITE
+function isProcessSharedWithVite(): boolean {
+  const yes = globalThis.__VIKE__IS_PROCESS_SHARED_WITH_VITE ?? false
   if (yes) assert(!isNonRunnableDev())
-  if (globalObject.isProcessSharedWithVite !== undefined) {
-    assert(globalObject.isProcessSharedWithVite === yes)
-  } else {
-    globalObject.isProcessSharedWithVite = yes
-  }
   return yes
 }
 
-function isRunnable(viteDevServer: ViteDevServer) {
+function isRunnable(viteDevServer: ViteDevServer): boolean {
   const yes =
     // Vite 5
     !viteDevServer.environments ||
