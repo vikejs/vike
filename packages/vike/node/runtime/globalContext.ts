@@ -618,16 +618,11 @@ async function addGlobalContextAsync(globalContext: GlobalContextBase) {
     if (buildInfo) {
       viteConfigRuntime = buildInfo.viteConfigRuntime
     } else {
-      if (!isProcessSharedWithVite()) {
-        if (!globalObject.isProduction) {
-          const rpc = getViteRPC<ViteRPC>()
-          viteConfigRuntime = await rpc.getViteConfigRuntimeRPC()
-        } else {
-          assert(false) // production => globalObject.buildInfo should be set
-        }
-      } else {
-        assert(false) // process shared with Vite => globalObject.viteConfigRuntime should be set
-      }
+      assert(!isProcessSharedWithVite()) // process shared with Vite => globalObject.viteConfigRuntime should be set
+      assert(!globalObject.isProduction) // production => globalObject.buildInfo.viteConfigRuntime should be set
+      assert(isNonRunnableDev())
+      const rpc = getViteRPC<ViteRPC>()
+      viteConfigRuntime = await rpc.getViteConfigRuntimeRPC()
     }
   }
   assert(viteConfigRuntime)
