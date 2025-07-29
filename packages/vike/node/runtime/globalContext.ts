@@ -665,6 +665,7 @@ function resolveBaseRuntime(
 
 function isProcessSharedWithVite() {
   const yes = globalThis.__VIKE__IS_PROCESS_SHARED_WITH_VITE
+  if (yes) assert(isNonRunnableDev() !== true)
   if (globalObject.isProcessSharedWithVite !== undefined) {
     assert(globalObject.isProcessSharedWithVite === yes)
   } else {
