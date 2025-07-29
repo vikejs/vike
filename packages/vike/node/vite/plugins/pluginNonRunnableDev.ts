@@ -1,4 +1,4 @@
-export { pluginViteRPC }
+export { pluginNonRunnableDev }
 
 import type { Plugin, ViteDevServer, ResolvedConfig } from 'vite'
 import {
@@ -36,11 +36,11 @@ declare global {
   var __VIKE__DYNAMIC_IMPORT: (module: string) => Promise<Record<string, unknown>>
   var __VIKE__IS_NON_RUNNABLE_DEV: undefined | boolean
 }
-function pluginViteRPC(): Plugin {
+function pluginNonRunnableDev(): Plugin {
   const runtimeFileWithDynamicImport = requireResolveVikeDistFile('dist/esm/node/runtime/globalContext.js')
   let config: ResolvedConfig
   return {
-    name: 'vike:pluginViteRPC',
+    name: 'vike:pluginNonRunnableDev',
     configureServer(viteDevServer) {
       createViteRPC(viteDevServer, getViteRpcFunctions)
     },

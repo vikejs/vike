@@ -1,7 +1,7 @@
 export { getViteDevScript }
 
 import { getViteRPC } from '../../../../utils/getViteRPC.js'
-import type { ViteRPC } from '../../../vite/plugins/pluginViteRPC.js'
+import type { ViteRPC } from '../../../vite/plugins/pluginNonRunnableDev.js'
 import type { GlobalContextServerInternal } from '../../globalContext.js'
 import { assert, assertUsage, assertWarning } from '../../utils.js'
 import pc from '@brillout/picocolors'
