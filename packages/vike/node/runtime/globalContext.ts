@@ -664,13 +664,13 @@ function resolveBaseRuntime(
 }
 
 function isProcessSharedWithVite() {
-  const ret = globalThis.__VIKE__IS_PROCESS_SHARED_WITH_VITE
+  const yes = globalThis.__VIKE__IS_PROCESS_SHARED_WITH_VITE
   if (globalObject.isProcessSharedWithVite !== undefined) {
-    assert(globalObject.isProcessSharedWithVite === ret)
+    assert(globalObject.isProcessSharedWithVite === yes)
   } else {
-    globalObject.isProcessSharedWithVite = ret
+    globalObject.isProcessSharedWithVite = yes
   }
-  return ret
+  return yes
 }
 
 function isRunnable(viteDevServer: ViteDevServer) {
