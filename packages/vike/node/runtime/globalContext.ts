@@ -56,7 +56,7 @@ import {
   isRunnableDevEnvironment,
 } from './utils.js'
 import type { ViteManifest } from '../../types/ViteManifest.js'
-import type { ResolvedConfig, ViteDevServer, RunnableDevEnvironment } from 'vite'
+import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
 import { virtualFileIdEntryServer } from '../shared/virtualFiles/virtualFileEntry.js'
 import pc from '@brillout/picocolors'
@@ -479,8 +479,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
 
     // Vite 5
     try {
-      // TODO/now use virtualFileIdEntryServer
-      virtualFileExports = await viteDevServer.ssrLoadModule('virtual:vike:entry:server')
+      virtualFileExports = await viteDevServer.ssrLoadModule(virtualFileIdEntryServer)
     } catch (err_) {
       hasError = true
       err = err_
