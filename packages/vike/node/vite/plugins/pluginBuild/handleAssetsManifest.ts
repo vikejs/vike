@@ -19,12 +19,11 @@ import {
   unique,
 } from '../../utils.js'
 import { isVirtualFileIdPageConfigLazy } from '../../../shared/virtualFiles/virtualFilePageConfigLazy.js'
-import { manifestTempFile } from './pluginBuildConfig.js'
 import type { Environment, ResolvedConfig, Rollup, UserConfig } from 'vite'
 import { getAssetsDir } from '../../shared/getAssetsDir.js'
 import pc from '@brillout/picocolors'
 import { getVikeConfigInternal, isV1Design } from '../../shared/resolveVikeConfigInternal.js'
-import { getOutDirs, OutDirs } from '../../shared/getOutDirs.js'
+import { getOutDirs } from '../../shared/getOutDirs.js'
 import { isViteServerBuild_onlySsrEnv, isViteServerBuild } from '../../shared/isViteServerBuild.js'
 import { set_macro_ASSETS_MANIFEST } from './pluginBuildEntry.js'
 type Bundle = Rollup.OutputBundle
@@ -42,9 +41,8 @@ function handleAssetsManifest_isFixEnabled(config: ResolvedConfig | UserConfig):
 async function fixServerAssets(
   config: ResolvedConfig,
 ): Promise<{ clientManifestMod: ViteManifest; serverManifestMod: ViteManifest }> {
-  const outDirs = getOutDirs(config)
-  const clientManifest = await readManifestFile(outDirs.outDirClient)
-  const serverManifest = await readManifestFile(outDirs.outDirServer)
+  const clientManifest = await readManifestFile(config, true)
+  const serverManifest = await readManifestFile(config, false)
 
   const { clientManifestMod, serverManifestMod, filesToMove, filesToRemove } = addServerAssets(
     clientManifest,
@@ -330,8 +328,8 @@ function removeEmptyDirectories(dirPath: string): void {
   }
 }
 
-async function readManifestFile(outDir: string) {
-  const manifestFilePath = path.posix.join(outDir, manifestTempFile)
+async function readManifestFile(config: ResolvedConfig, client: boolean) {
+  const manifestFilePath = getManifestFilePath(config, client)
   const manifestFileContent = await fs.readFile(manifestFilePath, 'utf-8')
   assert(manifestFileContent)
   const manifest: unknown = JSON.parse(manifestFileContent)
@@ -353,7 +351,7 @@ async function handleAssetsManifest_getBuildConfig(config: UserConfig) {
     ssrEmitAssets: isFixEnabled ? true : undefined,
     // Required if `ssrEmitAssets: true`, see https://github.com/vitejs/vite/pull/11430#issuecomment-1454800934
     cssMinify: isFixEnabled ? 'esbuild' : undefined,
-    manifest: manifestTempFile,
+    manifest: true,
     copyPublicDir: vikeConfig.config.vite6BuilderApp
       ? // Already set by vike:build:pluginBuildApp
         undefined
@@ -372,7 +370,7 @@ async function handleAssetsManifest(
     assert(!assetsJsonFilePath)
     const outDirs = getOutDirs(config, viteEnv)
     assetsJsonFilePath = path.posix.join(outDirs.outDirRoot, 'assets.json')
-    await writeAssetsManifestFile(outDirs, assetsJsonFilePath, config)
+    await writeAssetsManifestFile(assetsJsonFilePath, config)
   }
   if (isViteServerBuild(config, viteEnv)) {
     const outDir = options.dir
@@ -385,10 +383,10 @@ async function handleAssetsManifest(
     if (isSsrEnv) assert(!noop) // dist/server should always contain __VITE_ASSETS_MANIFEST__
   }
 }
-async function writeAssetsManifestFile(outDirs: OutDirs, assetsJsonFilePath: string, config: ResolvedConfig) {
+async function writeAssetsManifestFile(assetsJsonFilePath: string, config: ResolvedConfig) {
   const isFixEnabled = handleAssetsManifest_isFixEnabled(config)
-  const clientManifestFilePath = path.posix.join(outDirs.outDirClient, manifestTempFile)
-  const serverManifestFilePath = path.posix.join(outDirs.outDirServer, manifestTempFile)
+  const clientManifestFilePath = getManifestFilePath(config, true)
+  const serverManifestFilePath = getManifestFilePath(config, false)
   if (!isFixEnabled) {
     await fs.copyFile(clientManifestFilePath, assetsJsonFilePath)
   } else {
@@ -397,4 +395,15 @@ async function writeAssetsManifestFile(outDirs: OutDirs, assetsJsonFilePath: str
   }
   await fs.rm(clientManifestFilePath)
   await fs.rm(serverManifestFilePath)
+}
+
+function getManifestFilePath(config: ResolvedConfig, client: boolean) {
+  const outDirs = getOutDirs(config)
+  const outDir = client ? outDirs.outDirClient : outDirs.outDirServer
+  const env = client ? config.environments.client : config.environments.ssr
+  assert(env)
+  const manifestConfig = env!.build.manifest
+  const manifestFile = typeof manifestConfig === 'string' ? manifestConfig : '.vite/manifest.json'
+  const manifestFilePath = path.posix.join(outDir, manifestFile)
+  return manifestFilePath
 }

@@ -9,7 +9,6 @@ import type { VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.
 import { isViteCliCall, getViteConfigFromCli } from '../../shared/isViteCliCall.js'
 import pc from '@brillout/picocolors'
 import { logErrorHint } from '../../../runtime/renderPage/logErrorHint.js'
-import { manifestTempFile } from './pluginBuildConfig.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { isVikeCliOrApi } from '../../../api/context.js'
 import { handleAssetsManifest, handleAssetsManifest_assertUsageCssTarget } from './handleAssetsManifest.js'
@@ -86,7 +85,7 @@ async function triggerFullBuild(config: ResolvedConfig, viteEnv: Environment, bu
   //  - The legacy plugin triggers its own Rollup build for the client-side.
   //  - The legacy plugin doesn't generate a manifest => we can use that to detect the legacy plugin build.
   //  - Issue & reproduction: https://github.com/vikejs/vike/issues/1154#issuecomment-1965954636
-  if (!bundle[manifestTempFile]) return
+  if (!bundle['.vite/manifest.json']) return
 
   const configInline = getFullBuildInlineConfig(config)
 
