@@ -53,6 +53,13 @@ function pluginNonRunnableDev(): Plugin {
       const isNonRunnableDev = !isRunnableDevEnvironment(this.environment)
       const { magicString, getMagicStringResult } = getMagicString(code, id)
       if (isNonRunnableDev) {
+        /* Workaround for what seems to be a Vite bug:
+           ```js
+           assert(false)
+           // This line breaks the HMR of regular (runnable) apps, even though (as per the assert() above) it's never run. It seems to be a Vite bug: handleHotUpdate() receives an empty `modules` list.
+           import('virtual:vike:entry:server')
+           ```
+        */
         magicString.replaceAll('__VIKE__DYNAMIC_IMPORT', 'import')
       }
       magicString.replaceAll('__VIKE__IS_NON_RUNNABLE_DEV', JSON.stringify(isNonRunnableDev))
