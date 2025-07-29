@@ -2,7 +2,7 @@ export { removeBuiltInOverrides }
 
 import { assert, assertWarning } from '../utils.js'
 
-const BUILT_IN_CLIENT_ROUTER = ['urlPathname', 'urlParsed'] as const
+const BUILT_IN_CLIENT_ROUTER = ['urlPathname'] as const
 const BUILT_IN_CLIENT = ['Page', 'pageExports', 'exports'] as const
 type DeletedKeys = (typeof BUILT_IN_CLIENT)[number] | (typeof BUILT_IN_CLIENT_ROUTER)[number]
 function removeBuiltInOverrides(pageContext: Record<string, unknown> & { [key in DeletedKeys]?: never }) {
@@ -29,4 +29,8 @@ function removeBuiltInOverrides(pageContext: Record<string, unknown> & { [key in
       delete pageContext[prop]
     }
   })
+
+  // should be preserved instead of being recomputed on the client
+  if ('urlParsed' in pageContext) {
+  }
 }
