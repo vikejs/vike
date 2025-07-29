@@ -403,6 +403,7 @@ function getManifestFilePath(config: ResolvedConfig, client: boolean) {
   const env = client ? config.environments.client : config.environments.ssr
   assert(env)
   const manifestConfig = env.build.manifest
+  assert(manifestConfig !== false)
   const manifestFile = typeof manifestConfig === 'string' ? manifestConfig : '.vite/manifest.json'
   const manifestFilePath = path.posix.join(outDir, manifestFile)
   return manifestFilePath
