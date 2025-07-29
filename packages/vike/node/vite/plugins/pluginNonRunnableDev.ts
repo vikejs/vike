@@ -12,6 +12,7 @@ import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageC
 import { resolveClientEntriesDev } from '../shared/resolveClientEntriesDev.js'
 import { retrieveAssetsDev } from '../../runtime/renderPage/getPageAssets/retrieveAssetsDev.js'
 import { getViteConfigRuntime } from '../shared/getViteConfigRuntime.js'
+import { getMagicString } from '../shared/getMagicString.js'
 assertIsNotProductionRuntime()
 
 export type ViteRPC = ReturnType<typeof getViteRpcFunctions>
@@ -51,14 +52,12 @@ function pluginNonRunnableDev(): Plugin {
       if (!config._isDev) return
       if (id !== runtimeFileWithDynamicImport) return
       const isNonRunnableDev = !isRunnableDevEnvironment(this.environment)
-      let codeMod = code
-      // TODO/now use magic-string
+      const { magicString, getMagicStringResult } = getMagicString(code, id)
       if (isNonRunnableDev) {
-        codeMod = codeMod.replaceAll('__VIKE__DYNAMIC_IMPORT', 'import')
+        magicString.replaceAll('__VIKE__DYNAMIC_IMPORT', 'import')
       }
-      codeMod = codeMod.replaceAll('__VIKE__IS_NON_RUNNABLE_DEV', JSON.stringify(isNonRunnableDev))
-      assert(codeMod !== code)
-      return codeMod
+      magicString.replaceAll('__VIKE__IS_NON_RUNNABLE_DEV', JSON.stringify(isNonRunnableDev))
+      return getMagicStringResult()
     },
   }
 }
