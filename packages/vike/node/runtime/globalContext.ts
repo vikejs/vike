@@ -54,6 +54,7 @@ import {
   PROJECT_VERSION,
   getViteRPC,
   isRunnableDevEnvironment,
+  assertIsNotBrowser,
 } from './utils.js'
 import type { ViteManifest } from '../../types/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
@@ -105,6 +106,7 @@ const globalObjectTyped = globalObject as typeof globalObject & {
   globalContext?: GlobalContextServerInternal
 }
 const vikeConfigErrorRecoverMsg = pc.bold(pc.green('Vike config loaded'))
+assertIsNotBrowser()
 
 // Public usge
 type GlobalContextServer = Pick<
