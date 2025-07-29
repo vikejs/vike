@@ -58,7 +58,7 @@ function createRpcClient() {
 
           const dataRequest: DataRequest = { callId, functionName, functionArgs }
           if (debug.isActivated) debug('Request sent', dataRequest)
-          // Vite's type is wrong; it import.meta.hot.send() does seem to return a promise
+          // Vite's type is wrong: import.meta.hot.send() does seem to return a promise
           await hot.send('vike:rpc:request', dataRequest)
 
           const functionReturn = await promise
