@@ -182,12 +182,8 @@ function getEntryFileName(chunkInfo: PreRenderedChunk, config: ResolvedConfig, i
   }
 }
 
-function removePathSeparators(name: string, userRootDir: string) {
+function removePathSeparators(name: string) {
   assertPosixPath(name)
-  if (name.startsWith(userRootDir)) {
-    name = name.slice(userRootDir.length)
-    if (name.startsWith('/')) name = name.slice(1)
-  }
   assert(!name.startsWith('/'), { name })
 
   const entryDir = 'entries/'
@@ -204,15 +200,24 @@ function removePathSeparators(name: string, userRootDir: string) {
 
   return name
 }
+function removeUserRootDir(name: string, userRootDir: string) {
+  if (name.startsWith(userRootDir)) {
+    name = name.slice(userRootDir.length)
+    if (name.startsWith('/')) name = name.slice(1)
+  }
+  assert(!name.startsWith('/'), { name })
+  return name
+}
 
 function clean(name: string, userRootDir: string, removePathSep?: boolean, fixGlob?: boolean): string {
+  name = removeUserRootDir(name, userRootDir)
   name = fixExtractAssetsQuery(name)
   if (fixGlob) {
     name = workaroundGlob(name)
   }
   name = replaceNonLatinCharacters(name)
   if (removePathSep) {
-    name = removePathSeparators(name, userRootDir)
+    name = removePathSeparators(name)
   }
   name = removeLeadingUnderscoreInFilename(name)
   name = removeUnderscoreDoublets(name)
