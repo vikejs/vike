@@ -23,6 +23,12 @@ export type { BuildInfo }
 export type { GlobalContextServerInternal as GlobalContextServerInternal }
 export type { GlobalContextServer }
 
+// TODO/now: rename:
+//  - isProduction => isProductionEnvironment
+//  - setIsProduction => setIsProductionEnvironment
+//  - setGlobalContext_isProduction => setGlobalContext_isProductionEnvironment
+//  - sProductionEnvironment => sDevEnv
+
 // The core logic revolves around:
 // - virtualFileExports is the main requirement
 // - In production: globalObject.buildEntry which is the production entry set by @brillout/vite-plugin-server-entry
@@ -237,7 +243,6 @@ function setGlobalContext_isPrerendering() {
   setIsProduction(true)
 }
 function setGlobalContext_isProduction(isProduction: boolean, tolerateContraditction = false) {
-  // TODO/now: try to remove globalObject.isProduction ?
   // TODO/now: `rename tolerateContraditction tolerateContradiction`
   tolerateContraditction = true
   if (debug.isActivated) debug('setGlobalContext_isProduction()', { isProduction, tolerateContraditction })
