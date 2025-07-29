@@ -36,7 +36,7 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
 
   for (const envName in config.environments) {
     const env = config.environments[envName]!
-    if (env.optimizeDeps.noDiscovery) {
+    if (env.consumer === 'server' && env.optimizeDeps.noDiscovery) {
       env.optimizeDeps.include = add(env.optimizeDeps.include, includeServer)
       env.optimizeDeps.entries = add(env.optimizeDeps.entries, entriesServer)
     }
