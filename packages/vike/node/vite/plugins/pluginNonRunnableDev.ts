@@ -20,6 +20,7 @@ function getViteRpcFunctions(viteDevServer: ViteDevServer) {
     async transformIndexHtmlRPC(html: string) {
       return await viteDevServer.transformIndexHtml('/', html)
     },
+    // TODO/now: dedupe retrievePageAssetsDevRPC and retrievePageAssetsDev()
     async retrievePageAssetsDevRPC(clientDependencies: ClientDependency[], clientEntries: string[]) {
       const clientEntriesSrc = clientEntries.map((clientEntry) => resolveClientEntriesDev(clientEntry, viteDevServer))
       const assetUrls = await retrieveAssetsDev(clientDependencies, viteDevServer)
