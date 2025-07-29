@@ -49,21 +49,48 @@ function getPageContextUrlComputed(pageContext: PageContextUrlSource): PageConte
   assertPropertyGetters(pageContext)
 
   const pageContextUrlComputed = {}
-  objectDefineProperty(pageContextUrlComputed, 'urlPathname', {
-    get: urlPathnameGetter,
-    enumerable: true,
-    configurable: true,
-  })
-  objectDefineProperty(pageContextUrlComputed, 'url', {
-    get: urlGetter,
-    enumerable: false,
-    configurable: true,
-  })
-  objectDefineProperty(pageContextUrlComputed, 'urlParsed', {
-    get: urlParsedGetter,
-    enumerable: true,
-    configurable: true,
-  })
+
+  const hasUrlParsed = 'urlParsed' in pageContext && pageContext.urlParsed !== undefined
+
+  if (hasUrlParsed) {
+    objectDefineProperty(pageContextUrlComputed, 'urlPathname', {
+      get: function () {
+        return (pageContext as any).urlParsed.pathname
+      },
+      enumerable: true,
+      configurable: true,
+    })
+    objectDefineProperty(pageContextUrlComputed, 'url', {
+      get: urlGetter,
+      enumerable: false,
+      configurable: true,
+    })
+
+    objectDefineProperty(pageContextUrlComputed, 'urlParsed', {
+      get: function () {
+        return (pageContext as any).urlParsed
+      },
+      enumerable: true,
+      configurable: true,
+    })
+  } else {
+    // Otherwise, compute urlParsed normally
+    objectDefineProperty(pageContextUrlComputed, 'urlPathname', {
+      get: urlPathnameGetter,
+      enumerable: true,
+      configurable: true,
+    })
+    objectDefineProperty(pageContextUrlComputed, 'url', {
+      get: urlGetter,
+      enumerable: false,
+      configurable: true,
+    })
+    objectDefineProperty(pageContextUrlComputed, 'urlParsed', {
+      get: urlParsedGetter,
+      enumerable: true,
+      configurable: true,
+    })
+  }
 
   return pageContextUrlComputed
 }
