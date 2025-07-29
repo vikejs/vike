@@ -29,6 +29,7 @@ const passToClientBuiltInPageContext = [
   'pageId',
   'routeParams',
   'data', // for data() hook
+  'urlParsed',
 ]
 const pageToClientBuiltInPageContextError = ['pageProps', 'is404', isServerSideError]
 
