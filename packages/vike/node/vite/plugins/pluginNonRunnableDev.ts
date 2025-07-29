@@ -26,8 +26,7 @@ function getViteRpcFunctions(viteDevServer: ViteDevServer) {
       return { clientEntriesSrc, assetUrls }
     },
     async getViteConfigRuntimeRPC() {
-      const viteConfigRuntime = getViteConfigRuntime(viteDevServer.config)
-      return viteConfigRuntime
+      return getViteConfigRuntime(viteDevServer.config)
     },
   }
 }
