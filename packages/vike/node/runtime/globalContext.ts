@@ -660,7 +660,7 @@ function resolveBaseRuntime(
 
 function isProcessSharedWithVite() {
   const yes = globalThis.__VIKE__IS_PROCESS_SHARED_WITH_VITE
-  if (yes) assert(isNonRunnableDev() !== true)
+  if (yes) assert(!isNonRunnableDev())
   if (globalObject.isProcessSharedWithVite !== undefined) {
     assert(globalObject.isProcessSharedWithVite === yes)
   } else {
@@ -675,7 +675,7 @@ function isRunnable(viteDevServer: ViteDevServer) {
     !viteDevServer.environments ||
     // Vite 6 or above
     isRunnableDevEnvironment(viteDevServer.environments.ssr)
-  if (yes) assert(isNonRunnableDev() !== true)
+  if (yes) assert(!isNonRunnableDev())
   return yes
 }
 
