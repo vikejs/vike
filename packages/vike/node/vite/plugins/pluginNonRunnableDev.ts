@@ -6,7 +6,6 @@ import {
   assertIsNotProductionRuntime,
   requireResolveVikeDistFile,
   isRunnableDevEnvironment,
-  assert,
 } from '../utils.js'
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { resolveClientEntriesDev } from '../shared/resolveClientEntriesDev.js'
