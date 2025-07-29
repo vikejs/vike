@@ -639,11 +639,10 @@ function clearGlobalContext() {
 }
 
 function getInitialGlobalObject() {
-  const isProduction = getIsProductionStatic()
-  if (debug.isActivated) debug('getInitialGlobalObject()', { isProduction })
+  debug('getInitialGlobalObject()')
   const { promise: viteDevServerPromise, resolve: viteDevServerPromiseResolve } = genPromise<ViteDevServer>()
   return {
-    isProduction,
+    isProduction: isNonRunnableDev() ? false : undefined,
     viteDevServerPromise,
     viteDevServerPromiseResolve,
   }
@@ -659,15 +658,6 @@ function resolveBaseRuntime(
   return resolveBase(baseViteOriginal, baseServerUnresolved, baseAssetsUnresolved)
 }
 
-function getIsProductionStatic() {
-  // TODO/now add @ts-ignore comments
-  // @ts-ignore
-  if (!import.meta.env) return undefined
-  // @ts-ignore
-  const PROD = import.meta.env.PROD
-  return PROD
-}
-
 function isProcessSharedWithVite() {
   const ret = globalThis.__VIKE__IS_PROCESS_SHARED_WITH_VITE
   if (globalObject.isProcessSharedWithVite !== undefined) {
@@ -679,6 +669,15 @@ function isProcessSharedWithVite() {
 }
 
 function isRunnable(viteDevServer: ViteDevServer) {
-  if (!viteDevServer.environments) return true
-  return isRunnableDevEnvironment(viteDevServer.environments.ssr)
+  if (!viteDevServer.environments) return true // Vite 5
+  const yes = isRunnableDevEnvironment(viteDevServer.environments.ssr)
+  if (yes) assert(isNonRunnableDev() !== true)
+  return yes
+}
+
+function isNonRunnableDev(): boolean | null {
+  if (typeof __VIKE__IS_NON_RUNNABLE_DEV === 'undefined') return null
+  const yes = __VIKE__IS_NON_RUNNABLE_DEV
+  assert(typeof yes === 'boolean')
+  return yes
 }

@@ -2,7 +2,7 @@ export { pluginViteRPC }
 
 // TODO/now: rename file
 
-import type { RunnableDevEnvironment, Plugin, ViteDevServer, ResolvedConfig } from 'vite'
+import type { Plugin, ViteDevServer, ResolvedConfig } from 'vite'
 import {
   createViteRPC,
   assertIsNotProductionRuntime,
@@ -35,6 +35,7 @@ function getViteRpcFunctions(viteDevServer: ViteDevServer) {
 
 declare global {
   var __VIKE__DYNAMIC_IMPORT: (module: string) => Promise<Record<string, unknown>>
+  var __VIKE__IS_NON_RUNNABLE_DEV: undefined | boolean
 }
 function pluginViteRPC(): Plugin {
   const runtimeFileWithDynamicImport = requireResolveVikeDistFile('dist/esm/node/runtime/globalContext.js')
@@ -50,9 +51,13 @@ function pluginViteRPC(): Plugin {
     transform(code, id) {
       if (!config._isDev) return
       if (id !== runtimeFileWithDynamicImport) return
-      if (isRunnableDevEnvironment(this.environment)) return
+      const isNonRunnableDev = !isRunnableDevEnvironment(this.environment)
+      let codeMod = code
       // TODO/now use magic-string
-      const codeMod = code.replaceAll('__VIKE__DYNAMIC_IMPORT', 'import')
+      if (isNonRunnableDev) {
+        codeMod = codeMod.replaceAll('__VIKE__DYNAMIC_IMPORT', 'import')
+      }
+      codeMod = codeMod.replaceAll('__VIKE__IS_NON_RUNNABLE_DEV', JSON.stringify(isNonRunnableDev))
       return codeMod
     },
   }
