@@ -63,4 +63,21 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isDeprecatedDesign?: tr
       expect(await fetchHtml('/fr-FR/404')).toContain('Page non trouvé')
     })
   }
+
+  test('hydration', async () => {
+    await page.goto(getServerUrl() + '/de-DE/about')
+    await autoRetry(
+      async () => {
+        expect(await page.textContent('button')).toBe('Zähler 0')
+      },
+      { timeout: 3000 },
+    )
+    await autoRetry(
+      async () => {
+        await page.click('button')
+        expect(await page.textContent('button')).toContain('Zähler 1')
+      },
+      { timeout: 3000 },
+    )
+  })
 }
