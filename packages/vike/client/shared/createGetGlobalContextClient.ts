@@ -16,7 +16,7 @@ import {
 import type { GlobalContextClientInternal } from '../runtime-client-routing/globalContext.js'
 import type { GlobalContextClientInternalWithServerRouting } from '../runtime-server-routing/globalContext.js'
 import { getGlobalContextSerializedInHtml } from './getJsonSerializedInHtml.js'
-import { assert, assertUsage, genPromise, getGlobalObject, objectAssign } from './utils.js'
+import { assert, assertUsage, genPromise, getGlobalObject, objectAssign, checkType } from './utils.js'
 
 type GlobalContextNotTyped = Record<string, unknown>
 const globalObject = getGlobalObject<{
@@ -90,10 +90,12 @@ function createGetGlobalContextClient<GlobalContextAddendum extends object>(
 type NeverExported = never
 async function getGlobalContext(): Promise<NeverExported> {
   const globalContext = await globalObject.globalContextInitialPromise
+  checkType<GlobalContextNotTyped>(globalContext)
   return globalContext as never
 }
 function getGlobalContextSync(): NeverExported {
   const { globalContext } = globalObject
   assertUsage(globalContext, getGlobalContextSyncErrMsg)
+  checkType<GlobalContextNotTyped>(globalContext)
   return globalContext as never
 }
