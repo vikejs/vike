@@ -175,7 +175,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       }
     }
 
-    // Route
+    // Get pageContext serialized in <script id="vike_pageContext" type="application/json">
     if (isFirstRender) {
       const pageContextSerialized = getPageContextFromHooks_serialized()
       // TO-DO/eventually: create helper assertPageContextFromHook()
@@ -183,7 +183,11 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       objectAssign(pageContext, pageContextSerialized)
       // TO-DO/pageContext-prefetch: remove or change, because this only makes sense for a pre-rendered page
       populatePageContextPrefetchCache(pageContext, { pageContextFromServerHooks: pageContextSerialized })
-    } else {
+    }
+
+    // Route
+    // - We must also run it upon hydration to call the onBeforeRoute() hook, which is needed for i18n URL locale extraction.
+    {
       let pageContextFromRoute: Awaited<ReturnType<typeof route>>
       try {
         pageContextFromRoute = await route(pageContext)
@@ -193,41 +197,51 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       }
       if (isRenderOutdated()) return
 
-      if (!pageContextFromRoute.pageId) {
-        /*
-        // We don't use the client router to render the 404 page:
-        //  - So that the +redirects setting (https://vike.dev/redirects) can be applied.
-        //    - This is the main argument.
-        //    - See also failed CI: https://github.com/vikejs/vike/pull/1871
-        //  - So that server-side error tracking can track 404 links?
-        //    - We do use the client router for rendering the error page, so I don't think this is much of an argument.
-        await renderErrorPage({ is404: true })
-        */
-        redirectHard(urlOriginal)
-        return
-      }
-      assert(hasProp(pageContextFromRoute, 'pageId', 'string')) // Help TS
-
-      const isClientRoutable = await isClientSideRoutable(pageContextFromRoute.pageId, pageContext)
-      if (isRenderOutdated()) return
-      if (!isClientRoutable) {
-        redirectHard(urlOriginal)
-        return
-      }
-
-      const isSamePage =
-        pageContextFromRoute.pageId &&
-        previousPageContext?.pageId &&
-        pageContextFromRoute.pageId === previousPageContext.pageId
-      if (doNotRenderIfSamePage && isSamePage) {
-        // Skip's Vike's rendering; let the user handle the navigation
-        return
-      }
-
       // TO-DO/eventually: create helper assertPageContextFromHook()
       assert(!('urlOriginal' in pageContextFromRoute))
-      objectAssign(pageContext, pageContextFromRoute)
+      if (isFirstRender) {
+        // Set pageContext properties set by onBeforeRoute()
+        // - But we skip pageId and routeParams because routing may have been aborted by a server-side `throw render()`
+        const { pageId, routeParams, ...pageContextFromRouteRest } = pageContextFromRoute
+        objectAssign(pageContext, pageContextFromRouteRest)
+        assert(hasProp(pageContext, 'routeParams', 'string{}')) // Help TS
+      } else {
+        objectAssign(pageContext, pageContextFromRoute)
+      }
+
+      if (!isFirstRender) {
+        if (!pageContextFromRoute.pageId) {
+          /*
+          // We don't use the client router to render the 404 page:
+          //  - So that the +redirects setting (https://vike.dev/redirects) can be applied.
+          //    - This is the main argument.
+          //    - See also failed CI: https://github.com/vikejs/vike/pull/1871
+          //  - So that server-side error tracking can track 404 links?
+          //    - We do use the client router for rendering the error page, so I don't think this is much of an argument.
+          await renderErrorPage({ is404: true })
+          */
+          redirectHard(urlOriginal)
+          return
+        }
+
+        const isClientRoutable = await isClientSideRoutable(pageContextFromRoute.pageId, pageContext)
+        if (isRenderOutdated()) return
+        if (!isClientRoutable) {
+          redirectHard(urlOriginal)
+          return
+        }
+
+        const isSamePage =
+          pageContextFromRoute.pageId &&
+          previousPageContext?.pageId &&
+          pageContextFromRoute.pageId === previousPageContext.pageId
+        if (doNotRenderIfSamePage && isSamePage) {
+          // Skip's Vike's rendering; let the user handle the navigation
+          return
+        }
+      }
     }
+    assert(hasProp(pageContext, 'pageId', 'string')) // Help TS
 
     const res = await loadPageConfigsLazyClientSideAndExecHook(pageContext, isFirstRender, isRenderOutdated)
     /* Already called inside loadPageConfigsLazyClientSideAndExecHook()

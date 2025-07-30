@@ -1,8 +1,9 @@
 export default Page
 
-import React, { useState } from 'react'
+import React from 'react'
 import { locales } from '../../locales'
 import { Link } from '../../components/Link'
+import { Counter } from '../../components/Counter'
 import { LocaleText } from '../../renderer/LocaleText'
 
 function Page() {
@@ -29,14 +30,5 @@ function Page() {
         </li>
       </ul>
     </>
-  )
-}
-
-function Counter() {
-  const [count, setCount] = useState(0)
-  return (
-    <button type="button" onClick={() => setCount((count) => count + 1)}>
-      <LocaleText>Counter</LocaleText> {count}
-    </button>
   )
 }
