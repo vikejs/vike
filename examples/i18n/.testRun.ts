@@ -64,20 +64,22 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isDeprecatedDesign?: tr
     })
   }
 
-  test('hydration', async () => {
-    await page.goto(getServerUrl() + '/de-DE/about')
-    await autoRetry(
-      async () => {
-        expect(await page.textContent('button')).toBe('Zähler 0')
-      },
-      { timeout: 3000 },
-    )
-    await autoRetry(
-      async () => {
-        await page.click('button')
-        expect(await page.textContent('button')).toContain('Zähler 1')
-      },
-      { timeout: 3000 },
-    )
-  })
+  if (!isDeprecatedDesign) {
+    test('hydration', async () => {
+      await page.goto(getServerUrl() + '/de-DE/about')
+      await autoRetry(
+        async () => {
+          expect(await page.textContent('button')).toBe('Zähler 0')
+        },
+        { timeout: 3000 },
+      )
+      await autoRetry(
+        async () => {
+          await page.click('button')
+          expect(await page.textContent('button')).toContain('Zähler 1')
+        },
+        { timeout: 3000 },
+      )
+    })
+  }
 }
