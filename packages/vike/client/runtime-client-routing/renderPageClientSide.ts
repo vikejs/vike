@@ -175,7 +175,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       }
     }
 
-    // Get pageContext serilaized in <script id="vike_pageContext" type="application/json">
+    // Get pageContext serialized in <script id="vike_pageContext" type="application/json">
     if (isFirstRender) {
       const pageContextSerialized = getPageContextFromHooks_serialized()
       // TO-DO/eventually: create helper assertPageContextFromHook()
@@ -199,7 +199,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
       // TO-DO/eventually: create helper assertPageContextFromHook()
       assert(!('urlOriginal' in pageContextFromRoute))
-
       if (isFirstRender) {
         // Set pageContext properties set by onBeforeRoute()
         // - But we skip pageId and routeParams because routing may have been aborted by a server-side `throw render()`
