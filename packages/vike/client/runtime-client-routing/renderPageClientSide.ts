@@ -52,7 +52,7 @@ import { route } from '../../shared/route/index.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { setScrollPosition, type ScrollTarget } from './setScrollPosition.js'
 import { scrollRestoration_initialRenderIsDone } from './scrollRestoration.js'
-import { getErrorPageId } from '../../shared/error-page.js'
+import { getErrorPageId, isErrorPage } from '../../shared/error-page.js'
 import type { VikeConfigPublicPageLazy } from '../../shared/getPageFiles.js'
 import { setPageContextCurrent } from './getPageContextCurrent.js'
 import { getRouteStringParameterList } from '../../shared/route/resolveRouteString.js'
@@ -175,7 +175,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       }
     }
 
-    // <script id="vike_pageContext" type="application/json">
+    // Get pageContext serilaized in <script id="vike_pageContext" type="application/json">
+    let isFirstRenderErrorPage: undefined | false | string
     if (isFirstRender) {
       const pageContextSerialized = getPageContextFromHooks_serialized()
       // TO-DO/eventually: create helper assertPageContextFromHook()
@@ -183,6 +184,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       objectAssign(pageContext, pageContextSerialized)
       // TO-DO/pageContext-prefetch: remove or change, because this only makes sense for a pre-rendered page
       populatePageContextPrefetchCache(pageContext, { pageContextFromServerHooks: pageContextSerialized })
+      isFirstRenderErrorPage =
+        isErrorPage(pageContext.pageId, pageContext._globalContext._pageConfigs) && pageContext.pageId
     }
 
     // Route
@@ -197,6 +200,12 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       }
       if (isRenderOutdated()) return
 
+      // TO-DO/eventually: create helper assertPageContextFromHook()
+      assert(!('urlOriginal' in pageContextFromRoute))
+      objectAssign(pageContext, pageContextFromRoute)
+      if (!pageContext.pageId && isFirstRenderErrorPage) pageContext.pageId = isFirstRenderErrorPage
+
+      if (!isFirstRender) {
       if (!pageContextFromRoute.pageId) {
         /*
         // We don't use the client router to render the 404 page:
@@ -210,7 +219,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         redirectHard(urlOriginal)
         return
       }
-      assert(hasProp(pageContextFromRoute, 'pageId', 'string')) // Help TS
 
       const isClientRoutable = await isClientSideRoutable(pageContextFromRoute.pageId, pageContext)
       if (isRenderOutdated()) return
@@ -227,11 +235,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         // Skip's Vike's rendering; let the user handle the navigation
         return
       }
-
-      // TO-DO/eventually: create helper assertPageContextFromHook()
-      assert(!('urlOriginal' in pageContextFromRoute))
-      objectAssign(pageContext, pageContextFromRoute)
+      }
     }
+    assert(hasProp(pageContext, 'pageId', 'string')) // Help TS
 
     const res = await loadPageConfigsLazyClientSideAndExecHook(pageContext, isFirstRender, isRenderOutdated)
     /* Already called inside loadPageConfigsLazyClientSideAndExecHook()
