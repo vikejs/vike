@@ -22,15 +22,16 @@ type GlobalContextNotTyped = Record<string, unknown>
 const globalObject = getGlobalObject<{
   globalContext?: GlobalContextNotTyped
   isClientRouting?: boolean
-  globalContextPromise: Promise<GlobalContextNotTyped>
-  globalContextPromiseResolve: (globalContext: GlobalContextNotTyped) => void
+  globalContextInitialPromise: Promise<GlobalContextNotTyped>
+  globalContextInitialPromiseResolve: (globalContext: GlobalContextNotTyped) => void
 }>(
   'createGetGlobalContextClient.ts',
   (() => {
-    const { promise: globalContextPromise, resolve: globalContextPromiseResolve } = genPromise<GlobalContextNotTyped>()
+    const { promise: globalContextInitialPromise, resolve: globalContextInitialPromiseResolve } =
+      genPromise<GlobalContextNotTyped>()
     return {
-      globalContextPromise,
-      globalContextPromiseResolve,
+      globalContextInitialPromise,
+      globalContextInitialPromiseResolve,
     }
   })(),
 )
@@ -78,7 +79,7 @@ function createGetGlobalContextClient<GlobalContextAddendum extends object>(
       },
     )
     assert(globalObject.globalContext)
-    globalObject.globalContextPromiseResolve(globalObject.globalContext)
+    globalObject.globalContextInitialPromiseResolve(globalObject.globalContext)
 
     // Return
     return globalContext
@@ -88,7 +89,7 @@ function createGetGlobalContextClient<GlobalContextAddendum extends object>(
 // Type is never exported — it's the server-side getGlobalContext() type that is exported and exposed to the user
 type NeverExported = never
 async function getGlobalContext(): Promise<NeverExported> {
-  const globalContext = await globalObject.globalContextPromise
+  const globalContext = await globalObject.globalContextInitialPromise
   return globalContext as never
 }
 function getGlobalContextSync(): NeverExported {
