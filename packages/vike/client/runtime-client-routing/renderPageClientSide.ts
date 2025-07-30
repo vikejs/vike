@@ -188,6 +188,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     // Route
     // - We must also run it upon hydration to call the onBeforeRoute() hook, which is needed for i18n URL locale extraction.
     {
+      console.log('renderPageClientSide() > route()')
       let pageContextFromRoute: Awaited<ReturnType<typeof route>>
       try {
         pageContextFromRoute = await route(pageContext)
@@ -199,10 +200,12 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
       // TO-DO/eventually: create helper assertPageContextFromHook()
       assert(!('urlOriginal' in pageContextFromRoute))
+      console.log('isFirstRender', isFirstRender)
       if (isFirstRender) {
         // Set pageContext properties set by onBeforeRoute()
         // - But we skip pageId and routeParams because routing may have been aborted by a server-side `throw render()`
         const { pageId, routeParams, ...pageContextFromRouteRest } = pageContextFromRoute
+        console.log('pageContextFromRouteRest', pageContextFromRouteRest)
         objectAssign(pageContext, pageContextFromRouteRest)
         assert(hasProp(pageContext, 'routeParams', 'string{}')) // Help TS
       } else {
