@@ -52,7 +52,7 @@ import { route } from '../../shared/route/index.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { setScrollPosition, type ScrollTarget } from './setScrollPosition.js'
 import { scrollRestoration_initialRenderIsDone } from './scrollRestoration.js'
-import { getErrorPageId, isErrorPage } from '../../shared/error-page.js'
+import { getErrorPageId } from '../../shared/error-page.js'
 import type { VikeConfigPublicPageLazy } from '../../shared/getPageFiles.js'
 import { setPageContextCurrent } from './getPageContextCurrent.js'
 import { getRouteStringParameterList } from '../../shared/route/resolveRouteString.js'
@@ -176,7 +176,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
 
     // Get pageContext serilaized in <script id="vike_pageContext" type="application/json">
-    let isFirstRenderErrorPage: undefined | false | string
     if (isFirstRender) {
       const pageContextSerialized = getPageContextFromHooks_serialized()
       // TO-DO/eventually: create helper assertPageContextFromHook()
@@ -184,8 +183,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       objectAssign(pageContext, pageContextSerialized)
       // TO-DO/pageContext-prefetch: remove or change, because this only makes sense for a pre-rendered page
       populatePageContextPrefetchCache(pageContext, { pageContextFromServerHooks: pageContextSerialized })
-      isFirstRenderErrorPage =
-        isErrorPage(pageContext.pageId, pageContext._globalContext._pageConfigs) && pageContext.pageId
     }
 
     // Route
@@ -202,8 +199,14 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
       // TO-DO/eventually: create helper assertPageContextFromHook()
       assert(!('urlOriginal' in pageContextFromRoute))
-      objectAssign(pageContext, pageContextFromRoute)
-      if (!pageContext.pageId && isFirstRenderErrorPage) pageContext.pageId = isFirstRenderErrorPage
+
+      if (isFirstRender) {
+        const { pageId, routeParams, ...pageContextFromRouteRest } = pageContextFromRoute
+        objectAssign(pageContext, pageContextFromRouteRest)
+        assert(hasProp(pageContext, 'routeParams', 'string{}')) // Help TS
+      } else {
+        objectAssign(pageContext, pageContextFromRoute)
+      }
 
       if (!isFirstRender) {
         if (!pageContextFromRoute.pageId) {
