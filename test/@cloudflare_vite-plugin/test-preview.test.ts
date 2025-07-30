@@ -1,6 +1,6 @@
 import { testRunClassic } from '../../test/utils'
 testRunClassic('npm run preview', {
-  // TO-DO/eventually: once https://github.com/vitejs/vite/issues/20505 is solved, the warning should disapear and we can remove this
+  // TO-DO/eventually: once https://github.com/vitejs/vite/issues/20505 is solved, the warning should disappear and we can remove this
   tolerateError(args) {
     /*
     ```console
