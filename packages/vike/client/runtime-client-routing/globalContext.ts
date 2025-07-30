@@ -17,7 +17,9 @@ type GlobalContextClient = GlobalContextBasePublic &
   }
 type GlobalContextClientInternal = Awaited<ReturnType<typeof getGlobalContextClientInternal>>
 
+  console.log('globalContext.ts 1')
 const getGlobalContextClientInternal = createGetGlobalContextClient(virtualFileExports, true, addGlobalContext)
+  console.log('globalContext.ts 2')
 
 async function addGlobalContext(globalContext: GlobalContextBase) {
   const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(

@@ -27,6 +27,7 @@ async function createGlobalContextShared<GlobalContextAdded extends Record<strin
   // TO-DO/next-major-release: we'll be able to remove addGlobalContextTmp after loadPageRoutes() is sync (it will be sync after we remove the old design)
   addGlobalContextTmp?: (globalContext: GlobalContextBase) => Promise<GlobalContextAdded>,
 ) {
+  console.log('createGlobalContextShared()')
   const globalContext = createGlobalContextBase(virtualFileExports)
 
   let isNewGlobalContext: boolean

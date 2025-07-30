@@ -18,6 +18,8 @@ import type { GlobalContextClientInternalWithServerRouting } from '../runtime-se
 import { getGlobalContextSerializedInHtml } from './getJsonSerializedInHtml.js'
 import { assert, assertUsage, genPromise, getGlobalObject, objectAssign, checkType } from './utils.js'
 
+console.log('createGetGlobalContextClient.ts')
+
 type GlobalContextNotTyped = Record<string, unknown>
 const globalObject = getGlobalObject<{
   isClientRouting?: boolean
@@ -42,15 +44,19 @@ function createGetGlobalContextClient<GlobalContextAddendum extends object>(
   isClientRouting: boolean,
   addGlobalContext?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddendum>,
 ) {
+  console.log('createGetGlobalContextClient() begin')
   assert(globalObject.isClientRouting === undefined || globalObject.isClientRouting === isClientRouting)
   globalObject.isClientRouting = isClientRouting
 
   // Eagerly call onCreateGlobalContext() hook
   getGlobalContext()
 
+  console.log('createGetGlobalContextClient() end')
   return getGlobalContext
 
   async function getGlobalContext() {
+    console.log('getGlobalContext() begin')
+
     // Cache
     if (
       globalObject.virtualFileExports &&
@@ -86,7 +92,9 @@ function createGetGlobalContextClient<GlobalContextAddendum extends object>(
     const globalContext = await globalContextPromise
     assert(globalObject.globalContext === globalContext)
     globalObject.globalContextInitialPromiseResolve()
+    assert(globalContext)
 
+    console.log('getGlobalContext() end')
     // Return
     return globalContext
   }
