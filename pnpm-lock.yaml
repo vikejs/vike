@@ -15,8 +15,8 @@ importers:
         specifier: ^0.1.2
         version: 0.1.2
       '@brillout/test-e2e':
-        specifier: ^0.6.15
-        version: 0.6.15
+        specifier: ^0.6.16
+        version: 0.6.16
       '@brillout/test-types':
         specifier: ^0.1.13
         version: 0.1.15(typescript@5.8.3)
@@ -2246,8 +2246,8 @@ packages:
     resolution: {integrity: sha512-DNJKsGPRps/3rwezmtMMoNwrcIpqnDPkqArEK5eS3vpkRJGzVaSH8suGf1+TmgUIsHn2Y1bgLIz9jh7w0EqwHw==}
     hasBin: true
 
-  '@brillout/test-e2e@0.6.15':
-    resolution: {integrity: sha512-C2pv6Pjluq/pEXm61eTL9J2X1HPIPrPnj9Ds4QGXLCjRi8qhio4iYqKHi6rtPxKn4y9ZwLYcHSQVNmA7BURXQA==}
+  '@brillout/test-e2e@0.6.16':
+    resolution: {integrity: sha512-GZgF4d2cjRwPu32IGJyYVQDdwiXQW7NG87PrwxSmxmoCFCVfhdiX62mf4vPritcxu+7A8KsE9tKxec2saV5HtQ==}
     hasBin: true
 
   '@brillout/test-types@0.1.15':
@@ -8247,21 +8247,18 @@ snapshots:
       '@brillout/picocolors': 1.0.28
       '@brillout/shell': 0.2.1
 
-  '@brillout/test-e2e@0.6.15':
+  '@brillout/test-e2e@0.6.16':
     dependencies:
       '@brillout/part-regex': 0.1.4
       '@brillout/picocolors': 1.0.28
       chai: 4.5.0
       esbuild: 0.23.1
       fast-glob: 3.3.3
-      node-fetch: 2.7.0
       pixelmatch: 5.3.0
       playwright-chromium: 1.50.1
       pngjs: 6.0.0
       source-map-support: 0.5.21
       strip-ansi: 6.0.1
-    transitivePeerDependencies:
-      - encoding
 
   '@brillout/test-types@0.1.15(typescript@5.8.3)':
     dependencies:
