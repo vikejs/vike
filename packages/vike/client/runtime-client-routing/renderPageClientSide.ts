@@ -201,6 +201,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       assert(!('urlOriginal' in pageContextFromRoute))
 
       if (isFirstRender) {
+        // Set pageContext properties set by onBeforeRoute()
+        // - But we skip pageId and routeParams because routing may have been aborted by a server-side `throw render()`
         const { pageId, routeParams, ...pageContextFromRouteRest } = pageContextFromRoute
         objectAssign(pageContext, pageContextFromRouteRest)
         assert(hasProp(pageContext, 'routeParams', 'string{}')) // Help TS
