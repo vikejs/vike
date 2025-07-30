@@ -175,7 +175,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       }
     }
 
-    // Route
+    // <script id="vike_pageContext" type="application/json">
     if (isFirstRender) {
       const pageContextSerialized = getPageContextFromHooks_serialized()
       // TO-DO/eventually: create helper assertPageContextFromHook()
@@ -184,6 +184,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       // TO-DO/pageContext-prefetch: remove or change, because this only makes sense for a pre-rendered page
       populatePageContextPrefetchCache(pageContext, { pageContextFromServerHooks: pageContextSerialized })
     }
+
+    // Route
+    // - We must also run it upon hydration to call the onBeforeRoute() hook, which is needed for i18n URL locale extraction.
     {
       let pageContextFromRoute: Awaited<ReturnType<typeof route>>
       try {
