@@ -54,7 +54,7 @@ function createGetGlobalContextClient<GlobalContextAddendum extends object>(
     if (
       globalObject.globalContext &&
       // Don't break HMR
-      globalObject.globalContext._virtualFileExports !== virtualFileExports
+      globalObject.globalContext._virtualFileExports === virtualFileExports
     ) {
       return globalObject.globalContext as never
     }
