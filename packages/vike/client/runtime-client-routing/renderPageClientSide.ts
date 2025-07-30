@@ -183,7 +183,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       objectAssign(pageContext, pageContextSerialized)
       // TO-DO/pageContext-prefetch: remove or change, because this only makes sense for a pre-rendered page
       populatePageContextPrefetchCache(pageContext, { pageContextFromServerHooks: pageContextSerialized })
-    } else {
+    }
+    {
       let pageContextFromRoute: Awaited<ReturnType<typeof route>>
       try {
         pageContextFromRoute = await route(pageContext)
