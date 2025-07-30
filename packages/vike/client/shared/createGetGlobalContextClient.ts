@@ -21,14 +21,15 @@ import { assert, assertUsage, genPromise, getGlobalObject, objectAssign, checkTy
 type GlobalContextNotTyped = Record<string, unknown>
 const globalObject = getGlobalObject<{
   isClientRouting?: boolean
+  virtualFileExports?: unknown
   globalContext?: GlobalContextNotTyped
-  globalContextInitialPromise: Promise<GlobalContextNotTyped>
-  globalContextInitialPromiseResolve: (globalContext: GlobalContextNotTyped) => void
+  globalContextPromise?: Promise<GlobalContextNotTyped>
+  globalContextInitialPromise: Promise<void>
+  globalContextInitialPromiseResolve: () => void
 }>(
   'createGetGlobalContextClient.ts',
   (() => {
-    const { promise: globalContextInitialPromise, resolve: globalContextInitialPromiseResolve } =
-      genPromise<GlobalContextNotTyped>()
+    const { promise: globalContextInitialPromise, resolve: globalContextInitialPromiseResolve } = genPromise()
     return {
       globalContextInitialPromise,
       globalContextInitialPromiseResolve,
@@ -52,15 +53,18 @@ function createGetGlobalContextClient<GlobalContextAddendum extends object>(
   async function getGlobalContext() {
     // Cache
     if (
-      globalObject.globalContext &&
+      globalObject.virtualFileExports &&
       // Don't break HMR
-      globalObject.globalContext._virtualFileExports === virtualFileExports
+      globalObject.virtualFileExports === virtualFileExports
     ) {
-      return globalObject.globalContext as never
+      const globalContext = await globalObject.globalContextPromise
+      return globalContext as never
+    } else {
+      globalObject.virtualFileExports = virtualFileExports
     }
 
     // Create
-    const globalContext = await createGlobalContextShared(
+    const globalContextPromise = createGlobalContextShared(
       virtualFileExports,
       globalObject,
       undefined,
@@ -78,8 +82,10 @@ function createGetGlobalContextClient<GlobalContextAddendum extends object>(
         return globalContextAddendum
       },
     )
-    assert(globalObject.globalContext)
-    globalObject.globalContextInitialPromiseResolve(globalObject.globalContext)
+    globalObject.globalContextPromise = globalContextPromise
+    const globalContext = await globalContextPromise
+    assert(globalObject.globalContext === globalContext)
+    globalObject.globalContextInitialPromiseResolve()
 
     // Return
     return globalContext
@@ -89,7 +95,9 @@ function createGetGlobalContextClient<GlobalContextAddendum extends object>(
 // Type is never exported — it's the server-side getGlobalContext() type that is exported and exposed to the user
 type NeverExported = never
 async function getGlobalContext(): Promise<NeverExported> {
-  const globalContext = await globalObject.globalContextInitialPromise
+  await globalObject.globalContextInitialPromise
+  const globalContext = await globalObject.globalContextPromise
+  assert(globalContext)
   checkType<GlobalContextNotTyped>(globalContext)
   return globalContext as never
 }
