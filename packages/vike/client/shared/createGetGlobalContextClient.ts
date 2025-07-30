@@ -20,8 +20,8 @@ import { assert, assertUsage, genPromise, getGlobalObject, objectAssign, checkTy
 
 type GlobalContextNotTyped = Record<string, unknown>
 const globalObject = getGlobalObject<{
-  globalContext?: GlobalContextNotTyped
   isClientRouting?: boolean
+  globalContext?: GlobalContextNotTyped
   globalContextInitialPromise: Promise<GlobalContextNotTyped>
   globalContextInitialPromiseResolve: (globalContext: GlobalContextNotTyped) => void
 }>(
