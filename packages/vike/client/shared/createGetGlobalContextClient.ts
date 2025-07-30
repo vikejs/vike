@@ -49,57 +49,6 @@ function createGetGlobalContextClient<GlobalContextAddendum extends object>(
   return getGlobalContext
 
   async function getGlobalContext() {
-    console.log(
-      'globalObject.globalContext?._virtualFileExports === virtualFileExports',
-      globalObject.globalContext?._virtualFileExports === virtualFileExports,
-    )
-    console.log('globalObject.globalContext?._virtualFileExports', globalObject.globalContext?._virtualFileExports)
-    console.log('virtualFileExports', virtualFileExports)
-    // @ts-ignore
-    console.log(
-      'virtualFileExports.pageConfigGlobalSerialized.configValuesSerialized',
-      virtualFileExports.pageConfigGlobalSerialized.configValuesSerialized,
-    )
-    // @ts-ignore
-    console.log(
-      'globalObject.globalContext?._virtualFileExports.pageConfigGlobalSerialized.configValuesSerialized',
-      globalObject.globalContext?._virtualFileExports.pageConfigGlobalSerialized.configValuesSerialized,
-    )
-    console.log('============= 1')
-    /*
-     */
-    /*
-     * Module {…}
-neverLoaded
-: 
-(...)
-pageConfigGlobalSerialized
-: 
-Object
-configValuesSerialized
-: 
-onBeforeRoute
-: 
-definedAtData
-: 
-{filePathToShowToUser: '/pages/+onBeforeRoute.js', fileExportPathToShowToUser: Array(0)}
-type
-: 
-"standard"
-valueSerialized
-: 
-exportValues
-: 
-Module
-default
-: 
-ƒ onBeforeRoute(pageContext)
-length
-: 
-1
-name
-: 
-"onBeforeRoute"*/
     // Cache
     if (
       globalObject.globalContext &&
@@ -130,9 +79,6 @@ name
     )
     assert(globalObject.globalContext)
     globalObject.globalContextPromiseResolve(globalObject.globalContext)
-    console.log('============= 3')
-    console.log(globalObject.globalContext._onBeforeRouteHook)
-    console.log('============= 3')
 
     // Return
     return globalContext

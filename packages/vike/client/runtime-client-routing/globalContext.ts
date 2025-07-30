@@ -26,9 +26,6 @@ async function addGlobalContext(globalContext: GlobalContextBase) {
     globalContext._pageConfigGlobal,
     globalContext._allPageIds,
   )
-  console.log('============= 2')
-  console.log(onBeforeRouteHook)
-  console.log('============= 2')
   return {
     _pageRoutes: pageRoutes,
     _onBeforeRouteHook: onBeforeRouteHook,

@@ -29,9 +29,7 @@ async function execHookOnBeforeRoute(
   | ({ _routingProvidedByOnBeforeRouteHook: true } & PageContextFromRoute)
   | { _routingProvidedByOnBeforeRouteHook: false }
 > {
-  console.log('execHookOnBeforeRoute()')
   const pageContextFromOnBeforeRouteHook = {}
-  console.log('pageContext._globalContext._onBeforeRouteHook', pageContext._globalContext._onBeforeRouteHook)
   if (!pageContext._globalContext._onBeforeRouteHook) return null
   const pageContextFromHook = await getPageContextFromHook(pageContext._globalContext._onBeforeRouteHook, pageContext)
   if (pageContextFromHook) {
@@ -56,7 +54,6 @@ async function execHookOnBeforeRoute(
   objectAssign(pageContextFromOnBeforeRouteHook, {
     _routingProvidedByOnBeforeRouteHook: false as const,
   })
-  console.log('pageContextFromOnBeforeRouteHook', pageContextFromOnBeforeRouteHook)
   return pageContextFromOnBeforeRouteHook
 }
 
