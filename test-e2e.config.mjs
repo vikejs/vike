@@ -8,7 +8,7 @@ export default {
 function getCiJobs() {
   const linux_nodeOld = {
     os: 'ubuntu-latest',
-    node_version: '18',
+    node_version: '20',
   }
   const linux_nodeNew = {
     os: 'ubuntu-latest',
@@ -16,7 +16,7 @@ function getCiJobs() {
   }
   const windows_nodeOld = {
     os: 'windows-latest',
-    node_version: '18',
+    node_version: '20',
   }
 
   const setupsExamples = [linux_nodeNew, windows_nodeOld]
