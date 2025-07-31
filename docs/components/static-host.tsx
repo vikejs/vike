@@ -2,7 +2,6 @@ export { StaticHostDocIntro }
 export { StaticHostDocStrategies }
 export { StaticHostDocOutro }
 
-import { Link } from '@brillout/docpress'
 import React from 'react'
 
 function StaticHostDocIntro({ staticHostLink }: { staticHostLink?: React.JSX.Element }) {
@@ -15,10 +14,9 @@ function StaticHostDocIntro({ staticHostLink }: { staticHostLink?: React.JSX.Ele
       </p>
       <blockquote>
         <p>
-          Static hosts always expect one <code>.html</code> file per URL. This means you need to pre-render <em>all</em>{' '}
-          your pages, regardless of <Link text="render mode" href="/render-modes" />. For example, if you have SPA
-          pages, then you also need to pre-render them which will generate <code>.html</code> files with an empty{' '}
-          <code>&lt;body&gt;</code>.
+          Static hosts expect one <code>.html</code> file per URL. Consequently, you must pre-render <em>all</em> your
+          pages, including SPA pages (the generated <code>.html</code> files of SPA pages have an empty{' '}
+          <code>&lt;body&gt;</code>).
         </p>
       </blockquote>
     </>
@@ -27,7 +25,7 @@ function StaticHostDocIntro({ staticHostLink }: { staticHostLink?: React.JSX.Ele
 function StaticHostDocStrategies({ name = 'the static host' }: { name?: string }) {
   return (
     <>
-      <p>You can choose between following deploy strategies:</p>
+      <p>In general, you can choose between the following strategies to build and deploy:</p>
       <ul>
         <li>
           Build locally and upload <code>dist/client/</code> to {name}.
@@ -40,7 +38,8 @@ function StaticHostDocStrategies({ name = 'the static host' }: { name?: string }
       </ul>
       <blockquote>
         <p>
-          The <code>$ vike build</code> command generates <code>dist/client/</code> containing all static assets.
+          The <code>$ vike build</code> command generates a directory <code>dist/client/</code> which contains all
+          static assets.
         </p>
       </blockquote>
     </>
@@ -51,22 +50,26 @@ function StaticHostDocOutro({ baseUrlAddendum }: { baseUrlAddendum?: React.JSX.E
     <>
       <p>
         {' '}
-        You can try out your production build locally with{' '}
+        You can try out your production build locally using{' '}
         <a href="https://vitejs.dev/guide/cli.html#vite-preview">
           <code>$ vike preview</code>
         </a>
-        , or any other tool such as{' '}
+        . (You can also use a local static host, for example{' '}
         <a href="https://www.npmjs.com/package/serve">
           <code>$ serve dist/client/</code>
         </a>
-        .
+        ).
       </p>
       <blockquote>
         <p>
-          If you don't deploy your app at your domain root <code>https://my-domain.com</code>, but at{' '}
-          <code>https://my-domain.com/somewhere/nested</code> instead, then{' '}
-          <a href="/base-url">change your app's Base URL</a>.{baseUrlAddendum}
+          If you want your app's URLs to start at <code>https://my-domain.com/some/path/**/*</code> (instead of the
+          domain root <code>https://my-domain.com/**/*</code>),{' '}
+          <a href="/base-url">
+            change the Base URL to <code>/some/path/</code>
+          </a>
+          .
         </p>
+        {baseUrlAddendum}
       </blockquote>
     </>
   )

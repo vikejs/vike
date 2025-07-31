@@ -7,10 +7,10 @@ import { RepoLink, Warning } from '@brillout/docpress'
 
 <StaticHostDocStrategies name="GitHub Pages" />
 
-We recommend using the [GitHub Pages Deploy Action](https://github.com/JamesIves/github-pages-deploy-action). For example, `vike.dev` uses the GitHub action at <RepoLink path='.github/workflows/docs.yml' /> to automatically deploy whenever a commit changes the docs.
+> We recommend using the [GitHub Pages Deploy Action](https://github.com/JamesIves/github-pages-deploy-action). For example, `vike.dev` uses [this GitHub workflow](https://github.com/vikejs/vike/blob/main/.github/workflows/website.yml) to automatically deploy whenever a commit changes Vike's docs.
 
 <StaticHostDocOutro
-  baseUrlAddendum={<> You need to do this if you use the GitHub Page domain <code><i>username</i>.github.io/<i>repo-name/*</i></code>.</>}
+  baseUrlAddendum={<p>For example, if you want to deploy to GitHub's domain <code><i>username</i>.github.io/<i>repo-name/**/*</i></code>, set the Base URL to <code>/repo-name/</code>.</p>}
 />
 
 <Warning>

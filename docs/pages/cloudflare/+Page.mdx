@@ -1,48 +1,49 @@
-import { RepoLink, Link } from '@brillout/docpress'
+import { RepoLink, Link, FileAdded } from '@brillout/docpress'
 import { Example, UseScaffolder } from '../../components'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import '../../components/tabs.css'
 import Examples from './Examples.mdx'
 
-We recommend using the <Link href="#vike-cloudflare" /> extension to deploy your app to [Cloudflare](https://www.cloudflare.com).
+We recommend using <Link href="#vike-cloudflare" /> to deploy your app to [Cloudflare](https://www.cloudflare.com).
 
 > <UseScaffolder>`vike-cloudflare`</UseScaffolder>
 
 
 ## `vike-cloudflare`
 
-The [`vike-cloudflare`](https://github.com/vikejs/vike-cloudflare) extension enables zero-configuration deployment to
- - [Cloudflare Workers](https://workers.cloudflare.com) for the server-side (if you have any), and
- - [Cloudflare Pages](https://pages.cloudflare.com) for static assets.
+The [`vike-cloudflare`](https://github.com/vikejs/vike-cloudflare) extension enables zero-config deployment of <Link href="/ssr">SSR</Link> as well as <Link href="/pre-rendering">pre-rendered (aka SSG)</Link> apps to [Cloudflare Workers](https://workers.cloudflare.com).
 
-<Link href="/pre-rendering">Pre-rendered pages</Link> are deployed as static files, and <Link href="/ssr">SSR</Link>'d pages as [Pages Functions](https://developers.cloudflare.com/pages/functions/advanced-mode/) (which use Cloudflare Workers under the hood).
+> Cloudflare Workers recently added support for deploying static assets, see <Link href="/cloudflare-pages" />.
 
 ### Without a server
 
-```js
-// +config.js
+If you <Link href="/pre-rendering">pre-render</Link> all your pages, you don't need a server — simply add the `vike-cloudflare` extension:
 
-import vikeCloudflare from "vike-cloudflare/config";
+```js
+// pages/+config.js
+
+import vikeCloudflare from "vike-cloudflare/config" // [!code ++]
 
 export default {
-  plugins: [vikeCloudflare]
+  prerender: true,
+  plugins: [vikeCloudflare] // [!code ++]
 }
 ```
 
 ### With a server
 
-`vike-cloudflare` currently supports <Link href="/hono" /> and <Link href="/hattip" />.
+If you use <Link href="/ssr">SSR</Link>, you must create a server:
 
 ```js
-// +config.js
+// pages/+config.js
 
-import vikeCloudflare from "vike-cloudflare/config";
+import vikeCloudflare from "vike-cloudflare/config" // [!code ++]
 
 export default {
-  plugins: [vikeCloudflare],
-  server: {
-    entry: "server/index.js"
-  }
+  plugins: [vikeCloudflare], // [!code ++]
+  server: { // [!code ++]
+    entry: "server/index.js" // [!code ++]
+  } // [!code ++]
 }
 ```
 
@@ -53,50 +54,54 @@ export default {
   </TabList>
 
   <TabPanel>
+    <FileAdded>
     ```js
     // server/index.js
 
-    import { Hono } from "hono";
-    import { apply } from "vike-cloudflare/hono";
-    import { serve } from "vike-cloudflare/hono/serve";
+    import { Hono } from 'hono'
+    import { apply } from 'vike-cloudflare/hono'
+    import { serve } from 'vike-cloudflare/hono/serve'
 
     function startServer() {
-      const app = new Hono();
-      const port = process.env.PORT || 3000;
+      const app = new Hono()
+      const port = process.env.PORT || 3000
 
-      apply(app);
+      apply(app)
 
-      return serve(app, { port: +port });
+      return serve(app, { port: +port })
     }
 
-    export default startServer();
-
+    export default startServer()
     ```
+    </FileAdded>
   </TabPanel>
   <TabPanel>
+    <FileAdded>
     ```js
     // server/index.js
 
-    import { createRouter } from "@hattip/router";
-    import { apply } from "vike-cloudflare/hattip";
-    import { serve } from "vike-cloudflare/hattip/serve";
+    import { createRouter } from '@hattip/router'
+    import { apply } from 'vike-cloudflare/hattip'
+    import { serve } from 'vike-cloudflare/hattip/serve'
 
     function startServer() {
-      const router = createRouter();
-      const port = process.env.PORT || 3000;
+      const router = createRouter()
+      const port = process.env.PORT || 3000
 
-      apply(router);
+      apply(router)
 
-      return serve(router, { port: +port });
+      return serve(router, { port: +port })
     }
 
-    export default startServer();
+    export default startServer()
     ```
+    </FileAdded>
   </TabPanel>
 </Tabs>
 
+> `vike-cloudflare` currently supports <Link href="/hono" /> and <Link href="/hattip" /> — more servers are coming soon.
 
-## Accessing Cloudflare APIs in development
+## Cloudflare APIs in development
 
 You can use `wrangler`'s [`getPlatformProxy()`](https://developers.cloudflare.com/workers/wrangler/api/#getplatformproxy) to access Cloudflare APIs (such as D1 and KV) in development.
 

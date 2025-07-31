@@ -222,13 +222,13 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Cloudflare Pages',
-    url: '/cloudflare-pages',
+    title: 'Netlify',
+    url: '/netlify',
   },
   {
     level: 2,
-    title: 'Netlify',
-    url: '/netlify',
+    title: 'Cloudflare Pages',
+    url: '/cloudflare-pages',
   },
   {
     level: 2,
