@@ -1,6 +1,6 @@
 export { testRun }
 
-import {expect, getServerUrl, page, test} from '@brillout/test-e2e'
+import { expect, getServerUrl, page, test } from '@brillout/test-e2e'
 import { testCounter, testRunClassic } from '../../test/utils'
 
 type CMD = 'npm run dev' | 'npm run preview'

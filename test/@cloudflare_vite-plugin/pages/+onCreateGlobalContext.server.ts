@@ -1,11 +1,9 @@
 export { onCreateGlobalContext }
 
 import type { GlobalContextServer } from 'vike/types'
-// @ts-ignore
 import { env } from 'cloudflare:workers'
 
 async function onCreateGlobalContext(globalContext: GlobalContextServer) {
-  // @ts-ignore
   globalContext.someEnvVar = env['SOME_ENV_VAR']
 }
 
