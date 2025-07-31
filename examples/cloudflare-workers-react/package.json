@@ -11,8 +11,9 @@
     "cross-env": "^10.0.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "vite": "^7.0.6",
+    "typescript": "^5.9.2",
     "vike": "0.4.236",
+    "vite": "^7.0.6",
     "wrangler": "^4.27.0"
   },
   "type": "module"

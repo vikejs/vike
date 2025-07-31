@@ -206,6 +206,9 @@ importers:
       react-dom:
         specifier: ^19.1.1
         version: 19.1.1(react@19.1.1)
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
       vike:
         specifier: 0.4.236
         version: link:../../packages/vike
