@@ -3,7 +3,7 @@ export default Page
 import React from 'react'
 import { Counter } from './Counter'
 
-function Page() {
+function Page({ pageContext }) {
   return (
     <>
       <h1>Welcome</h1>
@@ -14,6 +14,9 @@ function Page() {
           Interactive. <Counter />
         </li>
       </ul>
+      <p>
+        <code>pageContext.globalContext.someEnvVar=== '{pageContext.globalContext.someEnvVar}'</code>
+      </p>
     </>
   )
 }
