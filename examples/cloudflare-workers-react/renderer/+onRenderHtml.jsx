@@ -7,10 +7,10 @@ import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { Layout } from './Layout'
 
 function onRenderHtml(pageContext) {
-  const { Page, pageProps } = pageContext
+  const { Page } = pageContext
   const pageHtml = ReactDOMServer.renderToString(
     <Layout>
-      <Page {...pageProps} />
+      <Page pageContext={pageContext} />
     </Layout>,
   )
 

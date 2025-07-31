@@ -8,7 +8,7 @@
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
-    "build-worker": "^0.3.0",
+    "build-worker": "^0.3.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "vike": "0.4.236",

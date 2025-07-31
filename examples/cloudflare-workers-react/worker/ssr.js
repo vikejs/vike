@@ -4,7 +4,7 @@ import { renderPage } from 'vike/server'
 
 async function handleSsr(url) {
   const pageContextInit = {
-    urlOriginal: url,
+    urlOriginal: url.href,
   }
   const pageContext = await renderPage(pageContextInit)
   const { httpResponse } = pageContext

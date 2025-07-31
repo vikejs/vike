@@ -6,11 +6,11 @@ import { hydrateRoot } from 'react-dom/client'
 import { Layout } from './Layout'
 
 async function onRenderClient(pageContext) {
-  const { Page, pageProps } = pageContext
+  const { Page } = pageContext
   hydrateRoot(
     document.getElementById('root'),
     <Layout>
-      <Page {...pageProps} />
+      <Page pageContext={pageContext} />
     </Layout>,
   )
 }
