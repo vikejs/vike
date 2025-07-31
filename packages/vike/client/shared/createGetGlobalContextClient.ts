@@ -16,21 +16,23 @@ import {
 import type { GlobalContextClientInternal } from '../runtime-client-routing/globalContext.js'
 import type { GlobalContextClientInternalWithServerRouting } from '../runtime-server-routing/globalContext.js'
 import { getGlobalContextSerializedInHtml } from './getJsonSerializedInHtml.js'
-import { assert, assertUsage, genPromise, getGlobalObject, objectAssign } from './utils.js'
+import { assert, assertUsage, genPromise, getGlobalObject, objectAssign, checkType } from './utils.js'
 
 type GlobalContextNotTyped = Record<string, unknown>
 const globalObject = getGlobalObject<{
-  globalContext?: GlobalContextNotTyped
   isClientRouting?: boolean
-  globalContextPromise: Promise<GlobalContextNotTyped>
-  globalContextPromiseResolve: (globalContext: GlobalContextNotTyped) => void
+  virtualFileExports?: unknown
+  globalContext?: GlobalContextNotTyped
+  globalContextPromise?: Promise<GlobalContextNotTyped>
+  globalContextInitialPromise: Promise<void>
+  globalContextInitialPromiseResolve: () => void
 }>(
   'createGetGlobalContextClient.ts',
   (() => {
-    const { promise: globalContextPromise, resolve: globalContextPromiseResolve } = genPromise<GlobalContextNotTyped>()
+    const { promise: globalContextInitialPromise, resolve: globalContextInitialPromiseResolve } = genPromise()
     return {
-      globalContextPromise,
-      globalContextPromiseResolve,
+      globalContextInitialPromise,
+      globalContextInitialPromiseResolve,
     }
   })(),
 )
@@ -51,15 +53,18 @@ function createGetGlobalContextClient<GlobalContextAddendum extends object>(
   async function getGlobalContext() {
     // Cache
     if (
-      globalObject.globalContext &&
+      globalObject.virtualFileExports &&
       // Don't break HMR
-      globalObject.globalContext._virtualFileExports !== virtualFileExports
+      globalObject.virtualFileExports === virtualFileExports
     ) {
-      return globalObject.globalContext as never
+      const globalContext = await globalObject.globalContextPromise
+      return globalContext as never
+    } else {
+      globalObject.virtualFileExports = virtualFileExports
     }
 
     // Create
-    const globalContext = await createGlobalContextShared(
+    const globalContextPromise = createGlobalContextShared(
       virtualFileExports,
       globalObject,
       undefined,
@@ -77,8 +82,10 @@ function createGetGlobalContextClient<GlobalContextAddendum extends object>(
         return globalContextAddendum
       },
     )
-    assert(globalObject.globalContext)
-    globalObject.globalContextPromiseResolve(globalObject.globalContext)
+    globalObject.globalContextPromise = globalContextPromise
+    const globalContext = await globalContextPromise
+    assert(globalObject.globalContext === globalContext)
+    globalObject.globalContextInitialPromiseResolve()
 
     // Return
     return globalContext
@@ -88,11 +95,15 @@ function createGetGlobalContextClient<GlobalContextAddendum extends object>(
 // Type is never exported — it's the server-side getGlobalContext() type that is exported and exposed to the user
 type NeverExported = never
 async function getGlobalContext(): Promise<NeverExported> {
+  await globalObject.globalContextInitialPromise
   const globalContext = await globalObject.globalContextPromise
+  assert(globalContext)
+  checkType<GlobalContextNotTyped>(globalContext)
   return globalContext as never
 }
 function getGlobalContextSync(): NeverExported {
   const { globalContext } = globalObject
   assertUsage(globalContext, getGlobalContextSyncErrMsg)
+  checkType<GlobalContextNotTyped>(globalContext)
   return globalContext as never
 }

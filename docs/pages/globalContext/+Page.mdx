@@ -123,12 +123,13 @@ If your JavaScript server runs as a single process, then you have only one `glob
 
 On edge environments, there are typically multiple server processes/workers, so you get multiple server-side `globalContext` objects — one per process/worker.
 
+> In development, the `globalContext` object is re-initialized if you make a file change that triggers a full page reload (i.e. a change that isn't covered by HMR).
+
 ### Client-side
 
 When a user starts visiting your website, a new `globalContext` object is created that lives until the user closes your website. If the user opens your website in multiple tabs, then there is one `globalContext` per tab.
 
 For example, if 3 users are simultaneously visiting your website — two users with 1 tab and one user with 3 tabs — then there are 5 (`1 + 1 + 3 = 5`) client-side `globalContext` objects.
-
 
 ### Pre-rendering
 
