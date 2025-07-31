@@ -23,6 +23,13 @@ export type { BuildInfo }
 export type { GlobalContextServerInternal as GlobalContextServerInternal }
 export type { GlobalContextServer }
 
+// TODO/now: use isProductionEnvironment() instead of globalObject.isProduction
+// TODO/now: rename:
+//  - isProduction => isProductionEnvironment
+//  - setIsProduction => setIsProductionEnvironment
+//  - setGlobalContext_isProduction => setGlobalContext_isProductionEnvironment
+//  - sProductionEnvironment => sDevEnv
+
 // The core logic revolves around:
 // - virtualFileExports is the main requirement
 // - In production: globalObject.buildEntry which is the production entry set by @brillout/vite-plugin-server-entry
@@ -46,6 +53,9 @@ import {
   createDebugger,
   checkType,
   PROJECT_VERSION,
+  getViteRPC,
+  isRunnableDevEnvironment,
+  assertIsNotBrowser,
 } from './utils.js'
 import type { ViteManifest } from '../../types/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
@@ -68,6 +78,7 @@ import { logRuntimeError, logRuntimeInfo } from './loggerRuntime.js'
 import { getVikeConfigErrorBuild, setVikeConfigError } from '../shared/getVikeConfigError.js'
 import { hasAlreadyLogged } from './renderPage/isNewError.js'
 import type { Hook } from '../../shared/hooks/getHook.js'
+import type { ViteRPC } from '../vite/plugins/pluginNonRunnableDev.js'
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
   {
@@ -95,6 +106,7 @@ const globalObjectTyped = globalObject as typeof globalObject & {
   globalContext?: GlobalContextServerInternal
 }
 const vikeConfigErrorRecoverMsg = pc.bold(pc.green('Vike config loaded'))
+assertIsNotBrowser()
 
 // Public usge
 type GlobalContextServer = Pick<
@@ -212,9 +224,11 @@ async function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
   globalObject.viteDevServer = viteDevServer
   globalObject.viteDevServerPromiseResolve(viteDevServer)
 
-  const { success } = await updateUserFiles()
-  if (!success) return
-  assertGlobalContextIsDefined()
+  if (isRunnable(viteDevServer)) {
+    const { success } = await updateUserFiles()
+    if (!success) return
+    assertGlobalContextIsDefined()
+  }
 }
 function setGlobalContext_viteConfig(viteConfig: ResolvedConfig, viteConfigRuntime: ViteConfigRuntime): void {
   if (globalObject.viteConfig) return
@@ -230,6 +244,7 @@ function setGlobalContext_isPrerendering() {
   globalObject.isPrerendering = true
   setIsProduction(true)
 }
+// TODO/now: `rename tolerateContraditction tolerateContradiction`
 function setGlobalContext_isProduction(isProduction: boolean, tolerateContraditction = false) {
   if (debug.isActivated) debug('setGlobalContext_isProduction()', { isProduction, tolerateContraditction })
   if (globalObject.isProduction === undefined) {
@@ -285,7 +300,12 @@ async function initGlobalContext(): Promise<void> {
   const { isProduction } = globalObject
   assert(typeof isProduction === 'boolean')
   if (!isProduction) {
-    await globalObject.viteDevServerPromise
+    if (isProcessSharedWithVite()) {
+      await globalObject.viteDevServerPromise
+    } else {
+      assert(isNonRunnableDev())
+      await updateUserFiles()
+    }
     assert(globalObject.waitForUserFilesUpdate)
     await globalObject.waitForUserFilesUpdate
   } else {
@@ -441,15 +461,45 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
     viteDevServer !== globalObject.viteDevServer
 
   const { viteDevServer } = globalObject
-  assert(viteDevServer)
   let hasError = false
   let virtualFileExports: Record<string, unknown> | undefined
   let err: unknown
-  try {
-    virtualFileExports = await viteDevServer.ssrLoadModule(virtualFileIdEntryServer)
-  } catch (err_) {
-    hasError = true
-    err = err_
+  if (viteDevServer) {
+    assert(isRunnable(viteDevServer))
+
+    /* We don't use runner.import() yet, because as of vite@7.0.6 (July 2025) runner.import() unexpectedly invalidates the module graph, which is a unexpected behavior that doesn't happen with ssrLoadModule()
+    // Vite 6
+    try {
+      virtualFileExports = await (viteDevServer.environments.ssr as RunnableDevEnvironment).runner.import(
+        'virtual:vike:entry:server',
+      )
+    } catch (err_) {
+      hasError = true
+      err = err_
+    }
+    */
+
+    // Vite 5
+    try {
+      virtualFileExports = await viteDevServer.ssrLoadModule(virtualFileIdEntryServer)
+    } catch (err_) {
+      hasError = true
+      err = err_
+    }
+  } else {
+    try {
+      /* We use __VIKE__DYNAMIC_IMPORT instead of directly using import() to workaround what seems to be a Vite HMR bug:
+         ```js
+         assert(false)
+         // This line breaks the HMR of regular (runnable) apps, even though (as per the assert() above) it's never run. It seems to be a Vite bug: handleHotUpdate() receives an empty `modules` list.
+         import('virtual:vike:entry:server')
+         ```
+      */
+      virtualFileExports = await __VIKE__DYNAMIC_IMPORT('virtual:vike:entry:server')
+    } catch (err_) {
+      hasError = true
+      err = err_
+    }
   }
   if (isOutdated()) return { success: false }
   if (hasError) return onError(err)
@@ -478,6 +528,7 @@ async function setGlobalContext(virtualFileExports: unknown) {
     globalObject,
     addGlobalContext,
     addGlobalContextTmp,
+    addGlobalContextAsync,
   )
 
   assertV1Design(
@@ -525,23 +576,18 @@ function addGlobalContextCommon(
     _pageRoutes: pageRoutes,
     _onBeforeRouteHook: onBeforeRouteHook,
   }
-  const { viteDevServer, viteConfig, viteConfigRuntime, isPrerendering, isProduction } = globalObject
+  const { viteDevServer, viteConfig, isPrerendering, isProduction } = globalObject
   assert(typeof isProduction === 'boolean')
   if (!isProduction) {
-    assert(viteDevServer)
     assert(globalContext) // main common requirement
-    assert(viteConfig)
-    assert(viteConfigRuntime)
     assert(!isPrerendering)
     return {
       ...globalContextBase,
-      ...resolveBaseRuntime(viteConfigRuntime, globalContext.config),
       _isProduction: false as const,
       _isPrerendering: false as const,
       assetsManifest: null,
       _viteDevServer: viteDevServer,
       viteConfig,
-      viteConfigRuntime,
     }
   } else {
     assert(globalObject.buildEntry)
@@ -551,11 +597,9 @@ function addGlobalContextCommon(
     assert(assetsManifest)
     const globalContextBase2 = {
       ...globalContextBase,
-      ...resolveBaseRuntime(buildInfo.viteConfigRuntime, globalContext.config),
       _isProduction: true as const,
       assetsManifest,
       _viteDevServer: null,
-      viteConfigRuntime: buildInfo.viteConfigRuntime,
       _usesClientRouter: buildInfo.usesClientRouter,
     }
     if (isPrerendering) {
@@ -574,6 +618,27 @@ function addGlobalContextCommon(
     }
   }
 }
+async function addGlobalContextAsync(globalContext: GlobalContextBase) {
+  debug('addGlobalContextAsync()')
+  let { viteConfigRuntime, buildInfo } = globalObject
+  if (!viteConfigRuntime) {
+    if (buildInfo) {
+      viteConfigRuntime = buildInfo.viteConfigRuntime
+    } else {
+      assert(!isProcessSharedWithVite()) // process shared with Vite => globalObject.viteConfigRuntime should be set
+      assert(!globalObject.isProduction) // production => globalObject.buildInfo.viteConfigRuntime should be set
+      assert(isNonRunnableDev())
+      const rpc = getViteRPC<ViteRPC>()
+      viteConfigRuntime = await rpc.getViteConfigRuntimeRPC()
+    }
+  }
+  assert(viteConfigRuntime)
+
+  return {
+    viteConfigRuntime,
+    ...resolveBaseRuntime(viteConfigRuntime, globalContext.config),
+  }
+}
 
 function clearGlobalContext() {
   debug('clearGlobalContext()')
@@ -584,6 +649,7 @@ function getInitialGlobalObject() {
   debug('getInitialGlobalObject()')
   const { promise: viteDevServerPromise, resolve: viteDevServerPromiseResolve } = genPromise<ViteDevServer>()
   return {
+    isProduction: isNonRunnableDev() ? false : undefined,
     viteDevServerPromise,
     viteDevServerPromiseResolve,
   }
@@ -597,4 +663,27 @@ function resolveBaseRuntime(
   const baseServerUnresolved = config.baseServer ?? null
   const baseAssetsUnresolved = config.baseAssets ?? null
   return resolveBase(baseViteOriginal, baseServerUnresolved, baseAssetsUnresolved)
+}
+
+function isProcessSharedWithVite(): boolean {
+  const yes = globalThis.__VIKE__IS_PROCESS_SHARED_WITH_VITE ?? false
+  if (yes) assert(!isNonRunnableDev())
+  return yes
+}
+
+function isRunnable(viteDevServer: ViteDevServer): boolean {
+  const yes =
+    // Vite 5
+    !viteDevServer.environments ||
+    // Vite 6 or above
+    isRunnableDevEnvironment(viteDevServer.environments.ssr)
+  if (yes) assert(!isNonRunnableDev())
+  return yes
+}
+
+function isNonRunnableDev(): boolean | null {
+  if (typeof __VIKE__IS_NON_RUNNABLE_DEV === 'undefined') return null
+  const yes = __VIKE__IS_NON_RUNNABLE_DEV
+  assert(typeof yes === 'boolean')
+  return yes
 }

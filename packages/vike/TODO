@@ -54,6 +54,7 @@
     - Make +client.js cumulative https://github.com/vikejs/vike/issues/1834
     - Fix non-global +client.js
       - For example, make `import '@batijs/elements'` work for Vike's docs.
+- Require Vite 6
 == Maybe
 - Rename hooks
   - Soft deprecation + migration scripts => hook renaming not too annoying for the user?

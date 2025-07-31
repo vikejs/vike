@@ -56,6 +56,27 @@ function getCiJobs() {
 function tolerateError({ logSource, logText, testInfo }) {
   return (
     [
+      /*
+      ```console
+      [19:47:21.367][/][npm run dev][stderr] The latest compatibility date supported by the installed Cloudflare Workers Runtime is "2025-07-12",
+but you've requested "2025-07-18". Falling back to "2025-07-12"...
+      ```
+      */
+      'compatibility date supported by the installed Cloudflare',
+
+      /*
+      ```shell
+      [12:12:28.624][/examples/cloudflare-workers-vue][npm run preview][stderr] ▲ [WARNING] "import.meta" is not available with the "iife" output format and will be empty [empty-import-meta]
+
+          ../../packages/vike/dist/esm/node/runtime/globalContext.js:511:17:
+            511 │     const PROD = import.meta.env.PROD;
+                ╵                  ~~~~~~~~~~~
+
+        You need to set the output format to "esm" for "import.meta" to work correctly.      
+      ```
+      */
+      '"import.meta" is not available with the "iife" output format and will be empty',
+
       // ```shell
       // [23:57:18.027][/.test-preview.test.ts][pnpm run preview][stderr] (!) Some chunks are larger than 500 kB after minification. Consider:
       // - Using dynamic import() to code-split the application

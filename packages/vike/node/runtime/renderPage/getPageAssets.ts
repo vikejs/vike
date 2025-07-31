@@ -5,7 +5,7 @@ export type { PageAsset }
 export type { GetPageAssets }
 export type { PageContextGetPageAssets }
 
-import { assert, prependBase, toPosixPath, unique, getGlobalObject } from '../utils.js'
+import { assert, prependBase, toPosixPath, unique, getGlobalObject, getViteRPC } from '../utils.js'
 import { retrieveAssetsDev } from './getPageAssets/retrieveAssetsDev.js'
 import { retrieveAssetsProd } from './getPageAssets/retrieveAssetsProd.js'
 import { inferMediaType, type MediaType } from './inferMediaType.js'
@@ -17,6 +17,7 @@ import type { ViteManifest } from '../../../types/ViteManifest.js'
 import type { ResolveClientEntriesDev } from '../../vite/shared/resolveClientEntriesDev.js'
 import type { ConfigResolved } from '../../../types/index.js'
 import type { ViteDevServer } from 'vite'
+import type { ViteRPC } from '../../vite/plugins/pluginNonRunnableDev.js'
 
 const globalObject = getGlobalObject('renderPage/getPageAssets.ts', {
   resolveClientEntriesDev: null as null | ResolveClientEntriesDev,
@@ -46,7 +47,9 @@ async function getPageAssets(
   const isDev = !isProduction
 
   const { assetUrls, clientEntriesSrc } = isDev
-    ? await retrievePageAssetsDev(globalContext._viteDevServer, clientDependencies, clientEntries)
+    ? !globalContext._viteDevServer
+      ? await getViteRPC<ViteRPC>().retrievePageAssetsDevRPC(clientDependencies, clientEntries)
+      : await retrievePageAssetsDev(globalContext._viteDevServer, clientDependencies, clientEntries)
     : retrievePageAssetsProd(
         globalContext.assetsManifest,
         clientDependencies,

@@ -51,6 +51,11 @@ function getCode(
   )
   lines.push('};')
 
+  if (!isForClientSide && isDev) {
+    // https://vite.dev/guide/api-environment-frameworks.html
+    lines.push('if (import.meta.hot) import.meta.hot.accept();')
+  }
+
   const code = [...importStatements, ...lines].join('\n')
   debug(id, isForClientSide ? 'CLIENT-SIDE' : 'SERVER-SIDE', code)
   return code

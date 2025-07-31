@@ -1,0 +1,27 @@
+{
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && pnpm run build:worker",
+    "build:worker": "build-worker --entry worker/index.ts --out dist/worker/index.js && node ./build-fix.js",
+    "preview": "pnpm run build && vite preview",
+    "deploy": "pnpm run build && wrangler deploy",
+    "cf-typegen": "wrangler types"
+  },
+  "dependencies": {
+    "build-worker": "^0.3.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "vike": "0.4.236",
+    "vike-react": "^0.6.5"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "https://pkg.pr.new/@cloudflare/vite-plugin@31c94b7",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.6.0",
+    "typescript": "^5.8.3",
+    "vite": "^7.0.6",
+    "wrangler": "https://pkg.pr.new/wrangler@31c94b7"
+  },
+  "type": "module"
+}

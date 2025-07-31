@@ -1,7 +1,8 @@
 export { getViteDevScript }
 
+import type { ViteRPC } from '../../../vite/plugins/pluginNonRunnableDev.js'
 import type { GlobalContextServerInternal } from '../../globalContext.js'
-import { assert, assertUsage, assertWarning } from '../../utils.js'
+import { assert, assertUsage, assertWarning, getViteRPC } from '../../utils.js'
 import pc from '@brillout/picocolors'
 
 const reachOutCTA = 'Create a new GitHub issue to discuss a solution.'
@@ -18,7 +19,9 @@ async function getViteDevScript(pageContext: {
   const fakeHtmlBegin = '<html> <head>' // White space to test whether user is using a minifier
   const fakeHtmlEnd = '</head><body></body></html>'
   let fakeHtml = fakeHtmlBegin + fakeHtmlEnd
-  fakeHtml = await viteDevServer.transformIndexHtml('/', fakeHtml)
+  fakeHtml = viteDevServer
+    ? await viteDevServer.transformIndexHtml('/', fakeHtml)
+    : await getViteRPC<ViteRPC>().transformIndexHtmlRPC(fakeHtml)
   assertUsage(
     !fakeHtml.includes('vite-plugin-pwa'),
     `The HTML transformer of ${pc.cyan(

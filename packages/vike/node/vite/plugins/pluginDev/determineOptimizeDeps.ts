@@ -30,12 +30,16 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
   config.optimizeDeps.include = add(config.optimizeDeps.include, includeClient)
   config.optimizeDeps.entries = add(config.optimizeDeps.entries, entriesClient)
 
-  // TO-DO/eventually: use a check that is agnostic to @cloudflare/vite-plugin
-  const isNotRunnable = config.environments?.ssr?.resolve.conditions.includes('workerd')
-  if (isNotRunnable) {
-    config.ssr.optimizeDeps.include = add(config.ssr.optimizeDeps.include, includeServer)
-    // @ts-ignore — Vite doesn't seem to support ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
-    config.ssr.optimizeDeps.entries = add(config.ssr.optimizeDeps.entries, entriesServer)
+  // Workaround until https://github.com/vitejs/vite-plugin-react/issues/650
+  // - TODO/soon: remove workaround once https://github.com/vitejs/vite/pull/20495 is released
+  includeServer.push('react/jsx-dev-runtime')
+
+  for (const envName in config.environments) {
+    const env = config.environments[envName]!
+    if (env.consumer === 'server' && env.optimizeDeps.noDiscovery === false) {
+      env.optimizeDeps.include = add(env.optimizeDeps.include, includeServer)
+      env.optimizeDeps.entries = add(env.optimizeDeps.entries, entriesServer)
+    }
   }
 
   if (debug.isActivated)
@@ -43,9 +47,8 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
       'config.optimizeDeps.entries': config.optimizeDeps.entries,
       'config.optimizeDeps.include': config.optimizeDeps.include,
       'config.optimizeDeps.exclude': config.optimizeDeps.exclude,
-      /* Vite doesn't seem to support ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
+      // @ts-ignore Vite doesn't seem to support ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
       'config.ssr.optimizeDeps.entries': config.ssr.optimizeDeps.entries,
-      //*/
       'config.ssr.optimizeDeps.include': config.ssr.optimizeDeps.include,
       'config.ssr.optimizeDeps.exclude': config.ssr.optimizeDeps.exclude,
     })

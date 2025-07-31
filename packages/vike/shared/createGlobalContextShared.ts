@@ -20,12 +20,16 @@ import { getHookFromPageConfigGlobalCumulative, type Hook } from './hooks/getHoo
 const getGlobalContextSyncErrMsg =
   "The global context isn't set yet, call getGlobalContextSync() later or use getGlobalContext() instead."
 
-async function createGlobalContextShared<GlobalContextAdded extends Record<string, any>>(
+async function createGlobalContextShared<
+  GlobalContextAdded extends Record<string, any>,
+  GlobalContextAddedAsync extends Record<string, any>,
+>(
   virtualFileExports: unknown,
   globalObject: { globalContext?: Record<string, unknown>; onCreateGlobalContextHooks?: Hook[] },
   addGlobalContext?: (globalContext: GlobalContextBase) => GlobalContextAdded,
   // TO-DO/next-major-release: we'll be able to remove addGlobalContextTmp after loadPageRoutes() is sync (it will be sync after we remove the old design)
   addGlobalContextTmp?: (globalContext: GlobalContextBase) => Promise<GlobalContextAdded>,
+  addGlobalContextAsync?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddedAsync>,
 ) {
   const globalContext = createGlobalContextBase(virtualFileExports)
 
@@ -49,6 +53,11 @@ async function createGlobalContextShared<GlobalContextAdded extends Record<strin
   } else {
     const globalContextAdded = await addGlobalContextTmp?.(globalContext)
     objectAssign(globalContext, globalContextAdded)
+  }
+
+  {
+    const globalContextAddedAsync = await addGlobalContextAsync?.(globalContext)
+    objectAssign(globalContext, globalContextAddedAsync)
   }
 
   const onCreateGlobalContextHooks = getHookFromPageConfigGlobalCumulative(

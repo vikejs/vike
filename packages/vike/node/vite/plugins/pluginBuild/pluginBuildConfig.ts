@@ -1,7 +1,6 @@
 export { pluginBuildConfig }
 export { assertRollupInput }
 export { analyzeClientEntries }
-export { manifestTempFile }
 
 import {
   assert,
@@ -32,7 +31,6 @@ import {
   handleAssetsManifest_getBuildConfig,
 } from './handleAssetsManifest.js'
 import { resolveIncludeAssetsImportedByServer } from '../../../runtime/renderPage/getPageAssets.js'
-const manifestTempFile = '_temp_manifest.json'
 
 function pluginBuildConfig(): Plugin[] {
   let config: ResolvedConfig
