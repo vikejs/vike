@@ -26,6 +26,7 @@ import { getVikeConfigInternal, isV1Design } from '../../shared/resolveVikeConfi
 import { getOutDirs } from '../../shared/getOutDirs.js'
 import { isViteServerBuild_onlySsrEnv, isViteServerBuild } from '../../shared/isViteServerBuild.js'
 import { set_macro_ASSETS_MANIFEST } from './pluginBuildEntry.js'
+import { getManifestFilePathRelative } from '../../shared/getManifestFilePathRelative.js'
 type Bundle = Rollup.OutputBundle
 assertIsSingleModuleInstance('build/handleAssetsManifest.ts')
 let assetsJsonFilePath: string | undefined
@@ -402,9 +403,7 @@ function getManifestFilePath(config: ResolvedConfig, client: boolean) {
   const outDir = client ? outDirs.outDirClient : outDirs.outDirServer
   const env = client ? config.environments.client : config.environments.ssr
   assert(env)
-  const manifestConfig = env.build.manifest
-  assert(manifestConfig !== false)
-  const manifestFile = typeof manifestConfig === 'string' ? manifestConfig : '.vite/manifest.json'
-  const manifestFilePath = path.posix.join(outDir, manifestFile)
+  const manifestFilePathRelative = getManifestFilePathRelative(env.build.manifest)
+  const manifestFilePath = path.posix.join(outDir, manifestFilePathRelative)
   return manifestFilePath
 }

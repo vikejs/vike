@@ -14,6 +14,7 @@ import { isVikeCliOrApi } from '../../../api/context.js'
 import { handleAssetsManifest, handleAssetsManifest_assertUsageCssTarget } from './handleAssetsManifest.js'
 import { isViteClientBuild, isViteServerBuild_onlySsrEnv } from '../../shared/isViteServerBuild.js'
 import { runPrerender_forceExit, runPrerenderFromAutoRun } from '../../../prerender/runPrerenderEntry.js'
+import { getManifestFilePathRelative } from '../../shared/getManifestFilePathRelative.js'
 assertIsSingleModuleInstance('build/pluginAutoFullBuild.ts')
 let forceExit = false
 
@@ -85,7 +86,7 @@ async function triggerFullBuild(config: ResolvedConfig, viteEnv: Environment, bu
   //  - The legacy plugin triggers its own Rollup build for the client-side.
   //  - The legacy plugin doesn't generate a manifest => we can use that to detect the legacy plugin build.
   //  - Issue & reproduction: https://github.com/vikejs/vike/issues/1154#issuecomment-1965954636
-  if (!bundle['.vite/manifest.json']) return
+  if (!bundle[getManifestFilePathRelative(config.build.manifest)]) return
 
   const configInline = getFullBuildInlineConfig(config)
 
