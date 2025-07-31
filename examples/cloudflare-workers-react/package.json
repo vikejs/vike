@@ -2,7 +2,8 @@
   "scripts": {
     "dev": "vike dev",
     "preview": "vike build && cross-env NODE_ENV=production && wrangler dev",
-    "deploy": "vike build && cross-env NODE_ENV=production && wrangler publish"
+    "deploy": "vike build && cross-env NODE_ENV=production && wrangler publish",
+    "cf-typegen": "wrangler types"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.4.0",
