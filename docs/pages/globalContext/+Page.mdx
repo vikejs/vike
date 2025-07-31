@@ -123,7 +123,7 @@ If your JavaScript server runs as a single process, then you have only one `glob
 
 On edge environments, there are typically multiple server processes/workers, so you get multiple server-side `globalContext` objects — one per process/worker.
 
-> In development, the `globalContext` object is re-initialized if you make a file change that triggers a full page reload (in other words, a file change that isn't covered by HMR).
+> In development, the `globalContext` object is re-initialized if you make a file change that triggers a full page reload (i.e. a change that isn't covered by HMR).
 
 ### Client-side
 
