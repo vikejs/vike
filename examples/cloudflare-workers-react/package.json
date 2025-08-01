@@ -1,6 +1,7 @@
 {
   "scripts": {
     "dev": "vike dev",
+    "build": "vike build",
     "preview": "vike build && cross-env NODE_ENV=production && wrangler dev",
     "deploy": "vike build && cross-env NODE_ENV=production && wrangler publish",
     "cf-typegen": "wrangler types"
