@@ -125,7 +125,7 @@ type GlobalContextServer = Pick<
   Vike.GlobalContextServer
 
 // Internal usage
-type GlobalContextServerInternal = Awaited<ReturnType<typeof setGlobalContext>>
+type GlobalContextServerInternal = Awaited<ReturnType<typeof createGlobalContext>>
 
 async function getGlobalContextServerInternal() {
   // getGlobalContextServerInternal() should always be called after initGlobalContext()
@@ -365,7 +365,7 @@ async function loadBuildEntry(outDir?: string) {
   assertBuildEntry(buildEntry)
   globalObject.assetsManifest = buildEntry.assetsManifest
   globalObject.buildInfo = buildEntry.buildInfo
-  await setGlobalContext(buildEntry.virtualFileExports)
+  await createGlobalContext(buildEntry.virtualFileExports)
 }
 
 // This is the production entry, see:
@@ -511,7 +511,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
   }
 
   try {
-    await setGlobalContext(virtualFileExports)
+    await createGlobalContext(virtualFileExports)
   } catch (err_) {
     hasError = true
     err = err_
@@ -521,8 +521,8 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
   return onSuccess()
 }
 
-async function setGlobalContext(virtualFileExports: unknown) {
-  debug('setGlobalContext()')
+async function createGlobalContext(virtualFileExports: unknown) {
+  debug('createGlobalContext()')
   assert(!getVikeConfigErrorBuild())
   const globalContext = await createGlobalContextShared(
     virtualFileExports,
@@ -541,9 +541,9 @@ async function setGlobalContext(virtualFileExports: unknown) {
   assertGlobalContextIsDefined()
   onSetupRuntime()
 
-  debug('setGlobalContext() - done')
+  debug('createGlobalContext() - done')
 
-  // Never actually used, only used for TypeScript `ReturnType<typeof setGlobalContext>`
+  // Never actually used, only used for TypeScript `ReturnType<typeof createGlobalContext>`
   return globalContext
 }
 
