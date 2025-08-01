@@ -1,4 +1,5 @@
 export { testRun }
+export { testCloudflareBindings }
 
 import { expect, getServerUrl, page, test } from '@brillout/test-e2e'
 import { testCounter, testRunClassic } from '../../test/utils'
@@ -9,11 +10,11 @@ type Args = Parameters<typeof testRunClassic>[1]
 
 function testRun(cmd: CMD) {
   testRunClassic(cmd, getArgs(cmd))
-  testBindings()
+  testCloudflareBindings()
 }
 
-function testBindings() {
-  test('bindings', async () => {
+function testCloudflareBindings() {
+  test('Cloudflare Bindings', async () => {
     await page.goto(getServerUrl() + '/')
     await testCounter()
     const bodyText = await page.textContent('body')
