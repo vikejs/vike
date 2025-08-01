@@ -1,4 +1,4 @@
-import { RepoLink, Link, FileAdded } from '@brillout/docpress'
+import { RepoLink, Link } from '@brillout/docpress'
 import { Example, UseScaffolder } from '../../components'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import '../../components/tabs.css'
@@ -7,65 +7,18 @@ import Examples from './Examples.mdx'
 We recommend using <Link href="#vike-cloudflare" /> to deploy your app to [Cloudflare](https://www.cloudflare.com).
 
 {/* TO-DO/eventually: re-apply commit about Cloudflare Pages deprecation https://github.com/vikejs/vike/commit/f36a9709809339106ed061b3d0f41383ba17964b */}
+{/* TO-DO/eventually: remove `cross-env NODE_ENV=production wrangler` after https://github.com/cloudflare/workers-sdk/issues/7886 is resolved */}
 
 > <UseScaffolder>`vike-cloudflare`</UseScaffolder>
 
 
 ## `vike-cloudflare`
 
-The [`vike-cloudflare`](https://github.com/vikejs/vike-cloudflare) extension enables zero-config deployment of <Link href="/ssr">SSR</Link> as well as <Link href="/pre-rendering">pre-rendered (aka SSG)</Link> apps to [Cloudflare Workers](https://workers.cloudflare.com).
+The [`vike-cloudflare`](https://github.com/vikejs/vike-cloudflare) extension enables zero-config deployment of <Link href="/ssr">SSR</Link> as well as <Link href="/pre-rendering">pre-rendered (aka SSG)</Link> apps to Cloudflare.
 
 ### Without a server
 
-If you <Link href="/pre-rendering">pre-render</Link> all your pages then you don't need a server — simply add the `vike-cloudflare` extension:
-
-<Tabs>
-  <TabList>
-    <Tab>npm</Tab>
-    <Tab>pnpm</Tab>
-    <Tab>yarn</Tab>
-  </TabList>
-  <TabPanel>
-    ```shell
-    npm i -D vike-cloudflare wrangler
-    ```
-  </TabPanel>
-  <TabPanel>
-    ```shell
-    pnpm add -D vike-cloudflare wrangler
-    ```
-  </TabPanel>
-  <TabPanel>
-    ```shell
-    yarn add -D vike-cloudflare wrangler
-    ```
-  </TabPanel>
-</Tabs>
-
-```ts
-// pages/+config.ts
-
-import vikeCloudflare from "vike-cloudflare/config" // [!code ++]
-
-export default {
-  prerender: true,
-  extends: [vikeCloudflare] // [!code ++]
-} satisfies Config
-```
-
-```json
-{
-  "scripts": {
-    "dev": "vike dev",
-    "preview": "vike build && wrangler pages dev", // [!code ++]
-    "deploy": "vike build && wrangler pages deploy" // [!code ++]
-  }
-}
-```
-
-### With a server
-
-If you use <Link href="/ssr">SSR</Link>, you must have a server and you can add `vike-cloudflare` like this:
+If you <Link href="/pre-rendering">pre-render</Link> all your pages then you don't need a server — simply add `vike-cloudflare` like this:
 
 <Tabs>
   <TabList>
@@ -93,12 +46,62 @@ If you use <Link href="/ssr">SSR</Link>, you must have a server and you can add 
 ```ts
 // pages/+config.ts
 
+import type { Config } from 'vike/types'
 import vikeCloudflare from "vike-cloudflare/config" // [!code ++]
+
+export default {
+  prerender: true,
+  extends: [vikeCloudflare] // [!code ++]
+} satisfies Config
+```
+
+```json
+{
+  "scripts": {
+    "dev": "vike dev",
+    "preview": "vike build && cross-env NODE_ENV=production wrangler pages dev", // [!code ++]
+    "deploy": "vike build && cross-env NODE_ENV=production wrangler pages deploy" // [!code ++]
+  }
+}
+```
+
+### With a server
+
+If you use <Link href="/ssr">SSR</Link>, you must have a server — add `vike-cloudflare` like this:
+
+<Tabs>
+  <TabList>
+    <Tab>npm</Tab>
+    <Tab>pnpm</Tab>
+    <Tab>yarn</Tab>
+  </TabList>
+  <TabPanel>
+    ```shell
+    npm i -D vike-cloudflare wrangler cross-env
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    pnpm add -D vike-cloudflare wrangler cross-env
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    yarn add -D vike-cloudflare wrangler cross-env
+    ```
+  </TabPanel>
+</Tabs>
+
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+import vikeCloudflare from 'vike-cloudflare/config' // [!code ++]
 
 export default {
   extends: [vikeCloudflare], // [!code ++]
   server: { // [!code ++]
-    entry: "server/index.ts" // [!code ++]
+    entry: 'server/index.ts' // [!code ++]
   } // [!code ++]
 } satisfies Config
 ```
@@ -110,42 +113,38 @@ export default {
   </TabList>
 
   <TabPanel>
-    <FileAdded>
     ```ts
     // server/index.ts
 
     import { Hono } from 'hono'
-    import { apply } from 'vike-cloudflare/hono'
-    import { serve } from 'vike-cloudflare/hono/serve'
+    import { apply } from 'vike-cloudflare/hono' // [!code ++]
+    import { serve } from 'vike-cloudflare/hono/serve' // [!code ++]
 
     function startServer() {
       const app = new Hono()
-      apply(app)
-      return serve(app, { port: 3000 })
+      apply(app) // [!code ++]
+      return serve(app, { port: 3000 }) // [!code ++]
     }
 
-    export default startServer()
+    export default startServer() // [!code ++]
     ```
-    </FileAdded>
   </TabPanel>
   <TabPanel>
-    <FileAdded>
     ```ts
     // server/index.ts
 
     import { createRouter } from '@hattip/router'
-    import { apply } from 'vike-cloudflare/hattip'
-    import { serve } from 'vike-cloudflare/hattip/serve'
+    import { apply } from 'vike-cloudflare/hattip' // [!code ++]
+    import { serve } from 'vike-cloudflare/hattip/serve' // [!code ++]
 
     function startServer() {
       const router = createRouter()
-      apply(router)
-      return serve(router, { port: 3000 })
+      apply(router) // [!code ++]
+      return serve(router, { port: 3000 }) // [!code ++]
     }
 
-    export default startServer()
+    export default startServer() // [!code ++]
     ```
-    </FileAdded>
   </TabPanel>
 </Tabs>
 
@@ -167,7 +166,7 @@ You can access Cloudflare's APIs (such as [D1](https://developers.cloudflare.com
 - In development, by using [`getPlatformProxy()`](https://developers.cloudflare.com/workers/wrangler/api/#getplatformproxy)
 - In production, by using [`import('cloudflare:workers')`](https://developers.cloudflare.com/workers/runtime-apis/bindings/#importing-env-as-a-global)
 
-With <Link href="/onCreateGlobalContext">`+onCreateGlobalContext.server`</Link>, you can make Cloudflare's bindings (the `env` object) available anywhere via <Link href="/globalContext#custom">`globalContext.cloudflare.env`</Link>.
+Using <Link href="/onCreateGlobalContext">`+onCreateGlobalContext.server`</Link>, you can make Cloudflare's bindings (the `env` object) available anywhere via <Link href="/globalContext#custom">`globalContext.cloudflare.env`</Link>.
 
 ```ts
 // pages/+onCreateGlobalContext.server.ts
@@ -199,7 +198,7 @@ declare global {
 ```ts
 // vite.config.ts
 
-import { defineConfig } from "vite";
+import { defineConfig } from 'vite'
 
 export default defineConfig({
   build: {
@@ -210,7 +209,31 @@ export default defineConfig({
 })
 ```
 
-> For an example of how to access [Cloudflare D1](https://developers.cloudflare.com/d1/) during development, see `npm create vike@latest --react --hono --drizzle --cloudflare` or go to <Link href="/new">vike.dev/new</Link> and `Cloudflare` and an ORM.
+> For an example of how to access [Cloudflare D1](https://developers.cloudflare.com/d1/) during development, see:
+> <Tabs>
+>   <TabList>
+>     <Tab>npm</Tab>
+>     <Tab>pnpm</Tab>
+>     <Tab>yarn</Tab>
+>   </TabList>
+>   <TabPanel>
+>     ```shell
+>     npm create vike@latest --- --react --hono --drizzle --cloudflare
+>     ```
+>   </TabPanel>
+>   <TabPanel>
+>     ```shell
+>     pnpm create vike@latest --react --hono --drizzle --cloudflare
+>     ```
+>   </TabPanel>
+>   <TabPanel>
+>     ```shell
+>     yarn create vike@latest --react --hono --drizzle --cloudflare
+>     ```
+>   </TabPanel>
+> </Tabs>
+>
+> Or go to <Link href="/new">vike.dev/new</Link> and select `Cloudflare` with an ORM.
 
 ## Extend 3MB limit
 
