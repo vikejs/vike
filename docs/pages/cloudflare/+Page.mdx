@@ -19,32 +19,32 @@ The [`vike-cloudflare`](https://github.com/vikejs/vike-cloudflare) extension ena
 
 If you <Link href="/pre-rendering">pre-render</Link> all your pages, you don't need a server — simply add the `vike-cloudflare` extension:
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
 
 import vikeCloudflare from "vike-cloudflare/config" // [!code ++]
 
 export default {
   prerender: true,
-  plugins: [vikeCloudflare] // [!code ++]
-}
+  extends: [vikeCloudflare] // [!code ++]
+} satisfies Config
 ```
 
 ### With a server
 
 If you use <Link href="/ssr">SSR</Link>, you must create a server:
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
 
 import vikeCloudflare from "vike-cloudflare/config" // [!code ++]
 
 export default {
-  plugins: [vikeCloudflare], // [!code ++]
+  extends: [vikeCloudflare], // [!code ++]
   server: { // [!code ++]
-    entry: "server/index.js" // [!code ++]
+    entry: "server/index.ts" // [!code ++]
   } // [!code ++]
-}
+} satisfies Config
 ```
 
 <Tabs>
@@ -55,8 +55,8 @@ export default {
 
   <TabPanel>
     <FileAdded>
-    ```js
-    // server/index.js
+    ```ts
+    // server/index.ts
 
     import { Hono } from 'hono'
     import { apply } from 'vike-cloudflare/hono'
@@ -64,11 +64,8 @@ export default {
 
     function startServer() {
       const app = new Hono()
-      const port = process.env.PORT || 3000
-
       apply(app)
-
-      return serve(app, { port: +port })
+      return serve(app, { port: 3000 })
     }
 
     export default startServer()
@@ -77,8 +74,8 @@ export default {
   </TabPanel>
   <TabPanel>
     <FileAdded>
-    ```js
-    // server/index.js
+    ```ts
+    // server/index.ts
 
     import { createRouter } from '@hattip/router'
     import { apply } from 'vike-cloudflare/hattip'
@@ -86,11 +83,8 @@ export default {
 
     function startServer() {
       const router = createRouter()
-      const port = process.env.PORT || 3000
-
       apply(router)
-
-      return serve(router, { port: +port })
+      return serve(router, { port: 3000 })
     }
 
     export default startServer()
@@ -111,7 +105,7 @@ You can access Cloudflare's APIs (such as [D1](https://developers.cloudflare.com
 With <Link href="/onCreateGlobalContext">`+onCreateGlobalContext.server`</Link>, you can make Cloudflare's bindings (the `env` object) available anywhere via <Link href="/globalContext">`globalContext.cloudflare.env`</Link>.
 
 ```ts
-// pages/+onCreateGlobalContext.server.js
+// pages/+onCreateGlobalContext.server.ts
 
 export { onCreateGlobalContext }
 
@@ -137,16 +131,18 @@ declare global {
 }
 ```
 
-```js
-// vite.config.js
+```ts
+// vite.config.ts
 
-export default {
+import { defineConfig } from "vite";
+
+export default defineConfig({
   build: {
     rollupOptions: {
       external: ['cloudflare:workers']
     }
   }
-}
+})
 ```
 
 ## Extend 3MB limit
