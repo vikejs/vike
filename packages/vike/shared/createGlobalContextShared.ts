@@ -31,6 +31,7 @@ async function createGlobalContextShared<
   addGlobalContextTmp?: (globalContext: GlobalContextBase) => Promise<GlobalContextAdded>,
   addGlobalContextAsync?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddedAsync>,
 ) {
+  console.log('createGlobalContextShared()')
   const globalContext = createGlobalContextBase(virtualFileExports)
 
   let isNewGlobalContext: boolean
@@ -76,6 +77,7 @@ async function createGlobalContextShared<
     )
     hooksCalled = true
   }
+  console.log('createGlobalContextShared() - globalContext.someEnvVar', globalContext.someEnvVar)
 
   if (isNewGlobalContext) {
     // Singleton: ensure all `globalContext` user-land references are preserved & updated.
