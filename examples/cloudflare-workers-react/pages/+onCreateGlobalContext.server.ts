@@ -14,11 +14,11 @@ async function onCreateGlobalContext(globalContext: GlobalContextServer) {
   } else {
     // @ts-ignore
     const exportsAll = await import('cloudflare:workers')
-    // TODO/now remove
-    console.log("import('cloudflare:workers') ", exportsAll)
     env = exportsAll.env
   }
   globalContext.someEnvVar = env['SOME_ENV_VAR']
+  // TODO/now remove
+  console.log('globalContext.someEnvVar', globalContext.someEnvVar)
 }
 
 declare global {
