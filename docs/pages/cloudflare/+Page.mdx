@@ -19,6 +19,14 @@ The [`vike-cloudflare`](https://github.com/vikejs/vike-cloudflare) extension ena
 
 If you <Link href="/pre-rendering">pre-render</Link> all your pages then you don't need a server — simply add the `vike-cloudflare` extension:
 
+```shell
+npm i -D wrangler vike-cloudflare
+# Or pnpm:
+pnpm add -D wrangler vike-cloudflare
+# Or yarn:
+yarn add -D wrangler vike-cloudflare
+```
+
 ```ts
 // pages/+config.ts
 
@@ -30,9 +38,28 @@ export default {
 } satisfies Config
 ```
 
+```json
+{
+  "scripts": {
+    "dev": "vike dev",
+    "build": "vike build",
+    "preview": "npm run build && wrangler pages dev", // [!code ++]
+    "deploy": "npm run build && wrangler pages deploy" // [!code ++]
+  }
+}
+```
+
 ### With a server
 
-If you use <Link href="/ssr">SSR</Link>, you must create a server:
+If you use <Link href="/ssr">SSR</Link>, you must have a server and you can add `vike-cloudflare` like this:
+
+```shell
+npm i -D wrangler vike-cloudflare
+# Or pnpm:
+pnpm add -D wrangler vike-cloudflare
+# Or yarn:
+yarn add -D wrangler vike-cloudflare
+```
 
 ```ts
 // pages/+config.ts
@@ -95,6 +122,16 @@ export default {
 
 > `vike-cloudflare` currently supports <Link href="/hono" /> and <Link href="/hattip" /> — more servers are coming soon.
 
+```json
+{
+  "scripts": {
+    "dev": "vike dev",
+    "build": "vike build",
+    "preview": "npm run build && wrangler pages dev", // [!code ++]
+    "deploy": "npm run build && wrangler pages deploy" // [!code ++]
+  }
+}
+```
 
 ## Cloudflare APIs
 
@@ -145,8 +182,7 @@ export default defineConfig({
 })
 ```
 
-> For an example of how to access [Cloudflare D1](https://developers.cloudflare.com/d1/) during development, see <Link href="/new">`pnpm create vike@latest --react --hono --drizzle --cloudflare`</Link>.
-
+> For an example of how to access [Cloudflare D1](https://developers.cloudflare.com/d1/) during development, see `npm create vike@latest --react --hono --drizzle --cloudflare` or go to <Link href="/new">vike.dev/new</Link> and `Cloudflare` and an ORM.
 
 ## Extend 3MB limit
 
