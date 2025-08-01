@@ -6,6 +6,8 @@ import Examples from './Examples.mdx'
 
 We recommend using <Link href="#vike-cloudflare" /> to deploy your app to [Cloudflare](https://www.cloudflare.com).
 
+{/* TO-DO/eventually: re-apply commit about Cloudflare Pages deprecation https://github.com/vikejs/vike/commit/f36a9709809339106ed061b3d0f41383ba17964b */}
+
 > <UseScaffolder>`vike-cloudflare`</UseScaffolder>
 
 
@@ -25,17 +27,17 @@ If you <Link href="/pre-rendering">pre-render</Link> all your pages then you don
   </TabList>
   <TabPanel>
     ```shell
-    npm i -D wrangler vike-cloudflare
+    npm i -D vike-cloudflare wrangler
     ```
   </TabPanel>
   <TabPanel>
     ```shell
-    pnpm add -D wrangler vike-cloudflare
+    pnpm add -D vike-cloudflare wrangler
     ```
   </TabPanel>
   <TabPanel>
     ```shell
-    yarn add -D wrangler vike-cloudflare
+    yarn add -D vike-cloudflare wrangler
     ```
   </TabPanel>
 </Tabs>
@@ -55,9 +57,8 @@ export default {
 {
   "scripts": {
     "dev": "vike dev",
-    "build": "vike build",
-    "preview": "npm run build && wrangler pages dev", // [!code ++]
-    "deploy": "npm run build && wrangler pages deploy" // [!code ++]
+    "preview": "vike build && wrangler pages dev", // [!code ++]
+    "deploy": "vike build && wrangler pages deploy" // [!code ++]
   }
 }
 ```
@@ -74,17 +75,17 @@ If you use <Link href="/ssr">SSR</Link>, you must have a server and you can add 
   </TabList>
   <TabPanel>
     ```shell
-    npm i -D wrangler vike-cloudflare
+    npm i -D vike-cloudflare wrangler cross-env
     ```
   </TabPanel>
   <TabPanel>
     ```shell
-    pnpm add -D wrangler vike-cloudflare
+    pnpm add -D vike-cloudflare wrangler cross-env
     ```
   </TabPanel>
   <TabPanel>
     ```shell
-    yarn add -D wrangler vike-cloudflare
+    yarn add -D vike-cloudflare wrangler cross-env
     ```
   </TabPanel>
 </Tabs>
@@ -154,9 +155,8 @@ export default {
 {
   "scripts": {
     "dev": "vike dev",
-    "build": "vike build",
-    "preview": "npm run build && wrangler pages dev", // [!code ++]
-    "deploy": "npm run build && wrangler pages deploy" // [!code ++]
+    "preview": "vike build && cross-env NODE_ENV=production wrangler pages dev", // [!code ++]
+    "deploy": "vike build && cross-env NODE_ENV=production wrangler pages deploy" // [!code ++]
   }
 }
 ```
