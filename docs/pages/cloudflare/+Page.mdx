@@ -106,7 +106,7 @@ export default {
 
 You can access Cloudflare's APIs (such as [D1](https://developers.cloudflare.com/d1/) and [KV](https://developers.cloudflare.com/kv/)):
 - In development, by using [`getPlatformProxy()`](https://developers.cloudflare.com/workers/wrangler/api/#getplatformproxy)
-- In production, by using [import('cloudflare:workers')](https://developers.cloudflare.com/workers/runtime-apis/bindings/#importing-env-as-a-global)
+- In production, by using [`import('cloudflare:workers')`](https://developers.cloudflare.com/workers/runtime-apis/bindings/#importing-env-as-a-global)
 
 With <Link href="/onCreateGlobalContext">`+onCreateGlobalContext.server`</Link>, you can make Cloudflare's bindings (the `env` object) available anywhere via <Link href="/globalContext">`globalContext.cloudflare.env`</Link>.
 
