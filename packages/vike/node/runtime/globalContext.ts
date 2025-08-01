@@ -426,6 +426,7 @@ function assertVersionAtBuildTime(versionAtBuildTime: string) {
 }
 
 async function updateUserFiles(): Promise<{ success: boolean }> {
+  debug('updateUserFiles()')
   assert(!globalObject.isProduction)
   const { promise, resolve } = genPromise<void>()
   globalObject.waitForUserFilesUpdate = promise
