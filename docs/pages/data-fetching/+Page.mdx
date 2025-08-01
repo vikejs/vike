@@ -10,31 +10,37 @@ The usual recommendation is:
 
 You can fetch the initial data of a page by using <Link href="/data">Vike's `+data` hook</Link>, then access it by using the <Link href="/useData">component hook `useData()`</Link>.
 
-```js
-// /pages/movies/@id/+data.js
+```ts
+// /pages/movies/@id/+data.ts
 // Environment: server
 
 export { data }
+export type Data = Awaited<ReturnType<typeof data>>
 
 import fetch from 'node-fetch'
+import type { PageContextServer } from 'vike/types'
 
-async function data(pageContext) {
+type MovieDetails = {
+  // ...
+}
+
+async function data(pageContext: PageContextServer) {
   const { id } = pageContext.routeParams
   const response = await fetch(`https://star-wars.brillout.com/api/films/${id}.json`)
 
-  let movie = await response.json()
+  let movie: MovieDetails = await response.json()
   // `movie` is serialized and passed to the client. Therefore, we pick only the
   // data the client needs in order to minimize what is sent over the network.
   movie = { title: movie.title, release_date: movie.release_date }
 
   // data() runs only on the server-side by default, we can therefore use ORM/SQL queries.
   /* With an ORM:
-  const movies = await Movie.findAll({ select: ['title', 'release_date'] }) */
+  const movie = await Movie.findAll({ select: ['title', 'release_date'] }) */
   /* With SQL:
-  const movies = await sql.run('SELECT { title, release_date } FROM movies;') */
+  const movie = await sql.run('SELECT { title, release_date } FROM movies;') */
 
   return {
-    movies
+    movie
   }
 }
 ```
@@ -43,10 +49,11 @@ async function data(pageContext) {
 
 > The `@id` in the file path `/pages/movie/@id/+data.js` denotes a route parameter which value is available at <Link href="/pageContext#routeParams">`pageContext.routeParams.id`</Link>, see <Link href="/routing" />.
 
-```js
-// SomeComponent.js
+```ts
+// SomeComponent.{tsx|vue}
 // Environment: server, client
 
+import type { Data } from '../pages/movies/@id/+data'
 import { useData } from 'vike-react/useData'
 /* Or:
 import { useData } from 'vike-vue/useData'
@@ -54,8 +61,8 @@ import { useData } from 'vike-solid/useData'
 */
 
   // Inside a UI component
-  const data = useData()
-  const { name, price } = data
+  const data = useData<Data>()
+  const { title, release_date } = data
 ```
 
 > `useData()` is implemented by the <UiFrameworkExtension name />. If you don't use <UiFrameworkExtension name noLink /> then see <Link href="/useData#without-vike-react-vue-solid" doNotInferSectionTitle />.
