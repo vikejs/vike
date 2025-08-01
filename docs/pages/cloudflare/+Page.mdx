@@ -103,27 +103,48 @@ export default {
 
 ## Cloudflare APIs in development
 
-You can use `wrangler`'s [`getPlatformProxy()`](https://developers.cloudflare.com/workers/wrangler/api/#getplatformproxy) to access Cloudflare APIs (such as D1 and KV) in development.
+You can access Cloudflare's APIs (such as [D1](https://developers.cloudflare.com/d1/) and [KV](https://developers.cloudflare.com/kv/)):
+- In development, by using [`getPlatformProxy()`](https://developers.cloudflare.com/workers/wrangler/api/#getplatformproxy)
+- In production, by using [import('cloudflare:workers')](https://developers.cloudflare.com/workers/runtime-apis/bindings/#importing-env-as-a-global)
 
-For example, this is what <Link href="/new">`pnpm create vike@latest --react --hono --drizzle --cloudflare`</Link> uses to access [Cloudflare D1](https://developers.cloudflare.com/d1/) during development:
+With <Link href="/onCreateGlobalContext">`+onCreateGlobalContext.server`</Link>, you can make Cloudflare's bindings (the `env` object) available anywhere via <Link href="/globalContext">`globalContext.cloudflare.env`</Link>.
 
 ```ts
-import type { D1Database } from "@cloudflare/workers-types";
-import type { RuntimeAdapter } from "@universal-middleware/core";
+// pages/+onCreateGlobalContext.server.js
 
-/**
- * Retrieve Cloudflare `env.DB` from `universal-middleware` runtime
- */
-export async function getDbFromRuntime(runtime: RuntimeAdapter): Promise<D1Database> {
-  if (runtime.runtime === "workerd") {
-    return runtime.env!.DB as D1Database;
+export { onCreateGlobalContext }
+
+import type { GlobalContextServer } from 'vike/types'
+
+async function onCreateGlobalContext(globalContext: GlobalContextServer) {
+  let cloudflare: { env: Cloudflare.Env }
+  if (import.meta.env.DEV) {
+    const { getPlatformProxy } = await import('wrangler')
+    cloudflare = (await getPlatformProxy()) as any
+  } else {
+    cloudflare = await import('cloudflare:workers')
   }
+  globalContext.cloudflare = cloudflare
+}
 
-  // When running on node, simulate Cloudflare environment with "wrangler"
-  const { getPlatformProxy } = await import("wrangler");
+declare global {
+  namespace Vike {
+    interface GlobalContextServer {
+      cloudflare: { env: Cloudflare.Env }
+    }
+  }
+}
+```
 
-  const { env } = await getPlatformProxy();
-  return env.DB as D1Database;
+```js
+// vite.config.js
+
+export default {
+  build: {
+    rollupOptions: {
+      external: ['cloudflare:workers']
+    }
+  }
 }
 ```
 
