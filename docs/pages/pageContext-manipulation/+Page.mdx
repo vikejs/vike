@@ -34,13 +34,13 @@ export { onBeforeRender }
 
 function onBeforeRender(pageContext) {
   const starWarsMovies = await getStarWarsMovies()
-  pageContext.starWarsMovies = starWarsMovies // [!code --]
-  // We should do this instead // [!code ++]
-  return { // [!code ++]
-    pageContext: { // [!code ++]
-      starWarsMovies // [!code ++]
-    } // [!code ++]
-  } // [!code ++]
+  pageContext.starWarsMovies = starWarsMovies// [!code --]
+  // We should do this instead// [!code ++]
+  return {// [!code ++]
+    pageContext: {// [!code ++]
+      starWarsMovies// [!code ++]
+    }// [!code ++]
+  }// [!code ++]
 }
 ```
 
@@ -60,14 +60,14 @@ export { onBeforeRender }
 function onBeforeRender(pageContext) {
   const starWarsMovies = await getStarWarsMovies()
   return {
-    pageContext: { // [!code --]
-      ...pageContext, // [!code --]
-      starWarsMovies // [!code --]
-    } // [!code --]
-    // Do this instead // [!code ++]
-    pageContext: { // [!code ++]
-      starWarsMovies // [!code ++]
-    } // [!code ++]
+    pageContext: {// [!code --]
+      ...pageContext,// [!code --]
+      starWarsMovies// [!code --]
+    }// [!code --]
+    // Do this instead// [!code ++]
+    pageContext: {// [!code ++]
+      starWarsMovies// [!code ++]
+    }// [!code ++]
   }
 }
 ```

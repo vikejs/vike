@@ -6,22 +6,22 @@ This migration page is only for double checking that you applied all deprecation
 1. Update to `v1.0.0` and, again, follow the new deprecation instructions (if you encounter any) `v1.0.0`. (INTERNAL-NOTE: for example the outdated warning for `pageContext.urlParsed` can only exist in `v1.0.0`)
 1. All types have been moved to `'vike/types'`:
    ```js
-   import type { SomeType } from 'vike/any-path' // [!code --]
-   import type { SomeType } from 'vike/types' // [!code ++]
+   import type { SomeType } from 'vike/any-path'// [!code --]
+   import type { SomeType } from 'vike/types'// [!code ++]
    ```
    And `PageContextBuiltInClient` has been renamed to `PageContextBuiltInClientWithClientRouting` and `PageContextBuiltInClientWithServerRouting`:
    ```js
-   import type { PageContextBuiltInClient } from 'vike/client/router' // [!code --]
-   import type { // [!code ++]
-     PageContextBuiltInClientWithClientRouting as // [!code ++]
-     PageContextBuiltInClient // [!code ++]
-   } from 'vike/types' // [!code ++]
+   import type { PageContextBuiltInClient } from 'vike/client/router'// [!code --]
+   import type {// [!code ++]
+     PageContextBuiltInClientWithClientRouting as// [!code ++]
+     PageContextBuiltInClient// [!code ++]
+   } from 'vike/types'// [!code ++]
 
-   import type { PageContextBuiltInClient } from 'vike/client' // [!code --]
-   import type { // [!code ++]
-     PageContextBuiltInClientWithServerRouting as // [!code ++]
-     PageContextBuiltInClient // [!code ++]
-   } from 'vike/types' // [!code ++]
+   import type { PageContextBuiltInClient } from 'vike/client'// [!code --]
+   import type {// [!code ++]
+     PageContextBuiltInClientWithServerRouting as// [!code ++]
+     PageContextBuiltInClient// [!code ++]
+   } from 'vike/types'// [!code ++]
    ```
 
 ## Dropped CJS support

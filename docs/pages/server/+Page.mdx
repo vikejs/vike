@@ -22,12 +22,12 @@ To add `vike-server` to an existing Vike app: install the `vike-server` npm pack
 ```js
 // +config.js
 
-import vikeServer from 'vike-server/config' // [!code ++]
+import vikeServer from 'vike-server/config'// [!code ++]
 
 export const config = {
-  extends: [vikeServer], // [!code ++]
-  // Points to your server entry // [!code ++]
-  server: 'server/index.js' // [!code ++]
+  extends: [vikeServer],// [!code ++]
+  // Points to your server entry// [!code ++]
+  server: 'server/index.js'// [!code ++]
 }
 ```
 
@@ -39,7 +39,7 @@ Update your production `script` in `package.json`:
 "scripts": {
   "dev": "vike dev",
   "build": "vike build",
-  "prod": "NODE_ENV=production node dist/server/index.js" // [!code ++]
+  "prod": "NODE_ENV=production node dist/server/index.js"// [!code ++]
 }
 ```
 

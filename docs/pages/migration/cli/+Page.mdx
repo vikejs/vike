@@ -14,12 +14,12 @@ Vite's CLI and Vite's API are deprecated starting from `vike@0.4.213`.
 // package.json
 {
   "scripts": {
-    "dev": "vite", // [!code --]
-    "dev": "vike dev", // [!code ++]
-    "build": "vite build", // [!code --]
-    "build": "vike build", // [!code ++]
-    "preview": "vite preview", // [!code --]
-    "preview": "vike preview", // [!code ++]
+    "dev": "vite",// [!code --]
+    "dev": "vike dev",// [!code ++]
+    "build": "vite build",// [!code --]
+    "build": "vike build",// [!code ++]
+    "preview": "vite preview",// [!code --]
+    "preview": "vike preview",// [!code ++]
   }
 }
 ```
@@ -40,8 +40,8 @@ Most notably, if you use Vite's `createServer()`, then use `createDevMiddleware(
 // server/index.js
 
 import express from 'express'
-import { renderPage } from 'vike/server' // [!code --]
-import { renderPage, createDevMiddleware } from 'vike/server' // [!code ++]
+import { renderPage } from 'vike/server'// [!code --]
+import { renderPage, createDevMiddleware } from 'vike/server'// [!code ++]
 
 const isProduction = process.env.NODE_ENV === 'production'
 const root = `${__dirname}/..`
@@ -54,14 +54,14 @@ async function startServer() {
 
   // Dev/prod middleware
   if (!isProduction) {
-    const vite = await import('vite') // [!code --]
-    const viteDevMiddleware = (await vite.createServer({ // [!code --]
-      root, // [!code --]
-      server: { middlewareMode: true } // [!code --]
-    })).middlewares // [!code --]
-    app.use(viteDevMiddleware) // [!code --]
-    const { devMiddleware } = await createDevMiddleware({ root }) // [!code ++]
-    app.use(devMiddleware) // [!code ++]
+    const vite = await import('vite')// [!code --]
+    const viteDevMiddleware = (await vite.createServer({// [!code --]
+      root,// [!code --]
+      server: { middlewareMode: true }// [!code --]
+    })).middlewares// [!code --]
+    app.use(viteDevMiddleware)// [!code --]
+    const { devMiddleware } = await createDevMiddleware({ root })// [!code ++]
+    app.use(devMiddleware)// [!code ++]
   } else {
     app.use(express.static(`${root}/${outDir}/client`))
   }

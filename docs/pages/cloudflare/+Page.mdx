@@ -47,11 +47,11 @@ If you <Link href="/pre-rendering">pre-render</Link> all your pages then you don
 // pages/+config.ts
 
 import type { Config } from 'vike/types'
-import vikeCloudflare from 'vike-cloudflare/config' // [!code ++]
+import vikeCloudflare from 'vike-cloudflare/config'// [!code ++]
 
 export default {
   prerender: true,
-  extends: [vikeCloudflare] // [!code ++]
+  extends: [vikeCloudflare]// [!code ++]
 } satisfies Config
 ```
 
@@ -59,8 +59,8 @@ export default {
 {
   "scripts": {
     "dev": "vike dev",
-    "preview": "vike build && cross-env NODE_ENV=production wrangler pages dev", // [!code ++]
-    "deploy": "vike build && cross-env NODE_ENV=production wrangler pages deploy" // [!code ++]
+    "preview": "vike build && cross-env NODE_ENV=production wrangler pages dev",// [!code ++]
+    "deploy": "vike build && cross-env NODE_ENV=production wrangler pages deploy"// [!code ++]
   }
 }
 ```
@@ -96,13 +96,13 @@ If you use <Link href="/ssr">SSR</Link>, you must have a server — add `vike-cl
 // pages/+config.ts
 
 import type { Config } from 'vike/types'
-import vikeCloudflare from 'vike-cloudflare/config' // [!code ++]
+import vikeCloudflare from 'vike-cloudflare/config'// [!code ++]
 
 export default {
-  extends: [vikeCloudflare], // [!code ++]
-  server: { // [!code ++]
-    entry: 'server/index.ts' // [!code ++]
-  } // [!code ++]
+  extends: [vikeCloudflare],// [!code ++]
+  server: {// [!code ++]
+    entry: 'server/index.ts'// [!code ++]
+  }// [!code ++]
 } satisfies Config
 ```
 
@@ -117,16 +117,16 @@ export default {
     // server/index.ts
 
     import { Hono } from 'hono'
-    import { apply } from 'vike-cloudflare/hono' // [!code ++]
-    import { serve } from 'vike-cloudflare/hono/serve' // [!code ++]
+    import { apply } from 'vike-cloudflare/hono'// [!code ++]
+    import { serve } from 'vike-cloudflare/hono/serve'// [!code ++]
 
     function startServer() {
       const app = new Hono()
-      apply(app) // [!code ++]
-      return serve(app, { port: 3000 }) // [!code ++]
+      apply(app)// [!code ++]
+      return serve(app, { port: 3000 })// [!code ++]
     }
 
-    export default startServer() // [!code ++]
+    export default startServer()// [!code ++]
     ```
   </TabPanel>
   <TabPanel>
@@ -134,16 +134,16 @@ export default {
     // server/index.ts
 
     import { createRouter } from '@hattip/router'
-    import { apply } from 'vike-cloudflare/hattip' // [!code ++]
-    import { serve } from 'vike-cloudflare/hattip/serve' // [!code ++]
+    import { apply } from 'vike-cloudflare/hattip'// [!code ++]
+    import { serve } from 'vike-cloudflare/hattip/serve'// [!code ++]
 
     function startServer() {
       const router = createRouter()
-      apply(router) // [!code ++]
-      return serve(router, { port: 3000 }) // [!code ++]
+      apply(router)// [!code ++]
+      return serve(router, { port: 3000 })// [!code ++]
     }
 
-    export default startServer() // [!code ++]
+    export default startServer()// [!code ++]
     ```
   </TabPanel>
 </Tabs>
@@ -154,8 +154,8 @@ export default {
 {
   "scripts": {
     "dev": "vike dev",
-    "preview": "vike build && cross-env NODE_ENV=production wrangler pages dev", // [!code ++]
-    "deploy": "vike build && cross-env NODE_ENV=production wrangler pages deploy" // [!code ++]
+    "preview": "vike build && cross-env NODE_ENV=production wrangler pages dev",// [!code ++]
+    "deploy": "vike build && cross-env NODE_ENV=production wrangler pages deploy"// [!code ++]
   }
 }
 ```

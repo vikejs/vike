@@ -49,7 +49,7 @@ The solution is typically one of the following:
    import { someFunction } from './file.js'
 
    function someCallerFn() {
-     someFunction() // [!code --]
+     someFunction()// [!code --]
    }
    ```
    ```js
@@ -58,24 +58,24 @@ The solution is typically one of the following:
    // This file is loaded on the client-side only.
 
    function someThirdFn() {
-     // We can call someFunction() here. // [!code ++]
-     someFunction() // [!code ++]
+     // We can call someFunction() here.// [!code ++]
+     someFunction()// [!code ++]
    }
    ```
 1. Or make `someFunction()` <Link href="/glossary#isomorphic">isomorphic</Link>:
    ```js
    // ~/my-app/some/file.js
 
-   // This file should be loaded only on the client-side // [!code --]
-   // This file can be loaded on both client- and server-side // [!code ++]
+   // This file should be loaded only on the client-side// [!code --]
+   // This file can be loaded on both client- and server-side// [!code ++]
 
    function someFunction() {
-     window.alert('hello') // [!code --]
-     if (isBrowser()) window.alert('hello') // [!code ++]
+     window.alert('hello')// [!code --]
+     if (isBrowser()) window.alert('hello')// [!code ++]
    }
-   function isBrowser() { // [!code ++]
-     return typeof window !== 'undefined' // [!code ++]
-   } // [!code ++]
+   function isBrowser() {// [!code ++]
+     return typeof window !== 'undefined'// [!code ++]
+   }// [!code ++]
    ```
 
 > We recommend the first approach whenever possible, because it's best to minimize isomorphic code to a strict minimum, for cleaner code and to avoid client-side bloat (loading server-side code on the client-side increases client bundle sizes and therefore slows down your app).

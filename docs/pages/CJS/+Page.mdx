@@ -35,12 +35,12 @@ This [makes Node.js treat all .js files as ESM](https://nodejs.org/docs/latest-v
 If you have .js files written in CJS then migrate them to ESM, for example:
 
 ```js
-// CJS code // [!code --]
-const express = require('express') // [!code --]
-const { renderPage } = require('vike/server') // [!code --]
-// ESM code // [!code ++]
-import express from 'express' // [!code ++]
-import { renderPage } from 'vike/server' // [!code ++]
+// CJS code// [!code --]
+const express = require('express')// [!code --]
+const { renderPage } = require('vike/server')// [!code --]
+// ESM code// [!code ++]
+import express from 'express'// [!code ++]
+import { renderPage } from 'vike/server'// [!code ++]
 ```
 
 > An escape hatch is to use [the `.cjs` and `.mjs` file extensions](https://nodejs.org/api/esm.html#enabling:~:text=Authors%20can%20tell%20Node.js%20to%20use%20the%20ECMAScript%20modules%20loader%20via%20the%20.mjs%20file%20extension): it enables you to choose between CJS and ESM on a file-by-file basis (regardless of `package.json#type`).
@@ -53,8 +53,8 @@ Depending on your setup, you may need to append `.js` to the path of your import
 ```ts
 // someTypeScriptFile.ts
 
-import { something } from './some/module' // [!code --]
-import { something } from './some/module.js' // [!code ++]
+import { something } from './some/module'// [!code --]
+import { something } from './some/module.js'// [!code ++]
 ```
 
 You can use [this script](https://gist.github.com/brillout/79fd8b21e8893f92334b885ee9fa30ff) to automatically apply this change.
