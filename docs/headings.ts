@@ -1043,17 +1043,17 @@ function misc() {
         url: '/press',
       },
       {
-        title: 'vike-react',
+        title: '`vike-react`',
         url: '/vike-react',
         category: 'Overview',
       },
       {
-        title: 'vike-vue',
+        title: '`vike-vue`',
         url: '/vike-vue',
         category: 'Overview',
       },
       {
-        title: 'vike-solid',
+        title: '`vike-solid`',
         url: '/vike-solid',
         category: 'Overview',
       },
