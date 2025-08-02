@@ -12,9 +12,9 @@ For example:
 ```bash
 FILESYSTEM                     URL
 ====================           ======
-pages/index/+Page.js           /
-pages/about/+Page.js           /about
-pages/jobs/+Page.js            /jobs
+pages/index/+Page.ts           /
+pages/about/+Page.ts           /about
+pages/jobs/+Page.ts            /jobs
 ```
 
 > Vike always skips the `pages/` and `index/` directories when determining the URL.
@@ -29,7 +29,7 @@ For more details, see:
 ```bash
 FILESYSTEM                     URL
 ========================       =======================
-pages/movie/@id/+Page.js       /movie/1, /movie/2, ...
+pages/movie/@id/+Page.ts       /movie/1, /movie/2, ...
 ```
 
 > The parameter `id` is available at <Link href="/pageContext#routeParams">`pageContext.routeParams.id`</Link>.
@@ -41,10 +41,10 @@ You can organize your pages into groups:
 ```yaml
 FILESYSTEM                             URL
 ================================       ==================
-pages/(marketing)/index/+Page.js       /
-pages/(marketing)/about/+Page.js       /about
-pages/admin-panel/index/+Page.js       /admin-panel
-pages/admin-panel/users/+Page.js       /admin-panel/users
+pages/(marketing)/index/+Page.ts       /
+pages/(marketing)/about/+Page.ts       /about
+pages/admin-panel/index/+Page.ts       /admin-panel
+pages/admin-panel/users/+Page.ts       /admin-panel/users
 ```
 > Any directory inside parentheses such as `(marketing)` is ignored by Filesystem Routing.
 
@@ -52,14 +52,14 @@ It also enables you to easily set different configurations for different pages:
 
 ```yaml
 # Define a layout for all marketing pages
-pages/(marketing)/+Layout.js
-pages/(marketing)/index/+Page.js
-pages/(marketing)/about/+Page.js
+pages/(marketing)/+Layout.ts
+pages/(marketing)/index/+Page.ts
+pages/(marketing)/about/+Page.ts
 
 # Define a layout for all admin pages
-pages/admin-panel/+Layout.js
-pages/admin-panel/index/+Page.js
-pages/admin-panel/users/+Page.js
+pages/admin-panel/+Layout.ts
+pages/admin-panel/index/+Page.ts
+pages/admin-panel/users/+Page.ts
 ```
 
 > Config inheritance is explained at: <Link href="/config#inheritance" />
@@ -75,8 +75,8 @@ You can also define your files within a `src/` directory:
 ```yaml
 FILESYSTEM                     URL
 ========================       ======
-src/pages/index/+Page.js       /
-src/pages/about/+Page.js       /about
+src/pages/index/+Page.ts       /
+src/pages/about/+Page.ts       /about
 ```
 
 > Vike always skips the `src/` directory when determining the URL.
@@ -91,17 +91,17 @@ For advanced apps, you may want to consider a *domain-driven file structure*.
 
 ```yaml
 # Domain: marketing
-(marketing)/pages/+Layout.js
-(marketing)/pages/index/+Page.js
-(marketing)/pages/about/+Page.js
-(marketing)/components/ContactUs.js
+(marketing)/pages/+Layout.ts
+(marketing)/pages/index/+Page.ts
+(marketing)/pages/about/+Page.ts
+(marketing)/components/ContactUs.ts
 
 # Domain: admin panel
-admin-panel/pages/+Layout.js
-admin-panel/pages/index/+Page.js
-admin-panel/pages/users/+Page.js
-admin-panel/components/Charts.js
-admin-panel/database/fetchUsers.js
+admin-panel/pages/+Layout.ts
+admin-panel/pages/index/+Page.ts
+admin-panel/pages/users/+Page.ts
+admin-panel/components/Charts.ts
+admin-panel/database/fetchUsers.ts
 ```
 
 See also:
@@ -112,10 +112,11 @@ See also:
 
 Instead of Filesystem Routing, you can define a Route String.
 
-```js
-// /pages/product/+route.js
+```ts
+// /pages/product/+route.ts
+// Environment: server
 
-// This file defines the route of /pages/product/+Page.js
+// This file defines the route of /pages/product/+Page.ts
 
 // Route String
 export default '/product/@id'
@@ -131,17 +132,19 @@ For more information, see:
 
 You can use Route Functions to get full programmatic flexibility for advanced routing logic.
 
-```js
-// /pages/product/edit/+route.js
+```ts
+// /pages/product/edit/+route.ts
+// Environment: server
 
-// This file defines the route of /pages/product/edit/+Page.js
+// This file defines the route of /pages/product/edit/+Page.ts
 
+import type { PageContextServer } from 'vike/types'
 // We use a RegExp, but we could as well use a routing library.
 import partRegex from 'part-regex'
 const routeRegex = partRegex`/product/${/([0-9]+)/}/edit`
 
 // Route Function
-export function route(pageContext) {
+export function route(pageContext: PageContextServer) {
   const match = pageContext.urlPathname.match(routeRegex)
   if (!match) return false
   const [, id] = match
@@ -156,14 +159,16 @@ For more information, see:
 
 You can use a `guard()` hook to protect pages from unauthorized/unexpected access.
 
-```js
-// /pages/admin/+guard.js
+```ts
+// /pages/admin/+guard.ts
+// Environment: server
 
+import type { PageContextServer } from 'vike/types'
 import { render } from 'vike/abort'
 
-// This guard() hook protects all pages /pages/admin/**/+Page.js
+// This guard() hook protects all pages /pages/admin/**/+Page.ts
 
-export async function guard(pageContext) {
+export async function guard(pageContext: PageContextServer ) {
   if (!pageContext.user.isAdmin) {
     throw render(401, "You aren't allowed to access this page.')
   }
