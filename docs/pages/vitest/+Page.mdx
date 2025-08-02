@@ -111,10 +111,10 @@ import vike from 'vike/plugin'
 
 export default {
   plugin: [
-    // Always add Vike's Vite plugin // [!code --]
-    vike(), // [!code --]
-    // Don't add Vike's Vite plugin when running Vitest // [!code ++]
-    !process.env.VITEST && vike(), // [!code ++]
+    // Always add Vike's Vite plugin// [!code --]
+    vike(),// [!code --]
+    // Don't add Vike's Vite plugin when running Vitest// [!code ++]
+    !process.env.VITEST && vike(),// [!code ++]
     // ...
   ]
 }

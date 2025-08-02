@@ -164,9 +164,9 @@ Node.js v18.0.0
 For default exports, the workaround proposed by Node.js may not work and you may need to do this instead:
 
 ```js
-import DefaultImport from "some-library"; // [!code --]
-import pkg from 'some-library'; // [!code ++]
-const DefaultImport = pkg.default ?? pkg; // [!code ++]
+import DefaultImport from "some-library";// [!code --]
+import pkg from 'some-library';// [!code ++]
+const DefaultImport = pkg.default ?? pkg;// [!code ++]
 ```
 
 For a workaround that is global (and TypeScript friendly), see <Link href="#vite-plugin-cjs-interop" />.
@@ -309,12 +309,12 @@ Use the component trace to find out which component is `undefined` / an `object`
 A local workaround is usually this:
 
 ```js
-import SomeComponent from "some-npm-package" // [!code --]
-import pkg from "some-npm-package" // [!code ++]
-// This: // [!code ++]
-const { SomeComponent } = pkg // [!code ++]
-// Or that: // [!code ++]
-const SomeComponent = pkg.default // [!code ++]
+import SomeComponent from "some-npm-package"// [!code --]
+import pkg from "some-npm-package"// [!code ++]
+// This:// [!code ++]
+const { SomeComponent } = pkg// [!code ++]
+// Or that:// [!code ++]
+const SomeComponent = pkg.default// [!code ++]
 ```
 
 For a workaround that is global (and TypeScript friendly), see <Link href="#vite-plugin-cjs-interop" />.

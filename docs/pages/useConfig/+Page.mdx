@@ -119,15 +119,15 @@ export function Page() {
 > ```js
 > export function Page() {
 >   const data = useData()
->   const config = useConfig() // [!code --]
+>   const config = useConfig()// [!code --]
 >
->   config({ // [!code --]
->     title: data.product.name, // [!code --]
->     Head: <meta property="og:image" content={data.product.image} /> // [!code --]
->   }) // [!code --]
+>   config({// [!code --]
+>     title: data.product.name,// [!code --]
+>     Head: <meta property="og:image" content={data.product.image} />// [!code --]
+>   })// [!code --]
 >
 >   return (
->     <Config title={data.product.name} /> // [!code ++]
+>     <Config title={data.product.name} />// [!code ++]
 >     <Head>// [!code ++]
 >       <meta property="og:image" content={data.product.image} />// [!code ++]
 >     </Head>// [!code ++]

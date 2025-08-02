@@ -37,10 +37,10 @@ Check whether your Docker container has enough memory, and you may also need to 
 // package.json
 {
   "scripts": {
-    "build": "vike build" // [!code --]
-    "// Increase Node.js memory size to 3GB": "", // [!code ++]
-    "build": "NODE_OPTIONS=--max-old-space-size=3072 npm run build:vite", // [!code ++]
-    "build:vite": "vike build" // [!code ++]
+    "build": "vike build"// [!code --]
+    "// Increase Node.js memory size to 3GB": "",// [!code ++]
+    "build": "NODE_OPTIONS=--max-old-space-size=3072 npm run build:vite",// [!code ++]
+    "build:vite": "vike build"// [!code ++]
   }
 }
 ```

@@ -24,29 +24,29 @@ Most of the migration boils down to the following two steps.
 Move your `renderer/` hooks to `+` files:
 
 ```js
-// /renderer/_default.page.client.js // [!code --]
-// /renderer/+onRenderClient.js // [!code ++]
+// /renderer/_default.page.client.js// [!code --]
+// /renderer/+onRenderClient.js// [!code ++]
 
-export { render } // [!code --]
-export { render as onRenderClient } // [!code ++]
+export { render }// [!code --]
+export { render as onRenderClient }// [!code ++]
 ```
 
 ```js
-// /renderer/_default.page.server.js // [!code --]
-// /renderer/+onRenderHtml.js // [!code ++]
+// /renderer/_default.page.server.js// [!code --]
+// /renderer/+onRenderHtml.js// [!code ++]
 
-export { render } // [!code --]
-export { render as onRenderHtml } // [!code ++]
+export { render }// [!code --]
+export { render as onRenderHtml }// [!code ++]
 ```
 
 If you've defined a global `onBeforeRender()` hook and/or `passToClient`:
 
 ```js
-// /renderer/_default.page.server.js // [!code --]
-// /renderer/+onBeforeRender.js // [!code ++]
+// /renderer/_default.page.server.js// [!code --]
+// /renderer/+onBeforeRender.js// [!code ++]
 
 export { onBeforeRender }
-export const passToClient = ['pageProps'] // [!code --]
+export const passToClient = ['pageProps']// [!code --]
 ```
 
 <FileAdded>
@@ -90,8 +90,8 @@ export default {
 Move your error page (if you defined one):
 
 ```js
-/renderer/_error.page.js // [!code --]
-/pages/_error/+Page.js // [!code ++]
+/renderer/_error.page.js// [!code --]
+/pages/_error/+Page.js// [!code ++]
 
 export { Page }
 ```
@@ -100,21 +100,21 @@ export { Page }
 **2. Migrate `/pages/**/*.page.*`**
 
 ```js
-// /pages/some-page/index.page.js // [!code --]
-// /pages/some-page/+Page.js // [!code ++]
+// /pages/some-page/index.page.js// [!code --]
+// /pages/some-page/+Page.js// [!code ++]
 
 export { Page }
 ```
 ```js
-// /pages/some-page/index.page.server.js // [!code --]
-// /pages/some-page/+onBeforeRender.js // [!code ++]
+// /pages/some-page/index.page.server.js// [!code --]
+// /pages/some-page/+onBeforeRender.js// [!code ++]
 
 export { onBeforeRender }
 ```
 
 ```js
-// /pages/some-page/index.page.route.js // [!code --]
-// /pages/some-page/+route.js // [!code ++]
+// /pages/some-page/index.page.route.js// [!code --]
+// /pages/some-page/+route.js// [!code ++]
 
 export default route
 ```
@@ -214,7 +214,7 @@ export const doNotPrerender = true
 // /pages/news/+config.js
 
 export default {
-  prerender: false // [!code ++]
+  prerender: false// [!code ++]
 }
 ```
 

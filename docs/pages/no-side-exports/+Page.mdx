@@ -53,16 +53,16 @@ export function SomeSharedComponent() {
 ```js
 // pages/about/+Page.js
 
-import { SomeSharedComponent } from '../index/+Page' // [!code --]
-import { SomeSharedComponent } from '../../components/SomeSharedComponent' // [!code ++]
+import { SomeSharedComponent } from '../index/+Page'// [!code --]
+import { SomeSharedComponent } from '../../components/SomeSharedComponent'// [!code ++]
 ```
 ```js
 // pages/index/+Page.js
 
 import './landing-page.css'
-import { SomeSharedComponent } from '../../components/SomeSharedComponent' // [!code ++]
+import { SomeSharedComponent } from '../../components/SomeSharedComponent'// [!code ++]
 
-export function SomeSharedComponent() { // [!code --]
-  // ... // [!code --]
-} // [!code --]
+export function SomeSharedComponent() {// [!code --]
+  // ...// [!code --]
+}// [!code --]
 ```
