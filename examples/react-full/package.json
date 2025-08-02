@@ -1,8 +1,8 @@
 {
   "scripts": {
     "dev": "vike dev",
-    "build": "vike build",
-    "preview": "vike build && vike preview"
+    "preview": "vike build && cross-env NODE_ENV=production wrangler pages dev",
+    "deploy": "vike build && cross-env NODE_ENV=production wrangler pages deploy"
   },
   "dependencies": {
     "@mdx-js/mdx": "^3.1.0",
@@ -22,5 +22,10 @@
     "vike": "0.4.236",
     "vite": "^6.3.5"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "cross-env": "^10.0.0",
+    "vike-cloudflare": "^0.2.3",
+    "wrangler": "^4.26.1"
+  }
 }
