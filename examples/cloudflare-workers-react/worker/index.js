@@ -1,9 +1,7 @@
 import { handleSsr } from './ssr'
 
 export default {
-  async fetch(request, env) {
-    // TODO/now remove
-    console.log('fetch(_, env)', env)
+  async fetch(request) {
     const url = new URL(request.url)
     return await handleSsr(url)
   },

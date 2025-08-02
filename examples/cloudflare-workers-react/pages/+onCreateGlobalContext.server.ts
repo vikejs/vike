@@ -2,27 +2,23 @@ export { onCreateGlobalContext }
 
 import type { GlobalContextServer } from 'vike/types'
 
-// TODO/now make it work or replace with +onCreatePageContext.server.js
-// TODO/now add test (copy from it)
-
 async function onCreateGlobalContext(globalContext: GlobalContextServer) {
-  let env: Record<string, string>
+  let cloudflare: { env: Cloudflare.Env }
   if (import.meta.env.DEV) {
     const { getPlatformProxy } = await import('wrangler')
-    const proxy = await getPlatformProxy()
-    env = proxy.env as any
+    cloudflare = (await getPlatformProxy()) as any
   } else {
-    // @ts-ignore
-    const exportsAll = await import('cloudflare:workers')
-    // TODO/now remove
-    console.log("import('cloudflare:workers') ", exportsAll)
-    env = exportsAll.env
+    cloudflare = await import('cloudflare:workers')
   }
-  globalContext.someEnvVar = env['SOME_ENV_VAR']
+  globalContext.cloudflare = cloudflare
+  globalContext.someEnvVar = cloudflare.env['SOME_ENV_VAR']
 }
 
 declare global {
   namespace Vike {
+    interface GlobalContextServer {
+      cloudflare: { env: Cloudflare.Env }
+    }
     interface GlobalContext {
       // Passed to client
       someEnvVar: string
