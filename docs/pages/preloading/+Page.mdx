@@ -20,8 +20,8 @@ You can use `pageContext.httpResponse.earlyHints` for adding early hints (`103 E
 
 > [`103 Early Hint`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/103) is the official successor of the now deprecated HTTP2/Push.
 
-```js
-// server.js
+```ts
+// server.ts
 
 import { renderPage } from 'vike/server'
 
@@ -60,11 +60,14 @@ See also:
 If Vike's default preload strategy doesn't work for you, you can customize which and where preload/asset tags are injected.
 
 ```ts
-// /renderer/+onRenderHtml.js
+// /renderer/+onRenderHtml.ts
 
 export { onRenderHtml }
 
-async function onRenderHtml(pageContext) {
+import type { InjectFilterEntry, PageContextServer } from 'vike/types'
+import { escapeInject } from 'vike/server'
+
+async function onRenderHtml(pageContext: PageContextServer) {
   // ...
 
   const documentHtml = escapeInject`<!DOCTYPE html>
@@ -74,7 +77,7 @@ async function onRenderHtml(pageContext) {
       </body>
     </html>`
 
-  const injectFilter = (assets) => {
+  const injectFilter = (assets: InjectFilterEntry[]) => {
     assets.forEach(asset => {
       // Preload images
       if (asset.assetType === 'image') {

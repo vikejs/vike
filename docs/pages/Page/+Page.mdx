@@ -9,8 +9,8 @@ The `Page` setting determines the root component of the page.
 
 With JSX (React/Solid):
 
-```js
-// /pages/index/+Page.jsx
+```tsx
+// /pages/index/+Page.tsx
 
 export { Page }
 /* Or:
@@ -45,8 +45,8 @@ What happens with the `Page` value is determined by the <UiFrameworkExtension />
 
 You can access <Link href="/pageContext">the `pageContext` object</Link> by using <Link href="/usePageContext">`usePageContext()`</Link>.
 
-```jsx
-// /pages/+Page.jsx
+```tsx
+// /pages/+Page.tsx
 
 import { usePageContext } from 'vike-react/usePageContext' // or vike-{vue,solid}
 
@@ -68,8 +68,8 @@ Instead of using <UiFrameworkExtension name noLink />, you can integrate your fa
 
 Here is a minimal example of manually integrating a UI framework:
 
-```js
-// /pages/hello/+Page.js
+```ts
+// /pages/hello/+Page.ts
 // Environment: client and server (configurable)
 
 export { Page }
@@ -83,16 +83,17 @@ function Page() {
 
 > You can configure in which environment the `Page` value is loaded by using <Link href="/meta">`meta`</Link>.
 
-```js
-// /renderer/+onRenderHtml.js
+```ts
+// /renderer/+onRenderHtml.ts
 // Environment: server
 
 export { onRenderHtml }
 
+import type { PageContextServer } from 'vike/types'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { renderToHtml } from 'my-favorite-ui-framework/server'
 
-async function onRenderHtml(pageContext) {
+async function onRenderHtml(pageContext: PageContextServer) {
   // The Page value is available at pageContext.Page
   const { Page } = pageContext
   const pageHtml = await renderToHtml(Page)
@@ -107,15 +108,16 @@ async function onRenderHtml(pageContext) {
 }
 ```
 
-```js
-// /renderer/+onRenderClient.js
+```ts
+// /renderer/+onRenderClient.ts
 // Environment: client
 
 export { onRenderClient }
 
 import { hydrateDom } from 'my-favorite-ui-framework/client'
+import type { PageContextClient } from 'vike/types'
 
-async function onRenderClient(pageContext) {
+async function onRenderClient(pageContext: PageContextClient) {
   // pageContext.Page is also available in the browser
   const { Page } = pageContext
   await hydrateDom(Page, document.getElementById('root'))
