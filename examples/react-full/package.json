@@ -20,6 +20,7 @@
     "react-streaming": "^0.4.3",
     "typescript": "^5.8.3",
     "vike": "0.4.236",
+    "vike-server": "^1.0.19",
     "vite": "^6.3.5"
   },
   "type": "module",
