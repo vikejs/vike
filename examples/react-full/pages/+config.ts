@@ -4,7 +4,7 @@ import vikeCloudflare from 'vike-cloudflare/config'
 export default {
   prerender: {
     enable: true,
-    keepDistServer: true
+    keepDistServer: true,
   },
-  extends: [vikeCloudflare]
+  extends: [vikeCloudflare],
 } satisfies Config
