@@ -31,6 +31,15 @@ function findAndParseJson(id: string) {
   )
   const jsonStr = elem.textContent
   assert(jsonStr)
-  const json = parse(jsonStr)
+  const json = parse(jsonStr, {
+    // Prevent Google from crawling URLs in JSON:
+    // - https://github.com/vikejs/vike/pull/2603
+    // - https://github.com/brillout/json-serializer/blob/38edbb9945de4938da1e65d6285ce1dd123a45ef/test/main.spec.ts#L44-L95
+    reviver(_key, value) {
+      if (typeof value === 'string') {
+        return { replacement: value.replaceAll('\\/', '/'), resolved: false }
+      }
+    },
+  })
   return json
 }
