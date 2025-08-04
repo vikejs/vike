@@ -413,9 +413,6 @@ importers:
       '@types/node':
         specifier: ^22.15.30
         version: 22.15.30
-      '@types/node-fetch':
-        specifier: ^2.6.12
-        version: 2.6.12
       '@types/react':
         specifier: ^19.1.6
         version: 19.1.6
@@ -425,12 +422,6 @@ importers:
       '@vitejs/plugin-react-swc':
         specifier: ^3.10.1
         version: 3.10.1(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.20.3))
-      cross-fetch:
-        specifier: ^4.1.0
-        version: 4.1.0
-      node-fetch:
-        specifier: ^3.3.2
-        version: 3.3.2
       react:
         specifier: ^19.1.0
         version: 19.1.0

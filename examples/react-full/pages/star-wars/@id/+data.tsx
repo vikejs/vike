@@ -2,7 +2,6 @@
 export { data }
 export type Data = Awaited<ReturnType<typeof data>>
 
-import fetch from 'cross-fetch'
 import { filterMovieData } from '../filterMovieData'
 import type { PageContextClient, PageContextServer } from 'vike/types'
 import type { MovieDetails } from '../types'
