@@ -116,7 +116,7 @@ function replaceHistoryState(state: StateEnhanced, url?: string) {
   window.history.replaceState(state, '', url_)
   assertIsVikeEnhanced(getState())
 }
-function replaceHistoryStateOriginal(state: unknown, url: string) {
+function replaceHistoryStateOriginal(state: unknown, url: Parameters<typeof window.history.replaceState>[2]) {
   // Bypass all monkey patches.
   // - Useful, for example, to avoid other tools listening to history.replaceState() calls
   History.prototype.replaceState.bind(window.history)(state, '', url)
@@ -128,8 +128,10 @@ function replaceHistoryStateOriginal(state: unknown, url: string) {
 function monkeyPatchHistoryAPI() {
   if (globalObject.monkeyPatched) return
   globalObject.monkeyPatched = true
+  /* This assertion can fail: https://github.com/vikejs/vike/issues/2504#issuecomment-3149764736
   // Ensure Vike's monkey patch is the first.
   assert(window.history.pushState === History.prototype.pushState)
+  */
   ;(['pushState', 'replaceState'] as const).forEach((funcName) => {
     const funcOriginal = window.history[funcName].bind(window.history)
     window.history[funcName] = (stateOriginal: unknown = {}, ...rest) => {
@@ -150,10 +152,17 @@ function monkeyPatchHistoryAPI() {
       funcOriginal(stateEnhanced, ...rest)
       assertIsVikeEnhanced(getState())
       globalObject.previous = getHistoryInfo()
+
+      // Workaround https://github.com/vikejs/vike/issues/2504#issuecomment-3149764736
+      assert(window.history.state === stateEnhanced)
+      queueMicrotask(() => {
+        if (window.history.state === stateEnhanced) return
+        Object.assign(stateEnhanced, window.history.state)
+        replaceHistoryStateOriginal(stateEnhanced, rest[1])
+        assert(window.history.state === stateEnhanced)
+      })
     }
     ;(window.history[funcName] as any as Record<string, unknown>)._isVikeMonkeyPatch = true
-    // Ensure assert() above isn't a false positive
-    assert(window.history.pushState !== History.prototype.pushState)
   })
 }
 
