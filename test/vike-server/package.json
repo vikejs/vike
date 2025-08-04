@@ -5,7 +5,7 @@
     "prod": "vike build && cross-env NODE_ENV=production node dist/server/index.js"
   },
   "dependencies": {
-    "@vitejs/plugin-react": "^4.5.1",
+    "@vitejs/plugin-react": "^4.7.0",
     "cross-env": "^7.0.3",
     "express": "^5.1.0",
     "react": "^19.1.0",
