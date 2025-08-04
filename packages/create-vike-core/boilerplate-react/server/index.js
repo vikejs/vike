@@ -7,6 +7,5 @@ export default startServer()
 function startServer() {
   const app = new Hono()
   apply(app)
-  const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000
-  return serve(app, { port })
+  return serve(app, { port: 3000 })
 }
