@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "strict": true,
-    "moduleResolution": "Node",
+    "moduleResolution": "bundler",
     "noImplicitAny": true,
     "checkJs": true,
     "esModuleInterop": true,

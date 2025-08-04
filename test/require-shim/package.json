@@ -6,7 +6,7 @@
   },
   "dependencies": {
     "@apollo/client": "3.6.9",
-    "@vitejs/plugin-react": "^4.5.1",
+    "@vitejs/plugin-react": "^4.7.0",
     "cross-env": "7.0.3",
     "express": "^5.1.0",
     "graphql": "16.5.0",

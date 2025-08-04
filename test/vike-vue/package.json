@@ -7,7 +7,7 @@
   "dependencies": {
     "@types/node": "^22.15.17",
     "@types/node-fetch": "^2.6.11",
-    "@vitejs/plugin-vue": "^5.2.4",
+    "@vitejs/plugin-vue": "^6.0.1",
     "node-fetch": "^3.3.2",
     "typescript": "^5.8.3",
     "unplugin-vue-markdown": "^28.3.1",
