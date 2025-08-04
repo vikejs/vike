@@ -3,5 +3,5 @@ import vikeCloudflare from 'vike-cloudflare/config'
 
 export default {
   prerender: true,
-  extends: [vikeCloudflare]
+  extends: [vikeCloudflare],
 } satisfies Config

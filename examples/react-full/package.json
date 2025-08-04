@@ -1,7 +1,7 @@
 {
   "scripts": {
     "dev": "vike dev",
-    "preview": "vike build && cross-env NODE_ENV=production wrangler pages dev",
+    "preview": "vike build && cross-env NODE_ENV=production wrangler pages dev --port 3000",
     "deploy": "vike build && cross-env NODE_ENV=production wrangler pages deploy"
   },
   "dependencies": {
@@ -9,24 +9,20 @@
     "@mdx-js/react": "^3.1.0",
     "@mdx-js/rollup": "^3.1.0",
     "@types/node": "^22.15.30",
-    "@types/node-fetch": "^2.6.12",
     "@types/react": "^19.1.6",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react-swc": "^3.10.1",
-    "cross-fetch": "^4.1.0",
-    "node-fetch": "^3.3.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-streaming": "^0.4.3",
     "typescript": "^5.8.3",
     "vike": "0.4.236",
-    "vike-server": "^1.0.19",
     "vite": "^6.3.5"
   },
   "type": "module",
   "devDependencies": {
     "cross-env": "^10.0.0",
-    "vike-cloudflare": "^0.2.3",
+    "vike-cloudflare": "^0.2.5",
     "wrangler": "^4.26.1"
   }
 }

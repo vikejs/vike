@@ -2,7 +2,6 @@ export { getStarWarsMovies }
 export { filterMoviesData }
 export { getTitle }
 
-import fetch from 'node-fetch'
 import type { Movie, MovieDetails } from '../types'
 
 async function getStarWarsMovies(): Promise<MovieDetails[]> {
