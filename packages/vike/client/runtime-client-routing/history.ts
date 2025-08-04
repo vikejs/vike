@@ -7,7 +7,7 @@ export type { HistoryInfo }
 export type { ScrollPosition }
 
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
-import { assert, assertUsage, getGlobalObject, isObject } from './utils.js'
+import { assert, assertUsage, getGlobalObject, isObject, deepEqual } from './utils.js'
 
 const globalObject = getGlobalObject('history.ts', {
   monkeyPatched: false,
@@ -154,12 +154,12 @@ function monkeyPatchHistoryAPI() {
       globalObject.previous = getHistoryInfo()
 
       // Workaround https://github.com/vikejs/vike/issues/2504#issuecomment-3149764736
-      assert(window.history.state === stateEnhanced)
+      assert(deepEqual(window.history.state, stateEnhanced))
       queueMicrotask(() => {
-        if (window.history.state === stateEnhanced) return
+        if (deepEqual(window.history.state, stateEnhanced)) return
         Object.assign(stateEnhanced, window.history.state)
         replaceHistoryStateOriginal(stateEnhanced, rest[1])
-        assert(window.history.state === stateEnhanced)
+        assert(deepEqual(window.history.state, stateEnhanced))
       })
     }
     ;(window.history[funcName] as any as Record<string, unknown>)._isVikeMonkeyPatch = true
