@@ -1,0 +1,7 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "my-vike-cloudflare-app",
+  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_date": "2025-08-04",
+  "pages_build_output_dir": "./dist/cloudflare"
+}

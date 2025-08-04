@@ -21,10 +21,12 @@ function testRun(
   {
     uiFramewok,
     lang,
+    isVikeCloudflare,
   }: {
     uiFramewok: 'react' | 'vue' | 'preact' | 'solid'
     lang?: 'ts'
     isSPA?: true
+    isVikeCloudflare?: true
   },
 ) {
   const isProd = cmd === 'npm run prod' || cmd === 'npm run preview'
@@ -34,6 +36,7 @@ function testRun(
   run(cmd, {
     // HMR tests are flaky (I couldn't make them reliable)
     isFlaky: testHMR,
+    serverIsReadyMessage: cmd.startsWith('npm run preview') && isVikeCloudflare ? 'Ready on' : undefined,
   })
 
   test('page content is rendered to HTML', async () => {

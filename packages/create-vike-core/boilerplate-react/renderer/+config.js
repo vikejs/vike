@@ -1,11 +1,11 @@
 export { config as default }
 
-import vikeServer from 'vike-server/config'
+import vikeCloudflare from 'vike-cloudflare/config'
 
 // https://vike.dev/config
 const config = {
   // https://vike.dev/server
-  extends: [vikeServer],
+  extends: [vikeCloudflare],
   server: 'server/index.js',
 
   // https://vike.dev/clientRouting

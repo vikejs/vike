@@ -2,7 +2,8 @@
   "scripts": {
     "dev": "vike dev",
     "build": "vike build",
-    "prod": "vike build && cross-env NODE_ENV=production node dist/server/index.js"
+    "preview": "vike build && cross-env NODE_ENV=production wrangler pages dev",
+    "deploy": "vike build && cross-env NODE_ENV=production wrangler pages deploy"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.5.1",
@@ -13,8 +14,10 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "vike": "^0.4.236",
+    "vike-cloudflare": "^0.2.3",
     "vike-server": "^1.0.16",
-    "vite": "^6.3.2"
+    "vite": "^6.3.2",
+    "wrangler": "^4.26.1"
   },
   "type": "module"
 }
