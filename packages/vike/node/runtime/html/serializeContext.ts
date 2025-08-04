@@ -42,7 +42,7 @@ type PageContextSerialization = {
   _globalContext: GlobalContextServerInternal
   isClientSideNavigation: boolean
 }
-function getPageContextClientSerialized(pageContext: PageContextSerialization) {
+function getPageContextClientSerialized(pageContext: PageContextSerialization, isHtmlJsonScript: boolean) {
   const passToClientPageContext = getPassToClientPageContext(pageContext)
   const getObj = (passToClientEntry: PassToClientEntryNormalized) => {
     if (passToClientEntry.once) return undefined // pass it to client-side globalContext
@@ -54,11 +54,16 @@ function getPageContextClientSerialized(pageContext: PageContextSerialization) {
   if (pageContextClientProps.some((prop) => getPropVal(pageContext._pageContextInit, prop))) {
     pageContextClient[pageContextInitIsPassedToClient] = true
   }
-  const pageContextClientSerialized = serializeObject(pageContextClient, passToClientPageContext, getObj)
+  const pageContextClientSerialized = serializeObject(
+    pageContextClient,
+    passToClientPageContext,
+    getObj,
+    isHtmlJsonScript,
+  )
   return pageContextClientSerialized
 }
 
-function getGlobalContextClientSerialized(pageContext: PageContextSerialization) {
+function getGlobalContextClientSerialized(pageContext: PageContextSerialization, isHtmlJsonScript: boolean) {
   const passToClient = pageContext._passToClient
   const globalContext = pageContext._globalContext
   const getObj = ({ prop, once }: PassToClientEntryNormalized) => {
@@ -74,14 +79,19 @@ function getGlobalContextClientSerialized(pageContext: PageContextSerialization)
   }
   const res = applyPassToClient(passToClient, getObj)
   const globalContextClient = res.objClient
-  const globalContextClientSerialized = serializeObject(globalContextClient, passToClient, getObj)
+  const globalContextClientSerialized = serializeObject(globalContextClient, passToClient, getObj, isHtmlJsonScript)
   return globalContextClientSerialized
 }
 
-function serializeObject(obj: Record<string, unknown>, passToClient: PassToClient, getObj: GetObj) {
+function serializeObject(
+  obj: Record<string, unknown>,
+  passToClient: PassToClient,
+  getObj: GetObj,
+  isHtmlJsonScript: boolean,
+) {
   let serialized: string
   try {
-    serialized = serializeValue(obj)
+    serialized = serializeValue(obj, isHtmlJsonScript)
   } catch (err) {
     const h = (s: string) => pc.cyan(s)
     let hasWarned = false
@@ -96,7 +106,7 @@ function serializeObject(obj: Record<string, unknown>, passToClient: PassToClien
       assert(objName)
       const varName = `${objName}${getPropKeys(prop).map(getPropAccessNotation).join('')}` as const
       try {
-        serializeValue(value, varName)
+        serializeValue(value, isHtmlJsonScript, varName)
       } catch (err) {
         propsNonSerializable.push(prop)
 
@@ -134,25 +144,31 @@ function serializeObject(obj: Record<string, unknown>, passToClient: PassToClien
       obj[getPropKeys(prop)[0]!] = NOT_SERIALIZABLE
     })
     try {
-      serialized = serializeValue(obj)
+      serialized = serializeValue(obj, isHtmlJsonScript)
     } catch (err) {
       assert(false)
     }
   }
   return serialized
 }
-function serializeValue(value: unknown, varName?: `pageContext${string}` | `globalContext${string}`): string {
+function serializeValue(
+  value: unknown,
+  isHtmlJsonScript: boolean,
+  varName?: `pageContext${string}` | `globalContext${string}`,
+): string {
   return stringify(value, {
     forbidReactElements: true,
     valueName: varName,
     // Prevent Google from crawling URLs in JSON:
     // - https://github.com/vikejs/vike/pull/2603
     // - https://github.com/brillout/json-serializer/blob/38edbb9945de4938da1e65d6285ce1dd123a45ef/test/main.spec.ts#L44-L95
-    replacer(_key, value) {
-      if (typeof value === 'string') {
-        return { replacement: value.replaceAll('/', '\\/'), resolved: false }
-      }
-    },
+    replacer: !isHtmlJsonScript
+      ? undefined
+      : (_key, value) => {
+          if (typeof value === 'string') {
+            return { replacement: value.replaceAll('/', '\\/'), resolved: false }
+          }
+        },
   })
 }
 type PassToClient = (string | { prop: string; once?: boolean })[]
@@ -175,6 +191,7 @@ function getPassToClientPageContext(pageContext: {
 function getPageContextClientSerializedAbort(
   pageContext: Record<string, unknown> &
     ({ _urlRedirect: UrlRedirect } | { _urlRewrite: string } | { abortStatusCode: number }),
+  isHtmlJsonScript: false,
 ): string {
   assert(pageContext._urlRedirect || pageContext._urlRewrite || pageContext.abortStatusCode)
   assert(pageContext._abortCall)
@@ -214,7 +231,7 @@ function getPageContextClientSerializedAbort(
       },
     )
   }
-  return serializeValue(pageContext)
+  return serializeValue(pageContext, isHtmlJsonScript)
 }
 
 type GetObj = (
