@@ -2,7 +2,7 @@
   "scripts": {
     "dev": "vike dev",
     "build": "vike build",
-    "preview": "vike build && cross-env NODE_ENV=production wrangler pages dev",
+    "preview": "vike build && cross-env NODE_ENV=production wrangler pages dev --port 3000",
     "deploy": "vike build && cross-env NODE_ENV=production wrangler pages deploy"
   },
   "dependencies": {
