@@ -3,8 +3,10 @@ export { testRun }
 import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry, expectLog, sleep } from '@brillout/test-e2e'
 import { ensureWasClientSideRouted, testCounter } from '../../test/utils'
 
-function testRun(uiFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
-  run(cmd)
+function testRun(uiFramework: 'vue' | 'react', cmd: 'npm run dev' | `npm run preview${string}`, isV1Design?: true) {
+  run(cmd, {
+    serverIsReadyMessage: cmd.startsWith('npm run preview') ? 'Ready on' : undefined,
+  })
 
   const isDev = cmd === 'npm run dev'
 
