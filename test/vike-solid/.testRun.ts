@@ -199,7 +199,7 @@ function findFirstPageId(html: string) {
   expect(html.split('"pageId"').length).toBe(2)
   const match = partRegex`"pageId":"${/([^"]+)/}"`.exec(html)
   expect(match).toBeTruthy()
-  const pageId = match![1]
+  let pageId = match![1]
   expect(pageId).toBeTruthy()
   pageId =
     // @ts-ignore
