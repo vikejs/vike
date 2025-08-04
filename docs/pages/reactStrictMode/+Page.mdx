@@ -9,16 +9,17 @@ Environment: server, client
 
 By default `vike-react` wraps your <Link href="/Page">`Page` component</Link> with [`<StrictMode>`](https://react.dev/reference/react/StrictMode) but you can opt-out:
 
-```js
-// /pages/+config.js
+```ts
+// /pages/+config.ts
 
+import type { Config } from 'vike/types'
 import vikeReact from 'vike-react/config'
 
 export default {
   // Don't use <StrictMode>// [!code ++]
   reactStrictMode: false,// [!code ++]
   extends: [vikeReact]
-}
+} satisfies Config
 ```
 
 <Warning>

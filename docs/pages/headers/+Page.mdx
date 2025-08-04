@@ -33,12 +33,12 @@ For example:
 
 You can convert it to a [standard `Headers` object](https://developer.mozilla.org/en-US/docs/Web/API/Headers) by using `new Headers()`:
 
-```js
+```ts
 const headers = new Headers(pageContext.headers)
 ```
 
 All values are merged. You can get the list of values as an array (`string[]`):
-```js
+```ts
 const acceptLanguage = pageContext.headers['accept-language']
   .split(',')
   .map(v => v.trimStart())
@@ -48,7 +48,7 @@ For getting the list of [cookie values](https://developer.mozilla.org/en-US/docs
 
 The `pageContext.headersOriginal` value is defined at the <Link href="/renderPage">`renderPage()`</Link> integration:
 
-```js
+```ts
 import { renderPage } from 'vike/server'
 
 app.get('*', async (req) => {
@@ -70,18 +70,20 @@ You can modify the HTTP response headers by using `+headersResponse` and/or `pag
 <Warning>Both `+headersResponse` and `pageContext.headersResponse` are beta features: expect breaking changes in any minor version update. See [#2554 - Stabilize `+headersResponse` and `pageContext.headersResponse`](https://github.com/vikejs/vike/issues/2554).</Warning>
 
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
 
 // Statically adding header
 export default {
   headersResponse: {
     'X-Powered-By': 'my-vike-app'
   }
-}
+} satisfies Config
 ```
 
-```js
+```ts
 // Dynamically adding/modifying header
 pageContext.headersResponse.set('Set-Cookie', 'sessionId=abc123')
 // Dynamically removing header
@@ -94,7 +96,7 @@ pageContext.headersResponse.delete('X-Powered-By')
 
 The final HTTP response headers sent to the client are available at `pageContext.httpResponse.headers`.
 
-```js
+```ts
 import { renderPage } from 'vike/server'
 
 // Server middleware
@@ -120,7 +122,7 @@ It's a list of string tuples `[string, string][]` — for example:
 
 You can convert it to a [standard `Headers` object](https://developer.mozilla.org/en-US/docs/Web/API/Headers) by using `new Headers()`:
 
-```js
+```ts
 const headers = new Headers(pageContext.httpResponse.headers)
 ```
 

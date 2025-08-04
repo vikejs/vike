@@ -5,8 +5,10 @@ import { TextType } from '../settings/TextType'
 
 By default, pre-rendering is disabled. To enable it:
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   // Enable pre-rendering
@@ -23,7 +25,7 @@ export default {
     enable: true,
     keepDistServer: false
   }
-}
+} satisfies Config
 ```
 
 ## Toggle
@@ -35,12 +37,14 @@ For example a news page that displays the latest news fetched from a database sh
 
 You can use `prerender: false` to tell Vike to skip a page from pre-rendering.
 
-```js
-// /pages/news/+config.js
+```ts
+// /pages/news/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   prerender: false
-}
+} satisfies Config
 ```
 
 ### Different defaults
@@ -49,10 +53,10 @@ You can define `prerender` in <Link href="/config#inheritance">higher levels so 
 
 This is especially handy with <Link text="Domain-Driven File Structure" href='/routing#domain-driven-file-structure' />:
 
-```js
-// /pages/marketing/+prerender.js
+```ts
+// /pages/marketing/+prerender.ts
 
-// Using Domain-Driven File Structure, +prerender.js applies to
+// Using Domain-Driven File Structure, +prerender.ts applies to
 // all marketing pages.
 
 // Enable pre-rendering for all marketing pages
@@ -61,17 +65,19 @@ export const prerender = true
 
 You can also make pre-rendering opt-in instead of opt-out:
 
-```js
-// /renderer/+config.js
+```ts
+// /renderer/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   // By default, pages are not pre-rendered
   prerender: false
-}
+} satisfies Config
 ```
 
-```js
-// /pages/about-us/+prerender.js
+```ts
+// /pages/about-us/+prerender.ts
 
 // Opt-in pre-rendering
 export const prerender = true
@@ -81,8 +87,8 @@ export const prerender = true
 
 You can pre-render pages conditionally:
 
-```js
-// /renderer/+prerender.js
+```ts
+// /renderer/+prerender.ts
 
 export const prerender = isCmsPreview() ? false : true
 ```
@@ -92,8 +98,8 @@ export const prerender = isCmsPreview() ? false : true
 Note that <Link href="/onBeforePrerenderStart">`onBeforePrerenderStart()` hooks</Link> are always called, even if `prerender` is `false`.
 If you want to call `onBeforePrerenderStart()` hooks conditionally as well:
 
-```js
-// /pages/movie/+prerender.js
+```ts
+// /pages/movie/+prerender.ts
 
 export { prerender }
 
@@ -102,8 +108,8 @@ import { someCondition } from './someCondition'
 const prerender = someCondition()
 ```
 
-```js
-// /pages/movie/+onBeforePrerenderStart.js
+```ts
+// /pages/movie/+onBeforePrerenderStart.ts
 
 export { onBeforePrerenderStart }
 
@@ -200,15 +206,17 @@ When running `$ vike build`, Vike automatically triggers <Link href="/pre-render
 
 You can disable the automatic triggering:
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   prerender: {
     // Stop `$ vike build` from initiating pre-rendering
     disableAutoRun: true
   }
-}
+} satisfies Config
 ```
 
 You can then manually trigger pre-rendering using:
@@ -220,28 +228,32 @@ You can then manually trigger pre-rendering using:
 
 When you set `prerender` to an object then you also enable pre-rendering. In other words:
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   // Setting it to an empty object:
   prerender: {},
   // Is equivalent to:
   prerender: true
-}
+} satisfies Config
 ```
 
 By setting `prerender.enable` to `null` you opt-out from this. In other words:
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   // This:
   prerender: { enable: null },
   // Is equivalent to:
   prerender: null
-}
+} satisfies Config
 ```
 
 This is useful, for example, if you want pre-rendering to stay opt-in instead of opt-out while setting pre-render settings globally.

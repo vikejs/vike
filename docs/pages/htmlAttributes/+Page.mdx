@@ -11,13 +11,15 @@ Environment: server
 
 The `htmlAttributes` setting adds attributes to the `<html>` tag.
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   // <html class="dark">
   htmlAttributes: { class: 'dark' }
-}
+} satisfies Config
 ```
 
 See <Link href="/lang" /> if you merely want to set the `<html lang>` attribute.

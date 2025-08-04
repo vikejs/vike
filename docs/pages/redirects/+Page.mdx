@@ -7,8 +7,10 @@ See also:
 
 Permanent redirections (HTTP status code `301`):
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   redirects: {
@@ -30,7 +32,7 @@ export default {
     // Glob + external
     '/admins/*': 'https://admin.example.org/*',
   }
-}
+} satisfies Config
 ```
 
 
@@ -38,8 +40,10 @@ export default {
 
 You can also use the `redirects` setting to alias links:
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   redirects: {
@@ -47,15 +51,15 @@ export default {
     '/donate': 'https://donate.stripe.com/9aiUAh021a',
     '/chat': 'https://discord.com/invite/hfHhnJyVg8'
   }
-}
+} satisfies Config
 ```
 
 By default, these aliases only work when your share them on third-party websites (e.g. if you share `https://my-website.com/chat` on Discord or GitHub).
 
 If you want to use these aliases also on your website, then update your `<Link>` implementation as shown below.
 
-```js
-// components/Link/aliases.js
+```ts
+// components/Link/aliases.ts
 
 export const aliases = {
   '/mail': 'mail@example.org',
@@ -64,8 +68,8 @@ export const aliases = {
 }
 ```
 
-```js
-// components/Link.js
+```ts
+// components/Link.ts
 
 import { aliases } from './Link/aliases'
 
@@ -75,16 +79,17 @@ function Link({ href }) {
 }
 ```
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
 
+import type { Config } from 'vike/types'
 import { aliases } from '../components/Link/aliases'
 
 export default {
   redirects: {
     ...aliases
   }
-}
+} satisfies Config
 ```
 
 > As explained at <Link href="#client-navigation" />, the `redirects` setting doesn't work upon client-side navigation, that's why you have to implement it yourself on the client-side.

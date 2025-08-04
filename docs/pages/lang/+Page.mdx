@@ -11,12 +11,14 @@ Environment: server
 
 You can set the value of the [`<html lang>` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/lang#language_tag_syntax) by using Vike's `lang` setting.
 
-```js
-// /pages/+config.js
+```ts
+// /pages/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   lang: 'fr'
-}
+} satisfies Config
 ```
 
 You can also dynamically set the value of `lang`. For example, if you want to internationalize your app:
@@ -24,7 +26,9 @@ You can also dynamically set the value of `lang`. For example, if you want to in
 ```js
 // /pages/+lang.js
 
-export default (pageContext) => {
+import type { PageContextServer } from 'vike/types'
+
+export default (pageContext: PageContextServer) => {
   return pageContext.locale
 }
 ```
@@ -36,19 +40,19 @@ export default (pageContext) => {
 
 The `lang` setting is implemented by the <UiFrameworkExtension />. If you don't use such extension, then you usually don't need to implement a setting like `lang` as you can directly set the value of the `<html lang>` attribute at your <Link href="/onRenderHtml">`onRenderHtml()` hook</Link>.
 
-```js
-// /renderer/+onRenderHtml.js
+```ts
+// /renderer/+onRenderHtml.ts
 
+import type { PageContextServer } from 'vike/types'
 import { escapeInject } from 'vike/server'
 
-export function onRenderHtml(pageContext) {
+export function onRenderHtml(pageContext: PageContextServer) {
   const lang = "fr"
   return escapeInject`<!DOCTYPE html>
     <html lang=${lang}>
       ...
     </html>`
 }
-
 ```
 
 That said, you can also implement and replicate the `lang` setting described in this page, see the source code of <UiFrameworkExtension name noLink />.
