@@ -640,8 +640,8 @@ async function createStreamWrapper({
     let isCancel = false
     const closeStream = async () => {
       if (isClosed) return
-      isClosed = true
       await onEnd(isCancel)
+      isClosed = true
       controllerProxy.close()
     }
     let controllerProxy: ReadableStreamController<unknown>
