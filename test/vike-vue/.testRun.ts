@@ -251,10 +251,13 @@ function findFirstPageId(html: string) {
   expect(html).toContain('<script id="vike_pageContext" type="application/json">')
   expect(html).toContain('"pageId"')
   expect(html.split('"pageId"').length).toBe(2)
-  const match = partRegex`"pageId":"!${/([^"]+)/}"`.exec(html)
+  const match = partRegex`"pageId":"${/([^"]+)/}"`.exec(html)
   expect(match).toBeTruthy()
-  const pageId = match![1]
+  let pageId = match![1]
   expect(pageId).toBeTruthy()
+  pageId =
+    // @ts-ignore
+    pageId.replaceAll('\\\\/', '/')
   return pageId
 }
 
