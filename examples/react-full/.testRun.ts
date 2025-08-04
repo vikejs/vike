@@ -3,9 +3,14 @@ export { testRun }
 import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry, expectLog, sleep } from '@brillout/test-e2e'
 import { ensureWasClientSideRouted, testCounter } from '../../test/utils'
 
-function testRun(uiFramework: 'vue' | 'react', cmd: 'npm run dev' | `npm run preview${string}`, isV1Design?: true) {
+function testRun(
+  uiFramework: 'vue' | 'react',
+  cmd: 'npm run dev' | `npm run preview${string}`,
+  isV1Design?: true,
+  isVikeCloudflare?: true,
+) {
   run(cmd, {
-    serverIsReadyMessage: cmd.startsWith('npm run preview') ? 'Ready on' : undefined,
+    serverIsReadyMessage: cmd.startsWith('npm run preview') && isVikeCloudflare ? 'Ready on' : undefined,
   })
 
   const isDev = cmd === 'npm run dev'
@@ -173,6 +178,9 @@ function testRun(uiFramework: 'vue' | 'react', cmd: 'npm run dev' | `npm run pre
               log.logSource === 'Browser Error' && log.logInfo.includes('http://localhost:3000/hello/forbidden'),
           })
         } else {
+          if (!isVikeCloudflare) {
+            expectLog('HTTP response /hello/forbidden 401', { filter: (log) => log.logSource === 'stderr' })
+          }
           expectLog('Failed to load resource: the server responded with a status of 401 (Unauthorized)', {
             filter: (log) =>
               log.logSource === 'Browser Error' && log.logInfo.includes('http://localhost:3000/hello/forbidden'),
@@ -182,6 +190,9 @@ function testRun(uiFramework: 'vue' | 'react', cmd: 'npm run dev' | `npm run pre
         expect(await page.textContent('body')).toContain(txt)
         const html = await fetchHtml('/hello/forbidden')
         expect(html).toContain(txt)
+        if (isV1Design && !isVikeCloudflare) {
+          expectLog('HTTP response /hello/forbidden 401', { filter: (log) => log.logSource === 'stderr' })
+        }
       })
     }
   }
