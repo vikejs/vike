@@ -1,4 +1,4 @@
-import { getTestJobs } from './getTestJobs.mjs'
+import { getTestJobs } from './getTestJobs'
 import { expect, describe, it } from 'vitest'
 
 /*/
