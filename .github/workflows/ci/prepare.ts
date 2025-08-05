@@ -10,7 +10,7 @@ const configFileName = 'test-e2e.config.mjs'
 const projectFiles = getProjectFiles()
 
 // CI
-export { getTestJobs }
+export { prepare }
 if (args.includes('--ci')) logMatrix()
 
 type MatrixEntry = { jobName: string; TEST_FILES: string; jobCmd: string; TEST_INSPECT: string } & Setup
@@ -26,7 +26,7 @@ function getProjectFiles(): string[] {
   return [...projectFiles1, ...projectFiles2]
 }
 
-async function getTestJobs(): Promise<Job[]> {
+async function prepare(): Promise<Job[]> {
   const specFiles = projectFiles.filter((file) => file.includes('.spec.'))
   const testFiles = projectFiles.filter((file) => file.includes('.test.'))
 
@@ -179,7 +179,7 @@ function getTestJobFiles(projectFiles: string[]): string[] {
 }
 
 async function getMatrix(): Promise<MatrixEntry[]> {
-  let jobs = await getTestJobs()
+  let jobs = await prepare()
 
   const inspectFile = getInspectFile()
   let TEST_INSPECT = ''
@@ -247,7 +247,7 @@ function getSetupName(setup: Setup): string {
   return setupName
 }
 
-// To debug `getInspectFile()` run `$ node ./getTestJobs.mjs --ci --debug`
+// To debug `getInspectFile()` run `$ node ./prepare.mjs --ci --debug`
 function getInspectFile(): string | null {
   // File was previously named FOCUS
   const inspectFiles = projectFiles.filter((file) => file.endsWith('/INSPECT'))

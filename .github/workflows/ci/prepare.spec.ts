@@ -1,22 +1,22 @@
-import { getTestJobs } from './getTestJobs'
+import { prepare } from './prepare'
 import { expect, describe, it } from 'vitest'
 
 /*/
-// We only use this `getTestJobs()` test for developing the getTestJobs() function. (Because, otherwise, the fixture down below would need to be updated everytime there is a new/(re)moved test file.)
+// We only use this `prepare()` test for developing the prepare() function. (Because, otherwise, the fixture down below would need to be updated everytime there is a new/(re)moved test file.)
 const SKIP = true
 /*/
 const SKIP = false
 //*/
 
-describe('getTestJobs()', () => {
+describe('prepare()', () => {
   if (SKIP) {
-    const msg = 'SKIPPED getTestJobs() test'
+    const msg = 'SKIPPED prepare() test'
     it(msg, () => {})
     return
   }
 
   it('basics', async () => {
-    const jobs = await getTestJobs()
+    const jobs = await prepare()
     expect(jobs).toMatchInlineSnapshot(`
       [
         {
@@ -29,7 +29,7 @@ describe('getTestJobs()', () => {
             },
           ],
           "jobTestFiles": [
-            ".github/workflows/ci/getTestJobs.spec.ts",
+            ".github/workflows/ci/prepare.spec.ts",
             "packages/vike/node/runtime/html/injectAssets/injectHtmlTags.spec.ts",
             "packages/vike/node/runtime/html/propKeys.spec.ts",
             "packages/vike/node/runtime/renderPage/createHttpResponse/assertNoInfiniteHttpRedirect.spec.ts",
@@ -83,7 +83,7 @@ describe('getTestJobs()', () => {
             },
           ],
           "jobTestFiles": [
-            ".github/workflows/ci/getTestJobs.spec.ts",
+            ".github/workflows/ci/prepare.spec.ts",
             "packages/vike/node/runtime/html/injectAssets/injectHtmlTags.spec.ts",
             "packages/vike/node/runtime/html/propKeys.spec.ts",
             "packages/vike/node/runtime/renderPage/createHttpResponse/assertNoInfiniteHttpRedirect.spec.ts",
