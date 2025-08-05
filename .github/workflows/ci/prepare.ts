@@ -191,7 +191,7 @@ async function getMatrix(): Promise<MatrixEntry[]> {
       matrix.push({
         jobCmd,
         jobName: jobName + getSetupName(setup),
-        TEST_FILES: (jobTests ?? []).join(' '),
+        TEST_FILES: (jobTests ?? []).map((jobTest) => jobTest.testFilePath).join(' '),
         ...setup,
       })
     })
