@@ -1,1 +1,1 @@
-{ "name": "Unit Tests E2E" }
+{ "ci": { "job": "Unit Tests E2E" } }
