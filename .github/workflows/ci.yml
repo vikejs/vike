@@ -8,12 +8,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
+    - uses: oven-sh/setup-bun@v2
       with:
-        node-version: 20
+        version: 1.2.19
     - id: getMatrix
       run: |
-        matrix=`node ./.github/workflows/ci/getTestJobs.mjs --ci`
+        matrix=`bun ./.github/workflows/ci/prepare.ts --ci`
         echo "matrix=$matrix" >> $GITHUB_OUTPUT
     - run: echo ${{ steps.getMatrix.outputs.matrix }}
     outputs:
