@@ -122,8 +122,6 @@ async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
   }
 
   jobConfigFiles.forEach((jobConfigFile) => {
-    assert(globalConfigFile)
-
     const jobConfig: JobConfig = require(path.join(root, jobConfigFile))
 
     const jobName = jobConfig.ci.job
@@ -142,6 +140,7 @@ async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
 
     const job = jobs.find((job) => job.jobName == jobName)
     if (job === undefined) {
+      assert(globalConfigFile)
       throw new Error(`Make sure ${jobName} is defined in ${globalConfigFile}`)
     }
     assert(job.jobTestFiles)
