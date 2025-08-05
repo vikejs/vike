@@ -7,7 +7,7 @@ const require = createRequire(import.meta.url)
 const args = process.argv
 const root = cmd('git rev-parse --show-toplevel')
 const configFileName = 'test-e2e.config.mjs'
-const testJobFileName = '.testCiJob.json'
+const jobConfigFileName = '.testCiJob.json'
 const projectFiles = getProjectFiles()
 let DEBUG = false
 
@@ -79,10 +79,10 @@ async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
   const jobs: Job[] = []
 
   const configFile = getConfigFile(projectFiles)
-  const testJobFiles = getTestJobFiles(projectFiles)
-  if (configFile && testJobFiles.length === 0) throw new Error('No file `.testCiJob.json` found')
+  const jobConfigFiles = getTestJobFiles(projectFiles)
+  if (configFile && jobConfigFiles.length === 0) throw new Error('No file `.testCiJob.json` found')
 
-  if (testJobFiles.length >= 1) {
+  if (jobConfigFiles.length >= 1) {
     if (!configFile) throw new Error(`Config file \`${configFileName}\` not found`)
     const { default: config }: { default: unknown } = await import(configFile)
     assert(isObject(config))
@@ -120,23 +120,23 @@ async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
     })
   }
 
-  testJobFiles.forEach((testJobFile) => {
+  jobConfigFiles.forEach((jobConfigFile) => {
     assert(configFile)
 
-    const jobJson: Record<string, unknown> = require(path.join(root, testJobFile))
+    const jobJson: Record<string, unknown> = require(path.join(root, jobConfigFile))
 
     const jobName = jobJson.name
     assert(jobName)
     assert(typeof jobName === 'string')
 
     const dir =
-      path.dirname(testJobFile) +
+      path.dirname(jobConfigFile) +
       // `$ git ls-files` returns posix paths
       path.posix.sep
     const jobTestFiles = testFiles.filter((f) => f.startsWith(dir))
     assert(
       jobTestFiles.length > 0,
-      `No test files found in \`${dir}\` (for \`${testJobFile}\`). Test files: \n${JSON.stringify(testFiles, null, 2)}`,
+      `No test files found in \`${dir}\` (for \`${jobConfigFile}\`). Test files: \n${JSON.stringify(testFiles, null, 2)}`,
     )
 
     const job = jobs.find((job) => job.jobName == jobName)
@@ -182,10 +182,10 @@ function getConfigFile(projectFiles: string[]) {
   return configFile
 }
 
-type TestJobFilePath = `${string}${typeof testJobFileName}`
+type TestJobFilePath = `${string}${typeof jobConfigFileName}`
 function getTestJobFiles(projectFiles: string[]) {
-  const testJobFiles = projectFiles.filter((file) => file.endsWith(testJobFileName)) as TestJobFilePath[]
-  return testJobFiles
+  const jobConfigFiles = projectFiles.filter((file) => file.endsWith(jobConfigFileName)) as TestJobFilePath[]
+  return jobConfigFiles
 }
 
 async function getMatrix(): Promise<MatrixEntry[]> {
