@@ -79,7 +79,7 @@ async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
   const jobs: Job[] = []
 
   const configFile = getConfigFile(projectFiles)
-  const jobConfigFiles = getTestJobFiles(projectFiles)
+  const jobConfigFiles = getJobConfigFiles(projectFiles)
   if (configFile && jobConfigFiles.length === 0) throw new Error('No file `.testCiJob.json` found')
 
   if (jobConfigFiles.length >= 1) {
@@ -182,9 +182,9 @@ function getConfigFile(projectFiles: string[]) {
   return configFile
 }
 
-type TestJobFilePath = `${string}${typeof jobConfigFileName}`
-function getTestJobFiles(projectFiles: string[]) {
-  const jobConfigFiles = projectFiles.filter((file) => file.endsWith(jobConfigFileName)) as TestJobFilePath[]
+type JobConfigFilePath = `${string}${typeof jobConfigFileName}`
+function getJobConfigFiles(projectFiles: string[]) {
+  const jobConfigFiles = projectFiles.filter((file) => file.endsWith(jobConfigFileName)) as JobConfigFilePath[]
   return jobConfigFiles
 }
 
