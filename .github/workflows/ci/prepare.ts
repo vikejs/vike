@@ -24,6 +24,7 @@ if (args.includes('--debug')) {
 type MatrixEntry = { jobName: string; TEST_FILES: string; jobCmd: string; TEST_INSPECT: string } & Setup
 type Job = { jobName: string; jobTestFiles?: string[]; jobSetups: Setup[]; jobCmd: string }
 type Setup = { os: string; node_version: string }
+type JobConfig = { ci: { job: string } }
 
 function getProjectFiles(): string[] {
   const projectFiles1 = cmd(`git ls-files`, { cwd: root }).split(' ')
@@ -123,9 +124,9 @@ async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
   jobConfigFiles.forEach((jobConfigFile) => {
     assert(globalConfigFile)
 
-    const jobConfig: Record<string, unknown> = require(path.join(root, jobConfigFile))
+    const jobConfig: JobConfig = require(path.join(root, jobConfigFile))
 
-    const jobName = (jobConfig as any).ci.job
+    const jobName = jobConfig.ci.job
     assert(jobName)
     assert(typeof jobName === 'string')
 
