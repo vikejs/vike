@@ -5,11 +5,11 @@ import { createRequire } from 'node:module'
 const require = createRequire(import.meta.url)
 
 const args = process.argv
-
 const root = cmd('git rev-parse --show-toplevel')
 const configFileName = 'test-e2e.config.mjs'
 const projectFiles = getProjectFiles()
 
+// CI
 export { getTestJobs }
 if (args.includes('--ci')) logMatrix()
 
