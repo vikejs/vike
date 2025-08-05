@@ -31,7 +31,10 @@ type Job = {
 }
 type Setup = { os: string; node_version: string }
 type LocalConfig = { ci: { job: string; inspect: true } }
-type GlobalConfig = { ci?: { jobs: { name: string; setups: Setup[] }[] }; tolerateError?: TolerateError }
+type GlobalConfig = {
+  ci?: { jobs: { name: string; setups: Setup[]; command?: string }[] }
+  tolerateError?: TolerateError
+}
 
 function getProjectFiles(): string[] {
   const projectFiles1 = cmd('git ls-files', { cwd: root }).split(' ')
@@ -43,48 +46,16 @@ function getProjectFiles(): string[] {
 }
 
 async function prepare(): Promise<Job[]> {
-  const specFiles = projectFiles.filter((file) => file.includes('.spec.'))
   const testFiles = projectFiles.filter((file) => file.includes('.test.'))
 
-  const linux_nodeOld = {
-    os: 'ubuntu-latest',
-    node_version: '18',
-  }
-  const windows_nodeOld = {
-    os: 'windows-latest',
-    node_version: '18',
-  }
-
-  let jobs: Job[] = [
-    {
-      jobName: 'Vitest (unit tests)',
-      jobCmd: 'pnpm exec vitest run --project unit',
-      jobTests: specFiles.map((file) => ({ testFilePath: file, localConfig: null })),
-      jobSetups: [linux_nodeOld],
-    },
-    {
-      jobName: 'Vitest (E2E tests)',
-      jobCmd: 'pnpm exec vitest run --project e2e',
-      jobTests: specFiles.map((file) => ({ testFilePath: file, localConfig: null })),
-      jobSetups: [linux_nodeOld, windows_nodeOld],
-    },
-    // Check TypeScript types
-    {
-      jobName: 'TypeScript',
-      jobCmd: 'pnpm exec test-types',
-      jobSetups: [linux_nodeOld],
-      jobTests: null,
-    },
-    // E2e tests
-    ...(await crawlE2eJobs(testFiles)),
-  ]
+  const jobs: Job[] = await getJobs(testFiles)
 
   assertTestFilesCoverage(testFiles, jobs)
 
   return jobs
 }
 
-async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
+async function getJobs(testFiles: string[]): Promise<Job[]> {
   const jobs: Job[] = []
 
   const globalConfigFile = getGlobalConfigFile(projectFiles)
@@ -96,26 +67,18 @@ async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
     const { default: config } = (await import(globalConfigFile)) as { default: GlobalConfig }
     const { ci } = config
     assert(ci)
-    const jobSpecs = ci.jobs
-    jobSpecs.forEach((jobSpec) => {
-      const jobName = jobSpec.name
-      assert(typeof jobName === 'string')
-
-      const jobSetups = jobSpec.setups.map((setup) => {
-        const { os, node_version } = setup
-        assert(typeof os === 'string')
-        assert(typeof node_version === 'string')
-        return {
-          os,
-          node_version,
-        }
+    ci.jobs.forEach((jobSpec) => {
+      assert(typeof jobSpec.name === 'string')
+      jobSpec.setups.forEach((setup) => {
+        assert(typeof setup.os === 'string')
+        assert(typeof setup.node_version === 'string')
       })
 
       jobs.push({
-        jobName,
-        jobTests: [],
-        jobSetups,
-        jobCmd: 'pnpm exec test-e2e',
+        jobName: jobSpec.name,
+        jobSetups: jobSpec.setups,
+        jobCmd: jobSpec.command ?? 'pnpm exec test-e2e',
+        jobTests: jobSpec.command ? null : [],
       })
     })
   }
@@ -145,29 +108,6 @@ async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
     assert(job.jobTests)
     job.jobTests.push(...jobTests)
   })
-
-  {
-    let job: Job | null = null
-    testFiles.forEach((testFile) => {
-      const isMissing = !jobs.some((job) => {
-        assert(job.jobTests)
-        return job.jobTests.some((jobTest) => jobTest.testFilePath === testFile)
-      })
-      if (isMissing) {
-        if (!job) {
-          job = {
-            jobName: 'E2E Tests',
-            jobCmd: 'pnpm exec test-e2e',
-            jobTests: [],
-            jobSetups: [{ os: 'ubuntu-latest', node_version: '20' }],
-          }
-          jobs.push(job)
-        }
-        assert(job.jobTests)
-        job.jobTests.push({ testFilePath: testFile, localConfig: null })
-      }
-    })
-  }
 
   return jobs
 }
@@ -245,19 +185,19 @@ async function logMatrix(): Promise<void> {
 
 function getSetupName(setup: Setup): string {
   const { os, node_version } = setup
-  let osName = undefined
+  let osNamePretty = undefined
   if (os === 'ubuntu-latest') {
-    osName = 'Ubuntu'
+    osNamePretty = 'Ubuntu'
   }
   if (os === 'macos-latest') {
-    osName = 'Mac'
+    osNamePretty = 'Mac'
   }
   if (os === 'windows-latest') {
-    osName = 'Win'
+    osNamePretty = 'Win'
   }
-  assert(osName, `Unknown Operating System ${os}`)
+  assert(osNamePretty, `Unknown Operating System ${os}`)
   assert(node_version)
-  const setupName = ` - ${osName} - Node.js ${node_version}`
+  const setupName = ` - ${osNamePretty} - Node.js ${node_version}`
   return setupName
 }
 
