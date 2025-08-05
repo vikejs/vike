@@ -8,10 +8,17 @@ const args = process.argv
 const root = cmd('git rev-parse --show-toplevel')
 const configFileName = 'test-e2e.config.mjs'
 const projectFiles = getProjectFiles()
+let DEBUG = false
 
-// CI
-export { prepare }
+// [ENTRY] CI
 if (args.includes('--ci')) logMatrix()
+// [ENTRY] Vitest
+export { prepare }
+// [ENTRY] Local inspection
+if (args.includes('--debug')) {
+  DEBUG = true
+  logMatrix()
+}
 
 type MatrixEntry = { jobName: string; TEST_FILES: string; jobCmd: string; TEST_INSPECT: string } & Setup
 type Job = { jobName: string; jobTestFiles?: string[]; jobSetups: Setup[]; jobCmd: string }
@@ -221,9 +228,10 @@ function assertTestFilesCoverage(testFiles: string[], jobs: Job[]): void {
 
 async function logMatrix(): Promise<void> {
   const matrix = await getMatrix()
-  if (args.includes('--debug')) {
+  if (DEBUG) {
     console.log(JSON.stringify(matrix, null, 2))
-    console.log(matrix.length)
+    console.log()
+    console.log('Number of jobs: ' + matrix.length)
   } else {
     console.log(`{"include":${JSON.stringify(matrix)}}`)
   }
@@ -247,7 +255,7 @@ function getSetupName(setup: Setup): string {
   return setupName
 }
 
-// To debug `getInspectFile()` run `$ node ./prepare.mjs --ci --debug`
+// To debug `getInspectFile()` run `$ bun ./prepare.ts --debug`
 function getInspectFile(): string | null {
   // File was previously named FOCUS
   const inspectFiles = projectFiles.filter((file) => file.endsWith('/INSPECT'))
