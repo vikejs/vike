@@ -32,9 +32,11 @@ To achieve that:
 
 By setting `Page`'s meta config `env` to `{ client: true, server: false }` we tell Vike to load `+Page.js` only in the browser.
 
-```js
-// /renderer/+config.js
+```ts
+// /renderer/+config.ts
 // Environment: config
+
+import type { Config } from 'vike/types'
 
 export default {
   meta: {
@@ -42,7 +44,7 @@ export default {
       env: { server: false, client: true } // SPA for all pages
     }
   }
-}
+} satisfies Config
 ```
 
 React example (SPA + SSR):
@@ -63,15 +65,16 @@ If we only have SPA pages, then we adapt our `onRenderHtml()` and `onRenderClien
 
 Client-side `onRenderClient()` hook:
 
-```js
-// /renderer/+onRenderClient.js
+```ts
+// /renderer/+onRenderClient.ts
 // Environment: client
-
-import { renderToDom } from 'some-ui-framework'
 
 export { onRenderClient }
 
-async function onRenderClient(pageContext) {
+import type { PageContextClient } from 'vike/types'
+import { renderToDom } from 'some-ui-framework'
+
+async function onRenderClient(pageContext: PageContextClient) {
   const { Page } = pageContext
   // UI frameworks usually have two methods, such as `renderToDom()` and `hydrateDom()`.
   // Note how we use `renderToDom()` and not `hydrateDom()`.
@@ -83,13 +86,13 @@ async function onRenderClient(pageContext) {
 
 We also adapt our server-side `onRenderHtml()` hook:
 
-```js
-// /renderer/+onRenderHtml.js
+```ts
+// /renderer/+onRenderHtml.ts
 // Environment: server
 
-import { escapeInject } from 'vike/server'
-
 export { onRenderHtml }
+
+import { escapeInject } from 'vike/server'
 
 async function onRenderHtml() {
   // Note that `div#root` is empty
@@ -114,11 +117,12 @@ We can also use our server-side `onRenderHtml()` hook to render `<head>`:
 // /renderer/+onRenderHtml.js
 // Environment: server
 
-import { escapeInject } from 'vike/server'
-
 export { onRenderHtml }
 
-async function onRenderHtml(pageContext) {
+import type { PageContextServer } from 'vike/types'
+import { escapeInject } from 'vike/server'
+
+async function onRenderHtml(pageContext: PageContextServer) {
   const { title, description } = pageContext.config
   // Even though we load and render our page's components only in the browser,
   // we define our page's `<title>` and `<meta name="description">` on the server-side.
@@ -136,18 +140,21 @@ async function onRenderHtml(pageContext) {
 
 > `pageContext.config.title` and `pageContext.config.description` are custom settings, see <Link href="/meta#example-title-and-description" doNotInferSectionTitle />.
 
-```js
-// /pages/about/+title.js
+```ts
+// /pages/about/+title.ts
 export const title = 'About | My App'
 ```
 
-```js
-// /pages/about/+description.js
+```ts
+// /pages/about/+description.ts
 export const description = 'My App is ...'
 ```
 
-```js
-// /renderer/+config.js
+```ts
+// /renderer/+config.ts
+
+import type { Config } from 'vike/types'
+
 export default {
   meta: {
     Page: {
@@ -160,7 +167,7 @@ export default {
       env: { server: true, client: false }
     }
   }
-}
+} satisfies Config
 ```
 
 
@@ -168,16 +175,17 @@ export default {
 
 If we have both SPA and SSR pages, then we adapt our `onRenderHtml()` and `onRenderClient()` hooks like this:
 
-```js
-// /renderer/+onRenderHtml.js
+```ts
+// /renderer/+onRenderHtml.ts
 // Environment: server
-
-import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import { renderToHtml } from 'some-ui-framework'
 
 export { onRenderHtml }
 
-async function onRenderHtml(pageContext) {
+import type { PageContextServer } from 'vike/types'
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
+import { renderToHtml } from 'some-ui-framework'
+
+async function onRenderHtml(pageContext: PageContextServer) {
   let pageHtml
   if (pageContext.Page) {
     // For SSR pages
@@ -198,15 +206,16 @@ async function onRenderHtml(pageContext) {
 > `{ server: true, client: true }` in `config.js`, then `pageContext.Page` is
 > only defined in the browser.
 
-```js
-// /renderer/+onRenderClient.js
+```ts
+// /renderer/+onRenderClient.ts
 // Environment: client
-
-import { renderToDom, hydrateDom } from 'some-ui-framework'
 
 export { onRenderClient }
 
-async function onRenderClient(pageContext) {
+import type { PageContextClient } from 'vike/types'
+import { renderToDom, hydrateDom } from 'some-ui-framework'
+
+async function onRenderClient(pageContext: PageContextClient) {
   const { Page } = pageContext
   const root = document.getElementById('root')
   if (
@@ -268,9 +277,11 @@ To render a page to HTML-only:
  1. (Optional) We define <Link href="/client">`+client.js`</Link> (e.g. to add a minimal amount of JavaScript surgically injecting bits of interactivity).
 
 
-```js
-// /renderer/+config.js
+```ts
+// /renderer/+config.ts
 // Environment: config
+
+import type { Config } from 'vike/types'
 
 export default {
   meta: {
@@ -278,11 +289,11 @@ export default {
       env: { server: true, client: false } // HTML-only for all pages
     }
   }
-}
+} satisfies Config
 ```
 
-```js
-// /pages/about/+Page.js
+```ts
+// /pages/about/+Page.ts
 // Environment: server
 
 export { Page }
@@ -297,12 +308,12 @@ function Page() {
 }
 ```
 
-```js
-// /pages/about/+client.js
+```ts
+// /pages/about/+client.ts
 // Environment: client
 
 // This file represents the entire browser-side JavaScript.
-// We can omit defining `+client.js` in which case the page has zero browser-side JavaScript.
+// We can omit defining `+client.ts` in which case the page has zero browser-side JavaScript.
 
 console.log("I'm the page's only browser-side JavaScript line.")
 ```
