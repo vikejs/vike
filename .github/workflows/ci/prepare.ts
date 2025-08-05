@@ -198,7 +198,7 @@ async function getMatrix(): Promise<MatrixEntry[]> {
     jobs = jobs.filter((job) => job.jobTests && job.jobTests.length > 0)
 
     // Append --inspect
-    jobs.forEach(job => {
+    jobs.forEach((job) => {
       job.jobCmd = `${job.jobCmd} --inspect`
     })
   }
