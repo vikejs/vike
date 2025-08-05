@@ -7,7 +7,7 @@ const require = createRequire(import.meta.url)
 const args = process.argv
 const root = cmd('git rev-parse --show-toplevel')
 const globalConfigFileName = 'test-e2e.config.mjs'
-const jobConfigFileName = '.testCiJob.json'
+const jobConfigFileName = '.test-e2e.json'
 const projectFiles = getProjectFiles()
 let DEBUG = false
 
@@ -80,7 +80,7 @@ async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
 
   const globalConfigFile = getGlobalConfigFile(projectFiles)
   const jobConfigFiles = getJobConfigFiles(projectFiles)
-  if (globalConfigFile && jobConfigFiles.length === 0) throw new Error('No file `.testCiJob.json` found')
+  if (globalConfigFile && jobConfigFiles.length === 0) throw new Error('No file `.test-e2e.json` found')
 
   if (jobConfigFiles.length >= 1) {
     if (!globalConfigFile) throw new Error(`Config file \`${globalConfigFileName}\` not found`)
