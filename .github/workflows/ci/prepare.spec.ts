@@ -132,6 +132,7 @@ describe('prepare()', () => {
               "os": "ubuntu-latest",
             },
           ],
+          "jobTests": null,
         },
         {
           "jobCmd": "pnpm exec test-e2e",

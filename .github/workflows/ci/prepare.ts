@@ -23,7 +23,7 @@ if (args.includes('--debug')) {
 }
 
 type MatrixEntry = { jobName: string; TEST_FILES: string; jobCmd: string; TEST_INSPECT: string } & Setup
-type Job = { jobName: string; jobTests?: string[]; jobSetups: Setup[]; jobCmd: string }
+type Job = { jobName: string; jobTests: string[] | null; jobSetups: Setup[]; jobCmd: string }
 type Setup = { os: string; node_version: string }
 type LocalConfig = { ci: { job: string } }
 type GlobalConfig = { ci?: { jobs: { name: string; setups: Setup[] }[] }; tolerateError?: TolerateError }
@@ -68,6 +68,7 @@ async function prepare(): Promise<Job[]> {
       jobName: 'TypeScript',
       jobCmd: 'pnpm exec test-types',
       jobSetups: [linux_nodeOld],
+      jobTests: null,
     },
     // E2e tests
     ...(await crawlE2eJobs(testFiles)),
