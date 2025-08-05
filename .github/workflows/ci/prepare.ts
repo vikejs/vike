@@ -22,7 +22,7 @@ if (args.includes('--debug')) {
   logMatrix()
 }
 
-type MatrixEntry = { jobName: string; TEST_FILES: string; jobCmd: string; TEST_INSPECT: string } & Setup
+type MatrixEntry = { jobName: string; TEST_FILES: string; jobCmd: string } & Setup
 type Job = { jobName: string; jobTests: { testFilePath: string }[] | null; jobSetups: Setup[]; jobCmd: string }
 type Setup = { os: string; node_version: string }
 type LocalConfig = { ci: { job: string } }
@@ -185,14 +185,6 @@ function getLocalConfigFiles(projectFiles: string[]) {
 async function getMatrix(): Promise<MatrixEntry[]> {
   let jobs = await prepare()
 
-  const inspectFile = getInspectFile()
-  let TEST_INSPECT = ''
-  if (inspectFile) {
-    const inspectDir = path.dirname(inspectFile)
-    TEST_INSPECT = inspectDir
-    jobs = jobs.filter((job) => job.jobTests?.some((testFile) => testFile.startsWith(inspectDir)))
-  }
-
   const matrix: MatrixEntry[] = []
   jobs.forEach(({ jobName, jobTests, jobSetups, jobCmd }) => {
     jobSetups.forEach((setup) => {
@@ -200,7 +192,6 @@ async function getMatrix(): Promise<MatrixEntry[]> {
         jobCmd,
         jobName: jobName + getSetupName(setup),
         TEST_FILES: (jobTests ?? []).join(' '),
-        TEST_INSPECT,
         ...setup,
       })
     })
@@ -250,20 +241,6 @@ function getSetupName(setup: Setup): string {
   assert(node_version)
   const setupName = ` - ${osName} - Node.js ${node_version}`
   return setupName
-}
-
-// To debug `getInspectFile()` run `$ bun ./prepare.ts --debug`
-function getInspectFile(): string | null {
-  // File was previously named FOCUS
-  const inspectFiles = projectFiles.filter((file) => file.endsWith('/INSPECT'))
-  if (inspectFiles.length === 0) {
-    return null
-  }
-  assert(
-    inspectFiles.length === 1,
-    'There cannot be only one INSPECT file but found multiple: ' + inspectFiles.join(' '),
-  )
-  return inspectFiles[0]
 }
 
 function cmd(command: string, { cwd }: { cwd?: string } = { cwd: undefined }): string {
