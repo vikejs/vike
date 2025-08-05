@@ -191,10 +191,16 @@ async function getMatrix(): Promise<MatrixEntry[]> {
   let jobs = await prepare()
 
   if (jobs.some((job) => job.jobTests?.some((t) => t.localConfig?.ci.inspect))) {
+    // Filter
     jobs.forEach((job) => {
       job.jobTests = job.jobTests && job.jobTests.filter((t) => t.localConfig?.ci.inspect)
     })
     jobs = jobs.filter((job) => job.jobTests && job.jobTests.length > 0)
+
+    // Append --inspect
+    jobs.forEach(job => {
+      job.jobCmd = `${job.jobCmd} --inspect`
+    })
   }
 
   const matrix: MatrixEntry[] = []
