@@ -2,8 +2,5 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "my-vike-cloudflare-app",
   "compatibility_date": "2025-08-04",
-  "pages_build_output_dir": "./dist/cloudflare",
-  "assets": {
-    "directory": "./dist/cloudflare"
-  }
+  "pages_build_output_dir": "./dist/cloudflare"
 }
