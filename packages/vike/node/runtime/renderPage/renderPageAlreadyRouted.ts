@@ -72,7 +72,7 @@ async function renderPageAlreadyRouted<
     if (isError) {
       objectAssign(pageContext, { [isServerSideError]: true })
     }
-    const pageContextSerialized: string = getPageContextClientSerialized(pageContext)
+    const pageContextSerialized: string = getPageContextClientSerialized(pageContext, false)
     const httpResponse = await createHttpResponsePageContextJson(pageContextSerialized)
     objectAssign(pageContext, { httpResponse })
     return pageContext
@@ -123,7 +123,7 @@ async function prerenderPage(
   if (!pageContext._usesClientRouter) {
     return { documentHtml, pageContextSerialized: null, pageContext }
   } else {
-    const pageContextSerialized = getPageContextClientSerialized(pageContext)
+    const pageContextSerialized = getPageContextClientSerialized(pageContext, false)
     return { documentHtml, pageContextSerialized, pageContext }
   }
 }

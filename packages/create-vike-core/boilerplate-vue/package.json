@@ -5,7 +5,7 @@
     "prod": "vike build && cross-env NODE_ENV=production node dist/server/index.js"
   },
   "dependencies": {
-    "@vitejs/plugin-vue": "^5.2.1",
+    "@vitejs/plugin-vue": "^6.0.1",
     "@vue/compiler-sfc": "^3.5.13",
     "@vue/server-renderer": "^3.5.13",
     "cross-env": "^7.0.3",

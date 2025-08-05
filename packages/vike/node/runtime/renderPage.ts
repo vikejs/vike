@@ -617,9 +617,9 @@ async function handleAbortError(
       objectAssign(pageContext, pageContextErrorPageInit, true)
       augmentType(pageContext, await loadPageConfigsLazyServerSideAndExecHook(pageContext))
       // We include pageContextInit: we don't only serialize pageContextAbort because the error page may need to access pageContextInit
-      pageContextSerialized = getPageContextClientSerialized(pageContext)
+      pageContextSerialized = getPageContextClientSerialized(pageContext, false)
     } else {
-      pageContextSerialized = getPageContextClientSerializedAbort(pageContextAbort)
+      pageContextSerialized = getPageContextClientSerializedAbort(pageContextAbort, false)
     }
     const httpResponse = await createHttpResponsePageContextJson(pageContextSerialized)
     const pageContextReturn = { httpResponse }

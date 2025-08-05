@@ -1,23 +1,23 @@
-import { cmd, isObject } from './utils.mjs'
 import assert from 'node:assert'
 import path from 'node:path'
+import { execSync } from 'node:child_process'
 import { createRequire } from 'node:module'
 const require = createRequire(import.meta.url)
 
 const args = process.argv
-
 const root = cmd('git rev-parse --show-toplevel')
 const configFileName = 'test-e2e.config.mjs'
 const projectFiles = getProjectFiles()
 
-export { getTestJobs }
+// CI
+export { prepare }
 if (args.includes('--ci')) logMatrix()
 
-/** @typedef { { jobName: string, TEST_FILES: string, jobCmd: string, TEST_INSPECT: string } & Setup } MatrixEntry */
-/** @typedef { { jobName: string, jobTestFiles?: string[], jobSetups: Setup[], jobCmd: string } } Job */
-/** @typedef { { os: string, node_version: string } } Setup */
+type MatrixEntry = { jobName: string; TEST_FILES: string; jobCmd: string; TEST_INSPECT: string } & Setup
+type Job = { jobName: string; jobTestFiles?: string[]; jobSetups: Setup[]; jobCmd: string }
+type Setup = { os: string; node_version: string }
 
-function getProjectFiles() {
+function getProjectFiles(): string[] {
   const projectFiles1 = cmd(`git ls-files`, { cwd: root }).split(' ')
   // Also include untracked files.
   //  - In other words, we remove git ignored files. (Staged files are tracked and listed by `$ git ls-files`.)
@@ -26,8 +26,7 @@ function getProjectFiles() {
   return [...projectFiles1, ...projectFiles2]
 }
 
-/** @type { () => Promise<Job[]> } */
-async function getTestJobs() {
+async function prepare(): Promise<Job[]> {
   const specFiles = projectFiles.filter((file) => file.includes('.spec.'))
   const testFiles = projectFiles.filter((file) => file.includes('.test.'))
 
@@ -40,8 +39,7 @@ async function getTestJobs() {
     node_version: '18',
   }
 
-  /** @type { Job[] } */
-  let jobs = [
+  let jobs: Job[] = [
     {
       jobName: 'Vitest (unit tests)',
       jobCmd: 'pnpm exec vitest run --project unit',
@@ -69,10 +67,8 @@ async function getTestJobs() {
   return jobs
 }
 
-/** @type { (testFiles: string[]) => Promise<Job[]> } */
-async function crawlE2eJobs(testFiles) {
-  /** @type { Job[] } */
-  const jobs = []
+async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
+  const jobs: Job[] = []
 
   const testJobFiles = getTestJobFiles(projectFiles)
   const configFile = getConfigFile(projectFiles)
@@ -80,8 +76,7 @@ async function crawlE2eJobs(testFiles) {
 
   if (testJobFiles.length >= 1) {
     if (!configFile) throw new Error(`Config file \`${configFileName}\` not found`)
-    /** @type {{ default: unknown }} */
-    const { default: config } = await import(configFile)
+    const { default: config }: { default: unknown } = await import(configFile)
     assert(isObject(config))
     const { ci } = config
     assert(isObject(ci))
@@ -93,8 +88,7 @@ async function crawlE2eJobs(testFiles) {
       assert(jobName)
       assert(typeof jobName === 'string')
 
-      /** @type { { os: string, node_version: string }[] }  */
-      const jobSetups = []
+      const jobSetups: { os: string; node_version: string }[] = []
       const { setups } = jobSpec
       assert(Array.isArray(setups))
       setups.forEach((setup) => {
@@ -121,8 +115,7 @@ async function crawlE2eJobs(testFiles) {
   testJobFiles.forEach((testJobFile) => {
     assert(configFile)
 
-    /** @type { Record<string, unknown> } */
-    const jobJson = require(path.join(root, testJobFile))
+    const jobJson: Record<string, unknown> = require(path.join(root, testJobFile))
 
     const jobName = jobJson.name
     assert(jobName)
@@ -147,8 +140,7 @@ async function crawlE2eJobs(testFiles) {
   })
 
   {
-    /** @type { null | Job } */
-    let job = null
+    let job: Job | null = null
     testFiles.forEach((testFile) => {
       const isMissing = !jobs.some((job) => {
         assert(job.jobTestFiles)
@@ -173,8 +165,7 @@ async function crawlE2eJobs(testFiles) {
   return jobs
 }
 
-/** @type { (projectFiles: string[]) => string | null } */
-function getConfigFile(projectFiles) {
+function getConfigFile(projectFiles: string[]): string | null {
   const matches = projectFiles.filter((file) => file.endsWith(configFileName))
   if (matches.length > 1) throw new Error(`Only one file \`${configFileName}\` is allowed`)
   if (matches.length === 0) return null
@@ -182,14 +173,13 @@ function getConfigFile(projectFiles) {
   return configFile
 }
 
-/** @type { (projectFiles: string[]) => string[] } */
-function getTestJobFiles(projectFiles) {
+function getTestJobFiles(projectFiles: string[]): string[] {
   const testJobFiles = projectFiles.filter((file) => file.endsWith('.testCiJob.json'))
   return testJobFiles
 }
 
-async function getMatrix() {
-  let jobs = await getTestJobs()
+async function getMatrix(): Promise<MatrixEntry[]> {
+  let jobs = await prepare()
 
   const inspectFile = getInspectFile()
   let TEST_INSPECT = ''
@@ -199,8 +189,7 @@ async function getMatrix() {
     jobs = jobs.filter((job) => job.jobTestFiles?.some((testFile) => testFile.startsWith(inspectDir)))
   }
 
-  /** @type MatrixEntry[] */
-  const matrix = []
+  const matrix: MatrixEntry[] = []
   jobs.forEach(({ jobName, jobTestFiles, jobSetups, jobCmd }) => {
     jobSetups.forEach((setup) => {
       matrix.push({
@@ -216,8 +205,7 @@ async function getMatrix() {
   return matrix
 }
 
-/** @type { (testFiles: string[], jobs: Job[]) => void } */
-function assertTestFilesCoverage(testFiles, jobs) {
+function assertTestFilesCoverage(testFiles: string[], jobs: Job[]): void {
   testFiles.forEach((testFile) => {
     const jobsFound = jobs.filter((job) => job.jobTestFiles?.includes(testFile))
     assert(
@@ -231,7 +219,7 @@ function assertTestFilesCoverage(testFiles, jobs) {
   })
 }
 
-async function logMatrix() {
+async function logMatrix(): Promise<void> {
   const matrix = await getMatrix()
   if (args.includes('--debug')) {
     console.log(JSON.stringify(matrix, null, 2))
@@ -241,8 +229,7 @@ async function logMatrix() {
   }
 }
 
-/** @type { (setup: Setup) => string } */
-function getSetupName(setup) {
+function getSetupName(setup: Setup): string {
   const { os, node_version } = setup
   let osName = undefined
   if (os === 'ubuntu-latest') {
@@ -260,8 +247,8 @@ function getSetupName(setup) {
   return setupName
 }
 
-// To debug `getInspectFile()` run `$ node ./getTestJobs.mjs --ci --debug`
-function getInspectFile() {
+// To debug `getInspectFile()` run `$ node ./prepare.mjs --ci --debug`
+function getInspectFile(): string | null {
   // File was previously named FOCUS
   const inspectFiles = projectFiles.filter((file) => file.endsWith('/INSPECT'))
   if (inspectFiles.length === 0) {
@@ -272,4 +259,14 @@ function getInspectFile() {
     'There cannot be only one INSPECT file but found multiple: ' + inspectFiles.join(' '),
   )
   return inspectFiles[0]
+}
+
+function cmd(command: string, { cwd }: { cwd?: string } = { cwd: undefined }): string {
+  let stdout = execSync(command, { encoding: 'utf8', cwd })
+  stdout = stdout.split(/\s/).filter(Boolean).join(' ')
+  return stdout
+}
+
+function isObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null
 }

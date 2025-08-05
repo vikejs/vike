@@ -2,6 +2,8 @@
   "compilerOptions": {
     "strict": true,
     "jsx": "react",
+    "module": "ES2020",
+    "moduleResolution": "bundler",
     "esModuleInterop": true
   }
 }

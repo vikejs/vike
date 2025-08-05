@@ -9,7 +9,7 @@
   "dependencies": {
     "@universal-middleware/express": "^0.4.15",
     "express": "^5.1.0",
-    "@vitejs/plugin-react": "^4.5.1",
+    "@vitejs/plugin-react": "^4.7.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "vike-react": "^0.6.5",
