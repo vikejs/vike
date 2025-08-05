@@ -77,8 +77,8 @@ async function prepare(): Promise<Job[]> {
 async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
   const jobs: Job[] = []
 
-  const testJobFiles = getTestJobFiles(projectFiles)
   const configFile = getConfigFile(projectFiles)
+  const testJobFiles = getTestJobFiles(projectFiles)
   if (configFile && testJobFiles.length === 0) throw new Error('No file `.testCiJob.json` found')
 
   if (testJobFiles.length >= 1) {
@@ -172,11 +172,12 @@ async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
   return jobs
 }
 
-function getConfigFile(projectFiles: string[]): string | null {
-  const matches = projectFiles.filter((file) => file.endsWith(configFileName))
+type ConfigFilePath = `${string}${typeof configFileName}`
+function getConfigFile(projectFiles: string[]) {
+  const matches = projectFiles.filter((file) => file.endsWith(configFileName)) as ConfigFilePath[]
   if (matches.length > 1) throw new Error(`Only one file \`${configFileName}\` is allowed`)
   if (matches.length === 0) return null
-  const configFile = path.join(root, matches[0])
+  const configFile = path.join(root, matches[0]) as ConfigFilePath
   return configFile
 }
 
