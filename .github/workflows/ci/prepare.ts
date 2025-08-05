@@ -125,7 +125,7 @@ async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
 
     const jobJson: Record<string, unknown> = require(path.join(root, jobConfigFile))
 
-    const jobName = jobJson.name
+    const jobName = (jobJson as any).ci.job
     assert(jobName)
     assert(typeof jobName === 'string')
 
