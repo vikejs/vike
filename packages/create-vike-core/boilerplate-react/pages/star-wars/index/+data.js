@@ -1,10 +1,6 @@
 // https://vike.dev/data
 export { data }
 
-// The node-fetch package (which only works on the server-side) can be used since
-// this file always runs on the server-side, see https://vike.dev/data#server-side
-import fetch from 'node-fetch'
-
 const data = async (pageContext) => {
   await sleep(700) // Simulate slow network
 

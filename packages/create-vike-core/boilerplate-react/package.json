@@ -9,7 +9,6 @@
     "@vitejs/plugin-react": "^4.7.0",
     "cross-env": "^10.0.0",
     "hono": "^4.8.12",
-    "node-fetch": "^3.3.2",
     "prop-types": "15.8.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

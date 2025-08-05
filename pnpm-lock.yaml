@@ -654,9 +654,6 @@ importers:
       hono:
         specifier: ^4.8.12
         version: 4.8.12
-      node-fetch:
-        specifier: ^3.3.2
-        version: 3.3.2
       prop-types:
         specifier: 15.8.1
         version: 15.8.1
