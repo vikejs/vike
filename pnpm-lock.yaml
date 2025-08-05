@@ -11,6 +11,9 @@ importers:
       '@biomejs/biome':
         specifier: ^1.9.4
         version: 1.9.4
+      '@brillout/replace':
+        specifier: ^0.1.4
+        version: 0.1.4
       '@brillout/spellcheck':
         specifier: ^0.1.2
         version: 0.1.2
@@ -2347,6 +2350,10 @@ packages:
 
   '@brillout/release-me@0.4.3':
     resolution: {integrity: sha512-zZzzOT34JVDOo8pe+AhJODAajzMLitfUOZoZotBXTAVGzpcOWcoHM1F4VDih1FW8GOrKhs/r48nhem5AmMWm8Q==}
+    hasBin: true
+
+  '@brillout/replace@0.1.4':
+    resolution: {integrity: sha512-t1J030/UpCi0ylX46uH9hjfXAw3oln7biYiFoaT1RPi9+3BsFOnJ/P7onefJJ/5Tt1L831iHESA+ZZiZRfvalg==}
     hasBin: true
 
   '@brillout/require-shim@0.1.2':
@@ -8891,6 +8898,11 @@ snapshots:
       conventional-changelog: 5.1.0
       execa: 5.1.1
       semver: 7.7.1
+
+  '@brillout/replace@0.1.4':
+    dependencies:
+      '@brillout/picocolors': 1.0.28
+      '@brillout/shell': 0.2.1
 
   '@brillout/require-shim@0.1.2': {}
 
