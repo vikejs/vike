@@ -59,13 +59,13 @@ async function prepare(): Promise<Job[]> {
     {
       jobName: 'Vitest (unit tests)',
       jobCmd: 'pnpm exec vitest run --project unit',
-      jobTests: specFiles.map((file) => ({ testFilePath: file, localConfig: null })),
+      jobTests: null,
       jobSetups: [linux_nodeOld],
     },
     {
       jobName: 'Vitest (E2E tests)',
       jobCmd: 'pnpm exec vitest run --project e2e',
-      jobTests: specFiles.map((file) => ({ testFilePath: file, localConfig: null })),
+      jobTests: null,
       jobSetups: [linux_nodeOld, windows_nodeOld],
     },
     // Check TypeScript types
