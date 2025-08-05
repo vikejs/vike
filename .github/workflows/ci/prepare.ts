@@ -45,45 +45,14 @@ function getProjectFiles(): string[] {
 async function prepare(): Promise<Job[]> {
   const testFiles = projectFiles.filter((file) => file.includes('.test.'))
 
-  const linux_nodeOld = {
-    os: 'ubuntu-latest',
-    node_version: '18',
-  }
-  const windows_nodeOld = {
-    os: 'windows-latest',
-    node_version: '18',
-  }
-
-  let jobs: Job[] = [
-    {
-      jobName: 'Vitest (unit tests)',
-      jobCmd: 'pnpm exec vitest run --project unit',
-      jobTests: null,
-      jobSetups: [linux_nodeOld],
-    },
-    {
-      jobName: 'Vitest (E2E tests)',
-      jobCmd: 'pnpm exec vitest run --project e2e',
-      jobTests: null,
-      jobSetups: [linux_nodeOld, windows_nodeOld],
-    },
-    // Check TypeScript types
-    {
-      jobName: 'TypeScript',
-      jobCmd: 'pnpm exec test-types',
-      jobSetups: [linux_nodeOld],
-      jobTests: null,
-    },
-    // E2e tests
-    ...(await crawlE2eJobs(testFiles)),
-  ]
+  const jobs: Job[] = await getJobs(testFiles)
 
   assertTestFilesCoverage(testFiles, jobs)
 
   return jobs
 }
 
-async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
+async function getJobs(testFiles: string[]): Promise<Job[]> {
   const jobs: Job[] = []
 
   const globalConfigFile = getGlobalConfigFile(projectFiles)
