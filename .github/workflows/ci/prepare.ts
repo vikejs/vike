@@ -185,19 +185,19 @@ async function logMatrix(): Promise<void> {
 
 function getSetupName(setup: Setup): string {
   const { os, node_version } = setup
-  let osName = undefined
+  let osNamePretty = undefined
   if (os === 'ubuntu-latest') {
-    osName = 'Ubuntu'
+    osNamePretty = 'Ubuntu'
   }
   if (os === 'macos-latest') {
-    osName = 'Mac'
+    osNamePretty = 'Mac'
   }
   if (os === 'windows-latest') {
-    osName = 'Win'
+    osNamePretty = 'Win'
   }
-  assert(osName, `Unknown Operating System ${os}`)
+  assert(osNamePretty, `Unknown Operating System ${os}`)
   assert(node_version)
-  const setupName = ` - ${osName} - Node.js ${node_version}`
+  const setupName = ` - ${osNamePretty} - Node.js ${node_version}`
   return setupName
 }
 
