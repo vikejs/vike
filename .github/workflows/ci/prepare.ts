@@ -23,7 +23,12 @@ if (args.includes('--debug')) {
 }
 
 type MatrixEntry = { jobName: string; TEST_FILES: string; jobCmd: string } & Setup
-type Job = { jobName: string; jobTests: { testFilePath: string }[] | null; jobSetups: Setup[]; jobCmd: string }
+type Job = {
+  jobName: string
+  jobTests: { testFilePath: string; localConfig: LocalConfig | null }[] | null
+  jobSetups: Setup[]
+  jobCmd: string
+}
 type Setup = { os: string; node_version: string }
 type LocalConfig = { ci: { job: string } }
 type GlobalConfig = { ci?: { jobs: { name: string; setups: Setup[] }[] }; tolerateError?: TolerateError }
@@ -54,13 +59,13 @@ async function prepare(): Promise<Job[]> {
     {
       jobName: 'Vitest (unit tests)',
       jobCmd: 'pnpm exec vitest run --project unit',
-      jobTests: specFiles.map((file) => ({ testFilePath: file })),
+      jobTests: specFiles.map((file) => ({ testFilePath: file, localConfig: null })),
       jobSetups: [linux_nodeOld],
     },
     {
       jobName: 'Vitest (E2E tests)',
       jobCmd: 'pnpm exec vitest run --project e2e',
-      jobTests: specFiles.map((file) => ({ testFilePath: file })),
+      jobTests: specFiles.map((file) => ({ testFilePath: file, localConfig: null })),
       jobSetups: [linux_nodeOld, windows_nodeOld],
     },
     // Check TypeScript types
@@ -126,7 +131,7 @@ async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
       path.dirname(localConfigFile) +
       // `$ git ls-files` returns posix paths
       path.posix.sep
-    const jobTests = testFiles.filter((f) => f.startsWith(dir)).map((file) => ({ testFilePath: file }))
+    const jobTests = testFiles.filter((f) => f.startsWith(dir)).map((file) => ({ testFilePath: file, localConfig }))
     assert(
       jobTests.length > 0,
       `No test files found in \`${dir}\` (for \`${localConfigFile}\`). Test files: \n${JSON.stringify(testFiles, null, 2)}`,
@@ -159,7 +164,7 @@ async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
           jobs.push(job)
         }
         assert(job.jobTests)
-        job.jobTests.push({ testFilePath: testFile })
+        job.jobTests.push({ testFilePath: testFile, localConfig: null })
       }
     })
   }

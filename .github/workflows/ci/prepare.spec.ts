@@ -30,117 +30,155 @@ describe('prepare()', () => {
           ],
           "jobTests": [
             {
+              "localConfig": null,
               "testFilePath": ".github/workflows/ci/prepare.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/node/runtime/html/injectAssets/injectHtmlTags.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/node/runtime/html/propKeys.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/node/runtime/renderPage/createHttpResponse/assertNoInfiniteHttpRedirect.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/node/runtime/renderPage/log404/index.spec.snapshot-1",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/node/runtime/renderPage/log404/index.spec.snapshot-2",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/node/runtime/renderPage/log404/index.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/node/runtime/renderPage/logErrorHint/getErrorHint.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/node/runtime/renderPage/resolveRedirects.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/node/vite/shared/loggerNotProd/errorWithCodeSnippet/getPrettyErrMessage.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/node/vite/shared/loggerNotProd/errorWithCodeSnippet/getPrettyErrorWithCodeSnippet.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/node/vite/shared/resolveVikeConfigInternal/crawlPlusFiles/crawlPlusFiles.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/node/vite/shared/resolveVikeConfigInternal/filesystemRouting.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/node/vite/shared/resolveVikeConfigInternal/pointerImports.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/shared/modifyUrl.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/shared/page-configs/getExportPath.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/shared/route/deduceRouteStringFromFilesystemPath.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/shared/route/resolvePrecedence/resolvePrecedence_overall.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/shared/route/resolvePrecedence/resolvePrecedence_route-strings.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/shared/route/resolveRouteString.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/shared/route/resolveUrlPathname.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/utils/freezePartial.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/utils/getValuePrintable.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/utils/isHtml.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/utils/normalizeHeaders.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/utils/parseNpmPackage.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/utils/parseUrl-extras.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/utils/parseUrl.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/utils/preservePropertyGetters.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/utils/trimWithAnsi.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "test/assertFileEnv/test-build.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "test/preload/__snapshots__/dev.spec.ts.snap",
             },
             {
+              "localConfig": null,
               "testFilePath": "test/preload/__snapshots__/prod.spec.ts.snap",
             },
             {
+              "localConfig": null,
               "testFilePath": "test/preload/dev.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "test/preload/prod.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "test/preload/utils/stabilizeHashes.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "test/vitest/dev.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "test/vitest/preview.spec.ts",
             },
           ],
@@ -160,117 +198,155 @@ describe('prepare()', () => {
           ],
           "jobTests": [
             {
+              "localConfig": null,
               "testFilePath": ".github/workflows/ci/prepare.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/node/runtime/html/injectAssets/injectHtmlTags.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/node/runtime/html/propKeys.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/node/runtime/renderPage/createHttpResponse/assertNoInfiniteHttpRedirect.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/node/runtime/renderPage/log404/index.spec.snapshot-1",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/node/runtime/renderPage/log404/index.spec.snapshot-2",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/node/runtime/renderPage/log404/index.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/node/runtime/renderPage/logErrorHint/getErrorHint.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/node/runtime/renderPage/resolveRedirects.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/node/vite/shared/loggerNotProd/errorWithCodeSnippet/getPrettyErrMessage.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/node/vite/shared/loggerNotProd/errorWithCodeSnippet/getPrettyErrorWithCodeSnippet.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/node/vite/shared/resolveVikeConfigInternal/crawlPlusFiles/crawlPlusFiles.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/node/vite/shared/resolveVikeConfigInternal/filesystemRouting.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/node/vite/shared/resolveVikeConfigInternal/pointerImports.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/shared/modifyUrl.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/shared/page-configs/getExportPath.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/shared/route/deduceRouteStringFromFilesystemPath.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/shared/route/resolvePrecedence/resolvePrecedence_overall.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/shared/route/resolvePrecedence/resolvePrecedence_route-strings.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/shared/route/resolveRouteString.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/shared/route/resolveUrlPathname.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/utils/freezePartial.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/utils/getValuePrintable.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/utils/isHtml.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/utils/normalizeHeaders.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/utils/parseNpmPackage.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/utils/parseUrl-extras.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/utils/parseUrl.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/utils/preservePropertyGetters.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "packages/vike/utils/trimWithAnsi.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "test/assertFileEnv/test-build.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "test/preload/__snapshots__/dev.spec.ts.snap",
             },
             {
+              "localConfig": null,
               "testFilePath": "test/preload/__snapshots__/prod.spec.ts.snap",
             },
             {
+              "localConfig": null,
               "testFilePath": "test/preload/dev.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "test/preload/prod.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "test/preload/utils/stabilizeHashes.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "test/vitest/dev.spec.ts",
             },
             {
+              "localConfig": null,
               "testFilePath": "test/vitest/preview.spec.ts",
             },
           ],
@@ -297,27 +373,67 @@ describe('prepare()', () => {
           ],
           "jobTests": [
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Boilerplates",
+                },
+              },
               "testFilePath": "packages/create-vike-core/boilerplate-react-ts/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Boilerplates",
+                },
+              },
               "testFilePath": "packages/create-vike-core/boilerplate-react-ts/.test-prod.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Boilerplates",
+                },
+              },
               "testFilePath": "packages/create-vike-core/boilerplate-react/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Boilerplates",
+                },
+              },
               "testFilePath": "packages/create-vike-core/boilerplate-react/.test-prod.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Boilerplates",
+                },
+              },
               "testFilePath": "packages/create-vike-core/boilerplate-vue-ts/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Boilerplates",
+                },
+              },
               "testFilePath": "packages/create-vike-core/boilerplate-vue-ts/.test-prod.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Boilerplates",
+                },
+              },
               "testFilePath": "packages/create-vike-core/boilerplate-vue/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Boilerplates",
+                },
+              },
               "testFilePath": "packages/create-vike-core/boilerplate-vue/.test-prod.test.ts",
             },
           ],
@@ -337,87 +453,227 @@ describe('prepare()', () => {
           ],
           "jobTests": [
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples React",
+                },
+              },
               "testFilePath": "examples/file-structure-domain-driven/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples React",
+                },
+              },
               "testFilePath": "examples/file-structure-domain-driven/.test-preview.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples React",
+                },
+              },
               "testFilePath": "examples/i18n/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples React",
+                },
+              },
               "testFilePath": "examples/i18n/.test-preview.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples React",
+                },
+              },
               "testFilePath": "examples/path-aliases/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples React",
+                },
+              },
               "testFilePath": "examples/path-aliases/.test-prod-static.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples React",
+                },
+              },
               "testFilePath": "examples/path-aliases/.test-prod.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples React",
+                },
+              },
               "testFilePath": "examples/react-full/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples React",
+                },
+              },
               "testFilePath": "examples/react-full/.test-preview.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples React",
+                },
+              },
               "testFilePath": "examples/react-minimal/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples React",
+                },
+              },
               "testFilePath": "examples/react-minimal/.test-preview.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples React",
+                },
+              },
               "testFilePath": "examples/react-streaming/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples React",
+                },
+              },
               "testFilePath": "examples/react-streaming/.test-prod.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples React",
+                },
+              },
               "testFilePath": "examples/render-modes/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples React",
+                },
+              },
               "testFilePath": "examples/render-modes/.test-prod.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples React",
+                },
+              },
               "testFilePath": "test-deprecated-design/file-structure-domain-driven/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples React",
+                },
+              },
               "testFilePath": "test-deprecated-design/file-structure-domain-driven/.test-preview.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples React",
+                },
+              },
               "testFilePath": "test-deprecated-design/i18n/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples React",
+                },
+              },
               "testFilePath": "test-deprecated-design/i18n/.test-preview.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples React",
+                },
+              },
               "testFilePath": "test-deprecated-design/path-aliases/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples React",
+                },
+              },
               "testFilePath": "test-deprecated-design/path-aliases/.test-prod-static.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples React",
+                },
+              },
               "testFilePath": "test-deprecated-design/path-aliases/.test-prod.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples React",
+                },
+              },
               "testFilePath": "test-deprecated-design/react-streaming/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples React",
+                },
+              },
               "testFilePath": "test-deprecated-design/react-streaming/.test-prod.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples React",
+                },
+              },
               "testFilePath": "test-deprecated-design/react/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples React",
+                },
+              },
               "testFilePath": "test-deprecated-design/react/.test-preview.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples React",
+                },
+              },
               "testFilePath": "test-deprecated-design/render-modes/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples React",
+                },
+              },
               "testFilePath": "test-deprecated-design/render-modes/.test-preview.test.ts",
             },
           ],
@@ -437,48 +693,123 @@ describe('prepare()', () => {
           ],
           "jobTests": [
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples Vue/Others",
+                },
+              },
               "testFilePath": "examples/html-fragments/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples Vue/Others",
+                },
+              },
               "testFilePath": "examples/html-fragments/.test-preview.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples Vue/Others",
+                },
+              },
               "testFilePath": "examples/telefunc/.dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples Vue/Others",
+                },
+              },
               "testFilePath": "examples/telefunc/.prod.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples Vue/Others",
+                },
+              },
               "testFilePath": "examples/vue-full/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples Vue/Others",
+                },
+              },
               "testFilePath": "examples/vue-full/.test-preview.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples Vue/Others",
+                },
+              },
               "testFilePath": "examples/vue-minimal/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples Vue/Others",
+                },
+              },
               "testFilePath": "examples/vue-minimal/.test-preview.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples Vue/Others",
+                },
+              },
               "testFilePath": "test-deprecated-design/html-fragments/.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples Vue/Others",
+                },
+              },
               "testFilePath": "test-deprecated-design/telefunc/.dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples Vue/Others",
+                },
+              },
               "testFilePath": "test-deprecated-design/telefunc/.prod.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples Vue/Others",
+                },
+              },
               "testFilePath": "test-deprecated-design/vue-full/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples Vue/Others",
+                },
+              },
               "testFilePath": "test-deprecated-design/vue-full/.test-preview.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples Vue/Others",
+                },
+              },
               "testFilePath": "test-deprecated-design/vue/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples Vue/Others",
+                },
+              },
               "testFilePath": "test-deprecated-design/vue/.test-preview.test.ts",
             },
           ],
@@ -498,36 +829,91 @@ describe('prepare()', () => {
           ],
           "jobTests": [
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples Misc",
+                },
+              },
               "testFilePath": "examples/auth/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples Misc",
+                },
+              },
               "testFilePath": "examples/auth/.test-prod.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples Misc",
+                },
+              },
               "testFilePath": "examples/base-url-cdn/.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples Misc",
+                },
+              },
               "testFilePath": "examples/base-url-server/.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples Misc",
+                },
+              },
               "testFilePath": "examples/base-url/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples Misc",
+                },
+              },
               "testFilePath": "examples/base-url/.test-preview.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples Misc",
+                },
+              },
               "testFilePath": "examples/custom-preload/.test-preview.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples Misc",
+                },
+              },
               "testFilePath": "test-deprecated-design/base-url-cdn/.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples Misc",
+                },
+              },
               "testFilePath": "test-deprecated-design/base-url-server/.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples Misc",
+                },
+              },
               "testFilePath": "test-deprecated-design/base-url/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Examples Misc",
+                },
+              },
               "testFilePath": "test-deprecated-design/base-url/.test-preview.test.ts",
             },
           ],
@@ -547,117 +933,307 @@ describe('prepare()', () => {
           ],
           "jobTests": [
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/abort/test-dev-server.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/abort/test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/abort/test-preview.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/abort/test-prod.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/assertFileEnv/test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/cjs/test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/cjs/test-prod.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/disableAutoImporter/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/disableAutoImporter/.test-preview.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/env/.test-build.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/env/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/environment-api/test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/environment-api/test-preview.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/hook-override/test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/hook-override/test-preview.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/includeAssetsImportedByServer/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/includeAssetsImportedByServer/.test-preview.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/playground/test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/playground/test-preview.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/require-shim/test-prod.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/stream-vue-onServerPrefetch/test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/stream-vue-onServerPrefetch/test-preview.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/universal-middleware/test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/universal-middleware/test-preview.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/vike-cloudflare/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/vike-cloudflare/.test-preview.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/vike-react/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/vike-react/.test-preview.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/vike-server/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/vike-server/.test-prod.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/vike-solid/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/vike-solid/.test-preview.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/vike-vercel/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/vike-vercel/.test-prod.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/vike-vue/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/vike-vue/.test-preview.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/webpack/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Unit Tests E2E",
+                },
+              },
               "testFilePath": "test/webpack/.test-preview.test.ts",
             },
           ],
@@ -673,45 +1249,115 @@ describe('prepare()', () => {
           ],
           "jobTests": [
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Cloudflare",
+                },
+              },
               "testFilePath": "examples/cloudflare-workers-react-full/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Cloudflare",
+                },
+              },
               "testFilePath": "examples/cloudflare-workers-react-full/.test-wrangler.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Cloudflare",
+                },
+              },
               "testFilePath": "examples/cloudflare-workers-react/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Cloudflare",
+                },
+              },
               "testFilePath": "examples/cloudflare-workers-react/.test-wrangler.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Cloudflare",
+                },
+              },
               "testFilePath": "examples/cloudflare-workers-vue/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Cloudflare",
+                },
+              },
               "testFilePath": "examples/cloudflare-workers-vue/.test-wrangler.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Cloudflare",
+                },
+              },
               "testFilePath": "test-deprecated-design/cloudflare-workers-react-full/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Cloudflare",
+                },
+              },
               "testFilePath": "test-deprecated-design/cloudflare-workers-react-full/.test-wrangler.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Cloudflare",
+                },
+              },
               "testFilePath": "test-deprecated-design/cloudflare-workers-react/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Cloudflare",
+                },
+              },
               "testFilePath": "test-deprecated-design/cloudflare-workers-react/.test-wrangler.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Cloudflare",
+                },
+              },
               "testFilePath": "test-deprecated-design/cloudflare-workers-vue/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Cloudflare",
+                },
+              },
               "testFilePath": "test-deprecated-design/cloudflare-workers-vue/.test-wrangler.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Cloudflare",
+                },
+              },
               "testFilePath": "test/@cloudflare_vite-plugin/test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "Cloudflare",
+                },
+              },
               "testFilePath": "test/@cloudflare_vite-plugin/test-preview.test.ts",
             },
           ],
@@ -727,9 +1373,19 @@ describe('prepare()', () => {
           ],
           "jobTests": [
             {
+              "localConfig": {
+                "ci": {
+                  "job": "https://vike.dev",
+                },
+              },
               "testFilePath": "docs/.test-dev.test.ts",
             },
             {
+              "localConfig": {
+                "ci": {
+                  "job": "https://vike.dev",
+                },
+              },
               "testFilePath": "docs/.test-preview.test.ts",
             },
           ],
