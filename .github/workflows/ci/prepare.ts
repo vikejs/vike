@@ -43,7 +43,6 @@ function getProjectFiles(): string[] {
 }
 
 async function prepare(): Promise<Job[]> {
-  const specFiles = projectFiles.filter((file) => file.includes('.spec.'))
   const testFiles = projectFiles.filter((file) => file.includes('.test.'))
 
   const linux_nodeOld = {
