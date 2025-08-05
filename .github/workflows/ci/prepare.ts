@@ -23,7 +23,7 @@ if (args.includes('--debug')) {
 }
 
 type MatrixEntry = { jobName: string; TEST_FILES: string; jobCmd: string; TEST_INSPECT: string } & Setup
-type Job = { jobName: string; jobTestFiles?: string[]; jobSetups: Setup[]; jobCmd: string }
+type Job = { jobName: string; jobTests?: string[]; jobSetups: Setup[]; jobCmd: string }
 type Setup = { os: string; node_version: string }
 type LocalConfig = { ci: { job: string } }
 type GlobalConfig = { ci?: { jobs: { name: string; setups: Setup[] }[] }; tolerateError?: TolerateError }
@@ -54,13 +54,13 @@ async function prepare(): Promise<Job[]> {
     {
       jobName: 'Vitest (unit tests)',
       jobCmd: 'pnpm exec vitest run --project unit',
-      jobTestFiles: specFiles,
+      jobTests: specFiles,
       jobSetups: [linux_nodeOld],
     },
     {
       jobName: 'Vitest (E2E tests)',
       jobCmd: 'pnpm exec vitest run --project e2e',
-      jobTestFiles: specFiles,
+      jobTests: specFiles,
       jobSetups: [linux_nodeOld, windows_nodeOld],
     },
     // Check TypeScript types
@@ -107,7 +107,7 @@ async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
 
       jobs.push({
         jobName,
-        jobTestFiles: [],
+        jobTests: [],
         jobSetups,
         jobCmd: 'pnpm exec test-e2e',
       })
@@ -125,9 +125,9 @@ async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
       path.dirname(localConfigFile) +
       // `$ git ls-files` returns posix paths
       path.posix.sep
-    const jobTestFiles = testFiles.filter((f) => f.startsWith(dir))
+    const jobTests = testFiles.filter((f) => f.startsWith(dir))
     assert(
-      jobTestFiles.length > 0,
+      jobTests.length > 0,
       `No test files found in \`${dir}\` (for \`${localConfigFile}\`). Test files: \n${JSON.stringify(testFiles, null, 2)}`,
     )
 
@@ -136,29 +136,29 @@ async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
       assert(globalConfigFile)
       throw new Error(`Make sure ${jobName} is defined in ${globalConfigFile}`)
     }
-    assert(job.jobTestFiles)
-    job.jobTestFiles.push(...jobTestFiles)
+    assert(job.jobTests)
+    job.jobTests.push(...jobTests)
   })
 
   {
     let job: Job | null = null
     testFiles.forEach((testFile) => {
       const isMissing = !jobs.some((job) => {
-        assert(job.jobTestFiles)
-        return job.jobTestFiles.includes(testFile)
+        assert(job.jobTests)
+        return job.jobTests.includes(testFile)
       })
       if (isMissing) {
         if (!job) {
           job = {
             jobName: 'E2E Tests',
             jobCmd: 'pnpm exec test-e2e',
-            jobTestFiles: [],
+            jobTests: [],
             jobSetups: [{ os: 'ubuntu-latest', node_version: '20' }],
           }
           jobs.push(job)
         }
-        assert(job.jobTestFiles)
-        job.jobTestFiles.push(testFile)
+        assert(job.jobTests)
+        job.jobTests.push(testFile)
       }
     })
   }
@@ -189,16 +189,16 @@ async function getMatrix(): Promise<MatrixEntry[]> {
   if (inspectFile) {
     const inspectDir = path.dirname(inspectFile)
     TEST_INSPECT = inspectDir
-    jobs = jobs.filter((job) => job.jobTestFiles?.some((testFile) => testFile.startsWith(inspectDir)))
+    jobs = jobs.filter((job) => job.jobTests?.some((testFile) => testFile.startsWith(inspectDir)))
   }
 
   const matrix: MatrixEntry[] = []
-  jobs.forEach(({ jobName, jobTestFiles, jobSetups, jobCmd }) => {
+  jobs.forEach(({ jobName, jobTests, jobSetups, jobCmd }) => {
     jobSetups.forEach((setup) => {
       matrix.push({
         jobCmd,
         jobName: jobName + getSetupName(setup),
-        TEST_FILES: (jobTestFiles ?? []).join(' '),
+        TEST_FILES: (jobTests ?? []).join(' '),
         TEST_INSPECT,
         ...setup,
       })
@@ -210,7 +210,7 @@ async function getMatrix(): Promise<MatrixEntry[]> {
 
 function assertTestFilesCoverage(testFiles: string[], jobs: Job[]): void {
   testFiles.forEach((testFile) => {
-    const jobsFound = jobs.filter((job) => job.jobTestFiles?.includes(testFile))
+    const jobsFound = jobs.filter((job) => job.jobTests?.includes(testFile))
     assert(
       jobsFound.length > 0,
       `Test file ${testFile} isn't included in any job. Jobs: \n${JSON.stringify(jobs, null, 2)}`,

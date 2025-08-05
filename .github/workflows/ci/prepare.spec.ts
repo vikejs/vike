@@ -28,7 +28,7 @@ describe('prepare()', () => {
               "os": "ubuntu-latest",
             },
           ],
-          "jobTestFiles": [
+          "jobTests": [
             ".github/workflows/ci/prepare.spec.ts",
             "packages/vike/node/runtime/html/injectAssets/injectHtmlTags.spec.ts",
             "packages/vike/node/runtime/html/propKeys.spec.ts",
@@ -82,7 +82,7 @@ describe('prepare()', () => {
               "os": "windows-latest",
             },
           ],
-          "jobTestFiles": [
+          "jobTests": [
             ".github/workflows/ci/prepare.spec.ts",
             "packages/vike/node/runtime/html/injectAssets/injectHtmlTags.spec.ts",
             "packages/vike/node/runtime/html/propKeys.spec.ts",
@@ -142,7 +142,7 @@ describe('prepare()', () => {
               "os": "ubuntu-latest",
             },
           ],
-          "jobTestFiles": [
+          "jobTests": [
             "packages/create-vike-core/boilerplate-react-ts/.test-dev.test.ts",
             "packages/create-vike-core/boilerplate-react-ts/.test-prod.test.ts",
             "packages/create-vike-core/boilerplate-react/.test-dev.test.ts",
@@ -166,7 +166,7 @@ describe('prepare()', () => {
               "os": "windows-latest",
             },
           ],
-          "jobTestFiles": [
+          "jobTests": [
             "examples/file-structure-domain-driven/.test-dev.test.ts",
             "examples/file-structure-domain-driven/.test-preview.test.ts",
             "examples/i18n/.test-dev.test.ts",
@@ -210,7 +210,7 @@ describe('prepare()', () => {
               "os": "windows-latest",
             },
           ],
-          "jobTestFiles": [
+          "jobTests": [
             "examples/html-fragments/.test-dev.test.ts",
             "examples/html-fragments/.test-preview.test.ts",
             "examples/telefunc/.dev.test.ts",
@@ -241,7 +241,7 @@ describe('prepare()', () => {
               "os": "windows-latest",
             },
           ],
-          "jobTestFiles": [
+          "jobTests": [
             "examples/auth/.test-dev.test.ts",
             "examples/auth/.test-prod.test.ts",
             "examples/base-url-cdn/.test.ts",
@@ -268,7 +268,7 @@ describe('prepare()', () => {
               "os": "windows-latest",
             },
           ],
-          "jobTestFiles": [
+          "jobTests": [
             "test/abort/test-dev-server.test.ts",
             "test/abort/test-dev.test.ts",
             "test/abort/test-preview.test.ts",
@@ -318,7 +318,7 @@ describe('prepare()', () => {
               "os": "ubuntu-latest",
             },
           ],
-          "jobTestFiles": [
+          "jobTests": [
             "examples/cloudflare-workers-react-full/.test-dev.test.ts",
             "examples/cloudflare-workers-react-full/.test-wrangler.test.ts",
             "examples/cloudflare-workers-react/.test-dev.test.ts",
@@ -344,7 +344,7 @@ describe('prepare()', () => {
               "os": "ubuntu-latest",
             },
           ],
-          "jobTestFiles": [
+          "jobTests": [
             "docs/.test-dev.test.ts",
             "docs/.test-preview.test.ts",
           ],
