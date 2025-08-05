@@ -24,7 +24,7 @@ if (args.includes('--debug')) {
 type MatrixEntry = { jobName: string; TEST_FILES: string; jobCmd: string; TEST_INSPECT: string } & Setup
 type Job = { jobName: string; jobTestFiles?: string[]; jobSetups: Setup[]; jobCmd: string }
 type Setup = { os: string; node_version: string }
-type JobConfig = { ci: { job: string } }
+type LocalConfig = { ci: { job: string } }
 
 function getProjectFiles(): string[] {
   const projectFiles1 = cmd(`git ls-files`, { cwd: root }).split(' ')
@@ -80,7 +80,7 @@ async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
   const jobs: Job[] = []
 
   const globalConfigFile = getGlobalConfigFile(projectFiles)
-  const jobConfigFiles = getJobConfigFiles(projectFiles)
+  const jobConfigFiles = getLocalConfigFiles(projectFiles)
   if (globalConfigFile && jobConfigFiles.length === 0) throw new Error('No file `.test-e2e.json` found')
 
   if (jobConfigFiles.length >= 1) {
@@ -122,7 +122,7 @@ async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
   }
 
   jobConfigFiles.forEach((jobConfigFile) => {
-    const jobConfig: JobConfig = require(path.join(root, jobConfigFile))
+    const jobConfig: LocalConfig = require(path.join(root, jobConfigFile))
 
     const jobName = jobConfig.ci.job
     assert(jobName)
@@ -182,9 +182,9 @@ function getGlobalConfigFile(projectFiles: string[]) {
   return globalConfigFile
 }
 
-type JobConfigFilePath = `${string}${typeof jobConfigFileName}`
-function getJobConfigFiles(projectFiles: string[]) {
-  const jobConfigFiles = projectFiles.filter((file) => file.endsWith(jobConfigFileName)) as JobConfigFilePath[]
+type LocalConfigFilePath = `${string}${typeof jobConfigFileName}`
+function getLocalConfigFiles(projectFiles: string[]) {
+  const jobConfigFiles = projectFiles.filter((file) => file.endsWith(jobConfigFileName)) as LocalConfigFilePath[]
   return jobConfigFiles
 }
 
