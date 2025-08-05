@@ -13,9 +13,9 @@ const projectFiles = getProjectFiles()
 export { getTestJobs }
 if (args.includes('--ci')) logMatrix()
 
-type MatrixEntry = { jobName: string, TEST_FILES: string, jobCmd: string, TEST_INSPECT: string } & Setup
-type Job = { jobName: string, jobTestFiles?: string[], jobSetups: Setup[], jobCmd: string }
-type Setup = { os: string, node_version: string }
+type MatrixEntry = { jobName: string; TEST_FILES: string; jobCmd: string; TEST_INSPECT: string } & Setup
+type Job = { jobName: string; jobTestFiles?: string[]; jobSetups: Setup[]; jobCmd: string }
+type Setup = { os: string; node_version: string }
 
 function getProjectFiles(): string[] {
   const projectFiles1 = cmd(`git ls-files`, { cwd: root }).split(' ')
@@ -88,7 +88,7 @@ async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
       assert(jobName)
       assert(typeof jobName === 'string')
 
-      const jobSetups: { os: string, node_version: string }[] = []
+      const jobSetups: { os: string; node_version: string }[] = []
       const { setups } = jobSpec
       assert(Array.isArray(setups))
       setups.forEach((setup) => {
