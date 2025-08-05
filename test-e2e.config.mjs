@@ -22,6 +22,26 @@ function getCiJobs() {
   const setupsExamples = [linux_nodeNew, windows_nodeOld]
 
   return [
+    // Vitest
+    {
+      name: 'Vitest (unit tests)',
+      command: 'pnpm exec vitest run --project unit',
+      setups: [linux_nodeOld],
+    },
+    {
+      name: 'Vitest (E2E tests)',
+      command: 'pnpm exec vitest run --project e2e',
+      setups: [linux_nodeOld, windows_nodeOld],
+    },
+
+    // TypeScript
+    {
+      name: 'TypeScript',
+      command: 'pnpm exec test-types',
+      setups: [linux_nodeOld],
+    },
+
+    // @brillout/test-e2e
     {
       name: 'Boilerplates',
       setups: [linux_nodeOld],

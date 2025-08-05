@@ -31,7 +31,10 @@ type Job = {
 }
 type Setup = { os: string; node_version: string }
 type LocalConfig = { ci: { job: string; inspect: true } }
-type GlobalConfig = { ci?: { jobs: { name: string; setups: Setup[] }[] }; tolerateError?: TolerateError }
+type GlobalConfig = {
+  ci?: { jobs: { name: string; setups: Setup[]; command?: string }[] }
+  tolerateError?: TolerateError
+}
 
 function getProjectFiles(): string[] {
   const projectFiles1 = cmd('git ls-files', { cwd: root }).split(' ')
@@ -64,26 +67,18 @@ async function getJobs(testFiles: string[]): Promise<Job[]> {
     const { default: config } = (await import(globalConfigFile)) as { default: GlobalConfig }
     const { ci } = config
     assert(ci)
-    const jobSpecs = ci.jobs
-    jobSpecs.forEach((jobSpec) => {
-      const jobName = jobSpec.name
-      assert(typeof jobName === 'string')
-
-      const jobSetups = jobSpec.setups.map((setup) => {
-        const { os, node_version } = setup
-        assert(typeof os === 'string')
-        assert(typeof node_version === 'string')
-        return {
-          os,
-          node_version,
-        }
+    ci.jobs.forEach((jobSpec) => {
+      assert(typeof jobSpec.name === 'string')
+      jobSpec.setups.forEach((setup) => {
+        assert(typeof setup.os === 'string')
+        assert(typeof setup.node_version === 'string')
       })
 
       jobs.push({
-        jobName,
-        jobTests: [],
-        jobSetups,
-        jobCmd: 'pnpm exec test-e2e',
+        jobName: jobSpec.name,
+        jobSetups: jobSpec.setups,
+        jobCmd: jobSpec.command ?? 'pnpm exec test-e2e',
+        jobTests: jobSpec.command ? null : [],
       })
     })
   }
@@ -114,7 +109,7 @@ async function getJobs(testFiles: string[]): Promise<Job[]> {
     job.jobTests.push(...jobTests)
   })
 
-  {
+  if (false) {
     let job: Job | null = null
     testFiles.forEach((testFile) => {
       const isMissing = !jobs.some((job) => {

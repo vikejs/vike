@@ -11,7 +11,7 @@ describe('prepare()', () => {
           "jobName": "Vitest (unit tests)",
           "jobSetups": [
             {
-              "node_version": "18",
+              "node_version": "20",
               "os": "ubuntu-latest",
             },
           ],
@@ -22,11 +22,11 @@ describe('prepare()', () => {
           "jobName": "Vitest (E2E tests)",
           "jobSetups": [
             {
-              "node_version": "18",
+              "node_version": "20",
               "os": "ubuntu-latest",
             },
             {
-              "node_version": "18",
+              "node_version": "20",
               "os": "windows-latest",
             },
           ],
@@ -37,7 +37,7 @@ describe('prepare()', () => {
           "jobName": "TypeScript",
           "jobSetups": [
             {
-              "node_version": "18",
+              "node_version": "20",
               "os": "ubuntu-latest",
             },
           ],
