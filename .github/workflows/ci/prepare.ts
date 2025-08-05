@@ -1,6 +1,6 @@
-import { cmd, isObject } from './utils.js'
 import assert from 'node:assert'
 import path from 'node:path'
+import { execSync } from 'node:child_process'
 import { createRequire } from 'node:module'
 const require = createRequire(import.meta.url)
 
@@ -259,4 +259,14 @@ function getInspectFile(): string | null {
     'There cannot be only one INSPECT file but found multiple: ' + inspectFiles.join(' '),
   )
   return inspectFiles[0]
+}
+
+function cmd(command: string, { cwd }: { cwd?: string } = { cwd: undefined }): string {
+  let stdout = execSync(command, { encoding: 'utf8', cwd })
+  stdout = stdout.split(/\s/).filter(Boolean).join(' ')
+  return stdout
+}
+
+function isObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null
 }
