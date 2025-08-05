@@ -7,7 +7,7 @@ const require = createRequire(import.meta.url)
 const args = process.argv
 const root = cmd('git rev-parse --show-toplevel')
 const globalConfigFileName = 'test-e2e.config.mjs'
-const jobConfigFileName = '.test-e2e.json'
+const localConfigFileName = '.test-e2e.json'
 const projectFiles = getProjectFiles()
 let DEBUG = false
 
@@ -80,10 +80,10 @@ async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
   const jobs: Job[] = []
 
   const globalConfigFile = getGlobalConfigFile(projectFiles)
-  const jobConfigFiles = getLocalConfigFiles(projectFiles)
-  if (globalConfigFile && jobConfigFiles.length === 0) throw new Error('No file `.test-e2e.json` found')
+  const localConfigFiles = getLocalConfigFiles(projectFiles)
+  if (globalConfigFile && localConfigFiles.length === 0) throw new Error('No file `.test-e2e.json` found')
 
-  if (jobConfigFiles.length >= 1) {
+  if (localConfigFiles.length >= 1) {
     if (!globalConfigFile) throw new Error(`Config file \`${globalConfigFileName}\` not found`)
     const { default: config }: { default: unknown } = await import(globalConfigFile)
     assert(isObject(config))
@@ -121,21 +121,21 @@ async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
     })
   }
 
-  jobConfigFiles.forEach((jobConfigFile) => {
-    const jobConfig: LocalConfig = require(path.join(root, jobConfigFile))
+  localConfigFiles.forEach((localConfigFile) => {
+    const localConfig: LocalConfig = require(path.join(root, localConfigFile))
 
-    const jobName = jobConfig.ci.job
+    const jobName = localConfig.ci.job
     assert(jobName)
     assert(typeof jobName === 'string')
 
     const dir =
-      path.dirname(jobConfigFile) +
+      path.dirname(localConfigFile) +
       // `$ git ls-files` returns posix paths
       path.posix.sep
     const jobTestFiles = testFiles.filter((f) => f.startsWith(dir))
     assert(
       jobTestFiles.length > 0,
-      `No test files found in \`${dir}\` (for \`${jobConfigFile}\`). Test files: \n${JSON.stringify(testFiles, null, 2)}`,
+      `No test files found in \`${dir}\` (for \`${localConfigFile}\`). Test files: \n${JSON.stringify(testFiles, null, 2)}`,
     )
 
     const job = jobs.find((job) => job.jobName == jobName)
@@ -182,10 +182,10 @@ function getGlobalConfigFile(projectFiles: string[]) {
   return globalConfigFile
 }
 
-type LocalConfigFilePath = `${string}${typeof jobConfigFileName}`
+type LocalConfigFilePath = `${string}${typeof localConfigFileName}`
 function getLocalConfigFiles(projectFiles: string[]) {
-  const jobConfigFiles = projectFiles.filter((file) => file.endsWith(jobConfigFileName)) as LocalConfigFilePath[]
-  return jobConfigFiles
+  const localConfigFiles = projectFiles.filter((file) => file.endsWith(localConfigFileName)) as LocalConfigFilePath[]
+  return localConfigFiles
 }
 
 async function getMatrix(): Promise<MatrixEntry[]> {
