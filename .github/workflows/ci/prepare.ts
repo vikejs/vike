@@ -1,4 +1,4 @@
-import { cmd, isObject } from './utils.mjs'
+import { cmd, isObject } from './utils.js'
 import assert from 'node:assert'
 import path from 'node:path'
 import { createRequire } from 'node:module'
