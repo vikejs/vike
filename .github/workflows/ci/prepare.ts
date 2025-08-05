@@ -6,7 +6,7 @@ const require = createRequire(import.meta.url)
 
 const args = process.argv
 const root = cmd('git rev-parse --show-toplevel')
-const configFileName = 'test-e2e.config.mjs'
+const globalConfigFileName = 'test-e2e.config.mjs'
 const jobConfigFileName = '.testCiJob.json'
 const projectFiles = getProjectFiles()
 let DEBUG = false
@@ -78,13 +78,13 @@ async function prepare(): Promise<Job[]> {
 async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
   const jobs: Job[] = []
 
-  const configFile = getConfigFile(projectFiles)
+  const globalConfigFile = getGlobalConfigFile(projectFiles)
   const jobConfigFiles = getJobConfigFiles(projectFiles)
-  if (configFile && jobConfigFiles.length === 0) throw new Error('No file `.testCiJob.json` found')
+  if (globalConfigFile && jobConfigFiles.length === 0) throw new Error('No file `.testCiJob.json` found')
 
   if (jobConfigFiles.length >= 1) {
-    if (!configFile) throw new Error(`Config file \`${configFileName}\` not found`)
-    const { default: config }: { default: unknown } = await import(configFile)
+    if (!globalConfigFile) throw new Error(`Config file \`${globalConfigFileName}\` not found`)
+    const { default: config }: { default: unknown } = await import(globalConfigFile)
     assert(isObject(config))
     const { ci } = config
     assert(isObject(ci))
@@ -121,7 +121,7 @@ async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
   }
 
   jobConfigFiles.forEach((jobConfigFile) => {
-    assert(configFile)
+    assert(globalConfigFile)
 
     const jobJson: Record<string, unknown> = require(path.join(root, jobConfigFile))
 
@@ -141,7 +141,7 @@ async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
 
     const job = jobs.find((job) => job.jobName == jobName)
     if (job === undefined) {
-      throw new Error(`Make sure ${jobName} is defined in ${configFile}`)
+      throw new Error(`Make sure ${jobName} is defined in ${globalConfigFile}`)
     }
     assert(job.jobTestFiles)
     job.jobTestFiles.push(...jobTestFiles)
@@ -173,13 +173,13 @@ async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
   return jobs
 }
 
-type ConfigFilePath = `${string}${typeof configFileName}`
-function getConfigFile(projectFiles: string[]) {
-  const matches = projectFiles.filter((file) => file.endsWith(configFileName)) as ConfigFilePath[]
-  if (matches.length > 1) throw new Error(`Only one file \`${configFileName}\` is allowed`)
+type GlobalConfigFilePath = `${string}${typeof globalConfigFileName}`
+function getGlobalConfigFile(projectFiles: string[]) {
+  const matches = projectFiles.filter((file) => file.endsWith(globalConfigFileName)) as GlobalConfigFilePath[]
+  if (matches.length > 1) throw new Error(`Only one file \`${globalConfigFileName}\` is allowed`)
   if (matches.length === 0) return null
-  const configFile = path.join(root, matches[0]) as ConfigFilePath
-  return configFile
+  const globalConfigFile = path.join(root, matches[0]) as GlobalConfigFilePath
+  return globalConfigFile
 }
 
 type JobConfigFilePath = `${string}${typeof jobConfigFileName}`
