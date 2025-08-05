@@ -30,8 +30,8 @@ importers:
   .github/workflows/ci:
     dependencies:
       typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
+        specifier: ^5.9.2
+        version: 5.9.2
 
   docs:
     dependencies:
