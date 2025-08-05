@@ -30,7 +30,7 @@ type Job = {
   jobCmd: string
 }
 type Setup = { os: string; node_version: string }
-type LocalConfig = { ci: { job: string } }
+type LocalConfig = { ci: { job: string; inspect: true } }
 type GlobalConfig = { ci?: { jobs: { name: string; setups: Setup[] }[] }; tolerateError?: TolerateError }
 
 function getProjectFiles(): string[] {
@@ -189,6 +189,13 @@ function getLocalConfigFiles(projectFiles: string[]) {
 
 async function getMatrix(): Promise<MatrixEntry[]> {
   let jobs = await prepare()
+
+  if (jobs.some((job) => job.jobTests?.some((t) => t.localConfig?.ci.inspect))) {
+    jobs.forEach((job) => {
+      job.jobTests = job.jobTests && job.jobTests.filter((t) => t.localConfig?.ci.inspect)
+    })
+    jobs = jobs.filter((job) => job.jobTests && job.jobTests.length > 0)
+  }
 
   const matrix: MatrixEntry[] = []
   jobs.forEach(({ jobName, jobTests, jobSetups, jobCmd }) => {
