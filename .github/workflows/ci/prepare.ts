@@ -7,6 +7,7 @@ const require = createRequire(import.meta.url)
 const args = process.argv
 const root = cmd('git rev-parse --show-toplevel')
 const configFileName = 'test-e2e.config.mjs'
+const testJobFileName = '.testCiJob.json'
 const projectFiles = getProjectFiles()
 let DEBUG = false
 
@@ -181,8 +182,9 @@ function getConfigFile(projectFiles: string[]) {
   return configFile
 }
 
-function getTestJobFiles(projectFiles: string[]): string[] {
-  const testJobFiles = projectFiles.filter((file) => file.endsWith('.testCiJob.json'))
+type TestJobFilePath = `${string}${typeof testJobFileName}`
+function getTestJobFiles(projectFiles: string[]) {
+  const testJobFiles = projectFiles.filter((file) => file.endsWith(testJobFileName)) as TestJobFilePath[]
   return testJobFiles
 }
 
