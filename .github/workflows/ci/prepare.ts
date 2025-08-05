@@ -109,29 +109,6 @@ async function getJobs(testFiles: string[]): Promise<Job[]> {
     job.jobTests.push(...jobTests)
   })
 
-  if (false) {
-    let job: Job | null = null
-    testFiles.forEach((testFile) => {
-      const isMissing = !jobs.some((job) => {
-        assert(job.jobTests)
-        return job.jobTests.some((jobTest) => jobTest.testFilePath === testFile)
-      })
-      if (isMissing) {
-        if (!job) {
-          job = {
-            jobName: 'E2E Tests',
-            jobCmd: 'pnpm exec test-e2e',
-            jobTests: [],
-            jobSetups: [{ os: 'ubuntu-latest', node_version: '20' }],
-          }
-          jobs.push(job)
-        }
-        assert(job.jobTests)
-        job.jobTests.push({ testFilePath: testFile, localConfig: null })
-      }
-    })
-  }
-
   return jobs
 }
 
