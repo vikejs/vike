@@ -2,6 +2,7 @@ import assert from 'node:assert'
 import path from 'node:path'
 import { execSync } from 'node:child_process'
 import { createRequire } from 'node:module'
+import type { TolerateError } from '@brillout/test-e2e'
 const require = createRequire(import.meta.url)
 
 const args = process.argv
@@ -25,6 +26,7 @@ type MatrixEntry = { jobName: string; TEST_FILES: string; jobCmd: string; TEST_I
 type Job = { jobName: string; jobTestFiles?: string[]; jobSetups: Setup[]; jobCmd: string }
 type Setup = { os: string; node_version: string }
 type LocalConfig = { ci: { job: string } }
+type GlobalConfig = { ci?: { jobs: { name: string; setups: Setup[] }[] }; tolerateError?: TolerateError }
 
 function getProjectFiles(): string[] {
   const projectFiles1 = cmd(`git ls-files`, { cwd: root }).split(' ')
@@ -85,31 +87,22 @@ async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
 
   if (localConfigFiles.length >= 1) {
     if (!globalConfigFile) throw new Error(`Config file \`${globalConfigFileName}\` not found`)
-    const { default: config }: { default: unknown } = await import(globalConfigFile)
-    assert(isObject(config))
+    const { default: config } = (await import(globalConfigFile)) as { default: GlobalConfig }
     const { ci } = config
-    assert(isObject(ci))
+    assert(ci)
     const jobSpecs = ci.jobs
-    assert(Array.isArray(jobSpecs))
     jobSpecs.forEach((jobSpec) => {
-      assert(isObject(jobSpec))
       const jobName = jobSpec.name
-      assert(jobName)
       assert(typeof jobName === 'string')
 
-      const jobSetups: { os: string; node_version: string }[] = []
-      const { setups } = jobSpec
-      assert(Array.isArray(setups))
-      setups.forEach((setup) => {
+      const jobSetups = jobSpec.setups.map((setup) => {
         const { os, node_version } = setup
-        assert(os)
         assert(typeof os === 'string')
-        assert(node_version)
         assert(typeof node_version === 'string')
-        jobSetups.push({
+        return {
           os,
           node_version,
-        })
+        }
       })
 
       jobs.push({
