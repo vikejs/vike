@@ -29,11 +29,11 @@ type LocalConfig = { ci: { job: string } }
 type GlobalConfig = { ci?: { jobs: { name: string; setups: Setup[] }[] }; tolerateError?: TolerateError }
 
 function getProjectFiles(): string[] {
-  const projectFiles1 = cmd(`git ls-files`, { cwd: root }).split(' ')
+  const projectFiles1 = cmd('git ls-files', { cwd: root }).split(' ')
   // Also include untracked files.
   //  - In other words, we remove git ignored files. (Staged files are tracked and listed by `$ git ls-files`.)
   //  - `git ls-files --others --exclude-standard` from https://stackoverflow.com/questions/3801321/git-list-only-untracked-files-also-custom-commands/3801554#3801554
-  const projectFiles2 = cmd(`git ls-files --others --exclude-standard`, { cwd: root }).split(' ')
+  const projectFiles2 = cmd('git ls-files --others --exclude-standard', { cwd: root }).split(' ')
   return [...projectFiles1, ...projectFiles2]
 }
 
@@ -269,8 +269,4 @@ function cmd(command: string, { cwd }: { cwd?: string } = { cwd: undefined }): s
   let stdout = execSync(command, { encoding: 'utf8', cwd })
   stdout = stdout.split(/\s/).filter(Boolean).join(' ')
   return stdout
-}
-
-function isObject(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null
 }
