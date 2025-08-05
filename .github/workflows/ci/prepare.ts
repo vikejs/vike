@@ -2,27 +2,43 @@ import assert from 'node:assert'
 import path from 'node:path'
 import { execSync } from 'node:child_process'
 import { createRequire } from 'node:module'
+import type { TolerateError } from '@brillout/test-e2e'
 const require = createRequire(import.meta.url)
 
 const args = process.argv
 const root = cmd('git rev-parse --show-toplevel')
-const configFileName = 'test-e2e.config.mjs'
+const globalConfigFileName = 'test-e2e.config.mjs'
+const localConfigFileName = '.test-e2e.json'
 const projectFiles = getProjectFiles()
+let DEBUG = false
 
-// CI
-export { prepare }
+// [ENTRY] CI
 if (args.includes('--ci')) logMatrix()
+// [ENTRY] Vitest
+export { prepare }
+// [ENTRY] Local inspection
+if (args.includes('--debug')) {
+  DEBUG = true
+  logMatrix()
+}
 
-type MatrixEntry = { jobName: string; TEST_FILES: string; jobCmd: string; TEST_INSPECT: string } & Setup
-type Job = { jobName: string; jobTestFiles?: string[]; jobSetups: Setup[]; jobCmd: string }
+type MatrixEntry = { jobName: string; TEST_FILES: string; jobCmd: string } & Setup
+type Job = {
+  jobName: string
+  jobTests: { testFilePath: string; localConfig: LocalConfig | null }[] | null
+  jobSetups: Setup[]
+  jobCmd: string
+}
 type Setup = { os: string; node_version: string }
+type LocalConfig = { ci: { job: string; inspect: true } }
+type GlobalConfig = { ci?: { jobs: { name: string; setups: Setup[] }[] }; tolerateError?: TolerateError }
 
 function getProjectFiles(): string[] {
-  const projectFiles1 = cmd(`git ls-files`, { cwd: root }).split(' ')
+  const projectFiles1 = cmd('git ls-files', { cwd: root }).split(' ')
   // Also include untracked files.
   //  - In other words, we remove git ignored files. (Staged files are tracked and listed by `$ git ls-files`.)
   //  - `git ls-files --others --exclude-standard` from https://stackoverflow.com/questions/3801321/git-list-only-untracked-files-also-custom-commands/3801554#3801554
-  const projectFiles2 = cmd(`git ls-files --others --exclude-standard`, { cwd: root }).split(' ')
+  const projectFiles2 = cmd('git ls-files --others --exclude-standard', { cwd: root }).split(' ')
   return [...projectFiles1, ...projectFiles2]
 }
 
@@ -43,13 +59,13 @@ async function prepare(): Promise<Job[]> {
     {
       jobName: 'Vitest (unit tests)',
       jobCmd: 'pnpm exec vitest run --project unit',
-      jobTestFiles: specFiles,
+      jobTests: specFiles.map((file) => ({ testFilePath: file, localConfig: null })),
       jobSetups: [linux_nodeOld],
     },
     {
       jobName: 'Vitest (E2E tests)',
       jobCmd: 'pnpm exec vitest run --project e2e',
-      jobTestFiles: specFiles,
+      jobTests: specFiles.map((file) => ({ testFilePath: file, localConfig: null })),
       jobSetups: [linux_nodeOld, windows_nodeOld],
     },
     // Check TypeScript types
@@ -57,6 +73,7 @@ async function prepare(): Promise<Job[]> {
       jobName: 'TypeScript',
       jobCmd: 'pnpm exec test-types',
       jobSetups: [linux_nodeOld],
+      jobTests: null,
     },
     // E2e tests
     ...(await crawlE2eJobs(testFiles)),
@@ -70,94 +87,84 @@ async function prepare(): Promise<Job[]> {
 async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
   const jobs: Job[] = []
 
-  const testJobFiles = getTestJobFiles(projectFiles)
-  const configFile = getConfigFile(projectFiles)
-  if (configFile && testJobFiles.length === 0) throw new Error('No file `.testCiJob.json` found')
+  const globalConfigFile = getGlobalConfigFile(projectFiles)
+  const localConfigFiles = getLocalConfigFiles(projectFiles)
+  if (globalConfigFile && localConfigFiles.length === 0) throw new Error('No file `.test-e2e.json` found')
 
-  if (testJobFiles.length >= 1) {
-    if (!configFile) throw new Error(`Config file \`${configFileName}\` not found`)
-    const { default: config }: { default: unknown } = await import(configFile)
-    assert(isObject(config))
+  if (localConfigFiles.length >= 1) {
+    if (!globalConfigFile) throw new Error(`Config file \`${globalConfigFileName}\` not found`)
+    const { default: config } = (await import(globalConfigFile)) as { default: GlobalConfig }
     const { ci } = config
-    assert(isObject(ci))
+    assert(ci)
     const jobSpecs = ci.jobs
-    assert(Array.isArray(jobSpecs))
     jobSpecs.forEach((jobSpec) => {
-      assert(isObject(jobSpec))
       const jobName = jobSpec.name
-      assert(jobName)
       assert(typeof jobName === 'string')
 
-      const jobSetups: { os: string; node_version: string }[] = []
-      const { setups } = jobSpec
-      assert(Array.isArray(setups))
-      setups.forEach((setup) => {
+      const jobSetups = jobSpec.setups.map((setup) => {
         const { os, node_version } = setup
-        assert(os)
         assert(typeof os === 'string')
-        assert(node_version)
         assert(typeof node_version === 'string')
-        jobSetups.push({
+        return {
           os,
           node_version,
-        })
+        }
       })
 
       jobs.push({
         jobName,
-        jobTestFiles: [],
+        jobTests: [],
         jobSetups,
         jobCmd: 'pnpm exec test-e2e',
       })
     })
   }
 
-  testJobFiles.forEach((testJobFile) => {
-    assert(configFile)
+  localConfigFiles.forEach((localConfigFile) => {
+    const localConfig: LocalConfig = require(path.join(root, localConfigFile))
 
-    const jobJson: Record<string, unknown> = require(path.join(root, testJobFile))
-
-    const jobName = jobJson.name
+    const jobName = localConfig.ci.job
     assert(jobName)
     assert(typeof jobName === 'string')
 
     const dir =
-      path.dirname(testJobFile) +
+      path.dirname(localConfigFile) +
       // `$ git ls-files` returns posix paths
       path.posix.sep
-    const jobTestFiles = testFiles.filter((f) => f.startsWith(dir))
+    const jobTests = testFiles.filter((f) => f.startsWith(dir)).map((file) => ({ testFilePath: file, localConfig }))
     assert(
-      jobTestFiles.length > 0,
-      `No test files found in \`${dir}\` (for \`${testJobFile}\`). Test files: \n${JSON.stringify(testFiles, null, 2)}`,
+      jobTests.length > 0,
+      `No test files found in \`${dir}\` (for \`${localConfigFile}\`). Test files: \n${JSON.stringify(testFiles, null, 2)}`,
     )
 
     const job = jobs.find((job) => job.jobName == jobName)
     if (job === undefined) {
-      throw new Error(`Make sure ${jobName} is defined in ${configFile}`)
+      assert(globalConfigFile)
+      throw new Error(`Make sure ${jobName} is defined in ${globalConfigFile}`)
     }
-    assert(job.jobTestFiles)
-    job.jobTestFiles.push(...jobTestFiles)
+    assert(job.jobTests)
+    job.jobTests.push(...jobTests)
   })
 
   {
     let job: Job | null = null
     testFiles.forEach((testFile) => {
       const isMissing = !jobs.some((job) => {
-        assert(job.jobTestFiles)
-        return job.jobTestFiles.includes(testFile)
+        assert(job.jobTests)
+        return job.jobTests.some((jobTest) => jobTest.testFilePath === testFile)
       })
       if (isMissing) {
         if (!job) {
           job = {
             jobName: 'E2E Tests',
             jobCmd: 'pnpm exec test-e2e',
-            jobTestFiles: [],
+            jobTests: [],
             jobSetups: [{ os: 'ubuntu-latest', node_version: '20' }],
           }
           jobs.push(job)
         }
-        assert(job.jobTestFiles)
-        job.jobTestFiles.push(testFile)
+        assert(job.jobTests)
+        job.jobTests.push({ testFilePath: testFile, localConfig: null })
       }
     })
   }
@@ -165,38 +172,44 @@ async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
   return jobs
 }
 
-function getConfigFile(projectFiles: string[]): string | null {
-  const matches = projectFiles.filter((file) => file.endsWith(configFileName))
-  if (matches.length > 1) throw new Error(`Only one file \`${configFileName}\` is allowed`)
+type GlobalConfigFilePath = `${string}${typeof globalConfigFileName}`
+function getGlobalConfigFile(projectFiles: string[]) {
+  const matches = projectFiles.filter((file) => file.endsWith(globalConfigFileName)) as GlobalConfigFilePath[]
+  if (matches.length > 1) throw new Error(`Only one file \`${globalConfigFileName}\` is allowed`)
   if (matches.length === 0) return null
-  const configFile = path.join(root, matches[0])
-  return configFile
+  const globalConfigFile = path.join(root, matches[0]) as GlobalConfigFilePath
+  return globalConfigFile
 }
 
-function getTestJobFiles(projectFiles: string[]): string[] {
-  const testJobFiles = projectFiles.filter((file) => file.endsWith('.testCiJob.json'))
-  return testJobFiles
+type LocalConfigFilePath = `${string}${typeof localConfigFileName}`
+function getLocalConfigFiles(projectFiles: string[]) {
+  const localConfigFiles = projectFiles.filter((file) => file.endsWith(localConfigFileName)) as LocalConfigFilePath[]
+  return localConfigFiles
 }
 
 async function getMatrix(): Promise<MatrixEntry[]> {
   let jobs = await prepare()
 
-  const inspectFile = getInspectFile()
-  let TEST_INSPECT = ''
-  if (inspectFile) {
-    const inspectDir = path.dirname(inspectFile)
-    TEST_INSPECT = inspectDir
-    jobs = jobs.filter((job) => job.jobTestFiles?.some((testFile) => testFile.startsWith(inspectDir)))
+  if (jobs.some((job) => job.jobTests?.some((t) => t.localConfig?.ci.inspect))) {
+    // Filter
+    jobs.forEach((job) => {
+      job.jobTests = job.jobTests && job.jobTests.filter((t) => t.localConfig?.ci.inspect)
+    })
+    jobs = jobs.filter((job) => job.jobTests && job.jobTests.length > 0)
+
+    // Append --inspect
+    jobs.forEach((job) => {
+      job.jobCmd = `${job.jobCmd} --inspect`
+    })
   }
 
   const matrix: MatrixEntry[] = []
-  jobs.forEach(({ jobName, jobTestFiles, jobSetups, jobCmd }) => {
+  jobs.forEach(({ jobName, jobTests, jobSetups, jobCmd }) => {
     jobSetups.forEach((setup) => {
       matrix.push({
         jobCmd,
         jobName: jobName + getSetupName(setup),
-        TEST_FILES: (jobTestFiles ?? []).join(' '),
-        TEST_INSPECT,
+        TEST_FILES: (jobTests ?? []).map((jobTest) => jobTest.testFilePath).join(' '),
         ...setup,
       })
     })
@@ -207,7 +220,7 @@ async function getMatrix(): Promise<MatrixEntry[]> {
 
 function assertTestFilesCoverage(testFiles: string[], jobs: Job[]): void {
   testFiles.forEach((testFile) => {
-    const jobsFound = jobs.filter((job) => job.jobTestFiles?.includes(testFile))
+    const jobsFound = jobs.filter((job) => job.jobTests?.some((jobTest) => jobTest.testFilePath === testFile))
     assert(
       jobsFound.length > 0,
       `Test file ${testFile} isn't included in any job. Jobs: \n${JSON.stringify(jobs, null, 2)}`,
@@ -221,9 +234,10 @@ function assertTestFilesCoverage(testFiles: string[], jobs: Job[]): void {
 
 async function logMatrix(): Promise<void> {
   const matrix = await getMatrix()
-  if (args.includes('--debug')) {
+  if (DEBUG) {
     console.log(JSON.stringify(matrix, null, 2))
-    console.log(matrix.length)
+    console.log()
+    console.log('Number of jobs: ' + matrix.length)
   } else {
     console.log(`{"include":${JSON.stringify(matrix)}}`)
   }
@@ -247,26 +261,8 @@ function getSetupName(setup: Setup): string {
   return setupName
 }
 
-// To debug `getInspectFile()` run `$ node ./prepare.mjs --ci --debug`
-function getInspectFile(): string | null {
-  // File was previously named FOCUS
-  const inspectFiles = projectFiles.filter((file) => file.endsWith('/INSPECT'))
-  if (inspectFiles.length === 0) {
-    return null
-  }
-  assert(
-    inspectFiles.length === 1,
-    'There cannot be only one INSPECT file but found multiple: ' + inspectFiles.join(' '),
-  )
-  return inspectFiles[0]
-}
-
 function cmd(command: string, { cwd }: { cwd?: string } = { cwd: undefined }): string {
   let stdout = execSync(command, { encoding: 'utf8', cwd })
   stdout = stdout.split(/\s/).filter(Boolean).join(' ')
   return stdout
-}
-
-function isObject(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null
 }

@@ -11,12 +11,15 @@ importers:
       '@biomejs/biome':
         specifier: ^1.9.4
         version: 1.9.4
+      '@brillout/replace':
+        specifier: ^0.1.4
+        version: 0.1.4
       '@brillout/spellcheck':
         specifier: ^0.1.2
         version: 0.1.2
       '@brillout/test-e2e':
-        specifier: ^0.6.16
-        version: 0.6.16
+        specifier: ^0.6.17
+        version: 0.6.17
       '@brillout/test-types':
         specifier: ^0.1.13
         version: 0.1.15(typescript@5.9.2)
@@ -2349,6 +2352,10 @@ packages:
     resolution: {integrity: sha512-zZzzOT34JVDOo8pe+AhJODAajzMLitfUOZoZotBXTAVGzpcOWcoHM1F4VDih1FW8GOrKhs/r48nhem5AmMWm8Q==}
     hasBin: true
 
+  '@brillout/replace@0.1.4':
+    resolution: {integrity: sha512-t1J030/UpCi0ylX46uH9hjfXAw3oln7biYiFoaT1RPi9+3BsFOnJ/P7onefJJ/5Tt1L831iHESA+ZZiZRfvalg==}
+    hasBin: true
+
   '@brillout/require-shim@0.1.2':
     resolution: {integrity: sha512-3I4LRHnVZXoSAsEoni5mosq9l6eiJED58d9V954W4CIZ88AUfYBanWGBGbJG3NztaRTpFHEA6wB3Hn93BmmJdg==}
 
@@ -2359,8 +2366,8 @@ packages:
     resolution: {integrity: sha512-DNJKsGPRps/3rwezmtMMoNwrcIpqnDPkqArEK5eS3vpkRJGzVaSH8suGf1+TmgUIsHn2Y1bgLIz9jh7w0EqwHw==}
     hasBin: true
 
-  '@brillout/test-e2e@0.6.16':
-    resolution: {integrity: sha512-GZgF4d2cjRwPu32IGJyYVQDdwiXQW7NG87PrwxSmxmoCFCVfhdiX62mf4vPritcxu+7A8KsE9tKxec2saV5HtQ==}
+  '@brillout/test-e2e@0.6.17':
+    resolution: {integrity: sha512-mIn0uBIsFot2S5Vj8teyKt8OHazCvSrFkpGvloAsATH/fkscDQ7zKjL78mhv32vaoBXDVZpg6Nxax0Bdewd+tA==}
     hasBin: true
 
   '@brillout/test-types@0.1.15':
@@ -8892,6 +8899,11 @@ snapshots:
       execa: 5.1.1
       semver: 7.7.1
 
+  '@brillout/replace@0.1.4':
+    dependencies:
+      '@brillout/picocolors': 1.0.28
+      '@brillout/shell': 0.2.1
+
   '@brillout/require-shim@0.1.2': {}
 
   '@brillout/shell@0.2.1':
@@ -8903,7 +8915,7 @@ snapshots:
       '@brillout/picocolors': 1.0.28
       '@brillout/shell': 0.2.1
 
-  '@brillout/test-e2e@0.6.16':
+  '@brillout/test-e2e@0.6.17':
     dependencies:
       '@brillout/part-regex': 0.1.4
       '@brillout/picocolors': 1.0.28
