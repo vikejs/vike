@@ -29,44 +29,120 @@ describe('prepare()', () => {
             },
           ],
           "jobTests": [
-            ".github/workflows/ci/prepare.spec.ts",
-            "packages/vike/node/runtime/html/injectAssets/injectHtmlTags.spec.ts",
-            "packages/vike/node/runtime/html/propKeys.spec.ts",
-            "packages/vike/node/runtime/renderPage/createHttpResponse/assertNoInfiniteHttpRedirect.spec.ts",
-            "packages/vike/node/runtime/renderPage/log404/index.spec.snapshot-1",
-            "packages/vike/node/runtime/renderPage/log404/index.spec.snapshot-2",
-            "packages/vike/node/runtime/renderPage/log404/index.spec.ts",
-            "packages/vike/node/runtime/renderPage/logErrorHint/getErrorHint.spec.ts",
-            "packages/vike/node/runtime/renderPage/resolveRedirects.spec.ts",
-            "packages/vike/node/vite/shared/loggerNotProd/errorWithCodeSnippet/getPrettyErrMessage.spec.ts",
-            "packages/vike/node/vite/shared/loggerNotProd/errorWithCodeSnippet/getPrettyErrorWithCodeSnippet.spec.ts",
-            "packages/vike/node/vite/shared/resolveVikeConfigInternal/crawlPlusFiles/crawlPlusFiles.spec.ts",
-            "packages/vike/node/vite/shared/resolveVikeConfigInternal/filesystemRouting.spec.ts",
-            "packages/vike/node/vite/shared/resolveVikeConfigInternal/pointerImports.spec.ts",
-            "packages/vike/shared/modifyUrl.spec.ts",
-            "packages/vike/shared/page-configs/getExportPath.spec.ts",
-            "packages/vike/shared/route/deduceRouteStringFromFilesystemPath.spec.ts",
-            "packages/vike/shared/route/resolvePrecedence/resolvePrecedence_overall.spec.ts",
-            "packages/vike/shared/route/resolvePrecedence/resolvePrecedence_route-strings.spec.ts",
-            "packages/vike/shared/route/resolveRouteString.spec.ts",
-            "packages/vike/shared/route/resolveUrlPathname.spec.ts",
-            "packages/vike/utils/freezePartial.spec.ts",
-            "packages/vike/utils/getValuePrintable.spec.ts",
-            "packages/vike/utils/isHtml.spec.ts",
-            "packages/vike/utils/normalizeHeaders.spec.ts",
-            "packages/vike/utils/parseNpmPackage.spec.ts",
-            "packages/vike/utils/parseUrl-extras.spec.ts",
-            "packages/vike/utils/parseUrl.spec.ts",
-            "packages/vike/utils/preservePropertyGetters.spec.ts",
-            "packages/vike/utils/trimWithAnsi.spec.ts",
-            "test/assertFileEnv/test-build.spec.ts",
-            "test/preload/__snapshots__/dev.spec.ts.snap",
-            "test/preload/__snapshots__/prod.spec.ts.snap",
-            "test/preload/dev.spec.ts",
-            "test/preload/prod.spec.ts",
-            "test/preload/utils/stabilizeHashes.spec.ts",
-            "test/vitest/dev.spec.ts",
-            "test/vitest/preview.spec.ts",
+            {
+              "testFilePath": ".github/workflows/ci/prepare.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/node/runtime/html/injectAssets/injectHtmlTags.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/node/runtime/html/propKeys.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/node/runtime/renderPage/createHttpResponse/assertNoInfiniteHttpRedirect.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/node/runtime/renderPage/log404/index.spec.snapshot-1",
+            },
+            {
+              "testFilePath": "packages/vike/node/runtime/renderPage/log404/index.spec.snapshot-2",
+            },
+            {
+              "testFilePath": "packages/vike/node/runtime/renderPage/log404/index.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/node/runtime/renderPage/logErrorHint/getErrorHint.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/node/runtime/renderPage/resolveRedirects.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/node/vite/shared/loggerNotProd/errorWithCodeSnippet/getPrettyErrMessage.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/node/vite/shared/loggerNotProd/errorWithCodeSnippet/getPrettyErrorWithCodeSnippet.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/node/vite/shared/resolveVikeConfigInternal/crawlPlusFiles/crawlPlusFiles.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/node/vite/shared/resolveVikeConfigInternal/filesystemRouting.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/node/vite/shared/resolveVikeConfigInternal/pointerImports.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/shared/modifyUrl.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/shared/page-configs/getExportPath.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/shared/route/deduceRouteStringFromFilesystemPath.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/shared/route/resolvePrecedence/resolvePrecedence_overall.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/shared/route/resolvePrecedence/resolvePrecedence_route-strings.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/shared/route/resolveRouteString.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/shared/route/resolveUrlPathname.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/utils/freezePartial.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/utils/getValuePrintable.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/utils/isHtml.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/utils/normalizeHeaders.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/utils/parseNpmPackage.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/utils/parseUrl-extras.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/utils/parseUrl.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/utils/preservePropertyGetters.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/utils/trimWithAnsi.spec.ts",
+            },
+            {
+              "testFilePath": "test/assertFileEnv/test-build.spec.ts",
+            },
+            {
+              "testFilePath": "test/preload/__snapshots__/dev.spec.ts.snap",
+            },
+            {
+              "testFilePath": "test/preload/__snapshots__/prod.spec.ts.snap",
+            },
+            {
+              "testFilePath": "test/preload/dev.spec.ts",
+            },
+            {
+              "testFilePath": "test/preload/prod.spec.ts",
+            },
+            {
+              "testFilePath": "test/preload/utils/stabilizeHashes.spec.ts",
+            },
+            {
+              "testFilePath": "test/vitest/dev.spec.ts",
+            },
+            {
+              "testFilePath": "test/vitest/preview.spec.ts",
+            },
           ],
         },
         {
@@ -83,44 +159,120 @@ describe('prepare()', () => {
             },
           ],
           "jobTests": [
-            ".github/workflows/ci/prepare.spec.ts",
-            "packages/vike/node/runtime/html/injectAssets/injectHtmlTags.spec.ts",
-            "packages/vike/node/runtime/html/propKeys.spec.ts",
-            "packages/vike/node/runtime/renderPage/createHttpResponse/assertNoInfiniteHttpRedirect.spec.ts",
-            "packages/vike/node/runtime/renderPage/log404/index.spec.snapshot-1",
-            "packages/vike/node/runtime/renderPage/log404/index.spec.snapshot-2",
-            "packages/vike/node/runtime/renderPage/log404/index.spec.ts",
-            "packages/vike/node/runtime/renderPage/logErrorHint/getErrorHint.spec.ts",
-            "packages/vike/node/runtime/renderPage/resolveRedirects.spec.ts",
-            "packages/vike/node/vite/shared/loggerNotProd/errorWithCodeSnippet/getPrettyErrMessage.spec.ts",
-            "packages/vike/node/vite/shared/loggerNotProd/errorWithCodeSnippet/getPrettyErrorWithCodeSnippet.spec.ts",
-            "packages/vike/node/vite/shared/resolveVikeConfigInternal/crawlPlusFiles/crawlPlusFiles.spec.ts",
-            "packages/vike/node/vite/shared/resolveVikeConfigInternal/filesystemRouting.spec.ts",
-            "packages/vike/node/vite/shared/resolveVikeConfigInternal/pointerImports.spec.ts",
-            "packages/vike/shared/modifyUrl.spec.ts",
-            "packages/vike/shared/page-configs/getExportPath.spec.ts",
-            "packages/vike/shared/route/deduceRouteStringFromFilesystemPath.spec.ts",
-            "packages/vike/shared/route/resolvePrecedence/resolvePrecedence_overall.spec.ts",
-            "packages/vike/shared/route/resolvePrecedence/resolvePrecedence_route-strings.spec.ts",
-            "packages/vike/shared/route/resolveRouteString.spec.ts",
-            "packages/vike/shared/route/resolveUrlPathname.spec.ts",
-            "packages/vike/utils/freezePartial.spec.ts",
-            "packages/vike/utils/getValuePrintable.spec.ts",
-            "packages/vike/utils/isHtml.spec.ts",
-            "packages/vike/utils/normalizeHeaders.spec.ts",
-            "packages/vike/utils/parseNpmPackage.spec.ts",
-            "packages/vike/utils/parseUrl-extras.spec.ts",
-            "packages/vike/utils/parseUrl.spec.ts",
-            "packages/vike/utils/preservePropertyGetters.spec.ts",
-            "packages/vike/utils/trimWithAnsi.spec.ts",
-            "test/assertFileEnv/test-build.spec.ts",
-            "test/preload/__snapshots__/dev.spec.ts.snap",
-            "test/preload/__snapshots__/prod.spec.ts.snap",
-            "test/preload/dev.spec.ts",
-            "test/preload/prod.spec.ts",
-            "test/preload/utils/stabilizeHashes.spec.ts",
-            "test/vitest/dev.spec.ts",
-            "test/vitest/preview.spec.ts",
+            {
+              "testFilePath": ".github/workflows/ci/prepare.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/node/runtime/html/injectAssets/injectHtmlTags.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/node/runtime/html/propKeys.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/node/runtime/renderPage/createHttpResponse/assertNoInfiniteHttpRedirect.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/node/runtime/renderPage/log404/index.spec.snapshot-1",
+            },
+            {
+              "testFilePath": "packages/vike/node/runtime/renderPage/log404/index.spec.snapshot-2",
+            },
+            {
+              "testFilePath": "packages/vike/node/runtime/renderPage/log404/index.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/node/runtime/renderPage/logErrorHint/getErrorHint.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/node/runtime/renderPage/resolveRedirects.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/node/vite/shared/loggerNotProd/errorWithCodeSnippet/getPrettyErrMessage.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/node/vite/shared/loggerNotProd/errorWithCodeSnippet/getPrettyErrorWithCodeSnippet.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/node/vite/shared/resolveVikeConfigInternal/crawlPlusFiles/crawlPlusFiles.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/node/vite/shared/resolveVikeConfigInternal/filesystemRouting.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/node/vite/shared/resolveVikeConfigInternal/pointerImports.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/shared/modifyUrl.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/shared/page-configs/getExportPath.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/shared/route/deduceRouteStringFromFilesystemPath.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/shared/route/resolvePrecedence/resolvePrecedence_overall.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/shared/route/resolvePrecedence/resolvePrecedence_route-strings.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/shared/route/resolveRouteString.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/shared/route/resolveUrlPathname.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/utils/freezePartial.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/utils/getValuePrintable.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/utils/isHtml.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/utils/normalizeHeaders.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/utils/parseNpmPackage.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/utils/parseUrl-extras.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/utils/parseUrl.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/utils/preservePropertyGetters.spec.ts",
+            },
+            {
+              "testFilePath": "packages/vike/utils/trimWithAnsi.spec.ts",
+            },
+            {
+              "testFilePath": "test/assertFileEnv/test-build.spec.ts",
+            },
+            {
+              "testFilePath": "test/preload/__snapshots__/dev.spec.ts.snap",
+            },
+            {
+              "testFilePath": "test/preload/__snapshots__/prod.spec.ts.snap",
+            },
+            {
+              "testFilePath": "test/preload/dev.spec.ts",
+            },
+            {
+              "testFilePath": "test/preload/prod.spec.ts",
+            },
+            {
+              "testFilePath": "test/preload/utils/stabilizeHashes.spec.ts",
+            },
+            {
+              "testFilePath": "test/vitest/dev.spec.ts",
+            },
+            {
+              "testFilePath": "test/vitest/preview.spec.ts",
+            },
           ],
         },
         {
@@ -144,14 +296,30 @@ describe('prepare()', () => {
             },
           ],
           "jobTests": [
-            "packages/create-vike-core/boilerplate-react-ts/.test-dev.test.ts",
-            "packages/create-vike-core/boilerplate-react-ts/.test-prod.test.ts",
-            "packages/create-vike-core/boilerplate-react/.test-dev.test.ts",
-            "packages/create-vike-core/boilerplate-react/.test-prod.test.ts",
-            "packages/create-vike-core/boilerplate-vue-ts/.test-dev.test.ts",
-            "packages/create-vike-core/boilerplate-vue-ts/.test-prod.test.ts",
-            "packages/create-vike-core/boilerplate-vue/.test-dev.test.ts",
-            "packages/create-vike-core/boilerplate-vue/.test-prod.test.ts",
+            {
+              "testFilePath": "packages/create-vike-core/boilerplate-react-ts/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "packages/create-vike-core/boilerplate-react-ts/.test-prod.test.ts",
+            },
+            {
+              "testFilePath": "packages/create-vike-core/boilerplate-react/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "packages/create-vike-core/boilerplate-react/.test-prod.test.ts",
+            },
+            {
+              "testFilePath": "packages/create-vike-core/boilerplate-vue-ts/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "packages/create-vike-core/boilerplate-vue-ts/.test-prod.test.ts",
+            },
+            {
+              "testFilePath": "packages/create-vike-core/boilerplate-vue/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "packages/create-vike-core/boilerplate-vue/.test-prod.test.ts",
+            },
           ],
         },
         {
@@ -168,34 +336,90 @@ describe('prepare()', () => {
             },
           ],
           "jobTests": [
-            "examples/file-structure-domain-driven/.test-dev.test.ts",
-            "examples/file-structure-domain-driven/.test-preview.test.ts",
-            "examples/i18n/.test-dev.test.ts",
-            "examples/i18n/.test-preview.test.ts",
-            "examples/path-aliases/.test-dev.test.ts",
-            "examples/path-aliases/.test-prod-static.test.ts",
-            "examples/path-aliases/.test-prod.test.ts",
-            "examples/react-full/.test-dev.test.ts",
-            "examples/react-full/.test-preview.test.ts",
-            "examples/react-minimal/.test-dev.test.ts",
-            "examples/react-minimal/.test-preview.test.ts",
-            "examples/react-streaming/.test-dev.test.ts",
-            "examples/react-streaming/.test-prod.test.ts",
-            "examples/render-modes/.test-dev.test.ts",
-            "examples/render-modes/.test-prod.test.ts",
-            "test-deprecated-design/file-structure-domain-driven/.test-dev.test.ts",
-            "test-deprecated-design/file-structure-domain-driven/.test-preview.test.ts",
-            "test-deprecated-design/i18n/.test-dev.test.ts",
-            "test-deprecated-design/i18n/.test-preview.test.ts",
-            "test-deprecated-design/path-aliases/.test-dev.test.ts",
-            "test-deprecated-design/path-aliases/.test-prod-static.test.ts",
-            "test-deprecated-design/path-aliases/.test-prod.test.ts",
-            "test-deprecated-design/react-streaming/.test-dev.test.ts",
-            "test-deprecated-design/react-streaming/.test-prod.test.ts",
-            "test-deprecated-design/react/.test-dev.test.ts",
-            "test-deprecated-design/react/.test-preview.test.ts",
-            "test-deprecated-design/render-modes/.test-dev.test.ts",
-            "test-deprecated-design/render-modes/.test-preview.test.ts",
+            {
+              "testFilePath": "examples/file-structure-domain-driven/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "examples/file-structure-domain-driven/.test-preview.test.ts",
+            },
+            {
+              "testFilePath": "examples/i18n/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "examples/i18n/.test-preview.test.ts",
+            },
+            {
+              "testFilePath": "examples/path-aliases/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "examples/path-aliases/.test-prod-static.test.ts",
+            },
+            {
+              "testFilePath": "examples/path-aliases/.test-prod.test.ts",
+            },
+            {
+              "testFilePath": "examples/react-full/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "examples/react-full/.test-preview.test.ts",
+            },
+            {
+              "testFilePath": "examples/react-minimal/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "examples/react-minimal/.test-preview.test.ts",
+            },
+            {
+              "testFilePath": "examples/react-streaming/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "examples/react-streaming/.test-prod.test.ts",
+            },
+            {
+              "testFilePath": "examples/render-modes/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "examples/render-modes/.test-prod.test.ts",
+            },
+            {
+              "testFilePath": "test-deprecated-design/file-structure-domain-driven/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test-deprecated-design/file-structure-domain-driven/.test-preview.test.ts",
+            },
+            {
+              "testFilePath": "test-deprecated-design/i18n/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test-deprecated-design/i18n/.test-preview.test.ts",
+            },
+            {
+              "testFilePath": "test-deprecated-design/path-aliases/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test-deprecated-design/path-aliases/.test-prod-static.test.ts",
+            },
+            {
+              "testFilePath": "test-deprecated-design/path-aliases/.test-prod.test.ts",
+            },
+            {
+              "testFilePath": "test-deprecated-design/react-streaming/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test-deprecated-design/react-streaming/.test-prod.test.ts",
+            },
+            {
+              "testFilePath": "test-deprecated-design/react/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test-deprecated-design/react/.test-preview.test.ts",
+            },
+            {
+              "testFilePath": "test-deprecated-design/render-modes/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test-deprecated-design/render-modes/.test-preview.test.ts",
+            },
           ],
         },
         {
@@ -212,21 +436,51 @@ describe('prepare()', () => {
             },
           ],
           "jobTests": [
-            "examples/html-fragments/.test-dev.test.ts",
-            "examples/html-fragments/.test-preview.test.ts",
-            "examples/telefunc/.dev.test.ts",
-            "examples/telefunc/.prod.test.ts",
-            "examples/vue-full/.test-dev.test.ts",
-            "examples/vue-full/.test-preview.test.ts",
-            "examples/vue-minimal/.test-dev.test.ts",
-            "examples/vue-minimal/.test-preview.test.ts",
-            "test-deprecated-design/html-fragments/.test.ts",
-            "test-deprecated-design/telefunc/.dev.test.ts",
-            "test-deprecated-design/telefunc/.prod.test.ts",
-            "test-deprecated-design/vue-full/.test-dev.test.ts",
-            "test-deprecated-design/vue-full/.test-preview.test.ts",
-            "test-deprecated-design/vue/.test-dev.test.ts",
-            "test-deprecated-design/vue/.test-preview.test.ts",
+            {
+              "testFilePath": "examples/html-fragments/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "examples/html-fragments/.test-preview.test.ts",
+            },
+            {
+              "testFilePath": "examples/telefunc/.dev.test.ts",
+            },
+            {
+              "testFilePath": "examples/telefunc/.prod.test.ts",
+            },
+            {
+              "testFilePath": "examples/vue-full/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "examples/vue-full/.test-preview.test.ts",
+            },
+            {
+              "testFilePath": "examples/vue-minimal/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "examples/vue-minimal/.test-preview.test.ts",
+            },
+            {
+              "testFilePath": "test-deprecated-design/html-fragments/.test.ts",
+            },
+            {
+              "testFilePath": "test-deprecated-design/telefunc/.dev.test.ts",
+            },
+            {
+              "testFilePath": "test-deprecated-design/telefunc/.prod.test.ts",
+            },
+            {
+              "testFilePath": "test-deprecated-design/vue-full/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test-deprecated-design/vue-full/.test-preview.test.ts",
+            },
+            {
+              "testFilePath": "test-deprecated-design/vue/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test-deprecated-design/vue/.test-preview.test.ts",
+            },
           ],
         },
         {
@@ -243,17 +497,39 @@ describe('prepare()', () => {
             },
           ],
           "jobTests": [
-            "examples/auth/.test-dev.test.ts",
-            "examples/auth/.test-prod.test.ts",
-            "examples/base-url-cdn/.test.ts",
-            "examples/base-url-server/.test.ts",
-            "examples/base-url/.test-dev.test.ts",
-            "examples/base-url/.test-preview.test.ts",
-            "examples/custom-preload/.test-preview.test.ts",
-            "test-deprecated-design/base-url-cdn/.test.ts",
-            "test-deprecated-design/base-url-server/.test.ts",
-            "test-deprecated-design/base-url/.test-dev.test.ts",
-            "test-deprecated-design/base-url/.test-preview.test.ts",
+            {
+              "testFilePath": "examples/auth/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "examples/auth/.test-prod.test.ts",
+            },
+            {
+              "testFilePath": "examples/base-url-cdn/.test.ts",
+            },
+            {
+              "testFilePath": "examples/base-url-server/.test.ts",
+            },
+            {
+              "testFilePath": "examples/base-url/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "examples/base-url/.test-preview.test.ts",
+            },
+            {
+              "testFilePath": "examples/custom-preload/.test-preview.test.ts",
+            },
+            {
+              "testFilePath": "test-deprecated-design/base-url-cdn/.test.ts",
+            },
+            {
+              "testFilePath": "test-deprecated-design/base-url-server/.test.ts",
+            },
+            {
+              "testFilePath": "test-deprecated-design/base-url/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test-deprecated-design/base-url/.test-preview.test.ts",
+            },
           ],
         },
         {
@@ -270,44 +546,120 @@ describe('prepare()', () => {
             },
           ],
           "jobTests": [
-            "test/abort/test-dev-server.test.ts",
-            "test/abort/test-dev.test.ts",
-            "test/abort/test-preview.test.ts",
-            "test/abort/test-prod.test.ts",
-            "test/assertFileEnv/test-dev.test.ts",
-            "test/cjs/test-dev.test.ts",
-            "test/cjs/test-prod.test.ts",
-            "test/disableAutoImporter/.test-dev.test.ts",
-            "test/disableAutoImporter/.test-preview.test.ts",
-            "test/env/.test-build.test.ts",
-            "test/env/.test-dev.test.ts",
-            "test/environment-api/test-dev.test.ts",
-            "test/environment-api/test-preview.test.ts",
-            "test/hook-override/test-dev.test.ts",
-            "test/hook-override/test-preview.test.ts",
-            "test/includeAssetsImportedByServer/.test-dev.test.ts",
-            "test/includeAssetsImportedByServer/.test-preview.test.ts",
-            "test/playground/test-dev.test.ts",
-            "test/playground/test-preview.test.ts",
-            "test/require-shim/test-prod.test.ts",
-            "test/stream-vue-onServerPrefetch/test-dev.test.ts",
-            "test/stream-vue-onServerPrefetch/test-preview.test.ts",
-            "test/universal-middleware/test-dev.test.ts",
-            "test/universal-middleware/test-preview.test.ts",
-            "test/vike-cloudflare/.test-dev.test.ts",
-            "test/vike-cloudflare/.test-preview.test.ts",
-            "test/vike-react/.test-dev.test.ts",
-            "test/vike-react/.test-preview.test.ts",
-            "test/vike-server/.test-dev.test.ts",
-            "test/vike-server/.test-prod.test.ts",
-            "test/vike-solid/.test-dev.test.ts",
-            "test/vike-solid/.test-preview.test.ts",
-            "test/vike-vercel/.test-dev.test.ts",
-            "test/vike-vercel/.test-prod.test.ts",
-            "test/vike-vue/.test-dev.test.ts",
-            "test/vike-vue/.test-preview.test.ts",
-            "test/webpack/.test-dev.test.ts",
-            "test/webpack/.test-preview.test.ts",
+            {
+              "testFilePath": "test/abort/test-dev-server.test.ts",
+            },
+            {
+              "testFilePath": "test/abort/test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test/abort/test-preview.test.ts",
+            },
+            {
+              "testFilePath": "test/abort/test-prod.test.ts",
+            },
+            {
+              "testFilePath": "test/assertFileEnv/test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test/cjs/test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test/cjs/test-prod.test.ts",
+            },
+            {
+              "testFilePath": "test/disableAutoImporter/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test/disableAutoImporter/.test-preview.test.ts",
+            },
+            {
+              "testFilePath": "test/env/.test-build.test.ts",
+            },
+            {
+              "testFilePath": "test/env/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test/environment-api/test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test/environment-api/test-preview.test.ts",
+            },
+            {
+              "testFilePath": "test/hook-override/test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test/hook-override/test-preview.test.ts",
+            },
+            {
+              "testFilePath": "test/includeAssetsImportedByServer/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test/includeAssetsImportedByServer/.test-preview.test.ts",
+            },
+            {
+              "testFilePath": "test/playground/test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test/playground/test-preview.test.ts",
+            },
+            {
+              "testFilePath": "test/require-shim/test-prod.test.ts",
+            },
+            {
+              "testFilePath": "test/stream-vue-onServerPrefetch/test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test/stream-vue-onServerPrefetch/test-preview.test.ts",
+            },
+            {
+              "testFilePath": "test/universal-middleware/test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test/universal-middleware/test-preview.test.ts",
+            },
+            {
+              "testFilePath": "test/vike-cloudflare/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test/vike-cloudflare/.test-preview.test.ts",
+            },
+            {
+              "testFilePath": "test/vike-react/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test/vike-react/.test-preview.test.ts",
+            },
+            {
+              "testFilePath": "test/vike-server/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test/vike-server/.test-prod.test.ts",
+            },
+            {
+              "testFilePath": "test/vike-solid/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test/vike-solid/.test-preview.test.ts",
+            },
+            {
+              "testFilePath": "test/vike-vercel/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test/vike-vercel/.test-prod.test.ts",
+            },
+            {
+              "testFilePath": "test/vike-vue/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test/vike-vue/.test-preview.test.ts",
+            },
+            {
+              "testFilePath": "test/webpack/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test/webpack/.test-preview.test.ts",
+            },
           ],
         },
         {
@@ -320,20 +672,48 @@ describe('prepare()', () => {
             },
           ],
           "jobTests": [
-            "examples/cloudflare-workers-react-full/.test-dev.test.ts",
-            "examples/cloudflare-workers-react-full/.test-wrangler.test.ts",
-            "examples/cloudflare-workers-react/.test-dev.test.ts",
-            "examples/cloudflare-workers-react/.test-wrangler.test.ts",
-            "examples/cloudflare-workers-vue/.test-dev.test.ts",
-            "examples/cloudflare-workers-vue/.test-wrangler.test.ts",
-            "test-deprecated-design/cloudflare-workers-react-full/.test-dev.test.ts",
-            "test-deprecated-design/cloudflare-workers-react-full/.test-wrangler.test.ts",
-            "test-deprecated-design/cloudflare-workers-react/.test-dev.test.ts",
-            "test-deprecated-design/cloudflare-workers-react/.test-wrangler.test.ts",
-            "test-deprecated-design/cloudflare-workers-vue/.test-dev.test.ts",
-            "test-deprecated-design/cloudflare-workers-vue/.test-wrangler.test.ts",
-            "test/@cloudflare_vite-plugin/test-dev.test.ts",
-            "test/@cloudflare_vite-plugin/test-preview.test.ts",
+            {
+              "testFilePath": "examples/cloudflare-workers-react-full/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "examples/cloudflare-workers-react-full/.test-wrangler.test.ts",
+            },
+            {
+              "testFilePath": "examples/cloudflare-workers-react/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "examples/cloudflare-workers-react/.test-wrangler.test.ts",
+            },
+            {
+              "testFilePath": "examples/cloudflare-workers-vue/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "examples/cloudflare-workers-vue/.test-wrangler.test.ts",
+            },
+            {
+              "testFilePath": "test-deprecated-design/cloudflare-workers-react-full/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test-deprecated-design/cloudflare-workers-react-full/.test-wrangler.test.ts",
+            },
+            {
+              "testFilePath": "test-deprecated-design/cloudflare-workers-react/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test-deprecated-design/cloudflare-workers-react/.test-wrangler.test.ts",
+            },
+            {
+              "testFilePath": "test-deprecated-design/cloudflare-workers-vue/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test-deprecated-design/cloudflare-workers-vue/.test-wrangler.test.ts",
+            },
+            {
+              "testFilePath": "test/@cloudflare_vite-plugin/test-dev.test.ts",
+            },
+            {
+              "testFilePath": "test/@cloudflare_vite-plugin/test-preview.test.ts",
+            },
           ],
         },
         {
@@ -346,8 +726,12 @@ describe('prepare()', () => {
             },
           ],
           "jobTests": [
-            "docs/.test-dev.test.ts",
-            "docs/.test-preview.test.ts",
+            {
+              "testFilePath": "docs/.test-dev.test.ts",
+            },
+            {
+              "testFilePath": "docs/.test-preview.test.ts",
+            },
           ],
         },
       ]

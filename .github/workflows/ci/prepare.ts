@@ -23,7 +23,7 @@ if (args.includes('--debug')) {
 }
 
 type MatrixEntry = { jobName: string; TEST_FILES: string; jobCmd: string; TEST_INSPECT: string } & Setup
-type Job = { jobName: string; jobTests: string[] | null; jobSetups: Setup[]; jobCmd: string }
+type Job = { jobName: string; jobTests: { testFilePath: string }[] | null; jobSetups: Setup[]; jobCmd: string }
 type Setup = { os: string; node_version: string }
 type LocalConfig = { ci: { job: string } }
 type GlobalConfig = { ci?: { jobs: { name: string; setups: Setup[] }[] }; tolerateError?: TolerateError }
@@ -54,13 +54,13 @@ async function prepare(): Promise<Job[]> {
     {
       jobName: 'Vitest (unit tests)',
       jobCmd: 'pnpm exec vitest run --project unit',
-      jobTests: specFiles,
+      jobTests: specFiles.map((file) => ({ testFilePath: file })),
       jobSetups: [linux_nodeOld],
     },
     {
       jobName: 'Vitest (E2E tests)',
       jobCmd: 'pnpm exec vitest run --project e2e',
-      jobTests: specFiles,
+      jobTests: specFiles.map((file) => ({ testFilePath: file })),
       jobSetups: [linux_nodeOld, windows_nodeOld],
     },
     // Check TypeScript types
@@ -126,7 +126,7 @@ async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
       path.dirname(localConfigFile) +
       // `$ git ls-files` returns posix paths
       path.posix.sep
-    const jobTests = testFiles.filter((f) => f.startsWith(dir))
+    const jobTests = testFiles.filter((f) => f.startsWith(dir)).map((file) => ({ testFilePath: file }))
     assert(
       jobTests.length > 0,
       `No test files found in \`${dir}\` (for \`${localConfigFile}\`). Test files: \n${JSON.stringify(testFiles, null, 2)}`,
@@ -146,7 +146,7 @@ async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
     testFiles.forEach((testFile) => {
       const isMissing = !jobs.some((job) => {
         assert(job.jobTests)
-        return job.jobTests.includes(testFile)
+        return job.jobTests.some((jobTest) => jobTest.testFilePath === testFile)
       })
       if (isMissing) {
         if (!job) {
@@ -159,7 +159,7 @@ async function crawlE2eJobs(testFiles: string[]): Promise<Job[]> {
           jobs.push(job)
         }
         assert(job.jobTests)
-        job.jobTests.push(testFile)
+        job.jobTests.push({ testFilePath: testFile })
       }
     })
   }
@@ -211,7 +211,7 @@ async function getMatrix(): Promise<MatrixEntry[]> {
 
 function assertTestFilesCoverage(testFiles: string[], jobs: Job[]): void {
   testFiles.forEach((testFile) => {
-    const jobsFound = jobs.filter((job) => job.jobTests?.includes(testFile))
+    const jobsFound = jobs.filter((job) => job.jobTests?.some((jobTest) => jobTest.testFilePath === testFile))
     assert(
       jobsFound.length > 0,
       `Test file ${testFile} isn't included in any job. Jobs: \n${JSON.stringify(jobs, null, 2)}`,
