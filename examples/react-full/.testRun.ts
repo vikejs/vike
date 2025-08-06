@@ -11,7 +11,7 @@ function testRun(
 ) {
   run(cmd, {
     serverIsReadyMessage: cmd.startsWith('npm run preview') && isVikeCloudflare ? 'Ready on' : undefined,
-    inspect: isVikeCloudflare ? true : undefined,
+    // inspect: isVikeCloudflare ? true : undefined,
   })
 
   const isDev = cmd === 'npm run dev'
