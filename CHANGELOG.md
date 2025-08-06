@@ -4174,7 +4174,7 @@ see https://vite-plugin-ssr.com/catch-all
 
 
 
-## [0.3.3](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.2...v0.3.3) (2025-08-06)
+## [0.3.3](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.2...v0.3.3) (2021-09-29)
 
 
 ### Features
