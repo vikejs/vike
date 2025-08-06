@@ -16,9 +16,11 @@ We recommend using `vike-cloudflare` to deploy your app to [Cloudflare](https://
 
 You can use Vike with the [`vike-cloudflare`](https://github.com/vikejs/vike-cloudflare) extension for a zero-config Cloudflare deployment of your <Link href="/ssr">SSR</Link> or <Link href="/pre-rendering">pre-rendered (aka SSG)</Link> app.
 
-### Without a server
+See:
+ - <Link href="#with-server" /> if you use <Link href="/ssr">SSR</Link> (SSR requires a server).
+ - <Link href="#without-server" /> if you <Link href="/pre-rendering">pre-render</Link> all your pages (you don't need a server then).
 
-If you <Link href="/pre-rendering">pre-render</Link> all your pages then you don't need a server — simply add `vike-cloudflare` like this:
+### Without server
 
 <Tabs>
   <TabList>
@@ -89,9 +91,7 @@ export default {
 .wrangler/ #[!code ++]
 ```
 
-### With a server
-
-If you use <Link href="/ssr">SSR</Link>, you must have a server — add `vike-cloudflare` like this:
+### With server
 
 <Tabs>
   <TabList>
