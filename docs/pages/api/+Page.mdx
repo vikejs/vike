@@ -15,7 +15,7 @@ Common use cases:
 
 Start the development server.
 
-```js
+```ts
 import { dev } from 'vike/api'
 console.log('Starting development server...')
 const {
@@ -42,7 +42,7 @@ Vite types:
 
 Build for production.
 
-```js
+```ts
 import { build } from 'vike/api'
 await build({
   viteConfig // Vite configuration (optional)
@@ -57,7 +57,7 @@ See: <Link href='#viteconfig'>`viteConfig` option</Link>.
 
 Start preview server using production build (only works for <Link href="/glossary#ssg">SSG apps</Link>).
 
-```js
+```ts
 import { preview } from 'vike/api'
 const {
   viteConfig, // Resolved Vite configuration
@@ -82,7 +82,7 @@ Vite types:
 
 <Link href="/pre-rendering">Pre-render</Link> pages (only needed when <Link href="/prerender#disableautorun">`prerender.disableAutoRun`</Link> is `true`).
 
-```js
+```ts
 import { prerender } from 'vike/api'
 const {
   viteConfig // Resolved Vite configuration
@@ -102,7 +102,7 @@ Vite types:
 Options:
 - **`viteConfig`**: See <Link href='#viteconfig'>`viteConfig` option</Link>.
 - **`pageContextInit`**: Initial <Link href="/pageContext">`pageContext`</Link> values.
-  ```js
+  ```ts
   prerender({
     pageContextInit: {
       someData: 42,
@@ -113,7 +113,7 @@ Options:
   See also: <Link href="/pageContext#lifecycle" />.
 - **`onPagePrerender()`**: control where/how HTML files are written.
   <Warning>Don't use this option without having contacted a Vike maintainer: this functionality may be changed/removed at any time.</Warning>
-  ```js
+  ```ts
   prerender({
     // If onPagePrerender() is set, then Vike won't create HTML files
     onPagePrerender(pageContext) {
@@ -132,7 +132,7 @@ All API functions accept the option `viteConfig` (with type [`InlineConfig`](htt
 
 If you want to define Vite settings outside of your app (typically when <Link href="/build-your-own-framework">building your own framework</Link>) you can do this:
 
-```js
+```ts
 import { dev } from 'vike/api'
 
 await dev({
@@ -150,7 +150,7 @@ console.log('Development server is ready')
 
 If you want to define your entire Vite config programmatically:
 
-```js
+```ts
 import { build } from 'vike/api'
 
 await build({

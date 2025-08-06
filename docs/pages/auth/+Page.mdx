@@ -13,7 +13,7 @@ In principle, you can use Vike with any authentication tool such as:
 
 You can make information about the authenticated user available to your UI components and Vike hooks by defining a <Link href="/pageContext#custom">custom property `pageContext.user`</Link> in <Link href="/onCreatePageContext">`+onCreatePageContext.server.js`</Link>.
 
-```js
+```ts
 // pages/+onCreatePageContext.server.ts
 // Environment: server
 
@@ -49,7 +49,7 @@ declare global {
 }
 ```
 
-```js
+```ts
 // pages/+config.ts
 
 import type { Config } from 'vike/types'
@@ -71,7 +71,7 @@ export default {
 > If you use <Link href="/server">`vike-server`</Link>, you can access the request object at `pageContext.runtime.req.user` (see <Link href="/pageContext#runtime">`pageContext.runtime`</Link>).
 >
 > If you don't use `vike-server`, you can define a custom property `pageContext.req` at <Link href="/renderPage">`renderPage()`</Link>:
-> ```js
+> ```ts
 > // server/index.ts
 >
 > import { renderPage } from 'vike/server'
@@ -103,11 +103,13 @@ export default {
 
 Instead, you can use <Link href="/onCreateGlobalContext">`+onCreateGlobalContext.client.js`</Link>:
 
-```js
-// pages/+onCreateGlobalContext.client.js
+```ts
+// pages/+onCreateGlobalContext.client.ts
 // Environment: client
 
-export async function onCreateGlobalContext(globalContext) {
+import type { GlobalContextClient } from 'vike/types'
+
+export async function onCreateGlobalContext(globalContext: GlobalContextClient) {
   // Fetch user information from your backend (or an authentication SaaS platform)
   const user = await fetchUseInfo()
   globalContext.user = user
@@ -124,12 +126,13 @@ By using <Link href="/guard">+guard</Link> with [`throw redirect()`](/redirect) 
  - Implement login flows.
  - Protect private pages from unprivileged access.
 
-```js
-// /pages/admin/+guard.js
+```ts
+// /pages/admin/+guard.ts
 
+import type { PageContextServer } from 'vike/types'
 import { render, redirect } from 'vike/abort'
 
-export const guard = (pageContext) => {
+export const guard = (pageContext: PageContextServer) => {
   const { user } = pageContext
   if (user === null) {
     // Render the login page while preserving the URL. (This is novel technique
@@ -155,15 +158,16 @@ export const guard = (pageContext) => {
 
 You can also define a `guard()` hook that applies to multiple pages:
 
-```js
-// /pages/+guard.js
+```ts
+// /pages/+guard.ts
 
-// This guard() hook applies to all pages: the file is located at /pages/+guard.js
-// and therefore applies to all /pages/**/+Page.js
+// This guard() hook applies to all pages: the file is located at /pages/+guard.ts
+// and therefore applies to all /pages/**/+Page.ts
 
+import type { PageContextServer } from 'vike/types'
 import { render } from 'vike/abort'
 
-export const guard = (pageContext) => {
+export const guard = (pageContext: PageContextServer) => {
   if (!pageContext.user) {
     throw render('/login')
   }

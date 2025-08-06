@@ -9,8 +9,8 @@ The `escapeInject` string template tag sanitizes HTML to prevent security risks 
 
 It's usually used by the `onRenderHtml()` hook.
 
-```js
-// +onRenderHtml.js
+```ts
+// +onRenderHtml.ts
 // Environment: server
 
 export { onRenderHtml }
@@ -48,16 +48,17 @@ If we find ourselves using `dangerouslySkipEscape()` in other situations, we sho
 We can assemble the overall HTML document from several HTML fragments.
 For example, if we want some HTML parts to be included only for certain pages:
 
-```js
-// +onRenderHtml.js
+```ts
+// +onRenderHtml.ts
 // Environment: server
 
+import type { PageContextServer } from 'vike/types'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { renderToHtml } from 'some-ui-framework'
 
 export { onRenderHtml }
 
-async function onRenderHtml(pageContext) {
+async function onRenderHtml(pageContext: PageContextServer) {
   const description = pageContext.config.description
   const descriptionTag = !description ?
     '' :
