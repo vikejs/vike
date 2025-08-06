@@ -20,77 +20,6 @@ See:
  - <Link href="#with-server" /> if you use <Link href="/ssr">SSR</Link> (SSR requires a server).
  - <Link href="#without-server" /> if you <Link href="/pre-rendering">pre-render</Link> all your pages (you don't need a server then).
 
-### Without server
-
-<Tabs>
-  <TabList>
-    <Tab>npm</Tab>
-    <Tab>pnpm</Tab>
-    <Tab>yarn</Tab>
-  </TabList>
-  <TabPanel>
-    ```shell
-    npm i vike-cloudflare wrangler cross-env
-    ```
-  </TabPanel>
-  <TabPanel>
-    ```shell
-    pnpm add vike-cloudflare wrangler cross-env
-    ```
-  </TabPanel>
-  <TabPanel>
-    ```shell
-    yarn add vike-cloudflare wrangler cross-env
-    ```
-  </TabPanel>
-</Tabs>
-
-```ts
-// pages/+config.ts
-
-import type { Config } from 'vike/types'
-import vikeCloudflare from 'vike-cloudflare/config'// [!code ++]
-
-export default {
-  prerender: true,
-  extends: [vikeCloudflare]// [!code ++]
-} satisfies Config
-```
-
-```jsonc
-// package.json
-
-{
-  "scripts": {
-    "dev": "vike dev",
-    "preview": "vike build && cross-env NODE_ENV=production wrangler pages dev",// [!code ++]
-    "deploy": "vike build && cross-env NODE_ENV=production wrangler pages deploy"// [!code ++]
-  }
-}
-```
-<FileAdded>
-```jsonc
-// wangler.jsonc
-
-{
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "my-vike-cloudflare-app",
-  // Only needed if your app (or one of your libraries) uses a Node.js API
-  "compatibility_flags": ["nodejs_compat"],
-  "compatibility_date": "2025-08-06",
-  "pages_build_output_dir": "./dist/cloudflare",
-  "assets": {
-    "directory": "./dist/cloudflare"
-  }
-}
-```
-</FileAdded>
-
-```bash
-# .gitignore
-.wrangler/ #[!code ++]
-```
-
 ### With server
 
 <Tabs>
@@ -207,6 +136,78 @@ export default {
 .wrangler/ #[!code ++]
 ```
 
+### Without server
+
+<Tabs>
+  <TabList>
+    <Tab>npm</Tab>
+    <Tab>pnpm</Tab>
+    <Tab>yarn</Tab>
+  </TabList>
+  <TabPanel>
+    ```shell
+    npm i vike-cloudflare wrangler cross-env
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    pnpm add vike-cloudflare wrangler cross-env
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    yarn add vike-cloudflare wrangler cross-env
+    ```
+  </TabPanel>
+</Tabs>
+
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+import vikeCloudflare from 'vike-cloudflare/config'// [!code ++]
+
+export default {
+  prerender: true,
+  extends: [vikeCloudflare]// [!code ++]
+} satisfies Config
+```
+
+```jsonc
+// package.json
+
+{
+  "scripts": {
+    "dev": "vike dev",
+    "preview": "vike build && cross-env NODE_ENV=production wrangler pages dev",// [!code ++]
+    "deploy": "vike build && cross-env NODE_ENV=production wrangler pages deploy"// [!code ++]
+  }
+}
+```
+<FileAdded>
+```jsonc
+// wangler.jsonc
+
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "my-vike-cloudflare-app",
+  // Only needed if your app (or one of your libraries) uses a Node.js API
+  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_date": "2025-08-06",
+  "pages_build_output_dir": "./dist/cloudflare",
+  "assets": {
+    "directory": "./dist/cloudflare"
+  }
+}
+```
+</FileAdded>
+
+```bash
+# .gitignore
+.wrangler/ #[!code ++]
+```
+
+
 ## Cloudflare APIs
 
 You can access Cloudflare's APIs (such as [D1](https://developers.cloudflare.com/d1/) and [KV](https://developers.cloudflare.com/kv/)):
@@ -281,6 +282,7 @@ export default defineConfig({
 > </Tabs>
 >
 > Or go to <Link href="/new">vike.dev/new</Link> and select `Cloudflare` with an ORM.
+
 
 ## Extend 3MB limit
 
