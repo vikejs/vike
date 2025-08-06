@@ -11,6 +11,5 @@
   },
   "workers_dev": true,
   "site": { "bucket": "./dist/client" },
-  "vars": { "SOME_ENV_VAR": "some-value" },
-  "assets": { "directory": "./dist/client/" }
+  "vars": { "SOME_ENV_VAR": "some-value" }
 }
