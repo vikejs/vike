@@ -14,7 +14,6 @@
     "react-dom": "^19.1.0",
     "vike": "^0.4.236",
     "vike-cloudflare": "^0.2.3",
-    "vike-server": "^1.0.16",
     "vite": "^6.3.2",
     "wrangler": "^4.28.0"
   },
