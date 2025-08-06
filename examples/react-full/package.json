@@ -22,7 +22,7 @@
   "type": "module",
   "devDependencies": {
     "cross-env": "^10.0.0",
-    "vike-cloudflare": "^0.2.5",
+    "vike-cloudflare": "^0.2.6",
     "wrangler": "^4.28.0"
   }
 }
