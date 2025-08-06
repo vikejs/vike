@@ -12,6 +12,5 @@
   "workers_dev": true,
   "site": { "bucket": "./dist/client" },
   "vars": { "SOME_ENV_VAR": "some-value" },
-  "assets": { "directory": "./dist/client/" },
-  "compatibility_flags": ["streams_enable_constructors"]
+  "assets": { "directory": "./dist/client/" }
 }
