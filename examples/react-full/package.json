@@ -23,6 +23,6 @@
   "devDependencies": {
     "cross-env": "^10.0.0",
     "vike-cloudflare": "^0.2.5",
-    "wrangler": "^4.27.0"
+    "wrangler": "^4.28.0"
   }
 }
