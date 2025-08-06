@@ -5,16 +5,20 @@ You can use the `onHydrationEnd()` hook to implement initialization that needs t
 
 > The `onHydrationEnd()` hook requires <Link href="/client-routing">Client Routing</Link>.
 
-```js
-// /pages/+onHydrationEnd.js
+```ts
+// /pages/+onHydrationEnd.ts
 // Environment: client
 
 export { onHydrationEnd }
 
+import type { OnHydrationEndAsync } from 'vike/types'
+
 // The onHydrationEnd() hook is called after the onRenderClient() hook finishes rendering the
 // first page the user navigates to. (The onHydrationEnd() hook isn't called upon subsequent
 // page navigation.)
-async function onHydrationEnd(pageContext) {
+const onHydrationEnd: OnHydrationEndAsync = async (
+  pageContext
+): ReturnType<OnHydrationEndAsync> => {
   console.log('The page is now interactive')
 }
 ```

@@ -6,7 +6,7 @@ Environment: `server`, `client`
 
 Hook called when the <Link href="/globalContext">`globalContext` object</Link> is created.
 
-```js
+```ts
 // pages/+onCreateGlobalContext.ts
 // Environment: server & client
 
@@ -125,15 +125,15 @@ Initializing a <Link href="/store">store</Link> on the client-side:
 // Environment: client
 
 import { Store } from 'some-state-management-library'
-import type { GlobalContextServer } from 'vike/types'
+import type { GlobalContextClient } from 'vike/types'
 
-export async function onCreateGlobalContext(globalContext: GlobalContextServer) {
+export async function onCreateGlobalContext(globalContext: GlobalContextClient) {
   globalContext.store = new Store()
 }
 
 declare global {
   namespace Vike {
-    interface GlobalContextServer {
+    interface GlobalContextClient {
       store: Store
     }
   }

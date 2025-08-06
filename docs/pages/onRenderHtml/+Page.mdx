@@ -11,16 +11,16 @@ The hooks `onRenderHtml()` and <Link href="/onRenderClient">`onRenderClient()`</
 
 > If you use a <UiFrameworkExtension />, then you don't need to (and shouldn't) define `onRenderHtml()` as it's already defined by <UiFrameworkExtension name noLink />.
 
-```js
-// +onRenderHtml.js
+```ts
+// +onRenderHtml.ts
 // Environment: server
+
+export { onRenderHtml }
 
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { renderToHtml, createElement } from 'some-ui-framework'
 
-export { onRenderHtml }
-
-async function onRenderHtml(pageContext){
+const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRenderHtmlAsync> => {
   const { Page, data } = pageContext
   const pageHtml = await renderToHtml(createElement(Page, data))
 
