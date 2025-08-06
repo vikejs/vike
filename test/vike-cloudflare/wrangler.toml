@@ -1,4 +1,4 @@
 name = "vike-cloudflare-vike-demo"
-compatibility_date = "2024-06-24"
+compatibility_date = "2025-08-06"
 pages_build_output_dir = "./dist/cloudflare"
 compatibility_flags = [ "nodejs_compat" ]
