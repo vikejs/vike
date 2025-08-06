@@ -14,7 +14,7 @@ export default defineWorkspace([
   },
   {
     test: {
-      // test/**/*.test.ts => @brillout/test-e2e
+      // **/*.test.ts => @brillout/test-e2e
       include: ['test/**/*.spec.ts'],
       name: 'e2e',
       env,

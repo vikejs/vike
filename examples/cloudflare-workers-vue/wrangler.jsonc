@@ -1,0 +1,15 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "compatibility_date": "2025-08-06",
+  "name": "vike_examples_cloudflare-workers-vue",
+  "main": "./worker/index.js",
+  "dev": { "port": 3000 },
+  "define": {
+    "__VUE_OPTIONS_API__": "false",
+    "__VUE_PROD_DEVTOOLS__": "false",
+    "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false"
+  },
+  "workers_dev": true,
+  "site": { "bucket": "./dist/client" },
+  "vars": { "SOME_ENV_VAR": "some-value" }
+}

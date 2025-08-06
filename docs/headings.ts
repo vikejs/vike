@@ -736,7 +736,7 @@ function tools() {
         url: '/hapi',
       },
       {
-        title: 'HatTip',
+        title: 'Hattip',
         url: '/hattip',
       },
       {
