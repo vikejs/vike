@@ -6,6 +6,8 @@ import Examples from './Examples.mdx'
 
 We recommend using `vike-cloudflare` to deploy your app to [Cloudflare](https://www.cloudflare.com).
 
+{/* See https://github.com/vikejs/vike/pull/2605 for a test of applying the following vike-cloudflare install instructions to packages/create-vike-core/boilerplate-react/ and examples/react-full/ */ }
+
 {/* TO-DO/eventually: re-apply commit about Cloudflare Pages deprecation https://github.com/vikejs/vike/commit/f36a9709809339106ed061b3d0f41383ba17964b */}
 {/* TO-DO/eventually: remove `cross-env NODE_ENV=production wrangler` after https://github.com/cloudflare/workers-sdk/issues/7886 is resolved */}
 
@@ -14,11 +16,135 @@ We recommend using `vike-cloudflare` to deploy your app to [Cloudflare](https://
 
 ## `vike-cloudflare`
 
-You can use Vike with the [`vike-cloudflare`](https://github.com/vikejs/vike-cloudflare) extension for a zero-config Cloudflare deployment of your <Link href="/ssr">SSR</Link> or <Link href="/pre-rendering">pre-rendered (aka SSG)</Link> app.
+Version history: [`CHANGELOG.md`](https://github.com/vikejs/vike-cloudflare/blob/main/CHANGELOG.md)  
+Examples: <Link href="/new">vike.dev/new</Link> and [`examples/`](https://github.com/vikejs/vike-cloudflare/tree/main/examples)  
+Source code: [GitHub > `vikejs/vike-cloudflare`](https://github.com/vikejs/vike-cloudflare)  
+npm package: [`vike-cloudflare`](https://www.npmjs.com/package/vike-cloudflare)  
 
-### Without a server
+You can use Vike with the `vike-cloudflare` extension for a zero-config Cloudflare deployment of your SSR or pre-rendered (aka SSG) app.
 
-If you <Link href="/pre-rendering">pre-render</Link> all your pages then you don't need a server — simply add `vike-cloudflare` like this:
+See:
+ - <Link href="#with-server" /> if you use <Link href="/ssr">SSR</Link> (it requires a server).
+ - <Link href="#without-server" /> if you <Link href="/pre-rendering">pre-render</Link> all your pages (you don't need a server then).
+
+### With server
+
+<Tabs>
+  <TabList>
+    <Tab>npm</Tab>
+    <Tab>pnpm</Tab>
+    <Tab>yarn</Tab>
+  </TabList>
+  <TabPanel>
+    ```shell
+    npm i vike-cloudflare wrangler cross-env
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    pnpm add vike-cloudflare wrangler cross-env
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    yarn add vike-cloudflare wrangler cross-env
+    ```
+  </TabPanel>
+</Tabs>
+
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+import vikeCloudflare from 'vike-cloudflare/config'// [!code ++]
+
+export default {
+  extends: [vikeCloudflare],// [!code ++]
+  server: 'server/index.ts'// [!code ++]
+} satisfies Config
+```
+
+> If you have `vike-server` installed then remove it (replace it with `vike-cloudflare`).
+
+<Tabs>
+  <TabList>
+    <Tab>Hono</Tab>
+    <Tab>Hattip</Tab>
+  </TabList>
+
+  <TabPanel>
+    ```ts
+    // server/index.ts
+
+    import { Hono } from 'hono'
+    import { apply } from 'vike-cloudflare/hono'// [!code ++]
+    import { serve } from 'vike-cloudflare/hono/serve'// [!code ++]
+
+    function startServer() {
+      const app = new Hono()
+      apply(app)// [!code ++]
+      return serve(app, { port: 3000 })// [!code ++]
+    }
+
+    export default startServer()// [!code ++]
+    ```
+    > If you haven't already, set up a <Link href="/hono">Hono</Link> server and install the `hono` package.
+  </TabPanel>
+  <TabPanel>
+    ```ts
+    // server/index.ts
+
+    import { createRouter } from '@hattip/router'
+    import { apply } from 'vike-cloudflare/hattip'// [!code ++]
+    import { serve } from 'vike-cloudflare/hattip/serve'// [!code ++]
+
+    function startServer() {
+      const router = createRouter()
+      apply(router)// [!code ++]
+      return serve(router, { port: 3000 })// [!code ++]
+    }
+
+    export default startServer()// [!code ++]
+    ```
+    > If you haven't already, set up a <Link href="/hattip">Hattip</Link> server and install the `@hattip/router` package.
+  </TabPanel>
+</Tabs>
+
+> `vike-cloudflare` currently only supports Hono and Hattip — more servers are coming soon.
+
+```json
+// package.json
+
+{
+  "scripts": {
+    "dev": "vike dev",
+    "preview": "vike build && cross-env NODE_ENV=production wrangler pages dev",// [!code ++]
+    "deploy": "vike build && cross-env NODE_ENV=production wrangler pages deploy"// [!code ++]
+  }
+}
+```
+<FileAdded>
+```jsonc
+// wrangler.jsonc
+
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "compatibility_date": "2025-08-06",
+  "name": "my-vike-cloudflare-app",
+  "pages_build_output_dir": "./dist/cloudflare",
+  // Only needed if your app (or one of your libraries) uses Node.js APIs
+  "compatibility_flags": ["nodejs_compat"]
+}
+```
+</FileAdded>
+
+```bash
+# .gitignore
+
+.wrangler/ # [!code ++]
+```
+
+### Without server
 
 <Tabs>
   <TabList>
@@ -72,10 +198,8 @@ export default {
 
 {
   "$schema": "node_modules/wrangler/config-schema.json",
+  "compatibility_date": "2025-08-06",
   "name": "my-vike-cloudflare-app",
-  // Only needed if your app (or one of your libraries) uses a Node.js API
-  "compatibility_flags": ["nodejs_compat"],
-  "compatibility_date": "2025-08-04",
   "pages_build_output_dir": "./dist/cloudflare",
   "assets": {
     "directory": "./dist/cloudflare"
@@ -86,126 +210,10 @@ export default {
 
 ```bash
 # .gitignore
-.wrangler/ #[!code ++]
+
+.wrangler/ # [!code ++]
 ```
 
-### With a server
-
-If you use <Link href="/ssr">SSR</Link>, you must have a server — add `vike-cloudflare` like this:
-
-<Tabs>
-  <TabList>
-    <Tab>npm</Tab>
-    <Tab>pnpm</Tab>
-    <Tab>yarn</Tab>
-  </TabList>
-  <TabPanel>
-    ```shell
-    npm i vike-cloudflare wrangler cross-env
-    ```
-  </TabPanel>
-  <TabPanel>
-    ```shell
-    pnpm add vike-cloudflare wrangler cross-env
-    ```
-  </TabPanel>
-  <TabPanel>
-    ```shell
-    yarn add vike-cloudflare wrangler cross-env
-    ```
-  </TabPanel>
-</Tabs>
-
-```ts
-// pages/+config.ts
-
-import type { Config } from 'vike/types'
-import vikeCloudflare from 'vike-cloudflare/config'// [!code ++]
-
-export default {
-  extends: [vikeCloudflare],// [!code ++]
-  server: {// [!code ++]
-    entry: 'server/index.ts'// [!code ++]
-  }// [!code ++]
-} satisfies Config
-```
-
-> If you have `vike-server` installed then remove it (replace it with `vike-cloudflare`).
-
-<Tabs>
-  <TabList>
-    <Tab>Hono</Tab>
-    <Tab>Hattip</Tab>
-  </TabList>
-
-  <TabPanel>
-    ```ts
-    // server/index.ts
-
-    import { Hono } from 'hono'
-    import { apply } from 'vike-cloudflare/hono'// [!code ++]
-    import { serve } from 'vike-cloudflare/hono/serve'// [!code ++]
-
-    function startServer() {
-      const app = new Hono()
-      apply(app)// [!code ++]
-      return serve(app, { port: 3000 })// [!code ++]
-    }
-
-    export default startServer()// [!code ++]
-    ```
-  </TabPanel>
-  <TabPanel>
-    ```ts
-    // server/index.ts
-
-    import { createRouter } from '@hattip/router'
-    import { apply } from 'vike-cloudflare/hattip'// [!code ++]
-    import { serve } from 'vike-cloudflare/hattip/serve'// [!code ++]
-
-    function startServer() {
-      const router = createRouter()
-      apply(router)// [!code ++]
-      return serve(router, { port: 3000 })// [!code ++]
-    }
-
-    export default startServer()// [!code ++]
-    ```
-  </TabPanel>
-</Tabs>
-
-> `vike-cloudflare` currently supports <Link href="/hono" /> and <Link href="/hattip" /> — more servers are coming soon.
-
-```json
-// package.json
-
-{
-  "scripts": {
-    "dev": "vike dev",
-    "preview": "vike build && cross-env NODE_ENV=production wrangler pages dev",// [!code ++]
-    "deploy": "vike build && cross-env NODE_ENV=production wrangler pages deploy"// [!code ++]
-  }
-}
-```
-<FileAdded>
-```jsonc
-// wangler.jsonc
-
-{
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "my-vike-cloudflare-app",
-  // Only needed if your app (or one of your libraries) uses a Node.js API
-  "compatibility_flags": ["nodejs_compat"],
-  "compatibility_date": "2025-08-04",
-  "pages_build_output_dir": "./dist/cloudflare"
-}
-```
-</FileAdded>
-
-```bash
-# .gitignore
-.wrangler/ #[!code ++]
-```
 
 ## Cloudflare APIs
 
@@ -281,6 +289,7 @@ export default defineConfig({
 > </Tabs>
 >
 > Or go to <Link href="/new">vike.dev/new</Link> and select `Cloudflare` with an ORM.
+
 
 ## Extend 3MB limit
 
