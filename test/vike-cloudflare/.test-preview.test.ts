@@ -1,6 +1,6 @@
 import { testRun } from './.testRun'
 
-testRun('pnpm run preview --port 3000', {
+testRun('pnpm run preview', {
   tolerateError: true,
   serverIsReadyMessage: 'Starting local server',
   serverIsReadyDelay: 2000,

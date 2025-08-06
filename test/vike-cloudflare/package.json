@@ -15,12 +15,11 @@
   "author": "Joël Charles <joel.charles91@gmail.com>",
   "devDependencies": {
     "@auth/core": "^0.40.0",
-    "@types/node": "^24.1.0",
+    "@types/node": "^24.2.0",
     "@universal-middleware/core": "^0.4.9",
-    "typescript": "^5.8.3",
-    "vike-cloudflare": "^0.2.3",
-    "vike-server": "^1.0.19",
-    "wrangler": "^4.26.1"
+    "typescript": "^5.9.2",
+    "vike-cloudflare": "^0.2.5",
+    "wrangler": "^4.28.0"
   },
   "dependencies": {
     "cross-env": "^10.0.0",
