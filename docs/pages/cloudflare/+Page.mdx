@@ -14,10 +14,15 @@ We recommend using `vike-cloudflare` to deploy your app to [Cloudflare](https://
 
 ## `vike-cloudflare`
 
-You can use Vike with the [`vike-cloudflare`](https://github.com/vikejs/vike-cloudflare) extension for a zero-config Cloudflare deployment of your <Link href="/ssr">SSR</Link> or <Link href="/pre-rendering">pre-rendered (aka SSG)</Link> app.
+Version history: [`CHANGELOG.md`](https://github.com/vikejs/vike-cloudflare/blob/main/CHANGELOG.md)  
+Examples: <Link href="/new">vike.dev/new</Link> and [`examples/`](https://github.com/vikejs/vike-cloudflare/tree/main/examples)  
+Source code: [GitHub > `vikejs/vike-cloudflare`](https://github.com/vikejs/vike-cloudflare)  
+npm package: [`vike-cloudflare`](https://www.npmjs.com/package/vike-cloudflare)  
+
+You can use Vike with the `vike-cloudflare` extension for a zero-config Cloudflare deployment of your SSR or pre-rendered (aka SSG) app.
 
 See:
- - <Link href="#with-server" /> if you use <Link href="/ssr">SSR</Link> (SSR requires a server).
+ - <Link href="#with-server" /> if you use <Link href="/ssr">SSR</Link> (it requires a server).
  - <Link href="#without-server" /> if you <Link href="/pre-rendering">pre-render</Link> all your pages (you don't need a server then).
 
 ### With server
@@ -105,7 +110,7 @@ export default {
   </TabPanel>
 </Tabs>
 
-> `vike-cloudflare` currently supports <Link href="/hono">Hono</Link> and <Link href="/hattip">HatTip</Link> — more servers are coming soon.
+> `vike-cloudflare` currently only supports Hono and HatTip — more servers are coming soon.
 
 ```json
 // package.json
@@ -120,22 +125,23 @@ export default {
 ```
 <FileAdded>
 ```jsonc
-// wangler.jsonc
+// wrangler.jsonc
 
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "my-vike-cloudflare-app",
-  // Only needed if your app (or one of your libraries) uses a Node.js API
-  "compatibility_flags": ["nodejs_compat"],
   "compatibility_date": "2025-08-06",
-  "pages_build_output_dir": "./dist/cloudflare"
+  "name": "my-vike-cloudflare-app",
+  "pages_build_output_dir": "./dist/cloudflare",
+  // Only needed if your app (or one of your libraries) uses Node.js APIs
+  "compatibility_flags": ["nodejs_compat"]
 }
 ```
 </FileAdded>
 
 ```bash
 # .gitignore
-.wrangler/ #[!code ++]
+
+.wrangler/ # [!code ++]
 ```
 
 ### Without server
@@ -192,10 +198,8 @@ export default {
 
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "my-vike-cloudflare-app",
-  // Only needed if your app (or one of your libraries) uses a Node.js API
-  "compatibility_flags": ["nodejs_compat"],
   "compatibility_date": "2025-08-06",
+  "name": "my-vike-cloudflare-app",
   "pages_build_output_dir": "./dist/cloudflare",
   "assets": {
     "directory": "./dist/cloudflare"
@@ -206,7 +210,8 @@ export default {
 
 ```bash
 # .gitignore
-.wrangler/ #[!code ++]
+
+.wrangler/ # [!code ++]
 ```
 
 
