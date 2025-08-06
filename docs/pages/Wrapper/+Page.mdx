@@ -9,7 +9,7 @@ Environment: client, and server if <Link href="/ssr">`ssr: true`</Link>
 
 The `+Wrapper` component wraps the <Link href="/Page">`+Page` component</Link> and all <Link href="/Layout">`+Layout` components</Link>.
 
-```jsx
+```tsx
 <Wrapper>     ⟸ component defined by +Wrapper
   <Layout>    ⟸ component defined by +Layout
     <Page />  ⟸ component defined by +Page
@@ -17,8 +17,8 @@ The `+Wrapper` component wraps the <Link href="/Page">`+Page` component</Link> a
 </Wrapper>
 ```
 
-```jsx
-// pages/+Wrapper.jsx
+```tsx
+// pages/+Wrapper.tsx
 
 // `children` includes +Page and all +Layout components
 export default function Wrapper({ children }) {
@@ -41,7 +41,7 @@ The `+Wrapper` component is usually used for integrating tools, such as <Link hr
 
 A page can be wrapped by multiple `+Wrapper` components:
 
-```jsx
+```tsx
 <Wrapper1>
   <Wrapper2>
     <Wrapper3>
@@ -58,8 +58,8 @@ A page can be wrapped by multiple `+Wrapper` components:
 
 You can access <Link href="/pageContext">the `pageContext` object</Link> by using <Link href="/usePageContext">`usePageContext()`</Link>.
 
-```jsx
-// /pages/+Layout.jsx
+```tsx
+// /pages/+Layout.tsx
 
 import { usePageContext } from 'vike-react/usePageContext' // or vike-{vue,solid}
 

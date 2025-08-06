@@ -15,7 +15,7 @@ Environment: client, and server if <Link href="/ssr">`ssr: true`</Link>
 
 The component defined by the `+Layout` setting wraps the component defined by <Link href="/Page">`+Page`</Link>.
 
-```jsx
+```tsx
 <Layout>     ⟸ component defined by +Layout
   <Page />   ⟸ component defined by +Page
 </Layout>
@@ -28,8 +28,8 @@ The component defined by the `+Layout` setting wraps the component defined by <L
 
 You can define a layout that applies to all your pages:
 
-```jsx
-// /pages/+Layout.jsx
+```tsx
+// /pages/+Layout.tsx
 
 export { Layout }
 
@@ -85,7 +85,7 @@ pages/admin-panel/+Layout.js
 Here `pages/+Layout.js` applies to all pages, including the marketing and admin pages.
 
 > The `Layout` setting is cumulative: `pages/(marketing)/+Layout.js` doesn't override `pages/+Layout.js`. Instead, the `<Layout>` components nest within each other:
-> ```jsx
+> ```tsx
 > <Layout>      ⟸ pages/+Layout.js
 >   <Layout>    ⟸ pages/(marketing)/+Layout.js
 >     <Page />  ⟸ pages/(marketing)/about-us/+Page.js
@@ -137,8 +137,8 @@ To fetch data for your layouts see:
 
 You can access <Link href="/pageContext">the `pageContext` object</Link> by using <Link href="/usePageContext">`usePageContext()`</Link>.
 
-```jsx
-// /pages/+Layout.jsx
+```tsx
+// /pages/+Layout.tsx
 
 import { usePageContext } from 'vike-react/usePageContext' // or vike-{vue,solid}
 
@@ -157,8 +157,8 @@ The following is for users that don't use a <UiFrameworkExtension />.
 
 A simple way to implement layouts is to manually wrap your `<Page>` components:
 
-```jsx
-// /pages/index/+Page.js
+```tsx
+// /pages/index/+Page.tsx
 
 export { Page }
 
@@ -173,8 +173,8 @@ function Page() {
 }
 ```
 
-```jsx
-// /pages/admin/+Page.js
+```tsx
+// /pages/admin/+Page.tsx
 
 export { Page }
 
