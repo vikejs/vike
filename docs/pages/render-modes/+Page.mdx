@@ -113,8 +113,8 @@ For production, we usually want to <Link text="pre-render" href="/pre-rendering"
 
 We can also use our server-side `onRenderHtml()` hook to render `<head>`:
 
-```js
-// /renderer/+onRenderHtml.js
+```ts
+// /renderer/+onRenderHtml.ts
 // Environment: server
 
 export { onRenderHtml }

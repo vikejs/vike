@@ -2,16 +2,19 @@ import { Link } from '@brillout/docpress'
 
 Route Functions provide full programmatic flexibility to define routes.
 
-```js
-// /pages/product/edit/+route.js
+```ts
+// /pages/product/edit/+route.ts
 
-// This file defines the route of /pages/product/edit/+Page.js
+// This file defines the route of /pages/product/edit/+Page.ts
 
+export { route }
+
+import type { RouteSync } from 'vike/types'
 // We use a RegExp, but we could as well use a routing library.
 import partRegex from 'part-regex'
 const routeRegex = partRegex`/product/${/([0-9]+)/}/edit`
 
-export function route(pageContext) {
+const route: RouteSync = (pageContext): ReturnType<RouteSync> => {
   if (!pageContext.user.isAdmin) return false
 
   const match = pageContext.urlPathname.match(routeRegex)
@@ -39,12 +42,14 @@ You can use any routing tool you want, such as:
 
 The `precedence` number can be used to resolve route conflicts, see <Link href="/routing-precedence" />.
 
-```js
-// /pages/product/edit/+route.js
+```ts
+// /pages/product/edit/+route.ts
 
 export { route }
 
-const route = (pageContext) => {
+import type { RouteSync } from 'vike/types'
+
+const route: RouteSync = (pageContext): ReturnType<RouteSync> => {
   // ...
   return {
     precedence: 10,
@@ -56,14 +61,15 @@ const route = (pageContext) => {
 
 You can use <Link text="Route Strings" href="/route-string" /> inside Route Functions:
 
-```js
-// /pages/product/edit/+route.js
+```ts
+// /pages/product/edit/+route.ts
 
 export { route }
 
+import type { RouteSync } from 'vike/types'
 import { resolveRoute } from 'vike/routing'
 
-const route = (pageContext) => {
+const route: RouteSync = (pageContext): ReturnType<RouteSync> => {
   if (!pageContext.user.isAdmin) {
     return false
   }
@@ -71,14 +77,15 @@ const route = (pageContext) => {
 }
 ```
 
-```js
-// /pages/product/index/+route.js
+```ts
+// /pages/product/index/+route.ts
 
 export { route }
 
+import type { RouteSync } from 'vike/types'
 import { resolveRoute } from 'vike/routing'
 
-const route = (pageContext) => {
+const route: RouteSync = (pageContext): ReturnType<RouteSync> => {
   {
     const result = resolveRoute('/product/@id', pageContext.urlPathname)
     if (result.match) {
@@ -120,12 +127,14 @@ Vike executes *all* Route Functions every time the user navigates to a new page.
 
 Vike always has to run all Route Functions because it cannot magically predict the outcome of Route Functions. Consider the following example:
 
-```js
-// /pages/login/+route.js
+```ts
+// /pages/login/+route.ts
 
 export { route }
 
-const route = (pageContext) => {
+import type { RouteSync } from 'vike/types'
+
+const route: RouteSync = (pageContext): ReturnType<RouteSync> => {
   // Only render the login page to unauthenticated users
   if (pageContext.user !== null) return false
   return {
@@ -149,8 +158,8 @@ Route Functions should be lightweight and fast.
 
 Asynchronous Route Functions are forbidden.
 
-```js
-// +route.js
+```ts
+// +route.ts
 
 // ❌ This is forbidden
 export default async () => { /* ... */ }
@@ -172,8 +181,8 @@ See <Link href="/redirect" />.
 
 Using Route Functions to provide `pageContext` values is forbidden.
 
-```js
-// +route.js
+```ts
+// +route.ts
 
 export default () => {
   return {
@@ -192,8 +201,8 @@ implement complex logic in `+route.js` files.
 
 That said, you can work around it by misusing `pageContext.routeParams` to provide data.
 
-```js
-// +route.js
+```ts
+// +route.ts
 
 export default () => {
   return {

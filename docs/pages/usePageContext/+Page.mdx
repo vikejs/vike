@@ -7,7 +7,7 @@ Implemented by: <UiFrameworkExtension /> (or <Link href="#without-vike-react-vue
 
 The `usePageContext()` hook enables any UI component to access the <Link href="/pageContext">`pageContext` object</Link>.
 
-```js
+```ts
 import { usePageContext } from 'vike-react/usePageContext'
 /* Or:
 import { usePageContext } from 'vike-vue/usePageContext'
@@ -38,8 +38,8 @@ with
 [`inject()`](https://v3.vuejs.org/api/composition-api.html#provide-inject)
 to make `pageContext` accessible from any Vue component.
 
-```js
-// createVueApp.js
+```ts
+// createVueApp.ts
 
 const app = createSSRApp(/*...*/)
 app.provide('pageContext', pageContext)
@@ -61,26 +61,29 @@ const pageContext = inject('pageContext')
 
 You can also implement a `usePageContext()` component hook:
 
-```js
-// usePageContext.js
-
-import { inject } from 'vue'
+```ts
+// usePageContext.ts
 
 export { usePageContext }
 export { setPageContext }
 
+import { inject } from 'vue'
+import type { App, ShallowReactive } from 'vue'
+import type { PageContext } from 'vike/types'
+
 const key = Symbol()
 
-function usePageContext() {
-  const pageContext = inject(key)
+function usePageContext(): ShallowReactive<PageContext> {
+  const pageContext = inject<ShallowReactive<PageContext>>(key)
   return pageContext
 }
-function setPageContext(app, pageContext) {
+
+function setPageContext(app: App, pageContext: ShallowReactive<PageContext>) {
   app.provide(key, pageContext)
 }
 ```
 
-```js
+```ts
 const app = createSSRApp(/*...*/)
 setPageContext(app, pageContext)
 ```
@@ -100,8 +103,8 @@ Examples:
 
 Alternatively, you can make `pageContext` available to all Vue components by using [app.config.globalProperties](https://v3.vuejs.org/api/application-config.html#globalproperties).
 
-```js
-// createVueApp.js
+```ts
+// createVueApp.ts
 
 const app = createSSRApp(/*...*/)
 app.config.globalProperties.$pageContext = pageContext

@@ -14,24 +14,28 @@ The `useData()` component hook allows you to access the value returned by the <L
 
 For example:
 
-```js
-// SomeComponent.js
+```ts
+// SomeComponent.ts
 // Environment: server, client
 
 import { useData } from 'vike-react/useData' // or vike-vue / vike-solid
+import type { Data } from './+data'
 
   // Inside a React/Vue/Solid component
-  const data = useData()
+  const data = useData<Data>()
   const { name, price } = data
 ```
 
-```js
-// /pages/product/@id/+data.js
+```ts
+// /pages/product/@id/+data.ts
 // Environment: server
 
 export { data }
+export type Data = Awaited<ReturnType<typeof data>>
 
-async function data(pageContext) {
+import type { PageContextServer } from 'vike/types'
+
+async function data(pageContext: PageContextServer) {
   let product = await Product.findById(pagContext.routeParams.id)
 
   // `product` is serialized and passed to the client. Therefore, we pick only the

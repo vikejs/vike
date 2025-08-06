@@ -22,19 +22,22 @@ Upon conflicts between Filesystem Routing, Route Strings and Route Functions, Vi
 
 **Example (4) + (6) + (7)**:
 
-```js
-// product/list/+route.js
+```ts
+// product/list/+route.ts
 export default '/product'
 ```
 
-```js
-// product/item/+route.js
+```ts
+// product/item/+route.ts
 export default '/product/@productId'
 ```
 
-```js
-// product/catch-all/+route.js
-export default pageContext => {
+```ts
+// product/catch-all/+route.ts
+
+import type { PageContextServer, PageContextClient } from 'vike/types'
+
+export default (pageContext: PageContextServer | PageContextClient) => {
   if (!pageContext.urlPathname.startsWith('/product/')) return false
   return {
     precedence: -1,
@@ -72,15 +75,17 @@ URL                           MATCHES                                WINNER
 
 **Example (1) + (4)**:
 
-```js
-// admin/+route.js
+```ts
+// admin/+route.ts
 export default '/admin'
 ```
 
-```js
-// login/+route.js
+```ts
+// login/+route.ts
 
-export default pageContext => {
+import type { PageContextServer, PageContextClient } from 'vike/types'
+
+export default (pageContext: PageContextServer | PageContextClient) => {
   if( pageContext.user === null ) {
     return {
       precedence: 99
