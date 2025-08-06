@@ -4,18 +4,22 @@ Vike's `+host` setting is an alias for setting Vite's [server.host](https://vite
 
 This:
 
-```js
-// +config.js
+```ts
+// +config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   host: true
-}
+} satisfies Config
 ```
 
 Is equivalent to that:
 
-```js
-// vite.config.js
+```ts
+// vite.config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   server: {
@@ -24,7 +28,7 @@ export default {
   preview: {
     host: true
   }
-}
+} satisfies Config
 ```
 
 If you want to set two different values between development and preview, then set the values over `vite.config.js` instead of using `+host`.

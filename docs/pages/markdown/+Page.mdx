@@ -65,8 +65,8 @@ For local metadata, we recommend:
 
 A simple way to define metadata is to define a `metadata.js` file that contains <Link href="#metadata:~:text=What%20is%20global%20metadata">global metadata</Link>.
 
-```js
-// /pages/metadata.js
+```ts
+// /pages/metadata.ts
 
 // This metadata is available to every page
 export const metadata = [
@@ -83,8 +83,8 @@ export const metadata = [
 ]
 ```
 
-```jsx
-// /pages/+Layout.jsx
+```tsx
+// /pages/+Layout.tsx
 
 import { metadata } from './metadata'
 

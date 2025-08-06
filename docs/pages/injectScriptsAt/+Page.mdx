@@ -11,8 +11,10 @@ You can use the `injectScriptsAt` setting to override Vike's heuristics and cont
 
 > Alternatively, for a more fine-grained control of where and what assets Vike injects, use <Link href="/injectFilter">`injectFilter()`</Link>.
 
-```js
-// +config.js
+```ts
+// +config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   // Inject scripts at the beginning of the HTML
@@ -23,7 +25,7 @@ export default {
   injectScriptsAt: 'STREAM',
   // Let Vike decide
   injectScriptsAt: null
-}
+} satisfies Config
 ```
 
 > Setting `injectAssetsAt` to `null` can be useful in the context of <Link href="/config#inheritance">config inheritance</Link>.

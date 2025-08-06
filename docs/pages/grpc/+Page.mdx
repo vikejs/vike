@@ -15,21 +15,22 @@ since `onBeforeRender()` hooks are called in Node.js.
 
 For mutating data:
 1. You create a new HTTP endpoint. For example, if you use [Express.js](https://github.com/expressjs/express):
-   ```js
+   ```ts
    // Environment: server
 
    import express from 'express'
+   import type { Request, Response } from 'express'
 
    const app = express()
    app.use(express.json()) // Parse the HTTP request body as JSON
 
-   app.post('/mutations/updateText', (req, res) => {
+   app.post('/mutations/updateText', (req: Request, res: Response) => {
      const { text } = req.body
      // Call gRPC endpoints here
    })
    ```
 2. You then call your HTTP endpoint from the browser.
-   ```jsx
+   ```ts
    // Environment: client
 
    const body = JSON.stringify({ text: 'Some new text' })
