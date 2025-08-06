@@ -1,6 +1,6 @@
 main="./worker/index.js"
 name = "vike_worker-example"
-compatibility_date = "2021-09-29"
+compatibility_date = "2025-08-06"
 workers_dev = true
 define = { __VUE_OPTIONS_API__ = "false", __VUE_PROD_DEVTOOLS__ = "false", __VUE_PROD_HYDRATION_MISMATCH_DETAILS__ = "false" }
 
