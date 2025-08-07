@@ -57,6 +57,17 @@ function testRun(
     })
   }
 
+  if (testNodeEnv) {
+    test('process.env.NODE_ENV', async () => {
+      await page.goto(`${getServerUrl()}/`)
+      await testCounter()
+      const bodyText = await page.textContent('body')
+      const log = `process.env.NODE_ENV === ${JSON.stringify(isProd ? 'production' : 'development')}`
+      if (isProd) expectLog(log, { allLogs: true, filter: (log) => log.logSource === 'stdout' })
+      expect(bodyText).toContain(log)
+    })
+  }
+
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
     expect(html).toContain('<h1>Welcome</h1>')
@@ -92,17 +103,6 @@ function testRun(
         await autoRetry(testContent)
       }
       */
-    })
-  }
-
-  if (testNodeEnv) {
-    test('process.env.NODE_ENV', async () => {
-      await page.goto(`${getServerUrl()}/`)
-      await testCounter()
-      const bodyText = await page.textContent('body')
-      const log = `process.env.NODE_ENV === ${JSON.stringify(isProd ? 'production' : 'development')}`
-      expect(bodyText).toContain(log)
-      if (isProd) expectLog(log, { allLogs: true, filter: (log) => log.logSource === 'stdout' })
     })
   }
 }
