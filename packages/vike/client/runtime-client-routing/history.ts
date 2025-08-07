@@ -140,17 +140,17 @@ function monkeyPatchHistoryAPI() {
           }
       assertIsVikeEnhanced(stateEnhanced)
       funcOriginal(stateEnhanced, ...rest)
-      assert(deepEqual(stateEnhanced, window.history.state))
+      assert(deepEqual(stateEnhanced, window.history.state as unknown))
 
       globalObject.previous = getHistoryInfo()
 
       // Workaround https://github.com/vikejs/vike/issues/2504#issuecomment-3149764736
       queueMicrotask(() => {
-        if (deepEqual(stateEnhanced, window.history.state)) return
-        Object.assign(stateEnhanced, window.history.state)
+        if (deepEqual(stateEnhanced, window.history.state as unknown)) return
+        Object.assign(stateEnhanced, window.history.state as unknown)
         assertIsVikeEnhanced(stateEnhanced)
         replaceHistoryStateOriginal(stateEnhanced, rest[1])
-        assert(deepEqual(stateEnhanced, window.history.state))
+        assert(deepEqual(stateEnhanced, window.history.state as unknown))
       })
     }
   })
@@ -189,7 +189,7 @@ function getHistoryInfo(): HistoryInfo {
 function onPopStateBegin() {
   const { previous } = globalObject
 
-  const isHistoryStateEnhanced = window.history.state !== null
+  const isHistoryStateEnhanced = window.history.state as unknown !== null
   if (!isHistoryStateEnhanced) enhanceHistoryState()
   assertIsVikeEnhanced(window.history.state as unknown)
 
