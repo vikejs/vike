@@ -11,7 +11,11 @@ import { testCloudflareBindings } from '../../test/@cloudflare_vite-plugin/testR
 
 function testRun(
   cmd: 'npm run dev' | 'npm run preview',
-  { hasStarWarsPage, testNodeEnv, testBindings }: { hasStarWarsPage: boolean; testNodeEnv?: boolean; testBindings?: true },
+  {
+    hasStarWarsPage,
+    testNodeEnv,
+    testBindings,
+  }: { hasStarWarsPage: boolean; testNodeEnv?: boolean; testBindings?: true },
 ) {
   const isWrangler = cmd === 'npm run preview'
   const isProd = cmd !== 'npm run dev'
