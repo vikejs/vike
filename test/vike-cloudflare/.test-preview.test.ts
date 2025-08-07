@@ -1,4 +1,4 @@
-import { testRun } from "./.testRun";
+import { testRun } from './.testRun'
 
 testRun('pnpm run preview', {
   serverIsReadyMessage: 'Starting local server',
