@@ -7,7 +7,7 @@ export type { HistoryInfo }
 export type { ScrollPosition }
 
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
-import { assert, assertUsage, getGlobalObject, isObject, deepEqual } from './utils.js'
+import { assert, assertUsage, getGlobalObject, isObject, deepEqual, cast } from './utils.js'
 
 const globalObject = getGlobalObject('history.ts', {
   monkeyPatched: false,
@@ -23,25 +23,17 @@ type StateEnhanced = {
   _isVikeEnhanced: true
 }
 type ScrollPosition = { x: number; y: number }
-type StateNotEnhanced =
-  // Default value: `null` (https://developer.mozilla.org/en-US/docs/Web/API/History/state#value)
-  | null
-  // Maybe there is a browser that sets the default value to `undefined` instead of `null`
-  | undefined
-  // State may be incomplete if `window.history.state` is set by an old Vike version. (E.g. `state.timestamp` was introduced for `pageContext.isBackwardNavigation` in `0.4.19`.)
-  | Partial<StateEnhanced>
 
 // `window.history.state === null` when:
 // - The very first render
 // - Click on `<a href="#some-hash" />`
 // - `location.hash = 'some-hash'`
 function enhanceHistoryState() {
-  const stateNotEnhanced = getStateNotEnhanced()
-  if (isVikeEnhanced(stateNotEnhanced)) return
-  const stateVikeEnhanced = enhance(stateNotEnhanced)
+  if (isVikeEnhanced(window.history.state as unknown)) return
+  const stateVikeEnhanced = enhance(window.history.state as unknown)
   replaceHistoryState(stateVikeEnhanced)
 }
-function enhance(stateNotEnhanced: StateNotEnhanced): StateEnhanced {
+function enhance(stateNotEnhanced: unknown): StateEnhanced {
   const timestamp = getTimestamp()
   const scrollPosition = getScrollPosition()
   const triggeredBy = 'browser'
@@ -55,6 +47,7 @@ function enhance(stateNotEnhanced: StateNotEnhanced): StateEnhanced {
     }
   } else {
     // State information may be incomplete if `window.history.state` is set by an old Vike version. (E.g. `state.timestamp` was introduced for `pageContext.isBackwardNavigation` in `0.4.19`.)
+    cast<Partial<StateEnhanced>>(stateNotEnhanced)
     stateVikeEnhanced = {
       timestamp: stateNotEnhanced.timestamp ?? timestamp,
       scrollPosition: stateNotEnhanced.scrollPosition ?? scrollPosition,
@@ -67,17 +60,13 @@ function enhance(stateNotEnhanced: StateNotEnhanced): StateEnhanced {
 }
 
 function getState(): StateEnhanced {
-  const state = getStateNotEnhanced()
+  const state = window.history.state as unknown
   // *Every* state added to the history needs to go through Vike.
   // - Otherwise Vike's `popstate` listener won't work. (Because, for example, if globalObject.previous is outdated => isHashNavigation faulty => client-side navigation is wrongfully skipped.)
   // - Therefore, we have to monkey patch history.pushState() and history.replaceState()
   // - Therefore, we need the assert() below to ensure history.state has been enhanced by Vike
   //   - If users stumble upon this assert() then let's make it a assertUsage()
   assertIsVikeEnhanced(state)
-  return state
-}
-function getStateNotEnhanced(): StateNotEnhanced {
-  const state: StateNotEnhanced = window.history.state
   return state
 }
 
@@ -114,7 +103,7 @@ function pushHistoryState(url: string, overwriteLastHistoryEntry: boolean) {
 function replaceHistoryState(state: StateEnhanced, url?: string) {
   const url_ = url ?? null // Passing `undefined` chokes older Edge versions.
   window.history.replaceState(state, '', url_)
-  assertIsVikeEnhanced(getState())
+  assertIsVikeEnhanced(window.history.state as unknown)
 }
 function replaceHistoryStateOriginal(state: unknown, url: Parameters<typeof window.history.replaceState>[2]) {
   // Bypass all monkey patches.
@@ -139,6 +128,7 @@ function monkeyPatchHistoryAPI() {
         stateOriginal === undefined || stateOriginal === null || isObject(stateOriginal),
         `history.${funcName}(state) argument state must be an object`,
       )
+
       const stateEnhanced: StateEnhanced = isVikeEnhanced(stateOriginal)
         ? stateOriginal
         : {
@@ -150,16 +140,17 @@ function monkeyPatchHistoryAPI() {
           }
       assertIsVikeEnhanced(stateEnhanced)
       funcOriginal(stateEnhanced, ...rest)
-      assertIsVikeEnhanced(getState())
+      assert(deepEqual(stateEnhanced, window.history.state))
+
       globalObject.previous = getHistoryInfo()
 
       // Workaround https://github.com/vikejs/vike/issues/2504#issuecomment-3149764736
-      assert(deepEqual(window.history.state, stateEnhanced))
       queueMicrotask(() => {
-        if (deepEqual(window.history.state, stateEnhanced)) return
+        if (deepEqual(stateEnhanced, window.history.state)) return
         Object.assign(stateEnhanced, window.history.state)
+        assertIsVikeEnhanced(stateEnhanced)
         replaceHistoryStateOriginal(stateEnhanced, rest[1])
-        assert(deepEqual(window.history.state, stateEnhanced))
+        assert(deepEqual(stateEnhanced, window.history.state))
       })
     }
   })
@@ -200,7 +191,7 @@ function onPopStateBegin() {
 
   const isHistoryStateEnhanced = window.history.state !== null
   if (!isHistoryStateEnhanced) enhanceHistoryState()
-  assertIsVikeEnhanced(window.history.state)
+  assertIsVikeEnhanced(window.history.state as unknown)
 
   const current = getHistoryInfo()
   globalObject.previous = current
