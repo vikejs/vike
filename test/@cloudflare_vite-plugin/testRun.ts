@@ -20,6 +20,7 @@ function testCloudflareBindings() {
     const bodyText = await page.textContent('body')
     expect(bodyText).toContain('someEnvVar')
     expect(bodyText).toContain('some-value')
+    expect(bodyText).toContain(`pageContext.globalContext.someEnvVar === ${JSON.stringify('some-value')}`)
   })
 }
 
