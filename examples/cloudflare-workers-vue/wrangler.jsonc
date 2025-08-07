@@ -7,7 +7,9 @@
   "define": {
     "__VUE_OPTIONS_API__": "false",
     "__VUE_PROD_DEVTOOLS__": "false",
-    "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false"
+    "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
+    // Workaround https://github.com/cloudflare/workers-sdk/issues/7886
+    "process.env.NODE_ENV": "'production'"
   },
   "workers_dev": true,
   "site": { "bucket": "./dist/client" },
