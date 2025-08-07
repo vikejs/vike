@@ -7,8 +7,8 @@
   "scripts": {
     "dev": "vike dev",
     "build": "vike build",
-    "preview": "vike build && cross-env NODE_ENV=production wrangler pages dev",
-    "deploy": "vike build && cross-env NODE_ENV=production wrangler pages deploy",
+    "preview": "vike build && wrangler pages dev",
+    "deploy": "vike build && wrangler pages deploy",
     "test": "tsc --noEmit"
   },
   "keywords": [],
@@ -22,7 +22,6 @@
     "wrangler": "^4.28.0"
   },
   "dependencies": {
-    "cross-env": "^10.0.0",
     "solid-js": "^1.9.7",
     "tsx": "^4.20.3",
     "vike": "0.4.236",
