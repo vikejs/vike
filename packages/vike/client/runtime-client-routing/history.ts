@@ -189,7 +189,7 @@ function getHistoryInfo(): HistoryInfo {
 function onPopStateBegin() {
   const { previous } = globalObject
 
-  const isHistoryStateEnhanced = window.history.state as unknown !== null
+  const isHistoryStateEnhanced = (window.history.state as unknown) !== null
   if (!isHistoryStateEnhanced) enhanceHistoryState()
   assertIsVikeEnhanced(window.history.state as unknown)
 
