@@ -377,9 +377,9 @@ async function setGlobalContext_buildEntry(buildEntry: unknown) {
   globalObject.buildEntry = buildEntry
   globalObject.buildEntryPrevious = buildEntry
   assert(globalObject.buildEntry) // ensure no infinite loop
-  // await loadBuildEntry()
-  // assertGlobalContextIsDefined()
-  // debug('setGlobalContext_buildEntry() - done')
+  await loadBuildEntry()
+  assertGlobalContextIsDefined()
+  debug('setGlobalContext_buildEntry() - done')
 }
 
 type BuildEntry = {
