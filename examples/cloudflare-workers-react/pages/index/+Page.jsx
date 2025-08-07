@@ -15,7 +15,7 @@ function Page({ pageContext }) {
         </li>
       </ul>
       <p>
-        <code>pageContext.globalContext.someEnvVar=== '{pageContext.globalContext.someEnvVar}'</code>
+        <code>pageContext.globalContext.someEnvVar === {JSON.stringify(pageContext.globalContext.someEnvVar)}</code>
       </p>
     </>
   )
