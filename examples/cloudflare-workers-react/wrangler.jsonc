@@ -4,8 +4,11 @@
   "name": "vike_examples_cloudflare-workers-react",
   "main": "./worker/index.js",
   "dev": { "port": 3000 },
+  "define": {
+    // Workaround https://github.com/cloudflare/workers-sdk/issues/7886
+    "process.env.NODE_ENV": "'production'"
+  },
   "vars": {
-    "NODE_ENV": "production",
     "SOME_ENV_VAR": "some-value"
   },
   "assets": { "directory": "./dist/client/" }
