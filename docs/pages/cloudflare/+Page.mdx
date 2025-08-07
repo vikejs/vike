@@ -180,7 +180,7 @@ export default {
 } satisfies Config
 ```
 
-```jsonc
+```json
 // package.json
 
 {
@@ -290,6 +290,53 @@ export default defineConfig({
 > Or go to <Link href="/new">vike.dev/new</Link> and select `Cloudflare` with an ORM.
 
 
+## TypeScript
+
+If you use TypeScript, (re-)run [`wrangler types`](https://developers.cloudflare.com/workers/wrangler/commands/#types) after changing your Cloudflare configuration to generate/update the `worker-configuration.d.ts` file.
+
+<Tabs>
+  <TabList>
+    <Tab>npm</Tab>
+    <Tab>pnpm</Tab>
+    <Tab>yarn</Tab>
+  </TabList>
+  <TabPanel>
+    ```shell
+    npx wrangler types
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    pnpm wrangler types
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    yarn wrangler types
+    ```
+  </TabPanel>
+</Tabs>
+
+Then commit it:
+
+```bash
+git commit -am "update cloudflare types"
+```
+
+Make sure TypeScript loads it:
+
+```jsonc
+// tsconfig.json
+
+{
+  "compilerOptions": {
+    "types": ["./worker-configuration.d.ts"],// [!code ++]
+ }
+}
+```
+
+See also: [Cloudflare Workers > TypeScript](https://developers.cloudflare.com/workers/languages/typescript/)
+
 ## Extend 3MB limit
 
 By default the bundle size of your worker cannot exceed 3MB, but you can request sizes of up to 100MB and beyond.
@@ -348,3 +395,5 @@ Example: <RepoLink path='/examples/cloudflare-workers-react-full#universal-fetch
 ## See also
 
 - <Link href="/cloudflare-pages" />
+- [Cloudflare Workers](https://developers.cloudflare.com/workers/)
+- [Cloudflare](https://cloudflare.com)
