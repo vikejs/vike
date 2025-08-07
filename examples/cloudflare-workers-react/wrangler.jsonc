@@ -4,6 +4,9 @@
   "name": "vike_examples_cloudflare-workers-react",
   "main": "./worker/index.js",
   "dev": { "port": 3000 },
-  "vars": { "SOME_ENV_VAR": "some-value" },
+  "vars": {
+    "NODE_ENV": "production",
+    "SOME_ENV_VAR": "some-value"
+  },
   "assets": { "directory": "./dist/client/" }
 }
