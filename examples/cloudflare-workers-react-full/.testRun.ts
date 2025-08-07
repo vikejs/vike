@@ -62,6 +62,10 @@ function testRun(
     })
   }
 
+  if (testBindings) {
+    testCloudflareBindings()
+  }
+
   if (testNodeEnv) {
     test('process.env.NODE_ENV', async () => {
       await page.goto(`${getServerUrl()}/`)
@@ -71,10 +75,6 @@ function testRun(
       if (isProd) expectLog(log, { allLogs: true, filter: (log) => log.logSource === 'stdout' })
       expect(bodyText).toContain(log)
     })
-  }
-
-  if (testBindings) {
-    testCloudflareBindings()
   }
 
   test('page content is rendered to HTML', async () => {

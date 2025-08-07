@@ -9,8 +9,8 @@ type CMD = 'npm run dev' | 'npm run preview'
 type Args = Parameters<typeof testRunClassic>[1]
 
 function testRun(cmd: CMD) {
-  testRunClassic(cmd, getArgs(cmd))
   testCloudflareBindings()
+  testRunClassic(cmd, getArgs(cmd))
 }
 
 function testCloudflareBindings() {
