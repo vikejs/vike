@@ -77,6 +77,24 @@ function tolerateError({ logSource, logText, testInfo }) {
   return (
     [
       /*
+      What seems to be a wrangler bug:
+      ```console
+      [11:07:40.427][/][pnpm run preview][stderr] ▲ [WARNING] Invalid source URL: first path segment in URL cannot contain colon [invalid-source-url]
+
+          .wrangler/tmp/pages-LLnPri/606wemc1wol.js.map:3:14:
+            3 │   "sources": ["<define:__ROUTES__>", "../../../../../node_modules/....
+              ╵               ~~~~~~~~~~~~~~~~~~~~~
+
+        The source map ".wrangler/tmp/pages-LLnPri/606wemc1wol.js.map" was referenced by the file ".wrangler/tmp/pages-LLnPri/606wemc1wol.js" here:
+
+          .wrangler/tmp/pages-LLnPri/606wemc1wol.js:41:21:
+            41 │ //# sourceMappingURL=606wemc1wol.js.map
+               ╵                      ~~~~~~~~~~~~~~~~~~
+      ```
+      */
+      'Invalid source URL: first path segment in URL cannot contain colon',
+
+      /*
       ```console
       [19:47:21.367][/][npm run dev][stderr] The latest compatibility date supported by the installed Cloudflare Workers Runtime is "2025-07-12",
 but you've requested "2025-07-18". Falling back to "2025-07-12"...
@@ -107,10 +125,6 @@ but you've requested "2025-07-18". Falling back to "2025-07-12"...
 
       // [22:04:24.193][/test-dev.test.ts][npm run dev][stderr] 10:04:24 PM [vike][request(1)][Warning] getGlobalContextSync() shouldn't be used in development, see https://vike.dev/getGlobalContext
       "getGlobalContextSync() shouldn't be used in development",
-
-      // Required for Cloudflare tests
-      // [14:00:34.879][/][npm run preview][stderr] [vike][Warning] process.env.NODE_ENV==="undefined" which is unexpected: process.env.NODE_ENV is allowed to be the *value* undefined (i.e. process.env.NODE_ENV===undefined) but it shouldn't be the *string* "undefined" https://vike.dev/NODE_ENV
-      'process.env.NODE_ENV==="undefined" which is unexpected',
 
       // Required for test-deprecated-design/*
       'Define Vike settings in +config.js instead of vite.config.js',

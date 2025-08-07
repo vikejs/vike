@@ -1,6 +1,6 @@
 export { testRun }
 
-import { page, test, expect, run, autoRetry, fetchHtml, isCI, getServerUrl, skip } from '@brillout/test-e2e'
+import { page, test, expect, run, autoRetry, fetchHtml, isCI, getServerUrl, skip, expectLog } from '@brillout/test-e2e'
 import { testCounter } from '../../test/utils'
 import { testCloudflareBindings } from '../../test/@cloudflare_vite-plugin/testRun'
 
@@ -11,9 +11,10 @@ import { testCloudflareBindings } from '../../test/@cloudflare_vite-plugin/testR
 
 function testRun(
   cmd: 'npm run dev' | 'npm run preview',
-  { hasStarWarsPage, testBindings }: { hasStarWarsPage: boolean; testBindings?: true },
+  { hasStarWarsPage, testNodeEnv, testBindings }: { hasStarWarsPage: boolean; testNodeEnv?: boolean; testBindings?: true },
 ) {
   const isWrangler = cmd === 'npm run preview'
+  const isProd = cmd !== 'npm run dev'
 
   /* Manually disabled
   if (isWrangler) {
@@ -54,6 +55,17 @@ function testRun(
       serverIsReadyMessage,
       // Randomly fails because of Cloudflare: it seems like uploading assets to Cloudflare sometimes fails.
       isFlaky: true,
+    })
+  }
+
+  if (testNodeEnv) {
+    test('process.env.NODE_ENV', async () => {
+      await page.goto(`${getServerUrl()}/`)
+      await testCounter()
+      const bodyText = await page.textContent('body')
+      const log = `process.env.NODE_ENV === ${JSON.stringify(isProd ? 'production' : 'development')}`
+      if (isProd) expectLog(log, { allLogs: true, filter: (log) => log.logSource === 'stdout' })
+      expect(bodyText).toContain(log)
     })
   }
 

@@ -1,2 +1,2 @@
 import { testRun } from '../cloudflare-workers-react-full/.testRun'
-testRun('npm run preview', { hasStarWarsPage: false, testBindings: true })
+testRun('npm run preview', { hasStarWarsPage: false, testNodeEnv: true, testBindings: true })

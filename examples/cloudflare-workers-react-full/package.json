@@ -1,14 +1,13 @@
 {
   "scripts": {
     "dev": "node ./dev-server",
-    "preview": "vike build && cross-env NODE_ENV=production && wrangler dev",
-    "deploy": "vike build && cross-env NODE_ENV=production && wrangler publish"
+    "preview": "vike build && wrangler dev",
+    "deploy": "vike build && wrangler publish"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.4.0",
     "@vitejs/plugin-react": "^4.7.0",
     "compression": "^1.8.1",
-    "cross-env": "^10.0.0",
     "express": "^5.1.0",
     "node-fetch": "^2.6.9",
     "react": "^19.1.1",
