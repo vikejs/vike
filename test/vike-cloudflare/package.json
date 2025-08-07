@@ -20,7 +20,7 @@
     "@types/node": "^24.2.0",
     "@universal-middleware/core": "^0.4.9",
     "typescript": "^5.9.2",
-    "vike-cloudflare": "^0.2.6",
+    "vike-cloudflare": "^0.2.7",
     "wrangler": "^4.28.0"
   },
   "type": "module"
