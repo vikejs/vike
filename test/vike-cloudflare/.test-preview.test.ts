@@ -1,4 +1,4 @@
-import { testRun } from '../hono-app/.testRun'
+import { testRun } from "./.testRun";
 
 testRun('pnpm run preview', {
   serverIsReadyMessage: 'Starting local server',
