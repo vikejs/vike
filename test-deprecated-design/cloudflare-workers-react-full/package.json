@@ -1,8 +1,8 @@
 {
   "scripts": {
     "dev": "node ./dev-server",
-    "preview": "vite build && cross-env NODE_ENV=production && wrangler dev",
-    "deploy": "vite build && cross-env NODE_ENV=production && wrangler publish"
+    "preview": "vite build && wrangler dev",
+    "deploy": "vite build && wrangler publish"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.2.0",

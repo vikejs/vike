@@ -1,8 +1,8 @@
 {
   "scripts": {
     "dev": "vike dev",
-    "preview": "vike build && cross-env NODE_ENV=production && wrangler dev",
-    "deploy": "vike build && cross-env NODE_ENV=production && wrangler publish"
+    "preview": "vike build && wrangler dev",
+    "deploy": "vike build && wrangler publish"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.4.0",
