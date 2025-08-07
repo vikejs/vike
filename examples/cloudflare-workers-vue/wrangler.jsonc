@@ -2,7 +2,6 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "compatibility_date": "2025-08-06",
   "name": "vike_examples_cloudflare-workers-vue",
-  "main": "./worker/index.js",
   "dev": { "port": 3000 },
   "define": {
     "__VUE_OPTIONS_API__": "false",
@@ -11,6 +10,7 @@
     // Workaround https://github.com/cloudflare/workers-sdk/issues/7886
     "process.env.NODE_ENV": "'production'"
   },
-  "workers_dev": true,
-  "site": { "bucket": "./dist/client" }
+  "main": "./worker/index.js",
+  "site": { "bucket": "./dist/client" },
+  "workers_dev": true
 }

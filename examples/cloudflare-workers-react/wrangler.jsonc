@@ -2,14 +2,14 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "compatibility_date": "2025-08-06",
   "name": "vike_examples_cloudflare-workers-react",
-  "main": "./worker/index.js",
+  "vars": {
+    "SOME_ENV_VAR": "some-value"
+  },
   "dev": { "port": 3000 },
   "define": {
     // Workaround https://github.com/cloudflare/workers-sdk/issues/7886
     "process.env.NODE_ENV": "'production'"
   },
-  "vars": {
-    "SOME_ENV_VAR": "some-value"
-  },
+  "main": "./worker/index.js",
   "assets": { "directory": "./dist/client/" }
 }
