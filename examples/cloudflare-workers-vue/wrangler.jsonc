@@ -12,6 +12,5 @@
     "process.env.NODE_ENV": "'production'"
   },
   "workers_dev": true,
-  "site": { "bucket": "./dist/client" },
-  "vars": { "SOME_ENV_VAR": "some-value" }
+  "site": { "bucket": "./dist/client" }
 }
