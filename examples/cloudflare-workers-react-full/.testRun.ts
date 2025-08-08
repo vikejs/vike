@@ -2,6 +2,7 @@ export { testRun }
 
 import { page, test, expect, run, autoRetry, fetchHtml, isCI, getServerUrl, skip, expectLog } from '@brillout/test-e2e'
 import { testCounter } from '../../test/utils'
+import { testCloudflareBindings } from '../../test/@cloudflare_vite-plugin/testRun'
 
 // Node.js 18's fetch implementation fails to resolve `localhost`.
 //  - Seems to happen only for wrangler
@@ -10,7 +11,11 @@ import { testCounter } from '../../test/utils'
 
 function testRun(
   cmd: 'npm run dev' | 'npm run preview',
-  { hasStarWarsPage, testNodeEnv }: { hasStarWarsPage: boolean; testNodeEnv?: boolean },
+  {
+    hasStarWarsPage,
+    testNodeEnv,
+    testBindings,
+  }: { hasStarWarsPage: boolean; testNodeEnv?: boolean; testBindings?: true },
 ) {
   const isWrangler = cmd === 'npm run preview'
   const isProd = cmd !== 'npm run dev'
@@ -55,6 +60,10 @@ function testRun(
       // Randomly fails because of Cloudflare: it seems like uploading assets to Cloudflare sometimes fails.
       isFlaky: true,
     })
+  }
+
+  if (testBindings) {
+    testCloudflareBindings()
   }
 
   if (testNodeEnv) {

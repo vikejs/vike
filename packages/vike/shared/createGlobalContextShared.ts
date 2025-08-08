@@ -4,7 +4,7 @@ export type { GlobalContextBase }
 export type { GlobalContextBasePublic }
 export type GlobalContextInternal = GlobalContextServerInternal | GlobalContextClientInternal
 
-import { changeEnumerable, objectAssign, objectReplace, unique } from './utils.js'
+import { changeEnumerable, genPromise, getGlobalObject, objectAssign, objectReplace, unique } from './utils.js'
 import type { PageFile } from './getPageFiles.js'
 import { parseVirtualFileExports } from './getPageFiles/parseVirtualFileExports.js'
 import {
@@ -19,7 +19,12 @@ import type { GlobalContextClientInternal } from '../client/runtime-client-routi
 import { getHookFromPageConfigGlobalCumulative, type Hook } from './hooks/getHook.js'
 const getGlobalContextSyncErrMsg =
   "The global context isn't set yet, call getGlobalContextSync() later or use getGlobalContext() instead."
+const globalObject_ = getGlobalObject<{ previousCallPromise?: Promise<void> }>(
+  'shared/createGlobalContextShared.ts',
+  {},
+)
 
+// TO-DO/eventually use flat globalContext — like flat pageContext
 async function createGlobalContextShared<
   GlobalContextAdded extends Record<string, any>,
   GlobalContextAddedAsync extends Record<string, any>,
@@ -31,6 +36,17 @@ async function createGlobalContextShared<
   addGlobalContextTmp?: (globalContext: GlobalContextBase) => Promise<GlobalContextAdded>,
   addGlobalContextAsync?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddedAsync>,
 ) {
+  const { previousCallPromise } = globalObject_
+  const { promise, resolve } = genPromise({
+    // Avoid this Cloudflare Worker error:
+    // ```console
+    // Error: Disallowed operation called within global scope. Asynchronous I/O (ex: fetch() or connect()), setting a timeout, and generating random values are not allowed within global scope. To fix this error, perform this operation within a handler.
+    // ```
+    timeout: null,
+  })
+  globalObject_.previousCallPromise = promise
+  await previousCallPromise
+
   const globalContext = createGlobalContextBase(virtualFileExports)
 
   let isNewGlobalContext: boolean
@@ -86,6 +102,8 @@ async function createGlobalContextShared<
       objectAssign(globalObject.globalContext, globalContext, true)
     }
   }
+
+  resolve()
 
   return globalObject.globalContext as typeof globalContext
 }
