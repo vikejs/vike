@@ -1,7 +1,7 @@
 {
   "scripts": {
     "dev": "vike dev",
-    "preview": "vike build && wrangler dev",
+    "preview": "wrangler dev",
     "deploy": "vike build && wrangler publish",
     "cf-typegen": "wrangler types"
   },

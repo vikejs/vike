@@ -64,6 +64,7 @@ function getPageContextClientSerialized(pageContext: PageContextSerialization, i
 }
 
 function getGlobalContextClientSerialized(pageContext: PageContextSerialization, isHtmlJsonScript: boolean) {
+  console.log('getGlobalContextClientSerialized()')
   const passToClient = pageContext._passToClient
   const globalContext = pageContext._globalContext
   const getObj = ({ prop, once }: PassToClientEntryNormalized) => {
