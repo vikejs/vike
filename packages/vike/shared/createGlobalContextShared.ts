@@ -31,8 +31,6 @@ async function createGlobalContextShared<
   addGlobalContextTmp?: (globalContext: GlobalContextBase) => Promise<GlobalContextAdded>,
   addGlobalContextAsync?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddedAsync>,
 ) {
-  const rid = Math.random()
-  console.log(rid, 'createGlobalContextShared() [begin]')
   const globalContext = createGlobalContextBase(virtualFileExports)
 
   let isNewGlobalContext: boolean
@@ -44,7 +42,6 @@ async function createGlobalContextShared<
   } else {
     isNewGlobalContext = true
   }
-  console.log(rid, 'isNewGlobalContext', isNewGlobalContext)
 
   if (
     addGlobalContext &&
@@ -67,10 +64,8 @@ async function createGlobalContextShared<
     globalContext._pageConfigGlobal,
     'onCreateGlobalContext',
   )
-  console.log(rid, 'onCreateGlobalContextHooks', onCreateGlobalContextHooks)
-  console.log(rid, 'globalObject.onCreateGlobalContextHooks', globalObject.onCreateGlobalContextHooks)
   let hooksCalled = false
-  if (!hooksAreEqual(globalObject.onCreateGlobalContextHooks ?? [], onCreateGlobalContextHooks) /* || true*/) {
+  if (!hooksAreEqual(globalObject.onCreateGlobalContextHooks ?? [], onCreateGlobalContextHooks)) {
     globalObject.onCreateGlobalContextHooks = onCreateGlobalContextHooks
     await execHookGlobal(
       'onCreateGlobalContext',
@@ -82,8 +77,7 @@ async function createGlobalContextShared<
     hooksCalled = true
   }
 
-  console.log(rid, 'hooksCalled', hooksCalled)
-  if (isNewGlobalContext && false) {
+  if (isNewGlobalContext) {
     // Singleton: ensure all `globalContext` user-land references are preserved & updated.
     if (hooksCalled) {
       objectReplace(globalObject.globalContext, globalContext)
@@ -93,9 +87,6 @@ async function createGlobalContextShared<
     }
   }
 
-  console.log(rid, 'createGlobalContextShared() [end]')
-  console.log(rid, 'globalObject.globalContext.someEnvVar', globalObject.globalContext.someEnvVar)
-  console.log(rid, 'createGlobalContextShared() [end-2]')
   return globalObject.globalContext as typeof globalContext
 }
 

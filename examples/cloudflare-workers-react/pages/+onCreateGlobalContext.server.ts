@@ -3,7 +3,6 @@ export { onCreateGlobalContext }
 import type { GlobalContextServer } from 'vike/types'
 
 async function onCreateGlobalContext(globalContext: GlobalContextServer) {
-  console.log('onCreateGlobalContext()')
   let cloudflare: { env: Cloudflare.Env }
   if (import.meta.env.DEV) {
     const { getPlatformProxy } = await import('wrangler')
