@@ -37,7 +37,13 @@ async function createGlobalContextShared<
   addGlobalContextAsync?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddedAsync>,
 ) {
   const { previousCallPromise } = globalObject_
-  const { promise, resolve } = genPromise({ timeout: null })
+  const { promise, resolve } = genPromise({
+    // Avoid this Cloudflare Worker error:
+    // ```console
+    // Error: Disallowed operation called within global scope. Asynchronous I/O (ex: fetch() or connect()), setting a timeout, and generating random values are not allowed within global scope. To fix this error, perform this operation within a handler.
+    // ```
+    timeout: null,
+  })
   globalObject_.previousCallPromise = promise
   await previousCallPromise
 
