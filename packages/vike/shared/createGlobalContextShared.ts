@@ -37,7 +37,7 @@ async function createGlobalContextShared<
   addGlobalContextAsync?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddedAsync>,
 ) {
   const { previousCallPromise } = globalObject_
-  const { promise, resolve } = genPromise()
+  const { promise, resolve } = genPromise({ timeout: null })
   globalObject_.previousCallPromise = promise
   await previousCallPromise
 
