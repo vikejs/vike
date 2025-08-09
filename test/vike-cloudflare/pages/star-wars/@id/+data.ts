@@ -1,5 +1,4 @@
 // https://vike.dev/data
-
 import type { PageContextServer } from 'vike/types'
 import type { MovieDetails } from '../types.js'
 

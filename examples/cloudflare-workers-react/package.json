@@ -1,14 +1,13 @@
 {
   "scripts": {
     "dev": "vike dev",
-    "preview": "vike build && cross-env NODE_ENV=production && wrangler dev",
-    "deploy": "vike build && cross-env NODE_ENV=production && wrangler publish",
+    "preview": "vike build && wrangler dev",
+    "deploy": "vike build && wrangler publish",
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.4.0",
     "@vitejs/plugin-react": "^4.7.0",
-    "cross-env": "^10.0.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "typescript": "^5.9.2",

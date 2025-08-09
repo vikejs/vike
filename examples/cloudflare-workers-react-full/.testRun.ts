@@ -1,15 +1,24 @@
 export { testRun }
 
-import { page, test, expect, run, autoRetry, fetchHtml, isCI, getServerUrl, skip } from '@brillout/test-e2e'
+import { page, test, expect, run, autoRetry, fetchHtml, isCI, getServerUrl, skip, expectLog } from '@brillout/test-e2e'
 import { testCounter } from '../../test/utils'
+import { testCloudflareBindings } from '../../test/@cloudflare_vite-plugin/testRun'
 
 // Node.js 18's fetch implementation fails to resolve `localhost`.
 //  - Seems to happen only for wrangler
 //  - https://github.com/nodejs/undici/issues/1248
 // urlBaseChange('http://127.0.0.1:3000')
 
-function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { hasStarWarsPage: boolean }) {
+function testRun(
+  cmd: 'npm run dev' | 'npm run preview',
+  {
+    hasStarWarsPage,
+    testNodeEnv,
+    testBindings,
+  }: { hasStarWarsPage: boolean; testNodeEnv?: boolean; testBindings?: true },
+) {
   const isWrangler = cmd === 'npm run preview'
+  const isProd = cmd !== 'npm run dev'
 
   /* Manually disabled
   if (isWrangler) {
@@ -50,6 +59,21 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { 
       serverIsReadyMessage,
       // Randomly fails because of Cloudflare: it seems like uploading assets to Cloudflare sometimes fails.
       isFlaky: true,
+    })
+  }
+
+  if (testBindings) {
+    testCloudflareBindings()
+  }
+
+  if (testNodeEnv) {
+    test('process.env.NODE_ENV', async () => {
+      await page.goto(`${getServerUrl()}/`)
+      await testCounter()
+      const bodyText = await page.textContent('body')
+      const log = `process.env.NODE_ENV === ${JSON.stringify(isProd ? 'production' : 'development')}`
+      if (isProd) expectLog(log, { allLogs: true, filter: (log) => log.logSource === 'stdout' })
+      expect(bodyText).toContain(log)
     })
   }
 

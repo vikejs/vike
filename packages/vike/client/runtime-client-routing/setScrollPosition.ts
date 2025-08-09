@@ -26,10 +26,10 @@ function setScrollPosition(scrollTarget: ScrollTarget, url?: string): void {
 // https://github.com/vikejs/vike/issues/2114
 // https://github.com/WICG/scroll-to-text-fragment/issues/261
 function scrollToTextFragment(url: string) {
-  const stateOriginal = window.history.state
+  const stateOriginal = window.history.state as unknown
   replaceHistoryStateOriginal(null, url)
   // We need `history.state===null` before location.replace() so that our 'popstate' handling is correct
-  assert(window.history.state === null)
+  assert((window.history.state as unknown) === null)
   // - Chrome's location.replace() keeps the current state (`history.state===stateOriginal`)
   // - Firefox's location.replace() replaces the current state with `null` (`history.state===null`)
   window.location.replace(url)
