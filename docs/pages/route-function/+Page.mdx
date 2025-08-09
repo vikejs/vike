@@ -9,12 +9,12 @@ Route Functions provide full programmatic flexibility to define routes.
 
 export { route }
 
-import type { RouteSync } from 'vike/types'
+import type { PageContextServer, PageContextClient } from 'vike/types'
 // We use a RegExp, but we could as well use a routing library.
 import partRegex from 'part-regex'
 const routeRegex = partRegex`/product/${/([0-9]+)/}/edit`
 
-const route: RouteSync = (pageContext): ReturnType<RouteSync> => {
+function route(pageContext: PageContextServer | PageContextClient) {
   if (!pageContext.user.isAdmin) return false
 
   const match = pageContext.urlPathname.match(routeRegex)
@@ -47,9 +47,9 @@ The `precedence` number can be used to resolve route conflicts, see <Link href="
 
 export { route }
 
-import type { RouteSync } from 'vike/types'
+import type { PageContextServer, PageContextClient } from 'vike/types'
 
-const route: RouteSync = (pageContext): ReturnType<RouteSync> => {
+function route(pageContext: PageContextServer | PageContextClient) {
   // ...
   return {
     precedence: 10,
@@ -66,10 +66,10 @@ You can use <Link text="Route Strings" href="/route-string" /> inside Route Func
 
 export { route }
 
-import type { RouteSync } from 'vike/types'
+import type { PageContextServer, PageContextClient } from 'vike/types'
 import { resolveRoute } from 'vike/routing'
 
-const route: RouteSync = (pageContext): ReturnType<RouteSync> => {
+function route(pageContext: PageContextServer | PageContextClient) {
   if (!pageContext.user.isAdmin) {
     return false
   }
@@ -82,10 +82,10 @@ const route: RouteSync = (pageContext): ReturnType<RouteSync> => {
 
 export { route }
 
-import type { RouteSync } from 'vike/types'
+import type { PageContextServer, PageContextClient } from 'vike/types'
 import { resolveRoute } from 'vike/routing'
 
-const route: RouteSync = (pageContext): ReturnType<RouteSync> => {
+function route(pageContext: PageContextServer | PageContextClient) {
   {
     const result = resolveRoute('/product/@id', pageContext.urlPathname)
     if (result.match) {

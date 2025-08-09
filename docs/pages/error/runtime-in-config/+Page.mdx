@@ -11,11 +11,11 @@ Then this means you're trying to define runtime code inside <Link href="/config"
 ```ts
 // pages/+config.ts
 
-import type { Config } from 'vike/types'
+import type { Config, PageContextServer } from 'vike/types'
 
 export default {
   // ❌ Forbidden: the function title() is runtime code
-  title: (pageContext) => pageContext.data.title
+  title: (pageContext: PageContextServer) => pageContext.data.title
 } satisfies Config
 ```
 
@@ -40,11 +40,12 @@ Or this:
 
 // ✅ Allowed: same as defining +title.ts
 
+import type { Config } from 'vike/types'
 import title from './title' with { type: 'pointer' }
 
 export default {
   title
-}
+} satisfies Config
 ```
 
 <Construction>The `with { type: 'pointer' }` import attribute isn't implement yet, see workaround at [#1500](https://github.com/vikejs/vike/issues/1500).</Construction>

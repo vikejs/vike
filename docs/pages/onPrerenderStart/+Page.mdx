@@ -13,11 +13,9 @@ a new array of page contexts, giving you a chance to add/remove/modify pages. Th
 ```ts
 export { onPrerenderStart }
 
-import type { OnPrerenderStartAsync, PageContextServer } from 'vike/types'
+import type { PageContextServer } from 'vike/types'
 
-const onPrerenderStart: OnPrerenderStartAsync = async (
-  prerenderContext
-): ReturnType<OnPrerenderStartAsync> => {
+async function onPrerenderStart(prerenderContext: { pageContexts: PageContextServer[] }) {
   // new page contexts
   const pageContexts: PageContextServer[] = []
 

@@ -17,10 +17,11 @@ The hooks `onRenderHtml()` and <Link href="/onRenderClient">`onRenderClient()`</
 
 export { onRenderHtml }
 
+import type { PageContextServer } from 'vike/types'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { renderToHtml, createElement } from 'some-ui-framework'
 
-const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRenderHtmlAsync> => {
+async function onRenderHtml(pageContext: PageContextServer){
   const { Page, data } = pageContext
   const pageHtml = await renderToHtml(createElement(Page, data))
 

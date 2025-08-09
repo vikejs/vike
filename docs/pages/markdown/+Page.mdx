@@ -86,13 +86,14 @@ export const metadata = [
 ```tsx
 // /pages/+Layout.tsx
 
+import React from 'react'
 import { metadata } from './metadata'
 
-export function Layout({ children }) {
+export function Layout({ children }: { children: React.ReactNode }) {
   // Current URL
   const { urlPathname } = usePageContext()
   // The page's metadata
-  const { title } = metadata.find(({ url }) => url === pageContext.urlPathname)
+  const { title } = metadata.find(({ url }) => url === urlPathname)
 
   return <>
     {/* Show the list of blog posts */}
@@ -235,9 +236,10 @@ export default {
 // /pages/+Layout.tsx
 // Environment: server & client
 
+import React from 'react'
 import { usePageContext } from 'vike-react/usePageContext' // or vike-{vue,solid}
 
-export function Layout({ children }) {
+export function Layout({ children }: { children: React.ReactNode }) {
   const pageContext = usePageContext()
   const { posts } = pageContext.globalContext
   return <>
@@ -346,9 +348,10 @@ You can then use <Link href="/pageContext#config">`pageContext.config`</Link> to
 ```tsx
 // /pages/+Layout.tsx
 
+import React from 'react'
 import { usePageContext } from 'vike-react/usePageContext' // or vike-{vue,solid}
 
-export function Layout({ children }) {
+export function Layout({ children }: { children: React.ReactNode }) {
    const pageContext = usePageContext()
    const { frontmatter } = pageContext.config
    return <>

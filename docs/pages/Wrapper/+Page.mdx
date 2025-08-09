@@ -20,8 +20,10 @@ The `+Wrapper` component wraps the <Link href="/Page">`+Page` component</Link> a
 ```tsx
 // pages/+Wrapper.tsx
 
+import React from 'react'
+
 // `children` includes +Page and all +Layout components
-export default function Wrapper({ children }) {
+export default function Wrapper({ children }: { children: React.ReactNode }) {
   return <>
     <MyWrapper>
       {children}
@@ -61,9 +63,10 @@ You can access <Link href="/pageContext">the `pageContext` object</Link> by usin
 ```tsx
 // /pages/+Layout.tsx
 
+import React from 'react'
 import { usePageContext } from 'vike-react/usePageContext' // or vike-{vue,solid}
 
-export function Layout({ children }) {
+export function Layout({ children }: { children: React.ReactNode }) {
   const pageContext = usePageContext()
   // ...
 }

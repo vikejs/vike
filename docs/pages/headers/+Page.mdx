@@ -51,7 +51,7 @@ The `pageContext.headersOriginal` value is defined at the <Link href="/renderPag
 ```ts
 import { renderPage } from 'vike/server'
 
-app.get('*', async (req) => {
+app.get('*', async (req: Request) => {
   const pageContextInit = {
     urlOriginal: req.url,
     // Defined here
@@ -100,7 +100,7 @@ The final HTTP response headers sent to the client are available at `pageContext
 import { renderPage } from 'vike/server'
 
 // Server middleware
-app.get('*', async (req) => {
+app.get('*', async (req: Request) => {
   // ...
   const pageContext = await renderPage(pageContextInit)
   // HTTP response headers sent to the client

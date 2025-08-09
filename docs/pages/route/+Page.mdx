@@ -6,9 +6,11 @@ The `route` config determines the page's <Link text="routing" href="/routing" />
 ```ts
 // /pages/product/+config.ts
 
+import type { Config } from 'vike/types'
+
 export default {
   route: '/product/@id'
-}
+} satisfies Config
 ```
 
 ```tsx
@@ -37,9 +39,9 @@ Instead of a Route String, you can also define a Route Function:
 
 export { route }
 
-import type { RouteSync } from 'vike/types'
+import type { PageContextServer, PageContextClient } from 'vike/types'
 
-const route: RouteSync = (pageContext): ReturnType<RouteSync> => {
+function route(pageContext: PageContextServer | PageContextClient) {
   const parts = pageContext.urlPathname.split('/')
   if (parts[1] !== 'product') {
     return false

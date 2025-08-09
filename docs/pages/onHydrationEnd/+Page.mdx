@@ -11,14 +11,12 @@ You can use the `onHydrationEnd()` hook to implement initialization that needs t
 
 export { onHydrationEnd }
 
-import type { OnHydrationEndAsync } from 'vike/types'
+import type { PageContextClient } from 'vike/types'
 
 // The onHydrationEnd() hook is called after the onRenderClient() hook finishes rendering the
 // first page the user navigates to. (The onHydrationEnd() hook isn't called upon subsequent
 // page navigation.)
-const onHydrationEnd: OnHydrationEndAsync = async (
-  pageContext
-): ReturnType<OnHydrationEndAsync> => {
+async function onHydrationEnd(pageContext: PageContextClient) {
   console.log('The page is now interactive')
 }
 ```

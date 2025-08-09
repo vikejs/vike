@@ -33,8 +33,10 @@ You can define a layout that applies to all your pages:
 
 export { Layout }
 
+import React from 'react'
+
 // `children` includes <Page>
-function Layout({ children }) {
+function Layout({ children }: { children: React.ReactNode }) {
   return <>
     <Navigation/>
     <Content>{children}</Content>
@@ -141,9 +143,12 @@ You can access <Link href="/pageContext">the `pageContext` object</Link> by usin
 ```tsx
 // /pages/+Layout.tsx
 
+export { Layout }
+
+import React from 'react'
 import { usePageContext } from 'vike-react/usePageContext' // or vike-{vue,solid}
 
-export function Layout({ children }) {
+function Layout({ children }: { children: React.ReactNode }) {
   const pageContext = usePageContext()
   // ...
 }

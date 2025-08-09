@@ -74,10 +74,11 @@ If you use React then you may also need to use <Link href="/Wrapper">`+Wrapper`<
 // pages/+Wrapper.tsx
 // Environment: server, client
 
+import React from 'react'
 import { Provider } from 'awesome-store/react'
 import { usePageContext } from 'vike-react/usePageContext'
 
-export default function StoreProvider({ children }) {
+export default function StoreProvider({ children }: { children: React.ReactNode }) {
   const pageContext = usePageContext()
   return <Provider store={pageContext.store}>{children}</Provider>
 }

@@ -39,6 +39,7 @@ export async function onCreatePageContext(pageContext: PageContextServer) {
 
 declare global {
   namespace Vike {
+    // We extend PageContext instead of PageContextServer because user is passed to the client
     interface PageContext {
       user?: {
         firstName: string

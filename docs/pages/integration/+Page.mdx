@@ -108,11 +108,12 @@ A fully manual integration can be done as follows:
    > If you use React then you may also need to use <Link href="/Wrapper">`+Wrapper`</Link>:
    > ```tsx
    > // pages/+Wrapper.tsx
-   >
+   > 
+   > import React from 'react'
    > import { Provider } from 'awesome-data-tool/react'
    > import { usePageContext } from 'vike-react/usePageContext'
    >
-   > export function Wrapper({ children }) {
+   > export function Wrapper({ children }: { children: React.ReactNode }) {
    >   const pageContext = usePageContext()
    >   return <Provider client={pageContext.dataClient}>{children}</Provider>
    > }

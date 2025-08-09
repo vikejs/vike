@@ -73,7 +73,7 @@ export const aliases = {
 
 import { aliases } from './Link/aliases'
 
-function Link({ href }) {
+function Link({ href }: { href: string }) {
   if (aliases[href]) href = aliases[href]
   // ...
 }

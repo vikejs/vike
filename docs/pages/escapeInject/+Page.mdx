@@ -52,11 +52,11 @@ For example, if we want some HTML parts to be included only for certain pages:
 // +onRenderHtml.ts
 // Environment: server
 
+export { onRenderHtml }
+
 import type { PageContextServer } from 'vike/types'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { renderToHtml } from 'some-ui-framework'
-
-export { onRenderHtml }
 
 async function onRenderHtml(pageContext: PageContextServer) {
   const description = pageContext.config.description

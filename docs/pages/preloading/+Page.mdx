@@ -25,7 +25,7 @@ You can use `pageContext.httpResponse.earlyHints` for adding early hints (`103 E
 
 import { renderPage } from 'vike/server'
 
-app.get('*', async (req, res) => {
+app.get('*', async (req: Request, res: Response) => {
   const pageContext = await renderPage({ urlOriginal: req.originalUrl } )
   const { earlyHints } = pageContext.httpResponse
   // For example with Node.js 18:

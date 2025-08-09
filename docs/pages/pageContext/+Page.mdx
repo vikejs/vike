@@ -61,7 +61,7 @@ The current URL.
 On the server-side, `pageContext.urlOriginal` is the value you passed at the server middleware:
  ```ts
  // Server middleware
- app.get('*', async (req) => {
+ app.get('*', async (req: Request) => {
    const pageContextInit = {}
    // `pageContext.urlOriginal` is defined here
    pageContextInit.urlOriginal = req.url
@@ -311,7 +311,7 @@ If you don't use <Link href="/server">`vike-server`</Link>, then you can define 
 
 ```ts
 // Your Vike server middleware integration
-app.get('*', async (req) => {
+app.get('*', async (req: Request) => {
   const pageContextInit = {
     // ***************************************
     // *** Built-in pageContext properties ***
@@ -421,6 +421,9 @@ function someFunction(pageContext: PageContext) {
 To extend and/or refine `PageContext`/`PageContextServer`/`PageContextClient`, use the global interface `Vike.PageContext`:
 
 ```ts
+
+import React from 'react'
+
 declare global {
   namespace Vike {
     interface PageContext {

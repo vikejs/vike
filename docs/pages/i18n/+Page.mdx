@@ -74,7 +74,7 @@ Update your `<Link>` component, for example:
 import { usePageContext } from 'vike-react/usePageContext' // or vike-vue / vike-solid
 import { localeDefault } from '../i18n'
 
-export function Link({ href, locale, ...props }) {
+export function Link({ href, locale, ...props }: { href: string, locale: string }) {
   const pageContext = usePageContext()
   locale = locale ?? pageContext.locale
   if (locale !== localeDefault) {

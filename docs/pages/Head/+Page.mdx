@@ -195,7 +195,7 @@ You can use React's `dangerouslySetInnerHTML` to add raw HTML, for example:
 import React from 'react'
 import { Head } from 'vike-react/Head'
 
-function Image({ src, author }) {
+function Image({ src, author }: { src: string, author: string }) {
   return (
     <>
       <img src={src} />
@@ -232,7 +232,7 @@ You can use <Link href="/useConfig">`useConfig()`</Link> with Vue's `innerHTML` 
 import { useAttrs, h } from 'vue'
 import { useConfig } from 'vike-vue/useConfig'
 
-const { src, author, ...otherAttrs } = useAttrs()
+const { src, author, ...otherAttrs } = useAttrs() as { src: string, author: string }
 
 const config = useConfig()
 config({
@@ -258,7 +258,7 @@ You can use `innerHTML` to add raw HTML, for example:
 ```tsx
 import { Head } from "vike-solid/Head"
 
-function Image({ src, author }) {
+function Image({ src, author }: { src: string, author: string }) {
   return (
     <>
       <img src={src} />

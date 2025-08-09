@@ -176,7 +176,7 @@ Make sure you use `renderPage()` only for URLs that include the Base URL, for ex
 
 ```ts
 // Make sure `/some-base/` aligns with your base setting
-app.get('/some-base/*', async (req, res) => {
+app.get('/some-base/*', async (req: Request, res: Response) => {
   // Keep the Base URL (Vike expects it)
   const pageContextInit = { urlOriginal: req.url }
   const pageContext = await renderPage(pageContextInit)
@@ -188,7 +188,7 @@ app.get('/some-base/*', async (req, res) => {
 Or use `pageContext.isBaseMissing`:
 
 ```ts
-app.get('*', async (req, res, next) => {
+app.get('*', async (req: Request, res: Response, next: NextFunction) => {
   const pageContextInit = { urlOriginal: req.url }
   const pageContext = await renderPage(pageContextInit)
   if (pageContext.isBaseMissing) return next()

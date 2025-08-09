@@ -17,12 +17,10 @@ The hooks `onRenderClient()` and <Link href="/onRenderHtml">`onRenderHtml()`</Li
 
 export { onRenderClient }
 
-import type { OnRenderClientAsync } from 'vike/types'
+import type { PageContextClient } from 'vike/types'
 import { renderToDom, hydrateDom } from 'some-ui-framework'
 
-const onRenderClient: OnRenderClientAsync = async (
-  pageContext
-): ReturnType<OnRenderClientAsync> => {
+async function onRenderClient(pageContext: PageContextClient) {
   const { Page } = pageContext
 
   // SPA:

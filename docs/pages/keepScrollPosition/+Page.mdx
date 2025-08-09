@@ -103,7 +103,7 @@ You can also programmatically set the scroll group:
 
 import type { PageContextClient } from 'vike/types'
 
-export default (pageContext: PageContextClient, { configDefinedAt }) => {
+export default (pageContext: PageContextClient, { configDefinedAt }: { configDefinedAt: string }) => {
   console.log(configDefinedAt) // Prints '/pages/product/@id/+keepScrollPosition.ts'
   // This is the value Vike sets by default:
   return [configDefinedAt, pageContext.routeParams['id']]
