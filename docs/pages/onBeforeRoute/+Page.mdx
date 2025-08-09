@@ -5,10 +5,12 @@ The `onBeforeRoute()` hook provides full control over routing.
 
 It is usually used for [internationalization](/i18n):
 
-```js
+```ts
 export { onBeforeRoute }
 
-function onBeforeRoute(pageContext) {
+import type { OnBeforeRouteSync } from 'vike/types'
+
+const onBeforeRoute: OnBeforeRouteSync = (pageContext): ReturnType<OnBeforeRouteSync> => {
   const { urlWithoutLocale, locale } = extractLocale(pageContext.urlPathname)
   return {
     pageContext: {

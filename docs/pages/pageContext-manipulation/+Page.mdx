@@ -1,12 +1,14 @@
 The hooks [`data()`](/data), [`onBeforeRender()`](/onBeforeRender), [`onRenderHtml()`](/onRenderHtml), and
 [`onBeforeRoute()`](/onBeforeRoute) enable us to extend `pageContext`.
 
-```js
-// +onBeforeRender.js
+```ts
+// +onBeforeRender.ts
 
 export { onBeforeRender }
 
-async function onBeforeRender(pageContext) {
+import type { PageContextServer } from 'vike/types'
+
+async function onBeforeRender(pageContext: PageContextServer) {
   const starWarsMovies = await getStarWarsMovies()
   return {
     pageContext: {
@@ -27,12 +29,14 @@ async function getStarWarsMovies() {
 
 In general, we should try to avoid mutating `pageContext`:
 
-```js
-// +onBeforeRender.js
+```ts
+// +onBeforeRender.ts
 
 export { onBeforeRender }
 
-function onBeforeRender(pageContext) {
+import type { PageContextServer } from 'vike/types'
+
+function onBeforeRender(pageContext: PageContextServer) {
   const starWarsMovies = await getStarWarsMovies()
   pageContext.starWarsMovies = starWarsMovies// [!code --]
   // We should do this instead// [!code ++]
@@ -52,12 +56,14 @@ function onBeforeRender(pageContext) {
 
 We also shouldn't do this:
 
-```js
-// +onBeforeRender.js
+```ts
+// +onBeforeRender.ts
 
 export { onBeforeRender }
 
-function onBeforeRender(pageContext) {
+import type { PageContextServer } from 'vike/types'
+
+function onBeforeRender(pageContext: PageContextServer) {
   const starWarsMovies = await getStarWarsMovies()
   return {
     pageContext: {// [!code --]

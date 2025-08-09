@@ -13,12 +13,14 @@ Environment: server, client
 
 The `+title` setting sets [the page's title](https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/The_head_metadata_in_HTML#adding_a_title).
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   title: 'Some Title'
-}
+} satisfies Config
 ```
 
 > It adds
@@ -36,8 +38,8 @@ export default {
 
 You can set its value using a <Link href="/pageContext">`pageContext`</Link> function:
 
-```tsx
-// pages/some-page/+title.js
+```ts
+// pages/some-page/+title.ts
 // Environment: server, client
 
 import type { Data } from './+data'

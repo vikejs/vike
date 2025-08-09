@@ -65,8 +65,8 @@ For local metadata, we recommend:
 
 A simple way to define metadata is to define a `metadata.js` file that contains <Link href="#metadata:~:text=What%20is%20global%20metadata">global metadata</Link>.
 
-```js
-// /pages/metadata.js
+```ts
+// /pages/metadata.ts
 
 // This metadata is available to every page
 export const metadata = [
@@ -83,16 +83,17 @@ export const metadata = [
 ]
 ```
 
-```jsx
-// /pages/+Layout.jsx
+```tsx
+// /pages/+Layout.tsx
 
+import React from 'react'
 import { metadata } from './metadata'
 
-export function Layout({ children }) {
+export function Layout({ children }: { children: React.ReactNode }) {
   // Current URL
   const { urlPathname } = usePageContext()
   // The page's metadata
-  const { title } = metadata.find(({ url }) => url === pageContext.urlPathname)
+  const { title } = metadata.find(({ url }) => url === urlPathname)
 
   return <>
     {/* Show the list of blog posts */}
@@ -147,8 +148,10 @@ You can use <Link href="/meta">`meta`</Link> to create a custom setting for defi
 /pages/2024-new-year/+metadata.js
 ```
 
-```js
-// /pages/+config.js
+```ts
+// /pages/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   meta: {
@@ -168,13 +171,13 @@ export default {
     // Make globalContext.posts available on the client-side
     'posts'
   ]
-}
+} satisfies Config
 ```
 
 > When setting `eager: true` the setting is available globally to all pages.
 
-```js
-// /pages/2024-new-year/+metadata.js
+```ts
+// /pages/2024-new-year/+metadata.ts
 
 export const metadata = {
   title: 'New Year 2024 Resolution'
@@ -229,13 +232,14 @@ export default {
 } satisfies Config
 ```
 
-```jsx
-// /pages/+Layout.jsx
+```tsx
+// /pages/+Layout.tsx
 // Environment: server & client
 
+import React from 'react'
 import { usePageContext } from 'vike-react/usePageContext' // or vike-{vue,solid}
 
-export function Layout({ children }) {
+export function Layout({ children }: { children: React.ReactNode }) {
   const pageContext = usePageContext()
   const { posts } = pageContext.globalContext
   return <>
@@ -292,7 +296,9 @@ This page uses [markdown](https://en.wikipedia.org/wiki/Markdown).
 > But, for improved DX, Vike allows markdown files (such as `+Page.mdx`) to export the value of <Link href="/settings">other settings</Link>.
 
 ```ts
-// /pages/+config.js
+// /pages/+config.ts
+
+import type { Config } from 'vike/types'
 
 // Create +metadata setting
 export default {
@@ -301,7 +307,7 @@ export default {
       env: { server: true, client: true }
     }
   }
-}
+} satisfies Config
 ```
 
 
@@ -324,8 +330,8 @@ You can use such frontmatter to define <Link href="#metadata:~:text=What%20is%20
 
 The markdown processor exposes the data defined by the frontmatter as an export, for example `export { frontmatter }`. You can access it by using <Link href="/meta">`meta`</Link> to define a `+frontmatter` setting (or whatever the name of the export is).
 
-```jsx
-// pages/+config.js
+```ts
+// pages/+config.ts
 
 export default {
   meta: {
@@ -334,17 +340,18 @@ export default {
       env: { server: true, client: true }
     }
   }
-}
+} satisfies Config
 ```
 
 You can then use <Link href="/pageContext#config">`pageContext.config`</Link> to access it:
 
-```jsx
-// /pages/+Layout.jsx
+```tsx
+// /pages/+Layout.tsx
 
+import React from 'react'
 import { usePageContext } from 'vike-react/usePageContext' // or vike-{vue,solid}
 
-export function Layout({ children }) {
+export function Layout({ children }: { children: React.ReactNode }) {
    const pageContext = usePageContext()
    const { frontmatter } = pageContext.config
    return <>

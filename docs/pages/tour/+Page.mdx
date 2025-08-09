@@ -10,46 +10,48 @@ The `+config.js` files is the interface between Vike and your code.
 
 You can use `+config.js` to define a new page:
 
-```js
-// /pages/about/+config.js
+```ts
+// /pages/about/+config.ts
 
 // The file defines a new page with URL /about
 
+import type { Config } from 'vike/types'
 import { AboutPage } from './AboutPage'
 
 export default {
   Page: AboutPage
-}
+} satisfies Config
 ```
 
 > The URL `/about` is determined by the filesystem location of `/pages/about/+config.js`, see <Link href="/filesystem-routing" />.
 
-```jsx
-// /pages/about/AboutPage.jsx
+```tsx
+// /pages/about/AboutPage.tsx
 
 export const AboutPage = () => <>Vike Demo</>
 ```
 
 Another example:
 
-```js
-// /pages/product/+config.js
+```ts
+// /pages/product/+config.ts
 
 // This file defines a new page with URL '/product/@id'
 
+import type { Config } from 'vike/types'
 import { ProductPage } from './ProductPage'
 
 export default {
    Page: ProductPage,
    // Parameterized route that matches URLs such as /product/1337 and /product/macbook
    route: '/product/@id'
-}
+} satisfies Config
 ```
 
 > Setting the `route` value overrides Filesystem Routing.
 
-```js
-// /pages/product/ProductPage.jsx
+```tsx
+// /pages/product/ProductPage.tsx
 
 export { ProductPage }
 
@@ -70,13 +72,13 @@ function ProductPage() {
 
 For convenience, instead of defining <Link href="#config-js">`+config.js`</Link>, you can define `+Page.js` and `+route.js`:
 
-```js
-// /pages/product/+route.js
+```ts
+// /pages/product/+route.ts
 
 export default '/product/@id'
 ```
-```js
-// /pages/product/+Page.jsx
+```tsx
+// /pages/product/+Page.tsx
 
 export { ProductPage as Page }
 
@@ -93,19 +95,20 @@ function ProductPage() {
 Which is equivalent to:
 
 
-```js
-// /pages/product/+config.js
+```ts
+// /pages/product/+config.ts
 
+import type { Config } from 'vike/types'
 import { ProductPage } from './ProductPage'
 
 export default {
    Page: ProductPage,
    route: '/product/@id'
-}
+} satisfies Config
 ```
 
-```js
-// /pages/product/ProductPage.jsx
+```tsx
+// /pages/product/ProductPage.tsx
 
 export { ProductPage }
 

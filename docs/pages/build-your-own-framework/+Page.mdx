@@ -19,9 +19,10 @@ Once you are satisfied wit the stack of your regular Vike app, progressively cre
 
 You can achieve that by progressively applying one or more of the following steps:
 - Create your own Vike extension that contains all your configuration.
-  ```js
-  // pages/+config.js
+  ```ts
+  // pages/+config.ts
 
+  import type { Config } from 'vike/types'
   import react from 'vike-react/config'// [!code --]
   import apollo from 'vike-react-apollo/config'// [!code --]
   import myFramework from 'my-framework/config'// [!code ++]
@@ -30,18 +31,19 @@ You can achieve that by progressively applying one or more of the following step
     ssr: false,// [!code --]
     extends: [react, apollo]// [!code --]
     extends: [myFramework]// [!code ++]
-  }
+  } satisfies Config
   ```
 - <Link href="/meta">Create custom settings</Link>, so that your Product Developers can easily configure your framework.
-  ```js
-  // pages/+config.js
+  ```ts
+  // pages/+config.ts
 
+  import type { Config } from 'vike/types'
   import myFramework from 'my-framework/config'
 
   export default {
     myCustomSetting: true,
     extends: [myFramework]
-  }
+  } satisfies Config
   ```
 - Create your own CLI.
   ```json

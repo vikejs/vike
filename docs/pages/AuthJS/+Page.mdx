@@ -35,8 +35,8 @@ In order to use Auth.js's [`getSession()`](https://authjs.dev/reference/utilitie
 
 We can use [`node-fetch` to patch the global object](https://github.com/node-fetch/node-fetch#providing-global-access):
 
-```js
-// server.js
+```ts
+// server.ts
 
 // Only install the polyfill on the server (e.g. Express.js). Browsers already implement
 // `fetch()` natively and it would be wasteful to load the polyfill on the browser-side.

@@ -6,10 +6,12 @@ When `includeAssetsImportedByServer` is `true`, then static assets (CSS, images,
 
 It's `true` by default and, in principle, there isn't any reason to disable it. You can however disable it:
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   includeAssetsImportedByServer: false
-}
+} satisfies Config
 ```

@@ -14,10 +14,12 @@ It's called upon rendering the first page (e.g. <Link href="/hydration">hydratio
 
 > If you want to perform an action only upon hydration then use <Link href="/pageContext#isHydration">`pageContext.isHydration`</Link>:
 >
-> ```js
-> // +onBeforeRenderClient.js
+> ```ts
+> // +onBeforeRenderClient.ts
 >
-> export async function onBeforeRenderClient(pageContext) {
+> import type { PageContextClient } from 'vike/types'
+>
+> export async function onBeforeRenderClient(pageContext: PageContextClient) {
 >   if (pageContext.isHydration) {
 >     // ...
 >   }

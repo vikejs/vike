@@ -8,8 +8,10 @@ By default, URLs are normalized:
 
 You can configure whether URLs are normalized and whether URLs should end with a trailing slash:
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   // Make URLs end with a trailing slash.
@@ -19,5 +21,5 @@ export default {
   // Or completely disable automatic URL normalization.
   // For example keep URL /some//path/
   disableUrlNormalization: true
-}
+} satisfies Config
 ```

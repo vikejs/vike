@@ -8,14 +8,15 @@ Get the app's <Link href="/config">configurations</Link> that are available at c
 
 > It only returns configurations that are available at config-time (i.e. at build- and dev-time). To get configurations at (production) runtime use <Link href="/globalContext#config">`globalContext.config`</Link> and <Link href="/globalContext#pages">`globalContext.pages`</Link> instead.
 
-```js
-// vite.config.js
+```ts
+// vite.config.ts
 
+import type { UserConfig } from 'vite'
 import { getVikeConfig } from 'vike/plugin'
 
 export default {
   plugins: [myVitePlugin()]
-}
+} satisfies UserConfig
 
 function myVitePlugin() {
   return {

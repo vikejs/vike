@@ -27,7 +27,7 @@ const SomeComponent = clientOnly(() => import("./SomeComponent.jsx"));
 const SomeComponent = clientOnly(async () => (await import('some-library')).SomeComponent)
 */
 
-function MyComponent(props) {
+function MyComponent() {
   return <SomeComponent fallback={<Loading />} />
 }
 ```
@@ -51,7 +51,7 @@ const SomeComponent = clientOnly(() => import("./SomeComponent.jsx"));
 const SomeComponent = clientOnly(async () => (await import('some-library')).SomeComponent)
 */
 
-function MyComponent(props) {
+function MyComponent() {
   return <SomeComponent fallback={<Loading />} />
 }
 ```

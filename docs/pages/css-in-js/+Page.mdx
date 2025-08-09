@@ -9,23 +9,25 @@ CSS-in-JS tools usually need to collect the page's styles upon SSR and add the c
 
 For example:
 
-```js
-// /pages/+onBeforeRenderHtml.js
+```ts
+// /pages/+onBeforeRenderHtml.ts
 
+import type { PageContextServer } from 'vike/types'
 import { collect } from 'my-css-in-js-tool'
 
-export default pageContext => {
+export default (pageContext: PageContextServer) => {
   pageContext.collectedStyles = collect()
 }
 ```
 
-```js
-// /pages/+onAfterRenderHtml.js
+```ts
+// /pages/+onAfterRenderHtml.ts
 
+import type { PageContextServer } from 'vike/types'
 import { useConfig } from 'vike-react/useConfig' // or vike-vue / vike-solid
 import { generateCSS } from 'my-css-in-js-tool'
 
-export default pageContext => {
+export default (pageContext: PageContextServer) => {
   const config = useConfig()
   const css = generateCSS(pageContext.collectedStyles)
   config({ Head: css })
@@ -45,17 +47,18 @@ You can collect and inject the page's styles inside your <Link href="/onRenderHt
 
 React example:
 
-```jsx
-// /renderer/+onRenderHtml.jsx
+```tsx
+// /renderer/+onRenderHtml.tsx
 
 import ReactDOMServer from 'react-dom/server'
 import React from 'react'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { CssCollector } from 'some-css-in-js-tool'
+import type { PageContextServer } from 'vike/types'
 
 export { onRenderHtml }
 
-async function onRenderHtml(pageContext) {
+async function onRenderHtml(pageContext: PageContextServer) {
   const { Page } = pageContext
   const page = <Page />
 

@@ -26,21 +26,24 @@ Use <Link href="/new">vike.dev/new</Link> for creating a new `vike-react` app.
 
 To add `vike-react` to an existing Vike app: install the `vike-react` npm package (e.g. `$ npm install vike-react`) then extend your existing `+config.js` file (or create one) with `vike-react`:
 
-```js
-// /pages/+config.js
+```ts
+// /pages/+config.ts
+
+import type { Config } from 'vike/types'
 import vikeReact from 'vike-react/config'// [!code ++]
 
 export default {
   // ...
   extends: [vikeReact]// [!code ++]
-}
+} satisfies Config
 ```
 
 You can then use <Link href="#under-the-hood">new settings introduced by `vike-react`</Link>:
 
-```js
-// /pages/+config.js
+```ts
+// /pages/+config.ts
 
+import type { Config } from 'vike/types'
 import vikeReact from 'vike-react/config'
 
 export default {
@@ -50,7 +53,7 @@ export default {
   ssr: false,// [!code ++]
 
   extends: [vikeReact]
-}
+} satisfies Config
 ```
 
 

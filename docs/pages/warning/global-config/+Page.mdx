@@ -8,26 +8,30 @@ For example, <Link href="/base-url">the Base URL settings</Link> are global: cha
 
 Consequently, it doesn't make sense to define a global config in a local <Link href="/config#files">`+` file</Link>.
 
-```js
-// /pages/tags/+config.js
+```ts
+// /pages/tags/+config.ts
 
 // This is a local config file: it applies only to a subset of pages.
 
+import type { Config } from 'vike/types'
+
 export default {
-  // ❌ Defining a global setting in a local +config.js
+  // ❌ Defining a global setting in a local +config.ts
   baseServer: '/blog/'
-}
+} satisfies Config
 ```
 
-```js
-// /pages/+config.js
+```ts
+// /pages/+config.ts
 
 // This is a global config file: it applies to all pages.
 
+import type { Config } from 'vike/types'
+
 export default {
-  // ✅ Defining a global setting in a global +config.js
+  // ✅ Defining a global setting in a global +config.ts
   baseServer: '/blog/'
-}
+} satisfies Config
 ```
 
 If you get the following warning then move your config to a global location.

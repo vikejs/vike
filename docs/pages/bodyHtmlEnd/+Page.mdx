@@ -11,22 +11,26 @@ The settings `bodyHtmlEnd`/<Link href="/bodyHtmlBegin" /> enable you to insert H
 
 Inserting static HTML:
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   bodyHtmlEnd: '<div id="something"></div>'
-}
+} satisfies Config
 ```
 
 > For adding `<script>` tags consider <Link href="/Head">`<Head>`</Link> or <Link href="/client">`+client.js`</Link> instead.
 
 Inserting dynamically generated HTML:
 
-```js
-// pages/+bodyHtmlEnd.js
+```ts
+// pages/+bodyHtmlEnd.ts
 
-export default (pageContext) => {
+import type { PageContextServer } from 'vike/types'
+
+export default (pageContext: PageContextServer) => {
   const { something } = pageContext
   return `<div>${something}</div>`
 }
@@ -43,17 +47,19 @@ Be cautious about the security risk called [XSS injections](https://en.wikipedia
 
 When using React, it's often used for portals.
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   bodyHtmlEnd: '<div id="portal-root"></div>'
-}
+} satisfies Config
 ```
 
 You'll then get the following HTML:
 
-```jsx
+```tsx
 <body>
   <!-- ... -->
   <div id="root">{reactHtml}</div>
@@ -68,7 +74,7 @@ When using Vue, it's often used for adding the HTML targets of teleports.
 Teleports work out of the box when using `<Teleport to="teleported">` and you don't have to use `bodyHtml{Begin,End}` then.
 
 > `vike-vue` always inserts this at the end of the `<body>` tag:
-> ```js
+> ```vue
 > <div id="teleported">${
 >   pageContext.ssrContext.teleports?.['#teleported'] ?? ''
 > }</div>
@@ -76,10 +82,12 @@ Teleports work out of the box when using `<Teleport to="teleported">` and you do
 
 > You can use <Link href="/pageContext">Vike's `pageContext` object</Link> to access [Vue's `ssrContext` object](https://vuejs.org/api/ssr#usessrcontext):
 >
-> ```js
-> // pages/+bodyHtmlEnd.js
+> ```ts
+> // pages/+bodyHtmlEnd.ts
 >
-> export default (pageContext) => {
+> import type { PageContextServer } from 'vike/types'
+>
+> export default (pageContext: PageContextServer) => {
 >   const content = pageContext.ssrContext.teleports?.['#someTeleport'] ?? ''
 >   return `<div id="someTeleport">${content}</div>`
 > }

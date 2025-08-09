@@ -15,8 +15,10 @@ The `stream` setting allows you to:
 
 > **What is HTML Streaming?** If you're unfamiliar with HTML streaming then check out [this explanation of SSR, HTML streaming, and Progressive Rendering](https://github.com/reactwg/react-18/discussions/37). Although it explains it in the context of React, we also recommend reading it if you use a UI framework other than React.
 
-```js
-// /pages/+config.js
+```ts
+// /pages/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   // Enable HTML Streaming. Let Vike extensions decide whether to use a Node.js or Web stream.
@@ -25,36 +27,40 @@ export default {
   stream: 'web',
   // Enable HTML Streaming. Force the stream to be a Node.js Stream.
   stream: 'node'
-}
+} satisfies Config
 ```
 
 ## Inheritance
 
 Enable for all your pages:
 
-```js
-// /pages/+config.js
+```ts
+// /pages/+config.ts
+
+import type { Config } from 'vike/types'
 
 // This config applies to all pages (/pages/**).
 export default {
   stream: false
-}
+} satisfies Config
 ```
 
 Enable only for some pages:
 
-```js
-// /pages/admin/+config.js
+```ts
+// /pages/admin/+config.ts
+
+import type { Config } from 'vike/types'
 
 /* This config applies only to admin pages (/pages/admin/**) such as:
    FILESYSTEM                            URL
-   /pages/admin/+Page.js                 /admin
-   /pages/admin/user/@id/+Page.js        /admin/user/@id
-   /pages/admin/product/@id/+Page.js     /admin/product/@id
+   /pages/admin/+Page.ts                 /admin
+   /pages/admin/user/@id/+Page.ts        /admin/user/@id
+   /pages/admin/product/@id/+Page.ts     /admin/product/@id
 */
 export default {
   stream: false
-}
+} satisfies Config
 ```
 
 For an improved file and config organization, you can consider using a <Link href="/routing#domain-driven-file-structure">domain-driven file structure</Link>.

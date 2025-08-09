@@ -23,22 +23,24 @@ Use <Link href="/new">vike.dev/new</Link> for creating a new `vike-solid` app.
 
 To add `vike-solid` to an existing Vike app: install the `vike-solid` npm package (e.g. `$ npm install vike-solid`) then extend your existing `+config.js` file (or create one) with `vike-solid`:
 
-```js
-// /pages/+config.js
+```ts
+// /pages/+config.ts
 
+import type { Config } from 'vike/types'
 import vikeSolid from 'vike-solid/config'// [!code ++]
 
 export default {
   // ...
   extends: [vikeSolid]// [!code ++]
-}
+} satisfies Config
 ```
 
 You can then use <Link href="#under-the-hood">new settings introduced by `vike-solid`</Link>:
 
-```js
-// /pages/+config.js
+```ts
+// /pages/+config.ts
 
+import type { Config } from 'vike/types'
 import vikeSolid from 'vike-solid/config'
 
 export default {
@@ -48,7 +50,7 @@ export default {
   ssr: false,// [!code ++]
 
   extends: [vikeSolid]
-}
+} satisfies Config
 ```
 
 

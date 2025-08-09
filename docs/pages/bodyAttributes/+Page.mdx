@@ -11,13 +11,15 @@ Environment: server
 
 The `bodyAttributes` setting adds attributes to the `<body>` tag.
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   // <body class="dark">
   bodyAttributes: { class: 'dark' }
-}
+} satisfies Config
 ```
 
 

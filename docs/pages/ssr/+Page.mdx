@@ -17,24 +17,28 @@ Setting to enable/disable Server-Side Rendering (SSR). You can disable SSR for a
 
 To disable SSR for all your pages:
 
-```js
-// /pages/+config.js
+```ts
+// /pages/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   // Applies to all pages
   ssr: false
-}
+} satisfies Config
 ```
 
 To disable SSR only for some pages:
 
-```js
-// /pages/admin-panel/+config.js
+```ts
+// /pages/admin-panel/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   // Applies only to all pages living under /pages/admin-panel/
   ssr: false
-}
+} satisfies Config
 ```
 
 ```bash

@@ -19,7 +19,7 @@ PUBLIC_ENV__SOME_KEY=123
 >
 > For [files not processed by Vite](https://github.com/vikejs/vike/issues/562), you need to manually install [dotenv](https://github.com/motdotla/dotenv) for your `.env` values to also be available in files that aren't processed by Vite.
 
-```js
+```ts
 function somewhere() {
   // Environment variables prefixed with PUBLIC_ENV__ can be used anywhere: in server-side code
   // as well as in client-side code.
@@ -27,7 +27,7 @@ function somewhere() {
 }
 ```
 
-```js
+```ts
 function data() {
   // Environment variables without the PUBLIC_ENV__ prefix can be used only in server-side code.
   // If this data() hook is loaded only on the server-side (which is the case
@@ -36,7 +36,7 @@ function data() {
 }
 ```
 > Keep in mind that <code>{'import.me'+'ta.env.SOME_ENV'}</code> is statically replaced:
-> ```js
+> ```ts
 > // ❌ Won't work
 > import.meta.env['SOME_ENV']
 > // ❌ Won't work

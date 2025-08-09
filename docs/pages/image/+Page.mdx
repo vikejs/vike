@@ -13,14 +13,15 @@ Environment: server
 
 The `image` setting sets the [preview image upon URL sharing](https://ahrefs.com/blog/open-graph-meta-tags).
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
 
+import type { Config } from 'vike/types'
 import previewImage from './previewImage.jpg'
 
 export default {
   image: previewImage
-}
+} satisfies Config
 ```
 
 > It adds
@@ -38,8 +39,8 @@ export default {
 
 You can set its value using a <Link href="/pageContext">`pageContext`</Link> function:
 
-```tsx
-// pages/some-page/+image.js
+```ts
+// pages/some-page/+image.ts
 // Environment: server
 
 import type { Data } from './+data'

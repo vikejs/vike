@@ -21,14 +21,14 @@ It's usually used for:
 
 Most of the time, the `onBeforePrerenderStart()` hook is used for providing the URLs of parameterized routes.
 
-```js
-// /pages/movie/+route.js
+```ts
+// /pages/movie/+route.ts
 
 export default '/movie/@movieId'
 ```
 
-```js
-// /pages/movie/+onBeforePrerenderStart.js
+```ts
+// /pages/movie/+onBeforePrerenderStart.ts
 // Environment: build-time (Node.js/Bun/Deno)
 
 export { onBeforePrerenderStart }
@@ -52,14 +52,14 @@ If you have a high number of pages that are to be pre-rendered, then running the
 
 You can make pre-rendering significantly faster by providing the <Link href="/pageContext">`pageContext`</Link> of pages in `onBeforePrerenderStart()` hooks.
 
-```js
-// /pages/movie/+route.js
+```ts
+// /pages/movie/+route.ts
 
 export default '/movie/@movieId'
 ```
 
-```js
-// /pages/movie/+onBeforePrerenderStart.js
+```ts
+// /pages/movie/+onBeforePrerenderStart.ts
 // Environment: build-time (Node.js/Bun/Deno)
 
 export { onBeforePrerenderStart }

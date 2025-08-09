@@ -1,12 +1,14 @@
 import { Link } from '@brillout/docpress'
 
-```js
-// +config.js
+```ts
+// +config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   // Default value: false
   hydrationCanBeAborted: true
-}
+} satisfies Config
 ```
 
 > The `hydrationCanBeAborted` setting only applies if you enabled <Link href="/client-routing">Client Routing</Link>.

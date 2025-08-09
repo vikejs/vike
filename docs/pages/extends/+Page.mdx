@@ -2,15 +2,16 @@ import { Link } from '@brillout/docpress'
 
 You can install <Link href="/extensions">Vike extensions</Link> by using `extends`:
 
-```js
-// /pages/+config.js
+```ts
+// /pages/+config.ts
 
+import type { Config } from 'vike/types'
 import vikeReact from 'vike-react/config'
 
 export default {
   // Install `vike-react`. (Technically speaking: inherit the configuration `vikeReact`.)
   extends: vikeReact
-}
+} satisfies Config
 ```
 
 > <Link href="/config#inheritance">Config inheritance</Link> also applies to `extends`.

@@ -15,11 +15,13 @@ cd dist/client/
 grep -r 'loaded twice'
 ```
 
-```js
-// vite.config.js
+```ts
+// vite.config.ts
+
+import type { UserConfig } from 'vite'
 
 export default {
   // Temporarily disable minification to make it easier to inspect /dist/client
   build: { minify: false }
-}
+} satisfies UserConfig
 ```

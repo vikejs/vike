@@ -6,8 +6,8 @@ import '../../../components/tabs.css'
 
 Make sure to upgrade `vike` to version `>=0.4.227`.
 
-```js
-// vite.config.js
+```ts
+// vite.config.ts
 
 import { pages } from "vike-cloudflare";// [!code --]
 import { defineConfig } from "vite";
@@ -19,9 +19,10 @@ export default defineConfig({
 });
 ```
 
-```js
-// +config.js
+```ts
+// +config.ts
 
+import type { Config } from 'vike/types'
 import vikeCloudflare from "vike-cloudflare/config";// [!code ++]
 
 export default {
@@ -29,7 +30,7 @@ export default {
     // ...
     vikeCloudflare// [!code ++]
   ]
-}
+} satisfies Config
 ```
 
 If your are using <Link href="/hono" /> or <Link href="/hattip" />, some additional modifications are required:
@@ -41,8 +42,8 @@ If your are using <Link href="/hono" /> or <Link href="/hattip" />, some additio
   </TabList>
 
   <TabPanel>
-    ```js
-    // vite.config.js
+    ```ts
+    // vite.config.ts
 
     import devServer from "@hono/vite-dev-server";// [!code --]
     import { pages } from "vike-cloudflare";// [!code --]
@@ -61,9 +62,10 @@ If your are using <Link href="/hono" /> or <Link href="/hattip" />, some additio
     });
     ```
 
-    ```js
-    // +config.js
+    ```ts
+    // +config.ts
 
+    import type { Config } from 'vike/types'
     import vikeCloudflare from "vike-cloudflare/config";// [!code ++]
 
     export default {
@@ -74,7 +76,7 @@ If your are using <Link href="/hono" /> or <Link href="/hattip" />, some additio
       server: {// [!code ++]
         entry: "hono-entry.ts"// [!code ++]
       }// [!code ++]
-    }
+    } satisfies Config
     ```
 
     ```json
@@ -95,7 +97,7 @@ If your are using <Link href="/hono" /> or <Link href="/hattip" />, some additio
     ```
   </TabPanel>
   <TabPanel>
-    ```js
+    ```ts
     import { hattip } from "@hattip/vite";// [!code --]
     import { pages } from "vike-cloudflare";// [!code --]
     import { defineConfig } from "vite";
@@ -113,9 +115,10 @@ If your are using <Link href="/hono" /> or <Link href="/hattip" />, some additio
     });
     ```
 
-    ```js
-    // +config.js
+    ```ts
+    // +config.ts
 
+    import type { Config } from 'vike/types'
     import vikeCloudflare from "vike-cloudflare/config";// [!code ++]
 
     export default {
@@ -126,7 +129,7 @@ If your are using <Link href="/hono" /> or <Link href="/hattip" />, some additio
       server: {// [!code ++]
         entry: "hattip-entry.ts"// [!code ++]
       }// [!code ++]
-    }
+    } satisfies Config
     ```
 
     ```json

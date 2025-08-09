@@ -2,8 +2,8 @@ import { Link, FileAdded } from '@brillout/docpress'
 
 Your <Link href="/config#files">`+` files</Link> should have only one export:
 
-```js
-// pages/index/+Page.js
+```ts
+// pages/index/+Page.ts
 
 // ✅ Main export
 export { Page }
@@ -17,8 +17,8 @@ export { SomeSharedComponent }
 
 The problem is that it often causes unnecessary code to be loaded on the client-side. For example:
 
-```js
-// pages/index/+Page.js
+```ts
+// pages/index/+Page.ts
 
 // This CSS is loaded every time SomeSharedComponent is imported
 import './landing-page.css'
@@ -27,8 +27,8 @@ export function SomeSharedComponent() {
   // ...
 }
 ```
-```js
-// pages/about/+Page.js
+```ts
+// pages/about/+Page.ts
 
 // ❌ Bad: the /about page loads landing-page.css, which usually isn't what you want
 import { SomeSharedComponent } from '../index/+Page'
@@ -42,22 +42,22 @@ import { SomeSharedComponent } from '../index/+Page'
 Move shared code into a separate file:
 
 <FileAdded>
-```js
-// components/SomeSharedComponent.js
+```ts
+// components/SomeSharedComponent.ts
 
 export function SomeSharedComponent() {
   // ...
 }
 ```
 </FileAdded>
-```js
-// pages/about/+Page.js
+```ts
+// pages/about/+Page.ts
 
 import { SomeSharedComponent } from '../index/+Page'// [!code --]
 import { SomeSharedComponent } from '../../components/SomeSharedComponent'// [!code ++]
 ```
-```js
-// pages/index/+Page.js
+```ts
+// pages/index/+Page.ts
 
 import './landing-page.css'
 import { SomeSharedComponent } from '../../components/SomeSharedComponent'// [!code ++]

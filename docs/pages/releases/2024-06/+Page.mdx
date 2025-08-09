@@ -119,11 +119,11 @@ Solid users already had `clientOnly()` and there is a feature request for `vike-
 
 There is now an official way to pass the HTTP request headers:
 
-```js
+```ts
 import { renderPage } from 'vike/server'
 
 // Server middleware
-app.get('*', async (req) => {
+app.get('*', async (req: Request) => {
   const pageContextInit = {
     urlOriginal: req.url,
     headersOriginal: req.headers

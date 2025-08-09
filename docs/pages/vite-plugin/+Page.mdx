@@ -2,15 +2,16 @@ import { Link } from '@brillout/docpress'
 
 Environment: development & build-time (Node.js/Deno/Bun)  
 
-```js
-// vite.config.js
+```ts
+// vite.config.ts
 
+import type { UserConfig } from 'vite'
 import vike from 'vike/plugin'
 
 export default {
   // Make sure to include `vike()` and not `vike`
   plugins: [vike()]
-}
+} satisfies UserConfig
 ```
 
 Vike's Vite plugin doesn't have any options. (All <Link href="/settings">Vike settings</Link> are defined in <Link href="/config#files">`+` files</Link>).

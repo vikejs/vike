@@ -20,8 +20,10 @@ If a <Link href="/hooks">hook</Link> returns a promise that takes too much time 
 
 You can configure the timeout of hooks:
 
-```js
-// +config.js
+```ts
+// +config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   hooksTimeout: {
@@ -32,15 +34,17 @@ export default {
       error: 60 * 1000
     }
   }
-}
+} satisfies Config
 ```
 
 ## Disable
 
 You can disable timeouts:
 
-```js
-// +config.js
+```ts
+// +config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   hooksTimeout: {
@@ -52,7 +56,7 @@ export default {
     // promise returned by onRenderClient()
     onRenderClient: false
   }
-}
+} satisfies Config
 ```
 
 <Warning>
@@ -65,11 +69,13 @@ export default {
 
 You can also disable timeouts for all hooks:
 
-```js
-// +config.js
+```ts
+// +config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   // We strongly recommend against this
   hooksTimeout: false
-}
+} satisfies Config
 ```

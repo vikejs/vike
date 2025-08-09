@@ -4,7 +4,7 @@ Instead of using relative import paths,
 which can be cumbersome,
 you can use path aliases:
 
-```js
+```ts
 import { Counter } from '../../../../components/Counter'// [!code --]
 import { Counter } from '#root/components/Counter'// [!code ++]
 ```
@@ -12,7 +12,7 @@ import { Counter } from '#root/components/Counter'// [!code ++]
 Where `#root/` denotes your project's root directory.
 
 You may need to define your path aliases at up to three different places:
- - `vite.config.js#resolve.alias` (for files processed by Vite)
+ - `vite.config.ts#resolve.alias` (for files processed by Vite)
  - `tsconfig.json#compilerOptions.paths` (for TypeScript)
  - `package.json#imports` (for Node.js files that aren't processed by Vite)
 
@@ -24,8 +24,10 @@ Example:
 
 ## Vite
 
-```js
-// vite.config.js
+```ts
+// vite.config.ts
+
+import type { UserConfig } from 'vite'
 
 export default {
   resolve: {
@@ -33,7 +35,7 @@ export default {
      "#root": __dirname,
     }
   }
-}
+} satisfies UserConfig
 ```
 
 > The Vite config `resolve.alias` only applies to files that are processed by Vite.

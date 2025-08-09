@@ -61,13 +61,15 @@ The trick here is to directly modify the built code at `node_modules/`, while us
 By default, the client-side code in `dist/client/` is minified, which makes debugging difficult. You can temporarily disable minification:
 
 
-```js
-// vite.config.js
+```ts
+// vite.config.ts
+
+import type { UserConfig } from 'vite'
 
 export default {
   build: { minify: false },
   // ...
-}
+} satisfies UserConfig
 ```
 
 You can then easily trace back where code in `dist/client/` originates from:

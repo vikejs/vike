@@ -20,15 +20,17 @@ You can workaround problematic npm packages by using on of the following:
 
 ### `ssr.noExternal`
 
-```js
-// vite.config.js
+```ts
+// vite.config.ts
+
+import type { UserConfig } from 'vite'
 
 export default {
   ssr: {
     // Add problematic npm package here:
     noExternal: ['some-npm-package']
   }
-}
+} satisfies UserConfig
 ```
 
 See [Vite > `ssr.noExternal`](https://vitejs.dev/config/ssr-options.html#ssr-noexternal).
@@ -39,9 +41,10 @@ See [Vite > `ssr.noExternal`](https://vitejs.dev/config/ssr-options.html#ssr-noe
 
 ### `vite-plugin-cjs-interop`
 
-```js
-// vite.config.js
+```ts
+// vite.config.ts
 
+import type { UserConfig } from 'vite'
 import { cjsInterop } from "vite-plugin-cjs-interop"
 
 export default {
@@ -61,7 +64,7 @@ export default {
       ]
     })
   ]
-}
+} satisfies UserConfig
 ```
 
 See [GitHub > `cyco130/vite-plugin-cjs-interop`](https://github.com/cyco130/vite-plugin-cjs-interop).
@@ -163,7 +166,7 @@ Node.js v18.0.0
 
 For default exports, the workaround proposed by Node.js may not work and you may need to do this instead:
 
-```js
+```ts
 import DefaultImport from "some-library";// [!code --]
 import pkg from 'some-library';// [!code ++]
 const DefaultImport = pkg.default ?? pkg;// [!code ++]
@@ -308,7 +311,7 @@ Use the component trace to find out which component is `undefined` / an `object`
 
 A local workaround is usually this:
 
-```js
+```ts
 import SomeComponent from "some-npm-package"// [!code --]
 import pkg from "some-npm-package"// [!code ++]
 // This:// [!code ++]

@@ -17,8 +17,8 @@ Most notably, the returned `pageContext` object includes data fetched via <Link 
 
 ## Example
 
-```js
-// /pages/star-wars/+data.server.js
+```ts
+// /pages/star-wars/+data.server.ts
 
 // This data() hook is always called on the server-side. But, upon page navigation, the data
 // needs to be available on the client-side thus Vike makes a /star-wars/index.pageContext.json
@@ -65,9 +65,9 @@ Vike makes a `pageContext.json` request for a page if and only if one of the two
   > - <Link href="/data#environment" />
   > - <Link href="/onBeforeRender#environment" />
 - The `pageContextInit` at <Link href="/renderPage">`renderPage()`</Link> contains a property that is included in <Link href="/passToClient">`passToClient`</Link>.
-  ```js
+  ```ts
   // Vike server middleware
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     const pageContextInit = {
       urlOriginal: req.originalUrl,
       // If passToClient contains 'user' then Vike makes a pageContext.json request

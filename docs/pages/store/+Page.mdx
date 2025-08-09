@@ -48,33 +48,37 @@ The integration can be broken down into three steps:
 Determine the store's initial state on the server-side (during SSR) and <Link href="/pageContext#custom">make it available as `pageContext.storeInitialState`</Link>.
 
 To achieve that, you can create the store at <Link href="/onCreatePageContext">`+onCreatePageContext.server.js`</Link>  and then retrieve its initial sate at <Link href="/onAfterRenderHtml">`+onAfterRenderHtml.js`</Link>:
-```js
-// pages/+onCreatePageContext.server.js
+```ts
+// pages/+onCreatePageContext.server.ts
 // Environment: server
 
+import type { PageContextServer } from 'vike/types'
 import { createStore } from 'awesome-store'
 
-export function onCreatePageContext(pageContext) {
+export function onCreatePageContext(pageContext: PageContextServer) {
   pageContext.store = createStore()
 }
 ```
-```js
-// pages/+onAfterRenderHtml.js
+```ts
+// pages/+onAfterRenderHtml.ts
 // Environment: server
 
-export function onAfterRenderHtml(pageContext) {
+import type { PageContextServer } from 'vike/types'
+
+export function onAfterRenderHtml(pageContext: PageContextServer) {
   pageContext.storeInitialState = pageContext.store.getState()
 }
 ```
 If you use React then you may also need to use <Link href="/Wrapper">`+Wrapper`</Link>:
-```js
-// pages/+Wrapper.jsx
+```ts
+// pages/+Wrapper.tsx
 // Environment: server, client
 
+import React from 'react'
 import { Provider } from 'awesome-store/react'
 import { usePageContext } from 'vike-react/usePageContext'
 
-export default function StoreProvider({ children }) {
+export default function StoreProvider({ children }: { children: React.ReactNode }) {
   const pageContext = usePageContext()
   return <Provider store={pageContext.store}>{children}</Provider>
 }
@@ -83,24 +87,27 @@ export default function StoreProvider({ children }) {
 **2. `passToClient`**
 
 Make `pageContext.storeInitialState` available on the client-side by using <Link href="/passToClient">`passToClient`</Link>:
- ```js
- // pages/+config.js
+ ```ts
+ // pages/+config.ts
+
+import type { Config } from 'vike/types'
 
  export default {
    passToClient: ['storeInitialState']
- }
+ } satisfies Config
  ```
 
 **3. Hydration**
 
 On the client-side, initialize the store with `pageContext.storeInitialState` upon hydration, for example at <Link href="/onBeforeRenderClient">`+onBeforeRenderClient`</Link>:
-```js
-// pages/+onBeforeRenderClient.js
+```ts
+// pages/+onBeforeRenderClient.ts
 // Environment: client
 
+import type { PageContextClient } from 'vike/types'
 import { createStore } from 'awesome-store'
 
-export function onBeforeRenderClient(pageContext) {
+export function onBeforeRenderClient(pageContext: PageContextClient) {
   if (pageContext.isHydration) {
     // Hydration. We must use the same state than on the server-side.
     pageContext.globalContext.store = createStore(pageContext.storeInitialState)

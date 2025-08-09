@@ -13,12 +13,14 @@ Environment: server
 
 The `description` setting sets the [SEO description tags](https://moz.com/learn/seo/meta-description).
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   description: 'This website is a Vike demo.'
-}
+} satisfies Config
 ```
 
 > It adds
@@ -37,8 +39,8 @@ export default {
 
 You can set its value using a <Link href="/pageContext">`pageContext`</Link> function:
 
-```tsx
-// pages/some-page/+description.js
+```ts
+// pages/some-page/+description.ts
 // Environment: server, client
 
 import type { Data } from './+data'

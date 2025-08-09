@@ -2,8 +2,8 @@ import { Link } from '@brillout/docpress'
 
 For a page `/pages/movie/+Page.js`, you can define its Route String in an adjacent file `/pages/movie/+route.js`.
 
-```js
-// /pages/movie/+route.js
+```ts
+// /pages/movie/+route.ts
 
 // Match URLs such as /movie/123 or /movie/abc
 export default '/movie/@id'
@@ -32,8 +32,8 @@ For more advanced routing logic, consider using a <Link href="/route-function">R
 
 ## Globs
 
-```js
-// /pages/product/+route.js
+```ts
+// /pages/product/+route.ts
 
 export default '/product/*'
 ```
@@ -69,15 +69,15 @@ If you define multiple globs (e.g. `/*/movie/@id/*`), their values are available
 
 You can use a <Link href="#globs">glob</Link> to catch all URLs:
 
-```js
-// /pages/catch-all/+route.js
+```ts
+// /pages/catch-all/+route.ts
 
 // Route all URLs to a single page
 export default '*'
 ```
 
-```js
-// /pages/catch-all/+Page.js
+```ts
+// /pages/catch-all/+Page.ts
 
 // The single page of our app.
 export { Page }

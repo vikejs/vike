@@ -15,8 +15,8 @@ ReferenceError: window is not defined
 ```
 </CodeBlockTransformer>
 
-```js
-// ~/my-app/some/file.js
+```ts
+// ~/my-app/some/file.ts
 
 // This file should be loaded only on the client-side
 
@@ -25,8 +25,8 @@ export function someFunction() {
 }
 ```
 
-```js
-// ~/my-app/some/other-file.js
+```ts
+// ~/my-app/some/other-file.ts
 
 // This file is loaded on both client- and server-side
 
@@ -41,8 +41,8 @@ The error, which is thrown by Node.js(/Bun/Deno), is that [the `window` object](
 
 The solution is typically one of the following:
 1. Make sure `someFunction()` is called only on the client-side:
-   ```js
-   // ~/my-app/some/other-file.js
+   ```ts
+   // ~/my-app/some/other-file.ts
 
    // This file is loaded on both client- and server-side
 
@@ -52,8 +52,8 @@ The solution is typically one of the following:
      someFunction()// [!code --]
    }
    ```
-   ```js
-   // ~/my-app/somewhere/else.js
+   ```ts
+   // ~/my-app/somewhere/else.ts
 
    // This file is loaded on the client-side only.
 
@@ -63,8 +63,8 @@ The solution is typically one of the following:
    }
    ```
 1. Or make `someFunction()` <Link href="/glossary#isomorphic">isomorphic</Link>:
-   ```js
-   // ~/my-app/some/file.js
+   ```ts
+   // ~/my-app/some/file.ts
 
    // This file should be loaded only on the client-side// [!code --]
    // This file can be loaded on both client- and server-side// [!code ++]

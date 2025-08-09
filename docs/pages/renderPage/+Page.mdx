@@ -21,11 +21,12 @@ The `renderPage()` function enables you to embed Vike into any server.
 
 ## Usage
 
-```js
-// server/index.js
+```ts
+// server/index.ts
 
 // In this example we use Express.js but we could use any other server framework
 import express from 'express'
+import type { Request, Response } from 'express'
 import { renderPage, createDevMiddleware } from 'vike/server'
 
 const isProduction = process.env.NODE_ENV === 'production'
@@ -54,7 +55,7 @@ async function startServer() {
   // SSR middleware.
   // Note: it should always be the last middleware, because it's a catch-all
   // middleware that supersedes any middleware placed after it.
-  app.get('*', async (req, res) => {
+  app.get('*', async (req: Request, res: Response) => {
     const pageContextInit = {
       // Required: the URL of the page
       urlOriginal: req.originalUrl,

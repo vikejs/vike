@@ -11,15 +11,16 @@ The `onCreateApp()` hook is called right after the
 [Vue app](https://vuejs.org/guide/essentials/application.html) is created, giving you the opportunity to extend it,
 typically for registering a [Vue plugin](https://vuejs.org/guide/reusability/plugins.html).
 
-```js
-// pages/+onCreateApp.js
+```ts
+// pages/+onCreateApp.ts
 // Environment: server, client
 
 export { onCreateApp }
 
+import type { OnCreateAppSync } from 'vike-vue'
 import SomeVuePlugin from 'some-vue-plugin'
 
-const onCreateApp = (pageContext) => {
+const onCreateApp: OnCreateAppSync = (pageContext): ReturnType<OnCreateAppSync> => {
   if (pageContext.isRenderingHead) return // Don't add the plugin when rendering <head>
   const { app } = pageContext
   app.use(SomeVuePlugin)

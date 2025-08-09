@@ -30,15 +30,16 @@ Examples of manually integrating HTML streaming (without using a <Link href="/ex
 
 ## Basics
 
-```js
-// /renderer/+onRenderHtml.js
+```ts
+// /renderer/+onRenderHtml.ts
 
 export { onRenderHtml }
 
+import type { PageContextServer } from 'vike/types'
 import { escapeInject } from 'vike/server'
 import { renderToStream } from 'some-ui-framework' // React, Vue, ...
 
-async function onRenderHtml(pageContext) {
+async function onRenderHtml(pageContext: PageContextServer) {
   const { Page } = pageContext
 
   const stream = renderToStream(Page)
@@ -54,12 +55,12 @@ async function onRenderHtml(pageContext) {
 
 Node.js(-like) environments (Node.js/Bun/Deno server, Vercel, AWS EC2, AWS Lambda, ...):
 
-```js
-// server.js
+```ts
+// server.ts
 
 import { renderPage } from 'vike/server'
 
-app.get("*", async (req, res) => {
+app.get("*", async (req: Request, res: Response) => {
   const pageContextInit = { urlOriginal: req.url }
   const pageContext = await renderPage(pageContextInit)
   const { httpResponse } = pageContext
@@ -77,8 +78,8 @@ app.get("*", async (req, res) => {
 
 Edge platforms (e.g. Cloudflare Workers):
 
-```js
-// worker.js
+```ts
+// worker.ts
 
 import { renderPage } from 'vike/server'
 
@@ -86,7 +87,7 @@ addEventListener('fetch', (event) => {
   event.respondWith(handleFetchEvent(event))
 })
 
-async function handleFetchEvent(event) {
+async function handleFetchEvent(event: Event) {
   const pageContextInit = { urlOriginal: event.request.url }
   const pageContext = await renderPage(pageContextInit)
   const { httpResponse } = pageContext
@@ -114,14 +115,15 @@ async function handleFetchEvent(event) {
 By default, the HTML stream isn't immediately sent to the user.
 Instead, Vike awaits for your UI framework to start its stream.
 
-```js
-// /renderer/+onRenderHtml.js
+```ts
+// /renderer/+onRenderHtml.ts
 
 export { onRenderHtml }
 
+import type { PageContextServer } from 'vike/types'
 import { renderToStream } from 'some-ui-framework' // React, Vue, ...
 
-async function onRenderHtml(pageContext) {
+async function onRenderHtml(pageContext: PageContextServer) {
   const { Page } = pageContext
 
   const stream = renderToStream(Page)
@@ -142,8 +144,12 @@ async function onRenderHtml(pageContext) {
 
 If you set `pageContext.enableEagerStreaming` to `true` then Vike starts emitting the HTML template right away.
 
-```js
-async function onRenderHtml(pageContext) {
+```ts
+
+import type { PageContextServer } from 'vike/types'
+import { renderToStream } from 'some-ui-framework' // React, Vue, ...
+
+async function onRenderHtml(pageContext: PageContextServer) {
   // The HTML template below is immediately sent to the user.
   const documentHtml = escapeInject`<!DOCTYPE html>
     <html>
@@ -171,15 +177,16 @@ async function onRenderHtml(pageContext) {
 
 If your UI framework provides a stream pipe, then you need to use `stampPipe()`.
 
-```js
-// /renderer/+onRenderHtml.js
+```ts
+// /renderer/+onRenderHtml.ts
 
 export { onRenderHtml }
 
+import type { PageContextServer } from 'vike/types'
 import { renderToStreamPipe } from 'some-ui-framework' // React, Vue, ...
 import { escapeInject, stampPipe } from 'vike/server'
 
-async function onRenderHtml(pageContext) {
+async function onRenderHtml(pageContext: PageContextServer) {
   const { Page } = pageContext
 
   const pipe = renderToStreamPipe(Page)
@@ -200,8 +207,8 @@ async function onRenderHtml(pageContext) {
 
 For Node.js:
 
-```js
-// server.js
+```ts
+// server.ts
 
 const pageContext = await renderPage(pageContextInit)
 const { httpResponse } = pageContext
@@ -211,8 +218,8 @@ httpResponse.pipe(res)
 
 If your server expects a readable stream (e.g. Cloudflare Workers) you can use `new TransformStream()`:
 
-```js
-// worker.js
+```ts
+// worker.ts
 
 const { readable, writable } = new TransformStream()
 httpResponse.pipe(writable)
@@ -221,15 +228,16 @@ const resp = new Response(readable)
 
 For some UI frameworks, such as Vue, you need a pipe wrapper:
 
-```js
-// /renderer/+onRenderHtml.js
+```ts
+// /renderer/+onRenderHtml.ts
 
 export { onRenderHtml }
 
+import type { PageContextServer } from 'vike/types'
 import { pipePageToWritable } from 'some-ui-framework'
 import { stampPipe, escapeInject } from 'vike/server'
 
-async function onRenderHtml(pageContext) {
+async function onRenderHtml(pageContext: PageContextServer) {
   // Using a pipe wrapper so that pipePageToWritable() can access pageContext.Page
   const pipeWrapper = (writable) => {
     pipePageToWritable(pageContext.Page, writable)
@@ -252,7 +260,7 @@ See <RepoLink path='/examples/cloudflare-workers-vue' /> for an example of using
 
 You can convert the stream to a string:
 
-```js
+```ts
 /* This won't work: (a stream cannot be consumed synchronously)
 const { body } = httpResponse
 res.send(body)
@@ -273,15 +281,16 @@ Consequently, you can determine the initial data (which needs to be passed to th
 
 In such situations, you can return a `pageContext` async function in your `onRenderHtml()` hook:
 
-```js
-// /renderer/+onRenderHtml.js
+```ts
+// /renderer/+onRenderHtml.ts
 
 export { onRenderHtml }
 
+import type { PageContextServer } from 'vike/types'
 import { escapeInject } from 'vike/server'
 import { renderToStream } from 'some-ui-framework' // React, Vue, ...
 
-async function onRenderHtml(pageContext) {
+async function onRenderHtml(pageContext: PageContextServer) {
   const { Page } = pageContext
 
   const stream = renderToStream(Page)

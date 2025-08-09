@@ -25,24 +25,28 @@ Vue example:
 ## Getting started
 
 1. Set `clientRouting` to `true`:
-   ```js
-   // /pages/+config.js
+   ```ts
+   // /pages/+config.ts
+   
+   import type { Config } from 'vike/types'
+
    export default {
      clientRouting: true
-   }
+   } satisfies Config
    ```
 
 2. Adapt your <Link text={<><code>onRenderClient()</code></>} href="/onRenderClient" /> hook:
 
-   ```js
-   // /renderer/+onRenderClient.js
+   ```ts
+   // /renderer/+onRenderClient.ts
    // Environment: client
 
    export { onRenderClient }
-
+   
+   import type { PageContextClient } from 'vike/types'
    import { renderToDom, hydrateDom } from 'some-ui-framework'
 
-   async function onRenderClient(pageContext) {
+   async function onRenderClient(pageContext: PageContextClient) {
      // `pageContext.isHydration` is set by Vike and is `true` when the page
      // is already rendered to HTML.
      if (pageContext.isHydration) {
@@ -111,19 +115,20 @@ Depending on the tool, you do either one of the following:
 
 To initialize once:
 
-```js
-// /renderer/+onRenderHtml.js
+```ts
+// /renderer/+onRenderHtml.ts
 // Environment: server
 
 export { onRenderHtml }
 
+import type { PageContextServer } from 'vike/types'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { renderToHtml } from 'some-ui-framework'
 import { getInitialState } from './getInitialState'
 
 // The `onRenderHtml()` hook is called only for the first page.
 // (Whereas `onBeforeRender()` is called as well upon page navigation.)
-async function onRenderHtml(pageContext) {
+async function onRenderHtml(pageContext: PageContextServer) {
   const initialState = await getInitialState()
 
   // We use `initialState` for rendering the HTML, so that the HTML contains
@@ -146,24 +151,27 @@ async function onRenderHtml(pageContext) {
 }
 ```
 
-```js
-// /renderer/+config.js
+```ts
+// /renderer/+config.ts
 // Environment: config
+
+import type { Config } from 'vike/types'
 
 export default {
   passToClient: ['initialState']
-}
+} satisfies Config
 ```
 
-```js
-// /renderer/+onRenderClient.js
+```ts
+// /renderer/+onRenderClient.ts
 // Environment: client
 
 export { onRenderClient }
 
+import type { PageContextClient } from 'vike/types'
 import { initClientSide } from './initClientSide'
 
-async function onRenderClient(pageContext) {
+async function onRenderClient(pageContext: PageContextClient) {
   // The first page is rendered to HTML and `pageContext.isHydration === true`
   if (pageContext.isHydration) {
     // `pageContext.initialState` is available here
@@ -179,8 +187,8 @@ async function onRenderClient(pageContext) {
 
 To initialize on every page navigation:
 
-```js
-// /renderer/+onBeforeRender.js
+```ts
+// /renderer/+onBeforeRender.ts
 // Environment: server
 
 export { onBeforeRender }
@@ -199,15 +207,16 @@ async function onBeforeRender() {
 }
 ```
 
-```js
-// /renderer/+onRenderClient.js
+```ts
+// /renderer/+onRenderClient.ts
 // Environment: client
 
 export { onRenderClient }
 
+import type { PageContextClient } from 'vike/types'
 import { initClientSide } from './initClientSide'
 
-async function onRenderClient(pageContext) {
+async function onRenderClient(pageContext: PageContextClient) {
   // We initialize the state for every page rendering. So not only
   // the first page but also any subsequent page navigation.
   initClientSide(pageContext.initialState)

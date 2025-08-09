@@ -23,22 +23,24 @@ Use <Link href="/new">vike.dev/new</Link> for creating a new `vike-vue` app.
 
 To add `vike-vue` to an existing Vike app: install the `vike-vue` npm package (e.g. `$ npm install vike-vue`) then extend your existing `+config.js` file (or create one) with `vike-vue`:
 
-```js
-// /pages/+config.js
+```ts
+// /pages/+config.ts
 
+import type { Config } from 'vike/types'
 import vikeVue from 'vike-vue/config'// [!code ++]
 
 export default {
   // ...
   extends: [vikeVue]// [!code ++]
-}
+} satisfies Config
 ```
 
 You can then use <Link href="#under-the-hood">new settings introduced by `vike-vue`</Link>:
 
-```js
-// /pages/+config.js
+```ts
+// /pages/+config.ts
 
+import type { Config } from 'vike/types'
 import vikeVue from 'vike-vue/config'
 
 export default {
@@ -48,7 +50,7 @@ export default {
   ssr: false,// [!code ++]
 
   extends: [vikeVue]
-}
+} satisfies Config
 ```
 
 

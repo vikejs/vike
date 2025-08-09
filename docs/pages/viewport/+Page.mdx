@@ -28,13 +28,15 @@ By default, Vike assumes your page to be responsive.
 
 If your page isn't responsive, then we recommend setting the initial page width shown to the user:
 
-```js
-// pages/admin-panel/+config.js
+```ts
+// pages/admin-panel/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   // The admin panel pages start to look good starting from a width of 1200px
   viewport: 1200
-}
+} satisfies Config
 ```
 
 > If your page looks and works well only starting from 1200px then we recommend setting the value to `1200`, so that the width shown to the user is 1200px (the virtual width), even on a mobile device with a real physical width of 600px: the browser will then zoom out the page by a factor of `2x` in order to match 1200px.
@@ -55,16 +57,18 @@ export default {
 
 You can also set any arbitrary `<meta name="viewport">` tag:
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   // Don't inject any `<meta name="viewport">` tag
   viewport: null
-}
+} satisfies Config
 ```
-```js
-// pages/+Head.js
+```ts
+// pages/+Head.ts
 
 // Same as Vike's default but adding `user-scalable=no` which makes sense for
 // highly interactive apps such as games.

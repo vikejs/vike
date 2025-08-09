@@ -14,8 +14,8 @@ Environment: client, and server if <Link href="/ssr">`ssr: true`</Link>
 
 The `+Loading` setting adds `<Suspense>` fallbacks, with the purpose of showing loading animations.
 
-```jsx
-// pages/+Loading.jsx
+```tsx
+// pages/+Loading.tsx
 
 export default {
   layout: LoadingLayout,
@@ -35,7 +35,7 @@ function LoadingComponent() {
 
 This is how `+Loading` is embedded:
 
-```jsx
+```tsx
 <Suspense fallback={Loading.layout}>             ⟸ component defined by +Loading.layout
   <Layout>                                       ⟸ component defined by +Layout
     <Page>                                       ⟸ component defined by +Page

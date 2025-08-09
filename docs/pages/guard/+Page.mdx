@@ -6,14 +6,15 @@ Environment: server (<Link href="#environment">configurable</Link>)
 
 The `guard()` hook enables you to protect pages from unauthorized and unexpected access.
 
-```js
-// /pages/admin/+guard.js
+```ts
+// /pages/admin/+guard.ts
 
+import type { PageContextServer } from 'vike/types'
 import { render } from 'vike/abort'
 
-// This guard() hook protects all pages /pages/admin/**/+Page.js
+// This guard() hook protects all pages /pages/admin/**/+Page.ts
 
-export async function guard(pageContext) {
+export async function guard(pageContext: PageContextServer) {
   if (!pageContext.user.isAdmin) {
     throw render(401, "You aren't allowed to access this page.")
   }

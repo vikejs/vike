@@ -10,11 +10,11 @@ Adding `.server.js` / `.client.js` / `.shared.js` to a file has following effect
 
 The most common use case for `.server.js` is to ensure that a file that contains secret information is never accidentally leaked to the client-side (and thus made public).
 
-```js
-// /server/database/credentials.server.js
+```ts
+// /server/database/credentials.server.ts
 
 // This file should *never* be imported by client-side code.
-// We use .server.js to guarantee that.
+// We use .server.ts to guarantee that.
 export default {
   password: 'WLa!9HW?E10a'
 }
@@ -35,10 +35,10 @@ If some client-side code does load `credentials.server.js` then Vike throws an e
 
 You can use `.client.js` to ensure that a file always runs on the client-side.
 
-```js
-// /utils/someClientCode.client.js
+```ts
+// /utils/someClientCode.client.ts
 
-// This code only works in the browser; we use .client.js to assert that this file is
+// This code only works in the browser; we use .client.ts to assert that this file is
 // never loaded on the server-side.
 
 window.onclick = () => {
@@ -60,7 +60,9 @@ For <Link href="/config#files">`+` files</Link>, the most common use case is to 
 >
 > ```ts
 > // /pages/product/@id/+config.ts
->
+> 
+> import type { Config } from 'vike/types'
+> 
 > export default {
 >   meta: {
 >     data: {
@@ -72,5 +74,5 @@ For <Link href="/config#files">`+` files</Link>, the most common use case is to 
 >       env: { server: false, client: true }
 >     }
 >   }
-> }
+> } satisfies Config
 > ```
