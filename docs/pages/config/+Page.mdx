@@ -274,7 +274,7 @@ It's similar to when you import images:
 ```ts
 import logo from '../images/logo.svg'
 // When you import an image, you don't actually load it: you get a URL instead.
-console.log(logo) // Prints: /assets/logo.svg
+console.log(logo) // /assets/logo.svg
 ```
 
 Vike transforms an import inside `+config.js` to be a pointer import if and only if the import resolves to a file that doesn't end with `.js`/`.ts`/`.mjs`/`.mts`/`.cjs`/`.cts`.
@@ -291,8 +291,8 @@ import Layout from '../layouts/LayoutDefault'
 // Resolves to the file ssr.js (a .js file) => normal import
 import ssr from './ssr'
 
-console.log(Layout) // Prints: import:../layouts/LayoutDefault:default
-console.log(ssr) // Prints: false
+console.log(Layout) // import:../layouts/LayoutDefault:default
+console.log(ssr) // false
 
 export default {
   Layout,
@@ -334,7 +334,7 @@ You can manually mark an import to be a pointer import:
 // Environment: config
 
 import ssr from './ssr' with { type: 'pointer' }
-console.log(ssr) // Prints: import:./ssr:default
+console.log(ssr) // import:./ssr:default
 ```
 
 <Construction>The `with { type: 'pointer' }` import attribute isn't implement yet, see workaround at [#1500](https://github.com/vikejs/vike/issues/1500).</Construction>
