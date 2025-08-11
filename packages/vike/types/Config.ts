@@ -225,6 +225,10 @@ type KeepScrollPosition =
   | string[]
   | ((pageContext: PageContextClient) => boolean | string | string[])
 
+/** The page's route.
+ *
+ * https://vike.dev/routing
+ */
 type Route = string | RouteSync | RouteAsync
 
 /** Page configuration.
