@@ -11,14 +11,14 @@ Get the app's <Link href="/config">configurations</Link> that are available at c
 ```ts
 // vite.config.ts
 
-import type { UserConfig } from 'vite'
+import type { UserConfig, Plugin } from 'vite'
 import { getVikeConfig } from 'vike/plugin'
 
 export default {
   plugins: [myVitePlugin()]
 } satisfies UserConfig
 
-function myVitePlugin() {
+function myVitePlugin(): Plugin {
   return {
     name: 'myVitePlugin',
     configResolved(config) {

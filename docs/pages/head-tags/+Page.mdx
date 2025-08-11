@@ -164,8 +164,9 @@ You can use the <Link href="/useConfig">`useConfig()` hook</Link> to set `<head>
 export type Data = Awaited<ReturnType<typeof data>>
 
 import { useConfig } from 'vike-react/useConfig' // or vike-{vue,solid}
+import { PageContextServer } from 'vike/types'
 
-export async function data() {
+export async function data(pageContext: PageContextServer) {
   const config = useConfig()
 
   const response = await fetch('https://star-wars.brillout.com/api/films.json')
