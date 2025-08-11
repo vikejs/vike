@@ -28,8 +28,6 @@ The central difference between the two hooks is that the value returned by `data
 
 export { data }
 
-import type { PageContextServer } from 'vike/types'
-
 function data() {
   const someValue = /* ... */
   // pageContext.data === someValue
@@ -42,8 +40,6 @@ function data() {
 // Environment: server
 
 export { onBeforeRender }
-
-import type { PageContextServer } from 'vike/types'
 
 function onBeforeRender() {
   const someValue1 = /* ... */
@@ -91,6 +87,7 @@ A single global `onBeforeRender()` hook orchestrating the custom setting:
 
 ```ts
 // /pages/+onBeforeRender.ts
+// Environment: server
 
 export { onBeforeRender }
 
