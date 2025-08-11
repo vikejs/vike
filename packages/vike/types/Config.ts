@@ -215,8 +215,6 @@ type RouteSync = (
   pageContext: PageContextServer | PageContextClient,
 ) => { routeParams?: Record<string, string>; precedence?: number } | boolean
 
-type Route = string | RouteSync | RouteAsync
-
 /** Whether the page scrolls to the top upon navigation.
  *
  * https://vike.dev/keepScrollPosition
@@ -226,6 +224,8 @@ type KeepScrollPosition =
   | string
   | string[]
   | ((pageContext: PageContextClient) => boolean | string | string[])
+
+type Route = string | RouteSync | RouteAsync
 
 /** Page configuration.
  *
