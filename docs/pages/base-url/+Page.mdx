@@ -8,7 +8,7 @@ import { ImportMeta } from '@brillout/docpress'
 
 To change the Base URL:
 
-1. Set [`vite.config.ts#base`](https://vitejs.dev/config/shared-options.html#base).
+1. Set [`vite.config.js#base`](https://vitejs.dev/config/shared-options.html#base).
    ```ts
    // vite.config.ts
    import type { UserConfig } from 'vite'
@@ -101,7 +101,6 @@ By default, the `baseAssets` setting applies to both development and production.
 
 ```ts
 // pages/+config.ts
-// Environment: config
 
 import type { Config } from 'vike/types'
 
@@ -124,7 +123,6 @@ You can do both:
 
 ```ts
 // pages/+config.ts
-// Environment: config
 
 import type { Config } from 'vike/types'
 
@@ -188,7 +186,7 @@ app.get('/some-base/*', async (req: Request, res: Response) => {
 Or use `pageContext.isBaseMissing`:
 
 ```ts
-app.get('*', async (req: Request, res: Response, next: NextFunction) => {
+app.get('*', async (req: Request, res: Response, next: Function) => {
   const pageContextInit = { urlOriginal: req.url }
   const pageContext = await renderPage(pageContextInit)
   if (pageContext.isBaseMissing) return next()
