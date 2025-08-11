@@ -17,12 +17,12 @@ typically for registering a [Vue plugin](https://vuejs.org/guide/reusability/plu
 
 export { onCreateApp }
 
-import type { OnCreateAppSync } from 'vike-vue'
 import SomeVuePlugin from 'some-vue-plugin'
+import type { PageContext } from 'vike/types'
 
-const onCreateApp: OnCreateAppSync = (pageContext): ReturnType<OnCreateAppSync> => {
+function onCreateApp(pageContext: PageContext) {
   if (pageContext.isRenderingHead) return // Don't add the plugin when rendering <head>
-  const { app } = pageContext
+  const app = pageContext.app!
   app.use(SomeVuePlugin)
 }
 ```
@@ -43,11 +43,11 @@ See [`vike-vue` > /examples/full/pages/+onCreateApp.ts](https://github.com/vikej
 
 export { onCreateApp }
 
-import type { OnCreateAppSync } from 'vike-vue'
 import SomeVuePlugin from 'some-vue-plugin'
+import type { PageContext } from 'vike/types'
 
-const onCreateApp: OnCreateAppSync = (pageContext): ReturnType<OnCreateAppSync> => {
-  const { app } = pageContext
+function onCreateApp(pageContext: PageContext) {
+  const app = pageContext.app!
   app.use(SomeVuePlugin)
 }
 ```
