@@ -10,6 +10,8 @@ export type {
   GlobalContextClientWithServerRouting,
 } from './PageContext.js'
 
+export type { PrerenderContextPublic as PrerenderContext } from '../node/prerender/runPrerender.js'
+
 // TO-DO/next-major-release: remove these three exports
 export type { PageContextBuiltInServer } from './PageContext.js'
 export type { PageContextBuiltInClientWithClientRouting } from './PageContext.js'
