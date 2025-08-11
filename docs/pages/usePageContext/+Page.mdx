@@ -53,7 +53,7 @@ app.provide('pageContext', pageContext)
   {{ pageContext.someProp }}
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { inject } from 'vue'
 const pageContext = inject('pageContext')
 </script>
@@ -89,7 +89,7 @@ setPageContext(app, pageContext)
 ```
 
 ```vue
-<script setup lang="ts">
+<script setup>
 import { usePageContext } from './path/to/usePageContext'
 const pageContext = usePageContext()
 </script>
@@ -118,7 +118,7 @@ app.config.globalProperties.$pageContext = pageContext
   {{ $pageContext.someProp }}
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { getCurrentInstance } from 'vue'
 // We can access `pageContext` here
 const pageContext = getCurrentInstance().appContext.config.globalProperties.$pageContext

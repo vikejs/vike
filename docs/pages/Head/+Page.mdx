@@ -143,7 +143,7 @@ Adding a `<script>` tag to only one/some pages isn't currently supported: [#2244
 If you use Vue, [`<script>` tags cannot be defined inside Vue SFC `<template>`](https://stackoverflow.com/questions/71430887/running-script-tags-within-template-on-vue-js/71442718#71442718). Instead use <Link href="/useConfig">`useConfig()`</Link>:
 
 ```vue
-<script setup lang="ts">
+<script setup>
 import { h } from 'vue'
 import { useConfig } from 'vike-vue/useConfig'
 const config = useConfig()
@@ -228,7 +228,7 @@ You can use <Link href="/useConfig">`useConfig()`</Link> with Vue's `innerHTML` 
   <img :src v-bind="otherAttrs" />
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { useAttrs, h } from 'vue'
 import { useConfig } from 'vike-vue/useConfig'
 

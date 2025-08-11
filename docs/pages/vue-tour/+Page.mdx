@@ -11,7 +11,7 @@ we define a new page by creating a new `+Page.vue` file.
   This page is rendered to HTML and interactive: <Counter />
 </template>
 
-<script setup lang="ts">
+<script setup>
 import Counter from '../../components/Counter.vue'
 </script>
 ```
@@ -127,7 +127,7 @@ Let's now have a look at how to fetch data.
   <p>Director: {{movie.director}}</p>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import type { Data } from './+data'
 import { useData } from 'vike-vue/useData'
 
