@@ -81,7 +81,7 @@ Alias for `pageContext.urlParsed.pathname`.
 <Prop name="urlParsed" />
 
 URL information:
-   ```ts
+   ```js
    {
      pathname: string
      pathnameOriginal: string
@@ -102,7 +102,7 @@ URL information:
    ```
    https://example.com/some-base-url/hello/s%C3%A9bastien?fruit=%C3%A2pple&fruit=orânge#%C3%A2ge
    ```
-   ```ts
+   ```js
    {
      // Without Base URL, and decodes escaped characters.
      pathname: '/hello/sébastien',
