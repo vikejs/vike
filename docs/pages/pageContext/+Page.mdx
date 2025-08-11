@@ -6,9 +6,12 @@ The `pageContext` object provides contextual information about the current page.
 ```ts
 // /pages/product/@id/+data.ts
 
+export { data }
+export type Data = Awaited<ReturnType<typeof data>>
+
 import type { PageContextServer } from 'vike/types'
 
-export async function data(pageContext: PageContextServer) {
+async function data(pageContext: PageContextServer) {
   // Common built-in properties
   pageContext.urlParsed.pathname // /product/42
   pageContext.routeParams.id // 42
@@ -265,9 +268,11 @@ For example <Link href="/onCreatePageContext">`+onCreatePageContext`</Link>:
 ```ts
 // pages/+onCreatePageContext.ts
 
+export { onCreatePageContext }
+
 import type { PageContext } from 'vike/types'
 
-export async function onCreatePageContext(pageContext: PageContext) {
+async function onCreatePageContext(pageContext: PageContext) {
   pageContext.myCustomProp = someValue
 }
 ```
@@ -279,9 +284,12 @@ Or <Link href="/data">`+data`</Link>:
 ```ts
 // pages/product/@id/+data.ts
 
+export { data }
+export type Data = Awaited<ReturnType<typeof data>>
+
 import type { PageContextServer } from 'vike/types'
 
-export async function data(pageContext: PageContextServer) {
+async function data(pageContext: PageContextServer) {
   const { data, queryDuration } = await fetchSomeData()
   pageContext.queryDuration = queryDuration
   return data

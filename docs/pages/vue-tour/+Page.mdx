@@ -147,12 +147,13 @@ export default '/star-wars/@movieId'
 // /pages/star-wars/movie/+data.ts
 // Environment: server
 
+export { data }
 export type Data = Awaited<ReturnType<typeof data>>
 
 import fetch from 'node-fetch'
 import type { PageContextServer } from 'vike/types'
 
-export async function data(pageContext: PageContextServer) {
+async function data(pageContext: PageContextServer) {
   // The route parameter of `/star-wars/@movieId` is available at `pageContext.routeParams`
   const { movieId } = pageContext.routeParams
 

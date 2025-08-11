@@ -16,10 +16,13 @@ You can use `useConfig()` inside any Vike hook, most notably <Link href="/data">
 ```tsx
 // pages/movies/+data.tsx
 
+export { data }
+export type Data = Awaited<ReturnType<typeof data>>
+
 import type { PageContextServer } from 'vike/types'
 import { useConfig } from 'vike-react/useConfig' // or vike-{vue,solid}
 
-export async function data(pageContext: PageContextServer) {
+async function data(pageContext: PageContextServer) {
   const config = useConfig()
 
   const response = await fetch('https://star-wars.brillout.com/api/films.json')
@@ -36,9 +39,9 @@ export async function data(pageContext: PageContextServer) {
 
 > Make sure to call `useConfig()` before any `await`:
 > ```ts
-> export async function data() {
+> async function data() {
 >   const response = await fetch('https://star-wars.brillout.com/api/films.json')
->   // ❌ Doesn't work: useConfig() has to be called before `await fetch()`
+>   // ❌ Doesn't work: useConfig() must be called before `await fetch()`
 >   const config = useConfig()
 > }
 > ```

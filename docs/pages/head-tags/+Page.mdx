@@ -161,12 +161,13 @@ You can use the <Link href="/useConfig">`useConfig()` hook</Link> to set `<head>
 // pages/movies/+data.ts
 // Environment: server
 
+export { data }
 export type Data = Awaited<ReturnType<typeof data>>
 
 import { useConfig } from 'vike-react/useConfig' // or vike-{vue,solid}
 import { PageContextServer } from 'vike/types'
 
-export async function data(pageContext: PageContextServer) {
+async function data(pageContext: PageContextServer) {
   const config = useConfig()
 
   const response = await fetch('https://star-wars.brillout.com/api/films.json')
@@ -183,7 +184,7 @@ export async function data(pageContext: PageContextServer) {
 
 > Make sure to call `useConfig()` before any `await`:
 > ```ts
-> export async function data() {
+> async function data() {
 >   const response = await fetch('https://star-wars.brillout.com/api/films.json')
 >   // ❌ Doesn't work: useConfig() must be called before `await fetch()`
 >   const config = useConfig()
@@ -212,9 +213,10 @@ export default (pageContext: PageContext<Data>) => `${pageContext.data.movies.le
 // pages/movies/+data.ts
 // Environment: server
 
+export { data }
 export type Data = Awaited<ReturnType<typeof data>>
 
-export async function data() {
+async function data() {
   const response = await fetch('https://star-wars.brillout.com/api/films.json')
   let { movies } = await response.json()
   return { movies }
