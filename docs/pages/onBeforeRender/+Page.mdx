@@ -55,7 +55,7 @@ function onBeforeRender() {
 }
 ```
 
-Another difference is that the entire `pageContext.data` value is always sent to the client-side, whereas with `onBeforeRender()` you can (and have to) decide which values are sent to the client-side by using <Link href="/passToClient">`passToClient`</Link>.
+Another difference is that the entire `pageContext.data` value is always sent to the client-side, whereas with `onBeforeRender()` you can (and must) decide which values are sent to the client-side by using <Link href="/passToClient">`passToClient`</Link>.
 
 In a nutshell: while `onBeforeRender()` requires more manual work, it also gives you more control.
 
