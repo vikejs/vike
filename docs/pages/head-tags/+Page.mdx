@@ -394,9 +394,9 @@ function Head() {
 // pages/movies/+title.ts
 // Environment: server, client
 
-import type { PageContextServer, PageContextClient } from 'vike/types'
+import type { PageContext } from 'vike/types'
 
-export function title(pageContext: PageContextServer | PageContextClient) {
+export function title(pageContext: PageContext) {
   const title = pageContext.locale === 'de-DE' ?
     'Star Wars Filme' :
     'Star Wars Movies'
