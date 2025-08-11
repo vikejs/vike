@@ -11,11 +11,14 @@
   - Add negligible breaking change
   - Maybe/eventually: `$ pnpm migrate pageContext.url`? Probably not for now: instead recommend `$ rename urlParsed url`.
 
-= TODO/typescript-docs
+= TO-DO/docs/typescript-javascript-toggle
 - Use detype
   - Vue SFC => transform `<script setup lang="ts">` but not `<script setup>`
-  - If code block mentions `+Page.ts` => transform to `+Page.js`
-    - E.g. https://github.com/vikejs/vike/blob/751f79e362048b2e821ef24c79c3d8016ba50593/docs/pages/Head/%2BPage.mdx#L91
+  - If code block mentions `someFile.ts` => transform to `someFile.js`
+    - https://github.com/vikejs/vike/blob/751f79e362048b2e821ef24c79c3d8016ba50593/docs/pages/Head/%2BPage.mdx#L91
+    - https://github.com/vikejs/vike/blob/8ec3316922865f1dceb578fc8055e6e03cee4c98/docs/pages/auth/%2BPage.mdx#L165-L166
+  - Don't show TS<->JS toggle for: https://github.com/vikejs/vike/blob/8ec3316922865f1dceb578fc8055e6e03cee4c98/docs/pages/Wrapper/%2BPage.mdx?plain=1#L12
+  - If detype doesn't work, look at what Astro does
 
 = TO-DO/next-major-release:
 == Highest Prio
