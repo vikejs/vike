@@ -52,6 +52,7 @@ export default {
 // Environment: server
 
 export { data }
+export type Data = Awaited<ReturnType<typeof data>>
 
 import type { PageContextServer } from 'vike/types'
 import fetch from 'node-fetch'

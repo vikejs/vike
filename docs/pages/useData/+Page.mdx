@@ -83,11 +83,11 @@ Using type inference as shown above is usually what you want, but if you want to
 export { data }
 export type { Data }
 
+import type { PageContextServer } from 'vike/types'
+
 type Data = /* the type you want to enforce */
 
-import type { DataAsync } from 'vike/types'
-
-const data: DataAsync = async (pageContext): Promise<Data> => {
+function data(pageContext: PageContextServer): Promise<Data> {
   // ...
 }
 ```
