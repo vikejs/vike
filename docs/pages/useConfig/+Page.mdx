@@ -117,26 +117,29 @@ export function Page() {
 ```
 
 > The `<Config>` and `<Head>` components are just `useConfig()` wrappers — they're only for convenience.
->
-> For example, the following change achieves the same:
+> The following doesn't make any difference:
 > ```ts
+> import { Config } from 'vike-react/Config' // or vike-{vue,solid}// [!code --]
+> import { Head } from 'vike-react/Head' // or vike-{vue,solid}// [!code --]
+> import { useConfig } from 'vike-react/useConfig' // or vike-{vue,solid}// [!code ++]
 > import type { Data } from './+data'
-> 
+>
 > export function Page() {
 >   const data = useData<Data>()
->   const config = useConfig()// [!code --]
+>   const config = useConfig()// [!code ++]
 >
->   config({// [!code --]
->     title: data.product.name,// [!code --]
->     Head: <meta property="og:image" content={data.product.image} />// [!code --]
->   })// [!code --]
+>   config({// [!code ++]
+>     title: data.product.name,// [!code ++]
+>     Head: <meta property="og:image" content={data.product.image} />// [!code ++]
+>   })// [!code ++]
 >
 >   return (
->     <Config title={data.product.name} />// [!code ++]
->     <Head>// [!code ++]
->       <meta property="og:image" content={data.product.image} />// [!code ++]
->     </Head>// [!code ++]
->     {/* ... */}
+>     <Config title={data.product.name} />// [!code --]
+>     <Head>// [!code --]
+>       <meta property="og:image" content={data.product.image} />// [!code --]
+>     </Head>// [!code --]
+>     <h1>{data.product.name}</h1>
+>     <p>{data.product.description}</p>
 >   )
 > }
 > ```
