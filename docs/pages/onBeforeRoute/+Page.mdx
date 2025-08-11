@@ -1,4 +1,3 @@
-import { HookTypeScriptHints } from '../../components'
 import { Link, Warning, RepoLink } from '@brillout/docpress'
 
 The `onBeforeRoute()` hook provides full control over routing.
@@ -6,11 +5,13 @@ The `onBeforeRoute()` hook provides full control over routing.
 It is usually used for [internationalization](/i18n):
 
 ```ts
+// Environment: server & client
+
 export { onBeforeRoute }
 
-import type { PageContextServer } from 'vike/types'
+import type { PageContext } from 'vike/types'
 
-function onBeforeRoute(pageContext: PageContextServer) {
+function onBeforeRoute(pageContext: PageContext) {
   const { urlWithoutLocale, locale } = extractLocale(pageContext.urlPathname)
   return {
     pageContext: {
@@ -25,20 +26,6 @@ You can also use it to [implement a custom router](https://github.com/vikejs/vik
 
 <Warning>For use cases other than i18n, open a GitHub ticket or reach out on Discord: `onBeforeRoute()` is purposely limited but the limitations can be lifted in order to unlock new capabilities.</Warning>
 
-
-## TypeScript
-
-```ts
-export { onBeforeRoute }
-
-import type { PageContextServer } from 'vike/types'
-
-function onBeforeRoute(pageContext: PageContextServer) {
-  // ...
-}
-```
-
-<HookTypeScriptHints hookTypeName="OnBeforeRouteSync" />
 
 ## See also
 
