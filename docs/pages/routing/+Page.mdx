@@ -12,9 +12,9 @@ For example:
 ```bash
 FILESYSTEM                     URL
 ====================           ======
-pages/index/+Page.ts           /
-pages/about/+Page.ts           /about
-pages/jobs/+Page.ts            /jobs
+pages/index/+Page.js           /
+pages/about/+Page.js           /about
+pages/jobs/+Page.js            /jobs
 ```
 
 > Vike always skips the `pages/` and `index/` directories when determining the URL.
@@ -29,7 +29,7 @@ For more details, see:
 ```bash
 FILESYSTEM                     URL
 ========================       =======================
-pages/movie/@id/+Page.ts       /movie/1, /movie/2, ...
+pages/movie/@id/+Page.js       /movie/1, /movie/2, ...
 ```
 
 > The parameter `id` is available at <Link href="/pageContext#routeParams">`pageContext.routeParams.id`</Link>.
@@ -41,10 +41,10 @@ You can organize your pages into groups:
 ```yaml
 FILESYSTEM                             URL
 ================================       ==================
-pages/(marketing)/index/+Page.ts       /
-pages/(marketing)/about/+Page.ts       /about
-pages/admin-panel/index/+Page.ts       /admin-panel
-pages/admin-panel/users/+Page.ts       /admin-panel/users
+pages/(marketing)/index/+Page.js       /
+pages/(marketing)/about/+Page.js       /about
+pages/admin-panel/index/+Page.js       /admin-panel
+pages/admin-panel/users/+Page.js       /admin-panel/users
 ```
 > Any directory inside parentheses such as `(marketing)` is ignored by Filesystem Routing.
 
@@ -52,14 +52,14 @@ It also enables you to easily set different configurations for different pages:
 
 ```yaml
 # Define a layout for all marketing pages
-pages/(marketing)/+Layout.ts
-pages/(marketing)/index/+Page.ts
-pages/(marketing)/about/+Page.ts
+pages/(marketing)/+Layout.js
+pages/(marketing)/index/+Page.js
+pages/(marketing)/about/+Page.js
 
 # Define a layout for all admin pages
-pages/admin-panel/+Layout.ts
-pages/admin-panel/index/+Page.ts
-pages/admin-panel/users/+Page.ts
+pages/admin-panel/+Layout.js
+pages/admin-panel/index/+Page.js
+pages/admin-panel/users/+Page.js
 ```
 
 > Config inheritance is explained at: <Link href="/config#inheritance" />
@@ -75,8 +75,8 @@ You can also define your files within a `src/` directory:
 ```yaml
 FILESYSTEM                     URL
 ========================       ======
-src/pages/index/+Page.ts       /
-src/pages/about/+Page.ts       /about
+src/pages/index/+Page.js       /
+src/pages/about/+Page.js       /about
 ```
 
 > Vike always skips the `src/` directory when determining the URL.
@@ -91,17 +91,17 @@ For advanced apps, you may want to consider a *domain-driven file structure*.
 
 ```yaml
 # Domain: marketing
-(marketing)/pages/+Layout.ts
-(marketing)/pages/index/+Page.ts
-(marketing)/pages/about/+Page.ts
-(marketing)/components/ContactUs.ts
+(marketing)/pages/+Layout.js
+(marketing)/pages/index/+Page.js
+(marketing)/pages/about/+Page.js
+(marketing)/components/ContactUs.js
 
 # Domain: admin panel
-admin-panel/pages/+Layout.ts
-admin-panel/pages/index/+Page.ts
-admin-panel/pages/users/+Page.ts
-admin-panel/components/Charts.ts
-admin-panel/database/fetchUsers.ts
+admin-panel/pages/+Layout.js
+admin-panel/pages/index/+Page.js
+admin-panel/pages/users/+Page.js
+admin-panel/components/Charts.js
+admin-panel/database/fetchUsers.js
 ```
 
 See also:
