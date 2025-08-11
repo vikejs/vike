@@ -232,7 +232,7 @@ You can use <Link href="/useConfig">`useConfig()`</Link> with Vue's `innerHTML` 
 import { useAttrs, h } from 'vue'
 import { useConfig } from 'vike-vue/useConfig'
 
-const { src, author, ...otherAttrs } = useAttrs()
+const { src, author, ...otherAttrs } = useAttrs() as Record<string, string>
 
 const config = useConfig()
 config({
