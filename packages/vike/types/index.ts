@@ -21,6 +21,11 @@ export type {
   Config,
   ConfigMeta as Meta,
   ImportString,
+  KeepScrollPosition,
+} from './Config.js'
+
+// TO-DO/next-major-release: remove
+export type {
   DataAsync,
   DataSync,
   GuardAsync,
@@ -45,8 +50,8 @@ export type {
   OnRenderHtmlSync,
   RouteAsync,
   RouteSync,
-  KeepScrollPosition,
 } from './Config.js'
+
 export type { ConfigResolved } from './Config/PageContextConfig.js'
 export type { ConfigEnv } from './PageConfig.js'
 export type {

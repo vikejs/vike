@@ -9,7 +9,10 @@ export type { HookNameOld }
 export type { HookNamePage }
 export type { HookNameGlobal }
 export type { ImportString }
+export type { Route }
+export type { KeepScrollPosition }
 
+// TO-DO/next-major-release: remove
 export type { DataAsync }
 export type { DataSync }
 export type { GuardAsync }
@@ -34,8 +37,6 @@ export type { OnRenderHtmlAsync }
 export type { OnRenderHtmlSync }
 export type { RouteAsync }
 export type { RouteSync }
-export type { Route }
-export type { KeepScrollPosition }
 
 import type {
   PrefetchSetting,
@@ -103,30 +104,15 @@ type Config = ConfigBuiltIn &
   )
 
 // Purposeful code duplication for improving QuickInfo IntelliSense
-/** Hook for fetching data.
- *
- *  https://vike.dev/data
- */
+/** @deprecated See https://vike.dev/data */
 type DataAsync<Data = unknown> = (pageContext: PageContextServer) => Promise<Data>
-/** Hook for fetching data.
- *
- *  https://vike.dev/data
- */
+/** @deprecated See https://vike.dev/data */
 type DataSync<Data = unknown> = (pageContext: PageContextServer) => Data
-/** Protect page(s), e.g. forbid unauthorized access.
- *
- *  https://vike.dev/guard
- */
+/** @deprecated https://vike.dev/guard */
 type GuardAsync = (pageContext: PageContextServer) => Promise<void>
-/** Protect page(s), e.g. forbid unauthorized access.
- *
- *  https://vike.dev/guard
- */
+/** @deprecated See https://vike.dev/guard */
 type GuardSync = (pageContext: PageContextServer) => void
-/** Global Hook called before the whole pre-rendering process starts.
- *
- * https://vike.dev/onBeforePrerenderStart
- */
+/** @deprecated See https://vike.dev/onBeforePrerenderStart */
 type OnBeforePrerenderStartAsync<Data = unknown> = () => Promise<
   (
     | string
@@ -136,10 +122,7 @@ type OnBeforePrerenderStartAsync<Data = unknown> = () => Promise<
       }
   )[]
 >
-/** Global Hook called before the whole pre-rendering process starts.
- *
- * https://vike.dev/onBeforePrerenderStart
- */
+/** @deprecated See https://vike.dev/onBeforePrerenderStart */
 type OnBeforePrerenderStartSync<Data = unknown> = () => (
   | string
   | {
@@ -147,22 +130,13 @@ type OnBeforePrerenderStartSync<Data = unknown> = () => (
       pageContext: Partial<Vike.PageContext & { data: Data }>
     }
 )[]
-/** Hook called before the page is rendered.
- *
- *  https://vike.dev/onBeforeRender
- */
+/** @deprecated See https://vike.dev/onBeforeRender */
 type OnBeforeRenderAsync = (
   pageContext: PageContextServer,
 ) => Promise<{ pageContext: Partial<Vike.PageContext> } | void>
-/** Hook called before the page is rendered.
- *
- *  https://vike.dev/onBeforeRender
- */
+/** @deprecated See https://vike.dev/onBeforeRender */
 type OnBeforeRenderSync = (pageContext: PageContextServer) => { pageContext: Partial<Vike.PageContext> } | void
-/** Hook called before the URL is routed to a page.
- *
- * https://vike.dev/onBeforeRoute
- */
+/** @deprecated See https://vike.dev/onBeforeRoute */
 type OnBeforeRouteAsync = (pageContext: PageContextServer) => Promise<{
   pageContext: Partial<
     | {
@@ -175,10 +149,7 @@ type OnBeforeRouteAsync = (pageContext: PageContextServer) => Promise<{
     | Vike.PageContext
   >
 }>
-/** Hook called before the URL is routed to a page.
- *
- * https://vike.dev/onBeforeRoute
- */
+/** @deprecated https://vike.dev/onBeforeRoute */
 type OnBeforeRouteSync = (pageContext: PageContextServer) => {
   pageContext: Partial<
     | {
@@ -191,69 +162,33 @@ type OnBeforeRouteSync = (pageContext: PageContextServer) => {
     | Vike.PageContext
   >
 }
-/** Hook called after the page is hydrated.
- *
- * https://vike.dev/onHydrationEnd
- */
+/** @deprecated See https://vike.dev/onHydrationEnd */
 type OnHydrationEndAsync = (pageContext: PageContextClient) => Promise<void>
-/** Hook called after the page is hydrated.
- *
- * https://vike.dev/onHydrationEnd
- */
+/** @deprecated https://vike.dev/onHydrationEnd */
 type OnHydrationEndSync = (pageContext: PageContextClient) => void
-/** Hook called after the user navigates to a new page.
- *
- * https://vike.dev/onPageTransitionEnd
- */
+/** @deprecated See https://vike.dev/onPageTransitionEnd */
 type OnPageTransitionEndAsync = (pageContext: PageContextClient) => Promise<void>
-/** Hook called after the user navigates to a new page.
- *
- * https://vike.dev/onPageTransitionEnd
- */
+/** @deprecated See https://vike.dev/onPageTransitionEnd */
 type OnPageTransitionEndSync = (pageContext: PageContextClient) => void
-/** Hook called before the user navigates to a new page.
- *
- * https://vike.dev/onPageTransitionStart
- */
+/** @deprecated See https://vike.dev/onPageTransitionStart */
 type OnPageTransitionStartAsync = (pageContext: PageContextClient) => Promise<void>
-/** Hook called before the user navigates to a new page.
- *
- * https://vike.dev/onPageTransitionStart
- */
+/** @deprecated See https://vike.dev/onPageTransitionStart */
 type OnPageTransitionStartSync = (pageContext: PageContextClient) => void
-/** Page Hook called when pre-rendering starts.
- *
- * https://vike.dev/onPrerenderStart
- */
+/** @deprecated See https://vike.dev/onPrerenderStart */
 type OnPrerenderStartAsync = (prerenderContext: {
   pageContexts: PageContextServer[]
 }) => Promise<{ prerenderContext: { pageContexts: PageContextServer[] } }>
-/** Page Hook called when pre-rendering starts.
- *
- * https://vike.dev/onPrerenderStart
- */
+/** @deprecated See https://vike.dev/onPrerenderStart */
 type OnPrerenderStartSync = (prerenderContext: { pageContexts: PageContextServer[] }) => {
   prerenderContext: { pageContexts: PageContextServer[] }
 }
-/** Hook called when page is rendered on the client-side.
- *
- * https://vike.dev/onRenderClient
- */
+/** @deprecated See https://vike.dev/onRenderClient */
 type OnRenderClientAsync = (pageContext: PageContextClient) => Promise<void>
-/** Hook called when page is rendered on the client-side.
- *
- * https://vike.dev/onRenderClient
- */
+/** @deprecated See https://vike.dev/onRenderClient */
 type OnRenderClientSync = (pageContext: PageContextClient) => void
-/** Hook called when page is rendered to HTML on the server-side.
- *
- * https://vike.dev/onRenderHtml
- */
+/** @deprecated See https://vike.dev/onRenderHtml */
 type OnRenderHtmlAsync = (pageContext: PageContextServer) => Promise<OnRenderHtmlReturn>
-/** Hook called when page is rendered to HTML on the server-side.
- *
- * https://vike.dev/onRenderHtml
- */
+/** @deprecated See https://vike.dev/onRenderHtml */
 type OnRenderHtmlSync = (pageContext: PageContextServer) => OnRenderHtmlReturn
 type OnRenderHtmlReturn =
   | DocumentHtml
@@ -275,13 +210,11 @@ type OnRenderHtmlPageContextReturn = Partial<
 type RouteAsync = (
   pageContext: PageContextServer | PageContextClient,
 ) => Promise<{ routeParams?: Record<string, string>; precedence?: number } | boolean>
-/** The page's URL(s).
- *
- *  https://vike.dev/route
- */
+/** @deprecated See https://vike.dev/route */
 type RouteSync = (
   pageContext: PageContextServer | PageContextClient,
 ) => { routeParams?: Record<string, string>; precedence?: number } | boolean
+
 type Route = string | RouteSync | RouteAsync
 
 /** Whether the page scrolls to the top upon navigation.
