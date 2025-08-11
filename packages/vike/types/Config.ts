@@ -108,7 +108,7 @@ type Config = ConfigBuiltIn &
 type DataAsync<Data = unknown> = (pageContext: PageContextServer) => Promise<Data>
 /** @deprecated This type is deprecated, see https://vike.dev/data */
 type DataSync<Data = unknown> = (pageContext: PageContextServer) => Data
-/** @deprecated https://vike.dev/guard */
+/** @deprecated This type is deprecated, see https://vike.dev/guard */
 type GuardAsync = (pageContext: PageContextServer) => Promise<void>
 /** @deprecated This type is deprecated, see https://vike.dev/guard */
 type GuardSync = (pageContext: PageContextServer) => void
@@ -149,7 +149,7 @@ type OnBeforeRouteAsync = (pageContext: PageContextServer) => Promise<{
     | Vike.PageContext
   >
 }>
-/** @deprecated https://vike.dev/onBeforeRoute */
+/** @deprecated This type is deprecated, see https://vike.dev/onBeforeRoute */
 type OnBeforeRouteSync = (pageContext: PageContextServer) => {
   pageContext: Partial<
     | {
@@ -164,7 +164,7 @@ type OnBeforeRouteSync = (pageContext: PageContextServer) => {
 }
 /** @deprecated This type is deprecated, see https://vike.dev/onHydrationEnd */
 type OnHydrationEndAsync = (pageContext: PageContextClient) => Promise<void>
-/** @deprecated https://vike.dev/onHydrationEnd */
+/** @deprecated This type is deprecated, see https://vike.dev/onHydrationEnd */
 type OnHydrationEndSync = (pageContext: PageContextClient) => void
 /** @deprecated This type is deprecated, see https://vike.dev/onPageTransitionEnd */
 type OnPageTransitionEndAsync = (pageContext: PageContextClient) => Promise<void>
