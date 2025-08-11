@@ -18,8 +18,9 @@
   - If code block mentions `someOtherFile.ts` => transform to `someOtherFile.js`
     - https://github.com/vikejs/vike/blob/751f79e362048b2e821ef24c79c3d8016ba50593/docs/pages/Head/%2BPage.mdx#L91
     - https://github.com/vikejs/vike/blob/8ec3316922865f1dceb578fc8055e6e03cee4c98/docs/pages/auth/%2BPage.mdx#L165-L166
-  - Don't show toggle for TypeScript-only code blocks
-    - For example: https://github.com/vikejs/vike/blob/4f867077d6a2c0fd6228c74de3dbbb33fa2a8c8a/docs/pages/head-tags/%2BPage.mdx#L325-L327
+  - Don't show toggle for TypeScript-only code blocks:
+    https://github.com/vikejs/vike/blob/4f867077d6a2c0fd6228c74de3dbbb33fa2a8c8a/docs/pages/head-tags/%2BPage.mdx#L325-L327
+    https://github.com/vikejs/vike/blob/41a844462c46ec0c63294815185416da6e5cf2e5/docs/pages/meta/%2BPage.mdx#L469-L473
     - Some kind of flags like in the following?
       ~~~mdx
       ```ts ts-only
