@@ -11,6 +11,12 @@
   - Add negligible breaking change
   - Maybe/eventually: `$ pnpm migrate pageContext.url`? Probably not for now: instead recommend `$ rename urlParsed url`.
 
+= TODO/typescript-docs
+- Use detype
+  - Vue SFC => transform `<script setup lang="ts">` but not `<script setup>`
+  - If code block mentions `+Page.ts` => transform to `+Page.js`
+    - E.g. https://github.com/vikejs/vike/blob/751f79e362048b2e821ef24c79c3d8016ba50593/docs/pages/Head/%2BPage.mdx#L91
+
 = TO-DO/next-major-release:
 == Highest Prio
 - Triage https://github.com/vikejs/vike/issues?q=state%3Aopen%20label%3A%22v1%20release%20%3Astar2%3A%22 and remove non-breaking changes => release new feature in `1.x.x` release branch
