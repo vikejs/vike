@@ -114,7 +114,7 @@ Instead of Filesystem Routing, you can define a Route String.
 
 ```ts
 // /pages/product/+route.ts
-// Environment: server
+// Environment: server & client
 
 // This file defines the route of /pages/product/+Page.ts
 
@@ -134,17 +134,17 @@ You can use Route Functions to get full programmatic flexibility for advanced ro
 
 ```ts
 // /pages/product/edit/+route.ts
-// Environment: server
+// Environment: server & client
 
 // This file defines the route of /pages/product/edit/+Page.ts
 
-import type { PageContextServer } from 'vike/types'
+import type { PageContext } from 'vike/types'
 // We use a RegExp, but we could as well use a routing library.
 import partRegex from 'part-regex'
 const routeRegex = partRegex`/product/${/([0-9]+)/}/edit`
 
 // Route Function
-export function route(pageContext: PageContextServer) {
+export function route(pageContext: PageContext) {
   const match = pageContext.urlPathname.match(routeRegex)
   if (!match) return false
   const [, id] = match
