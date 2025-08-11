@@ -36,11 +36,10 @@ Vike's CLI doesn't have any option: use the `VITE_CONFIG` environment variable i
 
 Most notably, if you use Vite's `createServer()`, then use `createDevMiddleware()` instead:
 
-```ts
-// server/index.ts
+```js
+// server/index.js
 
 import express from 'express'
-import type { Request, Response } from 'express'
 import { renderPage } from 'vike/server'// [!code --]
 import { renderPage, createDevMiddleware } from 'vike/server'// [!code ++]
 
@@ -68,7 +67,7 @@ async function startServer() {
   }
 
   // SSR middleware
-  app.get('*', async (req: Request, res: Response) => {
+  app.get('*', async (req, res) => {
     const pageContext = await renderPage({ urlOriginal: req.originalUrl })
     const { body, statusCode, headers } = pageContext.httpResponse
     headers.forEach(([name, value]) => res.setHeader(name, value))

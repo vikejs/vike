@@ -1,6 +1,6 @@
 import { Link } from '@brillout/docpress'
 
-Move your Vike settings from `vite.config.ts` to `pages/+config.ts` (or `renderer/+config.ts`):
+Move your Vike settings from `vite.config.js` to `pages/+config.js` (or `renderer/+config.js`):
 
 ```ts
 // vite.config.ts
@@ -37,6 +37,6 @@ export default {
 } satisfies Config
 ```
 
-> Support for defining Vike settings in `vite.config.ts` will be removed in the next major release.
+> Support for defining Vike settings in `vite.config.js` will be removed in the next major release.
 
 > All Vike settings are now defined by `+` files. (It's an important change as it unlocks new capabilities for Vike extensions.)
