@@ -4,12 +4,14 @@ The `filesystemRoutingRoot` setting allows you to change the <Link href="/filesy
 
 <Warning>Don't use `filesystemRoutingRoot` to change the Base URL, see <Link href="/base-url" /> instead.</Warning>
 
-```js
-// /marketing/+config.js
+```ts
+// /marketing/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   filesystemRoutingRoot: '/'
-}
+} satisfies Config
 ```
 
 ```bash

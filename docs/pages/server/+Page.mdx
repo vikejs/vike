@@ -19,16 +19,17 @@ This page contains the entire documentation for `vike-server`.
 
 To add `vike-server` to an existing Vike app: install the `vike-server` npm package (e.g. `$ npm install vike-server`) then extend your existing <Link href="/config#files">`+config.js`</Link> file (or create one) with `vike-server`:
 
-```js
-// +config.js
+```ts
+// +config.ts
 
+import type { Config } from 'vike/types'
 import vikeServer from 'vike-server/config'// [!code ++]
 
 export const config = {
   extends: [vikeServer],// [!code ++]
   // Points to your server entry// [!code ++]
-  server: 'server/index.js'// [!code ++]
-}
+  server: 'server/index.ts'// [!code ++]
+} satisfies Config
 ```
 
 Update your production `script` in `package.json`:
@@ -54,8 +55,8 @@ Create (or update) your server entry:
     <Tab>Elysia</Tab>
   </TabList>
   <TabPanel>
-    ```js
-    // server/index.js
+    ```ts
+    // server/index.ts
 
     import { Hono } from 'hono'
     import { apply } from 'vike-server/hono'
@@ -75,8 +76,8 @@ Create (or update) your server entry:
     ```
   </TabPanel>
   <TabPanel>
-    ```js
-    // server/index.js
+    ```ts
+    // server/index.ts
 
     import express from 'express'
     import { apply } from 'vike-server/express'
@@ -96,8 +97,8 @@ Create (or update) your server entry:
     ```
   </TabPanel>
   <TabPanel>
-    ```js
-    // server/index.js
+    ```ts
+    // server/index.ts
 
     import fastify from 'fastify'
     import rawBody from 'fastify-raw-body'
@@ -124,8 +125,8 @@ Create (or update) your server entry:
     ```
   </TabPanel>
   <TabPanel>
-    ```js
-    // server/index.js
+    ```ts
+    // server/index.ts
 
     import { createApp } from 'h3'
     import { apply } from 'vike-server/h3'
@@ -145,8 +146,8 @@ Create (or update) your server entry:
     ```
   </TabPanel>
   <TabPanel>
-    ```js
-    // server/index.js
+    ```ts
+    // server/index.ts
 
     import { Elysia } from 'elysia'
     import { apply } from 'vike-server/elysia'
@@ -193,7 +194,7 @@ In production run `$ NODE_ENV=production node dist/server/index.js` (or Bun/Deno
 
 ## `serve()` options
 
-```js
+```ts
 serve(app, {
   // [Required] Server port. It's ignored in Cloudflare and Vercel Edge (there
   // isn't any server in serverless deployment).
@@ -249,12 +250,14 @@ serve(app, {
 
 To define <Link href="/pageContext#custom">custom `pageContext` properties</Link> based on the HTTP request, you can use <Link href="/onCreatePageContext">`+onCreatePageContext.server.js`</Link> with <Link href="/pageContext#runtime">`pageContext.runtime`</Link>, for example:
 
-```js
-// pages/+onCreatePageContext.server.js
+```ts
+// pages/+onCreatePageContext.server.ts
 // Environment: server
 
+import type { PageContextServer } from 'vike/types'
+
 // This hook is called upon new incoming HTTP requests
-export async function onCreatePageContext(pageContext) {
+export async function onCreatePageContext(pageContext: PageContextServer) {
   pageContext.user = pageContext.runtime.req.user
 }
 ```
@@ -275,29 +278,33 @@ With `standalone: true`, the build output directory ([`dist/`](https://vite.dev/
 >  If the production code built with `standalone: true` fails to run with errors like `ENOENT: no such file or directory`, then disable standalone mode or replace
 >  the npm package throwing the error with another npm package. (The issue is that some npm package have dependencies that aren't explicit and, consequently, cannot be statically analyzed and cannot be included in the standalone bundle.)
 
-```js
-// +config.js
+```ts
+// +config.ts
 
+import type { Config } from 'vike/types'
 import vikeServer from 'vike-server/config'
 
 export const config = {
   // ...
   extends: [vikeServer],
   server: {
-    entry: 'server/index.js',
+    entry: 'server/index.ts',
     standalone: true
   }
-}
+} satisfies Config
 ```
 
 Options:
 
-```js
+```ts
+
+import type { Config } from 'vike/types'
+
 export const config = {
   // ...
   extends: [vikeServer],
   server: {
-    entry: 'server/index.js',
+    entry: 'server/index.ts',
     standalone: {
       esbuild: {
         minify: true,
@@ -305,7 +312,7 @@ export const config = {
       }
     }
   }
-}
+} satisfies Config
 ```
 
 > Instead of using `standalone: true`, we recommend tools such as [`pnpm deploy --prod`](https://pnpm.io/cli/deploy).
@@ -327,7 +334,7 @@ In production, `vike-server` compresses all Vike responses.
 
 You can disable it:
 
-```js
+```ts
 apply(app, {
   compress: false
 })
@@ -338,7 +345,7 @@ apply(app, {
 
 If you want to use HTTPS in development, pass `createServer` and the HTTPS certificates to `serve()`:
 
-```js
+```ts
 import { createServer } from 'node:https'
 /* Or with HTTP2:
 import { createSecureServer as createServer } from 'node:http2'

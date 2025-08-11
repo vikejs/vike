@@ -11,7 +11,7 @@ we define a new page by creating a new `+Page.vue` file.
   This page is rendered to HTML and interactive: <Counter />
 </template>
 
-<script setup>
+<script setup lang="ts">
 import Counter from '../../components/Counter.vue'
 </script>
 ```
@@ -26,16 +26,18 @@ FILESYSTEM                  URL
 
 We can also define a page's route with a *Route String* (for parameterized routes such as `/movies/@id`) or a *Route Function* (for full programmatic flexibility).
 
-```js
-// /pages/index/+route.js
+```ts
+// /pages/index/+route.ts
 
 // Note how the two files share the same folder `/pages/index/`; this is how Vike
-// knows that `/pages/index/+route.js` defines the route of `/pages/index/+Page.vue`.
+// knows that `/pages/index/+route.ts` defines the route of `/pages/index/+Page.vue`.
+
+import type { PageContext } from 'vike/types'
 
 // Route Function
-export default pageContext => pageContext.urlPathname === '/'
+export default (pageContext: PageContext) => pageContext.urlPathname === '/'
 
-// If we don't create a `+route.js` file then Vike does Filesystem Routing
+// If we don't create a `+route.ts` file then Vike does Filesystem Routing
 ```
 
 
@@ -43,17 +45,18 @@ export default pageContext => pageContext.urlPathname === '/'
 
 Unlike Nuxt, we control how our pages are rendered.
 
-```js
-// /renderer/+onRenderHtml.js
+```ts
+// /renderer/+onRenderHtml.ts
 // Environment: server
 
 import { createSSRApp, h } from 'vue'
 import { renderToString } from '@vue/server-renderer'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
+import type { PageContextServer } from "vike/types"
 
 export { onRenderHtml }
 
-async function onRenderHtml(pageContext) {
+async function onRenderHtml(pageContext: PageContextServer) {
   const { Page, data } = pageContext
   const app = createSSRApp({
     render: () => h(Page, data)
@@ -75,15 +78,16 @@ async function onRenderHtml(pageContext) {
 }
 ```
 
-```js
-// /renderer/+onRenderClient.js
+```ts
+// /renderer/+onRenderClient.ts
 // Environment: client
 
 import { createSSRApp, h } from 'vue'
 
 export { onRenderClient }
+import type { PageContextClient } from "vike/types"
 
-async function onRenderClient(pageContext) {
+async function onRenderClient(pageContext: PageContextClient) {
   const { Page, data } = pageContext
   const app = createSSRApp({
     render: () => h(Page, data)
@@ -103,7 +107,7 @@ This control enables us to *easily* and *naturally* integrate any tool we want (
 
 Note how we defined the files `onRenderClient.js` and `onRenderHtml.js` in a directory called `/renderer/`: that way, we tell Vike to apply the `onRenderHtml()` and `onRenderClient()` hooks to all our pages.
 
-This means we can now create a new page just by defining a new `+Page.jsx` file (the `+route.js` file is optional).
+This means we can now create a new page just by defining a new `+Page.vue` file (the `+route.js` file is optional).
 
 Plus files in `/renderer/` can be overridden. For example, we can override the `onRenderHtml()` and `onRenderClient()` hooks for rendering some of
 our pages with a completely different UI framework such as React.
@@ -123,31 +127,37 @@ Let's now have a look at how to fetch data.
   <p>Director: {{movie.director}}</p>
 </template>
 
-<script lang="js">
-const data = ['movie']
-export default { props: data }
+<script setup lang="ts">
+import type { Data } from './+data'
+import { useData } from 'vike-vue/useData'
+
+const movie = useData<Data>()
 </script>
 ```
 
-```js
-// /pages/star-wars/movie/+route.js
+```ts
+// /pages/star-wars/movie/+route.ts
 // Environment: server
 
 // Route String
 export default '/star-wars/@movieId'
 ```
 
-```js
-// /pages/star-wars/movie/+data.js
+```ts
+// /pages/star-wars/movie/+data.ts
 // Environment: server
 
-import fetch from 'node-fetch'
+export { data }
+export type Data = Awaited<ReturnType<typeof data>>
 
-export async function data(pageContext) {
+import fetch from 'node-fetch'
+import type { PageContextServer } from 'vike/types'
+
+async function data(pageContext: PageContextServer) {
   // The route parameter of `/star-wars/@movieId` is available at `pageContext.routeParams`
   const { movieId } = pageContext.routeParams
 
-  // By default, +data.js files are loaded and executed only on the server-side
+  // By default, +data.ts files are loaded and executed only on the server-side
   // which means we can use SQL/ORM queries here.
   const response = await fetch(`https://star-wars.brillout.com/api/films/${id}.json`)
   let movie = await response.json()

@@ -9,8 +9,8 @@ You can install error tracking:
 
 You can use <Link href="/client">`+client.js`</Link> in order to make sure that your error tracker is initialized before any other code executes.
 
-```js
-// pages/+client.js
+```ts
+// pages/+client.ts
 
 // This is a good place to initialize an error tracker such as Sentry
 Sentry.init()
@@ -26,8 +26,8 @@ window.addEventListener('error', (err) => {
 
 Server-side errors are exposed over `pageContext.errorWhileRendering` at <Link href="/renderPage">`renderPage()`</Link>:
 
-```js
-// server.js
+```ts
+// server.ts
 
 import { renderPage } from 'vike/server'
 
@@ -35,7 +35,7 @@ import { renderPage } from 'vike/server'
 server.addMiddleware({
   method: 'GET',
   route: '*', // catch-all
-  async handler(request) {
+  async handler(request: Request) {
     const pageContext = await renderPage({ urlOriginal: request.url })
 
     if (pageContext.errorWhileRendering) {
@@ -60,7 +60,7 @@ See also <Link href="/error-page" />.
 
 You can use any error tracker, such as [Sentry](https://sentry.io/), [Bugsnag](https://www.bugsnag.com/), [Rollbar](https://rollbar.com/), or your own custom error tracking. For that, make sure to use the error tracker's server-side interceptor. For example with Sentry:
 
-```js
+```ts
 import * as Sentry from "@sentry/node";
 
 // ...

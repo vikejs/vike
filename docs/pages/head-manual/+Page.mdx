@@ -5,16 +5,17 @@ If you don't use <UiFrameworkExtension name />, then you have direct control ove
 
 > If you use <UiFrameworkExtension name />, then see <Link href="/head-tags" />.
 
-```js
-// /renderer/+onRenderHtml.js
+```ts
+// /renderer/+onRenderHtml.ts
 // Environment: server
 
+import type { PageContextServer } from 'vike/types'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { renderToHtml } from 'some-ui-framework'
 
 export { onRenderHtml }
 
-async function onRenderHtml(pageContext) {
+async function onRenderHtml(pageContext: PageContextServer) {
   return escapeInject`<html>
     <head>
       <title>SpaceX</title>
@@ -43,16 +44,17 @@ To define `<head>` tags by any UI component:
 
 For example:
 
-```js
-// /renderer/+onRenderHtml.js
+```ts
+// /renderer/+onRenderHtml.ts
 // Environment: server
 
 export { onRenderHtml }
 
+import type { PageContextServer } from 'vike/types'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import renderToHtml from 'some-ui-framework'
 
-async function onRenderHtml(pageContext) {
+async function onRenderHtml(pageContext: PageContextServer) {
   // We use our UI framework to pass `pageContext.headProps` to all components
   // of our component tree. (E.g. React Context or Vue's `app.config.globalProperties`.)
   const pageHtml = await renderToHtml(
@@ -77,8 +79,8 @@ async function onRenderHtml(pageContext) {
 }
 ```
 
-```js
-// SomeComponent.js
+```ts
+// SomeComponent.ts
 
   // Inside a UI component
   const pageContext = usePageContext()
@@ -92,23 +94,27 @@ async function onRenderHtml(pageContext) {
 
 If you use Client Routing, make sure to update `document.title` upon page navigation:
 
-```js
-// /renderer/+config.js
+```ts
+// /renderer/+config.ts
 // Environment: config
+
+import type { Config } from 'vike/types'
 
 export default {
   // Make pageContext.headProps available on the client-side.
   passToClient: ['headProps']
-}
+} satisfies Config
 ```
 
-```js
-// /renderer/+onRenderClient.js
+```ts
+// /renderer/+onRenderClient.ts
 // Environment: client
 
 export { onRenderClient }
 
-async function onRenderClient(pageContext) {
+import type { PageContextClient } from 'vike/types'
+
+async function onRenderClient(pageContext: PageContextClient) {
   if (!pageContext.isHydration) {
     // Client-side navigation — we update the page's title
     document.title = pageContext.headProps.title
@@ -126,16 +132,17 @@ But we recommend using such library only if you have a rationale as the aforemen
 
 Head libraries already sanitize the HTML `<head>`, this means you can skip `escapeInject` and wrap the overall result with `dangerouslySkipEscape()`.
 
-```js
-// /renderer/+onRenderHtml.js
+```ts
+// /renderer/+onRenderHtml.ts
 // Environment: server
 
 export { onRenderHtml }
 
+import type { PageContextServer } from 'vike/types'
 import { dangerouslySkipEscape } from 'vike/server'
 import { renderToHtml } from 'some-ui-framework'
 
-async function onRenderHtml(pageContext) {
+async function onRenderHtml(pageContext: PageContextServer) {
   return dangerouslySkipEscape(await renderToHtml(pageContext.Page))
 }
 ```

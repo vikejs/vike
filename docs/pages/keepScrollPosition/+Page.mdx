@@ -17,13 +17,15 @@ For a control on a link-by-link basis, see <Link href="/clientRouting#settings">
 
 By default, the page is scrolled to the top upon navigation. But if you set `keepScrollPosition` to `true` then the page's scroll position is preserved instead.
 
-```js
-// pages/product/@id/+config.js
+```ts
+// pages/product/@id/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   // Don't scroll to top when navigating between the pages defined at pages/product/@id/**
   keepScrollPosition: true
-}
+} satisfies Config
 ```
 
 ```
@@ -59,12 +61,14 @@ See <Link href="#advanced" /> if this behavior doesn't fit your use case.
 
 You can preserve the scroll position between any arbitrary group of pages (the "scroll group").
 
-```js
-// /pages/product/@id/+config.js
+```ts
+// /pages/product/@id/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   keepScrollPosition: 'name-of-the-scroll-group'
-}
+} satisfies Config
 ```
 
 ```bash
@@ -73,12 +77,14 @@ export default {
 /product/1337/pricing
 ```
 
-```js
-// /pages/reviews/@id/+config.js
+```ts
+// /pages/reviews/@id/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   keepScrollPosition: 'name-of-the-scroll-group'
-}
+} satisfies Config
 ```
 
 ```bash
@@ -91,12 +97,14 @@ If two URLs belong to the same scroll group, then the scroll position is preserv
 
 You can also programmatically set the scroll group:
 
-```js
-// /pages/product/@id/+keepScrollPosition.js
+```ts
+// /pages/product/@id/+keepScrollPosition.ts
 // Environment: client
 
-export default (pageContext, { configDefinedAt }) => {
-  console.log(configDefinedAt) // Prints '/pages/product/@id/+keepScrollPosition.js'
+import type { PageContextClient } from 'vike/types'
+
+export default (pageContext: PageContextClient, { configDefinedAt }: { configDefinedAt: string }) => {
+  console.log(configDefinedAt) // /pages/product/@id/+keepScrollPosition.ts
   // This is the value Vike sets by default:
   return [configDefinedAt, pageContext.routeParams['id']]
 }

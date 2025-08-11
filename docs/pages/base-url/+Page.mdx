@@ -9,11 +9,14 @@ import { ImportMeta } from '@brillout/docpress'
 To change the Base URL:
 
 1. Set [`vite.config.js#base`](https://vitejs.dev/config/shared-options.html#base).
-   ```js
-   // vite.config.js
+   ```ts
+   // vite.config.ts
+
+   import type { UserConfig } from 'vite'
+
    export default {
      base: '/some-base/'
-   }
+   } satisfies UserConfig
    ```
 1. Use [<ImportMeta prop='env.BASE_URL' />](https://vitejs.dev/guide/build.html#public-base-path) to implement a `<Link>` component that prepends the Base URL. Example: <RepoLink path='/examples/base-url/components/Link.jsx' />.
 1. Use <ImportMeta prop='env.BASE_URL' /> for referencing static assets living in [`public/`](/static-directory#public). Example: <RepoLink path='/examples/base-url/renderer/+onRenderHtml.jsx' />.
@@ -49,12 +52,15 @@ You can change the base only for your asset URLs, while the base of your page UR
 
 > The most common use case is when deploying assets to a CDN.
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
+// Environment: config
+
+import type { Config } from 'vike/types'
 
 export default {
   baseAssets: 'https://cdn.example.org/my-website-assets/'
-}
+} satisfies Config
 ```
 
 The base of your page URLs isn't changed: your website is still served at `https://my-website.com/*` (the Base URL is still `/`).
@@ -94,15 +100,17 @@ Example:
 
 By default, the `baseAssets` setting applies to both development and production. You can apply it only to production by using `process.env.NODE_ENV`:
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
 
 const isProduction = process.env.NODE_ENV === 'production'
 const baseAssets = isProduction ? 'https://cdn.example.org/my-website-assets/' : undefined
 
 export default {
   baseAssets
-}
+} satisfies Config
 ```
 
 > There is [work-in-progress to apply it only in production by default](https://github.com/vikejs/vike/issues/1794).
@@ -114,13 +122,15 @@ You can do both:
  - Deploy your static assets to a CDN using the `baseAssets` setting.
  - Change the Base URL of your server using the `baseServer` setting.
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   baseAssets: 'https://cdn.example.org/my-website-assets/',
   baseServer: '/some-base/'
-}
+} satisfies Config
 ```
 
 ```html
@@ -163,9 +173,9 @@ If you set a Base URL for your SSR server, then make sure to properly install <L
 
 Make sure you use `renderPage()` only for URLs that include the Base URL, for example with Express.js:
 
-```js
+```ts
 // Make sure `/some-base/` aligns with your base setting
-app.get('/some-base/*', async (req, res) => {
+app.get('/some-base/*', async (req: Request, res: Response) => {
   // Keep the Base URL (Vike expects it)
   const pageContextInit = { urlOriginal: req.url }
   const pageContext = await renderPage(pageContextInit)
@@ -176,8 +186,8 @@ app.get('/some-base/*', async (req, res) => {
 
 Or use `pageContext.isBaseMissing`:
 
-```js
-app.get('*', async (req, res, next) => {
+```ts
+app.get('*', async (req: Request, res: Response, next: Function) => {
   const pageContextInit = { urlOriginal: req.url }
   const pageContext = await renderPage(pageContextInit)
   if (pageContext.isBaseMissing) return next()

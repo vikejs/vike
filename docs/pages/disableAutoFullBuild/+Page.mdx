@@ -8,15 +8,17 @@ Disable the automatic chaining of build steps.
   Consider <Link href="/prerender#disableautorun" /> instead.
 </Danger>
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   // Disable all chaining
   disableAutoFullBuild: true,
   // Or only disable the automatic pre-render triggering
   disableAutoFullBuild: 'prerender'
-}
+} satisfies Config
 ```
 
 Running `$ vite build` executes three build steps:

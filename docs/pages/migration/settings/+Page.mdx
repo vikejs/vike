@@ -2,9 +2,10 @@ import { Link } from '@brillout/docpress'
 
 Move your Vike settings from `vite.config.js` to `pages/+config.js` (or `renderer/+config.js`):
 
-```js
-// vite.config.js
+```ts
+// vite.config.ts
 
+import type { UserConfig } from 'vite'
 import vike from 'vike/plugin'
 
 export default {
@@ -18,11 +19,13 @@ export default {
       disableUrlNormalization// [!code --]
     })
   ]
-}
+} satisfies UserConfig
 ```
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   prerender,// [!code ++]
@@ -31,7 +34,7 @@ export default {
   baseServer,// [!code ++]
   trailingSlash,// [!code ++]
   disableUrlNormalization// [!code ++]
-}
+} satisfies Config
 ```
 
 > Support for defining Vike settings in `vite.config.js` will be removed in the next major release.

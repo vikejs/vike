@@ -27,7 +27,7 @@ const SomeComponent = clientOnly(() => import("./SomeComponent.jsx"));
 const SomeComponent = clientOnly(async () => (await import('some-library')).SomeComponent)
 */
 
-function MyComponent(props) {
+function MyComponent() {
   return <SomeComponent fallback={<Loading />} />
 }
 ```
@@ -51,7 +51,7 @@ const SomeComponent = clientOnly(() => import("./SomeComponent.jsx"));
 const SomeComponent = clientOnly(async () => (await import('some-library')).SomeComponent)
 */
 
-function MyComponent(props) {
+function MyComponent() {
   return <SomeComponent fallback={<Loading />} />
 }
 ```
@@ -74,7 +74,7 @@ All other props are passed to the loaded component.
   </SomeComponent>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import clientOnly from 'vike-vue/clientOnly'
 const SomeComponent = clientOnly(() => import('./SomeComponent.vue'))
 /* If the component isn't the default export:

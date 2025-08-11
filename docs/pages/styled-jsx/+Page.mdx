@@ -23,24 +23,25 @@ To use Vike with `styled-jsx` without <UiFrameworkExtension name list={['vike-re
    npm install styled-jsx
    ```
 
-2. Add `styled-jsx` to `vite.config.js`:
+2. Add `styled-jsx` to `vite.config.ts`:
 
-   ```js
-   // vite.config.js
+   ```ts
+   // vite.config.ts
 
+   import type { UserConfig } from 'vite'
    import react from '@vitejs/plugin-react'
    import vike from 'vike/plugin'
 
    export default {
      plugins: [react({ babel: { plugins: ['styled-jsx/babel'] } }), vike()]
-   }
+   } satisfies UserConfig
    ```
 
 3. Collect and inject styles.
    > When using a CSS-in-JS tool, like `styled-jsx`, you always need to collect the page's styles upon SSR in order <Link href="/css-in-js">to avoid FOUC</Link>.
 
-   ```js
-   // /renderer/+onRenderHtml.js
+   ```ts
+   // /renderer/+onRenderHtml.ts
 
    export { onRenderHtml }
 
@@ -49,10 +50,11 @@ To use Vike with `styled-jsx` without <UiFrameworkExtension name list={['vike-re
    import { escapeInject, dangerouslySkipEscape } from 'vike/server'
    import { Layout } from './Layout'
    import { createStyleRegistry, StyleRegistry } from 'styled-jsx'
+   import type { PageContextServer } from 'vike/types'
 
    const registry = createStyleRegistry()
 
-   async function onRenderHtml(pageContext) {
+   async function onRenderHtml(pageContext: PageContextServer) {
      // flush styles to support the possibility of concurrent rendering
      registry.flush()
 

@@ -1,4 +1,3 @@
-import { HookTypeScriptHints } from '../../components'
 import { Link } from '@brillout/docpress'
 
 Environment: build-time (Node.js/Bun/Deno)  
@@ -10,12 +9,14 @@ It receives as argument an array of all <Link href="/pageContext">page contexts<
 a new array of page contexts, giving you a chance to add/remove/modify pages. This is usually used for
 <Link href="/i18n">internationalization</Link>.
 
-```js
+```ts
 export { onPrerenderStart }
 
-async function onPrerenderStart(prerenderContext) {
+import type { PrerenderContext, PageContextServer } from 'vike/types'
+
+async function onPrerenderStart(prerenderContext: PrerenderContext) {
   // new page contexts
-  const pageContexts = []
+  const pageContexts: PageContextServer[] = []
 
   // for each original page context:
   prerenderContext.pageContexts.forEach((pageContext) => {
@@ -31,22 +32,6 @@ async function onPrerenderStart(prerenderContext) {
 }
 ```
 
-
-## TypeScript
-
-```ts
-export { onPrerenderStart }
-
-import type { OnPrerenderStartAsync, PageContextServer } from 'vike/types'
-
-const onPrerenderStart: OnPrerenderStartAsync = async (
-  prerenderContext
-): ReturnType<OnPrerenderStartAsync> => {
-  // ...
-}
-```
-
-<HookTypeScriptHints hookTypeName="OnPrerenderStartAsync" />
 
 ## See also
 

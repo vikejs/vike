@@ -15,8 +15,8 @@ The `+Head` setting allows you to add `<head>` tags to your pages.
 
 Common use cases:
 
-```jsx
-// /pages/+Head.js
+```tsx
+// /pages/+Head.ts
 // Environment: server
 
 import previewImage from './previewImage.jpg'
@@ -69,8 +69,8 @@ export function Head() {
 
 The `+Head` setting is cumulative. For example:
 
-```jsx
-// /pages/+Head.js
+```tsx
+// /pages/+Head.ts
 // Environment: server
 
 import favicon from './favicon.png'
@@ -81,21 +81,21 @@ export const Head = () =>
   <link rel="icon" href={favicon} type="image/svg+xml">
 ```
 
-```jsx
-// /pages/about-us/+Head.js
+```tsx
+// /pages/about-us/+Head.ts
 // Environment: server
 
 import previewImage from './previewImage.jpg'
 
 export const Head = () =>
-  // Both the favicon above and this tag applies to /pages/about-us/+Page.js
+  // Both the favicon above and this tag applies to /pages/about-us/+Page.ts
   <meta property="og:image" content={previewImage}>
 ```
 
 To apply different `+Head` settings to different pages:
 
-```jsx
-// /pages/(marketing)/+Head.js
+```tsx
+// /pages/(marketing)/+Head.ts
 // Environment: server
 
 import favicon from './favicon.png'
@@ -104,8 +104,8 @@ import favicon from './favicon.png'
 export const Head = () => <link rel="icon" href={favicon} type="image/svg+xml">
 ```
 
-```jsx
-// /pages/admin/+Head.js
+```tsx
+// /pages/admin/+Head.ts
 // Environment: server
 
 import favicon from './favicon.png'
@@ -125,8 +125,8 @@ export const Head = () => <link rel="icon" href={favicon} type="image/svg+xml">
 
 If you don't use Vue (e.g. React), you can use `+Head` for adding `<script>` tags to all your pages:
 
-```jsx
-// /pages/+Head.jsx
+```tsx
+// /pages/+Head.tsx
 
 export function Head() {
   return <>
@@ -143,7 +143,7 @@ Adding a `<script>` tag to only one/some pages isn't currently supported: [#2244
 If you use Vue, [`<script>` tags cannot be defined inside Vue SFC `<template>`](https://stackoverflow.com/questions/71430887/running-script-tags-within-template-on-vue-js/71442718#71442718). Instead use <Link href="/useConfig">`useConfig()`</Link>:
 
 ```vue
-<script setup>
+<script setup lang="ts">
 import { h } from 'vue'
 import { useConfig } from 'vike-vue/useConfig'
 const config = useConfig()
@@ -163,12 +163,12 @@ See also: <Link href="#how-to-inject-raw-html" />
 
 You can access <Link href="/pageContext">the `pageContext` object</Link> by using <Link href="/usePageContext">`usePageContext()`</Link>.
 
-```jsx
-// /pages/+Head.jsx
+```tsx
+// /pages/+Head.tsx
 
 import { usePageContext } from 'vike-react/usePageContext' // or vike-{vue,solid}
 
-export function Head({ children }) {
+export function Head() {
   const pageContext = usePageContext()
   // ...
 }
@@ -191,11 +191,11 @@ Be cautious about the security risk called [XSS injections](https://en.wikipedia
 
 You can use React's `dangerouslySetInnerHTML` to add raw HTML, for example:
 
-```ts
+```tsx
 import React from 'react'
 import { Head } from 'vike-react/Head'
 
-function Image({ src, author }) {
+function Image({ src, author }: { src: string, author: string }) {
   return (
     <>
       <img src={src} />
@@ -228,11 +228,11 @@ You can use <Link href="/useConfig">`useConfig()`</Link> with Vue's `innerHTML` 
   <img :src v-bind="otherAttrs" />
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useAttrs, h } from 'vue'
 import { useConfig } from 'vike-vue/useConfig'
 
-const { src, author, ...otherAttrs } = useAttrs()
+const { src, author, ...otherAttrs } = useAttrs() as Record<string, string>
 
 const config = useConfig()
 config({
@@ -255,10 +255,10 @@ config({
 
 You can use `innerHTML` to add raw HTML, for example:
 
-```jsx
+```tsx
 import { Head } from "vike-solid/Head"
 
-function Image({ src, author }) {
+function Image({ src, author }: { src: string, author: string }) {
   return (
     <>
       <img src={src} />
@@ -327,8 +327,8 @@ You can use `+Head` for setting `<head>` tags that are global (they have the sam
 
 The following example showcases that using `+Head` for setting `<title>` doesn't work, while it does work for setting `<meta name="description">`.
 
-```js
-// /pages/index/+Head.jsx
+```ts
+// /pages/index/+Head.tsx
 // Environment: server
 
 function Head() {
@@ -338,8 +338,8 @@ function Head() {
   </>
 }
 ```
-```js
-// /pages/about/+Head.jsx
+```ts
+// /pages/about/+Head.tsx
 // Environment: server
 
 function Head() {

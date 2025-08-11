@@ -21,40 +21,44 @@ The `meta` settings enables you to create:
 
 This example showcases a simple data fetching logic that uses URL data endpoints (e.g. a RESTful API).
 
-```js
-// /pages/countries/+dataEndpointUrl.js
+```ts
+// /pages/countries/+dataEndpointUrl.ts
 // Environment: server
 
 export default 'https://restcountries.com/v3.1/all'
 ```
 
-```js
-// /pages/+config.js
+```ts
+// /pages/+config.ts
 // Environment: config
+
+import type { Config } from 'vike/types'
 
 export default {
   meta: {
     dataEndpointUrl: {
       env: {
         server: true,
-        // Load the value of /pages/**/+dataEndpointUrl.js only on the server
+        // Load the value of /pages/**/+dataEndpointUrl.ts only on the server
         client: false
       }
     }
   }
-}
+} satisfies Config
 ```
 
-```js
-// /pages/+data.js
+```ts
+// /pages/+data.ts
 // Environment: server
 
 export { data }
+export type Data = Awaited<ReturnType<typeof data>>
 
+import type { PageContextServer } from 'vike/types'
 import fetch from 'node-fetch'
 
-async function data(pageContext) {
-  // The value exported by /pages/countries/+dataEndpointUrl.js is
+async function data(pageContext: PageContextServer) {
+  // The value exported by /pages/countries/+dataEndpointUrl.ts is
   // available at pageContext.config.dataEndpointUrl
   const response = await fetch(pageContext.config.dataEndpointUrl)
   // ...
@@ -65,47 +69,50 @@ async function data(pageContext) {
 
 Similarly to the previous example, another common use case is to enable pages to define their data requirements as SQL queries.
 
-```js
-// /pages/product/@id/+sql.js
+```ts
+// /pages/product/@id/+sql.ts
 export const sql = (id) => `SELECT { name, price } FROM products WHERE id = "${id}";`
 /* Or with an ORM:
 export const sql = { modelName: 'Product', select: ['name', 'price'], where: { id } } */
 ```
 
-```js
-// /pages/user/@id/+sql.js
+```ts
+// /pages/user/@id/+sql.ts
 export const sql = (id) => `SELECT { firstName, lastName } FROM users WHERE id = "${id}";`
 /* Or with an ORM:
 export const sql = { modelName: 'User', select: ['firstName', 'lastName'], where: { id } } */
 ```
 
-```js
-// /pages/+config.js
+```ts
+// /pages/+config.ts
 // Environment: config
+
+import type { Config } from 'vike/types'
 
 export default {
   meta: {
     sql: {
       env: {
         server: true,
-        // Load the value of /pages/**/+sql.js only on the server
+        // Load the value of /pages/**/+sql.ts only on the server
         client: false
       }
     }
   }
-}
+} satisfies Config
 ```
 
-```js
-// /pages/+onBeforeRender.js
+```ts
+// /pages/+onBeforeRender.ts
 // Environment: server
 
 export { onBeforeRender }
 
+import type { PageContextServer } from 'vike/types'
 import { runQuery } from 'some-sql-engine'
 
-async function onBeforeRender(pageContext) {
-  // The value exported by /pages/**/+sql.js is available at pageContext.config.sql
+async function onBeforeRender(pageContext: PageContextServer) {
+  // The value exported by /pages/**/+sql.ts is available at pageContext.config.sql
   const { id } = pageContext.routeParams
   const { sql } = pageContext.config
   const query = sql(id)
@@ -125,42 +132,52 @@ We first show how the settings `title` and `description` are used and then their
 
 #### Usage
 
-```js
-// /pages/about-us/+title.js
+```ts
+// /pages/about-us/+title.ts
 
 export default 'About Us'
 ```
 
-```js
-// /pages/about-us/+description.js
+```ts
+// /pages/about-us/+description.ts
 
 export default 'Who we are, our values, and what we stand for.'
 ```
 
 > You can also use `+config.js` instead of creating the files `+title.js` and `+description.js`:
 >
-> ```js
-> // /pages/about/+config.js
+> ```ts
+> // /pages/about/+config.ts
+>
+> import type { Config } from 'vike/types'
 >
 > export default {
 >   title: 'About Us',
 >   description: 'Who we are, our values, and what we stand for.'
-> }
+> } satisfies Config
 > ```
 >
 > See <Link href="/config" />.
 
 Your pages can also use data that was dynamically fetched in order to determine `<title>` and `<meta name="description">`:
 
-```js
-// /pages/product/+title.js
+```ts
+// /pages/product/+title.ts
+// Environment: server & client
 
-export default pageContext => pageContext.data.product.name
+import type { PageContext } from 'vike/types'
+import type { Data } from './+data'
+
+export default (pageContext: PageContext<Data>) => pageContext.data.product.name
 ```
-```js
-// /pages/product/+description.js
+```ts
+// /pages/product/+description.ts
+// Environment: server
 
-export default pageContext => {
+import type { PageContextServer } from 'vike/types'
+import type { Data } from './+data'
+
+export default (pageContext: PageContextServer<Data>) => {
   const { product } = pageContext.data
   return `${product.name} - ${product.description}`
 }
@@ -187,15 +204,16 @@ export default {
 } satisfies Config
 ```
 
-```js
-// /pages/+onRenderClient.js
+```ts
+// /pages/+onRenderClient.ts
 // Environment: client
 
 export { onRenderClient }
 
+import type { PageContextClient } from 'vike/types'
 import { getTitle } from './utils'
 
-function onRenderClient(pageContext) {
+function onRenderClient(pageContext: PageContextClient) {
   // Update the value of <title> upon page navigation
   if (!pageContext.isHydration) {
     document.title = getTitle(pageContext)
@@ -205,36 +223,38 @@ function onRenderClient(pageContext) {
 ```
 
 
-```js
-// /pages/utils.js
+```ts
+// /pages/utils.ts
 // Environment: server & client
 
+import type { PageContext } from 'vike/types'
 export { getTitle, getDescription }
 
-function getTitle(pageContext) {
+function getTitle(pageContext: PageContext) {
   // The value exported by /pages/**/+title.js is available at pageContext.config.title
   const val = pageContext.config.title
   if (!val) return 'Some default title'
   if (typeof val === 'string') return val
   if (typeof val === 'function') return val(pageContext)
 }
-function getDescription(pageContext) {
+function getDescription(pageContext: PageContext) {
   // Same as getTitle()
   // ...
 }
 ```
 
-```js
-// /pages/+onRenderHtml.js
+```ts
+// /pages/+onRenderHtml.ts
 // Environment: server
 
 export { onRenderHtml }
 
+import type { PageContextServer } from 'vike/types'
 import { getTitle, getDescription } from './utils'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { renderToHtml } from 'some-ui-framework'
 
-async function onRenderHtml(pageContext) {
+async function onRenderHtml(pageContext: PageContextServer) {
   const title = getTitle(pageContext)
   const description = getDescription(pageContext)
   return escapeInject`<!DOCTYPE html>
@@ -257,31 +277,33 @@ async function onRenderHtml(pageContext) {
 
 Another common use case for `meta` is to create a component `<Layout>` that defines the layout of the page.
 
-```js
-// /pages/product/+Layout.js
+```ts
+// /pages/product/+Layout.ts
 // Environment: client and server
 
 export { Layout } from '../layouts/Responsive'
 ```
 
-```js
-// /pages/admin/+Layout.js
+```ts
+// /pages/admin/+Layout.ts
 // Environment: client and server
 
 export { Layout } from '../layouts/Dashboard'
 ```
 
-```js
-// /pages/+Layout.js
+```ts
+// /pages/+Layout.ts
 // Environment: client and server
 
 // The default layout in case the page doesn't set one
 export { Layout } from '../layouts/LayoutDefault'
 ```
 
-```js
-// /pages/+config.js
+```ts
+// /pages/+config.ts
 // Environment: config
+
+import type { Config } from 'vike/types'
 
 export default {
   meta: {
@@ -292,19 +314,20 @@ export default {
       cumulative: true
     }
   }
-}
+} satisfies Config
 ```
 
-```js
-// /pages/+onRenderHtml.js
+```ts
+// /pages/+onRenderHtml.ts
 // Environment: server
 
 export { onRenderHtml }
 
+import type { PageContextServer } from 'vike/types'
 import { renderToHtml } from 'some-ui-framework'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 
-async function onRenderHtml(pageContext) {
+async function onRenderHtml(pageContext: PageContextServer) {
   const { Page, Layout } = pageContext.config
   const pageHtml = renderToHtml(<Layout><Page/></Layout>)
   return escapeInject`<!DOCTYPE html>
@@ -318,15 +341,16 @@ async function onRenderHtml(pageContext) {
 
 > Note how we use `pageContext.config.Page` instead of `pageContext.Page`: that's because `pageContext.Page` is just an alias for `pageContext.config.Page`.
 
-```js
-// /pages/+onRenderClient.jsx
+```ts
+// /pages/+onRenderClient.tsx
 // Environment: client
 
 export { onRenderClient }
 
+import type { PageContextClient } from 'vike/types'
 import { renderDom } from 'some-ui-framework'
 
-async function onRenderClient(pageContext) {
+async function onRenderClient(pageContext: PageContextClient) {
   const { Page, Layout } = pageContext.config
   renderDom(
     <Layout><Page/></Layout>,
@@ -402,9 +426,11 @@ Example:
 
 ## API
 
-```js
-// /pages/+config.js
+```ts
+// /pages/+config.ts
 // Environment: config
+
+import type { Config } from 'vike/types'
 
 export default {
   meta: {
@@ -439,7 +465,7 @@ export default {
       }
     }
   }
-}
+} satisfies Config
 ```
 
 
@@ -451,13 +477,15 @@ Similar to <Link href="/pageContext#typescript">`Vike.PageContext`</Link>, you c
 // /pages/+config.ts
 // Environment: config
 
+import type { Config } from 'vike/types'
+
 export default {
   meta: {
     sqlQuery: {
       env: { server: true }
     }
   }
-}
+} satisfies Config
 
 declare global {
   namespace Vike {
@@ -493,13 +521,15 @@ If you define a <Link href="#api">`cumulative` config</Link>, then also make sur
 // /pages/+config.ts
 // Environment: config
 
+import type { Config } from 'vike/types'
+
 export default {
   meta: {
     viewport: {
       env: { server: true }
     }
   }
-}
+} satisfies Config
 
 declare global {
   namespace Vike {

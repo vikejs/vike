@@ -4,22 +4,26 @@ Vike's `+mode` setting is just an alias for [Vite's `mode` setting](https://vite
 
 This:
 
-```js
-// +config.js
+```ts
+// +config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   mode: 'staging'
-}
+} satisfies Config
 ```
 
 Is equivalent to that:
 
-```js
-// vite.config.js
+```ts
+// vite.config.ts
+
+import type { UserConfig } from 'vite'
 
 export default {
   mode: 'staging'
-}
+} satisfies UserConfig
 ```
 
 ## See also

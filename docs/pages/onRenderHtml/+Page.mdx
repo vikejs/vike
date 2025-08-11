@@ -1,4 +1,4 @@
-import { HookTypeScriptHints, UiFrameworkExtension } from '../../components'
+import { UiFrameworkExtension } from '../../components'
 import { Link } from '@brillout/docpress'
 
 Environment: server  
@@ -11,16 +11,17 @@ The hooks `onRenderHtml()` and <Link href="/onRenderClient">`onRenderClient()`</
 
 > If you use a <UiFrameworkExtension />, then you don't need to (and shouldn't) define `onRenderHtml()` as it's already defined by <UiFrameworkExtension name noLink />.
 
-```js
-// +onRenderHtml.js
+```ts
+// +onRenderHtml.ts
 // Environment: server
-
-import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import { renderToHtml, createElement } from 'some-ui-framework'
 
 export { onRenderHtml }
 
-async function onRenderHtml(pageContext){
+import type { PageContextServer } from 'vike/types'
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
+import { renderToHtml, createElement } from 'some-ui-framework'
+
+async function onRenderHtml(pageContext: PageContextServer){
   const { Page, data } = pageContext
   const pageHtml = await renderToHtml(createElement(Page, data))
 
@@ -44,26 +45,6 @@ async function onRenderHtml(pageContext){
 ```
 
 Where `pageContext.Page` is the <Link href="/Page">`+Page` value</Link> of the page that is being rendered.
-
-
-## TypeScript
-
-```ts
-// /**/+onRenderHtml.ts (usually /renderer/+onRenderHtml.ts)
-// Environment: server
-
-export { onRenderHtml }
-
-import type { OnRenderHtmlAsync } from 'vike/types'
-import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import { renderToHtml, createElement } from 'some-ui-framework'
-
-const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRenderHtmlAsync> => {
-  // ...
-}
-```
-
-<HookTypeScriptHints hookTypeName="OnRenderHtmlAsync" />
 
 
 ## See also

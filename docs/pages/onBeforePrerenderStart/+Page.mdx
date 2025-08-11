@@ -1,4 +1,3 @@
-import { HookTypeScriptHints } from '../../components'
 import { Link, RepoLink } from '@brillout/docpress'
 import PreRenderDynamicRoutes from '../pre-rendering/PreRenderDynamicRoutes.mdx'
 
@@ -21,21 +20,21 @@ It's usually used for:
 
 Most of the time, the `onBeforePrerenderStart()` hook is used for providing the URLs of parameterized routes.
 
-```js
-// /pages/movie/+route.js
+```ts
+// /pages/movie/+route.ts
 
 export default '/movie/@movieId'
 ```
 
-```js
-// /pages/movie/+onBeforePrerenderStart.js
+```ts
+// /pages/movie/+onBeforePrerenderStart.ts
 // Environment: build-time (Node.js/Bun/Deno)
 
 export { onBeforePrerenderStart }
 
-async function onBeforePrerenderStart() {
+async function onBeforePrerenderStart(): Promise<string[]> {
   const movies = await Movie.findAll()
-  const moviePageURLs = movies.map(movie => '/movie/' + movie.id)
+  const moviePageURLs: string[] = movies.map(movie => '/movie/' + movie.id)
   return moviePageURLs
 }
 ```
@@ -52,22 +51,27 @@ If you have a high number of pages that are to be pre-rendered, then running the
 
 You can make pre-rendering significantly faster by providing the <Link href="/pageContext">`pageContext`</Link> of pages in `onBeforePrerenderStart()` hooks.
 
-```js
-// /pages/movie/+route.js
+```ts
+// /pages/movie/+route.ts
 
 export default '/movie/@movieId'
 ```
 
-```js
-// /pages/movie/+onBeforePrerenderStart.js
+```ts
+// /pages/movie/+onBeforePrerenderStart.ts
 // Environment: build-time (Node.js/Bun/Deno)
 
 export { onBeforePrerenderStart }
 
-async function onBeforePrerenderStart() {
+type PageContext = {
+  data?: Record<string, unknown>
+}
+type Return = { url: string, pageContext?: PageContext }
+
+async function onBeforePrerenderStart(): Promise<Return[]> {
   const movies = await Movie.findAll()
 
-  const moviePages = (
+  const moviePages: Return[] = (
     movies
     .map(movie => {
       const url = '/movie/' + movie.id
@@ -95,7 +99,7 @@ async function onBeforePrerenderStart() {
   // That way we can provide the `pageContext` of other pages.
   // Here we provide the `pageContext` of the `/movies` page since
   // we already have the data.
-  const movieListPage = {
+  const movieListPage: Return = {
     url: '/movies', // Note how this URL '/movies' doesn't match the page's route /movie/@movieId
     pageContext: {
       data: {
@@ -127,22 +131,6 @@ React Example:
 Vue Example:
  - <RepoLink path='/examples/vue-full/pages/star-wars/index/+onBeforePrerenderStart.ts' />
  - <RepoLink path='/examples/vue-full/pages/hello/+onBeforePrerenderStart.ts' />
-
-
-## TypeScript
-
-```ts
-export { onBeforePrerenderStart }
-
-import type { OnBeforePrerenderStartAsync } from 'vike/types'
-
-const onBeforePrerenderStart: OnBeforePrerenderStartAsync = async (
-): ReturnType<OnBeforePrerenderStartAsync> => {
-  // ...
-}
-```
-
-<HookTypeScriptHints hookTypeName="OnBeforePrerenderStartAsync" />
 
 
 ## See also
