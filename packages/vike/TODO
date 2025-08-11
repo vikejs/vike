@@ -18,6 +18,12 @@
   - If code block mentions `someOtherFile.ts` => transform to `someOtherFile.js`
     - https://github.com/vikejs/vike/blob/751f79e362048b2e821ef24c79c3d8016ba50593/docs/pages/Head/%2BPage.mdx#L91
     - https://github.com/vikejs/vike/blob/8ec3316922865f1dceb578fc8055e6e03cee4c98/docs/pages/auth/%2BPage.mdx#L165-L166
+  - Don't show toggle for TypeScript-only code blocks
+    - For example: https://github.com/vikejs/vike/blob/4f867077d6a2c0fd6228c74de3dbbb33fa2a8c8a/docs/pages/head-tags/%2BPage.mdx#L325-L327
+    - Some kind of flags like in the following?
+      ~~~mdx
+      ```ts ts-only
+      ~~~
   - Don't show TS<->JS toggle for: https://github.com/vikejs/vike/blob/8ec3316922865f1dceb578fc8055e6e03cee4c98/docs/pages/Wrapper/%2BPage.mdx?plain=1#L12
     - Simple rule: Don't show toggle if upon ```js (only show toggle upon ```ts)
       - Alternatively: make TS<->JS toggle small enough that it doesn't add too much noise => always show it then
