@@ -50,19 +50,6 @@ If the page doesn't have any `data()` hook, then `guard()` executes in the envir
 For more control on where and when your guarding logic is executed, consider using <Link href="/render">`throw render()`</Link> / <Link href="/redirect">`throw redirect()`</Link> inside another hook than `guard()`.
 
 
-## TypeScript
-
-```ts
-export { guard }
-
-import type { PageContextServer } from 'vike/types'
-
-async function guard(pageContext: PageContextServer){
-  // ...
-}
-```
-
-
 ## See also
 
 - <Link href="/auth#login-flow" />
