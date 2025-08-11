@@ -8,9 +8,9 @@ It is usually used for [internationalization](/i18n):
 ```ts
 export { onBeforeRoute }
 
-import type { OnBeforeRouteSync } from 'vike/types'
+import type { PageContextServer } from 'vike/types'
 
-const onBeforeRoute: OnBeforeRouteSync = (pageContext): ReturnType<OnBeforeRouteSync> => {
+function onBeforeRoute(pageContext: PageContextServer) {
   const { urlWithoutLocale, locale } = extractLocale(pageContext.urlPathname)
   return {
     pageContext: {
@@ -31,9 +31,9 @@ You can also use it to [implement a custom router](https://github.com/vikejs/vik
 ```ts
 export { onBeforeRoute }
 
-import type { OnBeforeRouteSync } from 'vike/types'
+import type { PageContextServer } from 'vike/types'
 
-const onBeforeRoute: OnBeforeRouteSync = (pageContext): ReturnType<OnBeforeRouteSync> => {
+function onBeforeRoute(pageContext: PageContextServer) {
   // ...
 }
 ```

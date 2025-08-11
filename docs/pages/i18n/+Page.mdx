@@ -12,10 +12,11 @@ To internationalize (i18n) your app:
 
 export { onBeforeRoute }
 
+import type { PageContextServer } from 'vike/types'
 import { modifyUrl } from 'vike/modifyUrl'
 import type { Url } from 'vike/types'
 
-const onBeforeRoute: OnBeforeRouteSync = (pageContext): ReturnType<OnBeforeRouteSync> => {
+function onBeforeRoute(pageContext: PageContextServer) {
   const { urlWithoutLocale, locale } = extractLocale(pageContext.urlParsed)
   return {
     pageContext: {
@@ -102,14 +103,12 @@ define the `onPrerenderStart()` hook:
 
 export { onPrerenderStart }
 
-import type { OnPrerenderStartAsync, PageContextServer } from 'vike/types'
+import type { PrerenderContext, PageContextServer } from 'vike/types'
 
 const locales = ['en-US', 'de-DE', 'fr-FR']
 const localeDefault = 'en-US'
 
-const onPrerenderStart: OnPrerenderStartAsync = async (
-  prerenderContext
-): ReturnType<OnPrerenderStartAsync> => {
+async function onPrerenderStart(prerenderContext: PrerenderContext) {
   const pageContexts: PageContextServer[] = []
   prerenderContext.pageContexts.forEach((pageContext) => {
     // Duplicate pageContext for each locale
@@ -144,9 +143,7 @@ Your <Link text={<><code>onBeforePrerenderStart()</code> hooks</>} href="/onBefo
 
 export { onBeforePrerenderStart }
 
-import type { OnBeforePrerenderStartAsync } from 'vike/types'
-
-const onBeforePrerenderStart: OnBeforePrerenderStartAsync = async (): ReturnType<OnBeforePrerenderStartAsync> => {
+async function onBeforePrerenderStart() {
   const products = await Product.findAll()
   const URLs = products.map(({ id }) => '/product/' + id)
   // You don't add the locale here (it's your onPrerenderStart() hook that adds the locales)
@@ -169,9 +166,7 @@ Alternatively, if you need to load data that depends on localization, instead of
 // uses onBeforePrerenderStart() to duplicate and localize URLs and their pageContext
 export { onBeforePrerenderStart }
 
-import type { OnBeforePrerenderStartAsync } from 'vike/types'
-
-const onBeforePrerenderStart: OnBeforePrerenderStartAsync = async (): ReturnType<OnBeforePrerenderStartAsync> => {
+async function onBeforePrerenderStart() {
   // Load data
   const products = await Product.findAll()
 
@@ -209,13 +204,11 @@ You may still need to use `onPrerenderStart()` for localizing static pages that 
 export { onPrerenderStart }
 
 import assert from 'assert'
-import type { OnPrerenderStartAsync, PageContextServer } from 'vike/types'
+import type { PrerenderContext, PageContextServer } from 'vike/types'
 
 const locales = ['en-US', 'de-DE', 'fr-FR']
 
-const onPrerenderStart: OnPrerenderStartAsync = async (
-  prerenderContext
-): ReturnType<OnPrerenderStartAsync> => {
+async function onPrerenderStart(prerenderContext: PrerenderContext) {
   const pageContexts: PageContextServer[] = []
   prerenderContext.pageContexts.forEach((pageContext) => {
     if(pageContext.locale) {

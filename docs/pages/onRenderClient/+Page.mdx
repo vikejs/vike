@@ -70,12 +70,10 @@ By defining multiple `onRenderClient()` hooks, you can define different renderin
 
 export { onRenderClient }
 
-import type { OnRenderClientAsync } from 'vike/types'
+import type { PageContextClient } from 'vike/types'
 import { hydrateDom } from 'some-ui-framework'
 
-const onRenderClient: OnRenderClientAsync = async (
-  pageContext
-): ReturnType<OnRenderClientAsync> => {
+async function onRenderClient(pageContext: PageContextClient) {
   // ...
 }
 ```

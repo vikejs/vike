@@ -60,9 +60,9 @@ function route(pageContext: PageContext) {
 ```ts
 export { route }
 
-import type { RouteSync } from 'vike/types'
+import type { PageContext } from 'vike/types'
 
-const route: RouteSync = (pageContext): ReturnType<RouteSync> => {
+function route(pageContext: PageContext) {
   // ...
 }
 ```

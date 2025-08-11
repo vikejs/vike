@@ -226,11 +226,9 @@ export function onBeforeRenderClient(pageContext: PageContextClient) {
 ```ts
 export { onBeforeRender }
 
-import type { OnBeforeRenderAsync } from 'vike/types'
+import type { PageContextServer } from 'vike/types'
 
-const onBeforeRender: OnBeforeRenderAsync = async (
-  pageContext
-): ReturnType<OnBeforeRenderAsync> => {
+async function onBeforeRender(pageContext: PageContextServer) {
   // ...
 }
 ```

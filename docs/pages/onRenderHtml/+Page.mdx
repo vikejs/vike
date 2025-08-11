@@ -55,11 +55,11 @@ Where `pageContext.Page` is the <Link href="/Page">`+Page` value</Link> of the p
 
 export { onRenderHtml }
 
-import type { OnRenderHtmlAsync } from 'vike/types'
+import type { PageContextServer } from 'vike/types'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { renderToHtml, createElement } from 'some-ui-framework'
 
-const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRenderHtmlAsync> => {
+async function onRenderHtml(pageContext: PageContextServer){
   // ...
 }
 ```

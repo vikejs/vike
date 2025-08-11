@@ -8,13 +8,14 @@ The `guard()` hook enables you to protect pages from unauthorized and unexpected
 
 ```ts
 // /pages/admin/+guard.ts
+export { guard }
 
 import type { PageContextServer } from 'vike/types'
 import { render } from 'vike/abort'
 
 // This guard() hook protects all pages /pages/admin/**/+Page.ts
 
-export async function guard(pageContext: PageContextServer) {
+async function guard(pageContext: PageContextServer) {
   if (!pageContext.user.isAdmin) {
     throw render(401, "You aren't allowed to access this page.")
   }
@@ -53,10 +54,9 @@ For more control on where and when your guarding logic is executed, consider usi
 ```ts
 export { guard }
 
-import type { GuardAsync } from 'vike/types'
-import { render } from 'vike/abort'
+import type { PageContextServer } from 'vike/types'
 
-const guard: GuardAsync = async (pageContext): ReturnType<GuardAsync> => {
+async function guard(pageContext: PageContextServer){
   // ...
 }
 ```

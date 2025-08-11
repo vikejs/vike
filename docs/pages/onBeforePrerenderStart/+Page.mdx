@@ -129,19 +129,6 @@ Vue Example:
  - <RepoLink path='/examples/vue-full/pages/hello/+onBeforePrerenderStart.ts' />
 
 
-## TypeScript
-
-```ts
-export { onBeforePrerenderStart }
-
-import type { OnBeforePrerenderStartAsync } from 'vike/types'
-
-const onBeforePrerenderStart: OnBeforePrerenderStartAsync = async (
-): ReturnType<OnBeforePrerenderStartAsync> => {
-  // ...
-}
-```
-
 <HookTypeScriptHints hookTypeName="OnBeforePrerenderStartAsync" />
 
 

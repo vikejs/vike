@@ -30,11 +30,9 @@ async function onHydrationEnd(pageContext: PageContextClient) {
 
 export { onHydrationEnd }
 
-import type { OnHydrationEndAsync } from 'vike/types'
+import type { PageContextClient } from 'vike/types'
 
-const onHydrationEnd: OnHydrationEndAsync = async (
-  pageContext
-): ReturnType<OnHydrationEndAsync> => {
+async function onHydrationEnd(pageContext: PageContextClient) {
   // ...
 }
 ```

@@ -110,10 +110,10 @@ function route(pageContext: PageContext) {
 
 export { route }
 
-import type { RouteSync } from 'vike/types'
+import type { PageContext } from 'vike/types'
 import { resolveRoute } from 'vike/routing'
 
-const route: RouteSync = (pageContext): ReturnType<RouteSync> => {
+function route(pageContext: PageContext) {
   // ..
 }
 ```
@@ -132,9 +132,9 @@ Vike always has to run all Route Functions because it cannot magically predict t
 
 export { route }
 
-import type { RouteSync } from 'vike/types'
+import type { PageContext } from 'vike/types'
 
-const route: RouteSync = (pageContext): ReturnType<RouteSync> => {
+function route(pageContext: PageContext) {
   // Only render the login page to unauthenticated users
   if (pageContext.user !== null) return false
   return {
