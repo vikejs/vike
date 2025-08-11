@@ -32,9 +32,9 @@ export default '/movie/@movieId'
 
 export { onBeforePrerenderStart }
 
-async function onBeforePrerenderStart() {
+async function onBeforePrerenderStart(): Promise<string[]> {
   const movies = await Movie.findAll()
-  const moviePageURLs = movies.map(movie => '/movie/' + movie.id)
+  const moviePageURLs: string[] = movies.map(movie => '/movie/' + movie.id)
   return moviePageURLs
 }
 ```
@@ -63,10 +63,15 @@ export default '/movie/@movieId'
 
 export { onBeforePrerenderStart }
 
-async function onBeforePrerenderStart() {
+type PageContext = {
+  data?: Record<string, unknown>
+}
+type Return = { url: string, pageContext?: PageContext }
+
+async function onBeforePrerenderStart(): Promise<Return[]> {
   const movies = await Movie.findAll()
 
-  const moviePages = (
+  const moviePages: Return[] = (
     movies
     .map(movie => {
       const url = '/movie/' + movie.id
@@ -94,7 +99,7 @@ async function onBeforePrerenderStart() {
   // That way we can provide the `pageContext` of other pages.
   // Here we provide the `pageContext` of the `/movies` page since
   // we already have the data.
-  const movieListPage = {
+  const movieListPage: Return = {
     url: '/movies', // Note how this URL '/movies' doesn't match the page's route /movie/@movieId
     pageContext: {
       data: {

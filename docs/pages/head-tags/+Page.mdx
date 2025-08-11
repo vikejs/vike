@@ -165,7 +165,7 @@ export { data }
 export type Data = Awaited<ReturnType<typeof data>>
 
 import { useConfig } from 'vike-react/useConfig' // or vike-{vue,solid}
-import { PageContextServer } from 'vike/types'
+import type { PageContextServer } from 'vike/types'
 
 async function data(pageContext: PageContextServer) {
   const config = useConfig()
@@ -230,7 +230,8 @@ You can define some default logic that applies to all pages:
 // Environment: server, client
 
 import type { PageContext } from 'vike/types'
-import type { Data } from './+data'
+
+type Data = { title?: string } | undefined
 
 // Applies to all pages: if a page fetches data and data.title is defined then
 // use it to set the page's title.
@@ -243,8 +244,8 @@ The `+Head` setting is a UI component — you can use <Link href="/useData">`use
 // pages/movie/@id/+Head.ts
 // Environment: server
 
-import type { Data } from './+data'
 import { useData } from 'vike-react/useData' // or vike-{vue,solid}
+import type { Data } from './+data'
 
 export function Head() {
   const data = useData<Data>()

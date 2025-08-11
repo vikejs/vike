@@ -114,7 +114,6 @@ Instead of Filesystem Routing, you can define a Route String.
 
 ```ts
 // /pages/product/+route.ts
-// Environment: server & client
 
 // This file defines the route of /pages/product/+Page.ts
 
@@ -168,7 +167,7 @@ import { render } from 'vike/abort'
 
 // This guard() hook protects all pages /pages/admin/**/+Page.ts
 
-export async function guard(pageContext: PageContextServer ) {
+export async function guard(pageContext: PageContextServer) {
   if (!pageContext.user.isAdmin) {
     throw render(401, "You aren't allowed to access this page.')
   }

@@ -49,12 +49,12 @@ async function data(pageContext: PageContextServer) {
 // pages/movies/@id/SomeComponent.ts
 // Environment: server, client
 
-import type { Data } from './+data'
 import { useData } from 'vike-react/useData'
 /* Or:
 import { useData } from 'vike-vue/useData'
 import { useData } from 'vike-solid/useData'
 */
+import type { Data } from './+data'
 
   // Inside a UI component
   const data = useData<Data>()
