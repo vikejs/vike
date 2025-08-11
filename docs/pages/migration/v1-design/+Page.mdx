@@ -23,17 +23,17 @@ Most of the migration boils down to the following two steps.
 
 Move your `renderer/` hooks to `+` files:
 
-```ts
-// /renderer/_default.page.client.ts// [!code --]
-// /renderer/+onRenderClient.ts// [!code ++]
+```js
+// /renderer/_default.page.client.js// [!code --]
+// /renderer/+onRenderClient.js// [!code ++]
 
 export { render }// [!code --]
 export { render as onRenderClient }// [!code ++]
 ```
 
-```ts
-// /renderer/_default.page.server.ts// [!code --]
-// /renderer/+onRenderHtml.ts// [!code ++]
+```js
+// /renderer/_default.page.server.js// [!code --]
+// /renderer/+onRenderHtml.js// [!code ++]
 
 export { render }// [!code --]
 export { render as onRenderHtml }// [!code ++]
@@ -41,23 +41,21 @@ export { render as onRenderHtml }// [!code ++]
 
 If you've defined a global `onBeforeRender()` hook and/or `passToClient`:
 
-```ts
-// /renderer/_default.page.server.ts// [!code --]
-// /renderer/+onBeforeRender.ts// [!code ++]
+```js
+// /renderer/_default.page.server.js// [!code --]
+// /renderer/+onBeforeRender.js// [!code ++]
 
 export { onBeforeRender }
 export const passToClient = ['pageProps']// [!code --]
 ```
 
 <FileAdded>
-```ts
-// /renderer/+config.ts
-
-import type { Config } from 'vike/types'
+```js
+// /renderer/+config.js
 
 export default {
   passToClient: ['pageProps']
-} satisfies Config
+}
 ```
 </FileAdded>
 
@@ -91,9 +89,9 @@ export default {
 
 Move your error page (if you defined one):
 
-```ts
-/renderer/_error.page.ts// [!code --]
-/pages/_error/+Page.ts// [!code ++]
+```js
+/renderer/_error.page.js// [!code --]
+/pages/_error/+Page.js// [!code ++]
 
 export { Page }
 ```
@@ -101,22 +99,22 @@ export { Page }
 
 **2. Migrate `/pages/**/*.page.*`**
 
-```ts
-// /pages/some-page/index.page.ts// [!code --]
-// /pages/some-page/+Page.ts// [!code ++]
+```js
+// /pages/some-page/index.page.js// [!code --]
+// /pages/some-page/+Page.js// [!code ++]
 
 export { Page }
 ```
-```ts
-// /pages/some-page/index.page.server.ts// [!code --]
-// /pages/some-page/+onBeforeRender.ts// [!code ++]
+```js
+// /pages/some-page/index.page.server.js// [!code --]
+// /pages/some-page/+onBeforeRender.js// [!code ++]
 
 export { onBeforeRender }
 ```
 
-```ts
-// /pages/some-page/index.page.route.ts// [!code --]
-// /pages/some-page/+route.ts// [!code ++]
+```js
+// /pages/some-page/index.page.route.js// [!code --]
+// /pages/some-page/+route.js// [!code ++]
 
 export default route
 ```
@@ -206,20 +204,18 @@ Old name | New name
 `doNotPrerender: true` | `prerender: false`
 
 <FileRemoved>
-```ts
-// /pages/news.page.server.ts
+```js
+// /pages/news.page.server.js
 
 export const doNotPrerender = true
 ```
 </FileRemoved>
-```ts
-// /pages/news/+config.ts
-
-import type { Config } from 'vike/types'
+```js
+// /pages/news/+config.js
 
 export default {
   prerender: false// [!code ++]
-} satisfies Config
+}
 ```
 
 
@@ -245,14 +241,12 @@ export default {
 } satisfies Config
 ```
 
-```ts
-// /renderer/+onRenderHtml.ts
+```js
+// /renderer/+onRenderHtml.js
 
 export { onRenderHtml }
 
-import type { PageContextServer } from 'vike/types'
-
-async function onRenderHtml(pageContext: PageContextServer) {
+async function onRenderHtml(pageContext) {
   // Config values are available at pageContext.config
   const { title } = pageContext.config
   return escapeInject`<html>
@@ -264,14 +258,12 @@ async function onRenderHtml(pageContext: PageContextServer) {
 }
 ```
 
-```ts
-// /pages/about/+config.ts
-
-import type { Config } from 'vike/types'
+```js
+// /pages/about/+config.js
 
 export default {
   title: 'Demo showcasing the V1 design'
-} satisfies Config
+}
 ```
 
 See:
@@ -310,18 +302,15 @@ The new config <Link text={<code>client</code>} href="/client" /> allows you to 
 
 > You can also keep using <Link text={<code>onHydrationEnd()</code>} href="/onHydrationEnd" />.
 
-```ts
-
-import type { Config } from 'vike/types'
-
-// +config.ts
+```js
+// +config.js
 export default {
-  client: './some-client-code.ts'
-} satisfies Config
+  client: './some-client-code.js'
+}
 ```
 
-```ts
-// some-client-code.ts
+```js
+// some-client-code.js
 console.log("I'm run when the client-side JavaScript is loaded.")
 ```
 
