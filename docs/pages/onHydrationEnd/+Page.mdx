@@ -1,5 +1,4 @@
 import { Link } from '@brillout/docpress'
-import { HookTypeScriptHints } from '../../components'
 
 You can use the `onHydrationEnd()` hook to implement initialization that needs to be executed once the page has finished <Link href="/hydration">hydrating</Link>.
 
@@ -21,23 +20,6 @@ async function onHydrationEnd(pageContext: PageContextClient) {
 }
 ```
 
-
-## TypeScript
-
-```ts
-// /pages/+onHydrationEnd.ts
-// Environment: client
-
-export { onHydrationEnd }
-
-import type { PageContextClient } from 'vike/types'
-
-async function onHydrationEnd(pageContext: PageContextClient) {
-  // ...
-}
-```
-
-<HookTypeScriptHints hookTypeName="OnHydrationEndAsync" />
 
 ## See also
 

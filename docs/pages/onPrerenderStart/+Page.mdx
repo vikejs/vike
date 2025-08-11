@@ -1,4 +1,3 @@
-import { HookTypeScriptHints } from '../../components'
 import { Link } from '@brillout/docpress'
 
 Environment: build-time (Node.js/Bun/Deno)  
@@ -33,20 +32,6 @@ async function onPrerenderStart(prerenderContext: PrerenderContext) {
 }
 ```
 
-
-## TypeScript
-
-```ts
-export { onPrerenderStart }
-
-import type { PrerenderContext } from 'vike/types'
-
-async function onPrerenderStart(prerenderContext: PrerenderContext) {
-  // ...
-}
-```
-
-<HookTypeScriptHints hookTypeName="OnPrerenderStartAsync" />
 
 ## See also
 

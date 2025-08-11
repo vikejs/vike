@@ -1,4 +1,4 @@
-import { HookTypeScriptHints, UiFrameworkExtension } from '../../components'
+import { UiFrameworkExtension } from '../../components'
 import { Link } from '@brillout/docpress'
 
 Environment: server (<Link href="#environment">configurable</Link>)  
@@ -24,8 +24,13 @@ The central difference between the two hooks is that the value returned by `data
 
 ```ts
 // /pages/some-page/+data.ts
+// Environment: server
 
-export function data() {
+export { data }
+
+import type { PageContextServer } from 'vike/types'
+
+function data() {
   const someValue = /* ... */
   // pageContext.data === someValue
   return someValue
@@ -34,8 +39,13 @@ export function data() {
 
 ```ts
 // /pages/some-page/+onBeforeRender.ts
+// Environment: server
 
-export function onBeforeRender() {
+export { onBeforeRender }
+
+import type { PageContextServer } from 'vike/types'
+
+function onBeforeRender() {
   const someValue1 = /* ... */
   const someValue2 = /* ... */
   // pageContext.prop1 === someValue1
@@ -82,10 +92,12 @@ A single global `onBeforeRender()` hook orchestrating the custom setting:
 ```ts
 // /pages/+onBeforeRender.ts
 
+export { onBeforeRender }
+
 import type { PageContextServer } from 'vike/types'
 import { runQuery } from 'some-sql-engine'
 
-export async function onBeforeRender(pageContext: PageContextServer) {
+async function onBeforeRender(pageContext: PageContextServer) {
   // The value exported by /pages/**/+sql.js is available at pageContext.config.sql
   const { sql } = pageContext.config
   const data = await runQuery(sql)
@@ -163,11 +175,13 @@ export default {
 
 ```ts
 // /pages/+onBeforeRender.ts
-// Environment: server or client
+// Environment: server & client
+
+export { onBeforeRender }
 
 import type { PageContext } from 'vike/types'
 
-export async function onBeforeRender(pageContext: PageContext) {
+async function onBeforeRender(pageContext: PageContext) {
   // When run on the server-side
   if (pageContext.config.onBeforeRenderHtml) {
     const { pageContext } = await onBeforeRenderHtml(pageContext)
@@ -184,10 +198,12 @@ export async function onBeforeRender(pageContext: PageContext) {
 // /pages/+onBeforeRenderHtml.tsx
 // Environment: server
 
+export { onBeforeRenderHtml }
+
 import type { PageContextServer } from 'vike/types'
 import { renderToHtml } from 'my-graphql-tool/server'
 
-export async function onBeforeRenderHtml(pageContext: PageContextServer) {
+async function onBeforeRenderHtml(pageContext: PageContextServer) {
   const { Page } = pageContext
   // `cache` contains the data fetched by GraphQL
   const { cache, html } = await renderToHtml(<Page />)
@@ -204,11 +220,13 @@ export async function onBeforeRenderHtml(pageContext: PageContextServer) {
 // /pages/+onBeforeRenderClient.tsx
 // Environment: client
 
+export { onBeforeRenderClient }
+
 import type { PageContextClient } from 'vike/types'
 import { hydrate } from 'my-ui-framework/client'
 import { CacheProvider } from 'my-graphql-tool/client'
 
-export function onBeforeRenderClient(pageContext: PageContextClient) {
+function onBeforeRenderClient(pageContext: PageContextClient) {
   const { Page, cache } = pageContext
   hydrate(
     // Re-use the `cache` data that was fetched on the server-side
@@ -219,21 +237,6 @@ export function onBeforeRenderClient(pageContext: PageContextClient) {
   )
 }
 ```
-
-
-## TypeScript
-
-```ts
-export { onBeforeRender }
-
-import type { PageContextServer } from 'vike/types'
-
-async function onBeforeRender(pageContext: PageContextServer) {
-  // ...
-}
-```
-
-<HookTypeScriptHints hookTypeName="OnBeforeRenderAsync" />
 
 
 ## See also

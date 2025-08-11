@@ -1,4 +1,3 @@
-import { HookTypeScriptHints } from '../../components'
 import { Link } from '@brillout/docpress'
 
 The `route` config determines the page's <Link text="routing" href="/routing" />.
@@ -55,19 +54,6 @@ function route(pageContext: PageContext) {
 }
 ```
 
-## TypeScript
-
-```ts
-export { route }
-
-import type { PageContext } from 'vike/types'
-
-function route(pageContext: PageContext) {
-  // ...
-}
-```
-
-<HookTypeScriptHints hookTypeName="RouteSync" />
 
 See also:
  - <Link href="/routing" />
