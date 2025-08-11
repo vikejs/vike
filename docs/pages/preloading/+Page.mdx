@@ -33,19 +33,16 @@ app.get('*', async (req: Request, res: Response) => {
 })
 ```
 
+The `pageContext.httpResponse.earlyHints` list is an `EarlyHint[]` array.
 ```ts
-type PageContext = {
-  httpResponse: {
-    earlyHints: {
-      earlyHintLink: string // Early hint value
-      assetType: "image" | "script" | "font" | "style" | "audio" | "video" | "document" |
-                 "fetch" | "track" | "worker" | "embed" | "object" | null
-      mediaType: string // MIME type
-      src: string // Asset's URL
-      isEntry: boolean // true  ⇒ asset is an entry
-                       // false ⇒ asset is a dependency of an entry
-    }[]
-  }
+type EarlyHint = {
+  earlyHintLink: string // Early hint value
+  assetType: "image" | "script" | "font" | "style" | "audio" | "video" | "document" |
+             "fetch" | "track" | "worker" | "embed" | "object" | null
+  mediaType: string // MIME type
+  src: string // Asset's URL
+  isEntry: boolean // true  ⇒ asset is an entry
+                   // false ⇒ asset is a dependency of an entry
 }
 ```
 
