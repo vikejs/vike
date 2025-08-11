@@ -9,14 +9,15 @@ To internationalize (i18n) your app:
 
 ```ts
 // pages/+onBeforeRoute.ts
+// Environment: server & client
 
 export { onBeforeRoute }
 
-import type { PageContextServer } from 'vike/types'
+import type { PageContext } from 'vike/types'
 import { modifyUrl } from 'vike/modifyUrl'
 import type { Url } from 'vike/types'
 
-function onBeforeRoute(pageContext: PageContextServer) {
+function onBeforeRoute(pageContext: PageContext) {
   const { urlWithoutLocale, locale } = extractLocale(pageContext.urlParsed)
   return {
     pageContext: {
