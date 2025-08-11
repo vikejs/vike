@@ -39,9 +39,9 @@ Instead of a Route String, you can also define a Route Function:
 
 export { route }
 
-import type { PageContextServer, PageContextClient } from 'vike/types'
+import type { PageContext } from 'vike/types'
 
-function route(pageContext: PageContextServer | PageContextClient) {
+function route(pageContext: PageContext) {
   const parts = pageContext.urlPathname.split('/')
   if (parts[1] !== 'product') {
     return false

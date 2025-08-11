@@ -35,10 +35,10 @@ We can also define a page's route with a *Route String* (for parameterized route
 // Note how the two files share the same folder `/pages/index/`; this is how Vike
 // knows that `/pages/index/+route.ts` defines the route of `/pages/index/+Page.tsx`.
 
-import type { PageContextServer, PageContextClient } from 'vike/types'
+import type { PageContext } from 'vike/types'
 
 // Route Function
-export default (pageContext: PageContextServer | PageContextClient) => pageContext.urlPathname === '/';
+export default (pageContext: PageContext) => pageContext.urlPathname === '/';
 
 // If we don't create a `+route.ts` file then Vike does Filesystem Routing
 ```

@@ -35,9 +35,9 @@ export default '/product/@productId'
 ```ts
 // product/catch-all/+route.ts
 
-import type { PageContextServer, PageContextClient } from 'vike/types'
+import type { PageContext } from 'vike/types'
 
-export default (pageContext: PageContextServer | PageContextClient) => {
+export default (pageContext: PageContext) => {
   if (!pageContext.urlPathname.startsWith('/product/')) return false
   return {
     precedence: -1,
@@ -83,9 +83,9 @@ export default '/admin'
 ```ts
 // login/+route.ts
 
-import type { PageContextServer, PageContextClient } from 'vike/types'
+import type { PageContext } from 'vike/types'
 
-export default (pageContext: PageContextServer | PageContextClient) => {
+export default (pageContext: PageContext) => {
   if( pageContext.user === null ) {
     return {
       precedence: 99

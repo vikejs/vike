@@ -162,13 +162,15 @@ Your pages can also use data that was dynamically fetched in order to determine 
 
 ```ts
 // /pages/product/+title.ts
+// Environment: server & client
 
-import type { PageContextServer } from 'vike/types'
+import type { PageContext } from 'vike/types'
 
-export default (pageContext: PageContextServer) => pageContext.data.product.name
+export default (pageContext: PageContext) => pageContext.data.product.name
 ```
 ```ts
 // /pages/product/+description.ts
+// Environment: server
 
 import type { PageContextServer } from 'vike/types'
 
@@ -222,17 +224,17 @@ function onRenderClient(pageContext: PageContextClient) {
 // /pages/utils.ts
 // Environment: server & client
 
-import type { PageContextServer, PageContextClient } from 'vike/types'
+import type { PageContext } from 'vike/types'
 export { getTitle, getDescription }
 
-function getTitle(pageContext: PageContextServer | PageContextClient) {
+function getTitle(pageContext: PageContext) {
   // The value exported by /pages/**/+title.js is available at pageContext.config.title
   const val = pageContext.config.title
   if (!val) return 'Some default title'
   if (typeof val === 'string') return val
   if (typeof val === 'function') return val(pageContext)
 }
-function getDescription(pageContext: PageContextServer | PageContextClient) {
+function getDescription(pageContext: PageContext) {
   // Same as getTitle()
   // ...
 }

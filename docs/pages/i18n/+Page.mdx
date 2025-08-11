@@ -13,7 +13,7 @@ To internationalize (i18n) your app:
 export { onBeforeRoute }
 
 import { modifyUrl } from 'vike/modifyUrl'
-import type { Url, PageContextClient, PageContextServer } from 'vike/types'
+import type { Url } from 'vike/types'
 
 const onBeforeRoute: OnBeforeRouteSync = (pageContext): ReturnType<OnBeforeRouteSync> => {
   const { urlWithoutLocale, locale } = extractLocale(pageContext.urlParsed)

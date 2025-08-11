@@ -165,9 +165,9 @@ export default {
 // /pages/+onBeforeRender.ts
 // Environment: server or client
 
-import type { PageContextServer, PageContextClient } from 'vike/types'
+import type { PageContext } from 'vike/types'
 
-export async function onBeforeRender(pageContext: PageContextServer | PageContextClient) {
+export async function onBeforeRender(pageContext: PageContext) {
   // When run on the server-side
   if (pageContext.config.onBeforeRenderHtml) {
     const { pageContext } = await onBeforeRenderHtml(pageContext)
