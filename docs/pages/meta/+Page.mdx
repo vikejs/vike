@@ -165,16 +165,18 @@ Your pages can also use data that was dynamically fetched in order to determine 
 // Environment: server & client
 
 import type { PageContext } from 'vike/types'
+import type { Data } from './+data'
 
-export default (pageContext: PageContext) => pageContext.data.product.name
+export default (pageContext: PageContext<Data>) => pageContext.data.product.name
 ```
 ```ts
 // /pages/product/+description.ts
 // Environment: server
 
 import type { PageContextServer } from 'vike/types'
+import type { Data } from './+data'
 
-export default (pageContext: PageContextServer) => {
+export default (pageContext: PageContextServer<Data>) => {
   const { product } = pageContext.data
   return `${product.name} - ${product.description}`
 }
