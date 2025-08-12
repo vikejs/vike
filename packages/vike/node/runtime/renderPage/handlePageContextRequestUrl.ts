@@ -3,25 +3,30 @@ export { handlePageContextRequestUrl }
 import { pageContextJsonFileExtension, doNotCreateExtraDirectory } from '../../../shared/getPageContextRequestUrl.js'
 import { baseServer, parseUrl, assert, slice } from '../utils.js'
 
+type UrlParsed = ReturnType<typeof parseUrl>
+
 // See also shared/getPageContextRequestUrl.ts
 function handlePageContextRequestUrl(url: string): {
   urlWithoutPageContextRequestSuffix: string
   isPageContextJsonRequest: boolean
 } {
-  if (!hasSuffix(url)) {
+  const urlParsed = parseUrl(url, baseServer)
+  if (!hasSuffix(urlParsed)) {
     return { urlWithoutPageContextRequestSuffix: url, isPageContextJsonRequest: false }
   }
-  return { urlWithoutPageContextRequestSuffix: removePageContextUrlSuffix(url), isPageContextJsonRequest: true }
+  return {
+    urlWithoutPageContextRequestSuffix: removePageContextUrlSuffix(urlParsed, url),
+    isPageContextJsonRequest: true,
+  }
 }
 
-function hasSuffix(url: string) {
-  const { pathnameOriginal, pathname } = parseUrl(url, baseServer)
+function hasSuffix(urlParsed: UrlParsed) {
+  const { pathnameOriginal, pathname } = urlParsed
   assert(pathname.endsWith(pageContextJsonFileExtension) === pathnameOriginal.endsWith(pageContextJsonFileExtension))
   return pathname.endsWith(pageContextJsonFileExtension)
 }
 
-function removePageContextUrlSuffix(url: string): string {
-  const urlParsed = parseUrl(url, baseServer)
+function removePageContextUrlSuffix(urlParsed: UrlParsed, url: string): string {
   // We cannot use `urlParsed.pathname` because it would break the `urlParsed.pathnameOriginal` value of subsequent `parseUrl()` calls.
   const { origin, pathnameOriginal, searchOriginal, hashOriginal } = urlParsed
   assert(doNotCreateExtraDirectory === false)
