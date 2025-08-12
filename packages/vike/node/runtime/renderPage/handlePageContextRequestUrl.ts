@@ -16,8 +16,8 @@ function handlePageContextRequestUrl(url: string): {
 
 function hasSuffix(url: string) {
   const { pathnameOriginal, pathname } = parseUrl(url, baseServer)
-  assert(pathnameOriginal.endsWith(pageContextJsonFileExtension) === pathname.endsWith(pageContextJsonFileExtension))
-  return pathnameOriginal.endsWith(pageContextJsonFileExtension)
+  assert(pathname.endsWith(pageContextJsonFileExtension) === pathnameOriginal.endsWith(pageContextJsonFileExtension))
+  return pathname.endsWith(pageContextJsonFileExtension)
 }
 
 function removePageContextUrlSuffix(url: string): string {
