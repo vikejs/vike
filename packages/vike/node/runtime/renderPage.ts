@@ -473,13 +473,10 @@ function getPageContextBegin(
   return pageContextBegin
 }
 
-function handlePageContextUrl(urlOriginal: string): {
-  isClientSideNavigation: boolean
-  _urlHandler: (urlOriginal: string) => string
-} {
-  const { isPageContextRequest } = handlePageContextRequestUrl(urlOriginal)
+function handlePageContextUrl(urlOriginal: string) {
+  const { isPageContextJsonRequest } = handlePageContextRequestUrl(urlOriginal)
   return {
-    isClientSideNavigation: isPageContextRequest,
+    isClientSideNavigation: isPageContextJsonRequest,
     _urlHandler: (url: string) => handlePageContextRequestUrl(url).urlWithoutPageContextRequestSuffix,
   }
 }
@@ -519,8 +516,8 @@ async function normalizeUrl(
   const { trailingSlash, disableUrlNormalization } = globalContext.config
   if (disableUrlNormalization) return null
   const { urlOriginal } = pageContext
-  const { isPageContextRequest } = handlePageContextRequestUrl(urlOriginal)
-  if (isPageContextRequest) return null
+  const { isPageContextJsonRequest } = handlePageContextRequestUrl(urlOriginal)
+  if (isPageContextJsonRequest) return null
   const urlNormalized = normalizeUrlPathname(urlOriginal, trailingSlash ?? false, globalContext.baseServer)
   if (!urlNormalized) return null
   logRuntimeInfo?.(

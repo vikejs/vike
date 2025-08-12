@@ -22,6 +22,7 @@ import { execHookGuard } from '../../../shared/route/execHookGuard.js'
 import pc from '@brillout/picocolors'
 import { isServerSideError } from '../../../shared/misc/isServerSideError.js'
 import type { PageContextCreated } from './createPageContextServerSide.js'
+import type { PageContextBegin } from '../renderPage.js'
 
 type PageContextAfterRender = { httpResponse: HttpResponse; errorWhileRendering: null | Error }
 
@@ -35,6 +36,7 @@ async function renderPageAlreadyRouted<
     errorWhileRendering: null | Error
     _httpRequestId: number
   } & PageContextCreated &
+    PageContextBegin &
     PageContextUrlInternal &
     PageContext_loadPageConfigsLazyServerSide,
 >(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {
@@ -98,11 +100,6 @@ async function prerenderPage(
       is404: boolean
     },
 ) {
-  objectAssign(pageContext, {
-    isClientSideNavigation: false,
-    _urlHandler: null,
-  })
-
   /* Should we execute the guard() hook upon pre-rendering? Is there a use case for this?
    *  - It isn't trivial to implement, as it requires to duplicate / factor out the isAbortError() handling
   await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageServer(pageContext))
@@ -117,7 +114,6 @@ async function prerenderPage(
       renderHook.hookFilePath
     } didn't return an HTML string.`,
   )
-  assert(pageContext.isClientSideNavigation === false)
   const documentHtml = await getHtmlString(htmlRender)
   assert(typeof documentHtml === 'string')
   if (!pageContext._usesClientRouter) {

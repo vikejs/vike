@@ -15,6 +15,7 @@ import { pageContextInitIsPassedToClient } from '../../../shared/misc/pageContex
 import { isServerSideError } from '../../../shared/misc/isServerSideError.js'
 import { getPropKeys, getPropVal, setPropVal } from './propKeys.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
+import type { PageContextCreated } from '../renderPage/createPageContextServerSide.js'
 
 const passToClientBuiltInPageContext = [
   'abortReason',
@@ -32,7 +33,7 @@ const passToClientBuiltInPageContext = [
 ]
 const pageToClientBuiltInPageContextError = ['pageProps', 'is404', isServerSideError]
 
-type PageContextSerialization = {
+type PageContextSerialization = PageContextCreated & {
   pageId: string
   routeParams: Record<string, string>
   _passToClient: PassToClient
@@ -40,7 +41,6 @@ type PageContextSerialization = {
   pageProps?: Record<string, unknown>
   _pageContextInit: Record<string, unknown>
   _globalContext: GlobalContextServerInternal
-  isClientSideNavigation: boolean
 }
 function getPageContextClientSerialized(pageContext: PageContextSerialization, isHtmlJsonScript: boolean) {
   const passToClientPageContext = getPassToClientPageContext(pageContext)

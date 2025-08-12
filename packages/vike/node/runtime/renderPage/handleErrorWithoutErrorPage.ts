@@ -7,11 +7,11 @@ import { createHttpResponsePage, createHttpResponseError } from './createHttpRes
 import pc from '@brillout/picocolors'
 import type { GetPageAssets } from './getPageAssets.js'
 import type { PageContextAfterRender } from './renderPageAlreadyRouted.js'
+import type { PageContextCreated } from './createPageContextServerSide.js'
 
 // When the user hasn't defined _error.page.js
 async function handleErrorWithoutErrorPage<
-  PageContext extends {
-    isClientSideNavigation: boolean
+  PageContext extends PageContextCreated & {
     errorWhileRendering: null | Error
     is404: null | boolean
     pageId: null
