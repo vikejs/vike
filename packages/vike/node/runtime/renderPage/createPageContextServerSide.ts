@@ -12,13 +12,7 @@ type PageContextCreated = Awaited<ReturnType<typeof createPageContextServerSide>
 function createPageContextServerSide(
   pageContextInit: PageContextInit,
   globalContext: GlobalContextServerInternal,
-  {
-    isPrerendering,
-    ssr: { urlHandler, isClientSideNavigation } = {
-      urlHandler: null,
-      isClientSideNavigation: false,
-    },
-  }:
+  args:
     | {
         isPrerendering: false
         ssr: {
@@ -32,6 +26,13 @@ function createPageContextServerSide(
       },
 ) {
   assert(pageContextInit.urlOriginal)
+  const {
+    isPrerendering,
+    ssr: { urlHandler, isClientSideNavigation } = {
+      urlHandler: null,
+      isClientSideNavigation: false,
+    },
+  } = args
 
   const pageContextCreated = createPageContext(pageContextInit, isPrerendering)
 
