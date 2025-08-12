@@ -46,14 +46,14 @@ function modifyUrlSameOrigin(url: string, modify: ModifyUrlSameOriginOptions): s
   return urlModified
 }
 
-function resolveSearch(urlParsed: ReturnType<typeof parseUrl>, search: Search): string {
+function resolveSearch(urlParsed: ReturnType<typeof parseUrl>, modifySearch: Search): string {
   let searchParams: URLSearchParams
-  if (search instanceof URLSearchParams) {
+  if (modifySearch instanceof URLSearchParams) {
     // Overwrite
-    searchParams = search
+    searchParams = modifySearch
   } else {
     // Merge
-    const searchMap = objectFilter({ ...urlParsed.search, ...search }, isNotNullish_keyVal<string>)
+    const searchMap = objectFilter({ ...urlParsed.search, ...modifySearch }, isNotNullish_keyVal<string>)
     searchParams = new URLSearchParams(searchMap)
   }
   return '?' + searchParams.toString()
