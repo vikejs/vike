@@ -68,7 +68,7 @@ function getGlobalContextClientSerialized(pageContext: PageContextSerialization,
   const globalContext = pageContext._globalContext
   const getObj = ({ prop, once }: PassToClientEntryNormalized) => {
     if (once && getPropVal(pageContext, prop)) {
-      assert(typeof pageContext.isClientSideNavigation === 'boolean')
+      assert(typeof pageContext.isClientSideNavigation === 'boolean' || pageContext.isClientSideNavigation === null)
       if (!pageContext.isClientSideNavigation) {
         return { obj: pageContext, objName: 'pageContext' as const } // pass it to client-side globalContext
       } else {
