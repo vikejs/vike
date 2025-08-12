@@ -6,12 +6,12 @@ import { baseServer, parseUrl, assert, slice } from '../utils.js'
 // See also shared/getPageContextRequestUrl.ts
 function handlePageContextRequestUrl(url: string): {
   urlWithoutPageContextRequestSuffix: string
-  isPageContextRequest: boolean
+  isPageContextJsonRequest: boolean
 } {
   if (!hasSuffix(url)) {
-    return { urlWithoutPageContextRequestSuffix: url, isPageContextRequest: false }
+    return { urlWithoutPageContextRequestSuffix: url, isPageContextJsonRequest: false }
   }
-  return { urlWithoutPageContextRequestSuffix: removePageContextUrlSuffix(url), isPageContextRequest: true }
+  return { urlWithoutPageContextRequestSuffix: removePageContextUrlSuffix(url), isPageContextJsonRequest: true }
 }
 
 function hasSuffix(url: string) {
