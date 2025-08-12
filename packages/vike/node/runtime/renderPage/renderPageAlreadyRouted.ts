@@ -101,7 +101,6 @@ async function prerenderPage(
     },
 ) {
   objectAssign(pageContext, {
-    isClientSideNavigation: false,
     _urlHandler: null,
   })
 
