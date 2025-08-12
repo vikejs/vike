@@ -26,8 +26,8 @@ function createPageContextServerSide(
       },
 ) {
   assert(pageContextInit.urlOriginal)
+  const { isPrerendering } = args
   const {
-    isPrerendering,
     ssr: { urlHandler, isClientSideNavigation } = {
       urlHandler: null,
       isClientSideNavigation: false,
