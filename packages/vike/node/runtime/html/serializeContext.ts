@@ -41,7 +41,6 @@ type PageContextSerialization = PageContextCreated & {
   pageProps?: Record<string, unknown>
   _pageContextInit: Record<string, unknown>
   _globalContext: GlobalContextServerInternal
-  isClientSideNavigation: boolean
 }
 function getPageContextClientSerialized(pageContext: PageContextSerialization, isHtmlJsonScript: boolean) {
   const passToClientPageContext = getPassToClientPageContext(pageContext)
