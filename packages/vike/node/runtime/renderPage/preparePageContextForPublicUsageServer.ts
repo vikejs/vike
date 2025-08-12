@@ -21,7 +21,6 @@ type PageContextForPublicUsageServer = PageContextInternalServer &
     Page: unknown
     pageId: string
     is404: null | boolean
-    isClientSideNavigation: boolean
     _globalContext: GlobalContextServerInternal
   }
 
