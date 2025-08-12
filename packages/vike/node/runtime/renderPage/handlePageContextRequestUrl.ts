@@ -12,11 +12,15 @@ function handlePageContextRequestUrl(url: string): {
 } {
   const urlParsed = parseUrl(url, baseServer)
   if (!hasSuffix(urlParsed)) {
-    return { urlWithoutPageContextRequestSuffix: url, isPageContextJsonRequest: false }
-  }
-  return {
-    urlWithoutPageContextRequestSuffix: removePageContextUrlSuffix(urlParsed, url),
-    isPageContextJsonRequest: true,
+    return {
+      isPageContextJsonRequest: false,
+      urlWithoutPageContextRequestSuffix: url,
+    }
+  } else {
+    return {
+      isPageContextJsonRequest: true,
+      urlWithoutPageContextRequestSuffix: removePageContextUrlSuffix(urlParsed, url),
+    }
   }
 }
 
