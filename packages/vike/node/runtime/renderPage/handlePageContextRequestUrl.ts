@@ -11,26 +11,27 @@ function handlePageContextRequestUrl(url: string): {
   isPageContextJsonRequest: boolean
 } {
   const urlParsed = parseUrl(url, baseServer)
-  if (!hasSuffix(urlParsed)) {
+  if (!isMatch(urlParsed)) {
     return {
       isPageContextJsonRequest: false,
       urlWithoutPageContextRequestSuffix: url,
     }
   } else {
+    const { urlWithoutPageContextRequestSuffix } = processUrl(urlParsed, url)
     return {
       isPageContextJsonRequest: true,
-      urlWithoutPageContextRequestSuffix: removePageContextUrlSuffix(urlParsed, url),
+      urlWithoutPageContextRequestSuffix,
     }
   }
 }
 
-function hasSuffix(urlParsed: UrlParsed) {
+function isMatch(urlParsed: UrlParsed) {
   const { pathnameOriginal, pathname } = urlParsed
   assert(pathname.endsWith(pageContextJsonFileExtension) === pathnameOriginal.endsWith(pageContextJsonFileExtension))
   return pathname.endsWith(pageContextJsonFileExtension)
 }
 
-function removePageContextUrlSuffix(urlParsed: UrlParsed, url: string): string {
+function processUrl(urlParsed: UrlParsed, url: string) {
   // We cannot use `urlParsed.pathname` because it would break the `urlParsed.pathnameOriginal` value of subsequent `parseUrl()` calls.
   const { origin, pathnameOriginal, searchOriginal, hashOriginal } = urlParsed
   assert(doNotCreateExtraDirectory === false)
@@ -39,5 +40,6 @@ function removePageContextUrlSuffix(urlParsed: UrlParsed, url: string): string {
   let pathnameModified = slice(pathnameOriginal, 0, -1 * urlSuffix.length)
   if (pathnameModified === '') pathnameModified = '/'
   assert(url === `${origin || ''}${pathnameOriginal}${searchOriginal || ''}${hashOriginal || ''}`, { url })
-  return `${origin || ''}${pathnameModified}${searchOriginal || ''}${hashOriginal || ''}`
+  const urlWithoutPageContextRequestSuffix = `${origin || ''}${pathnameModified}${searchOriginal || ''}${hashOriginal || ''}`
+  return { urlWithoutPageContextRequestSuffix }
 }
