@@ -40,7 +40,6 @@ type PageContextSerialization = PageContextCreated & {
   is404: null | boolean
   pageProps?: Record<string, unknown>
   _pageContextInit: Record<string, unknown>
-  isPrerendering: boolean
   _globalContext: GlobalContextServerInternal
   isClientSideNavigation: boolean
 }
