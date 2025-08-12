@@ -37,10 +37,7 @@ function createPageContextServerSide(
     _pageContextInit: pageContextInit,
     _urlRewrite: null,
     _urlHandler: args.ssr?.urlHandler ?? null,
-    isClientSideNavigation:
-      args.ssr?.isClientSideNavigation ??
-      // We don't have that information upon pre-rendering
-      null,
+    isClientSideNavigation: args.ssr?.isClientSideNavigation ?? false,
   })
 
   objectAssign(pageContextCreated, globalContext._vikeConfigPublicGlobal)

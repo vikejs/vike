@@ -155,11 +155,9 @@ type PageContextBuiltInCommon<Data> = {
   /**
    * Whether the page was navigated by the client-side router.
    *
-   * The value is `null` while pre-rendering pages.
-   *
    * https://vike.dev/pageContext#isClientSideNavigation
    */
-  isClientSideNavigation: boolean | null
+  isClientSideNavigation: boolean
 
   /**
    * The reason why the original page was aborted. Usually used for showing a custom message on the error page.
