@@ -118,7 +118,6 @@ async function prerenderPage(
       renderHook.hookFilePath
     } didn't return an HTML string.`,
   )
-  assert(pageContext.isClientSideNavigation === false)
   const documentHtml = await getHtmlString(htmlRender)
   assert(typeof documentHtml === 'string')
   if (!pageContext._usesClientRouter) {
