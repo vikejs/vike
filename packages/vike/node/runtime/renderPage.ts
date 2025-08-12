@@ -473,10 +473,7 @@ function getPageContextBegin(
   return pageContextBegin
 }
 
-function handlePageContextUrl(urlOriginal: string): {
-  isClientSideNavigation: boolean
-  _urlHandler: (urlOriginal: string) => string
-} {
+function handlePageContextUrl(urlOriginal: string) {
   const { isPageContextJsonRequest } = handlePageContextRequestUrl(urlOriginal)
   return {
     isClientSideNavigation: isPageContextJsonRequest,
