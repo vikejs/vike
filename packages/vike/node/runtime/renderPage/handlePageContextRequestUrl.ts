@@ -6,10 +6,7 @@ import { baseServer, parseUrl, assert, slice } from '../utils.js'
 type UrlParsed = ReturnType<typeof parseUrl>
 
 // See also shared/getPageContextRequestUrl.ts
-function handlePageContextRequestUrl(url: string): {
-  urlWithoutPageContextRequestSuffix: string
-  isPageContextJsonRequest: boolean
-} {
+function handlePageContextRequestUrl(url: string) {
   const urlParsed = parseUrl(url, baseServer)
   if (!isMatch(urlParsed)) {
     return {
