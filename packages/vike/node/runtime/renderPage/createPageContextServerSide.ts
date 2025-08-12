@@ -26,13 +26,7 @@ function createPageContextServerSide(
       },
 ) {
   assert(pageContextInit.urlOriginal)
-  const { isPrerendering } = args
-  const {
-    ssr: { urlHandler, isClientSideNavigation } = {
-      urlHandler: null,
-      isClientSideNavigation: false,
-    },
-  } = args
+  const { isPrerendering, ssr } = args
 
   const pageContextCreated = createPageContext(pageContextInit, isPrerendering)
 
@@ -44,8 +38,8 @@ function createPageContextServerSide(
     _baseAssets: globalContext.baseAssets,
     _pageContextInit: pageContextInit,
     _urlRewrite: null,
-    _urlHandler: urlHandler,
-    isClientSideNavigation,
+    _urlHandler: ssr?.urlHandler ?? null,
+    isClientSideNavigation: ssr?.isClientSideNavigation ?? false,
   })
 
   objectAssign(pageContextCreated, globalContext._vikeConfigPublicGlobal)
