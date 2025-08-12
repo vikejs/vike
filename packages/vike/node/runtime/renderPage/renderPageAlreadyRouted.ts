@@ -100,10 +100,6 @@ async function prerenderPage(
       is404: boolean
     },
 ) {
-  objectAssign(pageContext, {
-    _urlHandler: null,
-  })
-
   /* Should we execute the guard() hook upon pre-rendering? Is there a use case for this?
    *  - It isn't trivial to implement, as it requires to duplicate / factor out the isAbortError() handling
   await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageServer(pageContext))
