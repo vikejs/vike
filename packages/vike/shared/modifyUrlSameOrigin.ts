@@ -17,7 +17,7 @@ type ModifyUrlSameOriginOptions = {
   search?: Search | null
   pathname?: string
 }
-type Search = Record<string, string | null> | URLSearchParams
+type Search = Record<string, string | null | undefined> | URLSearchParams
 
 function modifyUrlSameOrigin(url: string, modify: ModifyUrlSameOriginOptions): string {
   const urlParsed = parseUrl(url, '/')
@@ -53,8 +53,15 @@ function resolveSearch(urlParsed: ReturnType<typeof parseUrl>, modifySearch: Sea
     searchParams = modifySearch
   } else {
     // Merge
-    const searchMap = objectFilter({ ...urlParsed.search, ...modifySearch }, isNotNullish_keyVal<string>)
+    const searchMap = objectFilter(
+      { ...urlParsed.search, ...objectFilter(modifySearch, isNotUndefined) },
+      isNotNullish_keyVal<string>,
+    )
     searchParams = new URLSearchParams(searchMap)
   }
   return '?' + searchParams.toString()
+}
+
+function isNotUndefined<T>(arg: [string, T | undefined]): arg is [string, T] {
+  return arg[1] !== undefined
 }
