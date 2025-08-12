@@ -16,6 +16,7 @@ import { isServerSideError } from '../../../shared/misc/isServerSideError.js'
 import { getPropKeys, getPropVal, setPropVal } from './propKeys.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { PageContextCreated } from '../renderPage/createPageContextServerSide.js'
+import type { PageContextBegin } from '../renderPage.js'
 
 const passToClientBuiltInPageContext = [
   'abortReason',
@@ -41,6 +42,7 @@ type PageContextSerialization = PageContextCreated & {
   pageProps?: Record<string, unknown>
   _pageContextInit: Record<string, unknown>
   _globalContext: GlobalContextServerInternal
+  _isPageContextJsonRequest: null | PageContextBegin['_isPageContextJsonRequest']
 }
 function getPageContextClientSerialized(pageContext: PageContextSerialization, isHtmlJsonScript: boolean) {
   const passToClientPageContext = getPassToClientPageContext(pageContext)
@@ -68,8 +70,7 @@ function getGlobalContextClientSerialized(pageContext: PageContextSerialization,
   const globalContext = pageContext._globalContext
   const getObj = ({ prop, once }: PassToClientEntryNormalized) => {
     if (once && getPropVal(pageContext, prop)) {
-      assert(typeof pageContext.isClientSideNavigation === 'boolean')
-      if (!pageContext.isClientSideNavigation) {
+      if (!pageContext._isPageContextJsonRequest || pageContext._isPageContextJsonRequest.noCache) {
         return { obj: pageContext, objName: 'pageContext' as const } // pass it to client-side globalContext
       } else {
         return undefined // already passed to client-side
