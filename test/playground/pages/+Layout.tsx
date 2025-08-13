@@ -37,13 +37,6 @@ function Layout({ children }: { children: React.ReactNode }) {
   }
 
   assert(pageContext.someClientOnceProp === 'someValueSetOnce')
-  if (globalContext.isClientSide) {
-    // @ts-expect-error
-    assert(globalContext.someClientOnceProp === 'someValueSetOnce')
-  } else {
-    // @ts-expect-error
-    assert(globalContext.someClientOnceProp === undefined)
-  }
 
   return (
     <React.StrictMode>

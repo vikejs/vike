@@ -23,6 +23,8 @@ const passToClientBuiltInPageContext = [
   '_urlRedirect',
   'abortStatusCode',
   '_abortCall',
+  // TODO/soon/once: remove
+  '_passToClientOnce',
   /* Not needed on the client-side
   '_abortCaller',
   */
@@ -45,7 +47,7 @@ type PageContextSerialization = PageContextCreated & {
 function getPageContextClientSerialized(pageContext: PageContextSerialization, isHtmlJsonScript: boolean) {
   const passToClientPageContext = getPassToClientPageContext(pageContext)
   const getObj = (passToClientEntry: PassToClientEntryNormalized) => {
-    if (passToClientEntry.once) return undefined // pass it to client-side globalContext
+    // if (passToClientEntry.once) return undefined // pass it to client-side globalContext
     return { obj: pageContext, objName: 'pageContext' as const }
   }
   const res = applyPassToClient(passToClientPageContext, getObj)
@@ -54,6 +56,12 @@ function getPageContextClientSerialized(pageContext: PageContextSerialization, i
   if (pageContextClientProps.some((prop) => getPropVal(pageContext._pageContextInit, prop))) {
     pageContextClient[pageContextInitIsPassedToClient] = true
   }
+  // TODO/soon/once: remove
+  const passToClientOnce: string[] = passToClientPageContext
+    .map(normalizePassToClientEntry)
+    .filter((p) => p.once)
+    .map((p) => p.prop)
+  pageContextClient._passToClientOnce = passToClientOnce
   const pageContextClientSerialized = serializeObject(
     pageContextClient,
     passToClientPageContext,
@@ -67,7 +75,7 @@ function getGlobalContextClientSerialized(pageContext: PageContextSerialization,
   const passToClient = pageContext._passToClient
   const globalContext = pageContext._globalContext
   const getObj = ({ prop, once }: PassToClientEntryNormalized) => {
-    if (once && getPropVal(pageContext, prop)) {
+    if (false && once && getPropVal(pageContext, prop)) {
       assert(typeof pageContext.isClientSideNavigation === 'boolean')
       if (!pageContext.isClientSideNavigation) {
         return { obj: pageContext, objName: 'pageContext' as const } // pass it to client-side globalContext

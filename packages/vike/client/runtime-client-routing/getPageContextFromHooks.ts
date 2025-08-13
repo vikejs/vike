@@ -15,6 +15,7 @@ import {
   redirectHard,
   isObject,
   getGlobalObject,
+  castProp,
 } from './utils.js'
 import { parse } from '@brillout/json-serializer/parse'
 import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtml.js'
