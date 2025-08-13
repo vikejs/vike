@@ -46,12 +46,15 @@ type PageContextSerialization = PageContextCreated & {
 }
 function getPageContextClientSerialized(pageContext: PageContextSerialization, isHtmlJsonScript: boolean) {
   const passToClientPageContext = getPassToClientPageContext(pageContext)
+
   const res = applyPassToClient(passToClientPageContext, pageContext)
   const pageContextClient = res.objClient
+
   const pageContextClientProps = res.objClientProps
   if (pageContextClientProps.some((prop) => getPropVal(pageContext._pageContextInit, prop))) {
     pageContextClient[pageContextInitIsPassedToClient] = true
   }
+
   // TODO/soon/once: remove
   const passToClientOnce: string[] = passToClientPageContext
     .map(normalizePassToClientEntry)
@@ -60,6 +63,7 @@ function getPageContextClientSerialized(pageContext: PageContextSerialization, i
   if (passToClientOnce.length > 0) {
     pageContextClient._passToClientOnce = passToClientOnce
   }
+
   const pageContextClientSerialized = serializeObject(
     pageContextClient,
     passToClientPageContext,
