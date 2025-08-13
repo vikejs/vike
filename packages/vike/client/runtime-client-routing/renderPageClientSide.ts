@@ -24,6 +24,7 @@ import {
   getPageContextFromHooks_serialized,
   type PageContextFromServerHooks,
   setPageContextInitIsPassedToClient,
+  getPageContextCached,
 } from './getPageContextFromHooks.js'
 import { createPageContextClientSide } from './createPageContextClientSide.js'
 import {
@@ -595,6 +596,8 @@ async function getPageContextBegin(
     previousPageContext,
     ...pageContextInitClient,
   })
+
+  Object.assign(pageContext, getPageContextCached())
 
   // TO-DO/next-major-release: remove
   Object.defineProperty(pageContext, '_previousPageContext', {
