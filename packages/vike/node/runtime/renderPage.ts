@@ -48,7 +48,7 @@ import {
   type HttpResponse,
   createHttpResponse404,
   createHttpResponseRedirect,
-  createHttpResponsePageContextJson,
+  createHttpResponseJson,
   createHttpResponseError,
   createHttpResponseErrorWithoutGlobalContext,
   createHttpResponseBaseIsMissing,
@@ -618,7 +618,7 @@ async function handleAbortError(
     } else {
       pageContextSerialized = getPageContextClientSerializedAbort(pageContextAbort, false)
     }
-    const httpResponse = await createHttpResponsePageContextJson(pageContextSerialized)
+    const httpResponse = await createHttpResponseJson(pageContextSerialized)
     const pageContextReturn = { httpResponse }
     return { pageContextReturn }
   }

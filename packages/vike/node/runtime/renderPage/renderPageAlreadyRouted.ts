@@ -7,7 +7,7 @@ import { getHtmlString } from '../html/renderHtml.js'
 import { assert, assertUsage, augmentType, hasProp, objectAssign } from '../utils.js'
 import { getPageContextClientSerialized } from '../html/serializeContext.js'
 import { type PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
-import { createHttpResponsePage, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponse.js'
+import { createHttpResponsePage, createHttpResponseJson, HttpResponse } from './createHttpResponse.js'
 import {
   loadPageConfigsLazyServerSideAndExecHook,
   PageContext_loadPageConfigsLazyServerSide,
@@ -75,7 +75,7 @@ async function renderPageAlreadyRouted<
       objectAssign(pageContext, { [isServerSideError]: true })
     }
     const pageContextSerialized: string = getPageContextClientSerialized(pageContext, false)
-    const httpResponse = await createHttpResponsePageContextJson(pageContextSerialized)
+    const httpResponse = await createHttpResponseJson(pageContextSerialized)
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
