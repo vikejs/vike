@@ -61,7 +61,9 @@ function getPageContextClientSerialized(pageContext: PageContextSerialization, i
     .map(normalizePassToClientEntry)
     .filter((p) => p.once)
     .map((p) => p.prop)
-  pageContextClient._passToClientOnce = passToClientOnce
+  if (passToClientOnce.length > 0) {
+    pageContextClient._passToClientOnce = passToClientOnce
+  }
   const pageContextClientSerialized = serializeObject(
     pageContextClient,
     passToClientPageContext,
