@@ -54,7 +54,6 @@ function getPageContextFromHooks_serialized(): PageContextSerialized & {
   _hasPageContextFromServer: true
 } {
   const pageContextSerialized = getPageContextSerializedInHtml()
-  assertUsage(!('urlOriginal' in pageContextSerialized), "Adding 'urlOriginal' to passToClient is forbidden")
   processPageContextFromServer(pageContextSerialized)
   objectAssign(pageContextSerialized, {
     _hasPageContextFromServer: true as const,
@@ -326,12 +325,13 @@ async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _u
     throw getProjectError(`pageContext couldn't be fetched because an error occurred on the server-side`)
   }
 
-  assert(hasProp(pageContextFromServer, 'pageId', 'string'))
   processPageContextFromServer(pageContextFromServer)
 
   return { pageContextFromServer }
 }
 
 function processPageContextFromServer(pageContextFromServer: Record<string, unknown>) {
+  assertUsage(!('urlOriginal' in pageContextFromServer), "Adding 'urlOriginal' to passToClient is forbidden")
+  assert(hasProp(pageContextFromServer, 'pageId', 'string'))
   removeBuiltInOverrides(pageContextFromServer)
 }
