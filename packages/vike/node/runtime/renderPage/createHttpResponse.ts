@@ -1,5 +1,5 @@
 export { createHttpResponsePage }
-export { createHttpResponseJson }
+export { createHttpResponsePageContextJson }
 export { createHttpResponseError }
 export { createHttpResponseErrorWithoutGlobalContext }
 export { createHttpResponseRedirect }
@@ -143,7 +143,7 @@ function createHttpResponseError_(reason: string): HttpResponse {
   return httpResponse
 }
 
-async function createHttpResponseJson(pageContextSerialized: string) {
+async function createHttpResponsePageContextJson(pageContextSerialized: string) {
   const httpResponse = createHttpResponse(200, 'application/json', [], pageContextSerialized, [], null)
   return httpResponse
 }
