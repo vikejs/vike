@@ -143,8 +143,8 @@ function createHttpResponseError_(reason: string): HttpResponse {
   return httpResponse
 }
 
-async function createHttpResponseJson(pageContextSerialized: string) {
-  const httpResponse = createHttpResponse(200, 'application/json', [], pageContextSerialized, [], null)
+async function createHttpResponseJson(json: string) {
+  const httpResponse = createHttpResponse(200, 'application/json', [], json, [], null)
   return httpResponse
 }
 
