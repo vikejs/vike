@@ -335,7 +335,6 @@ async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _u
 function processPageContextFromServer(pageContextFromServer: Record<string, unknown>) {
   assertUsage(!('urlOriginal' in pageContextFromServer), "Adding 'urlOriginal' to passToClient is forbidden")
   assert(hasProp(pageContextFromServer, 'pageId', 'string'))
-  removeBuiltInOverrides(pageContextFromServer)
 
   // TODO/soon/once: remove
   castProp<string[] | undefined>(pageContextFromServer, '_passToClientOnce')
@@ -346,6 +345,8 @@ function processPageContextFromServer(pageContextFromServer: Record<string, unkn
       globalObject.pageContextCached![prop] = pageContextFromServer[prop]
     })
   }
+
+  removeBuiltInOverrides(pageContextFromServer)
 }
 
 function getPageContextCached() {
