@@ -16,7 +16,6 @@ import {
   genPromise,
   isCallable,
   catchInfiniteLoop,
-  castProp,
 } from './utils.js'
 import {
   getPageContextFromClientHooks,
@@ -25,6 +24,7 @@ import {
   getPageContextFromHooks_serialized,
   type PageContextFromServerHooks,
   setPageContextInitIsPassedToClient,
+  getPageContextCached,
 } from './getPageContextFromHooks.js'
 import { createPageContextClientSide } from './createPageContextClientSide.js'
 import {
@@ -75,7 +75,6 @@ const globalObject = getGlobalObject<{
   isTransitioning?: true
   previousPageContext?: PreviousPageContext
   renderedPageContext?: PageContextClient
-  pageContextCached: Record<string, unknown>
   firstRenderStartPromise: Promise<void>
   firstRenderStartPromiseResolve: () => void
 }>(
@@ -86,7 +85,6 @@ const globalObject = getGlobalObject<{
       renderCounter: 0,
       firstRenderStartPromise,
       firstRenderStartPromiseResolve,
-      pageContextCached: {},
     }
   })(),
 )
@@ -567,17 +565,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
     globalObject.renderedPageContext = pageContext as any as PageContextClient
 
-    // TODO/soon/once: remove
-    if (!isErrorPage) {
-      castProp<string[] | undefined>(pageContext, '_passToClientOnce')
-      const passToClientOnce = pageContext._passToClientOnce
-      if (passToClientOnce) {
-        passToClientOnce.forEach((prop) => {
-          globalObject.pageContextCached[prop] = pageContext[prop]
-        })
-      }
-    }
-
     stampFinished(urlOriginal)
   }
 }
@@ -610,7 +597,7 @@ async function getPageContextBegin(
     ...pageContextInitClient,
   })
 
-  Object.assign(pageContext, globalObject.pageContextCached)
+  Object.assign(pageContext, getPageContextCached())
 
   // TO-DO/next-major-release: remove
   Object.defineProperty(pageContext, '_previousPageContext', {

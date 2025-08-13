@@ -2,6 +2,7 @@ export { getPageContextFromHooks_isHydration }
 export { getPageContextFromHooks_serialized }
 export { getPageContextFromServerHooks }
 export { getPageContextFromClientHooks }
+export { getPageContextCached }
 export { setPageContextInitIsPassedToClient }
 export { execHookClient }
 export type { PageContextFromServerHooks }
@@ -40,10 +41,10 @@ import {
 } from './preparePageContextForPublicUsageClient.js'
 import type { ConfigEnv } from '../../types/index.js'
 import type { GlobalContextClientInternal } from './globalContext.js'
-const globalObject = getGlobalObject<{ pageContextInitIsPassedToClient?: true }>(
-  'runtime-client-routing/getPageContextFromHooks.ts',
-  {},
-)
+const globalObject = getGlobalObject<{
+  pageContextInitIsPassedToClient?: true
+  pageContextCached?: Record<string, unknown>
+}>('runtime-client-routing/getPageContextFromHooks.ts', {})
 
 type PageContextSerialized = {
   pageId: string
@@ -335,4 +336,20 @@ function processPageContextFromServer(pageContextFromServer: Record<string, unkn
   assertUsage(!('urlOriginal' in pageContextFromServer), "Adding 'urlOriginal' to passToClient is forbidden")
   assert(hasProp(pageContextFromServer, 'pageId', 'string'))
   removeBuiltInOverrides(pageContextFromServer)
+
+  const pageContext = pageContextFromServer
+  castProp<string[]>(pageContextFromServer, '_passToClientOnce')
+  // TODO/soon/once: remove
+  castProp<string[] | undefined>(pageContext, '_passToClientOnce')
+  const passToClientOnce = pageContext._passToClientOnce
+  if (passToClientOnce) {
+    globalObject.pageContextCached ??= {}
+    passToClientOnce.forEach((prop) => {
+      globalObject.pageContextCached![prop] = pageContext[prop]
+    })
+  }
+}
+
+function getPageContextCached() {
+  return globalObject.pageContextCached
 }
