@@ -232,9 +232,6 @@ function getPageContextClientSerializedAbort(
   return serializeValue(pageContext, isHtmlJsonScript)
 }
 
-type GetObj = (
-  passToClientEntry: PassToClientEntryNormalized,
-) => { obj: Record<string, unknown>; objName: 'pageContext' | 'globalContext' } | undefined
 function applyPassToClient(passToClient: PassToClient, obj: Record<string, unknown>) {
   const objClient: Record<string, unknown> = {}
   const objClientProps: string[] = []
