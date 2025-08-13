@@ -41,6 +41,7 @@ async function navigate(url: string, options?: Options): Promise<void> {
     overwriteLastHistoryEntry,
     isBackwardNavigation: false,
     pageContextInitClient: pageContext,
+    isReload: true,
   })
 }
 

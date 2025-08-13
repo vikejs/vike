@@ -39,6 +39,7 @@ import {
 } from './preparePageContextForPublicUsageClient.js'
 import type { ConfigEnv } from '../../types/index.js'
 import type { GlobalContextClientInternal } from './globalContext.js'
+import { modifyUrlSameOrigin } from '../../shared/modifyUrlSameOrigin.js'
 const globalObject = getGlobalObject<{ pageContextInitIsPassedToClient?: true }>(
   'runtime-client-routing/getPageContextFromHooks.ts',
   {},
@@ -79,6 +80,7 @@ type PageContextFromServerHooks = { _hasPageContextFromServer: boolean }
 async function getPageContextFromServerHooks(
   pageContext: { pageId: string } & PageContextCreated,
   isErrorPage: boolean,
+  noClientCache: boolean,
 ): Promise<
   | { is404ServerSideRouted: true }
   | {
@@ -97,9 +99,9 @@ async function getPageContextFromServerHooks(
     // For the error page, we cannot fetch pageContext from the server because the pageContext JSON request is based on the URL
     !isErrorPage &&
     // true if pageContextInit has some client data or at least one of the data() and onBeforeRender() hooks is server-side only:
-    (await hasPageContextServer(pageContext))
+    (await hasPageContextServer(pageContext, noClientCache))
   ) {
-    const res = await fetchPageContextFromServer(pageContext)
+    const res = await fetchPageContextFromServer(pageContext, noClientCache)
     if ('is404ServerSideRouted' in res) return { is404ServerSideRouted: true as const }
     const { pageContextFromServer } = res
     pageContextFromServerHooks._hasPageContextFromServer = true
@@ -213,8 +215,12 @@ function setPageContextInitIsPassedToClient(pageContext: Record<string, unknown>
 }
 
 // TO-DO/next-major-release: make it sync
-async function hasPageContextServer(pageContext: Parameters<typeof hookServerOnlyExists>[1]): Promise<boolean> {
+async function hasPageContextServer(
+  pageContext: Parameters<typeof hookServerOnlyExists>[1],
+  noClientCache: boolean,
+): Promise<boolean> {
   return (
+    noClientCache ||
     !!globalObject.pageContextInitIsPassedToClient ||
     (await hookServerOnlyExists('data', pageContext)) ||
     (await hookServerOnlyExists('onBeforeRender', pageContext))
@@ -292,8 +298,14 @@ function getHookEnv(
   }
 }
 
-async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _urlRewrite: string | null }) {
-  const pageContextUrl = getPageContextRequestUrl(pageContext._urlRewrite ?? pageContext.urlOriginal)
+async function fetchPageContextFromServer(
+  pageContext: { urlOriginal: string; _urlRewrite: string | null },
+  noClientCache: boolean,
+) {
+  let pageContextUrl = getPageContextRequestUrl(pageContext._urlRewrite ?? pageContext.urlOriginal)
+  if (noClientCache) {
+    pageContextUrl = modifyUrlSameOrigin(pageContextUrl, { search: { _vike: JSON.stringify({ noCache: true }) } })
+  }
   const response = await fetch(pageContextUrl)
 
   {

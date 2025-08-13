@@ -105,6 +105,7 @@ type RenderArgs = {
   redirectCount?: number
   doNotRenderIfSamePage?: boolean
   isClientSideNavigation?: boolean
+  isReload?: boolean
   pageContextInitClient?: Record<string, unknown>
 }
 async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
@@ -119,9 +120,11 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     doNotRenderIfSamePage,
     isClientSideNavigation = true,
     pageContextInitClient,
+    isReload,
   } = renderArgs
   let { scrollTarget } = renderArgs
   const { previousPageContext } = globalObject
+  const noClientCache = isReload || previousPageContext?.urlOriginal === urlOriginal
 
   addLinkPrefetchHandlers_unwatch()
 
@@ -154,7 +157,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       await renderPageOnError({ err })
     }
 
-    const pageContext = await getPageContextBegin(false, pageContextBeginArgs)
+    const pageContext = await getPageContextBegin(false, pageContextBeginArgs, noClientCache)
     if (isRenderOutdated()) return
 
     // onPageTransitionStart()
@@ -291,7 +294,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         pageContextFromServerHooks = pageContextPrefetched
       } else {
         try {
-          const result = await getPageContextFromServerHooks(pageContext, false)
+          const result = await getPageContextFromServerHooks(pageContext, false, noClientCache)
           if (result.is404ServerSideRouted) return
           pageContextFromServerHooks = result.pageContextFromServerHooks
           // TO-DO/pageContext-prefetch: remove or change, because this only makes sense for a pre-rendered page
@@ -352,7 +355,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       }
     }
 
-    const pageContext = await getPageContextBegin(true, pageContextBeginArgs)
+    const pageContext = await getPageContextBegin(true, pageContextBeginArgs, noClientCache)
     if (isRenderOutdated()) return
 
     objectAssign(pageContext, { routeParams: {} })
@@ -437,7 +440,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
     let pageContextFromServerHooks: PageContextFromServerHooks
     try {
-      const result = await getPageContextFromServerHooks(pageContext, true)
+      const result = await getPageContextFromServerHooks(pageContext, true, noClientCache)
       if (result.is404ServerSideRouted) return
       pageContextFromServerHooks = result.pageContextFromServerHooks
     } catch (err: unknown) {
@@ -585,9 +588,10 @@ async function getPageContextBegin(
     pageContextInitClient: Record<string, unknown> | undefined
     isFirstRender: boolean
   },
+  noClientCache: boolean,
 ) {
   const previousPageContext = globalObject.previousPageContext ?? null
-  const pageContext = await createPageContextClientSide(urlOriginal)
+  const pageContext = await createPageContextClientSide(urlOriginal, noClientCache)
   objectAssign(pageContext, {
     isBackwardNavigation,
     isClientSideNavigation,
