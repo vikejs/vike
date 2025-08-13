@@ -337,15 +337,13 @@ function processPageContextFromServer(pageContextFromServer: Record<string, unkn
   assert(hasProp(pageContextFromServer, 'pageId', 'string'))
   removeBuiltInOverrides(pageContextFromServer)
 
-  const pageContext = pageContextFromServer
-  castProp<string[]>(pageContextFromServer, '_passToClientOnce')
   // TODO/soon/once: remove
-  castProp<string[] | undefined>(pageContext, '_passToClientOnce')
-  const passToClientOnce = pageContext._passToClientOnce
+  castProp<string[] | undefined>(pageContextFromServer, '_passToClientOnce')
+  const passToClientOnce = pageContextFromServer._passToClientOnce
   if (passToClientOnce) {
     globalObject.pageContextCached ??= {}
     passToClientOnce.forEach((prop) => {
-      globalObject.pageContextCached![prop] = pageContext[prop]
+      globalObject.pageContextCached![prop] = pageContextFromServer[prop]
     })
   }
 }
