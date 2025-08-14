@@ -37,11 +37,11 @@ function isRuntimeEnvMatch(configEnv: ConfigEnvInternal, runtimeEnv: RuntimeEnv)
   return true
 }
 
-function isOverridden(
-  source: ConfigValueSource,
-  configName: string,
-  pageConfig: Pick<PageConfigBuildTime | PageConfigGlobalBuildTime, 'configValueSources' | 'configDefinitions'>,
-): boolean {
+type PageConfigPartial = Pick<
+  PageConfigBuildTime | PageConfigGlobalBuildTime,
+  'configValueSources' | 'configDefinitions'
+>
+function isOverridden(source: ConfigValueSource, configName: string, pageConfig: PageConfigPartial): boolean {
   const configDef = pageConfig.configDefinitions[configName]
   assert(configDef)
   if (configDef.cumulative) return false
