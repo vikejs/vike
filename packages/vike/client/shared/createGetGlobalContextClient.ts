@@ -51,7 +51,6 @@ function createGetGlobalContextClient<GlobalContextAddendum extends object>(
   return getGlobalContext
 
   async function getGlobalContext(noClientCache: boolean) {
-    console.log('getGlobalContext()', noClientCache)
     if (noClientCache) {
       delete globalObject.globalContext
       delete globalObject.globalContextPromise
