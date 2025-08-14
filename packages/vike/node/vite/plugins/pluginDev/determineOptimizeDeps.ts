@@ -61,7 +61,6 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
   let includeClient: string[] = []
   let includeServer: string[] = []
 
-  const addEntry2 = (e: string) => {}
   const addEntry = (e: string, isForClientSide: boolean, definedAt?: DefinedAtFilePath) => {
     assert(e)
     // optimizeDeps.entries expects filesystem absolute paths
