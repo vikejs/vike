@@ -36,9 +36,6 @@ function Links() {
 
 function UserInfo() {
   const pageContext = usePageContext()
-  console.log('pageContext.userFullName', pageContext.userFullName)
-  // @ts-ignore
-  console.log('pageContext.globalContext.userFullName', pageContext.globalContext.userFullName)
   const { userFullName } = pageContext
   let content
   if (!userFullName) {
