@@ -107,7 +107,7 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
           const runtimeEnv = {
             isForClientSide,
             isDev: true,
-            // TO-DO/eventually: let's eventually remove support for Server Routing
+            // TO-DO/eventually/remove-server-router: let's eventually remove support for Server Routing
             isClientRouting: true,
           }
           const sourcesRelevant = getConfigValueSourcesRelevant(configName, runtimeEnv, pageConfig)

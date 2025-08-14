@@ -202,7 +202,15 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     _computed: (pageConfig): boolean => {
       const sources = (['data', 'onBeforeRender', 'onCreatePageContext'] as const)
         .map((hookName) =>
-          getConfigValueSourcesRelevant(hookName, { isForClientSide: false, isClientRouting: true }, pageConfig),
+          getConfigValueSourcesRelevant(
+            hookName,
+            {
+              isForClientSide: false,
+              // TO-DO/eventually/remove-server-router: let's eventually remove support for Server Routing
+              isClientRouting: true,
+            },
+            pageConfig,
+          ),
         )
         .flat(1)
         .filter((source) => !source.configEnv.client)
