@@ -222,6 +222,7 @@ async function hasPageContextServer(
   resetClientCache: boolean,
 ): Promise<boolean> {
   return (
+    // TODO/now
     resetClientCache ||
     !!globalObject.pageContextInitIsPassedToClient ||
     (await hookServerOnlyExists('data', pageContext)) ||
