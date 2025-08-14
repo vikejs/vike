@@ -1,0 +1,23 @@
+{
+  "scripts": {
+    "dev": "vike dev",
+    "build": "vike build",
+    "preview": "vike build && vike preview",
+    "preview:ssg": "vike build --prerender && vike preview --prerender"
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.6.1",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-redux": "^9.2.0",
+    "typescript": "^5.8.3",
+    "vike": "^0.4.235",
+    "vike-react": "0.6.5",
+    "vike-react-redux": "0.1.1",
+    "vite": "^6.2.5"
+  },
+  "type": "module"
+}
