@@ -1,6 +1,7 @@
 export { isRuntimeEnvMatch }
 
 import type { ConfigEnvInternal } from '../../../../types/PageConfig.js'
+import { assert } from '../../utils.js'
 
 function isRuntimeEnvMatch(
   configEnv: ConfigEnvInternal,
@@ -15,12 +16,15 @@ function isRuntimeEnvMatch(
   }
 
   // Production/development
-  if (
-    //
-    (configEnv.production === true && runtime.isDev) ||
-    (configEnv.production === false && !runtime.isDev)
-  )
-    return false
+  if (configEnv.production !== undefined) {
+    assert(typeof configEnv.production === 'boolean')
+    assert(typeof runtime.isDev === 'boolean')
+    if (configEnv.production) {
+      if (runtime.isDev) return false
+    } else {
+      if (!runtime.isDev) return false
+    }
+  }
 
   return true
 }
