@@ -1,9 +1,6 @@
 export { cast }
 export { castProp }
 
-function cast<T>(_thing: unknown): asserts _thing is T {}
+function cast<Type>(_thing: unknown): asserts _thing is Type {}
 
-function castProp<PropType, ObjectType, PropName extends PropertyKey>(
-  _obj: ObjectType,
-  _prop: PropName,
-): asserts _obj is ObjectType & Record<PropName, PropType> {}
+function castProp<PropType>(_obj: object, prop: PropertyKey): asserts _obj is Record<typeof prop, PropType> {}

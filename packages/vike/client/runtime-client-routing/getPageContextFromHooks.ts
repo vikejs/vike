@@ -2,6 +2,7 @@ export { getPageContextFromHooks_isHydration }
 export { getPageContextFromHooks_serialized }
 export { getPageContextFromServerHooks }
 export { getPageContextFromClientHooks }
+export { getPageContextCached }
 export { setPageContextInitIsPassedToClient }
 export { execHookClient }
 export type { PageContextFromServerHooks }
@@ -15,6 +16,7 @@ import {
   redirectHard,
   isObject,
   getGlobalObject,
+  castProp,
 } from './utils.js'
 import { parse } from '@brillout/json-serializer/parse'
 import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtml.js'
@@ -40,10 +42,10 @@ import {
 import type { ConfigEnv } from '../../types/index.js'
 import type { GlobalContextClientInternal } from './globalContext.js'
 import { modifyUrlSameOrigin } from '../../shared/modifyUrlSameOrigin.js'
-const globalObject = getGlobalObject<{ pageContextInitIsPassedToClient?: true }>(
-  'runtime-client-routing/getPageContextFromHooks.ts',
-  {},
-)
+const globalObject = getGlobalObject<{
+  pageContextInitIsPassedToClient?: true
+  pageContextCached?: Record<string, unknown>
+}>('runtime-client-routing/getPageContextFromHooks.ts', {})
 
 type PageContextSerialized = {
   pageId: string
@@ -55,7 +57,6 @@ function getPageContextFromHooks_serialized(): PageContextSerialized & {
   _hasPageContextFromServer: true
 } {
   const pageContextSerialized = getPageContextSerializedInHtml()
-  assertUsage(!('urlOriginal' in pageContextSerialized), "Adding 'urlOriginal' to passToClient is forbidden")
   processPageContextFromServer(pageContextSerialized)
   objectAssign(pageContextSerialized, {
     _hasPageContextFromServer: true as const,
@@ -338,12 +339,28 @@ async function fetchPageContextFromServer(
     throw getProjectError(`pageContext couldn't be fetched because an error occurred on the server-side`)
   }
 
-  assert(hasProp(pageContextFromServer, 'pageId', 'string'))
   processPageContextFromServer(pageContextFromServer)
 
   return { pageContextFromServer }
 }
 
-function processPageContextFromServer(pageContextFromServer: Record<string, unknown>) {
-  removeBuiltInOverrides(pageContextFromServer)
+function processPageContextFromServer(pageContext: Record<string, unknown>) {
+  assertUsage(!('urlOriginal' in pageContext), "Adding 'urlOriginal' to passToClient is forbidden")
+  assert(hasProp(pageContext, 'pageId', 'string'))
+
+  // TODO/soon/once: remove
+  castProp<string[] | undefined>(pageContext, '_passToClientOnce')
+  const passToClientOnce = pageContext._passToClientOnce
+  if (passToClientOnce) {
+    globalObject.pageContextCached ??= {}
+    passToClientOnce.forEach((prop) => {
+      globalObject.pageContextCached![prop] = pageContext[prop]
+    })
+  }
+
+  removeBuiltInOverrides(pageContext)
+}
+
+function getPageContextCached() {
+  return globalObject.pageContextCached
 }
