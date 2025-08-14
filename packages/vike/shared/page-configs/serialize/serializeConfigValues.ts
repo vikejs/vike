@@ -307,11 +307,12 @@ function getConfigValuesBase(
     } as const
     return { configValueBase, value, configName, configEnv }
   })
-  const fromSources = Object.entries(pageConfig.configValueSources).map(([configName, sources]) => {
+  const fromSources = Object.entries(pageConfig.configValueSources).map(([configName]) => {
     const configDef = pageConfig.configDefinitions[configName]
     assert(configDef)
     if (isEager !== null && isEager !== !!configDef.eager) return 'SKIP'
     if (!configDef.cumulative) {
+      const sources = pageConfig.configValueSources[configName]!
       const source = sources[0]
       assert(source)
       if (!isRuntimeEnvMatch(source.configEnv, runtimeEnv)) return 'SKIP'
@@ -322,6 +323,7 @@ function getConfigValuesBase(
       } as const
       return { configValueBase, sourceRelevant: source, configName }
     } else {
+      const sources = pageConfig.configValueSources[configName]!
       const sourcesRelevant = sources
         .filter((source) => !isOverridden(source, configName, pageConfig))
         .filter((source) => isRuntimeEnvMatch(source.configEnv, runtimeEnv))
