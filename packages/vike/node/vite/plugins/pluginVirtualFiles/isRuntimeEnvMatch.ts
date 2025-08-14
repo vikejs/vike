@@ -5,23 +5,23 @@ import { assert } from '../../utils.js'
 
 type RuntimeEnv = { isForClientSide: boolean; isClientRouting: boolean; isDev?: boolean }
 
-function isRuntimeEnvMatch(configEnv: ConfigEnvInternal, runtime: RuntimeEnv): boolean {
+function isRuntimeEnvMatch(configEnv: ConfigEnvInternal, runtimeEnv: RuntimeEnv): boolean {
   // Runtime
-  if (!runtime.isForClientSide) {
+  if (!runtimeEnv.isForClientSide) {
     if (!configEnv.server) return false
   } else {
     if (!configEnv.client) return false
-    if (configEnv.client === 'if-client-routing' && !runtime.isClientRouting) return false
+    if (configEnv.client === 'if-client-routing' && !runtimeEnv.isClientRouting) return false
   }
 
   // Production/development
   if (configEnv.production !== undefined) {
     assert(typeof configEnv.production === 'boolean')
-    assert(typeof runtime.isDev === 'boolean')
+    assert(typeof runtimeEnv.isDev === 'boolean')
     if (configEnv.production) {
-      if (runtime.isDev) return false
+      if (runtimeEnv.isDev) return false
     } else {
-      if (!runtime.isDev) return false
+      if (!runtimeEnv.isDev) return false
     }
   }
 
