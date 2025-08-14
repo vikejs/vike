@@ -1486,7 +1486,7 @@ function isGlobalLocation(locationId: LocationId, plusFilesAll: PlusFilesByLocat
 function isOverridden(
   source: ConfigValueSource,
   configName: string,
-  pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime,
+  pageConfig: Pick<PageConfigBuildTime | PageConfigGlobalBuildTime, 'configValueSources' | 'configDefinitions'>,
 ): boolean {
   const configDef = pageConfig.configDefinitions[configName]
   assert(configDef)
