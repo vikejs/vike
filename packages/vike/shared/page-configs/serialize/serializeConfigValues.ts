@@ -305,7 +305,7 @@ function getConfigValuesBase(
       type: 'computed',
       definedAtData: null,
     } as const
-    return { configValueBase, value, configName, configEnv } as const
+    return { configValueBase, value, configName, configEnv }
   })
   const fromSources = Object.entries(pageConfig.configValueSources).map(([configName, sources]) => {
     const configDef = pageConfig.configDefinitions[configName]
