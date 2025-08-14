@@ -266,7 +266,6 @@ function getHookEnv(
     // Client-only onBeforeRender() or data() hooks were never supported for the V0.4 design
     return { client: false, server: true }
   }
-  // V1
   const pageConfig = getPageConfig(pageContext.pageId, pageContext._globalContext._pageConfigs)
   // No runtime validation to save client-side KBs
   const hookEnv = (getConfigValueRuntime(pageConfig, `${hookName}Env`)?.value ?? {}) as ConfigEnv
