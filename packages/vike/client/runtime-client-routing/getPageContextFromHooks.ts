@@ -268,8 +268,7 @@ function hasServerOnlyHook(pageContext: {
   pageId: string
   _globalContext: GlobalContextClientInternal
 }) {
-  // TO-DO/next-major-release: remove
-  if (pageContext._globalContext._pageConfigs.length === 0) return false
+  if (isOldDesign(pageContext)) return false
   const pageConfig = getPageConfig(pageContext.pageId, pageContext._globalContext._pageConfigs)
   const val = getConfigValueRuntime(pageConfig, `serverOnlyHooks`)?.value
   assert(val === true || val === false)
@@ -293,17 +292,15 @@ function getHookEnv(
     _globalContext: GlobalContextClientInternal
   },
 ) {
-  if (pageContext._globalContext._pageConfigs.length > 0) {
-    // V1
-    const pageConfig = getPageConfig(pageContext.pageId, pageContext._globalContext._pageConfigs)
-    // No runtime validation to save client-side KBs
-    const hookEnv = (getConfigValueRuntime(pageConfig, `${hookName}Env`)?.value ?? {}) as ConfigEnv
-    return hookEnv
-  } else {
-    // TO-DO/next-major-release: remove
+  if (isOldDesign(pageContext)) {
     // Client-only onBeforeRender() or data() hooks were never supported for the V0.4 design
     return { client: false, server: true }
   }
+  // V1
+  const pageConfig = getPageConfig(pageContext.pageId, pageContext._globalContext._pageConfigs)
+  // No runtime validation to save client-side KBs
+  const hookEnv = (getConfigValueRuntime(pageConfig, `${hookName}Env`)?.value ?? {}) as ConfigEnv
+  return hookEnv
 }
 
 async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _urlRewrite: string | null }) {
@@ -364,4 +361,12 @@ function processPageContextFromServer(pageContext: Record<string, unknown>) {
 
 function getPageContextCached() {
   return globalObject.pageContextCached
+}
+
+// TO-DO/next-major-release: remove
+function isOldDesign(pageContext: {
+  pageId: string
+  _globalContext: GlobalContextClientInternal
+}) {
+  return pageContext._globalContext._pageConfigs.length === 0
 }
