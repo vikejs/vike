@@ -11,6 +11,7 @@ import type {
   ConfigValueSources,
   DefinedAtFilePath,
   ConfigValueSource,
+  PageConfigBuildTime,
 } from '../../../../types/PageConfig.js'
 import type { Config, ConfigNameBuiltIn, ConfigNameGlobal } from '../../../../types/Config.js'
 import { assert, assertUsage } from '../../utils.js'
@@ -85,7 +86,7 @@ type ConfigEffect = (config: {
 
 /** For Vike internal use */
 type ConfigDefinitionInternal = Omit<ConfigDefinition_, 'env'> & {
-  _computed?: (configValueSources: ConfigValueSources) => unknown
+  _computed?: (pageConfig: Omit<PageConfigBuildTime, 'configValuesComputed'>) => unknown
   _valueIsFilePath?: true
   _userEffectDefinedAtFilePath?: DefinedAtFilePath
   env: ConfigEnvInternal
@@ -201,7 +202,8 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   isClientRuntimeLoaded: {
     env: { server: true, client: true },
     eager: true,
-    _computed: (configValueSources): boolean => {
+    _computed: (pageConfig): boolean => {
+      const { configValueSources } = pageConfig
       {
         const source = getConfigValueSource(configValueSources, 'clientHooks')
         if (source) {
@@ -224,14 +226,20 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   onBeforeRenderEnv: {
     env: { client: true },
     eager: true,
-    _computed: (configValueSources): null | ConfigEnvInternal =>
-      !isConfigSet(configValueSources, 'onBeforeRender') ? null : getConfigEnv(configValueSources, 'onBeforeRender'),
+    _computed: (pageConfig): null | ConfigEnvInternal => {
+      const { configValueSources } = pageConfig
+      return !isConfigSet(configValueSources, 'onBeforeRender')
+        ? null
+        : getConfigEnv(configValueSources, 'onBeforeRender')
+    },
   },
   dataEnv: {
     env: { client: true },
     eager: true,
-    _computed: (configValueSources): null | ConfigEnvInternal =>
-      !isConfigSet(configValueSources, 'data') ? null : getConfigEnv(configValueSources, 'data'),
+    _computed: (pageConfig): null | ConfigEnvInternal => {
+      const { configValueSources } = pageConfig
+      return !isConfigSet(configValueSources, 'data') ? null : getConfigEnv(configValueSources, 'data')
+    },
   },
   hooksTimeout: {
     env: { server: true, client: true },

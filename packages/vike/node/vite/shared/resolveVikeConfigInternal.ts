@@ -1232,7 +1232,7 @@ function getComputed(pageConfig: Omit<PageConfigBuildTime, 'configValuesComputed
   const configValuesComputed: ConfigValuesComputed = {}
   objectEntries(pageConfig.configDefinitions).forEach(([configName, configDef]) => {
     if (!configDef._computed) return
-    const value = configDef._computed(pageConfig.configValueSources)
+    const value = configDef._computed(pageConfig)
     if (value === undefined) return
     configValuesComputed[configName] = {
       value,
