@@ -58,7 +58,7 @@ function createGetGlobalContextClient<GlobalContextAddendum extends object>(
       delete globalObject.virtualFileExports
     }
     // Cache
-    else if (
+    if (
       globalObject.virtualFileExports &&
       // Don't break HMR
       globalObject.virtualFileExports === virtualFileExports
