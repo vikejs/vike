@@ -25,6 +25,7 @@ import {
   type PageContextFromServerHooks,
   setPageContextInitIsPassedToClient,
   getPageContextCached,
+  clearPageContextCached,
 } from './getPageContextFromHooks.js'
 import { createPageContextClientSide } from './createPageContextClientSide.js'
 import {
@@ -126,6 +127,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   let { scrollTarget } = renderArgs
   const { previousPageContext } = globalObject
   const noClientCache = isReload || previousPageContext?.urlOriginal === urlOriginal
+  if (noClientCache) clearPageContextCached()
 
   addLinkPrefetchHandlers_unwatch()
 

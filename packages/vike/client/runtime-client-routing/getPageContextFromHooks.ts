@@ -3,6 +3,7 @@ export { getPageContextFromHooks_serialized }
 export { getPageContextFromServerHooks }
 export { getPageContextFromClientHooks }
 export { getPageContextCached }
+export { clearPageContextCached }
 export { setPageContextInitIsPassedToClient }
 export { execHookClient }
 export type { PageContextFromServerHooks }
@@ -363,4 +364,7 @@ function processPageContextFromServer(pageContext: Record<string, unknown>) {
 
 function getPageContextCached() {
   return globalObject.pageContextCached
+}
+function clearPageContextCached() {
+  delete globalObject.pageContextCached
 }
