@@ -16,9 +16,12 @@ function handlePageContextRequestUrl(url: string) {
     }
   } else {
     const { urlWithoutPageContextRequestSuffix, searchVikeArgs } = processUrl(urlParsed, url)
-    // TO-DO/eventually/once
-    const { noCache } = parseSearchVikeArgs(searchVikeArgs)
     return {
+      /* TO-DO/soon/once: pass & use previousUrl
+      isPageContextJsonRequest: {
+        previousUrl: parseSearchVikeArgs(searchVikeArgs),
+      },
+      */
       isPageContextJsonRequest: true,
       urlWithoutPageContextRequestSuffix,
     }
@@ -54,14 +57,14 @@ function processUrl(urlParsed: UrlParsed, url: string) {
 
 function parseSearchVikeArgs(searchVikeArgs: undefined | string) {
   const args = {
-    noCache: false,
+    previousUrl: null as null | string,
   }
   if (searchVikeArgs) {
     const parsed = JSON.parse(searchVikeArgs)
     assert(isObject(parsed))
-    if ('noCache' in parsed) {
-      assert(hasProp(parsed, 'noCache', 'boolean'))
-      args.noCache = parsed.noCache
+    if ('previousUrl' in parsed) {
+      assert(hasProp(parsed, 'previousUrl', 'string'))
+      args.previousUrl = parsed.previousUrl
     }
   }
   return args
