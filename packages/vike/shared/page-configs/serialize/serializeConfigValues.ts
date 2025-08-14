@@ -299,7 +299,7 @@ function getConfigValuesBase(
   const fromComputed = Object.entries(pageConfig.configValuesComputed ?? {}).map(([configName, valueInfo]) => {
     const { configEnv, value } = valueInfo
     if (!isRuntimeEnvMatch(configEnv, runtimeEnv)) return 'SKIP'
-    // AFAICT this should never happen — I ain't aware of a use case for overriding computed values. If there is a use case, then configValeSources has higher precedence.
+    // AFAICT this should never happen: I ain't aware of a use case for overriding computed values. If there is a use case, then configValueSources has higher precedence.
     if (pageConfig.configValueSources[configName]) return 'SKIP'
     const configValueBase = {
       type: 'computed',
