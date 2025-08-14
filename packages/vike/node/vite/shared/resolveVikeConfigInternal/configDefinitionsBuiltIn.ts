@@ -16,7 +16,7 @@ import type {
 import type { Config, ConfigNameBuiltIn, ConfigNameGlobal } from '../../../../types/Config.js'
 import { assert, assertUsage } from '../../utils.js'
 import { getConfigDefinedAt, type ConfigDefinedAt } from '../../../../shared/page-configs/getConfigDefinedAt.js'
-import { getConfigValueSourcesRelevant } from '../../plugins/pluginVirtualFiles/isRuntimeEnvMatch.js'
+import { getConfigValueSourcesRelevant } from '../../plugins/pluginVirtualFiles/getConfigValueSourcesRelevant.js'
 
 // For users
 /** The meta definition of a config.
@@ -246,6 +246,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
       )
     },
   },
+  // TO-DO/soon/cumulative-hooks: remove and replace with new computed prop `clientOnlyHooks: string[]` (see other TO-DO/soon/cumulative-hooks entries)
   onBeforeRenderEnv: {
     env: { client: true },
     eager: true,
@@ -256,6 +257,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
         : getConfigEnv(configValueSources, 'onBeforeRender')
     },
   },
+  // TO-DO/soon/cumulative-hooks: remove and replace with new computed prop `clientOnlyHooks: string[]` (see other TO-DO/soon/cumulative-hooks entries)
   dataEnv: {
     env: { client: true },
     eager: true,

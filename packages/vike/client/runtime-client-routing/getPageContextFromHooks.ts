@@ -69,6 +69,9 @@ async function getPageContextFromHooks_isHydration(
     VikeConfigPublicPageLazy & { _hasPageContextFromServer: true } & PageContextForPublicUsageClient,
 ) {
   for (const hookName of ['data', 'onBeforeRender'] as const) {
+    // TO-DO/soon/cumulative-hooks: filter & execute all client-only hooks
+    // - The client-side needs to know what hooks are client-only
+    //   - Possible implementation: new computed prop `clientOnlyHooks: string[]` (list of hook ids) and add `hookId` to serialized config values
     if (hookClientOnlyExists(hookName, pageContext)) {
       await execHookDataLike(hookName, pageContext)
     }
@@ -140,6 +143,7 @@ async function getPageContextFromClientHooks(
         await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageClient(pageContext))
       }
     } else {
+      // TO-DO/soon/cumulative-hooks: filter & execute all client-only hooks (see other TO-DO/soon/cumulative-hooks entries)
       if (hookClientOnlyExists(hookName, pageContext) || !pageContext._hasPageContextFromServer) {
         if (hookName === 'data') dataHookExecuted = true
         // This won't do anything if no hook has been defined or if the hook's env.client is false.
@@ -214,62 +218,27 @@ function setPageContextInitIsPassedToClient(pageContext: Record<string, unknown>
 }
 
 // TO-DO/next-major-release: make it sync
-async function hasPageContextServer(pageContext: Parameters<typeof hookServerOnlyExists>[1]): Promise<boolean> {
-  return (
-    !!globalObject.pageContextInitIsPassedToClient ||
-    (await hookServerOnlyExists('data', pageContext)) ||
-    (await hookServerOnlyExists('onBeforeRender', pageContext)) ||
-    hasServerOnlyHook(pageContext)
-  )
-}
-
-// TO-DO/next-major-release: make it sync
-/**
- * @param hookName
- * @param pageContext
- * @returns `true` if the given page has a `hookName` hook defined with a server-only env.
- */
-async function hookServerOnlyExists(
-  hookName: 'data' | 'onBeforeRender',
-  pageContext: {
-    pageId: string
-    _globalContext: GlobalContextClientInternal
-    _pageFilesAll: PageFile[]
-  },
-): Promise<boolean> {
-  if (pageContext._globalContext._pageConfigs.length > 0) {
-    // V1
-    const pageConfig = getPageConfig(pageContext.pageId, pageContext._globalContext._pageConfigs)
-    const hookEnv = getConfigValueRuntime(pageConfig, `${hookName}Env`)?.value
-    if (hookEnv === null) return false
-    assert(isObject(hookEnv))
-    const { client, server } = hookEnv
-    assert(client === true || client === undefined)
-    assert(server === true || server === undefined)
-    assert(client || server)
-    return !!server && !client
-  } else {
-    // TO-DO/next-major-release: remove
-    // V0.4
-
-    // data() hooks didn't exist in the V0.4 design
-    if (hookName === 'data') return false
-
-    assert(hookName === 'onBeforeRender')
+async function hasPageContextServer(pageContext: {
+  pageId: string
+  _globalContext: GlobalContextClientInternal
+  _pageFilesAll: PageFile[]
+}): Promise<boolean> {
+  if (isOldDesign(pageContext)) {
     const { hasOnBeforeRenderServerSideOnlyHook } = await analyzePageServerSide(
       pageContext._pageFilesAll,
       pageContext.pageId,
     )
+    // data() hooks didn't exist in the V0.4 design
     return hasOnBeforeRenderServerSideOnlyHook
   }
+  return !!globalObject.pageContextInitIsPassedToClient || hasServerOnlyHook(pageContext)
 }
 
 function hasServerOnlyHook(pageContext: {
   pageId: string
   _globalContext: GlobalContextClientInternal
 }) {
-  // TO-DO/next-major-release: remove
-  if (pageContext._globalContext._pageConfigs.length === 0) return false
+  if (isOldDesign(pageContext)) return false
   const pageConfig = getPageConfig(pageContext.pageId, pageContext._globalContext._pageConfigs)
   const val = getConfigValueRuntime(pageConfig, `serverOnlyHooks`)?.value
   assert(val === true || val === false)
@@ -293,17 +262,14 @@ function getHookEnv(
     _globalContext: GlobalContextClientInternal
   },
 ) {
-  if (pageContext._globalContext._pageConfigs.length > 0) {
-    // V1
-    const pageConfig = getPageConfig(pageContext.pageId, pageContext._globalContext._pageConfigs)
-    // No runtime validation to save client-side KBs
-    const hookEnv = (getConfigValueRuntime(pageConfig, `${hookName}Env`)?.value ?? {}) as ConfigEnv
-    return hookEnv
-  } else {
-    // TO-DO/next-major-release: remove
+  if (isOldDesign(pageContext)) {
     // Client-only onBeforeRender() or data() hooks were never supported for the V0.4 design
     return { client: false, server: true }
   }
+  const pageConfig = getPageConfig(pageContext.pageId, pageContext._globalContext._pageConfigs)
+  // No runtime validation to save client-side KBs
+  const hookEnv = (getConfigValueRuntime(pageConfig, `${hookName}Env`)?.value ?? {}) as ConfigEnv
+  return hookEnv
 }
 
 async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _urlRewrite: string | null }) {
@@ -364,4 +330,12 @@ function processPageContextFromServer(pageContext: Record<string, unknown>) {
 
 function getPageContextCached() {
   return globalObject.pageContextCached
+}
+
+// TO-DO/next-major-release: remove
+function isOldDesign(pageContext: {
+  pageId: string
+  _globalContext: GlobalContextClientInternal
+}) {
+  return pageContext._globalContext._pageConfigs.length === 0
 }
