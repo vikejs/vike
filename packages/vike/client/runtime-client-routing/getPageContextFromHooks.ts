@@ -2,8 +2,6 @@ export { getPageContextFromHooks_isHydration }
 export { getPageContextFromHooks_serialized }
 export { getPageContextFromServerHooks }
 export { getPageContextFromClientHooks }
-export { getPageContextCached }
-export { clearPageContextCached }
 export { setPageContextInitIsPassedToClient }
 export { execHookClient }
 export type { PageContextFromServerHooks }
@@ -17,7 +15,6 @@ import {
   redirectHard,
   isObject,
   getGlobalObject,
-  castProp,
 } from './utils.js'
 import { parse } from '@brillout/json-serializer/parse'
 import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtml.js'
@@ -42,10 +39,8 @@ import {
 } from './preparePageContextForPublicUsageClient.js'
 import type { ConfigEnv } from '../../types/index.js'
 import type { GlobalContextClientInternal } from './globalContext.js'
-import { modifyUrlSameOrigin } from '../../shared/modifyUrlSameOrigin.js'
 const globalObject = getGlobalObject<{
   pageContextInitIsPassedToClient?: true
-  pageContextCached?: Record<string, unknown>
 }>('runtime-client-routing/getPageContextFromHooks.ts', {})
 
 type PageContextSerialized = {
@@ -85,7 +80,6 @@ type PageContextFromServerHooks = { _hasPageContextFromServer: boolean }
 async function getPageContextFromServerHooks(
   pageContext: { pageId: string } & PageContextCreated,
   isErrorPage: boolean,
-  resetClientCache: boolean,
 ): Promise<
   | { is404ServerSideRouted: true }
   | {
@@ -104,9 +98,9 @@ async function getPageContextFromServerHooks(
     // For the error page, we cannot fetch pageContext from the server because the pageContext JSON request is based on the URL
     !isErrorPage &&
     // true if pageContextInit has some client data or at least one of the data() and onBeforeRender() hooks is server-side only:
-    (await hasPageContextServer(pageContext, resetClientCache))
+    (await hasPageContextServer(pageContext))
   ) {
-    const res = await fetchPageContextFromServer(pageContext, resetClientCache)
+    const res = await fetchPageContextFromServer(pageContext)
     if ('is404ServerSideRouted' in res) return { is404ServerSideRouted: true as const }
     const { pageContextFromServer } = res
     pageContextFromServerHooks._hasPageContextFromServer = true
@@ -221,14 +215,11 @@ function setPageContextInitIsPassedToClient(pageContext: Record<string, unknown>
 }
 
 // TO-DO/next-major-release: make it sync
-async function hasPageContextServer(
-  pageContext: {
-    pageId: string
-    _globalContext: GlobalContextClientInternal
-    _pageFilesAll: PageFile[]
-  },
-  resetClientCache: boolean,
-): Promise<boolean> {
+async function hasPageContextServer(pageContext: {
+  pageId: string
+  _globalContext: GlobalContextClientInternal
+  _pageFilesAll: PageFile[]
+}): Promise<boolean> {
   if (isOldDesign(pageContext)) {
     const { hasOnBeforeRenderServerSideOnlyHook } = await analyzePageServerSide(
       pageContext._pageFilesAll,
@@ -237,12 +228,7 @@ async function hasPageContextServer(
     // data() hooks didn't exist in the V0.4 design
     return hasOnBeforeRenderServerSideOnlyHook
   }
-  return (
-    !!globalObject.pageContextInitIsPassedToClient ||
-    hasServerOnlyHook(pageContext) ||
-    // TODO/now
-    resetClientCache
-  )
+  return !!globalObject.pageContextInitIsPassedToClient || hasServerOnlyHook(pageContext)
 }
 
 function hasServerOnlyHook(pageContext: {
@@ -283,14 +269,11 @@ function getHookEnv(
   return hookEnv
 }
 
-async function fetchPageContextFromServer(
-  pageContext: { urlOriginal: string; _urlRewrite: string | null },
-  resetClientCache: boolean,
-) {
+async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _urlRewrite: string | null }) {
   let pageContextUrl = getPageContextRequestUrl(pageContext._urlRewrite ?? pageContext.urlOriginal)
-  if (resetClientCache) {
-    pageContextUrl = modifyUrlSameOrigin(pageContextUrl, { search: { _vike: JSON.stringify({ noCache: true }) } })
-  }
+  /* TO-DO/soon/once: 
+  pageContextUrl = modifyUrlSameOrigin(pageContextUrl, { search: { _vike: JSON.stringify({ previousUrl: pageContext.previousPageContext.urlOriginal }) } })
+  */
   const response = await fetch(pageContextUrl)
 
   {
@@ -331,25 +314,7 @@ async function fetchPageContextFromServer(
 function processPageContextFromServer(pageContext: Record<string, unknown>) {
   assertUsage(!('urlOriginal' in pageContext), "Adding 'urlOriginal' to passToClient is forbidden")
   assert(hasProp(pageContext, 'pageId', 'string'))
-
-  // TODO/soon/once: remove
-  castProp<string[] | undefined>(pageContext, '_passToClientOnce')
-  const passToClientOnce = pageContext._passToClientOnce
-  if (passToClientOnce) {
-    globalObject.pageContextCached ??= {}
-    passToClientOnce.forEach((prop) => {
-      globalObject.pageContextCached![prop] = pageContext[prop]
-    })
-  }
-
   removeBuiltInOverrides(pageContext)
-}
-
-function getPageContextCached() {
-  return globalObject.pageContextCached
-}
-function clearPageContextCached() {
-  delete globalObject.pageContextCached
 }
 
 // TO-DO/next-major-release: remove

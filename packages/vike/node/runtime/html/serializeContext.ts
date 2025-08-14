@@ -24,8 +24,6 @@ const passToClientBuiltInPageContext = [
   '_urlRedirect',
   'abortStatusCode',
   '_abortCall',
-  // TODO/soon/once: remove
-  '_passToClientOnce',
   /* Not needed on the client-side
   '_abortCaller',
   */
@@ -55,15 +53,6 @@ function getPageContextClientSerialized(pageContext: PageContextSerialization, i
   const pageContextClientProps = res.objClientProps
   if (pageContextClientProps.some((prop) => getPropVal(pageContext._pageContextInit, prop))) {
     pageContextClient[pageContextInitIsPassedToClient] = true
-  }
-
-  // TODO/soon/once: remove
-  const passToClientOnce: string[] = passToClientPageContext
-    .map(normalizePassToClientEntry)
-    .filter((p) => p.once)
-    .map((p) => p.prop)
-  if (passToClientOnce.length > 0) {
-    pageContextClient._passToClientOnce = passToClientOnce
   }
 
   const pageContextClientSerialized = serializeObject(

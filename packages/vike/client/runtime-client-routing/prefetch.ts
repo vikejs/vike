@@ -102,7 +102,7 @@ async function prefetchPageContextFromServerHooks(
   pageContextLink: PageContextForPrefetch,
   resultMaxAge: number | null,
 ): Promise<void> {
-  const result = await getPageContextFromServerHooks(pageContextLink, false, false)
+  const result = await getPageContextFromServerHooks(pageContextLink, false)
   setPageContextPrefetchCache(pageContextLink, result, resultMaxAge)
 }
 function populatePageContextPrefetchCache(
@@ -307,7 +307,7 @@ function isExpired(found: PrefetchedPageContext) {
 
 // TO-DO/next-major-release: make it sync
 async function getPageContextLink(urlOfLink: string) {
-  const pageContextLink = await createPageContextClientSide(urlOfLink, false)
+  const pageContextLink = await createPageContextClientSide(urlOfLink)
 
   let pageContextFromRoute: PageContextFromRoute
   try {

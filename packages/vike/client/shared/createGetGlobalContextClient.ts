@@ -46,17 +46,11 @@ function createGetGlobalContextClient<GlobalContextAddendum extends object>(
   globalObject.isClientRouting = isClientRouting
 
   // Eagerly call onCreateGlobalContext() hook
-  getGlobalContext(false)
+  getGlobalContext()
 
   return getGlobalContext
 
-  async function getGlobalContext(resetClientCache: boolean) {
-    // Caching
-    if (resetClientCache) {
-      delete globalObject.globalContext
-      delete globalObject.globalContextPromise
-      delete globalObject.virtualFileExports
-    }
+  async function getGlobalContext() {
     // HMR => virtualFileExports are unequal
     if (globalObject.virtualFileExports === virtualFileExports) {
       const globalContext = await globalObject.globalContextPromise

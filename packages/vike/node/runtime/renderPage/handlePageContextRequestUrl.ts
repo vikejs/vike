@@ -16,9 +16,10 @@ function handlePageContextRequestUrl(url: string) {
     }
   } else {
     const { urlWithoutPageContextRequestSuffix, searchVikeArgs } = processUrl(urlParsed, url)
+    // TO-DO/eventually/once
     const { noCache } = parseSearchVikeArgs(searchVikeArgs)
     return {
-      isPageContextJsonRequest: { noCache },
+      isPageContextJsonRequest: true,
       urlWithoutPageContextRequestSuffix,
     }
   }

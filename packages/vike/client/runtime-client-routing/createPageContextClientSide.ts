@@ -7,8 +7,8 @@ import { getBaseServer } from './getBaseServer.js'
 import { getGlobalContextClientInternal } from './globalContext.js'
 import { assert, augmentType, isBaseServer, objectAssign } from './utils.js'
 
-async function createPageContextClientSide(urlOriginal: string, resetClientCache: boolean) {
-  const globalContext = await getGlobalContextClientInternal(resetClientCache)
+async function createPageContextClientSide(urlOriginal: string) {
+  const globalContext = await getGlobalContextClientInternal()
 
   const baseServer = getBaseServer()
   assert(isBaseServer(baseServer))

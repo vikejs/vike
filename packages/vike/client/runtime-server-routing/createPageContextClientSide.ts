@@ -19,7 +19,7 @@ import { execHook } from '../../shared/hooks/execHook.js'
 const urlFirst = getCurrentUrl({ withoutHash: true })
 
 async function createPageContextClientSide() {
-  const globalContext = await getGlobalContextClientInternal(false)
+  const globalContext = await getGlobalContextClientInternal()
 
   const pageContextCreated = createPageContextObject()
   objectAssign(pageContextCreated, {
