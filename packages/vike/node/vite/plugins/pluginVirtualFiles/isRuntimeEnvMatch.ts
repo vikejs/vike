@@ -5,7 +5,7 @@ import { assert } from '../../utils.js'
 
 function isRuntimeEnvMatch(
   configEnv: ConfigEnvInternal,
-  runtime: { isForClientSide: boolean; isClientRouting: boolean; isDev: boolean },
+  runtime: { isForClientSide: boolean; isClientRouting: boolean; isDev?: boolean },
 ): boolean {
   // Runtime
   if (!runtime.isForClientSide) {
