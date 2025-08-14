@@ -69,7 +69,9 @@ async function getPageContextFromHooks_isHydration(
     VikeConfigPublicPageLazy & { _hasPageContextFromServer: true } & PageContextForPublicUsageClient,
 ) {
   for (const hookName of ['data', 'onBeforeRender'] as const) {
-    await execHookDataLike(hookName, pageContext)
+    if (hookClientOnlyExists(hookName, pageContext)) {
+      await execHookDataLike(hookName, pageContext)
+    }
   }
   return pageContext
 }
