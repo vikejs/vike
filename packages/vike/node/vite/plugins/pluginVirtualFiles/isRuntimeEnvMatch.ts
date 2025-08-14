@@ -1,6 +1,5 @@
 export { getConfigValueSourcesRelevant }
 export { isRuntimeEnvMatch }
-export { isOverridden }
 export type { RuntimeEnv }
 
 import type {

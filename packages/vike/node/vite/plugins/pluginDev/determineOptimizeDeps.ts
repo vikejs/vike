@@ -13,13 +13,13 @@ import {
 } from '../../utils.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { analyzeClientEntries } from '../pluginBuild/pluginBuildConfig.js'
-import type { ConfigEnvInternal, DefinedAtFilePath, PageConfigBuildTime } from '../../../../types/PageConfig.js'
+import type { DefinedAtFilePath, PageConfigBuildTime } from '../../../../types/PageConfig.js'
 import {
   virtualFileIdEntryClientCR,
   virtualFileIdEntryClientSR,
 } from '../../../shared/virtualFiles/virtualFileEntry.js'
 import { getFilePathResolved } from '../../shared/getFilePath.js'
-import { isOverridden } from '../pluginVirtualFiles/isRuntimeEnvMatch.js'
+import { getConfigValueSourcesRelevant } from '../pluginVirtualFiles/isRuntimeEnvMatch.js'
 
 const debug = createDebugger('vike:optimizeDeps')
 
@@ -61,39 +61,34 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
   let includeClient: string[] = []
   let includeServer: string[] = []
 
-  const addEntry = (e: string, configEnv?: ConfigEnvInternal, definedAt?: DefinedAtFilePath) => {
+  const addEntry2 = (e: string) => {}
+  const addEntry = (e: string, isForClientSide: boolean, definedAt?: DefinedAtFilePath) => {
     assert(e)
     // optimizeDeps.entries expects filesystem absolute paths
     assert(isVirtualFileId(e) || isFilePathAbsoluteFilesystem(e))
 
-    if (isRelevant(e, false, configEnv, definedAt)) {
+    if (isExcluded(e, !isForClientSide, definedAt)) return
+
+    if (isForClientSide) {
       entriesClient.push(e)
-    }
-    if (isRelevant(e, true, configEnv, definedAt)) {
+    } else {
       entriesServer.push(e)
     }
   }
-  const addInclude = (e: string, configEnv?: ConfigEnvInternal, definedAt?: DefinedAtFilePath) => {
+  const addInclude = (e: string, isForClientSide: boolean, definedAt?: DefinedAtFilePath) => {
     assert(e)
     // optimizeDeps.include expects npm packages
     assert(!e.startsWith('/'))
     // Shouldn't be a path alias, as path aliases would need to be added to optimizeDeps.entries instead of optimizeDeps.include
     assertIsImportPathNpmPackage(e)
 
-    if (isRelevant(e, false, configEnv, definedAt)) {
+    if (isExcluded(e, !isForClientSide, definedAt)) return
+
+    if (isForClientSide) {
       includeClient.push(e)
-    }
-    if (isRelevant(e, true, configEnv, definedAt)) {
+    } else {
       includeServer.push(e)
     }
-  }
-  const isRelevant = (e: string, server: boolean, configEnv?: ConfigEnvInternal, definedAt?: DefinedAtFilePath) => {
-    if (server) {
-      if (!configEnv || !configEnv.server) return false
-    } else {
-      if (configEnv && !configEnv.client) return false
-    }
-    return !isExcluded(e, server, definedAt)
   }
   const isExcluded = (e: string, server: boolean, definedAt?: DefinedAtFilePath) => {
     const exclude = server ? config.ssr.optimizeDeps.exclude : config.optimizeDeps.exclude
@@ -107,13 +102,19 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
 
   // V1 design
   {
-    pageConfigs.forEach((pageConfig) => {
-      Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
-        sources
-          .filter((source) => !isOverridden(source, configName, pageConfig))
-          .forEach((configValueSource) => {
+    ;[true, false].forEach((isForClientSide) => {
+      pageConfigs.forEach((pageConfig) => {
+        Object.entries(pageConfig.configValueSources).forEach(([configName]) => {
+          const runtimeEnv = {
+            isForClientSide,
+            isDev: true,
+            // TO-DO/eventually: let's eventually remove support for Server Routing
+            isClientRouting: true,
+          }
+          const sourcesRelevant = getConfigValueSourcesRelevant(configName, runtimeEnv, pageConfig)
+          sourcesRelevant.forEach((configValueSource) => {
             if (!configValueSource.valueIsLoadedWithImport && !configValueSource.valueIsFilePath) return
-            const { definedAt, configEnv } = configValueSource
+            const { definedAt } = configValueSource
 
             if (definedAt.definedBy) return
 
@@ -121,18 +122,19 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
               addEntry(
                 // optimizeDeps.entries expects filesystem absolute paths
                 definedAt.filePathAbsoluteFilesystem,
-                configEnv,
+                isForClientSide,
                 definedAt,
               )
             } else {
               addInclude(
                 // optimizeDeps.include expects npm packages
                 definedAt.importPathAbsolute,
-                configEnv,
+                isForClientSide,
                 definedAt,
               )
             }
           })
+        })
       })
     })
   }
@@ -144,7 +146,7 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
     pageFiles.forEach((filePathAbsoluteUserRootDir) => {
       const entry = getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir })
       const { filePathAbsoluteFilesystem } = entry
-      addEntry(filePathAbsoluteFilesystem)
+      addEntry(filePathAbsoluteFilesystem, true)
     })
   }
 
@@ -155,9 +157,9 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
   //     - If we do, then we need to adjust include/entries (maybe by making include === entries -> will Vite complain?)
   {
     const { hasClientRouting, hasServerRouting, clientEntries } = analyzeClientEntries(pageConfigs, config)
-    Object.values(clientEntries).forEach((e) => addEntry(e))
-    if (hasClientRouting) addEntry(virtualFileIdEntryClientCR)
-    if (hasServerRouting) addEntry(virtualFileIdEntryClientSR)
+    Object.values(clientEntries).forEach((e) => addEntry(e, true))
+    if (hasClientRouting) addEntry(virtualFileIdEntryClientCR, true)
+    if (hasServerRouting) addEntry(virtualFileIdEntryClientSR, true)
   }
 
   entriesClient = entriesClient
