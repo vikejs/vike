@@ -213,6 +213,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
           ),
         )
         .flat(1)
+        // Server-only
         .filter((source) => !source.configEnv.client)
       return sources.length > 0
     },
