@@ -16,6 +16,7 @@ import type {
 import type { Config, ConfigNameBuiltIn, ConfigNameGlobal } from '../../../../types/Config.js'
 import { assert, assertUsage } from '../../utils.js'
 import { getConfigDefinedAt, type ConfigDefinedAt } from '../../../../shared/page-configs/getConfigDefinedAt.js'
+import { getConfigValueSourcesRelevant } from '../../plugins/pluginVirtualFiles/isRuntimeEnvMatch.js'
 
 // For users
 /** The meta definition of a config.
@@ -194,6 +195,28 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   meta: {
     env: { config: true },
+  },
+  serverOnlyHooks: {
+    env: { client: true },
+    eager: true,
+    _computed: (pageConfig): boolean => {
+      const sources = (['data', 'onBeforeRender', 'onCreatePageContext'] as const)
+        .map((hookName) =>
+          getConfigValueSourcesRelevant(
+            hookName,
+            {
+              isForClientSide: false,
+              // TO-DO/eventually/remove-server-router: let's eventually remove support for Server Routing
+              isClientRouting: true,
+            },
+            pageConfig,
+          ),
+        )
+        .flat(1)
+        // Server-only
+        .filter((source) => !source.configEnv.client)
+      return sources.length > 0
+    },
   },
   // Whether the page loads:
   //  - Vike's client runtime
