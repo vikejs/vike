@@ -45,6 +45,9 @@ function processUrl(urlParsed: UrlParsed, url: string) {
       _vike: searchVikeArgs ? null : undefined,
     },
   })
+  console.log('url', url)
+  console.log('searchVikeArgs', searchVikeArgs)
+  console.log('urlWithoutPageContextRequestSuffix', urlWithoutPageContextRequestSuffix)
   return {
     searchVikeArgs,
     urlWithoutPageContextRequestSuffix,
