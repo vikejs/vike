@@ -50,9 +50,9 @@ function createGetGlobalContextClient<GlobalContextAddendum extends object>(
 
   return getGlobalContext
 
-  async function getGlobalContext(noClientCache: boolean) {
+  async function getGlobalContext(resetClientCache: boolean) {
     // Caching
-    if (noClientCache) {
+    if (resetClientCache) {
       delete globalObject.globalContext
       delete globalObject.globalContextPromise
       delete globalObject.virtualFileExports
