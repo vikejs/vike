@@ -214,7 +214,11 @@ function setPageContextInitIsPassedToClient(pageContext: Record<string, unknown>
 }
 
 // TO-DO/next-major-release: make it sync
-async function hasPageContextServer(pageContext: Parameters<typeof hookServerOnlyExists>[1]): Promise<boolean> {
+async function hasPageContextServer(pageContext: {
+  pageId: string
+  _globalContext: GlobalContextClientInternal
+  _pageFilesAll: PageFile[]
+}): Promise<boolean> {
   if (isOldDesign(pageContext)) {
     const { hasOnBeforeRenderServerSideOnlyHook } = await analyzePageServerSide(
       pageContext._pageFilesAll,
@@ -223,37 +227,7 @@ async function hasPageContextServer(pageContext: Parameters<typeof hookServerOnl
     // data() hooks didn't exist in the V0.4 design
     return hasOnBeforeRenderServerSideOnlyHook
   }
-  return (
-    !!globalObject.pageContextInitIsPassedToClient ||
-    hookServerOnlyExists('data', pageContext) ||
-    hookServerOnlyExists('onBeforeRender', pageContext) ||
-    hasServerOnlyHook(pageContext)
-  )
-}
-
-// TO-DO/next-major-release: make it sync
-/**
- * @param hookName
- * @param pageContext
- * @returns `true` if the given page has a `hookName` hook defined with a server-only env.
- */
-function hookServerOnlyExists(
-  hookName: 'data' | 'onBeforeRender',
-  pageContext: {
-    pageId: string
-    _globalContext: GlobalContextClientInternal
-    _pageFilesAll: PageFile[]
-  },
-) {
-  const pageConfig = getPageConfig(pageContext.pageId, pageContext._globalContext._pageConfigs)
-  const hookEnv = getConfigValueRuntime(pageConfig, `${hookName}Env`)?.value
-  if (hookEnv === null) return false
-  assert(isObject(hookEnv))
-  const { client, server } = hookEnv
-  assert(client === true || client === undefined)
-  assert(server === true || server === undefined)
-  assert(client || server)
-  return !!server && !client
+  return !!globalObject.pageContextInitIsPassedToClient || hasServerOnlyHook(pageContext)
 }
 
 function hasServerOnlyHook(pageContext: {
