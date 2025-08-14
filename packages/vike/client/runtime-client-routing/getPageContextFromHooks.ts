@@ -122,7 +122,7 @@ async function getPageContextFromClientHooks(
     PageContextForPublicUsageClient,
   isErrorPage: boolean,
 ) {
-  let dataHookExec = false
+  let dataHookExecuted = false
   // At this point, we need to call the client-side guard(), data() and onBeforeRender() hooks, if they exist on client
   // env. However if we have fetched pageContext from the server, some of them might have run already on the
   // server-side, so we run only the client-only ones in this case.
@@ -141,7 +141,7 @@ async function getPageContextFromClientHooks(
       }
     } else {
       if (hookClientOnlyExists(hookName, pageContext) || !pageContext._hasPageContextFromServer) {
-        if (hookName === 'data') dataHookExec = true
+        if (hookName === 'data') dataHookExecuted = true
         // This won't do anything if no hook has been defined or if the hook's env.client is false.
         await execHookDataLike(hookName, pageContext)
       }
@@ -150,7 +150,7 @@ async function getPageContextFromClientHooks(
 
   // Execute +onData
   const dataHookEnv = getHookEnv('data', pageContext)
-  if ((dataHookExec && dataHookEnv.client) || (pageContext._hasPageContextFromServer && dataHookEnv.server)) {
+  if ((dataHookExecuted && dataHookEnv.client) || (pageContext._hasPageContextFromServer && dataHookEnv.server)) {
     await execHookClient('onData', pageContext)
   }
 
