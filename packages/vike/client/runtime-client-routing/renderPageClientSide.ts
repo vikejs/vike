@@ -601,6 +601,7 @@ async function getPageContextBegin(
     ...pageContextInitClient,
   })
 
+  // TODO/now: use cache at the same time where the cache is set?
   Object.assign(pageContext, getPageContextCached())
 
   // TO-DO/next-major-release: remove
