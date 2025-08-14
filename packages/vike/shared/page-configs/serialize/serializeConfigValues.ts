@@ -28,7 +28,11 @@ import { parsePointerImportData } from '../../../node/vite/shared/resolveVikeCon
 import { getConfigValueFilePathToShowToUser } from '../helpers.js'
 import { stringify } from '@brillout/json-serializer/stringify'
 import pc from '@brillout/picocolors'
-import { isOverridden } from '../../../node/vite/shared/resolveVikeConfigInternal.js'
+import {
+  getConfigValueSourcesRelevant,
+  isRuntimeEnvMatch,
+  type RuntimeEnv,
+} from '../../../node/vite/plugins/pluginVirtualFiles/isRuntimeEnvMatch.js'
 const stringifyOptions = { forbidReactElements: true as const }
 const REPLACE_ME_BEFORE = '__VIKE__REPLACE_ME_BEFORE__'
 const REPLACE_ME_AFTER = '__VIKE__REPLACE_ME_AFTER__'
@@ -43,14 +47,14 @@ function serializeConfigValues(
   pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime,
   importStatements: string[],
   filesEnv: FilesEnv,
-  isEnvMatch: (configEnv: ConfigEnvInternal) => boolean,
+  runtimeEnv: RuntimeEnv,
   tabspace: string,
   isEager: boolean | null,
 ): string[] {
   const lines: string[] = []
   tabspace += '  '
 
-  getConfigValuesBase(pageConfig, isEnvMatch, isEager).forEach((entry) => {
+  getConfigValuesBase(pageConfig, runtimeEnv, isEager).forEach((entry) => {
     if (entry.configValueBase.type === 'computed') {
       assert('value' in entry) // Help TS
       const { configValueBase, value, configName, configEnv } = entry
@@ -289,28 +293,29 @@ function logJsonSerializeError(err: unknown, configName: string, definedAtData: 
 
 function getConfigValuesBase(
   pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime,
-  isEnvMatch: (configEnv: ConfigEnvInternal) => boolean,
+  runtimeEnv: RuntimeEnv,
   isEager: boolean | null,
 ): ConfigValuesBase {
   const fromComputed = Object.entries(pageConfig.configValuesComputed ?? {}).map(([configName, valueInfo]) => {
     const { configEnv, value } = valueInfo
-    if (!isEnvMatch(configEnv)) return 'SKIP'
-    // Is there a use case for overriding computed values? If yes, then configValeSources has higher precedence
+    if (!isRuntimeEnvMatch(configEnv, runtimeEnv)) return 'SKIP'
+    // AFAICT this should never happen: I ain't aware of a use case for overriding computed values. If there is a use case, then configValueSources has higher precedence.
     if (pageConfig.configValueSources[configName]) return 'SKIP'
     const configValueBase = {
       type: 'computed',
       definedAtData: null,
     } as const
-    return { configValueBase, value, configName, configEnv } as const
+    return { configValueBase, value, configName, configEnv }
   })
-  const fromSources = Object.entries(pageConfig.configValueSources).map(([configName, sources]) => {
+  const fromSources = Object.entries(pageConfig.configValueSources).map(([configName]) => {
     const configDef = pageConfig.configDefinitions[configName]
     assert(configDef)
     if (isEager !== null && isEager !== !!configDef.eager) return 'SKIP'
     if (!configDef.cumulative) {
-      const source = sources[0]
-      assert(source)
-      if (!isEnvMatch(source.configEnv)) return 'SKIP'
+      const sourcesRelevant = getConfigValueSourcesRelevant(configName, runtimeEnv, pageConfig)
+      const source = sourcesRelevant[0]
+      if (!source) return 'SKIP'
+      assert(sourcesRelevant.length === 1)
       const definedAtFile = getDefinedAtFileSource(source)
       const configValueBase = {
         type: 'standard',
@@ -318,9 +323,7 @@ function getConfigValuesBase(
       } as const
       return { configValueBase, sourceRelevant: source, configName }
     } else {
-      const sourcesRelevant = sources
-        .filter((source) => !isOverridden(source, configName, pageConfig))
-        .filter((source) => isEnvMatch(source.configEnv))
+      const sourcesRelevant = getConfigValueSourcesRelevant(configName, runtimeEnv, pageConfig)
       if (sourcesRelevant.length === 0) return 'SKIP'
       const definedAtData: DefinedAt[] = []
       sourcesRelevant.forEach((source) => {

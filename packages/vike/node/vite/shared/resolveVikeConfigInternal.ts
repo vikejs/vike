@@ -8,7 +8,6 @@ export { isV1Design }
 export { getConfVal }
 export { getConfigDefinitionOptional }
 export { getVikeConfigFromCliOrEnv }
-export { isOverridden }
 export type { VikeConfigInternal }
 
 // Public usage
@@ -38,6 +37,8 @@ import {
   type SortReturn,
   assertIsSingleModuleInstance,
   genPromise,
+  checkType,
+  objectAssign,
 } from '../utils.js'
 import type {
   PageConfigGlobalBuildTime,
@@ -474,16 +475,18 @@ function getPageConfigsBuildTime(
       applyEffectsConfVal(configValueSources, configDefinitionsLocal, plusFilesAll)
       sortConfigValueSources(configValueSources, locationId)
 
-      const configValuesComputed = getComputed(configValueSources, configDefinitionsLocal)
-
-      const pageConfig: PageConfigBuildTime = {
+      const pageConfig = {
         pageId: locationId,
         ...pageConfigRoute,
         configDefinitions: configDefinitionsLocal,
         plusFiles: plusFilesRelevant,
         configValueSources,
-        configValuesComputed,
       }
+
+      const configValuesComputed = getComputed(pageConfig)
+      objectAssign(pageConfig, { configValuesComputed })
+
+      checkType<PageConfigBuildTime>(pageConfig)
       return pageConfig
     })
   assertPageConfigs(pageConfigs)
@@ -567,7 +570,7 @@ function assertOnBeforeRenderEnv(pageConfig: PageConfigBuildTime) {
 
 function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime, tolerateMissingValue?: true) {
   const configValues: ConfigValues = {}
-  getConfigValuesBase(pageConfig, (configEnv: ConfigEnvInternal) => !!configEnv.config, null).forEach((entry) => {
+  getConfigValuesBase(pageConfig, { isForConfig: true }, null).forEach((entry) => {
     if (entry.configValueBase.type === 'computed') {
       assert('value' in entry) // Help TS
       const { configValueBase, value, configName } = entry
@@ -1224,11 +1227,11 @@ function applyEffectMetaEnv(
   })
 }
 
-function getComputed(configValueSources: ConfigValueSources, configDefinitions: ConfigDefinitionsInternal) {
+function getComputed(pageConfig: Omit<PageConfigBuildTime, 'configValuesComputed'>) {
   const configValuesComputed: ConfigValuesComputed = {}
-  objectEntries(configDefinitions).forEach(([configName, configDef]) => {
+  objectEntries(pageConfig.configDefinitions).forEach(([configName, configDef]) => {
     if (!configDef._computed) return
-    const value = configDef._computed(configValueSources)
+    const value = configDef._computed(pageConfig)
     if (value === undefined) return
     configValuesComputed[configName] = {
       value,
@@ -1477,21 +1480,6 @@ function isGlobalLocation(locationId: LocationId, plusFilesAll: PlusFilesByLocat
     .filter(([_locationId, plusFiles]) => isDefiningPage(plusFiles))
     .map(([locationId]) => locationId)
   return locationIdsPage.every((locId) => isInherited(locationId, locId))
-}
-
-function isOverridden(
-  source: ConfigValueSource,
-  configName: string,
-  pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime,
-): boolean {
-  const configDef = pageConfig.configDefinitions[configName]
-  assert(configDef)
-  if (configDef.cumulative) return false
-  const sources = pageConfig.configValueSources[configName]
-  assert(sources)
-  const idx = sources.indexOf(source)
-  assert(idx >= 0)
-  return idx > 0
 }
 
 function resolvePrerenderContext(vikeConfig: Parameters<typeof resolvePrerenderConfigGlobal>[0]) {

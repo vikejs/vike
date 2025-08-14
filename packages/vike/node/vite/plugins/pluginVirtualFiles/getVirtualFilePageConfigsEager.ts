@@ -6,7 +6,6 @@ import type { PageConfigBuildTime, PageConfigGlobalBuildTime } from '../../../..
 import { getVirtualFileIdPageConfigLazy } from '../../../shared/virtualFiles/virtualFilePageConfigLazy.js'
 import { debug } from './debug.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
-import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
 import { FilesEnv, serializeConfigValues } from '../../../../shared/page-configs/serialize/serializeConfigValues.js'
 
 async function getVirtualFilePageConfigsEager(
@@ -86,7 +85,7 @@ function getCodePageConfigsSerialized(
         pageConfig,
         importStatements,
         filesEnv,
-        (configEnv) => isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isDev }),
+        { isForClientSide, isClientRouting, isDev },
         '    ',
         true,
       ),
@@ -115,7 +114,7 @@ function getCodePageConfigGlobalSerialized(
       pageConfigGlobal,
       importStatements,
       filesEnv,
-      (configEnv) => isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isDev }),
+      { isForClientSide, isClientRouting, isDev },
       '    ',
       null,
     ),
