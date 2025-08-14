@@ -215,10 +215,18 @@ function setPageContextInitIsPassedToClient(pageContext: Record<string, unknown>
 
 // TO-DO/next-major-release: make it sync
 async function hasPageContextServer(pageContext: Parameters<typeof hookServerOnlyExists>[1]): Promise<boolean> {
+  if (isOldDesign(pageContext)) {
+    const { hasOnBeforeRenderServerSideOnlyHook } = await analyzePageServerSide(
+      pageContext._pageFilesAll,
+      pageContext.pageId,
+    )
+    // data() hooks didn't exist in the V0.4 design
+    return hasOnBeforeRenderServerSideOnlyHook
+  }
   return (
     !!globalObject.pageContextInitIsPassedToClient ||
-    (await hookServerOnlyExists('data', pageContext)) ||
-    (await hookServerOnlyExists('onBeforeRender', pageContext)) ||
+    hookServerOnlyExists('data', pageContext) ||
+    hookServerOnlyExists('onBeforeRender', pageContext) ||
     hasServerOnlyHook(pageContext)
   )
 }
@@ -229,39 +237,23 @@ async function hasPageContextServer(pageContext: Parameters<typeof hookServerOnl
  * @param pageContext
  * @returns `true` if the given page has a `hookName` hook defined with a server-only env.
  */
-async function hookServerOnlyExists(
+function hookServerOnlyExists(
   hookName: 'data' | 'onBeforeRender',
   pageContext: {
     pageId: string
     _globalContext: GlobalContextClientInternal
     _pageFilesAll: PageFile[]
   },
-): Promise<boolean> {
-  if (pageContext._globalContext._pageConfigs.length > 0) {
-    // V1
-    const pageConfig = getPageConfig(pageContext.pageId, pageContext._globalContext._pageConfigs)
-    const hookEnv = getConfigValueRuntime(pageConfig, `${hookName}Env`)?.value
-    if (hookEnv === null) return false
-    assert(isObject(hookEnv))
-    const { client, server } = hookEnv
-    assert(client === true || client === undefined)
-    assert(server === true || server === undefined)
-    assert(client || server)
-    return !!server && !client
-  } else {
-    // TO-DO/next-major-release: remove
-    // V0.4
-
-    // data() hooks didn't exist in the V0.4 design
-    if (hookName === 'data') return false
-
-    assert(hookName === 'onBeforeRender')
-    const { hasOnBeforeRenderServerSideOnlyHook } = await analyzePageServerSide(
-      pageContext._pageFilesAll,
-      pageContext.pageId,
-    )
-    return hasOnBeforeRenderServerSideOnlyHook
-  }
+) {
+  const pageConfig = getPageConfig(pageContext.pageId, pageContext._globalContext._pageConfigs)
+  const hookEnv = getConfigValueRuntime(pageConfig, `${hookName}Env`)?.value
+  if (hookEnv === null) return false
+  assert(isObject(hookEnv))
+  const { client, server } = hookEnv
+  assert(client === true || client === undefined)
+  assert(server === true || server === undefined)
+  assert(client || server)
+  return !!server && !client
 }
 
 function hasServerOnlyHook(pageContext: {
