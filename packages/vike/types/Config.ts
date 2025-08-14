@@ -74,6 +74,8 @@ type ConfigNameBuiltIn =
   | Exclude<keyof Config, keyof VikeVitePluginOptions | 'onBeforeRoute' | 'onPrerenderStart' | 'vite' | 'redirects'>
   | 'prerender'
   | 'isClientRuntimeLoaded'
+  | 'onBeforeRenderEnv'
+  | 'dataEnv'
   | 'hooksTimeout'
   | 'clientHooks'
   | 'middleware'
