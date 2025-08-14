@@ -38,6 +38,8 @@ import {
   type SortReturn,
   assertIsSingleModuleInstance,
   genPromise,
+  checkType,
+  objectAssign,
 } from '../utils.js'
 import type {
   PageConfigGlobalBuildTime,
@@ -474,16 +476,18 @@ function getPageConfigsBuildTime(
       applyEffectsConfVal(configValueSources, configDefinitionsLocal, plusFilesAll)
       sortConfigValueSources(configValueSources, locationId)
 
-      const configValuesComputed = getComputed(configValueSources, configDefinitionsLocal)
-
-      const pageConfig: PageConfigBuildTime = {
+      const pageConfig = {
         pageId: locationId,
         ...pageConfigRoute,
         configDefinitions: configDefinitionsLocal,
         plusFiles: plusFilesRelevant,
         configValueSources,
-        configValuesComputed,
       }
+
+      const configValuesComputed = getComputed(configValueSources, configDefinitionsLocal)
+      objectAssign(pageConfig, { configValuesComputed })
+
+      checkType<PageConfigBuildTime>(pageConfig)
       return pageConfig
     })
   assertPageConfigs(pageConfigs)
