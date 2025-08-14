@@ -238,8 +238,10 @@ async function hasPageContextServer(
     return hasOnBeforeRenderServerSideOnlyHook
   }
   return (
+    !!globalObject.pageContextInitIsPassedToClient ||
+    hasServerOnlyHook(pageContext) ||
     // TODO/now
-    resetClientCache || !!globalObject.pageContextInitIsPassedToClient || hasServerOnlyHook(pageContext)
+    resetClientCache
   )
 }
 
@@ -343,17 +345,17 @@ function processPageContextFromServer(pageContext: Record<string, unknown>) {
   removeBuiltInOverrides(pageContext)
 }
 
+function getPageContextCached() {
+  return globalObject.pageContextCached
+}
+function clearPageContextCached() {
+  delete globalObject.pageContextCached
+}
+
 // TO-DO/next-major-release: remove
 function isOldDesign(pageContext: {
   pageId: string
   _globalContext: GlobalContextClientInternal
 }) {
   return pageContext._globalContext._pageConfigs.length === 0
-}
-
-function getPageContextCached() {
-  return globalObject.pageContextCached
-}
-function clearPageContextCached() {
-  delete globalObject.pageContextCached
 }
