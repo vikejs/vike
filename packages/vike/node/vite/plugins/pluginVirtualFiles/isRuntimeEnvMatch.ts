@@ -11,6 +11,8 @@ import type {
 } from '../../../../types/PageConfig.js'
 import { assert } from '../../utils.js'
 
+type RuntimeEnv = { isForClientSide: boolean; isClientRouting: boolean; isDev?: boolean } | { isForConfig: true }
+
 function getConfigValueSourcesRelevant(configName: string, runtimeEnv: RuntimeEnv, pageConfig: PageConfigPartial) {
   const configDef = pageConfig.configDefinitions[configName]
   assert(configDef)
@@ -34,7 +36,6 @@ function getConfigValueSourcesRelevant(configName: string, runtimeEnv: RuntimeEn
   return sourcesRelevant
 }
 
-type RuntimeEnv = { isForClientSide: boolean; isClientRouting: boolean; isDev?: boolean } | { isForConfig: true }
 function isRuntimeEnvMatch(configEnv: ConfigEnvInternal, runtimeEnv: RuntimeEnv): boolean {
   if ('isForConfig' in runtimeEnv) return !!configEnv.config
 
