@@ -218,7 +218,8 @@ async function hasPageContextServer(pageContext: Parameters<typeof hookServerOnl
   return (
     !!globalObject.pageContextInitIsPassedToClient ||
     (await hookServerOnlyExists('data', pageContext)) ||
-    (await hookServerOnlyExists('onBeforeRender', pageContext))
+    (await hookServerOnlyExists('onBeforeRender', pageContext)) ||
+    hasServerOnlyHook(pageContext)
   )
 }
 
@@ -261,6 +262,16 @@ async function hookServerOnlyExists(
     )
     return hasOnBeforeRenderServerSideOnlyHook
   }
+}
+
+function hasServerOnlyHook(pageContext: {
+  pageId: string
+  _globalContext: GlobalContextClientInternal
+}) {
+  const pageConfig = getPageConfig(pageContext.pageId, pageContext._globalContext._pageConfigs)
+  const val = getConfigValueRuntime(pageConfig, `serverOnlyHooks`)?.value
+  assert(val === true || val === false)
+  return val
 }
 
 function hookClientOnlyExists(

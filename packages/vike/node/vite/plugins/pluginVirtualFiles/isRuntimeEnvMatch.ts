@@ -16,7 +16,7 @@ function getConfigValueSourcesRelevant(configName: string, runtimeEnv: RuntimeEn
   const configDef = pageConfig.configDefinitions[configName]
   assert(configDef)
   let sourcesRelevant = pageConfig.configValueSources[configName]
-  assert(sourcesRelevant)
+  if (!sourcesRelevant) return []
 
   if (!configDef.cumulative) {
     const source = sourcesRelevant[0]
