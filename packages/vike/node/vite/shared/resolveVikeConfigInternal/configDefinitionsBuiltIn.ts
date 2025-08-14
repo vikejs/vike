@@ -223,24 +223,6 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
       )
     },
   },
-  onBeforeRenderEnv: {
-    env: { client: true },
-    eager: true,
-    _computed: (pageConfig): null | ConfigEnvInternal => {
-      const { configValueSources } = pageConfig
-      return !isConfigSet(configValueSources, 'onBeforeRender')
-        ? null
-        : getConfigEnv(configValueSources, 'onBeforeRender')
-    },
-  },
-  dataEnv: {
-    env: { client: true },
-    eager: true,
-    _computed: (pageConfig): null | ConfigEnvInternal => {
-      const { configValueSources } = pageConfig
-      return !isConfigSet(configValueSources, 'data') ? null : getConfigEnv(configValueSources, 'data')
-    },
-  },
   hooksTimeout: {
     env: { server: true, client: true },
   },
