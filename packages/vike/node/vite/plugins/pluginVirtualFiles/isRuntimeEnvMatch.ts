@@ -1,11 +1,14 @@
 export { isRuntimeEnvMatch }
+export type { RuntimeEnv }
 
 import type { ConfigEnvInternal } from '../../../../types/PageConfig.js'
 import { assert } from '../../utils.js'
 
-type RuntimeEnv = { isForClientSide: boolean; isClientRouting: boolean; isDev?: boolean }
+type RuntimeEnv = { isForClientSide: boolean; isClientRouting: boolean; isDev?: boolean } | { isForConfig: true }
 
 function isRuntimeEnvMatch(configEnv: ConfigEnvInternal, runtimeEnv: RuntimeEnv): boolean {
+  if ('isForConfig' in runtimeEnv) return !!configEnv.config
+
   // Runtime
   if (!runtimeEnv.isForClientSide) {
     if (!configEnv.server) return false

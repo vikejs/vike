@@ -571,7 +571,7 @@ function assertOnBeforeRenderEnv(pageConfig: PageConfigBuildTime) {
 
 function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime, tolerateMissingValue?: true) {
   const configValues: ConfigValues = {}
-  getConfigValuesBase(pageConfig, (configEnv: ConfigEnvInternal) => !!configEnv.config, null).forEach((entry) => {
+  getConfigValuesBase(pageConfig, { isForConfig: true }, null).forEach((entry) => {
     if (entry.configValueBase.type === 'computed') {
       assert('value' in entry) // Help TS
       const { configValueBase, value, configName } = entry

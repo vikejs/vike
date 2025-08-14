@@ -29,6 +29,7 @@ import { getConfigValueFilePathToShowToUser } from '../helpers.js'
 import { stringify } from '@brillout/json-serializer/stringify'
 import pc from '@brillout/picocolors'
 import { isOverridden } from '../../../node/vite/shared/resolveVikeConfigInternal.js'
+import { isRuntimeEnvMatch, type RuntimeEnv } from '../../../node/vite/plugins/pluginVirtualFiles/isRuntimeEnvMatch.js'
 const stringifyOptions = { forbidReactElements: true as const }
 const REPLACE_ME_BEFORE = '__VIKE__REPLACE_ME_BEFORE__'
 const REPLACE_ME_AFTER = '__VIKE__REPLACE_ME_AFTER__'
@@ -43,14 +44,14 @@ function serializeConfigValues(
   pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime,
   importStatements: string[],
   filesEnv: FilesEnv,
-  isEnvMatch: (configEnv: ConfigEnvInternal) => boolean,
+  runtimeEnv: RuntimeEnv,
   tabspace: string,
   isEager: boolean | null,
 ): string[] {
   const lines: string[] = []
   tabspace += '  '
 
-  getConfigValuesBase(pageConfig, isEnvMatch, isEager).forEach((entry) => {
+  getConfigValuesBase(pageConfig, runtimeEnv, isEager).forEach((entry) => {
     if (entry.configValueBase.type === 'computed') {
       assert('value' in entry) // Help TS
       const { configValueBase, value, configName, configEnv } = entry
@@ -289,12 +290,12 @@ function logJsonSerializeError(err: unknown, configName: string, definedAtData: 
 
 function getConfigValuesBase(
   pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime,
-  isEnvMatch: (configEnv: ConfigEnvInternal) => boolean,
+  runtimeEnv: RuntimeEnv,
   isEager: boolean | null,
 ): ConfigValuesBase {
   const fromComputed = Object.entries(pageConfig.configValuesComputed ?? {}).map(([configName, valueInfo]) => {
     const { configEnv, value } = valueInfo
-    if (!isEnvMatch(configEnv)) return 'SKIP'
+    if (!isRuntimeEnvMatch(configEnv, runtimeEnv)) return 'SKIP'
     // Is there a use case for overriding computed values? If yes, then configValeSources has higher precedence
     if (pageConfig.configValueSources[configName]) return 'SKIP'
     const configValueBase = {
@@ -310,7 +311,7 @@ function getConfigValuesBase(
     if (!configDef.cumulative) {
       const source = sources[0]
       assert(source)
-      if (!isEnvMatch(source.configEnv)) return 'SKIP'
+      if (!isRuntimeEnvMatch(source.configEnv, runtimeEnv)) return 'SKIP'
       const definedAtFile = getDefinedAtFileSource(source)
       const configValueBase = {
         type: 'standard',
@@ -320,7 +321,7 @@ function getConfigValuesBase(
     } else {
       const sourcesRelevant = sources
         .filter((source) => !isOverridden(source, configName, pageConfig))
-        .filter((source) => isEnvMatch(source.configEnv))
+        .filter((source) => isRuntimeEnvMatch(source.configEnv, runtimeEnv))
       if (sourcesRelevant.length === 0) return 'SKIP'
       const definedAtData: DefinedAt[] = []
       sourcesRelevant.forEach((source) => {

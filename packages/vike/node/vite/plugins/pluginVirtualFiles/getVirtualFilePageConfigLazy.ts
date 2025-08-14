@@ -73,7 +73,7 @@ function getLoadConfigLazy(
       pageConfig,
       importStatements,
       filesEnv,
-      (configEnv) => isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isDev }),
+      { isForClientSide, isClientRouting, isDev },
       '',
       false,
     ),
