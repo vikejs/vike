@@ -268,6 +268,8 @@ function hasServerOnlyHook(pageContext: {
   pageId: string
   _globalContext: GlobalContextClientInternal
 }) {
+  // TO-DO/next-major-release: remove
+  if (pageContext._globalContext._pageConfigs.length === 0) return false
   const pageConfig = getPageConfig(pageContext.pageId, pageContext._globalContext._pageConfigs)
   const val = getConfigValueRuntime(pageConfig, `serverOnlyHooks`)?.value
   assert(val === true || val === false)
