@@ -1804,7 +1804,7 @@ importers:
         specifier: ^5.8.3
         version: 5.9.2
       vike:
-        specifier: ^0.4.235
+        specifier: 0.4.236
         version: link:../../packages/vike
       vike-react:
         specifier: 0.6.5
@@ -1840,7 +1840,7 @@ importers:
         specifier: ^5.8.3
         version: 5.9.2
       vike:
-        specifier: ^0.4.235
+        specifier: 0.4.236
         version: link:../../packages/vike
       vike-react:
         specifier: 0.6.5
