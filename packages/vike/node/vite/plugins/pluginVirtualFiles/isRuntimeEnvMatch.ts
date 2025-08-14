@@ -1,7 +1,13 @@
 export { isRuntimeEnvMatch }
+export { isOverridden }
 export type { RuntimeEnv }
 
-import type { ConfigEnvInternal } from '../../../../types/PageConfig.js'
+import type {
+  ConfigEnvInternal,
+  ConfigValueSource,
+  PageConfigBuildTime,
+  PageConfigGlobalBuildTime,
+} from '../../../../types/PageConfig.js'
 import { assert } from '../../utils.js'
 
 type RuntimeEnv = { isForClientSide: boolean; isClientRouting: boolean; isDev?: boolean } | { isForConfig: true }
@@ -29,4 +35,19 @@ function isRuntimeEnvMatch(configEnv: ConfigEnvInternal, runtimeEnv: RuntimeEnv)
   }
 
   return true
+}
+
+function isOverridden(
+  source: ConfigValueSource,
+  configName: string,
+  pageConfig: Pick<PageConfigBuildTime | PageConfigGlobalBuildTime, 'configValueSources' | 'configDefinitions'>,
+): boolean {
+  const configDef = pageConfig.configDefinitions[configName]
+  assert(configDef)
+  if (configDef.cumulative) return false
+  const sources = pageConfig.configValueSources[configName]
+  assert(sources)
+  const idx = sources.indexOf(source)
+  assert(idx >= 0)
+  return idx > 0
 }

@@ -11,7 +11,7 @@ import {
   isFilePathAbsoluteFilesystem,
   isVirtualFileId,
 } from '../../utils.js'
-import { getVikeConfigInternal, isOverridden } from '../../shared/resolveVikeConfigInternal.js'
+import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { analyzeClientEntries } from '../pluginBuild/pluginBuildConfig.js'
 import type { ConfigEnvInternal, DefinedAtFilePath, PageConfigBuildTime } from '../../../../types/PageConfig.js'
 import {
@@ -19,6 +19,7 @@ import {
   virtualFileIdEntryClientSR,
 } from '../../../shared/virtualFiles/virtualFileEntry.js'
 import { getFilePathResolved } from '../../shared/getFilePath.js'
+import { isOverridden } from '../pluginVirtualFiles/isRuntimeEnvMatch.js'
 
 const debug = createDebugger('vike:optimizeDeps')
 

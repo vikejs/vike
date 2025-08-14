@@ -8,7 +8,6 @@ export { isV1Design }
 export { getConfVal }
 export { getConfigDefinitionOptional }
 export { getVikeConfigFromCliOrEnv }
-export { isOverridden }
 export type { VikeConfigInternal }
 
 // Public usage
@@ -1481,21 +1480,6 @@ function isGlobalLocation(locationId: LocationId, plusFilesAll: PlusFilesByLocat
     .filter(([_locationId, plusFiles]) => isDefiningPage(plusFiles))
     .map(([locationId]) => locationId)
   return locationIdsPage.every((locId) => isInherited(locationId, locId))
-}
-
-function isOverridden(
-  source: ConfigValueSource,
-  configName: string,
-  pageConfig: Pick<PageConfigBuildTime | PageConfigGlobalBuildTime, 'configValueSources' | 'configDefinitions'>,
-): boolean {
-  const configDef = pageConfig.configDefinitions[configName]
-  assert(configDef)
-  if (configDef.cumulative) return false
-  const sources = pageConfig.configValueSources[configName]
-  assert(sources)
-  const idx = sources.indexOf(source)
-  assert(idx >= 0)
-  return idx > 0
 }
 
 function resolvePrerenderContext(vikeConfig: Parameters<typeof resolvePrerenderConfigGlobal>[0]) {
