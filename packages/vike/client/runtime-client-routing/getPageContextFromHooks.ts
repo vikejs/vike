@@ -69,6 +69,9 @@ async function getPageContextFromHooks_isHydration(
     VikeConfigPublicPageLazy & { _hasPageContextFromServer: true } & PageContextForPublicUsageClient,
 ) {
   for (const hookName of ['data', 'onBeforeRender'] as const) {
+    // TO-DO/soon/cumulative-hooks: filter & execute all client-only hooks
+    // - The client-side needs to know what hooks are client-only
+    //   - Possible implementation: new computed prop `clientOnlyHooks: string[]` (list of hook ids) and add `hookId` to serialized config values
     if (hookClientOnlyExists(hookName, pageContext)) {
       await execHookDataLike(hookName, pageContext)
     }
@@ -140,6 +143,7 @@ async function getPageContextFromClientHooks(
         await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageClient(pageContext))
       }
     } else {
+      // TO-DO/soon/cumulative-hooks: filter & execute all client-only hooks (see other TO-DO/soon/cumulative-hooks entries)
       if (hookClientOnlyExists(hookName, pageContext) || !pageContext._hasPageContextFromServer) {
         if (hookName === 'data') dataHookExecuted = true
         // This won't do anything if no hook has been defined or if the hook's env.client is false.

@@ -246,6 +246,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
       )
     },
   },
+  // TO-DO/soon/cumulative-hooks: remove and replace with new computed prop `clientOnlyHooks: string[]` (see other TO-DO/soon/cumulative-hooks entries)
   onBeforeRenderEnv: {
     env: { client: true },
     eager: true,
@@ -256,6 +257,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
         : getConfigEnv(configValueSources, 'onBeforeRender')
     },
   },
+  // TO-DO/soon/cumulative-hooks: remove and replace with new computed prop `clientOnlyHooks: string[]` (see other TO-DO/soon/cumulative-hooks entries)
   dataEnv: {
     env: { client: true },
     eager: true,
