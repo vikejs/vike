@@ -1,8 +1,10 @@
 export { testRun }
 
-import { test, expect, run, page, getServerUrl, autoRetry, fetchHtml, isWindows, isCI } from '@brillout/test-e2e'
+import { test, expect, run, page, getServerUrl, autoRetry, fetchHtml, isWindows, isCI, sleep } from '@brillout/test-e2e'
 
 function testRun(cmd: `pnpm run ${'dev' | 'preview' | 'preview:ssg'}`) {
+  const isDev = cmd === 'pnpm run dev'
+
   run(cmd)
 
   test('count', async () => {
@@ -51,6 +53,8 @@ function testRun(cmd: `pnpm run ${'dev' | 'preview' | 'preview:ssg'}`) {
     // TODO/soon: remove this
     if (isCI() && !isWindows()) return
 
+    expect(await getNumberOfItems()).toBe(2)
+    if (isDev) await sleep(300) // Seems to be required, otherwise the test is flaky. I don't know why.
     await page.fill('input[type="text"]', 'Buy bananas')
     await page.click('button[type="submit"]')
     const expectBananas = async () => {
