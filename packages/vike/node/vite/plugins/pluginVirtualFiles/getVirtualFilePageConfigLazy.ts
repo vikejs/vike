@@ -11,7 +11,6 @@ import {
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { extractAssetsAddQuery } from '../../../shared/extractAssetsQuery.js'
 import { debug } from './debug.js'
-import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
 import { FilesEnv, serializeConfigValues } from '../../../../shared/page-configs/serialize/serializeConfigValues.js'
 import type { ResolvedConfig } from 'vite'
 import { handleAssetsManifest_isFixEnabled } from '../pluginBuild/handleAssetsManifest.js'
@@ -73,7 +72,7 @@ function getLoadConfigLazy(
       pageConfig,
       importStatements,
       filesEnv,
-      (configEnv) => isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isDev }),
+      { isForClientSide, isClientRouting, isDev },
       '',
       false,
     ),

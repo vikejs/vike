@@ -11,10 +11,12 @@ import type {
   ConfigValueSources,
   DefinedAtFilePath,
   ConfigValueSource,
+  PageConfigBuildTime,
 } from '../../../../types/PageConfig.js'
 import type { Config, ConfigNameBuiltIn, ConfigNameGlobal } from '../../../../types/Config.js'
 import { assert, assertUsage } from '../../utils.js'
 import { getConfigDefinedAt, type ConfigDefinedAt } from '../../../../shared/page-configs/getConfigDefinedAt.js'
+import { getConfigValueSourcesRelevant } from '../../plugins/pluginVirtualFiles/getConfigValueSourcesRelevant.js'
 
 // For users
 /** The meta definition of a config.
@@ -85,7 +87,7 @@ type ConfigEffect = (config: {
 
 /** For Vike internal use */
 type ConfigDefinitionInternal = Omit<ConfigDefinition_, 'env'> & {
-  _computed?: (configValueSources: ConfigValueSources) => unknown
+  _computed?: (pageConfig: Omit<PageConfigBuildTime, 'configValuesComputed'>) => unknown
   _valueIsFilePath?: true
   _userEffectDefinedAtFilePath?: DefinedAtFilePath
   env: ConfigEnvInternal
@@ -194,6 +196,28 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   meta: {
     env: { config: true },
   },
+  serverOnlyHooks: {
+    env: { client: true },
+    eager: true,
+    _computed: (pageConfig): boolean => {
+      const sources = (['data', 'onBeforeRender', 'onCreatePageContext'] as const)
+        .map((hookName) =>
+          getConfigValueSourcesRelevant(
+            hookName,
+            {
+              isForClientSide: false,
+              // TO-DO/eventually/remove-server-router: let's eventually remove support for Server Routing
+              isClientRouting: true,
+            },
+            pageConfig,
+          ),
+        )
+        .flat(1)
+        // Server-only
+        .filter((source) => !source.configEnv.client)
+      return sources.length > 0
+    },
+  },
   // Whether the page loads:
   //  - Vike's client runtime
   //  - User's client hooks
@@ -201,7 +225,8 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   isClientRuntimeLoaded: {
     env: { server: true, client: true },
     eager: true,
-    _computed: (configValueSources): boolean => {
+    _computed: (pageConfig): boolean => {
+      const { configValueSources } = pageConfig
       {
         const source = getConfigValueSource(configValueSources, 'clientHooks')
         if (source) {
@@ -221,17 +246,25 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
       )
     },
   },
+  // TO-DO/soon/cumulative-hooks: remove and replace with new computed prop `clientOnlyHooks: string[]` (see other TO-DO/soon/cumulative-hooks entries)
   onBeforeRenderEnv: {
     env: { client: true },
     eager: true,
-    _computed: (configValueSources): null | ConfigEnvInternal =>
-      !isConfigSet(configValueSources, 'onBeforeRender') ? null : getConfigEnv(configValueSources, 'onBeforeRender'),
+    _computed: (pageConfig): null | ConfigEnvInternal => {
+      const { configValueSources } = pageConfig
+      return !isConfigSet(configValueSources, 'onBeforeRender')
+        ? null
+        : getConfigEnv(configValueSources, 'onBeforeRender')
+    },
   },
+  // TO-DO/soon/cumulative-hooks: remove and replace with new computed prop `clientOnlyHooks: string[]` (see other TO-DO/soon/cumulative-hooks entries)
   dataEnv: {
     env: { client: true },
     eager: true,
-    _computed: (configValueSources): null | ConfigEnvInternal =>
-      !isConfigSet(configValueSources, 'data') ? null : getConfigEnv(configValueSources, 'data'),
+    _computed: (pageConfig): null | ConfigEnvInternal => {
+      const { configValueSources } = pageConfig
+      return !isConfigSet(configValueSources, 'data') ? null : getConfigEnv(configValueSources, 'data')
+    },
   },
   hooksTimeout: {
     env: { server: true, client: true },

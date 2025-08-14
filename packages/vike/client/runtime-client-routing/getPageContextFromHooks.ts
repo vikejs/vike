@@ -71,6 +71,9 @@ async function getPageContextFromHooks_isHydration(
     VikeConfigPublicPageLazy & { _hasPageContextFromServer: true } & PageContextForPublicUsageClient,
 ) {
   for (const hookName of ['data', 'onBeforeRender'] as const) {
+    // TO-DO/soon/cumulative-hooks: filter & execute all client-only hooks
+    // - The client-side needs to know what hooks are client-only
+    //   - Possible implementation: new computed prop `clientOnlyHooks: string[]` (list of hook ids) and add `hookId` to serialized config values
     if (hookClientOnlyExists(hookName, pageContext)) {
       await execHookDataLike(hookName, pageContext)
     }
@@ -125,7 +128,7 @@ async function getPageContextFromClientHooks(
     PageContextForPublicUsageClient,
   isErrorPage: boolean,
 ) {
-  let dataHookExec = false
+  let dataHookExecuted = false
   // At this point, we need to call the client-side guard(), data() and onBeforeRender() hooks, if they exist on client
   // env. However if we have fetched pageContext from the server, some of them might have run already on the
   // server-side, so we run only the client-only ones in this case.
@@ -143,8 +146,9 @@ async function getPageContextFromClientHooks(
         await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageClient(pageContext))
       }
     } else {
+      // TO-DO/soon/cumulative-hooks: filter & execute all client-only hooks (see other TO-DO/soon/cumulative-hooks entries)
       if (hookClientOnlyExists(hookName, pageContext) || !pageContext._hasPageContextFromServer) {
-        if (hookName === 'data') dataHookExec = true
+        if (hookName === 'data') dataHookExecuted = true
         // This won't do anything if no hook has been defined or if the hook's env.client is false.
         await execHookDataLike(hookName, pageContext)
       }
@@ -153,7 +157,7 @@ async function getPageContextFromClientHooks(
 
   // Execute +onData
   const dataHookEnv = getHookEnv('data', pageContext)
-  if ((dataHookExec && dataHookEnv.client) || (pageContext._hasPageContextFromServer && dataHookEnv.server)) {
+  if ((dataHookExecuted && dataHookEnv.client) || (pageContext._hasPageContextFromServer && dataHookEnv.server)) {
     await execHookClient('onData', pageContext)
   }
 
@@ -218,57 +222,36 @@ function setPageContextInitIsPassedToClient(pageContext: Record<string, unknown>
 
 // TO-DO/next-major-release: make it sync
 async function hasPageContextServer(
-  pageContext: Parameters<typeof hookServerOnlyExists>[1],
-  resetClientCache: boolean,
-): Promise<boolean> {
-  return (
-    // TODO/now
-    resetClientCache ||
-    !!globalObject.pageContextInitIsPassedToClient ||
-    (await hookServerOnlyExists('data', pageContext)) ||
-    (await hookServerOnlyExists('onBeforeRender', pageContext))
-  )
-}
-
-// TO-DO/next-major-release: make it sync
-/**
- * @param hookName
- * @param pageContext
- * @returns `true` if the given page has a `hookName` hook defined with a server-only env.
- */
-async function hookServerOnlyExists(
-  hookName: 'data' | 'onBeforeRender',
   pageContext: {
     pageId: string
     _globalContext: GlobalContextClientInternal
     _pageFilesAll: PageFile[]
   },
+  resetClientCache: boolean,
 ): Promise<boolean> {
-  if (pageContext._globalContext._pageConfigs.length > 0) {
-    // V1
-    const pageConfig = getPageConfig(pageContext.pageId, pageContext._globalContext._pageConfigs)
-    const hookEnv = getConfigValueRuntime(pageConfig, `${hookName}Env`)?.value
-    if (hookEnv === null) return false
-    assert(isObject(hookEnv))
-    const { client, server } = hookEnv
-    assert(client === true || client === undefined)
-    assert(server === true || server === undefined)
-    assert(client || server)
-    return !!server && !client
-  } else {
-    // TO-DO/next-major-release: remove
-    // V0.4
-
-    // data() hooks didn't exist in the V0.4 design
-    if (hookName === 'data') return false
-
-    assert(hookName === 'onBeforeRender')
+  if (isOldDesign(pageContext)) {
     const { hasOnBeforeRenderServerSideOnlyHook } = await analyzePageServerSide(
       pageContext._pageFilesAll,
       pageContext.pageId,
     )
+    // data() hooks didn't exist in the V0.4 design
     return hasOnBeforeRenderServerSideOnlyHook
   }
+  return (
+    // TODO/now
+    resetClientCache || !!globalObject.pageContextInitIsPassedToClient || hasServerOnlyHook(pageContext)
+  )
+}
+
+function hasServerOnlyHook(pageContext: {
+  pageId: string
+  _globalContext: GlobalContextClientInternal
+}) {
+  if (isOldDesign(pageContext)) return false
+  const pageConfig = getPageConfig(pageContext.pageId, pageContext._globalContext._pageConfigs)
+  const val = getConfigValueRuntime(pageConfig, `serverOnlyHooks`)?.value
+  assert(val === true || val === false)
+  return val
 }
 
 function hookClientOnlyExists(
@@ -288,17 +271,14 @@ function getHookEnv(
     _globalContext: GlobalContextClientInternal
   },
 ) {
-  if (pageContext._globalContext._pageConfigs.length > 0) {
-    // V1
-    const pageConfig = getPageConfig(pageContext.pageId, pageContext._globalContext._pageConfigs)
-    // No runtime validation to save client-side KBs
-    const hookEnv = (getConfigValueRuntime(pageConfig, `${hookName}Env`)?.value ?? {}) as ConfigEnv
-    return hookEnv
-  } else {
-    // TO-DO/next-major-release: remove
+  if (isOldDesign(pageContext)) {
     // Client-only onBeforeRender() or data() hooks were never supported for the V0.4 design
     return { client: false, server: true }
   }
+  const pageConfig = getPageConfig(pageContext.pageId, pageContext._globalContext._pageConfigs)
+  // No runtime validation to save client-side KBs
+  const hookEnv = (getConfigValueRuntime(pageConfig, `${hookName}Env`)?.value ?? {}) as ConfigEnv
+  return hookEnv
 }
 
 async function fetchPageContextFromServer(
@@ -361,6 +341,14 @@ function processPageContextFromServer(pageContext: Record<string, unknown>) {
   }
 
   removeBuiltInOverrides(pageContext)
+}
+
+// TO-DO/next-major-release: remove
+function isOldDesign(pageContext: {
+  pageId: string
+  _globalContext: GlobalContextClientInternal
+}) {
+  return pageContext._globalContext._pageConfigs.length === 0
 }
 
 function getPageContextCached() {

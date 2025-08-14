@@ -1,1 +1,1 @@
-Copied from: https://github.com/vikejs/vike-react/tree/main/examples/full
+Copied from: https://github.com/vikejs/vike-react/tree/main/examples/full/

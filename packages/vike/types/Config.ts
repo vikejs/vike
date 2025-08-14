@@ -73,6 +73,7 @@ type HookNameOldDesign = 'render' | 'prerender' | 'onBeforePrerender'
 type ConfigNameBuiltIn =
   | Exclude<keyof Config, keyof VikeVitePluginOptions | 'onBeforeRoute' | 'onPrerenderStart' | 'vite' | 'redirects'>
   | 'prerender'
+  | 'serverOnlyHooks'
   | 'isClientRuntimeLoaded'
   | 'onBeforeRenderEnv'
   | 'dataEnv'
