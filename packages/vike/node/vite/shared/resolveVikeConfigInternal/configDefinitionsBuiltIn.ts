@@ -16,7 +16,7 @@ import type {
 import type { Config, ConfigNameBuiltIn, ConfigNameGlobal } from '../../../../types/Config.js'
 import { assert, assertUsage } from '../../utils.js'
 import { getConfigDefinedAt, type ConfigDefinedAt } from '../../../../shared/page-configs/getConfigDefinedAt.js'
-import { getConfigValueSourcesRelevant } from '../../plugins/pluginVirtualFiles/isRuntimeEnvMatch.js'
+import { getConfigValueSourcesRelevant } from '../../plugins/pluginVirtualFiles/getConfigValueSourcesRelevant.js'
 
 // For users
 /** The meta definition of a config.

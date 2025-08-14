@@ -19,7 +19,7 @@ import {
   virtualFileIdEntryClientSR,
 } from '../../../shared/virtualFiles/virtualFileEntry.js'
 import { getFilePathResolved } from '../../shared/getFilePath.js'
-import { getConfigValueSourcesRelevant } from '../pluginVirtualFiles/isRuntimeEnvMatch.js'
+import { getConfigValueSourcesRelevant } from '../pluginVirtualFiles/getConfigValueSourcesRelevant.js'
 
 const debug = createDebugger('vike:optimizeDeps')
 
