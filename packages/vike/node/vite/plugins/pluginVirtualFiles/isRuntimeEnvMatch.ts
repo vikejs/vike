@@ -19,8 +19,11 @@ function getConfigValueSourcesRelevant(configName: string, runtimeEnv: RuntimeEn
 
   if (!configDef.cumulative) {
     const source = sourcesRelevant[0]
-    assert(source)
-    sourcesRelevant = [source]
+    if (source) {
+      sourcesRelevant = [source]
+    } else {
+      assert(sourcesRelevant.length === 0)
+    }
   } else {
     // isOverridden() must be called before isRuntimeEnvMatch() is called (otherwise isOverridden() will return a wrong value)
     sourcesRelevant = sourcesRelevant.filter((source) => !isOverridden(source, configName, pageConfig))
