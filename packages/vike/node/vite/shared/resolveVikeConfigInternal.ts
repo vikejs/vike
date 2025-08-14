@@ -484,7 +484,7 @@ function getPageConfigsBuildTime(
         configValueSources,
       }
 
-      const configValuesComputed = getComputed(configValueSources, configDefinitionsLocal)
+      const configValuesComputed = getComputed(pageConfig)
       objectAssign(pageConfig, { configValuesComputed })
 
       checkType<PageConfigBuildTime>(pageConfig)
@@ -1228,11 +1228,11 @@ function applyEffectMetaEnv(
   })
 }
 
-function getComputed(configValueSources: ConfigValueSources, configDefinitions: ConfigDefinitionsInternal) {
+function getComputed(pageConfig: Omit<PageConfigBuildTime, 'configValuesComputed'>) {
   const configValuesComputed: ConfigValuesComputed = {}
-  objectEntries(configDefinitions).forEach(([configName, configDef]) => {
+  objectEntries(pageConfig.configDefinitions).forEach(([configName, configDef]) => {
     if (!configDef._computed) return
-    const value = configDef._computed(configValueSources)
+    const value = configDef._computed(pageConfig.configValueSources)
     if (value === undefined) return
     configValuesComputed[configName] = {
       value,
