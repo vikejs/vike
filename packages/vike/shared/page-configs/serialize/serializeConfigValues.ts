@@ -29,7 +29,7 @@ import { getConfigValueFilePathToShowToUser } from '../helpers.js'
 import { stringify } from '@brillout/json-serializer/stringify'
 import pc from '@brillout/picocolors'
 import {
-  isOverridden,
+  getConfigValueSourcesRelevant,
   isRuntimeEnvMatch,
   type RuntimeEnv,
 } from '../../../node/vite/plugins/pluginVirtualFiles/isRuntimeEnvMatch.js'
@@ -312,10 +312,10 @@ function getConfigValuesBase(
     assert(configDef)
     if (isEager !== null && isEager !== !!configDef.eager) return 'SKIP'
     if (!configDef.cumulative) {
-      const sources = pageConfig.configValueSources[configName]!
-      const source = sources[0]
-      assert(source)
-      if (!isRuntimeEnvMatch(source.configEnv, runtimeEnv)) return 'SKIP'
+      const sourcesRelevant = getConfigValueSourcesRelevant(configName, runtimeEnv, pageConfig)
+      const source = sourcesRelevant[0]
+      if (!source) return 'SKIP'
+      assert(sourcesRelevant.length === 1)
       const definedAtFile = getDefinedAtFileSource(source)
       const configValueBase = {
         type: 'standard',
@@ -323,10 +323,7 @@ function getConfigValuesBase(
       } as const
       return { configValueBase, sourceRelevant: source, configName }
     } else {
-      const sources = pageConfig.configValueSources[configName]!
-      const sourcesRelevant = sources
-        .filter((source) => !isOverridden(source, configName, pageConfig))
-        .filter((source) => isRuntimeEnvMatch(source.configEnv, runtimeEnv))
+      const sourcesRelevant = getConfigValueSourcesRelevant(configName, runtimeEnv, pageConfig)
       if (sourcesRelevant.length === 0) return 'SKIP'
       const definedAtData: DefinedAt[] = []
       sourcesRelevant.forEach((source) => {

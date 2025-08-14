@@ -1,3 +1,4 @@
+export { getConfigValueSourcesRelevant }
 export { isRuntimeEnvMatch }
 export { isOverridden }
 export type { RuntimeEnv }
@@ -10,8 +11,27 @@ import type {
 } from '../../../../types/PageConfig.js'
 import { assert } from '../../utils.js'
 
-type RuntimeEnv = { isForClientSide: boolean; isClientRouting: boolean; isDev?: boolean } | { isForConfig: true }
+function getConfigValueSourcesRelevant(configName: string, runtimeEnv: RuntimeEnv, pageConfig: PageConfigPartial) {
+  const configDef = pageConfig.configDefinitions[configName]
+  assert(configDef)
+  let sourcesRelevant = pageConfig.configValueSources[configName]
+  assert(sourcesRelevant)
 
+  if (!configDef.cumulative) {
+    const source = sourcesRelevant[0]
+    assert(source)
+    sourcesRelevant = [source]
+  } else {
+    // isOverridden() must be called before isRuntimeEnvMatch() is called (otherwise isOverridden() will return a wrong value)
+    sourcesRelevant = sourcesRelevant.filter((source) => !isOverridden(source, configName, pageConfig))
+  }
+
+  sourcesRelevant = sourcesRelevant.filter((source) => isRuntimeEnvMatch(source.configEnv, runtimeEnv))
+
+  return sourcesRelevant
+}
+
+type RuntimeEnv = { isForClientSide: boolean; isClientRouting: boolean; isDev?: boolean } | { isForConfig: true }
 function isRuntimeEnvMatch(configEnv: ConfigEnvInternal, runtimeEnv: RuntimeEnv): boolean {
   if ('isForConfig' in runtimeEnv) return !!configEnv.config
 
