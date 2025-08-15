@@ -88,12 +88,12 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
       assertUsage(isArray(value), `+passToClient value defined at ${definedAt} should be an array`)
       const valS = value.map((el) => {
         if (isObject(el)) {
-          assertUsage(hasProp(el, 'prop', 'string'), errMsg)
           assertWarning(
             !('once' in el),
             'The passToClient once setting is deprecated and no longer has any effect. Instead, see the upcoming .once.js suffix (see https://github.com/vikejs/vike/issues/2566 for more information).',
             { onlyOnce: true },
           )
+          assertUsage(hasProp(el, 'prop', 'string'), errMsg)
           return el.prop
         }
         assertUsage(typeof el === 'string', errMsg)
