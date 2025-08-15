@@ -461,7 +461,9 @@ function getPageContextBegin(
   globalContext: GlobalContextServerInternal,
   httpRequestId: number,
 ) {
-  const { isClientSideNavigation, _urlHandler } = handlePageContextUrl(pageContextInit.urlOriginal)
+  const { isClientSideNavigation, _urlHandler, _isPageContextJsonRequest } = handlePageContextUrl(
+    pageContextInit.urlOriginal,
+  )
   const pageContextBegin = createPageContextServerSide(pageContextInit, globalContext, {
     isPrerendering: false,
     ssr: {
@@ -469,14 +471,15 @@ function getPageContextBegin(
       isClientSideNavigation,
     },
   })
-  objectAssign(pageContextBegin, { _httpRequestId: httpRequestId })
+  objectAssign(pageContextBegin, { _httpRequestId: httpRequestId, _isPageContextJsonRequest })
   return pageContextBegin
 }
 
 function handlePageContextUrl(urlOriginal: string) {
   const { isPageContextJsonRequest } = handlePageContextRequestUrl(urlOriginal)
   return {
-    isClientSideNavigation: isPageContextJsonRequest,
+    isClientSideNavigation: !!isPageContextJsonRequest,
+    _isPageContextJsonRequest: isPageContextJsonRequest,
     _urlHandler: (url: string) => handlePageContextRequestUrl(url).urlWithoutPageContextRequestSuffix,
   }
 }

@@ -2,7 +2,6 @@ export { getPageContextFromHooks_isHydration }
 export { getPageContextFromHooks_serialized }
 export { getPageContextFromServerHooks }
 export { getPageContextFromClientHooks }
-export { getPageContextCached }
 export { setPageContextInitIsPassedToClient }
 export { execHookClient }
 export type { PageContextFromServerHooks }
@@ -16,7 +15,6 @@ import {
   redirectHard,
   isObject,
   getGlobalObject,
-  castProp,
 } from './utils.js'
 import { parse } from '@brillout/json-serializer/parse'
 import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtml.js'
@@ -43,7 +41,6 @@ import type { ConfigEnv } from '../../types/index.js'
 import type { GlobalContextClientInternal } from './globalContext.js'
 const globalObject = getGlobalObject<{
   pageContextInitIsPassedToClient?: true
-  pageContextCached?: Record<string, unknown>
 }>('runtime-client-routing/getPageContextFromHooks.ts', {})
 
 type PageContextSerialized = {
@@ -273,7 +270,10 @@ function getHookEnv(
 }
 
 async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _urlRewrite: string | null }) {
-  const pageContextUrl = getPageContextRequestUrl(pageContext._urlRewrite ?? pageContext.urlOriginal)
+  let pageContextUrl = getPageContextRequestUrl(pageContext._urlRewrite ?? pageContext.urlOriginal)
+  /* TO-DO/soon/once: pass & use previousUrl
+  pageContextUrl = modifyUrlSameOrigin(pageContextUrl, { search: { _vike: JSON.stringify({ previousUrl: pageContext.previousPageContext.urlOriginal }) } })
+  */
   const response = await fetch(pageContextUrl)
 
   {
@@ -314,22 +314,7 @@ async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _u
 function processPageContextFromServer(pageContext: Record<string, unknown>) {
   assertUsage(!('urlOriginal' in pageContext), "Adding 'urlOriginal' to passToClient is forbidden")
   assert(hasProp(pageContext, 'pageId', 'string'))
-
-  // TODO/soon/once: remove
-  castProp<string[] | undefined>(pageContext, '_passToClientOnce')
-  const passToClientOnce = pageContext._passToClientOnce
-  if (passToClientOnce) {
-    globalObject.pageContextCached ??= {}
-    passToClientOnce.forEach((prop) => {
-      globalObject.pageContextCached![prop] = pageContext[prop]
-    })
-  }
-
   removeBuiltInOverrides(pageContext)
-}
-
-function getPageContextCached() {
-  return globalObject.pageContextCached
 }
 
 // TO-DO/next-major-release: remove

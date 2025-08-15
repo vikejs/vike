@@ -50,7 +50,7 @@ import type { Vike, VikePackages } from './VikeNamespace.js'
 import type { HooksTimeoutProvidedByUser } from '../shared/hooks/getHook.js'
 import type { GlobalContext, PageContextClient, PageContextServer } from './PageContext.js'
 import type { InlineConfig } from 'vite'
-import type { PassToClient } from '../node/runtime/html/serializeContext.js'
+import type { PassToClientPublic } from '../node/runtime/html/serializeContext.js'
 
 type HookNameOld = HookName | HookNameOldDesign
 type HookName = HookNamePage | HookNameGlobal
@@ -374,7 +374,7 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/passToClient
    */
-  passToClient?: PassToClient | ImportString
+  passToClient?: PassToClientPublic | ImportString
 
   /** Hook called when page is rendered on the client-side.
    *

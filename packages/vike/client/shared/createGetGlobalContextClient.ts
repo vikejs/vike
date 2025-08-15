@@ -51,12 +51,8 @@ function createGetGlobalContextClient<GlobalContextAddendum extends object>(
   return getGlobalContext
 
   async function getGlobalContext() {
-    // Cache
-    if (
-      globalObject.virtualFileExports &&
-      // Don't break HMR
-      globalObject.virtualFileExports === virtualFileExports
-    ) {
+    // HMR => virtualFileExports differ
+    if (globalObject.virtualFileExports === virtualFileExports) {
       const globalContext = await globalObject.globalContextPromise
       return globalContext as never
     } else {
