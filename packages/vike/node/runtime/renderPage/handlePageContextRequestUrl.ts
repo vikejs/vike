@@ -16,13 +16,13 @@ function handlePageContextRequestUrl(url: string) {
     }
   } else {
     const { urlWithoutPageContextRequestSuffix, searchVikeArgs } = processUrl(urlParsed, url)
+    const previousUrl = parseSearchVikeArgs(searchVikeArgs)
     return {
       /* TO-DO/soon/once: pass & use previousUrl
-      isPageContextJsonRequest: {
-        previousUrl: parseSearchVikeArgs(searchVikeArgs),
-      },
-      */
+      isPageContextJsonRequest: { previousUrl },
+      /*/
       isPageContextJsonRequest: true,
+      //*/
       urlWithoutPageContextRequestSuffix,
     }
   }
