@@ -10,7 +10,6 @@ import {
   assertWarning,
   hasProp,
   isArray,
-  isArrayOfStrings,
   isObject,
   objectAssign,
   PromiseType,
@@ -82,10 +81,10 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
   } else {
     configPublicPageLazy.from.configsCumulative.passToClient?.values.forEach((v) => {
       const { definedAt } = v
-      const errMsg = `+passToClient value defined at ${definedAt}${errMsgSuffix}`
+      const errMsg = `+passToClient value defined at ${definedAt}${errMsgSuffix}` as const
       const { value } = v
 
-      //*/
+      //*/ TO-DO/next-major-release: remove the passToClient once setting from the public API
       assertUsage(isArray(value), `+passToClient value defined at ${definedAt} should be an array`)
       const valS = value.map((el) => {
         if (isObject(el)) {
