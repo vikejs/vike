@@ -1,6 +1,6 @@
 import { Link, Warning } from '@brillout/docpress'
 
-TypeScript: `(string | { prop: string; once?: boolean })[]`  
+TypeScript: `string[]`  
 <Link href="/config#cumulative">Cumulative</Link>: true  
 <Link href="/config#global">Global</Link>: false  
 
@@ -42,37 +42,6 @@ async function onHydrationEnd(pageContext: PageContextClient) {
 ```
 
 Some values, such as `pageContext.data`, are already passed to the client-side by default, see <Link href="#default" />.
-
-
-## `once`
-
-<Warning>This is a beta feature: expect breaking changes in any minor version update. If we don't encounter issues over the next 1–2 months, we'll remove this warning and consider the feature stable.</Warning>
-
-By default, upon <Link href="/client-routing">client-side navigation</Link>, properties are passed to the client again.
-
-By setting `once: true`, the property is sent only once, at the beginning of the user's browsing session. The sent value is cached (saved in the <Link href="/globalContext">`globalContext`</Link>) and re-used on each subsequent client-side navigation.
-
-```ts
-// /pages/+config.ts
-// Environment: config
-
-import type { Config } from 'vike/types'
-
-export default {
-  passToClient: [
-    {
-      // pageContext.user
-      prop: 'user',
-      // Send it only once: upon client-side navigation re-use the initial pageContext.user value
-      once: true
-    }
-  ]
-} satisfies Config
-```
-
-> See also: <Link href="/auth" />
-
-This is typically used to avoid <Link href="/pageContext.json">`pageContext.json`</Link> requests upon client-side navigation.
 
 
 ## Default

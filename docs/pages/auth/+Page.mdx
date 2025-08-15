@@ -57,11 +57,7 @@ import type { Config } from 'vike/types'
 
 export default {
   // Make pageContext.user available on the client-side
-  passToClient: [{
-    prop: 'user',
-    // Send it only once: upon client-side navigation re-use the initial pageContext.user value
-    once: true
-  }]
+  passToClient: ['user']
 } satisfies Config
 ```
 

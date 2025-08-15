@@ -664,7 +664,6 @@ const headings = [
     level: 2,
     title: '`passToClient`',
     url: '/passToClient',
-    sectionTitles: ['`once`'],
   },
   {
     level: 2,
