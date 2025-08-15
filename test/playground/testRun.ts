@@ -30,12 +30,7 @@ const rootDir = path.dirname(fileURLToPath(import.meta.url))
 
 function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   const isDev = cmd === 'npm run dev'
-  testRunClassic(cmd, {
-    tolerateError: (log) =>
-      log.logText.includes(
-        'The passToClient once setting is deprecated and no longer has any effect. Instead, see the upcoming .once.js suffix (see https://github.com/vikejs/vike/issues/2566 for more information)',
-      ),
-  })
+  testRunClassic(cmd)
   testSettingsInheritance({ isDev })
   testMarkdown()
   testMarkdownClientFile(isDev)

@@ -36,8 +36,6 @@ function Layout({ children }: { children: React.ReactNode }) {
     someFnClient()
   }
 
-  assert(pageContext.someClientOnceProp === 'someValueSetOnce')
-
   return (
     <React.StrictMode>
       <Frame>

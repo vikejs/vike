@@ -5,15 +5,7 @@ export type { PageConfigsLazy }
 import { type PageFile, type VikeConfigPublicPageLazy, getPageFilesServerSide } from '../../../shared/getPageFiles.js'
 import { resolveVikeConfigPublicPageLazy } from '../../../shared/page-configs/resolveVikeConfigPublic.js'
 import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide.js'
-import {
-  assertUsage,
-  assertWarning,
-  hasProp,
-  isArray,
-  isObject,
-  objectAssign,
-  PromiseType,
-} from '../utils.js'
+import { assertUsage, assertWarning, hasProp, isArray, isObject, objectAssign, PromiseType } from '../utils.js'
 import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './getPageAssets.js'
 import { debugPageFiles, type PageContextDebugRouteMatches } from './debugPageFiles.js'
 import type { PageConfigGlobalRuntime, PageConfigRuntime } from '../../../types/PageConfig.js'
