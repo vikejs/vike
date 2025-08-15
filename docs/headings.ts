@@ -663,7 +663,7 @@ const headings = [
   {
     level: 2,
     title: '`passToClient`',
-    url: '/passToClient'
+    url: '/passToClient',
   },
   {
     level: 2,
