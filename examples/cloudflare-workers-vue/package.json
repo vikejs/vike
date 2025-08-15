@@ -10,7 +10,7 @@
     "@vue/compiler-sfc": "^3.5.18",
     "@vue/server-renderer": "^3.5.18",
     "vite": "^7.0.6",
-    "vike": "0.4.236",
+    "vike": "0.4.237",
     "vue": "^3.5.18",
     "wrangler": "^4.28.0"
   },

@@ -14,7 +14,7 @@
     "react-dom": "^19.1.0",
     "react-tabs": "^6.1.0",
     "typescript": "^5.8.3",
-    "vike": "0.4.236",
+    "vike": "0.4.237",
     "vite": "^6.3.4",
     "vite-plugin-svgr": "^4.3.0"
   },

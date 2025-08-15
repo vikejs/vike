@@ -1,3 +1,33 @@
+## [0.4.237](https://github.com/vikejs/vike/compare/v0.4.236...v0.4.237) (2025-08-15)
+
+
+### Bug Fixes
+
+* `modifyUrl()` — setting a `search` value to `undefined` should be a no-op ([aa91aa3](https://github.com/vikejs/vike/commit/aa91aa338adcbc4ddd19b346ae6de7b9429e4851))
+* also execute `onBeforeRoute()` upon hydration (fix [#2580](https://github.com/vikejs/vike/issues/2580)) ([#2590](https://github.com/vikejs/vike/issues/2590)) ([08fbc10](https://github.com/vikejs/vike/commit/08fbc1055a2a529af3b20f72553efcbc997f37e9))
+* define builder.buildApp() in pre hook ([1c35f48](https://github.com/vikejs/vike/commit/1c35f48f337439efeb52d7cd7867532431892770))
+* deprecate hook types ([#2620](https://github.com/vikejs/vike/issues/2620)) ([9758c70](https://github.com/vikejs/vike/commit/9758c70cd1da78c3c6abac2c970006439647623c))
+* deprecate passToClient once setting ([#2632](https://github.com/vikejs/vike/issues/2632)) ([e352999](https://github.com/vikejs/vike/commit/e352999decd18fbae7e6bf0acff99caa5b4564b3))
+* determine dist/ file names more reliably ([fe899d4](https://github.com/vikejs/vike/commit/fe899d4c3e2fc4d192fbbee68594c90a02f82f1f))
+* don't set `isClosed` too soon ([05b8467](https://github.com/vikejs/vike/commit/05b8467edb28e345d53410ebf889ae740dd2aee8))
+* export PrerenderContext ([e3c7ea6](https://github.com/vikejs/vike/commit/e3c7ea6d542a00e0411b4cbf82c7bd37cc6f0f8d))
+* fix `globalContext` re-initialization race condition ([#2599](https://github.com/vikejs/vike/issues/2599)) ([043684e](https://github.com/vikejs/vike/commit/043684ee8032afba3e88a87d93aa5f9df89e962b))
+* fix DEBUG=vike:crawl ([#2568](https://github.com/vikejs/vike/issues/2568)) ([85d361d](https://github.com/vikejs/vike/commit/85d361d0745bbecd99eb7c691d2d22882faf6133))
+* fix dist/ file name resolving upon @ in path ([#2587](https://github.com/vikejs/vike/issues/2587)) ([c79b787](https://github.com/vikejs/vike/commit/c79b787552b4418dee123622c161673945915d60))
+* fix globalContext HMR caching behavior ([#2592](https://github.com/vikejs/vike/issues/2592)) ([79f1ef0](https://github.com/vikejs/vike/commit/79f1ef0503d34f1a4556f19ae6261c075cf02ea2))
+* further prevent Google from crawling URLs in JSON ([#2277](https://github.com/vikejs/vike/issues/2277), [#2541](https://github.com/vikejs/vike/issues/2541)) ([#2603](https://github.com/vikejs/vike/issues/2603)) ([eab75f6](https://github.com/vikejs/vike/commit/eab75f606168529d756a69b5440a16badf4cee62))
+* improve error message upon wrong import resolve ([9cdfcb2](https://github.com/vikejs/vike/commit/9cdfcb28e950231c154f1f782d9a14801bd0f862))
+* improve warnings & docs about `NODE_ENV` and setup ([2724d4e](https://github.com/vikejs/vike/commit/2724d4e61198be1cfecb12d5a091d1a40bac8f95))
+* make pageContext.json request if +onCreatePageContext.server.js exists ([#2630](https://github.com/vikejs/vike/issues/2630)) ([29020c4](https://github.com/vikejs/vike/commit/29020c441c17ec8dda224e245e210e0499146e84))
+* resilient browsing history management ([#2504](https://github.com/vikejs/vike/issues/2504)) ([#2536](https://github.com/vikejs/vike/issues/2536)) ([e08f1ad](https://github.com/vikejs/vike/commit/e08f1add444613838027bb997c98d18fb452563f))
+* set ssr.optimizeDeps ([#2579](https://github.com/vikejs/vike/issues/2579)) ([233f462](https://github.com/vikejs/vike/commit/233f46212ce47d088596c90f82d4fb19b933590e))
+* skip Vike's virtual file global entry from module graph analysis ([#2576](https://github.com/vikejs/vike/issues/2576)) ([3d7fbf9](https://github.com/vikejs/vike/commit/3d7fbf93a8803cb8419d135121f5b210bdab20eb))
+* support @cloudflare/vite-plugin ([#2569](https://github.com/vikejs/vike/issues/2569)) ([7d5d0a6](https://github.com/vikejs/vike/commit/7d5d0a642c127246dce0570e87ec6c3a3ae6e16d))
+* update @brillout/vite-plugin-server-entry ([#2591](https://github.com/vikejs/vike/issues/2591)) ([73e7152](https://github.com/vikejs/vike/commit/73e7152b85afd179ba3ac65d55d36f871482c9a1))
+* update @brillout/vite-plugin-server-entry@^0.7.12 ([f3ce4e3](https://github.com/vikejs/vike/commit/f3ce4e3f3b948d04ea6c5e48a7f9d5efdf055e61))
+
+
+
 ## [0.4.236](https://github.com/vikejs/vike/compare/v0.4.235...v0.4.236) (2025-07-18)
 
 
