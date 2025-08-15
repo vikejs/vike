@@ -5,7 +5,16 @@ export type { PageConfigsLazy }
 import { type PageFile, type VikeConfigPublicPageLazy, getPageFilesServerSide } from '../../../shared/getPageFiles.js'
 import { resolveVikeConfigPublicPageLazy } from '../../../shared/page-configs/resolveVikeConfigPublic.js'
 import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide.js'
-import { assertUsage, assertWarning, hasProp, objectAssign, PromiseType } from '../utils.js'
+import {
+  assertUsage,
+  assertWarning,
+  hasProp,
+  isArray,
+  isArrayOfStrings,
+  isObject,
+  objectAssign,
+  PromiseType,
+} from '../utils.js'
 import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './getPageAssets.js'
 import { debugPageFiles, type PageContextDebugRouteMatches } from './debugPageFiles.js'
 import type { PageConfigGlobalRuntime, PageConfigRuntime } from '../../../types/PageConfig.js'
@@ -64,18 +73,38 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
   const isV1Design = !!pageConfig
 
   const passToClient: PassToClient = []
-  const errMsg = ' should be an array of strings.'
+  const errMsgSuffix = ' should be an array of strings.'
   if (!isV1Design) {
     configPublicPageLazy.exportsAll.passToClient?.forEach((e) => {
-      assertUsage(hasProp(e, 'exportValue', 'string[]'), `${e.exportSource}${errMsg}`)
+      assertUsage(hasProp(e, 'exportValue', 'string[]'), `${e.exportSource}${errMsgSuffix}`)
       passToClient.push(...e.exportValue)
     })
   } else {
     configPublicPageLazy.from.configsCumulative.passToClient?.values.forEach((v) => {
+      const { definedAt } = v
+      const errMsg = `+passToClient value defined at ${definedAt}${errMsgSuffix}`
       const { value } = v
-      // const { definedAt } = v
-      // assertUsage(isArrayOfStrings(value), `+passToClient value defined at ${definedAt}${errMsg}`)
-      passToClient.push(...(value as PassToClient))
+
+      //*/
+      assertUsage(isArray(value), `+passToClient value defined at ${definedAt} should be an array`)
+      const valS = value.map((el) => {
+        if (isObject(el)) {
+          assertUsage(hasProp(el, 'prop', 'string'), errMsg)
+          assertWarning(
+            !('once' in el),
+            'The passToClient once setting is deprecated and no longer has any effect. Instead, see the upcoming .once.js suffix (see https://github.com/vikejs/vike/issues/2566 for more information).',
+            { onlyOnce: true },
+          )
+          return el.prop
+        }
+        assertUsage(typeof el === 'string', errMsg)
+        return el
+      })
+      /*/
+      assertUsage(isArrayOfStrings(value), errMsg)
+      //*/
+
+      passToClient.push(...valS)
     })
   }
 

@@ -3,6 +3,7 @@ export { getPageContextClientSerializedAbort }
 export { getGlobalContextClientSerialized }
 export type { PageContextSerialization }
 export type { PassToClient }
+export type { PassToClientPublic }
 
 import { stringify, isJsonSerializerError } from '@brillout/json-serializer/stringify'
 import { assert, assertUsage, assertWarning, getPropAccessNotation, hasProp, unique } from '../utils.js'
@@ -91,9 +92,7 @@ function serializeObject(
     const h = (s: string) => pc.cyan(s)
     let hasWarned = false
     const propsNonSerializable: string[] = []
-    passToClient.forEach((entry) => {
-      const entryNormalized = normalizePassToClientEntry(entry)
-      const { prop } = entryNormalized
+    passToClient.forEach((prop) => {
       const res = getPropVal(obj, prop)
       if (!res) return
       const { value } = res
@@ -164,7 +163,15 @@ function serializeValue(
         },
   })
 }
-type PassToClient = (string | { prop: string; once?: boolean })[]
+type PassToClient = string[]
+type PassToClientPublic = (
+  | string
+  | {
+      prop: string
+      /** @deprecated The passToClient once setting is deprecated and no longer has any effect. Instead, see the upcoming .once.js suffix (see https://github.com/vikejs/vike/issues/2566 for more information). */
+      once?: boolean
+    }
+)[]
 function getPassToClientPageContext(pageContext: {
   pageId: string
   _passToClient: PassToClient
@@ -230,10 +237,7 @@ function getPageContextClientSerializedAbort(
 function applyPassToClient(passToClient: PassToClient, obj: Record<string, unknown>) {
   const objClient: Record<string, unknown> = {}
   const objClientProps: string[] = []
-  passToClient.forEach((entry) => {
-    const entryNormalized = normalizePassToClientEntry(entry)
-    const { prop } = entryNormalized
-
+  passToClient.forEach((prop) => {
     // Get value from pageContext
     const res = getPropVal(obj, prop)
     if (!res) return
@@ -245,18 +249,4 @@ function applyPassToClient(passToClient: PassToClient, obj: Record<string, unkno
     objClientProps.push(prop)
   })
   return { objClient, objClientProps }
-}
-
-type PassToClientEntryNormalized = { prop: string; once: boolean }
-function normalizePassToClientEntry(entry: PassToClient[number]): PassToClientEntryNormalized {
-  let once: boolean
-  let prop: string
-  if (typeof entry === 'string') {
-    prop = entry
-    once = false
-  } else {
-    prop = entry.prop
-    once = entry.once ?? false
-  }
-  return { prop, once }
 }
