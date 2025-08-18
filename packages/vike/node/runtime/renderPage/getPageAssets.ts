@@ -6,7 +6,7 @@ export type { PageContextGetPageAssets }
 
 import { assert, prependBase, toPosixPath, unique, getGlobalObject, getViteRPC } from '../utils.js'
 import { retrieveAssetsDev } from './getPageAssets/retrievePageAssetsDev.js'
-import { resolveIncludeAssetsImportedByServer, retrievePageAssetsProd } from './getPageAssets/retrievePageAssetsProd.js'
+import { retrievePageAssetsProd } from './getPageAssets/retrievePageAssetsProd.js'
 import { inferMediaType, type MediaType } from './inferMediaType.js'
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { sortPageAssetsForEarlyHintsHeader } from './getPageAssets/sortPageAssetsForEarlyHintsHeader.js'
@@ -46,12 +46,7 @@ async function getPageAssets(
     ? !globalContext._viteDevServer
       ? await getViteRPC<ViteRPC>().retrievePageAssetsDevRPC(clientDependencies, clientEntries)
       : await retrievePageAssetsDev(globalContext._viteDevServer, clientDependencies, clientEntries)
-    : retrievePageAssetsProd(
-        globalContext.assetsManifest,
-        clientDependencies,
-        clientEntries,
-        resolveIncludeAssetsImportedByServer(globalContext.config),
-      )
+    : retrievePageAssetsProd(globalContext.assetsManifest, clientDependencies, clientEntries, globalContext.config)
 
   let pageAssets: PageAsset[] = []
   unique([...clientEntriesSrc, ...assetUrls]).forEach((src: string) => {

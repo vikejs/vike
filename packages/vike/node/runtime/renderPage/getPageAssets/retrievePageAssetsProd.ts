@@ -12,14 +12,10 @@ function retrievePageAssetsProd(
   assetsManifest: ViteManifest,
   clientDependencies: ClientDependency[],
   clientEntries: string[],
-  includeAssetsImportedByServer: boolean,
+  config: ConfigResolved,
 ) {
   const clientEntriesSrc = clientEntries.map((clientEntry) => resolveClientEntriesProd(clientEntry, assetsManifest))
-  const assetUrls = retrieveAssetsProd(
-    clientDependencies,
-    assetsManifest,
-    resolveIncludeAssetsImportedByServer(includeAssetsImportedByServer),
-  )
+  const assetUrls = retrieveAssetsProd(clientDependencies, assetsManifest, config)
   return { clientEntriesSrc, assetUrls }
 }
 function resolveClientEntriesProd(clientEntry: string, assetsManifest: ViteManifest): string {
@@ -33,8 +29,10 @@ function resolveClientEntriesProd(clientEntry: string, assetsManifest: ViteManif
 function retrieveAssetsProd(
   clientDependencies: ClientDependency[],
   assetsManifest: ViteManifest,
-  includeAssetsImportedByServer: boolean,
+  config: ConfigResolved,
 ): string[] {
+  const includeAssetsImportedByServer = resolveIncludeAssetsImportedByServer(config)
+
   let assetUrls = new Set<string>()
   assert(assetsManifest)
   const visistedAssets = new Set<string>()
