@@ -50,16 +50,16 @@ function testRun(cmd: `pnpm run ${'dev' | 'preview' | 'preview:ssg'}`) {
   })
   async function expectInitialList() {
     const buyApples = 'Buy apples'
-    const nodeVerison = `Node.js ${process.version}`
+    const nodeVersion = `Node.js ${process.version}`
     {
       const html = await fetchHtml('/')
       expect(html).toContain(`<li>${buyApples}</li>`)
-      expect(html).toContain(nodeVerison)
+      expect(html).toContain(nodeVersion)
     }
     {
       const bodyText = await page.textContent('body')
       expect(bodyText).toContain(buyApples)
-      expect(bodyText).toContain(nodeVerison)
+      expect(bodyText).toContain(nodeVersion)
       expect(await getNumberOfItems()).toBe(2)
     }
   }
