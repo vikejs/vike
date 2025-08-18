@@ -25,11 +25,11 @@ function inferPreloadTag(pageAsset: PageAsset): string {
   return `<link ${attributes}>`
 }
 
-function inferAssetTag(pageAsset: PageAsset): string {
+function inferAssetTag(pageAsset: PageAsset, nonceAttr: string): string {
   const { src, assetType, mediaType } = pageAsset
   if (assetType === 'script') {
     assert(mediaType === 'text/javascript')
-    return `<script src="${src}" ${scriptAttrs}></script>`
+    return `<script src="${src}" ${scriptAttrs}${nonceAttr}></script>`
   }
   if (assetType === 'style') {
     // WARNING: if changing following line, then also update https://github.com/vikejs/vike/blob/fae90a15d88e5e87ca9fcbb54cf2dc8773d2f229/vike/client/shared/removeFoucBuster.ts#L29
