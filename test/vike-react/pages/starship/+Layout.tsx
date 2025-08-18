@@ -35,8 +35,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 }
 
 function Link(props: any) {
-  // We set `keep-scroll-position` to tell Vike to preserve the current scroll position
-  return <a keep-scroll-position="" style={{ marginRight: 10, ...props.style }} {...props} />
+  return <a style={{ marginRight: 10, ...props.style }} {...props} />
 }
 
 function Counter() {

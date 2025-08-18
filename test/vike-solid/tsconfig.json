@@ -10,5 +10,11 @@
     "jsxImportSource": "solid-js",
     "skipLibCheck": true,
     "esModuleInterop": true
-  }
+  },
+  "include": [
+    "**/*",
+    // Include .test* files
+    // https://github.com/microsoft/TypeScript/issues/49555
+    "**/.*"
+  ]
 }

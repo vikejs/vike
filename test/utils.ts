@@ -75,9 +75,7 @@ function findFirstPageId(html: string) {
   expect(match).toBeTruthy()
   let pageId = match![1]
   expect(pageId).toBeTruthy()
-  pageId =
-    // @ts-ignore
-    pageId.replaceAll('\\\\/', '/')
+  pageId = pageId.replaceAll('\\\\/', '/')
   return pageId
 }
 

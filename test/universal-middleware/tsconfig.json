@@ -17,5 +17,11 @@
     "jsx": "preserve",
     "jsxImportSource": "react"
   },
-  "exclude": ["dist"]
+  "exclude": ["dist"],
+  "include": [
+    "**/*",
+    // Include .test* files
+    // https://github.com/microsoft/TypeScript/issues/49555
+    "**/.*"
+  ]
 }

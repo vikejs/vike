@@ -63,6 +63,10 @@ function getCiJobs() {
       setups: [linux_nodeNew, windows_nodeOld],
     },
     {
+      name: 'Extensions',
+      setups: [linux_nodeNew],
+    },
+    {
       name: 'Cloudflare',
       setups: [linux_nodeNew],
     },

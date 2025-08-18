@@ -1,1 +1,7 @@
-Copied from [vite-plugin-vercel > examples/express/](https://github.com/magne4000/vite-plugin-vercel/tree/b2706eafc60d9c3ef3cd18aceba4873dc3db06c4/examples/express).
+Copy of https://github.com/magne4000/vite-plugin-vercel/tree/v9/examples/express
+
+To update:
+- Copy directory
+- Pin `"vike"` dependency in `package.json`
+- Update `README.md`
+- Run `pnpm run format`

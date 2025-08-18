@@ -28,7 +28,7 @@ importers:
         version: 1.50.1
       vitest:
         specifier: ^3.1.3
-        version: 3.1.3(@edge-runtime/vm@3.2.0)(@types/debug@4.1.12)(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 3.1.3(@edge-runtime/vm@3.2.0)(@types/debug@4.1.12)(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   .github/workflows/ci:
     dependencies:
@@ -43,7 +43,7 @@ importers:
         version: 0.0.48
       '@brillout/docpress':
         specifier: ^0.15.10
-        version: 0.15.10(@algolia/client-search@5.21.0)(@types/react@19.1.6)(@vitejs/plugin-react-swc@3.11.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.8.3)(vike@packages+vike)(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 0.15.10(@algolia/client-search@5.21.0)(@types/react@19.1.6)(@vitejs/plugin-react-swc@3.11.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.8.3)(vike@packages+vike)(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       '@types/react':
         specifier: ^19.0.2
         version: 19.1.6
@@ -67,10 +67,10 @@ importers:
         version: link:../packages/vike
       vite:
         specifier: ^6.3.4
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
       vite-plugin-svgr:
         specifier: ^4.3.0
-        version: 4.3.0(rollup@4.43.0)(typescript@5.8.3)(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.3.0(rollup@4.43.0)(typescript@5.8.3)(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
 
   examples/auth:
     dependencies:
@@ -85,7 +85,7 @@ importers:
         version: 18.3.5(@types/react@18.3.18)
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       cookie-parser:
         specifier: ^1.4.6
         version: 1.4.7
@@ -112,13 +112,13 @@ importers:
         version: 0.6.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   examples/base-url:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       react:
         specifier: ^19.1.0
         version: 19.1.0
@@ -130,13 +130,13 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   examples/base-url-cdn:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       concurrently:
         specifier: ^7.1.0
         version: 7.6.0
@@ -160,13 +160,13 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   examples/base-url-server:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       concurrently:
         specifier: ^7.1.0
         version: 7.6.0
@@ -190,7 +190,7 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   examples/cloudflare-workers-react:
     dependencies:
@@ -199,7 +199,7 @@ importers:
         version: 0.4.0
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@7.0.6(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       react:
         specifier: ^19.1.1
         version: 19.1.1
@@ -214,7 +214,7 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
       wrangler:
         specifier: ^4.28.0
         version: 4.28.0
@@ -226,7 +226,7 @@ importers:
         version: 0.4.0
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@7.0.6(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       compression:
         specifier: ^1.8.1
         version: 1.8.1
@@ -250,7 +250,7 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
       wrangler:
         specifier: ^4.28.0
         version: 4.28.0
@@ -262,7 +262,7 @@ importers:
         version: 0.4.0
       '@vitejs/plugin-vue':
         specifier: ^6.0.1
-        version: 6.0.1(vite@7.0.6(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))(vue@3.5.18(typescript@5.9.2))
+        version: 6.0.1(vite@7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))(vue@3.5.18(typescript@5.9.2))
       '@vue/compiler-sfc':
         specifier: ^3.5.18
         version: 3.5.18
@@ -274,7 +274,7 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
       vue:
         specifier: ^3.5.18
         version: 3.5.18(typescript@5.9.2)
@@ -286,7 +286,7 @@ importers:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       react:
         specifier: ^19.1.0
         version: 19.1.0
@@ -298,13 +298,13 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   examples/file-structure-domain-driven:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       react:
         specifier: ^19.1.0
         version: 19.1.0
@@ -316,7 +316,7 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   examples/html-fragments:
     dependencies:
@@ -328,13 +328,13 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   examples/i18n:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       node-fetch:
         specifier: ^3.3.2
         version: 3.3.2
@@ -349,7 +349,7 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   examples/path-aliases:
     dependencies:
@@ -448,7 +448,7 @@ importers:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@7.0.6(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@7.1.2(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -463,7 +463,7 @@ importers:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       compression:
         specifier: ^1.7.4
         version: 1.8.0
@@ -493,13 +493,13 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   examples/render-modes:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       compression:
         specifier: ^1.7.4
         version: 1.8.0
@@ -523,7 +523,7 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   examples/telefunc:
     dependencies:
@@ -535,7 +535,7 @@ importers:
         version: 18.3.5(@types/react@18.3.18)
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -559,7 +559,7 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   examples/vue-full:
     dependencies:
@@ -607,7 +607,7 @@ importers:
     dependencies:
       '@vitejs/plugin-vue':
         specifier: ^6.0.1
-        version: 6.0.1(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))(vue@3.5.13(typescript@5.9.2))
+        version: 6.0.1(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))(vue@3.5.13(typescript@5.9.2))
       '@vue/compiler-sfc':
         specifier: ^3.2.47
         version: 3.5.13
@@ -619,7 +619,7 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
       vue:
         specifier: ^3.2.47
         version: 3.5.13(typescript@5.9.2)
@@ -640,7 +640,7 @@ importers:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -664,10 +664,10 @@ importers:
         version: link:../../vike
       vike-server:
         specifier: ^1.0.16
-        version: 1.0.16(@hattip/core@0.0.49)(hono@4.8.4)(vike@packages+vike)(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 1.0.16(@hattip/core@0.0.49)(hono@4.8.4)(vike@packages+vike)(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   packages/create-vike-core/boilerplate-react-ts:
     dependencies:
@@ -715,7 +715,7 @@ importers:
     dependencies:
       '@vitejs/plugin-vue':
         specifier: ^6.0.1
-        version: 6.0.1(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))(vue@3.5.13(typescript@5.9.2))
+        version: 6.0.1(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))(vue@3.5.13(typescript@5.9.2))
       '@vue/compiler-sfc':
         specifier: ^3.5.13
         version: 3.5.13
@@ -736,10 +736,10 @@ importers:
         version: link:../../vike
       vike-server:
         specifier: ^1.0.16
-        version: 1.0.16(@hattip/core@0.0.49)(hono@4.8.4)(vike@packages+vike)(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 1.0.16(@hattip/core@0.0.49)(hono@4.8.4)(vike@packages+vike)(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
       vue:
         specifier: ^3.5.13
         version: 3.5.13(typescript@5.9.2)
@@ -868,11 +868,20 @@ importers:
         specifier: ^5.8.3
         version: 5.8.3
 
+  test:
+    dependencies:
+      '@types/node':
+        specifier: ^24.3.0
+        version: 24.3.0
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+
   test-deprecated-design/base-url:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       react:
         specifier: ^19.1.0
         version: 19.1.0
@@ -884,13 +893,13 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   test-deprecated-design/base-url-cdn:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       concurrently:
         specifier: ^7.1.0
         version: 7.6.0
@@ -914,13 +923,13 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   test-deprecated-design/base-url-server:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       concurrently:
         specifier: ^7.1.0
         version: 7.6.0
@@ -944,7 +953,7 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   test-deprecated-design/cloudflare-workers-react:
     dependencies:
@@ -953,7 +962,7 @@ importers:
         version: 0.2.0
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@5.1.0(@types/node@24.2.0)(terser@5.38.1))
+        version: 4.7.0(vite@5.1.0(@types/node@24.3.0)(terser@5.38.1))
       react:
         specifier: ^19.1.0
         version: 19.1.0
@@ -965,7 +974,7 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: 5.1.0
-        version: 5.1.0(@types/node@24.2.0)(terser@5.38.1)
+        version: 5.1.0(@types/node@24.3.0)(terser@5.38.1)
       wrangler:
         specifier: ^2.9.1
         version: 2.21.2(cron-schedule@3.0.6)
@@ -977,7 +986,7 @@ importers:
         version: 0.2.0
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       compression:
         specifier: ^1.7.4
         version: 1.8.0
@@ -1001,7 +1010,7 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
       wrangler:
         specifier: ^2.9.1
         version: 2.21.2(cron-schedule@3.0.6)
@@ -1013,7 +1022,7 @@ importers:
         version: 0.2.0
       '@vitejs/plugin-vue':
         specifier: ^6.0.1
-        version: 6.0.1(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))(vue@3.5.13(typescript@5.9.2))
+        version: 6.0.1(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))(vue@3.5.13(typescript@5.9.2))
       '@vue/compiler-sfc':
         specifier: ^3.2.47
         version: 3.5.13
@@ -1025,7 +1034,7 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
       vue:
         specifier: ^3.2.47
         version: 3.5.13(typescript@5.9.2)
@@ -1037,7 +1046,7 @@ importers:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       react:
         specifier: ^19.1.0
         version: 19.1.0
@@ -1049,7 +1058,7 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   test-deprecated-design/html-fragments:
     dependencies:
@@ -1061,13 +1070,13 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   test-deprecated-design/i18n:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       node-fetch:
         specifier: ^2.6.9
         version: 2.7.0
@@ -1082,7 +1091,7 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   test-deprecated-design/path-aliases:
     dependencies:
@@ -1133,7 +1142,7 @@ importers:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@5.1.0(@types/node@24.2.0)(terser@5.38.1))
+        version: 4.7.0(vite@5.1.0(@types/node@24.3.0)(terser@5.38.1))
       react:
         specifier: ^19.1.0
         version: 19.1.0
@@ -1145,13 +1154,13 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: 5.1.0
-        version: 5.1.0(@types/node@24.2.0)(terser@5.38.1)
+        version: 5.1.0(@types/node@24.3.0)(terser@5.38.1)
 
   test-deprecated-design/react-streaming:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       compression:
         specifier: ^1.7.4
         version: 1.8.0
@@ -1178,13 +1187,13 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   test-deprecated-design/render-modes:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       react:
         specifier: ^19.1.0
         version: 19.1.0
@@ -1196,7 +1205,7 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   test-deprecated-design/telefunc:
     dependencies:
@@ -1208,7 +1217,7 @@ importers:
         version: 18.3.5(@types/react@18.3.18)
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@5.1.0(@types/node@24.2.0)(terser@5.38.1))
+        version: 4.7.0(vite@5.1.0(@types/node@24.3.0)(terser@5.38.1))
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -1232,13 +1241,13 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: 5.1.0
-        version: 5.1.0(@types/node@24.2.0)(terser@5.38.1)
+        version: 5.1.0(@types/node@24.3.0)(terser@5.38.1)
 
   test-deprecated-design/vue:
     dependencies:
       '@vitejs/plugin-vue':
         specifier: ^6.0.1
-        version: 6.0.1(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))(vue@3.5.13(typescript@5.9.2))
+        version: 6.0.1(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))(vue@3.5.13(typescript@5.9.2))
       '@vue/compiler-sfc':
         specifier: ^3.2.47
         version: 3.5.13
@@ -1250,7 +1259,7 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
       vue:
         specifier: ^3.2.47
         version: 3.5.13(typescript@5.9.2)
@@ -1317,7 +1326,7 @@ importers:
     devDependencies:
       '@cloudflare/vite-plugin':
         specifier: ^1.11.1
-        version: 1.11.1(rollup@4.43.0)(vite@7.0.6(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))(workerd@1.20250803.0)(wrangler@4.28.0)
+        version: 1.11.1(rollup@4.43.0)(vite@7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))(workerd@1.20250803.0)(wrangler@4.28.0)
       '@types/react':
         specifier: ^19.1.8
         version: 19.1.8
@@ -1326,13 +1335,13 @@ importers:
         version: 19.1.6(@types/react@19.1.8)
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@7.0.6(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
       wrangler:
         specifier: ^4.28.0
         version: 4.28.0
@@ -1350,7 +1359,7 @@ importers:
         version: 18.3.5(@types/react@18.3.18)
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -1371,7 +1380,7 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   test/assertFileEnv:
     dependencies:
@@ -1380,7 +1389,7 @@ importers:
         version: 18.3.18
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       react:
         specifier: ^19.1.0
         version: 19.1.0
@@ -1395,13 +1404,13 @@ importers:
         version: 0.6.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   test/cjs:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       compression:
         specifier: ^1.7.4
         version: 1.8.0
@@ -1425,13 +1434,13 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   test/disableAutoImporter:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       react:
         specifier: ^19.1.0
         version: 19.1.0
@@ -1443,13 +1452,13 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   test/env:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       react:
         specifier: ^19.1.0
         version: 19.1.0
@@ -1461,7 +1470,7 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   test/environment-api:
     dependencies:
@@ -1470,7 +1479,7 @@ importers:
         version: 18.3.18
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       react:
         specifier: ^19.1.0
         version: 19.1.0
@@ -1485,7 +1494,7 @@ importers:
         version: 0.6.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   test/hook-override:
     dependencies:
@@ -1497,7 +1506,7 @@ importers:
         version: 18.3.5(@types/react@18.3.18)
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       react:
         specifier: ^19.1.0
         version: 19.1.0
@@ -1512,7 +1521,7 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   test/includeAssetsImportedByServer:
     dependencies:
@@ -1521,7 +1530,7 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   test/playground:
     dependencies:
@@ -1542,7 +1551,7 @@ importers:
         version: 19.1.6(@types/react@19.1.6)
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@7.0.6(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       cross-fetch:
         specifier: ^4.1.0
         version: 4.1.0
@@ -1566,13 +1575,13 @@ importers:
         version: 0.6.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   test/preload:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -1587,7 +1596,7 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   test/require-shim:
     dependencies:
@@ -1596,7 +1605,7 @@ importers:
         version: 3.6.9(graphql@16.5.0)(react@18.2.0)
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       cross-env:
         specifier: 7.0.3
         version: 7.0.3
@@ -1620,13 +1629,13 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   test/stream-vue-onServerPrefetch:
     dependencies:
       '@vitejs/plugin-vue':
         specifier: ^6.0.1
-        version: 6.0.1(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))(vue@3.5.13(typescript@5.9.2))
+        version: 6.0.1(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))(vue@3.5.13(typescript@5.9.2))
       '@vue/compiler-sfc':
         specifier: ^3.2.31
         version: 3.5.13
@@ -1641,7 +1650,7 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
       vue:
         specifier: ^3.2.37
         version: 3.5.13(typescript@5.9.2)
@@ -1656,7 +1665,7 @@ importers:
         version: 0.4.15(@cloudflare/workers-types@4.20250510.0)(@hattip/core@0.0.49)(hono@4.8.12)
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.19.4))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.19.4))
       express:
         specifier: ^5.1.0
         version: 5.1.0
@@ -1696,7 +1705,7 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.5
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.19.4)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.19.4)
 
   test/vike-cloudflare:
     dependencies:
@@ -1744,38 +1753,38 @@ importers:
   test/vike-react:
     dependencies:
       '@types/react':
-        specifier: ^19.1.3
-        version: 19.1.6
+        specifier: ^19.1.10
+        version: 19.1.10
       '@types/react-dom':
-        specifier: ^19.1.4
-        version: 19.1.6(@types/react@19.1.6)
+        specifier: ^19.1.7
+        version: 19.1.7(@types/react@19.1.10)
       '@vitejs/plugin-react':
-        specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        specifier: ^5.0.0
+        version: 5.0.0(vite@7.1.2(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       node-fetch:
         specifier: ^3.3.2
         version: 3.3.2
       react:
-        specifier: ^19.1.0
-        version: 19.1.0
+        specifier: ^19.1.1
+        version: 19.1.1
       react-dom:
-        specifier: ^19.1.0
-        version: 19.1.0(react@19.1.0)
+        specifier: ^19.1.1
+        version: 19.1.1(react@19.1.1)
       react-streaming:
         specifier: ^0.4.3
-        version: 0.4.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 0.4.3(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
+        specifier: ^5.9.2
+        version: 5.9.2
       vike:
         specifier: 0.4.237
         version: link:../../packages/vike
       vike-react:
-        specifier: ^0.6.5
-        version: 0.6.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
+        specifier: 0.6.5
+        version: 0.6.5(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(vike@packages+vike)
       vite:
-        specifier: ^6.3.5
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        specifier: ^7.1.2
+        version: 7.1.2(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   test/vike-react-redux:
     dependencies:
@@ -1790,7 +1799,7 @@ importers:
         version: 19.1.7(@types/react@19.1.9)
       '@vitejs/plugin-react':
         specifier: ^4.3.4
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       react:
         specifier: ^19.0.0
         version: 19.1.1
@@ -1814,7 +1823,7 @@ importers:
         version: 0.1.1(react-redux@9.2.0(@types/react@19.1.9)(react@19.1.1)(redux@5.0.1))(react@19.1.1)(vike-react@0.6.5(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(vike@packages+vike))(vike@packages+vike)
       vite:
         specifier: ^6.2.5
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   test/vike-react-zustand:
     dependencies:
@@ -1826,7 +1835,7 @@ importers:
         version: 19.1.7(@types/react@19.1.9)
       '@vitejs/plugin-react':
         specifier: ^4.3.4
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       immer:
         specifier: ^10.0.3
         version: 10.1.1
@@ -1850,7 +1859,7 @@ importers:
         version: 0.1.2(react-dom@19.1.1(react@19.1.1))(react-streaming@0.4.3(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)(vike-react@0.6.5(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(vike@packages+vike))(zustand@5.0.7(@types/react@19.1.9)(immer@10.1.1)(react@19.1.1)(use-sync-external-store@1.5.0(react@19.1.1)))
       vite:
         specifier: ^6.2.5
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
       zustand:
         specifier: ^5.0.3
         version: 5.0.7(@types/react@19.1.9)(immer@10.1.1)(react@19.1.1)(use-sync-external-store@1.5.0(react@19.1.1))
@@ -1859,7 +1868,7 @@ importers:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -1880,10 +1889,10 @@ importers:
         version: 0.6.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
       vike-server:
         specifier: ^1.0.16
-        version: 1.0.16(@hattip/core@0.0.49)(hono@4.8.12)(vike@packages+vike)(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 1.0.16(@hattip/core@0.0.49)(hono@4.8.12)(vike@packages+vike)(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       vite:
         specifier: ^6.3.5
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   test/vike-solid:
     dependencies:
@@ -1898,14 +1907,14 @@ importers:
         version: link:../../packages/vike
       vike-solid:
         specifier: ^0.7.12
-        version: 0.7.12(solid-js@1.9.7)(vike@packages+vike)(vite@7.0.6(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 0.7.12(solid-js@1.9.7)(vike@packages+vike)(vite@7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
     devDependencies:
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
       vite:
         specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   test/vike-vercel:
     dependencies:
@@ -1998,11 +2007,42 @@ importers:
         specifier: ^2.2.10
         version: 2.2.10(typescript@5.8.3)
 
+  test/vike-vue-pinia:
+    dependencies:
+      '@vitejs/plugin-vue':
+        specifier: ^5.2.1
+        version: 5.2.4(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))(vue@3.5.18(typescript@5.9.2))
+      pinia:
+        specifier: ^3.0.1
+        version: 3.0.3(typescript@5.9.2)(vue@3.5.18(typescript@5.9.2))
+      vike:
+        specifier: 0.4.237
+        version: link:../../packages/vike
+      vike-vue:
+        specifier: ^0.9.2
+        version: 0.9.2(vike@packages+vike)(vue@3.5.18(typescript@5.9.2))
+      vike-vue-pinia:
+        specifier: ^0.2.2
+        version: 0.2.2(pinia@3.0.3(typescript@5.9.2)(vue@3.5.18(typescript@5.9.2)))(vike-vue@0.9.2(vike@packages+vike)(vue@3.5.18(typescript@5.9.2)))(vue@3.5.18(typescript@5.9.2))
+      vite:
+        specifier: ^6.1.0
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
+      vue:
+        specifier: ^3.5.13
+        version: 3.5.18(typescript@5.9.2)
+    devDependencies:
+      typescript:
+        specifier: ^5.4.5
+        version: 5.9.2
+      vue-tsc:
+        specifier: ^2.0.13
+        version: 2.2.10(typescript@5.9.2)
+
   test/vitest:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       react:
         specifier: ^19.1.0
         version: 19.1.0
@@ -2020,7 +2060,7 @@ importers:
         version: 0.6.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   test/webpack:
     dependencies:
@@ -2041,7 +2081,7 @@ importers:
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
       webpack:
         specifier: ^5.79.0
         version: 5.97.1(webpack-cli@5.1.4)
@@ -3848,6 +3888,9 @@ packages:
   '@rolldown/pluginutils@1.0.0-beta.29':
     resolution: {integrity: sha512-NIJgOsMjbxAXvoGq/X0gD7VPMQ8j9g0BiDaNjVNVjvl+iKXxL3Jre0v31RmBYeLEmkbj2s02v8vFTbUXi5XS2Q==}
 
+  '@rolldown/pluginutils@1.0.0-beta.30':
+    resolution: {integrity: sha512-whXaSoNUFiyDAjkUF8OBpOm77Szdbk5lGNqFe6CbVbJFrhCCPinCbRA3NjawwlNHla1No7xvXXh+CpSxnPfUEw==}
+
   '@rolldown/pluginutils@1.0.0-beta.9':
     resolution: {integrity: sha512-e9MeMtVWo186sgvFFJOPGy7/d2j2mZhLJIdVW0C/xDluuOvymEATqz6zKsP0ZmXGzQtqlyjz5sC1sYQUoJG98w==}
 
@@ -4332,6 +4375,9 @@ packages:
   '@types/node@24.2.0':
     resolution: {integrity: sha512-3xyG3pMCq3oYCNg7/ZP+E1ooTaGB4cG8JWRsqqOYQdbWNY4zbaV0Ennrd7stjiJEFZCaybcIgpTjJWHRfBSIDw==}
 
+  '@types/node@24.3.0':
+    resolution: {integrity: sha512-aPTXCrfwnDLj4VvXrm+UUCQjNEvJgNA8s5F1cvwQU+3KNltTOkBm1j30uNLyqqPNe7gE3KFzImYoZEfLhp4Yow==}
+
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
 
@@ -4364,6 +4410,9 @@ packages:
 
   '@types/react@18.3.18':
     resolution: {integrity: sha512-t4yC+vtgnkYjNSKlFx1jkAhH8LgTo2N/7Qvi83kdEaUtMDiwpbLAktKDaAMlRcJ5eSxZkH74eEGt1ky31d7kfQ==}
+
+  '@types/react@19.1.10':
+    resolution: {integrity: sha512-EhBeSYX0Y6ye8pNebpKrwFJq7BoQ8J5SO6NlvNwwHjSj6adXJViPQrKlsyPw7hLBLvckEMO1yxeGdR82YBBlDg==}
 
   '@types/react@19.1.6':
     resolution: {integrity: sha512-JeG0rEWak0N6Itr6QUx+X60uQmN+5t3j9r/OVDtWzFXKaj6kD1BwJzOksD0FF6iWxZlbE1kB0q9vtnU2ekqa1Q==}
@@ -4527,6 +4576,19 @@ packages:
     peerDependencies:
       vite: ^4.2.0 || ^5.0.0 || ^6.0.0 || ^7.0.0
 
+  '@vitejs/plugin-react@5.0.0':
+    resolution: {integrity: sha512-Jx9JfsTa05bYkS9xo0hkofp2dCmp1blrKjw9JONs5BTHOvJCgLbaPSuZLGSVJW6u2qe0tc4eevY0+gSNNi0YCw==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+    peerDependencies:
+      vite: ^4.2.0 || ^5.0.0 || ^6.0.0 || ^7.0.0
+
+  '@vitejs/plugin-vue@5.2.4':
+    resolution: {integrity: sha512-7Yx/SXSOcQq5HiiV3orevHUFn+pmMB4cgbEkDYgnkUWb0WfeQ/wa2yFv6D5ICiCQOVpjA7vYDXrC7AGO8yjDHA==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    peerDependencies:
+      vite: ^5.0.0 || ^6.0.0
+      vue: ^3.2.25
+
   '@vitejs/plugin-vue@6.0.1':
     resolution: {integrity: sha512-+MaE752hU0wfPFJEUAIxqw18+20euHHdxVtMvbFcOEpjEyfqXH/5DCoTHiVJ0J29EhTJdoTkjEv5YBKU9dnoTw==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -4622,6 +4684,15 @@ packages:
 
   '@vue/devtools-api@6.6.4':
     resolution: {integrity: sha512-sGhTPMuXqZ1rVOk32RylztWkfXTRhuS7vgAKv0zjqk8gbsHkJ7xfFf+jbySxt7tWObEJwyKaHMikV/WGDiQm8g==}
+
+  '@vue/devtools-api@7.7.7':
+    resolution: {integrity: sha512-lwOnNBH2e7x1fIIbVT7yF5D+YWhqELm55/4ZKf45R9T8r9dE2AIOy8HKjfqzGsoTHFbWbr337O4E0A0QADnjBg==}
+
+  '@vue/devtools-kit@7.7.7':
+    resolution: {integrity: sha512-wgoZtxcTta65cnZ1Q6MbAfePVFxfM+gq0saaeytoph7nEa7yMXoi6sCPy4ufO111B9msnw0VOWjPEFCXuAKRHA==}
+
+  '@vue/devtools-shared@7.7.7':
+    resolution: {integrity: sha512-+udSj47aRl5aKb0memBvcUG9koarqnxNM5yjuREvqwK6T3ap4mn3Zqqc17QrBFTqSMjr3HK1cvStEZpMDpfdyw==}
 
   '@vue/language-core@2.0.11':
     resolution: {integrity: sha512-5ivg8Vem/yckzXI3L3n0mdKBPRcHSlsGt6/dpbEx42PcH3MIHAjSAJBYvENXeWJxv2ClQc8BS2mH1Ho2U7jZig==}
@@ -4959,6 +5030,9 @@ packages:
   bindings@1.5.0:
     resolution: {integrity: sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==}
 
+  birpc@2.5.0:
+    resolution: {integrity: sha512-VSWO/W6nNQdyP520F1mhf+Lc2f8pjGQOtoHHm7Ze8Go1kX7akpVIrtTa0fn+HB0QJEDVacl6aO08YE0PgXfdnQ==}
+
   blake3-wasm@2.1.5:
     resolution: {integrity: sha512-F1+K8EbfOZE49dtoPtmxUQrpXaBIl3ICvasLh+nJta0xkz+9kF/7uet9fLnwKqhDrmj6g+6K3Tw9yQPUg2ka5g==}
 
@@ -5294,6 +5368,10 @@ packages:
   cookie@1.0.2:
     resolution: {integrity: sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA==}
     engines: {node: '>=18'}
+
+  copy-anything@3.0.5:
+    resolution: {integrity: sha512-yCEafptTtb4bk7GLEQoM8KVJpxAfdBJYaXyzQEgQQQgYrZiDp8SJmGKlYza6CYjEDNstAdNdKA3UuoULlEbS6w==}
+    engines: {node: '>=12.13'}
 
   cors@2.8.5:
     resolution: {integrity: sha512-KIHbLJqu73RGr/hnbrO9uBeixNGuvSQjul/jdFvS/KFSIH1hWVd1ng7zOHx+YrEfInLG7q4n6GHQ9cDtxv/P6g==}
@@ -6032,6 +6110,9 @@ packages:
     resolution: {integrity: sha512-KOIBp1+iUs0HrKztM4EHiB2UtzZDTBihDtOF5K6+WaJjCPeaW4Q92R8j63jOhvJI5+tZSMuKD9REVEXXY9illg==}
     engines: {node: '>=16.9.0'}
 
+  hookable@5.5.3:
+    resolution: {integrity: sha512-Yc+BQe8SvoXH1643Qez1zqLRmbA5rCL+sSmk6TVos0LWVfNIB7PGncdlId77WzLGSIB5KaWgTaNTs2lNVEI6VQ==}
+
   hosted-git-info@7.0.2:
     resolution: {integrity: sha512-puUZAUKT5m8Zzvs72XWy3HtvVbTWljRE66cP60bxJzAqf2DgICo7lYTY2IHUmLnNpjYvw5bvmoHvPc0QO2a62w==}
     engines: {node: ^16.14.0 || >=18.0.0}
@@ -6629,6 +6710,9 @@ packages:
     resolution: {integrity: sha512-umcy022ILvb5/3Djuu8LWeqUa8D68JaBzlttKeMWen48SjabqS3iY5w/vzeMzMUNhLDifyhbOwKDSznB1vvrwg==}
     engines: {node: '>= 18'}
 
+  mitt@3.0.1:
+    resolution: {integrity: sha512-vKivATfr97l2/QBCYAkXYDbrIWPM2IIKEl7YPhjCvKlG3kE2gm+uBo6nEXK3M5/Ffh/FLpKExzOQ3JJoJGFKBw==}
+
   mkdirp@1.0.4:
     resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
     engines: {node: '>=10'}
@@ -6935,6 +7019,9 @@ packages:
     resolution: {integrity: sha512-vE7JKRyES09KiunauX7nd2Q9/L7lhok4smP9RZTDeD4MVs72Dp2qNFVz39Nz5a0FVEW0BJR6C0DYrq6unoziZA==}
     engines: {node: '>= 14.16'}
 
+  perfect-debounce@1.0.0:
+    resolution: {integrity: sha512-xCy9V055GLEqoFaHoC1SoLIaLmWctgCUaBaWxDZ7/Zx4CTyX7cJQLJOok/orfjZAh9kEYpjJa4d0KcJmCbctZA==}
+
   periscopic@3.1.0:
     resolution: {integrity: sha512-vKiQ8RRtkl9P+r/+oefh25C3fhybptkHKCZSPlcXiJux2tJF55GnEj3BVn4A5gKfq9NWWXXrxkHBwVPUfH0opw==}
 
@@ -6958,6 +7045,15 @@ packages:
 
   pinia@2.3.1:
     resolution: {integrity: sha512-khUlZSwt9xXCaTbbxFYBKDc/bWAGWJjOgvxETwkTN7KRm66EeT1ZdZj6i2ceh9sP2Pzqsbc704r2yngBrxBVug==}
+    peerDependencies:
+      typescript: '>=4.4.4'
+      vue: ^2.7.0 || ^3.5.11
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
+  pinia@3.0.3:
+    resolution: {integrity: sha512-ttXO/InUULUXkMHpTdp9Fj4hLpD/2AoJdmAbAeW2yu1iy1k+pkFekQXw5VpC0/5p51IOR/jDaDRfRWRnMMsGOA==}
     peerDependencies:
       typescript: '>=4.4.4'
       vue: ^2.7.0 || ^3.5.11
@@ -7241,6 +7337,9 @@ packages:
     resolution: {integrity: sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
 
+  rfdc@1.4.1:
+    resolution: {integrity: sha512-q1b3N5QkRUWUl7iyylaaj3kOpIT0N2i9MqIEQXP73GVsN9cw3fdx8X63cEmWhJGi2PPCF23Ijp7ktmd39rawIA==}
+
   rimraf@5.0.10:
     resolution: {integrity: sha512-l0OE8wL34P4nJH/H2ffoaniAokM2qSmrtXHmlpvYr5AVVX8msAyW0l8NVJFDxlSK4u3Uh/f41cQheDVdnYijwQ==}
     hasBin: true
@@ -7474,6 +7573,10 @@ packages:
   spdx-license-ids@3.0.21:
     resolution: {integrity: sha512-Bvg/8F5XephndSK3JffaRqdT+gyhfqIPwDHpX80tJrF8QQRYMo8sNMeaZ2Dp5+jhwKnUmIOyFFQfHRkjJm5nXg==}
 
+  speakingurl@14.0.1:
+    resolution: {integrity: sha512-1POYv7uv2gXoyGFpBCmpDVSNV74IfsWlDW216UPjbWufNf+bSU6GdbDsxdcxtfwb4xlI3yxzOTKClUosxARYrQ==}
+    engines: {node: '>=0.10.0'}
+
   split2@4.2.0:
     resolution: {integrity: sha512-UcjcJOWknrNkF6PLX83qcHM6KHgVKNkV62Y8a5uYDVv9ydGQVwAHMKqHdJje1VTWpljG0WYpCDhrCdAOYH4TWg==}
     engines: {node: '>= 10.x'}
@@ -7543,6 +7646,10 @@ packages:
 
   style-to-object@1.0.8:
     resolution: {integrity: sha512-xT47I/Eo0rwJmaXC4oilDGDWLohVhR6o/xAQcPQN8q6QBuZVL8qMYL85kLmST5cPjAorwvqIA4qXTRQoYHaL6g==}
+
+  superjson@2.2.2:
+    resolution: {integrity: sha512-5JRxVqC8I8NuOUjzBbvVJAKNM8qoVuH0O77h4WInc/qC2q5IreqKxYwgkga3PfA22OayK2ikceb/B26dztPl+Q==}
+    engines: {node: '>=16'}
 
   supports-color@10.0.0:
     resolution: {integrity: sha512-HRVVSbCCMbj7/kdWF9Q+bbckjBHLtHMEoJWlkmYzzdwhYMkjkOwubLM6t7NbWKjgKamGDrWL1++KrjUO1t9oAQ==}
@@ -7999,8 +8106,21 @@ packages:
       vike: '>=0.4.195'
       vite: '>=5.0.0'
 
+  vike-vue-pinia@0.2.2:
+    resolution: {integrity: sha512-Fuae0hunTle8M3RaUlY0kl6McVPJ3hyA6m42LUwZPthJ01h4yVHKaEZplmEWZH8HxtTdxjWMagcy+ih3NMpzrA==}
+    peerDependencies:
+      pinia: '>=3.0.0'
+      vike-vue: '>=0.7.0'
+      vue: '>=3.0.0'
+
   vike-vue@0.9.0:
     resolution: {integrity: sha512-AnHMSJOR61msugu6qE2XApMDsqO2NH8IAghwjC20k3/jXxn+23CNPTe4Hz+l8v5BBGYNmb3/8Q203O0s1qs6Ow==}
+    peerDependencies:
+      vike: '>=0.4.191'
+      vue: '>=3.0.0'
+
+  vike-vue@0.9.2:
+    resolution: {integrity: sha512-vZ3ctG/ZfjdYa+N+JYki79qxWu+MUcAQ83z2cahVPP2cAW/nQsY8chZQepQod0kKI3aS6/0oetxQl6zN5U6qhw==}
     peerDependencies:
       vike: '>=0.4.191'
       vue: '>=3.0.0'
@@ -8112,6 +8232,46 @@ packages:
 
   vite@7.0.6:
     resolution: {integrity: sha512-MHFiOENNBd+Bd9uvc8GEsIzdkn1JxMmEeYX35tI3fv0sJBUTfW5tQsoaOwuY4KhBI09A3dUJ/DXf2yxPVPUceg==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': ^20.19.0 || >=22.12.0
+      jiti: '>=1.21.0'
+      less: ^4.0.0
+      lightningcss: ^1.21.0
+      sass: ^1.70.0
+      sass-embedded: ^1.70.0
+      stylus: '>=0.54.8'
+      sugarss: ^5.0.0
+      terser: ^5.16.0
+      tsx: ^4.8.1
+      yaml: ^2.4.2
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      jiti:
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      sass-embedded:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+      tsx:
+        optional: true
+      yaml:
+        optional: true
+
+  vite@7.1.2:
+    resolution: {integrity: sha512-J0SQBPlQiEXAF7tajiH+rUooJPo0l8KQgyg4/aMunNtrOa7bwuZJsJbDWzeljqQpgftxuq5yNJxQ91O9ts29UQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
@@ -8833,7 +8993,7 @@ snapshots:
   '@biomejs/cli-win32-x64@1.9.4':
     optional: true
 
-  '@brillout/docpress@0.15.10(@algolia/client-search@5.21.0)(@types/react@19.1.6)(@vitejs/plugin-react-swc@3.11.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.8.3)(vike@packages+vike)(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))':
+  '@brillout/docpress@0.15.10(@algolia/client-search@5.21.0)(@types/react@19.1.6)(@vitejs/plugin-react-swc@3.11.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.8.3)(vike@packages+vike)(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))':
     dependencies:
       '@brillout/picocolors': 1.0.28
       '@docsearch/css': 3.9.0
@@ -8850,8 +9010,8 @@ snapshots:
       typescript: 5.8.3
       vike: link:packages/vike
     optionalDependencies:
-      '@vitejs/plugin-react-swc': 3.11.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
-      vite: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+      '@vitejs/plugin-react-swc': 3.11.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
+      vite: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
     transitivePeerDependencies:
       - '@algolia/client-search'
       - '@types/react'
@@ -8952,7 +9112,7 @@ snapshots:
     optionalDependencies:
       workerd: 1.20250803.0
 
-  '@cloudflare/vite-plugin@1.11.1(rollup@4.43.0)(vite@7.0.6(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))(workerd@1.20250803.0)(wrangler@4.28.0)':
+  '@cloudflare/vite-plugin@1.11.1(rollup@4.43.0)(vite@7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))(workerd@1.20250803.0)(wrangler@4.28.0)':
     dependencies:
       '@cloudflare/unenv-preset': 2.6.0(unenv@2.0.0-rc.19)(workerd@1.20250803.0)
       '@mjackson/node-fetch-server': 0.6.1
@@ -8962,7 +9122,7 @@ snapshots:
       picocolors: 1.1.1
       tinyglobby: 0.2.14
       unenv: 2.0.0-rc.19
-      vite: 7.0.6(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+      vite: 7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
       wrangler: 4.28.0
       ws: 8.18.0
     transitivePeerDependencies:
@@ -9960,6 +10120,8 @@ snapshots:
 
   '@rolldown/pluginutils@1.0.0-beta.29': {}
 
+  '@rolldown/pluginutils@1.0.0-beta.30': {}
+
   '@rolldown/pluginutils@1.0.0-beta.9': {}
 
   '@rollup/plugin-replace@6.0.2(rollup@4.43.0)':
@@ -10387,6 +10549,10 @@ snapshots:
     dependencies:
       undici-types: 7.10.0
 
+  '@types/node@24.3.0':
+    dependencies:
+      undici-types: 7.10.0
+
   '@types/normalize-package-data@2.4.4': {}
 
   '@types/picomatch@3.0.2': {}
@@ -10409,6 +10575,10 @@ snapshots:
     dependencies:
       '@types/react': 19.1.8
 
+  '@types/react-dom@19.1.7(@types/react@19.1.10)':
+    dependencies:
+      '@types/react': 19.1.10
+
   '@types/react-dom@19.1.7(@types/react@19.1.9)':
     dependencies:
       '@types/react': 19.1.9
@@ -10416,6 +10586,10 @@ snapshots:
   '@types/react@18.3.18':
     dependencies:
       '@types/prop-types': 15.7.14
+      csstype: 3.1.3
+
+  '@types/react@19.1.10':
+    dependencies:
       csstype: 3.1.3
 
   '@types/react@19.1.6':
@@ -10775,11 +10949,11 @@ snapshots:
     transitivePeerDependencies:
       - '@swc/helpers'
 
-  '@vitejs/plugin-react-swc@3.11.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))':
+  '@vitejs/plugin-react-swc@3.11.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))':
     dependencies:
       '@rolldown/pluginutils': 1.0.0-beta.27
       '@swc/core': 1.13.3
-      vite: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+      vite: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
     transitivePeerDependencies:
       - '@swc/helpers'
     optional: true
@@ -10792,7 +10966,7 @@ snapshots:
     transitivePeerDependencies:
       - '@swc/helpers'
 
-  '@vitejs/plugin-react@4.7.0(vite@5.1.0(@types/node@24.2.0)(terser@5.38.1))':
+  '@vitejs/plugin-react@4.7.0(vite@5.1.0(@types/node@24.3.0)(terser@5.38.1))':
     dependencies:
       '@babel/core': 7.28.0
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.0)
@@ -10800,7 +10974,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.27
       '@types/babel__core': 7.20.5
       react-refresh: 0.17.0
-      vite: 5.1.0(@types/node@24.2.0)(terser@5.38.1)
+      vite: 5.1.0(@types/node@24.3.0)(terser@5.38.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -10828,7 +11002,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-react@4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.19.4))':
+  '@vitejs/plugin-react@4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.19.4))':
     dependencies:
       '@babel/core': 7.28.0
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.0)
@@ -10836,11 +11010,11 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.27
       '@types/babel__core': 7.20.5
       react-refresh: 0.17.0
-      vite: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.19.4)
+      vite: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.19.4)
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-react@4.7.0(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))':
+  '@vitejs/plugin-react@4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))':
     dependencies:
       '@babel/core': 7.28.0
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.0)
@@ -10848,11 +11022,11 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.27
       '@types/babel__core': 7.20.5
       react-refresh: 0.17.0
-      vite: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+      vite: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-react@4.7.0(vite@7.0.6(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))':
+  '@vitejs/plugin-react@4.7.0(vite@7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))':
     dependencies:
       '@babel/core': 7.28.0
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.0)
@@ -10860,9 +11034,38 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.27
       '@types/babel__core': 7.20.5
       react-refresh: 0.17.0
-      vite: 7.0.6(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+      vite: 7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
     transitivePeerDependencies:
       - supports-color
+
+  '@vitejs/plugin-react@4.7.0(vite@7.1.2(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))':
+    dependencies:
+      '@babel/core': 7.28.0
+      '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.0)
+      '@babel/plugin-transform-react-jsx-source': 7.27.1(@babel/core@7.28.0)
+      '@rolldown/pluginutils': 1.0.0-beta.27
+      '@types/babel__core': 7.20.5
+      react-refresh: 0.17.0
+      vite: 7.1.2(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
+    transitivePeerDependencies:
+      - supports-color
+
+  '@vitejs/plugin-react@5.0.0(vite@7.1.2(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))':
+    dependencies:
+      '@babel/core': 7.28.0
+      '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.0)
+      '@babel/plugin-transform-react-jsx-source': 7.27.1(@babel/core@7.28.0)
+      '@rolldown/pluginutils': 1.0.0-beta.30
+      '@types/babel__core': 7.20.5
+      react-refresh: 0.17.0
+      vite: 7.1.2(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
+    transitivePeerDependencies:
+      - supports-color
+
+  '@vitejs/plugin-vue@5.2.4(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))(vue@3.5.18(typescript@5.9.2))':
+    dependencies:
+      vite: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
+      vue: 3.5.18(typescript@5.9.2)
 
   '@vitejs/plugin-vue@6.0.1(vite@5.1.0(@types/node@17.0.45)(terser@5.38.1))(vue@3.2.33)':
     dependencies:
@@ -10882,16 +11085,16 @@ snapshots:
       vite: 6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.20.3)
       vue: 3.5.13(typescript@5.8.3)
 
-  '@vitejs/plugin-vue@6.0.1(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))(vue@3.5.13(typescript@5.9.2))':
+  '@vitejs/plugin-vue@6.0.1(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))(vue@3.5.13(typescript@5.9.2))':
     dependencies:
       '@rolldown/pluginutils': 1.0.0-beta.29
-      vite: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+      vite: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
       vue: 3.5.13(typescript@5.9.2)
 
-  '@vitejs/plugin-vue@6.0.1(vite@7.0.6(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))(vue@3.5.18(typescript@5.9.2))':
+  '@vitejs/plugin-vue@6.0.1(vite@7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))(vue@3.5.18(typescript@5.9.2))':
     dependencies:
       '@rolldown/pluginutils': 1.0.0-beta.29
-      vite: 7.0.6(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+      vite: 7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
       vue: 3.5.18(typescript@5.9.2)
 
   '@vitest/expect@3.1.3':
@@ -10901,13 +11104,13 @@ snapshots:
       chai: 5.2.0
       tinyrainbow: 2.0.0
 
-  '@vitest/mocker@3.1.3(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))':
+  '@vitest/mocker@3.1.3(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))':
     dependencies:
       '@vitest/spy': 3.1.3
       estree-walker: 3.0.3
       magic-string: 0.30.17
     optionalDependencies:
-      vite: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+      vite: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   '@vitest/pretty-format@3.1.3':
     dependencies:
@@ -11056,6 +11259,24 @@ snapshots:
 
   '@vue/devtools-api@6.6.4': {}
 
+  '@vue/devtools-api@7.7.7':
+    dependencies:
+      '@vue/devtools-kit': 7.7.7
+
+  '@vue/devtools-kit@7.7.7':
+    dependencies:
+      '@vue/devtools-shared': 7.7.7
+      birpc: 2.5.0
+      hookable: 5.5.3
+      mitt: 3.0.1
+      perfect-debounce: 1.0.0
+      speakingurl: 14.0.1
+      superjson: 2.2.2
+
+  '@vue/devtools-shared@7.7.7':
+    dependencies:
+      rfdc: 1.4.1
+
   '@vue/language-core@2.0.11(typescript@5.8.3)':
     dependencies:
       '@volar/language-core': 2.2.5
@@ -11080,6 +11301,19 @@ snapshots:
       path-browserify: 1.0.1
     optionalDependencies:
       typescript: 5.8.3
+
+  '@vue/language-core@2.2.10(typescript@5.9.2)':
+    dependencies:
+      '@volar/language-core': 2.4.11
+      '@vue/compiler-dom': 3.5.18
+      '@vue/compiler-vue2': 2.7.16
+      '@vue/shared': 3.5.18
+      alien-signals: 1.0.13
+      minimatch: 9.0.5
+      muggle-string: 0.4.1
+      path-browserify: 1.0.1
+    optionalDependencies:
+      typescript: 5.9.2
 
   '@vue/reactivity-transform@3.2.33':
     dependencies:
@@ -11433,6 +11667,8 @@ snapshots:
   bindings@1.5.0:
     dependencies:
       file-uri-to-path: 1.0.0
+
+  birpc@2.5.0: {}
 
   blake3-wasm@2.1.5: {}
 
@@ -11807,6 +12043,10 @@ snapshots:
   cookie@0.7.2: {}
 
   cookie@1.0.2: {}
+
+  copy-anything@3.0.5:
+    dependencies:
+      is-what: 4.1.16
 
   cors@2.8.5:
     dependencies:
@@ -12732,6 +12972,8 @@ snapshots:
 
   hono@4.8.4: {}
 
+  hookable@5.5.3: {}
+
   hosted-git-info@7.0.2:
     dependencies:
       lru-cache: 10.4.3
@@ -13561,6 +13803,8 @@ snapshots:
       minipass: 7.1.2
       rimraf: 5.0.10
 
+  mitt@3.0.1: {}
+
   mkdirp@1.0.4: {}
 
   mkdirp@2.1.6: {}
@@ -13803,6 +14047,8 @@ snapshots:
 
   pathval@2.0.0: {}
 
+  perfect-debounce@1.0.0: {}
+
   periscopic@3.1.0:
     dependencies:
       '@types/estree': 1.0.7
@@ -13828,6 +14074,13 @@ snapshots:
       typescript: 5.9.2
     transitivePeerDependencies:
       - '@vue/composition-api'
+
+  pinia@3.0.3(typescript@5.9.2)(vue@3.5.18(typescript@5.9.2)):
+    dependencies:
+      '@vue/devtools-api': 7.7.7
+      vue: 3.5.18(typescript@5.9.2)
+    optionalDependencies:
+      typescript: 5.9.2
 
   pixelmatch@5.3.0:
     dependencies:
@@ -14168,6 +14421,8 @@ snapshots:
 
   reusify@1.0.4: {}
 
+  rfdc@1.4.1: {}
+
   rimraf@5.0.10:
     dependencies:
       glob: 10.4.5
@@ -14485,6 +14740,8 @@ snapshots:
 
   spdx-license-ids@3.0.21: {}
 
+  speakingurl@14.0.1: {}
+
   split2@4.2.0: {}
 
   sprintf-js@1.0.3: {}
@@ -14539,6 +14796,10 @@ snapshots:
   style-to-object@1.0.8:
     dependencies:
       inline-style-parser: 0.2.4
+
+  superjson@2.2.2:
+    dependencies:
+      copy-anything: 3.0.5
 
   supports-color@10.0.0: {}
 
@@ -14991,7 +15252,7 @@ snapshots:
       react-streaming: 0.4.3(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       vike: link:packages/vike
 
-  vike-server@1.0.16(@hattip/core@0.0.49)(hono@4.8.12)(vike@packages+vike)(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)):
+  vike-server@1.0.16(@hattip/core@0.0.49)(hono@4.8.12)(vike@packages+vike)(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)):
     dependencies:
       '@brillout/picocolors': 1.0.28
       '@brillout/vite-plugin-server-entry': 0.7.9
@@ -15007,7 +15268,7 @@ snapshots:
       esbuild: 0.25.4
       vike: link:packages/vike
     optionalDependencies:
-      vite: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+      vite: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
       - '@hattip/core'
@@ -15043,7 +15304,7 @@ snapshots:
       - h3
       - hono
 
-  vike-server@1.0.16(@hattip/core@0.0.49)(hono@4.8.4)(vike@packages+vike)(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)):
+  vike-server@1.0.16(@hattip/core@0.0.49)(hono@4.8.4)(vike@packages+vike)(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)):
     dependencies:
       '@brillout/picocolors': 1.0.28
       '@brillout/vite-plugin-server-entry': 0.7.9
@@ -15059,7 +15320,7 @@ snapshots:
       esbuild: 0.25.4
       vike: link:packages/vike
     optionalDependencies:
-      vite: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+      vite: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
       - '@hattip/core'
@@ -15106,18 +15367,40 @@ snapshots:
       - '@testing-library/jest-dom'
       - supports-color
 
+  vike-solid@0.7.12(solid-js@1.9.7)(vike@packages+vike)(vite@7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)):
+    dependencies:
+      isbot-fast: 1.2.0
+      solid-js: 1.9.7
+      vike: link:packages/vike
+      vite: 7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
+      vite-plugin-solid: 2.11.8(solid-js@1.9.7)(vite@7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
+    transitivePeerDependencies:
+      - '@testing-library/jest-dom'
+      - supports-color
+
+  vike-vue-pinia@0.2.2(pinia@3.0.3(typescript@5.9.2)(vue@3.5.18(typescript@5.9.2)))(vike-vue@0.9.2(vike@packages+vike)(vue@3.5.18(typescript@5.9.2)))(vue@3.5.18(typescript@5.9.2)):
+    dependencies:
+      pinia: 3.0.3(typescript@5.9.2)(vue@3.5.18(typescript@5.9.2))
+      vike-vue: 0.9.2(vike@packages+vike)(vue@3.5.18(typescript@5.9.2))
+      vue: 3.5.18(typescript@5.9.2)
+
   vike-vue@0.9.0(vike@packages+vike)(vue@3.5.13(typescript@5.8.3)):
     dependencies:
       vike: link:packages/vike
       vue: 3.5.13(typescript@5.8.3)
 
-  vite-node@3.1.3(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3):
+  vike-vue@0.9.2(vike@packages+vike)(vue@3.5.18(typescript@5.9.2)):
+    dependencies:
+      vike: link:packages/vike
+      vue: 3.5.18(typescript@5.9.2)
+
+  vite-node@3.1.3(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3):
     dependencies:
       cac: 6.7.14
       debug: 4.4.0
       es-module-lexer: 1.7.0
       pathe: 2.0.3
-      vite: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+      vite: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
     transitivePeerDependencies:
       - '@types/node'
       - jiti
@@ -15153,12 +15436,25 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  vite-plugin-svgr@4.3.0(rollup@4.43.0)(typescript@5.8.3)(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)):
+  vite-plugin-solid@2.11.8(solid-js@1.9.7)(vite@7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)):
+    dependencies:
+      '@babel/core': 7.26.10
+      '@types/babel__core': 7.20.5
+      babel-preset-solid: 1.9.6(@babel/core@7.26.10)
+      merge-anything: 5.1.7
+      solid-js: 1.9.7
+      solid-refresh: 0.6.3(solid-js@1.9.7)
+      vite: 7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
+      vitefu: 1.0.6(vite@7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
+    transitivePeerDependencies:
+      - supports-color
+
+  vite-plugin-svgr@4.3.0(rollup@4.43.0)(typescript@5.8.3)(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)):
     dependencies:
       '@rollup/pluginutils': 5.1.4(rollup@4.43.0)
       '@svgr/core': 8.1.0(typescript@5.8.3)
       '@svgr/plugin-jsx': 8.1.0(@svgr/core@8.1.0(typescript@5.8.3))
-      vite: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+      vite: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
     transitivePeerDependencies:
       - rollup
       - supports-color
@@ -15193,13 +15489,13 @@ snapshots:
       fsevents: 2.3.3
       terser: 5.38.1
 
-  vite@5.1.0(@types/node@24.2.0)(terser@5.38.1):
+  vite@5.1.0(@types/node@24.3.0)(terser@5.38.1):
     dependencies:
       esbuild: 0.19.12
       postcss: 8.5.3
       rollup: 4.43.0
     optionalDependencies:
-      '@types/node': 24.2.0
+      '@types/node': 24.3.0
       fsevents: 2.3.3
       terser: 5.38.1
 
@@ -15245,7 +15541,7 @@ snapshots:
       terser: 5.38.1
       tsx: 4.20.3
 
-  vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.19.4):
+  vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.19.4):
     dependencies:
       esbuild: 0.25.4
       fdir: 6.4.4(picomatch@4.0.2)
@@ -15254,12 +15550,12 @@ snapshots:
       rollup: 4.43.0
       tinyglobby: 0.2.13
     optionalDependencies:
-      '@types/node': 24.2.0
+      '@types/node': 24.3.0
       fsevents: 2.3.3
       terser: 5.38.1
       tsx: 4.19.4
 
-  vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3):
+  vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3):
     dependencies:
       esbuild: 0.25.4
       fdir: 6.4.4(picomatch@4.0.2)
@@ -15268,7 +15564,7 @@ snapshots:
       rollup: 4.43.0
       tinyglobby: 0.2.13
     optionalDependencies:
-      '@types/node': 24.2.0
+      '@types/node': 24.3.0
       fsevents: 2.3.3
       terser: 5.38.1
       tsx: 4.20.3
@@ -15301,14 +15597,46 @@ snapshots:
       terser: 5.38.1
       tsx: 4.20.3
 
+  vite@7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3):
+    dependencies:
+      esbuild: 0.25.4
+      fdir: 6.4.6(picomatch@4.0.3)
+      picomatch: 4.0.3
+      postcss: 8.5.6
+      rollup: 4.43.0
+      tinyglobby: 0.2.14
+    optionalDependencies:
+      '@types/node': 24.3.0
+      fsevents: 2.3.3
+      terser: 5.38.1
+      tsx: 4.20.3
+
+  vite@7.1.2(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3):
+    dependencies:
+      esbuild: 0.25.8
+      fdir: 6.4.6(picomatch@4.0.3)
+      picomatch: 4.0.3
+      postcss: 8.5.6
+      rollup: 4.43.0
+      tinyglobby: 0.2.14
+    optionalDependencies:
+      '@types/node': 24.3.0
+      fsevents: 2.3.3
+      terser: 5.38.1
+      tsx: 4.20.3
+
   vitefu@1.0.6(vite@7.0.6(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)):
     optionalDependencies:
       vite: 7.0.6(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
 
-  vitest@3.1.3(@edge-runtime/vm@3.2.0)(@types/debug@4.1.12)(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3):
+  vitefu@1.0.6(vite@7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)):
+    optionalDependencies:
+      vite: 7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
+
+  vitest@3.1.3(@edge-runtime/vm@3.2.0)(@types/debug@4.1.12)(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3):
     dependencies:
       '@vitest/expect': 3.1.3
-      '@vitest/mocker': 3.1.3(vite@6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+      '@vitest/mocker': 3.1.3(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       '@vitest/pretty-format': 3.1.3
       '@vitest/runner': 3.1.3
       '@vitest/snapshot': 3.1.3
@@ -15325,13 +15653,13 @@ snapshots:
       tinyglobby: 0.2.13
       tinypool: 1.0.2
       tinyrainbow: 2.0.0
-      vite: 6.3.5(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
-      vite-node: 3.1.3(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
+      vite: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
+      vite-node: 3.1.3(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@edge-runtime/vm': 3.2.0
       '@types/debug': 4.1.12
-      '@types/node': 24.2.0
+      '@types/node': 24.3.0
     transitivePeerDependencies:
       - jiti
       - less
@@ -15373,6 +15701,12 @@ snapshots:
       '@volar/typescript': 2.4.11
       '@vue/language-core': 2.2.10(typescript@5.8.3)
       typescript: 5.8.3
+
+  vue-tsc@2.2.10(typescript@5.9.2):
+    dependencies:
+      '@volar/typescript': 2.4.11
+      '@vue/language-core': 2.2.10(typescript@5.9.2)
+      typescript: 5.9.2
 
   vue@3.2.33:
     dependencies:

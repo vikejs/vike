@@ -1,1 +1,7 @@
-Copied from [vike-solid > examples/full/](https://github.com/vikejs/vike-solid/tree/47211252a661236624a3f99ddef190c6b13274da/examples/full).
+Copy of https://github.com/vikejs/vike-solid/tree/main/examples/full
+
+To update:
+- Copy directory
+- Pin `"vike"` dependency in `package.json`
+- Update `README.md`
+- Run `pnpm run format`
