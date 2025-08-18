@@ -45,6 +45,13 @@ function Layout({ children }: { children: React.ReactNode }) {
             .map((url) => (
               <Link href={url} key={url} />
             ))}
+          {/* Explicit links for cumulative modifiers test pages */}
+          <Link href="/config-meta/default-clear" />
+          <Link href="/config-meta/default-clear/only-default" />
+          <Link href="/config-meta/default-clear/with-non-default" />
+          <Link href="/config-meta/default-clear/with-clear" />
+          <Link href="/config-meta/default-clear/with-clear/child" />
+
           <Link href="/nested-layout/42" />
         </Left>
         <Right>
