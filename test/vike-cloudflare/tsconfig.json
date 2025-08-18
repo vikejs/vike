@@ -17,5 +17,11 @@
     "jsx": "preserve",
     "jsxImportSource": "solid-js"
   },
-  "exclude": ["dist"]
+  "exclude": ["dist"],
+  "include": [
+    "**/*",
+    // Include .test* files
+    // https://github.com/microsoft/TypeScript/issues/49555
+    "**/.*"
+  ]
 }

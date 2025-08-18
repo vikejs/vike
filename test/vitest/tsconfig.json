@@ -8,5 +8,11 @@
     "target": "ES2020",
     "module": "ES2022",
     "moduleResolution": "Bundler"
-  }
+  },
+  "include": [
+    "**/*",
+    // Include .test* files
+    // https://github.com/microsoft/TypeScript/issues/49555
+    "**/.*"
+  ]
 }
