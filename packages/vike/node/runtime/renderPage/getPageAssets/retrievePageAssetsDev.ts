@@ -19,7 +19,7 @@ async function retrievePageAssetsDev(
   const clientEntriesSrc = clientEntries.map((clientEntry) =>
     globalObject.resolveClientEntriesDev!(clientEntry, viteDevServer),
   )
-  const assetUrls = await retrieveAssetsDev(clientDependencies, viteDevServer)
+  const assetUrls = await getAssetUrls(clientDependencies, viteDevServer)
   return { clientEntriesSrc, assetUrls }
 }
 
@@ -27,7 +27,7 @@ function setResolveClientEntriesDev(resolveClientEntriesDev: ResolveClientEntrie
   globalObject.resolveClientEntriesDev = resolveClientEntriesDev
 }
 
-async function retrieveAssetsDev(clientDependencies: ClientDependency[], viteDevServer: ViteDevServer) {
+async function getAssetUrls(clientDependencies: ClientDependency[], viteDevServer: ViteDevServer) {
   const assetUrls = new Set<string>()
   await Promise.all(
     clientDependencies.map(async ({ id }) => {
