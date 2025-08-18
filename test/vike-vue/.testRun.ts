@@ -1,6 +1,7 @@
 export { testRun }
 
 import { test, expect, run, fetchHtml, page, getServerUrl, autoRetry, partRegex } from '@brillout/test-e2e'
+// @ts-ignore
 import assert from 'node:assert'
 
 let isProd: boolean
@@ -184,9 +185,7 @@ function testConfigComponent() {
     expect(getTitle(html)).toBe('Image created by Romuald Brillout')
     // check that description is rendered in <head>
     expect(html).toMatch(
-      partRegex`<meta name="description" content="Image at address ${getAssetUrl(
-        'logo.svg',
-      )} was created by Romuald Brillout">${/.*/s}</head>`,
+      partRegex`<meta name="description" content="Image at address ${getAssetUrl('logo.svg')} was created by Romuald Brillout">${/.*/s}</head>`,
     )
     // check that description is not rendered in <body>
     expect(html).not.toMatch(partRegex`<body>${/.*/s}<meta name="description"`)
