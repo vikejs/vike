@@ -663,8 +663,8 @@ importers:
         specifier: ^0.4.237
         version: link:../../vike
       vike-server:
-        specifier: ^1.0.22
-        version: 1.0.22(@hattip/core@0.0.49)(hono@4.8.4)(vike@packages+vike)(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
+        specifier: ^1.0.23
+        version: 1.0.23(@hattip/core@0.0.49)(hono@4.8.4)(vike@packages+vike)(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       vite:
         specifier: ^6.3.2
         version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
@@ -705,8 +705,8 @@ importers:
         specifier: ^0.4.237
         version: link:../../vike
       vike-server:
-        specifier: ^1.0.22
-        version: 1.0.22(@hattip/core@0.0.49)(hono@4.8.4)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.20.3))
+        specifier: ^1.0.23
+        version: 1.0.23(@hattip/core@0.0.49)(hono@4.8.4)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.20.3))
       vite:
         specifier: ^6.3.2
         version: 6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.20.3)
@@ -735,8 +735,8 @@ importers:
         specifier: ^0.4.237
         version: link:../../vike
       vike-server:
-        specifier: ^1.0.22
-        version: 1.0.22(@hattip/core@0.0.49)(hono@4.8.4)(vike@packages+vike)(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
+        specifier: ^1.0.23
+        version: 1.0.23(@hattip/core@0.0.49)(hono@4.8.4)(vike@packages+vike)(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       vite:
         specifier: ^6.3.2
         version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
@@ -774,8 +774,8 @@ importers:
         specifier: ^0.4.237
         version: link:../../vike
       vike-server:
-        specifier: ^1.0.22
-        version: 1.0.22(@hattip/core@0.0.49)(hono@4.8.4)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.20.3))
+        specifier: ^1.0.23
+        version: 1.0.23(@hattip/core@0.0.49)(hono@4.8.4)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.20.3))
       vite:
         specifier: ^6.3.2
         version: 6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.20.3)
@@ -1888,8 +1888,8 @@ importers:
         specifier: ^0.6.5
         version: 0.6.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
       vike-server:
-        specifier: ^1.0.22
-        version: 1.0.22(@hattip/core@0.0.49)(hono@4.8.12)(vike@packages+vike)(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
+        specifier: ^1.0.23
+        version: 1.0.23(@hattip/core@0.0.49)(hono@4.8.12)(vike@packages+vike)(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       vite:
         specifier: ^6.3.5
         version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
@@ -8078,8 +8078,8 @@ packages:
       react-dom: '>=19'
       vike: '>=0.4.182'
 
-  vike-server@1.0.22:
-    resolution: {integrity: sha512-TAbTMP7hYfO/nhdVwUhreKrXkmoNwgHTqv0bvzq4QfV+x8LFTV+zgVzy1bdNDCq59a9p8TI055T4t65HEMcl7Q==}
+  vike-server@1.0.23:
+    resolution: {integrity: sha512-lytwK4NA2XVHhukz9mpMe4VW5IppkbAGnnhdhojuGpAXlug977W1hF2/YyG3AxE0cwJpA+gTmAmBtbJc56JBZA==}
     peerDependencies:
       vike: '>=0.4.231'
       vite: '>=6'
@@ -15162,7 +15162,7 @@ snapshots:
     dependencies:
       hono: 4.8.12
       vike: link:packages/vike
-      vike-server: 1.0.22(@hattip/core@0.0.49)(hono@4.8.12)(vike@packages+vike)(vite@7.0.6(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
+      vike-server: 1.0.23(@hattip/core@0.0.49)(hono@4.8.12)(vike@packages+vike)(vite@7.0.6(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3))
       vite: 7.0.6(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)
     optionalDependencies:
       '@hattip/adapter-cloudflare-workers': 0.0.49
@@ -15208,7 +15208,7 @@ snapshots:
       react-streaming: 0.4.3(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       vike: link:packages/vike
 
-  vike-server@1.0.22(@hattip/core@0.0.49)(hono@4.8.12)(vike@packages+vike)(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)):
+  vike-server@1.0.23(@hattip/core@0.0.49)(hono@4.8.12)(vike@packages+vike)(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)):
     dependencies:
       '@brillout/picocolors': 1.0.28
       '@brillout/vite-plugin-server-entry': 0.7.12
@@ -15234,7 +15234,7 @@ snapshots:
       - h3
       - hono
 
-  vike-server@1.0.22(@hattip/core@0.0.49)(hono@4.8.12)(vike@packages+vike)(vite@7.0.6(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)):
+  vike-server@1.0.23(@hattip/core@0.0.49)(hono@4.8.12)(vike@packages+vike)(vite@7.0.6(@types/node@24.2.0)(terser@5.38.1)(tsx@4.20.3)):
     dependencies:
       '@brillout/picocolors': 1.0.28
       '@brillout/vite-plugin-server-entry': 0.7.12
@@ -15260,7 +15260,7 @@ snapshots:
       - h3
       - hono
 
-  vike-server@1.0.22(@hattip/core@0.0.49)(hono@4.8.4)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.20.3)):
+  vike-server@1.0.23(@hattip/core@0.0.49)(hono@4.8.4)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.20.3)):
     dependencies:
       '@brillout/picocolors': 1.0.28
       '@brillout/vite-plugin-server-entry': 0.7.12
@@ -15286,7 +15286,7 @@ snapshots:
       - h3
       - hono
 
-  vike-server@1.0.22(@hattip/core@0.0.49)(hono@4.8.4)(vike@packages+vike)(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)):
+  vike-server@1.0.23(@hattip/core@0.0.49)(hono@4.8.4)(vike@packages+vike)(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)):
     dependencies:
       '@brillout/picocolors': 1.0.28
       '@brillout/vite-plugin-server-entry': 0.7.12
