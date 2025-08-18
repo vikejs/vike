@@ -1,0 +1,22 @@
+{
+  "scripts": {
+    "dev": "vike dev",
+    "build": "vike build",
+    "preview": "vike build && vike preview",
+    "preview:ssg": "vike build --prerender && vike preview --prerender"
+  },
+  "dependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "pinia": "^3.0.1",
+    "vike": "0.4.237",
+    "vike-vue": "^0.9.2",
+    "vike-vue-pinia": "^0.2.2",
+    "vite": "^6.1.0",
+    "vue": "^3.5.13"
+  },
+  "type": "module",
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "vue-tsc": "^2.0.13"
+  }
+}

@@ -3,6 +3,7 @@ export { getPageContextClientSerializedAbort }
 export { getGlobalContextClientSerialized }
 export type { PageContextSerialization }
 export type { PassToClient }
+export type { PassToClientPublic }
 
 import { stringify, isJsonSerializerError } from '@brillout/json-serializer/stringify'
 import { assert, assertUsage, assertWarning, getPropAccessNotation, hasProp, unique } from '../utils.js'
@@ -15,6 +16,8 @@ import { pageContextInitIsPassedToClient } from '../../../shared/misc/pageContex
 import { isServerSideError } from '../../../shared/misc/isServerSideError.js'
 import { getPropKeys, getPropVal, setPropVal } from './propKeys.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
+import type { PageContextCreated } from '../renderPage/createPageContextServerSide.js'
+import type { PageContextBegin } from '../renderPage.js'
 
 const passToClientBuiltInPageContext = [
   'abortReason',
@@ -32,7 +35,7 @@ const passToClientBuiltInPageContext = [
 ]
 const pageToClientBuiltInPageContextError = ['pageProps', 'is404', isServerSideError]
 
-type PageContextSerialization = {
+type PageContextSerialization = PageContextCreated & {
   pageId: string
   routeParams: Record<string, string>
   _passToClient: PassToClient
@@ -40,25 +43,23 @@ type PageContextSerialization = {
   pageProps?: Record<string, unknown>
   _pageContextInit: Record<string, unknown>
   _globalContext: GlobalContextServerInternal
-  isClientSideNavigation: boolean
-  cspNonce?: string
+  _isPageContextJsonRequest: null | PageContextBegin['_isPageContextJsonRequest']
 }
 function getPageContextClientSerialized(pageContext: PageContextSerialization, isHtmlJsonScript: boolean) {
   const passToClientPageContext = getPassToClientPageContext(pageContext)
-  const getObj = (passToClientEntry: PassToClientEntryNormalized) => {
-    if (passToClientEntry.once) return undefined // pass it to client-side globalContext
-    return { obj: pageContext, objName: 'pageContext' as const }
-  }
-  const res = applyPassToClient(passToClientPageContext, getObj)
+
+  const res = applyPassToClient(passToClientPageContext, pageContext)
   const pageContextClient = res.objClient
+
   const pageContextClientProps = res.objClientProps
   if (pageContextClientProps.some((prop) => getPropVal(pageContext._pageContextInit, prop))) {
     pageContextClient[pageContextInitIsPassedToClient] = true
   }
+
   const pageContextClientSerialized = serializeObject(
     pageContextClient,
     passToClientPageContext,
-    getObj,
+    'pageContext',
     isHtmlJsonScript,
   )
   return pageContextClientSerialized
@@ -67,27 +68,21 @@ function getPageContextClientSerialized(pageContext: PageContextSerialization, i
 function getGlobalContextClientSerialized(pageContext: PageContextSerialization, isHtmlJsonScript: boolean) {
   const passToClient = pageContext._passToClient
   const globalContext = pageContext._globalContext
-  const getObj = ({ prop, once }: PassToClientEntryNormalized) => {
-    if (once && getPropVal(pageContext, prop)) {
-      assert(typeof pageContext.isClientSideNavigation === 'boolean')
-      if (!pageContext.isClientSideNavigation) {
-        return { obj: pageContext, objName: 'pageContext' as const } // pass it to client-side globalContext
-      } else {
-        return undefined // already passed to client-side
-      }
-    }
-    return { obj: globalContext, objName: 'globalContext' as const }
-  }
-  const res = applyPassToClient(passToClient, getObj)
+  const res = applyPassToClient(passToClient, globalContext)
   const globalContextClient = res.objClient
-  const globalContextClientSerialized = serializeObject(globalContextClient, passToClient, getObj, isHtmlJsonScript)
+  const globalContextClientSerialized = serializeObject(
+    globalContextClient,
+    passToClient,
+    'globalContext',
+    isHtmlJsonScript,
+  )
   return globalContextClientSerialized
 }
 
 function serializeObject(
   obj: Record<string, unknown>,
   passToClient: PassToClient,
-  getObj: GetObj,
+  objName: 'pageContext' | 'globalContext',
   isHtmlJsonScript: boolean,
 ) {
   let serialized: string
@@ -97,14 +92,10 @@ function serializeObject(
     const h = (s: string) => pc.cyan(s)
     let hasWarned = false
     const propsNonSerializable: string[] = []
-    passToClient.forEach((entry) => {
-      const entryNormalized = normalizePassToClientEntry(entry)
-      const { prop } = entryNormalized
+    passToClient.forEach((prop) => {
       const res = getPropVal(obj, prop)
       if (!res) return
       const { value } = res
-      const { objName } = getObj(entryNormalized) ?? {}
-      assert(objName)
       const varName = `${objName}${getPropKeys(prop).map(getPropAccessNotation).join('')}` as const
       try {
         serializeValue(value, isHtmlJsonScript, varName)
@@ -172,7 +163,15 @@ function serializeValue(
         },
   })
 }
-type PassToClient = (string | { prop: string; once?: boolean })[]
+type PassToClient = string[]
+type PassToClientPublic = (
+  | string
+  | {
+      prop: string
+      /** @deprecated The passToClient once setting is deprecated and no longer has any effect. Instead, see the upcoming .once.js suffix (see https://github.com/vikejs/vike/issues/2566 for more information). */
+      once?: boolean
+    }
+)[]
 function getPassToClientPageContext(pageContext: {
   pageId: string
   _passToClient: PassToClient
@@ -235,19 +234,10 @@ function getPageContextClientSerializedAbort(
   return serializeValue(pageContext, isHtmlJsonScript)
 }
 
-type GetObj = (
-  passToClientEntry: PassToClientEntryNormalized,
-) => { obj: Record<string, unknown>; objName: 'pageContext' | 'globalContext' } | undefined
-function applyPassToClient(passToClient: PassToClient, getObj: GetObj) {
+function applyPassToClient(passToClient: PassToClient, obj: Record<string, unknown>) {
   const objClient: Record<string, unknown> = {}
   const objClientProps: string[] = []
-  passToClient.forEach((entry) => {
-    const entryNormalized = normalizePassToClientEntry(entry)
-    const { prop } = entryNormalized
-
-    const { obj } = getObj(entryNormalized) ?? {}
-    if (!obj) return
-
+  passToClient.forEach((prop) => {
     // Get value from pageContext
     const res = getPropVal(obj, prop)
     if (!res) return
@@ -259,18 +249,4 @@ function applyPassToClient(passToClient: PassToClient, getObj: GetObj) {
     objClientProps.push(prop)
   })
   return { objClient, objClientProps }
-}
-
-type PassToClientEntryNormalized = { prop: string; once: boolean }
-function normalizePassToClientEntry(entry: PassToClient[number]): PassToClientEntryNormalized {
-  let once: boolean
-  let prop: string
-  if (typeof entry === 'string') {
-    prop = entry
-    once = false
-  } else {
-    prop = entry.prop
-    once = entry.once ?? false
-  }
-  return { prop, once }
 }

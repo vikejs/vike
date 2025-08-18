@@ -16,13 +16,15 @@ import {
   truncateString,
 } from '../../utils.js'
 import pc from '@brillout/picocolors'
+import type { PageContextCreated } from '../createPageContextServerSide.js'
 
-async function log404(pageContext: {
-  urlPathname: string
-  errorWhileRendering: null | Error
-  isClientSideNavigation: boolean
-  _globalContext: GlobalContextServerInternal
-}) {
+async function log404(
+  pageContext: PageContextCreated & {
+    urlPathname: string
+    errorWhileRendering: null | Error
+    _globalContext: GlobalContextServerInternal
+  },
+) {
   const { urlPathname } = pageContext
 
   const pageRoutes = pageContext._globalContext._pageRoutes

@@ -104,9 +104,10 @@ async function fetchHtml(urlPathname: string) {
 
 If you want to test JavaScript code without testing your Vike app, then remove <Link href="/vite-plugin">Vike's Vite plugin</Link> when running Vitest:
 
-```js
-// vite.config.js
+```ts
+// vite.config.ts
 
+import type { UserConfig } from 'vite'
 import vike from 'vike/plugin'
 
 export default {
@@ -117,7 +118,7 @@ export default {
     !process.env.VITEST && vike(),// [!code ++]
     // ...
   ]
-}
+} satisfies UserConfig
 ```
 
 So that you can share your `vite.config.js` settings between Vitest and your Vike app.

@@ -45,8 +45,8 @@ describe('modifyUrl', () => {
     expect(modifyUrl('/products?filter=cars', { search: { filter: null } })).toMatchInlineSnapshot(`"/products"`)
   })
   it('edge cases - unsupported types', () => {
-    expect(modifyUrl('/products?country=germany', { search: { country: undefined as any } })).toMatchInlineSnapshot(
-      `"/products"`,
+    expect(modifyUrl('/products?country=germany', { search: { country: undefined } })).toMatchInlineSnapshot(
+      `"/products?country=germany"`,
     )
     expect(modifyUrl('/products', { search: { zip: 75016 as any } })).toMatchInlineSnapshot(`"/products?zip=75016"`)
   })

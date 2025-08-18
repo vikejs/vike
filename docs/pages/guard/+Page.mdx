@@ -6,14 +6,17 @@ Environment: server (<Link href="#environment">configurable</Link>)
 
 The `guard()` hook enables you to protect pages from unauthorized and unexpected access.
 
-```js
-// /pages/admin/+guard.js
+```ts
+// /pages/admin/+guard.ts
 
+export { guard }
+
+import type { PageContextServer } from 'vike/types'
 import { render } from 'vike/abort'
 
-// This guard() hook protects all pages /pages/admin/**/+Page.js
+// This guard() hook protects all pages /pages/admin/**/+Page.ts
 
-export async function guard(pageContext) {
+async function guard(pageContext: PageContextServer) {
   if (!pageContext.user.isAdmin) {
     throw render(401, "You aren't allowed to access this page.")
   }
@@ -45,20 +48,6 @@ The `guard()` hook is called in the same environment as <Link href="/data">`data
 If the page doesn't have any `data()` hook, then `guard()` executes in the environment where the routing is evaluated. See <Link href="/hooks#lifecycle" />.
 
 For more control on where and when your guarding logic is executed, consider using <Link href="/render">`throw render()`</Link> / <Link href="/redirect">`throw redirect()`</Link> inside another hook than `guard()`.
-
-
-## TypeScript
-
-```ts
-export { guard }
-
-import type { GuardAsync } from 'vike/types'
-import { render } from 'vike/abort'
-
-const guard: GuardAsync = async (pageContext): ReturnType<GuardAsync> => {
-  // ...
-}
-```
 
 
 ## See also

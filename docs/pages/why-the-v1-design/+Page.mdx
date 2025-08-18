@@ -2,9 +2,10 @@ import { Link } from '@brillout/docpress'
 
 The <Link text="V1 design" href="/migration/v1-design" /> enables the creation of <Link href="/extensions">Vike extensions</Link>.
 
-```js
-// /pages/admin/+config.js
+```ts
+// /pages/admin/+config.ts
 
+import type { Config } from 'vike/types'
 import vue from 'vike-vue'
 import graphql from 'vike-vue-apollo'
 
@@ -13,19 +14,20 @@ export default {
   ssr: false,
   // Use Vue + GraphQL for the Admin Panel
   extends: [vue, graphql]
-}
+} satisfies Config
 ```
 
 You can choose extensions on a page-by-page basis:
 
-```js
-// /pages/product/@id/+config.js
+```ts
+// /pages/product/@id/+config.ts
 
+import type { Config } from 'vike/types'
 import react from 'vike-react'
 import telefunc from 'vike-react-telefunc'
 
 export default {
   // Use React + Telefunc for the product pages
   extends: [react, telefunc]
-}
+} satisfies Config
 ```

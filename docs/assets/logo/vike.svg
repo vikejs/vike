@@ -1,15 +1,15 @@
-<svg width="290.03" height="290.03" fill="none" version="1.1" viewBox="0 0 290.03 290.03" xmlns="http://www.w3.org/2000/svg">
+<svg width="290.03" height="290.03" fill="none" version="1.1" viewBox="0 0 290.03 290.03" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <defs>
 <linearGradient id="paint0_linear_13_108" x1="7.7366" x2="55.768" y1="240.47" y2="284.46" gradientUnits="userSpaceOnUse">
 <stop stop-color="#C4C4C4" offset="0"/>
-<stop stop-color="#ededed" offset=".25"/>
+<stop stop-color="#cdcdcd" offset=".25"/>
 <stop stop-color="#A6A6A6" offset=".46763"/>
 <stop stop-color="#B8B8B8" offset=".68"/>
 <stop stop-color="#A9AAA9" offset="1"/>
 </linearGradient>
 <linearGradient id="paint1_linear_13_108" x1="17.08" x2="64" y1="230.15" y2="275.48" gradientUnits="userSpaceOnUse">
 <stop stop-color="#b6b6b6" offset="0"/>
-<stop stop-color="#dcdcdc" offset=".25754"/>
+<stop stop-color="#cecece" offset=".25754"/>
 <stop stop-color="#9f9f9f" offset=".48968"/>
 <stop stop-color="#aeaeae" offset=".67922"/>
 <stop stop-color="#A9AAA9" offset="1"/>
@@ -85,9 +85,6 @@
 <mask id="mask19_13_108" x="4" y="-4" width="289" height="290" maskUnits="userSpaceOnUse">
 <path d="m292.53-3.0015h-288v288h288z" fill="#fff"/>
 </mask>
-<mask id="mask20_13_108" x="4" y="-4" width="289" height="290" maskUnits="userSpaceOnUse">
-<path d="m292.53-3.0015h-288v288h288z" fill="#fff"/>
-</mask>
 <mask id="mask21_13_108" x="4" y="-4" width="289" height="290" maskUnits="userSpaceOnUse">
 <path d="m292.53-3.0015h-288v288h288z" fill="#fff"/>
 </mask>
@@ -104,9 +101,6 @@
 <rect width="290.03" height="290.03" fill="#fff"/>
 </clipPath>
 <clipPath id="clipPath766">
-<rect width="290.03" height="290.03" fill="#fff"/>
-</clipPath>
-<clipPath id="clipPath772">
 <rect width="290.03" height="290.03" fill="#fff"/>
 </clipPath>
 <clipPath id="clipPath778">
@@ -157,17 +151,31 @@
 <clipPath id="clipPath892">
 <rect width="290.03" height="290.03" fill="#fff"/>
 </clipPath>
-<linearGradient id="linearGradient2471" x1="114.89" x2="139.08" y1="112.65" y2="112.65" gradientTransform="matrix(1.9265 -2.109 2.6459 1.7024 -415.5 197.42)" gradientUnits="userSpaceOnUse">
+<linearGradient id="linearGradient2471" x1="114.89" x2="139.08" y1="112.65" y2="112.65" gradientTransform="matrix(1.8302 -2.0036 2.5136 1.6173 -388.36 193.62)" gradientUnits="userSpaceOnUse">
 <stop stop-color="#FFEA83" offset="0"/>
 <stop stop-color="#FFDD35" offset=".083333"/>
 <stop stop-color="#FFA800" offset="1"/>
 </linearGradient>
+<linearGradient id="linearGradient5832" x1="150.8" x2="101.18" y1="130.97" y2="243.06" gradientUnits="userSpaceOnUse">
+<stop stop-color="#9b9b9b" offset="0"/>
+<stop stop-color="#8f8f8f" offset="1"/>
+</linearGradient>
+<linearGradient id="linearGradient5834" x1="247.96" x2="84.821" y1="102.51" y2="246.71" gradientUnits="userSpaceOnUse">
+<stop stop-color="#afafaf" offset="0"/>
+<stop stop-color="#898989" offset="1"/>
+</linearGradient>
 </defs>
+<g transform="translate(-.0015 -.0038489)" clip-path="url(#clipPath892)" fill="url(#linearGradient5832)" mask="url(#mask0_13_108)">
+<path d="m26.566 81.999v22.885l129.06 138.14 20.298 2.579 41.518-7.6912 67.087-69.024v-28.699l-118.73-121.41-47.155-17.533-21.316 2.9529z" fill="url(#linearGradient5834)"/>
+</g>
+<g transform="translate(-.0015 -.0038489)" clip-path="url(#clipPath790)" mask="url(#mask17_13_108)">
+<path d="m175.93 245.6-20.298-2.5462 0.4245-11.183z" fill="#818181"/>
+</g>
+<g transform="translate(-.0015 -.0038489)" clip-path="url(#clipPath838)" mask="url(#mask9_13_108)">
+<path d="m219.59 240.86c-7.1756 1.9227-43.292 5.013-43.292 5.013l-0.37-0.268 71.412-78.726h0.422l39.709 3.529v0.542s-60.269 67.87-67.881 69.91z" fill="#b6b6b6"/>
+</g>
 <g transform="translate(-.0015 -.0038489)" clip-path="url(#clipPath880)" mask="url(#mask2_13_108)">
 <path d="m53.321 287.52c-2.5848 2.51-4.0605 2.65-6.0192 2.466-2.2041-0.21-4.6744-1.128-7.1257-2.347-2.5121-1.249-5.2671-2.947-8.1078-4.954-5.6824-4.017-11.898-9.413-17.457-15.334-5.4888-5.847-9.417-11.223-11.092-15.307-0.76452-1.865-1.4698-4.418-0.4613-6.693 0.39712-0.896 0.95233-1.561 1.5934-2.047l12.848-14.107 48.614 44.276z" clip-rule="evenodd" fill="url(#paint0_linear_13_108)" fill-rule="evenodd"/>
-</g>
-<g transform="translate(-.0015 -.0038489)" clip-path="url(#clipPath892)" mask="url(#mask0_13_108)">
-<path d="m26.566 81.999v22.885l128.54 136.94 21.04 2.861 43.002-5.168 67.087-69.024v-28.699l-120.43-123.01-47.155-17.533-21.316 2.9529z" fill="#8f8f8f"/>
 </g>
 <g transform="translate(-.0015 -.0038489)" clip-path="url(#clipPath874)" mask="url(#mask3_13_108)">
 <path d="m30.534 250.27c-10.822-11.528-14.308-20.027-7.9729-19.425 6.3427 0.603 19.692 10.035 30.514 21.562 10.822 11.534 14.308 20.035 7.9728 19.432-6.3426-0.603-19.692-10.034-30.514-21.569z" stroke="url(#paint1_linear_13_108)" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.8496"/>
@@ -181,14 +189,11 @@
 <g transform="translate(-.0015 -.0038489)" clip-path="url(#clipPath844)" mask="url(#mask8_13_108)">
 <path d="m287.46 141.96v1.023l-40.503-3.867-130.18-138.34 1.348-0.77029 47.745 17.687z" fill="url(#paint4_linear_13_108)"/>
 </g>
-<g transform="translate(-.0015 -.0038489)" clip-path="url(#clipPath838)" mask="url(#mask9_13_108)">
-<path d="m219.59 240.86-43.292 5.013-0.37-0.268 71.412-78.726h0.422l39.709 3.529v0.542z" fill="#b6b6b6"/>
-</g>
 <g transform="translate(-.0015 -.0038489)" clip-path="url(#clipPath832)" mask="url(#mask10_13_108)">
 <path d="m96.834 2.8933 21.288-2.8896 1.58 1.8192-24.009 13.01z" fill="#e5e5e5"/>
 </g>
 <g transform="translate(-.0015 -.0038489)" clip-path="url(#clipPath826)" mask="url(#mask11_13_108)">
-<path d="m25.25 92.625-5e-4 12.047 129.76 138.24 0.621 0.114v-14.812l-129.77-136.24z" fill="#8b8a8b"/>
+<path d="m25.25 92.625-5e-4 12.047 130.38 138.39v-0.0327l0.4245-11.15-130.19-139.9z" fill="#8b8a8b"/>
 </g>
 <g transform="translate(-.0015 -.0038489)" clip-path="url(#clipPath820)" mask="url(#mask12_13_108)">
 <path d="m96.84 2.866-71.592 78.595v12.644l71.598-78.481z" fill="#e2e1e1"/>
@@ -202,17 +207,11 @@
 <g transform="translate(-.0015 -.0038489)" clip-path="url(#clipPath802)" mask="url(#mask15_13_108)">
 <path d="m98.142 13.241-1.239 0.7786-71.658 78.576 130.81 139.28 72.672-79.699z" fill="url(#paint5_linear_13_108)"/>
 </g>
-<g transform="translate(-.0015 -.0038489)" clip-path="url(#clipPath790)" mask="url(#mask17_13_108)">
-<path d="m176.3 245.87-21.288-2.894v-12.326l0.249-0.257 21.381 15.193z" fill="#939493"/>
-</g>
 <g transform="translate(-.0015 -.0038489)" clip-path="url(#clipPath784)" mask="url(#mask18_13_108)">
 <path d="m247.89 138.24-21.288 13.993-129.76-138.23 21.288-13.993z" fill="url(#paint7_linear_13_108)"/>
 </g>
 <g transform="translate(-.0015 -.0038489)" clip-path="url(#clipPath778)" mask="url(#mask19_13_108)">
 <path d="m287.45 170.96-39.987-3.7v-29.035l39.987 3.694z" fill="#f2f2f2"/>
-</g>
-<g transform="translate(-.0015 -.0038489)" clip-path="url(#clipPath772)" fill="#a4a4a4" mask="url(#mask20_13_108)">
-<path d="m247.86 167.25-71.562 78.619-21.322-15.057 71.838-78.774 21.047 14.696z" fill="#a4a4a4"/>
 </g>
 <g transform="translate(-.0015 -.0038489)" clip-path="url(#clipPath766)" mask="url(#mask21_13_108)">
 <path d="m247.89 167.27v-29.034l-0.17-0.239-21.257 14.015 0.139 0.217z" fill="#a7a6a7"/>
@@ -223,5 +222,5 @@
 <g transform="translate(-.0015 -.0038489)" clip-path="url(#clipPath748)" mask="url(#mask24_13_108)">
 <path d="m173.76 59.423 34.78 73.777 18.11 19.048 21.305-14.04z" fill="url(#paint8_linear_13_108)"/>
 </g>
-<path d="m138.23 90.939-16.179 17.712-37.045-40.576-0.0081 9e-3c-0.67252-0.77275-1.8962-1.0499-2.8939-0.6585s-1.4645 1.3336-1.104 2.2326l30.72 81.345c0.0361 0.91261 0.8318 1.7123 1.9239 1.9179 1.0819 0.19898 2.15-0.25173 2.5575-1.0751l16.179-17.712 37.045 40.576 8e-3 -0.01c0.67257 0.77278 1.8963 1.0499 2.8939 0.65855 0.99759-0.39144 1.4644-1.3337 1.104-2.2326l-30.72-81.344c-0.0362-0.91261-0.83173-1.7123-1.9238-1.918-1.0819-0.19899-2.15 0.25174-2.5575 1.0751z" fill="url(#linearGradient2471)" stroke-width=".99999"/>
+<path d="m137.68 92.462-15.37 16.826-35.193-38.547-0.0077 0.0085c-0.63889-0.73411-1.8014-0.9974-2.7492-0.62558s-1.3913 1.2669-1.0488 2.121l29.184 77.278c0.0343 0.86698 0.79021 1.6267 1.8277 1.822 1.0278 0.18903 2.0425-0.23915 2.4296-1.0214l15.37-16.826 35.193 38.547 8e-3 -0.01c0.63894 0.73414 1.8015 0.99741 2.7492 0.62563 0.94771-0.37187 1.3912-1.267 1.0488-2.121l-29.184-77.277c-0.0344-0.86698-0.79015-1.6267-1.8276-1.8221-1.0278-0.18904-2.0425 0.23915-2.4296 1.0213z" fill="url(#linearGradient2471)" stroke-width=".99999"/>
 </svg>

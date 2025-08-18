@@ -17,11 +17,13 @@ The `+Wrapper` component wraps the <Link href="/Page">`+Page` component</Link> a
 </Wrapper>
 ```
 
-```jsx
-// pages/+Wrapper.jsx
+```tsx
+// pages/+Wrapper.tsx
+
+import React from 'react'
 
 // `children` includes +Page and all +Layout components
-export default function Wrapper({ children }) {
+export default function Wrapper({ children }: { children: React.ReactNode }) {
   return <>
     <MyWrapper>
       {children}
@@ -41,7 +43,7 @@ The `+Wrapper` component is usually used for integrating tools, such as <Link hr
 
 A page can be wrapped by multiple `+Wrapper` components:
 
-```jsx
+```tsx
 <Wrapper1>
   <Wrapper2>
     <Wrapper3>
@@ -58,12 +60,13 @@ A page can be wrapped by multiple `+Wrapper` components:
 
 You can access <Link href="/pageContext">the `pageContext` object</Link> by using <Link href="/usePageContext">`usePageContext()`</Link>.
 
-```jsx
-// /pages/+Layout.jsx
+```tsx
+// /pages/+Layout.tsx
 
+import React from 'react'
 import { usePageContext } from 'vike-react/usePageContext' // or vike-{vue,solid}
 
-export function Layout({ children }) {
+export function Layout({ children }: { children: React.ReactNode }) {
   const pageContext = usePageContext()
   // ...
 }

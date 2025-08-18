@@ -184,9 +184,7 @@ function testConfigComponent() {
     expect(getTitle(html)).toBe('Image created by Romuald Brillout')
     // check that description is rendered in <head>
     expect(html).toMatch(
-      partRegex`<meta name="description" content="Image at address ${getAssetUrl(
-        'logo.svg',
-      )} was created by Romuald Brillout">${/.*/s}</head>`,
+      partRegex`<meta name="description" content="Image at address ${getAssetUrl('logo.svg')} was created by Romuald Brillout">${/.*/s}</head>`,
     )
     // check that description is not rendered in <body>
     expect(html).not.toMatch(partRegex`<body>${/.*/s}<meta name="description"`)
@@ -255,9 +253,7 @@ function findFirstPageId(html: string) {
   expect(match).toBeTruthy()
   let pageId = match![1]
   expect(pageId).toBeTruthy()
-  pageId =
-    // @ts-ignore
-    pageId.replaceAll('\\\\/', '/')
+  pageId = pageId.replaceAll('\\\\/', '/')
   return pageId
 }
 

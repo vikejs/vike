@@ -28,13 +28,15 @@ The component defined by the `+Layout` setting wraps the component defined by <L
 
 You can define a layout that applies to all your pages:
 
-```jsx
-// /pages/+Layout.jsx
+```tsx
+// /pages/+Layout.tsx
 
 export { Layout }
 
+import React from 'react'
+
 // `children` includes <Page>
-function Layout({ children }) {
+function Layout({ children }: { children: React.ReactNode }) {
   return <>
     <Navigation/>
     <Content>{children}</Content>
@@ -66,7 +68,8 @@ pages/admin-panel/users/+Page.js    # URL: /admin-panel/users
 
 > The directory `(marketing)` is skipped by Filesystem Routing, see <Link href="/routing#filesystem-routing" />.
 
-> Setting a default `<Layout>` that is overridable isn't currently supported, see [#1692 - Add `override` and `default` options for cumulative configs](https://github.com/vikejs/vike/issues/1692).
+> Setting a default `<Layout>` that is overridable isn't currently supported, see:
+> - [#1692 - New settings `clear` and `default` for controlling inheritance of cumulative configs](https://github.com/vikejs/vike/issues/1692)
 
 
 ## Nested
@@ -137,12 +140,15 @@ To fetch data for your layouts see:
 
 You can access <Link href="/pageContext">the `pageContext` object</Link> by using <Link href="/usePageContext">`usePageContext()`</Link>.
 
-```jsx
-// /pages/+Layout.jsx
+```tsx
+// /pages/+Layout.tsx
 
+export { Layout }
+
+import React from 'react'
 import { usePageContext } from 'vike-react/usePageContext' // or vike-{vue,solid}
 
-export function Layout({ children }) {
+function Layout({ children }: { children: React.ReactNode }) {
   const pageContext = usePageContext()
   // ...
 }
@@ -157,8 +163,8 @@ The following is for users that don't use a <UiFrameworkExtension />.
 
 A simple way to implement layouts is to manually wrap your `<Page>` components:
 
-```jsx
-// /pages/index/+Page.js
+```tsx
+// /pages/index/+Page.tsx
 
 export { Page }
 
@@ -173,8 +179,8 @@ function Page() {
 }
 ```
 
-```jsx
-// /pages/admin/+Page.js
+```tsx
+// /pages/admin/+Page.tsx
 
 export { Page }
 

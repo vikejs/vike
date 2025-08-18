@@ -29,10 +29,12 @@ You can apply `onAfterRenderHtml()` only upon certain conditions, for example yo
 
 To access the page's HTML string/stream:
 
-```js
-// +onAfterRenderHtml.js
+```ts
+// +onAfterRenderHtml.ts
 
-export async function onAfterRenderHtml(pageContext) {
+import type { PageContextServer } from 'vike/types'
+
+export async function onAfterRenderHtml(pageContext: PageContextServer) {
   // The +Page.js component rendered to an HTML string
   pageContext.pageHtmlString
   // The +Page.js component rendered to an HTML stream
@@ -42,10 +44,12 @@ export async function onAfterRenderHtml(pageContext) {
 
 You can mutate `pageContext.pageHtmlString` and `pageContext.pageHtmlStream`, for example to modify the HTML.
 
-```js
-// +onAfterRenderHtml.js
+```ts
+// +onAfterRenderHtml.ts
 
-export async function onAfterRenderHtml(pageContext) {
+import type { PageContextServer } from 'vike/types'
+
+export async function onAfterRenderHtml(pageContext: PageContextServer) {
   // Apply some HTML transformation, e.g. HTML minification
   pageContext.pageHtmlString = minifyHtml(pageContext.pageHtmlString)
 }

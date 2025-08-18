@@ -20,12 +20,12 @@ You can use `pageContext.httpResponse.earlyHints` for adding early hints (`103 E
 
 > [`103 Early Hint`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/103) is the official successor of the now deprecated HTTP2/Push.
 
-```js
-// server.js
+```ts
+// server.ts
 
 import { renderPage } from 'vike/server'
 
-app.get('*', async (req, res) => {
+app.get('*', async (req: Request, res: Response) => {
   const pageContext = await renderPage({ urlOriginal: req.originalUrl } )
   const { earlyHints } = pageContext.httpResponse
   // For example with Node.js 18:
@@ -33,19 +33,16 @@ app.get('*', async (req, res) => {
 })
 ```
 
+The `pageContext.httpResponse.earlyHints` list is an `EarlyHint[]` array.
 ```ts
-type PageContext = {
-  httpResponse: {
-    earlyHints: {
-      earlyHintLink: string // Early hint value
-      assetType: "image" | "script" | "font" | "style" | "audio" | "video" | "document" |
-                 "fetch" | "track" | "worker" | "embed" | "object" | null
-      mediaType: string // MIME type
-      src: string // Asset's URL
-      isEntry: boolean // true  ⇒ asset is an entry
-                       // false ⇒ asset is a dependency of an entry
-    }[]
-  }
+type EarlyHint = {
+  earlyHintLink: string // Early hint value
+  assetType: "image" | "script" | "font" | "style" | "audio" | "video" | "document" |
+             "fetch" | "track" | "worker" | "embed" | "object" | null
+  mediaType: string // MIME type
+  src: string // Asset's URL
+  isEntry: boolean // true  ⇒ asset is an entry
+                   // false ⇒ asset is a dependency of an entry
 }
 ```
 
@@ -60,11 +57,14 @@ See also:
 If Vike's default preload strategy doesn't work for you, you can customize which and where preload/asset tags are injected.
 
 ```ts
-// /renderer/+onRenderHtml.js
+// /renderer/+onRenderHtml.ts
 
 export { onRenderHtml }
 
-async function onRenderHtml(pageContext) {
+import type { InjectFilterEntry, PageContextServer } from 'vike/types'
+import { escapeInject } from 'vike/server'
+
+async function onRenderHtml(pageContext: PageContextServer) {
   // ...
 
   const documentHtml = escapeInject`<!DOCTYPE html>
@@ -74,7 +74,7 @@ async function onRenderHtml(pageContext) {
       </body>
     </html>`
 
-  const injectFilter = (assets) => {
+  const injectFilter = (assets: InjectFilterEntry[]) => {
     assets.forEach(asset => {
       // Preload images
       if (asset.assetType === 'image') {

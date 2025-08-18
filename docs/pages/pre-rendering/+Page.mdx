@@ -33,12 +33,14 @@ Pre-rendering can be used for websites with content that changes only occasional
 
 To opt into pre-rendering:
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   prerender: true
-}
+} satisfies Config
 ```
 
 List of options: <Link href="/prerender" />.

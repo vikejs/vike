@@ -1,14 +1,16 @@
 import { Link, Warning } from '@brillout/docpress'
 
-TypeScript: `(string | { prop: string; once?: boolean })[]`  
+TypeScript: `string[]`  
 <Link href="/config#cumulative">Cumulative</Link>: true  
 <Link href="/config#global">Global</Link>: false  
 
 Most <Link href="/pageContext">`pageContext`</Link> and <Link href="/globalContext">`globalContext`</Link> properties are available only on the server-side, but you can use `passToClient` to make properties available on the client-side.
 
-```js
-// /pages/+config.js
+```ts
+// /pages/+config.ts
 // Environment: config
+
+import type { Config } from 'vike/types'
 
 export default {
   passToClient: [
@@ -19,16 +21,18 @@ export default {
     // pageContext.user.info.avatar.url
     'user.avatar.url', // deeply nested
   ]
-}
+} satisfies Config
 ```
 
-```js
-// /pages/+onHydrationEnd.js
+```ts
+// /pages/+onHydrationEnd.ts
 // Environment: client
+
+import type { PageContextClient } from 'vike/types'
 
 export { onHydrationEnd }
 
-async function onHydrationEnd(pageContext) {
+async function onHydrationEnd(pageContext: PageContextClient) {
   // Available here on the client-side thanks to passToClient
   console.log(pageContext.someData)
   console.log(pageContext.user.id)
@@ -38,35 +42,6 @@ async function onHydrationEnd(pageContext) {
 ```
 
 Some values, such as `pageContext.data`, are already passed to the client-side by default, see <Link href="#default" />.
-
-
-## `once`
-
-<Warning>This is a beta feature: expect breaking changes in any minor version update. If we don't encounter issues over the next 1–2 months, we'll remove this warning and consider the feature stable.</Warning>
-
-By default, upon <Link href="/client-routing">client-side navigation</Link>, properties are passed to the client again.
-
-By setting `once: true`, the property is sent only once, at the beginning of the user's browsing session. The sent value is cached (saved in the <Link href="/globalContext">`globalContext`</Link>) and re-used on each subsequent client-side navigation.
-
-```js
-// /pages/+config.js
-// Environment: config
-
-export default {
-  passToClient: [
-    {
-      // pageContext.user
-      prop: 'user',
-      // Send it only once: upon client-side navigation re-use the initial pageContext.user value
-      once: true
-    }
-  ]
-}
-```
-
-> See also: <Link href="/auth" />
-
-This is typically used to avoid <Link href="/pageContext.json">`pageContext.json`</Link> requests upon client-side navigation.
 
 
 ## Default
@@ -95,7 +70,7 @@ Serialization is done with [`@brillout/json-serializer`](https://github.com/bril
 
 User-defined classes are lost during serialization:
 
-```js
+```ts
 class MyClass {
   prop = 42
 }
@@ -117,9 +92,11 @@ See [GitHub > `brillout/json-serializer` > #3 Support user-defined classes](http
 
 In the (unlikely) event you need to pass properties that include `.` in their name:
 
-```js
-// /pages/+config.js
+```ts
+// /pages/+config.ts
 // Environment: config
+
+import type { Config } from 'vike/types'
 
 export default {
   passToClient: [
@@ -130,7 +107,7 @@ export default {
     // pageContext['some-weird\\\\.prop-name']
     'some-weird\\\\\\.prop-name'
   ]
-}
+} satisfies Config
 ```
 
 

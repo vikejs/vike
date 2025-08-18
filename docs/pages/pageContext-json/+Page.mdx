@@ -17,13 +17,16 @@ Most notably, the returned `pageContext` object includes data fetched via <Link 
 
 ## Example
 
-```js
-// /pages/star-wars/+data.server.js
+```ts
+// /pages/star-wars/+data.server.ts
+
+export { data }
+export type Data = Awaited<ReturnType<typeof data>>
 
 // This data() hook is always called on the server-side. But, upon page navigation, the data
 // needs to be available on the client-side thus Vike makes a /star-wars/index.pageContext.json
 // request in order to pass the data from the server to the client.
-export async function data() {
+async function data() {
   const response = await fetch('https://star-wars.brillout.com/api/films.json')
   const movies = await response.json()
   return { movies }
@@ -60,14 +63,15 @@ If you want to minimize requests made to your server, then you may want Vike to 
 > Most commonly, if the data you fetch comes from another server, then you typically don't want to make an unnecessary detour over your JavaScript/SSR server.
 
 Vike makes a `pageContext.json` request for a page if and only if one of the two following conditions is true:
-- The page has a server-only `data()` or `onBeforeRender()` hook.
+- The page has a server-only `data()`, `onCreatePageContext()`, or `onBeforeRender()` hook.
   > See:
   > - <Link href="/data#environment" />
   > - <Link href="/onBeforeRender#environment" />
+  > - <Link href="/onCreatePageContext" />
 - The `pageContextInit` at <Link href="/renderPage">`renderPage()`</Link> contains a property that is included in <Link href="/passToClient">`passToClient`</Link>.
-  ```js
+  ```ts
   // Vike server middleware
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     const pageContextInit = {
       urlOriginal: req.originalUrl,
       // If passToClient contains 'user' then Vike makes a pageContext.json request
@@ -81,9 +85,8 @@ Vike makes a `pageContext.json` request for a page if and only if one of the two
 
 If both conditions are false, then Vike won't make any `pageContext.json` request.
 
-You can also use <Link href="/passToClient#once">the `once` setting of `passToClient`</Link> to send a `pageContext` property to the client only once.
-
 See also:
+- [#2566 - New setting `.once.js` e.g. `+data.once.js`](https://github.com/vikejs/vike/issues/2566)
 - [#2561 - New setting `requestPageContext: boolean`](https://github.com/vikejs/vike/issues/2561)
 
 

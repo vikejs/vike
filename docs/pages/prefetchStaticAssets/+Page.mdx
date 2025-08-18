@@ -5,13 +5,15 @@ Environment: client
 <Link href="/config#cumulative">Cumulative</Link>: false  
 <Link href="/config#global">Global</Link>: false  
 
-```js
-// +config.js
+```ts
+// +config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   // Default value: 'hover'
   prefetchStaticAssets: 'viewport',
-}
+} satisfies Config
 ```
 
 By default,
@@ -20,9 +22,11 @@ This means that static assets are often already loaded before even the user clic
 
 You can prefetch even more eagerly by using viewport prefetching: the links are then prefetched as soon as they appear in the viewport of the user's browser.
 
-```js
-// /renderer/+config.js
+```ts
+// /renderer/+config.ts
 // Environment: config
+
+import type { Config } from 'vike/types'
 
 export default {
   // Prefetch links as soon as they enter the viewport
@@ -33,7 +37,7 @@ export default {
 
   // Disable prefetching
   prefetchStaticAssets: false
-}
+} satisfies Config
 ```
 
 > Viewport prefetching is disabled in development. (Because preloading pages that early <ViteLazyTranspilingContradiction />.)
@@ -60,16 +64,16 @@ You can programmatically call <code>prefetch('/some/url')</code>, see <Link href
 
 You can viewport prefetch for mobile users while only hover prefetch for desktop users:
 
-```js
-// /pages/+prefetchStaticAssets.js
+```ts
+// /pages/+prefetchStaticAssets.ts
 
 // For small screens, such as mobile, viewport prefetching can be a sensible strategy
 export const prefetchStaticAssets =
   window.matchMedia('(max-width: 600px)').matches ? 'viewport' : 'hover'
 ```
 
-```js
-// /pages/+prefetchStaticAssets.js
+```ts
+// /pages/+prefetchStaticAssets.ts
 
 // Or we enable viewport prefetching for any device without a mouse: mobile and tablets (but
 // not laptops that have a touch display).

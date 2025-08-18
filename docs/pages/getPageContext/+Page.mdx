@@ -7,10 +7,11 @@ The `getPageContext()` function allows you to access the <Link href="/pageContex
 
 For example:
 
-```js
- // /pages/some-page/+data.js
+```ts
+ // /pages/some-page/+data.ts
 
 export { data }
+export type Data = Awaited<ReturnType<typeof data>>
 
 import { getPageContext } from 'vike/getPageContext'
 
@@ -23,10 +24,11 @@ function data() {
 
 It's the same object than the `function data(pageContext)` argument and the following is equivalent:
 
-```js
- // /pages/some-page/+data.js
+```ts
+ // /pages/some-page/+data.ts
 
 export { data }
+export type Data = Awaited<ReturnType<typeof data>>
 
 import { getPageContext } from 'vike/getPageContext'// [!code --]
 
@@ -45,8 +47,8 @@ You may ask yourself what the purpose of `getPageContext()` is and, indeed, it's
 
 A *universal hook* is a component hook that also works inside Vike hooks such as <Link href="/useConfig" />.
 
-```js
- // /components/SomeReactComponent.jsx
+```ts
+ // /components/SomeReactComponent.tsx
 
 import { useConfig } from 'vike-react/useConfig' // or vike-{vue,solid}
 
@@ -55,8 +57,8 @@ function SomeReactComponent() {
   const document = useConfig()
 }
 ```
-```js
- // /pages/some-page/+data.js
+```ts
+ // /pages/some-page/+data.ts
 
 import { useConfig } from 'vike-react/useConfig'
 

@@ -1,12 +1,12 @@
 import { Link } from '@brillout/docpress'
 
-Environment: `server`, `client`  
+Environment: `server` and/or `client`  
 <Link href="/config#cumulative">Cumulative</Link>: true  
 <Link href="/config#global">Global</Link>: false  
 
 Hook called when a <Link href="/pageContext">`pageContext` object</Link> is created.
 
-```js
+```ts
 // pages/+onCreatePageContext.ts
 // Environment: server & client
 
@@ -84,18 +84,9 @@ declare global {
 }
 ```
 
-```ts
-// pages/+config.ts
-
-export default {
-  passToClient: [{ prop: 'pageURLs', once: true }]
-}
-```
-
 > See also:
 > - <Link href="/globalContext#pages">API > `globalContext.pages`</Link>
 > - <Link href="/pageContext#urlParsed">API > `pageContext.urlParsed`</Link>
-> - <Link href="/passToClient#once" doNotInferSectionTitle />
 > - <Link href="/markdown#with-a-custom-setting-eager" doNotInferSectionTitle />
 
 ### Store

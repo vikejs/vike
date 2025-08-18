@@ -21,15 +21,15 @@ import { pluginBaseUrls } from './plugins/pluginBaseUrls.js'
 import { pluginEnvVars } from './plugins/pluginEnvVars.js'
 import pc from '@brillout/picocolors'
 import { pluginFileEnv } from './plugins/pluginFileEnv.js'
-import { setResolveClientEntriesDev } from '../runtime/renderPage/getPageAssets.js'
-import { resolveClientEntriesDev } from './shared/resolveClientEntriesDev.js'
+import { getClientEntrySrcDev } from './shared/getClientEntrySrcDev.js'
 import { pluginWorkaroundCssModuleHmr } from './plugins/pluginWorkaroundCssModuleHmr.js'
 import { pluginWorkaroundVite6HmrRegression } from './plugins/pluginWorkaroundVite6HmrRegression.js'
 import { pluginReplaceConstants } from './plugins/pluginReplaceConstants.js'
 import { pluginNonRunnableDev } from './plugins/pluginNonRunnableDev.js'
+import { setGetClientEntrySrcDev } from '../runtime/renderPage/getPageAssets/retrievePageAssetsDev.js'
 
 // We don't call this in ./onLoad.ts to avoid a cyclic dependency with utils.ts
-setResolveClientEntriesDev(resolveClientEntriesDev)
+setGetClientEntrySrcDev(getClientEntrySrcDev)
 
 type PluginInterop = Record<string, unknown> & { name: string }
 // Return `PluginInterop` instead of `Plugin` to avoid type mismatch upon different Vite versions

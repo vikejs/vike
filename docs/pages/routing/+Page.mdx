@@ -112,10 +112,10 @@ See also:
 
 Instead of Filesystem Routing, you can define a Route String.
 
-```js
-// /pages/product/+route.js
+```ts
+// /pages/product/+route.ts
 
-// This file defines the route of /pages/product/+Page.js
+// This file defines the route of /pages/product/+Page.ts
 
 // Route String
 export default '/product/@id'
@@ -131,17 +131,19 @@ For more information, see:
 
 You can use Route Functions to get full programmatic flexibility for advanced routing logic.
 
-```js
-// /pages/product/edit/+route.js
+```ts
+// /pages/product/edit/+route.ts
+// Environment: server & client
 
-// This file defines the route of /pages/product/edit/+Page.js
+// This file defines the route of /pages/product/edit/+Page.ts
 
+import type { PageContext } from 'vike/types'
 // We use a RegExp, but we could as well use a routing library.
 import partRegex from 'part-regex'
 const routeRegex = partRegex`/product/${/([0-9]+)/}/edit`
 
 // Route Function
-export function route(pageContext) {
+export function route(pageContext: PageContext) {
   const match = pageContext.urlPathname.match(routeRegex)
   if (!match) return false
   const [, id] = match
@@ -156,16 +158,18 @@ For more information, see:
 
 You can use a `guard()` hook to protect pages from unauthorized/unexpected access.
 
-```js
-// /pages/admin/+guard.js
+```ts
+// /pages/admin/+guard.ts
+// Environment: server
 
+import type { PageContextServer } from 'vike/types'
 import { render } from 'vike/abort'
 
-// This guard() hook protects all pages /pages/admin/**/+Page.js
+// This guard() hook protects all pages /pages/admin/**/+Page.ts
 
-export async function guard(pageContext) {
+export async function guard(pageContext: PageContextServer) {
   if (!pageContext.user.isAdmin) {
-    throw render(401, "You aren't allowed to access this page.')
+    throw render(401, "You aren't allowed to access this page.")
   }
 }
 ```
@@ -178,7 +182,7 @@ For more information, see:
 
 ## TypeScript
 
-There is work-in-progress for adding type safety to routes, see [#698 Typesafe Links](https://github.com/vikejs/vike/issues/698).
+There is work-in-progress for supporting type safe links, see [#698 Typesafe Links](https://github.com/vikejs/vike/issues/698).
 
 
 ## React Router / Vue Router

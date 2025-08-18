@@ -6,7 +6,7 @@ In production:
 - Make sure you don't load the [`vite` package](https://www.npmjs.com/package/vite) nor <Link href="/vite-plugin">Vike's Vite plugin</Link>.
 - Make sure you don't call <Link href="/createDevMiddleware">`createDevMiddleware()`</Link>. (The development middleware isn't needed in production.)
   > You can import `createDevMiddleware` in production, but make sure you don't call it.
-  > ```js
+  > ```ts
   > // Environment: production
   > import { createDevMiddleware } from 'vike/server' // ✅ You can import it
   > createDevMiddleware()                             // ❌ You shouldn't call it

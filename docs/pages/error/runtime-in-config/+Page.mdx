@@ -8,39 +8,44 @@ If you get an error like this:
 
 Then this means you're trying to define runtime code inside <Link href="/config">a config file (e.g. `+config.js`)</Link> which is forbidden.
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
+
+import type { Config, PageContextServer } from 'vike/types'
 
 export default {
   // ❌ Forbidden: the function title() is runtime code
-  title: (pageContext) => pageContext.data.title
-}
+  title: (pageContext: PageContextServer) => pageContext.data.title
+} satisfies Config
 ```
 
 > The `title()` function is called at runtime (when the page is rendered) and *not* at config time (when Vike loads `+config.js` files).
 
 Instead do this:
 
-```js
-// pages/+title.js
+```ts
+// pages/+title.ts
 
 // ✅ Allowed: Vike is able to lazily load this function at runtime
 
-export default (pageContext) => pageContext.data.title
+import type { PageContextServer } from 'vike/types'
+
+export default (pageContext: PageContextServer) => pageContext.data.title
 ```
 
 Or this:
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
 
-// ✅ Allowed: same as defining +title.js
+// ✅ Allowed: same as defining +title.ts
 
+import type { Config } from 'vike/types'
 import title from './title' with { type: 'pointer' }
 
 export default {
   title
-}
+} satisfies Config
 ```
 
 <Construction>The `with { type: 'pointer' }` import attribute isn't implement yet, see workaround at [#1500](https://github.com/vikejs/vike/issues/1500).</Construction>

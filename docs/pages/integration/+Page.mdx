@@ -7,8 +7,8 @@ import { JustAMiddleware, IntegrationHelp, Advanced, UiFrameworkExtension } from
 
 To initialize UI vanilla tools (jQuery, tooltips, ...) you can use the <Link href="/onHydrationEnd">`onHydrationEnd()` hook</Link>.
 
-```js
-// pages/+onHydrationEnd.js
+```ts
+// pages/+onHydrationEnd.ts
 
 export default () => {
   // Initializing vanilla JS component libraries, for example tooltips, after hydration.
@@ -27,8 +27,8 @@ To inject external `<script>` tags, you can use:
 
 You can use the <Link href="/client">`+client.js`</Link> file to initialize analytics code.
 
-```js
-// pages/+client.js
+```ts
+// pages/+client.ts
 
 someAnalyticsLibrary.init(/* ... */)
 ```
@@ -83,33 +83,37 @@ A fully manual integration can be done as follows:
 
 1. Determine the initial data on the server side (after SSR) and <Link href="/pageContext#custom">make it available as `pageContext.dataInitial`</Link>.
    > You can configure/initialize the tool's client at <Link href="/onBeforeRenderHtml">`onBeforeRenderHtml()`</Link>:
-   > ```js
-   > // pages/+onBeforeRenderHtml.js
-   >
+   > ```ts
+   > // pages/+onBeforeRenderHtml.ts
+   > 
+   > import type { PageContextServer } from 'vike/types'
    > import { init } from 'awesome-data-tool'
    >
-   > export function onBeforeRenderHtml(pageContext) {
+   > export function onBeforeRenderHtml(pageContext: PageContextServer) {
    >   pageContext.dataClient = init({ someConfiguration: 'value' })
    > }
    > ```
    >
    > You can determine the initially fetched data at <Link href="/onAfterRenderHtml">`onAfterRenderHtml()`</Link>:
-   > ```js
-   > // pages/+onAfterRenderHtml.js
+   > ```ts
+   > // pages/+onAfterRenderHtml.ts
    >
-   > export function onAfterRenderHtml(pageContext) {
+   > import type { PageContextServer } from 'vike/types'
+   > 
+   > export function onAfterRenderHtml(pageContext: PageContextServer) {
    >   pageContext.dataInitial = pageContext.dataClient.getFetchedData()
    > }
    > ```
    >
    > If you use React then you may also need to use <Link href="/Wrapper">`+Wrapper`</Link>:
-   > ```js
-   > // pages/+Wrapper.jsx
-   >
+   > ```tsx
+   > // pages/+Wrapper.tsx
+   > 
+   > import React from 'react'
    > import { Provider } from 'awesome-data-tool/react'
    > import { usePageContext } from 'vike-react/usePageContext'
    >
-   > export function Wrapper({ children }) {
+   > export function Wrapper({ children }: { children: React.ReactNode }) {
    >   const pageContext = usePageContext()
    >   return <Provider client={pageContext.dataClient}>{children}</Provider>
    > }
@@ -117,14 +121,15 @@ A fully manual integration can be done as follows:
 
 1. Make `pageContext.dataInitial` available to the client-side by using <Link href="/passToClient">`passToClient`</Link>.
 
-1. On the client-side, initialize with `pageContext.dataInitial`.
+2. On the client-side, initialize with `pageContext.dataInitial`.
    > Typically at <Link href="/onBeforeRenderClient">`onBeforeRenderClient()`</Link>:
-   > ```js
-   > // pages/+onBeforeRenderClient.js
+   > ```ts
+   > // pages/+onBeforeRenderClient.ts
    >
+   > import type { PageContextClient } from 'vike/types'
    > import { initClient } from 'awesome-data-tool'
    >
-   > export function onBeforeRenderClient(pageContext) {
+   > export function onBeforeRenderClient(pageContext: PageContextClient) {
    >   pageContext.dataClient = initClient({ data: pageContext.initialData })
    > }
    > ```
@@ -140,8 +145,8 @@ See also:
 
 You can use the <Link href="/client">`+client.js`</Link> file to initialize [service workers](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API).
 
-```js
-// pages/+client.js
+```ts
+// pages/+client.ts
 
 // Initializing a Service Worker
 navigator.serviceWorker.register(/* ... */)
@@ -163,18 +168,19 @@ You can manually integrate React/Vue/Solid (<Link href="/ui-frameworks">or any o
 
 You gain control not only over how React/Vue/Solid is integrated, but also how React/Vue/Solid tools are integrated.
 
-```js
-// /renderer/+onRenderHtml.js
+```ts
+// /renderer/+onRenderHtml.ts
 // Environment: server
 
+export { onRenderHtml }
+
+import type { PageContextServer } from 'vike/types'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 // This can be any UI framework (React, Vue, Solid, Svelte, ...)
 import renderToHtml from 'some-ui-framework'
 
-export { onRenderHtml }
-
-async function onRenderHtml(pageContext) {
-  // `Page` is the `export { Page }` of our +Page.js files;
+async function onRenderHtml(pageContext: PageContextServer) {
+  // `Page` is the `export { Page }` of our +Page.ts files;
   // Vike doesn't do anything with `Page` and just makes it available as
   // `pageContext.Page`; we can export any `Page` value we want and do whatever we want with it.
   const { Page } = pageContext
@@ -197,15 +203,16 @@ async function onRenderHtml(pageContext) {
 }
 ```
 
-```js
-// /renderer/+onRenderClient.js
+```ts
+// /renderer/+onRenderClient.ts
 // Environment: client
 
 export { onRenderClient }
 
+import type { PageContextClient } from 'vike/types'
 import { hydrateDom } from 'some-ui-framework'
 
-async function onRenderClient(pageContext) {
+async function onRenderClient(pageContext: PageContextClient) {
   // Here we can integrate performance measurement tools, e.g. to measure hydration performance
   const { Page } = pageContext
   // We control how our pages are hydrated
@@ -270,7 +277,7 @@ You can manually integrate Vike into your server for full control over the serve
 > If you want to use HTTPS in development, [pass the HTTPS certificates to Vite's dev server](https://vitejs.dev/config/server-options.html#server-https).
 
 You can use:
-- Any server framework (Express, Fastify, Hono, Nitro, HatTip, Koa, Hapi, ...)
+- Any server framework (Express, Fastify, Hono, Nitro, Hattip, Koa, Hapi, ...)
 - Any authentication strategy/tool (email/password, OAuth, Auth.js, Passport.js, Grant, Keycloak, Auth0, ...).
 - Any serverless/edge environment (Cloudflare Workers, Vercel, Firebase, AWS Lambda, Google Cloud Functions, Deno Deploy, ...)
 - Any virtual private server (AWS EC2, Google Cloud, ...)

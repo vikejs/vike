@@ -11,6 +11,27 @@
   - Add negligible breaking change
   - Maybe/eventually: `$ pnpm migrate pageContext.url`? Probably not for now: instead recommend `$ rename urlParsed url`.
 
+= TO-DO/docs/typescript-javascript-toggle
+- Use detype
+  - Vue SFC => transform `<script setup lang="ts">`
+  - If code block mentions `someOtherFile.ts` => transform to `someOtherFile.js`:
+    https://github.com/vikejs/vike/blob/751f79e362048b2e821ef24c79c3d8016ba50593/docs/pages/Head/%2BPage.mdx#L91
+    https://github.com/vikejs/vike/blob/8ec3316922865f1dceb578fc8055e6e03cee4c98/docs/pages/auth/%2BPage.mdx#L165-L166
+    A lot more files...
+    - Simply try `.ts` => `.js` and see if it works
+  - Don't show toggle for TypeScript-only code blocks:
+    https://github.com/vikejs/vike/blob/4f867077d6a2c0fd6228c74de3dbbb33fa2a8c8a/docs/pages/head-tags/%2BPage.mdx#L325-L327
+    https://github.com/vikejs/vike/blob/41a844462c46ec0c63294815185416da6e5cf2e5/docs/pages/meta/%2BPage.mdx#L469-L473
+    - Some kind of flags like in the following?
+      ~~~mdx
+      ```ts ts-only
+      ~~~
+  - Don't show TS<->JS toggle for: https://github.com/vikejs/vike/blob/8ec3316922865f1dceb578fc8055e6e03cee4c98/docs/pages/Wrapper/%2BPage.mdx?plain=1#L12
+    - Simple rule: Don't show toggle if upon ```js (only show toggle upon ```ts)
+      - Alternatively: make TS<->JS toggle small enough that it doesn't add too much noise => always show it then
+      - Alternatively: only show toggle if detype makes a change or if code block has a filename
+  - If detype doesn't work, look at what Astro does
+
 = TO-DO/next-major-release:
 == Highest Prio
 - Triage https://github.com/vikejs/vike/issues?q=state%3Aopen%20label%3A%22v1%20release%20%3Astar2%3A%22 and remove non-breaking changes => release new feature in `1.x.x` release branch

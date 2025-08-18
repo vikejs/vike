@@ -13,12 +13,16 @@ See also: <Link href="/head-tags" />.
 
 You can use `useConfig()` inside any Vike hook, most notably <Link href="/data">`+data`</Link>.
 
-```jsx
-// pages/movies/+data.jsx
+```tsx
+// pages/movies/+data.tsx
 
+export { data }
+export type Data = Awaited<ReturnType<typeof data>>
+
+import type { PageContextServer } from 'vike/types'
 import { useConfig } from 'vike-react/useConfig' // or vike-{vue,solid}
 
-export async function data(pageContext) {
+async function data(pageContext: PageContextServer) {
   const config = useConfig()
 
   const response = await fetch('https://star-wars.brillout.com/api/films.json')
@@ -34,10 +38,10 @@ export async function data(pageContext) {
 ```
 
 > Make sure to call `useConfig()` before any `await`:
-> ```js
-> export async function data(pageContext) {
+> ```ts
+> async function data() {
 >   const response = await fetch('https://star-wars.brillout.com/api/films.json')
->   // ❌ Doesn't work: useConfig() has to be called before `await fetch()`
+>   // ❌ Doesn't work: useConfig() must be called before `await fetch()`
 >   const config = useConfig()
 > }
 > ```
@@ -49,15 +53,16 @@ export async function data(pageContext) {
 
 You can also use `useConfig()` inside UI components.
 
-```jsx
-// pages/product/@id/+Page.jsx
+```tsx
+// pages/product/@id/+Page.tsx
 
 import { useConfig } from 'vike-react/useConfig' // or vike-{vue,solid}
 import { useData } from 'vike-react/useData' // or vike-{vue,solid}
+import type { Data } from './+data'
 
 export function Page() {
   const config = useConfig()
-  const data = useData()
+  const data = useData<Data>()
 
   // Set <head> tags
   config({
@@ -75,7 +80,7 @@ export function Page() {
 ```
 
 > For Vue you can use the following:
-> ```js
+> ```ts
 > import { h } from 'vue'
 > config({
 >   Head: h('meta', {
@@ -91,14 +96,16 @@ export function Page() {
 
 For a more declarative usage, you can use the `<Config>` and `<Head>` components instead of `useConfig()`:
 
-```jsx
-// pages/product/@id/+Page.jsx
+```tsx
+// pages/product/@id/+Page.tsx
 
 import { Config } from 'vike-react/Config' // or vike-{vue,solid}
 import { Head } from 'vike-react/Head' // or vike-{vue,solid}
+import { useData } from 'vike-react/useData' // or vike-{vue,solid}
+import type { Data } from './+data'
 
 export function Page() {
-  const data = useData()
+  const data = useData<Data>()
 
   // Render UI and <head> tags
   return <>
@@ -114,24 +121,30 @@ export function Page() {
 ```
 
 > The `<Config>` and `<Head>` components are just `useConfig()` wrappers — they're only for convenience.
+> The following doesn't make any difference:
+> ```ts
+> import { Config } from 'vike-react/Config' // or vike-{vue,solid}// [!code --]
+> import { Head } from 'vike-react/Head' // or vike-{vue,solid}// [!code --]
+> import { useConfig } from 'vike-react/useConfig' // or vike-{vue,solid}// [!code ++]
+> import { useData } from 'vike-react/useData' // or vike-{vue,solid}
+> import type { Data } from './+data'
 >
-> For example, the following change achieves the same:
-> ```js
 > export function Page() {
->   const data = useData()
->   const config = useConfig()// [!code --]
+>   const data = useData<Data>()
+>   const config = useConfig()// [!code ++]
 >
->   config({// [!code --]
->     title: data.product.name,// [!code --]
->     Head: <meta property="og:image" content={data.product.image} />// [!code --]
->   })// [!code --]
+>   config({// [!code ++]
+>     title: data.product.name,// [!code ++]
+>     Head: <meta property="og:image" content={data.product.image} />// [!code ++]
+>   })// [!code ++]
 >
 >   return (
->     <Config title={data.product.name} />// [!code ++]
->     <Head>// [!code ++]
->       <meta property="og:image" content={data.product.image} />// [!code ++]
->     </Head>// [!code ++]
->     {/* ... */}
+>     <Config title={data.product.name} />// [!code --]
+>     <Head>// [!code --]
+>       <meta property="og:image" content={data.product.image} />// [!code --]
+>     </Head>// [!code --]
+>     <h1>{data.product.name}</h1>
+>     <p>{data.product.description}</p>
 >   )
 > }
 > ```
@@ -148,7 +161,7 @@ and
 that enable components to fetch data.
 It enables your components to use the data they fetch to set `<head>` tags.
 
-```jsx
+```tsx
 import { useConfig } from 'vike-react/useConfig'
 import { useSuspenseQuery } from '@tanstack/react-query'
 
@@ -182,7 +195,7 @@ function Movies() {
 
 Or with `<Config>` and `<Head>`:
 
-```jsx
+```tsx
 import { Config } from 'vike-react/Config'
 import { Head } from 'vike-react/Head'
 import { useSuspenseQuery } from '@tanstack/react-query'

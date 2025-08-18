@@ -1,6 +1,5 @@
 export { testRun }
 
-import assert from 'node:assert'
 import { autoRetry, expect, fetchHtml, getServerUrl, page, partRegex, run, test } from '@brillout/test-e2e'
 const dataHk = partRegex`data-hk=${/[0-9-]+/}`
 
@@ -185,7 +184,7 @@ async function testCounter() {
  *   await ensureWasClientSideRouted('/pages/index')
  *   await ensureWasClientSideRouted('/pages/about')
  */
-async function ensureWasClientSideRouted(pageIdFirst: `/pages/${string}`) {
+async function ensureWasClientSideRouted(pageIdFirst: `/pages/${string}` | `!/pages/${string}`) {
   // Check whether the HTML is from the first page before Client-side Routing.
   // page.content() doesn't return the original HTML (it dumps the DOM to HTML).
   // Therefore only the serialized pageContext tell us the original HTML.
@@ -201,9 +200,7 @@ function findFirstPageId(html: string) {
   expect(match).toBeTruthy()
   let pageId = match![1]
   expect(pageId).toBeTruthy()
-  pageId =
-    // @ts-ignore
-    pageId.replaceAll('\\\\/', '/')
+  pageId = pageId.replaceAll('\\\\/', '/')
   return pageId
 }
 
@@ -212,6 +209,8 @@ function getAssetUrl(fileName: string) {
     return `/assets/${fileName}`
   }
   const [fileBaseName, fileExt, ...r] = fileName.split('.')
-  assert(r.length === 0)
+  if (r.length !== 0) {
+    throw new Error(`getAssetUrl() doesn't support file names with more than one dot. Found: ${fileName}`)
+  }
   return partRegex`/assets/static/${fileBaseName}.${/[a-zA-Z0-9_-]+/}.${fileExt}`
 }

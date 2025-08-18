@@ -12,8 +12,10 @@ A given page should *either* use Server Routing *or* Client Routing, never both.
 
 The problem is often due to one the following.
  - You configured [Rollup's code splitting](https://vitejs.dev/guide/build.html#chunking-strategy) in a way that includes both runtimes inside a same bundle. For example:
-   ```js
-   // vite.config.js
+   ```ts
+   // vite.config.ts
+
+   import type { UserConfig } from 'vite'
 
    // This will lead to the warning above. We recommend against this practice: not only because
    // of the above warning but also because, in general, a given page should only load what is
@@ -29,10 +31,10 @@ The problem is often due to one the following.
      }
    }
 
-   export default { build: { rollupOptions } }
+   export default { build: { rollupOptions } } satisfies UserConfig
    ```
  - You're importing a utility that is only available to <Link href="/client-routing">Client Routing</Link> such as `prefetch()` or `navigate()`, for a page that uses <Link href="/server-routing">Server Routing</Link>.
-   ```js
+   ```ts
    // ❌ Don't import these for pages that use Server Routing
    import { prefetch } from 'vike/client/router'
    import { navigate } from 'vike/client/router'

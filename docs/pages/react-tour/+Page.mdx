@@ -3,8 +3,8 @@
 Similarly to Next.js,
 we define a new page by creating a new `+Page.jsx` file.
 
-```jsx
-// /pages/index/+Page.jsx
+```tsx
+// /pages/index/+Page.tsx
 // Environment: client and server
 
 import React from "react";
@@ -29,16 +29,18 @@ FILESYSTEM                  URL
 
 We can also define a page's route with a *Route String* (for parameterized routes such as `/movies/@id`) or a *Route Function* (for full programmatic flexibility).
 
-```js
-// /pages/index/+route.js
+```ts
+// /pages/index/+route.ts
 
 // Note how the two files share the same folder `/pages/index/`; this is how Vike
-// knows that `/pages/index/+route.js` defines the route of `/pages/index/+Page.jsx`.
+// knows that `/pages/index/+route.ts` defines the route of `/pages/index/+Page.tsx`.
+
+import type { PageContext } from 'vike/types'
 
 // Route Function
-export default pageContext => pageContext.urlPathname === '/';
+export default (pageContext: PageContext) => pageContext.urlPathname === '/';
 
-// If we don't create a `+route.js` file then Vike does Filesystem Routing
+// If we don't create a `+route.ts` file then Vike does Filesystem Routing
 ```
 
 
@@ -46,17 +48,18 @@ export default pageContext => pageContext.urlPathname === '/';
 
 Unlike Next.js, we control how our pages are rendered.
 
-```jsx
-// /renderer/+onRenderHtml.jsx
+```tsx
+// /renderer/+onRenderHtml.tsx
 // Environment: server
+
+export { onRenderHtml };
 
 import ReactDOMServer from "react-dom/server";
 import React from "react";
 import { escapeInject, dangerouslySkipEscape } from "vike/server";
+import type { PageContextServer } from "vike/types"
 
-export { onRenderHtml };
-
-async function onRenderHtml(pageContext) {
+async function onRenderHtml(pageContext: PageContextServer) {
   const { Page, data } = pageContext;
   const viewHtml = ReactDOMServer.renderToString(
     <Page {...data} />
@@ -76,16 +79,17 @@ async function onRenderHtml(pageContext) {
 }
 ```
 
-```jsx
-// /renderer/+onRenderClient.jsx
+```tsx
+// /renderer/+onRenderClient.tsx
 // Environment: client
-
-import ReactDOM from "react-dom/client";
-import React from "react";
 
 export { onRenderClient };
 
-async function onRenderClient(pageContext) {
+import ReactDOM from "react-dom/client";
+import React from "react";
+import type { PageContextClient } from "vike/types"
+
+async function onRenderClient(pageContext: PageContextClient) {
   const { Page, data } = pageContext
   ReactDOM.hydrateRoot(
     document.getElementById("root"),
@@ -108,15 +112,16 @@ our pages with a completely different UI framework such as Vue.
 
 Let's now have a look at how to fetch data.
 
-```jsx
-// /pages/star-wars/movie/+Page.jsx
+```tsx
+// /pages/star-wars/movie/+Page.tsx
 // Environment: client and server
-
-import React from "react";
 
 export { Page };
 
-function Page(data) {
+import React from "react";
+import type { Data } from "./+data"
+
+function Page(data: Data) {
   const { movie } = data;
   return <>
     <h1>{movie.title}</h1>
@@ -126,25 +131,29 @@ function Page(data) {
 }
 ```
 
-```js
-// /pages/star-wars/movie/+route.js
+```ts
+// /pages/star-wars/movie/+route.ts
 // Environment: server
 
 // Route String
 export default "/star-wars/@movieId";
 ```
 
-```js
-// /pages/star-wars/movie/+data.js
+```ts
+// /pages/star-wars/movie/+data.ts
 // Environment: server
 
-import fetch from "node-fetch";
+export { data }
+export type Data = Awaited<ReturnType<typeof data>>
 
-export async function data(pageContext) {
+import fetch from "node-fetch";
+import type { PageContextServer } from 'vike/types'
+
+async function data(pageContext: PageContextServer) {
   // The route parameter of `/star-wars/@movieId` is available at `pageContext.routeParams`
   const { movieId } = pageContext.routeParams;
 
-  // By default, +data.js files are loaded and executed only on the server-side
+  // By default, +data.ts files are loaded and executed only on the server-side
   // which means we can use SQL/ORM queries here.
   const response = await fetch(`https://star-wars.brillout.com/api/films/${id}.json`)
   let movie = await response.json();

@@ -513,7 +513,7 @@ const headings = [
     level: 2,
     title: '`useData()`',
     url: '/useData',
-    sectionTitles: ['TypeScript', 'Without `vike-{react,vue,solid}`'],
+    sectionTitles: ['Without `vike-{react,vue,solid}`'],
   },
   {
     level: 2,
@@ -664,7 +664,6 @@ const headings = [
     level: 2,
     title: '`passToClient`',
     url: '/passToClient',
-    sectionTitles: ['`once`'],
   },
   {
     level: 2,
@@ -736,7 +735,7 @@ function tools() {
         url: '/hapi',
       },
       {
-        title: 'HatTip',
+        title: 'Hattip',
         url: '/hattip',
       },
       {

@@ -1,4 +1,4 @@
-import { HookTypeScriptHints, UiFrameworkExtension } from '../../components'
+import { UiFrameworkExtension } from '../../components'
 import { Link } from '@brillout/docpress'
 
 Environment: client  
@@ -11,15 +11,16 @@ The hooks `onRenderClient()` and <Link href="/onRenderHtml">`onRenderHtml()`</Li
 
 > If you use a <UiFrameworkExtension />, then you don't need to (and shouldn't) define `onRenderClient()` as it's already defined by <UiFrameworkExtension name noLink />.
 
-```js
-// +onRenderClient.js
+```ts
+// +onRenderClient.ts
 // Environment: client
-
-import { renderToDom, hydrateDom } from 'some-ui-framework'
 
 export { onRenderClient }
 
-async function onRenderClient(pageContext) {
+import type { PageContextClient } from 'vike/types'
+import { renderToDom, hydrateDom } from 'some-ui-framework'
+
+async function onRenderClient(pageContext: PageContextClient) {
   const { Page } = pageContext
 
   // SPA:
@@ -59,27 +60,6 @@ See <Link href='/render-modes' />.
 If you create `/pages/star-wars/+onRenderClient.js` then you define how `/pages/star-wars/+Page.js` is rendered while overriding the global `onRenderClient()` hook.
 
 By defining multiple `onRenderClient()` hooks, you can define different renderings for different pages. See <Link href='/multiple-renderer' />.
-
-
-## TypeScript
-
-```ts
-// /**/+onRenderClient.ts (usually /renderer/+onRenderClient.ts)
-// Environment: client
-
-export { onRenderClient }
-
-import type { OnRenderClientAsync } from 'vike/types'
-import { hydrateDom } from 'some-ui-framework'
-
-const onRenderClient: OnRenderClientAsync = async (
-  pageContext
-): ReturnType<OnRenderClientAsync> => {
-  // ...
-}
-```
-
-{/* NOTE(aurelien) no HookTypeScriptHints here because onRenderClient has no return value */}
 
 
 ## See also

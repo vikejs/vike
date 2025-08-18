@@ -21,8 +21,8 @@ The `renderPage()` function enables you to embed Vike into any server.
 
 ## Usage
 
-```js
-// server/index.js
+```ts
+// server/index.ts
 
 // In this example we use Express.js but we could use any other server framework
 import express from 'express'
@@ -93,7 +93,7 @@ For HTML streams use `httpResponse.pipe()` instead of `pageContext.httpResponse.
 Optionally, you can use `pageContext.httpResponse.earlyHints` for adding early hints (`103 Early Hint`), see <Link href="/preloading#early-hints" />.
 
 The `renderPage()` function doesn't depend on Node.js and you can use `renderPage()` (and therefore embed Vike) anywhere:
- - Any server environment (Express.js, HatTip, Deno, Fastify, Vite's development server, Node.js's HTTP server, ...)
+ - Any server environment (Express.js, Hattip, Deno, Fastify, Vite's development server, Node.js's HTTP server, ...)
  - Any deployment provider (AWS, Cloudflare Workers, Vercel, ...)
 
 > When modifying your server, you may need to manually restart your server for your changes to take effect. See [#562](https://github.com/vikejs/vike/issues/562).

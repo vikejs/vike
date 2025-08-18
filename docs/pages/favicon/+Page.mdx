@@ -14,14 +14,15 @@ Environment: server
 
 The `favicon` setting sets the page's favicon.
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
 
+import type { Config } from 'vike/types'
 import favicon from './favicon.svg'
 
 export default {
   favicon
-}
+} satisfies Config
 ```
 
 > If you want to set a different favicon for different pages, then consider creating a custom setting as shown at <Link href="/head-tags#custom-settings" />.

@@ -75,9 +75,11 @@ Use following settings to set `<head>` tags (aka document metadata).
 
 You can set `<head>` tags that apply globally to all pages:
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
+// Environment: config
 
+import type { Config } from 'vike/types'
 import image from './previewImage.jpg'
 
 // Applies to all pages (can be overridden)
@@ -88,11 +90,11 @@ export default {
   description: 'We deliver payload to space',
   // Default <meta property="og:image">
   image
-}
+} satisfies Config
 ```
 
-```jsx
-// pages/+Head.js
+```tsx
+// pages/+Head.ts
 // Environment: server
 
 import favicon from './favicon.png'
@@ -100,7 +102,7 @@ import favicon from './favicon.png'
 // Applies to all pages (cannot be overridden)
 export function Head() {
   return <>
-    {/* Icon shown in the browser tab (aka favicon) */
+    {/* Icon shown in the browser tab (aka favicon) */}
     <link rel="icon" href={favicon} type="image/svg+xml">
   </>
 }
@@ -108,29 +110,31 @@ export function Head() {
 
 You can also set `<head>` tags only for a single page or a group of pages:
 
-```js
-// pages/movies/+config.js
+```ts
+// pages/movies/+config.ts
+// Environment: config
 
-import previewImage from './previewImage.jpg'
+import type { Config } from 'vike/types'
+import image from './previewImage.jpg'
 
 // Overrides the defaults defined above
 export default {
   title: 'Movies',
   description: 'List of movies.',
   image
-}
+} satisfies Config
 ```
 
-```jsx
-// pages/movies/+Head.js
+```tsx
+// pages/movies/+Head.ts
 // Environment: server
 
 import iconMobile from './iconMobile.jpg'
 
-// This doesn't override the favicon defined at /pages/+Head.js above
+// This doesn't override the favicon defined at /pages/+Head.ts above
 export function Head() {
   return <>
-    {/* Icon shown on mobile homescreens (PWA) */
+    {/* Icon shown on mobile homescreens (PWA) */}
     <link rel="apple-touch-icon" href={iconMobile} type="image/svg+xml">
   </>
 }
@@ -153,12 +157,17 @@ You can set `<head>` tags based on <Link href="/data-fetching">fetched data</Lin
 
 You can use the <Link href="/useConfig">`useConfig()` hook</Link> to set `<head>` tags dynamically inside your `+data` hook.
 
-```js
-// pages/movies/+data.js
+```ts
+// pages/movies/+data.ts
+// Environment: server
+
+export { data }
+export type Data = Awaited<ReturnType<typeof data>>
 
 import { useConfig } from 'vike-react/useConfig' // or vike-{vue,solid}
+import type { PageContextServer } from 'vike/types'
 
-export async function data(pageContext) {
+async function data(pageContext: PageContextServer) {
   const config = useConfig()
 
   const response = await fetch('https://star-wars.brillout.com/api/films.json')
@@ -174,8 +183,8 @@ export async function data(pageContext) {
 ```
 
 > Make sure to call `useConfig()` before any `await`:
-> ```js
-> export async function data(pageContext) {
+> ```ts
+> async function data() {
 >   const response = await fetch('https://star-wars.brillout.com/api/films.json')
 >   // ❌ Doesn't work: useConfig() must be called before `await fetch()`
 >   const config = useConfig()
@@ -192,6 +201,7 @@ You can set `+title`, `+description` and `+image` using a <Link href="/pageConte
 
 ```ts
 // pages/movies/+title.ts
+// Environment: server, client
 
 import type { PageContext } from 'vike/types'
 import type { Data } from './+data'
@@ -199,11 +209,14 @@ import type { Data } from './+data'
 export default (pageContext: PageContext<Data>) => `${pageContext.data.movies.length} movies`
 ```
 
-```js
+```ts
 // pages/movies/+data.ts
+// Environment: server
 
+export { data }
 export type Data = Awaited<ReturnType<typeof data>>
-export async function data(pageContext) {
+
+async function data() {
   const response = await fetch('https://star-wars.brillout.com/api/films.json')
   let { movies } = await response.json()
   return { movies }
@@ -212,23 +225,30 @@ export async function data(pageContext) {
 
 You can define some default logic that applies to all pages:
 
-```js
-// pages/+title.js
+```ts
+// pages/+title.ts
+// Environment: server, client
+
+import type { PageContext } from 'vike/types'
+
+type Data = { title?: string } | undefined
 
 // Applies to all pages: if a page fetches data and data.title is defined then
 // use it to set the page's title.
-export default (pageContext) => pageContext.data?.title || 'Some Default Title'
+export default (pageContext: PageContext<Data>) => pageContext.data?.title || 'Some Default Title'
 ```
 
 The `+Head` setting is a UI component — you can use <Link href="/useData">`useData()`</Link> and <Link href="/usePageContext">`usePageContext()`</Link> as usual:
 
-```jsx
-// pages/movie/@id/+Head.js
+```tsx
+// pages/movie/@id/+Head.ts
+// Environment: server
 
 import { useData } from 'vike-react/useData' // or vike-{vue,solid}
+import type { Data } from './+data'
 
 export function Head() {
-  const data = useData()
+  const data = useData<Data>()
   return <>
     {/* Image shown when sharing on social sites (Twitter, WhatsApp, ...) */}
     <meta property="og:image" content={data.movie.image}>
@@ -247,8 +267,11 @@ For example, in the following, we create a new setting `+dynamicFavicon` that al
 
 ### Setting creation
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
+// Environment: config
+
+import type { Config } from 'vike/types'
 
 export default {
   meta: {
@@ -256,12 +279,13 @@ export default {
       env: { server: true, client: true }
     }
   }
-}
+} satisfies Config
 ```
 > See: <Link href="/meta" />
 
-```js
-// pages/+Head.jsx
+```tsx
+// pages/+Head.ts
+// Environment: server
 
 import { usePageContext } from 'vike-react/usePageContext' // or vike-{vue,solid}
 
@@ -273,10 +297,13 @@ export default () => {
   <>
 }
 ```
-```js
-// pages/+onAfterRenderClient.js
+```ts
+// pages/+onAfterRenderClient.ts
+// Environment: client
 
-export default (pageContext) => {
+import type { PageContextClient } from 'vike/types'
+
+export default (pageContext: PageContextClient) => {
   if (!pageContext.isHydration) {
     const { dynamicFavicon } = pageContext.config
     updateFavicon(dynamicFavicon)
@@ -302,7 +329,8 @@ function updateFavicon(dynamicFavicon) {
 For TypeScript users:
 
 ```ts
-// pages/+config.js
+// pages/+config.ts
+// Environment: config
 
 declare global {
   namespace Vike {
@@ -317,34 +345,38 @@ declare global {
 
 ### Setting usage
 
-```js
-// pages/+config.js
+```ts
+// pages/+config.ts
+// Environment: config
 
+import type { Config } from 'vike/types'
 import favicon from './favicon.svg'
 
-export {
+export default {
   // Default favicon
   dynamicFavicon: favicon
-}
+} satisfies Config
 ```
 
-```js
-// pages/premium-members/+config.js
+```ts
+// pages/premium-members/+config.ts
+// Environment: config
 
+import type { Config } from 'vike/types'
 import favicon from './favicon.svg'
 
-export {
+export default {
   // Favicon for /premium-members
   dynamicFavicon: favicon
-}
+} satisfies Config
 ```
 
 ## Internationalization
 
 Example of internationalizing (i18n) `<head>` tags:
 
-```jsx
-// pages/movies/+Head.js
+```tsx
+// pages/movies/+Head.ts
 // Environment: server
 
 export { Head }
@@ -361,11 +393,13 @@ function Head() {
   </>
 }
 ```
-```js
-// pages/movies/+title.js
+```ts
+// pages/movies/+title.ts
 // Environment: server, client
 
-export function title(pageContext) {
+import type { PageContext } from 'vike/types'
+
+export function title(pageContext: PageContext) {
   const title = pageContext.locale === 'de-DE' ?
     'Star Wars Filme' :
     'Star Wars Movies'

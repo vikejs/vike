@@ -1,6 +1,9 @@
 export { modifyUrlSameOrigin }
 export { ModifyUrlSameOriginOptions }
 
+// We don't move modifyUrlSameOrigin() to the modifyUrl.ts file because we plan to use modifyUrlSameOrigin() on the client-side:
+// https://github.com/vikejs/vike/blob/c5a2de5e85262771f97851767c00ac35da69c64b/packages/vike/client/runtime-client-routing/navigate.ts#L4
+
 import {
   createUrlFromComponents,
   isNotNullish_keyVal,
@@ -14,7 +17,7 @@ type ModifyUrlSameOriginOptions = {
   search?: Search | null
   pathname?: string
 }
-type Search = Record<string, string | null> | URLSearchParams
+type Search = Record<string, string | null | undefined> | URLSearchParams
 
 function modifyUrlSameOrigin(url: string, modify: ModifyUrlSameOriginOptions): string {
   const urlParsed = parseUrl(url, '/')
@@ -43,15 +46,22 @@ function modifyUrlSameOrigin(url: string, modify: ModifyUrlSameOriginOptions): s
   return urlModified
 }
 
-function resolveSearch(urlParsed: ReturnType<typeof parseUrl>, search: Search): string {
+function resolveSearch(urlParsed: ReturnType<typeof parseUrl>, modifySearch: Search): string {
   let searchParams: URLSearchParams
-  if (search instanceof URLSearchParams) {
+  if (modifySearch instanceof URLSearchParams) {
     // Overwrite
-    searchParams = search
+    searchParams = modifySearch
   } else {
     // Merge
-    const searchMap = objectFilter({ ...urlParsed.search, ...search }, isNotNullish_keyVal<string>)
+    const searchMap = objectFilter(
+      { ...urlParsed.search, ...objectFilter(modifySearch, isNotUndefined) },
+      isNotNullish_keyVal<string>,
+    )
     searchParams = new URLSearchParams(searchMap)
   }
   return '?' + searchParams.toString()
+}
+
+function isNotUndefined<T>(arg: [string, T | undefined]): arg is [string, T] {
+  return arg[1] !== undefined
 }

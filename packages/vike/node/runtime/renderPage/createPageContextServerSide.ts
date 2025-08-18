@@ -12,13 +12,7 @@ type PageContextCreated = Awaited<ReturnType<typeof createPageContextServerSide>
 function createPageContextServerSide(
   pageContextInit: PageContextInit,
   globalContext: GlobalContextServerInternal,
-  {
-    isPrerendering,
-    ssr: { urlHandler, isClientSideNavigation } = {
-      urlHandler: null,
-      isClientSideNavigation: false,
-    },
-  }:
+  args:
     | {
         isPrerendering: false
         ssr: {
@@ -32,8 +26,7 @@ function createPageContextServerSide(
       },
 ) {
   assert(pageContextInit.urlOriginal)
-
-  const pageContextCreated = createPageContext(pageContextInit, isPrerendering)
+  const pageContextCreated = createPageContext(pageContextInit, args.isPrerendering)
 
   objectAssign(pageContextCreated, {
     _globalContext: globalContext,
@@ -43,8 +36,8 @@ function createPageContextServerSide(
     _baseAssets: globalContext.baseAssets,
     _pageContextInit: pageContextInit,
     _urlRewrite: null,
-    _urlHandler: urlHandler,
-    isClientSideNavigation,
+    _urlHandler: args.ssr?.urlHandler ?? null,
+    isClientSideNavigation: args.ssr?.isClientSideNavigation ?? false,
   })
 
   objectAssign(pageContextCreated, globalContext._vikeConfigPublicGlobal)

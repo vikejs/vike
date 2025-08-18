@@ -14,51 +14,20 @@ The `useData()` component hook allows you to access the value returned by the <L
 
 For example:
 
-```js
-// SomeComponent.js
-// Environment: server, client
+```ts
+// /pages/product/@id/SomeComponent.ts
+// Environment: server & client
 
 import { useData } from 'vike-react/useData' // or vike-vue / vike-solid
-
-  // Inside a React/Vue/Solid component
-  const data = useData()
-  const { name, price } = data
-```
-
-```js
-// /pages/product/@id/+data.js
-// Environment: server
-
-export { data }
-
-async function data(pageContext) {
-  let product = await Product.findById(pagContext.routeParams.id)
-
-  // `product` is serialized and passed to the client. Therefore, we pick only the
-  // data the client needs in order to minimize what is sent over the network.
-  product = { name: product.name, price: product.price }
-
-  return product
-}
-```
-
-See <Link href="/data-fetching" /> for more information about data fetching.
-
-
-## TypeScript
-
-```ts
-// /pages/product/SomeComponent.ts
-// Environment: server, client
-
 import type { Data } from './+data'
 
   // Inside a React/Vue/Solid component
   const data = useData<Data>()
+  const { name, price } = data
 ```
 
 ```ts
-// /pages/product/+data.ts
+// /pages/product/@id/+data.ts
 // Environment: server
 
 export { data }
@@ -67,7 +36,13 @@ export type Data = Awaited<ReturnType<typeof data>>
 import type { PageContextServer } from 'vike/types'
 
 async function data(pageContext: PageContextServer) {
-  // ...
+  let product = await Product.findById(pagContext.routeParams.id)
+
+  // `product` is serialized and passed to the client. Therefore, we pick only the
+  // data the client needs in order to minimize what is sent over the network.
+  product = { name: product.name, price: product.price }
+
+  return product
 }
 ```
 
@@ -79,14 +54,15 @@ Using type inference as shown above is usually what you want, but if you want to
 export { data }
 export type { Data }
 
+import type { PageContextServer } from 'vike/types'
+
 type Data = /* the type you want to enforce */
 
-import type { DataAsync } from 'vike/types'
-
-const data: DataAsync = async (pageContext): Promise<Data> => {
+function data(pageContext: PageContextServer): Promise<Data> {
   // ...
 }
 ```
+
 
 ## Without `vike-{react,vue,solid}`
 

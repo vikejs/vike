@@ -27,3 +27,10 @@ body {
 body.page-is-transitioning #page-content {
   opacity: 0;
 }
+
+code {
+  font-family: monospace;
+  background-color: #eaeaea;
+  padding: 3px 5px;
+  border-radius: 4px;
+}

@@ -1,7 +1,6 @@
 main="./worker/index.js"
 name = "vike_worker-example"
-compatibility_flags = ["streams_enable_constructors"]
-compatibility_date = "2021-09-29"
+compatibility_date = "2025-08-06"
 workers_dev = true
 
 [site]
