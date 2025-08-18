@@ -1768,7 +1768,7 @@ importers:
         specifier: ^5.9.2
         version: 5.9.2
       vike:
-        specifier: ^0.4.237
+        specifier: 0.4.237
         version: link:../../packages/vike
       vike-react:
         specifier: 0.6.5
