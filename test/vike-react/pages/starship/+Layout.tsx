@@ -35,8 +35,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 }
 
 function Link(props: any) {
-  // We set `keep-scroll-position` to tell Vike to preserve the current scroll position
-  return <a keep-scroll-position="" style={{ marginRight: 10, ...props.style }} {...props} />
+  return <a style={{ marginRight: 10, ...props.style }} {...props} />
 }
 
 function Counter() {
@@ -50,7 +49,6 @@ function Counter() {
 
 function DummyText() {
   return (
-    // spellcheck-ignore:on
     <>
       <p>
         Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum
@@ -111,6 +109,5 @@ function DummyText() {
         varius tincidunt libero. Phasellus dolor. Maecenas vestibulum mollis diam. Pellentesque ut neque.
       </p>
     </>
-    // spellcheck-ignore:off
   )
 }
