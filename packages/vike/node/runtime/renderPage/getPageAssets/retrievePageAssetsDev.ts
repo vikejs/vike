@@ -8,6 +8,7 @@ import { isVirtualFileIdEntry } from '../../../shared/virtualFiles/virtualFileEn
 import type { GetClientEntrySrcDev } from '../../../vite/shared/getClientEntrySrcDev.js'
 
 const globalObject = getGlobalObject('getPageAssets/retrievePageAssetsDev.ts', {
+  // We cannot define getClientEntrySrcDev() in this file because it depends on utils/requireResolve.ts which isn't available in production
   getClientEntrySrcDev: null as null | GetClientEntrySrcDev,
 })
 
