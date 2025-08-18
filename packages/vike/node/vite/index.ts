@@ -26,10 +26,10 @@ import { pluginWorkaroundCssModuleHmr } from './plugins/pluginWorkaroundCssModul
 import { pluginWorkaroundVite6HmrRegression } from './plugins/pluginWorkaroundVite6HmrRegression.js'
 import { pluginReplaceConstants } from './plugins/pluginReplaceConstants.js'
 import { pluginNonRunnableDev } from './plugins/pluginNonRunnableDev.js'
-import { setResolveClientEntriesDev } from '../runtime/renderPage/getPageAssets/retrievePageAssetsDev.js'
+import { setGetClientEntrySrcDev } from '../runtime/renderPage/getPageAssets/retrievePageAssetsDev.js'
 
 // We don't call this in ./onLoad.ts to avoid a cyclic dependency with utils.ts
-setResolveClientEntriesDev(getClientEntrySrcDev)
+setGetClientEntrySrcDev(getClientEntrySrcDev)
 
 type PluginInterop = Record<string, unknown> & { name: string }
 // Return `PluginInterop` instead of `Plugin` to avoid type mismatch upon different Vite versions

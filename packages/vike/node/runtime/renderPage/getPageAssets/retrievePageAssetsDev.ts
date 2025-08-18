@@ -1,14 +1,14 @@
 export { retrievePageAssetsDev }
-export { setResolveClientEntriesDev }
+export { setGetClientEntrySrcDev }
 
 import { assert, getGlobalObject, styleFileRE } from '../../utils.js'
 import type { ModuleNode, ViteDevServer } from 'vite'
 import type { ClientDependency } from '../../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { isVirtualFileIdEntry } from '../../../shared/virtualFiles/virtualFileEntry.js'
-import type { ResolveClientEntriesDev } from '../../../vite/shared/getClientEntrySrcDev.js'
+import type { GetClientEntrySrcDev } from '../../../vite/shared/getClientEntrySrcDev.js'
 
 const globalObject = getGlobalObject('getPageAssets/retrievePageAssetsDev.ts', {
-  getClientEntrySrcDev: null as null | ResolveClientEntriesDev,
+  getClientEntrySrcDev: null as null | GetClientEntrySrcDev,
 })
 
 async function retrievePageAssetsDev(
@@ -23,7 +23,7 @@ async function retrievePageAssetsDev(
   return { clientEntriesSrc, assetUrls }
 }
 
-function setResolveClientEntriesDev(getClientEntrySrcDev: ResolveClientEntriesDev) {
+function setGetClientEntrySrcDev(getClientEntrySrcDev: GetClientEntrySrcDev) {
   globalObject.getClientEntrySrcDev = getClientEntrySrcDev
 }
 

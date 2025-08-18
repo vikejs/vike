@@ -1,5 +1,5 @@
 export { getClientEntrySrcDev }
-export type ResolveClientEntriesDev = typeof getClientEntrySrcDev
+export type GetClientEntrySrcDev = typeof getClientEntrySrcDev
 
 import {
   assert,
