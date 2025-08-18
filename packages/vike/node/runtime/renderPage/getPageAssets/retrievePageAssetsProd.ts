@@ -14,11 +14,11 @@ function retrievePageAssetsProd(
   clientEntries: string[],
   config: ConfigResolved,
 ) {
-  const clientEntriesSrc = clientEntries.map((clientEntry) => getClientEntrySrc(clientEntry, assetsManifest))
+  const clientEntriesSrc = clientEntries.map((clientEntry) => getClientEntrySrcProd(clientEntry, assetsManifest))
   const assetUrls = getAssetsUrl(clientDependencies, assetsManifest, config)
   return { clientEntriesSrc, assetUrls }
 }
-function getClientEntrySrc(clientEntry: string, assetsManifest: ViteManifest): string {
+function getClientEntrySrcProd(clientEntry: string, assetsManifest: ViteManifest): string {
   const { manifestEntry } = getManifestEntry(clientEntry, assetsManifest)
   assert(manifestEntry.isEntry || manifestEntry.isDynamicEntry || clientEntry.endsWith('.css'), { clientEntry })
   let { file } = manifestEntry
