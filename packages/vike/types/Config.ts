@@ -71,7 +71,10 @@ type HookNameGlobal = 'onBeforeRoute' | 'onPrerenderStart' | 'onCreatePageContex
 type HookNameOldDesign = 'render' | 'prerender' | 'onBeforePrerender'
 
 type ConfigNameBuiltIn =
-  | Exclude<keyof Config, keyof VikeVitePluginOptions | 'onBeforeRoute' | 'onPrerenderStart' | 'vite' | 'redirects'>
+  | Exclude<
+      keyof ConfigBuiltIn,
+      keyof VikeVitePluginOptions | 'onBeforeRoute' | 'onPrerenderStart' | 'vite' | 'redirects'
+    >
   | 'prerender'
   | 'serverOnlyHooks'
   | 'isClientRuntimeLoaded'
