@@ -1,10 +1,12 @@
 {
   "compilerOptions": {
     "strict": true,
-    "jsx": "react",
-    "module": "ES2020",
+    "target": "ESNext",
+    "module": "ESNext",
     "moduleResolution": "bundler",
-    "esModuleInterop": true
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "esModuleInterop": true,
+    "jsx": "react"
   },
   "include": [
     "**/*",

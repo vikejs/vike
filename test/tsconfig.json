@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
     "strict": true,
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "Bundler"
+    "moduleResolution": "bundler",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "esModuleInterop": true
   },
   "include": ["utils.ts"]
 }
