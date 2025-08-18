@@ -1,23 +1,16 @@
 export { getPageAssets }
-export { setResolveClientEntriesDev }
 export type { PageAsset }
 export type { GetPageAssets }
 export type { PageContextGetPageAssets }
 
-import { assert, prependBase, toPosixPath, unique, getGlobalObject, getViteRPC } from '../utils.js'
-import { retrieveAssetsDev } from './getPageAssets/retrievePageAssetsDev.js'
 import { retrievePageAssetsProd } from './getPageAssets/retrievePageAssetsProd.js'
+import { retrievePageAssetsDev } from './getPageAssets/retrievePageAssetsDev.js'
 import { inferMediaType, type MediaType } from './inferMediaType.js'
-import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { sortPageAssetsForEarlyHintsHeader } from './getPageAssets/sortPageAssetsForEarlyHintsHeader.js'
+import { assert, prependBase, toPosixPath, unique, getViteRPC } from '../utils.js'
+import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
-import type { ResolveClientEntriesDev } from '../../vite/shared/resolveClientEntriesDev.js'
-import type { ViteDevServer } from 'vite'
 import type { ViteRPC } from '../../vite/plugins/pluginNonRunnableDev.js'
-
-const globalObject = getGlobalObject('renderPage/getPageAssets.ts', {
-  resolveClientEntriesDev: null as null | ResolveClientEntriesDev,
-})
 
 type PageAsset = {
   src: string
@@ -88,20 +81,4 @@ async function getPageAssets(
   await sortPageAssetsForEarlyHintsHeader(pageAssets, isProduction)
 
   return pageAssets
-}
-
-async function retrievePageAssetsDev(
-  viteDevServer: ViteDevServer,
-  clientDependencies: ClientDependency[],
-  clientEntries: string[],
-) {
-  const clientEntriesSrc = clientEntries.map((clientEntry) =>
-    globalObject.resolveClientEntriesDev!(clientEntry, viteDevServer),
-  )
-  const assetUrls = await retrieveAssetsDev(clientDependencies, viteDevServer)
-  return { clientEntriesSrc, assetUrls }
-}
-
-function setResolveClientEntriesDev(resolveClientEntriesDev: ResolveClientEntriesDev) {
-  globalObject.resolveClientEntriesDev = resolveClientEntriesDev
 }

@@ -8,8 +8,7 @@ import {
   isRunnableDevEnvironment,
 } from '../utils.js'
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
-import { resolveClientEntriesDev } from '../shared/resolveClientEntriesDev.js'
-import { retrieveAssetsDev } from '../../runtime/renderPage/getPageAssets/retrievePageAssetsDev.js'
+import { retrievePageAssetsDev } from '../../runtime/renderPage/getPageAssets/retrievePageAssetsDev.js'
 import { getViteConfigRuntime } from '../shared/getViteConfigRuntime.js'
 import { getMagicString } from '../shared/getMagicString.js'
 assertIsNotProductionRuntime()
@@ -20,11 +19,8 @@ function getViteRpcFunctions(viteDevServer: ViteDevServer) {
     async transformIndexHtmlRPC(html: string) {
       return await viteDevServer.transformIndexHtml('/', html)
     },
-    // TODO/now: dedupe retrievePageAssetsDevRPC and retrievePageAssetsDev()
     async retrievePageAssetsDevRPC(clientDependencies: ClientDependency[], clientEntries: string[]) {
-      const clientEntriesSrc = clientEntries.map((clientEntry) => resolveClientEntriesDev(clientEntry, viteDevServer))
-      const assetUrls = await retrieveAssetsDev(clientDependencies, viteDevServer)
-      return { clientEntriesSrc, assetUrls }
+      return await retrievePageAssetsDev(viteDevServer, clientDependencies, clientEntries)
     },
     async getViteConfigRuntimeRPC() {
       return getViteConfigRuntime(viteDevServer.config)

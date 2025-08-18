@@ -1,9 +1,31 @@
-export { retrieveAssetsDev }
+export { retrievePageAssetsDev }
+export { setResolveClientEntriesDev }
 
-import { assert, styleFileRE } from '../../utils.js'
+import { assert, getGlobalObject, styleFileRE } from '../../utils.js'
 import type { ModuleNode, ViteDevServer } from 'vite'
 import type { ClientDependency } from '../../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { isVirtualFileIdEntry } from '../../../shared/virtualFiles/virtualFileEntry.js'
+import type { ResolveClientEntriesDev } from '../../../vite/shared/resolveClientEntriesDev.js'
+
+const globalObject = getGlobalObject('getPageAssets/retrievePageAssetsDev.ts', {
+  resolveClientEntriesDev: null as null | ResolveClientEntriesDev,
+})
+
+async function retrievePageAssetsDev(
+  viteDevServer: ViteDevServer,
+  clientDependencies: ClientDependency[],
+  clientEntries: string[],
+) {
+  const clientEntriesSrc = clientEntries.map((clientEntry) =>
+    globalObject.resolveClientEntriesDev!(clientEntry, viteDevServer),
+  )
+  const assetUrls = await retrieveAssetsDev(clientDependencies, viteDevServer)
+  return { clientEntriesSrc, assetUrls }
+}
+
+function setResolveClientEntriesDev(resolveClientEntriesDev: ResolveClientEntriesDev) {
+  globalObject.resolveClientEntriesDev = resolveClientEntriesDev
+}
 
 async function retrieveAssetsDev(clientDependencies: ClientDependency[], viteDevServer: ViteDevServer) {
   const assetUrls = new Set<string>()
