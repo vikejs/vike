@@ -1,7 +1,6 @@
 export { testRun }
 
 import { test, expect, run, fetchHtml, page, getServerUrl, autoRetry, partRegex } from '@brillout/test-e2e'
-// @ts-ignore
 import assert from 'node:assert'
 
 let isProd: boolean
@@ -254,9 +253,7 @@ function findFirstPageId(html: string) {
   expect(match).toBeTruthy()
   let pageId = match![1]
   expect(pageId).toBeTruthy()
-  pageId =
-    // @ts-ignore
-    pageId.replaceAll('\\\\/', '/')
+  pageId = pageId.replaceAll('\\\\/', '/')
   return pageId
 }
 
