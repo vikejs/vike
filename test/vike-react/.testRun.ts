@@ -1,5 +1,6 @@
 export { testRun }
-import { test, expect, run, fetchHtml, page, getServerUrl, autoRetry, partRegex } from '@brillout/test-e2e'
+import { test, expect, run, fetchHtml, page, getServerUrl, autoRetry, partRegex, expectLog } from '@brillout/test-e2e'
+// @ts-ignore
 import assert from 'node:assert'
 
 let isProd: boolean
@@ -43,6 +44,7 @@ function testRun(cmd: `pnpm run ${'dev' | 'preview'}`) {
   testPageNavigation_betweenWithSSRAndWithout()
   testPageNavigation_titleUpdate()
   testUseConfig()
+  testReactSetting()
 }
 
 function testPageNavigation_betweenWithSSRAndWithout() {
@@ -249,4 +251,13 @@ function getAssetUrl(fileName: string) {
   const [fileBaseName, fileExt, ...r] = fileName.split('.')
   assert(r.length === 0)
   return partRegex`/assets/static/${fileBaseName}.${/[a-zA-Z0-9_-]+/}.${fileExt}`
+}
+
+function testReactSetting() {
+  test('+react.{server.client}.js', async () => {
+    await page.goto(getServerUrl() + '/')
+    await testCounter()
+    expectLog('some-id-server-prefix', { filter: (log) => log.logSource === 'stdout' })
+    expectLog('some-id-client-prefix', { filter: (log) => log.logSource === 'Browser Log' })
+  })
 }
