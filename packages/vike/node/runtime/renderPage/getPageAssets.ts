@@ -1,21 +1,17 @@
 export { getPageAssets }
 export { setResolveClientEntriesDev }
-export { resolveIncludeAssetsImportedByServer }
 export type { PageAsset }
 export type { GetPageAssets }
 export type { PageContextGetPageAssets }
 
 import { assert, prependBase, toPosixPath, unique, getGlobalObject, getViteRPC } from '../utils.js'
 import { retrieveAssetsDev } from './getPageAssets/retrievePageAssetsDev.js'
-import { retrieveAssetsProd } from './getPageAssets/retrievePageAssetsProd.js'
+import { resolveIncludeAssetsImportedByServer, retrievePageAssetsProd } from './getPageAssets/retrievePageAssetsProd.js'
 import { inferMediaType, type MediaType } from './inferMediaType.js'
-import { getManifestEntry } from './getPageAssets/getManifestEntry.js'
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { sortPageAssetsForEarlyHintsHeader } from './getPageAssets/sortPageAssetsForEarlyHintsHeader.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
-import type { ViteManifest } from '../../../types/ViteManifest.js'
 import type { ResolveClientEntriesDev } from '../../vite/shared/resolveClientEntriesDev.js'
-import type { ConfigResolved } from '../../../types/index.js'
 import type { ViteDevServer } from 'vite'
 import type { ViteRPC } from '../../vite/plugins/pluginNonRunnableDev.js'
 
@@ -110,32 +106,7 @@ async function retrievePageAssetsDev(
   const assetUrls = await retrieveAssetsDev(clientDependencies, viteDevServer)
   return { clientEntriesSrc, assetUrls }
 }
-function retrievePageAssetsProd(
-  assetsManifest: ViteManifest,
-  clientDependencies: ClientDependency[],
-  clientEntries: string[],
-  includeAssetsImportedByServer: boolean,
-) {
-  const clientEntriesSrc = clientEntries.map((clientEntry) => resolveClientEntriesProd(clientEntry, assetsManifest))
-  const assetUrls = retrieveAssetsProd(
-    clientDependencies,
-    assetsManifest,
-    resolveIncludeAssetsImportedByServer(includeAssetsImportedByServer),
-  )
-  return { clientEntriesSrc, assetUrls }
-}
-function resolveClientEntriesProd(clientEntry: string, assetsManifest: ViteManifest): string {
-  const { manifestEntry } = getManifestEntry(clientEntry, assetsManifest)
-  assert(manifestEntry.isEntry || manifestEntry.isDynamicEntry || clientEntry.endsWith('.css'), { clientEntry })
-  let { file } = manifestEntry
-  assert(!file.startsWith('/'))
-  return '/' + file
-}
 
 function setResolveClientEntriesDev(resolveClientEntriesDev: ResolveClientEntriesDev) {
   globalObject.resolveClientEntriesDev = resolveClientEntriesDev
-}
-
-function resolveIncludeAssetsImportedByServer(config: ConfigResolved): boolean {
-  return config.includeAssetsImportedByServer ?? true
 }

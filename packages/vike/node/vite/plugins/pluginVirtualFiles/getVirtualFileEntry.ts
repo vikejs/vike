@@ -23,7 +23,7 @@ import { getVirtualFilePageConfigsEager } from './getVirtualFilePageConfigsEager
 import { getVikeConfigInternal, isV1Design as isV1Design_ } from '../../shared/resolveVikeConfigInternal.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
 import { isViteServerBuild_options } from '../../shared/isViteServerBuild.js'
-import { resolveIncludeAssetsImportedByServer } from '../../../runtime/renderPage/getPageAssets.js'
+import { resolveIncludeAssetsImportedByServer } from '../../../runtime/renderPage/getPageAssets/retrievePageAssetsProd.js'
 
 type GlobRoot = {
   includeDir: string // slash-terminated

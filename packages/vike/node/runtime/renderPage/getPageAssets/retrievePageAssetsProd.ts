@@ -1,10 +1,34 @@
-export { retrieveAssetsProd }
+export { retrievePageAssetsProd }
+export { resolveIncludeAssetsImportedByServer }
 
 import { assert, isImportPathNpmPackage } from '../../utils.js'
 import type { ViteManifest } from '../../../../types/ViteManifest.js'
 import { getManifestEntry } from './getManifestEntry.js'
 import { extractAssetsAddQuery } from '../../../shared/extractAssetsQuery.js'
 import type { ClientDependency } from '../../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
+import type { ConfigResolved } from '../../../../types/index.js'
+
+function retrievePageAssetsProd(
+  assetsManifest: ViteManifest,
+  clientDependencies: ClientDependency[],
+  clientEntries: string[],
+  includeAssetsImportedByServer: boolean,
+) {
+  const clientEntriesSrc = clientEntries.map((clientEntry) => resolveClientEntriesProd(clientEntry, assetsManifest))
+  const assetUrls = retrieveAssetsProd(
+    clientDependencies,
+    assetsManifest,
+    resolveIncludeAssetsImportedByServer(includeAssetsImportedByServer),
+  )
+  return { clientEntriesSrc, assetUrls }
+}
+function resolveClientEntriesProd(clientEntry: string, assetsManifest: ViteManifest): string {
+  const { manifestEntry } = getManifestEntry(clientEntry, assetsManifest)
+  assert(manifestEntry.isEntry || manifestEntry.isDynamicEntry || clientEntry.endsWith('.css'), { clientEntry })
+  let { file } = manifestEntry
+  assert(!file.startsWith('/'))
+  return '/' + file
+}
 
 function retrieveAssetsProd(
   clientDependencies: ClientDependency[],
@@ -79,4 +103,8 @@ function collectSingleStyle(assetUrls: Set<string>, assetsManifest: ViteManifest
   if (style && Object.values(assetsManifest).filter((asset) => asset.file.endsWith('.css')).length === 1) {
     assetUrls.add(`/${style.file}`)
   }
+}
+
+function resolveIncludeAssetsImportedByServer(config: ConfigResolved): boolean {
+  return config.includeAssetsImportedByServer ?? true
 }

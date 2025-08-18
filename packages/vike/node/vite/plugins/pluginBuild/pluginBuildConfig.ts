@@ -30,7 +30,7 @@ import {
   handleAssetsManifest_assertUsageCssCodeSplit,
   handleAssetsManifest_getBuildConfig,
 } from './handleAssetsManifest.js'
-import { resolveIncludeAssetsImportedByServer } from '../../../runtime/renderPage/getPageAssets.js'
+import { resolveIncludeAssetsImportedByServer } from '../../../runtime/renderPage/getPageAssets/retrievePageAssetsProd.js'
 
 function pluginBuildConfig(): Plugin[] {
   let config: ResolvedConfig
