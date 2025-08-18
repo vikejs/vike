@@ -9,7 +9,7 @@ import {
 } from '../utils.js'
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { resolveClientEntriesDev } from '../shared/resolveClientEntriesDev.js'
-import { retrieveAssetsDev } from '../../runtime/renderPage/getPageAssets/retrieveAssetsDev.js'
+import { retrieveAssetsDev } from '../../runtime/renderPage/getPageAssets/retrievePageAssetsDev.js'
 import { getViteConfigRuntime } from '../shared/getViteConfigRuntime.js'
 import { getMagicString } from '../shared/getMagicString.js'
 assertIsNotProductionRuntime()
