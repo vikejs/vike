@@ -12,46 +12,62 @@ declare global {
      *
      *  https://vike.dev/meta#typescript
      */
-    interface Config {}
+    interface Config {
+      _interfaceIsNotAny?: never // https://typescript-eslint.io/rules/no-empty-object-type/
+    }
     /** Refine the `pageContext.config` type.
      *
      *  It's used for cumulative configs: the `pageContext.config[configName]` type is an `array` whereas `Config[configName]` isn't.
      *
      *  https://vike.dev/meta#typescript
      */
-    interface ConfigResolved {}
+    interface ConfigResolved {
+      _interfaceIsNotAny?: never // https://typescript-eslint.io/rules/no-empty-object-type/
+    }
 
     /** Extend the `PageContext` type (`import type { PageContext } from 'vike/types'`).
      *
      *  https://vike.dev/pageContext#typescript
      */
-    interface PageContext {}
+    interface PageContext {
+      _interfaceIsNotAny?: never // https://typescript-eslint.io/rules/no-empty-object-type/
+    }
     /** Extend the `PageContextClient` type (`import type { PageContextClient } from 'vike/types'`).
      *
      *  https://vike.dev/pageContext#typescript
      */
-    interface PageContextClient {}
+    interface PageContextClient {
+      _interfaceIsNotAny?: never // https://typescript-eslint.io/rules/no-empty-object-type/
+    }
     /** Extend the `PageContextServer` type (`import type { PageContextServer } from 'vike/types'`).
      *
      *  https://vike.dev/pageContext#typescript
      */
-    interface PageContextServer {}
+    interface PageContextServer {
+      _interfaceIsNotAny?: never // https://typescript-eslint.io/rules/no-empty-object-type/
+    }
 
     /** Extend the `GlobalContext` type (`import type { GlobalContext } from 'vike/types'`).
      *
      *  https://vike.dev/globalContext#typescript
      */
-    interface GlobalContext {}
+    interface GlobalContext {
+      _interfaceIsNotAny?: never // https://typescript-eslint.io/rules/no-empty-object-type/
+    }
     /** Extend the `GlobalContextClient` type (`import type { GlobalContextClient } from 'vike/types'`).
      *
      *  https://vike.dev/globalContext#typescript
      */
-    interface GlobalContextClient {}
+    interface GlobalContextClient {
+      _interfaceIsNotAny?: never // https://typescript-eslint.io/rules/no-empty-object-type/
+    }
     /** Extend the `GlobalContextServer` type (`import type { GlobalContextServer } from 'vike/types'`).
      *
      *  https://vike.dev/globalContext#typescript
      */
-    interface GlobalContextServer {}
+    interface GlobalContextServer {
+      _interfaceIsNotAny?: never // https://typescript-eslint.io/rules/no-empty-object-type/
+    }
   }
 
   /** This namespace is only used by:
@@ -68,10 +84,25 @@ declare global {
     //  - We need a different interface for each vike-{react/vue/solid/svelte} package because of conflicts.
     //    - E.g. Config['Page'] is a React/Vue/Solid/Svelte component depending on which vike-{react/vue/solid/svelte} package is being used.
     //      - The user can be using more than one vike-{react/vue/solid/svelte} package.
-    interface ConfigVikeReact {} // For vike-react
-    interface ConfigVikeVue {} // For vike-vue
-    interface ConfigVikeSolid {} // For vike-solid
-    interface ConfigVikeSvelte {} // For vike-svelte (the vike-svelte package doesn't exist yet)
-    interface ConfigVikeAngular {} // For vike-angular
+    // For vike-react
+    interface ConfigVikeReact {
+      _interfaceIsNotAny?: never // https://typescript-eslint.io/rules/no-empty-object-type/
+    }
+    // For vike-vue
+    interface ConfigVikeVue {
+      _interfaceIsNotAny?: never // https://typescript-eslint.io/rules/no-empty-object-type/
+    }
+    // For vike-solid
+    interface ConfigVikeSolid {
+      _interfaceIsNotAny?: never // https://typescript-eslint.io/rules/no-empty-object-type/
+    }
+    // For vike-svelte (the vike-svelte package doesn't exist yet)
+    interface ConfigVikeSvelte {
+      _interfaceIsNotAny?: never // https://typescript-eslint.io/rules/no-empty-object-type/
+    }
+    // For vike-angular
+    interface ConfigVikeAngular {
+      _interfaceIsNotAny?: never // https://typescript-eslint.io/rules/no-empty-object-type/
+    }
   }
 }
