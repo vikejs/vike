@@ -7,7 +7,7 @@ export type { PageContextGetPageAssets }
 
 import { assert, prependBase, toPosixPath, unique, getGlobalObject, getViteRPC } from '../utils.js'
 import { retrieveAssetsDev } from './getPageAssets/retrievePageAssetsDev.js'
-import { retrieveAssetsProd } from './getPageAssets/retrieveAssetsProd.js'
+import { retrieveAssetsProd } from './getPageAssets/retrievePageAssetsProd.js'
 import { inferMediaType, type MediaType } from './inferMediaType.js'
 import { getManifestEntry } from './getPageAssets/getManifestEntry.js'
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
