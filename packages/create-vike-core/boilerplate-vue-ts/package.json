@@ -14,7 +14,7 @@
     "node-fetch": "^3.3.2",
     "typescript": "^5.8.3",
     "vike": "^0.4.237",
-    "vike-server": "^1.0.16",
+    "vike-server": "^1.0.22",
     "vite": "^6.3.2",
     "vue": "^3.5.13",
     "vue-tsc": "^2.1.10"
