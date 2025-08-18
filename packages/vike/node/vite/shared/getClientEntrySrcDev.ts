@@ -1,5 +1,5 @@
-export { resolveClientEntriesDev }
-export type ResolveClientEntriesDev = typeof resolveClientEntriesDev
+export { getClientEntrySrcDev }
+export type GetClientEntrySrcDev = typeof getClientEntrySrcDev
 
 import {
   assert,
@@ -15,7 +15,7 @@ import type { ViteDevServer } from 'vite'
 
 assertIsNotProductionRuntime()
 
-function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteDevServer): string {
+function getClientEntrySrcDev(clientEntry: string, viteDevServer: ViteDevServer): string {
   let userRootDir = viteDevServer.config.root
   assert(userRootDir)
   userRootDir = toPosixPath(userRootDir)

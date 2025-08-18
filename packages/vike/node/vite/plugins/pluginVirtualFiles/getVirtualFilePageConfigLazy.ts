@@ -15,7 +15,7 @@ import { FilesEnv, serializeConfigValues } from '../../../../shared/page-configs
 import type { ResolvedConfig } from 'vite'
 import { handleAssetsManifest_isFixEnabled } from '../pluginBuild/handleAssetsManifest.js'
 import { getConfigValueBuildTime } from '../../../../shared/page-configs/getConfigValueBuildTime.js'
-import { resolveIncludeAssetsImportedByServer } from '../../../runtime/renderPage/getPageAssets.js'
+import { resolveIncludeAssetsImportedByServer } from '../../../runtime/renderPage/getPageAssets/retrievePageAssetsProd.js'
 
 async function getVirtualFilePageConfigLazy(id: string, isDev: boolean, config: ResolvedConfig): Promise<string> {
   const result = isVirtualFileIdPageConfigLazy(id)

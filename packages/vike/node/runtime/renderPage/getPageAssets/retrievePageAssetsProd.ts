@@ -1,16 +1,38 @@
-export { retrieveAssetsProd }
+export { retrievePageAssetsProd }
+export { resolveIncludeAssetsImportedByServer }
 
 import { assert, isImportPathNpmPackage } from '../../utils.js'
 import type { ViteManifest } from '../../../../types/ViteManifest.js'
 import { getManifestEntry } from './getManifestEntry.js'
 import { extractAssetsAddQuery } from '../../../shared/extractAssetsQuery.js'
 import type { ClientDependency } from '../../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
+import type { ConfigResolved } from '../../../../types/index.js'
 
-function retrieveAssetsProd(
+function retrievePageAssetsProd(
+  assetsManifest: ViteManifest,
+  clientDependencies: ClientDependency[],
+  clientEntries: string[],
+  config: ConfigResolved,
+) {
+  const clientEntriesSrc = clientEntries.map((clientEntry) => getClientEntrySrcProd(clientEntry, assetsManifest))
+  const assetUrls = getAssetsUrl(clientDependencies, assetsManifest, config)
+  return { clientEntriesSrc, assetUrls }
+}
+function getClientEntrySrcProd(clientEntry: string, assetsManifest: ViteManifest): string {
+  const { manifestEntry } = getManifestEntry(clientEntry, assetsManifest)
+  assert(manifestEntry.isEntry || manifestEntry.isDynamicEntry || clientEntry.endsWith('.css'), { clientEntry })
+  let { file } = manifestEntry
+  assert(!file.startsWith('/'))
+  return '/' + file
+}
+
+function getAssetsUrl(
   clientDependencies: ClientDependency[],
   assetsManifest: ViteManifest,
-  includeAssetsImportedByServer: boolean,
+  config: ConfigResolved,
 ): string[] {
+  const includeAssetsImportedByServer = resolveIncludeAssetsImportedByServer(config)
+
   let assetUrls = new Set<string>()
   assert(assetsManifest)
   const visistedAssets = new Set<string>()
@@ -79,4 +101,8 @@ function collectSingleStyle(assetUrls: Set<string>, assetsManifest: ViteManifest
   if (style && Object.values(assetsManifest).filter((asset) => asset.file.endsWith('.css')).length === 1) {
     assetUrls.add(`/${style.file}`)
   }
+}
+
+function resolveIncludeAssetsImportedByServer(config: ConfigResolved): boolean {
+  return config.includeAssetsImportedByServer ?? true
 }

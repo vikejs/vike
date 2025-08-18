@@ -1,27 +1,16 @@
 export { getPageAssets }
-export { setResolveClientEntriesDev }
-export { resolveIncludeAssetsImportedByServer }
 export type { PageAsset }
 export type { GetPageAssets }
 export type { PageContextGetPageAssets }
 
-import { assert, prependBase, toPosixPath, unique, getGlobalObject, getViteRPC } from '../utils.js'
-import { retrieveAssetsDev } from './getPageAssets/retrieveAssetsDev.js'
-import { retrieveAssetsProd } from './getPageAssets/retrieveAssetsProd.js'
+import { retrievePageAssetsProd } from './getPageAssets/retrievePageAssetsProd.js'
+import { retrievePageAssetsDev } from './getPageAssets/retrievePageAssetsDev.js'
 import { inferMediaType, type MediaType } from './inferMediaType.js'
-import { getManifestEntry } from './getPageAssets/getManifestEntry.js'
-import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { sortPageAssetsForEarlyHintsHeader } from './getPageAssets/sortPageAssetsForEarlyHintsHeader.js'
+import { assert, prependBase, toPosixPath, unique, getViteRPC } from '../utils.js'
+import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
-import type { ViteManifest } from '../../../types/ViteManifest.js'
-import type { ResolveClientEntriesDev } from '../../vite/shared/resolveClientEntriesDev.js'
-import type { ConfigResolved } from '../../../types/index.js'
-import type { ViteDevServer } from 'vite'
 import type { ViteRPC } from '../../vite/plugins/pluginNonRunnableDev.js'
-
-const globalObject = getGlobalObject('renderPage/getPageAssets.ts', {
-  resolveClientEntriesDev: null as null | ResolveClientEntriesDev,
-})
 
 type PageAsset = {
   src: string
@@ -50,12 +39,7 @@ async function getPageAssets(
     ? !globalContext._viteDevServer
       ? await getViteRPC<ViteRPC>().retrievePageAssetsDevRPC(clientDependencies, clientEntries)
       : await retrievePageAssetsDev(globalContext._viteDevServer, clientDependencies, clientEntries)
-    : retrievePageAssetsProd(
-        globalContext.assetsManifest,
-        clientDependencies,
-        clientEntries,
-        resolveIncludeAssetsImportedByServer(globalContext.config),
-      )
+    : retrievePageAssetsProd(globalContext.assetsManifest, clientDependencies, clientEntries, globalContext.config)
 
   let pageAssets: PageAsset[] = []
   unique([...clientEntriesSrc, ...assetUrls]).forEach((src: string) => {
@@ -97,45 +81,4 @@ async function getPageAssets(
   await sortPageAssetsForEarlyHintsHeader(pageAssets, isProduction)
 
   return pageAssets
-}
-
-async function retrievePageAssetsDev(
-  viteDevServer: ViteDevServer,
-  clientDependencies: ClientDependency[],
-  clientEntries: string[],
-) {
-  const clientEntriesSrc = clientEntries.map((clientEntry) =>
-    globalObject.resolveClientEntriesDev!(clientEntry, viteDevServer),
-  )
-  const assetUrls = await retrieveAssetsDev(clientDependencies, viteDevServer)
-  return { clientEntriesSrc, assetUrls }
-}
-function retrievePageAssetsProd(
-  assetsManifest: ViteManifest,
-  clientDependencies: ClientDependency[],
-  clientEntries: string[],
-  includeAssetsImportedByServer: boolean,
-) {
-  const clientEntriesSrc = clientEntries.map((clientEntry) => resolveClientEntriesProd(clientEntry, assetsManifest))
-  const assetUrls = retrieveAssetsProd(
-    clientDependencies,
-    assetsManifest,
-    resolveIncludeAssetsImportedByServer(includeAssetsImportedByServer),
-  )
-  return { clientEntriesSrc, assetUrls }
-}
-function resolveClientEntriesProd(clientEntry: string, assetsManifest: ViteManifest): string {
-  const { manifestEntry } = getManifestEntry(clientEntry, assetsManifest)
-  assert(manifestEntry.isEntry || manifestEntry.isDynamicEntry || clientEntry.endsWith('.css'), { clientEntry })
-  let { file } = manifestEntry
-  assert(!file.startsWith('/'))
-  return '/' + file
-}
-
-function setResolveClientEntriesDev(resolveClientEntriesDev: ResolveClientEntriesDev) {
-  globalObject.resolveClientEntriesDev = resolveClientEntriesDev
-}
-
-function resolveIncludeAssetsImportedByServer(config: ConfigResolved): boolean {
-  return config.includeAssetsImportedByServer ?? true
 }

@@ -1,11 +1,34 @@
-export { retrieveAssetsDev }
+export { retrievePageAssetsDev }
+export { setGetClientEntrySrcDev }
 
-import { assert, styleFileRE } from '../../utils.js'
+import { assert, getGlobalObject, styleFileRE } from '../../utils.js'
 import type { ModuleNode, ViteDevServer } from 'vite'
 import type { ClientDependency } from '../../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { isVirtualFileIdEntry } from '../../../shared/virtualFiles/virtualFileEntry.js'
+import type { GetClientEntrySrcDev } from '../../../vite/shared/getClientEntrySrcDev.js'
 
-async function retrieveAssetsDev(clientDependencies: ClientDependency[], viteDevServer: ViteDevServer) {
+const globalObject = getGlobalObject('getPageAssets/retrievePageAssetsDev.ts', {
+  // We cannot define getClientEntrySrcDev() in this file because it depends on utils/requireResolve.ts which isn't available in production
+  getClientEntrySrcDev: null as null | GetClientEntrySrcDev,
+})
+
+async function retrievePageAssetsDev(
+  viteDevServer: ViteDevServer,
+  clientDependencies: ClientDependency[],
+  clientEntries: string[],
+) {
+  const clientEntriesSrc = clientEntries.map((clientEntry) =>
+    globalObject.getClientEntrySrcDev!(clientEntry, viteDevServer),
+  )
+  const assetUrls = await getAssetUrls(clientDependencies, viteDevServer)
+  return { clientEntriesSrc, assetUrls }
+}
+
+function setGetClientEntrySrcDev(getClientEntrySrcDev: GetClientEntrySrcDev) {
+  globalObject.getClientEntrySrcDev = getClientEntrySrcDev
+}
+
+async function getAssetUrls(clientDependencies: ClientDependency[], viteDevServer: ViteDevServer) {
   const assetUrls = new Set<string>()
   await Promise.all(
     clientDependencies.map(async ({ id }) => {
