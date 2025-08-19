@@ -40,9 +40,17 @@ const virtualFileIdGlobalEntries = [
   virtualFileIdGlobalEntryClientCR,
   virtualFileIdGlobalEntryClientSR,
 ]
-assert(virtualFileIdGlobalEntries.every((v) => v.startsWith(virtualFileIdGlobalEntryPrefix)))
 assert(
-  [virtualFileIdPageEntryClient, virtualFileIdPageEntryServer].every((v) => v.startsWith(virtualFileIdPageEntryPrefix)),
+  virtualFileIdGlobalEntries.every((v) =>
+    //
+    v.startsWith(virtualFileIdGlobalEntryPrefix),
+  ),
+)
+assert(
+  [virtualFileIdPageEntryClient, virtualFileIdPageEntryServer].every((v) =>
+    //
+    v.startsWith(virtualFileIdPageEntryPrefix),
+  ),
 )
 
 type VirtualFileIdEntryParsed =
