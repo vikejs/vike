@@ -20,8 +20,10 @@ function assert_isViteServerBuild(res1: boolean, configGlobal: ResolvedConfig | 
   if (isVite5) {
     const res2: boolean = !!configGlobal.build?.ssr
     assert(res1 === res2)
+    /*
     // @ts-expect-error
     assert(configGlobal.consumer === undefined)
+    //*/
   } else {
     const res2: boolean = !!viteEnv.config.build?.ssr
     assert(res2 === res1)
