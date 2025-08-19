@@ -87,7 +87,7 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
     Object.keys(pageFileEntries).length !== 0 || pageConfigs.length !== 0,
     'At least one page should be defined, see https://vike.dev/add',
   )
-  if (isViteServerBuild(config)) {
+  if (isViteServerBuild(config, undefined)) {
     const pageEntries = getPageEntries(pageConfigs)
     const entries = {
       ...pageFileEntries,
@@ -160,7 +160,7 @@ function analyzeClientEntries(pageConfigs: PageConfigBuildTime[], config: Resolv
 // Ensure Rollup creates entries for each page file, see https://github.com/vikejs/vike/issues/350
 // (Otherwise the page files may be missing in the client manifest.json)
 async function getPageFileEntries(config: ResolvedConfig, includeAssetsImportedByServer: boolean) {
-  const isForClientSide = !isViteServerBuild(config)
+  const isForClientSide = !isViteServerBuild(config, undefined)
   const fileTypes: FileType[] = isForClientSide ? ['.page', '.page.client'] : ['.page', '.page.server']
   if (isForClientSide && includeAssetsImportedByServer) {
     fileTypes.push('.page.server')

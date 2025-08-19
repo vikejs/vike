@@ -275,7 +275,7 @@ type TargetConfig = { global: Exclude<Target, undefined>; css: Target; isServerS
 const targets: TargetConfig[] = []
 function handleAssetsManifest_assertUsageCssTarget(config: ResolvedConfig) {
   if (!handleAssetsManifest_isFixEnabled(config)) return
-  const isServerSide = isViteServerBuild(config)
+  const isServerSide = isViteServerBuild(config, undefined)
   assert(typeof isServerSide === 'boolean')
   assert(config.build.target !== undefined)
   targets.push({ global: config.build.target, css: config.build.cssTarget, isServerSide })
@@ -356,7 +356,7 @@ async function handleAssetsManifest_getBuildConfig(config: UserConfig) {
     copyPublicDir: vikeConfig.config.vite6BuilderApp
       ? // Already set by vike:build:pluginBuildApp
         undefined
-      : !isViteServerBuild(config),
+      : !isViteServerBuild(config, undefined),
   } as const
 }
 

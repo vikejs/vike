@@ -7,7 +7,7 @@ export { isViteServerBuild_onlySsrEnv }
 import type { Environment, ResolvedConfig, UserConfig } from 'vite'
 import { assert } from '../../../utils/assert.js'
 
-function isViteServerBuild(configGlobal: ResolvedConfig | UserConfig, viteEnv?: Environment | undefined): boolean {
+function isViteServerBuild(configGlobal: ResolvedConfig | UserConfig, viteEnv: Environment | undefined): boolean {
   const configEnv = viteEnv?.config ?? configGlobal
   return !!configEnv?.build?.ssr
 }
