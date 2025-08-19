@@ -8,7 +8,6 @@ import { extractAssetsRemoveQuery } from '../extractAssetsQuery.js'
 import { assert, assertIsNotBrowser, removeVirtualFileIdPrefix } from '../utils.js'
 assertIsNotBrowser()
 
-// Virtual file ID patterns
 const virtualFileIdGlobalEntryServer = 'virtual:vike:global-entry:server'
 const virtualFileIdGlobalEntryClientSR = 'virtual:vike:global-entry:client:server-routing'
 const virtualFileIdGlobalEntryClientCR = 'virtual:vike:global-entry:client:client-routing'
@@ -17,17 +16,13 @@ const virtualFileIdGlobalEntries = [
   virtualFileIdGlobalEntryClientCR,
   virtualFileIdGlobalEntryClientSR,
 ]
+const virtualFileIdGlobalEntryBase = 'virtual:vike:global-entry:'
+assert(virtualFileIdGlobalEntries.every((v) => v.startsWith(virtualFileIdGlobalEntryBase)))
 
 // Page config lazy patterns (keeping old naming for backward compatibility)
 const idBasePageConfigClient = 'virtual:vike:page-entry:client:'
 const idBasePageConfigServer = 'virtual:vike:page-entry:server:'
 const idBasePageConfig = 'virtual:vike:page-entry:'
-
-const virtualFileIdGlobalEntryBase = 'virtual:vike:global-entry:'
-
-// Ensure all global entry patterns start with the common base
-assert(virtualFileIdGlobalEntries.every((v) => v.startsWith(virtualFileIdGlobalEntryBase)))
-// Note: Page config patterns use old naming for backward compatibility
 
 type VirtualFileIdEntryParsed =
   | { type: 'global'; isForClientSide: boolean; isClientRouting: boolean }
