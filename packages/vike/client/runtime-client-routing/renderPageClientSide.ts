@@ -53,7 +53,7 @@ import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { setScrollPosition, type ScrollTarget } from './setScrollPosition.js'
 import { scrollRestoration_initialRenderIsDone } from './scrollRestoration.js'
 import { getErrorPageId } from '../../shared/error-page.js'
-import type { VikeConfigPublicPageLazy } from '../../shared/getPageFiles.js'
+import type { VikeConfigPublicPageLazyLoaded } from '../../shared/getPageFiles.js'
 import { setPageContextCurrent } from './getPageContextCurrent.js'
 import { getRouteStringParameterList } from '../../shared/route/resolveRouteString.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
@@ -88,7 +88,7 @@ const globalObject = getGlobalObject<{
   })(),
 )
 const { firstRenderStartPromise } = globalObject
-type PreviousPageContext = { pageId: string } & VikeConfigPublicPageLazy &
+type PreviousPageContext = { pageId: string } & VikeConfigPublicPageLazyLoaded &
   PageContextRouted &
   PageContextExecHook &
   PageContextForPublicUsageClient
@@ -690,7 +690,7 @@ function getRenderCount(): number {
 }
 
 function getKeepScrollPositionSetting(
-  pageContext: VikeConfigPublicPageLazy & PageContextRouted & Record<string, unknown>,
+  pageContext: VikeConfigPublicPageLazyLoaded & PageContextRouted & Record<string, unknown>,
 ): false | string | string[] {
   const c = pageContext.from.configsStandard.keepScrollPosition
   if (!c) return false

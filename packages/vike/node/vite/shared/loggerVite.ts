@@ -37,7 +37,7 @@ function intercept(logType: LogType, config: ResolvedConfig) {
       // We swallow Vite's message: we didn't see it add any value so far.
       //  - It can even be confusing, such as the following:
       //    ```
-      //    Error when evaluating SSR module virtual:vike:pageConfigLazy:server:/pages/abort: failed to import "/pages/abort/+Page.mdx"
+      //    Error when evaluating SSR module virtual:vike:page-entry:server:/pages/abort: failed to import "/pages/abort/+Page.mdx"
       //    ```
       assert(!isErrorDebug())
       return

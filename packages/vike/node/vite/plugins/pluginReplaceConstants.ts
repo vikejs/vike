@@ -1,11 +1,10 @@
 export { pluginReplaceConstants }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import MagicString from 'magic-string'
 import { assert, assertPosixPath } from '../utils.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerBuild_safe } from '../shared/isViteServerBuild.js'
-import { applyRegExpWithMagicString } from '../shared/applyRegExWithMagicString.js'
+import { getMagicString } from '../shared/getMagicString.js'
 
 function pluginReplaceConstants(): Plugin {
   let config: ResolvedConfig
@@ -31,7 +30,7 @@ function pluginReplaceConstants(): Plugin {
       // @ts-expect-error
       if (config._skipVikeReplaceConstants?.(id)) return
 
-      const magicString = new MagicString(code)
+      const { magicString, getMagicStringResult } = getMagicString(code, id)
 
       const constantsMap: { constants: string[]; replacement: unknown }[] = []
       constantsMap.push({
@@ -42,15 +41,12 @@ function pluginReplaceConstants(): Plugin {
       constantsMap.forEach(({ constants, replacement }) => {
         if (!constants.some((c) => code.includes(c))) return
         const regExp = getConstantRegExp(constants)
-        applyRegExpWithMagicString(magicString, regExp, replacement)
+        magicString.replaceAll(regExp, JSON.stringify(replacement))
       })
 
       if (!magicString.hasChanged()) return null
 
-      return {
-        code: magicString.toString(),
-        map: magicString.generateMap({ hires: true, source: id }),
-      }
+      return getMagicStringResult()
     },
   }
 }

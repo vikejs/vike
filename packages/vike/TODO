@@ -70,7 +70,7 @@
  - Works well with +data.noInherit.js and +onPageTransitionStart.default.js https://github.com/vikejs/vike/issues/1692
 - Cleanup after old design removal:
   - Make client entry be a single virtual file
-    - Remove `import * as virtualFileExports from 'virtual:vike:entry:client:...'`
+    - Remove `import * as virtualFileExportsGlobalEntry from 'virtual:vike:global-entry:client:...'`
       - We can then avoid adding client runtime entry to optimizeDeps.exclude
     - Make +client.js cumulative https://github.com/vikejs/vike/issues/1834
     - Fix non-global +client.js

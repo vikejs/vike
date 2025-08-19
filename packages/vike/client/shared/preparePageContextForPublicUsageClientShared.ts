@@ -3,7 +3,7 @@ export { preparePageContextForPublicUsageClientMinimal }
 export type { PageContextForPublicUsageClientShared }
 
 import { objectAssign } from '../runtime-server-routing/utils.js'
-import type { VikeConfigPublicPageLazy } from '../../shared/getPageFiles.js'
+import type { VikeConfigPublicPageLazyLoaded } from '../../shared/getPageFiles.js'
 import {
   assertPropertyGetters,
   type PageContextPrepareMinimum,
@@ -13,7 +13,7 @@ import type { PageContextInternalClient } from '../../types/PageContext.js'
 
 type PageContextForPublicUsageClientShared = PageContextPrepareMinimum &
   PageContextInternalClient &
-  VikeConfigPublicPageLazy
+  VikeConfigPublicPageLazyLoaded
 
 function preparePageContextForPublicUsageClientShared<PageContext extends PageContextForPublicUsageClientShared>(
   pageContext: PageContext,

@@ -566,7 +566,7 @@ Instead change the require of +config.js in /home/romu/code/vike/node_modules/.p
     at Object.<anonymous> (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/server.node.js:13:1)
     at async nodeImport (file:///home/romu/code/vike/node_modules/.pnpm/vite@5.0.10_@types+node@17.0.45/node_modules/vite/dist/node/chunks/dep-R0I0XnyH.js:50544:17)
     at async ssrImport (file:///home/romu/code/vike/node_modules/.pnpm/vite@5.0.10_@types+node@17.0.45/node_modules/vite/dist/node/chunks/dep-R0I0XnyH.js:50444:24)
-    at async eval (virtual:vike:pageConfigLazy:server:/pages/index:3:44)
+    at async eval (virtual:vike:page-entry:server:/pages/index:3:44)
     at async instantiateModule (file:///home/romu/code/vike/node_modules/.pnpm/vite@5.0.10_@types+node@17.0.45/node_modules/vite/dist/node/chunks/dep-R0I0XnyH.js:50506:9)
 `,
         },
@@ -599,7 +599,7 @@ const { ApolloClient } = pkg;
     at ModuleJob._instantiate (node:internal/modules/esm/module_job:131:21)
     at async ModuleJob.run (node:internal/modules/esm/module_job:213:5)
     at async ModuleLoader.import (node:internal/modules/esm/loader:316:24)
-    at async pageFile.loadFile (file:///home/romu/tmp/vite-ssr-test/node_modules/.pnpm/vite-plugin-ssr@0.4.142_vite@4.0.3/node_modules/vite-plugin-ssr/dist/esm/shared/getPageFiles/parseVirtualFileExports.js:31:40)
+    at async pageFile.loadFile (file:///home/romu/tmp/vite-ssr-test/node_modules/.pnpm/vite-plugin-ssr@0.4.142_vite@4.0.3/node_modules/vite-plugin-ssr/dist/esm/shared/getPageFiles/parseVirtualFileExportsGlobalEntry.js:31:40)
     at async Promise.all (index 0)
     at async loadPageFiles (file:///home/romu/tmp/vite-ssr-test/node_modules/.pnpm/vite-plugin-ssr@0.4.142_vite@4.0.3/node_modules/vite-plugin-ssr/dist/esm/node/runtime/renderPage/loadPageFilesServerSide.js:86:5)
     at async Promise.all (index 0)
@@ -632,7 +632,7 @@ const { LiveProvider, LiveEditor } = pkg;
     at ModuleJob._instantiate (node:internal/modules/esm/module_job:131:21)
     at async ModuleJob.run (node:internal/modules/esm/module_job:213:5)
     at async ModuleLoader.import (node:internal/modules/esm/loader:316:24)
-    at async pageFile.loadFile (/home/romu/tmp/vite-ssr-redux-react-live-runner-example/node_modules/.pnpm/vite-plugin-ssr@0.4.131_vite@4.3.9/node_modules/vite-plugin-ssr/dist/cjs/shared/getPageFiles/parseVirtualFileExports.js:35:40)
+    at async pageFile.loadFile (/home/romu/tmp/vite-ssr-redux-react-live-runner-example/node_modules/.pnpm/vite-plugin-ssr@0.4.131_vite@4.3.9/node_modules/vite-plugin-ssr/dist/cjs/shared/getPageFiles/parseVirtualFileExportsGlobalEntry.js:35:40)
     at async Promise.all (index 0)
     at async loadPageFilesServerSide (/home/romu/tmp/vite-ssr-redux-react-live-runner-example/node_modules/.pnpm/vite-plugin-ssr@0.4.131_vite@4.3.9/node_modules/vite-plugin-ssr/dist/cjs/shared/getPageFiles/analyzePageServerSide/loadPageFilesServerSide.js:10:5)
     at async Promise.all (index 0)

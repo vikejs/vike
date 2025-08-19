@@ -1,8 +1,8 @@
 export { pluginModuleBanner }
 
 import type { ResolvedConfig, Plugin } from 'vite'
-import MagicString from 'magic-string'
 import { removeVirtualFileIdPrefix } from '../../utils.js'
+import { getMagicString } from '../../shared/getMagicString.js'
 import { isViteServerBuild_safe } from '../../shared/isViteServerBuild.js'
 
 // Rollup's banner feature doesn't work with Vite: https://github.com/vitejs/vite/issues/8412
@@ -32,15 +32,12 @@ function pluginModuleBanner(): Plugin {
         id = removeVirtualFileIdPrefix(id)
         if (id.startsWith(config.root)) id = id.slice(config.root.length + 1)
         id = id.replaceAll('*/', '*\\/') // https://github.com/vikejs/vike/issues/2377
-        const magicString = new MagicString(code)
+        const { magicString, getMagicStringResult } = getMagicString(code, id)
         // Use legal comment so that esbuild doesn't remove it.
         // - Terser still removes the comment, but I guess users use terser to minify JavaScript so I guess it's a good thing that comment is removed.
         // - https://esbuild.github.io/api/#legal-comments
         magicString.prepend(`/*! ${id} [vike:pluginModuleBanner] */\n`)
-        return {
-          code: magicString.toString(),
-          map: magicString.generateMap({ hires: true, source: id }),
-        }
+        return getMagicStringResult()
       },
     },
   }

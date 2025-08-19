@@ -2,7 +2,7 @@ export { preparePageContextForPublicUsageServer }
 export type { PageContextForPublicUsageServer }
 
 import type { PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
-import type { VikeConfigPublicPageLazy } from '../../../shared/page-configs/resolveVikeConfigPublic.js'
+import type { VikeConfigPublicPageLazyLoaded } from '../../../shared/page-configs/resolveVikeConfigPublic.js'
 import type { PageContextInternalServer } from '../../../types/PageContext.js'
 import {
   assertPropertyGetters,
@@ -11,7 +11,7 @@ import {
 import type { GlobalContextServerInternal } from '../globalContext.js'
 
 type PageContextForPublicUsageServer = PageContextInternalServer &
-  VikeConfigPublicPageLazy & {
+  VikeConfigPublicPageLazyLoaded & {
     urlOriginal: string
     /** @deprecated */
     url: string

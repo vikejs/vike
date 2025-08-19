@@ -2,8 +2,12 @@ export { loadPageConfigsLazyServerSideAndExecHook }
 export type { PageContext_loadPageConfigsLazyServerSide }
 export type { PageConfigsLazy }
 
-import { type PageFile, type VikeConfigPublicPageLazy, getPageFilesServerSide } from '../../../shared/getPageFiles.js'
-import { resolveVikeConfigPublicPageLazy } from '../../../shared/page-configs/resolveVikeConfigPublic.js'
+import {
+  type PageFile,
+  type VikeConfigPublicPageLazyLoaded,
+  getPageFilesServerSide,
+} from '../../../shared/getPageFiles.js'
+import { resolveVikeConfigPublicPageLazyLoaded } from '../../../shared/page-configs/resolveVikeConfigPublic.js'
 import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide.js'
 import { assertUsage, assertWarning, hasProp, isArray, isObject, objectAssign, PromiseType } from '../utils.js'
 import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './getPageAssets.js'
@@ -13,7 +17,7 @@ import { findPageConfig } from '../../../shared/page-configs/findPageConfig.js'
 import { analyzePage } from './analyzePage.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { MediaType } from './inferMediaType.js'
-import { loadConfigValues } from '../../../shared/page-configs/loadConfigValues.js'
+import { loadPageEntry } from '../../../shared/page-configs/loadPageEntry.js'
 import { execHookServer, type PageContextExecHookServer } from './execHookServer.js'
 import { getCacheControl } from './getCacheControl.js'
 import type { PassToClient } from '../html/serializeContext.js'
@@ -175,9 +179,13 @@ async function loadPageConfigFiles(
   isDev: boolean,
 ) {
   const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
-  const pageConfigLoaded = !pageConfig ? null : await loadConfigValues(pageConfig, isDev)
+  const pageConfigLoaded = !pageConfig ? null : await loadPageEntry(pageConfig, isDev)
   await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))
-  const configPublicPageLazy = resolveVikeConfigPublicPageLazy(pageFilesServerSide, pageConfigLoaded, pageConfigGlobal)
+  const configPublicPageLazy = resolveVikeConfigPublicPageLazyLoaded(
+    pageFilesServerSide,
+    pageConfigLoaded,
+    pageConfigGlobal,
+  )
   return {
     configPublicPageLazy,
     pageFilesLoaded: pageFilesServerSide,
@@ -189,7 +197,7 @@ function resolveHeadersResponse(
     pageId: null | string
     _globalContext: GlobalContextServerInternal
   },
-  pageContextAddendum: VikeConfigPublicPageLazy,
+  pageContextAddendum: VikeConfigPublicPageLazyLoaded,
 ): Headers {
   const headersResponse = mergeHeaders(pageContextAddendum.config.headersResponse)
   if (!headersResponse.get('Cache-Control')) {
