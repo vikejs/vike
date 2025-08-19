@@ -20,8 +20,7 @@ function assert_isViteServerBuild(
   configGlobal: ResolvedConfig | UserConfig,
   viteEnv: ViteEnv | undefined,
 ) {
-  const isVite5 = viteEnv === undefined
-  if (isVite5) {
+  if (viteEnv === undefined) {
     const res2: boolean = !!configGlobal.build?.ssr
     assert(res1 === res2)
     /*
@@ -39,11 +38,11 @@ function assert_isViteServerBuild(
 }
 
 // Only `ssr` env: for example don't include `vercel_edge` nor `vercel_node`.
-function isViteServerBuild_onlySsrEnv(configGlobal: ResolvedConfig, viteEnv: Environment | undefined) {
+function isViteServerBuild_onlySsrEnv(configGlobal: ResolvedConfig, viteEnv: ViteEnv | undefined) {
   return viteEnv ? viteEnv.name === 'ssr' : isViteServerBuild(configGlobal, undefined)
 }
 
-function isViteClientBuild(configGlobal: ResolvedConfig, viteEnv: Environment | undefined) {
+function isViteClientBuild(configGlobal: ResolvedConfig, viteEnv: ViteEnv | undefined) {
   return !isViteServerBuild(configGlobal, viteEnv)
 }
 
