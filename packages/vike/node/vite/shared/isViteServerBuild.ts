@@ -11,32 +11,35 @@ type ViteEnv = { name: string; config: EnvironmentOptions | Environment['config'
 
 function isViteServerBuild(configGlobal: ResolvedConfig | UserConfig, viteEnv: ViteEnv | undefined): boolean {
   const configEnv = viteEnv?.config ?? configGlobal
-  return !!configEnv?.build?.ssr
-}
-// Only `ssr` env: for example don't include `vercel_edge` nor `vercel_node`.
-function isViteServerBuild_onlySsrEnv(configGlobal: ResolvedConfig, viteEnv: Environment | undefined) {
-  return viteEnv ? viteEnv.name === 'ssr' : isViteServerBuild(configGlobal, viteEnv)
-}
-function isViteClientBuild(configGlobal: ResolvedConfig, viteEnv: Environment | undefined) {
-  const res = !isViteServerBuild(configGlobal, viteEnv)
-  assert_isViteClientBuild(res, configGlobal, viteEnv)
+  const res = !!configEnv?.build?.ssr
+  assert_isViteServerBuild(res, configGlobal, viteEnv)
   return res
 }
-function assert_isViteClientBuild(res1: boolean, configGlobal: ResolvedConfig, viteEnv: Environment | undefined) {
+function assert_isViteServerBuild(res1: boolean, configGlobal: ResolvedConfig | UserConfig, viteEnv: ViteEnv | undefined) {
   const isVite5 = viteEnv === undefined
   if (isVite5) {
-    const res2: boolean = !configGlobal.build.ssr
+    const res2: boolean = !!configGlobal.build?.ssr
     assert(res1 === res2)
     // @ts-expect-error
     assert(configGlobal.consumer === undefined)
   } else {
-    const res2: boolean = !viteEnv.config.build.ssr
-    const res3: boolean = viteEnv.config.consumer === 'client'
-    const res4: boolean = viteEnv.name === 'client'
-    assert(res1 === res2)
-    assert(res1 === res3)
-    assert(res1 === res4)
+    const res2: boolean = !!viteEnv.config.build?.ssr
+    assert(res2 === res1)
+    const res3: boolean = viteEnv.config.consumer === 'server'
+    assert(res3 === res1)
+    const res4: boolean = viteEnv.name !== 'client'
+    assert(res4 === res1)
   }
+}
+
+
+// Only `ssr` env: for example don't include `vercel_edge` nor `vercel_node`.
+function isViteServerBuild_onlySsrEnv(configGlobal: ResolvedConfig, viteEnv: Environment | undefined) {
+  return viteEnv ? viteEnv.name === 'ssr' : isViteServerBuild(configGlobal, undefined)
+}
+
+function isViteClientBuild(configGlobal: ResolvedConfig, viteEnv: Environment | undefined) {
+  return !isViteServerBuild(configGlobal, viteEnv)
 }
 
 function isViteServerBuild_options(options: { ssr?: boolean } | undefined): boolean {
