@@ -1,4 +1,4 @@
-export { getVirtualFileEntry }
+export { generateVirtualFileGlobalEntry }
 
 // TO-DO/next-major-release:
 //  - Remove this file
@@ -30,7 +30,7 @@ type GlobRoot = {
   excludeDir?: string // slash-terminated, no leading exclamation mark
 }
 
-async function getVirtualFileEntry(
+async function generateVirtualFileGlobalEntry(
   id: string,
   options: { ssr?: boolean } | undefined,
   config: ResolvedConfig,
