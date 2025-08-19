@@ -1,7 +1,6 @@
 export { pluginEnvVars }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import MagicString from 'magic-string'
 import { loadEnv } from 'vite'
 import {
   assert,
@@ -17,6 +16,7 @@ import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerBuild_safe } from '../shared/isViteServerBuild.js'
 import { applyRegExpWithMagicString } from '../shared/applyRegExWithMagicString.js'
+import { getMagicString } from '../shared/getMagicString.js'
 
 // TO-DO/eventually:
 // - Make import.meta.env work inside +config.js
@@ -53,7 +53,7 @@ function pluginEnvVars(): Plugin {
       const isBuild = config.command === 'build'
       const isClientSide = !isViteServerBuild_safe(config, options)
 
-      const magicString = new MagicString(code)
+      const { magicString, getMagicStringResult } = getMagicString(code, id)
 
       // Find & check
       const replacements = Object.entries(envsAll)
@@ -98,10 +98,7 @@ function pluginEnvVars(): Plugin {
       })
       if (!magicString.hasChanged()) return null
 
-      return {
-        code: magicString.toString(),
-        map: magicString.generateMap({ hires: true, source: id }),
-      }
+      return getMagicStringResult()
     },
   }
 }
