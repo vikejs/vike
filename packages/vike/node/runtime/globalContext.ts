@@ -60,7 +60,7 @@ import {
 import type { ViteManifest } from '../../types/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
-import { virtualFileIdEntryServer } from '../shared/virtualFiles/virtualFileEntry.js'
+import { virtualFileIdEntryServer } from '../shared/virtualFiles/parseVirtualFileIdEntry.js'
 import pc from '@brillout/picocolors'
 import type { VikeConfigPublicGlobal } from '../../shared/page-configs/resolveVikeConfigPublic.js'
 import { loadPageRoutes, loadPageRoutesSync, type PageRoutes } from '../../shared/route/loadPageRoutes.js'

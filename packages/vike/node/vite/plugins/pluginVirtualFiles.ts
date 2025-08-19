@@ -12,8 +12,7 @@ import {
   isVirtualFileId,
   removeVirtualFileIdPrefix,
 } from '../utils.js'
-import { isVirtualFileIdPageConfigLazy } from '../../shared/virtualFiles/virtualFilePageConfigLazy.js'
-import { isVirtualFileIdEntry } from '../../shared/virtualFiles/virtualFileEntry.js'
+import { parseVirtualFileIdEntry } from '../../shared/virtualFiles/parseVirtualFileIdEntry.js'
 import { reloadVikeConfig, isV1Design, getVikeConfigInternalOptional } from '../shared/resolveVikeConfigInternal.js'
 import pc from '@brillout/picocolors'
 import { logConfigInfo } from '../shared/loggerNotProd.js'
@@ -52,14 +51,16 @@ function pluginVirtualFiles(): Plugin {
       const isDev = config._isDev
       assert(typeof isDev === 'boolean')
 
-      if (isVirtualFileIdPageConfigLazy(id)) {
-        const code = await getVirtualFilePageConfigLazy(id, isDev, config)
-        return code
-      }
-
-      if (isVirtualFileIdEntry(id)) {
-        const code = await getVirtualFileEntry(id, options, config, isDev)
-        return code
+      const idParsed = parseVirtualFileIdEntry(id)
+      if (idParsed) {
+        if (idParsed.type === 'page') {
+          const code = await getVirtualFilePageConfigLazy(id, isDev, config)
+          return code
+        }
+        if (idParsed.type === 'global') {
+          const code = await getVirtualFileEntry(id, options, config, isDev)
+          return code
+        }
       }
     },
     configureServer(server) {
@@ -194,7 +195,7 @@ function reloadConfig(
 
 function getVikeVirtualFiles(server: ViteDevServer): ModuleNode[] {
   const vikeVirtualFiles = Array.from(server.moduleGraph.urlToModuleMap.keys())
-    .filter((url) => isVirtualFileIdPageConfigLazy(url) || isVirtualFileIdEntry(url))
+    .filter((url) => parseVirtualFileIdEntry(url))
     .map((url) => {
       const mod = server.moduleGraph.urlToModuleMap.get(url)
       assert(mod)

@@ -2,7 +2,7 @@ export { getManifestEntry }
 
 import type { ViteManifest, ViteManifestEntry } from '../../../../types/ViteManifest.js'
 import { assert, slice, assertIsImportPathNpmPackage } from '../../utils.js'
-import { isVirtualFileIdPageConfigLazy } from '../../../shared/virtualFiles/virtualFilePageConfigLazy.js'
+import { parseVirtualFileIdEntry } from '../../../shared/virtualFiles/parseVirtualFileIdEntry.js'
 import { prependEntriesDir } from '../../../shared/prependEntriesDir.js'
 
 function getManifestEntry(
@@ -20,7 +20,8 @@ function getManifestEntry(
   }
 
   // Page code importer
-  if (isVirtualFileIdPageConfigLazy(id)) {
+  const entryResult = parseVirtualFileIdEntry(id)
+  if (entryResult && entryResult.type === 'page') {
     {
       const manifestKey = id
       const manifestEntry = assetsManifest[manifestKey]
