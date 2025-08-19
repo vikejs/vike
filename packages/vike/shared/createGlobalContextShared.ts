@@ -6,7 +6,7 @@ export type GlobalContextInternal = GlobalContextServerInternal | GlobalContextC
 
 import { changeEnumerable, genPromise, getGlobalObject, objectAssign, objectReplace, unique } from './utils.js'
 import type { PageFile } from './getPageFiles.js'
-import { parseVirtualFileExports } from './getPageFiles/parseVirtualFileExports.js'
+import { parseVirtualFileExportsGlobalEntry } from './getPageFiles/parseVirtualFileExportsGlobalEntry.js'
 import {
   resolveVikeConfigPublicGlobal,
   resolveVikeConfigPublicPageEager,
@@ -141,7 +141,7 @@ function createGlobalContextBase(virtualFileExports: unknown) {
 }
 
 function getConfigsAll(virtualFileExports: unknown) {
-  const { pageFilesAll, pageConfigs, pageConfigGlobal } = parseVirtualFileExports(virtualFileExports)
+  const { pageFilesAll, pageConfigs, pageConfigGlobal } = parseVirtualFileExportsGlobalEntry(virtualFileExports)
   const allPageIds = getAllPageIds(pageFilesAll, pageConfigs)
 
   const vikeConfigPublicGlobal = resolveVikeConfigPublicGlobal({

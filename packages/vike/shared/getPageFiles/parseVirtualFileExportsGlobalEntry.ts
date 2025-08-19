@@ -1,8 +1,8 @@
-export { parseVirtualFileExports }
+export { parseVirtualFileExportsGlobalEntry }
 
 // TODO/now: merge or collocate following both files?
 // ```filesystem
-// vike/shared/getPageFiles/parseVirtualFileExports.ts
+// vike/shared/getPageFiles/parseVirtualFileExportsGlobalEntry.ts
 // vike/shared/page-configs/serialize/parsePageConfigs.ts
 // ```
 
@@ -19,7 +19,7 @@ import type {
   PageConfigRuntimeSerialized,
 } from '../page-configs/serialize/PageConfigSerialized.js'
 
-function parseVirtualFileExports(virtualFileExports: unknown): {
+function parseVirtualFileExportsGlobalEntry(virtualFileExports: unknown): {
   pageFilesAll: PageFile[]
   pageConfigs: PageConfigRuntime[]
   pageConfigGlobal: PageConfigGlobalRuntime
