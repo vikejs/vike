@@ -16,7 +16,7 @@ import { humanizeTime } from '../../utils/humanizeTime.js'
 import { isObject } from '../../utils/isObject.js'
 import type { PageContextClient, PageContextServer } from '../../types/PageContext.js'
 import type { Hook, HookLoc } from './getHook.js'
-import type { VikeConfigPublicPageLazy } from '../getPageFiles.js'
+import type { VikeConfigPublicPageLazyLoaded } from '../getPageFiles.js'
 import { getHookFromPageConfigGlobalCumulative, getHookFromPageContextNew } from './getHook.js'
 import type { HookName, HookNameGlobal } from '../../types/Config.js'
 import type { PageConfigGlobalRuntime } from '../../types/PageConfig.js'
@@ -32,7 +32,7 @@ const globalObject = getGlobalObject('utils/execHook.ts', {
   pageContext: null as null | PageContextPrepareMinimum,
 })
 
-type PageContextExecHook = VikeConfigPublicPageLazy & PageContextForPublicUsage
+type PageContextExecHook = VikeConfigPublicPageLazyLoaded & PageContextForPublicUsage
 type PageContextForPublicUsage = PageContextForPublicUsageServer | PageContextForPublicUsageClientShared
 
 type HookWithResult = Hook & {

@@ -2,10 +2,10 @@
 // TO-DO/soon/flat-pageContext: rename definedAt => definedBy
 export { resolveVikeConfigPublicGlobal }
 export { resolveVikeConfigPublicPageEagerLoaded }
-export { resolveVikeConfigPublicPageLazy }
+export { resolveVikeConfigPublicPageLazyLoaded }
 export type { VikeConfigPublicGlobal }
 export type { VikeConfigPublicPageEagerLoaded }
-export type { VikeConfigPublicPageLazy }
+export type { VikeConfigPublicPageLazyLoaded }
 export type { Source }
 export type { Sources }
 export type { From }
@@ -67,7 +67,7 @@ type ConfigEntries = Record<
     configDefinedByFile: string | null
   }[]
 >
-type VikeConfigPublicPageLazy = {
+type VikeConfigPublicPageLazyLoaded = {
   config: ConfigResolved
   source: Source
   sources: Sources
@@ -214,11 +214,11 @@ function resolveVikeConfigPublicGlobal({
   return getPublicCopy(vikeConfigPublicGlobal)
 }
 
-function resolveVikeConfigPublicPageLazy(
+function resolveVikeConfigPublicPageLazyLoaded(
   pageFiles: PageFile[], // V0.4 design
   pageConfig: PageConfigRuntimeLoaded | null, // V1 design
   pageConfigGlobal: PageConfigGlobalRuntime,
-): VikeConfigPublicPageLazy {
+): VikeConfigPublicPageLazyLoaded {
   const config: Record<string, unknown> = {}
   const configEntries: ConfigEntries = {} // TO-DO/next-major-release: remove
   const exportsAll: ExportsAll = {} // TO-DO/next-major-release: remove
