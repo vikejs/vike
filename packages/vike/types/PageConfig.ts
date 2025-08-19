@@ -76,7 +76,7 @@ type PageConfigGlobalBuildTime = {
 /** Same as PageConfigRuntime but also contains all lazily loaded config values such as config.Page */
 type PageConfigRuntimeLoaded = PageConfigRuntime & {
   /** Whether loadPageEntry() was called */
-  isAllLoaded: true
+  isPageEntryLoaded: true
 }
 type LoadPageEntry = () => {
   moduleId: string

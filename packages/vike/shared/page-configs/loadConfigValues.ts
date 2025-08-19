@@ -6,7 +6,7 @@ import { parseConfigValuesSerialized } from './serialize/parsePageConfigs.js'
 
 async function loadConfigValues(pageConfig: PageConfigRuntime, isDev: boolean): Promise<PageConfigRuntimeLoaded> {
   if (
-    'isAllLoaded' in pageConfig &&
+    'isPageEntryLoaded' in pageConfig &&
     // We don't need to cache in dev, since Vite already caches the virtual module
     !isDev
   ) {
@@ -18,6 +18,6 @@ async function loadConfigValues(pageConfig: PageConfigRuntime, isDev: boolean): 
   if (!configValuesLoaded) assert(false, { moduleExports, configValuesLoaded, moduleId })
   const configValues = parseConfigValuesSerialized(configValuesLoaded.configValuesSerialized)
   Object.assign(pageConfig.configValues, configValues)
-  objectAssign(pageConfig, { isAllLoaded: true as const })
+  objectAssign(pageConfig, { isPageEntryLoaded: true as const })
   return pageConfig
 }
