@@ -30,7 +30,38 @@ function getConfigValueSourcesRelevant(configName: string, runtimeEnv: RuntimeEn
     sourcesRelevant = sourcesRelevant.filter((source) => !isOverridden(source, configName, pageConfig))
   }
 
+  // Filter by runtime env
   sourcesRelevant = sourcesRelevant.filter((source) => isRuntimeEnvMatch(source.configEnv, runtimeEnv))
+
+  // Apply cumulative modifiers (suffix-only: .clear., .default.)
+  if (configDef.cumulative && sourcesRelevant.length > 0) {
+    sourcesRelevant = applyCumulativeSuffixModifiers(sourcesRelevant)
+  }
+
+  return sourcesRelevant
+}
+
+function applyCumulativeSuffixModifiers(sourcesRelevant: ConfigValueSource[]) {
+  const isSourceClear = (fn: string) => fn.includes('.clear.')
+  const isSourceDefault = (fn: string) => fn.includes('.default.')
+
+  const filenames = sourcesRelevant.map((s) => s.plusFile?.filePath.fileName || '')
+
+  // Apply `clear`: keep up to and including the first clear, drop all ancestors after it
+  const idxClear = filenames.findIndex((fn) => isSourceClear(fn))
+  if (idxClear !== -1) {
+    sourcesRelevant = sourcesRelevant.slice(0, idxClear + 1)
+  }
+
+  // Apply `default` semantics
+  const filenamesAfterClear = sourcesRelevant.map((s) => s.plusFile?.filePath.fileName || '')
+  const hasNonDefault = filenamesAfterClear.some((fn) => !isSourceDefault(fn))
+  if (hasNonDefault) {
+    sourcesRelevant = sourcesRelevant.filter((s) => !isSourceDefault(s.plusFile?.filePath.fileName || ''))
+  } else if (sourcesRelevant.length > 1) {
+    const first = sourcesRelevant[0]
+    if (first) sourcesRelevant = [first]
+  }
 
   return sourcesRelevant
 }

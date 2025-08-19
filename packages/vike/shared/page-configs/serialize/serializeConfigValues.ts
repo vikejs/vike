@@ -323,11 +323,7 @@ function getConfigValuesBase(
       } as const
       return { configValueBase, sourceRelevant: source, configName }
     } else {
-      // Cumulative: gather all relevant sources then apply clear/default semantics
-      let sourcesRelevant = getConfigValueSourcesRelevant(configName, runtimeEnv, pageConfig)
-      if (sourcesRelevant.length === 0) return 'SKIP'
-
-      sourcesRelevant = applyCumulativeModifiers(sourcesRelevant, pageConfig, configName)
+      const sourcesRelevant = getConfigValueSourcesRelevant(configName, runtimeEnv, pageConfig)
       if (sourcesRelevant.length === 0) return 'SKIP'
 
       const definedAtData: DefinedAt[] = []
@@ -372,37 +368,6 @@ type ConfigValuesBase = (
       configName: string
     }
 )[]
-
-function applyCumulativeModifiers(
-  sources: ConfigValueSource[],
-  _pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime,
-  _configName: string,
-): ConfigValueSource[] {
-  // Use centrally computed per-source flags from core resolution
-  const isSourceClear = (source: ConfigValueSource): boolean => source.cumulativeModifiers?.clear === true
-  const isSourceDefault = (source: ConfigValueSource): boolean => source.cumulativeModifiers?.default === true
-
-  let filtered = sources
-
-  // Apply `clear`: keep up to and including the first clear, drop all ancestors after it
-  const idxClear = filtered.findIndex((s) => isSourceClear(s))
-  if (idxClear !== -1) {
-    filtered = filtered.slice(0, idxClear + 1)
-  }
-
-  // Apply `default` semantics
-  // - If any non-default exists, drop all defaults (defaults are only fallbacks)
-  // - If all are defaults, keep only the most specific one (first)
-  const hasNonDefault = filtered.some((s) => !isSourceDefault(s))
-  if (hasNonDefault) {
-    filtered = filtered.filter((s) => !isSourceDefault(s))
-  } else if (filtered.length > 1) {
-    const first = filtered[0]
-    if (first) filtered = [first]
-  }
-
-  return filtered
-}
 
 function getDefinedAtFileSource(source: ConfigValueSource) {
   const { definedAt } = source

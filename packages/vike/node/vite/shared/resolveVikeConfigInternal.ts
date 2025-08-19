@@ -885,7 +885,6 @@ function getConfigValueSource(
       valueIsLoadedWithImport: false,
       valueIsDefinedByPlusValueFile: false,
       definedAt: definedAtFilePath,
-      cumulativeModifiers: computeCumulativeModifiersForSource(plusFile),
     }
     return configValueSource
   }
@@ -912,7 +911,6 @@ function getConfigValueSource(
         valueIsLoadedWithImport: true,
         valueIsDefinedByPlusValueFile: false,
         definedAt: pointerImport.fileExportPath,
-        cumulativeModifiers: computeCumulativeModifiersForSource(plusFile),
       }
       return configValueSource
     }
@@ -926,7 +924,6 @@ function getConfigValueSource(
       valueIsLoadedWithImport: false,
       valueIsDefinedByPlusValueFile: false,
       definedAt: definedAtFilePath_,
-      cumulativeModifiers: computeCumulativeModifiersForSource(plusFile),
     }
     return configValueSource
   }
@@ -949,7 +946,6 @@ function getConfigValueSource(
             : // Side-effect config (e.g. `export { frontmatter }` of .md files)
               [configName],
       },
-      cumulativeModifiers: computeCumulativeModifiersForSource(plusFile),
     }
     return configValueSource
   }
@@ -990,17 +986,6 @@ function getConfigNamesSetByPlusFile(plusFile: PlusFile): string[] {
   } else {
     return Object.keys(plusFile.fileExportsByConfigName)
   }
-}
-
-function computeCumulativeModifiersForSource(
-  plusFile: PlusFile | undefined,
-): { default?: true; clear?: true } | undefined {
-  const fn = plusFile?.filePath.fileName
-  if (!fn) return undefined
-  const flags: { default?: true; clear?: true } = {}
-  if (fn.includes('.clear.')) flags.clear = true
-  if (fn.includes('.default.')) flags.default = true
-  return Object.keys(flags).length ? flags : undefined
 }
 
 function getConfigDefinitions(

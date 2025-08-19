@@ -109,9 +109,6 @@ type ConfigValueSources = Record<
 >
 /**
  * A single source that defines the value of a config at a given location.
- *
- * cumulativeModifiers are per-source flags computed during config resolution (core) based on
- * filename suffixes only (.default., .clear.).
  */
 type ConfigValueSource = {
   configEnv: ConfigEnvInternal
@@ -129,11 +126,6 @@ type ConfigValueSource = {
   valueIsFilePath?: true
   /** Whether the config value is defined by a +{configName}.js file */
   valueIsDefinedByPlusValueFile: boolean
-  /** Per-source cumulative control flags, computed centrally at resolution time */
-  cumulativeModifiers?: {
-    default?: true
-    clear?: true
-  }
 } & (
   | {
       valueIsLoaded: false

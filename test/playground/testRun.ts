@@ -29,7 +29,7 @@ import { testDefaultAndClearSuffixes } from './pages/config-meta/default-clear/e
 
 const rootDir = path.dirname(fileURLToPath(import.meta.url))
 
-async function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
+function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   const isDev = cmd === 'npm run dev'
   testRunClassic(cmd)
   testSettingsInheritance({ isDev })
@@ -50,7 +50,6 @@ async function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') 
   testDynamicImportFileEnv({ isDev })
   testNestedLayout()
   testDefaultAndClearSuffixes()
-
   testHistoryPushState()
   testStarWars()
 }
