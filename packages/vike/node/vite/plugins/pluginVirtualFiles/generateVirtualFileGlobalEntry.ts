@@ -1,4 +1,4 @@
-export { getVirtualFilePageConfigsEager }
+export { generateVirtualFileGlobalEntry }
 
 // TODO/now: rename file to generateVirtualFileEntryGlobal.ts
 
@@ -8,7 +8,7 @@ import { debug } from './debug.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { FilesEnv, serializeConfigValues } from '../../../../shared/page-configs/serialize/serializeConfigValues.js'
 
-async function getVirtualFilePageConfigsEager(
+async function generateVirtualFileGlobalEntry(
   isForClientSide: boolean,
   isDev: boolean,
   id: string,

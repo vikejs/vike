@@ -2,7 +2,7 @@ export { generateVirtualFileGlobalEntryWithOldDesign }
 
 // TO-DO/next-major-release:
 //  - Remove this file
-//    - Instead only generate getVirtualFilePageConfigsEager()
+//    - Instead only generate generateVirtualFileGlobalEntry()
 //  - Remove old `.page.js`/`.page.client.js`/`.page.server.js` interface
 //    - Systematically remove all pageFilesAll references does the trick?
 
@@ -19,7 +19,7 @@ import { parseVirtualFileId } from '../../../shared/virtualFileId.js'
 import { version as viteVersion } from 'vite'
 import { type FileType, fileTypes } from '../../../../shared/getPageFiles/fileTypes.js'
 import path from 'node:path'
-import { getVirtualFilePageConfigsEager } from './getVirtualFilePageConfigsEager.js'
+import { generateVirtualFileGlobalEntry } from './generateVirtualFileGlobalEntry.js'
 import { getVikeConfigInternal, isV1Design as isV1Design_ } from '../../shared/resolveVikeConfigInternal.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
 import { isViteServerBuild_options } from '../../shared/isViteServerBuild.js'
@@ -119,7 +119,7 @@ export const pageFilesExportNamesEager = {};
 export const pageFilesList = [];
 export const neverLoaded = {};
 
-${await getVirtualFilePageConfigsEager(isForClientSide, isDev, id, isClientRouting)}
+${await generateVirtualFileGlobalEntry(isForClientSide, isDev, id, isClientRouting)}
 
 `
 
