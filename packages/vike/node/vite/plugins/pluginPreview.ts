@@ -19,7 +19,7 @@ function pluginPreview(): Plugin {
   return {
     name: 'vike:pluginPreview',
     apply: applyPreview,
-    config(config) {
+    configEnvironment(_name, config) {
       return {
         appType: 'custom',
         build: {
