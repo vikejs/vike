@@ -2,7 +2,7 @@ export { pluginVirtualFiles }
 
 import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode, ModuleGraph } from 'vite'
 import { normalizePath } from 'vite'
-import { generateVirtualFileEntryPage } from './pluginVirtualFiles/generateVirtualFileEntryPage.js'
+import { generateVirtualFilePageEntry } from './pluginVirtualFiles/generateVirtualFilePageEntry.js'
 import { generateVirtualFileGlobalEntry } from './pluginVirtualFiles/generateVirtualFileGlobalEntry.js'
 import {
   assert,
@@ -54,7 +54,7 @@ function pluginVirtualFiles(): Plugin {
       const idParsed = parseVirtualFileId(id)
       if (idParsed) {
         if (idParsed.type === 'page-entry') {
-          const code = await generateVirtualFileEntryPage(id, isDev, config)
+          const code = await generateVirtualFilePageEntry(id, isDev, config)
           return code
         }
         if (idParsed.type === 'global-entry') {
