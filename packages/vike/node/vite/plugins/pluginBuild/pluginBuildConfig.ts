@@ -25,7 +25,7 @@ import { prependEntriesDir } from '../../../shared/prependEntriesDir.js'
 import { getFilePathResolved } from '../../shared/getFilePath.js'
 import { getConfigValueBuildTime } from '../../../../shared/page-configs/getConfigValueBuildTime.js'
 import { isViteServerBuild } from '../../shared/isViteServerBuild.js'
-import { resolveOutDir_configEnvironment, resolveOutDir_tmp } from '../../shared/getOutDirs.js'
+import { resolveOutDir_configEnvironment } from '../../shared/getOutDirs.js'
 import {
   handleAssetsManifest_assertUsageCssCodeSplit,
   handleAssetsManifest_getBuildConfig,
@@ -58,7 +58,7 @@ function pluginBuildConfig(): Plugin[] {
         async handler(_name, config) {
           return {
             build: {
-              outDir: resolveOutDir_tmp(config),
+              outDir: resolveOutDir_configEnvironment(config),
             },
           }
         },
