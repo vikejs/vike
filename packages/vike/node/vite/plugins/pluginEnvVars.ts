@@ -15,7 +15,6 @@ import {
 import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerBuild_safe } from '../shared/isViteServerBuild.js'
-import { applyRegExpWithMagicString } from '../shared/applyRegExWithMagicString.js'
 import { getMagicString } from '../shared/getMagicString.js'
 
 // TO-DO/eventually:
@@ -94,7 +93,7 @@ function pluginEnvVars(): Plugin {
 
       // Apply
       replacements.forEach(({ regExpStr, replacement }) => {
-        applyRegExpWithMagicString(magicString, regExpStr, replacement)
+        magicString.replaceAll(new RegExp(regExpStr, 'g'), JSON.stringify(replacement))
       })
       if (!magicString.hasChanged()) return null
 

@@ -4,7 +4,6 @@ import type { Plugin, ResolvedConfig } from 'vite'
 import { assert, assertPosixPath } from '../utils.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerBuild_safe } from '../shared/isViteServerBuild.js'
-import { applyRegExpWithMagicString } from '../shared/applyRegExWithMagicString.js'
 import { getMagicString } from '../shared/getMagicString.js'
 
 function pluginReplaceConstants(): Plugin {
@@ -42,7 +41,7 @@ function pluginReplaceConstants(): Plugin {
       constantsMap.forEach(({ constants, replacement }) => {
         if (!constants.some((c) => code.includes(c))) return
         const regExp = getConstantRegExp(constants)
-        applyRegExpWithMagicString(magicString, regExp, replacement)
+        magicString.replaceAll(regExp, JSON.stringify(replacement))
       })
 
       if (!magicString.hasChanged()) return null
