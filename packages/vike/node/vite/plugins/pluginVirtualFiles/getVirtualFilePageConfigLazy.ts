@@ -38,7 +38,7 @@ async function getVirtualFilePageConfigLazy(id: string, isDev: boolean, config: 
     //*/
   }
 
-  const code = getLoadConfigLazy(
+  const code = getLoadPageEntry(
     pageConfig,
     isForClientSide,
     pageId,
@@ -50,7 +50,7 @@ async function getVirtualFilePageConfigLazy(id: string, isDev: boolean, config: 
   return code
 }
 
-function getLoadConfigLazy(
+function getLoadPageEntry(
   pageConfig: PageConfigBuildTime,
   isForClientSide: boolean,
   pageId: string,
