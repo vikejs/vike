@@ -418,7 +418,7 @@ importers:
         version: 19.1.6(@types/react@19.1.6)
       '@vitejs/plugin-react-swc':
         specifier: ^3.10.1
-        version: 3.10.1(vite@7.1.3(@types/node@22.15.30)(terser@5.38.1)(tsx@4.20.3))
+        version: 3.10.1(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.20.3))
       cross-fetch:
         specifier: ^4.1.0
         version: 4.1.0
@@ -441,14 +441,14 @@ importers:
         specifier: 0.4.237
         version: link:../../packages/vike
       vite:
-        specifier: ^7.1.3
-        version: 7.1.3(@types/node@22.15.30)(terser@5.38.1)(tsx@4.20.3)
+        specifier: ^6.3.5
+        version: 6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.20.3)
 
   examples/react-minimal:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@7.1.3(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@7.1.2(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -5900,15 +5900,6 @@ packages:
       picomatch:
         optional: true
 
-  fdir@6.5.0:
-    resolution: {integrity: sha512-tIbYtZbucOs0BRGqPJkshJUYdL+SDH7dVM8gjy+ERp3WAUjLEFJE+02kanyHtwjWOnwrKYBiwAmM0p4kLJAnXg==}
-    engines: {node: '>=12.0.0'}
-    peerDependencies:
-      picomatch: ^3 || ^4
-    peerDependenciesMeta:
-      picomatch:
-        optional: true
-
   fetch-blob@3.2.0:
     resolution: {integrity: sha512-7yAQpD2UMJzLi1Dqv7qFYnPbaPx7ZfFK6PiIxQ4PfkGPyNyl2Ugx+a/umUonmKqjhM4DnfbMvdX6otXq83soQQ==}
     engines: {node: ^12.20 || >= 14.13}
@@ -8269,46 +8260,6 @@ packages:
 
   vite@7.1.2:
     resolution: {integrity: sha512-J0SQBPlQiEXAF7tajiH+rUooJPo0l8KQgyg4/aMunNtrOa7bwuZJsJbDWzeljqQpgftxuq5yNJxQ91O9ts29UQ==}
-    engines: {node: ^20.19.0 || >=22.12.0}
-    hasBin: true
-    peerDependencies:
-      '@types/node': ^20.19.0 || >=22.12.0
-      jiti: '>=1.21.0'
-      less: ^4.0.0
-      lightningcss: ^1.21.0
-      sass: ^1.70.0
-      sass-embedded: ^1.70.0
-      stylus: '>=0.54.8'
-      sugarss: ^5.0.0
-      terser: ^5.16.0
-      tsx: ^4.8.1
-      yaml: ^2.4.2
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      jiti:
-        optional: true
-      less:
-        optional: true
-      lightningcss:
-        optional: true
-      sass:
-        optional: true
-      sass-embedded:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
-      tsx:
-        optional: true
-      yaml:
-        optional: true
-
-  vite@7.1.3:
-    resolution: {integrity: sha512-OOUi5zjkDxYrKhTV3V7iKsoS37VUM7v40+HuwEmcrsf11Cdx9y3DIr2Px6liIcZFwt3XSRpQvFpL3WVy7ApkGw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
@@ -10946,11 +10897,11 @@ snapshots:
       json-schema-to-ts: 1.6.4
       ts-morph: 12.0.0
 
-  '@vitejs/plugin-react-swc@3.10.1(vite@7.1.3(@types/node@22.15.30)(terser@5.38.1)(tsx@4.20.3))':
+  '@vitejs/plugin-react-swc@3.10.1(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.20.3))':
     dependencies:
       '@rolldown/pluginutils': 1.0.0-beta.9
       '@swc/core': 1.11.24
-      vite: 7.1.3(@types/node@22.15.30)(terser@5.38.1)(tsx@4.20.3)
+      vite: 6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.20.3)
     transitivePeerDependencies:
       - '@swc/helpers'
 
@@ -11043,7 +10994,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-react@4.7.0(vite@7.1.3(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))':
+  '@vitejs/plugin-react@4.7.0(vite@7.1.2(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))':
     dependencies:
       '@babel/core': 7.28.0
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.0)
@@ -11051,7 +11002,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.27
       '@types/babel__core': 7.20.5
       react-refresh: 0.17.0
-      vite: 7.1.3(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
+      vite: 7.1.2(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
     transitivePeerDependencies:
       - supports-color
 
@@ -12710,10 +12661,6 @@ snapshots:
       picomatch: 4.0.2
 
   fdir@6.4.6(picomatch@4.0.3):
-    optionalDependencies:
-      picomatch: 4.0.3
-
-  fdir@6.5.0(picomatch@4.0.3):
     optionalDependencies:
       picomatch: 4.0.3
 
@@ -15624,34 +15571,6 @@ snapshots:
     dependencies:
       esbuild: 0.25.8
       fdir: 6.4.6(picomatch@4.0.3)
-      picomatch: 4.0.3
-      postcss: 8.5.6
-      rollup: 4.43.0
-      tinyglobby: 0.2.14
-    optionalDependencies:
-      '@types/node': 24.3.0
-      fsevents: 2.3.3
-      terser: 5.38.1
-      tsx: 4.20.3
-
-  vite@7.1.3(@types/node@22.15.30)(terser@5.38.1)(tsx@4.20.3):
-    dependencies:
-      esbuild: 0.25.8
-      fdir: 6.5.0(picomatch@4.0.3)
-      picomatch: 4.0.3
-      postcss: 8.5.6
-      rollup: 4.43.0
-      tinyglobby: 0.2.14
-    optionalDependencies:
-      '@types/node': 22.15.30
-      fsevents: 2.3.3
-      terser: 5.38.1
-      tsx: 4.20.3
-
-  vite@7.1.3(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3):
-    dependencies:
-      esbuild: 0.25.8
-      fdir: 6.5.0(picomatch@4.0.3)
       picomatch: 4.0.3
       postcss: 8.5.6
       rollup: 4.43.0
