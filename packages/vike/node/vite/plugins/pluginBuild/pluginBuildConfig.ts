@@ -17,7 +17,7 @@ import {
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { findPageFiles } from '../../shared/findPageFiles.js'
 import type { ResolvedConfig, Plugin } from 'vite'
-import { getVirtualFileIdPageConfigLazy } from '../../../shared/virtualFiles/virtualFilePageConfigLazy.js'
+import { generateVirtualFileId } from '../../../shared/virtualFileId.js'
 import type { PageConfigBuildTime } from '../../../../types/PageConfig.js'
 import type { FileType } from '../../../../shared/getPageFiles/fileTypes.js'
 import { extractAssetsAddQuery } from '../../../shared/extractAssetsQuery.js'
@@ -201,7 +201,7 @@ function getEntryFromClientEntry(clientEntry: string, config: ResolvedConfig, ad
 }
 function getEntryFromPageConfig(pageConfig: PageConfigBuildTime, isForClientSide: boolean) {
   let { pageId } = pageConfig
-  const entryTarget = getVirtualFileIdPageConfigLazy(pageId, isForClientSide)
+  const entryTarget = generateVirtualFileId({ type: 'page-entry', pageId, isForClientSide })
   let entryName = pageId
   // Avoid:
   // ```

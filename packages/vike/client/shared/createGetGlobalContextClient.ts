@@ -21,7 +21,7 @@ import { assert, assertUsage, genPromise, getGlobalObject, objectAssign, checkTy
 type GlobalContextNotTyped = Record<string, unknown>
 const globalObject = getGlobalObject<{
   isClientRouting?: boolean
-  virtualFileExports?: unknown
+  virtualFileExportsGlobalEntry?: unknown
   globalContext?: GlobalContextNotTyped
   globalContextPromise?: Promise<GlobalContextNotTyped>
   globalContextInitialPromise: Promise<void>
@@ -38,7 +38,7 @@ const globalObject = getGlobalObject<{
 )
 
 function createGetGlobalContextClient<GlobalContextAddendum extends object>(
-  virtualFileExports: unknown,
+  virtualFileExportsGlobalEntry: unknown,
   isClientRouting: boolean,
   addGlobalContext?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddendum>,
 ) {
@@ -51,17 +51,17 @@ function createGetGlobalContextClient<GlobalContextAddendum extends object>(
   return getGlobalContext
 
   async function getGlobalContext() {
-    // HMR => virtualFileExports differ
-    if (globalObject.virtualFileExports === virtualFileExports) {
+    // HMR => virtualFileExportsGlobalEntry differ
+    if (globalObject.virtualFileExportsGlobalEntry === virtualFileExportsGlobalEntry) {
       const globalContext = await globalObject.globalContextPromise
       return globalContext as never
     } else {
-      globalObject.virtualFileExports = virtualFileExports
+      globalObject.virtualFileExportsGlobalEntry = virtualFileExportsGlobalEntry
     }
 
     // Create
     const globalContextPromise = createGlobalContextShared(
-      virtualFileExports,
+      virtualFileExportsGlobalEntry,
       globalObject,
       undefined,
       async (globalContext) => {

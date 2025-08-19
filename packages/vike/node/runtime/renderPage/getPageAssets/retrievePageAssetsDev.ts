@@ -4,7 +4,7 @@ export { setGetClientEntrySrcDev }
 import { assert, getGlobalObject, styleFileRE } from '../../utils.js'
 import type { ModuleNode, ViteDevServer } from 'vite'
 import type { ClientDependency } from '../../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
-import { isVirtualFileIdEntry } from '../../../shared/virtualFiles/virtualFileEntry.js'
+import { parseVirtualFileId } from '../../../shared/virtualFileId.js'
 import type { GetClientEntrySrcDev } from '../../../vite/shared/getClientEntrySrcDev.js'
 
 const globalObject = getGlobalObject('getPageAssets/retrievePageAssetsDev.ts', {
@@ -34,7 +34,8 @@ async function getAssetUrls(clientDependencies: ClientDependency[], viteDevServe
     clientDependencies.map(async ({ id }) => {
       if (id.startsWith('@@vike')) return // vike doesn't have any CSS
       assert(id)
-      assert(!isVirtualFileIdEntry(id))
+      const virtualFile = parseVirtualFileId(id)
+      assert(!virtualFile || virtualFile.type !== 'global-entry')
       const { moduleGraph } = viteDevServer
       const [_, graphId] = await moduleGraph.resolveUrl(id)
       assert(graphId, { id })
@@ -61,7 +62,8 @@ function collectCss(mod: ModuleNode, styleUrls: Set<string>, visitedModules: Set
   if (!mod.url) return
   if (visitedModules.has(mod.url)) return
   visitedModules.add(mod.url)
-  if (isVirtualFileIdEntry(mod.id || mod.url)) return // virtual:vike:entry:server dependency list includes all pages
+  const virtualFile = parseVirtualFileId(mod.id || mod.url)
+  if (virtualFile && virtualFile.type === 'global-entry') return // virtual:vike:global-entry:server dependency list includes all pages
   if (isStyle(mod) && (!importer || !isStyle(importer))) {
     if (mod.url.startsWith('/')) {
       styleUrls.add(mod.url)

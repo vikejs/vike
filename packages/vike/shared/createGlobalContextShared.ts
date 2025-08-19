@@ -6,10 +6,10 @@ export type GlobalContextInternal = GlobalContextServerInternal | GlobalContextC
 
 import { changeEnumerable, genPromise, getGlobalObject, objectAssign, objectReplace, unique } from './utils.js'
 import type { PageFile } from './getPageFiles.js'
-import { parseVirtualFileExports } from './getPageFiles/parseVirtualFileExports.js'
+import { parseVirtualFileExportsGlobalEntry } from './getPageFiles/parseVirtualFileExportsGlobalEntry.js'
 import {
   resolveVikeConfigPublicGlobal,
-  resolveVikeConfigPublicPageEager,
+  resolveVikeConfigPublicPageEagerLoaded,
 } from './page-configs/resolveVikeConfigPublic.js'
 import type { PageConfigRuntime } from '../types/PageConfig.js'
 import { execHookGlobal } from './hooks/execHook.js'
@@ -29,7 +29,7 @@ async function createGlobalContextShared<
   GlobalContextAdded extends Record<string, any>,
   GlobalContextAddedAsync extends Record<string, any>,
 >(
-  virtualFileExports: unknown,
+  virtualFileExportsGlobalEntry: unknown,
   globalObject: { globalContext?: Record<string, unknown>; onCreateGlobalContextHooks?: Hook[] },
   addGlobalContext?: (globalContext: GlobalContextBase) => GlobalContextAdded,
   // TO-DO/next-major-release: we'll be able to remove addGlobalContextTmp after loadPageRoutes() is sync (it will be sync after we remove the old design)
@@ -47,7 +47,7 @@ async function createGlobalContextShared<
   globalObject_.previousCallPromise = promise
   await previousCallPromise
 
-  const globalContext = createGlobalContextBase(virtualFileExports)
+  const globalContext = createGlobalContextBase(virtualFileExportsGlobalEntry)
 
   let isNewGlobalContext: boolean
   if (!globalObject.globalContext) {
@@ -61,7 +61,7 @@ async function createGlobalContextShared<
 
   if (
     addGlobalContext &&
-    // TODO/next-major-release: remove
+    // TO-DO/next-major-release: remove
     globalContext._pageConfigs.length > 0
   ) {
     const globalContextAdded = addGlobalContext?.(globalContext)
@@ -110,7 +110,7 @@ async function createGlobalContextShared<
 
 type GlobalContextBasePublic = Pick<GlobalContextBase, 'config' | 'pages' | 'isGlobalContext'>
 type GlobalContextBase = ReturnType<typeof createGlobalContextBase>
-function createGlobalContextBase(virtualFileExports: unknown) {
+function createGlobalContextBase(virtualFileExportsGlobalEntry: unknown) {
   const {
     pageFilesAll,
     allPageIds,
@@ -118,7 +118,7 @@ function createGlobalContextBase(virtualFileExports: unknown) {
     pageConfigGlobal,
     vikeConfigPublicGlobal,
     vikeConfigPublicPagesEager,
-  } = getConfigsAll(virtualFileExports)
+  } = getConfigsAll(virtualFileExportsGlobalEntry)
   const globalContext = {
     /**
      * Useful for distinguishing `globalContext` from other objects and narrowing down TypeScript unions.
@@ -127,7 +127,7 @@ function createGlobalContextBase(virtualFileExports: unknown) {
      */
     isGlobalContext: true as const,
     _isOriginalObject: true as const,
-    _virtualFileExports: virtualFileExports,
+    _virtualFileExportsGlobalEntry: virtualFileExportsGlobalEntry,
     _pageFilesAll: pageFilesAll,
     _pageConfigs: pageConfigs,
     _pageConfigGlobal: pageConfigGlobal,
@@ -140,8 +140,9 @@ function createGlobalContextBase(virtualFileExports: unknown) {
   return globalContext
 }
 
-function getConfigsAll(virtualFileExports: unknown) {
-  const { pageFilesAll, pageConfigs, pageConfigGlobal } = parseVirtualFileExports(virtualFileExports)
+function getConfigsAll(virtualFileExportsGlobalEntry: unknown) {
+  const { pageFilesAll, pageConfigs, pageConfigGlobal } =
+    parseVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry)
   const allPageIds = getAllPageIds(pageFilesAll, pageConfigs)
 
   const vikeConfigPublicGlobal = resolveVikeConfigPublicGlobal({
@@ -150,7 +151,7 @@ function getConfigsAll(virtualFileExports: unknown) {
 
   const vikeConfigPublicPagesEager = Object.fromEntries(
     pageConfigs.map((pageConfig) => {
-      return resolveVikeConfigPublicPageEager(pageConfigGlobal.configValues, pageConfig, pageConfig.configValues)
+      return resolveVikeConfigPublicPageEagerLoaded(pageConfigGlobal.configValues, pageConfig, pageConfig.configValues)
     }),
   )
 

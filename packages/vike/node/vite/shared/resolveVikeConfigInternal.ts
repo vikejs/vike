@@ -84,9 +84,9 @@ import type { FilePath } from '../../../types/FilePath.js'
 import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
 import {
   resolveVikeConfigPublicGlobal,
-  resolveVikeConfigPublicPageEager,
+  resolveVikeConfigPublicPageEagerLoaded,
   type VikeConfigPublicGlobal,
-  type VikeConfigPublicPageEager,
+  type VikeConfigPublicPageEagerLoaded,
 } from '../../../shared/page-configs/resolveVikeConfigPublic.js'
 import { getConfigValuesBase, isJsonValue } from '../../../shared/page-configs/serialize/serializeConfigValues.js'
 import {
@@ -129,7 +129,7 @@ type VikeConfigInternal = {
   _from: VikeConfigPublicGlobal['_from']
   pages: Record<
     string, // pageId
-    VikeConfigPublicPageEager
+    VikeConfigPublicPageEagerLoaded
   >
   _vikeConfigDependencies: Set<string>
   prerenderContext: PrerenderContext
@@ -307,7 +307,7 @@ async function resolveVikeConfigInternal(
   const vikeConfigPublicPagesEager = objectFromEntries(
     pageConfigs.map((pageConfig) => {
       const pageConfigValues = getConfigValues(pageConfig, true)
-      return resolveVikeConfigPublicPageEager(pageConfigGlobalValues, pageConfig, pageConfigValues)
+      return resolveVikeConfigPublicPageEagerLoaded(pageConfigGlobalValues, pageConfig, pageConfigValues)
     }),
   )
 

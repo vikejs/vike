@@ -1,14 +1,12 @@
-export { getVirtualFilePageConfigsEager }
-
-// TODO/now: rename file to generateVirtualFileEntryGlobal.ts
+export { generateVirtualFileGlobalEntry }
 
 import type { PageConfigBuildTime, PageConfigGlobalBuildTime } from '../../../../types/PageConfig.js'
-import { getVirtualFileIdPageConfigLazy } from '../../../shared/virtualFiles/virtualFilePageConfigLazy.js'
+import { generateVirtualFileId } from '../../../shared/virtualFileId.js'
 import { debug } from './debug.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { FilesEnv, serializeConfigValues } from '../../../../shared/page-configs/serialize/serializeConfigValues.js'
 
-async function getVirtualFilePageConfigsEager(
+async function generateVirtualFileGlobalEntry(
   isForClientSide: boolean,
   isDev: boolean,
   id: string,
@@ -76,9 +74,10 @@ function getCodePageConfigsSerialized(
     lines.push(`    pageId: ${JSON.stringify(pageId)},`)
     lines.push(`    isErrorPage: ${JSON.stringify(isErrorPage)},`)
     lines.push(`    routeFilesystem: ${JSON.stringify(routeFilesystem)},`)
-    const virtualFileId = JSON.stringify(getVirtualFileIdPageConfigLazy(pageId, isForClientSide))
-    const load = `() => ({ moduleId: ${virtualFileId}, moduleExports: import(${virtualFileId}) })`
-    lines.push(`    loadConfigLazy: ${load},`)
+    const virtualFileId = JSON.stringify(generateVirtualFileId({ type: 'page-entry', pageId, isForClientSide }))
+    lines.push(
+      `    loadVirtualFilePageEntry: () => ({ moduleId: ${virtualFileId}, moduleExportsPromise: import(${virtualFileId}) }),`,
+    )
     lines.push(`    configValuesSerialized: {`)
     lines.push(
       ...serializeConfigValues(

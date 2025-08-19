@@ -1,11 +1,11 @@
 // TO-DO/soon/same-api: use public API internally?
 // TO-DO/soon/flat-pageContext: rename definedAt => definedBy
 export { resolveVikeConfigPublicGlobal }
-export { resolveVikeConfigPublicPageEager }
-export { resolveVikeConfigPublicPageLazy }
+export { resolveVikeConfigPublicPageEagerLoaded }
+export { resolveVikeConfigPublicPageLazyLoaded }
 export type { VikeConfigPublicGlobal }
-export type { VikeConfigPublicPageEager }
-export type { VikeConfigPublicPageLazy }
+export type { VikeConfigPublicPageEagerLoaded }
+export type { VikeConfigPublicPageLazyLoaded }
 export type { Source }
 export type { Sources }
 export type { From }
@@ -67,7 +67,7 @@ type ConfigEntries = Record<
     configDefinedByFile: string | null
   }[]
 >
-type VikeConfigPublicPageLazy = {
+type VikeConfigPublicPageLazyLoaded = {
   config: ConfigResolved
   source: Source
   sources: Sources
@@ -167,16 +167,16 @@ type WithRoute =
       route?: undefined
       isErrorPage: true
     }
-type VikeConfigPublicPageEager = VikeConfigPublic & WithRoute
+type VikeConfigPublicPageEagerLoaded = VikeConfigPublic & WithRoute
 type VikeConfigPublicGlobal = VikeConfigPublic
-function resolveVikeConfigPublicPageEager(
+function resolveVikeConfigPublicPageEagerLoaded(
   pageConfigGlobalValues: ConfigValues,
   pageConfig: PageConfigRuntime | PageConfigBuildTime,
   pageConfigValues: ConfigValues,
-): [string, VikeConfigPublicPageEager] {
+): [string, VikeConfigPublicPageEagerLoaded] {
   const vikeConfigPublicPage_ = resolveVikeConfigPublic_base({ pageConfigGlobalValues, pageConfigValues })
   const vikeConfigPublicPage = getPublicCopy(vikeConfigPublicPage_)
-  let page: VikeConfigPublicPageEager
+  let page: VikeConfigPublicPageEagerLoaded
   if (!pageConfig.isErrorPage) {
     const route = vikeConfigPublicPage.config.route ?? pageConfig.routeFilesystem.routeString
     page = {
@@ -214,11 +214,11 @@ function resolveVikeConfigPublicGlobal({
   return getPublicCopy(vikeConfigPublicGlobal)
 }
 
-function resolveVikeConfigPublicPageLazy(
+function resolveVikeConfigPublicPageLazyLoaded(
   pageFiles: PageFile[], // V0.4 design
   pageConfig: PageConfigRuntimeLoaded | null, // V1 design
   pageConfigGlobal: PageConfigGlobalRuntime,
-): VikeConfigPublicPageLazy {
+): VikeConfigPublicPageLazyLoaded {
   const config: Record<string, unknown> = {}
   const configEntries: ConfigEntries = {} // TO-DO/next-major-release: remove
   const exportsAll: ExportsAll = {} // TO-DO/next-major-release: remove

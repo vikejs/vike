@@ -1,12 +1,5 @@
-export { parsePageConfigs }
+export { parsePageConfigsSerialized }
 export { parseConfigValuesSerialized }
-
-// TODO/now: rename parseVirtualFileExportsEntryPage ?
-// TODO/now: merge or collocate following both files?
-// ```filesystem
-// vike/packages/vike/shared/getPageFiles/parseVirtualFileExports.ts
-// vike/shared/page-configs/serialize/parsePageConfigs.ts
-// ```
 
 import type {
   ConfigValues,
@@ -26,7 +19,7 @@ import type { ConfigValueSerialized } from './PageConfigSerialized.js'
 import { parseTransform } from '@brillout/json-serializer/parse'
 import { assertPlusFileExport } from '../assertPlusFileExport.js'
 
-function parsePageConfigs(
+function parsePageConfigsSerialized(
   pageConfigsSerialized: PageConfigRuntimeSerialized[],
   pageConfigGlobalSerialized: PageConfigGlobalRuntimeSerialized,
 ): {

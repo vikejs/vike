@@ -20,6 +20,7 @@ export type { DefinedAtFile }
 export type { DefinedAt }
 export type { DefinedBy }
 export type { DefinedAtFilePath }
+export type { VirtualFileExportsPageEntry }
 
 import type { ConfigValueSerialized } from '../shared/page-configs/serialize/PageConfigSerialized.js'
 import type { LocationId } from '../node/vite/shared/resolveVikeConfigInternal/filesystemRouting.js'
@@ -52,7 +53,7 @@ type PageConfigRoute =
 type PageConfigRuntime = PageConfigCommon & {
   configValues: ConfigValues
   /** Load config values that are lazily loaded such as config.Page */
-  loadConfigLazy: LoadConfigLazy
+  loadVirtualFilePageEntry: LoadVirtualFilePageEntry
 }
 /** Global config that applies to all pages, runtime data structure */
 type PageConfigGlobalRuntime = {
@@ -75,14 +76,15 @@ type PageConfigGlobalBuildTime = {
 
 /** Same as PageConfigRuntime but also contains all lazily loaded config values such as config.Page */
 type PageConfigRuntimeLoaded = PageConfigRuntime & {
-  /** Whether loadConfigLazy() was called */
-  isAllLoaded: true
+  /** Whether loadVirtualFilePageEntry() was called */
+  isPageEntryLoaded: true
 }
-type LoadConfigLazy = () => {
+type LoadVirtualFilePageEntry = () => {
   moduleId: string
-  moduleExports: Promise<{
-    configValuesSerialized: Record<string, ConfigValueSerialized>
-  }>
+  moduleExportsPromise: Promise<VirtualFileExportsPageEntry>
+}
+type VirtualFileExportsPageEntry = {
+  configValuesSerialized: Record<string, ConfigValueSerialized>
 }
 
 /** In what environment(s) the config value is loaded.

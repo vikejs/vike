@@ -1,8 +1,8 @@
-export { getVirtualFileEntry }
+export { generateVirtualFileGlobalEntryWithOldDesign }
 
 // TO-DO/next-major-release:
 //  - Remove this file
-//    - Instead only generate getVirtualFilePageConfigsEager()
+//    - Instead only generate generateVirtualFileGlobalEntry()
 //  - Remove old `.page.js`/`.page.client.js`/`.page.server.js` interface
 //    - Systematically remove all pageFilesAll references does the trick?
 
@@ -15,11 +15,11 @@ import {
   isVersionOrAbove,
   assertWarning,
 } from '../../utils.js'
-import { isVirtualFileIdEntry } from '../../../shared/virtualFiles/virtualFileEntry.js'
+import { parseVirtualFileId } from '../../../shared/virtualFileId.js'
 import { version as viteVersion } from 'vite'
 import { type FileType, fileTypes } from '../../../../shared/getPageFiles/fileTypes.js'
 import path from 'node:path'
-import { getVirtualFilePageConfigsEager } from './getVirtualFilePageConfigsEager.js'
+import { generateVirtualFileGlobalEntry } from './generateVirtualFileGlobalEntry.js'
 import { getVikeConfigInternal, isV1Design as isV1Design_ } from '../../shared/resolveVikeConfigInternal.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
 import { isViteServerBuild_options } from '../../shared/isViteServerBuild.js'
@@ -30,14 +30,14 @@ type GlobRoot = {
   excludeDir?: string // slash-terminated, no leading exclamation mark
 }
 
-async function getVirtualFileEntry(
+async function generateVirtualFileGlobalEntryWithOldDesign(
   id: string,
   options: { ssr?: boolean } | undefined,
   config: ResolvedConfig,
   isDev: boolean,
 ) {
-  const idParsed = isVirtualFileIdEntry(id)
-  assert(idParsed)
+  const idParsed = parseVirtualFileId(id)
+  assert(idParsed && idParsed.type === 'global-entry')
   const { isForClientSide, isClientRouting } = idParsed
   assert(isForClientSide === !isViteServerBuild_options(options))
   const code = await getCode(config, isForClientSide, isClientRouting, isDev, id)
@@ -119,7 +119,7 @@ export const pageFilesExportNamesEager = {};
 export const pageFilesList = [];
 export const neverLoaded = {};
 
-${await getVirtualFilePageConfigsEager(isForClientSide, isDev, id, isClientRouting)}
+${await generateVirtualFileGlobalEntry(isForClientSide, isDev, id, isClientRouting)}
 
 `
 

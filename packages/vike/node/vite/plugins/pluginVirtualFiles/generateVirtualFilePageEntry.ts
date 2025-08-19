@@ -1,13 +1,8 @@
-export { getVirtualFilePageConfigLazy }
-
-// TODO/now: rename file to generateVirtualFileEntryPage.ts
+export { generateVirtualFilePageEntry }
 
 import { assert, getProjectError } from '../../utils.js'
 import type { PageConfigBuildTime } from '../../../../types/PageConfig.js'
-import {
-  getVirtualFileIdPageConfigLazy,
-  isVirtualFileIdPageConfigLazy,
-} from '../../../shared/virtualFiles/virtualFilePageConfigLazy.js'
+import { parseVirtualFileId, generateVirtualFileId } from '../../../shared/virtualFileId.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { extractAssetsAddQuery } from '../../../shared/extractAssetsQuery.js'
 import { debug } from './debug.js'
@@ -17,9 +12,9 @@ import { handleAssetsManifest_isFixEnabled } from '../pluginBuild/handleAssetsMa
 import { getConfigValueBuildTime } from '../../../../shared/page-configs/getConfigValueBuildTime.js'
 import { resolveIncludeAssetsImportedByServer } from '../../../runtime/renderPage/getPageAssets/retrievePageAssetsProd.js'
 
-async function getVirtualFilePageConfigLazy(id: string, isDev: boolean, config: ResolvedConfig): Promise<string> {
-  const result = isVirtualFileIdPageConfigLazy(id)
-  assert(result)
+async function generateVirtualFilePageEntry(id: string, isDev: boolean, config: ResolvedConfig): Promise<string> {
+  const result = parseVirtualFileId(id)
+  assert(result && result.type === 'page-entry')
   /* This assertion fails when using includeAssetsImportedByServer
   {
     const isForClientSide = !config.build.ssr
@@ -41,7 +36,7 @@ async function getVirtualFilePageConfigLazy(id: string, isDev: boolean, config: 
     //*/
   }
 
-  const code = getLoadConfigLazy(
+  const code = getCode(
     pageConfig,
     isForClientSide,
     pageId,
@@ -53,7 +48,7 @@ async function getVirtualFilePageConfigLazy(id: string, isDev: boolean, config: 
   return code
 }
 
-function getLoadConfigLazy(
+function getCode(
   pageConfig: PageConfigBuildTime,
   isForClientSide: boolean,
   pageId: string,
@@ -80,7 +75,9 @@ function getLoadConfigLazy(
   lines.push('};')
 
   if (!handleAssetsManifest_isFixEnabled(config) && includeAssetsImportedByServer && isForClientSide && !isDev) {
-    importStatements.push(`import '${extractAssetsAddQuery(getVirtualFileIdPageConfigLazy(pageId, false))}'`)
+    importStatements.push(
+      `import '${extractAssetsAddQuery(generateVirtualFileId({ type: 'page-entry', pageId, isForClientSide: false }))}'`,
+    )
   }
 
   const code = [...importStatements, ...lines].join('\n')

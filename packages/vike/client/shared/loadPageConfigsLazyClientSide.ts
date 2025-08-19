@@ -3,9 +3,9 @@ export type { PageContext_loadPageConfigsLazyClientSide }
 export { isErrorFetchingStaticAssets }
 
 import { getPageFilesClientSide, type PageFile } from '../../shared/getPageFiles.js'
-import { resolveVikeConfigPublicPageLazy } from '../../shared/page-configs/resolveVikeConfigPublic.js'
+import { resolveVikeConfigPublicPageLazyLoaded } from '../../shared/page-configs/resolveVikeConfigPublic.js'
 import { findPageConfig } from '../../shared/page-configs/findPageConfig.js'
-import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
+import { loadPageEntry } from '../../shared/page-configs/loadPageEntry.js'
 import type { PageConfigGlobalRuntime, PageConfigRuntime, PageConfigRuntimeLoaded } from '../../types/PageConfig.js'
 import { objectAssign } from '../runtime-server-routing/utils.js'
 
@@ -35,7 +35,7 @@ async function loadPageConfigsLazyClientSide(
     // prettier-ignore
     // biome-ignore format:
     const result = await Promise.all([
-      pageConfig && loadConfigValues(pageConfig, isDev),
+      pageConfig && loadPageEntry(pageConfig, isDev),
       ...pageFilesClientSide.map((p) => p.loadFile?.()),
     ])
     pageConfigLoaded = result[0]
@@ -47,7 +47,11 @@ async function loadPageConfigsLazyClientSide(
     }
     throw err
   }
-  const configPublicPageLazy = resolveVikeConfigPublicPageLazy(pageFilesClientSide, pageConfigLoaded, pageConfigGlobal)
+  const configPublicPageLazy = resolveVikeConfigPublicPageLazyLoaded(
+    pageFilesClientSide,
+    pageConfigLoaded,
+    pageConfigGlobal,
+  )
   const pageContextAddendum = {}
   objectAssign(pageContextAddendum, configPublicPageLazy)
   objectAssign(pageContextAddendum, { _pageFilesLoaded: pageFilesClientSide })
