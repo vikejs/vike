@@ -54,8 +54,8 @@ assert(
 )
 
 type VirtualFileIdEntryParsed =
-  | { type: 'global'; isForClientSide: boolean; isClientRouting: boolean }
-  | { type: 'page'; isForClientSide: boolean; pageId: string; isExtractAssets: boolean }
+  | { type: 'global-entry'; isForClientSide: boolean; isClientRouting: boolean }
+  | { type: 'page-entry'; isForClientSide: boolean; pageId: string; isExtractAssets: boolean }
 
 function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
   id = removeVirtualFileIdPrefix(id)
@@ -71,7 +71,7 @@ function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
     if (id.startsWith(virtualFileIdPageEntryClient)) {
       assert(isExtractAssets === false)
       return {
-        type: 'page',
+        type: 'page-entry',
         pageId: id.slice(virtualFileIdPageEntryClient.length),
         isForClientSide: true,
         isExtractAssets,
@@ -79,7 +79,7 @@ function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
     }
     if (id.startsWith(virtualFileIdPageEntryServer)) {
       return {
-        type: 'page',
+        type: 'page-entry',
         pageId: id.slice(virtualFileIdPageEntryServer.length),
         isForClientSide: false,
         isExtractAssets,
@@ -93,7 +93,7 @@ function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
     const isForClientSide = id !== virtualFileIdGlobalEntryServer
     const isClientRouting = id === virtualFileIdGlobalEntryClientCR
     return {
-      type: 'global',
+      type: 'global-entry',
       isForClientSide,
       isClientRouting,
     }
@@ -102,13 +102,16 @@ function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
   return false
 }
 
-function generateVirtualFileId(type: 'global', options: { isForClientSide: boolean; isClientRouting: boolean }): string
-function generateVirtualFileId(type: 'page', options: { pageId: string; isForClientSide: boolean }): string
 function generateVirtualFileId(
-  type: 'global' | 'page',
+  type: 'global-entry',
+  options: { isForClientSide: boolean; isClientRouting: boolean },
+): string
+function generateVirtualFileId(type: 'page-entry', options: { pageId: string; isForClientSide: boolean }): string
+function generateVirtualFileId(
+  type: 'global-entry' | 'page-entry',
   options: { isForClientSide: boolean; isClientRouting?: boolean; pageId?: string },
 ): string {
-  if (type === 'global') {
+  if (type === 'global-entry') {
     const { isForClientSide, isClientRouting } = options
     assert(typeof isClientRouting === 'boolean')
     if (!isForClientSide) {
@@ -120,7 +123,7 @@ function generateVirtualFileId(
     }
   }
 
-  if (type === 'page') {
+  if (type === 'page-entry') {
     const { pageId, isForClientSide } = options
     assert(typeof pageId === 'string')
     const id = `${isForClientSide ? virtualFileIdPageEntryClient : virtualFileIdPageEntryServer}${pageId}` as const

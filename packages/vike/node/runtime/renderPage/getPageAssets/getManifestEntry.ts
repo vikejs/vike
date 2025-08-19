@@ -21,7 +21,7 @@ function getManifestEntry(
 
   // Page code importer
   const virtualFile = parseVirtualFileId(id)
-  if (virtualFile && virtualFile.type === 'page') {
+  if (virtualFile && virtualFile.type === 'page-entry') {
     {
       const manifestKey = id
       const manifestEntry = assetsManifest[manifestKey]

@@ -16,7 +16,7 @@ import { resolveIncludeAssetsImportedByServer } from '../../../runtime/renderPag
 
 async function getVirtualFilePageConfigLazy(id: string, isDev: boolean, config: ResolvedConfig): Promise<string> {
   const result = parseVirtualFileId(id)
-  assert(result && result.type === 'page')
+  assert(result && result.type === 'page-entry')
   /* This assertion fails when using includeAssetsImportedByServer
   {
     const isForClientSide = !config.build.ssr
@@ -78,7 +78,7 @@ function getLoadConfigLazy(
 
   if (!handleAssetsManifest_isFixEnabled(config) && includeAssetsImportedByServer && isForClientSide && !isDev) {
     importStatements.push(
-      `import '${extractAssetsAddQuery(generateVirtualFileId('page', { pageId, isForClientSide: false }))}'`,
+      `import '${extractAssetsAddQuery(generateVirtualFileId('page-entry', { pageId, isForClientSide: false }))}'`,
     )
   }
 

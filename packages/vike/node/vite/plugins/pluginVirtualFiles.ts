@@ -53,11 +53,11 @@ function pluginVirtualFiles(): Plugin {
 
       const idParsed = parseVirtualFileId(id)
       if (idParsed) {
-        if (idParsed.type === 'page') {
+        if (idParsed.type === 'page-entry') {
           const code = await getVirtualFilePageConfigLazy(id, isDev, config)
           return code
         }
-        if (idParsed.type === 'global') {
+        if (idParsed.type === 'global-entry') {
           const code = await getVirtualFileEntry(id, options, config, isDev)
           return code
         }

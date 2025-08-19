@@ -214,7 +214,7 @@ function getPageId(key: string) {
   // (This seems to be needed only for vitest tests that use Vite's build() API with an inline config.)
   key = key.substring(key.indexOf('virtual:vike'))
   const result = parseVirtualFileId(key)
-  return result && result.type === 'page' ? result.pageId : null
+  return result && result.type === 'page-entry' ? result.pageId : null
 }
 
 function collectResources(entryRoot: ViteManifestEntry, manifest: ViteManifest) {

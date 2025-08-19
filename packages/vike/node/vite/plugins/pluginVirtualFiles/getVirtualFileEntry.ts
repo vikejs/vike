@@ -37,7 +37,7 @@ async function getVirtualFileEntry(
   isDev: boolean,
 ) {
   const idParsed = parseVirtualFileId(id)
-  assert(idParsed && idParsed.type === 'global')
+  assert(idParsed && idParsed.type === 'global-entry')
   const { isForClientSide, isClientRouting } = idParsed
   assert(isForClientSide === !isViteServerBuild_options(options))
   const code = await getCode(config, isForClientSide, isClientRouting, isDev, id)
