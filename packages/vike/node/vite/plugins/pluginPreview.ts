@@ -8,7 +8,7 @@ import type { ViteDevServer } from 'vite'
 import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
 import pc from '@brillout/picocolors'
 import { logDockerHint } from './pluginDev.js'
-import { getOutDirs, resolveOutDir } from '../shared/getOutDirs.js'
+import { getOutDirs, resolveOutDir_configEnvironment } from '../shared/getOutDirs.js'
 import sirv from 'sirv'
 import { getVikeConfigInternal, type VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 type ConnectServer = ViteDevServer['middlewares']
@@ -27,7 +27,7 @@ function pluginPreview(): Plugin {
     configEnvironment(_name, config) {
       return {
         build: {
-          outDir: resolveOutDir(config),
+          outDir: resolveOutDir_configEnvironment(config),
         },
       }
     },

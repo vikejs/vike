@@ -1,8 +1,9 @@
 export { getOutDirs }
 export { resolveOutDir }
+export { resolveOutDir_configEnvironment }
 export type { OutDirs }
 
-import type { UserConfig, ResolvedConfig, Environment } from 'vite'
+import type { UserConfig, ResolvedConfig, Environment, EnvironmentOptions } from 'vite'
 import pc from '@brillout/picocolors'
 import { assert, assertPosixPath, assertUsage, createDebugger, pathJoin, toPosixPath } from '../utils.js'
 import { isViteServerBuild } from './isViteServerBuild.js'
@@ -26,10 +27,14 @@ function getOutDirs(configGlobal: ResolvedConfig, viteEnv?: Environment): OutDir
   return outDirs
 }
 
+function resolveOutDir_configEnvironment(configEnv: EnvironmentOptions): string {
+  const isServerSide = configEnv.consumer === 'server'
+  return resolveOutDir(configEnv, isServerSide)
+}
+
 /** Appends `client/` or `server/` to `config.build.outDir` */
-function resolveOutDir(config: UserConfig, isSSR?: true): string {
+function resolveOutDir(config: UserConfig, isServerSide: boolean): string {
   debug('resolveOutDir()', new Error().stack)
-  const isServerSide = isViteServerBuild(config) || isSSR
   debug('isServerSide', isServerSide)
   const outDir = getOutDirFromViteUserConfig(config) || 'dist'
   debug('outDir', outDir)

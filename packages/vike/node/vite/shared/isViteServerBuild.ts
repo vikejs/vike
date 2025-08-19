@@ -7,20 +7,20 @@ export { isViteServerBuild_onlySsrEnv }
 import type { Environment, ResolvedConfig, UserConfig } from 'vite'
 import { assert } from '../../../utils/assert.js'
 
-function isViteServerBuild(configGlobal: ResolvedConfig | UserConfig, viteEnv?: Environment): boolean {
+function isViteServerBuild(configGlobal: ResolvedConfig | UserConfig, viteEnv?: Environment | undefined): boolean {
   const configEnv = viteEnv?.config ?? configGlobal
   return !!configEnv?.build?.ssr
 }
 // Only `ssr` env: for example don't include `vercel_edge` nor `vercel_node`.
 function isViteServerBuild_onlySsrEnv(configGlobal: ResolvedConfig, viteEnv: Environment | undefined) {
-  return viteEnv ? viteEnv.name === 'ssr' : isViteServerBuild(configGlobal)
+  return viteEnv ? viteEnv.name === 'ssr' : isViteServerBuild(configGlobal, viteEnv)
 }
-function isViteClientBuild(configGlobal: ResolvedConfig, viteEnv: Environment) {
+function isViteClientBuild(configGlobal: ResolvedConfig, viteEnv: Environment | undefined) {
   const res = !isViteServerBuild(configGlobal, viteEnv)
   assertRes_isViteClientBuild(res, configGlobal, viteEnv)
   return res
 }
-function assertRes_isViteClientBuild(res1: boolean, configGlobal: ResolvedConfig, viteEnv: Environment) {
+function assertRes_isViteClientBuild(res1: boolean, configGlobal: ResolvedConfig, viteEnv: Environment | undefined) {
   const isVite5 = viteEnv === undefined
   if (isVite5) {
     const res2: boolean = !configGlobal.build.ssr
