@@ -20,9 +20,9 @@ const virtualFileIdGlobalEntryBase = 'virtual:vike:global-entry:'
 assert(virtualFileIdGlobalEntries.every((v) => v.startsWith(virtualFileIdGlobalEntryBase)))
 
 // Page config lazy patterns (keeping old naming for backward compatibility)
-const idBasePageConfigClient = 'virtual:vike:page-entry:client:'
-const idBasePageConfigServer = 'virtual:vike:page-entry:server:'
-const idBasePageConfig = 'virtual:vike:page-entry:'
+const virtualFileIdPageEntryClient = 'virtual:vike:page-entry:client:'
+const virtualFileIdPageEntryServer = 'virtual:vike:page-entry:server:'
+const virtualFileIdPageEntry = 'virtual:vike:page-entry:'
 
 type VirtualFileIdEntryParsed =
   | { type: 'global'; isForClientSide: boolean; isClientRouting: boolean }
@@ -30,28 +30,28 @@ type VirtualFileIdEntryParsed =
 
 function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
   id = removeVirtualFileIdPrefix(id)
-  if (!id.startsWith(virtualFileIdGlobalEntryBase) && !id.startsWith(idBasePageConfig)) return false
+  if (!id.startsWith(virtualFileIdGlobalEntryBase) && !id.startsWith(virtualFileIdPageEntry)) return false
 
   // Check for page config lazy entries
-  if (id.includes(idBasePageConfig)) {
-    assert(id.startsWith(idBasePageConfig))
+  if (id.includes(virtualFileIdPageEntry)) {
+    assert(id.startsWith(virtualFileIdPageEntry))
     const idOriginal = id
     id = extractAssetsRemoveQuery(id)
     const isExtractAssets = idOriginal !== id
 
-    if (id.startsWith(idBasePageConfigClient)) {
+    if (id.startsWith(virtualFileIdPageEntryClient)) {
       assert(isExtractAssets === false)
       return {
         type: 'page',
-        pageId: id.slice(idBasePageConfigClient.length),
+        pageId: id.slice(virtualFileIdPageEntryClient.length),
         isForClientSide: true,
         isExtractAssets,
       }
     }
-    if (id.startsWith(idBasePageConfigServer)) {
+    if (id.startsWith(virtualFileIdPageEntryServer)) {
       return {
         type: 'page',
-        pageId: id.slice(idBasePageConfigServer.length),
+        pageId: id.slice(virtualFileIdPageEntryServer.length),
         isForClientSide: false,
         isExtractAssets,
       }
@@ -94,7 +94,7 @@ function generateVirtualFileId(
   if (type === 'page') {
     const { pageId, isForClientSide } = options
     assert(typeof pageId === 'string')
-    const id = `${isForClientSide ? idBasePageConfigClient : idBasePageConfigServer}${pageId}` as const
+    const id = `${isForClientSide ? virtualFileIdPageEntryClient : virtualFileIdPageEntryServer}${pageId}` as const
     return id
   }
 
