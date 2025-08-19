@@ -16,13 +16,21 @@ function isViteServerBuild_onlySsrEnv(configGlobal: ResolvedConfig, viteEnv: Env
   return viteEnv ? viteEnv.name === 'ssr' : isViteServerBuild(configGlobal)
 }
 function isViteClientBuild(configGlobal: ResolvedConfig, viteEnv: Environment) {
-  const yes = !isViteServerBuild(configGlobal, viteEnv)
+  const res = !isViteServerBuild(configGlobal, viteEnv)
+  assertRes_isViteClientBuild(res, configGlobal, viteEnv)
+  return res
+}
+function assertRes_isViteClientBuild(res1: boolean, configGlobal: ResolvedConfig, viteEnv: Environment) {
   const isVite5 = viteEnv === undefined
-  if (!isVite5) {
-    const yes2 = viteEnv.name === 'client'
-    assert(yes === yes2)
+  if (isVite5) {
+    const res2: boolean = !configGlobal.build.ssr
+    assert(res1 === res2)
+  } else {
+    const res2: boolean = !viteEnv.config.build.ssr
+    const res3: boolean = viteEnv.name === 'client'
+    assert(res1 === res2)
+    assert(res1 === res3)
   }
-  return yes
 }
 
 function isViteServerBuild_options(options: { ssr?: boolean } | undefined): boolean {
