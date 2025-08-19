@@ -53,16 +53,22 @@ function pluginBuildConfig(): Plugin[] {
           handleAssetsManifest_assertUsageCssCodeSplit(config)
         },
       },
+      configEnvironment: {
+        order: 'post',
+        async handler(_name, config) {
+          return {
+            build: {
+              outDir: resolveOutDir(config),
+            },
+          }
+        },
+      },
       config: {
         order: 'post',
         async handler(config) {
           onSetupBuild()
-          return {
-            build: {
-              outDir: resolveOutDir(config),
-              ...(await handleAssetsManifest_getBuildConfig(config)),
-            },
-          }
+          const build = await handleAssetsManifest_getBuildConfig(config)
+          return { build }
         },
       },
       buildStart() {
