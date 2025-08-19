@@ -1,7 +1,5 @@
 export { getVirtualFilePageConfigLazy }
 
-// TODO/now: rename file to generateVirtualFileEntryPage.ts
-
 import { assert, getProjectError } from '../../utils.js'
 import type { PageConfigBuildTime } from '../../../../types/PageConfig.js'
 import { parseVirtualFileId, generateVirtualFileId } from '../../../shared/virtualFileId.js'
