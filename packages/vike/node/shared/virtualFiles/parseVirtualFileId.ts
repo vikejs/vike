@@ -61,6 +61,17 @@ function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
   id = removeVirtualFileIdPrefix(id)
   if (!id.startsWith(virtualFileIdGlobalEntryPrefix) && !id.startsWith(virtualFileIdPageEntryPrefix)) return false
 
+  // Gloabl entry
+  if (virtualFileIdGlobalEntries.includes(id)) {
+    const isForClientSide = id !== virtualFileIdGlobalEntryServer
+    const isClientRouting = id === virtualFileIdGlobalEntryClientCR
+    return {
+      type: 'global-entry',
+      isForClientSide,
+      isClientRouting,
+    }
+  }
+
   // Page entry
   if (id.includes(virtualFileIdPageEntryPrefix)) {
     assert(id.startsWith(virtualFileIdPageEntryPrefix))
@@ -86,17 +97,6 @@ function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
       }
     }
     assert(false)
-  }
-
-  // Gloabl entry
-  if (virtualFileIdGlobalEntries.includes(id)) {
-    const isForClientSide = id !== virtualFileIdGlobalEntryServer
-    const isClientRouting = id === virtualFileIdGlobalEntryClientCR
-    return {
-      type: 'global-entry',
-      isForClientSide,
-      isClientRouting,
-    }
   }
 
   return false
