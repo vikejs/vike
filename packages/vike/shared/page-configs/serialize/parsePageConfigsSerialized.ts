@@ -1,13 +1,6 @@
 export { parsePageConfigsSerialized }
 export { parseConfigValuesSerialized }
 
-// TODO/now: rename parseVirtualFileExportsGlobalEntryEntryPage ?
-// TODO/now: merge or collocate following both files?
-// ```filesystem
-// vike/packages/vike/shared/getPageFiles/parseVirtualFileExportsGlobalEntry.ts
-// vike/shared/page-configs/serialize/parsePageConfigsSerialized.ts
-// ```
-
 import type {
   ConfigValues,
   PageConfigRuntime,

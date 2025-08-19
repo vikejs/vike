@@ -1,11 +1,5 @@
 export { parseVirtualFileExportsGlobalEntry }
 
-// TODO/now: merge or collocate following both files?
-// ```filesystem
-// vike/shared/getPageFiles/parseVirtualFileExportsGlobalEntry.ts
-// vike/shared/page-configs/serialize/parsePageConfigsSerialized.ts
-// ```
-
 // TO-DO/next-major-release: remove old design code, and remove all assertions.
 
 import { assert, hasProp, isCallable, isObject, cast, isArray } from '../utils.js'
