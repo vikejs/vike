@@ -26,7 +26,7 @@ const idBasePageConfig = 'virtual:vike:page-entry:'
 const virtualFileIdGlobalEntryBase = 'virtual:vike:global-entry:'
 
 // Ensure all global entry patterns start with the common base
-assert(virtualFileIdGlobalEntries.every((v) => v.startsWith(`${virtualFileIdGlobalEntryBase}:`)))
+assert(virtualFileIdGlobalEntries.every((v) => v.startsWith(virtualFileIdGlobalEntryBase)))
 // Note: Page config patterns use old naming for backward compatibility
 
 type VirtualFileIdEntryParsed =
