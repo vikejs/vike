@@ -12,11 +12,11 @@ async function loadPageEntry(pageConfig: PageConfigRuntime, isDev: boolean): Pro
   ) {
     return pageConfig as PageConfigRuntimeLoaded
   }
-  const { moduleId, moduleExports } = pageConfig.loadVirtualFilePageEntry()
-  const configValuesLoaded = await moduleExports
+  const { moduleId, moduleExportsPromise } = pageConfig.loadVirtualFilePageEntry()
+  const moduleExports = await moduleExportsPromise
   // `configValuesLoaded` is sometimes `undefined` https://github.com/vikejs/vike/discussions/2092
-  if (!configValuesLoaded) assert(false, { moduleExports, configValuesLoaded, moduleId })
-  const configValues = parseConfigValuesSerialized(configValuesLoaded.configValuesSerialized)
+  if (!moduleExports) assert(false, { moduleExportsPromise, moduleExports, moduleId })
+  const configValues = parseConfigValuesSerialized(moduleExports.configValuesSerialized)
   Object.assign(pageConfig.configValues, configValues)
   objectAssign(pageConfig, { isPageEntryLoaded: true as const })
   return pageConfig

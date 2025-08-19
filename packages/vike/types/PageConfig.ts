@@ -80,7 +80,7 @@ type PageConfigRuntimeLoaded = PageConfigRuntime & {
 }
 type LoadVirtualFilePageEntry = () => {
   moduleId: string
-  moduleExports: Promise<{
+  moduleExportsPromise: Promise<{
     configValuesSerialized: Record<string, ConfigValueSerialized>
   }>
 }

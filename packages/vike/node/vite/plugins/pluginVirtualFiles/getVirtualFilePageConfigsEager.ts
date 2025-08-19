@@ -78,7 +78,7 @@ function getCodePageConfigsSerialized(
     lines.push(`    routeFilesystem: ${JSON.stringify(routeFilesystem)},`)
     const virtualFileId = JSON.stringify(generateVirtualFileId({ type: 'page-entry', pageId, isForClientSide }))
     lines.push(
-      `    loadVirtualFilePageEntry: () => ({ moduleId: ${virtualFileId}, moduleExports: import(${virtualFileId}) }),`,
+      `    loadVirtualFilePageEntry: () => ({ moduleId: ${virtualFileId}, moduleExportsPromise: import(${virtualFileId}) }),`,
     )
     lines.push(`    configValuesSerialized: {`)
     lines.push(
