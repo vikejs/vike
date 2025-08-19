@@ -18,7 +18,7 @@ import {
   pLimit,
   unique,
 } from '../../utils.js'
-import { parseVirtualFileId } from '../../../shared/virtualFiles/parseVirtualFileId.js'
+import { parseVirtualFileId } from '../../../shared/virtualFileId.js'
 import type { Environment, ResolvedConfig, Rollup, UserConfig } from 'vite'
 import { getAssetsDir } from '../../shared/getAssetsDir.js'
 import pc from '@brillout/picocolors'

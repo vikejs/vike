@@ -14,10 +14,7 @@ import {
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { analyzeClientEntries } from '../pluginBuild/pluginBuildConfig.js'
 import type { DefinedAtFilePath, PageConfigBuildTime } from '../../../../types/PageConfig.js'
-import {
-  virtualFileIdGlobalEntryClientCR,
-  virtualFileIdGlobalEntryClientSR,
-} from '../../../shared/virtualFiles/parseVirtualFileId.js'
+import { virtualFileIdGlobalEntryClientCR, virtualFileIdGlobalEntryClientSR } from '../../../shared/virtualFileId.js'
 import { getFilePathResolved } from '../../shared/getFilePath.js'
 import { getConfigValueSourcesRelevant } from '../pluginVirtualFiles/getConfigValueSourcesRelevant.js'
 

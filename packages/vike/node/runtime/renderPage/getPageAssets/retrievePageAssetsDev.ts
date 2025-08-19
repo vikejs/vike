@@ -4,7 +4,7 @@ export { setGetClientEntrySrcDev }
 import { assert, getGlobalObject, styleFileRE } from '../../utils.js'
 import type { ModuleNode, ViteDevServer } from 'vite'
 import type { ClientDependency } from '../../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
-import { parseVirtualFileId } from '../../../shared/virtualFiles/parseVirtualFileId.js'
+import { parseVirtualFileId } from '../../../shared/virtualFileId.js'
 import type { GetClientEntrySrcDev } from '../../../vite/shared/getClientEntrySrcDev.js'
 
 const globalObject = getGlobalObject('getPageAssets/retrievePageAssetsDev.ts', {

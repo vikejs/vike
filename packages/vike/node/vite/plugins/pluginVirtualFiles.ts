@@ -12,7 +12,7 @@ import {
   isVirtualFileId,
   removeVirtualFileIdPrefix,
 } from '../utils.js'
-import { parseVirtualFileId } from '../../shared/virtualFiles/parseVirtualFileId.js'
+import { parseVirtualFileId } from '../../shared/virtualFileId.js'
 import { reloadVikeConfig, isV1Design, getVikeConfigInternalOptional } from '../shared/resolveVikeConfigInternal.js'
 import pc from '@brillout/picocolors'
 import { logConfigInfo } from '../shared/loggerNotProd.js'

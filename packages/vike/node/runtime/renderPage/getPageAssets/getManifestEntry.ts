@@ -2,7 +2,7 @@ export { getManifestEntry }
 
 import type { ViteManifest, ViteManifestEntry } from '../../../../types/ViteManifest.js'
 import { assert, slice, assertIsImportPathNpmPackage } from '../../utils.js'
-import { parseVirtualFileId } from '../../../shared/virtualFiles/parseVirtualFileId.js'
+import { parseVirtualFileId } from '../../../shared/virtualFileId.js'
 import { prependEntriesDir } from '../../../shared/prependEntriesDir.js'
 
 function getManifestEntry(
