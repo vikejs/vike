@@ -15,8 +15,8 @@ import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js
 import { analyzeClientEntries } from '../pluginBuild/pluginBuildConfig.js'
 import type { DefinedAtFilePath, PageConfigBuildTime } from '../../../../types/PageConfig.js'
 import {
-  virtualFileIdEntryClientCR,
-  virtualFileIdEntryClientSR,
+  virtualFileIdGlobalEntryClientCR,
+  virtualFileIdGlobalEntryClientSR,
 } from '../../../shared/virtualFiles/parseVirtualFileId.js'
 import { getFilePathResolved } from '../../shared/getFilePath.js'
 import { getConfigValueSourcesRelevant } from '../pluginVirtualFiles/getConfigValueSourcesRelevant.js'
@@ -157,8 +157,8 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
   {
     const { hasClientRouting, hasServerRouting, clientEntries } = analyzeClientEntries(pageConfigs, config)
     Object.values(clientEntries).forEach((e) => addEntry(e, true))
-    if (hasClientRouting) addEntry(virtualFileIdEntryClientCR, true)
-    if (hasServerRouting) addEntry(virtualFileIdEntryClientSR, true)
+    if (hasClientRouting) addEntry(virtualFileIdGlobalEntryClientCR, true)
+    if (hasServerRouting) addEntry(virtualFileIdGlobalEntryClientSR, true)
   }
 
   entriesClient = entriesClient

@@ -2,7 +2,7 @@ export { pluginBuildEntry }
 export { set_macro_ASSETS_MANIFEST }
 
 import { serverProductionEntryPlugin } from '@brillout/vite-plugin-server-entry/plugin'
-import { virtualFileIdEntryServer } from '../../../shared/virtualFiles/parseVirtualFileId.js'
+import { virtualFileIdGlobalEntryServer } from '../../../shared/virtualFiles/parseVirtualFileId.js'
 import { assert, PROJECT_VERSION, requireResolveVikeDistFile } from '../../utils.js'
 import fs from 'node:fs/promises'
 import path from 'node:path'
@@ -45,7 +45,7 @@ function getServerProductionEntryCode(config: ResolvedConfig): string {
   // After the old design is removed, let's maybe simplify and move everything into a single virtual module
   const importerCode = [
     `  import { setGlobalContext_buildEntry } from '${importPath}';`,
-    `  import * as virtualFileExports from '${virtualFileIdEntryServer}';`,
+    `  import * as virtualFileExports from '${virtualFileIdGlobalEntryServer}';`,
     `  {`,
     // Because of a Rollup bug, we have to assign ASSETS_MANIFEST to a variable before passing it to setGlobalContext_buildEntry()
     // - This workaround doesn't work: https://github.com/vikejs/vike/commit/d5f3a4f7aae5a8bc44192e6cbb2bcb9007be188d

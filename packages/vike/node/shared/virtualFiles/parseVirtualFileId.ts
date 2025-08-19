@@ -1,18 +1,22 @@
 export { parseVirtualFileId }
 export { generateVirtualFileId }
-export { virtualFileIdEntryServer }
-export { virtualFileIdEntryClientSR }
-export { virtualFileIdEntryClientCR }
+export { virtualFileIdGlobalEntryServer }
+export { virtualFileIdGlobalEntryClientSR }
+export { virtualFileIdGlobalEntryClientCR }
 
 import { extractAssetsRemoveQuery } from '../extractAssetsQuery.js'
 import { assert, assertIsNotBrowser, removeVirtualFileIdPrefix } from '../utils.js'
 assertIsNotBrowser()
 
 // Virtual file ID patterns
-const virtualFileIdEntryServer = 'virtual:vike:global-entry:server'
-const virtualFileIdEntryClientSR = 'virtual:vike:global-entry:client:server-routing'
-const virtualFileIdEntryClientCR = 'virtual:vike:global-entry:client:client-routing'
-const virtualFileIdEntries = [virtualFileIdEntryServer, virtualFileIdEntryClientCR, virtualFileIdEntryClientSR]
+const virtualFileIdGlobalEntryServer = 'virtual:vike:global-entry:server'
+const virtualFileIdGlobalEntryClientSR = 'virtual:vike:global-entry:client:server-routing'
+const virtualFileIdGlobalEntryClientCR = 'virtual:vike:global-entry:client:client-routing'
+const virtualFileIdGlobalEntries = [
+  virtualFileIdGlobalEntryServer,
+  virtualFileIdGlobalEntryClientCR,
+  virtualFileIdGlobalEntryClientSR,
+]
 
 // Page config lazy patterns (keeping old naming for backward compatibility)
 const idBasePageConfigClient = 'virtual:vike:page-entry:client:'
@@ -23,7 +27,7 @@ const idBasePageConfig = 'virtual:vike:page-entry:'
 const idBaseEntry = 'virtual:vike:entry'
 
 // Ensure all global entry patterns start with the common base
-assert(virtualFileIdEntries.every((v) => v.startsWith(`${idBaseEntry}:`)))
+assert(virtualFileIdGlobalEntries.every((v) => v.startsWith(`${idBaseEntry}:`)))
 // Note: Page config patterns use old naming for backward compatibility
 
 type VirtualFileIdEntryParsed =
@@ -62,9 +66,9 @@ function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
   }
 
   // Check for global entry files
-  if (virtualFileIdEntries.includes(id)) {
-    const isForClientSide = id !== virtualFileIdEntryServer
-    const isClientRouting = id === virtualFileIdEntryClientCR
+  if (virtualFileIdGlobalEntries.includes(id)) {
+    const isForClientSide = id !== virtualFileIdGlobalEntryServer
+    const isClientRouting = id === virtualFileIdGlobalEntryClientCR
     return {
       type: 'global',
       isForClientSide,
@@ -85,11 +89,11 @@ function generateVirtualFileId(
     const { isForClientSide, isClientRouting } = options
     assert(typeof isClientRouting === 'boolean')
     if (!isForClientSide) {
-      return virtualFileIdEntryServer
+      return virtualFileIdGlobalEntryServer
     } else if (isClientRouting) {
-      return virtualFileIdEntryClientCR
+      return virtualFileIdGlobalEntryClientCR
     } else {
-      return virtualFileIdEntryClientSR
+      return virtualFileIdGlobalEntryClientSR
     }
   }
 
