@@ -1,6 +1,5 @@
 export { parseVirtualFileExports }
 
-// TODO/now: rename parseVirtualFileExportsEntryGlobal
 // TODO/now: merge or collocate following both files?
 // ```filesystem
 // vike/shared/getPageFiles/parseVirtualFileExports.ts
