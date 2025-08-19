@@ -11,18 +11,17 @@ assertIsNotBrowser()
 const virtualFileIdGlobalEntryServer = 'virtual:vike:global-entry:server'
 const virtualFileIdGlobalEntryClientSR = 'virtual:vike:global-entry:client:server-routing'
 const virtualFileIdGlobalEntryClientCR = 'virtual:vike:global-entry:client:client-routing'
+const virtualFileIdPageEntryClient = 'virtual:vike:page-entry:client:'
+const virtualFileIdPageEntryServer = 'virtual:vike:page-entry:server:'
+
 const virtualFileIdGlobalEntries = [
   virtualFileIdGlobalEntryServer,
   virtualFileIdGlobalEntryClientCR,
   virtualFileIdGlobalEntryClientSR,
 ]
-const virtualFileIdGlobalEntryBase = 'virtual:vike:global-entry:'
-assert(virtualFileIdGlobalEntries.every((v) => v.startsWith(virtualFileIdGlobalEntryBase)))
-
-// Page config lazy patterns (keeping old naming for backward compatibility)
-const virtualFileIdPageEntryClient = 'virtual:vike:page-entry:client:'
-const virtualFileIdPageEntryServer = 'virtual:vike:page-entry:server:'
-const virtualFileIdPageEntry = 'virtual:vike:page-entry:'
+const virtualFileIdPageEntryPrefix = 'virtual:vike:page-entry:'
+const virtualFileIdGlobalEntryPrefix = 'virtual:vike:global-entry:'
+assert(virtualFileIdGlobalEntries.every((v) => v.startsWith(virtualFileIdGlobalEntryPrefix)))
 
 type VirtualFileIdEntryParsed =
   | { type: 'global'; isForClientSide: boolean; isClientRouting: boolean }
@@ -30,11 +29,11 @@ type VirtualFileIdEntryParsed =
 
 function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
   id = removeVirtualFileIdPrefix(id)
-  if (!id.startsWith(virtualFileIdGlobalEntryBase) && !id.startsWith(virtualFileIdPageEntry)) return false
+  if (!id.startsWith(virtualFileIdGlobalEntryPrefix) && !id.startsWith(virtualFileIdPageEntryPrefix)) return false
 
   // Check for page config lazy entries
-  if (id.includes(virtualFileIdPageEntry)) {
-    assert(id.startsWith(virtualFileIdPageEntry))
+  if (id.includes(virtualFileIdPageEntryPrefix)) {
+    assert(id.startsWith(virtualFileIdPageEntryPrefix))
     const idOriginal = id
     id = extractAssetsRemoveQuery(id)
     const isExtractAssets = idOriginal !== id
