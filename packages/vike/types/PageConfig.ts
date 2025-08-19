@@ -107,9 +107,6 @@ type ConfigValueSources = Record<
   string, // configName
   ConfigValueSource[]
 >
-/**
- * A single source that defines the value of a config at a given location.
- */
 type ConfigValueSource = {
   configEnv: ConfigEnvInternal
   definedAt: DefinedAtFilePath | DefinedBy
@@ -135,8 +132,6 @@ type ConfigValueSource = {
       value: unknown
     }
 )
-
-/** File path information (resolved) for the source definition */
 type DefinedAtFilePath = DefinedAtFile & FilePath & { fileExportName?: string }
 
 type ConfigValuesComputed = Record<

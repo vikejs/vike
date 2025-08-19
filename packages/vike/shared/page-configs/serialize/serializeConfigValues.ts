@@ -325,7 +325,6 @@ function getConfigValuesBase(
     } else {
       const sourcesRelevant = getConfigValueSourcesRelevant(configName, runtimeEnv, pageConfig)
       if (sourcesRelevant.length === 0) return 'SKIP'
-
       const definedAtData: DefinedAt[] = []
       sourcesRelevant.forEach((source) => {
         const definedAtFile = getDefinedAtFileSource(source)

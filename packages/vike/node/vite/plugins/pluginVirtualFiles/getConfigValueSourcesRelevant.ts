@@ -30,10 +30,8 @@ function getConfigValueSourcesRelevant(configName: string, runtimeEnv: RuntimeEn
     sourcesRelevant = sourcesRelevant.filter((source) => !isOverridden(source, configName, pageConfig))
   }
 
-  // Filter by runtime env
   sourcesRelevant = sourcesRelevant.filter((source) => isRuntimeEnvMatch(source.configEnv, runtimeEnv))
 
-  // Apply cumulative modifiers (suffix-only: .clear., .default.)
   if (configDef.cumulative && sourcesRelevant.length > 0) {
     sourcesRelevant = applyCumulativeSuffixModifiers(sourcesRelevant)
   }
