@@ -24,7 +24,7 @@ const idBasePageConfigServer = 'virtual:vike:page-entry:server:'
 const idBasePageConfig = 'virtual:vike:page-entry:'
 
 // Common base for all entry types
-const idBaseEntry = 'virtual:vike:global-entry'
+const idBaseEntry = 'virtual:vike:global-entry:'
 
 // Ensure all global entry patterns start with the common base
 assert(virtualFileIdGlobalEntries.every((v) => v.startsWith(`${idBaseEntry}:`)))
