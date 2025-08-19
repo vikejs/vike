@@ -104,12 +104,12 @@ function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
 }
 
 function generateVirtualFileId(
-  options:
+  args:
     | { type: 'global-entry'; isForClientSide: boolean; isClientRouting: boolean }
     | { type: 'page-entry'; pageId: string; isForClientSide: boolean },
 ): string {
-  if (options.type === 'global-entry') {
-    const { isForClientSide, isClientRouting } = options
+  if (args.type === 'global-entry') {
+    const { isForClientSide, isClientRouting } = args
     assert(typeof isClientRouting === 'boolean')
     if (!isForClientSide) {
       return virtualFileIdGlobalEntryServer
@@ -120,8 +120,8 @@ function generateVirtualFileId(
     }
   }
 
-  if (options.type === 'page-entry') {
-    const { pageId, isForClientSide } = options
+  if (args.type === 'page-entry') {
+    const { pageId, isForClientSide } = args
     assert(typeof pageId === 'string')
     const id = `${isForClientSide ? virtualFileIdPageEntryClient : virtualFileIdPageEntryServer}${pageId}` as const
     return id
