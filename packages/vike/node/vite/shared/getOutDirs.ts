@@ -1,6 +1,7 @@
 export { getOutDirs }
 export { resolveOutDir }
 export { resolveOutDir_configEnvironment }
+export { resolveOutDir_tmp }
 export type { OutDirs }
 
 import type { UserConfig, ResolvedConfig, Environment, EnvironmentOptions } from 'vite'
@@ -29,6 +30,11 @@ function getOutDirs(configGlobal: ResolvedConfig, viteEnv?: Environment): OutDir
 
 function resolveOutDir_configEnvironment(configEnv: EnvironmentOptions): string {
   const isServerSide = configEnv.consumer === 'server'
+  return resolveOutDir(configEnv, isServerSide)
+}
+
+function resolveOutDir_tmp(configEnv: EnvironmentOptions): string {
+  const isServerSide = isViteServerBuild(configEnv)
   return resolveOutDir(configEnv, isServerSide)
 }
 
