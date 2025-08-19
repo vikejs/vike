@@ -52,7 +52,7 @@ type PageConfigRoute =
 type PageConfigRuntime = PageConfigCommon & {
   configValues: ConfigValues
   /** Load config values that are lazily loaded such as config.Page */
-  loadPageEntry: LoadPageEntry
+  loadVirtualFilePageEntry: LoadVirtualFilePageEntry
 }
 /** Global config that applies to all pages, runtime data structure */
 type PageConfigGlobalRuntime = {
@@ -75,10 +75,10 @@ type PageConfigGlobalBuildTime = {
 
 /** Same as PageConfigRuntime but also contains all lazily loaded config values such as config.Page */
 type PageConfigRuntimeLoaded = PageConfigRuntime & {
-  /** Whether loadPageEntry() was called */
+  /** Whether loadVirtualFilePageEntry() was called */
   isPageEntryLoaded: true
 }
-type LoadPageEntry = () => {
+type LoadVirtualFilePageEntry = () => {
   moduleId: string
   moduleExports: Promise<{
     configValuesSerialized: Record<string, ConfigValueSerialized>
