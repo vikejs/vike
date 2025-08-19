@@ -1,4 +1,4 @@
-export { getVirtualFilePageConfigLazy }
+export { generateVirtualFileEntryPage }
 
 import { assert, getProjectError } from '../../utils.js'
 import type { PageConfigBuildTime } from '../../../../types/PageConfig.js'
@@ -12,7 +12,7 @@ import { handleAssetsManifest_isFixEnabled } from '../pluginBuild/handleAssetsMa
 import { getConfigValueBuildTime } from '../../../../shared/page-configs/getConfigValueBuildTime.js'
 import { resolveIncludeAssetsImportedByServer } from '../../../runtime/renderPage/getPageAssets/retrievePageAssetsProd.js'
 
-async function getVirtualFilePageConfigLazy(id: string, isDev: boolean, config: ResolvedConfig): Promise<string> {
+async function generateVirtualFileEntryPage(id: string, isDev: boolean, config: ResolvedConfig): Promise<string> {
   const result = parseVirtualFileId(id)
   assert(result && result.type === 'page-entry')
   /* This assertion fails when using includeAssetsImportedByServer
