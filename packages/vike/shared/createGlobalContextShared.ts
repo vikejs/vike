@@ -61,7 +61,7 @@ async function createGlobalContextShared<
 
   if (
     addGlobalContext &&
-    // TODO/next-major-release: remove
+    // TO-DO/next-major-release: remove
     globalContext._pageConfigs.length > 0
   ) {
     const globalContextAdded = addGlobalContext?.(globalContext)
