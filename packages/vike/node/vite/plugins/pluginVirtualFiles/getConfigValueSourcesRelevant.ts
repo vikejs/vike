@@ -80,26 +80,13 @@ function isOverridden(source: ConfigValueSource, configName: string, pageConfig:
 }
 
 function applyCumulativeSuffixModifiers(sourcesRelevant: ConfigValueSource[]) {
-  const isSourceClear = (fn: string) => fn.includes('.clear.')
-  const isSourceDefault = (fn: string) => fn.includes('.default.')
+  const getFileName = (source: ConfigValueSource) => source.plusFile?.filePath.fileName ?? ''
 
-  const filenames = sourcesRelevant.map((s) => s.plusFile?.filePath.fileName || '')
+  // Apply `clear`: truncate at first clear file
+  const clearIndex = sourcesRelevant.findIndex((source) => /\.clear\.[^.]+$/.test(getFileName(source)))
+  if (clearIndex !== -1) sourcesRelevant = sourcesRelevant.slice(0, clearIndex + 1)
 
-  // Apply `clear`: keep up to and including the first clear, drop all ancestors after it
-  const idxClear = filenames.findIndex((fn) => isSourceClear(fn))
-  if (idxClear !== -1) {
-    sourcesRelevant = sourcesRelevant.slice(0, idxClear + 1)
-  }
-
-  // Apply `default` semantics
-  const filenamesAfterClear = sourcesRelevant.map((s) => s.plusFile?.filePath.fileName || '')
-  const hasNonDefault = filenamesAfterClear.some((fn) => !isSourceDefault(fn))
-  if (hasNonDefault) {
-    sourcesRelevant = sourcesRelevant.filter((s) => !isSourceDefault(s.plusFile?.filePath.fileName || ''))
-  } else if (sourcesRelevant.length > 1) {
-    const first = sourcesRelevant[0]
-    if (first) sourcesRelevant = [first]
-  }
-
-  return sourcesRelevant
+  // Apply `default`: exclude defaults if any non-defaults exist, otherwise keep only first default
+  const nonDefaults = sourcesRelevant.filter((source) => !/\.default\.[^.]+$/.test(getFileName(source)))
+  return nonDefaults.length > 0 ? nonDefaults : sourcesRelevant.slice(0, 1)
 }

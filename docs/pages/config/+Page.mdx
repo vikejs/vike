@@ -110,8 +110,7 @@ export default {
 } satisfies Config
 ```
 
-> To set defaults for <Link href="#cumulative">cumulative configurations</Link>, see:
-> - [#1692 - New settings `clear` and `default` for controlling inheritance of cumulative configs](https://github.com/vikejs/vike/issues/1692)
+> To control inheritance for <Link href="#cumulative">cumulative configurations</Link>, see <Link href="#cumulative-inheritance-control">Cumulative inheritance control</Link>.
 
 
 ### Cumulative
@@ -146,8 +145,43 @@ pages/+title.js
 pages/product/@id/+title.js
 ```
 
-> To configure the inheritance behavior of cumulative settings, see:
-> - [#1692 - New settings `clear` and `default` for controlling inheritance of cumulative configs](https://github.com/vikejs/vike/issues/1692)
+#### Cumulative inheritance control
+
+You can control how cumulative configurations inherit from parent directories by using filename suffixes.
+
+**Default suffix (`.default`)**
+
+The `.default` suffix makes a configuration act as a fallback that is only used when no regular (non-default) configurations are defined.
+
+```yaml
+# Fallback value
+pages/+Layout.default.jsx
+# Regular value - this overrides the default
+pages/product/+Layout.jsx
+```
+
+If any regular configuration exists in the inheritance chain, all default configurations are ignored:
+
+```yaml
+# This default is ignored because a regular config exists below
+pages/+Layout.default.jsx
+# This regular config is used
+pages/product/+Layout.jsx
+```
+
+**Clear suffix (`.clear`)**
+
+The `.clear` suffix resets the inheritance chain, preventing configurations from parent directories from being included.
+
+```yaml
+# This layout won't be included
+pages/+Layout.jsx
+# This layout clears inheritance and starts fresh
+pages/admin/+Layout.clear.jsx
+# This layout will be added to the admin layout (not the root layout)
+pages/admin/dashboard/+Layout.jsx
+```
+
 
 ### Global
 
