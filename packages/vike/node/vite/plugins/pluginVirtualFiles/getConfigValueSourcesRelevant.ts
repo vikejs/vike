@@ -83,10 +83,10 @@ function applyCumulativeSuffixModifiers(sourcesRelevant: ConfigValueSource[]) {
   const getFileName = (source: ConfigValueSource) => source.plusFile?.filePath.fileName ?? ''
 
   // Apply `clear`: truncate at first clear file
-  const clearIndex = sourcesRelevant.findIndex((source) => /\.clear\.[^.]+$/.test(getFileName(source)))
+  const clearIndex = sourcesRelevant.findIndex((source) => getFileName(source).includes('.clear.'))
   if (clearIndex !== -1) sourcesRelevant = sourcesRelevant.slice(0, clearIndex + 1)
 
   // Apply `default`: exclude defaults if any non-defaults exist, otherwise keep only first default
-  const nonDefaults = sourcesRelevant.filter((source) => !/\.default\.[^.]+$/.test(getFileName(source)))
+  const nonDefaults = sourcesRelevant.filter((source) => !getFileName(source).includes('.default.'))
   return nonDefaults.length > 0 ? nonDefaults : sourcesRelevant.slice(0, 1)
 }
