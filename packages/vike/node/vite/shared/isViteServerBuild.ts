@@ -4,10 +4,12 @@ export { isViteServerBuild_options }
 export { isViteServerBuild_safe }
 export { isViteServerBuild_onlySsrEnv }
 
-import type { Environment, ResolvedConfig, UserConfig } from 'vite'
+import type { Environment, EnvironmentOptions, ResolvedConfig, UserConfig } from 'vite'
 import { assert } from '../../../utils/assert.js'
 
-function isViteServerBuild(configGlobal: ResolvedConfig | UserConfig, viteEnv: Environment | undefined): boolean {
+type ViteEnv = { name: string; config: EnvironmentOptions | Environment['config'] }
+
+function isViteServerBuild(configGlobal: ResolvedConfig | UserConfig, viteEnv: ViteEnv | undefined): boolean {
   const configEnv = viteEnv?.config ?? configGlobal
   return !!configEnv?.build?.ssr
 }

@@ -55,10 +55,11 @@ function pluginBuildConfig(): Plugin[] {
       },
       configEnvironment: {
         order: 'post',
-        async handler(_name, config) {
+        async handler(envName, configEnv) {
+          assert(config)
           return {
             build: {
-              outDir: resolveOutDir_configEnvironment(config),
+              outDir: resolveOutDir_configEnvironment(config, envName, configEnv),
             },
           }
         },

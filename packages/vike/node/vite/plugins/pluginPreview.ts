@@ -1,7 +1,7 @@
 export { pluginPreview }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assertUsage, applyPreview } from '../utils.js'
+import { assertUsage, applyPreview, assert } from '../utils.js'
 import fs from 'node:fs'
 import path from 'node:path'
 import type { ViteDevServer } from 'vite'
@@ -24,10 +24,11 @@ function pluginPreview(): Plugin {
         appType: 'custom',
       }
     },
-    configEnvironment(_name, config) {
+    configEnvironment(envName, configEnv) {
+      assert(config)
       return {
         build: {
-          outDir: resolveOutDir_configEnvironment(config),
+          outDir: resolveOutDir_configEnvironment(config, envName, configEnv),
         },
       }
     },

@@ -27,7 +27,11 @@ function getOutDirs(configGlobal: ResolvedConfig, viteEnv?: Environment): OutDir
   return outDirs
 }
 
-function resolveOutDir_configEnvironment(configEnv: EnvironmentOptions): string {
+function resolveOutDir_configEnvironment(
+  configGlobal: ResolvedConfig,
+  envName: string,
+  configEnv: EnvironmentOptions,
+): string {
   const isServerSide = isViteServerBuild(configEnv, undefined)
   assert_resolveOutDir_configEnvironment(isServerSide, configEnv)
   const res = resolveOutDir(configEnv, isServerSide)
