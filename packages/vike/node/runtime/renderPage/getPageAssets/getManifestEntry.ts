@@ -31,9 +31,9 @@ function getManifestEntry(
     }
     // Workaround for what seems to be a Vite bug when process.cwd() !== config.root
     //  - Manifest key is:
-    //       ../../virtual:vike:pageConfigLazy:client:/pages/index
+    //       ../../virtual:vike:page-entry:client:/pages/index
     //    But it should be this instead:
-    //      virtual:vike:pageConfigLazy:client:/pages/index
+    //      virtual:vike:page-entry:client:/pages/index
     //  - This workaround was implemented to support Vitest running /tests/*
     //    - I don't know whether end users actually need this workaround? (I'm not sure what the bug actually is.)
     const manifestKeyEnd = id

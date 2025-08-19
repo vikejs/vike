@@ -208,9 +208,9 @@ function addServerAssets(clientManifest: ViteManifest, serverManifest: ViteManif
 
 function getPageId(key: string) {
   // Normalize from:
-  //   ../../virtual:vike:pageConfigLazy:client:/pages/index
+  //   ../../virtual:vike:page-entry:client:/pages/index
   // to:
-  //   virtual:vike:pageConfigLazy:client:/pages/index
+  //   virtual:vike:page-entry:client:/pages/index
   // (This seems to be needed only for vitest tests that use Vite's build() API with an inline config.)
   key = key.substring(key.indexOf('virtual:vike'))
   const result = parseVirtualFileId(key)

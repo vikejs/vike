@@ -15,9 +15,9 @@ const virtualFileIdEntryClientCR = 'virtual:vike:global-entry:client:client-rout
 const virtualFileIdEntries = [virtualFileIdEntryServer, virtualFileIdEntryClientCR, virtualFileIdEntryClientSR]
 
 // Page config lazy patterns (keeping old naming for backward compatibility)
-const idBasePageConfigClient = 'virtual:vike:pageConfigLazy:client:'
-const idBasePageConfigServer = 'virtual:vike:pageConfigLazy:server:'
-const idBasePageConfig = 'virtual:vike:pageConfigLazy:'
+const idBasePageConfigClient = 'virtual:vike:page-entry:client:'
+const idBasePageConfigServer = 'virtual:vike:page-entry:server:'
+const idBasePageConfig = 'virtual:vike:page-entry:'
 
 // Common base for all entry types
 const idBaseEntry = 'virtual:vike:entry'
