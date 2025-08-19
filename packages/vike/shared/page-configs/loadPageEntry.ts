@@ -1,7 +1,12 @@
 export { loadPageEntry }
 
 import { assert, objectAssign } from '../utils.js'
-import type { PageConfigRuntime, PageConfigRuntimeLoaded } from '../../types/PageConfig.js'
+import type {
+  ConfigValues,
+  PageConfigRuntime,
+  PageConfigRuntimeLoaded,
+  VirtualFileExportsPageEntry,
+} from '../../types/PageConfig.js'
 import { parseConfigValuesSerialized } from './serialize/parsePageConfigs.js'
 
 async function loadPageEntry(pageConfig: PageConfigRuntime, isDev: boolean): Promise<PageConfigRuntimeLoaded> {
@@ -13,11 +18,16 @@ async function loadPageEntry(pageConfig: PageConfigRuntime, isDev: boolean): Pro
     return pageConfig as PageConfigRuntimeLoaded
   }
   const { moduleId, moduleExportsPromise } = pageConfig.loadVirtualFilePageEntry()
-  const moduleExports = await moduleExportsPromise
+  const virtualFileExportsPageEntry = await moduleExportsPromise
   // `configValuesLoaded` is sometimes `undefined` https://github.com/vikejs/vike/discussions/2092
-  if (!moduleExports) assert(false, { moduleExportsPromise, moduleExports, moduleId })
-  const configValues = parseConfigValuesSerialized(moduleExports.configValuesSerialized)
+  if (!virtualFileExportsPageEntry) assert(false, { moduleExportsPromise, virtualFileExportsPageEntry, moduleId })
+  const configValues = parseVirtualFileExportsPageEntry(virtualFileExportsPageEntry)
   Object.assign(pageConfig.configValues, configValues)
   objectAssign(pageConfig, { isPageEntryLoaded: true as const })
   return pageConfig
+}
+
+function parseVirtualFileExportsPageEntry(virtualFileExportsPageEntry: VirtualFileExportsPageEntry): ConfigValues {
+  const configValues = parseConfigValuesSerialized(virtualFileExportsPageEntry.configValuesSerialized)
+  return configValues
 }

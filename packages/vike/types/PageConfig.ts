@@ -20,6 +20,7 @@ export type { DefinedAtFile }
 export type { DefinedAt }
 export type { DefinedBy }
 export type { DefinedAtFilePath }
+export type { VirtualFileExportsPageEntry }
 
 import type { ConfigValueSerialized } from '../shared/page-configs/serialize/PageConfigSerialized.js'
 import type { LocationId } from '../node/vite/shared/resolveVikeConfigInternal/filesystemRouting.js'
@@ -80,9 +81,10 @@ type PageConfigRuntimeLoaded = PageConfigRuntime & {
 }
 type LoadVirtualFilePageEntry = () => {
   moduleId: string
-  moduleExportsPromise: Promise<{
-    configValuesSerialized: Record<string, ConfigValueSerialized>
-  }>
+  moduleExportsPromise: Promise<VirtualFileExportsPageEntry>
+}
+type VirtualFileExportsPageEntry = {
+  configValuesSerialized: Record<string, ConfigValueSerialized>
 }
 
 /** In what environment(s) the config value is loaded.
