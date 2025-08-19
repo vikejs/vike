@@ -9,9 +9,9 @@ import { assert, assertIsNotBrowser, removeVirtualFileIdPrefix } from '../utils.
 assertIsNotBrowser()
 
 // Virtual file ID patterns
-const virtualFileIdEntryServer = 'virtual:vike:entry:server'
-const virtualFileIdEntryClientSR = 'virtual:vike:entry:client:server-routing'
-const virtualFileIdEntryClientCR = 'virtual:vike:entry:client:client-routing'
+const virtualFileIdEntryServer = 'virtual:vike:global-entry:server'
+const virtualFileIdEntryClientSR = 'virtual:vike:global-entry:client:server-routing'
+const virtualFileIdEntryClientCR = 'virtual:vike:global-entry:client:client-routing'
 const virtualFileIdEntries = [virtualFileIdEntryServer, virtualFileIdEntryClientCR, virtualFileIdEntryClientSR]
 
 // Page config lazy patterns (keeping old naming for backward compatibility)

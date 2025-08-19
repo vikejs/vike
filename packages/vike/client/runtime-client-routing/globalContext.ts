@@ -6,7 +6,7 @@ import { createGetGlobalContextClient } from '../shared/createGetGlobalContextCl
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import type { GlobalContextBase, GlobalContextBasePublic } from '../../shared/createGlobalContextShared.js'
 // @ts-ignore
-import * as virtualFileExports from 'virtual:vike:entry:client:client-routing'
+import * as virtualFileExports from 'virtual:vike:global-entry:client:client-routing'
 
 // Public type
 type GlobalContextClient = GlobalContextBasePublic &

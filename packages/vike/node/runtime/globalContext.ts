@@ -471,7 +471,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
     // Vite 6
     try {
       virtualFileExports = await (viteDevServer.environments.ssr as RunnableDevEnvironment).runner.import(
-        'virtual:vike:entry:server',
+        'virtual:vike:global-entry:server',
       )
     } catch (err_) {
       hasError = true
@@ -492,10 +492,10 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
          ```js
          assert(false)
          // This line breaks the HMR of regular (runnable) apps, even though (as per the assert() above) it's never run. It seems to be a Vite bug: handleHotUpdate() receives an empty `modules` list.
-         import('virtual:vike:entry:server')
+         import('virtual:vike:global-entry:server')
          ```
       */
-      virtualFileExports = await __VIKE__DYNAMIC_IMPORT('virtual:vike:entry:server')
+      virtualFileExports = await __VIKE__DYNAMIC_IMPORT('virtual:vike:global-entry:server')
     } catch (err_) {
       hasError = true
       err = err_
