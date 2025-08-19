@@ -62,7 +62,8 @@ function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
   if (!id.startsWith(virtualFileIdGlobalEntryPrefix) && !id.startsWith(virtualFileIdPageEntryPrefix)) return false
 
   // Gloabl entry
-  if (virtualFileIdGlobalEntries.includes(id)) {
+  if (id.includes(virtualFileIdGlobalEntryPrefix)) {
+    assert(virtualFileIdGlobalEntries.includes(id))
     const isForClientSide = id !== virtualFileIdGlobalEntryServer
     const isClientRouting = id === virtualFileIdGlobalEntryClientCR
     return {
