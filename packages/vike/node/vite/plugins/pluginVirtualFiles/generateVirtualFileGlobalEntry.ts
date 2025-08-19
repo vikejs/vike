@@ -1,7 +1,5 @@
 export { generateVirtualFileGlobalEntry }
 
-// TODO/now: rename file to generateVirtualFileEntryGlobal.ts
-
 import type { PageConfigBuildTime, PageConfigGlobalBuildTime } from '../../../../types/PageConfig.js'
 import { generateVirtualFileId } from '../../../shared/virtualFileId.js'
 import { debug } from './debug.js'
