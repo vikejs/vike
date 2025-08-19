@@ -9,7 +9,7 @@ import type { PageFile } from './getPageFiles.js'
 import { parseVirtualFileExportsGlobalEntry } from './getPageFiles/parseVirtualFileExportsGlobalEntry.js'
 import {
   resolveVikeConfigPublicGlobal,
-  resolveVikeConfigPublicPageEager,
+  resolveVikeConfigPublicPageEagerLoaded,
 } from './page-configs/resolveVikeConfigPublic.js'
 import type { PageConfigRuntime } from '../types/PageConfig.js'
 import { execHookGlobal } from './hooks/execHook.js'
@@ -150,7 +150,7 @@ function getConfigsAll(virtualFileExports: unknown) {
 
   const vikeConfigPublicPagesEager = Object.fromEntries(
     pageConfigs.map((pageConfig) => {
-      return resolveVikeConfigPublicPageEager(pageConfigGlobal.configValues, pageConfig, pageConfig.configValues)
+      return resolveVikeConfigPublicPageEagerLoaded(pageConfigGlobal.configValues, pageConfig, pageConfig.configValues)
     }),
   )
 

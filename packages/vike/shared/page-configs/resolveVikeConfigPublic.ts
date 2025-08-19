@@ -1,10 +1,10 @@
 // TO-DO/soon/same-api: use public API internally?
 // TO-DO/soon/flat-pageContext: rename definedAt => definedBy
 export { resolveVikeConfigPublicGlobal }
-export { resolveVikeConfigPublicPageEager }
+export { resolveVikeConfigPublicPageEagerLoaded }
 export { resolveVikeConfigPublicPageLazy }
 export type { VikeConfigPublicGlobal }
-export type { VikeConfigPublicPageEager }
+export type { VikeConfigPublicPageEagerLoaded }
 export type { VikeConfigPublicPageLazy }
 export type { Source }
 export type { Sources }
@@ -167,16 +167,16 @@ type WithRoute =
       route?: undefined
       isErrorPage: true
     }
-type VikeConfigPublicPageEager = VikeConfigPublic & WithRoute
+type VikeConfigPublicPageEagerLoaded = VikeConfigPublic & WithRoute
 type VikeConfigPublicGlobal = VikeConfigPublic
-function resolveVikeConfigPublicPageEager(
+function resolveVikeConfigPublicPageEagerLoaded(
   pageConfigGlobalValues: ConfigValues,
   pageConfig: PageConfigRuntime | PageConfigBuildTime,
   pageConfigValues: ConfigValues,
-): [string, VikeConfigPublicPageEager] {
+): [string, VikeConfigPublicPageEagerLoaded] {
   const vikeConfigPublicPage_ = resolveVikeConfigPublic_base({ pageConfigGlobalValues, pageConfigValues })
   const vikeConfigPublicPage = getPublicCopy(vikeConfigPublicPage_)
-  let page: VikeConfigPublicPageEager
+  let page: VikeConfigPublicPageEagerLoaded
   if (!pageConfig.isErrorPage) {
     const route = vikeConfigPublicPage.config.route ?? pageConfig.routeFilesystem.routeString
     page = {
