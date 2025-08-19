@@ -8,20 +8,42 @@ import { extractAssetsRemoveQuery } from '../extractAssetsQuery.js'
 import { assert, assertIsNotBrowser, removeVirtualFileIdPrefix } from '../utils.js'
 assertIsNotBrowser()
 
-const virtualFileIdGlobalEntryServer = 'virtual:vike:global-entry:server'
-const virtualFileIdGlobalEntryClientSR = 'virtual:vike:global-entry:client:server-routing'
-const virtualFileIdGlobalEntryClientCR = 'virtual:vike:global-entry:client:client-routing'
-const virtualFileIdPageEntryClient = 'virtual:vike:page-entry:client:'
-const virtualFileIdPageEntryServer = 'virtual:vike:page-entry:server:'
+// Global entries
+const virtualFileIdGlobalEntryServer =
+  //
+  'virtual:vike:global-entry:server'
+const virtualFileIdGlobalEntryClientSR =
+  //
+  'virtual:vike:global-entry:client:server-routing'
+const virtualFileIdGlobalEntryClientCR =
+  //
+  'virtual:vike:global-entry:client:client-routing'
+
+// Page entries
+const virtualFileIdPageEntryClient =
+  //
+  'virtual:vike:page-entry:client:'
+const virtualFileIdPageEntryServer =
+  //
+  'virtual:vike:page-entry:server:'
+
+// Virtual ID prefixes
+const virtualFileIdPageEntryPrefix =
+  //
+  'virtual:vike:page-entry:'
+const virtualFileIdGlobalEntryPrefix =
+  //
+  'virtual:vike:global-entry:'
 
 const virtualFileIdGlobalEntries = [
   virtualFileIdGlobalEntryServer,
   virtualFileIdGlobalEntryClientCR,
   virtualFileIdGlobalEntryClientSR,
 ]
-const virtualFileIdPageEntryPrefix = 'virtual:vike:page-entry:'
-const virtualFileIdGlobalEntryPrefix = 'virtual:vike:global-entry:'
 assert(virtualFileIdGlobalEntries.every((v) => v.startsWith(virtualFileIdGlobalEntryPrefix)))
+assert(
+  [virtualFileIdPageEntryClient, virtualFileIdPageEntryServer].every((v) => v.startsWith(virtualFileIdPageEntryPrefix)),
+)
 
 type VirtualFileIdEntryParsed =
   | { type: 'global'; isForClientSide: boolean; isClientRouting: boolean }
