@@ -201,7 +201,7 @@ function getEntryFromClientEntry(clientEntry: string, config: ResolvedConfig, ad
 }
 function getEntryFromPageConfig(pageConfig: PageConfigBuildTime, isForClientSide: boolean) {
   let { pageId } = pageConfig
-  const entryTarget = generateVirtualFileId('page-entry', { pageId, isForClientSide })
+  const entryTarget = generateVirtualFileId({ type: 'page-entry', pageId, isForClientSide })
   let entryName = pageId
   // Avoid:
   // ```

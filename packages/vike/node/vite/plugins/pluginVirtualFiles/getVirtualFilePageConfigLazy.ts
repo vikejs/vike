@@ -78,7 +78,7 @@ function getLoadConfigLazy(
 
   if (!handleAssetsManifest_isFixEnabled(config) && includeAssetsImportedByServer && isForClientSide && !isDev) {
     importStatements.push(
-      `import '${extractAssetsAddQuery(generateVirtualFileId('page-entry', { pageId, isForClientSide: false }))}'`,
+      `import '${extractAssetsAddQuery(generateVirtualFileId({ type: 'page-entry', pageId, isForClientSide: false }))}'`,
     )
   }
 

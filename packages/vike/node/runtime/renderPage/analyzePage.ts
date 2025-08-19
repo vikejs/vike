@@ -24,14 +24,14 @@ async function analyzePage(
     if (isClientRuntimeLoaded) clientEntries.push(getVikeClientEntry(isClientRouting))
     const clientDependencies: ClientDependency[] = []
     clientDependencies.push({
-      id: generateVirtualFileId('page-entry', { pageId: pageConfig.pageId, isForClientSide: true }),
+      id: generateVirtualFileId({ type: 'page-entry', pageId: pageConfig.pageId, isForClientSide: true }),
       onlyAssets: isClientRuntimeLoaded ? false : true,
       eagerlyImported: false,
     })
     // In production we inject the import of the server virtual module with ?extractAssets inside the client virtual module
     if (!globalContext._isProduction) {
       clientDependencies.push({
-        id: generateVirtualFileId('page-entry', { pageId: pageConfig.pageId, isForClientSide: false }),
+        id: generateVirtualFileId({ type: 'page-entry', pageId: pageConfig.pageId, isForClientSide: false }),
         onlyAssets: true,
         eagerlyImported: false,
       })
