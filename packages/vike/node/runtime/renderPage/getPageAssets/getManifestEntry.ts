@@ -2,7 +2,7 @@ export { getManifestEntry }
 
 import type { ViteManifest, ViteManifestEntry } from '../../../../types/ViteManifest.js'
 import { assert, slice, assertIsImportPathNpmPackage } from '../../utils.js'
-import { parseVirtualFileIdEntry } from '../../../shared/virtualFiles/parseVirtualFileIdEntry.js'
+import { parseVirtualFileId } from '../../../shared/virtualFiles/parseVirtualFileId.js'
 import { prependEntriesDir } from '../../../shared/prependEntriesDir.js'
 
 function getManifestEntry(
@@ -20,7 +20,7 @@ function getManifestEntry(
   }
 
   // Page code importer
-  const virtualFile = parseVirtualFileIdEntry(id)
+  const virtualFile = parseVirtualFileId(id)
   if (virtualFile && virtualFile.type === 'page') {
     {
       const manifestKey = id

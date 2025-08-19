@@ -3,7 +3,7 @@ export { getVirtualFilePageConfigsEager }
 // TODO/now: rename file to generateVirtualFileEntryGlobal.ts
 
 import type { PageConfigBuildTime, PageConfigGlobalBuildTime } from '../../../../types/PageConfig.js'
-import { generateVirtualFileIdEntry } from '../../../shared/virtualFiles/parseVirtualFileIdEntry.js'
+import { generateVirtualFileIdEntry } from '../../../shared/virtualFiles/parseVirtualFileId.js'
 import { debug } from './debug.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { FilesEnv, serializeConfigValues } from '../../../../shared/page-configs/serialize/serializeConfigValues.js'

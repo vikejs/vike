@@ -18,7 +18,7 @@ import {
   pLimit,
   unique,
 } from '../../utils.js'
-import { parseVirtualFileIdEntry } from '../../../shared/virtualFiles/parseVirtualFileIdEntry.js'
+import { parseVirtualFileId } from '../../../shared/virtualFiles/parseVirtualFileId.js'
 import type { Environment, ResolvedConfig, Rollup, UserConfig } from 'vite'
 import { getAssetsDir } from '../../shared/getAssetsDir.js'
 import pc from '@brillout/picocolors'
@@ -213,7 +213,7 @@ function getPageId(key: string) {
   //   virtual:vike:pageConfigLazy:client:/pages/index
   // (This seems to be needed only for vitest tests that use Vite's build() API with an inline config.)
   key = key.substring(key.indexOf('virtual:vike'))
-  const result = parseVirtualFileIdEntry(key)
+  const result = parseVirtualFileId(key)
   return result && result.type === 'page' ? result.pageId : null
 }
 

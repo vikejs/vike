@@ -1,4 +1,4 @@
-export { parseVirtualFileIdEntry }
+export { parseVirtualFileId }
 export { generateVirtualFileIdEntry }
 export { virtualFileIdEntryServer }
 export { virtualFileIdEntryClientSR }
@@ -30,7 +30,7 @@ type VirtualFileIdEntryParsed =
   | { type: 'global'; isForClientSide: boolean; isClientRouting: boolean }
   | { type: 'page'; isForClientSide: boolean; pageId: string; isExtractAssets: boolean }
 
-function parseVirtualFileIdEntry(id: string): false | VirtualFileIdEntryParsed {
+function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
   id = removeVirtualFileIdPrefix(id)
   if (!id.startsWith(idBaseEntry) && !id.startsWith(idBasePageConfig)) return false
 

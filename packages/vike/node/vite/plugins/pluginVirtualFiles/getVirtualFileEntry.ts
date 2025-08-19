@@ -15,7 +15,7 @@ import {
   isVersionOrAbove,
   assertWarning,
 } from '../../utils.js'
-import { parseVirtualFileIdEntry } from '../../../shared/virtualFiles/parseVirtualFileIdEntry.js'
+import { parseVirtualFileId } from '../../../shared/virtualFiles/parseVirtualFileId.js'
 import { version as viteVersion } from 'vite'
 import { type FileType, fileTypes } from '../../../../shared/getPageFiles/fileTypes.js'
 import path from 'node:path'
@@ -36,7 +36,7 @@ async function getVirtualFileEntry(
   config: ResolvedConfig,
   isDev: boolean,
 ) {
-  const idParsed = parseVirtualFileIdEntry(id)
+  const idParsed = parseVirtualFileId(id)
   assert(idParsed && idParsed.type === 'global')
   const { isForClientSide, isClientRouting } = idParsed
   assert(isForClientSide === !isViteServerBuild_options(options))

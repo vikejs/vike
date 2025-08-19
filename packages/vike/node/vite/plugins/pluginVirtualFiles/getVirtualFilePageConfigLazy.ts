@@ -4,10 +4,7 @@ export { getVirtualFilePageConfigLazy }
 
 import { assert, getProjectError } from '../../utils.js'
 import type { PageConfigBuildTime } from '../../../../types/PageConfig.js'
-import {
-  parseVirtualFileIdEntry,
-  generateVirtualFileIdEntry,
-} from '../../../shared/virtualFiles/parseVirtualFileIdEntry.js'
+import { parseVirtualFileId, generateVirtualFileIdEntry } from '../../../shared/virtualFiles/parseVirtualFileId.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { extractAssetsAddQuery } from '../../../shared/extractAssetsQuery.js'
 import { debug } from './debug.js'
@@ -18,7 +15,7 @@ import { getConfigValueBuildTime } from '../../../../shared/page-configs/getConf
 import { resolveIncludeAssetsImportedByServer } from '../../../runtime/renderPage/getPageAssets/retrievePageAssetsProd.js'
 
 async function getVirtualFilePageConfigLazy(id: string, isDev: boolean, config: ResolvedConfig): Promise<string> {
-  const result = parseVirtualFileIdEntry(id)
+  const result = parseVirtualFileId(id)
   assert(result && result.type === 'page')
   /* This assertion fails when using includeAssetsImportedByServer
   {

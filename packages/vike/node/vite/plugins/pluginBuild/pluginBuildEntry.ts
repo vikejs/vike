@@ -2,7 +2,7 @@ export { pluginBuildEntry }
 export { set_macro_ASSETS_MANIFEST }
 
 import { serverProductionEntryPlugin } from '@brillout/vite-plugin-server-entry/plugin'
-import { virtualFileIdEntryServer } from '../../../shared/virtualFiles/parseVirtualFileIdEntry.js'
+import { virtualFileIdEntryServer } from '../../../shared/virtualFiles/parseVirtualFileId.js'
 import { assert, PROJECT_VERSION, requireResolveVikeDistFile } from '../../utils.js'
 import fs from 'node:fs/promises'
 import path from 'node:path'

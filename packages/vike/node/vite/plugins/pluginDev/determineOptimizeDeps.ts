@@ -17,7 +17,7 @@ import type { DefinedAtFilePath, PageConfigBuildTime } from '../../../../types/P
 import {
   virtualFileIdEntryClientCR,
   virtualFileIdEntryClientSR,
-} from '../../../shared/virtualFiles/parseVirtualFileIdEntry.js'
+} from '../../../shared/virtualFiles/parseVirtualFileId.js'
 import { getFilePathResolved } from '../../shared/getFilePath.js'
 import { getConfigValueSourcesRelevant } from '../pluginVirtualFiles/getConfigValueSourcesRelevant.js'
 

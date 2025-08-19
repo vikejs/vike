@@ -5,7 +5,7 @@ import { getVikeClientEntry } from '../../../shared/getPageFiles/analyzePageClie
 import type { PageFile } from '../../../shared/getPageFiles/getPageFileObject.js'
 import type { PageConfigRuntime } from '../../../types/PageConfig.js'
 import { type AnalysisResult, analyzePageClientSide } from '../../../shared/getPageFiles/analyzePageClientSide.js'
-import { generateVirtualFileIdEntry } from '../../shared/virtualFiles/parseVirtualFileIdEntry.js'
+import { generateVirtualFileIdEntry } from '../../shared/virtualFiles/parseVirtualFileId.js'
 import { analyzeClientSide } from '../../../shared/getPageFiles/analyzeClientSide.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import { getConfigValueRuntime } from '../../../shared/page-configs/getConfigValueRuntime.js'

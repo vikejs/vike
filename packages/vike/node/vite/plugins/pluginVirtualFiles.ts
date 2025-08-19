@@ -12,7 +12,7 @@ import {
   isVirtualFileId,
   removeVirtualFileIdPrefix,
 } from '../utils.js'
-import { parseVirtualFileIdEntry } from '../../shared/virtualFiles/parseVirtualFileIdEntry.js'
+import { parseVirtualFileId } from '../../shared/virtualFiles/parseVirtualFileId.js'
 import { reloadVikeConfig, isV1Design, getVikeConfigInternalOptional } from '../shared/resolveVikeConfigInternal.js'
 import pc from '@brillout/picocolors'
 import { logConfigInfo } from '../shared/loggerNotProd.js'
@@ -51,7 +51,7 @@ function pluginVirtualFiles(): Plugin {
       const isDev = config._isDev
       assert(typeof isDev === 'boolean')
 
-      const idParsed = parseVirtualFileIdEntry(id)
+      const idParsed = parseVirtualFileId(id)
       if (idParsed) {
         if (idParsed.type === 'page') {
           const code = await getVirtualFilePageConfigLazy(id, isDev, config)
@@ -195,7 +195,7 @@ function reloadConfig(
 
 function getVikeVirtualFiles(server: ViteDevServer): ModuleNode[] {
   const vikeVirtualFiles = Array.from(server.moduleGraph.urlToModuleMap.keys())
-    .filter((url) => parseVirtualFileIdEntry(url))
+    .filter((url) => parseVirtualFileId(url))
     .map((url) => {
       const mod = server.moduleGraph.urlToModuleMap.get(url)
       assert(mod)
