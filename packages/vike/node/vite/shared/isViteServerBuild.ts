@@ -7,34 +7,37 @@ export { isViteServerBuild_onlySsrEnv }
 import type { Environment, EnvironmentOptions, ResolvedConfig, UserConfig } from 'vite'
 import { assert } from '../../../utils/assert.js'
 
-type ViteEnv = { name: string; config: EnvironmentOptions | Environment['config'] }
+type ViteEnv = { name?: string; config: EnvironmentOptions | Environment['config'] }
 
 function isViteServerBuild(configGlobal: ResolvedConfig | UserConfig, viteEnv: ViteEnv | undefined): boolean {
-  const configEnv = viteEnv?.config ?? configGlobal
-  const res = !!configEnv?.build?.ssr
-  assert_isViteServerBuild(res, configGlobal, viteEnv)
-  return res
-}
-function assert_isViteServerBuild(
-  res1: boolean,
-  configGlobal: ResolvedConfig | UserConfig,
-  viteEnv: ViteEnv | undefined,
-) {
-  if (viteEnv === undefined) {
-    const res2: boolean = !!configGlobal.build?.ssr
-    assert(res1 === res2)
-    /*
-    // @ts-expect-error
-    assert(configGlobal.consumer === undefined)
-    //*/
-  } else {
-    const res2: boolean = !!viteEnv.config.build?.ssr
-    assert(res2 === res1)
-    const res3: boolean = viteEnv.config.consumer === 'server'
-    assert(res3 === res1)
-    const res4: boolean = viteEnv.name !== 'client'
-    assert(res4 === res1)
+  const isServerSide1: boolean | null = !viteEnv?.config.consumer ? null : viteEnv.config.consumer !== 'client'
+  const isServerSide2: boolean | null = !viteEnv?.name ? null : viteEnv.name !== 'client' // I can't think of a use case for creating another client-side environment
+  const isServerSide3: boolean | null = !viteEnv ? null : !!viteEnv.config.build?.ssr
+  const isServerSide4: boolean = !!configGlobal.build?.ssr
+  const debug = {
+    envIsUndefined: !viteEnv,
+    envName: viteEnv?.name ?? null,
+    envConsumer: viteEnv?.config.consumer ?? null,
+    configEnvBuildSsr: viteEnv?.config.build?.ssr ?? null,
+    configGlobalBuildSsr: configGlobal.build?.ssr ?? null,
+    isServerSide1,
+    isServerSide2,
+    isServerSide3,
+    isServerSide4,
   }
+  if (isServerSide1 !== null) {
+    assert(isServerSide1 === isServerSide2 || isServerSide2 === null, debug)
+    assert(isServerSide1 === isServerSide3, debug)
+    return isServerSide1
+  }
+  if (isServerSide2 !== null) {
+    // assert(isServerSide2 === isServerSide3, debug)
+    return isServerSide2
+  }
+  if (isServerSide3 !== null) {
+    return isServerSide3
+  }
+  return isServerSide4
 }
 
 // Only `ssr` env: for example don't include `vercel_edge` nor `vercel_node`.
