@@ -17,7 +17,7 @@ import { findPageConfig } from '../../../shared/page-configs/findPageConfig.js'
 import { analyzePage } from './analyzePage.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { MediaType } from './inferMediaType.js'
-import { loadConfigValues } from '../../../shared/page-configs/loadConfigValues.js'
+import { loadPageEntry } from '../../../shared/page-configs/loadPageEntry.js'
 import { execHookServer, type PageContextExecHookServer } from './execHookServer.js'
 import { getCacheControl } from './getCacheControl.js'
 import type { PassToClient } from '../html/serializeContext.js'
@@ -179,7 +179,7 @@ async function loadPageConfigFiles(
   isDev: boolean,
 ) {
   const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
-  const pageConfigLoaded = !pageConfig ? null : await loadConfigValues(pageConfig, isDev)
+  const pageConfigLoaded = !pageConfig ? null : await loadPageEntry(pageConfig, isDev)
   await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))
   const configPublicPageLazy = resolveVikeConfigPublicPageLazyLoaded(
     pageFilesServerSide,

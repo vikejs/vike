@@ -1,10 +1,10 @@
-export { loadConfigValues }
+export { loadPageEntry }
 
 import { assert, objectAssign } from '../utils.js'
 import type { PageConfigRuntime, PageConfigRuntimeLoaded } from '../../types/PageConfig.js'
 import { parseConfigValuesSerialized } from './serialize/parsePageConfigs.js'
 
-async function loadConfigValues(pageConfig: PageConfigRuntime, isDev: boolean): Promise<PageConfigRuntimeLoaded> {
+async function loadPageEntry(pageConfig: PageConfigRuntime, isDev: boolean): Promise<PageConfigRuntimeLoaded> {
   if (
     'isPageEntryLoaded' in pageConfig &&
     // We don't need to cache in dev, since Vite already caches the virtual module
