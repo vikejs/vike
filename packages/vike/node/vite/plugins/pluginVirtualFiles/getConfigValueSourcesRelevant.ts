@@ -41,31 +41,6 @@ function getConfigValueSourcesRelevant(configName: string, runtimeEnv: RuntimeEn
   return sourcesRelevant
 }
 
-function applyCumulativeSuffixModifiers(sourcesRelevant: ConfigValueSource[]) {
-  const isSourceClear = (fn: string) => fn.includes('.clear.')
-  const isSourceDefault = (fn: string) => fn.includes('.default.')
-
-  const filenames = sourcesRelevant.map((s) => s.plusFile?.filePath.fileName || '')
-
-  // Apply `clear`: keep up to and including the first clear, drop all ancestors after it
-  const idxClear = filenames.findIndex((fn) => isSourceClear(fn))
-  if (idxClear !== -1) {
-    sourcesRelevant = sourcesRelevant.slice(0, idxClear + 1)
-  }
-
-  // Apply `default` semantics
-  const filenamesAfterClear = sourcesRelevant.map((s) => s.plusFile?.filePath.fileName || '')
-  const hasNonDefault = filenamesAfterClear.some((fn) => !isSourceDefault(fn))
-  if (hasNonDefault) {
-    sourcesRelevant = sourcesRelevant.filter((s) => !isSourceDefault(s.plusFile?.filePath.fileName || ''))
-  } else if (sourcesRelevant.length > 1) {
-    const first = sourcesRelevant[0]
-    if (first) sourcesRelevant = [first]
-  }
-
-  return sourcesRelevant
-}
-
 function isRuntimeEnvMatch(configEnv: ConfigEnvInternal, runtimeEnv: RuntimeEnv): boolean {
   if ('isForConfig' in runtimeEnv) return !!configEnv.config
 
@@ -104,4 +79,29 @@ function isOverridden(source: ConfigValueSource, configName: string, pageConfig:
   const idx = sources.indexOf(source)
   assert(idx >= 0)
   return idx > 0
+}
+
+function applyCumulativeSuffixModifiers(sourcesRelevant: ConfigValueSource[]) {
+  const isSourceClear = (fn: string) => fn.includes('.clear.')
+  const isSourceDefault = (fn: string) => fn.includes('.default.')
+
+  const filenames = sourcesRelevant.map((s) => s.plusFile?.filePath.fileName || '')
+
+  // Apply `clear`: keep up to and including the first clear, drop all ancestors after it
+  const idxClear = filenames.findIndex((fn) => isSourceClear(fn))
+  if (idxClear !== -1) {
+    sourcesRelevant = sourcesRelevant.slice(0, idxClear + 1)
+  }
+
+  // Apply `default` semantics
+  const filenamesAfterClear = sourcesRelevant.map((s) => s.plusFile?.filePath.fileName || '')
+  const hasNonDefault = filenamesAfterClear.some((fn) => !isSourceDefault(fn))
+  if (hasNonDefault) {
+    sourcesRelevant = sourcesRelevant.filter((s) => !isSourceDefault(s.plusFile?.filePath.fileName || ''))
+  } else if (sourcesRelevant.length > 1) {
+    const first = sourcesRelevant[0]
+    if (first) sourcesRelevant = [first]
+  }
+
+  return sourcesRelevant
 }
