@@ -32,7 +32,8 @@ function resolveOutDir_configEnvironment(
   envName: string,
   configEnv: EnvironmentOptions,
 ): string {
-  const isServerSide = isViteServerBuild(configEnv, undefined)
+  const viteEnv = { name: envName, config: configEnv }
+  const isServerSide = isViteServerBuild(configGlobal, viteEnv)
   assert_resolveOutDir_configEnvironment(isServerSide, configEnv)
   const res = resolveOutDir(configEnv, isServerSide)
   return res
