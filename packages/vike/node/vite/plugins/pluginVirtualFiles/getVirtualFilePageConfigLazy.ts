@@ -4,7 +4,7 @@ export { getVirtualFilePageConfigLazy }
 
 import { assert, getProjectError } from '../../utils.js'
 import type { PageConfigBuildTime } from '../../../../types/PageConfig.js'
-import { parseVirtualFileId, generateVirtualFileIdEntry } from '../../../shared/virtualFiles/parseVirtualFileId.js'
+import { parseVirtualFileId, generateVirtualFileId } from '../../../shared/virtualFiles/parseVirtualFileId.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { extractAssetsAddQuery } from '../../../shared/extractAssetsQuery.js'
 import { debug } from './debug.js'
@@ -78,7 +78,7 @@ function getLoadConfigLazy(
 
   if (!handleAssetsManifest_isFixEnabled(config) && includeAssetsImportedByServer && isForClientSide && !isDev) {
     importStatements.push(
-      `import '${extractAssetsAddQuery(generateVirtualFileIdEntry('page', { pageId, isForClientSide: false }))}'`,
+      `import '${extractAssetsAddQuery(generateVirtualFileId('page', { pageId, isForClientSide: false }))}'`,
     )
   }
 

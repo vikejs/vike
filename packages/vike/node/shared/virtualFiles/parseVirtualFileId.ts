@@ -1,5 +1,5 @@
 export { parseVirtualFileId }
-export { generateVirtualFileIdEntry }
+export { generateVirtualFileId }
 export { virtualFileIdEntryServer }
 export { virtualFileIdEntryClientSR }
 export { virtualFileIdEntryClientCR }
@@ -75,12 +75,9 @@ function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
   return false
 }
 
-function generateVirtualFileIdEntry(
-  type: 'global',
-  options: { isForClientSide: boolean; isClientRouting: boolean },
-): string
-function generateVirtualFileIdEntry(type: 'page', options: { pageId: string; isForClientSide: boolean }): string
-function generateVirtualFileIdEntry(
+function generateVirtualFileId(type: 'global', options: { isForClientSide: boolean; isClientRouting: boolean }): string
+function generateVirtualFileId(type: 'page', options: { pageId: string; isForClientSide: boolean }): string
+function generateVirtualFileId(
   type: 'global' | 'page',
   options: { isForClientSide: boolean; isClientRouting?: boolean; pageId?: string },
 ): string {
