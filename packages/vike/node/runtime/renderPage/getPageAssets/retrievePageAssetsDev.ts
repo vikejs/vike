@@ -34,8 +34,8 @@ async function getAssetUrls(clientDependencies: ClientDependency[], viteDevServe
     clientDependencies.map(async ({ id }) => {
       if (id.startsWith('@@vike')) return // vike doesn't have any CSS
       assert(id)
-      const entryResult = parseVirtualFileIdEntry(id)
-      assert(!entryResult || entryResult.type !== 'global')
+      const virtualFile = parseVirtualFileIdEntry(id)
+      assert(!virtualFile || virtualFile.type !== 'global')
       const { moduleGraph } = viteDevServer
       const [_, graphId] = await moduleGraph.resolveUrl(id)
       assert(graphId, { id })
@@ -62,8 +62,8 @@ function collectCss(mod: ModuleNode, styleUrls: Set<string>, visitedModules: Set
   if (!mod.url) return
   if (visitedModules.has(mod.url)) return
   visitedModules.add(mod.url)
-  const entryResult = parseVirtualFileIdEntry(mod.id || mod.url)
-  if (entryResult && entryResult.type === 'global') return // virtual:vike:entry:server dependency list includes all pages
+  const virtualFile = parseVirtualFileIdEntry(mod.id || mod.url)
+  if (virtualFile && virtualFile.type === 'global') return // virtual:vike:entry:server dependency list includes all pages
   if (isStyle(mod) && (!importer || !isStyle(importer))) {
     if (mod.url.startsWith('/')) {
       styleUrls.add(mod.url)
