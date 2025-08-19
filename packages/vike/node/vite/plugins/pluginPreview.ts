@@ -1,6 +1,6 @@
 export { pluginPreview }
 
-import type { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
 import { assertUsage, applyPreview, assert } from '../utils.js'
 import fs from 'node:fs'
 import path from 'node:path'
@@ -15,20 +15,22 @@ type ConnectServer = ViteDevServer['middlewares']
 
 function pluginPreview(): Plugin {
   let config: ResolvedConfig
+  let configUnresolved: UserConfig
   let vikeConfig: VikeConfigInternal
   return {
     name: 'vike:pluginPreview',
     apply: applyPreview,
-    config() {
+    config(config) {
+      configUnresolved = config
       return {
         appType: 'custom',
       }
     },
     configEnvironment(envName, configEnv) {
-      assert(config)
+      assert(configUnresolved)
       return {
         build: {
-          outDir: resolveOutDir_configEnvironment(config, envName, configEnv),
+          outDir: resolveOutDir_configEnvironment(configUnresolved, envName, configEnv),
         },
       }
     },

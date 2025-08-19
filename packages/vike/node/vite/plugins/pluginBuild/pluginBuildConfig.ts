@@ -16,7 +16,7 @@ import {
 } from '../../utils.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { findPageFiles } from '../../shared/findPageFiles.js'
-import type { ResolvedConfig, Plugin } from 'vite'
+import type { ResolvedConfig, Plugin, UserConfig } from 'vite'
 import { generateVirtualFileId } from '../../../shared/virtualFileId.js'
 import type { PageConfigBuildTime } from '../../../../types/PageConfig.js'
 import type { FileType } from '../../../../shared/getPageFiles/fileTypes.js'
@@ -34,6 +34,7 @@ import { resolveIncludeAssetsImportedByServer } from '../../../runtime/renderPag
 
 function pluginBuildConfig(): Plugin[] {
   let config: ResolvedConfig
+  let configUnresolved: UserConfig
 
   return [
     {
@@ -56,10 +57,10 @@ function pluginBuildConfig(): Plugin[] {
       configEnvironment: {
         order: 'post',
         async handler(envName, configEnv) {
-          assert(config)
+          assert(configUnresolved)
           return {
             build: {
-              outDir: resolveOutDir_configEnvironment(config, envName, configEnv),
+              outDir: resolveOutDir_configEnvironment(configUnresolved, envName, configEnv),
             },
           }
         },
@@ -67,6 +68,7 @@ function pluginBuildConfig(): Plugin[] {
       config: {
         order: 'post',
         async handler(config) {
+          configUnresolved = config
           onSetupBuild()
           const build = await handleAssetsManifest_getBuildConfig(config)
           return { build }
