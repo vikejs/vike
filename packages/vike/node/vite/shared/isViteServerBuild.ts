@@ -27,9 +27,9 @@ function assertRes_isViteClientBuild(res1: boolean, configGlobal: ResolvedConfig
     assert(res1 === res2)
   } else {
     const res2: boolean = !viteEnv.config.build.ssr
-    const res3: boolean = viteEnv.name === 'client'
+    const res4: boolean = viteEnv.name === 'client'
     assert(res1 === res2)
-    assert(res1 === res3)
+    assert(res1 === res4)
   }
 }
 
