@@ -22,10 +22,10 @@ const virtualFileIdGlobalEntryClientCR =
 // Page entries
 const virtualFileIdPageEntryClient =
   //
-  'virtual:vike:page-entry:client:'
+  'virtual:vike:page-entry:client:' // ${pageId}
 const virtualFileIdPageEntryServer =
   //
-  'virtual:vike:page-entry:server:'
+  'virtual:vike:page-entry:server:' //  ${pageId}
 
 // Virtual ID prefixes
 const virtualFileIdPageEntryPrefix =
@@ -61,7 +61,7 @@ function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
   id = removeVirtualFileIdPrefix(id)
   if (!id.startsWith(virtualFileIdGlobalEntryPrefix) && !id.startsWith(virtualFileIdPageEntryPrefix)) return false
 
-  // Check for page config lazy entries
+  // Page entry
   if (id.includes(virtualFileIdPageEntryPrefix)) {
     assert(id.startsWith(virtualFileIdPageEntryPrefix))
     const idOriginal = id
@@ -88,7 +88,7 @@ function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
     assert(false)
   }
 
-  // Check for global entry files
+  // Gloabl entry
   if (virtualFileIdGlobalEntries.includes(id)) {
     const isForClientSide = id !== virtualFileIdGlobalEntryServer
     const isClientRouting = id === virtualFileIdGlobalEntryClientCR
