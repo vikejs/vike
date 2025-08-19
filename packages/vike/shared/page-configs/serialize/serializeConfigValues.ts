@@ -37,9 +37,9 @@ const stringifyOptions = { forbidReactElements: true as const }
 const REPLACE_ME_BEFORE = '__VIKE__REPLACE_ME_BEFORE__'
 const REPLACE_ME_AFTER = '__VIKE__REPLACE_ME_AFTER__'
 
-// This file is never loaded on the client-side but we save it under the vike/shared/ directory in order to collocate it with parsePageConfigs()
-// - vike/shared/page-configs/serialize/parsePageConfigs.ts
-// - parsePageConfigs() is loaded on both the client- and server-side.
+// This file is never loaded on the client-side but we save it under the vike/shared/ directory in order to collocate it with parsePageConfigsSerialized()
+// - vike/shared/page-configs/serialize/parsePageConfigsSerialized.ts
+// - parsePageConfigsSerialized() is loaded on both the client- and server-side.
 assertIsNotBrowser()
 assertIsNotProductionRuntime()
 

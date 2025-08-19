@@ -7,7 +7,7 @@ import type {
   PageConfigRuntimeLoaded,
   VirtualFileExportsPageEntry,
 } from '../../types/PageConfig.js'
-import { parseConfigValuesSerialized } from './serialize/parsePageConfigs.js'
+import { parseConfigValuesSerialized } from './serialize/parsePageConfigsSerialized.js'
 
 async function loadPageEntry(pageConfig: PageConfigRuntime, isDev: boolean): Promise<PageConfigRuntimeLoaded> {
   if (

@@ -3,7 +3,7 @@ export { parseVirtualFileExportsGlobalEntry }
 // TODO/now: merge or collocate following both files?
 // ```filesystem
 // vike/shared/getPageFiles/parseVirtualFileExportsGlobalEntry.ts
-// vike/shared/page-configs/serialize/parsePageConfigs.ts
+// vike/shared/page-configs/serialize/parsePageConfigsSerialized.ts
 // ```
 
 // TO-DO/next-major-release: remove old design code, and remove all assertions.
@@ -13,7 +13,7 @@ import { assertExportValues } from './assert_exports_old_design.js'
 import { getPageFileObject, type PageFile } from './getPageFileObject.js'
 import { fileTypes, type FileType } from './fileTypes.js'
 import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../../types/PageConfig.js'
-import { parsePageConfigs } from '../page-configs/serialize/parsePageConfigs.js'
+import { parsePageConfigsSerialized } from '../page-configs/serialize/parsePageConfigsSerialized.js'
 import type {
   PageConfigGlobalRuntimeSerialized,
   PageConfigRuntimeSerialized,
@@ -40,7 +40,10 @@ function parseVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry: unkno
   const { pageConfigsSerialized, pageConfigGlobalSerialized } = virtualFileExportsGlobalEntry
   assertPageConfigsSerialized(pageConfigsSerialized)
   assertPageConfigGlobalSerialized(pageConfigGlobalSerialized)
-  const { pageConfigs, pageConfigGlobal } = parsePageConfigs(pageConfigsSerialized, pageConfigGlobalSerialized)
+  const { pageConfigs, pageConfigGlobal } = parsePageConfigsSerialized(
+    pageConfigsSerialized,
+    pageConfigGlobalSerialized,
+  )
 
   const pageFilesMap: Record<string, PageFile> = {}
   parseGlobResult(virtualFileExportsGlobalEntry.pageFilesLazy).forEach(({ filePath, pageFile, globValue }) => {
