@@ -19,9 +19,13 @@ function pluginPreview(): Plugin {
   return {
     name: 'vike:pluginPreview',
     apply: applyPreview,
-    configEnvironment(_name, config) {
+    config() {
       return {
         appType: 'custom',
+      }
+    },
+    configEnvironment(_name, config) {
+      return {
         build: {
           outDir: resolveOutDir(config),
         },
