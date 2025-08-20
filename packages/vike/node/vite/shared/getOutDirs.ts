@@ -6,7 +6,7 @@ export type { OutDirs }
 import type { UserConfig, ResolvedConfig, EnvironmentOptions } from 'vite'
 import pc from '@brillout/picocolors'
 import { assert, assertPosixPath, assertUsage, createDebugger, pathJoin, toPosixPath } from '../utils.js'
-import { isViteServerBuild, ViteEnv } from './isViteServerBuild.js'
+import { isViteServerBuild, isViteServerBuild_withoutEnv, ViteEnv } from './isViteServerBuild.js'
 const debug = createDebugger('vike:outDir')
 
 type OutDirs = {
@@ -138,7 +138,7 @@ function assertOutDirResolved(outDir: string, configGlobal: UserConfig | Resolve
     outDirCorrected,
   )} instead.`
 
-  if (isViteServerBuild(configGlobal, viteEnv)) {
+  if (isViteServerBuild_withoutEnv(configGlobal, viteEnv)) {
     assertUsage(outDir.endsWith('/server'), wrongUsage)
   } else {
     assertUsage(outDir.endsWith('/client'), wrongUsage)

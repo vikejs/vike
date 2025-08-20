@@ -24,7 +24,11 @@ import { getAssetsDir } from '../../shared/getAssetsDir.js'
 import pc from '@brillout/picocolors'
 import { getVikeConfigInternal, isV1Design } from '../../shared/resolveVikeConfigInternal.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
-import { isViteServerBuild_onlySsrEnv, isViteServerBuild } from '../../shared/isViteServerBuild.js'
+import {
+  isViteServerBuild_onlySsrEnv,
+  isViteServerBuild,
+  isViteServerBuild_withoutEnv,
+} from '../../shared/isViteServerBuild.js'
 import { set_macro_ASSETS_MANIFEST } from './pluginBuildEntry.js'
 import { getManifestFilePathRelative } from '../../shared/getManifestFilePathRelative.js'
 type Bundle = Rollup.OutputBundle
@@ -356,13 +360,13 @@ async function handleAssetsManifest_getBuildConfig(config: UserConfig) {
     copyPublicDir: vikeConfig.config.vite6BuilderApp
       ? // Already set by vike:build:pluginBuildApp
         undefined
-      : !isViteServerBuild(config, undefined),
+      : !isViteServerBuild_withoutEnv(config),
   } as const
 }
 
 async function handleAssetsManifest(
   config: ResolvedConfig,
-  viteEnv: Environment | undefined,
+  viteEnv: Environment,
   options: { dir: string | undefined },
   bundle: Bundle,
 ) {

@@ -1,6 +1,7 @@
 // TODO/now: rename isViteServerSide
 export { isViteServerBuild }
 export { isViteClientBuild }
+export { isViteServerBuild_withoutEnv }
 export { isViteServerBuild_onlySsrEnv }
 export { isViteServerBuild_extraSafe }
 export type { ViteEnv }
@@ -10,7 +11,7 @@ import { assert } from '../../../utils/assert.js'
 
 type ViteEnv = { name?: string; config: EnvironmentOptions | Environment['config'] }
 
-function isViteServerBuild(configGlobal: ResolvedConfig | UserConfig, viteEnv: ViteEnv | undefined): boolean {
+function isViteServerBuild_check(configGlobal: ResolvedConfig | UserConfig, viteEnv: ViteEnv | undefined): boolean {
   assert(!('consumer' in configGlobal)) // make sure configGlobal isn't viteEnv.config
   const isServerSide1: boolean | null = !viteEnv?.config.consumer ? null : viteEnv.config.consumer !== 'client'
   const isServerSide2: boolean | null = !viteEnv?.name ? null : viteEnv.name !== 'client' // I can't think of a use case for creating another client-side environment
@@ -44,13 +45,20 @@ function isViteServerBuild(configGlobal: ResolvedConfig | UserConfig, viteEnv: V
   return isServerSide4
 }
 
+function isViteServerBuild(configGlobal: ResolvedConfig | UserConfig, viteEnv: ViteEnv) {
+  return isViteServerBuild_check(configGlobal, viteEnv)
+}
+function isViteServerBuild_withoutEnv(configGlobal: ResolvedConfig | UserConfig, viteEnv?: ViteEnv) {
+  return isViteServerBuild_check(configGlobal, viteEnv)
+}
+
 function isViteClientBuild(configGlobal: ResolvedConfig, viteEnv: ViteEnv | undefined) {
-  return !isViteServerBuild(configGlobal, viteEnv)
+  return !isViteServerBuild_check(configGlobal, viteEnv)
 }
 
 // Only `ssr` env: for example don't include `vercel_edge` nor `vercel_node`.
 function isViteServerBuild_onlySsrEnv(configGlobal: ResolvedConfig, viteEnv: ViteEnv | undefined) {
-  return viteEnv ? viteEnv.name === 'ssr' : isViteServerBuild(configGlobal, undefined)
+  return viteEnv ? viteEnv.name === 'ssr' : isViteServerBuild_check(configGlobal, undefined)
 }
 
 // Vite is quite messy about setting config.build.ssr — for security purposes, we use an extra safe implementation with lots of assertions, which is needed for the .client.js and .server.js guarantee.
