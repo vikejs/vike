@@ -1,5 +1,6 @@
 export { pathJoin }
 export { pathIsRelative }
+export { pathIsAbsolute }
 export { toPosixPath }
 export { assertPosixPath }
 
@@ -24,12 +25,11 @@ function pathJoin(path1: string, path2: string): string {
   return joined
 }
 
-/* https://github.com/brillout/telefunc/blob/0fd44322acbd07857ae29361ba7c998607f17dd5/telefunc/utils/path-shim.ts#L17-L21
+// https://github.com/brillout/telefunc/blob/0fd44322acbd07857ae29361ba7c998607f17dd5/telefunc/utils/path-shim.ts#L17-L21
 const IS_ABSOLUTE_RE = /^[/\\](?![/\\])|^[/\\]{2}(?!\.)|^[A-Za-z]:[/\\]/
 function pathIsAbsolute(filePath: string) {
   return IS_ABSOLUTE_RE.test(filePath)
 }
-//*/
 
 /**********************/
 /****** UTILS *********/
