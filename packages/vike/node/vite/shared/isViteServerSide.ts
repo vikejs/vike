@@ -1,5 +1,5 @@
 export { isViteServerSide }
-export { isViteClientBuild }
+export { isViteClientSide }
 export { isViteServerSide_withoutEnv }
 export { isViteServerSide_onlySsrEnv }
 export { isViteServerSide_extraSafe }
@@ -50,7 +50,7 @@ function isViteServerSide(configGlobal: ResolvedConfig | UserConfig, viteEnv: Vi
   return isViteServerSide_withoutEnv(configGlobal, viteEnv)
 }
 
-function isViteClientBuild(configGlobal: ResolvedConfig, viteEnv: ViteEnv) {
+function isViteClientSide(configGlobal: ResolvedConfig, viteEnv: ViteEnv) {
   return !isViteServerSide(configGlobal, viteEnv)
 }
 
