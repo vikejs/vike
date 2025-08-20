@@ -1,6 +1,4 @@
-// TODO/now: rename to isViteServerSide
 export { isViteServerBuild }
-// TODO/now: rename to isViteClientSide
 export { isViteClientBuild }
 export { isViteServerBuild_withoutEnv }
 export { isViteServerBuild_onlySsrEnv }
