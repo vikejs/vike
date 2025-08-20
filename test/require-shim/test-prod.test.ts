@@ -6,7 +6,7 @@ run('npm run prod', {
 })
 
 test('page is rendered to HTML', async () => {
-  //* TO-DO/soon: uncomment this
+  /* TO-DO/soon: uncomment this
   // API is down
   // https://github.com/trevorblades/countries/issues/78
   skip('SKIPPED: API is down')
