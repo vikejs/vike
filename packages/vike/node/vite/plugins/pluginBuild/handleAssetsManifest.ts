@@ -54,7 +54,7 @@ async function fixServerAssets(
   return { clientManifestMod, serverManifestMod }
 }
 async function copyAssets(filesToMove: string[], filesToRemove: string[], config: ResolvedConfig) {
-  const { outDirClient, outDirServer } = getOutDirs(config)
+  const { outDirClient, outDirServer } = getOutDirs(config, undefined)
   const assetsDir = getAssetsDir(config)
   const assetsDirServer = path.posix.join(outDirServer, assetsDir)
   if (!filesToMove.length && !filesToRemove.length && !existsSync(assetsDirServer)) return
@@ -399,7 +399,7 @@ async function writeAssetsManifestFile(assetsJsonFilePath: string, config: Resol
 }
 
 function getManifestFilePath(config: ResolvedConfig, client: boolean) {
-  const outDirs = getOutDirs(config)
+  const outDirs = getOutDirs(config, undefined)
   const outDir = client ? outDirs.outDirClient : outDirs.outDirServer
   const env = client ? config.environments.client : config.environments.ssr
   assert(env)

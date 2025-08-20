@@ -18,7 +18,7 @@ type OutDirs = {
   outDirServer: string
 }
 
-function getOutDirs(configGlobal: ResolvedConfig, viteEnv?: ViteEnv): OutDirs {
+function getOutDirs(configGlobal: ResolvedConfig, viteEnv: ViteEnv | undefined): OutDirs {
   debug('getOutDirs()', new Error().stack)
   const outDir = getOutDirFromViteResolvedConfig(configGlobal)
   if (!isOutDirRoot(outDir)) assertOutDirResolved(outDir, configGlobal, viteEnv)

@@ -240,7 +240,7 @@ function getGlobRoots(config: ResolvedConfig): GlobRoot[] {
   const globRoots: GlobRoot[] = [
     {
       includeDir: '/',
-      excludeDir: path.posix.relative(config.root, getOutDirs(config).outDirRoot),
+      excludeDir: path.posix.relative(config.root, getOutDirs(config, undefined).outDirRoot),
     },
   ]
   return globRoots

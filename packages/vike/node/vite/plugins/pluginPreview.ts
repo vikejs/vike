@@ -61,7 +61,7 @@ function pluginPreview(): Plugin {
     },
   }
   function assertDist(isPrerenderingEnabledForAllPages: boolean) {
-    const { outDirRoot, outDirClient, outDirServer } = getOutDirs(config)
+    const { outDirRoot, outDirClient, outDirServer } = getOutDirs(config, undefined)
     const dirS = [outDirRoot, outDirClient]
     if (!isPrerenderingEnabledForAllPages) dirS.push(outDirServer)
     dirS.forEach((outDirAny) => {
@@ -75,12 +75,12 @@ function pluginPreview(): Plugin {
   }
 
   function addStaticAssetsMiddleware(middlewares: ConnectServer) {
-    const { outDirClient } = getOutDirs(config)
+    const { outDirClient } = getOutDirs(config, undefined)
     middlewares.use(sirv(outDirClient))
   }
 
   function addStatic404Middleware(middlewares: ConnectServer) {
-    const { outDirClient } = getOutDirs(config)
+    const { outDirClient } = getOutDirs(config, undefined)
     middlewares.use(config.base, (_, res, next) => {
       const file = path.posix.join(outDirClient, './404.html')
       if (fs.existsSync(file)) {
