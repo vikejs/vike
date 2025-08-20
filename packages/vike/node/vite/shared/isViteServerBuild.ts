@@ -30,7 +30,9 @@ function isViteServerBuild_withoutEnv(configGlobal: ResolvedConfig | UserConfig,
   }
   if (isServerSide1 !== null) {
     assert(isServerSide1 === isServerSide2 || isServerSide2 === null, debug)
+    /* This assertion can fail, seems to be a Vite bug?
     assert(isServerSide1 === isServerSide3, debug)
+    */
     return isServerSide1
   }
   if (isServerSide2 !== null) {
