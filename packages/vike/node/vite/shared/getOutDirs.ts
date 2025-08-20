@@ -1,11 +1,12 @@
 export { getOutDirs }
 export { resolveOutDir }
+export { resolveOutDir_configEnvironment }
 export type { OutDirs }
 
-import type { UserConfig, ResolvedConfig, Environment } from 'vite'
+import type { UserConfig, ResolvedConfig, EnvironmentOptions } from 'vite'
 import pc from '@brillout/picocolors'
 import { assert, assertPosixPath, assertUsage, createDebugger, pathJoin, toPosixPath } from '../utils.js'
-import { isViteServerBuild } from './isViteServerBuild.js'
+import { isViteServerBuild, isViteServerBuild_withoutEnv, ViteEnv } from './isViteServerBuild.js'
 const debug = createDebugger('vike:outDir')
 
 type OutDirs = {
@@ -17,19 +18,28 @@ type OutDirs = {
   outDirServer: string
 }
 
-function getOutDirs(configGlobal: ResolvedConfig, viteEnv?: Environment): OutDirs {
-  const configEnv = viteEnv?.config ?? configGlobal
+function getOutDirs(configGlobal: ResolvedConfig, viteEnv: ViteEnv | undefined): OutDirs {
   debug('getOutDirs()', new Error().stack)
-  const outDir = getOutDirFromViteResolvedConfig(configEnv)
-  if (!isOutDirRoot(outDir)) assertOutDirResolved(outDir, configEnv)
-  const outDirs = getOutDirsAll(outDir, configEnv.root)
+  const outDir = getOutDirFromResolvedConfig(configGlobal)
+  assertOutDirResolved(outDir, configGlobal, viteEnv)
+  const outDirs = getOutDirsAll(outDir, configGlobal.root)
   return outDirs
 }
 
+function resolveOutDir_configEnvironment(
+  configGlobal: UserConfig,
+  envName: string,
+  configEnv: EnvironmentOptions,
+): string {
+  assert(configGlobal && envName && configEnv)
+  const viteEnv = { name: envName, config: configEnv }
+  const isServerSide = isViteServerBuild(configGlobal, viteEnv)
+  return resolveOutDir(configEnv, isServerSide)
+}
+
 /** Appends `client/` or `server/` to `config.build.outDir` */
-function resolveOutDir(config: UserConfig, isSSR?: true): string {
+function resolveOutDir(config: UserConfig, isServerSide: boolean): string {
   debug('resolveOutDir()', new Error().stack)
-  const isServerSide = isViteServerBuild(config) || isSSR
   debug('isServerSide', isServerSide)
   const outDir = getOutDirFromViteUserConfig(config) || 'dist'
   debug('outDir', outDir)
@@ -116,10 +126,11 @@ function assertIsNotOutDirRoot(outDir: string) {
   assert(outDir.endsWith('/client') || outDir.endsWith('/server'))
 }
 
-/** Assert that `outDir` ends with `/server` or `/client` */
-function assertOutDirResolved(outDir: string, config: UserConfig | ResolvedConfig) {
+/** Assert that `outDir` ends with the correct directory `/server` or `/client` */
+function assertOutDirResolved(outDir: string, configGlobal: UserConfig | ResolvedConfig, viteEnv: ViteEnv | undefined) {
   assertPosixPath(outDir)
-  assertIsNotOutDirRoot(outDir)
+  if (isOutDirRoot(outDir)) return
+  assert(outDir.endsWith('/client') || outDir.endsWith('/server')) // we normalized outDir
 
   assert('/client'.length === '/server'.length)
   const outDirCorrected = outDir.slice(0, -1 * '/client'.length)
@@ -127,7 +138,7 @@ function assertOutDirResolved(outDir: string, config: UserConfig | ResolvedConfi
     outDirCorrected,
   )} instead.`
 
-  if (isViteServerBuild(config)) {
+  if (isViteServerBuild_withoutEnv(configGlobal, viteEnv)) {
     assertUsage(outDir.endsWith('/server'), wrongUsage)
   } else {
     assertUsage(outDir.endsWith('/client'), wrongUsage)
@@ -140,7 +151,7 @@ function getOutDirFromViteUserConfig(config: UserConfig | ResolvedConfig): strin
   outDir = normalizeOutDir(outDir)
   return outDir
 }
-function getOutDirFromViteResolvedConfig(config: ResolvedConfig): string {
+function getOutDirFromResolvedConfig(config: ResolvedConfig): string {
   let outDir = config.build.outDir
   assert(outDir)
   outDir = normalizeOutDir(outDir)

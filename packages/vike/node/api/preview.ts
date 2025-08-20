@@ -19,7 +19,7 @@ async function preview(options: APIOptions = {}): Promise<{ viteServer?: Preview
   onSetupPreview()
   const { viteConfigFromUserEnhanced, viteConfigResolved } = await prepareViteApiCall(options, 'preview')
   if (viteConfigResolved.vitePluginServerEntry?.inject) {
-    const outDir = getOutDirs(viteConfigResolved).outDirRoot
+    const outDir = getOutDirs(viteConfigResolved, undefined).outDirRoot
     const { outServerIndex } = await importServerProductionIndex({ outDir })
     const outServerIndexRelative = path.relative(viteConfigResolved.root, outServerIndex)
     assertWarning(

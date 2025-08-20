@@ -31,7 +31,7 @@ import { handleAssetsManifest_isFixEnabled } from './pluginBuild/handleAssetsMan
 import { getVikeConfigInternal, type VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { assertV1Design } from '../../shared/assertV1Design.js'
 import { normalizeId } from '../shared/normalizeId.js'
-import { isViteServerBuild_safe } from '../shared/isViteServerBuild.js'
+import { isViteServerBuild_extraSafe } from '../shared/isViteServerBuild.js'
 import { resolveIncludeAssetsImportedByServer } from '../../runtime/renderPage/getPageAssets/retrievePageAssetsProd.js'
 type ResolvedId = Rollup.ResolvedId
 
@@ -65,7 +65,7 @@ function pluginExtractAssets(): Plugin[] {
         }
         const includeAssetsImportedByServer = resolveIncludeAssetsImportedByServer(vikeConfig.config)
         assert(includeAssetsImportedByServer)
-        assert(!isViteServerBuild_safe(config, options))
+        assert(!isViteServerBuild_extraSafe(config, options, this.environment))
         const importStatements = await getImportStatements(src)
         const moduleNames = getImportedModules(importStatements)
         const code = moduleNames.map((moduleName) => `import '${moduleName}';`).join('\n')
@@ -82,7 +82,7 @@ function pluginExtractAssets(): Plugin[] {
       //  - Vite's `vite:resolve` plugin; https://github.com/vitejs/vite/blob/d649daba7682791178b711d9a3e44a6b5d00990c/packages/vite/src/node/plugins/resolve.ts#L105
       enforce: 'pre',
       async resolveId(source, importer, options) {
-        if (isViteServerBuild_safe(config, options)) {
+        if (isViteServerBuild_extraSafe(config, options, this.environment)) {
           // When building for the server, there should never be a `?extractAssets` query
           assert(!extractAssetsRE.test(source))
           assert(importer === undefined || !extractAssetsRE.test(importer))

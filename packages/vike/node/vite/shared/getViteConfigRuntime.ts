@@ -8,7 +8,7 @@ import { getOutDirs } from './getOutDirs.js'
 type ViteConfigRuntime = ReturnType<typeof getViteConfigRuntime>
 function getViteConfigRuntime(config: ResolvedConfig) {
   assert(hasProp(config, '_baseViteOriginal', 'string'))
-  const { outDirRoot } = getOutDirs(config)
+  const { outDirRoot } = getOutDirs(config, undefined)
   assertFilePathAbsoluteFilesystem(outDirRoot)
   const viteConfigRuntime = {
     root: config.root,

@@ -57,6 +57,7 @@ function pluginBuildApp(): Plugin[] {
             client: {
               consumer: 'client',
               build: {
+                outDir: resolveOutDir(config, false),
                 copyPublicDir: true,
                 ssr: false,
               },

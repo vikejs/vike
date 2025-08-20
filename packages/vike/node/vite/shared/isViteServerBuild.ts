@@ -1,48 +1,85 @@
+// TODO/now: rename to isViteServerSide
 export { isViteServerBuild }
+// TODO/now: rename to isViteClientSide
 export { isViteClientBuild }
-export { isViteServerBuild_options }
-export { isViteServerBuild_safe }
+export { isViteServerBuild_withoutEnv }
 export { isViteServerBuild_onlySsrEnv }
+export { isViteServerBuild_extraSafe }
+export type { ViteEnv }
 
-import type { Environment, ResolvedConfig, UserConfig } from 'vite'
+import type { Environment, EnvironmentOptions, ResolvedConfig, UserConfig } from 'vite'
 import { assert } from '../../../utils/assert.js'
 
-function isViteServerBuild(configGlobal: ResolvedConfig | UserConfig, viteEnv?: Environment): boolean {
-  const configEnv = viteEnv?.config ?? configGlobal
-  return !!configEnv?.build?.ssr
-}
-// Only `ssr` env: for example don't include `vercel_edge` nor `vercel_node`.
-function isViteServerBuild_onlySsrEnv(configGlobal: ResolvedConfig, viteEnv: Environment | undefined) {
-  return viteEnv ? viteEnv.name === 'ssr' : isViteServerBuild(configGlobal)
-}
-function isViteClientBuild(configGlobal: ResolvedConfig, viteEnv: Environment) {
-  const yes = !isViteServerBuild(configGlobal, viteEnv)
-  const isVite5 = viteEnv === undefined
-  if (!isVite5) {
-    const yes2 = viteEnv.name === 'client'
-    assert(yes === yes2)
+type ViteEnv = { name?: string; config: EnvironmentOptions | Environment['config'] }
+
+function isViteServerBuild_withoutEnv(configGlobal: ResolvedConfig | UserConfig, viteEnv?: ViteEnv): boolean {
+  assert(!('consumer' in configGlobal)) // make sure configGlobal isn't viteEnv.config
+  const isServerSide1: boolean | null = !viteEnv?.config.consumer ? null : viteEnv.config.consumer !== 'client'
+  const isServerSide2: boolean | null = !viteEnv?.name ? null : viteEnv.name !== 'client' // I can't think of a use case for creating another client-side environment
+  const isServerSide3: boolean | null = !viteEnv ? null : !!viteEnv.config.build?.ssr
+  const isServerSide4: boolean = !!configGlobal.build?.ssr
+  const debug = {
+    envIsUndefined: !viteEnv,
+    envName: viteEnv?.name ?? null,
+    envConsumer: viteEnv?.config.consumer ?? null,
+    configEnvBuildSsr: viteEnv?.config.build?.ssr ?? null,
+    configGlobalBuildSsr: configGlobal.build?.ssr ?? null,
+    isServerSide1,
+    isServerSide2,
+    isServerSide3,
+    isServerSide4,
   }
-  return yes
+  if (isServerSide1 !== null) {
+    assert(isServerSide1 === isServerSide2 || isServerSide2 === null, debug)
+    /* This assertion can fail, seems to be a Vite bug?
+    assert(isServerSide1 === isServerSide3, debug)
+    */
+    return isServerSide1
+  }
+  if (isServerSide2 !== null) {
+    /* This assertion can fail, seems to be a Vite bug?
+    assert(isServerSide2 === isServerSide3, debug)
+    */
+    return isServerSide2
+  }
+  if (isServerSide3 !== null) {
+    return isServerSide3
+  }
+  return isServerSide4
 }
 
-function isViteServerBuild_options(options: { ssr?: boolean } | undefined): boolean {
-  return !!options?.ssr
+function isViteServerBuild(configGlobal: ResolvedConfig | UserConfig, viteEnv: ViteEnv) {
+  return isViteServerBuild_withoutEnv(configGlobal, viteEnv)
 }
 
-// Vite is quite messy about setting `ssr: boolean`, thus we use an extra safe implementation for security purposes.
-// It's used for .client.js and .server.js guarantee thus we use aggressive assert() calls for added safety.
-function isViteServerBuild_safe(config: ResolvedConfig, options: { ssr?: boolean } | undefined): boolean {
+function isViteClientBuild(configGlobal: ResolvedConfig, viteEnv: ViteEnv) {
+  return !isViteServerBuild(configGlobal, viteEnv)
+}
+
+// Only `ssr` env: for example don't include `vercel_edge` nor `vercel_node`.
+function isViteServerBuild_onlySsrEnv(configGlobal: ResolvedConfig, viteEnv: ViteEnv) {
+  return viteEnv ? viteEnv.name === 'ssr' : isViteServerBuild(configGlobal, viteEnv)
+}
+
+// Vite is quite messy about setting config.build.ssr — for security purposes, we use an extra safe implementation with lots of assertions, which is needed for the .client.js and .server.js guarantee.
+function isViteServerBuild_extraSafe(
+  config: ResolvedConfig,
+  options: { ssr?: boolean } | undefined,
+  viteEnv: ViteEnv,
+): boolean {
   if (config.command === 'build') {
-    assert(typeof config.build.ssr === 'boolean')
-    const val = config.build.ssr
-    if (options?.ssr !== undefined) assert(val === options.ssr)
-    return val
+    const res = config.build.ssr
+    assert(typeof res === 'boolean')
+    assert(res === options?.ssr || options?.ssr === undefined)
+    assert(res === isViteServerBuild(config, viteEnv))
+    return res
   } else {
-    assert(typeof options?.ssr === 'boolean')
-    const val = options.ssr
-    /* This assert() fails (which is very unexpected).
-    if (typeof config.build.ssr === 'boolean') assert(val === config.build.ssr)
-    //*/
-    return val
+    const res = options?.ssr
+    assert(typeof res === 'boolean')
+    /* This assertion can fail, seems to be a Vite bug? It's very unexpected.
+    if (typeof config.build.ssr === 'boolean') assert(res === config.build.ssr)
+    */
+    assert(res === isViteServerBuild(config, viteEnv))
+    return res
   }
 }

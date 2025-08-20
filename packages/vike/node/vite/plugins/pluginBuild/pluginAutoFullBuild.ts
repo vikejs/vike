@@ -58,7 +58,7 @@ function pluginAutoFullBuild(): Plugin[] {
         order: 'post',
         async handler() {
           onSetupBuild()
-          handleAssetsManifest_assertUsageCssTarget(config)
+          handleAssetsManifest_assertUsageCssTarget(config, this.environment)
           const vikeConfig = await getVikeConfigInternal()
           if (
             forceExit &&
