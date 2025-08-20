@@ -24,6 +24,7 @@ import { getVikeConfigInternal, isV1Design as isV1Design_ } from '../../shared/r
 import { getOutDirs } from '../../shared/getOutDirs.js'
 import { isViteServerBuild_options } from '../../shared/isViteServerBuild.js'
 import { resolveIncludeAssetsImportedByServer } from '../../../runtime/renderPage/getPageAssets/retrievePageAssetsProd.js'
+import type {Environment} from 'vite'
 
 type GlobRoot = {
   includeDir: string // slash-terminated
@@ -34,6 +35,7 @@ async function generateVirtualFileGlobalEntryWithOldDesign(
   id: string,
   options: { ssr?: boolean } | undefined,
   config: ResolvedConfig,
+  env: Environment,
   isDev: boolean,
 ) {
   const idParsed = parseVirtualFileId(id)

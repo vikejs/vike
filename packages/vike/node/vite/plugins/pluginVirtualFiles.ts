@@ -58,7 +58,7 @@ function pluginVirtualFiles(): Plugin {
           return code
         }
         if (idParsed.type === 'global-entry') {
-          const code = await generateVirtualFileGlobalEntryWithOldDesign(id, options, config, isDev)
+          const code = await generateVirtualFileGlobalEntryWithOldDesign(id, options, config, this.environment, isDev)
           return code
         }
       }
