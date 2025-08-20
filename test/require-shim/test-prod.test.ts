@@ -10,6 +10,7 @@ test('page is rendered to HTML', async () => {
   // API is down
   // https://github.com/trevorblades/countries/issues/78
   skip('SKIPPED: API is down')
+  return
   //*/
 
   const html = await fetchHtml('/')
