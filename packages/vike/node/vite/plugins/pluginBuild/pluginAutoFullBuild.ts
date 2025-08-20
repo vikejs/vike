@@ -12,7 +12,7 @@ import { logErrorHint } from '../../../runtime/renderPage/logErrorHint.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { isVikeCliOrApi } from '../../../api/context.js'
 import { handleAssetsManifest, handleAssetsManifest_assertUsageCssTarget } from './handleAssetsManifest.js'
-import { isViteClientBuild, isViteServerBuild_onlySsrEnv } from '../../shared/isViteServerBuild.js'
+import { isViteClientSide, isViteServerSide_onlySsrEnv } from '../../shared/isViteServerSide.js'
 import { runPrerender_forceExit, runPrerenderFromAutoRun } from '../../../prerender/runPrerenderEntry.js'
 import { getManifestFilePathRelative } from '../../shared/getManifestFilePathRelative.js'
 assertIsSingleModuleInstance('build/pluginAutoFullBuild.ts')
@@ -80,7 +80,7 @@ async function triggerFullBuild(config: ResolvedConfig, viteEnv: Environment, bu
   const isBuilderApp = vikeConfig.config.vite6BuilderApp
   // If builder.buildApp() => trigger at end of `this.environment.name === 'ssr'`.
   // Else => trigger at end of client-side build.
-  if (isBuilderApp ? !isViteServerBuild_onlySsrEnv(config, viteEnv) : !isViteClientBuild(config, viteEnv)) return
+  if (isBuilderApp ? !isViteServerSide_onlySsrEnv(config, viteEnv) : !isViteClientSide(config, viteEnv)) return
   if (isEntirelyDisabled(vikeConfig)) return
   // Workaround for @vitejs/plugin-legacy
   //  - The legacy plugin triggers its own Rollup build for the client-side.
