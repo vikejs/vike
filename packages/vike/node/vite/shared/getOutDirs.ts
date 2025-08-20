@@ -34,15 +34,7 @@ function resolveOutDir_configEnvironment(
   assert(configGlobal && envName && configEnv)
   const viteEnv = { name: envName, config: configEnv }
   const isServerSide = isViteServerBuild(configGlobal, viteEnv)
-  assert_resolveOutDir_configEnvironment(isServerSide, configEnv)
-  const res = resolveOutDir(configEnv, isServerSide)
-  return res
-}
-function assert_resolveOutDir_configEnvironment(isServerSide1: boolean, configEnv: EnvironmentOptions) {
-  if (configEnv.consumer) {
-    const isServerSide2 = configEnv.consumer === 'server'
-    assert(isServerSide1 === isServerSide2)
-  }
+  return resolveOutDir(configEnv, isServerSide)
 }
 
 /** Appends `client/` or `server/` to `config.build.outDir` */
