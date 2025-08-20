@@ -3,10 +3,10 @@ export { resolveOutDir }
 export { resolveOutDir_configEnvironment }
 export type { OutDirs }
 
-import type { UserConfig, ResolvedConfig, Environment, EnvironmentOptions } from 'vite'
+import type { UserConfig, ResolvedConfig, EnvironmentOptions } from 'vite'
 import pc from '@brillout/picocolors'
 import { assert, assertPosixPath, assertUsage, createDebugger, pathJoin, toPosixPath } from '../utils.js'
-import { isViteServerBuild } from './isViteServerBuild.js'
+import { isViteServerBuild, ViteEnv } from './isViteServerBuild.js'
 const debug = createDebugger('vike:outDir')
 
 type OutDirs = {
@@ -18,12 +18,11 @@ type OutDirs = {
   outDirServer: string
 }
 
-function getOutDirs(configGlobal: ResolvedConfig, viteEnv?: Environment): OutDirs {
-  const configEnv = viteEnv?.config ?? configGlobal
+function getOutDirs(configGlobal: ResolvedConfig, viteEnv?: ViteEnv): OutDirs {
   debug('getOutDirs()', new Error().stack)
-  const outDir = getOutDirFromViteResolvedConfig(configEnv)
-  if (!isOutDirRoot(outDir)) assertOutDirResolved(outDir, configEnv)
-  const outDirs = getOutDirsAll(outDir, configEnv.root)
+  const outDir = getOutDirFromViteResolvedConfig(configGlobal)
+  if (!isOutDirRoot(outDir)) assertOutDirResolved(outDir, configGlobal, viteEnv)
+  const outDirs = getOutDirsAll(outDir, configGlobal.root)
   return outDirs
 }
 
@@ -136,7 +135,7 @@ function assertIsNotOutDirRoot(outDir: string) {
 }
 
 /** Assert that `outDir` ends with `/server` or `/client` */
-function assertOutDirResolved(outDir: string, config: UserConfig | ResolvedConfig) {
+function assertOutDirResolved(outDir: string, configGlobal: UserConfig | ResolvedConfig, viteEnv: ViteEnv | undefined) {
   assertPosixPath(outDir)
   assertIsNotOutDirRoot(outDir)
 
@@ -146,7 +145,7 @@ function assertOutDirResolved(outDir: string, config: UserConfig | ResolvedConfi
     outDirCorrected,
   )} instead.`
 
-  if (isViteServerBuild(config, undefined)) {
+  if (isViteServerBuild(configGlobal, viteEnv)) {
     assertUsage(outDir.endsWith('/server'), wrongUsage)
   } else {
     assertUsage(outDir.endsWith('/client'), wrongUsage)
