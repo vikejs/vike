@@ -1,3 +1,4 @@
+// TODO/now: rename isViteServerSide
 export { isViteServerBuild }
 export { isViteClientBuild }
 export { isViteServerBuild_options }
