@@ -25,10 +25,10 @@ import pc from '@brillout/picocolors'
 import { getVikeConfigInternal, isV1Design } from '../../shared/resolveVikeConfigInternal.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
 import {
-  isViteServerBuild_onlySsrEnv,
-  isViteServerBuild,
-  isViteServerBuild_withoutEnv,
-} from '../../shared/isViteServerBuild.js'
+  isViteServerSide_onlySsrEnv,
+  isViteServerSide,
+  isViteServerSide_withoutEnv,
+} from '../../shared/isViteServerSide.js'
 import { set_macro_ASSETS_MANIFEST } from './pluginBuildEntry.js'
 import { getManifestFilePathRelative } from '../../shared/getManifestFilePathRelative.js'
 type Bundle = Rollup.OutputBundle
@@ -279,7 +279,7 @@ type TargetConfig = { global: Exclude<Target, undefined>; css: Target; isServerS
 const targets: TargetConfig[] = []
 function handleAssetsManifest_assertUsageCssTarget(config: ResolvedConfig, env: Environment) {
   if (!handleAssetsManifest_isFixEnabled(config)) return
-  const isServerSide = isViteServerBuild(config, env)
+  const isServerSide = isViteServerSide(config, env)
   assert(typeof isServerSide === 'boolean')
   assert(config.build.target !== undefined)
   targets.push({ global: config.build.target, css: config.build.cssTarget, isServerSide })
@@ -360,7 +360,7 @@ async function handleAssetsManifest_getBuildConfig(config: UserConfig) {
     copyPublicDir: vikeConfig.config.vite6BuilderApp
       ? // Already set by vike:build:pluginBuildApp
         undefined
-      : !isViteServerBuild_withoutEnv(config),
+      : !isViteServerSide_withoutEnv(config),
   } as const
 }
 
@@ -370,14 +370,14 @@ async function handleAssetsManifest(
   options: { dir: string | undefined },
   bundle: Bundle,
 ) {
-  const isSsrEnv = isViteServerBuild_onlySsrEnv(config, viteEnv)
+  const isSsrEnv = isViteServerSide_onlySsrEnv(config, viteEnv)
   if (isSsrEnv) {
     assert(!assetsJsonFilePath)
     const outDirs = getOutDirs(config, viteEnv)
     assetsJsonFilePath = path.posix.join(outDirs.outDirRoot, 'assets.json')
     await writeAssetsManifestFile(assetsJsonFilePath, config)
   }
-  if (isViteServerBuild(config, viteEnv)) {
+  if (isViteServerSide(config, viteEnv)) {
     const outDir = options.dir
     assert(outDir)
     // Replace __VITE_ASSETS_MANIFEST__ in server builds
