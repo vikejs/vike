@@ -45,13 +45,13 @@ function isViteServerBuild(configGlobal: ResolvedConfig | UserConfig, viteEnv: V
   return isServerSide4
 }
 
+function isViteClientBuild(configGlobal: ResolvedConfig, viteEnv: ViteEnv | undefined) {
+  return !isViteServerBuild(configGlobal, viteEnv)
+}
+
 // Only `ssr` env: for example don't include `vercel_edge` nor `vercel_node`.
 function isViteServerBuild_onlySsrEnv(configGlobal: ResolvedConfig, viteEnv: ViteEnv | undefined) {
   return viteEnv ? viteEnv.name === 'ssr' : isViteServerBuild(configGlobal, undefined)
-}
-
-function isViteClientBuild(configGlobal: ResolvedConfig, viteEnv: ViteEnv | undefined) {
-  return !isViteServerBuild(configGlobal, viteEnv)
 }
 
 function isViteServerBuild_options(options: { ssr?: boolean } | undefined): boolean {
