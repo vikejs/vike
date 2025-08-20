@@ -38,7 +38,7 @@ function getClientEntrySrcDev(clientEntry: string, viteDevServer: ViteDevServer)
   } else {
     if (clientEntry.startsWith('@@vike/')) {
       assert(clientEntry.endsWith('.js'))
-      filePath = requireResolveDistFile(`dist/esm/${clientEntry.replace('@@vike/dist/esm/', '')}`)
+      filePath = requireResolveDistFile(`dist/esm/${clientEntry.replace('@@vike/dist/esm/', '') as `${string}.js`}`)
     } else {
       assertIsImportPathNpmPackage(clientEntry)
       filePath = requireResolveNpmPackage({ importPathNpmPackage: clientEntry, userRootDir })

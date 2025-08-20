@@ -126,7 +126,7 @@ function requireResolveNpmPackage({
   if (res.hasFailed) throw res.err
   return res.importPathResolvedFilePath
 }
-function requireResolveDistFile(distFile: `dist/esm/${string}`) {
+function requireResolveDistFile(distFile: `dist/esm/${string}.js`) {
   const packageNodeModulesDirectory = getPackageNodeModulesDirectory()
   assertPosixPath(packageNodeModulesDirectory)
   assertPosixPath(distFile)
