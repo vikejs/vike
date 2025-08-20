@@ -73,9 +73,9 @@ function isViteServerBuild_transform(
   } else {
     assert(typeof options?.ssr === 'boolean')
     const val = options.ssr
-    /* This assert() fails (which is very unexpected).
+    /* This assertion can fail, seems to be a Vite bug? It's very unexpected.
     if (typeof config.build.ssr === 'boolean') assert(val === config.build.ssr)
-    //*/
+    */
     return val
   }
 }
