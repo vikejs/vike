@@ -197,10 +197,11 @@ function addFileExtensionsToRequireResolve(require_: NodeJS.Require) {
 }
 
 function getVikeNodeModulesRoot() {
-  // [RELATIVE_PATH_FROM_DIST] Current file: vike/dist/esm/utils/requireResolve.js
+  // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/${packageName}/dist/esm/utils/requireResolve.js
   assert(importMetaUrl.includes('/dist/esm/') || importMetaUrl.includes('/dist/cjs/'))
-  const vikeNodeModulesRoot = path.posix.join(removeFilePrefix(path.dirname(importMetaUrl)), '../../../')
-  return vikeNodeModulesRoot
+  const packageNodeModulesDirectory = path.posix.join(removeFilePrefix(path.dirname(importMetaUrl)), '../../../')
+  // Return `node_modules/${packageName}/`
+  return packageNodeModulesDirectory
 }
 
 function getFakeImporterFile(dirPath: string) {
