@@ -2,7 +2,7 @@ export { requireResolveOptional }
 export { requireResolveOptionalDir }
 export { requireResolveNpmPackage }
 export { requireResolveVikeDistFile }
-export { getVikeNodeModulesRoot }
+export { getPackageNodeModulesDirectory }
 
 import { assert } from './assert.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
@@ -127,7 +127,7 @@ function requireResolveNpmPackage({
   return res.importPathResolvedFilePath
 }
 function requireResolveVikeDistFile(distFile: `dist/esm/${string}`) {
-  const vikeNodeModulesRoot = getVikeNodeModulesRoot()
+  const vikeNodeModulesRoot = getPackageNodeModulesDirectory()
   assertPosixPath(vikeNodeModulesRoot)
   assertPosixPath(distFile)
   const importPathResolvedFilePath = makeNodeFriendly(path.posix.join(vikeNodeModulesRoot, distFile))
@@ -196,7 +196,7 @@ function addFileExtensionsToRequireResolve(require_: NodeJS.Require) {
   })
 }
 
-function getVikeNodeModulesRoot() {
+function getPackageNodeModulesDirectory() {
   // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/${packageName}/dist/esm/utils/requireResolve.js
   assert(importMetaUrl.includes('/dist/esm/') || importMetaUrl.includes('/dist/cjs/'))
   const packageNodeModulesDirectory = path.posix.join(removeFilePrefix(path.dirname(importMetaUrl)), '../../../')
