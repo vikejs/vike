@@ -9,7 +9,7 @@ import {
   assertIsImportPathNpmPackage,
   assertIsNotProductionRuntime,
   requireResolveNpmPackage,
-  requireResolveVikeDistFile,
+  requireResolveDistFile,
 } from '../utils.js'
 import type { ViteDevServer } from 'vite'
 
@@ -38,7 +38,7 @@ function getClientEntrySrcDev(clientEntry: string, viteDevServer: ViteDevServer)
   } else {
     if (clientEntry.startsWith('@@vike/')) {
       assert(clientEntry.endsWith('.js'))
-      filePath = requireResolveVikeDistFile(`dist/esm/${clientEntry.replace('@@vike/dist/esm/', '')}`)
+      filePath = requireResolveDistFile(`dist/esm/${clientEntry.replace('@@vike/dist/esm/', '')}`)
     } else {
       assertIsImportPathNpmPackage(clientEntry)
       filePath = requireResolveNpmPackage({ importPathNpmPackage: clientEntry, userRootDir })

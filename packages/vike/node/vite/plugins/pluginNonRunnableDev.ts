@@ -4,7 +4,7 @@ import type { Plugin, ViteDevServer, ResolvedConfig } from 'vite'
 import {
   createViteRPC,
   assertIsNotProductionRuntime,
-  requireResolveVikeDistFile,
+  requireResolveDistFile,
   isRunnableDevEnvironment,
 } from '../utils.js'
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
@@ -33,7 +33,7 @@ declare global {
   var __VIKE__IS_NON_RUNNABLE_DEV: undefined | boolean
 }
 function pluginNonRunnableDev(): Plugin {
-  const runtimeGlobalContextFilePath = requireResolveVikeDistFile('dist/esm/node/runtime/globalContext.js')
+  const runtimeGlobalContextFilePath = requireResolveDistFile('dist/esm/node/runtime/globalContext.js')
   let config: ResolvedConfig
   return {
     name: 'vike:pluginNonRunnableDev',

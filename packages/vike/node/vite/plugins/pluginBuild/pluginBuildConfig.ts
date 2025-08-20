@@ -12,7 +12,7 @@ import {
   normalizeRollupInput,
   onSetupBuild,
   assertIsImportPathNpmPackage,
-  requireResolveVikeDistFile,
+  requireResolveDistFile,
 } from '../../utils.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { findPageFiles } from '../../shared/findPageFiles.js'
@@ -108,8 +108,8 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
       ...clientEntries,
       ...pageFileEntries,
     }
-    const clientRoutingEntry = requireResolveVikeDistFile('dist/esm/client/runtime-client-routing/entry.js')
-    const serverRoutingEntry = requireResolveVikeDistFile('dist/esm/client/runtime-server-routing/entry.js')
+    const clientRoutingEntry = requireResolveDistFile('dist/esm/client/runtime-client-routing/entry.js')
+    const serverRoutingEntry = requireResolveDistFile('dist/esm/client/runtime-server-routing/entry.js')
     if (hasClientRouting) {
       entries['entries/entry-client-routing'] = clientRoutingEntry
     }
