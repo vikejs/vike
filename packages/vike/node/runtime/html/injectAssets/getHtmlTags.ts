@@ -1,5 +1,3 @@
-import { isFontFallback } from '../../renderPage/isFontFallback.js'
-
 export { getHtmlTags }
 export type { HtmlTag }
 export type { PreloadFilter }
@@ -23,6 +21,7 @@ import { getConfigValueRuntime } from '../../../../shared/page-configs/getConfig
 import pc from '@brillout/picocolors'
 import { getConfigDefinedAt } from '../../../../shared/page-configs/getConfigDefinedAt.js'
 import { htmlElementId_globalContext, htmlElementId_pageContext } from '../../../../shared/htmlElementIds.js'
+import { isFontFallback } from '../../renderPage/isFontFallback.js'
 
 const stamp = '__injectFilterEntry'
 
