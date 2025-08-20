@@ -22,9 +22,9 @@ import path from 'node:path'
 import { generateVirtualFileGlobalEntry } from './generateVirtualFileGlobalEntry.js'
 import { getVikeConfigInternal, isV1Design as isV1Design_ } from '../../shared/resolveVikeConfigInternal.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
-import { isViteServerBuild_options } from '../../shared/isViteServerBuild.js'
+import { isViteServerBuild_transform } from '../../shared/isViteServerBuild.js'
 import { resolveIncludeAssetsImportedByServer } from '../../../runtime/renderPage/getPageAssets/retrievePageAssetsProd.js'
-import type {Environment} from 'vite'
+import type { Environment } from 'vite'
 
 type GlobRoot = {
   includeDir: string // slash-terminated
@@ -41,7 +41,7 @@ async function generateVirtualFileGlobalEntryWithOldDesign(
   const idParsed = parseVirtualFileId(id)
   assert(idParsed && idParsed.type === 'global-entry')
   const { isForClientSide, isClientRouting } = idParsed
-  assert(isForClientSide === !isViteServerBuild_options(options))
+  assert(isForClientSide === !isViteServerBuild_transform(config, options, env))
   const code = await getCode(config, isForClientSide, isClientRouting, isDev, id)
   return code
 }
