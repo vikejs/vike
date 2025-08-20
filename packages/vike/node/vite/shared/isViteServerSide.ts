@@ -56,7 +56,7 @@ function isViteClientSide(configGlobal: ResolvedConfig, viteEnv: ViteEnv) {
 
 // Only `ssr` env: for example don't include `vercel_edge` nor `vercel_node`.
 function isViteServerSide_onlySsrEnv(configGlobal: ResolvedConfig, viteEnv: ViteEnv) {
-  return viteEnv ? viteEnv.name === 'ssr' : isViteServerSide(configGlobal, viteEnv)
+  return viteEnv.name ? viteEnv.name === 'ssr' : isViteServerSide(configGlobal, viteEnv)
 }
 
 // Vite is quite messy about setting config.build.ssr — for security purposes, we use an extra safe implementation with lots of assertions, which is needed for the .client.js and .server.js guarantee.
