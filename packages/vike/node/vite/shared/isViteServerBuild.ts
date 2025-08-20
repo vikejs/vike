@@ -63,7 +63,7 @@ function isViteServerBuild_options(options: { ssr?: boolean } | undefined): bool
 function isViteServerBuild_transform(
   config: ResolvedConfig,
   options: { ssr?: boolean } | undefined,
-  viteEnv: ViteEnv | undefined,
+  viteEnv: ViteEnv,
 ): boolean {
   if (config.command === 'build') {
     assert(typeof config.build.ssr === 'boolean')
