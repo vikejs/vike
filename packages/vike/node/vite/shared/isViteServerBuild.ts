@@ -66,18 +66,18 @@ function isViteServerBuild_transform(
   viteEnv: ViteEnv,
 ): boolean {
   if (config.command === 'build') {
-    assert(typeof config.build.ssr === 'boolean')
-    const val = config.build.ssr
-    if (options?.ssr !== undefined) assert(val === options.ssr)
-    assert(val === isViteServerBuild(config, viteEnv))
-    return val
+    const res = config.build.ssr
+    assert(typeof res === 'boolean')
+    assert(res === options?.ssr || options?.ssr === undefined)
+    assert(res === isViteServerBuild(config, viteEnv))
+    return res
   } else {
-    assert(typeof options?.ssr === 'boolean')
-    const val = options.ssr
+    const res = options?.ssr
+    assert(typeof res === 'boolean')
     /* This assertion can fail, seems to be a Vite bug? It's very unexpected.
-    if (typeof config.build.ssr === 'boolean') assert(val === config.build.ssr)
+    if (typeof config.build.ssr === 'boolean') assert(res === config.build.ssr)
     */
-    assert(val === isViteServerBuild(config, viteEnv))
-    return val
+    assert(res === isViteServerBuild(config, viteEnv))
+    return res
   }
 }
