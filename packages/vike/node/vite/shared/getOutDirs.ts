@@ -20,9 +20,15 @@ type OutDirs = {
 
 function getOutDirs(configGlobal: ResolvedConfig, viteEnv: ViteEnv | undefined): OutDirs {
   debug('getOutDirs()', new Error().stack)
+
   const outDir = getOutDirFromResolvedConfig(configGlobal)
   assertOutDirResolved(outDir, configGlobal, viteEnv)
+
   const outDirs = getOutDirsAll(outDir, configGlobal.root)
+  assertNormalization(outDirs.outDirRoot)
+  assertNormalization(outDirs.outDirClient)
+  assertNormalization(outDirs.outDirServer)
+
   return outDirs
 }
 
@@ -87,10 +93,6 @@ function getOutDirsAll(outDir: string, root?: string) {
   }
   debug('outDirs', outDirs)
 
-  assertNormalization(outDirs.outDirRoot)
-  assertNormalization(outDirs.outDirClient)
-  assertNormalization(outDirs.outDirServer)
-
   return outDirs
 }
 function getOutDirsAllFromRoot(outDirRoot: string) {
@@ -117,9 +119,9 @@ function getOutDirsAllFromRootNormalized(outDirRoot: string, root: string): OutD
 }
 function assertNormalization(outDirAny: string) {
   assertPosixPath(outDirAny)
-  assert(outDirIsAbsolutePath(outDirAny))
-  assert(outDirAny.endsWith('/'))
-  assert(!outDirAny.endsWith('//'))
+  assert(outDirIsAbsolutePath(outDirAny), outDirAny)
+  assert(outDirAny.endsWith('/'), outDirAny)
+  assert(!outDirAny.endsWith('//'), outDirAny)
 }
 
 function isOutDirRoot(outDirRot: string) {
