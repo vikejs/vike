@@ -2,7 +2,7 @@
 export { isViteServerBuild }
 export { isViteClientBuild }
 export { isViteServerBuild_onlySsrEnv }
-export { isViteServerBuild_transform }
+export { isViteServerBuild_extraSafe }
 export type { ViteEnv }
 
 import type { Environment, EnvironmentOptions, ResolvedConfig, UserConfig } from 'vite'
@@ -54,7 +54,7 @@ function isViteServerBuild_onlySsrEnv(configGlobal: ResolvedConfig, viteEnv: Vit
 }
 
 // Vite is quite messy about setting config.build.ssr — for security purposes, we use an extra safe implementation with lots of assertions, which is needed for the .client.js and .server.js guarantee.
-function isViteServerBuild_transform(
+function isViteServerBuild_extraSafe(
   config: ResolvedConfig,
   options: { ssr?: boolean } | undefined,
   viteEnv: ViteEnv,

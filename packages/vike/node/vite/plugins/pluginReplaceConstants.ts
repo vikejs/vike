@@ -3,7 +3,7 @@ export { pluginReplaceConstants }
 import type { Plugin, ResolvedConfig } from 'vite'
 import { assert, assertPosixPath } from '../utils.js'
 import { normalizeId } from '../shared/normalizeId.js'
-import { isViteServerBuild_transform } from '../shared/isViteServerBuild.js'
+import { isViteServerBuild_extraSafe } from '../shared/isViteServerBuild.js'
 import { getMagicString } from '../shared/getMagicString.js'
 
 function pluginReplaceConstants(): Plugin {
@@ -35,7 +35,7 @@ function pluginReplaceConstants(): Plugin {
       const constantsMap: { constants: string[]; replacement: unknown }[] = []
       constantsMap.push({
         constants: ['pageContext.isClientSide', 'globalContext.isClientSide', 'pageContext.globalContext.isClientSide'],
-        replacement: !isViteServerBuild_transform(config, options, this.environment),
+        replacement: !isViteServerBuild_extraSafe(config, options, this.environment),
       })
 
       constantsMap.forEach(({ constants, replacement }) => {
