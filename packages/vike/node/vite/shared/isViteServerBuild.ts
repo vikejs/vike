@@ -53,8 +53,7 @@ function isViteServerBuild_onlySsrEnv(configGlobal: ResolvedConfig, viteEnv: Vit
   return viteEnv ? viteEnv.name === 'ssr' : isViteServerBuild(configGlobal, undefined)
 }
 
-// Vite is quite messy about setting `ssr: boolean`, thus we use an extra safe implementation for security purposes.
-// It's used for .client.js and .server.js guarantee thus we use aggressive assert() calls for added safety.
+// Vite is quite messy about setting config.build.ssr — for security purposes, we use an extra safe implementation with lots of assertions, which is needed for the .client.js and .server.js guarantee.
 function isViteServerBuild_transform(
   config: ResolvedConfig,
   options: { ssr?: boolean } | undefined,
