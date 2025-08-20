@@ -86,6 +86,11 @@ function getOutDirsAll(outDir: string, root?: string) {
     outDirs = getOutDirsAllFromRoot(outDirRoot)
   }
   debug('outDirs', outDirs)
+
+  assertNormalization(outDirs.outDirRoot)
+  assertNormalization(outDirs.outDirClient)
+  assertNormalization(outDirs.outDirServer)
+
   return outDirs
 }
 function getOutDirsAllFromRoot(outDirRoot: string) {
