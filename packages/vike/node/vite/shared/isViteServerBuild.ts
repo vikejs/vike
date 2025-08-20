@@ -54,7 +54,7 @@ function isViteClientBuild(configGlobal: ResolvedConfig, viteEnv: ViteEnv | unde
 }
 
 // Only `ssr` env: for example don't include `vercel_edge` nor `vercel_node`.
-function isViteServerBuild_onlySsrEnv(configGlobal: ResolvedConfig, viteEnv: ViteEnv | undefined) {
+function isViteServerBuild_onlySsrEnv(configGlobal: ResolvedConfig, viteEnv: ViteEnv) {
   return viteEnv ? viteEnv.name === 'ssr' : isViteServerBuild_withoutEnv(configGlobal, undefined)
 }
 

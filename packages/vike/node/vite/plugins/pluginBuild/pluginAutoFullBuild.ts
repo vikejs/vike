@@ -76,7 +76,7 @@ function pluginAutoFullBuild(): Plugin[] {
 
 async function triggerFullBuild(
   config: ResolvedConfig,
-  viteEnv: Environment | undefined,
+  viteEnv: Environment,
   bundle: Record<string, unknown>,
 ) {
   const vikeConfig = await getVikeConfigInternal()
