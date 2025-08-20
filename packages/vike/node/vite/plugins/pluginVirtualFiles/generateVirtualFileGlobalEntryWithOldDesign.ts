@@ -22,8 +22,9 @@ import path from 'node:path'
 import { generateVirtualFileGlobalEntry } from './generateVirtualFileGlobalEntry.js'
 import { getVikeConfigInternal, isV1Design as isV1Design_ } from '../../shared/resolveVikeConfigInternal.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
-import { isViteServerBuild_options } from '../../shared/isViteServerBuild.js'
+import { isViteServerSide_extraSafe } from '../../shared/isViteServerSide.js'
 import { resolveIncludeAssetsImportedByServer } from '../../../runtime/renderPage/getPageAssets/retrievePageAssetsProd.js'
+import type { Environment } from 'vite'
 
 type GlobRoot = {
   includeDir: string // slash-terminated
@@ -34,12 +35,13 @@ async function generateVirtualFileGlobalEntryWithOldDesign(
   id: string,
   options: { ssr?: boolean } | undefined,
   config: ResolvedConfig,
+  env: Environment,
   isDev: boolean,
 ) {
   const idParsed = parseVirtualFileId(id)
   assert(idParsed && idParsed.type === 'global-entry')
   const { isForClientSide, isClientRouting } = idParsed
-  assert(isForClientSide === !isViteServerBuild_options(options))
+  assert(isForClientSide === !isViteServerSide_extraSafe(config, options, env))
   const code = await getCode(config, isForClientSide, isClientRouting, isDev, id)
   return code
 }
@@ -240,7 +242,7 @@ function getGlobRoots(config: ResolvedConfig): GlobRoot[] {
   const globRoots: GlobRoot[] = [
     {
       includeDir: '/',
-      excludeDir: path.posix.relative(config.root, getOutDirs(config).outDirRoot),
+      excludeDir: path.posix.relative(config.root, getOutDirs(config, undefined).outDirRoot),
     },
   ]
   return globRoots

@@ -24,7 +24,11 @@ import { getAssetsDir } from '../../shared/getAssetsDir.js'
 import pc from '@brillout/picocolors'
 import { getVikeConfigInternal, isV1Design } from '../../shared/resolveVikeConfigInternal.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
-import { isViteServerBuild_onlySsrEnv, isViteServerBuild } from '../../shared/isViteServerBuild.js'
+import {
+  isViteServerSide_onlySsrEnv,
+  isViteServerSide,
+  isViteServerSide_withoutEnv,
+} from '../../shared/isViteServerSide.js'
 import { set_macro_ASSETS_MANIFEST } from './pluginBuildEntry.js'
 import { getManifestFilePathRelative } from '../../shared/getManifestFilePathRelative.js'
 type Bundle = Rollup.OutputBundle
@@ -54,7 +58,7 @@ async function fixServerAssets(
   return { clientManifestMod, serverManifestMod }
 }
 async function copyAssets(filesToMove: string[], filesToRemove: string[], config: ResolvedConfig) {
-  const { outDirClient, outDirServer } = getOutDirs(config)
+  const { outDirClient, outDirServer } = getOutDirs(config, undefined)
   const assetsDir = getAssetsDir(config)
   const assetsDirServer = path.posix.join(outDirServer, assetsDir)
   if (!filesToMove.length && !filesToRemove.length && !existsSync(assetsDirServer)) return
@@ -273,9 +277,9 @@ function handleAssetsManifest_assertUsageCssCodeSplit(config: ResolvedConfig) {
 type Target = undefined | false | string | string[]
 type TargetConfig = { global: Exclude<Target, undefined>; css: Target; isServerSide: boolean }
 const targets: TargetConfig[] = []
-function handleAssetsManifest_assertUsageCssTarget(config: ResolvedConfig) {
+function handleAssetsManifest_assertUsageCssTarget(config: ResolvedConfig, env: Environment) {
   if (!handleAssetsManifest_isFixEnabled(config)) return
-  const isServerSide = isViteServerBuild(config)
+  const isServerSide = isViteServerSide(config, env)
   assert(typeof isServerSide === 'boolean')
   assert(config.build.target !== undefined)
   targets.push({ global: config.build.target, css: config.build.cssTarget, isServerSide })
@@ -356,24 +360,24 @@ async function handleAssetsManifest_getBuildConfig(config: UserConfig) {
     copyPublicDir: vikeConfig.config.vite6BuilderApp
       ? // Already set by vike:build:pluginBuildApp
         undefined
-      : !isViteServerBuild(config),
+      : !isViteServerSide_withoutEnv(config),
   } as const
 }
 
 async function handleAssetsManifest(
   config: ResolvedConfig,
-  viteEnv: Environment | undefined,
+  viteEnv: Environment,
   options: { dir: string | undefined },
   bundle: Bundle,
 ) {
-  const isSsrEnv = isViteServerBuild_onlySsrEnv(config, viteEnv)
+  const isSsrEnv = isViteServerSide_onlySsrEnv(config, viteEnv)
   if (isSsrEnv) {
     assert(!assetsJsonFilePath)
     const outDirs = getOutDirs(config, viteEnv)
     assetsJsonFilePath = path.posix.join(outDirs.outDirRoot, 'assets.json')
     await writeAssetsManifestFile(assetsJsonFilePath, config)
   }
-  if (isViteServerBuild(config, viteEnv)) {
+  if (isViteServerSide(config, viteEnv)) {
     const outDir = options.dir
     assert(outDir)
     // Replace __VITE_ASSETS_MANIFEST__ in server builds
@@ -399,7 +403,7 @@ async function writeAssetsManifestFile(assetsJsonFilePath: string, config: Resol
 }
 
 function getManifestFilePath(config: ResolvedConfig, client: boolean) {
-  const outDirs = getOutDirs(config)
+  const outDirs = getOutDirs(config, undefined)
   const outDir = client ? outDirs.outDirClient : outDirs.outDirServer
   const env = client ? config.environments.client : config.environments.ssr
   assert(env)

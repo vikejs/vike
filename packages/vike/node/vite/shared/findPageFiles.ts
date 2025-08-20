@@ -9,7 +9,7 @@ import { getOutDirs } from './getOutDirs.js'
 
 async function findPageFiles(config: ResolvedConfig, fileTypes: FileType[], isDev: boolean): Promise<string[]> {
   const cwd = config.root
-  const { outDirRoot } = getOutDirs(config)
+  const { outDirRoot } = getOutDirs(config, undefined)
   const timeBase = new Date().getTime()
   let pageFiles = await glob(
     fileTypes.map((fileType) => `**/*${fileType}.${scriptFileExtensionPattern}`),

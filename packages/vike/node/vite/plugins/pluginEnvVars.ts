@@ -14,7 +14,7 @@ import {
 } from '../utils.js'
 import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
 import { normalizeId } from '../shared/normalizeId.js'
-import { isViteServerBuild_safe } from '../shared/isViteServerBuild.js'
+import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 import { getMagicString } from '../shared/getMagicString.js'
 
 // TO-DO/eventually:
@@ -50,7 +50,7 @@ function pluginEnvVars(): Plugin {
       if (!code.includes('import.meta.env.')) return
 
       const isBuild = config.command === 'build'
-      const isClientSide = !isViteServerBuild_safe(config, options)
+      const isClientSide = !isViteServerSide_extraSafe(config, options, this.environment)
 
       const { magicString, getMagicStringResult } = getMagicString(code, id)
 

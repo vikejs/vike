@@ -102,7 +102,7 @@ function getImportPath(config: ResolvedConfig) {
   ) {
     return 'vike/__internal'
   } else {
-    const { outDirServer } = getOutDirs(config)
+    const { outDirServer } = getOutDirs(config, undefined)
     const filePathRelative = path.posix.relative(outDirServer, filePathAbsolute)
     return filePathRelative
   }

@@ -165,7 +165,7 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
   const viteConfig = await resolveViteConfig(options.viteConfig || {}, 'build', 'production')
   const vikeConfig = await getVikeConfigInternal()
 
-  const { outDirServer } = getOutDirs(viteConfig)
+  const { outDirServer } = getOutDirs(viteConfig, undefined)
   const prerenderConfigGlobal = resolvePrerenderConfigGlobal(vikeConfig)
   const { partial, noExtraDir, parallel, defaultLocalValue, isPrerenderingEnabled } = prerenderConfigGlobal
   if (!isPrerenderingEnabled) {
@@ -930,7 +930,7 @@ async function write(
   const { urlOriginal } = pageContext
   assert(urlOriginal.startsWith('/'))
 
-  const { outDirClient } = getOutDirs(viteConfig)
+  const { outDirClient } = getOutDirs(viteConfig, undefined)
   const { root } = viteConfig
 
   let fileUrl: string

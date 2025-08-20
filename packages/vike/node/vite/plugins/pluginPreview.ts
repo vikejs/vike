@@ -1,29 +1,36 @@
 export { pluginPreview }
 
-import type { Plugin, ResolvedConfig } from 'vite'
-import { assertUsage, applyPreview } from '../utils.js'
+import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
+import { assertUsage, applyPreview, assert } from '../utils.js'
 import fs from 'node:fs'
 import path from 'node:path'
 import type { ViteDevServer } from 'vite'
 import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
 import pc from '@brillout/picocolors'
 import { logDockerHint } from './pluginDev.js'
-import { getOutDirs, resolveOutDir } from '../shared/getOutDirs.js'
+import { getOutDirs, resolveOutDir_configEnvironment } from '../shared/getOutDirs.js'
 import sirv from 'sirv'
 import { getVikeConfigInternal, type VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 type ConnectServer = ViteDevServer['middlewares']
 
 function pluginPreview(): Plugin {
   let config: ResolvedConfig
+  let configUnresolved: UserConfig
   let vikeConfig: VikeConfigInternal
   return {
     name: 'vike:pluginPreview',
     apply: applyPreview,
     config(config) {
+      configUnresolved = config
       return {
         appType: 'custom',
+      }
+    },
+    configEnvironment(envName, configEnv) {
+      assert(configUnresolved)
+      return {
         build: {
-          outDir: resolveOutDir(config),
+          outDir: resolveOutDir_configEnvironment(configUnresolved, envName, configEnv),
         },
       }
     },
@@ -54,7 +61,7 @@ function pluginPreview(): Plugin {
     },
   }
   function assertDist(isPrerenderingEnabledForAllPages: boolean) {
-    const { outDirRoot, outDirClient, outDirServer } = getOutDirs(config)
+    const { outDirRoot, outDirClient, outDirServer } = getOutDirs(config, undefined)
     const dirS = [outDirRoot, outDirClient]
     if (!isPrerenderingEnabledForAllPages) dirS.push(outDirServer)
     dirS.forEach((outDirAny) => {
@@ -68,12 +75,12 @@ function pluginPreview(): Plugin {
   }
 
   function addStaticAssetsMiddleware(middlewares: ConnectServer) {
-    const { outDirClient } = getOutDirs(config)
+    const { outDirClient } = getOutDirs(config, undefined)
     middlewares.use(sirv(outDirClient))
   }
 
   function addStatic404Middleware(middlewares: ConnectServer) {
-    const { outDirClient } = getOutDirs(config)
+    const { outDirClient } = getOutDirs(config, undefined)
     middlewares.use(config.base, (_, res, next) => {
       const file = path.posix.join(outDirClient, './404.html')
       if (fs.existsSync(file)) {

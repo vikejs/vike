@@ -16,7 +16,7 @@ import {
 } from '../../utils.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { findPageFiles } from '../../shared/findPageFiles.js'
-import type { ResolvedConfig, Plugin } from 'vite'
+import type { ResolvedConfig, Plugin, UserConfig } from 'vite'
 import { generateVirtualFileId } from '../../../shared/virtualFileId.js'
 import type { PageConfigBuildTime } from '../../../../types/PageConfig.js'
 import type { FileType } from '../../../../shared/getPageFiles/fileTypes.js'
@@ -24,8 +24,8 @@ import { extractAssetsAddQuery } from '../../../shared/extractAssetsQuery.js'
 import { prependEntriesDir } from '../../../shared/prependEntriesDir.js'
 import { getFilePathResolved } from '../../shared/getFilePath.js'
 import { getConfigValueBuildTime } from '../../../../shared/page-configs/getConfigValueBuildTime.js'
-import { isViteServerBuild } from '../../shared/isViteServerBuild.js'
-import { resolveOutDir } from '../../shared/getOutDirs.js'
+import { isViteServerSide, isViteServerSide_withoutEnv } from '../../shared/isViteServerSide.js'
+import { resolveOutDir_configEnvironment } from '../../shared/getOutDirs.js'
 import {
   handleAssetsManifest_assertUsageCssCodeSplit,
   handleAssetsManifest_getBuildConfig,
@@ -34,6 +34,7 @@ import { resolveIncludeAssetsImportedByServer } from '../../../runtime/renderPag
 
 function pluginBuildConfig(): Plugin[] {
   let config: ResolvedConfig
+  let configUnresolved: UserConfig
 
   return [
     {
@@ -53,16 +54,24 @@ function pluginBuildConfig(): Plugin[] {
           handleAssetsManifest_assertUsageCssCodeSplit(config)
         },
       },
+      configEnvironment: {
+        order: 'post',
+        async handler(envName, configEnv) {
+          assert(configUnresolved)
+          return {
+            build: {
+              outDir: resolveOutDir_configEnvironment(configUnresolved, envName, configEnv),
+            },
+          }
+        },
+      },
       config: {
         order: 'post',
         async handler(config) {
+          configUnresolved = config
           onSetupBuild()
-          return {
-            build: {
-              outDir: resolveOutDir(config),
-              ...(await handleAssetsManifest_getBuildConfig(config)),
-            },
-          }
+          const build = await handleAssetsManifest_getBuildConfig(config)
+          return { build }
         },
       },
       buildStart() {
@@ -81,7 +90,7 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
     Object.keys(pageFileEntries).length !== 0 || pageConfigs.length !== 0,
     'At least one page should be defined, see https://vike.dev/add',
   )
-  if (isViteServerBuild(config)) {
+  if (isViteServerSide_withoutEnv(config)) {
     const pageEntries = getPageEntries(pageConfigs)
     const entries = {
       ...pageFileEntries,
@@ -154,7 +163,7 @@ function analyzeClientEntries(pageConfigs: PageConfigBuildTime[], config: Resolv
 // Ensure Rollup creates entries for each page file, see https://github.com/vikejs/vike/issues/350
 // (Otherwise the page files may be missing in the client manifest.json)
 async function getPageFileEntries(config: ResolvedConfig, includeAssetsImportedByServer: boolean) {
-  const isForClientSide = !isViteServerBuild(config)
+  const isForClientSide = !isViteServerSide_withoutEnv(config)
   const fileTypes: FileType[] = isForClientSide ? ['.page', '.page.client'] : ['.page', '.page.server']
   if (isForClientSide && includeAssetsImportedByServer) {
     fileTypes.push('.page.server')

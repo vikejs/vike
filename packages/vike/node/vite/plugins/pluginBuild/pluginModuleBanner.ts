@@ -3,7 +3,7 @@ export { pluginModuleBanner }
 import type { ResolvedConfig, Plugin } from 'vite'
 import { removeVirtualFileIdPrefix } from '../../utils.js'
 import { getMagicString } from '../../shared/getMagicString.js'
-import { isViteServerBuild_safe } from '../../shared/isViteServerBuild.js'
+import { isViteServerSide_extraSafe } from '../../shared/isViteServerSide.js'
 
 // Rollup's banner feature doesn't work with Vite: https://github.com/vitejs/vite/issues/8412
 // But, anyways, we want to prepend the banner at the beginning of each module, not at the beginning of each file (I believe that's what Rollup's banner feature does).
@@ -22,7 +22,7 @@ function pluginModuleBanner(): Plugin {
       order: 'post',
       handler(code, id, options) {
         if (
-          !isViteServerBuild_safe(config, options) &&
+          !isViteServerSide_extraSafe(config, options, this.environment) &&
           // Inject module banners if user sets `build.minify` to `false` for inspecting dist/client/
           config.build.minify
         ) {
