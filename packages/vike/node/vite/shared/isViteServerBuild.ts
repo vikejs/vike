@@ -3,7 +3,7 @@ export { isViteServerBuild }
 export { isViteClientBuild }
 export { isViteServerBuild_onlySsrEnv }
 export { isViteServerBuild_options }
-export { isViteServerBuild_safe }
+export { isViteServerBuild_transform }
 export type { ViteEnv }
 
 import type { Environment, EnvironmentOptions, ResolvedConfig, UserConfig } from 'vite'
@@ -60,7 +60,7 @@ function isViteServerBuild_options(options: { ssr?: boolean } | undefined): bool
 
 // Vite is quite messy about setting `ssr: boolean`, thus we use an extra safe implementation for security purposes.
 // It's used for .client.js and .server.js guarantee thus we use aggressive assert() calls for added safety.
-function isViteServerBuild_safe(
+function isViteServerBuild_transform(
   config: ResolvedConfig,
   options: { ssr?: boolean } | undefined,
   viteEnv: ViteEnv | undefined,
