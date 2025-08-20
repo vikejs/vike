@@ -74,11 +74,7 @@ function pluginAutoFullBuild(): Plugin[] {
   ]
 }
 
-async function triggerFullBuild(
-  config: ResolvedConfig,
-  viteEnv: Environment,
-  bundle: Record<string, unknown>,
-) {
+async function triggerFullBuild(config: ResolvedConfig, viteEnv: Environment, bundle: Record<string, unknown>) {
   const vikeConfig = await getVikeConfigInternal()
   // Whether builder.buildApp() is being used, see plugin:build:pluginBuildApp
   const isBuilderApp = vikeConfig.config.vite6BuilderApp
