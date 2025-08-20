@@ -2,7 +2,7 @@ export { pluginExtractExportNames }
 export { isUsingClientRouter }
 export { extractExportNamesRE }
 
-import type { Plugin } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
 import {
   assert,
   getFileExtension,
@@ -13,19 +13,20 @@ import {
 } from '../utils.js'
 import { getExportNames } from '../shared/parseEsModule.js'
 import { normalizeId } from '../shared/normalizeId.js'
-import { isViteServerBuild_options } from '../shared/isViteServerBuild.js'
+import { isViteServerBuild_transform } from '../shared/isViteServerBuild.js'
 const extractExportNamesRE = /(\?|&)extractExportNames(?:&|$)/
 const debug = createDebugger('vike:pluginExtractExportNames')
 const globalObject = getGlobalObject<{ usesClientRouter?: true }>('plugins/pluginExtractExportNames.ts', {})
 
 function pluginExtractExportNames(): Plugin {
   let isDev = false
+  let config: ResolvedConfig
   return {
     name: 'vike:pluginExtractExportNames',
     enforce: 'post',
     async transform(src, id, options) {
       id = normalizeId(id)
-      const isClientSide = !isViteServerBuild_options(options)
+      const isClientSide = !isViteServerBuild_transform(config, options, this.environment)
       if (extractExportNamesRE.test(id)) {
         const code = await getExtractExportNamesCode(src, isClientSide, !isDev, id)
         debug('id ' + id, ['result:\n' + code.code.trim(), 'src:\n' + src.trim()])
@@ -34,6 +35,9 @@ function pluginExtractExportNames(): Plugin {
     },
     configureServer() {
       isDev = true
+    },
+    configResolved(config_) {
+      config = config_
     },
     config() {
       if (debug.isActivated) {
