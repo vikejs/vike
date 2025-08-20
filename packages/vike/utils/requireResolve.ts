@@ -127,10 +127,10 @@ function requireResolveNpmPackage({
   return res.importPathResolvedFilePath
 }
 function requireResolveDistFile(distFile: `dist/esm/${string}`) {
-  const vikeNodeModulesRoot = getPackageNodeModulesDirectory()
-  assertPosixPath(vikeNodeModulesRoot)
+  const packageNodeModulesDirectory = getPackageNodeModulesDirectory()
+  assertPosixPath(packageNodeModulesDirectory)
   assertPosixPath(distFile)
-  const importPathResolvedFilePath = makeNodeFriendly(path.posix.join(vikeNodeModulesRoot, distFile))
+  const importPathResolvedFilePath = makeNodeFriendly(path.posix.join(packageNodeModulesDirectory, distFile))
 
   // Double check
   {
