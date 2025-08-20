@@ -2,7 +2,6 @@
 export { isViteServerBuild }
 export { isViteClientBuild }
 export { isViteServerBuild_onlySsrEnv }
-export { isViteServerBuild_options }
 export { isViteServerBuild_transform }
 export type { ViteEnv }
 
@@ -52,10 +51,6 @@ function isViteClientBuild(configGlobal: ResolvedConfig, viteEnv: ViteEnv | unde
 // Only `ssr` env: for example don't include `vercel_edge` nor `vercel_node`.
 function isViteServerBuild_onlySsrEnv(configGlobal: ResolvedConfig, viteEnv: ViteEnv | undefined) {
   return viteEnv ? viteEnv.name === 'ssr' : isViteServerBuild(configGlobal, undefined)
-}
-
-function isViteServerBuild_options(options: { ssr?: boolean } | undefined): boolean {
-  return !!options?.ssr
 }
 
 // Vite is quite messy about setting `ssr: boolean`, thus we use an extra safe implementation for security purposes.
