@@ -1,9 +1,9 @@
 // TODO/now: rename isViteServerSide
 export { isViteServerBuild }
 export { isViteClientBuild }
+export { isViteServerBuild_onlySsrEnv }
 export { isViteServerBuild_options }
 export { isViteServerBuild_safe }
-export { isViteServerBuild_onlySsrEnv }
 export type { ViteEnv }
 
 import type { Environment, EnvironmentOptions, ResolvedConfig, UserConfig } from 'vite'
