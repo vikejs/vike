@@ -31,7 +31,9 @@ function isViteServerBuild(configGlobal: ResolvedConfig | UserConfig, viteEnv: V
     return isServerSide1
   }
   if (isServerSide2 !== null) {
-    // assert(isServerSide2 === isServerSide3, debug)
+    /* This assertion can fail, seems to be a Vite bug?
+    assert(isServerSide2 === isServerSide3, debug)
+    */
     return isServerSide2
   }
   if (isServerSide3 !== null) {
