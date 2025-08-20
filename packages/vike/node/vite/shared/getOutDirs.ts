@@ -20,8 +20,8 @@ type OutDirs = {
 
 function getOutDirs(configGlobal: ResolvedConfig, viteEnv: ViteEnv | undefined): OutDirs {
   debug('getOutDirs()', new Error().stack)
-  const outDir = getOutDirFromViteResolvedConfig(configGlobal)
-  if (!isOutDirRoot(outDir)) assertOutDirResolved(outDir, configGlobal, viteEnv)
+  const outDir = getOutDirFromResolvedConfig(configGlobal)
+  assertOutDirResolved(outDir, configGlobal, viteEnv)
   const outDirs = getOutDirsAll(outDir, configGlobal.root)
   return outDirs
 }
@@ -134,10 +134,11 @@ function assertIsNotOutDirRoot(outDir: string) {
   assert(outDir.endsWith('/client') || outDir.endsWith('/server'))
 }
 
-/** Assert that `outDir` ends with `/server` or `/client` */
+/** Assert that `outDir` ends with the correct directory `/server` or `/client` */
 function assertOutDirResolved(outDir: string, configGlobal: UserConfig | ResolvedConfig, viteEnv: ViteEnv | undefined) {
   assertPosixPath(outDir)
-  assertIsNotOutDirRoot(outDir)
+  if (isOutDirRoot(outDir)) return
+  assert(outDir.endsWith('/client') || outDir.endsWith('/server')) // we normalized outDir
 
   assert('/client'.length === '/server'.length)
   const outDirCorrected = outDir.slice(0, -1 * '/client'.length)
@@ -158,7 +159,7 @@ function getOutDirFromViteUserConfig(config: UserConfig | ResolvedConfig): strin
   outDir = normalizeOutDir(outDir)
   return outDir
 }
-function getOutDirFromViteResolvedConfig(config: ResolvedConfig): string {
+function getOutDirFromResolvedConfig(config: ResolvedConfig): string {
   let outDir = config.build.outDir
   assert(outDir)
   outDir = normalizeOutDir(outDir)
