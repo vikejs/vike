@@ -273,9 +273,9 @@ function handleAssetsManifest_assertUsageCssCodeSplit(config: ResolvedConfig) {
 type Target = undefined | false | string | string[]
 type TargetConfig = { global: Exclude<Target, undefined>; css: Target; isServerSide: boolean }
 const targets: TargetConfig[] = []
-function handleAssetsManifest_assertUsageCssTarget(config: ResolvedConfig) {
+function handleAssetsManifest_assertUsageCssTarget(config: ResolvedConfig, env: Environment) {
   if (!handleAssetsManifest_isFixEnabled(config)) return
-  const isServerSide = isViteServerBuild(config, undefined)
+  const isServerSide = isViteServerBuild(config, env)
   assert(typeof isServerSide === 'boolean')
   assert(config.build.target !== undefined)
   targets.push({ global: config.build.target, css: config.build.cssTarget, isServerSide })
