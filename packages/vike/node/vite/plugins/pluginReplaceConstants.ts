@@ -35,7 +35,7 @@ function pluginReplaceConstants(): Plugin {
       const constantsMap: { constants: string[]; replacement: unknown }[] = []
       constantsMap.push({
         constants: ['pageContext.isClientSide', 'globalContext.isClientSide', 'pageContext.globalContext.isClientSide'],
-        replacement: !isViteServerBuild_safe(config, options),
+        replacement: !isViteServerBuild_safe(config, options, this.environment),
       })
 
       constantsMap.forEach(({ constants, replacement }) => {

@@ -22,7 +22,7 @@ function pluginModuleBanner(): Plugin {
       order: 'post',
       handler(code, id, options) {
         if (
-          !isViteServerBuild_safe(config, options) &&
+          !isViteServerBuild_safe(config, options, this.environment) &&
           // Inject module banners if user sets `build.minify` to `false` for inspecting dist/client/
           config.build.minify
         ) {

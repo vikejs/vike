@@ -65,7 +65,7 @@ function pluginExtractAssets(): Plugin[] {
         }
         const includeAssetsImportedByServer = resolveIncludeAssetsImportedByServer(vikeConfig.config)
         assert(includeAssetsImportedByServer)
-        assert(!isViteServerBuild_safe(config, options))
+        assert(!isViteServerBuild_safe(config, options, this.environment))
         const importStatements = await getImportStatements(src)
         const moduleNames = getImportedModules(importStatements)
         const code = moduleNames.map((moduleName) => `import '${moduleName}';`).join('\n')
@@ -82,7 +82,7 @@ function pluginExtractAssets(): Plugin[] {
       //  - Vite's `vite:resolve` plugin; https://github.com/vitejs/vite/blob/d649daba7682791178b711d9a3e44a6b5d00990c/packages/vite/src/node/plugins/resolve.ts#L105
       enforce: 'pre',
       async resolveId(source, importer, options) {
-        if (isViteServerBuild_safe(config, options)) {
+        if (isViteServerBuild_safe(config, options, this.environment)) {
           // When building for the server, there should never be a `?extractAssets` query
           assert(!extractAssetsRE.test(source))
           assert(importer === undefined || !extractAssetsRE.test(importer))
