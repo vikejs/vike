@@ -1,5 +1,7 @@
 export { getConfigValueSourcesRelevant }
+export { getConfigValueSourceRelevantAnyEnv }
 export { isRuntimeEnvMatch }
+export { isConfigSourceValueNull }
 export type { RuntimeEnv }
 
 import type {
@@ -8,35 +10,68 @@ import type {
   PageConfigBuildTime,
   PageConfigGlobalBuildTime,
 } from '../../../../types/PageConfig.js'
-import { assert } from '../../utils.js'
+import { assert, assertIsNotBrowser } from '../../utils.js'
+
+assertIsNotBrowser()
 
 type RuntimeEnv = { isForClientSide: boolean; isClientRouting: boolean; isDev?: boolean } | { isForConfig: true }
 
-function getConfigValueSourcesRelevant(configName: string, runtimeEnv: RuntimeEnv, pageConfig: PageConfigPartial) {
+type PageConfigPartial = Pick<
+  PageConfigBuildTime | PageConfigGlobalBuildTime,
+  'configValueSources' | 'configDefinitions'
+>
+function getConfigValueSourcesRelevant(
+  configName: string,
+  runtimeEnv: RuntimeEnv,
+  pageConfig: PageConfigPartial,
+): ConfigValueSource[] {
   const configDef = pageConfig.configDefinitions[configName]
   assert(configDef)
+
   let sourcesRelevant = pageConfig.configValueSources[configName]
   if (!sourcesRelevant) return []
 
-  if (!configDef.cumulative) {
-    const source = sourcesRelevant[0]
-    if (source) {
-      sourcesRelevant = [source]
-    } else {
-      assert(sourcesRelevant.length === 0)
-    }
-  } else {
-    // isOverridden() must be called before isRuntimeEnvMatch() is called (otherwise isOverridden() will return a wrong value)
-    sourcesRelevant = sourcesRelevant.filter((source) => !isOverridden(source, configName, pageConfig))
-  }
+  // Ignore configs with value `undefined`
+  sourcesRelevant = sourcesRelevant.filter((source) => !isConfigSourceValueUndefined(source))
 
+  // Environment filtering
   sourcesRelevant = sourcesRelevant.filter((source) => isRuntimeEnvMatch(source.configEnv, runtimeEnv))
 
+  // Overriding - non-cumulative configs
+  if (!configDef.cumulative && sourcesRelevant.length > 1) {
+    const source = sourcesRelevant[0]
+    assert(source)
+    sourcesRelevant = [source]
+  }
+
+  // Overriding - cumulative configs
   if (configDef.cumulative && sourcesRelevant.length > 0) {
     sourcesRelevant = applyCumulativeSuffixModifiers(sourcesRelevant)
   }
 
   return sourcesRelevant
+}
+
+function getConfigValueSourceRelevantAnyEnv(
+  configName: string,
+  pageConfig: PageConfigPartial,
+): null | ConfigValueSource {
+  const configDef = pageConfig.configDefinitions[configName]
+  assert(configDef)
+  assert(!configDef.cumulative) // So far, this function is only used by non-cumulative configs
+
+  let sourcesRelevant = pageConfig.configValueSources[configName]
+  if (!sourcesRelevant) return null
+
+  // Ignore configs with value `undefined`
+  sourcesRelevant = sourcesRelevant.filter((source) => !isConfigSourceValueUndefined(source))
+
+  const source = sourcesRelevant[0]
+  if (!source) return null
+
+  if (isConfigSourceValueNull(source)) return null
+
+  return source
 }
 
 function isRuntimeEnvMatch(configEnv: ConfigEnvInternal, runtimeEnv: RuntimeEnv): boolean {
@@ -64,20 +99,16 @@ function isRuntimeEnvMatch(configEnv: ConfigEnvInternal, runtimeEnv: RuntimeEnv)
   return true
 }
 
-type PageConfigPartial = Pick<
-  PageConfigBuildTime | PageConfigGlobalBuildTime,
-  'configValueSources' | 'configDefinitions'
->
-function isOverridden(source: ConfigValueSource, configName: string, pageConfig: PageConfigPartial): boolean {
-  const configDef = pageConfig.configDefinitions[configName]
-  assert(configDef)
-  assert(configDef.cumulative)
-  if (configDef.cumulative) return false
-  const sources = pageConfig.configValueSources[configName]
-  assert(sources)
-  const idx = sources.indexOf(source)
-  assert(idx >= 0)
-  return idx > 0
+// Setting a config to `undefined` should be equivalent to not setting it at all
+function isConfigSourceValueUndefined(source: ConfigValueSource): null | boolean {
+  if (!source.valueIsLoaded) return null
+  return source.value === undefined
+}
+
+// Setting a config to `null` enables the user to suppress inherited config by overriding it with `null` (this only works when setting the config value to `null` inside a +config.js file — it doesn't work when setting the config value to `null` with a +{configName}.js file).
+function isConfigSourceValueNull(source: ConfigValueSource) {
+  if (!source.valueIsLoaded) return null
+  return source.value === null
 }
 
 function applyCumulativeSuffixModifiers(sourcesRelevant: ConfigValueSource[]) {

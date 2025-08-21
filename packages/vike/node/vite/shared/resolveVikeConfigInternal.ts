@@ -9,6 +9,7 @@ export { getConfVal }
 export { getConfigDefinitionOptional }
 export { getVikeConfigFromCliOrEnv }
 export type { VikeConfigInternal }
+export type { PageConfigBuildTimeBeforeComputed }
 
 // Public usage
 export { getVikeConfig }
@@ -1225,7 +1226,8 @@ function applyEffectMetaEnv(
   })
 }
 
-function getComputed(pageConfig: Omit<PageConfigBuildTime, 'configValuesComputed'>) {
+type PageConfigBuildTimeBeforeComputed = Omit<PageConfigBuildTime, 'configValuesComputed'>
+function getComputed(pageConfig: PageConfigBuildTimeBeforeComputed) {
   const configValuesComputed: ConfigValuesComputed = {}
   objectEntries(pageConfig.configDefinitions).forEach(([configName, configDef]) => {
     if (!configDef._computed) return
