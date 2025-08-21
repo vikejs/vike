@@ -2,16 +2,15 @@ export { getConfigValueSourcesRelevant }
 export { isRuntimeEnvMatch }
 export type { RuntimeEnv }
 
-import type {
-  ConfigEnvInternal,
-  ConfigValueSource,
-  PageConfigBuildTime,
-  PageConfigGlobalBuildTime,
-} from '../../../../types/PageConfig.js'
+import type { ConfigEnvInternal, PageConfigBuildTime, PageConfigGlobalBuildTime } from '../../../../types/PageConfig.js'
 import { assert } from '../../utils.js'
 
 type RuntimeEnv = { isForClientSide: boolean; isClientRouting: boolean; isDev?: boolean } | { isForConfig: true }
 
+type PageConfigPartial = Pick<
+  PageConfigBuildTime | PageConfigGlobalBuildTime,
+  'configValueSources' | 'configDefinitions'
+>
 function getConfigValueSourcesRelevant(configName: string, runtimeEnv: RuntimeEnv, pageConfig: PageConfigPartial) {
   const configDef = pageConfig.configDefinitions[configName]
   assert(configDef)
@@ -56,8 +55,3 @@ function isRuntimeEnvMatch(configEnv: ConfigEnvInternal, runtimeEnv: RuntimeEnv)
 
   return true
 }
-
-type PageConfigPartial = Pick<
-  PageConfigBuildTime | PageConfigGlobalBuildTime,
-  'configValueSources' | 'configDefinitions'
->
