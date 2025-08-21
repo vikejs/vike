@@ -20,9 +20,14 @@ type PageConfigPartial = Pick<
   PageConfigBuildTime | PageConfigGlobalBuildTime,
   'configValueSources' | 'configDefinitions'
 >
-function getConfigValueSourcesRelevant(configName: string, runtimeEnv: RuntimeEnv, pageConfig: PageConfigPartial) {
+function getConfigValueSourcesRelevant(
+  configName: string,
+  runtimeEnv: RuntimeEnv,
+  pageConfig: PageConfigPartial,
+): ConfigValueSource[] {
   const configDef = pageConfig.configDefinitions[configName]
   assert(configDef)
+
   let sourcesRelevant = pageConfig.configValueSources[configName]
   if (!sourcesRelevant) return []
 
