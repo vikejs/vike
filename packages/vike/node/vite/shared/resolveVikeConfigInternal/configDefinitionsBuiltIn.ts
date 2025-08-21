@@ -15,6 +15,7 @@ import type { Config, ConfigNameBuiltIn, ConfigNameGlobal } from '../../../../ty
 import { assert, assertUsage } from '../../utils.js'
 import { getConfigDefinedAt, type ConfigDefinedAt } from '../../../../shared/page-configs/getConfigDefinedAt.js'
 import {
+  getConfigValueSourceRelevantAnyEnv,
   getConfigValueSourcesRelevant,
   isConfigNull,
 } from '../../plugins/pluginVirtualFiles/getConfigValueSourcesRelevant.js'
@@ -231,15 +232,13 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     eager: true,
     _computed: (pageConfig): boolean => {
       {
-        const source = getConfigValueSource(pageConfig, 'clientHooks')
+        const source = getConfigValueSourceRelevantAnyEnv('clientHooks', pageConfig)
         if (source) {
           assert(source.valueIsLoaded)
-          if (source.value !== null) {
-            const { value } = source
-            const definedAt = getConfigDefinedAt('Config', 'clientHooks', source.definedAt)
-            assertUsage(typeof value === 'boolean', `${definedAt} should be a boolean`)
-            return value
-          }
+          const { value, definedAt } = source
+          const configDefinedAt = getConfigDefinedAt('Config', 'clientHooks', definedAt)
+          assertUsage(typeof value === 'boolean', `${configDefinedAt} should be a boolean`)
+          return value
         }
       }
       return (
@@ -352,7 +351,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
 }
 
 function getConfigEnv(pageConfig: PageConfigBuildTimeBeforeComputed, configName: string): null | ConfigEnvInternal {
-  const configValueSource = getConfigValueSource(pageConfig, configName)
+  const configValueSource = getConfigValueSourceRelevantAnyEnv(configName, pageConfig)
   if (!configValueSource) return null
   const { configEnv } = configValueSource
   const env: { client?: true; server?: true } = {}
@@ -361,16 +360,6 @@ function getConfigEnv(pageConfig: PageConfigBuildTimeBeforeComputed, configName:
   return env
 }
 function isConfigSet(pageConfig: PageConfigBuildTimeBeforeComputed, configName: string): boolean {
-  const source = getConfigValueSource(pageConfig, configName)
-  return !!source && !isConfigNull(source)
-}
-function getConfigValueSource(
-  pageConfig: PageConfigBuildTimeBeforeComputed,
-  configName: string,
-): null | ConfigValueSource {
-  const sources = pageConfig.configValueSources[configName]
-  if (!sources) return null
-  const configValueSource = sources[0]
-  assert(configValueSource)
-  return configValueSource
+  const source = getConfigValueSourceRelevantAnyEnv(configName, pageConfig)
+  return !!source
 }

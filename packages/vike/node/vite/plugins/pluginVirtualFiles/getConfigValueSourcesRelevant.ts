@@ -1,4 +1,5 @@
 export { getConfigValueSourcesRelevant }
+export { getConfigValueSourceRelevantAnyEnv }
 export { isRuntimeEnvMatch }
 export { isConfigNull }
 export type { RuntimeEnv }
@@ -45,6 +46,28 @@ function getConfigValueSourcesRelevant(
   }
 
   return sourcesRelevant
+}
+
+function getConfigValueSourceRelevantAnyEnv(
+  configName: string,
+  pageConfig: PageConfigPartial,
+): null | ConfigValueSource {
+  const configDef = pageConfig.configDefinitions[configName]
+  assert(configDef)
+  assert(!configDef.cumulative) // So far, this function is only used by non-cumulative configs
+
+  let sourcesRelevant = pageConfig.configValueSources[configName]
+  if (!sourcesRelevant) return null
+
+  // Ignore configs with value `undefined`
+  sourcesRelevant = sourcesRelevant.filter((source) => !isConfigUndefined(source))
+
+  const source = sourcesRelevant[0]
+  if (!source) return null
+
+  if (isConfigNull(source)) return null
+
+  return source
 }
 
 function isRuntimeEnvMatch(configEnv: ConfigEnvInternal, runtimeEnv: RuntimeEnv): boolean {
