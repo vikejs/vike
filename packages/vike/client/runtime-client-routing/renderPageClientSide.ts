@@ -623,7 +623,10 @@ function stampFinished(urlOriginal: string) {
   window._vike.fullyRenderedUrl = urlOriginal
 }
 declare global {
-  var _vike: { fullyRenderedUrl?: string } | undefined
+  var _vike: VikeGlobal | undefined
+  interface VikeGlobal {
+    fullyRenderedUrl?: string
+  }
 }
 
 function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {

@@ -26,7 +26,8 @@ function getGlobals() {
   return globalThis._vike.globals
 }
 declare global {
-  var _vike: {
+  var _vike: VikeGlobal | undefined
+  interface VikeGlobal {
     globals?: Record<string, Record<string, unknown> | true>
   }
 }
