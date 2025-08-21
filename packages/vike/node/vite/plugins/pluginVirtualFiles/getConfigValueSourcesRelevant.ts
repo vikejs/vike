@@ -32,7 +32,7 @@ function getConfigValueSourcesRelevant(
   if (!sourcesRelevant) return []
 
   // Ignore configs with value `undefined`
-  sourcesRelevant = sourcesRelevant.filter((source) => !isConfigUndefined(source))
+  sourcesRelevant = sourcesRelevant.filter((source) => !isSourceValueUndefined(source))
 
   // Environment filtering
   sourcesRelevant = sourcesRelevant.filter((source) => isRuntimeEnvMatch(source.configEnv, runtimeEnv))
@@ -59,7 +59,7 @@ function getConfigValueSourceRelevantAnyEnv(
   if (!sourcesRelevant) return null
 
   // Ignore configs with value `undefined`
-  sourcesRelevant = sourcesRelevant.filter((source) => !isConfigUndefined(source))
+  sourcesRelevant = sourcesRelevant.filter((source) => !isSourceValueUndefined(source))
 
   const source = sourcesRelevant[0]
   if (!source) return null
@@ -95,7 +95,7 @@ function isRuntimeEnvMatch(configEnv: ConfigEnvInternal, runtimeEnv: RuntimeEnv)
 }
 
 // Setting a config to `undefined` should be equivalent to not setting it at all
-function isConfigUndefined(source: ConfigValueSource): null | boolean {
+function isSourceValueUndefined(source: ConfigValueSource): null | boolean {
   if (!source.valueIsLoaded) return null
   return source.value === undefined
 }
