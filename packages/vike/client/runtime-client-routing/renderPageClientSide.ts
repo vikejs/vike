@@ -65,6 +65,7 @@ import {
 } from './preparePageContextForPublicUsageClient.js'
 import { getHookFromPageContextNew } from '../../shared/hooks/getHook.js'
 import { preparePageContextForPublicUsageClientMinimal } from '../shared/preparePageContextForPublicUsageClientShared.js'
+import type { VikeInternalGlobal } from '../../types/VikeInternalGlobal.js'
 
 const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
@@ -623,10 +624,7 @@ function stampFinished(urlOriginal: string) {
   window._vike.fullyRenderedUrl = urlOriginal
 }
 declare global {
-  var _vike: VikeGlobal | undefined
-  interface VikeGlobal {
-    fullyRenderedUrl?: string
-  }
+  var _vike: VikeInternalGlobal
 }
 
 function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
