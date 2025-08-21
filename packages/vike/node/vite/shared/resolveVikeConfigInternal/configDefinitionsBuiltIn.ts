@@ -218,6 +218,8 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
         .flat(1)
         // Server-only
         .filter((source) => !source.configEnv.client)
+        // Config value isn't `null`
+        .filter((source) => !isConfigNull(source))
       return sources.length > 0
     },
   },
