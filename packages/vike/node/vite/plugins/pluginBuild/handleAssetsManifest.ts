@@ -9,15 +9,7 @@ import fs_sync from 'node:fs'
 import path from 'node:path'
 import { existsSync } from 'node:fs'
 import type { ViteManifest, ViteManifestEntry } from '../../../../types/ViteManifest.js'
-import {
-  assert,
-  assertIsSingleModuleInstance,
-  assertWarning,
-  isEqualStringList,
-  isObject,
-  pLimit,
-  unique,
-} from '../../utils.js'
+import { assert, assertWarning, getGlobalObject, isEqualStringList, isObject, pLimit, unique } from '../../utils.js'
 import { parseVirtualFileId } from '../../../shared/virtualFileId.js'
 import type { Environment, ResolvedConfig, Rollup, UserConfig } from 'vite'
 import { getAssetsDir } from '../../shared/getAssetsDir.js'
@@ -32,8 +24,10 @@ import {
 import { set_macro_ASSETS_MANIFEST } from './pluginBuildEntry.js'
 import { getManifestFilePathRelative } from '../../shared/getManifestFilePathRelative.js'
 type Bundle = Rollup.OutputBundle
-assertIsSingleModuleInstance('build/handleAssetsManifest.ts')
-let assetsJsonFilePath: string | undefined
+
+const globalObject = getGlobalObject('build/handleAssetsManifest.ts', {
+  assetsJsonFilePath: undefined as string | undefined,
+})
 
 // true  => use workaround config.build.ssrEmitAssets
 // false => use workaround extractAssets plugin
@@ -372,10 +366,10 @@ async function handleAssetsManifest(
 ) {
   const isSsrEnv = isViteServerSide_onlySsrEnv(config, viteEnv)
   if (isSsrEnv) {
-    assert(!assetsJsonFilePath)
+    assert(!globalObject.assetsJsonFilePath)
     const outDirs = getOutDirs(config, viteEnv)
-    assetsJsonFilePath = path.posix.join(outDirs.outDirRoot, 'assets.json')
-    await writeAssetsManifestFile(assetsJsonFilePath, config)
+    globalObject.assetsJsonFilePath = path.posix.join(outDirs.outDirRoot, 'assets.json')
+    await writeAssetsManifestFile(globalObject.assetsJsonFilePath, config)
   }
   if (isViteServerSide(config, viteEnv)) {
     const outDir = options.dir
@@ -384,7 +378,7 @@ async function handleAssetsManifest(
     // - Always replace it in dist/server/
     // - Also in some other server builds such as dist/vercel/ from vike-vercel
     // - Don't replace it in dist/rsc/ from vike-react-rsc since __VITE_ASSETS_MANIFEST__ doesn't exist there
-    const noop = await set_macro_ASSETS_MANIFEST(assetsJsonFilePath, bundle, outDir)
+    const noop = await set_macro_ASSETS_MANIFEST(globalObject.assetsJsonFilePath, bundle, outDir)
     if (isSsrEnv) assert(!noop) // dist/server should always contain __VITE_ASSETS_MANIFEST__
   }
 }
