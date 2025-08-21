@@ -386,7 +386,7 @@ const headings = [
     level: 2,
     title: 'Config Files',
     url: '/config',
-    sectionTitles: ['`+` files'],
+    sectionTitles: ['`+` files', '`.clear.js`', '`.default.js`'],
   },
   {
     level: 2,

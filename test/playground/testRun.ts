@@ -25,6 +25,7 @@ import { testNestedLayout } from './pages/nested-layout/e2e-test'
 import { testPrerenderSettings } from './pages/prerender.e2e-test'
 import { testHistoryPushState } from './pages/pushState/e2e-test'
 import { testStarWars } from './pages/star-wars/e2e-test'
+import { testDefaultAndClearSuffixes } from './pages/config-meta/default-clear/e2e-test'
 
 const rootDir = path.dirname(fileURLToPath(import.meta.url))
 
@@ -48,6 +49,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   testNavigateEarly()
   testDynamicImportFileEnv({ isDev })
   testNestedLayout()
+  testDefaultAndClearSuffixes()
   testHistoryPushState()
   testStarWars()
 }

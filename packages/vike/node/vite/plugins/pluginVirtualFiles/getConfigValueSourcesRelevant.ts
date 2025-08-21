@@ -37,11 +37,16 @@ function getConfigValueSourcesRelevant(
   // Environment filtering
   sourcesRelevant = sourcesRelevant.filter((source) => isRuntimeEnvMatch(source.configEnv, runtimeEnv))
 
-  // Overriding
+  // Overriding - non-cumulative configs
   if (!configDef.cumulative && sourcesRelevant.length > 1) {
     const source = sourcesRelevant[0]
     assert(source)
     sourcesRelevant = [source]
+  }
+
+  // Overriding - cumulative configs
+  if (configDef.cumulative && sourcesRelevant.length > 0) {
+    sourcesRelevant = applyFilenameSuffix(sourcesRelevant)
   }
 
   return sourcesRelevant
@@ -104,4 +109,16 @@ function isConfigSourceValueUndefined(source: ConfigValueSource): null | boolean
 function isConfigSourceValueNull(source: ConfigValueSource) {
   if (!source.valueIsLoaded) return null
   return source.value === null
+}
+
+function applyFilenameSuffix(sourcesRelevant: ConfigValueSource[]) {
+  const getFileName = (source: ConfigValueSource) => source.plusFile?.filePath.fileName ?? ''
+
+  // Apply `clear`: truncate at first clear file
+  const clearIndex = sourcesRelevant.findIndex((source) => getFileName(source).includes('.clear.'))
+  if (clearIndex !== -1) sourcesRelevant = sourcesRelevant.slice(0, clearIndex + 1)
+
+  // Apply `default`: exclude defaults if any non-defaults exist, otherwise keep only first default
+  const nonDefaults = sourcesRelevant.filter((source) => !getFileName(source).includes('.default.'))
+  return nonDefaults.length > 0 ? nonDefaults : sourcesRelevant.slice(0, 1)
 }

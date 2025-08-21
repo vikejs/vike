@@ -110,9 +110,7 @@ export default {
 } satisfies Config
 ```
 
-> To set defaults for <Link href="#cumulative">cumulative configurations</Link>, see:
-> - [#1692 - New settings `clear` and `default` for controlling inheritance of cumulative configs](https://github.com/vikejs/vike/issues/1692)
-
+> <Link href="#cumulative">Cumulative configs</Link> don't get overridden but accumulate instead (unless the filename extension <Link href="#default-js" doNotInferSectionTitle /> is used).
 
 ### Cumulative
 
@@ -137,6 +135,8 @@ pages/(marketing)/+Layout.js
 
 The `pages/(marketing)/+Layout.js` file doesn't override `pages/+Layout.js` — instead, multiple `<Layout>` components nest within each other.
 
+> You can control how cumulative configs inherit from parent directories by using the filename suffixes <Link href="#clear-js" doNotInferSectionTitle noBreadcrumb /> and <Link href="#default-js" doNotInferSectionTitle noBreadcrumb />.
+
 In contrast, the <Link href="/title">`+title` setting</Link> isn't cumulative — a page can only have one title.
 
 ```yaml
@@ -146,8 +146,46 @@ pages/+title.js
 pages/product/@id/+title.js
 ```
 
-> To configure the inheritance behavior of cumulative settings, see:
-> - [#1692 - New settings `clear` and `default` for controlling inheritance of cumulative configs](https://github.com/vikejs/vike/issues/1692)
+### `.clear.js`
+
+The `.clear.js` filename suffix resets the inheritance chain of <Link href="#cumulative">cumulative configs</Link>, preventing configurations from parent directories from being inherited.
+
+```yaml
+pages/+Layout.jsx
+# Inherits pages/+Layout.jsx
+pages/product/@id/+Page.jsx
+
+# This layout clears inheritance and starts fresh
+pages/admin/+Layout.clear.jsx
+# This layout will be added to the admin layout
+pages/admin/dashboard/+Layout.jsx
+# Only inherits the two admin layouts above
+pages/admin/dashboard/users/+Page.jsx
+```
+
+> See also:
+> - <Link href="#default-js" doNotInferSectionTitle />
+> - <Link href="/file-env" noBreadcrumb />
+
+### `.default.js`
+
+The `.default.js` filename suffix makes a <Link href="#cumulative">cumulative configuration</Link> act as a fallback — it's only used when no child directory defines the configuration.
+
+```yaml
+# Default layout
+pages/+Layout.default.jsx
+# Inherits the default layout
+pages/product/@id/+Page.jsx
+
+# Overrides the default layout
+pages/admin/+Layout.jsx
+# Only inherits the admin layout
+pages/admin/dashboard/+Page.jsx
+```
+
+> See also:
+> - <Link href="#clear-js" doNotInferSectionTitle />
+> - <Link href="/file-env" noBreadcrumb />
 
 ### Global
 
@@ -345,3 +383,4 @@ console.log(ssr) // import:./ssr:default
 - <Link href="/filesystem-routing" />
 - <Link href="/routing#domain-driven-file-structure" />
 - <Link href="/error/runtime-in-config" />
+- <Link href="/file-env" />
