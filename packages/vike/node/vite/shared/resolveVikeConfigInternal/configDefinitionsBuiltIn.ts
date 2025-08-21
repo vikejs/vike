@@ -8,7 +8,6 @@ export type { ConfigEffect }
 import type {
   ConfigEnvInternal,
   ConfigEnv,
-  ConfigValueSources,
   DefinedAtFilePath,
   ConfigValueSource,
 } from '../../../../types/PageConfig.js'
@@ -231,9 +230,8 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { server: true, client: true },
     eager: true,
     _computed: (pageConfig): boolean => {
-      const { configValueSources } = pageConfig
       {
-        const source = getConfigValueSource(configValueSources, 'clientHooks')
+        const source = getConfigValueSource(pageConfig, 'clientHooks')
         if (source) {
           assert(source.valueIsLoaded)
           if (source.value !== null) {
@@ -245,9 +243,9 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
         }
       }
       return (
-        isConfigSet(configValueSources, 'onRenderClient') &&
-        isConfigSet(configValueSources, 'Page') &&
-        !!getConfigEnv(configValueSources, 'Page')?.client
+        isConfigSet(pageConfig, 'onRenderClient') &&
+        isConfigSet(pageConfig, 'Page') &&
+        !!getConfigEnv(pageConfig, 'Page')?.client
       )
     },
   },
@@ -256,10 +254,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { client: true },
     eager: true,
     _computed: (pageConfig): null | ConfigEnvInternal => {
-      const { configValueSources } = pageConfig
-      return !isConfigSet(configValueSources, 'onBeforeRender')
-        ? null
-        : getConfigEnv(configValueSources, 'onBeforeRender')
+      return !isConfigSet(pageConfig, 'onBeforeRender') ? null : getConfigEnv(pageConfig, 'onBeforeRender')
     },
   },
   // TO-DO/soon/cumulative-hooks: remove and replace with new computed prop `clientOnlyHooks: string[]` (see other TO-DO/soon/cumulative-hooks entries)
@@ -267,8 +262,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { client: true },
     eager: true,
     _computed: (pageConfig): null | ConfigEnvInternal => {
-      const { configValueSources } = pageConfig
-      return !isConfigSet(configValueSources, 'data') ? null : getConfigEnv(configValueSources, 'data')
+      return !isConfigSet(pageConfig, 'data') ? null : getConfigEnv(pageConfig, 'data')
     },
   },
   hooksTimeout: {
@@ -357,8 +351,8 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
 }
 
-function getConfigEnv(configValueSources: ConfigValueSources, configName: string): null | ConfigEnvInternal {
-  const configValueSource = getConfigValueSource(configValueSources, configName)
+function getConfigEnv(pageConfig: PageConfigBuildTimeBeforeComputed, configName: string): null | ConfigEnvInternal {
+  const configValueSource = getConfigValueSource(pageConfig, configName)
   if (!configValueSource) return null
   const { configEnv } = configValueSource
   const env: { client?: true; server?: true } = {}
@@ -366,12 +360,15 @@ function getConfigEnv(configValueSources: ConfigValueSources, configName: string
   if (configEnv.server) env.server = true
   return env
 }
-function isConfigSet(configValueSources: ConfigValueSources, configName: string): boolean {
-  const source = getConfigValueSource(configValueSources, configName)
+function isConfigSet(pageConfig: PageConfigBuildTimeBeforeComputed, configName: string): boolean {
+  const source = getConfigValueSource(pageConfig, configName)
   return !!source && !isConfigNull(source)
 }
-function getConfigValueSource(configValueSources: ConfigValueSources, configName: string): null | ConfigValueSource {
-  const sources = configValueSources[configName]
+function getConfigValueSource(
+  pageConfig: PageConfigBuildTimeBeforeComputed,
+  configName: string,
+): null | ConfigValueSource {
+  const sources = pageConfig.configValueSources[configName]
   if (!sources) return null
   const configValueSource = sources[0]
   assert(configValueSource)
