@@ -64,12 +64,12 @@ pages/admin-panel/+Layout.js
 pages/admin-panel/index/+Page.js    # URL: /admin-panel
 pages/admin-panel/users/+Page.js    # URL: /admin-panel/users
 ```
-> See <Link href="/config#inheritance" />.
 
 > The directory `(marketing)` is skipped by Filesystem Routing, see <Link href="/routing#filesystem-routing" />.
 
-> Setting a default `<Layout>` that is overridable isn't currently supported, see:
-> - [#1692 - New settings `clear` and `default` for controlling inheritance of cumulative configs](https://github.com/vikejs/vike/issues/1692)
+> You can use <Link href="/config#clear-js">`.clear.js`</Link> and <Link href="/config#default-js">`.default.js`</Link> to control the inheritance chain.
+
+> See also: <Link href="/config#inheritance"/>
 
 
 ## Nested
@@ -95,6 +95,9 @@ Here `pages/+Layout.js` applies to all pages, including the marketing and admin 
 >   </Layout>
 > </Layout>
 > ```
+>
+> You can use <Link href="/config#clear-js">`.clear.js`</Link> and <Link href="/config#default-js">`.default.js`</Link> to control the inheritance chain.
+
 
 You can also implement same-page navigations such as tabs:
 

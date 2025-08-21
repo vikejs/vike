@@ -1,8 +1,10 @@
 import { CodeBlockTransformer, Link } from '@brillout/docpress'
 
-Adding `.server.js` / `.client.js` / `.shared.js` to a file has following effect:
+Adding a filename suffix `.server.js` / `.client.js` / `.shared.js` to a file has following effect:
  - For all files, it *guarantees* in which environment the file is loaded.
  - For <Link href="/config#files">`+` files</Link>, it *determines* in which environment the file is loaded.
+
+See also <Link href="/config#clear-js" doNotInferSectionTitle noBreadcrumb /> and <Link href="/config#default-js" doNotInferSectionTitle noBreadcrumb />.
 
 ## For all files
 
@@ -60,9 +62,9 @@ For <Link href="/config#files">`+` files</Link>, the most common use case is to 
 >
 > ```ts
 > // /pages/product/@id/+config.ts
-> 
+>
 > import type { Config } from 'vike/types'
-> 
+>
 > export default {
 >   meta: {
 >     data: {
@@ -76,3 +78,10 @@ For <Link href="/config#files">`+` files</Link>, the most common use case is to 
 >   }
 > } satisfies Config
 > ```
+
+
+## See also
+
+- <Link href="/config#clear-js" doNotInferSectionTitle />
+- <Link href="/config#default-js" doNotInferSectionTitle />
+- <Link href="/meta" />
