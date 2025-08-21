@@ -23,6 +23,9 @@ function getConfigValueSourcesRelevant(configName: string, runtimeEnv: RuntimeEn
   let sourcesRelevant = pageConfig.configValueSources[configName]
   if (!sourcesRelevant) return []
 
+  // Ignore configs with value `undefined`
+  sourcesRelevant = sourcesRelevant.filter((source) => !isConfigUndefined(source))
+
   // Environment filtering
   sourcesRelevant = sourcesRelevant.filter((source) => isRuntimeEnvMatch(source.configEnv, runtimeEnv))
 
