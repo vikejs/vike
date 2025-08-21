@@ -71,6 +71,7 @@ type PageConfigPartial = Pick<
 function isOverridden(source: ConfigValueSource, configName: string, pageConfig: PageConfigPartial): boolean {
   const configDef = pageConfig.configDefinitions[configName]
   assert(configDef)
+  assert(configDef.cumulative)
   if (configDef.cumulative) return false
   const sources = pageConfig.configValueSources[configName]
   assert(sources)

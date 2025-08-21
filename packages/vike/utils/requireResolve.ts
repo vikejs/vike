@@ -1,8 +1,8 @@
 export { requireResolveOptional }
 export { requireResolveOptionalDir }
 export { requireResolveNpmPackage }
-export { requireResolveVikeDistFile }
-export { getVikeNodeModulesRoot }
+export { requireResolveDistFile }
+export { getPackageNodeModulesDirectory }
 
 import { assert } from './assert.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
@@ -126,11 +126,11 @@ function requireResolveNpmPackage({
   if (res.hasFailed) throw res.err
   return res.importPathResolvedFilePath
 }
-function requireResolveVikeDistFile(vikeDistFile: `dist/esm/${string}`) {
-  const vikeNodeModulesRoot = getVikeNodeModulesRoot()
-  assertPosixPath(vikeNodeModulesRoot)
-  assertPosixPath(vikeDistFile)
-  const importPathResolvedFilePath = makeNodeFriendly(path.posix.join(vikeNodeModulesRoot, vikeDistFile))
+function requireResolveDistFile(distFile: `dist/esm/${string}.js`) {
+  const packageNodeModulesDirectory = getPackageNodeModulesDirectory()
+  assertPosixPath(packageNodeModulesDirectory)
+  assertPosixPath(distFile)
+  const importPathResolvedFilePath = makeNodeFriendly(path.posix.join(packageNodeModulesDirectory, distFile))
 
   // Double check
   {
@@ -196,11 +196,12 @@ function addFileExtensionsToRequireResolve(require_: NodeJS.Require) {
   })
 }
 
-function getVikeNodeModulesRoot() {
-  // [RELATIVE_PATH_FROM_DIST] Current file: vike/dist/esm/utils/requireResolve.js
-  assert(importMetaUrl.includes('/dist/esm/') || importMetaUrl.includes('/dist/cjs/'))
-  const vikeNodeModulesRoot = path.posix.join(removeFilePrefix(importMetaUrl), '../../../../')
-  return vikeNodeModulesRoot
+function getPackageNodeModulesDirectory() {
+  // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/${packageName}/dist/esm/utils/requireResolve.js
+  assert(importMetaUrl.includes('/dist/esm/utils/') || importMetaUrl.includes('/dist/cjs/utils/'))
+  const packageNodeModulesDirectory = path.posix.join(removeFilePrefix(path.dirname(importMetaUrl)), '../../../')
+  // Return `node_modules/${packageName}/`
+  return packageNodeModulesDirectory
 }
 
 function getFakeImporterFile(dirPath: string) {

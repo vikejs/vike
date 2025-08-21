@@ -3,7 +3,7 @@ export { isPrerenderForceExit }
 
 import { build } from 'vite'
 import type { Environment, InlineConfig, Plugin, ResolvedConfig } from 'vite'
-import { assert, assertIsSingleModuleInstance, assertWarning, onSetupBuild } from '../../utils.js'
+import { assert, assertWarning, getGlobalObject, onSetupBuild } from '../../utils.js'
 import { isPrerenderAutoRunEnabled, wasPrerenderRun } from '../../../prerender/context.js'
 import type { VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { isViteCliCall, getViteConfigFromCli } from '../../shared/isViteCliCall.js'
@@ -15,8 +15,9 @@ import { handleAssetsManifest, handleAssetsManifest_assertUsageCssTarget } from 
 import { isViteClientSide, isViteServerSide_onlySsrEnv } from '../../shared/isViteServerSide.js'
 import { runPrerender_forceExit, runPrerenderFromAutoRun } from '../../../prerender/runPrerenderEntry.js'
 import { getManifestFilePathRelative } from '../../shared/getManifestFilePathRelative.js'
-assertIsSingleModuleInstance('build/pluginAutoFullBuild.ts')
-let forceExit = false
+const globalObject = getGlobalObject('build/pluginAutoFullBuild.ts', {
+  forceExit: false,
+})
 
 function pluginAutoFullBuild(): Plugin[] {
   let config: ResolvedConfig
@@ -61,7 +62,7 @@ function pluginAutoFullBuild(): Plugin[] {
           handleAssetsManifest_assertUsageCssTarget(config, this.environment)
           const vikeConfig = await getVikeConfigInternal()
           if (
-            forceExit &&
+            globalObject.forceExit &&
             // Let vike:build:pluginBuildApp force exit
             !vikeConfig.config.vite6BuilderApp
           ) {
@@ -98,7 +99,7 @@ async function triggerFullBuild(config: ResolvedConfig, viteEnv: Environment, bu
 
   if (isPrerenderAutoRunEnabled(vikeConfig)) {
     const res = await runPrerenderFromAutoRun(configInline)
-    forceExit = res.forceExit
+    globalObject.forceExit = res.forceExit
     assert(wasPrerenderRun())
   }
 }
@@ -140,7 +141,7 @@ function isEntirelyDisabled(vikeConfig: VikeConfigInternal): boolean {
 }
 
 function isPrerenderForceExit(): boolean {
-  return forceExit
+  return globalObject.forceExit
 }
 
 function getFullBuildInlineConfig(config: ResolvedConfig): InlineConfig {

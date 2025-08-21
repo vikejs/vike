@@ -2,6 +2,8 @@ export { assertVersion }
 export { isVersionOrAbove }
 
 import { assert, assertUsage } from './assert.js'
+import { assertIsNotBrowser } from './assertIsNotBrowser.js'
+assertIsNotBrowser()
 
 function assertVersion(
   dependencyName: 'Vite' | 'Node.js',

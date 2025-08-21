@@ -549,8 +549,8 @@ importers:
         specifier: ^19.1.0
         version: 19.1.0(react@19.1.0)
       telefunc:
-        specifier: ^0.1.70
-        version: 0.1.85(@babel/core@7.28.0)(@babel/parser@7.28.0)(@babel/types@7.28.1)(react-streaming@0.3.50(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
+        specifier: ^0.2.10
+        version: 0.2.10(@babel/core@7.28.0)(@babel/parser@7.28.0)(@babel/types@7.28.1)(react-streaming@0.4.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -792,8 +792,8 @@ importers:
         specifier: ^0.2.6
         version: 0.2.6
       '@brillout/json-serializer':
-        specifier: ^0.5.17
-        version: 0.5.17
+        specifier: ^0.5.20
+        version: 0.5.20
       '@brillout/picocolors':
         specifier: ^1.0.26
         version: 1.0.28
@@ -1231,8 +1231,8 @@ importers:
         specifier: ^19.1.0
         version: 19.1.0(react@19.1.0)
       telefunc:
-        specifier: ^0.1.70
-        version: 0.1.85(@babel/core@7.28.0)(@babel/parser@7.28.0)(@babel/types@7.28.1)(react-streaming@0.3.50(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
+        specifier: ^0.2.10
+        version: 0.2.10(@babel/core@7.28.0)(@babel/parser@7.28.0)(@babel/types@7.28.1)(react-streaming@0.4.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)(vite@6.0.0(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -1676,8 +1676,8 @@ importers:
         specifier: ^19.1.0
         version: 19.1.0(react@19.1.0)
       telefunc:
-        specifier: ^0.2.5
-        version: 0.2.5(@babel/core@7.28.0)(@babel/parser@7.28.0)(@babel/types@7.28.1)(react-streaming@0.4.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
+        specifier: ^0.2.10
+        version: 0.2.10(@babel/core@7.28.0)(@babel/parser@7.28.0)(@babel/types@7.28.1)(react-streaming@0.4.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.19.4))
       vike-react:
         specifier: ^0.6.5
         version: 0.6.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
@@ -2430,14 +2430,14 @@ packages:
   '@brillout/import@0.2.6':
     resolution: {integrity: sha512-1GUTmADc8trUC1YSW2lp9r6PmwluMoEyHajnE1kxVdbKGD0wJOlq/DvTWMUqLtBDCnQR+n//qgMtz6HwA/lotA==}
 
-  '@brillout/json-serializer@0.5.15':
-    resolution: {integrity: sha512-iLAyV1HNC3nG07ypBwCJohFrajY1HeZdfBBgGuRtMH/JPddgG9bPmoSI18A1RBx67vRmY6/8rgisjR5YfTvZHA==}
-
   '@brillout/json-serializer@0.5.16':
     resolution: {integrity: sha512-X9CujUMruFxH35cyFgzebg3biBBRz4ouMmjJZwIa04D188du0V47QFcIK7YXKl3z0pue+9NccQ+1zaxhB49r1Q==}
 
   '@brillout/json-serializer@0.5.17':
     resolution: {integrity: sha512-QDe1kMDj9qq+f/bmZKnKAeuVtqdqT1nc1nVrXotfJtUhh7Sqb369d/BKmHG7J/qOyQ87Y8P0Cl+GoZrhj9wQ6Q==}
+
+  '@brillout/json-serializer@0.5.20':
+    resolution: {integrity: sha512-RjRm7siy3VEB248gYudtWB4FZyoIL4kuA/HF3mM4ViAd1LT6Tl9eZsp5n0/hB5uM/C9JKICCNsJ6slNGgjdetA==}
 
   '@brillout/libassert@0.5.8':
     resolution: {integrity: sha512-u/fu+jTRUdNdbLONGq1plCfh+k2/XjSbGVTfnF3rHnSPZd+ABWp0XinR5ifrFkyGOzMbzv8IiQ44lZ4U6ZGrGA==}
@@ -2476,14 +2476,8 @@ packages:
     peerDependencies:
       typescript: '>=4.0.0'
 
-  '@brillout/vite-plugin-server-entry@0.5.8':
-    resolution: {integrity: sha512-Ug8CobLfbKJf3udr9v2PkzRkr69gn1jdE9k7u8n2Gizs/FhEM9Uudn3AsXXAikb4PONSGTqgj3CnEVchziDJQg==}
-
   '@brillout/vite-plugin-server-entry@0.7.12':
     resolution: {integrity: sha512-yh+tsIl2qpStgj1JofxC6tb1WoDYHGnth7XZtHou5baRkBE7DgmoCRIE+kw6S3511KwCMOcuBQSUszrYg5dLUw==}
-
-  '@brillout/vite-plugin-server-entry@0.7.9':
-    resolution: {integrity: sha512-mJrUakPTj8Zf3Pm4beKmHowfozHOLS/deMqheYYIlqK8FSR4Hd3vMeFQBL/rxLLd+svIlW/j2K3M2SVPDmvX7A==}
 
   '@cloudflare/kv-asset-handler@0.2.0':
     resolution: {integrity: sha512-MVbXLbTcAotOPUj0pAMhVtJ+3/kFkwJqc5qNOleOZTv6QkZZABDMS21dSrSlVswEHwrpWC03e4fWytjqKvuE2A==}
@@ -4111,8 +4105,8 @@ packages:
   '@ts-morph/common@0.11.1':
     resolution: {integrity: sha512-7hWZS0NRpEsNV8vWJzg7FEz6V8MaLNeJOmwmghqUXTpzk16V1LLZhdo+4QvE/+zv4cVci0OviuJFnqhEfoV3+g==}
 
-  '@ts-morph/common@0.20.0':
-    resolution: {integrity: sha512-7uKjByfbPpwuzkstL3L5MQyuXPSKdoNG93Fmi2JoDcTf3pEP731JdRFAduRVkOs8oqxPsXKA+ScrWkdQ8t/I+Q==}
+  '@ts-morph/common@0.27.0':
+    resolution: {integrity: sha512-Wf29UqxWDpc+i61k3oIOzcUfQt79PIT9y/MWfAGlrkjg6lBC1hwDECLXPVJAhWjiGbfBCxZd65F/LIZF3+jeJQ==}
 
   '@tsconfig/node10@1.0.11':
     resolution: {integrity: sha512-DcRjDCujK/kCk/cUe8Xz8ZSpm8mS3mNNpta+jGCA6USEDfktlNvm1+IuZ9eTcDbNk41BHwpHHeW+N1lKCz4zOw==}
@@ -5039,8 +5033,8 @@ packages:
   code-block-writer@10.1.1:
     resolution: {integrity: sha512-67ueh2IRGst/51p0n6FvPrnRjAGHY5F8xdjkgrYE7DDzpJe6qA07RYQ9VcoUeo5ATOjSOiWpSL3SWBRRbempMw==}
 
-  code-block-writer@12.0.0:
-    resolution: {integrity: sha512-q4dMFMlXtKR3XNBHyMHt/3pwYNA69EDk00lloMOaaUMKPUXBw6lpXtbu3MMVG6/uOihGnRDOlkyqsONEUj60+w==}
+  code-block-writer@13.0.3:
+    resolution: {integrity: sha512-Oofo0pq3IKnsFtuHqSF7TqBfr71aeyZDVJ0HpmqB7FBM2qEigL0iPONSCZSO9pE9dZTAxANe5XHG9Uy0YMv8cg==}
 
   collapse-white-space@2.1.0:
     resolution: {integrity: sha512-loKTxY1zCOuG4j9f6EPnuyyYkf58RnhhWTvRoZEokgB+WbdXehfjFviyOVYkqzEWz1Q5kRiZdBYS5SwxbQYwzw==}
@@ -6545,10 +6539,6 @@ packages:
   minimatch@3.1.2:
     resolution: {integrity: sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==}
 
-  minimatch@7.4.6:
-    resolution: {integrity: sha512-sBz8G/YjVniEz6lKPNpKxXwazJe4c19fEfV2GDMX6AjFz+MX9uDWIZW8XreVhkFW3fkIdTv/gxWr/Kks5FFAVw==}
-    engines: {node: '>=10'}
-
   minimatch@9.0.5:
     resolution: {integrity: sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow==}
     engines: {node: '>=16 || 14 >=14.17'}
@@ -6569,11 +6559,6 @@ packages:
 
   mkdirp@1.0.4:
     resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
-    engines: {node: '>=10'}
-    hasBin: true
-
-  mkdirp@2.1.6:
-    resolution: {integrity: sha512-+hEnITedc8LAtIP9u3HJDFIdcLV2vXP33sqLLIzkv1Db1zO/1OxbvYf0Y1OC/S/Qo5dxHXepofhmxL02PsKe+A==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -7049,12 +7034,6 @@ packages:
   react-refresh@0.17.0:
     resolution: {integrity: sha512-z6F7K9bV85EfseRCp2bzrpyQ0Gkw1uLoCel9XBVWPg/TjRj94SkJzUTGfOa4bs7iJvBWtQG0Wq7wnI0syw3EBQ==}
     engines: {node: '>=0.10.0'}
-
-  react-streaming@0.3.50:
-    resolution: {integrity: sha512-BRjWzY83dtnjgFUCYM0H2J3iRuYruE++/AidXmjxRclTsz1O/zBdUVgjAO2uKb05y/zybskcKjmK/5xyMc1MSg==}
-    peerDependencies:
-      react: '>=18'
-      react-dom: '>=18'
 
   react-streaming@0.4.3:
     resolution: {integrity: sha512-IGlnbchegC8RCoP0E8hnQiT4fBC7r4KmeKcZFb1PoAA5Yzfr9C+9PZh6i8o+PVSJq5YCptVX4YZDHkNIDCsaIA==}
@@ -7540,29 +7519,8 @@ packages:
     resolution: {integrity: sha512-5S7Va8hKfV7W5U6g3aYxXmlPoZVAwUMy9AOKyF2fVuZa2UD3qZjg578OrLRt8PcNN1PleVaL/5/yYATNL0ICUw==}
     engines: {node: '>=18'}
 
-  telefunc@0.1.85:
-    resolution: {integrity: sha512-NYP1qSAmNeTHGMvhD4mgnUoW2khW1Cw78R1Y2wHIGNKOQCyszHmgiHzpNCMepe2WkBBfJ/LgRraovV66j7wnhg==}
-    engines: {node: '>=12.19.0'}
-    peerDependencies:
-      '@babel/core': ^7.0.0
-      '@babel/parser': ^7.0.0
-      '@babel/types': ^7.0.0
-      react: ^18.0.0
-      react-streaming: ^0.3.3
-    peerDependenciesMeta:
-      '@babel/core':
-        optional: true
-      '@babel/parser':
-        optional: true
-      '@babel/types':
-        optional: true
-      react:
-        optional: true
-      react-streaming:
-        optional: true
-
-  telefunc@0.2.5:
-    resolution: {integrity: sha512-rlDc9yiGgyyKqCZD9mThfhYg/3CHNN4UhPOVYqqxPmlddH98Clab+vYkgDZwawPtcNMnko4o9HuHhiP1QLQ+6Q==}
+  telefunc@0.2.10:
+    resolution: {integrity: sha512-cQHlijLFGrD+pewFnbhToGCivCMAjjUHSeIIiayCzI+mBOgvuUElipmwxdxoQ0N0M4x4TVTOQY8CMALt/IRgNA==}
     engines: {node: '>=12.19.0'}
     peerDependencies:
       '@babel/core': '>=7.0.0'
@@ -7570,6 +7528,7 @@ packages:
       '@babel/types': '>=7.0.0'
       react: '>=18.0.0'
       react-streaming: '>=0.3.3'
+      vite: '>=6.0.0'
     peerDependenciesMeta:
       '@babel/core':
         optional: true
@@ -7580,6 +7539,8 @@ packages:
       react:
         optional: true
       react-streaming:
+        optional: true
+      vite:
         optional: true
 
   terser-webpack-plugin@5.3.10:
@@ -7683,8 +7644,8 @@ packages:
   ts-morph@12.0.0:
     resolution: {integrity: sha512-VHC8XgU2fFW7yO1f/b3mxKDje1vmyzFXHWzOYmKEkCEwcLjDtbdLgBQviqj4ZwP4MJkQtRo6Ha2I29lq/B+VxA==}
 
-  ts-morph@19.0.0:
-    resolution: {integrity: sha512-D6qcpiJdn46tUqV45vr5UGM2dnIEuTGNxVhg0sk5NX11orcouwj6i1bMqZIz2mZTZB1Hcgy7C3oEVhAT+f6mbQ==}
+  ts-morph@26.0.0:
+    resolution: {integrity: sha512-ztMO++owQnz8c/gIENcM9XfCEzgoGphTv+nKpYNM1bgsdOVC/jRZuEBf6N+mLLDNg68Kl+GgUZfOySaRiG1/Ug==}
 
   ts-node@10.9.1:
     resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
@@ -8879,11 +8840,11 @@ snapshots:
 
   '@brillout/import@0.2.6': {}
 
-  '@brillout/json-serializer@0.5.15': {}
-
   '@brillout/json-serializer@0.5.16': {}
 
   '@brillout/json-serializer@0.5.17': {}
+
+  '@brillout/json-serializer@0.5.20': {}
 
   '@brillout/libassert@0.5.8': {}
 
@@ -8935,17 +8896,7 @@ snapshots:
       source-map-support: 0.5.21
       typescript: 5.9.2
 
-  '@brillout/vite-plugin-server-entry@0.5.8':
-    dependencies:
-      '@brillout/import': 0.2.6
-      '@brillout/picocolors': 1.0.28
-
   '@brillout/vite-plugin-server-entry@0.7.12':
-    dependencies:
-      '@brillout/import': 0.2.6
-      '@brillout/picocolors': 1.0.28
-
-  '@brillout/vite-plugin-server-entry@0.7.9':
     dependencies:
       '@brillout/import': 0.2.6
       '@brillout/picocolors': 1.0.28
@@ -10180,11 +10131,10 @@ snapshots:
       mkdirp: 1.0.4
       path-browserify: 1.0.1
 
-  '@ts-morph/common@0.20.0':
+  '@ts-morph/common@0.27.0':
     dependencies:
       fast-glob: 3.3.3
-      minimatch: 7.4.6
-      mkdirp: 2.1.6
+      minimatch: 10.0.1
       path-browserify: 1.0.1
 
   '@tsconfig/node10@1.0.11': {}
@@ -11597,7 +11547,7 @@ snapshots:
 
   code-block-writer@10.1.1: {}
 
-  code-block-writer@12.0.0: {}
+  code-block-writer@13.0.3: {}
 
   collapse-white-space@2.1.0: {}
 
@@ -13516,10 +13466,6 @@ snapshots:
     dependencies:
       brace-expansion: 1.1.11
 
-  minimatch@7.4.6:
-    dependencies:
-      brace-expansion: 2.0.1
-
   minimatch@9.0.5:
     dependencies:
       brace-expansion: 2.0.1
@@ -13536,8 +13482,6 @@ snapshots:
   mitt@3.0.1: {}
 
   mkdirp@1.0.4: {}
-
-  mkdirp@2.1.6: {}
 
   mkdirp@3.0.1: {}
 
@@ -13940,16 +13884,6 @@ snapshots:
       redux: 5.0.1
 
   react-refresh@0.17.0: {}
-
-  react-streaming@0.3.50(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
-    dependencies:
-      '@brillout/import': 0.2.6
-      '@brillout/json-serializer': 0.5.17
-      '@brillout/picocolors': 1.0.28
-      isbot-fast: 1.2.0
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
-    optional: true
 
   react-streaming@0.4.3(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
@@ -14562,36 +14496,56 @@ snapshots:
       mkdirp: 3.0.1
       yallist: 5.0.0
 
-  telefunc@0.1.85(@babel/core@7.28.0)(@babel/parser@7.28.0)(@babel/types@7.28.1)(react-streaming@0.3.50(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0):
+  telefunc@0.2.10(@babel/core@7.28.0)(@babel/parser@7.28.0)(@babel/types@7.28.1)(react-streaming@0.4.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)(vite@6.0.0(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)):
     dependencies:
       '@brillout/import': 0.2.6
-      '@brillout/json-serializer': 0.5.15
+      '@brillout/json-serializer': 0.5.20
       '@brillout/picocolors': 1.0.28
-      '@brillout/vite-plugin-server-entry': 0.5.8
-      es-module-lexer: 1.7.0
-      ts-morph: 19.0.0
-    optionalDependencies:
-      '@babel/core': 7.28.0
-      '@babel/parser': 7.28.0
-      '@babel/types': 7.28.1
-      react: 19.1.0
-      react-streaming: 0.3.50(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-
-  telefunc@0.2.5(@babel/core@7.28.0)(@babel/parser@7.28.0)(@babel/types@7.28.1)(react-streaming@0.4.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0):
-    dependencies:
-      '@brillout/import': 0.2.6
-      '@brillout/json-serializer': 0.5.15
-      '@brillout/picocolors': 1.0.28
-      '@brillout/vite-plugin-server-entry': 0.7.9
+      '@brillout/vite-plugin-server-entry': 0.7.12
       es-module-lexer: 1.7.0
       magic-string: 0.30.17
-      ts-morph: 19.0.0
+      ts-morph: 26.0.0
     optionalDependencies:
       '@babel/core': 7.28.0
       '@babel/parser': 7.28.0
       '@babel/types': 7.28.1
       react: 19.1.0
       react-streaming: 0.4.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      vite: 6.0.0(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
+
+  telefunc@0.2.10(@babel/core@7.28.0)(@babel/parser@7.28.0)(@babel/types@7.28.1)(react-streaming@0.4.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.19.4)):
+    dependencies:
+      '@brillout/import': 0.2.6
+      '@brillout/json-serializer': 0.5.20
+      '@brillout/picocolors': 1.0.28
+      '@brillout/vite-plugin-server-entry': 0.7.12
+      es-module-lexer: 1.7.0
+      magic-string: 0.30.17
+      ts-morph: 26.0.0
+    optionalDependencies:
+      '@babel/core': 7.28.0
+      '@babel/parser': 7.28.0
+      '@babel/types': 7.28.1
+      react: 19.1.0
+      react-streaming: 0.4.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      vite: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.19.4)
+
+  telefunc@0.2.10(@babel/core@7.28.0)(@babel/parser@7.28.0)(@babel/types@7.28.1)(react-streaming@0.4.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)):
+    dependencies:
+      '@brillout/import': 0.2.6
+      '@brillout/json-serializer': 0.5.20
+      '@brillout/picocolors': 1.0.28
+      '@brillout/vite-plugin-server-entry': 0.7.12
+      es-module-lexer: 1.7.0
+      magic-string: 0.30.17
+      ts-morph: 26.0.0
+    optionalDependencies:
+      '@babel/core': 7.28.0
+      '@babel/parser': 7.28.0
+      '@babel/types': 7.28.1
+      react: 19.1.0
+      react-streaming: 0.4.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      vite: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
   terser-webpack-plugin@5.3.10(webpack@5.97.1):
     dependencies:
@@ -14672,10 +14626,10 @@ snapshots:
       '@ts-morph/common': 0.11.1
       code-block-writer: 10.1.1
 
-  ts-morph@19.0.0:
+  ts-morph@26.0.0:
     dependencies:
-      '@ts-morph/common': 0.20.0
-      code-block-writer: 12.0.0
+      '@ts-morph/common': 0.27.0
+      code-block-writer: 13.0.3
 
   ts-node@10.9.1(@swc/core@1.13.3)(@types/node@16.18.11)(typescript@4.9.5):
     dependencies:

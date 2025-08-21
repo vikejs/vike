@@ -1,8 +1,8 @@
 export { isScriptFile }
 export { isPlainScriptFile }
 export { isTemplateFile }
-export { scriptFileExtensionPattern }
 export { scriptFileExtensionList }
+export { scriptFileExtensionPattern }
 
 // We can't use a RegExp:
 //  - Needs to work with Micromatch: https://github.com/micromatch/micromatch because:
