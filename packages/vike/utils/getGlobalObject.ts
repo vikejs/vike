@@ -2,7 +2,7 @@ export { getGlobalObject }
 export { assertIsSingleModuleInstance }
 
 import { assert } from './assert.js'
-import type { VikeInternalGlobal } from '../types/VikeInternalGlobal.js'
+import type { VikeGlobalInternal } from '../types/VikeGlobalInternal.js'
 
 // We use the file name and file directory as key: there should be only one getGlobalObject() usage per file.
 type ModuleId = `${string}.ts`
@@ -27,5 +27,5 @@ function getGlobals() {
   return globalThis._vike.globals
 }
 declare global {
-  var _vike: VikeInternalGlobal
+  var _vike: VikeGlobalInternal
 }

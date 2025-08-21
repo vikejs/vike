@@ -1,4 +1,4 @@
-export type VikeInternalGlobal =
+export type VikeGlobalInternal =
   | undefined
   | {
       globals?: Record<string, Record<string, unknown> | true>
