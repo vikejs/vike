@@ -18,7 +18,7 @@ function getGlobalObject<T extends Record<string, unknown> = never>(moduleId: Mo
 function assertIsSingleModuleInstance(moduleId: ModuleId): void {
   const globals = getGlobals()
   assert(!(moduleId in globals))
-  // globals[moduleId] = true
+  globals[moduleId] = true
 }
 
 function getGlobals() {
