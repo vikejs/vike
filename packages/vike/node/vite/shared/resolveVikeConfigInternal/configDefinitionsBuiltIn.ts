@@ -5,12 +5,7 @@ export type { ConfigDefinitionsInternal }
 export type { ConfigDefinitionInternal }
 export type { ConfigEffect }
 
-import type {
-  ConfigEnvInternal,
-  ConfigEnv,
-  DefinedAtFilePath,
-  ConfigValueSource,
-} from '../../../../types/PageConfig.js'
+import type { ConfigEnvInternal, ConfigEnv, DefinedAtFilePath } from '../../../../types/PageConfig.js'
 import type { Config, ConfigNameBuiltIn, ConfigNameGlobal } from '../../../../types/Config.js'
 import { assert, assertUsage } from '../../utils.js'
 import { getConfigDefinedAt, type ConfigDefinedAt } from '../../../../shared/page-configs/getConfigDefinedAt.js'
@@ -351,9 +346,9 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
 }
 
 function getConfigEnv(pageConfig: PageConfigBuildTimeBeforeComputed, configName: string): null | ConfigEnvInternal {
-  const configValueSource = getConfigValueSourceRelevantAnyEnv(configName, pageConfig)
-  if (!configValueSource) return null
-  const { configEnv } = configValueSource
+  const source = getConfigValueSourceRelevantAnyEnv(configName, pageConfig)
+  if (!source) return null
+  const { configEnv } = source
   const env: { client?: true; server?: true } = {}
   if (configEnv.client) env.client = true
   if (configEnv.server) env.server = true
