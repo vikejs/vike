@@ -8,12 +8,9 @@ declare global {
       settingCumulative?: { nested: string }
       settingWithEffect?: boolean
       dependentSetting?: string
-      // For default/clear tests
-      settingCumulativeString?: string
     }
     interface ConfigResolved {
       settingCumulative?: { nested: string }[]
-      settingCumulativeString?: string[]
     }
   }
 }

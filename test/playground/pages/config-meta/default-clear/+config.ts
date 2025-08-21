@@ -9,3 +9,15 @@ export default {
     },
   },
 } satisfies Config
+
+declare global {
+  namespace Vike {
+    interface Config {
+      // For default/clear tests
+      settingCumulativeString?: string
+    }
+    interface ConfigResolved {
+      settingCumulativeString?: string[]
+    }
+  }
+}
