@@ -25,9 +25,6 @@ function getConfigValueSourcesRelevant(configName: string, runtimeEnv: RuntimeEn
     } else {
       assert(sourcesRelevant.length === 0)
     }
-  } else {
-    // isOverridden() must be called before isRuntimeEnvMatch() is called (otherwise isOverridden() will return a wrong value)
-    sourcesRelevant = sourcesRelevant.filter((source) => !isOverridden(source, configName, pageConfig))
   }
 
   sourcesRelevant = sourcesRelevant.filter((source) => isRuntimeEnvMatch(source.configEnv, runtimeEnv))
@@ -64,14 +61,3 @@ type PageConfigPartial = Pick<
   PageConfigBuildTime | PageConfigGlobalBuildTime,
   'configValueSources' | 'configDefinitions'
 >
-function isOverridden(source: ConfigValueSource, configName: string, pageConfig: PageConfigPartial): boolean {
-  const configDef = pageConfig.configDefinitions[configName]
-  assert(configDef)
-  assert(configDef.cumulative)
-  if (configDef.cumulative) return false
-  const sources = pageConfig.configValueSources[configName]
-  assert(sources)
-  const idx = sources.indexOf(source)
-  assert(idx >= 0)
-  return idx > 0
-}
