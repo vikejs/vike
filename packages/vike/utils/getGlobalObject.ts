@@ -15,14 +15,14 @@ function getGlobalObject<T extends Record<string, unknown> = never>(moduleId: Mo
 
 /** Assert that the module is instantiated only once. */
 function assertIsSingleModuleInstance(moduleId: ModuleId): void {
-  const globalObjects = getGlobals()
-  assert(!(moduleId in globalObjects))
+  const globals = getGlobals()
+  assert(!(moduleId in globals))
 }
 
 function getGlobals() {
   globalThis._vike ??= {}
   globalThis._vike.globals ??= {}
-  return globalThis._vike.globals!
+  return globalThis._vike.globals
 }
 declare global {
   var _vike: {
