@@ -17,6 +17,7 @@ function getGlobalObject<T extends Record<string, unknown> = never>(moduleId: Mo
 function assertIsSingleModuleInstance(moduleId: ModuleId): void {
   const globals = getGlobals()
   assert(!(moduleId in globals))
+  globals[moduleId] = true
 }
 
 function getGlobals() {
@@ -26,6 +27,6 @@ function getGlobals() {
 }
 declare global {
   var _vike: {
-    globals?: Record<string, Record<string, unknown>>
+    globals?: Record<string, Record<string, unknown> | true>
   }
 }
