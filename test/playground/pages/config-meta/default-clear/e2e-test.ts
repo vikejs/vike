@@ -4,7 +4,7 @@ import { expect, test } from '@brillout/test-e2e'
 import { retrievePageContext } from '../retrievePageContext'
 
 function testDefaultAndClearSuffixes() {
-  test('default suffix acts as fallback; clear suffix resets ancestry', async () => {
+  test('.clear.js and .default.js', async () => {
     expect(await retrievePageContext('/config-meta/default-clear')).to.deep.equal({
       settingCumulativeString: ['default-root'],
     })
