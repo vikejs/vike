@@ -46,7 +46,7 @@ function getConfigValueSourcesRelevant(
 
   // Overriding - cumulative configs
   if (configDef.cumulative && sourcesRelevant.length > 0) {
-    sourcesRelevant = applyCumulativeSuffixModifiers(sourcesRelevant)
+    sourcesRelevant = applyFilenameSuffix(sourcesRelevant)
   }
 
   return sourcesRelevant
@@ -111,7 +111,7 @@ function isConfigSourceValueNull(source: ConfigValueSource) {
   return source.value === null
 }
 
-function applyCumulativeSuffixModifiers(sourcesRelevant: ConfigValueSource[]) {
+function applyFilenameSuffix(sourcesRelevant: ConfigValueSource[]) {
   const getFileName = (source: ConfigValueSource) => source.plusFile?.filePath.fileName ?? ''
 
   // Apply `clear`: truncate at first clear file
