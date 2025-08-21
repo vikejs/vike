@@ -13,7 +13,7 @@ export { getHttpRequestAsyncStore }
 export { installHttpRequestAsyncStore }
 
 import { renderPage_addAsyncHookwrapper } from '../../runtime/renderPage.js'
-import { assert, assertIsNotProductionRuntime, isObject, unique } from '../utils.js'
+import { assert, assertIsNotProductionRuntime, getGlobalObject, isObject, unique } from '../utils.js'
 import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hooks'
 import { getConfigBuildErrorFormatted } from './resolveVikeConfigInternal/transpileAndExecuteFile.js'
 import { logErrorDebugNote } from './loggerNotProd.js'
@@ -29,7 +29,9 @@ type HttpRequestAsyncStore = {
   markErrorAsLogged: (err: unknown) => void
   errorDebugNoteAlreadyShown: boolean
 }
-let asyncLocalStorage: null | AsyncLocalStorageType<HttpRequestAsyncStore> = null
+const globalObject = getGlobalObject('getHttpRequestAsyncStore.ts', {
+  asyncLocalStorage: null as AsyncLocalStorageType<HttpRequestAsyncStore> | null,
+})
 
 async function installHttpRequestAsyncStore(): Promise<void> {
   let mod: typeof import('node:async_hooks')
@@ -38,9 +40,9 @@ async function installHttpRequestAsyncStore(): Promise<void> {
   } catch {
     return
   }
-  asyncLocalStorage = new mod.AsyncLocalStorage()
+  globalObject.asyncLocalStorage = new mod.AsyncLocalStorage()
   renderPage_addAsyncHookwrapper(async (httpRequestId, renderPage) => {
-    assert(asyncLocalStorage)
+    assert(globalObject.asyncLocalStorage)
 
     const loggedErrors = new Set<unknown>()
     const markErrorAsLogged = (err: unknown) => {
@@ -67,15 +69,15 @@ async function installHttpRequestAsyncStore(): Promise<void> {
       shouldErrorBeSwallowed,
       errorDebugNoteAlreadyShown: false,
     }
-    const pageContextReturn = await asyncLocalStorage.run(store, renderPage)
+    const pageContextReturn = await globalObject.asyncLocalStorage.run(store, renderPage)
     return { pageContextReturn }
   })
   return
 }
 
 function getHttpRequestAsyncStore(): null | undefined | HttpRequestAsyncStore {
-  if (asyncLocalStorage === null) return null
-  const store = asyncLocalStorage.getStore()
+  if (globalObject.asyncLocalStorage === null) return null
+  const store = globalObject.asyncLocalStorage.getStore()
   assert(store === undefined || isObject(store))
   return store
 }

@@ -6,7 +6,6 @@ import {
   assertPosixPath,
   assert,
   scriptFileExtensionPattern,
-  assertIsSingleModuleInstance,
   assertIsNotProductionRuntime,
   isVersionOrAbove,
   isScriptFile,
@@ -18,6 +17,7 @@ import {
   assertWarning,
   hasProp,
   isNotNullish,
+  getGlobalObject,
 } from '../../utils.js'
 import path from 'node:path'
 import { glob } from 'tinyglobby'
@@ -32,8 +32,9 @@ const execA = promisify(exec)
 const debug = createDebugger('vike:crawl')
 
 assertIsNotProductionRuntime()
-assertIsSingleModuleInstance('getVikeConfig/crawlPlusFiles.ts')
-let gitIsNotUsable = false
+const globalObject = getGlobalObject('getVikeConfig/crawlPlusFiles.ts', {
+  gitIsNotUsable: false,
+})
 
 async function crawlPlusFiles(userRootDir: string): Promise<{ filePathAbsoluteUserRootDir: string }[]> {
   assertPosixPath(userRootDir)
@@ -77,7 +78,7 @@ async function crawlPlusFiles(userRootDir: string): Promise<{ filePathAbsoluteUs
 
 // Same as tinyglobby() but using `$ git ls-files`
 async function gitLsFiles(userRootDir: string, ignorePatterns: string[], ignoreMatchers: Matcher[]) {
-  if (gitIsNotUsable) return null
+  if (globalObject.gitIsNotUsable) return null
 
   // Preserve UTF-8 file paths.
   // https://github.com/vikejs/vike/issues/1658
@@ -114,7 +115,7 @@ async function gitLsFiles(userRootDir: string, ignorePatterns: string[], ignoreM
     ])
   } catch (err) {
     if (await isGitNotUsable(userRootDir)) {
-      gitIsNotUsable = true
+      globalObject.gitIsNotUsable = true
       return null
     }
     throw err

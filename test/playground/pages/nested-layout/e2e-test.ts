@@ -62,6 +62,3 @@ async function nav(href: `/${string}`) {
     { timeout: 5000 },
   )
 }
-declare global {
-  var _vike: { fullyRenderedUrl?: string } | undefined
-}
