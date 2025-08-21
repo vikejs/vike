@@ -104,7 +104,7 @@ import { getProxyForPublicUsage } from '../../../shared/getProxyForPublicUsage.j
 import { setVikeConfigError } from '../../shared/getVikeConfigError.js'
 assertIsNotProductionRuntime()
 
-const globalObject = getGlobalObject('v1-design/getVikeConfig.ts', {
+const globalObject = getGlobalObject('vite/shared/resolveVikeConfigInternal.ts', {
   restartVite: false,
   vikeConfigHasBuildError: null as boolean | null,
   isV1Design_: null as boolean | null,
@@ -114,7 +114,6 @@ const globalObject = getGlobalObject('v1-design/getVikeConfig.ts', {
   vikeConfigCtx: null as VikeConfigContext | null, // Information provided by Vite's `config` and Vike's CLI. We could, if we want or need to, completely remove the dependency on Vite.
   prerenderContext: null as null | PrerenderContext,
 })
-
 type VikeConfigContext = { userRootDir: string; isDev: boolean; vikeVitePluginOptions: unknown }
 type PrerenderContext = {
   isPrerenderingEnabled: boolean
