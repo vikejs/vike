@@ -10,10 +10,9 @@ import type {
   PageConfigBuildTime,
   PageConfigGlobalBuildTime,
 } from '../../../../types/PageConfig.js'
-import { assert, assertIsNotBrowser, assertIsNotProductionRuntime } from '../../utils.js'
+import { assert, assertIsNotBrowser } from '../../utils.js'
 
 assertIsNotBrowser()
-assertIsNotProductionRuntime()
 
 type RuntimeEnv = { isForClientSide: boolean; isClientRouting: boolean; isDev?: boolean } | { isForConfig: true }
 
