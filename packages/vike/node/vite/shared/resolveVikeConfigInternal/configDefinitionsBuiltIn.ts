@@ -12,7 +12,7 @@ import { getConfigDefinedAt, type ConfigDefinedAt } from '../../../../shared/pag
 import {
   getConfigValueSourceRelevantAnyEnv,
   getConfigValueSourcesRelevant,
-  isConfigNull,
+  isSourceValueNull,
 } from '../../plugins/pluginVirtualFiles/getConfigValueSourcesRelevant.js'
 import type { PageConfigBuildTimeBeforeComputed } from '../resolveVikeConfigInternal.js'
 
@@ -214,7 +214,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
         // Server-only
         .filter((source) => !source.configEnv.client)
         // Config value isn't `null`
-        .filter((source) => !isConfigNull(source))
+        .filter((source) => !isSourceValueNull(source))
       return sources.length > 0
     },
   },

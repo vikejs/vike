@@ -1,7 +1,7 @@
 export { getConfigValueSourcesRelevant }
 export { getConfigValueSourceRelevantAnyEnv }
 export { isRuntimeEnvMatch }
-export { isConfigNull }
+export { isSourceValueNull }
 export type { RuntimeEnv }
 
 import type {
@@ -64,7 +64,7 @@ function getConfigValueSourceRelevantAnyEnv(
   const source = sourcesRelevant[0]
   if (!source) return null
 
-  if (isConfigNull(source)) return null
+  if (isSourceValueNull(source)) return null
 
   return source
 }
@@ -101,7 +101,7 @@ function isConfigUndefined(source: ConfigValueSource): null | boolean {
 }
 
 // Setting a config to `null` enables the user to suppress inherited config by overriding it with `null` (this only works when setting the config value to `null` inside a +config.js file — it doesn't work when setting the config value to `null` with a +{configName}.js file).
-function isConfigNull(source: ConfigValueSource) {
+function isSourceValueNull(source: ConfigValueSource) {
   if (!source.valueIsLoaded) return null
   return source.value === null
 }
