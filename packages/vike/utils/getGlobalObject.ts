@@ -17,7 +17,7 @@ function getGlobalObject<T extends Record<string, unknown> = never>(moduleId: Mo
 /** Assert that the module is instantiated only once. */
 function assertIsSingleModuleInstance(moduleId: ModuleId): void {
   const globals = getGlobals()
-  assert(!(moduleId in globals))
+  assert(!(moduleId in globals), moduleId)
   globals[moduleId] = true
 }
 
