@@ -68,7 +68,10 @@ import { resolveRedirects } from './renderPage/resolveRedirects.js'
 import type { PageContextInternalServer } from '../../types/PageContext.js'
 import { getVikeConfigError } from '../shared/getVikeConfigError.js'
 
-const globalObject = getGlobalObject('runtime/renderPage.ts', { httpRequestsCount: 0 })
+const globalObject = getGlobalObject('runtime/renderPage.ts', {
+  httpRequestsCount: 0,
+  asyncHookWrapper: getFallbackAsyncHookWrapper(),
+})
 
 type PageContextAfterRender = { httpResponse: HttpResponse } & Partial<PageContextInternalServer>
 type PageContextInit = Pick<PageContextInternalServer, 'urlOriginal' | 'headersOriginal'> & {
@@ -98,7 +101,7 @@ async function renderPage<PageContextUserAdded extends {}, PageContextInitUser e
   const urlOriginalPretty = getUrlPretty(pageContextInit.urlOriginal)
   logHttpRequest(urlOriginalPretty, httpRequestId)
 
-  const { pageContextReturn } = await asyncHookWrapper(httpRequestId, () =>
+  const { pageContextReturn } = await globalObject.asyncHookWrapper(httpRequestId, () =>
     renderPagePrepare(pageContextInit, httpRequestId),
   )
 
@@ -110,12 +113,14 @@ async function renderPage<PageContextUserAdded extends {}, PageContextInitUser e
 }
 
 // Fallback wrapper if node:async_hooks isn't available
-let asyncHookWrapper = async <PageContext>(_httpRequestId: number, ret: () => Promise<PageContext>) => ({
-  pageContextReturn: await ret(),
-})
+function getFallbackAsyncHookWrapper() {
+  return async <PageContext>(_httpRequestId: number, ret: () => Promise<PageContext>) => ({
+    pageContextReturn: await ret(),
+  })
+}
 // Add node:async_hooks wrapper
-function renderPage_addAsyncHookwrapper(wrapper: typeof asyncHookWrapper) {
-  asyncHookWrapper = wrapper
+function renderPage_addAsyncHookwrapper(wrapper: typeof globalObject.asyncHookWrapper) {
+  globalObject.asyncHookWrapper = wrapper
 }
 
 async function renderPagePrepare(
