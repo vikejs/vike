@@ -11,7 +11,6 @@ import type {
   ConfigValueSources,
   DefinedAtFilePath,
   ConfigValueSource,
-  PageConfigBuildTime,
 } from '../../../../types/PageConfig.js'
 import type { Config, ConfigNameBuiltIn, ConfigNameGlobal } from '../../../../types/Config.js'
 import { assert, assertUsage } from '../../utils.js'
@@ -20,6 +19,7 @@ import {
   getConfigValueSourcesRelevant,
   isConfigNull,
 } from '../../plugins/pluginVirtualFiles/getConfigValueSourcesRelevant.js'
+import type { PageConfigBuildTimeBeforeComputed } from '../resolveVikeConfigInternal.js'
 
 // For users
 /** The meta definition of a config.
@@ -90,7 +90,7 @@ type ConfigEffect = (config: {
 
 /** For Vike internal use */
 type ConfigDefinitionInternal = Omit<ConfigDefinition_, 'env'> & {
-  _computed?: (pageConfig: Omit<PageConfigBuildTime, 'configValuesComputed'>) => unknown
+  _computed?: (pageConfig: PageConfigBuildTimeBeforeComputed) => unknown
   _valueIsFilePath?: true
   _userEffectDefinedAtFilePath?: DefinedAtFilePath
   env: ConfigEnvInternal
