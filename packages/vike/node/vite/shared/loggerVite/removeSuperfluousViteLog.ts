@@ -2,13 +2,14 @@ export { removeSuperfluousViteLog }
 export { removeSuperfluousViteLog_enable }
 export { removeSuperfluousViteLog_disable }
 
-import { assert } from '../../utils.js'
-
+import { assert, getGlobalObject } from '../../utils.js'
+const globalObject = getGlobalObject('removeSuperfluousViteLog.ts', {
+  enabled: false,
+})
 const superfluousLog = 'Forced re-optimization of dependencies'
-let enabled = false
 
 function removeSuperfluousViteLog(msg: string): boolean {
-  if (!enabled) {
+  if (!globalObject.enabled) {
     return false
   }
   if (msg.toLowerCase().includes('forced') && msg.toLowerCase().includes('optimization')) {
@@ -18,8 +19,8 @@ function removeSuperfluousViteLog(msg: string): boolean {
   return false
 }
 function removeSuperfluousViteLog_enable(): void {
-  enabled = true
+  globalObject.enabled = true
 }
 function removeSuperfluousViteLog_disable(): void {
-  enabled = false
+  globalObject.enabled = false
 }
