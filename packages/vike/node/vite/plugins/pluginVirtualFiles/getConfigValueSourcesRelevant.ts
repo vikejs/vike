@@ -17,8 +17,10 @@ function getConfigValueSourcesRelevant(configName: string, runtimeEnv: RuntimeEn
   let sourcesRelevant = pageConfig.configValueSources[configName]
   if (!sourcesRelevant) return []
 
+  // Environment filtering
   sourcesRelevant = sourcesRelevant.filter((source) => isRuntimeEnvMatch(source.configEnv, runtimeEnv))
 
+  // Overriding
   if (!configDef.cumulative && sourcesRelevant.length > 1) {
     const source = sourcesRelevant[0]
     assert(source)
