@@ -112,15 +112,15 @@ async function renderPage<PageContextUserAdded extends {}, PageContextInitUser e
   return pageContextReturn as any
 }
 
+// Add node:async_hooks wrapper
+function renderPage_addAsyncHookwrapper(wrapper: typeof globalObject.asyncHookWrapper) {
+  globalObject.asyncHookWrapper = wrapper
+}
 // Fallback wrapper if node:async_hooks isn't available
 function getFallbackAsyncHookWrapper() {
   return async <PageContext>(_httpRequestId: number, ret: () => Promise<PageContext>) => ({
     pageContextReturn: await ret(),
   })
-}
-// Add node:async_hooks wrapper
-function renderPage_addAsyncHookwrapper(wrapper: typeof globalObject.asyncHookWrapper) {
-  globalObject.asyncHookWrapper = wrapper
 }
 
 async function renderPagePrepare(
