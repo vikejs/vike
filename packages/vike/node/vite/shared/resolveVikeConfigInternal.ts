@@ -104,9 +104,6 @@ import { getProxyForPublicUsage } from '../../../shared/getProxyForPublicUsage.j
 import { setVikeConfigError } from '../../shared/getVikeConfigError.js'
 assertIsNotProductionRuntime()
 
-// We can simply use global variables since Vike's config is:
-//  - global
-//  - independent of Vite (therefore we don't need to tie Vike's config with Vite's `config` object)
 const globalObject = getGlobalObject('v1-design/getVikeConfig.ts', {
   restartVite: false,
   vikeConfigHasBuildError: null as boolean | null,
