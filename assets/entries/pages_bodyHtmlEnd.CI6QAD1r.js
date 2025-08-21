@@ -1,0 +1,80 @@
+import{o as r,a as o}from"../chunks/chunk-BublKjzk.js";import{j as e}from"../chunks/chunk-CJTbNtwT.js";import{L as n}from"../chunks/chunk-BveX4gYU.js";/* empty css                      */import{W as a}from"../chunks/chunk-BmReERWE.js";/* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      */import{P as i}from"../chunks/chunk-DWSFaklF.js";/* empty css                      *//* empty css                      *//* empty css                      */import"../chunks/chunk-BcE1GKJ9.js";/* empty css                      */const d=[{pageSectionId:"use-cases",pageSectionLevel:2,pageSectionTitle:"Use cases"},{pageSectionId:"react",pageSectionLevel:3,pageSectionTitle:"React"},{pageSectionId:"vue",pageSectionLevel:3,pageSectionTitle:"Vue"},{pageSectionId:"see-also",pageSectionLevel:2,pageSectionTitle:"See also"}];function t(l){const s={a:"a",blockquote:"blockquote",br:"br",code:"code",figure:"figure",li:"li",p:"p",pre:"pre",span:"span",ul:"ul",...l.components};return e.jsxs(e.Fragment,{children:[e.jsxs(s.p,{children:["Environment: server",e.jsx(s.br,{}),`
+`,e.jsx(n,{href:"/config#cumulative",children:"Cumulative"}),": true",e.jsx(s.br,{}),`
+`,e.jsx(n,{href:"/config#global",children:"Global"}),": true"]}),`
+`,e.jsx(i,{list:["vike-vue","vike-react"],noCustomGuide:!0,children:e.jsx(s.code,{children:"bodyHtmlEnd"})}),`
+`,e.jsxs(s.p,{children:["The settings ",e.jsx(s.code,{children:"bodyHtmlEnd"}),"/",e.jsx(n,{href:"/bodyHtmlBegin"})," enable you to insert HTML at the beginning/end of the ",e.jsx(s.code,{children:"<body>"})," tag."]}),`
+`,e.jsx(s.p,{children:"Inserting static HTML:"}),`
+`,e.jsx(s.figure,{"data-rehype-pretty-code-figure":"",children:e.jsx(s.pre,{style:{backgroundColor:"#fff",color:"#24292e"},tabIndex:"0","data-language":"ts","data-theme":"github-light",children:e.jsxs(s.code,{"data-language":"ts","data-theme":"github-light",style:{display:"grid"},children:[e.jsx(s.span,{"data-line":"",children:e.jsx(s.span,{style:{color:"#6A737D"},children:"// pages/+config.ts"})}),`
+`,e.jsx(s.span,{"data-line":"",children:" "}),`
+`,e.jsxs(s.span,{"data-line":"",children:[e.jsx(s.span,{style:{color:"#D73A49"},children:"import"}),e.jsx(s.span,{style:{color:"#D73A49"},children:" type"}),e.jsx(s.span,{style:{color:"#24292E"},children:" { Config } "}),e.jsx(s.span,{style:{color:"#D73A49"},children:"from"}),e.jsx(s.span,{style:{color:"#032F62"},children:" 'vike/types'"})]}),`
+`,e.jsx(s.span,{"data-line":"",children:" "}),`
+`,e.jsxs(s.span,{"data-line":"",children:[e.jsx(s.span,{style:{color:"#D73A49"},children:"export"}),e.jsx(s.span,{style:{color:"#D73A49"},children:" default"}),e.jsx(s.span,{style:{color:"#24292E"},children:" {"})]}),`
+`,e.jsxs(s.span,{"data-line":"",children:[e.jsx(s.span,{style:{color:"#24292E"},children:"  bodyHtmlEnd: "}),e.jsx(s.span,{style:{color:"#032F62"},children:`'<div id="something"></div>'`})]}),`
+`,e.jsxs(s.span,{"data-line":"",children:[e.jsx(s.span,{style:{color:"#24292E"},children:"} "}),e.jsx(s.span,{style:{color:"#D73A49"},children:"satisfies"}),e.jsx(s.span,{style:{color:"#6F42C1"},children:" Config"})]})]})})}),`
+`,e.jsxs(s.blockquote,{children:[`
+`,e.jsxs(s.p,{children:["For adding ",e.jsx(s.code,{children:"<script>"})," tags consider ",e.jsx(n,{href:"/Head",children:e.jsx(s.code,{children:"<Head>"})})," or ",e.jsx(n,{href:"/client",children:e.jsx(s.code,{children:"+client.js"})})," instead."]}),`
+`]}),`
+`,e.jsx(s.p,{children:"Inserting dynamically generated HTML:"}),`
+`,e.jsx(s.figure,{"data-rehype-pretty-code-figure":"",children:e.jsx(s.pre,{style:{backgroundColor:"#fff",color:"#24292e"},tabIndex:"0","data-language":"ts","data-theme":"github-light",children:e.jsxs(s.code,{"data-language":"ts","data-theme":"github-light",style:{display:"grid"},children:[e.jsx(s.span,{"data-line":"",children:e.jsx(s.span,{style:{color:"#6A737D"},children:"// pages/+bodyHtmlEnd.ts"})}),`
+`,e.jsx(s.span,{"data-line":"",children:" "}),`
+`,e.jsxs(s.span,{"data-line":"",children:[e.jsx(s.span,{style:{color:"#D73A49"},children:"import"}),e.jsx(s.span,{style:{color:"#D73A49"},children:" type"}),e.jsx(s.span,{style:{color:"#24292E"},children:" { PageContextServer } "}),e.jsx(s.span,{style:{color:"#D73A49"},children:"from"}),e.jsx(s.span,{style:{color:"#032F62"},children:" 'vike/types'"})]}),`
+`,e.jsx(s.span,{"data-line":"",children:" "}),`
+`,e.jsxs(s.span,{"data-line":"",children:[e.jsx(s.span,{style:{color:"#D73A49"},children:"export"}),e.jsx(s.span,{style:{color:"#D73A49"},children:" default"}),e.jsx(s.span,{style:{color:"#24292E"},children:" ("}),e.jsx(s.span,{style:{color:"#E36209"},children:"pageContext"}),e.jsx(s.span,{style:{color:"#D73A49"},children:":"}),e.jsx(s.span,{style:{color:"#6F42C1"},children:" PageContextServer"}),e.jsx(s.span,{style:{color:"#24292E"},children:") "}),e.jsx(s.span,{style:{color:"#D73A49"},children:"=>"}),e.jsx(s.span,{style:{color:"#24292E"},children:" {"})]}),`
+`,e.jsxs(s.span,{"data-line":"",children:[e.jsx(s.span,{style:{color:"#D73A49"},children:"  const"}),e.jsx(s.span,{style:{color:"#24292E"},children:" { "}),e.jsx(s.span,{style:{color:"#005CC5"},children:"something"}),e.jsx(s.span,{style:{color:"#24292E"},children:" } "}),e.jsx(s.span,{style:{color:"#D73A49"},children:"="}),e.jsx(s.span,{style:{color:"#24292E"},children:" pageContext"})]}),`
+`,e.jsxs(s.span,{"data-line":"",children:[e.jsx(s.span,{style:{color:"#D73A49"},children:"  return"}),e.jsx(s.span,{style:{color:"#032F62"},children:" `<div>${"}),e.jsx(s.span,{style:{color:"#24292E"},children:"something"}),e.jsx(s.span,{style:{color:"#032F62"},children:"}</div>`"})]}),`
+`,e.jsx(s.span,{"data-line":"",children:e.jsx(s.span,{style:{color:"#24292E"},children:"}"})})]})})}),`
+`,e.jsx(a,{children:e.jsxs(s.p,{children:["Be cautious about the security risk called ",e.jsx(s.a,{href:"https://en.wikipedia.org/wiki/Cross-site_scripting",children:"XSS injections"}),"."]})}),`
+`,e.jsx("h2",{id:"use-cases",children:"Use cases"}),`
+`,e.jsx("h3",{id:"react",children:"React"}),`
+`,e.jsx(s.p,{children:"When using React, it's often used for portals."}),`
+`,e.jsx(s.figure,{"data-rehype-pretty-code-figure":"",children:e.jsx(s.pre,{style:{backgroundColor:"#fff",color:"#24292e"},tabIndex:"0","data-language":"ts","data-theme":"github-light",children:e.jsxs(s.code,{"data-language":"ts","data-theme":"github-light",style:{display:"grid"},children:[e.jsx(s.span,{"data-line":"",children:e.jsx(s.span,{style:{color:"#6A737D"},children:"// pages/+config.ts"})}),`
+`,e.jsx(s.span,{"data-line":"",children:" "}),`
+`,e.jsxs(s.span,{"data-line":"",children:[e.jsx(s.span,{style:{color:"#D73A49"},children:"import"}),e.jsx(s.span,{style:{color:"#D73A49"},children:" type"}),e.jsx(s.span,{style:{color:"#24292E"},children:" { Config } "}),e.jsx(s.span,{style:{color:"#D73A49"},children:"from"}),e.jsx(s.span,{style:{color:"#032F62"},children:" 'vike/types'"})]}),`
+`,e.jsx(s.span,{"data-line":"",children:" "}),`
+`,e.jsxs(s.span,{"data-line":"",children:[e.jsx(s.span,{style:{color:"#D73A49"},children:"export"}),e.jsx(s.span,{style:{color:"#D73A49"},children:" default"}),e.jsx(s.span,{style:{color:"#24292E"},children:" {"})]}),`
+`,e.jsxs(s.span,{"data-line":"",children:[e.jsx(s.span,{style:{color:"#24292E"},children:"  bodyHtmlEnd: "}),e.jsx(s.span,{style:{color:"#032F62"},children:`'<div id="portal-root"></div>'`})]}),`
+`,e.jsxs(s.span,{"data-line":"",children:[e.jsx(s.span,{style:{color:"#24292E"},children:"} "}),e.jsx(s.span,{style:{color:"#D73A49"},children:"satisfies"}),e.jsx(s.span,{style:{color:"#6F42C1"},children:" Config"})]})]})})}),`
+`,e.jsx(s.p,{children:"You'll then get the following HTML:"}),`
+`,e.jsx(s.figure,{"data-rehype-pretty-code-figure":"",children:e.jsx(s.pre,{className:"has-diff",style:{backgroundColor:"#fff",color:"#24292e"},tabIndex:"0","data-language":"tsx","data-theme":"github-light",children:e.jsxs(s.code,{"data-language":"tsx","data-theme":"github-light",style:{display:"grid"},children:[e.jsxs(s.span,{"data-line":"",children:[e.jsx(s.span,{style:{color:"#24292E"},children:"<"}),e.jsx(s.span,{style:{color:"#22863A"},children:"body"}),e.jsx(s.span,{style:{color:"#24292E"},children:">"})]}),`
+`,e.jsx(s.span,{"data-line":"",children:e.jsx(s.span,{style:{color:"#24292E"},children:"  <!-- ... -->"})}),`
+`,e.jsxs(s.span,{"data-line":"",children:[e.jsx(s.span,{style:{color:"#24292E"},children:"  <"}),e.jsx(s.span,{style:{color:"#22863A"},children:"div"}),e.jsx(s.span,{style:{color:"#6F42C1"},children:" id"}),e.jsx(s.span,{style:{color:"#D73A49"},children:"="}),e.jsx(s.span,{style:{color:"#032F62"},children:'"root"'}),e.jsx(s.span,{style:{color:"#24292E"},children:">{reactHtml}</"}),e.jsx(s.span,{style:{color:"#22863A"},children:"div"}),e.jsx(s.span,{style:{color:"#24292E"},children:">"})]}),`
+`,e.jsxs(s.span,{className:"diff add","data-line":"",children:[e.jsx(s.span,{style:{color:"#24292E"},children:"  <"}),e.jsx(s.span,{style:{color:"#22863A"},children:"div"}),e.jsx(s.span,{style:{color:"#6F42C1"},children:" id"}),e.jsx(s.span,{style:{color:"#D73A49"},children:"="}),e.jsx(s.span,{style:{color:"#032F62"},children:'"portal-root"'}),e.jsx(s.span,{style:{color:"#24292E"},children:"></"}),e.jsx(s.span,{style:{color:"#22863A"},children:"div"}),e.jsx(s.span,{style:{color:"#24292E"},children:">"})]}),`
+`,e.jsxs(s.span,{"data-line":"",children:[e.jsx(s.span,{style:{color:"#24292E"},children:"</"}),e.jsx(s.span,{style:{color:"#22863A"},children:"body"}),e.jsx(s.span,{style:{color:"#24292E"},children:">"})]})]})})}),`
+`,e.jsx("h3",{id:"vue",children:"Vue"}),`
+`,e.jsx(s.p,{children:"When using Vue, it's often used for adding the HTML targets of teleports."}),`
+`,e.jsxs(s.p,{children:["Teleports work out of the box when using ",e.jsx(s.code,{children:'<Teleport to="teleported">'})," and you don't have to use ",e.jsx(s.code,{children:"bodyHtml{Begin,End}"})," then."]}),`
+`,e.jsxs(s.blockquote,{children:[`
+`,e.jsxs(s.p,{children:[e.jsx(s.code,{children:"vike-vue"})," always inserts this at the end of the ",e.jsx(s.code,{children:"<body>"})," tag:"]}),`
+`,e.jsx(s.figure,{"data-rehype-pretty-code-figure":"",children:e.jsx(s.pre,{style:{backgroundColor:"#fff",color:"#24292e"},tabIndex:"0","data-language":"vue","data-theme":"github-light",children:e.jsxs(s.code,{"data-language":"vue","data-theme":"github-light",style:{display:"grid"},children:[e.jsxs(s.span,{"data-line":"",children:[e.jsx(s.span,{style:{color:"#24292E"},children:"<"}),e.jsx(s.span,{style:{color:"#22863A"},children:"div"}),e.jsx(s.span,{style:{color:"#6F42C1"},children:" id"}),e.jsx(s.span,{style:{color:"#24292E"},children:"="}),e.jsx(s.span,{style:{color:"#032F62"},children:'"teleported"'}),e.jsx(s.span,{style:{color:"#24292E"},children:">${"})]}),`
+`,e.jsx(s.span,{"data-line":"",children:e.jsx(s.span,{style:{color:"#24292E"},children:"  pageContext.ssrContext.teleports?.['#teleported'] ?? ''"})}),`
+`,e.jsxs(s.span,{"data-line":"",children:[e.jsx(s.span,{style:{color:"#24292E"},children:"}</"}),e.jsx(s.span,{style:{color:"#22863A"},children:"div"}),e.jsx(s.span,{style:{color:"#24292E"},children:">"})]})]})})}),`
+`]}),`
+`,e.jsxs(s.blockquote,{children:[`
+`,e.jsxs(s.p,{children:["You can use ",e.jsxs(n,{href:"/pageContext",children:["Vike's ",e.jsx(s.code,{children:"pageContext"})," object"]})," to access ",e.jsxs(s.a,{href:"https://vuejs.org/api/ssr#usessrcontext",children:["Vue's ",e.jsx(s.code,{children:"ssrContext"})," object"]}),":"]}),`
+`,e.jsx(s.figure,{"data-rehype-pretty-code-figure":"",children:e.jsx(s.pre,{style:{backgroundColor:"#fff",color:"#24292e"},tabIndex:"0","data-language":"ts","data-theme":"github-light",children:e.jsxs(s.code,{"data-language":"ts","data-theme":"github-light",style:{display:"grid"},children:[e.jsx(s.span,{"data-line":"",children:e.jsx(s.span,{style:{color:"#6A737D"},children:"// pages/+bodyHtmlEnd.ts"})}),`
+`,e.jsx(s.span,{"data-line":"",children:" "}),`
+`,e.jsxs(s.span,{"data-line":"",children:[e.jsx(s.span,{style:{color:"#D73A49"},children:"import"}),e.jsx(s.span,{style:{color:"#D73A49"},children:" type"}),e.jsx(s.span,{style:{color:"#24292E"},children:" { PageContextServer } "}),e.jsx(s.span,{style:{color:"#D73A49"},children:"from"}),e.jsx(s.span,{style:{color:"#032F62"},children:" 'vike/types'"})]}),`
+`,e.jsx(s.span,{"data-line":"",children:" "}),`
+`,e.jsxs(s.span,{"data-line":"",children:[e.jsx(s.span,{style:{color:"#D73A49"},children:"export"}),e.jsx(s.span,{style:{color:"#D73A49"},children:" default"}),e.jsx(s.span,{style:{color:"#24292E"},children:" ("}),e.jsx(s.span,{style:{color:"#E36209"},children:"pageContext"}),e.jsx(s.span,{style:{color:"#D73A49"},children:":"}),e.jsx(s.span,{style:{color:"#6F42C1"},children:" PageContextServer"}),e.jsx(s.span,{style:{color:"#24292E"},children:") "}),e.jsx(s.span,{style:{color:"#D73A49"},children:"=>"}),e.jsx(s.span,{style:{color:"#24292E"},children:" {"})]}),`
+`,e.jsxs(s.span,{"data-line":"",children:[e.jsx(s.span,{style:{color:"#D73A49"},children:"  const"}),e.jsx(s.span,{style:{color:"#005CC5"},children:" content"}),e.jsx(s.span,{style:{color:"#D73A49"},children:" ="}),e.jsx(s.span,{style:{color:"#24292E"},children:" pageContext.ssrContext.teleports?.["}),e.jsx(s.span,{style:{color:"#032F62"},children:"'#someTeleport'"}),e.jsx(s.span,{style:{color:"#24292E"},children:"] "}),e.jsx(s.span,{style:{color:"#D73A49"},children:"??"}),e.jsx(s.span,{style:{color:"#032F62"},children:" ''"})]}),`
+`,e.jsxs(s.span,{"data-line":"",children:[e.jsx(s.span,{style:{color:"#D73A49"},children:"  return"}),e.jsx(s.span,{style:{color:"#032F62"},children:' `<div id="someTeleport">${'}),e.jsx(s.span,{style:{color:"#24292E"},children:"content"}),e.jsx(s.span,{style:{color:"#032F62"},children:"}</div>`"})]}),`
+`,e.jsx(s.span,{"data-line":"",children:e.jsx(s.span,{style:{color:"#24292E"},children:"}"})})]})})}),`
+`]}),`
+`,e.jsx("h2",{id:"see-also",children:"See also"}),`
+`,e.jsxs(s.ul,{children:[`
+`,e.jsxs(s.li,{children:[`
+`,e.jsx(n,{href:"/bodyHtmlBegin"}),`
+`]}),`
+`,e.jsxs(s.li,{children:[`
+`,e.jsx(n,{href:"/head-tags"}),`
+`]}),`
+`,e.jsxs(s.li,{children:[`
+`,e.jsx(n,{href:"/client"}),`
+`]}),`
+`,e.jsxs(s.li,{children:[`
+`,e.jsx(n,{href:"/onRenderHtml"}),`
+`]}),`
+`,e.jsxs(s.li,{children:[`
+`,e.jsx(n,{href:"/settings#html-shell",doNotInferSectionTitle:!0}),`
+`]}),`
+`]})]})}function c(l={}){const{wrapper:s}=l.components||{};return s?e.jsx(s,{...l,children:e.jsx(t,{...l})}):t(l)}const h=Object.freeze(Object.defineProperty({__proto__:null,default:c,pageSectionsExport:d},Symbol.toStringTag,{value:"Module"})),k={serverOnlyHooks:{type:"computed",definedAtData:null,valueSerialized:{type:"js-serialized",value:!1}},isClientRuntimeLoaded:{type:"computed",definedAtData:null,valueSerialized:{type:"js-serialized",value:!0}},onBeforeRenderEnv:{type:"computed",definedAtData:null,valueSerialized:{type:"js-serialized",value:null}},dataEnv:{type:"computed",definedAtData:null,valueSerialized:{type:"js-serialized",value:null}},onRenderClient:{type:"standard",definedAtData:{filePathToShowToUser:"@brillout/docpress/renderer/onRenderClient",fileExportPathToShowToUser:[]},valueSerialized:{type:"pointer-import",value:o}},onCreatePageContext:{type:"cumulative",definedAtData:[{filePathToShowToUser:"@brillout/docpress/renderer/onCreatePageContext",fileExportPathToShowToUser:[]}],valueSerialized:[{type:"pointer-import",value:r}]},Page:{type:"standard",definedAtData:{filePathToShowToUser:"/pages/bodyHtmlEnd/+Page.mdx",fileExportPathToShowToUser:[]},valueSerialized:{type:"plus-file",exportValues:h}},hydrationCanBeAborted:{type:"standard",definedAtData:{filePathToShowToUser:"@brillout/docpress/config",fileExportPathToShowToUser:["default","hydrationCanBeAborted"]},valueSerialized:{type:"js-serialized",value:!0}}};export{k as configValuesSerialized};
