@@ -1,8 +1,14 @@
 export { getConfigValueSourcesRelevant }
 export { isRuntimeEnvMatch }
+export { isConfigNull }
 export type { RuntimeEnv }
 
-import type { ConfigEnvInternal, PageConfigBuildTime, PageConfigGlobalBuildTime } from '../../../../types/PageConfig.js'
+import type {
+  ConfigEnvInternal,
+  ConfigValueSource,
+  PageConfigBuildTime,
+  PageConfigGlobalBuildTime,
+} from '../../../../types/PageConfig.js'
 import { assert } from '../../utils.js'
 
 type RuntimeEnv = { isForClientSide: boolean; isClientRouting: boolean; isDev?: boolean } | { isForConfig: true }
@@ -53,4 +59,16 @@ function isRuntimeEnvMatch(configEnv: ConfigEnvInternal, runtimeEnv: RuntimeEnv)
   }
 
   return true
+}
+
+// Setting a config to `undefined` should be equivalent to not setting it at all
+function isConfigUndefined(source: ConfigValueSource): null | boolean {
+  if (!source.valueIsLoaded) return null
+  return source.value === undefined
+}
+
+// Setting a config to `null` enables the user to suppress inherited config by overriding it with `null` (this only works when setting the config value to `null` inside a +config.js file — it doesn't work when setting the config value to `null` with a +{configName}.js file).
+function isConfigNull(source: ConfigValueSource) {
+  if (!source.valueIsLoaded) return null
+  return source.value === null
 }

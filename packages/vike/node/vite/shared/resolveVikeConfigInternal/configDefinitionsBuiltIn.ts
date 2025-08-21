@@ -16,7 +16,10 @@ import type {
 import type { Config, ConfigNameBuiltIn, ConfigNameGlobal } from '../../../../types/Config.js'
 import { assert, assertUsage } from '../../utils.js'
 import { getConfigDefinedAt, type ConfigDefinedAt } from '../../../../shared/page-configs/getConfigDefinedAt.js'
-import { getConfigValueSourcesRelevant } from '../../plugins/pluginVirtualFiles/getConfigValueSourcesRelevant.js'
+import {
+  getConfigValueSourcesRelevant,
+  isConfigNull,
+} from '../../plugins/pluginVirtualFiles/getConfigValueSourcesRelevant.js'
 
 // For users
 /** The meta definition of a config.
@@ -363,14 +366,7 @@ function getConfigEnv(configValueSources: ConfigValueSources, configName: string
 }
 function isConfigSet(configValueSources: ConfigValueSources, configName: string): boolean {
   const source = getConfigValueSource(configValueSources, configName)
-  return (
-    !!source &&
-    !(
-      source.valueIsLoaded &&
-      // Enable users to suppress inherited config by overriding it with `null`
-      source.value === null
-    )
-  )
+  return !!source && !isConfigNull(source)
 }
 function getConfigValueSource(configValueSources: ConfigValueSources, configName: string): null | ConfigValueSource {
   const sources = configValueSources[configName]
