@@ -28,8 +28,9 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
   config.optimizeDeps.include = add(config.optimizeDeps.include, includeClient)
   config.optimizeDeps.entries = add(config.optimizeDeps.entries, entriesClient)
 
-  // Workaround until https://github.com/vitejs/vite-plugin-react/issues/650
-  // - TODO/soon: remove workaround once https://github.com/vitejs/vite/pull/20495 is released
+  // Workaround for https://github.com/vitejs/vite-plugin-react/issues/650
+  // - The issue was closed as completed with https://github.com/vitejs/vite/pull/20495 but it doesn't fix the issue and the workaround is still needed.
+  // - TO-DO/eventually: try removing the workaround and see if the CI fails (at test/@cloudflare_vite-plugin/) — maybe the issue will get fixed at some point.
   includeServer.push('react/jsx-dev-runtime')
 
   for (const envName in config.environments) {
