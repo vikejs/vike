@@ -1,6 +1,6 @@
 export { route }
 export type { PageContextBeforeRoute }
-export type { PageContextFromRoute }
+export type { PageContextAfterRoute }
 export type { PageRoutes }
 export type { RouteMatches }
 
@@ -25,7 +25,7 @@ import type { GlobalContextInternal } from '../createGlobalContextShared.js'
 type PageContextBeforeRoute = PageContextUrlInternal & {
   _globalContext: GlobalContextInternal
 } & PageContextUrlSource
-type PageContextFromRoute = {
+type PageContextAfterRoute = {
   pageId: string | null
   routeParams: Record<string, string>
   _routingProvidedByOnBeforeRouteHook?: boolean
@@ -40,7 +40,10 @@ type RouteMatch = {
 type RouteMatches = 'CUSTOM_ROUTING' | RouteMatch[]
 
 // TO-DO/next-major-release: make it sync
-async function route(pageContext: PageContextBeforeRoute, skipOnBeforeRouteHook?: true): Promise<PageContextFromRoute> {
+async function route(
+  pageContext: PageContextBeforeRoute,
+  skipOnBeforeRouteHook?: true,
+): Promise<PageContextAfterRoute> {
   debug('Pages routes:', pageContext._globalContext._pageRoutes)
   const pageContextFromRoute = {}
 

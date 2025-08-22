@@ -29,11 +29,11 @@ import { loadAndParseVirtualFilePageEntry } from '../../../shared/page-configs/l
 import { execHookServer } from './execHookServer.js'
 import { getCacheControl } from './getCacheControl.js'
 import type { PassToClient } from '../html/serializeContext.js'
-import type { PageContextFromRoute } from '../../../shared/route/index.js'
+import type { PageContextAfterRoute } from '../../../shared/route/index.js'
 import type { PageContextCreated } from './createPageContextServerSide.js'
 
 type PageContext_loadPageConfigsLazyServerSide = PageContextCreated &
-  PageContextFromRoute & { is404: boolean | null; pageId: string }
+  PageContextAfterRoute & { is404: boolean | null; pageId: string }
 type PageConfigsLazy = PromiseType<ReturnType<typeof loadPageConfigsLazyServerSideAndExecHook>>
 
 // TODO/now: define new function resolveAfterLoad() ?
