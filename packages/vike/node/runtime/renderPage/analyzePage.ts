@@ -10,12 +10,12 @@ import { analyzeClientSide } from '../../../shared/getPageFiles/analyzeClientSid
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import { getConfigValueRuntime } from '../../../shared/page-configs/getConfigValueRuntime.js'
 
-async function analyzePage(
+function analyzePage(
   pageFilesAll: PageFile[],
   pageConfig: null | PageConfigRuntime,
   pageId: string,
   globalContext: GlobalContextServerInternal,
-): Promise<AnalysisResult> {
+): AnalysisResult {
   if (pageConfig) {
     const { isClientRuntimeLoaded, isClientRouting } = analyzeClientSide(pageConfig, pageFilesAll, pageId)
     const clientEntries: string[] = []

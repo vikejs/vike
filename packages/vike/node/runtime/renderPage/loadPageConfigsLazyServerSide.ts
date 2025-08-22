@@ -61,7 +61,7 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
       sharedPageFilesAlreadyLoaded: true,
     }),
   ])
-  const { isHtmlOnly, clientEntries, clientDependencies } = await analyzePage(
+  const { isHtmlOnly, clientEntries, clientDependencies } = analyzePage(
     pageContext._globalContext._pageFilesAll,
     pageConfig,
     pageContext.pageId,
