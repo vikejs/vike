@@ -30,13 +30,15 @@ type PageConfigsLazy = PromiseType<ReturnType<typeof loadPageConfigsLazyServerSi
 // TODO/now: define new function resolveAfterLoad() ?
 
 async function loadPageConfigsLazyServerSideAndExecHook(pageContext: PageContext_loadPageConfigsLazyServerSide) {
-  const pageConfig = findPageConfig(pageContext._globalContext._pageConfigs, pageContext.pageId) // Make pageConfig globally available as pageContext._pageConfig ?
+  objectAssign(pageContext, {
+    _pageConfig: findPageConfig(pageContext._globalContext._pageConfigs, pageContext.pageId),
+  })
 
   const globalContext = pageContext._globalContext
   const [{ configPublicPageLazy }] = await Promise.all([
     loadPageUserFiles_v1Design(
       pageContext._globalContext._pageFilesAll,
-      pageConfig,
+      pageContext._pageConfig,
       globalContext._pageConfigGlobal,
       pageContext.pageId,
       !globalContext._isProduction,
@@ -49,11 +51,11 @@ async function loadPageConfigsLazyServerSideAndExecHook(pageContext: PageContext
 
   const { isHtmlOnly, clientEntries, clientDependencies } = analyzePage(
     pageContext._globalContext._pageFilesAll,
-    pageConfig,
+    pageContext._pageConfig,
     pageContext.pageId,
     globalContext,
   )
-  const isV1Design = !!pageConfig
+  const isV1Design = !!pageContext._pageConfig
 
   const passToClient: PassToClient = []
   const errMsgSuffix = ' should be an array of strings.'
