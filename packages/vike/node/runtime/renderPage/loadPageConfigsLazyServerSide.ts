@@ -34,16 +34,11 @@ import type { PageContextCreated } from './createPageContextServerSide.js'
 
 type PageContext_loadPageConfigsLazyServerSide = PageContextCreated &
   PageContextFromRoute & { is404: boolean | null; pageId: string }
-type PageConfigsLazy = PromiseType<ReturnType<typeof loadPageConfigsLazyServerSide>>
-
-async function loadPageConfigsLazyServerSideAndExecHook(pageContext: PageContext_loadPageConfigsLazyServerSide) {
-  updateType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
-  return pageContext
-}
+type PageConfigsLazy = PromiseType<ReturnType<typeof loadPageConfigsLazyServerSideAndExecHook>>
 
 // TODO/now: define new function resolveAfterLoad() ?
 
-async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageConfigsLazyServerSide) {
+async function loadPageConfigsLazyServerSideAndExecHook(pageContext: PageContext_loadPageConfigsLazyServerSide) {
   const pageConfig = findPageConfig(pageContext._globalContext._pageConfigs, pageContext.pageId) // Make pageConfig globally available as pageContext._pageConfig ?
 
   const globalContext = pageContext._globalContext
