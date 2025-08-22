@@ -28,10 +28,6 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
   config.optimizeDeps.include = add(config.optimizeDeps.include, includeClient)
   config.optimizeDeps.entries = add(config.optimizeDeps.entries, entriesClient)
 
-  // Workaround until https://github.com/vitejs/vite-plugin-react/issues/650
-  // - TODO/soon: remove workaround once https://github.com/vitejs/vite/pull/20495 is released
-  includeServer.push('react/jsx-dev-runtime')
-
   for (const envName in config.environments) {
     const env = config.environments[envName]!
     if (env.consumer === 'server' && env.optimizeDeps.noDiscovery === false) {
