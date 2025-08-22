@@ -46,7 +46,7 @@ import { getPageFilesServerSide } from '../../shared/getPageFiles.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
 import { getUrlFromRouteString } from '../../shared/route/resolveRouteString.js'
 import { getConfigValueRuntime } from '../../shared/page-configs/getConfigValueRuntime.js'
-import { loadPageEntry } from '../../shared/page-configs/loadPageEntry.js'
+import { loadAndParseVirtualFilePageEntry } from '../../shared/page-configs/loadAndParseVirtualFilePageEntry.js'
 import { getErrorPageId, isErrorPage } from '../../shared/error-page.js'
 import { isAbortError } from '../../shared/route/abort.js'
 import { loadPageConfigsLazyServerSideAndExecHook } from '../runtime/renderPage/loadPageConfigsLazyServerSide.js'
@@ -355,7 +355,7 @@ async function callOnBeforePrerenderStartHooks(
     globalContext._pageConfigs.map((pageConfig) =>
       concurrencyLimit(async () => {
         const hookName = 'onBeforePrerenderStart'
-        const pageConfigLoaded = await loadPageEntry(pageConfig, false)
+        const pageConfigLoaded = await loadAndParseVirtualFilePageEntry(pageConfig, false)
         const hook = getHookFromPageConfig(pageConfigLoaded, hookName)
         if (!hook) return
         const { hookFn, hookFilePath, hookTimeout } = hook
