@@ -42,7 +42,6 @@ async function execHookOnRenderHtml(
       __getPageAssets: GetPageAssets
       _isHtmlOnly: boolean
       _baseServer: string
-      _pageFilePathsLoaded: string[]
       _httpRequestId: number | null
     },
 ): Promise<{
@@ -104,20 +103,7 @@ function getRenderHook(
   }
   if (!hookFound) {
     const hookName = pageContext._globalContext._pageConfigs.length > 0 ? 'onRenderHtml' : 'render'
-    assertUsage(
-      false,
-      [
-        `No ${hookName}() hook found, see https://vike.dev/${hookName}`,
-        /*
-        'See https://vike.dev/render-modes for more information.',
-        [
-          // 'Loaded config files (none of them define the onRenderHtml() hook):',
-          'Loaded server-side page files (none of them `export { render }`):',
-          ...pageContext._pageFilePathsLoaded.map((f, i) => ` (${i + 1}): ${f}`)
-        ].join('\n')
-        */
-      ].join(' '),
-    )
+    assertUsage(false, `No ${hookName}() hook found, see https://vike.dev/${hookName}`)
   }
   return hookFound
 }

@@ -33,7 +33,7 @@ async function loadPageConfigsLazyServerSideAndExecHook(pageContext: PageContext
   const pageConfig = findPageConfig(pageContext._globalContext._pageConfigs, pageContext.pageId) // Make pageConfig globally available as pageContext._pageConfig ?
 
   const globalContext = pageContext._globalContext
-  const [{ pageFilesLoaded, configPublicPageLazy }] = await Promise.all([
+  const [{ configPublicPageLazy }] = await Promise.all([
     loadPageConfigFiles(
       pageContext._globalContext._pageFilesAll,
       pageConfig,
@@ -95,7 +95,6 @@ async function loadPageConfigsLazyServerSideAndExecHook(pageContext: PageContext
     Page: configPublicPageLazy.exports.Page,
     _isHtmlOnly: isHtmlOnly,
     _passToClient: passToClient,
-    _pageFilePathsLoaded: pageFilesLoaded.map((p) => p.filePath),
     headersResponse: resolveHeadersResponse(pageContext, pageContextAddendum),
   })
 
