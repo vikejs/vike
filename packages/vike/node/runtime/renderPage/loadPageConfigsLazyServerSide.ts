@@ -34,14 +34,13 @@ async function loadPageConfigsLazyServerSideAndExecHook(pageContext: PageContext
     _pageConfig: findPageConfig(pageContext._globalContext._pageConfigs, pageContext.pageId),
   })
 
-  const globalContext = pageContext._globalContext
   const [{ configPublicPageLazy }] = await Promise.all([
     loadPageUserFiles_v1Design(
       pageContext._globalContext._pageFilesAll,
       pageContext._pageConfig,
-      globalContext._pageConfigGlobal,
+      pageContext._globalContext._pageConfigGlobal,
       pageContext.pageId,
-      !globalContext._isProduction,
+      !pageContext._globalContext._isProduction,
     ),
     analyzePageClientSideInit(pageContext._globalContext._pageFilesAll, pageContext.pageId, {
       sharedPageFilesAlreadyLoaded: true,
@@ -53,7 +52,7 @@ async function loadPageConfigsLazyServerSideAndExecHook(pageContext: PageContext
     pageContext._globalContext._pageFilesAll,
     pageContext._pageConfig,
     pageContext.pageId,
-    globalContext,
+    pageContext._globalContext,
   )
   const isV1Design = !!pageContext._pageConfig
 
