@@ -1,5 +1,5 @@
 export { route }
-export type { PageContextForRoute }
+export type { PageContextBeforeRoute }
 export type { PageContextFromRoute }
 export type { PageRoutes }
 export type { RouteMatches }
@@ -22,7 +22,7 @@ import { debug } from './debug.js'
 import pc from '@brillout/picocolors'
 import type { GlobalContextInternal } from '../createGlobalContextShared.js'
 
-type PageContextForRoute = PageContextUrlInternal & {
+type PageContextBeforeRoute = PageContextUrlInternal & {
   _globalContext: GlobalContextInternal
 } & PageContextUrlSource
 type PageContextFromRoute = {
@@ -40,7 +40,7 @@ type RouteMatch = {
 type RouteMatches = 'CUSTOM_ROUTING' | RouteMatch[]
 
 // TO-DO/next-major-release: make it sync
-async function route(pageContext: PageContextForRoute, skipOnBeforeRouteHook?: true): Promise<PageContextFromRoute> {
+async function route(pageContext: PageContextBeforeRoute, skipOnBeforeRouteHook?: true): Promise<PageContextFromRoute> {
   debug('Pages routes:', pageContext._globalContext._pageRoutes)
   const pageContextFromRoute = {}
 
