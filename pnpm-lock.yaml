@@ -448,7 +448,7 @@ importers:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@7.1.2(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@7.1.3(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -1326,7 +1326,7 @@ importers:
     devDependencies:
       '@cloudflare/vite-plugin':
         specifier: ^1.11.1
-        version: 1.11.1(rollup@4.43.0)(vite@7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))(workerd@1.20250803.0)(wrangler@4.28.0)
+        version: 1.11.1(rollup@4.43.0)(vite@7.1.3(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))(workerd@1.20250803.0)(wrangler@4.28.0)
       '@types/react':
         specifier: ^19.1.8
         version: 19.1.8
@@ -1335,13 +1335,13 @@ importers:
         version: 19.1.6(@types/react@19.1.8)
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
+        version: 4.7.0(vite@7.1.3(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
       vite:
-        specifier: ^7.0.6
-        version: 7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
+        specifier: ^7.1.3
+        version: 7.1.3(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
       wrangler:
         specifier: ^4.28.0
         version: 4.28.0
@@ -5751,6 +5751,15 @@ packages:
       picomatch:
         optional: true
 
+  fdir@6.5.0:
+    resolution: {integrity: sha512-tIbYtZbucOs0BRGqPJkshJUYdL+SDH7dVM8gjy+ERp3WAUjLEFJE+02kanyHtwjWOnwrKYBiwAmM0p4kLJAnXg==}
+    engines: {node: '>=12.0.0'}
+    peerDependencies:
+      picomatch: ^3 || ^4
+    peerDependenciesMeta:
+      picomatch:
+        optional: true
+
   fetch-blob@3.2.0:
     resolution: {integrity: sha512-7yAQpD2UMJzLi1Dqv7qFYnPbaPx7ZfFK6PiIxQ4PfkGPyNyl2Ugx+a/umUonmKqjhM4DnfbMvdX6otXq83soQQ==}
     engines: {node: ^12.20 || >= 14.13}
@@ -8128,6 +8137,46 @@ packages:
       yaml:
         optional: true
 
+  vite@7.1.3:
+    resolution: {integrity: sha512-OOUi5zjkDxYrKhTV3V7iKsoS37VUM7v40+HuwEmcrsf11Cdx9y3DIr2Px6liIcZFwt3XSRpQvFpL3WVy7ApkGw==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': ^20.19.0 || >=22.12.0
+      jiti: '>=1.21.0'
+      less: ^4.0.0
+      lightningcss: ^1.21.0
+      sass: ^1.70.0
+      sass-embedded: ^1.70.0
+      stylus: '>=0.54.8'
+      sugarss: ^5.0.0
+      terser: ^5.16.0
+      tsx: ^4.8.1
+      yaml: ^2.4.2
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      jiti:
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      sass-embedded:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+      tsx:
+        optional: true
+      yaml:
+        optional: true
+
   vitefu@1.0.6:
     resolution: {integrity: sha512-+Rex1GlappUyNN6UfwbVZne/9cYC4+R2XDk9xkNXBKMw6HQagdX9PgZ8V2v1WUSK1wfBLp7qbI1+XSNIlB1xmA==}
     peerDependencies:
@@ -8920,7 +8969,7 @@ snapshots:
     optionalDependencies:
       workerd: 1.20250803.0
 
-  '@cloudflare/vite-plugin@1.11.1(rollup@4.43.0)(vite@7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))(workerd@1.20250803.0)(wrangler@4.28.0)':
+  '@cloudflare/vite-plugin@1.11.1(rollup@4.43.0)(vite@7.1.3(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))(workerd@1.20250803.0)(wrangler@4.28.0)':
     dependencies:
       '@cloudflare/unenv-preset': 2.6.0(unenv@2.0.0-rc.19)(workerd@1.20250803.0)
       '@mjackson/node-fetch-server': 0.6.1
@@ -8930,7 +8979,7 @@ snapshots:
       picocolors: 1.1.1
       tinyglobby: 0.2.14
       unenv: 2.0.0-rc.19
-      vite: 7.0.6(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
+      vite: 7.1.3(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
       wrangler: 4.28.0
       ws: 8.18.0
     transitivePeerDependencies:
@@ -10744,7 +10793,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-react@4.7.0(vite@7.1.2(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))':
+  '@vitejs/plugin-react@4.7.0(vite@7.1.3(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))':
     dependencies:
       '@babel/core': 7.28.0
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.0)
@@ -10752,7 +10801,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.27
       '@types/babel__core': 7.20.5
       react-refresh: 0.17.0
-      vite: 7.1.2(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
+      vite: 7.1.3(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
     transitivePeerDependencies:
       - supports-color
 
@@ -12385,6 +12434,10 @@ snapshots:
       picomatch: 4.0.2
 
   fdir@6.4.6(picomatch@4.0.3):
+    optionalDependencies:
+      picomatch: 4.0.3
+
+  fdir@6.5.0(picomatch@4.0.3):
     optionalDependencies:
       picomatch: 4.0.3
 
@@ -15301,6 +15354,20 @@ snapshots:
     dependencies:
       esbuild: 0.25.8
       fdir: 6.4.6(picomatch@4.0.3)
+      picomatch: 4.0.3
+      postcss: 8.5.6
+      rollup: 4.43.0
+      tinyglobby: 0.2.14
+    optionalDependencies:
+      '@types/node': 24.3.0
+      fsevents: 2.3.3
+      terser: 5.38.1
+      tsx: 4.20.3
+
+  vite@7.1.3(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3):
+    dependencies:
+      esbuild: 0.25.8
+      fdir: 6.5.0(picomatch@4.0.3)
       picomatch: 4.0.3
       postcss: 8.5.6
       rollup: 4.43.0
