@@ -10,7 +10,6 @@ import { getPageAssets, type PageAsset } from './getPageAssets.js'
 import type { PageConfigRuntime } from '../../../types/PageConfig.js'
 import { findPageConfig } from '../../../shared/page-configs/findPageConfig.js'
 import { analyzePage } from './analyzePage.js'
-import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { MediaType } from './inferMediaType.js'
 import { loadAndParseVirtualFilePageEntry } from '../../../shared/page-configs/loadAndParseVirtualFilePageEntry.js'
 import { execHookServer } from './execHookServer.js'
@@ -23,15 +22,24 @@ type PageContext_loadPageConfigsLazyServerSide = PageContextCreated &
   PageContextAfterRoute & { is404: boolean | null; pageId: string }
 type PageConfigsLazy = PromiseType<ReturnType<typeof loadPageConfigsLazyServerSideAndExecHook>>
 
-// TODO/now: define new function resolveAfterLoad() ?
-
 async function loadPageConfigsLazyServerSideAndExecHook(pageContext: PageContext_loadPageConfigsLazyServerSide) {
   objectAssign(pageContext, {
     _pageConfig: findPageConfig(pageContext._globalContext._pageConfigs, pageContext.pageId),
   })
 
+  // Load the page's + files
   objectAssign(pageContext, await loadPageUserFiles(pageContext))
 
+  // Resolve computed pageContext properties
+  objectAssign(pageContext, await resolvePageContext(pageContext))
+
+  return pageContext
+}
+
+type PageContextBeforeResolve = PageContext_loadPageConfigsLazyServerSide & {
+  _pageConfig: null | PageConfigRuntime
+} & VikeConfigPublicPageLazyLoaded
+async function resolvePageContext(pageContext: PageContextBeforeResolve) {
   const { isHtmlOnly, clientEntries, clientDependencies } = analyzePage(pageContext)
   const isV1Design = !!pageContext._pageConfig
 
@@ -163,12 +171,7 @@ async function loadPageUserFiles_v1Design(
   }
 }
 
-function resolveHeadersResponse(
-  pageContext: {
-    pageId: null | string
-    _globalContext: GlobalContextServerInternal
-  } & VikeConfigPublicPageLazyLoaded,
-): Headers {
+function resolveHeadersResponse(pageContext: PageContextBeforeResolve): Headers {
   const headersResponse = mergeHeaders(pageContext.config.headersResponse)
   if (!headersResponse.get('Cache-Control')) {
     const cacheControl = getCacheControl(pageContext.pageId, pageContext._globalContext._pageConfigs)
