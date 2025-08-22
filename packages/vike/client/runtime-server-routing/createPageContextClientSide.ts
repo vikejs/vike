@@ -1,6 +1,6 @@
 export { createPageContextClientSide }
 
-import { assertUsage, augmentType, objectAssign } from './utils.js'
+import { assertUsage, updateType, objectAssign } from './utils.js'
 import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtml.js'
 import {
   loadPageConfigsLazyClientSide,
@@ -34,10 +34,10 @@ async function createPageContextClientSide() {
   objectAssign(pageContextCreated, getPageContextSerializedInHtml())
 
   // Sets pageContext.config to global configs
-  augmentType(pageContextCreated, createPageContextShared(pageContextCreated, globalContext._vikeConfigPublicGlobal))
+  updateType(pageContextCreated, createPageContextShared(pageContextCreated, globalContext._vikeConfigPublicGlobal))
 
   // Sets pageContext.config to local configs (overrides the pageContext.config set above)
-  augmentType(pageContextCreated, await loadPageConfigsLazyClientSideAndExecHook(pageContextCreated))
+  updateType(pageContextCreated, await loadPageConfigsLazyClientSideAndExecHook(pageContextCreated))
 
   assertPristineUrl()
   return pageContextCreated

@@ -28,7 +28,7 @@ import {
   setUrlOrigin,
   isUri,
   getUrlPretty,
-  augmentType,
+  updateType,
 } from './utils.js'
 import {
   assertNoInfiniteAbortLoop,
@@ -606,7 +606,7 @@ async function handleAbortError(
       objectAssign(pageContext, { pageId: errorPageId })
       objectAssign(pageContext, pageContextAbort)
       objectAssign(pageContext, pageContextErrorPageInit, true)
-      augmentType(pageContext, await loadPageConfigsLazyServerSideAndExecHook(pageContext))
+      updateType(pageContext, await loadPageConfigsLazyServerSideAndExecHook(pageContext))
       // We include pageContextInit: we don't only serialize pageContextAbort because the error page may need to access pageContextInit
       pageContextSerialized = getPageContextClientSerialized(pageContext, false)
     } else {

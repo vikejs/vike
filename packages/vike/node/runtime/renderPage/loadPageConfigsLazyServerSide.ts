@@ -12,7 +12,7 @@ import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzeP
 import {
   assertUsage,
   assertWarning,
-  augmentType,
+  updateType,
   hasProp,
   isArray,
   isObject,
@@ -44,7 +44,7 @@ type PageConfigsLazy = PromiseType<ReturnType<typeof loadPageConfigsLazyServerSi
 async function loadPageConfigsLazyServerSideAndExecHook<
   PageContext extends PageContext_loadPageConfigsLazyServerSide & PageContextExecuteHook,
 >(pageContext: PageContext) {
-  augmentType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
+  updateType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
 
   await execHookServer('onCreatePageContext', pageContext)
 

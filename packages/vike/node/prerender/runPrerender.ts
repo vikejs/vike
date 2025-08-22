@@ -68,7 +68,7 @@ import { getOutDirs } from '../vite/shared/getOutDirs.js'
 import fs from 'node:fs'
 import { getProxyForPublicUsage } from '../../shared/getProxyForPublicUsage.js'
 import { getStaticRedirectsForPrerender } from '../runtime/renderPage/resolveRedirects.js'
-import { augmentType } from '../runtime/utils.js'
+import { updateType } from '../runtime/utils.js'
 const docLink = 'https://vike.dev/i18n#pre-rendering'
 
 type HtmlFile = {
@@ -569,7 +569,7 @@ async function createPageContextPrerendering(
     })
   }
 
-  augmentType(pageContext, await loadPageConfigsLazyServerSideAndExecHook(pageContext))
+  updateType(pageContext, await loadPageConfigsLazyServerSideAndExecHook(pageContext))
 
   let usesClientRouter: boolean
   {
