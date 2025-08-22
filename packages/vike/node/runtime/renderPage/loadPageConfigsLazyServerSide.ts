@@ -2,16 +2,12 @@ export { loadPageConfigsLazyServerSideAndExecHook }
 export type { PageContext_loadPageConfigsLazyServerSide }
 export type { PageConfigsLazy }
 
-import {
-  type PageFile,
-  type VikeConfigPublicPageLazyLoaded,
-  getPageFilesServerSide,
-} from '../../../shared/getPageFiles.js'
+import { type VikeConfigPublicPageLazyLoaded, getPageFilesServerSide } from '../../../shared/getPageFiles.js'
 import { resolveVikeConfigPublicPageLazyLoaded } from '../../../shared/page-configs/resolveVikeConfigPublic.js'
 import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide.js'
 import { assertUsage, assertWarning, hasProp, isArray, isObject, objectAssign, PromiseType } from '../utils.js'
 import { getPageAssets, type PageAsset } from './getPageAssets.js'
-import type { PageConfigGlobalRuntime, PageConfigRuntime } from '../../../types/PageConfig.js'
+import type { PageConfigRuntime } from '../../../types/PageConfig.js'
 import { findPageConfig } from '../../../shared/page-configs/findPageConfig.js'
 import { analyzePage } from './analyzePage.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
@@ -34,13 +30,7 @@ async function loadPageConfigsLazyServerSideAndExecHook(pageContext: PageContext
     _pageConfig: findPageConfig(pageContext._globalContext._pageConfigs, pageContext.pageId),
   })
 
-  const [{ configPublicPageLazy }] = await Promise.all([
-    loadPageUserFiles_v1Design(pageContext),
-    analyzePageClientSideInit(pageContext._globalContext._pageFilesAll, pageContext.pageId, {
-      sharedPageFilesAlreadyLoaded: true,
-    }),
-  ])
-  objectAssign(pageContext, configPublicPageLazy)
+  objectAssign(pageContext, await loadPageUserFiles(pageContext))
 
   const { isHtmlOnly, clientEntries, clientDependencies } = analyzePage(pageContext)
   const isV1Design = !!pageContext._pageConfig
@@ -137,6 +127,20 @@ async function loadPageConfigsLazyServerSideAndExecHook(pageContext: PageContext
   return pageContext
 }
 
+async function loadPageUserFiles(
+  pageContext: PageContext_loadPageConfigsLazyServerSide & {
+    _pageConfig: null | PageConfigRuntime
+  },
+) {
+  const [{ configPublicPageLazy }] = await Promise.all([
+    loadPageUserFiles_v1Design(pageContext),
+    analyzePageClientSideInit(pageContext._globalContext._pageFilesAll, pageContext.pageId, {
+      sharedPageFilesAlreadyLoaded: true,
+    }),
+  ])
+  objectAssign(pageContext, configPublicPageLazy)
+  return pageContext
+}
 async function loadPageUserFiles_v1Design(
   pageContext: PageContext_loadPageConfigsLazyServerSide & {
     _pageConfig: null | PageConfigRuntime
