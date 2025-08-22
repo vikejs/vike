@@ -42,12 +42,7 @@ async function loadPageConfigsLazyServerSideAndExecHook(pageContext: PageContext
   ])
   objectAssign(pageContext, configPublicPageLazy)
 
-  const { isHtmlOnly, clientEntries, clientDependencies } = analyzePage(
-    pageContext._globalContext._pageFilesAll,
-    pageContext._pageConfig,
-    pageContext.pageId,
-    pageContext._globalContext,
-  )
+  const { isHtmlOnly, clientEntries, clientDependencies } = analyzePage(pageContext)
   const isV1Design = !!pageContext._pageConfig
 
   const passToClient: PassToClient = []
