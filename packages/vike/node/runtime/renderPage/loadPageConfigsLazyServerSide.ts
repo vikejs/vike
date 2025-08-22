@@ -89,13 +89,12 @@ async function loadPageConfigsLazyServerSideAndExecHook(pageContext: PageContext
     })
   }
 
-  const pageContextAddendum = {}
-  objectAssign(pageContextAddendum, configPublicPageLazy)
-  objectAssign(pageContextAddendum, {
+  objectAssign(pageContext, configPublicPageLazy)
+  objectAssign(pageContext, {
     Page: configPublicPageLazy.exports.Page,
     _isHtmlOnly: isHtmlOnly,
     _passToClient: passToClient,
-    headersResponse: resolveHeadersResponse(pageContext, pageContextAddendum),
+    headersResponse: resolveHeadersResponse(pageContext),
   })
 
   objectAssign(pageContext, {
@@ -143,8 +142,6 @@ async function loadPageConfigsLazyServerSideAndExecHook(pageContext: PageContext
     },
   })
 
-  objectAssign(pageContext, pageContextAddendum)
-
   await execHookServer('onCreatePageContext', pageContext)
 
   return pageContext
@@ -175,10 +172,9 @@ function resolveHeadersResponse(
   pageContext: {
     pageId: null | string
     _globalContext: GlobalContextServerInternal
-  },
-  pageContextAddendum: VikeConfigPublicPageLazyLoaded,
+  } & VikeConfigPublicPageLazyLoaded,
 ): Headers {
-  const headersResponse = mergeHeaders(pageContextAddendum.config.headersResponse)
+  const headersResponse = mergeHeaders(pageContext.config.headersResponse)
   if (!headersResponse.get('Cache-Control')) {
     const cacheControl = getCacheControl(pageContext.pageId, pageContext._globalContext._pageConfigs)
     if (cacheControl) headersResponse.set('Cache-Control', cacheControl)
