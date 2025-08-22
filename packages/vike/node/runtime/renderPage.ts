@@ -3,7 +3,7 @@ export { renderPage_addAsyncHookwrapper }
 export type { PageContextInit }
 export type { PageContextBegin }
 
-import { renderPageAlreadyRouted } from './renderPage/renderPageAlreadyRouted.js'
+import { renderPageAfterRoute } from './renderPage/renderPageAfterRoute.js'
 import {
   createPageContextServerSide,
   createPageContextServerSideWithoutGlobalContext,
@@ -287,9 +287,9 @@ async function renderPageOnError(
     objectAssign(pageContextErrorPageInit, { pageId: errorPageId })
   }
 
-  let pageContextErrorPage: undefined | Awaited<ReturnType<typeof renderPageAlreadyRouted>>
+  let pageContextErrorPage: undefined | Awaited<ReturnType<typeof renderPageAfterRoute>>
   try {
-    pageContextErrorPage = await renderPageAlreadyRouted(pageContextErrorPageInit)
+    pageContextErrorPage = await renderPageAfterRoute(pageContextErrorPageInit)
   } catch (errErrorPage) {
     // Handle `throw redirect()` and `throw render()` while rendering error page
     if (isAbortError(errErrorPage)) {
@@ -427,7 +427,7 @@ async function renderPageNominal(pageContext: PageContextBegin) {
   assert(pageContext.errorWhileRendering === null)
 
   // Render
-  const pageContextAfterRender = await renderPageAlreadyRouted(pageContext)
+  const pageContextAfterRender = await renderPageAfterRoute(pageContext)
   assert(pageContext === pageContextAfterRender)
   return pageContextAfterRender
 }

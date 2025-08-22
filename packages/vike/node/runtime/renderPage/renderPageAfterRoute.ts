@@ -1,4 +1,4 @@
-export { renderPageAlreadyRouted }
+export { renderPageAfterRoute }
 export { prerenderPage }
 export type { PageContextAfterRender }
 
@@ -26,7 +26,7 @@ import type { PageContextBegin } from '../renderPage.js'
 
 type PageContextAfterRender = { httpResponse: HttpResponse; errorWhileRendering: null | Error }
 
-async function renderPageAlreadyRouted<
+async function renderPageAfterRoute<
   PageContext extends {
     pageId: string
     _pageContextAlreadyProvidedByOnPrerenderHook?: true

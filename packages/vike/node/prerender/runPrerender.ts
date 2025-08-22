@@ -30,7 +30,7 @@ import {
   changeEnumerable,
   escapeHtml,
 } from './utils.js'
-import { prerenderPage } from '../runtime/renderPage/renderPageAlreadyRouted.js'
+import { prerenderPage } from '../runtime/renderPage/renderPageAfterRoute.js'
 import { createPageContextServerSide } from '../runtime/renderPage/createPageContextServerSide.js'
 import pc from '@brillout/picocolors'
 import { cpus } from 'node:os'
