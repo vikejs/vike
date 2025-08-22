@@ -41,10 +41,10 @@ type PageContextBeforeResolve = PageContext_loadPageConfigsLazyServerSide & {
 } & VikeConfigPublicPageLazyLoaded
 async function resolvePageContext(pageContext: PageContextBeforeResolve) {
   const { isHtmlOnly, clientEntries, clientDependencies } = analyzePage(pageContext)
-  const isV1Design = !!pageContext._pageConfig
 
   const passToClient: PassToClient = []
   const errMsgSuffix = ' should be an array of strings.'
+  const isV1Design = !!pageContext._pageConfig
   if (!isV1Design) {
     pageContext.exportsAll.passToClient?.forEach((e) => {
       assertUsage(hasProp(e, 'exportValue', 'string[]'), `${e.exportSource}${errMsgSuffix}`)
