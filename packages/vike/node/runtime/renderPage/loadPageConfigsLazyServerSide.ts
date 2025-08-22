@@ -5,7 +5,16 @@ export type { PageConfigsLazy }
 import { type VikeConfigPublicPageLazyLoaded, getPageFilesServerSide } from '../../../shared/getPageFiles.js'
 import { resolveVikeConfigPublicPageLazyLoaded } from '../../../shared/page-configs/resolveVikeConfigPublic.js'
 import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide.js'
-import { assertUsage, assertWarning, hasProp, isArray, isObject, objectAssign, PromiseType } from '../utils.js'
+import {
+  assertUsage,
+  assertWarning,
+  hasProp,
+  isArray,
+  isObject,
+  objectAssign,
+  PromiseType,
+  updateType,
+} from '../utils.js'
 import { getPageAssets, type PageAsset } from './getPageAssets.js'
 import type { PageConfigRuntime } from '../../../types/PageConfig.js'
 import { findPageConfig } from '../../../shared/page-configs/findPageConfig.js'
@@ -28,10 +37,10 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
   })
 
   // Load the page's + files
-  objectAssign(pageContext, await loadPageUserFiles(pageContext))
+  updateType(pageContext, await loadPageUserFiles(pageContext))
 
   // Resolve new computed pageContext properties
-  objectAssign(pageContext, await resolvePageContext(pageContext))
+  updateType(pageContext, await resolvePageContext(pageContext))
 
   // Execute +onCreatePageContext
   await execHookServer('onCreatePageContext', pageContext)
