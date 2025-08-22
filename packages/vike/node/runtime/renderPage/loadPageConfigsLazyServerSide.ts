@@ -9,7 +9,16 @@ import {
 } from '../../../shared/getPageFiles.js'
 import { resolveVikeConfigPublicPageLazyLoaded } from '../../../shared/page-configs/resolveVikeConfigPublic.js'
 import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide.js'
-import { assertUsage, assertWarning, hasProp, isArray, isObject, objectAssign, PromiseType } from '../utils.js'
+import {
+  assertUsage,
+  assertWarning,
+  augmentType,
+  hasProp,
+  isArray,
+  isObject,
+  objectAssign,
+  PromiseType,
+} from '../utils.js'
 import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './getPageAssets.js'
 import type { PageConfigGlobalRuntime, PageConfigRuntime } from '../../../types/PageConfig.js'
 import { findPageConfig } from '../../../shared/page-configs/findPageConfig.js'
@@ -35,8 +44,7 @@ type PageConfigsLazy = PromiseType<ReturnType<typeof loadPageConfigsLazyServerSi
 async function loadPageConfigsLazyServerSideAndExecHook<
   PageContext extends PageContext_loadPageConfigsLazyServerSide & PageContextExecuteHook,
 >(pageContext: PageContext) {
-  const pageContextAddendum = await loadPageConfigsLazyServerSide(pageContext)
-  objectAssign(pageContext, pageContextAddendum)
+  augmentType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
 
   await execHookServer('onCreatePageContext', pageContext)
 
@@ -61,6 +69,7 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
       sharedPageFilesAlreadyLoaded: true,
     }),
   ])
+
   const { isHtmlOnly, clientEntries, clientDependencies } = analyzePage(
     pageContext._globalContext._pageFilesAll,
     pageConfig,
@@ -159,7 +168,8 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
     },
   })
 
-  return pageContextAddendum
+  objectAssign(pageContext, pageContextAddendum)
+  return pageContext
 }
 
 async function loadPageConfigFiles(
