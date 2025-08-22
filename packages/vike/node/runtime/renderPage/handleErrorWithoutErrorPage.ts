@@ -6,7 +6,7 @@ import { assert, assertWarning, objectAssign } from '../utils.js'
 import { createHttpResponsePage, createHttpResponseError } from './createHttpResponse.js'
 import pc from '@brillout/picocolors'
 import type { GetPageAssets } from './getPageAssets.js'
-import type { PageContextAfterRender } from './renderPageAlreadyRouted.js'
+import type { PageContextAfterRender } from './renderPageAfterRoute.js'
 import type { PageContextCreated } from './createPageContextServerSide.js'
 
 // When the user hasn't defined _error.page.js

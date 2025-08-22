@@ -3,7 +3,7 @@ export { renderPage_addAsyncHookwrapper }
 export type { PageContextInit }
 export type { PageContextBegin }
 
-import { renderPageAlreadyRouted } from './renderPage/renderPageAlreadyRouted.js'
+import { renderPageAfterRoute } from './renderPage/renderPageAfterRoute.js'
 import {
   createPageContextServerSide,
   createPageContextServerSideWithoutGlobalContext,
@@ -28,7 +28,7 @@ import {
   setUrlOrigin,
   isUri,
   getUrlPretty,
-  augmentType,
+  updateType,
 } from './utils.js'
 import {
   assertNoInfiniteAbortLoop,
@@ -56,14 +56,13 @@ import {
 import { logRuntimeError, logRuntimeInfo } from './loggerRuntime.js'
 import { isNewError } from './renderPage/isNewError.js'
 import { assertArguments } from './renderPage/assertArguments.js'
-import type { PageContextDebugRouteMatches } from './renderPage/debugPageFiles.js'
 import { log404 } from './renderPage/log404/index.js'
 import pc from '@brillout/picocolors'
 import type { PageContextServer } from '../../types/index.js'
 import { getPageContextClientSerializedAbort, getPageContextClientSerialized } from './html/serializeContext.js'
 import { getErrorPageId } from '../../shared/error-page.js'
 import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErrorPage.js'
-import { loadPageConfigsLazyServerSideAndExecHook } from './renderPage/loadPageConfigsLazyServerSide.js'
+import { loadPageConfigsLazyServerSide } from './renderPage/loadPageConfigsLazyServerSide.js'
 import { resolveRedirects } from './renderPage/resolveRedirects.js'
 import type { PageContextInternalServer } from '../../types/PageContext.js'
 import { getVikeConfigError } from '../shared/getVikeConfigError.js'
@@ -255,11 +254,7 @@ async function renderPageOnError(
   assert(pageContextNominalPageBegin)
   assert(hasProp(pageContextNominalPageBegin, 'urlOriginal', 'string'))
 
-  const pageContextErrorPageInit = await getPageContextErrorPageInit(
-    pageContextBegin,
-    errNominalPage,
-    pageContextNominalPageBegin,
-  )
+  const pageContextErrorPageInit = await getPageContextErrorPageInit(pageContextBegin, errNominalPage)
 
   // Handle `throw redirect()` and `throw render()` while rendering nominal page
   if (isAbortError(errNominalPage)) {
@@ -292,9 +287,9 @@ async function renderPageOnError(
     objectAssign(pageContextErrorPageInit, { pageId: errorPageId })
   }
 
-  let pageContextErrorPage: undefined | Awaited<ReturnType<typeof renderPageAlreadyRouted>>
+  let pageContextErrorPage: undefined | Awaited<ReturnType<typeof renderPageAfterRoute>>
   try {
-    pageContextErrorPage = await renderPageAlreadyRouted(pageContextErrorPageInit)
+    pageContextErrorPage = await renderPageAfterRoute(pageContextErrorPageInit)
   } catch (errErrorPage) {
     // Handle `throw redirect()` and `throw render()` while rendering error page
     if (isAbortError(errErrorPage)) {
@@ -432,17 +427,13 @@ async function renderPageNominal(pageContext: PageContextBegin) {
   assert(pageContext.errorWhileRendering === null)
 
   // Render
-  const pageContextAfterRender = await renderPageAlreadyRouted(pageContext)
+  const pageContextAfterRender = await renderPageAfterRoute(pageContext)
   assert(pageContext === pageContextAfterRender)
   return pageContextAfterRender
 }
 
 type PageContextErrorPageInit = Awaited<ReturnType<typeof getPageContextErrorPageInit>>
-async function getPageContextErrorPageInit(
-  pageContextBegin: PageContextBegin,
-  errNominalPage: unknown,
-  pageContextNominalPagePartial: Record<string, unknown>,
-) {
+async function getPageContextErrorPageInit(pageContextBegin: PageContextBegin, errNominalPage: unknown) {
   const pageContext = forkPageContext(pageContextBegin)
 
   assert(errNominalPage)
@@ -450,11 +441,6 @@ async function getPageContextErrorPageInit(
     is404: false,
     errorWhileRendering: errNominalPage as Error,
     routeParams: {} as Record<string, string>,
-  })
-
-  objectAssign(pageContext, {
-    _debugRouteMatches:
-      (pageContextNominalPagePartial as PageContextDebugRouteMatches)._debugRouteMatches || 'ROUTING_ERROR',
   })
 
   assert(pageContext.errorWhileRendering)
@@ -620,7 +606,7 @@ async function handleAbortError(
       objectAssign(pageContext, { pageId: errorPageId })
       objectAssign(pageContext, pageContextAbort)
       objectAssign(pageContext, pageContextErrorPageInit, true)
-      augmentType(pageContext, await loadPageConfigsLazyServerSideAndExecHook(pageContext))
+      updateType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
       // We include pageContextInit: we don't only serialize pageContextAbort because the error page may need to access pageContextInit
       pageContextSerialized = getPageContextClientSerialized(pageContext, false)
     } else {

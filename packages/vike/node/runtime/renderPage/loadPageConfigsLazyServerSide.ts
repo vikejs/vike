@@ -1,81 +1,69 @@
-export { loadPageConfigsLazyServerSideAndExecHook }
+export { loadPageConfigsLazyServerSide }
 export type { PageContext_loadPageConfigsLazyServerSide }
 export type { PageConfigsLazy }
 
-import {
-  type PageFile,
-  type VikeConfigPublicPageLazyLoaded,
-  getPageFilesServerSide,
-} from '../../../shared/getPageFiles.js'
+import { type VikeConfigPublicPageLazyLoaded, getPageFilesServerSide } from '../../../shared/getPageFiles.js'
 import { resolveVikeConfigPublicPageLazyLoaded } from '../../../shared/page-configs/resolveVikeConfigPublic.js'
 import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide.js'
-import { assertUsage, assertWarning, hasProp, isArray, isObject, objectAssign, PromiseType } from '../utils.js'
-import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './getPageAssets.js'
-import { debugPageFiles, type PageContextDebugRouteMatches } from './debugPageFiles.js'
-import type { PageConfigGlobalRuntime, PageConfigRuntime } from '../../../types/PageConfig.js'
+import {
+  assertUsage,
+  assertWarning,
+  hasProp,
+  isArray,
+  isObject,
+  objectAssign,
+  PromiseType,
+  updateType,
+} from '../utils.js'
+import { getPageAssets, type PageAsset } from './getPageAssets.js'
+import type { PageConfigRuntime } from '../../../types/PageConfig.js'
 import { findPageConfig } from '../../../shared/page-configs/findPageConfig.js'
 import { analyzePage } from './analyzePage.js'
-import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { MediaType } from './inferMediaType.js'
-import { loadPageEntry } from '../../../shared/page-configs/loadPageEntry.js'
-import { execHookServer, type PageContextExecHookServer } from './execHookServer.js'
+import { loadAndParseVirtualFilePageEntry } from '../../../shared/page-configs/loadAndParseVirtualFilePageEntry.js'
+import { execHookServer } from './execHookServer.js'
 import { getCacheControl } from './getCacheControl.js'
 import type { PassToClient } from '../html/serializeContext.js'
+import type { PageContextAfterRoute } from '../../../shared/route/index.js'
+import type { PageContextCreated } from './createPageContextServerSide.js'
 
-type PageContextExecuteHook = Omit<
-  PageContextExecHookServer,
-  keyof Awaited<ReturnType<typeof loadPageConfigsLazyServerSide>>
->
-type PageContext_loadPageConfigsLazyServerSide = PageContextGetPageAssets &
-  PageContextDebugRouteMatches & {
-    pageId: string
-    urlOriginal: string
-    _globalContext: GlobalContextServerInternal
-  }
+type PageContext_loadPageConfigsLazyServerSide = PageContextCreated &
+  PageContextAfterRoute & { is404: boolean | null; pageId: string }
 type PageConfigsLazy = PromiseType<ReturnType<typeof loadPageConfigsLazyServerSide>>
 
-async function loadPageConfigsLazyServerSideAndExecHook<
-  PageContext extends PageContext_loadPageConfigsLazyServerSide & PageContextExecuteHook,
->(pageContext: PageContext) {
-  const pageContextAddendum = await loadPageConfigsLazyServerSide(pageContext)
-  objectAssign(pageContext, pageContextAddendum)
+async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageConfigsLazyServerSide) {
+  objectAssign(pageContext, {
+    _pageConfig: findPageConfig(pageContext._globalContext._pageConfigs, pageContext.pageId),
+  })
 
+  // Load the page's + files
+  updateType(pageContext, await loadPageUserFiles(pageContext))
+
+  // Resolve new computed pageContext properties
+  updateType(pageContext, await resolvePageContext(pageContext))
+
+  // Execute +onCreatePageContext
   await execHookServer('onCreatePageContext', pageContext)
 
   return pageContext
 }
 
-// TODO/now: define new function resolveAfterLoad() ?
-
-async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageConfigsLazyServerSide) {
-  const pageConfig = findPageConfig(pageContext._globalContext._pageConfigs, pageContext.pageId) // Make pageConfig globally available as pageContext._pageConfig ?
-
-  const globalContext = pageContext._globalContext
-  const [{ pageFilesLoaded, configPublicPageLazy }] = await Promise.all([
-    loadPageConfigFiles(
-      pageContext._globalContext._pageFilesAll,
-      pageConfig,
-      globalContext._pageConfigGlobal,
-      pageContext.pageId,
-      !globalContext._isProduction,
-    ),
-    analyzePageClientSideInit(pageContext._globalContext._pageFilesAll, pageContext.pageId, {
-      sharedPageFilesAlreadyLoaded: true,
-    }),
-  ])
-  const { isHtmlOnly, isClientRouting, clientEntries, clientDependencies, pageFilesClientSide, pageFilesServerSide } =
-    await analyzePage(pageContext._globalContext._pageFilesAll, pageConfig, pageContext.pageId, globalContext)
-  const isV1Design = !!pageConfig
+type PageContextBeforeResolve = PageContext_loadPageConfigsLazyServerSide & {
+  _pageConfig: null | PageConfigRuntime
+} & VikeConfigPublicPageLazyLoaded
+async function resolvePageContext(pageContext: PageContextBeforeResolve) {
+  const { isHtmlOnly, clientEntries, clientDependencies } = analyzePage(pageContext)
 
   const passToClient: PassToClient = []
   const errMsgSuffix = ' should be an array of strings.'
+  const isV1Design = !!pageContext._pageConfig
   if (!isV1Design) {
-    configPublicPageLazy.exportsAll.passToClient?.forEach((e) => {
+    pageContext.exportsAll.passToClient?.forEach((e) => {
       assertUsage(hasProp(e, 'exportValue', 'string[]'), `${e.exportSource}${errMsgSuffix}`)
       passToClient.push(...e.exportValue)
     })
   } else {
-    configPublicPageLazy.from.configsCumulative.passToClient?.values.forEach((v) => {
+    pageContext.from.configsCumulative.passToClient?.values.forEach((v) => {
       const { value, definedAt } = v
       const errMsg = `+passToClient value defined at ${definedAt}${errMsgSuffix}` as const
 
@@ -102,17 +90,14 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
     })
   }
 
-  const pageContextAddendum = {}
-  objectAssign(pageContextAddendum, configPublicPageLazy)
-  objectAssign(pageContextAddendum, {
-    Page: configPublicPageLazy.exports.Page,
+  objectAssign(pageContext, {
+    Page: pageContext.exports.Page,
     _isHtmlOnly: isHtmlOnly,
     _passToClient: passToClient,
-    _pageFilePathsLoaded: pageFilesLoaded.map((p) => p.filePath),
-    headersResponse: resolveHeadersResponse(pageContext, pageContextAddendum),
+    headersResponse: resolveHeadersResponse(pageContext),
   })
 
-  objectAssign(pageContextAddendum, {
+  objectAssign(pageContext, {
     __getPageAssets: async () => {
       if ('_pageAssets' in pageContext) {
         return (pageContext as any as { _pageAssets: PageAsset[] })._pageAssets
@@ -125,7 +110,7 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
   })
 
   // TO-DO/next-major-release: remove
-  Object.assign(pageContextAddendum, {
+  Object.assign(pageContext, {
     _getPageAssets: async () => {
       assertWarning(false, 'pageContext._getPageAssets() deprecated, see https://vike.dev/preloading', {
         onlyOnce: true,
@@ -137,7 +122,7 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
         mediaType: null | NonNullable<MediaType>['mediaType']
         preloadType: null | NonNullable<MediaType>['assetType']
       }[] = []
-      ;(await pageContextAddendum.__getPageAssets()).forEach((p) => {
+      ;(await pageContext.__getPageAssets()).forEach((p) => {
         if (p.assetType === 'script' && p.isEntry) {
           pageAssetsOldFormat.push({
             src: p.src,
@@ -157,34 +142,38 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
     },
   })
 
-  debugPageFiles({
-    pageContext,
-    isHtmlOnly,
-    isClientRouting,
-    pageFilesLoaded,
-    pageFilesClientSide,
-    pageFilesServerSide,
-    clientEntries,
-    clientDependencies,
-  })
-
-  return pageContextAddendum
+  return pageContext
 }
 
-async function loadPageConfigFiles(
-  pageFilesAll: PageFile[],
-  pageConfig: null | PageConfigRuntime,
-  pageConfigGlobal: PageConfigGlobalRuntime,
-  pageId: string,
-  isDev: boolean,
+async function loadPageUserFiles(
+  pageContext: PageContext_loadPageConfigsLazyServerSide & {
+    _pageConfig: null | PageConfigRuntime
+  },
 ) {
-  const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
-  const pageConfigLoaded = !pageConfig ? null : await loadPageEntry(pageConfig, isDev)
+  const [{ configPublicPageLazy }] = await Promise.all([
+    loadPageUserFiles_v1Design(pageContext),
+    analyzePageClientSideInit(pageContext._globalContext._pageFilesAll, pageContext.pageId, {
+      sharedPageFilesAlreadyLoaded: true,
+    }),
+  ])
+  objectAssign(pageContext, configPublicPageLazy)
+  return pageContext
+}
+async function loadPageUserFiles_v1Design(
+  pageContext: PageContext_loadPageConfigsLazyServerSide & {
+    _pageConfig: null | PageConfigRuntime
+  },
+) {
+  const pageFilesServerSide = getPageFilesServerSide(pageContext._pageFilesAll, pageContext.pageId)
+  const isDev = !pageContext._globalContext._isProduction
+  const pageConfigLoaded = !pageContext._pageConfig
+    ? null
+    : await loadAndParseVirtualFilePageEntry(pageContext._pageConfig, isDev)
   await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))
   const configPublicPageLazy = resolveVikeConfigPublicPageLazyLoaded(
     pageFilesServerSide,
     pageConfigLoaded,
-    pageConfigGlobal,
+    pageContext._globalContext._pageConfigGlobal,
   )
   return {
     configPublicPageLazy,
@@ -192,14 +181,8 @@ async function loadPageConfigFiles(
   }
 }
 
-function resolveHeadersResponse(
-  pageContext: {
-    pageId: null | string
-    _globalContext: GlobalContextServerInternal
-  },
-  pageContextAddendum: VikeConfigPublicPageLazyLoaded,
-): Headers {
-  const headersResponse = mergeHeaders(pageContextAddendum.config.headersResponse)
+function resolveHeadersResponse(pageContext: PageContextBeforeResolve): Headers {
+  const headersResponse = mergeHeaders(pageContext.config.headersResponse)
   if (!headersResponse.get('Cache-Control')) {
     const cacheControl = getCacheControl(pageContext.pageId, pageContext._globalContext._pageConfigs)
     if (cacheControl) headersResponse.set('Cache-Control', cacheControl)

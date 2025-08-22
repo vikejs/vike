@@ -2,7 +2,7 @@ export { createPageContextServerSide }
 export { createPageContextServerSideWithoutGlobalContext }
 export type { PageContextCreated }
 
-import { assert, assertUsage, assertWarning, augmentType, normalizeHeaders, objectAssign } from '../utils.js'
+import { assert, assertUsage, assertWarning, updateType, normalizeHeaders, objectAssign } from '../utils.js'
 import { getPageContextUrlComputed } from '../../../shared/getPageContextUrlComputed.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { PageContextInit } from '../renderPage.js'
@@ -70,7 +70,7 @@ function createPageContextServerSide(
   }
 
   const pageContextAugmented = createPageContextShared(pageContextCreated, globalContext._vikeConfigPublicGlobal)
-  augmentType(pageContextCreated, pageContextAugmented)
+  updateType(pageContextCreated, pageContextAugmented)
 
   return pageContextCreated
 }

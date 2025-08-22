@@ -5,7 +5,7 @@ export { isErrorFetchingStaticAssets }
 import { getPageFilesClientSide, type PageFile } from '../../shared/getPageFiles.js'
 import { resolveVikeConfigPublicPageLazyLoaded } from '../../shared/page-configs/resolveVikeConfigPublic.js'
 import { findPageConfig } from '../../shared/page-configs/findPageConfig.js'
-import { loadPageEntry } from '../../shared/page-configs/loadPageEntry.js'
+import { loadAndParseVirtualFilePageEntry } from '../../shared/page-configs/loadAndParseVirtualFilePageEntry.js'
 import type { PageConfigGlobalRuntime, PageConfigRuntime, PageConfigRuntimeLoaded } from '../../types/PageConfig.js'
 import { objectAssign } from '../runtime-server-routing/utils.js'
 
@@ -35,7 +35,7 @@ async function loadPageConfigsLazyClientSide(
     // prettier-ignore
     // biome-ignore format:
     const result = await Promise.all([
-      pageConfig && loadPageEntry(pageConfig, isDev),
+      pageConfig && loadAndParseVirtualFilePageEntry(pageConfig, isDev),
       ...pageFilesClientSide.map((p) => p.loadFile?.()),
     ])
     pageConfigLoaded = result[0]

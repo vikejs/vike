@@ -21,7 +21,7 @@ import { skipLink } from './skipLink.js'
 import { disableClientRouting } from './renderPageClientSide.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { createPageContextClientSide, type PageContextCreated } from './createPageContextClientSide.js'
-import { route, type PageContextFromRoute } from '../../shared/route/index.js'
+import { route, type PageContextAfterRoute } from '../../shared/route/index.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import { type PageContextFromServerHooks, getPageContextFromServerHooks } from './getPageContextFromHooks.js'
 import type { VikeConfigPublicPageLazyLoaded, PageFile } from '../../shared/getPageFiles.js'
@@ -309,7 +309,7 @@ function isExpired(found: PrefetchedPageContext) {
 async function getPageContextLink(urlOfLink: string) {
   const pageContextLink = await createPageContextClientSide(urlOfLink)
 
-  let pageContextFromRoute: PageContextFromRoute
+  let pageContextFromRoute: PageContextAfterRoute
   try {
     pageContextFromRoute = await route(pageContextLink)
   } catch {

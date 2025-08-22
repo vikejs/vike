@@ -1,6 +1,6 @@
 export { route }
-export type { PageContextForRoute }
-export type { PageContextFromRoute }
+export type { PageContextBeforeRoute }
+export type { PageContextAfterRoute }
 export type { PageRoutes }
 export type { RouteMatches }
 
@@ -22,14 +22,13 @@ import { debug } from './debug.js'
 import pc from '@brillout/picocolors'
 import type { GlobalContextInternal } from '../createGlobalContextShared.js'
 
-type PageContextForRoute = PageContextUrlInternal & {
+type PageContextBeforeRoute = PageContextUrlInternal & {
   _globalContext: GlobalContextInternal
 } & PageContextUrlSource
-type PageContextFromRoute = {
+type PageContextAfterRoute = {
   pageId: string | null
   routeParams: Record<string, string>
   _routingProvidedByOnBeforeRouteHook?: boolean
-  _debugRouteMatches: RouteMatches
 }
 type RouteMatch = {
   pageId: string
@@ -41,7 +40,10 @@ type RouteMatch = {
 type RouteMatches = 'CUSTOM_ROUTING' | RouteMatch[]
 
 // TO-DO/next-major-release: make it sync
-async function route(pageContext: PageContextForRoute, skipOnBeforeRouteHook?: true): Promise<PageContextFromRoute> {
+async function route(
+  pageContext: PageContextBeforeRoute,
+  skipOnBeforeRouteHook?: true,
+): Promise<PageContextAfterRoute> {
   debug('Pages routes:', pageContext._globalContext._pageRoutes)
   const pageContextFromRoute = {}
 
@@ -120,7 +122,6 @@ async function route(pageContext: PageContextForRoute, skipOnBeforeRouteHook?: t
 
   debug(`Route matches for URL ${pc.cyan(urlPathname)} (in precedence order):`, routeMatches)
 
-  objectAssign(pageContextFromRoute, { _debugRouteMatches: routeMatches })
   // For vite-plugin-vercel https://github.com/magne4000/vite-plugin-vercel/blob/main/packages/vike-integration/vike.ts#L173
   objectAssign(pageContextFromRoute, { _routeMatch: winner })
 

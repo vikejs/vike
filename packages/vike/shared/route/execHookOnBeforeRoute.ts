@@ -13,7 +13,7 @@ import {
 } from './utils.js'
 import { assertRouteParams, assertSyncRouting } from './resolveRouteFunction.js'
 import pc from '@brillout/picocolors'
-import type { PageContextForRoute, PageContextFromRoute } from './index.js'
+import type { PageContextBeforeRoute, PageContextAfterRoute } from './index.js'
 import type { Hook } from '../hooks/getHook.js'
 import { execHookDirectSync } from '../hooks/execHook.js'
 import {
@@ -23,10 +23,10 @@ import {
 import type { GlobalContextInternal } from '../createGlobalContextShared.js'
 
 async function execHookOnBeforeRoute(
-  pageContext: PageContextForRoute,
+  pageContext: PageContextBeforeRoute,
 ): Promise<
   | null
-  | ({ _routingProvidedByOnBeforeRouteHook: true } & PageContextFromRoute)
+  | ({ _routingProvidedByOnBeforeRouteHook: true } & PageContextAfterRoute)
   | { _routingProvidedByOnBeforeRouteHook: false }
 > {
   const pageContextFromOnBeforeRouteHook = {}
@@ -46,7 +46,6 @@ async function execHookOnBeforeRoute(
       }
       objectAssign(pageContextFromOnBeforeRouteHook, {
         _routingProvidedByOnBeforeRouteHook: true as const,
-        _debugRouteMatches: 'CUSTOM_ROUTING' as const,
       })
       return pageContextFromOnBeforeRouteHook
     }

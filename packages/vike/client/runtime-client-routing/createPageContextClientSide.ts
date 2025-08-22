@@ -5,7 +5,7 @@ import { createPageContextObject, createPageContextShared } from '../../shared/c
 import { getPageContextUrlComputed } from '../../shared/getPageContextUrlComputed.js'
 import { getBaseServer } from './getBaseServer.js'
 import { getGlobalContextClientInternal } from './globalContext.js'
-import { assert, augmentType, isBaseServer, objectAssign } from './utils.js'
+import { assert, updateType, isBaseServer, objectAssign } from './utils.js'
 
 async function createPageContextClientSide(urlOriginal: string) {
   const globalContext = await getGlobalContextClientInternal()
@@ -28,7 +28,7 @@ async function createPageContextClientSide(urlOriginal: string) {
   objectAssign(pageContextCreated, pageContextUrlComputed)
 
   const pageContextAugmented = createPageContextShared(pageContextCreated, globalContext._vikeConfigPublicGlobal)
-  augmentType(pageContextCreated, pageContextAugmented)
+  updateType(pageContextCreated, pageContextAugmented)
 
   return pageContextCreated
 }

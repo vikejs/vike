@@ -1,15 +1,15 @@
-export { renderPageAlreadyRouted }
+export { renderPageAfterRoute }
 export { prerenderPage }
 export type { PageContextAfterRender }
 
 import { getErrorPageId } from '../../../shared/error-page.js'
 import { getHtmlString } from '../html/renderHtml.js'
-import { assert, assertUsage, augmentType, hasProp, objectAssign } from '../utils.js'
+import { assert, assertUsage, updateType, hasProp, objectAssign } from '../utils.js'
 import { getPageContextClientSerialized } from '../html/serializeContext.js'
 import { type PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
 import { createHttpResponsePage, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponse.js'
 import {
-  loadPageConfigsLazyServerSideAndExecHook,
+  loadPageConfigsLazyServerSide,
   PageContext_loadPageConfigsLazyServerSide,
   type PageConfigsLazy,
 } from './loadPageConfigsLazyServerSide.js'
@@ -26,8 +26,7 @@ import type { PageContextBegin } from '../renderPage.js'
 
 type PageContextAfterRender = { httpResponse: HttpResponse; errorWhileRendering: null | Error }
 
-// TODO/now: rename?
-async function renderPageAlreadyRouted<
+async function renderPageAfterRoute<
   PageContext extends {
     pageId: string
     _pageContextAlreadyProvidedByOnPrerenderHook?: true
@@ -52,7 +51,7 @@ async function renderPageAlreadyRouted<
         getErrorPageId(pageContext._globalContext._pageFilesAll, pageContext._globalContext._pageConfigs)),
   )
 
-  augmentType(pageContext, await loadPageConfigsLazyServerSideAndExecHook(pageContext))
+  updateType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
 
   if (!isError) {
     await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageServer(pageContext))

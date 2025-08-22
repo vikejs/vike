@@ -30,7 +30,7 @@ import {
   changeEnumerable,
   escapeHtml,
 } from './utils.js'
-import { prerenderPage } from '../runtime/renderPage/renderPageAlreadyRouted.js'
+import { prerenderPage } from '../runtime/renderPage/renderPageAfterRoute.js'
 import { createPageContextServerSide } from '../runtime/renderPage/createPageContextServerSide.js'
 import pc from '@brillout/picocolors'
 import { cpus } from 'node:os'
@@ -46,10 +46,10 @@ import { getPageFilesServerSide } from '../../shared/getPageFiles.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
 import { getUrlFromRouteString } from '../../shared/route/resolveRouteString.js'
 import { getConfigValueRuntime } from '../../shared/page-configs/getConfigValueRuntime.js'
-import { loadPageEntry } from '../../shared/page-configs/loadPageEntry.js'
+import { loadAndParseVirtualFilePageEntry } from '../../shared/page-configs/loadAndParseVirtualFilePageEntry.js'
 import { getErrorPageId, isErrorPage } from '../../shared/error-page.js'
 import { isAbortError } from '../../shared/route/abort.js'
-import { loadPageConfigsLazyServerSideAndExecHook } from '../runtime/renderPage/loadPageConfigsLazyServerSide.js'
+import { loadPageConfigsLazyServerSide } from '../runtime/renderPage/loadPageConfigsLazyServerSide.js'
 import {
   getHookFromPageConfig,
   getHookFromPageConfigGlobal,
@@ -68,7 +68,7 @@ import { getOutDirs } from '../vite/shared/getOutDirs.js'
 import fs from 'node:fs'
 import { getProxyForPublicUsage } from '../../shared/getProxyForPublicUsage.js'
 import { getStaticRedirectsForPrerender } from '../runtime/renderPage/resolveRedirects.js'
-import { augmentType } from '../runtime/utils.js'
+import { updateType } from '../runtime/utils.js'
 const docLink = 'https://vike.dev/i18n#pre-rendering'
 
 type HtmlFile = {
@@ -355,7 +355,7 @@ async function callOnBeforePrerenderStartHooks(
     globalContext._pageConfigs.map((pageConfig) =>
       concurrencyLimit(async () => {
         const hookName = 'onBeforePrerenderStart'
-        const pageConfigLoaded = await loadPageEntry(pageConfig, false)
+        const pageConfigLoaded = await loadAndParseVirtualFilePageEntry(pageConfig, false)
         const hook = getHookFromPageConfig(pageConfigLoaded, hookName)
         if (!hook) return
         const { hookFn, hookFilePath, hookTimeout } = hook
@@ -565,12 +565,11 @@ async function createPageContextPrerendering(
     assert(pageId)
     objectAssign(pageContext, {
       pageId,
-      _debugRouteMatches: [],
       routeParams: {},
     })
   }
 
-  augmentType(pageContext, await loadPageConfigsLazyServerSideAndExecHook(pageContext))
+  updateType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
 
   let usesClientRouter: boolean
   {

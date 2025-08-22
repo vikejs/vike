@@ -2,20 +2,20 @@ export { analyzePage }
 
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { getVikeClientEntry } from '../../../shared/getPageFiles/analyzePageClientSide/determineClientEntry.js'
-import type { PageFile } from '../../../shared/getPageFiles/getPageFileObject.js'
 import type { PageConfigRuntime } from '../../../types/PageConfig.js'
 import { type AnalysisResult, analyzePageClientSide } from '../../../shared/getPageFiles/analyzePageClientSide.js'
 import { generateVirtualFileId } from '../../shared/virtualFileId.js'
 import { analyzeClientSide } from '../../../shared/getPageFiles/analyzeClientSide.js'
-import type { GlobalContextServerInternal } from '../globalContext.js'
 import { getConfigValueRuntime } from '../../../shared/page-configs/getConfigValueRuntime.js'
+import type { PageContext_loadPageConfigsLazyServerSide } from './loadPageConfigsLazyServerSide.js'
 
-async function analyzePage(
-  pageFilesAll: PageFile[],
-  pageConfig: null | PageConfigRuntime,
-  pageId: string,
-  globalContext: GlobalContextServerInternal,
-): Promise<AnalysisResult> {
+function analyzePage(
+  pageContext: PageContext_loadPageConfigsLazyServerSide & {
+    _pageConfig: null | PageConfigRuntime
+  },
+): AnalysisResult {
+  const { pageId, _pageConfig: pageConfig, _globalContext: globalContext } = pageContext
+  const { _pageFilesAll: pageFilesAll } = globalContext
   if (pageConfig) {
     const { isClientRuntimeLoaded, isClientRouting } = analyzeClientSide(pageConfig, pageFilesAll, pageId)
     const clientEntries: string[] = []

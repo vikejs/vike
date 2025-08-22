@@ -1,4 +1,4 @@
-= TODO/soon
+= TO-DO/soon
 - Add assertWarning() deprecations:
   - `pageContext.exports`
   - `pageContext.configEntries`

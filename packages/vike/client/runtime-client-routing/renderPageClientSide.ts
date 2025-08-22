@@ -12,7 +12,7 @@ import {
   redirectHard,
   getGlobalObject,
   hasProp,
-  augmentType,
+  updateType,
   genPromise,
   isCallable,
   catchInfiniteLoop,
@@ -253,7 +253,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       await onError(res.err)
       return
     }
-    augmentType(pageContext, res.pageContext)
+    updateType(pageContext, res.pageContext)
     setPageContextCurrent(pageContext)
 
     // Set global hydrationCanBeAborted
@@ -280,7 +280,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         return
       }
       if (isRenderOutdated()) return
-      augmentType(pageContext, pageContextAugmented)
+      updateType(pageContext, pageContextAugmented)
 
       // Render page view
       await renderPageView(pageContext)
@@ -316,7 +316,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         return
       }
       if (isRenderOutdated()) return
-      augmentType(pageContext, pageContextFromClientHooks)
+      updateType(pageContext, pageContextFromClientHooks)
 
       await renderPageView(pageContext)
     }
@@ -433,7 +433,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       onError(res.err)
       return
     }
-    augmentType(pageContext, res.pageContext)
+    updateType(pageContext, res.pageContext)
     setPageContextCurrent(pageContext)
 
     let pageContextFromServerHooks: PageContextFromServerHooks
@@ -458,7 +458,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       return
     }
     if (isRenderOutdated()) return
-    augmentType(pageContext, pageContextFromClientHooks)
+    updateType(pageContext, pageContextFromClientHooks)
 
     await renderPageView(pageContext, args)
   }
