@@ -34,7 +34,7 @@ async function loadPageConfigsLazyServerSideAndExecHook(pageContext: PageContext
 
   const globalContext = pageContext._globalContext
   const [{ configPublicPageLazy }] = await Promise.all([
-    loadPageConfigFiles(
+    loadPageUserFiles_v1Design(
       pageContext._globalContext._pageFilesAll,
       pageConfig,
       globalContext._pageConfigGlobal,
@@ -147,7 +147,7 @@ async function loadPageConfigsLazyServerSideAndExecHook(pageContext: PageContext
   return pageContext
 }
 
-async function loadPageConfigFiles(
+async function loadPageUserFiles_v1Design(
   pageFilesAll: PageFile[],
   pageConfig: null | PageConfigRuntime,
   pageConfigGlobal: PageConfigGlobalRuntime,
