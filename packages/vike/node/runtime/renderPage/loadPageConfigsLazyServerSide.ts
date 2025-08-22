@@ -19,35 +19,25 @@ import {
   objectAssign,
   PromiseType,
 } from '../utils.js'
-import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './getPageAssets.js'
+import { getPageAssets, type PageAsset } from './getPageAssets.js'
 import type { PageConfigGlobalRuntime, PageConfigRuntime } from '../../../types/PageConfig.js'
 import { findPageConfig } from '../../../shared/page-configs/findPageConfig.js'
 import { analyzePage } from './analyzePage.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { MediaType } from './inferMediaType.js'
 import { loadAndParseVirtualFilePageEntry } from '../../../shared/page-configs/loadAndParseVirtualFilePageEntry.js'
-import { execHookServer, type PageContextExecHookServer } from './execHookServer.js'
+import { execHookServer } from './execHookServer.js'
 import { getCacheControl } from './getCacheControl.js'
 import type { PassToClient } from '../html/serializeContext.js'
+import type { PageContextFromRoute } from '../../../shared/route/index.js'
+import type { PageContextCreated } from './createPageContextServerSide.js'
 
-type PageContextExecuteHook = Omit<
-  PageContextExecHookServer,
-  keyof Awaited<ReturnType<typeof loadPageConfigsLazyServerSide>>
->
-type PageContext_loadPageConfigsLazyServerSide = PageContextGetPageAssets & {
-  pageId: string
-  urlOriginal: string
-  _globalContext: GlobalContextServerInternal
-}
+type PageContext_loadPageConfigsLazyServerSide = PageContextCreated &
+  PageContextFromRoute & { is404: boolean | null; pageId: string }
 type PageConfigsLazy = PromiseType<ReturnType<typeof loadPageConfigsLazyServerSide>>
 
-async function loadPageConfigsLazyServerSideAndExecHook<
-  PageContext extends PageContext_loadPageConfigsLazyServerSide & PageContextExecuteHook,
->(pageContext: PageContext) {
+async function loadPageConfigsLazyServerSideAndExecHook(pageContext: PageContext_loadPageConfigsLazyServerSide) {
   updateType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
-
-  await execHookServer('onCreatePageContext', pageContext)
-
   return pageContext
 }
 
@@ -169,6 +159,9 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
   })
 
   objectAssign(pageContext, pageContextAddendum)
+
+  await execHookServer('onCreatePageContext', pageContext)
+
   return pageContext
 }
 

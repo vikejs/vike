@@ -1,7 +1,6 @@
 export { getPageAssets }
 export type { PageAsset }
 export type { GetPageAssets }
-export type { PageContextGetPageAssets }
 
 import { retrievePageAssetsProd } from './getPageAssets/retrievePageAssetsProd.js'
 import { retrievePageAssetsDev } from './getPageAssets/retrievePageAssetsDev.js'
@@ -20,14 +19,12 @@ type PageAsset = {
 }
 type GetPageAssets = () => Promise<PageAsset[]>
 
-type PageContextGetPageAssets = {
-  _baseServer: string
-  _baseAssets: string | null
-  _globalContext: GlobalContextServerInternal
-}
-
 async function getPageAssets(
-  pageContext: PageContextGetPageAssets,
+  pageContext: {
+    _baseServer: string
+    _baseAssets: string | null
+    _globalContext: GlobalContextServerInternal
+  },
   clientDependencies: ClientDependency[],
   clientEntries: string[],
 ): Promise<PageAsset[]> {
