@@ -1,3 +1,9 @@
+// TO-DO/soon: rename PageConfig names
+// - Use `Internal` suffix, i.e. {Page,Global}ConfigInternal
+//   - While keeping {Page,Global}ConfigPublic or remove Public suffix and rename it to {Page,Global}Config ?
+// - rename EagerLoaded EagerlyLoaded
+// - remove `LazyLoaded` suffix
+
 // TO-DO/soon/same-api: use public API internally?
 // TO-DO/soon/flat-pageContext: rename definedAt => definedBy
 export { resolveVikeConfigPublicGlobal }
