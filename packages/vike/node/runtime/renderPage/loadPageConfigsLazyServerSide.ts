@@ -9,15 +9,7 @@ import {
 } from '../../../shared/getPageFiles.js'
 import { resolveVikeConfigPublicPageLazyLoaded } from '../../../shared/page-configs/resolveVikeConfigPublic.js'
 import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide.js'
-import {
-  assertUsage,
-  assertWarning,
-  hasProp,
-  isArray,
-  isObject,
-  objectAssign,
-  PromiseType,
-} from '../utils.js'
+import { assertUsage, assertWarning, hasProp, isArray, isObject, objectAssign, PromiseType } from '../utils.js'
 import { getPageAssets, type PageAsset } from './getPageAssets.js'
 import type { PageConfigGlobalRuntime, PageConfigRuntime } from '../../../types/PageConfig.js'
 import { findPageConfig } from '../../../shared/page-configs/findPageConfig.js'
