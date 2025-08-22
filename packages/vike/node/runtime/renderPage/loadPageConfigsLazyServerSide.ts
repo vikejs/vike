@@ -33,6 +33,9 @@ async function loadPageConfigsLazyServerSideAndExecHook(pageContext: PageContext
   // Resolve computed pageContext properties
   objectAssign(pageContext, await resolvePageContext(pageContext))
 
+  // Execute +onCreatePageContext
+  await execHookServer('onCreatePageContext', pageContext)
+
   return pageContext
 }
 
@@ -129,8 +132,6 @@ async function resolvePageContext(pageContext: PageContextBeforeResolve) {
       return pageAssetsOldFormat
     },
   })
-
-  await execHookServer('onCreatePageContext', pageContext)
 
   return pageContext
 }
