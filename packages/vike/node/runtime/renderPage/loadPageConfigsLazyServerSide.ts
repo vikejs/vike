@@ -12,7 +12,6 @@ import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzeP
 import {
   assertUsage,
   assertWarning,
-  updateType,
   hasProp,
   isArray,
   isObject,
