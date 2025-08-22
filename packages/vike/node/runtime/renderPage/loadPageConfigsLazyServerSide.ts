@@ -1,4 +1,4 @@
-export { loadPageConfigsLazyServerSideAndExecHook }
+export { loadPageConfigsLazyServerSide }
 export type { PageContext_loadPageConfigsLazyServerSide }
 export type { PageConfigsLazy }
 
@@ -20,9 +20,9 @@ import type { PageContextCreated } from './createPageContextServerSide.js'
 
 type PageContext_loadPageConfigsLazyServerSide = PageContextCreated &
   PageContextAfterRoute & { is404: boolean | null; pageId: string }
-type PageConfigsLazy = PromiseType<ReturnType<typeof loadPageConfigsLazyServerSideAndExecHook>>
+type PageConfigsLazy = PromiseType<ReturnType<typeof loadPageConfigsLazyServerSide>>
 
-async function loadPageConfigsLazyServerSideAndExecHook(pageContext: PageContext_loadPageConfigsLazyServerSide) {
+async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageConfigsLazyServerSide) {
   objectAssign(pageContext, {
     _pageConfig: findPageConfig(pageContext._globalContext._pageConfigs, pageContext.pageId),
   })

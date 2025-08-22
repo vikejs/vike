@@ -62,7 +62,7 @@ import type { PageContextServer } from '../../types/index.js'
 import { getPageContextClientSerializedAbort, getPageContextClientSerialized } from './html/serializeContext.js'
 import { getErrorPageId } from '../../shared/error-page.js'
 import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErrorPage.js'
-import { loadPageConfigsLazyServerSideAndExecHook } from './renderPage/loadPageConfigsLazyServerSide.js'
+import { loadPageConfigsLazyServerSide } from './renderPage/loadPageConfigsLazyServerSide.js'
 import { resolveRedirects } from './renderPage/resolveRedirects.js'
 import type { PageContextInternalServer } from '../../types/PageContext.js'
 import { getVikeConfigError } from '../shared/getVikeConfigError.js'
@@ -606,7 +606,7 @@ async function handleAbortError(
       objectAssign(pageContext, { pageId: errorPageId })
       objectAssign(pageContext, pageContextAbort)
       objectAssign(pageContext, pageContextErrorPageInit, true)
-      updateType(pageContext, await loadPageConfigsLazyServerSideAndExecHook(pageContext))
+      updateType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
       // We include pageContextInit: we don't only serialize pageContextAbort because the error page may need to access pageContextInit
       pageContextSerialized = getPageContextClientSerialized(pageContext, false)
     } else {

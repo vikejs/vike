@@ -49,7 +49,7 @@ import { getConfigValueRuntime } from '../../shared/page-configs/getConfigValueR
 import { loadAndParseVirtualFilePageEntry } from '../../shared/page-configs/loadAndParseVirtualFilePageEntry.js'
 import { getErrorPageId, isErrorPage } from '../../shared/error-page.js'
 import { isAbortError } from '../../shared/route/abort.js'
-import { loadPageConfigsLazyServerSideAndExecHook } from '../runtime/renderPage/loadPageConfigsLazyServerSide.js'
+import { loadPageConfigsLazyServerSide } from '../runtime/renderPage/loadPageConfigsLazyServerSide.js'
 import {
   getHookFromPageConfig,
   getHookFromPageConfigGlobal,
@@ -569,7 +569,7 @@ async function createPageContextPrerendering(
     })
   }
 
-  updateType(pageContext, await loadPageConfigsLazyServerSideAndExecHook(pageContext))
+  updateType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
 
   let usesClientRouter: boolean
   {

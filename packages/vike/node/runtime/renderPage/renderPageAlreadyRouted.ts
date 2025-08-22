@@ -9,7 +9,7 @@ import { getPageContextClientSerialized } from '../html/serializeContext.js'
 import { type PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
 import { createHttpResponsePage, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponse.js'
 import {
-  loadPageConfigsLazyServerSideAndExecHook,
+  loadPageConfigsLazyServerSide,
   PageContext_loadPageConfigsLazyServerSide,
   type PageConfigsLazy,
 } from './loadPageConfigsLazyServerSide.js'
@@ -52,7 +52,7 @@ async function renderPageAlreadyRouted<
         getErrorPageId(pageContext._globalContext._pageFilesAll, pageContext._globalContext._pageConfigs)),
   )
 
-  updateType(pageContext, await loadPageConfigsLazyServerSideAndExecHook(pageContext))
+  updateType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
 
   if (!isError) {
     await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageServer(pageContext))
