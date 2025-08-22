@@ -35,13 +35,7 @@ async function loadPageConfigsLazyServerSideAndExecHook(pageContext: PageContext
   })
 
   const [{ configPublicPageLazy }] = await Promise.all([
-    loadPageUserFiles_v1Design(
-      pageContext._globalContext._pageFilesAll,
-      pageContext._pageConfig,
-      pageContext._globalContext._pageConfigGlobal,
-      pageContext.pageId,
-      !pageContext._globalContext._isProduction,
-    ),
+    loadPageUserFiles_v1Design(pageContext),
     analyzePageClientSideInit(pageContext._globalContext._pageFilesAll, pageContext.pageId, {
       sharedPageFilesAlreadyLoaded: true,
     }),
@@ -149,19 +143,20 @@ async function loadPageConfigsLazyServerSideAndExecHook(pageContext: PageContext
 }
 
 async function loadPageUserFiles_v1Design(
-  pageFilesAll: PageFile[],
-  pageConfig: null | PageConfigRuntime,
-  pageConfigGlobal: PageConfigGlobalRuntime,
-  pageId: string,
-  isDev: boolean,
+  pageContext: PageContext_loadPageConfigsLazyServerSide & {
+    _pageConfig: null | PageConfigRuntime
+  },
 ) {
-  const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
-  const pageConfigLoaded = !pageConfig ? null : await loadAndParseVirtualFilePageEntry(pageConfig, isDev)
+  const pageFilesServerSide = getPageFilesServerSide(pageContext._pageFilesAll, pageContext.pageId)
+  const isDev = !pageContext._globalContext._isProduction
+  const pageConfigLoaded = !pageContext._pageConfig
+    ? null
+    : await loadAndParseVirtualFilePageEntry(pageContext._pageConfig, isDev)
   await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))
   const configPublicPageLazy = resolveVikeConfigPublicPageLazyLoaded(
     pageFilesServerSide,
     pageConfigLoaded,
-    pageConfigGlobal,
+    pageContext._globalContext._pageConfigGlobal,
   )
   return {
     configPublicPageLazy,
