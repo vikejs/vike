@@ -98,7 +98,7 @@ async function loadPageConfigsLazyServerSideAndExecHook(pageContext: PageContext
     headersResponse: resolveHeadersResponse(pageContext, pageContextAddendum),
   })
 
-  objectAssign(pageContextAddendum, {
+  objectAssign(pageContext, {
     __getPageAssets: async () => {
       if ('_pageAssets' in pageContext) {
         return (pageContext as any as { _pageAssets: PageAsset[] })._pageAssets
@@ -111,7 +111,7 @@ async function loadPageConfigsLazyServerSideAndExecHook(pageContext: PageContext
   })
 
   // TO-DO/next-major-release: remove
-  Object.assign(pageContextAddendum, {
+  Object.assign(pageContext, {
     _getPageAssets: async () => {
       assertWarning(false, 'pageContext._getPageAssets() deprecated, see https://vike.dev/preloading', {
         onlyOnce: true,
@@ -123,7 +123,7 @@ async function loadPageConfigsLazyServerSideAndExecHook(pageContext: PageContext
         mediaType: null | NonNullable<MediaType>['mediaType']
         preloadType: null | NonNullable<MediaType>['assetType']
       }[] = []
-      ;(await pageContextAddendum.__getPageAssets()).forEach((p) => {
+      ;(await pageContext.__getPageAssets()).forEach((p) => {
         if (p.assetType === 'script' && p.isEntry) {
           pageAssetsOldFormat.push({
             src: p.src,
