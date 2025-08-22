@@ -56,7 +56,6 @@ import {
 import { logRuntimeError, logRuntimeInfo } from './loggerRuntime.js'
 import { isNewError } from './renderPage/isNewError.js'
 import { assertArguments } from './renderPage/assertArguments.js'
-import type { PageContextDebugRouteMatches } from './renderPage/debugPageFiles.js'
 import { log404 } from './renderPage/log404/index.js'
 import pc from '@brillout/picocolors'
 import type { PageContextServer } from '../../types/index.js'
@@ -255,11 +254,7 @@ async function renderPageOnError(
   assert(pageContextNominalPageBegin)
   assert(hasProp(pageContextNominalPageBegin, 'urlOriginal', 'string'))
 
-  const pageContextErrorPageInit = await getPageContextErrorPageInit(
-    pageContextBegin,
-    errNominalPage,
-    pageContextNominalPageBegin,
-  )
+  const pageContextErrorPageInit = await getPageContextErrorPageInit(pageContextBegin, errNominalPage)
 
   // Handle `throw redirect()` and `throw render()` while rendering nominal page
   if (isAbortError(errNominalPage)) {
@@ -438,11 +433,7 @@ async function renderPageNominal(pageContext: PageContextBegin) {
 }
 
 type PageContextErrorPageInit = Awaited<ReturnType<typeof getPageContextErrorPageInit>>
-async function getPageContextErrorPageInit(
-  pageContextBegin: PageContextBegin,
-  errNominalPage: unknown,
-  pageContextNominalPagePartial: Record<string, unknown>,
-) {
+async function getPageContextErrorPageInit(pageContextBegin: PageContextBegin, errNominalPage: unknown) {
   const pageContext = forkPageContext(pageContextBegin)
 
   assert(errNominalPage)
@@ -450,11 +441,6 @@ async function getPageContextErrorPageInit(
     is404: false,
     errorWhileRendering: errNominalPage as Error,
     routeParams: {} as Record<string, string>,
-  })
-
-  objectAssign(pageContext, {
-    _debugRouteMatches:
-      (pageContextNominalPagePartial as PageContextDebugRouteMatches)._debugRouteMatches || 'ROUTING_ERROR',
   })
 
   assert(pageContext.errorWhileRendering)

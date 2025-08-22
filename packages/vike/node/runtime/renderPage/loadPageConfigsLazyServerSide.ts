@@ -11,7 +11,6 @@ import { resolveVikeConfigPublicPageLazyLoaded } from '../../../shared/page-conf
 import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide.js'
 import { assertUsage, assertWarning, hasProp, isArray, isObject, objectAssign, PromiseType } from '../utils.js'
 import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './getPageAssets.js'
-import { debugPageFiles, type PageContextDebugRouteMatches } from './debugPageFiles.js'
 import type { PageConfigGlobalRuntime, PageConfigRuntime } from '../../../types/PageConfig.js'
 import { findPageConfig } from '../../../shared/page-configs/findPageConfig.js'
 import { analyzePage } from './analyzePage.js'
@@ -26,12 +25,11 @@ type PageContextExecuteHook = Omit<
   PageContextExecHookServer,
   keyof Awaited<ReturnType<typeof loadPageConfigsLazyServerSide>>
 >
-type PageContext_loadPageConfigsLazyServerSide = PageContextGetPageAssets &
-  PageContextDebugRouteMatches & {
-    pageId: string
-    urlOriginal: string
-    _globalContext: GlobalContextServerInternal
-  }
+type PageContext_loadPageConfigsLazyServerSide = PageContextGetPageAssets & {
+  pageId: string
+  urlOriginal: string
+  _globalContext: GlobalContextServerInternal
+}
 type PageConfigsLazy = PromiseType<ReturnType<typeof loadPageConfigsLazyServerSide>>
 
 async function loadPageConfigsLazyServerSideAndExecHook<
@@ -63,8 +61,12 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
       sharedPageFilesAlreadyLoaded: true,
     }),
   ])
-  const { isHtmlOnly, isClientRouting, clientEntries, clientDependencies, pageFilesClientSide, pageFilesServerSide } =
-    await analyzePage(pageContext._globalContext._pageFilesAll, pageConfig, pageContext.pageId, globalContext)
+  const { isHtmlOnly, clientEntries, clientDependencies } = await analyzePage(
+    pageContext._globalContext._pageFilesAll,
+    pageConfig,
+    pageContext.pageId,
+    globalContext,
+  )
   const isV1Design = !!pageConfig
 
   const passToClient: PassToClient = []
@@ -155,17 +157,6 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
       })
       return pageAssetsOldFormat
     },
-  })
-
-  debugPageFiles({
-    pageContext,
-    isHtmlOnly,
-    isClientRouting,
-    pageFilesLoaded,
-    pageFilesClientSide,
-    pageFilesServerSide,
-    clientEntries,
-    clientDependencies,
   })
 
   return pageContextAddendum

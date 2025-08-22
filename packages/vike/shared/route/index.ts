@@ -29,7 +29,6 @@ type PageContextFromRoute = {
   pageId: string | null
   routeParams: Record<string, string>
   _routingProvidedByOnBeforeRouteHook?: boolean
-  _debugRouteMatches: RouteMatches
 }
 type RouteMatch = {
   pageId: string
@@ -120,7 +119,6 @@ async function route(pageContext: PageContextForRoute, skipOnBeforeRouteHook?: t
 
   debug(`Route matches for URL ${pc.cyan(urlPathname)} (in precedence order):`, routeMatches)
 
-  objectAssign(pageContextFromRoute, { _debugRouteMatches: routeMatches })
   // For vite-plugin-vercel https://github.com/magne4000/vite-plugin-vercel/blob/main/packages/vike-integration/vike.ts#L173
   objectAssign(pageContextFromRoute, { _routeMatch: winner })
 

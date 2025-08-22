@@ -46,7 +46,6 @@ async function execHookOnBeforeRoute(
       }
       objectAssign(pageContextFromOnBeforeRouteHook, {
         _routingProvidedByOnBeforeRouteHook: true as const,
-        _debugRouteMatches: 'CUSTOM_ROUTING' as const,
       })
       return pageContextFromOnBeforeRouteHook
     }

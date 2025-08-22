@@ -565,7 +565,6 @@ async function createPageContextPrerendering(
     assert(pageId)
     objectAssign(pageContext, {
       pageId,
-      _debugRouteMatches: [],
       routeParams: {},
     })
   }
