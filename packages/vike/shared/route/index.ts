@@ -1,6 +1,4 @@
 export { route }
-// TODO/now rename PageContextForRoute PageContextBeforeRoute
-// TODO/now rename PageContextFromRoute PageContextAfterRoute
 export type { PageContextForRoute }
 export type { PageContextFromRoute }
 export type { PageRoutes }
