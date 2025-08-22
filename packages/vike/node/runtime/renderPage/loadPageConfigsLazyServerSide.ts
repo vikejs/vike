@@ -30,7 +30,7 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
   // Load the page's + files
   objectAssign(pageContext, await loadPageUserFiles(pageContext))
 
-  // Resolve computed pageContext properties
+  // Resolve new computed pageContext properties
   objectAssign(pageContext, await resolvePageContext(pageContext))
 
   // Execute +onCreatePageContext
