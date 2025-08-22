@@ -45,6 +45,7 @@ async function loadPageConfigsLazyServerSideAndExecHook(pageContext: PageContext
       sharedPageFilesAlreadyLoaded: true,
     }),
   ])
+  objectAssign(pageContext, configPublicPageLazy)
 
   const { isHtmlOnly, clientEntries, clientDependencies } = analyzePage(
     pageContext._globalContext._pageFilesAll,
@@ -57,12 +58,12 @@ async function loadPageConfigsLazyServerSideAndExecHook(pageContext: PageContext
   const passToClient: PassToClient = []
   const errMsgSuffix = ' should be an array of strings.'
   if (!isV1Design) {
-    configPublicPageLazy.exportsAll.passToClient?.forEach((e) => {
+    pageContext.exportsAll.passToClient?.forEach((e) => {
       assertUsage(hasProp(e, 'exportValue', 'string[]'), `${e.exportSource}${errMsgSuffix}`)
       passToClient.push(...e.exportValue)
     })
   } else {
-    configPublicPageLazy.from.configsCumulative.passToClient?.values.forEach((v) => {
+    pageContext.from.configsCumulative.passToClient?.values.forEach((v) => {
       const { value, definedAt } = v
       const errMsg = `+passToClient value defined at ${definedAt}${errMsgSuffix}` as const
 
@@ -89,9 +90,8 @@ async function loadPageConfigsLazyServerSideAndExecHook(pageContext: PageContext
     })
   }
 
-  objectAssign(pageContext, configPublicPageLazy)
   objectAssign(pageContext, {
-    Page: configPublicPageLazy.exports.Page,
+    Page: pageContext.exports.Page,
     _isHtmlOnly: isHtmlOnly,
     _passToClient: passToClient,
     headersResponse: resolveHeadersResponse(pageContext),
