@@ -10,44 +10,46 @@ import { assert } from '../../../utils/assert.js'
 
 type ViteEnv = { name?: string; config: EnvironmentOptions | Environment['config'] }
 
-function isViteServerSide_withoutEnv(configGlobal: ResolvedConfig | UserConfig, viteEnv?: ViteEnv): boolean {
+function isViteServerSide_impl(configGlobal: ResolvedConfig | UserConfig, viteEnv: ViteEnv | undefined): boolean {
   assert(!('consumer' in configGlobal)) // make sure configGlobal isn't viteEnv.config
-  const isServerSide1: boolean | null = !viteEnv?.config.consumer ? null : viteEnv.config.consumer !== 'client'
-  const isServerSide2: boolean | null = !viteEnv?.name ? null : viteEnv.name !== 'client' // I can't think of a use case for creating another client-side environment
-  const isServerSide3: boolean | null = !viteEnv ? null : !!viteEnv.config.build?.ssr
-  const isServerSide4: boolean = !!configGlobal.build?.ssr
   const debug = {
-    envIsUndefined: !viteEnv,
-    envName: viteEnv?.name ?? null,
-    envConsumer: viteEnv?.config.consumer ?? null,
+    viteEnvIsUndefined: !viteEnv,
+    viteEnvName: viteEnv?.name ?? null,
+    viteEnvConsumer: viteEnv?.config.consumer ?? null,
     configEnvBuildSsr: viteEnv?.config.build?.ssr ?? null,
     configGlobalBuildSsr: configGlobal.build?.ssr ?? null,
-    isServerSide1,
-    isServerSide2,
-    isServerSide3,
-    isServerSide4,
   }
-  if (isServerSide1 !== null) {
-    assert(isServerSide1 === isServerSide2 || isServerSide2 === null, debug)
-    /* This assertion can fail, seems to be a Vite bug?
-    assert(isServerSide1 === isServerSide3, debug)
-    */
-    return isServerSide1
+  if (!viteEnv) {
+    const isServerSide = getBuildSsrValue(configGlobal.build?.ssr)
+    assert(typeof isServerSide === 'boolean', debug)
+    return isServerSide
+  } else {
+    const isServerSide1: boolean | null = !viteEnv.config.consumer ? null : viteEnv.config.consumer !== 'client'
+    const isServerSide2: boolean | null = getBuildSsrValue(viteEnv.config.build?.ssr)
+    const isServerSide3: boolean | null = viteEnv.name === 'ssr' ? true : viteEnv.name === 'client' ? false : null
+    const isServerSide = isServerSide1 ?? isServerSide2
+    assert(isServerSide === isServerSide1 || isServerSide1 === null, debug)
+    assert(isServerSide === isServerSide2 || isServerSide2 === null, debug)
+    assert(isServerSide === isServerSide3 || isServerSide3 === null, debug)
+    assert(isServerSide !== null)
+    return isServerSide
   }
-  if (isServerSide2 !== null) {
-    /* This assertion can fail, seems to be a Vite bug?
-    assert(isServerSide2 === isServerSide3, debug)
-    */
-    return isServerSide2
-  }
-  if (isServerSide3 !== null) {
-    return isServerSide3
-  }
-  return isServerSide4
+}
+function getBuildSsrValue(buildSsr: string | boolean | undefined): boolean | null {
+  if (buildSsr === undefined) return null
+  assert(typeof buildSsr === 'boolean' || typeof buildSsr === 'string')
+  return !!buildSsr
 }
 
 function isViteServerSide(configGlobal: ResolvedConfig | UserConfig, viteEnv: ViteEnv) {
-  return isViteServerSide_withoutEnv(configGlobal, viteEnv)
+  return isViteServerSide_impl(configGlobal, viteEnv)
+}
+// TODO/now: rename
+function isViteServerSide_withoutEnv(
+  configGlobal: ResolvedConfig | UserConfig,
+  viteEnv?: ViteEnv | undefined,
+): boolean {
+  return isViteServerSide_impl(configGlobal, viteEnv)
 }
 
 function isViteClientSide(configGlobal: ResolvedConfig, viteEnv: ViteEnv) {
@@ -59,25 +61,23 @@ function isViteServerSide_onlySsrEnv(configGlobal: ResolvedConfig, viteEnv: Vite
   return viteEnv.name ? viteEnv.name === 'ssr' : isViteServerSide(configGlobal, viteEnv)
 }
 
+// TODO/now: improve args order
 // Vite is quite messy about setting config.build.ssr — for security purposes, we use an extra safe implementation with lots of assertions, which is needed for the .client.js and .server.js guarantee.
 function isViteServerSide_extraSafe(
   config: ResolvedConfig,
   options: { ssr?: boolean } | undefined,
   viteEnv: ViteEnv,
 ): boolean {
-  if (config.command === 'build') {
-    const res = config.build.ssr
-    assert(typeof res === 'boolean')
-    assert(res === options?.ssr || options?.ssr === undefined)
-    assert(res === isViteServerSide(config, viteEnv))
-    return res
-  } else {
-    const res = options?.ssr
-    assert(typeof res === 'boolean')
-    /* This assertion can fail, seems to be a Vite bug? It's very unexpected.
-    if (typeof config.build.ssr === 'boolean') assert(res === config.build.ssr)
-    */
-    assert(res === isViteServerSide(config, viteEnv))
-    return res
+  const isServerSide = isViteServerSide(config, viteEnv)
+  const debug = {
+    isServerSide,
+    configCommand: config.command,
+    configBuildSsr: getBuildSsrValue(config.build.ssr),
+    optionsIsUndefined: options === undefined,
+    optionsSsr: options?.ssr ?? null,
   }
+  assert(options, debug)
+  assert(typeof options.ssr === 'boolean', debug)
+  assert(options.ssr === isServerSide, debug)
+  return isServerSide
 }

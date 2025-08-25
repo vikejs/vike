@@ -5,7 +5,6 @@ import type { Plugin } from 'vite'
 import { resolveOutDir } from '../../shared/getOutDirs.js'
 import { assert } from '../../utils.js'
 import { isPrerenderForceExit } from './pluginAutoFullBuild.js'
-import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 
 function pluginBuildApp(): Plugin[] {
   return [
@@ -15,10 +14,7 @@ function pluginBuildApp(): Plugin[] {
       enforce: 'pre',
       config: {
         order: 'pre',
-        async handler(_config) {
-          const vikeConfig = await getVikeConfigInternal()
-          if (!vikeConfig.config.vite6BuilderApp) return
-
+        handler(_config) {
           return {
             builder: {
               // Can be overridden by another plugin e.g vike-vercel https://github.com/vikejs/vike/pull/2184#issuecomment-2659425195
@@ -41,10 +37,7 @@ function pluginBuildApp(): Plugin[] {
     {
       name: 'vike:build:pluginBuildApp',
       apply: 'build',
-      async config(config) {
-        const vikeConfig = await getVikeConfigInternal()
-        if (!vikeConfig.config.vite6BuilderApp) return
-
+      config(config) {
         return {
           environments: {
             ssr: {

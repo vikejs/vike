@@ -1,12 +1,11 @@
 export { getOutDirs }
 export { resolveOutDir }
-export { resolveOutDir_configEnvironment }
 export type { OutDirs }
 
-import type { UserConfig, ResolvedConfig, EnvironmentOptions } from 'vite'
+import type { UserConfig, ResolvedConfig } from 'vite'
 import pc from '@brillout/picocolors'
 import { assert, assertPosixPath, assertUsage, createDebugger, pathJoin, toPosixPath } from '../utils.js'
-import { isViteServerSide, isViteServerSide_withoutEnv, ViteEnv } from './isViteServerSide.js'
+import { isViteServerSide_withoutEnv, type ViteEnv } from './isViteServerSide.js'
 const debug = createDebugger('vike:outDir')
 
 type OutDirs = {
@@ -21,7 +20,7 @@ type OutDirs = {
 function getOutDirs(configGlobal: ResolvedConfig, viteEnv: ViteEnv | undefined): OutDirs {
   debug('getOutDirs()', new Error().stack)
 
-  const outDir = getOutDirFromResolvedConfig(configGlobal)
+  const outDir = getOutDirFromResolvedConfig(configGlobal, viteEnv)
   assertOutDirResolved(outDir, configGlobal, viteEnv)
 
   const outDirs = getOutDirsAll(outDir, configGlobal.root)
@@ -32,26 +31,11 @@ function getOutDirs(configGlobal: ResolvedConfig, viteEnv: ViteEnv | undefined):
   return outDirs
 }
 
-function resolveOutDir_configEnvironment(
-  configGlobal: UserConfig,
-  envName: string,
-  configEnv: EnvironmentOptions,
-): string {
-  assert(configGlobal && envName && configEnv)
-  const viteEnv = { name: envName, config: configEnv }
-  const isServerSide = isViteServerSide(configGlobal, viteEnv)
-  return resolveOutDir(configEnv, isServerSide)
-}
-
 /** Appends `client/` or `server/` to `config.build.outDir` */
 function resolveOutDir(config: UserConfig, isServerSide: boolean): string {
-  debug('resolveOutDir()', new Error().stack)
-  debug('isServerSide', isServerSide)
+  debug('resolveOutDir()')
   const outDir = getOutDirFromViteUserConfig(config) || 'dist'
   debug('outDir', outDir)
-  /* outDir may already be resolved when using Telefunc + Vike (because both Telefunc and Vike use this logic)
-  assert(isOutDirRoot(outDir))
-  */
 
   const { outDirClient, outDirServer } = getOutDirsAll(outDir)
   if (isServerSide) {
@@ -145,7 +129,8 @@ function assertOutDirResolved(outDir: string, configGlobal: UserConfig | Resolve
     outDirCorrected,
   )} instead.`
 
-  if (isViteServerSide_withoutEnv(configGlobal, viteEnv)) {
+  const isServerSide = isViteServerSide_withoutEnv(configGlobal, viteEnv)
+  if (isServerSide) {
     assertUsage(outDir.endsWith('/server'), wrongUsage)
   } else {
     assertUsage(outDir.endsWith('/client'), wrongUsage)
@@ -158,8 +143,8 @@ function getOutDirFromViteUserConfig(config: UserConfig | ResolvedConfig): strin
   outDir = normalizeOutDir(outDir)
   return outDir
 }
-function getOutDirFromResolvedConfig(config: ResolvedConfig): string {
-  let outDir = config.build.outDir
+function getOutDirFromResolvedConfig(config: ResolvedConfig, viteEnv: ViteEnv | undefined): string {
+  let outDir = viteEnv?.config.build?.outDir ?? config.build.outDir
   assert(outDir)
   outDir = normalizeOutDir(outDir)
   return outDir
