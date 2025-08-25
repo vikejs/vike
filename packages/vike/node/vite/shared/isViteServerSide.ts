@@ -13,7 +13,7 @@ type ViteEnv = { name?: string; config: EnvironmentOptions | Environment['config
 function isViteServerSide_withoutEnv(configGlobal: ResolvedConfig | UserConfig, viteEnv?: ViteEnv): boolean {
   assert(!('consumer' in configGlobal)) // make sure configGlobal isn't viteEnv.config
   const isServerSide1: boolean | null = !viteEnv?.config.consumer ? null : viteEnv.config.consumer !== 'client'
-  // const isServerSide5: boolean | null = !viteEnv?.name ? null : viteEnv.name !== 'client' // I can't think of a use case for creating another client-side environment
+  // const isServerSide4: boolean | null = !viteEnv?.name ? null : viteEnv.name !== 'client' // I can't think of a use case for creating another client-side environment
   const isServerSide2: boolean | null = !viteEnv ? null : !!viteEnv.config.build?.ssr
   const isServerSide3: boolean = !!configGlobal.build?.ssr
   const debug = {
@@ -23,7 +23,7 @@ function isViteServerSide_withoutEnv(configGlobal: ResolvedConfig | UserConfig, 
     configEnvBuildSsr: viteEnv?.config.build?.ssr ?? null,
     configGlobalBuildSsr: configGlobal.build?.ssr ?? null,
     isServerSide1,
-    // isServerSide5,
+    // isServerSide4,
     isServerSide2,
     isServerSide3,
   }
