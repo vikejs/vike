@@ -86,7 +86,14 @@ function isViteServerSide_extraSafe(
     optionsSsr: options?.ssr,
     isServerSide,
   }
-  if (true as boolean) return isServerSide
+  if (true as boolean) {
+    const res = options?.ssr
+    if (typeof res === 'boolean') {
+      assert(res === isServerSide, debug)
+      return res
+    }
+    return isServerSide
+  }
   if (config.command === 'build') {
     const res = config.build.ssr
     assert(typeof res === 'boolean', debug)

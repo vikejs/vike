@@ -23,6 +23,7 @@ import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
 import { getExportNames } from '../shared/parseEsModule.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isV1Design } from '../shared/resolveVikeConfigInternal.js'
+import { isViteServerSide, isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 
 function pluginFileEnv(): Plugin {
   let config: ResolvedConfig
@@ -43,7 +44,7 @@ function pluginFileEnv(): Plugin {
         .filter((id) => id !== null)
       assertFileEnv(
         id,
-        !!options?.ssr,
+        isViteServerSide_extraSafe(config, options, this.environment),
         importers,
         // In dev, we only show a warning because we don't want to disrupt when the user plays with settings such as [ssr](https://vike.dev/ssr).
         true,
@@ -55,7 +56,7 @@ function pluginFileEnv(): Plugin {
       // In dev, only using load() is enough as it also works for dynamic imports (see sibling comment).
       if (viteDevServer) return
       if (skip(id)) return
-      const isServerSide = !!options?.ssr
+      const isServerSide = isViteServerSide_extraSafe(config, options, this.environment)
       if (!isWrongEnv(id, isServerSide)) return
       const { importers } = this.getModuleInfo(id)!
       // Throwing a verbose error doesn't waste client-side KBs as dynamic imports are code split.
@@ -84,7 +85,7 @@ function pluginFileEnv(): Plugin {
             */
             return
           }
-          assertFileEnv(moduleId, !!config.build.ssr, importers, false)
+          assertFileEnv(moduleId, isViteServerSide(config, this.environment), importers, false)
         })
     },
     configResolved(config_) {
