@@ -74,7 +74,7 @@ function isViteServerSide_extraSafe(
     configCommand: config.command,
     configBuildSsr: getBuildSsrValue(config.build.ssr),
     optionsIsUndefined: options === undefined,
-    optionsSsr: options?.ssr,
+    optionsSsr: options?.ssr ?? null,
   }
   assert(options, debug)
   assert(typeof options.ssr === 'boolean', debug)
