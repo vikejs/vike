@@ -17,9 +17,9 @@ function isViteServerSide_impl(configGlobal: ResolvedConfig | UserConfig, viteEn
   const isServerSide3: boolean | null = !configGlobal.build ? null : !!configGlobal.build.ssr
   const isServerSide4: boolean | null = viteEnv?.name === 'ssr' ? true : viteEnv?.name === 'client' ? false : null
   const debug = {
-    envIsUndefined: !viteEnv,
-    envName: viteEnv?.name ?? null,
-    envConsumer: viteEnv?.config.consumer ?? null,
+    viteEnvIsUndefined: !viteEnv,
+    viteEnvName: viteEnv?.name ?? null,
+    viteEnvConsumer: viteEnv?.config.consumer ?? null,
     configEnvBuildSsr: viteEnv?.config.build?.ssr ?? null,
     configGlobalBuildSsr: configGlobal.build?.ssr ?? null,
     isServerSide1,
