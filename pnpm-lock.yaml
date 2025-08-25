@@ -802,7 +802,7 @@ importers:
         version: 0.1.2
       '@brillout/vite-plugin-server-entry':
         specifier: 0.7.12-commit-d36620e
-        version: 0.7.12-commit-d36620e
+        version: link:../../../vite-plugin-server-entry
       acorn:
         specifier: ^8.0.0
         version: 8.14.1
@@ -2478,9 +2478,6 @@ packages:
 
   '@brillout/vite-plugin-server-entry@0.7.12':
     resolution: {integrity: sha512-yh+tsIl2qpStgj1JofxC6tb1WoDYHGnth7XZtHou5baRkBE7DgmoCRIE+kw6S3511KwCMOcuBQSUszrYg5dLUw==}
-
-  '@brillout/vite-plugin-server-entry@0.7.12-commit-d36620e':
-    resolution: {integrity: sha512-O/dGhiW2l73jLXUIbZyJzq7XajB0cGLZ9VogtvbZDSSogFjtWOzRCFlVSDh/fl1Zi25D6BeV1ASbeA0QniEAHA==}
 
   '@cloudflare/kv-asset-handler@0.2.0':
     resolution: {integrity: sha512-MVbXLbTcAotOPUj0pAMhVtJ+3/kFkwJqc5qNOleOZTv6QkZZABDMS21dSrSlVswEHwrpWC03e4fWytjqKvuE2A==}
@@ -8949,11 +8946,6 @@ snapshots:
       typescript: 5.9.2
 
   '@brillout/vite-plugin-server-entry@0.7.12':
-    dependencies:
-      '@brillout/import': 0.2.6
-      '@brillout/picocolors': 1.0.28
-
-  '@brillout/vite-plugin-server-entry@0.7.12-commit-d36620e':
     dependencies:
       '@brillout/import': 0.2.6
       '@brillout/picocolors': 1.0.28
