@@ -24,9 +24,9 @@ function isViteServerSide_impl(configGlobal: ResolvedConfig | UserConfig, viteEn
     assert(typeof isServerSide === 'boolean', debug)
     return isServerSide
   } else {
-    const isServerSide1: boolean | null = !viteEnv?.config.consumer ? null : viteEnv.config.consumer !== 'client'
-    const isServerSide2: boolean | null = getBuildSsrValue(viteEnv?.config.build?.ssr)
-    const isServerSide3: boolean | null = viteEnv?.name === 'ssr' ? true : viteEnv?.name === 'client' ? false : null
+    const isServerSide1: boolean | null = !viteEnv.config.consumer ? null : viteEnv.config.consumer !== 'client'
+    const isServerSide2: boolean | null = getBuildSsrValue(viteEnv.config.build?.ssr)
+    const isServerSide3: boolean | null = viteEnv.name === 'ssr' ? true : viteEnv.name === 'client' ? false : null
     const isServerSide = isServerSide1 ?? isServerSide2
     assert(isServerSide === isServerSide1 || isServerSide1 === null, debug)
     assert(isServerSide === isServerSide2 || isServerSide2 === null, debug)
