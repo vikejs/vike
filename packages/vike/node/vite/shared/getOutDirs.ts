@@ -21,7 +21,7 @@ type OutDirs = {
 function getOutDirs(configGlobal: ResolvedConfig, viteEnv: ViteEnv | undefined): OutDirs {
   debug('getOutDirs()', new Error().stack)
 
-  const outDir = getOutDirFromResolvedConfig(configGlobal)
+  const outDir = getOutDirFromResolvedConfig(configGlobal, viteEnv)
   assertOutDirResolved(outDir, configGlobal, viteEnv)
 
   const outDirs = getOutDirsAll(outDir, configGlobal.root)
@@ -159,8 +159,8 @@ function getOutDirFromViteUserConfig(config: UserConfig | ResolvedConfig): strin
   outDir = normalizeOutDir(outDir)
   return outDir
 }
-function getOutDirFromResolvedConfig(config: ResolvedConfig): string {
-  let outDir = config.build.outDir
+function getOutDirFromResolvedConfig(config: ResolvedConfig, viteEnv: ViteEnv | undefined): string {
+  let outDir = viteEnv?.config.build?.outDir ?? config.build.outDir
   assert(outDir)
   outDir = normalizeOutDir(outDir)
   return outDir
