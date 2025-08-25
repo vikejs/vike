@@ -75,9 +75,8 @@ function pluginBuildApp(): Plugin[] {
         }
       },
     },
-    // Moved from pluginAutoFullBuild.ts
     {
-      name: 'vike:build:pluginAutoFullBuild',
+      name: 'vike:build:pluginBuildApp:autoFullBuild:pre',
       apply: 'build',
       enforce: 'pre',
       async configResolved(config_) {
@@ -96,7 +95,7 @@ function pluginBuildApp(): Plugin[] {
           } catch (err) {
             // We use try-catch also because:
             // - Vite/Rollup swallows errors thrown inside the writeBundle() hook. (It doesn't swallow errors thrown inside the first writeBundle() hook while building the client-side, but it does swallow errors thrown inside the second writeBundle() while building the server-side triggered after Vike calls Vite's `build()` API.)
-            // - Avoid Rollup prefixing the error with [vike:build:pluginAutoFullBuild], see for example https://github.com/vikejs/vike/issues/472#issuecomment-1276274203
+            // - Avoid Rollup prefixing the error with [vike:build:pluginBuildApp], see for example https://github.com/vikejs/vike/issues/472#issuecomment-1276274203
             console.error(err)
             logErrorHint(err)
             process.exit(1)
@@ -105,7 +104,7 @@ function pluginBuildApp(): Plugin[] {
       },
     },
     {
-      name: 'vike:build:pluginAutoFullBuild:post',
+      name: 'vike:build:pluginBuildApp:autoFullBuild:post',
       apply: 'build',
       enforce: 'post',
       closeBundle: {

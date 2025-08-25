@@ -12,7 +12,7 @@ import type { APIOptions } from './types.js'
 async function build(options: APIOptions = {}): Promise<{}> {
   const { viteConfigFromUserEnhanced } = await prepareViteApiCall(options, 'build')
 
-  // Pass it to pluginAutoFullBuild()
+  // Pass it to vike:build:pluginBuildApp
   if (viteConfigFromUserEnhanced) viteConfigFromUserEnhanced._viteConfigFromUserEnhanced = viteConfigFromUserEnhanced
 
   const builder = await createBuilder(viteConfigFromUserEnhanced)
