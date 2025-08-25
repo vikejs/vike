@@ -13,8 +13,8 @@ type ViteEnv = { name?: string; config: EnvironmentOptions | Environment['config
 function isViteServerSide_impl(configGlobal: ResolvedConfig | UserConfig, viteEnv: ViteEnv | undefined): boolean {
   assert(!('consumer' in configGlobal)) // make sure configGlobal isn't viteEnv.config
   const isServerSide1: boolean | null = !viteEnv?.config.consumer ? null : viteEnv.config.consumer !== 'client'
-  const isServerSide2: boolean | null = !viteEnv?.config.build ? null : !!viteEnv.config.build.ssr
-  const isServerSide3: boolean | null = !configGlobal.build ? null : !!configGlobal.build.ssr
+  const isServerSide2: boolean | null = !viteEnv?.config.build ? null : getBuildSsrValue(viteEnv.config.build.ssr)
+  const isServerSide3: boolean | null = !configGlobal.build ? null : getBuildSsrValue(configGlobal.build.ssr)
   const isServerSide4: boolean | null = viteEnv?.name === 'ssr' ? true : viteEnv?.name === 'client' ? false : null
   const debug = {
     viteEnvIsUndefined: !viteEnv,
@@ -45,7 +45,12 @@ function isViteServerSide_impl(configGlobal: ResolvedConfig | UserConfig, viteEn
   if (isServerSide4 !== null) {
     return isServerSide4
   }
-  assert(false, debug)
+  assert(!viteEnv)
+  return !!configGlobal.build?.ssr
+}
+function getBuildSsrValue(buildSsr: string | boolean | undefined): boolean | null {
+  if (buildSsr === undefined) return null
+  return !!buildSsr
 }
 
 function isViteServerSide(configGlobal: ResolvedConfig | UserConfig, viteEnv: ViteEnv) {
