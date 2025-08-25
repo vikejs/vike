@@ -26,7 +26,7 @@ function pluginExtractExportNames(): Plugin {
     enforce: 'post',
     async transform(src, id, options) {
       id = normalizeId(id)
-      const isClientSide = !isViteServerSide_extraSafe(config, options, this.environment)
+      const isClientSide = !isViteServerSide_extraSafe(config, this.environment, options)
       if (extractExportNamesRE.test(id)) {
         const code = await getExtractExportNamesCode(src, isClientSide, !isDev, id)
         debug('id ' + id, ['result:\n' + code.code.trim(), 'src:\n' + src.trim()])

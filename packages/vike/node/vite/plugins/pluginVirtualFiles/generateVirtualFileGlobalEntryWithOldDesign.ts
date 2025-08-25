@@ -41,7 +41,7 @@ async function generateVirtualFileGlobalEntryWithOldDesign(
   const idParsed = parseVirtualFileId(id)
   assert(idParsed && idParsed.type === 'global-entry')
   const { isForClientSide, isClientRouting } = idParsed
-  assert(isForClientSide === !isViteServerSide_extraSafe(config, options, env))
+  assert(isForClientSide === !isViteServerSide_extraSafe(config, env, options))
   const code = await getCode(config, isForClientSide, isClientRouting, isDev, id)
   return code
 }

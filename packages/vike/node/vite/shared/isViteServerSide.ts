@@ -63,8 +63,8 @@ function isViteServerSide_onlySsrEnv(configGlobal: ResolvedConfig, viteEnv: Vite
 // Vite is quite messy about setting config.build.ssr — for security purposes, we use an extra safe implementation with lots of assertions, which is needed for the .client.js and .server.js guarantee.
 function isViteServerSide_extraSafe(
   config: ResolvedConfig,
-  options: { ssr?: boolean } | undefined,
   viteEnv: ViteEnv,
+  options: { ssr?: boolean } | undefined,
 ): boolean {
   const isServerSide = isViteServerSide(config, viteEnv)
   const debug = {
