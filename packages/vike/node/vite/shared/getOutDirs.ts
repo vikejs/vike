@@ -1,12 +1,11 @@
 export { getOutDirs }
 export { resolveOutDir }
-export { resolveOutDir_configEnvironment }
 export type { OutDirs }
 
-import type { UserConfig, ResolvedConfig, EnvironmentOptions } from 'vite'
+import type { UserConfig, ResolvedConfig } from 'vite'
 import pc from '@brillout/picocolors'
 import { assert, assertPosixPath, assertUsage, createDebugger, pathJoin, toPosixPath } from '../utils.js'
-import { isViteServerSide, isViteServerSide_withoutEnv, ViteEnv } from './isViteServerSide.js'
+import { isViteServerSide_withoutEnv, ViteEnv } from './isViteServerSide.js'
 const debug = createDebugger('vike:outDir')
 
 type OutDirs = {
@@ -30,17 +29,6 @@ function getOutDirs(configGlobal: ResolvedConfig, viteEnv: ViteEnv | undefined):
   assertNormalization(outDirs.outDirServer)
 
   return outDirs
-}
-
-function resolveOutDir_configEnvironment(
-  configGlobal: UserConfig,
-  envName: string,
-  configEnv: EnvironmentOptions,
-): string {
-  assert(configGlobal && envName && configEnv)
-  const viteEnv = { name: envName, config: configEnv }
-  const isServerSide = isViteServerSide(configGlobal, viteEnv)
-  return resolveOutDir(configEnv, isServerSide)
 }
 
 /** Appends `client/` or `server/` to `config.build.outDir` */

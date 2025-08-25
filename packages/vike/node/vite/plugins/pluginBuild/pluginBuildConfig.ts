@@ -20,7 +20,7 @@ import {
 } from '../../utils.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { findPageFiles } from '../../shared/findPageFiles.js'
-import type { ResolvedConfig, Plugin, UserConfig, Environment, InlineConfig } from 'vite'
+import type { ResolvedConfig, Plugin, Environment, InlineConfig } from 'vite'
 import { generateVirtualFileId } from '../../../shared/virtualFileId.js'
 import type { PageConfigBuildTime } from '../../../../types/PageConfig.js'
 import type { FileType } from '../../../../shared/getPageFiles/fileTypes.js'
@@ -29,7 +29,6 @@ import { prependEntriesDir } from '../../../shared/prependEntriesDir.js'
 import { getFilePathResolved } from '../../shared/getFilePath.js'
 import { getConfigValueBuildTime } from '../../../../shared/page-configs/getConfigValueBuildTime.js'
 import { isViteServerSide_withoutEnv, isViteServerSide_onlySsrEnv } from '../../shared/isViteServerSide.js'
-import { resolveOutDir_configEnvironment } from '../../shared/getOutDirs.js'
 import {
   handleAssetsManifest_assertUsageCssCodeSplit,
   handleAssetsManifest_getBuildConfig,
@@ -52,7 +51,6 @@ const globalObject = getGlobalObject('build/pluginAutoFullBuild.ts', {
 
 function pluginBuildConfig(): Plugin[] {
   let config: ResolvedConfig
-  let configUnresolved: UserConfig
 
   return [
     {
@@ -72,21 +70,9 @@ function pluginBuildConfig(): Plugin[] {
           handleAssetsManifest_assertUsageCssCodeSplit(config)
         },
       },
-      configEnvironment: {
-        order: 'post',
-        async handler(envName, configEnv) {
-          assert(configUnresolved)
-          return {
-            build: {
-              outDir: resolveOutDir_configEnvironment(configUnresolved, envName, configEnv),
-            },
-          }
-        },
-      },
       config: {
         order: 'post',
         async handler(config) {
-          configUnresolved = config
           onSetupBuild()
           const build = await handleAssetsManifest_getBuildConfig(config)
           return { build }
