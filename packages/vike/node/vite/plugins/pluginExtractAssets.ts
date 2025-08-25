@@ -167,7 +167,7 @@ function pluginExtractAssets(): Plugin[] {
       async configResolved(config_) {
         config = config_
         vikeConfig = await getVikeConfigInternal()
-        isFixEnabled = handleAssetsManifest_isFixEnabled(config)
+        isFixEnabled = handleAssetsManifest_isFixEnabled()
         if (!isFixEnabled) {
           // https://github.com/vikejs/vike/issues/1060
           assertUsage(

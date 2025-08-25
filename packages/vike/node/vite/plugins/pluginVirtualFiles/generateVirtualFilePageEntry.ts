@@ -7,12 +7,11 @@ import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js
 import { extractAssetsAddQuery } from '../../../shared/extractAssetsQuery.js'
 import { debug } from './debug.js'
 import { FilesEnv, serializeConfigValues } from '../../../../shared/page-configs/serialize/serializeConfigValues.js'
-import type { ResolvedConfig } from 'vite'
 import { handleAssetsManifest_isFixEnabled } from '../pluginBuild/handleAssetsManifest.js'
 import { getConfigValueBuildTime } from '../../../../shared/page-configs/getConfigValueBuildTime.js'
 import { resolveIncludeAssetsImportedByServer } from '../../../runtime/renderPage/getPageAssets/retrievePageAssetsProd.js'
 
-async function generateVirtualFilePageEntry(id: string, isDev: boolean, config: ResolvedConfig): Promise<string> {
+async function generateVirtualFilePageEntry(id: string, isDev: boolean): Promise<string> {
   const result = parseVirtualFileId(id)
   assert(result && result.type === 'page-entry')
   /* This assertion fails when using includeAssetsImportedByServer
@@ -41,7 +40,6 @@ async function generateVirtualFilePageEntry(id: string, isDev: boolean, config: 
     isForClientSide,
     pageId,
     resolveIncludeAssetsImportedByServer(vikeConfig.config),
-    config,
     isDev,
   )
   debug(id, isForClientSide ? 'CLIENT-SIDE' : 'SERVER-SIDE', code)
@@ -53,7 +51,6 @@ function getCode(
   isForClientSide: boolean,
   pageId: string,
   includeAssetsImportedByServer: boolean,
-  config: ResolvedConfig,
   isDev: boolean,
 ): string {
   const lines: string[] = []
@@ -74,7 +71,7 @@ function getCode(
   )
   lines.push('};')
 
-  if (!handleAssetsManifest_isFixEnabled(config) && includeAssetsImportedByServer && isForClientSide && !isDev) {
+  if (!handleAssetsManifest_isFixEnabled() && includeAssetsImportedByServer && isForClientSide && !isDev) {
     importStatements.push(
       `import '${extractAssetsAddQuery(generateVirtualFileId({ type: 'page-entry', pageId, isForClientSide: false }))}'`,
     )
