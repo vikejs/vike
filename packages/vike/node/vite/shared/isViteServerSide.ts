@@ -78,19 +78,27 @@ function isViteServerSide_extraSafe(
   options: { ssr?: boolean } | undefined,
   viteEnv: ViteEnv,
 ): boolean {
+  const isServerSide = isViteServerSide(config, viteEnv)
+  const debug = {
+    configCommand: config.command,
+    configBuildSsr: config.build.ssr,
+    optionsIsUndefined: options === undefined,
+    optionsSsr: options?.ssr,
+    isServerSide,
+  }
   if (config.command === 'build') {
     const res = config.build.ssr
-    assert(typeof res === 'boolean')
-    assert(res === options?.ssr || options?.ssr === undefined)
-    assert(res === isViteServerSide(config, viteEnv))
+    assert(typeof res === 'boolean', debug)
+    assert(res === options?.ssr || options?.ssr === undefined, debug)
+    assert(res === isServerSide, debug)
     return res
   } else {
     const res = options?.ssr
-    assert(typeof res === 'boolean')
+    assert(typeof res === 'boolean', debug)
     /* This assertion can fail, seems to be a Vite bug? It's very unexpected.
     if (typeof config.build.ssr === 'boolean') assert(res === config.build.ssr)
     */
-    assert(res === isViteServerSide(config, viteEnv))
+    assert(res === isServerSide, debug)
     return res
   }
 }
