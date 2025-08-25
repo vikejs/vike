@@ -24,7 +24,7 @@ import { extractAssetsAddQuery } from '../../../shared/extractAssetsQuery.js'
 import { prependEntriesDir } from '../../../shared/prependEntriesDir.js'
 import { getFilePathResolved } from '../../shared/getFilePath.js'
 import { getConfigValueBuildTime } from '../../../../shared/page-configs/getConfigValueBuildTime.js'
-import { isViteServerSide, isViteServerSide_withoutEnv } from '../../shared/isViteServerSide.js'
+import { isViteServerSide_withoutEnv } from '../../shared/isViteServerSide.js'
 import { resolveOutDir_configEnvironment } from '../../shared/getOutDirs.js'
 import {
   handleAssetsManifest_assertUsageCssCodeSplit,
