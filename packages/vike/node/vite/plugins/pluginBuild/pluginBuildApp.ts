@@ -83,6 +83,8 @@ function pluginBuildApp(): Plugin[] {
         config = config_
         await abortViteBuildSsr()
       },
+      // TO-DO/eventually: stop using this writeBundle() hack and, instead, use the buildApp() implementation above.
+      // - Could it cause issues if a tool uses the writeBundle() hack together with getVikeConfig() ?
       writeBundle: {
         /* We can't use this because it breaks Vite's logging. TO-DO/eventually: try again with latest Vite version.
         sequential: true,
