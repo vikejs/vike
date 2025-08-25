@@ -10,7 +10,7 @@ import { assert } from '../../../utils/assert.js'
 
 type ViteEnv = { name?: string; config: EnvironmentOptions | Environment['config'] }
 
-function isViteServerSide_withoutEnv(configGlobal: ResolvedConfig | UserConfig, viteEnv?: ViteEnv): boolean {
+function isViteServerSide_impl(configGlobal: ResolvedConfig | UserConfig, viteEnv: ViteEnv | undefined): boolean {
   assert(!('consumer' in configGlobal)) // make sure configGlobal isn't viteEnv.config
   const isServerSide1: boolean | null = !viteEnv?.config.consumer ? null : viteEnv.config.consumer !== 'client'
   const isServerSide2: boolean | null = !viteEnv?.config.build ? null : !!viteEnv.config.build.ssr
@@ -49,7 +49,13 @@ function isViteServerSide_withoutEnv(configGlobal: ResolvedConfig | UserConfig, 
 }
 
 function isViteServerSide(configGlobal: ResolvedConfig | UserConfig, viteEnv: ViteEnv) {
-  return isViteServerSide_withoutEnv(configGlobal, viteEnv)
+  return isViteServerSide_impl(configGlobal, viteEnv)
+}
+function isViteServerSide_withoutEnv(
+  configGlobal: ResolvedConfig | UserConfig,
+  viteEnv?: ViteEnv | undefined,
+): boolean {
+  return isViteServerSide_impl(configGlobal, viteEnv)
 }
 
 function isViteClientSide(configGlobal: ResolvedConfig, viteEnv: ViteEnv) {
