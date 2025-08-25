@@ -34,7 +34,7 @@ async function runPrerenderFromAutoRun(viteConfig: InlineConfig | undefined): Pr
   try {
     await runPrerender({ viteConfig }, 'auto-run')
   } catch (err) {
-    // Avoid Rollup prefixing the error with [vike:build:pluginAutoFullBuild], see for example https://github.com/vikejs/vike/issues/472#issuecomment-1276274203
+    // Avoid Rollup prefixing the error with [vike:build:pluginBuildApp], see for example https://github.com/vikejs/vike/issues/472#issuecomment-1276274203
     console.error(err)
     logErrorHint(err)
     process.exit(1)

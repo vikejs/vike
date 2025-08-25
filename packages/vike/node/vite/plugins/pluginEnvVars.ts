@@ -50,7 +50,7 @@ function pluginEnvVars(): Plugin {
       if (!code.includes('import.meta.env.')) return
 
       const isBuild = config.command === 'build'
-      const isClientSide = !isViteServerSide_extraSafe(config, options, this.environment)
+      const isClientSide = !isViteServerSide_extraSafe(config, this.environment, options)
 
       const { magicString, getMagicStringResult } = getMagicString(code, id)
 

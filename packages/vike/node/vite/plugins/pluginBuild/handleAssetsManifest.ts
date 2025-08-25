@@ -11,7 +11,7 @@ import { existsSync } from 'node:fs'
 import type { ViteManifest, ViteManifestEntry } from '../../../../types/ViteManifest.js'
 import { assert, assertWarning, getGlobalObject, isEqualStringList, isObject, pLimit, unique } from '../../utils.js'
 import { parseVirtualFileId } from '../../../shared/virtualFileId.js'
-import type { Environment, ResolvedConfig, Rollup, UserConfig } from 'vite'
+import type { Environment, ResolvedConfig, Rollup } from 'vite'
 import { getAssetsDir } from '../../shared/getAssetsDir.js'
 import pc from '@brillout/picocolors'
 import { isV1Design } from '../../shared/resolveVikeConfigInternal.js'
@@ -27,7 +27,7 @@ const globalObject = getGlobalObject('build/handleAssetsManifest.ts', {
 
 // true  => use workaround config.build.ssrEmitAssets
 // false => use workaround extractAssets plugin
-function handleAssetsManifest_isFixEnabled(config: ResolvedConfig | UserConfig): boolean {
+function handleAssetsManifest_isFixEnabled(): boolean {
   // Allow user to toggle between the two workarounds? E.g. based on https://vike.dev/includeAssetsImportedByServer.
   return isV1Design()
 }
@@ -253,7 +253,7 @@ function getHash(src: string) {
 
 // https://github.com/vikejs/vike/issues/1993
 function handleAssetsManifest_assertUsageCssCodeSplit(config: ResolvedConfig) {
-  if (!handleAssetsManifest_isFixEnabled(config)) return
+  if (!handleAssetsManifest_isFixEnabled()) return
   assertWarning(
     config.build.cssCodeSplit,
     `${pc.cyan('build.cssCodeSplit')} shouldn't be set to ${pc.cyan(
@@ -268,7 +268,7 @@ type Target = undefined | false | string | string[]
 type TargetConfig = { global: Exclude<Target, undefined>; css: Target; isServerSide: boolean }
 const targets: TargetConfig[] = []
 function handleAssetsManifest_assertUsageCssTarget(config: ResolvedConfig, env: Environment) {
-  if (!handleAssetsManifest_isFixEnabled(config)) return
+  if (!handleAssetsManifest_isFixEnabled()) return
   const isServerSide = isViteServerSide(config, env)
   assert(typeof isServerSide === 'boolean')
   assert(config.build.target !== undefined)
@@ -338,8 +338,8 @@ async function writeManifestFile(manifest: ViteManifest, manifestFilePath: strin
   await fs.writeFile(manifestFilePath, manifestFileContent, 'utf-8')
 }
 
-async function handleAssetsManifest_getBuildConfig(config: UserConfig) {
-  const isFixEnabled = handleAssetsManifest_isFixEnabled(config)
+async function handleAssetsManifest_getBuildConfig() {
+  const isFixEnabled = handleAssetsManifest_isFixEnabled()
   return {
     // https://github.com/vikejs/vike/issues/1339
     ssrEmitAssets: isFixEnabled ? true : undefined,
@@ -347,7 +347,7 @@ async function handleAssetsManifest_getBuildConfig(config: UserConfig) {
     cssMinify: isFixEnabled ? 'esbuild' : undefined,
     manifest: true,
     /* Already set by vike:build:pluginBuildApp
-    copyPublicDir: !isViteServerSide_withoutEnv(config),
+    copyPublicDir: !isViteServerSide_viteEnvOptional(config),
     */
   } as const
 }
@@ -377,7 +377,7 @@ async function handleAssetsManifest(
   }
 }
 async function writeAssetsManifestFile(assetsJsonFilePath: string, config: ResolvedConfig) {
-  const isFixEnabled = handleAssetsManifest_isFixEnabled(config)
+  const isFixEnabled = handleAssetsManifest_isFixEnabled()
   const clientManifestFilePath = getManifestFilePath(config, true)
   const serverManifestFilePath = getManifestFilePath(config, false)
   if (!isFixEnabled) {

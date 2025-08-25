@@ -54,7 +54,7 @@ function pluginVirtualFiles(): Plugin {
       const idParsed = parseVirtualFileId(id)
       if (idParsed) {
         if (idParsed.type === 'page-entry') {
-          const code = await generateVirtualFilePageEntry(id, isDev, config)
+          const code = await generateVirtualFilePageEntry(id, isDev)
           return code
         }
         if (idParsed.type === 'global-entry') {

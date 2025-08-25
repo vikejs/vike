@@ -44,7 +44,7 @@ function pluginFileEnv(): Plugin {
         .filter((id) => id !== null)
       assertFileEnv(
         id,
-        isViteServerSide_extraSafe(config, options, this.environment),
+        isViteServerSide_extraSafe(config, this.environment, options),
         importers,
         // In dev, we only show a warning because we don't want to disrupt when the user plays with settings such as [ssr](https://vike.dev/ssr).
         true,
@@ -56,7 +56,7 @@ function pluginFileEnv(): Plugin {
       // In dev, only using load() is enough as it also works for dynamic imports (see sibling comment).
       if (viteDevServer) return
       if (skip(id)) return
-      const isServerSide = isViteServerSide_extraSafe(config, options, this.environment)
+      const isServerSide = isViteServerSide_extraSafe(config, this.environment, options)
       if (!isWrongEnv(id, isServerSide)) return
       const { importers } = this.getModuleInfo(id)!
       // Throwing a verbose error doesn't waste client-side KBs as dynamic imports are code split.

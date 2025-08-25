@@ -1,6 +1,6 @@
 export { isViteServerSide }
 export { isViteClientSide }
-export { isViteServerSide_withoutEnv }
+export { isViteServerSide_viteEnvOptional }
 export { isViteServerSide_onlySsrEnv }
 export { isViteServerSide_extraSafe }
 export type { ViteEnv }
@@ -44,8 +44,7 @@ function getBuildSsrValue(buildSsr: string | boolean | undefined): boolean | nul
 function isViteServerSide(configGlobal: ResolvedConfig | UserConfig, viteEnv: ViteEnv) {
   return isViteServerSide_impl(configGlobal, viteEnv)
 }
-// TODO/now: rename
-function isViteServerSide_withoutEnv(
+function isViteServerSide_viteEnvOptional(
   configGlobal: ResolvedConfig | UserConfig,
   viteEnv?: ViteEnv | undefined,
 ): boolean {
@@ -61,12 +60,11 @@ function isViteServerSide_onlySsrEnv(configGlobal: ResolvedConfig, viteEnv: Vite
   return viteEnv.name ? viteEnv.name === 'ssr' : isViteServerSide(configGlobal, viteEnv)
 }
 
-// TODO/now: improve args order
 // Vite is quite messy about setting config.build.ssr — for security purposes, we use an extra safe implementation with lots of assertions, which is needed for the .client.js and .server.js guarantee.
 function isViteServerSide_extraSafe(
   config: ResolvedConfig,
-  options: { ssr?: boolean } | undefined,
   viteEnv: ViteEnv,
+  options: { ssr?: boolean } | undefined,
 ): boolean {
   const isServerSide = isViteServerSide(config, viteEnv)
   const debug = {
