@@ -15,7 +15,7 @@ function isViteServerSide_withoutEnv(configGlobal: ResolvedConfig | UserConfig, 
   const isServerSide1: boolean | null = !viteEnv?.config.consumer ? null : viteEnv.config.consumer !== 'client'
   // const isServerSide5: boolean | null = !viteEnv?.name ? null : viteEnv.name !== 'client' // I can't think of a use case for creating another client-side environment
   const isServerSide2: boolean | null = !viteEnv ? null : !!viteEnv.config.build?.ssr
-  const isServerSide4: boolean = !!configGlobal.build?.ssr
+  const isServerSide3: boolean = !!configGlobal.build?.ssr
   const debug = {
     envIsUndefined: !viteEnv,
     envName: viteEnv?.name ?? null,
@@ -25,7 +25,7 @@ function isViteServerSide_withoutEnv(configGlobal: ResolvedConfig | UserConfig, 
     isServerSide1,
     // isServerSide5,
     isServerSide2,
-    isServerSide4,
+    isServerSide3,
   }
   if (isServerSide1 !== null) {
     /* This assertion can fail, seems to be a Vite bug?
@@ -36,7 +36,7 @@ function isViteServerSide_withoutEnv(configGlobal: ResolvedConfig | UserConfig, 
   if (isServerSide2 !== null) {
     return isServerSide2
   }
-  return isServerSide4
+  return isServerSide3
 }
 
 function isViteServerSide(configGlobal: ResolvedConfig | UserConfig, viteEnv: ViteEnv) {
