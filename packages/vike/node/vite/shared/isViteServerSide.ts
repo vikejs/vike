@@ -44,6 +44,7 @@ function isViteServerSide_impl(configGlobal: ResolvedConfig | UserConfig, viteEn
     return isServerSide4
   }
   assert(!viteEnv)
+  assert(false)
   return !!configGlobal.build?.ssr
 }
 function getBuildSsrValue(buildSsr: string | boolean | undefined): boolean | null {
