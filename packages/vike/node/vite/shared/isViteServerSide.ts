@@ -1,6 +1,6 @@
 export { isViteServerSide }
 export { isViteClientSide }
-export { isViteServerSide_withoutEnv }
+export { isViteServerSide_viteEnvOptional }
 export { isViteServerSide_onlySsrEnv }
 export { isViteServerSide_extraSafe }
 export type { ViteEnv }
@@ -45,7 +45,7 @@ function isViteServerSide(configGlobal: ResolvedConfig | UserConfig, viteEnv: Vi
   return isViteServerSide_impl(configGlobal, viteEnv)
 }
 // TODO/now: rename
-function isViteServerSide_withoutEnv(
+function isViteServerSide_viteEnvOptional(
   configGlobal: ResolvedConfig | UserConfig,
   viteEnv?: ViteEnv | undefined,
 ): boolean {

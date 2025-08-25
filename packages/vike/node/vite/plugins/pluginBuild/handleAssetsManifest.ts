@@ -347,7 +347,7 @@ async function handleAssetsManifest_getBuildConfig(config: UserConfig) {
     cssMinify: isFixEnabled ? 'esbuild' : undefined,
     manifest: true,
     /* Already set by vike:build:pluginBuildApp
-    copyPublicDir: !isViteServerSide_withoutEnv(config),
+    copyPublicDir: !isViteServerSide_viteEnvOptional(config),
     */
   } as const
 }
