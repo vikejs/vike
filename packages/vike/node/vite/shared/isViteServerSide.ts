@@ -27,25 +27,13 @@ function isViteServerSide_impl(configGlobal: ResolvedConfig | UserConfig, viteEn
     isServerSide3,
     isServerSide4,
   }
-  if (isServerSide1 !== null) {
-    assert(isServerSide1 === isServerSide2 || isServerSide2 === null, debug)
-    assert(isServerSide1 === isServerSide4 || isServerSide4 === null, debug)
-    return isServerSide1
-  }
-  if (isServerSide2 !== null) {
-    assert(isServerSide2 === isServerSide4 || isServerSide4 === null, debug)
-    return isServerSide2
-  }
-  if (isServerSide3 !== null) {
-    assert(isServerSide3 === isServerSide4 || isServerSide4 === null, debug)
-    return isServerSide3
-  }
-  if (isServerSide4 !== null) {
-    return isServerSide4
-  }
-  assert(!viteEnv)
-  assert(false)
-  return !!configGlobal.build?.ssr
+  const res = isServerSide1 ?? isServerSide2 ?? isServerSide3 ?? isServerSide4
+  assert(res === isServerSide1 || isServerSide1 === null, debug)
+  assert(res === isServerSide2 || isServerSide2 === null, debug)
+  // assert(res === isServerSide3 || isServerSide3 === null, debug)
+  assert(res === isServerSide4 || isServerSide4 === null, debug)
+  assert(res !== null)
+  return res
 }
 function getBuildSsrValue(buildSsr: string | boolean | undefined): boolean | null {
   if (buildSsr === undefined) return null
