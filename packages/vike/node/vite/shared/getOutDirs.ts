@@ -145,7 +145,8 @@ function assertOutDirResolved(outDir: string, configGlobal: UserConfig | Resolve
     outDirCorrected,
   )} instead.`
 
-  if (isViteServerSide_withoutEnv(configGlobal, viteEnv)) {
+  const isServerSide = isViteServerSide_withoutEnv(configGlobal, viteEnv)
+  if (isServerSide) {
     assertUsage(outDir.endsWith('/server'), wrongUsage)
   } else {
     assertUsage(outDir.endsWith('/client'), wrongUsage)
