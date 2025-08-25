@@ -28,10 +28,8 @@ function isViteServerSide_impl(configGlobal: ResolvedConfig | UserConfig, viteEn
     isServerSide4,
   }
   if (isServerSide1 !== null) {
-    assert(isServerSide1 === isServerSide4 || isServerSide4 === null, debug)
-    //* This assertion can fail, seems to be a Vite bug?
     assert(isServerSide1 === isServerSide2 || isServerSide2 === null, debug)
-    //*/
+    assert(isServerSide1 === isServerSide4 || isServerSide4 === null, debug)
     return isServerSide1
   }
   if (isServerSide2 !== null) {
