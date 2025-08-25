@@ -75,6 +75,8 @@ function isViteServerSide_extraSafe(
     optionsSsr: options?.ssr,
     isServerSide,
   }
+  assert(options)
+  assert(typeof options.ssr === 'boolean')
   if (true as boolean) {
     const res = options?.ssr
     if (typeof res === 'boolean') {
