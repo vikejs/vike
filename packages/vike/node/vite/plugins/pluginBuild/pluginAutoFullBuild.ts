@@ -1,7 +1,6 @@
 export { pluginAutoFullBuild }
 export { isPrerenderForceExit }
 
-import { build } from 'vite'
 import type { Environment, InlineConfig, Plugin, ResolvedConfig } from 'vite'
 import { assert, assertWarning, getGlobalObject, onSetupBuild } from '../../utils.js'
 import { isPrerenderAutoRunEnabled, wasPrerenderRun } from '../../../prerender/context.js'
@@ -12,8 +11,8 @@ import { logErrorHint } from '../../../runtime/renderPage/logErrorHint.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { isVikeCliOrApi } from '../../../api/context.js'
 import { handleAssetsManifest, handleAssetsManifest_assertUsageCssTarget } from './handleAssetsManifest.js'
-import { isViteClientSide, isViteServerSide_onlySsrEnv } from '../../shared/isViteServerSide.js'
-import { runPrerender_forceExit, runPrerenderFromAutoRun } from '../../../prerender/runPrerenderEntry.js'
+import { isViteServerSide_onlySsrEnv } from '../../shared/isViteServerSide.js'
+import { runPrerenderFromAutoRun } from '../../../prerender/runPrerenderEntry.js'
 import { getManifestFilePathRelative } from '../../shared/getManifestFilePathRelative.js'
 const globalObject = getGlobalObject('build/pluginAutoFullBuild.ts', {
   forceExit: false,
@@ -57,18 +56,12 @@ function pluginAutoFullBuild(): Plugin[] {
       closeBundle: {
         sequential: true,
         order: 'post',
-        async handler() {
+        handler() {
           onSetupBuild()
           handleAssetsManifest_assertUsageCssTarget(config, this.environment)
-          const vikeConfig = await getVikeConfigInternal()
-          if (
-            globalObject.forceExit &&
-            // Let vike:build:pluginBuildApp force exit
-            !vikeConfig.config.vite6BuilderApp
-          ) {
-            runPrerender_forceExit()
-            assert(false)
-          }
+          /* Let vike:build:pluginBuildApp force exit
+          runPrerender_forceExit()
+          */
         },
       },
     },
@@ -78,10 +71,9 @@ function pluginAutoFullBuild(): Plugin[] {
 async function triggerFullBuild(config: ResolvedConfig, viteEnv: Environment, bundle: Record<string, unknown>) {
   const vikeConfig = await getVikeConfigInternal()
   // Whether builder.buildApp() is being used, see plugin:build:pluginBuildApp
-  const isBuilderApp = vikeConfig.config.vite6BuilderApp
   // If builder.buildApp() => trigger at end of `this.environment.name === 'ssr'`.
   // Else => trigger at end of client-side build.
-  if (isBuilderApp ? !isViteServerSide_onlySsrEnv(config, viteEnv) : !isViteClientSide(config, viteEnv)) return
+  if (!isViteServerSide_onlySsrEnv(config, viteEnv)) return
   if (isEntirelyDisabled(vikeConfig)) return
   // Workaround for @vitejs/plugin-legacy
   //  - The legacy plugin triggers its own Rollup build for the client-side.
@@ -91,26 +83,14 @@ async function triggerFullBuild(config: ResolvedConfig, viteEnv: Environment, bu
 
   const configInline = getFullBuildInlineConfig(config)
 
-  if (!isBuilderApp) {
-    await build(setSSR(configInline))
-  } else {
-    // The server build is already called by builder.buildApp()
-  }
+  /* Already triggered by vike:build:pluginBuildApp
+  await build(setSSR(configInline))
+  */
 
   if (isPrerenderAutoRunEnabled(vikeConfig)) {
     const res = await runPrerenderFromAutoRun(configInline)
     globalObject.forceExit = res.forceExit
     assert(wasPrerenderRun())
-  }
-}
-
-function setSSR(configInline: InlineConfig): InlineConfig {
-  return {
-    ...configInline,
-    build: {
-      ...configInline.build,
-      ssr: true,
-    },
   }
 }
 

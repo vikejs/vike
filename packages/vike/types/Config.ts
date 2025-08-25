@@ -500,13 +500,10 @@ type ConfigBuiltIn = {
   /** @deprecated See https://vike.dev/disableAutoFullBuild */
   disableAutoFullBuild?: boolean | 'prerender'
 
-  // TO-DO/eventually: remove +vite6BuilderApp setting, require Vite 6 or above, and always use builder.buildApp()
   /**
-   * Use builder.buildApp() to orchestrate the build process.
-   *
-   * @experimental
+   * @deprecated It's value is now always true.
    */
-  vite6BuilderApp?: boolean
+  vite6BuilderApp?: true
 
   /** The Base URL of your server.
    *

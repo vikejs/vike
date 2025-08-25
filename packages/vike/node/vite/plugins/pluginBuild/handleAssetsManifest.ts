@@ -14,13 +14,9 @@ import { parseVirtualFileId } from '../../../shared/virtualFileId.js'
 import type { Environment, ResolvedConfig, Rollup, UserConfig } from 'vite'
 import { getAssetsDir } from '../../shared/getAssetsDir.js'
 import pc from '@brillout/picocolors'
-import { getVikeConfigInternal, isV1Design } from '../../shared/resolveVikeConfigInternal.js'
+import { isV1Design } from '../../shared/resolveVikeConfigInternal.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
-import {
-  isViteServerSide_onlySsrEnv,
-  isViteServerSide,
-  isViteServerSide_withoutEnv,
-} from '../../shared/isViteServerSide.js'
+import { isViteServerSide_onlySsrEnv, isViteServerSide } from '../../shared/isViteServerSide.js'
 import { set_macro_ASSETS_MANIFEST } from './pluginBuildEntry.js'
 import { getManifestFilePathRelative } from '../../shared/getManifestFilePathRelative.js'
 type Bundle = Rollup.OutputBundle
@@ -343,7 +339,6 @@ async function writeManifestFile(manifest: ViteManifest, manifestFilePath: strin
 }
 
 async function handleAssetsManifest_getBuildConfig(config: UserConfig) {
-  const vikeConfig = await getVikeConfigInternal()
   const isFixEnabled = handleAssetsManifest_isFixEnabled(config)
   return {
     // https://github.com/vikejs/vike/issues/1339
@@ -351,10 +346,9 @@ async function handleAssetsManifest_getBuildConfig(config: UserConfig) {
     // Required if `ssrEmitAssets: true`, see https://github.com/vitejs/vite/pull/11430#issuecomment-1454800934
     cssMinify: isFixEnabled ? 'esbuild' : undefined,
     manifest: true,
-    copyPublicDir: vikeConfig.config.vite6BuilderApp
-      ? // Already set by vike:build:pluginBuildApp
-        undefined
-      : !isViteServerSide_withoutEnv(config),
+    /* Already set by vike:build:pluginBuildApp
+    copyPublicDir: !isViteServerSide_withoutEnv(config),
+    */
   } as const
 }
 
