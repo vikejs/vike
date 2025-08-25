@@ -44,6 +44,7 @@ function getBuildSsrValue(buildSsr: string | boolean | undefined): boolean | nul
 function isViteServerSide(configGlobal: ResolvedConfig | UserConfig, viteEnv: ViteEnv) {
   return isViteServerSide_impl(configGlobal, viteEnv)
 }
+// TODO/now: rename
 function isViteServerSide_withoutEnv(
   configGlobal: ResolvedConfig | UserConfig,
   viteEnv?: ViteEnv | undefined,
