@@ -12,31 +12,32 @@ type ViteEnv = { name?: string; config: EnvironmentOptions | Environment['config
 
 function isViteServerSide_impl(configGlobal: ResolvedConfig | UserConfig, viteEnv: ViteEnv | undefined): boolean {
   assert(!('consumer' in configGlobal)) // make sure configGlobal isn't viteEnv.config
-  const isServerSide1: boolean | null = !viteEnv?.config.consumer ? null : viteEnv.config.consumer !== 'client'
-  const isServerSide2: boolean | null = !viteEnv?.config.build ? null : getBuildSsrValue(viteEnv.config.build.ssr)
-  const isServerSide3: boolean | null = !configGlobal.build ? null : getBuildSsrValue(configGlobal.build.ssr)
-  const isServerSide4: boolean | null = viteEnv?.name === 'ssr' ? true : viteEnv?.name === 'client' ? false : null
   const debug = {
     viteEnvIsUndefined: !viteEnv,
     viteEnvName: viteEnv?.name ?? null,
     viteEnvConsumer: viteEnv?.config.consumer ?? null,
     configEnvBuildSsr: viteEnv?.config.build?.ssr ?? null,
     configGlobalBuildSsr: configGlobal.build?.ssr ?? null,
-    isServerSide1,
-    isServerSide2,
-    isServerSide3,
-    isServerSide4,
   }
-  const res = isServerSide1 ?? isServerSide2 ?? isServerSide3 ?? isServerSide4
-  assert(res === isServerSide1 || isServerSide1 === null, debug)
-  assert(res === isServerSide2 || isServerSide2 === null, debug)
-  // assert(res === isServerSide3 || isServerSide3 === null, debug)
-  assert(res === isServerSide4 || isServerSide4 === null, debug)
-  assert(res !== null)
-  return res
+  if (!viteEnv) {
+    const isServerSide = getBuildSsrValue(configGlobal.build?.ssr)
+    assert(typeof isServerSide === 'boolean', debug)
+    return isServerSide
+  } else {
+    const isServerSide1: boolean | null = !viteEnv?.config.consumer ? null : viteEnv.config.consumer !== 'client'
+    const isServerSide2: boolean | null = getBuildSsrValue(viteEnv?.config.build?.ssr)
+    const isServerSide3: boolean | null = viteEnv?.name === 'ssr' ? true : viteEnv?.name === 'client' ? false : null
+    const isServerSide = isServerSide1 ?? isServerSide2
+    assert(isServerSide === isServerSide1 || isServerSide1 === null, debug)
+    assert(isServerSide === isServerSide2 || isServerSide2 === null, debug)
+    assert(isServerSide === isServerSide3 || isServerSide3 === null, debug)
+    assert(isServerSide !== null)
+    return isServerSide
+  }
 }
 function getBuildSsrValue(buildSsr: string | boolean | undefined): boolean | null {
   if (buildSsr === undefined) return null
+  assert(typeof buildSsr === 'boolean' || typeof buildSsr === 'string')
   return !!buildSsr
 }
 
