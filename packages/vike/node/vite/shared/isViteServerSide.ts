@@ -13,7 +13,7 @@ type ViteEnv = { name?: string; config: EnvironmentOptions | Environment['config
 function isViteServerSide_withoutEnv(configGlobal: ResolvedConfig | UserConfig, viteEnv?: ViteEnv): boolean {
   assert(!('consumer' in configGlobal)) // make sure configGlobal isn't viteEnv.config
   const isServerSide1: boolean | null = !viteEnv?.config.consumer ? null : viteEnv.config.consumer !== 'client'
-  const isServerSide2: boolean | null = !viteEnv?.name ? null : viteEnv.name !== 'client' // I can't think of a use case for creating another client-side environment
+  // const isServerSide2: boolean | null = !viteEnv?.name ? null : viteEnv.name !== 'client' // I can't think of a use case for creating another client-side environment
   const isServerSide3: boolean | null = !viteEnv ? null : !!viteEnv.config.build?.ssr
   const isServerSide4: boolean = !!configGlobal.build?.ssr
   const debug = {
@@ -23,22 +23,15 @@ function isViteServerSide_withoutEnv(configGlobal: ResolvedConfig | UserConfig, 
     configEnvBuildSsr: viteEnv?.config.build?.ssr ?? null,
     configGlobalBuildSsr: configGlobal.build?.ssr ?? null,
     isServerSide1,
-    isServerSide2,
+    // isServerSide2,
     isServerSide3,
     isServerSide4,
   }
   if (isServerSide1 !== null) {
-    assert(isServerSide1 === isServerSide2 || isServerSide2 === null, debug)
     /* This assertion can fail, seems to be a Vite bug?
     assert(isServerSide1 === isServerSide3, debug)
     */
     return isServerSide1
-  }
-  if (isServerSide2 !== null) {
-    /* This assertion can fail, seems to be a Vite bug?
-    assert(isServerSide2 === isServerSide3, debug)
-    */
-    return isServerSide2
   }
   if (isServerSide3 !== null) {
     return isServerSide3
