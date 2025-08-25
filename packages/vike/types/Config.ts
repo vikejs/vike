@@ -500,9 +500,7 @@ type ConfigBuiltIn = {
   /** @deprecated See https://vike.dev/disableAutoFullBuild */
   disableAutoFullBuild?: boolean | 'prerender'
 
-  /**
-   * @deprecated It's value is now always true.
-   */
+  /** @deprecated It's value is now always true. */
   vite6BuilderApp?: true
 
   /** The Base URL of your server.
