@@ -5,7 +5,7 @@ export type { OutDirs }
 import type { UserConfig, ResolvedConfig } from 'vite'
 import pc from '@brillout/picocolors'
 import { assert, assertPosixPath, assertUsage, createDebugger, pathJoin, toPosixPath } from '../utils.js'
-import { isViteServerSide_withoutEnv, ViteEnv } from './isViteServerSide.js'
+import { isViteServerSide_withoutEnv, type ViteEnv } from './isViteServerSide.js'
 const debug = createDebugger('vike:outDir')
 
 type OutDirs = {
@@ -33,13 +33,9 @@ function getOutDirs(configGlobal: ResolvedConfig, viteEnv: ViteEnv | undefined):
 
 /** Appends `client/` or `server/` to `config.build.outDir` */
 function resolveOutDir(config: UserConfig, isServerSide: boolean): string {
-  debug('resolveOutDir()', new Error().stack)
-  debug('isServerSide', isServerSide)
+  debug('resolveOutDir()')
   const outDir = getOutDirFromViteUserConfig(config) || 'dist'
   debug('outDir', outDir)
-  /* outDir may already be resolved when using Telefunc + Vike (because both Telefunc and Vike use this logic)
-  assert(isOutDirRoot(outDir))
-  */
 
   const { outDirClient, outDirServer } = getOutDirsAll(outDir)
   if (isServerSide) {
