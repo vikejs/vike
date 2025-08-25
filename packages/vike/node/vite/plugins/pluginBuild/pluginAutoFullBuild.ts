@@ -37,7 +37,7 @@ function pluginAutoFullBuild(): Plugin[] {
         async handler(options, bundle) {
           try {
             await handleAssetsManifest(config, this.environment, options, bundle)
-            await triggerFullBuild(config, this.environment, bundle)
+            await triggerPrerendering(config, this.environment, bundle)
           } catch (err) {
             // We use try-catch also because:
             // - Vite/Rollup swallows errors thrown inside the writeBundle() hook. (It doesn't swallow errors thrown inside the first writeBundle() hook while building the client-side, but it does swallow errors thrown inside the second writeBundle() while building the server-side triggered after Vike calls Vite's `build()` API.)
@@ -68,13 +68,10 @@ function pluginAutoFullBuild(): Plugin[] {
   ]
 }
 
-async function triggerFullBuild(config: ResolvedConfig, viteEnv: Environment, bundle: Record<string, unknown>) {
+async function triggerPrerendering(config: ResolvedConfig, viteEnv: Environment, bundle: Record<string, unknown>) {
   const vikeConfig = await getVikeConfigInternal()
-  // Whether builder.buildApp() is being used, see plugin:build:pluginBuildApp
-  // If builder.buildApp() => trigger at end of `this.environment.name === 'ssr'`.
-  // Else => trigger at end of client-side build.
   if (!isViteServerSide_onlySsrEnv(config, viteEnv)) return
-  if (isEntirelyDisabled(vikeConfig)) return
+  if (isDisabled(vikeConfig)) return
   // Workaround for @vitejs/plugin-legacy
   //  - The legacy plugin triggers its own Rollup build for the client-side.
   //  - The legacy plugin doesn't generate a manifest => we can use that to detect the legacy plugin build.
@@ -82,10 +79,6 @@ async function triggerFullBuild(config: ResolvedConfig, viteEnv: Environment, bu
   if (!bundle[getManifestFilePathRelative(config.build.manifest)]) return
 
   const configInline = getFullBuildInlineConfig(config)
-
-  /* Already triggered by vike:build:pluginBuildApp
-  await build(setSSR(configInline))
-  */
 
   if (isPrerenderAutoRunEnabled(vikeConfig)) {
     const res = await runPrerenderFromAutoRun(configInline)
@@ -110,7 +103,7 @@ async function abortViteBuildSsr() {
   }
 }
 
-function isEntirelyDisabled(vikeConfig: VikeConfigInternal): boolean {
+function isDisabled(vikeConfig: VikeConfigInternal): boolean {
   const { disableAutoFullBuild } = vikeConfig.config
   if (disableAutoFullBuild === undefined || disableAutoFullBuild === 'prerender') {
     const isUserUsingViteApi = !isViteCliCall() && !isVikeCliOrApi()

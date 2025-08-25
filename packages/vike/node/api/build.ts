@@ -16,7 +16,7 @@ async function build(options: APIOptions = {}): Promise<{}> {
   if (viteConfigFromUserEnhanced) viteConfigFromUserEnhanced._viteConfigFromUserEnhanced = viteConfigFromUserEnhanced
 
   const builder = await createBuilder(viteConfigFromUserEnhanced)
-  // See Vite plugin vike:build:pluginBuildApp
+  // buildApp() is implemented by vike:build:pluginBuildApp
   await builder.buildApp()
 
   return {
