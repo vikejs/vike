@@ -23,7 +23,6 @@ export type { BuildInfo }
 export type { GlobalContextServerInternal as GlobalContextServerInternal }
 export type { GlobalContextServer }
 
-// TODO/now: use isProductionEnvironment() instead of globalObject.isProduction
 // TODO/now: rename:
 //  - isProduction => isProductionEnvironment
 //  - setIsProduction => setIsProductionEnvironment
