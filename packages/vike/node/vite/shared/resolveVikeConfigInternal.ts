@@ -96,7 +96,7 @@ import {
   type PlusFilesByLocationId,
 } from './resolveVikeConfigInternal/getPlusFilesAll.js'
 import { getEnvVarObject } from './getEnvVarObject.js'
-import { getApiOperation } from '../../api/context.js'
+import { getVikeApiOperation } from '../../api/context.js'
 import { getCliOptions } from '../../cli/context.js'
 import type { PrerenderContextPublic } from '../../prerender/runPrerender.js'
 import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderConfig.js'
@@ -634,11 +634,11 @@ function setCliAndApiOptions(
   configDefinitionsResolved: ConfigDefinitionsResolved,
 ) {
   // Vike API — passed options [lowest precedence]
-  const apiOperation = getApiOperation()
-  if (apiOperation?.options.vikeConfig) {
+  const vikeApiOperation = getVikeApiOperation()
+  if (vikeApiOperation?.options.vikeConfig) {
     addSources(
-      apiOperation.options.vikeConfig as Record<string, unknown>,
-      { definedBy: 'api', operation: apiOperation.operation },
+      vikeApiOperation.options.vikeConfig as Record<string, unknown>,
+      { definedBy: 'api', operation: vikeApiOperation.operation },
       false,
     )
   }

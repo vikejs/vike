@@ -1,4 +1,4 @@
-export { pluginBuildEntry }
+export { pluginProdBuildEntry }
 export { set_macro_ASSETS_MANIFEST }
 
 import { serverProductionEntryPlugin } from '@brillout/vite-plugin-server-entry/plugin'
@@ -14,11 +14,11 @@ import { getViteConfigRuntime } from '../../shared/getViteConfigRuntime.js'
 type Bundle = Rollup.OutputBundle
 const ASSETS_MANIFEST = '__VITE_ASSETS_MANIFEST__'
 
-function pluginBuildEntry(): Plugin[] {
+function pluginProdBuildEntry(): Plugin[] {
   let config: ResolvedConfig
   return [
     {
-      name: 'vike:build:pluginBuildEntry',
+      name: 'vike:build:pluginProdBuildEntry',
       apply: 'build',
       enforce: 'post',
       async configResolved(config_) {
@@ -44,14 +44,14 @@ function getServerProductionEntryCode(config: ResolvedConfig): string {
   assertBuildInfo(buildInfo)
   // After the old design is removed, let's maybe simplify and move everything into a single virtual module
   const importerCode = [
-    `  import { setGlobalContext_buildEntry } from '${importPath}';`,
+    `  import { setGlobalContext_prodBuildEntry } from '${importPath}';`,
     `  import * as virtualFileExportsGlobalEntry from '${virtualFileIdGlobalEntryServer}';`,
     `  {`,
-    // Because of a Rollup bug, we have to assign ASSETS_MANIFEST to a variable before passing it to setGlobalContext_buildEntry()
+    // Because of a Rollup bug, we have to assign ASSETS_MANIFEST to a variable before passing it to setGlobalContext_prodBuildEntry()
     // - This workaround doesn't work: https://github.com/vikejs/vike/commit/d5f3a4f7aae5a8bc44192e6cbb2bcb9007be188d
     `    const assetsManifest = ${ASSETS_MANIFEST};`,
     `    const buildInfo = ${JSON.stringify(buildInfo, null, 2)};`,
-    '    setGlobalContext_buildEntry({',
+    '    setGlobalContext_prodBuildEntry({',
     `      virtualFileExportsGlobalEntry,`,
     `      assetsManifest,`,
     `      buildInfo,`,

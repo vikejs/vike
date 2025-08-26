@@ -61,7 +61,7 @@ import type { PageConfigBuildTime } from '../../types/PageConfig.js'
 import { getVikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
 import type { HookTimeout } from '../../shared/hooks/getHook.js'
 import { execHookDirectWithoutPageContext, isUserHookError } from '../../shared/hooks/execHook.js'
-import type { APIOptions } from '../api/types.js'
+import type { ApiOptions } from '../api/types.js'
 import { setWasPrerenderRun } from './context.js'
 import { resolvePrerenderConfigGlobal, resolvePrerenderConfigLocal } from './resolvePrerenderConfig.js'
 import { getOutDirs } from '../vite/shared/getOutDirs.js'
@@ -121,7 +121,7 @@ type PageContext = Awaited<ReturnType<typeof createPageContextPrerendering>> & {
   _urlOriginalBeforeHook?: string
 }
 
-type PrerenderOptions = APIOptions & {
+type PrerenderOptions = ApiOptions & {
   /** Initial `pageContext` values */
   pageContextInit?: Record<string, unknown>
   /** @experimental Don't use without having talked to a vike maintainer. */

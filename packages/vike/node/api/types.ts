@@ -1,10 +1,10 @@
-export type { APIOptions }
-export type { Operation }
+export type { ApiOptions }
+export type { ApiOperation }
 
 import type { InlineConfig } from 'vite'
 import type { Config } from '../../types/Config.js'
 
-type APIOptions = {
+type ApiOptions = {
   /**
    * Vite config.
    *
@@ -19,4 +19,4 @@ type APIOptions = {
   vikeConfig?: Config
 }
 
-type Operation = 'build' | 'dev' | 'preview' | 'prerender'
+type ApiOperation = 'build' | 'dev' | 'preview' | 'prerender'

@@ -3,7 +3,7 @@ export { preview }
 import { prepareViteApiCall } from './prepareViteApiCall.js'
 import { preview as previewVite, type ResolvedConfig, type PreviewServer } from 'vite'
 import { importServerProductionIndex } from '@brillout/vite-plugin-server-entry/runtime'
-import type { APIOptions } from './types.js'
+import type { ApiOptions } from './types.js'
 import { getOutDirs } from '../vite/shared/getOutDirs.js'
 import { assertWarning } from './utils.js'
 import pc from '@brillout/picocolors'
@@ -15,7 +15,7 @@ import { onSetupPreview } from '../runtime/utils.js'
  *
  * https://vike.dev/api#preview
  */
-async function preview(options: APIOptions = {}): Promise<{ viteServer?: PreviewServer; viteConfig: ResolvedConfig }> {
+async function preview(options: ApiOptions = {}): Promise<{ viteServer?: PreviewServer; viteConfig: ResolvedConfig }> {
   onSetupPreview()
   const { viteConfigFromUserEnhanced, viteConfigResolved } = await prepareViteApiCall(options, 'preview')
   if (viteConfigResolved.vitePluginServerEntry?.inject) {
