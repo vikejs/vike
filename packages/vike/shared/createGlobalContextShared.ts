@@ -26,7 +26,6 @@ async function createGlobalContextShared<
   GlobalContextAddedAsync extends Record<string, any>,
 >(
   virtualFileExportsGlobalEntry: unknown,
-  // TODO/now rename previousCreateGlobalContextPromise to previousCreateGlobalContextPromise
   globalObject: {
     globalContext?: Record<string, unknown>
     onCreateGlobalContextHooks?: Hook[]
