@@ -14,7 +14,7 @@ import { setGlobalContext_isProduction } from '../runtime/globalContext.js'
 async function createDevMiddleware(
   options: { root?: string } & APIOptions = {},
 ): Promise<{ devMiddleware: Connect.Server; viteServer: ViteDevServer; viteConfig: ResolvedConfig }> {
-  setGlobalContext_isProduction(false, true)
+  setGlobalContext_isProduction(false)
   const optionsMod = {
     ...options,
     viteConfig: {

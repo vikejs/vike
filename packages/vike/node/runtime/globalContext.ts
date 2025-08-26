@@ -88,6 +88,7 @@ const globalObject = getGlobalObject<
     viteConfigRuntime?: ViteConfigRuntime
     isPrerendering?: true
     initGlobalContext_runPrerender_alreadyCalled?: true
+    // TODO/now rename to prodBuildEntry
     buildEntry?: unknown
     buildEntryPrevious?: unknown
     waitForUserFilesUpdate?: Promise<void>
@@ -244,12 +245,12 @@ function setGlobalContext_isPrerendering() {
   globalObject.isPrerendering = true
   setIsProduction(true)
 }
-function setGlobalContext_isProduction(isProduction: boolean, tolerateContradiction = false) {
-  if (debug.isActivated) debug('setGlobalContext_isProduction()', { isProduction, tolerateContradiction })
+function setGlobalContext_isProduction(isProduction: boolean) {
+  if (debug.isActivated) debug('setGlobalContext_isProduction()', { isProduction })
   if (globalObject.isProduction === undefined) {
     setIsProduction(isProduction)
   } else {
-    assert(globalObject.isProduction === isProduction || tolerateContradiction)
+    assert(globalObject.isProduction === isProduction)
   }
 }
 function getViteDevServer(): ViteDevServer | null {

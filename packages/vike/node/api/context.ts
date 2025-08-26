@@ -1,6 +1,7 @@
 export { isVikeCliOrApi }
 export { setContextApiOperation }
 export { clearContextApiOperation }
+// TODO/now rename to getVikeApiOperation
 export { getApiOperation }
 
 import type { APIOptions, Operation } from './types.js'

@@ -26,18 +26,17 @@ async function createGlobalContextShared<
   GlobalContextAddedAsync extends Record<string, any>,
 >(
   virtualFileExportsGlobalEntry: unknown,
-  // TODO/now rename previousCallPromise to previousCreateGlobalContextPromise
   globalObject: {
     globalContext?: Record<string, unknown>
     onCreateGlobalContextHooks?: Hook[]
-    previousCallPromise?: Promise<void>
+    previousCreateGlobalContextPromise?: Promise<void>
   },
   addGlobalContext?: (globalContext: GlobalContextBase) => GlobalContextAdded,
   // TO-DO/next-major-release: we'll be able to remove addGlobalContextTmp after loadPageRoutes() is sync (it will be sync after we remove the old design)
   addGlobalContextTmp?: (globalContext: GlobalContextBase) => Promise<GlobalContextAdded>,
   addGlobalContextAsync?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddedAsync>,
 ) {
-  const { previousCallPromise } = globalObject
+  const { previousCreateGlobalContextPromise } = globalObject
   const { promise, resolve } = genPromise({
     // Avoid this Cloudflare Worker error:
     // ```console
@@ -45,10 +44,10 @@ async function createGlobalContextShared<
     // ```
     timeout: null,
   })
-  globalObject.previousCallPromise = promise
-  if (previousCallPromise) {
+  globalObject.previousCreateGlobalContextPromise = promise
+  if (previousCreateGlobalContextPromise) {
     assert(globalObject.globalContext)
-    await previousCallPromise
+    await previousCreateGlobalContextPromise
   }
 
   const globalContext = createGlobalContextBase(virtualFileExportsGlobalEntry)
