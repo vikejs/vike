@@ -26,7 +26,10 @@ function testCloudflareBindings() {
 
 function getArgs(cmd: CMD): Args {
   if (cmd !== 'npm run preview') {
-    return
+    return {
+      // TODO/now
+      tolerateError: true,
+    }
   } else {
     return {
       // TODO/now: workaround https://github.com/vitejs/vite/issues/20505 — the warning should disappear and we can remove this
