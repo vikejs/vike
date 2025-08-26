@@ -2,14 +2,14 @@ export { build }
 
 import { prepareViteApiCall } from './prepareViteApiCall.js'
 import { createBuilder } from 'vite'
-import type { APIOptions } from './types.js'
+import type { ApiOptions } from './types.js'
 
 /**
  * Programmatically trigger `$ vike build`
  *
  * https://vike.dev/api#build
  */
-async function build(options: APIOptions = {}): Promise<{}> {
+async function build(options: ApiOptions = {}): Promise<{}> {
   const { viteConfigFromUserEnhanced } = await prepareViteApiCall(options, 'build')
 
   // Pass it to vike:build:pluginBuildApp

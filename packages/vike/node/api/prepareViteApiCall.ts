@@ -5,7 +5,7 @@ export { normalizeViteRoot }
 
 import { loadConfigFromFile, mergeConfig, resolveConfig } from 'vite'
 import type { InlineConfig, ResolvedConfig, UserConfig } from 'vite'
-import type { APIOptions, Operation } from './types.js'
+import type { ApiOptions, Operation } from './types.js'
 import { clearContextVikeApiOperation, setContextVikeApiOperation } from './context.js'
 import {
   getVikeConfigInternal,
@@ -21,7 +21,7 @@ import { getEnvVarObject } from '../vite/shared/getEnvVarObject.js'
 
 const globalObject = getGlobalObject<{ root?: string }>('api/prepareViteApiCall.ts', {})
 
-async function prepareViteApiCall(options: APIOptions, operation: Operation) {
+async function prepareViteApiCall(options: ApiOptions, operation: Operation) {
   clear()
   setContextVikeApiOperation(operation, options)
   const viteConfigFromUserApiOptions = options.viteConfig
