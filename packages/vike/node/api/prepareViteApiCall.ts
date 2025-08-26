@@ -5,7 +5,7 @@ export { normalizeViteRoot }
 
 import { loadConfigFromFile, mergeConfig, resolveConfig } from 'vite'
 import type { InlineConfig, ResolvedConfig, UserConfig } from 'vite'
-import type { ApiOptions, Operation } from './types.js'
+import type { ApiOptions, ApiOperation } from './types.js'
 import { clearContextVikeApiOperation, setContextVikeApiOperation } from './context.js'
 import {
   getVikeConfigInternal,
@@ -21,7 +21,7 @@ import { getEnvVarObject } from '../vite/shared/getEnvVarObject.js'
 
 const globalObject = getGlobalObject<{ root?: string }>('api/prepareViteApiCall.ts', {})
 
-async function prepareViteApiCall(options: ApiOptions, operation: Operation) {
+async function prepareViteApiCall(options: ApiOptions, operation: ApiOperation) {
   clear()
   setContextVikeApiOperation(operation, options)
   const viteConfigFromUserApiOptions = options.viteConfig
@@ -34,7 +34,7 @@ function clear() {
   clearGlobalContext()
 }
 
-async function resolveConfigs(viteConfigFromUserApiOptions: InlineConfig | undefined, operation: Operation) {
+async function resolveConfigs(viteConfigFromUserApiOptions: InlineConfig | undefined, operation: ApiOperation) {
   const viteInfo = await getViteInfo(viteConfigFromUserApiOptions, operation)
   setVikeConfigContext({
     userRootDir: viteInfo.root,
@@ -66,13 +66,13 @@ function applyVikeViteConfig(viteConfigFromUserEnhanced: InlineConfig | undefine
   return viteConfigFromUserEnhanced
 }
 
-async function getViteRoot(operation: Operation) {
+async function getViteRoot(operation: ApiOperation) {
   if (!globalObject.root) await getViteInfo(undefined, operation)
   assert(globalObject.root)
   return globalObject.root
 }
 
-async function getViteInfo(viteConfigFromUserApiOptions: InlineConfig | undefined, operation: Operation) {
+async function getViteInfo(viteConfigFromUserApiOptions: InlineConfig | undefined, operation: ApiOperation) {
   let viteConfigFromUserEnhanced = viteConfigFromUserApiOptions
 
   // Precedence:
@@ -144,7 +144,7 @@ function findVikeVitePlugin(viteConfig: InlineConfig | UserConfig | undefined | 
 }
 
 // Copied from https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L961-L1005
-async function loadViteConfigFile(viteConfigFromUserApiOptions: InlineConfig | undefined, operation: Operation) {
+async function loadViteConfigFile(viteConfigFromUserApiOptions: InlineConfig | undefined, operation: ApiOperation) {
   const [inlineConfig, command, defaultMode, _defaultNodeEnv, isPreview] = getResolveConfigArgs(
     viteConfigFromUserApiOptions,
     operation,
@@ -174,7 +174,7 @@ async function loadViteConfigFile(viteConfigFromUserApiOptions: InlineConfig | u
   return null
 }
 
-function getResolveConfigArgs(viteConfig: InlineConfig = {}, operation: Operation) {
+function getResolveConfigArgs(viteConfig: InlineConfig = {}, operation: ApiOperation) {
   const inlineConfig = viteConfig
   const command = operation === 'build' || operation === 'prerender' ? 'build' : 'serve'
   const defaultMode = operation === 'dev' ? 'development' : 'production'
@@ -196,7 +196,7 @@ const errMsg = `A Vite plugin is modifying Vite's setting ${pc.cyan('root')} whi
 async function assertViteRoot2(
   root: string,
   viteConfigFromUserEnhanced: InlineConfig | undefined,
-  operation: Operation,
+  operation: ApiOperation,
 ) {
   const args = getResolveConfigArgs(viteConfigFromUserEnhanced, operation)
   // We can eventually remove this resolveConfig() call (along with removing the whole assertViteRoot2() function which is redundant with the assertViteRoot() function) so that Vike doesn't make any resolveConfig() (except for pre-rendering and preview which is required). But let's keep it for now, just to see whether calling resolveConfig() can be problematic.

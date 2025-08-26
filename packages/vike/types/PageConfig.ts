@@ -27,7 +27,7 @@ import type { LocationId } from '../node/vite/shared/resolveVikeConfigInternal/f
 import type { FilePath } from './FilePath.js'
 import type { ConfigDefinitionsInternal } from '../node/vite/shared/resolveVikeConfigInternal/configDefinitionsBuiltIn.js'
 import type { PlusFile } from '../node/vite/shared/resolveVikeConfigInternal/getPlusFilesAll.js'
-import type { Operation } from '../node/api/types.js'
+import type { ApiOperation } from '../node/api/types.js'
 
 type PageConfigCommon = {
   pageId: string
@@ -168,7 +168,7 @@ type ConfigValueComputed = {
 
 type DefinedAtData = DefinedAt | DefinedAt[] | null
 type DefinedAt = DefinedAtFile | DefinedBy
-type DefinedBy = { definedBy: 'cli' | 'env' } | { definedBy: 'api'; operation: Operation }
+type DefinedBy = { definedBy: 'cli' | 'env' } | { definedBy: 'api'; operation: ApiOperation }
 type DefinedAtFile = {
   filePathToShowToUser: string
   fileExportPathToShowToUser: null | string[]
