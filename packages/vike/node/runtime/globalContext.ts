@@ -197,10 +197,8 @@ function getGlobalContextSync(): GlobalContext {
   debug('getGlobalContextSync()')
   const { globalContext } = globalObjectTyped
   assertUsage(globalContext, getGlobalContextSyncErrMsg)
-  const isProduction: boolean = globalContext._isProduction
-  assert(typeof isProduction === 'boolean')
   assertWarning(
-    isProduction,
+    isProd(),
     // - We discourage users from using it in development because `pageContext.globalContext` is safer: I ain't sure but there could be race conditions when using `getGlobalContextSync()` inside React/Vue components upon HMR.
     // - I don't see any issues with getGlobalContextSync() in production.
     // - getGlobalContextSync() is used in production by vike-vercel
