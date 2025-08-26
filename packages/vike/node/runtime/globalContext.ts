@@ -523,13 +523,14 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
 async function createGlobalContext(virtualFileExportsGlobalEntry: unknown) {
   debug('createGlobalContext()')
   assert(!getVikeConfigErrorBuild())
-  const globalContext = await createGlobalContextShared(
+  const globalContextPromise = createGlobalContextShared(
     virtualFileExportsGlobalEntry,
     globalObject,
     addGlobalContext,
     addGlobalContextTmp,
     addGlobalContextAsync,
   )
+  const globalContext = await globalContextPromise
 
   assertV1Design(
     // pageConfigs is PageConfigRuntime[] but assertV1Design() requires PageConfigBuildTime[]
