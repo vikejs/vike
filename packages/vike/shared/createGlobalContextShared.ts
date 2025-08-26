@@ -4,7 +4,7 @@ export type { GlobalContextBase }
 export type { GlobalContextBasePublic }
 export type GlobalContextInternal = GlobalContextServerInternal | GlobalContextClientInternal
 
-import { changeEnumerable, genPromise, getGlobalObject, objectAssign, objectReplace, unique } from './utils.js'
+import { assert, changeEnumerable, genPromise, objectAssign, objectReplace, unique } from './utils.js'
 import type { PageFile } from './getPageFiles.js'
 import { parseVirtualFileExportsGlobalEntry } from './getPageFiles/parseVirtualFileExportsGlobalEntry.js'
 import {
@@ -19,10 +19,6 @@ import type { GlobalContextClientInternal } from '../client/runtime-client-routi
 import { getHookFromPageConfigGlobalCumulative, type Hook } from './hooks/getHook.js'
 const getGlobalContextSyncErrMsg =
   "The global context isn't set yet, call getGlobalContextSync() later or use getGlobalContext() instead."
-const globalObject_ = getGlobalObject<{ previousCallPromise?: Promise<void> }>(
-  'shared/createGlobalContextShared.ts',
-  {},
-)
 
 // TO-DO/eventually use flat globalContext — like flat pageContext
 async function createGlobalContextShared<
@@ -30,13 +26,18 @@ async function createGlobalContextShared<
   GlobalContextAddedAsync extends Record<string, any>,
 >(
   virtualFileExportsGlobalEntry: unknown,
-  globalObject: { globalContext?: Record<string, unknown>; onCreateGlobalContextHooks?: Hook[] },
+  // TODO/now rename previousCallPromise to previousCreateGlobalContextPromise
+  globalObject: {
+    globalContext?: Record<string, unknown>
+    onCreateGlobalContextHooks?: Hook[]
+    previousCallPromise?: Promise<void>
+  },
   addGlobalContext?: (globalContext: GlobalContextBase) => GlobalContextAdded,
   // TO-DO/next-major-release: we'll be able to remove addGlobalContextTmp after loadPageRoutes() is sync (it will be sync after we remove the old design)
   addGlobalContextTmp?: (globalContext: GlobalContextBase) => Promise<GlobalContextAdded>,
   addGlobalContextAsync?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddedAsync>,
 ) {
-  const { previousCallPromise } = globalObject_
+  const { previousCallPromise } = globalObject
   const { promise, resolve } = genPromise({
     // Avoid this Cloudflare Worker error:
     // ```console
@@ -44,8 +45,11 @@ async function createGlobalContextShared<
     // ```
     timeout: null,
   })
-  globalObject_.previousCallPromise = promise
-  await previousCallPromise
+  globalObject.previousCallPromise = promise
+  if (previousCallPromise) {
+    assert(globalObject.globalContext)
+    await previousCallPromise
+  }
 
   const globalContext = createGlobalContextBase(virtualFileExportsGlobalEntry)
 
