@@ -50,8 +50,8 @@ function pluginNonRunnableDev(): Plugin {
       const isNonRunnableDev = !isRunnableDevEnvironment(this.environment)
       const { magicString, getMagicStringResult } = getMagicString(code, id)
       let hasChanges = false
-      if (id === distFileIsNonRunnableDev) {
-        magicString.replaceAll('__VIKE__IS_NON_RUNNABLE_DEV', JSON.stringify(isNonRunnableDev))
+      if (id === distFileIsNonRunnableDev && isNonRunnableDev) {
+        magicString.replaceAll('__VIKE__IS_NON_RUNNABLE_DEV', JSON.stringify(true))
         hasChanges = true
       }
       if (id === distFileGlobalContext && isNonRunnableDev) {
