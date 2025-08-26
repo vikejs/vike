@@ -159,8 +159,7 @@ async function getGlobalContext(): Promise<GlobalContext> {
   debug('getGlobalContext()')
   const isProduction = isProdOptional()
   // This assertion cannot fail for vike-server users (because when using vike-server it's guaranteed that globalObject.isProduction is set before executing any user-land code and any Vike extension code).
-  assertUsage(isProduction !== undefined, "The global context isn't set yet, use getGlobalContextAsync() instead.")
-  assert(typeof isProduction === 'boolean')
+  assertUsage(isProduction !== null, "The global context isn't set yet, use getGlobalContextAsync() instead.")
   return await getGlobalContextAsync(isProduction)
 }
 /**
@@ -681,7 +680,6 @@ function isProd(): boolean {
       assert(false)
     }
   }
-  assert(typeof isProduction === 'boolean')
   return isProduction
 }
 function isProdOptional(): boolean | null {
@@ -699,6 +697,7 @@ function isProdOptional(): boolean | null {
     globalObject.isProductionAccordingToUser === true ||
     // vite-plugin-vercel
     globalObject.isProductionAccordingToPhotonVercel === true
+  assert(typeof yes === 'boolean')
 
   const no: boolean =
     !!globalObject.viteDevServer ||
@@ -710,6 +709,7 @@ function isProdOptional(): boolean | null {
     globalObject.isProductionAccordingToUser === false ||
     // @cloudflare/vite-plugin
     isNonRunnableDev() === true
+  assert(typeof no === 'boolean')
 
   if (yes) {
     // TO-DO/eventually: implement assertUsage()
