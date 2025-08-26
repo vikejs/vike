@@ -13,6 +13,7 @@ import { assert, assertUsage, assertWarning } from './assert.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
 import { createDebugger } from './debug.js'
 import { getGlobalObject } from './getGlobalObject.js'
+import { isNonRunnableDev } from './isNonRunnableDev.js'
 import { isVitest } from './isVitest.js'
 import pc from '@brillout/picocolors'
 assertIsNotBrowser()
@@ -42,7 +43,7 @@ function onSetupRuntime(): void | undefined {
   if (!setup.viteDevServer && setup.isViteDev === undefined) {
     // TO-DO/eventually: make it assertUsage() again once https://github.com/vikejs/vike/issues/1528 is implemented.
     assertWarning(
-      !isNodeEnvDev(),
+      !isNodeEnvDev() || isNonRunnableDev(),
       `The ${getEnvDescription()}, which is contradictory because the environment seems to be a production environment (Vite isn't loaded), see ${pc.underline('https://vike.dev/NODE_ENV')} and ${pc.underline('https://vike.dev/warning/setup')}`,
       { onlyOnce: true },
     )
