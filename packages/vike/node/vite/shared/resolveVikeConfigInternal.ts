@@ -634,11 +634,11 @@ function setCliAndApiOptions(
   configDefinitionsResolved: ConfigDefinitionsResolved,
 ) {
   // Vike API — passed options [lowest precedence]
-  const apiOperation = getVikeApiOperation()
-  if (apiOperation?.options.vikeConfig) {
+  const vikeApiOperation = getVikeApiOperation()
+  if (vikeApiOperation?.options.vikeConfig) {
     addSources(
-      apiOperation.options.vikeConfig as Record<string, unknown>,
-      { definedBy: 'api', operation: apiOperation.operation },
+      vikeApiOperation.options.vikeConfig as Record<string, unknown>,
+      { definedBy: 'api', operation: vikeApiOperation.operation },
       false,
     )
   }

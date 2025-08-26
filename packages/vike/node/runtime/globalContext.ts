@@ -683,14 +683,14 @@ function isProd(): boolean {
   return isProduction
 }
 function isProdOptional(): boolean | null {
-  const apiOperation = getVikeApiOperation()?.operation ?? null
+  const vikeApiOperation = getVikeApiOperation()?.operation ?? null
 
   const yes: boolean =
     // setGlobalContext_prodBuildEntry() was called
     !!globalObject.prodBuildEntry ||
     globalObject.isPrerendering === true ||
     // Vike CLI & Vike API
-    (!!apiOperation && apiOperation !== 'dev') ||
+    (!!vikeApiOperation && vikeApiOperation !== 'dev') ||
     // Vite command
     globalObject.isProductionAccordingToVite === true ||
     // getGlobalContextAsync(isProduction)
@@ -702,7 +702,7 @@ function isProdOptional(): boolean | null {
   const no: boolean =
     !!globalObject.viteDevServer ||
     // Vike CLI & Vike API
-    apiOperation === 'dev' ||
+    vikeApiOperation === 'dev' ||
     // Vite command
     globalObject.isProductionAccordingToVite === false ||
     // getGlobalContextAsync(isProduction)

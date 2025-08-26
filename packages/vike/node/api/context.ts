@@ -5,20 +5,20 @@ export { getVikeApiOperation }
 
 import type { APIOptions, Operation } from './types.js'
 import { assert, getGlobalObject } from './utils.js'
-const globalObject = getGlobalObject<{ apiOperation?: VikeApiOperation }>('api/context.ts', {})
+const globalObject = getGlobalObject<{ vikeApiOperation?: VikeApiOperation }>('api/context.ts', {})
 
 type VikeApiOperation = { operation: Operation; options: APIOptions }
 function getVikeApiOperation(): VikeApiOperation | null {
-  return globalObject.apiOperation ?? null
+  return globalObject.vikeApiOperation ?? null
 }
 function isVikeCliOrApi(): boolean {
   // The CLI uses the API
-  return !!globalObject.apiOperation
+  return !!globalObject.vikeApiOperation
 }
 function setContextVikeApiOperation(operation: Operation, options: APIOptions): void {
-  assert(!globalObject.apiOperation)
-  globalObject.apiOperation = { operation, options }
+  assert(!globalObject.vikeApiOperation)
+  globalObject.vikeApiOperation = { operation, options }
 }
 function clearContextVikeApiOperation(): void {
-  globalObject.apiOperation = undefined
+  globalObject.vikeApiOperation = undefined
 }
