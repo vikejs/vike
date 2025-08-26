@@ -523,6 +523,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
 async function createGlobalContext(virtualFileExportsGlobalEntry: unknown) {
   debug('createGlobalContext()')
   assert(!getVikeConfigErrorBuild())
+
   const globalContextPromise = createGlobalContextShared(
     virtualFileExportsGlobalEntry,
     globalObject,
@@ -530,23 +531,22 @@ async function createGlobalContext(virtualFileExportsGlobalEntry: unknown) {
     addGlobalContextTmp,
     addGlobalContextAsync,
   )
-  debug('createGlobalContext() - done [sync]')
 
+  debug('createGlobalContext() - done [sync]')
   // We define an early globalContext version synchronously, so that getGlobalContextSync() can be called early.
   // - Required by vike-vercel
   assert(globalObject.globalContext)
+
   const globalContext = await globalContextPromise
+  debug('createGlobalContext() - done [async]')
 
   assertV1Design(
     // pageConfigs is PageConfigRuntime[] but assertV1Design() requires PageConfigBuildTime[]
     globalContext._pageConfigs.length > 0,
     globalContext._pageFilesAll,
   )
-
   assertGlobalContextIsDefined()
   onSetupRuntime()
-
-  debug('createGlobalContext() - done [async]')
 
   // Never actually used, only used for TypeScript `ReturnType<typeof createGlobalContext>`
   return globalContext

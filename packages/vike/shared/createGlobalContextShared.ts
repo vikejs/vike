@@ -4,7 +4,7 @@ export type { GlobalContextBase }
 export type { GlobalContextBasePublic }
 export type GlobalContextInternal = GlobalContextServerInternal | GlobalContextClientInternal
 
-import { assert, changeEnumerable, genPromise, getGlobalObject, objectAssign, objectReplace, unique } from './utils.js'
+import { assert, changeEnumerable, genPromise, objectAssign, objectReplace, unique } from './utils.js'
 import type { PageFile } from './getPageFiles.js'
 import { parseVirtualFileExportsGlobalEntry } from './getPageFiles/parseVirtualFileExportsGlobalEntry.js'
 import {
