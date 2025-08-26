@@ -49,6 +49,7 @@ import {
   getViteRPC,
   isRunnableDevEnvironment,
   assertIsNotBrowser,
+  isNonRunnableDev,
 } from './utils.js'
 import type { ViteManifest } from '../../types/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
@@ -659,13 +660,6 @@ function isRunnable(viteDevServer: ViteDevServer): boolean {
     // Vite 6 or above
     isRunnableDevEnvironment(viteDevServer.environments.ssr)
   if (yes) assert(!isNonRunnableDev())
-  return yes
-}
-
-function isNonRunnableDev(): boolean | null {
-  if (typeof __VIKE__IS_NON_RUNNABLE_DEV === 'undefined') return null
-  const yes = __VIKE__IS_NON_RUNNABLE_DEV
-  assert(typeof yes === 'boolean')
   return yes
 }
 

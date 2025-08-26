@@ -34,6 +34,7 @@ declare global {
 }
 function pluginNonRunnableDev(): Plugin {
   const distFileGlobalContext = requireResolveDistFile('dist/esm/node/runtime/globalContext.js')
+  const distFileIsNonRunnableDev = requireResolveDistFile('dist/esm/utils/isNonRunnableDev.js')
   let config: ResolvedConfig
   return {
     name: 'vike:pluginNonRunnableDev',
@@ -45,7 +46,7 @@ function pluginNonRunnableDev(): Plugin {
     },
     transform(code, id) {
       if (!config._isDev) return
-      if (id !== distFileGlobalContext) return
+      if (id !== distFileGlobalContext && id !== distFileIsNonRunnableDev) return
       const isNonRunnableDev = !isRunnableDevEnvironment(this.environment)
       const { magicString, getMagicStringResult } = getMagicString(code, id)
       if (isNonRunnableDev) {
