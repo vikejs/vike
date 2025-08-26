@@ -36,7 +36,6 @@ function assertIsNotProductionRuntime(): void | undefined {
 }
 
 function onSetupRuntime(): void | undefined {
-  if (true as boolean) return // TODO/now refactor this
   if (debug.isActivated) debug('assertSetup()', new Error().stack)
   if (isTest()) return
   assertNodeEnvIsNotUndefinedString()
@@ -45,7 +44,7 @@ function onSetupRuntime(): void | undefined {
     assertWarning(
       !isNodeEnvDev(),
       `The ${getEnvDescription()}, which is contradictory because the environment seems to be a production environment (Vite isn't loaded), see ${pc.underline('https://vike.dev/NODE_ENV')} and ${pc.underline('https://vike.dev/warning/setup')}`,
-      { onlyOnce: true },
+      { onlyOnce: true, showStackTrace: true },
     )
     assertUsage(
       !setup.vikeVitePlugin,
