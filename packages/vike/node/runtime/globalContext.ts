@@ -530,6 +530,7 @@ async function createGlobalContext(virtualFileExportsGlobalEntry: unknown) {
     addGlobalContextTmp,
     addGlobalContextAsync,
   )
+  debug('createGlobalContext() - done [sync]')
   const globalContext = await globalContextPromise
 
   assertV1Design(
@@ -541,7 +542,7 @@ async function createGlobalContext(virtualFileExportsGlobalEntry: unknown) {
   assertGlobalContextIsDefined()
   onSetupRuntime()
 
-  debug('createGlobalContext() - done')
+  debug('createGlobalContext() - done [async]')
 
   // Never actually used, only used for TypeScript `ReturnType<typeof createGlobalContext>`
   return globalContext
