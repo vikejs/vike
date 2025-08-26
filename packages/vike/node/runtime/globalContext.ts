@@ -72,7 +72,7 @@ import { getVikeConfigErrorBuild, setVikeConfigError } from '../shared/getVikeCo
 import { hasAlreadyLogged } from './renderPage/isNewError.js'
 import type { Hook } from '../../shared/hooks/getHook.js'
 import type { ViteRPC } from '../vite/plugins/pluginNonRunnableDev.js'
-import { getApiOperation } from '../api/context.js'
+import { getVikeApiOperation } from '../api/context.js'
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
   {
@@ -683,7 +683,7 @@ function isProd(): boolean {
   return isProduction
 }
 function isProdOptional(): boolean | null {
-  const apiOperation = getApiOperation()?.operation ?? null
+  const apiOperation = getVikeApiOperation()?.operation ?? null
 
   const yes: boolean =
     // setGlobalContext_prodBuildEntry() was called
