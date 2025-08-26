@@ -1,4 +1,4 @@
-export { pluginBuildEntry }
+export { pluginProdBuildEntry }
 export { set_macro_ASSETS_MANIFEST }
 
 import { serverProductionEntryPlugin } from '@brillout/vite-plugin-server-entry/plugin'
@@ -14,11 +14,11 @@ import { getViteConfigRuntime } from '../../shared/getViteConfigRuntime.js'
 type Bundle = Rollup.OutputBundle
 const ASSETS_MANIFEST = '__VITE_ASSETS_MANIFEST__'
 
-function pluginBuildEntry(): Plugin[] {
+function pluginProdBuildEntry(): Plugin[] {
   let config: ResolvedConfig
   return [
     {
-      name: 'vike:build:pluginBuildEntry',
+      name: 'vike:build:pluginProdBuildEntry',
       apply: 'build',
       enforce: 'post',
       async configResolved(config_) {

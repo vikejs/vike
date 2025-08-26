@@ -17,7 +17,7 @@ import pc from '@brillout/picocolors'
 import { isV1Design } from '../../shared/resolveVikeConfigInternal.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
 import { isViteServerSide_onlySsrEnv, isViteServerSide } from '../../shared/isViteServerSide.js'
-import { set_macro_ASSETS_MANIFEST } from './pluginBuildEntry.js'
+import { set_macro_ASSETS_MANIFEST } from './pluginProdBuildEntry.js'
 import { getManifestFilePathRelative } from '../../shared/getManifestFilePathRelative.js'
 type Bundle = Rollup.OutputBundle
 

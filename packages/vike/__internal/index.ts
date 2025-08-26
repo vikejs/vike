@@ -1,4 +1,4 @@
-// Used by vike:build:pluginBuildEntry
+// Used by vike:build:pluginProdBuildEntry
 export { setGlobalContext_buildEntry } from '../node/runtime/globalContext.js'
 
 // Used by vite-plugin-vercel
