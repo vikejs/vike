@@ -19,6 +19,7 @@ import type { GlobalContextClientInternal } from '../client/runtime-client-routi
 import { getHookFromPageConfigGlobalCumulative, type Hook } from './hooks/getHook.js'
 const getGlobalContextSyncErrMsg =
   "The global context isn't set yet, call getGlobalContextSync() later or use getGlobalContext() instead."
+// TODO/now rename globalObject_
 const globalObject_ = getGlobalObject<{ previousCallPromise?: Promise<void> }>(
   'shared/createGlobalContextShared.ts',
   {},
