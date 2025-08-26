@@ -10,8 +10,6 @@ import {
   autoRetry,
   partRegex,
   expectLog,
-  isCI,
-  isWindows,
   sleep,
 } from '@brillout/test-e2e'
 

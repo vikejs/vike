@@ -1,6 +1,6 @@
 export { testRun }
 
-import { test, expect, run, page, getServerUrl, autoRetry, fetchHtml, isWindows, isCI, sleep } from '@brillout/test-e2e'
+import { test, expect, run, page, getServerUrl, autoRetry, fetchHtml, sleep } from '@brillout/test-e2e'
 
 function testRun(cmd: `pnpm run ${'dev' | 'preview' | 'preview:ssg'}`) {
   const isDev = cmd === 'pnpm run dev'
