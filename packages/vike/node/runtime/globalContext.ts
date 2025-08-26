@@ -88,6 +88,7 @@ const globalObject = getGlobalObject<
     viteConfigRuntime?: ViteConfigRuntime
     isPrerendering?: true
     initGlobalContext_runPrerender_alreadyCalled?: true
+    // TODO/now rename to prodBuildEntry
     buildEntry?: unknown
     buildEntryPrevious?: unknown
     waitForUserFilesUpdate?: Promise<void>
