@@ -531,6 +531,10 @@ async function createGlobalContext(virtualFileExportsGlobalEntry: unknown) {
     addGlobalContextAsync,
   )
   debug('createGlobalContext() - done [sync]')
+
+  // We define an early globalContext version synchronously, so that getGlobalContextSync() can be called early.
+  // - Required by vike-vercel
+  assert(globalObject.globalContext)
   const globalContext = await globalContextPromise
 
   assertV1Design(
