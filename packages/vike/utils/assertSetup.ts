@@ -44,7 +44,7 @@ function onSetupRuntime(): void | undefined {
     assertWarning(
       !isNodeEnvDev(),
       `The ${getEnvDescription()}, which is contradictory because the environment seems to be a production environment (Vite isn't loaded), see ${pc.underline('https://vike.dev/NODE_ENV')} and ${pc.underline('https://vike.dev/warning/setup')}`,
-      { onlyOnce: true, showStackTrace: true },
+      { onlyOnce: true },
     )
     assertUsage(
       !setup.vikeVitePlugin,
