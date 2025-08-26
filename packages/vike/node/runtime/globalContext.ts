@@ -345,6 +345,7 @@ async function loadProdBuildEntry(outDir?: string) {
 }
 
 // This is the production entry, see:
+// TODO/now update link
 // https://github.com/vikejs/vike/blob/798e5465dc3e3e6723b38b601a50350c0a006fb8/packages/vike/node/vite/plugins/pluginBuild/pluginBuildEntry.ts#L47
 async function setGlobalContext_prodBuildEntry(prodBuildEntry: unknown) {
   debug('setGlobalContext_prodBuildEntry()')
