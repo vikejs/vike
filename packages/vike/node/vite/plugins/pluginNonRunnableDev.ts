@@ -47,18 +47,14 @@ function pluginNonRunnableDev(): Plugin {
     transform(code, id) {
       if (!config._isDev) return
       if (id !== distFileIsNonRunnableDev && id !== distFileGlobalContext) return
-      const isNonRunnableDev = !isRunnableDevEnvironment(this.environment)
+      if (isRunnableDevEnvironment(this.environment)) return
       const { magicString, getMagicStringResult } = getMagicString(code, id)
-      let hasChanges = false
-      if (id === distFileIsNonRunnableDev && isNonRunnableDev) {
+      if (id === distFileIsNonRunnableDev) {
         magicString.replaceAll('__VIKE__IS_NON_RUNNABLE_DEV', JSON.stringify(true))
-        hasChanges = true
       }
-      if (id === distFileGlobalContext && isNonRunnableDev) {
+      if (id === distFileGlobalContext) {
         magicString.replaceAll('__VIKE__DYNAMIC_IMPORT', 'import')
-        hasChanges = true
       }
-      if (!hasChanges) return
       return getMagicStringResult()
     },
   }
