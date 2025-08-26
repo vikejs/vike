@@ -712,12 +712,10 @@ function isProdOptional(): boolean | null {
   assert(typeof no === 'boolean')
 
   if (yes) {
-    // TO-DO/eventually: implement assertUsage()
     assert(no === false)
     return true
   }
   if (no) {
-    // TO-DO/eventually: implement assertUsage()
     assert(yes === false)
     return false
   }
