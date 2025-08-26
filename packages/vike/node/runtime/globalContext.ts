@@ -23,12 +23,6 @@ export type { BuildInfo }
 export type { GlobalContextServerInternal as GlobalContextServerInternal }
 export type { GlobalContextServer }
 
-// TODO/now: rename:
-//  - isProduction => isProductionEnvironment
-//  - setIsProduction => setIsProductionEnvironment
-//  - setGlobalContext_isProduction => setGlobalContext_isProductionEnvironment
-//  - sProductionEnvironment => sDevEnv
-
 // The core logic revolves around:
 // - virtualFileExportsGlobalEntry is the main requirement
 // - In production: globalObject.buildEntry which is the production entry set by @brillout/vite-plugin-server-entry
