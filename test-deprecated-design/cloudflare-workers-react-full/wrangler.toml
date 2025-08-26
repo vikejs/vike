@@ -2,6 +2,7 @@ main="./worker/index.js"
 name = "vike_worker-example"
 compatibility_date = "2025-08-06"
 workers_dev = true
+define = { NODE_ENV = "'production'" }
 
 [site]
 bucket = "./dist/client"

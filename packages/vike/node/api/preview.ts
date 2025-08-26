@@ -5,10 +5,9 @@ import { preview as previewVite, type ResolvedConfig, type PreviewServer } from 
 import { importServerProductionIndex } from '@brillout/vite-plugin-server-entry/runtime'
 import type { ApiOptions } from './types.js'
 import { getOutDirs } from '../vite/shared/getOutDirs.js'
-import { assertWarning } from './utils.js'
+import { assertWarning, onSetupPreview } from './utils.js'
 import pc from '@brillout/picocolors'
 import path from 'node:path'
-import { onSetupPreview } from '../runtime/utils.js'
 
 /**
  * Programmatically trigger `$ vike preview`

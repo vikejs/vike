@@ -2,7 +2,7 @@
 
 export { prerender } from '../api/prerender.js'
 
-import { assertWarning } from '../../utils/assert.js'
+import { assertWarning } from './utils.js'
 import pc from '@brillout/picocolors'
 assertWarning(
   false,
