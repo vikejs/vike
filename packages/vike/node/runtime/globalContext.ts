@@ -13,7 +13,7 @@ export { initGlobalContext_getPagesAndRoutes }
 export { setGlobalContext_viteDevServer }
 export { setGlobalContext_viteConfig }
 export { setGlobalContext_isPrerendering }
-export { setGlobalContext_isProduction }
+export { setGlobalContext_isProductionAccordingToVite }
 export { setGlobalContext_buildEntry } // production entry
 export { clearGlobalContext }
 export { assertBuildInfo }
@@ -79,6 +79,7 @@ import { getVikeConfigErrorBuild, setVikeConfigError } from '../shared/getVikeCo
 import { hasAlreadyLogged } from './renderPage/isNewError.js'
 import type { Hook } from '../../shared/hooks/getHook.js'
 import type { ViteRPC } from '../vite/plugins/pluginNonRunnableDev.js'
+import { getApiOperation } from '../api/context.js'
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
   {
@@ -94,11 +95,14 @@ const globalObject = getGlobalObject<
     waitForUserFilesUpdate?: Promise<void>
     waitForUserFilesUpdateResolve?: (() => void)[]
     vikeConfigHasRuntimeError?: boolean
-    isProduction?: boolean
     buildInfo?: BuildInfo
     // Move to buildInfo.assetsManifest ?
     assetsManifest?: ViteManifest
     isInitialized?: true
+    isAfterFirstRenderPageCall?: true
+    isProductionAccordingToUser?: boolean
+    isProductionAccordingToPhotonVercel?: true
+    isProductionAccordingToVite?: boolean
   } & ReturnType<typeof getInitialGlobalObject>
 >('runtime/globalContext.ts', getInitialGlobalObject())
 // Trick to break down TypeScript circular dependency
@@ -132,7 +136,7 @@ async function getGlobalContextServerInternal() {
   // getGlobalContextServerInternal() should always be called after initGlobalContext()
   assert(globalObject.isInitialized)
   assertGlobalContextIsDefined()
-  if (globalObject.isProduction !== true) await globalObject.waitForUserFilesUpdate
+  if (!isProd()) await globalObject.waitForUserFilesUpdate
   const { globalContext } = globalObjectTyped
   assertIsDefined(globalContext)
   return { globalContext }
@@ -160,10 +164,10 @@ function assertGlobalContextIsDefined() {
  */
 async function getGlobalContext(): Promise<GlobalContext> {
   debug('getGlobalContext()')
-  const { isProduction } = globalObject
+  const isProduction = isProdOptional()
   // This assertion cannot fail for vike-server users (because when using vike-server it's guaranteed that globalObject.isProduction is set before executing any user-land code and any Vike extension code).
   assertUsage(isProduction !== undefined, "The global context isn't set yet, use getGlobalContextAsync() instead.")
-  assert(typeof globalObject.isProduction === 'boolean')
+  assert(typeof isProduction === 'boolean')
   return await getGlobalContextAsync(isProduction)
 }
 /**
@@ -179,7 +183,7 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
       isProduction === undefined ? 'is missing' : `should be ${pc.cyan('true')} or ${pc.cyan('false')}`
     }`,
   )
-  setIsProduction(isProduction)
+  globalObject.isProductionAccordingToUser = isProduction
   if (!globalObject.globalContext) await initGlobalContext_getGlobalContextAsync()
   if (!isProduction) await globalObject.waitForUserFilesUpdate
   assertGlobalContextIsDefined()
@@ -194,10 +198,10 @@ function getGlobalContextSync(): GlobalContext {
   debug('getGlobalContextSync()')
   const { globalContext } = globalObjectTyped
   assertUsage(globalContext, getGlobalContextSyncErrMsg)
-  const isProd: boolean = globalContext._isProduction
-  assert(typeof isProd === 'boolean')
+  const isProduction: boolean = globalContext._isProduction
+  assert(typeof isProduction === 'boolean')
   assertWarning(
-    isProd,
+    isProduction,
     // - We discourage users from using it in development because `pageContext.globalContext` is safer: I ain't sure but there could be race conditions when using `getGlobalContextSync()` inside React/Vue components upon HMR.
     // - I don't see any issues with getGlobalContextSync() in production.
     // - getGlobalContextSync() is used in production by vike-vercel
@@ -216,7 +220,6 @@ function getGlobalContextForPublicUsage(): GlobalContextServer {
 
 async function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
   debug('setGlobalContext_viteDevServer()')
-  setIsProduction(false)
   // We cannot cache globalObject.viteDevServer because it's fully replaced when the user modifies vite.config.js => Vite's dev server is fully reloaded and a new viteDevServer replaces the previous one.
   if (!globalObject.viteDevServer) {
     assertIsNotInitializedYet()
@@ -243,15 +246,9 @@ function assertIsNotInitializedYet() {
 }
 function setGlobalContext_isPrerendering() {
   globalObject.isPrerendering = true
-  setIsProduction(true)
 }
-function setGlobalContext_isProduction(isProduction: boolean) {
-  if (debug.isActivated) debug('setGlobalContext_isProduction()', { isProduction })
-  if (globalObject.isProduction === undefined) {
-    setIsProduction(isProduction)
-  } else {
-    assert(globalObject.isProduction === isProduction)
-  }
+function setGlobalContext_isProductionAccordingToVite(isProductionAccordingToVite: boolean) {
+  globalObject.isProductionAccordingToVite = isProductionAccordingToVite
 }
 function getViteDevServer(): ViteDevServer | null {
   return globalObject.viteDevServer ?? null
@@ -262,17 +259,14 @@ function getViteConfig(): ResolvedConfig | null {
 
 async function initGlobalContext_renderPage(): Promise<void> {
   debug('initGlobalContext_renderPage()')
-
-  // `globalObject.isProduction === undefined` when using production server without `vike-server`. (There isn't any reliable signal we can use to determine early whether the environment is production or development.)
-  if (globalObject.isProduction === undefined) setIsProduction(true)
-
+  globalObject.isAfterFirstRenderPageCall = true
   await initGlobalContext()
 }
 
 async function initGlobalContext_runPrerender(): Promise<void> {
   debug('initGlobalContext_runPrerender()')
   assert(globalObject.isPrerendering === true)
-  assert(globalObject.isProduction === true)
+  assert(isProd())
   if (globalObject.initGlobalContext_runPrerender_alreadyCalled) return
   globalObject.initGlobalContext_runPrerender_alreadyCalled = true
 
@@ -293,12 +287,11 @@ async function initGlobalContext_getGlobalContextAsync(): Promise<void> {
 }
 async function initGlobalContext_getPagesAndRoutes(): Promise<void> {
   debug('initGlobalContext_getPagesAndRoutes()')
-  setIsProduction(true)
+  globalObject.isProductionAccordingToPhotonVercel = true
   await initGlobalContext()
 }
 async function initGlobalContext(): Promise<void> {
-  const { isProduction } = globalObject
-  assert(typeof isProduction === 'boolean')
+  const isProduction = isProd()
   if (!isProduction) {
     if (isProcessSharedWithVite()) {
       await globalObject.viteDevServerPromise
@@ -313,12 +306,6 @@ async function initGlobalContext(): Promise<void> {
   }
   assertGlobalContextIsDefined()
   globalObject.isInitialized = true
-}
-function setIsProduction(isProduction: boolean) {
-  debug('setIsProduction', isProduction)
-  assert(typeof isProduction === 'boolean')
-  if (globalObject.isProduction !== undefined) assert(globalObject.isProduction === isProduction)
-  globalObject.isProduction = isProduction
 }
 
 function assertViteManifest(manifest: unknown): asserts manifest is ViteManifest {
@@ -372,7 +359,6 @@ async function loadBuildEntry(outDir?: string) {
 // https://github.com/vikejs/vike/blob/798e5465dc3e3e6723b38b601a50350c0a006fb8/packages/vike/node/vite/plugins/pluginBuild/pluginBuildEntry.ts#L47
 async function setGlobalContext_buildEntry(buildEntry: unknown) {
   debug('setGlobalContext_buildEntry()')
-  setIsProduction(true)
   assertBuildEntry(buildEntry)
   globalObject.buildEntry = buildEntry
   globalObject.buildEntryPrevious = buildEntry
@@ -427,7 +413,7 @@ function assertVersionAtBuildTime(versionAtBuildTime: string) {
 
 async function updateUserFiles(): Promise<{ success: boolean }> {
   debug('updateUserFiles()')
-  assert(!globalObject.isProduction)
+  assert(!isProd())
   const { promise, resolve } = genPromise<void>()
   globalObject.waitForUserFilesUpdate = promise
   globalObject.waitForUserFilesUpdateResolve ??= []
@@ -583,8 +569,8 @@ function addGlobalContextCommon(
     _pageRoutes: pageRoutes,
     _onBeforeRouteHook: onBeforeRouteHook,
   }
-  const { viteDevServer, viteConfig, isPrerendering, isProduction } = globalObject
-  assert(typeof isProduction === 'boolean')
+  const { viteDevServer, viteConfig, isPrerendering } = globalObject
+  const isProduction = isProd()
   if (!isProduction) {
     assert(globalContext) // main common requirement
     assert(!isPrerendering)
@@ -633,7 +619,7 @@ async function addGlobalContextAsync(globalContext: GlobalContextBase) {
       viteConfigRuntime = buildInfo.viteConfigRuntime
     } else {
       assert(!isProcessSharedWithVite()) // process shared with Vite => globalObject.viteConfigRuntime should be set
-      assert(!globalObject.isProduction) // production => globalObject.buildInfo.viteConfigRuntime should be set
+      assert(!isProd()) // production => globalObject.buildInfo.viteConfigRuntime should be set
       assert(isNonRunnableDev())
       const rpc = getViteRPC<ViteRPC>()
       viteConfigRuntime = await rpc.getViteConfigRuntimeRPC()
@@ -656,7 +642,6 @@ function getInitialGlobalObject() {
   debug('getInitialGlobalObject()')
   const { promise: viteDevServerPromise, resolve: viteDevServerPromiseResolve } = genPromise<ViteDevServer>()
   return {
-    isProduction: isNonRunnableDev() ? false : undefined,
     viteDevServerPromise,
     viteDevServerPromiseResolve,
   }
@@ -693,4 +678,57 @@ function isNonRunnableDev(): boolean | null {
   const yes = __VIKE__IS_NON_RUNNABLE_DEV
   assert(typeof yes === 'boolean')
   return yes
+}
+
+function isProd(): boolean {
+  const isProduction = isProdOptional()
+  if (isProduction === null) {
+    if (globalObject.isAfterFirstRenderPageCall) {
+      // When using a production server without vike-server, there isn't any reliable signal we can use to determine early whether the environment is production or development. If renderPage() was called then some non-negligible amount of time passed — it's likely that, in dev, one of the Vite hooks should have already sent a signal we can use to determine prod/dev.
+      return true
+    } else {
+      assert(false)
+    }
+  }
+  assert(typeof isProduction === 'boolean')
+  return isProduction
+}
+function isProdOptional(): boolean | null {
+  const vikeApiOperation = getApiOperation()?.operation ?? null
+
+  const yes: boolean =
+    // setGlobalContext_buildEntry() was called
+    !!globalObject.buildEntry ||
+    globalObject.isPrerendering === true ||
+    // Vike CLI & Vike API
+    (!!vikeApiOperation && vikeApiOperation !== 'dev') ||
+    // Vite command
+    globalObject.isProductionAccordingToVite === true ||
+    // getGlobalContextAsync(isProduction)
+    globalObject.isProductionAccordingToUser === true ||
+    // vite-plugin-vercel
+    globalObject.isProductionAccordingToPhotonVercel === true
+
+  const no: boolean =
+    !!globalObject.viteDevServer ||
+    // Vike CLI & Vike API
+    vikeApiOperation === 'dev' ||
+    // Vite command
+    globalObject.isProductionAccordingToVite === false ||
+    // getGlobalContextAsync(isProduction)
+    globalObject.isProductionAccordingToUser === false ||
+    // @cloudflare/vite-plugin
+    isNonRunnableDev() === true
+
+  if (yes) {
+    // TO-DO/eventually: implement assertUsage()
+    assert(no === false)
+    return true
+  }
+  if (no) {
+    // TO-DO/eventually: implement assertUsage()
+    assert(yes === false)
+    return false
+  }
+  return null
 }

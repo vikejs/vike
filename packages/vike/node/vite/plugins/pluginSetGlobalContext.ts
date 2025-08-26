@@ -4,7 +4,7 @@ import type { Plugin } from 'vite'
 import {
   setGlobalContext_viteDevServer,
   setGlobalContext_viteConfig,
-  setGlobalContext_isProduction,
+  setGlobalContext_isProductionAccordingToVite,
 } from '../../runtime/globalContext.js'
 import { isDevCheck, markSetup_isViteDev, markSetup_viteDevServer, markSetup_vitePreviewServer } from '../utils.js'
 import { reloadVikeConfig } from '../shared/resolveVikeConfigInternal.js'
@@ -33,7 +33,7 @@ function pluginSetGlobalContext(): Plugin[] {
         order: 'pre',
         handler(_, env) {
           const isViteDev = isDevCheck(env)
-          setGlobalContext_isProduction(!isViteDev)
+          setGlobalContext_isProductionAccordingToVite(!isViteDev)
           markSetup_isViteDev(isViteDev)
         },
       },
