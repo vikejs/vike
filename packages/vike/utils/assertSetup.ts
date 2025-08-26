@@ -27,16 +27,10 @@ const setup = getGlobalObject<{
   isPreview?: true
   // Calling Vite's `createServer()` (i.e. `createDevMiddleware()`) is enough for `setup.isViteDev` to be `true`, even without actually adding Vite's development middleware to the server: https://github.com/vikejs/vike/issues/792#issuecomment-1516830759
   isViteDev?: boolean
-  p2: number
-}>('utils/assertSetup.ts', {
-  p2: Math.random(),
-})
-
-const p1 = Math.random()
+}>('utils/assertSetup.ts', {})
 
 // Called by Vike modules that want to ensure that they aren't loaded by the server runtime in production
 function assertIsNotProductionRuntime(): void | undefined {
-  console.log(p1, setup.p2, new Error('bb'))
   if (debug.isActivated) debug('assertIsNotProductionRuntime()', new Error().stack)
   setup.shouldNotBeProduction = true
 }
@@ -57,10 +51,6 @@ function onSetupRuntime(): void | undefined {
       `Vike's Vite plugin (the ${pc.cyan('vike/plugin')} module) shouldn't be loaded in production, see ${pc.underline('https://vike.dev/warning/setup')}`,
     )
     // This assert() one of the main goal of this file: it ensures assertIsNotProductionRuntime()
-    console.log('setup.shouldNotBeProduction', p1, setup.p2, setup.shouldNotBeProduction)
-    if (setup.shouldNotBeProduction) {
-      console.log(p1, setup.p2, new Error('cc'))
-    }
     assert(!setup.shouldNotBeProduction)
   } else {
     if (!setup.isPreview && !setup.vitePreviewServer && !setup.isPrerendering) {
