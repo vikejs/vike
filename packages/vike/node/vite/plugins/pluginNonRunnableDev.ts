@@ -33,8 +33,8 @@ declare global {
   var __VIKE__IS_NON_RUNNABLE_DEV: undefined | boolean
 }
 function pluginNonRunnableDev(): Plugin {
-  const distFileGlobalContext = requireResolveDistFile('dist/esm/node/runtime/globalContext.js')
   const distFileIsNonRunnableDev = requireResolveDistFile('dist/esm/utils/isNonRunnableDev.js')
+  const distFileGlobalContext = requireResolveDistFile('dist/esm/node/runtime/globalContext.js')
   let config: ResolvedConfig
   return {
     name: 'vike:pluginNonRunnableDev',
