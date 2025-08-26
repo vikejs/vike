@@ -65,10 +65,6 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   }
 
   test('todos - add to-do', async () => {
-    // No clue why this started to fail only in GitHub CI Linux at https://github.com/vikejs/vike-react/pull/177 (it doesn't fail locally nor on windows) — let's skip for now and try again later.
-    // TODO/soon: remove this
-    if (isCI() && !isWindows()) return
-
     expect(await getNumberOfItems()).toBe(2)
     if (isDev) await sleep(300) // Seems to be required, otherwise the test is flaky. I don't know why.
     await page.fill('input[type="text"]', 'Buy bananas')
