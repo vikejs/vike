@@ -27,7 +27,7 @@ function testCloudflareBindings() {
 function getArgs(cmd: CMD): Args {
   if (cmd !== 'npm run preview') {
     return {
-      // TODO/now
+      // TODO/now fix assertSetup() for @cloudflare/vite-plugin and remove this
       tolerateError: true,
     }
   } else {
