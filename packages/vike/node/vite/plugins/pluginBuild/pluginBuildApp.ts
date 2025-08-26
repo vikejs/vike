@@ -1,5 +1,4 @@
 export { pluginBuildApp }
-export { isPrerenderForceExit }
 
 import { runPrerender_forceExit } from '../../../prerender/runPrerenderEntry.js'
 import type { Environment, InlineConfig, Plugin, ResolvedConfig } from 'vite'
@@ -133,14 +132,12 @@ async function triggerPrerendering(config: ResolvedConfig, viteEnv: Environment,
   //  - The legacy plugin doesn't generate a manifest => we can use that to detect the legacy plugin build.
   //  - Issue & reproduction: https://github.com/vikejs/vike/issues/1154#issuecomment-1965954636
   if (!bundle[getManifestFilePathRelative(config.build.manifest)]) return
+  if (!isPrerenderAutoRunEnabled(vikeConfig)) return
 
   const configInline = getFullBuildInlineConfig(config)
-
-  if (isPrerenderAutoRunEnabled(vikeConfig)) {
-    const res = await runPrerenderFromAutoRun(configInline)
-    globalObject.forceExit = res.forceExit
-    assert(wasPrerenderRun())
-  }
+  const res = await runPrerenderFromAutoRun(configInline)
+  globalObject.forceExit = res.forceExit
+  assert(wasPrerenderRun())
 }
 
 async function abortViteBuildSsr() {
