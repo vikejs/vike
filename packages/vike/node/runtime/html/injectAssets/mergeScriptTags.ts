@@ -1,6 +1,6 @@
 export { mergeScriptTags }
 
-import { inferNonceAttr, PageContextCspNonce } from '../../renderPage/csp.js'
+import { inferNonceAttr, PageContextCspNonce } from '../../csp.js'
 import { assert } from '../../utils.js'
 import { scriptAttrs } from './inferHtmlTags.js'
 
