@@ -18,16 +18,16 @@ export default {
 
 ```
 
-If `+csp.nonce` is `true`, Vike generates a random string for each HTTP request, stores it in `pageContext.cspNonce`, and appends it to `<script>` tags.
+If `+csp.nonce` is `true`, Vike generates a random string (the `nonce` value) for each HTTP request, stores it in `pageContext.cspNonce`, and appends it to `<script>` tags.
 
 ```jsx
-// Vike adds the nonce value to each <script> it injects
+// Vike adds the nonce to each <script> it injects
 <script nonce={pageContext.cspNonce}>
 ```
 
 <Warning>The `+csp` setting is a beta feature: expect breaking changes in any minor version update. See [#2665 - Stabilize `+csp`](https://github.com/vikejs/vike/issues/2665).</Warning>
 
-You can generate the nonce yourself:
+You can generate the `nonce` value yourself:
 
 ```ts
 // pages/+csp.ts
@@ -41,9 +41,9 @@ export default {
 }
 ```
 
-If `pageContext.cspNonce` is set, then Vike automatically adds the following HTTP response header:
+The following default CSP header is added to the HTTP response headers:
 
-```
+```yaml
 Content-Security-Policy: script-src 'self' 'nonce-${pageContext.cspNonce}'
 ```
 
@@ -62,12 +62,12 @@ export function headersResponse(pageContext: PageContextServer) {
 }
 ```
 
-Instead of using the `+headersResponse` setting, you can directly modify <Link href="/pageContext#headersResponse">`pageContext.headersResponse`</Link>.
+You can also directly modify <Link href="/pageContext#headersResponse">`pageContext.headersResponse`</Link> instead of using the `+headersResponse` setting.
 
 
 ## Random string generation
 
-If [the `crypto` module](https://nodejs.org/api/crypto.html) is available, Vike uses it to generate a random string for the CSP nonce value:
+If the [`crypto` module](https://nodejs.org/api/crypto.html) is available, Vike uses it to generate a random string for the CSP nonce value:
 
 ```js
 import { randomBytes } from 'crypto'
@@ -92,7 +92,7 @@ function generateNonce() {
 
 The nonce random string is available at `pageContext.cspNonce`.
 
-Instead of using the `+csp` setting, you can directly set `pageContext.cspNonce`:
+You can directly set `pageContext.cspNonce` instead of using the `+csp` setting:
 
 ```ts
 // pages/+onCreatePageContext.server.ts
@@ -107,7 +107,7 @@ export async function onCreatePageContext(pageContext: PageContextServer) {
 
 > See: <Link href="/onCreatePageContext" />
 
-You can also use the `+csp` setting while modifying `pageContext.cspNonce` — Vike uses the value set at `pageContext.cspNonce` as the nonce value.
+You can also use the `+csp` setting and modify `pageContext.cspNonce` — Vike uses the value set at `pageContext.cspNonce` as the nonce value.
 
 > The `+csp` setting is merely a convenience to set the `pageContext.cspNonce` value.
 
