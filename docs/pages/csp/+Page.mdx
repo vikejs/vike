@@ -112,6 +112,21 @@ export async function onCreatePageContext(pageContext: PageContextServer) {
 > The `+csp` setting is merely a convenience to set the `pageContext.cspNonce` value.
 
 
+## PCI
+
+Using a CSP nonce helps maintain [PCI DSS compliance](https://www.pcisecuritystandards.org/standards/pci-dss/). Inline scripts are allowed **only** if they include the generated nonce (section `6.4.3` of [PCI DSS `4.0.1`](https://docs-prv.pcisecuritystandards.org/PCI%20DSS/Standard/PCI-DSS-v4_0_1.pdf)). Avoid using `'unsafe-inline'` in the CSP header's `script-src`, as it would violate PCI security requirements.
+
+```html
+<!-- ❌ Not allowed -->
+<script>alert('hello')</script>
+
+<!-- ✅ Allowed -->
+<script nonce="jy8W9w1ljXuO4Xq9rft15w">alert('hello')</script>
+```
+
+By generating a unique nonce for each request, Vike ensures that inline scripts remain secure and compliant.
+
+
 ## See also
 
 - <Link href="/headers" />
