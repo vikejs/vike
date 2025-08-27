@@ -62,12 +62,12 @@ export function headersResponse(pageContext: PageContextServer) {
 }
 ```
 
-You can also directly modify <Link href="/pageContext#headersResponse">`pageContext.headersResponse`</Link> instead of using the `+headersResponse` setting.
+> You can also directly modify <Link href="/pageContext#headersResponse">`pageContext.headersResponse`</Link> instead of using the `+headersResponse` setting.
 
 
 ## Random string generation
 
-If the [`crypto` module](https://nodejs.org/api/crypto.html) is available, Vike uses it to generate a random string for the CSP nonce value:
+If the [`crypto` module](https://nodejs.org/api/crypto.html) is available, Vike uses it to generate a random string that serves as the CSP nonce:
 
 ```js
 import { randomBytes } from 'crypto'
@@ -90,7 +90,7 @@ function generateNonce() {
 
 ## `pageContext.cspNonce`
 
-The nonce random string is available at `pageContext.cspNonce`.
+The nonce value is stored at `pageContext.cspNonce`.
 
 You can directly set `pageContext.cspNonce` instead of using the `+csp` setting:
 
@@ -106,8 +106,6 @@ export async function onCreatePageContext(pageContext: PageContextServer) {
 ```
 
 > See: <Link href="/onCreatePageContext" />
-
-You can also use the `+csp` setting and modify `pageContext.cspNonce` — Vike uses the value set at `pageContext.cspNonce` as the nonce value.
 
 > The `+csp` setting is merely a convenience to set the `pageContext.cspNonce` value.
 
