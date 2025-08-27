@@ -172,13 +172,13 @@ function testHeadersResponse() {
       const resp = await fetch(getServerUrl() + '/about')
       common(resp.headers)
       expect(resp.headers.get('some-static-headER')).toBe(null)
-      expect(resp.headers.get('some-dynamic-header')).toBe('the-page-url: /about')
+      expect(resp.headers.get('some-dynamic-header')).toBe('the-page-url=/about')
     }
     {
       const resp = await fetch(getServerUrl() + '/')
       common(resp.headers)
       expect(resp.headers.get('SOME-STaTIc-Header')).toBe('some-static-header-value')
-      expect(resp.headers.get('some-dynamic-header')).toBe('the-page-url: /')
+      expect(resp.headers.get('some-dynamic-header')).toBe('the-page-url=/')
     }
   })
 }
