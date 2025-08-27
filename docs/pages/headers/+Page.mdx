@@ -83,6 +83,22 @@ export default {
 } satisfies Config
 ```
 
+You can add headers dynamically:
+
+```ts
+// pages/+headersResponse.ts
+
+import type { PageContextServer } from 'vike/types'
+
+export async function headersResponse(pageContext: PageContextServer) {
+  return {
+    'some-dynamic-header': `the-page-url=${pageContext.urlPathname}`
+  }
+}
+```
+
+You can modify and remove headers:
+
 ```ts
 // Dynamically adding/modifying header
 pageContext.headersResponse.set('Set-Cookie', 'sessionId=abc123')

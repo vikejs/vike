@@ -10,6 +10,7 @@ import {
   assertWarning,
   hasProp,
   isArray,
+  isCallable,
   isObject,
   objectAssign,
   PromiseType,
@@ -97,7 +98,7 @@ async function resolvePageContext(pageContext: PageContextBeforeResolve) {
     Page: pageContext.exports.Page,
     _isHtmlOnly: isHtmlOnly,
     _passToClient: passToClient,
-    headersResponse: resolveHeadersResponse(pageContext),
+    headersResponse: await resolveHeadersResponse(pageContext),
   })
 
   objectAssign(pageContext, {
@@ -185,8 +186,8 @@ async function loadPageUserFiles_v1Design(
 }
 
 // TODO/now: move all response headers code to headersResponse.ts
-function resolveHeadersResponse(pageContext: PageContextBeforeResolve & PageContextCspNonce): Headers {
-  const headersResponse = mergeHeaders(pageContext.config.headersResponse)
+async function resolveHeadersResponse(pageContext: PageContextBeforeResolve & PageContextCspNonce): Promise<Headers> {
+  const headersResponse = await mergeHeaders(pageContext)
   if (!headersResponse.get('Cache-Control')) {
     const cacheControl = getCacheControl(pageContext.pageId, pageContext._globalContext._pageConfigs)
     if (cacheControl) headersResponse.set('Cache-Control', cacheControl)
@@ -195,12 +196,20 @@ function resolveHeadersResponse(pageContext: PageContextBeforeResolve & PageCont
   return headersResponse
 }
 
-function mergeHeaders(headersList: HeadersInit[] = []): Headers {
+async function mergeHeaders(pageContext: PageContextBeforeResolve): Promise<Headers> {
   const headersMerged = new Headers()
-  headersList.forEach((headers) => {
-    new Headers(headers).forEach((value, key) => {
-      headersMerged.append(key, value)
-    })
-  })
+  await Promise.all(
+    (pageContext.config.headersResponse ?? []).map(async (headers) => {
+      let headersInit: HeadersInit
+      if (isCallable(headers)) {
+        headersInit = await headers(pageContext as any)
+      } else {
+        headersInit = headers
+      }
+      new Headers(headersInit).forEach((value, key) => {
+        headersMerged.append(key, value)
+      })
+    }),
+  )
   return headersMerged
 }

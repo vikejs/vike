@@ -550,7 +550,7 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/headers#response
    */
-  headersResponse?: HeadersInit
+  headersResponse?: HeadersInit | ((pageContext: PageContextServer) => HeadersInit | Promise<HeadersInit>)
 
   /**
    * Make development/preview server available over LAN and public addresses.
@@ -617,7 +617,7 @@ type ConfigBuiltInResolved = {
   redirects?: Record<string, string>[]
   prerender?: Exclude<Config['prerender'], ImportString | undefined>[]
   middleware?: Function[]
-  headersResponse?: HeadersInit[]
+  headersResponse?: Exclude<Config['headersResponse'], ImportString | undefined>[]
 }
 
 type ConfigMeta = Record<string, ConfigDefinition>
