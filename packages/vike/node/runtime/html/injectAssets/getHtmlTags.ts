@@ -246,7 +246,7 @@ function mergeScriptEntries(
   //   ```
   // - Maybe an alternative would be to make Vike's client runtime entry <script> tag non-async. Would that work? Would it be a performance issue?
   //   - The entry <script> shouldn't be `<script defer>` upon HTML streaming, otherwise progressive hydration while SSR streaming won't work.
-  scriptEntry = mergeScriptTags(scriptEntry)
+  scriptEntry = mergeScriptTags(scriptEntry, pageContext)
   return scriptEntry
 }
 
