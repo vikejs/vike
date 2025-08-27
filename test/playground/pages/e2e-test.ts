@@ -14,6 +14,7 @@ import {
   fetchHtml,
   getServerUrl,
   page,
+  partRegex,
   test,
 } from '@brillout/test-e2e'
 import { sleepBeforeEditFile, testCounter } from '../../../test/utils'
@@ -167,12 +168,14 @@ function testHeadersResponse() {
       expect(resp.headers.get('Some-Header')).toBe('Some-Header-Value')
       expect(resp.headers.get('some-static-headER')).toBe(null)
       expect(resp.headers.get('Cache-Control')).toBe('no-store, max-age=0')
+      expect(resp.headers.get('Content-Security-Policy')).toMatch(partRegex`script-src 'nonce-${/[^']*/}'`)
     }
     {
       const resp = await fetch(getServerUrl() + '/')
       expect(resp.headers.get('Some-Header')).toBe('Some-Header-Value')
       expect(resp.headers.get('SOME-STaTIc-Header')).toBe('some-static-header-value')
       expect(resp.headers.get('Cache-Control')).toBe('no-store, max-age=0')
+      expect(resp.headers.get('Content-Security-Policy')).toMatch(partRegex`script-src 'nonce-${/[^']*/}'`)
     }
   })
 }
