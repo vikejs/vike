@@ -242,7 +242,7 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
     /**
      * The CSP nonce.
      *
-     * https://vike.dev/CSP
+     * https://vike.dev/csp
      */
     cspNonce?: string
 

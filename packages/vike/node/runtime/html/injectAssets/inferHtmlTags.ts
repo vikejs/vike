@@ -43,10 +43,9 @@ function inferAssetTag(pageAsset: PageAsset, pageContext: PageContextCspNonce): 
   assert(false, { pageAsset })
 }
 
-type PageContextCspNonce = Pick<PageContextServer, 'cspNonce'> & { cspNonceResolved?: string | null }
+type PageContextCspNonce = Pick<PageContextServer, 'cspNonce'>
 function inferNonceAttr(pageContext: PageContextCspNonce): string {
-  pageContext.cspNonceResolved ??= pageContext.cspNonce ?? null
-  const nonceAttr = pageContext.cspNonceResolved ? ` nonce="${pageContext.cspNonce}"` : ''
+  const nonceAttr = pageContext.cspNonce ? ` nonce="${pageContext.cspNonce}"` : ''
   return nonceAttr
 }
 
