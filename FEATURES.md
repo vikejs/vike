@@ -86,6 +86,7 @@ Misc:
     - https://redux.js.org/usage/nextjs
     - https://zustand.docs.pmnd.rs/guides/nextjs
 - @brillout/test-e2e => endcheck
+- CSP nonce
 
 First-class SSG support
 - +prerender.partial
