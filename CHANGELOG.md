@@ -1,3 +1,32 @@
+## [0.4.238](https://github.com/vikejs/vike/compare/v0.4.237...v0.4.238) (2025-08-27)
+
+
+### Bug Fixes
+
+* avoid empty any interfaces ([#2638](https://github.com/vikejs/vike/issues/2638)) ([67d0c87](https://github.com/vikejs/vike/commit/67d0c8761831be4fe3cfdebffcd505d5e4411211))
+* enable assertSetup again ([#2661](https://github.com/vikejs/vike/issues/2661)) ([5f3c2b8](https://github.com/vikejs/vike/commit/5f3c2b8d91a0de7de5c99d89a63bfbdc7e0a8433))
+* ensure globalContext is available early ([#2654](https://github.com/vikejs/vike/issues/2654)) ([a72463c](https://github.com/vikejs/vike/commit/a72463c967757244c83c2a5872f3a520f5d94ec7))
+* fix & refactor build.outDir handling ([#2642](https://github.com/vikejs/vike/issues/2642)) ([5ed75b6](https://github.com/vikejs/vike/commit/5ed75b6cb1a25a5c48e1e820b0a3a0690c41f9aa))
+* fix assertSetup for @cloudflare/vite-plugin ([#2663](https://github.com/vikejs/vike/issues/2663)) ([33e34e7](https://github.com/vikejs/vike/commit/33e34e7afbcb1e25cbf01db7c7dda8d95a01a73f))
+* fix server/client Vite check ([#2651](https://github.com/vikejs/vike/issues/2651)) ([aabd39e](https://github.com/vikejs/vike/commit/aabd39e4ddcf818f4d3d14d3a8159d48fb3b068d))
+* stop assuming modules to be instanciated only once ([#2646](https://github.com/vikejs/vike/issues/2646)) ([ef1635e](https://github.com/vikejs/vike/commit/ef1635eef52a255046092e6a599d3af6be9ff069))
+* update @brillout/json-serializer ([#2647](https://github.com/vikejs/vike/issues/2647)) ([ca5f7e0](https://github.com/vikejs/vike/commit/ca5f7e022bfc31d0b3b5eb97c8fd2f11d3bbadd1))
+* update @brillout/vite-plugin-server-entry ([#2652](https://github.com/vikejs/vike/issues/2652)) ([a4c45af](https://github.com/vikejs/vike/commit/a4c45afbb3653b1e064f5c8dc0598631635c05b4))
+
+
+### Features
+
+* support `.clear.js` and `.default.js` (closes [#1692](https://github.com/vikejs/vike/issues/1692)) ([#2641](https://github.com/vikejs/vike/issues/2641)) ([92dc549](https://github.com/vikejs/vike/commit/92dc5490d641d8e8832f26105e05d1f9015efbde))
+
+
+### BREAKING CHANGES
+
+* Use Vite 6 or above.
+* Update to Node.js 20 or above (or use Bun/Deno).
+* update Vike extensions (`vike-react-zustand` and `vike-server`) to their latest version
+
+
+
 ## [0.4.237](https://github.com/vikejs/vike/compare/v0.4.236...v0.4.237) (2025-08-15)
 
 
