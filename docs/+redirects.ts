@@ -18,6 +18,7 @@ const redirects = {
   '/SPA-vs-SSR-vs-HTML': '/render-modes',
   '/Head-setting': '/head-tags',
   '/head': '/head-tags',
+  '/CSP': '/csp',
   '/ClientOnly': '/clientOnly',
   '/add-ssr-to-vite-app': '/add',
   '/scaffold': '/new',

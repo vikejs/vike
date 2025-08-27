@@ -672,6 +672,11 @@ const headings = [
   },
   {
     level: 2,
+    title: '`csp`',
+    url: '/csp',
+  },
+  {
+    level: 2,
     title: '`clientRouting`',
     url: '/clientRouting',
   },
