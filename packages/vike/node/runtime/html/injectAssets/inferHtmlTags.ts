@@ -32,8 +32,8 @@ function inferAssetTag(pageAsset: PageAsset, pageContext: PageContextCspNonce): 
   const { src, assetType, mediaType } = pageAsset
   if (assetType === 'script') {
     assert(mediaType === 'text/javascript')
-    const cspNonceAttr = inferNonceAttr(pageContext)
-    return `<script src="${src}" ${scriptAttrs}${cspNonceAttr}></script>`
+    const nonceAttr = inferNonceAttr(pageContext)
+    return `<script src="${src}" ${scriptAttrs}${nonceAttr}></script>`
   }
   if (assetType === 'style') {
     // WARNING: if changing following line, then also update https://github.com/vikejs/vike/blob/fae90a15d88e5e87ca9fcbb54cf2dc8773d2f229/vike/client/shared/removeFoucBuster.ts#L29
@@ -45,8 +45,8 @@ function inferAssetTag(pageAsset: PageAsset, pageContext: PageContextCspNonce): 
 type PageContextCspNonce = Pick<PageContextServer, 'cspNonce'> & { cspNonceResolved?: string | null }
 function inferNonceAttr(pageContext: PageContextCspNonce): string {
   pageContext.cspNonceResolved ??= pageContext.cspNonce ?? null
-  const cspNonceAttr = pageContext.cspNonceResolved ? ` nonce="${pageContext.cspNonce}"` : ''
-  return cspNonceAttr
+  const nonceAttr = pageContext.cspNonceResolved ? ` nonce="${pageContext.cspNonce}"` : ''
+  return nonceAttr
 }
 
 // We ignore crossorigin, it seems like Early Hints doesn't have a "crossorigin" property: https://github.com/vikejs/vike/issues/618#issuecomment-1415752222

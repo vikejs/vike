@@ -252,8 +252,8 @@ function mergeScriptEntries(
 
 function getPageContextJsonScriptTag(pageContext: PageContextSerialization): string {
   const pageContextClientSerialized = sanitizeJson(getPageContextClientSerialized(pageContext, true))
-  const cspNonceAttr = inferNonceAttr(pageContext)
-  const htmlTag = `<script id="${htmlElementId_pageContext}" type="application/json"${cspNonceAttr}>${pageContextClientSerialized}</script>`
+  const nonceAttr = inferNonceAttr(pageContext)
+  const htmlTag = `<script id="${htmlElementId_pageContext}" type="application/json"${nonceAttr}>${pageContextClientSerialized}</script>`
   // Used by contra.com https://github.com/gajus
   // @ts-expect-error
   pageContext._pageContextHtmlTag = htmlTag
@@ -261,8 +261,8 @@ function getPageContextJsonScriptTag(pageContext: PageContextSerialization): str
 }
 function getGlobalContextJsonScriptTag(pageContext: PageContextSerialization): string {
   const globalContextClientSerialized = sanitizeJson(getGlobalContextClientSerialized(pageContext, true))
-  const cspNonceAttr = inferNonceAttr(pageContext)
-  const htmlTag = `<script id="${htmlElementId_globalContext}" type="application/json"${cspNonceAttr}>${globalContextClientSerialized}</script>`
+  const nonceAttr = inferNonceAttr(pageContext)
+  const htmlTag = `<script id="${htmlElementId_globalContext}" type="application/json"${nonceAttr}>${globalContextClientSerialized}</script>`
   return htmlTag
 }
 

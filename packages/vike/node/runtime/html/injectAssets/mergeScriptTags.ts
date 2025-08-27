@@ -36,8 +36,8 @@ function mergeScriptTags(scriptTagsHtml: string, pageContext: PageContextCspNonc
         }
       })
       if (contents.length > 0) {
-        const cspNonceAttr = inferNonceAttr(pageContext)
-        scriptTag += `<script ${scriptAttrs}${cspNonceAttr}>\n${contents.join('\n')}\n</script>`
+        const nonceAttr = inferNonceAttr(pageContext)
+        scriptTag += `<script ${scriptAttrs}${nonceAttr}>\n${contents.join('\n')}\n</script>`
       }
     }
   }
