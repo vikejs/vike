@@ -26,7 +26,7 @@ import { getCacheControl } from './getCacheControl.js'
 import type { PassToClient } from '../html/serializeContext.js'
 import type { PageContextAfterRoute } from '../../../shared/route/index.js'
 import type { PageContextCreated } from './createPageContextServerSide.js'
-import { type PageContextCspNonce, resolvePageContextCspNone } from '../csp.js'
+import { addCspHeader, type PageContextCspNonce, resolvePageContextCspNone } from '../csp.js'
 
 type PageContext_loadPageConfigsLazyServerSide = PageContextCreated &
   PageContextAfterRoute & { is404: boolean | null; pageId: string }
@@ -191,9 +191,7 @@ function resolveHeadersResponse(pageContext: PageContextBeforeResolve & PageCont
     const cacheControl = getCacheControl(pageContext.pageId, pageContext._globalContext._pageConfigs)
     if (cacheControl) headersResponse.set('Cache-Control', cacheControl)
   }
-  if (pageContext.cspNonce && !headersResponse.get('Content-Security-Policy')) {
-    headersResponse.set('Content-Security-Policy', `script-src 'nonce-${pageContext.cspNonce}'`)
-  }
+  addCspHeader(pageContext, headersResponse)
   return headersResponse
 }
 

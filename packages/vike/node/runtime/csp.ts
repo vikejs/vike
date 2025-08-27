@@ -1,5 +1,6 @@
 export { resolvePageContextCspNone }
 export { inferNonceAttr }
+export { addCspHeader }
 export type { PageContextCspNonce }
 
 import { import_ } from '@brillout/import'
@@ -37,4 +38,10 @@ type PageContextCspNonce = Pick<PageContextServer, 'cspNonce'>
 function inferNonceAttr(pageContext: PageContextCspNonce): string {
   const nonceAttr = pageContext.cspNonce ? ` nonce="${pageContext.cspNonce}"` : ''
   return nonceAttr
+}
+
+function addCspHeader(pageContext: PageContextCspNonce, headersResponse: Headers) {
+  if (!pageContext.cspNonce) return
+  if (headersResponse.get('Content-Security-Policy')) return
+  headersResponse.set('Content-Security-Policy', `script-src 'nonce-${pageContext.cspNonce}'`)
 }
