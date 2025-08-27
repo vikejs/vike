@@ -26,6 +26,7 @@ import { getCacheControl } from './getCacheControl.js'
 import type { PassToClient } from '../html/serializeContext.js'
 import type { PageContextAfterRoute } from '../../../shared/route/index.js'
 import type { PageContextCreated } from './createPageContextServerSide.js'
+import { resolvePageContextCspNone } from './csp.js'
 
 type PageContext_loadPageConfigsLazyServerSide = PageContextCreated &
   PageContextAfterRoute & { is404: boolean | null; pageId: string }
@@ -96,6 +97,8 @@ async function resolvePageContext(pageContext: PageContextBeforeResolve) {
     _passToClient: passToClient,
     headersResponse: resolveHeadersResponse(pageContext),
   })
+
+  objectAssign(pageContext, await resolvePageContextCspNone(pageContext))
 
   objectAssign(pageContext, {
     __getPageAssets: async () => {
