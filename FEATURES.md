@@ -87,6 +87,7 @@ Misc:
     - https://zustand.docs.pmnd.rs/guides/nextjs
 - @brillout/test-e2e => endcheck
 - CSP nonce
+  - PCI DSS compliance
 
 First-class SSG support
 - +prerender.partial
