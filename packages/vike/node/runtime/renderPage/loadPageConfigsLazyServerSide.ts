@@ -184,6 +184,7 @@ async function loadPageUserFiles_v1Design(
   }
 }
 
+// TODO/now: move all response headers code to headersResponse.ts
 function resolveHeadersResponse(pageContext: PageContextBeforeResolve): Headers {
   const headersResponse = mergeHeaders(pageContext.config.headersResponse)
   if (!headersResponse.get('Cache-Control')) {
