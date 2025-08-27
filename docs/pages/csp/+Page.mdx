@@ -44,7 +44,7 @@ export default {
 If `pageContext.cspNonce` is set, then Vike automatically adds the following HTTP response header:
 
 ```
-Content-Security-Policy: script-src 'nonce-${pageContext.cspNonce}'
+Content-Security-Policy: script-src 'self' 'nonce-${pageContext.cspNonce}'
 ```
 
 To change the CSP header you can use the <Link href="/headers#response">`+headersResponse` setting</Link>:
@@ -57,7 +57,7 @@ import type { PageContextServer } from 'vike/types'
 export function headersResponse(pageContext: PageContextServer) {
   return {
     // Custom CSP header instead of Vike's default
-    'Content-Security-Policy': `script-src 'nonce-${pageContext.cspNonce}'; img-src 'self'`
+    'Content-Security-Policy': `script-src 'self' 'nonce-${pageContext.cspNonce}'; img-src 'self'`
   }
 }
 ```

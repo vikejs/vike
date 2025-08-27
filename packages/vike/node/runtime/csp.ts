@@ -43,5 +43,5 @@ function inferNonceAttr(pageContext: PageContextCspNonce): string {
 function addCspHeader(pageContext: PageContextCspNonce, headersResponse: Headers) {
   if (!pageContext.cspNonce) return
   if (headersResponse.get('Content-Security-Policy')) return
-  headersResponse.set('Content-Security-Policy', `script-src 'nonce-${pageContext.cspNonce}'`)
+  headersResponse.set('Content-Security-Policy', `script-src 'self' 'nonce-${pageContext.cspNonce}'`)
 }

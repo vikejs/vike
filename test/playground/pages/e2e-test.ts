@@ -166,7 +166,7 @@ function testHeadersResponse() {
     const common = (headers: Headers) => {
       expect(headers.get('Some-Header')).toBe('Some-Header-Value')
       expect(headers.get('Cache-Control')).toBe('no-store, max-age=0')
-      expect(headers.get('Content-Security-Policy')).toMatch(partRegex`script-src 'nonce-${/[^']*/}'`)
+      expect(headers.get('Content-Security-Policy')).toMatch(partRegex`script-src 'self' 'nonce-${/[^']+/}'`)
     }
     {
       const resp = await fetch(getServerUrl() + '/about')
