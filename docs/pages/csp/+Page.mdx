@@ -18,7 +18,7 @@ export default {
 
 ```
 
-If `+cps.nonce` is `true`, Vike generates a random string for each HTTP request, stores it in `pageContext.cspNonce`, and appends it to `<script>` tags.
+If `+csp.nonce` is `true`, Vike generates a random string for each HTTP request, stores it in `pageContext.cspNonce`, and appends it to `<script>` tags.
 
 ```jsx
 // Vike adds the nonce value to each <script> it injects
@@ -92,7 +92,7 @@ function generateNonce() {
 
 The nonce random string is available at `pageContext.cspNonce`.
 
-Instead of using the `+csp` setting, you can directly set `pageContext.cpsNonce`:
+Instead of using the `+csp` setting, you can directly set `pageContext.cspNonce`:
 
 ```ts
 // pages/+onCreatePageContext.server.ts
