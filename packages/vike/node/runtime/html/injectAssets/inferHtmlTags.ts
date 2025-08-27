@@ -1,7 +1,7 @@
 export { inferAssetTag }
 export { inferPreloadTag }
 export { inferEarlyHintLink }
-export { inferCspNonceAttr }
+export { inferNonceAttr }
 export { scriptAttrs }
 export type { PageContextCspNonce }
 
@@ -32,7 +32,7 @@ function inferAssetTag(pageAsset: PageAsset, pageContext: PageContextCspNonce): 
   const { src, assetType, mediaType } = pageAsset
   if (assetType === 'script') {
     assert(mediaType === 'text/javascript')
-    const cspNonceAttr = inferCspNonceAttr(pageContext)
+    const cspNonceAttr = inferNonceAttr(pageContext)
     return `<script src="${src}" ${scriptAttrs}${cspNonceAttr}></script>`
   }
   if (assetType === 'style') {
@@ -43,7 +43,7 @@ function inferAssetTag(pageAsset: PageAsset, pageContext: PageContextCspNonce): 
 }
 
 type PageContextCspNonce = Pick<PageContextServer, 'cspNonce'> & { cspNonceResolved?: string | null }
-function inferCspNonceAttr(pageContext: PageContextCspNonce): string {
+function inferNonceAttr(pageContext: PageContextCspNonce): string {
   pageContext.cspNonceResolved ??= pageContext.cspNonce ?? null
   const cspNonceAttr = pageContext.cspNonceResolved ? ` nonce="${pageContext.cspNonce}"` : ''
   return cspNonceAttr

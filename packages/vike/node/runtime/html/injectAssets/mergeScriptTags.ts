@@ -1,7 +1,7 @@
 export { mergeScriptTags }
 
 import { assert } from '../../utils.js'
-import { inferCspNonceAttr, type PageContextCspNonce, scriptAttrs } from './inferHtmlTags.js'
+import { inferNonceAttr, type PageContextCspNonce, scriptAttrs } from './inferHtmlTags.js'
 
 const scriptRE = /(<script\b(?:\s[^>]*>|>))(.*?)<\/script>/gims
 const srcRE = /\bsrc\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s'">]+))/im
@@ -36,7 +36,7 @@ function mergeScriptTags(scriptTagsHtml: string, pageContext: PageContextCspNonc
         }
       })
       if (contents.length > 0) {
-        const cspNonceAttr = inferCspNonceAttr(pageContext)
+        const cspNonceAttr = inferNonceAttr(pageContext)
         scriptTag += `<script ${scriptAttrs}${cspNonceAttr}>\n${contents.join('\n')}\n</script>`
       }
     }

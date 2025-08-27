@@ -10,7 +10,7 @@ import {
   getPageContextClientSerialized,
 } from '../serializeContext.js'
 import { sanitizeJson } from './sanitizeJson.js'
-import { inferAssetTag, inferCspNonceAttr, inferPreloadTag, type PageContextCspNonce } from './inferHtmlTags.js'
+import { inferAssetTag, inferNonceAttr, inferPreloadTag, type PageContextCspNonce } from './inferHtmlTags.js'
 import { mergeScriptTags } from './mergeScriptTags.js'
 import type { PageContextInjectAssets } from '../injectAssets.js'
 import type { StreamFromReactStreamingPackage } from '../stream/react-streaming.js'
@@ -252,7 +252,7 @@ function mergeScriptEntries(
 
 function getPageContextJsonScriptTag(pageContext: PageContextSerialization): string {
   const pageContextClientSerialized = sanitizeJson(getPageContextClientSerialized(pageContext, true))
-  const cspNonceAttr = inferCspNonceAttr(pageContext)
+  const cspNonceAttr = inferNonceAttr(pageContext)
   const htmlTag = `<script id="${htmlElementId_pageContext}" type="application/json"${cspNonceAttr}>${pageContextClientSerialized}</script>`
   // Used by contra.com https://github.com/gajus
   // @ts-expect-error
@@ -261,7 +261,7 @@ function getPageContextJsonScriptTag(pageContext: PageContextSerialization): str
 }
 function getGlobalContextJsonScriptTag(pageContext: PageContextSerialization): string {
   const globalContextClientSerialized = sanitizeJson(getGlobalContextClientSerialized(pageContext, true))
-  const cspNonceAttr = inferCspNonceAttr(pageContext)
+  const cspNonceAttr = inferNonceAttr(pageContext)
   const htmlTag = `<script id="${htmlElementId_globalContext}" type="application/json"${cspNonceAttr}>${globalContextClientSerialized}</script>`
   return htmlTag
 }
