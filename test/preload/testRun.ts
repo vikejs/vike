@@ -38,7 +38,7 @@ async function render(urlOriginal: '/' | '/preload-disabled' | '/preload-images'
   const stabilzeReferences = !isDev ? stabilizeHashes : stabilizePaths
   const { httpResponse } = await renderPage({
     urlOriginal,
-    //* Comment to try aumatic generation
+    //* Comment to try automatic generation
     cspNonce: '12345689',
     //*/
   })
