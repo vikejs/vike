@@ -36,7 +36,7 @@ function testRun(isDev: boolean) {
 
 async function render(urlOriginal: '/' | '/preload-disabled' | '/preload-images' | '/preload-eager', isDev: boolean) {
   const stabilzeReferences = !isDev ? stabilizeHashes : stabilizePaths
-  const { httpResponse } = await renderPage({ urlOriginal, cspNonce: 12345689 })
+  const { httpResponse } = await renderPage({ urlOriginal, cspNonce: '12345689' })
   const body = stabilzeReferences(httpResponse.body)
   const earlyHints = httpResponse.earlyHints.map((hint) =>
     Object.fromEntries(
