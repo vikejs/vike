@@ -36,17 +36,16 @@ const passToClientBuiltInPageContext = [
 ]
 const pageToClientBuiltInPageContextError = ['pageProps', 'is404', isServerSideError]
 
-type PageContextSerialization = PageContextCreated &
-  PageContextCspNonce & {
-    pageId: string
-    routeParams: Record<string, string>
-    _passToClient: PassToClient
-    is404: null | boolean
-    pageProps?: Record<string, unknown>
-    _pageContextInit: Record<string, unknown>
-    _globalContext: GlobalContextServerInternal
-    _isPageContextJsonRequest: null | PageContextBegin['_isPageContextJsonRequest']
-  }
+type PageContextSerialization = PageContextCreated & {
+  pageId: string
+  routeParams: Record<string, string>
+  _passToClient: PassToClient
+  is404: null | boolean
+  pageProps?: Record<string, unknown>
+  _pageContextInit: Record<string, unknown>
+  _globalContext: GlobalContextServerInternal
+  _isPageContextJsonRequest: null | PageContextBegin['_isPageContextJsonRequest']
+} & PageContextCspNonce
 function getPageContextClientSerialized(pageContext: PageContextSerialization, isHtmlJsonScript: boolean) {
   const passToClientPageContext = getPassToClientPageContext(pageContext)
 

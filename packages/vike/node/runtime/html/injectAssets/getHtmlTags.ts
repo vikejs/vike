@@ -22,7 +22,6 @@ import pc from '@brillout/picocolors'
 import { getConfigDefinedAt } from '../../../../shared/page-configs/getConfigDefinedAt.js'
 import { htmlElementId_globalContext, htmlElementId_pageContext } from '../../../../shared/htmlElementIds.js'
 import { isFontFallback } from '../../renderPage/isFontFallback.js'
-import type { PageContextServer } from '../../../../types/PageContext.js'
 import { inferNonceAttr, type PageContextCspNonce } from '../../csp.js'
 
 const stamp = '__injectFilterEntry'
@@ -51,7 +50,7 @@ type HtmlTag = {
   position: Position
 }
 async function getHtmlTags(
-  pageContext: { _isStream: boolean } & PageContextInjectAssets & Pick<PageContextServer, 'cspNonce'>,
+  pageContext: { _isStream: boolean } & PageContextInjectAssets,
   streamFromReactStreamingPackage: null | StreamFromReactStreamingPackage,
   injectFilter: PreloadFilter,
   pageAssets: PageAsset[],
