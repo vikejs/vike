@@ -239,6 +239,13 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
      */
     globalContext: GlobalContextServer
 
+    /**
+     * The CSP nonce.
+     *
+     * https://vike.dev/CSP
+     */
+    cspNonce?: string
+
     isHydration?: undefined
     isBackwardNavigation?: undefined
     previousPageContext?: undefined
