@@ -1,29 +1,25 @@
-Upgrades that keep the leading digit (e.g. `0.4.x` => `0.4.y` or `1.x.y` => `1.z.w`) are generally non-breaking.
-
-But note that Vike doesn't strictly follow [semver](https://semver.org):
-1. Features can be introduced in any version update.
-2. `MINOR BREAKING CHANGES` (see [`CHANGELOG.md`](https://github.com/vikejs/vike/blob/main/CHANGELOG.md)) can be introduced in any version update.
-   <blockquote>
-   They affect very few users, and you're highly unlikely to be one of them. So we recommend that you ignore them — unless the update breaks your app.
-   </blockquote>
-   <blockquote>
-   It considerably speeds up Vike’s development. For example, it enables Vike to [quickly fix bugs](https://github.com/vikejs/vike/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22bug%20%3Aboom%3A%22): if Vike behaves incorrectly and fixing it helps nearly everyone but breaks things for very few users, we prioritize the fix over strict semver adherence.
-   </blockquote>
-
-If updating breaks your app, check the [`CHANGELOG.md`](https://github.com/vikejs/vike/blob/main/CHANGELOG.md) for any `MINOR BREAKING CHANGES`. If none are listed — or they don't apply to you — reach out: we'll consider it a regression and fix it.
+Vike version updates that keep the leading digit (e.g. `0.4.x` => `0.4.y` or `1.x.y` => `1.z.w`) can be considered non-breaking except of `MINOR BREAKING CHANGES`.
 
 
-## Warnings
+## `MINOR BREAKING CHANGES`
+
+[`MINOR BREAKING CHANGES`](https://github.com/vikejs/vike/blob/main/CHANGELOG.md#minor-breaking-changes) can be introduced in any version update, even patch updates such as `1.2.3` => `1.2.4`.
+
+They affect very few users, and you're unlikely to be one of them. So we recommend that you ignore them — unless updating breaks your app.
+
+> If updating Vike breaks your app, check the [`CHANGELOG.md`](https://github.com/vikejs/vike/blob/main/CHANGELOG.md) for any `MINOR BREAKING CHANGES`. If you experience a breaking change that isn't listed, reach out — we'll treat it as a regression and we'll fix it.
+
+> **It significantly speeds up Vike’s development.** For example, it enables Vike to [quickly fix bugs](https://github.com/vikejs/vike/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22bug%20%3Aboom%3A%22): if Vike behaves incorrectly and fixing it helps almost everyone but breaks the app of very few users, then we prioritize the fix over strict adherence to non-breaking version updates.
+
+## Semver
+
+Vike doesn't strictly follow [semver](https://semver.org): features can be introduced in any version update.
+
+
+## Deprecation warnings
 
 Vike sometimes adds a warning when an API will be deprecated in the next major release.
 
-For example:
+You can postpone migrating — the old API and the new API are both supported until the next major release.
 
-```
-[Vike][Warning] Using Vite's CLI will be deprecated in the next major release, use
-Vike's CLI instead.
-```
-
-You can migrate whenever you want — the old API and the new API are both supported until the next major release.
-
-> It isn't a breaking change; therefore, such warnings can be introduced in any version update.
+> It isn't a breaking change and, therefore, such warnings can be introduced in any version update.
