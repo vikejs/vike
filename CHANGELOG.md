@@ -19,11 +19,14 @@
 * support `.clear.js` and `.default.js` (closes [#1692](https://github.com/vikejs/vike/issues/1692)) ([#2641](https://github.com/vikejs/vike/issues/2641)) ([92dc549](https://github.com/vikejs/vike/commit/92dc5490d641d8e8832f26105e05d1f9015efbde))
 
 
-### BREAKING CHANGES
+### MINOR BREAKING CHANGES
 
-* Use Vite 6 or above.
-* Update to Node.js 20 or above (or use Bun/Deno).
-* update Vike extensions (`vike-react-zustand` and `vike-server`) to their latest version
+> [!NOTE]
+> We recommend ignoring `MINOR BREAKING CHANGES` unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
+
+* Update to Vite 6 or above.
+* Update to Node.js 20 or above (or use Bun/Deno). See also: [`require(esm)`](https://gist.github.com/brillout/8e0133716e169b981b6c4e8a938b0134).
+* Update Vike extensions (`vike-react-zustand` and `vike-server`) to their latest version.
 
 
 
