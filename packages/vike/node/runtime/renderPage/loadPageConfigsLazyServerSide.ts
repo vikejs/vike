@@ -26,7 +26,7 @@ import { getCacheControl } from './getCacheControl.js'
 import type { PassToClient } from '../html/serializeContext.js'
 import type { PageContextAfterRoute } from '../../../shared/route/index.js'
 import type { PageContextCreated } from './createPageContextServerSide.js'
-import { resolvePageContextCspNone } from '../csp.js'
+import { type PageContextCspNonce, resolvePageContextCspNone } from '../csp.js'
 
 type PageContext_loadPageConfigsLazyServerSide = PageContextCreated &
   PageContextAfterRoute & { is404: boolean | null; pageId: string }
@@ -185,11 +185,14 @@ async function loadPageUserFiles_v1Design(
 }
 
 // TODO/now: move all response headers code to headersResponse.ts
-function resolveHeadersResponse(pageContext: PageContextBeforeResolve): Headers {
+function resolveHeadersResponse(pageContext: PageContextBeforeResolve & PageContextCspNonce): Headers {
   const headersResponse = mergeHeaders(pageContext.config.headersResponse)
   if (!headersResponse.get('Cache-Control')) {
     const cacheControl = getCacheControl(pageContext.pageId, pageContext._globalContext._pageConfigs)
     if (cacheControl) headersResponse.set('Cache-Control', cacheControl)
+  }
+  if (pageContext.cspNonce && !headersResponse.get('Content-Security-Policy')) {
+    headersResponse.set('Content-Security-Policy', `script-src 'nonce-${pageContext.cspNonce}'`)
   }
   return headersResponse
 }
