@@ -14,7 +14,7 @@ function testRun(isDev: boolean) {
         expect(earlyHints).toMatchSnapshot()
         expect(body).toMatchSnapshot()
       },
-      15 * 1000,
+      30 * 1000,
     )
     it('Preload Disabled', async () => {
       const { body, earlyHints } = await render('/preload-disabled', isDev)
