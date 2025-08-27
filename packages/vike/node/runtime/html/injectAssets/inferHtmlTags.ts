@@ -29,10 +29,10 @@ function inferPreloadTag(pageAsset: PageAsset): string {
 }
 
 function inferAssetTag(pageAsset: PageAsset, pageContext: PageContextCspNonce): string {
-  const cspNonceAttr = inferCspNonceAttr(pageContext)
   const { src, assetType, mediaType } = pageAsset
   if (assetType === 'script') {
     assert(mediaType === 'text/javascript')
+    const cspNonceAttr = inferCspNonceAttr(pageContext)
     return `<script src="${src}" ${scriptAttrs}${cspNonceAttr}></script>`
   }
   if (assetType === 'style') {
