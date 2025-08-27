@@ -91,14 +91,14 @@ async function resolvePageContext(pageContext: PageContextBeforeResolve) {
     })
   }
 
+  objectAssign(pageContext, await resolvePageContextCspNone(pageContext))
+
   objectAssign(pageContext, {
     Page: pageContext.exports.Page,
     _isHtmlOnly: isHtmlOnly,
     _passToClient: passToClient,
     headersResponse: resolveHeadersResponse(pageContext),
   })
-
-  objectAssign(pageContext, await resolvePageContextCspNone(pageContext))
 
   objectAssign(pageContext, {
     __getPageAssets: async () => {
