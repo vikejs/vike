@@ -10,7 +10,7 @@ import {
   getPageContextClientSerialized,
 } from '../serializeContext.js'
 import { sanitizeJson } from './sanitizeJson.js'
-import { inferAssetTag, inferPreloadTag } from './inferHtmlTags.js'
+import { inferAssetTag, inferCspNonceAttr, inferPreloadTag, type PageContextCspNonce } from './inferHtmlTags.js'
 import { mergeScriptTags } from './mergeScriptTags.js'
 import type { PageContextInjectAssets } from '../injectAssets.js'
 import type { StreamFromReactStreamingPackage } from '../stream/react-streaming.js'
@@ -60,7 +60,6 @@ async function getHtmlTags(
   assert([true, false].includes(pageContext._isHtmlOnly))
   const isHtmlOnly = pageContext._isHtmlOnly
   const { _isProduction: isProduction } = pageContext._globalContext
-  const nonceAttr = pageContext.cspNonce ? ` nonce="${pageContext.cspNonce}"` : ''
   const injectScriptsAt = getInjectScriptsAt(pageContext.pageId, pageContext._globalContext._pageConfigs)
 
   const injectFilterEntries: InjectFilterEntry[] = []
@@ -129,7 +128,7 @@ async function getHtmlTags(
     .filter((asset) => asset.assetType !== 'script' && asset.inject)
     .forEach((asset) => {
       if (!asset.inject) return
-      const htmlTag = asset.isEntry ? inferAssetTag(asset, nonceAttr) : inferPreloadTag(asset)
+      const htmlTag = asset.isEntry ? inferAssetTag(asset, pageContext) : inferPreloadTag(asset)
       htmlTags.push({ htmlTag, position: asset.inject })
     })
 
@@ -189,19 +188,19 @@ async function getHtmlTags(
     htmlTags.push({
       htmlTag: () =>
         // Needs to be called after resolvePageContextPromise()
-        getPageContextJsonScriptTag(pageContext, nonceAttr),
+        getPageContextJsonScriptTag(pageContext),
       position: positionJavaScriptEntry,
     })
     // <script id="vike_globalContext" type="application/json">
     htmlTags.push({
       htmlTag: () =>
         // Needs to be called after resolvePageContextPromise()
-        getGlobalContextJsonScriptTag(pageContext, nonceAttr),
+        getGlobalContextJsonScriptTag(pageContext),
       position: positionJavaScriptEntry,
     })
   }
   // The JavaScript entry <script> tag
-  const scriptEntry = mergeScriptEntries(pageAssets, viteDevScript, nonceAttr)
+  const scriptEntry = mergeScriptEntries(pageAssets, viteDevScript, pageContext)
   if (scriptEntry) {
     htmlTags.push({
       htmlTag: scriptEntry,
@@ -223,9 +222,13 @@ async function getHtmlTags(
   return htmlTags
 }
 
-function mergeScriptEntries(pageAssets: PageAsset[], viteDevScript: string, nonceAttr: string): null | string {
+function mergeScriptEntries(
+  pageAssets: PageAsset[],
+  viteDevScript: string,
+  pageContext: PageContextCspNonce,
+): null | string {
   const scriptEntries = pageAssets.filter((pageAsset) => pageAsset.isEntry && pageAsset.assetType === 'script')
-  let scriptEntry = `${viteDevScript}${scriptEntries.map((asset) => inferAssetTag(asset, nonceAttr)).join('')}`
+  let scriptEntry = `${viteDevScript}${scriptEntries.map((asset) => inferAssetTag(asset, pageContext)).join('')}`
   // We merge scripts to avoid the infamous HMR preamble error.
   // - Infamous HMR preamble error:
   //   ```browser-console
@@ -247,17 +250,19 @@ function mergeScriptEntries(pageAssets: PageAsset[], viteDevScript: string, nonc
   return scriptEntry
 }
 
-function getPageContextJsonScriptTag(pageContext: PageContextSerialization, nonceAttr: string): string {
+function getPageContextJsonScriptTag(pageContext: PageContextSerialization): string {
   const pageContextClientSerialized = sanitizeJson(getPageContextClientSerialized(pageContext, true))
-  const htmlTag = `<script id="${htmlElementId_pageContext}" type="application/json"${nonceAttr}>${pageContextClientSerialized}</script>`
+  const cspNonceAttr = inferCspNonceAttr(pageContext)
+  const htmlTag = `<script id="${htmlElementId_pageContext}" type="application/json"${cspNonceAttr}>${pageContextClientSerialized}</script>`
   // Used by contra.com https://github.com/gajus
   // @ts-expect-error
   pageContext._pageContextHtmlTag = htmlTag
   return htmlTag
 }
-function getGlobalContextJsonScriptTag(pageContext: PageContextSerialization, nonceAttr: string): string {
+function getGlobalContextJsonScriptTag(pageContext: PageContextSerialization): string {
   const globalContextClientSerialized = sanitizeJson(getGlobalContextClientSerialized(pageContext, true))
-  const htmlTag = `<script id="${htmlElementId_globalContext}" type="application/json"${nonceAttr}>${globalContextClientSerialized}</script>`
+  const cspNonceAttr = inferCspNonceAttr(pageContext)
+  const htmlTag = `<script id="${htmlElementId_globalContext}" type="application/json"${cspNonceAttr}>${globalContextClientSerialized}</script>`
   return htmlTag
 }
 

@@ -1,10 +1,13 @@
 export { inferAssetTag }
 export { inferPreloadTag }
 export { inferEarlyHintLink }
+export { inferCspNonceAttr }
 export { scriptAttrs }
+export type { PageContextCspNonce }
 
 import { assert } from '../../utils.js'
 import type { PageAsset } from '../../renderPage/getPageAssets.js'
+import type { PageContextServer } from '../../../../types/PageContext.js'
 
 // We can't use `defer` here. With `defer`, the entry script won't start before `</body>` has been parsed, preventing progressive hydration during SSR streaming, see https://github.com/vikejs/vike/pull/1271
 const scriptAttrs = 'type="module" async'
@@ -25,17 +28,25 @@ function inferPreloadTag(pageAsset: PageAsset): string {
   return `<link ${attributes}>`
 }
 
-function inferAssetTag(pageAsset: PageAsset, nonceAttr: string): string {
+function inferAssetTag(pageAsset: PageAsset, pageContext: PageContextCspNonce): string {
+  const cspNonceAttr = inferCspNonceAttr(pageContext)
   const { src, assetType, mediaType } = pageAsset
   if (assetType === 'script') {
     assert(mediaType === 'text/javascript')
-    return `<script src="${src}" ${scriptAttrs}${nonceAttr}></script>`
+    return `<script src="${src}" ${scriptAttrs}${cspNonceAttr}></script>`
   }
   if (assetType === 'style') {
     // WARNING: if changing following line, then also update https://github.com/vikejs/vike/blob/fae90a15d88e5e87ca9fcbb54cf2dc8773d2f229/vike/client/shared/removeFoucBuster.ts#L29
     return `<link rel="stylesheet" type="text/css" href="${src}">`
   }
   assert(false, { pageAsset })
+}
+
+type PageContextCspNonce = Pick<PageContextServer, 'cspNonce'> & { cspNonceResolved?: string | null }
+function inferCspNonceAttr(pageContext: PageContextCspNonce): string {
+  pageContext.cspNonceResolved ??= pageContext.cspNonce ?? null
+  const cspNonceAttr = pageContext.cspNonceResolved ? ` nonce="${pageContext.cspNonce}"` : ''
+  return cspNonceAttr
 }
 
 // We ignore crossorigin, it seems like Early Hints doesn't have a "crossorigin" property: https://github.com/vikejs/vike/issues/618#issuecomment-1415752222

@@ -18,6 +18,7 @@ import { getPropKeys, getPropVal, setPropVal } from './propKeys.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { PageContextCreated } from '../renderPage/createPageContextServerSide.js'
 import type { PageContextBegin } from '../renderPage.js'
+import type { PageContextCspNonce } from './injectAssets/inferHtmlTags.js'
 
 const passToClientBuiltInPageContext = [
   'abortReason',
@@ -35,16 +36,17 @@ const passToClientBuiltInPageContext = [
 ]
 const pageToClientBuiltInPageContextError = ['pageProps', 'is404', isServerSideError]
 
-type PageContextSerialization = PageContextCreated & {
-  pageId: string
-  routeParams: Record<string, string>
-  _passToClient: PassToClient
-  is404: null | boolean
-  pageProps?: Record<string, unknown>
-  _pageContextInit: Record<string, unknown>
-  _globalContext: GlobalContextServerInternal
-  _isPageContextJsonRequest: null | PageContextBegin['_isPageContextJsonRequest']
-}
+type PageContextSerialization = PageContextCreated &
+  PageContextCspNonce & {
+    pageId: string
+    routeParams: Record<string, string>
+    _passToClient: PassToClient
+    is404: null | boolean
+    pageProps?: Record<string, unknown>
+    _pageContextInit: Record<string, unknown>
+    _globalContext: GlobalContextServerInternal
+    _isPageContextJsonRequest: null | PageContextBegin['_isPageContextJsonRequest']
+  }
 function getPageContextClientSerialized(pageContext: PageContextSerialization, isHtmlJsonScript: boolean) {
   const passToClientPageContext = getPassToClientPageContext(pageContext)
 
