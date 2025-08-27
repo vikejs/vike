@@ -277,6 +277,9 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { config: true },
     global: true,
   },
+  csp: {
+    env: { server: true },
+  },
   injectScriptsAt: {
     env: { server: true },
   },

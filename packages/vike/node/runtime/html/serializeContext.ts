@@ -18,6 +18,7 @@ import { getPropKeys, getPropVal, setPropVal } from './propKeys.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { PageContextCreated } from '../renderPage/createPageContextServerSide.js'
 import type { PageContextBegin } from '../renderPage.js'
+import type { PageContextCspNonce } from '../csp.js'
 
 const passToClientBuiltInPageContext = [
   'abortReason',
@@ -44,7 +45,7 @@ type PageContextSerialization = PageContextCreated & {
   _pageContextInit: Record<string, unknown>
   _globalContext: GlobalContextServerInternal
   _isPageContextJsonRequest: null | PageContextBegin['_isPageContextJsonRequest']
-}
+} & PageContextCspNonce
 function getPageContextClientSerialized(pageContext: PageContextSerialization, isHtmlJsonScript: boolean) {
   const passToClientPageContext = getPassToClientPageContext(pageContext)
 

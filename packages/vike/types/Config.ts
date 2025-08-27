@@ -577,6 +577,13 @@ type ConfigBuiltIn = {
    */
   mode?: string
 
+  /**
+   * Content Security Policy (CSP).
+   *
+   * https://vike.dev/csp
+   */
+  csp?: { nonce: boolean | ((pageContext: PageContextServer) => string | Promise<string>) }
+
   /** Where scripts are injected in the HTML.
    *
    * https://vike.dev/injectScriptsAt

@@ -21,6 +21,7 @@ export default {
       isDefinedByPeerDependency: true,
     },
   },
+  csp: { nonce: true },
 } satisfies Config
 
 declare global {

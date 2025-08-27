@@ -1,0 +1,117 @@
+import { Link, Warning } from '@brillout/docpress'
+
+Environment: server  
+<Link href="/config#cumulative">Cumulative</Link>: false  
+<Link href="/config#global">Global</Link>: false  
+{/* TODO/now rename false no */}
+
+The `+csp` setting allows you to add and configure the CSP nonce, see [Content Security Policy (CSP)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP).
+
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+
+export default {
+  csp: { nonce: true }
+} satisfies Config
+
+```
+
+If `+csp.nonce` is `true`, Vike generates a random string (the `nonce` value) for each HTTP request, stores it in `pageContext.cspNonce`, and appends it to `<script>` tags.
+
+```jsx
+// Vike adds the nonce to each <script> it injects
+<script nonce={pageContext.cspNonce}>
+```
+
+<Warning>The `+csp` setting is a beta feature: expect breaking changes in any minor version update. See [#2665 - Stabilize `+csp`](https://github.com/vikejs/vike/issues/2665).</Warning>
+
+You can generate the `nonce` value yourself:
+
+```ts
+// pages/+csp.ts
+
+import type { PageContextServer } from 'vike/types'
+
+export default {
+  async nonce(pageContext: PageContextServer) {
+     return 'some-random-string'
+  }
+}
+```
+
+The following default CSP header is added to the HTTP response headers:
+
+```yaml
+Content-Security-Policy: script-src 'self' 'nonce-${pageContext.cspNonce}'
+```
+
+To change the CSP header you can use the <Link href="/headers#response">`+headersResponse` setting</Link>:
+
+```ts
+// pages/+headersResponse.ts
+
+import type { PageContextServer } from 'vike/types'
+
+export function headersResponse(pageContext: PageContextServer) {
+  return {
+    // Custom CSP header instead of Vike's default
+    'Content-Security-Policy': `script-src 'self' 'nonce-${pageContext.cspNonce}'; img-src 'self'`
+  }
+}
+```
+
+> You can also directly modify <Link href="/pageContext#headersResponse">`pageContext.headersResponse`</Link> instead of using the `+headersResponse` setting.
+
+
+## Random string generation
+
+If the [`crypto` module](https://nodejs.org/api/crypto.html) is available, Vike uses it to generate a random string that serves as the CSP nonce:
+
+```js
+import { randomBytes } from 'crypto'
+
+// Generate a cryptographically secure nonce for Content Security Policy (CSP).
+// Returns a base64url-encoded nonce string (URL-safe, no padding).
+function generateNonce() {
+  return randomBytes(16).toString('base64url')
+}
+```
+
+If the `crypto` module isn't available (e.g. on some edge platforms), Vike falls back to:
+
+```js
+function generateNonce() {
+  return Math.random().toString(36).substring(2, 18)
+}
+```
+
+
+## `pageContext.cspNonce`
+
+The nonce value is stored at `pageContext.cspNonce`.
+
+You can directly set `pageContext.cspNonce` instead of using the `+csp` setting:
+
+```ts
+// pages/+onCreatePageContext.server.ts
+// Environment: server
+
+import type { PageContextServer } from 'vike/types'
+
+export async function onCreatePageContext(pageContext: PageContextServer) {
+  pageContext.cspNonce = 'some-random-string'
+}
+```
+
+> See: <Link href="/onCreatePageContext" />
+
+> The `+csp` setting is merely a convenience to set the `pageContext.cspNonce` value.
+
+
+## See also
+
+- <Link href="/headers" />
+- [MDN > Content Security Policy (CSP)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP)
+- [#1554 - CSP nonce support](https://github.com/vikejs/vike/issues/1554)

@@ -22,6 +22,7 @@ import pc from '@brillout/picocolors'
 import { getConfigDefinedAt } from '../../../../shared/page-configs/getConfigDefinedAt.js'
 import { htmlElementId_globalContext, htmlElementId_pageContext } from '../../../../shared/htmlElementIds.js'
 import { isFontFallback } from '../../renderPage/isFontFallback.js'
+import { inferNonceAttr, type PageContextCspNonce } from '../../csp.js'
 
 const stamp = '__injectFilterEntry'
 
@@ -127,7 +128,7 @@ async function getHtmlTags(
     .filter((asset) => asset.assetType !== 'script' && asset.inject)
     .forEach((asset) => {
       if (!asset.inject) return
-      const htmlTag = asset.isEntry ? inferAssetTag(asset) : inferPreloadTag(asset)
+      const htmlTag = asset.isEntry ? inferAssetTag(asset, pageContext) : inferPreloadTag(asset)
       htmlTags.push({ htmlTag, position: asset.inject })
     })
 
@@ -199,7 +200,7 @@ async function getHtmlTags(
     })
   }
   // The JavaScript entry <script> tag
-  const scriptEntry = mergeScriptEntries(pageAssets, viteDevScript)
+  const scriptEntry = mergeScriptEntries(pageAssets, viteDevScript, pageContext)
   if (scriptEntry) {
     htmlTags.push({
       htmlTag: scriptEntry,
@@ -221,9 +222,13 @@ async function getHtmlTags(
   return htmlTags
 }
 
-function mergeScriptEntries(pageAssets: PageAsset[], viteDevScript: string): null | string {
+function mergeScriptEntries(
+  pageAssets: PageAsset[],
+  viteDevScript: string,
+  pageContext: PageContextCspNonce,
+): null | string {
   const scriptEntries = pageAssets.filter((pageAsset) => pageAsset.isEntry && pageAsset.assetType === 'script')
-  let scriptEntry = `${viteDevScript}${scriptEntries.map((asset) => inferAssetTag(asset)).join('')}`
+  let scriptEntry = `${viteDevScript}${scriptEntries.map((asset) => inferAssetTag(asset, pageContext)).join('')}`
   // We merge scripts to avoid the infamous HMR preamble error.
   // - Infamous HMR preamble error:
   //   ```browser-console
@@ -241,13 +246,14 @@ function mergeScriptEntries(pageAssets: PageAsset[], viteDevScript: string): nul
   //   ```
   // - Maybe an alternative would be to make Vike's client runtime entry <script> tag non-async. Would that work? Would it be a performance issue?
   //   - The entry <script> shouldn't be `<script defer>` upon HTML streaming, otherwise progressive hydration while SSR streaming won't work.
-  scriptEntry = mergeScriptTags(scriptEntry)
+  scriptEntry = mergeScriptTags(scriptEntry, pageContext)
   return scriptEntry
 }
 
 function getPageContextJsonScriptTag(pageContext: PageContextSerialization): string {
   const pageContextClientSerialized = sanitizeJson(getPageContextClientSerialized(pageContext, true))
-  const htmlTag = `<script id="${htmlElementId_pageContext}" type="application/json">${pageContextClientSerialized}</script>`
+  const nonceAttr = inferNonceAttr(pageContext)
+  const htmlTag = `<script id="${htmlElementId_pageContext}" type="application/json"${nonceAttr}>${pageContextClientSerialized}</script>`
   // Used by contra.com https://github.com/gajus
   // @ts-expect-error
   pageContext._pageContextHtmlTag = htmlTag
@@ -255,7 +261,8 @@ function getPageContextJsonScriptTag(pageContext: PageContextSerialization): str
 }
 function getGlobalContextJsonScriptTag(pageContext: PageContextSerialization): string {
   const globalContextClientSerialized = sanitizeJson(getGlobalContextClientSerialized(pageContext, true))
-  const htmlTag = `<script id="${htmlElementId_globalContext}" type="application/json">${globalContextClientSerialized}</script>`
+  const nonceAttr = inferNonceAttr(pageContext)
+  const htmlTag = `<script id="${htmlElementId_globalContext}" type="application/json"${nonceAttr}>${globalContextClientSerialized}</script>`
   return htmlTag
 }
 

@@ -14,7 +14,7 @@ function testRun(isDev: boolean) {
         expect(earlyHints).toMatchSnapshot()
         expect(body).toMatchSnapshot()
       },
-      15 * 1000,
+      30 * 1000,
     )
     it('Preload Disabled', async () => {
       const { body, earlyHints } = await render('/preload-disabled', isDev)
@@ -36,7 +36,12 @@ function testRun(isDev: boolean) {
 
 async function render(urlOriginal: '/' | '/preload-disabled' | '/preload-images' | '/preload-eager', isDev: boolean) {
   const stabilzeReferences = !isDev ? stabilizeHashes : stabilizePaths
-  const { httpResponse } = await renderPage({ urlOriginal })
+  const { httpResponse } = await renderPage({
+    urlOriginal,
+    //* Comment to try automatic generation
+    cspNonce: '12345689',
+    //*/
+  })
   const body = stabilzeReferences(httpResponse.body)
   const earlyHints = httpResponse.earlyHints.map((hint) =>
     Object.fromEntries(

@@ -26,6 +26,7 @@ import { getCacheControl } from './getCacheControl.js'
 import type { PassToClient } from '../html/serializeContext.js'
 import type { PageContextAfterRoute } from '../../../shared/route/index.js'
 import type { PageContextCreated } from './createPageContextServerSide.js'
+import { addCspHeader, type PageContextCspNonce, resolvePageContextCspNone } from '../csp.js'
 
 type PageContext_loadPageConfigsLazyServerSide = PageContextCreated &
   PageContextAfterRoute & { is404: boolean | null; pageId: string }
@@ -89,6 +90,8 @@ async function resolvePageContext(pageContext: PageContextBeforeResolve) {
       passToClient.push(...valS)
     })
   }
+
+  objectAssign(pageContext, await resolvePageContextCspNone(pageContext))
 
   objectAssign(pageContext, {
     Page: pageContext.exports.Page,
@@ -181,12 +184,14 @@ async function loadPageUserFiles_v1Design(
   }
 }
 
-function resolveHeadersResponse(pageContext: PageContextBeforeResolve): Headers {
+// TODO/now: move all response headers code to headersResponse.ts
+function resolveHeadersResponse(pageContext: PageContextBeforeResolve & PageContextCspNonce): Headers {
   const headersResponse = mergeHeaders(pageContext.config.headersResponse)
   if (!headersResponse.get('Cache-Control')) {
     const cacheControl = getCacheControl(pageContext.pageId, pageContext._globalContext._pageConfigs)
     if (cacheControl) headersResponse.set('Cache-Control', cacheControl)
   }
+  addCspHeader(pageContext, headersResponse)
   return headersResponse
 }
 

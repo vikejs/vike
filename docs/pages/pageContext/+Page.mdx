@@ -133,6 +133,10 @@ The headers of the HTTP Request. As a string object (`Record<string, string>`) n
 
 The headers of the HTTP Request. The original object provided by the server, see <Link href="/headers"/>.
 
+<Prop name="headersResponse" />
+
+The headers of the HTTP Response, see <Link href="/headers#response"/>.
+
 <Prop name="runtime" />
 
 The `pageContext.runtime` object is the [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) and it contains:
@@ -238,6 +242,10 @@ The <Link href="/globalContext">`globalContext` object</Link>.
 <Prop name="isPageContext" />
 
 Always `true`, useful for distinguishing `pageContext` from other objects and narrowing down TypeScript unions, see <Link href="#narrowing-down" />.
+
+<Prop name="cspNonce" />
+
+The CSP nonce, see <Link href="/csp" />.
 
 
 ## Custom

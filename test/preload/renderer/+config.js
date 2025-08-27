@@ -5,4 +5,7 @@ export default {
       env: { server: true },
     },
   },
+  csp: {
+    nonce: true,
+  },
 }

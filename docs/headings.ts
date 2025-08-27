@@ -187,6 +187,11 @@ const headings = [
   },
   {
     level: 2,
+    title: 'HTTP Headers',
+    url: '/headers',
+  },
+  {
+    level: 2,
     title: 'Internationalization (i18n)',
     url: '/i18n',
   },
@@ -664,6 +669,11 @@ const headings = [
     level: 2,
     title: '`passToClient`',
     url: '/passToClient',
+  },
+  {
+    level: 2,
+    title: '`csp`',
+    url: '/csp',
   },
   {
     level: 2,
@@ -1310,10 +1320,6 @@ function api() {
       {
         title: '`getVikeConfig()`',
         url: '/getVikeConfig',
-      },
-      {
-        title: 'HTTP Headers',
-        url: '/headers',
       },
       {
         title: '`reactStrictMode`',

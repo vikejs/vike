@@ -14,6 +14,7 @@ import {
   fetchHtml,
   getServerUrl,
   page,
+  partRegex,
   test,
 } from '@brillout/test-e2e'
 import { sleepBeforeEditFile, testCounter } from '../../../test/utils'
@@ -162,17 +163,20 @@ function testHooksCalled() {
 
 function testHeadersResponse() {
   test('+headersResponse and pageContext.headersResponse', async () => {
+    const common = (headers: Headers) => {
+      expect(headers.get('Some-Header')).toBe('Some-Header-Value')
+      expect(headers.get('Cache-Control')).toBe('no-store, max-age=0')
+      expect(headers.get('Content-Security-Policy')).toMatch(partRegex`script-src 'self' 'nonce-${/[^']+/}'`)
+    }
     {
       const resp = await fetch(getServerUrl() + '/about')
-      expect(resp.headers.get('Some-Header')).toBe('Some-Header-Value')
+      common(resp.headers)
       expect(resp.headers.get('some-static-headER')).toBe(null)
-      expect(resp.headers.get('Cache-Control')).toBe('no-store, max-age=0')
     }
     {
       const resp = await fetch(getServerUrl() + '/')
-      expect(resp.headers.get('Some-Header')).toBe('Some-Header-Value')
+      common(resp.headers)
       expect(resp.headers.get('SOME-STaTIc-Header')).toBe('some-static-header-value')
-      expect(resp.headers.get('Cache-Control')).toBe('no-store, max-age=0')
     }
   })
 }
