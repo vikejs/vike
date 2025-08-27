@@ -1,13 +1,11 @@
 export { inferAssetTag }
 export { inferPreloadTag }
 export { inferEarlyHintLink }
-export { inferNonceAttr }
 export { scriptAttrs }
-export type { PageContextCspNonce }
 
 import { assert } from '../../utils.js'
 import type { PageAsset } from '../../renderPage/getPageAssets.js'
-import type { PageContextServer } from '../../../../types/PageContext.js'
+import { inferNonceAttr, PageContextCspNonce } from '../../renderPage/csp.js'
 
 // TODO/now rename scriptAttrs scriptCommonAttrs
 // We can't use `defer` here. With `defer`, the entry script won't start before `</body>` has been parsed, preventing progressive hydration during SSR streaming, see https://github.com/vikejs/vike/pull/1271
@@ -41,12 +39,6 @@ function inferAssetTag(pageAsset: PageAsset, pageContext: PageContextCspNonce): 
     return `<link rel="stylesheet" type="text/css" href="${src}">`
   }
   assert(false, { pageAsset })
-}
-
-type PageContextCspNonce = Pick<PageContextServer, 'cspNonce'>
-function inferNonceAttr(pageContext: PageContextCspNonce): string {
-  const nonceAttr = pageContext.cspNonce ? ` nonce="${pageContext.cspNonce}"` : ''
-  return nonceAttr
 }
 
 // We ignore crossorigin, it seems like Early Hints doesn't have a "crossorigin" property: https://github.com/vikejs/vike/issues/618#issuecomment-1415752222

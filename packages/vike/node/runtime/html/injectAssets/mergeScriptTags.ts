@@ -1,7 +1,8 @@
 export { mergeScriptTags }
 
+import { inferNonceAttr, PageContextCspNonce } from '../../renderPage/csp.js'
 import { assert } from '../../utils.js'
-import { inferNonceAttr, type PageContextCspNonce, scriptAttrs } from './inferHtmlTags.js'
+import { scriptAttrs } from './inferHtmlTags.js'
 
 const scriptRE = /(<script\b(?:\s[^>]*>|>))(.*?)<\/script>/gims
 const srcRE = /\bsrc\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s'">]+))/im

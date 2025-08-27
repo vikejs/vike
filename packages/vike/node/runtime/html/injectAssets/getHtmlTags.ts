@@ -10,7 +10,7 @@ import {
   getPageContextClientSerialized,
 } from '../serializeContext.js'
 import { sanitizeJson } from './sanitizeJson.js'
-import { inferAssetTag, inferNonceAttr, inferPreloadTag, type PageContextCspNonce } from './inferHtmlTags.js'
+import { inferAssetTag, inferPreloadTag } from './inferHtmlTags.js'
 import { mergeScriptTags } from './mergeScriptTags.js'
 import type { PageContextInjectAssets } from '../injectAssets.js'
 import type { StreamFromReactStreamingPackage } from '../stream/react-streaming.js'
@@ -23,6 +23,7 @@ import { getConfigDefinedAt } from '../../../../shared/page-configs/getConfigDef
 import { htmlElementId_globalContext, htmlElementId_pageContext } from '../../../../shared/htmlElementIds.js'
 import { isFontFallback } from '../../renderPage/isFontFallback.js'
 import type { PageContextServer } from '../../../../types/PageContext.js'
+import { inferNonceAttr, type PageContextCspNonce } from '../../renderPage/csp.js'
 
 const stamp = '__injectFilterEntry'
 

@@ -1,8 +1,10 @@
 export { resolvePageContextCspNone }
+export { inferNonceAttr }
+export type { PageContextCspNonce }
 
 import { import_ } from '@brillout/import'
 import type { VikeConfigPublicPageLazyLoaded } from '../../../shared/getPageFiles.js'
-import type { PageContextCspNonce } from '../html/injectAssets/inferHtmlTags.js'
+import type { PageContextServer } from '../../../types/PageContext.js'
 
 async function resolvePageContextCspNone(pageContext: VikeConfigPublicPageLazyLoaded & PageContextCspNonce) {
   if (pageContext.cspNonce) return // already set by user e.g. `renderPage({ cspNonce: '123456789' })`
@@ -29,4 +31,10 @@ async function generateNonce(): Promise<string> {
     return Math.random().toString(36).substring(2, 18)
   }
   return cryptoModule.randomBytes(16).toString('base64url')
+}
+
+type PageContextCspNonce = Pick<PageContextServer, 'cspNonce'>
+function inferNonceAttr(pageContext: PageContextCspNonce): string {
+  const nonceAttr = pageContext.cspNonce ? ` nonce="${pageContext.cspNonce}"` : ''
+  return nonceAttr
 }
