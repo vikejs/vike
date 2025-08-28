@@ -360,6 +360,7 @@ function resolveGlobalContextConfig(pageConfigs: PageConfigRuntime[], pageConfig
     config: vikeConfigPublicGlobal.config,
     pages: vikeConfigPublicPagesEager,
     _vikeConfigPublicGlobal: vikeConfigPublicGlobal,
+    _from: vikeConfigPublicGlobal._from,
   }
   return globalContextAddendum
 }
