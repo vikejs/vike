@@ -200,7 +200,7 @@ type PageContextConfig = {
 }
 
 type PageConfigPublicWithRoute = VikeConfigPublic_ & WithRoute
-function resolvePagesEagerLoaded(
+function resolveGlobalConfigPage(
   pageConfigGlobalValues: ConfigValues,
   pageConfig: PageConfigRuntime | PageConfigBuildTime,
   pageConfigValues: ConfigValues,
@@ -236,13 +236,6 @@ function resolveVikeConfigPublic_base({
 }: { pageConfigGlobalValues: ConfigValues; pageConfigValues: ConfigValues }) {
   const configValues = { ...pageConfigGlobalValues, ...pageConfigValues }
   return resolveVikeConfigPublic_V1Design({ configValues })
-}
-
-function resolveGlobalConfigPublic({
-  pageConfigGlobalValues,
-}: { pageConfigGlobalValues: ConfigValues }): VikeConfigPublic_ {
-  const globalConfig = resolveVikeConfigPublic_V1Design({ configValues: pageConfigGlobalValues })
-  return getPublicCopy(globalConfig)
 }
 
 function resolvePageContextConfig(
@@ -362,13 +355,14 @@ function resolveVikeConfigPublic<
 ) {
   // global
   const pageConfigGlobalValues = getConfigValues(pageConfigGlobal, true)
-  const globalConfigPublic = resolveGlobalConfigPublic({ pageConfigGlobalValues })
+  const globalConfigPublic_ = resolveVikeConfigPublic_V1Design({ configValues: pageConfigGlobalValues })
+  const globalConfigPublic = getPublicCopy(globalConfigPublic_)
 
   // pages
   const pages = Object.fromEntries(
     pageConfigs.map((pageConfig) => {
       const pageConfigValues = getConfigValues(pageConfig)
-      return resolvePagesEagerLoaded(pageConfigGlobalValues, pageConfig, pageConfigValues)
+      return resolveGlobalConfigPage(pageConfigGlobalValues, pageConfig, pageConfigValues)
     }),
   )
 
