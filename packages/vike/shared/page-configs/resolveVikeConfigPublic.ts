@@ -331,7 +331,8 @@ function resolvePageContextConfig(
 }
 
 function resolveGlobalContextConfig(pageConfigs: PageConfigRuntime[], pageConfigGlobal: PageConfigGlobalRuntime) {
-  return resolveGlobalConfigPublic(pageConfigs, pageConfigGlobal, (c) => c.configValues)
+  const globalContextAddendum = resolveGlobalConfigPublic(pageConfigs, pageConfigGlobal, (c) => c.configValues)
+  return globalContextAddendum
 }
 
 type GlobalConfigPublic = Omit<ReturnType<typeof resolveGlobalConfigPublic>, '_globalConfigPublic'>
