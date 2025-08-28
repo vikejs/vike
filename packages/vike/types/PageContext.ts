@@ -244,7 +244,7 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
      *
      * https://vike.dev/csp
      */
-    cspNonce?: string
+    cspNonce: string | null
 
     isHydration?: undefined
     isBackwardNavigation?: undefined

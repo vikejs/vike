@@ -7,17 +7,18 @@ import { import_ } from '@brillout/import'
 import type { VikeConfigPublicPageLazyLoaded } from '../../shared/getPageFiles.js'
 import type { PageContextServer } from '../../types/PageContext.js'
 
-async function resolvePageContextCspNone(pageContext: VikeConfigPublicPageLazyLoaded & PageContextCspNonce) {
-  if (pageContext.cspNonce) return // already set by user e.g. `renderPage({ cspNonce: '123456789' })`
+async function resolvePageContextCspNone(
+  pageContext: VikeConfigPublicPageLazyLoaded & Partial<PageContextCspNonce>,
+): Promise<{ cspNonce: null | string }> {
+  const pageContextAddendum = { cspNonce: null as null | string }
+  if (pageContext.cspNonce) return pageContextAddendum // already set by user e.g. `renderPage({ cspNonce: '123456789' })`
   const { csp } = pageContext.config
-  if (!csp?.nonce) return
-  let cspNonce: string
+  if (!csp?.nonce) return pageContextAddendum
   if (csp.nonce === true) {
-    cspNonce = await generateNonce()
+    pageContextAddendum.cspNonce = await generateNonce()
   } else {
-    cspNonce = await csp.nonce(pageContext as any)
+    pageContextAddendum.cspNonce = await csp.nonce(pageContext as any)
   }
-  const pageContextAddendum = { cspNonce }
   return pageContextAddendum
 }
 
