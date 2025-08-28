@@ -84,8 +84,7 @@ import { getFilePathResolved } from './getFilePath.js'
 import type { FilePath } from '../../../types/FilePath.js'
 import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
 import {
-  resolveVikeConfigPublicGlobal,
-  resolveVikeConfigPublicPageEagerLoaded,
+  resolveVikeConfigPublic,
   type VikeConfigPublicGlobal,
   type VikeConfigPublicPageEagerLoaded,
 } from '../../../shared/page-configs/resolveVikeConfigPublic.js'
@@ -298,7 +297,7 @@ async function resolveVikeConfigInternal(
 
   setCliAndApiOptions(pageConfigGlobal, configDefinitionsResolved)
 
-  const vikeConfigPublic = resolveVikeConfigPublic(pageConfigGlobal, pageConfigs)
+  const vikeConfigPublic = resolveVikeConfig(pageConfigGlobal, pageConfigs)
 
   const prerenderContext = resolvePrerenderContext({
     config: vikeConfigPublic.config,
@@ -318,26 +317,8 @@ async function resolveVikeConfigInternal(
   return vikeConfig
 }
 
-function resolveVikeConfigPublic(pageConfigGlobal: PageConfigGlobalBuildTime, pageConfigs: PageConfigBuildTime[]) {
-  // global
-  const pageConfigGlobalValues = getConfigValues(pageConfigGlobal)
-  const vikeConfigPublicGlobal = resolveVikeConfigPublicGlobal({ pageConfigGlobalValues })
-
-  // pages
-  const vikeConfigPublicPagesEager = objectFromEntries(
-    pageConfigs.map((pageConfig) => {
-      const pageConfigValues = getConfigValues(pageConfig, true)
-      return resolveVikeConfigPublicPageEagerLoaded(pageConfigGlobalValues, pageConfig, pageConfigValues)
-    }),
-  )
-
-  const vikeConfigPublic = {
-    config: vikeConfigPublicGlobal.config,
-    _from: vikeConfigPublicGlobal._from,
-    pages: vikeConfigPublicPagesEager,
-  }
-
-  return vikeConfigPublic
+function resolveVikeConfig(pageConfigGlobal: PageConfigGlobalBuildTime, pageConfigs: PageConfigBuildTime[]) {
+  return resolveVikeConfigPublic(pageConfigs, pageConfigGlobal, getConfigValues)
 }
 
 type ConfigDefinitionsResolved = Awaited<ReturnType<typeof resolveConfigDefinitions>>
@@ -578,7 +559,8 @@ function assertOnBeforeRenderEnv(pageConfig: PageConfigBuildTime) {
   )
 }
 
-function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime, tolerateMissingValue?: true) {
+function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime, isGlobalConfig?: true) {
+  const tolerateMissingValue = !isGlobalConfig
   const configValues: ConfigValues = {}
   getConfigValuesBase(pageConfig, { isForConfig: true }, null).forEach((entry) => {
     if (entry.configValueBase.type === 'computed') {
@@ -1527,11 +1509,15 @@ function restartViteDevServer() {
 }
 
 function getVikeConfigDummy(esbuildCache: EsbuildCache): VikeConfigInternal {
-  const globalDummy = resolveVikeConfigPublicGlobal({ pageConfigGlobalValues: {} })
   const pageConfigsDummy: VikeConfigInternal['_pageConfigs'] = []
+  const pageConfigGlobalDummy: VikeConfigInternal['_pageConfigGlobal'] = {
+    configValueSources: {},
+    configDefinitions: {},
+  }
+  const vikeConfigPublicDummy = resolveVikeConfig(pageConfigGlobalDummy, pageConfigsDummy)
   const prerenderContextDummy = resolvePrerenderContext({
-    config: globalDummy.config,
-    _from: globalDummy._from,
+    config: vikeConfigPublicDummy.config,
+    _from: vikeConfigPublicDummy._from,
     _pageConfigs: pageConfigsDummy,
   })
   const vikeConfigDummy: VikeConfigInternal = {
@@ -1540,9 +1526,7 @@ function getVikeConfigDummy(esbuildCache: EsbuildCache): VikeConfigInternal {
       configDefinitions: {},
       configValueSources: {},
     },
-    config: globalDummy.config,
-    _from: globalDummy._from,
-    pages: {},
+    ...vikeConfigPublicDummy,
     prerenderContext: prerenderContextDummy,
     _vikeConfigDependencies: esbuildCache.vikeConfigDependencies,
   }

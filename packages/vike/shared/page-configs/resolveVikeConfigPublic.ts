@@ -6,8 +6,7 @@
 
 // TO-DO/soon/same-api: use public API internally?
 // TO-DO/soon/flat-pageContext: rename definedAt => definedBy
-export { resolveVikeConfigPublicGlobal }
-export { resolveVikeConfigPublicPageEagerLoaded }
+export { resolveVikeConfigPublic }
 export { resolvePageContextConfig }
 export { resolveGlobalContextConfig }
 export type { VikeConfigPublicGlobal }
@@ -358,24 +357,25 @@ function resolveVikeConfigPublic<
 >(
   pageConfigs: PageConfig[],
   pageConfigGlobal: PageConfigGlobal,
-  getConfigValues: (config: PageConfig | PageConfigGlobal) => ConfigValues,
+  getConfigValues: (config: PageConfig | PageConfigGlobal, isGlobalConfig?: true) => ConfigValues,
 ) {
-  const pageConfigGlobalValues = getConfigValues(pageConfigGlobal)
-  const vikeConfigPublicGlobal = resolveVikeConfigPublicGlobal({
-    pageConfigGlobalValues: pageConfigGlobalValues,
-  })
+  // global
+  const pageConfigGlobalValues = getConfigValues(pageConfigGlobal, true)
+  const vikeConfigPublicGlobal = resolveVikeConfigPublicGlobal({ pageConfigGlobalValues })
+
+  // pages
   const vikeConfigPublicPagesEager = Object.fromEntries(
     pageConfigs.map((pageConfig) => {
-      return resolveVikeConfigPublicPageEagerLoaded(pageConfigGlobalValues, pageConfig, getConfigValues(pageConfig))
+      const pageConfigValues = getConfigValues(pageConfig)
+      return resolveVikeConfigPublicPageEagerLoaded(pageConfigGlobalValues, pageConfig, pageConfigValues)
     }),
   )
-  const globalContextAddendum = {
+  return {
     config: vikeConfigPublicGlobal.config,
     pages: vikeConfigPublicPagesEager,
     _vikeConfigPublicGlobal: vikeConfigPublicGlobal,
     _from: vikeConfigPublicGlobal._from,
   }
-  return globalContextAddendum
 }
 
 // V1 design
