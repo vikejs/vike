@@ -18,7 +18,6 @@ export type { Sources }
 export type { From }
 export type { ExportsAll }
 export type { ConfigEntries }
-export type { PageContextConfig }
 
 import { assertDefaultExports, forbiddenDefaultExports } from '../getPageFiles/assert_exports_old_design.js'
 import type { FileType } from '../getPageFiles/fileTypes.js'
@@ -200,7 +199,6 @@ type PageContextConfig = {
   /** @deprecated */
   pageExports: Record<string, unknown>
 }
-type PageContextConfig = PageContextConfig
 
 function resolveVikeConfigPublicPageEagerLoaded(
   pageConfigGlobalValues: ConfigValues,
