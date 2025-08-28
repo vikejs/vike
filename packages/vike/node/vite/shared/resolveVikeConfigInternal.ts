@@ -83,11 +83,7 @@ import { resolvePointerImport } from './resolveVikeConfigInternal/resolvePointer
 import { getFilePathResolved } from './getFilePath.js'
 import type { FilePath } from '../../../types/FilePath.js'
 import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
-import {
-  resolveVikeConfigPublic,
-  type VikeConfigPublicGlobal,
-  type VikeConfigPublicPageEagerLoaded,
-} from '../../../shared/page-configs/resolveVikeConfigPublic.js'
+import { resolveVikeConfigPublic, type VikeConfigPublic } from '../../../shared/page-configs/resolveVikeConfigPublic.js'
 import { getConfigValuesBase, isJsonValue } from '../../../shared/page-configs/serialize/serializeConfigValues.js'
 import {
   getPlusFilesAll,
@@ -120,15 +116,10 @@ type PrerenderContext = {
   isPrerenderingEnabledForAllPages: boolean
 } & ({ [K in keyof PrerenderContextPublic]: null } | PrerenderContextPublic)
 
-type VikeConfigInternal = {
+// We need to explicitly define it to avoid TypeScript circular definition
+type VikeConfigInternal = VikeConfigPublic & {
   _pageConfigs: PageConfigBuildTime[]
   _pageConfigGlobal: PageConfigGlobalBuildTime
-  config: VikeConfigPublicGlobal['config']
-  _from: VikeConfigPublicGlobal['_from']
-  pages: Record<
-    string, // pageId
-    VikeConfigPublicPageEagerLoaded
-  >
   _vikeConfigDependencies: Set<string>
   prerenderContext: PrerenderContext
 }

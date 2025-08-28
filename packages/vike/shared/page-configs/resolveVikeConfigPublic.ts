@@ -17,6 +17,7 @@ export type { Sources }
 export type { From }
 export type { ExportsAll }
 export type { ConfigEntries }
+export type { VikeConfigPublic }
 
 import { assertDefaultExports, forbiddenDefaultExports } from '../getPageFiles/assert_exports_old_design.js'
 import type { FileType } from '../getPageFiles/fileTypes.js'
@@ -144,7 +145,7 @@ type SourceConfigsComputed = {
   value: unknown
 }
 
-type VikeConfigPublic = {
+type VikeConfigPublic_ = {
   config: ConfigResolved
   // TO-DO/soon/flat-pageContext: expose publicly?
   _source: Source
@@ -160,8 +161,8 @@ type WithRoute =
       route?: undefined
       isErrorPage: true
     }
-type VikeConfigPublicPageEagerLoaded = VikeConfigPublic & WithRoute
-type VikeConfigPublicGlobal = VikeConfigPublic
+type VikeConfigPublicPageEagerLoaded = VikeConfigPublic_ & WithRoute
+type VikeConfigPublicGlobal = VikeConfigPublic_
 
 type PageContextConfig = {
   /** The page's configuration values.
@@ -222,7 +223,7 @@ function resolvePagesEagerLoaded(
   }
   return [pageConfig.pageId, page]
 }
-function getPublicCopy(vikeConfigPublic: ReturnType<typeof resolveVikeConfigPublic_V1Design>): VikeConfigPublic {
+function getPublicCopy(vikeConfigPublic: ReturnType<typeof resolveVikeConfigPublic_V1Design>): VikeConfigPublic_ {
   return {
     config: vikeConfigPublic.config,
     _source: vikeConfigPublic.source,
@@ -351,6 +352,7 @@ function resolveGlobalContextConfig(pageConfigs: PageConfigRuntime[], pageConfig
   return resolveVikeConfigPublic(pageConfigs, pageConfigGlobal, (c) => c.configValues)
 }
 
+type VikeConfigPublic = ReturnType<typeof resolveVikeConfigPublic>
 function resolveVikeConfigPublic<
   PageConfig extends PageConfigRuntime | PageConfigBuildTime,
   PageConfigGlobal extends PageConfigGlobalRuntime | PageConfigGlobalBuildTime,
