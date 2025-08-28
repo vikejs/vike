@@ -1,7 +1,7 @@
 export { resolveHeadersResponseEarly }
 export { resolveHeadersResponseFinal }
 
-import { addCspResponseHeader, PageContextCspNonce } from '../csp.js'
+import { addCspResponseHeader, PageContextCspNonce } from './csp.js'
 import { isCallable } from '../utils.js'
 import { cacheControlDisable, getCacheControl } from './getCacheControl.js'
 import type { PageContextAfterPageEntryLoaded } from './loadPageConfigsLazyServerSide.js'

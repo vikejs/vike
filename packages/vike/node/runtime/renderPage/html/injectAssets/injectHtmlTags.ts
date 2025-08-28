@@ -9,7 +9,7 @@ export { joinHtmlTags }
 export { injectAtOpeningTag }
 export { injectAtClosingTag }
 
-import { assert, assertUsage, slice } from '../../utils.js'
+import { assert, assertUsage, slice } from '../../../utils.js'
 import type { StreamFromReactStreamingPackage } from '../stream/react-streaming.js'
 import type { HtmlTag } from './getHtmlTags.js'
 

@@ -23,11 +23,11 @@ import { analyzePage } from './analyzePage.js'
 import type { MediaType } from './inferMediaType.js'
 import { loadAndParseVirtualFilePageEntry } from '../../../shared/page-configs/loadAndParseVirtualFilePageEntry.js'
 import { execHookServer } from './execHookServer.js'
-import type { PassToClient } from '../html/serializeContext.js'
+import type { PassToClient } from './html/serializeContext.js'
 import type { PageContextAfterRoute } from '../../../shared/route/index.js'
 import type { PageContextCreated } from './createPageContextServerSide.js'
 import { resolveHeadersResponseEarly } from './headersResponse.js'
-import { resolvePageContextCspNone } from '../csp.js'
+import { resolvePageContextCspNone } from './csp.js'
 
 type PageContext_loadPageConfigsLazyServerSide = PageContextCreated &
   PageContextAfterRoute & { is404: boolean | null; pageId: string }

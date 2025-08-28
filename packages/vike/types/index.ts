@@ -64,7 +64,7 @@ export type { VikeConfig } from '../node/vite/shared/resolveVikeConfigInternal.j
 
 export type { UrlPublic as Url } from '../utils/parseUrl.js'
 
-export type { InjectFilterEntry } from '../node/runtime/html/injectAssets/getHtmlTags.js'
+export type { InjectFilterEntry } from '../node/runtime/renderPage/html/injectAssets/getHtmlTags.js'
 
 export { defineConfig } from './defineConfig.js'
 

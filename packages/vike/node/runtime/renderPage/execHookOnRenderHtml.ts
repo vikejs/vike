@@ -7,21 +7,21 @@ import {
   renderDocumentHtml,
   DocumentHtml,
   dangerouslySkipEscape,
-} from '../html/renderHtml.js'
+} from './html/renderHtml.js'
 import { getHookFromPageContext, type Hook } from '../../../shared/hooks/getHook.js'
 import { assert, assertUsage, assertWarning, isObject, objectAssign, isPromise, isCallable } from '../utils.js'
 import type { PageAsset } from './getPageAssets.js'
-import { isStream } from '../html/stream.js'
+import { isStream } from './html/stream.js'
 import { assertPageContextProvidedByUser } from '../../../shared/assertPageContextProvidedByUser.js'
-import type { PreloadFilter } from '../html/injectAssets/getHtmlTags.js'
+import type { PreloadFilter } from './html/injectAssets/getHtmlTags.js'
 import {
   preparePageContextForPublicUsageServer,
   type PageContextForPublicUsageServer,
 } from './preparePageContextForPublicUsageServer.js'
-import type { PageContextPromise } from '../html/injectAssets.js'
+import type { PageContextPromise } from './html/injectAssets.js'
 import { assertHookReturnedObject } from '../../../shared/assertHookReturnedObject.js'
 import { logRuntimeError } from '../loggerRuntime.js'
-import type { PageContextSerialization } from '../html/serializeContext.js'
+import type { PageContextSerialization } from './html/serializeContext.js'
 import pc from '@brillout/picocolors'
 import { execHookDirectSingleWithReturn } from '../../../shared/hooks/execHook.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'

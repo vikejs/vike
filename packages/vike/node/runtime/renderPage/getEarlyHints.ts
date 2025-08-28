@@ -2,7 +2,7 @@ export { getEarlyHints }
 export type { EarlyHint }
 
 import { isFontFallback } from './isFontFallback.js'
-import { inferEarlyHintLink } from '../html/injectAssets/inferHtmlTags.js'
+import { inferEarlyHintLink } from './html/injectAssets/inferHtmlTags.js'
 import type { PageAsset } from './getPageAssets.js'
 
 type EarlyHint = PageAsset & {

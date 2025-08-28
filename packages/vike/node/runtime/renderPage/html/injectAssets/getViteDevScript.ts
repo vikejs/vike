@@ -1,8 +1,8 @@
 export { getViteDevScript }
 
-import type { ViteRPC } from '../../../vite/plugins/pluginNonRunnableDev.js'
-import type { GlobalContextServerInternal } from '../../globalContext.js'
-import { assert, assertUsage, assertWarning, getViteRPC } from '../../utils.js'
+import type { ViteRPC } from '../../../../vite/plugins/pluginNonRunnableDev.js'
+import type { GlobalContextServerInternal } from '../../../globalContext.js'
+import { assert, assertUsage, assertWarning, getViteRPC } from '../../../utils.js'
 import pc from '@brillout/picocolors'
 
 const reachOutCTA = 'Create a new GitHub issue to discuss a solution.'

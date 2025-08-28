@@ -3,9 +3,9 @@ export { prerenderPage }
 export type { PageContextAfterRender }
 
 import { getErrorPageId } from '../../../shared/error-page.js'
-import { getHtmlString } from '../html/renderHtml.js'
+import { getHtmlString } from './html/renderHtml.js'
 import { assert, assertUsage, updateType, hasProp, objectAssign } from '../utils.js'
-import { getPageContextClientSerialized } from '../html/serializeContext.js'
+import { getPageContextClientSerialized } from './html/serializeContext.js'
 import { type PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
 import { createHttpResponsePage, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponse.js'
 import {
