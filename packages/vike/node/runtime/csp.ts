@@ -5,11 +5,11 @@ export type { PageContextCspNonce }
 
 import { import_ } from '@brillout/import'
 import { assert } from './utils.js'
-import type { VikeConfigPublicPageLazyLoaded } from '../../shared/getPageFiles.js'
+import type { PageContextConfig } from '../../shared/getPageFiles.js'
 import type { PageContextServer } from '../../types/PageContext.js'
 
 async function resolvePageContextCspNone(
-  pageContext: VikeConfigPublicPageLazyLoaded & Partial<PageContextCspNonce>,
+  pageContext: PageContextConfig & Partial<PageContextCspNonce>,
 ): Promise<null | { cspNonce: string | null }> {
   if (pageContext.cspNonce) return null // already set by user e.g. `renderPage({ cspNonce: '123456789' })`
 

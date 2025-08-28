@@ -3,7 +3,7 @@ export type { PageContext_loadPageConfigsLazyServerSide }
 export type { PageConfigsLazy }
 export type { PageContextAfterPageEntryLoaded }
 
-import { type VikeConfigPublicPageLazyLoaded, getPageFilesServerSide } from '../../../shared/getPageFiles.js'
+import { type PageContextConfig, getPageFilesServerSide } from '../../../shared/getPageFiles.js'
 import { resolvePageContextPageConfigLazy } from '../../../shared/page-configs/resolveVikeConfigPublic.js'
 import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide.js'
 import {
@@ -52,7 +52,7 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
 
 type PageContextAfterPageEntryLoaded = PageContext_loadPageConfigsLazyServerSide & {
   _pageConfig: null | PageConfigRuntime
-} & VikeConfigPublicPageLazyLoaded
+} & PageContextConfig
 async function resolvePageContext(pageContext: PageContextAfterPageEntryLoaded) {
   const { isHtmlOnly, clientEntries, clientDependencies } = analyzePage(pageContext)
 

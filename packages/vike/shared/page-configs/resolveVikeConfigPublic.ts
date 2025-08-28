@@ -3,7 +3,7 @@
 //   - While keeping {Page,Global}ConfigPublic or remove Public suffix and rename it to {Page,Global}Config ?
 // - rename EagerLoaded EagerlyLoaded
 // - remove `LazyLoaded` suffix
-// TODO/now: rename VikeConfigPublicPageLazyLoaded PageContextSomething (for `pageContext: PageContextSomething` usage)
+// TODO/now: rename PageContextConfig PageContextSomething (for `pageContext: PageContextSomething` usage)
 
 // TO-DO/soon/same-api: use public API internally?
 // TO-DO/soon/flat-pageContext: rename definedAt => definedBy
@@ -12,7 +12,7 @@ export { resolveVikeConfigPublicPageEagerLoaded }
 export { resolvePageContextPageConfigLazy }
 export type { VikeConfigPublicGlobal }
 export type { VikeConfigPublicPageEagerLoaded }
-export type { VikeConfigPublicPageLazyLoaded }
+export type { PageContextConfig }
 export type { Source }
 export type { Sources }
 export type { From }
@@ -200,7 +200,7 @@ type PageContextConfig = {
   /** @deprecated */
   pageExports: Record<string, unknown>
 }
-type VikeConfigPublicPageLazyLoaded = PageContextConfig
+type PageContextConfig = PageContextConfig
 
 function resolveVikeConfigPublicPageEagerLoaded(
   pageConfigGlobalValues: ConfigValues,
@@ -251,7 +251,7 @@ function resolvePageContextPageConfigLazy(
   pageFiles: PageFile[], // V0.4 design
   pageConfig: PageConfigRuntimeLoaded | null, // V1 design
   pageConfigGlobal: PageConfigGlobalRuntime,
-): VikeConfigPublicPageLazyLoaded {
+): PageContextConfig {
   const config: Record<string, unknown> = {}
   const configEntries: ConfigEntries = {} // TO-DO/next-major-release: remove
   const exportsAll: ExportsAll = {} // TO-DO/next-major-release: remove

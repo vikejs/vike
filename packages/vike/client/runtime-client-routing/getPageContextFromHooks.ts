@@ -18,7 +18,7 @@ import {
 } from './utils.js'
 import { parse } from '@brillout/json-serializer/parse'
 import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtml.js'
-import type { VikeConfigPublicPageLazyLoaded, PageFile } from '../../shared/getPageFiles.js'
+import type { PageContextConfig, PageFile } from '../../shared/getPageFiles.js'
 import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide.js'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
@@ -63,7 +63,7 @@ function getPageContextFromHooks_serialized(): PageContextSerialized & {
 async function getPageContextFromHooks_isHydration(
   pageContext: PageContextSerialized &
     PageContextBegin &
-    VikeConfigPublicPageLazyLoaded & { _hasPageContextFromServer: true } & PageContextForPublicUsageClient,
+    PageContextConfig & { _hasPageContextFromServer: true } & PageContextForPublicUsageClient,
 ) {
   for (const hookName of ['data', 'onBeforeRender'] as const) {
     // TO-DO/soon/cumulative-hooks: filter & execute all client-only hooks
@@ -118,7 +118,7 @@ async function getPageContextFromServerHooks(
 
 async function getPageContextFromClientHooks(
   pageContext: { pageId: string; _hasPageContextFromServer: boolean } & PageContextBegin &
-    VikeConfigPublicPageLazyLoaded &
+    PageContextConfig &
     PageContextForPublicUsageClient,
   isErrorPage: boolean,
 ) {
@@ -159,7 +159,7 @@ async function getPageContextFromClientHooks(
   return pageContextFromClientHooks
 }
 
-type PageContextExecHookClient = VikeConfigPublicPageLazyLoaded & PageContextForPublicUsageClient
+type PageContextExecHookClient = PageContextConfig & PageContextForPublicUsageClient
 async function execHookClient(hookName: HookName, pageContext: PageContextExecHookClient) {
   return await execHook(hookName, pageContext, (p) => preparePageContextForPublicUsageClient(p))
 }
