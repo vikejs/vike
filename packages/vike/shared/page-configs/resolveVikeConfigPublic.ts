@@ -315,7 +315,7 @@ function resolvePageContextPageConfigLazy(
   assert(!('default' in exports))
   assert(!('default' in exportsAll))
 
-  const configPublicPageLazy = {
+  const pageContextAddendum = {
     config: config as any as ConfigResolved,
     from,
     source,
@@ -328,7 +328,7 @@ function resolvePageContextPageConfigLazy(
   }
 
   // TO-DO/next-major-release: remove
-  objectDefineProperty(configPublicPageLazy, 'pageExports', {
+  objectDefineProperty(pageContextAddendum, 'pageExports', {
     get: () => {
       // We only show the warning in Node.js because when using Client Routing Vue integration uses `Object.assign(pageContextReactive, pageContext)` which will wrongully trigger the warning. There is no cross-browser way to catch whether the property accessor was initiated by an `Object.assign()` call.
       if (!isBrowser()) {
@@ -343,7 +343,7 @@ function resolvePageContextPageConfigLazy(
     configurable: true,
   })
 
-  return configPublicPageLazy
+  return pageContextAddendum
 }
 
 // V1 design
