@@ -118,10 +118,7 @@ function createGlobalContextBase(virtualFileExportsGlobalEntry: unknown) {
     parseVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry)
   const allPageIds = getAllPageIds(pageFilesAll, pageConfigs)
 
-  const { vikeConfigPublicGlobal, vikeConfigPublicPagesEager } = resolveGlobalContextConfig(
-    pageConfigs,
-    pageConfigGlobal,
-  )
+  const globalContextAddendum = resolveGlobalContextConfig(pageConfigs, pageConfigGlobal)
 
   const globalContext = {
     /**
@@ -136,9 +133,7 @@ function createGlobalContextBase(virtualFileExportsGlobalEntry: unknown) {
     _pageConfigs: pageConfigs,
     _pageConfigGlobal: pageConfigGlobal,
     _allPageIds: allPageIds,
-    _vikeConfigPublicGlobal: vikeConfigPublicGlobal,
-    config: vikeConfigPublicGlobal.config,
-    pages: vikeConfigPublicPagesEager,
+    ...globalContextAddendum,
   }
   changeEnumerable(globalContext, '_isOriginalObject', false)
   return globalContext
@@ -153,7 +148,12 @@ function resolveGlobalContextConfig(pageConfigs: PageConfigRuntime[], pageConfig
       return resolveVikeConfigPublicPageEagerLoaded(pageConfigGlobal.configValues, pageConfig, pageConfig.configValues)
     }),
   )
-  return { vikeConfigPublicGlobal, vikeConfigPublicPagesEager }
+  const globalContextAddendum = {
+    _vikeConfigPublicGlobal: vikeConfigPublicGlobal,
+    config: vikeConfigPublicGlobal.config,
+    pages: vikeConfigPublicPagesEager,
+  }
+  return globalContextAddendum
 }
 function getAllPageIds(pageFilesAll: PageFile[], pageConfigs: PageConfigRuntime[]): string[] {
   const fileIds = pageFilesAll.filter(({ isDefaultPageFile }) => !isDefaultPageFile).map(({ pageId }) => pageId)
