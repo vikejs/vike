@@ -12,11 +12,13 @@ function resolveHeadersResponseFinal(
   },
   statusCode: number,
 ) {
-  const headers: [string, string][] = []
   const headersResponse = pageContext.headersResponse || new Headers()
+
   // 5xx error pages are temporary and shouldn't be cached.
   // This overrides any previously set Cache-Control value.
   if (statusCode >= 500) headersResponse.set('Cache-Control', cacheControlDisable)
+
+  const headers: [string, string][] = []
   headersResponse.forEach((value, key) => {
     headers.push([key, value])
   })
