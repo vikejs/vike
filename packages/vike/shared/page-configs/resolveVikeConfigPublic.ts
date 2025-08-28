@@ -200,23 +200,23 @@ type PageContextConfig = {
   pageExports: Record<string, unknown>
 }
 
-function resolveVikeConfigPublicPageEagerLoaded(
+function resolvePagesEagerLoaded(
   pageConfigGlobalValues: ConfigValues,
   pageConfig: PageConfigRuntime | PageConfigBuildTime,
   pageConfigValues: ConfigValues,
 ): [string, VikeConfigPublicPageEagerLoaded] {
-  const vikeConfigPublicPage_ = resolveVikeConfigPublic_base({ pageConfigGlobalValues, pageConfigValues })
-  const vikeConfigPublicPage = getPublicCopy(vikeConfigPublicPage_)
+  const pageConfigPublic_ = resolveVikeConfigPublic_base({ pageConfigGlobalValues, pageConfigValues })
+  const pageConfigPublic = getPublicCopy(pageConfigPublic_)
   let page: VikeConfigPublicPageEagerLoaded
   if (!pageConfig.isErrorPage) {
-    const route = vikeConfigPublicPage.config.route ?? pageConfig.routeFilesystem.routeString
+    const route = pageConfigPublic.config.route ?? pageConfig.routeFilesystem.routeString
     page = {
-      ...vikeConfigPublicPage,
+      ...pageConfigPublic,
       route,
     }
   } else {
     page = {
-      ...vikeConfigPublicPage,
+      ...pageConfigPublic,
       isErrorPage: true,
     }
   }
@@ -238,11 +238,11 @@ function resolveVikeConfigPublic_base({
   return resolveVikeConfigPublic_V1Design({ configValues })
 }
 
-function resolveVikeConfigPublicGlobal({
+function resolveGlobalConfigPublic({
   pageConfigGlobalValues,
 }: { pageConfigGlobalValues: ConfigValues }): VikeConfigPublicGlobal {
-  const vikeConfigPublicGlobal = resolveVikeConfigPublic_V1Design({ configValues: pageConfigGlobalValues })
-  return getPublicCopy(vikeConfigPublicGlobal)
+  const globalConfig = resolveVikeConfigPublic_V1Design({ configValues: pageConfigGlobalValues })
+  return getPublicCopy(globalConfig)
 }
 
 function resolvePageContextConfig(
@@ -361,20 +361,20 @@ function resolveVikeConfigPublic<
 ) {
   // global
   const pageConfigGlobalValues = getConfigValues(pageConfigGlobal, true)
-  const vikeConfigPublicGlobal = resolveVikeConfigPublicGlobal({ pageConfigGlobalValues })
+  const globalConfigPublic = resolveGlobalConfigPublic({ pageConfigGlobalValues })
 
   // pages
-  const vikeConfigPublicPagesEager = Object.fromEntries(
+  const pages = Object.fromEntries(
     pageConfigs.map((pageConfig) => {
       const pageConfigValues = getConfigValues(pageConfig)
-      return resolveVikeConfigPublicPageEagerLoaded(pageConfigGlobalValues, pageConfig, pageConfigValues)
+      return resolvePagesEagerLoaded(pageConfigGlobalValues, pageConfig, pageConfigValues)
     }),
   )
   return {
-    config: vikeConfigPublicGlobal.config,
-    pages: vikeConfigPublicPagesEager,
-    _vikeConfigPublicGlobal: vikeConfigPublicGlobal,
-    _from: vikeConfigPublicGlobal._from,
+    config: globalConfigPublic.config,
+    pages,
+    _vikeConfigPublicGlobal: globalConfigPublic,
+    _from: globalConfigPublic._from,
   }
 }
 
