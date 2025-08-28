@@ -9,8 +9,8 @@
 export { resolveVikeConfigPublic }
 export { resolvePageContextConfig }
 export { resolveGlobalContextConfig }
-export type { VikeConfigPublicGlobal }
 export type { PageContextConfig }
+export type { GlobalConfigPublic }
 export type { Source }
 export type { Sources }
 export type { From }
@@ -160,7 +160,7 @@ type WithRoute =
       route?: undefined
       isErrorPage: true
     }
-type VikeConfigPublicGlobal = VikeConfigPublic_
+type GlobalConfigPublic = VikeConfigPublic_
 
 type PageContextConfig = {
   /** The page's configuration values.
@@ -240,7 +240,7 @@ function resolveVikeConfigPublic_base({
 
 function resolveGlobalConfigPublic({
   pageConfigGlobalValues,
-}: { pageConfigGlobalValues: ConfigValues }): VikeConfigPublicGlobal {
+}: { pageConfigGlobalValues: ConfigValues }): VikeConfigPublic_ {
   const globalConfig = resolveVikeConfigPublic_V1Design({ configValues: pageConfigGlobalValues })
   return getPublicCopy(globalConfig)
 }
@@ -372,10 +372,9 @@ function resolveVikeConfigPublic<
     }),
   )
   return {
-    config: globalConfigPublic.config,
+    ...globalConfigPublic,
     pages,
     _vikeConfigPublicGlobal: globalConfigPublic,
-    _from: globalConfigPublic._from,
   }
 }
 

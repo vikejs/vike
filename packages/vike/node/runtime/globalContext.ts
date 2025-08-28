@@ -56,7 +56,7 @@ import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
 import { virtualFileIdGlobalEntryServer } from '../shared/virtualFileId.js'
 import pc from '@brillout/picocolors'
-import type { VikeConfigPublicGlobal } from '../../shared/page-configs/resolveVikeConfigPublic.js'
+import type { VikeConfigPublic } from '../../shared/page-configs/resolveVikeConfigPublic.js'
 import { loadPageRoutes, loadPageRoutesSync, type PageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { assertV1Design } from '../shared/assertV1Design.js'
 import { resolveBase } from '../shared/resolveBase.js'
@@ -637,10 +637,7 @@ function getInitialGlobalObject() {
   }
 }
 
-function resolveBaseRuntime(
-  viteConfigRuntime: BuildInfo['viteConfigRuntime'],
-  config: VikeConfigPublicGlobal['config'],
-) {
+function resolveBaseRuntime(viteConfigRuntime: BuildInfo['viteConfigRuntime'], config: VikeConfigPublic['config']) {
   const baseViteOriginal = viteConfigRuntime._baseViteOriginal
   const baseServerUnresolved = config.baseServer ?? null
   const baseAssetsUnresolved = config.baseAssets ?? null
