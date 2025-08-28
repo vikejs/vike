@@ -77,7 +77,7 @@ function Sponsors() {
             ))}
         </div>
       </div>
-      <IllustrationNote style={{ paddingTop: 6 }}>Company sponsors, current and past (small logo)</IllustrationNote>
+      <IllustrationNote style={{ paddingTop: 6 }}>Significant sponsors, current and past (smaller logo)</IllustrationNote>
     </div>
   )
 }
