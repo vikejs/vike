@@ -114,14 +114,15 @@ async function createGlobalContextShared<
 type GlobalContextBasePublic = Pick<GlobalContextBase, 'config' | 'pages' | 'isGlobalContext'>
 type GlobalContextBase = ReturnType<typeof createGlobalContextBase>
 function createGlobalContextBase(virtualFileExportsGlobalEntry: unknown) {
-  const {
-    pageFilesAll,
-    allPageIds,
+  const { pageFilesAll, pageConfigs, pageConfigGlobal } =
+    parseVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry)
+  const allPageIds = getAllPageIds(pageFilesAll, pageConfigs)
+
+  const { vikeConfigPublicGlobal, vikeConfigPublicPagesEager } = resolveGlobalContextConfig(
     pageConfigs,
     pageConfigGlobal,
-    vikeConfigPublicGlobal,
-    vikeConfigPublicPagesEager,
-  } = getConfigsAll(virtualFileExportsGlobalEntry)
+  )
+
   const globalContext = {
     /**
      * Useful for distinguishing `globalContext` from other objects and narrowing down TypeScript unions.
@@ -143,25 +144,6 @@ function createGlobalContextBase(virtualFileExportsGlobalEntry: unknown) {
   return globalContext
 }
 
-function getConfigsAll(virtualFileExportsGlobalEntry: unknown) {
-  const { pageFilesAll, pageConfigs, pageConfigGlobal } =
-    parseVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry)
-  const allPageIds = getAllPageIds(pageFilesAll, pageConfigs)
-
-  const { vikeConfigPublicGlobal, vikeConfigPublicPagesEager } = resolveGlobalContextConfig(
-    pageConfigs,
-    pageConfigGlobal,
-  )
-
-  return {
-    pageFilesAll,
-    allPageIds,
-    pageConfigs,
-    pageConfigGlobal,
-    vikeConfigPublicGlobal,
-    vikeConfigPublicPagesEager,
-  }
-}
 function resolveGlobalContextConfig(pageConfigs: PageConfigRuntime[], pageConfigGlobal: PageConfigGlobalRuntime) {
   const vikeConfigPublicGlobal = resolveVikeConfigPublicGlobal({
     pageConfigGlobalValues: pageConfigGlobal.configValues,
