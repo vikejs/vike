@@ -27,7 +27,7 @@ import { getCacheControl } from './getCacheControl.js'
 import type { PassToClient } from '../html/serializeContext.js'
 import type { PageContextAfterRoute } from '../../../shared/route/index.js'
 import type { PageContextCreated } from './createPageContextServerSide.js'
-import { addCspHeader, type PageContextCspNonce, resolvePageContextCspNone } from '../csp.js'
+import { addCspResponseHeader, type PageContextCspNonce, resolvePageContextCspNone } from '../csp.js'
 
 type PageContext_loadPageConfigsLazyServerSide = PageContextCreated &
   PageContextAfterRoute & { is404: boolean | null; pageId: string }
@@ -192,7 +192,7 @@ async function resolveHeadersResponse(pageContext: PageContextBeforeResolve & Pa
     const cacheControl = getCacheControl(pageContext.pageId, pageContext._globalContext._pageConfigs)
     if (cacheControl) headersResponse.set('Cache-Control', cacheControl)
   }
-  addCspHeader(pageContext, headersResponse)
+  addCspResponseHeader(pageContext, headersResponse)
   return headersResponse
 }
 
