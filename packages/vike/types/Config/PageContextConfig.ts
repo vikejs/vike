@@ -5,9 +5,16 @@ import type { VikePackages } from '../VikeNamespace.js'
 import type { ConfigBuiltIn, ConfigBuiltInResolved, ImportString } from '../Config.js'
 import type { Combine, IsNotEmpty, XOR5 } from './helpers.js'
 
-type PageContextConfig = ConfigResolved &
-  // TO-DO/eventually: remove the whole XOR logic
-  (ConfigVikePackagesNotEmptyXor extends true ? ConfigVikePackagesIntersection : ConfigVikePackagesCombined)
+type PageContextConfig = {
+  /** The page's configuration values.
+   *
+   * https://vike.dev/config
+   * https://vike.dev/pageContext#config
+   */
+  config: ConfigResolved &
+    // TO-DO/eventually: remove the whole XOR logic
+    (ConfigVikePackagesNotEmptyXor extends true ? ConfigVikePackagesIntersection : ConfigVikePackagesCombined)
+}
 
 // https://vike.dev/meta#typescript
 type ConfigUnresolved = WithoutImportString<ConfigBuiltIn & Vike.Config>

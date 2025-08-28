@@ -58,7 +58,7 @@ type PageContextClientWithServerRouting<Data = unknown> = PageContextBuiltInClie
   Vike.PageContext &
   Vike.PageContextClient
 
-type PageContextBuiltInCommon<Data> = {
+type PageContextBuiltInCommon<Data> = PageContextConfig & {
   /**
    * Useful for distinguishing `pageContext` from other objects and narrowing down TypeScript unions.
    *
@@ -86,13 +86,6 @@ type PageContextBuiltInCommon<Data> = {
    * https://vike.dev/pageContext#data
    */
   data: Data
-
-  /** The page's configuration values.
-   *
-   * https://vike.dev/config
-   * https://vike.dev/pageContext#config
-   */
-  config: PageContextConfig
 
   /** The page's configuration, including the configs origin and overridden configs.
    *
