@@ -180,8 +180,5 @@ async function loadPageUserFiles_v1Design(
     pageConfigLoaded,
     pageContext._globalContext._pageConfigGlobal,
   )
-  return {
-    configPublicPageLazy,
-    pageFilesLoaded: pageFilesServerSide,
-  }
+  return { configPublicPageLazy }
 }
