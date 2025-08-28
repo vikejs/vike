@@ -18,7 +18,7 @@ import { getEarlyHints, type EarlyHint } from './getEarlyHints.js'
 import { assertNoInfiniteHttpRedirect } from './createHttpResponse/assertNoInfiniteHttpRedirect.js'
 import type { PageContextBegin } from '../renderPage.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
-import { cacheControlDisable } from './getCacheControl.js'
+import { resolveHeadersResponseFinal } from './headersResponse.js'
 
 type HttpResponse = {
   statusCode: 200 | 404 | 500 | RedirectStatusCode | AbortStatusCode
@@ -63,15 +63,7 @@ async function createHttpResponsePage(
   }
 
   const earlyHints = getEarlyHints(await pageContext.__getPageAssets())
-
-  const headers: ResponseHeaders = []
-  const headersResponse = pageContext.headersResponse || new Headers()
-  headersResponse.forEach((value, key) => {
-    headers.push([key, value])
-  })
-  // An 5xx error page shouldn't be cached (it should be temporary)
-  if (statusCode >= 500) headersResponse.set('Cache-Control', cacheControlDisable)
-
+  const headers = resolveHeadersResponseFinal(pageContext, statusCode)
   return createHttpResponse(statusCode, 'text/html;charset=utf-8', headers, htmlRender, earlyHints, renderHook)
 }
 

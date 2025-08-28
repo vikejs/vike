@@ -1,9 +1,26 @@
 export { resolveHeadersResponse }
+export { resolveHeadersResponseFinal }
 
 import { addCspResponseHeader, PageContextCspNonce } from '../csp.js'
 import { isCallable } from '../utils.js'
-import { getCacheControl } from './getCacheControl.js'
+import { cacheControlDisable, getCacheControl } from './getCacheControl.js'
 import type { PageContextAfterPageEntryLoaded } from './loadPageConfigsLazyServerSide.js'
+
+function resolveHeadersResponseFinal(
+  pageContext: {
+    headersResponse?: Headers
+  },
+  statusCode: number,
+) {
+  const headers: [string, string][] = []
+  const headersResponse = pageContext.headersResponse || new Headers()
+  headersResponse.forEach((value, key) => {
+    headers.push([key, value])
+  })
+  // An 5xx error page shouldn't be cached (it should be temporary)
+  if (statusCode >= 500) headersResponse.set('Cache-Control', cacheControlDisable)
+  return headers
+}
 
 async function resolveHeadersResponse(
   pageContext: PageContextAfterPageEntryLoaded & PageContextCspNonce,
