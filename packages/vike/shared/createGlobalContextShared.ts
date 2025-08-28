@@ -148,7 +148,7 @@ function getConfigsAll(virtualFileExportsGlobalEntry: unknown) {
     parseVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry)
   const allPageIds = getAllPageIds(pageFilesAll, pageConfigs)
 
-  const { vikeConfigPublicGlobal, vikeConfigPublicPagesEager } = resolveGlobalContextGlobalConfig(
+  const { vikeConfigPublicGlobal, vikeConfigPublicPagesEager } = resolveGlobalContextConfig(
     pageConfigs,
     pageConfigGlobal,
   )
@@ -162,7 +162,7 @@ function getConfigsAll(virtualFileExportsGlobalEntry: unknown) {
     vikeConfigPublicPagesEager,
   }
 }
-function resolveGlobalContextGlobalConfig(pageConfigs: PageConfigRuntime[], pageConfigGlobal: PageConfigGlobalRuntime) {
+function resolveGlobalContextConfig(pageConfigs: PageConfigRuntime[], pageConfigGlobal: PageConfigGlobalRuntime) {
   const vikeConfigPublicGlobal = resolveVikeConfigPublicGlobal({
     pageConfigGlobalValues: pageConfigGlobal.configValues,
   })
