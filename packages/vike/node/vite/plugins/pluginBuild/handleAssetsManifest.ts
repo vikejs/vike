@@ -25,7 +25,7 @@ const globalObject = getGlobalObject('build/handleAssetsManifest.ts', {
   assetsJsonFilePath: undefined as string | undefined,
 })
 
-// true  => use workaround config.build.ssrEmitAssets
+// yes  => use workaround config.build.ssrEmitAssets
 // false => use workaround extractAssets plugin
 function handleAssetsManifest_isFixEnabled(): boolean {
   // Allow user to toggle between the two workarounds? E.g. based on https://vike.dev/includeAssetsImportedByServer.
