@@ -3,7 +3,6 @@
 //   - While keeping {Page,Global}ConfigPublic or remove Public suffix and rename it to {Page,Global}Config ?
 // - rename EagerLoaded EagerlyLoaded
 // - remove `LazyLoaded` suffix
-// TODO/now: rename PageContextConfig PageContextSomething (for `pageContext: PageContextSomething` usage)
 
 // TO-DO/soon/same-api: use public API internally?
 // TO-DO/soon/flat-pageContext: rename definedAt => definedBy
