@@ -47,9 +47,8 @@ async function loadPageConfigsLazyClientSide(
     }
     throw err
   }
-  const configPublicPageLazy = resolvePageContextConfig(pageFilesClientSide, pageConfigLoaded, pageConfigGlobal)
   const pageContextAddendum = {}
-  objectAssign(pageContextAddendum, configPublicPageLazy)
+  objectAssign(pageContextAddendum, resolvePageContextConfig(pageFilesClientSide, pageConfigLoaded, pageConfigGlobal))
   objectAssign(pageContextAddendum, { _pageFilesLoaded: pageFilesClientSide })
   return pageContextAddendum
 }
