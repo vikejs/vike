@@ -31,11 +31,11 @@ import type {
   ConfigEntries,
   ExportsAll,
   From,
+  PageContextConfig,
   Source,
   Sources,
 } from '../shared/page-configs/resolveVikeConfigPublic.js'
 import type { Config } from './Config.js'
-import type { PageContextConfig } from './Config/ConfigResolved.js'
 import type { AbortStatusCode } from '../shared/route/abort.js'
 import type { GlobalContextServer } from '../node/runtime/globalContext.js'
 import type { GlobalContextClient } from '../client/runtime-client-routing/globalContext.js'

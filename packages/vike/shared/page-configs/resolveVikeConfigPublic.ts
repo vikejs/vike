@@ -18,6 +18,7 @@ export type { Sources }
 export type { From }
 export type { ExportsAll }
 export type { ConfigEntries }
+export type { PageContextConfig }
 
 import { assertDefaultExports, forbiddenDefaultExports } from '../getPageFiles/assert_exports_old_design.js'
 import type { FileType } from '../getPageFiles/fileTypes.js'
@@ -176,6 +177,16 @@ type WithRoute =
     }
 type VikeConfigPublicPageEagerLoaded = VikeConfigPublic & WithRoute
 type VikeConfigPublicGlobal = VikeConfigPublic
+
+type PageContextConfig = {
+  /** The page's configuration values.
+   *
+   * https://vike.dev/config
+   * https://vike.dev/pageContext#config
+   */
+  config: ConfigResolved
+}
+
 function resolveVikeConfigPublicPageEagerLoaded(
   pageConfigGlobalValues: ConfigValues,
   pageConfig: PageConfigRuntime | PageConfigBuildTime,

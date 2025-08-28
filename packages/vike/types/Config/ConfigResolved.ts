@@ -1,18 +1,8 @@
-export type { PageContextConfig }
 export type { ConfigResolved }
 
 import type { VikePackages } from '../VikeNamespace.js'
 import type { ConfigBuiltIn, ConfigBuiltInResolved, ImportString } from '../Config.js'
 import type { Combine, IsNotEmpty, XOR5 } from './helpers.js'
-
-type PageContextConfig = {
-  /** The page's configuration values.
-   *
-   * https://vike.dev/config
-   * https://vike.dev/pageContext#config
-   */
-  config: ConfigResolved
-}
 
 // https://vike.dev/meta#typescript
 type ConfigUnresolved = WithoutImportString<ConfigBuiltIn & Vike.Config>
