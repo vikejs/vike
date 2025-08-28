@@ -8,7 +8,7 @@
 // TO-DO/soon/flat-pageContext: rename definedAt => definedBy
 export { resolveVikeConfigPublicGlobal }
 export { resolveVikeConfigPublicPageEagerLoaded }
-export { resolvePageContextPageConfigLazy }
+export { resolvePageContextConfig }
 export { resolveGlobalContextConfig }
 export type { VikeConfigPublicGlobal }
 export type { VikeConfigPublicPageEagerLoaded }
@@ -245,7 +245,7 @@ function resolveVikeConfigPublicGlobal({
   return getPublicCopy(vikeConfigPublicGlobal)
 }
 
-function resolvePageContextPageConfigLazy(
+function resolvePageContextConfig(
   pageFiles: PageFile[], // V0.4 design
   pageConfig: PageConfigRuntimeLoaded | null, // V1 design
   pageConfigGlobal: PageConfigGlobalRuntime,
