@@ -9,6 +9,7 @@
 export { resolveVikeConfigPublicGlobal }
 export { resolveVikeConfigPublicPageEagerLoaded }
 export { resolvePageContextPageConfigLazy }
+export { resolveGlobalContextConfig }
 export type { VikeConfigPublicGlobal }
 export type { VikeConfigPublicPageEagerLoaded }
 export type { PageContextConfig }
@@ -344,6 +345,23 @@ function resolvePageContextPageConfigLazy(
   })
 
   return pageContextAddendum
+}
+
+function resolveGlobalContextConfig(pageConfigs: PageConfigRuntime[], pageConfigGlobal: PageConfigGlobalRuntime) {
+  const vikeConfigPublicGlobal = resolveVikeConfigPublicGlobal({
+    pageConfigGlobalValues: pageConfigGlobal.configValues,
+  })
+  const vikeConfigPublicPagesEager = Object.fromEntries(
+    pageConfigs.map((pageConfig) => {
+      return resolveVikeConfigPublicPageEagerLoaded(pageConfigGlobal.configValues, pageConfig, pageConfig.configValues)
+    }),
+  )
+  const globalContextAddendum = {
+    _vikeConfigPublicGlobal: vikeConfigPublicGlobal,
+    config: vikeConfigPublicGlobal.config,
+    pages: vikeConfigPublicPagesEager,
+  }
+  return globalContextAddendum
 }
 
 // V1 design
