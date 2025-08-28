@@ -95,8 +95,8 @@ export function Link({ href, locale, ...props }: { locale: string } & AnchorElem
 
 ## Pre-rendering
 
-If you use <Link text="pre-rendering" href="/pre-rendering" /> then, in addition to defining `onBeforeRoute()`, you also need to
-define the `onPrerenderStart()` hook:
+If you use <Link text="pre-rendering" href="/pre-rendering" /> then, in addition to defining <Link href="/onBeforeRoute">`onBeforeRoute()`</Link>, you also need to
+define the <Link href="/onPrerenderStart">`onPrerenderStart()`</Link> hook:
 
 ```ts
 // pages/+onPrerenderStart.ts
