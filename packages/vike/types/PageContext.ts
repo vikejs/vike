@@ -87,25 +87,6 @@ type PageContextBuiltInCommon<Data> = PageContextConfig & {
    */
   data: Data
 
-  /** The page's configuration, including the configs origin and overridden configs.
-   *
-   * https://vike.dev/config
-   */
-  configEntries: ConfigEntries
-
-  /** Custom Exports/Hooks.
-   *
-   * https://vike.dev/exports
-   */
-  exports: Record<string, unknown>
-
-  /**
-   * Same as `pageContext.exports` but cumulative.
-   *
-   * https://vike.dev/exports
-   */
-  exportsAll: ExportsAll
-
   /** The URL you provided to Vike when calling `renderPage({ urlOriginal })` in your server middleware.
    *
    * https://vike.dev/renderPage

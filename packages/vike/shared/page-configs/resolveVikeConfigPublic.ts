@@ -185,6 +185,25 @@ type PageContextConfig = {
    * https://vike.dev/pageContext#config
    */
   config: ConfigResolved
+
+  /** The page's configuration, including the configs origin and overridden configs.
+   *
+   * https://vike.dev/config
+   */
+  configEntries: ConfigEntries
+
+  /** Custom Exports/Hooks.
+   *
+   * https://vike.dev/exports
+   */
+  exports: Record<string, unknown>
+
+  /**
+   * Same as `pageContext.exports` but cumulative.
+   *
+   * https://vike.dev/exports
+   */
+  exportsAll: ExportsAll
 }
 
 function resolveVikeConfigPublicPageEagerLoaded(
