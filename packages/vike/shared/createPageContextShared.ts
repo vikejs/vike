@@ -7,9 +7,9 @@ import { changeEnumerable, objectAssign } from './utils.js'
 
 function createPageContextShared<T extends PageContextPrepareMinimum>(
   pageContextCreated: T,
-  vikeConfigPublic: GlobalConfigPublic,
+  globalConfigPublic: GlobalConfigPublic,
 ) {
-  objectAssign(pageContextCreated, vikeConfigPublic)
+  objectAssign(pageContextCreated, globalConfigPublic)
 
   return pageContextCreated
 }
