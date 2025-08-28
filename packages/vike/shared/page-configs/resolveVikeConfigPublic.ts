@@ -190,7 +190,7 @@ function resolveGlobalConfigPublicPage(
   pageConfig: PageConfigRuntime | PageConfigBuildTime,
   pageConfigValues: ConfigValues,
 ): [string, PageConfigPublicWithRoute] {
-  const pageConfigPublic_ = resolveGlobalConfigPublic_base({ pageConfigGlobalValues, pageConfigValues })
+  const pageConfigPublic_ = resolvePageConfigPublic({ pageConfigGlobalValues, pageConfigValues })
   const pageConfigPublic = getPublicCopy(pageConfigPublic_)
   const page = (() => {
     if (!pageConfig.isErrorPage) {
@@ -220,7 +220,7 @@ function getPublicCopy(configInternal: ReturnType<typeof resolveConfigPublic_V1D
   }
   return configPublic
 }
-function resolveGlobalConfigPublic_base({
+function resolvePageConfigPublic({
   pageConfigGlobalValues,
   pageConfigValues,
 }: { pageConfigGlobalValues: ConfigValues; pageConfigValues: ConfigValues }) {
@@ -261,7 +261,7 @@ function resolvePageContextConfig(
   let sources: Sources
   let from: From
   if (pageConfig) {
-    const res = resolveGlobalConfigPublic_base({
+    const res = resolvePageConfigPublic({
       pageConfigGlobalValues: pageConfigGlobal.configValues,
       pageConfigValues: pageConfig.configValues,
     })
