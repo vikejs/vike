@@ -85,7 +85,7 @@ import type { FilePath } from '../../../types/FilePath.js'
 import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
 import {
   resolveGlobalConfigPublic,
-  type VikeConfigPublic,
+  type GlobalConfigPublic,
 } from '../../../shared/page-configs/resolveVikeConfigPublic.js'
 import { getConfigValuesBase, isJsonValue } from '../../../shared/page-configs/serialize/serializeConfigValues.js'
 import {
@@ -120,7 +120,7 @@ type PrerenderContext = {
 } & ({ [K in keyof PrerenderContextPublic]: null } | PrerenderContextPublic)
 
 // We need to explicitly define it to avoid TypeScript circular definition
-type VikeConfigInternal = VikeConfigPublic & {
+type VikeConfigInternal = GlobalConfigPublic & {
   _pageConfigs: PageConfigBuildTime[]
   _pageConfigGlobal: PageConfigGlobalBuildTime
   _vikeConfigDependencies: Set<string>

@@ -16,7 +16,7 @@ export type { Sources }
 export type { From }
 export type { ExportsAll }
 export type { ConfigEntries }
-export type { VikeConfigPublic }
+export type { GlobalConfigPublic }
 
 import { assertDefaultExports, forbiddenDefaultExports } from '../getPageFiles/assert_exports_old_design.js'
 import type { FileType } from '../getPageFiles/fileTypes.js'
@@ -344,7 +344,7 @@ function resolveGlobalContextConfig(pageConfigs: PageConfigRuntime[], pageConfig
   return resolveGlobalConfigPublic(pageConfigs, pageConfigGlobal, (c) => c.configValues)
 }
 
-type VikeConfigPublic = Omit<ReturnType<typeof resolveGlobalConfigPublic>, '_vikeConfigPublic'>
+type GlobalConfigPublic = Omit<ReturnType<typeof resolveGlobalConfigPublic>, '_vikeConfigPublic'>
 function resolveGlobalConfigPublic<
   PageConfig extends PageConfigRuntime | PageConfigBuildTime,
   PageConfigGlobal extends PageConfigGlobalRuntime | PageConfigGlobalBuildTime,
