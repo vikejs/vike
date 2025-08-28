@@ -464,6 +464,8 @@ function resolveConfigPublic_V1Design(pageConfig: { configValues: ConfigValues }
   }
 }
 
+// V0.4 design
+// TO-DO/next-major-release: remove
 function getExportValues(pageFile: PageFile) {
   const { filePath, fileExports } = pageFile
   assert(fileExports) // assume pageFile.loadFile() was called
