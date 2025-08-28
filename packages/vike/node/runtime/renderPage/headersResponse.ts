@@ -17,7 +17,8 @@ function resolveHeadersResponseFinal(
   headersResponse.forEach((value, key) => {
     headers.push([key, value])
   })
-  // An 5xx error page shouldn't be cached (it should be temporary)
+  // 5xx error pages are temporary and shouldn't be cached.
+  // This overrides any previously set Cache-Control value.
   if (statusCode >= 500) headersResponse.set('Cache-Control', cacheControlDisable)
   return headers
 }
