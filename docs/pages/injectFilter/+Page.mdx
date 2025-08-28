@@ -75,7 +75,7 @@ type InjectFilterEntry = {
   assetType: "image" | "script" | "font" | "style" | "audio" | "video" | "document" |
              "fetch" | "track" | "worker" | "embed" | "object" | null
   mediaType: string // MIME type
-  isEntry: boolean // true  ⇒ <script> or <link rel="stylesheet" type="text/css">
+  isEntry: boolean // yes  ⇒ <script> or <link rel="stylesheet" type="text/css">
                    // false ⇒ preload tag, e.g. <link rel="preload" as="font">
 }
 ```

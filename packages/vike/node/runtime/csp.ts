@@ -1,23 +1,29 @@
 export { resolvePageContextCspNone }
 export { inferNonceAttr }
-export { addCspHeader }
+export { addCspResponseHeader }
 export type { PageContextCspNonce }
 
 import { import_ } from '@brillout/import'
+import { assert } from './utils.js'
 import type { VikeConfigPublicPageLazyLoaded } from '../../shared/getPageFiles.js'
 import type { PageContextServer } from '../../types/PageContext.js'
 
-async function resolvePageContextCspNone(pageContext: VikeConfigPublicPageLazyLoaded & PageContextCspNonce) {
-  if (pageContext.cspNonce) return // already set by user e.g. `renderPage({ cspNonce: '123456789' })`
+async function resolvePageContextCspNone(
+  pageContext: VikeConfigPublicPageLazyLoaded & Partial<PageContextCspNonce>,
+): Promise<null | { cspNonce: string | null }> {
+  if (pageContext.cspNonce) return null // already set by user e.g. `renderPage({ cspNonce: '123456789' })`
+
   const { csp } = pageContext.config
-  if (!csp?.nonce) return
-  let cspNonce: string
-  if (csp.nonce === true) {
-    cspNonce = await generateNonce()
-  } else {
-    cspNonce = await csp.nonce(pageContext as any)
+  const pageContextAddendum = { cspNonce: null as string | null }
+
+  if (csp?.nonce) {
+    if (csp.nonce === true) {
+      pageContextAddendum.cspNonce = await generateNonce()
+    } else {
+      pageContextAddendum.cspNonce = await csp.nonce(pageContext as any)
+    }
   }
-  const pageContextAddendum = { cspNonce }
+
   return pageContextAddendum
 }
 
@@ -40,7 +46,8 @@ function inferNonceAttr(pageContext: PageContextCspNonce): string {
   return nonceAttr
 }
 
-function addCspHeader(pageContext: PageContextCspNonce, headersResponse: Headers) {
+function addCspResponseHeader(pageContext: PageContextCspNonce, headersResponse: Headers) {
+  assert(pageContext.cspNonce === null || typeof pageContext.cspNonce === 'string') // ensure resolvePageContextCspNone() is called before addCspResponseHeader()
   if (!pageContext.cspNonce) return
   if (headersResponse.get('Content-Security-Policy')) return
   headersResponse.set('Content-Security-Policy', `script-src 'self' 'nonce-${pageContext.cspNonce}'`)
