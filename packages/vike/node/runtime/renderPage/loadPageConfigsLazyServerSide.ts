@@ -39,7 +39,7 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
   })
 
   // Load the page's + files
-  updateType(pageContext, await loadPageUserFiles(pageContext))
+  objectAssign(pageContext, await loadPageUserFiles(pageContext))
 
   // Resolve new computed pageContext properties
   updateType(pageContext, await resolvePageContext(pageContext))
@@ -155,33 +155,24 @@ async function loadPageUserFiles(
     _pageConfig: null | PageConfigRuntime
   },
 ) {
-  const [{ configPublicPageLazy }] = await Promise.all([
-    loadPageUserFiles_v1Design(pageContext),
+  const [{ pageContextAddendum }] = await Promise.all([
+    (async () => {
+      const pageFilesServerSide = getPageFilesServerSide(pageContext._pageFilesAll, pageContext.pageId)
+      const isDev = !pageContext._globalContext._isProduction
+      const pageConfigLoaded = !pageContext._pageConfig
+        ? null
+        : await loadAndParseVirtualFilePageEntry(pageContext._pageConfig, isDev)
+      await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))
+      const pageContextAddendum = resolveVikeConfigPublicPageLazyLoaded(
+        pageFilesServerSide,
+        pageConfigLoaded,
+        pageContext._globalContext._pageConfigGlobal,
+      )
+      return { pageContextAddendum }
+    })(),
     analyzePageClientSideInit(pageContext._globalContext._pageFilesAll, pageContext.pageId, {
       sharedPageFilesAlreadyLoaded: true,
     }),
   ])
-  objectAssign(pageContext, configPublicPageLazy)
-  return pageContext
-}
-async function loadPageUserFiles_v1Design(
-  pageContext: PageContext_loadPageConfigsLazyServerSide & {
-    _pageConfig: null | PageConfigRuntime
-  },
-) {
-  const pageFilesServerSide = getPageFilesServerSide(pageContext._pageFilesAll, pageContext.pageId)
-  const isDev = !pageContext._globalContext._isProduction
-  const pageConfigLoaded = !pageContext._pageConfig
-    ? null
-    : await loadAndParseVirtualFilePageEntry(pageContext._pageConfig, isDev)
-  await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))
-  const configPublicPageLazy = resolveVikeConfigPublicPageLazyLoaded(
-    pageFilesServerSide,
-    pageConfigLoaded,
-    pageContext._globalContext._pageConfigGlobal,
-  )
-  return {
-    configPublicPageLazy,
-    pageFilesLoaded: pageFilesServerSide,
-  }
+  return pageContextAddendum
 }
