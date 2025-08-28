@@ -39,7 +39,7 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
   })
 
   // Load the page's + files
-  updateType(pageContext, await loadPageUserFiles(pageContext))
+  objectAssign(pageContext, await loadPageUserFiles(pageContext))
 
   // Resolve new computed pageContext properties
   updateType(pageContext, await resolvePageContext(pageContext))
@@ -174,6 +174,5 @@ async function loadPageUserFiles(
       sharedPageFilesAlreadyLoaded: true,
     }),
   ])
-  objectAssign(pageContext, pageContextAddendum)
-  return pageContext
+  return pageContextAddendum
 }
