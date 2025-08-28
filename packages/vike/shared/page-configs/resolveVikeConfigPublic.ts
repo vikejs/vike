@@ -143,7 +143,7 @@ type SourceConfigsComputed = {
   value: unknown
 }
 
-type VikeConfigPublic_ = {
+type ConfigPublic = {
   config: ConfigResolved
   // TO-DO/soon/flat-pageContext: expose publicly?
   _source: Source
@@ -197,7 +197,7 @@ type PageContextConfig = {
   pageExports: Record<string, unknown>
 }
 
-type PageConfigPublicWithRoute = VikeConfigPublic_ & WithRoute
+type PageConfigPublicWithRoute = ConfigPublic & WithRoute
 function resolveGlobalConfigPage(
   pageConfigGlobalValues: ConfigValues,
   pageConfig: PageConfigRuntime | PageConfigBuildTime,
@@ -220,7 +220,7 @@ function resolveGlobalConfigPage(
   }
   return [pageConfig.pageId, page]
 }
-function getPublicCopy(configPublic: ReturnType<typeof resolveConfigPublic_V1Design>): VikeConfigPublic_ {
+function getPublicCopy(configPublic: ReturnType<typeof resolveConfigPublic_V1Design>) {
   return {
     config: configPublic.config,
     _source: configPublic.source,
