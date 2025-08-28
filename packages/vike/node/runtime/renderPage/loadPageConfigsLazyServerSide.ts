@@ -26,7 +26,7 @@ import { execHookServer } from './execHookServer.js'
 import type { PassToClient } from '../html/serializeContext.js'
 import type { PageContextAfterRoute } from '../../../shared/route/index.js'
 import type { PageContextCreated } from './createPageContextServerSide.js'
-import { resolveHeadersResponse } from './headersResponse.js'
+import { resolveHeadersResponseEarly } from './headersResponse.js'
 import { resolvePageContextCspNone } from '../csp.js'
 
 type PageContext_loadPageConfigsLazyServerSide = PageContextCreated &
@@ -98,7 +98,7 @@ async function resolvePageContext(pageContext: PageContextAfterPageEntryLoaded) 
     Page: pageContext.exports.Page,
     _isHtmlOnly: isHtmlOnly,
     _passToClient: passToClient,
-    headersResponse: await resolveHeadersResponse(pageContext),
+    headersResponse: await resolveHeadersResponseEarly(pageContext),
   })
 
   objectAssign(pageContext, {

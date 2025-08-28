@@ -1,4 +1,4 @@
-export { resolveHeadersResponse }
+export { resolveHeadersResponseEarly }
 export { resolveHeadersResponseFinal }
 
 import { addCspResponseHeader, PageContextCspNonce } from '../csp.js'
@@ -24,7 +24,7 @@ function resolveHeadersResponseFinal(
   return headers
 }
 
-async function resolveHeadersResponse(
+async function resolveHeadersResponseEarly(
   pageContext: PageContextAfterPageEntryLoaded & PageContextCspNonce,
 ): Promise<Headers> {
   const headersResponse = await mergeHeaders(pageContext)
