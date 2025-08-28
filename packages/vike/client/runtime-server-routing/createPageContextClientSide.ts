@@ -34,7 +34,7 @@ async function createPageContextClientSide() {
   objectAssign(pageContextCreated, getPageContextSerializedInHtml())
 
   // Sets pageContext.config to global configs
-  updateType(pageContextCreated, createPageContextShared(pageContextCreated, globalContext._vikeConfigPublicGlobal))
+  updateType(pageContextCreated, createPageContextShared(pageContextCreated, globalContext._vikeConfigPublic))
 
   // Sets pageContext.config to local configs (overrides the pageContext.config set above)
   updateType(pageContextCreated, await loadPageConfigsLazyClientSideAndExecHook(pageContextCreated))

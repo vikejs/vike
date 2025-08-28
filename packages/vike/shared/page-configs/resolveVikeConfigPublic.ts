@@ -371,10 +371,14 @@ function resolveVikeConfigPublic<
       return resolvePagesEagerLoaded(pageConfigGlobalValues, pageConfig, pageConfigValues)
     }),
   )
-  return {
+
+  const vikeConfigPublic = {
     ...globalConfigPublic,
     pages,
-    _vikeConfigPublicGlobal: globalConfigPublic,
+  }
+  return {
+    ...vikeConfigPublic,
+    _vikeConfigPublic: vikeConfigPublic,
   }
 }
 

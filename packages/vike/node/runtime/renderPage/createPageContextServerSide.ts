@@ -40,7 +40,7 @@ function createPageContextServerSide(
     isClientSideNavigation: args.ssr?.isClientSideNavigation ?? false,
   })
 
-  objectAssign(pageContextCreated, globalContext._vikeConfigPublicGlobal)
+  objectAssign(pageContextCreated, globalContext._vikeConfigPublic)
 
   // pageContext.urlParsed
   const pageContextUrlComputed = getPageContextUrlComputed(pageContextCreated)
@@ -69,7 +69,7 @@ function createPageContextServerSide(
     objectAssign(pageContextCreated, { headers })
   }
 
-  const pageContextAugmented = createPageContextShared(pageContextCreated, globalContext._vikeConfigPublicGlobal)
+  const pageContextAugmented = createPageContextShared(pageContextCreated, globalContext._vikeConfigPublic)
   updateType(pageContextCreated, pageContextAugmented)
 
   return pageContextCreated
