@@ -5,7 +5,7 @@ export { scriptCommonAttrs }
 
 import { assert } from '../../../utils.js'
 import type { PageAsset } from '../../getPageAssets.js'
-import { inferNonceAttr, type PageContextCspNonce } from '../../../csp.js'
+import { inferNonceAttr, type PageContextCspNonce } from '../../csp.js'
 
 // We can't use `defer` here. With `defer`, the entry script won't start before `</body>` has been parsed, preventing progressive hydration during SSR streaming, see https://github.com/vikejs/vike/pull/1271
 const scriptCommonAttrs = 'type="module" async'

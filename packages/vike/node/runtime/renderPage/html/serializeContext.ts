@@ -18,7 +18,7 @@ import { getPropKeys, getPropVal, setPropVal } from './propKeys.js'
 import type { GlobalContextServerInternal } from '../../globalContext.js'
 import type { PageContextCreated } from '../createPageContextServerSide.js'
 import type { PageContextBegin } from '../../renderPage.js'
-import type { PageContextCspNonce } from '../../csp.js'
+import type { PageContextCspNonce } from '../csp.js'
 
 const passToClientBuiltInPageContext = [
   'abortReason',
