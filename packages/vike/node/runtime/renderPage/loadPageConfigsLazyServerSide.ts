@@ -157,18 +157,18 @@ async function loadPageUserFiles(
 ) {
   const [{ configPublicPageLazy }] = await Promise.all([
     (async () => {
-  const pageFilesServerSide = getPageFilesServerSide(pageContext._pageFilesAll, pageContext.pageId)
-  const isDev = !pageContext._globalContext._isProduction
-  const pageConfigLoaded = !pageContext._pageConfig
-    ? null
-    : await loadAndParseVirtualFilePageEntry(pageContext._pageConfig, isDev)
-  await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))
-  const configPublicPageLazy = resolveVikeConfigPublicPageLazyLoaded(
-    pageFilesServerSide,
-    pageConfigLoaded,
-    pageContext._globalContext._pageConfigGlobal,
-  )
-  return { configPublicPageLazy }
+      const pageFilesServerSide = getPageFilesServerSide(pageContext._pageFilesAll, pageContext.pageId)
+      const isDev = !pageContext._globalContext._isProduction
+      const pageConfigLoaded = !pageContext._pageConfig
+        ? null
+        : await loadAndParseVirtualFilePageEntry(pageContext._pageConfig, isDev)
+      await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))
+      const configPublicPageLazy = resolveVikeConfigPublicPageLazyLoaded(
+        pageFilesServerSide,
+        pageConfigLoaded,
+        pageContext._globalContext._pageConfigGlobal,
+      )
+      return { configPublicPageLazy }
     })(),
     analyzePageClientSideInit(pageContext._globalContext._pageFilesAll, pageContext.pageId, {
       sharedPageFilesAlreadyLoaded: true,
