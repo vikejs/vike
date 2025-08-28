@@ -24,16 +24,17 @@ function resolveHeadersResponseFinal(
   return headers
 }
 
-async function resolveHeadersResponseEarly(
-  pageContext: PageContextAfterPageEntryLoaded & PageContextCspNonce,
-): Promise<Headers> {
+async function resolveHeadersResponseEarly(pageContext: PageContextAfterPageEntryLoaded & PageContextCspNonce) {
   const headersResponse = await resolveHeadersResponseConfig(pageContext)
   if (!headersResponse.get('Cache-Control')) {
     const cacheControl = getCacheControl(pageContext.pageId, pageContext._globalContext._pageConfigs)
     if (cacheControl) headersResponse.set('Cache-Control', cacheControl)
   }
   addCspResponseHeader(pageContext, headersResponse)
-  return headersResponse
+  const pageContextAddendum = {
+    headersResponse,
+  }
+  return pageContextAddendum
 }
 
 async function resolveHeadersResponseConfig(pageContext: PageContextAfterPageEntryLoaded): Promise<Headers> {

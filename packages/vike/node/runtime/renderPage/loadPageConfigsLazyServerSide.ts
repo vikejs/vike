@@ -98,8 +98,9 @@ async function resolvePageContext(pageContext: PageContextAfterPageEntryLoaded) 
     Page: pageContext.exports.Page,
     _isHtmlOnly: isHtmlOnly,
     _passToClient: passToClient,
-    headersResponse: await resolveHeadersResponseEarly(pageContext),
   })
+
+  objectAssign(pageContext, await resolveHeadersResponseEarly(pageContext))
 
   objectAssign(pageContext, {
     __getPageAssets: async () => {
