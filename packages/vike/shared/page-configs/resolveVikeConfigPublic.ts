@@ -189,6 +189,7 @@ type WithRoute =
       route?: undefined
       isErrorPage: true
     }
+// We explicitly define the return type to avoid the cyclic type dependency: Route => PageContext => PageContextConfig => GlobalConfigPublic => typeof resolveGlobalConfigPublic() => typeof resolveGlobalConfigPage()
 type PageConfigPublicWithRoute = ConfigPublic & WithRoute
 function resolveGlobalConfigPage(
   pageConfigGlobalValues: ConfigValues,
