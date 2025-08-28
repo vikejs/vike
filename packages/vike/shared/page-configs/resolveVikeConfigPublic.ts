@@ -143,23 +143,6 @@ type SourceConfigsComputed = {
   value: unknown
 }
 
-type ConfigPublic = {
-  config: ConfigResolved
-  // TO-DO/soon/flat-pageContext: expose publicly?
-  _source: Source
-  _sources: Sources
-  _from: From
-}
-type WithRoute =
-  | {
-      route: Route
-      isErrorPage?: undefined
-    }
-  | {
-      route?: undefined
-      isErrorPage: true
-    }
-
 type PageContextConfig = {
   /** The page's configuration values.
    *
@@ -197,6 +180,15 @@ type PageContextConfig = {
   pageExports: Record<string, unknown>
 }
 
+type WithRoute =
+  | {
+      route: Route
+      isErrorPage?: undefined
+    }
+  | {
+      route?: undefined
+      isErrorPage: true
+    }
 type PageConfigPublicWithRoute = ConfigPublic & WithRoute
 function resolveGlobalConfigPage(
   pageConfigGlobalValues: ConfigValues,
@@ -220,9 +212,12 @@ function resolveGlobalConfigPage(
   }
   return [pageConfig.pageId, page]
 }
+
+type ConfigPublic = ReturnType<typeof getPublicCopy>
 function getPublicCopy(configPublic: ReturnType<typeof resolveConfigPublic_V1Design>) {
   return {
     config: configPublic.config,
+    // TO-DO/soon/flat-pageContext: expose publicly?
     _source: configPublic.source,
     _sources: configPublic.sources,
     _from: configPublic.from,
