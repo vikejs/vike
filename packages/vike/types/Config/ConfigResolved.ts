@@ -11,15 +11,18 @@ type PageContextConfig = {
    * https://vike.dev/config
    * https://vike.dev/pageContext#config
    */
-  config: ConfigResolved &
-    // TODO/now: remove the whole XOR logic
-    (ConfigVikePackagesNotEmptyXor extends true ? ConfigVikePackagesIntersection : ConfigVikePackagesCombined)
+  config: ConfigResolved
 }
 
 // https://vike.dev/meta#typescript
 type ConfigUnresolved = WithoutImportString<ConfigBuiltIn & Vike.Config>
 type ConfigResolvedOnly = ConfigBuiltInResolved & Vike.ConfigResolved
-type ConfigResolved = ConfigResolvedOnly & Omit<ConfigUnresolved, keyof ConfigResolvedOnly>
+type ConfigResolved = ConfigResolvedOnly & Omit<ConfigUnresolved, keyof ConfigResolvedOnly> & ConfigResolvedPackages
+
+// TODO/now: remove the whole XOR logic
+type ConfigResolvedPackages = ConfigVikePackagesNotEmptyXor extends true
+  ? ConfigVikePackagesIntersection
+  : ConfigVikePackagesCombined
 
 // Preserves JSDocs, such as the the JSDoc pageContext.config.title defined by vike-react
 type ConfigVikePackagesIntersection = VikePackages.ConfigVikeReact &
