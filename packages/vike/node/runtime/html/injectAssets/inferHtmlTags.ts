@@ -1,15 +1,15 @@
 export { inferAssetTag }
 export { inferPreloadTag }
 export { inferEarlyHintLink }
-export { scriptAttrs }
+export { scriptCommonAttrs }
 
 import { assert } from '../../utils.js'
 import type { PageAsset } from '../../renderPage/getPageAssets.js'
 import { inferNonceAttr, type PageContextCspNonce } from '../../csp.js'
 
-// TODO/now rename scriptAttrs scriptCommonAttrs
+// TODO/now rename scriptCommonAttrs scriptCommonAttrs
 // We can't use `defer` here. With `defer`, the entry script won't start before `</body>` has been parsed, preventing progressive hydration during SSR streaming, see https://github.com/vikejs/vike/pull/1271
-const scriptAttrs = 'type="module" async'
+const scriptCommonAttrs = 'type="module" async'
 
 function inferPreloadTag(pageAsset: PageAsset): string {
   const { src, assetType, mediaType } = pageAsset
@@ -32,7 +32,7 @@ function inferAssetTag(pageAsset: PageAsset, pageContext: PageContextCspNonce): 
   if (assetType === 'script') {
     assert(mediaType === 'text/javascript')
     const nonceAttr = inferNonceAttr(pageContext)
-    return `<script src="${src}" ${scriptAttrs}${nonceAttr}></script>`
+    return `<script src="${src}" ${scriptCommonAttrs}${nonceAttr}></script>`
   }
   if (assetType === 'style') {
     // WARNING: if changing following line, then also update https://github.com/vikejs/vike/blob/fae90a15d88e5e87ca9fcbb54cf2dc8773d2f229/vike/client/shared/removeFoucBuster.ts#L29
