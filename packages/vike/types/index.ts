@@ -52,7 +52,7 @@ export type {
   RouteSync,
 } from './Config.js'
 
-export type { ConfigResolved } from './Config/PageContextConfig.js'
+export type { ConfigResolved } from './Config/ConfigResolved.js'
 export type { ConfigEnv } from './PageConfig.js'
 export type {
   ConfigDefinition,
