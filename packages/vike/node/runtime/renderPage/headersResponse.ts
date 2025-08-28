@@ -27,7 +27,7 @@ function resolveHeadersResponseFinal(
 async function resolveHeadersResponseEarly(
   pageContext: PageContextAfterPageEntryLoaded & PageContextCspNonce,
 ): Promise<Headers> {
-  const headersResponse = await mergeHeaders(pageContext)
+  const headersResponse = await resolveHeadersResponseConfig(pageContext)
   if (!headersResponse.get('Cache-Control')) {
     const cacheControl = getCacheControl(pageContext.pageId, pageContext._globalContext._pageConfigs)
     if (cacheControl) headersResponse.set('Cache-Control', cacheControl)
@@ -36,7 +36,7 @@ async function resolveHeadersResponseEarly(
   return headersResponse
 }
 
-async function mergeHeaders(pageContext: PageContextAfterPageEntryLoaded): Promise<Headers> {
+async function resolveHeadersResponseConfig(pageContext: PageContextAfterPageEntryLoaded): Promise<Headers> {
   const headersMerged = new Headers()
   await Promise.all(
     (pageContext.config.headersResponse ?? []).map(
