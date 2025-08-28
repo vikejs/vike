@@ -1,3 +1,7 @@
+// Public usage
+export { getVikeConfig }
+export type { VikeConfig }
+
 // Internal usage
 export { getVikeConfigInternal }
 export { getVikeConfigInternalOptional }
@@ -10,10 +14,6 @@ export { getConfigDefinitionOptional }
 export { getVikeConfigFromCliOrEnv }
 export type { VikeConfigInternal }
 export type { PageConfigBuildTimeBeforeComputed }
-
-// Public usage
-export { getVikeConfig }
-export type { VikeConfig }
 
 import {
   assertPosixPath,
