@@ -11,9 +11,10 @@ import type { PageContextServer } from '../../types/PageContext.js'
 async function resolvePageContextCspNone(
   pageContext: VikeConfigPublicPageLazyLoaded & Partial<PageContextCspNonce>,
 ): Promise<null | { cspNonce: null | string }> {
-  const pageContextAddendum = { cspNonce: null as null | string }
   if (pageContext.cspNonce) return null // already set by user e.g. `renderPage({ cspNonce: '123456789' })`
+
   const { csp } = pageContext.config
+  const pageContextAddendum = { cspNonce: null as null | string }
   if (!csp?.nonce) return pageContextAddendum
   if (csp.nonce === true) {
     pageContextAddendum.cspNonce = await generateNonce()
