@@ -75,20 +75,6 @@ type ConfigEntries = Record<
     configDefinedByFile: string | null
   }[]
 >
-type VikeConfigPublicPageLazyLoaded = {
-  config: ConfigResolved
-  source: Source
-  sources: Sources
-  from: From
-
-  // TO-DO/eventually: deprecate every prop below
-  configEntries: ConfigEntries
-  exports: Record<string, unknown>
-  exportsAll: ExportsAll
-  /** @deprecated */
-  pageExports: Record<string, unknown>
-}
-
 type From = {
   configsStandard: Record<
     string, // configName
@@ -186,6 +172,12 @@ type PageContextConfig = {
    */
   config: ConfigResolved
 
+  source: Source
+  sources: Sources
+  from: From
+
+  // TO-DO/eventually: deprecate every prop below
+
   /** The page's configuration, including the configs origin and overridden configs.
    *
    * https://vike.dev/config
@@ -204,7 +196,11 @@ type PageContextConfig = {
    * https://vike.dev/exports
    */
   exportsAll: ExportsAll
+
+  /** @deprecated */
+  pageExports: Record<string, unknown>
 }
+type VikeConfigPublicPageLazyLoaded = PageContextConfig
 
 function resolveVikeConfigPublicPageEagerLoaded(
   pageConfigGlobalValues: ConfigValues,
