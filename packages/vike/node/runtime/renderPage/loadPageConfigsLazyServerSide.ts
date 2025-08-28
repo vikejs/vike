@@ -1,6 +1,7 @@
 export { loadPageConfigsLazyServerSide }
 export type { PageContext_loadPageConfigsLazyServerSide }
 export type { PageConfigsLazy }
+export type { PageContextAfterPageEntryLoaded }
 
 import { type VikeConfigPublicPageLazyLoaded, getPageFilesServerSide } from '../../../shared/getPageFiles.js'
 import { resolveVikeConfigPublicPageLazyLoaded } from '../../../shared/page-configs/resolveVikeConfigPublic.js'
@@ -10,7 +11,6 @@ import {
   assertWarning,
   hasProp,
   isArray,
-  isCallable,
   isObject,
   objectAssign,
   PromiseType,
@@ -23,11 +23,11 @@ import { analyzePage } from './analyzePage.js'
 import type { MediaType } from './inferMediaType.js'
 import { loadAndParseVirtualFilePageEntry } from '../../../shared/page-configs/loadAndParseVirtualFilePageEntry.js'
 import { execHookServer } from './execHookServer.js'
-import { getCacheControl } from './getCacheControl.js'
 import type { PassToClient } from '../html/serializeContext.js'
 import type { PageContextAfterRoute } from '../../../shared/route/index.js'
 import type { PageContextCreated } from './createPageContextServerSide.js'
-import { addCspResponseHeader, type PageContextCspNonce, resolvePageContextCspNone } from '../csp.js'
+import { resolveHeadersResponse } from './headersResponse.js'
+import { resolvePageContextCspNone } from '../csp.js'
 
 type PageContext_loadPageConfigsLazyServerSide = PageContextCreated &
   PageContextAfterRoute & { is404: boolean | null; pageId: string }
@@ -50,10 +50,10 @@ async function loadPageConfigsLazyServerSide(pageContext: PageContext_loadPageCo
   return pageContext
 }
 
-type PageContextBeforeResolve = PageContext_loadPageConfigsLazyServerSide & {
+type PageContextAfterPageEntryLoaded = PageContext_loadPageConfigsLazyServerSide & {
   _pageConfig: null | PageConfigRuntime
 } & VikeConfigPublicPageLazyLoaded
-async function resolvePageContext(pageContext: PageContextBeforeResolve) {
+async function resolvePageContext(pageContext: PageContextAfterPageEntryLoaded) {
   const { isHtmlOnly, clientEntries, clientDependencies } = analyzePage(pageContext)
 
   const passToClient: PassToClient = []
@@ -183,33 +183,4 @@ async function loadPageUserFiles_v1Design(
     configPublicPageLazy,
     pageFilesLoaded: pageFilesServerSide,
   }
-}
-
-// TODO/now: move all response headers code to headersResponse.ts
-async function resolveHeadersResponse(pageContext: PageContextBeforeResolve & PageContextCspNonce): Promise<Headers> {
-  const headersResponse = await mergeHeaders(pageContext)
-  if (!headersResponse.get('Cache-Control')) {
-    const cacheControl = getCacheControl(pageContext.pageId, pageContext._globalContext._pageConfigs)
-    if (cacheControl) headersResponse.set('Cache-Control', cacheControl)
-  }
-  addCspResponseHeader(pageContext, headersResponse)
-  return headersResponse
-}
-
-async function mergeHeaders(pageContext: PageContextBeforeResolve): Promise<Headers> {
-  const headersMerged = new Headers()
-  await Promise.all(
-    (pageContext.config.headersResponse ?? []).map(async (headers) => {
-      let headersInit: HeadersInit
-      if (isCallable(headers)) {
-        headersInit = await headers(pageContext as any)
-      } else {
-        headersInit = headers
-      }
-      new Headers(headersInit).forEach((value, key) => {
-        headersMerged.append(key, value)
-      })
-    }),
-  )
-  return headersMerged
 }
