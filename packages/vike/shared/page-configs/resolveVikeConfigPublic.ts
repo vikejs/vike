@@ -353,8 +353,8 @@ function resolveGlobalConfigPublic<
 ) {
   // global
   const pageConfigGlobalValues = getConfigValues(pageConfigGlobal, true)
-  const globalConfigPublic_ = resolveConfigPublic_V1Design({ configValues: pageConfigGlobalValues })
-  const globalConfigPublic = getPublicCopy(globalConfigPublic_)
+  const globalConfigPublicBase_ = resolveConfigPublic_V1Design({ configValues: pageConfigGlobalValues })
+  const globalConfigPublicBase = getPublicCopy(globalConfigPublicBase_)
 
   // pages
   const pages = Object.fromEntries(
@@ -364,13 +364,13 @@ function resolveGlobalConfigPublic<
     }),
   )
 
-  const vikeConfigPublic = {
-    ...globalConfigPublic,
+  const globalConfigPublic = {
+    ...globalConfigPublicBase,
     pages,
   }
   return {
-    ...vikeConfigPublic,
-    _globalConfigPublic: vikeConfigPublic,
+    ...globalConfigPublic,
+    _globalConfigPublic: globalConfigPublic,
   }
 }
 
