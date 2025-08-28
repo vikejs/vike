@@ -27,7 +27,7 @@ async function createPageContextClientSide(urlOriginal: string) {
   const pageContextUrlComputed = getPageContextUrlComputed(pageContextCreated)
   objectAssign(pageContextCreated, pageContextUrlComputed)
 
-  const pageContextAugmented = createPageContextShared(pageContextCreated, globalContext._vikeConfigPublic)
+  const pageContextAugmented = createPageContextShared(pageContextCreated, globalContext._globalConfigPublic)
   updateType(pageContextCreated, pageContextAugmented)
 
   return pageContextCreated
