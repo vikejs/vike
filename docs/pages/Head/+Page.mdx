@@ -24,32 +24,34 @@ import favicon from './favicon.png'
 import iconMobile from './iconMobile.png'
 
 export function Head() {
-  return <>
-    {/* Icon shown in the browser tab (aka favicon) */
-    <link rel="icon" href={favicon} type="image/svg+xml">
+  return (
+    <>
+      {/* Icon shown in the browser tab (aka favicon) */}
+      <link rel="icon" href={favicon} type="image/svg+xml" />
 
-    {/* Icon shown on mobile homescreens (PWA) */
-    <link rel="apple-touch-icon" href={iconMobile} type="image/svg+xml">
+      {/* Icon shown on mobile homescreens (PWA) */}
+      <link rel="apple-touch-icon" href={iconMobile} type="image/svg+xml" />
 
-    {/* Add script tag */}
-    <script type="text/javascript" src="https://example.com/some-script.js"></script>
+      {/* Add script tag */}
+      <script type="text/javascript" src="https://example.com/some-script.js"></script>
 
-    {/* Image shown when sharing on social sites (Twitter, WhatsApp, ...) */}
-    <meta property="og:image" content={previewImage}>
-    {/* More Open Graph tags */}
-    <meta property="og:type" content="website">
-    <meta property="article:author" content="https://example.com/author">
+      {/* Image shown when sharing on social sites (Twitter, WhatsApp, ...) */}
+      <meta property="og:image" content={previewImage} />
+      {/* More Open Graph tags */}
+      <meta property="og:type" content="website" />
+      <meta property="article:author" content="https://example.com/author" />
 
-    {/* Settings for search engine crawlers */}
-    <meta name="robots" content="index, follow">
+      {/* Settings for search engine crawlers */}
+      <meta name="robots" content="index, follow" />
 
-    {/* PWA settings */}
-    <meta name="theme-color" content="#00f">
-    <link rel="manifest" href="/manifest.webmanifest">
+      {/* PWA settings */}
+      <meta name="theme-color" content="#00f" />
+      <link rel="manifest" href="/manifest.webmanifest" />
 
-    {/* CSP setting */}
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self'">
-  </>
+      {/* CSP setting */}
+      <meta http-equiv="Content-Security-Policy" content="script-src 'self'" />
+    </>
+  )
 }
 ```
 
@@ -78,7 +80,7 @@ import favicon from './favicon.png'
 // Applies to all pages (cannot be overridden)
 export const Head = () =>
   // All pages share the same favicon
-  <link rel="icon" href={favicon} type="image/svg+xml">
+  <link rel="icon" href={favicon} type="image/svg+xml" />
 ```
 
 ```tsx
@@ -89,7 +91,7 @@ import previewImage from './previewImage.jpg'
 
 export const Head = () =>
   // Both the favicon above and this tag applies to /pages/about-us/+Page.ts
-  <meta property="og:image" content={previewImage}>
+  <meta property="og:image" content={previewImage} />
 ```
 
 To apply different `+Head` settings to different pages:
@@ -101,7 +103,7 @@ To apply different `+Head` settings to different pages:
 import favicon from './favicon.png'
 
 // Applies to all marketing pages
-export const Head = () => <link rel="icon" href={favicon} type="image/svg+xml">
+export const Head = () => <link rel="icon" href={favicon} type="image/svg+xml" />
 ```
 
 ```tsx
@@ -111,7 +113,7 @@ export const Head = () => <link rel="icon" href={favicon} type="image/svg+xml">
 import favicon from './favicon.png'
 
 // Applies to all admin pages
-export const Head = () => <link rel="icon" href={favicon} type="image/svg+xml">
+export const Head = () => <link rel="icon" href={favicon} type="image/svg+xml" />
 ```
 
 > You can use <Link href="/config#clear-js">`.clear.js`</Link> and <Link href="/config#default-js">`.default.js`</Link> to control the inheritance chain.
@@ -325,25 +327,27 @@ You can use `+Head` for setting `<head>` tags that are global (they have the sam
 
 The following example showcases that using `+Head` for setting `<title>` doesn't work, while it does work for setting `<meta name="description">`.
 
-```ts
+```tsx
 // /pages/index/+Head.tsx
 // Environment: server
 
 function Head() {
-  return <>
-    <title>AwesomeRockets</title>
-    <meta name="description" content="The rocket company.">
-  </>
+  return (
+    <>
+      <title>AwesomeRockets</title>
+      <meta name="description" content="The rocket company." />
+    </>
+  )
 }
 ```
-```ts
+```tsx
 // /pages/about/+Head.tsx
 // Environment: server
 
 function Head() {
   return <>
     <title>About us</title>
-    <meta name="description" content="We deliver payload to space.">
+    <meta name="description" content="We deliver payload to space." />
   </>
 }
 ```

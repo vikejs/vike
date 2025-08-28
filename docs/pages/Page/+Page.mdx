@@ -18,10 +18,12 @@ export default Page
 */
 
 function Page() {
-  return <>
-    <h1>Hi</h1>
-    <p>Hello World</p>
-  </>
+  return (
+    <>
+      <h1>Hi</h1>
+      <p>Hello World</p>
+    </>
+  )
 }
 ```
 
@@ -68,7 +70,7 @@ Instead of using <UiFrameworkExtension name noLink />, you can integrate your fa
 
 Here is a minimal example of manually integrating a UI framework:
 
-```ts
+```tsx
 // /pages/hello/+Page.ts
 // Environment: client and server (configurable)
 

@@ -17,7 +17,7 @@ Inserting static HTML:
 import type { Config } from 'vike/types'
 
 export default {
-  bodyHtmlEnd: '<div id="something"></div>'
+  bodyHtmlEnd: '<div id="something"></div>',
 } satisfies Config
 ```
 
@@ -25,7 +25,7 @@ export default {
 
 Inserting dynamically generated HTML:
 
-```ts
+```tsx
 // pages/+bodyHtmlEnd.ts
 
 import type { PageContextServer } from 'vike/types'
@@ -53,7 +53,7 @@ When using React, it's often used for portals.
 import type { Config } from 'vike/types'
 
 export default {
-  bodyHtmlEnd: '<div id="portal-root"></div>'
+  bodyHtmlEnd: '<div id="portal-root"></div>',
 } satisfies Config
 ```
 
@@ -61,7 +61,7 @@ You'll then get the following HTML:
 
 ```tsx
 <body>
-  <!-- ... -->
+  {/* ... */}
   <div id="root">{reactHtml}</div>
   <div id="portal-root"></div>// [!code ++]
 </body>

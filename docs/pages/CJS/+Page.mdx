@@ -34,7 +34,7 @@ This [makes Node.js treat all .js files as ESM](https://nodejs.org/docs/latest-v
 
 If you have .js files written in CJS then migrate them to ESM, for example:
 
-```ts
+```ts ts-only
 // CJS code// [!code --]
 const express = require('express')// [!code --]
 const { renderPage } = require('vike/server')// [!code --]
@@ -50,7 +50,7 @@ import { renderPage } from 'vike/server'// [!code ++]
 
 Depending on your setup, you may need to append `.js` to the path of your imports:
 
-```ts
+```ts ts-only
 // someTypeScriptFile.ts
 
 import { something } from './some/module'// [!code --]

@@ -194,7 +194,7 @@ In production run `$ NODE_ENV=production node dist/server/index.js` (or Bun/Deno
 
 ## `serve()` options
 
-```ts
+```ts ts-only
 serve(app, {
   // [Required] Server port. It's ignored in Cloudflare and Vercel Edge (there
   // isn't any server in serverless deployment).
@@ -209,7 +209,7 @@ serve(app, {
   onServer(server) {
     // `server` type depends on your runtime:
     //   Node.js:  Server ('node:http') by default. It's an HTTPS or HTTP2 server
-                   if the `createServer` option was provided (see below).
+    //             if the `createServer` option was provided (see below).
     //   Deno:     return of Deno.Serve (experimental support)
     //   Bun:      return of Bun.Serve  (experimental support)
 

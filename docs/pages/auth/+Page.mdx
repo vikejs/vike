@@ -26,9 +26,9 @@ export async function onCreatePageContext(pageContext: PageContextServer) {
 
   // Authentication middlewares (e.g. Passport.js and Grant) usually set req.user
   // to expose information about the logged-in user.
-  const { user } = req
+  // const { user } = req
   // Or, when using a third-party authentication provider (e.g. Auth0):
-  const user = await someAuthApi.getUser(req.headers)
+  // const user = await someAuthApi.getUser(req.headers)
 
   // Select the properties you want to make available everywhere
   pageContext.user = {

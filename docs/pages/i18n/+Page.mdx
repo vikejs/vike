@@ -36,12 +36,12 @@ function extractLocale(url: Url) {
   // Determine the locale, for example:
   //  /en-US/film/42 => en-US
   //  /de-DE/film/42 => de-DE
-  const locale = /* ... */
+  const locale = `/* ... */`
 
   // Remove the locale, for example:
   //  /en-US/film/42 => /film/42
   //  /de-DE/film/42 => /film/42
-  const pathnameWithoutLocale = /* ... */
+  const pathnameWithoutLocale = `/* ... */`
 
   // Reconstruct full URL
   const urlWithoutLocale = modifyUrl(url.href, { pathname: pathnameWithoutLocale })

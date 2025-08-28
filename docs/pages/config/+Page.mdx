@@ -25,12 +25,12 @@ export default {
   Layout
 } satisfies Config
 ```
-```ts
+```ts ts-only
 // /pages/product/@id/Page.ts
 
 export default /* ... */
 ```
-```ts
+```ts ts-only
 // /pages/product/@id/Layout.ts
 
 export default /* ... */
@@ -295,7 +295,7 @@ Into:
 // Environment: config
 
 import type { Config } from 'vike/types'
-import Layout from '../layouts/LayoutDefault.jsx'// [!code --]
+//import Layout from '../layouts/LayoutDefault.jsx'// [!code --]
 const Layout = 'import:../layouts/LayoutDefault.jsx:default'// [!code ++]
 
 export default {

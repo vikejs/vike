@@ -89,7 +89,7 @@ export default {
   // Default <meta name="description">
   description: 'We deliver payload to space',
   // Default <meta property="og:image">
-  image
+  image,
 } satisfies Config
 ```
 
@@ -101,10 +101,12 @@ import favicon from './favicon.png'
 
 // Applies to all pages (cannot be overridden)
 export function Head() {
-  return <>
-    {/* Icon shown in the browser tab (aka favicon) */}
-    <link rel="icon" href={favicon} type="image/svg+xml">
-  </>
+  return (
+    <>
+      {/* Icon shown in the browser tab (aka favicon) */}
+      <link rel="icon" href={favicon} type="image/svg+xml" />
+    </>
+  )
 }
 ```
 
@@ -121,7 +123,7 @@ import image from './previewImage.jpg'
 export default {
   title: 'Movies',
   description: 'List of movies.',
-  image
+  image,
 } satisfies Config
 ```
 
@@ -133,10 +135,12 @@ import iconMobile from './iconMobile.jpg'
 
 // This doesn't override the favicon defined at /pages/+Head.ts above
 export function Head() {
-  return <>
-    {/* Icon shown on mobile homescreens (PWA) */}
-    <link rel="apple-touch-icon" href={iconMobile} type="image/svg+xml">
-  </>
+  return (
+    <>
+      {/* Icon shown on mobile homescreens (PWA) */}
+      <link rel="apple-touch-icon" href={iconMobile} type="image/svg+xml" />
+    </>
+  )
 }
 ```
 
@@ -183,7 +187,7 @@ async function data(pageContext: PageContextServer) {
 ```
 
 > Make sure to call `useConfig()` before any `await`:
-> ```ts
+> ```ts ts-only
 > async function data() {
 >   const response = await fetch('https://star-wars.brillout.com/api/films.json')
 >   // ❌ Doesn't work: useConfig() must be called before `await fetch()`
@@ -251,7 +255,7 @@ export function Head() {
   const data = useData<Data>()
   return <>
     {/* Image shown when sharing on social sites (Twitter, WhatsApp, ...) */}
-    <meta property="og:image" content={data.movie.image}>
+    <meta property="og:image" content={data.movie.image} />
   </>
 }
 ```
@@ -277,8 +281,8 @@ export default {
   meta: {
     dynamicFavicon: {
       env: { server: true, client: true }
-    }
-  }
+    },
+  },
 } satisfies Config
 ```
 > See: <Link href="/meta" />
@@ -292,9 +296,7 @@ import { usePageContext } from 'vike-react/usePageContext' // or vike-{vue,solid
 export default () => {
   const pageContext = usePageContext()
   const { dynamicFavicon } = pageContext.config
-  return <>
-    { dynamicFavicon && <link rel="icon" href={dynamicFavicon} type="image/svg+xml"> }
-  <>
+  return <>{ dynamicFavicon && <link rel="icon" href={dynamicFavicon} type="image/svg+xml" /> }</>
 }
 ```
 ```ts
@@ -328,7 +330,7 @@ function updateFavicon(dynamicFavicon) {
 
 For TypeScript users:
 
-```ts
+```ts ts-only
 // pages/+config.ts
 // Environment: config
 
@@ -354,7 +356,7 @@ import favicon from './favicon.svg'
 
 export default {
   // Default favicon
-  dynamicFavicon: favicon
+  dynamicFavicon: favicon,
 } satisfies Config
 ```
 
@@ -367,7 +369,7 @@ import favicon from './favicon.svg'
 
 export default {
   // Favicon for /premium-members
-  dynamicFavicon: favicon
+  dynamicFavicon: favicon,
 } satisfies Config
 ```
 
@@ -385,12 +387,16 @@ import { usePageContext } from 'vike-react/usePageContext' // or vike-{vue,solid
 
 function Head() {
   const pageContext = usePageContext()
-  const description = pageContext.locale === 'de-DE' ?
-    'List von Star Wars Filme.' :
-    'List of Star Wars Movies.'
-  return <>
-    <meta name="description" content={description}>
-  </>
+  const description = 
+    pageContext.locale === 'de-DE' ?
+      'List von Star Wars Filme.' :
+      'List of Star Wars Movies.'
+
+  return (
+    <>
+      <meta name="description" content={description} />
+    </>
+  )
 }
 ```
 ```ts
@@ -400,9 +406,8 @@ function Head() {
 import type { PageContext } from 'vike/types'
 
 export function title(pageContext: PageContext) {
-  const title = pageContext.locale === 'de-DE' ?
-    'Star Wars Filme' :
-    'Star Wars Movies'
+  const title = pageContext.locale === 'de-DE' ?'Star Wars Filme' :'Star Wars Movies'
+
   return title
 }
 ```

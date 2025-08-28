@@ -105,7 +105,7 @@ async function onBeforePrerenderStart(): Promise<Return[]> {
       data: {
         // We filter out the data we don't need in order to minimize what is sent
         // to the browser. We explain this practice at https://vike.dev/data-fetching
-        movieList: movies.map(({id, title}) => ({id, title})
+        movieList: movies.map(({id, title}) => ({id, title}))
       }
     }
   }

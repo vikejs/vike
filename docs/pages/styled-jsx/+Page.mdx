@@ -40,8 +40,8 @@ To use Vike with `styled-jsx` without <UiFrameworkExtension name list={['vike-re
 3. Collect and inject styles.
    > When using a CSS-in-JS tool, like `styled-jsx`, you always need to collect the page's styles upon SSR in order <Link href="/css-in-js">to avoid FOUC</Link>.
 
-   ```ts
-   // /renderer/+onRenderHtml.ts
+   ```tsx
+   // /renderer/+onRenderHtml.tsx
 
    export { onRenderHtml }
 

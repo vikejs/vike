@@ -27,7 +27,7 @@ export default {
     */
   },
   createRootOptions: {
-    onUncaughtError
+    onUncaughtError,
     /*
     onCaughtError,
     onRecoverableError,
@@ -50,12 +50,12 @@ You can also use <Link href="/pageContext">`pageContext`</Link>:
 
 import type { Config, PageContextClient } from 'vike/types'
 
-export default (pageContext: PageContextClient) => {
+export default (pageContext: PageContextClient): Config['react'] => {
   return {
     hydrateRootOptions,
-    createRootOptions
+    createRootOptions,
   }
-} satisfies Config['react']
+}
 ```
 
 On the server-side, you can set the options of React's [`renderToString()`](https://react.dev/reference/react-dom/server/renderToString).

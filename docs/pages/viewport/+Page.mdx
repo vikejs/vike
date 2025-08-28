@@ -35,7 +35,7 @@ import type { Config } from 'vike/types'
 
 export default {
   // The admin panel pages start to look good starting from a width of 1200px
-  viewport: 1200
+  viewport: 1200,
 } satisfies Config
 ```
 
@@ -64,11 +64,11 @@ import type { Config } from 'vike/types'
 
 export default {
   // Don't inject any `<meta name="viewport">` tag
-  viewport: null
+  viewport: null,
 } satisfies Config
 ```
-```ts
-// pages/+Head.ts
+```tsx ts-only
+// pages/+Head.tsx
 
 // Same as Vike's default but adding `user-scalable=no` which makes sense for
 // highly interactive apps such as games.

@@ -2,7 +2,7 @@ import { Link } from '@brillout/docpress'
 
 `throw render()` is like <Link href="/redirect">`throw redirect()`</Link> but preserves the URL, see <Link href="/abort#throw-redirect-vs-throw-render-vs-navigate" doNotInferSectionTitle={true} />.
 
-```ts
+```ts ts-only
 // Render the error page
 render(abortStatusCode: 401 | 403 | 404 | 429 | 500 | 503, abortReason?: unknown)
 // Render another page (aka URL rewrite)

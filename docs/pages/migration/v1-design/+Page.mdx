@@ -67,7 +67,7 @@ export default {
 Move `/renderer/` configurations to `/renderer/+config.ts`:
 
 <FileRemoved>
-```ts
+```ts ts-only
 // /renderer/_default.page.client.ts
 
 export { clientRouting }
@@ -82,7 +82,7 @@ import type { Config } from 'vike/types'
 
 export default {
   clientRouting: true,
-  hydrationCanBeAborted: true
+  hydrationCanBeAborted: true,
 } satisfies Config
 ```
 </FileAdded>

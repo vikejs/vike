@@ -55,7 +55,7 @@ If you use <Link href="/client-routing" noBreadcrumb />:
 
 All `useClientRouter()` options are now exports:
 
-```ts
+```ts ts-only
 // renderer/_default.page.client.js
 
 export { render }
@@ -137,9 +137,9 @@ All pre-render options are now defined in `vite.config.js`:
 import type { UserConfig } from 'vite'
 
 export default {
-  base: '/some/base/url/'
+  base: '/some/base/url/',
   // Or, if you used `baseAsset`:
-  base: 'https://cdn.example.org/'
+  base: 'https://cdn.example.org/',
 } satisfies UserConfig
 ```
 

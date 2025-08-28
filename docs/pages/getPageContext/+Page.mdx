@@ -8,7 +8,7 @@ The `getPageContext()` function allows you to access the <Link href="/pageContex
 For example:
 
 ```ts
- // /pages/some-page/+data.ts
+// /pages/some-page/+data.ts
 
 export { data }
 export type Data = Awaited<ReturnType<typeof data>>
@@ -25,15 +25,15 @@ function data() {
 It's the same object than the `function data(pageContext)` argument and the following is equivalent:
 
 ```ts
- // /pages/some-page/+data.ts
+// /pages/some-page/+data.ts
 
 export { data }
 export type Data = Awaited<ReturnType<typeof data>>
 
 import { getPageContext } from 'vike/getPageContext'// [!code --]
 
-function data() {// [!code --]
-  const pageContext = getPageContext()// [!code --]
+// function data() {// [!code --]
+//  const pageContext = getPageContext()// [!code --]
 function data(pageContext) {// [!code ++]
 
   // ...

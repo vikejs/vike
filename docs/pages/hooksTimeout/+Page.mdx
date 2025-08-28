@@ -31,7 +31,7 @@ export default {
       // Increase warning timeout to 5 seconds
       warning: 5 * 1000,
       // Increase error timeout to one minute
-      error: 60 * 1000
+      error: 60 * 1000,
     }
   }
 } satisfies Config
@@ -50,11 +50,11 @@ export default {
   hooksTimeout: {
     data: {
       // Disable the warning timeout
-      warning: false
-    }
+      warning: false,
+    },
     // No timeout at all: Vike won't warn and will indefinitely await the
     // promise returned by onRenderClient()
-    onRenderClient: false
+    onRenderClient: false,
   }
 } satisfies Config
 ```
@@ -76,6 +76,6 @@ import type { Config } from 'vike/types'
 
 export default {
   // We strongly recommend against this
-  hooksTimeout: false
+  hooksTimeout: false,
 } satisfies Config
 ```
