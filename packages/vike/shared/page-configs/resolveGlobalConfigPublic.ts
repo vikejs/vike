@@ -6,7 +6,7 @@
 
 // TO-DO/soon/same-api: use public API internally?
 // TO-DO/soon/flat-pageContext: rename definedAt => definedBy
-export { resolveVikeConfigPublic }
+export { resolveGlobalConfigPublic }
 export { resolvePageContextConfig }
 export { resolveGlobalContextConfig }
 export type { PageContextConfig }
@@ -205,7 +205,7 @@ function resolveGlobalConfigPage(
   pageConfig: PageConfigRuntime | PageConfigBuildTime,
   pageConfigValues: ConfigValues,
 ): [string, PageConfigPublicWithRoute] {
-  const pageConfigPublic_ = resolveVikeConfigPublic_base({ pageConfigGlobalValues, pageConfigValues })
+  const pageConfigPublic_ = resolveGlobalConfigPublic_base({ pageConfigGlobalValues, pageConfigValues })
   const pageConfigPublic = getPublicCopy(pageConfigPublic_)
   let page: PageConfigPublicWithRoute
   if (!pageConfig.isErrorPage) {
@@ -222,7 +222,7 @@ function resolveGlobalConfigPage(
   }
   return [pageConfig.pageId, page]
 }
-function getPublicCopy(vikeConfigPublic: ReturnType<typeof resolveVikeConfigPublic_V1Design>): VikeConfigPublic_ {
+function getPublicCopy(vikeConfigPublic: ReturnType<typeof resolveGlobalConfigPublic_V1Design>): VikeConfigPublic_ {
   return {
     config: vikeConfigPublic.config,
     _source: vikeConfigPublic.source,
@@ -230,12 +230,12 @@ function getPublicCopy(vikeConfigPublic: ReturnType<typeof resolveVikeConfigPubl
     _from: vikeConfigPublic.from,
   }
 }
-function resolveVikeConfigPublic_base({
+function resolveGlobalConfigPublic_base({
   pageConfigGlobalValues,
   pageConfigValues,
 }: { pageConfigGlobalValues: ConfigValues; pageConfigValues: ConfigValues }) {
   const configValues = { ...pageConfigGlobalValues, ...pageConfigValues }
-  return resolveVikeConfigPublic_V1Design({ configValues })
+  return resolveGlobalConfigPublic_V1Design({ configValues })
 }
 
 function resolvePageContextConfig(
@@ -271,7 +271,7 @@ function resolvePageContextConfig(
   let sources: Sources
   let from: From
   if (pageConfig) {
-    const res = resolveVikeConfigPublic_base({
+    const res = resolveGlobalConfigPublic_base({
       pageConfigGlobalValues: pageConfigGlobal.configValues,
       pageConfigValues: pageConfig.configValues,
     })
@@ -341,11 +341,11 @@ function resolvePageContextConfig(
 }
 
 function resolveGlobalContextConfig(pageConfigs: PageConfigRuntime[], pageConfigGlobal: PageConfigGlobalRuntime) {
-  return resolveVikeConfigPublic(pageConfigs, pageConfigGlobal, (c) => c.configValues)
+  return resolveGlobalConfigPublic(pageConfigs, pageConfigGlobal, (c) => c.configValues)
 }
 
-type VikeConfigPublic = Omit<ReturnType<typeof resolveVikeConfigPublic>, '_vikeConfigPublic'>
-function resolveVikeConfigPublic<
+type VikeConfigPublic = Omit<ReturnType<typeof resolveGlobalConfigPublic>, '_vikeConfigPublic'>
+function resolveGlobalConfigPublic<
   PageConfig extends PageConfigRuntime | PageConfigBuildTime,
   PageConfigGlobal extends PageConfigGlobalRuntime | PageConfigGlobalBuildTime,
 >(
@@ -355,7 +355,7 @@ function resolveVikeConfigPublic<
 ) {
   // global
   const pageConfigGlobalValues = getConfigValues(pageConfigGlobal, true)
-  const globalConfigPublic_ = resolveVikeConfigPublic_V1Design({ configValues: pageConfigGlobalValues })
+  const globalConfigPublic_ = resolveGlobalConfigPublic_V1Design({ configValues: pageConfigGlobalValues })
   const globalConfigPublic = getPublicCopy(globalConfigPublic_)
 
   // pages
@@ -377,7 +377,7 @@ function resolveVikeConfigPublic<
 }
 
 // V1 design
-function resolveVikeConfigPublic_V1Design(pageConfig: { configValues: ConfigValues }) {
+function resolveGlobalConfigPublic_V1Design(pageConfig: { configValues: ConfigValues }) {
   const config: Record<string, unknown> = {}
   const configEntries: ConfigEntries = {}
   const exportsAll: ExportsAll = {}

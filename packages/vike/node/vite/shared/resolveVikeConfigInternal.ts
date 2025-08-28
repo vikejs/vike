@@ -83,7 +83,10 @@ import { resolvePointerImport } from './resolveVikeConfigInternal/resolvePointer
 import { getFilePathResolved } from './getFilePath.js'
 import type { FilePath } from '../../../types/FilePath.js'
 import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
-import { resolveVikeConfigPublic, type VikeConfigPublic } from '../../../shared/page-configs/resolveVikeConfigPublic.js'
+import {
+  resolveGlobalConfigPublic,
+  type VikeConfigPublic,
+} from '../../../shared/page-configs/resolveGlobalConfigPublic.js'
 import { getConfigValuesBase, isJsonValue } from '../../../shared/page-configs/serialize/serializeConfigValues.js'
 import {
   getPlusFilesAll,
@@ -309,7 +312,7 @@ async function resolveVikeConfigInternal(
 }
 
 function resolveVikeConfig(pageConfigGlobal: PageConfigGlobalBuildTime, pageConfigs: PageConfigBuildTime[]) {
-  return resolveVikeConfigPublic(pageConfigs, pageConfigGlobal, getConfigValues)
+  return resolveGlobalConfigPublic(pageConfigs, pageConfigGlobal, getConfigValues)
 }
 
 type ConfigDefinitionsResolved = Awaited<ReturnType<typeof resolveConfigDefinitions>>
