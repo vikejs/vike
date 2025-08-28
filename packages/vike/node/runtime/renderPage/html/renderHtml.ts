@@ -19,7 +19,7 @@ import {
   isHtml,
   isPromise,
   objectAssign,
-} from '../utils.js'
+} from '../../utils.js'
 import { injectHtmlTagsToString, injectHtmlTagsToStream } from './injectAssets.js'
 import type { PageContextInjectAssets } from './injectAssets.js'
 import {
@@ -32,7 +32,7 @@ import {
 } from './stream.js'
 import { isStreamFromReactStreamingPackage } from './stream/react-streaming.js'
 import type { StreamFromReactStreamingPackage } from './stream/react-streaming.js'
-import type { PageAsset } from '../renderPage/getPageAssets.js'
+import type { PageAsset } from '../getPageAssets.js'
 import type { PreloadFilter } from './injectAssets/getHtmlTags.js'
 import pc from '@brillout/picocolors'
 

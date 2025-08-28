@@ -3,9 +3,9 @@ export { injectHtmlTagsToStream }
 export type { PageContextInjectAssets }
 export type { PageContextPromise }
 
-import { assert, isCallable, isPromise } from '../utils.js'
-import type { PageAsset } from '../renderPage/getPageAssets.js'
-import { assertPageContextProvidedByUser } from '../../../shared/assertPageContextProvidedByUser.js'
+import { assert, isCallable, isPromise } from '../../utils.js'
+import type { PageAsset } from '../getPageAssets.js'
+import { assertPageContextProvidedByUser } from '../../../../shared/assertPageContextProvidedByUser.js'
 import {
   joinHtmlTags,
   injectHtmlTags,
@@ -17,7 +17,7 @@ import { getHtmlTags, type PreloadFilter, type HtmlTag } from './injectAssets/ge
 import type { StreamFromReactStreamingPackage } from './stream/react-streaming.js'
 import type { PageContextSerialization } from './serializeContext.js'
 import { getViteDevScript } from './injectAssets/getViteDevScript.js'
-import type { GlobalContextServerInternal } from '../globalContext.js'
+import type { GlobalContextServerInternal } from '../../globalContext.js'
 
 type PageContextInjectAssets = {
   urlPathname: string

@@ -59,7 +59,10 @@ import { assertArguments } from './renderPage/assertArguments.js'
 import { log404 } from './renderPage/log404/index.js'
 import pc from '@brillout/picocolors'
 import type { PageContextServer } from '../../types/index.js'
-import { getPageContextClientSerializedAbort, getPageContextClientSerialized } from './html/serializeContext.js'
+import {
+  getPageContextClientSerializedAbort,
+  getPageContextClientSerialized,
+} from './renderPage/html/serializeContext.js'
 import { getErrorPageId } from '../../shared/error-page.js'
 import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErrorPage.js'
 import { loadPageConfigsLazyServerSide } from './renderPage/loadPageConfigsLazyServerSide.js'

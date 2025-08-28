@@ -3,8 +3,8 @@ import { assert } from '../../utils/assert.js'
 assert(!isBrowser())
 
 export { renderPage } from './renderPage.js'
-export { escapeInject, dangerouslySkipEscape } from './html/renderHtml.js'
-export { pipeWebStream, pipeNodeStream, pipeStream, stampPipe } from './html/stream.js'
+export { escapeInject, dangerouslySkipEscape } from './renderPage/html/renderHtml.js'
+export { pipeWebStream, pipeNodeStream, pipeStream, stampPipe } from './renderPage/html/stream.js'
 export { PROJECT_VERSION as version } from './utils.js'
 export { getGlobalContext, getGlobalContextSync, getGlobalContextAsync } from './globalContext.js'
 export { createDevMiddleware } from '../runtime-dev/index.js'
@@ -12,7 +12,7 @@ export { createDevMiddleware } from '../runtime-dev/index.js'
 // TO-DO/next-major-release: remove
 // Deprecated exports
 export * from '../../types/index-dreprecated.js'
-export { injectAssets__public as _injectAssets } from './html/injectAssets/injectAssets__public.js'
+export { injectAssets__public as _injectAssets } from './renderPage/html/injectAssets/injectAssets__public.js'
 export { createPageRenderer } from '../createPageRenderer.js'
 import { assertWarning } from './utils.js'
 import pc from '@brillout/picocolors'

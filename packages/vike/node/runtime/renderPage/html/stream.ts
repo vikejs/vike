@@ -41,7 +41,7 @@ import {
   isCallable,
   createDebugger,
   isBug,
-} from '../utils.js'
+} from '../../utils.js'
 import { HtmlRender } from './renderHtml.js'
 import {
   getStreamOfReactStreamingPackage,

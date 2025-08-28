@@ -43,14 +43,14 @@ import type {
   PrefetchStaticAssets,
 } from '../client/runtime-client-routing/prefetch/PrefetchSetting.js'
 import type { ConfigDefinition } from '../node/vite/shared/resolveVikeConfigInternal/configDefinitionsBuiltIn.js'
-import type { DocumentHtml } from '../node/runtime/html/renderHtml.js'
+import type { DocumentHtml } from '../node/runtime/renderPage/html/renderHtml.js'
 import type { InjectFilterEntry } from './index.js'
 import type { VikeVitePluginOptions } from '../node/vite/index.js'
 import type { Vike } from './VikeNamespace.js'
 import type { HooksTimeoutProvidedByUser } from '../shared/hooks/getHook.js'
 import type { GlobalContext, PageContextClient, PageContextServer } from './PageContext.js'
 import type { InlineConfig } from 'vite'
-import type { PassToClientPublic } from '../node/runtime/html/serializeContext.js'
+import type { PassToClientPublic } from '../node/runtime/renderPage/html/serializeContext.js'
 
 type HookNameOld = HookName | HookNameOldDesign
 type HookName = HookNamePage | HookNameGlobal

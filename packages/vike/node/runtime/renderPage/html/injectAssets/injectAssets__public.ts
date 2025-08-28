@@ -1,8 +1,8 @@
 export { injectAssets__public }
 
-import { assertUsage, assertWarning, castProp, hasProp } from '../../utils.js'
+import { assertUsage, assertWarning, castProp, hasProp } from '../../../utils.js'
 import { injectHtmlTagsToString } from '../injectAssets.js'
-import type { PageAsset } from '../../renderPage/getPageAssets.js'
+import type { PageAsset } from '../../getPageAssets.js'
 
 // TO-DO/next-major-release: remove
 async function injectAssets__public(htmlString: string, pageContext: Record<string, unknown>): Promise<string> {
