@@ -31,11 +31,11 @@ import type {
   ConfigEntries,
   ExportsAll,
   From,
+  PageContextConfig,
   Source,
   Sources,
 } from '../shared/page-configs/resolveVikeConfigPublic.js'
 import type { Config } from './Config.js'
-import type { PageContextConfig } from './Config/PageContextConfig.js'
 import type { AbortStatusCode } from '../shared/route/abort.js'
 import type { GlobalContextServer } from '../node/runtime/globalContext.js'
 import type { GlobalContextClient } from '../client/runtime-client-routing/globalContext.js'
@@ -58,7 +58,7 @@ type PageContextClientWithServerRouting<Data = unknown> = PageContextBuiltInClie
   Vike.PageContext &
   Vike.PageContextClient
 
-type PageContextBuiltInCommon<Data> = {
+type PageContextBuiltInCommon<Data> = PageContextConfig & {
   /**
    * Useful for distinguishing `pageContext` from other objects and narrowing down TypeScript unions.
    *
@@ -86,32 +86,6 @@ type PageContextBuiltInCommon<Data> = {
    * https://vike.dev/pageContext#data
    */
   data: Data
-
-  /** The page's configuration values.
-   *
-   * https://vike.dev/config
-   * https://vike.dev/pageContext#config
-   */
-  config: PageContextConfig
-
-  /** The page's configuration, including the configs origin and overridden configs.
-   *
-   * https://vike.dev/config
-   */
-  configEntries: ConfigEntries
-
-  /** Custom Exports/Hooks.
-   *
-   * https://vike.dev/exports
-   */
-  exports: Record<string, unknown>
-
-  /**
-   * Same as `pageContext.exports` but cumulative.
-   *
-   * https://vike.dev/exports
-   */
-  exportsAll: ExportsAll
 
   /** The URL you provided to Vike when calling `renderPage({ urlOriginal })` in your server middleware.
    *

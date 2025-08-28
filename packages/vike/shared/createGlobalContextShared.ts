@@ -7,10 +7,7 @@ export type GlobalContextInternal = GlobalContextServerInternal | GlobalContextC
 import { assert, changeEnumerable, genPromise, objectAssign, objectReplace, unique } from './utils.js'
 import type { PageFile } from './getPageFiles.js'
 import { parseVirtualFileExportsGlobalEntry } from './getPageFiles/parseVirtualFileExportsGlobalEntry.js'
-import {
-  resolveVikeConfigPublicGlobal,
-  resolveVikeConfigPublicPageEagerLoaded,
-} from './page-configs/resolveVikeConfigPublic.js'
+import { resolveGlobalContextConfig } from './page-configs/resolveVikeConfigPublic.js'
 import type { PageConfigRuntime } from '../types/PageConfig.js'
 import { execHookGlobal } from './hooks/execHook.js'
 import { prepareGlobalContextForPublicUsage } from './prepareGlobalContextForPublicUsage.js'
@@ -114,14 +111,12 @@ async function createGlobalContextShared<
 type GlobalContextBasePublic = Pick<GlobalContextBase, 'config' | 'pages' | 'isGlobalContext'>
 type GlobalContextBase = ReturnType<typeof createGlobalContextBase>
 function createGlobalContextBase(virtualFileExportsGlobalEntry: unknown) {
-  const {
-    pageFilesAll,
-    allPageIds,
-    pageConfigs,
-    pageConfigGlobal,
-    vikeConfigPublicGlobal,
-    vikeConfigPublicPagesEager,
-  } = getConfigsAll(virtualFileExportsGlobalEntry)
+  const { pageFilesAll, pageConfigs, pageConfigGlobal } =
+    parseVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry)
+  const allPageIds = getAllPageIds(pageFilesAll, pageConfigs)
+
+  const globalContextAddendum = resolveGlobalContextConfig(pageConfigs, pageConfigGlobal)
+
   const globalContext = {
     /**
      * Useful for distinguishing `globalContext` from other objects and narrowing down TypeScript unions.
@@ -135,38 +130,12 @@ function createGlobalContextBase(virtualFileExportsGlobalEntry: unknown) {
     _pageConfigs: pageConfigs,
     _pageConfigGlobal: pageConfigGlobal,
     _allPageIds: allPageIds,
-    _vikeConfigPublicGlobal: vikeConfigPublicGlobal,
-    config: vikeConfigPublicGlobal.config,
-    pages: vikeConfigPublicPagesEager,
+    ...globalContextAddendum,
   }
   changeEnumerable(globalContext, '_isOriginalObject', false)
   return globalContext
 }
 
-function getConfigsAll(virtualFileExportsGlobalEntry: unknown) {
-  const { pageFilesAll, pageConfigs, pageConfigGlobal } =
-    parseVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry)
-  const allPageIds = getAllPageIds(pageFilesAll, pageConfigs)
-
-  const vikeConfigPublicGlobal = resolveVikeConfigPublicGlobal({
-    pageConfigGlobalValues: pageConfigGlobal.configValues,
-  })
-
-  const vikeConfigPublicPagesEager = Object.fromEntries(
-    pageConfigs.map((pageConfig) => {
-      return resolveVikeConfigPublicPageEagerLoaded(pageConfigGlobal.configValues, pageConfig, pageConfig.configValues)
-    }),
-  )
-
-  return {
-    pageFilesAll,
-    allPageIds,
-    pageConfigs,
-    pageConfigGlobal,
-    vikeConfigPublicGlobal,
-    vikeConfigPublicPagesEager,
-  }
-}
 function getAllPageIds(pageFilesAll: PageFile[], pageConfigs: PageConfigRuntime[]): string[] {
   const fileIds = pageFilesAll.filter(({ isDefaultPageFile }) => !isDefaultPageFile).map(({ pageId }) => pageId)
   const allPageIds = unique(fileIds)

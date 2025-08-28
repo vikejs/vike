@@ -1,18 +1,10 @@
-// TODO/now: rename PageConfig names
-// - Use `Internal` suffix, i.e. {Page,Global}ConfigInternal
-//   - While keeping {Page,Global}ConfigPublic or remove Public suffix and rename it to {Page,Global}Config ?
-// - rename EagerLoaded EagerlyLoaded
-// - remove `LazyLoaded` suffix
-// TODO/now: rename VikeConfigPublicPageLazyLoaded PageContextSomething (for `pageContext: PageContextSomething` usage)
-
 // TO-DO/soon/same-api: use public API internally?
 // TO-DO/soon/flat-pageContext: rename definedAt => definedBy
-export { resolveVikeConfigPublicGlobal }
-export { resolveVikeConfigPublicPageEagerLoaded }
-export { resolveVikeConfigPublicPageLazyLoaded }
-export type { VikeConfigPublicGlobal }
-export type { VikeConfigPublicPageEagerLoaded }
-export type { VikeConfigPublicPageLazyLoaded }
+export { resolveGlobalConfigPublic }
+export { resolvePageContextConfig }
+export { resolveGlobalContextConfig }
+export type { PageContextConfig }
+export type { GlobalConfigPublic }
 export type { Source }
 export type { Sources }
 export type { From }
@@ -26,6 +18,7 @@ import type {
   ConfigValues,
   DefinedAtData,
   PageConfigBuildTime,
+  PageConfigGlobalBuildTime,
   PageConfigGlobalRuntime,
   PageConfigRuntime,
   PageConfigRuntimeLoaded,
@@ -44,7 +37,7 @@ import {
   objectDefineProperty,
 } from '../utils.js'
 import pc from '@brillout/picocolors'
-import type { ConfigResolved } from '../../types/Config/PageContextConfig.js'
+import type { ConfigResolved } from '../../types/Config/ConfigResolved.js'
 import type { Route } from '../../types/Config.js'
 
 // TO-DO/next-major-release: remove
@@ -74,20 +67,6 @@ type ConfigEntries = Record<
     configDefinedByFile: string | null
   }[]
 >
-type VikeConfigPublicPageLazyLoaded = {
-  config: ConfigResolved
-  source: Source
-  sources: Sources
-  from: From
-
-  // TO-DO/eventually: deprecate every prop below
-  configEntries: ConfigEntries
-  exports: Record<string, unknown>
-  exportsAll: ExportsAll
-  /** @deprecated */
-  pageExports: Record<string, unknown>
-}
-
 type From = {
   configsStandard: Record<
     string, // configName
@@ -158,13 +137,43 @@ type SourceConfigsComputed = {
   value: unknown
 }
 
-type VikeConfigPublic = {
+type PageContextConfig = {
+  /** The page's configuration values.
+   *
+   * https://vike.dev/config
+   * https://vike.dev/pageContext#config
+   */
   config: ConfigResolved
-  // TO-DO/soon/flat-pageContext: expose publicly?
-  _source: Source
-  _sources: Sources
-  _from: From
+
+  source: Source
+  sources: Sources
+  from: From
+
+  // TO-DO/eventually: deprecate every prop below
+
+  /** The page's configuration, including the configs origin and overridden configs.
+   *
+   * https://vike.dev/config
+   */
+  configEntries: ConfigEntries
+
+  /** Custom Exports/Hooks.
+   *
+   * https://vike.dev/exports
+   */
+  exports: Record<string, unknown>
+
+  /**
+   * Same as `pageContext.exports` but cumulative.
+   *
+   * https://vike.dev/exports
+   */
+  exportsAll: ExportsAll
+
+  /** @deprecated */
+  pageExports: Record<string, unknown>
 }
+
 type WithRoute =
   | {
       route: Route
@@ -174,58 +183,56 @@ type WithRoute =
       route?: undefined
       isErrorPage: true
     }
-type VikeConfigPublicPageEagerLoaded = VikeConfigPublic & WithRoute
-type VikeConfigPublicGlobal = VikeConfigPublic
-function resolveVikeConfigPublicPageEagerLoaded(
+// We explicitly define the return type to avoid the cyclic type dependency: Route => PageContext => PageContextConfig => GlobalConfigPublic => typeof resolveGlobalConfigPublic() => typeof resolveGlobalConfigPage()
+type PageConfigPublicWithRoute = ConfigPublic & WithRoute
+function resolveGlobalConfigPublicPage(
   pageConfigGlobalValues: ConfigValues,
   pageConfig: PageConfigRuntime | PageConfigBuildTime,
   pageConfigValues: ConfigValues,
-): [string, VikeConfigPublicPageEagerLoaded] {
-  const vikeConfigPublicPage_ = resolveVikeConfigPublic_base({ pageConfigGlobalValues, pageConfigValues })
-  const vikeConfigPublicPage = getPublicCopy(vikeConfigPublicPage_)
-  let page: VikeConfigPublicPageEagerLoaded
-  if (!pageConfig.isErrorPage) {
-    const route = vikeConfigPublicPage.config.route ?? pageConfig.routeFilesystem.routeString
-    page = {
-      ...vikeConfigPublicPage,
-      route,
+): [string, PageConfigPublicWithRoute] {
+  const pageConfigPublic_ = resolvePageConfigPublic({ pageConfigGlobalValues, pageConfigValues })
+  const pageConfigPublic = getPublicCopy(pageConfigPublic_)
+  const page = (() => {
+    if (!pageConfig.isErrorPage) {
+      const route = pageConfigPublic.config.route ?? pageConfig.routeFilesystem.routeString
+      return {
+        ...pageConfigPublic,
+        route,
+      }
+    } else {
+      return {
+        ...pageConfigPublic,
+        isErrorPage: true as const,
+      }
     }
-  } else {
-    page = {
-      ...vikeConfigPublicPage,
-      isErrorPage: true,
-    }
-  }
+  })()
   return [pageConfig.pageId, page]
 }
-function getPublicCopy(vikeConfigPublic: ReturnType<typeof resolveVikeConfigPublic_V1Design>): VikeConfigPublic {
-  return {
-    config: vikeConfigPublic.config,
-    _source: vikeConfigPublic.source,
-    _sources: vikeConfigPublic.sources,
-    _from: vikeConfigPublic.from,
+
+type ConfigPublic = ReturnType<typeof getPublicCopy>
+function getPublicCopy(configInternal: ReturnType<typeof resolveConfigPublic_V1Design>) {
+  const configPublic = {
+    config: configInternal.config,
+    // TO-DO/soon/flat-pageContext: expose publicly?
+    _source: configInternal.source,
+    _sources: configInternal.sources,
+    _from: configInternal.from,
   }
+  return configPublic
 }
-function resolveVikeConfigPublic_base({
+function resolvePageConfigPublic({
   pageConfigGlobalValues,
   pageConfigValues,
 }: { pageConfigGlobalValues: ConfigValues; pageConfigValues: ConfigValues }) {
   const configValues = { ...pageConfigGlobalValues, ...pageConfigValues }
-  return resolveVikeConfigPublic_V1Design({ configValues })
+  return resolveConfigPublic_V1Design({ configValues })
 }
 
-function resolveVikeConfigPublicGlobal({
-  pageConfigGlobalValues,
-}: { pageConfigGlobalValues: ConfigValues }): VikeConfigPublicGlobal {
-  const vikeConfigPublicGlobal = resolveVikeConfigPublic_V1Design({ configValues: pageConfigGlobalValues })
-  return getPublicCopy(vikeConfigPublicGlobal)
-}
-
-function resolveVikeConfigPublicPageLazyLoaded(
+function resolvePageContextConfig(
   pageFiles: PageFile[], // V0.4 design
   pageConfig: PageConfigRuntimeLoaded | null, // V1 design
   pageConfigGlobal: PageConfigGlobalRuntime,
-): VikeConfigPublicPageLazyLoaded {
+): PageContextConfig {
   const config: Record<string, unknown> = {}
   const configEntries: ConfigEntries = {} // TO-DO/next-major-release: remove
   const exportsAll: ExportsAll = {} // TO-DO/next-major-release: remove
@@ -254,7 +261,7 @@ function resolveVikeConfigPublicPageLazyLoaded(
   let sources: Sources
   let from: From
   if (pageConfig) {
-    const res = resolveVikeConfigPublic_base({
+    const res = resolvePageConfigPublic({
       pageConfigGlobalValues: pageConfigGlobal.configValues,
       pageConfigValues: pageConfig.configValues,
     })
@@ -292,7 +299,7 @@ function resolveVikeConfigPublicPageLazyLoaded(
   assert(!('default' in exports))
   assert(!('default' in exportsAll))
 
-  const configPublicPageLazy = {
+  const pageContextAddendum = {
     config: config as any as ConfigResolved,
     from,
     source,
@@ -305,7 +312,7 @@ function resolveVikeConfigPublicPageLazyLoaded(
   }
 
   // TO-DO/next-major-release: remove
-  objectDefineProperty(configPublicPageLazy, 'pageExports', {
+  objectDefineProperty(pageContextAddendum, 'pageExports', {
     get: () => {
       // We only show the warning in Node.js because when using Client Routing Vue integration uses `Object.assign(pageContextReactive, pageContext)` which will wrongully trigger the warning. There is no cross-browser way to catch whether the property accessor was initiated by an `Object.assign()` call.
       if (!isBrowser()) {
@@ -320,11 +327,48 @@ function resolveVikeConfigPublicPageLazyLoaded(
     configurable: true,
   })
 
-  return configPublicPageLazy
+  return pageContextAddendum
+}
+
+function resolveGlobalContextConfig(pageConfigs: PageConfigRuntime[], pageConfigGlobal: PageConfigGlobalRuntime) {
+  const globalContextAddendum = resolveGlobalConfigPublic(pageConfigs, pageConfigGlobal, (c) => c.configValues)
+  return globalContextAddendum
+}
+
+type GlobalConfigPublic = Omit<ReturnType<typeof resolveGlobalConfigPublic>, '_globalConfigPublic'>
+function resolveGlobalConfigPublic<
+  PageConfig extends PageConfigRuntime | PageConfigBuildTime,
+  PageConfigGlobal extends PageConfigGlobalRuntime | PageConfigGlobalBuildTime,
+>(
+  pageConfigs: PageConfig[],
+  pageConfigGlobal: PageConfigGlobal,
+  getConfigValues: (config: PageConfig | PageConfigGlobal, isGlobalConfig?: true) => ConfigValues,
+) {
+  // global
+  const pageConfigGlobalValues = getConfigValues(pageConfigGlobal, true)
+  const globalConfigPublicBase_ = resolveConfigPublic_V1Design({ configValues: pageConfigGlobalValues })
+  const globalConfigPublicBase = getPublicCopy(globalConfigPublicBase_)
+
+  // pages
+  const pages = Object.fromEntries(
+    pageConfigs.map((pageConfig) => {
+      const pageConfigValues = getConfigValues(pageConfig)
+      return resolveGlobalConfigPublicPage(pageConfigGlobalValues, pageConfig, pageConfigValues)
+    }),
+  )
+
+  const globalConfigPublic = {
+    ...globalConfigPublicBase,
+    pages,
+  }
+  return {
+    ...globalConfigPublic,
+    _globalConfigPublic: globalConfigPublic,
+  }
 }
 
 // V1 design
-function resolveVikeConfigPublic_V1Design(pageConfig: { configValues: ConfigValues }) {
+function resolveConfigPublic_V1Design(pageConfig: { configValues: ConfigValues }) {
   const config: Record<string, unknown> = {}
   const configEntries: ConfigEntries = {}
   const exportsAll: ExportsAll = {}
@@ -421,6 +465,8 @@ function resolveVikeConfigPublic_V1Design(pageConfig: { configValues: ConfigValu
   }
 }
 
+// V0.4 design
+// TO-DO/next-major-release: remove
 function getExportValues(pageFile: PageFile) {
   const { filePath, fileExports } = pageFile
   assert(fileExports) // assume pageFile.loadFile() was called

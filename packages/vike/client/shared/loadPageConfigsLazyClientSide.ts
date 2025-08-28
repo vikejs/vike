@@ -3,7 +3,7 @@ export type { PageContext_loadPageConfigsLazyClientSide }
 export { isErrorFetchingStaticAssets }
 
 import { getPageFilesClientSide, type PageFile } from '../../shared/getPageFiles.js'
-import { resolveVikeConfigPublicPageLazyLoaded } from '../../shared/page-configs/resolveVikeConfigPublic.js'
+import { resolvePageContextConfig } from '../../shared/page-configs/resolveVikeConfigPublic.js'
 import { findPageConfig } from '../../shared/page-configs/findPageConfig.js'
 import { loadAndParseVirtualFilePageEntry } from '../../shared/page-configs/loadAndParseVirtualFilePageEntry.js'
 import type { PageConfigGlobalRuntime, PageConfigRuntime, PageConfigRuntimeLoaded } from '../../types/PageConfig.js'
@@ -47,13 +47,8 @@ async function loadPageConfigsLazyClientSide(
     }
     throw err
   }
-  const configPublicPageLazy = resolveVikeConfigPublicPageLazyLoaded(
-    pageFilesClientSide,
-    pageConfigLoaded,
-    pageConfigGlobal,
-  )
   const pageContextAddendum = {}
-  objectAssign(pageContextAddendum, configPublicPageLazy)
+  objectAssign(pageContextAddendum, resolvePageContextConfig(pageFilesClientSide, pageConfigLoaded, pageConfigGlobal))
   objectAssign(pageContextAddendum, { _pageFilesLoaded: pageFilesClientSide })
   return pageContextAddendum
 }
