@@ -298,6 +298,27 @@ async function resolveVikeConfigInternal(
 
   setCliAndApiOptions(pageConfigGlobal, configDefinitionsResolved)
 
+  const vikeConfigPublic = resolveVikeConfigPublic(pageConfigGlobal, pageConfigs)
+
+  const prerenderContext = resolvePrerenderContext({
+    config: vikeConfigPublic.config,
+    _from: vikeConfigPublic._from,
+    _pageConfigs: pageConfigs,
+  })
+
+  const vikeConfig: VikeConfigInternal = {
+    ...vikeConfigPublic,
+    prerenderContext,
+    _pageConfigs: pageConfigs,
+    _pageConfigGlobal: pageConfigGlobal,
+    _vikeConfigDependencies: esbuildCache.vikeConfigDependencies,
+  }
+  globalObject.vikeConfigSync = vikeConfig
+
+  return vikeConfig
+}
+
+function resolveVikeConfigPublic(pageConfigGlobal: PageConfigGlobalBuildTime, pageConfigs: PageConfigBuildTime[]) {
   // global
   const pageConfigGlobalValues = getConfigValues(pageConfigGlobal)
   const vikeConfigPublicGlobal = resolveVikeConfigPublicGlobal({ pageConfigGlobalValues })
@@ -310,25 +331,15 @@ async function resolveVikeConfigInternal(
     }),
   )
 
-  const prerenderContext = resolvePrerenderContext({
-    config: vikeConfigPublicGlobal.config,
-    _from: vikeConfigPublicGlobal._from,
-    _pageConfigs: pageConfigs,
-  })
-
-  const vikeConfig: VikeConfigInternal = {
-    _pageConfigs: pageConfigs,
-    _pageConfigGlobal: pageConfigGlobal,
+  const vikeConfigPublic = {
     config: vikeConfigPublicGlobal.config,
     _from: vikeConfigPublicGlobal._from,
     pages: vikeConfigPublicPagesEager,
-    prerenderContext,
-    _vikeConfigDependencies: esbuildCache.vikeConfigDependencies,
   }
-  globalObject.vikeConfigSync = vikeConfig
 
-  return vikeConfig
+  return vikeConfigPublic
 }
+
 type ConfigDefinitionsResolved = Awaited<ReturnType<typeof resolveConfigDefinitions>>
 async function resolveConfigDefinitions(
   plusFilesAll: PlusFilesByLocationId,
