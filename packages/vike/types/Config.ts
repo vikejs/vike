@@ -46,7 +46,7 @@ import type { ConfigDefinition } from '../node/vite/shared/resolveVikeConfigInte
 import type { DocumentHtml } from '../node/runtime/html/renderHtml.js'
 import type { InjectFilterEntry } from './index.js'
 import type { VikeVitePluginOptions } from '../node/vite/index.js'
-import type { Vike, VikePackages } from './VikeNamespace.js'
+import type { Vike } from './VikeNamespace.js'
 import type { HooksTimeoutProvidedByUser } from '../shared/hooks/getHook.js'
 import type { GlobalContext, PageContextClient, PageContextServer } from './PageContext.js'
 import type { InlineConfig } from 'vite'
@@ -97,15 +97,7 @@ type ConfigNameGlobal =
   | 'disableUrlNormalization'
   | 'vite'
 
-type Config = ConfigBuiltIn &
-  Vike.Config &
-  (
-    | VikePackages.ConfigVikeReact
-    | VikePackages.ConfigVikeVue
-    | VikePackages.ConfigVikeSolid
-    | VikePackages.ConfigVikeSvelte
-    | VikePackages.ConfigVikeAngular
-  )
+type Config = ConfigBuiltIn & Vike.Config
 
 // Purposeful code duplication for improving QuickInfo IntelliSense
 /** @deprecated This type is deprecated, see https://vike.dev/data */

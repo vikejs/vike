@@ -1,5 +1,4 @@
 export type { Vike }
-export type { VikePackages }
 
 // Enable users and vike-* packages to define types, e.g.:
 //  - User can set Config['Page'] over Vike.Config['Page']
@@ -66,42 +65,6 @@ declare global {
      *  https://vike.dev/globalContext#typescript
      */
     interface GlobalContextServer {
-      _interfaceIsNotAny?: never // https://typescript-eslint.io/rules/no-empty-object-type/
-    }
-  }
-
-  /** This namespace is only used by:
-   *  - `vike-react`
-   *  - `vike-vue`
-   *  - `vike-solid`
-   *  - `vike-svelte`
-   *  - `vike-angular`
-   *
-   *  As a Vike user, you can ignore this.
-   */
-  namespace VikePackages {
-    // Enable vike-{react/vue/solid/svelte} to extend the type `Config`.
-    //  - We need a different interface for each vike-{react/vue/solid/svelte} package because of conflicts.
-    //    - E.g. Config['Page'] is a React/Vue/Solid/Svelte component depending on which vike-{react/vue/solid/svelte} package is being used.
-    //      - The user can be using more than one vike-{react/vue/solid/svelte} package.
-    // For vike-react
-    interface ConfigVikeReact {
-      _interfaceIsNotAny?: never // https://typescript-eslint.io/rules/no-empty-object-type/
-    }
-    // For vike-vue
-    interface ConfigVikeVue {
-      _interfaceIsNotAny?: never // https://typescript-eslint.io/rules/no-empty-object-type/
-    }
-    // For vike-solid
-    interface ConfigVikeSolid {
-      _interfaceIsNotAny?: never // https://typescript-eslint.io/rules/no-empty-object-type/
-    }
-    // For vike-svelte (the vike-svelte package doesn't exist yet)
-    interface ConfigVikeSvelte {
-      _interfaceIsNotAny?: never // https://typescript-eslint.io/rules/no-empty-object-type/
-    }
-    // For vike-angular
-    interface ConfigVikeAngular {
       _interfaceIsNotAny?: never // https://typescript-eslint.io/rules/no-empty-object-type/
     }
   }
