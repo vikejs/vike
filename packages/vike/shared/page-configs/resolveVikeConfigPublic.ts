@@ -357,9 +357,9 @@ function resolveGlobalContextConfig(pageConfigs: PageConfigRuntime[], pageConfig
     }),
   )
   const globalContextAddendum = {
-    _vikeConfigPublicGlobal: vikeConfigPublicGlobal,
     config: vikeConfigPublicGlobal.config,
     pages: vikeConfigPublicPagesEager,
+    _vikeConfigPublicGlobal: vikeConfigPublicGlobal,
   }
   return globalContextAddendum
 }
