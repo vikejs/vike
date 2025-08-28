@@ -26,6 +26,7 @@ import type {
   ConfigValues,
   DefinedAtData,
   PageConfigBuildTime,
+  PageConfigGlobalBuildTime,
   PageConfigGlobalRuntime,
   PageConfigRuntime,
   PageConfigRuntimeLoaded,
@@ -348,12 +349,24 @@ function resolvePageContextConfig(
 }
 
 function resolveGlobalContextConfig(pageConfigs: PageConfigRuntime[], pageConfigGlobal: PageConfigGlobalRuntime) {
+  return resolveVikeConfigPublic(pageConfigs, pageConfigGlobal, (c) => c.configValues)
+}
+
+function resolveVikeConfigPublic<
+  PageConfig extends PageConfigRuntime | PageConfigBuildTime,
+  PageConfigGlobal extends PageConfigGlobalRuntime | PageConfigGlobalBuildTime,
+>(
+  pageConfigs: PageConfig[],
+  pageConfigGlobal: PageConfigGlobal,
+  getConfigValues: (config: PageConfig | PageConfigGlobal) => ConfigValues,
+) {
+  const pageConfigGlobalValues = getConfigValues(pageConfigGlobal)
   const vikeConfigPublicGlobal = resolveVikeConfigPublicGlobal({
-    pageConfigGlobalValues: pageConfigGlobal.configValues,
+    pageConfigGlobalValues: pageConfigGlobalValues,
   })
   const vikeConfigPublicPagesEager = Object.fromEntries(
     pageConfigs.map((pageConfig) => {
-      return resolveVikeConfigPublicPageEagerLoaded(pageConfigGlobal.configValues, pageConfig, pageConfig.configValues)
+      return resolveVikeConfigPublicPageEagerLoaded(pageConfigGlobalValues, pageConfig, getConfigValues(pageConfig))
     }),
   )
   const globalContextAddendum = {
