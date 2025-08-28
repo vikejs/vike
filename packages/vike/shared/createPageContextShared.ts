@@ -1,15 +1,15 @@
 export { createPageContextShared }
 export { createPageContextObject }
 
-import type { GlobalConfigPublic } from './page-configs/resolveVikeConfigPublic.js'
+import type { VikeConfigPublic } from './page-configs/resolveVikeConfigPublic.js'
 import { type PageContextPrepareMinimum } from './preparePageContextForPublicUsage.js'
 import { changeEnumerable, objectAssign } from './utils.js'
 
 function createPageContextShared<T extends PageContextPrepareMinimum>(
   pageContextCreated: T,
-  globalConfig: GlobalConfigPublic,
+  vikeConfigPublic: VikeConfigPublic,
 ) {
-  objectAssign(pageContextCreated, globalConfig)
+  objectAssign(pageContextCreated, vikeConfigPublic)
 
   return pageContextCreated
 }

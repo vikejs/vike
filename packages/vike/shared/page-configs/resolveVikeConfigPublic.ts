@@ -351,7 +351,7 @@ function resolveGlobalContextConfig(pageConfigs: PageConfigRuntime[], pageConfig
   return resolveVikeConfigPublic(pageConfigs, pageConfigGlobal, (c) => c.configValues)
 }
 
-type VikeConfigPublic = ReturnType<typeof resolveVikeConfigPublic>
+type VikeConfigPublic = Omit<ReturnType<typeof resolveVikeConfigPublic>, '_vikeConfigPublic'>
 function resolveVikeConfigPublic<
   PageConfig extends PageConfigRuntime | PageConfigBuildTime,
   PageConfigGlobal extends PageConfigGlobalRuntime | PageConfigGlobalBuildTime,
