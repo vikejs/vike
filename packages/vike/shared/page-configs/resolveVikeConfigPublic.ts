@@ -191,7 +191,7 @@ type WithRoute =
     }
 // We explicitly define the return type to avoid the cyclic type dependency: Route => PageContext => PageContextConfig => GlobalConfigPublic => typeof resolveGlobalConfigPublic() => typeof resolveGlobalConfigPage()
 type PageConfigPublicWithRoute = ConfigPublic & WithRoute
-function resolveGlobalConfigPage(
+function resolveGlobalConfigPublicPage(
   pageConfigGlobalValues: ConfigValues,
   pageConfig: PageConfigRuntime | PageConfigBuildTime,
   pageConfigValues: ConfigValues,
@@ -357,7 +357,7 @@ function resolveGlobalConfigPublic<
   const pages = Object.fromEntries(
     pageConfigs.map((pageConfig) => {
       const pageConfigValues = getConfigValues(pageConfig)
-      return resolveGlobalConfigPage(pageConfigGlobalValues, pageConfig, pageConfigValues)
+      return resolveGlobalConfigPublicPage(pageConfigGlobalValues, pageConfig, pageConfigValues)
     }),
   )
 
