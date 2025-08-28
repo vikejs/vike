@@ -4,6 +4,7 @@ export { addCspResponseHeader }
 export type { PageContextCspNonce }
 
 import { import_ } from '@brillout/import'
+import { assert } from './utils.js'
 import type { VikeConfigPublicPageLazyLoaded } from '../../shared/getPageFiles.js'
 import type { PageContextServer } from '../../types/PageContext.js'
 
@@ -42,6 +43,7 @@ function inferNonceAttr(pageContext: PageContextCspNonce): string {
 }
 
 function addCspResponseHeader(pageContext: PageContextCspNonce, headersResponse: Headers) {
+  assert(pageContext.cspNonce === null || typeof pageContext.cspNonce === 'string') // ensure resolvePageContextCspNone() is called before addCspResponseHeader()
   if (!pageContext.cspNonce) return
   if (headersResponse.get('Content-Security-Policy')) return
   headersResponse.set('Content-Security-Policy', `script-src 'self' 'nonce-${pageContext.cspNonce}'`)
