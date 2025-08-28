@@ -12,7 +12,7 @@ type PageContextConfig = {
    * https://vike.dev/pageContext#config
    */
   config: ConfigResolved &
-    // TO-DO/eventually: remove the whole XOR logic
+    // TODO/now: remove the whole XOR logic
     (ConfigVikePackagesNotEmptyXor extends true ? ConfigVikePackagesIntersection : ConfigVikePackagesCombined)
 }
 
