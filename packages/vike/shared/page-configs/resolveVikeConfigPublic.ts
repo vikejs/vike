@@ -197,19 +197,20 @@ function resolveGlobalConfigPage(
 ): [string, PageConfigPublicWithRoute] {
   const pageConfigPublic_ = resolveGlobalConfigPublic_base({ pageConfigGlobalValues, pageConfigValues })
   const pageConfigPublic = getPublicCopy(pageConfigPublic_)
-  let page: PageConfigPublicWithRoute
-  if (!pageConfig.isErrorPage) {
-    const route = pageConfigPublic.config.route ?? pageConfig.routeFilesystem.routeString
-    page = {
-      ...pageConfigPublic,
-      route,
+  const page = (() => {
+    if (!pageConfig.isErrorPage) {
+      const route = pageConfigPublic.config.route ?? pageConfig.routeFilesystem.routeString
+      return {
+        ...pageConfigPublic,
+        route,
+      }
+    } else {
+      return {
+        ...pageConfigPublic,
+        isErrorPage: true as const,
+      }
     }
-  } else {
-    page = {
-      ...pageConfigPublic,
-      isErrorPage: true,
-    }
-  }
+  })()
   return [pageConfig.pageId, page]
 }
 
