@@ -16,7 +16,6 @@ export type { Sources }
 export type { From }
 export type { ExportsAll }
 export type { ConfigEntries }
-export type { GlobalConfigPublic }
 
 import { assertDefaultExports, forbiddenDefaultExports } from '../getPageFiles/assert_exports_old_design.js'
 import type { FileType } from '../getPageFiles/fileTypes.js'
@@ -160,7 +159,6 @@ type WithRoute =
       route?: undefined
       isErrorPage: true
     }
-type GlobalConfigPublic = VikeConfigPublic_
 
 type PageContextConfig = {
   /** The page's configuration values.
