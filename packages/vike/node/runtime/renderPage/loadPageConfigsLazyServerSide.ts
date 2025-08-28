@@ -4,7 +4,7 @@ export type { PageConfigsLazy }
 export type { PageContextAfterPageEntryLoaded }
 
 import { type PageContextConfig, getPageFilesServerSide } from '../../../shared/getPageFiles.js'
-import { resolvePageContextConfig } from '../../../shared/page-configs/resolveGlobalConfigPublic.js'
+import { resolvePageContextConfig } from '../../../shared/page-configs/resolveVikeConfigPublic.js'
 import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide.js'
 import {
   assertUsage,

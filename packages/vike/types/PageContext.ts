@@ -34,7 +34,7 @@ import type {
   PageContextConfig,
   Source,
   Sources,
-} from '../shared/page-configs/resolveGlobalConfigPublic.js'
+} from '../shared/page-configs/resolveVikeConfigPublic.js'
 import type { Config } from './Config.js'
 import type { AbortStatusCode } from '../shared/route/abort.js'
 import type { GlobalContextServer } from '../node/runtime/globalContext.js'

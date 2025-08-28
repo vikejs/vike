@@ -86,7 +86,7 @@ import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigV
 import {
   resolveGlobalConfigPublic,
   type VikeConfigPublic,
-} from '../../../shared/page-configs/resolveGlobalConfigPublic.js'
+} from '../../../shared/page-configs/resolveVikeConfigPublic.js'
 import { getConfigValuesBase, isJsonValue } from '../../../shared/page-configs/serialize/serializeConfigValues.js'
 import {
   getPlusFilesAll,

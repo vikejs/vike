@@ -7,7 +7,7 @@ export type GlobalContextInternal = GlobalContextServerInternal | GlobalContextC
 import { assert, changeEnumerable, genPromise, objectAssign, objectReplace, unique } from './utils.js'
 import type { PageFile } from './getPageFiles.js'
 import { parseVirtualFileExportsGlobalEntry } from './getPageFiles/parseVirtualFileExportsGlobalEntry.js'
-import { resolveGlobalContextConfig } from './page-configs/resolveGlobalConfigPublic.js'
+import { resolveGlobalContextConfig } from './page-configs/resolveVikeConfigPublic.js'
 import type { PageConfigRuntime } from '../types/PageConfig.js'
 import { execHookGlobal } from './hooks/execHook.js'
 import { prepareGlobalContextForPublicUsage } from './prepareGlobalContextForPublicUsage.js'

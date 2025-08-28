@@ -58,7 +58,7 @@ export type {
   ConfigDefinition,
   ConfigEffect,
 } from '../node/vite/shared/resolveVikeConfigInternal/configDefinitionsBuiltIn.js'
-export type { ConfigEntries } from '../shared/page-configs/resolveGlobalConfigPublic.js'
+export type { ConfigEntries } from '../shared/page-configs/resolveVikeConfigPublic.js'
 
 export type { VikeConfig } from '../node/vite/shared/resolveVikeConfigInternal.js'
 
