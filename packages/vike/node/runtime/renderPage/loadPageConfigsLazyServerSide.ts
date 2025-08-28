@@ -4,7 +4,7 @@ export type { PageConfigsLazy }
 export type { PageContextAfterPageEntryLoaded }
 
 import { type VikeConfigPublicPageLazyLoaded, getPageFilesServerSide } from '../../../shared/getPageFiles.js'
-import { resolveVikeConfigPublicPageLazyLoaded } from '../../../shared/page-configs/resolveVikeConfigPublic.js'
+import { resolvePageContextPageConfigLazy } from '../../../shared/page-configs/resolveVikeConfigPublic.js'
 import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide.js'
 import {
   assertUsage,
@@ -163,7 +163,7 @@ async function loadPageUserFiles(
         ? null
         : await loadAndParseVirtualFilePageEntry(pageContext._pageConfig, isDev)
       await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))
-      const pageContextAddendum = resolveVikeConfigPublicPageLazyLoaded(
+      const pageContextAddendum = resolvePageContextPageConfigLazy(
         pageFilesServerSide,
         pageConfigLoaded,
         pageContext._globalContext._pageConfigGlobal,
