@@ -291,16 +291,16 @@ async function resolveVikeConfigInternal(
 
   setCliAndApiOptions(pageConfigGlobal, configDefinitionsResolved)
 
-  const vikeConfigPublic = resolveVikeConfig(pageConfigGlobal, pageConfigs)
+  const globalConfig = resolveGlobalConfig(pageConfigGlobal, pageConfigs)
 
   const prerenderContext = resolvePrerenderContext({
-    config: vikeConfigPublic.config,
-    _from: vikeConfigPublic._from,
+    config: globalConfig.config,
+    _from: globalConfig._from,
     _pageConfigs: pageConfigs,
   })
 
   const vikeConfig: VikeConfigInternal = {
-    ...vikeConfigPublic,
+    ...globalConfig,
     prerenderContext,
     _pageConfigs: pageConfigs,
     _pageConfigGlobal: pageConfigGlobal,
@@ -311,8 +311,9 @@ async function resolveVikeConfigInternal(
   return vikeConfig
 }
 
-function resolveVikeConfig(pageConfigGlobal: PageConfigGlobalBuildTime, pageConfigs: PageConfigBuildTime[]) {
-  return resolveGlobalConfigPublic(pageConfigs, pageConfigGlobal, getConfigValues)
+function resolveGlobalConfig(pageConfigGlobal: PageConfigGlobalBuildTime, pageConfigs: PageConfigBuildTime[]) {
+  const globalConfig = resolveGlobalConfigPublic(pageConfigs, pageConfigGlobal, getConfigValues)
+  return globalConfig
 }
 
 type ConfigDefinitionsResolved = Awaited<ReturnType<typeof resolveConfigDefinitions>>
@@ -1508,10 +1509,10 @@ function getVikeConfigDummy(esbuildCache: EsbuildCache): VikeConfigInternal {
     configValueSources: {},
     configDefinitions: {},
   }
-  const vikeConfigPublicDummy = resolveVikeConfig(pageConfigGlobalDummy, pageConfigsDummy)
+  const globalConfigDummy = resolveGlobalConfig(pageConfigGlobalDummy, pageConfigsDummy)
   const prerenderContextDummy = resolvePrerenderContext({
-    config: vikeConfigPublicDummy.config,
-    _from: vikeConfigPublicDummy._from,
+    config: globalConfigDummy.config,
+    _from: globalConfigDummy._from,
     _pageConfigs: pageConfigsDummy,
   })
   const vikeConfigDummy: VikeConfigInternal = {
@@ -1520,7 +1521,7 @@ function getVikeConfigDummy(esbuildCache: EsbuildCache): VikeConfigInternal {
       configDefinitions: {},
       configValueSources: {},
     },
-    ...vikeConfigPublicDummy,
+    ...globalConfigDummy,
     prerenderContext: prerenderContextDummy,
     _vikeConfigDependencies: esbuildCache.vikeConfigDependencies,
   }
