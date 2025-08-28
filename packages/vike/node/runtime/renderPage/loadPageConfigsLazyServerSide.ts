@@ -156,19 +156,7 @@ async function loadPageUserFiles(
   },
 ) {
   const [{ configPublicPageLazy }] = await Promise.all([
-    loadPageUserFiles_v1Design(pageContext),
-    analyzePageClientSideInit(pageContext._globalContext._pageFilesAll, pageContext.pageId, {
-      sharedPageFilesAlreadyLoaded: true,
-    }),
-  ])
-  objectAssign(pageContext, configPublicPageLazy)
-  return pageContext
-}
-async function loadPageUserFiles_v1Design(
-  pageContext: PageContext_loadPageConfigsLazyServerSide & {
-    _pageConfig: null | PageConfigRuntime
-  },
-) {
+    (async () => {
   const pageFilesServerSide = getPageFilesServerSide(pageContext._pageFilesAll, pageContext.pageId)
   const isDev = !pageContext._globalContext._isProduction
   const pageConfigLoaded = !pageContext._pageConfig
@@ -181,4 +169,11 @@ async function loadPageUserFiles_v1Design(
     pageContext._globalContext._pageConfigGlobal,
   )
   return { configPublicPageLazy }
+    })(),
+    analyzePageClientSideInit(pageContext._globalContext._pageFilesAll, pageContext.pageId, {
+      sharedPageFilesAlreadyLoaded: true,
+    }),
+  ])
+  objectAssign(pageContext, configPublicPageLazy)
+  return pageContext
 }
