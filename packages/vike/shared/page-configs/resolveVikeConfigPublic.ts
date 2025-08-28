@@ -216,14 +216,15 @@ function resolveGlobalConfigPublicPage(
 }
 
 type ConfigPublic = ReturnType<typeof getPublicCopy>
-function getPublicCopy(configPublic: ReturnType<typeof resolveConfigPublic_V1Design>) {
-  return {
-    config: configPublic.config,
+function getPublicCopy(configInternal: ReturnType<typeof resolveConfigPublic_V1Design>) {
+  const configPublic = {
+    config: configInternal.config,
     // TO-DO/soon/flat-pageContext: expose publicly?
-    _source: configPublic.source,
-    _sources: configPublic.sources,
-    _from: configPublic.from,
+    _source: configInternal.source,
+    _sources: configInternal.sources,
+    _from: configInternal.from,
   }
+  return configPublic
 }
 function resolveGlobalConfigPublic_base({
   pageConfigGlobalValues,
