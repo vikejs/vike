@@ -10,7 +10,6 @@ export { resolveVikeConfigPublic }
 export { resolvePageContextConfig }
 export { resolveGlobalContextConfig }
 export type { VikeConfigPublicGlobal }
-export type { VikeConfigPublicPageEagerLoaded }
 export type { PageContextConfig }
 export type { Source }
 export type { Sources }
@@ -161,7 +160,6 @@ type WithRoute =
       route?: undefined
       isErrorPage: true
     }
-type VikeConfigPublicPageEagerLoaded = VikeConfigPublic_ & WithRoute
 type VikeConfigPublicGlobal = VikeConfigPublic_
 
 type PageContextConfig = {
@@ -201,14 +199,15 @@ type PageContextConfig = {
   pageExports: Record<string, unknown>
 }
 
+type PageConfigPublicWithRoute = VikeConfigPublic_ & WithRoute
 function resolvePagesEagerLoaded(
   pageConfigGlobalValues: ConfigValues,
   pageConfig: PageConfigRuntime | PageConfigBuildTime,
   pageConfigValues: ConfigValues,
-): [string, VikeConfigPublicPageEagerLoaded] {
+): [string, PageConfigPublicWithRoute] {
   const pageConfigPublic_ = resolveVikeConfigPublic_base({ pageConfigGlobalValues, pageConfigValues })
   const pageConfigPublic = getPublicCopy(pageConfigPublic_)
-  let page: VikeConfigPublicPageEagerLoaded
+  let page: PageConfigPublicWithRoute
   if (!pageConfig.isErrorPage) {
     const route = pageConfigPublic.config.route ?? pageConfig.routeFilesystem.routeString
     page = {
