@@ -1,8 +1,11 @@
 import { Link } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
 
-Environment: build-time (Node.js/Bun/Deno)  
-<Link href="/config#cumulative">Cumulative</Link>: no  
-<Link href="/config#global">Global</Link>: yes  
+<ConfigSpec
+  env="build-time (Node.js/Bun/Deno)"
+  global
+  cumulative={false}
+/>
 
 The `onPrerenderStart()` hook is called once when <Link href="/pre-rendering">pre-rendering</Link> starts.
 It receives as argument an array of all <Link href="/pageContext">page contexts</Link> to be pre-rendered, and returns
