@@ -248,6 +248,26 @@ async function onPrerenderStart(prerenderContext: PrerenderContext) {
 You can use the `lang` setting to define the value of the `<html lang>` attribute, see <Link href="/lang" />.
 
 
+## Split locale data
+
+To reduce your client bundle sizes, you can load only the translation of the current language — instead of loading the translations of all languages at once.
+
+For example by using <Link href="/onBeforeRender">`+onBeforeRender.shared.js`</Link>:
+
+```ts
+// pages/+onBeforeRender.shared.ts
+// Environment: server & client
+
+import type { PageContext } from 'vike/types'
+
+export async function onBeforeRender(pageContext: PageContext) {
+  pageContext.localeData = await import(`../translations/${pageContext.locale}.ts`)
+}
+```
+
+Alternatively, you can define a server-only `+onBeforeRender.js` and add `pageContext.localeData` to <Link href="/passToClient">`passToClient`</Link>.
+
+
 ## See also
 
 - <Link href="/head-tags#internationalization" />
