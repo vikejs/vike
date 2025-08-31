@@ -60,84 +60,82 @@ function ConfigSpec({
 }) {
   return (
     <>
-      <>
-        {!env ? null : (
-          <>
-            <img
-              src="https://i.imgur.com/Ri4a5Ok.png"
-              width="20"
-              style={{ display: 'inline-block', position: 'relative', top: 4 }}
-            />{' '}
-            Environment: {env}
-            <br />
-          </>
-        )}
-        {!type && !children ? null : (
-          <>
-            <img
-              src={iconTypescript}
-              width="20"
-              style={{ display: 'inline-block', position: 'relative', top: 4, verticalAlign: 'top' }}
-            />{' '}
-            {children ? (
-              <div className="code-padding-buster" style={{ display: 'inline-block' }}>
-                {children}
-              </div>
-            ) : (
-              type
-            )}
-            <br />
-          </>
-        )}
-        {!prop.default ? null : (
-          <>
-            <img src={iconSparkles} width="20" style={{ display: 'inline-block', position: 'relative', top: 4 }} />{' '}
-            Default: {prop.default}
-            <br />
-          </>
-        )}
-        {!requires ? null : (
-          <>
-            <img src={iconLink} width="20" style={{ display: 'inline-block', position: 'relative', top: 4 }} />{' '}
-            Requires: {requires}
-            <br />
-          </>
-        )}
-        {global === null ? null : global ? (
-          <>
-            <img src={iconGlobal} width="20" style={{ display: 'inline-block', position: 'relative', top: 4 }} />{' '}
-            <Link href="/config#global">Global</Link>
-            <br />
-          </>
-        ) : (
-          <>
-            <img src={iconPage} width="20" style={{ display: 'inline-block', position: 'relative', top: 5 }} />{' '}
-            <Link href="/config#global">Local</Link>
-            <br />
-          </>
-        )}
-        {cumulative === undefined ? null : cumulative ? (
-          <>
-            <img
-              src="https://i.imgur.com/vms3p4B.png"
-              width="20"
-              style={{ display: 'inline-block', position: 'relative', top: 4 }}
-            />{' '}
-            <Link href="/config#cumulative">Cumulative</Link>
-            <br />
-          </>
-        ) : (
-          <>
-            <img
-              src="https://i.imgur.com/wnJF8GR.png"
-              width="20"
-              style={{ display: 'inline-block', position: 'relative', top: 4 }}
-            />{' '}
-            <Link href="/config#cumulative">Non-cumulative</Link>
-            <br />
-          </>
-        )}
-      </>
+      {!env ? null : (
+        <>
+          <img
+            src="https://i.imgur.com/Ri4a5Ok.png"
+            width="20"
+            style={{ display: 'inline-block', position: 'relative', top: 4 }}
+          />{' '}
+          Environment: {env}
+          <br />
+        </>
+      )}
+      {!type && !children ? null : (
+        <>
+          <img
+            src={iconTypescript}
+            width="20"
+            style={{ display: 'inline-block', position: 'relative', top: 4, verticalAlign: 'top' }}
+          />{' '}
+          {children ? (
+            <div className="code-padding-buster" style={{ display: 'inline-block' }}>
+              {children}
+            </div>
+          ) : (
+            type
+          )}
+          <br />
+        </>
+      )}
+      {!prop.default ? null : (
+        <>
+          <img src={iconSparkles} width="20" style={{ display: 'inline-block', position: 'relative', top: 4 }} />{' '}
+          Default: {prop.default}
+          <br />
+        </>
+      )}
+      {!requires ? null : (
+        <>
+          <img src={iconLink} width="20" style={{ display: 'inline-block', position: 'relative', top: 4 }} /> Requires:{' '}
+          {requires}
+          <br />
+        </>
+      )}
+      {global === null ? null : global ? (
+        <>
+          <img src={iconGlobal} width="20" style={{ display: 'inline-block', position: 'relative', top: 4 }} />{' '}
+          <Link href="/config#global">Global</Link>
+          <br />
+        </>
+      ) : (
+        <>
+          <img src={iconPage} width="20" style={{ display: 'inline-block', position: 'relative', top: 5 }} />{' '}
+          <Link href="/config#global">Local</Link>
+          <br />
+        </>
+      )}
+      {cumulative === undefined ? null : cumulative ? (
+        <>
+          <img
+            src="https://i.imgur.com/vms3p4B.png"
+            width="20"
+            style={{ display: 'inline-block', position: 'relative', top: 4 }}
+          />{' '}
+          <Link href="/config#cumulative">Cumulative</Link>
+          <br />
+        </>
+      ) : (
+        <>
+          <img
+            src="https://i.imgur.com/wnJF8GR.png"
+            width="20"
+            style={{ display: 'inline-block', position: 'relative', top: 4 }}
+          />{' '}
+          <Link href="/config#cumulative">Non-cumulative</Link>
+          <br />
+        </>
+      )}
       {providedBy ?? <ProvidedBy core />}
     </>
   )
