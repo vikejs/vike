@@ -6,9 +6,12 @@ import { UiFrameworkExtension, ProvidedBy, ConfigSpec } from '../../components'
   env="server"
   cumulative
   global
-  type={<code>object | (pageContext) =&gt; object</code>}
   providedBy={<ProvidedBy noCustomGuide />}
-/>
+>
+```ts
+object | (pageContext) => object
+```
+</ConfigSpec>
 
 The `bodyAttributes` setting adds attributes to the `<body>` tag.
 

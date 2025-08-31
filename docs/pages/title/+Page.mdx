@@ -5,9 +5,12 @@ import { ProvidedBy, ConfigSpec } from '../../components'
 <ConfigSpec
   env="server, client"
   cumulative={false}
-  type={<code>string | null | ((pageContext) =&gt; string | null | undefined)</code>}
   providedBy={<ProvidedBy noCustomGuide />}
-/>
+>
+```ts
+string | null | ((pageContext) => string | null | undefined)
+```
+</ConfigSpec>
 
 > See <Link href="/head-tags" /> for a general introduction about `<head>` tags.
 

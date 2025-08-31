@@ -5,9 +5,12 @@ import { UiFrameworkExtension, ProvidedBy, ConfigSpec } from '../../components'
   env="server"
   cumulative={false}
   default={<code>'en'</code>}
-  type={<code>string | null | ((pageContext) =&gt; string | null | undefined)</code>}
   providedBy={<ProvidedBy />}
-/>
+>
+```ts
+string | null | ((pageContext) => string | null | undefined)
+```
+</ConfigSpec>
 
 You can set the value of the [`<html lang>` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/lang#language_tag_syntax) by using Vike's `lang` setting.
 

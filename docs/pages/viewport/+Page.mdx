@@ -6,9 +6,12 @@ import { ProvidedBy, ConfigSpec } from '../../components'
   env="server"
   cumulative={false}
   default={<code>'responsive'</code>}
-  type={<code>'responsive' | number | null | ((pageContext) =&gt; 'responsive' | number | null | undefined)</code>}
   providedBy={<ProvidedBy noCustomGuide />}
-/>
+>
+```ts
+'responsive' | number | null | ((pageContext) => 'responsive' | number | null | undefined)
+```
+</ConfigSpec>
 
 The `viewport` setting sets [the page's shown width on mobile/tablet devices](https://developer.mozilla.org/en-US/docs/Web/HTML/Viewport_meta_tag).
 
