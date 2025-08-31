@@ -1,8 +1,10 @@
 import { Link } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
 
-Environment: server (<Link href="#environment">configurable</Link>)  
-<Link href="/config#cumulative">Cumulative</Link>: no  
-<Link href="/config#global">Global</Link>: no  
+<ConfigSpec
+  env={<>server (<Link href="#environment">configurable</Link>)</>}
+  cumulative={false}
+/>
 
 The `guard()` hook enables you to protect pages from unauthorized and unexpected access.
 

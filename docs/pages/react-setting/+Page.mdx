@@ -1,11 +1,11 @@
 import { Link } from '@brillout/docpress'
-import { ProvidedBy } from '../../components'
+import { ProvidedBy, ConfigSpec } from '../../components'
 
-Environment: server, client  
-<Link href="/config#cumulative">Cumulative</Link>: yes  
-<Link href="/config#global">Global</Link>: no  
-
-<ProvidedBy list={['vike-react']} noCustomGuide={true}>the `+react` setting</ProvidedBy>
+<ConfigSpec
+  env="server, client"
+  cumulative
+  providedBy={<ProvidedBy list={['vike-react']} noCustomGuide={true}>the <code>+react</code> setting</ProvidedBy>}
+/>
 
 Add options to the React functions that `vike-react` calls.
 

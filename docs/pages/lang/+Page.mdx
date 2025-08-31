@@ -1,13 +1,16 @@
 import { Link } from '@brillout/docpress'
-import { UiFrameworkExtension, ProvidedBy } from '../../components'
+import { UiFrameworkExtension, ProvidedBy, ConfigSpec } from '../../components'
 
-TypeScript: `string | null | ((pageContext) => string | null | undefined)`  
-Default value: `'en'`  
-Environment: server  
-<Link href="/config#cumulative">Cumulative</Link>: no  
-<Link href="/config#global">Global</Link>: no  
-
-<ProvidedBy />
+<ConfigSpec
+  env="server"
+  default={<code>'en'</code>}
+  providedBy={<ProvidedBy />}
+>
+```ts
+type Value = string | null | undefined
+type Lang = Value | ((pageContext) => Value)
+```
+</ConfigSpec>
 
 You can set the value of the [`<html lang>` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/lang#language_tag_syntax) by using Vike's `lang` setting.
 

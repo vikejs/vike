@@ -1,9 +1,14 @@
 import { Link } from '@brillout/docpress'
-import { UiFrameworkExtension, ProvidedBy } from '../../components'
+import { UiFrameworkExtension, ProvidedBy, ConfigSpec } from '../../components'
 
-Default value: `true`.
-
-<ProvidedBy>the `ssr` setting</ProvidedBy>
+<ConfigSpec
+  default={<code>true</code>}
+  providedBy={<ProvidedBy>the <code>ssr</code> setting</ProvidedBy>}
+>
+```ts
+boolean
+```
+</ConfigSpec>
 
 Setting to enable/disable Server-Side Rendering (SSR). You can disable SSR for all your pages or only for some pages.
 

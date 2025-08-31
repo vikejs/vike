@@ -1,11 +1,12 @@
 import { Link } from '@brillout/docpress'
-import { ProvidedBy } from '../../components'
+import { ProvidedBy, ConfigSpec } from '../../components'
 
-Environment: server, client  
-<Link href="/config#cumulative">Cumulative</Link>: yes  
-<Link href="/config#global">Global</Link>: yes  
-
-<ProvidedBy list={['vike-vue']} noCustomGuide={true}>`onCreateApp()`</ProvidedBy>
+<ConfigSpec
+  env="server, client"
+  cumulative
+  global
+  providedBy={<ProvidedBy list={['vike-vue']} noCustomGuide={true}><code>onCreateApp()</code></ProvidedBy>}
+/>
 
 The `onCreateApp()` hook is called right after the
 [Vue app](https://vuejs.org/guide/essentials/application.html) is created, giving you the opportunity to extend it,

@@ -1,7 +1,10 @@
 import { RepoLink, Link, Warning } from '@brillout/docpress'
-import { UiFrameworkExtension } from '../../components'
+import { UiFrameworkExtension, ConfigSpec } from '../../components'
 
-Environment: client  
+<ConfigSpec
+  env="client"
+  global={null}
+/>
 
 The `navigate('/some/url')` function enables you to programmatically switch pages without requiring the user to click a link.
 
