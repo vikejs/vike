@@ -5,6 +5,7 @@ import { Link } from '@brillout/docpress'
 import iconGlobal from '../assets/icons/global.svg'
 import iconPage from '../assets/icons/page.svg'
 import iconSparkles from '../assets/icons/sparkles.svg'
+import iconLink from '../assets/icons/link.svg'
 import iconTypescript from '../assets/icons/typescript.svg'
 import { ProvidedBy } from './ProvidedBy'
 import './ConfigSpec.css'
@@ -43,6 +44,7 @@ function ConfigSpec({
   cumulative,
   global,
   providedBy,
+  requires,
   type,
   children,
   ...prop
@@ -52,6 +54,7 @@ function ConfigSpec({
   global?: true | null
   providedBy?: React.ReactNode
   default?: React.ReactNode
+  requires?: React.ReactNode
   type?: React.ReactNode
   children?: React.ReactNode
 }) {
@@ -90,6 +93,13 @@ function ConfigSpec({
           <>
             <img src={iconSparkles} width="20" style={{ display: 'inline-block', position: 'relative', top: 4 }} />{' '}
             Default: {prop.default}
+            <br />
+          </>
+        )}
+        {!requires ? null : (
+          <>
+            <img src={iconLink} width="20" style={{ display: 'inline-block', position: 'relative', top: 4 }} />{' '}
+            Requires: {requires}
             <br />
           </>
         )}
