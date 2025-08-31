@@ -20,7 +20,7 @@ The `onBeforeRender()` hook can be used to orchestrate multiple <Link href="/met
 
 ## `onBeforeRender()` VS `data()`
 
-The central difference between the two hooks is that the value returned by `data()` always sets the value of `pageContext.data`, whereas `onBeforeRender()` can set multiple `pageContext` values.
+The central difference between the two hooks is that the value returned by `data()` always sets the value of `pageContext.data`, whereas `onBeforeRender()` can set multiple <Link href="/pageContext">`pageContext`</Link> values.
 
 ```ts
 // /pages/some-page/+data.ts
@@ -239,6 +239,6 @@ function onBeforeRenderClient(pageContext: PageContextClient) {
 ## See also
 
 - <Link href="/data" />
-- <Link href="/pageContext" />
-- <Link href="/pageContext.json" />
+- <Link href="/onBeforeRenderHtml" />
+- <Link href="/onBeforeRenderClient" />
 - <Link href="/hooks" />
