@@ -49,7 +49,7 @@ function ConfigSpec({
 }: {
   env: React.ReactNode
   cumulative?: true
-  global?: true | null
+  global?: true | false
   providedBy?: React.ReactNode
   default?: React.ReactNode
   type?: React.ReactNode
@@ -93,19 +93,19 @@ function ConfigSpec({
             <br />
           </>
         )}
-        {global === null ? null : global ? (
+        {global === undefined ? null : global === true ? (
           <>
             <img src={iconGlobal} width="20" style={{ display: 'inline-block', position: 'relative', top: 4 }} />{' '}
             <Link href="/config#global">Global</Link>
             <br />
           </>
-        ) : (
+        ) : global === false ? (
           <>
             <img src={iconPage} width="20" style={{ display: 'inline-block', position: 'relative', top: 5 }} />{' '}
             <Link href="/config#global">Local</Link>
             <br />
           </>
-        )}
+        ) : null}
         {cumulative === undefined ? null : cumulative ? (
           <>
             <img
