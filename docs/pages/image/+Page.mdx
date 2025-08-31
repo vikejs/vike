@@ -8,7 +8,8 @@ import { UiFrameworkExtension, ProvidedBy, OnlyHtmlNote, ConfigSpec } from '../.
   providedBy={<ProvidedBy noCustomGuide />}
 >
 ```ts
-string | null | ((pageContext) => string | null | undefined)
+type Value = string | null | undefined
+type Image = Value | ((pageContext) => Value)
 ```
 </ConfigSpec>
 

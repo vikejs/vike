@@ -8,7 +8,8 @@ import { UiFrameworkExtension, ProvidedBy, ConfigSpec } from '../../components'
   providedBy={<ProvidedBy />}
 >
 ```ts
-string | null | ((pageContext) => string | null | undefined)
+type Value = string | null | undefined
+type Lang = Value | ((pageContext) => Value)
 ```
 </ConfigSpec>
 

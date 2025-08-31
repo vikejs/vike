@@ -9,7 +9,10 @@ import { ProvidedBy, ConfigSpec } from '../../components'
   providedBy={<ProvidedBy noCustomGuide />}
 >
 ```ts
-'responsive' | number | null | ((pageContext) => 'responsive' | number | null | undefined)
+type Value = 'responsive' | number | null | undefined
+type Viewport =
+  | Value
+  | ((pageContext) => Value)
 ```
 </ConfigSpec>
 

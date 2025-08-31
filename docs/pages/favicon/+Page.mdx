@@ -8,7 +8,8 @@ import { ProvidedBy, ConfigSpec } from '../../components'
   providedBy={<ProvidedBy noCustomGuide />}
 >
 ```ts
-string | null | ((pageContext) => string | null | undefined)
+type Value = string | null | undefined
+type Favicon = Value | ((pageContext) => Value)
 ```
 </ConfigSpec>
 
