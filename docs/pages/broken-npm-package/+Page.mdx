@@ -166,7 +166,7 @@ Node.js v18.0.0
 
 For default exports, the workaround proposed by Node.js may not work and you may need to do this instead:
 
-```ts ts-only
+```js
 import DefaultImport from "some-library";// [!code --]
 import pkg from 'some-library';// [!code ++]
 const DefaultImport = pkg.default ?? pkg;// [!code ++]
