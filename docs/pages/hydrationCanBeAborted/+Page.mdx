@@ -1,4 +1,10 @@
 import { Link } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
+
+<ConfigSpec
+  env="client"
+  default={<code>false</code>}
+/>
 
 ```ts
 // +config.ts
@@ -6,7 +12,6 @@ import { Link } from '@brillout/docpress'
 import type { Config } from 'vike/types'
 
 export default {
-  // Default value: false
   hydrationCanBeAborted: true
 } satisfies Config
 ```

@@ -1,11 +1,18 @@
 import { Link } from '@brillout/docpress'
 
-import { UiFrameworkExtension, ProvidedBy } from '../../components'
+import { UiFrameworkExtension, ProvidedBy, ConfigSpec } from '../../components'
 
-Default value: `false`. (Or `true` if using a <Link href="/extensions">Vike extension</Link> that requires streaming.)  
-Requires: <Link href="/ssr">`ssr: true`</Link>.
-
-<ProvidedBy>the `stream` setting</ProvidedBy>
+<ConfigSpec
+  default={<>
+    <code>false</code> (or <code>true</code> if using a <Link href="/extensions">Vike extension</Link> that requires streaming)
+  </>}
+  providedBy={<ProvidedBy>the <code>stream</code> setting</ProvidedBy>}
+  requires={<Link href="/ssr"><code>ssr: true</code></Link>}
+>
+```ts
+boolean | 'web' | 'node'
+```
+</ConfigSpec>
 
 The `stream` setting allows you to:
 - Enable or disable HTML Streaming.

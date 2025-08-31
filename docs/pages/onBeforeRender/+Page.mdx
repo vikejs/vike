@@ -1,13 +1,14 @@
-import { UiFrameworkExtension } from '../../components'
+import { UiFrameworkExtension, ConfigSpec } from '../../components'
 import { Link } from '@brillout/docpress'
 
-Environment: server (<Link href="#environment">configurable</Link>)  
-<Link href="/config#cumulative">Cumulative</Link>: no  
-<Link href="/config#global">Global</Link>: no  
+<ConfigSpec
+  env={<>server (<Link href="#environment">configurable</Link>)</>}
+  cumulative={false}
+/>
 
-> The `onBeforeRender()` hook is for expert Vike users. If you're new to Vike, we recommend using the
-> <Link href="/data">`data()` hook</Link> instead, and/or <Link href="/extensions">Vike extensions</Link> for
-> automatically integrating data fetching tools (RPC with Telefunc/tRPC, REST with Tanstack Query, GraphQL with Apollo/Relay, etc).
+> The `onBeforeRender()` hook is for advanced use cases. We generally recommend using the
+> <Link href="/data">`data()` hook</Link> instead, and/or <Link href="/extensions">Vike extensions</Link>
+> that automatically integrate data fetching tools (RPC with Telefunc/tRPC, REST with Tanstack Query, GraphQL with Apollo/Relay, etc).
 
 The most notable use case for the `onBeforeRender()` hook is deep integration with data fetching tools.
 
@@ -20,7 +21,7 @@ The `onBeforeRender()` hook can be used to orchestrate multiple <Link href="/met
 
 ## `onBeforeRender()` VS `data()`
 
-The central difference between the two hooks is that the value returned by `data()` always sets the value of `pageContext.data`, whereas `onBeforeRender()` can set multiple `pageContext` values.
+The central difference between the two hooks is that the value returned by `data()` always sets the value of `pageContext.data`, whereas `onBeforeRender()` can set multiple <Link href="/pageContext">`pageContext`</Link> values.
 
 ```ts ts-only
 // /pages/some-page/+data.ts
@@ -239,6 +240,6 @@ function onBeforeRenderClient(pageContext: PageContextClient) {
 ## See also
 
 - <Link href="/data" />
-- <Link href="/pageContext" />
-- <Link href="/pageContext.json" />
+- <Link href="/onBeforeRenderHtml" />
+- <Link href="/onBeforeRenderClient" />
 - <Link href="/hooks" />

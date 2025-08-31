@@ -1,9 +1,14 @@
 import { Link } from '@brillout/docpress'
-import { ViteLazyTranspilingContradiction } from '../../components'
+import { ViteLazyTranspilingContradiction, ConfigSpec } from '../../components'
 
-Environment: client  
-<Link href="/config#cumulative">Cumulative</Link>: no  
-<Link href="/config#global">Global</Link>: no  
+<ConfigSpec
+  env="client"
+  default={<code>'hover'</code>}
+>
+```ts
+false | 'hover' | 'viewport'
+```
+</ConfigSpec>
 
 ```ts
 // +config.ts

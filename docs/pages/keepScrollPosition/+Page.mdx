@@ -1,10 +1,18 @@
 import { Link } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
 
-Environment: client  
-TypeScript: `boolean | string | string[] | ((pageContext: PageContextClient) => boolean | string | string[])`  
-Default value: `false`  
-<Link href="/config#cumulative">Cumulative</Link>: no  
-<Link href="/config#global">Global</Link>: no  
+
+<ConfigSpec
+  env="client"
+  default={<code>false</code>}
+>
+```ts
+type Val = boolean | string | string[]
+type KeepScrollPosition =
+  | Val
+  | ((pageContext: PageContextClient) => Val)
+```
+</ConfigSpec>
 
 The `keepScrollPosition` setting enables you to control whether the page scrolls to the top upon navigation.
 
@@ -103,7 +111,10 @@ You can also programmatically set the scroll group:
 
 import type { PageContextClient } from 'vike/types'
 
-export default (pageContext: PageContextClient, { configDefinedAt }: { configDefinedAt: string }) => {
+export function keepScrollPosition(
+  pageContext: PageContextClient,
+  { configDefinedAt }: { configDefinedAt: string }
+) {
   console.log(configDefinedAt) // /pages/product/@id/+keepScrollPosition.ts
   // This is the value Vike sets by default:
   return [configDefinedAt, pageContext.routeParams['id']]

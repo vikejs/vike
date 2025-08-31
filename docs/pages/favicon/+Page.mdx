@@ -1,12 +1,16 @@
 import { Link, Warning } from '@brillout/docpress'
-import { ProvidedBy } from '../../components'
+import { ProvidedBy, ConfigSpec } from '../../components'
 
-TypeScript: `string | null | ((pageContext) => string | null | undefined)`  
-Environment: server  
-<Link href="/config#cumulative">Cumulative</Link>: no  
-<Link href="/config#global">Global</Link>: yes  
-
-<ProvidedBy noCustomGuide />
+<ConfigSpec
+  env="server"
+  global
+  providedBy={<ProvidedBy noCustomGuide />}
+>
+```ts
+type Value = string | null | undefined
+type Favicon = Value | ((pageContext) => Value)
+```
+</ConfigSpec>
 
 <Warning>
   This setting is experimental and may be removed in the future. Consider <Link href="/Head">using `+Head`</Link> instead.

@@ -1,13 +1,16 @@
 import { Link } from '@brillout/docpress'
 
-import { UiFrameworkExtension, ProvidedBy, OnlyHtmlNote } from '../../components'
+import { UiFrameworkExtension, ProvidedBy, OnlyHtmlNote, ConfigSpec } from '../../components'
 
-TypeScript: `string | null | ((pageContext) => string | null | undefined)`  
-Environment: server  
-<Link href="/config#cumulative">Cumulative</Link>: no  
-<Link href="/config#global">Global</Link>: no  
-
-<ProvidedBy noCustomGuide />
+<ConfigSpec
+  env="server"
+  providedBy={<ProvidedBy noCustomGuide />}
+>
+```ts
+type Value = string | null | undefined
+type Description = Value | ((pageContext) => Value)
+```
+</ConfigSpec>
 
 > See <Link href="/head-tags" /> for a general introduction about `<head>` tags.
 

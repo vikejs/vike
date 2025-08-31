@@ -1,13 +1,16 @@
 import { Link } from '@brillout/docpress'
 
-import { ProvidedBy } from '../../components'
+import { ProvidedBy, ConfigSpec } from '../../components'
 
-TypeScript: `string | null | ((pageContext) => string | null | undefined)`  
-Environment: server, client  
-<Link href="/config#cumulative">Cumulative</Link>: no  
-<Link href="/config#global">Global</Link>: no  
-
-<ProvidedBy noCustomGuide />
+<ConfigSpec
+  env="server, client"
+  providedBy={<ProvidedBy noCustomGuide />}
+>
+```ts
+type Value = string | null | undefined
+type Title = Value | ((pageContext) => Value)
+```
+</ConfigSpec>
 
 > See <Link href="/head-tags" /> for a general introduction about `<head>` tags.
 

@@ -1,8 +1,10 @@
 import { Link } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
 
-Environment: `server`, `client`  
-<Link href="/config#cumulative">Cumulative</Link>: yes  
-<Link href="/config#global">Global</Link>: no  
+<ConfigSpec
+  env={<><code>server</code>, <code>client</code></>}
+  cumulative
+/>
 
 Hook called as soon as <Link href="/pageContext#data">`pageContext.data`</Link> is available.
 

@@ -1,7 +1,10 @@
 import { Link } from '@brillout/docpress'
-import { UiFrameworkExtension } from '../../components'
+import { UiFrameworkExtension, ConfigSpec } from '../../components'
 
-Environment: client  
+<ConfigSpec
+  env="client"
+  global={null}
+/>
 
 By using `prefetch('/some/url')` you can programmatically prefetch pages.
 

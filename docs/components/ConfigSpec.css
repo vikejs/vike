@@ -1,0 +1,10 @@
+.code-padding-buster {
+  margin-top: -9px;
+  margin-bottom: -13px;
+  code {
+    padding: 4px 6px !important;
+  }
+  pre [data-line] {
+    padding: 0 !important;
+  }
+}

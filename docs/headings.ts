@@ -944,7 +944,7 @@ function tools() {
       {
         title: 'Tool guides & examples',
         url: '/tools',
-        sectionTitles: ['CSS-in-JS'],
+        sectionTitles: ['CSS-in-JS', 'Internationalization (i18n)'],
       },
       {
         title: 'React Router',
@@ -961,6 +961,10 @@ function tools() {
       {
         title: 'Vitest',
         url: '/vitest',
+      },
+      {
+        title: 'Lingui',
+        url: '/lingui',
       },
     ] as const
   ).map((h) => ({ ...h, category: 'Guides (tools)' as const })) satisfies HeadingDetachedDefinition[]
@@ -1371,7 +1375,7 @@ function api() {
       },
       { title: '`injectAssets()`', url: '/injectAssets' },
       {
-        title: 'Vite Plugin',
+        title: 'Vite plugin',
         url: '/vite-plugin',
       },
     ] as const

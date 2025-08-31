@@ -1,12 +1,12 @@
 import { Link, Contribution } from '@brillout/docpress'
-import { UiFrameworkExtension, ProvidedBy, Figure } from '../../components'
+import { UiFrameworkExtension, ProvidedBy, Figure, ConfigSpec } from '../../components'
 import { LoadingComponent } from './LoadingComponent'
 
-Environment: client, and server if <Link href="/ssr">`ssr: true`</Link>  
-<Link href="/config#cumulative">Cumulative</Link>: no  
-<Link href="/config#global">Global</Link>: no  
-
-<ProvidedBy list={['vike-react']} noCustomGuide={true}>the `+Loading` setting</ProvidedBy>
+<ConfigSpec
+  env={<>client, and server if <Link href="/ssr"><code>ssr: true</code></Link></>}
+  cumulative={false}
+  providedBy={<ProvidedBy list={['vike-react']} noCustomGuide={true}>the <code>+Loading</code> setting</ProvidedBy>}
+/>
 
 <Contribution>
   Contributions welcome to implement the `+Loading` setting for `vike-vue` and `vike-solid`.
