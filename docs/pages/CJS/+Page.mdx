@@ -1,4 +1,4 @@
-import { Warning } from '@brillout/docpress'
+import { Warning, TypescriptOnly } from '@brillout/docpress'
 
 <Warning>
 Vike will probably deprecate support for user-land CJS code soon. (Using CJS packages will still be supported for the foreseeable future.)
@@ -45,6 +45,7 @@ import { renderPage } from 'vike/server'// [!code ++]
 
 > An escape hatch is to use [the `.cjs` and `.mjs` file extensions](https://nodejs.org/api/esm.html#enabling:~:text=Authors%20can%20tell%20Node.js%20to%20use%20the%20ECMAScript%20modules%20loader%20via%20the%20.mjs%20file%20extension): it enables you to choose between CJS and ESM on a file-by-file basis (regardless of `package.json#type`).
 
+<TypescriptOnly>
 
 ## TypeScript migration
 
@@ -61,6 +62,7 @@ You can use [this script](https://gist.github.com/brillout/79fd8b21e8893f92334b8
 
 > This is typically only needed for library code (e.g. your monorepo packages used by your application code). For the application code itself, you can use [TypeScript's new `--moduleResolution bundler` option](https://devblogs.microsoft.com/typescript/announcing-typescript-5-0/#moduleresolution-bundler) instead.
 
+</TypescriptOnly>
 
 ## Monorepo migration
 

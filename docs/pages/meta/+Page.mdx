@@ -1,5 +1,5 @@
 import { Advanced, UiFrameworkExtension } from '../../components'
-import { Link, RepoLink } from '@brillout/docpress'
+import { Link, RepoLink, TypescriptOnly } from '@brillout/docpress'
 
 <Advanced>
   The `meta` setting is an advanced feature. Instead of using `meta`, consider using <Link href="/file-env" noBreadcrumb={true} /> or <Link href="/extensions">Vike Extensions</Link> (they use `meta` on your behalf).
@@ -468,12 +468,13 @@ export default {
 } satisfies Config
 ```
 
+<TypescriptOnly>
 
 ## TypeScript
 
 Similar to <Link href="/pageContext#typescript">`Vike.PageContext`</Link>, you can extend (or refine) Vike's `Config` type by using the global interface `Vike.Config`.
 
-```ts
+```ts ts-only
 // /pages/+config.ts
 // Environment: config
 
@@ -502,7 +503,7 @@ declare global {
 export {}
 ```
 
-```ts
+```ts ts-only
 // /pages/product/@id/+config.ts
 
 import { Config } from 'vike/types'
@@ -517,7 +518,7 @@ export default {
 
 If you define a <Link href="#api">`cumulative` config</Link>, then also make sure to use the global interface `Vike.ConfigResolved`.
 
-```ts
+```ts ts-only
 // /pages/+config.ts
 // Environment: config
 
@@ -544,6 +545,7 @@ declare global {
 }
 ```
 
+</TypescriptOnly>
 
 ## See also
 

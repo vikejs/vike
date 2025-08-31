@@ -1,4 +1,4 @@
-import { Link } from '@brillout/docpress'
+import { Link, TypescriptOnly } from '@brillout/docpress'
 import { UiFrameworkExtension } from '../../components'
 import { TableStyle } from './TableStyle'
 
@@ -328,6 +328,8 @@ function updateFavicon(dynamicFavicon) {
 }
 ```
 
+<TypescriptOnly>
+
 For TypeScript users:
 
 ```ts ts-only
@@ -344,6 +346,8 @@ declare global {
 ```
 
 > See: <Link href="/meta#typescript" />
+
+</TypescriptOnly>
 
 ### Setting usage
 
