@@ -27,7 +27,7 @@ export async function onCreatePageContext(pageContext: PageContextServer) {
   
   // Authentication middlewares (e.g. Passport.js and Grant) usually set req.user
   // to expose information about the logged-in user.
-  user = req
+  user = req.user
   // Or, when using a third-party authentication provider (e.g. Auth0):
   user = await someAuthApi.getUser(req.headers)
 
