@@ -9,7 +9,8 @@ import { UiFrameworkExtension, ProvidedBy, ConfigSpec } from '../../components'
   providedBy={<ProvidedBy noCustomGuide />}
 >
 ```ts
-object | (pageContext) => object
+type Value = Record<string, string>
+type BodyAttributes = Value | ((pageContext) => Value)
 ```
 </ConfigSpec>
 

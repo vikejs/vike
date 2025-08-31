@@ -1375,7 +1375,7 @@ function api() {
       },
       { title: '`injectAssets()`', url: '/injectAssets' },
       {
-        title: 'Vite Plugin',
+        title: 'Vite plugin',
         url: '/vite-plugin',
       },
     ] as const

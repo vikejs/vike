@@ -8,7 +8,11 @@ import { UiFrameworkExtension, ProvidedBy, ConfigSpec } from '../../components'
   </>}
   providedBy={<ProvidedBy>the <code>stream</code> setting</ProvidedBy>}
   requires={<Link href="/ssr"><code>ssr: true</code></Link>}
-/>
+>
+```ts
+boolean | 'web' | 'node'
+```
+</ConfigSpec>
 
 The `stream` setting allows you to:
 - Enable or disable HTML Streaming.

@@ -9,9 +9,7 @@ import { ProvidedBy, ConfigSpec } from '../../components'
 >
 ```ts
 type Value = 'responsive' | number | null | undefined
-type Viewport =
-  | Value
-  | ((pageContext) => Value)
+type Viewport = Value | ((pageContext) => Value)
 ```
 </ConfigSpec>
 
