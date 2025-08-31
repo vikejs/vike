@@ -59,7 +59,7 @@ function ConfigSpec({
   children?: React.ReactNode
 }) {
   return (
-    <>
+    <div style={{ paddingTop: 0, paddingBottom: 0, paddingLeft: 13, borderLeft: '3px solid #0002' }}>
       {!env ? null : (
         <>
           <img
@@ -137,6 +137,6 @@ function ConfigSpec({
         </>
       )}
       {providedBy ?? <ProvidedBy core />}
-    </>
+    </div>
   )
 }
