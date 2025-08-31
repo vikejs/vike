@@ -189,34 +189,39 @@ pages/admin/dashboard/+Page.jsx
 
 ### Global
 
-We call a configuration either *global* or *local*.
+We call a configuration either *global* or *local*:
 
-We call it global when it cannot be local — it always applies to all pages. For example, <Link href="/base-url">Base URL settings</Link> always affect your app globally.
+- **Global** — always applies to all pages.
 
-```yaml
-# Defining +baseAssets for a single page doesn't make sense — Vike logs a warning
-# since this +baseAssets.js file applies to all pages, not just this one.
-/pages/about/+baseAssets.js
-/pages/about/+Page.js
-# No config inheritance — the +baseAssets.js file also applies to this page.
-/pages/index/+Page.js
-```
+  For example, we call the <Link href="/base-url">Base URL setting</Link> global, because it affects your app globally.
 
-> Config inheritance doesn't apply to global configs.
+  > Config inheritance doesn't apply:
+  >
+  > ```yaml
+  > # Defining +baseAssets for a single page doesn't make sense — Vike logs a warning
+  > # since this +baseAssets.js file applies to all pages, not just this one.
+  > /pages/about/+baseAssets.js
+  > /pages/about/+Page.js
+  > # No config inheritance — the +baseAssets.js file above also applies to this page.
+  > /pages/index/+Page.js
+  > ```
 
-In contrast, we call the <Link href="/title">`+title` setting</Link> local because it *can* be local — each page can have a different title.
+- **Local** — can be defined on a per-page basis.
 
-> A local configuration configuration can apply globally if you define it at a global location.
-> ```ts
-> // pages/+config.ts
->
-> export default {
->   // This value applies to all pages defined at pages/** although it can be ovrriden,
->   // but if it isn't overriden then it applies globally.
->   title: 'Some title'
-> }
->
-> ```
+  For example, we call the <Link href="/title">`+title` setting</Link> local, because each page can have a different title.
+
+  > A local config can apply globally if defined at a global location:
+  > ```ts
+  > // pages/+config.ts
+  >
+  > import { Config } from 'vike/types'
+  >
+  > export default {
+  >   // If it isn't overriden then this tilte applies to all pages (more precisely
+  >   // speaking, it applies to all pages defined at pages/**).
+  >   title: 'My App'
+  > } satisfies Config
+  > ```
 
 ### Domain-driven File Structure
 
