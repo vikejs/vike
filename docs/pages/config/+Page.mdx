@@ -189,9 +189,7 @@ pages/admin/dashboard/+Page.jsx
 
 ### Global
 
-A configuration is either *global* or *local*.
-
-A global configuration always applies to all pages. For example, <Link href="/base-url">Base URL settings</Link> affect your app globally.
+We call a configuration *global* when it cannot be *local* — it always applies to all pages. For example, <Link href="/base-url">Base URL settings</Link> always affect your app globally.
 
 ```yaml
 # Defining +baseAssets for a single page doesn't make sense — Vike logs a warning
@@ -204,7 +202,7 @@ A global configuration always applies to all pages. For example, <Link href="/ba
 
 > Config inheritance doesn't apply to global configs.
 
-In contrast, the <Link href="/title">`+title` setting</Link> is local, as each page can have a different title.
+In contrast, the <Link href="/title">`+title` setting</Link> can be local, as each page can have a different title.
 
 ### Domain-driven File Structure
 
