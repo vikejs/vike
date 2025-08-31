@@ -40,7 +40,7 @@ export default {
       env: {
         server: true,
         // Load the value of /pages/**/+dataEndpointUrl.ts only on the server
-        client: false,
+        client: false
       }
     }
   }
@@ -95,7 +95,7 @@ export default {
       env: {
         server: true,
         // Load the value of /pages/**/+sql.ts only on the server
-        client: false,
+        client: false
       }
     }
   }
@@ -153,7 +153,7 @@ export default 'Who we are, our values, and what we stand for.'
 >
 > export default {
 >   title: 'About Us',
->   description: 'Who we are, our values, and what we stand for.',
+>   description: 'Who we are, our values, and what we stand for.'
 > } satisfies Config
 > ```
 >
@@ -194,12 +194,12 @@ export default {
   meta: {
     title: {
       // Make the value of `title` available on both the server- and client-side
-      env: { server: true, client: true },
+      env: { server: true, client: true }
     },
     description: {
       // Make the value of `description` available only on the server-side
-      env: { server: true },
-    },
+      env: { server: true }
+    }
   }
 } satisfies Config
 ```
@@ -311,7 +311,7 @@ export default {
       // Load the value of /pages/**/+Layout.js on both the server and client
       env: { server: true, client: true },
       // Make it cumulative for nested layouts
-      cumulative: true,
+      cumulative: true
     }
   }
 } satisfies Config
@@ -375,7 +375,7 @@ export default {
       // By default, the data() hook is loaded and executed only on the
       // server-side. By using meta we can make it isomorphic instead:
       // data() is loaded and executed as well on the client-side.
-      env: { server: true, client: true },
+      env: { server: true, client: true }
     }
   }
 } satisfies Config
@@ -396,7 +396,7 @@ const config = {
   meta: {
     dataIsomorph: {
       env: { config: true },
-      effect,
+      effect
     }
   }
 } satisfies Config
@@ -442,7 +442,7 @@ export default {
         // Load the config value on the client. [Required]
         client: true,
         // Load the config value at config-time (when Vike loads +config.js files). [Optional]
-        config: false, // default value
+        config: false // default value
       },
 
       // [Optional] Whether config values should be merged (instead of overridden).
@@ -457,8 +457,8 @@ export default {
             meta: {
               // This can be the same or another hook/setting.
               someOtherSettingOrHook: {
-                env: { server: true, client: false },
-              },
+                env: { server: true, client: false }
+              }
             }
           }
         }
@@ -482,8 +482,8 @@ import type { Config } from 'vike/types'
 export default {
   meta: {
     sqlQuery: {
-      env: { server: true },
-    },
+      env: { server: true }
+    }
   }
 } satisfies Config
 

@@ -28,7 +28,7 @@ import type { UserConfig } from 'vite'
 export default {
   ssr: {
     // Add problematic npm package here:
-    noExternal: ['some-npm-package'],
+    noExternal: ['some-npm-package']
   }
 } satisfies UserConfig
 ```
@@ -60,7 +60,7 @@ export default {
         //   import someImport from 'some-package/path'
         //   import someImport from 'some-package/sub/path'
         //   ...
-        "some-package/**",
+        "some-package/**"
       ]
     })
   ]

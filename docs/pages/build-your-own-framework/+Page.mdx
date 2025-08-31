@@ -30,7 +30,7 @@ You can achieve that by progressively applying one or more of the following step
   export default {
     ssr: false,// [!code --]
     extends: [react, apollo],// [!code --]
-    extends: [myFramework],// [!code ++]
+    extends: [myFramework]// [!code ++]
   } satisfies Config
   ```
 - <Link href="/meta">Create custom settings</Link>, so that your Product Developers can easily configure your framework.
@@ -42,7 +42,7 @@ You can achieve that by progressively applying one or more of the following step
 
   export default {
     myCustomSetting: true,
-    extends: [myFramework],
+    extends: [myFramework]
   } satisfies Config
   ```
 - Create your own CLI.

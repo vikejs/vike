@@ -89,7 +89,7 @@ export default {
   // Default <meta name="description">
   description: 'We deliver payload to space',
   // Default <meta property="og:image">
-  image,
+  image
 } satisfies Config
 ```
 
@@ -123,7 +123,7 @@ import image from './previewImage.jpg'
 export default {
   title: 'Movies',
   description: 'List of movies.',
-  image,
+  image
 } satisfies Config
 ```
 
@@ -281,8 +281,8 @@ export default {
   meta: {
     dynamicFavicon: {
       env: { server: true, client: true }
-    },
-  },
+    }
+  }
 } satisfies Config
 ```
 > See: <Link href="/meta" />
@@ -356,7 +356,7 @@ import favicon from './favicon.svg'
 
 export default {
   // Default favicon
-  dynamicFavicon: favicon,
+  dynamicFavicon: favicon
 } satisfies Config
 ```
 
@@ -369,7 +369,7 @@ import favicon from './favicon.svg'
 
 export default {
   // Favicon for /premium-members
-  dynamicFavicon: favicon,
+  dynamicFavicon: favicon
 } satisfies Config
 ```
 
@@ -388,9 +388,7 @@ import { usePageContext } from 'vike-react/usePageContext' // or vike-{vue,solid
 function Head() {
   const pageContext = usePageContext()
   const description = 
-    pageContext.locale === 'de-DE' ?
-      'List von Star Wars Filme.' :
-      'List of Star Wars Movies.'
+    pageContext.locale === 'de-DE' ? 'List von Star Wars Filme.' : 'List of Star Wars Movies.'
 
   return (
     <>

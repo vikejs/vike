@@ -19,7 +19,7 @@ import type { Config } from 'vike/types'
 
 export default {
   hydrateRootOptions: {
-    onUncaughtError,
+    onUncaughtError
     /*
     onCaughtError,
     onRecoverableError,
@@ -27,7 +27,7 @@ export default {
     */
   },
   createRootOptions: {
-    onUncaughtError,
+    onUncaughtError
     /*
     onCaughtError,
     onRecoverableError,
@@ -53,7 +53,7 @@ import type { Config, PageContextClient } from 'vike/types'
 export default (pageContext: PageContextClient): Config['react'] => {
   return {
     hydrateRootOptions,
-    createRootOptions,
+    createRootOptions
   }
 }
 ```
