@@ -1,9 +1,10 @@
 import { Link } from '@brillout/docpress'
-import { UiFrameworkExtension } from '../../components'
+import { UiFrameworkExtension, ConfigSpec } from '../../components'
 
-Environment: client, and server if <Link href="/ssr">`ssr: true`</Link>  
-<Link href="/config#cumulative">Cumulative</Link>: no  
-<Link href="/config#global">Global</Link>: no  
+<ConfigSpec
+  env={<>client, and server if <Link href="/ssr"><code>ssr: true</code></Link></>}
+  cumulative={false}
+/>
 
 The `Page` setting determines the root component of the page.
 

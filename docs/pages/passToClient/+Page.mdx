@@ -1,8 +1,10 @@
 import { Link, Warning } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
 
-TypeScript: `string[]`  
-<Link href="/config#cumulative">Cumulative</Link>: yes  
-<Link href="/config#global">Global</Link>: no  
+<ConfigSpec
+  type={<code>string[]</code>}
+  cumulative
+/>
 
 Most <Link href="/pageContext">`pageContext`</Link> and <Link href="/globalContext">`globalContext`</Link> properties are available only on the server-side, but you can use `passToClient` to make properties available on the client-side.
 

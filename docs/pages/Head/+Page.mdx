@@ -1,11 +1,11 @@
-import { UiFrameworkExtension, ProvidedBy } from '../../components'
+import { UiFrameworkExtension, ProvidedBy, ConfigSpec } from '../../components'
 import { Link, Warning } from '@brillout/docpress'
 
-Environment: server  
-<Link href="/config#cumulative">Cumulative</Link>: yes  
-<Link href="/config#global">Global</Link>: no  
-
-<ProvidedBy noCustomGuide />
+<ConfigSpec
+  env="server"
+  cumulative
+  providedBy={<ProvidedBy noCustomGuide />}
+/>
 
 The `+Head` setting allows you to add `<head>` tags to your pages.
 

@@ -1,9 +1,10 @@
-import { UiFrameworkExtension } from '../../components'
+import { UiFrameworkExtension, ConfigSpec } from '../../components'
 import { Link } from '@brillout/docpress'
 
-Environment: server (<Link href="#environment">configurable</Link>)  
-<Link href="/config#cumulative">Cumulative</Link>: no  
-<Link href="/config#global">Global</Link>: no  
+<ConfigSpec
+  env={<>server (<Link href="#environment">configurable</Link>)</>}
+  cumulative={false}
+/>
 
 > The `onBeforeRender()` hook is for advanced use cases. We generally recommend using the
 > <Link href="/data">`data()` hook</Link> instead, and/or <Link href="/extensions">Vike extensions</Link>

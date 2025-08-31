@@ -1,12 +1,12 @@
 import { Link } from '@brillout/docpress'
-import { ProvidedBy } from '../../components'
+import { ProvidedBy, ConfigSpec } from '../../components'
 import { UiFrameworkExtension } from '../../components'
 
-Environment: client  
-<Link href="/config#cumulative">Cumulative</Link>: yes  
-<Link href="/config#global">Global</Link>: no  
-
-<ProvidedBy list={['vike-react', 'vike-vue']}>`onBeforeRenderClient()`</ProvidedBy>
+<ConfigSpec
+  env="client"
+  cumulative
+  providedBy={<ProvidedBy list={['vike-react', 'vike-vue']}><code>onBeforeRenderClient()</code></ProvidedBy>}
+/>
 
 Hook called at the beginning of rendering the page on the client-side. It's usually used for integrating tools, such as state management tools.
 

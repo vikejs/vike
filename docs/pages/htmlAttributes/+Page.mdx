@@ -1,13 +1,14 @@
 import { Link } from '@brillout/docpress'
 
-import { UiFrameworkExtension, ProvidedBy } from '../../components'
+import { UiFrameworkExtension, ProvidedBy, ConfigSpec } from '../../components'
 
-TypeScript: `object | (pageContext) => object`  
-Environment: server  
-<Link href="/config#cumulative">Cumulative</Link>: yes  
-<Link href="/config#global">Global</Link>: yes  
-
-<ProvidedBy noCustomGuide />
+<ConfigSpec
+  env="server"
+  cumulative
+  global
+  type={<code>object | (pageContext) => object</code>}
+  providedBy={<ProvidedBy noCustomGuide />}
+/>
 
 The `htmlAttributes` setting adds attributes to the `<html>` tag.
 

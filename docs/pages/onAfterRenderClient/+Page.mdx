@@ -1,10 +1,10 @@
 import { Link } from '@brillout/docpress'
-import { ProvidedBy } from '../../components'
+import { ProvidedBy, ConfigSpec } from '../../components'
 
-Environment: client  
-<Link href="/config#cumulative">Cumulative</Link>: yes  
-<Link href="/config#global">Global</Link>: no  
-
-<ProvidedBy noCustomGuide={true}>`onAfterRenderClient()`</ProvidedBy>
+<ConfigSpec
+  env="client"
+  cumulative
+  providedBy={<ProvidedBy noCustomGuide={true}><code>onAfterRenderClient()</code></ProvidedBy>}
+/>
 
 Same as <Link href="/onBeforeRenderClient">`onBeforeRenderClient()`</Link> but called after rendering the page on the client-side.

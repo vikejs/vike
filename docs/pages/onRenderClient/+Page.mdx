@@ -1,9 +1,10 @@
-import { UiFrameworkExtension } from '../../components'
+import { UiFrameworkExtension, ConfigSpec } from '../../components'
 import { Link } from '@brillout/docpress'
 
-Environment: client  
-<Link href="/config#cumulative">Cumulative</Link>: no  
-<Link href="/config#global">Global</Link>: no  
+<ConfigSpec
+  env="client"
+  cumulative={false}
+/>
 
 The `onRenderClient()` hook defines how pages are rendered/<Link text="hydrated" href="/hydration" /> on the client-side.
 

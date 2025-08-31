@@ -1,7 +1,9 @@
-import { UiFrameworkExtension } from '../../components'
+import { UiFrameworkExtension, ConfigSpec } from '../../components'
 import { Link, RepoLink } from '@brillout/docpress'
 
-Environment: server  
+<ConfigSpec
+  env="server"
+/>
 
 The `escapeInject` string template tag sanitizes HTML to prevent security risks commonly called [XSS injections](https://en.wikipedia.org/wiki/Cross-site_scripting).
 

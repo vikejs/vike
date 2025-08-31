@@ -1,14 +1,14 @@
 import { Link } from '@brillout/docpress'
 
-import { ProvidedBy } from '../../components'
+import { ProvidedBy, ConfigSpec } from '../../components'
 
-TypeScript: `'responsive' | number | null | ((pageContext) => 'responsive' | number | null | undefined)`  
-Default: `'responsive'`  
-Environment: server  
-<Link href="/config#cumulative">Cumulative</Link>: no  
-<Link href="/config#global">Global</Link>: no  
-
-<ProvidedBy noCustomGuide />
+<ConfigSpec
+  env="server"
+  cumulative={false}
+  default={<code>'responsive'</code>}
+  type={<code>'responsive' | number | null | ((pageContext) => 'responsive' | number | null | undefined)</code>}
+  providedBy={<ProvidedBy noCustomGuide />}
+/>
 
 The `viewport` setting sets [the page's shown width on mobile/tablet devices](https://developer.mozilla.org/en-US/docs/Web/HTML/Viewport_meta_tag).
 

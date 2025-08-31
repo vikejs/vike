@@ -1,9 +1,11 @@
 import { Link, RepoLink } from '@brillout/docpress'
 import PreRenderDynamicRoutes from '../pre-rendering/PreRenderDynamicRoutes.mdx'
+import { ConfigSpec } from '../../components'
 
-Environment: build-time (Node.js/Bun/Deno)  
-<Link href="/config#cumulative">Cumulative</Link>: no  
-<Link href="/config#global">Global</Link>: no  
+<ConfigSpec
+  env="build-time (Node.js/Bun/Deno)"
+  cumulative={false}
+/>
 
 The `onBeforePrerenderStart()` hook is executed upon <Link text="pre-rendering" href="/pre-rendering" /> your app.
 

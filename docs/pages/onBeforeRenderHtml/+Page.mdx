@@ -1,10 +1,10 @@
 import { Link } from '@brillout/docpress'
-import { ProvidedBy, UiFrameworkExtension } from '../../components'
+import { ProvidedBy, UiFrameworkExtension, ConfigSpec } from '../../components'
 
-Environment: server  
-<Link href="/config#cumulative">Cumulative</Link>: yes  
-<Link href="/config#global">Global</Link>: no  
-
-<ProvidedBy list={['vike-react', 'vike-vue']} noCustomGuide={true}>`onBeforeRenderHtml()`</ProvidedBy>
+<ConfigSpec
+  env="server"
+  cumulative
+  providedBy={<ProvidedBy list={['vike-react', 'vike-vue']} noCustomGuide={true}><code>onBeforeRenderHtml()</code></ProvidedBy>}
+/>
 
 Same as <Link href="/onAfterRenderHtml">`onAfterRenderHtml()`</Link> but called right before the `+Page` component is rendered to HTML.

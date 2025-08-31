@@ -1,10 +1,11 @@
 import { Link } from '@brillout/docpress'
-import { ProvidedBy, UiFrameworkExtension } from '../../components'
+import { ProvidedBy, UiFrameworkExtension, ConfigSpec } from '../../components'
 
-Environment: server  
-<Link href="/config#cumulative">Cumulative</Link>: yes  
-<Link href="/config#global">Global</Link>: yes  
-
-<ProvidedBy list={['vike-vue', 'vike-react']} noCustomGuide>`bodyHtmlBegin`</ProvidedBy>
+<ConfigSpec
+  env="server"
+  cumulative
+  global
+  providedBy={<ProvidedBy list={['vike-vue', 'vike-react']} noCustomGuide><code>bodyHtmlBegin</code></ProvidedBy>}
+/>
 
 Setting for inserting HTML at the beginning of the `<body>` tag, see the documentation at <Link href="/bodyHtmlEnd">`bodyHtmlEnd`</Link>.
