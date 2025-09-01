@@ -672,6 +672,11 @@ const headings = [
   },
   {
     level: 2,
+    title: '`+headersResponse`',
+    url: '/headersResponse',
+  },
+  {
+    level: 2,
     title: '`+csp`',
     url: '/csp',
   },

@@ -3,6 +3,7 @@
   margin-bottom: -13px;
   code {
     padding: 3px 8px !important;
+    padding-bottom: 5px !important;
   }
   pre [data-line] {
     padding: 0 !important;
