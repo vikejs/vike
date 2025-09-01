@@ -48,6 +48,7 @@ function ConfigSpec({
   providedBy,
   requires,
   children,
+  isTypeOneLiner,
   ...prop
 }: {
   env: React.ReactNode
@@ -57,6 +58,7 @@ function ConfigSpec({
   default?: React.ReactNode
   requires?: React.ReactNode
   children?: React.ReactNode
+  isTypeOneLiner?: true
 }) {
   return (
     <div
@@ -89,7 +91,10 @@ function ConfigSpec({
             width="20"
             style={{ display: 'inline-block', position: 'relative', top: 4, verticalAlign: 'top' }}
           />{' '}
-          <div className="code-padding-buster" style={{ display: 'inline-block' }}>
+          <div
+            className={`code-padding-buster ${isTypeOneLiner ? 'one-liner' : ''}`}
+            style={{ display: 'inline-block' }}
+          >
             {children}
           </div>
           <br />
