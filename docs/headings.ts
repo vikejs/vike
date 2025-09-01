@@ -1265,15 +1265,15 @@ function api() {
         url: '/createDevMiddleware',
       },
       {
-        title: '`onRenderHtml()` hook',
+        title: '`+onRenderHtml()` hook',
         url: '/onRenderHtml',
       },
       {
-        title: '`onRenderClient()` hook',
+        title: '`+onRenderClient()` hook',
         url: '/onRenderClient',
       },
       {
-        title: '`onBeforeRoute()` hook',
+        title: '`+onBeforeRoute()` hook',
         url: '/onBeforeRoute',
       },
       {
@@ -1289,7 +1289,7 @@ function api() {
         url: '/lang',
       },
       {
-        title: '`onCreateApp()` hook',
+        title: '`+onCreateApp()` hook',
         url: '/onCreateApp',
       },
       {
@@ -1325,23 +1325,23 @@ function api() {
         url: '/reactStrictMode',
       },
       {
-        title: '`onPageTransitionEnd()` hook',
+        title: '`+onPageTransitionEnd()` hook',
         url: '/onPageTransitionEnd',
       },
       {
-        title: '`onBeforeRenderClient()` hook',
+        title: '`+onBeforeRenderClient()` hook',
         url: '/onBeforeRenderClient',
       },
       {
-        title: '`onAfterRenderClient()` hook',
+        title: '`+onAfterRenderClient()` hook',
         url: '/onAfterRenderClient',
       },
       {
-        title: '`onBeforeRenderHtml()` hook',
+        title: '`+onBeforeRenderHtml()` hook',
         url: '/onBeforeRenderHtml',
       },
       {
-        title: '`onAfterRenderHtml()` hook',
+        title: '`+onAfterRenderHtml()` hook',
         url: '/onAfterRenderHtml',
       },
       {
@@ -1414,7 +1414,7 @@ function deprecated() {
         url: '/createPageRenderer',
       },
       {
-        title: 'Multiple `onBeforeRender()` hooks',
+        title: 'Multiple `+onBeforeRender()` hooks',
         url: '/onBeforeRender-multiple',
       },
       { title: '`dist/server/importBuild.js`', url: '/importBuild.js' },
