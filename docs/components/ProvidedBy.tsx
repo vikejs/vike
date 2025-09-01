@@ -33,7 +33,7 @@ function ProvidedBy({
       </>
       {core ? null : (
         <blockquote style={{ marginLeft: iconSize + 6, marginTop: 7 }}>
-          <p>
+          <p style={{ marginTop: 7, marginBottom: 10 }}>
             You need {uiFrameworkList} to be able to use {children ?? 'this setting'}.
             {!noCustomGuide && (
               <>
