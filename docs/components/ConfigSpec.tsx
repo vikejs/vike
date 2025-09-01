@@ -63,15 +63,14 @@ function ConfigSpec({
   return (
     <div
       style={{
-        backgroundColor: '#f8f9fa',
+        backgroundColor: '#efefef',
         border: '1px solid #dee2e6',
-        borderRadius: '8px',
-        padding: '20px',
-        marginBottom: '24px',
-        borderLeft: '4px solid #495057',
-        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-        fontSize: '14px',
-        lineHeight: '1.6',
+        borderRadius: 8,
+        paddingLeft: 14,
+        paddingRight: 15,
+        paddingTop: 10,
+        paddingBottom: 2,
+        marginBottom: 24,
       }}
     >
       {!env ? null : (

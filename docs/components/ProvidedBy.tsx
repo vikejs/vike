@@ -13,7 +13,7 @@ function ProvidedBy({
   const uiFrameworkList = <UiFrameworkExtension name list={list} />
   const iconSize = 20
   return (
-    <>
+    <div style={{ marginBottom: 10 }}>
       <>
         <img
           src="https://i.imgur.com/XsdeDvz.png"
@@ -32,7 +32,7 @@ function ProvidedBy({
         )}
       </>
       {core ? null : (
-        <blockquote style={{ marginLeft: iconSize + 6, marginTop: 7 }}>
+        <blockquote style={{ marginLeft: iconSize + 6, marginTop: 7, marginBottom: 13 }}>
           <p style={{ marginTop: 7, marginBottom: 10 }}>
             You need {uiFrameworkList} to be able to use {children ?? 'this setting'}.
             {!noCustomGuide && (
@@ -45,6 +45,6 @@ function ProvidedBy({
           </p>
         </blockquote>
       )}
-    </>
+    </div>
   )
 }
