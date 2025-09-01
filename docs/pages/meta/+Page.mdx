@@ -16,7 +16,7 @@ type Meta = {
   cumulative?: boolean
   global?: boolean | ((value: unknown, info: { isGlobalLocation: boolean }) => boolean)
   eager?: boolean
-  effect?: ((config: { configValue: unknown configDefinedAt: sring }) => Config | undefined)
+  effect?: ((config: { configValue: unknown configDefinedAt: string }) => Config | undefined)
   isDefinedByPeerDependency?: true
 }
 ```
