@@ -70,7 +70,7 @@ function ConfigSpec({
         paddingRight: 15,
         paddingTop: 10,
         paddingBottom: 2,
-        marginBottom: 24,
+        marginBottom: 20,
       }}
     >
       {!env ? null : (
