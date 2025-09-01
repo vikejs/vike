@@ -47,7 +47,6 @@ function ConfigSpec({
   global,
   providedBy,
   requires,
-  type,
   children,
   ...prop
 }: {
@@ -57,7 +56,6 @@ function ConfigSpec({
   providedBy?: React.ReactNode
   default?: React.ReactNode
   requires?: React.ReactNode
-  type?: React.ReactNode
   children?: React.ReactNode
 }) {
   return (
@@ -84,20 +82,16 @@ function ConfigSpec({
           <br />
         </>
       )}
-      {!type && !children ? null : (
+      {!children ? null : (
         <>
           <img
             src={iconTypescript}
             width="20"
             style={{ display: 'inline-block', position: 'relative', top: 4, verticalAlign: 'top' }}
           />{' '}
-          {children ? (
-            <div className="code-padding-buster" style={{ display: 'inline-block' }}>
-              {children}
-            </div>
-          ) : (
-            type
-          )}
+          <div className="code-padding-buster" style={{ display: 'inline-block' }}>
+            {children}
+          </div>
           <br />
         </>
       )}
