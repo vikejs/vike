@@ -6,22 +6,22 @@ import { Link } from '@brillout/docpress'
   cumulative={false}
 />
 
-> The `onBeforeRender()` hook is for advanced use cases. We generally recommend using the
-> <Link href="/data">`data()` hook</Link> instead, and/or <Link href="/extensions">Vike extensions</Link>
+> The `+onBeforeRender()` hook is for advanced use cases. We generally recommend using the
+> <Link href="/data">`+data()` hook</Link> instead, and/or <Link href="/extensions">Vike extensions</Link>
 > that automatically integrate data fetching tools (RPC with Telefunc/tRPC, REST with Tanstack Query, GraphQL with Apollo/Relay, etc).
 
-The most notable use case for the `onBeforeRender()` hook is deep integration with data fetching tools.
+The most notable use case for the `+onBeforeRender()` hook is deep integration with data fetching tools.
 
-For simple data fetching needs, use the <Link href="/data">`data()` hook</Link> instead. As a strategy to decide which one to use, always first try to use `data()` and only use `onBeforeRender()` as a fallback if `data()` doesn't work out.
+For simple data fetching needs, use the <Link href="/data">`+data()` hook</Link> instead. As a strategy to decide which one to use, always first try to use `+data()` and only use `+onBeforeRender()` as a fallback if `+data()` doesn't work out.
 
-The `onBeforeRender()` hook can be used to orchestrate multiple <Link href="/meta">custom hooks and settings</Link>, see:
+The `+onBeforeRender()` hook can be used to orchestrate multiple <Link href="/meta">custom hooks and settings</Link>, see:
  - <Link href="#onbeforerender-meta" doNotInferSectionTitle />
  - <Link href="#advanced-example" />
 
 
-## `onBeforeRender()` VS `data()`
+## `+onBeforeRender()` VS `+data()`
 
-The central difference between the two hooks is that the value returned by `data()` always sets the value of `pageContext.data`, whereas `onBeforeRender()` can set multiple <Link href="/pageContext">`pageContext`</Link> values.
+The central difference between the two hooks is that the value returned by `+data()` always sets the value of `pageContext.data`, whereas `+onBeforeRender()` can set multiple <Link href="/pageContext">`pageContext`</Link> values.
 
 ```ts
 // /pages/some-page/+data.ts
@@ -56,19 +56,19 @@ function onBeforeRender() {
 }
 ```
 
-Another difference is that the entire `pageContext.data` value is always sent to the client-side, whereas with `onBeforeRender()` you can (and must) decide which values are sent to the client-side by using <Link href="/passToClient">`passToClient`</Link>.
+Another difference is that the entire `pageContext.data` value is always sent to the client-side, whereas with `+onBeforeRender()` you can (and must) decide which values are sent to the client-side by using <Link href="/passToClient">`passToClient`</Link>.
 
-In a nutshell: while `onBeforeRender()` requires more manual work, it also gives you more control.
+In a nutshell: while `+onBeforeRender()` requires more manual work, it also gives you more control.
 
 
 ## Environment
 
-Like `data()`, the `onBeforeRender()` hook always runs on the server-side by default. By using <Link href="/file-env">`.shared.js` or `.client.js`</Link> you can tell Vike to run `onBeforeRender()` on the client-side instead, see <Link href="/data#environment" />.
+Like `+data()`, the `+onBeforeRender()` hook always runs on the server-side by default. By using <Link href="/file-env">`.shared.js` or `.client.js`</Link> you can tell Vike to run `+onBeforeRender()` on the client-side instead, see <Link href="/data#environment" />.
 
 
-## `onBeforeRender()` + `meta`
+## `+onBeforeRender()` + `+meta`
 
-Using `onBeforeRender()` together with custom hooks and settings (see <Link href="/meta">`meta`</Link>) is a powerful technique enabling you to implement your own tailored DX.
+Using `+onBeforeRender()` together with custom hooks and settings (see <Link href="/meta">`+meta`</Link>) is a powerful technique enabling you to implement your own tailored DX.
 
 For example.
 
@@ -84,7 +84,7 @@ export default { modelName: 'User', select: ['firstName', 'lastName'] }
 export default { modelName: 'Product', select: ['name', 'price'] }
 ```
 
-A single global `onBeforeRender()` hook orchestrating the custom setting:
+A single global `+onBeforeRender()` hook orchestrating the custom setting:
 
 ```ts
 // /pages/+onBeforeRender.ts
@@ -108,11 +108,11 @@ See full implementation at <Link href="/meta#example-sql" doNotInferSectionTitle
 
 ## Override
 
-There can be only one `onBeforeRender()` hook per page. For example, if you define a global `onBeforeRender()` hook at `/pages/+onBeforeRender.js` as well as a page-specific one at `/pages/star-wars/+onBeforeRender.js` then the page-specific one overrides the global one. See <Link href="/config#inheritance" />.
+There can be only one `+onBeforeRender()` hook per page. For example, if you define a global `+onBeforeRender()` hook at `/pages/+onBeforeRender.js` as well as a page-specific one at `/pages/star-wars/+onBeforeRender.js` then the page-specific one overrides the global one. See <Link href="/config#inheritance" />.
 
-> If you want multiple `onBeforeRender()` hooks, then consider:
-> - <Link href="/meta">Creating custom hooks</Link> instead: you can then use one global `onBeforeRender()` hook that orchestrates many custom hooks.
-> - Using <Link href="/data">`data()` hooks</Link>: you can then use one global `onBeforeRender()` while using page-specific `data()` hooks.
+> If you want multiple `+onBeforeRender()` hooks, then consider:
+> - <Link href="/meta">Creating custom hooks</Link> instead: you can then use one global `+onBeforeRender()` hook that orchestrates many custom hooks.
+> - Using <Link href="/data">`+data()` hooks</Link>: you can then use one global `+onBeforeRender()` while using page-specific `+data()` hooks.
 
 You can also suppress globally defined `onBeforeRender()` hooks on a per-page basis:
 ```ts
@@ -137,7 +137,7 @@ export default {
 
 ## Advanced example
 
-The following is an advanced example of using `onBeforeRender()` with `meta` in order to integrate data fetching tools. In particular, this approach can be used for advanced integration with GraphQL tools.
+The following is an advanced example of using `+onBeforeRender()` with `+meta` in order to integrate data fetching tools. In particular, this approach can be used for advanced integration with GraphQL tools.
 
 > If you use a custom renderer instead of <UiFrameworkExtension name noLink />, then you can modify your `onRenderHtml()`/`onRenderClient()` hooks instead of doing the following.
 
