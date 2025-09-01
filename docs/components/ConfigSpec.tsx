@@ -47,21 +47,32 @@ function ConfigSpec({
   global,
   providedBy,
   requires,
-  type,
   children,
+  isTypeOneLiner,
   ...prop
 }: {
   env: React.ReactNode
   cumulative?: true
-  global?: true | null
+  global?: true | false
   providedBy?: React.ReactNode
   default?: React.ReactNode
   requires?: React.ReactNode
-  type?: React.ReactNode
   children?: React.ReactNode
+  isTypeOneLiner?: true
 }) {
   return (
-    <div style={{ paddingTop: 0, paddingBottom: 0, paddingLeft: 13, borderLeft: '3px solid #0002' }}>
+    <div
+      style={{
+        backgroundColor: '#efefef',
+        border: '1px solid #dee2e6',
+        borderRadius: 8,
+        paddingLeft: 14,
+        paddingRight: 15,
+        paddingTop: 10,
+        paddingBottom: 2,
+        marginBottom: 20,
+      }}
+    >
       {!env ? null : (
         <>
           <img
@@ -73,20 +84,19 @@ function ConfigSpec({
           <br />
         </>
       )}
-      {!type && !children ? null : (
+      {!children ? null : (
         <>
           <img
             src={iconTypescript}
             width="20"
             style={{ display: 'inline-block', position: 'relative', top: 4, verticalAlign: 'top' }}
           />{' '}
-          {children ? (
-            <div className="code-padding-buster" style={{ display: 'inline-block' }}>
-              {children}
-            </div>
-          ) : (
-            type
-          )}
+          <div
+            className={`code-padding-buster ${isTypeOneLiner ? 'one-liner' : ''}`}
+            style={{ display: 'inline-block' }}
+          >
+            {children}
+          </div>
           <br />
         </>
       )}

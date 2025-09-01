@@ -2,9 +2,16 @@
   margin-top: -9px;
   margin-bottom: -13px;
   code {
-    padding: 4px 6px !important;
+    padding: 3px 8px !important;
   }
   pre [data-line] {
     padding: 0 !important;
+  }
+  &.one-liner {
+    code {
+      padding: 1px 6px !important;
+      position: relative;
+      top: -1px;
+    }
   }
 }
