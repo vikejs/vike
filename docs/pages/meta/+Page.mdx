@@ -3,12 +3,22 @@ import { Link, RepoLink } from '@brillout/docpress'
 import { ConfigSpec } from '../../components'
 
 <ConfigSpec
-  env="development & build-time"
+  env="config (development & build-time)"
   global={null}
-  isTypeOneLiner
 >
 ```ts
-Record<string, string>
+type Meta = {
+  env: {
+    client?: boolean
+    server?: boolean
+    config?: boolean
+  }
+  cumulative?: boolean
+  global?: boolean | ((value: unknown, info: { isGlobalLocation: boolean }) => boolean)
+  eager?: boolean
+  effect?: ((config: { configValue: unknown configDefinedAt: sring }) => Config | undefined)
+  isDefinedByPeerDependency?: true
+}
 ```
 </ConfigSpec>
 
