@@ -1,5 +1,26 @@
 import { Link } from '@brillout/docpress'
-import { TextType } from '../settings/TextType'
+import { ConfigSpec } from '../../components'
+
+<ConfigSpec
+  env="client, server"
+  global={null}
+>
+```ts
+type Config = {
+  prerender:
+  | boolean
+  | {
+      partial: boolean
+      redirects: boolean
+      noExtraDir: boolean
+      parallel: boolean | number
+      disableAutoRun: boolean
+      enable: null | boolean
+      keepDistServer: boolean
+    }
+}
+```
+</ConfigSpec>
 
 > <Link href="/pre-rendering" /> explains what pre-rendering is and how to use it.
 
@@ -14,11 +35,10 @@ export default {
   // Enable pre-rendering
   prerender: true,
 
-  // Pre-rendeer settings.
-  // The following are the default values.
+  // Settings for pre-rendering. The following are the default values.
   prerender: {
     partial: false,
-    redirects: isFullyPrerendered,
+    redirects: isFullyPrerendered, // Default value is true if all pages are pre-rendered
     noExtraDir: false,
     parallel: os.cpus.length, // Number of CPUs
     disableAutoRun: false,
@@ -154,17 +174,16 @@ Alternatively, set `+prerender` to `false` for the pages that cannot be pre-rend
 
 ### `redirects`
 
-TypeScript: `boolean`.  
-Default: `true` if the app is fully-prerendered.  
+`boolean` (default: `true` if the app is fully-prerendered)
 
-Whether <Link href="/redirects">`+redirects`</Link> should be pre-rendered to HTML documents that redirect the user:
+Whether <Link href="/redirects">`+redirects`</Link> should be pre-rendered to following HTML:
 
 ```html
-<!-- HTML redirecting user to https://example.org/path -->
+<!-- HTML redirecting user to /some/path -->
 <html>
 <head>
   <!-- Tell browser to redirect user -->
-  <meta http-equiv="refresh" content="0;url=https://example.org/path">
+  <meta http-equiv="refresh" content="0;url=/some/path">
 </head>
 <body></body>
 </html>
@@ -226,6 +245,8 @@ You can then manually trigger pre-rendering using:
 
 ### `enable`
 
+`boolean | null` (default: `true`)
+
 When you set `prerender` to an object then you also enable pre-rendering. In other words:
 
 ```ts
@@ -261,7 +282,7 @@ This is useful, for example, if you want pre-rendering to stay opt-in instead of
 It's also often used by <Link href="/extensions">Vike extensions</Link> to change pre-rendering settings without enabling pre-rendering on behalf of the user.
 
 ```js
-// node_modules/vike-some-extension/+config.js
+// node_modules/some-vike-extension/+config.js
 
 export default {
   prerender: {
@@ -274,6 +295,8 @@ export default {
 ```
 
 ### `keepDistServer`
+
+`boolean` (default: `false`)
 
 If you pre-render all your pages (i.e. you didn't set <Link href="#partial">`partial`</Link> to `true`) then Vike removes the `dist/server/` directory (or `path.join(build.outDir, 'server/')` if you changed [`build.outDir`](https://vitejs.dev/config/build-options.html#build-outdir)) after pre-rendering has finished.
 
