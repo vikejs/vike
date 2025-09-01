@@ -27,6 +27,7 @@ const categories = [
   'API',
   'Glossary',
   'Deploy',
+  'Extensions',
   'Integration',
   'Overview',
   'Get Started',
@@ -304,7 +305,7 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Server',
+    title: '`vike-server`',
     url: '/server',
     sectionTitles: ['HTTPS'],
   },
@@ -359,32 +360,28 @@ const headings = [
   },
   {
     level: 2,
-    titleInNav: '`Page`',
-    title: '`<Page>`',
+    title: '`+Page`',
     url: '/Page',
   },
   {
     level: 2,
-    title: '`route`',
+    title: '`+route`',
     url: '/route',
   },
   {
     level: 2,
-    titleInNav: '`Head`',
-    title: '`Head`',
+    title: '`+Head`',
     url: '/Head',
     sectionTitles: ['Only HTML', 'How to inject raw HTML?'],
   },
   {
     level: 2,
-    titleInNav: '`Layout`',
-    title: '`<Layout>`',
+    title: '`+Layout`',
     url: '/Layout',
   },
   {
     level: 2,
-    titleInNav: '`Wrapper`',
-    title: '`<Wrapper>`',
+    title: '`+Wrapper`',
     url: '/Wrapper',
   },
   {
@@ -444,64 +441,64 @@ const headings = [
   },
   {
     level: 2,
-    title: '`data()` hook',
-    titleInNav: '`data()`',
+    title: '`+data()` hook',
+    titleInNav: '`+data()`',
     url: '/data',
     sectionTitles: ['Without `vike-{react,vue,solid}`'],
   },
   {
     level: 2,
-    title: '`onData()` hook',
-    titleInNav: '`onData()`',
+    title: '`+onData()` hook',
+    titleInNav: '`+onData()`',
     url: '/onData',
   },
   {
     level: 2,
-    title: '`guard()` hook',
-    titleInNav: '`guard()`',
+    title: '`+guard()` hook',
+    titleInNav: '`+guard()`',
     url: '/guard',
   },
   {
     level: 2,
-    title: '`onBeforeRender()` hook',
-    titleInNav: '`onBeforeRender()`',
+    title: '`+onBeforeRender()` hook',
+    titleInNav: '`+onBeforeRender()`',
     url: '/onBeforeRender',
     sectionTitles: ['`onBeforeRender()` + `meta`'],
   },
   {
     level: 2,
-    title: '`onHydrationEnd()` hook',
-    titleInNav: '`onHydrationEnd()`',
+    title: '`+onHydrationEnd()` hook',
+    titleInNav: '`+onHydrationEnd()`',
     url: '/onHydrationEnd',
   },
   {
     level: 2,
-    title: '`onPageTransitionStart()` hook',
-    titleInNav: '`onPageTransitionStart()`',
+    title: '`+onPageTransitionStart()` hook',
+    titleInNav: '`+onPageTransitionStart()`',
     url: '/onPageTransitionStart',
   },
   {
     level: 2,
-    title: '`onCreatePageContext()` hook',
-    titleInNav: '`onCreatePageContext()`',
+    title: '`+onCreatePageContext()` hook',
+    titleInNav: '`+onCreatePageContext()`',
     url: '/onCreatePageContext',
   },
   {
     level: 2,
-    title: '`onCreateGlobalContext()` hook',
-    titleInNav: '`onCreateGlobalContext()`',
+    title: '`+onCreateGlobalContext()` hook',
+    titleInNav: '`+onCreateGlobalContext()`',
     url: '/onCreateGlobalContext',
   },
   {
     level: 2,
-    title: '`onBeforePrerenderStart()` hook',
-    titleInNav: '`onBeforePrerenderStart()`',
+    title: '`+onBeforePrerenderStart()` hook',
+    titleInNav: '`+onBeforePrerenderStart()`',
     url: '/onBeforePrerenderStart',
   },
   {
     level: 2,
-    title: '`onPrerenderStart()` hook',
-    titleInNav: '`onPrerenderStart()`',
+    title: '`+onPrerenderStart()` hook',
+    titleInNav: '`+onPrerenderStart()`',
     url: '/onPrerenderStart',
   },
   {
@@ -600,89 +597,88 @@ const headings = [
   },
   {
     level: 2,
-    title: '`title`',
+    title: '`+title`',
     url: '/title',
   },
   {
     level: 2,
-    title: '`description`',
+    title: '`+description`',
     url: '/description',
   },
   {
     level: 2,
-    title: '`image`',
+    title: '`+image`',
     url: '/image',
   },
   {
     level: 2,
-    title: '`viewport`',
+    title: '`+viewport`',
     url: '/viewport',
   },
   {
     level: 2,
-    title: '`htmlAttributes`',
+    title: '`+htmlAttributes`',
     url: '/htmlAttributes',
   },
   {
     level: 2,
-    title: '`bodyAttributes`',
+    title: '`+bodyAttributes`',
     url: '/bodyAttributes',
   },
   {
     level: 2,
-    title: '`ssr`',
+    title: '`+ssr`',
     url: '/ssr',
   },
   {
     level: 2,
-    title: '`stream`',
+    title: '`+stream`',
     url: '/stream',
   },
   {
     level: 2,
     title: '`+prerender`',
-    titleInNav: '`prerender`',
     url: '/prerender',
     sectionTitles: ['`disableAutoRun`', '`redirects`'],
   },
   {
     level: 2,
-    title: '`redirects`',
+    title: '`+redirects`',
     url: '/redirects',
   },
   {
     level: 2,
-    title: '`keepScrollPosition`',
+    title: '`+keepScrollPosition`',
     url: '/keepScrollPosition',
   },
   {
     level: 2,
-    title: '`prefetchStaticAssets`',
+    title: '`+prefetchStaticAssets`',
     url: '/prefetchStaticAssets',
   },
   {
     level: 2,
-    title: '`hooksTimeout`',
+    title: '`+hooksTimeout`',
     url: '/hooksTimeout',
   },
   {
     level: 2,
-    title: '`passToClient`',
+    title: '`+passToClient`',
     url: '/passToClient',
   },
   {
     level: 2,
-    title: '`csp`',
+    title: '`+csp`',
     url: '/csp',
   },
   {
     level: 2,
-    title: '`clientRouting`',
+    title: '`+clientRouting`',
     url: '/clientRouting',
   },
   {
     level: 2,
-    title: '`meta`',
+    title: '`+meta`',
     url: '/meta',
     sectionTitles: [
       'Example: `+dataEndpointUrl`',
@@ -704,6 +700,7 @@ const headings = [
 const headingsDetached = [
   ...api(),
   ...guides(),
+  ...extensions(),
   ...tools(),
   ...migrations(),
   ...misc(),
@@ -970,6 +967,25 @@ function tools() {
   ).map((h) => ({ ...h, category: 'Guides (tools)' as const })) satisfies HeadingDetachedDefinition[]
 }
 
+function extensions() {
+  return (
+    [
+      {
+        title: '`vike-react`',
+        url: '/vike-react',
+      },
+      {
+        title: '`vike-vue`',
+        url: '/vike-vue',
+      },
+      {
+        title: '`vike-solid`',
+        url: '/vike-solid',
+      },
+    ] as const
+  ).map((h) => ({ ...h, category: 'Extensions' as const })) satisfies HeadingDetachedDefinition[]
+}
+
 function misc() {
   return (
     [
@@ -1054,21 +1070,6 @@ function misc() {
       {
         title: 'Press Kit',
         url: '/press',
-      },
-      {
-        title: '`vike-react`',
-        url: '/vike-react',
-        category: 'Overview',
-      },
-      {
-        title: '`vike-vue`',
-        url: '/vike-vue',
-        category: 'Overview',
-      },
-      {
-        title: '`vike-solid`',
-        url: '/vike-solid',
-        category: 'Overview',
       },
       {
         title: 'Versioning',
@@ -1270,15 +1271,15 @@ function api() {
         url: '/createDevMiddleware',
       },
       {
-        title: '`onRenderHtml()` hook',
+        title: '`+onRenderHtml()` hook',
         url: '/onRenderHtml',
       },
       {
-        title: '`onRenderClient()` hook',
+        title: '`+onRenderClient()` hook',
         url: '/onRenderClient',
       },
       {
-        title: '`onBeforeRoute()` hook',
+        title: '`+onBeforeRoute()` hook',
         url: '/onBeforeRoute',
       },
       {
@@ -1294,7 +1295,7 @@ function api() {
         url: '/lang',
       },
       {
-        title: '`onCreateApp()` hook',
+        title: '`+onCreateApp()` hook',
         url: '/onCreateApp',
       },
       {
@@ -1330,23 +1331,23 @@ function api() {
         url: '/reactStrictMode',
       },
       {
-        title: '`onPageTransitionEnd()` hook',
+        title: '`+onPageTransitionEnd()` hook',
         url: '/onPageTransitionEnd',
       },
       {
-        title: '`onBeforeRenderClient()` hook',
+        title: '`+onBeforeRenderClient()` hook',
         url: '/onBeforeRenderClient',
       },
       {
-        title: '`onAfterRenderClient()` hook',
+        title: '`+onAfterRenderClient()` hook',
         url: '/onAfterRenderClient',
       },
       {
-        title: '`onBeforeRenderHtml()` hook',
+        title: '`+onBeforeRenderHtml()` hook',
         url: '/onBeforeRenderHtml',
       },
       {
-        title: '`onAfterRenderHtml()` hook',
+        title: '`+onAfterRenderHtml()` hook',
         url: '/onAfterRenderHtml',
       },
       {
@@ -1419,7 +1420,7 @@ function deprecated() {
         url: '/createPageRenderer',
       },
       {
-        title: 'Multiple `onBeforeRender()` hooks',
+        title: 'Multiple `+onBeforeRender()` hooks',
         url: '/onBeforeRender-multiple',
       },
       { title: '`dist/server/importBuild.js`', url: '/importBuild.js' },

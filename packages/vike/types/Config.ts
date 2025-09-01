@@ -574,7 +574,12 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/csp
    */
-  csp?: { nonce: boolean | ((pageContext: PageContextServer) => string | Promise<string>) }
+  csp?: {
+    nonce:
+      | boolean
+      //
+      | ((pageContext: PageContextServer) => string | Promise<string>)
+  }
 
   /** Where scripts are injected in the HTML.
    *
