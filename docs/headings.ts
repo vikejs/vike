@@ -462,7 +462,7 @@ const headings = [
     title: '`+onBeforeRender()` hook',
     titleInNav: '`+onBeforeRender()`',
     url: '/onBeforeRender',
-    sectionTitles: ['`+onBeforeRender()` + `+meta`'],
+    sectionTitles: ['`onBeforeRender()` + `meta`'],
   },
   {
     level: 2,
