@@ -6,18 +6,14 @@ import { ConfigSpec } from '../../components'
   global={null}
 >
 ```ts
-type Config = {
-  prerender:
-  | boolean
-  | {
-      partial: boolean
-      redirects: boolean
-      noExtraDir: boolean
-      parallel: boolean | number
-      disableAutoRun: boolean
-      enable: null | boolean
-      keepDistServer: boolean
-    }
+boolean | {
+  partial: boolean
+  redirects: boolean
+  noExtraDir: boolean
+  parallel: boolean | number
+  disableAutoRun: boolean
+  enable: null | boolean
+  keepDistServer: boolean
 }
 ```
 </ConfigSpec>
