@@ -2,9 +2,10 @@ export { resolvePrerenderConfigGlobal }
 export { resolvePrerenderConfigLocal }
 
 import { VikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
-import { assert, isArray, isObject, objectAssign } from './utils.js'
+import { assert, assertUsage, isArray, isObject, objectAssign } from './utils.js'
 import { getConfigValueBuildTime } from '../../shared/page-configs/getConfigValueBuildTime.js'
 import type { PageConfigBuildTime } from '../../types/PageConfig.js'
+import { getConfigDefinedAt, getConfigDefinedAtOptional } from '../../shared/page-configs/getConfigDefinedAt.js'
 
 // When setting +prerender to an object => it also enables pre-rendering
 const defaultValueForObject = true
@@ -61,9 +62,12 @@ function resolvePrerenderConfigLocal(pageConfig: PageConfigBuildTime) {
   const values = configValue.value
   assert(isArray(values))
   const value = values[0]
-  // If it's set to an object in a local config then Vike considers it a global config and it's skipped from local inheritance, thus we can assume the value to be a boolean.
-  assert(typeof value === 'boolean')
   assert(isArray(configValue.definedAtData))
+  const configDefinedAt = getConfigDefinedAt('Config', 'prerender', configValue.definedAtData)
+  assertUsage(
+    typeof value === 'boolean',
+    `${configDefinedAt} must be a boolean (it isn't defined at a global location)`,
+  )
   const prerenderConfigLocal = { value }
   return prerenderConfigLocal
 }
