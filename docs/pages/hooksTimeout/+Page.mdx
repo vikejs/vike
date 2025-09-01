@@ -1,6 +1,17 @@
 import { Link, Warning, CodeBlockTransformer } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
 
-<Warning>This is a V1 design only feature: make sure to 1. update Vike to the latest version and 2. <Link href="/migration/v1-design">migrate to the V1 design</Link>.</Warning>
+<ConfigSpec
+  env="client, server"
+>
+```ts
+type HookTimeout = {
+  error?: number | false
+  warning?: number | false
+}
+type HooksTimeout = false | Record<string, HookTimeout>
+```
+</ConfigSpec>
 
 If a <Link href="/hooks">hook</Link> returns a promise that takes too much time to resolve, then Vike logs an error and your <Link href="/error-page">error page</Link> is rendered.
 

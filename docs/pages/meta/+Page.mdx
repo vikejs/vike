@@ -1,5 +1,16 @@
 import { Advanced, UiFrameworkExtension } from '../../components'
 import { Link, RepoLink } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
+
+<ConfigSpec
+  env="development & build-time"
+  global={null}
+  isTypeOneLiner
+>
+```ts
+Record<string, string>
+```
+</ConfigSpec>
 
 <Advanced>
   The `meta` setting is an advanced feature. Instead of using `meta`, consider using <Link href="/file-env" noBreadcrumb={true} /> or <Link href="/extensions">Vike Extensions</Link> (they use `meta` on your behalf).

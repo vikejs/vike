@@ -3,7 +3,15 @@ import { ConfigSpec } from '../../components'
 
 <ConfigSpec
   env="server"
-/>
+>
+```ts
+{
+  nonce:
+    | boolean
+    | ((pageContext: PageContextServer) => string | Promise<string>)
+}
+```
+</ConfigSpec>
 
 The `+csp` setting allows you to add and configure the CSP nonce, see [Content Security Policy (CSP)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP).
 
