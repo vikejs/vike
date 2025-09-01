@@ -4,7 +4,7 @@ import vikeServer from 'vike-server/config'
 
 // https://vike.dev/config
 const config = {
-  // https://vike.dev/server
+  // https://vike.dev/vike-server
   extends: [vikeServer],
   server: 'server/index.js',
 

@@ -1,5 +1,26 @@
 import { Advanced, UiFrameworkExtension } from '../../components'
 import { Link, RepoLink, TypescriptOnly } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
+
+<ConfigSpec
+  env="config (development & build-time)"
+  global={null}
+>
+```ts
+type Meta = {
+  env: {
+    client?: boolean
+    server?: boolean
+    config?: boolean
+  }
+  cumulative?: boolean
+  global?: boolean | ((value: unknown, info: { isGlobalLocation: boolean }) => boolean)
+  eager?: boolean
+  effect?: ((config: { configValue: unknown configDefinedAt: string }) => Config | undefined)
+  isDefinedByPeerDependency?: true
+}
+```
+</ConfigSpec>
 
 <Advanced>
   The `meta` setting is an advanced feature. Instead of using `meta`, consider using <Link href="/file-env" noBreadcrumb={true} /> or <Link href="/extensions">Vike Extensions</Link> (they use `meta` on your behalf).
@@ -550,3 +571,4 @@ declare global {
 ## See also
 
 - <Link href="/head-tags#custom-settings" />
+- <Link href="/settings" />

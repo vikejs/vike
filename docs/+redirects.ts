@@ -44,7 +44,6 @@ const redirects = {
   '/config-code-splitting': '/config#pointer-imports',
   '/dynamic-import': '/clientOnly',
   '/.env-files': '/env',
-  '/vike-server': '/server',
   '/cloudflare-workers': '/cloudflare',
   '/migration-0.4': '/migration/0.4',
   '/catch-all': '/route-string#catch-all',

@@ -1,0 +1,100 @@
+import { Link, Warning } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
+
+<ConfigSpec
+  env="server"
+>
+```ts
+type Value =
+  | Record<string, string>
+  | [string, string][]
+  // The standard Headers interface
+  | Headers
+type HeadersResponse =
+  | Value
+  | ((pageContext: PageContextServer) => Value | Promise<Value>)
+```
+</ConfigSpec>
+
+You can modify the HTTP response headers by using `+headersResponse` and/or `pageContext.headersResponse`.
+
+<Warning>Both `+headersResponse` and `pageContext.headersResponse` are beta features: expect breaking changes in any minor version update. See [#2554 - Stabilize `+headersResponse` and `pageContext.headersResponse`](https://github.com/vikejs/vike/issues/2554).</Warning>
+
+
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+
+// Statically adding header
+export default {
+  headersResponse: {
+    'X-Powered-By': 'my-vike-app'
+  }
+} satisfies Config
+```
+
+You can add headers dynamically:
+
+```ts
+// pages/+headersResponse.ts
+
+import type { PageContextServer } from 'vike/types'
+
+export async function headersResponse(pageContext: PageContextServer) {
+  return {
+    'some-dynamic-header': `the-page-url=${pageContext.urlPathname}`
+  }
+}
+```
+
+You can modify and remove headers:
+
+```ts
+// Dynamically adding/modifying header
+pageContext.headersResponse.set('Set-Cookie', 'sessionId=abc123')
+// Dynamically removing header
+pageContext.headersResponse.delete('X-Powered-By')
+```
+
+> `pageContext.headersResponse` is a [standard `Headers` object](https://developer.mozilla.org/en-US/docs/Web/API/Headers).
+
+> You can access `pageContext` in any Vike hook and UI component — see <Link href="/pageContext" />.
+
+The final HTTP response headers sent to the client are available at `pageContext.httpResponse.headers`.
+
+```ts
+import { renderPage } from 'vike/server'
+
+// Server middleware
+app.get('*', async (req: Request) => {
+  // ...
+  const pageContext = await renderPage(pageContextInit)
+  // HTTP response headers sent to the client
+  const headers = pageContext.httpResponse.headers
+  // ...
+})
+```
+
+> See: <Link href="/renderPage" />
+
+It's a list of string tuples `[string, string][]` — for example:
+
+```json5
+[
+  ['Content-Type', 'text/html;charset=utf-8'],
+  ['Cache-Control', 'no-store, max-age=0']
+]
+```
+
+You can convert it to a [standard `Headers` object](https://developer.mozilla.org/en-US/docs/Web/API/Headers) by using `new Headers()`:
+
+```ts
+const headers = new Headers(pageContext.httpResponse.headers)
+```
+
+## See also
+
+- <Link href="/headers" />
+- [MDN > Web API > `Headers`](https://developer.mozilla.org/en-US/docs/Web/API/Headers)
+- <Link href="/settings" />

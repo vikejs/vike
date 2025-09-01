@@ -1,5 +1,11 @@
 import { Link, RepoLink, Construction } from '@brillout/docpress'
-import { UiFrameworkExtension } from '../../components'
+import { UiFrameworkExtension, ConfigSpec } from '../../components'
+
+<ConfigSpec
+  env="client"
+  cumulative={false}
+/>
+
 
 You can define a `+client.js` file to add client-side JavaScript.
 
@@ -36,3 +42,4 @@ console.log("I'm the first line of client-side JavaScript.")
 - <Link href="/onBeforeRenderClient" />
 - <Link href="/onPageTransitionStart" />
 - <Link href="/onPageTransitionEnd" />
+- <Link href="/settings" />

@@ -1,4 +1,14 @@
 import { Link } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
+
+<ConfigSpec
+  env="server"
+  isTypeOneLiner
+>
+```ts
+'HTML_BEGIN' | 'HTML_END' | 'STREAM' | null
+```
+</ConfigSpec>
 
 Vike injects scripts at three possible positions:
 - At the end of the HTML.
@@ -33,3 +43,4 @@ export default {
 ## See also
 
 - <Link href="/injectFilter" />
+- <Link href="/settings" />

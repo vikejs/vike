@@ -4,7 +4,13 @@ import { UseVikeExtensionUiFramework, UiFrameworkExtension, ConfigSpec } from '.
 <ConfigSpec
   env="client"
   global
-/>
+  isTypeOneLiner
+  default={<><code>false</code> (but <code>true</code> if you use <UiFrameworkExtension succinct />)</>}
+>
+```ts
+boolean
+```
+</ConfigSpec>
 
 If you don't use a <UiFrameworkExtension /> then Vike does <Link text="Server Routing" href="/server-routing" /> by default.
 
@@ -235,3 +241,4 @@ async function onRenderClient(pageContext: PageContextClient) {
  - <Link href="/onPageTransitionStart" />
  - <Link href="/onPageTransitionEnd" />
  - <Link href="/prefetchStaticAssets" />
+ - <Link href="/settings" />

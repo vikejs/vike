@@ -135,7 +135,7 @@ The headers of the HTTP Request. The original object provided by the server, see
 
 <Prop name="headersResponse" />
 
-The headers of the HTTP Response, see <Link href="/headers#response"/>.
+The headers of the HTTP Response, see <Link href="/headersResponse"/>.
 
 <Prop name="runtime" />
 
@@ -143,7 +143,7 @@ The `pageContext.runtime` object is the [`RuntimeAdapter`](https://universal-mid
  - `pageContext.runtime.req` — the original HTTP request object, for example [IncomingMessage](https://nodejs.org/api/http.html#class-httpincomingmessage).
  - `pageContext.runtime.res` — the original HTTP response object, for example [ServerResponse](https://nodejs.org/api/http.html#class-httpserverresponse).
 
-It's set by <Link href="/server">`vike-server`</Link> (which uses [`universal-middleware`](https://universal-middleware.dev/) under the hood).
+It's set by <Link href="/vike-server">`vike-server`</Link> (which uses [`universal-middleware`](https://universal-middleware.dev/) under the hood).
 
 > It's only available if you use `vike-server`.
 
@@ -323,7 +323,7 @@ Custom properties can be defined at <Link href="/navigate#options">`navigate({ p
 
 ### `renderPage()`
 
-If you don't use <Link href="/server">`vike-server`</Link>, then you can define custom properties at <Link href="/renderPage">`renderPage()`</Link>:
+If you don't use <Link href="/vike-server">`vike-server`</Link>, then you can define custom properties at <Link href="/renderPage">`renderPage()`</Link>:
 
 ```ts
 // Your Vike server middleware integration

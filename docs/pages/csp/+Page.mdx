@@ -3,7 +3,15 @@ import { ConfigSpec } from '../../components'
 
 <ConfigSpec
   env="server"
-/>
+>
+```ts
+{
+  nonce:
+    | boolean
+    | ((pageContext: PageContextServer) => string | Promise<string>)
+}
+```
+</ConfigSpec>
 
 The `+csp` setting allows you to add and configure the CSP nonce, see [Content Security Policy (CSP)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP).
 
@@ -49,7 +57,7 @@ Content-Security-Policy: script-src 'self' 'nonce-${pageContext.cspNonce}'
 
 > This CSP header authorizes Vike's inline scripts (without having to open the door to all inline scripts via `'unsafe-inline'`).
 
-To change the CSP header you can use the <Link href="/headers#response">`+headersResponse` setting</Link>:
+To change the CSP header you can use the <Link href="/headersResponse">`+headersResponse` setting</Link>:
 
 ```ts
 // pages/+headersResponse.ts
@@ -132,3 +140,4 @@ By generating a unique nonce for each request, Vike ensures that inline scripts 
 - <Link href="/headers" />
 - [MDN > Content Security Policy (CSP)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP)
 - [#1554 - CSP nonce support](https://github.com/vikejs/vike/issues/1554)
+- <Link href="/settings" />

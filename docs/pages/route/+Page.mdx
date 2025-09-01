@@ -1,6 +1,12 @@
 import { Link } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
 
-The `route` config determines the page's <Link text="routing" href="/routing" />.
+<ConfigSpec
+  env="client, server"
+  global={null}
+/>
+
+The `+route` setting determines the page's <Link text="routing" href="/routing" />.
 
 ```ts
 // /pages/product/+config.ts
@@ -55,8 +61,10 @@ function route(pageContext: PageContext) {
 ```
 
 
-See also:
- - <Link href="/routing" />
- - <Link href="/route-string" />
- - <Link href="/route-function" />
- - <Link href="/filesystem-routing" />
+## See also
+
+- <Link href="/routing" />
+- <Link href="/route-string" />
+- <Link href="/route-function" />
+- <Link href="/filesystem-routing" />
+- <Link href="/settings" />

@@ -1,9 +1,12 @@
 export { ConfigSpec }
+export { PageHeader }
+export { IconGlobal }
+export { IconLocal }
 
 import React from 'react'
 import { Link } from '@brillout/docpress'
 import iconGlobal from '../assets/icons/global.svg'
-import iconPage from '../assets/icons/page.svg'
+import iconPushpin from '../assets/icons/pushpin.svg'
 import iconSparkles from '../assets/icons/sparkles.svg'
 import iconLink from '../assets/icons/link.svg'
 import iconTypescript from '../assets/icons/typescript.svg'
@@ -45,21 +48,27 @@ function ConfigSpec({
   global,
   providedBy,
   requires,
-  type,
   children,
+  isTypeOneLiner,
   ...prop
 }: {
   env: React.ReactNode
   cumulative?: true
-  global?: true | null
+  global?: true | false
   providedBy?: React.ReactNode
   default?: React.ReactNode
   requires?: React.ReactNode
-  type?: React.ReactNode
   children?: React.ReactNode
+  isTypeOneLiner?: true
 }) {
   return (
-    <div style={{ paddingTop: 0, paddingBottom: 0, paddingLeft: 13, borderLeft: '3px solid #0002' }}>
+    <PageHeader
+      style={{
+        paddingTop: 10,
+        paddingBottom: 2,
+        marginBottom: 20,
+      }}
+    >
       {!env ? null : (
         <>
           <img
@@ -71,20 +80,19 @@ function ConfigSpec({
           <br />
         </>
       )}
-      {!type && !children ? null : (
+      {!children ? null : (
         <>
           <img
             src={iconTypescript}
             width="20"
             style={{ display: 'inline-block', position: 'relative', top: 4, verticalAlign: 'top' }}
           />{' '}
-          {children ? (
-            <div className="code-padding-buster" style={{ display: 'inline-block' }}>
-              {children}
-            </div>
-          ) : (
-            type
-          )}
+          <div
+            className={`code-padding-buster ${isTypeOneLiner ? 'one-liner' : ''}`}
+            style={{ display: 'inline-block' }}
+          >
+            {children}
+          </div>
           <br />
         </>
       )}
@@ -104,14 +112,12 @@ function ConfigSpec({
       )}
       {global === null ? null : global ? (
         <>
-          <img src={iconGlobal} width="20" style={{ display: 'inline-block', position: 'relative', top: 4 }} />{' '}
-          <Link href="/config#global">Global</Link>
+          <IconGlobal /> <Link href="/config#global">Global</Link>
           <br />
         </>
       ) : (
         <>
-          <img src={iconPage} width="20" style={{ display: 'inline-block', position: 'relative', top: 5 }} />{' '}
-          <Link href="/config#global">Local</Link>
+          <IconLocal /> <Link href="/config#global">Local</Link>
           <br />
         </>
       )}
@@ -137,6 +143,42 @@ function ConfigSpec({
         </>
       )}
       {providedBy ?? <ProvidedBy core />}
+    </PageHeader>
+  )
+}
+
+function IconGlobal() {
+  return <img src={iconGlobal} width="20" style={{ display: 'inline-block', position: 'relative', top: 4 }} />
+}
+function IconLocal() {
+  return (
+    <img
+      src={iconPushpin}
+      width="19"
+      style={{ display: 'inline-block', position: 'relative', top: 5, marginRight: 1 }}
+    />
+  )
+}
+
+function PageHeader({
+  style,
+  children,
+}: {
+  style: React.CSSProperties
+  children?: React.ReactNode
+}) {
+  return (
+    <div
+      style={{
+        backgroundColor: '#efefef',
+        border: '1px solid #dee2e6',
+        borderRadius: 8,
+        paddingLeft: 14,
+        paddingRight: 15,
+        ...style,
+      }}
+    >
+      {children}
     </div>
   )
 }

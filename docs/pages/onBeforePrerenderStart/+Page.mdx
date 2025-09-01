@@ -3,7 +3,7 @@ import PreRenderDynamicRoutes from '../pre-rendering/PreRenderDynamicRoutes.mdx'
 import { ConfigSpec } from '../../components'
 
 <ConfigSpec
-  env="build-time (Node.js/Bun/Deno)"
+  env="build-time"
 />
 
 The `onBeforePrerenderStart()` hook is executed upon <Link text="pre-rendering" href="/pre-rendering" /> your app.
@@ -29,7 +29,7 @@ export default '/movie/@movieId'
 
 ```ts
 // /pages/movie/+onBeforePrerenderStart.ts
-// Environment: build-time (Node.js/Bun/Deno)
+// Environment: build-time
 
 export { onBeforePrerenderStart }
 
@@ -60,7 +60,7 @@ export default '/movie/@movieId'
 
 ```ts
 // /pages/movie/+onBeforePrerenderStart.ts
-// Environment: build-time (Node.js/Bun/Deno)
+// Environment: build-time
 
 export { onBeforePrerenderStart }
 

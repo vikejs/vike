@@ -468,6 +468,7 @@ type ConfigBuiltIn = {
    */
   redirects?: Record<string, string>
 
+  // TO-DO/eventually: [#2679 - Rename URL normalization settings](https://github.com/vikejs/vike/issues/2679)
   /** Whether URLs should end with a trailing slash.
    *
    * https://vike.dev/url-normalization
@@ -476,6 +477,7 @@ type ConfigBuiltIn = {
    */
   trailingSlash?: boolean
 
+  // TO-DO/eventually: [#2679 - Rename URL normalization settings](https://github.com/vikejs/vike/issues/2679)
   /** Disable automatic URL normalization.
    *
    * https://vike.dev/url-normalization
@@ -574,7 +576,12 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/csp
    */
-  csp?: { nonce: boolean | ((pageContext: PageContextServer) => string | Promise<string>) }
+  csp?: {
+    nonce:
+      | boolean
+      //
+      | ((pageContext: PageContextServer) => string | Promise<string>)
+  }
 
   /** Where scripts are injected in the HTML.
    *

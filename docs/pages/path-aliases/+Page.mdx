@@ -74,7 +74,7 @@ See also:
 
 ## Node.js
 
-If you don't use <Link href="/server">`vike-server`</Link> then your server files aren't processed by Vite — they are directly executed by Node.js. Therefore, you must configure Node.js to resolve your path aliases:
+If you don't use <Link href="/vike-server">`vike-server`</Link> then your server files aren't processed by Vite — they are directly executed by Node.js. Therefore, you must configure Node.js to resolve your path aliases:
 
 ```json
 // package.json
@@ -98,6 +98,6 @@ If you don't use <Link href="/server">`vike-server`</Link> then your server file
 > The following files are processed by Vite:
 > - Browser files.
 > - Runtime <Link href="/config#files">`+` files</Link>. (Config-time `+` files aren't processed by Vite.)
-> - Server files, if you use <Link href="/server">`vike-server`</Link>.
+> - Server files, if you use <Link href="/vike-server">`vike-server`</Link>.
 
 You can use Node.js's built-in support `package.json#imports` or, alternatively, you can use one of many npm packages such as [`module-alias`](https://github.com/ilearnio/module-alias). (Example of using `module-alias`: [/examples/path-aliases (@c914dad)](https://github.com/vikejs/vike/tree/c914dade5f0809ff330478c3531928055abdadef/examples/path-aliases).)

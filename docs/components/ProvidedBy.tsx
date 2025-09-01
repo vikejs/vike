@@ -6,17 +6,32 @@ import React from 'react'
 
 function ProvidedBy({
   children,
+  extension,
   list,
   noCustomGuide,
   core,
-}: { children?: React.ReactNode; list?: UiFrameworkExtensionList; noCustomGuide?: true; core?: true }) {
-  const uiFrameworkList = <UiFrameworkExtension name list={list} />
+}: {
+  extension?: `vike-${string}`
+  children?: React.ReactNode
+  list?: UiFrameworkExtensionList
+  noCustomGuide?: true
+  core?: true
+}) {
+  const extensionList = extension ? (
+    <Link href={`/${extension}`}>
+      <code>{extension}</code>
+    </Link>
+  ) : (
+    <UiFrameworkExtension name list={list} />
+  )
+  if (noCustomGuide === undefined && extension) noCustomGuide = true
+  const iconSize = 20
   return (
-    <>
+    <div style={{ marginBottom: 10 }}>
       <>
         <img
           src="https://i.imgur.com/XsdeDvz.png"
-          width="20"
+          width={iconSize}
           style={{ display: 'inline-block', position: 'relative', top: 5 }}
         />{' '}
         Provided by:{' '}
@@ -27,13 +42,13 @@ function ProvidedBy({
             </a>
           </>
         ) : (
-          uiFrameworkList
+          extensionList
         )}
       </>
       {core ? null : (
-        <blockquote>
-          <p>
-            You need {uiFrameworkList} to be able to use {children ?? 'this setting'}.
+        <blockquote style={{ marginLeft: iconSize + 6, marginTop: 7, marginBottom: 13 }}>
+          <p style={{ marginTop: 7, marginBottom: 10 }}>
+            You need {extensionList} to be able to use {children ?? 'this setting'}.
             {!noCustomGuide && (
               <>
                 {' '}
@@ -44,6 +59,6 @@ function ProvidedBy({
           </p>
         </blockquote>
       )}
-    </>
+    </div>
   )
 }

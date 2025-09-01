@@ -88,6 +88,7 @@ Misc:
 - @brillout/test-e2e => endcheck
 - CSP nonce
   - PCI DSS compliance
+- ISR via @photonjs/vercel
 
 First-class SSG support
 - +prerender.partial
