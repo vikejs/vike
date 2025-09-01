@@ -3,7 +3,7 @@ export { IconGlobal }
 export { IconLocal }
 
 import React from 'react'
-import { Link } from '@brillout/docpress'
+import { assert, Link } from '@brillout/docpress'
 import iconGlobal from '../assets/icons/global.svg'
 import iconPushpin from '../assets/icons/pushpin.svg'
 import iconSparkles from '../assets/icons/sparkles.svg'
@@ -47,6 +47,7 @@ function ConfigSpec({
   global,
   providedBy,
   requires,
+  type,
   children,
   ...prop
 }: {
@@ -56,8 +57,10 @@ function ConfigSpec({
   providedBy?: React.ReactNode
   default?: React.ReactNode
   requires?: React.ReactNode
+  type?: React.ReactNode
   children?: React.ReactNode
 }) {
+  assert(type === undefined)
   return (
     <div
       style={{
