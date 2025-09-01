@@ -1,5 +1,4 @@
 import { Link } from '@brillout/docpress'
-import { TextType } from './TextType'
 
 List of built-in settings. (You can <Link href="/meta">create your own settings</Link>.)
 
@@ -11,7 +10,7 @@ See also: <Link href="/hooks" />.
 - [**`Page`**](/Page): The page's root component.
 - [**`Layout`**](/Layout): The page's layout component.
 - [**`Wrapper`**](/Wrapper): Component(s) that wrap the page's root component.
-- [**`route`**](/routing): <TextType>string | Function</TextType> The page's route.
+- [**`route`**](/routing): The page's route.
 - [**`prerender`**](/prerender): Whether to <Link href="/pre-rendering">pre-render</Link> the page, and pre-rendering settings.
 - [**`client`**](/client): Add client code.
 - [**`redirects`**](/redirects): Permanent redirections (HTTP status code `301`).
@@ -25,7 +24,7 @@ See also: <Link href="/hooks" />.
 - [**`headersResponse`**](/headers#response): Add HTTP headers to the HTTP response.
 - [**`csp`**](/csp): Content Security Policy (CSP).
 - [**`extends`**](/extends): Install <Link href="/extensions" />.
-- [**`react`**](/react-setting): `vike-react` Options passed to React functions such as `createRoot()` or `hydrateRoot()`.
+- [**`react`**](/react-setting): Options passed to React functions such as `createRoot()` or `hydrateRoot()`.
 
 
 ## HTML shell
@@ -56,13 +55,13 @@ Other settings that modify the page HTML shell:
 > Most users don't need to know about these settings.
 
 - [**`meta`**](/meta): Create new hooks or settings, or modify existing ones.
-- [**`passToClient`**](/passToClient): <TextType>string[]</TextType> Determines what `pageContext` values are sent to the client-side.
-- [**`clientRouting`**](/clientRouting): <TextType>boolean</TextType> Enable <Link href="/client-routing">Client Routing</Link>.
-- [**`hydrationCanBeAborted`**](/hydrationCanBeAborted): <TextType>boolean</TextType>  Whether your <Link text="UI framework" href="/ui-frameworks" /> allows the <Link href="/hydration">hydration</Link> to be aborted.
+- [**`passToClient`**](/passToClient): Determines what `pageContext` values are sent to the client-side.
+- [**`clientRouting`**](/clientRouting): Enable <Link href="/client-routing">Client Routing</Link>.
+- [**`hydrationCanBeAborted`**](/hydrationCanBeAborted): Whether your <Link text="UI framework" href="/ui-frameworks" /> allows the <Link href="/hydration">hydration</Link> to be aborted.
 - [**`trailingSlash`**](/url-normalization): Whether URLs should end with a trailing slash.
 - [**`disableUrlNormalization`**](/url-normalization): Disable automatic URL normalization.
-- [**`reactStrictMode`**](/reactStrictMode): `vike-react` Whether to use React's `<StrictMode>`.
-- [**`clientHooks`**](/clientHooks): <TextType>boolean</TextType> Whether hooks are loaded on the client-side.
+- [**`reactStrictMode`**](/reactStrictMode): Whether to use React's `<StrictMode>`.
+- [**`clientHooks`**](/clientHooks): Whether hooks are loaded on the client-side.
 - [**`filesystemRoutingRoot`**](/filesystemRoutingRoot): URL root for <Link href="/filesystem-routing">Filesystem Routing</Link>.
 - [**`injectScriptsAt`**](/injectScriptsAt): Where scripts are injected in the HTML.
 
