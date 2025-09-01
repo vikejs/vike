@@ -6,11 +6,25 @@ import React from 'react'
 
 function ProvidedBy({
   children,
+  extension,
   list,
   noCustomGuide,
   core,
-}: { children?: React.ReactNode; list?: UiFrameworkExtensionList; noCustomGuide?: true; core?: true }) {
-  const uiFrameworkList = <UiFrameworkExtension name list={list} />
+}: {
+  extension?: `vike-${string}`
+  children?: React.ReactNode
+  list?: UiFrameworkExtensionList
+  noCustomGuide?: true
+  core?: true
+}) {
+  const extensionList = extension ? (
+    <Link href={`/${extension}`}>
+      <code>{extension}</code>
+    </Link>
+  ) : (
+    <UiFrameworkExtension name list={list} />
+  )
+  if (noCustomGuide === undefined && extension) noCustomGuide = true
   const iconSize = 20
   return (
     <div style={{ marginBottom: 10 }}>
@@ -28,13 +42,13 @@ function ProvidedBy({
             </a>
           </>
         ) : (
-          uiFrameworkList
+          extensionList
         )}
       </>
       {core ? null : (
         <blockquote style={{ marginLeft: iconSize + 6, marginTop: 7, marginBottom: 13 }}>
           <p style={{ marginTop: 7, marginBottom: 10 }}>
-            You need {uiFrameworkList} to be able to use {children ?? 'this setting'}.
+            You need {extensionList} to be able to use {children ?? 'this setting'}.
             {!noCustomGuide && (
               <>
                 {' '}

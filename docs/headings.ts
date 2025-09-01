@@ -305,9 +305,9 @@ const headings = [
   },
   {
     level: 2,
-    title: '`vike-server`',
-    url: '/server',
-    sectionTitles: ['HTTPS'],
+    title: 'Server integration',
+    url: '/server-integration',
+    sectionTitles: ['Non-JavaScript Backend'],
   },
   {
     level: 2,
@@ -334,7 +334,6 @@ const headings = [
     level: 2,
     titleInNav: '... more',
     title: 'Integration (more)',
-    sectionTitles: ['Non-JavaScript Backend', 'Server (manual integration)'],
     url: '/integration',
   },
   {
@@ -634,6 +633,11 @@ const headings = [
     level: 2,
     title: '`+stream`',
     url: '/stream',
+  },
+  {
+    level: 2,
+    title: '`+server`',
+    url: '/server',
   },
   {
     level: 2,
@@ -981,6 +985,12 @@ function extensions() {
       {
         title: '`vike-solid`',
         url: '/vike-solid',
+      },
+      {
+        title: '`vike-server`',
+        url: '/vike-server',
+        sectionTitles: ['HTTPS'],
+        category: 'Overview',
       },
     ] as const
   ).map((h) => ({ ...h, category: 'Extensions' as const })) satisfies HeadingDetachedDefinition[]

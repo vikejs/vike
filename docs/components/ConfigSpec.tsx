@@ -1,4 +1,5 @@
 export { ConfigSpec }
+export { PageHeader }
 export { IconGlobal }
 export { IconLocal }
 
@@ -61,13 +62,8 @@ function ConfigSpec({
   isTypeOneLiner?: true
 }) {
   return (
-    <div
+    <PageHeader
       style={{
-        backgroundColor: '#efefef',
-        border: '1px solid #dee2e6',
-        borderRadius: 8,
-        paddingLeft: 14,
-        paddingRight: 15,
         paddingTop: 10,
         paddingBottom: 2,
         marginBottom: 20,
@@ -147,7 +143,7 @@ function ConfigSpec({
         </>
       )}
       {providedBy ?? <ProvidedBy core />}
-    </div>
+    </PageHeader>
   )
 }
 
@@ -161,5 +157,28 @@ function IconLocal() {
       width="19"
       style={{ display: 'inline-block', position: 'relative', top: 5, marginRight: 1 }}
     />
+  )
+}
+
+function PageHeader({
+  style,
+  children,
+}: {
+  style: React.CSSProperties
+  children?: React.ReactNode
+}) {
+  return (
+    <div
+      style={{
+        backgroundColor: '#efefef',
+        border: '1px solid #dee2e6',
+        borderRadius: 8,
+        paddingLeft: 14,
+        paddingRight: 15,
+        ...style,
+      }}
+    >
+      {children}
+    </div>
   )
 }
