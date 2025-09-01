@@ -1,9 +1,11 @@
 export { ConfigSpec }
+export { IconGlobal }
+export { IconLocal }
 
 import React from 'react'
 import { Link } from '@brillout/docpress'
 import iconGlobal from '../assets/icons/global.svg'
-import iconPage from '../assets/icons/page.svg'
+import iconPushpin from '../assets/icons/pushpin.svg'
 import iconSparkles from '../assets/icons/sparkles.svg'
 import iconLink from '../assets/icons/link.svg'
 import iconTypescript from '../assets/icons/typescript.svg'
@@ -104,13 +106,13 @@ function ConfigSpec({
       )}
       {global === null ? null : global ? (
         <>
-          <img src={iconGlobal} width="20" style={{ display: 'inline-block', position: 'relative', top: 4 }} />{' '}
+          <IconGlobal/>{' '}
           <Link href="/config#global">Global</Link>
           <br />
         </>
       ) : (
         <>
-          <img src={iconPage} width="20" style={{ display: 'inline-block', position: 'relative', top: 5 }} />{' '}
+        <IconLocal />{' '}
           <Link href="/config#global">Local</Link>
           <br />
         </>
@@ -139,4 +141,11 @@ function ConfigSpec({
       {providedBy ?? <ProvidedBy core />}
     </div>
   )
+}
+
+function IconGlobal() {
+          return <img src={iconGlobal} width="20" style={{ display: 'inline-block', position: 'relative', top: 4 }} />
+}
+function IconLocal() {
+          return <img src={iconPushpin} width="19" style={{ display: 'inline-block', position: 'relative', top: 5, marginRight: 1 }} />
 }

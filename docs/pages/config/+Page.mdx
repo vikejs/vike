@@ -1,4 +1,5 @@
 import { Link, Construction, FileRemoved } from '@brillout/docpress'
+import { IconLocal, IconGlobal } from '../../components'
 
 Detailed information about Vike's config files.
 
@@ -191,7 +192,7 @@ pages/admin/dashboard/+Page.jsx
 
 We call a configuration either *global* or *local*:
 
-- **Global** — always applies to all pages.
+- <IconGlobal/> **Global** — always applies to all pages.
 
   For example, we call the <Link href="/base-url">Base URL setting</Link> global, because it affects your app globally.
 
@@ -206,7 +207,7 @@ We call a configuration either *global* or *local*:
   > /pages/index/+Page.js
   > ```
 
-- **Local** — can be defined on a per-page basis.
+- <IconLocal/> **Local** — can be defined on a per-page basis.
 
   For example, we call the <Link href="/title">`+title` setting</Link> local, because each page can have a different title.
 
@@ -218,7 +219,7 @@ We call a configuration either *global* or *local*:
   >
   > export default {
   >   // If it isn't overriden then this tilte applies to all pages (more precisely
-  >   // speaking, it applies to all pages defined at pages/**).
+  >   // speaking: it applies to all pages defined at pages/**)
   >   title: 'My App'
   > } satisfies Config
   > ```
