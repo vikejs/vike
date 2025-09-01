@@ -106,14 +106,12 @@ function ConfigSpec({
       )}
       {global === null ? null : global ? (
         <>
-          <IconGlobal/>{' '}
-          <Link href="/config#global">Global</Link>
+          <IconGlobal /> <Link href="/config#global">Global</Link>
           <br />
         </>
       ) : (
         <>
-        <IconLocal />{' '}
-          <Link href="/config#global">Local</Link>
+          <IconLocal /> <Link href="/config#global">Local</Link>
           <br />
         </>
       )}
@@ -144,8 +142,14 @@ function ConfigSpec({
 }
 
 function IconGlobal() {
-          return <img src={iconGlobal} width="20" style={{ display: 'inline-block', position: 'relative', top: 4 }} />
+  return <img src={iconGlobal} width="20" style={{ display: 'inline-block', position: 'relative', top: 4 }} />
 }
 function IconLocal() {
-          return <img src={iconPushpin} width="19" style={{ display: 'inline-block', position: 'relative', top: 5, marginRight: 1 }} />
+  return (
+    <img
+      src={iconPushpin}
+      width="19"
+      style={{ display: 'inline-block', position: 'relative', top: 5, marginRight: 1 }}
+    />
+  )
 }
