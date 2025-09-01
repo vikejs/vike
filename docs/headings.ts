@@ -973,17 +973,14 @@ function extensions() {
       {
         title: '`vike-react`',
         url: '/vike-react',
-        category: 'Overview',
       },
       {
         title: '`vike-vue`',
         url: '/vike-vue',
-        category: 'Overview',
       },
       {
         title: '`vike-solid`',
         url: '/vike-solid',
-        category: 'Overview',
       },
     ] as const
   ).map((h) => ({ ...h, category: 'Extensions' as const })) satisfies HeadingDetachedDefinition[]
