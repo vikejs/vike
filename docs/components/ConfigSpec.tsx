@@ -53,7 +53,7 @@ function ConfigSpec({
 }: {
   env: React.ReactNode
   cumulative?: true
-  global?: true | null
+  global?: true | false
   providedBy?: React.ReactNode
   default?: React.ReactNode
   requires?: React.ReactNode
@@ -61,7 +61,16 @@ function ConfigSpec({
   children?: React.ReactNode
 }) {
   return (
-    <div style={{ paddingTop: 0, paddingBottom: 0, paddingLeft: 13, borderLeft: '3px solid #0002' }}>
+    <div
+      style={{
+        backgroundColor: '#f8f9fa',
+        border: '1px solid #e9ecef',
+        borderRadius: '6px',
+        padding: '16px',
+        marginBottom: '16px',
+        borderLeft: '4px solid #6c757d',
+      }}
+    >
       {!env ? null : (
         <>
           <img
