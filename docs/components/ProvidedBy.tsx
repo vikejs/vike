@@ -11,12 +11,13 @@ function ProvidedBy({
   core,
 }: { children?: React.ReactNode; list?: UiFrameworkExtensionList; noCustomGuide?: true; core?: true }) {
   const uiFrameworkList = <UiFrameworkExtension name list={list} />
+  const iconSize = 20
   return (
     <>
       <>
         <img
           src="https://i.imgur.com/XsdeDvz.png"
-          width="20"
+          width={iconSize}
           style={{ display: 'inline-block', position: 'relative', top: 5 }}
         />{' '}
         Provided by:{' '}
@@ -31,8 +32,8 @@ function ProvidedBy({
         )}
       </>
       {core ? null : (
-        <blockquote>
-          <p>
+        <blockquote style={{ marginLeft: iconSize + 6, marginTop: 7 }}>
+          <p style={{ marginTop: 7, marginBottom: 10 }}>
             You need {uiFrameworkList} to be able to use {children ?? 'this setting'}.
             {!noCustomGuide && (
               <>
