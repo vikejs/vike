@@ -21,7 +21,8 @@ import type { PageConfigBuildTimeBeforeComputed } from '../resolveVikeConfigInte
  *
  * https://vike.dev/meta
  */
-type ConfigDefinition = {
+type ConfigDefinition = ConfigDefinition_ | ConfigDefinitionDefinedByPeerDependency
+type ConfigDefinition_ = {
   /** In what environment(s) the config value is loaded.
    *
    * https://vike.dev/meta
@@ -56,10 +57,12 @@ type ConfigDefinition = {
    * https://vike.dev/extends#inheritance
    */
   global?: boolean | ((value: unknown, moreInfo: { isGlobalLocation: boolean }) => boolean)
+}
+type ConfigDefinitionDefinedByPeerDependency = {
   /**
    * Omit the "unknown config" error without defining the config — useful for optional peer dependencies: for example, vike-server sets +stream.require which is defined by vike-{react,vue,solid} but some users don't use vike-{react,vue,solid}
    */
-  isDefinedByPeerDependency?: true
+  isDefinedByPeerDependency: true
 }
 
 /**
@@ -81,7 +84,7 @@ type ConfigEffect = (config: {
 }) => Config | undefined
 
 /** For Vike internal use */
-type ConfigDefinitionInternal = Omit<ConfigDefinition, 'env' | 'isDefinedByPeerDependency'> & {
+type ConfigDefinitionInternal = Omit<ConfigDefinition_, 'env'> & {
   _computed?: (pageConfig: PageConfigBuildTimeBeforeComputed) => unknown
   _valueIsFilePath?: true
   _userEffectDefinedAtFilePath?: DefinedAtFilePath
