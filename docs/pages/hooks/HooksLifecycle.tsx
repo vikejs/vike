@@ -25,8 +25,16 @@ const guard = { name: 'guard()', href: '/guard' }
 const data = { name: 'data()', href: '/data' }
 const onData = { name: 'onData()', href: '/onData' }
 const onBeforeRender = { name: 'onBeforeRender()', href: '/onBeforeRender' }
-const onBeforeRenderClient = { name: 'onBeforeRenderClient()', href: '/onBeforeRenderClient', providedBy: ['vike-react', 'vike-vue'] as const }
-const onAfterRenderClient = { name: 'onAfterRenderClient()', href: '/onAfterRenderClient', providedBy: ['vike-react', 'vike-vue', 'vike-solid'] as const }
+const onBeforeRenderClient = {
+  name: 'onBeforeRenderClient()',
+  href: '/onBeforeRenderClient',
+  providedBy: ['vike-react', 'vike-vue'] as const,
+}
+const onAfterRenderClient = {
+  name: 'onAfterRenderClient()',
+  href: '/onAfterRenderClient',
+  providedBy: ['vike-react', 'vike-vue', 'vike-solid'] as const,
+}
 
 const firstRenderHooks: HookInfo[] = [
   // Server-side hooks
