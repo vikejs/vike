@@ -9,38 +9,38 @@ interface HookInfo {
   href: string
   env: 'server' | 'client' | 'server & client'
   description?: string
-  providedBy?: ('vike-react' | 'vike-vue' | 'vike-solid')[]
-  dataHooks?: ('default' | 'client' | 'shared')[]
+  providedBy?: readonly ('vike-react' | 'vike-vue' | 'vike-solid')[]
+  dataHooks?: readonly ('default' | 'client' | 'shared')[]
 }
 
 const firstRenderHooks: HookInfo[] = [
   // Server-side hooks
   ...[
-    { name: 'onCreateApp()', href: '/onCreateApp', providedBy: ['vike-vue'] },
+    { name: 'onCreateApp()', href: '/onCreateApp', providedBy: ['vike-vue'] as const },
     { name: 'renderPage()', href: '/renderPage' },
     { name: 'onBeforeRoute()', href: '/onBeforeRoute' },
     { name: 'Routing', href: '/routing', description: 'The routing executes your Route Functions (of all your pages).' },
     { name: 'onCreatePageContext()', href: '/onCreatePageContext' },
-    { name: 'guard()', href: '/guard', dataHooks: ['default', 'shared'] },
-    { name: 'data()', href: '/data', dataHooks: ['default', 'shared'] },
-    { name: 'onData()', href: '/onData', dataHooks: ['default', 'shared'] },
-    { name: 'onBeforeRender()', href: '/onBeforeRender', dataHooks: ['default', 'shared'] },
-    { name: 'onBeforeRenderHtml()', href: '/onBeforeRenderHtml', providedBy: ['vike-react', 'vike-vue'] },
+    { name: 'guard()', href: '/guard', dataHooks: ['default', 'shared'] as const },
+    { name: 'data()', href: '/data', dataHooks: ['default', 'shared'] as const },
+    { name: 'onData()', href: '/onData', dataHooks: ['default', 'shared'] as const },
+    { name: 'onBeforeRender()', href: '/onBeforeRender', dataHooks: ['default', 'shared'] as const },
+    { name: 'onBeforeRenderHtml()', href: '/onBeforeRenderHtml', providedBy: ['vike-react', 'vike-vue'] as const },
     { name: 'onRenderHtml()', href: '/onRenderHtml' },
-    { name: 'onAfterRenderHtml()', href: '/onAfterRenderHtml', providedBy: ['vike-react', 'vike-vue'] },
+    { name: 'onAfterRenderHtml()', href: '/onAfterRenderHtml', providedBy: ['vike-react', 'vike-vue'] as const },
   ].map(hook => ({ ...hook, env: 'server' as const })),
 
   // Client-side hooks
   ...[
     { name: 'onCreatePageContext()', href: '/onCreatePageContext' },
-    { name: 'guard()', href: '/guard', dataHooks: ['client'] },
-    { name: 'data()', href: '/data', dataHooks: ['client'] },
-    { name: 'onData()', href: '/onData', dataHooks: ['client'] },
-    { name: 'onBeforeRender()', href: '/onBeforeRender', dataHooks: ['client'] },
-    { name: 'onCreateApp()', href: '/onCreateApp', providedBy: ['vike-vue'] },
-    { name: 'onBeforeRenderClient()', href: '/onBeforeRenderClient', providedBy: ['vike-react', 'vike-vue'] },
+    { name: 'guard()', href: '/guard', dataHooks: ['client'] as const },
+    { name: 'data()', href: '/data', dataHooks: ['client'] as const },
+    { name: 'onData()', href: '/onData', dataHooks: ['client'] as const },
+    { name: 'onBeforeRender()', href: '/onBeforeRender', dataHooks: ['client'] as const },
+    { name: 'onCreateApp()', href: '/onCreateApp', providedBy: ['vike-vue'] as const },
+    { name: 'onBeforeRenderClient()', href: '/onBeforeRenderClient', providedBy: ['vike-react', 'vike-vue'] as const },
     { name: 'onRenderClient()', href: '/onRenderClient' },
-    { name: 'onAfterRenderClient()', href: '/onAfterRenderClient', providedBy: ['vike-react', 'vike-vue', 'vike-solid'] },
+    { name: 'onAfterRenderClient()', href: '/onAfterRenderClient', providedBy: ['vike-react', 'vike-vue', 'vike-solid'] as const },
     { name: 'onHydrationEnd()', href: '/onHydrationEnd' },
   ].map(hook => ({ ...hook, env: 'client' as const })),
 ]
@@ -52,29 +52,29 @@ const clientNavigationHooks: HookInfo[] = [
     { name: 'onBeforeRoute()', href: '/onBeforeRoute' },
     { name: 'Routing', href: '/routing' },
     { name: 'onCreatePageContext()', href: '/onCreatePageContext' },
-    { name: 'guard()', href: '/guard', dataHooks: ['client'] },
-    { name: 'data()', href: '/data', dataHooks: ['client'] },
-    { name: 'onData()', href: '/onData', dataHooks: ['client'] },
-    { name: 'onBeforeRender()', href: '/onBeforeRender', dataHooks: ['client'] },
+    { name: 'guard()', href: '/guard', dataHooks: ['client'] as const },
+    { name: 'data()', href: '/data', dataHooks: ['client'] as const },
+    { name: 'onData()', href: '/onData', dataHooks: ['client'] as const },
+    { name: 'onBeforeRender()', href: '/onBeforeRender', dataHooks: ['client'] as const },
   ].map(hook => ({ ...hook, env: 'client' as const })),
 
   // Server-side hooks (for data fetching)
   ...[
-    { name: 'onBeforeRoute()', href: '/onBeforeRoute', dataHooks: ['default', 'shared'] },
-    { name: 'Routing', href: '/routing', description: 'The routing is executed twice: once for the client and once for the server.', dataHooks: ['default', 'shared'] },
-    { name: 'onCreatePageContext()', href: '/onCreatePageContext', dataHooks: ['default', 'shared'] },
-    { name: 'guard()', href: '/guard', dataHooks: ['default', 'shared'] },
-    { name: 'data()', href: '/data', dataHooks: ['default', 'shared'] },
-    { name: 'onBeforeRender()', href: '/onBeforeRender', dataHooks: ['default', 'shared'] },
+    { name: 'onBeforeRoute()', href: '/onBeforeRoute', dataHooks: ['default', 'shared'] as const },
+    { name: 'Routing', href: '/routing', description: 'The routing is executed twice: once for the client and once for the server.', dataHooks: ['default', 'shared'] as const },
+    { name: 'onCreatePageContext()', href: '/onCreatePageContext', dataHooks: ['default', 'shared'] as const },
+    { name: 'guard()', href: '/guard', dataHooks: ['default', 'shared'] as const },
+    { name: 'data()', href: '/data', dataHooks: ['default', 'shared'] as const },
+    { name: 'onBeforeRender()', href: '/onBeforeRender', dataHooks: ['default', 'shared'] as const },
   ].map(hook => ({ ...hook, env: 'server' as const })),
 
   // Client-side hooks (second part)
   ...[
-    { name: 'onData()', href: '/onData', dataHooks: ['default', 'shared'] },
+    { name: 'onData()', href: '/onData', dataHooks: ['default', 'shared'] as const },
     { name: 'onRenderClient()', href: '/onRenderClient' },
-    { name: 'onCreateApp()', href: '/onCreateApp', providedBy: ['vike-vue'] },
-    { name: 'onBeforeRenderClient()', href: '/onBeforeRenderClient', providedBy: ['vike-react', 'vike-vue'] },
-    { name: 'onAfterRenderClient()', href: '/onAfterRenderClient', providedBy: ['vike-react', 'vike-vue', 'vike-solid'] },
+    { name: 'onCreateApp()', href: '/onCreateApp', providedBy: ['vike-vue'] as const },
+    { name: 'onBeforeRenderClient()', href: '/onBeforeRenderClient', providedBy: ['vike-react', 'vike-vue'] as const },
+    { name: 'onAfterRenderClient()', href: '/onAfterRenderClient', providedBy: ['vike-react', 'vike-vue', 'vike-solid'] as const },
     { name: 'onPageTransitionEnd()', href: '/onPageTransitionEnd' },
   ].map(hook => ({ ...hook, env: 'client' as const })),
 ]
@@ -248,11 +248,11 @@ function shouldShowHook(
 ) {
   // If hook has dataHooks specified, it must include the current dataHooks
   // If no dataHooks specified, always show (hooks like onRenderClient, onPageTransitionStart, etc.)
-  if (hook.dataHooks && !hook.dataHooks.includes(dataHooks)) return false
+  if (hook.dataHooks && !(hook.dataHooks as any).includes(dataHooks)) return false
 
   // Framework filter
   if (hook.providedBy && !selectedFramework) return false
-  if (hook.providedBy && selectedFramework && !hook.providedBy.includes(selectedFramework)) return false
+  if (hook.providedBy && selectedFramework && !(hook.providedBy as any).includes(selectedFramework)) return false
 
   return true
 }
