@@ -71,6 +71,12 @@ const clientNavigationHooks: HookInfo[] = [
   { name: 'onRenderClient()', href: '/onRenderClient', env: 'client' },
   { name: 'onAfterRenderClient()', href: '/onAfterRenderClient', env: 'client', providedBy: ['vike-react', 'vike-vue', 'vike-solid'] },
   { name: 'onPageTransitionEnd()', href: '/onPageTransitionEnd', env: 'client' },
+
+  // Client-only data environment versions
+  { name: 'guard()', href: '/guard', env: 'client', dataEnv: 'client' },
+  { name: 'data()', href: '/data', env: 'client', dataEnv: 'client' },
+  { name: 'onData()', href: '/onData', env: 'client', dataEnv: 'client' },
+  { name: 'onBeforeRender()', href: '/onBeforeRender', env: 'client', dataEnv: 'client' },
 ]
 
 
