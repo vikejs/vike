@@ -6,7 +6,6 @@
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.7.0",
-    "is-dev": "^0.2.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "vike": "0.4.238"

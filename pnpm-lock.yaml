@@ -449,9 +449,6 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^4.7.0
         version: 4.7.0(vite@7.1.3(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
-      is-dev:
-        specifier: ^0.2.0
-        version: 0.2.0
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -6064,9 +6061,6 @@ packages:
 
   is-decimal@2.0.1:
     resolution: {integrity: sha512-AAB9hiomQs5DXWcRB1rqsxGUstbRroFOPPVAomNk/3XHR5JyEZChOyTWe2oayKnsSsr/kcGqF+z6yuH6HHpN0A==}
-
-  is-dev@0.2.0:
-    resolution: {integrity: sha512-c9zskpxNsEd9IO346f3QybOmaRDmGGKnHf1rHxYrxMz3XfEip4J7XoYICafhZ63U4nRDNp3QnjGvDzfXMnukmQ==}
 
   is-docker@2.2.1:
     resolution: {integrity: sha512-F+i2BKsFrH66iaUFc0woD8sLy8getkwTwtOBjvs56Cx4CgJDeKQeqfz8wAYiSb8JOprWhHH5p77PbmYCvvUuXQ==}
@@ -12801,8 +12795,6 @@ snapshots:
       hasown: 2.0.2
 
   is-decimal@2.0.1: {}
-
-  is-dev@0.2.0: {}
 
   is-docker@2.2.1: {}
 
