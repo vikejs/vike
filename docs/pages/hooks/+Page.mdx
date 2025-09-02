@@ -55,25 +55,23 @@ Potentially upcoming hooks:
 
 ## Lifecycle
 
-The order in which the page's hooks are called upon rendering that page. (Aka the hook flow.)
+The order in which hooks are called upon rendering a page. (Aka the hook flow.)
 
 <HooksLifecycle />
+
+> **Data hook environment**
+>
+> Select the following:
+> - `Server-only (default)` — if you use `+data.js` (or `+onBeforeRender.js`) which, by default, runs only on the server-side.
+if <Link href="/data#environment">environment of `+data`</Link> nor the <Link href="/onBeforeRender#environment">environment of `+onBeforeRender`</Link>.
+> - `Client-only` — if you use <Link href="/data#environment">`+data.client.js`</Link> (or <Link href="/onBeforeRender#environment">`+onBeforeRender.client.js`</Link>) (runs only on the client-side)
+> - `Server & client` — if you use `+data.shared.js` (or `+onBeforeRender.shared.js`) (runs only on the client-side)
 
 > <Link href="/routing">Routing</Link> executes the <Link href="/route-function">Route Function</Link> of all your pages.
 
 > See also:
 > - <Link href="/pageContext#lifecycle" />
 > - <Link href="/globalContext#lifecycle" />
-
-
-## Environment
-
-            <Link href="/data#environment">Environment of `+data`</Link> and{' '}
-            <Link href="/onBeforeRender#environment">`+onBeforeRender`</Link>:
-
-If you didn't change the environment of `data()` nor `onBeforeRender()`:
-
-> If you <Link href="/data#environment">configured `data()`</Link> and <Link href="/onBeforeRender#environment">`onBeforeRender()` as well</Link> to run *only* on the client-side:
 
 
 ## See also

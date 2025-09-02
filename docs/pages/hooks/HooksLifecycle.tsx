@@ -223,11 +223,11 @@ function HooksLifecycle() {
 
         <div>
           <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>
-            <Link href="#environment">Hooks environment</Link>
+            Data hook environment (explanation below)
           </label>
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
             {[
-              { key: 'server' as const, label: 'Server-only' },
+              { key: 'server' as const, label: 'Server-only (default)' },
               { key: 'client' as const, label: 'Client-only' },
               { key: 'shared' as const, label: 'Server & client' },
             ].map(({ key, label }) => (
