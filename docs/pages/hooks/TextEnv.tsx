@@ -21,8 +21,6 @@ interface HookInfo {
   dataEnv?: ('default' | 'client' | 'shared')[]
 }
 
-
-
 const firstRenderHooks: HookInfo[] = [
   // Server-side hooks
   { name: 'onCreateApp()', href: '/onCreateApp', env: 'server', providedBy: ['vike-vue'] },
