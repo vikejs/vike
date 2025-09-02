@@ -196,8 +196,6 @@ function HooksLifecycle() {
           padding: '1rem',
         }}
       >
-        <h4 style={{ marginTop: 0, marginBottom: '1rem' }}>Configuration</h4>
-
         <div style={{ marginBottom: '1rem' }}>
           <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>UI Framework Extension:</label>
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
@@ -227,7 +225,7 @@ function HooksLifecycle() {
                   cursor: 'pointer',
                 }}
               >
-                <code>{framework}</code>
+                {framework}
               </button>
             ))}
           </div>
