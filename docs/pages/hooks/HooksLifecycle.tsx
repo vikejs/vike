@@ -166,12 +166,7 @@ function HooksLifecycle() {
     const hooks = getFilteredHooks(phase)
 
     return (
-      <Box
-        style={{
-          marginBottom: '2rem',
-          padding: '1.5rem',
-        }}
-      >
+      <LifecycleBox>
         <h4 style={{ marginTop: 0, marginBottom: '1rem', color: '#2c3e50' }}>{title}</h4>
         <ol>
           {hooks.map((hook, index) => {
@@ -184,18 +179,13 @@ function HooksLifecycle() {
             )
           })}
         </ol>
-      </Box>
+      </LifecycleBox>
     )
   }
 
   return (
     <div>
-      <Box
-        style={{
-          marginBottom: '2rem',
-          padding: '1rem',
-        }}
-      >
+      <LifecycleBox>
         <div style={{ marginBottom: '1rem' }}>
           <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>UI Framework Extension:</label>
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
@@ -258,7 +248,7 @@ function HooksLifecycle() {
             ))}
           </div>
         </div>
-      </Box>
+      </LifecycleBox>
 
       <div
         style={{
@@ -268,19 +258,39 @@ function HooksLifecycle() {
         }}
       >
         <div>
-          <Box style={{ padding: '1.5rem', marginBottom: '2rem' }}>
+          <LifecycleBox>
             <h4 style={{ marginTop: 0, marginBottom: '1rem', color: '#2c3e50' }}>Server start</h4>
             <ol>
               <li>
                 <Link href="/onCreateGlobalContext">`onCreateGlobalContext`</Link>
               </li>
             </ol>
-          </Box>
+          </LifecycleBox>
           {renderHooksList('first-render', 'First Render')}
         </div>
         <div>{renderHooksList('client-navigation', 'Client-side Navigation')}</div>
       </div>
     </div>
+  )
+}
+
+function LifecycleBox({
+  style,
+  children,
+}: {
+  style?: React.CSSProperties
+  children?: React.ReactNode
+}) {
+  return (
+    <Box
+      style={{
+        padding: '1.5rem',
+        marginBottom: '2rem',
+        ...style,
+      }}
+    >
+      {children}
+    </Box>
   )
 }
 
