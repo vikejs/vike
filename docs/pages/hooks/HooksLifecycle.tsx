@@ -18,15 +18,15 @@ const routing = {
   href: '/routing',
 }
 
-const onCreateApp = { name: 'onCreateApp()', href: '/onCreateApp', providedBy: ['vike-vue'] }
+const onCreateApp = { name: 'onCreateApp()', href: '/onCreateApp', providedBy: ['vike-vue'] as const }
 const onCreatePageContext = { name: 'onCreatePageContext()', href: '/onCreatePageContext' }
 const onBeforeRoute = { name: 'onBeforeRoute()', href: '/onBeforeRoute' }
 const guard = { name: 'guard()', href: '/guard' }
 const data = { name: 'data()', href: '/data' }
 const onData = { name: 'onData()', href: '/onData' }
 const onBeforeRender = { name: 'onBeforeRender()', href: '/onBeforeRender' }
-const onBeforeRenderClient = { name: 'onBeforeRenderClient()', href: '/onBeforeRenderClient', providedBy: ['vike-react', 'vike-vue'] }
-const onAfterRenderClient = { name: 'onAfterRenderClient()', href: '/onAfterRenderClient', providedBy: ['vike-react', 'vike-vue', 'vike-solid'] }
+const onBeforeRenderClient = { name: 'onBeforeRenderClient()', href: '/onBeforeRenderClient', providedBy: ['vike-react', 'vike-vue'] as const }
+const onAfterRenderClient = { name: 'onAfterRenderClient()', href: '/onAfterRenderClient', providedBy: ['vike-react', 'vike-vue', 'vike-solid'] as const }
 
 const firstRenderHooks: HookInfo[] = [
   // Server-side hooks
