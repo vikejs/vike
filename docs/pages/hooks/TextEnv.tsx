@@ -8,12 +8,6 @@ import { Link } from '@brillout/docpress'
 function TextEnv({ children, style }: { children: any; style?: any }) {
   return <span style={{ color: '#888', fontSize: '0.94em', verticalAlign: 'middle', ...style }}>{children}</span>
 }
-const getEnvColor = (text: string) => {
-  if (text.includes('server')) return '#d110ff'
-  if (text.includes('client')) return '#3acd3a'
-  return '#888'
-}
-
 function TextEnv2({ children }: { children: any }) {
   return <TextEnv style={{ fontWeight: 600, color: getEnvColor(children) }}>{children}</TextEnv>
 }
@@ -27,21 +21,7 @@ interface HookInfo {
   dataEnv?: ('default' | 'client' | 'shared')[]
 }
 
-const shouldShowHook = (
-  hook: HookInfo,
-  dataEnv: 'default' | 'client' | 'shared',
-  selectedFramework: 'vike-react' | 'vike-vue' | 'vike-solid' | null,
-) => {
-  // If hook has dataEnv specified, it must include the current dataEnv
-  // If no dataEnv specified, always show (hooks like onRenderClient, onPageTransitionStart, etc.)
-  if (hook.dataEnv && !hook.dataEnv.includes(dataEnv)) return false
 
-  // Framework filter
-  if (hook.providedBy && !selectedFramework) return false
-  if (hook.providedBy && selectedFramework && !hook.providedBy.includes(selectedFramework)) return false
-
-  return true
-}
 
 const firstRenderHooks: HookInfo[] = [
   // Server-side hooks
@@ -155,12 +135,12 @@ function HooksLifecycle() {
     localStorage.setItem('vike-docs-data-env', dataEnv)
   }, [dataEnv])
 
-  const getFilteredHooks = (phase: 'first-render' | 'client-navigation') => {
+  function getFilteredHooks(phase: 'first-render' | 'client-navigation') {
     const hooks = phase === 'first-render' ? firstRenderHooks : clientNavigationHooks
     return hooks.filter((hook) => shouldShowHook(hook, dataEnv, selectedFramework))
   }
 
-  const renderHooksList = (phase: 'first-render' | 'client-navigation', title: string) => {
+  function renderHooksList(phase: 'first-render' | 'client-navigation', title: string) {
     const hooks = getFilteredHooks(phase)
 
     return (
@@ -285,4 +265,27 @@ function HooksLifecycle() {
       </div>
     </div>
   )
+}
+
+// Utility functions
+function shouldShowHook(
+  hook: HookInfo,
+  dataEnv: 'default' | 'client' | 'shared',
+  selectedFramework: 'vike-react' | 'vike-vue' | 'vike-solid' | null,
+) {
+  // If hook has dataEnv specified, it must include the current dataEnv
+  // If no dataEnv specified, always show (hooks like onRenderClient, onPageTransitionStart, etc.)
+  if (hook.dataEnv && !hook.dataEnv.includes(dataEnv)) return false
+
+  // Framework filter
+  if (hook.providedBy && !selectedFramework) return false
+  if (hook.providedBy && selectedFramework && !hook.providedBy.includes(selectedFramework)) return false
+
+  return true
+}
+
+function getEnvColor(text: string) {
+  if (text.includes('server')) return '#d110ff'
+  if (text.includes('client')) return '#3acd3a'
+  return '#888'
 }
