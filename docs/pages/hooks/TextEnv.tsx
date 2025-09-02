@@ -11,9 +11,9 @@ function TextEnv({ children, style }: { children: any; style?: any }) {
 function TextEnv2({ children }: { children: any }) {
   // Color code based on environment
   const getEnvColor = (text: string) => {
-    if (text.includes('server')) return '#e74c3c' // Red for server
-    if (text.includes('client')) return '#3498db' // Blue for client
-    return '#888' // Default gray
+    if (text.includes('server')) return '#d110ff'
+    if (text.includes('client')) return '#3acd3a'
+    return '#888'
   }
 
   return <TextEnv style={{ fontWeight: 600, color: getEnvColor(children) }}>{children}</TextEnv>
