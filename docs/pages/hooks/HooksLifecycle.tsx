@@ -262,7 +262,7 @@ function HooksLifecycle() {
             <h4 style={{ marginTop: 0, marginBottom: '1rem', color: '#2c3e50' }}>Server start</h4>
             <ol>
               <li>
-                <Link href="/onCreateGlobalContext">
+                <Link href="/onCreateGlobalContext#lifecycle">
                   <code>onCreateGlobalContext()</code>
                 </Link>
               </li>
