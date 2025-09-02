@@ -46,6 +46,10 @@ const firstRenderHooks: HookInfo[] = [
 
   // Client-side hooks
   { name: 'onCreatePageContext()', href: '/onCreatePageContext', env: 'client' },
+  { name: 'guard()', href: '/guard', env: 'client', dataEnv: 'client' },
+  { name: 'data()', href: '/data', env: 'client', dataEnv: 'client' },
+  { name: 'onData()', href: '/onData', env: 'client', dataEnv: 'client' },
+  { name: 'onBeforeRender()', href: '/onBeforeRender', env: 'client', dataEnv: 'client' },
   { name: 'onCreateApp()', href: '/onCreateApp', env: 'client', providedBy: ['vike-vue'] },
   { name: 'onBeforeRenderClient()', href: '/onBeforeRenderClient', env: 'client', providedBy: ['vike-react', 'vike-vue'] },
   { name: 'onRenderClient()', href: '/onRenderClient', env: 'client' },
@@ -122,61 +126,28 @@ function HooksLifecycle() {
       return hook.providedBy.includes(selectedFramework)
     })
 
-    // Adjust hooks based on data environment
+    // Filter hooks based on data environment
     if (dataEnv === 'client') {
-      const dataHookNames = ['guard()', 'data()', 'onData()', 'onBeforeRender()']
-
-      if (phase === 'first-render') {
-        // For client-only first render: remove server data hooks, keep only client data hooks
-        hooks = hooks.filter(hook => {
-          // Remove server-side data hooks
-          if (hook.dataEnv === 'default' && hook.env === 'server' && dataHookNames.includes(hook.name)) {
-            return false
-          }
-          // Remove client dataEnv hooks (they're duplicates for first render)
-          if (hook.dataEnv === 'client') {
-            return false
-          }
-          return true
-        })
-
-        // Add client-side data hooks after onCreatePageContext (client)
-        const clientPageContextIndex = hooks.findIndex(h =>
-          h.name === 'onCreatePageContext()' && h.env === 'client'
-        )
-
-        if (clientPageContextIndex !== -1) {
-          const clientDataHooks = [
-            { name: 'guard()', href: '/guard', env: 'client' as const, dataEnv: 'client' as const },
-            { name: 'data()', href: '/data', env: 'client' as const, dataEnv: 'client' as const },
-            { name: 'onData()', href: '/onData', env: 'client' as const, dataEnv: 'client' as const },
-            { name: 'onBeforeRender()', href: '/onBeforeRender', env: 'client' as const, dataEnv: 'client' as const },
-          ]
-
-          hooks = [
-            ...hooks.slice(0, clientPageContextIndex + 1),
-            ...clientDataHooks,
-            ...hooks.slice(clientPageContextIndex + 1)
-          ]
+      // Client-only mode: show only client dataEnv hooks, remove default dataEnv data hooks
+      hooks = hooks.filter(hook => {
+        // For data hooks, only show client dataEnv versions
+        if (['guard()', 'data()', 'onData()', 'onBeforeRender()'].includes(hook.name)) {
+          return hook.dataEnv === 'client'
         }
-      } else {
-        // For client-side navigation: show only client versions, remove all server hooks
-        const serverHookNames = ['onBeforeRoute()', 'Routing', 'onCreatePageContext()', ...dataHookNames]
 
-        hooks = hooks.filter(hook => {
-          // Remove all server-side hooks in client-only mode
-          if (hook.env === 'server' && serverHookNames.includes(hook.name)) {
+        // For client navigation, also remove server routing hooks
+        if (phase === 'client-navigation') {
+          const serverRoutingHooks = ['onBeforeRoute()', 'Routing', 'onCreatePageContext()']
+          if (hook.env === 'server' && serverRoutingHooks.includes(hook.name)) {
             return false
           }
-          // Remove default client data hooks (keep only client dataEnv ones)
-          if (hook.dataEnv === 'default' && hook.env === 'client' && dataHookNames.includes(hook.name)) {
-            return false
-          }
-          return true
-        })
-      }
+        }
+
+        // Keep all other hooks
+        return true
+      })
     } else {
-      // For default/shared mode: remove client dataEnv duplicates
+      // Default/shared mode: remove client dataEnv hooks (show only default dataEnv)
       hooks = hooks.filter(hook => hook.dataEnv !== 'client')
     }
 
