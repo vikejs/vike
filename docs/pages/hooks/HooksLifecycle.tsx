@@ -10,7 +10,7 @@ interface HookInfo {
   href: string
   env: 'server' | 'client'
   providedBy?: ('vike-react' | 'vike-vue' | 'vike-solid')[]
-  dataHooks?: ('server' | 'client' | 'shared')[]
+  hooksEnv?: ('server' | 'client' | 'shared')[]
 }
 
 const routing = { name: 'Routing', href: '/routing' }
@@ -58,10 +58,10 @@ const firstRenderHooks: HookInfo[] = [
       onBeforeRoute,
       routing,
       onCreatePageContext,
-      { ...guard, dataHooks: ['server', 'shared'] },
-      { ...data, dataHooks: ['server', 'shared'] },
-      { ...onData, dataHooks: ['server', 'shared'] },
-      { ...onBeforeRender, dataHooks: ['server', 'shared'] },
+      { ...guard, hooksEnv: ['server', 'shared'] },
+      { ...data, hooksEnv: ['server', 'shared'] },
+      { ...onData, hooksEnv: ['server', 'shared'] },
+      { ...onBeforeRender, hooksEnv: ['server', 'shared'] },
       onBeforeRenderHtml,
       onRenderHtml,
       onAfterRenderHtml,
@@ -72,10 +72,10 @@ const firstRenderHooks: HookInfo[] = [
   ...(
     [
       onCreatePageContext,
-      { ...guard, dataHooks: ['client'] },
-      { ...data, dataHooks: ['client'] },
-      { ...onData, dataHooks: ['client'] },
-      { ...onBeforeRender, dataHooks: ['client'] },
+      { ...guard, hooksEnv: ['client'] },
+      { ...data, hooksEnv: ['client'] },
+      { ...onData, hooksEnv: ['client'] },
+      { ...onBeforeRender, hooksEnv: ['client'] },
       onCreateApp,
       onBeforeRenderClient,
       onRenderClient,
@@ -93,29 +93,29 @@ const clientNavigationHooks: HookInfo[] = [
       onBeforeRoute,
       routing,
       onCreatePageContext,
-      { ...guard, dataHooks: ['client'] },
-      { ...data, dataHooks: ['client'] },
-      { ...onData, dataHooks: ['client'] },
-      { ...onBeforeRender, dataHooks: ['client'] },
+      { ...guard, hooksEnv: ['client'] },
+      { ...data, hooksEnv: ['client'] },
+      { ...onData, hooksEnv: ['client'] },
+      { ...onBeforeRender, hooksEnv: ['client'] },
     ] satisfies Omit<HookInfo, 'env'>[]
   ).map((hook) => ({ ...hook, env: 'client' }) satisfies HookInfo),
 
   // Server-side hooks (for data fetching)
   ...(
     [
-      { ...onBeforeRoute, dataHooks: ['server', 'shared'] },
-      { ...routing, dataHooks: ['server', 'shared'] },
-      { ...onCreatePageContext, dataHooks: ['server', 'shared'] },
-      { ...guard, dataHooks: ['server', 'shared'] },
-      { ...data, dataHooks: ['server', 'shared'] },
-      { ...onBeforeRender, dataHooks: ['server', 'shared'] },
+      { ...onBeforeRoute, hooksEnv: ['server', 'shared'] },
+      { ...routing, hooksEnv: ['server', 'shared'] },
+      { ...onCreatePageContext, hooksEnv: ['server', 'shared'] },
+      { ...guard, hooksEnv: ['server', 'shared'] },
+      { ...data, hooksEnv: ['server', 'shared'] },
+      { ...onBeforeRender, hooksEnv: ['server', 'shared'] },
     ] satisfies Omit<HookInfo, 'env'>[]
   ).map((hook) => ({ ...hook, env: 'server' }) satisfies HookInfo),
 
   // Client-side hooks (second part)
   ...(
     [
-      { ...onData, dataHooks: ['server', 'shared'] },
+      { ...onData, hooksEnv: ['server', 'shared'] },
       onRenderClient,
       onCreateApp,
       onBeforeRenderClient,
@@ -129,7 +129,7 @@ const vikeDocsSelectedFramework = 'vike-docs:selected-framework'
 const vikeDocsHooksEnv = 'vike-docs:hooks-env'
 function HooksLifecycle() {
   const [selectedFramework, setSelectedFramework] = useState<'vike-react' | 'vike-vue' | 'vike-solid' | null>(null)
-  const [dataHooks, setDataEnv] = useState<'server' | 'client' | 'shared'>('server')
+  const [hooksEnv, setDataEnv] = useState<'server' | 'client' | 'shared'>('server')
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -154,12 +154,12 @@ function HooksLifecycle() {
   }, [selectedFramework])
 
   useEffect(() => {
-    localStorage.setItem(vikeDocsHooksEnv, dataHooks)
-  }, [dataHooks])
+    localStorage.setItem(vikeDocsHooksEnv, hooksEnv)
+  }, [hooksEnv])
 
   function getFilteredHooks(phase: 'first-render' | 'client-navigation') {
     const hooks = phase === 'first-render' ? firstRenderHooks : clientNavigationHooks
-    return hooks.filter((hook) => shouldShowHook(hook, dataHooks, selectedFramework))
+    return hooks.filter((hook) => shouldShowHook(hook, hooksEnv, selectedFramework))
   }
 
   function renderHooksList(phase: 'first-render' | 'client-navigation', title: string) {
@@ -238,8 +238,8 @@ function HooksLifecycle() {
                   padding: '0.25rem 0.75rem',
                   border: '1px solid #ccc',
                   borderRadius: '4px',
-                  backgroundColor: dataHooks === key ? '#007bff' : 'white',
-                  color: dataHooks === key ? 'white' : 'black',
+                  backgroundColor: hooksEnv === key ? '#007bff' : 'white',
+                  color: hooksEnv === key ? 'white' : 'black',
                   cursor: 'pointer',
                 }}
               >
@@ -298,12 +298,12 @@ function LifecycleBox({
 
 function shouldShowHook(
   hook: HookInfo,
-  dataHooks: 'server' | 'client' | 'shared',
+  hooksEnv: 'server' | 'client' | 'shared',
   selectedFramework: 'vike-react' | 'vike-vue' | 'vike-solid' | null,
 ) {
-  // If hook has dataHooks specified, it must include the current dataHooks
-  // If no dataHooks specified, always show (hooks like onRenderClient, onPageTransitionStart, etc.)
-  if (hook.dataHooks && !hook.dataHooks.includes(dataHooks)) return false
+  // If hook has hooksEnv specified, it must include the current hooksEnv
+  // If no hooksEnv specified, always show (hooks like onRenderClient, onPageTransitionStart, etc.)
+  if (hook.hooksEnv && !hook.hooksEnv.includes(hooksEnv)) return false
 
   // Framework filter
   if (hook.providedBy && !selectedFramework) return false
