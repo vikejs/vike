@@ -63,7 +63,11 @@ In a nutshell: while `onBeforeRender()` requires more manual work, it also gives
 
 ## Environment
 
-Like `data()`, the `onBeforeRender()` hook always runs on the server-side by default. By using <Link href="/file-env">`.shared.js` or `.client.js`</Link> you can tell Vike to run `onBeforeRender()` on the client-side instead, see <Link href="/data#environment" />.
+By default, like `data()`, the `onBeforeRender()` hook always runs on the server-side.
+
+By using <Link href="/file-env">`.shared.js` (or `.client.js`)</Link> you tell Vike to also (or only) load and execute `onBeforeRender()` on the client-side, see:
+- <Link href="/data#client-js" doNotInferSectionTitle />
+- <Link href="/data#shared-js" doNotInferSectionTitle />
 
 
 ## `onBeforeRender()` + `meta`

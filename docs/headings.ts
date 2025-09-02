@@ -443,7 +443,7 @@ const headings = [
     title: '`+data()` hook',
     titleInNav: '`+data()`',
     url: '/data',
-    sectionTitles: ['Without `vike-{react,vue,solid}`'],
+    sectionTitles: ['`.client.js`', '`.shared.js`', 'Without `vike-{react,vue,solid}`'],
   },
   {
     level: 2,

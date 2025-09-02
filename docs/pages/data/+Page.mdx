@@ -90,24 +90,23 @@ Alternatively, you can use `throw render()` and `throw redirect()` inside of a <
 
 By default, the `data()` hook always runs on the server-side.
 
-By using <Link href="/file-env#for-files">`.client.js` (or `.shared.js`)</Link>,
-you can tell Vike to only (or also) load and execute `data()` on the client-side.
+By using <Link href="/file-env">`.shared.js` (or `.client.js`)</Link> you tell Vike to also (or only) load and execute `data()` on the client-side.
 
 > Alternatively, instead of using `.shared.js` and `.client.js`, you can modify the <Link href="/meta#example-modify-data-env">`meta.env` setting</Link> of the `data()` hook in a global fashion, removing the need to add `.shared.js` / `.client.js` to each of your `+data.js` files.
 
-### Client-side only
+### `.client.js`
 
 By using `.client.js`,
-you can tell Vike to load and execute `data()` only on the client-side (never on the server-side).
+you tell Vike to load and execute `data()` only on the client-side (never on the server-side).
 
 > For <Link href="/pre-rendering">pre-rendered pages (SSG)</Link>, if you want to fetch dynamic data provided by some server (Java/PHP/JavaScript/...), then make sure to always call `data()` on the client-side (i.e. `+data.client.js`).
 >
-> Note that, for pre-rendered pages, the data that is fetched from the "server-side" is the static JSON file <Link href="/pageContext.json">`dist/client/some-page/index.pageContext.json`</Link> that was generated at build-time upon pre-rendering the page.
+> Note that, for pre-rendered pages, data fetched with the `data()` hook is frozen at build-time: the value returned by `data()` is saved as a static JSON file <Link href="/pageContext.json">`dist/client/some-page/index.pageContext.json`</Link> generated during pre-rendering.
 
-### Server- and client-side
+### `.shared.js`
 
 By using `.shared.js`,
-you can tell Vike to load and execute `data()` also on the client-side:
+you tell Vike to load and execute `data()` also on the client-side:
 - `data()` runs on the server-side for the first page the user visits.
 - `data()` runs on the client-side for subsequent page navigations.
 
