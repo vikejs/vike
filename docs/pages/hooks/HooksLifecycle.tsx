@@ -15,84 +15,68 @@ interface HookInfo {
 
 const firstRenderHooks: HookInfo[] = [
   // Server-side hooks
-  { name: 'onCreateApp()', href: '/onCreateApp', env: 'server', providedBy: ['vike-vue'] },
-  { name: 'renderPage()', href: '/renderPage', env: 'server' },
-  { name: 'onBeforeRoute()', href: '/onBeforeRoute', env: 'server' },
-  {
-    name: 'Routing',
-    href: '/routing',
-    env: 'server',
-    description: 'The routing executes your Route Functions (of all your pages).',
-  },
-  { name: 'onCreatePageContext()', href: '/onCreatePageContext', env: 'server' },
-  { name: 'guard()', href: '/guard', env: 'server', dataHooks: ['default', 'shared'] },
-  { name: 'data()', href: '/data', env: 'server', dataHooks: ['default', 'shared'] },
-  { name: 'onData()', href: '/onData', env: 'server', dataHooks: ['default', 'shared'] },
-  { name: 'onBeforeRender()', href: '/onBeforeRender', env: 'server', dataHooks: ['default', 'shared'] },
-  { name: 'onBeforeRenderHtml()', href: '/onBeforeRenderHtml', env: 'server', providedBy: ['vike-react', 'vike-vue'] },
-  { name: 'onRenderHtml()', href: '/onRenderHtml', env: 'server' },
-  { name: 'onAfterRenderHtml()', href: '/onAfterRenderHtml', env: 'server', providedBy: ['vike-react', 'vike-vue'] },
+  ...[
+    { name: 'onCreateApp()', href: '/onCreateApp', providedBy: ['vike-vue'] },
+    { name: 'renderPage()', href: '/renderPage' },
+    { name: 'onBeforeRoute()', href: '/onBeforeRoute' },
+    { name: 'Routing', href: '/routing', description: 'The routing executes your Route Functions (of all your pages).' },
+    { name: 'onCreatePageContext()', href: '/onCreatePageContext' },
+    { name: 'guard()', href: '/guard', dataHooks: ['default', 'shared'] },
+    { name: 'data()', href: '/data', dataHooks: ['default', 'shared'] },
+    { name: 'onData()', href: '/onData', dataHooks: ['default', 'shared'] },
+    { name: 'onBeforeRender()', href: '/onBeforeRender', dataHooks: ['default', 'shared'] },
+    { name: 'onBeforeRenderHtml()', href: '/onBeforeRenderHtml', providedBy: ['vike-react', 'vike-vue'] },
+    { name: 'onRenderHtml()', href: '/onRenderHtml' },
+    { name: 'onAfterRenderHtml()', href: '/onAfterRenderHtml', providedBy: ['vike-react', 'vike-vue'] },
+  ].map(hook => ({ ...hook, env: 'server' as const })),
 
   // Client-side hooks
-  { name: 'onCreatePageContext()', href: '/onCreatePageContext', env: 'client' },
-  { name: 'guard()', href: '/guard', env: 'client', dataHooks: ['client'] },
-  { name: 'data()', href: '/data', env: 'client', dataHooks: ['client'] },
-  { name: 'onData()', href: '/onData', env: 'client', dataHooks: ['client'] },
-  { name: 'onBeforeRender()', href: '/onBeforeRender', env: 'client', dataHooks: ['client'] },
-  { name: 'onCreateApp()', href: '/onCreateApp', env: 'client', providedBy: ['vike-vue'] },
-  {
-    name: 'onBeforeRenderClient()',
-    href: '/onBeforeRenderClient',
-    env: 'client',
-    providedBy: ['vike-react', 'vike-vue'],
-  },
-  { name: 'onRenderClient()', href: '/onRenderClient', env: 'client' },
-  {
-    name: 'onAfterRenderClient()',
-    href: '/onAfterRenderClient',
-    env: 'client',
-    providedBy: ['vike-react', 'vike-vue', 'vike-solid'],
-  },
-  { name: 'onHydrationEnd()', href: '/onHydrationEnd', env: 'client' },
+  ...[
+    { name: 'onCreatePageContext()', href: '/onCreatePageContext' },
+    { name: 'guard()', href: '/guard', dataHooks: ['client'] },
+    { name: 'data()', href: '/data', dataHooks: ['client'] },
+    { name: 'onData()', href: '/onData', dataHooks: ['client'] },
+    { name: 'onBeforeRender()', href: '/onBeforeRender', dataHooks: ['client'] },
+    { name: 'onCreateApp()', href: '/onCreateApp', providedBy: ['vike-vue'] },
+    { name: 'onBeforeRenderClient()', href: '/onBeforeRenderClient', providedBy: ['vike-react', 'vike-vue'] },
+    { name: 'onRenderClient()', href: '/onRenderClient' },
+    { name: 'onAfterRenderClient()', href: '/onAfterRenderClient', providedBy: ['vike-react', 'vike-vue', 'vike-solid'] },
+    { name: 'onHydrationEnd()', href: '/onHydrationEnd' },
+  ].map(hook => ({ ...hook, env: 'client' as const })),
 ]
 
 const clientNavigationHooks: HookInfo[] = [
-  { name: 'onPageTransitionStart()', href: '/onPageTransitionStart', env: 'client' },
-  { name: 'onBeforeRoute()', href: '/onBeforeRoute', env: 'client' },
-  { name: 'Routing', href: '/routing', env: 'client' },
-  { name: 'onCreatePageContext()', href: '/onCreatePageContext', env: 'client' },
-  { name: 'guard()', href: '/guard', env: 'client', dataHooks: ['client'] },
-  { name: 'data()', href: '/data', env: 'client', dataHooks: ['client'] },
-  { name: 'onData()', href: '/onData', env: 'client', dataHooks: ['client'] },
-  { name: 'onBeforeRender()', href: '/onBeforeRender', env: 'client', dataHooks: ['client'] },
-  { name: 'onBeforeRoute()', href: '/onBeforeRoute', env: 'server', dataHooks: ['default', 'shared'] },
-  {
-    name: 'Routing',
-    href: '/routing',
-    env: 'server',
-    description: 'The routing is executed twice: once for the client and once for the server.',
-    dataHooks: ['default', 'shared'],
-  },
-  { name: 'onCreatePageContext()', href: '/onCreatePageContext', env: 'server', dataHooks: ['default', 'shared'] },
-  { name: 'guard()', href: '/guard', env: 'server', dataHooks: ['default', 'shared'] },
-  { name: 'data()', href: '/data', env: 'server', dataHooks: ['default', 'shared'] },
-  { name: 'onBeforeRender()', href: '/onBeforeRender', env: 'server', dataHooks: ['default', 'shared'] },
-  { name: 'onData()', href: '/onData', env: 'client', dataHooks: ['default', 'shared'] },
-  { name: 'onRenderClient()', href: '/onRenderClient', env: 'client' },
-  { name: 'onCreateApp()', href: '/onCreateApp', env: 'client', providedBy: ['vike-vue'] },
-  {
-    name: 'onBeforeRenderClient()',
-    href: '/onBeforeRenderClient',
-    env: 'client',
-    providedBy: ['vike-react', 'vike-vue'],
-  },
-  {
-    name: 'onAfterRenderClient()',
-    href: '/onAfterRenderClient',
-    env: 'client',
-    providedBy: ['vike-react', 'vike-vue', 'vike-solid'],
-  },
-  { name: 'onPageTransitionEnd()', href: '/onPageTransitionEnd', env: 'client' },
+  // Client-side hooks (first part)
+  ...[
+    { name: 'onPageTransitionStart()', href: '/onPageTransitionStart' },
+    { name: 'onBeforeRoute()', href: '/onBeforeRoute' },
+    { name: 'Routing', href: '/routing' },
+    { name: 'onCreatePageContext()', href: '/onCreatePageContext' },
+    { name: 'guard()', href: '/guard', dataHooks: ['client'] },
+    { name: 'data()', href: '/data', dataHooks: ['client'] },
+    { name: 'onData()', href: '/onData', dataHooks: ['client'] },
+    { name: 'onBeforeRender()', href: '/onBeforeRender', dataHooks: ['client'] },
+  ].map(hook => ({ ...hook, env: 'client' as const })),
+
+  // Server-side hooks (for data fetching)
+  ...[
+    { name: 'onBeforeRoute()', href: '/onBeforeRoute', dataHooks: ['default', 'shared'] },
+    { name: 'Routing', href: '/routing', description: 'The routing is executed twice: once for the client and once for the server.', dataHooks: ['default', 'shared'] },
+    { name: 'onCreatePageContext()', href: '/onCreatePageContext', dataHooks: ['default', 'shared'] },
+    { name: 'guard()', href: '/guard', dataHooks: ['default', 'shared'] },
+    { name: 'data()', href: '/data', dataHooks: ['default', 'shared'] },
+    { name: 'onBeforeRender()', href: '/onBeforeRender', dataHooks: ['default', 'shared'] },
+  ].map(hook => ({ ...hook, env: 'server' as const })),
+
+  // Client-side hooks (second part)
+  ...[
+    { name: 'onData()', href: '/onData', dataHooks: ['default', 'shared'] },
+    { name: 'onRenderClient()', href: '/onRenderClient' },
+    { name: 'onCreateApp()', href: '/onCreateApp', providedBy: ['vike-vue'] },
+    { name: 'onBeforeRenderClient()', href: '/onBeforeRenderClient', providedBy: ['vike-react', 'vike-vue'] },
+    { name: 'onAfterRenderClient()', href: '/onAfterRenderClient', providedBy: ['vike-react', 'vike-vue', 'vike-solid'] },
+    { name: 'onPageTransitionEnd()', href: '/onPageTransitionEnd' },
+  ].map(hook => ({ ...hook, env: 'client' as const })),
 ]
 
 function HooksLifecycle() {
