@@ -14,7 +14,7 @@ interface HookInfo {
 }
 
 const routing = {
-  name: 'Routing (executes all your Route Functions)',
+  name: 'Routing',
   href: '/routing',
 }
 
