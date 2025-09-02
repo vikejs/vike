@@ -201,13 +201,13 @@ function HooksLifecycle() {
           <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>Data Environment:</label>
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
             {[
-              { key: 'default', label: 'Default (server)' },
-              { key: 'client', label: 'Client-only' },
-              { key: 'shared', label: 'Shared (server + client)' },
+              { key: 'default' as const, label: 'Default (server)' },
+              { key: 'client' as const, label: 'Client-only' },
+              { key: 'shared' as const, label: 'Shared (server + client)' },
             ].map(({ key, label }) => (
               <button
                 key={key}
-                onClick={() => setDataEnv(key as any)}
+                onClick={() => setDataEnv(key)}
                 style={{
                   padding: '0.25rem 0.75rem',
                   border: '1px solid #ccc',
@@ -248,11 +248,11 @@ function shouldShowHook(
 ) {
   // If hook has dataHooks specified, it must include the current dataHooks
   // If no dataHooks specified, always show (hooks like onRenderClient, onPageTransitionStart, etc.)
-  if (hook.dataHooks && !(hook.dataHooks as any).includes(dataHooks)) return false
+  if (hook.dataHooks && !(hook.dataHooks).includes(dataHooks)) return false
 
   // Framework filter
   if (hook.providedBy && !selectedFramework) return false
-  if (hook.providedBy && selectedFramework && !(hook.providedBy as any).includes(selectedFramework)) return false
+  if (hook.providedBy && selectedFramework && !(hook.providedBy).includes(selectedFramework)) return false
 
   return true
 }
