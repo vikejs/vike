@@ -3,7 +3,7 @@ export { HooksLifecycle }
 import React, { useState, useEffect } from 'react'
 import { Link } from '@brillout/docpress'
 import { TextEnv } from './TextEnv'
-import { Box } from '../../components/ConfigSpec'
+import { Box } from '../../components'
 
 interface HookInfo {
   name: string
