@@ -105,6 +105,7 @@ const clientNavigationHooks: HookInfo[] = [
   // Server-side hooks (for data fetching)
   ...(
     [
+      { ...renderPage, hooksEnv: ['server'] },
       { ...onBeforeRoute, hooksEnv: ['server'] },
       { ...routing, hooksEnv: ['server'] },
       { ...onCreatePageContext, hooksEnv: ['server'] },
