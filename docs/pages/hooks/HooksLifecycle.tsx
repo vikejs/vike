@@ -7,10 +7,10 @@ import { TextEnv } from './TextEnv'
 interface HookInfo {
   name: string
   href: string
-  env: 'server' | 'client'
+  env: 'server' | 'client' | 'server & client'
   description?: string
   providedBy?: ('vike-react' | 'vike-vue' | 'vike-solid')[]
-  dataHooks?: ('default' | 'client' | 'shared')[]
+  dataHooks?: ('server' | 'client' | 'shared')[]
 }
 
 const routing = {
@@ -62,10 +62,10 @@ const firstRenderHooks: HookInfo[] = [
       onBeforeRoute,
       routing,
       onCreatePageContext,
-      { ...guard, dataHooks: ['default', 'shared'] },
-      { ...data, dataHooks: ['default', 'shared'] },
-      { ...onData, dataHooks: ['default', 'shared'] },
-      { ...onBeforeRender, dataHooks: ['default', 'shared'] },
+      { ...guard, dataHooks: ['server', 'shared'] },
+      { ...data, dataHooks: ['server', 'shared'] },
+      { ...onData, dataHooks: ['server', 'shared'] },
+      { ...onBeforeRender, dataHooks: ['server', 'shared'] },
       onBeforeRenderHtml,
       onRenderHtml,
       onAfterRenderHtml,
@@ -107,19 +107,19 @@ const clientNavigationHooks: HookInfo[] = [
   // Server-side hooks (for data fetching)
   ...(
     [
-      { ...onBeforeRoute, dataHooks: ['default', 'shared'] },
-      { ...routing, dataHooks: ['default', 'shared'] },
-      { ...onCreatePageContext, dataHooks: ['default', 'shared'] },
-      { ...guard, dataHooks: ['default', 'shared'] },
-      { ...data, dataHooks: ['default', 'shared'] },
-      { ...onBeforeRender, dataHooks: ['default', 'shared'] },
+      { ...onBeforeRoute, dataHooks: ['server', 'shared'] },
+      { ...routing, dataHooks: ['server', 'shared'] },
+      { ...onCreatePageContext, dataHooks: ['server', 'shared'] },
+      { ...guard, dataHooks: ['server', 'shared'] },
+      { ...data, dataHooks: ['server', 'shared'] },
+      { ...onBeforeRender, dataHooks: ['server', 'shared'] },
     ] satisfies Omit<HookInfo, 'env'>[]
   ).map((hook) => ({ ...hook, env: 'server' }) satisfies HookInfo),
 
   // Client-side hooks (second part)
   ...(
     [
-      { ...onData, dataHooks: ['default', 'shared'] },
+      { ...onData, dataHooks: ['server', 'shared'] },
       onRenderClient,
       onCreateApp,
       onBeforeRenderClient,
@@ -131,7 +131,7 @@ const clientNavigationHooks: HookInfo[] = [
 
 function HooksLifecycle() {
   const [selectedFramework, setSelectedFramework] = useState<'vike-react' | 'vike-vue' | 'vike-solid' | null>(null)
-  const [dataHooks, setDataEnv] = useState<'default' | 'client' | 'shared'>('default')
+  const [dataHooks, setDataEnv] = useState<'server' | 'client' | 'shared'>('server')
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -140,7 +140,7 @@ function HooksLifecycle() {
       | 'vike-vue'
       | 'vike-solid'
       | null
-    const savedDataEnv = localStorage.getItem('vike-docs-data-env') as 'default' | 'client' | 'shared' | null
+    const savedDataEnv = localStorage.getItem('vike-docs-data-env') as 'server' | 'client' | 'shared' | null
 
     if (savedFramework) setSelectedFramework(savedFramework)
     if (savedDataEnv) setDataEnv(savedDataEnv)
@@ -251,7 +251,7 @@ function HooksLifecycle() {
           <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>Data Environment:</label>
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
             {[
-              { key: 'default' as const, label: 'Default (server)' },
+              { key: 'server' as const, label: 'Server-only' },
               { key: 'client' as const, label: 'Client-only' },
               { key: 'shared' as const, label: 'Shared (server + client)' },
             ].map(({ key, label }) => (
@@ -293,7 +293,7 @@ function HooksLifecycle() {
 
 function shouldShowHook(
   hook: HookInfo,
-  dataHooks: 'default' | 'client' | 'shared',
+  dataHooks: 'server' | 'client' | 'shared',
   selectedFramework: 'vike-react' | 'vike-vue' | 'vike-solid' | null,
 ) {
   // If hook has dataHooks specified, it must include the current dataHooks
