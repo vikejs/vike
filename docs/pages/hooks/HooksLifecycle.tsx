@@ -93,29 +93,29 @@ const clientNavigationHooks: HookInfo[] = [
       onBeforeRoute,
       routing,
       onCreatePageContext,
-      { ...guard, hooksEnv: ['client'] },
-      { ...data, hooksEnv: ['client'] },
-      { ...onData, hooksEnv: ['client'] },
-      { ...onBeforeRender, hooksEnv: ['client'] },
+      { ...guard, hooksEnv: ['client', 'shared'] },
+      { ...data, hooksEnv: ['client', 'shared'] },
+      { ...onData, hooksEnv: ['client', 'shared'] },
+      { ...onBeforeRender, hooksEnv: ['client', 'shared'] },
     ] satisfies Omit<HookInfo, 'env'>[]
   ).map((hook) => ({ ...hook, env: 'client' }) satisfies HookInfo),
 
   // Server-side hooks (for data fetching)
   ...(
     [
-      { ...onBeforeRoute, hooksEnv: ['server', 'shared'] },
-      { ...routing, hooksEnv: ['server', 'shared'] },
-      { ...onCreatePageContext, hooksEnv: ['server', 'shared'] },
-      { ...guard, hooksEnv: ['server', 'shared'] },
-      { ...data, hooksEnv: ['server', 'shared'] },
-      { ...onBeforeRender, hooksEnv: ['server', 'shared'] },
+      { ...onBeforeRoute, hooksEnv: ['server'] },
+      { ...routing, hooksEnv: ['server'] },
+      { ...onCreatePageContext, hooksEnv: ['server'] },
+      { ...guard, hooksEnv: ['server'] },
+      { ...data, hooksEnv: ['server'] },
+      { ...onBeforeRender, hooksEnv: ['server'] },
     ] satisfies Omit<HookInfo, 'env'>[]
   ).map((hook) => ({ ...hook, env: 'server' }) satisfies HookInfo),
 
   // Client-side hooks (second part)
   ...(
     [
-      { ...onData, hooksEnv: ['server', 'shared'] },
+      { ...onData, hooksEnv: ['server'] },
       onRenderClient,
       onCreateApp,
       onBeforeRenderClient,
