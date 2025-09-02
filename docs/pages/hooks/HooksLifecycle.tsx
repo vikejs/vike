@@ -166,10 +166,10 @@ function HooksLifecycle() {
       <div
         style={{
           marginBottom: '2rem',
-          border: '1px solid #e9ecef',
-          borderRadius: '8px',
+          border: '1px solid #dee2e6',
+          borderRadius: 8,
           padding: '1.5rem',
-          backgroundColor: '#fafbfc',
+          backgroundColor: '#efefef',
         }}
       >
         <h4 style={{ marginTop: 0, marginBottom: '1rem', color: '#2c3e50' }}>{title}</h4>
@@ -194,9 +194,9 @@ function HooksLifecycle() {
         style={{
           marginBottom: '2rem',
           padding: '1rem',
-          backgroundColor: '#f8f9fa',
-          borderRadius: '8px',
-          border: '1px solid #e9ecef',
+          backgroundColor: '#efefef',
+          borderRadius: 8,
+          border: '1px solid #dee2e6',
         }}
       >
         <h4 style={{ marginTop: 0, marginBottom: '1rem' }}>Configuration</h4>
