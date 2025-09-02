@@ -173,7 +173,10 @@ function HooksLifecycle() {
             const key = `${hook.name}-${hook.env}-${index}`
             return (
               <li key={key}>
-                <TextEnv2>{hook.env}</TextEnv2> <Link href={hook.href}><code>{hook.name}</code></Link>
+                <TextEnv2>{hook.env}</TextEnv2>{' '}
+                <Link href={hook.href}>
+                  <code>{hook.name}</code>
+                </Link>
               </li>
             )
           })}
