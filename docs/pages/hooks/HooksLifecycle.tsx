@@ -171,10 +171,9 @@ function HooksLifecycle() {
         <ol>
           {hooks.map((hook, index) => {
             const key = `${hook.name}-${hook.env}-${index}`
-
             return (
               <li key={key}>
-                <TextEnv2>{hook.env}</TextEnv2> <Link href={hook.href}>{hook.name}</Link>
+                <TextEnv2>{hook.env}</TextEnv2> <Link href={hook.href}><code>{hook.name}</code></Link>
               </li>
             )
           })}
@@ -254,7 +253,7 @@ function HooksLifecycle() {
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-          gap: '2rem',
+          gap: 10,
         }}
       >
         <div>
