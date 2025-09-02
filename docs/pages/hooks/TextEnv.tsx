@@ -21,55 +21,53 @@ interface HookInfo {
   isCore?: boolean
   dataEnv?: 'default' | 'client' | 'shared'
   order: number
-  phase: 'first-render' | 'client-navigation'
 }
 
-const coreHooks: HookInfo[] = [
-  // First render - server side
-  { name: 'renderPage()', href: '/renderPage', env: 'server', isCore: true, order: 1, phase: 'first-render' },
-  { name: 'onBeforeRoute()', href: '/onBeforeRoute', env: 'server', isCore: true, order: 2, phase: 'first-render' },
-  { name: 'Routing', href: '/routing', env: 'server', description: 'The routing executes your Route Functions (of all your pages).', isCore: true, order: 3, phase: 'first-render' },
-  { name: 'onCreatePageContext()', href: '/onCreatePageContext', env: 'server', isCore: true, order: 4, phase: 'first-render' },
-  { name: 'guard()', href: '/guard', env: 'server', isCore: true, order: 5, phase: 'first-render', dataEnv: 'default' },
-  { name: 'data()', href: '/data', env: 'server', isCore: true, order: 6, phase: 'first-render', dataEnv: 'default' },
-  { name: 'onData()', href: '/onData', env: 'server', isCore: true, order: 7, phase: 'first-render', dataEnv: 'default' },
-  { name: 'onBeforeRender()', href: '/onBeforeRender', env: 'server', isCore: true, order: 8, phase: 'first-render', dataEnv: 'default' },
-  { name: 'onRenderHtml()', href: '/onRenderHtml', env: 'server', isCore: true, order: 9, phase: 'first-render' },
+// First render hooks (server-side first, then client-side)
+const firstRenderHooks: HookInfo[] = [
+  // Server-side hooks
+  { name: 'renderPage()', href: '/renderPage', env: 'server', isCore: true, order: 1 },
+  { name: 'onBeforeRoute()', href: '/onBeforeRoute', env: 'server', isCore: true, order: 2 },
+  { name: 'Routing', href: '/routing', env: 'server', description: 'The routing executes your Route Functions (of all your pages).', isCore: true, order: 3 },
+  { name: 'onCreatePageContext()', href: '/onCreatePageContext', env: 'server', isCore: true, order: 4 },
+  { name: 'guard()', href: '/guard', env: 'server', isCore: true, order: 5, dataEnv: 'default' },
+  { name: 'data()', href: '/data', env: 'server', isCore: true, order: 6, dataEnv: 'default' },
+  { name: 'onData()', href: '/onData', env: 'server', isCore: true, order: 7, dataEnv: 'default' },
+  { name: 'onBeforeRender()', href: '/onBeforeRender', env: 'server', isCore: true, order: 8, dataEnv: 'default' },
+  { name: 'onBeforeRenderHtml()', href: '/onBeforeRenderHtml', env: 'server', providedBy: ['vike-react', 'vike-vue'], order: 8.5 },
+  { name: 'onRenderHtml()', href: '/onRenderHtml', env: 'server', isCore: true, order: 9 },
+  { name: 'onAfterRenderHtml()', href: '/onAfterRenderHtml', env: 'server', providedBy: ['vike-react', 'vike-vue'], order: 9.5 },
 
-  // First render - client side
-  { name: 'onCreatePageContext()', href: '/onCreatePageContext', env: 'client', isCore: true, order: 10, phase: 'first-render' },
-  { name: 'onRenderClient()', href: '/onRenderClient', env: 'client', isCore: true, order: 11, phase: 'first-render' },
-  { name: 'onHydrationEnd()', href: '/onHydrationEnd', env: 'client', isCore: true, order: 12, phase: 'first-render' },
-
-  // Client navigation
-  { name: 'onPageTransitionStart()', href: '/onPageTransitionStart', env: 'client', isCore: true, order: 1, phase: 'client-navigation' },
-  { name: 'onBeforeRoute()', href: '/onBeforeRoute', env: 'client', isCore: true, order: 2, phase: 'client-navigation' },
-  { name: 'Routing', href: '/routing', env: 'client', isCore: true, order: 3, phase: 'client-navigation' },
-  { name: 'onCreatePageContext()', href: '/onCreatePageContext', env: 'client', isCore: true, order: 4, phase: 'client-navigation' },
-  { name: 'onBeforeRoute()', href: '/onBeforeRoute', env: 'server', isCore: true, order: 5, phase: 'client-navigation' },
-  { name: 'Routing', href: '/routing', env: 'server', description: 'The routing is executed twice: once for the client and once for the server.', isCore: true, order: 6, phase: 'client-navigation' },
-  { name: 'onCreatePageContext()', href: '/onCreatePageContext', env: 'server', isCore: true, order: 7, phase: 'client-navigation' },
-  { name: 'guard()', href: '/guard', env: 'server', isCore: true, order: 8, phase: 'client-navigation', dataEnv: 'default' },
-  { name: 'data()', href: '/data', env: 'server', isCore: true, order: 9, phase: 'client-navigation', dataEnv: 'default' },
-  { name: 'onBeforeRender()', href: '/onBeforeRender', env: 'server', isCore: true, order: 10, phase: 'client-navigation', dataEnv: 'default' },
-  { name: 'onData()', href: '/onData', env: 'client', isCore: true, order: 11, phase: 'client-navigation', dataEnv: 'default' },
-  { name: 'onRenderClient()', href: '/onRenderClient', env: 'client', isCore: true, order: 12, phase: 'client-navigation' },
-  { name: 'onPageTransitionEnd()', href: '/onPageTransitionEnd', env: 'client', isCore: true, order: 13, phase: 'client-navigation' },
+  // Client-side hooks
+  { name: 'onCreatePageContext()', href: '/onCreatePageContext', env: 'client', isCore: true, order: 10 },
+  { name: 'onBeforeRenderClient()', href: '/onBeforeRenderClient', env: 'client', providedBy: ['vike-react', 'vike-vue'], order: 10.5 },
+  { name: 'onRenderClient()', href: '/onRenderClient', env: 'client', isCore: true, order: 11 },
+  { name: 'onAfterRenderClient()', href: '/onAfterRenderClient', env: 'client', providedBy: ['vike-react', 'vike-vue', 'vike-solid'], order: 11.5 },
+  { name: 'onHydrationEnd()', href: '/onHydrationEnd', env: 'client', isCore: true, order: 12 },
 ]
 
-const extensionHooks: HookInfo[] = [
-  // vike-react hooks
-  { name: 'onBeforeRenderHtml()', href: '/onBeforeRenderHtml', env: 'server', providedBy: ['vike-react', 'vike-vue'], order: 8.5, phase: 'first-render' },
-  { name: 'onAfterRenderHtml()', href: '/onAfterRenderHtml', env: 'server', providedBy: ['vike-react', 'vike-vue'], order: 9.5, phase: 'first-render' },
-  { name: 'onBeforeRenderClient()', href: '/onBeforeRenderClient', env: 'client', providedBy: ['vike-react', 'vike-vue'], order: 10.5, phase: 'first-render' },
-  { name: 'onAfterRenderClient()', href: '/onAfterRenderClient', env: 'client', providedBy: ['vike-react', 'vike-vue', 'vike-solid'], order: 11.5, phase: 'first-render' },
+// Client-side navigation hooks
+const clientNavigationHooks: HookInfo[] = [
+  { name: 'onPageTransitionStart()', href: '/onPageTransitionStart', env: 'client', isCore: true, order: 1 },
+  { name: 'onBeforeRoute()', href: '/onBeforeRoute', env: 'client', isCore: true, order: 2 },
+  { name: 'Routing', href: '/routing', env: 'client', isCore: true, order: 3 },
+  { name: 'onCreatePageContext()', href: '/onCreatePageContext', env: 'client', isCore: true, order: 4 },
+  { name: 'onBeforeRoute()', href: '/onBeforeRoute', env: 'server', isCore: true, order: 5 },
+  { name: 'Routing', href: '/routing', env: 'server', description: 'The routing is executed twice: once for the client and once for the server.', isCore: true, order: 6 },
+  { name: 'onCreatePageContext()', href: '/onCreatePageContext', env: 'server', isCore: true, order: 7 },
+  { name: 'guard()', href: '/guard', env: 'server', isCore: true, order: 8, dataEnv: 'default' },
+  { name: 'data()', href: '/data', env: 'server', isCore: true, order: 9, dataEnv: 'default' },
+  { name: 'onBeforeRender()', href: '/onBeforeRender', env: 'server', isCore: true, order: 10, dataEnv: 'default' },
+  { name: 'onData()', href: '/onData', env: 'client', isCore: true, order: 11, dataEnv: 'default' },
+  { name: 'onBeforeRenderClient()', href: '/onBeforeRenderClient', env: 'client', providedBy: ['vike-react', 'vike-vue'], order: 11.5 },
+  { name: 'onRenderClient()', href: '/onRenderClient', env: 'client', isCore: true, order: 12 },
+  { name: 'onAfterRenderClient()', href: '/onAfterRenderClient', env: 'client', providedBy: ['vike-react', 'vike-vue', 'vike-solid'], order: 12.5 },
+  { name: 'onPageTransitionEnd()', href: '/onPageTransitionEnd', env: 'client', isCore: true, order: 13 },
+]
 
-  // vike-vue specific
-  { name: 'onCreateApp()', href: '/onCreateApp', env: 'server & client', providedBy: ['vike-vue'], order: 0.5, phase: 'first-render' },
-
-  // Client navigation extension hooks
-  { name: 'onBeforeRenderClient()', href: '/onBeforeRenderClient', env: 'client', providedBy: ['vike-react', 'vike-vue'], order: 11.5, phase: 'client-navigation' },
-  { name: 'onAfterRenderClient()', href: '/onAfterRenderClient', env: 'client', providedBy: ['vike-react', 'vike-vue', 'vike-solid'], order: 12.5, phase: 'client-navigation' },
+// Special hooks that need to be added based on framework selection
+const frameworkSpecificHooks: HookInfo[] = [
+  { name: 'onCreateApp()', href: '/onCreateApp', env: 'server & client', providedBy: ['vike-vue'], order: 0.5 },
 ]
 
 function HooksLifecycle() {
@@ -99,28 +97,49 @@ function HooksLifecycle() {
   }, [dataEnv])
 
   const getFilteredHooks = (phase: 'first-render' | 'client-navigation') => {
-    let hooks = [...coreHooks.filter(h => h.phase === phase)]
+    // Start with the appropriate base hooks
+    let hooks = [...(phase === 'first-render' ? firstRenderHooks : clientNavigationHooks)]
 
-    // Add extension hooks if framework is selected
+    // Add framework-specific hooks if framework is selected
     if (selectedFramework) {
-      hooks.push(...extensionHooks.filter(h =>
-        h.phase === phase && h.providedBy?.includes(selectedFramework)
-      ))
+      // Add onCreateApp for vike-vue in first render
+      if (phase === 'first-render' && selectedFramework === 'vike-vue') {
+        hooks.push(...frameworkSpecificHooks.filter(h => h.providedBy?.includes(selectedFramework)))
+      }
     }
 
-    // Filter based on data environment
+    // Filter out extension hooks that aren't available for the selected framework
+    hooks = hooks.filter(hook => {
+      if (hook.isCore) return true
+      if (!selectedFramework) return false
+      return hook.providedBy?.includes(selectedFramework) || false
+    })
+
+    // Adjust hooks based on data environment
     if (dataEnv !== 'default') {
       hooks = hooks.map(hook => {
-        if (hook.dataEnv === 'default' && (hook.name === 'guard()' || hook.name === 'data()' || hook.name === 'onData()' || hook.name === 'onBeforeRender()')) {
+        if (hook.dataEnv === 'default' && ['guard()', 'data()', 'onData()', 'onBeforeRender()'].includes(hook.name)) {
           if (dataEnv === 'client') {
             // Move these hooks to client-side
-            if (hook.phase === 'first-render') {
-              return { ...hook, env: 'client' as const, order: hook.name === 'guard()' ? 10.1 : hook.name === 'data()' ? 10.2 : hook.name === 'onData()' ? 10.3 : 10.4 }
+            if (phase === 'first-render') {
+              return {
+                ...hook,
+                env: 'client' as const,
+                order: hook.name === 'guard()' ? 10.1 :
+                       hook.name === 'data()' ? 10.2 :
+                       hook.name === 'onData()' ? 10.3 : 10.4
+              }
             } else {
-              return { ...hook, env: 'client' as const, order: hook.name === 'guard()' ? 4.1 : hook.name === 'data()' ? 4.2 : hook.name === 'onData()' ? 4.3 : 4.4 }
+              return {
+                ...hook,
+                env: 'client' as const,
+                order: hook.name === 'guard()' ? 4.1 :
+                       hook.name === 'data()' ? 4.2 :
+                       hook.name === 'onData()' ? 4.3 : 4.4
+              }
             }
           }
-          // For shared, keep server-side but also add client-side versions for navigation
+          // For shared mode, keep the hooks as-is (they run on both sides)
         }
         return hook
       })
