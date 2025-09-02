@@ -7,7 +7,7 @@ import { TextEnv } from './TextEnv'
 interface HookInfo {
   name: string
   href: string
-  env: 'server' | 'client' | 'server & client'
+  env: 'server' | 'client'
   description?: string
   providedBy?: ('vike-react' | 'vike-vue' | 'vike-solid')[]
   dataHooks?: ('server' | 'client' | 'shared')[]
