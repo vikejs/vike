@@ -237,12 +237,16 @@ function HooksLifecycle() {
         </div>
 
         <div>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>Data Environment:</label>
+          <Link href="#environment">Hooks environment</Link>
+          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>
+            <Link href="/data#environment">Environment of `+data`</Link> and{' '}
+            <Link href="/onBeforeRender#environment">`+onBeforeRender`</Link>:
+          </label>
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
             {[
               { key: 'server' as const, label: 'Server-only' },
               { key: 'client' as const, label: 'Client-only' },
-              { key: 'shared' as const, label: 'Shared (server + client)' },
+              { key: 'shared' as const, label: 'Server & client' },
             ].map(({ key, label }) => (
               <button
                 key={key}
@@ -259,9 +263,6 @@ function HooksLifecycle() {
                 {label}
               </button>
             ))}
-          </div>
-          <div style={{ fontSize: '0.85em', color: '#666', marginTop: '0.5rem' }}>
-            See <Link href="/data#environment">data() environment configuration</Link> for details.
           </div>
         </div>
       </div>
