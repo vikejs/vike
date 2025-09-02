@@ -13,10 +13,6 @@ interface HookInfo {
   dataEnv?: ('default' | 'client' | 'shared')[]
 }
 
-function TextEnv2({ children }: { children: any }) {
-  return <TextEnv style={{ fontWeight: 600, color: getEnvColor(children) }}>{children}</TextEnv>
-}
-
 const firstRenderHooks: HookInfo[] = [
   // Server-side hooks
   { name: 'onCreateApp()', href: '/onCreateApp', env: 'server', providedBy: ['vike-vue'] },
@@ -281,4 +277,8 @@ function getEnvColor(text: string) {
   if (text.includes('server')) return '#d110ff'
   if (text.includes('client')) return '#3acd3a'
   return '#888'
+}
+
+function TextEnv2({ children }: { children: any }) {
+  return <TextEnv style={{ fontWeight: 600, color: getEnvColor(children) }}>{children}</TextEnv>
 }
