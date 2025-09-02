@@ -12,11 +12,7 @@ interface HookInfo {
   dataHooks?: ('server' | 'client' | 'shared')[]
 }
 
-const routing = {
-  name: 'Routing',
-  href: '/routing',
-}
-
+const routing = { name: 'Routing', href: '/routing' }
 const onCreateApp = { name: 'onCreateApp()', href: '/onCreateApp', providedBy: ['vike-vue'] as const }
 const onCreatePageContext = { name: 'onCreatePageContext()', href: '/onCreatePageContext' }
 const onBeforeRoute = { name: 'onBeforeRoute()', href: '/onBeforeRoute' }
