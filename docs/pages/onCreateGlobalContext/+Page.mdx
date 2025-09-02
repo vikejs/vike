@@ -26,8 +26,6 @@ You can define:
 - `+onCreateGlobalContext.client.js` => called when `globalContext` is created on the client.
 - `+onCreateGlobalContext.server.js` and `+onCreateGlobalContext.server.js` => two different `onCreateGlobalContext()` hooks for server and client.
 
-> See <Link href="/globalContext#lifecycle" /> for details when `onCreateGlobalContext()` called.
-
 > See also:
 > - <Link href="/file-env" />
 > - <Link href="/onCreatePageContext" />
@@ -148,6 +146,11 @@ On the server-side, the store is typically initialized by using a <Link href="/o
 See also:
  - <Link href="/onCreatePageContext#store" />
  - <Link href="/store#manual-integration" />
+
+
+## Lifecycle
+
+See <Link href="/globalContext#lifecycle" /> which explains when the `globalContext` object is created (the `onCreateGlobalContext()` hook is called immediately afterwards).
 
 
 ## See also
