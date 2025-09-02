@@ -1,3 +1,5 @@
+export { HooksLifecycle }
+
 import React, { useState, useEffect } from 'react'
 import { Link } from '@brillout/docpress'
 import { TextEnv } from './TextEnv'
@@ -97,7 +99,7 @@ const clientNavigationHooks: HookInfo[] = [
   { name: 'onPageTransitionEnd()', href: '/onPageTransitionEnd', env: 'client' },
 ]
 
-export default function HooksLifecycle() {
+function HooksLifecycle() {
   const [selectedFramework, setSelectedFramework] = useState<'vike-react' | 'vike-vue' | 'vike-solid' | null>(null)
   const [dataEnv, setDataEnv] = useState<'default' | 'client' | 'shared'>('default')
 
