@@ -16,7 +16,6 @@ interface HookInfo {
   name: string
   href: string
   env: 'server' | 'client' | 'server & client'
-  description?: string
   providedBy?: ('vike-react' | 'vike-vue' | 'vike-solid')[]
   isCore?: boolean
   dataEnv?: 'default' | 'client' | 'shared'
@@ -25,6 +24,8 @@ interface HookInfo {
 // First render hooks (server-side first, then client-side)
 const firstRenderHooks: HookInfo[] = [
   // Server-side hooks
+  { name: 'onCreateApp() (+Page.vue)', href: '/onCreateApp', env: 'server', providedBy: ['vike-vue'] },
+  { name: 'onCreateApp() (+Head.vue)', href: '/onCreateApp', env: 'server', providedBy: ['vike-vue'] },
   { name: 'renderPage()', href: '/renderPage', env: 'server', isCore: true },
   { name: 'onBeforeRoute()', href: '/onBeforeRoute', env: 'server', isCore: true },
   { name: 'Routing', href: '/routing', env: 'server', description: 'The routing executes your Route Functions (of all your pages).', isCore: true },
@@ -39,6 +40,7 @@ const firstRenderHooks: HookInfo[] = [
 
   // Client-side hooks
   { name: 'onCreatePageContext()', href: '/onCreatePageContext', env: 'client', isCore: true },
+  { name: 'onCreateApp() (hydration)', href: '/onCreateApp', env: 'client', providedBy: ['vike-vue'] },
   { name: 'onBeforeRenderClient()', href: '/onBeforeRenderClient', env: 'client', providedBy: ['vike-react', 'vike-vue'] },
   { name: 'onRenderClient()', href: '/onRenderClient', env: 'client', isCore: true },
   { name: 'onAfterRenderClient()', href: '/onAfterRenderClient', env: 'client', providedBy: ['vike-react', 'vike-vue', 'vike-solid'] },
@@ -51,6 +53,7 @@ const clientNavigationHooks: HookInfo[] = [
   { name: 'onBeforeRoute()', href: '/onBeforeRoute', env: 'client', isCore: true },
   { name: 'Routing', href: '/routing', env: 'client', isCore: true },
   { name: 'onCreatePageContext()', href: '/onCreatePageContext', env: 'client', isCore: true },
+  { name: 'onCreateApp() (navigation)', href: '/onCreateApp', env: 'client', providedBy: ['vike-vue'] },
   { name: 'onBeforeRoute()', href: '/onBeforeRoute', env: 'server', isCore: true },
   { name: 'Routing', href: '/routing', env: 'server', description: 'The routing is executed twice: once for the client and once for the server.', isCore: true },
   { name: 'onCreatePageContext()', href: '/onCreatePageContext', env: 'server', isCore: true },
@@ -64,10 +67,7 @@ const clientNavigationHooks: HookInfo[] = [
   { name: 'onPageTransitionEnd()', href: '/onPageTransitionEnd', env: 'client', isCore: true },
 ]
 
-// Special hooks that need to be added based on framework selection
-const frameworkSpecificHooks: HookInfo[] = [
-  { name: 'onCreateApp()', href: '/onCreateApp', env: 'server & client', providedBy: ['vike-vue'] },
-]
+
 
 function HooksLifecycle() {
   const [selectedFramework, setSelectedFramework] = useState<'vike-react' | 'vike-vue' | 'vike-solid' | null>(null)
@@ -98,15 +98,6 @@ function HooksLifecycle() {
   const getFilteredHooks = (phase: 'first-render' | 'client-navigation') => {
     // Start with the appropriate base hooks
     let hooks = [...(phase === 'first-render' ? firstRenderHooks : clientNavigationHooks)]
-
-    // Add framework-specific hooks if framework is selected
-    if (selectedFramework) {
-      // Add onCreateApp for vike-vue at the beginning of first render
-      if (phase === 'first-render' && selectedFramework === 'vike-vue') {
-        const vueSpecificHooks = frameworkSpecificHooks.filter(h => h.providedBy?.includes(selectedFramework))
-        hooks = [...vueSpecificHooks, ...hooks]
-      }
-    }
 
     // Filter out extension hooks that aren't available for the selected framework
     hooks = hooks.filter(hook => {
