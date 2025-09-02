@@ -12,9 +12,10 @@ interface HookInfo {
   providedBy?: ('vike-react' | 'vike-vue' | 'vike-solid')[]
   hooksEnv?: ('server' | 'client' | 'shared')[]
   hideWhenFrameworkSelected?: boolean
+  notAHook?: boolean
 }
 
-const routing = { name: 'Routing', href: '/routing' }
+const routing = { name: 'Routing', href: '/routing', notAHook: true }
 const onCreateApp = { name: 'onCreateApp()', href: '/onCreateApp', providedBy: ['vike-vue'] as const }
 const onCreatePageContext = { name: 'onCreatePageContext()', href: '/onCreatePageContext' }
 const onBeforeRoute = { name: 'onBeforeRoute()', href: '/onBeforeRoute' }
@@ -175,9 +176,7 @@ function HooksLifecycle() {
             return (
               <li key={key}>
                 <TextEnv2>{hook.env}</TextEnv2>{' '}
-                <Link href={hook.href}>
-                  <code>{hook.name}</code>
-                </Link>
+                <Link href={hook.href}>{hook.notAHook ? hook.name : <code>{hook.name}</code>}</Link>
               </li>
             )
           })}
