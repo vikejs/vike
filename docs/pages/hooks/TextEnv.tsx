@@ -16,6 +16,7 @@ interface HookInfo {
   name: string
   href: string
   env: 'server' | 'client' | 'server & client'
+  description?: string
   providedBy?: ('vike-react' | 'vike-vue' | 'vike-solid')[]
   isCore?: boolean
   dataEnv?: 'default' | 'client' | 'shared'
@@ -24,8 +25,7 @@ interface HookInfo {
 // First render hooks (server-side first, then client-side)
 const firstRenderHooks: HookInfo[] = [
   // Server-side hooks
-  { name: 'onCreateApp() (+Page.vue)', href: '/onCreateApp', env: 'server', providedBy: ['vike-vue'] },
-  { name: 'onCreateApp() (+Head.vue)', href: '/onCreateApp', env: 'server', providedBy: ['vike-vue'] },
+  { name: 'onCreateApp()', href: '/onCreateApp', env: 'server', providedBy: ['vike-vue'] },
   { name: 'renderPage()', href: '/renderPage', env: 'server', isCore: true },
   { name: 'onBeforeRoute()', href: '/onBeforeRoute', env: 'server', isCore: true },
   { name: 'Routing', href: '/routing', env: 'server', description: 'The routing executes your Route Functions (of all your pages).', isCore: true },
@@ -40,7 +40,7 @@ const firstRenderHooks: HookInfo[] = [
 
   // Client-side hooks
   { name: 'onCreatePageContext()', href: '/onCreatePageContext', env: 'client', isCore: true },
-  { name: 'onCreateApp() (hydration)', href: '/onCreateApp', env: 'client', providedBy: ['vike-vue'] },
+  { name: 'onCreateApp()', href: '/onCreateApp', env: 'client', providedBy: ['vike-vue'] },
   { name: 'onBeforeRenderClient()', href: '/onBeforeRenderClient', env: 'client', providedBy: ['vike-react', 'vike-vue'] },
   { name: 'onRenderClient()', href: '/onRenderClient', env: 'client', isCore: true },
   { name: 'onAfterRenderClient()', href: '/onAfterRenderClient', env: 'client', providedBy: ['vike-react', 'vike-vue', 'vike-solid'] },
@@ -53,7 +53,7 @@ const clientNavigationHooks: HookInfo[] = [
   { name: 'onBeforeRoute()', href: '/onBeforeRoute', env: 'client', isCore: true },
   { name: 'Routing', href: '/routing', env: 'client', isCore: true },
   { name: 'onCreatePageContext()', href: '/onCreatePageContext', env: 'client', isCore: true },
-  { name: 'onCreateApp() (navigation)', href: '/onCreateApp', env: 'client', providedBy: ['vike-vue'] },
+  { name: 'onCreateApp()', href: '/onCreateApp', env: 'client', providedBy: ['vike-vue'] },
   { name: 'onBeforeRoute()', href: '/onBeforeRoute', env: 'server', isCore: true },
   { name: 'Routing', href: '/routing', env: 'server', description: 'The routing is executed twice: once for the client and once for the server.', isCore: true },
   { name: 'onCreatePageContext()', href: '/onCreatePageContext', env: 'server', isCore: true },
