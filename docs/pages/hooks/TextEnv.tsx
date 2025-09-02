@@ -30,8 +30,7 @@ interface HookInfo {
 
 // First render hooks (server-side first, then client-side)
 const firstRenderHooks: HookInfo[] = [
-  // Server-side hooks
-  { name: 'onCreateApp()', href: '/onCreateApp', env: 'server', providedBy: ['vike-vue'] },
+  // Server-side hooks (matching documented order)
   { name: 'renderPage()', href: '/renderPage', env: 'server' },
   { name: 'onBeforeRoute()', href: '/onBeforeRoute', env: 'server' },
   { name: 'Routing', href: '/routing', env: 'server', description: 'The routing executes your Route Functions (of all your pages).' },
@@ -40,16 +39,11 @@ const firstRenderHooks: HookInfo[] = [
   { name: 'data()', href: '/data', env: 'server', dataEnv: 'default' },
   { name: 'onData()', href: '/onData', env: 'server', dataEnv: 'default' },
   { name: 'onBeforeRender()', href: '/onBeforeRender', env: 'server', dataEnv: 'default' },
-  { name: 'onBeforeRenderHtml()', href: '/onBeforeRenderHtml', env: 'server', providedBy: ['vike-react', 'vike-vue'] },
   { name: 'onRenderHtml()', href: '/onRenderHtml', env: 'server' },
-  { name: 'onAfterRenderHtml()', href: '/onAfterRenderHtml', env: 'server', providedBy: ['vike-react', 'vike-vue'] },
 
-  // Client-side hooks
+  // Client-side hooks (matching documented order)
   { name: 'onCreatePageContext()', href: '/onCreatePageContext', env: 'client' },
-  { name: 'onCreateApp()', href: '/onCreateApp', env: 'client', providedBy: ['vike-vue'] },
-  { name: 'onBeforeRenderClient()', href: '/onBeforeRenderClient', env: 'client', providedBy: ['vike-react', 'vike-vue'] },
   { name: 'onRenderClient()', href: '/onRenderClient', env: 'client' },
-  { name: 'onAfterRenderClient()', href: '/onAfterRenderClient', env: 'client', providedBy: ['vike-react', 'vike-vue', 'vike-solid'] },
   { name: 'onHydrationEnd()', href: '/onHydrationEnd', env: 'client' },
 ]
 
@@ -59,7 +53,7 @@ const clientNavigationHooks: HookInfo[] = [
   { name: 'onBeforeRoute()', href: '/onBeforeRoute', env: 'client' },
   { name: 'Routing', href: '/routing', env: 'client' },
   { name: 'onCreatePageContext()', href: '/onCreatePageContext', env: 'client' },
-  { name: 'onCreateApp()', href: '/onCreateApp', env: 'client', providedBy: ['vike-vue'] },
+
   { name: 'onBeforeRoute()', href: '/onBeforeRoute', env: 'server' },
   { name: 'Routing', href: '/routing', env: 'server', description: 'The routing is executed twice: once for the client and once for the server.' },
   { name: 'onCreatePageContext()', href: '/onCreatePageContext', env: 'server' },
@@ -67,13 +61,22 @@ const clientNavigationHooks: HookInfo[] = [
   { name: 'data()', href: '/data', env: 'server', dataEnv: 'default' },
   { name: 'onBeforeRender()', href: '/onBeforeRender', env: 'server', dataEnv: 'default' },
   { name: 'onData()', href: '/onData', env: 'client', dataEnv: 'default' },
-  { name: 'onBeforeRenderClient()', href: '/onBeforeRenderClient', env: 'client', providedBy: ['vike-react', 'vike-vue'] },
   { name: 'onRenderClient()', href: '/onRenderClient', env: 'client' },
-  { name: 'onAfterRenderClient()', href: '/onAfterRenderClient', env: 'client', providedBy: ['vike-react', 'vike-vue', 'vike-solid'] },
   { name: 'onPageTransitionEnd()', href: '/onPageTransitionEnd', env: 'client' },
 ]
 
+// Extension hooks to add when frameworks are selected
+const extensionHooksFirstRender: HookInfo[] = [
+  { name: 'onBeforeRenderHtml()', href: '/onBeforeRenderHtml', env: 'server', providedBy: ['vike-react', 'vike-vue'] },
+  { name: 'onAfterRenderHtml()', href: '/onAfterRenderHtml', env: 'server', providedBy: ['vike-react', 'vike-vue'] },
+  { name: 'onBeforeRenderClient()', href: '/onBeforeRenderClient', env: 'client', providedBy: ['vike-react', 'vike-vue'] },
+  { name: 'onAfterRenderClient()', href: '/onAfterRenderClient', env: 'client', providedBy: ['vike-react', 'vike-vue', 'vike-solid'] },
+]
 
+const extensionHooksClientNavigation: HookInfo[] = [
+  { name: 'onBeforeRenderClient()', href: '/onBeforeRenderClient', env: 'client', providedBy: ['vike-react', 'vike-vue'] },
+  { name: 'onAfterRenderClient()', href: '/onAfterRenderClient', env: 'client', providedBy: ['vike-react', 'vike-vue', 'vike-solid'] },
+]
 
 function HooksLifecycle() {
   const [selectedFramework, setSelectedFramework] = useState<'vike-react' | 'vike-vue' | 'vike-solid' | null>(null)
@@ -105,14 +108,31 @@ function HooksLifecycle() {
     // Start with the appropriate base hooks
     let hooks = [...(phase === 'first-render' ? firstRenderHooks : clientNavigationHooks)]
 
-    // Filter out extension hooks that aren't available for the selected framework
-    hooks = hooks.filter(hook => {
-      // Core hooks (no providedBy) are always shown
-      if (!hook.providedBy) return true
-      // Extension hooks are only shown if the framework is selected
-      if (!selectedFramework) return false
-      return hook.providedBy.includes(selectedFramework)
-    })
+    // Add extension hooks if framework is selected
+    if (selectedFramework) {
+      const extensionHooks = phase === 'first-render' ? extensionHooksFirstRender : extensionHooksClientNavigation
+      const availableExtensionHooks = extensionHooks.filter(hook =>
+        hook.providedBy?.includes(selectedFramework)
+      )
+
+      // Insert extension hooks in the right positions
+      availableExtensionHooks.forEach(extHook => {
+        if (extHook.name === 'onBeforeRenderHtml()') {
+          const index = hooks.findIndex(h => h.name === 'onRenderHtml()')
+          if (index !== -1) hooks.splice(index, 0, extHook)
+        } else if (extHook.name === 'onAfterRenderHtml()') {
+          const index = hooks.findIndex(h => h.name === 'onRenderHtml()')
+          if (index !== -1) hooks.splice(index + 1, 0, extHook)
+        } else if (extHook.name === 'onBeforeRenderClient()') {
+          const index = hooks.findIndex(h => h.name === 'onRenderClient()')
+          if (index !== -1) hooks.splice(index, 0, extHook)
+        } else if (extHook.name === 'onAfterRenderClient()') {
+          const index = hooks.findIndex(h => h.name === 'onRenderClient()')
+          if (index !== -1) hooks.splice(index + 1, 0, extHook)
+        }
+      })
+    }
+
 
     // Adjust hooks based on data environment
     if (dataEnv !== 'default') {
