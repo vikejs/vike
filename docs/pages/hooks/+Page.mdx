@@ -62,10 +62,9 @@ The order in which hooks are called upon rendering a page. (Aka the hook flow.)
 > **Data hook environment**
 >
 > Select the following:
-> - `Server-only (default)` — if you use `+data.js` (or `+onBeforeRender.js`) which, by default, runs only on the server-side.
-if <Link href="/data#environment">environment of `+data`</Link> nor the <Link href="/onBeforeRender#environment">environment of `+onBeforeRender`</Link>.
-> - `Client-only` — if you use <Link href="/data#environment">`+data.client.js`</Link> (or <Link href="/onBeforeRender#environment">`+onBeforeRender.client.js`</Link>) (runs only on the client-side)
-> - `Server & client` — if you use `+data.shared.js` (or `+onBeforeRender.shared.js`) (runs only on the client-side)
+> - `Server-only (default)` if you use `+data.js` or `+onBeforeRender.js` which, by default, run only on the server-side.
+> - `Client-only` if you use <Link href="/data#environment">`+data.client.js`</Link> or <Link href="/onBeforeRender#environment">`+onBeforeRender.client.js`</Link> (which run only on the client-side).
+> - `Server & client` if you use `+data.shared.js` or `+onBeforeRender.shared.js` (which run on both the server- and client-side).
 
 > <Link href="/routing">Routing</Link> executes the <Link href="/route-function">Route Function</Link> of all your pages.
 
