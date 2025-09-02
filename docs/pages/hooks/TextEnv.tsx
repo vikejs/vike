@@ -157,7 +157,6 @@ function HooksLifecycle() {
             return (
               <li key={key} style={{
                 opacity: isGrayed ? 0.4 : 1,
-                marginBottom: '0.5rem'
               }}>
                 <TextEnv2>{hook.env}</TextEnv2>{' '}
                 <Link href={hook.href}>{hook.name}</Link>
