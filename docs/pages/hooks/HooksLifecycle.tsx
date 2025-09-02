@@ -18,19 +18,29 @@ const routing = {
   href: '/routing',
 }
 
+const onCreateApp = { name: 'onCreateApp()', href: '/onCreateApp', providedBy: ['vike-vue'] }
+const onCreatePageContext = { name: 'onCreatePageContext()', href: '/onCreatePageContext' }
+const onBeforeRoute = { name: 'onBeforeRoute()', href: '/onBeforeRoute' }
+const guard = { name: 'guard()', href: '/guard' }
+const data = { name: 'data()', href: '/data' }
+const onData = { name: 'onData()', href: '/onData' }
+const onBeforeRender = { name: 'onBeforeRender()', href: '/onBeforeRender' }
+const onBeforeRenderClient = { name: 'onBeforeRenderClient()', href: '/onBeforeRenderClient', providedBy: ['vike-react', 'vike-vue'] }
+const onAfterRenderClient = { name: 'onAfterRenderClient()', href: '/onAfterRenderClient', providedBy: ['vike-react', 'vike-vue', 'vike-solid'] }
+
 const firstRenderHooks: HookInfo[] = [
   // Server-side hooks
   ...(
     [
-      { name: 'onCreateApp()', href: '/onCreateApp', providedBy: ['vike-vue'] },
+      onCreateApp,
       { name: 'renderPage()', href: '/renderPage' },
-      { name: 'onBeforeRoute()', href: '/onBeforeRoute' },
+      onBeforeRoute,
       routing,
-      { name: 'onCreatePageContext()', href: '/onCreatePageContext' },
-      { name: 'guard()', href: '/guard', dataHooks: ['default', 'shared'] },
-      { name: 'data()', href: '/data', dataHooks: ['default', 'shared'] },
-      { name: 'onData()', href: '/onData', dataHooks: ['default', 'shared'] },
-      { name: 'onBeforeRender()', href: '/onBeforeRender', dataHooks: ['default', 'shared'] },
+      onCreatePageContext,
+      { ...guard, dataHooks: ['default', 'shared'] },
+      { ...data, dataHooks: ['default', 'shared'] },
+      { ...onData, dataHooks: ['default', 'shared'] },
+      { ...onBeforeRender, dataHooks: ['default', 'shared'] },
       { name: 'onBeforeRenderHtml()', href: '/onBeforeRenderHtml', providedBy: ['vike-react', 'vike-vue'] },
       { name: 'onRenderHtml()', href: '/onRenderHtml' },
       { name: 'onAfterRenderHtml()', href: '/onAfterRenderHtml', providedBy: ['vike-react', 'vike-vue'] },
@@ -40,19 +50,15 @@ const firstRenderHooks: HookInfo[] = [
   // Client-side hooks
   ...(
     [
-      { name: 'onCreatePageContext()', href: '/onCreatePageContext' },
-      { name: 'guard()', href: '/guard', dataHooks: ['client'] },
-      { name: 'data()', href: '/data', dataHooks: ['client'] },
-      { name: 'onData()', href: '/onData', dataHooks: ['client'] },
-      { name: 'onBeforeRender()', href: '/onBeforeRender', dataHooks: ['client'] },
-      { name: 'onCreateApp()', href: '/onCreateApp', providedBy: ['vike-vue'] },
-      { name: 'onBeforeRenderClient()', href: '/onBeforeRenderClient', providedBy: ['vike-react', 'vike-vue'] },
+      onCreatePageContext,
+      { ...guard, dataHooks: ['client'] },
+      { ...data, dataHooks: ['client'] },
+      { ...onData, dataHooks: ['client'] },
+      { ...onBeforeRender, dataHooks: ['client'] },
+      onCreateApp,
+      onBeforeRenderClient,
       { name: 'onRenderClient()', href: '/onRenderClient' },
-      {
-        name: 'onAfterRenderClient()',
-        href: '/onAfterRenderClient',
-        providedBy: ['vike-react', 'vike-vue', 'vike-solid'],
-      },
+      onAfterRenderClient,
       { name: 'onHydrationEnd()', href: '/onHydrationEnd' },
     ] satisfies Omit<HookInfo, 'env'>[]
   ).map((hook) => ({ ...hook, env: 'client' }) satisfies HookInfo),
@@ -63,40 +69,36 @@ const clientNavigationHooks: HookInfo[] = [
   ...(
     [
       { name: 'onPageTransitionStart()', href: '/onPageTransitionStart' },
-      { name: 'onBeforeRoute()', href: '/onBeforeRoute' },
+      onBeforeRoute,
       routing,
-      { name: 'onCreatePageContext()', href: '/onCreatePageContext' },
-      { name: 'guard()', href: '/guard', dataHooks: ['client'] },
-      { name: 'data()', href: '/data', dataHooks: ['client'] },
-      { name: 'onData()', href: '/onData', dataHooks: ['client'] },
-      { name: 'onBeforeRender()', href: '/onBeforeRender', dataHooks: ['client'] },
+      onCreatePageContext,
+      { ...guard, dataHooks: ['client'] },
+      { ...data, dataHooks: ['client'] },
+      { ...onData, dataHooks: ['client'] },
+      { ...onBeforeRender, dataHooks: ['client'] },
     ] satisfies Omit<HookInfo, 'env'>[]
   ).map((hook) => ({ ...hook, env: 'client' }) satisfies HookInfo),
 
   // Server-side hooks (for data fetching)
   ...(
     [
-      { name: 'onBeforeRoute()', href: '/onBeforeRoute', dataHooks: ['default', 'shared'] },
+      { ...onBeforeRoute, dataHooks: ['default', 'shared'] },
       { ...routing, dataHooks: ['default', 'shared'] },
-      { name: 'onCreatePageContext()', href: '/onCreatePageContext', dataHooks: ['default', 'shared'] },
-      { name: 'guard()', href: '/guard', dataHooks: ['default', 'shared'] },
-      { name: 'data()', href: '/data', dataHooks: ['default', 'shared'] },
-      { name: 'onBeforeRender()', href: '/onBeforeRender', dataHooks: ['default', 'shared'] },
+      { ...onCreatePageContext, dataHooks: ['default', 'shared'] },
+      { ...guard, dataHooks: ['default', 'shared'] },
+      { ...data, dataHooks: ['default', 'shared'] },
+      { ...onBeforeRender, dataHooks: ['default', 'shared'] },
     ] satisfies Omit<HookInfo, 'env'>[]
   ).map((hook) => ({ ...hook, env: 'server' }) satisfies HookInfo),
 
   // Client-side hooks (second part)
   ...(
     [
-      { name: 'onData()', href: '/onData', dataHooks: ['default', 'shared'] },
+      { ...onData, dataHooks: ['default', 'shared'] },
       { name: 'onRenderClient()', href: '/onRenderClient' },
-      { name: 'onCreateApp()', href: '/onCreateApp', providedBy: ['vike-vue'] },
-      { name: 'onBeforeRenderClient()', href: '/onBeforeRenderClient', providedBy: ['vike-react', 'vike-vue'] },
-      {
-        name: 'onAfterRenderClient()',
-        href: '/onAfterRenderClient',
-        providedBy: ['vike-react', 'vike-vue', 'vike-solid'],
-      },
+      onCreateApp,
+      onBeforeRenderClient,
+      onAfterRenderClient,
       { name: 'onPageTransitionEnd()', href: '/onPageTransitionEnd' },
     ] satisfies Omit<HookInfo, 'env'>[]
   ).map((hook) => ({ ...hook, env: 'client' }) satisfies HookInfo),
