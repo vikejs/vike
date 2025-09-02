@@ -11,6 +11,7 @@ interface HookInfo {
   env: 'server' | 'client'
   providedBy?: ('vike-react' | 'vike-vue' | 'vike-solid')[]
   hooksEnv?: ('server' | 'client' | 'shared')[]
+  hideWhenFrameworkSelected?: boolean
 }
 
 const routing = { name: 'Routing', href: '/routing' }
@@ -38,13 +39,13 @@ const onBeforeRenderHtml = {
   href: '/onBeforeRenderHtml',
   providedBy: ['vike-react', 'vike-vue'] as const,
 }
-const onRenderHtml = { name: 'onRenderHtml()', href: '/onRenderHtml' }
+const onRenderHtml = { name: 'onRenderHtml()', href: '/onRenderHtml', hideWhenFrameworkSelected: true }
 const onAfterRenderHtml = {
   name: 'onAfterRenderHtml()',
   href: '/onAfterRenderHtml',
   providedBy: ['vike-react', 'vike-vue'] as const,
 }
-const onRenderClient = { name: 'onRenderClient()', href: '/onRenderClient' }
+const onRenderClient = { name: 'onRenderClient()', href: '/onRenderClient', hideWhenFrameworkSelected: true }
 const onHydrationEnd = { name: 'onHydrationEnd()', href: '/onHydrationEnd' }
 const onPageTransitionStart = { name: 'onPageTransitionStart()', href: '/onPageTransitionStart' }
 const onPageTransitionEnd = { name: 'onPageTransitionEnd()', href: '/onPageTransitionEnd' }
@@ -307,8 +308,8 @@ function shouldShowHook(
   // If no hooksEnv specified, always show (hooks like onRenderClient, onPageTransitionStart, etc.)
   if (hook.hooksEnv && !hook.hooksEnv.includes(hooksEnv)) return false
 
-  // Special case: onRenderClient() and onRenderHtml() should only show when no vike framework is selected
-  if ((hook.name === 'onRenderClient()' || hook.name === 'onRenderHtml()') && selectedFramework !== null) {
+  // Hide hooks that should only show when no framework is selected
+  if (hook.hideWhenFrameworkSelected && selectedFramework !== null) {
     return false
   }
 
