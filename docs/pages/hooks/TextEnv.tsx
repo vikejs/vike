@@ -59,7 +59,6 @@ const clientNavigationHooks: HookInfo[] = [
   { name: 'onBeforeRoute()', href: '/onBeforeRoute', env: 'client' },
   { name: 'Routing', href: '/routing', env: 'client' },
   { name: 'onCreatePageContext()', href: '/onCreatePageContext', env: 'client' },
-  { name: 'onCreateApp()', href: '/onCreateApp', env: 'client', providedBy: ['vike-vue'] },
   { name: 'onBeforeRoute()', href: '/onBeforeRoute', env: 'server' },
   { name: 'Routing', href: '/routing', env: 'server', description: 'The routing is executed twice: once for the client and once for the server.' },
   { name: 'onCreatePageContext()', href: '/onCreatePageContext', env: 'server' },
@@ -67,10 +66,13 @@ const clientNavigationHooks: HookInfo[] = [
   { name: 'data()', href: '/data', env: 'server', dataEnv: 'default' },
   { name: 'onBeforeRender()', href: '/onBeforeRender', env: 'server', dataEnv: 'default' },
   { name: 'onData()', href: '/onData', env: 'client', dataEnv: 'default' },
-  { name: 'onBeforeRenderClient()', href: '/onBeforeRenderClient', env: 'client', providedBy: ['vike-react', 'vike-vue'] },
   { name: 'onRenderClient()', href: '/onRenderClient', env: 'client' },
-  { name: 'onAfterRenderClient()', href: '/onAfterRenderClient', env: 'client', providedBy: ['vike-react', 'vike-vue', 'vike-solid'] },
   { name: 'onPageTransitionEnd()', href: '/onPageTransitionEnd', env: 'client' },
+
+  // Extension hooks (added when framework is selected)
+  { name: 'onCreateApp()', href: '/onCreateApp', env: 'client', providedBy: ['vike-vue'] },
+  { name: 'onBeforeRenderClient()', href: '/onBeforeRenderClient', env: 'client', providedBy: ['vike-react', 'vike-vue'] },
+  { name: 'onAfterRenderClient()', href: '/onAfterRenderClient', env: 'client', providedBy: ['vike-react', 'vike-vue', 'vike-solid'] },
 
   // Client-only data environment versions
   { name: 'guard()', href: '/guard', env: 'client', dataEnv: 'client' },
@@ -121,50 +123,61 @@ function HooksLifecycle() {
     })
 
     // Adjust hooks based on data environment
-    if (dataEnv !== 'default') {
+    if (dataEnv === 'client') {
       const dataHookNames = ['guard()', 'data()', 'onData()', 'onBeforeRender()']
 
-      if (dataEnv === 'client') {
-        // For client-only mode, move data hooks to client-side
-        hooks = hooks.map(hook => {
-          if (hook.dataEnv === 'default' && dataHookNames.includes(hook.name)) {
-            return { ...hook, env: 'client' as const }
+      if (phase === 'first-render') {
+        // For client-only first render: remove server data hooks, keep only client data hooks
+        hooks = hooks.filter(hook => {
+          // Remove server-side data hooks
+          if (hook.dataEnv === 'default' && hook.env === 'server' && dataHookNames.includes(hook.name)) {
+            return false
           }
-          return hook
+          // Remove client dataEnv hooks (they're duplicates for first render)
+          if (hook.dataEnv === 'client') {
+            return false
+          }
+          return true
         })
 
-        // Remove server-side data hooks for client-only mode in first render
-        if (phase === 'first-render') {
-          hooks = hooks.filter(hook =>
-            !(hook.dataEnv === 'default' && hook.env === 'server' && dataHookNames.includes(hook.name))
-          )
+        // Add client-side data hooks after onCreatePageContext (client)
+        const clientPageContextIndex = hooks.findIndex(h =>
+          h.name === 'onCreatePageContext()' && h.env === 'client'
+        )
 
-          // Move client-side data hooks to after onCreatePageContext (client)
-          const clientDataHooks = hooks.filter(hook =>
-            hook.dataEnv === 'default' && hook.env === 'client' && dataHookNames.includes(hook.name)
-          )
-          const otherHooks = hooks.filter(hook =>
-            !(hook.dataEnv === 'default' && hook.env === 'client' && dataHookNames.includes(hook.name))
-          )
+        if (clientPageContextIndex !== -1) {
+          const clientDataHooks = [
+            { name: 'guard()', href: '/guard', env: 'client' as const, dataEnv: 'client' as const },
+            { name: 'data()', href: '/data', env: 'client' as const, dataEnv: 'client' as const },
+            { name: 'onData()', href: '/onData', env: 'client' as const, dataEnv: 'client' as const },
+            { name: 'onBeforeRender()', href: '/onBeforeRender', env: 'client' as const, dataEnv: 'client' as const },
+          ]
 
-          // Find the index of client onCreatePageContext
-          const clientPageContextIndex = otherHooks.findIndex(h =>
-            h.name === 'onCreatePageContext()' && h.env === 'client'
-          )
-
-          if (clientPageContextIndex !== -1) {
-            // Insert data hooks after client onCreatePageContext
-            hooks = [
-              ...otherHooks.slice(0, clientPageContextIndex + 1),
-              ...clientDataHooks,
-              ...otherHooks.slice(clientPageContextIndex + 1)
-            ]
-          } else {
-            hooks = [...otherHooks, ...clientDataHooks]
-          }
+          hooks = [
+            ...hooks.slice(0, clientPageContextIndex + 1),
+            ...clientDataHooks,
+            ...hooks.slice(clientPageContextIndex + 1)
+          ]
         }
+      } else {
+        // For client-side navigation: show only client versions, remove all server hooks
+        const serverHookNames = ['onBeforeRoute()', 'Routing', 'onCreatePageContext()', ...dataHookNames]
+
+        hooks = hooks.filter(hook => {
+          // Remove all server-side hooks in client-only mode
+          if (hook.env === 'server' && serverHookNames.includes(hook.name)) {
+            return false
+          }
+          // Remove default client data hooks (keep only client dataEnv ones)
+          if (hook.dataEnv === 'default' && hook.env === 'client' && dataHookNames.includes(hook.name)) {
+            return false
+          }
+          return true
+        })
       }
-      // For shared mode, keep the hooks as-is (they run on both sides)
+    } else {
+      // For default/shared mode: remove client dataEnv duplicates
+      hooks = hooks.filter(hook => hook.dataEnv !== 'client')
     }
 
     return hooks
