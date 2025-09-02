@@ -307,6 +307,11 @@ function shouldShowHook(
   // If no hooksEnv specified, always show (hooks like onRenderClient, onPageTransitionStart, etc.)
   if (hook.hooksEnv && !hook.hooksEnv.includes(hooksEnv)) return false
 
+  // Special case: onRenderClient() and onRenderHtml() should only show when no vike framework is selected
+  if ((hook.name === 'onRenderClient()' || hook.name === 'onRenderHtml()') && selectedFramework !== null) {
+    return false
+  }
+
   // Framework filter
   if (hook.providedBy && !selectedFramework) return false
   if (hook.providedBy && selectedFramework && !hook.providedBy.includes(selectedFramework)) return false
