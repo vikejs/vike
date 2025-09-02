@@ -3,6 +3,7 @@ export { HooksLifecycle }
 import React, { useState, useEffect } from 'react'
 import { Link } from '@brillout/docpress'
 import { TextEnv } from './TextEnv'
+import { Box } from '../../components/ConfigSpec'
 
 interface HookInfo {
   name: string
@@ -47,13 +48,6 @@ const onRenderClient = { name: 'onRenderClient()', href: '/onRenderClient' }
 const onHydrationEnd = { name: 'onHydrationEnd()', href: '/onHydrationEnd' }
 const onPageTransitionStart = { name: 'onPageTransitionStart()', href: '/onPageTransitionStart' }
 const onPageTransitionEnd = { name: 'onPageTransitionEnd()', href: '/onPageTransitionEnd' }
-
-const boxStyle = {
-  marginBottom: '2rem',
-  border: '1px solid #dee2e6',
-  borderRadius: 8,
-  backgroundColor: '#efefef',
-}
 
 const firstRenderHooks: HookInfo[] = [
   // Server-side hooks
@@ -170,9 +164,9 @@ function HooksLifecycle() {
     const hooks = getFilteredHooks(phase)
 
     return (
-      <div
+      <Box
         style={{
-          ...boxStyle,
+          marginBottom: '2rem',
           padding: '1.5rem',
         }}
       >
@@ -188,15 +182,15 @@ function HooksLifecycle() {
             )
           })}
         </ol>
-      </div>
+      </Box>
     )
   }
 
   return (
     <div>
-      <div
+      <Box
         style={{
-          ...boxStyle,
+          marginBottom: '2rem',
           padding: '1rem',
         }}
       >
@@ -266,7 +260,7 @@ function HooksLifecycle() {
             ))}
           </div>
         </div>
-      </div>
+      </Box>
 
       <div
         style={{
