@@ -260,15 +260,6 @@ function HooksLifecycle() {
         </div>
       </Box>
 
-      <Box style={{ padding: '1rem', marginBottom: '1.5rem' }}>
-        <h4 style={{ marginTop: 0, marginBottom: '0.5rem' }}>Server start</h4>
-        <ul style={{ marginBottom: 0 }}>
-          <li>
-            <Link href="/onCreateGlobalContext">`onCreateGlobalContext`</Link>
-          </li>
-        </ul>
-      </Box>
-
       <div
         style={{
           display: 'grid',
@@ -276,8 +267,18 @@ function HooksLifecycle() {
           gap: '2rem',
         }}
       >
-        {renderHooksList('first-render', 'First Render')}
-        {renderHooksList('client-navigation', 'Client-side Navigation')}
+        <div>
+          <Box style={{ padding: '1.5rem', marginBottom: '2rem' }}>
+            <h4 style={{ marginTop: 0, marginBottom: '1rem', color: '#2c3e50' }}>Server start</h4>
+            <ol>
+              <li>
+                <Link href="/onCreateGlobalContext">`onCreateGlobalContext`</Link>
+              </li>
+            </ol>
+          </Box>
+          {renderHooksList('first-render', 'First Render')}
+        </div>
+        <div>{renderHooksList('client-navigation', 'Client-side Navigation')}</div>
       </div>
     </div>
   )
