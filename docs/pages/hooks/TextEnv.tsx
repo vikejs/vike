@@ -9,7 +9,14 @@ function TextEnv({ children, style }: { children: any; style?: any }) {
   return <span style={{ color: '#888', fontSize: '0.94em', verticalAlign: 'middle', ...style }}>{children}</span>
 }
 function TextEnv2({ children }: { children: any }) {
-  return <TextEnv style={{ fontWeight: 600 }}>{children}</TextEnv>
+  // Color code based on environment
+  const getEnvColor = (text: string) => {
+    if (text.includes('server')) return '#e74c3c' // Red for server
+    if (text.includes('client')) return '#3498db' // Blue for client
+    return '#888' // Default gray
+  }
+
+  return <TextEnv style={{ fontWeight: 600, color: getEnvColor(children) }}>{children}</TextEnv>
 }
 
 interface HookInfo {
