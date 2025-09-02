@@ -8,7 +8,6 @@ interface HookInfo {
   name: string
   href: string
   env: 'server' | 'client'
-  description?: string
   providedBy?: ('vike-react' | 'vike-vue' | 'vike-solid')[]
   dataHooks?: ('server' | 'client' | 'shared')[]
 }
@@ -185,12 +184,6 @@ function HooksLifecycle() {
             return (
               <li key={key}>
                 <TextEnv2>{hook.env}</TextEnv2> <Link href={hook.href}>{hook.name}</Link>
-                {hook.description && (
-                  <>
-                    <br />
-                    <span style={{ fontSize: '0.9em', color: '#666', marginLeft: '1rem' }}>{hook.description}</span>
-                  </>
-                )}
               </li>
             )
           })}
