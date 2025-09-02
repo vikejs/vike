@@ -13,6 +13,11 @@ interface HookInfo {
   dataHooks?: readonly ('default' | 'client' | 'shared')[]
 }
 
+const routing = {
+  name: 'Routing (executes all your Route Functions)',
+  href: '/routing',
+}
+
 const firstRenderHooks: HookInfo[] = [
   // Server-side hooks
   ...(
@@ -20,11 +25,7 @@ const firstRenderHooks: HookInfo[] = [
       { name: 'onCreateApp()', href: '/onCreateApp', providedBy: ['vike-vue'] },
       { name: 'renderPage()', href: '/renderPage' },
       { name: 'onBeforeRoute()', href: '/onBeforeRoute' },
-      {
-        name: 'Routing',
-        href: '/routing',
-        description: 'The routing executes your Route Functions (of all your pages).',
-      },
+      routing,
       { name: 'onCreatePageContext()', href: '/onCreatePageContext' },
       { name: 'guard()', href: '/guard', dataHooks: ['default', 'shared'] },
       { name: 'data()', href: '/data', dataHooks: ['default', 'shared'] },
@@ -63,7 +64,7 @@ const clientNavigationHooks: HookInfo[] = [
     [
       { name: 'onPageTransitionStart()', href: '/onPageTransitionStart' },
       { name: 'onBeforeRoute()', href: '/onBeforeRoute' },
-      { name: 'Routing', href: '/routing' },
+      routing,
       { name: 'onCreatePageContext()', href: '/onCreatePageContext' },
       { name: 'guard()', href: '/guard', dataHooks: ['client'] },
       { name: 'data()', href: '/data', dataHooks: ['client'] },
@@ -76,12 +77,7 @@ const clientNavigationHooks: HookInfo[] = [
   ...(
     [
       { name: 'onBeforeRoute()', href: '/onBeforeRoute', dataHooks: ['default', 'shared'] },
-      {
-        name: 'Routing',
-        href: '/routing',
-        description: 'The routing is executed twice: once for the client and once for the server.',
-        dataHooks: ['default', 'shared'],
-      },
+      { ...routing, dataHooks: ['default', 'shared'] },
       { name: 'onCreatePageContext()', href: '/onCreatePageContext', dataHooks: ['default', 'shared'] },
       { name: 'guard()', href: '/guard', dataHooks: ['default', 'shared'] },
       { name: 'data()', href: '/data', dataHooks: ['default', 'shared'] },
