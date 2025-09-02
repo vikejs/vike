@@ -48,6 +48,13 @@ const onHydrationEnd = { name: 'onHydrationEnd()', href: '/onHydrationEnd' }
 const onPageTransitionStart = { name: 'onPageTransitionStart()', href: '/onPageTransitionStart' }
 const onPageTransitionEnd = { name: 'onPageTransitionEnd()', href: '/onPageTransitionEnd' }
 
+const boxStyle = {
+  marginBottom: '2rem',
+  border: '1px solid #dee2e6',
+  borderRadius: 8,
+  backgroundColor: '#efefef',
+}
+
 const firstRenderHooks: HookInfo[] = [
   // Server-side hooks
   ...(
@@ -165,11 +172,8 @@ function HooksLifecycle() {
     return (
       <div
         style={{
-          marginBottom: '2rem',
-          border: '1px solid #dee2e6',
-          borderRadius: 8,
+          ...boxStyle,
           padding: '1.5rem',
-          backgroundColor: '#efefef',
         }}
       >
         <h4 style={{ marginTop: 0, marginBottom: '1rem', color: '#2c3e50' }}>{title}</h4>
@@ -192,11 +196,8 @@ function HooksLifecycle() {
     <div>
       <div
         style={{
-          marginBottom: '2rem',
+          ...boxStyle,
           padding: '1rem',
-          backgroundColor: '#efefef',
-          borderRadius: 8,
-          border: '1px solid #dee2e6',
         }}
       >
         <h4 style={{ marginTop: 0, marginBottom: '1rem' }}>Configuration</h4>
