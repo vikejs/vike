@@ -1,6 +1,7 @@
 import { Link } from '@brillout/docpress'
 import { TextEnv } from './TextEnv'
 import { HooksLifecycle } from './HooksLifecycle'
+import { Box } from '../../components'
 
 List of built-in hooks. (You can <Link href="/meta">create your own</Link>.)
 
@@ -56,7 +57,9 @@ Potentially upcoming hooks:
 
 The order in which the hooks are called (the hook flow).
 
-> The <Link href="/onCreateGlobalContext">`onCreateGlobalContext()` hook</Link> is called when the `globalContext` object is created, see <Link href="/globalContext#lifecycle" />.
+<Box style={{ padding: '1rem', marginBottom: '1.5rem' }}>
+The <Link href="/onCreateGlobalContext">`onCreateGlobalContext()` hook</Link> is called when the `globalContext` object is created, see <Link href="/globalContext#lifecycle" />.
+</Box>
 
 <HooksLifecycle />
 
