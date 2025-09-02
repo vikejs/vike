@@ -10,7 +10,7 @@ interface HookInfo {
   env: 'server' | 'client' | 'server & client'
   description?: string
   providedBy?: ('vike-react' | 'vike-vue' | 'vike-solid')[]
-  dataEnv?: ('default' | 'client' | 'shared')[]
+  dataHooks?: ('default' | 'client' | 'shared')[]
 }
 
 const firstRenderHooks: HookInfo[] = [
@@ -25,20 +25,20 @@ const firstRenderHooks: HookInfo[] = [
     description: 'The routing executes your Route Functions (of all your pages).',
   },
   { name: 'onCreatePageContext()', href: '/onCreatePageContext', env: 'server' },
-  { name: 'guard()', href: '/guard', env: 'server', dataEnv: ['default', 'shared'] },
-  { name: 'data()', href: '/data', env: 'server', dataEnv: ['default', 'shared'] },
-  { name: 'onData()', href: '/onData', env: 'server', dataEnv: ['default', 'shared'] },
-  { name: 'onBeforeRender()', href: '/onBeforeRender', env: 'server', dataEnv: ['default', 'shared'] },
+  { name: 'guard()', href: '/guard', env: 'server', dataHooks: ['default', 'shared'] },
+  { name: 'data()', href: '/data', env: 'server', dataHooks: ['default', 'shared'] },
+  { name: 'onData()', href: '/onData', env: 'server', dataHooks: ['default', 'shared'] },
+  { name: 'onBeforeRender()', href: '/onBeforeRender', env: 'server', dataHooks: ['default', 'shared'] },
   { name: 'onBeforeRenderHtml()', href: '/onBeforeRenderHtml', env: 'server', providedBy: ['vike-react', 'vike-vue'] },
   { name: 'onRenderHtml()', href: '/onRenderHtml', env: 'server' },
   { name: 'onAfterRenderHtml()', href: '/onAfterRenderHtml', env: 'server', providedBy: ['vike-react', 'vike-vue'] },
 
   // Client-side hooks
   { name: 'onCreatePageContext()', href: '/onCreatePageContext', env: 'client' },
-  { name: 'guard()', href: '/guard', env: 'client', dataEnv: ['client'] },
-  { name: 'data()', href: '/data', env: 'client', dataEnv: ['client'] },
-  { name: 'onData()', href: '/onData', env: 'client', dataEnv: ['client'] },
-  { name: 'onBeforeRender()', href: '/onBeforeRender', env: 'client', dataEnv: ['client'] },
+  { name: 'guard()', href: '/guard', env: 'client', dataHooks: ['client'] },
+  { name: 'data()', href: '/data', env: 'client', dataHooks: ['client'] },
+  { name: 'onData()', href: '/onData', env: 'client', dataHooks: ['client'] },
+  { name: 'onBeforeRender()', href: '/onBeforeRender', env: 'client', dataHooks: ['client'] },
   { name: 'onCreateApp()', href: '/onCreateApp', env: 'client', providedBy: ['vike-vue'] },
   {
     name: 'onBeforeRenderClient()',
@@ -61,23 +61,23 @@ const clientNavigationHooks: HookInfo[] = [
   { name: 'onBeforeRoute()', href: '/onBeforeRoute', env: 'client' },
   { name: 'Routing', href: '/routing', env: 'client' },
   { name: 'onCreatePageContext()', href: '/onCreatePageContext', env: 'client' },
-  { name: 'guard()', href: '/guard', env: 'client', dataEnv: ['client'] },
-  { name: 'data()', href: '/data', env: 'client', dataEnv: ['client'] },
-  { name: 'onData()', href: '/onData', env: 'client', dataEnv: ['client'] },
-  { name: 'onBeforeRender()', href: '/onBeforeRender', env: 'client', dataEnv: ['client'] },
-  { name: 'onBeforeRoute()', href: '/onBeforeRoute', env: 'server', dataEnv: ['default', 'shared'] },
+  { name: 'guard()', href: '/guard', env: 'client', dataHooks: ['client'] },
+  { name: 'data()', href: '/data', env: 'client', dataHooks: ['client'] },
+  { name: 'onData()', href: '/onData', env: 'client', dataHooks: ['client'] },
+  { name: 'onBeforeRender()', href: '/onBeforeRender', env: 'client', dataHooks: ['client'] },
+  { name: 'onBeforeRoute()', href: '/onBeforeRoute', env: 'server', dataHooks: ['default', 'shared'] },
   {
     name: 'Routing',
     href: '/routing',
     env: 'server',
     description: 'The routing is executed twice: once for the client and once for the server.',
-    dataEnv: ['default', 'shared'],
+    dataHooks: ['default', 'shared'],
   },
-  { name: 'onCreatePageContext()', href: '/onCreatePageContext', env: 'server', dataEnv: ['default', 'shared'] },
-  { name: 'guard()', href: '/guard', env: 'server', dataEnv: ['default', 'shared'] },
-  { name: 'data()', href: '/data', env: 'server', dataEnv: ['default', 'shared'] },
-  { name: 'onBeforeRender()', href: '/onBeforeRender', env: 'server', dataEnv: ['default', 'shared'] },
-  { name: 'onData()', href: '/onData', env: 'client', dataEnv: ['default', 'shared'] },
+  { name: 'onCreatePageContext()', href: '/onCreatePageContext', env: 'server', dataHooks: ['default', 'shared'] },
+  { name: 'guard()', href: '/guard', env: 'server', dataHooks: ['default', 'shared'] },
+  { name: 'data()', href: '/data', env: 'server', dataHooks: ['default', 'shared'] },
+  { name: 'onBeforeRender()', href: '/onBeforeRender', env: 'server', dataHooks: ['default', 'shared'] },
+  { name: 'onData()', href: '/onData', env: 'client', dataHooks: ['default', 'shared'] },
   { name: 'onRenderClient()', href: '/onRenderClient', env: 'client' },
   { name: 'onCreateApp()', href: '/onCreateApp', env: 'client', providedBy: ['vike-vue'] },
   {
@@ -97,7 +97,7 @@ const clientNavigationHooks: HookInfo[] = [
 
 function HooksLifecycle() {
   const [selectedFramework, setSelectedFramework] = useState<'vike-react' | 'vike-vue' | 'vike-solid' | null>(null)
-  const [dataEnv, setDataEnv] = useState<'default' | 'client' | 'shared'>('default')
+  const [dataHooks, setDataEnv] = useState<'default' | 'client' | 'shared'>('default')
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -122,12 +122,12 @@ function HooksLifecycle() {
   }, [selectedFramework])
 
   useEffect(() => {
-    localStorage.setItem('vike-docs-data-env', dataEnv)
-  }, [dataEnv])
+    localStorage.setItem('vike-docs-data-env', dataHooks)
+  }, [dataHooks])
 
   function getFilteredHooks(phase: 'first-render' | 'client-navigation') {
     const hooks = phase === 'first-render' ? firstRenderHooks : clientNavigationHooks
-    return hooks.filter((hook) => shouldShowHook(hook, dataEnv, selectedFramework))
+    return hooks.filter((hook) => shouldShowHook(hook, dataHooks, selectedFramework))
   }
 
   function renderHooksList(phase: 'first-render' | 'client-navigation', title: string) {
@@ -228,8 +228,8 @@ function HooksLifecycle() {
                   padding: '0.25rem 0.75rem',
                   border: '1px solid #ccc',
                   borderRadius: '4px',
-                  backgroundColor: dataEnv === key ? '#007bff' : 'white',
-                  color: dataEnv === key ? 'white' : 'black',
+                  backgroundColor: dataHooks === key ? '#007bff' : 'white',
+                  color: dataHooks === key ? 'white' : 'black',
                   cursor: 'pointer',
                 }}
               >
@@ -259,12 +259,12 @@ function HooksLifecycle() {
 
 function shouldShowHook(
   hook: HookInfo,
-  dataEnv: 'default' | 'client' | 'shared',
+  dataHooks: 'default' | 'client' | 'shared',
   selectedFramework: 'vike-react' | 'vike-vue' | 'vike-solid' | null,
 ) {
-  // If hook has dataEnv specified, it must include the current dataEnv
-  // If no dataEnv specified, always show (hooks like onRenderClient, onPageTransitionStart, etc.)
-  if (hook.dataEnv && !hook.dataEnv.includes(dataEnv)) return false
+  // If hook has dataHooks specified, it must include the current dataHooks
+  // If no dataHooks specified, always show (hooks like onRenderClient, onPageTransitionStart, etc.)
+  if (hook.dataHooks && !hook.dataHooks.includes(dataHooks)) return false
 
   // Framework filter
   if (hook.providedBy && !selectedFramework) return false
