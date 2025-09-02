@@ -13,48 +13,55 @@ interface HookInfo {
   hooksEnv?: ('server' | 'client' | 'shared')[]
 }
 
+// Core hooks (always exist - based on configDefinitionsBuiltIn)
 const routing = { name: 'Routing', href: '/routing' }
-const onCreateApp = { name: 'onCreateApp()', href: '/onCreateApp', providedBy: ['vike-vue'] as const }
-const onCreatePageContext = { name: 'onCreatePageContext()', href: '/onCreatePageContext' }
-const onBeforeRoute = { name: 'onBeforeRoute()', href: '/onBeforeRoute' }
-const guard = { name: 'guard()', href: '/guard' }
-const data = { name: 'data()', href: '/data' }
-const onData = { name: 'onData()', href: '/onData' }
-const onBeforeRender = { name: 'onBeforeRender()', href: '/onBeforeRender' }
+const onRenderHtml = { name: 'onRenderHtml', href: '/onRenderHtml' }
+const onRenderClient = { name: 'onRenderClient', href: '/onRenderClient' }
+
+// Built-in hooks (from HookNamePage and HookNameGlobal types)
+const onCreateGlobalContext = { name: 'onCreateGlobalContext', href: '/onCreateGlobalContext' }
+const onBeforeRoute = { name: 'onBeforeRoute', href: '/onBeforeRoute' }
+const onCreatePageContext = { name: 'onCreatePageContext', href: '/onCreatePageContext' }
+const guard = { name: 'guard', href: '/guard' }
+const data = { name: 'data', href: '/data' }
+const onData = { name: 'onData', href: '/onData' }
+const onBeforeRender = { name: 'onBeforeRender', href: '/onBeforeRender' }
+const route = { name: 'route', href: '/route-function' }
+const onHydrationEnd = { name: 'onHydrationEnd', href: '/onHydrationEnd' }
+const onPageTransitionStart = { name: 'onPageTransitionStart', href: '/onPageTransitionStart' }
+const onPageTransitionEnd = { name: 'onPageTransitionEnd', href: '/onPageTransitionEnd' }
+const onBeforePrerenderStart = { name: 'onBeforePrerenderStart', href: '/onBeforePrerenderStart' }
+
+// Framework-provided hooks (not in built-in types - provided by extensions)
+const onCreateApp = { name: 'onCreateApp', href: '/onCreateApp', providedBy: ['vike-vue'] as const }
+const onBeforeRenderHtml = {
+  name: 'onBeforeRenderHtml',
+  href: '/onBeforeRenderHtml',
+  providedBy: ['vike-react', 'vike-vue'] as const,
+}
+const onAfterRenderHtml = {
+  name: 'onAfterRenderHtml',
+  href: '/onAfterRenderHtml',
+  providedBy: ['vike-react', 'vike-vue'] as const,
+}
 const onBeforeRenderClient = {
-  name: 'onBeforeRenderClient()',
+  name: 'onBeforeRenderClient',
   href: '/onBeforeRenderClient',
   providedBy: ['vike-react', 'vike-vue'] as const,
 }
 const onAfterRenderClient = {
-  name: 'onAfterRenderClient()',
+  name: 'onAfterRenderClient',
   href: '/onAfterRenderClient',
   providedBy: ['vike-react', 'vike-vue', 'vike-solid'] as const,
 }
 
-const renderPage = { name: 'renderPage()', href: '/renderPage' }
-const onBeforeRenderHtml = {
-  name: 'onBeforeRenderHtml()',
-  href: '/onBeforeRenderHtml',
-  providedBy: ['vike-react', 'vike-vue'] as const,
-}
-const onRenderHtml = { name: 'onRenderHtml()', href: '/onRenderHtml' }
-const onAfterRenderHtml = {
-  name: 'onAfterRenderHtml()',
-  href: '/onAfterRenderHtml',
-  providedBy: ['vike-react', 'vike-vue'] as const,
-}
-const onRenderClient = { name: 'onRenderClient()', href: '/onRenderClient' }
-const onHydrationEnd = { name: 'onHydrationEnd()', href: '/onHydrationEnd' }
-const onPageTransitionStart = { name: 'onPageTransitionStart()', href: '/onPageTransitionStart' }
-const onPageTransitionEnd = { name: 'onPageTransitionEnd()', href: '/onPageTransitionEnd' }
+
 
 const firstRenderHooks: HookInfo[] = [
-  // Server-side hooks
+  // Server-side hooks (based on renderPageNominal execution order)
   ...(
     [
-      onCreateApp,
-      renderPage,
+      onCreateGlobalContext,
       onBeforeRoute,
       routing,
       onCreatePageContext,
@@ -68,7 +75,7 @@ const firstRenderHooks: HookInfo[] = [
     ] satisfies Omit<HookInfo, 'env'>[]
   ).map((hook) => ({ ...hook, env: 'server' }) satisfies HookInfo),
 
-  // Client-side hooks
+  // Client-side hooks (hydration/first render based on renderPageClientSide)
   ...(
     [
       onCreatePageContext,
@@ -126,10 +133,14 @@ const clientNavigationHooks: HookInfo[] = [
 ]
 
 const vikeDocsSelectedFramework = 'vike-docs:selected-framework'
-const vikeDocsHooksEnv = 'vike-docs:hooks-env'
 function HooksLifecycle() {
   const [selectedFramework, setSelectedFramework] = useState<'vike-react' | 'vike-vue' | 'vike-solid' | null>(null)
-  const [hooksEnv, setDataEnv] = useState<'server' | 'client' | 'shared'>('server')
+  const [selectedHooks, setSelectedHooks] = useState<Set<string>>(new Set([
+    '+data.js',
+    'onRenderHtml',
+    'onRenderClient',
+    'onCreatePageContext',
+  ]))
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -138,10 +149,23 @@ function HooksLifecycle() {
       | 'vike-vue'
       | 'vike-solid'
       | null
-    const savedDataEnv = localStorage.getItem(vikeDocsHooksEnv) as 'server' | 'client' | 'shared' | null
+    const savedHooks = localStorage.getItem('vike-docs:selected-hooks')
 
     if (savedFramework) setSelectedFramework(savedFramework)
-    if (savedDataEnv) setDataEnv(savedDataEnv)
+    if (savedHooks) {
+      try {
+        const hooksArray = JSON.parse(savedHooks)
+        setSelectedHooks(new Set(hooksArray))
+      } catch (e) {
+        // Fallback to default
+        setSelectedHooks(new Set([
+          '+data.js',
+          'onRenderHtml',
+          'onRenderClient',
+          'onCreatePageContext',
+        ]))
+      }
+    }
   }, [])
 
   // Save to localStorage when changed
@@ -154,12 +178,72 @@ function HooksLifecycle() {
   }, [selectedFramework])
 
   useEffect(() => {
-    localStorage.setItem(vikeDocsHooksEnv, hooksEnv)
-  }, [hooksEnv])
+    localStorage.setItem('vike-docs:selected-hooks', JSON.stringify(Array.from(selectedHooks)))
+  }, [selectedHooks])
+
+  // Define all available hooks (based on comprehensive codebase analysis)
+  const allHooks = [
+    // + file hooks with environment variants (these are file patterns, not hook names)
+    '+data.js',
+    '+data.client.js',
+    '+data.shared.js',
+    '+onBeforeRender.js',
+    '+onBeforeRender.client.js',
+    '+onBeforeRender.shared.js',
+    '+guard.js',
+    '+guard.client.js',
+    '+guard.shared.js',
+    '+route.js',
+    '+onData.js',
+
+    // Built-in hooks (from HookNamePage and HookNameGlobal types)
+    'onHydrationEnd',
+    'onBeforePrerenderStart',
+    'onBeforeRender',
+    'onPageTransitionStart',
+    'onPageTransitionEnd',
+    'onRenderHtml',
+    'onRenderClient',
+    'guard',
+    'data',
+    'onData',
+    'route',
+    'onBeforeRoute',
+    'onCreatePageContext',
+    'onCreateGlobalContext',
+
+    // Framework-provided hooks (not in built-in types)
+    'onCreateApp',
+    'onBeforeRenderHtml',
+    'onAfterRenderHtml',
+    'onBeforeRenderClient',
+    'onAfterRenderClient',
+  ]
+
+  // Preset functions
+  const selectAll = () => setSelectedHooks(new Set(allHooks))
+  const selectNone = () => setSelectedHooks(new Set())
+  const selectStandard = () => setSelectedHooks(new Set([
+    '+data.js',
+    'onRenderHtml',
+    'onRenderClient',
+    'onCreatePageContext',
+  ]))
+
+  // Toggle hook selection
+  const toggleHook = (hook: string) => {
+    const newSelection = new Set(selectedHooks)
+    if (newSelection.has(hook)) {
+      newSelection.delete(hook)
+    } else {
+      newSelection.add(hook)
+    }
+    setSelectedHooks(newSelection)
+  }
 
   function getFilteredHooks(phase: 'first-render' | 'client-navigation') {
     const hooks = phase === 'first-render' ? firstRenderHooks : clientNavigationHooks
-    return hooks.filter((hook) => shouldShowHook(hook, hooksEnv, selectedFramework))
+    return hooks.filter((hook) => shouldShowHook(hook, selectedHooks, selectedFramework))
   }
 
   function renderHooksList(phase: 'first-render' | 'client-navigation', title: string) {
@@ -223,28 +307,64 @@ function HooksLifecycle() {
 
         <div>
           <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>
-            <Link href="#environment">Hooks environment</Link>
+            Hook Selection
           </label>
-          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-            {[
-              { key: 'server' as const, label: 'Server-only' },
-              { key: 'client' as const, label: 'Client-only' },
-              { key: 'shared' as const, label: 'Server & client' },
-            ].map(({ key, label }) => (
-              <button
-                key={key}
-                onClick={() => setDataEnv(key)}
-                style={{
-                  padding: '0.25rem 0.75rem',
-                  border: '1px solid #ccc',
-                  borderRadius: '4px',
-                  backgroundColor: hooksEnv === key ? '#007bff' : 'white',
-                  color: hooksEnv === key ? 'white' : 'black',
-                  cursor: 'pointer',
-                }}
-              >
-                {label}
-              </button>
+
+          {/* Preset buttons */}
+          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
+            <button
+              onClick={selectStandard}
+              style={{
+                padding: '0.25rem 0.75rem',
+                border: '1px solid #ccc',
+                borderRadius: '4px',
+                backgroundColor: '#28a745',
+                color: 'white',
+                cursor: 'pointer',
+              }}
+            >
+              Standard
+            </button>
+            <button
+              onClick={selectAll}
+              style={{
+                padding: '0.25rem 0.75rem',
+                border: '1px solid #ccc',
+                borderRadius: '4px',
+                backgroundColor: '#007bff',
+                color: 'white',
+                cursor: 'pointer',
+              }}
+            >
+              All
+            </button>
+            <button
+              onClick={selectNone}
+              style={{
+                padding: '0.25rem 0.75rem',
+                border: '1px solid #ccc',
+                borderRadius: '4px',
+                backgroundColor: '#dc3545',
+                color: 'white',
+                cursor: 'pointer',
+              }}
+            >
+              None
+            </button>
+          </div>
+
+          {/* Hook checkboxes */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.5rem' }}>
+            {allHooks.map((hook) => (
+              <label key={hook} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  checked={selectedHooks.has(hook)}
+                  onChange={() => toggleHook(hook)}
+                  style={{ cursor: 'pointer' }}
+                />
+                <code style={{ fontSize: '0.9em' }}>{hook}</code>
+              </label>
             ))}
           </div>
         </div>
@@ -298,18 +418,77 @@ function LifecycleBox({
 
 function shouldShowHook(
   hook: HookInfo,
-  hooksEnv: 'server' | 'client' | 'shared',
+  selectedHooks: Set<string>,
   selectedFramework: 'vike-react' | 'vike-vue' | 'vike-solid' | null,
 ) {
-  // If hook has hooksEnv specified, it must include the current hooksEnv
-  // If no hooksEnv specified, always show (hooks like onRenderClient, onPageTransitionStart, etc.)
-  if (hook.hooksEnv && !hook.hooksEnv.includes(hooksEnv)) return false
+  function checkFramework() {
+    // Framework filter
+    if (hook.providedBy && !selectedFramework) return false
+    if (hook.providedBy && selectedFramework && !hook.providedBy.includes(selectedFramework)) return false
+    return true
+  }
 
-  // Framework filter
-  if (hook.providedBy && !selectedFramework) return false
-  if (hook.providedBy && selectedFramework && !hook.providedBy.includes(selectedFramework)) return false
+  // Always show these core hooks (they always exist in every Vike app)
+  if (hook.name === 'Routing' || hook.name === 'onRenderHtml' || hook.name === 'onRenderClient') {
+    return checkFramework()
+  }
 
-  return true
+  // Check if this hook is selected
+  const hookName = hook.name
+
+  // For data hooks, check all variants
+  if (hookName === 'data') {
+    const hasDataJs = selectedHooks.has('+data.js')
+    const hasDataClient = selectedHooks.has('+data.client.js')
+    const hasDataShared = selectedHooks.has('+data.shared.js')
+    const hasDataFunction = selectedHooks.has('data')
+
+    // Show if any data variant is selected and matches the hook's environment
+    if (hook.hooksEnv) {
+      if (hook.hooksEnv.includes('server') && (hasDataJs || hasDataFunction)) return checkFramework()
+      if (hook.hooksEnv.includes('client') && (hasDataClient || hasDataFunction)) return checkFramework()
+      if (hook.hooksEnv.includes('shared') && (hasDataShared || hasDataFunction)) return checkFramework()
+      return false
+    }
+    return (hasDataJs || hasDataFunction) && checkFramework()
+  }
+
+  if (hookName === 'onBeforeRender') {
+    const hasOnBeforeRenderJs = selectedHooks.has('+onBeforeRender.js')
+    const hasOnBeforeRenderClient = selectedHooks.has('+onBeforeRender.client.js')
+    const hasOnBeforeRenderShared = selectedHooks.has('+onBeforeRender.shared.js')
+    const hasOnBeforeRenderFunction = selectedHooks.has('onBeforeRender')
+
+    // Show if any onBeforeRender variant is selected and matches the hook's environment
+    if (hook.hooksEnv) {
+      if (hook.hooksEnv.includes('server') && (hasOnBeforeRenderJs || hasOnBeforeRenderFunction)) return checkFramework()
+      if (hook.hooksEnv.includes('client') && (hasOnBeforeRenderClient || hasOnBeforeRenderFunction)) return checkFramework()
+      if (hook.hooksEnv.includes('shared') && (hasOnBeforeRenderShared || hasOnBeforeRenderFunction)) return checkFramework()
+      return false
+    }
+    return (hasOnBeforeRenderJs || hasOnBeforeRenderFunction) && checkFramework()
+  }
+
+  if (hookName === 'guard') {
+    const hasGuardJs = selectedHooks.has('+guard.js')
+    const hasGuardClient = selectedHooks.has('+guard.client.js')
+    const hasGuardShared = selectedHooks.has('+guard.shared.js')
+    const hasGuardFunction = selectedHooks.has('guard')
+
+    // Show if any guard variant is selected and matches the hook's environment
+    if (hook.hooksEnv) {
+      if (hook.hooksEnv.includes('server') && (hasGuardJs || hasGuardFunction)) return checkFramework()
+      if (hook.hooksEnv.includes('client') && (hasGuardClient || hasGuardFunction)) return checkFramework()
+      if (hook.hooksEnv.includes('shared') && (hasGuardShared || hasGuardFunction)) return checkFramework()
+      return false
+    }
+    return (hasGuardJs || hasGuardFunction) && checkFramework()
+  }
+
+  // For other hooks, check if they're selected
+  if (!selectedHooks.has(hookName)) return false
+
+  return checkFramework()
 }
 
 function getEnvColor(text: string) {
