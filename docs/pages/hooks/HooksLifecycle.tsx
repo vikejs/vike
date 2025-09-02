@@ -36,12 +36,29 @@ const onAfterRenderClient = {
   providedBy: ['vike-react', 'vike-vue', 'vike-solid'] as const,
 }
 
+const renderPage = { name: 'renderPage()', href: '/renderPage' }
+const onBeforeRenderHtml = {
+  name: 'onBeforeRenderHtml()',
+  href: '/onBeforeRenderHtml',
+  providedBy: ['vike-react', 'vike-vue'] as const,
+}
+const onRenderHtml = { name: 'onRenderHtml()', href: '/onRenderHtml' }
+const onAfterRenderHtml = {
+  name: 'onAfterRenderHtml()',
+  href: '/onAfterRenderHtml',
+  providedBy: ['vike-react', 'vike-vue'] as const,
+}
+const onRenderClient = { name: 'onRenderClient()', href: '/onRenderClient' }
+const onHydrationEnd = { name: 'onHydrationEnd()', href: '/onHydrationEnd' }
+const onPageTransitionStart = { name: 'onPageTransitionStart()', href: '/onPageTransitionStart' }
+const onPageTransitionEnd = { name: 'onPageTransitionEnd()', href: '/onPageTransitionEnd' }
+
 const firstRenderHooks: HookInfo[] = [
   // Server-side hooks
   ...(
     [
       onCreateApp,
-      { name: 'renderPage()', href: '/renderPage' },
+      renderPage,
       onBeforeRoute,
       routing,
       onCreatePageContext,
@@ -49,9 +66,9 @@ const firstRenderHooks: HookInfo[] = [
       { ...data, dataHooks: ['default', 'shared'] },
       { ...onData, dataHooks: ['default', 'shared'] },
       { ...onBeforeRender, dataHooks: ['default', 'shared'] },
-      { name: 'onBeforeRenderHtml()', href: '/onBeforeRenderHtml', providedBy: ['vike-react', 'vike-vue'] },
-      { name: 'onRenderHtml()', href: '/onRenderHtml' },
-      { name: 'onAfterRenderHtml()', href: '/onAfterRenderHtml', providedBy: ['vike-react', 'vike-vue'] },
+      onBeforeRenderHtml,
+      onRenderHtml,
+      onAfterRenderHtml,
     ] satisfies Omit<HookInfo, 'env'>[]
   ).map((hook) => ({ ...hook, env: 'server' }) satisfies HookInfo),
 
@@ -65,9 +82,9 @@ const firstRenderHooks: HookInfo[] = [
       { ...onBeforeRender, dataHooks: ['client'] },
       onCreateApp,
       onBeforeRenderClient,
-      { name: 'onRenderClient()', href: '/onRenderClient' },
+      onRenderClient,
       onAfterRenderClient,
-      { name: 'onHydrationEnd()', href: '/onHydrationEnd' },
+      onHydrationEnd,
     ] satisfies Omit<HookInfo, 'env'>[]
   ).map((hook) => ({ ...hook, env: 'client' }) satisfies HookInfo),
 ]
@@ -76,7 +93,7 @@ const clientNavigationHooks: HookInfo[] = [
   // Client-side hooks (first part)
   ...(
     [
-      { name: 'onPageTransitionStart()', href: '/onPageTransitionStart' },
+      onPageTransitionStart,
       onBeforeRoute,
       routing,
       onCreatePageContext,
@@ -103,11 +120,11 @@ const clientNavigationHooks: HookInfo[] = [
   ...(
     [
       { ...onData, dataHooks: ['default', 'shared'] },
-      { name: 'onRenderClient()', href: '/onRenderClient' },
+      onRenderClient,
       onCreateApp,
       onBeforeRenderClient,
       onAfterRenderClient,
-      { name: 'onPageTransitionEnd()', href: '/onPageTransitionEnd' },
+      onPageTransitionEnd,
     ] satisfies Omit<HookInfo, 'env'>[]
   ).map((hook) => ({ ...hook, env: 'client' }) satisfies HookInfo),
 ]
