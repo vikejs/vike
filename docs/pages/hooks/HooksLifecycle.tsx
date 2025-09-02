@@ -7,10 +7,10 @@ import { TextEnv } from './TextEnv'
 interface HookInfo {
   name: string
   href: string
-  env: 'server' | 'client' | 'server & client'
+  env: 'server' | 'client'
   description?: string
-  providedBy?: readonly ('vike-react' | 'vike-vue' | 'vike-solid')[]
-  dataHooks?: readonly ('default' | 'client' | 'shared')[]
+  providedBy?: ('vike-react' | 'vike-vue' | 'vike-solid')[]
+  dataHooks?: ('default' | 'client' | 'shared')[]
 }
 
 const routing = {
