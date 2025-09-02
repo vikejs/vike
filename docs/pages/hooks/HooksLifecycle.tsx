@@ -284,8 +284,8 @@ function LifecycleBox({
   return (
     <Box
       style={{
-        padding: '1.5rem',
-        marginBottom: '2rem',
+        padding: '10px 20px',
+        marginBottom: 10,
         ...style,
       }}
     >
