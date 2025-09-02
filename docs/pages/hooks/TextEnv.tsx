@@ -127,14 +127,7 @@ function HooksLifecycle() {
     return hooks.filter(hook => shouldShowHook(hook, dataEnv, selectedFramework))
   }
 
-  const isHookGrayedOut = (hook: HookInfo) => {
-    // Core hooks (no providedBy) are never grayed out
-    if (!hook.providedBy) return false
-    // Extension hooks are grayed out if no framework is selected
-    if (!selectedFramework) return true
-    // Extension hooks are grayed out if the selected framework doesn't provide them
-    return !hook.providedBy.includes(selectedFramework)
-  }
+
 
   const renderHooksList = (phase: 'first-render' | 'client-navigation', title: string) => {
     const hooks = getFilteredHooks(phase)
@@ -150,13 +143,10 @@ function HooksLifecycle() {
         <h4 style={{ marginTop: 0, marginBottom: '1rem', color: '#2c3e50' }}>{title}</h4>
         <ol>
           {hooks.map((hook, index) => {
-            const isGrayed = isHookGrayedOut(hook)
             const key = `${hook.name}-${hook.env}-${index}`
 
             return (
-              <li key={key} style={{
-                opacity: isGrayed ? 0.4 : 1,
-              }}>
+              <li key={key}>
                 <TextEnv2>{hook.env}</TextEnv2>{' '}
                 <Link href={hook.href}>{hook.name}</Link>
                 {hook.description && (
@@ -264,18 +254,7 @@ function HooksLifecycle() {
         {renderHooksList('client-navigation', 'Client-side Navigation')}
       </div>
 
-      <div style={{
-        marginTop: '2rem',
-        padding: '1rem',
-        backgroundColor: '#fff3cd',
-        borderRadius: '8px',
-        border: '1px solid #ffeaa7'
-      }}>
-        <p style={{ margin: 0, fontSize: '0.9em' }}>
-          <strong>Note:</strong> Grayed out hooks are not available in your current configuration.
-          Extension hooks require the corresponding UI framework extension to be installed.
-        </p>
-      </div>
+
     </div>
   )
 }
