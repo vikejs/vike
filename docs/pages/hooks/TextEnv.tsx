@@ -30,7 +30,7 @@ interface HookInfo {
 
 // First render hooks (server-side first, then client-side)
 const firstRenderHooks: HookInfo[] = [
-  // Server-side hooks (matching documented order)
+  // Server-side hooks
   { name: 'onCreateApp()', href: '/onCreateApp', env: 'server', providedBy: ['vike-vue'] },
   { name: 'renderPage()', href: '/renderPage', env: 'server' },
   { name: 'onBeforeRoute()', href: '/onBeforeRoute', env: 'server' },
@@ -119,39 +119,43 @@ function HooksLifecycle() {
       const dataHookNames = ['guard()', 'data()', 'onData()', 'onBeforeRender()']
 
       if (dataEnv === 'client') {
+        // For client-only mode, move data hooks to client-side
+        hooks = hooks.map(hook => {
+          if (hook.dataEnv === 'default' && dataHookNames.includes(hook.name)) {
+            return { ...hook, env: 'client' as const }
+          }
+          return hook
+        })
+
+        // Remove server-side data hooks for client-only mode in first render
         if (phase === 'first-render') {
-          // For client-only mode in first render: remove server data hooks, add client data hooks
           hooks = hooks.filter(hook =>
             !(hook.dataEnv === 'default' && hook.env === 'server' && dataHookNames.includes(hook.name))
           )
 
-          // Add client-side data hooks after onCreatePageContext (client)
-          const clientPageContextIndex = hooks.findIndex(h =>
+          // Move client-side data hooks to after onCreatePageContext (client)
+          const clientDataHooks = hooks.filter(hook =>
+            hook.dataEnv === 'default' && hook.env === 'client' && dataHookNames.includes(hook.name)
+          )
+          const otherHooks = hooks.filter(hook =>
+            !(hook.dataEnv === 'default' && hook.env === 'client' && dataHookNames.includes(hook.name))
+          )
+
+          // Find the index of client onCreatePageContext
+          const clientPageContextIndex = otherHooks.findIndex(h =>
             h.name === 'onCreatePageContext()' && h.env === 'client'
           )
 
           if (clientPageContextIndex !== -1) {
-            const clientDataHooks = [
-              { name: 'guard()', href: '/guard', env: 'client' as const, dataEnv: 'client' as const },
-              { name: 'data()', href: '/data', env: 'client' as const, dataEnv: 'client' as const },
-              { name: 'onData()', href: '/onData', env: 'client' as const, dataEnv: 'client' as const },
-              { name: 'onBeforeRender()', href: '/onBeforeRender', env: 'client' as const, dataEnv: 'client' as const },
-            ]
-
+            // Insert data hooks after client onCreatePageContext
             hooks = [
-              ...hooks.slice(0, clientPageContextIndex + 1),
+              ...otherHooks.slice(0, clientPageContextIndex + 1),
               ...clientDataHooks,
-              ...hooks.slice(clientPageContextIndex + 1)
+              ...otherHooks.slice(clientPageContextIndex + 1)
             ]
+          } else {
+            hooks = [...otherHooks, ...clientDataHooks]
           }
-        } else {
-          // For client-side navigation: move all data hooks to client-side
-          hooks = hooks.map(hook => {
-            if (hook.dataEnv === 'default' && dataHookNames.includes(hook.name)) {
-              return { ...hook, env: 'client' as const }
-            }
-            return hook
-          })
         }
       }
       // For shared mode, keep the hooks as-is (they run on both sides)
