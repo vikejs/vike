@@ -265,7 +265,6 @@ function HooksLifecycle() {
   )
 }
 
-// Utility functions
 function shouldShowHook(
   hook: HookInfo,
   dataEnv: 'default' | 'client' | 'shared',
