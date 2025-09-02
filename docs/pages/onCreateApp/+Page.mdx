@@ -41,7 +41,7 @@ The `onCreateApp()` hook is called when `vike-vue` creates a new `app` instance 
 > You can use `pageContext.isRenderingHead` for applying your `onCreateApp()` logic only for rendering the `+Page.vue` component. (See example above.)
 
 In other words:
- - Upon the first page the user visits, there are three `onCreateApp()` calls: two on ther server-side (one for `+Page.vue` and a second one for `+Head.vue`), and one on the client-side (for hydration).
+ - Upon the first page the user visits, there are three `onCreateApp()` calls: two on the server-side (one for `+Page.vue` and a second one for `+Head.vue`), and one on the client-side (for hydration).
  - Upon client-side navigation, there is only one `onCreateApp()` call (on the client-side) for rendering the next page.
 
 If your page <Link href="/ssr">isn't SSR'd</Link> then, upon rendering the first page, there are only two `onCreateApp()` calls: one on the server-side (for `+Head.vue`), and another one on the client-side (for rendering).
