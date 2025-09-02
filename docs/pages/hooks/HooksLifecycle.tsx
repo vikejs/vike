@@ -260,6 +260,15 @@ function HooksLifecycle() {
         </div>
       </Box>
 
+      <Box style={{ padding: '1rem', marginBottom: '1.5rem' }}>
+        <h4 style={{ marginTop: 0, marginBottom: '0.5rem' }}>Server start</h4>
+        <ul style={{ marginBottom: 0 }}>
+          <li>
+            <Link href="/onCreateGlobalContext">`onCreateGlobalContext`</Link>
+          </li>
+        </ul>
+      </Box>
+
       <div
         style={{
           display: 'grid',
