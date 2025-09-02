@@ -125,18 +125,20 @@ const clientNavigationHooks: HookInfo[] = [
   ).map((hook) => ({ ...hook, env: 'client' }) satisfies HookInfo),
 ]
 
+const vikeDocsSelectedFramework = 'vike-docs:selected-framework'
+const vikeDocsHooksEnv = 'vike-docs:hooks-env'
 function HooksLifecycle() {
   const [selectedFramework, setSelectedFramework] = useState<'vike-react' | 'vike-vue' | 'vike-solid' | null>(null)
   const [dataHooks, setDataEnv] = useState<'server' | 'client' | 'shared'>('server')
 
   // Load from localStorage on mount
   useEffect(() => {
-    const savedFramework = localStorage.getItem('vike-docs-selected-framework') as
+    const savedFramework = localStorage.getItem(vikeDocsSelectedFramework) as
       | 'vike-react'
       | 'vike-vue'
       | 'vike-solid'
       | null
-    const savedDataEnv = localStorage.getItem('vike-docs-data-env') as 'server' | 'client' | 'shared' | null
+    const savedDataEnv = localStorage.getItem(vikeDocsHooksEnv) as 'server' | 'client' | 'shared' | null
 
     if (savedFramework) setSelectedFramework(savedFramework)
     if (savedDataEnv) setDataEnv(savedDataEnv)
@@ -145,14 +147,14 @@ function HooksLifecycle() {
   // Save to localStorage when changed
   useEffect(() => {
     if (selectedFramework) {
-      localStorage.setItem('vike-docs-selected-framework', selectedFramework)
+      localStorage.setItem(vikeDocsSelectedFramework, selectedFramework)
     } else {
-      localStorage.removeItem('vike-docs-selected-framework')
+      localStorage.removeItem(vikeDocsSelectedFramework)
     }
   }, [selectedFramework])
 
   useEffect(() => {
-    localStorage.setItem('vike-docs-data-env', dataHooks)
+    localStorage.setItem(vikeDocsHooksEnv, dataHooks)
   }, [dataHooks])
 
   function getFilteredHooks(phase: 'first-render' | 'client-navigation') {
@@ -232,10 +234,8 @@ function HooksLifecycle() {
         </div>
 
         <div>
-          <Link href="#environment">Hooks environment</Link>
           <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>
-            <Link href="/data#environment">Environment of `+data`</Link> and{' '}
-            <Link href="/onBeforeRender#environment">`+onBeforeRender`</Link>:
+            <Link href="#environment">Hooks environment</Link>
           </label>
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
             {[
