@@ -92,6 +92,8 @@ By default, the `data()` hook always runs on the server-side.
 
 By using <Link href="/file-env">`.shared.js` (or `.client.js`)</Link> you tell Vike to also (or only) load and execute `data()` on the client-side.
 
+See also: <Link href="/pageContext#lifecycle" />.
+
 > Alternatively, instead of using `.shared.js` and `.client.js`, you can modify the <Link href="/meta#example-modify-data-env">`meta.env` setting</Link> of the `data()` hook in a global fashion, removing the need to add `.shared.js` / `.client.js` to each of your `+data.js` files.
 
 ### `.client.js`
@@ -112,8 +114,7 @@ you tell Vike to load and execute `data()` also on the client-side:
 
 > In general, we recommend running `data()` only on the server-side because it's easier to write code that runs in only one environment.
 >
-> That said, if you want to minimize requests made to your server, then it can make sense to run `data()` also on the client-side. See:
-> - <Link href="/pageContext.json#avoid-pagecontext-json-requests" doNotInferSectionTitle noBreadcrumb />
+> That said, if you want to minimize requests made to your server, then it can make sense to run `data()` also on the client-side. See: <Link href="/pageContext.json#avoid-pagecontext-json-requests" doNotInferSectionTitle noBreadcrumb />.
 
 
 ## Examples

@@ -64,10 +64,11 @@ If you want to minimize requests made to your server, then you may want Vike to 
 
 Vike makes a `pageContext.json` request for a page if and only if one of the two following conditions is true:
 - The page has a server-only `data()`, `onCreatePageContext()`, or `onBeforeRender()` hook.
-  > See:
+  > See also:
   > - <Link href="/data#environment" />
   > - <Link href="/onBeforeRender#environment" />
   > - <Link href="/onCreatePageContext" />
+  > - <Link href="/pageContext#lifecycle" />
 - The `pageContextInit` at <Link href="/renderPage">`renderPage()`</Link> contains a property that is included in <Link href="/passToClient">`passToClient`</Link>.
   ```ts
   // Vike server middleware
