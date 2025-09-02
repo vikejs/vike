@@ -240,9 +240,9 @@ function HooksLifecycle() {
           <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>Data Environment:</label>
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
             {[
-              { key: 'server' as const, label: 'Server-only' },
-              { key: 'client' as const, label: 'Client-only' },
-              { key: 'shared' as const, label: 'Shared (server + client)' },
+              { key: 'server' as const, label: <code>.server.js</code> },
+              { key: 'client' as const, label: <code>.client.js</code> },
+              { key: 'shared' as const, label: <code>.shared.js</code> },
             ].map(({ key, label }) => (
               <button
                 key={key}
