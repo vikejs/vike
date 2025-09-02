@@ -53,7 +53,6 @@ const firstRenderHooks: HookInfo[] = [
   // Server-side hooks
   ...(
     [
-      onCreateApp,
       renderPage,
       onBeforeRoute,
       routing,
@@ -62,6 +61,7 @@ const firstRenderHooks: HookInfo[] = [
       { ...data, hooksEnv: ['server', 'shared'] },
       { ...onData, hooksEnv: ['server', 'shared'] },
       { ...onBeforeRender, hooksEnv: ['server', 'shared'] },
+      onCreateApp,
       onBeforeRenderHtml,
       onRenderHtml,
       onAfterRenderHtml,
@@ -116,9 +116,9 @@ const clientNavigationHooks: HookInfo[] = [
   ...(
     [
       { ...onData, hooksEnv: ['server'] },
-      onRenderClient,
       onCreateApp,
       onBeforeRenderClient,
+      onRenderClient,
       onAfterRenderClient,
       onPageTransitionEnd,
     ] satisfies Omit<HookInfo, 'env'>[]
