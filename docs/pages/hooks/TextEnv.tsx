@@ -170,8 +170,14 @@ function HooksLifecycle() {
     const hooks = getFilteredHooks(phase)
 
     return (
-      <div style={{ marginBottom: '2rem' }}>
-        <h4>{title}</h4>
+      <div style={{
+        marginBottom: '2rem',
+        border: '1px solid #e9ecef',
+        borderRadius: '8px',
+        padding: '1.5rem',
+        backgroundColor: '#fafbfc'
+      }}>
+        <h4 style={{ marginTop: 0, marginBottom: '1rem', color: '#2c3e50' }}>{title}</h4>
         <ol>
           {hooks.map((hook, index) => {
             const isGrayed = isHookGrayedOut(hook)
@@ -279,8 +285,14 @@ function HooksLifecycle() {
         </div>
       </div>
 
-      {renderHooksList('first-render', 'First Render')}
-      {renderHooksList('client-navigation', 'Client-side Navigation')}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+        gap: '2rem'
+      }}>
+        {renderHooksList('first-render', 'First Render')}
+        {renderHooksList('client-navigation', 'Client-side Navigation')}
+      </div>
 
       <div style={{
         marginTop: '2rem',
