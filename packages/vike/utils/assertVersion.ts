@@ -1,29 +1,37 @@
 export { assertVersion }
 export { isVersionOrAbove }
 
+import pc from '@brillout/picocolors'
 import { assert, assertUsage } from './assert.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
+import { joinEnglish } from './joinEnglish.js'
 assertIsNotBrowser()
 
-function assertVersion(
-  dependencyName: 'Vite' | 'Node.js',
-  versionActual: string,
-  versionExpected: `${number}.${number}.${number}`,
-) {
-  assert(versionActual)
-  assert(versionExpected)
+type Version = `${number}.${number}.${number}`
+
+function assertVersion(dependencyName: 'Vite' | 'Node.js', versionActual: string, versionExpected: Version[]) {
   assertUsage(
     isVersionOrAbove(versionActual, versionExpected),
-    `${dependencyName} ${versionActual} isn't supported, use ${dependencyName} >= ${versionExpected} instead.`,
+    `${pc.bold(dependencyName)} ${pc.red(pc.bold(versionActual))} isn't supported, use ${pc.bold(dependencyName)} ${joinEnglish(
+      [...versionExpected, 'above'].map((v) => pc.green(pc.bold(v))),
+      'or',
+    )}.`,
   )
 }
 
-function isVersionOrAbove(versionActual: string, versionExpected: `${number}.${number}.${number}`): boolean {
+function isVersionOrAbove(versionActual: string, versionExpected: Version[]): boolean | null {
+  assert(versionActual)
+  assert(versionExpected)
+  assert(versionExpected.length > 0)
+  return versionExpected.every((version) => compare(versionActual, version) !== false)
+}
+
+function compare(versionActual: string, versionExpected: Version): boolean | null {
   const p1 = parseVersion(versionActual)
   const p2 = parseVersion(versionExpected)
 
   // major
-  if (p1[0] !== p2[0]) return p1[0] > p2[0]
+  if (p1[0] !== p2[0]) return p1[0] > p2[0] ? true : null
   // minor
   if (p1[1] !== p2[1]) return p1[1] > p2[1]
   // patch

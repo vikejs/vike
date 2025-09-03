@@ -7,5 +7,11 @@ import { assertVersion } from './assertVersion.js'
 function assertNodeVersion() {
   if (!isNodeJS()) return
   const version = process.versions.node
-  assertVersion('Node.js', version, '22.12.0')
+  assertVersion(
+    'Node.js',
+    version,
+    ['22.15.0'],
+    // ['20.19.0', '22.12.0', '23.0.0']
+    // ['20.19.0', '22.12.0', '23.0.0']
+  )
 }

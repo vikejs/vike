@@ -211,7 +211,7 @@ function getGlobs(
       const globExcludePath = globRoot.excludeDir ? `'!${getGlobPath(globRoot.excludeDir, fileType)}'` : null
       const globOptions: Record<string, unknown> = { eager: isEager }
       if (query) {
-        const isNewViteInterface = isVersionOrAbove(viteVersion, '5.1.0')
+        const isNewViteInterface = isVersionOrAbove(viteVersion, ['5.1.0'])
         if (
           isNewViteInterface &&
           // When used for the old design, the new syntax breaks Vike's CI (surprinsigly so). I couldn't reproduce locally (I didn't dig much).

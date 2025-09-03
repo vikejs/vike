@@ -12,5 +12,6 @@ function joinEnglish(
   if (arr.length === 1) return colorizer(arr[0]!)
   const firsts = arr.slice(0, arr.length - 1)
   const last = arr[arr.length - 1]!
-  return firsts.map(colorizer).join(', ') + `, ${conjunction} ` + colorizer(last)
+  const lastComma = arr.length > 2 ? ',' : ''
+  return firsts.map(colorizer).join(', ') + `${lastComma} ${conjunction} ` + colorizer(last)
 }
