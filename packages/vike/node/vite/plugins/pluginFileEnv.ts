@@ -35,7 +35,7 @@ function pluginFileEnv(): Plugin {
         // In build, we use generateBundle() instead of the load() hook. Using load() works for dynamic imports in dev thanks to Vite's lazy transpiling, but it doesn't work in build because Rollup transpiles any dynamically imported module even if it's never actually imported.
         if (!viteDevServer) return
         if (!isV1Design()) return
-        if (skip(id)) return
+        if (skip(id, config.root)) return
         // For `.vue` files: https://github.com/vikejs/vike/issues/1912#issuecomment-2394981475
         if (id.endsWith('?direct')) id = id.slice(0, -1 * '?direct'.length)
         const moduleInfo = viteDevServer.moduleGraph.getModuleById(id)
@@ -58,7 +58,7 @@ function pluginFileEnv(): Plugin {
         id = normalizeId(id)
         // In dev, only using load() is enough as it also works for dynamic imports (see sibling comment).
         if (viteDevServer) return
-        if (skip(id)) return
+        if (skip(id, config.root)) return
         const isServerSide = isViteServerSide_extraSafe(config, this.environment, options)
         if (!isWrongEnv(id, isServerSide)) return
         const { importers } = this.getModuleInfo(id)!
@@ -79,7 +79,7 @@ function pluginFileEnv(): Plugin {
     generateBundle: {
       handler() {
         Array.from(this.getModuleIds())
-          .filter((id) => !skip(id))
+          .filter((id) => !skip(id, config.root))
           .forEach((moduleId) => {
             const mod = this.getModuleInfo(moduleId)!
             const { importers } = mod
@@ -161,6 +161,8 @@ function pluginFileEnv(): Plugin {
 
     return errMsg
   }
+}
+
 
   function isWrongEnv(moduleId: string, isServerSide: boolean): boolean {
     const modulePath = getModulePath(moduleId)
@@ -168,7 +170,7 @@ function pluginFileEnv(): Plugin {
     return modulePath.includes(suffixWrong)
   }
 
-  function skip(id: string): boolean {
+  function skip(id: string, userRootDir: string): boolean {
     // TO-DO/next-major-release: remove
     if (extractAssetsRE.test(id) || extractExportNamesRE.test(id)) return true
     if (!id.includes(getSuffix('client')) && !id.includes(getSuffix('server'))) return true
@@ -176,7 +178,7 @@ function pluginFileEnv(): Plugin {
     // Apply `.server.js` and `.client.js` only to user files
     if (id.includes('/node_modules/')) return true
     // Only user files
-    if (!id.startsWith(config.root)) return true
+    if (!id.startsWith(userRootDir)) return true
     return false
   }
 
@@ -187,4 +189,3 @@ function pluginFileEnv(): Plugin {
   function getModulePath(moduleId: string) {
     return moduleId.split('?')[0]!
   }
-}
