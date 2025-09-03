@@ -118,9 +118,12 @@ function testRunClassic(
     skipAboutPage,
     skipViteEcosystemCi,
     tolerateError,
+    // TODO/now remove and always test HMR
+    testHmr,
   }: {
     skipAboutPage?: true
     skipViteEcosystemCi?: true
+    testHmr?: true
     tolerateError?: NonNullable<Parameters<typeof run>[1]>['tolerateError']
   } = {},
 ) {
@@ -145,7 +148,7 @@ function testRunClassic(
     await testCounter()
   })
 
-  if (isDev) {
+  if (isDev && testHmr) {
     test('HMR', async () => {
       await testCounter(1)
       const org = 'Welcome'

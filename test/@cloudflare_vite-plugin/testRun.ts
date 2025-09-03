@@ -48,5 +48,9 @@ function getArgs(cmd: CMD): Args {
         if (args.logText.includes('The CSS browser target should be the same for both client and server')) return true
       },
     }
+  } else {
+    return {
+      testHmr: true,
+    }
   }
 }
