@@ -263,9 +263,9 @@ function HooksLifecycle() {
               <HookCall hook={{ ...onCreateGlobalContext, env: 'server' }} />
             </ol>
           </LifecycleBox>
-          {renderHooksList('first-render', 'First Render')}
+          {renderHooksList('first-render', 'First render')}
         </div>
-        <div>{renderHooksList('client-navigation', 'Client-side Navigation')}</div>
+        <div>{renderHooksList('client-navigation', 'Client-side navigation')}</div>
       </div>
     </div>
   )
