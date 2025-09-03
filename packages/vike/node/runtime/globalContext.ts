@@ -442,7 +442,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
   let virtualFileExportsGlobalEntry: Record<string, unknown> | undefined
   let err: unknown
   if (viteDevServer) {
-    if (!isRunnable(viteDevServer)) return { success: false }
+    assert(isRunnable(viteDevServer))
 
     /* We don't use runner.import() yet, because as of vite@7.0.6 (July 2025) runner.import() unexpectedly invalidates the module graph, which is a unexpected behavior that doesn't happen with ssrLoadModule()
     // Vite 6
