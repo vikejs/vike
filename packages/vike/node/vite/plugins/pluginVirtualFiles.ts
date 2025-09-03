@@ -25,7 +25,7 @@ import { isPlusFile } from '../shared/resolveVikeConfigInternal/crawlPlusFiles.j
 import { isTemporaryBuildFile } from '../shared/resolveVikeConfigInternal/transpileAndExecuteFile.js'
 import { getVikeConfigError } from '../../shared/getVikeConfigError.js'
 
-const filterIdInclued = new RegExp(`^(${escapeRegex(virtualFileIdPrefix1)}|${escapeRegex(virtualFileIdPrefix2)})`)
+const filterIdIncluded = new RegExp(`^(${escapeRegex(virtualFileIdPrefix1)}|${escapeRegex(virtualFileIdPrefix2)})`)
 
 function pluginVirtualFiles(): Plugin {
   let config: ResolvedConfig
@@ -41,7 +41,7 @@ function pluginVirtualFiles(): Plugin {
     resolveId: {
       filter: {
         id: {
-          include: filterIdInclued,
+          include: filterIdIncluded,
         },
       },
       handler(id) {
@@ -63,7 +63,7 @@ function pluginVirtualFiles(): Plugin {
     load: {
       filter: {
         id: {
-          include: filterIdInclued,
+          include: filterIdIncluded,
         },
       },
       async handler(id, options) {
