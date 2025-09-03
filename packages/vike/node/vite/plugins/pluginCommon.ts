@@ -142,7 +142,7 @@ function setDefault<Setting extends 'port' | 'host'>(
 /*
 import { version } from 'vite'
 function overrideViteDefaultSsrExternal(config: ResolvedConfig) {
-  if (!isVersionOrAbove(version, '5.0.12')) return
+  if (!isVersionMatch(version, '5.0.12')) return
   // @ts-ignore Not released yet: https://github.com/vitejs/vite/pull/10939/files#diff-5a3d42620df2c6b17e25f440ffdb67683dee7ef57317674d19f41d5f30502310L5
   config.ssr.external ??= true
 }

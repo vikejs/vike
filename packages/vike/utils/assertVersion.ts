@@ -1,5 +1,5 @@
 export { assertVersion }
-export { isVersionOrAbove }
+export { isVersionMatch }
 
 import pc from '@brillout/picocolors'
 import { assert, assertUsage } from './assert.js'
@@ -11,7 +11,7 @@ type Version = `${number}.${number}.${number}`
 
 function assertVersion(dependencyName: 'Vite' | 'Node.js', versionActual: string, versionExpectedList: Version[]) {
   assertUsage(
-    isVersionOrAbove(versionActual, versionExpectedList),
+    isVersionMatch(versionActual, versionExpectedList),
     `${pc.bold(dependencyName)} ${pc.red(pc.bold(versionActual))} isn't supported, use ${pc.bold(dependencyName)} ${joinEnglish(
       [...versionExpectedList, 'above'].map((v) => pc.green(pc.bold(v))),
       'or',
@@ -19,7 +19,7 @@ function assertVersion(dependencyName: 'Vite' | 'Node.js', versionActual: string
   )
 }
 
-function isVersionOrAbove(versionActual: string, versionExpectedList: Version[]): boolean {
+function isVersionMatch(versionActual: string, versionExpectedList: Version[]): boolean {
   assert(versionActual)
   assert(versionExpectedList)
   assert(versionExpectedList.length > 0)
