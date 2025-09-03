@@ -172,15 +172,9 @@ function HooksLifecycle() {
       <LifecycleBox>
         <h4 style={{ marginTop: 0, marginBottom: '1rem', color: '#2c3e50' }}>{title}</h4>
         <ol>
-          {hooks.map((hook, index) => {
-            const key = `${hook.name}-${hook.env}-${index}`
-            return (
-              <li key={key}>
-                <TextEnv2>{hook.env}</TextEnv2>{' '}
-                <Link href={hook.href}>{hook.notAHook ? hook.name : <code>{hook.name}</code>}</Link>
-              </li>
-            )
-          })}
+          {hooks.map((hook, index) => (
+            <HookCall key={`${hook.name}-${hook.env}-${index}`} hook={hook} />
+          ))}
         </ol>
       </LifecycleBox>
     )
@@ -276,6 +270,15 @@ function HooksLifecycle() {
         <div>{renderHooksList('client-navigation', 'Client-side Navigation')}</div>
       </div>
     </div>
+  )
+}
+
+function HookCall({ hook }: { hook: HookInfo }) {
+  return (
+    <li>
+      <TextEnv2>{hook.env}</TextEnv2>{' '}
+      <Link href={hook.href}>{hook.notAHook ? hook.name : <code>{hook.name}</code>}</Link>
+    </li>
   )
 }
 
