@@ -141,6 +141,6 @@ export function createProjectFileFilter(projectRoot: string): { filter: { id: Re
   return {
     filter: {
       id: new RegExp(`^${normalizedRoot}/(?!.*node_modules/).*\\.(js|ts|jsx|tsx|vue|svelte)(\\\?|$)`),
-    },
+    }
   }
 }

@@ -30,14 +30,14 @@ function pluginExtractExportNames(): Plugin {
     transform: {
       filter: { id: /[?&]extractExportNames(?:&|$)/ },
       async handler(src, id, options) {
-        id = normalizeId(id)
-        const isClientSide = !isViteServerSide_extraSafe(config, this.environment, options)
-        // Backward compatibility check (hook filter should already handle this)
-        if (extractExportNamesRE.test(id)) {
-          const code = await getExtractExportNamesCode(src, isClientSide, !isDev, id)
-          debug('id ' + id, ['result:\n' + code.code.trim(), 'src:\n' + src.trim()])
-          return code
-        }
+      id = normalizeId(id)
+      const isClientSide = !isViteServerSide_extraSafe(config, this.environment, options)
+      // Backward compatibility check (hook filter should already handle this)
+      if (extractExportNamesRE.test(id)) {
+        const code = await getExtractExportNamesCode(src, isClientSide, !isDev, id)
+        debug('id ' + id, ['result:\n' + code.code.trim(), 'src:\n' + src.trim()])
+        return code
+      }
       },
     },
     configureServer() {

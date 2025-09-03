@@ -59,24 +59,24 @@ function pluginExtractAssets(): Plugin[] {
       transform: {
         filter: { id: /[?&]extractAssets(?:&|$)/ },
         async handler(src, id, options) {
-          id = normalizeId(id)
-          // Backward compatibility check (hook filter should already handle this)
-          if (!extractAssetsRE.test(id)) {
-            return
-          }
-          if (isFixEnabled) {
-            // I'm guessing isFixEnabled can only be true when mixing both designs: https://github.com/vikejs/vike/issues/1480
-            assertV1Design(vikeConfig._pageConfigs, true)
-            assert(false)
-          }
-          const includeAssetsImportedByServer = resolveIncludeAssetsImportedByServer(vikeConfig.config)
-          assert(includeAssetsImportedByServer)
-          assert(!isViteServerSide_extraSafe(config, this.environment, options))
-          const importStatements = await getImportStatements(src)
-          const moduleNames = getImportedModules(importStatements)
-          const code = moduleNames.map((moduleName) => `import '${moduleName}';`).join('\n')
-          debugTransformResult(id, code, importStatements)
-          return rollupSourceMapRemove(code)
+        id = normalizeId(id)
+        // Backward compatibility check (hook filter should already handle this)
+        if (!extractAssetsRE.test(id)) {
+          return
+        }
+        if (isFixEnabled) {
+          // I'm guessing isFixEnabled can only be true when mixing both designs: https://github.com/vikejs/vike/issues/1480
+          assertV1Design(vikeConfig._pageConfigs, true)
+          assert(false)
+        }
+        const includeAssetsImportedByServer = resolveIncludeAssetsImportedByServer(vikeConfig.config)
+        assert(includeAssetsImportedByServer)
+        assert(!isViteServerSide_extraSafe(config, this.environment, options))
+        const importStatements = await getImportStatements(src)
+        const moduleNames = getImportedModules(importStatements)
+        const code = moduleNames.map((moduleName) => `import '${moduleName}';`).join('\n')
+        debugTransformResult(id, code, importStatements)
+        return rollupSourceMapRemove(code)
         },
       },
     },
@@ -92,67 +92,67 @@ function pluginExtractAssets(): Plugin[] {
       resolveId: {
         filter: { id: /\.(js|ts|jsx|tsx|mjs|cjs|vue|svelte)(\?|$)|[?&]extractAssets(?:&|$)/ },
         async handler(source, importer, options) {
-          if (isViteServerSide_extraSafe(config, this.environment, options)) {
-            // When building for the server, there should never be a `?extractAssets` query
-            assert(!extractAssetsRE.test(source))
-            assert(importer === undefined || !extractAssetsRE.test(importer))
-            return
-          }
+        if (isViteServerSide_extraSafe(config, this.environment, options)) {
+          // When building for the server, there should never be a `?extractAssets` query
+          assert(!extractAssetsRE.test(source))
+          assert(importer === undefined || !extractAssetsRE.test(importer))
+          return
+        }
 
-          // If there is no `importer` then `module` is an entry.
-          // We don't need to append `?extractAssets` to entries because they already have `?extractAssets` as Vike appends `?extractAssets` to entries by using `import.meta.glob('/**/*.page.server.js', { as: "extractAssets" })` (see `generateImportGlobs.ts`).
-          if (!importer) {
-            return
-          }
+        // If there is no `importer` then `module` is an entry.
+        // We don't need to append `?extractAssets` to entries because they already have `?extractAssets` as Vike appends `?extractAssets` to entries by using `import.meta.glob('/**/*.page.server.js', { as: "extractAssets" })` (see `generateImportGlobs.ts`).
+        if (!importer) {
+          return
+        }
 
-          // We only append `?extractAssets` if the parent module has `?extractAssets`
-          if (!extractAssetsRE.test(importer)) {
-            return
-          }
-          const includeAssetsImportedByServer = resolveIncludeAssetsImportedByServer(vikeConfig.config)
-          assert(includeAssetsImportedByServer)
+        // We only append `?extractAssets` if the parent module has `?extractAssets`
+        if (!extractAssetsRE.test(importer)) {
+          return
+        }
+        const includeAssetsImportedByServer = resolveIncludeAssetsImportedByServer(vikeConfig.config)
+        assert(includeAssetsImportedByServer)
 
-          let resolution: null | ResolvedId = null
-          try {
-            resolution = await this.resolve(source, importer, { skipSelf: true, ...options })
-          } catch {}
+        let resolution: null | ResolvedId = null
+        try {
+          resolution = await this.resolve(source, importer, { skipSelf: true, ...options })
+        } catch {}
 
-          // Sometimes Rollup fails to resolve. If it fails to resolve, we assume the dependency to be an npm package and we skip it. (I guess Rollup should always be able to resolve local dependencies?)
-          if (!resolution) return emptyModule(source, importer)
+        // Sometimes Rollup fails to resolve. If it fails to resolve, we assume the dependency to be an npm package and we skip it. (I guess Rollup should always be able to resolve local dependencies?)
+        if (!resolution) return emptyModule(source, importer)
 
-          const { id: file, external } = resolution
+        const { id: file, external } = resolution
 
-          // Nothing is externalized when building for the client-side
-          assert(external === false)
+        // Nothing is externalized when building for the client-side
+        assert(external === false)
 
-          // We include:
-          //  - CSS(/LESS/SCSS/...) files
-          //  - Asset files (`.svg`, `.pdf`, ...)
-          //  - URL imports (e.g. `import scriptUrl from './script.js?url.js'`)
-          if (styleFileRE.test(file) || isAsset(file) || urlRE.test(file)) {
-            debugOperation('INCLUDED', file, importer)
-            return resolution
-          }
+        // We include:
+        //  - CSS(/LESS/SCSS/...) files
+        //  - Asset files (`.svg`, `.pdf`, ...)
+        //  - URL imports (e.g. `import scriptUrl from './script.js?url.js'`)
+        if (styleFileRE.test(file) || isAsset(file) || urlRE.test(file)) {
+          debugOperation('INCLUDED', file, importer)
+          return resolution
+        }
 
-          // We erase `source` if its file doesn't contain JavaScript
-          if (!isScriptFile(file)) {
-            return emptyModule(file, importer)
-          }
+        // We erase `source` if its file doesn't contain JavaScript
+        if (!isScriptFile(file)) {
+          return emptyModule(file, importer)
+        }
 
-          // If the import path resolves to a file in `node_modules/`, we ignore that file:
-          //  - Direct CSS dependencies are included though, such as `import 'bootstrap/theme/dark.css'`. (Because the above if-branch for CSS files will add the file.)
-          //  - Loading CSS from a library (living in `node_modules/`) in a non-direct way is unconventional; we can safely not support this case. (I'm not aware of any library that does this.)
-          assertPosixPath(file)
-          if (file.includes('/node_modules/')) {
-            return emptyModule(file, importer)
-          }
-          // When a library is symlinked, it lives outside `root`.
-          assertPosixPath(config.root)
-          if (!file.startsWith(config.root)) {
-            return emptyModule(file, importer)
-          }
+        // If the import path resolves to a file in `node_modules/`, we ignore that file:
+        //  - Direct CSS dependencies are included though, such as `import 'bootstrap/theme/dark.css'`. (Because the above if-branch for CSS files will add the file.)
+        //  - Loading CSS from a library (living in `node_modules/`) in a non-direct way is unconventional; we can safely not support this case. (I'm not aware of any library that does this.)
+        assertPosixPath(file)
+        if (file.includes('/node_modules/')) {
+          return emptyModule(file, importer)
+        }
+        // When a library is symlinked, it lives outside `root`.
+        assertPosixPath(config.root)
+        if (!file.startsWith(config.root)) {
+          return emptyModule(file, importer)
+        }
 
-          return appendExtractAssetsQuery(file, importer)
+        return appendExtractAssetsQuery(file, importer)
         },
       },
     },
