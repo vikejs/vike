@@ -20,40 +20,40 @@ function pluginPreview(): Plugin {
     name: 'vike:pluginPreview',
     apply: applyPreview,
     config: {
-    handler() {
-      return {
-        appType: 'custom',
-      }
-    }
+      handler() {
+        return {
+          appType: 'custom',
+        }
+      },
     },
     configResolved: {
-    async handler(config_) {
-      config = config_
-      vikeConfig = await getVikeConfigInternal()
-      logDockerHint(config.preview.host)
-      // vikeConfig = await getVikeConfig(config)
-    }
+      async handler(config_) {
+        config = config_
+        vikeConfig = await getVikeConfigInternal()
+        logDockerHint(config.preview.host)
+        // vikeConfig = await getVikeConfig(config)
+      },
     },
     configurePreviewServer: {
-    handler(server) {
-      /* - Couldn't make `appType: 'mpa'` work as of npm:@brillout/vite@5.0.0-beta.14.0426910c
+      handler(server) {
+        /* - Couldn't make `appType: 'mpa'` work as of npm:@brillout/vite@5.0.0-beta.14.0426910c
          - This ugly hack to set appType for preview won't be need once https://github.com/vitejs/vite/pull/14855 is merged.
       config.appType = 'mpa'
       */
-      return () => {
-        const { isPrerenderingEnabledForAllPages, isPrerenderingEnabled } = vikeConfig.prerenderContext
-        assertDist(isPrerenderingEnabledForAllPages)
+        return () => {
+          const { isPrerenderingEnabledForAllPages, isPrerenderingEnabled } = vikeConfig.prerenderContext
+          assertDist(isPrerenderingEnabledForAllPages)
 
-        // We cannot re-use Vite's static middleware: https://github.com/vitejs/vite/pull/14836#issuecomment-1788540300
-        addStaticAssetsMiddleware(server.middlewares)
+          // We cannot re-use Vite's static middleware: https://github.com/vitejs/vite/pull/14836#issuecomment-1788540300
+          addStaticAssetsMiddleware(server.middlewares)
 
-        if (!isPrerenderingEnabledForAllPages) {
-          addSsrMiddleware(server.middlewares, config, true, isPrerenderingEnabled)
+          if (!isPrerenderingEnabledForAllPages) {
+            addSsrMiddleware(server.middlewares, config, true, isPrerenderingEnabled)
+          }
+
+          addStatic404Middleware(server.middlewares)
         }
-
-        addStatic404Middleware(server.middlewares)
-      }
-    }
+      },
     },
   }
   function assertDist(isPrerenderingEnabledForAllPages: boolean) {

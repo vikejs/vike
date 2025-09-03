@@ -22,9 +22,9 @@ function pluginProdBuildEntry(): Plugin[] {
       apply: 'build',
       enforce: 'post',
       configResolved: {
-      async handler(config_) {
-        config = config_
-      }
+        async handler(config_) {
+          config = config_
+        },
       },
     },
     ...serverProductionEntryPlugin({

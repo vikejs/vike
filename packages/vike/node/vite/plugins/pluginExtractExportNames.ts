@@ -25,32 +25,32 @@ function pluginExtractExportNames(): Plugin {
     name: 'vike:pluginExtractExportNames',
     enforce: 'post',
     transform: {
-    async handler(src, id, options) {
-      id = normalizeId(id)
-      const isClientSide = !isViteServerSide_extraSafe(config, this.environment, options)
-      if (extractExportNamesRE.test(id)) {
-        const code = await getExtractExportNamesCode(src, isClientSide, !isDev, id)
-        debug('id ' + id, ['result:\n' + code.code.trim(), 'src:\n' + src.trim()])
-        return code
-      }
-    }
+      async handler(src, id, options) {
+        id = normalizeId(id)
+        const isClientSide = !isViteServerSide_extraSafe(config, this.environment, options)
+        if (extractExportNamesRE.test(id)) {
+          const code = await getExtractExportNamesCode(src, isClientSide, !isDev, id)
+          debug('id ' + id, ['result:\n' + code.code.trim(), 'src:\n' + src.trim()])
+          return code
+        }
+      },
     },
     configureServer: {
-    handler() {
-      isDev = true
-    }
+      handler() {
+        isDev = true
+      },
     },
     configResolved: {
-    handler(config_) {
-      config = config_
-    }
+      handler(config_) {
+        config = config_
+      },
     },
     config: {
-    handler() {
-      if (debug.isActivated) {
-        return { logLevel: 'silent' }
-      }
-    }
+      handler() {
+        if (debug.isActivated) {
+          return { logLevel: 'silent' }
+        }
+      },
     },
   }
 }

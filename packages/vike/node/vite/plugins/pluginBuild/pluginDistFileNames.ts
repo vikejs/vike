@@ -19,96 +19,96 @@ function pluginDistFileNames(): Plugin {
     apply: 'build',
     enforce: 'post',
     configResolved: {
-    handler(config) {
-      const rollupOutputs = getRollupOutputs(config)
-      // We need to support multiple outputs: @vite/plugin-legacy adds an output, see https://github.com/vikejs/vike/issues/477#issuecomment-1406434802
-      rollupOutputs.forEach((rollupOutput) => {
-        if (!('entryFileNames' in rollupOutput)) {
-          rollupOutput.entryFileNames = (chunkInfo) => getEntryFileName(chunkInfo, config, true)
-        }
-        if (!('chunkFileNames' in rollupOutput)) {
-          rollupOutput.chunkFileNames = (chunkInfo) => getChunkFileName(chunkInfo, config)
-        }
-        if (!('assetFileNames' in rollupOutput)) {
-          rollupOutput.assetFileNames = (chunkInfo) => getAssetFileName(chunkInfo, config)
+      handler(config) {
+        const rollupOutputs = getRollupOutputs(config)
+        // We need to support multiple outputs: @vite/plugin-legacy adds an output, see https://github.com/vikejs/vike/issues/477#issuecomment-1406434802
+        rollupOutputs.forEach((rollupOutput) => {
+          if (!('entryFileNames' in rollupOutput)) {
+            rollupOutput.entryFileNames = (chunkInfo) => getEntryFileName(chunkInfo, config, true)
+          }
+          if (!('chunkFileNames' in rollupOutput)) {
+            rollupOutput.chunkFileNames = (chunkInfo) => getChunkFileName(chunkInfo, config)
+          }
+          if (!('assetFileNames' in rollupOutput)) {
+            rollupOutput.assetFileNames = (chunkInfo) => getAssetFileName(chunkInfo, config)
 
-          // This Vite plugin is sometimes applied twice => avoid assertUsage() error below
-          // - I don't know why this plugin can be applied twice for the same config. It happened when there was multiple Vike instances installed with one instance being a link to ~/code/vike/packages/vike/
-          ;(rollupOutput.assetFileNames as any).isTheOneSetByVike = true
-          assert((rollupOutput.assetFileNames as any).isTheOneSetByVike)
-        } else {
-          // If a user needs this:
-          //  - assertUsage() that the naming provided by the user ends with `.[hash][extname]`
-          //    - It's needed for getHash() of handleAssetsManifest()
-          //    - Asset URLs should always contain a hash: it's paramount for caching assets.
-          //    - If rollupOutput.assetFileNames is a function then use a wrapper function to apply the assertUsage()
-          assertUsage(
-            (rollupOutput.assetFileNames as any).isTheOneSetByVike,
-            "Setting Vite's configuration build.rollupOptions.output.assetFileNames is currently forbidden. Reach out if you need to use it.",
-          )
-        }
-        {
-          const manualChunksOriginal = rollupOutput.manualChunks
-          rollupOutput.manualChunks = function (id, ...args) {
-            if (manualChunksOriginal) {
-              if (isCallable(manualChunksOriginal)) {
-                const result = manualChunksOriginal.call(this, id, ...args)
-                if (result !== undefined) return result
-              } else {
-                assertUsage(
-                  false,
-                  "The Vite's configuration build.rollupOptions.output.manualChunks must be a function. Reach out if you need to set it to another value.",
-                )
+            // This Vite plugin is sometimes applied twice => avoid assertUsage() error below
+            // - I don't know why this plugin can be applied twice for the same config. It happened when there was multiple Vike instances installed with one instance being a link to ~/code/vike/packages/vike/
+            ;(rollupOutput.assetFileNames as any).isTheOneSetByVike = true
+            assert((rollupOutput.assetFileNames as any).isTheOneSetByVike)
+          } else {
+            // If a user needs this:
+            //  - assertUsage() that the naming provided by the user ends with `.[hash][extname]`
+            //    - It's needed for getHash() of handleAssetsManifest()
+            //    - Asset URLs should always contain a hash: it's paramount for caching assets.
+            //    - If rollupOutput.assetFileNames is a function then use a wrapper function to apply the assertUsage()
+            assertUsage(
+              (rollupOutput.assetFileNames as any).isTheOneSetByVike,
+              "Setting Vite's configuration build.rollupOptions.output.assetFileNames is currently forbidden. Reach out if you need to use it.",
+            )
+          }
+          {
+            const manualChunksOriginal = rollupOutput.manualChunks
+            rollupOutput.manualChunks = function (id, ...args) {
+              if (manualChunksOriginal) {
+                if (isCallable(manualChunksOriginal)) {
+                  const result = manualChunksOriginal.call(this, id, ...args)
+                  if (result !== undefined) return result
+                } else {
+                  assertUsage(
+                    false,
+                    "The Vite's configuration build.rollupOptions.output.manualChunks must be a function. Reach out if you need to set it to another value.",
+                  )
+                }
               }
-            }
 
-            // Disable CSS bundling to workaround https://github.com/vikejs/vike/issues/1815
-            // TO-DO/eventually: let's bundle CSS again once Rolldown replaces Rollup
-            if (id.endsWith('.css')) {
-              const userRootDir = config.root
-              if (id.startsWith(userRootDir)) {
-                assertPosixPath(id)
-                assertModuleId(id)
+              // Disable CSS bundling to workaround https://github.com/vikejs/vike/issues/1815
+              // TO-DO/eventually: let's bundle CSS again once Rolldown replaces Rollup
+              if (id.endsWith('.css')) {
+                const userRootDir = config.root
+                if (id.startsWith(userRootDir)) {
+                  assertPosixPath(id)
+                  assertModuleId(id)
 
-                let name: string
-                const isNodeModules = id.match(/node_modules\/([^\/]+)\/(?!.*node_modules)/)
-                if (isNodeModules) {
-                  name = isNodeModules[1]!
+                  let name: string
+                  const isNodeModules = id.match(/node_modules\/([^\/]+)\/(?!.*node_modules)/)
+                  if (isNodeModules) {
+                    name = isNodeModules[1]!
+                  } else {
+                    const filePath = getModuleFilePathAbsolute(id, config)
+                    name = filePath
+                    name = name.split('.').slice(0, -1).join('.') // remove file extension
+                    name = name.split('/').filter(Boolean).join('_')
+                  }
+
+                  // Make fileHash the same between local development and CI
+                  const idStable = path.posix.relative(userRootDir, id)
+                  // Don't remove `?` queries because each `id` should belong to a unique bundle.
+                  const hash = getIdHash(idStable)
+
+                  return `${name}-${hash}`
                 } else {
-                  const filePath = getModuleFilePathAbsolute(id, config)
-                  name = filePath
-                  name = name.split('.').slice(0, -1).join('.') // remove file extension
-                  name = name.split('/').filter(Boolean).join('_')
+                  let name: string
+                  const isVirtualModule = id.match(/virtual:([^:]+):/)
+                  if (isVirtualModule) {
+                    name = isVirtualModule[1]!
+                    assert(name)
+                  } else if (
+                    // https://github.com/vikejs/vike/issues/1818#issuecomment-2298478321
+                    id.startsWith('/__uno')
+                  ) {
+                    name = 'uno'
+                  } else {
+                    name = 'style'
+                  }
+                  const hash = getIdHash(id)
+                  return `${name}-${hash}`
                 }
-
-                // Make fileHash the same between local development and CI
-                const idStable = path.posix.relative(userRootDir, id)
-                // Don't remove `?` queries because each `id` should belong to a unique bundle.
-                const hash = getIdHash(idStable)
-
-                return `${name}-${hash}`
-              } else {
-                let name: string
-                const isVirtualModule = id.match(/virtual:([^:]+):/)
-                if (isVirtualModule) {
-                  name = isVirtualModule[1]!
-                  assert(name)
-                } else if (
-                  // https://github.com/vikejs/vike/issues/1818#issuecomment-2298478321
-                  id.startsWith('/__uno')
-                ) {
-                  name = 'uno'
-                } else {
-                  name = 'style'
-                }
-                const hash = getIdHash(id)
-                return `${name}-${hash}`
               }
             }
           }
-        }
-      })
-    }
+        })
+      },
     },
   }
 }
