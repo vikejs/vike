@@ -1382,30 +1382,6 @@ importers:
         specifier: ^6.3.2
         version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
 
-  test/assertFileEnv:
-    dependencies:
-      '@types/react':
-        specifier: ^18.0.8
-        version: 18.3.18
-      '@vitejs/plugin-react':
-        specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
-      react:
-        specifier: ^19.1.0
-        version: 19.1.0
-      react-dom:
-        specifier: ^19.1.0
-        version: 19.1.0(react@19.1.0)
-      vike:
-        specifier: 0.4.239
-        version: link:../../packages/vike
-      vike-react:
-        specifier: ^0.6.5
-        version: 0.6.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
-      vite:
-        specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
-
   test/cjs:
     dependencies:
       '@vitejs/plugin-react':
@@ -1492,6 +1468,30 @@ importers:
       vike-react:
         specifier: ^0.6.5
         version: 0.6.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vike@packages+vike)
+      vite:
+        specifier: ^6.3.2
+        version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
+
+  test/fileEnv:
+    dependencies:
+      '@types/react':
+        specifier: ^18.0.8
+        version: 18.3.18
+      '@vitejs/plugin-react':
+        specifier: ^4.7.0
+        version: 4.7.0(vite@6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3))
+      react:
+        specifier: ^19.1.0
+        version: 19.1.1
+      react-dom:
+        specifier: ^19.1.0
+        version: 19.1.1(react@19.1.1)
+      vike:
+        specifier: 0.4.239
+        version: link:../../packages/vike
+      vike-react:
+        specifier: ^0.6.5
+        version: 0.6.5(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(vike@packages+vike)
       vite:
         specifier: ^6.3.2
         version: 6.3.5(@types/node@24.3.0)(terser@5.38.1)(tsx@4.20.3)
