@@ -15,23 +15,23 @@ describe('isVersionOrAbove()', () => {
     expect(isVersionOrAbove('1.0.0', ['1.0.1'])).toBe(false)
 
     // Different major versions
-    expect(isVersionOrAbove('2.0.0', ['1.0.0'])).toBe(true) // higher major
-    expect(isVersionOrAbove('1.0.0', ['2.0.0'])).toBe(false) // lower major
+    expect(isVersionOrAbove('2.0.0', ['1.0.0'])).toBe(true)
+    expect(isVersionOrAbove('1.0.0', ['2.0.0'])).toBe(false)
   })
 
   it('multiple expected versions', () => {
-    // Must satisfy ANY of the expected versions
-    expect(isVersionOrAbove('2.0.0', ['1.0.0', '2.0.0'])).toBe(true)
-    expect(isVersionOrAbove('2.0.1', ['1.0.0', '2.0.0'])).toBe(true)
-    expect(isVersionOrAbove('2.1.0', ['1.0.0', '2.0.0'])).toBe(true)
+    expect(isVersionOrAbove('1.2.3', ['1.2.3', '2.3.4'])).toBe(true)
+    expect(isVersionOrAbove('1.2.4', ['1.2.3', '2.3.4'])).toBe(true)
+    expect(isVersionOrAbove('1.3.3', ['1.2.3', '2.3.4'])).toBe(true)
+    expect(isVersionOrAbove('1.2.2', ['1.2.3', '2.3.4'])).toBe(false)
 
-    expect(isVersionOrAbove('1.0.0', ['1.0.0', '2.0.0'])).toBe(true)
-    expect(isVersionOrAbove('1.0.1', ['1.0.0', '2.0.0'])).toBe(true)
-    expect(isVersionOrAbove('1.1.0', ['1.0.0', '2.0.0'])).toBe(true)
+    expect(isVersionOrAbove('2.3.4', ['1.2.3', '2.3.4'])).toBe(true)
+    expect(isVersionOrAbove('2.3.5', ['1.2.3', '2.3.4'])).toBe(true)
+    expect(isVersionOrAbove('2.4.4', ['1.2.3', '2.3.4'])).toBe(true)
+    expect(isVersionOrAbove('2.3.3', ['1.2.3', '2.3.4'])).toBe(false)
 
-    // Different majors
-    expect(isVersionOrAbove('0.9.0', ['1.0.0', '2.0.0'])).toBe(false) // lower than all
-    expect(isVersionOrAbove('3.0.0', ['1.0.0', '2.0.0'])).toBe(true) // higher than any
+    expect(isVersionOrAbove('0.9.0', ['1.0.0', '2.0.0'])).toBe(false)
+    expect(isVersionOrAbove('3.0.0', ['1.0.0', '2.0.0'])).toBe(true)
 
     expect(isVersionOrAbove('1.2.2', ['0.1.2', '1.2.3', '2.3.4'])).toBe(false)
     expect(isVersionOrAbove('1.2.3', ['0.1.2', '1.2.3', '2.3.4'])).toBe(true)
