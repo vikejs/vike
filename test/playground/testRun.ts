@@ -31,7 +31,7 @@ const rootDir = path.dirname(fileURLToPath(import.meta.url))
 
 function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   const isDev = cmd === 'npm run dev'
-  testRunClassic(cmd, { skipHmr: true })
+  testRunClassic(cmd, { testHmr: true })
   testSettingsInheritance({ isDev })
   testMarkdown()
   testMarkdownClientFile(isDev)
