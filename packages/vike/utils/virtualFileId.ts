@@ -9,11 +9,11 @@ assertIsNotBrowser()
 
 const idBase = 'virtual:vike:'
 // https://vitejs.dev/guide/api-plugin.html#virtual-modules-convention
-const prefix = '\0'
+const convention = '\0'
 
 function isVirtualFileId(id: string): boolean {
   if (id.startsWith(idBase)) return true
-  if (id.startsWith(prefix + idBase)) return true
+  if (id.startsWith(convention + idBase)) return true
   // https://github.com/vikejs/vike/issues/1985
   assertUsage(
     !id.includes(idBase),
@@ -25,17 +25,17 @@ function isVirtualFileId(id: string): boolean {
 }
 function addVirtualFileIdPrefix(id: string): string {
   assert(isVirtualFileId(id))
-  if (!id.startsWith(prefix)) {
-    id = prefix + id
+  if (!id.startsWith(convention)) {
+    id = convention + id
   }
-  assert(id.startsWith(prefix))
+  assert(id.startsWith(convention))
   return id
 }
 
 function removeVirtualFileIdPrefix(id: string): string {
-  if (id.startsWith(prefix)) {
-    id = id.slice(prefix.length)
+  if (id.startsWith(convention)) {
+    id = id.slice(convention.length)
   }
-  assert(!id.startsWith(prefix))
+  assert(!id.startsWith(convention))
   return id
 }
