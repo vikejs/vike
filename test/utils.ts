@@ -123,7 +123,7 @@ function testRunClassic(
   }: {
     skipAboutPage?: true
     skipViteEcosystemCi?: true
-    testHmr?: true
+    testHmr?: false | string
     isVue?: true
     tolerateError?: NonNullable<Parameters<typeof run>[1]>['tolerateError']
   } = {},
@@ -149,13 +149,13 @@ function testRunClassic(
     await testCounter()
   })
 
-  if (isDev && !testHmr) {
+  if (isDev && testHmr !== false) {
     test('HMR', async () => {
       await testCounter(1)
       const org = 'Welcome'
       const mod = 'Wilkommen'
       expect(await page.textContent('h1')).toBe(org)
-      editFile(`./pages/index/+Page.${isVue ? 'vue' : 'tsx'}`, (s) => s.replace(org, mod))
+      editFile(testHmr || `./pages/index/+Page.${isVue ? 'vue' : 'tsx'}`, (s) => s.replace(org, mod))
       await autoRetry(
         async () => {
           expect(await page.textContent('h1')).toBe(mod)

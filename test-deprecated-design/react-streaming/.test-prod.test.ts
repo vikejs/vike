@@ -1,2 +1,2 @@
 import { testRunClassic } from '../../test/utils'
-testRunClassic('npm run prod', { testHmr: true })
+testRunClassic('npm run prod', { testHmr: false })
