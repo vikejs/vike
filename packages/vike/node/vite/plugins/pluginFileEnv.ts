@@ -12,6 +12,7 @@ import {
   assertUsage,
   assertWarning,
   capitalizeFirstLetter,
+  escapeRegex,
   isFilePathAbsolute,
   joinEnglish,
   rollupSourceMapRemove,
@@ -30,11 +31,13 @@ const skipNodeModules = '/node_modules/'
 
 const filterRolldown = {
   id: {
+    include: (['client', 'server'] as const).map((env) => new RegExp(`${escapeRegex(getSuffix(env))}`)),
     exclude: [`**${skipNodeModules}**`],
   },
 }
 const filterFunction = (id: string) => {
   if (id.includes(skipNodeModules)) return false
+  if (!id.includes(getSuffix('client')) && !id.includes(getSuffix('server'))) return false
   return true
 }
 
@@ -187,9 +190,9 @@ function isWrongEnv(moduleId: string, isServerSide: boolean): boolean {
 
 function skip(id: string, userRootDir: string): boolean {
   assert(!id.includes(skipNodeModules))
+  assert(id.includes(getSuffix('client')) || id.includes(getSuffix('server')))
   // TO-DO/next-major-release: remove
   if (extractAssetsRE.test(id) || extractExportNamesRE.test(id)) return true
-  if (!id.includes(getSuffix('client')) && !id.includes(getSuffix('server'))) return true
   if (getModulePath(id).endsWith('.css')) return true
   // Only user files
   if (!id.startsWith(userRootDir)) return true
