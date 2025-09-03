@@ -29,8 +29,6 @@ const PUBLIC_ENV_ALLOWLIST = [
   'STORYBOOK',
 ]
 
-
-
 function pluginEnvVars(): Plugin {
   let envsAll: Record<string, string>
   let config: ResolvedConfig
