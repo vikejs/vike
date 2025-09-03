@@ -33,16 +33,16 @@ function isVersionOrAbove(versionActual: string, versionExpected: Version[]): bo
     return expectedParts[0] === actualMajor
   })
 
-  // If there are versions with the same major, check if actual satisfies any of them
   if (versionExpectedSameMajor.length > 0) {
+    // If there are versions with the same major, check if actual satisfies any of them
     return versionExpectedSameMajor.some((version) => compare(versionActual, version))
+  } else {
+    // If no same major versions, check if actual satisfies any version with lower major
+    return versionExpected.some((version) => {
+      const expectedParts = parseVersion(version)
+      return actualMajor > expectedParts[0]
+    })
   }
-
-  // If no same major versions, check if actual satisfies any version with lower major
-  return versionExpected.some((version) => {
-    const expectedParts = parseVersion(version)
-    return actualMajor > expectedParts[0]
-  })
 }
 
 function compare(versionActual: string, versionExpected: Version): boolean {
