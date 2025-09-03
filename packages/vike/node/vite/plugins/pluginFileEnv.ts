@@ -25,12 +25,26 @@ import { normalizeId } from '../shared/normalizeId.js'
 import { isV1Design } from '../shared/resolveVikeConfigInternal.js'
 import { isViteServerSide, isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 
+// Apply `.server.js` and `.client.js` only to user files
+const skipNodeModules = '/node_modules/'
+
+const filterRolldown = {
+  id: {
+    exclude: [`**${skipNodeModules}**`],
+  },
+}
+const filterFunction = (id: string) => {
+  if (id.includes(skipNodeModules)) return false
+  return true
+}
+
 function pluginFileEnv(): Plugin {
   let config: ResolvedConfig
   let viteDevServer: ViteDevServer | undefined
   return {
     name: 'vike:pluginFileEnv',
     load: {
+      filter: filterRolldown,
       handler(id, options) {
         // In build, we use generateBundle() instead of the load() hook. Using load() works for dynamic imports in dev thanks to Vite's lazy transpiling, but it doesn't work in build because Rollup transpiles any dynamically imported module even if it's never actually imported.
         if (!viteDevServer) return
@@ -54,6 +68,7 @@ function pluginFileEnv(): Plugin {
     },
     // In production, we have to use transform() to replace modules with a runtime error because generateBundle() doesn't work for dynamic imports. In production, dynamic imports can only be verified at runtime.
     transform: {
+      filter: filterRolldown,
       async handler(code, id, options) {
         id = normalizeId(id)
         // In dev, only using load() is enough as it also works for dynamic imports (see sibling comment).
@@ -79,6 +94,7 @@ function pluginFileEnv(): Plugin {
     generateBundle: {
       handler() {
         Array.from(this.getModuleIds())
+          .filter(filterFunction)
           .filter((id) => !skip(id, config.root))
           .forEach((moduleId) => {
             const mod = this.getModuleInfo(moduleId)!
@@ -170,12 +186,11 @@ function isWrongEnv(moduleId: string, isServerSide: boolean): boolean {
 }
 
 function skip(id: string, userRootDir: string): boolean {
+  assert(!id.includes(skipNodeModules))
   // TO-DO/next-major-release: remove
   if (extractAssetsRE.test(id) || extractExportNamesRE.test(id)) return true
   if (!id.includes(getSuffix('client')) && !id.includes(getSuffix('server'))) return true
   if (getModulePath(id).endsWith('.css')) return true
-  // Apply `.server.js` and `.client.js` only to user files
-  if (id.includes('/node_modules/')) return true
   // Only user files
   if (!id.startsWith(userRootDir)) return true
   return false
