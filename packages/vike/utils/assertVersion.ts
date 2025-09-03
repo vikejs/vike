@@ -28,7 +28,7 @@ function isVersionOrAbove(versionActual: string, versionExpected: Version[]): bo
   const actualMajor = actualParts[0]
 
   // Find all expected versions that have the same major version as actual
-  const sameMajorVersions = versionExpected.filter(version => {
+  const sameMajorVersions = versionExpected.filter((version) => {
     const expectedParts = parseVersion(version)
     return expectedParts[0] === actualMajor
   })
