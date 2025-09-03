@@ -15,8 +15,10 @@ function pluginModuleBanner(): Plugin {
     name: 'vike:build:pluginModuleBanner',
     enforce: 'post',
     apply: 'build',
-    configResolved(config_) {
-      config = config_
+    configResolved: {
+      handler(config_) {
+        config = config_
+      }
     },
     transform: {
       order: 'post',

@@ -21,8 +21,9 @@ function pluginDev(): Plugin[] {
     {
       name: 'vike:pluginDev',
       apply: applyDev,
-      config() {
-        return {
+      config: {
+        handler() {
+          return {
           appType: 'custom',
           // TO-DO/next-major-release: remove (AFAICT we only need to use config.optimizeDeps for the old design)
           optimizeDeps: {
@@ -62,16 +63,19 @@ function pluginDev(): Plugin[] {
             ],
           },
         } satisfies UserConfig
-      },
-      async configResolved(config_) {
-        config = config_
-        await determineOptimizeDeps(config)
-        await determineFsAllowList(config)
-        if (!isErrorDebug()) {
-          await installHttpRequestAsyncStore()
-          improveViteLogs(config)
         }
-        logDockerHint(config.server.host)
+      },
+      configResolved: {
+        async handler(config_) {
+          config = config_
+          await determineOptimizeDeps(config)
+          await determineFsAllowList(config)
+          if (!isErrorDebug()) {
+            await installHttpRequestAsyncStore()
+            improveViteLogs(config)
+          }
+          logDockerHint(config.server.host)
+        }
       },
     },
     {

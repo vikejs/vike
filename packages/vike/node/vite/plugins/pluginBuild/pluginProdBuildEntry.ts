@@ -21,8 +21,10 @@ function pluginProdBuildEntry(): Plugin[] {
       name: 'vike:build:pluginProdBuildEntry',
       apply: 'build',
       enforce: 'post',
-      async configResolved(config_) {
-        config = config_
+      configResolved: {
+        async handler(config_) {
+          config = config_
+        }
       },
     },
     ...serverProductionEntryPlugin({

@@ -18,8 +18,9 @@ function pluginDistFileNames(): Plugin {
     name: 'vike:build:pluginDistFileNames',
     apply: 'build',
     enforce: 'post',
-    configResolved(config) {
-      const rollupOutputs = getRollupOutputs(config)
+    configResolved: {
+      handler(config) {
+        const rollupOutputs = getRollupOutputs(config)
       // We need to support multiple outputs: @vite/plugin-legacy adds an output, see https://github.com/vikejs/vike/issues/477#issuecomment-1406434802
       rollupOutputs.forEach((rollupOutput) => {
         if (!('entryFileNames' in rollupOutput)) {
@@ -107,6 +108,7 @@ function pluginDistFileNames(): Plugin {
           }
         }
       })
+      }
     },
   }
 }

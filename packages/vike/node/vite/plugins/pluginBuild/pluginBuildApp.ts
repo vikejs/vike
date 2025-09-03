@@ -52,25 +52,27 @@ function pluginBuildApp(): Plugin[] {
     {
       name: 'vike:build:pluginBuildApp',
       apply: 'build',
-      config(config) {
-        return {
-          environments: {
-            ssr: {
-              consumer: 'server',
-              build: {
-                outDir: resolveOutDir(config, true),
-                ssr: true,
+      config: {
+        handler(config) {
+          return {
+            environments: {
+              ssr: {
+                consumer: 'server',
+                build: {
+                  outDir: resolveOutDir(config, true),
+                  ssr: true,
+                },
+              },
+              client: {
+                consumer: 'client',
+                build: {
+                  outDir: resolveOutDir(config, false),
+                  copyPublicDir: true,
+                  ssr: false,
+                },
               },
             },
-            client: {
-              consumer: 'client',
-              build: {
-                outDir: resolveOutDir(config, false),
-                copyPublicDir: true,
-                ssr: false,
-              },
-            },
-          },
+          }
         }
       },
     },
@@ -78,9 +80,11 @@ function pluginBuildApp(): Plugin[] {
       name: 'vike:build:pluginBuildApp:autoFullBuild:pre',
       apply: 'build',
       enforce: 'pre',
-      async configResolved(config_) {
-        config = config_
-        await abortViteBuildSsr()
+      configResolved: {
+        async handler(config_) {
+          config = config_
+          await abortViteBuildSsr()
+        }
       },
       // TO-DO/eventually: stop using this writeBundle() hack and, instead, use the buildApp() implementation above.
       // - Could it cause issues if a tool uses the writeBundle() hack together with getVikeConfig() ?

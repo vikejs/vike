@@ -60,8 +60,10 @@ function pluginBuildConfig(): Plugin[] {
           return { build }
         },
       },
-      buildStart() {
-        onSetupBuild()
+      buildStart: {
+        handler() {
+          onSetupBuild()
+        }
       },
     },
   ]

@@ -26,45 +26,55 @@ function pluginVirtualFiles(): Plugin {
   let config: ResolvedConfig
   return {
     name: 'vike:pluginVirtualFiles',
-    async configResolved(config_) {
-      config = config_
-      // TO-DO/next-major-release: remove
-      if (!isV1Design()) config.experimental.importGlobRestoreExtension = true
-    },
-    resolveId(id) {
-      if (isVirtualFileId(id)) {
-        return addVirtualFileIdPrefix(id)
+    configResolved: {
+      async handler(config_) {
+        config = config_
+        // TO-DO/next-major-release: remove
+        if (!isV1Design()) config.experimental.importGlobRestoreExtension = true
       }
     },
-    async handleHotUpdate(ctx) {
-      try {
-        return await handleHotUpdate(ctx, config)
-      } catch (err) {
-        // Vite swallows errors thrown by handleHotUpdate()
-        console.error(err)
-        throw err
+    resolveId: {
+      handler(id) {
+        if (isVirtualFileId(id)) {
+          return addVirtualFileIdPrefix(id)
+        }
       }
     },
-    async load(id, options) {
-      if (!isVirtualFileId(id)) return undefined
-      id = removeVirtualFileIdPrefix(id)
-      const isDev = config._isDev
-      assert(typeof isDev === 'boolean')
+    handleHotUpdate: {
+      async handler(ctx) {
+        try {
+          return await handleHotUpdate(ctx, config)
+        } catch (err) {
+          // Vite swallows errors thrown by handleHotUpdate()
+          console.error(err)
+          throw err
+        }
+      }
+    },
+    load: {
+      async handler(id, options) {
+        if (!isVirtualFileId(id)) return undefined
+        id = removeVirtualFileIdPrefix(id)
+        const isDev = config._isDev
+        assert(typeof isDev === 'boolean')
 
-      const idParsed = parseVirtualFileId(id)
-      if (idParsed) {
-        if (idParsed.type === 'page-entry') {
-          const code = await generateVirtualFilePageEntry(id, isDev)
-          return code
-        }
-        if (idParsed.type === 'global-entry') {
-          const code = await generateVirtualFileGlobalEntryWithOldDesign(id, options, config, this.environment, isDev)
-          return code
+        const idParsed = parseVirtualFileId(id)
+        if (idParsed) {
+          if (idParsed.type === 'page-entry') {
+            const code = await generateVirtualFilePageEntry(id, isDev)
+            return code
+          }
+          if (idParsed.type === 'global-entry') {
+            const code = await generateVirtualFileGlobalEntryWithOldDesign(id, options, config, this.environment, isDev)
+            return code
+          }
         }
       }
     },
-    configureServer(server) {
-      handleFileAddRemove(server, config)
+    configureServer: {
+      handler(server) {
+        handleFileAddRemove(server, config)
+      }
     },
   }
 }
