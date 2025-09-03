@@ -36,51 +36,51 @@ function pluginFileEnv(): Plugin {
     load: {
       filter: { id: /\.(js|ts|jsx|tsx|mjs|cjs)(\?|$)/ },
       handler(id, options) {
-      // In build, we use generateBundle() instead of the load() hook. Using load() works for dynamic imports in dev thanks to Vite's lazy transpiling, but it doesn't work in build because Rollup transpiles any dynamically imported module even if it's never actually imported.
-      if (!viteDevServer) return
-      if (!isV1Design()) return
-      // Backward compatibility check (hook filter should already handle this)
-      if (skip(id)) return
-      // For `.vue` files: https://github.com/vikejs/vike/issues/1912#issuecomment-2394981475
-      if (id.endsWith('?direct')) id = id.slice(0, -1 * '?direct'.length)
-      const moduleInfo = viteDevServer.moduleGraph.getModuleById(id)
-      assert(moduleInfo)
-      const importers: string[] = Array.from(moduleInfo.importers)
-        .map((m) => m.id)
-        .filter((id) => id !== null)
-      assertFileEnv(
-        id,
-        isViteServerSide_extraSafe(config, this.environment, options),
-        importers,
-        // In dev, we only show a warning because we don't want to disrupt when the user plays with settings such as [ssr](https://vike.dev/ssr).
-        true,
-      )
+        // In build, we use generateBundle() instead of the load() hook. Using load() works for dynamic imports in dev thanks to Vite's lazy transpiling, but it doesn't work in build because Rollup transpiles any dynamically imported module even if it's never actually imported.
+        if (!viteDevServer) return
+        if (!isV1Design()) return
+        // Backward compatibility check (hook filter should already handle this)
+        if (skip(id)) return
+        // For `.vue` files: https://github.com/vikejs/vike/issues/1912#issuecomment-2394981475
+        if (id.endsWith('?direct')) id = id.slice(0, -1 * '?direct'.length)
+        const moduleInfo = viteDevServer.moduleGraph.getModuleById(id)
+        assert(moduleInfo)
+        const importers: string[] = Array.from(moduleInfo.importers)
+          .map((m) => m.id)
+          .filter((id) => id !== null)
+        assertFileEnv(
+          id,
+          isViteServerSide_extraSafe(config, this.environment, options),
+          importers,
+          // In dev, we only show a warning because we don't want to disrupt when the user plays with settings such as [ssr](https://vike.dev/ssr).
+          true,
+        )
       },
     },
     transform: {
       filter: { id: /\.(js|ts|jsx|tsx|mjs|cjs)(\?|$)/ },
       async handler(code, id, options) {
-    // In production, we have to use transform() to replace modules with a runtime error because generateBundle() doesn't work for dynamic imports. In production, dynamic imports can only be verified at runtime.
-      id = normalizeId(id)
-      // In dev, only using load() is enough as it also works for dynamic imports (see sibling comment).
-      if (viteDevServer) return
-      // Backward compatibility check (hook filter should already handle this)
-      if (skip(id)) return
-      const isServerSide = isViteServerSide_extraSafe(config, this.environment, options)
-      if (!isWrongEnv(id, isServerSide)) return
-      const { importers } = this.getModuleInfo(id)!
-      // Throwing a verbose error doesn't waste client-side KBs as dynamic imports are code split.
-      const errMsg = getErrorMessage(id, isServerSide, importers, false, true)
-      // We have to inject empty exports to avoid Rollup complaining about missing exports, see https://gist.github.com/brillout/5ea45776e65bd65100a52ecd7bfda3ff
-      const { exportNames } = await getExportNames(code)
-      return rollupSourceMapRemove(
-        [
-          `throw new Error(${JSON.stringify(errMsg)});`,
-          ...exportNames.map((name) =>
-            name === 'default' ? 'export default undefined;' : `export const ${name} = undefined;`,
-          ),
-        ].join('\n'),
-      )
+        // In production, we have to use transform() to replace modules with a runtime error because generateBundle() doesn't work for dynamic imports. In production, dynamic imports can only be verified at runtime.
+        id = normalizeId(id)
+        // In dev, only using load() is enough as it also works for dynamic imports (see sibling comment).
+        if (viteDevServer) return
+        // Backward compatibility check (hook filter should already handle this)
+        if (skip(id)) return
+        const isServerSide = isViteServerSide_extraSafe(config, this.environment, options)
+        if (!isWrongEnv(id, isServerSide)) return
+        const { importers } = this.getModuleInfo(id)!
+        // Throwing a verbose error doesn't waste client-side KBs as dynamic imports are code split.
+        const errMsg = getErrorMessage(id, isServerSide, importers, false, true)
+        // We have to inject empty exports to avoid Rollup complaining about missing exports, see https://gist.github.com/brillout/5ea45776e65bd65100a52ecd7bfda3ff
+        const { exportNames } = await getExportNames(code)
+        return rollupSourceMapRemove(
+          [
+            `throw new Error(${JSON.stringify(errMsg)});`,
+            ...exportNames.map((name) =>
+              name === 'default' ? 'export default undefined;' : `export const ${name} = undefined;`,
+            ),
+          ].join('\n'),
+        )
       },
     },
     generateBundle() {

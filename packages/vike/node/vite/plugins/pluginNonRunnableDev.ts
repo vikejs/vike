@@ -53,19 +53,19 @@ function pluginNonRunnableDev(): Plugin {
         ),
       },
       handler(code, id) {
-      if (!config._isDev) return
-      const idWithoutQuery = id.split('?')[0]!
-      // Backward compatibility check (hook filter should already handle this)
-      if (idWithoutQuery !== distFileIsNonRunnableDev && idWithoutQuery !== distFileGlobalContext) return
-      if (isRunnableDevEnvironment(this.environment)) return
-      const { magicString, getMagicStringResult } = getMagicString(code, id)
-      if (idWithoutQuery === distFileIsNonRunnableDev) {
-        magicString.replaceAll('__VIKE__IS_NON_RUNNABLE_DEV', JSON.stringify(true))
-      }
-      if (idWithoutQuery === distFileGlobalContext) {
-        magicString.replaceAll('__VIKE__DYNAMIC_IMPORT', 'import')
-      }
-      return getMagicStringResult()
+        if (!config._isDev) return
+        const idWithoutQuery = id.split('?')[0]!
+        // Backward compatibility check (hook filter should already handle this)
+        if (idWithoutQuery !== distFileIsNonRunnableDev && idWithoutQuery !== distFileGlobalContext) return
+        if (isRunnableDevEnvironment(this.environment)) return
+        const { magicString, getMagicStringResult } = getMagicString(code, id)
+        if (idWithoutQuery === distFileIsNonRunnableDev) {
+          magicString.replaceAll('__VIKE__IS_NON_RUNNABLE_DEV', JSON.stringify(true))
+        }
+        if (idWithoutQuery === distFileGlobalContext) {
+          magicString.replaceAll('__VIKE__DYNAMIC_IMPORT', 'import')
+        }
+        return getMagicStringResult()
       },
     },
   }

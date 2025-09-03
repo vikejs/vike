@@ -37,10 +37,10 @@ function pluginVirtualFiles(): Plugin {
     resolveId: {
       filter: { id: /^virtual:vike:/ },
       handler(id) {
-      // Backward compatibility check (hook filter should already handle this)
-      if (isVirtualFileId(id)) {
-        return addVirtualFileIdPrefix(id)
-      }
+        // Backward compatibility check (hook filter should already handle this)
+        if (isVirtualFileId(id)) {
+          return addVirtualFileIdPrefix(id)
+        }
       },
     },
     load: {
@@ -48,21 +48,21 @@ function pluginVirtualFiles(): Plugin {
       async handler(id, options) {
         // Backward compatibility check (hook filter should already handle this)
         if (!isVirtualFileId(id)) return undefined
-      id = removeVirtualFileIdPrefix(id)
-      const isDev = config._isDev
-      assert(typeof isDev === 'boolean')
+        id = removeVirtualFileIdPrefix(id)
+        const isDev = config._isDev
+        assert(typeof isDev === 'boolean')
 
-      const idParsed = parseVirtualFileId(id)
-      if (idParsed) {
-        if (idParsed.type === 'page-entry') {
-          const code = await generateVirtualFilePageEntry(id, isDev)
-          return code
+        const idParsed = parseVirtualFileId(id)
+        if (idParsed) {
+          if (idParsed.type === 'page-entry') {
+            const code = await generateVirtualFilePageEntry(id, isDev)
+            return code
+          }
+          if (idParsed.type === 'global-entry') {
+            const code = await generateVirtualFileGlobalEntryWithOldDesign(id, options, config, this.environment, isDev)
+            return code
+          }
         }
-        if (idParsed.type === 'global-entry') {
-          const code = await generateVirtualFileGlobalEntryWithOldDesign(id, options, config, this.environment, isDev)
-          return code
-        }
-      }
       },
     },
     async handleHotUpdate(ctx) {
