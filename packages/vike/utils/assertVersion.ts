@@ -23,7 +23,7 @@ function isVersionOrAbove(versionActual: string, versionExpected: Version[]): bo
   assert(versionActual)
   assert(versionExpected)
   assert(versionExpected.length > 0)
-  return versionExpected.every((version) => compare(versionActual, version) !== false)
+  return versionExpected.some((version) => compare(versionActual, version) === true)
 }
 
 function compare(versionActual: string, versionExpected: Version): boolean {
