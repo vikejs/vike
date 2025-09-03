@@ -155,7 +155,7 @@ function testRunClassic(
       const org = 'Welcome'
       const mod = 'Wilkommen'
       expect(await page.textContent('h1')).toBe(org)
-      editFile(`./pages/index/+Page.${isVue ? 'vue' : 'jsx'}`, (s) => s.replace(org, mod))
+      editFile(`./pages/index/+Page.${isVue ? 'vue' : 'tsx'}`, (s) => s.replace(org, mod))
       await autoRetry(
         async () => {
           expect(await page.textContent('h1')).toBe(mod)
