@@ -6,6 +6,22 @@ import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 import { getMagicString } from '../shared/getMagicString.js'
 
+const skipNodeModules = '/node_modules/'
+const skipIrrelevant = 'import.meta.env.'
+const filterRolldown = {
+  id: {
+    exclude: `**${skipNodeModules}**`,
+  },
+  code: {
+    include: skipIrrelevant,
+  },
+}
+const filterFunction = (id: string, code: string) => {
+  if (id.includes(skipNodeModules)) return false
+  if (!code.includes(skipIrrelevant)) return false
+  return true
+}
+
 function pluginReplaceConstants(): Plugin {
   let config: ResolvedConfig
   return {
@@ -18,13 +34,13 @@ function pluginReplaceConstants(): Plugin {
       },
     },
     transform: {
+      filter: filterRolldown,
       handler(code, id, options) {
         id = normalizeId(id)
         assertPosixPath(id)
-        if (id.includes('/node_modules/')) return
         assertPosixPath(config.root)
-        if (!id.startsWith(config.root)) return
-        if (!code.includes('import.meta.env.')) return
+        if (!id.startsWith(config.root)) return // skip linked dependencies
+        assert(filterFunction(id, code))
         const isBuild = config.command === 'build'
         assert(isBuild)
 

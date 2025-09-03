@@ -5,6 +5,14 @@ import { removeVirtualFileIdPrefix } from '../../utils.js'
 import { getMagicString } from '../../shared/getMagicString.js'
 import { isViteServerSide_extraSafe } from '../../shared/isViteServerSide.js'
 
+const skipNodeModules = '/node_modules/'
+const filterRolldown = {
+  id: {
+    exclude: `**${skipNodeModules}**`,
+  },
+}
+const filterFunction = (id: string) => !id.includes(skipNodeModules)
+
 // Rollup's banner feature doesn't work with Vite: https://github.com/vitejs/vite/issues/8412
 // But, anyways, we want to prepend the banner at the beginning of each module, not at the beginning of each file (I believe that's what Rollup's banner feature does).
 
@@ -21,6 +29,7 @@ function pluginModuleBanner(): Plugin {
       },
     },
     transform: {
+      filter: filterRolldown,
       order: 'post',
       handler(code, id, options) {
         if (

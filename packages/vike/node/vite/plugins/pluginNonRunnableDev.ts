@@ -6,6 +6,7 @@ import {
   assertIsNotProductionRuntime,
   requireResolveDistFile,
   isRunnableDevEnvironment,
+  assert,
 } from '../utils.js'
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { retrievePageAssetsDev } from '../../runtime/renderPage/getPageAssets/retrievePageAssetsDev.js'
@@ -35,6 +36,17 @@ declare global {
 function pluginNonRunnableDev(): Plugin {
   const distFileIsNonRunnableDev = requireResolveDistFile('dist/esm/utils/isNonRunnableDev.js')
   const distFileGlobalContext = requireResolveDistFile('dist/esm/node/runtime/globalContext.js')
+
+  const filterRolldown = {
+    id: {
+      include: [distFileIsNonRunnableDev, distFileGlobalContext],
+    },
+  }
+  const filterFunction = (id: string) => {
+    const idWithoutQuery = id.split('?')[0]!
+    return idWithoutQuery === distFileIsNonRunnableDev || idWithoutQuery === distFileGlobalContext
+  }
+
   let config: ResolvedConfig
   return {
     name: 'vike:pluginNonRunnableDev',
@@ -49,10 +61,11 @@ function pluginNonRunnableDev(): Plugin {
       },
     },
     transform: {
+      filter: filterRolldown,
       handler(code, id) {
         if (!config._isDev) return
+        assert(filterFunction(id))
         const idWithoutQuery = id.split('?')[0]!
-        if (idWithoutQuery !== distFileIsNonRunnableDev && idWithoutQuery !== distFileGlobalContext) return
         if (isRunnableDevEnvironment(this.environment)) return
         const { magicString, getMagicStringResult } = getMagicString(code, id)
         if (idWithoutQuery === distFileIsNonRunnableDev) {
