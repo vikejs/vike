@@ -11,7 +11,7 @@
     "build-worker": "^0.3.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "vike": "0.4.238",
+    "vike": "0.4.239",
     "vike-react": "^0.6.5"
   },
   "devDependencies": {
