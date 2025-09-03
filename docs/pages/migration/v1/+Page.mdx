@@ -23,9 +23,3 @@ This migration page is only for double checking that you applied all deprecation
      PageContextBuiltInClient// [!code ++]
    } from 'vike/types'// [!code ++]
    ```
-
-## Dropped CJS support
-
-For TypeScript users:
- - Make sure your `tsconfig.json` doesn't transpile to CJS (e.g. make sure `tsconfig.json#compilerOptions.module` isn't set to `CommonJS`).
- - If you use `ts-node`, make sure your `tsconfig.json#ts-node` doesn't transpile to CJS (e.g. make sure `tsconfig.json#ts-node.compilerOptions.module` isn't set to `CommonJS`)

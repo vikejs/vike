@@ -93,7 +93,6 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
           workaroundCI(config)
           assertRollupInput(config)
           assertResolveAlias(config)
-          assertEsm(config.root)
           assertVikeCliOrApi(config)
           temp_supportOldInterface(config)
           await emitServerEntryOnlyIfNeeded(config)
@@ -154,24 +153,6 @@ function workaroundCI(config: ResolvedConfig) {
     config.server.host ??= true
     config.preview.host ??= true
   }
-}
-
-function assertEsm(userViteRoot: string) {
-  const found = findPackageJson(userViteRoot)
-  if (!found) return
-  const { packageJson, packageJsonPath } = found
-  let dir = path.posix.dirname(packageJsonPath)
-  if (dir !== '/') {
-    assert(!dir.endsWith('/'))
-    dir = dir + '/'
-  }
-  assert(dir.endsWith('/'))
-  dir = pc.dim(dir)
-  assertWarning(
-    packageJson.type === 'module',
-    `We recommend setting ${dir}package.json#type to "module", see https://vike.dev/CJS`,
-    { onlyOnce: true },
-  )
 }
 
 function assertSingleInstance(config: ResolvedConfig) {

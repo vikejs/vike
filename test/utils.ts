@@ -6,19 +6,7 @@ export { expectPageContextJsonRequest }
 export { waitForNavigation }
 export { sleepBeforeEditFile }
 
-import {
-  page,
-  test,
-  expect,
-  run,
-  autoRetry,
-  fetchHtml,
-  getServerUrl,
-  expectLog,
-  partRegex,
-  sleep,
-  skip,
-} from '@brillout/test-e2e'
+import { page, test, expect, run, autoRetry, fetchHtml, getServerUrl, partRegex, sleep, skip } from '@brillout/test-e2e'
 
 async function testCounter(currentValue = 0) {
   // autoRetry() in case page just got client-side navigated
@@ -114,12 +102,10 @@ declare global {
 function testRunClassic(
   cmd: 'npm run dev' | 'npm run preview' | 'npm run prod',
   {
-    isCJS,
     skipAboutPage,
     skipViteEcosystemCi,
     tolerateError,
   }: {
-    isCJS?: true
     skipAboutPage?: true
     skipViteEcosystemCi?: true
     tolerateError?: NonNullable<Parameters<typeof run>[1]>['tolerateError']
@@ -135,11 +121,6 @@ function testRunClassic(
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
     expect(html).toContain('<h1>Welcome</h1>')
-    if (isCJS) {
-      expectLog('package.json#type to "module", see https://vike.dev/CJS', {
-        filter: (log) => log.logSource === 'stderr',
-      })
-    }
   })
 
   test('page is rendered to the DOM and interactive', async () => {

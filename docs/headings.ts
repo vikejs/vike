@@ -1175,10 +1175,6 @@ function guides() {
         url: '/client-runtime-duplicated',
       },
       {
-        title: 'CJS',
-        url: '/CJS',
-      },
-      {
         title: 'URL Normalization',
         url: '/url-normalization',
       },
