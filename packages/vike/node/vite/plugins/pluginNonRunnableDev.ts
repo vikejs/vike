@@ -67,7 +67,7 @@ function pluginNonRunnableDev(): Plugin {
     transform: {
       filter: filterRolldown,
       handler(code, id) {
-        if (!config._isDev) return
+        assert(config._isDev)
         assert(filterFunction(id))
         const idWithoutQuery = getIdWithoutQuery(id)
         if (isRunnableDevEnvironment(this.environment)) return
