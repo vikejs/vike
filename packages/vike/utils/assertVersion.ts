@@ -25,9 +25,9 @@ function isVersionOrAbove(versionActual: string, versionExpectedList: Version[])
   assert(versionExpectedList.length > 0)
 
   const versionActualMajor = parseVersion(versionActual)[0]
-  const versionExpectedListSameMajor = versionExpectedList.filter((version) => {
-    const versionMajor = parseVersion(version)[0]
-    return versionMajor === versionActualMajor
+  const versionExpectedListSameMajor = versionExpectedList.filter((versionExpected) => {
+    const versionExpectedMajor = parseVersion(versionExpected)[0]
+    return versionExpectedMajor === versionActualMajor
   })
   assert(versionExpectedListSameMajor.length <= 1)
   const versionExpectedSameMajor = versionExpectedListSameMajor[0]
