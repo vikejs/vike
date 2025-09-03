@@ -14,6 +14,18 @@ import { getViteConfigRuntime } from '../shared/getViteConfigRuntime.js'
 import { getMagicString } from '../shared/getMagicString.js'
 assertIsNotProductionRuntime()
 
+const distFileIsNonRunnableDev = requireResolveDistFile('dist/esm/utils/isNonRunnableDev.js')
+const distFileGlobalContext = requireResolveDistFile('dist/esm/node/runtime/globalContext.js')
+const filterRolldown = {
+  id: {
+    include: [distFileIsNonRunnableDev, distFileGlobalContext],
+  },
+}
+const filterFunction = (id: string) => {
+  const idWithoutQuery = id.split('?')[0]!
+  return idWithoutQuery === distFileIsNonRunnableDev || idWithoutQuery === distFileGlobalContext
+}
+
 export type ViteRPC = ReturnType<typeof getViteRpcFunctions>
 function getViteRpcFunctions(viteDevServer: ViteDevServer) {
   return {
@@ -34,19 +46,6 @@ declare global {
   var __VIKE__IS_NON_RUNNABLE_DEV: undefined | boolean
 }
 function pluginNonRunnableDev(): Plugin {
-  const distFileIsNonRunnableDev = requireResolveDistFile('dist/esm/utils/isNonRunnableDev.js')
-  const distFileGlobalContext = requireResolveDistFile('dist/esm/node/runtime/globalContext.js')
-
-  const filterRolldown = {
-    id: {
-      include: [distFileIsNonRunnableDev, distFileGlobalContext],
-    },
-  }
-  const filterFunction = (id: string) => {
-    const idWithoutQuery = id.split('?')[0]!
-    return idWithoutQuery === distFileIsNonRunnableDev || idWithoutQuery === distFileGlobalContext
-  }
-
   let config: ResolvedConfig
   return {
     name: 'vike:pluginNonRunnableDev',
