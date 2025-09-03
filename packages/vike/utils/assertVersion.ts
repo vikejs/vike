@@ -19,7 +19,7 @@ function assertVersion(dependencyName: 'Vite' | 'Node.js', versionActual: string
   )
 }
 
-function isVersionOrAbove(versionActual: string, versionExpected: Version[]): boolean | null {
+function isVersionOrAbove(versionActual: string, versionExpected: Version[]): boolean {
   assert(versionActual)
   assert(versionExpected)
   assert(versionExpected.length > 0)
