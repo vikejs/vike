@@ -44,6 +44,11 @@ function pluginEnvVars(): Plugin {
       },
     },
     transform: {
+      filter: {
+        id: {
+          exclude: '**/node_modules/**',
+        },
+      },
       handler(code, id, options) {
         id = normalizeId(id)
         assertPosixPath(id)
