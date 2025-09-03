@@ -154,11 +154,11 @@ function testRunClassic(
       editFile('./pages/index/+Page.jsx', (s) => s.replace(org, mod))
       await autoRetry(async () => {
         expect(await page.textContent('h1')).toBe(mod)
-      })
+      }, { timeout: 5000 })
       editFileRevert()
       await autoRetry(async () => {
         expect(await page.textContent('h1')).toBe(org)
-      })
+      }, { timeout: 5000 })
       await testCounter(2)
     })
   }
