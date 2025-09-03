@@ -46,7 +46,7 @@ function pluginNonRunnableDev(): Plugin {
     },
     transform(code, id) {
       if (!config._isDev) return
-      const idWithoutHash = id.split('?')[0]!;
+      const idWithoutHash = id.split('?')[0]!
       if (idWithoutHash !== distFileIsNonRunnableDev && idWithoutHash !== distFileGlobalContext) return
       if (isRunnableDevEnvironment(this.environment)) return
       const { magicString, getMagicStringResult } = getMagicString(code, id)
