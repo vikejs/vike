@@ -48,6 +48,9 @@ function pluginEnvVars(): Plugin {
         id: {
           exclude: '**/node_modules/**',
         },
+        code: {
+          include: 'import.meta.env.'
+        }
       },
       handler(code, id, options) {
         id = normalizeId(id)
@@ -55,7 +58,7 @@ function pluginEnvVars(): Plugin {
         assert(!id.includes('/node_modules/'))
         assertPosixPath(config.root)
         if (!id.startsWith(config.root)) return
-        if (!code.includes('import.meta.env.')) return
+        assert(code.includes('import.meta.env.'))
 
         const isBuild = config.command === 'build'
         const isClientSide = !isViteServerSide_extraSafe(config, this.environment, options)
