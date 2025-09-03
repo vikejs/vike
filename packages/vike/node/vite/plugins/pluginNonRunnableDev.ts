@@ -39,30 +39,30 @@ function pluginNonRunnableDev(): Plugin {
   return {
     name: 'vike:pluginNonRunnableDev',
     configureServer: {
-      handler(viteDevServer) {
-        createViteRPC(viteDevServer, getViteRpcFunctions)
-      }
+    handler(viteDevServer) {
+      createViteRPC(viteDevServer, getViteRpcFunctions)
+    }
     },
     configResolved: {
-      handler(config_) {
-        config = config_
-      }
+    handler(config_) {
+      config = config_
+    }
     },
     transform: {
-      handler(code, id) {
-        if (!config._isDev) return
-        const idWithoutQuery = id.split('?')[0]!
-        if (idWithoutQuery !== distFileIsNonRunnableDev && idWithoutQuery !== distFileGlobalContext) return
-        if (isRunnableDevEnvironment(this.environment)) return
-        const { magicString, getMagicStringResult } = getMagicString(code, id)
-        if (idWithoutQuery === distFileIsNonRunnableDev) {
-          magicString.replaceAll('__VIKE__IS_NON_RUNNABLE_DEV', JSON.stringify(true))
-        }
-        if (idWithoutQuery === distFileGlobalContext) {
-          magicString.replaceAll('__VIKE__DYNAMIC_IMPORT', 'import')
-        }
-        return getMagicStringResult()
+    handler(code, id) {
+      if (!config._isDev) return
+      const idWithoutQuery = id.split('?')[0]!
+      if (idWithoutQuery !== distFileIsNonRunnableDev && idWithoutQuery !== distFileGlobalContext) return
+      if (isRunnableDevEnvironment(this.environment)) return
+      const { magicString, getMagicStringResult } = getMagicString(code, id)
+      if (idWithoutQuery === distFileIsNonRunnableDev) {
+        magicString.replaceAll('__VIKE__IS_NON_RUNNABLE_DEV', JSON.stringify(true))
       }
+      if (idWithoutQuery === distFileGlobalContext) {
+        magicString.replaceAll('__VIKE__DYNAMIC_IMPORT', 'import')
+      }
+      return getMagicStringResult()
+    }
     },
   }
 }

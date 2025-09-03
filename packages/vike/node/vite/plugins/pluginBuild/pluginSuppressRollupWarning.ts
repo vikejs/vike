@@ -11,22 +11,22 @@ function pluginSuppressRollupWarning(): Plugin {
     apply: 'build',
     enforce: 'post',
     configResolved: {
-      async handler(config) {
-        const onWarnOriginal = config.build.rollupOptions.onwarn
-        config.build.rollupOptions.onwarn = function (warning, warn) {
-          // Suppress
-          if (suppressUnusedImport(warning)) return
-          if (suppressEmptyBundle(warning)) return
-          if (suppressUseClientDirective(warning)) return
+    async handler(config) {
+      const onWarnOriginal = config.build.rollupOptions.onwarn
+      config.build.rollupOptions.onwarn = function (warning, warn) {
+        // Suppress
+        if (suppressUnusedImport(warning)) return
+        if (suppressEmptyBundle(warning)) return
+        if (suppressUseClientDirective(warning)) return
 
-          // Pass through
-          if (onWarnOriginal) {
-            onWarnOriginal.apply(this, arguments as any)
-          } else {
-            warn(warning)
-          }
+        // Pass through
+        if (onWarnOriginal) {
+          onWarnOriginal.apply(this, arguments as any)
+        } else {
+          warn(warning)
         }
       }
+    }
     },
   }
 }

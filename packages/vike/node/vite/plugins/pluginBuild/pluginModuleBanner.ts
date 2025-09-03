@@ -16,9 +16,9 @@ function pluginModuleBanner(): Plugin {
     enforce: 'post',
     apply: 'build',
     configResolved: {
-      handler(config_) {
-        config = config_
-      }
+    handler(config_) {
+      config = config_
+    }
     },
     transform: {
       order: 'post',

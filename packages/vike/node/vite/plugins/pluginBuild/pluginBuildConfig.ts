@@ -61,9 +61,9 @@ function pluginBuildConfig(): Plugin[] {
         },
       },
       buildStart: {
-        handler() {
-          onSetupBuild()
-        }
+      handler() {
+        onSetupBuild()
+      }
       },
     },
   ]

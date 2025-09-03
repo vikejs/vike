@@ -20,22 +20,22 @@ function pluginPreview(): Plugin {
     name: 'vike:pluginPreview',
     apply: applyPreview,
     config: {
-      handler() {
-        return {
-          appType: 'custom',
-        }
+    handler() {
+      return {
+        appType: 'custom',
       }
+    }
     },
     configResolved: {
-      async handler(config_) {
-        config = config_
-        vikeConfig = await getVikeConfigInternal()
-        logDockerHint(config.preview.host)
-        // vikeConfig = await getVikeConfig(config)
-      }
+    async handler(config_) {
+      config = config_
+      vikeConfig = await getVikeConfigInternal()
+      logDockerHint(config.preview.host)
+      // vikeConfig = await getVikeConfig(config)
+    }
     },
     configurePreviewServer: {
-      handler(server) {
+    handler(server) {
       /* - Couldn't make `appType: 'mpa'` work as of npm:@brillout/vite@5.0.0-beta.14.0426910c
          - This ugly hack to set appType for preview won't be need once https://github.com/vitejs/vite/pull/14855 is merged.
       config.appType = 'mpa'
@@ -53,7 +53,7 @@ function pluginPreview(): Plugin {
 
         addStatic404Middleware(server.middlewares)
       }
-      }
+    }
     },
   }
   function assertDist(isPrerenderingEnabledForAllPages: boolean) {

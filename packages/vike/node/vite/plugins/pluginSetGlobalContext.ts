@@ -27,9 +27,9 @@ function pluginSetGlobalContext(): Plugin[] {
         },
       },
       configurePreviewServer: {
-        handler() {
-          markSetup_vitePreviewServer()
-        }
+      handler() {
+        markSetup_vitePreviewServer()
+      }
       },
       config: {
         order: 'pre',

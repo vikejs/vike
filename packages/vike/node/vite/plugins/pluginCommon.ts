@@ -72,11 +72,11 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
     {
       name: pluginName,
       configResolved: {
-        handler(config) {
-          assertViteRoot(config._rootResolvedEarly!, config)
-          assertSingleInstance(config)
-          installRequireShim_setUserRootDir(config.root)
-        }
+      handler(config) {
+        assertViteRoot(config._rootResolvedEarly!, config)
+        assertSingleInstance(config)
+        installRequireShim_setUserRootDir(config.root)
+      }
       },
     },
     {

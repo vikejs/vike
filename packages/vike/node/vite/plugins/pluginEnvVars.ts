@@ -35,27 +35,27 @@ function pluginEnvVars(): Plugin {
     name: 'vike:pluginEnvVars',
     enforce: 'post',
     configResolved: {
-      handler(config_) {
-        config = config_
-        envsAll = loadEnv(config.mode, config.envDir || config.root, '')
-        // Vite's built-in plugin vite:define needs to apply after this plugin.
-        //  - This plugin vike:pluginEnvVars needs to apply after vike:pluginExtractAssets and vike:pluginExtractExportNames which need to apply after @vitejs/plugin-vue
-        ;(config.plugins as Plugin[]).sort(lowerFirst<Plugin>((plugin) => (plugin.name === 'vite:define' ? 1 : 0)))
-      }
+    handler(config_) {
+      config = config_
+      envsAll = loadEnv(config.mode, config.envDir || config.root, '')
+      // Vite's built-in plugin vite:define needs to apply after this plugin.
+      //  - This plugin vike:pluginEnvVars needs to apply after vike:pluginExtractAssets and vike:pluginExtractExportNames which need to apply after @vitejs/plugin-vue
+      ;(config.plugins as Plugin[]).sort(lowerFirst<Plugin>((plugin) => (plugin.name === 'vite:define' ? 1 : 0)))
+    }
     },
     transform: {
-      handler(code, id, options) {
-        id = normalizeId(id)
-        assertPosixPath(id)
-        if (id.includes('/node_modules/')) return
-        assertPosixPath(config.root)
-        if (!id.startsWith(config.root)) return
-        if (!code.includes('import.meta.env.')) return
+    handler(code, id, options) {
+      id = normalizeId(id)
+      assertPosixPath(id)
+      if (id.includes('/node_modules/')) return
+      assertPosixPath(config.root)
+      if (!id.startsWith(config.root)) return
+      if (!code.includes('import.meta.env.')) return
 
-        const isBuild = config.command === 'build'
-        const isClientSide = !isViteServerSide_extraSafe(config, this.environment, options)
+      const isBuild = config.command === 'build'
+      const isClientSide = !isViteServerSide_extraSafe(config, this.environment, options)
 
-        const { magicString, getMagicStringResult } = getMagicString(code, id)
+      const { magicString, getMagicStringResult } = getMagicString(code, id)
 
       // Find & check
       const replacements = Object.entries(envsAll)
@@ -94,14 +94,14 @@ function pluginEnvVars(): Plugin {
         })
         .filter(isNotNullish)
 
-        // Apply
-        replacements.forEach(({ regExpStr, replacement }) => {
-          magicString.replaceAll(new RegExp(regExpStr, 'g'), JSON.stringify(replacement))
-        })
-        if (!magicString.hasChanged()) return null
+      // Apply
+      replacements.forEach(({ regExpStr, replacement }) => {
+        magicString.replaceAll(new RegExp(regExpStr, 'g'), JSON.stringify(replacement))
+      })
+      if (!magicString.hasChanged()) return null
 
-        return getMagicStringResult()
-      }
+      return getMagicStringResult()
+    }
     },
   }
 }
