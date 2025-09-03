@@ -1,4 +1,5 @@
 export { pluginReplaceConstants }
+export { skipNodeModules, skipIrrelevant, filterRolldown, filterFunction }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { assert, assertPosixPath } from '../utils.js'

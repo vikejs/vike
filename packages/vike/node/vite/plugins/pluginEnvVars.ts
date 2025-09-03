@@ -16,6 +16,7 @@ import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 import { getMagicString } from '../shared/getMagicString.js'
+import { skipNodeModules, skipIrrelevant, filterRolldown, filterFunction } from './pluginReplaceConstants.js'
 
 // TO-DO/eventually:
 // - Make import.meta.env work inside +config.js
@@ -28,21 +29,7 @@ const PUBLIC_ENV_ALLOWLIST = [
   'STORYBOOK',
 ]
 
-const skipNodeModules = '/node_modules/'
-const skipIrrelevant = 'import.meta.env.'
-const filterRolldown = {
-  id: {
-    exclude: `**${skipNodeModules}**`,
-  },
-  code: {
-    include: skipIrrelevant,
-  },
-}
-const filterFunction = (id: string, code: string) => {
-  if (id.includes(skipNodeModules)) return false
-  if (!code.includes(skipIrrelevant)) return false
-  return true
-}
+
 
 function pluginEnvVars(): Plugin {
   let envsAll: Record<string, string>
