@@ -45,9 +45,6 @@ function pluginEnvVars(): Plugin {
     },
     transform: {
       filter: {
-        id: {
-          exclude: '**/node_modules/**',
-        },
         code: {
           include: 'import.meta.env.',
         },
