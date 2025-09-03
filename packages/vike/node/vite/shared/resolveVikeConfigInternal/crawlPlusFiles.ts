@@ -7,7 +7,7 @@ import {
   assert,
   scriptFileExtensionPattern,
   assertIsNotProductionRuntime,
-  isVersionOrAbove,
+  isVersionMatch,
   isScriptFile,
   scriptFileExtensionList,
   createDebugger,
@@ -181,7 +181,7 @@ async function isGitNotUsable(userRootDir: string) {
     //    - We didn't bother test which is the earliest version that works.
     //  - Git 2.32.0 doesn't seem to work: https://github.com/vikejs/vike/discussions/1549
     //    - Maybe it's because of StackBlitz: looking at the release notes, Git 2.32.0 should be working.
-    if (!isVersionOrAbove(gitVersion, '2.43.1')) return true
+    if (!isVersionMatch(gitVersion, ['2.43.1'])) return true
   }
   // Is userRootDir inside a Git repository?
   {
