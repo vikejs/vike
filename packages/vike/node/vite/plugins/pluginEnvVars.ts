@@ -39,7 +39,7 @@ const filterRolldown = {
   },
 }
 const filterFunction = (id: string, code: string) => {
-  if (!id.includes(skipNodeModules)) return false
+  if (id.includes(skipNodeModules)) return false
   if (!code.includes(skipIrrelevant)) return false
   return true
 }
