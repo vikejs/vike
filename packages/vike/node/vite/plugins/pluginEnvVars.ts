@@ -60,7 +60,7 @@ function pluginEnvVars(): Plugin {
         assertPosixPath(id)
         assert(!id.includes(skipNodeModules))
         assertPosixPath(config.root)
-        if (!id.startsWith(config.root)) return
+        if (!id.startsWith(config.root)) return // skip linked dependencies
         assert(code.includes(skipIrrelevant))
 
         const isBuild = config.command === 'build'
