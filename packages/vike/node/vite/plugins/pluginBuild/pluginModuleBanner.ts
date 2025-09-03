@@ -8,24 +8,12 @@ import { isViteServerSide_extraSafe } from '../../shared/isViteServerSide.js'
 // Rollup's banner feature doesn't work with Vite: https://github.com/vitejs/vite/issues/8412
 // But, anyways, we want to prepend the banner at the beginning of each module, not at the beginning of each file (I believe that's what Rollup's banner feature does).
 
+type Transform = Extract<Plugin['transform'], Function>
+
 function pluginModuleBanner(): Plugin {
   let config: ResolvedConfig
 
-  return {
-    name: 'vike:build:pluginModuleBanner',
-    enforce: 'post',
-    apply: 'build',
-    configResolved: {
-      handler(config_) {
-        config = config_
-      },
-    },
-    transform: {
-      order: 'post',
-      /* TO-DO/eventually/filter-rolldown: we cannot apply a filter here — instead add the transformer hook dynamically in a config() hook.
-      filter: {},
-      */
-      handler(code, id, options) {
+  const transform: Transform = function(code, id, options) {
         if (
           !isViteServerSide_extraSafe(config, this.environment, options) &&
           // Inject module banners if user sets `build.minify` to `false` for inspecting dist/client/
@@ -43,7 +31,34 @@ function pluginModuleBanner(): Plugin {
         // - https://esbuild.github.io/api/#legal-comments
         magicString.prepend(`/*! ${id} [vike:pluginModuleBanner] */\n`)
         return getMagicStringResult()
+  }
+
+  return {
+    name: 'vike:build:pluginModuleBanner',
+    enforce: 'post',
+    apply: 'build',
+    configResolved: {
+      handler(config_) {
+        config = config_
       },
+    },
+    config: {
+      handler(config) {
+        return {
+          /* Won't work: https://github.com/vitejs/vite/discussions/5806#discussioncomment-1685544
+          plugins: [{
+            name: 'ewu'
+          }]
+          */
+        }
+      }
+    },
+    transform: {
+      order: 'post',
+      /* TO-DO/eventually/filter-rolldown: we cannot apply a filter here — instead add the transformer hook dynamically in a config() hook.
+      filter: {},
+      */
+      handler: transform
     },
   }
 }
