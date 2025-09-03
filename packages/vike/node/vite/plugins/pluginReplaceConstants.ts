@@ -12,41 +12,49 @@ function pluginReplaceConstants(): Plugin {
     name: 'vike:pluginReplaceConstants',
     enforce: 'post',
     apply: 'build',
-    configResolved(config_) {
-      config = config_
+    configResolved: {
+      handler(config_) {
+        config = config_
+      },
     },
-    transform(code, id, options) {
-      id = normalizeId(id)
-      assertPosixPath(id)
-      if (id.includes('/node_modules/')) return
-      assertPosixPath(config.root)
-      if (!id.startsWith(config.root)) return
-      if (!code.includes('import.meta.env.')) return
-      const isBuild = config.command === 'build'
-      assert(isBuild)
+    transform: {
+      handler(code, id, options) {
+        id = normalizeId(id)
+        assertPosixPath(id)
+        if (id.includes('/node_modules/')) return
+        assertPosixPath(config.root)
+        if (!id.startsWith(config.root)) return
+        if (!code.includes('import.meta.env.')) return
+        const isBuild = config.command === 'build'
+        assert(isBuild)
 
-      // Used by vike.dev
-      // https://github.com/vikejs/vike/blob/08a1ff55c80ddca64ca6d4417fefd45fefeb4ffb/docs/vite.config.ts#L12
-      // @ts-expect-error
-      if (config._skipVikeReplaceConstants?.(id)) return
+        // Used by vike.dev
+        // https://github.com/vikejs/vike/blob/08a1ff55c80ddca64ca6d4417fefd45fefeb4ffb/docs/vite.config.ts#L12
+        // @ts-expect-error
+        if (config._skipVikeReplaceConstants?.(id)) return
 
-      const { magicString, getMagicStringResult } = getMagicString(code, id)
+        const { magicString, getMagicStringResult } = getMagicString(code, id)
 
-      const constantsMap: { constants: string[]; replacement: unknown }[] = []
-      constantsMap.push({
-        constants: ['pageContext.isClientSide', 'globalContext.isClientSide', 'pageContext.globalContext.isClientSide'],
-        replacement: !isViteServerSide_extraSafe(config, this.environment, options),
-      })
+        const constantsMap: { constants: string[]; replacement: unknown }[] = []
+        constantsMap.push({
+          constants: [
+            'pageContext.isClientSide',
+            'globalContext.isClientSide',
+            'pageContext.globalContext.isClientSide',
+          ],
+          replacement: !isViteServerSide_extraSafe(config, this.environment, options),
+        })
 
-      constantsMap.forEach(({ constants, replacement }) => {
-        if (!constants.some((c) => code.includes(c))) return
-        const regExp = getConstantRegExp(constants)
-        magicString.replaceAll(regExp, JSON.stringify(replacement))
-      })
+        constantsMap.forEach(({ constants, replacement }) => {
+          if (!constants.some((c) => code.includes(c))) return
+          const regExp = getConstantRegExp(constants)
+          magicString.replaceAll(regExp, JSON.stringify(replacement))
+        })
 
-      if (!magicString.hasChanged()) return null
+        if (!magicString.hasChanged()) return null
 
-      return getMagicStringResult()
+        return getMagicStringResult()
+      },
     },
   }
 }
