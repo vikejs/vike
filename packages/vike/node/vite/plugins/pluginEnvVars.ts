@@ -31,6 +31,15 @@ const PUBLIC_ENV_ALLOWLIST = [
 const skipNodeModules = '/node_modules/'
 const skipIrrelevant = 'import.meta.env.'
 
+const filterRolldown = {
+  id: {
+    exclude: `**${skipNodeModules}**`,
+  },
+  code: {
+    include: skipIrrelevant,
+  },
+}
+
 function pluginEnvVars(): Plugin {
   let envsAll: Record<string, string>
   let config: ResolvedConfig
@@ -47,14 +56,7 @@ function pluginEnvVars(): Plugin {
       },
     },
     transform: {
-      filter: {
-        id: {
-          exclude: `**${skipNodeModules}**`,
-        },
-        code: {
-          include: skipIrrelevant,
-        },
-      },
+      filter: filterRolldown,
       handler(code, id, options) {
         id = normalizeId(id)
         assertPosixPath(id)
