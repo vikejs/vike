@@ -9,23 +9,23 @@ assertIsNotBrowser()
 
 type Version = `${number}.${number}.${number}`
 
-function assertVersion(dependencyName: 'Vite' | 'Node.js', versionActual: string, versionExpected: Version[]) {
+function assertVersion(dependencyName: 'Vite' | 'Node.js', versionActual: string, versionExpectedList: Version[]) {
   assertUsage(
-    isVersionOrAbove(versionActual, versionExpected),
+    isVersionOrAbove(versionActual, versionExpectedList),
     `${pc.bold(dependencyName)} ${pc.red(pc.bold(versionActual))} isn't supported, use ${pc.bold(dependencyName)} ${joinEnglish(
-      [...versionExpected, 'above'].map((v) => pc.green(pc.bold(v))),
+      [...versionExpectedList, 'above'].map((v) => pc.green(pc.bold(v))),
       'or',
     )}.`,
   )
 }
 
-function isVersionOrAbove(versionActual: string, versionExpected: Version[]): boolean {
+function isVersionOrAbove(versionActual: string, versionExpectedList: Version[]): boolean {
   assert(versionActual)
-  assert(versionExpected)
-  assert(versionExpected.length > 0)
+  assert(versionExpectedList)
+  assert(versionExpectedList.length > 0)
 
   const versionActualMajor = parseVersion(versionActual)[0]
-  const versionExpectedSameMajor = versionExpected.filter((version) => {
+  const versionExpectedSameMajor = versionExpectedList.filter((version) => {
     const versionMajor = parseVersion(version)[0]
     return versionMajor === versionActualMajor
   })
@@ -34,7 +34,7 @@ function isVersionOrAbove(versionActual: string, versionExpected: Version[]): bo
     assert(versionExpectedSameMajor.length === 1)
     return versionExpectedSameMajor.every((version) => compare(versionActual, version))
   } else {
-    return versionExpected.every((version) => compare(versionActual, version))
+    return versionExpectedList.every((version) => compare(versionActual, version))
   }
 }
 
