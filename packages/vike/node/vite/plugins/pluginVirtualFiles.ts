@@ -14,6 +14,7 @@ import {
 } from '../utils.js'
 import { parseVirtualFileId } from '../../shared/virtualFileId.js'
 import { reloadVikeConfig, isV1Design, getVikeConfigInternalOptional } from '../shared/resolveVikeConfigInternal.js'
+import { createHookFilters } from '../shared/hookFilters.js'
 import pc from '@brillout/picocolors'
 import { logConfigInfo } from '../shared/loggerNotProd.js'
 import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
@@ -24,6 +25,7 @@ import { getVikeConfigError } from '../../shared/getVikeConfigError.js'
 
 function pluginVirtualFiles(): Plugin {
   let config: ResolvedConfig
+  const hookFilters = createHookFilters()
   return {
     name: 'vike:pluginVirtualFiles',
     async configResolved(config_) {
@@ -31,7 +33,10 @@ function pluginVirtualFiles(): Plugin {
       // TO-DO/next-major-release: remove
       if (!isV1Design()) config.experimental.importGlobRestoreExtension = true
     },
+    // Hook filter: only process virtual file IDs
+    ...hookFilters.virtualFiles,
     resolveId(id) {
+      // Backward compatibility check (hook filter should already handle this)
       if (isVirtualFileId(id)) {
         return addVirtualFileIdPrefix(id)
       }
@@ -46,6 +51,7 @@ function pluginVirtualFiles(): Plugin {
       }
     },
     async load(id, options) {
+      // Backward compatibility check (hook filter should already handle this)
       if (!isVirtualFileId(id)) return undefined
       id = removeVirtualFileIdPrefix(id)
       const isDev = config._isDev

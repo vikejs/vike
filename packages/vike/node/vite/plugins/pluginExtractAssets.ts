@@ -33,6 +33,7 @@ import { assertV1Design } from '../../shared/assertV1Design.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 import { resolveIncludeAssetsImportedByServer } from '../../runtime/renderPage/getPageAssets/retrievePageAssetsProd.js'
+import { createHookFilters, matchesFilter } from '../shared/hookFilters.js'
 type ResolvedId = Rollup.ResolvedId
 
 const extractAssetsRE = /(\?|&)extractAssets(?:&|$)/
@@ -46,6 +47,7 @@ function pluginExtractAssets(): Plugin[] {
   let config: ResolvedConfig
   let vikeConfig: VikeConfigInternal
   let isFixEnabled: boolean
+  const hookFilters = createHookFilters()
   return [
     // This plugin removes all JavaScript from server-side only code, so that only CSS imports remains. (And also static files imports e.g. `import logoURL from './logo.svg.js'`).
     {
@@ -53,8 +55,11 @@ function pluginExtractAssets(): Plugin[] {
       // In dev, things just work. (Because Vite's module graph erroneously conflates the Vite server-side importees with the client-side importees.)
       apply: 'build',
       enforce: 'post',
+      // Hook filter: only process files with extractAssets query
+      ...hookFilters.extractAssets,
       async transform(src, id, options) {
         id = normalizeId(id)
+        // Backward compatibility check (hook filter should already handle this)
         if (!extractAssetsRE.test(id)) {
           return
         }
@@ -81,6 +86,10 @@ function pluginExtractAssets(): Plugin[] {
       //  - rollup's `alias` plugin; https://github.com/rollup/plugins/blob/5363f55aa1933b6c650832b08d6a54cb9ea64539/packages/alias/src/index.ts
       //  - Vite's `vite:resolve` plugin; https://github.com/vitejs/vite/blob/d649daba7682791178b711d9a3e44a6b5d00990c/packages/vite/src/node/plugins/resolve.ts#L105
       enforce: 'pre',
+      // Hook filter: only process script files and files with extractAssets query
+      resolveId: {
+        id: /\.(js|ts|jsx|tsx|mjs|cjs|vue|svelte)(\?|$)|[?&]extractAssets(?:&|$)/
+      },
       async resolveId(source, importer, options) {
         if (isViteServerSide_extraSafe(config, this.environment, options)) {
           // When building for the server, there should never be a `?extractAssets` query

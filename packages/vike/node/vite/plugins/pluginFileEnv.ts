@@ -24,16 +24,21 @@ import { getExportNames } from '../shared/parseEsModule.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isV1Design } from '../shared/resolveVikeConfigInternal.js'
 import { isViteServerSide, isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
+import { createHookFilters } from '../shared/hookFilters.js'
 
 function pluginFileEnv(): Plugin {
   let config: ResolvedConfig
   let viteDevServer: ViteDevServer | undefined
+  const hookFilters = createHookFilters()
   return {
     name: 'vike:pluginFileEnv',
+    // Hook filter: only process script files that might have file env restrictions
+    ...hookFilters.scriptFiles,
     load(id, options) {
       // In build, we use generateBundle() instead of the load() hook. Using load() works for dynamic imports in dev thanks to Vite's lazy transpiling, but it doesn't work in build because Rollup transpiles any dynamically imported module even if it's never actually imported.
       if (!viteDevServer) return
       if (!isV1Design()) return
+      // Backward compatibility check (hook filter should already handle this)
       if (skip(id)) return
       // For `.vue` files: https://github.com/vikejs/vike/issues/1912#issuecomment-2394981475
       if (id.endsWith('?direct')) id = id.slice(0, -1 * '?direct'.length)
@@ -55,6 +60,7 @@ function pluginFileEnv(): Plugin {
       id = normalizeId(id)
       // In dev, only using load() is enough as it also works for dynamic imports (see sibling comment).
       if (viteDevServer) return
+      // Backward compatibility check (hook filter should already handle this)
       if (skip(id)) return
       const isServerSide = isViteServerSide_extraSafe(config, this.environment, options)
       if (!isWrongEnv(id, isServerSide)) return

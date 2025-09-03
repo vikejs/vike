@@ -16,6 +16,7 @@ import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 import { getMagicString } from '../shared/getMagicString.js'
+import { createHookFilters } from '../shared/hookFilters.js'
 
 // TO-DO/eventually:
 // - Make import.meta.env work inside +config.js
@@ -31,6 +32,7 @@ const PUBLIC_ENV_ALLOWLIST = [
 function pluginEnvVars(): Plugin {
   let envsAll: Record<string, string>
   let config: ResolvedConfig
+  const hookFilters = createHookFilters()
   return {
     name: 'vike:pluginEnvVars',
     enforce: 'post',
@@ -41,9 +43,12 @@ function pluginEnvVars(): Plugin {
       //  - This plugin vike:pluginEnvVars needs to apply after vike:pluginExtractAssets and vike:pluginExtractExportNames which need to apply after @vitejs/plugin-vue
       ;(config.plugins as Plugin[]).sort(lowerFirst<Plugin>((plugin) => (plugin.name === 'vite:define' ? 1 : 0)))
     },
+    // Hook filter: only process user script files that might contain import.meta.env
+    ...hookFilters.combine(hookFilters.userFiles, hookFilters.envFiles),
     transform(code, id, options) {
       id = normalizeId(id)
       assertPosixPath(id)
+      // Backward compatibility checks (hook filter should already handle most of these)
       if (id.includes('/node_modules/')) return
       assertPosixPath(config.root)
       if (!id.startsWith(config.root)) return

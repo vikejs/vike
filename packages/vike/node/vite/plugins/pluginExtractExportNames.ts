@@ -14,6 +14,7 @@ import {
 import { getExportNames } from '../shared/parseEsModule.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
+import { createHookFilters } from '../shared/hookFilters.js'
 const extractExportNamesRE = /(\?|&)extractExportNames(?:&|$)/
 const debug = createDebugger('vike:pluginExtractExportNames')
 const globalObject = getGlobalObject<{ usesClientRouter?: true }>('plugins/pluginExtractExportNames.ts', {})
@@ -21,12 +22,16 @@ const globalObject = getGlobalObject<{ usesClientRouter?: true }>('plugins/plugi
 function pluginExtractExportNames(): Plugin {
   let isDev = false
   let config: ResolvedConfig
+  const hookFilters = createHookFilters()
   return {
     name: 'vike:pluginExtractExportNames',
     enforce: 'post',
+    // Hook filter: only process files with extractExportNames query
+    ...hookFilters.extractExportNames,
     async transform(src, id, options) {
       id = normalizeId(id)
       const isClientSide = !isViteServerSide_extraSafe(config, this.environment, options)
+      // Backward compatibility check (hook filter should already handle this)
       if (extractExportNamesRE.test(id)) {
         const code = await getExtractExportNamesCode(src, isClientSide, !isDev, id)
         debug('id ' + id, ['result:\n' + code.code.trim(), 'src:\n' + src.trim()])

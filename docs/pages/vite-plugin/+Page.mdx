@@ -21,3 +21,28 @@ export default {
 Vike's Vite plugin doesn't have any options. (All <Link href="/settings">Vike settings</Link> are defined in <Link href="/config#files">`+` files</Link>).
 
 It should be loaded only in development or during build, see <Link href="/warning/setup" />.
+
+## Performance Optimizations
+
+Vike automatically optimizes build performance using <Link href="/hook-filters">hook filters</Link> when using Rolldown (Vite's new Rust-based bundler). These optimizations reduce JavaScript-Rust communication overhead by filtering files at the Rust level before calling JavaScript plugin hooks.
+
+For your own plugins, you can use Vite's `withFilter` wrapper to achieve similar performance benefits:
+
+```ts
+// vite.config.ts
+import { withFilter } from 'vite'
+import vike from 'vike/plugin'
+
+export default {
+  plugins: [
+    vike(),
+    // Optimize custom plugins with hook filters
+    withFilter(
+      myCustomPlugin(),
+      { transform: { id: /\.custom(\?|$)/ } }
+    )
+  ]
+} satisfies UserConfig
+```
+
+See <Link href="/hook-filters">Hook Filters</Link> for more details.

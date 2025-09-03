@@ -5,6 +5,7 @@ import { assert, assertPosixPath } from '../utils.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 import { getMagicString } from '../shared/getMagicString.js'
+import { createHookFilters, createProjectFileFilter } from '../shared/hookFilters.js'
 
 function pluginReplaceConstants(): Plugin {
   let config: ResolvedConfig
@@ -15,9 +16,14 @@ function pluginReplaceConstants(): Plugin {
     configResolved(config_) {
       config = config_
     },
+    // Hook filter: only process user script files that might contain import.meta.env
+    transform: {
+      id: /^(?!.*\/node_modules\/).*\.(js|ts|jsx|tsx|vue|svelte)(\?|$)/
+    },
     transform(code, id, options) {
       id = normalizeId(id)
       assertPosixPath(id)
+      // Backward compatibility checks (hook filter should already handle most of these)
       if (id.includes('/node_modules/')) return
       assertPosixPath(config.root)
       if (!id.startsWith(config.root)) return

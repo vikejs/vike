@@ -1,0 +1,155 @@
+import { Link, Warning, RepoLink } from '@brillout/docpress'
+
+Hook filters are a performance optimization feature that reduces JavaScript-Rust communication overhead when using Rolldown with Vite.
+
+## What are Hook Filters?
+
+Hook filters allow you to specify patterns that filter which files should be processed by plugin hooks at the Rust level, before calling into JavaScript. This significantly reduces the overhead of cross-language communication, especially for plugins that only process specific file types.
+
+Hook filters are supported by:
+- **Rolldown** (Vite's new Rust-based bundler)
+- **Rollup 4.38.0+** 
+- **Vite 6.3.0+**
+
+## Performance Benefits
+
+Without hook filters, every file processed by Vite needs to cross the JavaScript-Rust boundary for each plugin hook, even if the plugin doesn't actually process that file type. With hook filters:
+
+- **Reduced overhead**: Files are filtered at the Rust level before calling JavaScript
+- **Better performance**: Especially beneficial for large codebases with many files
+- **Maintained compatibility**: Works with both Rolldown and traditional Rollup
+
+## Vike's Built-in Optimizations
+
+Vike automatically uses hook filters for its internal plugins to improve performance:
+
+### Virtual Files Plugin
+```typescript
+// Only processes virtual:vike:* imports
+resolveId: { id: /^virtual:vike:/ },
+load: { id: /^virtual:vike:/ }
+```
+
+### Extract Assets Plugin
+```typescript
+// Only processes files with ?extractAssets query
+transform: { id: /[?&]extractAssets(?:&|$)/ }
+```
+
+### Script Processing Plugins
+```typescript
+// Only processes JavaScript/TypeScript files outside node_modules
+transform: { id: /^(?!.*\/node_modules\/).*\.(js|ts|jsx|tsx)(\?|$)/ }
+```
+
+## Using withFilter for Your Plugins
+
+You can optimize your own plugins using Vite's `withFilter` wrapper:
+
+```typescript
+import { withFilter } from 'vite'
+
+// Only process .svg files
+withFilter(
+  svgPlugin(),
+  { transform: { id: /\.svg(\?|$)/ } }
+)
+```
+
+### Complex Filters
+
+```typescript
+// Only process TypeScript files outside node_modules
+withFilter(
+  typescriptPlugin(),
+  { 
+    transform: { 
+      id: /^(?!.*\/node_modules\/).*\.tsx?(\?|$)/ 
+    } 
+  }
+)
+```
+
+### Query Parameter Filters
+
+```typescript
+// Only process files with ?inline query
+withFilter(
+  inlinePlugin(),
+  { 
+    transform: { 
+      id: /[?&]inline(?:&|$)/ 
+    } 
+  }
+)
+```
+
+## Available Hook Types
+
+You can filter these plugin hooks:
+
+- **`resolveId`**: Filter module resolution
+- **`load`**: Filter module loading  
+- **`transform`**: Filter code transformation
+
+## Common Filter Patterns
+
+### File Extensions
+```typescript
+// CSS files
+{ id: /\.css(\?|$)/ }
+
+// Script files
+{ id: /\.(js|ts|jsx|tsx)(\?|$)/ }
+
+// Multiple extensions
+{ id: /\.(vue|svelte)(\?|$)/ }
+```
+
+### Exclude node_modules
+```typescript
+{ id: /^(?!.*\/node_modules\/)/ }
+```
+
+### Query Parameters
+```typescript
+// Files with ?raw query
+{ id: /[?&]raw(?:&|$)/ }
+
+// Files with ?url query  
+{ id: /[?&]url(?:&|$)/ }
+```
+
+### Project Files Only
+```typescript
+// Files within project root, excluding node_modules
+{ id: /^\/path\/to\/project\/(?!.*node_modules\/).*\.(js|ts)(\?|$)/ }
+```
+
+## Backward Compatibility
+
+Hook filters are designed to be backward compatible. When using hook filters:
+
+1. **Keep existing checks**: Your plugin should still check file types in the hook implementation
+2. **Graceful degradation**: Plugins work normally on older Vite/Rollup versions without hook filters
+3. **Progressive enhancement**: Hook filters provide performance benefits when available
+
+```typescript
+// Good: Keep the check even with hook filters
+transform: { id: /\.css(\?|$)/ },
+transform(code, id) {
+  // Still check - hook filter is an optimization, not a replacement
+  if (!id.endsWith('.css')) return
+  // Process CSS...
+}
+```
+
+## Example Implementation
+
+<RepoLink path="/examples/hook-filters/vite.config.ts" />
+
+## Learn More
+
+- <Link href="/performance">Performance Guide</Link>
+- [Vite Hook Filters Documentation](https://vite.dev/guide/rolldown.html#hook-filter-feature)
+- [Rolldown Plugin Utils](https://github.com/rolldown/rolldown/tree/main/packages/rolldown-plugin-utils)

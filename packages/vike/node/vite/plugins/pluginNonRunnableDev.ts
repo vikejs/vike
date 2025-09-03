@@ -11,6 +11,7 @@ import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageC
 import { retrievePageAssetsDev } from '../../runtime/renderPage/getPageAssets/retrievePageAssetsDev.js'
 import { getViteConfigRuntime } from '../shared/getViteConfigRuntime.js'
 import { getMagicString } from '../shared/getMagicString.js'
+import { createHookFilters } from '../shared/hookFilters.js'
 assertIsNotProductionRuntime()
 
 export type ViteRPC = ReturnType<typeof getViteRpcFunctions>
@@ -44,9 +45,14 @@ function pluginNonRunnableDev(): Plugin {
     configResolved(config_) {
       config = config_
     },
+    // Hook filter: only process specific Vike dist files
+    transform: {
+      id: new RegExp(`(${distFileIsNonRunnableDev.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}|${distFileGlobalContext.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`)
+    },
     transform(code, id) {
       if (!config._isDev) return
       const idWithoutQuery = id.split('?')[0]!
+      // Backward compatibility check (hook filter should already handle this)
       if (idWithoutQuery !== distFileIsNonRunnableDev && idWithoutQuery !== distFileGlobalContext) return
       if (isRunnableDevEnvironment(this.environment)) return
       const { magicString, getMagicStringResult } = getMagicString(code, id)
