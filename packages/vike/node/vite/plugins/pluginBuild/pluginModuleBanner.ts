@@ -1,9 +1,8 @@
 export { pluginModuleBanner }
 
 import type { ResolvedConfig, Plugin } from 'vite'
-import { removeVirtualFileIdPrefix } from '../../utils.js'
+import { assert, removeVirtualFileIdPrefix } from '../../utils.js'
 import { getMagicString } from '../../shared/getMagicString.js'
-import { isViteServerSide_extraSafe } from '../../shared/isViteServerSide.js'
 
 // Rollup's banner feature doesn't work with Vite: https://github.com/vitejs/vite/issues/8412
 // But, anyways, we want to prepend the banner at the beginning of each module, not at the beginning of each file (I believe that's what Rollup's banner feature does).
@@ -15,6 +14,13 @@ function pluginModuleBanner(): Plugin {
     name: 'vike:build:pluginModuleBanner',
     enforce: 'post',
     apply: 'build',
+    applyToEnvironment(environment) {
+      const { config } = environment
+      const { consumer } = config
+      const { minify } = config.build
+      assert(minify === false || minify, { minify, consumer })
+      return !minify
+    },
     configResolved: {
       handler(config_) {
         config = config_
@@ -22,14 +28,12 @@ function pluginModuleBanner(): Plugin {
     },
     transform: {
       order: 'post',
-      handler(code, id, options) {
-        if (
-          !isViteServerSide_extraSafe(config, this.environment, options) &&
-          // Inject module banners if user sets `build.minify` to `false` for inspecting dist/client/
-          config.build.minify
-        ) {
-          return
-        }
+      /* Using a Rolldown hook filter doesn't make sense here — we use applyToEnvironment() to conditionally apply this plugin.
+      filter: {},
+      */
+      handler(code, id) {
+        const { minify } = this.environment.config.build
+        assert(minify === false, { minify })
         if (id.startsWith('\0')) id = id
         id = removeVirtualFileIdPrefix(id)
         if (id.startsWith(config.root)) id = id.slice(config.root.length + 1)

@@ -15,7 +15,7 @@ function onLoad() {
   // TO-DO/eventually: let's also use this.meta.viteVersion
   // - https://github.com/vitejs/vite/pull/20088
   // - https://github.com/vitejs/vite/blob/main/packages/vite/CHANGELOG.md#700-2025-06-24
-  assertVersion('Vite', version, ['6.0.0'])
+  assertVersion('Vite', version, ['6.3.0'])
   // Ensure we don't bloat the server runtime with heavy dependencies such Vite and esbuild
   assertIsNotProductionRuntime()
 }

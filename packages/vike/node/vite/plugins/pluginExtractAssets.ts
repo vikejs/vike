@@ -1,3 +1,5 @@
+// TO-DO/next-major-release: remove
+
 // Remove this workaround if the other workaround config.build.ssrEmitAssets turns out to be reliable.
 //  - Remove this file then revert this commit: https://github.com/vikejs/vike/commit/805a18974f13420a78fcc30fdd676696e405c3ca
 
@@ -42,6 +44,13 @@ const EMPTY_MODULE_ID = 'virtual:vike:empty-module'
 
 const debug = createDebugger('vike:pluginExtractAssets')
 
+const filterRolldown = {
+  id: {
+    include: extractAssetsRE,
+  },
+}
+const filterFunction = (id: string) => extractAssetsRE.test(id)
+
 function pluginExtractAssets(): Plugin[] {
   let config: ResolvedConfig
   let vikeConfig: VikeConfigInternal
@@ -54,11 +63,10 @@ function pluginExtractAssets(): Plugin[] {
       apply: 'build',
       enforce: 'post',
       transform: {
+        filter: filterRolldown,
         async handler(src, id, options) {
           id = normalizeId(id)
-          if (!extractAssetsRE.test(id)) {
-            return
-          }
+          assert(filterFunction(id))
           if (isFixEnabled) {
             // I'm guessing isFixEnabled can only be true when mixing both designs: https://github.com/vikejs/vike/issues/1480
             assertV1Design(vikeConfig._pageConfigs, true)

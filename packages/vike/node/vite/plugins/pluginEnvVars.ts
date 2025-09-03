@@ -16,6 +16,7 @@ import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 import { getMagicString } from '../shared/getMagicString.js'
+import { filterRolldown, filterFunction } from './pluginReplaceConstants.js'
 
 // TO-DO/eventually:
 // - Make import.meta.env work inside +config.js
@@ -44,13 +45,13 @@ function pluginEnvVars(): Plugin {
       },
     },
     transform: {
+      filter: filterRolldown,
       handler(code, id, options) {
         id = normalizeId(id)
         assertPosixPath(id)
-        if (id.includes('/node_modules/')) return
         assertPosixPath(config.root)
-        if (!id.startsWith(config.root)) return
-        if (!code.includes('import.meta.env.')) return
+        if (!id.startsWith(config.root)) return // skip linked dependencies
+        assert(filterFunction(id, code))
 
         const isBuild = config.command === 'build'
         const isClientSide = !isViteServerSide_extraSafe(config, this.environment, options)

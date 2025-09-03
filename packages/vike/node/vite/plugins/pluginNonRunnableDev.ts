@@ -6,12 +6,29 @@ import {
   assertIsNotProductionRuntime,
   requireResolveDistFile,
   isRunnableDevEnvironment,
+  assert,
+  escapeRegex,
+  isDevCheck,
 } from '../utils.js'
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { retrievePageAssetsDev } from '../../runtime/renderPage/getPageAssets/retrievePageAssetsDev.js'
 import { getViteConfigRuntime } from '../shared/getViteConfigRuntime.js'
 import { getMagicString } from '../shared/getMagicString.js'
 assertIsNotProductionRuntime()
+
+const distFileIsNonRunnableDev = requireResolveDistFile('dist/esm/utils/isNonRunnableDev.js')
+const distFileGlobalContext = requireResolveDistFile('dist/esm/node/runtime/globalContext.js')
+const filterRolldown = {
+  id: {
+    include: [distFileIsNonRunnableDev, distFileGlobalContext].map(
+      (filePath) => new RegExp(`^${escapeRegex(filePath)}($|${escapeRegex('?')}.*)`),
+    ),
+  },
+}
+const filterFunction = (id: string) => {
+  const idWithoutQuery = getIdWithoutQuery(id)
+  return idWithoutQuery === distFileIsNonRunnableDev || idWithoutQuery === distFileGlobalContext
+}
 
 export type ViteRPC = ReturnType<typeof getViteRpcFunctions>
 function getViteRpcFunctions(viteDevServer: ViteDevServer) {
@@ -33,11 +50,10 @@ declare global {
   var __VIKE__IS_NON_RUNNABLE_DEV: undefined | boolean
 }
 function pluginNonRunnableDev(): Plugin {
-  const distFileIsNonRunnableDev = requireResolveDistFile('dist/esm/utils/isNonRunnableDev.js')
-  const distFileGlobalContext = requireResolveDistFile('dist/esm/node/runtime/globalContext.js')
   let config: ResolvedConfig
   return {
     name: 'vike:pluginNonRunnableDev',
+    apply: (_, configEnv) => isDevCheck(configEnv),
     configureServer: {
       handler(viteDevServer) {
         createViteRPC(viteDevServer, getViteRpcFunctions)
@@ -49,10 +65,11 @@ function pluginNonRunnableDev(): Plugin {
       },
     },
     transform: {
+      filter: filterRolldown,
       handler(code, id) {
-        if (!config._isDev) return
-        const idWithoutQuery = id.split('?')[0]!
-        if (idWithoutQuery !== distFileIsNonRunnableDev && idWithoutQuery !== distFileGlobalContext) return
+        assert(config._isDev)
+        assert(filterFunction(id))
+        const idWithoutQuery = getIdWithoutQuery(id)
         if (isRunnableDevEnvironment(this.environment)) return
         const { magicString, getMagicStringResult } = getMagicString(code, id)
         if (idWithoutQuery === distFileIsNonRunnableDev) {
@@ -65,4 +82,8 @@ function pluginNonRunnableDev(): Plugin {
       },
     },
   }
+}
+
+function getIdWithoutQuery(id: string) {
+  return id.split('?')[0]!
 }
