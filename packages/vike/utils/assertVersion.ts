@@ -33,13 +33,13 @@ function isVersionOrAbove(versionActual: string, versionExpectedList: Version[])
   const versionExpectedSameMajor = versionExpectedListSameMajor[0]
 
   if (versionExpectedSameMajor) {
-    return compare(versionActual, versionExpectedSameMajor)
+    return isSameOrAbove(versionActual, versionExpectedSameMajor)
   } else {
-    return versionExpectedList.every((versionExpected) => compare(versionActual, versionExpected))
+    return versionExpectedList.every((versionExpected) => isSameOrAbove(versionActual, versionExpected))
   }
 }
 
-function compare(versionActual: string, versionExpected: Version): boolean {
+function isSameOrAbove(versionActual: string, versionExpected: Version): boolean {
   const p1 = parseVersion(versionActual)
   const p2 = parseVersion(versionExpected)
 
