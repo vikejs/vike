@@ -49,8 +49,8 @@ function pluginEnvVars(): Plugin {
           exclude: '**/node_modules/**',
         },
         code: {
-          include: 'import.meta.env.'
-        }
+          include: 'import.meta.env.',
+        },
       },
       handler(code, id, options) {
         id = normalizeId(id)
