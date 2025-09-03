@@ -31,7 +31,7 @@ function compare(versionActual: string, versionExpected: Version): boolean | nul
   const p2 = parseVersion(versionExpected)
 
   // major
-  if (p1[0] !== p2[0]) return p1[0] > p2[0] ? true : null
+  if (p1[0] !== p2[0]) return p1[0] > p2[0] ? true : false
   // minor
   if (p1[1] !== p2[1]) return p1[1] > p2[1]
   // patch

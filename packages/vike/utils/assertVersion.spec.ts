@@ -14,9 +14,9 @@ describe('isVersionOrAbove()', () => {
     expect(isVersionOrAbove('1.0.0', ['1.1.0'])).toBe(false)
     expect(isVersionOrAbove('1.0.0', ['1.0.1'])).toBe(false)
 
-    // Different major versions - always pass (incompatible but allowed)
+    // Different major versions
     expect(isVersionOrAbove('2.0.0', ['1.0.0'])).toBe(true) // higher major
-    expect(isVersionOrAbove('1.0.0', ['2.0.0'])).toBe(true) // lower major
+    expect(isVersionOrAbove('1.0.0', ['2.0.0'])).toBe(false) // lower major
   })
 
   it('multiple expected versions', () => {
@@ -24,9 +24,9 @@ describe('isVersionOrAbove()', () => {
     expect(isVersionOrAbove('2.0.0', ['1.0.0', '2.0.0'])).toBe(true)
     expect(isVersionOrAbove('1.5.0', ['1.0.0', '1.8.0'])).toBe(false) // fails on 1.8.0
 
-    // Different majors are always allowed
-    expect(isVersionOrAbove('0.9.0', ['1.0.0', '2.0.0'])).toBe(true)
-    expect(isVersionOrAbove('5.0.0', ['1.0.0', '2.0.0'])).toBe(true)
+    // Different majors
+    expect(isVersionOrAbove('0.9.0', ['1.0.0', '2.0.0'])).toBe(false) // lower major
+    expect(isVersionOrAbove('5.0.0', ['1.0.0', '2.0.0'])).toBe(true) // higher major
   })
 
   it('pre-release versions', () => {
