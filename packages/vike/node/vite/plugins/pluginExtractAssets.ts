@@ -88,7 +88,7 @@ function pluginExtractAssets(): Plugin[] {
       enforce: 'pre',
       // Hook filter: only process script files and files with extractAssets query
       resolveId: {
-        id: /\.(js|ts|jsx|tsx|mjs|cjs|vue|svelte)(\?|$)|[?&]extractAssets(?:&|$)/
+        id: /\.(js|ts|jsx|tsx|mjs|cjs|vue|svelte)(\?|$)|[?&]extractAssets(?:&|$)/,
       },
       async resolveId(source, importer, options) {
         if (isViteServerSide_extraSafe(config, this.environment, options)) {

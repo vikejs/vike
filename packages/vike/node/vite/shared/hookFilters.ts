@@ -34,7 +34,7 @@ function createHookFilters() {
      */
     virtualFiles: {
       resolveId: { id: /^virtual:vike:/ },
-      load: { id: /^virtual:vike:/ }
+      load: { id: /^virtual:vike:/ },
     } satisfies HookFilters,
 
     /**
@@ -42,7 +42,7 @@ function createHookFilters() {
      */
     extractAssets: {
       resolveId: { id: /[?&]extractAssets(?:&|$)/ },
-      transform: { id: /[?&]extractAssets(?:&|$)/ }
+      transform: { id: /[?&]extractAssets(?:&|$)/ },
     } satisfies HookFilters,
 
     /**
@@ -50,7 +50,7 @@ function createHookFilters() {
      * Excludes node_modules for performance
      */
     scriptFiles: {
-      transform: { id: /\.(js|ts|jsx|tsx|mjs|cjs)(\?|$)/ }
+      transform: { id: /\.(js|ts|jsx|tsx|mjs|cjs)(\?|$)/ },
     } satisfies HookFilters,
 
     /**
@@ -58,21 +58,21 @@ function createHookFilters() {
      * Useful for plugins that should only process user code
      */
     userFiles: {
-      transform: { id: /^(?!.*\/node_modules\/).*/ }
+      transform: { id: /^(?!.*\/node_modules\/).*/ },
     } satisfies HookFilters,
 
     /**
      * Filter for files with extractExportNames query parameter
      */
     extractExportNames: {
-      transform: { id: /[?&]extractExportNames(?:&|$)/ }
+      transform: { id: /[?&]extractExportNames(?:&|$)/ },
     } satisfies HookFilters,
 
     /**
      * Filter for CSS files
      */
     cssFiles: {
-      transform: { id: /\.css(\?|$)/ }
+      transform: { id: /\.css(\?|$)/ },
     } satisfies HookFilters,
 
     /**
@@ -80,7 +80,7 @@ function createHookFilters() {
      * This is a heuristic filter - the actual check happens in the hook
      */
     envFiles: {
-      transform: { id: /\.(js|ts|jsx|tsx|vue|svelte)(\?|$)/ }
+      transform: { id: /\.(js|ts|jsx|tsx|vue|svelte)(\?|$)/ },
     } satisfies HookFilters,
 
     /**
@@ -88,13 +88,13 @@ function createHookFilters() {
      */
     combine: (...filters: HookFilters[]): HookFilters => {
       const combined: HookFilters = {}
-      
+
       for (const filter of filters) {
         for (const [hookName, hookFilter] of Object.entries(filter) as [keyof HookFilters, any][]) {
           if (!combined[hookName]) {
             combined[hookName] = {}
           }
-          
+
           if (hookFilter.id) {
             if (combined[hookName]!.id) {
               // Combine regexes with AND logic by creating a new regex that matches both
@@ -107,9 +107,9 @@ function createHookFilters() {
           }
         }
       }
-      
+
       return combined
-    }
+    },
   }
 }
 
@@ -130,6 +130,6 @@ export function createProjectFileFilter(projectRoot: string): { id: RegExp } {
   // Normalize path separators and escape for regex
   const normalizedRoot = projectRoot.replace(/\\/g, '/').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
   return {
-    id: new RegExp(`^${normalizedRoot}/(?!.*node_modules/).*\\.(js|ts|jsx|tsx|vue|svelte)(\\\?|$)`)
+    id: new RegExp(`^${normalizedRoot}/(?!.*node_modules/).*\\.(js|ts|jsx|tsx|vue|svelte)(\\\?|$)`),
   }
 }

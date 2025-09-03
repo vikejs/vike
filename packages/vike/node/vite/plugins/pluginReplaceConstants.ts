@@ -18,7 +18,7 @@ function pluginReplaceConstants(): Plugin {
     },
     // Hook filter: only process user script files that might contain import.meta.env
     transform: {
-      id: /^(?!.*\/node_modules\/).*\.(js|ts|jsx|tsx|vue|svelte)(\?|$)/
+      id: /^(?!.*\/node_modules\/).*\.(js|ts|jsx|tsx|vue|svelte)(\?|$)/,
     },
     transform(code, id, options) {
       id = normalizeId(id)

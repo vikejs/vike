@@ -47,7 +47,9 @@ function pluginNonRunnableDev(): Plugin {
     },
     // Hook filter: only process specific Vike dist files
     transform: {
-      id: new RegExp(`(${distFileIsNonRunnableDev.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}|${distFileGlobalContext.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`)
+      id: new RegExp(
+        `(${distFileIsNonRunnableDev.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}|${distFileGlobalContext.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`,
+      ),
     },
     transform(code, id) {
       if (!config._isDev) return

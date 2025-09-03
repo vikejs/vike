@@ -12,7 +12,7 @@ function svgPlugin() {
         // Process SVG files
         return `export default ${JSON.stringify(code)}`
       }
-    }
+    },
   }
 }
 
@@ -25,7 +25,7 @@ function cssPlugin() {
         // Process CSS files
         return code.replace(/\/\*.*?\*\//g, '') // Remove comments
       }
-    }
+    },
   }
 }
 
@@ -33,25 +33,19 @@ export default defineConfig({
   plugins: [
     vike(),
     react(),
-    
+
     // Example 1: Using withFilter to optimize SVG processing
     // Only calls the plugin's transform hook for .svg files
-    withFilter(
-      svgPlugin(),
-      { 
-        transform: { id: /\.svg(\?|$)/ } 
-      }
-    ),
-    
+    withFilter(svgPlugin(), {
+      transform: { id: /\.svg(\?|$)/ },
+    }),
+
     // Example 2: Using withFilter to optimize CSS processing
     // Only calls the plugin's transform hook for .css files
-    withFilter(
-      cssPlugin(),
-      { 
-        transform: { id: /\.css(\?|$)/ } 
-      }
-    ),
-    
+    withFilter(cssPlugin(), {
+      transform: { id: /\.css(\?|$)/ },
+    }),
+
     // Example 3: Complex filter combining multiple conditions
     // Only process TypeScript files that are not in node_modules
     withFilter(
@@ -60,15 +54,15 @@ export default defineConfig({
         transform(code: string, id: string) {
           // Add TypeScript-specific transformations
           return code.replace(/console\.log/g, 'console.debug')
-        }
+        },
       },
       {
-        transform: { 
-          id: /^(?!.*\/node_modules\/).*\.tsx?(\?|$)/ 
-        }
-      }
+        transform: {
+          id: /^(?!.*\/node_modules\/).*\.tsx?(\?|$)/,
+        },
+      },
     ),
-    
+
     // Example 4: Filter for specific file patterns
     // Only process files with specific query parameters
     withFilter(
@@ -77,13 +71,13 @@ export default defineConfig({
         transform(code: string, id: string) {
           // Process files with ?inline query
           return `export default ${JSON.stringify(code)}`
-        }
+        },
       },
       {
-        transform: { 
-          id: /[?&]inline(?:&|$)/ 
-        }
-      }
-    )
+        transform: {
+          id: /[?&]inline(?:&|$)/,
+        },
+      },
+    ),
   ],
 }) satisfies UserConfig
