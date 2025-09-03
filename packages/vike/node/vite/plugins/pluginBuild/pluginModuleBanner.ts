@@ -1,7 +1,7 @@
 export { pluginModuleBanner }
 
 import type { ResolvedConfig, Plugin } from 'vite'
-import { removeVirtualFileIdPrefix } from '../../utils.js'
+import { assert, removeVirtualFileIdPrefix } from '../../utils.js'
 import { getMagicString } from '../../shared/getMagicString.js'
 import { isViteServerSide_extraSafe } from '../../shared/isViteServerSide.js'
 
@@ -15,6 +15,10 @@ function pluginModuleBanner(): Plugin {
     name: 'vike:build:pluginModuleBanner',
     enforce: 'post',
     apply: 'build',
+    applyToEnvironment(environment) {
+      const { config } = environment
+      return config.build.minify === false
+    },
     configResolved: {
       handler(config_) {
         config = config_
@@ -22,17 +26,11 @@ function pluginModuleBanner(): Plugin {
     },
     transform: {
       order: 'post',
-      /* TO-DO/eventually/filter-rolldown: we cannot apply a filter here — instead add the transformer hook dynamically in a config() hook.
+      /* Using a Rolldown hook filter doesn't make sense here — we use applyToEnvironment() to conditionally apply this plugin.
       filter: {},
       */
-      handler(code, id, options) {
-        if (
-          !isViteServerSide_extraSafe(config, this.environment, options) &&
-          // Inject module banners if user sets `build.minify` to `false` for inspecting dist/client/
-          config.build.minify
-        ) {
-          return
-        }
+      handler(code, id) {
+        assert(!config.build.minify)
         if (id.startsWith('\0')) id = id
         id = removeVirtualFileIdPrefix(id)
         if (id.startsWith(config.root)) id = id.slice(config.root.length + 1)
