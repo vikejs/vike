@@ -17,7 +17,7 @@ import { reloadVikeConfig, isV1Design, getVikeConfigInternalOptional } from '../
 import pc from '@brillout/picocolors'
 import { logConfigInfo } from '../shared/loggerNotProd.js'
 import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
-import { updateUserFiles } from '../../runtime/globalContext.js'
+import { isRunnable, updateUserFiles } from '../../runtime/globalContext.js'
 import { isPlusFile } from '../shared/resolveVikeConfigInternal/crawlPlusFiles.js'
 import { isTemporaryBuildFile } from '../shared/resolveVikeConfigInternal/transpileAndExecuteFile.js'
 import { getVikeConfigError } from '../../shared/getVikeConfigError.js'
@@ -151,7 +151,10 @@ async function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
       // Ensure we invalidate `file` *before* server.ssrLoadModule() in updateUserFiles()
       // Vite already invalidates it, but *after* handleHotUpdate() and thus after server.ssrLoadModule()
       ctx.modules.forEach((mod) => server.moduleGraph.invalidateModule(mod))
-      updateUserFiles()
+      if (isRunnable(server)) {
+        // TODO/now: await
+        updateUserFiles()
+      }
     }
   }
 }

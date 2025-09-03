@@ -18,6 +18,7 @@ export { setGlobalContext_prodBuildEntry } // production entry
 export { clearGlobalContext }
 export { assertBuildInfo }
 export { updateUserFiles }
+export { isRunnable }
 export { vikeConfigErrorRecoverMsg }
 export type { BuildInfo }
 export type { GlobalContextServerInternal as GlobalContextServerInternal }
