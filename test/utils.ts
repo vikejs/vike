@@ -6,7 +6,20 @@ export { expectPageContextJsonRequest }
 export { waitForNavigation }
 export { sleepBeforeEditFile }
 
-import { page, test, expect, run, autoRetry, fetchHtml, getServerUrl, partRegex, sleep, skip } from '@brillout/test-e2e'
+import {
+  page,
+  test,
+  expect,
+  run,
+  autoRetry,
+  fetchHtml,
+  getServerUrl,
+  partRegex,
+  sleep,
+  skip,
+  editFile,
+  editFileRevert,
+} from '@brillout/test-e2e'
 
 async function testCounter(currentValue = 0) {
   // autoRetry() in case page just got client-side navigated
@@ -111,6 +124,8 @@ function testRunClassic(
     tolerateError?: NonNullable<Parameters<typeof run>[1]>['tolerateError']
   } = {},
 ) {
+  const isDev = cmd === 'npm run dev'
+
   if (skipViteEcosystemCi && process.env.VITE_ECOSYSTEM_CI) {
     skip("SKIPPED: skipping this test from Vite's ecosystem CI, see https://github.com/vikejs/vike/pull/2220")
     return
@@ -129,6 +144,24 @@ function testRunClassic(
     expect(await page.textContent('h1')).toBe('Welcome')
     await testCounter()
   })
+
+  if (isDev) {
+    test('HMR', async () => {
+      await testCounter(1)
+      const org = 'Welcome'
+      const mod = 'Wilkommen'
+      expect(await page.textContent('h1')).toBe(org)
+      editFile('./pages/index/+Page.jsx', (s) => s.replace(org, mod))
+      await autoRetry(async () => {
+        expect(await page.textContent('h1')).toBe(mod)
+      })
+      editFileRevert()
+      await autoRetry(async () => {
+        expect(await page.textContent('h1')).toBe(org)
+      })
+      await testCounter(2)
+    })
+  }
 
   if (!skipAboutPage) {
     test('about page', async () => {
