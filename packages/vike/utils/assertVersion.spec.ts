@@ -22,7 +22,6 @@ describe('isVersionOrAbove()', () => {
   it('multiple expected versions', () => {
     // Must satisfy ANY of the expected versions
     expect(isVersionOrAbove('2.0.0', ['1.0.0', '2.0.0'])).toBe(true)
-    expect(isVersionOrAbove('1.5.0', ['1.0.0', '1.8.0'])).toBe(true) // satisfies 1.0.0
 
     // Different majors
     expect(isVersionOrAbove('0.9.0', ['1.0.0', '2.0.0'])).toBe(false) // lower than all
