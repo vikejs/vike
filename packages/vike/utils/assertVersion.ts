@@ -24,21 +24,16 @@ function isVersionOrAbove(versionActual: string, versionExpected: Version[]): bo
   assert(versionExpected)
   assert(versionExpected.length > 0)
 
-  const actualParts = parseVersion(versionActual)
-  const actualMajor = actualParts[0]
-
-  // Find all expected versions that have the same major version as actual
+  const versionActualMajor = parseVersion(versionActual)[0]
   const versionExpectedSameMajor = versionExpected.filter((version) => {
-    const expectedParts = parseVersion(version)
-    return expectedParts[0] === actualMajor
+    const versionMajor = parseVersion(version)[0]
+    return versionMajor === versionActualMajor
   })
 
   if (versionExpectedSameMajor.length > 0) {
     assert(versionExpectedSameMajor.length === 1)
-    // If there are versions with the same major, check if actual satisfies any of them
     return versionExpectedSameMajor.every((version) => compare(versionActual, version))
   } else {
-    // If no same major versions, check if actual satisfies all version with lower major
     return versionExpected.every((version) => compare(versionActual, version))
   }
 }
