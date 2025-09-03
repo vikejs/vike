@@ -12,7 +12,6 @@ import {
   assertUsage,
   assertWarning,
   capitalizeFirstLetter,
-  escapeRegex,
   isFilePathAbsolute,
   joinEnglish,
   rollupSourceMapRemove,
@@ -189,12 +188,11 @@ function isWrongEnv(moduleId: string, isServerSide: boolean): boolean {
 }
 
 function skip(id: string, userRootDir: string): boolean {
-  assert(!id.includes(skipNodeModules))
-  assert(id.includes(getSuffix('client')) || id.includes(getSuffix('server')))
+  assert(filterFunction(id))
   // TO-DO/next-major-release: remove
   if (extractAssetsRE.test(id) || extractExportNamesRE.test(id)) return true
   if (getModulePath(id).endsWith('.css')) return true
-  // Only user files
+  // Skip linked dependencies
   if (!id.startsWith(userRootDir)) return true
   return false
 }
