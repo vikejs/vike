@@ -4,6 +4,7 @@
     "target": "ES2023",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "types": ["./worker-configuration.d.ts", "vite/client"],
+    "jsx": "react",
     "module": "ESNext",
     "skipLibCheck": true,
 
