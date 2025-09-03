@@ -39,7 +39,7 @@ function isVersionOrAbove(versionActual: string, versionExpected: Version[]): bo
     return versionExpectedSameMajor.every((version) => compare(versionActual, version))
   } else {
     // If no same major versions, check if actual satisfies any version with lower major
-    return versionExpected.some((version) => {
+    return versionExpected.every((version) => {
       const expectedParts = parseVersion(version)
       return actualMajor > expectedParts[0]
     })
