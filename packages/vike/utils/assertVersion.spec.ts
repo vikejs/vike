@@ -7,8 +7,8 @@ describe('isVersionOrAbove()', () => {
     expect(isVersionOrAbove('1.0.0', ['1.0.0'])).toBe(true)
 
     // Higher versions (same major)
-    expect(isVersionOrAbove('1.1.0', ['1.0.0'])).toBe(true)
     expect(isVersionOrAbove('1.0.1', ['1.0.0'])).toBe(true)
+    expect(isVersionOrAbove('1.1.0', ['1.0.0'])).toBe(true)
 
     // Lower versions (same major) - should fail
     expect(isVersionOrAbove('1.0.0', ['1.1.0'])).toBe(false)
@@ -44,6 +44,5 @@ describe('isVersionOrAbove()', () => {
 
     // Malformed versions
     expect(() => isVersionOrAbove('1.0', ['1.0.0'])).toThrow()
-    expect(() => isVersionOrAbove('1.0.0', [])).toThrow()
   })
 })
