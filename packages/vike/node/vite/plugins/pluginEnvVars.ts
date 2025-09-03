@@ -44,10 +44,15 @@ function pluginEnvVars(): Plugin {
       },
     },
     transform: {
+      filter: {
+        id: {
+          exclude: '**/node_modules/**',
+        },
+      },
       handler(code, id, options) {
         id = normalizeId(id)
         assertPosixPath(id)
-        if (id.includes('/node_modules/')) return
+        assert(!id.includes('/node_modules/'))
         assertPosixPath(config.root)
         if (!id.startsWith(config.root)) return
         if (!code.includes('import.meta.env.')) return
