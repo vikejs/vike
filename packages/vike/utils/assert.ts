@@ -168,6 +168,7 @@ function addPrefixProjectName(msg: string, showProjectVersion = false): string {
   return `${prefix}${msg}`
 }
 
+// TO-DO/eventually: remove this (refactor the whole log handling)
 function getAssertErrMsg(thing: unknown): { assertMsg: string; showVikeVersion: boolean } | null {
   let errMsg: string
   let errStack: string | undefined
@@ -189,7 +190,21 @@ function getAssertErrMsg(thing: unknown): { assertMsg: string; showVikeVersion: 
         return { assertMsg, showVikeVersion }
       }
     } else if (errStack?.includes(tag)) {
+      // The following assert can fail, e.g. with following error:
+      // ```
+      // Error: Error running module "/home/rom/code/vike-server/examples/cloudflare-react/cloudflare-entry.js".
+      // Error running module "photon:cloudflare:/home/rom/code/vike-server/examples/cloudflare-react/server.js".
+      // Error running module "/home/rom/code/vike-server/examples/cloudflare-react/server.js".
+      // Error running module "/home/rom/code/vike-server/node_modules/.pnpm/@photonjs+hono@0.0.6_@hattip+core@0.0.49_elysia@1.3.13_exact-mirror@0.1.6_@sinclair+typ_c39d432d43266746f390ace81b426601/node_modules/@photonjs/hono/dist/index.js?v=6ca51a04".
+      // Error running module "/home/rom/code/vike-server/node_modules/.pnpm/@photonjs+hono@0.0.6_@hattip+core@0.0.49_elysia@1.3.13_exact-mirror@0.1.6_@sinclair+typ_c39d432d43266746f390ace81b426601/node_modules/@photonjs/hono/dist/apply.dev.js?v=6ca51a04".
+      // Error running module "photon:get-middlewares:dev:hono".
+      // Error running module "/home/rom/code/vike-server/packages/vike-server/dist/universal.dev.js".
+      // [vike][Wrong Usage] The global context isn't set yet, use getGlobalContextAsync() instead........
+      //     at async ProxyServer.fetch (file:///home/rom/code/vike-server/node_modules/.pnpm/miniflare@4.20250829.0/node_modules/miniflare/src/workers/core/proxy.worker.ts:174:11)
+      // ```
+      /*
       throw new Error('Internal Vike error')
+      */
     }
     if (errMsg?.startsWith(tag)) {
       const assertMsg = errMsg.slice(tag.length)
