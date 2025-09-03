@@ -53,7 +53,7 @@ function pluginNonRunnableDev(): Plugin {
   let config: ResolvedConfig
   return {
     name: 'vike:pluginNonRunnableDev',
-    apply: (_, configEnv) =>  isDevCheck(configEnv),
+    apply: (_, configEnv) => isDevCheck(configEnv),
     configureServer: {
       handler(viteDevServer) {
         createViteRPC(viteDevServer, getViteRpcFunctions)
