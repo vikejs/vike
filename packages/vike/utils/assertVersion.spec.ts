@@ -22,10 +22,16 @@ describe('isVersionOrAbove()', () => {
   it('multiple expected versions', () => {
     // Must satisfy ANY of the expected versions
     expect(isVersionOrAbove('2.0.0', ['1.0.0', '2.0.0'])).toBe(true)
+    expect(isVersionOrAbove('2.0.1', ['1.0.0', '2.0.0'])).toBe(true)
+    expect(isVersionOrAbove('2.1.0', ['1.0.0', '2.0.0'])).toBe(true)
+
+    expect(isVersionOrAbove('1.0.0', ['1.0.0', '2.0.0'])).toBe(true)
+    expect(isVersionOrAbove('1.0.1', ['1.0.0', '2.0.0'])).toBe(true)
+    expect(isVersionOrAbove('1.1.0', ['1.0.0', '2.0.0'])).toBe(true)
 
     // Different majors
     expect(isVersionOrAbove('0.9.0', ['1.0.0', '2.0.0'])).toBe(false) // lower than all
-    expect(isVersionOrAbove('5.0.0', ['1.0.0', '2.0.0'])).toBe(true) // higher than any
+    expect(isVersionOrAbove('3.0.0', ['1.0.0', '2.0.0'])).toBe(true) // higher than any
 
     expect(isVersionOrAbove('1.2.2', ['0.1.2', '1.2.3', '2.3.4'])).toBe(false)
     expect(isVersionOrAbove('1.2.3', ['0.1.2', '1.2.3', '2.3.4'])).toBe(true)
