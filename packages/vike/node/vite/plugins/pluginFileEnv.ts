@@ -163,29 +163,28 @@ function pluginFileEnv(): Plugin {
   }
 }
 
+function isWrongEnv(moduleId: string, isServerSide: boolean): boolean {
+  const modulePath = getModulePath(moduleId)
+  const suffixWrong = getSuffix(isServerSide ? 'client' : 'server')
+  return modulePath.includes(suffixWrong)
+}
 
-  function isWrongEnv(moduleId: string, isServerSide: boolean): boolean {
-    const modulePath = getModulePath(moduleId)
-    const suffixWrong = getSuffix(isServerSide ? 'client' : 'server')
-    return modulePath.includes(suffixWrong)
-  }
+function skip(id: string, userRootDir: string): boolean {
+  // TO-DO/next-major-release: remove
+  if (extractAssetsRE.test(id) || extractExportNamesRE.test(id)) return true
+  if (!id.includes(getSuffix('client')) && !id.includes(getSuffix('server'))) return true
+  if (getModulePath(id).endsWith('.css')) return true
+  // Apply `.server.js` and `.client.js` only to user files
+  if (id.includes('/node_modules/')) return true
+  // Only user files
+  if (!id.startsWith(userRootDir)) return true
+  return false
+}
 
-  function skip(id: string, userRootDir: string): boolean {
-    // TO-DO/next-major-release: remove
-    if (extractAssetsRE.test(id) || extractExportNamesRE.test(id)) return true
-    if (!id.includes(getSuffix('client')) && !id.includes(getSuffix('server'))) return true
-    if (getModulePath(id).endsWith('.css')) return true
-    // Apply `.server.js` and `.client.js` only to user files
-    if (id.includes('/node_modules/')) return true
-    // Only user files
-    if (!id.startsWith(userRootDir)) return true
-    return false
-  }
+function getSuffix(env: 'client' | 'server') {
+  return `.${env}.` as const
+}
 
-  function getSuffix(env: 'client' | 'server') {
-    return `.${env}.` as const
-  }
-
-  function getModulePath(moduleId: string) {
-    return moduleId.split('?')[0]!
-  }
+function getModulePath(moduleId: string) {
+  return moduleId.split('?')[0]!
+}
