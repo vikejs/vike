@@ -7,6 +7,7 @@ import {
   requireResolveDistFile,
   isRunnableDevEnvironment,
   assert,
+  escapeRegex,
 } from '../utils.js'
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { retrievePageAssetsDev } from '../../runtime/renderPage/getPageAssets/retrievePageAssetsDev.js'
@@ -18,11 +19,13 @@ const distFileIsNonRunnableDev = requireResolveDistFile('dist/esm/utils/isNonRun
 const distFileGlobalContext = requireResolveDistFile('dist/esm/node/runtime/globalContext.js')
 const filterRolldown = {
   id: {
-    include: [distFileIsNonRunnableDev, distFileGlobalContext],
+    include: [distFileIsNonRunnableDev, distFileGlobalContext].map(
+      (filePath) => new RegExp(`^${escapeRegex(filePath)}($|${escapeRegex('?')}.*)`),
+    ),
   },
 }
 const filterFunction = (id: string) => {
-  const idWithoutQuery = id.split('?')[0]!
+  const idWithoutQuery = getIdWithoutQuery(id)
   return idWithoutQuery === distFileIsNonRunnableDev || idWithoutQuery === distFileGlobalContext
 }
 
@@ -64,7 +67,7 @@ function pluginNonRunnableDev(): Plugin {
       handler(code, id) {
         if (!config._isDev) return
         assert(filterFunction(id))
-        const idWithoutQuery = id.split('?')[0]!
+        const idWithoutQuery = getIdWithoutQuery(id)
         if (isRunnableDevEnvironment(this.environment)) return
         const { magicString, getMagicStringResult } = getMagicString(code, id)
         if (idWithoutQuery === distFileIsNonRunnableDev) {
@@ -77,4 +80,8 @@ function pluginNonRunnableDev(): Plugin {
       },
     },
   }
+}
+
+function getIdWithoutQuery(id: string) {
+  return id.split('?')[0]!
 }
