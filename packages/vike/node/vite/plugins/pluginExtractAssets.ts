@@ -46,19 +46,19 @@ const EMPTY_MODULE_ID = 'virtual:vike:empty-module'
 
 const debug = createDebugger('vike:pluginExtractAssets')
 
-const extractAssetsFilterRolldown = {
+const filterRolldownExtractAssets = {
   id: {
     include: extractAssetsRE,
   },
 }
-const extractAssetsFilterFunction = (id: string) => extractAssetsRE.test(id)
+const filterFunctionExtractAssets = (id: string) => extractAssetsRE.test(id)
 
-const virtualFileFilterRolldown = {
+const filterRolldownVirtualFile = {
   id: {
     include: new RegExp(`^${escapeRegex(virtualFileIdPrefix1)}`),
   },
 }
-const virtualFileFilterFunction = (id: string) => isVirtualFileId(id)
+const filterFunctionVirtualFile = (id: string) => isVirtualFileId(id)
 
 function pluginExtractAssets(): Plugin[] {
   let config: ResolvedConfig
@@ -72,10 +72,10 @@ function pluginExtractAssets(): Plugin[] {
       apply: 'build',
       enforce: 'post',
       transform: {
-        filter: extractAssetsFilterRolldown,
+        filter: filterRolldownExtractAssets,
         async handler(src, id, options) {
           id = normalizeId(id)
-          assert(extractAssetsFilterFunction(id))
+          assert(filterFunctionExtractAssets(id))
           if (isFixEnabled) {
             // I'm guessing isFixEnabled can only be true when mixing both designs: https://github.com/vikejs/vike/issues/1480
             assertV1Design(vikeConfig._pageConfigs, true)
@@ -170,9 +170,9 @@ function pluginExtractAssets(): Plugin[] {
       name: 'vike:pluginExtractAssets-3',
       apply: 'build',
       load: {
-        filter: virtualFileFilterRolldown,
+        filter: filterRolldownVirtualFile,
         handler(id) {
-          assert(virtualFileFilterFunction(id))
+          assert(filterFunctionVirtualFile(id))
           id = removeVirtualFileIdPrefix(id)
 
           if (id === EMPTY_MODULE_ID) {
