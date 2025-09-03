@@ -36,7 +36,7 @@ function isVersionOrAbove(versionActual: string, versionExpected: Version[]): bo
   if (versionExpectedSameMajor.length > 0) {
     assert(versionExpectedSameMajor.length === 1)
     // If there are versions with the same major, check if actual satisfies any of them
-    return versionExpectedSameMajor.some((version) => compare(versionActual, version))
+    return versionExpectedSameMajor.every((version) => compare(versionActual, version))
   } else {
     // If no same major versions, check if actual satisfies any version with lower major
     return versionExpected.some((version) => {
