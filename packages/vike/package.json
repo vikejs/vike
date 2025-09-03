@@ -159,7 +159,7 @@
     }
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20.19.0"
   },
   "license": "MIT",
   "description": "The Framework *You* Control - Next.js & Nuxt alternative for unprecedented flexibility and dependability.",
