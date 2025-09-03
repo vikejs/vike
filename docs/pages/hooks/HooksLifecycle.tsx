@@ -18,6 +18,7 @@ interface HookInfo {
 const routing = { name: 'Routing', href: '/routing', notAHook: true }
 const onCreateApp = { name: 'onCreateApp()', href: '/onCreateApp', providedBy: ['vike-vue'] as const }
 const onCreatePageContext = { name: 'onCreatePageContext()', href: '/onCreatePageContext' }
+const onCreateGlobalContext = { name: 'onCreateGlobalContext()', href: '/onCreateGlobalContext#lifecycle' }
 const onBeforeRoute = { name: 'onBeforeRoute()', href: '/onBeforeRoute' }
 const guard = { name: 'guard()', href: '/guard' }
 const data = { name: 'data()', href: '/data' }
@@ -73,6 +74,7 @@ const firstRenderHooks: HookInfo[] = [
   // Client-side hooks
   ...(
     [
+      onCreateGlobalContext,
       onCreatePageContext,
       { ...guard, hooksEnv: ['client'] },
       { ...data, hooksEnv: ['client'] },
@@ -258,11 +260,7 @@ function HooksLifecycle() {
           <LifecycleBox>
             <h4 style={{ marginTop: 0, marginBottom: '1rem', color: '#2c3e50' }}>Server start</h4>
             <ol>
-              <li>
-                <Link href="/onCreateGlobalContext#lifecycle">
-                  <code>onCreateGlobalContext()</code>
-                </Link>
-              </li>
+              <HookCall hook={{ ...onCreateGlobalContext, env: 'server' }} />
             </ol>
           </LifecycleBox>
           {renderHooksList('first-render', 'First Render')}
