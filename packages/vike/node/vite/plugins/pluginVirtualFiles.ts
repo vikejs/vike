@@ -30,6 +30,7 @@ const filterRolldown = {
     include: new RegExp(`^(${escapeRegex(virtualFileIdPrefix1)}|${escapeRegex(virtualFileIdPrefix2)})`),
   },
 }
+const filterFunction = (id: string) => isVirtualFileId(id)
 
 function pluginVirtualFiles(): Plugin {
   let config: ResolvedConfig
@@ -45,7 +46,7 @@ function pluginVirtualFiles(): Plugin {
     resolveId: {
       filter: filterRolldown,
       handler(id) {
-        assert(isVirtualFileId(id))
+        assert(filterFunction(id))
         return addVirtualFileIdPrefix(id)
       },
     },
@@ -63,7 +64,7 @@ function pluginVirtualFiles(): Plugin {
     load: {
       filter: filterRolldown,
       async handler(id, options) {
-        assert(isVirtualFileId(id))
+        assert(filterFunction(id))
         id = removeVirtualFileIdPrefix(id)
         const isDev = config._isDev
         assert(typeof isDev === 'boolean')

@@ -30,7 +30,6 @@ const PUBLIC_ENV_ALLOWLIST = [
 
 const skipNodeModules = '/node_modules/'
 const skipIrrelevant = 'import.meta.env.'
-
 const filterRolldown = {
   id: {
     exclude: `**${skipNodeModules}**`,
@@ -38,6 +37,11 @@ const filterRolldown = {
   code: {
     include: skipIrrelevant,
   },
+}
+const filterFunction = (id: string, code: string) => {
+  if (!id.includes(skipNodeModules)) return false
+  if (!code.includes(skipIrrelevant)) return false
+  return true
 }
 
 function pluginEnvVars(): Plugin {
@@ -60,10 +64,9 @@ function pluginEnvVars(): Plugin {
       handler(code, id, options) {
         id = normalizeId(id)
         assertPosixPath(id)
-        assert(!id.includes(skipNodeModules))
         assertPosixPath(config.root)
         if (!id.startsWith(config.root)) return // skip linked dependencies
-        assert(code.includes(skipIrrelevant))
+        assert(filterFunction(id, code))
 
         const isBuild = config.command === 'build'
         const isClientSide = !isViteServerSide_extraSafe(config, this.environment, options)

@@ -25,9 +25,7 @@ import { normalizeId } from '../shared/normalizeId.js'
 import { isV1Design } from '../shared/resolveVikeConfigInternal.js'
 import { isViteServerSide, isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 
-// Apply `.server.js` and `.client.js` only to user files
-const skipNodeModules = '/node_modules/'
-
+const skipNodeModules = '/node_modules/' // Only apply `.server.js` and `.client.js` to user files
 const filterRolldown = {
   id: {
     include: (['client', 'server'] as const).map((env) => `**/*${getSuffix(env)}*`),
