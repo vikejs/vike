@@ -31,7 +31,7 @@ const skipNodeModules = '/node_modules/'
 
 const filterRolldown = {
   id: {
-    include: (['client', 'server'] as const).map((env) => new RegExp(`${escapeRegex(getSuffix(env))}`)),
+    include: (['client', 'server'] as const).map((env) => `**/*${getSuffix(env)}*`),
     exclude: [`**${skipNodeModules}**`],
   },
 }
