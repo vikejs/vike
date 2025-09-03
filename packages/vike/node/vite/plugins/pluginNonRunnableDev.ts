@@ -8,6 +8,7 @@ import {
   isRunnableDevEnvironment,
   assert,
   escapeRegex,
+  isDevCheck,
 } from '../utils.js'
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { retrievePageAssetsDev } from '../../runtime/renderPage/getPageAssets/retrievePageAssetsDev.js'
@@ -52,6 +53,7 @@ function pluginNonRunnableDev(): Plugin {
   let config: ResolvedConfig
   return {
     name: 'vike:pluginNonRunnableDev',
+    apply: (_, configEnv) =>  isDevCheck(configEnv),
     configureServer: {
       handler(viteDevServer) {
         createViteRPC(viteDevServer, getViteRpcFunctions)
