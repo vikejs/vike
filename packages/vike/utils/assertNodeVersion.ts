@@ -10,6 +10,7 @@ function assertNodeVersion() {
   assertVersion(
     'Node.js',
     version,
+    // https://gist.github.com/brillout/8e0133716e169b981b6c4e8a938b0134
     // ['20.19.0', '22.12.0', '23.0.0'],
     ['18.0.0'],
     // ['22.15.0'],
