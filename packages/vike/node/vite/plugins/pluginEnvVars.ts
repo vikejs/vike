@@ -28,6 +28,9 @@ const PUBLIC_ENV_ALLOWLIST = [
   'STORYBOOK',
 ]
 
+const skipNodeModules = '/node_modules/'
+const skipIrrelevant = 'import.meta.env.'
+
 function pluginEnvVars(): Plugin {
   let envsAll: Record<string, string>
   let config: ResolvedConfig
@@ -46,19 +49,19 @@ function pluginEnvVars(): Plugin {
     transform: {
       filter: {
         id: {
-          exclude: '**/node_modules/**',
+          exclude: `**${skipNodeModules}**`,
         },
         code: {
-          include: 'import.meta.env.',
+          include: skipIrrelevant,
         },
       },
       handler(code, id, options) {
         id = normalizeId(id)
         assertPosixPath(id)
-        assert(!id.includes('/node_modules/'))
+        assert(!id.includes(skipNodeModules))
         assertPosixPath(config.root)
         if (!id.startsWith(config.root)) return
-        assert(code.includes('import.meta.env.'))
+        assert(code.includes(skipIrrelevant))
 
         const isBuild = config.command === 'build'
         const isClientSide = !isViteServerSide_extraSafe(config, this.environment, options)
