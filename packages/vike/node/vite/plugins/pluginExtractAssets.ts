@@ -1,3 +1,5 @@
+// TODO/next-major-release: remove
+
 // Remove this workaround if the other workaround config.build.ssrEmitAssets turns out to be reliable.
 //  - Remove this file then revert this commit: https://github.com/vikejs/vike/commit/805a18974f13420a78fcc30fdd676696e405c3ca
 
