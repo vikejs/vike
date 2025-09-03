@@ -4,7 +4,7 @@
   - `pageContext.configEntries`
 - Soft deprecate returning `pageContext` from `onBeforeRender()`
   - Also `documentHtml` — use pageContext.html instead
-  - Also `injectFilter()` — maybe deprecate `injectFilter()` in favor of `pageContext.injectAssets`? Do we need a new hook or is `onRenderHtml()`/`onAfterRenderHtml()` engouh?
+  - Also `injectFilter()` — maybe deprecate `injectFilter()` in favor of `pageContext.injectAssets`? Do we need a new hook or is `onRenderHtml()`/`onAfterRenderHtml()` enough?
   - Also all return values of `onBeforeRender()`, `onRenderHtml()`, `onBeforeRoute()` and all hooks
 
 = TO-DO/docs/typescript-javascript-toggle
