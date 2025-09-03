@@ -119,10 +119,12 @@ function testRunClassic(
     skipViteEcosystemCi,
     tolerateError,
     skipHmr,
+    isVue,
   }: {
     skipAboutPage?: true
     skipViteEcosystemCi?: true
     skipHmr?: true
+    isVue?: true
     tolerateError?: NonNullable<Parameters<typeof run>[1]>['tolerateError']
   } = {},
 ) {
@@ -153,7 +155,7 @@ function testRunClassic(
       const org = 'Welcome'
       const mod = 'Wilkommen'
       expect(await page.textContent('h1')).toBe(org)
-      editFile('./pages/index/+Page.jsx', (s) => s.replace(org, mod))
+      editFile(`./pages/index/+Page.${isVue ? 'vue' : 'jsx'}`, (s) => s.replace(org, mod))
       await autoRetry(
         async () => {
           expect(await page.textContent('h1')).toBe(mod)
