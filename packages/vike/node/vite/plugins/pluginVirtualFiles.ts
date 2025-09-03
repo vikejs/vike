@@ -11,6 +11,9 @@ import {
   addVirtualFileIdPrefix,
   isVirtualFileId,
   removeVirtualFileIdPrefix,
+  escapeRegex,
+  virtualFileIdPrefix1,
+  virtualFileIdPrefix2,
 } from '../utils.js'
 import { parseVirtualFileId } from '../../shared/virtualFileId.js'
 import { reloadVikeConfig, isV1Design, getVikeConfigInternalOptional } from '../shared/resolveVikeConfigInternal.js'
@@ -21,6 +24,8 @@ import { isRunnable, updateUserFiles } from '../../runtime/globalContext.js'
 import { isPlusFile } from '../shared/resolveVikeConfigInternal/crawlPlusFiles.js'
 import { isTemporaryBuildFile } from '../shared/resolveVikeConfigInternal/transpileAndExecuteFile.js'
 import { getVikeConfigError } from '../../shared/getVikeConfigError.js'
+
+const filterIdInclued = new RegExp(`^(${escapeRegex(virtualFileIdPrefix1)}|${escapeRegex(virtualFileIdPrefix2)})`)
 
 function pluginVirtualFiles(): Plugin {
   let config: ResolvedConfig
@@ -34,10 +39,14 @@ function pluginVirtualFiles(): Plugin {
       },
     },
     resolveId: {
+      filter: {
+        id: {
+          include: filterIdInclued,
+        },
+      },
       handler(id) {
-        if (isVirtualFileId(id)) {
-          return addVirtualFileIdPrefix(id)
-        }
+        assert(isVirtualFileId(id))
+        return addVirtualFileIdPrefix(id)
       },
     },
     handleHotUpdate: {
@@ -52,8 +61,13 @@ function pluginVirtualFiles(): Plugin {
       },
     },
     load: {
+      filter: {
+        id: {
+          include: filterIdInclued,
+        },
+      },
       async handler(id, options) {
-        if (!isVirtualFileId(id)) return undefined
+        assert(isVirtualFileId(id))
         id = removeVirtualFileIdPrefix(id)
         const isDev = config._isDev
         assert(typeof isDev === 'boolean')

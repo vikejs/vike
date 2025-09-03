@@ -1,6 +1,8 @@
 export { isVirtualFileId }
 export { addVirtualFileIdPrefix }
 export { removeVirtualFileIdPrefix }
+export { virtualFileIdPrefix1 }
+export { virtualFileIdPrefix2 }
 
 import pc from '@brillout/picocolors'
 import { assert, assertUsage } from './assert.js'
