@@ -16,7 +16,10 @@ function pluginModuleBanner(): Plugin {
     apply: 'build',
     applyToEnvironment(environment) {
       const { config } = environment
-      return config.build.minify === false
+      const { consumer } = config
+      const { minify } = config.build
+      assert(minify === false || minify, { minify, consumer })
+      return !minify
     },
     configResolved: {
       handler(config_) {
@@ -29,7 +32,8 @@ function pluginModuleBanner(): Plugin {
       filter: {},
       */
       handler(code, id) {
-        assert(!config.build.minify)
+        const { minify } = this.environment.config.build
+        assert(minify === false, { minify })
         if (id.startsWith('\0')) id = id
         id = removeVirtualFileIdPrefix(id)
         if (id.startsWith(config.root)) id = id.slice(config.root.length + 1)
