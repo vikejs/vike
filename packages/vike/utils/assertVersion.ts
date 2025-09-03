@@ -26,12 +26,12 @@ function isVersionOrAbove(versionActual: string, versionExpected: Version[]): bo
   return versionExpected.every((version) => compare(versionActual, version) !== false)
 }
 
-function compare(versionActual: string, versionExpected: Version): boolean | null {
+function compare(versionActual: string, versionExpected: Version): boolean {
   const p1 = parseVersion(versionActual)
   const p2 = parseVersion(versionExpected)
 
   // major
-  if (p1[0] !== p2[0]) return p1[0] > p2[0] ? true : false
+  if (p1[0] !== p2[0]) return p1[0] > p2[0]
   // minor
   if (p1[1] !== p2[1]) return p1[1] > p2[1]
   // patch
