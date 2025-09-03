@@ -44,8 +44,9 @@ function pluginEnvVars(): Plugin {
       ;(config.plugins as Plugin[]).sort(lowerFirst<Plugin>((plugin) => (plugin.name === 'vite:define' ? 1 : 0)))
     },
     // Hook filter: only process user script files that might contain import.meta.env
-    ...hookFilters.combine(hookFilters.userFiles, hookFilters.envFiles),
-    transform(code, id, options) {
+    transform: {
+      filter: { id: /^(?!.*\/node_modules\/).*\.(js|ts|jsx|tsx|vue|svelte)(\?|$)/ },
+      handler(code, id, options) {
       id = normalizeId(id)
       assertPosixPath(id)
       // Backward compatibility checks (hook filter should already handle most of these)
@@ -103,6 +104,7 @@ function pluginEnvVars(): Plugin {
       if (!magicString.hasChanged()) return null
 
       return getMagicStringResult()
+      },
     },
   }
 }

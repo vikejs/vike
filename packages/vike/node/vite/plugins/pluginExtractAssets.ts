@@ -56,8 +56,9 @@ function pluginExtractAssets(): Plugin[] {
       apply: 'build',
       enforce: 'post',
       // Hook filter: only process files with extractAssets query
-      ...hookFilters.extractAssets,
-      async transform(src, id, options) {
+      transform: {
+        filter: { id: /[?&]extractAssets(?:&|$)/ },
+        async handler(src, id, options) {
         id = normalizeId(id)
         // Backward compatibility check (hook filter should already handle this)
         if (!extractAssetsRE.test(id)) {
@@ -76,6 +77,7 @@ function pluginExtractAssets(): Plugin[] {
         const code = moduleNames.map((moduleName) => `import '${moduleName}';`).join('\n')
         debugTransformResult(id, code, importStatements)
         return rollupSourceMapRemove(code)
+        },
       },
     },
     // This plugin appends `?extractAssets` to module IDs
@@ -88,9 +90,8 @@ function pluginExtractAssets(): Plugin[] {
       enforce: 'pre',
       // Hook filter: only process script files and files with extractAssets query
       resolveId: {
-        id: /\.(js|ts|jsx|tsx|mjs|cjs|vue|svelte)(\?|$)|[?&]extractAssets(?:&|$)/,
-      },
-      async resolveId(source, importer, options) {
+        filter: { id: /\.(js|ts|jsx|tsx|mjs|cjs|vue|svelte)(\?|$)|[?&]extractAssets(?:&|$)/ },
+        async handler(source, importer, options) {
         if (isViteServerSide_extraSafe(config, this.environment, options)) {
           // When building for the server, there should never be a `?extractAssets` query
           assert(!extractAssetsRE.test(source))
@@ -152,6 +153,7 @@ function pluginExtractAssets(): Plugin[] {
         }
 
         return appendExtractAssetsQuery(file, importer)
+        },
       },
     },
     {

@@ -47,11 +47,12 @@ function pluginNonRunnableDev(): Plugin {
     },
     // Hook filter: only process specific Vike dist files
     transform: {
-      id: new RegExp(
-        `(${distFileIsNonRunnableDev.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}|${distFileGlobalContext.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`,
-      ),
-    },
-    transform(code, id) {
+      filter: {
+        id: new RegExp(
+          `(${distFileIsNonRunnableDev.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}|${distFileGlobalContext.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`,
+        ),
+      },
+      handler(code, id) {
       if (!config._isDev) return
       const idWithoutQuery = id.split('?')[0]!
       // Backward compatibility check (hook filter should already handle this)
@@ -65,6 +66,7 @@ function pluginNonRunnableDev(): Plugin {
         magicString.replaceAll('__VIKE__DYNAMIC_IMPORT', 'import')
       }
       return getMagicStringResult()
+      },
     },
   }
 }

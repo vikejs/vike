@@ -33,8 +33,9 @@ function pluginFileEnv(): Plugin {
   return {
     name: 'vike:pluginFileEnv',
     // Hook filter: only process script files that might have file env restrictions
-    ...hookFilters.scriptFiles,
-    load(id, options) {
+    load: {
+      filter: { id: /\.(js|ts|jsx|tsx|mjs|cjs)(\?|$)/ },
+      handler(id, options) {
       // In build, we use generateBundle() instead of the load() hook. Using load() works for dynamic imports in dev thanks to Vite's lazy transpiling, but it doesn't work in build because Rollup transpiles any dynamically imported module even if it's never actually imported.
       if (!viteDevServer) return
       if (!isV1Design()) return
@@ -54,9 +55,12 @@ function pluginFileEnv(): Plugin {
         // In dev, we only show a warning because we don't want to disrupt when the user plays with settings such as [ssr](https://vike.dev/ssr).
         true,
       )
+      },
     },
+    transform: {
+      filter: { id: /\.(js|ts|jsx|tsx|mjs|cjs)(\?|$)/ },
+      async handler(code, id, options) {
     // In production, we have to use transform() to replace modules with a runtime error because generateBundle() doesn't work for dynamic imports. In production, dynamic imports can only be verified at runtime.
-    async transform(code, id, options) {
       id = normalizeId(id)
       // In dev, only using load() is enough as it also works for dynamic imports (see sibling comment).
       if (viteDevServer) return
@@ -77,6 +81,7 @@ function pluginFileEnv(): Plugin {
           ),
         ].join('\n'),
       )
+      },
     },
     generateBundle() {
       Array.from(this.getModuleIds())

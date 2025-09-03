@@ -27,8 +27,9 @@ function pluginExtractExportNames(): Plugin {
     name: 'vike:pluginExtractExportNames',
     enforce: 'post',
     // Hook filter: only process files with extractExportNames query
-    ...hookFilters.extractExportNames,
-    async transform(src, id, options) {
+    transform: {
+      filter: { id: /[?&]extractExportNames(?:&|$)/ },
+      async handler(src, id, options) {
       id = normalizeId(id)
       const isClientSide = !isViteServerSide_extraSafe(config, this.environment, options)
       // Backward compatibility check (hook filter should already handle this)
@@ -37,6 +38,7 @@ function pluginExtractExportNames(): Plugin {
         debug('id ' + id, ['result:\n' + code.code.trim(), 'src:\n' + src.trim()])
         return code
       }
+      },
     },
     configureServer() {
       isDev = true

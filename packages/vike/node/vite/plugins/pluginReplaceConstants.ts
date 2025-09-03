@@ -18,9 +18,8 @@ function pluginReplaceConstants(): Plugin {
     },
     // Hook filter: only process user script files that might contain import.meta.env
     transform: {
-      id: /^(?!.*\/node_modules\/).*\.(js|ts|jsx|tsx|vue|svelte)(\?|$)/,
-    },
-    transform(code, id, options) {
+      filter: { id: /^(?!.*\/node_modules\/).*\.(js|ts|jsx|tsx|vue|svelte)(\?|$)/ },
+      handler(code, id, options) {
       id = normalizeId(id)
       assertPosixPath(id)
       // Backward compatibility checks (hook filter should already handle most of these)
@@ -53,6 +52,7 @@ function pluginReplaceConstants(): Plugin {
       if (!magicString.hasChanged()) return null
 
       return getMagicStringResult()
+      },
     },
   }
 }

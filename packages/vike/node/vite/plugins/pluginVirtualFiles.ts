@@ -34,25 +34,20 @@ function pluginVirtualFiles(): Plugin {
       if (!isV1Design()) config.experimental.importGlobRestoreExtension = true
     },
     // Hook filter: only process virtual file IDs
-    ...hookFilters.virtualFiles,
-    resolveId(id) {
+    resolveId: {
+      filter: { id: /^virtual:vike:/ },
+      handler(id) {
       // Backward compatibility check (hook filter should already handle this)
       if (isVirtualFileId(id)) {
         return addVirtualFileIdPrefix(id)
       }
+      },
     },
-    async handleHotUpdate(ctx) {
-      try {
-        return await handleHotUpdate(ctx, config)
-      } catch (err) {
-        // Vite swallows errors thrown by handleHotUpdate()
-        console.error(err)
-        throw err
-      }
-    },
-    async load(id, options) {
-      // Backward compatibility check (hook filter should already handle this)
-      if (!isVirtualFileId(id)) return undefined
+    load: {
+      filter: { id: /^virtual:vike:/ },
+      async handler(id, options) {
+        // Backward compatibility check (hook filter should already handle this)
+        if (!isVirtualFileId(id)) return undefined
       id = removeVirtualFileIdPrefix(id)
       const isDev = config._isDev
       assert(typeof isDev === 'boolean')
@@ -67,6 +62,16 @@ function pluginVirtualFiles(): Plugin {
           const code = await generateVirtualFileGlobalEntryWithOldDesign(id, options, config, this.environment, isDev)
           return code
         }
+      }
+      },
+    },
+    async handleHotUpdate(ctx) {
+      try {
+        return await handleHotUpdate(ctx, config)
+      } catch (err) {
+        // Vite swallows errors thrown by handleHotUpdate()
+        console.error(err)
+        throw err
       }
     },
     configureServer(server) {
