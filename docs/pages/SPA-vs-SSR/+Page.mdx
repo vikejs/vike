@@ -1,47 +1,48 @@
 import { Link, RepoLink } from '@brillout/docpress'
 
 For each page, you can choose between:
- - **SSR** (**S**erver-**S**ide **R**endering): the page is rendered to HTML on the server-side and then <Link href="/hydration">hydrated</Link> (made interactive) on the client-side. (The page is loaded in both Node.js/Bun/Deno and the browser.)
+ - **SSR** (**S**erver-**S**ide **R**endering): The page is rendered to HTML on the server-side and then <Link href="/hydration">hydrated</Link> (made interactive) on the client-side. (The page is loaded in both Node.js/Bun/Deno and the browser.)
    > You can also pre-render SSR, see <Link href="/pre-rendering" />.
- - **SPA**: the page is only rendered on the client-side. The page's content isn't rendered to HTML (the page is loaded only in the browser).
+ - **SPA**: The page is only rendered on the client-side. The page's content isn't rendered to HTML (the page is loaded only in the browser).
 
-The main motivation for SSR is that **SSR makes your page's content available to the crawlers of AI and search engines**.
+The main motivation for choosing SSR is that **SSR makes your page's content available to the crawlers of search engines and AI**.
 
-> With SPA, a page is rendered only on the client-side. This means the HTML of SPA pages is just an empty shell that delivers client-side JavaScript — the HTML doesn't include the page's content. This means that **with SPA the page's content is invisible to search engine and AI crawlers** (because crawlers navigate your website by reading HTML).
+> With SPA, a page is rendered only on the client-side. This means the HTML of an SPA page is just an empty shell that delivers client-side JavaScript — the HTML doesn't include the page's content. Therefore, **with SPA the page's content is invisible to search engine and AI crawlers** (because crawlers navigate your website by reading HTML).
 
 This means **SPA isn't an option if your page's content should appear in search engines (e.g. Google) and AIs (e.g. ChatGPT)**. You must use SSR.
 
-If SPA then we generally recommend going for SPA, while considering the following pros and cons.
+If SPA is an option, we generally recommend choosing SPA while considering following trade-offs:
 
 **SPA Cons:**
 - Slower first page load time, especially on mobile devices.
-  > SSR improves performance because your page's content is shown to the user before any client-side JavaScript is loaded. Depending on the app, this can make a significant difference, especially on mobile devices (where loading and executing JavaScript can be *much* slower than loading HTML).
+  > SSR improves performance because your page's content is shown to the user before any client-side JavaScript loads. Depending on the app, this can make a significant difference, especially on mobile devices (where loading and executing JavaScript can be *much* slower than loading HTML).
 
 **SPA Pros:**
-1. Your page's code doesn't run in Node.js/Bun/Deno. It's always easier to write code that runs in only one environment (e.g. some libraries have issues when run on the server-side).
+1. Your page's code doesn't run in Node.js(/Bun/Deno). It's easier to write code that runs in only one environment. (E.g. some libraries have issues when run on the server-side.)
 1. SPA doesn't require a production Node.js server.
-    > You can also <Link href="/pre-rendering">pre-render</Link> SSR to remove the need for a production server but <Link href="/pre-rendering#should-i-pre-render">it doesn't always work</Link>.
+   > You can also <Link href="/pre-rendering">pre-render</Link> SSR to remove the need for a production server, but <Link href="/pre-rendering#should-i-pre-render">it doesn't always work</Link>.
 1. Reduced backend workload.
 
 
 ## Examples
 
-SSR usually makes sense for content-focused websites (the value of the app is primarily about consuming content), such as:
+SSR usually makes sense for **content-focused websites** (the primary value is consuming content):
 - Social site ([Hacker News](https://news.ycombinator.com), [Reddit](https://www.reddit.com), ...)
 - Newspaper
 - Blog
+- Documentation sites
 
-SPA usually makes sense for private pages, such as:
-- Dashboard interfaces
-- Admin panels
-- Company internal apps
+SPA usually makes sense for **private pages**:
+- Dashboard interface
+- Admin panel
+- Company internal application
 - User account settings
 
-SPA also works well for apps that are interaction-focused apps (the value of the app is primarily about functionality), such as:
+SPA usually also makes sense **interaction-focused apps* (the primary value is functionality):
 - To-do list app
 - Productivity tool
 - Online image editor
-- Calendar apps
+- Calendar app
 
 
 ## See also
