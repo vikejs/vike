@@ -39,11 +39,16 @@ const {
   vikeConfig, // Vike configuration (optional)
   viteConfig, // Vite configuration (optional)
 })
+
+// You can access the globalContext object:
+import { getGlobalContext } from 'vike'
+const globalContext = await getGlobalContext()
 ```
 
 See:
 - <Link href='#option-vikeconfig' />
 - <Link href='#option-viteconfig' />
+- <Link href='#access-globalcontext' />
 
 Vite types:
 - The type of `viteConfig` is [`ResolvedConfig`](https://vite.dev/guide/api-javascript.html#resolvedconfig)
@@ -69,11 +74,16 @@ await build({
   vikeConfig, // Vike configuration (optional)
   viteConfig, // Vite configuration (optional)
 })
+
+// You can access the globalContext object:
+import { getGlobalContext } from 'vike'
+const globalContext = await getGlobalContext()
 ```
 
 See:
 - <Link href='#option-vikeconfig' />
 - <Link href='#option-viteconfig' />
+- <Link href='#access-globalcontext' />
 
 Vite types:
 - The type of `viteConfig` is [`ResolvedConfig`](https://vite.dev/guide/api-javascript.html#resolvedconfig)
@@ -106,11 +116,16 @@ const {
   vikeConfig, // Vike configuration (optional)
   viteConfig, // Vite configuration (optional)
 })
+
+// You can access the globalContext object:
+import { getGlobalContext } from 'vike'
+const globalContext = await getGlobalContext()
 ```
 
 See:
 - <Link href='#option-vikeconfig' />
 - <Link href='#option-viteconfig' />
+- <Link href='#access-globalcontext' />
 
 Vite types:
 - The type of `viteConfig` is [`ResolvedConfig`](https://vite.dev/guide/api-javascript.html#resolvedconfig)
@@ -140,10 +155,15 @@ const {
   pageContextInit, // Initial pageContext (optional)
   onPagePrerender // Called before writing an HTML file (optional)
 })
+
+// You can access the globalContext object:
+import { getGlobalContext } from 'vike'
+const globalContext = await getGlobalContext()
 ```
 
 See:
 - <Link href='#option-viteconfig' />
+- <Link href='#access-globalcontext' />
 - <Link href='#option-vikeconfig' />
   > You can pass <Link href="/prerender">`+prerender` settings</Link> like this:
   > ```ts
@@ -181,6 +201,20 @@ See:
 Vite types:
 - The type of `viteConfig` is [`ResolvedConfig`](https://vite.dev/guide/api-javascript.html#resolvedconfig)
 
+
+## Access `globalContext`
+
+You can access the <Link href="/globalContext">`globalContext` object</Link> like this:
+
+```ts
+import { someApiFunction } from 'vike/api'
+import { getGlobalContext } from 'vike'
+
+await someApiFunction()
+const globalContext = await getGlobalContext()
+```
+
+See: <Link href="/getGlobalContext" />
 
 
 ## Option `vikeConfig`
