@@ -5,31 +5,28 @@ For each page, you can choose between:
    > You can also pre-render the HTML at build-time, see <Link href="/pre-rendering" />.
  - **SPA**: the page is only rendered on the client-side. The page's content isn't rendered to HTML (the page is loaded only in the browser).
 
-Let's compare both approaches.
+## SSR vs SPA
 
-
-## SSR
-
-The main motivation for SSR is that **it makes your page's content available to the crawlers of AI and search engines**.
+**SSR** renders pages to HTML on the server-side, making content available to the crawlers of AI and search engines. If your page should be discoverable by search engines (e.g. Google) and AIs (e.g. ChatGPT), then use SSR so that the content of your page content is rendered to HTML.
 
 > Crawlers navigate your website by reading the HTML of pages and following `<a href="/some-other-page">` links found in the HTML.
-
-In other words, if your page should be discoverable by search engines (e.g. Google) and AIs (e.g. ChatGPT), then use SSR so that the content of your page content is rendered to HTML.
 
 For example, content-focused websites like [Hacker News](https://news.ycombinator.com) and [Reddit](https://www.reddit.com) use SSR.
 
 Also, SSR improves performance because your page's content is shown to the user before any client-side JavaScript is loaded. Depending on the app, this can make a significant difference, especially on mobile devices (where loading and executing JavaScript can be *much* slower than loading HTML).
 
-> You can also pre-render (aka SSG) if your page's content doesn't update frequently, see <Link href="/pre-rendering" />.
+**SPA** renders pages only on the client-side. The HTML of SPA pages is just an empty shell that delivers client-side JavaScript — the HTML doesn't include the page's content. The biggest drawback is that **the page's content is invisible to search engine and AI crawlers**.
 
+SPA is only an option if the page's content doesn't need to appear in search engines (e.g., Google) and AIs.
 
-## SPA
+**SSR Pros:**
+- Content available to search engines and AI crawlers
+- Better performance (content shown before JavaScript loads)
+- Better mobile performance
 
-With SPA, a page is rendered only on the client-side. This means the HTML of SPA pages is just an empty shell that delivers client-side JavaScript — the HTML doesn't include the page's content. The biggest drawback is that **the page's content is invisible to search engine and AI crawlers** (because crawlers navigate your website by reading HTML).
-
-This means SPA is only an option if the page's content doesn't need to appear in search engines (e.g., Google) and AIs.
-
-If SPA is viable for your use case, you can choose between SSR and SPA by considering the following trade-offs:
+**SSR Cons:**
+- Code must run in Node.js/Bun/Deno
+- Requires production server (unless pre-rendered)
 
 **SPA Pros:**
 - Your page's code doesn't run in Node.js/Bun/Deno. It's always easier to write code that runs in only one environment (e.g. some libraries have issues when run on the server-side).
@@ -40,19 +37,18 @@ If SPA is viable for your use case, you can choose between SSR and SPA by consid
 **SPA Cons:**
 - Slower first page load time, especially on mobile devices.
 
-SPA usually makes sense for private pages, such as:
-- Dashboard interfaces
-- Admin panels
-- Company internal apps
-- User account settings
+**When to use SSR:**
+- Content-focused websites (blogs, news, documentation)
+- Public pages that need SEO
 
-SPA also works well for apps that are interaction-focused rather than content-focused:
-- To-do list applications
-- Online image editors
-- Calendar apps
+**When to use SPA:**
+- Private pages (dashboard interfaces, admin panels, company internal apps, user account settings)
+- Interaction-focused apps (to-do list applications, online image editors, calendar apps)
 
 > **Content-focused**: The value of the app is primarily about consuming content (e.g., a newspaper, blog, or documentation site).
 > **Interaction-focused**: The value of the app is primarily about user interaction and functionality (e.g., a to-do list app, image editor, or productivity tool).
+
+> You can also pre-render (aka SSG) if your page's content doesn't update frequently, see <Link href="/pre-rendering" />.
 
 
 ## See also
