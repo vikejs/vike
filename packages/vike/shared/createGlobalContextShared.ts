@@ -18,13 +18,10 @@ const getGlobalContextSyncErrMsg =
   "The global context isn't set yet, call getGlobalContextSync() later or use getGlobalContext() instead."
 
 // TO-DO/eventually use flat globalContext — like flat pageContext
-async function createGlobalContextShared<
-  GlobalContextAdded extends Record<string, any>,
-  GlobalContextAddedAsync extends Record<string, any>,
->(
+async function createGlobalContextShared<GlobalContextAdded extends {}, GlobalContextAddedAsync extends {}>(
   virtualFileExportsGlobalEntry: unknown,
   globalObject: {
-    globalContext?: Record<string, unknown>
+    globalContext?: {}
     onCreateGlobalContextHooks?: Hook[]
     previousCreateGlobalContextPromise?: Promise<void>
   },
