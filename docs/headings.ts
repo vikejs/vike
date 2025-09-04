@@ -1103,7 +1103,7 @@ function guides() {
   return (
     [
       {
-        title: 'SPA vs SSR',
+        title: 'SSR vs SPA',
         url: '/SPA-vs-SSR',
       },
       {
