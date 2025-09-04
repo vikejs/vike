@@ -1,23 +1,37 @@
 import { Link, Warning } from '@brillout/docpress'
 
-Programmatically trigger <Link href="/cli">CLI commands</Link>:
+You can programmatically trigger <Link href="/cli">CLI commands</Link> by using following functions:
  - <Link href="#dev" />
  - <Link href="#build" />
  - <Link href="#preview" />
  - <Link href="#prerender" />
 
 Common use cases:
+ - Writing a custom build script for adding post-processing.
  - Building your own CLI in the context of <Link href="/build-your-own-framework" noBreadcrumb />.
- - Writing a custom build script, for example to add a post-processing build step.
 
 
 ## `dev()`
 
-Start the development server.
+Start the development server:
 
 ```ts
 import { dev } from 'vike/api'
+
 console.log('Starting development server...')
+
+const { viteServer, viteConfig } = await dev()
+await viteServer.listen()
+viteServer.printUrls()
+viteServer.bindCLIShortcuts({ print: true })
+
+const { port } = viteConfig.server
+console.log(`Development server is ready at http://localhost:${port}`)
+```
+
+Return & options:
+
+```ts
 const {
   viteConfig, // Resolved Vite configuration
   viteServer, // Vite's development server
@@ -25,42 +39,66 @@ const {
   vikeConfig, // Vike configuration (optional)
   viteConfig, // Vite configuration (optional)
 })
-await viteServer.listen()
-viteServer.printUrls()
-viteServer.bindCLIShortcuts({ print: true })
-const { port } = viteConfig.server
-console.log(`Development server is ready at http://localhost:${port}`)
 ```
 
-See: <Link href='#viteconfig'>`viteConfig` option</Link>.
+See:
+- <Link href='#option-vikeconfig' />
+- <Link href='#option-viteconfig' />
 
 Vite types:
-- [ResolvedConfig](https://vite.dev/guide/api-javascript.html#resolvedconfig) types the `viteConfig` return value.
-- Vite's development server: [`const viteServer = createServer()`](https://vite.dev/guide/api-javascript.html#createserver).
+- The type of `viteConfig` is [`ResolvedConfig`](https://vite.dev/guide/api-javascript.html#resolvedconfig)
+- Vite's development server: [`const viteServer = createServer()`](https://vite.dev/guide/api-javascript.html#createserver)
 
 
 ## `build()`
 
-Build for production.
+Build for production:
 
 ```ts
 import { build } from 'vike/api'
+
+console.log('Building app...')
+await build()
+console.log('Build is done')
+```
+
+Return & options:
+
+```ts
 await build({
   vikeConfig, // Vike configuration (optional)
   viteConfig, // Vite configuration (optional)
 })
-console.log('Build is done')
 ```
 
-See: <Link href='#viteconfig'>`viteConfig` option</Link>.
+See:
+- <Link href='#option-vikeconfig' />
+- <Link href='#option-viteconfig' />
+
+Vite types:
+- The type of `viteConfig` is [`ResolvedConfig`](https://vite.dev/guide/api-javascript.html#resolvedconfig)
 
 
 ## `preview()`
 
-Start preview server using production build (only works for <Link href="/glossary#ssg">SSG apps</Link>).
+Start a server to preview the production build:
 
 ```ts
 import { preview } from 'vike/api'
+
+console.log('Starting preview server...')
+
+const { viteConfig, viteServer } = await preview()
+viteServer.printUrls()
+viteServer.bindCLIShortcuts({ print: true })
+
+const { port } = viteConfig.preview
+console.log(`Preview server is ready at http://localhost:${port}`)
+```
+
+Return & options:
+
+```ts
 const {
   viteConfig, // Resolved Vite configuration
   viteServer, // Vite's development server
@@ -68,25 +106,32 @@ const {
   vikeConfig, // Vike configuration (optional)
   viteConfig, // Vite configuration (optional)
 })
-viteServer.printUrls()
-viteServer.bindCLIShortcuts({ print: true })
-const { port } = viteConfig.preview
-console.log(`Preview server is ready at http://localhost:${port}`)
 ```
 
-See: <Link href='#viteconfig'>`viteConfig` option</Link>.
+See:
+- <Link href='#option-vikeconfig' />
+- <Link href='#option-viteconfig' />
 
 Vite types:
-- [ResolvedConfig](https://vite.dev/guide/api-javascript.html#resolvedconfig) types the `viteConfig` return value.
-- Vite's preview server: [`const viteServer = preview()`](https://vite.dev/guide/api-javascript.html#preview).
+- The type of `viteConfig` is [`ResolvedConfig`](https://vite.dev/guide/api-javascript.html#resolvedconfig)
+- Vite's preview server: [`const viteServer = preview()`](https://vite.dev/guide/api-javascript.html#preview)
 
 
 ## `prerender()`
 
-<Link href="/pre-rendering">Pre-render</Link> pages (only needed when <Link href="/prerender#disableautorun">`prerender.disableAutoRun`</Link> is `true`).
+<Link href="/pre-rendering">Pre-render</Link> pages (see <Link href="/prerender#disableautorun">`prerender.disableAutoRun`</Link>):
 
 ```ts
 import { prerender } from 'vike/api'
+
+console.log('Pre-rendering pages...')
+await prerender()
+console.log('Pre-rendering is done')
+```
+
+Return & options:
+
+```ts
 const {
   viteConfig // Resolved Vite configuration
 } = await prerender({
@@ -95,16 +140,22 @@ const {
   pageContextInit, // Initial pageContext (optional)
   onPagePrerender // Called before writing an HTML file (optional)
 })
-console.log('Pre-rendering is done')
 ```
 
-For more settings, see <Link href="/prerender" />.
-
-Vite types:
-- [ResolvedConfig](https://vite.dev/guide/api-javascript.html#resolvedconfig) types the `viteConfig` return value.
-
-Options:
-- **`viteConfig`**: See <Link href='#viteconfig'>`viteConfig` option</Link>.
+See:
+- <Link href='#option-viteconfig' />
+- <Link href='#option-vikeconfig' />
+  > You can pass <Link href="/prerender">`+prerender` settings</Link> like this:
+  > ```ts
+  > await prerender({
+  >   vikeConfig: {
+  >     prerender: {
+  >       keepDistServer: true,
+  >       parallel: false
+  >     }
+  >   }
+  > })
+  > ```
 - **`pageContextInit`**: Initial <Link href="/pageContext">`pageContext`</Link> values.
   ```ts
   prerender({
@@ -114,7 +165,7 @@ Options:
     }
   })
   ```
-  See also: <Link href="/pageContext#lifecycle" />.
+  > See also: <Link href="/pageContext#lifecycle" />.
 - **`onPagePrerender()`**: control where/how HTML files are written.
   <Warning>Don't use this option without having contacted a Vike maintainer: this functionality may be changed/removed at any time.</Warning>
   ```ts
@@ -127,8 +178,21 @@ Options:
   })
   ```
 
+Vite types:
+- The type of `viteConfig` is [`ResolvedConfig`](https://vite.dev/guide/api-javascript.html#resolvedconfig)
 
-## `viteConfig`
+
+
+## Option `vikeConfig`
+
+All API functions accept the option `vikeConfig` to pass <Link href="/settings">Vike settings</Link>.
+
+> You can only pass serializable Vike settings (e.g. <Link href="/prerender">`+prerender`</Link> is serializable but <Link href="/Layout">`+Layout`</Link> isn't), and you cannot pass <Link href="/hooks">Vike hooks</Link>. (If you want to understand why, see <Link href="/error/runtime-in-config" /> and <Link href="/config#pointer-imports" />.)
+
+> We generally recommend to define your Vike settings in your `pages/+config.js` file instead of using the `vikeConfig` option. The API automatically loads your `+config.js` files (just like the CLI).
+
+
+## Option `viteConfig`
 
 All API functions accept the option `viteConfig` (with type [`InlineConfig`](https://vitejs.dev/guide/api-javascript.html#inlineconfig)).
 
