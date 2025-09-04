@@ -78,6 +78,8 @@ await build({
 // You can access the globalContext object:
 import { getGlobalContext } from 'vike'
 const globalContext = await getGlobalContext()
+// If you pre-render pages
+console.log(globalContext.prerenderContext)
 ```
 
 See:
@@ -159,6 +161,7 @@ const {
 // You can access the globalContext object:
 import { getGlobalContext } from 'vike'
 const globalContext = await getGlobalContext()
+console.log(globalContext.prerenderContext)
 ```
 
 See:
