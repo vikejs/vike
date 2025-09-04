@@ -22,11 +22,15 @@ In a nutshell: **pre-render your pages whenever you can**.
 
 Because pre-rendering removes the need for a production server and makes deployment very easy and very cheap (mostly free). It's also significantly more performant as the HTML isn't re-generated on every HTTP request.
 
-But **pre-rendering cannot be used for websites with SSR content that changes very frequently**. For example [Hacker News](https://news.ycombinator.com) or [Reddit](https://www.reddit.com): new content is created every time a user posts something new. Pre-rendering cannot be run again every (milli)second whenever there is new content (Reddit has millions of pages that cannot be re-rendered every (milli)second).
+But **pre-rendering cannot be used for websites with content that changes very frequently**. For example [Hacker News](https://news.ycombinator.com) or [Reddit](https://www.reddit.com): new content is created every time a user posts something new. Pre-rendering cannot be run again every (milli)second whenever there is new content (Reddit has millions of pages that cannot be re-rendered every (milli)second).
 
 > In theory, it's possible to re-render only the subset of pages that are affected by new content, but it isn't practical (it has been tried before) and we recommend against this practice.
 
-**Pre-rendering can be used for websites with SSR content that changes only occasionally**. For example, the content of `https://vike.dev` changes only when a maintainer updates the documentation: all pages of `https://vike.dev` can then be pre-rendered again.
+> Technically speaking, what matters is how frequent the HTML content of pages (rendered during SSR) changes, see also:
+> - <Link href="#ssg-vs-ssr-vs-spa" />
+> - <Link href="/SPA-vs-SSR" />
+
+**Pre-rendering can be used for websites with content that changes only occasionally**. For example, the content of `https://vike.dev` changes only when a maintainer updates the documentation: all pages of `https://vike.dev` can then be pre-rendered again.
 
 > Thanks to pre-rendering, `https://vike.dev` is deployed to <Link href="/github-pages" text="GitHub Pages" />, a static host which is completely free, [easy to use](https://github.com/vikejs/vike/blob/main/.github/workflows/website.yml), and very performant.
 

@@ -5,59 +5,56 @@ For each page, you can choose between:
    > You can also pre-render the HTML at build-time, see <Link href="/pre-rendering" />.
  - **SPA**: the page is only rendered on the client-side. The page's content isn't rendered to HTML (the page is loaded only in the browser).
 
-Let's now compare both approaches.
+Let's compare both approaches.
 
 
 ## SSR
 
-The main motivation for doing SSR is that **it makes your page's content available to the crawlers of AI and search engines**.
+The main motivation for SSR is that **it makes your page's content available to the crawlers of AI and search engines**.
 
-> Crawlers navigate your websites by reading the HTML of pages and by following `<a href="/some-other-page">` found in the HTML. Thus, you should make sure that the content of your pages is rendered to HTML.
+> Crawlers navigate your website by reading the HTML of pages and following `<a href="/some-other-page">` links found in the HTML.
 
-In other words, if your page should be integrated by search engines (e.g. Google) and AIs (e.g. ChatGPT) then you most certainly want to SSR your pages.
+In other words, if your page should be discoverable by search engines (e.g. Google) and AIs (e.g. ChatGPT), then use SSR so that the content of your page content is rendered to HTML.
 
-> Also, SSR improves performance as your page's content is shown the the user before the user's browser load any client-side JavaScript is loaded. Dependening on the app, this can make a significant difference, essentially on mobile (where loading and executing JavaScript can be *much* slower than loading HTML).
+For example, content-focused websites like [Hacker News](https://news.ycombinator.com) and [Reddit](https://www.reddit.com) use SSR.
 
-For example, websites like [Hacker News](https://news.ycombinator.com) or [Reddit](https://www.reddit.com) most always use SSR.
+Also, SSR improves performance because your page's content is shown to the user before any client-side JavaScript is loaded. Depending on the app, this can make a significant difference, especially on mobile devices (where loading and executing JavaScript can be *much* slower than loading HTML).
 
-SSR improves mobile performance in the sense that the page's content is rendered to HTML and can already be shown to the user before the browser-side JavaScript even starts loading. ()
-
-> You can also pre-render (aka SSG) if your page's content doesn't updated frequently, see <Link href="/pre-rendering" />.
+> You can also pre-render (aka SSG) if your page's content doesn't update frequently, see <Link href="/pre-rendering" />.
 
 
 ## SPA
 
-With SPA, a page is rendered only on the client-side. This means the HTML of SPA pages is just an empy shell delivering client-side JavaScript — the HTML doesn't include the content of the page. The biggest issue is that the **page's content is invisible to the crawlers of AI and search engines** (because crawlers navigate your websites by reading HTML).
+With SPA, a page is rendered only on the client-side. This means the HTML of SPA pages is just an empty shell that delivers client-side JavaScript — the HTML doesn't include the page's content. The biggest drawback is that **the page's content is invisible to search engine and AI crawlers** (because crawlers navigate your website by reading HTML).
 
-This means SPA is only an option if you the page's content doesn't need to appear in search engines (.e.g Google) and AIs.
+This means SPA is only an option if the page's content doesn't need to appear in search engines (e.g., Google) and AIs.
 
-If SPA is an option, then you choose between SSR and SPA by considering the following pros and cons.
+If SPA is viable for your use case, you can choose between SSR and SPA by considering the following trade-offs:
 
-SPA pros:
-- Your page's code doesn't need to be able to run in Node.js(/Bun/Deno). For example, SPA is the only option for UI libraries that don't work with SSR.
-  > Most libraries nowadays support SSR (or have workarounds).
-- SPA doesn't enforce the usage of a production Node.js server: <Link text="SPAs can be easily deployed to a static host" href="/pre-rendering#spa" />.
-  > You can also remove the need for a production Node.js server for SSR apps by using pre-rendering.
-- Decreased backend workload.
+**SPA Pros:**
+- Your page's code doesn't run in Node.js/Bun/Deno. It's always easier to write code that runs in only one environment (e.g. some libraries have issues when run on the server-side).
+- SPA doesn't require a production Node.js server.
+  > You can also <Link href="/pre-rendering">pre-render</Link> SSR to remove the need for a production server but <Link href="/pre-rendering#should-i-pre-render">it doesn't always work</Link>.
+- Reduced backend workload.
 
-SPA cons:
-- Slower first page load time, especially on mobile.
+**SPA Cons:**
+- Slower first page load time, especially on mobile devices.
 
-SPA usually makes sense for private pages, for example:
-- Admin pages
-- Company internal app
-- Account settings
+SPA usually makes sense for private pages, such as:
+- Dashboard interfaces
+- Admin panels
+- Company internal apps
+- User account settings
 
-SPA also usually makes sense apps that aren't content-centric but interactive-centric:
-- To-do list app
-- Online image editor
-- Calendar app
+SPA also works well for apps that are interaction-focused rather than content-focused:
+- To-do list applications
+- Online image editors
+- Calendar apps
 
-> *Content-centric*: the value of the app is mostly about content (e.g. a newspaper or a blog).  
-> *Interactive-centric*: the value of the app is mostly about interaction (e.g. a to-do list app, an online image editor).  
+> **Content-focused**: The value of the app is primarily about consuming content (e.g., a newspaper, blog, or documentation site).
+> **Interaction-focused**: The value of the app is primarily about user interaction and functionality (e.g., a to-do list app, image editor, or productivity tool).
 
 
 ## See also
 
 - <Link href="/pre-rendering" />
-- <Link href="/pre-rendering#should-i-pre-render" />
