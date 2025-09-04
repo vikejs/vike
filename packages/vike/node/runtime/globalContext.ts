@@ -13,6 +13,7 @@ export { initGlobalContext_getPagesAndRoutes }
 export { setGlobalContext_viteDevServer }
 export { setGlobalContext_viteConfig }
 export { setGlobalContext_isPrerendering }
+export { setGlobalContext_prerenderContext }
 export { setGlobalContext_isProductionAccordingToVite }
 export { setGlobalContext_prodBuildEntry } // production entry
 export { clearGlobalContext }
@@ -51,6 +52,7 @@ import {
   isRunnableDevEnvironment,
   assertIsNotBrowser,
   isNonRunnableDev,
+  objectAssign,
 } from './utils.js'
 import type { ViteManifest } from '../../types/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
@@ -75,6 +77,7 @@ import { hasAlreadyLogged } from './renderPage/isNewError.js'
 import type { Hook } from '../../shared/hooks/getHook.js'
 import type { ViteRPC } from '../vite/plugins/pluginNonRunnableDev.js'
 import { getVikeApiOperation } from '../api/context.js'
+import type { PrerenderContext } from '../../types/index.js'
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
   {
@@ -83,6 +86,7 @@ const globalObject = getGlobalObject<
     viteConfig?: ResolvedConfig
     viteConfigRuntime?: ViteConfigRuntime
     isPrerendering?: true
+    prerenderContextPublic?: PrerenderContext
     initGlobalContext_runPrerender_alreadyCalled?: true
     prodBuildEntry?: unknown
     prodBuildEntryPrevious?: unknown
@@ -238,9 +242,17 @@ function assertIsNotInitializedYet() {
 function setGlobalContext_isPrerendering() {
   globalObject.isPrerendering = true
 }
+function setGlobalContext_prerenderContext(prerenderContextPublic: PrerenderContext) {
+  globalObject.prerenderContextPublic = prerenderContextPublic
+
+  // Ugly redundancy, which we can remove after globalContext is a proxy
+  const { globalContext } = globalObjectTyped
+  if (globalContext) globalContext.prerenderContext = prerenderContextPublic
+}
 function setGlobalContext_isProductionAccordingToVite(isProductionAccordingToVite: boolean) {
   globalObject.isProductionAccordingToVite = isProductionAccordingToVite
 }
+
 function getViteDevServer(): ViteDevServer | null {
   return globalObject.viteDevServer ?? null
 }
@@ -525,6 +537,8 @@ async function createGlobalContext(virtualFileExportsGlobalEntry: unknown) {
   )
   assertGlobalContextIsDefined()
   onSetupRuntime()
+
+  objectAssign(globalContext, { prerenderContext: globalObject.prerenderContextPublic })
 
   // Never actually used, only used for TypeScript `ReturnType<typeof createGlobalContext>`
   return globalContext

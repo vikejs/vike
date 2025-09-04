@@ -6,3 +6,6 @@ viteServer.printUrls()
 viteServer.bindCLIShortcuts({ print: true })
 const { port } = viteConfig.server
 console.log(`Server running at http://localhost:${port}`)
+
+import { assertGlobalContext } from './common.js'
+await assertGlobalContext()
