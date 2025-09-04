@@ -138,6 +138,11 @@ const headings = [
   },
   {
     level: 2,
+    title: 'SPA vs SSR',
+    url: '/SPA-vs-SSR',
+  },
+  {
+    level: 2,
     title: '`<head>` tags',
     url: '/head-tags',
   },
@@ -1101,10 +1106,6 @@ function misc() {
 function guides() {
   return (
     [
-      {
-        title: 'SPA vs SSR (and more)',
-        url: '/SPA-vs-SSR',
-      },
       {
         title: 'Content- VS interactive-centric',
         url: '/content-vs-interactive',

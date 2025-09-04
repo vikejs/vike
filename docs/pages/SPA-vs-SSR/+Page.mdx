@@ -1,40 +1,27 @@
 import { Link, RepoLink } from '@brillout/docpress'
 
-Modern UI frameworks (React/Vue/...) enable a wide range of render modes:
- - SPA
- - SSR
- - Pre-rendering (aka SSG)
- - HTML-only
+For each page, you can choose between:
+ - **SSR**: the page is rendered to HTML on the server-side and then <Link href="/hydration">hydrated</Link> (made interactive) on the client-side. (The page is loaded in both Node.js/Bun/Deno and the browser.)
+   > You can also pre-render the HTML at build-time, see <Link href="/pre-rendering" />.
+ - **SPA**: the page is only rendered on the client-side. The page's content isn't rendered to HTML (the page is loaded only in the browser).
 
-We compare render modes and explain when to use each mode.
-
-> See <Link href="/render-modes" /> for how to use render modes with your Vike app.
-
-
-## Technical Overview
-
-Technically and precisely speaking, the difference between each render mode is the following.
- - **SSR**: the page is rendered twice. It's rendered to HTML on the server-side as well as rendered (hydrated) on the browser-side. (The page is loaded both in Node.js and in the browser.)
- - **SPA**: the page is only rendered in the browser. The page's content isn't rendered to HTML. (The page is loaded only in the browser.)
- - **HTML-only**: the page is rendered only on the server-side (to HTML). It's not rendered in the browser and has zero/minimal browser-side JavaScript. (The page is loaded only in Node.js.)
- - **Pre-rendering** (aka SSG): the page is rendered to HTML at build-time (instead of request-time).
-
+Let's now compare both approaches.
 
 ## SPA
 
-SPA means that the page is loaded & rendered only in the browser.
+SPA means that the page is loaded & rendered only in the client.
 
-In general, if our page:
+In general, if you page:
  1. doesn't need SEO (e.g. an Admin Panel doesn't need to appear in Google searches), and
  2. mobile performance isn't crucial (e.g. the user is expected to use the Admin Panel on a desktop device).
 
 then SPA is an option.
 
 SPA advantages:
- - Our page's code doesn't need to be able to run in Node.js. For example, SPA is the only option for UI libraries that don't work with SSR.
+ - Your page's code doesn't need to be able to run in Node.js(/Bun/Deno). For example, SPA is the only option for UI libraries that don't work with SSR.
    > Most libraries nowadays support SSR (or have workarounds).
  - SPA doesn't enforce the usage of a production Node.js server: <Link text="SPAs can be deployed to a static host" href="/pre-rendering#should-i-pre-render" />.
-   > We can remove the need for a production Node.js server for SSR apps by using pre-rendering.
+   > You can also remove the need for a production Node.js server for SSR apps by using pre-rendering.
  - Decreased backend workload.
 
 While for certain types of pages, such as an Admin Panel where there is a clear choice in favor of SPA, there often isn't a clear-cut whether we should use SPA or SSR.
@@ -64,25 +51,6 @@ We should use pre-rendering whenever we can, as it allows us to deploy our app t
 For example, `https://vike.dev` is pre-rendered and deployed to [GitHub Pages](/github-pages).
 
 > See <Link href="/pre-rendering" />.
-
-
-## HTML-only
-
-HTML-only means that the page is only loaded & rendered on the server-side.
-
-For <Link text="content centric" href="/content-vs-interactive" /> pages with no/little interactivity (the page has no/few stateful components), then using HTML-only is an option.
-
-Examples:
- - Blog
- - Portfolio/homepage
- - Marketing pages
- - Software Documentation (e.g. `https://vike.dev`)
-
-The advantage of HTML-only is that the page has no/little browser-side JavaScript, which leads to considerably faster loading times (especially on mobile).
-
-For the few bits of interactivity (such as an image carousel or a collapsible section),
-the page can load a couple of vanilla browser-side JavaScript libraries to surgically implement these few bits of interactivity.
-This is what `https://vike.dev` does: if we inspect the browser-side JavaScript of this page, we'll see only around 1-2KB of JavaScript.
 
 
 ## SSG
