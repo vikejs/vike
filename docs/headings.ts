@@ -1414,11 +1414,6 @@ function workInProgress() {
         title: 'React Tour',
         url: '/react-tour',
       },
-      { title: 'Server-Side Rendering (SSR)', url: '/SSR' },
-      {
-        title: 'Server-side Rendering (SSR)',
-        url: '/server-side-rendering',
-      },
       { title: 'TypeScript', url: '/typescript' },
     ] as const
   ).map((h) => ({ ...h, category: 'Work-in-progress' as const })) satisfies HeadingDetachedDefinition[]
