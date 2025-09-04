@@ -1104,7 +1104,7 @@ function guides() {
     [
       {
         title: 'SSR vs SPA',
-        url: '/SPA-vs-SSR',
+        url: '/SSR-vs-SPA',
       },
       {
         title: 'Multiple `renderer/`',

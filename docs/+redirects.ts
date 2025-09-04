@@ -15,7 +15,7 @@ const redirects = {
   '/https': '/server#https',
   '/css-tools': '/css-in-js',
   '/errors': '/error-tracking',
-  '/SPA-vs-SSR-vs-HTML': '/render-modes',
+  '/SSR-vs-SPA-vs-HTML': '/render-modes',
   '/Head-setting': '/head-tags',
   '/head': '/head-tags',
   '/CSP': '/csp',
