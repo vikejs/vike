@@ -31,16 +31,30 @@ With SPA, a page is rendered only on the client-side. This means the HTML of SPA
 
 This means SPA is only an option if you the page's content doesn't need to appear in search engines (.e.g Google) and AIs.
 
-SPA advantages:
- - Your page's code doesn't need to be able to run in Node.js(/Bun/Deno). For example, SPA is the only option for UI libraries that don't work with SSR.
-   > Most libraries nowadays support SSR (or have workarounds).
- - SPA doesn't enforce the usage of a production Node.js server: <Link text="SPAs can be deployed to a static host" href="/pre-rendering#should-i-pre-render" />.
-   > You can also remove the need for a production Node.js server for SSR apps by using pre-rendering.
- - Decreased backend workload.
+If SPA is an option, then you choose between SSR and SPA by considering the following pros and cons.
 
-While for certain types of pages, such as an Admin Panel where there is a clear choice in favor of SPA, there often isn't a clear-cut whether we should use SPA or SSR.
+SPA pros:
+- Your page's code doesn't need to be able to run in Node.js(/Bun/Deno). For example, SPA is the only option for UI libraries that don't work with SSR.
+  > Most libraries nowadays support SSR (or have workarounds).
+- SPA doesn't enforce the usage of a production Node.js server: <Link text="SPAs can be easily deployed to a static host" href="/pre-rendering#spa" />.
+  > You can also remove the need for a production Node.js server for SSR apps by using pre-rendering.
+- Decreased backend workload.
 
-For pages that are not <Link text="content centric" href="/content-vs-interactive" /> (e.g. a to-do list app) and don't need SEO, we can consider [SPA](#spa) instead of SSR.
+SPA cons:
+- Slower first page load time, especially on mobile.
+
+SPA usually makes sense for private pages, for example:
+- Admin pages
+- Company internal apps
+- Account pages
+
+SPA also usually makes sense apps that aren't content-centric but interactive-centric:
+- To-do list apps
+- Image editor web app
+- Calendar app
+
+> *Content-centric*: the value of the page is mostly about content (e.g. a newspaper or a blog).  
+> *Interactive-centric*: the value of the page is mostly about interaction (e.g. a to-do list app, an online image editor, or an admin-panel).  
 
 
 ## See also

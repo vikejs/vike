@@ -1107,10 +1107,6 @@ function guides() {
   return (
     [
       {
-        title: 'Content- VS interactive-centric',
-        url: '/content-vs-interactive',
-      },
-      {
         title: 'Multiple `renderer/`',
         url: '/multiple-renderer',
       },
