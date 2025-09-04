@@ -22,7 +22,8 @@ const {
   viteConfig, // Resolved Vite configuration
   viteServer, // Vite's development server
 } = await dev({
-  viteConfig // Vite configuration (optional)
+  vikeConfig, // Vike configuration (optional)
+  viteConfig, // Vite configuration (optional)
 })
 await viteServer.listen()
 viteServer.printUrls()
@@ -45,7 +46,8 @@ Build for production.
 ```ts
 import { build } from 'vike/api'
 await build({
-  viteConfig // Vite configuration (optional)
+  vikeConfig, // Vike configuration (optional)
+  viteConfig, // Vite configuration (optional)
 })
 console.log('Build is done')
 ```
@@ -63,7 +65,8 @@ const {
   viteConfig, // Resolved Vite configuration
   viteServer, // Vite's development server
 } = await preview({
-  viteConfig // Vite configuration (optional)
+  vikeConfig, // Vike configuration (optional)
+  viteConfig, // Vite configuration (optional)
 })
 viteServer.printUrls()
 viteServer.bindCLIShortcuts({ print: true })
@@ -87,6 +90,7 @@ import { prerender } from 'vike/api'
 const {
   viteConfig // Resolved Vite configuration
 } = await prerender({
+  vikeConfig, // Vike configuration (optional)
   viteConfig, // Vite configuration (optional)
   pageContextInit, // Initial pageContext (optional)
   onPagePrerender // Called before writing an HTML file (optional)
