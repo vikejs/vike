@@ -40,6 +40,7 @@ import {
   type GlobalContextServerInternal,
   initGlobalContext_runPrerender,
   setGlobalContext_isPrerendering,
+  setGlobalContext_prerenderContext,
 } from '../runtime/globalContext.js'
 import { type ResolvedConfig, resolveConfig as resolveViteConfig } from 'vite'
 import { getPageFilesServerSide } from '../../shared/getPageFiles.js'
@@ -102,6 +103,7 @@ type PrerenderContextPublic = Pick<
   // Needed by vite-plugin-vercel
   | 'output'
 >
+
 type PrerenderContext = {
   pageContexts: PageContext[]
   output: Output
@@ -251,6 +253,7 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
 
   const prerenderContextPublic = preparePrerenderContextForPublicUsage(prerenderContext)
   objectAssign(vikeConfig.prerenderContext, prerenderContextPublic, true)
+  setGlobalContext_prerenderContext(prerenderContextPublic)
 
   if (prerenderConfigGlobal.isPrerenderingEnabledForAllPages && !prerenderConfigGlobal.keepDistServer) {
     fs.rmSync(outDirServer, { recursive: true })
@@ -1128,7 +1131,7 @@ function assertIsNotAbort(err: unknown, urlOriginal: string) {
   )
 }
 
-function preparePrerenderContextForPublicUsage(prerenderContext: PrerenderContext) {
+function preparePrerenderContextForPublicUsage(prerenderContext: PrerenderContext): PrerenderContext {
   // TO-DO/next-major-release: remove
   if (!('prerenderPageContexts' in prerenderContext)) {
     Object.defineProperty(prerenderContext, 'prerenderPageContexts', {
