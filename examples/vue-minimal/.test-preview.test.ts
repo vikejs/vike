@@ -1,2 +1,2 @@
 import { testRunClassic } from '../../test/utils'
-testRunClassic('npm run preview')
+testRunClassic('npm run preview', { isVue: true })

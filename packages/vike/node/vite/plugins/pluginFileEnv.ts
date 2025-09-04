@@ -25,74 +25,100 @@ import { normalizeId } from '../shared/normalizeId.js'
 import { isV1Design } from '../shared/resolveVikeConfigInternal.js'
 import { isViteServerSide, isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 
+const skipNodeModules = '/node_modules/' // Only apply `.server.js` and `.client.js` to user files
+const filterRolldown = {
+  id: {
+    include: (['client', 'server'] as const).map((env) => `**/*${getSuffix(env)}*`),
+    exclude: [`**${skipNodeModules}**`],
+  },
+}
+const filterFunction = (id: string) => {
+  if (id.includes(skipNodeModules)) return false
+  if (!id.includes(getSuffix('client')) && !id.includes(getSuffix('server'))) return false
+  return true
+}
+
 function pluginFileEnv(): Plugin {
   let config: ResolvedConfig
   let viteDevServer: ViteDevServer | undefined
   return {
     name: 'vike:pluginFileEnv',
-    load(id, options) {
-      // In build, we use generateBundle() instead of the load() hook. Using load() works for dynamic imports in dev thanks to Vite's lazy transpiling, but it doesn't work in build because Rollup transpiles any dynamically imported module even if it's never actually imported.
-      if (!viteDevServer) return
-      if (!isV1Design()) return
-      if (skip(id)) return
-      // For `.vue` files: https://github.com/vikejs/vike/issues/1912#issuecomment-2394981475
-      if (id.endsWith('?direct')) id = id.slice(0, -1 * '?direct'.length)
-      const moduleInfo = viteDevServer.moduleGraph.getModuleById(id)
-      assert(moduleInfo)
-      const importers: string[] = Array.from(moduleInfo.importers)
-        .map((m) => m.id)
-        .filter((id) => id !== null)
-      assertFileEnv(
-        id,
-        isViteServerSide_extraSafe(config, this.environment, options),
-        importers,
-        // In dev, we only show a warning because we don't want to disrupt when the user plays with settings such as [ssr](https://vike.dev/ssr).
-        true,
-      )
+    load: {
+      filter: filterRolldown,
+      handler(id, options) {
+        // In build, we use generateBundle() instead of the load() hook. Using load() works for dynamic imports in dev thanks to Vite's lazy transpiling, but it doesn't work in build because Rollup transpiles any dynamically imported module even if it's never actually imported.
+        if (!viteDevServer) return
+        if (!isV1Design()) return
+        if (skip(id, config.root)) return
+        // For `.vue` files: https://github.com/vikejs/vike/issues/1912#issuecomment-2394981475
+        if (id.endsWith('?direct')) id = id.slice(0, -1 * '?direct'.length)
+        const moduleInfo = viteDevServer.moduleGraph.getModuleById(id)
+        assert(moduleInfo)
+        const importers: string[] = Array.from(moduleInfo.importers)
+          .map((m) => m.id)
+          .filter((id) => id !== null)
+        assertFileEnv(
+          id,
+          isViteServerSide_extraSafe(config, this.environment, options),
+          importers,
+          // In dev, we only show a warning because we don't want to disrupt when the user plays with settings such as [ssr](https://vike.dev/ssr).
+          true,
+        )
+      },
     },
     // In production, we have to use transform() to replace modules with a runtime error because generateBundle() doesn't work for dynamic imports. In production, dynamic imports can only be verified at runtime.
-    async transform(code, id, options) {
-      id = normalizeId(id)
-      // In dev, only using load() is enough as it also works for dynamic imports (see sibling comment).
-      if (viteDevServer) return
-      if (skip(id)) return
-      const isServerSide = isViteServerSide_extraSafe(config, this.environment, options)
-      if (!isWrongEnv(id, isServerSide)) return
-      const { importers } = this.getModuleInfo(id)!
-      // Throwing a verbose error doesn't waste client-side KBs as dynamic imports are code split.
-      const errMsg = getErrorMessage(id, isServerSide, importers, false, true)
-      // We have to inject empty exports to avoid Rollup complaining about missing exports, see https://gist.github.com/brillout/5ea45776e65bd65100a52ecd7bfda3ff
-      const { exportNames } = await getExportNames(code)
-      return rollupSourceMapRemove(
-        [
-          `throw new Error(${JSON.stringify(errMsg)});`,
-          ...exportNames.map((name) =>
-            name === 'default' ? 'export default undefined;' : `export const ${name} = undefined;`,
-          ),
-        ].join('\n'),
-      )
+    transform: {
+      filter: filterRolldown,
+      async handler(code, id, options) {
+        id = normalizeId(id)
+        // In dev, only using load() is enough as it also works for dynamic imports (see sibling comment).
+        if (viteDevServer) return
+        if (skip(id, config.root)) return
+        const isServerSide = isViteServerSide_extraSafe(config, this.environment, options)
+        if (!isWrongEnv(id, isServerSide)) return
+        const { importers } = this.getModuleInfo(id)!
+        // Throwing a verbose error doesn't waste client-side KBs as dynamic imports are code split.
+        const errMsg = getErrorMessage(id, isServerSide, importers, false, true)
+        // We have to inject empty exports to avoid Rollup complaining about missing exports, see https://gist.github.com/brillout/5ea45776e65bd65100a52ecd7bfda3ff
+        const { exportNames } = await getExportNames(code)
+        return rollupSourceMapRemove(
+          [
+            `throw new Error(${JSON.stringify(errMsg)});`,
+            ...exportNames.map((name) =>
+              name === 'default' ? 'export default undefined;' : `export const ${name} = undefined;`,
+            ),
+          ].join('\n'),
+        )
+      },
     },
-    generateBundle() {
-      Array.from(this.getModuleIds())
-        .filter((id) => !skip(id))
-        .forEach((moduleId) => {
-          const mod = this.getModuleInfo(moduleId)!
-          const { importers } = mod
-          if (importers.length === 0) {
-            // Dynamic imports can only be verified at runtime
-            /* This assertion can fail: https://github.com/vikejs/vike/issues/2227
+    generateBundle: {
+      handler() {
+        Array.from(this.getModuleIds())
+          .filter(filterFunction)
+          .filter((id) => !skip(id, config.root))
+          .forEach((moduleId) => {
+            const mod = this.getModuleInfo(moduleId)!
+            const { importers } = mod
+            if (importers.length === 0) {
+              // Dynamic imports can only be verified at runtime
+              /* This assertion can fail: https://github.com/vikejs/vike/issues/2227
             assert(dynamicImporters.length > 0)
             */
-            return
-          }
-          assertFileEnv(moduleId, isViteServerSide(config, this.environment), importers, false)
-        })
+              return
+            }
+            assertFileEnv(moduleId, isViteServerSide(config, this.environment), importers, false)
+          })
+      },
     },
-    configResolved(config_) {
-      config = config_
+    configResolved: {
+      handler(config_) {
+        config = config_
+      },
     },
-    configureServer(viteDevServer_) {
-      viteDevServer = viteDevServer_
+    configureServer: {
+      handler(viteDevServer_) {
+        viteDevServer = viteDevServer_
+      },
     },
   }
 
@@ -151,30 +177,28 @@ function pluginFileEnv(): Plugin {
 
     return errMsg
   }
+}
 
-  function isWrongEnv(moduleId: string, isServerSide: boolean): boolean {
-    const modulePath = getModulePath(moduleId)
-    const suffixWrong = getSuffix(isServerSide ? 'client' : 'server')
-    return modulePath.includes(suffixWrong)
-  }
+function isWrongEnv(moduleId: string, isServerSide: boolean): boolean {
+  const modulePath = getModulePath(moduleId)
+  const suffixWrong = getSuffix(isServerSide ? 'client' : 'server')
+  return modulePath.includes(suffixWrong)
+}
 
-  function skip(id: string): boolean {
-    // TO-DO/next-major-release: remove
-    if (extractAssetsRE.test(id) || extractExportNamesRE.test(id)) return true
-    if (!id.includes(getSuffix('client')) && !id.includes(getSuffix('server'))) return true
-    if (getModulePath(id).endsWith('.css')) return true
-    // Apply `.server.js` and `.client.js` only to user files
-    if (id.includes('/node_modules/')) return true
-    // Only user files
-    if (!id.startsWith(config.root)) return true
-    return false
-  }
+function skip(id: string, userRootDir: string): boolean {
+  assert(filterFunction(id))
+  // TO-DO/next-major-release: remove
+  if (extractAssetsRE.test(id) || extractExportNamesRE.test(id)) return true
+  if (getModulePath(id).endsWith('.css')) return true
+  // Skip linked dependencies
+  if (!id.startsWith(userRootDir)) return true
+  return false
+}
 
-  function getSuffix(env: 'client' | 'server') {
-    return `.${env}.` as const
-  }
+function getSuffix(env: 'client' | 'server') {
+  return `.${env}.` as const
+}
 
-  function getModulePath(moduleId: string) {
-    return moduleId.split('?')[0]!
-  }
+function getModulePath(moduleId: string) {
+  return moduleId.split('?')[0]!
 }

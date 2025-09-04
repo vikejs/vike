@@ -47,6 +47,16 @@ The app's global runtime <Link href="/config">configuration</Link> (such as <Lin
 > - [`globalContext.pages`](#pages)
 > - <Link href="/getVikeConfig" />
 
+<Prop name="prerenderContext" />
+
+Environment: config (build-time)  
+
+If you use <Link href="/pre-rendering">pre-rendering</Link>, you can access:
+ - `globalContext.prerenderContext.pageContexts` — the list of all pre-rendered URLs.
+ - `globalContext.prerenderContext.output` — the list of all written files.
+
+See also: <Link href="/getVikeConfig" />
+
 <Prop name="isClientSide" />
 
 Environment: server, client  
@@ -188,5 +198,6 @@ To define properties only for the server-/client-side, use the interfaces `Vike.
 
 - <Link href="/pageContext" />
 - <Link href="/getGlobalContext" />
+- <Link href="/getVikeConfig">API > `getVikeConfig()`</Link>
 - <Link href="/onCreateGlobalContext" />
 - <Link href="/passToClient" />

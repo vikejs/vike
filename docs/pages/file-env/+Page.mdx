@@ -55,7 +55,7 @@ The file extension `.shared.js` has an effect only for `+` files (see section be
 
 ## For `+` files
 
-For <Link href="/config#files">`+` files</Link>, the most common use case is to change the environment of the <Link href="/data">`data()` hook</Link>: by renaming `+data.js` to `+data.shared.js`/`+data.server.js`/`+data.client.js` you tell Vike in which environment `data()` should be loaded and executed, see <Link href="/data#environment" />.
+For <Link href="/config#files">`+` files</Link>, the most common use case is to change the environment of <Link href="/hooks">Vike hooks</Link>. Most notably the <Link href="/data">`data()` hook</Link>: by renaming `+data.js` to `+data.shared.js`/`+data.server.js`/`+data.client.js` you tell Vike in which environment `data()` should be loaded and executed, see <Link href="/data#environment" />.
 
 > Essentially, it's a simpler way to set the <Link href="/meta#example-modify-data-env">`meta.env` setting</Link> of a `+` file.
 > Adding `.server.js`/`.client.js`/`.shared` to a `+` file, for example `/pages/product/@id/+data.js`, is equivalent to:

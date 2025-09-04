@@ -71,10 +71,12 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
     },
     {
       name: pluginName,
-      configResolved(config) {
-        assertViteRoot(config._rootResolvedEarly!, config)
-        assertSingleInstance(config)
-        installRequireShim_setUserRootDir(config.root)
+      configResolved: {
+        handler(config) {
+          assertViteRoot(config._rootResolvedEarly!, config)
+          assertSingleInstance(config)
+          installRequireShim_setUserRootDir(config.root)
+        },
       },
     },
     {
@@ -93,7 +95,6 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
           workaroundCI(config)
           assertRollupInput(config)
           assertResolveAlias(config)
-          assertEsm(config.root)
           assertVikeCliOrApi(config)
           temp_supportOldInterface(config)
           await emitServerEntryOnlyIfNeeded(config)
@@ -142,7 +143,7 @@ function setDefault<Setting extends 'port' | 'host'>(
 /*
 import { version } from 'vite'
 function overrideViteDefaultSsrExternal(config: ResolvedConfig) {
-  if (!isVersionOrAbove(version, '5.0.12')) return
+  if (!isVersionMatch(version, ['5.0.12'])) return
   // @ts-ignore Not released yet: https://github.com/vitejs/vite/pull/10939/files#diff-5a3d42620df2c6b17e25f440ffdb67683dee7ef57317674d19f41d5f30502310L5
   config.ssr.external ??= true
 }
@@ -154,24 +155,6 @@ function workaroundCI(config: ResolvedConfig) {
     config.server.host ??= true
     config.preview.host ??= true
   }
-}
-
-function assertEsm(userViteRoot: string) {
-  const found = findPackageJson(userViteRoot)
-  if (!found) return
-  const { packageJson, packageJsonPath } = found
-  let dir = path.posix.dirname(packageJsonPath)
-  if (dir !== '/') {
-    assert(!dir.endsWith('/'))
-    dir = dir + '/'
-  }
-  assert(dir.endsWith('/'))
-  dir = pc.dim(dir)
-  assertWarning(
-    packageJson.type === 'module',
-    `We recommend setting ${dir}package.json#type to "module", see https://vike.dev/CJS`,
-    { onlyOnce: true },
-  )
 }
 
 function assertSingleInstance(config: ResolvedConfig) {

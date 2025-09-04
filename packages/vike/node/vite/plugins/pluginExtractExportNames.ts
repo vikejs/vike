@@ -18,31 +18,46 @@ const extractExportNamesRE = /(\?|&)extractExportNames(?:&|$)/
 const debug = createDebugger('vike:pluginExtractExportNames')
 const globalObject = getGlobalObject<{ usesClientRouter?: true }>('plugins/pluginExtractExportNames.ts', {})
 
+const filterRolldown = {
+  id: {
+    include: extractExportNamesRE,
+  },
+}
+const filterFunction = (id: string) => extractExportNamesRE.test(id)
+
 function pluginExtractExportNames(): Plugin {
   let isDev = false
   let config: ResolvedConfig
   return {
     name: 'vike:pluginExtractExportNames',
     enforce: 'post',
-    async transform(src, id, options) {
-      id = normalizeId(id)
-      const isClientSide = !isViteServerSide_extraSafe(config, this.environment, options)
-      if (extractExportNamesRE.test(id)) {
+    transform: {
+      filter: filterRolldown,
+      async handler(src, id, options) {
+        id = normalizeId(id)
+        const isClientSide = !isViteServerSide_extraSafe(config, this.environment, options)
+        assert(filterFunction(id))
         const code = await getExtractExportNamesCode(src, isClientSide, !isDev, id)
         debug('id ' + id, ['result:\n' + code.code.trim(), 'src:\n' + src.trim()])
         return code
-      }
+      },
     },
-    configureServer() {
-      isDev = true
+    configureServer: {
+      handler() {
+        isDev = true
+      },
     },
-    configResolved(config_) {
-      config = config_
+    configResolved: {
+      handler(config_) {
+        config = config_
+      },
     },
-    config() {
-      if (debug.isActivated) {
-        return { logLevel: 'silent' }
-      }
+    config: {
+      handler() {
+        if (debug.isActivated) {
+          return { logLevel: 'silent' }
+        }
+      },
     },
   }
 }

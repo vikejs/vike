@@ -443,7 +443,7 @@ const headings = [
     title: '`+data()` hook',
     titleInNav: '`+data()`',
     url: '/data',
-    sectionTitles: ['Without `vike-{react,vue,solid}`'],
+    sectionTitles: ['`.client.js`', '`.shared.js`', 'Without `vike-{react,vue,solid}`'],
   },
   {
     level: 2,
@@ -1173,10 +1173,6 @@ function guides() {
       {
         title: 'Client runtime loaded twice',
         url: '/client-runtime-duplicated',
-      },
-      {
-        title: 'CJS',
-        url: '/CJS',
       },
       {
         title: 'URL Normalization',

@@ -30,9 +30,13 @@ function myVitePlugin(): Plugin {
       console.log(vike.config.prerender)
       console.log(vike.config.baseAssets)
       console.log(vike.config.baseServer)
+
       console.log(vike.pages['/pages/index'].config)
       console.log(vike.pages['/pages/product'].route)
-      // ...
+
+      // If you pre-render pages
+      console.log(vike.prerenderContext.pageContexts)
+      console.log(vike.prerenderContext.output)
     },
     config(config) {
       // Also available here
@@ -48,5 +52,6 @@ function myVitePlugin(): Plugin {
 - <Link href="/getGlobalContext" />
 - <Link href="/globalContext#config">API > `globalContext.config`</Link>
 - <Link href="/globalContext#pages">API > `globalContext.pages`</Link>
+- <Link href="/globalContext#prerenderContext">API > `globalContext.prerenderContext`</Link>
 - [Vite > Plugin API > `configResolved`](https://vite.dev/guide/api-plugin.html#configresolved)
 - [Vite > Plugin API > `config`](https://vite.dev/guide/api-plugin.html#config)

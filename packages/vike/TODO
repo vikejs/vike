@@ -2,14 +2,10 @@
 - Add assertWarning() deprecations:
   - `pageContext.exports`
   - `pageContext.configEntries`
-- Soft depracate TS helpers such as OnRenderHtmlAsync https://vike.dev/onRenderHtml#typescript
 - Soft deprecate returning `pageContext` from `onBeforeRender()`
-  - Depecrate all return values of `onBeforeRender()`, `onRenderHtml`, and all hooks?
-    - Including `documentHtml` and `injectFilter()`
-      - Use pageContext.html and pageContext.injectFilter instead
-- pageContext.url + soft deprecate pageContext.urlParsed
-  - Add negligible breaking change
-  - Maybe/eventually: `$ pnpm migrate pageContext.url`? Probably not for now: instead recommend `$ rename urlParsed url`.
+  - Also `documentHtml` — use pageContext.html instead
+  - Also `injectFilter()` — maybe deprecate `injectFilter()` in favor of `pageContext.injectAssets`? Do we need a new hook or is `onRenderHtml()`/`onAfterRenderHtml()` enough?
+  - Also all return values of `onBeforeRender()`, `onRenderHtml()`, `onBeforeRoute()` and all hooks
 
 = TO-DO/docs/typescript-javascript-toggle
 - Use detype
@@ -32,6 +28,11 @@
       - Alternatively: only show toggle if detype makes a change or if code block has a filename
   - If detype doesn't work, look at what Astro does
 
+= TO-DO/prepare-next-major-release:
+- Remove CJS build
+
+= TO-DO/open-source-pricing
+
 = TO-DO/next-major-release:
 == Highest Prio
 - Triage https://github.com/vikejs/vike/issues?q=state%3Aopen%20label%3A%22v1%20release%20%3Astar2%3A%22 and remove non-breaking changes => release new feature in `1.x.x` release branch
@@ -39,9 +40,10 @@
 - Remove TS helpers such as OnRenderHtmlAsync https://vike.dev/onRenderHtml#typescript
 - Make routing fully sync
   - Forbid async Route Functions
-- Make CJS warning an error
-  - Keep the CJS build for a little while and if no one complains then remove the CJS build
 == Prio
+- pageContext.url + soft deprecate pageContext.urlParsed
+  - Recommend users to `$ rename urlParsed url` (grep w/ sed + @brillout/replace)
+    - Maybe: `$ pnpm migrate pageContext.url` instead? Probably not for now
 - Simplify import paths
   - Migration script => not too annoying for the user? All the user has to do to update to `v1.0.0` is:
     1. Follow all soft deprecation warnings

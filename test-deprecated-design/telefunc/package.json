@@ -16,8 +16,8 @@
     "react-dom": "^19.1.0",
     "telefunc": "^0.2.10",
     "typescript": "^5.8.3",
-    "vite": "6.0.0",
-    "vike": "0.4.238"
+    "vite": "6.3.0",
+    "vike": "0.4.239"
   },
   "type": "module"
 }

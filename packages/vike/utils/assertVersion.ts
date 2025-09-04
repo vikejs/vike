@@ -1,24 +1,45 @@
 export { assertVersion }
-export { isVersionOrAbove }
+export { isVersionMatch }
 
+import pc from '@brillout/picocolors'
 import { assert, assertUsage } from './assert.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
+import { joinEnglish } from './joinEnglish.js'
 assertIsNotBrowser()
 
-function assertVersion(
-  dependencyName: 'Vite' | 'Node.js',
-  versionActual: string,
-  versionExpected: `${number}.${number}.${number}`,
-) {
-  assert(versionActual)
-  assert(versionExpected)
+type Version = `${number}.${number}.${number}`
+
+function assertVersion(dependencyName: 'Vite' | 'Node.js', versionActual: string, versionExpectedList: Version[]) {
   assertUsage(
-    isVersionOrAbove(versionActual, versionExpected),
-    `${dependencyName} ${versionActual} isn't supported, use ${dependencyName} >= ${versionExpected} instead.`,
+    isVersionMatch(versionActual, versionExpectedList),
+    `${pc.bold(dependencyName)} ${pc.red(pc.bold(versionActual))} isn't supported, use ${pc.bold(dependencyName)} ${joinEnglish(
+      [...versionExpectedList, 'above'].map((v) => pc.green(pc.bold(v))),
+      'or',
+    )}.`,
   )
 }
 
-function isVersionOrAbove(versionActual: string, versionExpected: `${number}.${number}.${number}`): boolean {
+function isVersionMatch(versionActual: string, versionExpectedList: Version[]): boolean {
+  assert(versionActual)
+  assert(versionExpectedList)
+  assert(versionExpectedList.length > 0)
+
+  const versionActualMajor = parseVersion(versionActual)[0]
+  const versionExpectedListSameMajor = versionExpectedList.filter((versionExpected) => {
+    const versionExpectedMajor = parseVersion(versionExpected)[0]
+    return versionExpectedMajor === versionActualMajor
+  })
+  assert(versionExpectedListSameMajor.length <= 1)
+  const versionExpectedSameMajor = versionExpectedListSameMajor[0]
+
+  if (versionExpectedSameMajor) {
+    return isSameOrAbove(versionActual, versionExpectedSameMajor)
+  } else {
+    return versionExpectedList.every((versionExpected) => isSameOrAbove(versionActual, versionExpected))
+  }
+}
+
+function isSameOrAbove(versionActual: string, versionExpected: Version): boolean {
   const p1 = parseVersion(versionActual)
   const p2 = parseVersion(versionExpected)
 

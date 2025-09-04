@@ -8,9 +8,9 @@ import { ProvidedBy, ConfigSpec } from '../../components'
   providedBy={<ProvidedBy list={['vike-vue']} noCustomGuide={true}><code>onCreateApp()</code></ProvidedBy>}
 />
 
-The `onCreateApp()` hook is called right after the
-[Vue app](https://vuejs.org/guide/essentials/application.html) is created, giving you the opportunity to extend it,
-typically for registering a [Vue plugin](https://vuejs.org/guide/reusability/plugins.html).
+The `onCreateApp()` hook is called whenever `vike-vue` creates a new [Vue `app` instance](https://vuejs.org/api/application.html),
+giving you the opportunity to access `app`,
+for example to register a [Vue plugin](https://vuejs.org/guide/reusability/plugins.html).
 
 ```ts
 // pages/+onCreateApp.ts
@@ -22,13 +22,31 @@ import SomeVuePlugin from 'some-vue-plugin'
 import type { PageContext } from 'vike/types'
 
 function onCreateApp(pageContext: PageContext) {
-  if (pageContext.isRenderingHead) return // Don't add the plugin when rendering <head>
+  if (pageContext.isRenderingHead) {
+    // Don't add the plugin when rendering <head> (see Lifecycle)
+    return
+  }
   const app = pageContext.app!
   app.use(SomeVuePlugin)
 }
 ```
 
-> There are two [app instances](https://vuejs.org/guide/essentials/application): one for rendering the `+Page.vue` component, and a second one for rendering the `+Head.vue` components. You can use `pageContext.isRenderingHead` for applying `onCreateApp()` only for rendering the `+Page.vue` component.
+
+## Lifecycle
+
+The `onCreateApp()` hook is called when `vike-vue` creates a new `app` instance upon <Link href="/ssr">SSR</Link>, <Link href="/hydration">hydration</Link>, and <Link href="/client-routing">client-side navigation</Link>.
+
+> Upon SSR, `vike-vue` creates two `app` instances: one for rendering the `+Page.vue` component, and a second one for rendering the `+Head.vue` component.
+>
+> You can use `pageContext.isRenderingHead` for applying your `onCreateApp()` logic only for rendering the `+Page.vue` component. (See example above.)
+
+In other words:
+ - Upon the first page the user visits, there are three `onCreateApp()` calls: two on the server-side (one for `+Page.vue` and a second one for `+Head.vue`), and one on the client-side (for hydration).
+ - Upon client-side navigation, there is only one `onCreateApp()` call (on the client-side) for rendering the next page.
+
+If your page <Link href="/ssr">isn't SSR'd</Link> then, upon rendering the first page, there are only two `onCreateApp()` calls: one on the server-side (for `+Head.vue`), and another one on the client-side (for rendering).
+
+See also: <Link href="/hooks#lifecycle" />
 
 
 ## Examples
@@ -39,4 +57,5 @@ See [`vike-vue` > /examples/full/pages/+onCreateApp.ts](https://github.com/vikej
 ## See also
 
 - [Vue > The application instance](https://vuejs.org/guide/essentials/application)
+- [Vue > Application API](https://vuejs.org/api/application.html)
 - <Link href="/hooks" />

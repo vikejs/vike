@@ -14,10 +14,11 @@ import {
   autoRetry,
   fetchHtml,
   getServerUrl,
-  expectLog,
   partRegex,
   sleep,
   skip,
+  editFile,
+  editFileRevert,
 } from '@brillout/test-e2e'
 
 async function testCounter(currentValue = 0) {
@@ -114,17 +115,21 @@ declare global {
 function testRunClassic(
   cmd: 'npm run dev' | 'npm run preview' | 'npm run prod',
   {
-    isCJS,
     skipAboutPage,
     skipViteEcosystemCi,
     tolerateError,
+    testHmr,
+    isVue,
   }: {
-    isCJS?: true
     skipAboutPage?: true
     skipViteEcosystemCi?: true
+    testHmr?: false | string
+    isVue?: true
     tolerateError?: NonNullable<Parameters<typeof run>[1]>['tolerateError']
   } = {},
 ) {
+  const isDev = cmd === 'npm run dev'
+
   if (skipViteEcosystemCi && process.env.VITE_ECOSYSTEM_CI) {
     skip("SKIPPED: skipping this test from Vite's ecosystem CI, see https://github.com/vikejs/vike/pull/2220")
     return
@@ -135,11 +140,6 @@ function testRunClassic(
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
     expect(html).toContain('<h1>Welcome</h1>')
-    if (isCJS) {
-      expectLog('package.json#type to "module", see https://vike.dev/CJS', {
-        filter: (log) => log.logSource === 'stderr',
-      })
-    }
   })
 
   test('page is rendered to the DOM and interactive', async () => {
@@ -148,6 +148,30 @@ function testRunClassic(
     expect(await page.textContent('h1')).toBe('Welcome')
     await testCounter()
   })
+
+  if (isDev && testHmr !== false) {
+    test('HMR', async () => {
+      await testCounter(1)
+      const org = 'Welcome'
+      const mod = 'Wilkommen'
+      expect(await page.textContent('h1')).toBe(org)
+      editFile(testHmr || `./pages/index/+Page.${isVue ? 'vue' : 'tsx'}`, (s) => s.replace(org, mod))
+      await autoRetry(
+        async () => {
+          expect(await page.textContent('h1')).toBe(mod)
+        },
+        { timeout: 5000 },
+      )
+      editFileRevert()
+      await autoRetry(
+        async () => {
+          expect(await page.textContent('h1')).toBe(org)
+        },
+        { timeout: 5000 },
+      )
+      await testCounter(2)
+    })
+  }
 
   if (!skipAboutPage) {
     test('about page', async () => {

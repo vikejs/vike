@@ -7,6 +7,7 @@ import { assert, Link } from '@brillout/docpress'
 type UiFrameworkExtensionList = `vike-${'react' | 'vue' | 'solid'}`[]
 const extensionList: UiFrameworkExtensionList = ['vike-react', 'vike-vue', 'vike-solid']
 
+// TO-DO/docs: refactor this component
 function UiFrameworkExtension({
   name,
   noLink,

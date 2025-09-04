@@ -1,5 +1,6 @@
 export { ConfigSpec }
 export { PageHeader }
+export { Box }
 export { IconGlobal }
 export { IconLocal }
 
@@ -168,13 +169,31 @@ function PageHeader({
   children?: React.ReactNode
 }) {
   return (
+    <Box
+      style={{
+        paddingLeft: 14,
+        paddingRight: 15,
+        ...style,
+      }}
+    >
+      {children}
+    </Box>
+  )
+}
+
+function Box({
+  style,
+  children,
+}: {
+  style?: React.CSSProperties
+  children?: React.ReactNode
+}) {
+  return (
     <div
       style={{
         backgroundColor: '#efefef',
         border: '1px solid #dee2e6',
         borderRadius: 8,
-        paddingLeft: 14,
-        paddingRight: 15,
         ...style,
       }}
     >

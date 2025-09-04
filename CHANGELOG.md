@@ -1,3 +1,28 @@
+## [0.4.239](https://github.com/vikejs/vike/compare/v0.4.238...v0.4.239) (2025-09-03)
+
+
+### Bug Fixes
+
+* Cache-Control header for 5xx HTTP responses ([#2669](https://github.com/vikejs/vike/issues/2669)) ([a3fb52e](https://github.com/vikejs/vike/commit/a3fb52e3934a1e2063516be1b337fb92778e17fa))
+* ensure proper replacement of __VIKE__IS_NON_RUNNABLE_DEV ([#2682](https://github.com/vikejs/vike/issues/2682)) ([d48a597](https://github.com/vikejs/vike/commit/d48a5976751413318ced7dfd1ddc8d79cd81aee8))
+* improve error message upon wrong +prerender local value (fix [#2676](https://github.com/vikejs/vike/issues/2676)) ([b5a0803](https://github.com/vikejs/vike/commit/b5a08039c628153ae7c75e6675a1a56db443fb2a))
+* remove outdated VikePackages namespace ([8b9433e](https://github.com/vikejs/vike/commit/8b9433e2c01b87bc077a42b86e8375a6cfe47bfb))
+* remove too sensitive assert upon weirdly formatted error ([4c6aa0d](https://github.com/vikejs/vike/commit/4c6aa0d742e5c59be41a9e47331deeb5190ba7b1))
+* require correct Node.js version ([#2683](https://github.com/vikejs/vike/issues/2683)) ([a375c6b](https://github.com/vikejs/vike/commit/a375c6bfb0dfe11a2a9e3fb2c8826465ac61e7f2))
+
+
+### Features
+
+* +headersResponse(pageContext) ([#2667](https://github.com/vikejs/vike/issues/2667)) ([3c1a09d](https://github.com/vikejs/vike/commit/3c1a09d00a83a762551b75f8af4de390945d09a6))
+* CSP support (closes [#1554](https://github.com/vikejs/vike/issues/1554)) ([#2664](https://github.com/vikejs/vike/issues/2664)) ([5762291](https://github.com/vikejs/vike/commit/576229110b71f5271f9fbdd58659a97574f0944d))
+
+
+### BREAKING CHANGES
+
+* Very old vike-react/vike-vue/vike-solid versions aren't supported anymore, update to a more recent version.
+
+
+
 ## [0.4.238](https://github.com/vikejs/vike/compare/v0.4.237...v0.4.238) (2025-08-27)
 
 
