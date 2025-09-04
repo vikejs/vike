@@ -9,20 +9,20 @@ For each page, you can choose between:
 > - <Link href="/ssr" />
 > - <Link href="/pre-rendering#spa" doNotInferSectionTitle />
 
-The main motivation for choosing SSR is that **SSR makes your page's content available to the crawler of search engines and AI**.
+The main motivation for choosing SSR is that **SSR makes your page's content available to the crawlers of search engines and AI**.
 
-> With SPA, a page is rendered only on the client-side. The HTML of an SPA page is just an empty shell that delivers the page's client-side JavaScript — the HTML doesn't include the page's content. Therefore, **with SPA the page's content is invisible to the crawler of search engines and AI** (crawlers navigate your website by reading HTML).
+> With SPA, a page is rendered only on the client-side. The HTML of an SPA page is just an empty shell that delivers the page's client-side JavaScript — the HTML doesn't include the page's content. Therefore, **with SPA, the page's content is invisible to the crawlers of search engines and AI** (crawlers navigate your website by reading HTML).
 
-This means that **SPA isn't an option if your page's content should appear in search engines (e.g. Google) and AI (e.g. ChatGPT)**. You must use SSR.
+This means that **SPA isn't an option if your page's content should appear in search engines (e.g., Google) and AI (e.g., ChatGPT)**. You must use SSR.
 
-If SPA is an option, we generally recommend choosing SPA while considering following trade-offs:
+If SPA is an option, we generally recommend choosing SPA while considering the following trade-offs:
 
 **SPA Cons:**
 - Slower first page load time, especially on mobile devices.
   > SSR improves performance because the page's content is shown to the user via HTML before any client-side JavaScript loads. Depending on the app, this can make a significant difference, especially on mobile devices (where loading and executing JavaScript can be *much* slower than loading HTML).
 
 **SPA Pros:**
-1. Your page's code doesn't run in Node.js(/Bun/Deno). It's easier to write code that runs in only one environment. (E.g. some libraries have issues when run on the server-side.)
+1. Your page's code doesn't run in Node.js/Bun/Deno. It's easier to write code that runs in only one environment. (E.g., some libraries have issues when run on the server-side.)
 1. SPA doesn't require a production server.
    > You can also <Link href="/pre-rendering">pre-render SSR</Link> to remove the need for a production server, but <Link href="/pre-rendering#should-i-pre-render">it doesn't always work</Link>.
 1. Reduced backend workload.
@@ -42,7 +42,7 @@ SPA usually makes sense for **private pages**:
 - Company internal application
 - User account settings
 
-SPA usually also makes sense **interaction-focused apps** (the primary value is functionality):
+SPA usually also makes sense for **interaction-focused apps** (the primary value is functionality):
 - To-do list app
 - Productivity tool
 - Online image editor
