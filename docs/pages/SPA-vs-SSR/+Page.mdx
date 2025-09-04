@@ -7,6 +7,21 @@ For each page, you can choose between:
 
 Let's now compare both approaches.
 
+## SSR
+
+With <Link href="/server-side-rendering">SSR</Link>, the page is rendered to HTML on the server-side <Link href="/hydration">as well as interactive</Link> on the client-side rendered.
+
+It is the most capable mode as it enables:
+ - Improved SEO (e.g. high ranking on Google)
+ - Improved mobile performance
+
+For example, social news websites need SSR. (They are interactive while needing both SEO and mobile performance.)
+
+SSR improves mobile performance in the sense that the page's content is rendered to HTML and can already be shown to the user before the browser-side JavaScript even starts loading. (Loading & executing JavaScript is usually very slow on mobile.)
+
+For pages that are not <Link text="content centric" href="/content-vs-interactive" /> (e.g. a to-do list app) and don't need SEO, we can consider [SPA](#spa) instead of SSR.
+
+
 ## SPA
 
 SPA means that the page is loaded & rendered only in the client.
@@ -25,21 +40,6 @@ SPA advantages:
  - Decreased backend workload.
 
 While for certain types of pages, such as an Admin Panel where there is a clear choice in favor of SPA, there often isn't a clear-cut whether we should use SPA or SSR.
-
-
-## SSR
-
-With <Link href="/server-side-rendering">SSR</Link>, the page is rendered to HTML on the server-side <Link href="/hydration">as well as interactive</Link> on the client-side rendered.
-
-It is the most capable mode as it enables:
- - Improved SEO (e.g. high ranking on Google)
- - Improved mobile performance
-
-For example, social news websites need SSR. (They are interactive while needing both SEO and mobile performance.)
-
-SSR improves mobile performance in the sense that the page's content is rendered to HTML and can already be shown to the user before the browser-side JavaScript even starts loading. (Loading & executing JavaScript is usually very slow on mobile.)
-
-For pages that are not <Link text="content centric" href="/content-vs-interactive" /> (e.g. a to-do list app) and don't need SEO, we can consider [SPA](#spa) instead of SSR.
 
 
 ## Pre-rendering
