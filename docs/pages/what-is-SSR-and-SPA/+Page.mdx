@@ -8,7 +8,7 @@ This page explains both concepts and their differences.
 
 A unique aspect of JavaScript is that it can run both in the browser (browsers support only two languages: [JavaScript](https://en.wikipedia.org/wiki/JavaScript) and [WebAssembly](https://webassembly.org)) and on the server (using a JavaScript runtime such as [Node.js](https://nodejs.org)).
 
-This means that when you define a component like this:
+For example:
 
 ```jsx
 // Welcome.jsx
@@ -23,7 +23,7 @@ function Welcome() {
 }
 ```
 
-This JSX code is compiled (by [Vite](https://vite.dev)) to JavaScript and can run on both the client and the server.
+This JSX component is compiled (by [Vite](https://vite.dev)) to JavaScript and can run on both the client and the server.
 
 **SPA** refers to the practice of rendering components only on the client-side (i.e., in the browser):
 
@@ -135,7 +135,7 @@ With SSR:
 
 > See also: <Link href="/SSR-vs-SPA" />
 
-> **Note:** Google's crawler can execute client-side JavaScript, but we still recommend using SSR even if you only target Google.
+> Google's crawler can execute client-side JavaScript, but we still recommend using SSR even if you only target Google.
 >
 > <details>
 > <summary>Why SSR is still recommended for Google:</summary>
@@ -180,9 +180,9 @@ The term "SPA" (Single Page Application) is technically a misnomer in modern usa
 
 **Historically**, SPA referred to applications that truly had only one page—like [Gmail](https://thehistoryoftheweb.com/what-does-ajax-even-stand-for/)—where you never navigate to different URLs and everything happens within a single page interface.
 
-**Today**, "SPA" is commonly used to mean "not SSR"—referring to any client-side rendered application, even if it has multiple pages with different URLs. This is technically incorrect but has become the accepted usage.
+**Today**, "SPA" is commonly used to mean "not SSR"—referring to any client-side rendered application, even if it has multiple pages with different URLs. This is technically an incorrect usage of the term "SPA", but it has become the accepted usage.
 
-> **Note:** A more accurate term would be CSR (Client-Side Rendering), but "CSR" is rarely used while "SPA" is widely used in the web development community. That's why we use the term SPA throughout Vike's documentation.
+> A more accurate term would be CSR (Client-Side Rendering), but "CSR" is rarely used while "SPA" is ubiquitous in the web development community. That's why we use the term SPA throughout Vike's documentation.
 
 
 ## See also
