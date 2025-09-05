@@ -39,7 +39,7 @@ const root = createRoot(document.getElementById('root'))
 root.render(<Welcome />)
 ```
 
-The HTML sent to the browser is just an empty shell that delivers the page's client-side JavaScript:
+The HTML sent to the browser is just an empty shell that delivers the client-side JavaScript:
 
 ```html
 <html>
@@ -75,7 +75,7 @@ import { hydrateRoot } from 'react-dom/client'
 hydrateRoot(document.getElementById('root'), <Welcome />)
 ```
 
-> In this example, hydration is unnecessary since `<Welcome>` isn't interactive. However, interactive components (e.g. `<Counter>`) require hydration to function properly.
+> In this example, hydration is unnecessary since `<Welcome>` isn't interactive. However, interactive components (e.g. [`<Counter>`](https://gist.github.com/brillout/16ee742e9c58536a620441c76a713173)) require hydration to function properly.
 
 ```html
 <html>
@@ -95,13 +95,13 @@ Notice that with SSR, the content of `<Welcome>` is included in the HTML, while 
 This is the key difference between SSR and SPA: **with SSR, the page's content is included in the HTML, whereas with SPA, the HTML is just an empty shell**.
 
 This difference has important implications for:
-- **Crawlers** (search engines, social media, AI)
-- **Performance** (particularly on mobile devices and slow connections)
+- **Crawlers** (search engines, social sites, AI)
+- **Performance** (particularly on mobile devices or slow connections)
 
 
 ## Crawlers
 
-The [crawlers](https://en.wikipedia.org/wiki/Web_crawler) of **search engines** (e.g. Google, Bing), **social media platforms** (e.g. Instagram, Twitter), and **AI** (e.g. ChatGPT) navigate your website by reading the HTML of your pages and following `<a href="/some-other-page">` links.
+The [crawlers](https://en.wikipedia.org/wiki/Web_crawler) of **search engines** (e.g. Google, Bing), **social sites** (e.g. Instagram, Twitter), and **AI** (e.g. ChatGPT) navigate your website by reading the HTML of your pages and following `<a href="/some-other-page">` links.
 
 With *SPA*, crawlers only see empty HTML:
 
@@ -138,25 +138,27 @@ With *SSR*:
 
 ## Performance
 
-SSR provides faster initial page loads, especially on mobile devices where JavaScript loading and execution are significantly slower. With SPA, users may see a blank page for several seconds while JavaScript loads and executes.
+SSR provides faster initial page load, especially on mobile devices where JavaScript loading and execution is significantly slower. With SPA, users may see a blank page for several seconds while JavaScript loads and executes.
 
 > **Note:** Subsequent page navigation (also known as <Link href="/client-routing">client-side navigation</Link>) is equally fast between SSR and SPA.
 
-#### Loading timeline comparison (mobile device)
+> See also: <Link href="/SSR-vs-SPA" />
 
-**SPA:**
-1. 0s: User visits page
-2. 1s: HTML loads (empty)
-3. 3s: JavaScript downloads
-4. 5s: JavaScript executes and renders content ← *User finally sees content*
+#### Initial page load comparison (mobile device)
+
+TODO: use a table
+
+**SPA:**  
+0s — User visits page  
+1s — HTML loads (empty)  
+3s — JavaScript downloads  
+5s — JavaScript executes and renders content ← *User finally sees content*  
 
 **SSR:**
 1. 0s: User visits page
 2. 1s: HTML loads with content ← *User sees content immediately*
 3. 3s: JavaScript downloads
 4. 5s: JavaScript hydrates (makes content interactive)
-
-> See also: <Link href="/SSR-vs-SPA" />
 
 
 ## SPA is a misnomer
