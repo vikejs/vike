@@ -15,16 +15,35 @@ function Hello({ name }: { name: string }) {
 This JSX code is compiled (by [Vite](https://vite.dev)) to JavaScript and can be run on the client and/or the server.
 
 
-**S**erver-**s**ide **r**endering (SSR) denotes the practice of rendering components to HTML on the server-side.
+**SPA** denotes the practice of rendering components only on the client-side (i.e. in the browser):
 
 ```js
-// TODO: write minimal React code that renders <Hello name="Alice" />
+// TODO: write minimal React code that renders <Hello name="Alice" /> on the client-side
+```
+```html
+// TODO: write minimal but full HTML that delivers the JavaScript code above
+<h1>Hello Alice</h1>
+```
+
+**SSR* (**S**erver-**s**ide **r**endering) denotes the practice of rendering components to HTML on the server-side and then hydrating them on the clinet-side .
+
+```js
+// TODO: write minimal React code that renders <Hello name="Alice" /> on the server-side
+```
+```js
+// TODO: write minimal React code that hydrates <Hello name="Alice" /> on the client-side
 ```
 
 ```html
 // TODO: write minimal but full HTML
 <h1>Hello Alice</h1>
 ```
+
+Note the key differnce here
+
+A page without any client-side JavaScript cannot be interactive: there isn't any JavaScript event handler to react to a user action, such as a click on a button.
+In order to make
+
 
 But that isn't enough to make
 
