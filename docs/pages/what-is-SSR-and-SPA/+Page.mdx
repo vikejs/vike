@@ -1,4 +1,4 @@
-If you're new to modern web development, you might have heard the terms **SSR** (Server-Side Rendering) and **SPA** (Single Page Application) but aren't sure what they mean. This guide will explain both concepts and their differences.
+If you're new to modern web development with JavaScript and [React](https://react.dev) or [Vue](https://vuejs.org), you might have heard the terms **SSR** (Server-Side Rendering) and **SPA** (Single Page Application) but aren't sure what they mean. This guide explains both concepts and their differences.
 
 > If you're alreay familiar with SSR and SPA, see <Link href="/SSR-vs-SPA" /> instead.
 
@@ -22,10 +22,9 @@ This JSX code is compiled (by [Vite](https://vite.dev)) to JavaScript and can be
 ```
 ```html
 // TODO: write minimal but full HTML that delivers the JavaScript code above
-<h1>Hello Alice</h1>
 ```
 
-**SSR* (**S**erver-**s**ide **r**endering) denotes the practice of rendering components to HTML on the server-side and then hydrating them on the clinet-side .
+**SSR* (**S**erver-**s**ide **r**endering) denotes the practice of rendering components to HTML on the server-side and <Link href="/hydration">hydrating</Link> (made interactive) them on the client-side .
 
 ```js
 // TODO: write minimal React code that renders <Hello name="Alice" /> on the server-side
@@ -39,53 +38,20 @@ This JSX code is compiled (by [Vite](https://vite.dev)) to JavaScript and can be
 <h1>Hello Alice</h1>
 ```
 
-Note the key differnce here
+Note how `<h1>Hello Alice</h1>`, with SSR, the content `<h1>Hello Alice</h1>` is included in the HTML but missing with SPA
 
-A page without any client-side JavaScript cannot be interactive: there isn't any JavaScript event handler to react to a user action, such as a click on a button.
-In order to make
-
-
-But that isn't enough to make
-
--## What is SSR?
--
--Modern UI frameworks,
--such as React or Vue,
--are able to load, execute and render UI source code on the browser-side or server-side, or even both.
--
--The practice of loading & rendering the UI on the browser-side is commonly called *SPA*.
--
--[SPA Demo](/spa-demo)
--
--[SSR Demo](/ssr-demo)
--
--[HTML-only Demo](/html-only-demo)
--
--*Server-side Rendering (SSR)* essentially denotes the practice of loading & rendering the UI not only on the browser-side but also on the server-side.
--
--## Why SSR?
--
--**Search Engines**
--
--**Other Crawlers (Facebook, Twitter, Algolia, ...)**
--
--**Performance**
--
--## When to use SSR?
--
+This is the central functional difference between SSR and SPA: with SSR the page's content is rendered to HTML whereas with SPA the HTML is just an empty shell.
 
 
-With SSR:
-1. When someone visits your website, the server runs your application code
-2. The server generates the complete HTML with all the content
-3. The browser receives ready-to-display HTML
-4. JavaScript then "hydrates" the page to make it interactive
+## Crawlers
 
-With SPA:
-1. When someone visites yur website
+TODO: Crawlers only see HTML.
 
-## SSR
+> See also: <Link href="/SSR-vs-SPA" />
 
-## SPA
 
-## Cralwers
+## Performance
+
+TODO: explain: Deskotp => usually fine, but mobile => can make a big difference
+
+> See also: <Link href="/SSR-vs-SPA" />
