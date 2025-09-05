@@ -149,9 +149,9 @@ SSR provides faster initial page load, especially on mobile devices where JavaSc
 | Time | SPA | SSR |
 |------|-----|-----|
 | **0s** | User visits page | User visits page |
-| **1s** | HTML loaded (empty) | HTML loaded with content<br/><span style={{color: 'green'}}>✅ *User sees content*</span> |
+| **1s** | HTML loaded (empty content) | HTML loaded with content<br/><span style={{color: 'green'}}>✅ *User sees content*</span> |
 | **3s** | JavaScript downloaded | JavaScript downloaded |
-| **5s** | JavaScript executed and rendered content<br/><span style={{color: 'green'}}>✅ *User sees content*</span> | JavaScript hydrated (made content interactive) |
+| **5s** | JavaScript executed (content is rendered)<br/><span style={{color: 'green'}}>✅ *User sees content*</span> | JavaScript executed (content is hydrated) |
 
 
 ## SPA is a misnomer
