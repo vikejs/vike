@@ -27,7 +27,7 @@ But **pre-rendering cannot be used for websites with content that changes very f
 > In theory, it's possible to re-render only the subset of pages that are affected by new content, but it isn't practical (it has been tried before) and we recommend against this practice.
 
 > Technically speaking, what matters is how frequent the HTML of pages changes, see also:
-> - <Link href="#ssg-vs-ssr-vs-spa" />
+> - <Link href="#ssg-vs-ssr" />
 > - <Link href="/SSR-vs-SPA" />
 
 **Pre-rendering can be used for websites with content that changes only occasionally**. For example, the content of `https://vike.dev` changes only when a maintainer updates the documentation: all pages of `https://vike.dev` can then be pre-rendered again.
@@ -76,15 +76,7 @@ Vue Example:
  - <RepoLink path='/examples/vue-full/package.json' /> (see Vike CLI usage)
 
 
-## SSG vs SSR vs SPA
-
-This section explains the difference between SSG, SSR, and SPA.
-
-> To decide between SSR and SPA, with a list of pros and cons, see <Link href="/SSR-vs-SPA" />.
-
-> To decide between SSR and SSG, see <Link href="#should-i-pre-render" />
-
-### SSG vs SSR
+## SSG vs SSR
 
 The only difference between SSG and SSR is *when* the HTML is rendered:
 - **SSG**: the HTML of the page is rendered at build-time (when calling `$ vike build`).
@@ -113,10 +105,16 @@ export default {
 See also:
 - <Link href="/prerender" />
 - <Link href="/ssr" />
+- <Link href="/SSR-vs-SPA" />
 
-### SPA
 
-SPA means the page is rendered only on the client-side. In other words, no SSR:
+## SPA
+
+SPA means the page is rendered only on the client-side.
+
+> See: <Link href="/what-is-SSR-and-SPA" />
+
+In other words, no SSR:
 
 ```ts
 // pages/+config.ts
@@ -143,7 +141,7 @@ export default {
 } satisfies Config
 ```
 
-That's why, the usual practice to create an SPA page is to set `ssr: false` together with `prerender: true`.
+That's why it's a common practice to set `ssr: false` together with `prerender: true`.
 
 > You can also add meta page information (title, description, social image, ...) to the pre-rendered HTML of SPA pages, see <Link href="/head-tags" />.
 
@@ -154,7 +152,7 @@ Yes, you can have some pages be SSG while other pages are SPA.
 
 Technically, you still pre-render *all* your pages, it's just that the content of some pages are rendered to HTML (SSG) while the content of others pages aren't rendered to HTML (SPA).
 
-> See explanation at <Link href="#ssg-vs-ssr-vs-spa" />.
+> See explanation at <Link href="#spa" />.
 
 For example:
 

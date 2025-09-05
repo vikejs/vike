@@ -1,10 +1,10 @@
 import { Link } from '@brillout/docpress'
 
+> If you're already familiar with SSR and SPA and you only want to decide which one to choose, see <Link href="/SSR-vs-SPA" /> instead.
+
 If you're new to modern web development with JavaScript and UI frameworks like [React](https://react.dev) or [Vue](https://vuejs.org), you might have heard the terms **SSR** (Server-Side Rendering) and **SPA** (Single Page Application) but aren't sure what they mean.
 
 This guide explains both concepts and their differences.
-
-> If you're already familiar with SSR and SPA and you only want to decide which one to choose, see <Link href="/SSR-vs-SPA" /> instead.
 
 JavaScript has a unique capability: it can run both in the browser (browsers support only two languages: [JavaScript](https://en.wikipedia.org/wiki/JavaScript) and [WebAssembly](https://webassembly.org)) and on the server (using a JavaScript runtime such as [Node.js](https://nodejs.org)).
 
@@ -51,7 +51,9 @@ The HTML sent to the browser is just an empty shell that delivers the client-sid
 </html>
 ```
 
-**SSR** (**S**erver-**S**ide **R**endering) involves rendering components to HTML on the server and then <Link href="/hydration">hydrating</Link> them (making them interactive) on the client-side.
+{/* spellcheck-ignore */}
+**SSR** (**S**erver-**S**ide **R**endering)
+refers to rendering components to HTML on the server-side and then <Link href="/hydration">hydrating</Link> them (making them interactive) on the client-side.
 
 ```jsx
 // ssr.js
@@ -156,7 +158,9 @@ SSR provides faster initial page load, especially on mobile devices where JavaSc
 
 ## SPA is a misnomer
 
-The term SPA (**S**ingle **P**age **A**pplication) has become a misnomer in modern web development.
+{/* spellcheck-ignore */}
+The term SPA (**S**ingle **P**age **A**pplication)
+has become a misnomer in modern web development.
 
 **Historically**, SPA referred to applications that truly had only one page — like [Gmail](https://thehistoryoftheweb.com/what-does-ajax-even-stand-for/) — where you never navigate to different URLs and everything happens within a single interface.
 

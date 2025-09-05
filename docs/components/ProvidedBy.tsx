@@ -52,7 +52,7 @@ function ProvidedBy({
             {!noCustomGuide && (
               <>
                 {' '}
-                If you don't use {<UiFrameworkExtension name noLink list={list} />} then see{' '}
+                If you don't use {<UiFrameworkExtension succinct list={list} />} then see{' '}
                 <Link href="#without-vike-react-vue-solid" />.
               </>
             )}

@@ -135,7 +135,12 @@ const headings = [
     level: 2,
     title: 'Pre-rendering (SSG)',
     url: '/pre-rendering',
-    sectionTitles: ['SPA'],
+    sectionTitles: ['SPA', 'SSG vs SSR'],
+  },
+  {
+    level: 2,
+    title: 'SSR vs SPA',
+    url: '/SSR-vs-SPA',
   },
   {
     level: 2,
@@ -1103,12 +1108,9 @@ function guides() {
   return (
     [
       {
-        title: 'SSR vs SPA',
-        url: '/SSR-vs-SPA',
-      },
-      {
         title: 'What is SSR and SPA?',
         url: '/what-is-SSR-and-SPA',
+        sectionTitles: ['SPA is a misnomer'],
       },
       {
         title: 'Multiple `renderer/`',
