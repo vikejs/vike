@@ -8,12 +8,16 @@ A unique aspect about JavaScript is that it can run not only inside the browser 
 
 This means that when you define a component like this:
 
-// TODO: replace Hello.jsx with Welcome.jsx with content shown in the HTML snippet below
 ```jsx
-// Hello.jsx
+// Welcome.jsx
 
-function Hello({ name }: { name: string }) {
-  return <h1>Hello {name}</h1>
+function Welcome() {
+  return (
+    <div>
+      <h1>Welcome to My Blog</h1>
+      <p>This is an article about web development...</p>
+    </div>
+  )
 }
 ```
 
@@ -25,12 +29,12 @@ This JSX code is compiled (by [Vite](https://vite.dev)) to JavaScript and can be
 // render.js
 // Environment: client
 
-import { Hello } from './Hello'
+import { Welcome } from './Welcome'
 
-// Render <Hello> on the client-side
+// Render <Welcome> on the client-side
 import { createRoot } from 'react-dom/client'
 function App() {
-  return <Hello name="Alice" />
+  return <Welcome />
 }
 const root = createRoot(document.getElementById('root'))
 root.render(<App />)
@@ -58,12 +62,12 @@ The HTML delivered to the browser is minimal and doesn't contain the actual cont
 // ssr.js
 // Environment: server
 
-import { Hello } from './Hello'
+import { Welcome } from './Welcome'
 
-// Render <Hello> to HTML on the server-side
+// Render <Welcome> to HTML on the server-side
 import { renderToString } from 'react-dom/server'
 function App() {
-  return <Hello name="Alice" />
+  return <Welcome />
 }
 const html = renderToString(<App />)
 ```
@@ -72,15 +76,12 @@ const html = renderToString(<App />)
 // hydrate.js
 // Environment: client
 
-import { Hello } from './Hello'
+import { Welcome } from './Welcome'
 
 // Hydrate the app on the client-side
 import { hydrateRoot } from 'react-dom/client'
-function Hello({ name }) {
-  return <h1>Hello {name}</h1>
-}
 function App() {
-  return <Hello name="Alice" />
+  return <Welcome />
 }
 hydrateRoot(document.getElementById('root'), <App />)
 ```
@@ -96,14 +97,17 @@ The HTML delivered to the browser contains the actual content:
   <body>
     <!-- Content is already here when the page loads -->
     <div id="root">
-      <h1>Hello Alice</h1>
+      <div>
+        <h1>Welcome to My Blog</h1>
+        <p>This is an article about web development...</p>
+      </div>
     </div>
     <script src="/hydrate.js"></script>
   </body>
 </html>
 ```
 
-Note how with SSR, the content `<h1>Hello Alice</h1>` is included in the HTML, but with SPA it's missing in the HTML.
+Note how with SSR, the content is included in the HTML, but with SPA it's missing in the HTML.
 
 This is the central functional difference between SSR and SPA: **with SSR the page's content is rendered to HTML whereas with SPA the HTML is just an empty shell**.
 
@@ -138,27 +142,17 @@ Whereas with SSR:
 
 ## Performance
 
-// TODO: make it more succinct (keep the timeline)
+SSR is faster on mobile devices because users see content immediately, while SPA users may see a blank page for several seconds.
 
-The performance difference between SSR and SPA varies by device:
+**Timeline comparison on mobile:**
 
-**Desktop computers** (fast processors, good internet):
-- SPA: Usually fine. Client-side JavaScript loads and executes quickly.
-- SSR: Slightly faster initial load, but difference is minimal.
-
-**Mobile devices** (slower processors, potentially slow internet):
-- SPA: Can be significantly slower. Users might see a blank page for several seconds.
-- SSR: Much faster initial load. Users see content immediately while JavaScript loads in the background.
-
-**Example timeline:**
-
-*SPA on mobile:*
+*SPA:*
 1. 0s: User visits page
 2. 1s: HTML loads (empty)
 3. 3s: JavaScript downloads
 4. 5s: JavaScript executes and renders content ← User finally sees content
 
-*SSR on mobile:*
+*SSR:*
 1. 0s: User visits page
 2. 1s: HTML loads with content ← User sees content immediately
 3. 3s: JavaScript downloads
@@ -169,7 +163,17 @@ The performance difference between SSR and SPA varies by device:
 
 ## SPA is a misnomer
 
-TODO: explain why SPA is misnomer. It's usually used to denote "not SSR" but technically/historically it means "SPA fallback".
+The term "SPA" (Single Page Application) is technically a misnomer in modern usage.
+
+**Historically**, SPA referred to applications that truly had only one page - like Gmail, where you never navigate to different URLs, everything happens within a single page interface.
+
+**Today**, "SPA" is commonly used to mean "not SSR" - referring to any client-side rendered application, even if it has multiple pages with different URLs. This is technically incorrect but has become the accepted usage.
+
+**More accurate terms** would be:
+- **CSR** (Client-Side Rendering) instead of SPA
+- **SSR** (Server-Side Rendering) for server-rendered pages
+
+However, since "SPA" is widely understood to mean "client-side rendered" in the web development community, we continue to use this terminology.
 
 
 ## See also
