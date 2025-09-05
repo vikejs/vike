@@ -6,9 +6,8 @@ This page explains both concepts and their differences.
 
 > If you're already familiar with SSR and SPA and you only want to decide which one to choose, see <Link href="/SSR-vs-SPA" /> instead.
 
-A unique aspect about JavaScript is that it can in both the browser (browsers support only two languages: [JavaScript](https://en.wikipedia.org/wiki/JavaScript) and [WebAssembly](https://webassembly.org)) and on the server (by using a JavaScript runtime such as [Node.js](https://nodejs.org)).
+A unique aspect about JavaScript is that it can run in both the browser (browsers support only two languages: [JavaScript](https://en.wikipedia.org/wiki/JavaScript) and [WebAssembly](https://webassembly.org)) and on the server (by using a JavaScript runtime such as [Node.js](https://nodejs.org)).
 
-// TODO: Check for English mistakes? Weird flow with Subsequent sentence?
 This means that when you define a component like this:
 
 ```jsx
@@ -141,8 +140,14 @@ Whereas with SSR:
 > <details>
 > <summary>Why SSR is still recommended for Google</summary>
 >
-> // TODO: elaborate a bit more
-> Google's crawler is unique because it can also execute client-side JavaScript. This means Google is able to index the content of SPA apps, but it isn't reliable and the common recommendation is still to use SSR even if you only want to target Google. (Also, Google may very well stop doing this since SSR has become a ubiquitous practice.)
+> Google's crawler is unique because it can execute client-side JavaScript, unlike most other search engines and social media crawlers. This means Google can potentially index SPA content, but there are several limitations:
+>
+> - **Unreliable execution**: JavaScript execution may fail or timeout
+> - **Delayed indexing**: Google processes JavaScript content in a second wave, which can delay indexing
+> - **Performance impact**: Heavy JavaScript can cause crawling issues
+> - **Future uncertainty**: Google may discontinue JavaScript execution as SSR becomes standard
+>
+> For these reasons, SSR remains the recommended approach even for Google-only SEO.
 > </details>
 
 
@@ -177,8 +182,7 @@ The term "SPA" (Single Page Application) is technically a misnomer in modern usa
 
 **Today**, "SPA" is commonly used to mean "not SSR" - referring to any client-side rendered application, even if it has multiple pages with different URLs. This is technically incorrect but has become the accepted usage.
 
-// TODO: Check for English mistakes?
-> A more accurate term would be CSR (Client-Side Rendering) but "SPA" is ubiquitously used in the web development community. That's why we still use the term SPA throughout Vike's documentation.
+> **Note:** A more accurate term would be CSR (Client-Side Rendering), but "SPA" is widely used in the web development community. That's why we use the term SPA throughout Vike's documentation.
 
 
 ## See also
