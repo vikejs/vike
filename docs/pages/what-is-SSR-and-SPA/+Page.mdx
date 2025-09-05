@@ -16,9 +16,6 @@ function Hello({ name }: { name: string }) {
 
 This JSX code is compiled (by [Vite](https://vite.dev)) to JavaScript and can be run on the client and/or the server.
 
-
-## SPA (Single Page Application)
-
 **SPA** denotes the practice of rendering components only on the client-side (i.e. in the browser):
 
 ```jsx
@@ -53,8 +50,6 @@ The HTML delivered to the browser is minimal and doesn't contain the actual cont
   </body>
 </html>
 ```
-
-## SSR (Server-Side Rendering)
 
 **SSR** (**S**erver-**s**ide **r**endering) denotes the practice of rendering components to HTML on the server-side and <Link href="/hydration">hydrating</Link> (making them interactive) on the client-side.
 
@@ -109,16 +104,14 @@ The HTML delivered to the browser contains the actual content:
 </html>
 ```
 
-Note how with SSR, the content `<h1>Hello Alice</h1>` is included in the HTML, but with SPA it's missing from the initial HTML.
+Note how with SSR, the content `<h1>Hello Alice</h1>` is included in the HTML, but with SPA it's missing in the HTML.
 
 This is the central functional difference between SSR and SPA: **with SSR the page's content is rendered to HTML whereas with SPA the HTML is just an empty shell**.
 
+Let's see why it matters.
 
-## Why Does This Matter?
 
-The difference between SSR and SPA has important implications for your website:
-
-### Search Engines and Crawlers
+## Crawlers
 
 **Search engines** (like Google) and **social media crawlers** (like Facebook, Twitter) primarily read HTML content. They have limited JavaScript execution capabilities.
 
@@ -142,12 +135,15 @@ Example of what a search engine crawler sees:
 <script src="/app.js"></script>
 ```
 
-### Performance
+> See also: <Link href="/SSR-vs-SPA" />
+
+
+## Performance
 
 The performance difference between SSR and SPA varies by device:
 
 **Desktop computers** (fast processors, good internet):
-- SPA: Usually fine. JavaScript loads and executes quickly.
+- SPA: Usually fine. Client-side JavaScript loads and executes quickly.
 - SSR: Slightly faster initial load, but difference is minimal.
 
 **Mobile devices** (slower processors, potentially slow internet):
@@ -166,34 +162,13 @@ The performance difference between SSR and SPA varies by device:
 1. 0s: User visits page
 2. 1s: HTML loads with content ← User sees content immediately
 3. 3s: JavaScript downloads
-4. 4s: JavaScript hydrates (makes content interactive)
+4. 5s: JavaScript hydrates (makes content interactive)
 
-## When to Choose SPA vs SSR
+> See also: <Link href="/SSR-vs-SPA" />
 
-### Choose SPA when:
-- Building internal tools or admin panels (SEO not important)
-- Creating highly interactive applications (games, editors)
-- Your users primarily use desktop devices
-- You need offline functionality
 
-### Choose SSR when:
-- Building public websites that need SEO
-- Creating content-heavy sites (blogs, news, documentation)
-- Your users include mobile device users
-- You want the fastest possible initial page load
+## See also
 
-### Best of Both Worlds
-
-With modern frameworks like Vike, you don't have to choose just one approach. You can use:
-- **SSR for initial page loads** (fast loading, good SEO)
-- **SPA-like navigation** (smooth transitions between pages)
-
-This hybrid approach gives you the benefits of both SSR and SPA.
-
-## Next Steps
-
-Now that you understand the basics of SSR and SPA:
-
-- **For a detailed comparison**: Read <Link href="/SPA-vs-SSR" /> for more technical details and additional rendering modes
-- **To get started building**: Check out the <Link href="/start">Getting Started guide</Link> to create your first Vike application
-- **To learn about hydration**: Read <Link href="/hydration">What is Hydration?</Link> to understand how SSR becomes interactive
+- <Link href="/SSR-vs-SPA" />
+- <Link href="/hydration" />
+- <Link href="/ssr" />
