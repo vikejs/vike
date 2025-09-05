@@ -1,10 +1,12 @@
+import { Link } from '@brillout/docpress'
+
 If you're new to modern web development with JavaScript and [React](https://react.dev) or [Vue](https://vuejs.org), you might have heard the terms **SSR** (Server-Side Rendering) and **SPA** (Single Page Application) but aren't sure what they mean. This guide explains both concepts and their differences.
 
-> If you're alreay familiar with SSR and SPA, see <Link href="/SSR-vs-SPA" /> instead.
+> If you're already familiar with SSR and SPA, see <Link href="/SPA-vs-SSR" /> instead.
 
-A unique aspect about JavaScript is that it can run not only inside the browser (browsers support only two languages: [JavaScript](https://en.wikipedia.org/wiki/JavaScript) and [wasm](https://webassembly.org)) but also on the server (by using a JavaScript runtime such as [Node.js](https://nodejs.org)).
+A unique aspect about JavaScript is that it can run not only inside the browser (browsers support only two languages: [JavaScript](https://en.wikipedia.org/wiki/JavaScript) and [WebAssembly](https://webassembly.org)) but also on the server (by using a JavaScript runtime such as [Node.js](https://nodejs.org)).
 
-This means that, When you defined a component like this:
+This means that when you define a component like this:
 
 ```jsx
 function Hello({ name }: { name: string }) {
@@ -15,43 +17,183 @@ function Hello({ name }: { name: string }) {
 This JSX code is compiled (by [Vite](https://vite.dev)) to JavaScript and can be run on the client and/or the server.
 
 
+## SPA (Single Page Application)
+
 **SPA** denotes the practice of rendering components only on the client-side (i.e. in the browser):
 
-```js
-// TODO: write minimal React code that renders <Hello name="Alice" /> on the client-side
+```jsx
+// Client-side code that renders <Hello name="Alice" />
+import { createRoot } from 'react-dom/client'
+
+function Hello({ name }) {
+  return <h1>Hello {name}</h1>
+}
+
+function App() {
+  return <Hello name="Alice" />
+}
+
+// This runs in the browser
+const root = createRoot(document.getElementById('root'))
+root.render(<App />)
 ```
+
+The HTML delivered to the browser is minimal and doesn't contain the actual content:
+
 ```html
-// TODO: write minimal but full HTML that delivers the JavaScript code above
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My SPA</title>
+  </head>
+  <body>
+    <!-- Empty container - content will be added by JavaScript -->
+    <div id="root"></div>
+    <script src="/app.js"></script>
+  </body>
+</html>
 ```
 
-**SSR* (**S**erver-**s**ide **r**endering) denotes the practice of rendering components to HTML on the server-side and <Link href="/hydration">hydrating</Link> (made interactive) them on the client-side .
+## SSR (Server-Side Rendering)
 
-```js
-// TODO: write minimal React code that renders <Hello name="Alice" /> on the server-side
+**SSR** (**S**erver-**s**ide **r**endering) denotes the practice of rendering components to HTML on the server-side and <Link href="/hydration">hydrating</Link> (making them interactive) on the client-side.
+
+```jsx
+// Server-side code that renders <Hello name="Alice" /> to HTML
+import { renderToString } from 'react-dom/server'
+
+function Hello({ name }) {
+  return <h1>Hello {name}</h1>
+}
+
+function App() {
+  return <Hello name="Alice" />
+}
+
+// This runs on the server
+const html = renderToString(<App />)
+// html is now: '<h1>Hello Alice</h1>'
 ```
-```js
-// TODO: write minimal React code that hydrates <Hello name="Alice" /> on the client-side
+
+```jsx
+// Client-side code that hydrates the server-rendered HTML
+import { hydrateRoot } from 'react-dom/client'
+
+function Hello({ name }) {
+  return <h1>Hello {name}</h1>
+}
+
+function App() {
+  return <Hello name="Alice" />
+}
+
+// This runs in the browser and makes the HTML interactive
+hydrateRoot(document.getElementById('root'), <App />)
 ```
+
+The HTML delivered to the browser contains the actual content:
 
 ```html
-// TODO: write minimal but full HTML
-<h1>Hello Alice</h1>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My SSR App</title>
+  </head>
+  <body>
+    <!-- Content is already here when the page loads -->
+    <div id="root">
+      <h1>Hello Alice</h1>
+    </div>
+    <script src="/app.js"></script>
+  </body>
+</html>
 ```
 
-Note how `<h1>Hello Alice</h1>`, with SSR, the content `<h1>Hello Alice</h1>` is included in the HTML but missing with SPA
+Note how with SSR, the content `<h1>Hello Alice</h1>` is included in the HTML, but with SPA it's missing from the initial HTML.
 
-This is the central functional difference between SSR and SPA: with SSR the page's content is rendered to HTML whereas with SPA the HTML is just an empty shell.
-
-
-## Crawlers
-
-TODO: Crawlers only see HTML.
-
-> See also: <Link href="/SSR-vs-SPA" />
+This is the central functional difference between SSR and SPA: **with SSR the page's content is rendered to HTML whereas with SPA the HTML is just an empty shell**.
 
 
-## Performance
+## Why Does This Matter?
 
-TODO: explain: Deskotp => usually fine, but mobile => can make a big difference
+The difference between SSR and SPA has important implications for your website:
 
-> See also: <Link href="/SSR-vs-SPA" />
+### Search Engines and Crawlers
+
+**Search engines** (like Google) and **social media crawlers** (like Facebook, Twitter) primarily read HTML content. They have limited JavaScript execution capabilities.
+
+- **With SPA**: Search engines see an empty HTML shell. Your content might not be indexed properly, leading to poor SEO.
+- **With SSR**: Search engines see the full HTML content immediately, leading to better SEO and social media sharing.
+
+Example of what a search engine crawler sees:
+
+**SPA HTML (poor for SEO):**
+```html
+<div id="root"></div>
+<script src="/app.js"></script>
+```
+
+**SSR HTML (good for SEO):**
+```html
+<div id="root">
+  <h1>Welcome to My Blog</h1>
+  <p>This is an article about web development...</p>
+</div>
+<script src="/app.js"></script>
+```
+
+### Performance
+
+The performance difference between SSR and SPA varies by device:
+
+**Desktop computers** (fast processors, good internet):
+- SPA: Usually fine. JavaScript loads and executes quickly.
+- SSR: Slightly faster initial load, but difference is minimal.
+
+**Mobile devices** (slower processors, potentially slow internet):
+- SPA: Can be significantly slower. Users might see a blank page for several seconds.
+- SSR: Much faster initial load. Users see content immediately while JavaScript loads in the background.
+
+**Example timeline:**
+
+*SPA on mobile:*
+1. 0s: User visits page
+2. 1s: HTML loads (empty)
+3. 3s: JavaScript downloads
+4. 5s: JavaScript executes and renders content ← User finally sees content
+
+*SSR on mobile:*
+1. 0s: User visits page
+2. 1s: HTML loads with content ← User sees content immediately
+3. 3s: JavaScript downloads
+4. 4s: JavaScript hydrates (makes content interactive)
+
+## When to Choose SPA vs SSR
+
+### Choose SPA when:
+- Building internal tools or admin panels (SEO not important)
+- Creating highly interactive applications (games, editors)
+- Your users primarily use desktop devices
+- You need offline functionality
+
+### Choose SSR when:
+- Building public websites that need SEO
+- Creating content-heavy sites (blogs, news, documentation)
+- Your users include mobile device users
+- You want the fastest possible initial page load
+
+### Best of Both Worlds
+
+With modern frameworks like Vike, you don't have to choose just one approach. You can use:
+- **SSR for initial page loads** (fast loading, good SEO)
+- **SPA-like navigation** (smooth transitions between pages)
+
+This hybrid approach gives you the benefits of both SSR and SPA.
+
+## Next Steps
+
+Now that you understand the basics of SSR and SPA:
+
+- **For a detailed comparison**: Read <Link href="/SPA-vs-SSR" /> for more technical details and additional rendering modes
+- **To get started building**: Check out the <Link href="/start">Getting Started guide</Link> to create your first Vike application
+- **To learn about hydration**: Read <Link href="/hydration">What is Hydration?</Link> to understand how SSR becomes interactive
