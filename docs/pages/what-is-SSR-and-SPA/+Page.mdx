@@ -8,7 +8,10 @@ A unique aspect about JavaScript is that it can run not only inside the browser 
 
 This means that when you define a component like this:
 
+// TODO: replace Hello.jsx with Welcome.jsx with content shown in the HTML snippet below
 ```jsx
+// Hello.jsx
+
 function Hello({ name }: { name: string }) {
   return <h1>Hello {name}</h1>
 }
@@ -19,18 +22,16 @@ This JSX code is compiled (by [Vite](https://vite.dev)) to JavaScript and can be
 **SPA** denotes the practice of rendering components only on the client-side (i.e. in the browser):
 
 ```jsx
-// Client-side code that renders <Hello name="Alice" />
+// render.js
+// Environment: client
+
+import { Hello } from './Hello'
+
+// Render <Hello> on the client-side
 import { createRoot } from 'react-dom/client'
-
-function Hello({ name }) {
-  return <h1>Hello {name}</h1>
-}
-
 function App() {
   return <Hello name="Alice" />
 }
-
-// This runs in the browser
 const root = createRoot(document.getElementById('root'))
 root.render(<App />)
 ```
@@ -44,9 +45,9 @@ The HTML delivered to the browser is minimal and doesn't contain the actual cont
     <title>My SPA</title>
   </head>
   <body>
-    <!-- Empty container - content will be added by JavaScript -->
+    <!-- Empty container: content will be added dynamically by the client-side JavaScript -->
     <div id="root"></div>
-    <script src="/app.js"></script>
+    <script src="/render.js"></script>
   </body>
 </html>
 ```
@@ -54,35 +55,33 @@ The HTML delivered to the browser is minimal and doesn't contain the actual cont
 **SSR** (**S**erver-**s**ide **r**endering) denotes the practice of rendering components to HTML on the server-side and <Link href="/hydration">hydrating</Link> (making them interactive) on the client-side.
 
 ```jsx
-// Server-side code that renders <Hello name="Alice" /> to HTML
+// ssr.js
+// Environment: server
+
+import { Hello } from './Hello'
+
+// Render <Hello> to HTML on the server-side
 import { renderToString } from 'react-dom/server'
-
-function Hello({ name }) {
-  return <h1>Hello {name}</h1>
-}
-
 function App() {
   return <Hello name="Alice" />
 }
-
-// This runs on the server
 const html = renderToString(<App />)
-// html is now: '<h1>Hello Alice</h1>'
 ```
 
 ```jsx
-// Client-side code that hydrates the server-rendered HTML
-import { hydrateRoot } from 'react-dom/client'
+// hydrate.js
+// Environment: client
 
+import { Hello } from './Hello'
+
+// Hydrate the app on the client-side
+import { hydrateRoot } from 'react-dom/client'
 function Hello({ name }) {
   return <h1>Hello {name}</h1>
 }
-
 function App() {
   return <Hello name="Alice" />
 }
-
-// This runs in the browser and makes the HTML interactive
 hydrateRoot(document.getElementById('root'), <App />)
 ```
 
@@ -99,7 +98,7 @@ The HTML delivered to the browser contains the actual content:
     <div id="root">
       <h1>Hello Alice</h1>
     </div>
-    <script src="/app.js"></script>
+    <script src="/hydrate.js"></script>
   </body>
 </html>
 ```
@@ -108,37 +107,38 @@ Note how with SSR, the content `<h1>Hello Alice</h1>` is included in the HTML, b
 
 This is the central functional difference between SSR and SPA: **with SSR the page's content is rendered to HTML whereas with SPA the HTML is just an empty shell**.
 
-Let's see why it matters.
+It matters for two reasons: crawlers (search engines and AI) and performance.
 
 
 ## Crawlers
 
-**Search engines** (like Google) and **social media crawlers** (like Facebook, Twitter) primarily read HTML content. They have limited JavaScript execution capabilities.
+The [crawlers](https://en.wikipedia.org/wiki/Web_crawler) of **search engines** (e.g. Google) and **social media sites** (e.g. Instagram, Twitter), and **AI** (e.g. ChatGPT) navigate your website by recursively reading the HTML of your pages while following `<a href="/some-other-page">` links found in the HTML.
 
-- **With SPA**: Search engines see an empty HTML shell. Your content might not be indexed properly, leading to poor SEO.
-- **With SSR**: Search engines see the full HTML content immediately, leading to better SEO and social media sharing.
+With SPA, a crawler only sees an empty HTML.
 
-Example of what a search engine crawler sees:
-
-**SPA HTML (poor for SEO):**
 ```html
+<-- ❌ Crawlers doesn't see the page's content -->
 <div id="root"></div>
-<script src="/app.js"></script>
 ```
 
-**SSR HTML (good for SEO):**
+Whereas with SSR:
+
 ```html
+<-- ✅ Crawlers sees the page's content -->
 <div id="root">
   <h1>Welcome to My Blog</h1>
   <p>This is an article about web development...</p>
 </div>
-<script src="/app.js"></script>
 ```
 
 > See also: <Link href="/SSR-vs-SPA" />
 
+> Google's crawler is unique because it can also execute client-side JavaScript. This means Google is able to index the content of SPA apps, but it isn't reliable and the common recommendation is still to use SSR even if you only want to target Google. (Also, Google may very well stop doing this since SSR has become a ubiquitous practice.)
+
 
 ## Performance
+
+// TODO: make it more succinct (keep the timeline)
 
 The performance difference between SSR and SPA varies by device:
 
@@ -165,6 +165,11 @@ The performance difference between SSR and SPA varies by device:
 4. 5s: JavaScript hydrates (makes content interactive)
 
 > See also: <Link href="/SSR-vs-SPA" />
+
+
+## SPA is a misnomer
+
+TODO: explain why SPA is misnomer. It's usually used to denote "not SSR" but technically/historically it means "SPA fallback".
 
 
 ## See also
