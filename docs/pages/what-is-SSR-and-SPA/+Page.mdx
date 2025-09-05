@@ -135,25 +135,18 @@ Whereas with SSR:
 
 > See also: <Link href="/SSR-vs-SPA" />
 
-TODO: show a succint one-liner mentioning Google's ability with out recommendation to still use SSR, with an expandable to elaborate why.
+> **Note:** While Google can execute JavaScript and index SPA content, SSR is still recommended for reliable SEO.
+>
+> <details>
+> <summary>Why SSR is still recommended for Google</summary>
+>
 > Google's crawler is unique because it can also execute client-side JavaScript. This means Google is able to index the content of SPA apps, but it isn't reliable and the common recommendation is still to use SSR even if you only want to target Google. (Also, Google may very well stop doing this since SSR has become a ubiquitous practice.)
+> </details>
 
 
 ## Performance
 
-TODO/begin: make it more succinct (but keep semantics)
-
-The performance difference between SSR and SPA varies by device:
-
-**Desktop computers** (fast processors, good internet):
-- SPA: Usually fine. Client-side JavaScript loads and executes quickly.
-- SSR: Slightly faster initial load, but difference is minimal.
-
-**Mobile devices** (slower processors, potentially slow internet):
-- SPA: Can be significantly slower. Users might see a blank page for several seconds.
-- SSR: Much faster initial load. Users see content immediately while JavaScript loads in the background.
-
-TODO/end: make it more succinct (but keep semantics)
+SSR is faster than SPA, especially on mobile devices where JavaScript execution is slower. With SPA, users may see a blank page for several seconds while JavaScript loads and executes. With SSR, users see content immediately.
 
 #### Timeline example on mobile
 
@@ -176,17 +169,11 @@ TODO/end: make it more succinct (but keep semantics)
 
 The term "SPA" (Single Page Application) is technically a misnomer in modern usage.
 
-// TODO: find link that explain that Gmail was one of the first "Ajax" app.
-**Historically**, SPA referred to applications that truly had only one page - like [Gmail](https://en.wikipedia.org/wiki/Gmail), where you never navigate to different URLs, everything happens within a single page interface.
+**Historically**, SPA referred to applications that truly had only one page - like [Gmail](https://thehistoryoftheweb.com/what-does-ajax-even-stand-for/), where you never navigate to different URLs, everything happens within a single page interface.
 
 **Today**, "SPA" is commonly used to mean "not SSR" - referring to any client-side rendered application, even if it has multiple pages with different URLs. This is technically incorrect but has become the accepted usage.
 
-// TODO: move it to a succinct note
-**More accurate terms** would be:
-- **CSR** (Client-Side Rendering) instead of SPA
-- **SSR** (Server-Side Rendering) for server-rendered pages
-
-However, since "SPA" is widely understood to mean "client-side rendered" in the web development community, we continue to use this terminology.
+> **Note:** More accurate terms would be CSR (Client-Side Rendering) instead of SPA, but "SPA" is widely understood in the web development community.
 
 
 ## See also
