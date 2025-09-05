@@ -1,12 +1,12 @@
 import { Link } from '@brillout/docpress'
 
-If you're new to modern web development with JavaScript and [React](https://react.dev) or [Vue](https://vuejs.org), you might have heard the terms **SSR** (Server-Side Rendering) and **SPA** (Single Page Application) but aren't sure what they mean.
+If you're new to modern web development with JavaScript and frameworks like [React](https://react.dev) or [Vue](https://vuejs.org), you might have heard the terms **SSR** (Server-Side Rendering) and **SPA** (Single Page Application) but aren't sure what they mean.
 
-This page explains both concepts and their differences.
+This guide explains both concepts and their differences.
 
 > If you're already familiar with SSR and SPA and you only want to decide which one to choose, see <Link href="/SSR-vs-SPA" /> instead.
 
-A unique aspect of JavaScript is that it can run both in the browser (browsers support only two languages: [JavaScript](https://en.wikipedia.org/wiki/JavaScript) and [WebAssembly](https://webassembly.org)) and on the server (using a JavaScript runtime such as [Node.js](https://nodejs.org)).
+JavaScript has a unique capability: it can run both in the browser (browsers support only two languages: [JavaScript](https://en.wikipedia.org/wiki/JavaScript) and [WebAssembly](https://webassembly.org)) and on the server (using a JavaScript runtime such as [Node.js](https://nodejs.org)).
 
 For example:
 
@@ -58,7 +58,7 @@ The HTML delivered to the browser is minimal and doesn't contain the actual cont
 </html>
 ```
 
-**SSR** (**S**erver-**S**ide **R**endering) refers to the practice of rendering components to HTML on the server-side and <Link href="/hydration">hydrating</Link> them (making them interactive) on the client-side.
+**SSR** (**S**erver-**S**ide **R**endering) refers to rendering components to HTML on the server-side and then <Link href="/hydration">hydrating</Link> them (making them interactive) on the client-side.
 
 ```jsx
 // ssr.js
@@ -103,20 +103,20 @@ The HTML delivered to the browser contains the actual content:
 </html>
 ```
 
-Note how with SSR, the content of `<Welcome>` is included in the HTML, but with SPA it's missing.
+Notice that with SSR, the content of `<Welcome>` is included in the HTML, while with SPA it's missing.
 
-This is the central functional difference between SSR and SPA: **with SSR, the page's content is rendered to HTML, whereas with SPA, the HTML is just an empty shell**.
+This is the key difference between SSR and SPA: **with SSR, the page's content is rendered to HTML, whereas with SPA, the HTML is just an empty shell**.
 
-This difference matters for two reasons:
- - Crawlers (e.g., search engines and AI)
- - Performance
+This difference has important implications for:
+ - **Crawlers** (search engines, social media, and AI)
+ - **Performance** (especially on mobile devices)
 
 
 ## Crawlers
 
-The [crawlers](https://en.wikipedia.org/wiki/Web_crawler) of **search engines** (e.g., Google), **social media sites** (e.g., Instagram, Twitter), and **AI** (e.g., ChatGPT) navigate your website by recursively reading the HTML of your pages while following `<a href="/some-other-page">` links found in the HTML.
+[Crawlers](https://en.wikipedia.org/wiki/Web_crawler) from **search engines** (e.g., Google), **social media platforms** (e.g., Instagram, Twitter), and **AI systems** (e.g., ChatGPT) navigate your website by reading the HTML of your pages and following `<a href="/some-other-page">` links.
 
-With SPA, a crawler only sees empty HTML.
+With SPA, crawlers only see empty HTML:
 
 ```html
 <!-- ❌ Crawlers don't see the page's content -->
@@ -153,21 +153,21 @@ With SSR:
 
 ## Performance
 
-The initial page load is faster with SSR, especially on mobile devices where JavaScript loading and execution can be much slower. With SPA, users may see a blank page for several seconds while JavaScript loads and executes.
+SSR provides faster initial page loads, especially on mobile devices where JavaScript loading and execution are significantly slower. With SPA, users may see a blank page for several seconds while JavaScript loads and executes.
 
-> Subsequent page navigation (also known as <Link href="/client-routing">client-side navigation</Link>) is equally fast between SSR and SPA.
+> **Note:** Subsequent page navigation (also known as <Link href="/client-routing">client-side navigation</Link>) is equally fast between SSR and SPA.
 
-#### Timeline example on mobile
+#### Loading timeline comparison (mobile device)
 
-*SPA*:
+**SPA:**
 1. 0s: User visits page
 2. 1s: HTML loads (empty)
 3. 3s: JavaScript downloads
-4. 5s: JavaScript executes and renders content ← User finally sees content
+4. 5s: JavaScript executes and renders content ← *User finally sees content*
 
-*SSR*:
+**SSR:**
 1. 0s: User visits page
-2. 1s: HTML loads with content ← User sees content immediately
+2. 1s: HTML loads with content ← *User sees content immediately*
 3. 3s: JavaScript downloads
 4. 5s: JavaScript hydrates (makes content interactive)
 
@@ -176,13 +176,13 @@ The initial page load is faster with SSR, especially on mobile devices where Jav
 
 ## SPA is a misnomer
 
-The term "SPA" (Single Page Application) is technically a misnomer in modern usage.
+The term "SPA" (Single Page Application) is technically a misnomer in modern web development.
 
-**Historically**, SPA referred to applications that truly had only one page—like [Gmail](https://thehistoryoftheweb.com/what-does-ajax-even-stand-for/)—where you never navigate to different URLs and everything happens within a single page interface.
+**Historically**, SPA referred to applications that truly had only one page—like [Gmail](https://thehistoryoftheweb.com/what-does-ajax-even-stand-for/)—where you never navigate to different URLs and everything happens within a single interface.
 
-**Today**, "SPA" is commonly used to mean "not SSR"—referring to any client-side rendered application, even if it has multiple pages with different URLs. This is technically an incorrect usage of the term "SPA", but it has become the accepted usage.
+**Today**, "SPA" is commonly used to mean "not SSR"—referring to any client-side rendered application, even those with multiple pages and different URLs. While technically incorrect, this usage has become widely accepted.
 
-> A more accurate term would be CSR (Client-Side Rendering), but "CSR" is rarely used while "SPA" is ubiquitous in the web development community. That's why we use the term SPA throughout Vike's documentation.
+> **Note:** A more accurate term would be CSR (Client-Side Rendering), but "SPA" is the established terminology in the web development community. That's why we use "SPA" throughout Vike's documentation.
 
 
 ## See also
