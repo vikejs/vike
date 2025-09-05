@@ -135,6 +135,7 @@ const headings = [
     level: 2,
     title: 'Pre-rendering (SSG)',
     url: '/pre-rendering',
+    sectionTitles: ['SPA'],
   },
   {
     level: 2,
@@ -1102,12 +1103,8 @@ function guides() {
   return (
     [
       {
-        title: 'SPA vs SSR (and more)',
-        url: '/SPA-vs-SSR',
-      },
-      {
-        title: 'Content- VS interactive-centric',
-        url: '/content-vs-interactive',
+        title: 'SSR vs SPA',
+        url: '/SSR-vs-SPA',
       },
       {
         title: 'Multiple `renderer/`',
@@ -1412,11 +1409,6 @@ function workInProgress() {
       {
         title: 'React Tour',
         url: '/react-tour',
-      },
-      { title: 'Server-Side Rendering (SSR)', url: '/SSR' },
-      {
-        title: 'Server-side Rendering (SSR)',
-        url: '/server-side-rendering',
       },
       { title: 'TypeScript', url: '/typescript' },
     ] as const
