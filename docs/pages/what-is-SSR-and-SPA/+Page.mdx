@@ -1,13 +1,14 @@
 import { Link } from '@brillout/docpress'
 
-If you're new to modern web development with JavaScript and [React](https://react.dev)/[Vue](https://vuejs.org), you might have heard the terms **SSR** (Server-Side Rendering) and **SPA** (Single Page Application) but aren't sure what they mean.
+If you're new to modern web development with JavaScript and [React](https://react.dev) or [Vue](https://vuejs.org), you might have heard the terms **SSR** (Server-Side Rendering) and **SPA** (Single Page Application) but aren't sure what they mean.
 
 This page explains both concepts and their differences.
 
 > If you're already familiar with SSR and SPA and you only want to decide which one to choose, see <Link href="/SSR-vs-SPA" /> instead.
 
-A unique aspect about JavaScript is that it can run not only inside the browser (browsers support only two languages: [JavaScript](https://en.wikipedia.org/wiki/JavaScript) and [WebAssembly](https://webassembly.org)) but also on the server (by using a JavaScript runtime such as [Node.js](https://nodejs.org)).
+A unique aspect about JavaScript is that it can in both the browser (browsers support only two languages: [JavaScript](https://en.wikipedia.org/wiki/JavaScript) and [WebAssembly](https://webassembly.org)) and on the server (by using a JavaScript runtime such as [Node.js](https://nodejs.org)).
 
+// TODO: Check for English mistakes? Weird flow with Subsequent sentence?
 This means that when you define a component like this:
 
 ```jsx
@@ -119,14 +120,14 @@ The [crawlers](https://en.wikipedia.org/wiki/Web_crawler) of **search engines** 
 With SPA, a crawler only sees an empty HTML.
 
 ```html
-<-- ❌ Crawlers doesn't see the page's content -->
+<!-- ❌ Crawlers doesn't see the page's content -->
 <div id="root"></div>
 ```
 
 Whereas with SSR:
 
 ```html
-<-- ✅ Crawlers sees the page's content -->
+<!-- ✅ Crawlers sees the page's content -->
 <div id="root">
   <h1>Welcome to My Blog</h1>
   <p>This is an article about web development...</p>
@@ -135,18 +136,21 @@ Whereas with SSR:
 
 > See also: <Link href="/SSR-vs-SPA" />
 
-> **Note:** While Google can execute JavaScript and index SPA content, SSR is still recommended for reliable SEO.
+> **Note:** Google's crawler can execute client-side JavaScript, but we still recommend using SSR even if you only want to target Google.
 >
 > <details>
 > <summary>Why SSR is still recommended for Google</summary>
 >
+> // TODO: elaborate a bit more
 > Google's crawler is unique because it can also execute client-side JavaScript. This means Google is able to index the content of SPA apps, but it isn't reliable and the common recommendation is still to use SSR even if you only want to target Google. (Also, Google may very well stop doing this since SSR has become a ubiquitous practice.)
 > </details>
 
 
 ## Performance
 
-SSR is faster than SPA, especially on mobile devices where JavaScript execution is slower. With SPA, users may see a blank page for several seconds while JavaScript loads and executes. With SSR, users see content immediately.
+The load time of the first page the user visits is faster with SSR, especially on mobile devices where JavaScript loading and execution can be much slower. With SPA, users may see a blank page for several seconds while JavaScript loads and executes.
+
+> Subsequent page navigation (aka <Link href="/client-routing">client-side navigation</Link>) is equally fast between SSR and SPA.
 
 #### Timeline example on mobile
 
@@ -173,7 +177,8 @@ The term "SPA" (Single Page Application) is technically a misnomer in modern usa
 
 **Today**, "SPA" is commonly used to mean "not SSR" - referring to any client-side rendered application, even if it has multiple pages with different URLs. This is technically incorrect but has become the accepted usage.
 
-> **Note:** More accurate terms would be CSR (Client-Side Rendering) instead of SPA, but "SPA" is widely understood in the web development community.
+// TODO: Check for English mistakes?
+> A more accurate term would be CSR (Client-Side Rendering) but "SPA" is ubiquitously used in the web development community. That's why we still use the term SPA throughout Vike's documentation.
 
 
 ## See also
