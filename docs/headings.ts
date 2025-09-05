@@ -139,6 +139,11 @@ const headings = [
   },
   {
     level: 2,
+    title: 'SSR vs SPA',
+    url: '/SSR-vs-SPA',
+  },
+  {
+    level: 2,
     title: '`<head>` tags',
     url: '/head-tags',
   },
@@ -1102,10 +1107,6 @@ function misc() {
 function guides() {
   return (
     [
-      {
-        title: 'SSR vs SPA',
-        url: '/SSR-vs-SPA',
-      },
       {
         title: 'What is SSR and SPA?',
         url: '/what-is-SSR-and-SPA',
