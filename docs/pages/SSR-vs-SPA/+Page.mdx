@@ -1,33 +1,34 @@
 import { Link, RepoLink } from '@brillout/docpress'
 
-> If you're unfamiliar with what SSR and SPA mean, see <Link href="/what-is-SSR-and-SPA" />
+> Unfamiliar with SSR and SPA? See <Link href="/what-is-SSR-and-SPA" />
 
 For each page, you can choose between:
  - **SSR** (**S**erver-**S**ide **R**endering): The page is rendered to HTML on the server-side, and then <Link href="/hydration">hydrated</Link> (made interactive) on the client-side.
    > You can also pre-render your SSR pages, see <Link href="/pre-rendering" />.
- - **SPA**: The page is only rendered on the client-side. The page's content isn't rendered to HTML, and the page is loaded only in the browser.
+ - **SPA**: The page is only rendered on the client-side — the page isn't rendered to HTML.
 
 > You can toggle between SSR and SPA on a per-page basis by using the <Link href="/ssr">`+ssr` setting</Link>.
 
 The main motivation for choosing SSR is that **SSR makes your page's content available to the crawlers of search engines and AI**.
 
-> With SPA, a page is rendered only on the client-side. The HTML of an SPA page is just an empty shell that delivers the page's client-side JavaScript — the HTML doesn't include the page's content. Therefore, **with SPA the page's content is invisible to the crawlers of search engines and AI** (crawlers navigate your website by reading HTML). For further explanation, see:
+> With SPA, a page is rendered only on the client-side. The HTML of an SPA page is just an empty shell that delivers the page's client-side JavaScript — the HTML doesn't include the page's content. Therefore, **with SPA, the page's content is invisible to the crawlers of search engines and AI** (crawlers navigate your website by reading HTML). For further explanation, see:
 > - <Link href="/what-is-SSR-and-SPA#crawlers" />
 
 This means that **SPA isn't an option if your page's content should appear in search engines (e.g. Google) and AI (e.g. ChatGPT)**. You must use SSR.
 
-If SPA is an option, we generally recommend choosing SPA while considering the following trade-offs:
+If SPA is an option, we generally recommend choosing SPA while considering the following trade-offs.
 
-**SPA Cons:**
-- Slower first page load time, especially on mobile devices.
-  > SSR improves performance because the page's content is shown to the user via HTML before any client-side JavaScript loads. Depending on the app, this can make a significant difference, especially on mobile devices (where loading and executing JavaScript can be *much* slower than loading HTML). For further explanation, see:
+**SPA disadvantage:**
+- Slower initial page load, especially on mobile devices.
+  > SSR improves performance because the page's content is shown to the user via HTML before any client-side JavaScript loads. Depending on the app, this can make a significant difference, especially on mobile devices where loading and executing JavaScript is significantly slower. For further explanation, see:
   > - <Link href="/what-is-SSR-and-SPA#performance" />
+  > <p/> {/* MDX bug workaround */}
 
 
-**SPA Pros:**
-1. Your page's code doesn't run on the server-side (e.g. Node.js). It's easier to write code that runs in only one environment. (E.g. some libraries have issues when run on the server-side.)
+**SPA advantages:**
+1. Your page's code doesn't run on the server-side. It's easier to write code that runs in only one environment. (E.g. some libraries have issues when run on the server-side.)
 1. SPA doesn't require a production server.
-   > You can also <Link href="/pre-rendering">pre-render SSR</Link> to remove the need for a production server, but <Link href="/pre-rendering#should-i-pre-render">it doesn't always work</Link>.
+   > You can also <Link href="/pre-rendering">pre-render your SSR pages</Link> to remove the need for a production server, but <Link href="/pre-rendering#should-i-pre-render">it doesn't always work</Link>.
 1. Reduced backend workload.
 
 
@@ -54,4 +55,5 @@ If SPA is an option, we generally recommend choosing SPA while considering the f
 
 ## See also
 
+- <Link href="/what-is-SSR-and-SPA" />
 - <Link href="/pre-rendering" />

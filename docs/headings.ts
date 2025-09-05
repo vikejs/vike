@@ -1110,6 +1110,9 @@ function guides() {
       {
         title: 'What is SSR and SPA?',
         url: '/what-is-SSR-and-SPA',
+        sectionTitles: [
+          'SPA is a misnomer'
+        ],
       },
       {
         title: 'Multiple `renderer/`',
