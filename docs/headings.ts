@@ -1107,6 +1107,10 @@ function guides() {
         url: '/SSR-vs-SPA',
       },
       {
+        title: 'What is SSR and SPA?',
+        url: '/what-is-SSR-and-SPA',
+      },
+      {
         title: 'Multiple `renderer/`',
         url: '/multiple-renderer',
       },
