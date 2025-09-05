@@ -146,19 +146,12 @@ SSR provides faster initial page load, especially on mobile devices where JavaSc
 
 #### Initial page load comparison (mobile device)
 
-TODO: use a table
-
-**SPA:**  
-0s — User visits page  
-1s — HTML loads (empty)  
-3s — JavaScript downloads  
-5s — JavaScript executes and renders content ← *User finally sees content*  
-
-**SSR:**
-1. 0s: User visits page
-2. 1s: HTML loads with content ← *User sees content immediately*
-3. 3s: JavaScript downloads
-4. 5s: JavaScript hydrates (makes content interactive)
+| Time | SPA | SSR |
+|------|-----|-----|
+| **0s** | User visits page | User visits page |
+| **1s** | HTML loads (empty) | HTML loads with content ← *User sees content* |
+| **3s** | JavaScript downloads | JavaScript downloads |
+| **5s** | JavaScript executes and renders content ← *User finally sees content* | JavaScript hydrates (makes content interactive) |
 
 
 ## SPA is a misnomer
