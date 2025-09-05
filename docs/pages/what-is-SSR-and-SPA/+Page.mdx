@@ -1,6 +1,6 @@
 import { Link } from '@brillout/docpress'
 
-If you're new to modern web development with JavaScript and UI frameworks like [React](https://react.dev) or [Vue](https://vuejs.org), you might have heard the terms **SSR** (Server-Side Rendering) and **SPA** (Single Page Application) but aren't sure what they mean.
+If you're new to modern web development with JavaScript and frameworks like [React](https://react.dev) or [Vue](https://vuejs.org), you might have heard the terms **SSR** (Server-Side Rendering) and **SPA** (Single Page Application) but aren't sure what they mean.
 
 This guide explains both concepts and their differences.
 
@@ -23,9 +23,11 @@ function Welcome() {
 }
 ```
 
-This JSX component is compiled (by [Vite](https://vite.dev)) to JavaScript and can run on both the client and the server.
+[Vite](https://vite.dev) compiles this JSX component to JavaScript that can execute on both the client and server.
 
-**SPA** refers to the practice of rendering components only on the client-side (i.e., in the browser):
+## SPA (Single Page Application)
+
+**SPA** refers to rendering components exclusively on the client-side (in the browser):
 
 ```jsx
 // render.js
@@ -42,7 +44,7 @@ const root = createRoot(document.getElementById('root'))
 root.render(<App />)
 ```
 
-The HTML delivered to the browser is minimal and doesn't contain the actual content:
+The HTML sent to the browser contains minimal markup without the actual page content:
 
 ```html
 <!DOCTYPE html>
@@ -58,7 +60,9 @@ The HTML delivered to the browser is minimal and doesn't contain the actual cont
 </html>
 ```
 
-**SSR** (**S**erver-**S**ide **R**endering) refers to rendering components to HTML on the server-side and then <Link href="/hydration">hydrating</Link> them (making them interactive) on the client-side.
+## SSR (Server-Side Rendering)
+
+**SSR** (**S**erver-**S**ide **R**endering) involves rendering components to HTML on the server and then <Link href="/hydration">hydrating</Link> them (making them interactive) on the client-side.
 
 ```jsx
 // ssr.js
@@ -82,9 +86,9 @@ import { hydrateRoot } from 'react-dom/client'
 hydrateRoot(document.getElementById('root'), <Welcome />)
 ```
 
-> In this example, hydration is unnecessary because `<Welcome>` isn't interactive, but note that interactive components (e.g., `<Counter>`) require hydration.
+> **Note:** In this example, hydration is unnecessary since `<Welcome>` contains no interactive elements. However, interactive components (e.g., `<Counter>`) require hydration to function properly.
 
-The HTML delivered to the browser contains the actual content:
+The HTML sent to the browser includes the fully rendered content:
 
 ```html
 <!DOCTYPE html>
@@ -103,27 +107,27 @@ The HTML delivered to the browser contains the actual content:
 </html>
 ```
 
-Notice that with SSR, the content of `<Welcome>` is included in the HTML, while with SPA it's missing.
+## Key Difference
 
-This is the key difference between SSR and SPA: **with SSR, the page's content is rendered to HTML, whereas with SPA, the HTML is just an empty shell**.
+The fundamental distinction is clear: **with SSR, the page content is pre-rendered to HTML on the server, whereas with SPA, the HTML remains an empty shell until JavaScript executes in the browser**.
 
-This difference has important implications for:
- - **Crawlers** (search engines, social media, and AI)
- - **Performance** (especially on mobile devices)
+This architectural difference has significant implications for:
+ - **SEO and discoverability** (search engines, social media, AI crawlers)
+ - **Performance** (particularly on mobile devices and slow connections)
 
 
 ## Crawlers
 
-[Crawlers](https://en.wikipedia.org/wiki/Web_crawler) from **search engines** (e.g., Google), **social media platforms** (e.g., Instagram, Twitter), and **AI systems** (e.g., ChatGPT) navigate your website by reading the HTML of your pages and following `<a href="/some-other-page">` links.
+Web [crawlers](https://en.wikipedia.org/wiki/Web_crawler)—automated programs used by **search engines** (Google, Bing), **social media platforms** (Instagram, Twitter), and **AI systems** (ChatGPT)—discover and index content by parsing HTML and following links.
 
-With SPA, crawlers only see empty HTML:
+**SPA limitation:** Crawlers encounter only empty HTML:
 
 ```html
 <!-- ❌ Crawlers don't see the page's content -->
 <div id="root"></div>
 ```
 
-With SSR:
+**SSR advantage:** Crawlers access complete content:
 
 ```html
 <!-- ✅ Crawlers see the page's content -->
@@ -133,9 +137,7 @@ With SSR:
 </div>
 ```
 
-> See also: <Link href="/SSR-vs-SPA" />
-
-> Google's crawler can execute client-side JavaScript, but we still recommend using SSR even if you only target Google.
+> **Note:** Google's crawler can execute client-side JavaScript, but SSR is still recommended even for Google-only targeting.
 >
 > <details>
 > <summary>Why SSR is still recommended for Google:</summary>
@@ -153,9 +155,9 @@ With SSR:
 
 ## Performance
 
-SSR provides faster initial page loads, especially on mobile devices where JavaScript loading and execution are significantly slower. With SPA, users may see a blank page for several seconds while JavaScript loads and executes.
+SSR delivers superior initial page performance, particularly on mobile devices where JavaScript parsing and execution create significant bottlenecks. SPA users often experience prolonged blank screens while waiting for JavaScript bundles to download and execute.
 
-> **Note:** Subsequent page navigation (also known as <Link href="/client-routing">client-side navigation</Link>) is equally fast between SSR and SPA.
+> **Important:** While initial loads favor SSR, subsequent navigation (via <Link href="/client-routing">client-side routing</Link>) performs equally well in both approaches.
 
 #### Loading timeline comparison (mobile device)
 
@@ -174,15 +176,15 @@ SSR provides faster initial page loads, especially on mobile devices where JavaS
 > See also: <Link href="/SSR-vs-SPA" />
 
 
-## SPA is a misnomer
+## Understanding the "SPA" Terminology
 
-The term "SPA" (Single Page Application) is technically a misnomer in modern web development.
+The term "SPA" (Single Page Application) represents a semantic evolution in web development terminology.
 
-**Historically**, SPA referred to applications that truly had only one page—like [Gmail](https://thehistoryoftheweb.com/what-does-ajax-even-stand-for/)—where you never navigate to different URLs and everything happens within a single interface.
+**Original definition:** SPA described applications with genuinely single-page interfaces—like [Gmail](https://thehistoryoftheweb.com/what-does-ajax-even-stand-for/)—where navigation occurs entirely within one URL without traditional page transitions.
 
-**Today**, "SPA" is commonly used to mean "not SSR"—referring to any client-side rendered application, even those with multiple pages and different URLs. While technically incorrect, this usage has become widely accepted.
+**Modern usage:** The industry now uses "SPA" as shorthand for "client-side rendered," encompassing any application that renders content in the browser, regardless of having multiple routes or pages. While technically imprecise, this broader definition has achieved universal adoption.
 
-> **Note:** A more accurate term would be CSR (Client-Side Rendering), but "SPA" is the established terminology in the web development community. That's why we use "SPA" throughout Vike's documentation.
+> **Terminology note:** CSR (Client-Side Rendering) would be more technically accurate, but "SPA" dominates industry discourse. Vike's documentation follows this established convention for clarity and consistency.
 
 
 ## See also
