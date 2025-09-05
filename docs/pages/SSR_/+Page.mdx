@@ -1,128 +1,26 @@
-import { Link } from '@brillout/docpress'
-
-# What is SSR and SPA?
-
-If you're new to modern web development, you might have heard the terms **SSR** (Server-Side Rendering) and **SPA** (Single Page Application) but aren't sure what they mean or when to use them. This guide will explain both concepts in simple terms and help you understand their differences.
-
-## What is SPA?
-
-**SPA** stands for **Single Page Application**. Despite the name, SPAs can have multiple pages - the "single page" refers to how the application works technically.
-
-### How SPAs Work
-
-In a traditional website, when you click a link to go to a new page:
-1. Your browser sends a request to the server
-2. The server sends back a completely new HTML page
-3. Your browser loads and displays this new page
-
-In an SPA:
-1. The initial page loads with JavaScript code
-2. When you navigate, JavaScript updates the page content without loading a new page
-3. The URL changes, but the page doesn't fully reload
-
-### SPA Example
-
-Think of Gmail or Google Maps - when you click around, the page updates smoothly without the white flash you see on traditional websites. That's an SPA in action.
-
-**Key characteristics of SPAs:**
-- Fast navigation between pages (no page reloads)
-- Smooth, app-like user experience
-- All rendering happens in the browser
-- Requires JavaScript to display content
-
 ## What is SSR?
 
-**SSR** stands for **Server-Side Rendering**. This means the server generates the HTML content before sending it to the browser.
+Modern UI frameworks,
+such as React or Vue,
+are able to load, execute and render UI source code on the browser-side or server-side, or even both.
 
-### How SSR Works
+The practice of loading & rendering the UI on the browser-side is commonly called *SPA*.
 
-With SSR:
-1. When someone visits your website, the server runs your application code
-2. The server generates the complete HTML with all the content
-3. The browser receives ready-to-display HTML
-4. JavaScript then "hydrates" the page to make it interactive
+[SPA Demo](/spa-demo)
 
-### SSR Example
+[SSR Demo](/ssr-demo)
 
-When you visit a news website like BBC or CNN, you can see the articles immediately, even before JavaScript loads. That's because the server pre-rendered the HTML with all the content.
+[HTML-only Demo](/html-only-demo)
 
-**Key characteristics of SSR:**
-- Content is visible immediately when the page loads
-- Works even if JavaScript is disabled
-- Better for search engines (SEO)
-- Server does the initial rendering work
+*Server-side Rendering (SSR)* essentially denotes the practice of loading & rendering the UI not only on the browser-side but also on the server-side.
 
-## SPA vs SSR: Key Differences
+## Why SSR?
 
-| Aspect | SPA | SSR |
-|--------|-----|-----|
-| **Initial Load** | Slower (needs to download JavaScript first) | Faster (HTML is ready immediately) |
-| **Navigation** | Very fast (no page reloads) | Slower (full page reloads) |
-| **SEO** | Poor (search engines struggle with JavaScript) | Excellent (search engines see HTML content) |
-| **Server Load** | Low (server just serves files) | Higher (server renders each page) |
-| **Offline Support** | Good (can cache JavaScript app) | Limited (needs server for each page) |
+**Search Engines**
 
-## When to Use SPA?
+**Other Crawlers (Facebook, Twitter, Algolia, ...)**
 
-SPAs work best for:
+**Performance**
 
-- **Admin panels and dashboards** - Users expect app-like interactions
-- **Internal tools** - SEO isn't important, user experience is
-- **Interactive applications** - Games, editors, complex forms
-- **When you have a fast internet connection** - JavaScript downloads quickly
-
-**Example use cases:**
-- Company admin dashboard
-- Online code editor
-- Social media feed
-- Real-time chat application
-
-## When to Use SSR?
-
-SSR works best for:
-
-- **Public websites** - Need good SEO for search engines
-- **Content-heavy sites** - Blogs, news sites, documentation
-- **E-commerce** - Product pages need to be indexed by search engines
-- **Mobile users** - Faster initial load on slower devices
-
-**Example use cases:**
-- Company blog or marketing website
-- Online store product pages
-- News or magazine website
-- Documentation site (like this one!)
-
-## Can You Have Both?
-
-Yes! Many modern applications use a hybrid approach:
-
-- **SSR for initial page load** - Fast loading and good SEO
-- **SPA behavior after that** - Smooth navigation between pages
-
-This gives you the best of both worlds. Vike makes this easy to implement.
-
-## Real-World Examples
-
-### SPA Examples
-- Gmail (email interface)
-- Figma (design tool)
-- Discord (chat application)
-- Notion (note-taking app)
-
-### SSR Examples
-- Wikipedia (content needs to be searchable)
-- E-commerce product pages (SEO important)
-- News websites (content-focused)
-- This documentation site
-
-### Hybrid Examples
-- GitHub (initial page is SSR, navigation is SPA-like)
-- Twitter/X (timeline loads fast, then becomes interactive)
-- YouTube (video pages are SSR, but navigation is smooth)
-
-## Getting Started with Vike
-
-Vike makes it easy to build applications with SSR, SPA, or a combination of both. You can even configure different pages to use different rendering modes based on their needs.
-
-> **Next steps:** Check out our <Link href="/start">Getting Started guide</Link> to build your first Vike application, or read more about <Link href="/SPA-vs-SSR">choosing the right render mode</Link> for your specific use case.
+## When to use SSR?
 
