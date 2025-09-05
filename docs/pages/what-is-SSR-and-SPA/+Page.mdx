@@ -1,6 +1,60 @@
+If you're new to modern web development, you might have heard the terms **SSR** (Server-Side Rendering) and **SPA** (Single Page Application) but aren't sure what they mean. This guide will explain both concepts and their differences.
+
 > If you're alreay familiar with SSR and SPA, see <Link href="/SSR-vs-SPA" /> instead.
 
-If you're new to modern web development, you might have heard the terms **SSR** (Server-Side Rendering) and **SPA** (Single Page Application) but aren't sure what they mean or when to use them. This guide will explain both concepts in simple terms and help you understand their differences.
+A unique aspect about JavaScript is that it can run not only inside the browser (browsers support only two languages: [JavaScript](https://en.wikipedia.org/wiki/JavaScript) and [wasm](https://webassembly.org)) but also on the server (by using a JavaScript runtime such as [Node.js](https://nodejs.org), [Bun](https://bun.com), or [Deno](https://deno.com)).
+
+This means that, When you defined a component like this:
+
+```jsx
+function Hello({ name }: { name: string }) {
+  return <h1>Hello {name}</h1>
+}
+```
+
+This JSX code is compiled (by [Vite](https://vite.dev)) to JavaScript and can be run on the client and/or the server.
+
+
+**S**erver-**s**ide **r**endering (SSR) denotes the practice of rendering components to HTML on the server-side.
+
+```js
+// TODO: write minimal React code that renders <Hello name="Alice" />
+```
+
+```html
+// TODO: write minimal but full HTML
+<h1>Hello Alice</h1>
+```
+
+But that isn't enough to make
+
+-## What is SSR?
+-
+-Modern UI frameworks,
+-such as React or Vue,
+-are able to load, execute and render UI source code on the browser-side or server-side, or even both.
+-
+-The practice of loading & rendering the UI on the browser-side is commonly called *SPA*.
+-
+-[SPA Demo](/spa-demo)
+-
+-[SSR Demo](/ssr-demo)
+-
+-[HTML-only Demo](/html-only-demo)
+-
+-*Server-side Rendering (SSR)* essentially denotes the practice of loading & rendering the UI not only on the browser-side but also on the server-side.
+-
+-## Why SSR?
+-
+-**Search Engines**
+-
+-**Other Crawlers (Facebook, Twitter, Algolia, ...)**
+-
+-**Performance**
+-
+-## When to use SSR?
+-
+
 
 With SSR:
 1. When someone visits your website, the server runs your application code
