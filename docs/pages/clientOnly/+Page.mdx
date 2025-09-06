@@ -1,7 +1,11 @@
 import { Link } from '@brillout/docpress'
-import { UiFrameworkExtension, ProvidedBy } from '../../components'
+import { UiFrameworkExtension, ProvidedBy, ConfigSpec } from '../../components'
 
-<ProvidedBy><code>useConfig()</code></ProvidedBy>
+<ConfigSpec
+  env="client, server"
+  providedBy={<ProvidedBy><code>clientOnly()</code></ProvidedBy>}
+  global={null}
+/>
 
 The `clientOnly()` helper enables you to load and render a component only on the client-side.
 

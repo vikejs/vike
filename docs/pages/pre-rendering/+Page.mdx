@@ -22,11 +22,15 @@ In a nutshell: **pre-render your pages whenever you can**.
 
 Because pre-rendering removes the need for a production server and makes deployment very easy and very cheap (mostly free). It's also significantly more performant as the HTML isn't re-generated on every HTTP request.
 
-But **pre-rendering cannot be used for websites with SSR content that changes very frequently**. For example [Hacker News](https://news.ycombinator.com) or [Reddit](https://www.reddit.com): new content is created every time a user posts something new. Pre-rendering cannot be run again every (milli)second whenever there is new content (Reddit has millions of pages that cannot be re-rendered every (milli)second).
+But **pre-rendering cannot be used for websites with content that changes very frequently**. For example [Hacker News](https://news.ycombinator.com) or [Reddit](https://www.reddit.com): new content is created every time a user posts something new. Pre-rendering cannot be run again every (milli)second whenever there is new content (Reddit has millions of pages that cannot be re-rendered every (milli)second).
 
 > In theory, it's possible to re-render only the subset of pages that are affected by new content, but it isn't practical (it has been tried before) and we recommend against this practice.
 
-**Pre-rendering can be used for websites with SSR content that changes only occasionally**. For example, the content of `https://vike.dev` changes only when a maintainer updates the documentation: all pages of `https://vike.dev` can then be pre-rendered again.
+> Technically speaking, what matters is how frequent the HTML of pages changes, see also:
+> - <Link href="#ssg-vs-ssr" />
+> - <Link href="/SSR-vs-SPA" />
+
+**Pre-rendering can be used for websites with content that changes only occasionally**. For example, the content of `https://vike.dev` changes only when a maintainer updates the documentation: all pages of `https://vike.dev` can then be pre-rendered again.
 
 > Thanks to pre-rendering, `https://vike.dev` is deployed to <Link href="/github-pages" text="GitHub Pages" />, a static host which is completely free, [easy to use](https://github.com/vikejs/vike/blob/main/.github/workflows/website.yml), and very performant.
 
@@ -72,15 +76,7 @@ Vue Example:
  - <RepoLink path='/examples/vue-full/package.json' /> (see Vike CLI usage)
 
 
-## SSG vs SSR vs SPA
-
-This section explains the difference between SSG, SSR, and SPA.
-
-> To decide between SSR and SPA, with a list of pros and cons, see <Link href="/SPA-vs-SSR" />.
-
-> To decide between SSR and SSG, see <Link href="#should-i-pre-render" />
-
-### SSG vs SSR
+## SSG vs SSR
 
 The only difference between SSG and SSR is *when* the HTML is rendered:
 - **SSG**: the HTML of the page is rendered at build-time (when calling `$ vike build`).
@@ -102,17 +98,23 @@ import { Config } from 'vike/types'
 // SSG
 export default {
   prerender: true,
-  ssr: true // optional: `ssr` is true by default
+  ssr: true // (optional: `ssr` is true by default)
 } satisfies Config
 ```
 
 See also:
 - <Link href="/prerender" />
 - <Link href="/ssr" />
+- <Link href="/SSR-vs-SPA" />
 
-### SPA
 
-SPA means the page is rendered only on the client-side. In other words, no SSR:
+## SPA
+
+SPA means the page is rendered only on the client-side.
+
+> See also: <Link href="/what-is-SSR-and-SPA" />
+
+In other words, no SSR:
 
 ```ts
 // pages/+config.ts
@@ -125,7 +127,7 @@ export default {
 } satisfies Config
 ```
 
-But when the user visits an SPA page, the browser still needs an HTML response to kick off client-side rendering. This HTML is usually just an empty shell (it doesn't contain the content of the page). If you want to avoid the need for a production server, you can pre-render this empty shell:
+But when the user visits an SPA page, the browser still needs an HTML response to kick off client-side rendering. This HTML is just an empty shell (it doesn't contain the content of the page). If you want to avoid the need for a production server, you can pre-render this empty shell:
 
 ```ts
 // pages/+config.ts
@@ -139,7 +141,7 @@ export default {
 } satisfies Config
 ```
 
-That's why, the usual practice to create an SPA page is to set `ssr: false` together with `prerender: true`.
+That's why it's a common practice to set `ssr: false` together with `prerender: true`.
 
 > You can also add meta page information (title, description, social image, ...) to the pre-rendered HTML of SPA pages, see <Link href="/head-tags" />.
 
@@ -150,7 +152,7 @@ Yes, you can have some pages be SSG while other pages are SPA.
 
 Technically, you still pre-render *all* your pages, it's just that the content of some pages are rendered to HTML (SSG) while the content of others pages aren't rendered to HTML (SPA).
 
-> See explanation at <Link href="#ssg-vs-ssr-vs-spa" />.
+> See explanation in the <Link href="#spa" /> section above.
 
 For example:
 
@@ -192,7 +194,7 @@ import { Config } from 'vike/types'
 
 export default {
   // SSG
-  ssr: true // optional: `ssr` is true by default
+  ssr: true // (optional: `ssr` is true by default)
 } satisfies Config
 ```
 
@@ -205,6 +207,7 @@ See also:
 
 - <Link href="/data-fetching#pre-rendering-ssg" doNotInferSectionTitle />
 - <Link href="/static-hosts" />
+- <Link href="/SSR-vs-SPA" />
 - <Link href="/ssr" />
 
 Pre-rendering options:

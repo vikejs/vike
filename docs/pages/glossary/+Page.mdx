@@ -11,15 +11,50 @@ Common terminology used in web development.
 ## HMR
 
 {/* spellcheck-ignore */}
-*HMR* (**H**ot **M**odule **R**eplacement, aka live reload) is a development feature that updates modules in a running application without requiring a full page reload, preserving application state.
+*HMR* (**H**ot **M**odule **R**eplacement, aka live reload)
+is a development feature that updates modules in a running application without requiring a full page reload, preserving application state.
 
 See also: [Vite > Why Vite > Slow Updates](https://vite.dev/guide/why.html#slow-updates).
 
 
+## SPA
+
+{/* spellcheck-ignore */}
+*SPA* (**S**ingle **P**age **A**pplication)
+refers to rendering the page exclusively on the client-side (in the browser), see:
+- <Link href="/what-is-SSR-and-SPA" />
+- <Link href="/SSR-vs-SPA" />
+
+> The term SPA has become a misnomer, see:
+> - <Link href="/what-is-SSR-and-SPA#spa-is-a-misnomer" doNotInferSectionTitle />
+
+See also:
+- <Link href="#ssr" />
+- <Link href="#ssg" />
+
+
+## SSR
+
+{/* spellcheck-ignore */}
+*SSR* (**S**erver-**S**ide **R**endering)
+refers to rendering the page to HTML on the server-side and then hydrating them (making them interactive) on the client-side, see:
+- <Link href="/what-is-SSR-and-SPA" />
+
+The main motivation for doing SSR is to improve SEO and AI discovery (it makes your page's content available to the crawlers of AI and search engines), see:
+- <Link href="/SSR-vs-SPA" />
+
+See also:
+- <Link href="#spa" />
+- <Link href="#ssg" />
+
+
 ## SSG
 
-*SSG* (**S**tatic **S**ite **G**eneration, aka pre-rendering) is a web development approach where all pages are pre-rendered to HTML at build time, so that your app consists only of static assets that can be deployed to a static host which is fast, easy, and inexpensive (usually free).
+*SSG* (**S**tatic **S**ite **G**eneration, aka pre-rendering) is a web development approach where all pages are pre-rendered to HTML at build time, so that your app consists only of static assets that can be deployed to a static host which is fast, easy, and inexpensive (usually free), see:
+- <Link href="/pre-rendering" />.
 
-Technically speaking: an SSG app is an app where *all* pages are pre-rendered (<Link href="/prerender#partial">`prerender.partial`</Link> is `false`).
+> Technically, an SSG app is an app where *all* pages are pre-rendered (i.e. <Link href="/prerender#partial">`prerender.partial`</Link> is `false`).
 
-For more information see <Link href="/pre-rendering" />.
+See also:
+- <Link href="#ssr" />
+- <Link href="#spa" />

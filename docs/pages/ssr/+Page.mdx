@@ -11,17 +11,15 @@ boolean
 ```
 </ConfigSpec>
 
-Setting to enable/disable Server-Side Rendering (SSR). You can disable SSR for all your pages or only for some pages.
+Setting to enable/disable SSR (Server-Side Rendering). You can disable SSR for all your pages or only for some pages.
 
-> **What is SSR?** If you're unfamiliar with SSR then check out [Dan Abramov's explanation of SSR, HTML Streaming, and Progressive Rendering](https://github.com/reactwg/react-18/discussions/37). (While it explains it in the context of React, we still recommend reading it if you use a UI framework other than React.)
+> **What is SSR?** If you're unfamiliar with SSR, then see:
+> - <Link href="/what-is-SSR-and-SPA" />
+> - <Link href="/SSR-vs-SPA" />
+> - <Link href="/pre-rendering#ssg-vs-ssr" />
 
-> See <Link href="/SPA-vs-SSR" /> for a guide on whether to use SSR or not.
 
-> Alternatively:
->  - You can use <Link href="/clientOnly">`clientOnly()`</Link> to render and load some components only on the client-side while rendering the rest of the page with SSR.
->  - You can <Link href="/pre-rendering">pre-render</Link> some of (or all) your pages.
-
-To disable SSR for all your pages:
+You can disable SSR for all your pages:
 
 ```ts
 // /pages/+config.ts
@@ -34,7 +32,7 @@ export default {
 } satisfies Config
 ```
 
-To disable SSR only for some pages:
+Or disable SSR only for some pages:
 
 ```ts
 // /pages/admin-panel/+config.ts
@@ -58,7 +56,11 @@ export default {
 /pages/about/+Page.js
 ```
 
-For an improved file and config organization, you can consider using a <Link href="/routing#domain-driven-file-structure">domain-driven file structure</Link>.
+> For better config organization, you can use a <Link href="/routing#domain-driven-file-structure">domain-driven file structure</Link>.
+
+Alternatively, instead of using the `+ssr` setting, you can use the <Link href="/clientOnly">`clientOnly()`</Link> helper to render and load some components only on the client-side, while rendering the rest of the page with SSR.
+
+If your goal is to remove the need for a production server, then consider <Link href="/pre-rendering">pre-rendering your SSR pages</Link> instead of disabling SSR.
 
 
 ## Without `vike-{react,vue,solid}`
@@ -70,10 +72,12 @@ Examples:
  - [`vike-vue` source code](https://github.com/vikejs/vike-vue/blob/main/packages/vike-vue)
  - [`vike-solid` source code](https://github.com/vikejs/vike-solid/blob/main/vike-solid)
 
-See also <Link href="/render-modes" />.
+> See also: <Link href="/render-modes" />
 
 
 ## See also
 
 - <Link href="/pre-rendering" />
 - <Link href="/stream" />
+- <Link href="/SSR-vs-SPA" />
+- <Link href="/what-is-SSR-and-SPA" />
