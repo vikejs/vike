@@ -1,8 +1,9 @@
+
 In production, the server build (which lives at `dist/server/`) is automagically loaded.
 
 But, in some (rare) situations, the trick used by Vike doesn't work. In that case, we have to manually load the files living at `dist/server/`. We do this by importing `dist/server/importBuild.cjs`:
 
-```ts
+```ts ts-only
 // server.ts
 
 // We load the server build living at dist/server/

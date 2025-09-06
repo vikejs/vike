@@ -1,12 +1,12 @@
 import { Advanced, UiFrameworkExtension } from '../../components'
-import { Link, RepoLink } from '@brillout/docpress'
+import { Link, RepoLink, TypescriptOnly } from '@brillout/docpress'
 import { ConfigSpec } from '../../components'
 
 <ConfigSpec
   env="config (development & build-time)"
   global={null}
 >
-```ts
+```ts ts-only
 type Meta = {
   env: {
     client?: boolean
@@ -264,7 +264,7 @@ function getDescription(pageContext: PageContext) {
 }
 ```
 
-```ts
+```tsx
 // /pages/+onRenderHtml.ts
 // Environment: server
 
@@ -338,7 +338,7 @@ export default {
 } satisfies Config
 ```
 
-```ts
+```tsx
 // /pages/+onRenderHtml.ts
 // Environment: server
 
@@ -362,7 +362,7 @@ async function onRenderHtml(pageContext: PageContextServer) {
 
 > Note how we use `pageContext.config.Page` instead of `pageContext.Page`: that's because `pageContext.Page` is just an alias for `pageContext.config.Page`.
 
-```ts
+```tsx
 // /pages/+onRenderClient.tsx
 // Environment: client
 
@@ -489,12 +489,13 @@ export default {
 } satisfies Config
 ```
 
+<TypescriptOnly>
 
 ## TypeScript
 
 Similar to <Link href="/pageContext#typescript">`Vike.PageContext`</Link>, you can extend (or refine) Vike's `Config` type by using the global interface `Vike.Config`.
 
-```ts
+```ts ts-only
 // /pages/+config.ts
 // Environment: config
 
@@ -523,7 +524,7 @@ declare global {
 export {}
 ```
 
-```ts
+```ts ts-only
 // /pages/product/@id/+config.ts
 
 import { Config } from 'vike/types'
@@ -538,7 +539,7 @@ export default {
 
 If you define a <Link href="#api">`cumulative` config</Link>, then also make sure to use the global interface `Vike.ConfigResolved`.
 
-```ts
+```ts ts-only
 // /pages/+config.ts
 // Environment: config
 
@@ -565,6 +566,7 @@ declare global {
 }
 ```
 
+</TypescriptOnly>
 
 ## See also
 

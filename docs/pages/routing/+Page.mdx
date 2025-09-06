@@ -1,4 +1,4 @@
-import { Link } from '@brillout/docpress'
+import { Link, TypescriptOnly } from '@brillout/docpress'
 
 Overview of how to define the URL of your pages.
 
@@ -179,11 +179,13 @@ export async function guard(pageContext: PageContextServer) {
 For more information, see:
 - <Link href="/guard" />
 
+<TypescriptOnly>
 
 ## TypeScript
 
 There is work-in-progress for supporting type safe links, see [#698 Typesafe Links](https://github.com/vikejs/vike/issues/698).
 
+</TypescriptOnly>
 
 ## React Router / Vue Router
 
