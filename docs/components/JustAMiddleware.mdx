@@ -11,7 +11,7 @@ import { renderPage } from 'vike/server'
 server.addMiddleware({
   method: 'GET',
   route: '*', // catch-all
-  async handler(request) {
+  async handler(request: Request) {
     const pageContextInit = { urlOriginal: request.url }
     const pageContext = await renderPage(pageContextInit)
     // `body` is the HTML of the page with a route matching pageContextInit.urlOriginal
