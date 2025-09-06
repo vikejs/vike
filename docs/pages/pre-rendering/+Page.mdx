@@ -98,7 +98,7 @@ import { Config } from 'vike/types'
 // SSG
 export default {
   prerender: true,
-  ssr: true // optional: `ssr` is true by default
+  ssr: true // (optional: `ssr` is true by default)
 } satisfies Config
 ```
 
@@ -112,7 +112,7 @@ See also:
 
 SPA means the page is rendered only on the client-side.
 
-> See: <Link href="/what-is-SSR-and-SPA" />
+> See also: <Link href="/what-is-SSR-and-SPA" />
 
 In other words, no SSR:
 
@@ -127,7 +127,7 @@ export default {
 } satisfies Config
 ```
 
-But when the user visits an SPA page, the browser still needs an HTML response to kick off client-side rendering. This HTML is usually just an empty shell (it doesn't contain the content of the page). If you want to avoid the need for a production server, you can pre-render this empty shell:
+But when the user visits an SPA page, the browser still needs an HTML response to kick off client-side rendering. This HTML is just an empty shell (it doesn't contain the content of the page). If you want to avoid the need for a production server, you can pre-render this empty shell:
 
 ```ts
 // pages/+config.ts
@@ -152,7 +152,7 @@ Yes, you can have some pages be SSG while other pages are SPA.
 
 Technically, you still pre-render *all* your pages, it's just that the content of some pages are rendered to HTML (SSG) while the content of others pages aren't rendered to HTML (SPA).
 
-> See explanation at <Link href="#spa" />.
+> See explanation in the <Link href="#spa" /> section above.
 
 For example:
 
@@ -194,7 +194,7 @@ import { Config } from 'vike/types'
 
 export default {
   // SSG
-  ssr: true // optional: `ssr` is true by default
+  ssr: true // (optional: `ssr` is true by default)
 } satisfies Config
 ```
 
