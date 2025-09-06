@@ -317,8 +317,9 @@ Into:
 // Environment: config
 
 import type { Config } from 'vike/types'
-//import Layout from '../layouts/LayoutDefault.jsx'// [!code --]
-const Layout = 'import:../layouts/LayoutDefault.jsx:default'// [!code ++]
+import Layout from '../layouts/LayoutDefault.jsx'// [!code --]
+// @detype-rename DummyLayout>Layout
+const DummyLayout = 'import:../layouts/LayoutDefault.jsx:default'// [!code ++]
 
 export default {
   Layout
@@ -331,7 +332,7 @@ This enables Vike to load the file `/pages/+config.js` without having to load `L
 
 It's similar to when you import images:
 
-```ts
+```ts ts-only
 import logo from '../images/logo.svg'
 // When you import an image, you don't actually load it: you get a URL instead.
 console.log(logo) // /assets/logo.svg
