@@ -1,4 +1,4 @@
-import { Link, TypescriptOnly } from '@brillout/docpress'
+import { Link } from '@brillout/docpress'
 import { PropGlobalContext as Prop, ConfigSpec } from '../../components'
 
 <ConfigSpec
@@ -150,7 +150,6 @@ For example, if 3 users are simultaneously visiting your website — two users w
 
 Upon <Link href="/pre-rendering">pre-rendering</Link>, there is exactly one `globalContext` object that lives from the beginning until the end of the pre-rendering process.
 
-<TypescriptOnly>
 
 ## TypeScript
 
@@ -197,7 +196,6 @@ export {}
 
 To define properties only for the server-/client-side, use the interfaces `Vike.GlobalContextServer` and `Vike.GlobalContextClient` instead.
 
-</TypescriptOnly>
 
 ## See also
 

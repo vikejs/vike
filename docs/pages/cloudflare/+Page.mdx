@@ -1,4 +1,4 @@
-import { RepoLink, Link, FileAdded, TypescriptOnly } from '@brillout/docpress'
+import { RepoLink, Link, FileAdded } from '@brillout/docpress'
 import { Example, UseScaffolder } from '../../components'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import '../../components/tabs.css'
@@ -289,7 +289,6 @@ export default defineConfig({
 >
 > Or go to <Link href="/new">vike.dev/new</Link> and select `Cloudflare` with an ORM.
 
-<TypescriptOnly>
 
 ## TypeScript
 
@@ -337,8 +336,6 @@ Make sure TypeScript loads it:
 ```
 
 See also: [Cloudflare Workers > TypeScript](https://developers.cloudflare.com/workers/languages/typescript/)
-
-</TypescriptOnly>
 
 ## Extend 3MB limit
 
