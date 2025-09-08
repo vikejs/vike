@@ -21,7 +21,7 @@ import { set_macro_ASSETS_MANIFEST } from './pluginProdBuildEntry.js'
 import { getManifestFilePathRelative } from '../../shared/getManifestFilePathRelative.js'
 type Bundle = Rollup.OutputBundle
 
-const globalObject = getGlobalObject('build/handleAssetsManifest.ts', {
+const globalObject = getGlobalObject('handleAssetsManifest.ts', {
   assetsJsonFilePath: undefined as string | undefined,
   targetsAll: [] as TargetConfig[],
 })
