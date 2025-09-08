@@ -396,7 +396,7 @@ export function onAfterRenderHtml(pageContext: PageContextServer) {
 
 ### Basics
 
-```ts
+```ts ts-only
 import type {
   // For code loaded in client and server
   PageContext,
@@ -413,7 +413,7 @@ You can use
 <Link href="#isClientSide" noWarning>`pageContext.isClientSide`</Link> and <Link href="#isPageContext" noWarning>`pageContext.isPageContext`</Link>
 to narrow down TypeScript unions.
 
-```ts
+```ts ts-only
 import type { PageContext, GlobalContext } from 'vike/types'
 
 function someFunction(someObject: PageContext | GlobalContext) {
@@ -425,7 +425,7 @@ function someFunction(someObject: PageContext | GlobalContext) {
 }
 ```
 
-```ts
+```ts ts-only
 import type { PageContext } from 'vike/types'
 
 function someFunction(pageContext: PageContext) {
@@ -441,8 +441,7 @@ function someFunction(pageContext: PageContext) {
 
 To extend and/or refine `PageContext`/`PageContextServer`/`PageContextClient`, use the global interface `Vike.PageContext`:
 
-```ts
-
+```ts ts-only
 import React from 'react'
 
 declare global {
@@ -472,7 +471,7 @@ To define properties only for the server-/client-side, use the interfaces `Vike.
 
 If you use <Link text="Server Routing" href="/server-routing" />:
 
-```ts
+```ts ts-only
 import type {
   // For code loaded in client and server
   PageContextWithServerRouting as PageContext,
