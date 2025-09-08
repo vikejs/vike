@@ -9,6 +9,7 @@ import { pluginProdBuildEntry } from './pluginBuild/pluginProdBuildEntry.js'
 import { pluginBuildConfig } from './pluginBuild/pluginBuildConfig.js'
 import { pluginModuleBanner } from './pluginBuild/pluginModuleBanner.js'
 
+// TODO/now refactor
 function pluginBuild(): Plugin[] {
   return [
     ...pluginBuildConfig(),
