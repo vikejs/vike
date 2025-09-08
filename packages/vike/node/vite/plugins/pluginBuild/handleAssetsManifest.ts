@@ -272,6 +272,7 @@ function handleAssetsManifest_assertUsageCssCodeSplit(config: ResolvedConfig) {
 }
 
 // https://github.com/vikejs/vike/issues/1815
+// https://github.com/vitejs/vite/issues/20505
 type CssTarget = ResolvedConfig['build']['cssTarget']
 type Target = ResolvedConfig['build']['target'] | CssTarget
 type TargetConfig = { global: Exclude<Target, undefined>; css: Target; isServerSide: boolean }
