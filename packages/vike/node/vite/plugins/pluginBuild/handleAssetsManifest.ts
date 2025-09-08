@@ -23,6 +23,7 @@ type Bundle = Rollup.OutputBundle
 
 const globalObject = getGlobalObject('build/handleAssetsManifest.ts', {
   assetsJsonFilePath: undefined as string | undefined,
+  targetsAll: [] as TargetConfig[],
 })
 
 // yes  => use workaround config.build.ssrEmitAssets
@@ -266,12 +267,12 @@ function handleAssetsManifest_assertUsageCssCodeSplit(config: ResolvedConfig) {
 // https://github.com/vikejs/vike/issues/1815
 type Target = ResolvedConfig['build']['target'] | ResolvedConfig['build']['cssTarget']
 type TargetConfig = { global: Exclude<Target, undefined>; css: Target; isServerSide: boolean }
-const targetsAll: TargetConfig[] = []
 function handleAssetsManifest_assertUsageCssTarget(config: ResolvedConfig, env: Environment) {
   if (!handleAssetsManifest_isFixEnabled()) return
   const isServerSide = isViteServerSide(config, env)
   assert(typeof isServerSide === 'boolean')
   assert(config.build.target !== undefined)
+  const { targetsAll } = globalObject
   targetsAll.push({ global: config.build.target, css: config.build.cssTarget, isServerSide })
   const targetsServer = targetsAll.filter((t) => t.isServerSide)
   const targetsClient = targetsAll.filter((t) => !t.isServerSide)
