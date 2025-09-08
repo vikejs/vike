@@ -56,7 +56,7 @@ function pluginBuildConfig(): Plugin[] {
       configResolved: {
         order: 'post',
         async handler() {
-          handleAssetsManifest_workaroundCssTarget_part2(config)
+          handleAssetsManifest_workaroundCssTarget_part2()
           onSetupBuild()
           assertRollupInput(config)
           const entries = await getEntries(config)
