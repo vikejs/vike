@@ -266,15 +266,15 @@ function handleAssetsManifest_assertUsageCssCodeSplit(config: ResolvedConfig) {
 // https://github.com/vikejs/vike/issues/1815
 type Target = ResolvedConfig['build']['target'] | ResolvedConfig['build']['cssTarget']
 type TargetConfig = { global: Exclude<Target, undefined>; css: Target; isServerSide: boolean }
-const targets: TargetConfig[] = []
+const targetsAll: TargetConfig[] = []
 function handleAssetsManifest_assertUsageCssTarget(config: ResolvedConfig, env: Environment) {
   if (!handleAssetsManifest_isFixEnabled()) return
   const isServerSide = isViteServerSide(config, env)
   assert(typeof isServerSide === 'boolean')
   assert(config.build.target !== undefined)
-  targets.push({ global: config.build.target, css: config.build.cssTarget, isServerSide })
-  const targetsServer = targets.filter((t) => t.isServerSide)
-  const targetsClient = targets.filter((t) => !t.isServerSide)
+  targetsAll.push({ global: config.build.target, css: config.build.cssTarget, isServerSide })
+  const targetsServer = targetsAll.filter((t) => t.isServerSide)
+  const targetsClient = targetsAll.filter((t) => !t.isServerSide)
   targetsClient.forEach((targetClient) => {
     const targetCssResolvedClient = resolveCssTarget(targetClient)
     targetsServer.forEach((targetServer) => {
