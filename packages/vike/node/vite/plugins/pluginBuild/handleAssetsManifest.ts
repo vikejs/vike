@@ -29,7 +29,7 @@ type Bundle = Rollup.OutputBundle
 
 const globalObject = getGlobalObject('handleAssetsManifest.ts', {
   assetsJsonFilePath: undefined as string | undefined,
-  cssTarget: '__VIKE__UNSET' as ResolvedConfig['build']['cssTarget'] | '__VIKE__UNSET',
+  cssTarget: '__VIKE__UNSET' as CssTarget | '__VIKE__UNSET',
   targetsAll: [] as TargetConfig[],
 })
 
@@ -272,7 +272,8 @@ function handleAssetsManifest_assertUsageCssCodeSplit(config: ResolvedConfig) {
 }
 
 // https://github.com/vikejs/vike/issues/1815
-type Target = ResolvedConfig['build']['target'] | ResolvedConfig['build']['cssTarget']
+type CssTarget = ResolvedConfig['build']['cssTarget']
+type Target = ResolvedConfig['build']['target'] | CssTarget
 type TargetConfig = { global: Exclude<Target, undefined>; css: Target; isServerSide: boolean }
 function handleAssetsManifest_workaroundCssTarget_part1(config: ResolvedConfig) {
   if (!isViteServerSide_viteEnvOptional(config, undefined)) {
