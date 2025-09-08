@@ -9,8 +9,6 @@ export { prefetch } from './prefetch.js'
 export { getPageContextClient } from './renderPageClientSide.js'
 export { PROJECT_VERSION as version } from './utils.js'
 
-if (import.meta.hot) import.meta.hot.accept()
-
 // TO-DO/next-major-release: remove this
 import type { PageContextBuiltInClientWithClientRouting } from '../../types/PageContext.js'
 /** @deprecated

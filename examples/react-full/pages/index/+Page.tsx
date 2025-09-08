@@ -4,8 +4,6 @@ import React from 'react'
 import { navigate } from 'vike/client/router'
 import { Counter } from '../../components/Counter'
 
-if (import.meta.hot) import.meta.hot.accept()
-
 function Page() {
   return (
     <>
