@@ -594,7 +594,6 @@ async function getPageContextBegin(
   objectAssign(pageContext, {
     isBackwardNavigation,
     isClientSideNavigation,
-    _isErrorPage: isForErrorPage,
     isHydration: isFirstRender && !isForErrorPage,
     previousPageContext,
     ...pageContextInitClient,
