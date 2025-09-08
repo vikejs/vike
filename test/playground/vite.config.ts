@@ -17,6 +17,7 @@ export default {
     //* Inspect dist/client/
     minify: false,
     //*/
+    target: 'esnext',
   },
   plugins: [react(), testPlugin() as any],
 } satisfies UserConfig
