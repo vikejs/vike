@@ -264,7 +264,7 @@ function handleAssetsManifest_assertUsageCssCodeSplit(config: ResolvedConfig) {
 }
 
 // https://github.com/vikejs/vike/issues/1815
-type Target = undefined | false | string | string[]
+type Target = ResolvedConfig['build']['target'] | ResolvedConfig['build']['cssTarget']
 type TargetConfig = { global: Exclude<Target, undefined>; css: Target; isServerSide: boolean }
 const targets: TargetConfig[] = []
 function handleAssetsManifest_assertUsageCssTarget(config: ResolvedConfig, env: Environment) {
