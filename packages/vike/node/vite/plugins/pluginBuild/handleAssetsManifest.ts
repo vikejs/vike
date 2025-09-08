@@ -31,6 +31,7 @@ const globalObject = getGlobalObject('handleAssetsManifest.ts', {
   assetsJsonFilePath: undefined as string | undefined,
   cssTarget: '__VIKE__UNSET' as CssTarget | '__VIKE__UNSET',
   targetsAll: [] as TargetConfig[],
+  configsAll: [] as ResolvedConfig[],
 })
 
 // yes  => use workaround config.build.ssrEmitAssets
@@ -277,6 +278,7 @@ type CssTarget = ResolvedConfig['build']['cssTarget']
 type Target = ResolvedConfig['build']['target'] | CssTarget
 type TargetConfig = { global: Exclude<Target, undefined>; css: Target; isServerSide: boolean }
 function handleAssetsManifest_workaroundCssTarget_part1(config: ResolvedConfig) {
+  globalObject.configsAll.push(config)
   if (!isViteServerSide_viteEnvOptional(config, undefined)) {
     globalObject.cssTarget = config.build.cssTarget
   }
@@ -284,6 +286,7 @@ function handleAssetsManifest_workaroundCssTarget_part1(config: ResolvedConfig) 
 function handleAssetsManifest_workaroundCssTarget_part2(config: ResolvedConfig) {
   assert(globalObject.cssTarget !== '__VIKE__UNSET')
   config.build.cssTarget = globalObject.cssTarget
+  globalObject.configsAll.forEach((c) => (c.build.cssTarget = globalObject.cssTarget))
 }
 function handleAssetsManifest_assertUsageCssTarget(config: ResolvedConfig, env: Environment) {
   if (!handleAssetsManifest_isFixEnabled()) return
