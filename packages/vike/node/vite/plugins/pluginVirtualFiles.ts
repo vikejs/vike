@@ -55,7 +55,6 @@ function pluginVirtualFiles(): Plugin {
         try {
           return await handleHotUpdate(ctx, config)
         } catch (err) {
-          console.log('handleHotUpdate() - err')
           // Vite swallows errors thrown by handleHotUpdate()
           console.error(err)
           throw err
@@ -143,37 +142,6 @@ function invalidateVikeVirtualFiles(server: ViteDevServer) {
 
 // Vite calls its hook handleHotUpdate() whenever *any file* is modified — including files that aren't in Vite's module graph such as `pages/+config.js`
 async function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
-  let allGood = true
-  for (const mod of ctx.server.moduleGraph.idToModuleMap.values()) {
-    if (mod.id?.startsWith('/home/rom/code/vike/examples/react-full')) {
-      console.log()
-      console.log(mod.id)
-      console.log('mod.invalidationState', mod.invalidationState)
-      console.log('mod.info', mod.info)
-      console.log('mod.meta', mod.meta)
-      console.log('mod._clientModule?.info', mod._clientModule?.info)
-      console.log('mod._clientModule?.meta', mod._clientModule?.meta)
-      console.log('!!mod.transformResult', !!mod.transformResult)
-      console.log('!!mod.ssrTransformResult', !!mod.ssrTransformResult)
-      console.log('!!mod._clientModule', !!mod._clientModule)
-      console.log('!!mod._clientModule?.transformResult', !!mod._clientModule?.transformResult)
-      console.log('mod.ssrError', mod.ssrError)
-      if (mod.transformResult === null && mod.ssrTransformResult === null) {
-        console.log(`❌ Module failed to transform (maybe syntax error): ${mod.id}`)
-        allGood = false
-        // console.log(mod.transformResult)
-        //console.log(mod.ssrTransformResult)
-      } else {
-        console.log(`✅ Module transformed: ${mod.id}`)
-      }
-    }
-  }
-  if (allGood) {
-    console.log(`YES ✅✅✅✅✅`)
-  } else {
-    console.log(`NO -------------`)
-  }
-
   const { file, server } = ctx
   const isVikeConfigDep = await isVikeConfigDependency(ctx.file, ctx.server.moduleGraph)
 
