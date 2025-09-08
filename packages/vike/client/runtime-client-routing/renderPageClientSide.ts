@@ -52,12 +52,12 @@ import { route } from '../../shared/route/index.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { setScrollPosition, type ScrollTarget } from './setScrollPosition.js'
 import { scrollRestoration_initialRenderIsDone } from './scrollRestoration.js'
-import { getErrorPageId } from '../../shared/error-page.js'
+import { getErrorPageId, isErrorPage } from '../../shared/error-page.js'
 import type { PageContextConfig } from '../../shared/getPageFiles.js'
 import { setPageContextCurrent } from './getPageContextCurrent.js'
 import { getRouteStringParameterList } from '../../shared/route/resolveRouteString.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
-import type { PageContextClient } from '../../types/PageContext.js'
+import type { PageContextClient, PageContextInternalClient } from '../../types/PageContext.js'
 import { execHookDirect, type PageContextExecHook, execHook } from '../../shared/hooks/execHook.js'
 import {
   type PageContextForPublicUsageClient,
@@ -73,8 +73,10 @@ const globalObject = getGlobalObject<{
   onRenderClientPreviousPromise?: Promise<unknown>
   isFirstRenderDone?: true
   isTransitioning?: true
+  // TODO/now rename
   previousPageContext?: PreviousPageContext
-  renderedPageContext?: PageContextClient
+  // TODO/now rename
+  renderedPageContext?: PageContextInternalClient & PageContext_loadPageConfigsLazyClientSide
   firstRenderStartPromise: Promise<void>
   firstRenderStartPromiseResolve: () => void
 }>(
@@ -563,7 +565,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     addLinkPrefetchHandlers_watch()
     addLinkPrefetchHandlers()
 
-    globalObject.renderedPageContext = pageContext as any as PageContextClient
+    globalObject.renderedPageContext = pageContext
 
     stampFinished(urlOriginal)
   }
@@ -732,7 +734,7 @@ function areKeysEqual(key1: string | string[], key2: string | string[]): boolean
  * https://vike.dev/getPageContextClient
  */
 function getPageContextClient(): PageContextClient | null {
-  return globalObject.renderedPageContext ?? null
+  return (globalObject.renderedPageContext as any) ?? null
 }
 
 type PageContextExecuteHook = Omit<
@@ -799,3 +801,17 @@ function handleErrorFetchingStaticAssets(
 
   return true
 }
+
+// [HMR] If error page is shown => re-render whole page
+if (import.meta.env.DEV && import.meta.hot)
+  import.meta.hot.on('vite:beforeUpdate', () => {
+    const pageContext = globalObject.renderedPageContext
+    if (pageContext?.pageId && isErrorPage(pageContext.pageId, pageContext._globalContext._pageConfigs)) {
+      renderPageClientSide({
+        scrollTarget: { preserveScroll: false },
+        urlOriginal: getCurrentUrl(),
+        overwriteLastHistoryEntry: true,
+        isBackwardNavigation: false,
+      })
+    }
+  })
