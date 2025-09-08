@@ -1,21 +1,10 @@
 export { pluginCommon }
 
 import { type InlineConfig, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
-import {
-  assert,
-  assertUsage,
-  assertWarning,
-  findPackageJson,
-  hasProp,
-  isDevCheck,
-  isDocker,
-  isObject,
-  isVitest,
-} from '../utils.js'
+import { assert, assertUsage, assertWarning, hasProp, isDevCheck, isDocker, isObject, isVitest } from '../utils.js'
 import { assertRollupInput } from './pluginBuild/pluginBuildConfig.js'
 import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
 import pc from '@brillout/picocolors'
-import path from 'node:path'
 import { assertResolveAlias } from './pluginCommon/assertResolveAlias.js'
 import { isViteCliCall } from '../shared/isViteCliCall.js'
 import { isVikeCliOrApi } from '../../api/context.js'
