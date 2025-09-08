@@ -415,6 +415,7 @@ function assertVersionAtBuildTime(versionAtBuildTime: string) {
 }
 
 async function updateUserFiles(): Promise<{ success: boolean }> {
+  console.log('updateUserFiles()')
   debug('updateUserFiles()')
   assert(!isProd())
   const { promise, resolve } = genPromise<void>()
