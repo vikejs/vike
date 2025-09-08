@@ -48,7 +48,7 @@ function getCode(
   )
   lines.push('};')
 
-  if (!isForClientSide && isDev) {
+  if (isDev) {
     // https://vite.dev/guide/api-environment-frameworks.html
     lines.push('if (import.meta.hot) import.meta.hot.accept();')
   }
