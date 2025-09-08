@@ -28,6 +28,8 @@ import { isViteServerSide_viteEnvOptional } from '../../shared/isViteServerSide.
 import {
   handleAssetsManifest_assertUsageCssCodeSplit,
   handleAssetsManifest_getBuildConfig,
+  handleAssetsManifest_workaroundCssTarget_part1,
+  handleAssetsManifest_workaroundCssTarget_part2,
 } from './handleAssetsManifest.js'
 import { resolveIncludeAssetsImportedByServer } from '../../../runtime/renderPage/getPageAssets/retrievePageAssetsProd.js'
 
@@ -36,13 +38,25 @@ function pluginBuildConfig(): Plugin[] {
 
   return [
     {
-      name: 'vike:build:pluginBuildConfig',
+      name: 'vike:build:pluginBuildConfig:post1',
       apply: 'build',
       enforce: 'post',
       configResolved: {
         order: 'post',
-        async handler(config_) {
+        handler(config_) {
           config = config_
+          handleAssetsManifest_workaroundCssTarget_part1(config)
+        },
+      },
+    },
+    {
+      name: 'vike:build:pluginBuildConfig:post2',
+      apply: 'build',
+      enforce: 'post',
+      configResolved: {
+        order: 'post',
+        async handler() {
+          handleAssetsManifest_workaroundCssTarget_part2()
           onSetupBuild()
           assertRollupInput(config)
           const entries = await getEntries(config)
