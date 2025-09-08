@@ -3,6 +3,8 @@ export { handleAssetsManifest_getBuildConfig }
 export { handleAssetsManifest_isFixEnabled }
 export { handleAssetsManifest_assertUsageCssCodeSplit }
 export { handleAssetsManifest_assertUsageCssTarget }
+export { handleAssetsManifest_workaroundCssTarget_part1 }
+export { handleAssetsManifest_workaroundCssTarget_part2 }
 
 import fs from 'node:fs/promises'
 import fs_sync from 'node:fs'
@@ -16,13 +18,18 @@ import { getAssetsDir } from '../../shared/getAssetsDir.js'
 import pc from '@brillout/picocolors'
 import { isV1Design } from '../../shared/resolveVikeConfigInternal.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
-import { isViteServerSide_onlySsrEnv, isViteServerSide } from '../../shared/isViteServerSide.js'
+import {
+  isViteServerSide_onlySsrEnv,
+  isViteServerSide,
+  isViteServerSide_viteEnvOptional,
+} from '../../shared/isViteServerSide.js'
 import { set_macro_ASSETS_MANIFEST } from './pluginProdBuildEntry.js'
 import { getManifestFilePathRelative } from '../../shared/getManifestFilePathRelative.js'
 type Bundle = Rollup.OutputBundle
 
 const globalObject = getGlobalObject('handleAssetsManifest.ts', {
   assetsJsonFilePath: undefined as string | undefined,
+  cssTarget: '__VIKE__UNSET' as ResolvedConfig['build']['cssTarget'] | '__VIKE__UNSET',
   targetsAll: [] as TargetConfig[],
 })
 
@@ -267,6 +274,15 @@ function handleAssetsManifest_assertUsageCssCodeSplit(config: ResolvedConfig) {
 // https://github.com/vikejs/vike/issues/1815
 type Target = ResolvedConfig['build']['target'] | ResolvedConfig['build']['cssTarget']
 type TargetConfig = { global: Exclude<Target, undefined>; css: Target; isServerSide: boolean }
+function handleAssetsManifest_workaroundCssTarget_part1(config: ResolvedConfig) {
+  if (!isViteServerSide_viteEnvOptional(config, undefined)) {
+    globalObject.cssTarget = config.build.cssTarget
+  }
+}
+function handleAssetsManifest_workaroundCssTarget_part2(config: ResolvedConfig) {
+  assert(globalObject.cssTarget !== '__VIKE__UNSET')
+  config.build.cssTarget = globalObject.cssTarget
+}
 function handleAssetsManifest_assertUsageCssTarget(config: ResolvedConfig, env: Environment) {
   if (!handleAssetsManifest_isFixEnabled()) return
   const isServerSide = isViteServerSide(config, env)
