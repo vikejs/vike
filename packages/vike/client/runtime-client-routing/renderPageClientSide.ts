@@ -73,7 +73,9 @@ const globalObject = getGlobalObject<{
   onRenderClientPreviousPromise?: Promise<unknown>
   isFirstRenderDone?: true
   isTransitioning?: true
+  // TODO/now rename
   previousPageContext?: PreviousPageContext
+  // TODO/now rename
   renderedPageContext?: PageContextClient
   firstRenderStartPromise: Promise<void>
   firstRenderStartPromiseResolve: () => void
