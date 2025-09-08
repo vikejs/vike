@@ -42,8 +42,8 @@ function pluginBuildConfig(): Plugin[] {
       configResolved: {
         order: 'post',
         async handler(config_) {
-          onSetupBuild()
           config = config_
+          onSetupBuild()
           assertRollupInput(config)
           const entries = await getEntries(config)
           assert(Object.keys(entries).length > 0)
