@@ -285,7 +285,6 @@ function handleAssetsManifest_workaroundCssTarget_part1(config: ResolvedConfig) 
 }
 function handleAssetsManifest_workaroundCssTarget_part2(config: ResolvedConfig) {
   assert(globalObject.cssTarget !== '__VIKE__UNSET')
-  config.build.cssTarget = globalObject.cssTarget
   globalObject.configsAll.forEach((c) => (c.build.cssTarget = globalObject.cssTarget))
 }
 function handleAssetsManifest_assertUsageCssTarget(config: ResolvedConfig, env: Environment) {
