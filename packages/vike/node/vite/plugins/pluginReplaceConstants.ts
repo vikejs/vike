@@ -8,6 +8,7 @@ import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 import { getMagicString } from '../shared/getMagicString.js'
 
+// https://vike.dev/pageContext#narrowing-down
 const constantsIsClientSide = [
   //
   'pageContext.isClientSide',
