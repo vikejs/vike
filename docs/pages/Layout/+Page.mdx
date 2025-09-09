@@ -9,9 +9,9 @@ import { UiFrameworkExtension, ConfigSpec, ProvidedBy } from '../../components'
 
 > **What are layouts?**
 >
-> Pages usually share a common visual design. The `+Layout` setting enables you to define such shared visual appearance.
+> Pages usually share a common layout, like a shared header, sidebar, and footer. The `+Layout` setting lets you define such shared layout.
 >
-> You can also define multiple designs: some pages can share a design while other pages share another one. (For example, admin pages and marketing pages typically have a different design.)
+> You can also define multiple layouts: some pages can share one layout, while other pages share a different one. For example, admin and marketing pages typically have different layouts.
 
 The component defined by the `+Layout` setting wraps the component defined by <Link href="/Page">`+Page`</Link>.
 
@@ -21,12 +21,7 @@ The component defined by the `+Layout` setting wraps the component defined by <L
 </Layout>
 ```
 
-> If you want to add a wrapper component that is required for installing a tool, then we generally recommend using <Link href="/Wrapper">`<Wrapper>`</Link> instead.
-
-
-## Global
-
-You can define a layout that applies to all your pages:
+To define a gloabl layout applying to all your pages:
 
 ```tsx
 // /pages/+Layout.tsx
@@ -46,7 +41,9 @@ function Navigation() { /* ... */ }
 function Content() { /* ... */ }
 ```
 
-> The reason `/pages/+Layout.jsx` applies to all pages is explained at <Link href="/config#inheritance" />.
+> See <Link href="/config#inheritance" /> for an explanation of why `/pages/+Layout.jsx` applies to all pages.
+
+> If you're adding a wrapper component required for installing a tool, we recommend using <Link href="/Wrapper">`<Wrapper>`</Link> instead.
 
 
 ## Multiple
