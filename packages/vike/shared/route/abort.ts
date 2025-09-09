@@ -259,6 +259,7 @@ function assertStatusCode(statusCode: number, expected: number[], caller: 'rende
   )
   const statusCodeWithColor = pc.bold(String(statusCode))
   if (statusCode === 400) {
+    assert(!expected.includes(statusCode))
     assertWarning(
       false,
       `We recommend against using the status code ${statusCodeWithColor} passed to ${caller}() — we recommend using ${pc.bold('404')} instead, see https://github.com/vikejs/vike/issues/1008#issuecomment-3270894445`,
