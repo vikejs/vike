@@ -34,6 +34,9 @@ type RedirectStatusCode = number & Parameters<typeof redirect>[1]
 // For improved IntelliSense, we duplicate this list
 type AbortStatusCode = number & Parameters<InferTwoOverloads<typeof render>[0]>[0]
 
+console.log('i1', import.meta)
+console.log('i2', import.meta.env)
+
 type UrlRedirect = {
   url: string
   statusCode: RedirectStatusCode
@@ -250,6 +253,8 @@ function logAbortErrorHandled(
 
 function assertStatusCode(statusCode: number, expected: number[], caller: 'render' | 'redirect') {
   assert(import.meta.env.SSR || import.meta.env.DEV) // save client-side KBs
+  console.log('b1', import.meta)
+  console.log('b2', import.meta.env)
   const expectedEnglish = joinEnglish(
     expected.map((s) => pc.bold(String(s))),
     'or',
