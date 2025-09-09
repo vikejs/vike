@@ -34,6 +34,9 @@ type RedirectStatusCode = number & Parameters<typeof redirect>[1]
 // For improved IntelliSense, we duplicate this list
 type AbortStatusCode = number & Parameters<InferTwoOverloads<typeof render>[0]>[0]
 
+console.log('globalThis.__VIKE__IS_DEV', globalThis.__VIKE__IS_DEV)
+console.log('globalThis.__VIKE__IS_CLIENT', globalThis.__VIKE__IS_CLIENT)
+
 type UrlRedirect = {
   url: string
   statusCode: RedirectStatusCode
@@ -120,6 +123,7 @@ function render_(
   abortCaller: 'throw render()' | 'throw RenderErrorPage()',
   pageContextAddendum?: { _isLegacyRenderErrorPage: true } & Record<string, unknown>,
 ): Error {
+  console.log('render_()')
   const pageContextAbort = {
     abortReason,
     _abortCaller: abortCaller,
@@ -130,6 +134,7 @@ function render_(
     objectAssign(pageContextAbort, pageContextAddendum)
   }
   if (typeof urlOrStatusCode === 'string') {
+    console.log('render_() 1')
     const url = urlOrStatusCode
     assertUsageUrlPathnameAbsolute(url, getErrPrefix(abortCaller))
     objectAssign(pageContextAbort, {
@@ -137,6 +142,7 @@ function render_(
     })
     return AbortRender(pageContextAbort)
   } else {
+    console.log('render_() 2')
     const abortStatusCode = urlOrStatusCode
     if (!globalThis.__VIKE__IS_CLIENT || globalThis.__VIKE__IS_DEV)
       assertStatusCode(urlOrStatusCode, [401, 403, 404, 410, 429, 500, 503], 'render')
@@ -249,6 +255,7 @@ function logAbortErrorHandled(
 }
 
 function assertStatusCode(statusCode: number, expected: number[], caller: 'render' | 'redirect') {
+  console.log('assertStatusCode()', statusCode, expected)
   assert(!globalThis.__VIKE__IS_CLIENT || globalThis.__VIKE__IS_DEV) // save client-side KBs
   const expectedEnglish = joinEnglish(
     expected.map((s) => pc.bold(String(s))),
