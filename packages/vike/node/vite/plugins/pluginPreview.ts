@@ -13,10 +13,10 @@ import sirv from 'sirv'
 import { getVikeConfigInternal, type VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 type ConnectServer = ViteDevServer['middlewares']
 
-function pluginPreview(): Plugin {
+function pluginPreview(): Plugin[] {
   let config: ResolvedConfig
   let vikeConfig: VikeConfigInternal
-  return {
+  return [{
     name: 'vike:pluginPreview',
     apply: applyPreview,
     config: {
@@ -55,7 +55,7 @@ function pluginPreview(): Plugin {
         }
       },
     },
-  }
+  }]
   function assertDist(isPrerenderingEnabledForAllPages: boolean) {
     const { outDirRoot, outDirClient, outDirServer } = getOutDirs(config, undefined)
     const dirS = [outDirRoot, outDirClient]

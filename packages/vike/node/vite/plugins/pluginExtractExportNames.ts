@@ -25,10 +25,10 @@ const filterRolldown = {
 }
 const filterFunction = (id: string) => extractExportNamesRE.test(id)
 
-function pluginExtractExportNames(): Plugin {
+function pluginExtractExportNames(): Plugin[] {
   let isDev = false
   let config: ResolvedConfig
-  return {
+  return [{
     name: 'vike:pluginExtractExportNames',
     enforce: 'post',
     transform: {
@@ -59,7 +59,7 @@ function pluginExtractExportNames(): Plugin {
         }
       },
     },
-  }
+  }]
 }
 
 async function getExtractExportNamesCode(src: string, isClientSide: boolean, isProduction: boolean, id: string) {

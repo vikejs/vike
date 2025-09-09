@@ -38,10 +38,10 @@ const filterFunction = (id: string) => {
   return true
 }
 
-function pluginFileEnv(): Plugin {
+function pluginFileEnv(): Plugin[] {
   let config: ResolvedConfig
   let viteDevServer: ViteDevServer | undefined
-  return {
+  return [{
     name: 'vike:pluginFileEnv',
     load: {
       filter: filterRolldown,
@@ -120,7 +120,7 @@ function pluginFileEnv(): Plugin {
         viteDevServer = viteDevServer_
       },
     },
-  }
+  }]
 
   function assertFileEnv(
     moduleId: string,

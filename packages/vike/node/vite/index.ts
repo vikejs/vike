@@ -43,21 +43,21 @@ type PluginInterop = Record<string, unknown> & { name: string }
 function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginInterop[] {
   const plugins: Plugin[] = [
     ...pluginCommon(vikeVitePluginOptions),
-    pluginVirtualFiles(),
+    ...pluginVirtualFiles(),
     ...pluginDev(),
     ...pluginBuild(),
-    pluginPreview(),
+    ...pluginPreview(),
     ...pluginExtractAssets(),
-    pluginExtractExportNames(),
+    ...pluginExtractExportNames(),
     ...pluginSetGlobalContext(),
-    pluginBaseUrls(),
-    pluginEnvVars(),
-    pluginFileEnv(),
-    pluginWorkaroundCssModuleHmr(),
-    pluginWorkaroundVite6HmrRegression(),
-    pluginReplaceIsClientSide(),
-    pluginReplaceGlobalThisConstants(),
-    pluginNonRunnableDev(),
+    ...pluginBaseUrls(),
+    ...pluginEnvVars(),
+    ...pluginFileEnv(),
+    ...pluginWorkaroundCssModuleHmr(),
+    ...pluginWorkaroundVite6HmrRegression(),
+    ...pluginReplaceIsClientSide(),
+    ...pluginReplaceGlobalThisConstants(),
+    ...pluginNonRunnableDev(),
   ]
   Object.assign(plugins, { _vikeVitePluginOptions: vikeVitePluginOptions })
   return plugins as any

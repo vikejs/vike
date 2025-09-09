@@ -32,9 +32,9 @@ const filterRolldown = {
 }
 const filterFunction = (id: string) => isVirtualFileId(id)
 
-function pluginVirtualFiles(): Plugin {
+function pluginVirtualFiles(): Plugin[] {
   let config: ResolvedConfig
-  return {
+  return [{
     name: 'vike:pluginVirtualFiles',
     configResolved: {
       async handler(config_) {
@@ -87,7 +87,7 @@ function pluginVirtualFiles(): Plugin {
         handleFileAddRemove(server, config)
       },
     },
-  }
+  }]
 }
 
 function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {

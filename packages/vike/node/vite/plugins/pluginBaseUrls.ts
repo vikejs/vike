@@ -5,9 +5,9 @@ import { resolveBase } from '../../shared/resolveBase.js'
 import { assert } from '../utils.js'
 import { getVikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 
-function pluginBaseUrls(): Plugin {
+function pluginBaseUrls(): Plugin[] {
   let basesResolved: ReturnType<typeof resolveBase>
-  return {
+  return [{
     name: 'vike:pluginBaseUrls',
     enforce: 'post',
     config: {
@@ -52,7 +52,7 @@ function pluginBaseUrls(): Plugin {
       */
       },
     },
-  }
+  }]
 }
 
 function resolveBaseFromResolvedConfig(

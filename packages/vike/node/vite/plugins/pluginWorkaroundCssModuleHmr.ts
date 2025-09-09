@@ -4,8 +4,8 @@ export { pluginWorkaroundCssModuleHmr }
 
 import type { Plugin } from 'vite'
 
-function pluginWorkaroundCssModuleHmr(): Plugin {
-  return {
+function pluginWorkaroundCssModuleHmr(): Plugin[] {
+  return [{
     name: 'vike:pluginWorkaroundCssModuleHmr',
     handleHotUpdate: {
       handler(ctx) {
@@ -16,5 +16,5 @@ function pluginWorkaroundCssModuleHmr(): Plugin {
         }
       },
     },
-  }
+  }]
 }

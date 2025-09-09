@@ -49,9 +49,9 @@ declare global {
   var __VIKE__DYNAMIC_IMPORT: (module: string) => Promise<Record<string, unknown>>
   var __VIKE__IS_NON_RUNNABLE_DEV: undefined | boolean
 }
-function pluginNonRunnableDev(): Plugin {
+function pluginNonRunnableDev(): Plugin[] {
   let config: ResolvedConfig
-  return {
+  return [{
     name: 'vike:pluginNonRunnableDev',
     apply: (_, configEnv) => isDevCheck(configEnv),
     configureServer: {
@@ -81,7 +81,7 @@ function pluginNonRunnableDev(): Plugin {
         return getMagicStringResult()
       },
     },
-  }
+  }]
 }
 
 function getIdWithoutQuery(id: string) {

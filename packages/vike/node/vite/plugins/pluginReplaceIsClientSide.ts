@@ -33,9 +33,9 @@ const filterFunction = (id: string, code: string) => {
   return true
 }
 
-function pluginReplaceIsClientSide(): Plugin {
+function pluginReplaceIsClientSide(): Plugin[] {
   let config: ResolvedConfig
-  return {
+  return [{
     name: 'vike:pluginReplaceIsClientSide',
     enforce: 'post',
     apply: 'build',
@@ -72,7 +72,7 @@ function pluginReplaceIsClientSide(): Plugin {
         return getMagicStringResult()
       },
     },
-  }
+  }]
 }
 
 // Copied & adapted from:

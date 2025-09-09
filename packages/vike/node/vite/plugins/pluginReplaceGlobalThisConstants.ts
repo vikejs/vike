@@ -10,8 +10,8 @@ declare global {
   var __VIKE__IS_CLIENT: true | undefined
 }
 
-function pluginReplaceGlobalThisConstants(): Plugin {
-  return {
+function pluginReplaceGlobalThisConstants(): Plugin[] {
+  return [{
     name: 'vike:pluginReplaceGlobalThisConstants',
     config: {
       handler(config) {
@@ -35,5 +35,5 @@ function pluginReplaceGlobalThisConstants(): Plugin {
         }
       },
     },
-  }
+  }]
 }

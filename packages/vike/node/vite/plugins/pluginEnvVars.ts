@@ -44,10 +44,10 @@ const filterFunction = (id: string, code: string) => {
   return true
 }
 
-function pluginEnvVars(): Plugin {
+function pluginEnvVars(): Plugin[] {
   let envsAll: Record<string, string>
   let config: ResolvedConfig
-  return {
+  return [{
     name: 'vike:pluginEnvVars',
     enforce: 'post',
     configResolved: {
@@ -121,5 +121,5 @@ function pluginEnvVars(): Plugin {
         return getMagicStringResult()
       },
     },
-  }
+  }]
 }
