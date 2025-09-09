@@ -16,7 +16,7 @@ import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 import { getMagicString } from '../shared/getMagicString.js'
-import { filterRolldown, filterFunction } from './pluginReplaceConstants.js'
+import { filterRolldown, filterFunction } from './pluginReplaceIsClientSide.js'
 
 // TO-DO/eventually:
 // - Make import.meta.env work inside +config.js

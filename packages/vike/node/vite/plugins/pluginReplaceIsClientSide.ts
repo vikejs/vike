@@ -1,4 +1,4 @@
-export { pluginReplaceConstants }
+export { pluginReplaceIsClientSide }
 export { filterFunction }
 export { filterRolldown }
 
@@ -32,10 +32,10 @@ const filterFunction = (id: string, code: string) => {
   return true
 }
 
-function pluginReplaceConstants(): Plugin {
+function pluginReplaceIsClientSide(): Plugin {
   let config: ResolvedConfig
   return {
-    name: 'vike:pluginReplaceConstants',
+    name: 'vike:pluginReplaceIsClientSide',
     enforce: 'post',
     apply: 'build',
     configResolved: {
