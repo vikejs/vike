@@ -20,6 +20,8 @@ export default {
     target: 'esnext',
   },
   plugins: [react(), testPlugin() as any],
+  // Simulate the real-world config users get (in this monorepo Vike is linked thus ssr.noExternal which isn't what users get)
+  ssr: { external: ['vike'] },
 } satisfies UserConfig
 
 // TEST: returning a promise
