@@ -21,7 +21,7 @@ The component defined by the `+Layout` setting wraps the component defined by <L
 </Layout>
 ```
 
-To define a gloabl layout applying to all your pages:
+To define a global layout applying to all your pages:
 
 ```tsx
 // /pages/+Layout.tsx
@@ -30,7 +30,7 @@ export { Layout }
 
 import React from 'react'
 
-// `children` includes the +Page compnent (and all inner +Layout components)
+// `children` includes the +Page component (and all inner +Layout components)
 function Layout({ children }: { children: React.ReactNode }) {
   return <>
     <Navigation/>
