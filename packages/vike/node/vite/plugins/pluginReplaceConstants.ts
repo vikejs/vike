@@ -60,20 +60,13 @@ function pluginReplaceConstants(): Plugin {
 
         const { magicString, getMagicStringResult } = getMagicString(code, id)
 
-        const constantsMap: { constants: string[]; replacement: unknown }[] = []
-        constantsMap.push({
-          constants: constantsIsClientSide,
-          replacement: !isViteServerSide_extraSafe(config, this.environment, options),
-        })
-
-        constantsMap.forEach(({ constants, replacement }) => {
-          if (!constants.some((c) => code.includes(c))) return
-          const regExp = getConstantRegExp(constants)
+        if (constantsIsClientSide.some((c) => code.includes(c))) {
+          const replacement = !isViteServerSide_extraSafe(config, this.environment, options)
+          const regExp = getConstantRegExp(constantsIsClientSide)
           magicString.replaceAll(regExp, JSON.stringify(replacement))
-        })
+        }
 
         if (!magicString.hasChanged()) return null
-
         return getMagicStringResult()
       },
     },
