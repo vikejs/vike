@@ -23,7 +23,6 @@ function getViteRPC<RpcFunctions>() {
 }
 
 function createRpcClient() {
-  // @ts-ignore CJS build doesn't support import.meta — TO-DO/eventually: let's remove this ts-ignore after we removed the CJS build
   const hot = import.meta.hot
   assert(hot)
 
@@ -43,7 +42,6 @@ function createRpcClient() {
     {
       get(_, functionName: string) {
         return async (...functionArgs: unknown[]) => {
-          // @ts-ignore CJS build doesn't support import.meta — TO-DO/eventually: let's remove this ts-ignore after we removed the CJS build
           const hot = import.meta.hot
           assert(hot)
           const callId = getRandomId()

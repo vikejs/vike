@@ -6,7 +6,6 @@
     "./server": {
       "worker": "./dist/esm/node/runtime/index.js",
       "workerd": "./dist/esm/node/runtime/index.js",
-      "require": "./dist/cjs/node/runtime/index.js",
       "node": "./dist/esm/node/runtime/index.js",
       "browser": "./dist/esm/client/node.js",
       "types": "./dist/esm/node/runtime/index.d.ts",
@@ -21,7 +20,6 @@
     "./client/router": {
       "worker": "./dist/esm/node/client/router.js",
       "workerd": "./dist/esm/node/client/router.js",
-      "require": "./dist/cjs/node/client/router.js",
       "node": "./dist/esm/node/client/router.js",
       "browser": "./dist/esm/client/runtime-client-routing/index.js",
       "types": "./dist/esm/client/runtime-client-routing/index.d.ts",
@@ -30,32 +28,27 @@
     "./routing": {
       "worker": "./dist/esm/shared/route/routing.js",
       "workerd": "./dist/esm/shared/route/routing.js",
-      "require": "./dist/cjs/shared/route/routing.js",
       "node": "./dist/esm/shared/route/routing.js",
       "browser": "./dist/esm/shared/route/routing.js",
       "types": "./dist/esm/shared/route/routing.d.ts",
       "default": "./dist/esm/shared/route/routing.js"
     },
     "./cli": {
-      "require": "./dist/cjs/node/cli/index.js",
       "node": "./dist/esm/node/cli/index.js",
       "types": "./dist/esm/node/cli/index.d.ts",
       "default": "./dist/esm/node/cli/index.js"
     },
     "./api": {
-      "require": "./dist/cjs/node/api/index.js",
       "node": "./dist/esm/node/api/index.js",
       "types": "./dist/esm/node/api/index.d.ts",
       "default": "./dist/esm/node/api/index.js"
     },
     "./prerender": {
-      "require": "./dist/cjs/node/prerender/index.js",
       "node": "./dist/esm/node/prerender/index.js",
       "types": "./dist/esm/node/prerender/index.d.ts",
       "default": "./dist/esm/node/prerender/index.js"
     },
     "./plugin": {
-      "require": "./dist/cjs/node/vite/index.js",
       "node": "./dist/esm/node/vite/index.js",
       "types": "./dist/esm/node/vite/index.d.ts",
       "default": "./dist/esm/node/vite/index.js"
@@ -63,7 +56,6 @@
     "./RenderErrorPage": {
       "worker": "./dist/esm/shared/RenderErrorPage.js",
       "workerd": "./dist/esm/shared/RenderErrorPage.js",
-      "require": "./dist/cjs/shared/RenderErrorPage.js",
       "node": "./dist/esm/shared/RenderErrorPage.js",
       "browser": "./dist/esm/shared/RenderErrorPage.js",
       "types": "./dist/esm/shared/RenderErrorPage.d.ts",
@@ -72,7 +64,6 @@
     "./abort": {
       "worker": "./dist/esm/shared/abort.js",
       "workerd": "./dist/esm/shared/abort.js",
-      "require": "./dist/cjs/shared/abort.js",
       "node": "./dist/esm/shared/abort.js",
       "browser": "./dist/esm/shared/abort.js",
       "types": "./dist/esm/shared/abort.d.ts",
@@ -81,7 +72,6 @@
     "./getPageContext": {
       "worker": "./dist/esm/shared/getPageContext.js",
       "workerd": "./dist/esm/shared/getPageContext.js",
-      "require": "./dist/cjs/shared/getPageContext.js",
       "node": "./dist/esm/shared/getPageContext.js",
       "browser": "./dist/esm/shared/getPageContext.js",
       "types": "./dist/esm/shared/getPageContext.d.ts",
@@ -90,7 +80,6 @@
     "./modifyUrl": {
       "worker": "./dist/esm/shared/modifyUrl.js",
       "workerd": "./dist/esm/shared/modifyUrl.js",
-      "require": "./dist/cjs/shared/modifyUrl.js",
       "node": "./dist/esm/shared/modifyUrl.js",
       "browser": "./dist/esm/shared/modifyUrl.js",
       "types": "./dist/esm/shared/modifyUrl.d.ts",
@@ -99,20 +88,17 @@
     "./universal-middleware": {
       "worker": "./dist/esm/node/runtime/universal-middleware.js",
       "workerd": "./dist/esm/node/runtime/universal-middleware.js",
-      "require": "./dist/cjs/node/runtime/universal-middleware.js",
       "node": "./dist/esm/node/runtime/universal-middleware.js",
       "browser": "./dist/esm/client/node.js",
       "types": "./dist/esm/node/runtime/universal-middleware.d.ts",
       "default": "./dist/esm/node/runtime/universal-middleware.js"
     },
     "./__internal": {
-      "require": "./dist/cjs/__internal/index.js",
       "node": "./dist/esm/__internal/index.js",
       "types": "./dist/esm/__internal/index.d.ts",
       "default": "./dist/esm/__internal/index.js"
     },
     "./__internal/setup": {
-      "require": "./dist/cjs/node/runtime/page-files/setup.js",
       "node": "./dist/esm/node/runtime/page-files/setup.js",
       "types": "./dist/esm/node/runtime/page-files/setup.d.ts",
       "default": "./dist/esm/node/runtime/page-files/setup.js"
@@ -120,7 +106,6 @@
     ".": {
       "worker": "./dist/esm/node/runtime/index.js",
       "workerd": "./dist/esm/node/runtime/index.js",
-      "require": "./dist/cjs/node/runtime/index.js",
       "node": "./dist/esm/node/runtime/index.js",
       "browser": "./dist/esm/client/index.js",
       "types": "./dist/esm/node/runtime/index.d.ts",
@@ -267,11 +252,7 @@
   },
   "scripts": {
     "dev": "tsc --watch",
-    "build": "rimraf dist/ && pnpm run build:esm && pnpm run build:cjs",
-    "build:esm": "tsc",
-    "build:cjs": "pnpm run build:cjs:ts && pnpm run build:cjs:fixup",
-    "build:cjs:ts": "tsc --project ./tsconfig.cjs.json",
-    "build:cjs:fixup": "node ./dist-cjs-fixup.mjs",
+    "build": "rimraf dist/ && tsc",
     "========= Release": "",
     "release": "release-me patch",
     "release:minor": "release-me minor",
