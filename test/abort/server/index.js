@@ -18,7 +18,8 @@ async function startServer() {
   app.get('/{*vikeCatchAll}', async (req, res) => {
     const pageContextInit = {
       urlOriginal: req.url,
-      user: 'some-fake-data',
+      // Trigger pageContext.json request
+      someFakeData: 1234,
     }
     const pageContext = await renderPage(pageContextInit)
 
