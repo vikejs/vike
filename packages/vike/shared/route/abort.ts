@@ -29,12 +29,16 @@ import {
 } from './utils.js'
 import pc from '@brillout/picocolors'
 
-type RedirectStatusCode = number &
-  // For improved IntelliSense, we define the list of status code directly on redirect()'s argument type
-  Parameters<typeof redirect>[1]
-type AbortStatusCode = number &
-  // For improved IntelliSense, we define the list of status code directly on render()'s argument type
-  Parameters<typeof render>[0]
+// For improved IntelliSense, we define the list of status code directly on redirect()'s argument type
+type RedirectStatusCode = number & Parameters<typeof redirect>[1]
+// For improved IntelliSense, we duplicate this list
+type AbortStatusCode = 401 | 403 | 404 | 410 | 429 | 500 | 503
+/* Doesn't work because of function overloading — https://stackoverflow.com/questions/58773217/how-to-use-parameters-type-on-overloaded-functions
+// For improved IntelliSense, we define the list of status code directly on render()'s argument type
+type AbortStatusCode = number & Parameters<typeof render>[0]
+//*/
+
+const _caputureType = render
 
 type UrlRedirect = {
   url: string
@@ -75,15 +79,6 @@ function redirect(url: string, statusCode?: 301 | 302): AbortRedirect {
 }
 
 /**
- * Abort the rendering of the current page, and render another page instead.
- *
- * https://vike.dev/render
- *
- * @param url The URL to render.
- * @param abortReason Sets `pageContext.abortReason` which is used by the error page to show a message to the user, see https://vike.dev/error-page
- */
-function render(url: `/${string}`, abortReason?: AbortReason): Error
-/**
  * Abort the rendering of the current page, and render the error page instead.
  *
  * https://vike.dev/render
@@ -107,6 +102,15 @@ function render(url: `/${string}`, abortReason?: AbortReason): Error
  * @param abortReason - Sets `pageContext.abortReason` which is usually used by the error page to show a message to the user, see https://vike.dev/error-page
  */
 function render(abortStatusCode: 401 | 403 | 404 | 410 | 429 | 500 | 503, abortReason?: AbortReason): Error
+/**
+ * Abort the rendering of the current page, and render another page instead.
+ *
+ * https://vike.dev/render
+ *
+ * @param url The URL to render.
+ * @param abortReason Sets `pageContext.abortReason` which is used by the error page to show a message to the user, see https://vike.dev/error-page
+ */
+function render(url: `/${string}`, abortReason?: AbortReason): Error
 function render(urlOrStatusCode: string | number, abortReason?: unknown): Error {
   const args = [typeof urlOrStatusCode === 'number' ? String(urlOrStatusCode) : JSON.stringify(urlOrStatusCode)]
   if (abortReason !== undefined) args.push(truncateString(JSON.stringify(abortReason), 30))
