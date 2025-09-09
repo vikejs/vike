@@ -15,7 +15,7 @@ const constantsIsClientSide = [
 ]
 
 const skipNodeModules = '/node_modules/'
-const skipIrrelevant = 'import.meta.env.'
+const skipIrrelevant = 'Context.isClientSide'
 const filterRolldown = {
   id: {
     exclude: `**${skipNodeModules}**`,
