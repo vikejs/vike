@@ -54,7 +54,6 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
             configVikePromise: Promise.resolve({
               prerender: vikeConfig.prerenderContext.isPrerenderingEnabled,
             }),
-            ssr: { external: ['vike'] },
           }
         },
       },
