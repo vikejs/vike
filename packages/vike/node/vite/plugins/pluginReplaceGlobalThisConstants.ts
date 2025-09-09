@@ -11,29 +11,31 @@ declare global {
 }
 
 function pluginReplaceGlobalThisConstants(): Plugin[] {
-  return [{
-    name: 'vike:pluginReplaceGlobalThisConstants',
-    config: {
-      handler(config) {
-        const isDev = config._isDev
-        assert(typeof isDev === 'boolean')
-        return {
-          define: {
-            'globalThis.__VIKE__IS_DEV': JSON.stringify(isDev),
-          },
-        }
+  return [
+    {
+      name: 'vike:pluginReplaceGlobalThisConstants',
+      config: {
+        handler(config) {
+          const isDev = config._isDev
+          assert(typeof isDev === 'boolean')
+          return {
+            define: {
+              'globalThis.__VIKE__IS_DEV': JSON.stringify(isDev),
+            },
+          }
+        },
+      },
+      configEnvironment: {
+        handler(name, config) {
+          const consumer: 'server' | 'client' = config.consumer ?? (name === 'client' ? 'client' : 'server')
+          const isClientSide = consumer === 'client'
+          return {
+            define: {
+              'globalThis.__VIKE__IS_CLIENT': JSON.stringify(isClientSide),
+            },
+          }
+        },
       },
     },
-    configEnvironment: {
-      handler(name, config) {
-        const consumer: 'server' | 'client' = config.consumer ?? (name === 'client' ? 'client' : 'server')
-        const isClientSide = consumer === 'client'
-        return {
-          define: {
-            'globalThis.__VIKE__IS_CLIENT': JSON.stringify(isClientSide),
-          },
-        }
-      },
-    },
-  }]
+  ]
 }

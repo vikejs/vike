@@ -34,60 +34,68 @@ const filterFunction = (id: string) => isVirtualFileId(id)
 
 function pluginVirtualFiles(): Plugin[] {
   let config: ResolvedConfig
-  return [{
-    name: 'vike:pluginVirtualFiles',
-    configResolved: {
-      async handler(config_) {
-        config = config_
-        // TO-DO/next-major-release: remove
-        if (!isV1Design()) config.experimental.importGlobRestoreExtension = true
+  return [
+    {
+      name: 'vike:pluginVirtualFiles',
+      configResolved: {
+        async handler(config_) {
+          config = config_
+          // TO-DO/next-major-release: remove
+          if (!isV1Design()) config.experimental.importGlobRestoreExtension = true
+        },
       },
-    },
-    resolveId: {
-      filter: filterRolldown,
-      handler(id) {
-        assert(filterFunction(id))
-        return addVirtualFileIdPrefix(id)
+      resolveId: {
+        filter: filterRolldown,
+        handler(id) {
+          assert(filterFunction(id))
+          return addVirtualFileIdPrefix(id)
+        },
       },
-    },
-    handleHotUpdate: {
-      async handler(ctx) {
-        try {
-          return await handleHotUpdate(ctx, config)
-        } catch (err) {
-          // Vite swallows errors thrown by handleHotUpdate()
-          console.error(err)
-          throw err
-        }
+      handleHotUpdate: {
+        async handler(ctx) {
+          try {
+            return await handleHotUpdate(ctx, config)
+          } catch (err) {
+            // Vite swallows errors thrown by handleHotUpdate()
+            console.error(err)
+            throw err
+          }
+        },
       },
-    },
-    load: {
-      filter: filterRolldown,
-      async handler(id, options) {
-        assert(filterFunction(id))
-        id = removeVirtualFileIdPrefix(id)
-        const isDev = config._isDev
-        assert(typeof isDev === 'boolean')
+      load: {
+        filter: filterRolldown,
+        async handler(id, options) {
+          assert(filterFunction(id))
+          id = removeVirtualFileIdPrefix(id)
+          const isDev = config._isDev
+          assert(typeof isDev === 'boolean')
 
-        const idParsed = parseVirtualFileId(id)
-        if (idParsed) {
-          if (idParsed.type === 'page-entry') {
-            const code = await generateVirtualFilePageEntry(id, isDev)
-            return code
+          const idParsed = parseVirtualFileId(id)
+          if (idParsed) {
+            if (idParsed.type === 'page-entry') {
+              const code = await generateVirtualFilePageEntry(id, isDev)
+              return code
+            }
+            if (idParsed.type === 'global-entry') {
+              const code = await generateVirtualFileGlobalEntryWithOldDesign(
+                id,
+                options,
+                config,
+                this.environment,
+                isDev,
+              )
+              return code
+            }
           }
-          if (idParsed.type === 'global-entry') {
-            const code = await generateVirtualFileGlobalEntryWithOldDesign(id, options, config, this.environment, isDev)
-            return code
-          }
-        }
+        },
+      },
+      configureServer: {
+        handler(server) {
+          handleFileAddRemove(server, config)
+        },
       },
     },
-    configureServer: {
-      handler(server) {
-        handleFileAddRemove(server, config)
-      },
-    },
-  }]
+  ]
 }
 
 function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
