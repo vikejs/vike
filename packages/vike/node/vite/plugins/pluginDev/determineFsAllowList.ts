@@ -5,6 +5,7 @@ import type { ResolvedConfig } from 'vite'
 import path from 'node:path'
 import { assert, assertPosixPath, getPackageNodeModulesDirectory } from '../../utils.js'
 import { fileURLToPath } from 'node:url'
+// TODO/now: remove these ts-ignore
 // @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
 const importMetaUrl: string = import.meta.url
 assertPosixPath(importMetaUrl)
