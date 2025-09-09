@@ -30,7 +30,7 @@ export { Layout }
 
 import React from 'react'
 
-// `children` includes <Page>
+// `children` includes the +Page compnent (and all inner +Layout components)
 function Layout({ children }: { children: React.ReactNode }) {
   return <>
     <Navigation/>
@@ -40,6 +40,8 @@ function Layout({ children }: { children: React.ReactNode }) {
 function Navigation() { /* ... */ }
 function Content() { /* ... */ }
 ```
+
+> Don't forget to use `children` (or [`<slot>`](https://vuejs.org/guide/components/slots.html) if you use Vue).
 
 > See <Link href="/config#inheritance" /> for an explanation of why `/pages/+Layout.jsx` applies to all pages.
 
