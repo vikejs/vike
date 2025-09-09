@@ -32,13 +32,7 @@ import pc from '@brillout/picocolors'
 // For improved IntelliSense, we define the list of status code directly on redirect()'s argument type
 type RedirectStatusCode = number & Parameters<typeof redirect>[1]
 // For improved IntelliSense, we duplicate this list
-type AbortStatusCode = 401 | 403 | 404 | 410 | 429 | 500 | 503
-/* Doesn't work because of function overloading — https://stackoverflow.com/questions/58773217/how-to-use-parameters-type-on-overloaded-functions
-// For improved IntelliSense, we define the list of status code directly on render()'s argument type
-type AbortStatusCode = number & Parameters<typeof render>[0]
-//*/
-
-const _caputureType = render
+type AbortStatusCode = Parameters<InferTwoOverloads<typeof render>[0]>[0]
 
 type UrlRedirect = {
   url: string
@@ -319,3 +313,9 @@ function assertNoInfiniteAbortLoop(rewriteCount: number, redirectCount: number) 
 function getErrPrefix(abortCaller: AbortCaller): string {
   return `URL passed to ${pc.code(abortCaller)}`
 }
+
+// https://github.com/microsoft/TypeScript/issues/28867#issue-387798238
+// https://stackoverflow.com/questions/58773217/how-to-use-parameters-type-on-overloaded-functions#comment103832704_58773217
+type InferTwoOverloads<F extends Function> = F extends { (...a1: infer A1): infer R1; (...a0: infer A0): infer R0 }
+  ? [(...a1: A1) => R1, (...a0: A0) => R0]
+  : never
