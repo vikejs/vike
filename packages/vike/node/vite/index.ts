@@ -41,7 +41,7 @@ setGetClientEntrySrcDev(getClientEntrySrcDev)
 type PluginInterop = Record<string, unknown> & { name: string }
 // Return `PluginInterop` instead of `Plugin` to avoid type mismatch upon different Vite versions
 function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginInterop[] {
-  // TODO/now: make all plugins return an array (to avoid re-formatting)
+  // TODO/now: make all plugins return Plugin[] instead of Plugin
   const plugins: Plugin[] = [
     ...pluginCommon(vikeVitePluginOptions),
     pluginVirtualFiles(),
