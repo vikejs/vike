@@ -32,7 +32,7 @@ import pc from '@brillout/picocolors'
 // For improved IntelliSense, we define the list of status code directly on redirect()'s argument type
 type RedirectStatusCode = number & Parameters<typeof redirect>[1]
 // For improved IntelliSense, we duplicate this list
-type AbortStatusCode = Parameters<InferTwoOverloads<typeof render>[0]>[0]
+type AbortStatusCode = number & Parameters<InferTwoOverloads<typeof render>[0]>[0]
 
 type UrlRedirect = {
   url: string
