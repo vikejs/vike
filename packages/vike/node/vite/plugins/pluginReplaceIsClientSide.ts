@@ -1,6 +1,4 @@
-export { pluginReplaceConstants }
-export { filterFunction }
-export { filterRolldown }
+export { pluginReplaceIsClientSide }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { assert, assertPosixPath } from '../utils.js'
@@ -8,6 +6,7 @@ import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 import { getMagicString } from '../shared/getMagicString.js'
 
+// https://vike.dev/pageContext#narrowing-down
 const constantsIsClientSide = [
   //
   'pageContext.isClientSide',
@@ -31,10 +30,10 @@ const filterFunction = (id: string, code: string) => {
   return true
 }
 
-function pluginReplaceConstants(): Plugin {
+function pluginReplaceIsClientSide(): Plugin {
   let config: ResolvedConfig
   return {
-    name: 'vike:pluginReplaceConstants',
+    name: 'vike:pluginReplaceIsClientSide',
     enforce: 'post',
     apply: 'build',
     configResolved: {
@@ -60,20 +59,13 @@ function pluginReplaceConstants(): Plugin {
 
         const { magicString, getMagicStringResult } = getMagicString(code, id)
 
-        const constantsMap: { constants: string[]; replacement: unknown }[] = []
-        constantsMap.push({
-          constants: constantsIsClientSide,
-          replacement: !isViteServerSide_extraSafe(config, this.environment, options),
-        })
-
-        constantsMap.forEach(({ constants, replacement }) => {
-          if (!constants.some((c) => code.includes(c))) return
-          const regExp = getConstantRegExp(constants)
+        if (constantsIsClientSide.some((c) => code.includes(c))) {
+          const replacement = !isViteServerSide_extraSafe(config, this.environment, options)
+          const regExp = getConstantRegExp(constantsIsClientSide)
           magicString.replaceAll(regExp, JSON.stringify(replacement))
-        })
+        }
 
         if (!magicString.hasChanged()) return null
-
         return getMagicStringResult()
       },
     },
