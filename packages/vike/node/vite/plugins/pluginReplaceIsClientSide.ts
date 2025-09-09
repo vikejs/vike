@@ -1,6 +1,4 @@
 export { pluginReplaceIsClientSide }
-export { filterFunction }
-export { filterRolldown }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { assert, assertPosixPath } from '../utils.js'
