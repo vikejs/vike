@@ -7,9 +7,11 @@ export { PROJECT_VERSION as version } from './utils.js'
 export type { VikeVitePluginOptions as UserConfig }
 export type { VikeVitePluginOptions }
 
-import { type Plugin } from 'vite'
+import type { Plugin } from 'vite'
+import { getClientEntrySrcDev } from './shared/getClientEntrySrcDev.js'
+import { setGetClientEntrySrcDev } from '../runtime/renderPage/getPageAssets/retrievePageAssetsDev.js'
 import { assertUsage } from './utils.js'
-import { pluginBuild } from './plugins/pluginBuild.js'
+import pc from '@brillout/picocolors'
 import { pluginPreview } from './plugins/pluginPreview.js'
 import { pluginDev } from './plugins/pluginDev.js'
 import { pluginVirtualFiles } from './plugins/pluginVirtualFiles.js'
@@ -19,14 +21,18 @@ import { pluginSetGlobalContext } from './plugins/pluginSetGlobalContext.js'
 import { pluginCommon } from './plugins/pluginCommon.js'
 import { pluginBaseUrls } from './plugins/pluginBaseUrls.js'
 import { pluginEnvVars } from './plugins/pluginEnvVars.js'
-import pc from '@brillout/picocolors'
 import { pluginFileEnv } from './plugins/pluginFileEnv.js'
-import { getClientEntrySrcDev } from './shared/getClientEntrySrcDev.js'
 import { pluginWorkaroundCssModuleHmr } from './plugins/pluginWorkaroundCssModuleHmr.js'
 import { pluginWorkaroundVite6HmrRegression } from './plugins/pluginWorkaroundVite6HmrRegression.js'
-import { pluginReplaceConstants } from './plugins/pluginReplaceConstants.js'
+import { pluginReplaceIsClientSide } from './plugins/pluginReplaceIsClientSide.js'
 import { pluginNonRunnableDev } from './plugins/pluginNonRunnableDev.js'
-import { setGetClientEntrySrcDev } from '../runtime/renderPage/getPageAssets/retrievePageAssetsDev.js'
+import { pluginBuildApp } from './plugins/pluginBuild/pluginBuildApp.js'
+import { pluginDistPackageJsonFile } from './plugins/pluginBuild/pluginDistPackageJsonFile.js'
+import { pluginSuppressRollupWarning } from './plugins/pluginBuild/pluginSuppressRollupWarning.js'
+import { pluginDistFileNames } from './plugins/pluginBuild/pluginDistFileNames.js'
+import { pluginProdBuildEntry } from './plugins/pluginBuild/pluginProdBuildEntry.js'
+import { pluginBuildConfig } from './plugins/pluginBuild/pluginBuildConfig.js'
+import { pluginModuleBanner } from './plugins/pluginBuild/pluginModuleBanner.js'
 
 // We don't call this in ./onLoad.ts to avoid a cyclic dependency with utils.ts
 setGetClientEntrySrcDev(getClientEntrySrcDev)
@@ -48,11 +54,23 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginIntero
     pluginFileEnv(),
     pluginWorkaroundCssModuleHmr(),
     pluginWorkaroundVite6HmrRegression(),
-    pluginReplaceConstants(),
+    pluginReplaceIsClientSide(),
     pluginNonRunnableDev(),
   ]
   Object.assign(plugins, { _vikeVitePluginOptions: vikeVitePluginOptions })
   return plugins as any
+}
+
+function pluginBuild(): Plugin[] {
+  return [
+    ...pluginBuildConfig(),
+    ...pluginBuildApp(),
+    ...pluginProdBuildEntry(),
+    pluginDistPackageJsonFile(),
+    pluginSuppressRollupWarning(),
+    pluginDistFileNames(),
+    pluginModuleBanner(),
+  ]
 }
 
 // Error upon wrong usage

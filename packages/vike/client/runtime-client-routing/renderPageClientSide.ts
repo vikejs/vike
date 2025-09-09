@@ -73,9 +73,8 @@ const globalObject = getGlobalObject<{
   onRenderClientPreviousPromise?: Promise<unknown>
   isFirstRenderDone?: true
   isTransitioning?: true
-  // TODO/now rename
+  //https://vike.dev/pageContext#previousPageContext
   previousPageContext?: PreviousPageContext
-  // TODO/now rename
   renderedPageContext?: PageContextInternalClient & PageContext_loadPageConfigsLazyClientSide
   firstRenderStartPromise: Promise<void>
   firstRenderStartPromiseResolve: () => void
