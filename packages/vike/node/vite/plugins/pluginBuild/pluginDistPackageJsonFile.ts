@@ -11,9 +11,9 @@ import type { Plugin, ResolvedConfig } from 'vite'
 import { rollupIsEsm } from '../../shared/rollupIsEsm.js'
 import { isViteServerSide } from '../../shared/isViteServerSide.js'
 
-function pluginDistPackageJsonFile(): Plugin {
+function pluginDistPackageJsonFile(): Plugin[] {
   let config: ResolvedConfig
-  return {
+  return [{
     name: 'vike:build:pluginDistPackageJsonFile',
     apply: 'build',
     configResolved: {
@@ -34,7 +34,7 @@ function pluginDistPackageJsonFile(): Plugin {
         })
       },
     },
-  }
+  }]
 }
 
 function getPackageJsonContent(isEsm: boolean): string {

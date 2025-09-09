@@ -7,10 +7,10 @@ import { getMagicString } from '../../shared/getMagicString.js'
 // Rollup's banner feature doesn't work with Vite: https://github.com/vitejs/vite/issues/8412
 // But, anyways, we want to prepend the banner at the beginning of each module, not at the beginning of each file (I believe that's what Rollup's banner feature does).
 
-function pluginModuleBanner(): Plugin {
+function pluginModuleBanner(): Plugin[] {
   let config: ResolvedConfig
 
-  return {
+  return [{
     name: 'vike:build:pluginModuleBanner',
     enforce: 'post',
     apply: 'build',
@@ -46,5 +46,5 @@ function pluginModuleBanner(): Plugin {
         return getMagicStringResult()
       },
     },
-  }
+  }]
 }

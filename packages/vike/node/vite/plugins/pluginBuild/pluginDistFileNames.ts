@@ -13,8 +13,8 @@ import { assertModuleId, getModuleFilePathAbsolute } from '../../shared/getFileP
 type PreRenderedChunk = Rollup.PreRenderedChunk
 type PreRenderedAsset = Rollup.PreRenderedAsset
 
-function pluginDistFileNames(): Plugin {
-  return {
+function pluginDistFileNames(): Plugin[] {
+  return [{
     name: 'vike:build:pluginDistFileNames',
     apply: 'build',
     enforce: 'post',
@@ -110,7 +110,7 @@ function pluginDistFileNames(): Plugin {
         })
       },
     },
-  }
+  }]
 }
 
 function getIdHash(id: string) {
