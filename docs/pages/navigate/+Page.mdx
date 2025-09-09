@@ -2,7 +2,7 @@ import { RepoLink, Link, Warning } from '@brillout/docpress'
 import { UiFrameworkExtension, ConfigSpec } from '../../components'
 
 <ConfigSpec
-  env="client"
+  env="client (server can import but not call it)"
   global={null}
 />
 
@@ -34,6 +34,8 @@ async function onSubmit() {
 > To navigate back or forward in the user's browser history, use the [History API](https://developer.mozilla.org/en-US/docs/Web/API/History) instead:
 >  - To go back, use [`window.history.back()`](https://developer.mozilla.org/en-US/docs/Web/API/History/back).
 >  - To go forward, use [`window.history.forward()`](https://developer.mozilla.org/en-US/docs/Web/API/History/forward).
+
+> For reloading the current page, use <Link href="/reload">`reload()`</Link> instead.
 
 
 ## Options
@@ -87,6 +89,7 @@ If you don't use a <UiFrameworkExtension /> and if you use <Link text="Server Ro
 
 ## See also
 
+- <Link href="/reload" />
 - <Link href="/redirect" />
 - <Link href="/redirects" />
 - <Link href="/abort#throw-redirect-vs-throw-render-vs-navigate" doNotInferSectionTitle={true} />
