@@ -57,7 +57,9 @@ function redirect(url: string, statusCode?: 301 | 302): AbortRedirect {
   if (!statusCode) {
     statusCode = 302
   } else {
-    if (!globalThis.__VIKE__IS_CLIENT || globalThis.__VIKE__IS_DEV) assertStatusCode(statusCode, [301, 302], 'redirect')
+    if (!globalThis.__VIKE__IS_CLIENT || globalThis.__VIKE__IS_DEV) {
+      assertStatusCode(statusCode, [301, 302], 'redirect')
+    }
     args.push(String(statusCode))
   }
   const pageContextAbort = {}
@@ -137,9 +139,10 @@ function render_(
     })
     return AbortRender(pageContextAbort)
   } else {
-    const abortStatusCode = urlOrStatusCode
-    if (!globalThis.__VIKE__IS_CLIENT || globalThis.__VIKE__IS_DEV)
+    if (!globalThis.__VIKE__IS_CLIENT || globalThis.__VIKE__IS_DEV) {
       assertStatusCode(urlOrStatusCode, [401, 403, 404, 410, 429, 500, 503], 'render')
+    }
+    const abortStatusCode = urlOrStatusCode
     objectAssign(pageContextAbort, {
       abortStatusCode,
       is404: abortStatusCode === 404,
