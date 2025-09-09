@@ -9,6 +9,10 @@ function testRun(
 ) {
   run(cmd)
 
+  // See `someFakeData` in server/index.js
+  const isMakingPageContextJsonRequest = cmd === 'npm run dev:server' || cmd === 'npm run prod'
+  const isDev = cmd === 'npm run dev' || cmd === 'npm run dev:server'
+
   test('HTML', async () => {
     const t = async (url: string) => {
       const html = await fetchHtml(url)
@@ -66,17 +70,18 @@ function testRun(
     const expectErrServer = () => {
       // Maybe we should also show a log in production?
       if (cmd === 'npm run prod') return
-      expectLog('HTTP response /show-error-page 503', { filter: (log) => log.logSource === 'stderr' })
+      expectLog('HTTP response /show-error-page 666', { filter: (log) => log.logSource === 'stderr' })
     }
     const expectErrClient = () =>
-      expectLog('Failed to load resource: the server responded with a status of 503 (Service Unavailable)', {
+      expectLog('Failed to load resource: the server responded with a status of 666 (unknown)', {
         filter: (log) =>
           log.logSource === 'Browser Error' && partRegex`http://${/[^\/]+/}:3000/show-error-page`.test(log.logInfo),
       })
     test('render error page - HTML', async () => {
       const response = await fetch(url)
-      expect(response.status).toBe(503)
+      expect(response.status).toBe(666)
       expectErrServer()
+      expectLog('Unexpected status code 666', { filter: (log) => log.logSource === 'stderr' })
       const html = await response.text()
       expect(html).toContain('Testing throw render error page.')
       expect(html).toContain('<p style="font-size:1.3em">Testing throw render error page.</p>')
@@ -102,6 +107,13 @@ function testRun(
       expect(await page.textContent('p')).toBe('Testing throw render error page.')
       await expectUrl('/show-error-page')
       await ensureWasClientSideRouted('/pages/about')
+      if (
+        // guard() is called on the client-side => warning is shown on the server-side (not on the client-side)
+        !isMakingPageContextJsonRequest &&
+        // The warning isn't shown on the client-side in production
+        isDev
+      )
+        expectLog('Unexpected status code 666', { filter: (log) => log.logSource === 'Browser Warning' })
     })
   }
 

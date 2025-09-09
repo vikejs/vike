@@ -1,12 +1,14 @@
 export { pluginReplaceIsClientSide }
 
+// - See https://vike.dev/pageContext#narrowing-down
+// - We cannot use [`define`](https://vite.dev/config/shared-options.html#define) because of https://github.com/rolldown/rolldown/issues/4300
+
 import type { Plugin, ResolvedConfig } from 'vite'
 import { assert, assertPosixPath } from '../utils.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 import { getMagicString } from '../shared/getMagicString.js'
 
-// https://vike.dev/pageContext#narrowing-down
 const constantsIsClientSide = [
   //
   'pageContext.isClientSide',

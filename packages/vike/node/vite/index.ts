@@ -25,6 +25,7 @@ import { pluginFileEnv } from './plugins/pluginFileEnv.js'
 import { pluginWorkaroundCssModuleHmr } from './plugins/pluginWorkaroundCssModuleHmr.js'
 import { pluginWorkaroundVite6HmrRegression } from './plugins/pluginWorkaroundVite6HmrRegression.js'
 import { pluginReplaceIsClientSide } from './plugins/pluginReplaceIsClientSide.js'
+import { pluginReplaceGlobalThisConstants } from './plugins/pluginReplaceGlobalThisConstants.js'
 import { pluginNonRunnableDev } from './plugins/pluginNonRunnableDev.js'
 import { pluginBuildApp } from './plugins/pluginBuild/pluginBuildApp.js'
 import { pluginDistPackageJsonFile } from './plugins/pluginBuild/pluginDistPackageJsonFile.js'
@@ -40,6 +41,7 @@ setGetClientEntrySrcDev(getClientEntrySrcDev)
 type PluginInterop = Record<string, unknown> & { name: string }
 // Return `PluginInterop` instead of `Plugin` to avoid type mismatch upon different Vite versions
 function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginInterop[] {
+  // TODO/now: make all plugins return an array (to avoid re-formatting)
   const plugins: Plugin[] = [
     ...pluginCommon(vikeVitePluginOptions),
     pluginVirtualFiles(),
@@ -55,6 +57,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginIntero
     pluginWorkaroundCssModuleHmr(),
     pluginWorkaroundVite6HmrRegression(),
     pluginReplaceIsClientSide(),
+    pluginReplaceGlobalThisConstants(),
     pluginNonRunnableDev(),
   ]
   Object.assign(plugins, { _vikeVitePluginOptions: vikeVitePluginOptions })

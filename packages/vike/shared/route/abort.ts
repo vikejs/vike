@@ -29,12 +29,10 @@ import {
 } from './utils.js'
 import pc from '@brillout/picocolors'
 
-type RedirectStatusCode = number &
-  // For improved IntelliSense, we define the list of status code directly on redirect()'s argument type
-  Parameters<typeof redirect>[1]
-type AbortStatusCode = number &
-  // For improved IntelliSense, we define the list of status code directly on render()'s argument type
-  Parameters<typeof render>[0]
+// For improved IntelliSense, we define the list of status code directly on redirect()'s argument type
+type RedirectStatusCode = number & Parameters<typeof redirect>[1]
+// For improved IntelliSense, we duplicate this list
+type AbortStatusCode = number & Parameters<InferTwoOverloads<typeof render>[0]>[0]
 
 type UrlRedirect = {
   url: string
@@ -59,7 +57,9 @@ function redirect(url: string, statusCode?: 301 | 302): AbortRedirect {
   if (!statusCode) {
     statusCode = 302
   } else {
-    assertStatusCode(statusCode, [301, 302], 'redirect')
+    if (!globalThis.__VIKE__IS_CLIENT || globalThis.__VIKE__IS_DEV) {
+      assertStatusCode(statusCode, [301, 302], 'redirect')
+    }
     args.push(String(statusCode))
   }
   const pageContextAbort = {}
@@ -79,16 +79,23 @@ function redirect(url: string, statusCode?: 301 | 302): AbortRedirect {
  *
  * https://vike.dev/render
  *
- * @param abortStatusCode
- * One of the following:
- *   `401` Unauthorized (user isn't logged in)
- *   `403` Forbidden (user is logged in but isn't allowed)
- *   `404` Not Found
- *   `410` Gone (use this instead of `404` if the page existed in the past, see https://github.com/vikejs/vike/issues/1097#issuecomment-1695260887)
- *   `429` Too Many Requests (rate limiting)
- *   `500` Internal Server Error (your client or server has a bug)
- *   `503` Service Unavailable (server is overloaded, or a third-party API isn't responding)
- * @param abortReason Sets `pageContext.abortReason` which is usually used by the error page to show a message to the user, see https://vike.dev/error-page
+ *
+ * **Recommended** status codes:
+ *   `401` — Unauthorized (user isn't logged in)
+ *   `403` — Forbidden (user is logged in but isn't allowed)
+ *   `404` — Not Found
+ *   `410` — Gone (use this instead of `404` if the page existed in the past, see https://github.com/vikejs/vike/issues/1097#issuecomment-1695260887)
+ *   `429` — Too Many Requests (rate limiting)
+ *   `500` — Internal Server Error (your client or server has a bug)
+ *   `503` — Service Unavailable (server is overloaded, or a third-party API isn't responding)
+ *
+ * **Not recommended** status codes:
+ *   `400` — See https://github.com/vikejs/vike/issues/1008#issuecomment-3270894445
+ *   Other status codes — See https://github.com/vikejs/vike/issues/1008
+ *
+ * @param abortStatusCode - One of the recommended status codes listed above.
+ *
+ * @param abortReason - Sets `pageContext.abortReason` which is usually used by the error page to show a message to the user, see https://vike.dev/error-page
  */
 function render(abortStatusCode: 401 | 403 | 404 | 410 | 429 | 500 | 503, abortReason?: AbortReason): Error
 /**
@@ -132,8 +139,10 @@ function render_(
     })
     return AbortRender(pageContextAbort)
   } else {
+    if (!globalThis.__VIKE__IS_CLIENT || globalThis.__VIKE__IS_DEV) {
+      assertStatusCode(urlOrStatusCode, [401, 403, 404, 410, 429, 500, 503], 'render')
+    }
     const abortStatusCode = urlOrStatusCode
-    assertStatusCode(urlOrStatusCode, [401, 403, 404, 410, 429, 500, 503], 'render')
     objectAssign(pageContextAbort, {
       abortStatusCode,
       is404: abortStatusCode === 404,
@@ -243,15 +252,26 @@ function logAbortErrorHandled(
 }
 
 function assertStatusCode(statusCode: number, expected: number[], caller: 'render' | 'redirect') {
+  assert(!globalThis.__VIKE__IS_CLIENT || globalThis.__VIKE__IS_DEV) // save client-side KBs
   const expectedEnglish = joinEnglish(
-    expected.map((s) => s.toString()),
+    expected.map((s) => pc.bold(String(s))),
     'or',
   )
-  assertWarning(
-    expected.includes(statusCode),
-    `Unepexected status code ${statusCode} passed to ${caller}(), we recommend ${expectedEnglish} instead. (Or reach out at https://github.com/vikejs/vike/issues/1008 if you believe ${statusCode} should be added.)`,
-    { onlyOnce: true },
-  )
+  const statusCodeWithColor = pc.bold(String(statusCode))
+  if (statusCode === 400) {
+    assert(!expected.includes(statusCode))
+    assertWarning(
+      false,
+      `We recommend against using the status code ${statusCodeWithColor} passed to ${caller}() — we recommend using ${pc.bold('404')} instead, see https://github.com/vikejs/vike/issues/1008#issuecomment-3270894445`,
+      { onlyOnce: true, showStackTrace: true },
+    )
+  } else {
+    assertWarning(
+      expected.includes(statusCode),
+      `Unexpected status code ${statusCodeWithColor} passed to ${caller}() — we recommend using ${expectedEnglish} instead. (Or reach out at https://github.com/vikejs/vike/issues/1008 if you believe ${statusCodeWithColor} should be added.)`,
+      { onlyOnce: true, showStackTrace: true },
+    )
+  }
 }
 
 type PageContextFromRewrite = { _urlRewrite: string }
@@ -297,3 +317,9 @@ function assertNoInfiniteAbortLoop(rewriteCount: number, redirectCount: number) 
 function getErrPrefix(abortCaller: AbortCaller): string {
   return `URL passed to ${pc.code(abortCaller)}`
 }
+
+// https://github.com/microsoft/TypeScript/issues/28867#issue-387798238
+// https://stackoverflow.com/questions/58773217/how-to-use-parameters-type-on-overloaded-functions#comment103832704_58773217
+type InferTwoOverloads<F extends Function> = F extends { (...a1: infer A1): infer R1; (...a0: infer A0): infer R0 }
+  ? [(...a1: A1) => R1, (...a0: A0) => R0]
+  : never
