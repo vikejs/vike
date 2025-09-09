@@ -57,7 +57,7 @@ function redirect(url: string, statusCode?: 301 | 302): AbortRedirect {
   if (!statusCode) {
     statusCode = 302
   } else {
-    if (import.meta.env.SSR || import.meta.env.DEV) assertStatusCode(statusCode, [301, 302], 'redirect')
+    if (!globalThis.__VIKE__IS_CLIENT || globalThis.__VIKE__IS_DEV) assertStatusCode(statusCode, [301, 302], 'redirect')
     args.push(String(statusCode))
   }
   const pageContextAbort = {}
@@ -138,7 +138,7 @@ function render_(
     return AbortRender(pageContextAbort)
   } else {
     const abortStatusCode = urlOrStatusCode
-    if (import.meta.env.SSR || import.meta.env.DEV)
+    if (!globalThis.__VIKE__IS_CLIENT || globalThis.__VIKE__IS_DEV)
       assertStatusCode(urlOrStatusCode, [401, 403, 404, 410, 429, 500, 503], 'render')
     objectAssign(pageContextAbort, {
       abortStatusCode,
@@ -249,7 +249,7 @@ function logAbortErrorHandled(
 }
 
 function assertStatusCode(statusCode: number, expected: number[], caller: 'render' | 'redirect') {
-  assert(import.meta.env.SSR || import.meta.env.DEV) // save client-side KBs
+  assert(!globalThis.__VIKE__IS_CLIENT || globalThis.__VIKE__IS_DEV) // save client-side KBs
   const expectedEnglish = joinEnglish(
     expected.map((s) => pc.bold(String(s))),
     'or',
