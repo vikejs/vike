@@ -14,8 +14,7 @@ import path from 'node:path'
 import { assertIsImportPathNpmPackage, isImportPathNpmPackageOrPathAlias } from './parseNpmPackage.js'
 import { isNotNullish } from './isNullish.js'
 import { createDebugger } from './debug.js'
-// @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
-const importMetaUrl: string = import.meta.url
+const importMetaUrl = import.meta.url
 assertPosixPath(importMetaUrl)
 
 assertIsNotBrowser()
