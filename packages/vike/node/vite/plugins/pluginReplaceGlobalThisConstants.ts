@@ -26,7 +26,7 @@ function pluginReplaceGlobalThisConstants(): Plugin {
     },
     configEnvironment: {
       handler(name, config) {
-        const consumer = (config.consumer ?? name === 'client') ? 'client' : 'server'
+        const consumer = config.consumer ?? (name === 'client' ? 'client' : 'server')
         const isClientSide = consumer === 'client'
         return {
           define: {
