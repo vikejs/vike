@@ -41,24 +41,23 @@ setGetClientEntrySrcDev(getClientEntrySrcDev)
 type PluginInterop = Record<string, unknown> & { name: string }
 // Return `PluginInterop` instead of `Plugin` to avoid type mismatch upon different Vite versions
 function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginInterop[] {
-  // TODO/now: make all plugins return an array (to avoid re-formatting)
   const plugins: Plugin[] = [
     ...pluginCommon(vikeVitePluginOptions),
-    pluginVirtualFiles(),
+    ...pluginVirtualFiles(),
     ...pluginDev(),
     ...pluginBuild(),
-    pluginPreview(),
+    ...pluginPreview(),
     ...pluginExtractAssets(),
-    pluginExtractExportNames(),
+    ...pluginExtractExportNames(),
     ...pluginSetGlobalContext(),
-    pluginBaseUrls(),
-    pluginEnvVars(),
-    pluginFileEnv(),
-    pluginWorkaroundCssModuleHmr(),
-    pluginWorkaroundVite6HmrRegression(),
-    pluginReplaceIsClientSide(),
-    pluginReplaceGlobalThisConstants(),
-    pluginNonRunnableDev(),
+    ...pluginBaseUrls(),
+    ...pluginEnvVars(),
+    ...pluginFileEnv(),
+    ...pluginWorkaroundCssModuleHmr(),
+    ...pluginWorkaroundVite6HmrRegression(),
+    ...pluginReplaceIsClientSide(),
+    ...pluginReplaceGlobalThisConstants(),
+    ...pluginNonRunnableDev(),
   ]
   Object.assign(plugins, { _vikeVitePluginOptions: vikeVitePluginOptions })
   return plugins as any
@@ -69,10 +68,10 @@ function pluginBuild(): Plugin[] {
     ...pluginBuildConfig(),
     ...pluginBuildApp(),
     ...pluginProdBuildEntry(),
-    pluginDistPackageJsonFile(),
-    pluginSuppressRollupWarning(),
-    pluginDistFileNames(),
-    pluginModuleBanner(),
+    ...pluginDistPackageJsonFile(),
+    ...pluginSuppressRollupWarning(),
+    ...pluginDistFileNames(),
+    ...pluginModuleBanner(),
   ]
 }
 

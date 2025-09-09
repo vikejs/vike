@@ -5,30 +5,32 @@ export { pluginSuppressRollupWarning }
 import type { Plugin, Rollup } from 'vite'
 type RollupLog = Rollup.RollupLog
 
-function pluginSuppressRollupWarning(): Plugin {
-  return {
-    name: 'vike:build:pluginSuppressRollupWarning',
-    apply: 'build',
-    enforce: 'post',
-    configResolved: {
-      async handler(config) {
-        const onWarnOriginal = config.build.rollupOptions.onwarn
-        config.build.rollupOptions.onwarn = function (warning, warn) {
-          // Suppress
-          if (suppressUnusedImport(warning)) return
-          if (suppressEmptyBundle(warning)) return
-          if (suppressUseClientDirective(warning)) return
+function pluginSuppressRollupWarning(): Plugin[] {
+  return [
+    {
+      name: 'vike:build:pluginSuppressRollupWarning',
+      apply: 'build',
+      enforce: 'post',
+      configResolved: {
+        async handler(config) {
+          const onWarnOriginal = config.build.rollupOptions.onwarn
+          config.build.rollupOptions.onwarn = function (warning, warn) {
+            // Suppress
+            if (suppressUnusedImport(warning)) return
+            if (suppressEmptyBundle(warning)) return
+            if (suppressUseClientDirective(warning)) return
 
-          // Pass through
-          if (onWarnOriginal) {
-            onWarnOriginal.apply(this, arguments as any)
-          } else {
-            warn(warning)
+            // Pass through
+            if (onWarnOriginal) {
+              onWarnOriginal.apply(this, arguments as any)
+            } else {
+              warn(warning)
+            }
           }
-        }
+        },
       },
     },
-  }
+  ]
 }
 
 /** Suppress warning about Rollup removing the React Server Components `"use client";` directives */

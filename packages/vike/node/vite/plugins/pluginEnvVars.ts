@@ -44,82 +44,88 @@ const filterFunction = (id: string, code: string) => {
   return true
 }
 
-function pluginEnvVars(): Plugin {
+function pluginEnvVars(): Plugin[] {
   let envsAll: Record<string, string>
   let config: ResolvedConfig
-  return {
-    name: 'vike:pluginEnvVars',
-    enforce: 'post',
-    configResolved: {
-      handler(config_) {
-        config = config_
-        envsAll = loadEnv(config.mode, config.envDir || config.root, '')
-        // Vite's built-in plugin vite:define needs to apply after this plugin.
-        //  - This plugin vike:pluginEnvVars needs to apply after vike:pluginExtractAssets and vike:pluginExtractExportNames which need to apply after @vitejs/plugin-vue
-        ;(config.plugins as Plugin[]).sort(lowerFirst<Plugin>((plugin) => (plugin.name === 'vite:define' ? 1 : 0)))
+  return [
+    {
+      name: 'vike:pluginEnvVars',
+      enforce: 'post',
+      configResolved: {
+        handler(config_) {
+          config = config_
+          envsAll = loadEnv(config.mode, config.envDir || config.root, '')
+          // Vite's built-in plugin vite:define needs to apply after this plugin.
+          //  - This plugin vike:pluginEnvVars needs to apply after vike:pluginExtractAssets and vike:pluginExtractExportNames which need to apply after @vitejs/plugin-vue
+          ;(config.plugins as Plugin[]).sort(lowerFirst<Plugin>((plugin) => (plugin.name === 'vite:define' ? 1 : 0)))
+        },
       },
-    },
-    transform: {
-      filter: filterRolldown,
-      handler(code, id, options) {
-        id = normalizeId(id)
-        assertPosixPath(id)
-        assertPosixPath(config.root)
-        if (!id.startsWith(config.root)) return // skip linked dependencies
-        assert(filterFunction(id, code))
+      transform: {
+        filter: filterRolldown,
+        handler(code, id, options) {
+          id = normalizeId(id)
+          assertPosixPath(id)
+          assertPosixPath(config.root)
+          if (!id.startsWith(config.root)) return // skip linked dependencies
+          assert(filterFunction(id, code))
 
-        const isBuild = config.command === 'build'
-        const isClientSide = !isViteServerSide_extraSafe(config, this.environment, options)
+          const isBuild = config.command === 'build'
+          const isClientSide = !isViteServerSide_extraSafe(config, this.environment, options)
 
-        const { magicString, getMagicStringResult } = getMagicString(code, id)
+          const { magicString, getMagicStringResult } = getMagicString(code, id)
 
-        // Find & check
-        const replacements = Object.entries(envsAll)
-          .filter(([key]) => {
-            // Already handled by Vite
-            const envPrefix = !config.envPrefix ? [] : isArray(config.envPrefix) ? config.envPrefix : [config.envPrefix]
-            return !envPrefix.some((prefix) => key.startsWith(prefix))
-          })
-          .map(([envName, envVal]) => {
-            const envStatement = `import.meta.env.${envName}` as const
-            const envStatementRegExpStr = escapeRegex(envStatement) + '\\b'
+          // Find & check
+          const replacements = Object.entries(envsAll)
+            .filter(([key]) => {
+              // Already handled by Vite
+              const envPrefix = !config.envPrefix
+                ? []
+                : isArray(config.envPrefix)
+                  ? config.envPrefix
+                  : [config.envPrefix]
+              return !envPrefix.some((prefix) => key.startsWith(prefix))
+            })
+            .map(([envName, envVal]) => {
+              const envStatement = `import.meta.env.${envName}` as const
+              const envStatementRegExpStr = escapeRegex(envStatement) + '\\b'
 
-            // Security check
-            {
-              const isPrivate = !envName.startsWith(PUBLIC_ENV_PREFIX) && !PUBLIC_ENV_ALLOWLIST.includes(envName)
-              if (isPrivate && isClientSide) {
-                if (!new RegExp(envStatementRegExpStr).test(code)) return
-                const modulePath = getModuleFilePathAbsolute(id, config)
-                const errMsgAddendum: string = isBuild
-                  ? ''
-                  : ' (Vike will prevent your app from building for production)'
-                const keyPublic = `${PUBLIC_ENV_PREFIX}${envName}` as const
-                const errMsg =
-                  `${envStatement} is used in client-side file ${modulePath} which means that the environment variable ${envName} will be included in client-side bundles and, therefore, ${envName} will be publicly exposed which can be a security leak${errMsgAddendum}. Use ${envStatement} only in server-side files, or rename ${envName} to ${keyPublic}, see https://vike.dev/env` as const
-                if (isBuild) {
-                  assertUsage(false, errMsg)
-                } else {
-                  // - Only a warning for faster development DX (e.g. when user toggles `ssr: boolean` or `onBeforeRenderIsomorph: boolean`).
-                  // - But only showing a warning can be confusing: https://github.com/vikejs/vike/issues/1641
-                  assertWarning(false, errMsg, { onlyOnce: true })
+              // Security check
+              {
+                const isPrivate = !envName.startsWith(PUBLIC_ENV_PREFIX) && !PUBLIC_ENV_ALLOWLIST.includes(envName)
+                if (isPrivate && isClientSide) {
+                  if (!new RegExp(envStatementRegExpStr).test(code)) return
+                  const modulePath = getModuleFilePathAbsolute(id, config)
+                  const errMsgAddendum: string = isBuild
+                    ? ''
+                    : ' (Vike will prevent your app from building for production)'
+                  const keyPublic = `${PUBLIC_ENV_PREFIX}${envName}` as const
+                  const errMsg =
+                    `${envStatement} is used in client-side file ${modulePath} which means that the environment variable ${envName} will be included in client-side bundles and, therefore, ${envName} will be publicly exposed which can be a security leak${errMsgAddendum}. Use ${envStatement} only in server-side files, or rename ${envName} to ${keyPublic}, see https://vike.dev/env` as const
+                  if (isBuild) {
+                    assertUsage(false, errMsg)
+                  } else {
+                    // - Only a warning for faster development DX (e.g. when user toggles `ssr: boolean` or `onBeforeRenderIsomorph: boolean`).
+                    // - But only showing a warning can be confusing: https://github.com/vikejs/vike/issues/1641
+                    assertWarning(false, errMsg, { onlyOnce: true })
+                  }
                 }
+                // Double check
+                assert(!(isPrivate && isClientSide) || !isBuild)
               }
-              // Double check
-              assert(!(isPrivate && isClientSide) || !isBuild)
-            }
 
-            return { regExpStr: envStatementRegExpStr, replacement: envVal }
+              return { regExpStr: envStatementRegExpStr, replacement: envVal }
+            })
+            .filter(isNotNullish)
+
+          // Apply
+          replacements.forEach(({ regExpStr, replacement }) => {
+            magicString.replaceAll(new RegExp(regExpStr, 'g'), JSON.stringify(replacement))
           })
-          .filter(isNotNullish)
+          if (!magicString.hasChanged()) return null
 
-        // Apply
-        replacements.forEach(({ regExpStr, replacement }) => {
-          magicString.replaceAll(new RegExp(regExpStr, 'g'), JSON.stringify(replacement))
-        })
-        if (!magicString.hasChanged()) return null
-
-        return getMagicStringResult()
+          return getMagicStringResult()
+        },
       },
     },
-  }
+  ]
 }

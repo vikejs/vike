@@ -33,46 +33,48 @@ const filterFunction = (id: string, code: string) => {
   return true
 }
 
-function pluginReplaceIsClientSide(): Plugin {
+function pluginReplaceIsClientSide(): Plugin[] {
   let config: ResolvedConfig
-  return {
-    name: 'vike:pluginReplaceIsClientSide',
-    enforce: 'post',
-    apply: 'build',
-    configResolved: {
-      handler(config_) {
-        config = config_
+  return [
+    {
+      name: 'vike:pluginReplaceIsClientSide',
+      enforce: 'post',
+      apply: 'build',
+      configResolved: {
+        handler(config_) {
+          config = config_
+        },
+      },
+      transform: {
+        filter: filterRolldown,
+        handler(code, id, options) {
+          id = normalizeId(id)
+          assertPosixPath(id)
+          assertPosixPath(config.root)
+          if (!id.startsWith(config.root)) return // skip linked dependencies
+          assert(filterFunction(id, code))
+          const isBuild = config.command === 'build'
+          assert(isBuild)
+
+          // Used by vike.dev
+          // https://github.com/vikejs/vike/blob/08a1ff55c80ddca64ca6d4417fefd45fefeb4ffb/docs/vite.config.ts#L12
+          // @ts-expect-error
+          if (config._skipVikeReplaceConstants?.(id)) return
+
+          const { magicString, getMagicStringResult } = getMagicString(code, id)
+
+          if (constantsIsClientSide.some((c) => code.includes(c))) {
+            const replacement = !isViteServerSide_extraSafe(config, this.environment, options)
+            const regExp = getConstantRegExp(constantsIsClientSide)
+            magicString.replaceAll(regExp, JSON.stringify(replacement))
+          }
+
+          if (!magicString.hasChanged()) return null
+          return getMagicStringResult()
+        },
       },
     },
-    transform: {
-      filter: filterRolldown,
-      handler(code, id, options) {
-        id = normalizeId(id)
-        assertPosixPath(id)
-        assertPosixPath(config.root)
-        if (!id.startsWith(config.root)) return // skip linked dependencies
-        assert(filterFunction(id, code))
-        const isBuild = config.command === 'build'
-        assert(isBuild)
-
-        // Used by vike.dev
-        // https://github.com/vikejs/vike/blob/08a1ff55c80ddca64ca6d4417fefd45fefeb4ffb/docs/vite.config.ts#L12
-        // @ts-expect-error
-        if (config._skipVikeReplaceConstants?.(id)) return
-
-        const { magicString, getMagicStringResult } = getMagicString(code, id)
-
-        if (constantsIsClientSide.some((c) => code.includes(c))) {
-          const replacement = !isViteServerSide_extraSafe(config, this.environment, options)
-          const regExp = getConstantRegExp(constantsIsClientSide)
-          magicString.replaceAll(regExp, JSON.stringify(replacement))
-        }
-
-        if (!magicString.hasChanged()) return null
-        return getMagicStringResult()
-      },
-    },
-  }
+  ]
 }
 
 // Copied & adapted from:

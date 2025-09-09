@@ -49,39 +49,41 @@ declare global {
   var __VIKE__DYNAMIC_IMPORT: (module: string) => Promise<Record<string, unknown>>
   var __VIKE__IS_NON_RUNNABLE_DEV: undefined | boolean
 }
-function pluginNonRunnableDev(): Plugin {
+function pluginNonRunnableDev(): Plugin[] {
   let config: ResolvedConfig
-  return {
-    name: 'vike:pluginNonRunnableDev',
-    apply: (_, configEnv) => isDevCheck(configEnv),
-    configureServer: {
-      handler(viteDevServer) {
-        createViteRPC(viteDevServer, getViteRpcFunctions)
+  return [
+    {
+      name: 'vike:pluginNonRunnableDev',
+      apply: (_, configEnv) => isDevCheck(configEnv),
+      configureServer: {
+        handler(viteDevServer) {
+          createViteRPC(viteDevServer, getViteRpcFunctions)
+        },
+      },
+      configResolved: {
+        handler(config_) {
+          config = config_
+        },
+      },
+      transform: {
+        filter: filterRolldown,
+        handler(code, id) {
+          assert(config._isDev)
+          assert(filterFunction(id))
+          const idWithoutQuery = getIdWithoutQuery(id)
+          if (isRunnableDevEnvironment(this.environment)) return
+          const { magicString, getMagicStringResult } = getMagicString(code, id)
+          if (idWithoutQuery === distFileIsNonRunnableDev) {
+            magicString.replaceAll('__VIKE__IS_NON_RUNNABLE_DEV', JSON.stringify(true))
+          }
+          if (idWithoutQuery === distFileGlobalContext) {
+            magicString.replaceAll('__VIKE__DYNAMIC_IMPORT', 'import')
+          }
+          return getMagicStringResult()
+        },
       },
     },
-    configResolved: {
-      handler(config_) {
-        config = config_
-      },
-    },
-    transform: {
-      filter: filterRolldown,
-      handler(code, id) {
-        assert(config._isDev)
-        assert(filterFunction(id))
-        const idWithoutQuery = getIdWithoutQuery(id)
-        if (isRunnableDevEnvironment(this.environment)) return
-        const { magicString, getMagicStringResult } = getMagicString(code, id)
-        if (idWithoutQuery === distFileIsNonRunnableDev) {
-          magicString.replaceAll('__VIKE__IS_NON_RUNNABLE_DEV', JSON.stringify(true))
-        }
-        if (idWithoutQuery === distFileGlobalContext) {
-          magicString.replaceAll('__VIKE__DYNAMIC_IMPORT', 'import')
-        }
-        return getMagicStringResult()
-      },
-    },
-  }
+  ]
 }
 
 function getIdWithoutQuery(id: string) {
