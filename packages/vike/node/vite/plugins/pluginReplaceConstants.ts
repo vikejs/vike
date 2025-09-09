@@ -8,6 +8,13 @@ import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 import { getMagicString } from '../shared/getMagicString.js'
 
+const constantsIsClientSide = [
+  //
+  'pageContext.isClientSide',
+  'globalContext.isClientSide',
+  'pageContext.globalContext.isClientSide',
+]
+
 const skipNodeModules = '/node_modules/'
 const skipIrrelevant = 'import.meta.env.'
 const filterRolldown = {
@@ -55,11 +62,7 @@ function pluginReplaceConstants(): Plugin {
 
         const constantsMap: { constants: string[]; replacement: unknown }[] = []
         constantsMap.push({
-          constants: [
-            'pageContext.isClientSide',
-            'globalContext.isClientSide',
-            'pageContext.globalContext.isClientSide',
-          ],
+          constants: constantsIsClientSide,
           replacement: !isViteServerSide_extraSafe(config, this.environment, options),
         })
 
