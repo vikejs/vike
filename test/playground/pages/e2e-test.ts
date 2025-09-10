@@ -113,7 +113,7 @@ function testOnCreateGlobalContext(isDev: boolean) {
       expect(setGloballyClientNew).toBe(setGloballyClient)
     }
 
-    // HMR
+    // HMR (part 1)
     if (isDev) {
       const org = 'number server-side'
       const mod = 'numrrr server-side'
@@ -144,12 +144,52 @@ function testOnCreateGlobalContext(isDev: boolean) {
       expect(setGloballyServerNew).toBe(setGloballyServer)
       expect(setGloballyClientNew).not.toBe(setGloballyClient)
     }
+
+    // HMR (part 2)
+    if (isDev) {
+      const setGloballyServer = await page.textContent('#setGloballyServer')
+      const setGloballyClient = await page.textContent('#setGloballyClient')
+
+      const prefixClientOld = 'client-random-number:'
+      const prefixServerOld = 'server-random-number:'
+      const prefixClientNew = 'client-rrrdom-number:'
+      const prefixServerNew = 'server-rrrdom-number:'
+      expect(setGloballyClient).toContain(prefixClientOld)
+      expect(setGloballyServer).toContain(prefixServerOld)
+
+      // Change +onCreateGlobalContext.client.ts
+      editFile('./+onCreateGlobalContext.client.ts', (s) => s.replace(prefixClientOld, prefixClientNew))
+      await autoRetry(async () => {
+        expect(await page.textContent('#setGloballyClient')).toContain(prefixClientNew)
+      })
+      editFileRevert()
+      await autoRetry(async () => {
+        expect(await page.textContent('#setGloballyClient')).toContain(prefixClientOld)
+      })
+      expect(await page.textContent('#setGloballyServer')).toBe(setGloballyServer)
+
+      // Change +onCreateGlobalContext.server.ts
+      editFile('./+onCreateGlobalContext.server.ts', (s) => s.replace(prefixServerOld, prefixServerNew))
+      await autoRetry(async () => {
+        expect(await page.textContent('#setGloballyServer')).toContain(prefixServerNew)
+      })
+      editFileRevert()
+      await autoRetry(async () => {
+        expect(await page.textContent('#setGloballyServer')).toContain(prefixServerOld)
+      })
+    }
   })
 }
 function expectNumbers(setGloballyClient: string | null, setGloballyServer: string | null) {
-  expect(isNaN(parseInt(setGloballyServer!, 10))).toBe(false)
-  expect(isNaN(parseInt(setGloballyClient!, 10))).toBe(false)
+  expect(isNaN(parseInt(removePrefix(setGloballyServer), 10))).toBe(false)
+  expect(isNaN(parseInt(removePrefix(setGloballyClient), 10))).toBe(false)
   expect(isNaN(parseInt('hydrating...', 10))).toBe(true)
+}
+
+function removePrefix(randomNumber: string | null) {
+  randomNumber = randomNumber!.split(':')[1]!
+  expect(randomNumber).toBeTruthy()
+  return randomNumber
 }
 
 function testHooksCalled() {

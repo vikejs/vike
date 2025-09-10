@@ -5,13 +5,14 @@ import { assert } from './utils/assert'
 
 async function onCreateGlobalContext(globalContext: GlobalContextClient) {
   assert(globalContext.pages['/pages/index'])
-  globalContext.setGloballyClient = Math.ceil(Math.random() * Math.pow(10, 14))
+  const rid = Math.ceil(Math.random() * Math.pow(10, 14))
+  globalContext.setGloballyClient = `client-random-number:${rid}`
 }
 
 declare global {
   namespace Vike {
     interface GlobalContextClient {
-      setGloballyClient: number
+      setGloballyClient: string
     }
     interface GlobalContextServer {
       setGloballyClient?: undefined
