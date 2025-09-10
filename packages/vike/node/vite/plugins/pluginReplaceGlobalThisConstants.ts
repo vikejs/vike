@@ -4,20 +4,20 @@ import type { Plugin } from 'vite'
 import { assert } from '../utils.js'
 
 declare global {
-  /** Like `import.meta.env.DEV` but works inside `node_modules/` (even if package is `ssr.external`). If value is `undefined` then interpret it as `false`. */
+  /** Like `import.meta.env.DEV` but works inside `node_modules/` (even if package is `ssr.external`). The value `undefined` is to be interpreted as `false`. */
   var __VIKE__IS_DEV: boolean | undefined
-  /** Like `import.meta.env.SSR` but works inside `node_modules/` (even if package is `ssr.external`). If value is `undefined` then interpret it as `false`. */
+  /** Like `import.meta.env.SSR` but works inside `node_modules/` (even if package is `ssr.external`). The value `undefined` is to be interpreted as `false`. */
   var __VIKE__IS_CLIENT: boolean | undefined
 }
 
-// If client-side => always ssr.noExternal => globalThis.{__VIKE__IS_CLIENT,__VIKE__IS_DEV} are set by the `define` config below.
+// If client-side => always noExternal => globalThis.{__VIKE__IS_CLIENT,__VIKE__IS_DEV} are set by the `define` config below.
 // If server-side:
-//   If package is ssr.noExternal => globalThis.{__VIKE__IS_CLIENT,__VIKE__IS_DEV} are set by the `define` config below.
-//   If package is `ssr.external`:
-//     If Vite isn't loaded => production => `globalThis.{__VIKE__IS_CLIENT,__VIKE__IS_DEV} === undefined` => checking for `!globalThis.{__VIKE__IS_CLIENT,__VIKE__IS_DEV}` is accurate.
-//     If Vite is loaded:
-//       If RunnableDevEnvironment => globalThis.{__VIKE__IS_CLIENT,__VIKE__IS_DEV} are set by the assignments below.
-//       If not RunnableDevEnvironment => packages are always ssr.noExternal => globalThis.{__VIKE__IS_CLIENT,__VIKE__IS_DEV} are set by the `define` config below.
+//   If not RunnableDevEnvironment (e.g. `@cloudflare/vite-plugin`) => always ssr.noExternal => globalThis.{__VIKE__IS_CLIENT,__VIKE__IS_DEV} are set by the `define` config below.
+//   If RunnableDevEnvironment (the default setup):
+//     If ssr.noExternal => globalThis.{__VIKE__IS_CLIENT,__VIKE__IS_DEV} are set by the `define` config below.
+//     If `ssr.external`:
+//       If Vite is loaded => Vite and server run inside the same process (because RunnableDevEnvironment) => globalThis.{__VIKE__IS_CLIENT,__VIKE__IS_DEV} are set by the assignments below.
+//       If Vite isn't loaded => production and globalThis.{__VIKE__IS_CLIENT,__VIKE__IS_DEV} is never set => value `undefined` is to be interpreted as `false`.
 
 globalThis.__VIKE__IS_CLIENT = false
 
@@ -29,8 +29,6 @@ function pluginReplaceGlobalThisConstants(): Plugin[] {
         handler(config) {
           const isDev = config._isDev
           assert(typeof isDev === 'boolean')
-          // If Vite isn't loaded => production => `globalThis.__VIKE__IS_DEV === undefined` => checking for `!globalThis.__VIKE__IS_DEV` is accurate.
-          // If Vite is loaded: see comment above about `globalThis.__VIKE__IS_CLIENT`.
           globalThis.__VIKE__IS_DEV = isDev
           return {
             define: {
