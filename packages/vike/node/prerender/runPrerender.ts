@@ -1180,6 +1180,7 @@ function getRedirectHtml(urlTarget: string) {
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="refresh" content="0;url=${urlTargetSafe}">
+  <link rel="canonical" href="${urlTargetSafe}" />
   <title>Redirect ${urlTargetSafe}</title>
   <style>body{opacity:0}</style>
   <noscript>
