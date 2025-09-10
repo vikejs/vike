@@ -9,7 +9,7 @@ import {
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 
 import { createPageContextObject, createPageContextShared } from '../../shared/createPageContextShared.js'
-import { createGlobalContextClient } from './createGlobalContextClient.js'
+import { getGlobalContextClientInternal } from './getGlobalContextClientInternal.js'
 import {
   preparePageContextForPublicUsageClient,
   type PageContextForPublicUsageClient,
@@ -19,7 +19,7 @@ import { execHook } from '../../shared/hooks/execHook.js'
 const urlFirst = getCurrentUrl({ withoutHash: true })
 
 async function createPageContextClientSide() {
-  const globalContext = await createGlobalContextClient()
+  const globalContext = await getGlobalContextClientInternal()
 
   const pageContextCreated = createPageContextObject()
   objectAssign(pageContextCreated, {

@@ -1,8 +1,8 @@
-export { createGlobalContextClient }
+export { getGlobalContextClientInternal }
 export type { GlobalContextClient }
 export type { GlobalContextClientInternal }
 
-import { createGlobalContextClientShared } from '../shared/createGlobalContextClientShared.js'
+import { getGlobalContextClientInternalShared } from '../shared/getGlobalContextClientInternalShared.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import type { GlobalContextBase, GlobalContextBasePublic } from '../../shared/createGlobalContextShared.js'
 import { objectAssign } from './utils.js'
@@ -14,10 +14,10 @@ type GlobalContextClient = GlobalContextBasePublic &
   Vike.GlobalContextClient & {
     // Nothing extra for now
   }
-type GlobalContextClientInternal = Awaited<ReturnType<typeof createGlobalContextClient>>
+type GlobalContextClientInternal = Awaited<ReturnType<typeof getGlobalContextClientInternal>>
 
-async function createGlobalContextClient() {
-  const globalContext = await createGlobalContextClientShared()
+async function getGlobalContextClientInternal() {
+  const globalContext = await getGlobalContextClientInternalShared()
   objectAssign(globalContext, await addGlobalContext(globalContext))
   return globalContext
 }

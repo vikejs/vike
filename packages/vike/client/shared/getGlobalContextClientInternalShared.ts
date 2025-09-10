@@ -4,14 +4,14 @@ export { getGlobalContextSync }
 export { setVirtualFileExportsGlobalEntry }
 
 // Internal usage
-export { createGlobalContextClientShared }
+export { getGlobalContextClientInternalShared }
 export type GlobalContextClientInternalShared =
   | GlobalContextClientInternal
   | GlobalContextClientInternalWithServerRouting
 
 import { createGlobalContextShared, getGlobalContextSyncErrMsg } from '../../shared/createGlobalContextShared.js'
-import type { GlobalContextClientInternal } from '../runtime-client-routing/createGlobalContextClient.js'
-import type { GlobalContextClientInternalWithServerRouting } from '../runtime-server-routing/createGlobalContextClient.js'
+import type { GlobalContextClientInternal } from '../runtime-client-routing/getGlobalContextClientInternal.js'
+import type { GlobalContextClientInternalWithServerRouting } from '../runtime-server-routing/getGlobalContextClientInternal.js'
 import { getGlobalContextSerializedInHtml } from './getJsonSerializedInHtml.js'
 import { assert, assertUsage, genPromise, getGlobalObject, objectAssign, checkType } from './utils.js'
 
@@ -24,7 +24,7 @@ const globalObject = getGlobalObject<{
   globalContextInitialPromise: Promise<void>
   globalContextInitialPromiseResolve: () => void
 }>(
-  'createGlobalContextClientShared.ts',
+  'getGlobalContextClientInternalShared.ts',
   (() => {
     const { promise: globalContextInitialPromise, resolve: globalContextInitialPromiseResolve } = genPromise()
     return {
@@ -34,7 +34,7 @@ const globalObject = getGlobalObject<{
   })(),
 )
 
-async function createGlobalContextClientShared() {
+async function getGlobalContextClientInternalShared() {
   if (globalObject.globalContextPromise) {
     const globalContext = await globalObject.globalContextPromise
     return globalContext as never
@@ -93,6 +93,6 @@ async function setVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry: u
     delete globalObject.globalContextPromise
     globalObject.virtualFileExportsGlobalEntry = virtualFileExportsGlobalEntry
     // Eagerly call +onCreateGlobalContext() hooks
-    await createGlobalContextClientShared()
+    await getGlobalContextClientInternalShared()
   }
 }

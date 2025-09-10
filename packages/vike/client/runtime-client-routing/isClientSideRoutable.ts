@@ -3,7 +3,7 @@ export { isClientSideRoutable }
 import { analyzePageClientSideInit } from '../../shared/getPageFiles/analyzePageClientSide.js'
 import { findPageConfig } from '../../shared/page-configs/findPageConfig.js'
 import { analyzeClientSide } from '../../shared/getPageFiles/analyzeClientSide.js'
-import type { GlobalContextClientInternal } from './createGlobalContextClient.js'
+import type { GlobalContextClientInternal } from './getGlobalContextClientInternal.js'
 import type { PageFile } from '../../shared/getPageFiles.js'
 
 // TO-DO/next-major-release: make it sync
