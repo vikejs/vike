@@ -1,7 +1,6 @@
 // Public usage
 export { getGlobalContext }
 export { getGlobalContextSync }
-export { setVirtualFileExportsGlobalEntry }
 
 // Internal usage
 export { createGetGlobalContextClient }
@@ -39,24 +38,34 @@ const globalObject = getGlobalObject<{
 )
 
 function createGetGlobalContextClient<GlobalContextAddendum extends object>(
+  virtualFileExportsGlobalEntry: unknown,
+  isClientRouting: boolean,
   addGlobalContext?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddendum>,
 ) {
+  assert(globalObject.isClientRouting === undefined || globalObject.isClientRouting === isClientRouting)
+  globalObject.isClientRouting = isClientRouting
+
+  // Eagerly call onCreateGlobalContext() hook
+  getGlobalContext()
+
   return getGlobalContext
 
   async function getGlobalContext() {
-    if (globalObject.globalContextPromise) {
+    // HMR => virtualFileExportsGlobalEntry differ
+    if (globalObject.virtualFileExportsGlobalEntry === virtualFileExportsGlobalEntry) {
       const globalContext = await globalObject.globalContextPromise
       return globalContext as never
+    } else {
+      globalObject.virtualFileExportsGlobalEntry = virtualFileExportsGlobalEntry
     }
 
     // Create
     const globalContextPromise = createGlobalContextShared(
-      globalObject.virtualFileExportsGlobalEntry,
+      virtualFileExportsGlobalEntry,
       globalObject,
       undefined,
       async (globalContext) => {
         const globalContextAddendum = {
-          // TODO/now update JSDocs
           /**
            * Whether the environment is client-side or server-side / pre-rendering.
            *
@@ -93,18 +102,4 @@ function getGlobalContextSync(): NeverExported {
   assertUsage(globalContext, getGlobalContextSyncErrMsg)
   checkType<GlobalContextNotTyped>(globalContext)
   return globalContext as never
-}
-
-function setVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry: unknown, isClientRouting: boolean) {
-  // TODO/now: remove unused globalObject.isClientRouting
-  assert(globalObject.isClientRouting === undefined || globalObject.isClientRouting === isClientRouting)
-  globalObject.isClientRouting = isClientRouting
-  // HMR => virtualFileExportsGlobalEntry differ
-  if (globalObject.virtualFileExportsGlobalEntry !== virtualFileExportsGlobalEntry) {
-    delete globalObject.globalContextPromise
-    globalObject.virtualFileExportsGlobalEntry = virtualFileExportsGlobalEntry
-    // TODO/now: refactor to make it work
-    // Eagerly call +onCreateGlobalContext() hooks
-    getGlobalContext()
-  }
 }
