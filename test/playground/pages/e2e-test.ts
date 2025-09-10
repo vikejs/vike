@@ -185,7 +185,6 @@ function expectNumbers(setGloballyClient: string | null, setGloballyServer: stri
   expect(isNaN(parseInt(removePrefix(setGloballyClient), 10))).toBe(false)
   expect(isNaN(parseInt('hydrating...', 10))).toBe(true)
 }
-
 function removePrefix(randomNumber: string | null) {
   randomNumber = randomNumber!.split(':')[1]!
   expect(randomNumber).toBeTruthy()
