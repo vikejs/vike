@@ -4,6 +4,8 @@ export { getGlobalContextSync }
 export { setVirtualFileExportsGlobalEntry }
 
 // Internal usage
+// TODO/now rename export
+// TODO/now rename file
 export { createGetGlobalContextClient }
 export type GlobalContextClientInternalShared =
   | GlobalContextClientInternal
