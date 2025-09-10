@@ -23,6 +23,7 @@ import {
   assertWarning,
   checkType,
   hasProp,
+  isBrowser,
   joinEnglish,
   objectAssign,
   truncateString,
@@ -253,6 +254,16 @@ function logAbortErrorHandled(
 
 function assertStatusCode(statusCode: number, expected: number[], caller: 'render' | 'redirect') {
   assert(!globalThis.__VIKE__IS_CLIENT || globalThis.__VIKE__IS_DEV) // save client-side KBs
+  // double check
+  if (globalThis.__VIKE__IS_CLIENT) {
+    assert(isBrowser())
+    assert(import.meta.env.SSR === false)
+    assert(globalThis.__VIKE__IS_CLIENT !== undefined)
+    assert(import.meta.env.DEV === globalThis.__VIKE__IS_DEV)
+  } else {
+    assert(!isBrowser())
+  }
+
   const expectedEnglish = joinEnglish(
     expected.map((s) => pc.bold(String(s))),
     'or',
