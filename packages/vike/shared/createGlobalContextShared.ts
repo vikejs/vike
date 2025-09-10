@@ -12,7 +12,7 @@ import type { PageConfigRuntime } from '../types/PageConfig.js'
 import { execHookGlobal } from './hooks/execHook.js'
 import { prepareGlobalContextForPublicUsage } from './prepareGlobalContextForPublicUsage.js'
 import type { GlobalContextServerInternal } from '../node/runtime/globalContext.js'
-import type { GlobalContextClientInternal } from '../client/runtime-client-routing/globalContext.js'
+import type { GlobalContextClientInternal } from '../client/runtime-client-routing/createGlobalContextClient.js'
 import { getHookFromPageConfigGlobalCumulative, type Hook } from './hooks/getHook.js'
 const getGlobalContextSyncErrMsg =
   "The global context isn't set yet, call getGlobalContextSync() later or use getGlobalContext() instead."
