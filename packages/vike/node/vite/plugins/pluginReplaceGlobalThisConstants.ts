@@ -10,14 +10,19 @@ declare global {
   var __VIKE__IS_CLIENT: boolean | undefined
 }
 
-// If client-side => always noExternal => globalThis.{__VIKE__IS_CLIENT,__VIKE__IS_DEV} are set by the `define` config below.
+// === Explanation: globalThis.__VIKE__IS_DEV
+// If client-side => always noExternal => globalThis.__VIKE__IS_DEV is set by the `define` config below.
 // If server-side:
-//   If not RunnableDevEnvironment (e.g. `@cloudflare/vite-plugin`) => always ssr.noExternal => globalThis.{__VIKE__IS_CLIENT,__VIKE__IS_DEV} are set by the `define` config below.
-//   If RunnableDevEnvironment (the default setup):
-//     If ssr.noExternal => globalThis.{__VIKE__IS_CLIENT,__VIKE__IS_DEV} are set by the `define` config below.
-//     If `ssr.external`:
-//       If Vite is loaded => Vite and server run inside the same process (because RunnableDevEnvironment) => globalThis.{__VIKE__IS_CLIENT,__VIKE__IS_DEV} are set by the assignments below.
-//       If Vite isn't loaded => production and globalThis.{__VIKE__IS_CLIENT,__VIKE__IS_DEV} is never set => value `undefined` is to be interpreted as `false`.
+//   If ssr.noExternal => globalThis.__VIKE__IS_DEV is set by the `define` config below.
+//   If `ssr.external`:
+//     If not RunnableDevEnvironment (e.g. `@cloudflare/vite-plugin`) => always ssr.noExternal => globalThis.__VIKE__IS_DEV is set by the `define` config below.
+//     If RunnableDevEnvironment (the default setup):
+//       If dev/preview/pre-rendering => Vite is loaded, and server and Vite run inside the same process (because RunnableDevEnvironment) => globalThis.__VIKE__IS_DEV is set by the assignment below.
+//       If production => Vite isn't loaded => globalThis.__VIKE__IS_DEV is `undefined` (it's never set) => value `undefined` is to be interpreted as `false`.
+
+// === Explanation: globalThis.__VIKE__IS_CLIENT
+// If client-side => always noExternal => globalThis.__VIKE__IS_CLIENT is set to `true` by the `define` config below.
+// If server-side => globalThis.__VIKE__IS_CLIENT is either `false` or `undefined` (the value `undefined` is to be interpreted as `false`).
 
 globalThis.__VIKE__IS_CLIENT = false
 
