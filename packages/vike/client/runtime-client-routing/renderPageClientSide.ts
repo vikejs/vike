@@ -642,13 +642,11 @@ function disableClientRouting(err: unknown, log: boolean) {
     // We don't use console.error() to avoid flooding error trackers such as Sentry
     console.log(err)
   }
-  // @ts-ignore Since dist/cjs/client/ is never used, we can ignore this error.
-  const isProd: boolean = import.meta.env.PROD
   assertInfo(
     false,
     [
       'Failed to fetch static asset.',
-      isProd ? 'This usually happens when a new frontend is deployed.' : null,
+      import.meta.env.PROD ? 'This usually happens when a new frontend is deployed.' : null,
       'Falling back to Server Routing.',
       '(The next page navigation will use Server Routing instead of Client Routing.)',
     ]

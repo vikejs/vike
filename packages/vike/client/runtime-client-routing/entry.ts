@@ -8,10 +8,7 @@ import { setVirtualFileExportsGlobalEntry } from '../shared/createGetGlobalConte
 // @ts-expect-error
 import * as virtualFileExportsGlobalEntry from 'virtual:vike:global-entry:client:client-routing'
 
-// TODO/now: remove this ts-ignore
-// @ts-ignore Since dist/cjs/client/ is never used, we can ignore this error.
-const isProd: boolean = import.meta.env.PROD
-assertSingleInstance_onClientEntryClientRouting(isProd)
+assertSingleInstance_onClientEntryClientRouting(import.meta.env.PROD)
 
 setVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry, true)
 
