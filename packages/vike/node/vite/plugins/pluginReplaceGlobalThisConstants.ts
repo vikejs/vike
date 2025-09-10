@@ -10,6 +10,9 @@ declare global {
   var __VIKE__IS_CLIENT: boolean | undefined
 }
 
+globalThis.__VIKE__IS_DEV = true
+globalThis.__VIKE__IS_CLIENT = false
+
 function pluginReplaceGlobalThisConstants(): Plugin[] {
   return [
     {
