@@ -40,9 +40,7 @@ const globalObject = getGlobalObject<{
   })(),
 )
 
-async function createGetGlobalContextClient<GlobalContextAddendum extends object>(
-  addGlobalContext?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddendum>,
-) {
+async function createGetGlobalContextClient() {
   if (globalObject.globalContextPromise) {
     const globalContext = await globalObject.globalContextPromise
     return globalContext as never
@@ -64,7 +62,6 @@ async function createGetGlobalContextClient<GlobalContextAddendum extends object
         isClientSide: true as const,
       }
       objectAssign(globalContextAddendum, getGlobalContextSerializedInHtml())
-      objectAssign(globalContextAddendum, await addGlobalContext?.(globalContext))
       return globalContextAddendum
     },
   )
@@ -93,7 +90,7 @@ function getGlobalContextSync(): NeverExported {
   return globalContext as never
 }
 
-function setVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry: unknown, isClientRouting: boolean) {
+async function setVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry: unknown, isClientRouting: boolean) {
   // TODO/now: remove unused globalObject.isClientRouting
   assert(globalObject.isClientRouting === undefined || globalObject.isClientRouting === isClientRouting)
   globalObject.isClientRouting = isClientRouting
@@ -101,8 +98,7 @@ function setVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry: unknown
   if (globalObject.virtualFileExportsGlobalEntry !== virtualFileExportsGlobalEntry) {
     delete globalObject.globalContextPromise
     globalObject.virtualFileExportsGlobalEntry = virtualFileExportsGlobalEntry
-    // TODO/now: refactor to make it work
     // Eagerly call +onCreateGlobalContext() hooks
-    getGlobalContext()
+    await createGetGlobalContextClient()
   }
 }
