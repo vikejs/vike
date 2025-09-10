@@ -41,38 +41,38 @@ const globalObject = getGlobalObject<{
 async function createGetGlobalContextClient<GlobalContextAddendum extends object>(
   addGlobalContext?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddendum>,
 ) {
-    if (globalObject.globalContextPromise) {
-      const globalContext = await globalObject.globalContextPromise
-      return globalContext as never
-    }
+  if (globalObject.globalContextPromise) {
+    const globalContext = await globalObject.globalContextPromise
+    return globalContext as never
+  }
 
-    // Create
-    const globalContextPromise = createGlobalContextShared(
-      globalObject.virtualFileExportsGlobalEntry,
-      globalObject,
-      undefined,
-      async (globalContext) => {
-        const globalContextAddendum = {
-          // TODO/now update JSDocs
-          /**
-           * Whether the environment is client-side or server-side / pre-rendering.
-           *
-           * We recommend using `import.meta.env.SSR` instead, see https://vike.dev/globalContext
-           */
-          isClientSide: true as const,
-        }
-        objectAssign(globalContextAddendum, getGlobalContextSerializedInHtml())
-        objectAssign(globalContextAddendum, await addGlobalContext?.(globalContext))
-        return globalContextAddendum
-      },
-    )
-    globalObject.globalContextPromise = globalContextPromise
-    const globalContext = await globalContextPromise
-    assert(globalObject.globalContext === globalContext)
-    globalObject.globalContextInitialPromiseResolve()
+  // Create
+  const globalContextPromise = createGlobalContextShared(
+    globalObject.virtualFileExportsGlobalEntry,
+    globalObject,
+    undefined,
+    async (globalContext) => {
+      const globalContextAddendum = {
+        // TODO/now update JSDocs
+        /**
+         * Whether the environment is client-side or server-side / pre-rendering.
+         *
+         * We recommend using `import.meta.env.SSR` instead, see https://vike.dev/globalContext
+         */
+        isClientSide: true as const,
+      }
+      objectAssign(globalContextAddendum, getGlobalContextSerializedInHtml())
+      objectAssign(globalContextAddendum, await addGlobalContext?.(globalContext))
+      return globalContextAddendum
+    },
+  )
+  globalObject.globalContextPromise = globalContextPromise
+  const globalContext = await globalContextPromise
+  assert(globalObject.globalContext === globalContext)
+  globalObject.globalContextInitialPromiseResolve()
 
-    // Return
-    return globalContext
+  // Return
+  return globalContext
 }
 
 // Type is never exported — it's the server-side getGlobalContext() type that is exported and exposed to the user
