@@ -6,4 +6,4 @@ export {
   getGlobalContext,
   getGlobalContext as getGlobalContextAsync,
   getGlobalContextSync,
-} from './shared/createGetGlobalContextClient.js'
+} from './shared/createGlobalContextClientShared.js'

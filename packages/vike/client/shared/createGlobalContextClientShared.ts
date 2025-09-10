@@ -4,7 +4,7 @@ export { getGlobalContextSync }
 export { setVirtualFileExportsGlobalEntry }
 
 // Internal usage
-export { createGetGlobalContextClient }
+export { createGlobalContextClientShared }
 export type GlobalContextClientInternalShared =
   | GlobalContextClientInternal
   | GlobalContextClientInternalWithServerRouting
@@ -24,7 +24,7 @@ const globalObject = getGlobalObject<{
   globalContextInitialPromise: Promise<void>
   globalContextInitialPromiseResolve: () => void
 }>(
-  'createGetGlobalContextClient.ts',
+  'createGlobalContextClientShared.ts',
   (() => {
     const { promise: globalContextInitialPromise, resolve: globalContextInitialPromiseResolve } = genPromise()
     return {
@@ -34,7 +34,7 @@ const globalObject = getGlobalObject<{
   })(),
 )
 
-async function createGetGlobalContextClient() {
+async function createGlobalContextClientShared() {
   if (globalObject.globalContextPromise) {
     const globalContext = await globalObject.globalContextPromise
     return globalContext as never
@@ -93,6 +93,6 @@ async function setVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry: u
     delete globalObject.globalContextPromise
     globalObject.virtualFileExportsGlobalEntry = virtualFileExportsGlobalEntry
     // Eagerly call +onCreateGlobalContext() hooks
-    await createGetGlobalContextClient()
+    await createGlobalContextClientShared()
   }
 }

@@ -7,7 +7,7 @@ import { assertSingleInstance_onClientEntryServerRouting } from './utils.js'
 import { removeFoucBuster } from '../shared/removeFoucBuster.js'
 import { execHook } from '../../shared/hooks/execHook.js'
 import { preparePageContextForPublicUsageClient } from './preparePageContextForPublicUsageClient.js'
-import { setVirtualFileExportsGlobalEntry } from '../shared/createGetGlobalContextClient.js'
+import { setVirtualFileExportsGlobalEntry } from '../shared/createGlobalContextClientShared.js'
 // @ts-expect-error
 import * as virtualFileExportsGlobalEntry from 'virtual:vike:global-entry:client:server-routing'
 

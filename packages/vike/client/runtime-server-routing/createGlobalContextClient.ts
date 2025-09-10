@@ -2,7 +2,7 @@ export { createGlobalContextClient }
 export type { GlobalContextClientWithServerRouting }
 export type { GlobalContextClientInternalWithServerRouting }
 
-import { createGetGlobalContextClient } from '../shared/createGetGlobalContextClient.js'
+import { createGlobalContextClientShared } from '../shared/createGlobalContextClientShared.js'
 import type { GlobalContextBasePublic } from '../../shared/createGlobalContextShared.js'
 
 // Public type
@@ -16,6 +16,6 @@ type GlobalContextClientInternalWithServerRouting = Awaited<ReturnType<typeof cr
 
 // TODO/now: remove this useless function and re-export instead?
 async function createGlobalContextClient() {
-  const globalContext = await createGetGlobalContextClient()
+  const globalContext = await createGlobalContextClientShared()
   return globalContext
 }

@@ -2,7 +2,7 @@ export { createGlobalContextClient }
 export type { GlobalContextClient }
 export type { GlobalContextClientInternal }
 
-import { createGetGlobalContextClient } from '../shared/createGetGlobalContextClient.js'
+import { createGlobalContextClientShared } from '../shared/createGlobalContextClientShared.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import type { GlobalContextBase, GlobalContextBasePublic } from '../../shared/createGlobalContextShared.js'
 import { objectAssign } from './utils.js'
@@ -17,7 +17,7 @@ type GlobalContextClient = GlobalContextBasePublic &
 type GlobalContextClientInternal = Awaited<ReturnType<typeof createGlobalContextClient>>
 
 async function createGlobalContextClient() {
-  const globalContext = await createGetGlobalContextClient()
+  const globalContext = await createGlobalContextClientShared()
   objectAssign(globalContext, await addGlobalContext(globalContext))
   return globalContext
 }
