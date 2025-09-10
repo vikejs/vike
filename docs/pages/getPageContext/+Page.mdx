@@ -31,10 +31,11 @@ export { data }
 export type Data = Awaited<ReturnType<typeof data>>
 
 import { getPageContext } from 'vike/getPageContext'// [!code --]
+import type { PageContextServer } from 'vike/types'
 
-//~/* [!code --]*/function data() {
-/* [!code --]*/ const pageContext = getPageContext()
-function data(pageContext) /* [!code ++]*/{
+//~function data() {// [!code --]
+//~ const pageContext = getPageContext()// [!code --]
+function data(pageContext: PageContextServer) {// [!code ++]
   // ...
 }
 ```
