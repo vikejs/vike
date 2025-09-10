@@ -254,14 +254,24 @@ function logAbortErrorHandled(
 
 function assertStatusCode(statusCode: number, expected: number[], caller: 'render' | 'redirect') {
   assert(!globalThis.__VIKE__IS_CLIENT || globalThis.__VIKE__IS_DEV) // save client-side KBs
-  // double check
+
+  // double check vike:pluginReplaceGlobalThisConstants
   if (globalThis.__VIKE__IS_CLIENT) {
     assert(isBrowser())
+    assert(typeof globalThis.__VIKE__IS_DEV === 'boolean')
+    assert(typeof globalThis.__VIKE__IS_CLIENT === 'boolean')
     assert(import.meta.env.SSR === false)
-    assert(globalThis.__VIKE__IS_CLIENT !== undefined)
     assert(import.meta.env.DEV === globalThis.__VIKE__IS_DEV)
   } else {
     assert(!isBrowser())
+    if (import.meta.env) {
+      assert(typeof globalThis.__VIKE__IS_DEV === 'boolean')
+      assert(typeof globalThis.__VIKE__IS_CLIENT === 'boolean')
+      assert(import.meta.env.SSR === true)
+      assert(import.meta.env.DEV === globalThis.__VIKE__IS_DEV)
+    } else {
+      // import.meta.env isn't defined when 'vike' is ssr.external
+    }
   }
 
   const expectedEnglish = joinEnglish(

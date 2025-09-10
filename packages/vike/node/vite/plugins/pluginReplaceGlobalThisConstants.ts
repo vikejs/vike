@@ -4,13 +4,21 @@ import type { Plugin } from 'vite'
 import { assert } from '../utils.js'
 
 declare global {
-  /** `undefined` means we don't know: if the module isn't processed by Vite then the information isn't available */
+  /** Like `import.meta.env.DEV` but works inside `node_modules/` (even if package is `ssr.external`). If value is `undefined` then interpret it as `false`. */
   var __VIKE__IS_DEV: boolean | undefined
-  /** `undefined` means `false`: if the module isn't processed by Vite then the module cannot be client-side */
+  /** Like `import.meta.env.SSR` but works inside `node_modules/` (even if package is `ssr.external`). If value is `undefined` then interpret it as `false`. */
   var __VIKE__IS_CLIENT: boolean | undefined
 }
 
-globalThis.__VIKE__IS_DEV = true
+// If client-side => always ssr.noExternal => globalThis.{__VIKE__IS_CLIENT,__VIKE__IS_DEV} are set by the `define` config below.
+// If server-side:
+//   If package is ssr.noExternal => globalThis.{__VIKE__IS_CLIENT,__VIKE__IS_DEV} are set by the `define` config below.
+//   If package is `ssr.external`:
+//     If Vite isn't loaded => production => `globalThis.{__VIKE__IS_CLIENT,__VIKE__IS_DEV} === undefined` => checking for `!globalThis.{__VIKE__IS_CLIENT,__VIKE__IS_DEV}` is accurate.
+//     If Vite is loaded:
+//       If RunnableDevEnvironment => globalThis.{__VIKE__IS_CLIENT,__VIKE__IS_DEV} are set by the assignments below.
+//       If not RunnableDevEnvironment => packages are always ssr.noExternal => globalThis.{__VIKE__IS_CLIENT,__VIKE__IS_DEV} are set by the `define` config below.
+
 globalThis.__VIKE__IS_CLIENT = false
 
 function pluginReplaceGlobalThisConstants(): Plugin[] {
@@ -21,6 +29,9 @@ function pluginReplaceGlobalThisConstants(): Plugin[] {
         handler(config) {
           const isDev = config._isDev
           assert(typeof isDev === 'boolean')
+          // If Vite isn't loaded => production => `globalThis.__VIKE__IS_DEV === undefined` => checking for `!globalThis.__VIKE__IS_DEV` is accurate.
+          // If Vite is loaded: see comment above about `globalThis.__VIKE__IS_CLIENT`.
+          globalThis.__VIKE__IS_DEV = isDev
           return {
             define: {
               'globalThis.__VIKE__IS_DEV': JSON.stringify(isDev),
