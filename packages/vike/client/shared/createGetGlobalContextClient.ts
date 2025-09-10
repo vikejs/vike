@@ -1,8 +1,11 @@
 // Public usage
 export { getGlobalContext }
 export { getGlobalContextSync }
+export { setVirtualFileExportsGlobalEntry }
 
 // Internal usage
+// TODO/now rename export
+// TODO/now rename file
 export { createGetGlobalContextClient }
 export type GlobalContextClientInternalShared =
   | GlobalContextClientInternal
@@ -37,55 +40,38 @@ const globalObject = getGlobalObject<{
   })(),
 )
 
-function createGetGlobalContextClient<GlobalContextAddendum extends object>(
-  virtualFileExportsGlobalEntry: unknown,
-  isClientRouting: boolean,
-  addGlobalContext?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddendum>,
-) {
-  assert(globalObject.isClientRouting === undefined || globalObject.isClientRouting === isClientRouting)
-  globalObject.isClientRouting = isClientRouting
-
-  // Eagerly call onCreateGlobalContext() hook
-  getGlobalContext()
-
-  return getGlobalContext
-
-  async function getGlobalContext() {
-    // HMR => virtualFileExportsGlobalEntry differ
-    if (globalObject.virtualFileExportsGlobalEntry === virtualFileExportsGlobalEntry) {
-      const globalContext = await globalObject.globalContextPromise
-      return globalContext as never
-    } else {
-      globalObject.virtualFileExportsGlobalEntry = virtualFileExportsGlobalEntry
-    }
-
-    // Create
-    const globalContextPromise = createGlobalContextShared(
-      virtualFileExportsGlobalEntry,
-      globalObject,
-      undefined,
-      async (globalContext) => {
-        const globalContextAddendum = {
-          /**
-           * Whether the environment is client-side or server-side / pre-rendering.
-           *
-           * We recommend using `import.meta.env.SSR` instead, see https://vike.dev/globalContext
-           */
-          isClientSide: true as const,
-        }
-        objectAssign(globalContextAddendum, getGlobalContextSerializedInHtml())
-        objectAssign(globalContextAddendum, await addGlobalContext?.(globalContext))
-        return globalContextAddendum
-      },
-    )
-    globalObject.globalContextPromise = globalContextPromise
-    const globalContext = await globalContextPromise
-    assert(globalObject.globalContext === globalContext)
-    globalObject.globalContextInitialPromiseResolve()
-
-    // Return
-    return globalContext
+async function createGetGlobalContextClient() {
+  if (globalObject.globalContextPromise) {
+    const globalContext = await globalObject.globalContextPromise
+    return globalContext as never
   }
+
+  // Create
+  const globalContextPromise = createGlobalContextShared(
+    globalObject.virtualFileExportsGlobalEntry,
+    globalObject,
+    undefined,
+    async (globalContext) => {
+      const globalContextAddendum = {
+        // TODO/now update JSDocs
+        /**
+         * Whether the environment is client-side or server-side / pre-rendering.
+         *
+         * We recommend using `import.meta.env.SSR` instead, see https://vike.dev/globalContext
+         */
+        isClientSide: true as const,
+      }
+      objectAssign(globalContextAddendum, getGlobalContextSerializedInHtml())
+      return globalContextAddendum
+    },
+  )
+  globalObject.globalContextPromise = globalContextPromise
+  const globalContext = await globalContextPromise
+  assert(globalObject.globalContext === globalContext)
+  globalObject.globalContextInitialPromiseResolve()
+
+  // Return
+  return globalContext
 }
 
 // Type is never exported — it's the server-side getGlobalContext() type that is exported and exposed to the user
@@ -102,4 +88,17 @@ function getGlobalContextSync(): NeverExported {
   assertUsage(globalContext, getGlobalContextSyncErrMsg)
   checkType<GlobalContextNotTyped>(globalContext)
   return globalContext as never
+}
+
+async function setVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry: unknown, isClientRouting: boolean) {
+  // TODO/now: remove unused globalObject.isClientRouting
+  assert(globalObject.isClientRouting === undefined || globalObject.isClientRouting === isClientRouting)
+  globalObject.isClientRouting = isClientRouting
+  // HMR => virtualFileExportsGlobalEntry differ
+  if (globalObject.virtualFileExportsGlobalEntry !== virtualFileExportsGlobalEntry) {
+    delete globalObject.globalContextPromise
+    globalObject.virtualFileExportsGlobalEntry = virtualFileExportsGlobalEntry
+    // Eagerly call +onCreateGlobalContext() hooks
+    await createGetGlobalContextClient()
+  }
 }

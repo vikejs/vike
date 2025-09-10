@@ -1,11 +1,11 @@
+// TODO/now: rename file
+// TODO/now: rename export
 export { getGlobalContextClientInternal }
 export type { GlobalContextClientWithServerRouting }
 export type { GlobalContextClientInternalWithServerRouting }
 
 import { createGetGlobalContextClient } from '../shared/createGetGlobalContextClient.js'
 import type { GlobalContextBasePublic } from '../../shared/createGlobalContextShared.js'
-// @ts-ignore
-import * as virtualFileExportsGlobalEntry from 'virtual:vike:global-entry:client:server-routing'
 
 // Public type
 type GlobalContextClientWithServerRouting = GlobalContextBasePublic &
@@ -16,4 +16,8 @@ type GlobalContextClientWithServerRouting = GlobalContextBasePublic &
   }
 type GlobalContextClientInternalWithServerRouting = Awaited<ReturnType<typeof getGlobalContextClientInternal>>
 
-const getGlobalContextClientInternal = createGetGlobalContextClient(virtualFileExportsGlobalEntry, false)
+// TODO/now: remove this useless function and re-export instead?
+async function getGlobalContextClientInternal() {
+  const globalContext = await createGetGlobalContextClient()
+  return globalContext
+}

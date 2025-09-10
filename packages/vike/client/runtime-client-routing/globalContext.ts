@@ -1,3 +1,5 @@
+// TODO/now: rename file
+// TODO/now: rename export
 export { getGlobalContextClientInternal }
 export type { GlobalContextClient }
 export type { GlobalContextClientInternal }
@@ -5,8 +7,7 @@ export type { GlobalContextClientInternal }
 import { createGetGlobalContextClient } from '../shared/createGetGlobalContextClient.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import type { GlobalContextBase, GlobalContextBasePublic } from '../../shared/createGlobalContextShared.js'
-// @ts-ignore
-import * as virtualFileExportsGlobalEntry from 'virtual:vike:global-entry:client:client-routing'
+import { objectAssign } from './utils.js'
 
 // Public type
 type GlobalContextClient = GlobalContextBasePublic &
@@ -17,12 +18,13 @@ type GlobalContextClient = GlobalContextBasePublic &
   }
 type GlobalContextClientInternal = Awaited<ReturnType<typeof getGlobalContextClientInternal>>
 
-const getGlobalContextClientInternal = createGetGlobalContextClient(
-  virtualFileExportsGlobalEntry,
-  true,
-  addGlobalContext,
-)
+async function getGlobalContextClientInternal() {
+  const globalContext = await createGetGlobalContextClient()
+  objectAssign(globalContext, await addGlobalContext(globalContext))
+  return globalContext
+}
 
+// TO-DO/next-major-release make this function sync
 async function addGlobalContext(globalContext: GlobalContextBase) {
   const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
     globalContext._pageFilesAll,
