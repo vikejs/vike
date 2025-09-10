@@ -803,6 +803,7 @@ function handleErrorFetchingStaticAssets(
 
 // [HMR] If error page is shown => re-render whole page
 if (import.meta.env.DEV && import.meta.hot)
+  // TODO/now use after event
   import.meta.hot.on('vite:beforeUpdate', () => {
     const pageContext = globalObject.renderedPageContext
     if (pageContext?.pageId && isErrorPage(pageContext.pageId, pageContext._globalContext._pageConfigs)) {
