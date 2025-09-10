@@ -87,6 +87,7 @@ async function testRedirect(source: string, target: string, isDev: boolean) {
   } else {
     const html = await resp.text()
     expect(html).toContain(`<meta http-equiv="refresh" content="0;url=${target}">`)
+    expect(html).toContain(`<link rel="canonical" href="${target}" />`)
     expect(isDev).toBe(false)
   }
 }
