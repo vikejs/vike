@@ -14,7 +14,6 @@ type GlobalContextClientWithServerRouting = GlobalContextBasePublic &
   }
 type GlobalContextClientInternalWithServerRouting = Awaited<ReturnType<typeof getGlobalContextClientInternal>>
 
-// TODO/now: remove this useless function and re-export instead?
 async function getGlobalContextClientInternal() {
   const globalContext = await getGlobalContextClientInternalShared()
   return globalContext
