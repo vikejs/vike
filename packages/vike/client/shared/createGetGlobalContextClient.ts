@@ -53,11 +53,12 @@ async function createGetGlobalContextClient() {
     undefined,
     async (globalContext) => {
       const globalContextAddendum = {
-        // TODO/now update JSDocs
         /**
-         * Whether the environment is client-side or server-side / pre-rendering.
+         * Whether the environment is the client-side:
+         * - In the browser, the value is `true`.
+         * - Upon SSR and pre-rendering, the value is `false`.
          *
-         * We recommend using `import.meta.env.SSR` instead, see https://vike.dev/globalContext
+         * https://vike.dev/globalContext#isClientSide
          */
         isClientSide: true as const,
       }

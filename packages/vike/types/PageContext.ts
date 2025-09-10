@@ -189,9 +189,9 @@ type PageContextBuiltInCommon<Data> = PageContextConfig & {
 type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
   PageContextUrlServer & {
     /**
-     * Whether the page is being rendered on the client-side or server-side / pre-rendered.
-     *
-     * We recommend using `import.meta.env.SSR` instead, see https://vike.dev/pageContext#isClientSide
+     * Whether the environment is the client-side:
+     * - In the browser, the value is `true`.
+     * - Upon SSR and pre-rendering, the value is `false`.
      *
      * https://vike.dev/pageContext#isClientSide
      */
@@ -286,9 +286,9 @@ type PageContextBuiltInClientWithServerRouting<Data> = Partial<PageContextBuiltI
 
 type PageContextClientCommon = {
   /**
-   * Whether the page is being rendered on the client-side, or rendered on the server-side / pre-rendered.
-   *
-   * In order to save client-side KBs, we recommend using `import.meta.env.SSR` whenever possible instead, see https://vike.dev/pageContext#isClientSide
+   * Whether the environment is the client-side:
+   * - In the browser, the value is `true`.
+   * - Upon SSR and pre-rendering, the value is `false`.
    *
    * https://vike.dev/pageContext#isClientSide
    */
