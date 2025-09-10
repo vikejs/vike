@@ -1,19 +1,11 @@
 export default Page
 
-import React, {useEffect} from 'react'
+import React from 'react'
 import { Counter } from './Counter'
 import { usePageContext } from 'vike-react/usePageContext'
-// @ts-expect-error
-import { hello } from '../../hello.telefunc'
 
 function Page() {
   const pageContext = usePageContext()
-  useEffect(() => {
-    (async () =>{
-      const msg = await hello({name: 'Jon' })
-      console.log(msg)
-    })()
-  })
   return (
     <>
       <h1>Welcome</h1>
