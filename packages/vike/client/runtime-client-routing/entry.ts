@@ -10,7 +10,7 @@ import * as virtualFileExportsGlobalEntry from 'virtual:vike:global-entry:client
 
 assertSingleInstance_onClientEntryClientRouting(import.meta.env.PROD)
 
-setVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry, true)
+setVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry)
 
 initClientRouter()
 

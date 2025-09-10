@@ -13,7 +13,7 @@ import * as virtualFileExportsGlobalEntry from 'virtual:vike:global-entry:client
 
 assertSingleInstance_onClientEntryServerRouting(import.meta.env.PROD)
 
-setVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry, false)
+setVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry)
 
 if (import.meta.env.DEV) removeFoucBuster()
 

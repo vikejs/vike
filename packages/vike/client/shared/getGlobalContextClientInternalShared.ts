@@ -85,10 +85,7 @@ function getGlobalContextSync(): NeverExported {
   return globalContext as never
 }
 
-async function setVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry: unknown, isClientRouting: boolean) {
-  // TODO/now: remove unused globalObject.isClientRouting
-  assert(globalObject.isClientRouting === undefined || globalObject.isClientRouting === isClientRouting)
-  globalObject.isClientRouting = isClientRouting
+async function setVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry: unknown) {
   // HMR => virtualFileExportsGlobalEntry differ
   if (globalObject.virtualFileExportsGlobalEntry !== virtualFileExportsGlobalEntry) {
     delete globalObject.globalContextPromise
