@@ -38,12 +38,9 @@ const globalObject = getGlobalObject<{
   })(),
 )
 
-function createGetGlobalContextClient<GlobalContextAddendum extends object>(
+async function createGetGlobalContextClient<GlobalContextAddendum extends object>(
   addGlobalContext?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddendum>,
 ) {
-  return getGlobalContext
-
-  async function getGlobalContext() {
     if (globalObject.globalContextPromise) {
       const globalContext = await globalObject.globalContextPromise
       return globalContext as never
@@ -76,7 +73,6 @@ function createGetGlobalContextClient<GlobalContextAddendum extends object>(
 
     // Return
     return globalContext
-  }
 }
 
 // Type is never exported — it's the server-side getGlobalContext() type that is exported and exposed to the user

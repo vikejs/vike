@@ -1,3 +1,5 @@
+// TODO/now: rename file
+// TODO/now: rename export
 export { getGlobalContextClientInternal }
 export type { GlobalContextClient }
 export type { GlobalContextClientInternal }
@@ -15,7 +17,10 @@ type GlobalContextClient = GlobalContextBasePublic &
   }
 type GlobalContextClientInternal = Awaited<ReturnType<typeof getGlobalContextClientInternal>>
 
-const getGlobalContextClientInternal = createGetGlobalContextClient(addGlobalContext)
+async function getGlobalContextClientInternal() {
+  const globalContext = await createGetGlobalContextClient(addGlobalContext)
+  return globalContext
+}
 
 async function addGlobalContext(globalContext: GlobalContextBase) {
   const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
