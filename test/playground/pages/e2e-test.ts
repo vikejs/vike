@@ -147,9 +147,8 @@ function testOnCreateGlobalContext(isDev: boolean) {
 
     // HMR (part 2)
     if (isDev) {
-      const setGloballyServer = await page.textContent('#setGloballyServer')
       const setGloballyClient = await page.textContent('#setGloballyClient')
-
+      const setGloballyServer = await page.textContent('#setGloballyServer')
       const prefixClientOld = 'client-random-number:'
       const prefixServerOld = 'server-random-number:'
       const prefixClientNew = 'client-rrrdom-number:'
