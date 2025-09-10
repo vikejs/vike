@@ -1,21 +1,14 @@
 export { pluginNonRunnableDev }
 
 import type { Plugin, ViteDevServer, ResolvedConfig } from 'vite'
-import {
-  createViteRPC,
-  assertIsNotProductionRuntime,
-  requireResolveDistFile,
-  isRunnableDevEnvironment,
-  assert,
-  escapeRegex,
-  isDevCheck,
-} from '../utils.js'
+import { createViteRPC, assertIsNotProductionRuntime, isRunnableDevEnvironment, assert, isDevCheck } from '../utils.js'
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { retrievePageAssetsDev } from '../../runtime/renderPage/getPageAssets/retrievePageAssetsDev.js'
 import { getViteConfigRuntime } from '../shared/getViteConfigRuntime.js'
 import { getMagicString } from '../shared/getMagicString.js'
 assertIsNotProductionRuntime()
 
+/* We cannot use [`filter.id`](https://rolldown.rs/plugins/hook-filters) because Vite's optimizeDeps bundles the package `vike` into node_modules/.vite/deps_ssr/chunk-WBC5FHD7.js
 const distFileIsNonRunnableDev = requireResolveDistFile('dist/esm/utils/isNonRunnableDev.js')
 const distFileGlobalContext = requireResolveDistFile('dist/esm/node/runtime/globalContext.js')
 const filterRolldown = {
@@ -25,10 +18,10 @@ const filterRolldown = {
     ),
   },
 }
-const filterFunction = (id: string) => {
-  const idWithoutQuery = getIdWithoutQuery(id)
-  return idWithoutQuery === distFileIsNonRunnableDev || idWithoutQuery === distFileGlobalContext
-}
+*/
+
+const __VIKE__DYNAMIC_IMPORT = '__VIKE__DYNAMIC_IMPORT'
+const __VIKE__IS_NON_RUNNABLE_DEV = '__VIKE__IS_NON_RUNNABLE_DEV'
 
 export type ViteRPC = ReturnType<typeof getViteRpcFunctions>
 function getViteRpcFunctions(viteDevServer: ViteDevServer) {
@@ -53,7 +46,7 @@ function pluginNonRunnableDev(): Plugin[] {
   let config: ResolvedConfig
   return [
     {
-      name: 'vike:pluginNonRunnableDev',
+      name: 'vike:pluginNonRunnableDev:1',
       apply: (_, configEnv) => isDevCheck(configEnv),
       configureServer: {
         handler(viteDevServer) {
@@ -66,26 +59,37 @@ function pluginNonRunnableDev(): Plugin[] {
         },
       },
       transform: {
-        filter: filterRolldown,
+        filter: {
+          code: {
+            include: __VIKE__IS_NON_RUNNABLE_DEV,
+          },
+        },
         handler(code, id) {
           assert(config._isDev)
-          assert(filterFunction(id))
-          const idWithoutQuery = getIdWithoutQuery(id)
           if (isRunnableDevEnvironment(this.environment)) return
           const { magicString, getMagicStringResult } = getMagicString(code, id)
-          if (idWithoutQuery === distFileIsNonRunnableDev) {
-            magicString.replaceAll('__VIKE__IS_NON_RUNNABLE_DEV', JSON.stringify(true))
-          }
-          if (idWithoutQuery === distFileGlobalContext) {
-            magicString.replaceAll('__VIKE__DYNAMIC_IMPORT', 'import')
-          }
+          magicString.replaceAll(__VIKE__IS_NON_RUNNABLE_DEV, JSON.stringify(true))
+          return getMagicStringResult()
+        },
+      },
+    },
+    {
+      name: 'vike:pluginNonRunnableDev:2',
+      apply: (_, configEnv) => isDevCheck(configEnv),
+      transform: {
+        filter: {
+          code: {
+            include: __VIKE__DYNAMIC_IMPORT,
+          },
+        },
+        handler(code, id) {
+          assert(config._isDev)
+          if (isRunnableDevEnvironment(this.environment)) return
+          const { magicString, getMagicStringResult } = getMagicString(code, id)
+          magicString.replaceAll(__VIKE__DYNAMIC_IMPORT, 'import')
           return getMagicStringResult()
         },
       },
     },
   ]
-}
-
-function getIdWithoutQuery(id: string) {
-  return id.split('?')[0]!
 }
