@@ -26,7 +26,6 @@ async function createGlobalContextShared<GlobalContextAdded extends {}, GlobalCo
     previousCreateGlobalContextPromise?: Promise<void>
   },
   addGlobalContext?: (globalContext: GlobalContextBase) => GlobalContextAdded,
-  // TODO/now can we remove it now?
   // TO-DO/next-major-release: we'll be able to remove addGlobalContextTmp after loadPageRoutes() is sync (it will be sync after we remove the old design)
   addGlobalContextTmp?: (globalContext: GlobalContextBase) => Promise<GlobalContextAdded>,
   addGlobalContextAsync?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddedAsync>,

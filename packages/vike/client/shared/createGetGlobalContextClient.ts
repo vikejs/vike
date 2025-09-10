@@ -50,8 +50,7 @@ async function createGetGlobalContextClient() {
   const globalContextPromise = createGlobalContextShared(
     globalObject.virtualFileExportsGlobalEntry,
     globalObject,
-    undefined,
-    async (globalContext) => {
+    () => {
       const globalContextAddendum = {
         /**
          * Whether the environment is the client-side:
