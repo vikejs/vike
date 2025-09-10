@@ -38,7 +38,7 @@ import {
   preparePageContextForPublicUsageClient,
 } from './preparePageContextForPublicUsageClient.js'
 import type { ConfigEnv } from '../../types/index.js'
-import type { GlobalContextClientInternal } from './globalContext.js'
+import type { GlobalContextClientInternal } from './getGlobalContextClientInternal.js'
 const globalObject = getGlobalObject<{
   pageContextInitIsPassedToClient?: true
 }>('runtime-client-routing/getPageContextFromHooks.ts', {})

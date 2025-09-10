@@ -29,13 +29,11 @@ async function loadPageConfigsLazyClientSide(
   const pageFilesClientSide = getPageFilesClientSide(pageFilesAll, pageId)
   const pageConfig = findPageConfig(pageConfigs, pageId)
   let pageConfigLoaded: null | PageConfigRuntimeLoaded
-  // @ts-ignore Since dist/cjs/client/ is never used, we can ignore this error.
-  const isDev: boolean = import.meta.env.DEV
   try {
     // prettier-ignore
     // biome-ignore format:
     const result = await Promise.all([
-      pageConfig && loadAndParseVirtualFilePageEntry(pageConfig, isDev),
+      pageConfig && loadAndParseVirtualFilePageEntry(pageConfig, import.meta.env.DEV),
       ...pageFilesClientSide.map((p) => p.loadFile?.()),
     ])
     pageConfigLoaded = result[0]

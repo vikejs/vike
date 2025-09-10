@@ -6,7 +6,7 @@ import { getHookFromPageContext, type Hook } from '../../shared/hooks/getHook.js
 import type { PageFile, PageContextConfig } from '../../shared/getPageFiles.js'
 import type { PageContextForPublicUsageClientShared } from './preparePageContextForPublicUsageClientShared.js'
 import { execHookDirectSingle } from '../../shared/hooks/execHook.js'
-import type { GlobalContextClientInternalShared } from './createGetGlobalContextClient.js'
+import type { GlobalContextClientInternalShared } from './getGlobalContextClientInternalShared.js'
 
 type PageContextBeforeRenderClient = {
   _pageFilesLoaded: PageFile[]

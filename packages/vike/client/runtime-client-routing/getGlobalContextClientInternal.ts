@@ -1,10 +1,8 @@
-// TODO/now: rename file
-// TODO/now: rename export
 export { getGlobalContextClientInternal }
 export type { GlobalContextClient }
 export type { GlobalContextClientInternal }
 
-import { createGetGlobalContextClient } from '../shared/createGetGlobalContextClient.js'
+import { getGlobalContextClientInternalShared } from '../shared/getGlobalContextClientInternalShared.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import type { GlobalContextBase, GlobalContextBasePublic } from '../../shared/createGlobalContextShared.js'
 import { objectAssign } from './utils.js'
@@ -19,7 +17,7 @@ type GlobalContextClient = GlobalContextBasePublic &
 type GlobalContextClientInternal = Awaited<ReturnType<typeof getGlobalContextClientInternal>>
 
 async function getGlobalContextClientInternal() {
-  const globalContext = await createGetGlobalContextClient()
+  const globalContext = await getGlobalContextClientInternalShared()
   objectAssign(globalContext, await addGlobalContext(globalContext))
   return globalContext
 }

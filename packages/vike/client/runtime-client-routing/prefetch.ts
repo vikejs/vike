@@ -33,7 +33,7 @@ import {
 } from './prefetch/getPrefetchSettings.js'
 import pc from '@brillout/picocolors'
 import { normalizeUrlArgument } from './normalizeUrlArgument.js'
-import type { GlobalContextClientInternal } from './globalContext.js'
+import type { GlobalContextClientInternal } from './getGlobalContextClientInternal.js'
 
 assertClientRouting()
 const globalObject = getGlobalObject('runtime-client-routing/prefetch.ts', {

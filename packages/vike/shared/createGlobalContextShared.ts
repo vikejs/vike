@@ -12,7 +12,7 @@ import type { PageConfigRuntime } from '../types/PageConfig.js'
 import { execHookGlobal } from './hooks/execHook.js'
 import { prepareGlobalContextForPublicUsage } from './prepareGlobalContextForPublicUsage.js'
 import type { GlobalContextServerInternal } from '../node/runtime/globalContext.js'
-import type { GlobalContextClientInternal } from '../client/runtime-client-routing/globalContext.js'
+import type { GlobalContextClientInternal } from '../client/runtime-client-routing/getGlobalContextClientInternal.js'
 import { getHookFromPageConfigGlobalCumulative, type Hook } from './hooks/getHook.js'
 const getGlobalContextSyncErrMsg =
   "The global context isn't set yet, call getGlobalContextSync() later or use getGlobalContext() instead."
@@ -26,7 +26,6 @@ async function createGlobalContextShared<GlobalContextAdded extends {}, GlobalCo
     previousCreateGlobalContextPromise?: Promise<void>
   },
   addGlobalContext?: (globalContext: GlobalContextBase) => GlobalContextAdded,
-  // TODO/now can we remove it now?
   // TO-DO/next-major-release: we'll be able to remove addGlobalContextTmp after loadPageRoutes() is sync (it will be sync after we remove the old design)
   addGlobalContextTmp?: (globalContext: GlobalContextBase) => Promise<GlobalContextAdded>,
   addGlobalContextAsync?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddedAsync>,

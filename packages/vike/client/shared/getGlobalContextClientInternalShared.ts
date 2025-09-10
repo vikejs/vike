@@ -4,20 +4,14 @@ export { getGlobalContextSync }
 export { setVirtualFileExportsGlobalEntry }
 
 // Internal usage
-// TODO/now rename export
-// TODO/now rename file
-export { createGetGlobalContextClient }
+export { getGlobalContextClientInternalShared }
 export type GlobalContextClientInternalShared =
   | GlobalContextClientInternal
   | GlobalContextClientInternalWithServerRouting
 
-import {
-  createGlobalContextShared,
-  getGlobalContextSyncErrMsg,
-  type GlobalContextBase,
-} from '../../shared/createGlobalContextShared.js'
-import type { GlobalContextClientInternal } from '../runtime-client-routing/globalContext.js'
-import type { GlobalContextClientInternalWithServerRouting } from '../runtime-server-routing/globalContext.js'
+import { createGlobalContextShared, getGlobalContextSyncErrMsg } from '../../shared/createGlobalContextShared.js'
+import type { GlobalContextClientInternal } from '../runtime-client-routing/getGlobalContextClientInternal.js'
+import type { GlobalContextClientInternalWithServerRouting } from '../runtime-server-routing/getGlobalContextClientInternal.js'
 import { getGlobalContextSerializedInHtml } from './getJsonSerializedInHtml.js'
 import { assert, assertUsage, genPromise, getGlobalObject, objectAssign, checkType } from './utils.js'
 
@@ -30,7 +24,7 @@ const globalObject = getGlobalObject<{
   globalContextInitialPromise: Promise<void>
   globalContextInitialPromiseResolve: () => void
 }>(
-  'createGetGlobalContextClient.ts',
+  'getGlobalContextClientInternalShared.ts',
   (() => {
     const { promise: globalContextInitialPromise, resolve: globalContextInitialPromiseResolve } = genPromise()
     return {
@@ -40,7 +34,8 @@ const globalObject = getGlobalObject<{
   })(),
 )
 
-async function createGetGlobalContextClient() {
+async function getGlobalContextClientInternalShared() {
+  // Get
   if (globalObject.globalContextPromise) {
     const globalContext = await globalObject.globalContextPromise
     return globalContext as never
@@ -50,8 +45,7 @@ async function createGetGlobalContextClient() {
   const globalContextPromise = createGlobalContextShared(
     globalObject.virtualFileExportsGlobalEntry,
     globalObject,
-    undefined,
-    async (globalContext) => {
+    () => {
       const globalContextAddendum = {
         /**
          * Whether the environment is the client-side:
@@ -91,15 +85,12 @@ function getGlobalContextSync(): NeverExported {
   return globalContext as never
 }
 
-async function setVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry: unknown, isClientRouting: boolean) {
-  // TODO/now: remove unused globalObject.isClientRouting
-  assert(globalObject.isClientRouting === undefined || globalObject.isClientRouting === isClientRouting)
-  globalObject.isClientRouting = isClientRouting
+async function setVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry: unknown) {
   // HMR => virtualFileExportsGlobalEntry differ
   if (globalObject.virtualFileExportsGlobalEntry !== virtualFileExportsGlobalEntry) {
     delete globalObject.globalContextPromise
     globalObject.virtualFileExportsGlobalEntry = virtualFileExportsGlobalEntry
     // Eagerly call +onCreateGlobalContext() hooks
-    await createGetGlobalContextClient()
+    await getGlobalContextClientInternalShared()
   }
 }
