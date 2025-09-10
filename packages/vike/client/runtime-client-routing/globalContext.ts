@@ -1,4 +1,4 @@
-export { getGlobalContextClientInternal }
+export { createGlobalContextClient }
 export type { GlobalContextClient }
 export type { GlobalContextClientInternal }
 
@@ -14,9 +14,9 @@ type GlobalContextClient = GlobalContextBasePublic &
   Vike.GlobalContextClient & {
     // Nothing extra for now
   }
-type GlobalContextClientInternal = Awaited<ReturnType<typeof getGlobalContextClientInternal>>
+type GlobalContextClientInternal = Awaited<ReturnType<typeof createGlobalContextClient>>
 
-async function getGlobalContextClientInternal() {
+async function createGlobalContextClient() {
   const globalContext = await createGetGlobalContextClient()
   objectAssign(globalContext, await addGlobalContext(globalContext))
   return globalContext

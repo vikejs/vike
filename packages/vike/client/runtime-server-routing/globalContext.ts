@@ -1,4 +1,4 @@
-export { getGlobalContextClientInternal }
+export { createGlobalContextClient }
 export type { GlobalContextClientWithServerRouting }
 export type { GlobalContextClientInternalWithServerRouting }
 
@@ -12,10 +12,10 @@ type GlobalContextClientWithServerRouting = GlobalContextBasePublic &
   Vike.GlobalContextClient & {
     // Nothing extra for now
   }
-type GlobalContextClientInternalWithServerRouting = Awaited<ReturnType<typeof getGlobalContextClientInternal>>
+type GlobalContextClientInternalWithServerRouting = Awaited<ReturnType<typeof createGlobalContextClient>>
 
 // TODO/now: remove this useless function and re-export instead?
-async function getGlobalContextClientInternal() {
+async function createGlobalContextClient() {
   const globalContext = await createGetGlobalContextClient()
   return globalContext
 }

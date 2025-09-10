@@ -4,11 +4,11 @@ export type PageContextCreated = Awaited<ReturnType<typeof createPageContextClie
 import { createPageContextObject, createPageContextShared } from '../../shared/createPageContextShared.js'
 import { getPageContextUrlComputed } from '../../shared/getPageContextUrlComputed.js'
 import { getBaseServer } from './getBaseServer.js'
-import { getGlobalContextClientInternal } from './globalContext.js'
+import { createGlobalContextClient } from './globalContext.js'
 import { assert, updateType, isBaseServer, objectAssign } from './utils.js'
 
 async function createPageContextClientSide(urlOriginal: string) {
-  const globalContext = await getGlobalContextClientInternal()
+  const globalContext = await createGlobalContextClient()
 
   const baseServer = getBaseServer()
   assert(isBaseServer(baseServer))
