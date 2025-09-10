@@ -528,38 +528,38 @@ importers:
   examples/telefunc:
     dependencies:
       '@types/react':
-        specifier: ^18.2.37
-        version: 18.3.18
+        specifier: ^19.1.12
+        version: 19.1.12
       '@types/react-dom':
-        specifier: ^18.2.15
-        version: 18.3.5(@types/react@18.3.18)
+        specifier: ^19.1.9
+        version: 19.1.9(@types/react@19.1.12)
       '@vitejs/plugin-react':
-        specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.3.1)(terser@5.38.1)(tsx@4.20.3))
+        specifier: ^5.0.2
+        version: 5.0.2(vite@7.1.5(@types/node@24.3.1)(terser@5.38.1)(tsx@4.20.3))
       cross-env:
-        specifier: ^7.0.3
-        version: 7.0.3
+        specifier: ^10.0.0
+        version: 10.0.0
       express:
         specifier: ^5.1.0
         version: 5.1.0
       react:
-        specifier: ^19.1.0
-        version: 19.1.0
+        specifier: ^19.1.1
+        version: 19.1.1
       react-dom:
-        specifier: ^19.1.0
-        version: 19.1.0(react@19.1.0)
+        specifier: ^19.1.1
+        version: 19.1.1(react@19.1.1)
       telefunc:
-        specifier: ^0.2.10
-        version: 0.2.10(@babel/core@7.28.3)(@babel/parser@7.28.3)(@babel/types@7.28.2)(react-streaming@0.4.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)(vite@6.3.5(@types/node@24.3.1)(terser@5.38.1)(tsx@4.20.3))
+        specifier: ^0.2.12
+        version: 0.2.12(@babel/core@7.28.3)(@babel/parser@7.28.3)(@babel/types@7.28.2)(react-streaming@0.4.3(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)(vite@7.1.5(@types/node@24.3.1)(terser@5.38.1)(tsx@4.20.3))
       typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
+        specifier: ^5.9.2
+        version: 5.9.2
       vike:
         specifier: 0.4.239
         version: link:../../packages/vike
       vite:
-        specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.3.1)(terser@5.38.1)(tsx@4.20.3)
+        specifier: ^7.1.5
+        version: 7.1.5(@types/node@24.3.1)(terser@5.38.1)(tsx@4.20.3)
 
   examples/vue-full:
     dependencies:
@@ -2625,6 +2625,9 @@ packages:
 
   '@emnapi/runtime@1.4.3':
     resolution: {integrity: sha512-pBPWdu6MLKROBX05wSNKcNb++m5Er+KQ9QkB+WVM+pW2Kx9hoSrVTnu3BdkI5eBLZoKu/J6mW/B6i6bJB2ytXQ==}
+
+  '@epic-web/invariant@1.0.0':
+    resolution: {integrity: sha512-lrTPqgvfFQtR/eY/qkIzp98OGdNJu0m5ji3q/nJI8v3SXkRKEnWiOxMmbvcSoAIzv/cGiuvRy57k4suKQSAdwA==}
 
   '@esbuild-plugins/node-globals-polyfill@0.1.1':
     resolution: {integrity: sha512-MR0oAA+mlnJWrt1RQVQ+4VYuRJW/P2YmRTv1AsplObyvuBMnPHiizUF95HHYiSsMGLhyGtWufaq2XQg6+iurBg==}
@@ -5253,6 +5256,11 @@ packages:
   cron-schedule@3.0.6:
     resolution: {integrity: sha512-izfGgKyzzIyLaeb1EtZ3KbglkS6AKp9cv7LxmiyoOu+fXfol1tQDC0Cof0enVZGNtudTHW+3lfuW9ZkLQss4Wg==}
 
+  cross-env@10.0.0:
+    resolution: {integrity: sha512-aU8qlEK/nHYtVuN4p7UQgAwVljzMg8hB4YK5ThRqD2l/ziSnryncPNn7bMLt5cFYsKVKBh8HqLqyCoTupEUu7Q==}
+    engines: {node: '>=20'}
+    hasBin: true
+
   cross-env@7.0.3:
     resolution: {integrity: sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==}
     engines: {node: '>=10.14', npm: '>=6', yarn: '>=1'}
@@ -7590,6 +7598,30 @@ packages:
       vite:
         optional: true
 
+  telefunc@0.2.12:
+    resolution: {integrity: sha512-QXImOhnfeUKc6waQLTwy7XX2Gl1o+aZeEKljn3ovwGl40Z9pDXEdJwoYcJd2YxvUFCzmIZ6V1MRsxJIeV+iWSw==}
+    engines: {node: '>=12.19.0'}
+    peerDependencies:
+      '@babel/core': '>=7.0.0'
+      '@babel/parser': '>=7.0.0'
+      '@babel/types': '>=7.0.0'
+      react: '>=18.0.0'
+      react-streaming: '>=0.3.3'
+      vite: '>=6.3.0'
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
+      '@babel/parser':
+        optional: true
+      '@babel/types':
+        optional: true
+      react:
+        optional: true
+      react-streaming:
+        optional: true
+      vite:
+        optional: true
+
   terser-webpack-plugin@5.3.10:
     resolution: {integrity: sha512-BKFPWlPDndPs+NGGCr1U59t0XScL5317Y0UReNrHaw9/FwhPENlq6bfgs+4yPfyP51vqC1bQ4rp1EfXW5ZSH9w==}
     engines: {node: '>= 10.13.0'}
@@ -9243,6 +9275,8 @@ snapshots:
     dependencies:
       tslib: 2.8.1
     optional: true
+
+  '@epic-web/invariant@1.0.0': {}
 
   '@esbuild-plugins/node-globals-polyfill@0.1.1(esbuild@0.16.3)':
     dependencies:
@@ -11054,6 +11088,18 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@vitejs/plugin-react@5.0.2(vite@7.1.5(@types/node@24.3.1)(terser@5.38.1)(tsx@4.20.3))':
+    dependencies:
+      '@babel/core': 7.28.3
+      '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.3)
+      '@babel/plugin-transform-react-jsx-source': 7.27.1(@babel/core@7.28.3)
+      '@rolldown/pluginutils': 1.0.0-beta.34
+      '@types/babel__core': 7.20.5
+      react-refresh: 0.17.0
+      vite: 7.1.5(@types/node@24.3.1)(terser@5.38.1)(tsx@4.20.3)
+    transitivePeerDependencies:
+      - supports-color
+
   '@vitejs/plugin-vue@5.2.4(vite@6.3.5(@types/node@24.3.1)(terser@5.38.1)(tsx@4.20.3))(vue@3.5.18(typescript@5.9.2))':
     dependencies:
       vite: 6.3.5(@types/node@24.3.1)(terser@5.38.1)(tsx@4.20.3)
@@ -12057,6 +12103,11 @@ snapshots:
   create-require@1.1.1: {}
 
   cron-schedule@3.0.6: {}
+
+  cross-env@10.0.0:
+    dependencies:
+      '@epic-web/invariant': 1.0.0
+      cross-spawn: 7.0.6
 
   cross-env@7.0.3:
     dependencies:
@@ -14854,12 +14905,12 @@ snapshots:
       react-streaming: 0.4.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       vite: 6.3.5(@types/node@24.3.1)(terser@5.38.1)(tsx@4.19.4)
 
-  telefunc@0.2.10(@babel/core@7.28.3)(@babel/parser@7.28.3)(@babel/types@7.28.2)(react-streaming@0.4.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)(vite@6.3.5(@types/node@24.3.1)(terser@5.38.1)(tsx@4.20.3)):
+  telefunc@0.2.12(@babel/core@7.28.3)(@babel/parser@7.28.3)(@babel/types@7.28.2)(react-streaming@0.4.3(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)(vite@7.1.5(@types/node@24.3.1)(terser@5.38.1)(tsx@4.20.3)):
     dependencies:
       '@brillout/import': 0.2.6
       '@brillout/json-serializer': 0.5.20
       '@brillout/picocolors': 1.0.28
-      '@brillout/vite-plugin-server-entry': 0.7.12
+      '@brillout/vite-plugin-server-entry': 0.7.14
       es-module-lexer: 1.7.0
       magic-string: 0.30.17
       ts-morph: 26.0.0
@@ -14867,9 +14918,9 @@ snapshots:
       '@babel/core': 7.28.3
       '@babel/parser': 7.28.3
       '@babel/types': 7.28.2
-      react: 19.1.0
-      react-streaming: 0.4.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      vite: 6.3.5(@types/node@24.3.1)(terser@5.38.1)(tsx@4.20.3)
+      react: 19.1.1
+      react-streaming: 0.4.3(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      vite: 7.1.5(@types/node@24.3.1)(terser@5.38.1)(tsx@4.20.3)
 
   terser-webpack-plugin@5.3.10(webpack@5.97.1):
     dependencies:
