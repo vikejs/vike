@@ -1,5 +1,3 @@
-// TODO/now: rename file
-// TODO/now: rename export
 export { getGlobalContextClientInternal }
 export type { GlobalContextClientWithServerRouting }
 export type { GlobalContextClientInternalWithServerRouting }
