@@ -35,6 +35,7 @@ const globalObject = getGlobalObject<{
 )
 
 async function getGlobalContextClientInternalShared() {
+  // Get
   if (globalObject.globalContextPromise) {
     const globalContext = await globalObject.globalContextPromise
     return globalContext as never
