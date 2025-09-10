@@ -27,14 +27,7 @@ import type {
   PageContextUrlClient,
   PageContextUrlServer,
 } from '../shared/getPageContextUrlComputed.js'
-import type {
-  ConfigEntries,
-  ExportsAll,
-  From,
-  PageContextConfig,
-  Source,
-  Sources,
-} from '../shared/page-configs/resolveVikeConfigPublic.js'
+import type { From, PageContextConfig, Source, Sources } from '../shared/page-configs/resolveVikeConfigPublic.js'
 import type { Config } from './Config.js'
 import type { AbortStatusCode } from '../shared/route/abort.js'
 import type { GlobalContextServer } from '../node/runtime/globalContext.js'
