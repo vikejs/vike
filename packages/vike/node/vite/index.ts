@@ -27,13 +27,13 @@ import { pluginWorkaroundVite6HmrRegression } from './plugins/pluginWorkaroundVi
 import { pluginReplaceIsClientSide } from './plugins/pluginReplaceIsClientSide.js'
 import { pluginReplaceGlobalThisConstants } from './plugins/pluginReplaceGlobalThisConstants.js'
 import { pluginNonRunnableDev } from './plugins/pluginNonRunnableDev.js'
-import { pluginBuildApp } from './plugins/pluginBuild/pluginBuildApp.js'
-import { pluginDistPackageJsonFile } from './plugins/pluginBuild/pluginDistPackageJsonFile.js'
-import { pluginSuppressRollupWarning } from './plugins/pluginBuild/pluginSuppressRollupWarning.js'
-import { pluginDistFileNames } from './plugins/pluginBuild/pluginDistFileNames.js'
-import { pluginProdBuildEntry } from './plugins/pluginBuild/pluginProdBuildEntry.js'
-import { pluginBuildConfig } from './plugins/pluginBuild/pluginBuildConfig.js'
-import { pluginModuleBanner } from './plugins/pluginBuild/pluginModuleBanner.js'
+import { pluginBuildApp } from './plugins/build/pluginBuildApp.js'
+import { pluginDistPackageJsonFile } from './plugins/build/pluginDistPackageJsonFile.js'
+import { pluginSuppressRollupWarning } from './plugins/build/pluginSuppressRollupWarning.js'
+import { pluginDistFileNames } from './plugins/build/pluginDistFileNames.js'
+import { pluginProdBuildEntry } from './plugins/build/pluginProdBuildEntry.js'
+import { pluginBuildConfig } from './plugins/build/pluginBuildConfig.js'
+import { pluginModuleBanner } from './plugins/build/pluginModuleBanner.js'
 
 // We don't call this in ./onLoad.ts to avoid a cyclic dependency with utils.ts
 setGetClientEntrySrcDev(getClientEntrySrcDev)

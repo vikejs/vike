@@ -7,7 +7,7 @@ import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js
 import { extractAssetsAddQuery } from '../../../shared/extractAssetsQuery.js'
 import { debug } from './debug.js'
 import { FilesEnv, serializeConfigValues } from '../../../../shared/page-configs/serialize/serializeConfigValues.js'
-import { handleAssetsManifest_isFixEnabled } from '../pluginBuild/handleAssetsManifest.js'
+import { handleAssetsManifest_isFixEnabled } from '../build/handleAssetsManifest.js'
 import { getConfigValueBuildTime } from '../../../../shared/page-configs/getConfigValueBuildTime.js'
 import { resolveIncludeAssetsImportedByServer } from '../../../runtime/renderPage/getPageAssets/retrievePageAssetsProd.js'
 
