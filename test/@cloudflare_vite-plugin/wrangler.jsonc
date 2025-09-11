@@ -3,5 +3,19 @@
   "compatibility_date": "2025-08-06",
   "name": "vike_test_cloudflare_vite-plugin",
   "vars": { "SOME_ENV_VAR": "some-value" },
-  "main": "./worker/index.ts"
+  "main": "./worker/index.ts",
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "TO_DO_LIST_DURABLE_OBJECTS",
+        "class_name": "TodoListDurableObject"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["TodoListDurableObject"]
+    }
+  ]
 }

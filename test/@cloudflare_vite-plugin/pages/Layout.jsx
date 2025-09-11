@@ -13,6 +13,9 @@ function Layout({ children }) {
         <a className="navitem" href="/about">
           About
         </a>
+        <a className="navitem" href="/todo">
+          To-Do
+        </a>
       </Sidebar>
       <Content>{children}</Content>
     </PageLayout>
