@@ -193,10 +193,23 @@ function isDebug() {
 
 function getDEBUG() {
   let DEBUG: undefined | string
+
+  // ssr.noExternal
+  /* // Full implementation:
+     // - https://github.com/vikejs/vike/commit/7637564a98f43e23834bcae2f7ada8d941958a34
+     // - https://github.com/vikejs/vike/pull/2718
+     // - We don't implement this yet because it crashes @cloudflare/vite-plugin
+  if (import.meta.env) {
+    return import.meta.env.DEBUG
+  }
+  //*/
+
+  // ssr.external
   // - `process` can be undefined in edge workers
   // - We want bundlers to be able to statically replace `process.env.*`
   try {
     DEBUG = process.env.DEBUG
   } catch {}
+
   return DEBUG
 }
