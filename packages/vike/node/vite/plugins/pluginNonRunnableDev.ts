@@ -3,13 +3,11 @@ export { pluginNonRunnableDev }
 // TODO/now refactor to match Telefunc's copy
 
 import type { Plugin, ViteDevServer, ResolvedConfig } from 'vite'
-import { createViteRPC, assertIsNotProductionRuntime, isRunnableDevEnvironment, assert, isDevCheck } from '../utils.js'
+import { createViteRPC, isRunnableDevEnvironment, assert, isDevCheck } from '../utils.js'
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { retrievePageAssetsDev } from '../../runtime/renderPage/getPageAssets/retrievePageAssetsDev.js'
 import { getViteConfigRuntime } from '../shared/getViteConfigRuntime.js'
 import { getMagicString } from '../shared/getMagicString.js'
-// TODO/now: move to vite/index.ts
-assertIsNotProductionRuntime()
 
 /* We cannot use [`filter.id`](https://rolldown.rs/plugins/hook-filters) because Vite's optimizeDeps bundles the package `vike` into node_modules/.vite/deps_ssr/chunk-WBC5FHD7.js
 const distFileIsNonRunnableDev = requireResolveDistFile('dist/esm/utils/isNonRunnableDev.js')

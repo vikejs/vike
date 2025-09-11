@@ -10,7 +10,7 @@ export type { VikeVitePluginOptions }
 import type { Plugin } from 'vite'
 import { getClientEntrySrcDev } from './shared/getClientEntrySrcDev.js'
 import { setGetClientEntrySrcDev } from '../runtime/renderPage/getPageAssets/retrievePageAssetsDev.js'
-import { assertUsage } from './utils.js'
+import { assertIsNotProductionRuntime, assertUsage } from './utils.js'
 import pc from '@brillout/picocolors'
 import { pluginPreview } from './plugins/pluginPreview.js'
 import { pluginDev } from './plugins/pluginDev.js'
@@ -37,6 +37,7 @@ import { pluginModuleBanner } from './plugins/pluginBuild/pluginModuleBanner.js'
 
 // We don't call this in ./onLoad.ts to avoid a cyclic dependency with utils.ts
 setGetClientEntrySrcDev(getClientEntrySrcDev)
+assertIsNotProductionRuntime()
 
 type PluginInterop = Record<string, unknown> & { name: string }
 // Return `PluginInterop` instead of `Plugin` to avoid type mismatch upon different Vite versions
