@@ -1,27 +1,28 @@
 {
   "scripts": {
     "dev": "vite",
-    "build": "vite build && pnpm run build:worker",
-    "build:worker": "build-worker --entry worker/index.ts --out dist/worker/index.js && node ./build-fix.js",
+    "build": "vite build && pnpm run build:worker && node ./build-fix.js",
+    "build:worker": "build-worker --entry worker/index.ts --out dist/worker/index.js --external virtual:telefunc:entry",
     "preview": "pnpm run build && vite preview",
     "deploy": "pnpm run build && wrangler deploy",
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
-    "build-worker": "^0.3.2",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "vike": "0.4.239",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "telefunc": "0.2.12",
+    "vike": "0.4.239-commit-95ab407",
     "vike-react": "^0.6.5"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "^1.12.4",
-    "@types/react": "^19.1.12",
-    "@types/react-dom": "^19.1.9",
-    "@vitejs/plugin-react": "^5.0.2",
-    "typescript": "^5.9.2",
-    "vite": "^7.1.5",
-    "wrangler": "^4.35.0"
+    "@cloudflare/vite-plugin": "^1.11.1",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.7.0",
+    "build-worker": "^0.3.4",
+    "typescript": "^5.8.3",
+    "vite": "^7.1.3",
+    "wrangler": "^4.28.0"
   },
   "type": "module"
 }
