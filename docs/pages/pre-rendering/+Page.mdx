@@ -4,14 +4,13 @@ import PreRenderDynamicRoutes from './PreRenderDynamicRoutes.mdx'
 
 ## What is pre-rendering?
 
-Pre-rendering means to render the HTML of pages at build-time (when running `$ vike build`).
+Pre-rendering means to render the HTML of pages at build-time (when running <Link href="/cli">`$ vike build`</Link>).
 
 Without pre-rendering, the HTML of a page is rendered at request-time (when the user goes to that page).
 
-If you pre-render all of your pages, then you no longer need a production server: your app will consist only of static assets (HTML, JS, CSS, images, ...)
-that you can deploy to so-called "static hosts" such as <Link href="/github-pages" text="GitHub Pages" />, [Cloudflare Pages](/cloudflare-pages), or [Netlify](/netlify).
+If you pre-render all your pages, you don't need a production server: your app consists only of a static assets (HTML, JS, CSS, images, ...) that can be deployed to a static host (<Link href="/github-pages" text="GitHub Pages" />, <Link href="/cloudflare-pages">Cloudflare Pages</Link>, <Link href="/netlify">Netlify</Link>, ...).
 
-If you don't pre-render, then you need a production server in order to be able to dynamically render the HTML of your pages at request-time. (A Node.js production server, or a Node.js-like production environment such as <Link href="/cloudflare" text="Cloudflare Workers" /> or <Link href="/vercel" text="Vercel" />.)
+If you don't pre-render, you need a production server to dynamically render your pages' HTML at request-time. (Deploying a [Node.js](https://nodejs.org) server to [AWS](https://aws.amazon.com), <Link href="/cloudflare" text="Cloudflare Workers" />, <Link href="/vercel" text="Vercel" />...)
 
 > Tools that pre-render pages are also known as "SSG" (Static-Site Generators).
 
@@ -20,19 +19,19 @@ If you don't pre-render, then you need a production server in order to be able t
 
 In a nutshell: **pre-render your pages whenever you can**.
 
-Because pre-rendering removes the need for a production server and makes deployment very easy and very cheap (mostly free). It's also significantly more performant as the HTML isn't re-generated on every HTTP request.
+Because pre-rendering removes the need for a production server and makes deployment very easy and very cheap (usually free). It's also significantly more performant as the HTML isn't re-generated on every HTTP request.
 
-But **pre-rendering cannot be used for websites with content that changes very frequently**. For example [Hacker News](https://news.ycombinator.com) or [Reddit](https://www.reddit.com): new content is created every time a user posts something new. Pre-rendering cannot be run again every (milli)second whenever there is new content (Reddit has millions of pages that cannot be re-rendered every (milli)second).
+But **pre-rendering cannot be used for websites with content that changes very frequently**. For example [Hacker News](https://news.ycombinator.com) or [Reddit](https://www.reddit.com): users are constantly creating new posts, which would require pre-rendering to run again each time — pre-rendering the entire website (millions of pages) every millisecond isn't possible.
 
 > In theory, it's possible to re-render only the subset of pages that are affected by new content, but it isn't practical (it has been tried before) and we recommend against this practice.
 
-> Technically speaking, what matters is how frequent the HTML of pages changes, see also:
+> Technically, the bottom line is: how frequently does the HTML of your pages change? See:
 > - <Link href="#ssg-vs-ssr" />
 > - <Link href="/SSR-vs-SPA" />
 
-**Pre-rendering can be used for websites with content that changes only occasionally**. For example, the content of `https://vike.dev` changes only when a maintainer updates the documentation: all pages of `https://vike.dev` can then be pre-rendered again.
+**Pre-rendering can be used for websites with content that changes only occasionally**. For example, the content of `https://vike.dev` changes only when a maintainer updates the documentation — the entire website `https://vike.dev` can then be pre-rendered again every time there is change.
 
-> Thanks to pre-rendering, `https://vike.dev` is deployed to <Link href="/github-pages" text="GitHub Pages" />, a static host which is completely free, [easy to use](https://github.com/vikejs/vike/blob/main/.github/workflows/website.yml), and very performant.
+> This website `https://vike.dev` uses pre-rendering and is deployed to <Link href="/github-pages" text="GitHub Pages" /> — a static host that is completely free, [easy to use](https://github.com/vikejs/vike/blob/main/.github/workflows/website.yml), and performant.
 
 
 ## How to pre-render
@@ -51,7 +50,7 @@ export default {
 
 List of options: <Link href="/prerender" />.
 
-Your pages' HTML will be rendered when you run `$ vike build` and the generated HTML files are available at `dist/client/`.
+Your pages' HTML are rendered when you run <Link href="/cli">`$ vike build`</Link> and the generated HTML files are available at `dist/client/`.
 
 For a page with a parameterized route (e.g. `/movie/@movieId`), you have to use the <Link href="/onBeforePrerenderStart">`onBeforePrerenderStart()` hook</Link> in order to provide the list of URLs that are to be pre-rendered. The `onBeforePrerenderStart()` hook can also be used to accelerate the pre-rendering process.
 
@@ -59,7 +58,7 @@ For a page with a parameterized route (e.g. `/movie/@movieId`), you have to use 
 
 By default, all pages are pre-rendered. To pre-render only some pages, use the <Link href="/prerender#partial" text={<><code>partial</code> option</>} /> with <Link href="/prerender#toggle" text={<code>prerender: false</code>} />.
 
-If you pre-render all your pages, then you can use Vike's CLI instead of a server (`$ vike dev` and `$ vike preview`). See linked examples below.
+If you pre-render all your pages, then you can use <Link href="/cli">`$ vike dev` and `$ vike preview`</Link> instead of using development/preview server.
 
 You can programmatically invoke the pre-rendering process, see <Link href="/api#prerender" doNotInferSectionTitle />.
 
@@ -79,14 +78,12 @@ Vue Example:
 ## SSG vs SSR
 
 The only difference between SSG and SSR is *when* the HTML is rendered:
-- **SSG**: the HTML of the page is rendered at build-time (when calling `$ vike build`).
+- **SSG**: the HTML of the page is rendered at build-time (when calling <Link href="/cli">`$ vike build`</Link>).
 - **SSR**: the HTML of the page is rendered at request-time (when the user goes to the page).
 
-> The **client-side code** of pages is loaded and executed in the user's browser and, therefore, always runs at request-time.
->
-> If you pre-render all your pages, then there isn't any **server-side code**, because all the "server code" runs at build-time.
+> The **client-side code** of the page is always loaded and executed in the user's browser at request-time (regardless of SSG and SSR).
 
-> With pre-rendering **it's a misnomer but we still call it "server-side code"** to keep the docs simple. One way to think about it is that pre-rendering means "pre-rendered server-side code".
+> If you pre-render all your pages, there's no server — all "server-side code" runs at build-time. Calling it "server-side code" is technically a misnomer, but we keep the term for simplicity. One way to think about pre-rendering is that it essentially means "pre-rendered SSR (Server-Side Rendering)".
 
 Essentially, and technically, SSG means SSR + pre-rendering:
 
