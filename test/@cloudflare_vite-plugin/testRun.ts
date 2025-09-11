@@ -1,15 +1,14 @@
 export { testRun }
 export { testCloudflareBindings }
 
-import { autoRetry, expect, getServerUrl, page, test } from '@brillout/test-e2e'
+import { autoRetry, expect, getServerUrl, page, sleep, test } from '@brillout/test-e2e'
 import { testCounter, testRunClassic } from '../../test/utils'
 
-type CMD = 'npm run dev' | 'npm run preview'
-
-function testRun(cmd: CMD) {
+function testRun(cmd: 'npm run dev' | 'npm run preview') {
+  const isDev = cmd === 'npm run dev'
   testCloudflareBindings()
   testRunClassic(cmd)
-  testTodolist()
+  testTodolist(isDev)
 }
 
 function testCloudflareBindings() {
@@ -23,9 +22,10 @@ function testCloudflareBindings() {
   })
 }
 
-function testTodolist() {
+function testTodolist(isDev: boolean) {
   test('To-Do list', async () => {
     await page.goto(getServerUrl() + '/todo')
+    if (isDev) await sleep(300) // Seems to be required, otherwise the test is flaky. I don't know why.
     await page.locator('button', { hasText: 'Reset' }).click()
     await autoRetry(
       async () => {
