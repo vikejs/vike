@@ -1,5 +1,4 @@
 = TODO/now
-- Copy Telefunc CF example
 - Make DEBUG work in cloudflare plugin
 - Fully support Vite CLI again
 
