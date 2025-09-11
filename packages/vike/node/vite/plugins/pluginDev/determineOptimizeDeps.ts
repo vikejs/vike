@@ -12,7 +12,7 @@ import {
   isVirtualFileId,
 } from '../../utils.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
-import { analyzeClientEntries } from '../pluginBuild/pluginBuildConfig.js'
+import { analyzeClientEntries } from '../build/pluginBuildConfig.js'
 import type { DefinedAtFilePath, PageConfigBuildTime } from '../../../../types/PageConfig.js'
 import { virtualFileIdGlobalEntryClientCR, virtualFileIdGlobalEntryClientSR } from '../../../shared/virtualFileId.js'
 import { getFilePathResolved } from '../../shared/getFilePath.js'

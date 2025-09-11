@@ -10,7 +10,7 @@ export type { VikeVitePluginOptions }
 import type { Plugin } from 'vite'
 import { getClientEntrySrcDev } from './shared/getClientEntrySrcDev.js'
 import { setGetClientEntrySrcDev } from '../runtime/renderPage/getPageAssets/retrievePageAssetsDev.js'
-import { assertUsage } from './utils.js'
+import { assertIsNotProductionRuntime, assertUsage } from './utils.js'
 import pc from '@brillout/picocolors'
 import { pluginPreview } from './plugins/pluginPreview.js'
 import { pluginDev } from './plugins/pluginDev.js'
@@ -26,17 +26,19 @@ import { pluginWorkaroundCssModuleHmr } from './plugins/pluginWorkaroundCssModul
 import { pluginWorkaroundVite6HmrRegression } from './plugins/pluginWorkaroundVite6HmrRegression.js'
 import { pluginReplaceIsClientSide } from './plugins/pluginReplaceIsClientSide.js'
 import { pluginReplaceGlobalThisConstants } from './plugins/pluginReplaceGlobalThisConstants.js'
-import { pluginNonRunnableDev } from './plugins/pluginNonRunnableDev.js'
-import { pluginBuildApp } from './plugins/pluginBuild/pluginBuildApp.js'
-import { pluginDistPackageJsonFile } from './plugins/pluginBuild/pluginDistPackageJsonFile.js'
-import { pluginSuppressRollupWarning } from './plugins/pluginBuild/pluginSuppressRollupWarning.js'
-import { pluginDistFileNames } from './plugins/pluginBuild/pluginDistFileNames.js'
-import { pluginProdBuildEntry } from './plugins/pluginBuild/pluginProdBuildEntry.js'
-import { pluginBuildConfig } from './plugins/pluginBuild/pluginBuildConfig.js'
-import { pluginModuleBanner } from './plugins/pluginBuild/pluginModuleBanner.js'
+import { pluginViteRPC } from './plugins/non-runnable-dev/pluginViteRPC.js'
+import { pluginBuildApp } from './plugins/build/pluginBuildApp.js'
+import { pluginDistPackageJsonFile } from './plugins/build/pluginDistPackageJsonFile.js'
+import { pluginSuppressRollupWarning } from './plugins/build/pluginSuppressRollupWarning.js'
+import { pluginDistFileNames } from './plugins/build/pluginDistFileNames.js'
+import { pluginProdBuildEntry } from './plugins/build/pluginProdBuildEntry.js'
+import { pluginBuildConfig } from './plugins/build/pluginBuildConfig.js'
+import { pluginModuleBanner } from './plugins/build/pluginModuleBanner.js'
+import { pluginReplaceConstantsNonRunnableDev } from './plugins/non-runnable-dev/pluginReplaceConstantsNonRunnableDev.js'
 
 // We don't call this in ./onLoad.ts to avoid a cyclic dependency with utils.ts
 setGetClientEntrySrcDev(getClientEntrySrcDev)
+assertIsNotProductionRuntime()
 
 type PluginInterop = Record<string, unknown> & { name: string }
 // Return `PluginInterop` instead of `Plugin` to avoid type mismatch upon different Vite versions
@@ -57,7 +59,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginIntero
     ...pluginWorkaroundVite6HmrRegression(),
     ...pluginReplaceIsClientSide(),
     ...pluginReplaceGlobalThisConstants(),
-    ...pluginNonRunnableDev(),
+    ...pluginNonRunnabeDev(),
   ]
   Object.assign(plugins, { _vikeVitePluginOptions: vikeVitePluginOptions })
   return plugins as any
@@ -73,6 +75,10 @@ function pluginBuild(): Plugin[] {
     ...pluginDistFileNames(),
     ...pluginModuleBanner(),
   ]
+}
+
+function pluginNonRunnabeDev() {
+  return [...pluginViteRPC(), ...pluginReplaceConstantsNonRunnableDev()]
 }
 
 // Error upon wrong usage
