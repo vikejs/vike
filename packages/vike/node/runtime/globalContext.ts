@@ -75,7 +75,7 @@ import { logRuntimeError, logRuntimeInfo } from './loggerRuntime.js'
 import { getVikeConfigErrorBuild, setVikeConfigError } from '../shared/getVikeConfigError.js'
 import { hasAlreadyLogged } from './renderPage/isNewError.js'
 import type { Hook } from '../../shared/hooks/getHook.js'
-import type { ViteRPC } from '../vite/plugins/pluginNonRunnableDev.js'
+import type { ViteRPC } from '../vite/plugins/non-runnable-dev/pluginViteRPC.js'
 import { getVikeApiOperation } from '../api/context.js'
 import type { PrerenderContext } from '../../types/index.js'
 const debug = createDebugger('vike:globalContext')

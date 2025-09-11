@@ -9,7 +9,7 @@ import { sortPageAssetsForEarlyHintsHeader } from './getPageAssets/sortPageAsset
 import { assert, prependBase, toPosixPath, unique, getViteRPC } from '../utils.js'
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
-import type { ViteRPC } from '../../vite/plugins/pluginNonRunnableDev.js'
+import type { ViteRPC } from '../../vite/plugins/non-runnable-dev/pluginViteRPC.js'
 
 type PageAsset = {
   src: string

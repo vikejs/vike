@@ -5,7 +5,7 @@ import { assertIsNotBrowser } from './assertIsNotBrowser.js'
 assertIsNotBrowser()
 
 function isNonRunnableDev(): boolean {
-  if (typeof __VIKE__IS_NON_RUNNABLE_DEV === 'undefined') return false
-  assert(__VIKE__IS_NON_RUNNABLE_DEV === true)
+  if (globalThis.__VIKE__IS_NON_RUNNABLE_DEV === undefined) return false
+  assert(globalThis.__VIKE__IS_NON_RUNNABLE_DEV === true)
   return true
 }

@@ -26,7 +26,7 @@ import { pluginWorkaroundCssModuleHmr } from './plugins/pluginWorkaroundCssModul
 import { pluginWorkaroundVite6HmrRegression } from './plugins/pluginWorkaroundVite6HmrRegression.js'
 import { pluginReplaceIsClientSide } from './plugins/pluginReplaceIsClientSide.js'
 import { pluginReplaceGlobalThisConstants } from './plugins/pluginReplaceGlobalThisConstants.js'
-import { pluginNonRunnableDev } from './plugins/pluginNonRunnableDev.js'
+import { pluginViteRPC } from './plugins/non-runnable-dev/pluginViteRPC.js'
 import { pluginBuildApp } from './plugins/build/pluginBuildApp.js'
 import { pluginDistPackageJsonFile } from './plugins/build/pluginDistPackageJsonFile.js'
 import { pluginSuppressRollupWarning } from './plugins/build/pluginSuppressRollupWarning.js'
@@ -34,6 +34,7 @@ import { pluginDistFileNames } from './plugins/build/pluginDistFileNames.js'
 import { pluginProdBuildEntry } from './plugins/build/pluginProdBuildEntry.js'
 import { pluginBuildConfig } from './plugins/build/pluginBuildConfig.js'
 import { pluginModuleBanner } from './plugins/build/pluginModuleBanner.js'
+import { pluginReplaceConstantsNonRunnableDev } from './plugins/non-runnable-dev/pluginReplaceConstantsNonRunnableDev.js'
 
 // We don't call this in ./onLoad.ts to avoid a cyclic dependency with utils.ts
 setGetClientEntrySrcDev(getClientEntrySrcDev)
@@ -58,7 +59,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginIntero
     ...pluginWorkaroundVite6HmrRegression(),
     ...pluginReplaceIsClientSide(),
     ...pluginReplaceGlobalThisConstants(),
-    ...pluginNonRunnableDev(),
+    ...pluginNonRunnabeDev(),
   ]
   Object.assign(plugins, { _vikeVitePluginOptions: vikeVitePluginOptions })
   return plugins as any
@@ -74,6 +75,10 @@ function pluginBuild(): Plugin[] {
     ...pluginDistFileNames(),
     ...pluginModuleBanner(),
   ]
+}
+
+function pluginNonRunnabeDev() {
+  return [...pluginViteRPC(), ...pluginReplaceConstantsNonRunnableDev()]
 }
 
 // Error upon wrong usage
