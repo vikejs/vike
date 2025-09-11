@@ -479,13 +479,14 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
     }
   } else {
     try {
-      /* We use __VIKE__DYNAMIC_IMPORT instead of directly using import() to workaround what seems to be a Vite HMR bug:
-         ```js
-         assert(false)
-         // This line breaks the HMR of regular (runnable) apps, even though (as per the assert() above) it's never run. It seems to be a Vite bug: handleHotUpdate() receives an empty `modules` list.
-         import('virtual:vike:global-entry:server')
-         ```
-      */
+      // We don't directly use import() because:
+      // - Avoid Cloudflare Workers (without @cloudflare/vite-plugin) to try to bundle `import('virtual:id')`.
+      // - Using import() seems to lead to a Vite HMR bug:
+      //   ```js
+      //   assert(false)
+      //   // This line breaks the HMR of regular (runnable) apps, even though (as per the assert() above) it's never run. It seems to be a Vite bug: handleHotUpdate() receives an empty `modules` list.
+      //   import('virtual:vike:global-entry:server')
+      //   ```
       virtualFileExportsGlobalEntry = await __VIKE__DYNAMIC_IMPORT('virtual:vike:global-entry:server')
     } catch (err_) {
       hasError = true
