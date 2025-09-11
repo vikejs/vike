@@ -711,7 +711,7 @@ function isProdOptional(): boolean | null {
   // getGlobalContextAsync(isProduction)
   const no4 = globalObject.isProductionAccordingToUser === false
   // @cloudflare/vite-plugin
-  const no5 = isNonRunnableDev() === true
+  const no5 = isNonRunnableDev()
   const no: boolean = no1 || no2 || no3 || no4 || no5
 
   const debug = { yes1, yes2, yes3, yes4, yes5, yes6, no1, no2, no3, no4, no5 }
