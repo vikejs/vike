@@ -362,6 +362,7 @@ async function loadProdBuildEntry(outDir?: string) {
 // https://github.com/vikejs/vike/blob/8c350e8105a626469e87594d983090919e82099b/packages/vike/node/vite/plugins/pluginBuild/pluginProdBuildEntry.ts#L47
 async function setGlobalContext_prodBuildEntry(prodBuildEntry: unknown) {
   debug('setGlobalContext_prodBuildEntry()')
+  assert(!isNonRunnableDev())
   assertProdBuildEntry(prodBuildEntry)
   globalObject.prodBuildEntry = prodBuildEntry
   globalObject.prodBuildEntryPrevious = prodBuildEntry
