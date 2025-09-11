@@ -1,3 +1,7 @@
+= TODO/now
+- Make DEBUG work in cloudflare plugin
+- Remove Vite CLI warning
+
 = TO-DO/soon
 - Add assertWarning() deprecations:
   - `pageContext.exports`

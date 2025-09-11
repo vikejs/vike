@@ -6,6 +6,7 @@ import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageC
 import { retrievePageAssetsDev } from '../../runtime/renderPage/getPageAssets/retrievePageAssetsDev.js'
 import { getViteConfigRuntime } from '../shared/getViteConfigRuntime.js'
 import { getMagicString } from '../shared/getMagicString.js'
+// TODO/now: move to vite/index.ts
 assertIsNotProductionRuntime()
 
 /* We cannot use [`filter.id`](https://rolldown.rs/plugins/hook-filters) because Vite's optimizeDeps bundles the package `vike` into node_modules/.vite/deps_ssr/chunk-WBC5FHD7.js
