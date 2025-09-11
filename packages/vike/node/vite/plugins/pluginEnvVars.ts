@@ -24,7 +24,6 @@ import { getMagicString } from '../shared/getMagicString.js'
 
 const PUBLIC_ENV_PREFIX = 'PUBLIC_ENV__'
 const PUBLIC_ENV_ALLOWLIST = [
-  'DEBUG',
   // https://github.com/vikejs/vike/issues/1724
   'STORYBOOK',
 ]
@@ -33,7 +32,7 @@ const skipNodeModules = '/node_modules/'
 const skipIrrelevant = 'import.meta.env.'
 const filterRolldown = {
   id: {
-    // exclude: `**${skipNodeModules}**`,
+    exclude: `**${skipNodeModules}**`,
   },
   code: {
     include: skipIrrelevant,
@@ -67,7 +66,7 @@ function pluginEnvVars(): Plugin[] {
           id = normalizeId(id)
           assertPosixPath(id)
           assertPosixPath(config.root)
-          // if (!id.startsWith(config.root)) return // skip linked dependencies
+          if (!id.startsWith(config.root)) return // skip linked dependencies
           assert(filterFunction(id, code))
 
           const isBuild = config.command === 'build'
