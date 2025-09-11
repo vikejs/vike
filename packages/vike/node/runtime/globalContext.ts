@@ -690,38 +690,40 @@ function isProd(): boolean {
 function isProdOptional(): boolean | null {
   const vikeApiOperation = getVikeApiOperation()?.operation ?? null
 
-  const yes: boolean =
-    // setGlobalContext_prodBuildEntry() was called
-    !!globalObject.prodBuildEntry ||
-    globalObject.isPrerendering === true ||
-    // Vike CLI & Vike API
-    (!!vikeApiOperation && vikeApiOperation !== 'dev') ||
-    // Vite command
-    globalObject.isProductionAccordingToVite === true ||
-    // getGlobalContextAsync(isProduction)
-    globalObject.isProductionAccordingToUser === true ||
-    // vite-plugin-vercel
-    globalObject.isProductionAccordingToPhotonVercel === true
-  assert(typeof yes === 'boolean')
+  // setGlobalContext_prodBuildEntry() was called
+  const yes1 = !!globalObject.prodBuildEntry
+  const yes2 = globalObject.isPrerendering === true
+  // Vike CLI & Vike API
+  const yes3 = !!vikeApiOperation && vikeApiOperation !== 'dev'
+  // Vite command
+  const yes4 = globalObject.isProductionAccordingToVite === true
+  // getGlobalContextAsync(isProduction)
+  const yes5 = globalObject.isProductionAccordingToUser === true
+  // vite-plugin-vercel
+  const yes6 = globalObject.isProductionAccordingToPhotonVercel === true
+  const yes: boolean = yes1 || yes2 || yes3 || yes4 || yes5 || yes6
 
-  const no: boolean =
-    !!globalObject.viteDevServer ||
-    // Vike CLI & Vike API
-    vikeApiOperation === 'dev' ||
-    // Vite command
-    globalObject.isProductionAccordingToVite === false ||
-    // getGlobalContextAsync(isProduction)
-    globalObject.isProductionAccordingToUser === false ||
-    // @cloudflare/vite-plugin
-    isNonRunnableDev() === true
-  assert(typeof no === 'boolean')
+  const no1 = !!globalObject.viteDevServer
+  // Vike CLI & Vike API
+  const no2 = vikeApiOperation === 'dev'
+  // Vite command
+  const no3 = globalObject.isProductionAccordingToVite === false
+  // getGlobalContextAsync(isProduction)
+  const no4 = globalObject.isProductionAccordingToUser === false
+  // @cloudflare/vite-plugin
+  const no5 = isNonRunnableDev() === true
+  const no: boolean = no1 || no2 || no3 || no4 || no5
+
+  const debug = { yes1, yes2, yes3, yes4, yes5, yes6, no1, no2, no3, no4, no5 }
+  assert(typeof yes === 'boolean', debug)
+  assert(typeof no === 'boolean', debug)
 
   if (yes) {
-    assert(no === false)
+    assert(no === false, debug)
     return true
   }
   if (no) {
-    assert(yes === false)
+    assert(yes === false, debug)
     return false
   }
   return null
