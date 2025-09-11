@@ -193,6 +193,15 @@ function isDebug() {
 
 function getDEBUG() {
   let DEBUG: undefined | string
+
+  // ssr.noExternal
+  if (import.meta.env) {
+    console.log(typeof import.meta.env.DEBUG)
+    console.log(import.meta.env.DEBUG)
+    return import.meta.env.DEBUG
+  }
+
+  // ssr.external
   // - `process` can be undefined in edge workers
   // - We want bundlers to be able to statically replace `process.env.*`
   try {
