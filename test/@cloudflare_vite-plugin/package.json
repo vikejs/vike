@@ -10,8 +10,8 @@
   "dependencies": {
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "telefunc": "0.2.12",
-    "vike": "0.4.239-commit-95ab407",
+    "telefunc": "^0.2.13",
+    "vike": "0.4.239",
     "vike-react": "^0.6.5"
   },
   "devDependencies": {
