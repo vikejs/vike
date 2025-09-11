@@ -136,10 +136,6 @@ but you've requested "2025-07-18". Falling back to "2025-07-12"...
       // Required for test-deprecated-design/*
       'vite.createServer() is deprecated',
 
-      // TODO/now: support Vite CLI again
-      // Required for test-deprecated-design/*
-      "Vite's CLI is deprecated",
-
       // Error: [DocPress][Warning] prop `text` is deprecated
       'prop `text` is deprecated',
 

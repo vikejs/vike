@@ -160,9 +160,6 @@ function assertVikeCliOrApi(config: ResolvedConfig) {
   if (isVikeCliOrApi()) return
   if (isViteCliCall()) {
     assert(!isVitest())
-    assertWarning(false, `Vite's CLI is deprecated ${pc.underline('https://vike.dev/migration/cli')}`, {
-      onlyOnce: true,
-    })
     return
   }
   if (isVitest()) {
@@ -183,9 +180,6 @@ function assertVikeCliOrApi(config: ResolvedConfig) {
     )
     return
   }
-  assertWarning(false, `Vite's JavaScript API is deprecated ${pc.underline('https://vike.dev/migration/cli#api')}`, {
-    onlyOnce: true,
-  })
 }
 
 // TO-DO/next-major-release: remove https://github.com/vikejs/vike/issues/2122
