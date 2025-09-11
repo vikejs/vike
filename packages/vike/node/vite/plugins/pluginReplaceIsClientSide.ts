@@ -69,7 +69,6 @@ function pluginReplaceIsClientSide(): Plugin[] {
             magicString.replaceAll(regExp, JSON.stringify(replacement))
           }
 
-          if (!magicString.hasChanged()) return null
           return getMagicStringResult()
         },
       },

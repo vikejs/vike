@@ -121,7 +121,6 @@ function pluginEnvVars(): Plugin[] {
           replacements.forEach(({ regExpStr, replacement }) => {
             magicString.replaceAll(new RegExp(regExpStr, 'g'), JSON.stringify(replacement))
           })
-          if (!magicString.hasChanged()) return null
 
           return getMagicStringResult()
         },
