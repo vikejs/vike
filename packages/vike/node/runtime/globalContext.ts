@@ -485,7 +485,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
          import('virtual:vike:global-entry:server')
          ```
       */
-      virtualFileExportsGlobalEntry = await __VIKE__DYNAMIC_IMPORT('virtual:vike:global-entry:server')
+      virtualFileExportsGlobalEntry = await import('virtual:vike:global-entry:server' as string)
     } catch (err_) {
       hasError = true
       err = err_
