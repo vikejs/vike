@@ -1,8 +1,5 @@
 export { pluginReplaceConstantsPageContext }
 
-// - See https://vike.dev/pageContext#narrowing-down
-// - We cannot use [`define`](https://vite.dev/config/shared-options.html#define) because of https://github.com/rolldown/rolldown/issues/4300
-
 import type { Plugin, ResolvedConfig } from 'vite'
 import { assert, assertPosixPath } from '../utils.js'
 import { normalizeId } from '../shared/normalizeId.js'
@@ -15,6 +12,9 @@ const constantsIsClientSide = [
   'globalContext.isClientSide',
   'pageContext.globalContext.isClientSide',
 ]
+
+// - See https://vike.dev/pageContext#narrowing-down
+// - We cannot use [`define`](https://vite.dev/config/shared-options.html#define) because of https://github.com/rolldown/rolldown/issues/4300
 
 const skipNodeModules = '/node_modules/'
 const skipIrrelevant = 'Context.isClientSide'
