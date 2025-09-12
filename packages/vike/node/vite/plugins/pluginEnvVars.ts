@@ -87,6 +87,7 @@ function pluginEnvVars(): Plugin[] {
               const envStatement = `import.meta.env.${envName}` as const
               const envStatementRegExpStr = escapeRegex(envStatement) + '\\b'
 
+              // TODO/now: move following in its own function
               // Security check
               {
                 const isPrivate = !envName.startsWith(PUBLIC_ENV_PREFIX) && !PUBLIC_ENV_ALLOWLIST.includes(envName)
