@@ -150,9 +150,9 @@ function assertNoClientSideLeak({
   // - assertUsage() and abort when building for production
   const modulePath = getModuleFilePathAbsolute(id, config)
   const errMsgAddendum: string = isBuild ? '' : ' (Vike will prevent your app from building for production)'
-  const keyPublic = `${PUBLIC_ENV_PREFIX}${envName}` as const
+  const envNameFixed = `${PUBLIC_ENV_PREFIX}${envName}` as const
   const errMsg =
-    `${envStatement} is used in client-side file ${modulePath} which means that the environment variable ${envName} will be included in client-side bundles and, therefore, ${envName} will be publicly exposed which can be a security leak${errMsgAddendum}. Use ${envStatement} only in server-side files, or rename ${envName} to ${keyPublic}, see https://vike.dev/env` as const
+    `${envStatement} is used in client-side file ${modulePath} which means that the environment variable ${envName} will be included in client-side bundles and, therefore, ${envName} will be publicly exposed which can be a security leak${errMsgAddendum}. Use ${envStatement} only in server-side files, or rename ${envName} to ${envNameFixed}, see https://vike.dev/env` as const
   if (isBuild) {
     assertUsage(false, errMsg)
   } else {
