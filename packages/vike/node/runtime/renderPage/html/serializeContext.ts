@@ -87,11 +87,9 @@ function serializeObject(
   isHtmlJsonScript: boolean,
 ) {
   let serialized: string
-  console.log('obj', obj)
   try {
     serialized = serializeValue(obj, isHtmlJsonScript)
   } catch (err) {
-    console.log('err', err)
     const h = (s: string) => pc.cyan(s)
     let hasWarned = false
     const propsNonSerializable: string[] = []
@@ -144,7 +142,6 @@ function serializeObject(
       assert(false)
     }
   }
-  console.log('serialized', serialized)
   return serialized
 }
 function serializeValue(
