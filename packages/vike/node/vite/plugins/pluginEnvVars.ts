@@ -1,5 +1,8 @@
 export { pluginEnvVars }
 
+// TODO/now: rename pluginReplaceConstans
+//  - Also the other plugin (there should be three pluginReplaceConstants)
+
 import type { Plugin, ResolvedConfig } from 'vite'
 import { loadEnv } from 'vite'
 import {
@@ -76,8 +79,8 @@ function pluginEnvVars(): Plugin[] {
 
           // Find & check
           const replacements = Object.entries(envsAll)
+            // Already handled by Vite
             .filter(([key]) => {
-              // Already handled by Vite
               const envPrefix = !config.envPrefix
                 ? []
                 : isArray(config.envPrefix)
