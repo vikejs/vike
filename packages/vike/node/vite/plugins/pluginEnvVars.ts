@@ -80,13 +80,13 @@ function pluginEnvVars(): Plugin[] {
           // Find & check
           const replacements = Object.entries(envsAll)
             // Already handled by Vite
-            .filter(([key]) => {
+            .filter(([envName]) => {
               const envPrefix = !config.envPrefix
                 ? []
                 : isArray(config.envPrefix)
                   ? config.envPrefix
                   : [config.envPrefix]
-              return !envPrefix.some((prefix) => key.startsWith(prefix))
+              return !envPrefix.some((prefix) => envName.startsWith(prefix))
             })
             .map(([envName, envVal]) => {
               const envStatement = `import.meta.env.${envName}` as const
