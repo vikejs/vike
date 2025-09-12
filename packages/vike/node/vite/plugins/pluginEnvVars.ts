@@ -4,7 +4,7 @@ export { pluginEnvVars }
 //  - Also the other plugin (there should be three pluginReplaceConstants)
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { loadEnv, resolveEnvPrefix } from 'vite'
+import { loadEnv } from 'vite'
 import {
   assert,
   assertPosixPath,
