@@ -139,10 +139,15 @@ function assertNoClientSideLeak({
   id: string
   config: ResolvedConfig
   isBuild: boolean
-}): void {
+}): void | 'ALL_GOOD' {
   const isPrivate = !envName.startsWith(PUBLIC_ENV_PREFIX) && !PUBLIC_ENV_ALLOWLIST.includes(envName)
-  if (!isPrivate) return
-  if (!new RegExp(envStatementRegExpStr).test(code)) return
+  // ✅ All good
+  if (!isPrivate) return 'ALL_GOOD'
+  if (!new RegExp(envStatementRegExpStr).test(code)) return 'ALL_GOOD'
+
+  // ❌ Security leak!
+  // - Warning in dev
+  // - assertUsage() and abort when building for prodution
   const modulePath = getModuleFilePathAbsolute(id, config)
   const errMsgAddendum: string = isBuild ? '' : ' (Vike will prevent your app from building for production)'
   const keyPublic = `${PUBLIC_ENV_PREFIX}${envName}` as const
