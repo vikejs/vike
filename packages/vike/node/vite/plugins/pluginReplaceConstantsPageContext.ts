@@ -1,4 +1,4 @@
-export { pluginReplaceConstantsIsClientSide }
+export { pluginReplaceConstantsPageContext }
 
 // - See https://vike.dev/pageContext#narrowing-down
 // - We cannot use [`define`](https://vite.dev/config/shared-options.html#define) because of https://github.com/rolldown/rolldown/issues/4300
@@ -33,11 +33,11 @@ const filterFunction = (id: string, code: string) => {
   return true
 }
 
-function pluginReplaceConstantsIsClientSide(): Plugin[] {
+function pluginReplaceConstantsPageContext(): Plugin[] {
   let config: ResolvedConfig
   return [
     {
-      name: 'vike:pluginReplaceConstantsIsClientSide',
+      name: 'vike:pluginReplaceConstantsPageContext',
       enforce: 'post',
       apply: 'build',
       configResolved: {
