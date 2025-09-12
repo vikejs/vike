@@ -29,7 +29,6 @@ const flags = [
   'vike:outDir',
   'vike:pageFiles',
   'vike:pointer-imports',
-  // TODO/now: rename
   'vike:resolve',
   'vike:routing',
   'vike:setup',
