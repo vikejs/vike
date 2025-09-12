@@ -257,6 +257,34 @@ export function Head() {
 ```
 
 
+## SPA
+
+While the content of your SPA pages isn't included in the HTML, all head settings are:
+
+```html
+<html>
+  <!-- ✅ All head settings of the SPA page are included in the HTML -->
+  <head>
+    <title>AwesomeRockets</title>
+    <meta name="description" content="The rocket company.">
+    <meta property="og:image" content="/assets/previewImage.9d8ha1.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="viewport" content="width=1200" />
+  </head>
+
+  <!-- ❌ The content of the SPA page isn't included in the HTML -->
+  <div id="root"></div>
+
+  <!-- The client-side JavaScript of the SPA page -->
+  <script src="/spa-entry.js" type="module"></script>
+</html>
+```
+
+> See also:
+> - <Link href="/SSR-vs-SPA" />
+> - <Link href="/what-is-SSR-and-SPA" />
+
+
 ## Custom settings
 
 You can create your own custom settings.

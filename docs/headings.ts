@@ -135,7 +135,7 @@ const headings = [
     level: 2,
     title: 'Pre-rendering (SSG)',
     url: '/pre-rendering',
-    sectionTitles: ['SPA', 'SSG vs SSR'],
+    sectionTitles: ['SSG vs SSR'],
   },
   {
     level: 2,
@@ -146,6 +146,7 @@ const headings = [
     level: 2,
     title: '`<head>` tags',
     url: '/head-tags',
+    sectionTitles: ['SPA'],
   },
   {
     level: 2,
