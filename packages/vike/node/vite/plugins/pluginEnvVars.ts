@@ -1,5 +1,8 @@
 export { pluginEnvVars }
 
+// TODO/now: rename pluginReplaceConstants
+//  - Also the other plugin (there should be three pluginReplaceConstants)
+
 import type { Plugin, ResolvedConfig } from 'vite'
 import { loadEnv } from 'vite'
 import {
@@ -45,7 +48,8 @@ const filterFunction = (id: string, code: string) => {
 }
 
 function pluginEnvVars(): Plugin[] {
-  let envsAll: Record<string, string>
+  let envVarsAll: Record<string, string>
+  let envPrefix: string[]
   let config: ResolvedConfig
   return [
     {
@@ -54,7 +58,8 @@ function pluginEnvVars(): Plugin[] {
       configResolved: {
         handler(config_) {
           config = config_
-          envsAll = loadEnv(config.mode, config.envDir || config.root, '')
+          envVarsAll = loadEnv(config.mode, config.envDir || config.root, '')
+          envPrefix = getEnvPrefix(config)
           // Vite's built-in plugin vite:define needs to apply after this plugin.
           //  - This plugin vike:pluginEnvVars needs to apply after vike:pluginExtractAssets and vike:pluginExtractExportNames which need to apply after @vitejs/plugin-vue
           ;(config.plugins as Plugin[]).sort(lowerFirst<Plugin>((plugin) => (plugin.name === 'vite:define' ? 1 : 0)))
@@ -74,50 +79,33 @@ function pluginEnvVars(): Plugin[] {
 
           const { magicString, getMagicStringResult } = getMagicString(code, id)
 
-          // Find & check
-          const replacements = Object.entries(envsAll)
-            .filter(([key]) => {
-              // Already handled by Vite
-              const envPrefix = !config.envPrefix
-                ? []
-                : isArray(config.envPrefix)
-                  ? config.envPrefix
-                  : [config.envPrefix]
-              return !envPrefix.some((prefix) => key.startsWith(prefix))
-            })
+          // Get regex operations
+          const replacements = Object.entries(envVarsAll)
+            // Skip env vars that start with [`config.envPrefix`](https://vite.dev/config/shared-options.html#envprefix) => they are already handled by Vite
+            .filter(([envName]) => !envPrefix.some((prefix) => envName.startsWith(prefix)))
             .map(([envName, envVal]) => {
               const envStatement = `import.meta.env.${envName}` as const
               const envStatementRegExpStr = escapeRegex(envStatement) + '\\b'
 
-              // Security check
-              {
-                const isPrivate = !envName.startsWith(PUBLIC_ENV_PREFIX) && !PUBLIC_ENV_ALLOWLIST.includes(envName)
-                if (isPrivate && isClientSide) {
-                  if (!new RegExp(envStatementRegExpStr).test(code)) return
-                  const modulePath = getModuleFilePathAbsolute(id, config)
-                  const errMsgAddendum: string = isBuild
-                    ? ''
-                    : ' (Vike will prevent your app from building for production)'
-                  const keyPublic = `${PUBLIC_ENV_PREFIX}${envName}` as const
-                  const errMsg =
-                    `${envStatement} is used in client-side file ${modulePath} which means that the environment variable ${envName} will be included in client-side bundles and, therefore, ${envName} will be publicly exposed which can be a security leak${errMsgAddendum}. Use ${envStatement} only in server-side files, or rename ${envName} to ${keyPublic}, see https://vike.dev/env` as const
-                  if (isBuild) {
-                    assertUsage(false, errMsg)
-                  } else {
-                    // - Only a warning for faster development DX (e.g. when user toggles `ssr: boolean` or `onBeforeRenderIsomorph: boolean`).
-                    // - But only showing a warning can be confusing: https://github.com/vikejs/vike/issues/1641
-                    assertWarning(false, errMsg, { onlyOnce: true })
-                  }
-                }
-                // Double check
-                assert(!(isPrivate && isClientSide) || !isBuild)
+              // Show error (warning in dev) if client code contains a private environment variable (one that doesn't start with PUBLIC_ENV__ and that isn't included in `PUBLIC_ENV_ALLOWLIST`).
+              if (isClientSide) {
+                const skip = assertNoClientSideLeak({
+                  envName,
+                  envStatement,
+                  envStatementRegExpStr,
+                  code,
+                  id,
+                  config,
+                  isBuild,
+                })
+                if (skip) return null
               }
 
               return { regExpStr: envStatementRegExpStr, replacement: envVal }
             })
             .filter(isNotNullish)
 
-          // Apply
+          // Apply regex operations
           replacements.forEach(({ regExpStr, replacement }) => {
             magicString.replaceAll(new RegExp(regExpStr, 'g'), JSON.stringify(replacement))
           })
@@ -127,4 +115,53 @@ function pluginEnvVars(): Plugin[] {
       },
     },
   ]
+}
+
+function getEnvPrefix(config: ResolvedConfig): string[] {
+  const { envPrefix } = config
+  if (!envPrefix) return []
+  if (!isArray(envPrefix)) return [envPrefix]
+  return envPrefix
+}
+
+function assertNoClientSideLeak({
+  envName,
+  envStatement,
+  envStatementRegExpStr,
+  code,
+  id,
+  config,
+  isBuild,
+}: {
+  envName: string
+  envStatement: string
+  envStatementRegExpStr: string
+  code: string
+  id: string
+  config: ResolvedConfig
+  isBuild: boolean
+}): undefined | true {
+  const isPrivate = !envName.startsWith(PUBLIC_ENV_PREFIX) && !PUBLIC_ENV_ALLOWLIST.includes(envName)
+  // ✅ All good
+  if (!isPrivate) return
+  if (!new RegExp(envStatementRegExpStr).test(code)) return true
+
+  // ❌ Security leak!
+  // - Warning in dev
+  // - assertUsage() and abort when building for production
+  const modulePath = getModuleFilePathAbsolute(id, config)
+  const errMsgAddendum: string = isBuild ? '' : ' (Vike will prevent your app from building for production)'
+  const envNameFixed = `${PUBLIC_ENV_PREFIX}${envName}` as const
+  const errMsg =
+    `${envStatement} is used in client-side file ${modulePath} which means that the environment variable ${envName} will be included in client-side bundles and, therefore, ${envName} will be publicly exposed which can be a security leak${errMsgAddendum}. Use ${envStatement} only in server-side files, or rename ${envName} to ${envNameFixed}, see https://vike.dev/env` as const
+
+  if (isBuild) {
+    assertUsage(false, errMsg)
+  } else {
+    // - Only a warning for faster development DX (e.g. when user toggles `ssr: boolean` or `onBeforeRenderIsomorph: boolean`).
+    // - Although only showing a warning can be confusing: https://github.com/vikejs/vike/issues/1641
+    assertWarning(false, errMsg, { onlyOnce: true })
+  }
+
+  assert(!isBuild) // we should abort if building for production
 }
