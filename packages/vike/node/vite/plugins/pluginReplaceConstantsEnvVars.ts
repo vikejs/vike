@@ -1,4 +1,4 @@
-export { pluginEnvVars }
+export { pluginReplaceConstantsEnvVars }
 
 // TODO/now: rename pluginReplaceConstants
 //  - Also the other plugin (there should be three pluginReplaceConstants)
@@ -47,13 +47,13 @@ const filterFunction = (id: string, code: string) => {
   return true
 }
 
-function pluginEnvVars(): Plugin[] {
+function pluginReplaceConstantsEnvVars(): Plugin[] {
   let envVarsAll: Record<string, string>
   let envPrefix: string[]
   let config: ResolvedConfig
   return [
     {
-      name: 'vike:pluginEnvVars',
+      name: 'vike:pluginReplaceConstantsEnvVars',
       enforce: 'post',
       configResolved: {
         handler(config_) {
@@ -61,7 +61,7 @@ function pluginEnvVars(): Plugin[] {
           envVarsAll = loadEnv(config.mode, config.envDir || config.root, '')
           envPrefix = getEnvPrefix(config)
           // Vite's built-in plugin vite:define needs to apply after this plugin.
-          //  - This plugin vike:pluginEnvVars needs to apply after vike:pluginExtractAssets and vike:pluginExtractExportNames which need to apply after @vitejs/plugin-vue
+          //  - This plugin vike:pluginReplaceConstantsEnvVars needs to apply after vike:pluginExtractAssets and vike:pluginExtractExportNames which need to apply after @vitejs/plugin-vue
           ;(config.plugins as Plugin[]).sort(lowerFirst<Plugin>((plugin) => (plugin.name === 'vite:define' ? 1 : 0)))
         },
       },
