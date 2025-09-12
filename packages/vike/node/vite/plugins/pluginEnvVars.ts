@@ -87,9 +87,9 @@ function pluginEnvVars(): Plugin[] {
               const envStatement = `import.meta.env.${envName}` as const
               const envStatementRegExpStr = escapeRegex(envStatement) + '\\b'
 
-              // Only apply to client code if environment variable starts with PUBLIC_ENV__
+              // Show error (warning in dev) if client code contains a private environment variable (one that doesn't start with PUBLIC_ENV__ and that isn't included in `PUBLIC_ENV_ALLOWLIST`).
               if (isClientSide) {
-                const skip = checkClientSide({
+                assertNoClientSideLeak({
                   envName,
                   envStatement,
                   envStatementRegExpStr,
@@ -98,7 +98,6 @@ function pluginEnvVars(): Plugin[] {
                   config,
                   isBuild,
                 })
-                if (skip) return null
               }
 
               return { regExpStr: envStatementRegExpStr, replacement: envVal }
@@ -124,7 +123,7 @@ function getEnvPrefix(config: ResolvedConfig): string[] {
   return envPrefix
 }
 
-function checkClientSide({
+function assertNoClientSideLeak({
   envName,
   envStatement,
   envStatementRegExpStr,
@@ -140,10 +139,10 @@ function checkClientSide({
   id: string
   config: ResolvedConfig
   isBuild: boolean
-}): boolean {
+}): void {
   const isPrivate = !envName.startsWith(PUBLIC_ENV_PREFIX) && !PUBLIC_ENV_ALLOWLIST.includes(envName)
   if (isPrivate) {
-    if (!new RegExp(envStatementRegExpStr).test(code)) return true
+    if (!new RegExp(envStatementRegExpStr).test(code)) return
     const modulePath = getModuleFilePathAbsolute(id, config)
     const errMsgAddendum: string = isBuild ? '' : ' (Vike will prevent your app from building for production)'
     const keyPublic = `${PUBLIC_ENV_PREFIX}${envName}` as const
@@ -159,5 +158,4 @@ function checkClientSide({
   }
   // Double check
   assert(!isPrivate || !isBuild)
-  return false
 }
