@@ -142,25 +142,23 @@ function checkClientSide({
   isClientSide: boolean
   isBuild: boolean
 }): boolean {
-                const isPrivate = !envName.startsWith(PUBLIC_ENV_PREFIX) && !PUBLIC_ENV_ALLOWLIST.includes(envName)
-                if (isPrivate && isClientSide) {
-                  if (!new RegExp(envStatementRegExpStr).test(code)) return true
-                  const modulePath = getModuleFilePathAbsolute(id, config)
-                  const errMsgAddendum: string = isBuild
-                    ? ''
-                    : ' (Vike will prevent your app from building for production)'
-                  const keyPublic = `${PUBLIC_ENV_PREFIX}${envName}` as const
-                  const errMsg =
-                    `${envStatement} is used in client-side file ${modulePath} which means that the environment variable ${envName} will be included in client-side bundles and, therefore, ${envName} will be publicly exposed which can be a security leak${errMsgAddendum}. Use ${envStatement} only in server-side files, or rename ${envName} to ${keyPublic}, see https://vike.dev/env` as const
-                  if (isBuild) {
-                    assertUsage(false, errMsg)
-                  } else {
-                    // - Only a warning for faster development DX (e.g. when user toggles `ssr: boolean` or `onBeforeRenderIsomorph: boolean`).
-                    // - But only showing a warning can be confusing: https://github.com/vikejs/vike/issues/1641
-                    assertWarning(false, errMsg, { onlyOnce: true })
-                  }
-                }
-                // Double check
-                assert(!(isPrivate && isClientSide) || !isBuild)
+  const isPrivate = !envName.startsWith(PUBLIC_ENV_PREFIX) && !PUBLIC_ENV_ALLOWLIST.includes(envName)
+  if (isPrivate && isClientSide) {
+    if (!new RegExp(envStatementRegExpStr).test(code)) return true
+    const modulePath = getModuleFilePathAbsolute(id, config)
+    const errMsgAddendum: string = isBuild ? '' : ' (Vike will prevent your app from building for production)'
+    const keyPublic = `${PUBLIC_ENV_PREFIX}${envName}` as const
+    const errMsg =
+      `${envStatement} is used in client-side file ${modulePath} which means that the environment variable ${envName} will be included in client-side bundles and, therefore, ${envName} will be publicly exposed which can be a security leak${errMsgAddendum}. Use ${envStatement} only in server-side files, or rename ${envName} to ${keyPublic}, see https://vike.dev/env` as const
+    if (isBuild) {
+      assertUsage(false, errMsg)
+    } else {
+      // - Only a warning for faster development DX (e.g. when user toggles `ssr: boolean` or `onBeforeRenderIsomorph: boolean`).
+      // - But only showing a warning can be confusing: https://github.com/vikejs/vike/issues/1641
+      assertWarning(false, errMsg, { onlyOnce: true })
+    }
+  }
+  // Double check
+  assert(!(isPrivate && isClientSide) || !isBuild)
   return false
 }
