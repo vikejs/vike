@@ -79,7 +79,7 @@ function pluginEnvVars(): Plugin[] {
 
           const { magicString, getMagicStringResult } = getMagicString(code, id)
 
-          // Find & check
+          // Get regex operations
           const replacements = Object.entries(envVarsAll)
             // Skip env vars that start with [`config.envPrefix`](https://vite.dev/config/shared-options.html#envprefix) => they are already handled by Vite
             .filter(([envName]) => !envPrefix.some((prefix) => envName.startsWith(prefix)))
@@ -96,7 +96,7 @@ function pluginEnvVars(): Plugin[] {
             })
             .filter(isNotNullish)
 
-          // Apply
+          // Apply regex operations
           replacements.forEach(({ regExpStr, replacement }) => {
             magicString.replaceAll(new RegExp(regExpStr, 'g'), JSON.stringify(replacement))
           })
