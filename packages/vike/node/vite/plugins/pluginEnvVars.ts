@@ -141,7 +141,7 @@ function assertNoClientSideLeak({
   isBuild: boolean
 }): void {
   const isPrivate = !envName.startsWith(PUBLIC_ENV_PREFIX) && !PUBLIC_ENV_ALLOWLIST.includes(envName)
-  if (isPrivate) {
+  if (!isPrivate) return
     if (!new RegExp(envStatementRegExpStr).test(code)) return
     const modulePath = getModuleFilePathAbsolute(id, config)
     const errMsgAddendum: string = isBuild ? '' : ' (Vike will prevent your app from building for production)'
@@ -155,7 +155,5 @@ function assertNoClientSideLeak({
       // - But only showing a warning can be confusing: https://github.com/vikejs/vike/issues/1641
       assertWarning(false, errMsg, { onlyOnce: true })
     }
-  }
-  // Double check
-  assert(!isPrivate || !isBuild)
+  assert(!isBuild) // we should abort if building for production
 }
