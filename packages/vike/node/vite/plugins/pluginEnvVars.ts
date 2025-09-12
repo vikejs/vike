@@ -82,9 +82,7 @@ function pluginEnvVars(): Plugin[] {
           // Find & check
           const replacements = Object.entries(envsAll)
             // Skip env vars that start with [`config.envPrefix`](https://vite.dev/config/shared-options.html#envprefix) => they are already handled by Vite
-            .filter(([envName]) => {
-              return !envPrefix.some((prefix) => envName.startsWith(prefix))
-            })
+            .filter(([envName]) => !envPrefix.some((prefix) => envName.startsWith(prefix)))
             .map(([envName, envVal]) => {
               const envStatement = `import.meta.env.${envName}` as const
               const envStatementRegExpStr = escapeRegex(envStatement) + '\\b'
