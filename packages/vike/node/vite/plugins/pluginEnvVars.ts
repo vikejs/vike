@@ -79,7 +79,7 @@ function pluginEnvVars(): Plugin[] {
 
           // Find & check
           const replacements = Object.entries(envsAll)
-            // Already handled by Vite
+            // Skip env vars that start with [`config.envPrefix`](https://vite.dev/config/shared-options.html#envprefix) => they are already handled by Vite
             .filter(([envName]) => {
               const envPrefix = !config.envPrefix
                 ? []
