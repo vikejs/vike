@@ -189,6 +189,51 @@ export default {
 > Even though the content of SPA pages is missing, meta information (title, description, social image, ...) is still included in the pre-rendered HTML. See <Link href="/head-tags#spa" />.
 
 
+## Can I use SSG + SSR?
+
+Yes, you can have SSR pages while others are SSG.
+
+> SSG is basically "pre-rendered SSR", see <Link href="#ssg-vs-ssr" />.
+
+For example:
+
+```yaml
+pages/+config.js
+pages/user/@id/+Page.js # SSR
+pages/(marketing)/+config.js
+pages/(marketing)/index/+Page.js # SSG
+pages/(marketing)/about/+Page.js # SSG
+```
+
+```ts
+// pages/+config.js
+
+import { Config } from 'vike/types'
+
+// SSR
+export default {
+  ssr: true // (optional: `ssr` is true by default)
+} satisfies Config
+```
+
+```ts
+// pages/(marketing)/+config.ts
+
+import { Config } from 'vike/types'
+
+// SSG
+export default {
+  prerender: true,
+  ssr: true // (optional: `ssr` is inherited by pages/+config.js)
+} satisfies Config
+```
+
+> See also:
+> - <Link href="/ssr" />
+> - <Link href="#ssg-vs-ssr" />
+> - <Link href="/config#inheritance" />
+
+
 ## See also
 
 - <Link href="/data-fetching#pre-rendering-ssg" doNotInferSectionTitle />
