@@ -89,7 +89,16 @@ function pluginEnvVars(): Plugin[] {
 
               // Show error (warning in dev) if client code contains a private environment variable (one that doesn't start with PUBLIC_ENV__ and that isn't included in `PUBLIC_ENV_ALLOWLIST`).
               if (isClientSide) {
-                assertNoClientSideLeak({ envName, envStatement, envStatementRegExpStr, code, id, config, isBuild })
+                const skip = assertNoClientSideLeak({
+                  envName,
+                  envStatement,
+                  envStatementRegExpStr,
+                  code,
+                  id,
+                  config,
+                  isBuild,
+                })
+                if (skip) return null
               }
 
               return { regExpStr: envStatementRegExpStr, replacement: envVal }
@@ -131,11 +140,11 @@ function assertNoClientSideLeak({
   id: string
   config: ResolvedConfig
   isBuild: boolean
-}): void | 'ALL_GOOD' {
+}): undefined | true {
   const isPrivate = !envName.startsWith(PUBLIC_ENV_PREFIX) && !PUBLIC_ENV_ALLOWLIST.includes(envName)
   // ✅ All good
-  if (!isPrivate) return 'ALL_GOOD'
-  if (!new RegExp(envStatementRegExpStr).test(code)) return 'ALL_GOOD'
+  if (!isPrivate) return
+  if (!new RegExp(envStatementRegExpStr).test(code)) return true
 
   // ❌ Security leak!
   // - Warning in dev
