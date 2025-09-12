@@ -4,7 +4,7 @@ export { pluginEnvVars }
 //  - Also the other plugin (there should be three pluginReplaceConstants)
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { loadEnv } from 'vite'
+import { loadEnv, resolveEnvPrefix } from 'vite'
 import {
   assert,
   assertPosixPath,
@@ -49,6 +49,7 @@ const filterFunction = (id: string, code: string) => {
 
 function pluginEnvVars(): Plugin[] {
   let envsAll: Record<string, string>
+  let envPrefix: string[]
   let config: ResolvedConfig
   return [
     {
@@ -58,6 +59,7 @@ function pluginEnvVars(): Plugin[] {
         handler(config_) {
           config = config_
           envsAll = loadEnv(config.mode, config.envDir || config.root, '')
+          envPrefix = getEnvPrefix(config)
           // Vite's built-in plugin vite:define needs to apply after this plugin.
           //  - This plugin vike:pluginEnvVars needs to apply after vike:pluginExtractAssets and vike:pluginExtractExportNames which need to apply after @vitejs/plugin-vue
           ;(config.plugins as Plugin[]).sort(lowerFirst<Plugin>((plugin) => (plugin.name === 'vite:define' ? 1 : 0)))
@@ -81,11 +83,6 @@ function pluginEnvVars(): Plugin[] {
           const replacements = Object.entries(envsAll)
             // Skip env vars that start with [`config.envPrefix`](https://vite.dev/config/shared-options.html#envprefix) => they are already handled by Vite
             .filter(([envName]) => {
-              const envPrefix = !config.envPrefix
-                ? []
-                : isArray(config.envPrefix)
-                  ? config.envPrefix
-                  : [config.envPrefix]
               return !envPrefix.some((prefix) => envName.startsWith(prefix))
             })
             .map(([envName, envVal]) => {
@@ -130,4 +127,11 @@ function pluginEnvVars(): Plugin[] {
       },
     },
   ]
+}
+
+function getEnvPrefix(config: ResolvedConfig): string[] {
+  const { envPrefix } = config
+  if (!envPrefix) return []
+  if (!isArray(envPrefix)) return [envPrefix]
+  return envPrefix
 }
