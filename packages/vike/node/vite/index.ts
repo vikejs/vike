@@ -25,7 +25,7 @@ import { pluginFileEnv } from './plugins/pluginFileEnv.js'
 import { pluginWorkaroundCssModuleHmr } from './plugins/pluginWorkaroundCssModuleHmr.js'
 import { pluginWorkaroundVite6HmrRegression } from './plugins/pluginWorkaroundVite6HmrRegression.js'
 import { pluginReplaceConstantsPageContext } from './plugins/pluginReplaceConstantsPageContext.js'
-import { pluginReplaceGlobalThisConstants } from './plugins/pluginReplaceGlobalThisConstants.js'
+import { pluginReplaceConstantsGlobalThis } from './plugins/pluginReplaceConstantsGlobalThis.js'
 import { pluginViteRPC } from './plugins/non-runnable-dev/pluginViteRPC.js'
 import { pluginBuildApp } from './plugins/build/pluginBuildApp.js'
 import { pluginDistPackageJsonFile } from './plugins/build/pluginDistPackageJsonFile.js'
@@ -58,7 +58,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginIntero
     ...pluginWorkaroundCssModuleHmr(),
     ...pluginWorkaroundVite6HmrRegression(),
     ...pluginReplaceConstantsPageContext(),
-    ...pluginReplaceGlobalThisConstants(),
+    ...pluginReplaceConstantsGlobalThis(),
     ...pluginNonRunnabeDev(),
   ]
   Object.assign(plugins, { _vikeVitePluginOptions: vikeVitePluginOptions })

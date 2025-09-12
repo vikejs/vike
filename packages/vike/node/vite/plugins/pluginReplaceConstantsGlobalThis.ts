@@ -1,4 +1,4 @@
-export { pluginReplaceGlobalThisConstants }
+export { pluginReplaceConstantsGlobalThis }
 
 import type { Plugin } from 'vite'
 import { assert } from '../utils.js'
@@ -26,10 +26,10 @@ declare global {
 
 globalThis.__VIKE__IS_CLIENT = false
 
-function pluginReplaceGlobalThisConstants(): Plugin[] {
+function pluginReplaceConstantsGlobalThis(): Plugin[] {
   return [
     {
-      name: 'vike:pluginReplaceGlobalThisConstants',
+      name: 'vike:pluginReplaceConstantsGlobalThis',
       config: {
         handler(config) {
           const isDev = config._isDev

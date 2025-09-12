@@ -255,7 +255,7 @@ function logAbortErrorHandled(
 function assertStatusCode(statusCode: number, expected: number[], caller: 'render' | 'redirect') {
   assert(!globalThis.__VIKE__IS_CLIENT || globalThis.__VIKE__IS_DEV) // save client-side KBs
 
-  // double check vike:pluginReplaceGlobalThisConstants
+  // double check vike:pluginReplaceConstantsGlobalThis
   if (globalThis.__VIKE__IS_CLIENT) {
     assert(isBrowser())
     assert(typeof globalThis.__VIKE__IS_DEV === 'boolean')
