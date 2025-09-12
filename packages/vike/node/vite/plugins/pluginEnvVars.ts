@@ -147,7 +147,7 @@ function assertNoClientSideLeak({
 
   // ❌ Security leak!
   // - Warning in dev
-  // - assertUsage() and abort when building for prodution
+  // - assertUsage() and abort when building for production
   const modulePath = getModuleFilePathAbsolute(id, config)
   const errMsgAddendum: string = isBuild ? '' : ' (Vike will prevent your app from building for production)'
   const keyPublic = `${PUBLIC_ENV_PREFIX}${envName}` as const
