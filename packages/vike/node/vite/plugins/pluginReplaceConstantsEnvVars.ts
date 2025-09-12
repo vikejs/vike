@@ -1,8 +1,5 @@
 export { pluginReplaceConstantsEnvVars }
 
-// TODO/now: rename pluginReplaceConstants
-//  - Also the other plugin (there should be three pluginReplaceConstants)
-
 import type { Plugin, ResolvedConfig } from 'vite'
 import { loadEnv } from 'vite'
 import {
