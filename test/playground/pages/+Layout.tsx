@@ -36,6 +36,9 @@ function Layout({ children }: { children: React.ReactNode }) {
     someFnClient()
   }
 
+  assert(globalContext.someDate)
+  assert(globalContext.someDate instanceof Date, globalContext.someDate)
+
   return (
     <React.StrictMode>
       <Frame>

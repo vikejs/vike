@@ -8,6 +8,7 @@ async function onCreateGlobalContext(globalContext: GlobalContextServer) {
   const rid = Math.ceil(Math.random() * Math.pow(10, 14))
   globalContext.setGloballyServer = `server-random-number:${rid}`
   globalContext.notPassedToClient = 123
+  globalContext.someDate = new Date('2025')
 }
 
 declare global {
@@ -15,6 +16,7 @@ declare global {
     interface GlobalContext {
       // Passed to client
       setGloballyServer: string
+      someDate: Date
     }
     interface GlobalContextServer {
       notPassedToClient: number
