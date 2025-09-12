@@ -1,7 +1,4 @@
-export { pluginEnvVars }
-
-// TODO/now: rename pluginReplaceConstants
-//  - Also the other plugin (there should be three pluginReplaceConstants)
+export { pluginReplaceConstantsEnvVars }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { loadEnv } from 'vite'
@@ -20,16 +17,16 @@ import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 import { getMagicString } from '../shared/getMagicString.js'
 
-// TO-DO/eventually:
-// - Make import.meta.env work inside +config.js
-//   - For it to work, we'll probably need the user to define the settings (e.g. `envDir`) for loadEnv() inside vike.config.js instead of vite.config.js
-//   - Or stop using Vite's `mode` implementation and have Vike implement its own `mode` feature? (So that the only dependencies are `$ vike build --mode staging` and `$ MODE=staging vike build`.)
-
 const PUBLIC_ENV_PREFIX = 'PUBLIC_ENV__'
 const PUBLIC_ENV_ALLOWLIST = [
   // https://github.com/vikejs/vike/issues/1724
   'STORYBOOK',
 ]
+
+// TO-DO/eventually:
+// - Make import.meta.env work inside +config.js
+//   - For it to work, we'll probably need the user to define the settings (e.g. `envDir`) for loadEnv() inside vike.config.js instead of vite.config.js
+//   - Or stop using Vite's `mode` implementation and have Vike implement its own `mode` feature? (So that the only dependencies are `$ vike build --mode staging` and `$ MODE=staging vike build`.)
 
 const skipNodeModules = '/node_modules/'
 const skipIrrelevant = 'import.meta.env.'
@@ -47,13 +44,13 @@ const filterFunction = (id: string, code: string) => {
   return true
 }
 
-function pluginEnvVars(): Plugin[] {
+function pluginReplaceConstantsEnvVars(): Plugin[] {
   let envVarsAll: Record<string, string>
   let envPrefix: string[]
   let config: ResolvedConfig
   return [
     {
-      name: 'vike:pluginEnvVars',
+      name: 'vike:pluginReplaceConstantsEnvVars',
       enforce: 'post',
       configResolved: {
         handler(config_) {
@@ -61,7 +58,7 @@ function pluginEnvVars(): Plugin[] {
           envVarsAll = loadEnv(config.mode, config.envDir || config.root, '')
           envPrefix = getEnvPrefix(config)
           // Vite's built-in plugin vite:define needs to apply after this plugin.
-          //  - This plugin vike:pluginEnvVars needs to apply after vike:pluginExtractAssets and vike:pluginExtractExportNames which need to apply after @vitejs/plugin-vue
+          //  - This plugin vike:pluginReplaceConstantsEnvVars needs to apply after vike:pluginExtractAssets and vike:pluginExtractExportNames which need to apply after @vitejs/plugin-vue
           ;(config.plugins as Plugin[]).sort(lowerFirst<Plugin>((plugin) => (plugin.name === 'vite:define' ? 1 : 0)))
         },
       },

@@ -1,7 +1,4 @@
-export { pluginReplaceIsClientSide }
-
-// - See https://vike.dev/pageContext#narrowing-down
-// - We cannot use [`define`](https://vite.dev/config/shared-options.html#define) because of https://github.com/rolldown/rolldown/issues/4300
+export { pluginReplaceConstantsPageContext }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { assert, assertPosixPath } from '../utils.js'
@@ -15,6 +12,9 @@ const constantsIsClientSide = [
   'globalContext.isClientSide',
   'pageContext.globalContext.isClientSide',
 ]
+
+// - See https://vike.dev/pageContext#narrowing-down
+// - We cannot use [`define`](https://vite.dev/config/shared-options.html#define) because of https://github.com/rolldown/rolldown/issues/4300
 
 const skipNodeModules = '/node_modules/'
 const skipIrrelevant = 'Context.isClientSide'
@@ -33,11 +33,11 @@ const filterFunction = (id: string, code: string) => {
   return true
 }
 
-function pluginReplaceIsClientSide(): Plugin[] {
+function pluginReplaceConstantsPageContext(): Plugin[] {
   let config: ResolvedConfig
   return [
     {
-      name: 'vike:pluginReplaceIsClientSide',
+      name: 'vike:pluginReplaceConstantsPageContext',
       enforce: 'post',
       apply: 'build',
       configResolved: {
