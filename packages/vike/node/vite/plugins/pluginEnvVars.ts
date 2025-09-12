@@ -89,15 +89,7 @@ function pluginEnvVars(): Plugin[] {
 
               // Show error (warning in dev) if client code contains a private environment variable (one that doesn't start with PUBLIC_ENV__ and that isn't included in `PUBLIC_ENV_ALLOWLIST`).
               if (isClientSide) {
-                assertNoClientSideLeak({
-                  envName,
-                  envStatement,
-                  envStatementRegExpStr,
-                  code,
-                  id,
-                  config,
-                  isBuild,
-                })
+                assertNoClientSideLeak({ envName, envStatement, envStatementRegExpStr, code, id, config, isBuild })
               }
 
               return { regExpStr: envStatementRegExpStr, replacement: envVal }
@@ -153,12 +145,14 @@ function assertNoClientSideLeak({
   const envNameFixed = `${PUBLIC_ENV_PREFIX}${envName}` as const
   const errMsg =
     `${envStatement} is used in client-side file ${modulePath} which means that the environment variable ${envName} will be included in client-side bundles and, therefore, ${envName} will be publicly exposed which can be a security leak${errMsgAddendum}. Use ${envStatement} only in server-side files, or rename ${envName} to ${envNameFixed}, see https://vike.dev/env` as const
+
   if (isBuild) {
     assertUsage(false, errMsg)
   } else {
     // - Only a warning for faster development DX (e.g. when user toggles `ssr: boolean` or `onBeforeRenderIsomorph: boolean`).
-    // - But only showing a warning can be confusing: https://github.com/vikejs/vike/issues/1641
+    // - Although only showing a warning can be confusing: https://github.com/vikejs/vike/issues/1641
     assertWarning(false, errMsg, { onlyOnce: true })
   }
+
   assert(!isBuild) // we should abort if building for production
 }
