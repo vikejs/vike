@@ -88,17 +88,18 @@ function pluginEnvVars(): Plugin[] {
               const envStatementRegExpStr = escapeRegex(envStatement) + '\\b'
 
               // Only apply to client code if environment variable starts with PUBLIC_ENV__
-              const skip = checkClientSide({
-                envName,
-                envStatement,
-                envStatementRegExpStr,
-                code,
-                id,
-                config,
-                isClientSide,
-                isBuild,
-              })
-              if (skip) return null
+              if (isClientSide) {
+                const skip = checkClientSide({
+                  envName,
+                  envStatement,
+                  envStatementRegExpStr,
+                  code,
+                  id,
+                  config,
+                  isBuild,
+                })
+                if (skip) return null
+              }
 
               return { regExpStr: envStatementRegExpStr, replacement: envVal }
             })
@@ -130,7 +131,6 @@ function checkClientSide({
   code,
   id,
   config,
-  isClientSide,
   isBuild,
 }: {
   envName: string
@@ -139,11 +139,10 @@ function checkClientSide({
   code: string
   id: string
   config: ResolvedConfig
-  isClientSide: boolean
   isBuild: boolean
 }): boolean {
   const isPrivate = !envName.startsWith(PUBLIC_ENV_PREFIX) && !PUBLIC_ENV_ALLOWLIST.includes(envName)
-  if (isPrivate && isClientSide) {
+  if (isPrivate) {
     if (!new RegExp(envStatementRegExpStr).test(code)) return true
     const modulePath = getModuleFilePathAbsolute(id, config)
     const errMsgAddendum: string = isBuild ? '' : ' (Vike will prevent your app from building for production)'
@@ -159,6 +158,6 @@ function checkClientSide({
     }
   }
   // Double check
-  assert(!(isPrivate && isClientSide) || !isBuild)
+  assert(!isPrivate || !isBuild)
   return false
 }
