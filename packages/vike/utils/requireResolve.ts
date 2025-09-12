@@ -20,7 +20,7 @@ assertPosixPath(importMetaUrl)
 assertIsNotBrowser()
 assertIsNotProductionRuntime()
 
-const debug = createDebugger('vike:resolve')
+const debug = createDebugger('vike:requireResolve')
 
 // - We still can't use import.meta.resolve() as of 23.1.0 (November 2024) because `parent` argument requires an experimental flag.
 //   - https://stackoverflow.com/questions/54977743/do-require-resolve-for-es-modules#comment139581675_62272600

@@ -29,7 +29,7 @@ const flags = [
   'vike:outDir',
   'vike:pageFiles',
   'vike:pointer-imports',
-  'vike:resolve',
+  'vike:requireResolve',
   'vike:routing',
   'vike:setup',
   'vike:stream',
