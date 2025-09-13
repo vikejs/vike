@@ -15,7 +15,7 @@ Common use cases:
 
 Start the development server:
 
-```ts
+```ts ts-only
 import { dev } from 'vike/api'
 
 console.log('Starting development server...')
@@ -31,13 +31,13 @@ console.log(`Development server is ready at http://localhost:${port}`)
 
 Return & options:
 
-```ts
+```ts ts-only
 const {
   viteConfig, // Resolved Vite configuration
-  viteServer, // Vite's development server
+  viteServer // Vite's development server
 } = await dev({
   vikeConfig, // Vike configuration (optional)
-  viteConfig, // Vite configuration (optional)
+  viteConfig // Vite configuration (optional)
 })
 
 // You can access the globalContext object:
@@ -59,7 +59,7 @@ Vite types:
 
 Build for production:
 
-```ts
+```ts ts-only
 import { build } from 'vike/api'
 
 console.log('Building app...')
@@ -69,10 +69,10 @@ console.log('Build is done')
 
 Return & options:
 
-```ts
+```ts ts-only
 await build({
   vikeConfig, // Vike configuration (optional)
-  viteConfig, // Vite configuration (optional)
+  viteConfig // Vite configuration (optional)
 })
 
 // You can access the globalContext object:
@@ -95,7 +95,7 @@ Vite types:
 
 Start a server to preview the production build:
 
-```ts
+```ts ts-only
 import { preview } from 'vike/api'
 
 console.log('Starting preview server...')
@@ -110,13 +110,13 @@ console.log(`Preview server is ready at http://localhost:${port}`)
 
 Return & options:
 
-```ts
+```ts ts-only
 const {
   viteConfig, // Resolved Vite configuration
-  viteServer, // Vite's development server
+  viteServer // Vite's development server
 } = await preview({
   vikeConfig, // Vike configuration (optional)
-  viteConfig, // Vite configuration (optional)
+  viteConfig // Vite configuration (optional)
 })
 
 // You can access the globalContext object:
@@ -138,7 +138,7 @@ Vite types:
 
 <Link href="/pre-rendering">Pre-render</Link> pages (see <Link href="/prerender#disableautorun">`prerender.disableAutoRun`</Link>):
 
-```ts
+```ts ts-only
 import { prerender } from 'vike/api'
 
 console.log('Pre-rendering pages...')
@@ -148,7 +148,7 @@ console.log('Pre-rendering is done')
 
 Return & options:
 
-```ts
+```ts ts-only
 const {
   viteConfig // Resolved Vite configuration
 } = await prerender({
@@ -169,7 +169,7 @@ See:
 - <Link href='#access-globalcontext' />
 - <Link href='#option-vikeconfig' />
   > You can pass <Link href="/prerender">`+prerender` settings</Link> like this:
-  > ```ts
+  > ```ts ts-only
   > await prerender({
   >   vikeConfig: {
   >     prerender: {
@@ -180,10 +180,10 @@ See:
   > })
   > ```
 - **`pageContextInit`**: Initial <Link href="/pageContext">`pageContext`</Link> values.
-  ```ts
+  ```ts ts-only
   prerender({
     pageContextInit: {
-      someData: 42,
+      someData: 42
       // ...
     }
   })
@@ -191,7 +191,7 @@ See:
   > See also: <Link href="/pageContext#lifecycle" />.
 - **`onPagePrerender()`**: control where/how HTML files are written.
   <Warning>This option is a beta feature: expect breaking changes in any minor version update.</Warning>
-  ```ts
+  ```ts ts-only
   prerender({
     // If onPagePrerender() is set, then Vike won't create HTML files
     onPagePrerender(pageContext) {
@@ -209,7 +209,7 @@ Vite types:
 
 You can access the <Link href="/globalContext">`globalContext` object</Link> like this:
 
-```ts
+```ts ts-only
 import { someApiFunction } from 'vike/api'
 import { getGlobalContext } from 'vike'
 
@@ -242,11 +242,11 @@ import { dev } from 'vike/api'
 
 await dev({
   viteConfig: {
-    // vite.config.js can live in node_modules/my-framework/src/vite.config.ts
-    configFile: './path/to/vite.config.js',
-    // The app's root can be somewhere completely else than vite.config.js
+    // vite.config.ts can live in node_modules/my-framework/src/vite.config.ts
+    configFile: './path/to/vite.config.ts',
+    // The app's root can be somewhere completely else than vite.config.ts
     root: './path/to/app/'
-    // Some Vite settings overriding vite.config.js
+    // Some Vite settings overriding vite.config.ts
     /* ... */
   }
 })
@@ -260,8 +260,8 @@ import { build } from 'vike/api'
 
 await build({
   viteConfig: {
-    // Don't load any vite.config.js
-    configFile: false,
+    // Don't load any vite.config.ts
+    configFile: false
     // All Vite settings
     /* ... */
   }

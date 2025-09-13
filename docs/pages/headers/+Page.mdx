@@ -34,12 +34,12 @@ For example:
 
 You can convert it to a [standard `Headers` object](https://developer.mozilla.org/en-US/docs/Web/API/Headers) by using `new Headers()`:
 
-```ts
+```ts ts-only
 const headers = new Headers(pageContext.headers)
 ```
 
 All values are merged. You can get the list of values as an array (`string[]`):
-```ts
+```ts ts-only
 const acceptLanguage = pageContext.headers['accept-language']
   .split(',')
   .map(v => v.trimStart())

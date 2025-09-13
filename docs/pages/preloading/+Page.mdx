@@ -34,7 +34,7 @@ app.get('*', async (req: Request, res: Response) => {
 ```
 
 The `pageContext.httpResponse.earlyHints` list is an `EarlyHint[]` array.
-```ts
+```ts ts-only
 type EarlyHint = {
   earlyHintLink: string // Early hint value
   assetType: "image" | "script" | "font" | "style" | "audio" | "video" | "document" |

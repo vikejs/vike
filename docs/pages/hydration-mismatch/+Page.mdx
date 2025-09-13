@@ -50,14 +50,14 @@ There was an error while hydrating. Because the error happened outside of a Susp
 
 This component causes a hydration mismatch because the milliseconds rendered to HTML (e.g. `<span>123</span>`) won't match the milliseconds rendered in the browser (e.g. `<span>167</span>`).
 
-```tsx
+```tsx ts-only
 <span>{ new Date().getMilliseconds() }</span>
 ```
 
 
 Instead, to prevent the hydration mismatch:
 
-```ts
+```ts ts-only
 export { onBeforeRender }
 
 async function onBeforeRender() {
@@ -69,7 +69,7 @@ async function onBeforeRender() {
   }
 }
 ```
-```tsx
+```tsx ts-only
 <span>{ pageContext.milliseconds }</span>
 ```
 
@@ -100,7 +100,7 @@ For situations where mismatches are inevitable or difficult to avoid, you can si
 
 Use the `suppressHydrationWarning` attribute:
 
-```tsx
+```tsx ts-only
 function SomeComponent() {
   return (
     <span suppressHydrationWarning={true}>
@@ -118,7 +118,7 @@ See:
 
 Use the `data-allow-mismatch` attribute:
 
-```vue
+```vue ts-only
 <div data-allow-mismatch="text">{{ data.toLocaleString() }}</div>
 ```
 

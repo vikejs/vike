@@ -95,26 +95,28 @@ export function Layout({ children }: { children: React.ReactNode }) {
   // The page's metadata
   const { title } = metadata.find(({ url }) => url === urlPathname)
 
-  return <>
-    {/* Show the list of blog posts */}
-    <LeftSidebar>
-      <p>Blog posts:</p>
-      <ul>{
-        metadata.map(({ title, url, date }) =>
-          <li>
-            <a href={url}>{data + title}</a>
-          </li>
-        )
-      }</ul>
-    </LeftSidebar>
+  return (
+    <>
+      {/* Show the list of blog posts */}
+      <LeftSidebar>
+        <p>Blog posts:</p>
+        <ul>
+          {metadata.map(({ title, url, date }) => (
+            <li>
+              <a href={url}>{data + title}</a>
+            </li>
+          ))}
+        </ul>
+      </LeftSidebar>
 
-    {/* The page's content */}
-    <Content>
-      <h1>{ title }</h1>
-      { /* children is pageContext.Page which is the component defined by +Page.md */ }
-      { children }
-    </Content>
-  </>
+      {/* The page's content */}
+      <Content>
+        <h1>{title}</h1>
+        {/* children is pageContext.Page which is the component defined by +Page.md */}
+        {children}
+      </Content>
+    </>
+  )
 }
 ```
 
@@ -242,26 +244,28 @@ import { usePageContext } from 'vike-react/usePageContext' // or vike-{vue,solid
 export function Layout({ children }: { children: React.ReactNode }) {
   const pageContext = usePageContext()
   const { posts } = pageContext.globalContext
-  return <>
-    {/* Show the list of blog posts */}
-    <LeftSidebar>
-      <p>Blog posts:</p>
-      <ul>{
-        posts.map((post) =>
-          <li>
-            <a href={post.url}>{post.title}</a>
-          </li>
-        )
-      }</ul>
-    </LeftSidebar>
+  return (
+    <>
+      {/* Show the list of blog posts */}
+      <LeftSidebar>
+        <p>Blog posts:</p>
+        <ul>
+          {posts.map((post) => (
+            <li>
+              <a href={post.url}>{post.title}</a>
+            </li>
+          ))}
+        </ul>
+      </LeftSidebar>
 
-    {/* The page's content */}
-    <Content>
-      <h1>{ title }</h1>
-      { /* children is pageContext.Page which is the component defined by +Page.mdx */ }
-      { children }
-    </Content>
-  </>
+      {/* The page's content */}
+      <Content>
+        <h1>{title}</h1>
+        {/* children is pageContext.Page which is the component defined by +Page.mdx */}
+        {children}
+      </Content>
+    </>
+  )
 }
 ```
 
@@ -354,13 +358,15 @@ import { usePageContext } from 'vike-react/usePageContext' // or vike-{vue,solid
 export function Layout({ children }: { children: React.ReactNode }) {
    const pageContext = usePageContext()
    const { frontmatter } = pageContext.config
-   return <>
-     <h1>{frontmatter.title}</h1>
-     {children}
-     <footer>
-       <p>Written by {frontmatter.author}.</p>
-     </footer>
-   </>
+  return (
+    <>
+      <h1>{frontmatter.title}</h1>
+      {children}
+      <footer>
+        <p>Written by {frontmatter.author}.</p>
+      </footer>
+    </>
+  )
 }
 ```
 

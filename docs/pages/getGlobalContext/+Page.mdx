@@ -10,7 +10,7 @@ Access global information about your app, see <Link href="/globalContext" />.
 
 For example, on the server-side, it can be used to access <Link href="/preloading#assets-manifest">the assets manifest</Link>:
 
-```ts
+```ts ts-only
 // Environment: server, client
 
 import { getGlobalContext } from 'vike'
@@ -32,7 +32,7 @@ if (!globalContext.isClientSide) console.log(globalContext.viteRuntimeInfo)
 
 ## `getGlobalContextAsync()`
 
-```ts
+```ts ts-only
 import { getGlobalContextAsync } from 'vike'
 const globalContext = await getGlobalContextAsync(process.env.NODE_ENV === 'production')
 ```

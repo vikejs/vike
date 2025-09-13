@@ -4,13 +4,13 @@ Create server middleware for development with <Link href="/glossary#hmr">HMR</Li
 
 > You don't need `createDevMiddleware()` if you use <Link href="/vike-server">`vike-server`</Link>. (You also don't need it if you <Link href="/pre-rendering">pre-render</Link> and don't use a server at all.)
 
-```ts
+```ts ts-only
 import { createDevMiddleware } from 'vike/server'
 
 const {
   devMiddleware, // The development middleware
   viteConfig, // Resolved Vite configuration
-  viteServer, // Vite's development server
+  viteServer // Vite's development server
 } = await createDevMiddleware({
   root: './path/to/app', // (optional, but recommended)
   viteConfig: {

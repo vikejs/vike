@@ -23,28 +23,28 @@ The `onBeforeRender()` hook can be used to orchestrate multiple <Link href="/met
 
 The central difference between the two hooks is that the value returned by `data()` always sets the value of `pageContext.data`, whereas `onBeforeRender()` can set multiple <Link href="/pageContext">`pageContext`</Link> values.
 
-```ts ts-only
+```ts
 // /pages/some-page/+data.ts
 // Environment: server
 
 export { data }
 
 function data() {
-  const someValue = /* ... */
+  //~const someValue = /* ... */
   // pageContext.data === someValue
   return someValue
 }
 ```
 
-```ts ts-only
+```ts
 // /pages/some-page/+onBeforeRender.ts
 // Environment: server
 
 export { onBeforeRender }
 
 function onBeforeRender() {
-  const someValue1 = /* ... */
-  const someValue2 = /* ... */
+  //~const someValue1 = /* ... */
+  //~const someValue2 = /* ... */
   // pageContext.prop1 === someValue1
   // pageContext.prop2 === someValue2
   return {
@@ -102,7 +102,7 @@ import type { PageContextServer } from 'vike/types'
 import { runQuery } from 'some-sql-engine'
 
 async function onBeforeRender(pageContext: PageContextServer) {
-  // The value exported by /pages/**/+sql.js is available at pageContext.config.sql
+  // The value exported by /pages/**/+sql.ts is available at pageContext.config.sql
   const { sql } = pageContext.config
   const data = await runQuery(sql)
   // ...

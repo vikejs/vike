@@ -50,7 +50,7 @@ export async function headersResponse(pageContext: PageContextServer) {
 
 You can modify and remove headers:
 
-```ts
+```ts ts-only
 // Dynamically adding/modifying header
 pageContext.headersResponse.set('Set-Cookie', 'sessionId=abc123')
 // Dynamically removing header
@@ -89,7 +89,7 @@ It's a list of string tuples `[string, string][]` — for example:
 
 You can convert it to a [standard `Headers` object](https://developer.mozilla.org/en-US/docs/Web/API/Headers) by using `new Headers()`:
 
-```ts
+```ts ts-only
 const headers = new Headers(pageContext.httpResponse.headers)
 ```
 

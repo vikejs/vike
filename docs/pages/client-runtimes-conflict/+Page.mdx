@@ -34,7 +34,7 @@ The problem is often due to one the following.
    export default { build: { rollupOptions } } satisfies UserConfig
    ```
  - You're importing a utility that is only available to <Link href="/client-routing">Client Routing</Link> such as `prefetch()` or `navigate()`, for a page that uses <Link href="/server-routing">Server Routing</Link>.
-   ```ts
+   ```ts ts-only
    // ❌ Don't import these for pages that use Server Routing
    import { prefetch } from 'vike/client/router'
    import { navigate } from 'vike/client/router'

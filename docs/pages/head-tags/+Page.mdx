@@ -253,10 +253,12 @@ import type { Data } from './+data'
 
 export function Head() {
   const data = useData<Data>()
-  return <>
-    {/* Image shown when sharing on social sites (Twitter, WhatsApp, ...) */}
-    <meta property="og:image" content={data.movie.image} />
-  </>
+  return (
+    <>
+      {/* Image shown when sharing on social sites (Twitter, WhatsApp, ...) */}
+      <meta property="og:image" content={data.movie.image} />
+    </>
+  )
 }
 ```
 

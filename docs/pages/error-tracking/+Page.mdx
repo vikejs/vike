@@ -17,7 +17,7 @@ Sentry.init()
 
 // Custom tracking
 window.addEventListener('error', (err) => {
-   console.error('An error occurred:', err)
+  console.error('An error occurred:', err)
 })
 ```
 
@@ -60,7 +60,7 @@ See also <Link href="/error-page" />.
 
 You can use any error tracker, such as [Sentry](https://sentry.io/), [Bugsnag](https://www.bugsnag.com/), [Rollbar](https://rollbar.com/), or your own custom error tracking. For that, make sure to use the error tracker's server-side interceptor. For example with Sentry:
 
-```ts
+```ts ts-only
 import * as Sentry from "@sentry/node";
 
 // ...

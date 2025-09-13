@@ -26,7 +26,7 @@ export default {
 
 Inserting dynamically generated HTML:
 
-```tsx
+```ts
 // pages/+bodyHtmlEnd.ts
 
 import type { PageContextServer } from 'vike/types'
@@ -60,7 +60,7 @@ export default {
 
 You'll then get the following HTML:
 
-```tsx
+```tsx ts-only
 <body>
   {/* ... */}
   <div id="root">{reactHtml}</div>
@@ -75,7 +75,7 @@ When using Vue, it's often used for adding the HTML targets of teleports.
 Teleports work out of the box when using `<Teleport to="teleported">` and you don't have to use `bodyHtml{Begin,End}` then.
 
 > `vike-vue` always inserts this at the end of the `<body>` tag:
-> ```vue
+> ```vue ts-only
 > <div id="teleported">${
 >   pageContext.ssrContext.teleports?.['#teleported'] ?? ''
 > }</div>

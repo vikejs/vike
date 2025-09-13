@@ -9,7 +9,7 @@ import { UiFrameworkExtension, ConfigSpec, ProvidedBy } from '../../components'
 
 The `usePageContext()` hook enables any UI component to access the <Link href="/pageContext">`pageContext` object</Link>.
 
-```ts
+```ts ts-only
 import { usePageContext } from 'vike-react/usePageContext'
 /* Or:
 import { usePageContext } from 'vike-vue/usePageContext'
@@ -85,7 +85,7 @@ function setPageContext(app: App, pageContext: ShallowReactive<PageContext>) {
 }
 ```
 
-```ts
+```ts ts-only
 const app = createSSRApp(/*...*/)
 setPageContext(app, pageContext)
 ```

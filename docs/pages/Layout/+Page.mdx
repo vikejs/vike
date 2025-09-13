@@ -37,13 +37,19 @@ import React from 'react'
 
 // `children` includes <Page>
 function Layout({ children }: { children: React.ReactNode }) {
-  return <>
-    <Navigation/>
-    <Content>{children}</Content>
-  </>
+  return (
+    <>
+      <Navigation />
+      <Content>{children}</Content>
+    </>
+  )
 }
-function Navigation() { /* ... */ }
-function Content() { /* ... */ }
+function Navigation() {
+  /* ... */
+}
+function Content() {
+  /* ... */
+}
 ```
 
 > The reason `/pages/+Layout.jsx` applies to all pages is explained at <Link href="/config#inheritance" />.
@@ -174,11 +180,11 @@ export { Page }
 import { LayoutDefault } from '../layouts/LayoutDefault'
 
 function Page() {
-  return <>
-    <LayoutDefault>
-      {/* ... */}
-    </LayoutDefault>
-  </>
+  return (
+    <>
+      <LayoutDefault>{/* ... */}</LayoutDefault>
+    </>
+  )
 }
 ```
 
@@ -190,11 +196,11 @@ export { Page }
 import { LayoutDashboard } from '../layouts/LayoutDashboard'
 
 function Page() {
-  return <>
-    <LayoutDashboard>
-      {/* ... */}
-    </LayoutDashboard>
-  </>
+  return (
+    <>
+      <LayoutDashboard>{/* ... */}</LayoutDashboard>
+    </>
+  )
 }
 ```
 

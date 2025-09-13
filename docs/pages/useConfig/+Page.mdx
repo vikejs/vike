@@ -74,15 +74,17 @@ export function Page() {
   })
 
   // Render UI
-  return <>
-    <h1>{data.product.name}</h1>
-    <p>{data.product.description}</p>
-  </>
+  return (
+    <>
+      <h1>{data.product.name}</h1>
+      <p>{data.product.description}</p>
+    </>
+  )
 }
 ```
 
 > For Vue you can use the following:
-> ```ts
+> ```ts ts-only
 > import { h } from 'vue'
 > config({
 >   Head: h('meta', {
@@ -188,11 +190,11 @@ function Movies() {
 
   // Render UI
   return (
-    <ul>{
-      movies.map(({ title }) => (
+    <ul>
+      {movies.map(({ title }) => (
         <li>{title}</li>
-      ))
-    }</ul>
+      ))}
+    </ul>
   )
 }
 ```
@@ -221,11 +223,11 @@ function Movies() {
       <Head>
         <meta name="description" content={`List of all ${movies.length} Star Wars movies.`} />
       </Head>
-      <ul>{
-        movies.map(({ title }) => (
+      <ul>
+        {movies.map(({ title }) => (
           <li>{title}</li>
-        ))
-      }</ul>
+        ))}
+      </ul>
     </>
   )
 }

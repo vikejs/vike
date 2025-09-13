@@ -2,14 +2,14 @@ import { Link, FileAdded } from '@brillout/docpress'
 
 Your <Link href="/config#files">`+` files</Link> should have only one export:
 
-```ts ts-only
+```ts
 // pages/index/+Page.ts
 
 // ✅ Main export
-export { Page }
+//~export { Page }
 
 // ❌ Avoid side exports
-export { SomeSharedComponent }
+//~export { SomeSharedComponent }
 ```
 
 
@@ -17,7 +17,7 @@ export { SomeSharedComponent }
 
 The problem is that it often causes unnecessary code to be loaded on the client-side. For example:
 
-```ts ts-only
+```ts
 // pages/index/+Page.ts
 
 // This CSS is loaded every time SomeSharedComponent is imported
@@ -27,7 +27,7 @@ export function SomeSharedComponent() {
   // ...
 }
 ```
-```ts ts-only
+```ts
 // pages/about/+Page.ts
 
 // ❌ Bad: the /about page loads landing-page.css, which usually isn't what you want
@@ -42,7 +42,7 @@ import { SomeSharedComponent } from '../index/+Page'
 Move shared code into a separate file:
 
 <FileAdded>
-```ts ts-only
+```ts
 // components/SomeSharedComponent.ts
 
 export function SomeSharedComponent() {
@@ -50,19 +50,21 @@ export function SomeSharedComponent() {
 }
 ```
 </FileAdded>
-```ts ts-only
+```ts
 // pages/about/+Page.ts
 
 import { SomeSharedComponent } from '../index/+Page'// [!code --]
-import { SomeSharedComponent } from '../../components/SomeSharedComponent'// [!code ++]
+// @detype-rename DummyComponent>SomeSharedComponent
+import { DummyComponent } from '../../components/SomeSharedComponent'// [!code ++]
 ```
-```ts ts-only
+```ts
 // pages/index/+Page.ts
 
 import './landing-page.css'
 import { SomeSharedComponent } from '../../components/SomeSharedComponent'// [!code ++]
 
-export function SomeSharedComponent() {// [!code --]
+// @detype-rename DummyComponent>SomeSharedComponent
+export function DummyComponent() {// [!code --]
   // ...// [!code --]
 }// [!code --]
 ```
