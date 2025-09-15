@@ -5,7 +5,6 @@ export type { Debug }
 import { isCallable } from './isCallable.js'
 import { objectAssign } from './objectAssign.js'
 import { assert, assertUsage } from './assert.js'
-import { checkType } from './checkType.js'
 import { getTerminalWidth } from './getTerminalWidth.js'
 import pc from '@brillout/picocolors'
 import { isArray } from './isArray.js'
@@ -52,7 +51,6 @@ type Options = {
 }
 
 function createDebugger(flag: Flag, optionsGlobal?: Options) {
-  checkType<`vike:${string}`>(flag)
   assert(flags.includes(flag))
 
   const debugWithOptions = (optionsLocal: Options) => {
@@ -94,7 +92,6 @@ function debug_(flag: Flag, options: Options, ...msgs: unknown[]) {
 }
 
 function isDebugActivated(flag: Flag): boolean {
-  checkType<`vike:${string}`>(flag)
   assert(flags.includes(flag))
   const { flagsActivated, all } = getFlagsActivated()
   const isActivated = flagsActivated.includes(flag) || (all && !flagsSkipWildcard.includes(flag))
