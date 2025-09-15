@@ -141,11 +141,12 @@ async function renderPagePrepare(
   try {
     await initGlobalContext_renderPage()
   } catch (err) {
-    // Errors are expected since assertUsage() is used in initGlobalContext_renderPage() such as:
-    // ```bash
-    // Re-build your app (you're using 1.2.3 but your app was built with 1.2.2)
-    // ```
-    // initGlobalContext_renderPage() doesn't call any user hook => err isn't thrown from user code.
+    // Errors are expected:
+    // - assertUsage() such as:
+    //   ```bash
+    //   Re-build your app (you're using 1.2.3 but your app was built with 1.2.2)
+    //   ```
+    // - initGlobalContext_renderPage() depends on +onCreateGlobalContext hooks
     assert(!isAbortError(err))
     logRuntimeError(err, httpRequestId)
     const pageContextWithError = getPageContextHttpResponseErrorWithoutGlobalContext(err, pageContextInit)
