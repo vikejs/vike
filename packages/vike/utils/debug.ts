@@ -11,7 +11,13 @@ import pc from '@brillout/picocolors'
 import { isArray } from './isArray.js'
 import { isObject } from './isObject.js'
 
-assert(!globalThis.__VIKE__IS_CLIENT || globalThis.__VIKE__IS_DEBUG) // assert tree-shaking
+// assert tree-shaking
+assert(
+  !globalThis.__VIKE__IS_CLIENT ||
+    globalThis.__VIKE__IS_DEBUG ||
+    // Vite doesn't do tree-shaking in dev (maybe it will with Rolldown?)
+    import.meta.env.DEV,
+)
 
 const flags = [
   'vike',
