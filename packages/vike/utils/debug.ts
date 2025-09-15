@@ -11,7 +11,7 @@ import pc from '@brillout/picocolors'
 import { isArray } from './isArray.js'
 import { isObject } from './isObject.js'
 
-// assert tree-shaking
+// Assert tree-shaking (ensure this module is loaded on the client-side only if debug is enabled).
 assert(
   !globalThis.__VIKE__IS_CLIENT ||
     globalThis.__VIKE__IS_DEBUG ||
