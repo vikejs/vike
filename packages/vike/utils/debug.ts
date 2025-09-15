@@ -1,6 +1,10 @@
 export { createDebugger }
 export { isDebugActivated }
+export { getDebugFlags }
+export { isDebugGlobal }
 export type { Debug }
+// TODO/now refactor align naming
+export type { Flag as DebugFlag }
 
 import { isCallable } from './isCallable.js'
 import { objectAssign } from './objectAssign.js'
@@ -13,9 +17,11 @@ import { setCreateDebugger } from '../shared/route/debug.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
 
 assertIsNotBrowser()
+// TODO/now
 setCreateDebugger(createDebugger) // for isomorphic code
 
 const flags = [
+  'vike',
   'vike:crawl',
   'vike:error',
   'vike:esbuild-resolve',
@@ -34,7 +40,7 @@ const flags = [
   'vike:stream',
   'vike:virtualFiles',
   'vike:vite-rpc',
-] as const
+] as const satisfies ('vike' | `vike:${string}`)[]
 const flagsSkipWildcard = ['vike:log']
 const flagRegex = /\bvike:[a-zA-Z-]+/g
 // We purposely read process.env.DEBUG early, in order to avoid users from the temptation to set process.env.DEBUG with JavaScript, since reading & writing process.env.DEBUG dynamically leads to inconsistencies such as https://github.com/vikejs/vike/issues/2239
@@ -96,6 +102,16 @@ function isDebugActivated(flag: Flag): boolean {
   const { flagsActivated, all } = getFlagsActivated()
   const isActivated = flagsActivated.includes(flag) || (all && !flagsSkipWildcard.includes(flag))
   return isActivated
+}
+
+function getDebugFlags(): string[] {
+  const { flagsActivated } = getFlagsActivated()
+  return flagsActivated
+}
+
+function isDebugGlobal(): boolean {
+  const { isGlobal } = getFlagsActivated()
+  return isGlobal
 }
 
 function formatMsg(
@@ -177,15 +193,18 @@ function assertFlagsActivated() {
   })
 }
 
+// TODO/now: refactor isAll
+// TODO/now: refactor inline flagRegex
 function getFlagsActivated() {
   const flagsActivated: string[] = DEBUG.match(flagRegex) ?? []
   const all = DEBUG.includes('vike:*')
-  return { flagsActivated, all }
+  const isGlobal = /\bvike\b[^:]/.test(DEBUG)
+  return { flagsActivated, all, isGlobal }
 }
 
 function isDebug() {
-  const { flagsActivated, all } = getFlagsActivated()
-  return all || flagsActivated.length > 0
+  const { flagsActivated, all, isGlobal } = getFlagsActivated()
+  return all || flagsActivated.length > 0 || isGlobal
 }
 
 function getDEBUG() {

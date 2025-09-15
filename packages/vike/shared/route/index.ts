@@ -18,7 +18,6 @@ import { resolveRouteString } from './resolveRouteString.js'
 import { resolveRouteFunction } from './resolveRouteFunction.js'
 import { execHookOnBeforeRoute } from './execHookOnBeforeRoute.js'
 import type { PageRoutes, RouteType } from './loadPageRoutes.js'
-import { debug } from './debug.js'
 import pc from '@brillout/picocolors'
 import type { GlobalContextInternal } from '../createGlobalContextShared.js'
 
@@ -44,8 +43,11 @@ async function route(
   pageContext: PageContextBeforeRoute,
   skipOnBeforeRouteHook?: true,
 ): Promise<PageContextAfterRoute> {
-  debug('Pages routes:', pageContext._globalContext._pageRoutes)
   const pageContextFromRoute = {}
+
+  if (globalThis.__VIKE__DEBUG_FLAGS && globalThis.__VIKE__DEBUG_FLAGS.includes('vike:routing')) {
+    console.log('Pages routes:', pageContext._globalContext._pageRoutes)
+  }
 
   // onBeforeRoute()
   if (!skipOnBeforeRouteHook) {
@@ -120,7 +122,9 @@ async function route(
   resolvePrecedence(routeMatches)
   const winner = routeMatches[0] ?? null
 
-  debug(`Route matches for URL ${pc.cyan(urlPathname)} (in precedence order):`, routeMatches)
+  if (globalThis.__VIKE__DEBUG_FLAGS && globalThis.__VIKE__DEBUG_FLAGS.includes('vike:routing')) {
+    console.log(`Route matches for URL ${pc.cyan(urlPathname)} (in precedence order):`, routeMatches)
+  }
 
   // For vite-plugin-vercel https://github.com/magne4000/vite-plugin-vercel/blob/main/packages/vike-integration/vike.ts#L173
   objectAssign(pageContextFromRoute, { _routeMatch: winner })

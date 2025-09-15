@@ -1,13 +1,17 @@
 export { pluginReplaceConstantsGlobalThis }
 
 import type { Plugin } from 'vite'
-import { assert } from '../utils.js'
+import { assert, DebugFlag, getDebugFlags, isDebugGlobal } from '../utils.js'
 
 declare global {
   /** Like `import.meta.env.DEV` but works inside `node_modules/` (even if package is `ssr.external`). The value `undefined` is to be interpreted as `false`. */
   var __VIKE__IS_DEV: boolean | undefined
   /** Like `import.meta.env.SSR` but works inside `node_modules/` (even if package is `ssr.external`). The value `undefined` is to be interpreted as `false`. */
   var __VIKE__IS_CLIENT: boolean | undefined
+  /** WARNING: in server-side production, it's `undefined` (the value isn't known). For server-side only code, use `isDebugGlobal()` instead. */
+  var __VIKE__IS_DEBUG_GLOBAL: boolean | undefined
+  /** WARNING: in server-side production, it's `undefined` (the value isn't known). For server-side only code, use `isDebugActivated()` instead. */
+  var __VIKE__DEBUG_FLAGS: DebugFlag[] | false | undefined
 }
 
 // === Explanation: globalThis.__VIKE__IS_DEV
@@ -35,9 +39,12 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
           const isDev = config._isDev
           assert(typeof isDev === 'boolean')
           globalThis.__VIKE__IS_DEV = isDev
+          const debugFlags = getDebugFlags()
           return {
             define: {
               'globalThis.__VIKE__IS_DEV': JSON.stringify(isDev),
+              'globalThis.__VIKE__IS_DEBUG_GLOBAL': JSON.stringify(isDebugGlobal()),
+              'globalThis.__VIKE__DEBUG_FLAGS': JSON.stringify(debugFlags.length === 0 ? false : debugFlags),
             },
           }
         },
