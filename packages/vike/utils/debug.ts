@@ -1,6 +1,5 @@
 export { createDebugger }
-export { isDebugActivated }
-export { isDebugMode }
+export { isDebug }
 export { debug }
 
 import { isCallable } from './isCallable.js'
@@ -97,12 +96,6 @@ function isDebugActivated(flag: Flag): boolean {
   const { flagsActivated, all } = getFlagsActivated()
   const isActivated = flagsActivated.includes(flag) || (all && !flagsSkipWildcard.includes(flag))
   return isActivated
-}
-
-// TODO refactor name
-function isDebugMode(): boolean {
-  const { isGlobal, flagsActivated } = getFlagsActivated()
-  return flagsActivated.length > 0 || isGlobal
 }
 
 function formatMsg(

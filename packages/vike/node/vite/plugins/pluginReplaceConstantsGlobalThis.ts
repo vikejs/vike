@@ -1,7 +1,7 @@
 export { pluginReplaceConstantsGlobalThis }
 
 import type { Plugin } from 'vite'
-import { assert, isDebugMode } from '../utils.js'
+import { assert, isDebug } from '../utils.js'
 
 declare global {
   /** Like `import.meta.env.DEV` but works inside `node_modules/` (even if package is `ssr.external`). The value `undefined` is to be interpreted as `false`. */
@@ -56,7 +56,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
             ? {}
             : {
                 // We purposely only define it on the client-side, because we cannot know the value in server-side ssr.external production.
-                'globalThis.__VIKE__IS_DEBUG': JSON.stringify(isDebugMode()),
+                'globalThis.__VIKE__IS_DEBUG': JSON.stringify(isDebug()),
               }
           return {
             define: {
