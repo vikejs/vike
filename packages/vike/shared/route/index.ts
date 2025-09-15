@@ -11,14 +11,13 @@ if (isBrowser()) {
   assertClientRouting()
 }
 
-import { assert, assertUsage, isPlainObject, objectAssign } from './utils.js'
+import { assert, assertUsage, isPlainObject, objectAssign, debug } from './utils.js'
 import { type PageContextUrlInternal, type PageContextUrlSource } from '../getPageContextUrlComputed.js'
 import { resolvePrecedence } from './resolvePrecedence.js'
 import { resolveRouteString } from './resolveRouteString.js'
 import { resolveRouteFunction } from './resolveRouteFunction.js'
 import { execHookOnBeforeRoute } from './execHookOnBeforeRoute.js'
 import type { PageRoutes, RouteType } from './loadPageRoutes.js'
-import { debug } from './debug.js'
 import pc from '@brillout/picocolors'
 import type { GlobalContextInternal } from '../createGlobalContextShared.js'
 
@@ -44,8 +43,11 @@ async function route(
   pageContext: PageContextBeforeRoute,
   skipOnBeforeRouteHook?: true,
 ): Promise<PageContextAfterRoute> {
-  if (!globalThis.__VIKE__IS_CLIENT || globalThis.__VIKE__IS_DEBUG) debug('Pages routes:', pageContext._globalContext._pageRoutes)
   const pageContextFromRoute = {}
+
+  if (!globalThis.__VIKE__IS_CLIENT || globalThis.__VIKE__IS_DEBUG) {
+    debug('vike:routing', 'Pages routes:', pageContext._globalContext._pageRoutes)
+  }
 
   // onBeforeRoute()
   if (!skipOnBeforeRouteHook) {
@@ -121,7 +123,7 @@ async function route(
   const winner = routeMatches[0] ?? null
 
   if (!globalThis.__VIKE__IS_CLIENT || globalThis.__VIKE__IS_DEBUG) {
-    debug(`Route matches for URL ${pc.cyan(urlPathname)} (in precedence order):`, routeMatches)
+    debug('vike:routing', `Route matches for URL ${pc.cyan(urlPathname)} (in precedence order):`, routeMatches)
   }
 
   // For vite-plugin-vercel https://github.com/magne4000/vite-plugin-vercel/blob/main/packages/vike-integration/vike.ts#L173

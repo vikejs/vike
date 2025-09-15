@@ -2,7 +2,6 @@ export { createDebugger }
 export { isDebugActivated }
 export { isDebugMode }
 export { debug }
-export type { Debug }
 
 import { isCallable } from './isCallable.js'
 import { objectAssign } from './objectAssign.js'
@@ -11,12 +10,7 @@ import { getTerminalWidth } from './getTerminalWidth.js'
 import pc from '@brillout/picocolors'
 import { isArray } from './isArray.js'
 import { isObject } from './isObject.js'
-import { setCreateDebugger } from '../shared/route/debug.js'
-import { assertIsNotBrowser } from './assertIsNotBrowser.js'
-
-assertIsNotBrowser()
-// TODO/now
-setCreateDebugger(createDebugger) // for isomorphic code
+assert(!globalThis.__VIKE__IS_CLIENT || import.meta.env.DEV || globalThis.__VIKE__IS_DEBUG) // assert tree-shaking
 
 const flags = [
   'vike',
@@ -47,7 +41,6 @@ if (isDebug()) Error.stackTraceLimit = Infinity
 assertFlagsActivated()
 
 type Flag = (typeof flags)[number]
-type Debug = ReturnType<typeof createDebugger>
 type Options = {
   serialization?: {
     emptyArray?: string
