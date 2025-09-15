@@ -33,7 +33,7 @@ const flags = [
   'vike:stream',
   'vike:virtualFiles',
   'vike:vite-rpc',
-] as const satisfies ('vike' | `vike:${string}`)[]
+] as const satisfies (`vike:${string}` | 'vike')[]
 const flagsSkipWildcard = ['vike:log']
 const flagRegex = /\bvike:[a-zA-Z-]+/g
 // We purposely read process.env.DEBUG early, in order to avoid users from the temptation to set process.env.DEBUG with JavaScript, since reading & writing process.env.DEBUG dynamically leads to inconsistencies such as https://github.com/vikejs/vike/issues/2239
