@@ -15,6 +15,7 @@ import {
 } from './loadPageConfigsLazyServerSide.js'
 import { execHookOnRenderHtml } from './execHookOnRenderHtml.js'
 import { execHookDataAndOnBeforeRender } from './execHookDataAndOnBeforeRender.js'
+import { execHookOnError } from './execHookOnError.js'
 import { logRuntimeError } from '../loggerRuntime.js'
 import { isNewError } from './isNewError.js'
 import { preparePageContextForPublicUsageServer } from './preparePageContextForPublicUsageServer.js'
@@ -64,6 +65,16 @@ async function renderPageAfterRoute<
       await execHookDataAndOnBeforeRender(pageContext)
     } catch (err) {
       if (isNewError(err, pageContext.errorWhileRendering)) {
+        logRuntimeError(err, pageContext._httpRequestId)
+      }
+    }
+
+    // Execute onError hook when there's an error
+    if (pageContext.errorWhileRendering) {
+      try {
+        await execHookOnError(pageContext as typeof pageContext & { errorWhileRendering: Error })
+      } catch (err) {
+        // If the onError hook itself throws, log it but don't let it break the error page rendering
         logRuntimeError(err, pageContext._httpRequestId)
       }
     }

@@ -66,6 +66,7 @@ type HookNamePage =
   | 'data'
   | 'onData'
   | 'route'
+  | 'onError'
 type HookNameGlobal = 'onBeforeRoute' | 'onPrerenderStart' | 'onCreatePageContext' | 'onCreateGlobalContext'
 // v0.4 design TO-DO/next-major-release: remove
 type HookNameOldDesign = 'render' | 'prerender' | 'onBeforePrerender'
@@ -346,6 +347,12 @@ type ConfigBuiltIn = {
    *  https://vike.dev/onCreatePageContext
    */
   onCreatePageContext?: ((pageContext: PageContextServer) => void) | ImportString | null
+
+  /** Hook called when an error occurs during rendering.
+   *
+   *  https://vike.dev/onError
+   */
+  onError?: ((pageContext: PageContextServer & { errorWhileRendering: Error }) => void) | ImportString | null
 
   /** Hook called when the `globalContext` object is created.
    *
