@@ -47,11 +47,9 @@ If you want to guard your pages after or during fetching data, then use <Link hr
 
 #### Default
 
-By default, the `guard()` hook is:
-- Called in the same environment as <Link href="/data">`data()`</Link>. In other words, it's always called on the server-side unless you <Link href="/data#environment">configure `data()` to run on the client-side</Link>.
-- Loaded in both the client and server (even if it only executes on the server-side).
+The `guard()` hook is called in the same environment as <Link href="/data">`data()`</Link>. In other words, it's always called on the server-side unless you <Link href="/data#environment">configure `data()` to run on the client-side</Link>.
 
-> By default, your `guard()` hook (and the entire `+guard.js` file) is always loaded in 
+> By default, your `guard()` hook (and the entire `+guard.js` file) is always loaded in both the client and server, even if it only executes on the server-side.
 
 If the page doesn't have any `data()` hook, then `guard()` executes in the environment where the routing is evaluated. See <Link href="/hooks#lifecycle" />.
 
