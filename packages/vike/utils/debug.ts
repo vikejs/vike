@@ -9,6 +9,7 @@ import { getTerminalWidth } from './getTerminalWidth.js'
 import pc from '@brillout/picocolors'
 import { isArray } from './isArray.js'
 import { isObject } from './isObject.js'
+
 assert(!globalThis.__VIKE__IS_CLIENT || import.meta.env.DEV || globalThis.__VIKE__IS_DEBUG) // assert tree-shaking
 
 const flags = [
