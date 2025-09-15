@@ -76,7 +76,7 @@ type ConfigNameBuiltIn =
       keyof VikeVitePluginOptions | 'onBeforeRoute' | 'onPrerenderStart' | 'vite' | 'redirects'
     >
   | 'prerender'
-  | 'serverOnlyHooks'
+  | 'hasServerOnlyHook'
   | 'isClientRuntimeLoaded'
   | 'onBeforeRenderEnv'
   | 'dataEnv'

@@ -237,7 +237,7 @@ function hasServerOnlyHook(pageContext: {
 }) {
   if (isOldDesign(pageContext)) return false
   const pageConfig = getPageConfig(pageContext.pageId, pageContext._globalContext._pageConfigs)
-  const val = getConfigValueRuntime(pageConfig, `serverOnlyHooks`)?.value
+  const val = getConfigValueRuntime(pageConfig, `hasServerOnlyHook`)?.value
   assert(val === true || val === false)
   return val
 }

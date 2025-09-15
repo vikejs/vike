@@ -194,7 +194,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   meta: {
     env: { config: true },
   },
-  serverOnlyHooks: {
+  hasServerOnlyHook: {
     env: { client: true },
     eager: true,
     _computed: (pageConfig): boolean => {
