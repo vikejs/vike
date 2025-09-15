@@ -43,6 +43,7 @@ type Tag = 'Bug' | 'Wrong Usage' | 'Error' | 'Warning'
 
 const numberOfStackTraceLinesToRemove = 2
 
+// @__NO_SIDE_EFFECTS__
 function assert(condition: unknown, debugInfo?: unknown): asserts condition {
   if (condition) return
 

@@ -1,6 +1,7 @@
+export { debug }
 export { createDebugger }
+export { isDebug }
 export { isDebugActivated }
-export type { Debug }
 
 import { isCallable } from './isCallable.js'
 import { objectAssign } from './objectAssign.js'
@@ -9,13 +10,17 @@ import { getTerminalWidth } from './getTerminalWidth.js'
 import pc from '@brillout/picocolors'
 import { isArray } from './isArray.js'
 import { isObject } from './isObject.js'
-import { setCreateDebugger } from '../shared/route/debug.js'
-import { assertIsNotBrowser } from './assertIsNotBrowser.js'
 
-assertIsNotBrowser()
-setCreateDebugger(createDebugger) // for isomorphic code
+// Assert tree-shaking (ensure this module is loaded on the client-side only if debug is enabled).
+assert(
+  !globalThis.__VIKE__IS_CLIENT ||
+    globalThis.__VIKE__IS_DEBUG ||
+    // Vite doesn't do tree-shaking in dev (maybe it will with Rolldown?)
+    import.meta.env.DEV,
+)
 
 const flags = [
+  'vike',
   'vike:crawl',
   'vike:error',
   'vike:esbuild-resolve',
@@ -34,7 +39,7 @@ const flags = [
   'vike:stream',
   'vike:virtualFiles',
   'vike:vite-rpc',
-] as const
+] as const satisfies (`vike:${string}` | 'vike')[]
 const flagsSkipWildcard = ['vike:log']
 const flagRegex = /\bvike:[a-zA-Z-]+/g
 // We purposely read process.env.DEBUG early, in order to avoid users from the temptation to set process.env.DEBUG with JavaScript, since reading & writing process.env.DEBUG dynamically leads to inconsistencies such as https://github.com/vikejs/vike/issues/2239
@@ -43,7 +48,6 @@ if (isDebug()) Error.stackTraceLimit = Infinity
 assertFlagsActivated()
 
 type Flag = (typeof flags)[number]
-type Debug = ReturnType<typeof createDebugger>
 type Options = {
   serialization?: {
     emptyArray?: string
@@ -62,6 +66,10 @@ function createDebugger(flag: Flag, optionsGlobal?: Options) {
   const debug = (...msgs: unknown[]) => debugWithOptions({})(...msgs)
   objectAssign(debug, { options: debugWithOptions, isActivated: isDebugActivated(flag) })
   return debug
+}
+
+function debug(flag: Flag, ...msgs: unknown[]) {
+  return debug_(flag, {}, ...msgs)
 }
 
 function debug_(flag: Flag, options: Options, ...msgs: unknown[]) {
@@ -177,15 +185,18 @@ function assertFlagsActivated() {
   })
 }
 
+// TODO/now: refactor isAll
+// TODO/now: refactor inline flagRegex
 function getFlagsActivated() {
   const flagsActivated: string[] = DEBUG.match(flagRegex) ?? []
   const all = DEBUG.includes('vike:*')
-  return { flagsActivated, all }
+  const isGlobal = /\bvike\b[^:]/.test(DEBUG)
+  return { flagsActivated, all, isGlobal }
 }
 
 function isDebug() {
-  const { flagsActivated, all } = getFlagsActivated()
-  return all || flagsActivated.length > 0
+  const { flagsActivated, all, isGlobal } = getFlagsActivated()
+  return all || flagsActivated.length > 0 || isGlobal
 }
 
 function getDEBUG() {

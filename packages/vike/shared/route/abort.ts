@@ -58,7 +58,12 @@ function redirect(url: string, statusCode?: 301 | 302): AbortRedirect {
   if (!statusCode) {
     statusCode = 302
   } else {
-    if (!globalThis.__VIKE__IS_CLIENT || globalThis.__VIKE__IS_DEV) {
+    if (
+      // Tree-shaking to save client-side KBs
+      !globalThis.__VIKE__IS_CLIENT ||
+      globalThis.__VIKE__IS_DEV ||
+      globalThis.__VIKE__IS_DEBUG
+    ) {
       assertStatusCode(statusCode, [301, 302], 'redirect')
     }
     args.push(String(statusCode))
@@ -140,7 +145,12 @@ function render_(
     })
     return AbortRender(pageContextAbort)
   } else {
-    if (!globalThis.__VIKE__IS_CLIENT || globalThis.__VIKE__IS_DEV) {
+    if (
+      // Tree-shaking to save client-side KBs
+      !globalThis.__VIKE__IS_CLIENT ||
+      globalThis.__VIKE__IS_DEV ||
+      globalThis.__VIKE__IS_DEBUG
+    ) {
       assertStatusCode(urlOrStatusCode, [401, 403, 404, 410, 429, 500, 503], 'render')
     }
     const abortStatusCode = urlOrStatusCode
@@ -253,7 +263,7 @@ function logAbortErrorHandled(
 }
 
 function assertStatusCode(statusCode: number, expected: number[], caller: 'render' | 'redirect') {
-  assert(!globalThis.__VIKE__IS_CLIENT || globalThis.__VIKE__IS_DEV) // save client-side KBs
+  assert(!globalThis.__VIKE__IS_CLIENT || globalThis.__VIKE__IS_DEV || globalThis.__VIKE__IS_DEBUG) // assert tree-shaking
 
   // double check vike:pluginReplaceConstantsGlobalThis
   if (globalThis.__VIKE__IS_CLIENT) {
