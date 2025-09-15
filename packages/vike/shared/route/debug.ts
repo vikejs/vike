@@ -7,7 +7,9 @@ export { setCreateDebugger }
 
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import type { createDebugger, Debug } from '../../utils/debug.js'
+import { assert } from './utils.js'
 type CreateDebugger = typeof createDebugger
+assert(!globalThis.__VIKE__IS_CLIENT || import.meta.env.DEV || globalThis.__VIKE__IS_DEBUG) // assert tree-shaking
 
 const globalObject = getGlobalObject<{
   debug?: Debug

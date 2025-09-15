@@ -58,7 +58,7 @@ function redirect(url: string, statusCode?: 301 | 302): AbortRedirect {
   if (!statusCode) {
     statusCode = 302
   } else {
-    if (!globalThis.__VIKE__IS_CLIENT || globalThis.__VIKE__IS_DEV || globalThis.__VIKE__IS_DEBUG_GLOBAL) {
+    if (!globalThis.__VIKE__IS_CLIENT || globalThis.__VIKE__IS_DEV || globalThis.__VIKE__IS_DEBUG) {
       assertStatusCode(statusCode, [301, 302], 'redirect')
     }
     args.push(String(statusCode))

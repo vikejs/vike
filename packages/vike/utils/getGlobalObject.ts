@@ -5,7 +5,11 @@ import type { VikeGlobalInternal } from '../types/VikeGlobalInternal.js'
 // We use the file name and file directory as key: there should be only one getGlobalObject() usage per file.
 type ModuleId = `${string}.ts`
 
-/** Share information across module instances. */
+/**
+ * Share information across module instances.
+ *
+ * @__NO_SIDE_EFFECTS__
+ */
 function getGlobalObject<T extends Record<string, unknown> = never>(moduleId: ModuleId, defaultValue: T): T {
   const globals = getGlobals()
   const globalObject = (globals[moduleId] ??= defaultValue)

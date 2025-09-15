@@ -1,17 +1,15 @@
 export { pluginReplaceConstantsGlobalThis }
 
 import type { Plugin } from 'vite'
-import { assert, DebugFlag, getDebugFlags, isDebugGlobal } from '../utils.js'
+import { assert, isDebugMode } from '../utils.js'
 
 declare global {
   /** Like `import.meta.env.DEV` but works inside `node_modules/` (even if package is `ssr.external`). The value `undefined` is to be interpreted as `false`. */
   var __VIKE__IS_DEV: boolean | undefined
   /** Like `import.meta.env.SSR` but works inside `node_modules/` (even if package is `ssr.external`). The value `undefined` is to be interpreted as `false`. */
   var __VIKE__IS_CLIENT: boolean | undefined
-  /** WARNING: in server-side production, it's `undefined` (the value isn't known). For server-side only code, use `isDebugGlobal()` instead. */
-  var __VIKE__IS_DEBUG_GLOBAL: boolean | undefined
-  /** WARNING: in server-side production, it's `undefined` (the value isn't known). For server-side only code, use `isDebugActivated()` instead. */
-  var __VIKE__DEBUG_FLAGS: DebugFlag[] | false | undefined
+  /** WARNING: must be used only on the client-side, e.g. by using it with `globalThis.__VIKE__IS_CLIENT` (because on the server-side it's `undefined`, (the value isn't known). For server-side only code, use `isDebugGlobal()` instead. */
+  var __VIKE__IS_DEBUG: boolean | undefined
 }
 
 // === Explanation: globalThis.__VIKE__IS_DEV
@@ -39,12 +37,9 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
           const isDev = config._isDev
           assert(typeof isDev === 'boolean')
           globalThis.__VIKE__IS_DEV = isDev
-          const debugFlags = getDebugFlags()
           return {
             define: {
               'globalThis.__VIKE__IS_DEV': JSON.stringify(isDev),
-              'globalThis.__VIKE__IS_DEBUG_GLOBAL': JSON.stringify(isDebugGlobal()),
-              'globalThis.__VIKE__DEBUG_FLAGS': JSON.stringify(debugFlags.length === 0 ? false : debugFlags),
             },
           }
         },
@@ -53,9 +48,16 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
         handler(name, config) {
           const consumer: 'server' | 'client' = config.consumer ?? (name === 'client' ? 'client' : 'server')
           const isClientSide = consumer === 'client'
+          const defineIsDebug = !isClientSide
+            ? {}
+            : {
+                // We purposely only define it on the client-side, because we cannot know the value in server-side ssr.external production.
+                'globalThis.__VIKE__IS_DEBUG': JSON.stringify(isDebugMode()),
+              }
           return {
             define: {
               'globalThis.__VIKE__IS_CLIENT': JSON.stringify(isClientSide),
+              ...defineIsDebug,
             },
           }
         },

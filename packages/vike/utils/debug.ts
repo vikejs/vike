@@ -1,10 +1,8 @@
 export { createDebugger }
 export { isDebugActivated }
-export { getDebugFlags }
-export { isDebugGlobal }
+export { isDebugMode }
+export { debug }
 export type { Debug }
-// TODO/now refactor align naming
-export type { Flag as DebugFlag }
 
 import { isCallable } from './isCallable.js'
 import { objectAssign } from './objectAssign.js'
@@ -70,6 +68,10 @@ function createDebugger(flag: Flag, optionsGlobal?: Options) {
   return debug
 }
 
+function debug(flag: Flag, ...msgs: unknown[]) {
+  return debug_(flag, {}, ...msgs)
+}
+
 function debug_(flag: Flag, options: Options, ...msgs: unknown[]) {
   if (!isDebugActivated(flag)) return
   let [msgFirst, ...msgsRest] = msgs
@@ -104,14 +106,10 @@ function isDebugActivated(flag: Flag): boolean {
   return isActivated
 }
 
-function getDebugFlags(): string[] {
-  const { flagsActivated } = getFlagsActivated()
-  return flagsActivated
-}
-
-function isDebugGlobal(): boolean {
-  const { isGlobal } = getFlagsActivated()
-  return isGlobal
+// TODO refactor name
+function isDebugMode(): boolean {
+  const { isGlobal, flagsActivated } = getFlagsActivated()
+  return flagsActivated.length > 0 || isGlobal
 }
 
 function formatMsg(
