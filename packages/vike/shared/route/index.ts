@@ -45,7 +45,11 @@ async function route(
 ): Promise<PageContextAfterRoute> {
   const pageContextFromRoute = {}
 
-  if (!globalThis.__VIKE__IS_CLIENT || globalThis.__VIKE__IS_DEBUG) {
+  if (
+    // Tree-shaking to save client-side KBs
+    !globalThis.__VIKE__IS_CLIENT ||
+    globalThis.__VIKE__IS_DEBUG
+  ) {
     debug('vike:routing', 'Pages routes:', pageContext._globalContext._pageRoutes)
   }
 
@@ -122,7 +126,11 @@ async function route(
   resolvePrecedence(routeMatches)
   const winner = routeMatches[0] ?? null
 
-  if (!globalThis.__VIKE__IS_CLIENT || globalThis.__VIKE__IS_DEBUG) {
+  if (
+    // Tree-shaking to save client-side KBs
+    !globalThis.__VIKE__IS_CLIENT ||
+    globalThis.__VIKE__IS_DEBUG
+  ) {
     debug('vike:routing', `Route matches for URL ${pc.cyan(urlPathname)} (in precedence order):`, routeMatches)
   }
 
