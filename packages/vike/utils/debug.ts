@@ -1,6 +1,7 @@
+export { debug }
 export { createDebugger }
 export { isDebug }
-export { debug }
+export { isDebugActivated }
 
 import { isCallable } from './isCallable.js'
 import { objectAssign } from './objectAssign.js'
