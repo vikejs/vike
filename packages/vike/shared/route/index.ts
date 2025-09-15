@@ -47,8 +47,9 @@ async function route(
 
   if (
     // Tree-shaking to save client-side KBs
-    !globalThis.__VIKE__IS_CLIENT ||
-    globalThis.__VIKE__IS_DEBUG
+    globalThis.__VIKE__IS_DEBUG ||
+    // globalThis.__VIKE__IS_DEBUG is only available on the client-side
+    !globalThis.__VIKE__IS_CLIENT
   ) {
     debug('vike:routing', 'Pages routes:', pageContext._globalContext._pageRoutes)
   }
@@ -128,8 +129,9 @@ async function route(
 
   if (
     // Tree-shaking to save client-side KBs
-    !globalThis.__VIKE__IS_CLIENT ||
-    globalThis.__VIKE__IS_DEBUG
+    globalThis.__VIKE__IS_DEBUG ||
+    // globalThis.__VIKE__IS_DEBUG is only available on the client-side
+    !globalThis.__VIKE__IS_CLIENT
   ) {
     debug('vike:routing', `Route matches for URL ${pc.cyan(urlPathname)} (in precedence order):`, routeMatches)
   }
