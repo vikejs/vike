@@ -8,7 +8,11 @@ declare global {
   var __VIKE__IS_DEV: boolean | undefined
   /** Like `import.meta.env.SSR` but works inside `node_modules/` (even if package is `ssr.external`). The value `undefined` is to be interpreted as `false`. */
   var __VIKE__IS_CLIENT: boolean | undefined
-  /** WARNING: must be used only on the client-side, e.g. by using it with `globalThis.__VIKE__IS_CLIENT` (because on the server-side it's `undefined`, (the value isn't known). For server-side only code, use `isDebugGlobal()` instead. */
+  /**
+   * WARNING: must be used ONLY on the client-side. (The value is always `undefined` on the server-side.)
+   *
+   * You can use it with `globalThis.__VIKE__IS_CLIENT`, e.g. `if (globalThis.__VIKE__IS_CLIENT && __VIKE__IS_DEBUG) doSomething()`.
+   */
   var __VIKE__IS_DEBUG: boolean | undefined
 }
 
