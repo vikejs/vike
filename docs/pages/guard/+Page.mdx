@@ -6,7 +6,7 @@ import { ConfigSpec } from '../../components'
   cumulative={false}
 />
 
-The `guard()` hook enables you to protect pages from unauthorized and unexpected access.
+The `guard()` hook enables you to protect pages from unauthorized access.
 
 ```ts
 // /pages/admin/+guard.ts
@@ -36,7 +36,7 @@ Note that:
 
 The `guard()` hook is the first hook called after the routing is evaluated. Most notably, it's always called before the <Link href="/data">`data()` hook</Link>. See <Link href="/hooks#lifecycle" />.
 
-> We recommend using `throw render()` / `throw redirect()` before fetching data, whenever possible. (Unauthorized/unexpected data fetching can be problematic.)
+> Whenever possible, we recommend using `throw render()` / `throw redirect()` before fetching data. (Unauthorized data fetching can be problematic.)
 
 If you want to guard your pages after or during fetching data, then use <Link href="/render">`throw render()`</Link> / <Link href="/redirect">`throw redirect()`</Link> inside your `data()` hook instead (or any another <Link href="/hooks">Vike hook</Link>).
 
@@ -49,15 +49,17 @@ If you want to guard your pages after or during fetching data, then use <Link hr
 
 The `guard()` hook is called in the same environment as <Link href="/data">`data()`</Link>. In other words, it's always called on the server-side unless you <Link href="/data#environment">configure `data()` to run on the client-side</Link>.
 
-> By default, your `guard()` hook (and the entire `+guard.js` file) is always loaded in both the client and server, even if it only executes on the server-side.
+If the page doesn't have a `data()` hook, then `guard()` executes in the environment where routing happens. See <Link href="/hooks#lifecycle" />.
 
-If the page doesn't have any `data()` hook, then `guard()` executes in the environment where the routing is evaluated. See <Link href="/hooks#lifecycle" />.
+> By default, the `guard()` hook (and the entire `+guard.js` file) is always loaded in both the client and server — even if it only executes on the server-side.
 
 #### `+guard.server.js`
 
-If you define `+guard.server.js` (see <Link href="/file-env" />) then your `guard()` hook is:
- - Always called on the server-side.
- - Only loaded on the server-side.
+If you define `+guard.server.js` then `guard()` is:
+ - always called on the server-side, and
+ - only loaded on the server-side.
+
+> See also: see <Link href="/file-env" />
 
 #### Use other hooks
 
