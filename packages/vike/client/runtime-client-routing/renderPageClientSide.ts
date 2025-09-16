@@ -497,6 +497,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       try {
         await execHookOnRenderClient(pageContext, preparePageContextForPublicUsageClient)
       } catch (err) {
+        assert(err)
         onRenderClientError = err
       }
       globalObject.onRenderClientPreviousPromise = undefined
