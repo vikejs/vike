@@ -403,6 +403,10 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       return
     }
 
+    if (import.meta.env.DEV || globalThis.__VIKE__IS_DEBUG) {
+      assertInfo(false, `Rendering error page ${errorPageId}`, { onlyOnce: false })
+    }
+
     const res = await loadPageConfigsLazyClientSideAndExecHook(pageContext, isFirstRender, isRenderOutdated)
     /* Already called inside loadPageConfigsLazyClientSideAndExecHook()
     if (isRenderOutdated()) return
