@@ -361,7 +361,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     })
 
     // throw redirect()/render()
-    {
       if (isAbortError(err)) {
         const errAbort = err
         logAbortErrorHandled(err, !import.meta.env.DEV, pageContext)
@@ -407,7 +406,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       } else {
         objectAssign(pageContext, { is404: false })
       }
-    }
 
     const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._globalContext._pageConfigs)
     if (!errorPageId) throw new Error('No error page defined.')
