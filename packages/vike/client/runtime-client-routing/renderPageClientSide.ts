@@ -15,6 +15,7 @@ import {
   genPromise,
   isCallable,
   catchInfiniteLoop,
+  isObject,
 } from './utils.js'
 import {
   getPageContextFromClientHooks,
@@ -337,7 +338,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       // We don't swallow 404 errors:
       //  - On the server-side, Vike swallows / doesn't show any 404 error log because it's expected that a user may go to some random non-existent URL. (We don't want to flood the app's error tracking with 404 logs.)
       //  - On the client-side, if the user navigates to a 404 then it means that the UI has a broken link. (It isn't expected that users can go to some random URL using the client-side router, as it would require, for example, the user to manually change the URL of a link by manually manipulating the DOM which highly unlikely.)
-      console.error(err)
+      logError(err)
     } else {
       // We swallow throw redirect()/render() called by client-side hooks onBeforeRender()/data()/guard()
       // We handle the abort error down below.
@@ -373,7 +374,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
          - An infinite reloading page is a even worse UX than a blank page.
       redirectHard(urlOriginal)
       */
-      console.error(err)
+      logError(err)
     }
 
     const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._globalContext._pageConfigs)
@@ -497,7 +498,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       if (!isErrorPage) {
         await handleError({ err })
       } else {
-        console.error(err)
+        logError(err)
       }
     }
 
@@ -654,14 +655,14 @@ function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
 }
 
 function disableClientRouting(err: unknown, log: boolean) {
-  assert(isErrorFetchingStaticAssets(err))
-
   globalObject.clientRoutingIsDisabled = true
 
+  assert(isErrorFetchingStaticAssets(err))
   if (log) {
-    // We don't use console.error() to avoid flooding error trackers such as Sentry
+    // We purposely don't use console.error() to avoid flooding error trackers such as Sentry
     console.log(err)
   }
+
   assertInfo(
     false,
     [
@@ -832,3 +833,7 @@ if (import.meta.env.DEV && import.meta.hot)
       })
     }
   })
+
+function logError(err: unknown) {
+  console.error(err)
+}
