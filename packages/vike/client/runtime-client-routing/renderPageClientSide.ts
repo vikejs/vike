@@ -391,9 +391,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       assert(pageContextAbort.abortStatusCode)
       assert(!('urlOriginal' in pageContextAbort))
       objectAssign(pageContext, pageContextAbort)
-      if (pageContextAbort.abortStatusCode === 404) {
-        objectAssign(pageContext, { is404: true })
-      }
+      objectAssign(pageContext, { is404: pageContextAbort.abortStatusCode === 404 })
     } else {
       objectAssign(pageContext, { is404: false })
     }
