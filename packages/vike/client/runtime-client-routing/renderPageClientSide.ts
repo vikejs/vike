@@ -341,22 +341,11 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       // We swallow throw redirect()/render() called by client-side hooks onBeforeRender()/data()/guard()
       // We handle the abort error down below.
     }
-    const onError = (err: unknown) => {
-      if (!isSameErrorMessage(err, args.err)) {
-        /* When we can't render the error page, we prefer showing a blank page over letting the server-side try because otherwise:
-           - We risk running into an infinite loop of reloads which would overload the server.
-           - An infinite reloading page is a even worse UX than a blank page.
-        redirectHard(urlOriginal)
-        */
-        console.error(err)
-      }
-    }
 
     // pageContext
     const pageContext = await getPageContextBegin(true, pageContextBeginArgs)
     if (isRenderOutdated()) return
     objectAssign(pageContext, {
-      routeParams: {},
       errorWhileRendering: err,
     })
 
@@ -407,10 +396,27 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       objectAssign(pageContext, { is404: false })
     }
 
+    // Render error page
+    await renderErrorPage(pageContext, args)
+  }
+
+  async function renderErrorPage(pageContext: PageContextBegin, args: { err: unknown }) {
+    const onError = (err: unknown) => {
+      if (!isSameErrorMessage(err, args.err)) {
+        /* When we can't render the error page, we prefer showing a blank page over letting the server-side try because otherwise:
+           - We risk running into an infinite loop of reloads which would overload the server.
+           - An infinite reloading page is a even worse UX than a blank page.
+        redirectHard(urlOriginal)
+        */
+        console.error(err)
+      }
+    }
+
     const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._globalContext._pageConfigs)
     if (!errorPageId) throw new Error('No error page defined.')
     objectAssign(pageContext, {
       pageId: errorPageId,
+      routeParams: {},
     })
 
     const isClientRoutable = await isClientSideRoutable(pageContext.pageId, pageContext)
