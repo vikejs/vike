@@ -341,8 +341,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         console.error(err)
       }
     }
-
-    {
       if (!isAbortError(err)) {
         // We don't swallow 404 errors:
         //  - On the server-side, Vike swallows / doesn't show any 404 error log because it's expected that a user may go to some random non-existent URL. (We don't want to flood the app's error tracking with 404 logs.)
@@ -352,7 +350,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         // We swallow throw redirect()/render() called by client-side hooks onBeforeRender()/data()/guard()
         // We handle the abort error down below.
       }
-    }
 
     const pageContext = await getPageContextBegin(true, pageContextBeginArgs)
     if (isRenderOutdated()) return
