@@ -331,6 +331,15 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     const { err } = args
     assert(err)
 
+    if (!isAbortError(err)) {
+      // We don't swallow 404 errors:
+      //  - On the server-side, Vike swallows / doesn't show any 404 error log because it's expected that a user may go to some random non-existent URL. (We don't want to flood the app's error tracking with 404 logs.)
+      //  - On the client-side, if the user navigates to a 404 then it means that the UI has a broken link. (It isn't expected that users can go to some random URL using the client-side router, as it would require, for example, the user to manually change the URL of a link by manually manipulating the DOM which highly unlikely.)
+      console.error(err)
+    } else {
+      // We swallow throw redirect()/render() called by client-side hooks onBeforeRender()/data()/guard()
+      // We handle the abort error down below.
+    }
     const onError = (err: unknown) => {
       if (!isSameErrorMessage(err, args.err)) {
         /* When we can't render the error page, we prefer showing a blank page over letting the server-side try because otherwise:
@@ -340,15 +349,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         */
         console.error(err)
       }
-    }
-    if (!isAbortError(err)) {
-      // We don't swallow 404 errors:
-      //  - On the server-side, Vike swallows / doesn't show any 404 error log because it's expected that a user may go to some random non-existent URL. (We don't want to flood the app's error tracking with 404 logs.)
-      //  - On the client-side, if the user navigates to a 404 then it means that the UI has a broken link. (It isn't expected that users can go to some random URL using the client-side router, as it would require, for example, the user to manually change the URL of a link by manually manipulating the DOM which highly unlikely.)
-      console.error(err)
-    } else {
-      // We swallow throw redirect()/render() called by client-side hooks onBeforeRender()/data()/guard()
-      // We handle the abort error down below.
     }
 
     const pageContext = await getPageContextBegin(true, pageContextBeginArgs)
