@@ -153,7 +153,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
   async function renderPageNominal() {
     const onError = async (err: unknown) => {
-      await renderPageOnError({ err })
+      await handleError({ err })
     }
 
     const pageContext = await getPageContextBegin(false, pageContextBeginArgs)
@@ -327,7 +327,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   // - Can be a URL rewrite upon `throw render('/some-url')`
   // - Can be rendering the error page
   // - Can be rendering Vike's generic error page (if no error page is defined, or if the error page throws an error)
-  async function renderPageOnError(args: { err: unknown }) {
+  async function handleError(args: { err: unknown }) {
     const onError = (err: unknown) => {
       if (!isSameErrorMessage(err, args.err)) {
         /* When we can't render the error page, we prefer showing a blank page over letting the server-side try because otherwise:
@@ -473,7 +473,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   ) {
     const onError = async (err: unknown) => {
       if (!isErrorPage) {
-        await renderPageOnError({ err })
+        await handleError({ err })
       } else {
         if (!isSameErrorMessage(err, isErrorPage.err)) {
           console.error(err)
