@@ -358,13 +358,13 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
     const pageContext = await getPageContextBegin(true, pageContextBeginArgs)
     if (isRenderOutdated()) return
-
-    objectAssign(pageContext, { routeParams: {} })
+    objectAssign(pageContext, {
+      routeParams: {},
+      errorWhileRendering: args.err,
+    })
 
     {
       const { err } = args
-      assert(!('errorWhileRendering' in pageContext))
-      objectAssign(pageContext, { errorWhileRendering: err })
 
       if (isAbortError(err)) {
         const errAbort = err
