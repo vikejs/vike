@@ -7,6 +7,7 @@ function logErrorServer(err: unknown) {
   if (
     isObject(err) &&
     // Set by react-streaming
+    // https://github.com/brillout/react-streaming/blob/0f93e09059a5936a1fb581bc1ce0bce473e0d5e0/src/server/renderToStream/common.ts#L36
     isCallable(err.prettifyThisError)
   ) {
     err = err.prettifyThisError(err)
