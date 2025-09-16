@@ -7,7 +7,6 @@ export type { PageContextBegin }
 
 import {
   assert,
-  isSameErrorMessage,
   objectAssign,
   redirectHard,
   getGlobalObject,
@@ -369,14 +368,12 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     pageContextAbort: PageContextAbort | undefined,
   ) {
     const onError = (err: unknown) => {
-      if (!isSameErrorMessage(err, args.err)) {
-        /* When we can't render the error page, we prefer showing a blank page over letting the server-side try because otherwise:
-           - We risk running into an infinite loop of reloads which would overload the server.
-           - An infinite reloading page is a even worse UX than a blank page.
-        redirectHard(urlOriginal)
-        */
-        console.error(err)
-      }
+      /* When we can't render the error page, we prefer showing a blank page over letting the server-side try because otherwise:
+         - We risk running into an infinite loop of reloads which would overload the server.
+         - An infinite reloading page is a even worse UX than a blank page.
+      redirectHard(urlOriginal)
+      */
+      console.error(err)
     }
 
     const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._globalContext._pageConfigs)
@@ -500,9 +497,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       if (!isErrorPage) {
         await handleError({ err })
       } else {
-        if (!isSameErrorMessage(err, isErrorPage.err)) {
-          console.error(err)
-        }
+        console.error(err)
       }
     }
 
