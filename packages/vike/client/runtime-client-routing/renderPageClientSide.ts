@@ -392,6 +392,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       if (pageContextAbort.abortStatusCode === 404) {
         objectAssign(pageContext, { is404: true })
       }
+    } else {
+      objectAssign(pageContext, { is404: false })
     }
 
     // Render error page
@@ -415,7 +417,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     objectAssign(pageContext, {
       pageId: errorPageId,
       routeParams: {},
-      is404: false,
     })
 
     const isClientRoutable = await isClientSideRoutable(pageContext.pageId, pageContext)
