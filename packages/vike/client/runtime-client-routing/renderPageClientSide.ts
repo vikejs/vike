@@ -361,51 +361,51 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     })
 
     // throw redirect()/render()
-      if (isAbortError(err)) {
-        const errAbort = err
-        logAbortErrorHandled(err, !import.meta.env.DEV, pageContext)
-        const pageContextAbort = errAbort._pageContextAbort
+    if (isAbortError(err)) {
+      const errAbort = err
+      logAbortErrorHandled(err, !import.meta.env.DEV, pageContext)
+      const pageContextAbort = errAbort._pageContextAbort
 
-        // throw render('/some-url')
-        if (pageContextAbort._urlRewrite) {
+      // throw render('/some-url')
+      if (pageContextAbort._urlRewrite) {
+        await renderPageClientSide({
+          ...renderArgs,
+          scrollTarget: undefined,
+          pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAbort],
+        })
+        return
+      }
+
+      // throw redirect('/some-url')
+      if (pageContextAbort._urlRedirect) {
+        const urlRedirect = pageContextAbort._urlRedirect.url
+        if (!urlRedirect.startsWith('/')) {
+          // External redirection
+          redirectHard(urlRedirect)
+          return
+        } else {
           await renderPageClientSide({
             ...renderArgs,
             scrollTarget: undefined,
-            pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAbort],
+            urlOriginal: urlRedirect,
+            overwriteLastHistoryEntry: false,
+            isBackwardNavigation: false,
+            redirectCount: redirectCount + 1,
           })
-          return
         }
-
-        // throw redirect('/some-url')
-        if (pageContextAbort._urlRedirect) {
-          const urlRedirect = pageContextAbort._urlRedirect.url
-          if (!urlRedirect.startsWith('/')) {
-            // External redirection
-            redirectHard(urlRedirect)
-            return
-          } else {
-            await renderPageClientSide({
-              ...renderArgs,
-              scrollTarget: undefined,
-              urlOriginal: urlRedirect,
-              overwriteLastHistoryEntry: false,
-              isBackwardNavigation: false,
-              redirectCount: redirectCount + 1,
-            })
-          }
-          return
-        }
-
-        // throw render(statusCode)
-        assert(pageContextAbort.abortStatusCode)
-        assert(!('urlOriginal' in pageContextAbort))
-        objectAssign(pageContext, pageContextAbort)
-        if (pageContextAbort.abortStatusCode === 404) {
-          objectAssign(pageContext, { is404: true })
-        }
-      } else {
-        objectAssign(pageContext, { is404: false })
+        return
       }
+
+      // throw render(statusCode)
+      assert(pageContextAbort.abortStatusCode)
+      assert(!('urlOriginal' in pageContextAbort))
+      objectAssign(pageContext, pageContextAbort)
+      if (pageContextAbort.abortStatusCode === 404) {
+        objectAssign(pageContext, { is404: true })
+      }
+    } else {
+      objectAssign(pageContext, { is404: false })
+    }
 
     const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._globalContext._pageConfigs)
     if (!errorPageId) throw new Error('No error page defined.')
