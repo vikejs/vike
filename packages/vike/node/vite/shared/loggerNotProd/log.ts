@@ -8,6 +8,7 @@ import pc from '@brillout/picocolors'
 import { isErrorDebug } from '../../../shared/isErrorDebug.js'
 import { getViteDevServer } from '../../../runtime/globalContext.js'
 import type { LogCategory, LogType } from '../loggerNotProd.js'
+import { logErrorServer } from '../../../runtime/logErrorServer.js'
 
 assertIsNotProductionRuntime()
 
@@ -47,7 +48,8 @@ function logDirectly(thing: unknown, logType: LogType) {
     return
   }
   if (logType === 'error') {
-    console.error(thing)
+    // console.error()
+    logErrorServer(thing)
     return
   }
   if (logType === 'error-recover') {

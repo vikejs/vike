@@ -187,7 +187,7 @@ function assertFlagsActivated() {
 function getFlagsActivated() {
   const flagsActivated: string[] = DEBUG.match(/\bvike:[a-zA-Z-]+/g) ?? []
   const isAll = DEBUG.includes('vike:*')
-  const isGlobal = /\bvike\b([^:]|$)/.test(DEBUG);
+  const isGlobal = /\bvike\b([^:]|$)/.test(DEBUG)
   return { flagsActivated, isAll, isGlobal }
 }
 
