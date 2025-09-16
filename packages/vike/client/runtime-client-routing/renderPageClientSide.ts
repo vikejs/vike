@@ -835,5 +835,12 @@ if (import.meta.env.DEV && import.meta.hot)
   })
 
 function logError(err: unknown) {
+  if (
+    isObject(err) &&
+    // Set by vike-react
+    err.isAlreadyLogged
+  ) {
+    return
+  }
   console.error(err)
 }
