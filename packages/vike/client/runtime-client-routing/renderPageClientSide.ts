@@ -363,7 +363,11 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     await renderErrorPage(pageContext, args, pageContextAbort)
   }
 
-  async function renderErrorPage(pageContext: PageContextBegin, args: { err: unknown }, pageContextAbort: PageContextAbort | undefined) {
+  async function renderErrorPage(
+    pageContext: PageContextBegin,
+    args: { err: unknown },
+    pageContextAbort: PageContextAbort | undefined,
+  ) {
     const onError = (err: unknown) => {
       if (!isSameErrorMessage(err, args.err)) {
         /* When we can't render the error page, we prefer showing a blank page over letting the server-side try because otherwise:
@@ -440,43 +444,46 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     await renderPageView(pageContext, args)
   }
 
-  async function handleAbortError(err: ErrorAbort, pageContext: PageContextBegin): Promise<{ skip: true, pageContextAbort?: undefined } | { pageContextAbort: PageContextAbort, skip?: undefined }> {
-      const errAbort = err
-      logAbortErrorHandled(err, !import.meta.env.DEV, pageContext)
-      const pageContextAbort = errAbort._pageContextAbort
+  async function handleAbortError(
+    err: ErrorAbort,
+    pageContext: PageContextBegin,
+  ): Promise<{ skip: true; pageContextAbort?: undefined } | { pageContextAbort: PageContextAbort; skip?: undefined }> {
+    const errAbort = err
+    logAbortErrorHandled(err, !import.meta.env.DEV, pageContext)
+    const pageContextAbort = errAbort._pageContextAbort
 
-      // throw render('/some-url')
-      if (pageContextAbort._urlRewrite) {
+    // throw render('/some-url')
+    if (pageContextAbort._urlRewrite) {
+      await renderPageClientSide({
+        ...renderArgs,
+        scrollTarget: undefined,
+        pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAbort],
+      })
+      return { skip: true }
+    }
+
+    // throw redirect('/some-url')
+    if (pageContextAbort._urlRedirect) {
+      const urlRedirect = pageContextAbort._urlRedirect.url
+      if (!urlRedirect.startsWith('/')) {
+        // External redirection
+        redirectHard(urlRedirect)
+        return { skip: true }
+      } else {
         await renderPageClientSide({
           ...renderArgs,
           scrollTarget: undefined,
-          pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAbort],
+          urlOriginal: urlRedirect,
+          overwriteLastHistoryEntry: false,
+          isBackwardNavigation: false,
+          redirectCount: redirectCount + 1,
         })
-        return { skip: true }
       }
+      return { skip: true }
+    }
 
-      // throw redirect('/some-url')
-      if (pageContextAbort._urlRedirect) {
-        const urlRedirect = pageContextAbort._urlRedirect.url
-        if (!urlRedirect.startsWith('/')) {
-          // External redirection
-          redirectHard(urlRedirect)
-          return { skip: true }
-        } else {
-          await renderPageClientSide({
-            ...renderArgs,
-            scrollTarget: undefined,
-            urlOriginal: urlRedirect,
-            overwriteLastHistoryEntry: false,
-            isBackwardNavigation: false,
-            redirectCount: redirectCount + 1,
-          })
-        }
-        return { skip: true }
-      }
-
-      // throw render(statusCode)
-      return { pageContextAbort }
+    // throw render(statusCode)
+    return { pageContextAbort }
   }
 
   async function renderPageView(
