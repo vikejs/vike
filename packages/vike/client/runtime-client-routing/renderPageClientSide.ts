@@ -323,7 +323,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
   }
 
-  // When the normal page threw an error
+  // When the normal page threw an error:
   // - Can be a URL rewrite upon `throw render('/some-url')`
   // - Can be rendering the error page
   // - Can be rendering Vike's generic error page (if no error page is defined, or if the error page throws an error)
