@@ -12,6 +12,7 @@ export type { AbortStatusCode }
 export type { ErrorAbort }
 export type { PageContextFromRewrite }
 export type { UrlRedirect }
+export type { PageContextAbort }
 
 import { isUserHookError } from '../hooks/execHook.js'
 import {

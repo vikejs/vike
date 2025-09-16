@@ -41,7 +41,6 @@ const flags = [
   'vike:vite-rpc',
 ] as const satisfies (`vike:${string}` | 'vike')[]
 const flagsSkipWildcard = ['vike:log']
-const flagRegex = /\bvike:[a-zA-Z-]+/g
 // We purposely read process.env.DEBUG early, in order to avoid users from the temptation to set process.env.DEBUG with JavaScript, since reading & writing process.env.DEBUG dynamically leads to inconsistencies such as https://github.com/vikejs/vike/issues/2239
 const DEBUG = getDEBUG() ?? ''
 if (isDebug()) Error.stackTraceLimit = Infinity
@@ -101,8 +100,8 @@ function debug_(flag: Flag, options: Options, ...msgs: unknown[]) {
 
 function isDebugActivated(flag: Flag): boolean {
   assert(flags.includes(flag))
-  const { flagsActivated, all } = getFlagsActivated()
-  const isActivated = flagsActivated.includes(flag) || (all && !flagsSkipWildcard.includes(flag))
+  const { flagsActivated, isAll } = getFlagsActivated()
+  const isActivated = flagsActivated.includes(flag) || (isAll && !flagsSkipWildcard.includes(flag))
   return isActivated
 }
 
@@ -185,18 +184,16 @@ function assertFlagsActivated() {
   })
 }
 
-// TODO/now: refactor isAll
-// TODO/now: refactor inline flagRegex
 function getFlagsActivated() {
-  const flagsActivated: string[] = DEBUG.match(flagRegex) ?? []
-  const all = DEBUG.includes('vike:*')
+  const flagsActivated: string[] = DEBUG.match(/\bvike:[a-zA-Z-]+/g) ?? []
+  const isAll = DEBUG.includes('vike:*')
   const isGlobal = /\bvike\b[^:]/.test(DEBUG)
-  return { flagsActivated, all, isGlobal }
+  return { flagsActivated, isAll, isGlobal }
 }
 
 function isDebug() {
-  const { flagsActivated, all, isGlobal } = getFlagsActivated()
-  return all || flagsActivated.length > 0 || isGlobal
+  const { flagsActivated, isAll, isGlobal } = getFlagsActivated()
+  return isAll || flagsActivated.length > 0 || isGlobal
 }
 
 function getDEBUG() {
