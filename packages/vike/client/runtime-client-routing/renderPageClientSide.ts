@@ -328,7 +328,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   // - Can be rendering the error page
   // - Can be rendering Vike's generic error page (if no error page is defined, or if the error page throws an error)
   async function handleError(args: { err: unknown }) {
-    assert(args.err)
+    const { err } = args
+    assert(err)
 
     const onError = (err: unknown) => {
       if (!isSameErrorMessage(err, args.err)) {
@@ -342,9 +343,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
 
     {
-      const { err } = args
-      assert(err)
-
       if (!isAbortError(err)) {
         // We don't swallow 404 errors:
         //  - On the server-side, Vike swallows / doesn't show any 404 error log because it's expected that a user may go to some random non-existent URL. (We don't want to flood the app's error tracking with 404 logs.)
@@ -360,12 +358,10 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     if (isRenderOutdated()) return
     objectAssign(pageContext, {
       routeParams: {},
-      errorWhileRendering: args.err,
+      errorWhileRendering: err,
     })
 
     {
-      const { err } = args
-
       if (isAbortError(err)) {
         const errAbort = err
         logAbortErrorHandled(err, !import.meta.env.DEV, pageContext)
