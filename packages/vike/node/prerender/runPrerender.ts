@@ -1142,7 +1142,6 @@ function preparePrerenderContextForPublicUsage(prerenderContext: PrerenderContex
         })
         return prerenderContext.pageContexts
       },
-      configurable: true,
     })
   }
 
