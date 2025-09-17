@@ -113,7 +113,7 @@ declare global {
 }
 
 function testRunClassic(
-  cmd: 'npm run dev' | 'npm run preview' | 'npm run prod',
+  cmd: 'npm run dev' | 'npm run preview' | 'npm run prod' | 'npm run preview:build-twice',
   {
     skipAboutPage,
     skipViteEcosystemCi,

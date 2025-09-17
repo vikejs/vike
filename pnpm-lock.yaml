@@ -1555,6 +1555,9 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^4.7.0
         version: 4.7.0(vite@7.0.6(@types/node@24.3.1)(terser@5.38.1)(tsx@4.20.3))
+      cross-env:
+        specifier: ^10.0.0
+        version: 10.0.0
       cross-fetch:
         specifier: ^4.1.0
         version: 4.1.0
