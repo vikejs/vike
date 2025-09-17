@@ -12,7 +12,7 @@ Usage:
 
 #### CLI options
 
-You can pass <Link href="/settings">any Vike setting</Link> as CLI option, for example:
+You can pass <Link href="/settings">any Vike setting</Link> to the CLI, for example:
 
 ```bash
 # Make development server available over LAN and public addresses
@@ -28,9 +28,9 @@ $ vike build --mode staging
 $ vike build --prerender "{parallel:4,noExtraDir:true}"
 ```
 
-> These are all Vike settings: <Link href="/host" noBreadcrumb /> / <Link href="/port" noBreadcrumb /> / <Link href="/mode" noBreadcrumb /> / <Link href="/prerender" noBreadcrumb />. (Vike aliases some Vite settings for convenience.)
+> These are all Vike settings — Vike aliases some Vite settings for convenience (see <Link href="/host" noBreadcrumb />/<Link href="/port" noBreadcrumb />/<Link href="/mode" noBreadcrumb />/<Link href="/prerender" noBreadcrumb />).
 
-> The CLI option value syntax is JavaScript-like, see <Link href="#json5-syntax" />.
+> You can set values using JavaScript(-like) syntax (see <Link href="#json5-syntax" />).
 
 #### `VIKE_CONFIG` environment variable
 
@@ -44,27 +44,27 @@ $ VIKE_CONFIG="{host:true}" vike dev
 $ VIKE_CONFIG="{prerender:{parallel:4,noExtraDir:true}}" npm run build
 ```
 
-> The `VIKE_CONFIG` value syntax is JavaScript-like, see <Link href="#json5-syntax" />.
+> You can set `VIKE_CONFIG` using JavaScript(-like) syntax (see <Link href="#json5-syntax" />).
 
 
 ## Vite settings
 
 #### CLI options
 
-The following [Vite CLI options](https://vite.dev/guide/cli#options) are supported:
+Vike's CLI supports following [Vite CLI options](https://vite.dev/guide/cli#options):
  - `--host`
  - `--mode`
  - `--port`
 
-> These are actually all Vike settings, which alias Vite settings. See: <Link href="/host" noBreadcrumb /> / <Link href="/port" noBreadcrumb /> / <Link href="/mode" noBreadcrumb />.
+> Technically these are Vike settings that alias Vite settings (see <Link href="/host" noBreadcrumb />/<Link href="/port" noBreadcrumb />/<Link href="/mode" noBreadcrumb />). In other words, Vike's CLI options are always <Link href="/settings">Vike settings</Link>.
+>
+> Reach out if you believe there are other Vite settings that should also be aliased.
 
 For other Vite settings, use `vite.config.js` or `VITE_CONFIG`.
 
-> Reach out if you believe some other Vite setting should also be added the list of CLI options.
-
 #### `VITE_CONFIG` environment variable
 
-You can use the `VITE_CONFIG` environment variable to pass [any Vite setting](https://vite.dev/config/), for example:
+You can use the `VITE_CONFIG` environment variable to pass [Vite settings](https://vite.dev/config/), for example:
 
 ```bash
 # Set Vite's server.host setting to true
@@ -77,12 +77,27 @@ $ VITE_CONFIG="{build:{outDir:'build'}}" npm run build
 $ VITE_CONFIG="{mode:'staging'}" npm run preview
 ```
 
-> The `VITE_CONFIG` value syntax is JavaScript-like, see <Link href="#json5-syntax" />.
+> You can set `VITE_CONFIG` using JavaScript(-like) syntax (see <Link href="#json5-syntax" />).
+
 
 
 ## JSON5 syntax
 
-You can set the value of CLI options, `VITE_CONFIG`, and `VIKE_CONFIG` using JavaScript-like syntax, [JSON syntax](https://json.org/example.html), or [JSON5 syntax](https://json5.org/#example). (Vike uses [JSON5](https://json5.org) to parse the values.)
+Vike uses [JSON5](https://json5.org) to parse the values of Vike's CLI options and the values of the environment variables `VITE_CONFIG` and `VIKE_CONFIG`.
+
+It's a [JSON](https://json.org) extension that supports:
+- Standard [JSON syntax](https://json.org/example.html)
+- JavaScript-like syntax
+  > For example `{someProp:'someVal'}`, which isn't valid `JSON`, is valid JSON5.
+- Extra [JSON5 features](https://json5.org/#example)
+  > For example comments — the following is valid JSON5 (it isn't valid `JSON`):
+  > ```json5
+  > // Some comment
+  > {
+  >    "someProp": "someVal"
+  > }
+  > ```
+
 
 
 ## See also
