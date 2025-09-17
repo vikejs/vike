@@ -110,7 +110,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
     {
       name: 'vike:pluginReplaceConstantsGlobalThis:virtual-file',
       applyToEnvironment(env) {
-        return env.config.consumer === 'server'
+        return env.config.consumer !== 'client'
       },
       resolveId: {
         filter: filterRolldown,
