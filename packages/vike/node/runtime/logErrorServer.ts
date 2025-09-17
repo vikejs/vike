@@ -57,20 +57,16 @@ function tryExecOnErrorHook(err: unknown) {
 
     if (onErrorHooks.length === 0) return
 
-    // Create a minimal page context for the global onError hooks
-    const pageContext = {
-      _isOriginalObject: true as const,
-      isPageContext: true as const,
-      _globalContext: globalContext,
+    // Create global context with error information for the global onError hooks
+    const globalContextWithError = {
+      ...globalContext,
       errorWhileRendering: err as unknown as Error,
-      urlOriginal: '/_error', // Dummy URL since this is a global hook
-      headers: null,
     }
 
     // Execute all onError hooks (cumulative)
     for (const hook of onErrorHooks) {
       try {
-        hook.hookFn(pageContext)
+        hook.hookFn(globalContextWithError)
       } catch (hookErr) {
         // If an individual onError hook throws, continue with the next one
         // We don't want one failing hook to prevent others from running
