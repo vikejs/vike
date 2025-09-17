@@ -28,7 +28,7 @@ function Layout({ children }: { children: React.ReactNode }) {
   }
 
   // TEST: globalThis
-  // assert(globalThis.__VIKE__IS_DEV === import.meta.env.DEV)
+  assert(globalThis.__VIKE__IS_DEV === import.meta.env.DEV)
   assert(globalThis.__VIKE__IS_CLIENT === !import.meta.env.SSR)
 
   if (!globalContext.isClientSide) {
