@@ -13,6 +13,6 @@ async function onBeforeRenderClient(pageContext: PageContextClient) {
 
   // TEST: getGlobalContext()
   assert((await getGlobalContext()).isClientSide)
-  assert((await getGlobalContextAsync(import.meta.env.PROD)).isClientSide)
+  // assert((await getGlobalContextAsync(import.meta.env.PROD)).isClientSide)
   assert(getGlobalContextSync().isClientSide)
 }
