@@ -29,7 +29,6 @@ function getCode(
   const importStatements: string[] = []
   const filesEnv: FilesEnv = new Map()
 
-  // Ensure constants are loaded first (server-side only)
   if (!isForClientSide) {
     importStatements.push("import 'virtual:vike:globalThis-constants';")
   }
