@@ -15,7 +15,6 @@ import {
 } from './loadPageConfigsLazyServerSide.js'
 import { execHookOnRenderHtml } from './execHookOnRenderHtml.js'
 import { execHookDataAndOnBeforeRender } from './execHookDataAndOnBeforeRender.js'
-import { execHookOnError } from './execHookOnError.js'
 import { logRuntimeError } from '../loggerRuntime.js'
 import { isNewError } from './isNewError.js'
 import { preparePageContextForPublicUsageServer } from './preparePageContextForPublicUsageServer.js'
@@ -69,15 +68,8 @@ async function renderPageAfterRoute<
       }
     }
 
-    // Execute onError hook when there's an error
-    if (pageContext.errorWhileRendering) {
-      try {
-        await execHookOnError(pageContext as typeof pageContext & { errorWhileRendering: Error })
-      } catch (err) {
-        // If the onError hook itself throws, log it but don't let it break the error page rendering
-        logRuntimeError(err, pageContext._httpRequestId)
-      }
-    }
+    // Note: onError hook is now executed centrally in logErrorServer() -> tryExecOnErrorHook()
+    // This ensures it's called for all errors, including those that occur before global context is initialized
   }
 
   if (pageContext.isClientSideNavigation) {
