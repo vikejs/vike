@@ -12,7 +12,7 @@ async function buildApp() {
   await build({
     vikeConfig: {
       // Skip pre-rendering as it seems to open a can of worms with Vitest
-      // prerender: false,
+      prerender: false,
     },
     viteConfig: {
       logLevel: 'warn' as const,
