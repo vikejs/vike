@@ -30,7 +30,6 @@ function Layout({ children }: { children: React.ReactNode }) {
   // TEST: globalThis
   assert(globalThis.__VIKE__IS_DEV === import.meta.env.DEV)
   assert(globalThis.__VIKE__IS_CLIENT === !import.meta.env.SSR)
-  assert(globalThis.__VIKE__IS_DEBUG === false)
 
   if (!globalContext.isClientSide) {
     assert(globalContext.notPassedToClient === 123)
@@ -157,5 +156,4 @@ function Footer() {
 declare global {
   var __VIKE__IS_DEV: boolean
   var __VIKE__IS_CLIENT: boolean
-  var __VIKE__IS_DEBUG: boolean
 }
