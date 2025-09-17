@@ -27,7 +27,7 @@ export default {
 // TEST: returning a promise
 async function testPlugin(): Promise<PluginOption> {
   if (process.env.VITEST) {
-    // Skip this for build-multiple-times.spec.ts
+    // Skip this for build-twice.spec.ts
     return
   }
 
