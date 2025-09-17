@@ -7,7 +7,6 @@ import {
   addVirtualFileIdPrefix,
   isVirtualFileId,
   removeVirtualFileIdPrefix,
-  escapeRegex,
 } from '../utils.js'
 
 declare global {
@@ -69,7 +68,7 @@ const VIRTUAL_MODULE_ID = 'virtual:vike:globalThis-constants'
 
 const filterRolldown = {
   id: {
-    include: new RegExp(`^${escapeRegex(VIRTUAL_MODULE_ID)}`),
+    include: VIRTUAL_MODULE_ID,
   },
 }
 const filterFunction = (id: string) => id === VIRTUAL_MODULE_ID || id === addVirtualFileIdPrefix(VIRTUAL_MODULE_ID)
