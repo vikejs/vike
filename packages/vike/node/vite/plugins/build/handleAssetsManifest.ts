@@ -381,6 +381,7 @@ async function handleAssetsManifest(
 ) {
   const isSsrEnv = isViteServerSide_onlySsrEnv(config, viteEnv)
   if (isSsrEnv) {
+    assert(!globalObject.assetsJsonFilePath)
     const outDirs = getOutDirs(config, viteEnv)
     globalObject.assetsJsonFilePath = path.posix.join(outDirs.outDirRoot, 'assets.json')
     await writeAssetsManifestFile(globalObject.assetsJsonFilePath, config)
