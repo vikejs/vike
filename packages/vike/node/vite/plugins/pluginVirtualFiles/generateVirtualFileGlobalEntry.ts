@@ -57,7 +57,17 @@ function getCode(
     lines.push('if (import.meta.hot) import.meta.hot.accept();')
   }
 
-  const code = [...importStatements, ...lines].join('\n')
+  let code = [
+    //
+    "import 'virtual:vike:globalThis-constants';",
+    ...importStatements,
+    ...lines,
+  ].join('\n')
+
+  if (!isForClientSide) {
+    code = "import 'virtual:vike:globalThis-constants';\n" + code
+  }
+
   debug(id, isForClientSide ? 'CLIENT-SIDE' : 'SERVER-SIDE', code)
   return code
 }
