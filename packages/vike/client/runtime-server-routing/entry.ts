@@ -10,6 +10,9 @@ import { preparePageContextForPublicUsageClient } from './preparePageContextForP
 import { setVirtualFileExportsGlobalEntry } from '../shared/getGlobalContextClientInternalShared.js'
 // @ts-expect-error
 import * as virtualFileExportsGlobalEntry from 'virtual:vike:global-entry:client:server-routing'
+// Ensure constants are loaded
+// @ts-expect-error
+import 'virtual:vike:constants'
 
 assertSingleInstance_onClientEntryServerRouting(import.meta.env.PROD)
 

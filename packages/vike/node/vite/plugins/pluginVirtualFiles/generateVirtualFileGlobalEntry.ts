@@ -29,6 +29,9 @@ function getCode(
   const importStatements: string[] = []
   const filesEnv: FilesEnv = new Map()
 
+  // Ensure constants are loaded first
+  importStatements.push("import 'virtual:vike:constants';")
+
   lines.push('export const pageConfigsSerialized = [')
   lines.push(
     getCodePageConfigsSerialized(pageConfigs, isForClientSide, isClientRouting, isDev, importStatements, filesEnv),

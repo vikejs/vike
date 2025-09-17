@@ -19,19 +19,15 @@ declare global {
 }
 
 // === Virtual Module Approach (NEW)
-// This plugin now provides a virtual module 'virtual:vike:constants' that exports:
-// - __VIKE__IS_DEV: boolean
-// - __VIKE__IS_CLIENT: boolean
-// - __VIKE__IS_DEBUG: boolean | undefined
+// This plugin now provides a virtual module 'virtual:vike:constants' that automatically sets globalThis values.
+// The virtual module is automatically loaded to ensure globalThis variables are set reliably in production,
+// even with ssr.external configurations.
 //
 // Benefits of virtual module approach:
 // 1. Works reliably in production with ssr.external (no undefined values)
-// 2. Provides proper TypeScript support
-// 3. Enables tree-shaking optimizations
-// 4. More explicit imports vs global variables
-//
-// Usage:
-// import { __VIKE__IS_DEV, __VIKE__IS_CLIENT, __VIKE__IS_DEBUG } from 'virtual:vike:constants'
+// 2. Automatically sets globalThis variables without requiring code changes
+// 3. Ensures constants are available before any user code runs
+// 4. Maintains backward compatibility with existing globalThis usage
 
 // === Legacy globalThis Approach (BACKWARD COMPATIBILITY)
 // The plugin still sets globalThis variables for backward compatibility:
@@ -116,28 +112,23 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
             (this.environment?.name === 'client' ? 'client' : 'server')
           const isClientSide = consumer === 'client'
 
-          // Generate the virtual module content
+          // Generate the virtual module content that sets globalThis values
           const lines: string[] = []
-          lines.push('// Virtual module providing Vike constants')
+          lines.push('// Virtual module that ensures Vike constants are set on globalThis')
+          lines.push('// This module is automatically loaded to provide reliable constants in production')
           lines.push('')
-          lines.push(`export const __VIKE__IS_DEV: boolean = ${JSON.stringify(isDev ?? false)};`)
-          lines.push(`export const __VIKE__IS_CLIENT: boolean = ${JSON.stringify(isClientSide)};`)
-
-          if (isClientSide) {
-            // Only provide debug flag on client-side
-            lines.push(`export const __VIKE__IS_DEBUG: boolean = ${JSON.stringify(isDebug())};`)
-          } else {
-            // On server-side, debug is always undefined/false
-            lines.push(`export const __VIKE__IS_DEBUG: boolean | undefined = undefined;`)
-          }
-
-          lines.push('')
-          lines.push('// Backward compatibility: also set globalThis values')
           lines.push(`globalThis.__VIKE__IS_DEV = ${JSON.stringify(isDev ?? false)};`)
           lines.push(`globalThis.__VIKE__IS_CLIENT = ${JSON.stringify(isClientSide)};`)
+
           if (isClientSide) {
             lines.push(`globalThis.__VIKE__IS_DEBUG = ${JSON.stringify(isDebug())};`)
+          } else {
+            // On server-side, debug is always undefined
+            lines.push(`globalThis.__VIKE__IS_DEBUG = undefined;`)
           }
+
+          lines.push('')
+          lines.push('// Module loaded successfully - globalThis constants are now available')
 
           return lines.join('\n')
         },
