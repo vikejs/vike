@@ -30,7 +30,7 @@ function logErrorServer(err: unknown) {
   tryExecOnErrorHook(err)
 }
 
-async function tryExecOnErrorHook(err: unknown) {
+function tryExecOnErrorHook(err: unknown) {
   try {
     // Skip if not an object (can't track in WeakSet)
     if (!isObject(err)) return
@@ -41,58 +41,44 @@ async function tryExecOnErrorHook(err: unknown) {
     // Mark as executed to prevent duplicates
     globalObject.onErrorHookExecuted.add(err)
 
-    // Check if global context is available - if not, we can't execute hooks yet
-    // This is expected for initialization errors and is acceptable
-    const { getGlobalContextServerInternal } = await import('./globalContext.js')
-    let globalContextResult
-    try {
-      globalContextResult = await getGlobalContextServerInternal()
-    } catch {
-      return // Global context not available yet - this is expected for initialization errors
+    // Check if global context is available synchronously
+    const { getGlobalContextServerInternalOptional } = require('./globalContext.js')
+    const globalContextResult = getGlobalContextServerInternalOptional()
+
+    if (!globalContextResult) {
+      // Global context not available yet - this is expected for initialization errors
+      return
     }
 
     const { globalContext } = globalContextResult
-    if (!globalContext) return
 
-    // Find an error page to use as context for the onError hook
-    const { getErrorPageId } = await import('../../shared/error-page.js')
-    const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
+    // Execute global onError hooks
+    const onErrorHooks = globalContext.config.onError
+    if (!onErrorHooks || onErrorHooks.length === 0) return
 
-    if (!errorPageId) return // No error page defined, can't execute onError hook
-
-    // We need to load the page configuration to execute hooks properly
-    // This is a simplified approach that only works when global context is available
-    const { loadPageConfigsLazyServerSide } = await import('./renderPage/loadPageConfigsLazyServerSide.js')
-    const { createPageContextServerSide } = await import('./renderPage/createPageContextServerSide.js')
-
-    // Create a basic page context for the error page
-    const pageContextInit = {
-      urlOriginal: '/_error', // Dummy URL for error page
-      headersOriginal: null,
+    // Create a minimal page context for the global onError hooks
+    const pageContext = {
+      errorWhileRendering: err as unknown as Error,
+      urlOriginal: '/_error', // Dummy URL since this is a global hook
+      headers: null,
+      // Add other minimal properties that might be expected
+      _globalContext: globalContext,
     }
 
-    const pageContextCreated = createPageContextServerSide(pageContextInit, globalContext, {
-      isPrerendering: false,
-      ssr: { urlHandler: null, isClientSideNavigation: false },
-    })
-
-    // Set the error page ID and error
-    Object.assign(pageContextCreated, {
-      pageId: errorPageId,
-      errorWhileRendering: err as unknown as Error,
-      _httpRequestId: null,
-      routeParams: {} as Record<string, string>, // Empty route params for error page
-    })
-
-    // Load page configurations for the error page
-    const pageContextWithConfig = await loadPageConfigsLazyServerSide(pageContextCreated as any)
-
-    // Execute the onError hook
-    const { execHookServer } = await import('./renderPage/execHookServer.js')
-    await execHookServer('onError', pageContextWithConfig)
+    // Execute all onError hooks (cumulative)
+    for (const onErrorHook of onErrorHooks) {
+      try {
+        if (typeof onErrorHook === 'function') {
+          onErrorHook(pageContext)
+        }
+      } catch (hookErr) {
+        // If an individual onError hook throws, continue with the next one
+        // We don't want one failing hook to prevent others from running
+      }
+    }
 
   } catch (hookErr) {
-    // If anything fails while trying to execute the onError hook, silently ignore
+    // If anything fails while trying to execute the onError hooks, silently ignore
     // We don't want to create infinite loops or interfere with error page rendering
     // The original error logging has already happened
   }

@@ -5,6 +5,7 @@ export { getGlobalContextAsync }
 
 // Internal use
 export { getGlobalContextServerInternal }
+export { getGlobalContextServerInternalOptional }
 export { getViteDevServer }
 export { getViteConfig }
 export { initGlobalContext_renderPage }
@@ -137,6 +138,15 @@ async function getGlobalContextServerInternal() {
   if (!isProd()) await globalObject.waitForUserFilesUpdate
   const { globalContext } = globalObjectTyped
   assertIsDefined(globalContext)
+  return { globalContext }
+}
+
+function getGlobalContextServerInternalOptional(): { globalContext: GlobalContextServerInternal } | null {
+  // Synchronous version that returns null if global context is not available
+  // Used for optional operations like error hooks that shouldn't block on initialization
+  if (!globalObject.isInitialized) return null
+  const { globalContext } = globalObjectTyped
+  if (!globalContext) return null
   return { globalContext }
 }
 

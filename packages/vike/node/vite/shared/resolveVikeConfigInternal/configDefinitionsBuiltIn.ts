@@ -127,6 +127,8 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   onError: {
     env: { server: true },
+    global: true,
+    cumulative: true,
   },
   onBeforeRender: {
     env: { server: true },
