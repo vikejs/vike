@@ -4,6 +4,7 @@ import React from 'react'
 import { Counter } from './Counter'
 
 function Page() {
+  console.log('import.meta.env.PROD', import.meta.env.PROD)
   return (
     <>
       <h1>Welcome</h1>

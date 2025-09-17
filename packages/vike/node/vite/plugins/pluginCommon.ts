@@ -162,6 +162,7 @@ function assertVikeCliOrApi(config: ResolvedConfig) {
     assert(!isVitest())
     return
   }
+  /* This warning is always shown: Vitest loads Vite *before* any Vike JavaScript API can be invoked.
   if (isVitest()) {
     assertWarning(
       false,
@@ -170,6 +171,7 @@ function assertVikeCliOrApi(config: ResolvedConfig) {
     )
     return
   }
+  */
   if (config.server.middlewareMode) {
     assertWarning(
       false,
