@@ -4,7 +4,7 @@
     "build": "node scripts/build.js",
     "prerender": "node scripts/prerender.js",
     "preview": "node scripts/preview.js",
-    "preview:build-twice": "node scripts/build.js && node scripts/preview.js"
+    "preview:build-twice": "BUILD_TWICE=true node scripts/preview.js"
   },
   "dependencies": {
     "@mdx-js/mdx": "^3.1.0",
