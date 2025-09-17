@@ -14,13 +14,11 @@ declare global {
   /** Like `import.meta.env.SSR` but works for `node_modules/` packages with `ssr.external` */
   var __VIKE__IS_CLIENT: boolean
   var __VIKE__IS_DEBUG: boolean
-  var __VIKE__IS_VITE_LOADED: true | undefined
 }
 
 const isDebugVal = isDebug()
 globalThis.__VIKE__IS_CLIENT = false
 globalThis.__VIKE__IS_DEBUG = isDebugVal
-globalThis.__VIKE__IS_VITE_LOADED = true
 
 const VIRTUAL_FILE_ID = 'virtual:vike:server:globalThis-constants'
 const filterRolldown = {
