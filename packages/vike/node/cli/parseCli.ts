@@ -11,7 +11,7 @@ type Command = 'dev' | 'build' | 'preview' | 'prerender'
 const commands = [
   { name: 'dev', desc: 'Start development server' },
   { name: 'build', desc: 'Build for production' },
-  { name: 'preview', desc: 'Start preview server using production build (only works for SSG apps)' },
+  { name: 'preview', desc: 'Start preview server using production build' },
   { name: 'prerender', desc: 'Pre-render pages (only needed when prerender.disableAutoRun is true)' },
 ] as const
 
