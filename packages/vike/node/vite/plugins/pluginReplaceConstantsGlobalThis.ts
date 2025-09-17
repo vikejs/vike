@@ -9,9 +9,9 @@ import {
 } from '../shared/isViteServerSide.js'
 
 declare global {
-  /** Like `import.meta.env.DEV` but works inside `node_modules/` (even if package is `ssr.external`). */
+  /** Like `import.meta.env.DEV` but works for `node_modules/` packages with `ssr.external` */
   var __VIKE__IS_DEV: boolean
-  /** Like `import.meta.env.SSR` but works inside `node_modules/` (even if package is `ssr.external`). */
+  /** Like `import.meta.env.SSR` but works for `node_modules/` packages with `ssr.external` */
   var __VIKE__IS_CLIENT: boolean
   var __VIKE__IS_DEBUG: boolean
   var __VIKE__IS_VITE_LOADED: true | undefined
