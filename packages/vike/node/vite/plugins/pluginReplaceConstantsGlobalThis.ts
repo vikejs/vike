@@ -121,6 +121,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
         filter: filterRolldown,
         handler(id) {
           assert(filterFunction(id))
+          assert(id === VIRTUAL_MODULE_ID)
           return addVirtualFileIdPrefix(id)
         },
       },
