@@ -67,9 +67,6 @@ async function renderPageAfterRoute<
         logRuntimeError(err, pageContext._httpRequestId)
       }
     }
-
-    // Note: onError hook is now executed centrally in logErrorServer() -> tryExecOnErrorHook()
-    // This ensures it's called for all errors, including those that occur before global context is initialized
   }
 
   if (pageContext.isClientSideNavigation) {

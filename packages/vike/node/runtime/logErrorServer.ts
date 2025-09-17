@@ -1,5 +1,4 @@
 export { logErrorServer }
-export { tryExecOnErrorHook }
 
 import pc from '@brillout/picocolors'
 import { isCallable, isObject, getGlobalObject } from './utils.js'
