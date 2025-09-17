@@ -87,6 +87,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
         handler(id, options) {
           assert(filterFunction(id))
           assert(isViteServerSide_extraSafe(config, this.environment, options))
+          assert(typeof isDev === 'boolean')
           const code = [
             `globalThis.__VIKE__IS_DEV = ${JSON.stringify(isDev)};`,
             `globalThis.__VIKE__IS_CLIENT = false;`,
