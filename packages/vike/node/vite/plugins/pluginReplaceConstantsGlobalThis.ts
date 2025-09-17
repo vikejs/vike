@@ -25,18 +25,23 @@ declare global {
   var __VIKE__IS_DEBUG: boolean | undefined
 }
 
-// === Virtual Module Approach (NEW - SERVER-SIDE ONLY)
-// This plugin now provides a virtual module 'virtual:vike:globalThis-constants' that automatically sets globalThis values
-// on the server-side. The virtual module is automatically loaded to ensure globalThis variables are set reliably
-// in production, even with ssr.external configurations.
+// === Two-Plugin Approach
+// This file exports two separate Vite plugins:
 //
-// Client-side continues to use Vite's define macros which work reliably.
-// Server-side uses the virtual module for ssr.external production environments.
+// Plugin 1: Define macros (all environments)
+// - Uses Vite's define config to set constants at build time
+// - Works reliably for client-side and most server-side scenarios
 //
-// Benefits of virtual module approach:
-// 1. Works reliably in server-side production with ssr.external (no undefined values)
-// 2. Automatically sets globalThis variables without requiring code changes
-// 3. Ensures constants are available before any user code runs
+// Plugin 2: Virtual module (server-side only)
+// - Provides 'virtual:vike:globalThis-constants' that sets globalThis values
+// - Only applies to server environments using applyToEnvironment
+// - Automatically loaded to ensure globalThis variables are set reliably in production
+// - Solves ssr.external production issues where define macros don't work
+//
+// Benefits of split approach:
+// 1. Optimal performance: define macros for client-side
+// 2. Production reliability: virtual module for server-side ssr.external
+// 3. Clear separation of concerns
 // 4. Maintains backward compatibility with existing globalThis usage
 
 // === Legacy globalThis Approach (BACKWARD COMPATIBILITY)
@@ -72,8 +77,9 @@ const filterFunction = (id: string) => id === VIRTUAL_MODULE_ID || id === addVir
 function pluginReplaceConstantsGlobalThis(): Plugin[] {
   let isDev: boolean
   return [
+    // Plugin 1: Define macros (works for all environments)
     {
-      name: 'vike:pluginReplaceConstantsGlobalThis',
+      name: 'vike:pluginReplaceConstantsGlobalThis:define',
       config: {
         handler(config) {
           isDev = config._isDev
@@ -104,6 +110,13 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
           }
         },
       },
+    },
+    // Plugin 2: Virtual module (server-side only)
+    {
+      name: 'vike:pluginReplaceConstantsGlobalThis:virtual',
+      applyToEnvironment(env) {
+        return env.config.consumer === 'server'
+      },
       resolveId: {
         filter: filterRolldown,
         handler(id) {
@@ -117,16 +130,6 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
         handler(id, options) {
           if (!filterFunction(id)) return
           id = removeVirtualFileIdPrefix(id)
-
-          const consumer: 'server' | 'client' =
-            this.environment?.config?.consumer ?? (this.environment?.name === 'client' ? 'client' : 'server')
-          const isClientSide = consumer === 'client'
-
-          // Only generate virtual module for server-side
-          // Client-side uses define macros which work reliably
-          if (isClientSide) {
-            return '// Client-side uses define macros - no virtual module needed'
-          }
 
           // Generate the virtual module content that sets globalThis values for server-side
           const lines: string[] = []
