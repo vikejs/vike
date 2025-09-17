@@ -60,7 +60,7 @@ async function getCode(
   let content = ''
 
   if (!isForClientSide) {
-    content += "import 'virtual:vike:globalThis-constants';\n"
+    content += "import 'virtual:vike:server:globalThis-constants';\n"
   }
 
   {

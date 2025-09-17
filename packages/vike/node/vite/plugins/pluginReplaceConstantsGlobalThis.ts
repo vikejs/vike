@@ -22,7 +22,7 @@ globalThis.__VIKE__IS_CLIENT = false
 globalThis.__VIKE__IS_DEBUG = isDebugVal
 globalThis.__VIKE__IS_VITE_LOADED = true
 
-const VIRTUAL_FILE_ID = 'virtual:vike:globalThis-constants'
+const VIRTUAL_FILE_ID = 'virtual:vike:server:globalThis-constants'
 const filterRolldown = {
   id: {
     include: new RegExp(escapeRegex(VIRTUAL_FILE_ID)),

@@ -30,7 +30,7 @@ function getCode(
   const filesEnv: FilesEnv = new Map()
 
   if (!isForClientSide) {
-    importStatements.push("import 'virtual:vike:globalThis-constants';")
+    importStatements.push("import 'virtual:vike:server:globalThis-constants';")
   }
 
   lines.push('export const pageConfigsSerialized = [')
@@ -59,13 +59,13 @@ function getCode(
 
   let code = [
     //
-    "import 'virtual:vike:globalThis-constants';",
+    "import 'virtual:vike:server:globalThis-constants';",
     ...importStatements,
     ...lines,
   ].join('\n')
 
   if (!isForClientSide) {
-    code = "import 'virtual:vike:globalThis-constants';\n" + code
+    code = "import 'virtual:vike:server:globalThis-constants';\n" + code
   }
 
   debug(id, isForClientSide ? 'CLIENT-SIDE' : 'SERVER-SIDE', code)
