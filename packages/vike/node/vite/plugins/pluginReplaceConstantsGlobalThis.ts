@@ -44,6 +44,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
           return {
             define: {
               'globalThis.__VIKE__IS_DEV': JSON.stringify(isDev),
+              'globalThis.__VIKE__IS_DEBUG': JSON.stringify(isDebugVal),
             },
           }
         },
@@ -51,16 +52,9 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
       configEnvironment: {
         handler(name, config) {
           const isClientSide = !isViteServerSide_configEnvironment(name, config)
-          const defineIsDebug = !isClientSide
-            ? {}
-            : {
-                // We purposely only define it on the client-side, because we cannot know the value in server-side ssr.external production.
-                'globalThis.__VIKE__IS_DEBUG': JSON.stringify(isDebugVal),
-              }
           return {
             define: {
               'globalThis.__VIKE__IS_CLIENT': JSON.stringify(isClientSide),
-              ...defineIsDebug,
             },
           }
         },
