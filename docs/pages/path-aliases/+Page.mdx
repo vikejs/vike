@@ -1,28 +1,26 @@
 import { RepoLink, Link } from '@brillout/docpress'
 
-Instead of using relative import paths,
-which can be cumbersome,
-you can use path aliases:
+Instead of using relative import paths, which can be cumbersome, you can use path aliases. For example:
 
 ```ts
 import { Counter } from '../../../../components/Counter'// [!code --]
 import { Counter } from '#root/components/Counter'// [!code ++]
 ```
 
-Where `#root/` denotes your project's root directory.
+> We recommend following [the Node.js convention](https://nodejs.org/api/packages.html#subpath-imports:~:text=must%20always%20start%20with%20%23%20to%20ensure%20they%20are%20disambiguated%20from%20external%20package%20specifiers) to always prefix path aliases with the special character `#`.
 
-You may need to define your path aliases at up to three different places:
- - `vite.config.ts#resolve.alias` (for files processed by Vite)
- - `tsconfig.json#compilerOptions.paths` (for TypeScript)
- - `package.json#imports` (for Node.js files that aren't processed by Vite)
+If you use **JavaScript**, define your path aliases at:
+- <Link href="#vite-config-js">`vite.config.ts` > `resolve.alias`</Link>
 
-> Vite will soon directly support path aliases set over `tsconfig.json#compilerOptions.paths`, see [#1547 - Define path aliases only once](https://github.com/vikejs/vike/issues/1547#issuecomment-3085232187).
+If you use **TypeScript**, you must define your path aliases also at:
+- <Link href="#tsconfig-json">`tsconfig.json` > `compilerOptions.paths`</Link>
+  > You must define them twice — inside `vite.config.js` *and* `tsconfig.json`. (It's temporary: [Vite will soon support path aliases set in `tsconfig.json`](https://github.com/vikejs/vike/issues/1547#issuecomment-3085232187).)
 
-Example:
- - <RepoLink path='/examples/path-aliases' />
+If you use a custom server integration (**you don't use `vike-server`**), also define them at:
+- <Link href="#package-json">`package.json` > `imports`</Link>
 
 
-## Vite
+## `vite.config.js`
 
 ```ts
 // vite.config.ts
@@ -38,18 +36,20 @@ export default {
 } satisfies UserConfig
 ```
 
-> The Vite config `resolve.alias` only applies to files that are processed by Vite.
-> Note that some of your server files may not be processed by Vite,
-> see the [Node.js section below](#node-js).
-
-We recommend following the [Node.js convention](https://nodejs.org/api/packages.html#subpath-imports:~:text=must%20always%20start%20with%20%23%20to%20ensure%20they%20are%20disambiguated%20from%20external%20package%20specifiers) to prefix path aliases with the special character `#`.
-
 See also:
  - [Vite > `resolve.alias`](https://vitejs.dev/config/shared-options.html#resolve-alias)
- - <RepoLink path='/examples/path-aliases/vite.config.ts' />
+
+> The Vite config `resolve.alias` only applies to files that are processed by Vite.
+>
+> The following are processed by Vite:
+> - All client-side code.
+> - All <Link href="/config#files">`+` files</Link> loaded at runtime (client or server).
+> - Your server code if you use <Link href="/vike-server">`vike-server`</Link>.
+>
+> Config files, such as `vite.config.js` or `+config.js` aren't processed by Vite. See <Link href="#config-files" />.
 
 
-## TypeScript
+## `tsconfig.json`
 
 If you use TypeScript, then TypeScript needs to know about your path aliases.
 
@@ -67,12 +67,11 @@ If you use TypeScript, then TypeScript needs to know about your path aliases.
 
 See also:
  - [TypeScript > `tsconfig.json#compilerOptions.paths`](https://www.typescriptlang.org/tsconfig#paths)
- - <RepoLink path='/examples/path-aliases/tsconfig.json' />
 
 
-## Node.js
+## `package.json`
 
-If you don't use <Link href="/vike-server">`vike-server`</Link> then your server files aren't processed by Vite — they are directly executed by Node.js. Therefore, you must configure Node.js to resolve your path aliases:
+If you use a JavaScript server, with a <Link href="/server-integration#manual-integration">custom integration</Link> instead of using <Link href="/vike-server">`vike-server`</Link>, then also define your path aliases at:
 
 ```json
 // package.json
@@ -87,15 +86,21 @@ If you don't use <Link href="/vike-server">`vike-server`</Link> then your server
 }
 ```
 
-> See also:
->  - [NodeJS > Subpath imports](https://nodejs.org/api/packages.html#subpath-imports)
->  - <RepoLink path='/examples/path-aliases/package.json' />
+This tells Node.js how to resolve path aliases (Node.js doesn't know about `vite.config.js`).
 
-> Vite's `vite.config.js#resolve.alias` only applies to files that are processed by Vite.
+See also:
+ - [NodeJS > Subpath imports](https://nodejs.org/api/packages.html#subpath-imports)
+
+> If you use <Link href="/vike-server">`vike-server`</Link>, all your server code is transpiled by Vite. Defining path aliases at `vite.config.js` is enough because Vite already resolves all path aliases and Node.js doesn't see any path alias.
 >
-> The following files are processed by Vite:
-> - Browser files.
-> - Runtime <Link href="/config#files">`+` files</Link>. (Config-time `+` files aren't processed by Vite.)
-> - Server files, if you use <Link href="/vike-server">`vike-server`</Link>.
+> If you don't use `vike-server`, your server code isn't processed by [Vite](https://vite.dev) out of the box. Instead, Node.js directly executes your server code and, therefore, you must configure Node.js to resolve your path aliases. See also: [#562 - Transpile server code](https://github.com/vikejs/vike/issues/562).
 
-You can use Node.js's built-in support `package.json#imports` or, alternatively, you can use one of many npm packages such as [`module-alias`](https://github.com/ilearnio/module-alias). (Example of using `module-alias`: [/examples/path-aliases (@c914dad)](https://github.com/vikejs/vike/tree/c914dade5f0809ff330478c3531928055abdadef/examples/path-aliases).)
+> Alternatively, instead of using Node.js's built-in support over `package.json#imports`, you can use an npm package such as [`module-alias`](https://github.com/ilearnio/module-alias).
+
+
+## Config files
+
+
+To make path aliases work in config files, such as  `+config.js` and `vite.config.js`, define them at `tsconfig.json` or `package.json` (defining them in `vite.config.js` doesn't work for config files).
+
+> Config files are transpiled by [esbuild](https://esbuild.github.io) instead of Vite — esbuild supports path aliases defined over `tsconfig.json` and `package.json` (esbuild doesn't know about `vite.config.js`).
