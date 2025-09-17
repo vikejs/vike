@@ -338,7 +338,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       // We don't swallow 404 errors:
       //  - On the server-side, Vike swallows / doesn't show any 404 error log because it's expected that a user may go to some random non-existent URL. (We don't want to flood the app's error tracking with 404 logs.)
       //  - On the client-side, if the user navigates to a 404 then it means that the UI has a broken link. (It isn't expected that users can go to some random URL using the client-side router, as it would require, for example, the user to manually change the URL of a link by manually manipulating the DOM which highly unlikely.)
-      logError(err)
+      logErrorClient(err)
     } else {
       // We swallow throw redirect()/render() called by client-side hooks onBeforeRender()/data()/guard()
       // We handle the abort error down below.
@@ -374,7 +374,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
          - An infinite reloading page is a even worse UX than a blank page.
       redirectHard(urlOriginal)
       */
-      logError(err)
+      logErrorClient(err)
     }
 
     const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._globalContext._pageConfigs)
@@ -498,7 +498,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       if (!isErrorPage) {
         await handleError({ err })
       } else {
-        logError(err)
+        logErrorClient(err)
       }
     }
 
@@ -834,7 +834,7 @@ if (import.meta.env.DEV && import.meta.hot)
     }
   })
 
-function logError(err: unknown) {
+function logErrorClient(err: unknown) {
   if (
     isObject(err) &&
     // Set by vike-react
