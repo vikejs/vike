@@ -17,7 +17,6 @@ export default defineWorkspace([
       // **/*.test.ts => @brillout/test-e2e
       include: ['test/**/*.spec.ts'],
       name: 'e2e',
-      pool: 'forks',
       env,
     },
   },
