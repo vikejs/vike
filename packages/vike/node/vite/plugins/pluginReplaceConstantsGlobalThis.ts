@@ -120,15 +120,14 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
       resolveId: {
         filter: filterRolldown,
         handler(id) {
-          if (filterFunction(id)) {
-            return addVirtualFileIdPrefix(id)
-          }
+          assert(filterFunction(id))
+          return addVirtualFileIdPrefix(id)
         },
       },
       load: {
         filter: filterRolldown,
         handler(id, options) {
-          if (!filterFunction(id)) return
+          assert(filterFunction(id))
           id = removeVirtualFileIdPrefix(id)
 
           // Generate the virtual module content that sets globalThis values for server-side
