@@ -1,7 +1,7 @@
 export { pluginReplaceConstantsGlobalThis }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assert, isDebug, addVirtualFileIdPrefix, removeVirtualFileIdPrefix, escapeRegex } from '../utils.js'
+import { assert, isDebug, addVirtualFileIdPrefix, escapeRegex } from '../utils.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 const isDebugVal = isDebug()
 
@@ -14,9 +14,9 @@ declare global {
   var __VIKE__IS_VITE_LOADED: true | undefined
 }
 
-globalThis.__VIKE__IS_VITE_LOADED = true
 globalThis.__VIKE__IS_CLIENT = false
 globalThis.__VIKE__IS_DEBUG = isDebugVal
+globalThis.__VIKE__IS_VITE_LOADED = true
 
 const VIRTUAL_FILE_ID = 'virtual:vike:globalThis-constants'
 const filterRolldown = {
@@ -84,13 +84,12 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
         handler(id, options) {
           assert(filterFunction(id))
           assert(isViteServerSide_extraSafe(config, this.environment, options))
-          id = removeVirtualFileIdPrefix(id)
-
-          const lines: string[] = []
-          lines.push(`globalThis.__VIKE__IS_DEV = ${JSON.stringify(isDev)};`)
-          lines.push(`globalThis.__VIKE__IS_CLIENT = false;`)
-          lines.push(`globalThis.__VIKE__IS_DEBUG = ${JSON.stringify(isDebugVal)};`)
-          return lines.join('\n')
+          const code = [
+            `globalThis.__VIKE__IS_DEV = ${JSON.stringify(isDev)};`,
+            `globalThis.__VIKE__IS_CLIENT = false;`,
+            `globalThis.__VIKE__IS_DEBUG = ${JSON.stringify(isDebugVal)};`,
+          ].join('\n')
+          return code
         },
       },
     },
