@@ -2,7 +2,11 @@ export { pluginReplaceConstantsGlobalThis }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { assert, isDebug, addVirtualFileIdPrefix, escapeRegex } from '../utils.js'
-import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
+import {
+  isViteServerSide_applyToEnvironment,
+  isViteServerSide_configEnvironment,
+  isViteServerSide_extraSafe,
+} from '../shared/isViteServerSide.js'
 const isDebugVal = isDebug()
 
 declare global {
@@ -46,8 +50,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
       },
       configEnvironment: {
         handler(name, config) {
-          const consumer: 'server' | 'client' = config.consumer ?? (name === 'client' ? 'client' : 'server')
-          const isClientSide = consumer === 'client'
+          const isClientSide = !isViteServerSide_configEnvironment(name, config)
           const defineIsDebug = !isClientSide
             ? {}
             : {
@@ -69,7 +72,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
     {
       name: 'vike:pluginReplaceConstantsGlobalThis:virtual-file',
       applyToEnvironment(env) {
-        return env.config.consumer !== 'client'
+        return isViteServerSide_applyToEnvironment(env)
       },
       resolveId: {
         filter: filterRolldown,
