@@ -59,8 +59,10 @@ async function getCode(
   assert(isDev === !isBuild)
   let content = ''
 
-  // Ensure constants are loaded first
-  content += "import 'virtual:vike:constants';\n"
+  // Ensure constants are loaded first (server-side only)
+  if (!isForClientSide) {
+    content += "import 'virtual:vike:constants';\n"
+  }
 
   {
     const globRoots = getGlobRoots(config)

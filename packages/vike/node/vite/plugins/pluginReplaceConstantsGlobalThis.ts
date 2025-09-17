@@ -18,13 +18,16 @@ declare global {
   var __VIKE__IS_DEBUG: boolean | undefined
 }
 
-// === Virtual Module Approach (NEW)
-// This plugin now provides a virtual module 'virtual:vike:constants' that automatically sets globalThis values.
-// The virtual module is automatically loaded to ensure globalThis variables are set reliably in production,
-// even with ssr.external configurations.
+// === Virtual Module Approach (NEW - SERVER-SIDE ONLY)
+// This plugin now provides a virtual module 'virtual:vike:constants' that automatically sets globalThis values
+// on the server-side. The virtual module is automatically loaded to ensure globalThis variables are set reliably
+// in production, even with ssr.external configurations.
+//
+// Client-side continues to use Vite's define macros which work reliably.
+// Server-side uses the virtual module for ssr.external production environments.
 //
 // Benefits of virtual module approach:
-// 1. Works reliably in production with ssr.external (no undefined values)
+// 1. Works reliably in server-side production with ssr.external (no undefined values)
 // 2. Automatically sets globalThis variables without requiring code changes
 // 3. Ensures constants are available before any user code runs
 // 4. Maintains backward compatibility with existing globalThis usage
@@ -112,20 +115,20 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
             (this.environment?.name === 'client' ? 'client' : 'server')
           const isClientSide = consumer === 'client'
 
-          // Generate the virtual module content that sets globalThis values
+          // Only generate virtual module for server-side
+          // Client-side uses define macros which work reliably
+          if (isClientSide) {
+            return '// Client-side uses define macros - no virtual module needed'
+          }
+
+          // Generate the virtual module content that sets globalThis values for server-side
           const lines: string[] = []
-          lines.push('// Virtual module that ensures Vike constants are set on globalThis')
+          lines.push('// Virtual module that ensures Vike constants are set on globalThis (server-side only)')
           lines.push('// This module is automatically loaded to provide reliable constants in production')
           lines.push('')
           lines.push(`globalThis.__VIKE__IS_DEV = ${JSON.stringify(isDev ?? false)};`)
-          lines.push(`globalThis.__VIKE__IS_CLIENT = ${JSON.stringify(isClientSide)};`)
-
-          if (isClientSide) {
-            lines.push(`globalThis.__VIKE__IS_DEBUG = ${JSON.stringify(isDebug())};`)
-          } else {
-            // On server-side, debug is always undefined
-            lines.push(`globalThis.__VIKE__IS_DEBUG = undefined;`)
-          }
+          lines.push(`globalThis.__VIKE__IS_CLIENT = false;`) // Always false on server-side
+          lines.push(`globalThis.__VIKE__IS_DEBUG = undefined;`) // Always undefined on server-side
 
           lines.push('')
           lines.push('// Module loaded successfully - globalThis constants are now available')

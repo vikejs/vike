@@ -7,9 +7,6 @@ import { removeFoucBuster } from '../shared/removeFoucBuster.js'
 import { setVirtualFileExportsGlobalEntry } from '../shared/getGlobalContextClientInternalShared.js'
 // @ts-expect-error
 import * as virtualFileExportsGlobalEntry from 'virtual:vike:global-entry:client:client-routing'
-// Ensure constants are loaded
-// @ts-expect-error
-import 'virtual:vike:constants'
 
 assertSingleInstance_onClientEntryClientRouting(import.meta.env.PROD)
 
