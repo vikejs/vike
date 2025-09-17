@@ -13,6 +13,7 @@ function testHistoryPushState() {
     await page.click('a[href="/markdown"]')
     await page.click('a[href="/pushState"]')
     const timestamp2 = await getTimestamp()
+    expect(timestamp2 !== timestamp1).toBe(true)
     expect(timestamp2 > timestamp1).toBe(true)
 
     // Calling history.pushState() doesn't trigger a re-render, thus timestamp doesn't change

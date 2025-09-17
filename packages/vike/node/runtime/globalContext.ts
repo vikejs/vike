@@ -703,7 +703,8 @@ function isProdOptional(): boolean | null {
   const yes5 = globalObject.isProductionAccordingToUser === true
   // vite-plugin-vercel
   const yes6 = globalObject.isProductionAccordingToPhotonVercel === true
-  const yes: boolean = yes1 || yes2 || yes3 || yes4 || yes5 || yes6
+  const yes7 = globalThis.__VIKE__IS_DEV === false
+  const yes: boolean = yes1 || yes2 || yes3 || yes4 || yes5 || yes6 || yes7
 
   const no1 = !!globalObject.viteDevServer
   // Vike CLI & Vike API
@@ -714,9 +715,10 @@ function isProdOptional(): boolean | null {
   const no4 = globalObject.isProductionAccordingToUser === false
   // @cloudflare/vite-plugin
   const no5 = isNonRunnableDev()
-  const no: boolean = no1 || no2 || no3 || no4 || no5
+  const no6 = globalThis.__VIKE__IS_DEV === true
+  const no: boolean = no1 || no2 || no3 || no4 || no5 || no6
 
-  const debug = { yes1, yes2, yes3, yes4, yes5, yes6, no1, no2, no3, no4, no5 }
+  const debug = { yes1, yes2, yes3, yes4, yes5, yes6, yes7, no1, no2, no3, no4, no5, no6 }
   assert(typeof yes === 'boolean', debug)
   assert(typeof no === 'boolean', debug)
 

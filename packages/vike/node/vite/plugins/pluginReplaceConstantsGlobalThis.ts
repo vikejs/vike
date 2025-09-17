@@ -1,71 +1,92 @@
 export { pluginReplaceConstantsGlobalThis }
 
-import type { Plugin } from 'vite'
-import { assert, isDebug } from '../utils.js'
+import type { Plugin, ResolvedConfig } from 'vite'
+import { assert, isDebug, addVirtualFileIdPrefix, escapeRegex } from '../utils.js'
+import {
+  isViteServerSide_applyToEnvironment,
+  isViteServerSide_configEnvironment,
+  isViteServerSide_extraSafe,
+} from '../shared/isViteServerSide.js'
 
 declare global {
-  /** Like `import.meta.env.DEV` but works inside `node_modules/` (even if package is `ssr.external`). The value `undefined` is to be interpreted as `false`. */
-  var __VIKE__IS_DEV: boolean | undefined
-  /** Like `import.meta.env.SSR` but works inside `node_modules/` (even if package is `ssr.external`). The value `undefined` is to be interpreted as `false`. */
-  var __VIKE__IS_CLIENT: boolean | undefined
-  /**
-   * Whether a debug flag is enabled (either the global flag `DEBUG=vike` or a specific flag `DEBUG=vike:some-flag`).
-   *
-   * WARNING: must be used ONLY on the client-side. (The value is always `undefined` on the server-side.)
-   *
-   * In isomorhpic code, use `globalThis.__VIKE__IS_CLIENT` to make sure it's only used on the client-side.
-   */
-  var __VIKE__IS_DEBUG: boolean | undefined
+  /** Like `import.meta.env.DEV` but works for `node_modules/` packages with `ssr.external` */
+  var __VIKE__IS_DEV: boolean
+  /** Like `import.meta.env.SSR` but works for `node_modules/` packages with `ssr.external` */
+  var __VIKE__IS_CLIENT: boolean
+  var __VIKE__IS_DEBUG: boolean
 }
 
-// === Explanation: globalThis.__VIKE__IS_DEV
-// If client-side => always noExternal => globalThis.__VIKE__IS_DEV is set by the `define` config below.
-// If server-side:
-//   If ssr.noExternal => globalThis.__VIKE__IS_DEV is set by the `define` config below.
-//   If `ssr.external`:
-//     If not RunnableDevEnvironment (e.g. `@cloudflare/vite-plugin`) => always ssr.noExternal => globalThis.__VIKE__IS_DEV is set by the `define` config below.
-//     If RunnableDevEnvironment (the default setup):
-//       If dev/preview/pre-rendering => Vite is loaded, and server and Vite run inside the same process (because RunnableDevEnvironment) => globalThis.__VIKE__IS_DEV is set by the assignment below.
-//       If production => Vite isn't loaded => globalThis.__VIKE__IS_DEV is `undefined` (it's never set) => value `undefined` is to be interpreted as `false`.
-
-// === Explanation: globalThis.__VIKE__IS_CLIENT
-// If client-side => always noExternal => globalThis.__VIKE__IS_CLIENT is set to `true` by the `define` config below.
-// If server-side => globalThis.__VIKE__IS_CLIENT is either `false` or `undefined` (the value `undefined` is to be interpreted as `false`).
-
+const isDebugVal = isDebug()
 globalThis.__VIKE__IS_CLIENT = false
+globalThis.__VIKE__IS_DEBUG = isDebugVal
+
+const VIRTUAL_FILE_ID = 'virtual:vike:server:globalThis-constants'
+const filterRolldown = {
+  id: {
+    include: new RegExp(escapeRegex(VIRTUAL_FILE_ID)),
+  },
+}
+const filterFunction = (id: string) => id === VIRTUAL_FILE_ID || id === addVirtualFileIdPrefix(VIRTUAL_FILE_ID)
 
 function pluginReplaceConstantsGlobalThis(): Plugin[] {
+  let config: ResolvedConfig
+  let isDev: boolean
   return [
     {
-      name: 'vike:pluginReplaceConstantsGlobalThis',
+      name: 'vike:pluginReplaceConstantsGlobalThis:define',
       config: {
         handler(config) {
-          const isDev = config._isDev
-          assert(typeof isDev === 'boolean')
+          assert(typeof config._isDev === 'boolean')
+          isDev = config._isDev
           globalThis.__VIKE__IS_DEV = isDev
           return {
             define: {
               'globalThis.__VIKE__IS_DEV': JSON.stringify(isDev),
+              'globalThis.__VIKE__IS_DEBUG': JSON.stringify(isDebugVal),
             },
           }
         },
       },
       configEnvironment: {
         handler(name, config) {
-          const consumer: 'server' | 'client' = config.consumer ?? (name === 'client' ? 'client' : 'server')
-          const isClientSide = consumer === 'client'
-          const defineIsDebug = !isClientSide
-            ? {}
-            : {
-                // We purposely only define it on the client-side, because we cannot know the value in server-side ssr.external production.
-                'globalThis.__VIKE__IS_DEBUG': JSON.stringify(isDebug()),
-              }
+          const isClientSide = !isViteServerSide_configEnvironment(name, config)
           return {
             define: {
               'globalThis.__VIKE__IS_CLIENT': JSON.stringify(isClientSide),
-              ...defineIsDebug,
             },
           }
+        },
+      },
+      configResolved(config_) {
+        config = config_
+      },
+    },
+    {
+      name: 'vike:pluginReplaceConstantsGlobalThis:virtual-file',
+      // We only need the virtual file for the server-side (for node_modules/ packages with ssr.external) — the `define` values above always apply to the client-side.
+      applyToEnvironment(env) {
+        return isViteServerSide_applyToEnvironment(env)
+      },
+      resolveId: {
+        filter: filterRolldown,
+        handler(id) {
+          assert(filterFunction(id))
+          assert(id === VIRTUAL_FILE_ID)
+          return addVirtualFileIdPrefix(id)
+        },
+      },
+      load: {
+        filter: filterRolldown,
+        handler(id, options) {
+          assert(filterFunction(id))
+          assert(isViteServerSide_extraSafe(config, this.environment, options))
+          assert(typeof isDev === 'boolean')
+          const code = [
+            `globalThis.__VIKE__IS_DEV = ${JSON.stringify(isDev)};`,
+            `globalThis.__VIKE__IS_CLIENT = false;`,
+            `globalThis.__VIKE__IS_DEBUG = ${JSON.stringify(isDebugVal)};`,
+          ].join('\n')
+          return code
         },
       },
     },
