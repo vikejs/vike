@@ -7,7 +7,6 @@ import {
   isViteServerSide_configEnvironment,
   isViteServerSide_extraSafe,
 } from '../shared/isViteServerSide.js'
-const isDebugVal = isDebug()
 
 declare global {
   /** Like `import.meta.env.DEV` but works inside `node_modules/` (even if package is `ssr.external`). */
@@ -18,6 +17,7 @@ declare global {
   var __VIKE__IS_VITE_LOADED: true | undefined
 }
 
+const isDebugVal = isDebug()
 globalThis.__VIKE__IS_CLIENT = false
 globalThis.__VIKE__IS_DEBUG = isDebugVal
 globalThis.__VIKE__IS_VITE_LOADED = true
