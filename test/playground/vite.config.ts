@@ -26,11 +26,6 @@ export default {
 
 // TEST: returning a promise
 async function testPlugin(): Promise<PluginOption> {
-  if (process.env.VITEST) {
-    // Skip this for build-twice.spec.ts
-    return
-  }
-
   let vike: Vike
   await sleep(10)
   return {
