@@ -1,7 +1,14 @@
 export { pluginReplaceConstantsGlobalThis }
 
 import type { Plugin } from 'vite'
-import { assert, isDebug, addVirtualFileIdPrefix, isVirtualFileId, removeVirtualFileIdPrefix, escapeRegex } from '../utils.js'
+import {
+  assert,
+  isDebug,
+  addVirtualFileIdPrefix,
+  isVirtualFileId,
+  removeVirtualFileIdPrefix,
+  escapeRegex,
+} from '../utils.js'
 
 declare global {
   /** Like `import.meta.env.DEV` but works inside `node_modules/` (even if package is `ssr.external`). The value `undefined` is to be interpreted as `false`. */
@@ -19,7 +26,7 @@ declare global {
 }
 
 // === Virtual Module Approach (NEW - SERVER-SIDE ONLY)
-// This plugin now provides a virtual module 'virtual:vike:constants' that automatically sets globalThis values
+// This plugin now provides a virtual module 'virtual:vike:globalThis-constants' that automatically sets globalThis values
 // on the server-side. The virtual module is automatically loaded to ensure globalThis variables are set reliably
 // in production, even with ssr.external configurations.
 //
@@ -53,7 +60,7 @@ declare global {
 globalThis.__VIKE__IS_CLIENT = false
 
 // Virtual module ID for constants
-const VIRTUAL_MODULE_ID = 'virtual:vike:constants'
+const VIRTUAL_MODULE_ID = 'virtual:vike:globalThis-constants'
 
 const filterRolldown = {
   id: {
@@ -111,8 +118,8 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
           if (!filterFunction(id)) return
           id = removeVirtualFileIdPrefix(id)
 
-          const consumer: 'server' | 'client' = this.environment?.config?.consumer ??
-            (this.environment?.name === 'client' ? 'client' : 'server')
+          const consumer: 'server' | 'client' =
+            this.environment?.config?.consumer ?? (this.environment?.name === 'client' ? 'client' : 'server')
           const isClientSide = consumer === 'client'
 
           // Only generate virtual module for server-side

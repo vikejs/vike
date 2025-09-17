@@ -31,7 +31,7 @@ function getCode(
 
   // Ensure constants are loaded first (server-side only)
   if (!isForClientSide) {
-    importStatements.push("import 'virtual:vike:constants';")
+    importStatements.push("import 'virtual:vike:globalThis-constants';")
   }
 
   lines.push('export const pageConfigsSerialized = [')

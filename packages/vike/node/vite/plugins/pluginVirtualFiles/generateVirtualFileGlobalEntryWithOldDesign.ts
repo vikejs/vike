@@ -61,7 +61,7 @@ async function getCode(
 
   // Ensure constants are loaded first (server-side only)
   if (!isForClientSide) {
-    content += "import 'virtual:vike:constants';\n"
+    content += "import 'virtual:vike:globalThis-constants';\n"
   }
 
   {
