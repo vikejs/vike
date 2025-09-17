@@ -80,12 +80,12 @@ function isViteServerSide_extraSafe(
 type PartialEnvironment = Parameters<NonNullable<Plugin['applyToEnvironment']>>[0]
 function isViteServerSide_applyToEnvironment(env: PartialEnvironment) {
   const { consumer } = env.config
-  return isViteServerSide_envApi(consumer)
+  return isViteServerSide_consumer(consumer)
 }
 function isViteServerSide_configEnvironment(name: string, config: EnvironmentOptions) {
   const consumer = config.consumer ?? (name === 'client' ? 'client' : 'server')
-  return isViteServerSide_envApi(consumer)
+  return isViteServerSide_consumer(consumer)
 }
-function isViteServerSide_envApi(consumer: string) {
+function isViteServerSide_consumer(consumer: string) {
   return consumer !== 'client'
 }
