@@ -3,6 +3,8 @@ export { tryExecOnErrorHook }
 
 import pc from '@brillout/picocolors'
 import { isCallable, isObject, getGlobalObject } from './utils.js'
+import { getGlobalContextServerInternalOptional } from './globalContext.js'
+import { getHookFromPageConfigGlobalCumulative } from '../../shared/hooks/getHook.js'
 
 // Track which errors have already had their onError hook executed
 const globalObject = getGlobalObject('runtime/logErrorServer.ts', {
@@ -42,7 +44,6 @@ function tryExecOnErrorHook(err: unknown) {
     globalObject.onErrorHookExecuted.add(err)
 
     // Check if global context is available synchronously
-    const { getGlobalContextServerInternalOptional } = require('./globalContext.js')
     const globalContextResult = getGlobalContextServerInternalOptional()
 
     if (!globalContextResult) {
@@ -52,25 +53,25 @@ function tryExecOnErrorHook(err: unknown) {
 
     const { globalContext } = globalContextResult
 
-    // Execute global onError hooks
-    const onErrorHooks = globalContext.config.onError
-    if (!onErrorHooks || onErrorHooks.length === 0) return
+    // Get global onError hooks using the proper hook system
+    const onErrorHooks = getHookFromPageConfigGlobalCumulative(globalContext._pageConfigGlobal, 'onError')
+
+    if (onErrorHooks.length === 0) return
 
     // Create a minimal page context for the global onError hooks
     const pageContext = {
+      _isOriginalObject: true as const,
+      isPageContext: true as const,
+      _globalContext: globalContext,
       errorWhileRendering: err as unknown as Error,
       urlOriginal: '/_error', // Dummy URL since this is a global hook
       headers: null,
-      // Add other minimal properties that might be expected
-      _globalContext: globalContext,
     }
 
     // Execute all onError hooks (cumulative)
-    for (const onErrorHook of onErrorHooks) {
+    for (const hook of onErrorHooks) {
       try {
-        if (typeof onErrorHook === 'function') {
-          onErrorHook(pageContext)
-        }
+        hook.hookFn(pageContext)
       } catch (hookErr) {
         // If an individual onError hook throws, continue with the next one
         // We don't want one failing hook to prevent others from running
