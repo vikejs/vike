@@ -133,7 +133,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
 
           // Generate the virtual module content that sets globalThis values for server-side
           const lines: string[] = []
-          lines.push(`globalThis.__VIKE__IS_DEV = ${JSON.stringify(isDev ?? false)};`)
+          lines.push(`globalThis.__VIKE__IS_DEV = ${JSON.stringify(isDev)};`)
           lines.push(`globalThis.__VIKE__IS_CLIENT = false;`) // Always false on server-side
           lines.push(`globalThis.__VIKE__IS_DEBUG = ${JSON.stringify(isDebug())};`) // Always undefined on server-side
           return lines.join('\n')
