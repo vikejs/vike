@@ -81,8 +81,8 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
       name: 'vike:pluginReplaceConstantsGlobalThis:define',
       config: {
         handler(config) {
+          assert(typeof config._isDev === 'boolean')
           isDev = config._isDev
-          assert(typeof isDev === 'boolean')
           globalThis.__VIKE__IS_DEV = isDev
           return {
             define: {
