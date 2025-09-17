@@ -65,6 +65,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
     },
     {
       name: 'vike:pluginReplaceConstantsGlobalThis:virtual-file',
+      // We only need the virtual file for server-side node_modules/ packages with ssr.external — the `define` above always apply to the client-side.
       applyToEnvironment(env) {
         return isViteServerSide_applyToEnvironment(env)
       },
