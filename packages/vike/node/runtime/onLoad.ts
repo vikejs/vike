@@ -49,5 +49,5 @@ function assertGlobalThis() {
           // Cannot be `undefined` in production (since virtual:vike:globalThis-constants is loaded early)
           globalThis.__VIKE__IS_VITE_LOADED),
     )
-  }, 0)
+  }, 1000)
 }

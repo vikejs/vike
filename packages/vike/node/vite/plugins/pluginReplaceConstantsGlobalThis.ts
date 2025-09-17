@@ -1,13 +1,8 @@
 export { pluginReplaceConstantsGlobalThis }
 
-import type { Plugin } from 'vite'
-import {
-  assert,
-  isDebug,
-  addVirtualFileIdPrefix,
-  removeVirtualFileIdPrefix,
-  escapeRegex,
-} from '../utils.js'
+import type { Plugin, ResolvedConfig } from 'vite'
+import { assert, isDebug, addVirtualFileIdPrefix, removeVirtualFileIdPrefix, escapeRegex } from '../utils.js'
+import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 const isDebugVal = isDebug()
 
 declare global {
@@ -32,6 +27,7 @@ const filterRolldown = {
 const filterFunction = (id: string) => id === VIRTUAL_FILE_ID || id === addVirtualFileIdPrefix(VIRTUAL_FILE_ID)
 
 function pluginReplaceConstantsGlobalThis(): Plugin[] {
+  let config: ResolvedConfig
   let isDev: boolean
   return [
     {
@@ -66,6 +62,9 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
           }
         },
       },
+      configResolved(config_) {
+        config = config_
+      },
     },
     {
       name: 'vike:pluginReplaceConstantsGlobalThis:virtual-file',
@@ -84,6 +83,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
         filter: filterRolldown,
         handler(id, options) {
           assert(filterFunction(id))
+          assert(isViteServerSide_extraSafe(config, this.environment, options))
           id = removeVirtualFileIdPrefix(id)
 
           const lines: string[] = []
