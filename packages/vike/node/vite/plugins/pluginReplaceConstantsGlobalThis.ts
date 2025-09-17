@@ -62,8 +62,6 @@ declare global {
 // If client-side => always noExternal => globalThis.__VIKE__IS_CLIENT is set to `true` by the `define` config below.
 // If server-side => globalThis.__VIKE__IS_CLIENT is either `false` or `undefined` (the value `undefined` is to be interpreted as `false`).
 
-globalThis.__VIKE__IS_CLIENT = false
-
 // Virtual module ID for constants
 const VIRTUAL_MODULE_ID = 'virtual:vike:globalThis-constants'
 
@@ -77,14 +75,12 @@ const filterFunction = (id: string) => id === VIRTUAL_MODULE_ID || id === addVir
 function pluginReplaceConstantsGlobalThis(): Plugin[] {
   let isDev: boolean
   return [
-    // Plugin 1: Define macros (works for all environments)
     {
       name: 'vike:pluginReplaceConstantsGlobalThis:define',
       config: {
         handler(config) {
           assert(typeof config._isDev === 'boolean')
           isDev = config._isDev
-          globalThis.__VIKE__IS_DEV = isDev
           return {
             define: {
               'globalThis.__VIKE__IS_DEV': JSON.stringify(isDev),
@@ -111,9 +107,8 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
         },
       },
     },
-    // Plugin 2: Virtual module (server-side only)
     {
-      name: 'vike:pluginReplaceConstantsGlobalThis:virtual',
+      name: 'vike:pluginReplaceConstantsGlobalThis:virtual-file',
       applyToEnvironment(env) {
         return env.config.consumer === 'server'
       },
@@ -131,11 +126,10 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
           assert(filterFunction(id))
           id = removeVirtualFileIdPrefix(id)
 
-          // Generate the virtual module content that sets globalThis values for server-side
           const lines: string[] = []
           lines.push(`globalThis.__VIKE__IS_DEV = ${JSON.stringify(isDev)};`)
-          lines.push(`globalThis.__VIKE__IS_CLIENT = false;`) // Always false on server-side
-          lines.push(`globalThis.__VIKE__IS_DEBUG = ${JSON.stringify(isDebug())};`) // Always undefined on server-side
+          lines.push(`globalThis.__VIKE__IS_CLIENT = false;`)
+          lines.push(`globalThis.__VIKE__IS_DEBUG = ${JSON.stringify(isDebug())};`)
           return lines.join('\n')
         },
       },
