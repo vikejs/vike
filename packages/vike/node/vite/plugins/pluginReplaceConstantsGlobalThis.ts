@@ -133,16 +133,9 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
 
           // Generate the virtual module content that sets globalThis values for server-side
           const lines: string[] = []
-          lines.push('// Virtual module that ensures Vike constants are set on globalThis (server-side only)')
-          lines.push('// This module is automatically loaded to provide reliable constants in production')
-          lines.push('')
           lines.push(`globalThis.__VIKE__IS_DEV = ${JSON.stringify(isDev ?? false)};`)
           lines.push(`globalThis.__VIKE__IS_CLIENT = false;`) // Always false on server-side
-          lines.push(`globalThis.__VIKE__IS_DEBUG = undefined;`) // Always undefined on server-side
-
-          lines.push('')
-          lines.push('// Module loaded successfully - globalThis constants are now available')
-
+          lines.push(`globalThis.__VIKE__IS_DEBUG = ${JSON.stringify(isDebug())};`) // Always undefined on server-side
           return lines.join('\n')
         },
       },
