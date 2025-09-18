@@ -121,7 +121,12 @@ function getHookTimeoutGlobal(hookName: HookNameOld) {
   const hookTimeout = getHookTimeoutDefault(hookName)
   return hookTimeout
 }
-function getHook<HookArg = HookArgDefault>(hookFn: unknown, hookName: HookNameOld, hookFilePath: string, hookTimeout: HookTimeout): Hook<HookArg> {
+function getHook<HookArg = HookArgDefault>(
+  hookFn: unknown,
+  hookName: HookNameOld,
+  hookFilePath: string,
+  hookTimeout: HookTimeout,
+): Hook<HookArg> {
   assert(hookFilePath)
   assertHookFn<HookArg>(hookFn, { hookName, hookFilePath })
   const hook = { hookFn, hookName, hookFilePath, hookTimeout }
