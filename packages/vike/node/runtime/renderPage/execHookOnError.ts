@@ -10,21 +10,17 @@ const globalObject = getGlobalObject('renderPage/execHookOnError.ts', {
 
 function execHookOnError(err: unknown) {
   if (isObject(err)) {
-    // Track seen errors but don't skip execution
+    if (globalObject.seen.has(err)) return
     globalObject.seen.add(err)
   }
 
   const globalContext = getGlobalContextServerInternalOptional()
   if (!globalContext) return
 
-  const hooks = getHookFromPageConfigGlobalCumulative<Error>(globalContext._pageConfigGlobal, 'onError')
-
-  // Convert unknown error to Error object as expected by the hook
-  const error = err instanceof Error ? err : new Error(String(err))
-
+  const hooks = getHookFromPageConfigGlobalCumulative<unknown>(globalContext._pageConfigGlobal, 'onError')
   for (const hook of hooks) {
     try {
-      hook.hookFn(error)
+      hook.hookFn(err)
     } catch (hookErr) {
       console.error(hookErr)
     }
