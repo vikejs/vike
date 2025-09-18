@@ -16,7 +16,7 @@ type HeadersResponse =
 ```
 </ConfigSpec>
 
-You can modify the HTTP response headers by using `+headersResponse` and/or `pageContext.headersResponse`.
+You can modify the HTTP response headers by using `+headersResponse` or `pageContext.headersResponse`.
 
 <Warning>Both `+headersResponse` and `pageContext.headersResponse` are beta features: expect breaking changes in any minor version update. See [#2554 - Stabilize `+headersResponse` and `pageContext.headersResponse`](https://github.com/vikejs/vike/issues/2554).</Warning>
 
@@ -34,7 +34,7 @@ export default {
 } satisfies Config
 ```
 
-You can add headers dynamically:
+To add headers dynamically:
 
 ```ts
 // pages/+headersResponse.ts
@@ -48,18 +48,24 @@ export async function headersResponse(pageContext: PageContextServer) {
 }
 ```
 
-You can modify and remove headers:
+Alternatively, you can use `pageContext.headersResponse` to dynamically add or modify headers:
 
 ```ts
-// Dynamically adding/modifying header
-pageContext.headersResponse.set('Set-Cookie', 'sessionId=abc123')
-// Dynamically removing header
-pageContext.headersResponse.delete('X-Powered-By')
+// pages/+onBeforeRenderHtml.ts
+
+import type { PageContextServer } from 'vike/types'
+
+export function onBeforeRenderHtml(pageContext: PageContextServer) {
+  // Dynamically adding/modifying header
+  pageContext.headersResponse.set('Set-Cookie', 'sessionId=abc123')
+  // Dynamically removing header
+  pageContext.headersResponse.delete('X-Powered-By')
+}
 ```
 
-> `pageContext.headersResponse` is a [standard `Headers` object](https://developer.mozilla.org/en-US/docs/Web/API/Headers).
-
 > You can access `pageContext` in any Vike hook and UI component — see <Link href="/pageContext" />.
+
+> `pageContext.headersResponse` is a [standard `Headers` object](https://developer.mozilla.org/en-US/docs/Web/API/Headers).
 
 The final HTTP response headers sent to the client are available at `pageContext.httpResponse.headers`.
 
