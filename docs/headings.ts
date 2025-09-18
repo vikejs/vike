@@ -643,8 +643,8 @@ const headings = [
   },
   {
     level: 2,
-    title: '`+server`',
-    url: '/server',
+    title: '`+photon`',
+    url: '/photon',
   },
   {
     level: 2,
@@ -997,12 +997,6 @@ function extensions() {
       {
         title: '`vike-solid`',
         url: '/vike-solid',
-      },
-      {
-        title: '`vike-server`',
-        url: '/vike-server',
-        sectionTitles: ['HTTPS'],
-        category: 'Overview',
       },
       {
         title: '`vike-photon`',
@@ -1496,6 +1490,16 @@ function deprecated() {
       {
         title: '`_default.page.route.js`',
         url: '/_default.page.route.js',
+      },
+      {
+        title: '`+server.js`',
+        url: '/server',
+      },
+      {
+        title: '`vike-server`',
+        url: '/vike-server',
+        sectionTitles: ['HTTPS'],
+        category: 'Overview',
       },
     ] as const
   ).map((h) => ({ ...h, category: 'Deprecated' as const })) satisfies HeadingDetachedDefinition[]

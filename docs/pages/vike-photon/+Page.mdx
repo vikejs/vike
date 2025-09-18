@@ -351,9 +351,19 @@ If HMR isn't what you want (for example if you modify the database connection) y
 
 In production, `vike-photon` compresses all Vike responses.
 
-<NoteWithoutIcon>
-If you need an option to disable this behavior, please open a <a href={githubDiscussions}>GitHub Discussion</a>.
-</NoteWithoutIcon>
+You can disable it:
+
+```ts
+// Manually importing Vike middlewares to access their options
+import { getMiddlewares } from "vike-photon/universal-middlewares";// [!code ++]
+
+apply(
+  app,
+  getMiddlewares({// [!code ++]
+    compress: false// [!code ++]
+  }),// [!code ++]
+);
+```
 
 
 ## HTTPS
