@@ -2,8 +2,12 @@ export { logErrorServer }
 
 import pc from '@brillout/picocolors'
 import { isCallable, isObject } from './utils.js'
+import { execHookOnError } from './renderPage/execHookOnError.js'
 
 function logErrorServer(err: unknown) {
+  execHookOnError(err)
+
+  // TODO https://gist.github.com/brillout/066293a687ab7cf695e62ad867bc6a9c
   if (
     isObject(err) &&
     // Set by react-streaming
@@ -14,7 +18,7 @@ function logErrorServer(err: unknown) {
   }
 
   // We ensure we print a string; Cloudflare Workers doesn't seem to properly stringify `Error` objects.
-  // - TO-DO/eventuually: is that still true? Let's eventually remove it and see if it crashes Cloudflare.
+  // - TO-DO/eventually: is that still true? Let's eventually remove it and see if it crashes Cloudflare.
   const errStr = isObject(err) && 'stack' in err ? String(err.stack) : String(err)
 
   console.error(pc.red(errStr))

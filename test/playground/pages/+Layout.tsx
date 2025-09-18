@@ -8,6 +8,10 @@ import type { GlobalContextClient } from 'vike/types'
 import { someFnClient, someFnServer } from './someFn'
 
 function Layout({ children }: { children: React.ReactNode }) {
+  /*
+  if (import.meta.env.SSR) throw new Error('Some Failure')
+  //*/
+
   const pageContext = usePageContext()
   const globalContext = pageContext.globalContext
 
