@@ -17,7 +17,7 @@ function logErrorServer(err: unknown) {
   }
 
   // We ensure we print a string; Cloudflare Workers doesn't seem to properly stringify `Error` objects.
-  // - TO-DO/eventuually: is that still true? Let's eventually remove it and see if it crashes Cloudflare.
+  // - TO-DO/eventually: is that still true? Let's eventually remove it and see if it crashes Cloudflare.
   const errStr = isObject(err) && 'stack' in err ? String(err.stack) : String(err)
 
   console.error(pc.red(errStr))

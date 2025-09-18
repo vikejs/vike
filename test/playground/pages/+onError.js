@@ -2,5 +2,5 @@
 export { onError }
 
 function onError(error) {
-  console.error('onError hook:', error.message)
+  console.error('+onError', error)
 }
