@@ -1495,10 +1495,6 @@ function deprecated() {
         title: '`+server.js`',
         url: '/server',
       },
-      {
-        title: '`vike-server`',
-        url: '/vike-server',
-      },
     ] as const
   ).map((h) => ({ ...h, category: 'Deprecated' as const })) satisfies HeadingDetachedDefinition[]
 }
