@@ -17,8 +17,8 @@ function execHookOnError(err: unknown) {
   const globalContext = getGlobalContextServerInternalOptional()
   if (!globalContext) return
 
-  const onErrorHooks = getHookFromPageConfigGlobalCumulative<unknown>(globalContext._pageConfigGlobal, 'onError')
-  for (const hook of onErrorHooks) {
+  const hooks = getHookFromPageConfigGlobalCumulative<unknown>(globalContext._pageConfigGlobal, 'onError')
+  for (const hook of hooks) {
     try {
       hook.hookFn(err)
     } catch (hookErr) {
