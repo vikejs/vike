@@ -1004,6 +1004,12 @@ function extensions() {
         sectionTitles: ['HTTPS'],
         category: 'Overview',
       },
+      {
+        title: '`vike-photon`',
+        url: '/vike-photon',
+        sectionTitles: ['HTTPS'],
+        category: 'Overview',
+      },
     ] as const
   ).map((h) => ({ ...h, category: 'Extensions' as const })) satisfies HeadingDetachedDefinition[]
 }
