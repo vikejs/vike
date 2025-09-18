@@ -19,6 +19,9 @@ This page contains the entire documentation for `vike-photon`.
 
 > If you want more control over server integration, see <Link href="/server-integration#custom-integration" />.
 
+<Warning>
+  Coming from `vike-server`? Follow the documentation to <Link href="/migration/vike-server" />
+</Warning>
 
 ## Add `vike-photon` to an existing Vike app
 
@@ -32,8 +35,9 @@ import vikePhoton from 'vike-photon/config'// [!code ++]
 
 export const config = {
   extends: [vikePhoton],// [!code ++]
-  // Points to your server entry// [!code ++]
+  // (optional) override the default server
   photon: {// [!code ++]
+    // Points to your server entry// [!code ++]
     server: 'server/index.ts'// [!code ++]
   }// [!code ++]
 } satisfies Config
@@ -51,7 +55,7 @@ Update your production `script` in `package.json`:
 }
 ```
 
-Create (or update) your server entry:
+If you chose to override the default server, create (or update) your server entry:
 
 <Tabs>
   <TabList>
@@ -197,12 +201,10 @@ Note that:
     In production run `$ NODE_ENV=production node ./dist/server/index.mjs` (or Bun/Deno).
   </TabPanel>
   <TabPanel>
-    TODO
-    <Link href="/vercel" />
+    See <Link href="/vercel" />
   </TabPanel>
   <TabPanel>
-    TODO
-    <Link href="/cloudflare" />
+    See <Link href="/cloudflare" />
   </TabPanel>
 </Tabs>
 

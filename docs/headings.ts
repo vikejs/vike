@@ -1495,12 +1495,6 @@ function deprecated() {
         title: '`+server.js`',
         url: '/server',
       },
-      {
-        title: '`vike-server`',
-        url: '/vike-server',
-        sectionTitles: ['HTTPS'],
-        category: 'Overview',
-      },
     ] as const
   ).map((h) => ({ ...h, category: 'Deprecated' as const })) satisfies HeadingDetachedDefinition[]
 }
@@ -1548,6 +1542,10 @@ function migrations() {
       {
         title: 'Migrate `vike-cloudflare`',
         url: '/migration/vike-cloudflare',
+      },
+      {
+        title: 'Migrate from `vike-server` to `vike-photon`',
+        url: '/migration/vike-server',
       },
     ] as const
   ).map((h) => ({ ...h, category: 'Migration' as const })) satisfies HeadingDetachedDefinition[]
