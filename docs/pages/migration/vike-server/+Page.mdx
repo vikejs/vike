@@ -1,0 +1,261 @@
+import { Link } from '@brillout/docpress'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+import '../../../components/tabs.css'
+
+Make sure to upgrade `vike` to version `>=0.4.239`.
+
+
+### Update dependencies
+
+<Tabs>
+  <TabList>
+    <Tab>npm</Tab>
+    <Tab>pnpm</Tab>
+    <Tab>yarn</Tab>
+  </TabList>
+  <TabPanel>
+    ```shell
+    npm uninstall vike-server
+    npm i vike-photon
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    pnpm remove vike-server
+    pnpm add vike-photon
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    yarn remove vike-server
+    yarn add vike-photon
+    ```
+  </TabPanel>
+</Tabs>
+
+### Update scripts
+```json
+// package.json
+
+{
+  "scripts": {
+    "dev": "vike dev",
+    "build": "vike build",
+    "prod": "node ./dist/server/index.mjs"// [!code ++]
+  }
+}
+```
+
+### Update +config
+
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+import vikeServer from 'vike-server/config';// [!code --]
+import vikePhoton from 'vike-photon/config';// [!code ++]
+
+export default {
+  extends: [
+    // ...
+    vikeServer,// [!code --]
+    vikePhoton,// [!code ++]
+  ],
+  server: 'server/index.ts',// [!code --]
+  photon: {// [!code ++]
+    server: 'server/index.ts',// [!code ++]
+  }// [!code ++]
+} satisfies Config
+```
+
+### Update the server entry
+
+<Tabs>
+  <TabList>
+    <Tab>Hono</Tab>
+    <Tab>Express.js</Tab>
+    <Tab>Fastify</Tab>
+    <Tab>H3</Tab>
+    <Tab>Elysia</Tab>
+  </TabList>
+  <TabPanel>
+    {/* Hono */}
+    <Tabs>
+      <TabList>
+        <Tab>npm</Tab>
+        <Tab>pnpm</Tab>
+        <Tab>yarn</Tab>
+      </TabList>
+      <TabPanel>
+        ```shell
+        npm i @photonjs/hono
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        pnpm add @photonjs/hono
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        yarn add @photonjs/hono
+        ```
+      </TabPanel>
+    </Tabs>
+
+    ```ts
+    // server/index.ts
+
+    import { Hono } from 'hono'
+    import { apply } from 'vike-server/hono'// [!code --]
+    import { serve } from 'vike-server/hono/serve'// [!code --]
+    import { apply, serve } from '@photonjs/hono'// [!code ++]
+
+    // ...
+    ```
+  </TabPanel>
+  <TabPanel>
+    {/* Express.js */}
+    <Tabs>
+      <TabList>
+        <Tab>npm</Tab>
+        <Tab>pnpm</Tab>
+        <Tab>yarn</Tab>
+      </TabList>
+      <TabPanel>
+        ```shell
+        npm i @photonjs/express
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        pnpm add @photonjs/express
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        yarn add @photonjs/express
+        ```
+      </TabPanel>
+    </Tabs>
+
+    ```ts
+    // server/index.ts
+
+    import express from 'express'
+    import { apply } from 'vike-server/express'// [!code --]
+    import { serve } from 'vike-server/express/serve'// [!code --]
+    import { apply, serve } from '@photonjs/express'// [!code ++]
+
+    // ...
+    ```
+  </TabPanel>
+  <TabPanel>
+    {/* Fastify */}
+    <Tabs>
+      <TabList>
+        <Tab>npm</Tab>
+        <Tab>pnpm</Tab>
+        <Tab>yarn</Tab>
+      </TabList>
+      <TabPanel>
+        ```shell
+        npm i @photonjs/fastify
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        pnpm add @photonjs/fastify
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        yarn add @photonjs/fastify
+        ```
+      </TabPanel>
+    </Tabs>
+
+    ```ts
+    // server/index.ts
+
+    import fastify from 'fastify'
+    import { apply } from 'vike-server/fastify'// [!code --]
+    import { serve } from 'vike-server/fastify/serve'// [!code --]
+    import { apply, serve } from '@photonjs/fastify'// [!code ++]
+
+    // ...
+    ```
+  </TabPanel>
+  <TabPanel>
+    {/* H3 */}
+    <Tabs>
+      <TabList>
+        <Tab>npm</Tab>
+        <Tab>pnpm</Tab>
+        <Tab>yarn</Tab>
+      </TabList>
+      <TabPanel>
+        ```shell
+        npm i @photonjs/h3
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        pnpm add @photonjs/h3
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        yarn add @photonjs/h3
+        ```
+      </TabPanel>
+    </Tabs>
+
+    ```ts
+    // server/index.ts
+
+    import { createApp } from 'h3'
+    import { apply } from 'vike-server/h3'// [!code --]
+    import { serve } from 'vike-server/h3/serve'// [!code --]
+    import { apply, serve } from '@photonjs/h3'// [!code ++]
+
+    // ...
+    ```
+  </TabPanel>
+  <TabPanel>
+    {/* Elysia */}
+    <Tabs>
+      <TabList>
+        <Tab>npm</Tab>
+        <Tab>pnpm</Tab>
+        <Tab>yarn</Tab>
+      </TabList>
+      <TabPanel>
+        ```shell
+        npm i @photonjs/elysia
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        pnpm add @photonjs/elysia
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        yarn add @photonjs/elysia
+        ```
+      </TabPanel>
+    </Tabs>
+
+    ```ts
+    // server/index.ts
+
+    import { Elysia } from 'elysia'
+    import { apply } from 'vike-server/elysia'// [!code --]
+    import { serve } from 'vike-server/elysia/serve'// [!code --]
+    import { apply, serve } from '@photonjs/elysia'// [!code ++]
+
+    // ...
+    ```
+  </TabPanel>
+</Tabs>
