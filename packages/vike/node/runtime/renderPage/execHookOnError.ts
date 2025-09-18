@@ -8,7 +8,7 @@ const globalObject = getGlobalObject('renderPage/execHookOnError.ts', {
   seen: new WeakSet(),
 })
 
-function execHookOnError(errStr: string, err: unknown) {
+function execHookOnError(err: unknown) {
   if (isObject(err)) {
     if (globalObject.seen.has(err)) return
     globalObject.seen.add(err)
@@ -17,10 +17,10 @@ function execHookOnError(errStr: string, err: unknown) {
   const globalContext = getGlobalContextServerInternalOptional()
   if (!globalContext) return
 
-  const hooks = getHookFromPageConfigGlobalCumulative<[string, { err: unknown }]>(globalContext._pageConfigGlobal, 'onError')
+  const hooks = getHookFromPageConfigGlobalCumulative<unknown>(globalContext._pageConfigGlobal, 'onError')
   for (const hook of hooks) {
     try {
-      hook.hookFn(errStr, { err })
+      hook.hookFn(err)
     } catch (hookErr) {
       console.error(hookErr)
     }

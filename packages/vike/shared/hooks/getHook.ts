@@ -26,8 +26,8 @@ import type { PageContextPrepareMinimum } from '../preparePageContextForPublicUs
 const globalObject = getGlobalObject<{ isPrerendering?: true }>('hooks/getHook.ts', {})
 
 // TODO improve?
-type HookArgDefault = [PageContextPrepareMinimum | GlobalContextPrepareMinimum]
-type Hook<HookArg extends unknown[] = HookArgDefault> = HookLoc & { hookFn: HookFn<HookArg>; hookTimeout: HookTimeout }
+type HookArgDefault = PageContextPrepareMinimum | GlobalContextPrepareMinimum
+type Hook<HookArg = HookArgDefault> = HookLoc & { hookFn: HookFn<HookArg>; hookTimeout: HookTimeout }
 type HookLoc = {
   hookName: HookNameOld
   /* Once we remove the old design, we'll be able to use the full path information.
@@ -41,7 +41,7 @@ import type {FilePath} from '../page-configs/FilePath.js'
   */
   hookFilePath: string
 }
-type HookFn<HookArg extends unknown[] = HookArgDefault> = (...arg: HookArg) => unknown
+type HookFn<HookArg = HookArgDefault> = (arg: HookArg) => unknown
 type HookTimeout = {
   error: number | false
   warning: number | false
@@ -100,7 +100,7 @@ function getHookFromPageConfigGlobal(pageConfigGlobal: PageConfigGlobalRuntime, 
   const hookTimeout = getHookTimeoutGlobal(hookName)
   return getHook(hookFn, hookName, hookFilePath, hookTimeout)
 }
-function getHookFromPageConfigGlobalCumulative<HookArg extends unknown[] = HookArgDefault>(
+function getHookFromPageConfigGlobalCumulative<HookArg = HookArgDefault>(
   pageConfigGlobal: PageConfigGlobalRuntime,
   hookName: HookNameGlobal,
 ): Hook<HookArg>[] {
@@ -121,7 +121,7 @@ function getHookTimeoutGlobal(hookName: HookNameOld) {
   const hookTimeout = getHookTimeoutDefault(hookName)
   return hookTimeout
 }
-function getHook<HookArg extends unknown[] = HookArgDefault>(
+function getHook<HookArg = HookArgDefault>(
   hookFn: unknown,
   hookName: HookNameOld,
   hookFilePath: string,
@@ -140,7 +140,7 @@ function getHookFromConfigValue(configValue: ConfigValue) {
   return { hookFn, hookFilePath }
 }
 
-function assertHookFn<HookArg extends unknown[] = HookArgDefault>(
+function assertHookFn<HookArg = HookArgDefault>(
   hookFn: unknown,
   { hookName, hookFilePath }: { hookName: HookNameOld; hookFilePath: string },
 ): asserts hookFn is HookFn<HookArg> {
