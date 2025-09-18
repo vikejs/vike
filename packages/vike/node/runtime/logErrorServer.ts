@@ -5,8 +5,6 @@ import { isCallable, isObject } from './utils.js'
 import { execHookOnError } from './renderPage/execHookOnError.js'
 
 function logErrorServer(err: unknown) {
-  execHookOnError(err)
-
   if (
     isObject(err) &&
     // Set by react-streaming
@@ -21,4 +19,7 @@ function logErrorServer(err: unknown) {
   const errStr = isObject(err) && 'stack' in err ? String(err.stack) : String(err)
 
   console.error(pc.red(errStr))
+
+  // Execute +onError hook after logging the error
+  execHookOnError(err)
 }
