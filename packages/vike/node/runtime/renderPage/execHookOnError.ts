@@ -9,26 +9,20 @@ const globalObject = getGlobalObject('renderPage/execHookOnError.ts', {
 })
 
 function execHookOnError(err: unknown) {
-  // TODO only skip the check, still run +onError
-  if (!isObject(err)) return
-
-  if (globalObject.seen.has(err)) return
-  globalObject.seen.add(err)
-
-  // Check if global context is available synchronously
-  const globalContextResult = getGlobalContextServerInternalOptional()
-  if (!globalContextResult) {
-    // Global context not available yet - this is expected for initialization errors
-    return
+  if (isObject(err)) {
+    if (globalObject.seen.has(err)) return
+    globalObject.seen.add(err)
   }
-  const { globalContext } = globalContextResult
+
+  const globalContext = getGlobalContextServerInternalOptional()
+  if (!globalContext) return
 
   const onErrorHooks = getHookFromPageConfigGlobalCumulative(globalContext._pageConfigGlobal, 'onError')
   for (const hook of onErrorHooks) {
     try {
-      // TODO: err is always unknown
-      const hookFn = hook.hookFn as unknown as (error: Error) => void
-      hookFn(err as unknown as Error)
+      // TODO: avoid ts-ignore
+      // @ts-ignore
+      hook.hookFn(err)
     } catch (hookErr) {
       console.error(hookErr)
     }

@@ -141,16 +141,10 @@ async function getGlobalContextServerInternal() {
   return { globalContext }
 }
 
-function getGlobalContextServerInternalOptional(): { globalContext: GlobalContextServerInternal } | null {
-  // Synchronous version that returns null if global context is not available
-  // Used for optional operations like error hooks that shouldn't block on initialization
-  if (!globalObject.isInitialized) return null
+function getGlobalContextServerInternalOptional() {
   const { globalContext } = globalObjectTyped
   if (!globalContext) return null
-  /* TODO
   return globalContext
-  */
-  return { globalContext }
 }
 
 function assertIsDefined<T extends GlobalContextServerInternal>(
