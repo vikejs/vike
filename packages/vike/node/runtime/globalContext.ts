@@ -147,6 +147,9 @@ function getGlobalContextServerInternalOptional(): { globalContext: GlobalContex
   if (!globalObject.isInitialized) return null
   const { globalContext } = globalObjectTyped
   if (!globalContext) return null
+  /* TODO
+  return globalContext
+  */
   return { globalContext }
 }
 
