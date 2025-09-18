@@ -7,7 +7,8 @@ import { execHookOnError } from './renderPage/execHookOnError.js'
 function logErrorServer(err: unknown) {
   execHookOnError(err)
 
-  // TODO https://gist.github.com/brillout/066293a687ab7cf695e62ad867bc6a9c
+  // ErrorEnhanced pattern implemented in loggerNotProd.ts for development/build environments
+  // Production uses this simpler approach
   if (
     isObject(err) &&
     // Set by react-streaming
