@@ -61,7 +61,6 @@ function tryExecOnErrorHook(err: unknown) {
     for (const hook of onErrorHooks) {
       try {
         // Call the hook function directly with just the error
-        // The hook system expects this to be a simple function call
         const hookFn = hook.hookFn as unknown as (error: Error) => void
         hookFn(err as unknown as Error)
       } catch (hookErr) {
