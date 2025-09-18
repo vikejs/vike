@@ -1,12 +1,73 @@
 import { Link, Warning } from '@brillout/docpress'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+import '../../components/tabs.css'
 import { UseScaffolder } from '../../components'
 import { Example } from '../../components'
 
-You can deploy Vike to [Vercel](https://vercel.com) simply by using a Vercel API Route. Alternatively, you can use `vite-plugin-vercel` for a full-fledged Vercel integration with ISR and Edge Middlewares.
-
-We recommend using the Vercel API Route technique because it's a simple and sturdy integration. Later, if the need arises, you can switch to `vite-plugin-vercel`.
+You can deploy Vike to [Vercel](https://vercel.com) simply by using a Vercel API Route. Alternatively, you can use <Link href="/vike-photon" /> for a full-fledged Vercel integration with ISR and Edge Middlewares.
 
 > <UseScaffolder>Vercel</UseScaffolder>
+
+
+## `vike-photon` with `vite-plugin-vercel`
+
+<Link href="/vike-photon" /> enables zero-configuration support for all Vercel features, including [Incremental Static Regeneration (ISR)](https://vercel.com/docs/concepts/incremental-static-regeneration/overview) and Edge Middlewares.
+
+If you <Link text="pre-render your pages only partially" href="/prerender#partial" />, you can also use <Link href="/vike-photon" /> to statically deploy your pre-rendered pages while dynamically serving your non-prerendered pages.
+
+<Tabs>
+  <TabList>
+    <Tab>npm</Tab>
+    <Tab>pnpm</Tab>
+    <Tab>yarn</Tab>
+  </TabList>
+  <TabPanel>
+    ```shell
+    npm i vike-photon vite-plugin-vercel
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    pnpm add vike-photon vite-plugin-vercel
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    yarn add vike-photon vite-plugin-vercel
+    ```
+  </TabPanel>
+</Tabs>
+
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+import vikePhoton from 'vike-photon/config'// [!code ++]
+
+export default {
+  extends: [vikePhoton],// [!code ++]
+  // (optional) if you installed a server
+  photon: {// [!code ++]
+    server: 'server/index.ts'// [!code ++]
+  }// [!code ++]
+} satisfies Config
+```
+
+```json
+// package.json
+
+{
+  "scripts": {
+    "dev": "vike dev",
+    "preview": "vike build && vite preview",// [!code ++]
+    "deploy": "vike build && wrangler deploy"// [!code ++]
+  }
+}
+```
+
+> Under the hood, `vite-plugin-vercel` uses Vercel's [Build Output API](https://vercel.com/docs/build-output-api/v3).
+
+> See <Link href="/vike-photon" /> if you need to configure a server.
 
 
 ## API Route
@@ -20,17 +81,6 @@ Example:
 > Using a Vercel API Route is a sturdy way to deploy to Vercel, as API Routes is a core Vercel feature: it's here to stay and, most importantly, stable. (Whereas Vercel's Build Output API is a moving target with occasional breaking changes.) Once you've set the server-side rendering API Route, you can expect it to work for the foreseeable future.
 
 
-## vite-plugin-vercel
-
-[`vite-plugin-vercel`](https://github.com/magne4000/vite-plugin-vercel) enables zero-configuration support for all Vercel features, including [Incremental Static Regeneration (ISR)](https://vercel.com/docs/concepts/incremental-static-regeneration/overview) and Edge Middlewares.
-
-If you <Link text="pre-render your pages only partially" href="/prerender#partial" />, you can also use `vite-plugin-vercel` to statically deploy your pre-rendered pages while dynamically serving your non-prerendered pages.
-
-> See Vike + `vite-plugin-vercel` installation instructions at [`vite-plugin-vercel` > Usage with Vike](https://github.com/magne4000/vite-plugin-vercel#usage-with-vike).
-
-> Under the hood, `vite-plugin-vercel` uses Vercel's [Build Output API](https://vercel.com/docs/build-output-api/v3).
-
-
 ## Build Output API
 
 For maximum flexibility and configuration options, you can directly use the [Build Output API](https://vercel.com/docs/build-output-api/v3).
@@ -42,7 +92,7 @@ Example:
 
 ## Data APIs (GraphQL, RESTful, RPC)
 
-Vercel API Routes only work on Vercel's platform; you cannot run them locally.
+By default, Vercel API Routes only work on Vercel's platform.
 
 This means that you need to integrate your data layer twice:
  1. Using Vercel's API Routes, for Vercel deployment.
