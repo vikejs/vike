@@ -36,6 +36,12 @@ const maintainersList: Maintainer[] = [
         <code>universal-middleware</code> (Lead Maintainer, Creator)
       </>,
       <>
+        <code>photon</code> (Lead Maintainer, Creator)
+      </>,
+      <>
+        <code>vike-photon</code> (Lead Maintainer, Creator)
+      </>,
+      <>
         <code>vike-solid</code> (Lead Maintainer, Creator)
       </>,
       <>Vike Core (Contributor)</>,

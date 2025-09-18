@@ -16,7 +16,7 @@ If you use **TypeScript**, you must define your path aliases also at:
 - <Link href="#tsconfig-json">`tsconfig.json` > `compilerOptions.paths`</Link>
   > You must define them twice — inside `vite.config.js` *and* `tsconfig.json`. (It's temporary: [Vite will soon support path aliases set in `tsconfig.json`](https://github.com/vikejs/vike/issues/1547#issuecomment-3085232187).)
 
-If you use a custom server integration (**you don't use `vike-server`**), also define them at:
+If you use a custom server integration (**you don't use `vike-photon`**), also define them at:
 - <Link href="#package-json">`package.json` > `imports`</Link>
 
 
@@ -44,7 +44,7 @@ See also:
 > The following are processed by Vite:
 > - All client-side code.
 > - All <Link href="/config#files">`+` files</Link> loaded at runtime (client or server).
-> - Your server code if you use <Link href="/vike-server">`vike-server`</Link>.
+> - Your server code if you use <Link href="/vike-photon">`vike-photon`</Link>.
 >
 > Config files, such as `vite.config.js` or `+config.js` aren't processed by Vite. See <Link href="#config-files" />.
 
@@ -71,7 +71,7 @@ See also:
 
 ## `package.json`
 
-If you use a JavaScript server, with a <Link href="/server-integration#manual-integration">custom integration</Link> instead of using <Link href="/vike-server">`vike-server`</Link>, then also define your path aliases at:
+If you use a JavaScript server, with a <Link href="/server-integration#manual-integration">custom integration</Link> instead of using <Link href="/vike-photon">`vike-photon`</Link>, then also define your path aliases at:
 
 ```json
 // package.json
@@ -91,9 +91,9 @@ This tells Node.js how to resolve path aliases (Node.js doesn't know about `vite
 See also:
  - [NodeJS > Subpath imports](https://nodejs.org/api/packages.html#subpath-imports)
 
-> If you use <Link href="/vike-server">`vike-server`</Link>, all your server code is transpiled by Vite. Defining path aliases at `vite.config.js` is enough because Vite already resolves all path aliases and Node.js doesn't see any path alias.
+> If you use <Link href="/vike-photon">`vike-photon`</Link>, all your server code is transpiled by Vite. Defining path aliases at `vite.config.js` is enough because Vite already resolves all path aliases and Node.js doesn't see any path alias.
 >
-> If you don't use `vike-server`, your server code isn't processed by [Vite](https://vite.dev) out of the box. Instead, Node.js directly executes your server code and, therefore, you must configure Node.js to resolve your path aliases. See also: [#562 - Transpile server code](https://github.com/vikejs/vike/issues/562).
+> If you don't use `vike-photon`, your server code isn't processed by [Vite](https://vite.dev) out of the box. Instead, Node.js directly executes your server code and, therefore, you must configure Node.js to resolve your path aliases. See also: [#562 - Transpile server code](https://github.com/vikejs/vike/issues/562).
 
 > Alternatively, instead of using Node.js's built-in support over `package.json#imports`, you can use an npm package such as [`module-alias`](https://github.com/ilearnio/module-alias).
 
