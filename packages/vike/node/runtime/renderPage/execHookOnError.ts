@@ -17,11 +17,9 @@ function execHookOnError(err: unknown) {
   const globalContext = getGlobalContextServerInternalOptional()
   if (!globalContext) return
 
-  const onErrorHooks = getHookFromPageConfigGlobalCumulative(globalContext._pageConfigGlobal, 'onError')
+  const onErrorHooks = getHookFromPageConfigGlobalCumulative<unknown>(globalContext._pageConfigGlobal, 'onError')
   for (const hook of onErrorHooks) {
     try {
-      // TODO: avoid ts-ignore
-      // @ts-ignore
       hook.hookFn(err)
     } catch (hookErr) {
       console.error(hookErr)

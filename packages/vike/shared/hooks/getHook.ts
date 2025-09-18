@@ -25,7 +25,9 @@ import type { GlobalContextPrepareMinimum } from '../prepareGlobalContextForPubl
 import type { PageContextPrepareMinimum } from '../preparePageContextForPublicUsage.js'
 const globalObject = getGlobalObject<{ isPrerendering?: true }>('hooks/getHook.ts', {})
 
-type Hook = HookLoc & { hookFn: HookFn; hookTimeout: HookTimeout }
+// TODO improve?
+type HookArgDefault = PageContextPrepareMinimum | GlobalContextPrepareMinimum
+type Hook<HookArg = HookArgDefault> = HookLoc & { hookFn: HookFn<HookArg>; hookTimeout: HookTimeout }
 type HookLoc = {
   hookName: HookNameOld
   /* Once we remove the old design, we'll be able to use the full path information.
@@ -39,7 +41,7 @@ import type {FilePath} from '../page-configs/FilePath.js'
   */
   hookFilePath: string
 }
-type HookFn = (arg: PageContextPrepareMinimum | GlobalContextPrepareMinimum) => unknown
+type HookFn<HookArg = HookArgDefault> = (arg: HookArg) => unknown
 type HookTimeout = {
   error: number | false
   warning: number | false
@@ -98,10 +100,10 @@ function getHookFromPageConfigGlobal(pageConfigGlobal: PageConfigGlobalRuntime, 
   const hookTimeout = getHookTimeoutGlobal(hookName)
   return getHook(hookFn, hookName, hookFilePath, hookTimeout)
 }
-function getHookFromPageConfigGlobalCumulative(
+function getHookFromPageConfigGlobalCumulative<HookArg = HookArgDefault>(
   pageConfigGlobal: PageConfigGlobalRuntime,
   hookName: HookNameGlobal,
-): Hook[] {
+): Hook<HookArg>[] {
   const configValue = pageConfigGlobal.configValues[hookName]
   if (!configValue?.value) return []
   const val = configValue.value
@@ -119,9 +121,9 @@ function getHookTimeoutGlobal(hookName: HookNameOld) {
   const hookTimeout = getHookTimeoutDefault(hookName)
   return hookTimeout
 }
-function getHook(hookFn: unknown, hookName: HookNameOld, hookFilePath: string, hookTimeout: HookTimeout): Hook {
+function getHook<HookArg = HookArgDefault>(hookFn: unknown, hookName: HookNameOld, hookFilePath: string, hookTimeout: HookTimeout): Hook<HookArg> {
   assert(hookFilePath)
-  assertHookFn(hookFn, { hookName, hookFilePath })
+  assertHookFn<HookArg>(hookFn, { hookName, hookFilePath })
   const hook = { hookFn, hookName, hookFilePath, hookTimeout }
   return hook
 }
@@ -133,10 +135,10 @@ function getHookFromConfigValue(configValue: ConfigValue) {
   return { hookFn, hookFilePath }
 }
 
-function assertHookFn(
+function assertHookFn<HookArg = HookArgDefault>(
   hookFn: unknown,
   { hookName, hookFilePath }: { hookName: HookNameOld; hookFilePath: string },
-): asserts hookFn is HookFn {
+): asserts hookFn is HookFn<HookArg> {
   assert(hookName && hookFilePath)
   assert(!hookName.endsWith(')'))
   assert(!hookFilePath.endsWith(' '))
