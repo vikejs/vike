@@ -5,142 +5,27 @@ import { ConfigSpec } from '../../components'
   env="server"
   cumulative
   global
-/>
+>
+```ts
+(error: unknown) => void
+```
+</ConfigSpec>
 
 Hook called when an error occurs during server-side rendering.
 
-```js
+```ts
 // pages/+onError.js
 // Environment: server
 
-export { onError }
+import { Config } from 'vike/types'
 
-function onError(error) {
-  console.error('Application error:', error.message)
-  
-  // Send to error tracking service
-  Sentry.captureException(error)
-  
-  // Log additional context
-  console.error('Stack trace:', error.stack)
+export const onError: Config['onError'] = (error) => {
+  // ...
 }
 ```
-
-The `onError` hook is called for **all server-side errors**, including:
-- Page rendering errors
-- Data fetching errors  
-- Hook execution errors
-- Global context initialization errors
-- Configuration loading errors
-
-> The hook receives the error object directly. If you need access to the global context, you can use <Link href="/getGlobalContext">`getGlobalContext()`</Link>.
-
-## Use cases
-
-### Error tracking
-
-Send errors to monitoring services:
-
-```js
-// pages/+onError.js
-
-export { onError }
-
-function onError(error) {
-  // Send to Sentry
-  Sentry.captureException(error, {
-    tags: {
-      component: 'vike-ssr'
-    }
-  })
-  
-  // Send to custom analytics
-  analytics.track('server_error', {
-    message: error.message,
-    stack: error.stack
-  })
-}
-```
-
-### Custom logging
-
-Enhanced error logging with context:
-
-```js
-// pages/+onError.js
-
-import { getGlobalContext } from 'vike/getGlobalContext'
-
-export { onError }
-
-function onError(error) {
-  const globalContext = getGlobalContext()
-  
-  console.error('Server Error:', {
-    message: error.message,
-    stack: error.stack,
-    timestamp: new Date().toISOString(),
-    baseUrl: globalContext?.baseServer,
-    isProduction: globalContext?._isProduction
-  })
-}
-```
-
-### Multiple handlers
-
-Since the hook is <Link href="/config#cumulative">cumulative</Link>, you can define multiple error handlers:
-
-```js
-// pages/+onError.js - Main error handling
-export { onError }
-function onError(error) {
-  console.error('Main error handler:', error.message)
-}
-```
-
-```js
-// pages/analytics/+onError.js - Analytics tracking  
-export { onError }
-function onError(error) {
-  analytics.track('error', { message: error.message })
-}
-```
-
-```js
-// pages/monitoring/+onError.js - Infrastructure monitoring
-export { onError }  
-function onError(error) {
-  monitoring.reportError(error)
-}
-```
-
-## Error handling
-
-The `onError` hook itself is wrapped in error handling - if your hook throws an error, it will be logged but won't interfere with the original error or other error handlers.
-
-```js
-// pages/+onError.js
-
-export { onError }
-
-function onError(error) {
-  // If this throws, it will be logged but won't break other handlers
-  throw new Error('Error in error handler!')
-}
-```
-
-## Timing
-
-The `onError` hook is called **after** the error is logged to the console but **before** the error page is rendered. This ensures:
-
-1. The original error is always logged
-2. Your error tracking runs before the response is sent
-3. Multiple error handlers can run independently
 
 ## See also
 
-- <Link href="/error-page" />
 - <Link href="/error-tracking" />
-- <Link href="/getGlobalContext" />
+- <Link href="/error-page" />
 - <Link href="/hooks" />
-- <Link href="/config#cumulative" />
