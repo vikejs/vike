@@ -347,7 +347,7 @@ type ConfigBuiltIn = {
    */
   onCreatePageContext?: ((pageContext: PageContextServer) => void) | ImportString | null
 
-  /** Hook called when an error occurs during serve-side rendering.
+  /** Hook called when an error occurs during server-side rendering.
    *
    *  https://vike.dev/onError
    */
