@@ -1545,7 +1545,7 @@ function migrations() {
       },
       {
         title: 'Migrate from `vike-server` to `vike-photon`',
-        url: '/migration/vike-server',
+        url: '/migration/vike-photon',
       },
     ] as const
   ).map((h) => ({ ...h, category: 'Migration' as const })) satisfies HeadingDetachedDefinition[]
