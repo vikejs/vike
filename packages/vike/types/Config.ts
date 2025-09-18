@@ -351,7 +351,7 @@ type ConfigBuiltIn = {
    *
    *  https://vike.dev/onError
    */
-  onError?: ((error: Error) => void) | ImportString | null
+  onError?: ((error: unknown) => void) | ImportString | null
 
   /** Hook called when the `globalContext` object is created.
    *
