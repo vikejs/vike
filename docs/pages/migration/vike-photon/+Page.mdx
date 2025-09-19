@@ -2,10 +2,14 @@ import { Link } from '@brillout/docpress'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import '../../../components/tabs.css'
 
-Make sure to upgrade `vike` to version `>=0.4.239`.
+Guide to migrate from <Link href="/vike-server">`vike-server`</Link> to <Link href="/vike-photon">`vike-photon`</Link>.
 
+> See also
+>
+> - <Link href="/vike-photon" />
+> - <Link href="/blog/photon" />
 
-### Update dependencies
+## 1. Update dependencies
 
 <Tabs>
   <TabList>
@@ -16,24 +20,28 @@ Make sure to upgrade `vike` to version `>=0.4.239`.
   <TabPanel>
     ```shell
     npm uninstall vike-server
-    npm i vike-photon
+    npm i vike-photon vike@latest
     ```
   </TabPanel>
   <TabPanel>
     ```shell
     pnpm remove vike-server
-    pnpm add vike-photon
+    pnpm add vike-photon vike@latest
     ```
   </TabPanel>
   <TabPanel>
     ```shell
     yarn remove vike-server
-    yarn add vike-photon
+    yarn add vike-photon vike@latest
     ```
   </TabPanel>
 </Tabs>
 
-### Update scripts
+> `vike-photon` requires `vike >= 0.4.239`
+
+
+## 2. Update `scripts`
+
 ```json
 // package.json
 
@@ -41,12 +49,13 @@ Make sure to upgrade `vike` to version `>=0.4.239`.
   "scripts": {
     "dev": "vike dev",
     "build": "vike build",
+    "prod": "NODE_ENV=production node dist/server/index.js"// [!code --]
     "prod": "node ./dist/server/index.mjs"// [!code ++]
   }
 }
 ```
 
-### Update +config
+## 3. Update `+config`
 
 ```ts
 // pages/+config.ts
@@ -68,7 +77,7 @@ export default {
 } satisfies Config
 ```
 
-### Update the server entry
+## 4. Update server entry
 
 <Tabs>
   <TabList>
@@ -259,3 +268,9 @@ export default {
     ```
   </TabPanel>
 </Tabs>
+
+
+## See also
+
+- <Link href="/vike-photon" />
+- <Link href="/blog/photon" />

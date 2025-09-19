@@ -1225,6 +1225,11 @@ function blog() {
         url: '/blog/vike-server',
       },
       {
+        title: 'Introducing Photon',
+        url: '/blog/photon',
+        sectionTitles: ['Why Photon?'],
+      },
+      {
         title: 'Vite 6 is a groundbreaking release',
         url: '/blog/vite-6',
       },
@@ -1548,7 +1553,7 @@ function migrations() {
         url: '/migration/vike-cloudflare',
       },
       {
-        title: 'Migrate from `vike-server` to `vike-photon`',
+        title: 'Migration to `vike-photon`',
         url: '/migration/vike-photon',
       },
     ] as const
