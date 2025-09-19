@@ -4,7 +4,9 @@ import '../../components/tabs.css'
 import { UseScaffolder } from '../../components'
 import { Example } from '../../components'
 
-You can deploy Vike to [Vercel](https://vercel.com) simply by using a Vercel API Route. Alternatively, you can use <Link href="/vike-photon" /> for a full-fledged Vercel integration with ISR and Edge Middlewares.
+We recommend using <Link href="/vike-photon" /> for a seamless and full-fledged [Vercel](https://vercel.com) integration with ISR and Edge Middlewares.
+
+Alternatively, for more control, you can manually integrate Vercel yourself.
 
 > <UseScaffolder>Vercel</UseScaffolder>
 
@@ -70,9 +72,11 @@ export default {
 > See <Link href="/vike-photon" /> if you need to configure a server.
 
 
-## API Route
+## Custom integration
 
-You can integrate Vercel simply by creating a Vercel API Route `api/ssr.js` that server-side renders your app.
+### API Route
+
+A simple way to integrate Vercel is to create a Vercel API Route `api/ssr.js` that server-side renders your app.
 
 Example:
  - <Example timestamp="2024.03" repo="brillout/vike-with-vercel" />
@@ -81,20 +85,20 @@ Example:
 > Using a Vercel API Route is a sturdy way to deploy to Vercel, as API Routes is a core Vercel feature: it's here to stay and, most importantly, stable. (Whereas Vercel's Build Output API is a moving target with occasional breaking changes.) Once you've set the server-side rendering API Route, you can expect it to work for the foreseeable future.
 
 
-## Build Output API
+### Build Output API
 
-For maximum flexibility and configuration options, you can directly use the [Build Output API](https://vercel.com/docs/build-output-api/v3).
+For maximum flexibility and configuration options, you can use the [Build Output API](https://vercel.com/docs/build-output-api/v3) instead of an API route.
 
 Example:
  - <Example timestamp="2022.07" repo="brillout/vite-plugin-ssr_vercel_build-output-api" />
    > vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike).
 
 
-## Data APIs (GraphQL, RESTful, RPC)
+### API Routes with development
 
-By default, Vercel API Routes only work on Vercel's platform.
+Vercel API Routes only work in production on Vercel's platform. This means, you may need to re-create your API routes integration for development.
 
-This means that you need to integrate your data layer twice:
+For example, you typically need to integrate your data layer twice:
  1. Using Vercel's API Routes, for Vercel deployment.
  1. Using a local server (e.g. Express.js), for development.
 
@@ -106,5 +110,3 @@ This is usually easy to achieve as most data layer tools integrate using a singl
 In other words, you can add a data layer by:
  - Creating a new Vercel API Route, integrating that single endpoint.
  - Creating a new route to your local development server (e.g. Express.js), integrating that single endpoint.
-
-> When using SSR, we recommend using [RPC instead of GraphQL](https://telefunc.com/RPC-vs-GraphQL-REST), leading to a substantial simplification and increased development speed.
