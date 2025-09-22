@@ -1,11 +1,14 @@
 import { Link } from '@brillout/docpress'
 import { PhotonRationale } from '../../../components'
 
-We are thrilled to unveil [Photon](https://photonjs.dev) — a next-generation infrastructure for deploying JavaScript servers anywhere (self-hosting, Cloudflare, Vercel, Netlify, ...) with support for any server framework (Hono, Express.js, Fastify, ...).
+We (<Link href="/team">Joël and Rom</Link>) are thrilled to introduce [Photon](https://photonjs.dev) — a next-generation infrastructure for deploying JavaScript servers anywhere (self-hosting, Cloudflare, Vercel, Netlify, ...) with support for popular server frameworks (Hono, Express.js, Fastify, ...).
 
-It leverages <Link href="/blog/vite-6">Vite's Environment API</Link> — a novel approach enabling first-class integration with deployment providers ― which unlocks unprecedented DX for users. See <Link href="#features" />.
+It leverages <Link href="/blog/vite-6">Vite's Environment API</Link> — a novel approach enabling first-class integration with deployment providers, delivering unprecedented DX. See <Link href="#features" />.
 
 We believe Photon represents the future of JavaScript deployment, see <Link href="#why-photon" />
+
+> If you use `vike-server` you can easily migrate to Photon. See <Link href="/migration/vike-photon" />.
+
 
 
 ## Features
@@ -30,17 +33,25 @@ And big thanks for @sapphi-red and @hio, James
 
 ## Why Photon?
 
-<Link href="/blog/vike-server#sharing-with-other-frameworks">While developing `vike-server` we realized most code is agnostic to Vike</Link>. So we decided to make our deployment integration fully agnostic to Vike. This means any Vite-based framework can integrate Photon and offer their users all Photon's features.
+#### Agnostic
+
+<Link href="/blog/vike-server#sharing-with-other-frameworks">While developing `vike-server` we realized most code is agnostic to Vike</Link>. So we decided to make Vike's deployment infrastructure fully agnostic.
+
+That's what Photon is: it's everything we learned while developing `vike-server`, `vike-cloudflare`, and `vite-plugin-vercel` bundled in one cohesive tool with improved DX and new features — all that completely agnostic to Vike.
+
+Any Vite-based framework can integrate Photon and offer all Photon's features to their users.
 
 #### Collaboration
 
-We believe collaborative infrastructure eventually outperforms non-collaborative ones. For example, Vite's sheer amount of collaboration has made it very challanging for others to keep up with Vite's features and momentum.
+We believe collaborative infrastructure will eventually outpace non-collaborative ones. For example, the incredible collaboration around Vite has made it very challenging for others to keep up.
 
-We invite and welcome other Vite-based frameworks to collaborate on deployment infrastructure!
+We invite and vividly encourage Vite-based frameworks to collaborate on deployment.
 
 #### Nitro
 
-So far, [Nitro](https://nitro.build) has had only limited success to spread outside of Nuxt. We believe Nitro must (and eventually will) follow Photon's footsepts and become a lot more flexible (imposing less frivolous opinions, and becoming more do-one-thing-do-it-well). The best oucome would be if the users of Vite-based frameworks (including Vike) have the choice between using Nitro and Photon, with a vibrant and constructive competition between Nitro and Photon.
+So far, [Nitro](https://nitro.build) has limited success spreading outside of Nuxt, because it isn't flexible enough. Nitro enforces opinions and architectural decisions that it shouldn't. We believe Nitro must (and eventually will) follow Photon's footsepts and become more do-one-thing-do-it-well.
+
+For users, the best oucome is having the choice between Nitro and Photon — with a vibrant and constructive competition between the two.
 
 
 ## See also
@@ -49,11 +60,3 @@ So far, [Nitro](https://nitro.build) has had only limited success to spread outs
 - <Link href="/migration/vike-photon" />
 - <Link href="/blog/vike-server" />
 - <Link href="/blog/vite-6" />
-
-
-
-with a minmal amount of glue code, with `vike-photon` for a seamless integration between Vike and Photon.
-
-Photon is a next-generation deployment infrastructure that enables users to choose their favorite srever framework (Hono, Express.js, Fastify, ...) and deploy it to 
-
-> It's completely agnostic to Vike — any Vite-based framework can but a  work
