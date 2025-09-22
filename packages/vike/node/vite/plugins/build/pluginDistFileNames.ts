@@ -9,7 +9,7 @@ import path from 'node:path'
 import crypto from 'node:crypto'
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
 import { getAssetsDir } from '../../shared/getAssetsDir.js'
-import { assertModuleId, getModuleFilePathAbsolute } from '../../shared/getFilePath.js'
+import { assertModuleId, getFilePathToShowToUserModule } from '../../shared/getFilePath.js'
 type PreRenderedChunk = Rollup.PreRenderedChunk
 type PreRenderedAsset = Rollup.PreRenderedAsset
 
@@ -76,7 +76,7 @@ function pluginDistFileNames(): Plugin[] {
                     if (isNodeModules) {
                       name = isNodeModules[1]!
                     } else {
-                      const filePath = getModuleFilePathAbsolute(id, config)
+                      const filePath = getFilePathToShowToUserModule(id, config)
                       name = filePath
                       name = name.split('.').slice(0, -1).join('.') // remove file extension
                       name = name.split('/').filter(Boolean).join('_')

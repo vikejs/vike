@@ -2,7 +2,7 @@ export { getFilePathResolved }
 export { getFilePathUnresolved }
 export { getFilePathAbsoluteUserRootDir }
 export { getFilePathToShowToUserFromUnknown }
-export { getModuleFilePathAbsolute }
+export { getFilePathToShowToUserModule }
 export { getModuleFilePathRelative }
 export { cleanFilePathUnknown }
 export { assertModuleId }
@@ -153,7 +153,7 @@ function getFilePathRelative({
   }
 }
 
-function getModuleFilePathAbsolute(moduleId: string, config: ResolvedConfig): string {
+function getFilePathToShowToUserModule(moduleId: string, config: ResolvedConfig): string {
   const { filePathAbsoluteUserRootDir, filePathAbsoluteFilesystem } = getModuleFilePath(moduleId, config)
   return filePathAbsoluteUserRootDir || filePathAbsoluteFilesystem
 }
