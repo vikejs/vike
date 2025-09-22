@@ -54,8 +54,10 @@ function pluginFileEnv(): Plugin[] {
           // For `.vue` files: https://github.com/vikejs/vike/issues/1912#issuecomment-2394981475
           if (id.endsWith('?direct')) id = id.slice(0, -1 * '?direct'.length)
           const moduleInfo = viteDevServer.moduleGraph.getModuleById(id)
-          assert(moduleInfo)
-          const importers: string[] = Array.from(moduleInfo.importers)
+          /* It can fail, no clue why — https://github.com/vikejs/vike/issues/2740
+          assert(moduleInfo, { moduleId })
+          */
+          const importers: string[] = (!moduleInfo ? [] : Array.from(moduleInfo.importers))
             .map((m) => m.id)
             .filter((id) => id !== null)
           assertFileEnv(
