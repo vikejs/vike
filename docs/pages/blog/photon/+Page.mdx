@@ -1,24 +1,46 @@
 import { Link } from '@brillout/docpress'
 import { PhotonRationale } from '../../../components'
 
-We are thrilled to unveil Photon — a next-generation infrastructure for deploying JavaScript servers anywhere (self-hosting, Cloudflare, Vercel, Netlify, ...) with support for any server framework (Hono, Express.js, Fastify, ...).
+We are thrilled to unveil [Photon](https://photonjs.dev) — a next-generation infrastructure for deploying JavaScript servers anywhere (self-hosting, Cloudflare, Vercel, Netlify, ...) with support for any server framework (Hono, Express.js, Fastify, ...).
 
-We believe Photon represents the future of JavaScript deployment.
+It leverages <Link href="/blog/vite-6">Vite's Environment API</Link> — a novel approach enabling first-class integration with deployment providers ― which unlocks unprecedented DX for users. See <Link href="#features" />.
 
-## What is Photon?
+We believe Photon represents the future of JavaScript deployment, see <Link href="#why-photon" />
 
-Photon is a next-generation infrastructure that enables users to:
+
+## Features
+
+#### Server HMR
+
+
+#### Cloudflare Workers development DX
+
+Huge props to the Vite teams for — it's noval approach.
+
+It's the result of a lot of collaboration between Vite, deployment providers, and frameworks.
+
+And big thanks for @sapphi-red and @hio, James
+
+> To our knowledge, Vike is the second framework that supports developing directly (after React Router, props to them for leading the way)
+> This is a major DX improvement for Cloudflare users, and we are thrilled and proud to be the second framework that supports this.
+
+#### Server-side code splitting
+
 
 
 ## Why Photon?
 
-As we developed `vike-server`, <Link href="/blog/vike-server#sharing-with-other-frameworks">we realized most code is agnostic to Vike</Link>. So we decided to make our work fully agnostic to Vike with a minmal amount of glue code.
+<Link href="/blog/vike-server#sharing-with-other-frameworks">While developing `vike-server` we realized most code is agnostic to Vike</Link>. So we decided to make our deployment integration fully agnostic to Vike. This means any Vite-based framework can integrate Photon and offer their users all Photon's features.
 
-This means any Vite-based framework can integrate Photon to provide their users with all the Photon features.
+#### Collaboration
 
-> We believe Photon represents
+We believe collaborative infrastructure eventually outperforms non-collaborative ones. For example, Vite's sheer amount of collaboration has made it very challanging for others to keep up with Vite's features and momentum.
 
-<PhotonRationale isBlogPost/>
+We invite and welcome other Vite-based frameworks to collaborate on deployment infrastructure!
+
+#### Nitro
+
+So far, [Nitro](https://nitro.build) has had only limited success to spread outside of Nuxt. We believe Nitro must (and eventually will) follow Photon's footsepts and become a lot more flexible (imposing less frivolous opinions, and becoming more do-one-thing-do-it-well). The best oucome would be if the users of Vite-based frameworks (including Vike) have the choice between using Nitro and Photon, with a vibrant and constructive competition between Nitro and Photon.
 
 
 ## See also
@@ -26,9 +48,12 @@ This means any Vite-based framework can integrate Photon to provide their users 
 - <Link href="/vike-photon" />
 - <Link href="/migration/vike-photon" />
 - <Link href="/blog/vike-server" />
+- <Link href="/blog/vite-6" />
 
 
-So the last couple of months, we (<Link href="/team">Joël and Rom</Link>) have been working on a new project called Photon.
-We didn't plan to write an framewor
-When we started working on `vike-server` we just wanted to simple a simple problem for our users.
 
+with a minmal amount of glue code, with `vike-photon` for a seamless integration between Vike and Photon.
+
+Photon is a next-generation deployment infrastructure that enables users to choose their favorite srever framework (Hono, Express.js, Fastify, ...) and deploy it to 
+
+> It's completely agnostic to Vike — any Vite-based framework can but a  work
