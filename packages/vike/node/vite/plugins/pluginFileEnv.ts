@@ -170,13 +170,14 @@ function pluginFileEnv(): Plugin[] {
           isFilePathAbsolute(importer),
         )
         .map((importer) => getModuleFilePathAbsolute(importer, config))
+        .map((importPath) => pc.cyan(importPath))
       if (importPaths.length > 0) {
         errMsg += ` by ${joinEnglish(importPaths, 'and')}`
       }
     }
 
     if (onlyWarn) {
-      errMsg += ' and, therefore, Vike will prevent building your app for production.'
+      errMsg += ". This is potentially a security issue and Vike won't allow you to build your app for production."
     }
 
     return errMsg
