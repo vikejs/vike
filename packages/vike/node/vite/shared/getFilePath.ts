@@ -153,10 +153,10 @@ function getFilePathRelative({
 }
 
 function getFilePathToShowToUserModule(moduleId: string, config: ResolvedConfig): string {
-  const { filePathAbsoluteUserRootDir, filePathAbsoluteFilesystem } = getModuleFilePath(moduleId, config)
+  const { filePathAbsoluteUserRootDir, filePathAbsoluteFilesystem } = getFilePathModule(moduleId, config)
   return filePathAbsoluteUserRootDir || filePathAbsoluteFilesystem
 }
-function getModuleFilePath(moduleId: string, config: ResolvedConfig) {
+function getFilePathModule(moduleId: string, config: ResolvedConfig) {
   const userRootDir = config.root
   assertModuleId(moduleId)
   assertPosixPath(userRootDir)
