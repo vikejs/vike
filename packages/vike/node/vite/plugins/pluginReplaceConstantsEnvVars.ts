@@ -12,7 +12,7 @@ import {
   isNotNullish,
   lowerFirst,
 } from '../utils.js'
-import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
+import { getFilePathToShowToUserModule } from '../shared/getFilePath.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 import { getMagicString } from '../shared/getMagicString.js'
@@ -148,7 +148,7 @@ function assertNoClientSideLeak({
   // ❌ Security leak!
   // - Warning in dev
   // - assertUsage() and abort when building for production
-  const modulePath = getModuleFilePathAbsolute(id, config)
+  const modulePath = getFilePathToShowToUserModule(id, config)
   const errMsgAddendum: string = isBuild ? '' : ' (Vike will prevent your app from building for production)'
   const envNameFixed = `${PUBLIC_ENV_PREFIX}${envName}` as const
   const errMsg =

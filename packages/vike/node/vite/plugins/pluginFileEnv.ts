@@ -19,7 +19,7 @@ import {
 import { extractAssetsRE } from './pluginExtractAssets.js'
 import { extractExportNamesRE } from './pluginExtractExportNames.js'
 import pc from '@brillout/picocolors'
-import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
+import { getFilePathToShowToUserModule } from '../shared/getFilePath.js'
 import { getExportNames } from '../shared/parseEsModule.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isV1Design } from '../shared/resolveVikeConfigInternal.js'
@@ -154,7 +154,7 @@ function pluginFileEnv(): Plugin[] {
     const envExpect = isServerSide ? 'client' : 'server'
 
     let errMsg: string
-    let modulePathPretty = getModuleFilePathAbsolute(modulePath, config)
+    let modulePathPretty = getFilePathToShowToUserModule(modulePath, config)
     if (!noColor) {
       const suffix = getSuffix(envExpect)
       modulePathPretty = modulePathPretty.replaceAll(suffix, pc.bold(suffix))
@@ -169,7 +169,7 @@ function pluginFileEnv(): Plugin[] {
           // Can be Vike's virtual module: https://github.com/vikejs/vike/issues/2483
           isFilePathAbsolute(importer),
         )
-        .map((importer) => getModuleFilePathAbsolute(importer, config))
+        .map((importer) => getFilePathToShowToUserModule(importer, config))
         .map((importPath) => pc.cyan(importPath))
       if (importPaths.length > 0) {
         errMsg += ` by ${joinEnglish(importPaths, 'and')}`

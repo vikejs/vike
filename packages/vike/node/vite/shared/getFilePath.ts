@@ -1,9 +1,8 @@
 export { getFilePathResolved }
 export { getFilePathUnresolved }
 export { getFilePathAbsoluteUserRootDir }
-export { getFilePathToShowToUserFromUnknown }
-export { getModuleFilePathAbsolute }
-export { getModuleFilePathRelative }
+export { getFilePathToShowToUserUnknown }
+export { getFilePathToShowToUserModule }
 export { cleanFilePathUnknown }
 export { assertModuleId }
 
@@ -153,15 +152,11 @@ function getFilePathRelative({
   }
 }
 
-function getModuleFilePathAbsolute(moduleId: string, config: ResolvedConfig): string {
-  const { filePathAbsoluteUserRootDir, filePathAbsoluteFilesystem } = getModuleFilePath(moduleId, config)
+function getFilePathToShowToUserModule(moduleId: string, config: ResolvedConfig): string {
+  const { filePathAbsoluteUserRootDir, filePathAbsoluteFilesystem } = getFilePathModule(moduleId, config)
   return filePathAbsoluteUserRootDir || filePathAbsoluteFilesystem
 }
-function getModuleFilePathRelative(moduleId: string, config: ResolvedConfig): string {
-  const { filePathRelativeUserRootDir } = getModuleFilePath(moduleId, config)
-  return filePathRelativeUserRootDir
-}
-function getModuleFilePath(moduleId: string, config: ResolvedConfig) {
+function getFilePathModule(moduleId: string, config: ResolvedConfig) {
   const userRootDir = config.root
   assertModuleId(moduleId)
   assertPosixPath(userRootDir)
@@ -182,7 +177,7 @@ function assertModuleId(moduleId: string) {
   assertFilePathAbsoluteFilesystem(moduleId) // Can moduleId be something else than the filesystem absolute path?
 }
 
-function getFilePathToShowToUserFromUnknown(
+function getFilePathToShowToUserUnknown(
   // We don't have any guarantee about filePath, e.g. about whether is filePathAbsoluteFilesystem or filePathAbsoluteUserRootDir
   filePathUnknown: string,
   userRootDir: string,
