@@ -42,26 +42,16 @@ This means you can scale to hundreds of pages while keeping you server cold star
 
 #### Cloudflare Workers development DX
 
-Cloudflare [recently introduced `@cloudflare/vite-plugin`](https://blog.cloudflare.com/introducing-the-cloudflare-vite-plugin/) which enables the user to run the server-side of his app server-side inside `workerd` which is the real runtime Cloudflare Workers uses in production.
+Cloudflare [recently introduced `@cloudflare/vite-plugin`](https://blog.cloudflare.com/introducing-the-cloudflare-vite-plugin/) which enables the user to run the server-side of his app server-side inside `workerd` which is the same runtime than Cloudflare Workers uses in production.
 
-This means, the development environment is now a faithful reproduction of production. (Miniflare was only mimicking the production environment, which was a brittle.)
+This means the development environment is now a faithful representation of Cloudflare's production edge environment. (Miniflare only mimics the production environment.)
 
-This gives confidence as you develop and deploy your Cloudflare apps.
+In other words, if you app works in dev, then it will also work in production.
 
-Photon now supports 
-The `@photonjs/cloudflare` uses `@cloudflare/vite-plugin` under, so that you 
+> Vike is the second framework (after React Router) that supports this. Shout out to the Cloudflare and Vite Team — in particular [James Opstad](https://github.com/jamesopstad), [@sapphi-red](https://github.com/sapphi-red), and [Hiroshi Ogawa](https://github.com/hi-ogawa) — who helped us integrate Vike and Photon with `@cloudflare/vite-plugin` and Vite's Environment API.
 
-> This is It levera
-> only two
+> Huge props to the Vite teams for — it's noval approach. Massive collaboration, between the Vite Team, Cloudflare, and framework authors.
 
-Huge props to the Vite teams for — it's noval approach.
-
-It's the result of a lot of collaboration between Vite, deployment providers, and frameworks.
-
-And big thanks for @sapphi-red and @hio, James
-
-> To our knowledge, Vike is the second framework that supports developing directly (after React Router, props to them for leading the way)
-> This is a major DX improvement for Cloudflare users, and we are thrilled and proud to be the second framework that supports this.
 
 #### Vercel
 
