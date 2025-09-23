@@ -42,15 +42,15 @@ This means you can scale to hundreds of pages while keeping you server cold star
 
 #### Cloudflare Workers development DX
 
-Cloudflare [recently introduced `@cloudflare/vite-plugin`](https://blog.cloudflare.com/introducing-the-cloudflare-vite-plugin/) which enables the user to run the server-side of his app server-side inside `workerd` which is the same runtime than Cloudflare Workers uses in production.
+Cloudflare [recently introduced `@cloudflare/vite-plugin`](https://blog.cloudflare.com/introducing-the-cloudflare-vite-plugin/), which runs the server-side of the user's app inside `workerd` — the same runtime Cloudflare Workers use in production.
 
-This means the development environment is now a faithful representation of Cloudflare's production edge environment. (Miniflare only mimics the production environment.)
+This means the development environment is now a faithful representation of Cloudflare's production edge environment (miniflare was only mimicking it).
 
-In other words, if you app works in dev, then it will also work in production.
+With Miniflare, there are many discrepancies between dev and prod, which lead to less DRY, poord DX, complicated architecture (it was notoriously unclear what the integrating with Cloudflare notoriously). These issue are now all gone — if your works in dev, you now can have much more confidence it also works in production.
 
-> Vike is the second framework (after React Router) that supports this. Shout out to the Cloudflare and Vite Team — in particular [James Opstad](https://github.com/jamesopstad), [@sapphi-red](https://github.com/sapphi-red), and [Hiroshi Ogawa](https://github.com/hi-ogawa) — who helped us integrate Vike and Photon with `@cloudflare/vite-plugin` and Vite's Environment API.
+> Vike is the second framework (after React Router) that supports this. Shout out to the Cloudflare and Vite Team — in particular [James Opstad](https://github.com/jamesopstad), [@sapphi-red](https://github.com/sapphi-red), and [Hiroshi Ogawa](https://github.com/hi-ogawa) — who helped us integrate Vike, Photon, `@cloudflare/vite-plugin`, and Vite's Environment API.
 
-> Huge props to the Vite teams for — it's noval approach. Massive collaboration, between the Vite Team, Cloudflare, and framework authors.
+> It's all powered by Vite's Environment API. It enables Vite to run in a Node.js process while running he user code in another non-Node.js process such as `workerd`. The design and API was developed with massive collaboration between the Vite Team, Cloudflare, and framework authors. Shows that collabration...
 
 
 #### Vercel
