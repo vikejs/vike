@@ -26,6 +26,9 @@ $ vike build --mode staging
 
 # Change pre-render settings
 $ vike build --prerender "{parallel:4,noExtraDir:true}"
+
+# Force dependency pre-bundling (clear cache)
+$ vike dev --force
 ```
 
 > These are all Vike settings — Vike aliases some Vite settings for convenience (see <Link href="/host" noBreadcrumb />/<Link href="/port" noBreadcrumb />/<Link href="/mode" noBreadcrumb />/<Link href="/prerender" noBreadcrumb />).
@@ -55,6 +58,7 @@ Vike's CLI supports following [Vite CLI options](https://vite.dev/guide/cli#opti
  - `--host`
  - `--mode`
  - `--port`
+ - `--force`
 
 > Technically these are Vike settings that alias Vite settings (see <Link href="/host" noBreadcrumb />/<Link href="/port" noBreadcrumb />/<Link href="/mode" noBreadcrumb />). In other words, Vike's CLI options are always <Link href="/settings">Vike settings</Link>.
 >

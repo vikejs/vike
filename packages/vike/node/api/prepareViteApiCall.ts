@@ -13,6 +13,7 @@ import {
   setVikeConfigContext,
   type VikeConfigInternal,
 } from '../vite/shared/resolveVikeConfigInternal.js'
+import { getCliOptions } from '../cli/context.js'
 import path from 'node:path'
 import { assert, assertUsage, getGlobalObject, isObject, pick, toPosixPath } from './utils.js'
 import pc from '@brillout/picocolors'
@@ -81,11 +82,27 @@ async function getViteInfo(viteConfigFromUserApiOptions: InlineConfig | undefine
   //  2) viteConfigFromUserApiOptions
   //  3) viteConfigFromUserViteFile (lowest precedence)
 
-  // Resolve Vike's +mode setting
+  // Resolve Vike's +mode setting and Vite CLI flags
   {
-    const viteConfigFromUserVikeConfig = pick(getVikeConfigFromCliOrEnv().vikeConfigFromCliOrEnv, ['mode'])
+    const { vikeConfigFromCliOrEnv } = getVikeConfigFromCliOrEnv()
+
+    // Handle Vike settings that alias Vite settings
+    const viteConfigFromUserVikeConfig = pick(vikeConfigFromCliOrEnv, ['mode'])
     if (Object.keys(viteConfigFromUserVikeConfig).length > 0) {
       viteConfigFromUserEnhanced = mergeConfig(viteConfigFromUserEnhanced ?? {}, viteConfigFromUserVikeConfig)
+    }
+
+    // Handle Vite CLI flags - get original CLI options (including Vite flags)
+    const allCliOptions = getCliOptions()
+    const viteConfigFromCliFlags: InlineConfig = {}
+
+    // Handle --force flag -> optimizeDeps.force
+    if (allCliOptions?.force !== undefined) {
+      viteConfigFromCliFlags.optimizeDeps = { force: !!allCliOptions.force }
+    }
+
+    if (Object.keys(viteConfigFromCliFlags).length > 0) {
+      viteConfigFromUserEnhanced = mergeConfig(viteConfigFromUserEnhanced ?? {}, viteConfigFromCliFlags)
     }
   }
 
