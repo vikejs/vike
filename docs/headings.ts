@@ -1326,6 +1326,10 @@ function api() {
         url: '/port',
       },
       {
+        title: '`+force`',
+        url: '/force',
+      },
+      {
         title: '`+mode`',
         url: '/mode',
       },
