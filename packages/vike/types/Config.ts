@@ -572,6 +572,13 @@ type ConfigBuiltIn = {
   mode?: string
 
   /**
+   * Disable Vite's cache.
+   *
+   * https://vike.dev/force
+   */
+  force?: boolean
+
+  /**
    * Content Security Policy (CSP).
    *
    * https://vike.dev/csp

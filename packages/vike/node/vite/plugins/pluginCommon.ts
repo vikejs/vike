@@ -111,6 +111,12 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
             setDefault('host', true, configFromUser, configFromVike)
           }
 
+          // https://vike.dev/force
+          if (vikeConfig.config.force !== undefined && configFromUser.optimizeDeps?.force === undefined) {
+            configFromVike.optimizeDeps ??= {}
+            configFromVike.optimizeDeps.force = vikeConfig.config.force
+          }
+
           return configFromVike
         },
       },

@@ -1,0 +1,48 @@
+import { Link } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
+
+<ConfigSpec
+  env="Vite (development-time)"
+  global
+  isTypeOneLiner
+>
+```ts
+boolean
+```
+</ConfigSpec>
+
+Disables [Vite](https://vitejs.dev)'s cache.
+
+Vike's `+force` setting is just an alias for [Vite's CLI `--force` flag](https://vite.dev/guide/cli.html#options) (which sets Vite's [optimizeDeps.force](https://vite.dev/config/dep-optimization-options.html#optimizedeps-force) configuration).
+
+This:
+
+```ts
+// +config.ts
+
+import type { Config } from 'vike/types'
+
+export default {
+  force: true
+} satisfies Config
+```
+
+Is equivalent to that:
+
+```ts
+// vite.config.ts
+
+import type { UserConfig } from 'vite'
+
+export default {
+  optimizeDeps: {
+    force: true
+  }
+} satisfies UserConfig
+```
+
+
+## See also
+
+- [Vite > Dependency Pre-Bundling](https://vite.dev/guide/dep-pre-bundling.html)
+- <Link href="/settings" />

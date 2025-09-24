@@ -277,6 +277,10 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { config: true },
     global: true,
   },
+  force: {
+    env: { config: true },
+    global: true,
+  },
   csp: {
     env: { server: true },
   },
