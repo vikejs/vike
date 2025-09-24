@@ -494,6 +494,7 @@ type ConfigBuiltIn = {
   /** @deprecated See https://vike.dev/disableAutoFullBuild */
   disableAutoFullBuild?: boolean | 'prerender'
 
+  // This is deprecated (since Summer 2025). But don't remove this (yet) — otherwise it will break older Vike extensions that still use it.
   /** @deprecated It's value is now always true. */
   vite6BuilderApp?: true
 
