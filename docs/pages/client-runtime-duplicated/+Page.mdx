@@ -4,16 +4,11 @@ If you get this warning:
 [vike][Warning] Client runtime loaded twice
 ```
 
-Then this means that the page has loaded more than one copy of Vike's client runtime. In other words, the client-side bundle of the page includes Vike's client runtime twice (or more).
+Then this means that the page has loaded more than one copy of Vike's client runtime. In other words, the client runtime's source code is included twice (or more) inside the client-side bundle.
 
-In order to reduce the size of your client, make sure that the client-side JavaScript of a given page includes Vike's client runtime only once.
+In order to reduce the size of your client, make sure the client-side JavaScript of a given page includes Vike's client runtime only once.
 
 You can inspect where Vike's client runtime is included twice:
-
-```bash
-cd dist/client/
-grep -r 'loaded twice'
-```
 
 ```ts
 // vite.config.ts
@@ -24,4 +19,9 @@ export default {
   // Temporarily disable minification to make it easier to inspect /dist/client
   build: { minify: false }
 } satisfies UserConfig
+```
+
+```bash
+cd dist/client/
+grep -r 'loaded twice'
 ```
