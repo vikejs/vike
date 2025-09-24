@@ -12,7 +12,7 @@ const commands = [
   { name: 'dev', desc: 'Start development server' },
   { name: 'build', desc: 'Build for production' },
   { name: 'preview', desc: 'Start preview server using production build' },
-  { name: 'prerender', desc: 'Pre-render pages (only needed when prerender.disableAutoRun is true)' },
+  { name: 'prerender', desc: 'Pre-render pages (only needed when +prerender.disableAutoRun is true)' },
 ] as const
 
 function parseCli(): { command: Command; cliOptions: CliOptions } {
@@ -69,7 +69,7 @@ function getCliOptions() {
 }
 
 function showHelp(): never {
-  const TAB = ' '.repeat(3)
+  const TAB = ' '.repeat(2)
   const nameMaxLength = Math.max(...commands.map((c) => c.name.length))
   console.log(
     [
@@ -83,17 +83,16 @@ function showHelp(): never {
       '',
       'Common CLI options:',
       [
-        `vike dev ${pc.cyan('--host')}`,
-        `vike dev ${pc.cyan('--port')} 80`,
-        `vike build ${pc.cyan('--mode')} staging`,
-        `vike dev ${pc.cyan('--force')}`,
+        `vike dev ${pc.cyan('--host')}          ${TAB}${pc.dim('# Make server available over LAN and public addresses')}`,
+        `vike dev ${pc.cyan('--port')} 80       ${TAB}${pc.dim('# Change the server port')}`,
+        `vike build ${pc.cyan('--mode')} staging${TAB}${pc.dim('# Set the mode to run in')}`,
+        `vike dev ${pc.cyan('--force')}         ${TAB}${pc.dim("# Disable Vite's cache")}`,
       ]
         .map((o) => `  ${pc.dim('$')} ${o}`)
         .join('\n'),
       '',
-      `More Vike settings can be passed over the ${pc.cyan('VIKE_CONFIG')} environment variable or as ${pc.cyan('CLI options')}.`,
+      `More Vike settings can be passed over the ${pc.cyan('VIKE_CONFIG')} environment variable or as ${pc.cyan('CLI option')}.`,
       `More Vite settings can be passed over the ${pc.cyan('VITE_CONFIG')} environment variable.`,
-      ``,
       `See ${pc.underline('https://vike.dev/cli')} for more information.`,
     ].join('\n'),
   )
