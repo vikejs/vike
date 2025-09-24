@@ -572,7 +572,7 @@ type ConfigBuiltIn = {
   mode?: string
 
   /**
-   * Force dependency pre-bundling.
+   * Disable Vite's cache.
    *
    * https://vike.dev/force
    */

@@ -39,17 +39,44 @@ export default {
 } satisfies UserConfig
 ```
 
-The `+force` setting forces Vite to re-bundle dependencies, ignoring previously cached optimized dependencies. This is useful when you want to clear Vite's dependency cache.
+The `+force` setting disables Vite's cache by forcing Vite to re-optimize dependencies, ignoring previously cached optimized dependencies.
+
+## What exactly does it do?
+
+When you use `--force`, Vite will:
+
+1. **Ignore the dependency cache**: Vite normally caches optimized dependencies in `node_modules/.vite/deps/` to speed up subsequent builds. The `--force` flag tells Vite to ignore this cache entirely.
+
+2. **Re-analyze all dependencies**: Vite will re-scan your project to detect which dependencies need to be pre-bundled, even if they were already processed before.
+
+3. **Re-bundle dependencies**: All dependencies will be re-processed and re-bundled from scratch, applying the latest optimization strategies.
+
+4. **Update the cache**: After re-bundling, Vite will update the cache with the newly optimized dependencies.
+
+## When to use it
+
+The `--force` flag is useful when:
+
+- **Dependencies aren't updating**: You've updated a dependency but Vite is still using the old cached version
+- **Build issues after dependency changes**: You're experiencing unexpected behavior after adding, removing, or updating dependencies
+- **Debugging dependency-related problems**: You suspect that cached dependencies might be causing issues
+- **After major dependency updates**: When you've made significant changes to your `package.json`
+- **CI/CD environments**: To ensure a clean build without relying on potentially stale cache
 
 ## Usage
 
 ```bash
-# Force dependency pre-bundling (clear cache)
+# Disable Vite's cache during development
 $ vike dev --force
 
-# Also works with build
+# Disable Vite's cache during build
 $ vike build --force
+
+# Using environment variable
+$ VIKE_CONFIG="{force:true}" vike dev
 ```
+
+> **Note**: Using `--force` will make the initial startup slower since dependencies need to be re-processed, but subsequent hot reloads during development will still be fast.
 
 ## See also
 
