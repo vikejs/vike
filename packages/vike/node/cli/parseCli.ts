@@ -82,7 +82,12 @@ function showHelp(): never {
       ),
       '',
       'Common CLI options:',
-      [`vike dev ${pc.cyan('--host')}`, `vike dev ${pc.cyan('--port')} 80`, `vike build ${pc.cyan('--mode')} staging`, `vike dev ${pc.cyan('--force')}`]
+      [
+        `vike dev ${pc.cyan('--host')}`,
+        `vike dev ${pc.cyan('--port')} 80`,
+        `vike build ${pc.cyan('--mode')} staging`,
+        `vike dev ${pc.cyan('--force')}`,
+      ]
         .map((o) => `  ${pc.dim('$')} ${o}`)
         .join('\n'),
       '',
