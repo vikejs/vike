@@ -661,12 +661,8 @@ function setCliAndApiOptions(
   }
 }
 function getVikeConfigFromCliOrEnv() {
-  const allCliOptions = getCliOptions()
+  const configFromCliOptions = getCliOptions()
   const configFromEnvVar = getEnvVarObject('VIKE_CONFIG')
-
-  // Separate Vike configs from Vite flags
-  const { vikeConfigs: configFromCliOptions, viteFlags } = separateVikeConfigsFromViteFlags(allCliOptions)
-
   const vikeConfigFromCliOrEnv = {
     ...configFromCliOptions, // Lower precedence
     ...configFromEnvVar, // Higher precedence
@@ -675,7 +671,6 @@ function getVikeConfigFromCliOrEnv() {
     vikeConfigFromCliOrEnv,
     configFromCliOptions,
     configFromEnvVar,
-    viteFlags, // Return Vite flags separately
   }
 }
 
@@ -1533,51 +1528,4 @@ function getVikeConfigDummy(esbuildCache: EsbuildCache): VikeConfigInternal {
   globalObject.vikeConfigSync = vikeConfigDummy
   globalObject.isV1Design_ = true
   return vikeConfigDummy
-}
-
-/**
- * Separate Vike configs from Vite CLI flags
- */
-function separateVikeConfigsFromViteFlags(allCliOptions: Record<string, unknown> | null): {
-  vikeConfigs: Record<string, unknown>
-  viteFlags: Record<string, unknown>
-} {
-  if (!allCliOptions) {
-    return { vikeConfigs: {}, viteFlags: {} }
-  }
-
-  // List of Vite CLI flags that should be passed through to Vite config
-  const viteFlags = [
-    // Core Vite flags
-    'force',
-    'clearScreen',
-    'base',
-    'logLevel',
-    'config',
-    // Build-specific flags
-    'target',
-    'outDir',
-    'assetsDir',
-    'assetsInlineLimit',
-    'ssr',
-    'sourcemap',
-    'minify',
-    'manifest',
-    'ssrManifest',
-    'emptyOutDir',
-    'watch',
-  ]
-
-  const vikeConfigs: Record<string, unknown> = {}
-  const viteCliFlags: Record<string, unknown> = {}
-
-  Object.entries(allCliOptions).forEach(([key, value]) => {
-    if (viteFlags.includes(key)) {
-      viteCliFlags[key] = value
-    } else {
-      vikeConfigs[key] = value
-    }
-  })
-
-  return { vikeConfigs, viteFlags: viteCliFlags }
 }

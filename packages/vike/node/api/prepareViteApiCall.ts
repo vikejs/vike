@@ -81,24 +81,11 @@ async function getViteInfo(viteConfigFromUserApiOptions: InlineConfig | undefine
   //  2) viteConfigFromUserApiOptions
   //  3) viteConfigFromUserViteFile (lowest precedence)
 
-  // Resolve Vike's +mode setting and Vite CLI flags
+  // Resolve Vike's +mode setting
   {
-    const { vikeConfigFromCliOrEnv, viteFlags } = getVikeConfigFromCliOrEnv()
-
-    // Extract Vike-specific settings (mode is handled as a Vike setting)
-    const viteConfigFromUserVikeConfig = pick(vikeConfigFromCliOrEnv, ['mode'])
-
-    // Convert Vite CLI flags to Vite config format
-    const viteConfigFromCliFlags = extractViteConfigFromCliFlags(viteFlags)
-
-    // Apply Vike settings
+    const viteConfigFromUserVikeConfig = pick(getVikeConfigFromCliOrEnv().vikeConfigFromCliOrEnv, ['mode'])
     if (Object.keys(viteConfigFromUserVikeConfig).length > 0) {
       viteConfigFromUserEnhanced = mergeConfig(viteConfigFromUserEnhanced ?? {}, viteConfigFromUserVikeConfig)
-    }
-
-    // Apply Vite CLI flags
-    if (Object.keys(viteConfigFromCliFlags).length > 0) {
-      viteConfigFromUserEnhanced = mergeConfig(viteConfigFromUserEnhanced ?? {}, viteConfigFromCliFlags)
     }
   }
 
@@ -220,52 +207,4 @@ async function assertViteRoot2(
 function assertViteRoot(root: string, config: ResolvedConfig) {
   if (globalObject.root) assert(normalizeViteRoot(globalObject.root) === normalizeViteRoot(root))
   assertUsage(normalizeViteRoot(root) === normalizeViteRoot(config.root), errMsg)
-}
-
-/**
- * Extract Vite-specific CLI flags from CLI options and convert them to Vite config format
- */
-function extractViteConfigFromCliFlags(cliOptions: Record<string, unknown>): InlineConfig {
-  const viteConfig: InlineConfig = {}
-
-  // Handle --force flag -> optimizeDeps.force
-  if (cliOptions.force !== undefined) {
-    viteConfig.optimizeDeps = { force: !!cliOptions.force }
-  }
-
-  // Handle --clearScreen flag
-  if (cliOptions.clearScreen !== undefined) {
-    viteConfig.clearScreen = !!cliOptions.clearScreen
-  }
-
-  // Handle --base flag
-  if (cliOptions.base !== undefined && typeof cliOptions.base === 'string') {
-    viteConfig.base = cliOptions.base
-  }
-
-  // Handle --logLevel flag
-  if (cliOptions.logLevel !== undefined && typeof cliOptions.logLevel === 'string') {
-    viteConfig.logLevel = cliOptions.logLevel as any
-  }
-
-  // Handle build-specific flags
-  const buildConfig: Record<string, unknown> = {}
-
-  if (cliOptions.target !== undefined) buildConfig.target = cliOptions.target
-  if (cliOptions.outDir !== undefined) buildConfig.outDir = cliOptions.outDir
-  if (cliOptions.assetsDir !== undefined) buildConfig.assetsDir = cliOptions.assetsDir
-  if (cliOptions.assetsInlineLimit !== undefined) buildConfig.assetsInlineLimit = cliOptions.assetsInlineLimit
-  if (cliOptions.ssr !== undefined) buildConfig.ssr = cliOptions.ssr
-  if (cliOptions.sourcemap !== undefined) buildConfig.sourcemap = !!cliOptions.sourcemap
-  if (cliOptions.minify !== undefined) buildConfig.minify = cliOptions.minify
-  if (cliOptions.manifest !== undefined) buildConfig.manifest = cliOptions.manifest
-  if (cliOptions.ssrManifest !== undefined) buildConfig.ssrManifest = cliOptions.ssrManifest
-  if (cliOptions.emptyOutDir !== undefined) buildConfig.emptyOutDir = !!cliOptions.emptyOutDir
-  if (cliOptions.watch !== undefined) buildConfig.watch = !!cliOptions.watch
-
-  if (Object.keys(buildConfig).length > 0) {
-    viteConfig.build = buildConfig
-  }
-
-  return viteConfig
 }
