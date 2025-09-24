@@ -333,7 +333,7 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/extends
    */
-  extends?: Config | Config[] | ImportString | ImportString[]
+  extends?: Config | ImportString | (Config | ImportString)[]
 
   /** Hook called before the page is rendered.
    *
