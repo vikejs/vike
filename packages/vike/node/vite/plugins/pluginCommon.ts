@@ -112,11 +112,9 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
           }
 
           // https://vike.dev/force
-          if (vikeConfig.config.force !== undefined) {
-            if (!configFromVike.optimizeDeps) configFromVike.optimizeDeps = {}
-            if (configFromUser.optimizeDeps?.force === undefined) {
-              configFromVike.optimizeDeps.force = vikeConfig.config.force
-            }
+          if (vikeConfig.config.force !== undefined && configFromUser.optimizeDeps?.force === undefined) {
+            configFromVike.optimizeDeps ??= {}
+            configFromVike.optimizeDeps.force = vikeConfig.config.force
           }
 
           return configFromVike
