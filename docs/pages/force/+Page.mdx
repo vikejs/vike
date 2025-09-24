@@ -1,0 +1,57 @@
+import { Link } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
+
+<ConfigSpec
+  env="Vite (development & build-time)"
+  global
+  isTypeOneLiner
+>
+```ts
+boolean
+```
+</ConfigSpec>
+
+Vike's `+force` setting is an alias for setting Vite's [optimizeDeps.force](https://vite.dev/config/dep-optimization-options.html#optimizedeps-force).
+
+This:
+
+```ts
+// +config.ts
+
+import type { Config } from 'vike/types'
+
+export default {
+  force: true
+} satisfies Config
+```
+
+Is equivalent to that:
+
+```ts
+// vite.config.ts
+
+import type { UserConfig } from 'vite'
+
+export default {
+  optimizeDeps: {
+    force: true
+  }
+} satisfies UserConfig
+```
+
+The `+force` setting forces Vite to re-bundle dependencies, ignoring previously cached optimized dependencies. This is useful when you want to clear Vite's dependency cache.
+
+## Usage
+
+```bash
+# Force dependency pre-bundling (clear cache)
+$ vike dev --force
+
+# Also works with build
+$ vike build --force
+```
+
+## See also
+
+- <Link href="/settings" />
+- [Vite > Dependency Pre-Bundling](https://vite.dev/guide/dep-pre-bundling.html)

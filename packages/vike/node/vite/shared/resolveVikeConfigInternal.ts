@@ -661,12 +661,8 @@ function setCliAndApiOptions(
   }
 }
 function getVikeConfigFromCliOrEnv() {
-  const allCliOptions = getCliOptions()
+  const configFromCliOptions = getCliOptions()
   const configFromEnvVar = getEnvVarObject('VIKE_CONFIG')
-
-  // Filter out Vite-specific CLI flags from Vike config options
-  const configFromCliOptions = filterOutViteFlags(allCliOptions)
-
   const vikeConfigFromCliOrEnv = {
     ...configFromCliOptions, // Lower precedence
     ...configFromEnvVar, // Higher precedence
@@ -676,25 +672,6 @@ function getVikeConfigFromCliOrEnv() {
     configFromCliOptions,
     configFromEnvVar,
   }
-}
-
-/**
- * Filter out Vite-specific CLI flags that should not be treated as Vike config options
- */
-function filterOutViteFlags(cliOptions: Record<string, unknown> | null): Record<string, unknown> {
-  if (!cliOptions) return {}
-
-  // List of Vite CLI flags that should be excluded from Vike config validation
-  const viteFlags = ['force']
-
-  const vikeOptions: Record<string, unknown> = {}
-  Object.entries(cliOptions).forEach(([key, value]) => {
-    if (!viteFlags.includes(key)) {
-      vikeOptions[key] = value
-    }
-  })
-
-  return vikeOptions
 }
 
 function getSourceNonConfigFile(
