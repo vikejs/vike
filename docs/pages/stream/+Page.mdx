@@ -38,6 +38,10 @@ export default {
 } satisfies Config
 ```
 
+> **Why doesn't it seem to work?** If you enable HTML Streaming but the HTML is still sent all at once, note that:
+> - **The <Link href="/data">`+data` hook</Link> doesn't trigger HTML Streaming** — the `+data` hook applies to the whole page and is fully awaited before rendering starts. [A slow `+data` hook](https://github.com/vikejs/vike-react/pull/189/commits/a834d9ba0f259f0f2d332e46a99cc9d895cbedf2) still results in the HTML being sent all at once. To see HTML streaming in action, use a Vike extension like [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#readme)/[`vike-vue-query`](https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-query#readme)/[`vike-solid-query`](https://github.com/vikejs/vike-solid/tree/main/packages/vike-solid-query#readme) (and the upcoming Telefunc integrations such as [`vike-react-telefunc`](https://github.com/vikejs/vike-react/issues/131)).
+> - **By default, HTML streaming is disabled for bots**. For example, the [`User-Agent` header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/User-Agent) sent by [`curl`](https://curl.se) is interpreted as a bot. See [`react-streaming` > Bots](https://github.com/brillout/react-streaming#bots).
+
 ## Inheritance
 
 Enable for all your pages:
