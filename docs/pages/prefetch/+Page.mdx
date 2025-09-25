@@ -12,15 +12,11 @@ Using `prefetch()` enables you to speed up page navigation when you can predict 
 
 For example:
 
-```tsx ts-only
+```tsx
 import { prefetch } from 'vike/client/router'
 
 function Form() {
-   return (
-     <form onSubmit={onSubmit}>
-       {/* ... */}
-     </form>
-   )
+  return <form onSubmit={onSubmit}>{/* ... */}</form>
 }
 
 async function onSubmit() {

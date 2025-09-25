@@ -338,7 +338,7 @@ In production, `vike-server` compresses all Vike responses.
 
 You can disable it:
 
-```ts ts-only
+```ts
 apply(app, {
   compress: false
 })
@@ -349,7 +349,7 @@ apply(app, {
 
 If you want to use HTTPS in development, pass `createServer` and the HTTPS certificates to `serve()`:
 
-```ts ts-only
+```ts
 import { createServer } from 'node:https'
 /* Or with HTTP2:
 import { createSecureServer as createServer } from 'node:http2'
@@ -364,7 +364,7 @@ serve(app, {
     key: fs.readFileSync('/etc/letsencrypt/live/example.com/privkey.pem'),
     cert: fs.readFileSync('/etc/letsencrypt/live/example.com/fullchain.pem')
     // ... other createServer() options ...
-  },
+  }
 })
 ```
 

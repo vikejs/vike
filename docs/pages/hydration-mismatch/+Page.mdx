@@ -57,7 +57,7 @@ This component causes a hydration mismatch because the milliseconds rendered to 
 
 Instead, to prevent the hydration mismatch:
 
-```ts ts-only
+```ts
 export { onBeforeRender }
 
 async function onBeforeRender() {
@@ -118,7 +118,7 @@ See:
 
 Use the `data-allow-mismatch` attribute:
 
-```vue ts-only
+```vue
 <div data-allow-mismatch="text">{{ data.toLocaleString() }}</div>
 ```
 

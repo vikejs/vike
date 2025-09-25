@@ -10,15 +10,11 @@ The `navigate('/some/url')` function enables you to programmatically switch page
 
 For example, to redirect the user after a successful form submission:
 
-```tsx ts-only
+```tsx
 import { navigate } from 'vike/client/router'
 
 function Form() {
-   return (
-     <form onSubmit={onSubmit}>
-       {/* ... */}
-     </form>
-   )
+  return <form onSubmit={onSubmit}>{/* ... */}</form>
 }
 
 async function onSubmit() {
@@ -49,7 +45,7 @@ async function onSubmit() {
 
 If you want to change the URL completely independently of Vike then use [`history.pushState()`](https://developer.mozilla.org/en-US/docs/Web/API/History/pushState) instead of `navigate()`.
 
-```ts ts-only
+```ts
 // Somewhere in your client-side code
 window.history.pushState(null, '', '/some-url')
 ```
@@ -58,7 +54,7 @@ You can then implement your navigation handling by listening to the [`popstate` 
 
 <Warning>**You must handle the `popstate` event**, otherwise you'll break the browser's back- and forward history button.</Warning>
 
-```ts ts-only
+```ts
 window.addEventListener('popstate', () => {
   // Vike sets triggeredBy to 'vike' | 'browser' | 'user'
   // https://vike.dev/navigate#history-pushstate

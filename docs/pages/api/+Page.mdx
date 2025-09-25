@@ -15,7 +15,7 @@ Common use cases:
 
 Start the development server:
 
-```ts ts-only
+```ts
 import { dev } from 'vike/api'
 
 console.log('Starting development server...')
@@ -31,7 +31,7 @@ console.log(`Development server is ready at http://localhost:${port}`)
 
 Return & options:
 
-```ts ts-only
+```ts
 const {
   viteConfig, // Resolved Vite configuration
   viteServer // Vite's development server
@@ -59,7 +59,7 @@ Vite types:
 
 Build for production:
 
-```ts ts-only
+```ts
 import { build } from 'vike/api'
 
 console.log('Building app...')
@@ -69,7 +69,7 @@ console.log('Build is done')
 
 Return & options:
 
-```ts ts-only
+```ts
 await build({
   vikeConfig, // Vike configuration (optional)
   viteConfig // Vite configuration (optional)
@@ -95,7 +95,7 @@ Vite types:
 
 Start a server to preview the production build:
 
-```ts ts-only
+```ts
 import { preview } from 'vike/api'
 
 console.log('Starting preview server...')
@@ -110,7 +110,7 @@ console.log(`Preview server is ready at http://localhost:${port}`)
 
 Return & options:
 
-```ts ts-only
+```ts
 const {
   viteConfig, // Resolved Vite configuration
   viteServer // Vite's development server
@@ -138,7 +138,7 @@ Vite types:
 
 <Link href="/pre-rendering">Pre-render</Link> pages (see <Link href="/prerender#disableautorun">`prerender.disableAutoRun`</Link>):
 
-```ts ts-only
+```ts
 import { prerender } from 'vike/api'
 
 console.log('Pre-rendering pages...')
@@ -148,7 +148,7 @@ console.log('Pre-rendering is done')
 
 Return & options:
 
-```ts ts-only
+```ts
 const {
   viteConfig // Resolved Vite configuration
 } = await prerender({
@@ -169,7 +169,7 @@ See:
 - <Link href='#access-globalcontext' />
 - <Link href='#option-vikeconfig' />
   > You can pass <Link href="/prerender">`+prerender` settings</Link> like this:
-  > ```ts ts-only
+  > ```ts
   > await prerender({
   >   vikeConfig: {
   >     prerender: {
@@ -180,7 +180,7 @@ See:
   > })
   > ```
 - **`pageContextInit`**: Initial <Link href="/pageContext">`pageContext`</Link> values.
-  ```ts ts-only
+  ```ts
   prerender({
     pageContextInit: {
       someData: 42
@@ -191,7 +191,7 @@ See:
   > See also: <Link href="/pageContext#lifecycle" />.
 - **`onPagePrerender()`**: control where/how HTML files are written.
   <Warning>This option is a beta feature: expect breaking changes in any minor version update.</Warning>
-  ```ts ts-only
+  ```ts
   prerender({
     // If onPagePrerender() is set, then Vike won't create HTML files
     onPagePrerender(pageContext) {
@@ -209,7 +209,7 @@ Vite types:
 
 You can access the <Link href="/globalContext">`globalContext` object</Link> like this:
 
-```ts ts-only
+```ts
 import { someApiFunction } from 'vike/api'
 import { getGlobalContext } from 'vike'
 

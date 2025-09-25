@@ -60,14 +60,14 @@ See also <Link href="/error-page" />.
 
 You can use any error tracker, such as [Sentry](https://sentry.io/), [Bugsnag](https://www.bugsnag.com/), [Rollbar](https://rollbar.com/), or your own custom error tracking. For that, make sure to use the error tracker's server-side interceptor. For example with Sentry:
 
-```ts ts-only
-import * as Sentry from "@sentry/node";
+```ts
+import * as Sentry from '@sentry/node'
 
 // ...
 
-    if (pageContext.errorWhileRendering) {
-      Sentry.captureException(e)
-    }
+if (pageContext.errorWhileRendering) {
+  Sentry.captureException(e)
+}
 
 // ...
 ```

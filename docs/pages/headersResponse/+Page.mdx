@@ -4,7 +4,7 @@ import { ConfigSpec } from '../../components'
 <ConfigSpec
   env="server"
 >
-```ts ts-only
+```ts ts-only hide-menu
 type Value =
   | Record<string, string>
   | [string, string][]
@@ -50,7 +50,7 @@ export async function headersResponse(pageContext: PageContextServer) {
 
 You can modify and remove headers:
 
-```ts ts-only
+```ts
 // Dynamically adding/modifying header
 pageContext.headersResponse.set('Set-Cookie', 'sessionId=abc123')
 // Dynamically removing header
@@ -89,7 +89,7 @@ It's a list of string tuples `[string, string][]` — for example:
 
 You can convert it to a [standard `Headers` object](https://developer.mozilla.org/en-US/docs/Web/API/Headers) by using `new Headers()`:
 
-```ts ts-only
+```ts
 const headers = new Headers(pageContext.httpResponse.headers)
 ```
 

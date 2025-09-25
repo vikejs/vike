@@ -75,7 +75,7 @@ When using Vue, it's often used for adding the HTML targets of teleports.
 Teleports work out of the box when using `<Teleport to="teleported">` and you don't have to use `bodyHtml{Begin,End}` then.
 
 > `vike-vue` always inserts this at the end of the `<body>` tag:
-> ```vue ts-only
+> ```vue
 > <div id="teleported">${
 >   pageContext.ssrContext.teleports?.['#teleported'] ?? ''
 > }</div>

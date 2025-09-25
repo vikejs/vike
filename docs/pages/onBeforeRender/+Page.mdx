@@ -30,7 +30,7 @@ The central difference between the two hooks is that the value returned by `data
 export { data }
 
 function data() {
-  //~const someValue = /* ... */
+  // @detype-uncomment const someValue = /* ... */
   // pageContext.data === someValue
   return someValue
 }
@@ -43,8 +43,8 @@ function data() {
 export { onBeforeRender }
 
 function onBeforeRender() {
-  //~const someValue1 = /* ... */
-  //~const someValue2 = /* ... */
+  // @detype-uncomment const someValue1 = /* ... */
+  // @detype-uncomment const someValue2 = /* ... */
   // pageContext.prop1 === someValue1
   // pageContext.prop2 === someValue2
   return {

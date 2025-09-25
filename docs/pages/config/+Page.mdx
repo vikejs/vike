@@ -29,12 +29,12 @@ export default {
 ```ts
 // /pages/product/@id/Page.ts
 
-//~export default /* ... */
+// @detype-uncomment export default /* ... */
 ```
 ```ts
 // /pages/product/@id/Layout.ts
 
-//~export default /* ... */
+// @detype-uncomment export default /* ... */
 ```
 
 For more convenience, you can prepend `+` to the file names and do this:
@@ -318,7 +318,7 @@ Into:
 
 import type { Config } from 'vike/types'
 import Layout from '../layouts/LayoutDefault.jsx'// [!code --]
-// @detype-rename DummyLayout>Layout
+// @detype-replace DummyLayout Layout
 const DummyLayout = 'import:../layouts/LayoutDefault.jsx:default'// [!code ++]
 
 export default {
@@ -332,7 +332,7 @@ This enables Vike to load the file `/pages/+config.js` without having to load `L
 
 It's similar to when you import images:
 
-```ts ts-only
+```ts
 import logo from '../images/logo.svg'
 // When you import an image, you don't actually load it: you get a URL instead.
 console.log(logo) // /assets/logo.svg
