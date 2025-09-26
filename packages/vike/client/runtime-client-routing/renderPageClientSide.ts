@@ -7,7 +7,6 @@ export type { PageContextBegin }
 
 import {
   assert,
-  isSameErrorMessage,
   objectAssign,
   redirectHard,
   getGlobalObject,
@@ -16,6 +15,7 @@ import {
   genPromise,
   isCallable,
   catchInfiniteLoop,
+  isObject,
 } from './utils.js'
 import {
   getPageContextFromClientHooks,
@@ -43,21 +43,23 @@ import {
 import { pushHistoryState } from './history.js'
 import {
   assertNoInfiniteAbortLoop,
+  type ErrorAbort,
   getPageContextFromAllRewrites,
   isAbortError,
   logAbortErrorHandled,
+  PageContextAbort,
   type PageContextFromRewrite,
 } from '../../shared/route/abort.js'
 import { route } from '../../shared/route/index.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { setScrollPosition, type ScrollTarget } from './setScrollPosition.js'
 import { scrollRestoration_initialRenderIsDone } from './scrollRestoration.js'
-import { getErrorPageId } from '../../shared/error-page.js'
+import { getErrorPageId, isErrorPage } from '../../shared/error-page.js'
 import type { PageContextConfig } from '../../shared/getPageFiles.js'
 import { setPageContextCurrent } from './getPageContextCurrent.js'
 import { getRouteStringParameterList } from '../../shared/route/resolveRouteString.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
-import type { PageContextClient } from '../../types/PageContext.js'
+import type { PageContextClient, PageContextInternalClient } from '../../types/PageContext.js'
 import { execHookDirect, type PageContextExecHook, execHook } from '../../shared/hooks/execHook.js'
 import {
   type PageContextForPublicUsageClient,
@@ -73,8 +75,9 @@ const globalObject = getGlobalObject<{
   onRenderClientPreviousPromise?: Promise<unknown>
   isFirstRenderDone?: true
   isTransitioning?: true
+  //https://vike.dev/pageContext#previousPageContext
   previousPageContext?: PreviousPageContext
-  renderedPageContext?: PageContextClient
+  renderedPageContext?: PageContextInternalClient & PageContext_loadPageConfigsLazyClientSide
   firstRenderStartPromise: Promise<void>
   firstRenderStartPromiseResolve: () => void
 }>(
@@ -152,7 +155,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
   async function renderPageNominal() {
     const onError = async (err: unknown) => {
-      await renderPageOnError({ err })
+      await handleError({ err })
     }
 
     const pageContext = await getPageContextBegin(false, pageContextBeginArgs)
@@ -322,106 +325,84 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
   }
 
-  // When the normal page threw an error
+  // When the normal page threw an error:
   // - Can be a URL rewrite upon `throw render('/some-url')`
   // - Can be rendering the error page
   // - Can be rendering Vike's generic error page (if no error page is defined, or if the error page throws an error)
-  async function renderPageOnError(args: { err?: unknown; pageContextError?: Record<string, unknown> }) {
-    const onError = (err: unknown) => {
-      if (!isSameErrorMessage(err, args.err)) {
-        /* When we can't render the error page, we prefer showing a blank page over letting the server-side try because otherwise:
-           - We risk running into an infinite loop of reloads which would overload the server.
-           - An infinite reloading page is a even worse UX than a blank page.
-        redirectHard(urlOriginal)
-        */
-        console.error(err)
-      }
+  async function handleError(args: { err: unknown }) {
+    const { err } = args
+    assert(err)
+
+    // Logging
+    if (!isAbortError(err)) {
+      // We don't swallow 404 errors:
+      //  - On the server-side, Vike swallows / doesn't show any 404 error log because it's expected that a user may go to some random non-existent URL. (We don't want to flood the app's error tracking with 404 logs.)
+      //  - On the client-side, if the user navigates to a 404 then it means that the UI has a broken link. (It isn't expected that users can go to some random URL using the client-side router, as it would require, for example, the user to manually change the URL of a link by manually manipulating the DOM which highly unlikely.)
+      logErrorClient(err)
+    } else {
+      // We swallow throw redirect()/render() called by client-side hooks onBeforeRender()/data()/guard()
+      // We handle the abort error down below.
     }
 
-    if ('err' in args) {
-      const { err } = args
-      assert(err)
-
-      if (!isAbortError(err)) {
-        // We don't swallow 404 errors:
-        //  - On the server-side, Vike swallows / doesn't show any 404 error log because it's expected that a user may go to some random non-existent URL. (We don't want to flood the app's error tracking with 404 logs.)
-        //  - On the client-side, if the user navigates to a 404 then it means that the UI has a broken link. (It isn't expected that users can go to some random URL using the client-side router, as it would require, for example, the user to manually change the URL of a link by manually manipulating the DOM which highly unlikely.)
-        console.error(err)
-      } else {
-        // We swallow throw redirect()/render() called by client-side hooks onBeforeRender()/data()/guard()
-        // We handle the abort error down below.
-      }
-    }
-
+    // pageContext
     const pageContext = await getPageContextBegin(true, pageContextBeginArgs)
     if (isRenderOutdated()) return
+    objectAssign(pageContext, {
+      errorWhileRendering: err,
+    })
 
-    objectAssign(pageContext, { routeParams: {} })
-    if (args.pageContextError) objectAssign(pageContext, args.pageContextError)
+    // throw redirect()/render()
+    let pageContextAbort: undefined | PageContextAbort
+    if (isAbortError(err)) {
+      const res = await handleAbortError(err, pageContext)
+      if (res.skip) return
+      pageContextAbort = res.pageContextAbort
+    }
 
-    if ('err' in args) {
-      const { err } = args
-      assert(!('errorWhileRendering' in pageContext))
-      objectAssign(pageContext, { errorWhileRendering: err })
+    // Render error page
+    await renderErrorPage(pageContext, args, pageContextAbort)
+  }
 
-      if (isAbortError(err)) {
-        const errAbort = err
-        logAbortErrorHandled(err, !import.meta.env.DEV, pageContext)
-        const pageContextAbort = errAbort._pageContextAbort
-
-        // throw render('/some-url')
-        if (pageContextAbort._urlRewrite) {
-          await renderPageClientSide({
-            ...renderArgs,
-            scrollTarget: undefined,
-            pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAbort],
-          })
-          return
-        }
-
-        // throw redirect('/some-url')
-        if (pageContextAbort._urlRedirect) {
-          const urlRedirect = pageContextAbort._urlRedirect.url
-          if (!urlRedirect.startsWith('/')) {
-            // External redirection
-            redirectHard(urlRedirect)
-            return
-          } else {
-            await renderPageClientSide({
-              ...renderArgs,
-              scrollTarget: undefined,
-              urlOriginal: urlRedirect,
-              overwriteLastHistoryEntry: false,
-              isBackwardNavigation: false,
-              redirectCount: redirectCount + 1,
-            })
-          }
-          return
-        }
-
-        // throw render(statusCode)
-        assert(pageContextAbort.abortStatusCode)
-        assert(!('urlOriginal' in pageContextAbort))
-        objectAssign(pageContext, pageContextAbort)
-        if (pageContextAbort.abortStatusCode === 404) {
-          objectAssign(pageContext, { is404: true })
-        }
-      } else {
-        objectAssign(pageContext, { is404: false })
-      }
+  async function renderErrorPage(
+    pageContext: PageContextBegin,
+    args: { err: unknown },
+    pageContextAbort: PageContextAbort | undefined,
+  ) {
+    const onError = (err: unknown) => {
+      /* When we can't render the error page, we prefer showing a blank page over letting the server-side try because otherwise:
+         - We risk running into an infinite loop of reloads which would overload the server.
+         - An infinite reloading page is a even worse UX than a blank page.
+      redirectHard(urlOriginal)
+      */
+      logErrorClient(err)
     }
 
     const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._globalContext._pageConfigs)
     if (!errorPageId) throw new Error('No error page defined.')
     objectAssign(pageContext, {
       pageId: errorPageId,
+      routeParams: {},
     })
+
+    // throw render(statusCode)
+    if (pageContextAbort) {
+      assert(pageContextAbort.abortStatusCode)
+      assert(!('urlOriginal' in pageContextAbort))
+      objectAssign(pageContext, pageContextAbort)
+      objectAssign(pageContext, { is404: pageContextAbort.abortStatusCode === 404 })
+    } else {
+      objectAssign(pageContext, { is404: false })
+    }
 
     const isClientRoutable = await isClientSideRoutable(pageContext.pageId, pageContext)
     if (isRenderOutdated()) return
     if (!isClientRoutable) {
       redirectHard(urlOriginal)
       return
+    }
+
+    if (import.meta.env.DEV || globalThis.__VIKE__IS_DEBUG) {
+      assertInfo(false, `Rendering error page ${errorPageId}`, { onlyOnce: false })
     }
 
     const res = await loadPageConfigsLazyClientSideAndExecHook(pageContext, isFirstRender, isRenderOutdated)
@@ -463,6 +444,48 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     await renderPageView(pageContext, args)
   }
 
+  async function handleAbortError(
+    err: ErrorAbort,
+    pageContext: PageContextBegin,
+  ): Promise<{ skip: true; pageContextAbort?: undefined } | { pageContextAbort: PageContextAbort; skip?: undefined }> {
+    const errAbort = err
+    logAbortErrorHandled(err, !import.meta.env.DEV, pageContext)
+    const pageContextAbort = errAbort._pageContextAbort
+
+    // throw render('/some-url')
+    if (pageContextAbort._urlRewrite) {
+      await renderPageClientSide({
+        ...renderArgs,
+        scrollTarget: undefined,
+        pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAbort],
+      })
+      return { skip: true }
+    }
+
+    // throw redirect('/some-url')
+    if (pageContextAbort._urlRedirect) {
+      const urlRedirect = pageContextAbort._urlRedirect.url
+      if (!urlRedirect.startsWith('/')) {
+        // External redirection
+        redirectHard(urlRedirect)
+        return { skip: true }
+      } else {
+        await renderPageClientSide({
+          ...renderArgs,
+          scrollTarget: undefined,
+          urlOriginal: urlRedirect,
+          overwriteLastHistoryEntry: false,
+          isBackwardNavigation: false,
+          redirectCount: redirectCount + 1,
+        })
+      }
+      return { skip: true }
+    }
+
+    // throw render(statusCode)
+    return { pageContextAbort }
+  }
+
   async function renderPageView(
     pageContext: PageContextBeforeRenderClient &
       PageContextBegin & {
@@ -473,11 +496,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   ) {
     const onError = async (err: unknown) => {
       if (!isErrorPage) {
-        await renderPageOnError({ err })
+        await handleError({ err })
       } else {
-        if (!isSameErrorMessage(err, isErrorPage.err)) {
-          console.error(err)
-        }
+        logErrorClient(err)
       }
     }
 
@@ -496,6 +517,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       try {
         await execHookOnRenderClient(pageContext, preparePageContextForPublicUsageClient)
       } catch (err) {
+        assert(err)
         onRenderClientError = err
       }
       globalObject.onRenderClientPreviousPromise = undefined
@@ -563,7 +585,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     addLinkPrefetchHandlers_watch()
     addLinkPrefetchHandlers()
 
-    globalObject.renderedPageContext = pageContext as any as PageContextClient
+    globalObject.renderedPageContext = pageContext
 
     stampFinished(urlOriginal)
   }
@@ -633,21 +655,19 @@ function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
 }
 
 function disableClientRouting(err: unknown, log: boolean) {
-  assert(isErrorFetchingStaticAssets(err))
-
   globalObject.clientRoutingIsDisabled = true
 
+  assert(isErrorFetchingStaticAssets(err))
   if (log) {
-    // We don't use console.error() to avoid flooding error trackers such as Sentry
+    // We purposely don't use console.error() to avoid flooding error trackers such as Sentry
     console.log(err)
   }
-  // @ts-ignore Since dist/cjs/client/ is never used, we can ignore this error.
-  const isProd: boolean = import.meta.env.PROD
+
   assertInfo(
     false,
     [
       'Failed to fetch static asset.',
-      isProd ? 'This usually happens when a new frontend is deployed.' : null,
+      import.meta.env.PROD ? 'This usually happens when a new frontend is deployed.' : null,
       'Falling back to Server Routing.',
       '(The next page navigation will use Server Routing instead of Client Routing.)',
     ]
@@ -732,7 +752,7 @@ function areKeysEqual(key1: string | string[], key2: string | string[]): boolean
  * https://vike.dev/getPageContextClient
  */
 function getPageContextClient(): PageContextClient | null {
-  return globalObject.renderedPageContext ?? null
+  return (globalObject.renderedPageContext as any) ?? null
 }
 
 type PageContextExecuteHook = Omit<
@@ -798,4 +818,30 @@ function handleErrorFetchingStaticAssets(
   redirectHard(pageContext.urlOriginal)
 
   return true
+}
+
+// [HMR] If error page is shown => re-render whole page
+if (import.meta.env.DEV && import.meta.hot)
+  import.meta.hot.on('vite:afterUpdate', () => {
+    const pageContext = globalObject.renderedPageContext
+    if (pageContext?.pageId && isErrorPage(pageContext.pageId, pageContext._globalContext._pageConfigs)) {
+      renderPageClientSide({
+        scrollTarget: { preserveScroll: false },
+        urlOriginal: getCurrentUrl(),
+        overwriteLastHistoryEntry: true,
+        isBackwardNavigation: false,
+      })
+    }
+  })
+
+function logErrorClient(err: unknown) {
+  if (
+    isObject(err) &&
+    // Set by vike-react
+    // https://github.com/vikejs/vike-react/blob/195a208c6b77e7f34496e1f637278a36c60fbe07/packages/vike-react/src/integration/onRenderClient.tsx#L109
+    err.isAlreadyLogged
+  ) {
+    return
+  }
+  console.error(err)
 }

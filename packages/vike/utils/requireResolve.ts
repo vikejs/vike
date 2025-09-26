@@ -14,14 +14,13 @@ import path from 'node:path'
 import { assertIsImportPathNpmPackage, isImportPathNpmPackageOrPathAlias } from './parseNpmPackage.js'
 import { isNotNullish } from './isNullish.js'
 import { createDebugger } from './debug.js'
-// @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
-const importMetaUrl: string = import.meta.url
+const importMetaUrl = import.meta.url
 assertPosixPath(importMetaUrl)
 
 assertIsNotBrowser()
 assertIsNotProductionRuntime()
 
-const debug = createDebugger('vike:resolve')
+const debug = createDebugger('vike:requireResolve')
 
 // - We still can't use import.meta.resolve() as of 23.1.0 (November 2024) because `parent` argument requires an experimental flag.
 //   - https://stackoverflow.com/questions/54977743/do-require-resolve-for-es-modules#comment139581675_62272600

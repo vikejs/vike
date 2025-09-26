@@ -38,7 +38,7 @@ import {
   preparePageContextForPublicUsageClient,
 } from './preparePageContextForPublicUsageClient.js'
 import type { ConfigEnv } from '../../types/index.js'
-import type { GlobalContextClientInternal } from './globalContext.js'
+import type { GlobalContextClientInternal } from './getGlobalContextClientInternal.js'
 const globalObject = getGlobalObject<{
   pageContextInitIsPassedToClient?: true
 }>('runtime-client-routing/getPageContextFromHooks.ts', {})
@@ -237,7 +237,7 @@ function hasServerOnlyHook(pageContext: {
 }) {
   if (isOldDesign(pageContext)) return false
   const pageConfig = getPageConfig(pageContext.pageId, pageContext._globalContext._pageConfigs)
-  const val = getConfigValueRuntime(pageConfig, `serverOnlyHooks`)?.value
+  const val = getConfigValueRuntime(pageConfig, `hasServerOnlyHook`)?.value
   assert(val === true || val === false)
   return val
 }

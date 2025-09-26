@@ -6,9 +6,9 @@ export { onRuntimeError }
 
 import { isAbortError } from '../../../shared/route/abort.js'
 import { setAlreadyLogged } from './isNewError.js'
-import { isObject, warnIfErrorIsNotObject } from '../utils.js'
-import pc from '@brillout/picocolors'
+import { warnIfErrorIsNotObject } from '../utils.js'
 import { logErrorHint } from './logErrorHint.js'
+import { logErrorServer } from '../logErrorServer.js'
 
 function logErrorProd(err: unknown, _httpRequestId: null | number): void {
   warnIfErrorIsNotObject(err)
@@ -18,9 +18,7 @@ function logErrorProd(err: unknown, _httpRequestId: null | number): void {
     return
   }
 
-  // We ensure we print a string; Cloudflare Workers doesn't seem to properly stringify `Error` objects.
-  const errStr = isObject(err) && 'stack' in err ? String(err.stack) : String(err)
-  console.error(pc.red(errStr))
+  logErrorServer(err)
 
   // Needs to be called after logging the error.
   onRuntimeError(err)

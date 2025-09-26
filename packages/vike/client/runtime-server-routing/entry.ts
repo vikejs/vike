@@ -7,9 +7,13 @@ import { assertSingleInstance_onClientEntryServerRouting } from './utils.js'
 import { removeFoucBuster } from '../shared/removeFoucBuster.js'
 import { execHook } from '../../shared/hooks/execHook.js'
 import { preparePageContextForPublicUsageClient } from './preparePageContextForPublicUsageClient.js'
-// @ts-ignore Since dist/cjs/client/ is never used, we can ignore this error.
-const isProd: boolean = import.meta.env.PROD
-assertSingleInstance_onClientEntryServerRouting(isProd)
+import { setVirtualFileExportsGlobalEntry } from '../shared/getGlobalContextClientInternalShared.js'
+// @ts-expect-error
+import * as virtualFileExportsGlobalEntry from 'virtual:vike:global-entry:client:server-routing'
+
+assertSingleInstance_onClientEntryServerRouting(import.meta.env.PROD)
+
+setVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry)
 
 if (import.meta.env.DEV) removeFoucBuster()
 

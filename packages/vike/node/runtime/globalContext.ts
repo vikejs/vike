@@ -75,7 +75,7 @@ import { logRuntimeError, logRuntimeInfo } from './loggerRuntime.js'
 import { getVikeConfigErrorBuild, setVikeConfigError } from '../shared/getVikeConfigError.js'
 import { hasAlreadyLogged } from './renderPage/isNewError.js'
 import type { Hook } from '../../shared/hooks/getHook.js'
-import type { ViteRPC } from '../vite/plugins/pluginNonRunnableDev.js'
+import type { ViteRPC } from '../vite/plugins/non-runnable-dev/pluginViteRPC.js'
 import { getVikeApiOperation } from '../api/context.js'
 import type { PrerenderContext } from '../../types/index.js'
 const debug = createDebugger('vike:globalContext')
@@ -362,6 +362,7 @@ async function loadProdBuildEntry(outDir?: string) {
 // https://github.com/vikejs/vike/blob/8c350e8105a626469e87594d983090919e82099b/packages/vike/node/vite/plugins/pluginBuild/pluginProdBuildEntry.ts#L47
 async function setGlobalContext_prodBuildEntry(prodBuildEntry: unknown) {
   debug('setGlobalContext_prodBuildEntry()')
+  assert(!isNonRunnableDev())
   assertProdBuildEntry(prodBuildEntry)
   globalObject.prodBuildEntry = prodBuildEntry
   globalObject.prodBuildEntryPrevious = prodBuildEntry
@@ -478,13 +479,14 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
     }
   } else {
     try {
-      /* We use __VIKE__DYNAMIC_IMPORT instead of directly using import() to workaround what seems to be a Vite HMR bug:
-         ```js
-         assert(false)
-         // This line breaks the HMR of regular (runnable) apps, even though (as per the assert() above) it's never run. It seems to be a Vite bug: handleHotUpdate() receives an empty `modules` list.
-         import('virtual:vike:global-entry:server')
-         ```
-      */
+      // We don't directly use import() because:
+      // - Avoid Cloudflare Workers (without @cloudflare/vite-plugin) to try to bundle `import('virtual:id')`.
+      // - Using import() seems to lead to a Vite HMR bug:
+      //   ```js
+      //   assert(false)
+      //   // This line breaks the HMR of regular (runnable) apps, even though (as per the assert() above) it's never run. It seems to be a Vite bug: handleHotUpdate() receives an empty `modules` list.
+      //   import('virtual:vike:global-entry:server')
+      //   ```
       virtualFileExportsGlobalEntry = await __VIKE__DYNAMIC_IMPORT('virtual:vike:global-entry:server')
     } catch (err_) {
       hasError = true
@@ -690,38 +692,42 @@ function isProd(): boolean {
 function isProdOptional(): boolean | null {
   const vikeApiOperation = getVikeApiOperation()?.operation ?? null
 
-  const yes: boolean =
-    // setGlobalContext_prodBuildEntry() was called
-    !!globalObject.prodBuildEntry ||
-    globalObject.isPrerendering === true ||
-    // Vike CLI & Vike API
-    (!!vikeApiOperation && vikeApiOperation !== 'dev') ||
-    // Vite command
-    globalObject.isProductionAccordingToVite === true ||
-    // getGlobalContextAsync(isProduction)
-    globalObject.isProductionAccordingToUser === true ||
-    // vite-plugin-vercel
-    globalObject.isProductionAccordingToPhotonVercel === true
-  assert(typeof yes === 'boolean')
+  // setGlobalContext_prodBuildEntry() was called
+  const yes1 = !!globalObject.prodBuildEntry
+  const yes2 = globalObject.isPrerendering === true
+  // Vike CLI & Vike API
+  const yes3 = !!vikeApiOperation && vikeApiOperation !== 'dev'
+  // Vite command
+  const yes4 = globalObject.isProductionAccordingToVite === true
+  // getGlobalContextAsync(isProduction)
+  const yes5 = globalObject.isProductionAccordingToUser === true
+  // vite-plugin-vercel
+  const yes6 = globalObject.isProductionAccordingToPhotonVercel === true
+  const yes7 = globalThis.__VIKE__IS_DEV === false
+  const yes: boolean = yes1 || yes2 || yes3 || yes4 || yes5 || yes6 || yes7
 
-  const no: boolean =
-    !!globalObject.viteDevServer ||
-    // Vike CLI & Vike API
-    vikeApiOperation === 'dev' ||
-    // Vite command
-    globalObject.isProductionAccordingToVite === false ||
-    // getGlobalContextAsync(isProduction)
-    globalObject.isProductionAccordingToUser === false ||
-    // @cloudflare/vite-plugin
-    isNonRunnableDev() === true
-  assert(typeof no === 'boolean')
+  const no1 = !!globalObject.viteDevServer
+  // Vike CLI & Vike API
+  const no2 = vikeApiOperation === 'dev'
+  // Vite command
+  const no3 = globalObject.isProductionAccordingToVite === false
+  // getGlobalContextAsync(isProduction)
+  const no4 = globalObject.isProductionAccordingToUser === false
+  // @cloudflare/vite-plugin
+  const no5 = isNonRunnableDev()
+  const no6 = globalThis.__VIKE__IS_DEV === true
+  const no: boolean = no1 || no2 || no3 || no4 || no5 || no6
+
+  const debug = { yes1, yes2, yes3, yes4, yes5, yes6, yes7, no1, no2, no3, no4, no5, no6 }
+  assert(typeof yes === 'boolean', debug)
+  assert(typeof no === 'boolean', debug)
 
   if (yes) {
-    assert(no === false)
+    assert(no === false, debug)
     return true
   }
   if (no) {
-    assert(yes === false)
+    assert(yes === false, debug)
     return false
   }
   return null

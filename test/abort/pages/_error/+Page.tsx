@@ -6,13 +6,14 @@ import { Counter } from '../index/Counter'
 
 function Page() {
   const pageContext = usePageContext()
-  let { is404, abortReason } = pageContext
+  let { is404, abortReason, abortStatusCode } = pageContext
   if (!abortReason) {
     abortReason = is404 ? 'Page not found.' : 'Something went wrong.'
   }
   return (
     <Center>
       <div>
+        <h1>{abortStatusCode}</h1>
         <p style={{ fontSize: '1.3em' }}>{abortReason}</p>
         <Counter />
       </div>

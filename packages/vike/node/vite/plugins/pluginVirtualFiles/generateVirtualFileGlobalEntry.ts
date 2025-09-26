@@ -29,6 +29,10 @@ function getCode(
   const importStatements: string[] = []
   const filesEnv: FilesEnv = new Map()
 
+  if (!isForClientSide) {
+    importStatements.push("import 'virtual:vike:server:globalThis-constants';")
+  }
+
   lines.push('export const pageConfigsSerialized = [')
   lines.push(
     getCodePageConfigsSerialized(pageConfigs, isForClientSide, isClientRouting, isDev, importStatements, filesEnv),
@@ -53,7 +57,12 @@ function getCode(
     lines.push('if (import.meta.hot) import.meta.hot.accept();')
   }
 
-  const code = [...importStatements, ...lines].join('\n')
+  let code = [...importStatements, ...lines].join('\n')
+
+  if (!isForClientSide) {
+    code = "import 'virtual:vike:server:globalThis-constants';\n" + code
+  }
+
   debug(id, isForClientSide ? 'CLIENT-SIDE' : 'SERVER-SIDE', code)
   return code
 }

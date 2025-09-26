@@ -1,3 +1,40 @@
+## [0.4.240](https://github.com/vikejs/vike/compare/v0.4.239...v0.4.240) (2025-09-11)
+
+
+### Bug Fixes
+
+* [HMR] re-render whole page if error page is shown (fix [#2511](https://github.com/vikejs/vike/issues/2511)) ([#2700](https://github.com/vikejs/vike/issues/2700)) ([59f1017](https://github.com/vikejs/vike/commit/59f10178939a3d896183bcaf4e8ba43775035732))
+* await file reloading in handleHotUpdate() hook ([1bac7f6](https://github.com/vikejs/vike/commit/1bac7f6d2fe8af894b8caf15a76d926cf4bb5967))
+* correctly replace `pageContext.isClientSide` ([#2705](https://github.com/vikejs/vike/issues/2705)) ([28b4664](https://github.com/vikejs/vike/commit/28b4664d6f84ecf2bd339759eaa340557e32e04a))
+* ensure consistent cssTarget ([#2698](https://github.com/vikejs/vike/issues/2698)) ([6016387](https://github.com/vikejs/vike/commit/60163875a4d62ef56a333584477bc5a7b921c7a8))
+* fix @cloudflare/vite-plugin support when vike isn't linked ([#2712](https://github.com/vikejs/vike/issues/2712)) ([e3b8ab7](https://github.com/vikejs/vike/commit/e3b8ab79b8da6eba91831a1ae96c830e5c31b76e))
+* fix HMR in worker env ([#2686](https://github.com/vikejs/vike/issues/2686)) ([050a4a3](https://github.com/vikejs/vike/commit/050a4a3b2d17ae8659f3bb900d932933b1a6029c))
+* fix HMR when importing `navigate()`, `prefetch()`, or `reload()` (break import cycle) ([#1934](https://github.com/vikejs/vike/issues/1934)) ([#2708](https://github.com/vikejs/vike/issues/2708)) ([4d0d950](https://github.com/vikejs/vike/commit/4d0d9503c56867182a5379f719807444cb33b6e0))
+* improve `{pageContext,globalContext}.isClientSide` JSDocs ([1977bf2](https://github.com/vikejs/vike/commit/1977bf298a0dbfcb42ff064546c35e74c2491f29))
+* improve JSDocs & warning about recommended render() status codes ([#1008](https://github.com/vikejs/vike/issues/1008)) ([#2702](https://github.com/vikejs/vike/issues/2702)) ([c26a079](https://github.com/vikejs/vike/commit/c26a079622ddb446cbe23b7c4962a9592a36f04d))
+* include canonical link in prerendered redirect ([#2711](https://github.com/vikejs/vike/issues/2711)) ([9dcde6d](https://github.com/vikejs/vike/commit/9dcde6d03220d73d94d3643cff049e761dd5f1f7))
+* remove CJS build ([#2701](https://github.com/vikejs/vike/issues/2701)) ([fe5bd51](https://github.com/vikejs/vike/commit/fe5bd514af0d499017f87edcf0c4555f08e951e0))
+* remove CJS warning ([074c0e5](https://github.com/vikejs/vike/commit/074c0e54fb9ecb33b2fa893924d58a1e1e77f184))
+* stop showing Vite CLI/API deprecation warning ([3279ec1](https://github.com/vikejs/vike/commit/3279ec1e349f90e38a21b6f2256c5f635554d82a))
+* update @brillout/vite-plugin-server-entry ([#2691](https://github.com/vikejs/vike/issues/2691)) ([4345699](https://github.com/vikejs/vike/commit/4345699ceda5caca9c952e017109d9de624c5836))
+
+
+### Features
+
+* `globalContext.prerenderContext` ([#2692](https://github.com/vikejs/vike/issues/2692)) ([33e55d4](https://github.com/vikejs/vike/commit/33e55d4c8965bb14831249dcd2d92f759db91aa0))
+
+
+### Performance Improvements
+
+* start using hook filters ([#2688](https://github.com/vikejs/vike/issues/2688)) ([c1acee7](https://github.com/vikejs/vike/commit/c1acee74796b3e0a395a02132f613e41e018d969))
+
+
+### BREAKING CHANGES
+
+* Update to Vite `6.3.0` or above.
+
+
+
 ## [0.4.239](https://github.com/vikejs/vike/compare/v0.4.238...v0.4.239) (2025-09-03)
 
 

@@ -3,6 +3,8 @@ export { handleAssetsManifest_getBuildConfig }
 export { handleAssetsManifest_isFixEnabled }
 export { handleAssetsManifest_assertUsageCssCodeSplit }
 export { handleAssetsManifest_assertUsageCssTarget }
+export { handleAssetsManifest_workaroundCssTarget_part1 }
+export { handleAssetsManifest_workaroundCssTarget_part2 }
 
 import fs from 'node:fs/promises'
 import fs_sync from 'node:fs'
@@ -16,13 +18,20 @@ import { getAssetsDir } from '../../shared/getAssetsDir.js'
 import pc from '@brillout/picocolors'
 import { isV1Design } from '../../shared/resolveVikeConfigInternal.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
-import { isViteServerSide_onlySsrEnv, isViteServerSide } from '../../shared/isViteServerSide.js'
+import {
+  isViteServerSide_onlySsrEnv,
+  isViteServerSide,
+  isViteServerSide_viteEnvOptional,
+} from '../../shared/isViteServerSide.js'
 import { set_macro_ASSETS_MANIFEST } from './pluginProdBuildEntry.js'
 import { getManifestFilePathRelative } from '../../shared/getManifestFilePathRelative.js'
 type Bundle = Rollup.OutputBundle
 
-const globalObject = getGlobalObject('build/handleAssetsManifest.ts', {
+const globalObject = getGlobalObject('handleAssetsManifest.ts', {
   assetsJsonFilePath: undefined as string | undefined,
+  cssTarget: '__VIKE__UNSET' as CssTarget | '__VIKE__UNSET',
+  targetsAll: [] as TargetConfig[],
+  configsAll: [] as ResolvedConfig[],
 })
 
 // yes  => use workaround config.build.ssrEmitAssets
@@ -264,17 +273,29 @@ function handleAssetsManifest_assertUsageCssCodeSplit(config: ResolvedConfig) {
 }
 
 // https://github.com/vikejs/vike/issues/1815
-type Target = undefined | false | string | string[]
+// https://github.com/vitejs/vite/issues/20505
+type CssTarget = ResolvedConfig['build']['cssTarget']
+type Target = ResolvedConfig['build']['target'] | CssTarget
 type TargetConfig = { global: Exclude<Target, undefined>; css: Target; isServerSide: boolean }
-const targets: TargetConfig[] = []
+function handleAssetsManifest_workaroundCssTarget_part1(config: ResolvedConfig) {
+  globalObject.configsAll.push(config)
+  if (!isViteServerSide_viteEnvOptional(config, undefined)) {
+    globalObject.cssTarget = config.build.cssTarget
+  }
+}
+function handleAssetsManifest_workaroundCssTarget_part2() {
+  assert(globalObject.cssTarget !== '__VIKE__UNSET')
+  globalObject.configsAll.forEach((c) => (c.build.cssTarget = globalObject.cssTarget))
+}
 function handleAssetsManifest_assertUsageCssTarget(config: ResolvedConfig, env: Environment) {
   if (!handleAssetsManifest_isFixEnabled()) return
   const isServerSide = isViteServerSide(config, env)
   assert(typeof isServerSide === 'boolean')
   assert(config.build.target !== undefined)
-  targets.push({ global: config.build.target, css: config.build.cssTarget, isServerSide })
-  const targetsServer = targets.filter((t) => t.isServerSide)
-  const targetsClient = targets.filter((t) => !t.isServerSide)
+  const { targetsAll } = globalObject
+  targetsAll.push({ global: config.build.target, css: config.build.cssTarget, isServerSide })
+  const targetsServer = targetsAll.filter((t) => t.isServerSide)
+  const targetsClient = targetsAll.filter((t) => !t.isServerSide)
   targetsClient.forEach((targetClient) => {
     const targetCssResolvedClient = resolveCssTarget(targetClient)
     targetsServer.forEach((targetServer) => {
@@ -360,7 +381,6 @@ async function handleAssetsManifest(
 ) {
   const isSsrEnv = isViteServerSide_onlySsrEnv(config, viteEnv)
   if (isSsrEnv) {
-    assert(!globalObject.assetsJsonFilePath)
     const outDirs = getOutDirs(config, viteEnv)
     globalObject.assetsJsonFilePath = path.posix.join(outDirs.outDirRoot, 'assets.json')
     await writeAssetsManifestFile(globalObject.assetsJsonFilePath, config)

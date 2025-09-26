@@ -1,21 +1,10 @@
 export { pluginCommon }
 
 import { type InlineConfig, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
-import {
-  assert,
-  assertUsage,
-  assertWarning,
-  findPackageJson,
-  hasProp,
-  isDevCheck,
-  isDocker,
-  isObject,
-  isVitest,
-} from '../utils.js'
-import { assertRollupInput } from './pluginBuild/pluginBuildConfig.js'
+import { assert, assertUsage, assertWarning, hasProp, isDevCheck, isDocker, isObject, isVitest } from '../utils.js'
+import { assertRollupInput } from './build/pluginBuildConfig.js'
 import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
 import pc from '@brillout/picocolors'
-import path from 'node:path'
 import { assertResolveAlias } from './pluginCommon/assertResolveAlias.js'
 import { isViteCliCall } from '../shared/isViteCliCall.js'
 import { isVikeCliOrApi } from '../../api/context.js'
@@ -122,6 +111,12 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
             setDefault('host', true, configFromUser, configFromVike)
           }
 
+          // https://vike.dev/force
+          if (vikeConfig.config.force !== undefined && configFromUser.optimizeDeps?.force === undefined) {
+            configFromVike.optimizeDeps ??= {}
+            configFromVike.optimizeDeps.force = vikeConfig.config.force
+          }
+
           return configFromVike
         },
       },
@@ -171,11 +166,9 @@ function assertVikeCliOrApi(config: ResolvedConfig) {
   if (isVikeCliOrApi()) return
   if (isViteCliCall()) {
     assert(!isVitest())
-    assertWarning(false, `Vite's CLI is deprecated ${pc.underline('https://vike.dev/migration/cli')}`, {
-      onlyOnce: true,
-    })
     return
   }
+  /* This warning is always shown: Vitest loads Vite *before* any Vike JavaScript API can be invoked.
   if (isVitest()) {
     assertWarning(
       false,
@@ -184,6 +177,7 @@ function assertVikeCliOrApi(config: ResolvedConfig) {
     )
     return
   }
+  */
   if (config.server.middlewareMode) {
     assertWarning(
       false,
@@ -194,9 +188,6 @@ function assertVikeCliOrApi(config: ResolvedConfig) {
     )
     return
   }
-  assertWarning(false, `Vite's JavaScript API is deprecated ${pc.underline('https://vike.dev/migration/cli#api')}`, {
-    onlyOnce: true,
-  })
 }
 
 // TO-DO/next-major-release: remove https://github.com/vikejs/vike/issues/2122

@@ -1,3 +1,6 @@
+= TODO/now
+- Fully support Vite CLI again
+
 = TO-DO/soon
 - Add assertWarning() deprecations:
   - `pageContext.exports`

@@ -2,10 +2,8 @@ export { getGlobalContextClientInternal }
 export type { GlobalContextClientWithServerRouting }
 export type { GlobalContextClientInternalWithServerRouting }
 
-import { createGetGlobalContextClient } from '../shared/createGetGlobalContextClient.js'
+import { getGlobalContextClientInternalShared } from '../shared/getGlobalContextClientInternalShared.js'
 import type { GlobalContextBasePublic } from '../../shared/createGlobalContextShared.js'
-// @ts-ignore
-import * as virtualFileExportsGlobalEntry from 'virtual:vike:global-entry:client:server-routing'
 
 // Public type
 type GlobalContextClientWithServerRouting = GlobalContextBasePublic &
@@ -16,4 +14,7 @@ type GlobalContextClientWithServerRouting = GlobalContextBasePublic &
   }
 type GlobalContextClientInternalWithServerRouting = Awaited<ReturnType<typeof getGlobalContextClientInternal>>
 
-const getGlobalContextClientInternal = createGetGlobalContextClient(virtualFileExportsGlobalEntry, false)
+async function getGlobalContextClientInternal() {
+  const globalContext = await getGlobalContextClientInternalShared()
+  return globalContext
+}

@@ -4,9 +4,9 @@
     "preview": "vike build && vike preview"
   },
   "dependencies": {
-    "typescript": "^5.8.3",
+    "typescript": "^5.9.2",
     "vite": "^6.3.2",
-    "vike": "0.4.239"
+    "vike": "0.4.240"
   },
   "type": "module"
 }

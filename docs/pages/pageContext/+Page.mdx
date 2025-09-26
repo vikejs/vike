@@ -174,9 +174,11 @@ Whether the page is rendered to HTML.
 
 <Prop name="isClientSide" />
 
-Whether the page is being rendered on the client-side, or server-side / <Link href="/pre-rendering">pre-rendered</Link>.
+Whether the environment is the client-side:
+- In the browser, the value is `true`.
+- Upon <Link href="/ssr">SSR</Link> and <Link href="/pre-rendering">pre-rendering</Link>, the value is `false`.
 
-Also useful for narrowing down the `PageContext` type to either `PageContextClient` or `PageContextServer`, see <Link href="#narrowing-down" />.
+It can be used to narrow down the `PageContext` type to either `PageContextClient` or `PageContextServer`, see <Link href="#narrowing-down" />.
 
 It's equivalent to <code>{'pageContext.isClientSide\u00A0===\u00A0!import.meta.env.SSR'}</code>.
 

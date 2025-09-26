@@ -1,11 +1,12 @@
 export { isViteServerSide }
-export { isViteClientSide }
 export { isViteServerSide_viteEnvOptional }
 export { isViteServerSide_onlySsrEnv }
 export { isViteServerSide_extraSafe }
+export { isViteServerSide_applyToEnvironment }
+export { isViteServerSide_configEnvironment }
 export type { ViteEnv }
 
-import type { Environment, EnvironmentOptions, ResolvedConfig, UserConfig } from 'vite'
+import type { Environment, EnvironmentOptions, ResolvedConfig, UserConfig, Plugin } from 'vite'
 import { assert } from '../../../utils/assert.js'
 
 type ViteEnv = { name?: string; config: EnvironmentOptions | Environment['config'] }
@@ -51,10 +52,6 @@ function isViteServerSide_viteEnvOptional(
   return isViteServerSide_impl(configGlobal, viteEnv)
 }
 
-function isViteClientSide(configGlobal: ResolvedConfig, viteEnv: ViteEnv) {
-  return !isViteServerSide(configGlobal, viteEnv)
-}
-
 // Only `ssr` env: for example don't include `vercel_edge` nor `vercel_node`.
 function isViteServerSide_onlySsrEnv(configGlobal: ResolvedConfig, viteEnv: ViteEnv) {
   return viteEnv.name ? viteEnv.name === 'ssr' : isViteServerSide(configGlobal, viteEnv)
@@ -78,4 +75,17 @@ function isViteServerSide_extraSafe(
   assert(typeof options.ssr === 'boolean', debug)
   assert(options.ssr === isServerSide, debug)
   return isServerSide
+}
+
+type PartialEnvironment = Parameters<NonNullable<Plugin['applyToEnvironment']>>[0]
+function isViteServerSide_applyToEnvironment(env: PartialEnvironment) {
+  const { consumer } = env.config
+  return isViteServerSide_consumer(consumer)
+}
+function isViteServerSide_configEnvironment(name: string, config: EnvironmentOptions) {
+  const consumer = config.consumer ?? (name === 'client' ? 'client' : 'server')
+  return isViteServerSide_consumer(consumer)
+}
+function isViteServerSide_consumer(consumer: string) {
+  return consumer !== 'client'
 }

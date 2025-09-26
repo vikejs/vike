@@ -1,4 +1,10 @@
 import { Link } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
+
+<ConfigSpec
+  env="client (server can import but not call it)"
+  global={null}
+/>
 
 The `reload()` function enables you to reload the page. The difference with [`window.location.reload`](https://developer.mozilla.org/en-US/docs/Web/API/Location/reload) is that `reload()` is much faster as it uses Vike's <Link text="Client Router" href="/client-routing" />.
 
@@ -24,3 +30,8 @@ async function logout() {
 ```
 
 It's the same as [`navigate(window.location.href)`](/navigate) but it handles some edge cases.
+
+
+## See also
+
+- <Link href="/navigate" />

@@ -7,6 +7,7 @@ function getMagicString(code: string, id: string) {
   const magicString = new MagicString(code)
 
   const getMagicStringResult = () => {
+    if (!magicString.hasChanged()) return undefined
     return {
       code: magicString.toString(),
       map: magicString.generateMap({ hires: true, source: id }),

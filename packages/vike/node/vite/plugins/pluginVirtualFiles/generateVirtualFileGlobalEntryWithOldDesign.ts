@@ -58,6 +58,11 @@ async function getCode(
   const isBuild = command === 'build'
   assert(isDev === !isBuild)
   let content = ''
+
+  if (!isForClientSide) {
+    content += "import 'virtual:vike:server:globalThis-constants';\n"
+  }
+
   {
     const globRoots = getGlobRoots(config)
     debugGlob('Glob roots: ', globRoots)

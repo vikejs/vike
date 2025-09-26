@@ -1,22 +1,26 @@
+export { debug }
 export { createDebugger }
+export { isDebug }
 export { isDebugActivated }
-export type { Debug }
 
 import { isCallable } from './isCallable.js'
 import { objectAssign } from './objectAssign.js'
 import { assert, assertUsage } from './assert.js'
-import { checkType } from './checkType.js'
 import { getTerminalWidth } from './getTerminalWidth.js'
 import pc from '@brillout/picocolors'
 import { isArray } from './isArray.js'
 import { isObject } from './isObject.js'
-import { setCreateDebugger } from '../shared/route/debug.js'
-import { assertIsNotBrowser } from './assertIsNotBrowser.js'
 
-assertIsNotBrowser()
-setCreateDebugger(createDebugger) // for isomorphic code
+// Assert tree-shaking (ensure this module is loaded on the client-side only if debug is enabled).
+assert(
+  !globalThis.__VIKE__IS_CLIENT ||
+    globalThis.__VIKE__IS_DEBUG ||
+    // Vite doesn't do tree-shaking in dev (maybe it will with Rolldown?)
+    import.meta.env.DEV,
+)
 
 const flags = [
+  'vike',
   'vike:crawl',
   'vike:error',
   'vike:esbuild-resolve',
@@ -29,22 +33,20 @@ const flags = [
   'vike:outDir',
   'vike:pageFiles',
   'vike:pointer-imports',
-  'vike:resolve',
+  'vike:requireResolve',
   'vike:routing',
   'vike:setup',
   'vike:stream',
   'vike:virtualFiles',
   'vike:vite-rpc',
-] as const
+] as const satisfies (`vike:${string}` | 'vike')[]
 const flagsSkipWildcard = ['vike:log']
-const flagRegex = /\bvike:[a-zA-Z-]+/g
 // We purposely read process.env.DEBUG early, in order to avoid users from the temptation to set process.env.DEBUG with JavaScript, since reading & writing process.env.DEBUG dynamically leads to inconsistencies such as https://github.com/vikejs/vike/issues/2239
 const DEBUG = getDEBUG() ?? ''
 if (isDebug()) Error.stackTraceLimit = Infinity
 assertFlagsActivated()
 
 type Flag = (typeof flags)[number]
-type Debug = ReturnType<typeof createDebugger>
 type Options = {
   serialization?: {
     emptyArray?: string
@@ -52,7 +54,6 @@ type Options = {
 }
 
 function createDebugger(flag: Flag, optionsGlobal?: Options) {
-  checkType<`vike:${string}`>(flag)
   assert(flags.includes(flag))
 
   const debugWithOptions = (optionsLocal: Options) => {
@@ -64,6 +65,10 @@ function createDebugger(flag: Flag, optionsGlobal?: Options) {
   const debug = (...msgs: unknown[]) => debugWithOptions({})(...msgs)
   objectAssign(debug, { options: debugWithOptions, isActivated: isDebugActivated(flag) })
   return debug
+}
+
+function debug(flag: Flag, ...msgs: unknown[]) {
+  return debug_(flag, {}, ...msgs)
 }
 
 function debug_(flag: Flag, options: Options, ...msgs: unknown[]) {
@@ -94,10 +99,9 @@ function debug_(flag: Flag, options: Options, ...msgs: unknown[]) {
 }
 
 function isDebugActivated(flag: Flag): boolean {
-  checkType<`vike:${string}`>(flag)
   assert(flags.includes(flag))
-  const { flagsActivated, all } = getFlagsActivated()
-  const isActivated = flagsActivated.includes(flag) || (all && !flagsSkipWildcard.includes(flag))
+  const { flagsActivated, isAll } = getFlagsActivated()
+  const isActivated = flagsActivated.includes(flag) || (isAll && !flagsSkipWildcard.includes(flag))
   return isActivated
 }
 
@@ -181,22 +185,36 @@ function assertFlagsActivated() {
 }
 
 function getFlagsActivated() {
-  const flagsActivated: string[] = DEBUG.match(flagRegex) ?? []
-  const all = DEBUG.includes('vike:*')
-  return { flagsActivated, all }
+  const flagsActivated: string[] = DEBUG.match(/\bvike:[a-zA-Z-]+/g) ?? []
+  const isAll = DEBUG.includes('vike:*')
+  const isGlobal = /\bvike\b([^:]|$)/.test(DEBUG)
+  return { flagsActivated, isAll, isGlobal }
 }
 
 function isDebug() {
-  const { flagsActivated, all } = getFlagsActivated()
-  return all || flagsActivated.length > 0
+  const { flagsActivated, isAll, isGlobal } = getFlagsActivated()
+  return isAll || flagsActivated.length > 0 || isGlobal
 }
 
 function getDEBUG() {
   let DEBUG: undefined | string
+
+  // ssr.noExternal
+  /* // Full implementation:
+     // - https://github.com/vikejs/vike/commit/7637564a98f43e23834bcae2f7ada8d941958a34
+     // - https://github.com/vikejs/vike/pull/2718
+     // - We don't implement this yet because it crashes @cloudflare/vite-plugin
+  if (import.meta.env) {
+    return import.meta.env.DEBUG
+  }
+  //*/
+
+  // ssr.external
   // - `process` can be undefined in edge workers
   // - We want bundlers to be able to statically replace `process.env.*`
   try {
     DEBUG = process.env.DEBUG
   } catch {}
+
   return DEBUG
 }

@@ -1,4 +1,10 @@
 import { Link, TypescriptOnly } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
+
+<ConfigSpec
+  env={<>client, and server if <Link href="/ssr"><code>ssr: true</code></Link></>}
+  global
+/>
 
 The error page, which is defined by `/pages/_error/+Page.js`, is rendered when an error occurs. It's also rendered when
 you call <Link href="/render" text={<code>throw render(abortStatusCode)</code>}></Link>.
@@ -73,6 +79,9 @@ The error page is rendered when:
  2. Your code has a bug (`500 Internal Error`), technically speaking: one of your hooks threw an error.
  3. One of your hooks used <Link href="/render" text={<code>throw render(abortStatusCode)</code>} />, for example: `throw render(401, "You don't have the permission to access this page.")`.
 
+> Currently, you can define only one error page. See also:
+> - [Feature Request #1038 — Allow multiple error pages](https://github.com/vikejs/vike/issues/1038)
+
 
 ## Pre-rendering
 
@@ -80,6 +89,7 @@ If you use <Link text="pre-rendering" href="/pre-rendering" />, then Vike uses t
 `/dist/client/404.html`.
 
 > Most Static Hosts follow the convention of using the file `404.html` as 404 page.
+
 
 ## See also
 

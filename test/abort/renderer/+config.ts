@@ -1,7 +1,7 @@
 export default {
   clientRouting: true,
   hydrationCanBeAborted: true,
-  passToClient: ['user'],
+  passToClient: ['someFakeData'],
   redirects: {
     '/permanent-redirect': '/',
     '/star-wars-api/*': 'https://brillout.github.io/star-wars/api/*',

@@ -1142,6 +1142,7 @@ function preparePrerenderContextForPublicUsage(prerenderContext: PrerenderContex
         })
         return prerenderContext.pageContexts
       },
+      configurable: true,
     })
   }
 
@@ -1174,12 +1175,14 @@ async function prerenderRedirects(
 }
 function getRedirectHtml(urlTarget: string) {
   const urlTargetSafe = escapeHtml(urlTarget)
-  // To test it: /test/playground => http://localhost:3000/download
+  // - Test: /test/playground => http://localhost:3000/download
+  // - Adding `<link rel="canonical">` for SEO, see https://github.com/vikejs/vike/pull/2711
   const htmlString = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="refresh" content="0;url=${urlTargetSafe}">
+  <link rel="canonical" href="${urlTargetSafe}" />
   <title>Redirect ${urlTargetSafe}</title>
   <style>body{opacity:0}</style>
   <noscript>

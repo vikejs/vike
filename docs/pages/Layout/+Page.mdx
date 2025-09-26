@@ -9,9 +9,9 @@ import { UiFrameworkExtension, ConfigSpec, ProvidedBy } from '../../components'
 
 > **What are layouts?**
 >
-> Pages usually share a common visual design. The `+Layout` setting enables you to define such shared visual appearance.
+> Pages usually share a common layout, like a shared header, sidebar, and footer. The `+Layout` setting lets you define such shared layout.
 >
-> You can also define multiple designs: some pages can share a design while other pages share another one. (For example, admin pages and marketing pages typically have a different design.)
+> You can define multiple layouts: some pages can share one layout while other pages share another one. For example, admin and marketing pages typically have different layouts.
 
 The component defined by the `+Layout` setting wraps the component defined by <Link href="/Page">`+Page`</Link>.
 
@@ -21,12 +21,7 @@ The component defined by the `+Layout` setting wraps the component defined by <L
 </Layout>
 ```
 
-> If you want to add a wrapper component that is required for installing a tool, then we generally recommend using <Link href="/Wrapper">`<Wrapper>`</Link> instead.
-
-
-## Global
-
-You can define a layout that applies to all your pages:
+To define a global layout applying to all your pages:
 
 ```tsx
 // /pages/+Layout.tsx
@@ -35,7 +30,7 @@ export { Layout }
 
 import React from 'react'
 
-// `children` includes <Page>
+// `children` includes the +Page component (and all inner +Layout components)
 function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
@@ -52,7 +47,11 @@ function Content() {
 }
 ```
 
-> The reason `/pages/+Layout.jsx` applies to all pages is explained at <Link href="/config#inheritance" />.
+> Don't forget to use `children` (or [`<slot>`](https://vuejs.org/guide/components/slots.html) if you use Vue).
+
+> See <Link href="/config#inheritance" /> for an explanation of why `/pages/+Layout.jsx` applies to all pages.
+
+> If you're adding a wrapper component required for installing a tool, we recommend using <Link href="/Wrapper">`<Wrapper>`</Link> instead.
 
 
 ## Multiple

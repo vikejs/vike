@@ -26,10 +26,15 @@ import { testPrerenderSettings } from './pages/prerender.e2e-test'
 import { testHistoryPushState } from './pages/pushState/e2e-test'
 import { testStarWars } from './pages/star-wars/e2e-test'
 import { testDefaultAndClearSuffixes } from './pages/config-meta/default-clear/e2e-test'
+import { isCI, skip } from '@brillout/test-e2e'
 
 const rootDir = path.dirname(fileURLToPath(import.meta.url))
 
-function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
+function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run preview:build-twice') {
+  if (cmd === 'npm run preview:build-twice' && !isCI()) {
+    skip('SKIPPED: we only run this test in the CI (to avoid slowing down running test/playground locally)')
+    return
+  }
   const isDev = cmd === 'npm run dev'
   testRunClassic(cmd, { testHmr: './pages/index/Page.tsx' })
   testSettingsInheritance({ isDev })

@@ -25,41 +25,43 @@ const filterRolldown = {
 }
 const filterFunction = (id: string) => extractExportNamesRE.test(id)
 
-function pluginExtractExportNames(): Plugin {
+function pluginExtractExportNames(): Plugin[] {
   let isDev = false
   let config: ResolvedConfig
-  return {
-    name: 'vike:pluginExtractExportNames',
-    enforce: 'post',
-    transform: {
-      filter: filterRolldown,
-      async handler(src, id, options) {
-        id = normalizeId(id)
-        const isClientSide = !isViteServerSide_extraSafe(config, this.environment, options)
-        assert(filterFunction(id))
-        const code = await getExtractExportNamesCode(src, isClientSide, !isDev, id)
-        debug('id ' + id, ['result:\n' + code.code.trim(), 'src:\n' + src.trim()])
-        return code
+  return [
+    {
+      name: 'vike:pluginExtractExportNames',
+      enforce: 'post',
+      transform: {
+        filter: filterRolldown,
+        async handler(src, id, options) {
+          id = normalizeId(id)
+          const isClientSide = !isViteServerSide_extraSafe(config, this.environment, options)
+          assert(filterFunction(id))
+          const code = await getExtractExportNamesCode(src, isClientSide, !isDev, id)
+          debug('id ' + id, ['result:\n' + code.code.trim(), 'src:\n' + src.trim()])
+          return code
+        },
+      },
+      configureServer: {
+        handler() {
+          isDev = true
+        },
+      },
+      configResolved: {
+        handler(config_) {
+          config = config_
+        },
+      },
+      config: {
+        handler() {
+          if (debug.isActivated) {
+            return { logLevel: 'silent' }
+          }
+        },
       },
     },
-    configureServer: {
-      handler() {
-        isDev = true
-      },
-    },
-    configResolved: {
-      handler(config_) {
-        config = config_
-      },
-    },
-    config: {
-      handler() {
-        if (debug.isActivated) {
-          return { logLevel: 'silent' }
-        }
-      },
-    },
-  }
+  ]
 }
 
 async function getExtractExportNamesCode(src: string, isClientSide: boolean, isProduction: boolean, id: string) {

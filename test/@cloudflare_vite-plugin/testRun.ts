@@ -1,16 +1,14 @@
 export { testRun }
 export { testCloudflareBindings }
 
-import { expect, getServerUrl, page, test } from '@brillout/test-e2e'
+import { autoRetry, expect, getServerUrl, page, sleep, test } from '@brillout/test-e2e'
 import { testCounter, testRunClassic } from '../../test/utils'
 
-type CMD = 'npm run dev' | 'npm run preview'
-
-type Args = Parameters<typeof testRunClassic>[1]
-
-function testRun(cmd: CMD) {
+function testRun(cmd: 'npm run dev' | 'npm run preview') {
+  const isDev = cmd === 'npm run dev'
   testCloudflareBindings()
-  testRunClassic(cmd, getArgs(cmd))
+  testRunClassic(cmd)
+  testTodolist(isDev)
 }
 
 function testCloudflareBindings() {
@@ -24,29 +22,43 @@ function testCloudflareBindings() {
   })
 }
 
-function getArgs(cmd: CMD): Args {
-  if (cmd === 'npm run preview') {
-    return {
-      // TODO/now: workaround https://github.com/vitejs/vite/issues/20505 — the warning should disappear and we can remove this
-      tolerateError(args) {
-        /*
-        ```console
-        [21:07:06.605][/][npm run preview][stderr] 9:07:06 PM [vike][Warning] The CSS browser target should be the same for both client and server, but we got:
-        Client: ["chrome107","edge107","firefox104","safari16"]
-        Server: "es2022"
-        Different targets lead to CSS duplication, see https://github.com/vikejs/vike/issues/1815#issuecomment-2507002979 for more information.
-            at file:///home/rom/code/vike/packages/vike/dist/esm/node/vite/plugins/pluginBuild/handleAssetsManifest.js:233:13
-            at Array.forEach (<anonymous>)
-            at file:///home/rom/code/vike/packages/vike/dist/esm/node/vite/plugins/pluginBuild/handleAssetsManifest.js:231:23
-            at Array.forEach (<anonymous>)
-            at handleAssetsManifest_assertUsageCssTarget (file:///home/rom/code/vike/packages/vike/dist/esm/node/vite/plugins/pluginBuild/handleAssetsManifest.js:229:19)
-            at Object.handler (file:///home/rom/code/vike/packages/vike/dist/esm/node/vite/plugins/pluginBuild/pluginAutoFullBuild.js:58:21)
-            at Object.handler (file:///home/rom/code/vike/node_modules/.pnpm/vite@7.0.6_@types+node@22.15.30_terser@5.38.1_tsx@4.19.4/node_modules/vite/dist/node/chunks/dep-BHkUv4Z8.js:34323:13)
-            at file:///home/rom/code/vike/node_modules/.pnpm/rollup@4.43.0/node_modules/rollup/dist/es/shared/node-entry.js:22269:40
-        ```
-        */
-        if (args.logText.includes('The CSS browser target should be the same for both client and server')) return true
+function testTodolist(isDev: boolean) {
+  test('To-Do list', async () => {
+    await page.goto(getServerUrl() + '/todo')
+    if (isDev) await sleep(300) // Seems to be required, otherwise the test is flaky. I don't know why.
+    await page.locator('button', { hasText: 'Reset' }).click()
+    await autoRetry(
+      async () => {
+        expect(await getNumberOfItems()).toBe(3)
       },
+      { timeout: 5000 },
+    )
+    {
+      const reactText = await page.textContent('#root')
+      expect(reactText).toContain('Buy milk')
+      expect(reactText).not.toContain('Buy bananas')
     }
-  }
+    const todoItemNew = `Buy bananas ${Math.random()}`
+    await page.fill('input[type="text"]', todoItemNew)
+    await page.click('button[type="submit"]')
+    await autoRetry(
+      async () => {
+        expect(await getNumberOfItems()).toBe(4)
+      },
+      { timeout: 5000 },
+    )
+    expect(await page.textContent('#root')).toContain(todoItemNew)
+    await fullPageReload()
+    expect(await getNumberOfItems()).toBe(4)
+    expect(await page.textContent('#root')).toContain(todoItemNew)
+  })
+}
+async function getNumberOfItems() {
+  return await page.evaluate(() => document.querySelectorAll('li').length)
+}
+
+async function fullPageReload() {
+  await page.goto(getServerUrl() + '/')
+  await testCounter()
+  await page.goto(getServerUrl() + '/todo')
 }

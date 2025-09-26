@@ -9,7 +9,7 @@ import {
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 
 import { createPageContextObject, createPageContextShared } from '../../shared/createPageContextShared.js'
-import { getGlobalContextClientInternal } from './globalContext.js'
+import { getGlobalContextClientInternal } from './getGlobalContextClientInternal.js'
 import {
   preparePageContextForPublicUsageClient,
   type PageContextForPublicUsageClient,
