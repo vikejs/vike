@@ -196,15 +196,14 @@ import type { GlobalContextServer } from 'vike/types'
 
 export async function onCreateGlobalContext(globalContext: GlobalContextServer) {
   const pages = globalContext.pages
-  const posts = Object.values(pages)
-    .map((page) => {
-      const { metadata } = page.config
-      const post = {
-        url: page.route,
-        title: metadata.title
-      }
-      return post
-    })
+  const posts = Object.values(pages).map((page) => {
+    const { metadata } = page.config
+    const post = {
+      url: page.route,
+      title: metadata.title
+    }
+    return post
+  })
   globalContext.posts = posts
 }
 
@@ -356,8 +355,8 @@ import React from 'react'
 import { usePageContext } from 'vike-react/usePageContext' // or vike-{vue,solid}
 
 export function Layout({ children }: { children: React.ReactNode }) {
-   const pageContext = usePageContext()
-   const { frontmatter } = pageContext.config
+  const pageContext = usePageContext()
+  const { frontmatter } = pageContext.config
   return (
     <>
       <h1>{frontmatter.title}</h1>
