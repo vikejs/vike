@@ -78,9 +78,10 @@ The `+Head` setting is cumulative. For example:
 import favicon from './favicon.png'
 
 // Applies to all pages (cannot be overridden)
-export const Head = () =>
+export const Head = () => (
   // All pages share the same favicon
   <link rel="icon" href={favicon} type="image/svg+xml" />
+)
 ```
 
 ```tsx
@@ -89,9 +90,10 @@ export const Head = () =>
 
 import previewImage from './previewImage.jpg'
 
-export const Head = () =>
+export const Head = () => (
   // Both the favicon above and this tag applies to /pages/about-us/+Page.ts
   <meta property="og:image" content={previewImage} />
+)
 ```
 
 To apply different `+Head` settings to different pages:
@@ -129,10 +131,12 @@ If you don't use Vue (e.g. React), you can use `+Head` for adding `<script>` tag
 // /pages/+Head.tsx
 
 export function Head() {
-  return <>
-    <script type="text/javascript" src="https://example.com/some-script.js"></script>
-    <script>console.log("hello")</script>
-  </>
+  return (
+    <>
+      <script type="text/javascript" src="https://example.com/some-script.js"></script>
+      <script>console.log("hello")</script>
+    </>
+  )
 }
 ```
 
@@ -256,7 +260,7 @@ config({
 You can use `innerHTML` to add raw HTML, for example:
 
 ```tsx
-import { Head } from "vike-solid/Head"
+import { Head } from 'vike-solid/Head'
 
 function Image({ src, author }: { src: string, author: string }) {
   return (
@@ -266,10 +270,10 @@ function Image({ src, author }: { src: string, author: string }) {
         <script
           type="application/ld+json"
           innerHTML={JSON.stringify({
-            "@context": "https://schema.org/",
+            '@context': 'https://schema.org/',
             contentUrl: { src },
             creator: {
-              "@type": "Person",
+              '@type': 'Person',
               name: author
             }
           })}
@@ -345,10 +349,12 @@ function Head() {
 // Environment: server
 
 function Head() {
-  return <>
-    <title>About us</title>
-    <meta name="description" content="We deliver payload to space." />
-  </>
+  return (
+    <>
+      <title>About us</title>
+      <meta name="description" content="We deliver payload to space." />
+    </>
+  )
 }
 ```
 
