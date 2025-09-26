@@ -14,11 +14,8 @@ assertIsNotBrowser()
 //  - Use assertErrorIsObject() throughout Vike's source code
 function warnIfErrorIsNotObject(err: unknown): void {
   if (!isObject(err)) {
-    // Create an enhanced warning that combines the message with the thrown value
-    const warningMessage = '[vike] The thrown value is:'
-    const enhancedWarning = createWarningEnhanced(err, warningMessage)
-    console.warn(enhancedWarning)
-
+    console.warn('[vike] The thrown value is:')
+    console.warn(err)
     assertWarning(
       false,
       `One of your hooks threw an error ${pc.cyan('throw someValue')} but ${pc.cyan(
@@ -31,26 +28,4 @@ function warnIfErrorIsNotObject(err: unknown): void {
       { onlyOnce: false },
     )
   }
-}
-
-type WarningEnhanced = {
-  message: string
-  stack: string
-  getOriginalValue: () => unknown
-} & Error
-
-function createWarningEnhanced(originalValue: unknown, prefixMessage: string): WarningEnhanced {
-  const enhancedMessage = `${prefixMessage}\n${String(originalValue)}`
-  const enhancedWarning = new Error(enhancedMessage) as WarningEnhanced
-  enhancedWarning.name = 'Warning'
-
-  // Add the getOriginalValue method as enumerable
-  Object.defineProperty(enhancedWarning, 'getOriginalValue', {
-    value: () => originalValue,
-    enumerable: true,
-    configurable: true,
-    writable: true
-  })
-
-  return enhancedWarning
 }
