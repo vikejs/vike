@@ -90,7 +90,7 @@ Essentially, and technically, SSG means SSR + pre-rendering:
 ```ts
 // pages/+config.ts
 
-import { Config } from 'vike/types'
+import type { Config } from 'vike/types'
 
 // SSG
 export default {
@@ -125,7 +125,7 @@ pages/admin-panel/index/+Page.js # SPA
 ```ts
 // pages/+config.ts
 
-import { Config } from 'vike/types'
+import type { Config } from 'vike/types'
 
 export default {
   // Pre-render *all* pages (including SPA pages)
@@ -136,7 +136,7 @@ export default {
 ```ts
 // pages/admin-panel/about/+Page.js
 
-import { Config } from 'vike/types'
+import type { Config } from 'vike/types'
 
 export default {
   // SPA
@@ -147,7 +147,7 @@ export default {
 ```ts
 // pages/(marketing)/about/+Page.js
 
-import { Config } from 'vike/types'
+import type { Config } from 'vike/types'
 
 export default {
   // SSG
@@ -160,7 +160,7 @@ export default {
 > ```ts
 > // pages/+config.ts
 >
-> import { Config } from 'vike/types'
+> import type { Config } from 'vike/types'
 >
 > // SPA
 > export default {
@@ -173,7 +173,7 @@ export default {
 > ```ts
 > // pages/+config.ts
 >
-> import { Config } from 'vike/types'
+> import type { Config } from 'vike/types'
 >
 > // SPA
 > export default {
@@ -208,7 +208,7 @@ pages/(marketing)/about/+Page.js # SSG
 ```ts
 // pages/+config.js
 
-import { Config } from 'vike/types'
+import type { Config } from 'vike/types'
 
 // SSR
 export default {
@@ -219,7 +219,7 @@ export default {
 ```ts
 // pages/(marketing)/+config.ts
 
-import { Config } from 'vike/types'
+import type { Config } from 'vike/types'
 
 // SSG
 export default {
