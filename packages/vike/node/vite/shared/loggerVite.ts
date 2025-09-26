@@ -13,6 +13,7 @@ function improveViteLogs(config: ResolvedConfig) {
   intercept('error', config)
 }
 
+// TODO rename logType loggerType
 function intercept(logType: LogType, config: ResolvedConfig) {
   config.logger[logType] = (msg, options: LogErrorOptions = {}) => {
     assert(!isErrorDebug())
@@ -45,7 +46,10 @@ function intercept(logType: LogType, config: ResolvedConfig) {
 
     // Vite's default logger preprends the "[vite]" tag if and only if options.timestamp is true
     const prependViteTag = options.timestamp || !!store?.httpRequestId
-    logViteAny(msg, logType, store?.httpRequestId ?? null, prependViteTag)
+    // If it's an actual error => options.error is set => it's handled with logViteError() above
+    // TODO rename logType_tmp logType
+    const logType_tmp = logType === 'error' ? 'error-note' : logType
+    logViteAny(msg, logType_tmp, store?.httpRequestId ?? null, prependViteTag)
   }
 }
 

@@ -47,7 +47,11 @@ function logDirectly(thing: unknown, logType: LogType) {
     console.warn(thing)
     return
   }
-  if (logType === 'error') {
+  if (logType === 'error-note') {
+    console.error(thing)
+    return
+  }
+  if (logType === 'error-thrown') {
     // console.error()
     logErrorServer(thing)
     return
@@ -72,7 +76,7 @@ function applyViteSourceMapToStackTrace(thing: unknown) {
 
 function prependTags(msg: string, projectTag: '[vite]' | ProjectTag, category: LogCategory | null, logType: LogType) {
   const color = (s: string) => {
-    if (logType === 'error' && !hasRed(msg)) return pc.bold(pc.red(s))
+    if (logType === 'error-thrown' && !hasRed(msg)) return pc.bold(pc.red(s))
     if (logType === 'error-recover' && !hasGreen(msg)) return pc.bold(pc.green(s))
     if (logType === 'warn' && !hasYellow(msg)) return pc.yellow(s)
     if (projectTag === '[vite]') return pc.bold(pc.cyan(s))
