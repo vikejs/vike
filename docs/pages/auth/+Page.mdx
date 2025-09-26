@@ -21,7 +21,7 @@ import type { PageContextServer } from 'vike/types'
 
 // This hook is called upon new incoming HTTP requests
 export async function onCreatePageContext(pageContext: PageContextServer) {
-  // vike-server exposes the request object at pageContext.runtime.req
+  // vike-photon exposes the request object at pageContext.runtime.req
   const { req } = pageContext.runtime
 
   // Authentication middlewares (e.g. Passport.js and Grant) usually set req.user
@@ -65,9 +65,9 @@ export default {
 
 > You can access `pageContext` in any UI component and Vike hook — see <Link href="/pageContext" />.
 
-> If you use <Link href="/vike-server">`vike-server`</Link>, you can access the request object at `pageContext.runtime.req.user` (see <Link href="/pageContext#runtime">`pageContext.runtime`</Link>).
+> If you use <Link href="/vike-photon">`vike-photon`</Link>, you can access the request object at `pageContext.runtime.req.user` (see <Link href="/pageContext#runtime">`pageContext.runtime`</Link>).
 >
-> If you don't use `vike-server`, you can define a custom property `pageContext.req` at <Link href="/renderPage">`renderPage()`</Link>:
+> If you don't use `vike-photon`, you can define a custom property `pageContext.req` at <Link href="/renderPage">`renderPage()`</Link>:
 > ```ts
 > // server/index.ts
 >

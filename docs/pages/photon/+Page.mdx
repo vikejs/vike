@@ -1,0 +1,24 @@
+import { Link } from '@brillout/docpress'
+import { ConfigSpec, ProvidedBy } from '../../components'
+
+<ConfigSpec
+  env="server"
+  providedBy={<ProvidedBy extension="vike-photon">the <code>+photon</code> setting</ProvidedBy> }
+>
+```ts
+import type { BuildOptions } from 'esbuild'
+import type { Photon } from '@photonjs/core'
+
+type PhotonConfig = Photon.Config & {
+  standalone?: boolean | { esbuild: BuildOptions }
+}
+```
+</ConfigSpec>
+
+The documentation for the various `+photon` settings lives at <Link href="/vike-photon"></Link>.
+
+## See also
+
+- <Link href="/vike-photon" />
+- <Link href="/blog/photon" />
+- <Link href="/migration/vike-photon" />
