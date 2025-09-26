@@ -471,6 +471,7 @@ function triggerPrepareStackTrace(err: unknown) {
 
 function getErrIntroMsg(operation: 'transpile' | 'execute', filePath: FilePathResolved) {
   const { filePathToShowToUserResolved } = filePath
+  // TODO use const string
   const msg = [
     // prettier ignore
     pc.red(`Failed to ${operation}`),
