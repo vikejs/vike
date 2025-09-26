@@ -53,7 +53,6 @@ import pc from '@brillout/picocolors'
 import { setAlreadyLogged } from '../../runtime/renderPage/isNewError.js'
 import { onRuntimeError } from '../../runtime/renderPage/loggerProd.js'
 import { isUserHookError } from '../../../shared/hooks/execHook.js'
-import { isObject } from '../../../utils/isObject.js'
 
 assertIsNotProductionRuntime()
 overwriteRuntimeProductionLogger(logRuntimeError, logRuntimeInfo)
@@ -141,16 +140,16 @@ function logErr(err: unknown, httpRequestId: number | null = null, errorComesFro
   const hook = isUserHookError(err)
   if (hook) {
     const { hookName, hookFilePath } = hook
-    const errorMessage = `Following error was thrown by the ${hookName}() hook defined at ${hookFilePath}`
-    const enhancedError = createErrorEnhanced(err, errorMessage)
-    logDirectly(enhancedError, 'error')
+    logWithVikeTag(
+      pc.red(`Following error was thrown by the ${hookName}() hook defined at ${hookFilePath}`),
+      'error',
+      category,
+    )
   } else if (category) {
-    const errorMessage = errorComesFromVite ? 'Transpilation error' : 'An error was thrown'
-    const enhancedError = createErrorEnhanced(err, `[Error] ${errorMessage}:`)
-    logDirectly(enhancedError, 'error')
-  } else {
-    logDirectly(err, 'error')
+    logFallbackErrIntro(category, errorComesFromVite)
   }
+
+  logDirectly(err, 'error')
 
   // Needs to be called after logging the error.
   onRuntimeError(err)
@@ -165,8 +164,8 @@ function logConfigError(err: unknown): void {
     const errIntroMsg = getConfigExecutionErrorIntroMsg(err)
     if (errIntroMsg) {
       assert(stripAnsi(errIntroMsg).startsWith('Failed to execute'))
-      const enhancedError = createErrorEnhanced(err, stripAnsi(errIntroMsg))
-      logDirectly(enhancedError, 'error')
+      logWithVikeTag(errIntroMsg, 'error', category)
+      logDirectly(err, 'error')
       return
     }
   }
@@ -187,16 +186,14 @@ function logConfigError(err: unknown): void {
     if (logged) return
   }
 
-  if (category) {
-    const errorMessage = 'An error was thrown'
-    const enhancedError = createErrorEnhanced(err, `[Error] ${errorMessage}:`)
-    logDirectly(enhancedError, 'error')
-  } else {
-    logDirectly(err, 'error')
-  }
+  if (category) logFallbackErrIntro(category, false)
+  logDirectly(err, 'error')
 }
 
-
+function logFallbackErrIntro(category: LogCategory, errorComesFromVite: boolean) {
+  const msg = errorComesFromVite ? 'Transpilation error' : 'An error was thrown'
+  logWithVikeTag(pc.bold(pc.red(`[Error] ${msg}:`)), 'error', category)
+}
 
 function getConfigCategory(): LogCategory {
   const category = getCategory() ?? 'config'
@@ -251,52 +248,4 @@ function getCategory(httpRequestId: number | null = null): LogCategory | null {
   // const category = httpRequestId % 2 === 1 ? (`request-${httpRequestId}` as const) : (`request(${httpRequestId})` as const)
   const category = `request(${httpRequestId})` as const
   return category
-}
-
-type ErrorEnhanced = {
-  message: string
-  stack: string
-  getOriginalError: () => unknown
-} & Error
-
-function createErrorEnhanced(originalError: unknown, prefixMessage: string): ErrorEnhanced {
-  // If the original error is already an Error object, use its properties
-  if (isObject(originalError) && originalError instanceof Error) {
-    const enhancedMessage = `${pc.red(prefixMessage)}\n${originalError.message}`
-    const enhancedStack = originalError.stack ? `${pc.red(prefixMessage)}\n${originalError.stack}` : enhancedMessage
-
-    const enhancedError = new Error(enhancedMessage) as ErrorEnhanced
-    enhancedError.stack = enhancedStack
-    enhancedError.name = originalError.name
-
-    // Copy other enumerable properties from the original error
-    Object.keys(originalError).forEach(key => {
-      if (key !== 'message' && key !== 'stack' && key !== 'name') {
-        ;(enhancedError as any)[key] = (originalError as any)[key]
-      }
-    })
-
-    // Add the getOriginalError method as enumerable
-    Object.defineProperty(enhancedError, 'getOriginalError', {
-      value: () => originalError,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    })
-
-    return enhancedError
-  } else {
-    // If the original error is not an Error object, create a new Error
-    const enhancedMessage = `${pc.red(prefixMessage)}\n${String(originalError)}`
-    const enhancedError = new Error(enhancedMessage) as ErrorEnhanced
-
-    Object.defineProperty(enhancedError, 'getOriginalError', {
-      value: () => originalError,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    })
-
-    return enhancedError
-  }
 }
