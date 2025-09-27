@@ -54,8 +54,8 @@ export function SomeSharedComponent() {
 // pages/about/+Page.ts
 
 import { SomeSharedComponent } from '../index/+Page'// [!code --]
-// @detype-replace DummyComponent SomeSharedComponent
-import { DummyComponent } from '../../components/SomeSharedComponent'// [!code ++]
+// @detype-replace SomeSharedComponent_ SomeSharedComponent
+import { SomeSharedComponent_ } from '../../components/SomeSharedComponent'// [!code ++]
 ```
 ```ts
 // pages/index/+Page.ts
@@ -63,8 +63,8 @@ import { DummyComponent } from '../../components/SomeSharedComponent'// [!code +
 import './landing-page.css'
 import { SomeSharedComponent } from '../../components/SomeSharedComponent'// [!code ++]
 
-// @detype-replace DummyComponent SomeSharedComponent
-export function DummyComponent() {// [!code --]
+// @detype-replace SomeSharedComponent_ SomeSharedComponent
+export function SomeSharedComponent_() {// [!code --]
   // ...// [!code --]
 }// [!code --]
 ```
