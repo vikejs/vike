@@ -36,7 +36,7 @@ export { onBeforeRender }
 
 import type { PageContextServer } from 'vike/types'
 
-function onBeforeRender(pageContext: PageContextServer) {
+async function onBeforeRender(pageContext: PageContextServer) {
   const starWarsMovies = await getStarWarsMovies()
   pageContext.starWarsMovies = starWarsMovies// [!code --]
   // We should do this instead// [!code ++]
@@ -63,13 +63,13 @@ export { onBeforeRender }
 
 import type { PageContextServer } from 'vike/types'
 
-function onBeforeRender(pageContext: PageContextServer) {
+async function onBeforeRender(pageContext: PageContextServer) {
   const starWarsMovies = await getStarWarsMovies()
   return {
-    pageContext: {// [!code --]
-      ...pageContext,// [!code --]
-      starWarsMovies// [!code --]
-    }// [!code --]
+    // @detype-uncomment pageContext: {// [!code --]
+    // @detype-uncomment   ...pageContext,// [!code --]
+    // @detype-uncomment   starWarsMovies// [!code --]
+    // @detype-uncomment }// [!code --]
     // Do this instead// [!code ++]
     pageContext: {// [!code ++]
       starWarsMovies// [!code ++]

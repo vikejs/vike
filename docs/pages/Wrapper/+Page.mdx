@@ -24,11 +24,7 @@ import React from 'react'
 
 // `children` includes +Page and all +Layout components
 export default function Wrapper({ children }: { children: React.ReactNode }) {
-  return <>
-    <MyWrapper>
-      {children}
-    </MyWrapper>
-  </>
+  return <MyWrapper>{children}</MyWrapper>
 }
 ```
 
@@ -43,7 +39,7 @@ The `+Wrapper` component is usually used for integrating tools, such as <Link hr
 
 A page can be wrapped by multiple `+Wrapper` components:
 
-```tsx
+```jsx
 <Wrapper1>
   <Wrapper2>
     <Wrapper3>

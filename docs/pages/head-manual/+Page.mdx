@@ -44,7 +44,7 @@ To define `<head>` tags by any UI component:
 
 For example:
 
-```ts
+```tsx
 // /renderer/+onRenderHtml.ts
 // Environment: server
 
@@ -82,11 +82,13 @@ async function onRenderHtml(pageContext: PageContextServer) {
 ```ts
 // SomeComponent.ts
 
-  // Inside a UI component
-  const pageContext = usePageContext()
-  const { headProps } = pageContext
-  headProps.title = 'I was set by some component.'
-  headProps.description = 'Me too.'
+/* ... */
+
+// Inside any UI component
+const pageContext = usePageContext()
+const { headProps } = pageContext
+headProps.title = 'I was set by some component.'
+headProps.description = 'Me too.'
 ```
 
 

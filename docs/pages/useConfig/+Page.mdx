@@ -31,7 +31,7 @@ async function data(pageContext: PageContextServer) {
   let { movies } = await response.json()
 
   config({
-    title: `${movies.length} Star Wars Movies`
+    title: `${movies.length} Star Wars Movies`,
     Head: <meta name="description" content={`List of all ${movies.length} Star Wars movies.`} />
   })
 
@@ -74,10 +74,12 @@ export function Page() {
   })
 
   // Render UI
-  return <>
-    <h1>{data.product.name}</h1>
-    <p>{data.product.description}</p>
-  </>
+  return (
+    <>
+      <h1>{data.product.name}</h1>
+      <p>{data.product.description}</p>
+    </>
+  )
 }
 ```
 
@@ -110,21 +112,23 @@ export function Page() {
   const data = useData<Data>()
 
   // Render UI and <head> tags
-  return <>
-    <Config title={data.product.name} />
-    <Head>
-      {/* Image shown when sharing on social sites (Twitter, WhatsApp, ...) */}
-      <meta property="og:image" content={data.product.image}>
-    </Head>
-    <h1>{data.product.name}</h1>
-    <p>{data.product.description}</p>
-  </>
+  return (
+    <>
+      <Config title={data.product.name} />
+      <Head>
+        {/* Image shown when sharing on social sites (Twitter, WhatsApp, ...) */}
+        <meta property="og:image" content={data.product.image} />
+      </Head>
+      <h1>{data.product.name}</h1>
+      <p>{data.product.description}</p>
+    </>
+  )
 }
 ```
 
 > The `<Config>` and `<Head>` components are just `useConfig()` wrappers — they're only for convenience.
 > The following doesn't make any difference:
-> ```ts
+> ```tsx
 > import { Config } from 'vike-react/Config' // or vike-{vue,solid}// [!code --]
 > import { Head } from 'vike-react/Head' // or vike-{vue,solid}// [!code --]
 > import { useConfig } from 'vike-react/useConfig' // or vike-{vue,solid}// [!code ++]
@@ -141,12 +145,14 @@ export function Page() {
 >   })// [!code ++]
 >
 >   return (
->     <Config title={data.product.name} />// [!code --]
->     <Head>// [!code --]
->       <meta property="og:image" content={data.product.image} />// [!code --]
->     </Head>// [!code --]
->     <h1>{data.product.name}</h1>
->     <p>{data.product.description}</p>
+>     <>
+>      <Config title={data.product.name} />// [!code --]
+>      <Head>// [!code --]
+>        <meta property="og:image" content={data.product.image} />// [!code --]
+>      </Head>// [!code --]
+>      <h1>{data.product.name}</h1>
+>      <p>{data.product.description}</p>
+>     </>
 >   )
 > }
 > ```
@@ -178,17 +184,17 @@ function Movies() {
   // Set <head> tags
   const config = useConfig()
   config({
-    title: `${movies.length} Star Wars Movies` // <title>
+    title: `${movies.length} Star Wars Movies`, // <title>
     Head: <meta name="description" content={`List of all ${movies.length} Star Wars movies.`} />
   })
 
   // Render UI
   return (
-    <ul>{
-      movies.map(({ title }) => (
+    <ul>
+      {movies.map(({ title }) => (
         <li>{title}</li>
-      ))
-    }</ul>
+      ))}
+    </ul>
   )
 }
 ```
@@ -212,15 +218,17 @@ function Movies() {
 
   // Render UI and <head> tags
   return (
-    <Config title={`${movies.length} Star Wars Movies`} />
-    <Head>
-      <meta name="description" content={`List of all ${movies.length} Star Wars movies.`} />
-    </Head>
-    <ul>{
-      movies.map(({ title }) => (
-        <li>{title}</li>
-      ))
-    }</ul>
+    <>
+      <Config title={`${movies.length} Star Wars Movies`} />
+      <Head>
+        <meta name="description" content={`List of all ${movies.length} Star Wars movies.`} />
+      </Head>
+      <ul>
+        {movies.map(({ title }) => (
+          <li>{title}</li>
+        ))}
+      </ul>
+    </>
   )
 }
 ```

@@ -95,26 +95,28 @@ export function Layout({ children }: { children: React.ReactNode }) {
   // The page's metadata
   const { title } = metadata.find(({ url }) => url === urlPathname)
 
-  return <>
-    {/* Show the list of blog posts */}
-    <LeftSidebar>
-      <p>Blog posts:</p>
-      <ul>{
-        metadata.map(({ title, url, date }) =>
-          <li>
-            <a href={url}>{data + title}</a>
-          </li>
-        )
-      }</ul>
-    </LeftSidebar>
+  return (
+    <>
+      {/* Show the list of blog posts */}
+      <LeftSidebar>
+        <p>Blog posts:</p>
+        <ul>
+          {metadata.map(({ title, url, date }) => (
+            <li>
+              <a href={url}>{data + title}</a>
+            </li>
+          ))}
+        </ul>
+      </LeftSidebar>
 
-    {/* The page's content */}
-    <Content>
-      <h1>{ title }</h1>
-      { /* children is pageContext.Page which is the component defined by +Page.md */ }
-      { children }
-    </Content>
-  </>
+      {/* The page's content */}
+      <Content>
+        <h1>{title}</h1>
+        {/* children is pageContext.Page which is the component defined by +Page.md */}
+        {children}
+      </Content>
+    </>
+  )
 }
 ```
 
@@ -140,12 +142,12 @@ all essentials you'd expect from a frontend framework with a robust design.
 
 You can use <Link href="/meta">`meta`</Link> to create a custom setting for defining <Link href="#metadata:~:text=What%20is%20local%20metadata">global metadata</Link>.
 
-```bash
-/pages/+config.js
+```yaml
+/pages/+config.ts
 /pages/+onCreateGlobalContext.server.ts
-/pages/+Layout.jsx
+/pages/+Layout.tsx
 /pages/2024-new-year/+Page.mdx
-/pages/2024-new-year/+metadata.js
+/pages/2024-new-year/+metadata.ts
 ```
 
 ```ts
@@ -194,15 +196,14 @@ import type { GlobalContextServer } from 'vike/types'
 
 export async function onCreateGlobalContext(globalContext: GlobalContextServer) {
   const pages = globalContext.pages
-  const posts = Object.values(pages)
-    .map((page) => {
-      const { metadata } = page.config
-      const post = {
-        url: page.route,
-        title: metadata.title
-      }
-      return post
-    })
+  const posts = Object.values(pages).map((page) => {
+    const { metadata } = page.config
+    const post = {
+      url: page.route,
+      title: metadata.title
+    }
+    return post
+  })
   globalContext.posts = posts
 }
 
@@ -242,26 +243,28 @@ import { usePageContext } from 'vike-react/usePageContext' // or vike-{vue,solid
 export function Layout({ children }: { children: React.ReactNode }) {
   const pageContext = usePageContext()
   const { posts } = pageContext.globalContext
-  return <>
-    {/* Show the list of blog posts */}
-    <LeftSidebar>
-      <p>Blog posts:</p>
-      <ul>{
-        posts.map((post) =>
-          <li>
-            <a href={post.url}>{post.title}</a>
-          </li>
-        )
-      }</ul>
-    </LeftSidebar>
+  return (
+    <>
+      {/* Show the list of blog posts */}
+      <LeftSidebar>
+        <p>Blog posts:</p>
+        <ul>
+          {posts.map((post) => (
+            <li>
+              <a href={post.url}>{post.title}</a>
+            </li>
+          ))}
+        </ul>
+      </LeftSidebar>
 
-    {/* The page's content */}
-    <Content>
-      <h1>{ title }</h1>
-      { /* children is pageContext.Page which is the component defined by +Page.mdx */ }
-      { children }
-    </Content>
-  </>
+      {/* The page's content */}
+      <Content>
+        <h1>{title}</h1>
+        {/* children is pageContext.Page which is the component defined by +Page.mdx */}
+        {children}
+      </Content>
+    </>
+  )
 }
 ```
 
@@ -352,15 +355,17 @@ import React from 'react'
 import { usePageContext } from 'vike-react/usePageContext' // or vike-{vue,solid}
 
 export function Layout({ children }: { children: React.ReactNode }) {
-   const pageContext = usePageContext()
-   const { frontmatter } = pageContext.config
-   return <>
-     <h1>{frontmatter.title}</h1>
-     {children}
-     <footer>
-       <p>Written by {frontmatter.author}.</p>
-     </footer>
-   </>
+  const pageContext = usePageContext()
+  const { frontmatter } = pageContext.config
+  return (
+    <>
+      <h1>{frontmatter.title}</h1>
+      {children}
+      <footer>
+        <p>Written by {frontmatter.author}.</p>
+      </footer>
+    </>
+  )
 }
 ```
 

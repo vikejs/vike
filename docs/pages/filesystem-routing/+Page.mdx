@@ -17,24 +17,24 @@ Following directories are ignored by Filesystem Routing:
 ```yaml
 FILESYSTEM                                                    URL
 ========================================================      ========
-pages/index/+Page.js                                          /
-src/(marketing)/pages/jobs/+Page.js                           /jobs
-pages/pages/src/(some-dir)/about/renderer/index/+Page.js      /about
+pages/index/+Page.ts                                          /
+src/(marketing)/pages/jobs/+Page.ts                           /jobs
+pages/pages/src/(some-dir)/about/renderer/index/+Page.ts      /about
 ```
 
 Note that, except of `pages/` and `renderer/`, these directories aren't ignored by <Link href="/config#inheritance">config inheritance</Link>:
 
 ```yaml
-pages/index/+config.js
-# The +config.js above doesn't apply to pages/about/
-pages/about/+Page.js
+pages/index/+config.ts
+# The +config.ts above doesn't apply to pages/about/
+pages/about/+Page.ts
 ```
 
 ```yaml
-# This +config.js file applies to admin-panel/**/*
-admin-panel/pages/+config.js
-# This +config.js file applies to (marketing)/**/*
-(marketing)/page/+config.js
+# This +config.ts file applies to admin-panel/**/*
+admin-panel/pages/+config.ts
+# This +config.ts file applies to (marketing)/**/*
+(marketing)/page/+config.ts
 ```
 
 > See also: <Link href="/routing#groups" />
@@ -45,28 +45,28 @@ Unlike the other ignored directories, the `pages/` and `renderer/` directories a
 ###################
 ## Configuration ##
 ###################
-# This +config.js file applies everywhere (i.e. /**/* — including the root directory)
-pages/+config.js
-# This +onRenderClient.js hook applies everywhere (i.e. /**/* — including the root directory)
-renderer/+onRenderClient.js
-# This +onRenderHtml.js hook applies only to admin-panel/**/*
-admin-panel/renderer/+onRenderHtml.js
-# This +onRenderHtml.js hook applies only to (marketing)/**/*
-(marketing)/pages/+onRenderHtml.js
+# This +config.ts file applies everywhere (i.e. /**/* — including the root directory)
+pages/+config.ts
+# This +onRenderClient.ts hook applies everywhere (i.e. /**/* — including the root directory)
+renderer/+onRenderClient.ts
+# This +onRenderHtml.ts hook applies only to admin-panel/**/*
+admin-panel/renderer/+onRenderHtml.ts
+# This +onRenderHtml.ts hook applies only to (marketing)/**/*
+(marketing)/pages/+onRenderHtml.ts
 
 ###################
 ###### Pages ######
 ###################
 # This page is configured by:
-# - pages/+config.js
-# - renderer/+onRenderClient.js
-# - (marketing)/pages/+onRenderHtml.js
-(marketing)/pages/index/+Page.js
+# - pages/+config.ts
+# - renderer/+onRenderClient.ts
+# - (marketing)/pages/+onRenderHtml.ts
+(marketing)/pages/index/+Page.ts
 # This page is configured by:
-# - pages/+config.js
-# - renderer/+onRenderClient.js
-# - admin-panel/renderer/+onRenderHtml.js
-admin-panel/pages/index/+Page.js
+# - pages/+config.ts
+# - renderer/+onRenderClient.ts
+# - admin-panel/renderer/+onRenderHtml.ts
+admin-panel/pages/index/+Page.ts
 ```
 
 > See also:
@@ -78,10 +78,10 @@ admin-panel/pages/index/+Page.js
 
 Filesystem Routing is case sensitive:
 
-```bash
+```yaml
 FILESYSTEM                     URL
 ========================       ======
-pages/HELLO/+Page.js           /HELLO
+pages/HELLO/+Page.ts           /HELLO
 ```
 
 
@@ -119,8 +119,8 @@ If you don't use a <UiFrameworkExtension /> then we recommend placing your UI fr
 /server/
 
 # Code that specifies how pages are rendered
-/renderer/+onRenderHtml.js
-/renderer/+onRenderClient.js
+/renderer/+onRenderHtml.ts
+/renderer/+onRenderClient.ts
 /renderer/Layout.{jsx,vue}  # React/Vue/... component that wraps the `Page` component
 /renderer/Layout.css
 /renderer/Header.{jsx,vue} # Website header used for every page

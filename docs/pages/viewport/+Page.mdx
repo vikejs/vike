@@ -7,7 +7,7 @@ import { ProvidedBy, ConfigSpec } from '../../components'
   default={<code>'responsive'</code>}
   providedBy={<ProvidedBy noCustomGuide />}
 >
-```ts
+```ts ts-only hide-menu
 type Value = 'responsive' | number | null | undefined
 type Viewport = Value | ((pageContext) => Value)
 ```
@@ -70,14 +70,16 @@ export default {
   viewport: null
 } satisfies Config
 ```
-```ts
-// pages/+Head.ts
+```tsx
+// pages/+Head.tsx
 
 // Same as Vike's default but adding `user-scalable=no` which makes sense for
 // highly interactive apps such as games.
-export default () => <>
-  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
-</>
+export default () => (
+  <>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+  </>
+)
 ```
 
 > If there isn't any `<meta name="viewport">` tag, then the browser will fallback to its default. We don't recommend this (it's unpredictable) and instead consider always setting a `<meta name="viewport">` tag.

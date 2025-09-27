@@ -4,7 +4,7 @@ import { ConfigSpec } from '../../components'
 <ConfigSpec
   env="client, server"
 >
-```ts
+```ts ts-only hide-menu
 type HookTimeout = {
   error?: number | false
   warning?: number | false
@@ -62,7 +62,7 @@ export default {
     data: {
       // Disable the warning timeout
       warning: false
-    }
+    },
     // No timeout at all: Vike won't warn and will indefinitely await the
     // promise returned by onRenderClient()
     onRenderClient: false

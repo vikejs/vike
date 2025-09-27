@@ -6,9 +6,7 @@ import { UiFrameworkExtension, ProvidedBy, ConfigSpec } from '../../components'
   providedBy={<ProvidedBy>the <code>ssr</code> setting</ProvidedBy>}
   isTypeOneLiner
 >
-```ts
-boolean
-```
+`boolean {:ts}`
 </ConfigSpec>
 
 Setting to enable/disable SSR (Server-Side Rendering). You can disable SSR for all your pages or only for some pages.
@@ -45,15 +43,15 @@ export default {
 } satisfies Config
 ```
 
-```bash
+```yaml
 # Pages rendered and loaded only on the client-side
-/pages/admin-panel/products/+Page.js
-/pages/admin-panel/users/+Page.js
+/pages/admin-panel/products/+Page.ts
+/pages/admin-panel/users/+Page.ts
 
 # Pages rendered and loaded on both client- and server-side. (Because they
 # don't live under /pages/admin-panel/ thus the `ssr` setting doesn't apply.)
-/pages/index/+Page.js
-/pages/about/+Page.js
+/pages/index/+Page.ts
+/pages/about/+Page.ts
 ```
 
 > For better config organization, you can use a <Link href="/routing#domain-driven-file-structure">domain-driven file structure</Link>.

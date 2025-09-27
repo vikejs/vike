@@ -32,13 +32,19 @@ import React from 'react'
 
 // `children` includes the +Page component (and all inner +Layout components)
 function Layout({ children }: { children: React.ReactNode }) {
-  return <>
-    <Navigation/>
-    <Content>{children}</Content>
-  </>
+  return (
+    <>
+      <Navigation />
+      <Content>{children}</Content>
+    </>
+  )
 }
-function Navigation() { /* ... */ }
-function Content() { /* ... */ }
+function Navigation() {
+  /* ... */
+}
+function Content() {
+  /* ... */
+}
 ```
 
 > Don't forget to use `children` (or [`<slot>`](https://vuejs.org/guide/components/slots.html) if you use Vue).
@@ -173,11 +179,7 @@ export { Page }
 import { LayoutDefault } from '../layouts/LayoutDefault'
 
 function Page() {
-  return <>
-    <LayoutDefault>
-      {/* ... */}
-    </LayoutDefault>
-  </>
+  return <LayoutDefault>{/* ... */}</LayoutDefault>
 }
 ```
 
@@ -189,11 +191,7 @@ export { Page }
 import { LayoutDashboard } from '../layouts/LayoutDashboard'
 
 function Page() {
-  return <>
-    <LayoutDashboard>
-      {/* ... */}
-    </LayoutDashboard>
-  </>
+  return <LayoutDashboard>{/* ... */}</LayoutDashboard>
 }
 ```
 

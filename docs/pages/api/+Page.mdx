@@ -34,10 +34,10 @@ Return & options:
 ```ts
 const {
   viteConfig, // Resolved Vite configuration
-  viteServer, // Vite's development server
+  viteServer // Vite's development server
 } = await dev({
   vikeConfig, // Vike configuration (optional)
-  viteConfig, // Vite configuration (optional)
+  viteConfig // Vite configuration (optional)
 })
 
 // You can access the globalContext object:
@@ -72,7 +72,7 @@ Return & options:
 ```ts
 await build({
   vikeConfig, // Vike configuration (optional)
-  viteConfig, // Vite configuration (optional)
+  viteConfig // Vite configuration (optional)
 })
 
 // You can access the globalContext object:
@@ -113,10 +113,10 @@ Return & options:
 ```ts
 const {
   viteConfig, // Resolved Vite configuration
-  viteServer, // Vite's development server
+  viteServer // Vite's development server
 } = await preview({
   vikeConfig, // Vike configuration (optional)
-  viteConfig, // Vite configuration (optional)
+  viteConfig // Vite configuration (optional)
 })
 
 // You can access the globalContext object:
@@ -183,7 +183,7 @@ See:
   ```ts
   prerender({
     pageContextInit: {
-      someData: 42,
+      someData: 42
       // ...
     }
   })
@@ -242,11 +242,11 @@ import { dev } from 'vike/api'
 
 await dev({
   viteConfig: {
-    // vite.config.js can live in node_modules/my-framework/src/vite.config.ts
-    configFile: './path/to/vite.config.js',
-    // The app's root can be somewhere completely else than vite.config.js
+    // vite.config.ts can live in node_modules/my-framework/src/vite.config.ts
+    configFile: './path/to/vite.config.ts',
+    // The app's root can be somewhere completely else than vite.config.ts
     root: './path/to/app/'
-    // Some Vite settings overriding vite.config.js
+    // Some Vite settings overriding vite.config.ts
     /* ... */
   }
 })
@@ -260,8 +260,8 @@ import { build } from 'vike/api'
 
 await build({
   viteConfig: {
-    // Don't load any vite.config.js
-    configFile: false,
+    // Don't load any vite.config.ts
+    configFile: false
     // All Vite settings
     /* ... */
   }
