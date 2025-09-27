@@ -39,10 +39,8 @@ const headers = new Headers(pageContext.headers)
 ```
 
 All values are merged. You can get the list of values as an array (`string[]`):
-```ts ts-only
-const acceptLanguage = pageContext.headers['accept-language']
-  .split(',')
-  .map(v => v.trimStart())
+```ts
+const acceptLanguage = pageContext.headers['accept-language'].split(',').map((v) => v.trimStart())
 ```
 
 For getting the list of [cookie values](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies), you can use a cookie parser (e.g. [`cookie-parser`](https://npmjs.com/package/cookie-parser)).
