@@ -360,8 +360,6 @@ function updateFavicon(dynamicFavicon) {
 
 <TypescriptOnly>
 
-For TypeScript users:
-
 ```ts ts-only
 // pages/+config.ts
 // Environment: config
@@ -421,8 +419,8 @@ import { usePageContext } from 'vike-react/usePageContext' // or vike-{vue,solid
 
 function Head() {
   const pageContext = usePageContext()
-  const description = 
-    pageContext.locale === 'de-DE' ? 'List von Star Wars Filme.' : 'List of Star Wars Movies.'
+  const description =
+    pageContext.locale === 'de-DE' ? 'Liste von Star Wars Filme.' : 'List of Star Wars Movies.'
 
   return (
     <>
