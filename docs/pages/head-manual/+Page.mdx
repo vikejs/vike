@@ -82,11 +82,13 @@ async function onRenderHtml(pageContext: PageContextServer) {
 ```ts
 // SomeComponent.ts
 
-  // Inside a UI component
-  const pageContext = usePageContext()
-  const { headProps } = pageContext
-  headProps.title = 'I was set by some component.'
-  headProps.description = 'Me too.'
+/* ... */
+
+// Inside any UI component
+const pageContext = usePageContext()
+const { headProps } = pageContext
+headProps.title = 'I was set by some component.'
+headProps.description = 'Me too.'
 ```
 
 

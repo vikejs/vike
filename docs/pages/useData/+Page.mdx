@@ -24,9 +24,11 @@ For example:
 import { useData } from 'vike-react/useData' // or vike-vue / vike-solid
 import type { Data } from './+data'
 
-  // Inside a React/Vue/Solid component
-  const data = useData<Data>()
-  const { name, price } = data
+/* ... */
+
+// Inside any React/Vue/Solid component
+const data = useData<Data>()
+const { name, price } = data
 ```
 
 ```ts
