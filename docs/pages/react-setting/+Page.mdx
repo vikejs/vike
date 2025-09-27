@@ -50,7 +50,7 @@ You can also use <Link href="/pageContext">`pageContext`</Link>:
 
 import type { Config, PageContextClient } from 'vike/types'
 
-export default (pageContext: PageContextClient): Config['react'] => {
+export const react: Config['react'] = (pageContext: PageContextClient) => {
   return {
     hydrateRootOptions,
     createRootOptions
