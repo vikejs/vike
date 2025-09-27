@@ -374,7 +374,7 @@ function logHttpResponse(urlOriginalPretty: string, httpRequestId: number, pageC
       msg = `HTTP ${type} ${prettyUrl(urlOriginalPretty)} ${color(statusCode ?? 'ERR')}`
     }
   }
-  logRuntimeInfo?.(msg, httpRequestId, isNominal ? 'info' : 'error')
+  logRuntimeInfo?.(msg, httpRequestId, isNominal ? 'info' : 'error-note')
 }
 function prettyUrl(url: string) {
   try {
@@ -676,7 +676,7 @@ function getPageContextSkipRequest(pageContextInit: PageContextInit) {
 }
 
 function getPageContextInvalidVikeConfig(err: unknown, pageContextInit: PageContextInit, httpRequestId: number) {
-  logRuntimeInfo?.(pc.bold(pc.red('Error loading Vike config — see error above')), httpRequestId, 'error')
+  logRuntimeInfo?.(pc.bold(pc.red('Error loading Vike config — see error above')), httpRequestId, 'error-note')
   const pageContextWithError = getPageContextHttpResponseErrorWithoutGlobalContext(err, pageContextInit)
   return pageContextWithError
 }

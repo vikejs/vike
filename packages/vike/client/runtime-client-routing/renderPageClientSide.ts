@@ -834,6 +834,7 @@ if (import.meta.env.DEV && import.meta.hot)
     }
   })
 
+// TODO move to own file
 function logErrorClient(err: unknown) {
   if (
     isObject(err) &&
