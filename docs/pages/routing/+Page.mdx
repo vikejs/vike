@@ -9,12 +9,12 @@ Vike supports *Filesystem Routing*: the URL of a page is determined by its locat
 
 For example:
 
-```yaml
+```bash
 FILESYSTEM                     URL
 ====================           ======
-pages/index/+Page.ts           /
-pages/about/+Page.ts           /about
-pages/jobs/+Page.ts            /jobs
+pages/index/+Page.js           /
+pages/about/+Page.js           /about
+pages/jobs/+Page.js            /jobs
 ```
 
 > Vike always skips the `pages/` and `index/` directories when determining the URL.
@@ -26,10 +26,10 @@ For more details, see:
 
 ### Parameterized routes
 
-```yaml
+```bash
 FILESYSTEM                     URL
 ========================       =======================
-pages/movie/@id/+Page.ts       /movie/1, /movie/2, ...
+pages/movie/@id/+Page.js       /movie/1, /movie/2, ...
 ```
 
 > The parameter `id` is available at <Link href="/pageContext#routeParams">`pageContext.routeParams.id`</Link>.
@@ -41,10 +41,10 @@ You can organize your pages into groups:
 ```yaml
 FILESYSTEM                             URL
 ================================       ==================
-pages/(marketing)/index/+Page.ts       /
-pages/(marketing)/about/+Page.ts       /about
-pages/admin-panel/index/+Page.ts       /admin-panel
-pages/admin-panel/users/+Page.ts       /admin-panel/users
+pages/(marketing)/index/+Page.js       /
+pages/(marketing)/about/+Page.js       /about
+pages/admin-panel/index/+Page.js       /admin-panel
+pages/admin-panel/users/+Page.js       /admin-panel/users
 ```
 > Any directory inside parentheses such as `(marketing)` is ignored by Filesystem Routing.
 
@@ -52,14 +52,14 @@ It also enables you to easily set different configurations for different pages:
 
 ```yaml
 # Define a layout for all marketing pages
-pages/(marketing)/+Layout.ts
-pages/(marketing)/index/+Page.ts
-pages/(marketing)/about/+Page.ts
+pages/(marketing)/+Layout.js
+pages/(marketing)/index/+Page.js
+pages/(marketing)/about/+Page.js
 
 # Define a layout for all admin pages
-pages/admin-panel/+Layout.ts
-pages/admin-panel/index/+Page.ts
-pages/admin-panel/users/+Page.ts
+pages/admin-panel/+Layout.js
+pages/admin-panel/index/+Page.js
+pages/admin-panel/users/+Page.js
 ```
 
 > Config inheritance is explained at: <Link href="/config#inheritance" />
