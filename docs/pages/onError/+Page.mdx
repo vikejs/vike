@@ -11,10 +11,10 @@ import { ConfigSpec } from '../../components'
 ```
 </ConfigSpec>
 
-Hook called when an error occurs during server-side rendering.
+Hook called when an error occurs on the server (during <Link href="/ssr">server-side rendering</Link>).
 
 ```ts
-// pages/+onError.js
+// pages/+onError.ts
 // Environment: server
 
 import type { Config } from 'vike/types'
@@ -24,7 +24,9 @@ export const onError: Config['onError'] = (error) => {
 }
 ```
 
-It's usually used for error tracking — see <Link href="/error-tracking#server-side" />.
+It's usually used for error tracking, see <Link href="/error-tracking#server-side" />.
+
+For tracking errors on the client-side, see <Link href="/error-tracking#client-side" />.
 
 ## See also
 

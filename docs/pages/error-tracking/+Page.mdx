@@ -27,7 +27,7 @@ window.addEventListener('error', (err) => {
 You can use the <Link href="/onError">`+onError()`</Link> hook to access server-side errors:
 
 ```ts
-// pages/+onError.js
+// pages/+onError.ts
 // Environment: server
 
 import type { Config } from 'vike/types'
@@ -47,7 +47,7 @@ export const onError: Config['onError'] = (error) => {
 This enables you to install error trackers such as [Sentry](https://sentry.io/), [Bugsnag](https://www.bugsnag.com/), or [Rollbar](https://rollbar.com/). For example with Sentry:
 
 ```ts
-// pages/+onError.js
+// pages/+onError.ts
 // Environment: server
 
 import * as Sentry from "@sentry/node";
