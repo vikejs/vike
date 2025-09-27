@@ -42,7 +42,7 @@ pages/product/@id/pricing/+Page.ts
 pages/product/@id/reviews/+Page.ts
 ```
 
-```bash
+```yaml
 # Scroll is preserved when navigating between:
 /product/42
 /product/42/pricing
@@ -56,7 +56,7 @@ pages/product/@id/reviews/+Page.ts
 
 Note that the scroll isn't preserved (the page scrolls to the top) if the `@id` parameter differs.
 
-```bash
+```yaml
 # Scroll *isn't* preserved when navigating between:
 /product/42/pricing
 /product/1337/pricing
@@ -79,7 +79,7 @@ export default {
 } satisfies Config
 ```
 
-```bash
+```yaml
 # Scroll is preserved when navigating between:
 /product/42/pricing
 /product/1337/pricing
@@ -95,7 +95,7 @@ export default {
 } satisfies Config
 ```
 
-```bash
+```yaml
 # Scroll is preserved when navigating between:
 /product/42
 /reviews/1337
