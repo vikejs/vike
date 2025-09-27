@@ -10,7 +10,10 @@ import { parseVirtualFileExportsGlobalEntry } from './getPageFiles/parseVirtualF
 import { resolveGlobalContextConfig } from './page-configs/resolveVikeConfigPublic.js'
 import type { PageConfigRuntime } from '../types/PageConfig.js'
 import { execHookGlobal } from './hooks/execHook.js'
-import { prepareGlobalContextForPublicUsage } from './prepareGlobalContextForPublicUsage.js'
+import {
+  type GlobalContextPrepareMinimum,
+  prepareGlobalContextForPublicUsage,
+} from './prepareGlobalContextForPublicUsage.js'
 import type { GlobalContextServerInternal } from '../node/runtime/globalContext.js'
 import type { GlobalContextClientInternal } from '../client/runtime-client-routing/getGlobalContextClientInternal.js'
 import { getHookFromPageConfigGlobalCumulative, type Hook } from './hooks/getHook.js'
@@ -22,7 +25,7 @@ async function createGlobalContextShared<GlobalContextAdded extends {}, GlobalCo
   virtualFileExportsGlobalEntry: unknown,
   globalObject: {
     globalContext?: {}
-    onCreateGlobalContextHooks?: Hook[]
+    onCreateGlobalContextHooks?: Hook<GlobalContextPrepareMinimum>[]
     previousCreateGlobalContextPromise?: Promise<void>
   },
   addGlobalContext?: (globalContext: GlobalContextBase) => GlobalContextAdded,
@@ -140,7 +143,10 @@ function getAllPageIds(pageFilesAll: PageFile[], pageConfigs: PageConfigRuntime[
   return [...allPageIds, ...allPageIds2]
 }
 
-function hooksAreEqual(hooks1: Hook[], hooks2: Hook[]): boolean {
+function hooksAreEqual<HookArg = GlobalContextPrepareMinimum>(
+  hooks1: Hook<HookArg>[],
+  hooks2: Hook<HookArg>[],
+): boolean {
   const hooksFn1 = hooks1.map((hook) => hook.hookFn)
   const hooksFn2 = hooks2.map((hook) => hook.hookFn)
   return (
