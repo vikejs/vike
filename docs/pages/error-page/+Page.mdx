@@ -39,9 +39,9 @@ function Page() {
     msg = "You cannot access this page because you aren't logged in. Please log in."
   } else {
     // Fallback error message
-    msg = pageContext.is404 ?
-      "This page doesn't exist." :
-      "Something went wrong. Try again (later)."
+    msg = pageContext.is404
+      ? "This page doesn't exist."
+      : "Something went wrong. Try again (later)."
   }
 
   return <p>{msg}</p>
