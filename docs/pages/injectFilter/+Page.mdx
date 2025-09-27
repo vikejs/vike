@@ -1,4 +1,4 @@
-import { Link, Warning, RepoLink, TypescriptOnly } from '@brillout/docpress'
+import { Link, Warning, RepoLink } from '@brillout/docpress'
 
 The `injectFilter()` hook allows you to control where and what tags Vike injects in the HTML, most notably <Link href="/preloading">preload</Link> tags.
 
@@ -68,7 +68,6 @@ async function onRenderHtml(pageContext) {
 }
 ```
 
-<TypescriptOnly>
 ```ts ts-only
 type InjectFilterEntry = {
   inject: false | 'HTML_BEGIN' | 'HTML_END' // Whether and where to inject
@@ -80,7 +79,6 @@ type InjectFilterEntry = {
                    // false ⇒ preload tag, e.g. <link rel="preload" as="font">
 }
 ```
-</TypescriptOnly>
 
 
 ## See also
