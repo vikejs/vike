@@ -39,12 +39,12 @@ export default {
 
 For more convenience, you can prepend `+` to the file names and do this:
 
-```bash
-/pages/product/@id/+config.js # [!code --]
-/pages/product/@id/Page.jsx # [!code --]
-/pages/product/@id/Layout.jsx # [!code --]
-/pages/product/@id/+Page.jsx # [!code ++]
-/pages/product/@id/+Layout.jsx # [!code ++]
+```yaml
+/pages/product/@id/+config.ts # [!code --]
+/pages/product/@id/Page.tsx # [!code --]
+/pages/product/@id/Layout.tsx # [!code --]
+/pages/product/@id/+Page.tsx # [!code ++]
+/pages/product/@id/+Layout.tsx # [!code ++]
 ```
 
 Vike automatically picks up any such `+` file, and it doesn't make any difference whether you define `Page`/`Layout` via `+config.js > export default { Page, Layout }` or `+Page.jsx`/`+Layout.jsx`
@@ -380,7 +380,7 @@ The config code itself is never included in runtimes:
 // be imported in runtime files such as +Page.jsx instead.
 import './some.css'
 
-// This log is printed only when Vike loads this +config.js file (at development and when
+// This log is printed only when Vike loads this +config.ts file (at development and when
 // building your app). This log isn't included in the client nor server runtime.
 // Consequently, you won't see this log in production.
 console.log("I will never be logged in production")
