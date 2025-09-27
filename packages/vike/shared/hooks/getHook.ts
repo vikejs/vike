@@ -25,8 +25,7 @@ import type { GlobalContextPrepareMinimum } from '../prepareGlobalContextForPubl
 import type { PageContextPrepareMinimum } from '../preparePageContextForPublicUsage.js'
 const globalObject = getGlobalObject<{ isPrerendering?: true }>('hooks/getHook.ts', {})
 
-// TODO improve?
-type HookArgDefault = PageContextPrepareMinimum | GlobalContextPrepareMinimum
+type HookArgDefault = PageContextPrepareMinimum
 type Hook<HookArg = HookArgDefault> = HookLoc & { hookFn: HookFn<HookArg>; hookTimeout: HookTimeout }
 type HookLoc = {
   hookName: HookNameOld
@@ -100,7 +99,7 @@ function getHookFromPageConfigGlobal(pageConfigGlobal: PageConfigGlobalRuntime, 
   const hookTimeout = getHookTimeoutGlobal(hookName)
   return getHook(hookFn, hookName, hookFilePath, hookTimeout)
 }
-function getHookFromPageConfigGlobalCumulative<HookArg = HookArgDefault>(
+function getHookFromPageConfigGlobalCumulative<HookArg = GlobalContextPrepareMinimum>(
   pageConfigGlobal: PageConfigGlobalRuntime,
   hookName: HookNameGlobal,
 ): Hook<HookArg>[] {

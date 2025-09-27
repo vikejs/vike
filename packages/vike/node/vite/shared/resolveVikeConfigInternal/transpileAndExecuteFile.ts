@@ -413,7 +413,7 @@ async function formatBuildErr(err: unknown, filePath: FilePathResolved): Promise
   err[formatted] = `${msgIntro}\n${msgEsbuild}`
 }
 
-const execErrIntroMsg = new WeakMap<object, string>()
+const execErrIntroMsg = new WeakMap<object, ReturnType<typeof getErrIntroMsg>>()
 function getConfigExecutionErrorIntroMsg(err: unknown): string | null {
   if (!isObject(err)) return null
   const errIntroMsg = execErrIntroMsg.get(err)
@@ -471,13 +471,8 @@ function triggerPrepareStackTrace(err: unknown) {
 
 function getErrIntroMsg(operation: 'transpile' | 'execute', filePath: FilePathResolved) {
   const { filePathToShowToUserResolved } = filePath
-  // TODO use const string
-  const msg = [
-    // prettier ignore
-    pc.red(`Failed to ${operation}`),
-    pc.bold(pc.red(filePathToShowToUserResolved)),
-    pc.red(`because:`),
-  ].join(' ')
+  const msg =
+    `${pc.red(`Failed to ${operation}`)} ${pc.bold(pc.red(filePathToShowToUserResolved))} ${pc.red(`because:`)}` as const
   return msg
 }
 

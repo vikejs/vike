@@ -15,7 +15,6 @@ import {
   genPromise,
   isCallable,
   catchInfiniteLoop,
-  isObject,
 } from './utils.js'
 import {
   getPageContextFromClientHooks,
@@ -68,6 +67,7 @@ import {
 import { getHookFromPageContextNew } from '../../shared/hooks/getHook.js'
 import { preparePageContextForPublicUsageClientMinimal } from '../shared/preparePageContextForPublicUsageClientShared.js'
 import type { VikeGlobalInternal } from '../../types/VikeGlobalInternal.js'
+import { logErrorClient } from './logErrorClient.js'
 
 const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
@@ -833,16 +833,3 @@ if (import.meta.env.DEV && import.meta.hot)
       })
     }
   })
-
-// TODO move to own file
-function logErrorClient(err: unknown) {
-  if (
-    isObject(err) &&
-    // Set by vike-react
-    // https://github.com/vikejs/vike-react/blob/195a208c6b77e7f34496e1f637278a36c60fbe07/packages/vike-react/src/integration/onRenderClient.tsx#L109
-    err.isAlreadyLogged
-  ) {
-    return
-  }
-  console.error(err)
-}
