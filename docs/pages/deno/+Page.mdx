@@ -1,6 +1,77 @@
-import { Example, CommunityNote } from '../../components'
+import { Link } from '@brillout/docpress'
+import { Example } from '../../components'
 
-<CommunityNote url="https://deno.land" />
+[Deno](https://deno.land) is a runtime for JavaScript and TypeScript that uses V8 and is built in Rust. It supports zero config typescript and has broad npm compatibility.
+
+It also supports vike and a *yet untested* majority of it's plugins.
+
+## `package.json` and `vite.config.ts`
+
+If you are porting from a node based project, you likely already have a package.json file. If you create a new project we suggest to create a minimal one like this:
+
+package.json:
+```json
+{
+  "dependencies": {
+    "vite": "latest",
+    "vike": "latest"
+  }
+}
+```
+
+> In a new deno project do not run any package manager, we let deno handle the dependencies.
+
+### Vite
+
+If you follow the approach above we can use these aliases throughout the project.
+In any case create a vite config file at the project root:
+
+vite.config.ts:
+```ts
+import { defineConfig } from 'vite'
+import vike from 'vike/plugin'
+
+export default defineConfig({
+  plugins: [vike()]
+})
+```
+
+### Usage without package.json
+
+If you don't want to use a package.json file, you can also use vike with deno by using the npm: specifier.
+
+```ts
+import { defineConfig } from 'npm:vite@latest'
+import vike from 'npm:vike@latest'
+
+export default defineConfig({
+  plugins: [vike()]
+})
+```
+
+## Deno configuration
+
+We let deno handle our dependencies, so we need to add the `--node-modules-dir` flag to deno commands.
+
+example `deno.json` in project root:
+```json
+{
+  "tasks": {
+    "dev": "deno run --allow-all --node-modules-dir npm:vike dev",
+    "build": "deno run --allow-all --node-modules-dir npm:vike build",
+    "preview": "deno run --allow-all --node-modules-dir npm:vike preview",
+    "prod": "deno task build && deno task preview"
+  },
+}
+```
+
+Now you can run the following commands:
+ - `deno task dev` to start a development server
+ - `deno task build` to build the project
+ - `deno task preview` to preview a production build
+ - `deno task prod` to build and preview the project
+
+<br />
 
 Example:
  - <Example timestamp="2025.10" repo="richard-unterberg/deno-vike-react" />
