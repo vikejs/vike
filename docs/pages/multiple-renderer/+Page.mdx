@@ -4,7 +4,7 @@ If we have pages with substantially different rendering logic,
 for example different <Link text="Render Modes" href="/render-modes" />,
 then we may want to define multiple `renderer/`.
 
-```bash
+```yaml
 # =====================
 # == Marketing Pages ==
 # =====================
@@ -31,7 +31,7 @@ admin-panel/renderer/+onRenderClient.js
 
 We can also override only a subset of `renderer/`.
 
-```bash
+```yaml
 # Our default renderer
 renderer/+onRenderHtml.js
 renderer/+onRenderClient.js

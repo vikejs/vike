@@ -90,7 +90,7 @@ Essentially, and technically, SSG means SSR + pre-rendering:
 ```ts
 // pages/+config.ts
 
-import { Config } from 'vike/types'
+import type { Config } from 'vike/types'
 
 // SSG
 export default {
@@ -114,18 +114,18 @@ You usually still pre-render all your pages, including SPA pages. (See explanati
 For example:
 
 ```yaml
-pages/+config.js
-pages/(marketing)/+config.js
-pages/(marketing)/index/+Page.js # SSR
-pages/(marketing)/about/+Page.js # SSR
-pages/admin-panel/+config.js
-pages/admin-panel/index/+Page.js # SPA
+pages/+config.ts
+pages/(marketing)/+config.ts
+pages/(marketing)/index/+Page.ts # SSR
+pages/(marketing)/about/+Page.ts # SSR
+pages/admin-panel/+config.ts
+pages/admin-panel/index/+Page.ts # SPA
 ```
 
 ```ts
 // pages/+config.ts
 
-import { Config } from 'vike/types'
+import type { Config } from 'vike/types'
 
 export default {
   // Pre-render *all* pages (including SPA pages)
@@ -134,9 +134,9 @@ export default {
 ```
 
 ```ts
-// pages/admin-panel/about/+Page.js
+// pages/admin-panel/about/+Page.ts
 
-import { Config } from 'vike/types'
+import type { Config } from 'vike/types'
 
 export default {
   // SPA
@@ -145,9 +145,9 @@ export default {
 ```
 
 ```ts
-// pages/(marketing)/about/+Page.js
+// pages/(marketing)/about/+Page.ts
 
-import { Config } from 'vike/types'
+import type { Config } from 'vike/types'
 
 export default {
   // SSG
@@ -160,7 +160,7 @@ export default {
 > ```ts
 > // pages/+config.ts
 >
-> import { Config } from 'vike/types'
+> import type { Config } from 'vike/types'
 >
 > // SPA
 > export default {
@@ -173,7 +173,7 @@ export default {
 > ```ts
 > // pages/+config.ts
 >
-> import { Config } from 'vike/types'
+> import type { Config } from 'vike/types'
 >
 > // SPA
 > export default {
@@ -198,17 +198,17 @@ Yes, you can have SSR pages while others are SSG.
 For example:
 
 ```yaml
-pages/+config.js
-pages/user/@id/+Page.js # SSR
-pages/(marketing)/+config.js
-pages/(marketing)/index/+Page.js # SSG
-pages/(marketing)/about/+Page.js # SSG
+pages/+config.ts
+pages/user/@id/+Page.ts # SSR
+pages/(marketing)/+config.ts
+pages/(marketing)/index/+Page.ts # SSG
+pages/(marketing)/about/+Page.ts # SSG
 ```
 
 ```ts
-// pages/+config.js
+// pages/+config.ts
 
-import { Config } from 'vike/types'
+import type { Config } from 'vike/types'
 
 // SSR
 export default {
@@ -219,12 +219,12 @@ export default {
 ```ts
 // pages/(marketing)/+config.ts
 
-import { Config } from 'vike/types'
+import type { Config } from 'vike/types'
 
 // SSG
 export default {
   prerender: true,
-  ssr: true // (optional: `ssr` is inherited by pages/+config.js)
+  ssr: true // (optional: `ssr` is inherited by pages/+config.ts)
 } satisfies Config
 ```
 

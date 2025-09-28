@@ -9,10 +9,16 @@
     padding: 0 !important;
   }
   &.one-liner {
-    code {
-      padding: 1px 6px !important;
-      position: relative;
-      top: -1px;
+    margin: 0 !important;
+    padding-top: 0.5px;
+    padding-bottom: 1px;
+    p {
+      margin: 0 !important;
+    }
+    span > code {
+      background: #0000000b;
+      font-size: 1em;
+      padding: 3px 6px !important;
     }
   }
 }

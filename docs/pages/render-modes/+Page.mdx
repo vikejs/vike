@@ -292,19 +292,19 @@ export default {
 } satisfies Config
 ```
 
-```ts
+```tsx
 // /pages/about/+Page.ts
 // Environment: server
 
 export { Page }
 
 function Page() {
-  return <>
-    <h1>HTML-only page</h1>
-    <p>
-      This page is rendered only to HTML. (It's not loaded/rendered in the browser-side.)
-    </p>
-  </>
+  return (
+    <>
+      <h1>HTML-only page</h1>
+      <p>This page is rendered only to HTML. (It's not loaded/rendered in the browser-side.)</p>
+    </>
+  )
 }
 ```
 

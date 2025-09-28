@@ -70,7 +70,7 @@ export function onAfterRenderHtml(pageContext: PageContextServer) {
 }
 ```
 If you use React then you may also need to use <Link href="/Wrapper">`+Wrapper`</Link>:
-```ts
+```tsx
 // pages/+Wrapper.tsx
 // Environment: server, client
 
@@ -87,15 +87,15 @@ export default function StoreProvider({ children }: { children: React.ReactNode 
 **2. `passToClient`**
 
 Make `pageContext.storeInitialState` available on the client-side by using <Link href="/passToClient">`passToClient`</Link>:
- ```ts
- // pages/+config.ts
+```ts
+// pages/+config.ts
 
 import type { Config } from 'vike/types'
 
- export default {
-   passToClient: ['storeInitialState']
- } satisfies Config
- ```
+export default {
+  passToClient: ['storeInitialState']
+} satisfies Config
+```
 
 **3. Hydration**
 

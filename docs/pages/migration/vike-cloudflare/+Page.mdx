@@ -9,21 +9,21 @@ Make sure to upgrade `vike` to version `>=0.4.227`.
 ```ts
 // vite.config.ts
 
-import { pages } from "vike-cloudflare";// [!code --]
-import { defineConfig } from "vite";
+import { pages } from 'vike-cloudflare'// [!code --]
+import { defineConfig } from 'vite'
 
 export default defineConfig({
   plugins: [
     pages()// [!code --]
   ]
-});
+})
 ```
 
 ```ts
 // +config.ts
 
 import type { Config } from 'vike/types'
-import vikeCloudflare from "vike-cloudflare/config";// [!code ++]
+import vikeCloudflare from 'vike-cloudflare/config'// [!code ++]
 
 export default {
   extends: [
@@ -45,28 +45,28 @@ If your are using <Link href="/hono" /> or <Link href="/hattip" />, some additio
     ```ts
     // vite.config.ts
 
-    import devServer from "@hono/vite-dev-server";// [!code --]
-    import { pages } from "vike-cloudflare";// [!code --]
-    import { defineConfig } from "vite";
+    import devServer from '@hono/vite-dev-server'// [!code --]
+    import { pages } from 'vike-cloudflare'// [!code --]
+    import { defineConfig } from 'vite'
 
     export default defineConfig({
       plugins: [
-        devServer(...),// [!code --]
+        devServer(/*...*/),// [!code --]
         pages({// [!code --]
           server: {// [!code --]
-            kind: "hono",// [!code --]
-            entry: "hono-entry.ts",// [!code --]
-          },// [!code --]
-        }),// [!code --]
-      ],
-    });
+            kind: 'hono',// [!code --]
+            entry: 'hono-entry.ts'// [!code --]
+          }// [!code --]
+        })// [!code --]
+      ]
+    })
     ```
 
     ```ts
     // +config.ts
 
     import type { Config } from 'vike/types'
-    import vikeCloudflare from "vike-cloudflare/config";// [!code ++]
+    import vikeCloudflare from 'vike-cloudflare/config'// [!code ++]
 
     export default {
       extends: [
@@ -74,7 +74,7 @@ If your are using <Link href="/hono" /> or <Link href="/hattip" />, some additio
         vikeCloudflare// [!code ++]
       ],
       server: {// [!code ++]
-        entry: "hono-entry.ts"// [!code ++]
+        entry: 'hono-entry.ts'// [!code ++]
       }// [!code ++]
     } satisfies Config
     ```
@@ -98,28 +98,30 @@ If your are using <Link href="/hono" /> or <Link href="/hattip" />, some additio
   </TabPanel>
   <TabPanel>
     ```ts
-    import { hattip } from "@hattip/vite";// [!code --]
-    import { pages } from "vike-cloudflare";// [!code --]
-    import { defineConfig } from "vite";
+    // vite.config.ts
+ 
+    import { hattip } from '@hattip/vite'// [!code --]
+    import { pages } from 'vike-cloudflare'// [!code --]
+    import { defineConfig } from 'vite'
 
     export default defineConfig({
       plugins: [
         hattip(),// [!code --]
         pages({// [!code --]
           server: {// [!code --]
-            kind: "hattip",// [!code --]
-            entry: "hattip-entry.ts",// [!code --]
-          },// [!code --]
-        }),// [!code --]
-      ],
-    });
+            kind: 'hattip',// [!code --]
+            entry: 'hattip-entry.ts'// [!code --]
+          }// [!code --]
+        })// [!code --]
+      ]
+    })
     ```
 
     ```ts
     // +config.ts
 
     import type { Config } from 'vike/types'
-    import vikeCloudflare from "vike-cloudflare/config";// [!code ++]
+    import vikeCloudflare from 'vike-cloudflare/config'// [!code ++]
 
     export default {
       extends: [
@@ -127,7 +129,7 @@ If your are using <Link href="/hono" /> or <Link href="/hattip" />, some additio
         vikeCloudflare// [!code ++]
       ],
       server: {// [!code ++]
-        entry: "hattip-entry.ts"// [!code ++]
+        entry: 'hattip-entry.ts'// [!code ++]
       }// [!code ++]
     } satisfies Config
     ```

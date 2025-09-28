@@ -1,4 +1,4 @@
-import { Link } from '@brillout/docpress'
+import { Link, TypescriptOnly } from '@brillout/docpress'
 import { ConfigSpec } from '../../components'
 
 <ConfigSpec
@@ -9,7 +9,7 @@ import { ConfigSpec } from '../../components'
 The error page, which is defined by `/pages/_error/+Page.js`, is rendered when an error occurs. It's also rendered when
 you call <Link href="/render" text={<code>throw render(abortStatusCode)</code>}></Link>.
 
-```ts
+```tsx
 // /pages/_error/+Page.ts
 
 export { Page }
@@ -39,15 +39,22 @@ function Page() {
     msg = "You cannot access this page because you aren't logged in. Please log in."
   } else {
     // Fallback error message
-    msg = pageContext.is404 ?
-      "This page doesn't exist." :
-      "Something went wrong. Try again (later)."
+    msg = pageContext.is404
+      ? "This page doesn't exist."
+      : "Something went wrong. Try again (later)."
   }
 
   return <p>{msg}</p>
 }
+```
 
-// When using TypeScript you can define the type of `abortReason`
+<TypescriptOnly>
+
+To define the type of `pageContext.abortReason`:
+
+```ts ts-only
+// /pages/+config.ts
+
 declare global {
   namespace Vike {
     interface PageContext {
@@ -58,6 +65,8 @@ declare global {
   }
 }
 ```
+
+</TypescriptOnly>
 
 > The <Link href="/usePageContext" /> UI component hook allows you to access <Link href="/pageContext" noBreadcrumb /> from any UI component.
 

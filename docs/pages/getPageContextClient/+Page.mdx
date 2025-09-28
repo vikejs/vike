@@ -14,11 +14,7 @@ It's usually used for getting the `pageContext` of a newly navigated page:
 import { getPageContextClient, navigate } from 'vike/client/router'
 
 function SignupForm() {
-   return (
-     <form onSubmit={onSubmit}>
-       {/* ... */}
-     </form>
-   )
+  return <form onSubmit={onSubmit}>{/* ... */}</form>
 }
 
 async function onSubmit() {
