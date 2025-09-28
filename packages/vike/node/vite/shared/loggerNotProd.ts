@@ -58,7 +58,7 @@ assertIsNotProductionRuntime()
 overwriteRuntimeProductionLogger(logRuntimeError, logRuntimeInfo)
 overwriteAssertProductionLogger(assertLogger)
 
-type LogType = 'info' | 'warn' | 'error' | 'error-recover'
+type LogType = 'info' | 'warn' | 'error-thrown' | 'error-recover' | 'error-note'
 type LogCategory = 'config' | `request(${number})`
 type LogInfo = (...args: LogInfoArgs) => void
 type LogInfoArgs = Parameters<typeof logRuntimeInfo>
@@ -125,7 +125,7 @@ function logErr(err: unknown, httpRequestId: number | null = null, errorComesFro
       assert(viteConfig)
       const prettyErr = getPrettyErrorWithCodeSnippet(err, viteConfig.root)
       assert(stripAnsi(prettyErr).startsWith('Failed to transpile'))
-      logWithViteTag(prettyErr, 'error', category)
+      logWithViteTag(prettyErr, 'error-thrown', category)
       logErrorDebugNote()
       return
     }
@@ -142,14 +142,14 @@ function logErr(err: unknown, httpRequestId: number | null = null, errorComesFro
     const { hookName, hookFilePath } = hook
     logWithVikeTag(
       pc.red(`Following error was thrown by the ${hookName}() hook defined at ${hookFilePath}`),
-      'error',
+      'error-note',
       category,
     )
   } else if (category) {
     logFallbackErrIntro(category, errorComesFromVite)
   }
 
-  logDirectly(err, 'error')
+  logDirectly(err, 'error-thrown')
 
   // Needs to be called after logging the error.
   onRuntimeError(err)
@@ -164,8 +164,8 @@ function logConfigError(err: unknown): void {
     const errIntroMsg = getConfigExecutionErrorIntroMsg(err)
     if (errIntroMsg) {
       assert(stripAnsi(errIntroMsg).startsWith('Failed to execute'))
-      logWithVikeTag(errIntroMsg, 'error', category)
-      logDirectly(err, 'error')
+      logWithVikeTag(errIntroMsg, 'error-note', category)
+      logDirectly(err, 'error-thrown')
       return
     }
   }
@@ -174,9 +174,9 @@ function logConfigError(err: unknown): void {
     if (errMsgFormatted) {
       assert(stripAnsi(errMsgFormatted).startsWith('Failed to transpile'))
       if (!isErrorDebug()) {
-        logWithVikeTag(errMsgFormatted, 'error', category)
+        logWithVikeTag(errMsgFormatted, 'error-thrown', category)
       } else {
-        logDirectly(err, 'error')
+        logDirectly(err, 'error-thrown')
       }
       return
     }
@@ -187,12 +187,12 @@ function logConfigError(err: unknown): void {
   }
 
   if (category) logFallbackErrIntro(category, false)
-  logDirectly(err, 'error')
+  logDirectly(err, 'error-thrown')
 }
 
 function logFallbackErrIntro(category: LogCategory, errorComesFromVite: boolean) {
   const msg = errorComesFromVite ? 'Transpilation error' : 'An error was thrown'
-  logWithVikeTag(pc.bold(pc.red(`[Error] ${msg}:`)), 'error', category)
+  logWithVikeTag(pc.bold(pc.red(`[Error] ${msg}:`)), 'error-note', category)
 }
 
 function getConfigCategory(): LogCategory {
@@ -204,7 +204,7 @@ function handleAssertMsg(err: unknown, category: LogCategory | null): boolean {
   const res = getAssertErrMsg(err)
   if (!res) return false
   const { assertMsg, showVikeVersion } = res
-  logWithVikeTag(assertMsg, 'error', category, showVikeVersion)
+  logWithVikeTag(assertMsg, 'error-thrown', category, showVikeVersion)
   return true
 }
 function assertLogger(thing: string | Error, logType: LogType): void {
@@ -232,7 +232,7 @@ function logErrorDebugNote() {
     store.errorDebugNoteAlreadyShown = true
   }
   const msg = pc.dim(formatHintLog("Error isn't helpful? See https://vike.dev/debug#verbose-errors"))
-  logDirectly(msg, 'error')
+  logDirectly(msg, 'error-note')
 }
 
 function getCategory(httpRequestId: number | null = null): LogCategory | null {
