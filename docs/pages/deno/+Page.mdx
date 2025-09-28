@@ -1,14 +1,16 @@
 import { Link } from '@brillout/docpress'
-import { Example } from '../../components'
+import { Example, CommunityNote } from '../../components'
 
-[Deno](https://deno.land) is a runtime for JavaScript and TypeScript that uses V8 and is built in Rust. It supports zero config typescript and has broad npm compatibility.
+<CommunityNote tool="deno" url="https://deno.land" />
 
-It also supports vike and a *yet untested* majority of it's plugins.
+[Deno](https://deno.land) is a runtime for JavaScript and TypeScript that uses [V8](https://v8.dev/) and is built in Rust. It supports zero config typescript and has broad npm compatibility.
+
+It also supports vike.
 
 ## `package.json` and `vite.config.ts`
 
-If you are porting from a node based project, you likely already have a package.json file. If you create a new project we suggest to create a minimal one like this:
-
+If you are porting from a Node.js project, you likely already have a package.json file. If you create a new project we suggest to create a minimal one like this:
+ 
 package.json:
 ```json
 {
@@ -19,16 +21,29 @@ package.json:
 }
 ```
 
-> In a new deno project do not run any package manager, we let deno handle the dependencies.
+> In a new Deno project do not run any package manager — let Deno handle the dependencies.
 
-### Vite
+### Vite config without package.json
 
-If you follow the approach above we can use these aliases throughout the project.
-In any case create a vite config file at the project root:
+If you don't want to use a `package.json` file, you can use the `npm:` specifier.
 
-vite.config.ts:
 ```ts
-import { defineConfig } from 'vite'
+// vite.config.ts
+import { defineConfig } from 'npm:vite'
+import vike from 'npm:vike@latest/plugin'
+ 
+export default defineConfig({
+  plugins: [vike()]
+})
+```
+
+#### Node based Deno projects
+
+If followed the [approach earlier](#package-json-and-vite-config-ts) and imported node packages via the `package.json` you can use the linked libraries from there throughout the project without the `npm:`-prefix.
+
+```ts
+// vite.config.js
+import { defineConfig } from 'vite' // note the missing `npm:` prefix
 import vike from 'vike/plugin'
 
 export default defineConfig({
@@ -36,18 +51,7 @@ export default defineConfig({
 })
 ```
 
-### Usage without package.json
-
-If you don't want to use a package.json file, you can also use vike with deno by using the npm: specifier.
-
-```ts
-import { defineConfig } from 'npm:vite@latest'
-import vike from 'npm:vike@latest'
-
-export default defineConfig({
-  plugins: [vike()]
-})
-```
+> In any case a vite config file is required.
 
 ## Deno configuration
 
@@ -70,6 +74,8 @@ Now you can run the following commands:
  - `deno task build` to build the project
  - `deno task preview` to preview a production build
  - `deno task prod` to build and preview the project
+
+More on how Deno handles dependencies: https://docs.deno.com/runtime/fundamentals/modules/#importing-third-party-modules-and-libraries
 
 <br />
 
