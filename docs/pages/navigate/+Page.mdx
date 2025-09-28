@@ -14,11 +14,7 @@ For example, to redirect the user after a successful form submission:
 import { navigate } from 'vike/client/router'
 
 function Form() {
-   return (
-     <form onSubmit={onSubmit}>
-       {/* ... */}
-     </form>
-   )
+  return <form onSubmit={onSubmit}>{/* ... */}</form>
 }
 
 async function onSubmit() {

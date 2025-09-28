@@ -7,9 +7,7 @@ import { UseVikeExtensionUiFramework, UiFrameworkExtension, ConfigSpec } from '.
   isTypeOneLiner
   default={<><code>false</code> (but <code>true</code> if you use <UiFrameworkExtension succinct />)</>}
 >
-```ts
-boolean
-```
+`boolean {:ts}`
 </ConfigSpec>
 
 If you don't use a <UiFrameworkExtension /> then Vike does <Link text="Server Routing" href="/server-routing" /> by default.
@@ -187,8 +185,6 @@ async function onRenderClient(pageContext: PageContextClient) {
     // Note that `pageContext.initialState` isn't available here,
     // since our `onRenderHtml()` hook is only called for the first page.
   }
-
-  // ...
 }
 ```
 

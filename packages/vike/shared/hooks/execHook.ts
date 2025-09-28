@@ -48,7 +48,7 @@ async function execHook<PageContext extends PageContextExecHook>(
   return await execHookDirect(hooks, pageContext, preparePageContextForPublicUsage)
 }
 
-async function execHookGlobal<HookArg extends PageContextPrepareMinimum | GlobalContextPrepareMinimum>(
+async function execHookGlobal<HookArg extends GlobalContextPrepareMinimum>(
   hookName: HookNameGlobal,
   pageConfigGlobal: PageConfigGlobalRuntime,
   pageContext: PageContextPrepareMinimum | null,

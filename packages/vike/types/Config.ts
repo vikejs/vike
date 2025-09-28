@@ -66,7 +66,7 @@ type HookNamePage =
   | 'data'
   | 'onData'
   | 'route'
-type HookNameGlobal = 'onBeforeRoute' | 'onPrerenderStart' | 'onCreatePageContext' | 'onCreateGlobalContext'
+type HookNameGlobal = 'onBeforeRoute' | 'onPrerenderStart' | 'onCreatePageContext' | 'onCreateGlobalContext' | 'onError'
 // v0.4 design TO-DO/next-major-release: remove
 type HookNameOldDesign = 'render' | 'prerender' | 'onBeforePrerender'
 
@@ -333,7 +333,7 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/extends
    */
-  extends?: Config | Config[] | ImportString | ImportString[]
+  extends?: Config | ImportString | (Config | ImportString)[]
 
   /** Hook called before the page is rendered.
    *
@@ -346,6 +346,12 @@ type ConfigBuiltIn = {
    *  https://vike.dev/onCreatePageContext
    */
   onCreatePageContext?: ((pageContext: PageContextServer) => void) | ImportString | null
+
+  /** Hook called when an error occurs during server-side rendering.
+   *
+   *  https://vike.dev/onError
+   */
+  onError?: ((error: unknown) => void) | ImportString | null
 
   /** Hook called when the `globalContext` object is created.
    *
@@ -494,6 +500,7 @@ type ConfigBuiltIn = {
   /** @deprecated See https://vike.dev/disableAutoFullBuild */
   disableAutoFullBuild?: boolean | 'prerender'
 
+  // This is deprecated (since Summer 2025). But don't remove this (yet) — otherwise it will break older Vike extensions that still use it.
   /** @deprecated It's value is now always true. */
   vite6BuilderApp?: true
 
@@ -570,6 +577,13 @@ type ConfigBuiltIn = {
    * https://vike.dev/mode
    */
   mode?: string
+
+  /**
+   * Disable Vite's cache.
+   *
+   * https://vike.dev/force
+   */
+  force?: boolean
 
   /**
    * Content Security Policy (CSP).

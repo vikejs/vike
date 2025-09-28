@@ -6,10 +6,10 @@ Your <Link href="/config#files">`+` files</Link> should have only one export:
 // pages/index/+Page.ts
 
 // ✅ Main export
-export { Page }
+// @detype-uncomment export { Page }
 
 // ❌ Avoid side exports
-export { SomeSharedComponent }
+// @detype-uncomment export { SomeSharedComponent }
 ```
 
 
@@ -54,7 +54,8 @@ export function SomeSharedComponent() {
 // pages/about/+Page.ts
 
 import { SomeSharedComponent } from '../index/+Page'// [!code --]
-import { SomeSharedComponent } from '../../components/SomeSharedComponent'// [!code ++]
+// @detype-replace SomeSharedComponent_ SomeSharedComponent
+import { SomeSharedComponent_ } from '../../components/SomeSharedComponent'// [!code ++]
 ```
 ```ts
 // pages/index/+Page.ts
@@ -62,7 +63,8 @@ import { SomeSharedComponent } from '../../components/SomeSharedComponent'// [!c
 import './landing-page.css'
 import { SomeSharedComponent } from '../../components/SomeSharedComponent'// [!code ++]
 
-export function SomeSharedComponent() {// [!code --]
+// @detype-replace SomeSharedComponent_ SomeSharedComponent
+export function SomeSharedComponent_() {// [!code --]
   // ...// [!code --]
 }// [!code --]
 ```

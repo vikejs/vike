@@ -157,7 +157,7 @@ Upon <Link href="/pre-rendering">pre-rendering</Link>, there is exactly one `glo
 
 ### Basics
 
-```ts
+```ts ts-only
 import type {
   // For code loaded in client and server
   GlobalContext,
@@ -176,7 +176,7 @@ You can use `globalContext.isClientSide` and `globalContext.isGlobalContext` to 
 
 To extend `GlobalContext`/`GlobalContextServer`/`GlobalContextClient`, use the global interface `Vike.GlobalContext`:
 
-```ts
+```ts ts-only
 declare global {
   namespace Vike {
     interface GlobalContext {

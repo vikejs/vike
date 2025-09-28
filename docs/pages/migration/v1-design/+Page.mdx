@@ -23,39 +23,41 @@ Most of the migration boils down to the following two steps.
 
 Move your `renderer/` hooks to `+` files:
 
-```js
-// /renderer/_default.page.client.js// [!code --]
-// /renderer/+onRenderClient.js// [!code ++]
+```ts
+// /renderer/_default.page.client.ts// [!code --]
+// /renderer/+onRenderClient.ts// [!code ++]
 
-export { render }// [!code --]
-export { render as onRenderClient }// [!code ++]
+// @detype-uncomment export { render }// [!code --]
+// @detype-uncomment export { render as onRenderClient }// [!code ++]
 ```
 
-```js
-// /renderer/_default.page.server.js// [!code --]
-// /renderer/+onRenderHtml.js// [!code ++]
+```ts
+// /renderer/_default.page.server.ts// [!code --]
+// /renderer/+onRenderHtml.ts// [!code ++]
 
-export { render }// [!code --]
-export { render as onRenderHtml }// [!code ++]
+// @detype-uncomment export { render }// [!code --]
+// @detype-uncomment export { render as onRenderHtml }// [!code ++]
 ```
 
 If you've defined a global `onBeforeRender()` hook and/or `passToClient`:
 
-```js
-// /renderer/_default.page.server.js// [!code --]
-// /renderer/+onBeforeRender.js// [!code ++]
+```ts
+// /renderer/_default.page.server.ts// [!code --]
+// /renderer/+onBeforeRender.ts// [!code ++]
 
-export { onBeforeRender }
+// @detype-uncomment export { onBeforeRender }
 export const passToClient = ['pageProps']// [!code --]
 ```
 
 <FileAdded>
-```js
-// /renderer/+config.js
+```ts
+// /renderer/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   passToClient: ['pageProps']
-}
+} satisfies Config
 ```
 </FileAdded>
 
@@ -64,14 +66,14 @@ export default {
 
 > The suffixes such as `.page.server.js` and `.page.client.js` don't exist anymore. After the feature request [#744](https://github.com/vikejs/vike/issues/744) is implemented, you'll be able to use `.server.js` and `.client.js` suffixes again but note that they'll serve another purpose.
 
-Move `/renderer/` configurations to `/renderer/+config.ts`:
+Move `/renderer/` configurations to `/renderer/+config.js`:
 
 <FileRemoved>
 ```ts
 // /renderer/_default.page.client.ts
 
-export { clientRouting }
-export { hydrationCanBeAborted }
+// @detype-uncomment export { clientRouting }
+// @detype-uncomment export { hydrationCanBeAborted }
 ```
 </FileRemoved>
 <FileAdded>
@@ -89,44 +91,44 @@ export default {
 
 Move your error page (if you defined one):
 
-```js
-/renderer/_error.page.js// [!code --]
-/pages/_error/+Page.js// [!code ++]
+```ts
+// /renderer/_error.page.ts// [!code --]
+// /pages/_error/+Page.ts// [!code ++]
 
-export { Page }
+// @detype-uncomment export { Page }
 ```
 
 
 **2. Migrate `/pages/**/*.page.*`**
 
-```js
-// /pages/some-page/index.page.js// [!code --]
-// /pages/some-page/+Page.js// [!code ++]
+```ts
+// /pages/some-page/index.page.ts// [!code --]
+// /pages/some-page/+Page.ts// [!code ++]
 
-export { Page }
+// @detype-uncomment export { Page }
 ```
-```js
-// /pages/some-page/index.page.server.js// [!code --]
-// /pages/some-page/+onBeforeRender.js// [!code ++]
+```ts
+// /pages/some-page/index.page.server.ts// [!code --]
+// /pages/some-page/+onBeforeRender.ts// [!code ++]
 
-export { onBeforeRender }
+// @detype-uncomment export { onBeforeRender }
 ```
 
-```js
-// /pages/some-page/index.page.route.js// [!code --]
-// /pages/some-page/+route.js// [!code ++]
+```ts
+// /pages/some-page/index.page.route.ts// [!code --]
+// /pages/some-page/+route.ts// [!code ++]
 
-export default route
+// @detype-uncomment export default route
 ```
 
 > Each page now lives in its own directory.
-> ```bash
+> ```yaml
 > # ✅ V1 design
 > $ ls pages/**/*
 > /pages/some-page/+Page.js
 > /pages/some-other-page/+Page.js
 > ```
-> ```bash
+> ```yaml
 > # ❌ This isn't possible anymore: each page now needs to create a new directory
 > $ ls pages/**/*
 > /pages/some.page.js
@@ -204,18 +206,20 @@ Old name | New name
 `doNotPrerender: true` | `prerender: false`
 
 <FileRemoved>
-```js
-// /pages/news.page.server.js
+```ts
+// /pages/news.page.server.ts
 
 export const doNotPrerender = true
 ```
 </FileRemoved>
-```js
-// /pages/news/+config.js
+```ts
+// /pages/news/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   prerender: false// [!code ++]
-}
+} satisfies Config
 ```
 
 
@@ -241,12 +245,14 @@ export default {
 } satisfies Config
 ```
 
-```js
-// /renderer/+onRenderHtml.js
+```ts
+// /renderer/+onRenderHtml.ts
 
 export { onRenderHtml }
 
-async function onRenderHtml(pageContext) {
+import type { PageContextServer } from 'vike/types'
+
+async function onRenderHtml(pageContext: PageContextServer) {
   // Config values are available at pageContext.config
   const { title } = pageContext.config
   return escapeInject`<html>
@@ -258,12 +264,14 @@ async function onRenderHtml(pageContext) {
 }
 ```
 
-```js
-// /pages/about/+config.js
+```ts
+// /pages/about/+config.ts
+
+import type { Config } from 'vike/types'
 
 export default {
   title: 'Demo showcasing the V1 design'
-}
+} satisfies Config
 ```
 
 See:
@@ -302,15 +310,18 @@ The new config <Link text={<code>client</code>} href="/client" /> allows you to 
 
 > You can also keep using <Link text={<code>onHydrationEnd()</code>} href="/onHydrationEnd" />.
 
-```js
-// +config.js
+```ts
+// +config.ts
+
+import type { Config } from 'vike/types'
+
 export default {
-  client: './some-client-code.js'
-}
+  client: './some-client-code.ts'
+} satisfies Config
 ```
 
-```js
-// some-client-code.js
+```ts
+// some-client-code.ts
 console.log("I'm run when the client-side JavaScript is loaded.")
 ```
 

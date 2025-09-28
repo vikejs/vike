@@ -125,6 +125,11 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     global: true,
     cumulative: true,
   },
+  onError: {
+    env: { server: true },
+    global: true,
+    cumulative: true,
+  },
   onBeforeRender: {
     env: { server: true },
   },
@@ -277,6 +282,10 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { config: true },
     global: true,
   },
+  force: {
+    env: { config: true },
+    global: true,
+  },
   csp: {
     env: { server: true },
   },
@@ -313,6 +322,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { config: true },
     global: true,
   },
+  // This is deprecated (since Summer 2025). But don't remove this (yet) — otherwise it will break older Vike extensions that still use it.
   vite6BuilderApp: {
     env: { config: true },
     global: true,

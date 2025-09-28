@@ -56,9 +56,11 @@ import { useData } from 'vike-solid/useData'
 */
 import type { Data } from './+data'
 
-  // Inside a UI component
-  const data = useData<Data>()
-  const { title, release_date } = data
+/* ... */
+
+// Inside any UI component
+const data = useData<Data>()
+const { title, release_date } = data
 ```
 
 > `useData()` is provided by <UiFrameworkExtension name />. If you don't use such extension then see <Link href="/useData#without-vike-react-vue-solid" doNotInferSectionTitle />.

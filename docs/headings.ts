@@ -479,6 +479,12 @@ const headings = [
   },
   {
     level: 2,
+    title: '`+onError()` hook',
+    titleInNav: '`+onError()`',
+    url: '/onError',
+  },
+  {
+    level: 2,
     title: '`+onPageTransitionStart()` hook',
     titleInNav: '`+onPageTransitionStart()`',
     url: '/onPageTransitionStart',
@@ -1329,6 +1335,10 @@ function api() {
       {
         title: '`+port`',
         url: '/port',
+      },
+      {
+        title: '`+force`',
+        url: '/force',
       },
       {
         title: '`+mode`',

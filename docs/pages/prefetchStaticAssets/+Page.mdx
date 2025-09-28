@@ -6,9 +6,7 @@ import { ViteLazyTranspilingContradiction, ConfigSpec } from '../../components'
   default={<code>'hover'</code>}
   isTypeOneLiner
 >
-```ts
-false | 'hover' | 'viewport'
-```
+`false | 'hover' | 'viewport' {:ts}`
 </ConfigSpec>
 
 ```ts
@@ -18,7 +16,7 @@ import type { Config } from 'vike/types'
 
 export default {
   // Default value: 'hover'
-  prefetchStaticAssets: 'viewport',
+  prefetchStaticAssets: 'viewport'
 } satisfies Config
 ```
 
@@ -36,10 +34,10 @@ import type { Config } from 'vike/types'
 
 export default {
   // Prefetch links as soon as they enter the viewport
-  prefetchStaticAssets: 'viewport'
+  prefetchStaticAssets: 'viewport',
 
   // Prefetch links when the user's mouse hovers a link
-  prefetchStaticAssets: 'hover'
+  prefetchStaticAssets: 'hover',
 
   // Disable prefetching
   prefetchStaticAssets: false

@@ -1,0 +1,36 @@
+import { Link } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
+
+<ConfigSpec
+  env="server"
+  cumulative
+  global
+  isTypeOneLiner
+>
+`(error: unknown) => void{:ts}`
+</ConfigSpec>
+
+Hook called when an error occurs on the server (during <Link href="/ssr">server-side rendering</Link>).
+
+```ts
+// pages/+onError.ts
+// Environment: server
+
+import type { Config } from 'vike/types'
+
+export const onError: Config['onError'] = (error) => {
+  // ...
+}
+```
+
+It's usually used for error tracking, see <Link href="/error-tracking#server-side" />.
+
+For tracking errors on the client-side, see <Link href="/error-tracking#client-side" />.
+
+## See also
+
+- <Link href="/error-tracking" />
+- <Link href="/error-page" />
+ - <Link href="/debug#verbose-errors" />
+- <Link href="/hooks" />
+- [Feature Request #1439 — New hook `onLog()`](https://github.com/vikejs/vike/issues/1438)

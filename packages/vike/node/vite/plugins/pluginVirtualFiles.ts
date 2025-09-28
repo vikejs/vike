@@ -19,7 +19,7 @@ import { parseVirtualFileId } from '../../shared/virtualFileId.js'
 import { reloadVikeConfig, isV1Design, getVikeConfigInternalOptional } from '../shared/resolveVikeConfigInternal.js'
 import pc from '@brillout/picocolors'
 import { logConfigInfo } from '../shared/loggerNotProd.js'
-import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
+import { getFilePathToShowToUserModule } from '../shared/getFilePath.js'
 import { isRunnable, updateUserFiles } from '../../runtime/globalContext.js'
 import { isPlusFile } from '../shared/resolveVikeConfigInternal/crawlPlusFiles.js'
 import { isTemporaryBuildFile } from '../shared/resolveVikeConfigInternal/transpileAndExecuteFile.js'
@@ -214,7 +214,7 @@ function reloadConfig(
   invalidateVikeVirtualFiles(server)
 
   {
-    const filePathToShowToUserResolved = getModuleFilePathAbsolute(filePath, config)
+    const filePathToShowToUserResolved = getFilePathToShowToUserModule(filePath, config)
     const msg = `${op} ${pc.dim(filePathToShowToUserResolved)}`
     logConfigInfo(msg, 'info')
   }

@@ -26,9 +26,12 @@ $ vike build --mode staging
 
 # Change pre-render settings
 $ vike build --prerender "{parallel:4,noExtraDir:true}"
+
+# Disable Vite's cache
+$ vike dev --force
 ```
 
-> These are all Vike settings — Vike aliases some Vite settings for convenience (see <Link href="/host" noBreadcrumb />/<Link href="/port" noBreadcrumb />/<Link href="/mode" noBreadcrumb />/<Link href="/prerender" noBreadcrumb />).
+> These are all Vike settings: <Link href="/host" noBreadcrumb />/<Link href="/port" noBreadcrumb />/<Link href="/mode" noBreadcrumb />/<Link href="/prerender" noBreadcrumb />/<Link href="/force" noBreadcrumb />. (Note that Vike aliases some Vite settings for convenience, see <Link href="#vite-settings"/>.)
 
 > You can set values using JavaScript(-like) syntax (see <Link href="#json5-syntax" />).
 
@@ -55,8 +58,9 @@ Vike's CLI supports following [Vite CLI options](https://vite.dev/guide/cli#opti
  - `--host`
  - `--mode`
  - `--port`
+ - `--force`
 
-> Technically these are Vike settings that alias Vite settings (see <Link href="/host" noBreadcrumb />/<Link href="/port" noBreadcrumb />/<Link href="/mode" noBreadcrumb />). In other words, Vike's CLI options are always <Link href="/settings">Vike settings</Link>.
+> These are actually Vike settings, which alias Vite settings. (See <Link href="/host" noBreadcrumb />/<Link href="/mode" noBreadcrumb />/<Link href="/port" noBreadcrumb />/<Link href="/force" noBreadcrumb />.) In other words: each Vike CLI option corresponds to a <Link href="/settings">Vike setting</Link>.
 >
 > Reach out if you believe there are other Vite settings that should also be aliased.
 

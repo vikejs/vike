@@ -4,7 +4,7 @@ import { assert, removeEmptyLines, trimWithAnsi, trimWithAnsiTrailOnly } from '.
 import { logViteError, logViteAny } from './loggerNotProd.js'
 import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore.js'
 import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog.js'
-import type { LogType, ResolvedConfig, LogErrorOptions } from 'vite'
+import type { LogType as LoggerType, ResolvedConfig, LogErrorOptions } from 'vite'
 import { isErrorDebug } from '../../shared/isErrorDebug.js'
 
 function improveViteLogs(config: ResolvedConfig) {
@@ -13,8 +13,8 @@ function improveViteLogs(config: ResolvedConfig) {
   intercept('error', config)
 }
 
-function intercept(logType: LogType, config: ResolvedConfig) {
-  config.logger[logType] = (msg, options: LogErrorOptions = {}) => {
+function intercept(loggerType: LoggerType, config: ResolvedConfig) {
+  config.logger[loggerType] = (msg, options: LogErrorOptions = {}) => {
     assert(!isErrorDebug())
 
     if (removeSuperfluousViteLog(msg)) return
@@ -45,6 +45,8 @@ function intercept(logType: LogType, config: ResolvedConfig) {
 
     // Vite's default logger preprends the "[vite]" tag if and only if options.timestamp is true
     const prependViteTag = options.timestamp || !!store?.httpRequestId
+    // If it's an actual error => options.error is set => it's handled with logViteError() above
+    const logType = loggerType === 'error' ? 'error-note' : loggerType
     logViteAny(msg, logType, store?.httpRequestId ?? null, prependViteTag)
   }
 }

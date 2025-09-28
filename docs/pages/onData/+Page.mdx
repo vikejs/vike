@@ -48,10 +48,10 @@ For example, a common use case is to populate <Link href="/store">a store</Link>
 
 It's <Link href="/config#inheritance">cumulative</Link>, so you can define multiple `+onData`:
 
-```bash
-pages/+onData.js # Global hook called after every +data
-pages/movies/+onData.js
-pages/movies/+data.js # Both +onData hooks are called after this +data hook
+```yaml
+pages/+onData.ts # Global hook called after every +data
+pages/movies/+onData.ts
+pages/movies/+data.ts # Both +onData hooks are called after this +data hook
 ```
 
 

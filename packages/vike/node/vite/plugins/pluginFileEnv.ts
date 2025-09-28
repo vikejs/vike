@@ -19,7 +19,7 @@ import {
 import { extractAssetsRE } from './pluginExtractAssets.js'
 import { extractExportNamesRE } from './pluginExtractExportNames.js'
 import pc from '@brillout/picocolors'
-import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
+import { getFilePathToShowToUserModule } from '../shared/getFilePath.js'
 import { getExportNames } from '../shared/parseEsModule.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isV1Design } from '../shared/resolveVikeConfigInternal.js'
@@ -54,8 +54,10 @@ function pluginFileEnv(): Plugin[] {
           // For `.vue` files: https://github.com/vikejs/vike/issues/1912#issuecomment-2394981475
           if (id.endsWith('?direct')) id = id.slice(0, -1 * '?direct'.length)
           const moduleInfo = viteDevServer.moduleGraph.getModuleById(id)
-          assert(moduleInfo)
-          const importers: string[] = Array.from(moduleInfo.importers)
+          /* It can fail, no clue why — https://github.com/vikejs/vike/issues/2740
+          assert(moduleInfo, { moduleId })
+          */
+          const importers: string[] = (!moduleInfo ? [] : Array.from(moduleInfo.importers))
             .map((m) => m.id)
             .filter((id) => id !== null)
           assertFileEnv(
@@ -152,7 +154,7 @@ function pluginFileEnv(): Plugin[] {
     const envExpect = isServerSide ? 'client' : 'server'
 
     let errMsg: string
-    let modulePathPretty = getModuleFilePathAbsolute(modulePath, config)
+    let modulePathPretty = getFilePathToShowToUserModule(modulePath, config)
     if (!noColor) {
       const suffix = getSuffix(envExpect)
       modulePathPretty = modulePathPretty.replaceAll(suffix, pc.bold(suffix))
@@ -167,14 +169,15 @@ function pluginFileEnv(): Plugin[] {
           // Can be Vike's virtual module: https://github.com/vikejs/vike/issues/2483
           isFilePathAbsolute(importer),
         )
-        .map((importer) => getModuleFilePathAbsolute(importer, config))
+        .map((importer) => getFilePathToShowToUserModule(importer, config))
+        .map((importPath) => pc.cyan(importPath))
       if (importPaths.length > 0) {
         errMsg += ` by ${joinEnglish(importPaths, 'and')}`
       }
     }
 
     if (onlyWarn) {
-      errMsg += ' and, therefore, Vike will prevent building your app for production.'
+      errMsg += ". This is potentially a security issue and Vike won't allow you to build your app for production."
     }
 
     return errMsg

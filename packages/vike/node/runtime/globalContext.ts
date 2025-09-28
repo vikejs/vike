@@ -5,6 +5,7 @@ export { getGlobalContextAsync }
 
 // Internal use
 export { getGlobalContextServerInternal }
+export { getGlobalContextServerInternalOptional }
 export { getViteDevServer }
 export { getViteConfig }
 export { initGlobalContext_renderPage }
@@ -138,6 +139,12 @@ async function getGlobalContextServerInternal() {
   const { globalContext } = globalObjectTyped
   assertIsDefined(globalContext)
   return { globalContext }
+}
+
+function getGlobalContextServerInternalOptional() {
+  const { globalContext } = globalObjectTyped
+  if (!globalContext) return null
+  return globalContext
 }
 
 function assertIsDefined<T extends GlobalContextServerInternal>(

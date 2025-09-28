@@ -6,7 +6,7 @@ import { ConfigSpec } from '../../components'
   env="config (development & build-time)"
   global={null}
 >
-```ts
+```ts ts-only hide-menu
 type Meta = {
   env: {
     client?: boolean
@@ -252,7 +252,7 @@ import type { PageContext } from 'vike/types'
 export { getTitle, getDescription }
 
 function getTitle(pageContext: PageContext) {
-  // The value exported by /pages/**/+title.js is available at pageContext.config.title
+  // The value exported by /pages/**/+title.ts is available at pageContext.config.title
   const val = pageContext.config.title
   if (!val) return 'Some default title'
   if (typeof val === 'string') return val
@@ -264,7 +264,7 @@ function getDescription(pageContext: PageContext) {
 }
 ```
 
-```ts
+```tsx
 // /pages/+onRenderHtml.ts
 // Environment: server
 
@@ -329,7 +329,7 @@ import type { Config } from 'vike/types'
 export default {
   meta: {
     Layout: {
-      // Load the value of /pages/**/+Layout.js on both the server and client
+      // Load the value of /pages/**/+Layout.ts on both the server and client
       env: { server: true, client: true },
       // Make it cumulative for nested layouts
       cumulative: true
@@ -338,7 +338,7 @@ export default {
 } satisfies Config
 ```
 
-```ts
+```tsx
 // /pages/+onRenderHtml.ts
 // Environment: server
 
@@ -362,7 +362,7 @@ async function onRenderHtml(pageContext: PageContextServer) {
 
 > Note how we use `pageContext.config.Page` instead of `pageContext.Page`: that's because `pageContext.Page` is just an alias for `pageContext.config.Page`.
 
-```ts
+```tsx
 // /pages/+onRenderClient.tsx
 // Environment: client
 
@@ -374,8 +374,10 @@ import { renderDom } from 'some-ui-framework'
 async function onRenderClient(pageContext: PageContextClient) {
   const { Page, Layout } = pageContext.config
   renderDom(
-    <Layout><Page/></Layout>,
-    document.getElementById("root")
+    <Layout>
+      <Page />
+    </Layout>,
+    document.getElementById('root')
   )
 }
 ```
@@ -462,7 +464,7 @@ export default {
         server: true,
         // Load the config value on the client. [Required]
         client: true,
-        // Load the config value at config-time (when Vike loads +config.js files). [Optional]
+        // Load the config value at config-time (when Vike loads +config.ts files). [Optional]
         config: false // default value
       },
 
@@ -494,7 +496,7 @@ export default {
 
 Similar to <Link href="/pageContext#typescript">`Vike.PageContext`</Link>, you can extend (or refine) Vike's `Config` type by using the global interface `Vike.Config`.
 
-```ts
+```ts ts-only
 // /pages/+config.ts
 // Environment: config
 
@@ -523,7 +525,7 @@ declare global {
 export {}
 ```
 
-```ts
+```ts ts-only
 // /pages/product/@id/+config.ts
 
 import { Config } from 'vike/types'
@@ -538,7 +540,7 @@ export default {
 
 If you define a <Link href="#api">`cumulative` config</Link>, then also make sure to use the global interface `Vike.ConfigResolved`.
 
-```ts
+```ts ts-only
 // /pages/+config.ts
 // Environment: config
 
