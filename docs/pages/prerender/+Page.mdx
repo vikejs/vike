@@ -20,7 +20,7 @@ type Prerender = boolean | {
 
 > <Link href="/pre-rendering" /> explains what pre-rendering is and how to use it.
 
-By default, pre-rendering is disabled. To enable it:
+The default values:
 
 ```ts
 // pages/+config.ts
@@ -28,10 +28,7 @@ By default, pre-rendering is disabled. To enable it:
 import type { Config } from 'vike/types'
 
 export default {
-  // Enable pre-rendering
-  prerender: true,
-
-  // Settings for pre-rendering. The following are the default values.
+  // The default values
   prerender: {
     partial: false,
     redirects: isFullyPrerendered, // Default value is true if all pages are pre-rendered
@@ -44,126 +41,9 @@ export default {
 } satisfies Config
 ```
 
-## Toggle
-
-Set `prerender: false` to skip a page from pre-rendering.
-
-```ts
-// /pages/+config.ts
-
-import type { Config } from 'vike/types'
-
-export default {
-  // Pre-render all pages by default
-  prerender: true
-} satisfies Config
-```
-```ts
-// /pages/news/+config.ts
-
-import type { Config } from 'vike/types'
-
-export default {
-  // Skip pre-rendering for /pages/news/+Page.ts
-  prerender: false
-} satisfies Config
-```
-
-> For example, a news page that displays the latest news fetched from a database should be rendered at request-time (not at build-time).
->
-> See also: <Link href="/pre-rendering#should-i-pre-render" doNotInferSectionTitle />
-
-You can also disable pre-rendering for a group of pages:
-
-```ts
-// /pages/products/+prerender.ts
-
-// Applies to all /pages/products/**/+Page.ts
-export const prerender = false
-```
-
-> See also: <Link href="/config#inheritance" />
-
-#### Opt-in instead of opt-out
-
-You can make pre-rendering opt-in instead of opt-out:
-
-```ts
-// /pages/+config.ts
-
-import type { Config } from 'vike/types'
-
-export default {
-  // By default, pages aren't pre-rendered
-  prerender: false
-} satisfies Config
-```
-
-```ts
-// /pages/(marketing)/+prerender.ts
-
-// Applies to all marketing pages /pages/(marketing)/**/+Page.ts
-export const prerender = true
-```
-
-> The directory `(marketing)` is ignored by Filesystem Routing, see <Link href="/routing#groups" />.
-
-#### Dynamic condition
-
-You can dynamically disable/enable pre-rendering:
-
-```ts
-// /pages/+prerender.ts
-
-export const prerender = someCondition() ? false : true
-```
-
-> For example, to disable pre-rendering when previewing CMS changes:
-> ```ts
-> // /pages/+prerender.ts
->
-> export const prerender = process.env.MODE !== 'preview'
-> ```
-
-Note that <Link href="/onBeforePrerenderStart">`onBeforePrerenderStart()` hooks</Link> are always called, even if `prerender` is `false`.
-If you want to define `onBeforePrerenderStart()` conditionally:
-
-```ts
-// /pages/movie/+prerender.ts
-
-export { prerender }
-
-import { someCondition } from './someCondition'
-
-const prerender = someCondition()
-```
-
-```ts
-// /pages/movie/+onBeforePrerenderStart.ts
-
-export { onBeforePrerenderStart }
-
-import { someCondition } from './someCondition'
-
-const onBeforePrerenderStart = someCondition()
-  ? async () => {
-      // ...
-    }
-  : null
-```
 
 
-## Settings
-
-- <Link href="#partial" />
-- <Link href="#redirects" />
-- <Link href="#noextradir" />
-- <Link href="#parallel" />
-- <Link href="#disableautorun" />
-- <Link href="#enable" />
-- <Link href="#keepdistserver" />
-
-### `partial`
+## `partial`
 
 `boolean` (default: `false`)
 
@@ -172,7 +52,7 @@ Stop showing a warning when pages cannot be pre-rendered.
 > Vike shows a warning when a page has a parameterized route (e.g. <Link text="Route String" href="/route-string" /> `/movie/@movieId`) while there isn't any <Link text={<><code>onBeforePrerenderStart()</code> hook</>} href="/onBeforePrerenderStart" /> that provides at least one URL matching the page's route (e.g. `/movie/42`).
 This setting doesn't affect the pre-rendering process: it only suppresses the warning.
 
-Alternatively, set `+prerender` to `false` for the pages that cannot be pre-rendered — this also suppresses the warning. See <Link href="#toggle" />.
+Alternatively, set `+prerender` to `false` for the pages that cannot be pre-rendered — this also suppresses the warning. See <Link href="/pre-rendering#partial" />.
 
 > As explained in <Link href="/pre-rendering" />, if you don't pre-render *all* your pages then you need a production server.
 >
@@ -181,7 +61,7 @@ Alternatively, set `+prerender` to `false` for the pages that cannot be pre-rend
 > With <Link text={<code>vite-plugin-vercel</code>} href="/vercel#vite-plugin-vercel" />, you can statically deploy your pre-rendered pages while using a production server for your non-pre-rendered pages.
 
 
-### `redirects`
+## `redirects`
 
 `boolean` (default: `true` if the app is fully-prerendered)
 
@@ -199,7 +79,7 @@ Whether <Link href="/redirects">`+redirects`</Link> should be pre-rendered to fo
 ```
 
 
-### `noExtraDir`
+## `noExtraDir`
 
 `boolean` (default: `false`)
 
@@ -211,7 +91,7 @@ For example, generate `dist/client/about.html` instead of `dist/client/about/ind
 > But some static hosts prefer the other way.
 
 
-### `parallel`
+## `parallel`
 
 `boolean | number` (default: [`os.cpus().length`](https://nodejs.org/api/os.html#os_os_cpus))
 
@@ -226,11 +106,11 @@ Set to `false` (or `1`) to disable concurrency.
 > - If pre-rendering takes an abnormal high amount of time. (Caused by the very slow process of memory swapping that kicks-in when memory starts to saturate).
 
 
-### `disableAutoRun`
+## `disableAutoRun`
 
 `boolean` (default: `false`)
 
-When running `$ vike build`, Vike automatically triggers <Link href="/pre-rendering">pre-rendering</Link>. (If you <Link text="enabled it" href="/pre-rendering#how-to-pre-render" />.)
+When running `$ vike build`, Vike automatically triggers <Link href="/pre-rendering">pre-rendering</Link>. (If you <Link text="enabled it" href="/pre-rendering#get-started" />.)
 
 You can disable the automatic triggering:
 
@@ -252,7 +132,7 @@ You can then manually trigger pre-rendering using:
  - <Link href="/api#prerender" doNotInferSectionTitle />
 
 
-### `enable`
+## `enable`
 
 `boolean | null` (default: `true`)
 
@@ -303,7 +183,7 @@ export default {
 }
 ```
 
-### `keepDistServer`
+## `keepDistServer`
 
 `boolean` (default: `false`)
 

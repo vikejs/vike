@@ -898,7 +898,7 @@ async function warnMissingPages(
       const pageAt = isV1 ? pageId : `\`${pageId}.page.*\``
       assertWarning(
         partial,
-        `Cannot pre-render page ${pageAt} because it has a non-static route, while there isn't any ${hookName}() hook returning an URL matching the page's route. You must use a ${hookName}() hook (https://vike.dev/${hookName}) for providing the list of URLs to be pre-rendered for that page. If you want to skip pre-rendering that page, you can remove this warning by setting +prerender to false at ${pageAt} (https://vike.dev/prerender#toggle) or by setting +prerender.partial to true (https://vike.dev/prerender#partial).`,
+        `Cannot pre-render page ${pageAt} because it has a non-static route, while there isn't any ${hookName}() hook returning an URL matching the page's route. You must use a ${hookName}() hook (https://vike.dev/${hookName}) for providing the list of URLs to be pre-rendered for that page. If you want to skip pre-rendering that page, you can remove this warning by setting +prerender to false at ${pageAt} (https://vike.dev/pre-rendering#partial) or by setting +prerender.partial to true (https://vike.dev/prerender#partial).`,
         { onlyOnce: true },
       )
     })
