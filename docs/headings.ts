@@ -135,7 +135,7 @@ const headings = [
     level: 2,
     title: 'Pre-rendering (SSG)',
     url: '/pre-rendering',
-    sectionTitles: ['SSG vs SSR'],
+    sectionTitles: ['SSG vs SSR', 'Should I pre-render?'],
   },
   {
     level: 2,

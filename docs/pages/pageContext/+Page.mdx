@@ -543,7 +543,7 @@ To workaround the issue you can either:
   }
   ```
 - Or, if the number of `?filter=` values isn't too large, you can use <Link href="/onBeforePrerenderStart">`onBeforePrerenderStart()`</Link> to pre-render all filter values: `/products?filter=computer`, `/products?filter=car`, ...
-  > You can then also use <Link href="/routing#parameterized-routes">parameterized route `/products/@filter`</Link> instead of `?filter=` if you prefer.
+  > If you use `onBeforePrerenderStart()` then <Link href="/pre-rendering#parameterized-routes">you can use parameterized routes</Link>, such as `/products/@filter` instead of `/products?filter=`.
 
 
 

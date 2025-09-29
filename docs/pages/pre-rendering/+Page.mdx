@@ -36,7 +36,7 @@ But **pre-rendering cannot be used for websites with content that changes very f
 
 ## How to pre-render
 
-To opt into pre-rendering:
+To enable pre-rendering:
 
 ```ts
 // pages/+config.ts
@@ -48,31 +48,24 @@ export default {
 } satisfies Config
 ```
 
-List of options: <Link href="/prerender" />.
+> The `+prerender` setting has many options, see <Link href="/prerender" />.
 
-Your pages' HTML are rendered when you run <Link href="/cli">`$ vike build`</Link> and the generated HTML files are available at `dist/client/`.
+Your pages' HTML are now rendered at build-time (when you run <Link href="/cli">`$ vike build`</Link>) instead of request-time. The generated `.html` files are written to `dist/client/`.
 
-For a page with a parameterized route (e.g. `/movie/@movieId`), you have to use the <Link href="/onBeforePrerenderStart">`onBeforePrerenderStart()` hook</Link> in order to provide the list of URLs that are to be pre-rendered. The `onBeforePrerenderStart()` hook can also be used to accelerate the pre-rendering process.
+By default, all pages are pre-rendered. To pre-render only some pages, see <Link href="/prerender#toggle" />.
+
+If you pre-render all your pages, then you don't need a JavaScript server — you can use <Link href="/cli">`$ vike dev` and `$ vike preview`</Link> instead.
+
+To invoke the pre-rendering process programmatically (instead of running automatically on `$ vike build`), see <Link href="/api#prerender" doNotInferSectionTitle />.
+
+You can accelerate the pre-rendering process by using the <Link href="/onBeforePrerenderStart">`onBeforePrerenderStart()` hook</Link>.
+
+
+## Parameterized routes
+
+For a page with a parameterized route (e.g. `/movie/@movieId`), you must use the <Link href="/onBeforePrerenderStart">`onBeforePrerenderStart()` hook</Link> to provide the list of URLs to be pre-rendered.
 
 <PreRenderDynamicRoutes />
-
-By default, all pages are pre-rendered. To pre-render only some pages, use the <Link href="/prerender#partial" text={<><code>partial</code> option</>} /> with <Link href="/prerender#toggle" text={<code>prerender: false</code>} />.
-
-If you pre-render all your pages, then you can use <Link href="/cli">`$ vike dev` and `$ vike preview`</Link> instead of using development/preview server.
-
-You can programmatically invoke the pre-rendering process, see <Link href="/api#prerender" doNotInferSectionTitle />.
-
-React Example:
- - <RepoLink path='/examples/react-full/vite.config.ts' /> (see setting <code>prerender</code> option to `true`)
- - <RepoLink path='/examples/react-full/pages/hello/+onBeforePrerenderStart.ts' />
- - <RepoLink path='/examples/react-full/pages/star-wars/index/+onBeforePrerenderStart.ts' />
- - <RepoLink path='/examples/react-full/package.json' /> (see Vike CLI usage)
-
-Vue Example:
- - <RepoLink path='/examples/vue-full/vite.config.ts' /> (see setting <code>prerender</code> option to `true`)
- - <RepoLink path='/examples/vue-full/pages/hello/+onBeforePrerenderStart.ts' />
- - <RepoLink path='/examples/vue-full/pages/star-wars/index/+onBeforePrerenderStart.ts' />
- - <RepoLink path='/examples/vue-full/package.json' /> (see Vike CLI usage)
 
 
 ## SSG vs SSR
