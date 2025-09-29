@@ -17,7 +17,7 @@ function CommunityNote({ tool, url, hasExtension }: { tool?: string; url: string
         Documentation about using Vike with <a href={url}>{parseMarkdownMini(pageContext.resolved.pageTitle!)}</a>.
       </p>
       <Contribution>
-        This page is maintained by the community and may contain outdated information;{' '}
+        This page is maintained by the community and may contain outdated information —{' '}
         <a href={getEditLink(pageContext.urlPathname)} target="_blank">
           PR welcome
         </a>{' '}
