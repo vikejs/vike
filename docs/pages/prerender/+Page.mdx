@@ -46,73 +46,87 @@ export default {
 
 ## Toggle
 
-In some situations, a page shouldn't be pre-rendered.
-For example a news page that displays the latest news fetched from a database should be rendered at request-time (not at build-time).
+Set `prerender: false` to skip a page from pre-rendering.
 
-> <Link href="/pre-rendering" /> explains in depth whether a page should be pre-rendered or not.
+```ts
+// /pages/+config.ts
 
-You can use `prerender: false` to tell Vike to skip a page from pre-rendering.
+import type { Config } from 'vike/types'
 
+export default {
+  // Pre-render all pages by default
+  prerender: true
+} satisfies Config
+```
 ```ts
 // /pages/news/+config.ts
 
 import type { Config } from 'vike/types'
 
 export default {
+  // Skip pre-rendering for /pages/news/+Page.ts
   prerender: false
 } satisfies Config
 ```
 
-### Different defaults
+> For example, a news page that displays the latest news fetched from a database should be rendered at request-time (not at build-time).
+>
+> See also: <Link href="/pre-rendering#should-i-pre-render" doNotInferSectionTitle />
 
-You can define `prerender` in <Link href="/config#inheritance">higher levels so it applies to more/all pages</Link>.
-
-This is especially handy with <Link text="Domain-Driven File Structure" href='/routing#domain-driven-file-structure' />:
+You can also disable pre-rendering for a group of pages:
 
 ```ts
-// /pages/marketing/+prerender.ts
+// /pages/products/+prerender.ts
 
-// Using Domain-Driven File Structure, +prerender.ts applies to
-// all marketing pages.
-
-// Enable pre-rendering for all marketing pages
-export const prerender = true
+// Applies to all /pages/products/**/+Page.ts
+export const prerender = false
 ```
 
-You can also make pre-rendering opt-in instead of opt-out:
+> See also: <Link href="/config#inheritance" />
+
+#### Opt-in instead of opt-out
+
+You can make pre-rendering opt-in instead of opt-out:
 
 ```ts
-// /renderer/+config.ts
+// /pages/+config.ts
 
 import type { Config } from 'vike/types'
 
 export default {
-  // By default, pages are not pre-rendered
+  // By default, pages aren't pre-rendered
   prerender: false
 } satisfies Config
 ```
 
 ```ts
-// /pages/about-us/+prerender.ts
+// /pages/(marketing)/+prerender.ts
 
-// Opt-in pre-rendering
+// Applies to all marketing pages /pages/(marketing)/**/+Page.ts
 export const prerender = true
 ```
 
-### Conditional pre-rendering
+> The syntax `(marketing)` is explained at <Link href="/routing#groups" />.
 
-You can pre-render pages conditionally:
+#### Dynamic condition
+
+You can dynamically disable/enable pre-rendering:
 
 ```ts
-// /renderer/+prerender.ts
+// /pages/+prerender.ts
 
-export const prerender = isCmsPreview() ? false : true
+export const prerender = someCondition() ? false : true
 ```
 
-> This is useful for previewing CMS pages (you don't want to pre-renderer a CMS deploy preview).
+> For example, to disable pre-rendering when previewing CMS changes:
+> ```ts
+> // /pages/+prerender.ts
+>
+> export const prerender = process.env.MODE !== 'preview'
+> ```
 
 Note that <Link href="/onBeforePrerenderStart">`onBeforePrerenderStart()` hooks</Link> are always called, even if `prerender` is `false`.
-If you want to call `onBeforePrerenderStart()` hooks conditionally as well:
+If you want to define `onBeforePrerenderStart()` conditionally:
 
 ```ts
 // /pages/movie/+prerender.ts
@@ -134,7 +148,6 @@ import { someCondition } from './someCondition'
 const onBeforePrerenderStart = someCondition()
   ? async () => {
       // ...
-      return listOfUrls
     }
   : null
 ```
