@@ -1,20 +1,20 @@
 import { Link, Warning } from '@brillout/docpress'
 
-If we have pages with substantially different rendering logic,
-for example different <Link text="Render Modes" href="/render-modes" />,
-then we may want to define multiple `renderer/`.
+If you have pages with substantially different rendering logic,
+for example using different <Link href="/ui-frameworks">UI frameworks</Link>,
+then you may want to define multiple `renderer/`.
 
 ```yaml
 # =====================
 # == Marketing Pages ==
 # =====================
-marketing/pages/index/+Page.js # /
-marketing/pages/about/+Page.js # /about
-marketing/pages/jobs/+Page.js # /jobs
+(marketing)/pages/index/+Page.js # /
+(marketing)/pages/about/+Page.js # /about
+(marketing)/pages/jobs/+Page.js # /jobs
 # Render Marketing Pages as HTML-only
-marketing/renderer/+onRenderHtml.js
-marketing/renderer/+onRenderClient.js
-marketing/+config.js # (Route to `/*` instead of `/marketing/*`.)
+(marketing)/renderer/+onRenderHtml.js
+(marketing)/renderer/+onRenderClient.js
+(marketing)/+config.js # (Route to `/*` instead of `/marketing/*`.)
 
 # =================
 # == Admin Panel ==
@@ -25,21 +25,21 @@ admin-panel/renderer/+onRenderHtml.js
 admin-panel/renderer/+onRenderClient.js
 ```
 
-> We call such structure a <Link text="domain-driven file structure" href='/routing#domain-driven-file-structure' />.
+> We call such structure a <Link href="/file-structure">domain-driven file structure</Link>.
 
 ## Partial
 
-We can also override only a subset of `renderer/`.
+You can also override only a subset of `renderer/`.
 
 ```yaml
-# Our default renderer
+# Default renderer
 renderer/+onRenderHtml.js
 renderer/+onRenderClient.js
 
-pages/some-page/index/+Page.js # Rendered with our default renderer
+pages/some-page/index/+Page.js # Rendered with the default renderer
 
-# Our Product pages need a slightly different client-side.
-# We only override onRenderClient() while onRenderHtml() stays the same.
+# Product pages need a slightly different client-side.
+# Only override onRenderClient() while onRenderHtml() stays the same.
 pages/product/+onRenderClient.js
 pages/product/@productId/+Page.js
 pages/product/index/+Page.js

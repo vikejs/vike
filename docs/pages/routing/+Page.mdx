@@ -19,7 +19,7 @@ pages/jobs/+Page.js            /jobs
 
 > Vike always skips the `pages/` and `index/` directories when determining the URL.
 
-> `+` files are explained at: <Link href="/config#files" doNotInferSectionTitle />
+> `+` files are explained at <Link href="/config#files" doNotInferSectionTitle />.
 
 For more details, see:
  - <Link href="/filesystem-routing" />
@@ -46,31 +46,42 @@ pages/(marketing)/about/+Page.js       /about
 pages/admin-panel/index/+Page.js       /admin-panel
 pages/admin-panel/users/+Page.js       /admin-panel/users
 ```
-> Any directory inside parentheses such as `(marketing)` is ignored by Filesystem Routing.
+> Any directory inside parentheses such as `(marketing)` is ignored by Filesystem Routing. See also: <Link href="/filesystem-routing#ignored-directories" />.
 
-It also enables you to easily set different configurations for different pages:
+It enables you to set different configurations for different groups of pages:
 
 ```yaml
-# Define a layout for all marketing pages
-pages/(marketing)/+Layout.js
+pages/(marketing)/+Layout.js # The layout for all marketing pages
 pages/(marketing)/index/+Page.js
 pages/(marketing)/about/+Page.js
 
-# Define a layout for all admin pages
-pages/admin-panel/+Layout.js
+pages/admin-panel/+Layout.js # The layout for all admin pages
 pages/admin-panel/index/+Page.js
 pages/admin-panel/users/+Page.js
 ```
 
-> Config inheritance is explained at: <Link href="/config#inheritance" />
+> It's powered by config inheritance, see <Link href="/config#inheritance" />.
 
-See also:
- - <Link href="/filesystem-routing#ignored-directories" />
+> You can define two `pages/` directories for a <Link href="/file-structure">domain-driven file structure</Link>:
+> ```yaml
+> # Domain: marketing
+> (marketing)/pages/+Layout.js
+> (marketing)/pages/index/+Page.js
+> (marketing)/pages/about/+Page.js
+> (marketing)/components/ContactUs.js
+>
+> # Domain: admin panel
+> admin-panel/pages/+Layout.js
+> admin-panel/pages/index/+Page.js
+> admin-panel/pages/users/+Page.js
+> admin-panel/components/Charts.js
+> admin-panel/database/fetchUsers.js
+> ```
 
 
 ### `src/`
 
-You can also define your files within a `src/` directory:
+You can define all files within a `src/` directory:
 
 ```yaml
 FILESYSTEM                     URL
@@ -79,33 +90,7 @@ src/pages/index/+Page.js       /
 src/pages/about/+Page.js       /about
 ```
 
-> Vike always skips the `src/` directory when determining the URL.
-
-See also:
- - <Link href="/filesystem-routing#ignored-directories" />
-
-
-### Domain-driven file structure
-
-For advanced apps, you may want to consider a *domain-driven file structure*.
-
-```yaml
-# Domain: marketing
-(marketing)/pages/+Layout.js
-(marketing)/pages/index/+Page.js
-(marketing)/pages/about/+Page.js
-(marketing)/components/ContactUs.js
-
-# Domain: admin panel
-admin-panel/pages/+Layout.js
-admin-panel/pages/index/+Page.js
-admin-panel/pages/users/+Page.js
-admin-panel/components/Charts.js
-admin-panel/database/fetchUsers.js
-```
-
-See also:
- - <Link href='/file-structure#domain-driven' />
+> Vike always skips the `src/` directory when determining the URL. See also: <Link href="/filesystem-routing#ignored-directories" />.
 
 
 ## Route String
