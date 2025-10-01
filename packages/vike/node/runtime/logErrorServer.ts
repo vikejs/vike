@@ -8,7 +8,8 @@ function logErrorServer(err: unknown) {
   execHookOnError(err)
 
   // Set by react-streaming
-  // - https://github.com/brillout/react-streaming/blob/0eaf7099651ffb27e61c0bf6b5a01657c9225f08/src/server/renderToStream/common.ts#L57-L65
+  // - https://github.com/brillout/react-streaming/blob/0fb5510d0a5a614f577668a519bccd62de40aed8/src/server/renderToStream/common.ts#L59-L62
+  // - https://gist.github.com/brillout/066293a687ab7cf695e62ad867bc6a9c
   // - It doesn't seem to be needed? (The error Vike receives is already enhanced.) Should we remove this?
   if (isObject(err) && isCallable(err.getEnhancedError)) {
     err = err.getEnhancedError(err)
