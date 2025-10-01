@@ -42,7 +42,7 @@ assertIsNotProductionRuntime()
 
 type PluginInterop = Record<string, unknown> & { name: string }
 // Return `PluginInterop` instead of `Plugin` to avoid type mismatch upon different Vite versions
-function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginInterop[] {
+async function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): Promise<PluginInterop[]> {
   const plugins: Plugin[] = [
     ...pluginCommon(vikeVitePluginOptions),
     ...pluginVirtualFiles(),
