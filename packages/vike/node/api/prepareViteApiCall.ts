@@ -35,8 +35,7 @@ function clear() {
 }
 
 async function resolveConfigs(viteConfigFromUserApiOptions: InlineConfig | undefined, operation: ApiOperation) {
-  let viteApiArgs = getViteApiArgsWithOperation(viteConfigFromUserApiOptions, operation)
-  const viteInfo = await getViteInfo(viteConfigFromUserApiOptions, viteApiArgs)
+  const viteInfo = await getViteInfo(viteConfigFromUserApiOptions, operation)
   setVikeConfigContext({
     userRootDir: viteInfo.root,
     isDev: operation === 'dev',
@@ -44,7 +43,7 @@ async function resolveConfigs(viteConfigFromUserApiOptions: InlineConfig | undef
   })
   const vikeConfig = await getVikeConfigInternal()
   const viteConfigFromUserEnhanced = applyVikeViteConfig(viteInfo.viteConfigFromUserEnhanced, vikeConfig)
-  viteApiArgs = getViteApiArgsWithOperation(viteConfigFromUserEnhanced, operation)
+  const viteApiArgs = getViteApiArgsWithOperation(viteConfigFromUserEnhanced, operation)
   const { viteConfigResolved } = await assertViteRoot2(viteInfo.root, viteApiArgs)
   return {
     viteConfigResolved, // ONLY USE if strictly necessary. (We plan to remove assertViteRoot2() as explained in the comments of that function.)
@@ -69,13 +68,12 @@ function applyVikeViteConfig(viteConfigFromUserEnhanced: InlineConfig | undefine
 }
 
 async function getViteRoot(operation: ApiOperation) {
-  const viteApiArgs = getViteApiArgsWithOperation(undefined, operation)
-  if (!globalObject.root) await getViteInfo(undefined, viteApiArgs)
+  if (!globalObject.root) await getViteInfo(undefined, operation)
   assert(globalObject.root)
   return globalObject.root
 }
 
-async function getViteInfo(viteConfigFromUserApiOptions: InlineConfig | undefined, viteApiArgs: ViteApiArgs) {
+async function getViteInfo(viteConfigFromUserApiOptions: InlineConfig | undefined, operation: ApiOperation) {
   let viteConfigFromUserEnhanced = viteConfigFromUserApiOptions
 
   // Precedence:
@@ -99,6 +97,7 @@ async function getViteInfo(viteConfigFromUserApiOptions: InlineConfig | undefine
   }
 
   // Resolve vite.config.js
+  const viteApiArgs = getViteApiArgsWithOperation(viteConfigFromUserEnhanced, operation)
   const viteConfigFromUserViteFile = await loadViteConfigFile(viteApiArgs)
   // Correct precedence, replicates Vite:
   // https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L1001
