@@ -24,8 +24,8 @@ const globalObject = getGlobalObject<{ root?: string }>('api/prepareViteApiCall.
 async function prepareViteApiCall(options: ApiOptions, operation: ApiOperation) {
   clear()
   setContextVikeApiOperation(operation, options)
-  const viteConfigFromUserApiOptions = options.viteConfig
-  return resolveConfigs(viteConfigFromUserApiOptions, operation)
+  const viteConfigFromUserVikeApiOptions = options.viteConfig
+  return resolveConfigs(viteConfigFromUserVikeApiOptions, operation)
 }
 
 // For subsequent API calls, e.g. calling prerender() after build()
@@ -34,8 +34,8 @@ function clear() {
   clearGlobalContext()
 }
 
-async function resolveConfigs(viteConfigFromUserApiOptions: InlineConfig | undefined, operation: ApiOperation) {
-  const viteInfo = await getViteInfo(viteConfigFromUserApiOptions, operation)
+async function resolveConfigs(viteConfigFromUserVikeApiOptions: InlineConfig | undefined, operation: ApiOperation) {
+  const viteInfo = await getViteInfo(viteConfigFromUserVikeApiOptions, operation)
   setVikeConfigContext({
     userRootDir: viteInfo.root,
     isDev: operation === 'dev',
@@ -73,13 +73,13 @@ async function getViteRoot(operation: ApiOperation) {
   return globalObject.root
 }
 
-async function getViteInfo(viteConfigFromUserApiOptions: InlineConfig | undefined, operation: ApiOperation) {
-  let viteConfigFromUserEnhanced = viteConfigFromUserApiOptions
+async function getViteInfo(viteConfigFromUserVikeApiOptions: InlineConfig | undefined, operation: ApiOperation) {
+  let viteConfigFromUserEnhanced = viteConfigFromUserVikeApiOptions
 
   // Precedence:
   //  1) viteConfigFromUserEnvVar (highest precedence)
   //  2) viteConfigFromUserVikeConfig
-  //  2) viteConfigFromUserApiOptions
+  //  2) viteConfigFromUserVikeApiOptions
   //  3) viteConfigFromUserViteFile (lowest precedence)
 
   // Resolve Vike's +mode setting
