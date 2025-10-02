@@ -38,10 +38,12 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
         handler(config) {
           assert(typeof config._isDev === 'boolean')
           isDev = config._isDev
-          globalThis.__VIKE__IS_DEV = isDev
+          // TODO
+          // globalThis.__VIKE__IS_DEV = isDev
           return {
             define: {
-              'globalThis.__VIKE__IS_DEV': JSON.stringify(isDev),
+              // TODO
+              // 'globalThis.__VIKE__IS_DEV': JSON.stringify(isDev),
               'globalThis.__VIKE__IS_DEBUG': JSON.stringify(isDebugVal),
             },
           }
@@ -82,7 +84,8 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
           assert(isViteServerSide_extraSafe(config, this.environment, options))
           assert(typeof isDev === 'boolean')
           const code = [
-            `globalThis.__VIKE__IS_DEV = ${JSON.stringify(isDev)};`,
+            // TODO
+            // `globalThis.__VIKE__IS_DEV = ${JSON.stringify(isDev)};`,
             `globalThis.__VIKE__IS_CLIENT = false;`,
             `globalThis.__VIKE__IS_DEBUG = ${JSON.stringify(isDebugVal)};`,
           ].join('\n')
