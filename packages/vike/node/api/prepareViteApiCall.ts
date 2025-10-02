@@ -175,13 +175,19 @@ async function loadViteConfigFile(viteConfigFromUserApiOptions: InlineConfig | u
   return null
 }
 
-function resolveViteApiArgsWithOperation(viteConfig: InlineConfig = {}, operation: ApiOperation) {
+function resolveViteApiArgsWithOperation(inlineConfig: InlineConfig = {}, operation: ApiOperation) {
   const isBuild = operation === 'build' || operation === 'prerender'
   const isPreview = operation === 'preview'
-  return resolveViteApiArgs(viteConfig, isBuild, isPreview)
+  const viteApiArgs = { inlineConfig, isBuild, isPreview }
+  return resolveViteApiArgs(viteApiArgs)
 }
-function resolveViteApiArgs(viteConfig: InlineConfig = {}, isBuild: boolean, isPreview: boolean) {
-  const inlineConfig = viteConfig
+type ViteApiArgs = {
+  inlineConfig: InlineConfig
+  isBuild: boolean
+  isPreview: boolean
+}
+function resolveViteApiArgs(viteApiArgs: ViteApiArgs) {
+  const { inlineConfig, isBuild, isPreview } = viteApiArgs
   const command = isBuild ? 'build' : 'serve'
   // Seems like a good choice:
   // - Component development (e.g. Storybook) => let's consider it development
