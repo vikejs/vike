@@ -151,10 +151,8 @@ function findVikeVitePlugin(viteConfig: InlineConfig | UserConfig | undefined | 
 
 // Copied from https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L961-L1005
 async function loadViteConfigFile(viteConfigFromUserResolved: InlineConfig | undefined, viteApiArgs: ViteApiArgs) {
-  const [inlineConfig, command, defaultMode, _defaultNodeEnv, isPreview] = resolveViteApiArgs(
-    viteConfigFromUserResolved,
-    viteApiArgs,
-  )
+  const viteApiArgsResolved = resolveViteApiArgs(viteConfigFromUserResolved, viteApiArgs)
+  const [inlineConfig, command, defaultMode, _defaultNodeEnv, isPreview] = viteApiArgsResolved
 
   let config = inlineConfig
   let mode = inlineConfig.mode || defaultMode
@@ -199,7 +197,8 @@ function resolveViteApiArgs(inlineConfig: InlineConfig = {}, viteApiArgs: ViteAp
   const isDev = !isBuild && !isPreview
   const defaultMode = isDev ? 'development' : 'production'
   const defaultNodeEnv = defaultMode
-  return [inlineConfig, command, defaultMode, defaultNodeEnv, isPreview] as const
+  const viteApiArgsResolved = [inlineConfig, command, defaultMode, defaultNodeEnv, isPreview] as const
+  return viteApiArgsResolved
 }
 
 function normalizeViteRoot(root: string) {
@@ -217,9 +216,9 @@ async function assertViteRoot2(
   viteConfigFromUserResolved: InlineConfig | undefined,
   viteApiArgs: ViteApiArgs,
 ) {
-  const args = resolveViteApiArgs(viteConfigFromUserResolved, viteApiArgs)
+  const viteApiArgsResolved = resolveViteApiArgs(viteConfigFromUserResolved, viteApiArgs)
   // We can eventually remove this resolveConfig() call (along with removing the whole assertViteRoot2() function which is redundant with the assertViteRoot() function) so that Vike doesn't make any resolveConfig() (except for pre-rendering and preview which is required). But let's keep it for now, just to see whether calling resolveConfig() can be problematic.
-  const viteConfigResolved = await resolveConfig(...args)
+  const viteConfigResolved = await resolveConfig(...viteApiArgsResolved)
   assertUsage(normalizeViteRoot(viteConfigResolved.root) === normalizeViteRoot(root), errMsg)
   return { viteConfigResolved }
 }
