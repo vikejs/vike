@@ -34,7 +34,10 @@ function clear() {
   clearGlobalContext()
 }
 
-async function resolveViteConfigEarly(viteConfigFromUserVikeApiOptions: InlineConfig | undefined, operation: ApiOperation) {
+async function resolveViteConfigEarly(
+  viteConfigFromUserVikeApiOptions: InlineConfig | undefined,
+  operation: ApiOperation,
+) {
   const viteInfo = await getViteInfo(viteConfigFromUserVikeApiOptions, operation)
   setVikeConfigContext({
     userRootDir: viteInfo.root,
