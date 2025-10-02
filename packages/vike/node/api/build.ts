@@ -1,6 +1,6 @@
 export { build }
 
-import { prepareViteApiCall } from './prepareViteApiCall.js'
+import { prepareViteApiCall } from './resolveViteConfigFromUser.js'
 import { createBuilder } from 'vite'
 import type { ApiOptions } from './types.js'
 

@@ -1,7 +1,7 @@
 export { createDevMiddleware }
 
 import { createServer } from 'vite'
-import { prepareViteApiCall } from '../api/prepareViteApiCall.js'
+import { prepareViteApiCall } from '../api/resolveViteConfigFromUser.js'
 import type { ResolvedConfig, Connect, ViteDevServer } from 'vite'
 import type { ApiOptions } from '../api/types.js'
 
