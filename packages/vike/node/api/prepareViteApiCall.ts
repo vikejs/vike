@@ -42,7 +42,7 @@ async function resolveViteConfigEarly(
   const viteInfo = await getViteInfo(viteConfigFromUserVikeApiOptions, viteApiArgs)
   setVikeConfigContext({
     userRootDir: viteInfo.root,
-    isDev: getIsDev(viteApiArgs),
+    isDev: viteApiArgs.isDev,
     vikeVitePluginOptions: viteInfo.vikeVitePluginOptions,
   })
   const vikeConfig = await getVikeConfigInternal()
@@ -177,7 +177,7 @@ async function loadViteConfigFile(viteConfigFromUserResolved: InlineConfig | und
   return null
 }
 
-function getViteApiArgsWithOperation(operation: ApiOperation) {
+function getViteApiArgsWithOperation(operation: ApiOperation): ViteApiArgs {
   const isBuild = operation === 'build' || operation === 'prerender'
   const isPreview = operation === 'preview'
   const isDev = operation === 'dev'
@@ -187,25 +187,26 @@ function getViteApiArgsWithOperation(operation: ApiOperation) {
 type ViteApiArgs = {
   isBuild: boolean
   isPreview: boolean
-  isDev?: boolean
+  isDev: boolean
+}
+function getViteApiArgsWithoutOperation(): ViteApiArgs {
+  // Seems like a good choice:
+  // - Component development (e.g. Storybook) => let's consider it development
+  // - Testing (e.g. Vitest) => let's consider it development
+  const viteApiArgs = {
+    isDev: true,
+    isBuild: false,
+    isPreview: false,
+  }
+  return viteApiArgs
 }
 function resolveViteApiArgs(inlineConfig: InlineConfig = {}, viteApiArgs: ViteApiArgs) {
-  const { isBuild, isPreview } = viteApiArgs
+  const { isBuild, isPreview, isDev } = viteApiArgs
   const command = isBuild ? 'build' : 'serve'
-  const isDev = getIsDev(viteApiArgs)
   const defaultMode = isDev ? 'development' : 'production'
   const defaultNodeEnv = defaultMode
   const viteApiArgsResolved = [inlineConfig, command, defaultMode, defaultNodeEnv, isPreview] as const
   return viteApiArgsResolved
-}
-
-function getIsDev(viteApiArgs: ViteApiArgs) {
-  // Seems like a good choice:
-  // - Component development (e.g. Storybook) => let's consider it development
-  // - Testing (e.g. Vitest) => let's consider it development
-  const isDev = !viteApiArgs.isBuild && !viteApiArgs.isPreview
-  assert(isDev === viteApiArgs.isDev || viteApiArgs.isDev === undefined)
-  return isDev
 }
 
 function normalizeViteRoot(root: string) {

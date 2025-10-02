@@ -39,7 +39,7 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
         order: 'pre',
         async handler(configFromUser, env) {
           const isDev = isDevCheck(env)
-          const viteApiArgs = { isBuild: env.command === 'build', isPreview: !!env.isPreview }
+          const viteApiArgs = { isBuild: env.command === 'build', isPreview: !!env.isPreview, isDev }
           const rootResolvedEarly = configFromUser.root
             ? normalizeViteRoot(configFromUser.root)
             : await getViteRoot(viteApiArgs)
