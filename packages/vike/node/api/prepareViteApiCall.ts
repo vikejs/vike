@@ -146,7 +146,7 @@ function findVikeVitePlugin(viteConfig: InlineConfig | UserConfig | undefined | 
 
 // Copied from https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L961-L1005
 async function loadViteConfigFile(viteConfigFromUserApiOptions: InlineConfig | undefined, operation: ApiOperation) {
-  const [inlineConfig, command, defaultMode, _defaultNodeEnv, isPreview] = getArgsForVite(
+  const [inlineConfig, command, defaultMode, _defaultNodeEnv, isPreview] = getArgsForViteWithOperation(
     viteConfigFromUserApiOptions,
     operation,
   )
@@ -175,12 +175,17 @@ async function loadViteConfigFile(viteConfigFromUserApiOptions: InlineConfig | u
   return null
 }
 
-function getArgsForVite(viteConfig: InlineConfig = {}, operation: ApiOperation) {
-  const inlineConfig = viteConfig
-  const command = operation === 'build' || operation === 'prerender' ? 'build' : 'serve'
-  const defaultMode = operation === 'dev' ? 'development' : 'production'
-  const defaultNodeEnv = defaultMode
+function getArgsForViteWithOperation(viteConfig: InlineConfig = {}, operation: ApiOperation) {
+  const isBuild = operation === 'build' || operation === 'prerender'
   const isPreview = operation === 'preview'
+  return getArgsForVite(viteConfig, isBuild, isPreview)
+}
+function getArgsForVite(viteConfig: InlineConfig = {}, isBuild: boolean, isPreview: boolean) {
+  const inlineConfig = viteConfig
+  const command = isBuild ? 'build' : 'serve'
+  const isDev = !isBuild && !isPreview
+  const defaultMode = isDev ? 'development' : 'production'
+  const defaultNodeEnv = defaultMode
   return [inlineConfig, command, defaultMode, defaultNodeEnv, isPreview] as const
 }
 
@@ -199,7 +204,7 @@ async function assertViteRoot2(
   viteConfigFromUserEnhanced: InlineConfig | undefined,
   operation: ApiOperation,
 ) {
-  const args = getArgsForVite(viteConfigFromUserEnhanced, operation)
+  const args = getArgsForViteWithOperation(viteConfigFromUserEnhanced, operation)
   // We can eventually remove this resolveConfig() call (along with removing the whole assertViteRoot2() function which is redundant with the assertViteRoot() function) so that Vike doesn't make any resolveConfig() (except for pre-rendering and preview which is required). But let's keep it for now, just to see whether calling resolveConfig() can be problematic.
   const viteConfigResolved = await resolveConfig(...args)
   assertUsage(normalizeViteRoot(viteConfigResolved.root) === normalizeViteRoot(root), errMsg)
