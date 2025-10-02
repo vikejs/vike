@@ -35,6 +35,7 @@ import { pluginProdBuildEntry } from './plugins/build/pluginProdBuildEntry.js'
 import { pluginBuildConfig } from './plugins/build/pluginBuildConfig.js'
 import { pluginModuleBanner } from './plugins/build/pluginModuleBanner.js'
 import { pluginReplaceConstantsNonRunnableDev } from './plugins/non-runnable-dev/pluginReplaceConstantsNonRunnableDev.js'
+import { pluginViteConfigVikeExtensions } from './plugins/pluginViteConfigVikeExtensions.js'
 
 // We don't call this in ./onLoad.ts to avoid a cyclic dependency with utils.ts
 setGetClientEntrySrcDev(getClientEntrySrcDev)
@@ -61,6 +62,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): Promise<Plug
       ...pluginReplaceConstantsPageContext(),
       ...pluginReplaceConstantsGlobalThis(),
       ...pluginNonRunnabeDev(),
+      ...(await pluginViteConfigVikeExtensions()),
     ]
     return plugins as PluginInterop[]
   })()

@@ -1,4 +1,5 @@
 export { resolveViteConfigFromUser }
+export { getVikeConfigInternalEarly }
 export { getViteApiArgsWithOperation }
 export { getViteRoot }
 export { assertViteRoot }
@@ -19,7 +20,10 @@ import { assert, assertUsage, getGlobalObject, isObject, pick, toPosixPath } fro
 import pc from '@brillout/picocolors'
 import { getEnvVarObject } from '../vite/shared/getEnvVarObject.js'
 
-const globalObject = getGlobalObject<{ root?: string }>('api/prepareViteApiCall.ts', {})
+const globalObject = getGlobalObject<{ root?: string; isVikeConfigResolving?: boolean }>(
+  'api/prepareViteApiCall.ts',
+  {},
+)
 
 async function resolveViteConfigFromUser(
   viteConfigFromUserVikeApiOptions: InlineConfig | undefined,
@@ -28,7 +32,9 @@ async function resolveViteConfigFromUser(
   const viteInfo = await getViteInfo(viteConfigFromUserVikeApiOptions, viteApiArgs)
   setVikeConfigContext_(viteInfo, viteApiArgs)
   const vikeConfig = await getVikeConfigInternal()
-  const viteConfigFromUserResolved = applyVikeViteConfig(viteInfo.viteConfigFromUserResolved, vikeConfig)
+  // TODO: remove?
+  // const viteConfigFromUserResolved = applyVikeViteConfig(viteInfo.viteConfigFromUserResolved, vikeConfig)
+  const { viteConfigFromUserResolved } = viteInfo
   const { viteConfigResolved } = await assertViteRoot2(viteInfo.root, viteConfigFromUserResolved, viteApiArgs)
   return {
     viteConfigResolved, // ONLY USE if strictly necessary. (We plan to remove assertViteRoot2() as explained in the comments of that function.)
@@ -36,12 +42,14 @@ async function resolveViteConfigFromUser(
   }
 }
 
-// TODO use
 async function getVikeConfigInternalEarly() {
+  if (globalObject.isVikeConfigResolving) return null
   if (!isVikeConfigContextSet()) {
+    globalObject.isVikeConfigResolving = true
     const viteApiArgs = getViteApiArgsWithoutOperation()
     const viteInfo = await getViteInfo(undefined, viteApiArgs)
     setVikeConfigContext_(viteInfo, viteApiArgs)
+    globalObject.isVikeConfigResolving = false
   }
   return await getVikeConfigInternal()
 }
