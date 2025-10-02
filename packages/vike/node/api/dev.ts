@@ -10,8 +10,8 @@ import type { ApiOptions } from './types.js'
  * https://vike.dev/api#dev
  */
 async function dev(options: ApiOptions = {}): Promise<{ viteServer: ViteDevServer; viteConfig: ResolvedConfig }> {
-  const { viteConfigFromUserEnhanced } = await prepareViteApiCall(options, 'dev')
-  const server = await createServer(viteConfigFromUserEnhanced)
+  const { viteConfigFromUserResolved } = await prepareViteApiCall(options, 'dev')
+  const server = await createServer(viteConfigFromUserResolved)
   return {
     viteServer: server,
     viteConfig: server.config,

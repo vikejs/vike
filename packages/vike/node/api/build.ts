@@ -10,18 +10,18 @@ import type { ApiOptions } from './types.js'
  * https://vike.dev/api#build
  */
 async function build(options: ApiOptions = {}): Promise<{}> {
-  const { viteConfigFromUserEnhanced } = await prepareViteApiCall(options, 'build')
+  const { viteConfigFromUserResolved } = await prepareViteApiCall(options, 'build')
 
   // Pass it to vike:build:pluginBuildApp
-  if (viteConfigFromUserEnhanced) viteConfigFromUserEnhanced._viteConfigFromUserEnhanced = viteConfigFromUserEnhanced
+  if (viteConfigFromUserResolved) viteConfigFromUserResolved._viteConfigFromUserResolved = viteConfigFromUserResolved
 
-  const builder = await createBuilder(viteConfigFromUserEnhanced)
+  const builder = await createBuilder(viteConfigFromUserResolved)
   // buildApp() is implemented by vike:build:pluginBuildApp
   await builder.buildApp()
 
   return {
-    /* We don't return `viteConfig` because `viteConfigFromUserEnhanced` is `InlineConfig` not `ResolvedConfig`
-    viteConfig: viteConfigFromUserEnhanced,
+    /* We don't return `viteConfig` because `viteConfigFromUserResolved` is `InlineConfig` not `ResolvedConfig`
+    viteConfig: viteConfigFromUserResolved,
     */
   }
 }

@@ -24,8 +24,8 @@ async function createDevMiddleware(
       },
     },
   }
-  const { viteConfigFromUserEnhanced } = await prepareViteApiCall(optionsMod, 'dev')
-  const server = await createServer(viteConfigFromUserEnhanced)
+  const { viteConfigFromUserResolved } = await prepareViteApiCall(optionsMod, 'dev')
+  const server = await createServer(viteConfigFromUserResolved)
   const devMiddleware = server.middlewares
   return { devMiddleware, viteServer: server, viteConfig: server.config }
 }

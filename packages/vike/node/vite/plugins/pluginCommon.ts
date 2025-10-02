@@ -21,7 +21,7 @@ declare module 'vite' {
     _rootResolvedEarly?: string
     _baseViteOriginal?: string
     // We'll be able to remove once we have one Rolldown build instead of two Rollup builds
-    _viteConfigFromUserEnhanced?: InlineConfig
+    _viteConfigFromUserResolved?: InlineConfig
   }
 }
 

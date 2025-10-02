@@ -16,7 +16,7 @@ import path from 'node:path'
  */
 async function preview(options: ApiOptions = {}): Promise<{ viteServer?: PreviewServer; viteConfig: ResolvedConfig }> {
   onSetupPreview()
-  const { viteConfigFromUserEnhanced, viteConfigResolved } = await prepareViteApiCall(options, 'preview')
+  const { viteConfigFromUserResolved, viteConfigResolved } = await prepareViteApiCall(options, 'preview')
   if (viteConfigResolved.vitePluginServerEntry?.inject) {
     const outDir = getOutDirs(viteConfigResolved, undefined).outDirRoot
     const { outServerIndex } = await importServerProductionIndex({ outDir })
@@ -30,7 +30,7 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
       viteConfig: viteConfigResolved,
     }
   } else {
-    const server = await previewVite(viteConfigFromUserEnhanced)
+    const server = await previewVite(viteConfigFromUserResolved)
     return {
       viteServer: server,
       viteConfig: server.config,
