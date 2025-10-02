@@ -44,7 +44,6 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
             ? normalizeViteRoot(configFromUser.root)
             : await getViteRoot(operation)
           assert(rootResolvedEarly)
-          // TO-DO/next-major-release: we can remove setVikeConfigContext() call here since with Vike's CLI it's already called at vike/node/api/prepareViteApiCall.ts
           setVikeConfigContext({ userRootDir: rootResolvedEarly, isDev, vikeVitePluginOptions })
           const vikeConfig = await getVikeConfigInternal()
           return {
