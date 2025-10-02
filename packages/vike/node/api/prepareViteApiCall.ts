@@ -146,7 +146,7 @@ function findVikeVitePlugin(viteConfig: InlineConfig | UserConfig | undefined | 
 
 // Copied from https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L961-L1005
 async function loadViteConfigFile(viteConfigFromUserApiOptions: InlineConfig | undefined, operation: ApiOperation) {
-  const [inlineConfig, command, defaultMode, _defaultNodeEnv, isPreview] = getResolveConfigArgs(
+  const [inlineConfig, command, defaultMode, _defaultNodeEnv, isPreview] = getArgsForVite(
     viteConfigFromUserApiOptions,
     operation,
   )
@@ -175,7 +175,7 @@ async function loadViteConfigFile(viteConfigFromUserApiOptions: InlineConfig | u
   return null
 }
 
-function getResolveConfigArgs(viteConfig: InlineConfig = {}, operation: ApiOperation) {
+function getArgsForVite(viteConfig: InlineConfig = {}, operation: ApiOperation) {
   const inlineConfig = viteConfig
   const command = operation === 'build' || operation === 'prerender' ? 'build' : 'serve'
   const defaultMode = operation === 'dev' ? 'development' : 'production'
@@ -199,7 +199,7 @@ async function assertViteRoot2(
   viteConfigFromUserEnhanced: InlineConfig | undefined,
   operation: ApiOperation,
 ) {
-  const args = getResolveConfigArgs(viteConfigFromUserEnhanced, operation)
+  const args = getArgsForVite(viteConfigFromUserEnhanced, operation)
   // We can eventually remove this resolveConfig() call (along with removing the whole assertViteRoot2() function which is redundant with the assertViteRoot() function) so that Vike doesn't make any resolveConfig() (except for pre-rendering and preview which is required). But let's keep it for now, just to see whether calling resolveConfig() can be problematic.
   const viteConfigResolved = await resolveConfig(...args)
   assertUsage(normalizeViteRoot(viteConfigResolved.root) === normalizeViteRoot(root), errMsg)
