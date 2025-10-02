@@ -26,6 +26,7 @@ async function resolveViteConfigFromUser(
   viteApiArgs: ViteApiArgs,
 ) {
   const viteInfo = await getViteInfo(viteConfigFromUserVikeApiOptions, viteApiArgs)
+  setVikeConfigContext_(viteInfo, viteApiArgs)
   const vikeConfig = await getVikeConfigInternal()
   const viteConfigFromUserResolved = applyVikeViteConfig(viteInfo.viteConfigFromUserResolved, vikeConfig)
   const { viteConfigResolved } = await assertViteRoot2(viteInfo.root, viteConfigFromUserResolved, viteApiArgs)
