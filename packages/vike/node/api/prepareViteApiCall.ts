@@ -26,7 +26,7 @@ async function prepareViteApiCall(options: ApiOptions, operation: ApiOperation) 
   setContextVikeApiOperation(operation, options)
   const viteConfigFromUserVikeApiOptions = options.viteConfig
   const viteApiArgs = getViteApiArgsWithOperation(operation)
-  return resolveViteConfigEarly(viteConfigFromUserVikeApiOptions, viteApiArgs)
+  return resolveViteConfigFromUser(viteConfigFromUserVikeApiOptions, viteApiArgs)
 }
 
 // For subsequent API calls, e.g. calling prerender() after build()
@@ -35,7 +35,7 @@ function clear() {
   clearGlobalContext()
 }
 
-async function resolveViteConfigEarly(
+async function resolveViteConfigFromUser(
   viteConfigFromUserVikeApiOptions: InlineConfig | undefined,
   viteApiArgs: ViteApiArgs,
 ) {
