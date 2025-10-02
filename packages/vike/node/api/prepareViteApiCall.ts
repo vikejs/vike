@@ -184,8 +184,8 @@ function getArgsForVite(viteConfig: InlineConfig = {}, isBuild: boolean, isPrevi
   const inlineConfig = viteConfig
   const command = isBuild ? 'build' : 'serve'
   // Seems like a good choice:
-  // - Component development (e.g. Storybook) => not build, not preview => let's consider it development
-  // - Testing (e.g. Vitest) => not build, not preview (debatable) => let's consider it development
+  // - Component development (e.g. Storybook) => let's consider it development
+  // - Testing (e.g. Vitest) => let's consider it development
   const isDev = !isBuild && !isPreview
   const defaultMode = isDev ? 'development' : 'production'
   const defaultNodeEnv = defaultMode
