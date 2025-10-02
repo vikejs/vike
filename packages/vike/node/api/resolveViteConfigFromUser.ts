@@ -1,12 +1,12 @@
-export { prepareViteApiCall }
+export { resolveViteConfigFromUser }
+export { getViteApiArgsWithOperation }
 export { getViteRoot }
 export { assertViteRoot }
 export { normalizeViteRoot }
 
 import { loadConfigFromFile, mergeConfig, resolveConfig } from 'vite'
 import type { InlineConfig, ResolvedConfig, UserConfig } from 'vite'
-import type { ApiOptions, ApiOperation } from './types.js'
-import { clearContextVikeApiOperation, setContextVikeApiOperation } from './context.js'
+import type { ApiOperation } from './types.js'
 import {
   getVikeConfigInternal,
   getVikeConfigFromCliOrEnv,
@@ -17,24 +17,9 @@ import {
 import path from 'node:path'
 import { assert, assertUsage, getGlobalObject, isObject, pick, toPosixPath } from './utils.js'
 import pc from '@brillout/picocolors'
-import { clearGlobalContext } from '../runtime/globalContext.js'
 import { getEnvVarObject } from '../vite/shared/getEnvVarObject.js'
 
 const globalObject = getGlobalObject<{ root?: string }>('api/prepareViteApiCall.ts', {})
-
-async function prepareViteApiCall(options: ApiOptions, operation: ApiOperation) {
-  clear()
-  setContextVikeApiOperation(operation, options)
-  const viteConfigFromUserVikeApiOptions = options.viteConfig
-  const viteApiArgs = getViteApiArgsWithOperation(operation)
-  return resolveViteConfigFromUser(viteConfigFromUserVikeApiOptions, viteApiArgs)
-}
-
-// For subsequent API calls, e.g. calling prerender() after build()
-function clear() {
-  clearContextVikeApiOperation()
-  clearGlobalContext()
-}
 
 async function resolveViteConfigFromUser(
   viteConfigFromUserVikeApiOptions: InlineConfig | undefined,

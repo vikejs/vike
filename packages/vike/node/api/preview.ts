@@ -1,6 +1,6 @@
 export { preview }
 
-import { prepareViteApiCall } from './resolveViteConfigFromUser.js'
+import { prepareViteApiCall } from './prepareViteApiCall.js'
 import { preview as previewVite, type ResolvedConfig, type PreviewServer } from 'vite'
 import { importServerProductionIndex } from '@brillout/vite-plugin-server-entry/runtime'
 import type { ApiOptions } from './types.js'
