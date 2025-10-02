@@ -25,7 +25,8 @@ async function prepareViteApiCall(options: ApiOptions, operation: ApiOperation) 
   clear()
   setContextVikeApiOperation(operation, options)
   const viteConfigFromUserVikeApiOptions = options.viteConfig
-  return resolveViteConfigEarly(viteConfigFromUserVikeApiOptions, operation)
+  const viteApiArgs = getViteApiArgsWithOperation(operation)
+  return resolveViteConfigEarly(viteConfigFromUserVikeApiOptions, viteApiArgs)
 }
 
 // For subsequent API calls, e.g. calling prerender() after build()
@@ -36,17 +37,16 @@ function clear() {
 
 async function resolveViteConfigEarly(
   viteConfigFromUserVikeApiOptions: InlineConfig | undefined,
-  operation: ApiOperation,
+  viteApiArgs: ViteApiArgs,
 ) {
-  const viteInfo = await getViteInfo(viteConfigFromUserVikeApiOptions, operation)
+  const viteInfo = await getViteInfo(viteConfigFromUserVikeApiOptions, viteApiArgs)
   setVikeConfigContext({
     userRootDir: viteInfo.root,
-    isDev: operation === 'dev',
+    isDev: getIsDev(viteApiArgs),
     vikeVitePluginOptions: viteInfo.vikeVitePluginOptions,
   })
   const vikeConfig = await getVikeConfigInternal()
   const viteConfigFromUserResolved = applyVikeViteConfig(viteInfo.viteConfigFromUserResolved, vikeConfig)
-  const viteApiArgs = getViteApiArgsWithOperation(operation)
   const { viteConfigResolved } = await assertViteRoot2(viteInfo.root, viteConfigFromUserResolved, viteApiArgs)
   return {
     viteConfigResolved, // ONLY USE if strictly necessary. (We plan to remove assertViteRoot2() as explained in the comments of that function.)
@@ -70,13 +70,13 @@ function applyVikeViteConfig(viteConfigFromUserResolved: InlineConfig | undefine
   return viteConfigFromUserResolved
 }
 
-async function getViteRoot(operation: ApiOperation) {
-  if (!globalObject.root) await getViteInfo(undefined, operation)
+async function getViteRoot(viteApiArgs: ViteApiArgs) {
+  if (!globalObject.root) await getViteInfo(undefined, viteApiArgs)
   assert(globalObject.root)
   return globalObject.root
 }
 
-async function getViteInfo(viteConfigFromUserVikeApiOptions: InlineConfig | undefined, operation: ApiOperation) {
+async function getViteInfo(viteConfigFromUserVikeApiOptions: InlineConfig | undefined, viteApiArgs: ViteApiArgs) {
   let viteConfigFromUserResolved = viteConfigFromUserVikeApiOptions
 
   // Precedence:
@@ -100,7 +100,6 @@ async function getViteInfo(viteConfigFromUserVikeApiOptions: InlineConfig | unde
   }
 
   // Resolve vite.config.js
-  const viteApiArgs = getViteApiArgsWithOperation(operation)
   const viteConfigFromUserViteFile = await loadViteConfigFile(viteConfigFromUserResolved, viteApiArgs)
   // Correct precedence, replicates Vite:
   // https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L1001
@@ -181,24 +180,32 @@ async function loadViteConfigFile(viteConfigFromUserResolved: InlineConfig | und
 function getViteApiArgsWithOperation(operation: ApiOperation) {
   const isBuild = operation === 'build' || operation === 'prerender'
   const isPreview = operation === 'preview'
-  const viteApiArgs = { isBuild, isPreview }
+  const isDev = operation === 'dev'
+  const viteApiArgs = { isBuild, isPreview, isDev }
   return viteApiArgs
 }
 type ViteApiArgs = {
   isBuild: boolean
   isPreview: boolean
+  isDev?: boolean
 }
 function resolveViteApiArgs(inlineConfig: InlineConfig = {}, viteApiArgs: ViteApiArgs) {
   const { isBuild, isPreview } = viteApiArgs
   const command = isBuild ? 'build' : 'serve'
-  // Seems like a good choice:
-  // - Component development (e.g. Storybook) => let's consider it development
-  // - Testing (e.g. Vitest) => let's consider it development
-  const isDev = !isBuild && !isPreview
+  const isDev = getIsDev(viteApiArgs)
   const defaultMode = isDev ? 'development' : 'production'
   const defaultNodeEnv = defaultMode
   const viteApiArgsResolved = [inlineConfig, command, defaultMode, defaultNodeEnv, isPreview] as const
   return viteApiArgsResolved
+}
+
+function getIsDev(viteApiArgs: ViteApiArgs) {
+  // Seems like a good choice:
+  // - Component development (e.g. Storybook) => let's consider it development
+  // - Testing (e.g. Vitest) => let's consider it development
+  const isDev = !viteApiArgs.isBuild && !viteApiArgs.isPreview
+  assert(isDev === viteApiArgs.isDev || viteApiArgs.isDev === undefined)
+  return isDev
 }
 
 function normalizeViteRoot(root: string) {
