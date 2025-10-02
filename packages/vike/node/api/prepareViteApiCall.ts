@@ -12,6 +12,7 @@ import {
   getVikeConfigFromCliOrEnv,
   setVikeConfigContext,
   type VikeConfigInternal,
+  isVikeConfigContextSet,
 } from '../vite/shared/resolveVikeConfigInternal.js'
 import path from 'node:path'
 import { assert, assertUsage, getGlobalObject, isObject, pick, toPosixPath } from './utils.js'
@@ -40,11 +41,6 @@ async function resolveViteConfigFromUser(
   viteApiArgs: ViteApiArgs,
 ) {
   const viteInfo = await getViteInfo(viteConfigFromUserVikeApiOptions, viteApiArgs)
-  setVikeConfigContext({
-    userRootDir: viteInfo.root,
-    isDev: viteApiArgs.isDev,
-    vikeVitePluginOptions: viteInfo.vikeVitePluginOptions,
-  })
   const vikeConfig = await getVikeConfigInternal()
   const viteConfigFromUserResolved = applyVikeViteConfig(viteInfo.viteConfigFromUserResolved, vikeConfig)
   const { viteConfigResolved } = await assertViteRoot2(viteInfo.root, viteConfigFromUserResolved, viteApiArgs)
@@ -52,6 +48,24 @@ async function resolveViteConfigFromUser(
     viteConfigResolved, // ONLY USE if strictly necessary. (We plan to remove assertViteRoot2() as explained in the comments of that function.)
     viteConfigFromUserResolved,
   }
+}
+
+// TODO use
+async function getVikeConfigInternalEarly() {
+  if (!isVikeConfigContextSet()) {
+    const viteApiArgs = getViteApiArgsWithoutOperation()
+    const viteInfo = await getViteInfo(undefined, viteApiArgs)
+    setVikeConfigContext_(viteInfo, viteApiArgs)
+  }
+  return await getVikeConfigInternal()
+}
+
+function setVikeConfigContext_(viteInfo: ViteInfo, viteApiArgs: ViteApiArgs) {
+  setVikeConfigContext({
+    userRootDir: viteInfo.root,
+    isDev: viteApiArgs.isDev,
+    vikeVitePluginOptions: viteInfo.vikeVitePluginOptions,
+  })
 }
 
 // Apply +vite
@@ -76,6 +90,7 @@ async function getViteRoot(viteApiArgs: ViteApiArgs) {
   return globalObject.root
 }
 
+type ViteInfo = Awaited<ReturnType<typeof getViteInfo>>
 async function getViteInfo(viteConfigFromUserVikeApiOptions: InlineConfig | undefined, viteApiArgs: ViteApiArgs) {
   let viteConfigFromUserResolved = viteConfigFromUserVikeApiOptions
 
