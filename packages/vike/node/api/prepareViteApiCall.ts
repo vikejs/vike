@@ -24,7 +24,7 @@ const globalObject = getGlobalObject<{ root?: string }>('api/prepareViteApiCall.
 async function prepareViteApiCall(options: ApiOptions, operation: ApiOperation) {
   clear()
   setContextVikeApiOperation(operation, options)
-  const viteConfigFromUserVikeApiOptions = options.viteConfig
+  const viteConfigFromUserVikeApiOptions = options.viteConfig ?? null
   return resolveConfigs(viteConfigFromUserVikeApiOptions, operation)
 }
 
@@ -34,7 +34,7 @@ function clear() {
   clearGlobalContext()
 }
 
-async function resolveConfigs(viteConfigFromUserVikeApiOptions: InlineConfig | undefined, operation: ApiOperation) {
+async function resolveConfigs(viteConfigFromUserVikeApiOptions: InlineConfig | null, operation: ApiOperation) {
   const viteInfo = await getViteInfo(viteConfigFromUserVikeApiOptions, operation)
   setVikeConfigContext({
     userRootDir: viteInfo.root,
@@ -53,7 +53,7 @@ async function resolveConfigs(viteConfigFromUserVikeApiOptions: InlineConfig | u
 
 // Apply +vite
 // - For example, Vike extensions adding Vite plugins
-function applyVikeViteConfig(viteConfigFromUserEnhanced: InlineConfig | undefined, vikeConfig: VikeConfigInternal) {
+function applyVikeViteConfig(viteConfigFromUserEnhanced: InlineConfig | null, vikeConfig: VikeConfigInternal) {
   const viteConfigs = vikeConfig._from.configsCumulative.vite
   if (!viteConfigs) return viteConfigFromUserEnhanced
   viteConfigs.values.forEach((v) => {
@@ -68,12 +68,12 @@ function applyVikeViteConfig(viteConfigFromUserEnhanced: InlineConfig | undefine
 }
 
 async function getViteRoot(operation: ApiOperation) {
-  if (!globalObject.root) await getViteInfo(undefined, operation)
+  if (!globalObject.root) await getViteInfo(null, operation)
   assert(globalObject.root)
   return globalObject.root
 }
 
-async function getViteInfo(viteConfigFromUserVikeApiOptions: InlineConfig | undefined, operation: ApiOperation) {
+async function getViteInfo(viteConfigFromUserVikeApiOptions: InlineConfig | null, operation: ApiOperation) {
   let viteConfigFromUserEnhanced = viteConfigFromUserVikeApiOptions
 
   // Precedence:
@@ -174,7 +174,7 @@ async function loadViteConfigFile(viteApiArgs: ViteApiArgs) {
   return null
 }
 
-function getViteApiArgsWithOperation(inlineConfig: InlineConfig = {}, operation: ApiOperation) {
+function getViteApiArgsWithOperation(inlineConfig: InlineConfig | null = {}, operation: ApiOperation) {
   const isBuild = operation === 'build' || operation === 'prerender'
   const isPreview = operation === 'preview'
   const viteApiArgs = { inlineConfig, isBuild, isPreview }
