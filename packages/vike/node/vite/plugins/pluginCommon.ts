@@ -9,7 +9,7 @@ import { assertResolveAlias } from './pluginCommon/assertResolveAlias.js'
 import { isViteCliCall } from '../shared/isViteCliCall.js'
 import { isVikeCliOrApi } from '../../api/context.js'
 import { getVikeConfigInternal, setVikeConfigContext } from '../shared/resolveVikeConfigInternal.js'
-import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/prepareViteApiCall.js'
+import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/resolveViteConfigFromUser.js'
 import { temp_disablePrerenderAutoRun } from '../../prerender/context.js'
 import type { VitePluginServerEntryOptions } from '@brillout/vite-plugin-server-entry/plugin'
 const pluginName = 'vike:pluginCommon'
@@ -21,7 +21,7 @@ declare module 'vite' {
     _rootResolvedEarly?: string
     _baseViteOriginal?: string
     // We'll be able to remove once we have one Rolldown build instead of two Rollup builds
-    _viteConfigFromUserEnhanced?: InlineConfig
+    _viteConfigFromUserResolved?: InlineConfig
   }
 }
 
@@ -39,12 +39,11 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
         order: 'pre',
         async handler(configFromUser, env) {
           const isDev = isDevCheck(env)
-          const operation = env.command === 'build' ? 'build' : env.isPreview ? 'preview' : 'dev'
+          const viteApiArgs = { isBuild: env.command === 'build', isPreview: !!env.isPreview, isDev }
           const rootResolvedEarly = configFromUser.root
             ? normalizeViteRoot(configFromUser.root)
-            : await getViteRoot(operation)
+            : await getViteRoot(viteApiArgs)
           assert(rootResolvedEarly)
-          // TO-DO/next-major-release: we can remove setVikeConfigContext() call here since with Vike's CLI it's already called at vike/node/api/prepareViteApiCall.ts
           setVikeConfigContext({ userRootDir: rootResolvedEarly, isDev, vikeVitePluginOptions })
           const vikeConfig = await getVikeConfigInternal()
           return {

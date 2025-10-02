@@ -42,27 +42,30 @@ assertIsNotProductionRuntime()
 
 type PluginInterop = Record<string, unknown> & { name: string }
 // Return `PluginInterop` instead of `Plugin` to avoid type mismatch upon different Vite versions
-function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginInterop[] {
-  const plugins: Plugin[] = [
-    ...pluginCommon(vikeVitePluginOptions),
-    ...pluginVirtualFiles(),
-    ...pluginDev(),
-    ...pluginBuild(),
-    ...pluginPreview(),
-    ...pluginExtractAssets(),
-    ...pluginExtractExportNames(),
-    ...pluginSetGlobalContext(),
-    ...pluginBaseUrls(),
-    ...pluginReplaceConstantsEnvVars(),
-    ...pluginFileEnv(),
-    ...pluginWorkaroundCssModuleHmr(),
-    ...pluginWorkaroundVite6HmrRegression(),
-    ...pluginReplaceConstantsPageContext(),
-    ...pluginReplaceConstantsGlobalThis(),
-    ...pluginNonRunnabeDev(),
-  ]
-  Object.assign(plugins, { _vikeVitePluginOptions: vikeVitePluginOptions })
-  return plugins as any
+function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): Promise<PluginInterop[]> {
+  const promise = (async () => {
+    const plugins: Plugin[] = [
+      ...pluginCommon(vikeVitePluginOptions),
+      ...pluginVirtualFiles(),
+      ...pluginDev(),
+      ...pluginBuild(),
+      ...pluginPreview(),
+      ...pluginExtractAssets(),
+      ...pluginExtractExportNames(),
+      ...pluginSetGlobalContext(),
+      ...pluginBaseUrls(),
+      ...pluginReplaceConstantsEnvVars(),
+      ...pluginFileEnv(),
+      ...pluginWorkaroundCssModuleHmr(),
+      ...pluginWorkaroundVite6HmrRegression(),
+      ...pluginReplaceConstantsPageContext(),
+      ...pluginReplaceConstantsGlobalThis(),
+      ...pluginNonRunnabeDev(),
+    ]
+    return plugins as PluginInterop[]
+  })()
+  Object.assign(promise, { _vikeVitePluginOptions: vikeVitePluginOptions })
+  return promise
 }
 
 function pluginBuild(): Plugin[] {

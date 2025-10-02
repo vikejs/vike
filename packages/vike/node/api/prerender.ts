@@ -13,8 +13,8 @@ import type { ResolvedConfig } from 'vite'
 async function prerender(options: PrerenderOptions = {}): Promise<{
   viteConfig: ResolvedConfig
 }> {
-  const { viteConfigFromUserEnhanced } = await prepareViteApiCall(options, 'prerender')
-  options.viteConfig = viteConfigFromUserEnhanced
+  const { viteConfigFromUserResolved } = await prepareViteApiCall(options, 'prerender')
+  options.viteConfig = viteConfigFromUserResolved
   const { viteConfig } = await runPrerenderFromAPI(options)
   return {
     viteConfig,
