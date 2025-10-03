@@ -4,7 +4,7 @@ export { getViteConfigFromCli }
 import { assert, isObject, toPosixPath } from '../utils.js'
 import { cac } from 'cac'
 
-// TODO: rename_full isViteCliCall isViteCli
+// TODO/now: rename_full isViteCliCall isViteCli
 function isViteCliCall(): boolean {
   let execPath = process.argv[1]
   assert(execPath)

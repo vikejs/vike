@@ -110,7 +110,7 @@ async function getViteInfo(viteConfigFromUserVikeApiOptions: InlineConfig | unde
   if (found) {
     vikeVitePluginOptions = found.vikeVitePluginOptions
   } else {
-    // TODO deprecate this
+    // TODO/now deprecate this
     // Add Vike to plugins if not present.
     // Using a dynamic import because the script calling the Vike API may not live in the same place as vite.config.js, thus vike/plugin may resolved to two different node_modules/vike directories.
     const { plugin: vikePlugin } = await import('../vite/index.js')
