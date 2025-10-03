@@ -20,7 +20,7 @@ import { assert, assertUsage, getGlobalObject, isObject, pick, toPosixPath } fro
 import pc from '@brillout/picocolors'
 import { getEnvVarObject } from '../vite/shared/getEnvVarObject.js'
 
-const globalObject = getGlobalObject<{ root?: string; isVikeConfigResolving?: boolean }>(
+const globalObject = getGlobalObject<{ root?: string; isOnlyResolvingUserConfig?: boolean }>(
   'api/prepareViteApiCall.ts',
   {},
 )
@@ -43,7 +43,7 @@ async function resolveViteConfigFromUser(
 }
 
 async function getVikeConfigInternalEarly() {
-  if (globalObject.isVikeConfigResolving) return null
+  if (globalObject.isOnlyResolvingUserConfig) return null
   if (!isVikeConfigContextSet()) {
     const viteApiArgs = getViteApiArgsWithoutOperation()
     const viteInfo = await getViteInfo(undefined, viteApiArgs)
@@ -107,9 +107,9 @@ async function getViteInfo(viteConfigFromUserVikeApiOptions: InlineConfig | unde
   }
 
   // Resolve vite.config.js
-  globalObject.isVikeConfigResolving = true
+  globalObject.isOnlyResolvingUserConfig = true
   const viteConfigFromUserViteFile = await loadViteConfigFile(viteConfigFromUserResolved, viteApiArgs)
-  globalObject.isVikeConfigResolving = false
+  globalObject.isOnlyResolvingUserConfig = false
   // Correct precedence, replicates Vite:
   // https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L1001
   const viteConfigResolved = mergeConfig(viteConfigFromUserViteFile ?? {}, viteConfigFromUserResolved ?? {})
