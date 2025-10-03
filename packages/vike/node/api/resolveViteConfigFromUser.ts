@@ -19,7 +19,6 @@ import path from 'node:path'
 import { assert, assertUsage, getGlobalObject, isObject, pick, toPosixPath } from './utils.js'
 import pc from '@brillout/picocolors'
 import { getEnvVarObject } from '../vite/shared/getEnvVarObject.js'
-import { isVitest } from '../vite/utils.js'
 
 const globalObject = getGlobalObject<{ root?: string; isVikeConfigResolving?: boolean }>(
   'api/prepareViteApiCall.ts',
@@ -46,7 +45,6 @@ async function resolveViteConfigFromUser(
 async function getVikeConfigInternalEarly() {
   if (globalObject.isVikeConfigResolving) return null
   if (!isVikeConfigContextSet()) {
-    globalObject.isVikeConfigResolving = true
     const viteApiArgs = getViteApiArgsWithoutOperation()
     const viteInfo = await getViteInfo(undefined, viteApiArgs)
     setVikeConfigContext_(viteInfo, viteApiArgs)
