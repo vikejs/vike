@@ -43,7 +43,6 @@ async function resolveViteConfigFromUser(
 async function getVikeConfigInternalEarly() {
   assert(!globalObject.isOnlyResolvingUserConfig) // ensure no infinite loop
   if (!isVikeConfigContextSet()) {
-    assert(!isVikeCliOrApi())
     const viteApiArgs = getViteApiArgsWithoutOperation()
     const viteInfo = await getViteInfo(undefined, viteApiArgs)
     setVikeConfigContext_(viteInfo, viteApiArgs)
@@ -186,6 +185,7 @@ type ViteApiArgs = {
   isDev: boolean
 }
 function getViteApiArgsWithoutOperation(): ViteApiArgs {
+  assert(!isVikeCliOrApi())
   // Seems like a good choice:
   // - Component development (e.g. Storybook) => let's consider it development
   // - Testing (e.g. Vitest) => let's consider it development
