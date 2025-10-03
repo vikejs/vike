@@ -78,9 +78,7 @@ function getViteConfigFromCli(): null | ConfigFromCli {
   return configFromCli
 
   // https://github.com/vitejs/vite/blob/d3e7eeefa91e1992f47694d16fe4dbe708c4d80e/packages/vite/src/node/cli.ts#L99
-  function cleanGlobalCLIOptions(
-    options: Record<string, unknown>,
-  ) {
+  function cleanGlobalCLIOptions(options: Record<string, unknown>) {
     const ret = { ...options }
     delete ret['--']
     delete ret.c
@@ -111,7 +109,8 @@ function getViteConfigFromCli(): null | ConfigFromCli {
 
     return ret
   }
-  function cleanBuilderCLIOptions(options: any) {
+  // https://github.com/vitejs/vite/blob/d3e7eeefa91e1992f47694d16fe4dbe708c4d80e/packages/vite/src/node/cli.ts#L141
+  function cleanBuilderCLIOptions(options: Record<string, unknown>) {
     const ret = { ...options }
     delete ret.app
     return ret
