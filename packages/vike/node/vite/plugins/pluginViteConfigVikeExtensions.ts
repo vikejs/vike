@@ -5,6 +5,8 @@ import { mergeConfig } from 'vite'
 import { assertUsage, isObject } from '../utils.js'
 import { getVikeConfigInternalEarly } from '../../api/resolveViteConfigFromUser.js'
 
+// Apply +vite
+// - For example, Vike extensions adding Vite plugins
 async function pluginViteConfigVikeExtensions(): Promise<Plugin[]> {
   const vikeConfig = await getVikeConfigInternalEarly()
   if (vikeConfig === null) return []

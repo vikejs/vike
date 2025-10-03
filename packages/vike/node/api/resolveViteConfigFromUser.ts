@@ -13,11 +13,10 @@ import {
   getVikeConfigInternal,
   getVikeConfigFromCliOrEnv,
   setVikeConfigContext,
-  type VikeConfigInternal,
   isVikeConfigContextSet,
 } from '../vite/shared/resolveVikeConfigInternal.js'
 import path from 'node:path'
-import { assert, assertUsage, getGlobalObject, isObject, pick, toPosixPath } from './utils.js'
+import { assert, assertUsage, getGlobalObject, pick, toPosixPath } from './utils.js'
 import pc from '@brillout/picocolors'
 import { getEnvVarObject } from '../vite/shared/getEnvVarObject.js'
 
@@ -32,9 +31,6 @@ async function resolveViteConfigFromUser(
 ) {
   const viteInfo = await getViteInfo(viteConfigFromUserVikeApiOptions, viteApiArgs)
   setVikeConfigContext_(viteInfo, viteApiArgs)
-  const vikeConfig = await getVikeConfigInternal()
-  // TODO: remove?
-  // const viteConfigFromUserResolved = applyVikeViteConfig(viteInfo.viteConfigFromUserResolved, vikeConfig)
   const { viteConfigFromUserResolved } = viteInfo
   const { viteConfigResolved } = await assertViteRoot2(viteInfo.root, viteConfigFromUserResolved, viteApiArgs)
   return {
@@ -63,22 +59,6 @@ function setVikeConfigContext_(viteInfo: ViteInfo, viteApiArgs: ViteApiArgs) {
 
 function isOnlyResolvingUserConfig() {
   return globalObject.isOnlyResolvingUserConfig
-}
-
-// Apply +vite
-// - For example, Vike extensions adding Vite plugins
-function applyVikeViteConfig(viteConfigFromUserResolved: InlineConfig | undefined, vikeConfig: VikeConfigInternal) {
-  const viteConfigs = vikeConfig._from.configsCumulative.vite
-  if (!viteConfigs) return viteConfigFromUserResolved
-  viteConfigs.values.forEach((v) => {
-    assertUsage(isObject(v.value), `${v.definedAt} should be an object`)
-    viteConfigFromUserResolved = mergeConfig(viteConfigFromUserResolved ?? {}, v.value)
-    assertUsage(
-      !findVikeVitePlugin(v.value as InlineConfig),
-      "Using the +vite setting to add Vike's Vite plugin is forbidden",
-    )
-  })
-  return viteConfigFromUserResolved
 }
 
 async function getViteRoot(viteApiArgs: ViteApiArgs) {
