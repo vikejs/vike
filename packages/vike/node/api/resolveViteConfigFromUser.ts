@@ -48,7 +48,6 @@ async function getVikeConfigInternalEarly() {
     const viteApiArgs = getViteApiArgsWithoutOperation()
     const viteInfo = await getViteInfo(undefined, viteApiArgs)
     setVikeConfigContext_(viteInfo, viteApiArgs)
-    globalObject.isVikeConfigResolving = false
   }
   return await getVikeConfigInternal()
 }
