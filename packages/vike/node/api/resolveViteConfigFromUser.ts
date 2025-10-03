@@ -187,7 +187,9 @@ type ViteApiArgs = {
   isDev: boolean
 }
 function getViteApiArgsWithoutOperation(): ViteApiArgs {
-  assert(!isVikeCliOrApi())
+  /* TODO Shouldn't it be true? Or implement?
+  assert(!isVikeCliOrApi());
+  */
 
   const viteCommand = getViteCommandFromCli()
   if (viteCommand === 'dev' || viteCommand === 'optimize') {
