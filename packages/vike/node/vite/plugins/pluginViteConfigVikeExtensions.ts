@@ -6,24 +6,24 @@ import { assertUsage, isObject } from '../utils.js'
 import { getVikeConfigInternalEarly } from '../../api/resolveViteConfigFromUser.js'
 
 async function pluginViteConfigVikeExtensions(): Promise<Plugin[]> {
-  let viteConfig: InlineConfig = {}
   const vikeConfig = await getVikeConfigInternalEarly()
   if (vikeConfig === null) return []
-  const viteConfigFromExtensions = vikeConfig._from.configsCumulative.vite
-  if (!viteConfigFromExtensions) return []
-  viteConfigFromExtensions.values.forEach((v) => {
+  let viteConfigFromExtensions: InlineConfig = {}
+  const viteConfigsExtensions = vikeConfig._from.configsCumulative.vite
+  if (!viteConfigsExtensions) return []
+  viteConfigsExtensions.values.forEach((v) => {
     assertUsage(isObject(v.value), `${v.definedAt} should be an object`)
-    viteConfig = mergeConfig(viteConfig, v.value)
+    viteConfigFromExtensions = mergeConfig(viteConfigFromExtensions, v.value)
   })
-  const plugins: Plugin[] = (viteConfig.plugins ?? []) as Plugin[]
-  delete viteConfig.plugins
+  const pluginsFromExtensions: Plugin[] = (viteConfigFromExtensions.plugins ?? []) as Plugin[]
+  delete viteConfigFromExtensions.plugins
   return [
-    ...plugins,
+    ...pluginsFromExtensions,
     {
       name: 'vike:pluginViteConfigVikeExtensions',
       config: {
         handler(_config) {
-          return viteConfig
+          return viteConfigFromExtensions
         },
       },
     },
