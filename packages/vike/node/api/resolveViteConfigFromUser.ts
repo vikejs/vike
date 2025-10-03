@@ -1,4 +1,5 @@
 export { resolveViteConfigFromUser }
+export { isOnlyResolvingUserConfig }
 export { getVikeConfigInternalEarly }
 export { getViteApiArgsWithOperation }
 export { getViteRoot }
@@ -43,7 +44,7 @@ async function resolveViteConfigFromUser(
 }
 
 async function getVikeConfigInternalEarly() {
-  if (globalObject.isOnlyResolvingUserConfig) return null
+  assert(!globalObject.isOnlyResolvingUserConfig) // ensure no infinite loop
   if (!isVikeConfigContextSet()) {
     const viteApiArgs = getViteApiArgsWithoutOperation()
     const viteInfo = await getViteInfo(undefined, viteApiArgs)
@@ -58,6 +59,10 @@ function setVikeConfigContext_(viteInfo: ViteInfo, viteApiArgs: ViteApiArgs) {
     isDev: viteApiArgs.isDev,
     vikeVitePluginOptions: viteInfo.vikeVitePluginOptions,
   })
+}
+
+function isOnlyResolvingUserConfig() {
+  return globalObject.isOnlyResolvingUserConfig
 }
 
 // Apply +vite
