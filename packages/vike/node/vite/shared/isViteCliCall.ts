@@ -55,10 +55,10 @@ function getViteConfigFromCli(): null | ConfigFromCli {
     .option('--app', desc)
     .action((root: unknown, options: unknown) => {
       assert(isObject(options))
-      const buildOptions = cleanGlobalCLIOptions(cleanBuilderCLIOptions(options))
       assert(root === undefined || typeof root === 'string')
       assert(options.config === undefined || typeof options.config === 'string')
-      // https://github.com/vitejs/vite/blob/d3e7eeefa91e1992f47694d16fe4dbe708c4d80e/packages/vite/src/node/cli.ts#L336-L346
+      // https://github.com/vitejs/vite/blob/d3e7eeefa91e1992f47694d16fe4dbe708c4d80e/packages/vite/src/node/cli.ts#L331-L346
+      const buildOptions = cleanGlobalCLIOptions(cleanBuilderCLIOptions(options))
       configFromCli = {
         root,
         base: options.base,
