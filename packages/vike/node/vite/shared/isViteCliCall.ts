@@ -30,7 +30,8 @@ function getViteConfigFromCli(): null | ConfigFromCli {
   // Copied and adapted from Vite
   const desc = 'vike:vite-cli-simulation'
   const cli = cac(desc)
-  // Common configs: https://github.com/vitejs/vite/blob/d3e7eeefa91e1992f47694d16fe4dbe708c4d80e/packages/vite/src/node/cli.ts#L169-L182
+  // Common configs
+  // https://github.com/vitejs/vite/blob/d3e7eeefa91e1992f47694d16fe4dbe708c4d80e/packages/vite/src/node/cli.ts#L169-L182
   cli
     .option('-c, --config <file>', desc)
     .option('--base <path>', desc)
@@ -40,7 +41,8 @@ function getViteConfigFromCli(): null | ConfigFromCli {
     .option('-d, --debug [feat]', desc)
     .option('-f, --filter <filter>', desc)
     .option('-m, --mode <mode>', desc)
-  // Build configs: https://github.com/vitejs/vite/blob/d3e7eeefa91e1992f47694d16fe4dbe708c4d80e/packages/vite/src/node/cli.ts#L286-L322
+  // Build configs
+  // https://github.com/vitejs/vite/blob/d3e7eeefa91e1992f47694d16fe4dbe708c4d80e/packages/vite/src/node/cli.ts#L286-L322
   cli
     .command('build [root]', desc)
     .option('--target <target>', desc)
@@ -57,18 +59,20 @@ function getViteConfigFromCli(): null | ConfigFromCli {
     .option('--app', desc)
     .action((root: unknown, options: unknown) => {
       assert(isObject(options))
-      const buildOptions = cleanOptions(options)
       assert(root === undefined || typeof root === 'string')
       assert(options.config === undefined || typeof options.config === 'string')
+      // https://github.com/vitejs/vite/blob/d3e7eeefa91e1992f47694d16fe4dbe708c4d80e/packages/vite/src/node/cli.ts#L331-L346
+      const buildOptions = cleanGlobalCLIOptions(cleanBuilderCLIOptions(options))
       configFromCli = {
         root,
         base: options.base,
         mode: options.mode,
         configFile: options.config,
+        configLoader: options.configLoader,
         logLevel: options.logLevel,
         clearScreen: options.clearScreen,
-        optimizeDeps: { force: options.force },
         build: buildOptions,
+        ...(options.app ? { builder: {} } : {}),
       }
     })
 
@@ -77,7 +81,8 @@ function getViteConfigFromCli(): null | ConfigFromCli {
 
   return configFromCli
 
-  function cleanOptions(options: Record<string, unknown>) {
+  // https://github.com/vitejs/vite/blob/d3e7eeefa91e1992f47694d16fe4dbe708c4d80e/packages/vite/src/node/cli.ts#L99
+  function cleanGlobalCLIOptions(options: Record<string, unknown>) {
     const ret = { ...options }
     delete ret['--']
     delete ret.c
@@ -86,12 +91,32 @@ function getViteConfigFromCli(): null | ConfigFromCli {
     delete ret.l
     delete ret.logLevel
     delete ret.clearScreen
+    delete ret.configLoader
     delete ret.d
     delete ret.debug
     delete ret.f
     delete ret.filter
     delete ret.m
     delete ret.mode
+    delete ret.force
+    delete ret.w
+
+    // convert the sourcemap option to a boolean if necessary
+    if ('sourcemap' in ret) {
+      const sourcemap = ret.sourcemap as `${boolean}` | 'inline' | 'hidden'
+      ret.sourcemap = sourcemap === 'true' ? true : sourcemap === 'false' ? false : ret.sourcemap
+    }
+    if ('watch' in ret) {
+      const watch = ret.watch
+      ret.watch = watch ? {} : undefined
+    }
+
+    return ret
+  }
+  // https://github.com/vitejs/vite/blob/d3e7eeefa91e1992f47694d16fe4dbe708c4d80e/packages/vite/src/node/cli.ts#L141
+  function cleanBuilderCLIOptions(options: Record<string, unknown>) {
+    const ret = { ...options }
+    delete ret.app
     return ret
   }
 }
