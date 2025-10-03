@@ -10,7 +10,7 @@ export type { VikeVitePluginOptions }
 import type { Plugin } from 'vite'
 import { getClientEntrySrcDev } from './shared/getClientEntrySrcDev.js'
 import { setGetClientEntrySrcDev } from '../runtime/renderPage/getPageAssets/retrievePageAssetsDev.js'
-import { assertIsNotProductionRuntime, assertUsage } from './utils.js'
+import { assertIsNotProductionRuntime, assertUsage, isVitest } from './utils.js'
 import pc from '@brillout/picocolors'
 import { pluginPreview } from './plugins/pluginPreview.js'
 import { pluginDev } from './plugins/pluginDev.js'
@@ -35,6 +35,7 @@ import { pluginProdBuildEntry } from './plugins/build/pluginProdBuildEntry.js'
 import { pluginBuildConfig } from './plugins/build/pluginBuildConfig.js'
 import { pluginModuleBanner } from './plugins/build/pluginModuleBanner.js'
 import { pluginReplaceConstantsNonRunnableDev } from './plugins/non-runnable-dev/pluginReplaceConstantsNonRunnableDev.js'
+import { isVikeCliOrApi } from '../api/context.js'
 
 // We don't call this in ./onLoad.ts to avoid a cyclic dependency with utils.ts
 setGetClientEntrySrcDev(getClientEntrySrcDev)
@@ -43,6 +44,7 @@ assertIsNotProductionRuntime()
 type PluginInterop = Record<string, unknown> & { name: string }
 // Return `PluginInterop` instead of `Plugin` to avoid type mismatch upon different Vite versions
 function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): Promise<PluginInterop[]> {
+  if (isVitest() && !isVikeCliOrApi()) return Promise.resolve([])
   const promise = (async () => {
     const plugins: Plugin[] = [
       ...pluginCommon(vikeVitePluginOptions),
