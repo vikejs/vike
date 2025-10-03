@@ -44,8 +44,6 @@ async function resolveViteConfigFromUser(
 }
 
 async function getVikeConfigInternalEarly() {
-  // TODO
-  if (isVitest()) return null
   if (globalObject.isVikeConfigResolving) return null
   if (!isVikeConfigContextSet()) {
     globalObject.isVikeConfigResolving = true
@@ -112,7 +110,9 @@ async function getViteInfo(viteConfigFromUserVikeApiOptions: InlineConfig | unde
   }
 
   // Resolve vite.config.js
+  globalObject.isVikeConfigResolving = true
   const viteConfigFromUserViteFile = await loadViteConfigFile(viteConfigFromUserResolved, viteApiArgs)
+  globalObject.isVikeConfigResolving = false
   // Correct precedence, replicates Vite:
   // https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L1001
   const viteConfigResolved = mergeConfig(viteConfigFromUserViteFile ?? {}, viteConfigFromUserResolved ?? {})
