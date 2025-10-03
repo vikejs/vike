@@ -78,9 +78,9 @@ function getViteConfigFromCli(): null | ConfigFromCli {
   return configFromCli
 
   // https://github.com/vitejs/vite/blob/d3e7eeefa91e1992f47694d16fe4dbe708c4d80e/packages/vite/src/node/cli.ts#L99
-  function cleanGlobalCLIOptions<Options extends GlobalCLIOptions>(
-    options: Options,
-  ): Omit<Options, keyof GlobalCLIOptions> {
+  function cleanGlobalCLIOptions(
+    options: Record<string, unknown>,
+  ) {
     const ret = { ...options }
     delete ret['--']
     delete ret.c
@@ -116,25 +116,4 @@ function getViteConfigFromCli(): null | ConfigFromCli {
     delete ret.app
     return ret
   }
-
-  interface GlobalCLIOptions {
-    '--'?: string[]
-    c?: boolean | string
-    config?: string
-    base?: string
-    l?: LogLevel
-    logLevel?: LogLevel
-    clearScreen?: boolean
-    configLoader?: 'bundle' | 'runner' | 'native'
-    d?: boolean | string
-    debug?: boolean | string
-    f?: string
-    filter?: string
-    m?: string
-    mode?: string
-    force?: boolean
-    w?: boolean
-  }
-  type LogType = 'error' | 'warn' | 'info'
-  type LogLevel = LogType | 'silent'
 }
