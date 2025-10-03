@@ -22,6 +22,8 @@ function isViteCliCall(): boolean {
 type ConfigFromCli = { root: undefined | string; configFile: undefined | string } & Record<string, unknown> & {
     build: Record<string, unknown>
   }
+// TODO update to also use command in early Vike Config resolve
+// TODO double check whether the CLI args are still being used
 function getViteConfigFromCli(): null | ConfigFromCli {
   if (!isViteCliCall()) return null
 
