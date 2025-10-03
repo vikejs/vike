@@ -1,8 +1,11 @@
 export { isViteCliCall }
 export { getViteConfigFromCli }
+export { getViteCommandFromCli }
 
 import { assert, isObject, toPosixPath } from '../utils.js'
 import { cac } from 'cac'
+
+const desc = 'vike:vite-cli-simulation'
 
 // TODO/now: rename_full isViteCliCall isViteCli
 function isViteCliCall(): boolean {
@@ -22,13 +25,51 @@ function isViteCliCall(): boolean {
 type ConfigFromCli = { root: undefined | string; configFile: undefined | string } & Record<string, unknown> & {
     build: Record<string, unknown>
   }
-// TODO update to also use command in early Vike Config resolve
-// TODO double check whether the CLI args are still being used
+
+type ViteCommand = 'dev' | 'build' | 'optimize' | 'preview'
+function getViteCommandFromCli(): ViteCommand | null {
+  const cli = cac(desc)
+  if (!isViteCliCall()) return null
+
+  let command: ViteCommand | undefined
+  const setCommand = (cmd: ViteCommand) => {
+    assert(command === undefined)
+    command = cmd
+  }
+
+  // dev
+  cli
+    .command('[root]', desc)
+    .alias('serve')
+    .alias('dev')
+    .action(async () => {
+      setCommand('dev')
+    })
+
+  // build
+  cli.command('build [root]', desc).action(async () => {
+    setCommand('build')
+  })
+
+  // optimize
+  cli.command('optimize [root]', desc).action(async () => {
+    setCommand('optimize')
+  })
+
+  // preview
+  cli.command('preview [root]', desc).action(async () => {
+    setCommand('preview')
+  })
+
+  assert(command)
+  return command
+}
+
+// TODO/now rename getViteConfigFromCli getViteConfigForBuildFromCli
 function getViteConfigFromCli(): null | ConfigFromCli {
   if (!isViteCliCall()) return null
 
   // Copied and adapted from Vite
-  const desc = 'vike:vite-cli-simulation'
   const cli = cac(desc)
   // Common configs
   // https://github.com/vitejs/vite/blob/d3e7eeefa91e1992f47694d16fe4dbe708c4d80e/packages/vite/src/node/cli.ts#L169-L182

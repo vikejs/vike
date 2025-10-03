@@ -20,6 +20,7 @@ import { assert, assertUsage, getGlobalObject, pick, toPosixPath } from './utils
 import pc from '@brillout/picocolors'
 import { getEnvVarObject } from '../vite/shared/getEnvVarObject.js'
 import { isVikeCliOrApi } from './context.js'
+import { getViteCommandFromCli } from '../vite/shared/isViteCliCall.js'
 
 const globalObject = getGlobalObject<{ root?: string; isOnlyResolvingUserConfig?: boolean }>(
   'api/prepareViteApiCall.ts',
@@ -186,6 +187,33 @@ type ViteApiArgs = {
 }
 function getViteApiArgsWithoutOperation(): ViteApiArgs {
   assert(!isVikeCliOrApi())
+
+  const viteCommand = getViteCommandFromCli()
+  if (viteCommand === 'dev' || viteCommand === 'optimize') {
+    const viteApiArgs = {
+      isDev: true,
+      isBuild: false,
+      isPreview: false,
+    }
+    return viteApiArgs
+  }
+  if (viteCommand === 'build') {
+    const viteApiArgs = {
+      isDev: false,
+      isBuild: true,
+      isPreview: false,
+    }
+    return viteApiArgs
+  }
+  if (viteCommand === 'preview') {
+    const viteApiArgs = {
+      isDev: false,
+      isBuild: false,
+      isPreview: true,
+    }
+    return viteApiArgs
+  }
+
   // Seems like a good choice:
   // - Component development (e.g. Storybook) => let's consider it development
   // - Testing (e.g. Vitest) => let's consider it development
