@@ -13,7 +13,7 @@ async function pluginViteConfigVikeExtensions(): Promise<Plugin[]> {
   if (!viteConfigFromExtensions) return []
   viteConfigFromExtensions.values.forEach((v) => {
     assertUsage(isObject(v.value), `${v.definedAt} should be an object`)
-    viteConfig = mergeConfig(viteConfig ?? {}, v.value)
+    viteConfig = mergeConfig(viteConfig, v.value)
   })
   const plugins: Plugin[] = (viteConfig.plugins ?? []) as Plugin[]
   delete viteConfig.plugins
