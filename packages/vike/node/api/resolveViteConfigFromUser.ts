@@ -16,7 +16,7 @@ import {
   isVikeConfigContextSet,
 } from '../vite/shared/resolveVikeConfigInternal.js'
 import path from 'node:path'
-import { assert, assertUsage, getGlobalObject, pick, toPosixPath } from './utils.js'
+import { assert, assertUsage, assertWarning, getGlobalObject, pick, toPosixPath } from './utils.js'
 import pc from '@brillout/picocolors'
 import { getEnvVarObject } from '../vite/shared/getEnvVarObject.js'
 import { getVikeApiOperation, isVikeCliOrApi } from './context.js'
@@ -112,7 +112,11 @@ async function getViteInfo(viteConfigFromUserVikeApiOptions: InlineConfig | unde
   if (found) {
     vikeVitePluginOptions = found.vikeVitePluginOptions
   } else {
-    // TODO/now deprecate this
+    assertWarning(
+      false,
+      "Omitting Vike's Vite plugin (inside your vite.config.js) is deprecated — make sure to always add Vike's Vite plugin https://vike.dev/vite-plugin",
+      { onlyOnce: true },
+    )
     // Add Vike to plugins if not present.
     // Using a dynamic import because the script calling the Vike API may not live in the same place as vite.config.js, thus vike/plugin may resolved to two different node_modules/vike directories.
     const { plugin: vikePlugin } = await import('../vite/index.js')
