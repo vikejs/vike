@@ -1,4 +1,4 @@
-export { isViteCliCall }
+export { isViteCli }
 export { getViteConfigForBuildFromCli }
 export { getViteCommandFromCli }
 
@@ -7,7 +7,7 @@ import { cac } from 'cac'
 
 const desc = 'vike:vite-cli-simulation'
 
-function isViteCliCall(): boolean {
+function isViteCli(): boolean {
   let execPath = process.argv[1]
   assert(execPath)
   execPath = toPosixPath(execPath)
@@ -27,7 +27,7 @@ type ConfigFromCli = { root: undefined | string; configFile: undefined | string 
 
 type ViteCommand = 'dev' | 'build' | 'optimize' | 'preview'
 function getViteCommandFromCli(): ViteCommand | null {
-  if (!isViteCliCall()) return null
+  if (!isViteCli()) return null
 
   let command: ViteCommand | undefined
   const setCommand = (cmd: ViteCommand) => {
@@ -66,7 +66,7 @@ function getViteCommandFromCli(): ViteCommand | null {
 }
 
 function getViteConfigForBuildFromCli(): null | ConfigFromCli {
-  if (!isViteCliCall()) return null
+  if (!isViteCli()) return null
 
   // Copied & adapted from Vite
   const cli = cac(desc)

@@ -6,7 +6,7 @@ import { assertRollupInput } from './build/pluginBuildConfig.js'
 import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
 import pc from '@brillout/picocolors'
 import { assertResolveAlias } from './pluginCommon/assertResolveAlias.js'
-import { isViteCliCall } from '../shared/isViteCliCall.js'
+import { isViteCli } from '../shared/isViteCli.js'
 import { isVikeCliOrApi } from '../../api/context.js'
 import { getVikeConfigInternal, setVikeConfigContext } from '../shared/resolveVikeConfigInternal.js'
 import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/resolveViteConfigFromUser.js'
@@ -163,7 +163,7 @@ function assertSingleInstance(config: ResolvedConfig) {
 
 function assertVikeCliOrApi(config: ResolvedConfig) {
   if (isVikeCliOrApi()) return
-  if (isViteCliCall()) {
+  if (isViteCli()) {
     assert(!isVitest())
     return
   }

@@ -8,7 +8,7 @@ import type { InlineConfig, ResolvedConfig } from 'vite'
 import { logErrorHint } from '../runtime/renderPage/logErrorHint.js'
 import { prepareViteApiCall } from '../api/prepareViteApiCall.js'
 import { isVikeCli } from '../cli/context.js'
-import { isViteCliCall } from '../vite/shared/isViteCliCall.js'
+import { isViteCli } from '../vite/shared/isViteCli.js'
 import { PrerenderOptions, runPrerender } from './runPrerender.js'
 
 async function runPrerenderFromAPI(options: PrerenderOptions = {}): Promise<{ viteConfig: ResolvedConfig }> {
@@ -39,7 +39,7 @@ async function runPrerenderFromAutoRun(viteConfig: InlineConfig | undefined): Pr
     logErrorHint(err)
     process.exit(1)
   }
-  const forceExit = isVikeCli() || isViteCliCall()
+  const forceExit = isVikeCli() || isViteCli()
   return { forceExit }
 }
 
