@@ -173,6 +173,7 @@ async function loadViteConfigFile(viteConfigFromUserResolved: InlineConfig | und
   return null
 }
 
+// TODO/now move below
 function getViteApiArgsWithOperation(operation: ApiOperation): ViteApiArgs {
   const isBuild = operation === 'build' || operation === 'prerender'
   const isPreview = operation === 'preview'
