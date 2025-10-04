@@ -1,7 +1,17 @@
 export { pluginCommon }
 
 import { type InlineConfig, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
-import { assert, assertUsage, assertWarning, hasProp, isDevCheck, isDocker, isObject, isVitest } from '../utils.js'
+import {
+  assert,
+  assertUsage,
+  assertWarning,
+  hasProp,
+  isDevCheck,
+  isDocker,
+  isExactlyOneTruthy,
+  isObject,
+  isVitest,
+} from '../utils.js'
 import { assertRollupInput } from './build/pluginBuildConfig.js'
 import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
 import pc from '@brillout/picocolors'
@@ -39,7 +49,10 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
         order: 'pre',
         async handler(configFromUser, env) {
           const isDev = isDevCheck(env)
-          const viteApiArgs = env.command === 'build' ? 'is-build' : !!env.isPreview ? 'is-preview' : 'is-dev'
+          const isBuild = env.command === 'build'
+          const isPreview = env.isPreview!!
+          assert(isExactlyOneTruthy(isDev, isBuild, isPreview))
+          const viteApiArgs = isBuild ? 'is-build' : isPreview ? 'is-preview' : 'is-dev'
           const rootResolvedEarly = configFromUser.root
             ? normalizeViteRoot(configFromUser.root)
             : await getViteRoot(viteApiArgs)

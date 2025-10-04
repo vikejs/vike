@@ -212,8 +212,7 @@ function getViteApiArgsWithOperation(operation: ApiOperation): ViteApiArgs {
   if (operation === 'dev') {
     return 'is-dev'
   }
-  // This should never happen given the ApiOperation type, but for completeness
-  throw new Error(`Unknown operation: ${operation}`)
+  assert(false)
 }
 function resolveViteApiArgs(inlineConfig: InlineConfig = {}, viteApiArgs: ViteApiArgs) {
   const isBuild = viteApiArgs === 'is-build'
