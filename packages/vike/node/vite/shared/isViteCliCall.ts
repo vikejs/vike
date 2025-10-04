@@ -36,8 +36,9 @@ function getViteCommandFromCli(): ViteCommand | null {
     command = cmd
   }
 
+  // Copied & adapted from Vite
+  // https://github.com/vitejs/vite/blob/d3e7eeefa91e1992f47694d16fe4dbe708c4d80e/packages/vite/src/node/cli.ts#L186-L188
   const cli = cac(desc)
-
   // dev
   cli
     .command('[root]', desc)
@@ -69,7 +70,7 @@ function getViteCommandFromCli(): ViteCommand | null {
 function getViteConfigFromCli(): null | ConfigFromCli {
   if (!isViteCliCall()) return null
 
-  // Copied and adapted from Vite
+  // Copied & adapted from Vite
   const cli = cac(desc)
   // Common configs
   // https://github.com/vitejs/vite/blob/d3e7eeefa91e1992f47694d16fe4dbe708c4d80e/packages/vite/src/node/cli.ts#L169-L182
