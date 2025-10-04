@@ -1,6 +1,3 @@
-= TODO/now
-- Fully support Vite CLI again
-
 = TO-DO/soon
 - Add assertWarning() deprecations:
   - `pageContext.exports`
@@ -9,6 +6,8 @@
   - Also `documentHtml` — use pageContext.html instead
   - Also `injectFilter()` — maybe deprecate `injectFilter()` in favor of `pageContext.injectAssets`? Do we need a new hook or is `onRenderHtml()`/`onAfterRenderHtml()` enough?
   - Also all return values of `onBeforeRender()`, `onRenderHtml()`, `onBeforeRoute()` and all hooks
+- Pre-rendering hook renaming? +onPrerender and +onPrerenderBegin ?
+- Update zustand example of vike-react to use Vite CLI instead of Vike CLI
 
 = TO-DO/docs/typescript-javascript-toggle
 - Use detype

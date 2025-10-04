@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "dev": "vike dev",
-    "build": "vike build",
-    "preview": "vike build && vike preview",
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite build && vite preview",
     "test": "tsc --noEmit"
   },
   "dependencies": {

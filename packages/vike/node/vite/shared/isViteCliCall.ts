@@ -1,10 +1,13 @@
 export { isViteCliCall }
 export { getViteConfigFromCli }
+export { getViteCommandFromCli }
 
 import { assert, isObject, toPosixPath } from '../utils.js'
 import { cac } from 'cac'
 
-// TODO: rename_full isViteCliCall isViteCli
+const desc = 'vike:vite-cli-simulation'
+
+// TODO/now: rename_full isViteCliCall isViteCli
 function isViteCliCall(): boolean {
   let execPath = process.argv[1]
   assert(execPath)
@@ -22,11 +25,52 @@ function isViteCliCall(): boolean {
 type ConfigFromCli = { root: undefined | string; configFile: undefined | string } & Record<string, unknown> & {
     build: Record<string, unknown>
   }
+
+type ViteCommand = 'dev' | 'build' | 'optimize' | 'preview'
+function getViteCommandFromCli(): ViteCommand | null {
+  if (!isViteCliCall()) return null
+
+  let command: ViteCommand | undefined
+  const setCommand = (cmd: ViteCommand) => {
+    assert(command === undefined)
+    command = cmd
+  }
+
+  // Copied & adapted from Vite
+  // https://github.com/vitejs/vite/blob/d3e7eeefa91e1992f47694d16fe4dbe708c4d80e/packages/vite/src/node/cli.ts#L186-L188
+  const cli = cac(desc)
+  // dev
+  cli
+    .command('[root]', desc)
+    .alias('serve')
+    .alias('dev')
+    .action(() => {
+      setCommand('dev')
+    })
+  // build
+  cli.command('build [root]', desc).action(() => {
+    setCommand('build')
+  })
+  // optimize
+  cli.command('optimize [root]', desc).action(() => {
+    setCommand('optimize')
+  })
+  // preview
+  cli.command('preview [root]', desc).action(() => {
+    setCommand('preview')
+  })
+
+  cli.parse()
+  assert(command)
+
+  return command
+}
+
+// TODO/now rename getViteConfigFromCli getViteConfigForBuildFromCli
 function getViteConfigFromCli(): null | ConfigFromCli {
   if (!isViteCliCall()) return null
 
-  // Copied and adapted from Vite
-  const desc = 'vike:vite-cli-simulation'
+  // Copied & adapted from Vite
   const cli = cac(desc)
   // Common configs
   // https://github.com/vitejs/vite/blob/d3e7eeefa91e1992f47694d16fe4dbe708c4d80e/packages/vite/src/node/cli.ts#L169-L182
