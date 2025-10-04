@@ -187,13 +187,13 @@ type ViteApiArgs = {
   isDev: boolean
 }
 function getViteApiArgs(): ViteApiArgs {
-  {
-    const res = getVikeApiOperation()
-    if (res) return getViteApiArgsWithOperation(res.operation)
-    assert(!isVikeCliOrApi())
-  }
-
+  const vikeApiOperation = getVikeApiOperation()
   const viteCommand = getViteCommandFromCli()
+  assert(!(viteCommand && vikeApiOperation))
+
+  if (vikeApiOperation) return getViteApiArgsWithOperation(vikeApiOperation.operation)
+  assert(!isVikeCliOrApi())
+
   if (viteCommand === 'dev' || viteCommand === 'optimize') {
     const viteApiArgs = {
       isDev: true,
