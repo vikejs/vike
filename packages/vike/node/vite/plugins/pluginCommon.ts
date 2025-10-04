@@ -52,10 +52,10 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
           const isBuild = env.command === 'build'
           const isPreview = env.isPreview!!
           assert(isExactlyOneTruthy(isDev, isBuild, isPreview))
-          const viteApiArgs = isBuild ? 'is-build' : isPreview ? 'is-preview' : 'is-dev'
+          const viteContext = isBuild ? 'is-build' : isPreview ? 'is-preview' : 'is-dev'
           const rootResolvedEarly = configFromUser.root
             ? normalizeViteRoot(configFromUser.root)
-            : await getViteRoot(viteApiArgs)
+            : await getViteRoot(viteContext)
           assert(rootResolvedEarly)
           setVikeConfigContext({ userRootDir: rootResolvedEarly, isDev, vikeVitePluginOptions })
           const vikeConfig = await getVikeConfigInternal()
