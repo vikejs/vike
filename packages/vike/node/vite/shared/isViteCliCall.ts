@@ -42,7 +42,7 @@ function getViteCommandFromCli(): ViteCommand | null {
     .command('[root]', desc)
     .alias('serve')
     .alias('dev')
-    .action(async () => {
+    .action(() => {
       setCommand('dev')
     })
 
