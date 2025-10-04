@@ -66,7 +66,6 @@ function getViteCommandFromCli(): ViteCommand | null {
   return command
 }
 
-// TODO/now rename getViteConfigFromCli getViteConfigForBuildFromCli
 function getViteConfigFromCli(): null | ConfigFromCli {
   if (!isViteCliCall()) return null
 
