@@ -220,7 +220,7 @@ function getViteApiArgs(): ViteApiArgs {
     return viteApiArgs
   }
 
-  // Seems like a good choice:
+  // Third-party CLIs.
   // - Component development (e.g. Storybook) => let's consider it development
   // - Testing (e.g. Vitest) => let's consider it development
   const viteApiArgs = {
