@@ -28,7 +28,6 @@ type ConfigFromCli = { root: undefined | string; configFile: undefined | string 
 
 type ViteCommand = 'dev' | 'build' | 'optimize' | 'preview'
 function getViteCommandFromCli(): ViteCommand | null {
-  const cli = cac(desc)
   if (!isViteCliCall()) return null
 
   let command: ViteCommand | undefined
@@ -36,6 +35,8 @@ function getViteCommandFromCli(): ViteCommand | null {
     assert(command === undefined)
     command = cmd
   }
+
+  const cli = cac(desc)
 
   // dev
   cli
@@ -45,17 +46,14 @@ function getViteCommandFromCli(): ViteCommand | null {
     .action(() => {
       setCommand('dev')
     })
-
   // build
   cli.command('build [root]', desc).action(async () => {
     setCommand('build')
   })
-
   // optimize
   cli.command('optimize [root]', desc).action(async () => {
     setCommand('optimize')
   })
-
   // preview
   cli.command('preview [root]', desc).action(async () => {
     setCommand('preview')
@@ -63,6 +61,7 @@ function getViteCommandFromCli(): ViteCommand | null {
 
   cli.parse()
   assert(command)
+
   return command
 }
 
