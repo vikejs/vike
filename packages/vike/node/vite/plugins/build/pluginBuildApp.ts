@@ -6,7 +6,7 @@ import { resolveOutDir } from '../../shared/getOutDirs.js'
 import { assert, assertWarning, getGlobalObject, onSetupBuild } from '../../utils.js'
 import { isPrerenderAutoRunEnabled, wasPrerenderRun } from '../../../prerender/context.js'
 import type { VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
-import { isViteCliCall, getViteConfigFromCli } from '../../shared/isViteCliCall.js'
+import { isViteCli, getViteConfigForBuildFromCli } from '../../shared/isViteCli.js'
 import pc from '@brillout/picocolors'
 import { logErrorHint } from '../../../runtime/renderPage/logErrorHint.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
@@ -146,7 +146,7 @@ async function triggerPrerendering(config: ResolvedConfig, viteEnv: Environment,
 
 async function abortViteBuildSsr() {
   const vikeConfig = await getVikeConfigInternal()
-  if (vikeConfig.config.disableAutoFullBuild !== true && isViteCliCall() && getViteConfigFromCli()?.build.ssr) {
+  if (vikeConfig.config.disableAutoFullBuild !== true && isViteCli() && getViteConfigForBuildFromCli()?.build.ssr) {
     assertWarning(
       false,
       `The CLI call ${pc.cyan('$ vite build --ssr')} is superfluous since ${pc.cyan(
@@ -163,7 +163,7 @@ async function abortViteBuildSsr() {
 function isDisabled(vikeConfig: VikeConfigInternal): boolean {
   const { disableAutoFullBuild } = vikeConfig.config
   if (disableAutoFullBuild === undefined || disableAutoFullBuild === 'prerender') {
-    const isUserUsingViteApi = !isViteCliCall() && !isVikeCliOrApi()
+    const isUserUsingViteApi = !isViteCli() && !isVikeCliOrApi()
     return isUserUsingViteApi
   } else {
     return disableAutoFullBuild
@@ -175,7 +175,7 @@ function isPrerenderForceExit(): boolean {
 }
 
 function getFullBuildInlineConfig(config: ResolvedConfig): InlineConfig {
-  const configFromCli = !isViteCliCall() ? null : getViteConfigFromCli()
+  const configFromCli = !isViteCli() ? null : getViteConfigForBuildFromCli()
   if (config._viteConfigFromUserResolved) {
     return config._viteConfigFromUserResolved
   } else {

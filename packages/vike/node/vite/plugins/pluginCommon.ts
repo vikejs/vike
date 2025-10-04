@@ -1,12 +1,22 @@
 export { pluginCommon }
 
 import { type InlineConfig, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
-import { assert, assertUsage, assertWarning, hasProp, isDevCheck, isDocker, isObject, isVitest } from '../utils.js'
+import {
+  assert,
+  assertUsage,
+  assertWarning,
+  hasProp,
+  isDevCheck,
+  isDocker,
+  isExactlyOneTruthy,
+  isObject,
+  isVitest,
+} from '../utils.js'
 import { assertRollupInput } from './build/pluginBuildConfig.js'
 import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
 import pc from '@brillout/picocolors'
 import { assertResolveAlias } from './pluginCommon/assertResolveAlias.js'
-import { isViteCliCall } from '../shared/isViteCliCall.js'
+import { isViteCli } from '../shared/isViteCli.js'
 import { isVikeCliOrApi } from '../../api/context.js'
 import { getVikeConfigInternal, setVikeConfigContext } from '../shared/resolveVikeConfigInternal.js'
 import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/resolveViteConfigFromUser.js'
@@ -39,10 +49,13 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
         order: 'pre',
         async handler(configFromUser, env) {
           const isDev = isDevCheck(env)
-          const viteApiArgs = { isBuild: env.command === 'build', isPreview: !!env.isPreview, isDev }
+          const isBuild = env.command === 'build'
+          const isPreview = env.isPreview!!
+          assert(isExactlyOneTruthy(isDev, isBuild, isPreview))
+          const viteContext = isBuild ? 'build' : isPreview ? 'preview' : 'dev'
           const rootResolvedEarly = configFromUser.root
             ? normalizeViteRoot(configFromUser.root)
-            : await getViteRoot(viteApiArgs)
+            : await getViteRoot(viteContext)
           assert(rootResolvedEarly)
           setVikeConfigContext({ userRootDir: rootResolvedEarly, isDev, vikeVitePluginOptions })
           const vikeConfig = await getVikeConfigInternal()
@@ -163,7 +176,7 @@ function assertSingleInstance(config: ResolvedConfig) {
 
 function assertVikeCliOrApi(config: ResolvedConfig) {
   if (isVikeCliOrApi()) return
-  if (isViteCliCall()) {
+  if (isViteCli()) {
     assert(!isVitest())
     return
   }
