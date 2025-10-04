@@ -100,6 +100,7 @@ function skip() {
   // - If the user calls Vike's JavaScript API inside Vitest (e.g. `build()` inside `beforeAll()`)  => vite.config.js is loaded twice: once by Vitest and once by Vike => problematic because Vitest's environment is `development` whereas Vike's `build()` environment is `production` => the globalContext.ts isProd() function throws an assertion fail (I don't know why the two globalContext.ts instances aren't independent from each other) => that's why we skip Vike's Vite plugin when it's Vitest that loads vite.config.js
   //   - When calling `$ vitest` Vitest loads vite.config.js if it lives at process.cwd()
   // - The user is supposed to use Vike's API instead of Vite's API. Vike supports Vite's API only for third parties (e.g. Vitest or Storybook).
+  // - https://vike.dev/vitest
   if (
     /* Maybe also all third party tools such as Storybook?
     !isViteCli() &&
