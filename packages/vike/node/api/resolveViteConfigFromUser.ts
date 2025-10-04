@@ -178,7 +178,7 @@ async function loadViteConfigFile(viteConfigFromUserResolved: InlineConfig | und
   return null
 }
 
-// TODO/now refactor & rename
+// TODO/now refactor
 type ViteApiArgs = {
   isBuild: boolean
   isPreview: boolean
