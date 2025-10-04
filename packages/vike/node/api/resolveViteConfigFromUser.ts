@@ -112,6 +112,7 @@ async function getViteInfo(viteConfigFromUserVikeApiOptions: InlineConfig | unde
   if (found) {
     vikeVitePluginOptions = found.vikeVitePluginOptions
   } else {
+    // TO-DO/next-major-release: remove (because this only works with Vike's CLI but we Vike now also supports third-party CLIs)
     assertWarning(
       false,
       "Omitting Vike's Vite plugin (inside your vite.config.js) is deprecated — make sure to always add Vike's Vite plugin https://vike.dev/vite-plugin",
