@@ -19,7 +19,7 @@ import path from 'node:path'
 import { assert, assertUsage, getGlobalObject, pick, toPosixPath } from './utils.js'
 import pc from '@brillout/picocolors'
 import { getEnvVarObject } from '../vite/shared/getEnvVarObject.js'
-import { isVikeCliOrApi } from './context.js'
+import { getVikeApiOperation, isVikeCliOrApi } from './context.js'
 import { getViteCommandFromCli } from '../vite/shared/isViteCliCall.js'
 
 const globalObject = getGlobalObject<{ root?: string; isOnlyResolvingUserConfig?: boolean }>(
@@ -44,7 +44,7 @@ async function resolveViteConfigFromUser(
 async function getVikeConfigInternalEarly() {
   assert(!globalObject.isOnlyResolvingUserConfig) // ensure no infinite loop
   if (!isVikeConfigContextSet()) {
-    const viteApiArgs = getViteApiArgsWithoutOperation()
+    const viteApiArgs = getViteApiArgs()
     const viteInfo = await getViteInfo(undefined, viteApiArgs)
     setVikeConfigContext_(viteInfo, viteApiArgs)
   }
@@ -186,8 +186,12 @@ type ViteApiArgs = {
   isPreview: boolean
   isDev: boolean
 }
-function getViteApiArgsWithoutOperation(): ViteApiArgs {
-  assert(!isVikeCliOrApi())
+function getViteApiArgs(): ViteApiArgs {
+  {
+    const res = getVikeApiOperation()
+    if (res) return getViteApiArgsWithOperation(res.operation)
+    assert(!isVikeCliOrApi())
+  }
 
   const viteCommand = getViteCommandFromCli()
   if (viteCommand === 'dev' || viteCommand === 'optimize') {
