@@ -48,15 +48,15 @@ function getViteCommandFromCli(): ViteCommand | null {
       setCommand('dev')
     })
   // build
-  cli.command('build [root]', desc).action(async () => {
+  cli.command('build [root]', desc).action(() => {
     setCommand('build')
   })
   // optimize
-  cli.command('optimize [root]', desc).action(async () => {
+  cli.command('optimize [root]', desc).action(() => {
     setCommand('optimize')
   })
   // preview
-  cli.command('preview [root]', desc).action(async () => {
+  cli.command('preview [root]', desc).action(() => {
     setCommand('preview')
   })
 
