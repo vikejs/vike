@@ -178,7 +178,7 @@ async function loadViteConfigFile(viteConfigFromUserResolved: InlineConfig | und
   return null
 }
 
-type ViteContext = 'build' | 'is-preview' | 'dev'
+type ViteContext = 'build' | 'preview' | 'dev'
 function getViteContext(): ViteContext {
   const vikeApiOperation = getVikeApiOperation()
   const viteCommand = getViteCommandFromCli()
@@ -194,7 +194,7 @@ function getViteContext(): ViteContext {
     return 'build'
   }
   if (viteCommand === 'preview') {
-    return 'is-preview'
+    return 'preview'
   }
 
   // Third-party CLIs.
@@ -207,7 +207,7 @@ function getViteContextWithOperation(operation: ApiOperation): ViteContext {
     return 'build'
   }
   if (operation === 'preview') {
-    return 'is-preview'
+    return 'preview'
   }
   if (operation === 'dev') {
     return 'dev'
@@ -216,7 +216,7 @@ function getViteContextWithOperation(operation: ApiOperation): ViteContext {
 }
 function resolveViteContext(inlineConfig: InlineConfig = {}, viteContext: ViteContext) {
   const isBuild = viteContext === 'build'
-  const isPreview = viteContext === 'is-preview'
+  const isPreview = viteContext === 'preview'
   const isDev = viteContext === 'dev'
   const command = isBuild ? 'build' : 'serve'
   const defaultMode = isDev ? 'development' : 'production'
