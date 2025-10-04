@@ -54,7 +54,7 @@ async function getVikeConfigInternalEarly() {
 function setVikeConfigContext_(viteInfo: ViteInfo, viteContext: ViteContext) {
   setVikeConfigContext({
     userRootDir: viteInfo.root,
-    isDev: viteContext === 'is-dev',
+    isDev: viteContext === 'dev',
     vikeVitePluginOptions: viteInfo.vikeVitePluginOptions,
   })
 }
@@ -178,7 +178,7 @@ async function loadViteConfigFile(viteConfigFromUserResolved: InlineConfig | und
   return null
 }
 
-type ViteContext = 'is-build' | 'is-preview' | 'is-dev'
+type ViteContext = 'is-build' | 'is-preview' | 'dev'
 function getViteContext(): ViteContext {
   const vikeApiOperation = getVikeApiOperation()
   const viteCommand = getViteCommandFromCli()
@@ -188,7 +188,7 @@ function getViteContext(): ViteContext {
   assert(!isVikeCliOrApi())
 
   if (viteCommand === 'dev' || viteCommand === 'optimize') {
-    return 'is-dev'
+    return 'dev'
   }
   if (viteCommand === 'build') {
     return 'is-build'
@@ -200,7 +200,7 @@ function getViteContext(): ViteContext {
   // Third-party CLIs.
   // - Component development (e.g. Storybook) => let's consider it development
   // - Testing (e.g. Vitest) => let's consider it development
-  return 'is-dev'
+  return 'dev'
 }
 function getViteContextWithOperation(operation: ApiOperation): ViteContext {
   if (operation === 'build' || operation === 'prerender') {
@@ -210,14 +210,14 @@ function getViteContextWithOperation(operation: ApiOperation): ViteContext {
     return 'is-preview'
   }
   if (operation === 'dev') {
-    return 'is-dev'
+    return 'dev'
   }
   assert(false)
 }
 function resolveViteContext(inlineConfig: InlineConfig = {}, viteContext: ViteContext) {
   const isBuild = viteContext === 'is-build'
   const isPreview = viteContext === 'is-preview'
-  const isDev = viteContext === 'is-dev'
+  const isDev = viteContext === 'dev'
   const command = isBuild ? 'build' : 'serve'
   const defaultMode = isDev ? 'development' : 'production'
   const defaultNodeEnv = defaultMode
