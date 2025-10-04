@@ -61,6 +61,7 @@ function getViteCommandFromCli(): ViteCommand | null {
     setCommand('preview')
   })
 
+  cli.parse()
   assert(command)
   return command
 }
