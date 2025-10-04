@@ -1,5 +1,5 @@
 export { isViteCliCall }
-export { getViteConfigFromCli }
+export { getViteConfigForBuildFromCli }
 export { getViteCommandFromCli }
 
 import { assert, isObject, toPosixPath } from '../utils.js'
@@ -66,7 +66,7 @@ function getViteCommandFromCli(): ViteCommand | null {
   return command
 }
 
-function getViteConfigFromCli(): null | ConfigFromCli {
+function getViteConfigForBuildFromCli(): null | ConfigFromCli {
   if (!isViteCliCall()) return null
 
   // Copied & adapted from Vite
