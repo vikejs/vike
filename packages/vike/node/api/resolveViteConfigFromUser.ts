@@ -54,7 +54,7 @@ async function getVikeConfigInternalEarly() {
 function setVikeConfigContext_(viteInfo: ViteInfo, viteApiArgs: ViteApiArgs) {
   setVikeConfigContext({
     userRootDir: viteInfo.root,
-    isDev: viteApiArgs.isDev,
+    isDev: viteApiArgs === 'is-dev',
     vikeVitePluginOptions: viteInfo.vikeVitePluginOptions,
   })
 }
@@ -178,12 +178,7 @@ async function loadViteConfigFile(viteConfigFromUserResolved: InlineConfig | und
   return null
 }
 
-// TODO/now refactor
-type ViteApiArgs = {
-  isBuild: boolean
-  isPreview: boolean
-  isDev: boolean
-}
+type ViteApiArgs = 'is-build' | 'is-preview' | 'is-dev'
 function getViteApiArgs(): ViteApiArgs {
   const vikeApiOperation = getVikeApiOperation()
   const viteCommand = getViteCommandFromCli()
@@ -193,49 +188,37 @@ function getViteApiArgs(): ViteApiArgs {
   assert(!isVikeCliOrApi())
 
   if (viteCommand === 'dev' || viteCommand === 'optimize') {
-    const viteApiArgs = {
-      isDev: true,
-      isBuild: false,
-      isPreview: false,
-    }
-    return viteApiArgs
+    return 'is-dev'
   }
   if (viteCommand === 'build') {
-    const viteApiArgs = {
-      isDev: false,
-      isBuild: true,
-      isPreview: false,
-    }
-    return viteApiArgs
+    return 'is-build'
   }
   if (viteCommand === 'preview') {
-    const viteApiArgs = {
-      isDev: false,
-      isBuild: false,
-      isPreview: true,
-    }
-    return viteApiArgs
+    return 'is-preview'
   }
 
   // Third-party CLIs.
   // - Component development (e.g. Storybook) => let's consider it development
   // - Testing (e.g. Vitest) => let's consider it development
-  const viteApiArgs = {
-    isDev: true,
-    isBuild: false,
-    isPreview: false,
-  }
-  return viteApiArgs
+  return 'is-dev'
 }
 function getViteApiArgsWithOperation(operation: ApiOperation): ViteApiArgs {
-  const isBuild = operation === 'build' || operation === 'prerender'
-  const isPreview = operation === 'preview'
-  const isDev = operation === 'dev'
-  const viteApiArgs = { isBuild, isPreview, isDev }
-  return viteApiArgs
+  if (operation === 'build' || operation === 'prerender') {
+    return 'is-build'
+  }
+  if (operation === 'preview') {
+    return 'is-preview'
+  }
+  if (operation === 'dev') {
+    return 'is-dev'
+  }
+  // This should never happen given the ApiOperation type, but for completeness
+  throw new Error(`Unknown operation: ${operation}`)
 }
 function resolveViteApiArgs(inlineConfig: InlineConfig = {}, viteApiArgs: ViteApiArgs) {
-  const { isBuild, isPreview, isDev } = viteApiArgs
+  const isBuild = viteApiArgs === 'is-build'
+  const isPreview = viteApiArgs === 'is-preview'
+  const isDev = viteApiArgs === 'is-dev'
   const command = isBuild ? 'build' : 'serve'
   const defaultMode = isDev ? 'development' : 'production'
   const defaultNodeEnv = defaultMode
