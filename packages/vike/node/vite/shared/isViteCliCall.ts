@@ -7,7 +7,6 @@ import { cac } from 'cac'
 
 const desc = 'vike:vite-cli-simulation'
 
-// TODO/now: rename_full isViteCliCall isViteCli
 function isViteCliCall(): boolean {
   let execPath = process.argv[1]
   assert(execPath)
