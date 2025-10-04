@@ -173,14 +173,6 @@ async function loadViteConfigFile(viteConfigFromUserResolved: InlineConfig | und
   return null
 }
 
-// TODO/now move below
-function getViteApiArgsWithOperation(operation: ApiOperation): ViteApiArgs {
-  const isBuild = operation === 'build' || operation === 'prerender'
-  const isPreview = operation === 'preview'
-  const isDev = operation === 'dev'
-  const viteApiArgs = { isBuild, isPreview, isDev }
-  return viteApiArgs
-}
 // TODO/now refactor & rename
 type ViteApiArgs = {
   isBuild: boolean
@@ -228,6 +220,13 @@ function getViteApiArgs(): ViteApiArgs {
     isBuild: false,
     isPreview: false,
   }
+  return viteApiArgs
+}
+function getViteApiArgsWithOperation(operation: ApiOperation): ViteApiArgs {
+  const isBuild = operation === 'build' || operation === 'prerender'
+  const isPreview = operation === 'preview'
+  const isDev = operation === 'dev'
+  const viteApiArgs = { isBuild, isPreview, isDev }
   return viteApiArgs
 }
 function resolveViteApiArgs(inlineConfig: InlineConfig = {}, viteApiArgs: ViteApiArgs) {
