@@ -95,11 +95,11 @@ async function getViteInfo(viteConfigFromUserVikeApiOptions: InlineConfig | unde
 
   // Resolve vite.config.js
   globalObject.isOnlyResolvingUserConfig = true
-  const viteConfigFromUserViteFile = await loadViteConfigFile(viteConfigFromUserResolved, viteContext)
+  const viteConfigFromUserViteConfigFile = await loadViteConfigFile(viteConfigFromUserResolved, viteContext)
   globalObject.isOnlyResolvingUserConfig = false
   // Correct precedence, replicates Vite:
   // https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L1001
-  const viteConfigResolved = mergeConfig(viteConfigFromUserViteFile ?? {}, viteConfigFromUserResolved ?? {})
+  const viteConfigResolved = mergeConfig(viteConfigFromUserViteConfigFile ?? {}, viteConfigFromUserResolved ?? {})
 
   const root = normalizeViteRoot(viteConfigResolved.root ?? process.cwd())
   globalObject.root = root
@@ -112,9 +112,11 @@ async function getViteInfo(viteConfigFromUserVikeApiOptions: InlineConfig | unde
   if (found) {
     vikeVitePluginOptions = found.vikeVitePluginOptions
   } else {
-    // TO-DO/next-major-release: remove (because this only works with Vike's CLI but we Vike now also supports third-party CLIs)
+    // Show a warning because Vike supports Vite's CLI (as well as third-party CLIs).
+    // - Encourage users to define a vite.config.js file that also works with Vite's CLI (and potentially other third-party CLIs).
+    // - Vike-based frameworks, such as DocPress, allow their users to omit defining a vite.config.js file.
     assertWarning(
-      false,
+      viteConfigFromUserViteConfigFile, // Only show the warning if the user defined a vite.config.js file
       "Omitting Vike's Vite plugin (inside your vite.config.js) is deprecated — make sure to always add Vike's Vite plugin https://vike.dev/vite-plugin",
       { onlyOnce: true },
     )
@@ -173,7 +175,9 @@ async function loadViteConfigFile(viteConfigFromUserResolved: InlineConfig | und
       config.logLevel,
       config.customLogger,
     )
-    return loadResult?.config
+    if (!loadResult) return null
+    assert(loadResult.config)
+    return loadResult.config
   }
   return null
 }
