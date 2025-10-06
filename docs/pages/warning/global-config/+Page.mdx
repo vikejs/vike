@@ -1,10 +1,6 @@
 import { CodeBlockTransformer, Link } from '@brillout/docpress'
 
-A config is called *global* when it always applies to all pages (it cannot be applied to only a subset of pages).
-
-For example, <Link href="/base-url">the Base URL settings</Link> are global: changing the Base URL affects your whole app (all your pages).
-
-> There isn't any <Link href="/config#inheritance">config inheritance</Link> for global configs.
+Global configurations always apply to all pages, see <Link href="/config#global" />.
 
 Consequently, it doesn't make sense to define a global config in a local <Link href="/config#files">`+` file</Link>.
 
