@@ -1018,11 +1018,11 @@ function misc() {
   return (
     [
       {
-        title: "[Warning] Don't define global configs locally",
+        title: "❌ Don't define global configs locally",
         url: '/warning/global-config',
       },
       {
-        title: "[Warning] Don't load multiple versions",
+        title: "❌ Don't load multiple versions",
         url: '/warning/version-mismatch',
       },
       {
@@ -1030,11 +1030,11 @@ function misc() {
         url: '/NODE_ENV',
       },
       {
-        title: '[Warning] Wrong setup',
+        title: '❌ Wrong setup',
         url: '/warning/setup',
       },
       {
-        title: '[Error] Runtime code defined in config file',
+        title: '❌ Runtime code defined in config file',
         url: '/error/runtime-in-config',
       },
       {
