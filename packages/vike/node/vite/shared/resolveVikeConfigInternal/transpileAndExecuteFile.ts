@@ -214,6 +214,16 @@ async function transpileWithEsbuild(
           }
 
           assert(resolved.path)
+
+          // Built-in modules e.g. node:fs
+          if (resolved.path === args.path) {
+            const isPointerImport = false
+            pointerImports[args.path] = isPointerImport
+            if (debug.isActivated) debug('onResolve() [built-in module]', { args, resolved })
+            assert(resolved.external)
+            return resolved
+          }
+
           const importPathResolved = toPosixPath(resolved.path)
           const importPathOriginal = args.path
 
@@ -267,7 +277,7 @@ async function transpileWithEsbuild(
           if (!isExternal) {
             // User-land config code (i.e. not runtime code) => let esbuild transpile it
             assert(!isPointerImport && !isNpmPkgImport)
-            if (debug.isActivated) debug('onResolved()', { args, resolved, isPointerImport, isExternal })
+            if (debug.isActivated) debug('onResolve() [non-external]', { args, resolved, isPointerImport, isExternal })
             return resolved
           }
 
@@ -299,7 +309,7 @@ async function transpileWithEsbuild(
           }
 
           if (debug.isActivated)
-            debug('onResolved()', { args, resolved, importPathTranspiled, isPointerImport, isExternal })
+            debug('onResolve() [external]', { args, resolved, importPathTranspiled, isPointerImport, isExternal })
           assert(isExternal)
           assert(
             // Import of runtime code => handled by Vike
