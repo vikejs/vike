@@ -1,3 +1,25 @@
+## [0.4.242](https://github.com/vikejs/vike/compare/v0.4.241...v0.4.242) (2025-10-07)
+
+
+### Bug Fixes
+
+* allow omitting vite.config.js for Vike-based frameworks ([a6ddc2d](https://github.com/vikejs/vike/commit/a6ddc2dad79160c45d02650a64c1434d5bd0a2bd))
+* automatically load `globalThis.__VIKE__IS_*` types ([31ee8cc](https://github.com/vikejs/vike/commit/31ee8ccf91149ba885ee6974df781f1e15560ffb))
+* deprecate omitting Vike's Vite plugin inside vite.config.js ([#2763](https://github.com/vikejs/vike/issues/2763)) ([247c80a](https://github.com/vikejs/vike/commit/247c80a769609e7f4d6e2e19a4cbf6c683bff96e))
+* fix Vite's CLI args support ([#2762](https://github.com/vikejs/vike/issues/2762)) ([70ef50f](https://github.com/vikejs/vike/commit/70ef50fd6341f541579c74ee81a7e7c6e9515d14))
+* full-fledged support for third-party CLIs (Vite, Vite Plus, Vitest, Storybook, ...) ([#2760](https://github.com/vikejs/vike/issues/2760)) ([b071c2e](https://github.com/vikejs/vike/commit/b071c2e5071605c3c77e10446b76e7b4b3766e74))
+* skip Vike's Vite pugin for Vitest ([#2761](https://github.com/vikejs/vike/issues/2761)) ([a2ea963](https://github.com/vikejs/vike/commit/a2ea963de660617fb56c2ce837a295086d095609))
+* support getEnhancedError() ([6d5ed71](https://github.com/vikejs/vike/commit/6d5ed71068a95e5a2a7c28647de460b833e4e185))
+* support imoprting built-in modules in config files (fix [#2766](https://github.com/vikejs/vike/issues/2766)) ([60b0676](https://github.com/vikejs/vike/commit/60b06765ab692e40f46f5af12a035cc7e1f61b4a))
+* update Vite's CLI args support ([7e4b4e9](https://github.com/vikejs/vike/commit/7e4b4e9b74f3d1852dbf73c446fe78634f6a2d17))
+
+
+### BREAKING CHANGES
+
+* By default, Vike's Vite plugin now removes itself when it detects Vitest, see https://vike.dev/vitest
+
+
+
 ## [0.4.241](https://github.com/vikejs/vike/compare/v0.4.240...v0.4.241) (2025-09-30)
 
 
