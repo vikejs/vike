@@ -88,7 +88,10 @@
 * start using hook filters ([#2688](https://github.com/vikejs/vike/issues/2688)) ([c1acee7](https://github.com/vikejs/vike/commit/c1acee74796b3e0a395a02132f613e41e018d969))
 
 
-### BREAKING CHANGES
+### MINOR BREAKING CHANGES
+
+> [!NOTE]
+> We recommend ignoring `MINOR BREAKING CHANGES` unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
 
 * Update to Vite `6.3.0` or above.
 
@@ -113,7 +116,10 @@
 * CSP support (closes [#1554](https://github.com/vikejs/vike/issues/1554)) ([#2664](https://github.com/vikejs/vike/issues/2664)) ([5762291](https://github.com/vikejs/vike/commit/576229110b71f5271f9fbdd58659a97574f0944d))
 
 
-### BREAKING CHANGES
+### MINOR BREAKING CHANGES
+
+> [!NOTE]
+> We recommend ignoring `MINOR BREAKING CHANGES` unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
 
 * Very old vike-react/vike-vue/vike-solid versions aren't supported anymore, update to a more recent version.
 
