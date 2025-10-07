@@ -14,7 +14,10 @@
 * update Vite's CLI args support ([7e4b4e9](https://github.com/vikejs/vike/commit/7e4b4e9b74f3d1852dbf73c446fe78634f6a2d17))
 
 
-### BREAKING CHANGES
+### MINOR BREAKING CHANGES
+
+> [!NOTE]
+> We recommend ignoring `MINOR BREAKING CHANGES` unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
 
 * By default, Vike's Vite plugin now removes itself when it detects Vitest, see https://vike.dev/vitest
 
