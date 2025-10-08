@@ -187,7 +187,7 @@ function getBaseURI() {
   return baseURI
 }
 function parseOrigin(url: string): { pathname: string; origin: null | string; protocol: null | string } {
-  if (!isUrlWithProtocol(url)) {
+  if (!isUrlWithWebProtocol(url)) {
     return { pathname: url, origin: null, protocol: null }
   } else {
     const { protocol, uriWithoutProtocol } = parseProtocol(url)
@@ -335,10 +335,10 @@ function createUrlFromComponents(
 
 function isUrl(url: string): boolean {
   // parseUrl() works with these URLs
-  return url.startsWith('/') || isUrlWithProtocol(url) || isUrlRelative(url)
+  return url.startsWith('/') || isUrlWithWebProtocol(url) || isUrlRelative(url)
 }
 function isUrlRedirectTarget(url: string): boolean {
-  return url.startsWith('/') || isUrlWithProtocol(url) || isUri(url)
+  return url.startsWith('/') || isUrlWithWebProtocol(url) || isUri(url)
 }
 function isUrlRelative(url: string) {
   return ['.', '?', '#'].some((c) => url.startsWith(c)) || url === ''
@@ -359,7 +359,7 @@ URL with protocol.
 [Electron (`file://`)](https://github.com/vikejs/vike/issues/1557)
 [Capacitor](https://github.com/vikejs/vike/issues/1706)
  */
-function isUrlWithProtocol(url: string): boolean {
+function isUrlWithWebProtocol(url: string): boolean {
   const { protocol } = parseProtocol(url)
   return !!protocol && isWebUrlProtocol(protocol)
 }
