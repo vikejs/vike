@@ -408,6 +408,6 @@ function assertUsageUrl(
 
   assertUsage(false, errMsg)
 }
-function getErrMsg<String extends string>(url: string, errPrefix: String) {
+function getErrMsg(url: string, errPrefix: string) {
   return `${errPrefix} is ${pc.string(url)} but it should start with ${pc.string('/')}`
 }
