@@ -335,10 +335,10 @@ function createUrlFromComponents(
 
 function isUrl(url: string): boolean {
   // parseUrl() works with these URLs
-  return isUrlWithProtocol(url) || url.startsWith('/') || isUrlRelative(url)
+  return url.startsWith('/') || isUrlWithProtocol(url) || isUrlRelative(url)
 }
 function isUrlRedirectTarget(url: string): boolean {
-  return url.startsWith('/') || isUri(url) || isUrlWithProtocol(url)
+  return url.startsWith('/') || isUrlWithProtocol(url) || isUri(url)
 }
 function isUrlRelative(url: string) {
   return ['.', '?', '#'].some((c) => url.startsWith(c)) || url === ''
