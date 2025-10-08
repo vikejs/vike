@@ -379,7 +379,7 @@ We need to treat URIs differently than URLs.
 */
 function isUri(uri: string): boolean {
   const { protocol } = parseProtocol(uri)
-  return !!protocol && !isWebProtocol(uri)
+  return !!protocol && !isWebProtocol(protocol)
 }
 
 function assertUsageUrlPathnameAbsolute(url: string, errPrefix: string): void {
