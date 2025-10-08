@@ -397,7 +397,7 @@ function assertUsageUrlRedirectTarget(url: string, errPrefix: string, isUnresolv
 }
 function getErrMsg(url: string, errPrefix: string, allowProtocol?: true, allowUri?: true) {
   let errMsg = `${errPrefix} is ${pc.string(url)} but it should start with ${pc.string('/')}`
-  if (allowProtocol) errMsg += ` or a protocol (e.g. ${pc.string('http://')}))`
+  if (allowProtocol) errMsg += ` or a protocol (e.g. ${pc.string('http://')})`
   if (allowUri) errMsg += `, or be ${pc.string('*')}`
   return errMsg
 }
