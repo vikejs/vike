@@ -346,8 +346,8 @@ function assertNoInfiniteAbortLoop(rewriteCount: number, redirectCount: number) 
   )
 }
 
-function getErrPrefix(abortCaller: AbortCaller): string {
-  return `URL passed to ${pc.code(abortCaller)}`
+function getErrPrefix(abortCaller: AbortCaller) {
+  return `URL passed to ${pc.code(abortCaller)}` as const
 }
 
 // https://github.com/microsoft/TypeScript/issues/28867#issue-387798238
