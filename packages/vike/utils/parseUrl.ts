@@ -395,7 +395,7 @@ function assertUsageUrl(
 ) {
   if (url.startsWith('/')) return
 
-  let errMsg = `${errPrefix} is ${pc.string(url)} but it should start with ${pc.string('/')}`
+  let errMsg = getErrMsg(url, errPrefix)
 
   if (isRedirectTarget) {
     if (isUrlRedirectTarget(url)) return
@@ -407,4 +407,7 @@ function assertUsageUrl(
   }
 
   assertUsage(false, errMsg)
+}
+function getErrMsg<String extends string>(url: string, errPrefix: String) {
+  return `${errPrefix} is ${pc.string(url)} but it should start with ${pc.string('/')}`
 }
