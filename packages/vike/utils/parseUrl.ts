@@ -394,17 +394,17 @@ function assertUsageUrlPathAbsolute(url: string, errPrefix: string): void {
 function assertUsageUrlRedirectTarget(url: string, errPrefix: string, isUnresolved?: true): void {
   if (isUrlRedirectTarget(url)) return
 
-  let errMsg = getErrMsg(url, errPrefix)
-  errMsg += ` or a protocol (${pc.string('http://')}, ${pc.string('mailto:')}, ...)`
+  let errMsg = getErrMsg(url, errPrefix, true, isUnresolved)
 
   if (isUnresolved) {
     if (url === '*') return
-    errMsg += `, or be ${pc.string('*')}`
   }
 
   assertUsage(false, errMsg)
 }
-function getErrMsg(url: string, errPrefix: string) {
+function getErrMsg(url: string, errPrefix: string, allowProtocol?: true, allowUri?: true) {
   let errMsg = `${errPrefix} is ${pc.string(url)} but it should start with ${pc.string('/')}`
+  if (allowProtocol) errMsg += ` or a protocol (e.g. ${pc.string('http://')}))`
+  if (allowUri) errMsg += `, or be ${pc.string('*')}`
   return errMsg
 }
