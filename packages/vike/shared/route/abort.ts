@@ -19,7 +19,7 @@ import {
   assert,
   assertInfo,
   assertUsage,
-  assertUsageUrlPathnameAbsolute,
+  assertUsageUrlPathAbsolute,
   assertUsageUrlRedirectTarget,
   assertWarning,
   checkType,
@@ -140,7 +140,7 @@ function render_(
   }
   if (typeof urlOrStatusCode === 'string') {
     const url = urlOrStatusCode
-    assertUsageUrlPathnameAbsolute(url, getErrPrefix(abortCaller))
+    assertUsageUrlPathAbsolute(url, getErrPrefix(abortCaller))
     objectAssign(pageContextAbort, {
       _urlRewrite: url,
     })
