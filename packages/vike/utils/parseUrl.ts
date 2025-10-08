@@ -383,7 +383,7 @@ function isUri(uri: string): boolean {
 }
 
 function assertUsageUrlPathnameAbsolute(url: string, errPrefix: string): void {
-  assertUsageUrl(url, errPrefix)
+  assertUsage(url.startsWith('/'), getErrMsg(url, errPrefix))
 }
 function assertUsageUrlRedirectTarget(url: string, errPrefix: string, isUnresolved?: true): void {
   assertUsageUrl(url, errPrefix, { isRedirectTarget: isUnresolved ? 'unresolved' : true })
