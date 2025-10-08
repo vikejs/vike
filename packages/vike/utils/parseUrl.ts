@@ -341,7 +341,10 @@ function isUrlRedirectTarget(url: string): boolean {
   return isUrlAbsolute(url) || isUri(url)
 }
 function isUrlAbsolute(url: string): boolean {
-  return url.startsWith('/') || isUrlWithWebProtocol(url)
+  return isUrlPathAbsolute(url) || isUrlWithWebProtocol(url)
+}
+function isUrlPathAbsolute(url: string): boolean {
+  return url.startsWith('/')
 }
 function isUrlRelative(url: string) {
   return ['.', '?', '#'].some((c) => url.startsWith(c)) || url === ''
