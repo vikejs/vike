@@ -39,12 +39,12 @@ const root = createRoot(document.getElementById('root'))
 root.render(<Welcome />)
 ```
 
-The HTML sent to the browser is just an empty shell that delivers the client-side JavaScript:
+The HTML sent to the browser is just an empty shell that delivers client-side JavaScript:
 
 ```html
 <html>
   <body>
-    <!-- Empty container: content will be added dynamically by render.js -->
+    <!-- Content is added to div#root dynamically on the client-side by render.js -->
     <div id="root"></div>
     <script src="/render.js"></script>
   </body>
