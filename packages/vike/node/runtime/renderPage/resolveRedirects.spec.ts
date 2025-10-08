@@ -31,7 +31,7 @@ describe('resolveRouteStringRedirect', () => {
       `[Error: [vike][Wrong Usage][+redirects] Invalid Route String a: it should start with / or *]`,
     )
     expect(() => resolveRouteStringRedirect('/a', 'b', '/')).toThrowErrorMatchingInlineSnapshot(
-      `[Error: [vike][Wrong Usage][+redirects] The URL redirection target is 'b' but it should start with '/' or a protocol ('http://', 'mailto:', ...), or be '*']`,
+      `[Error: [vike][Wrong Usage][+redirects] The URL redirection target is 'b' but it should start with '/' or a protocol (e.g. 'http://'), or be '*']`,
     )
     expect(() => resolveRouteStringRedirect('/a', '/@i', '/')).toThrowErrorMatchingInlineSnapshot(
       `[Error: [vike][Wrong Usage][+redirects] The redirection source URL '/a' is missing the URL parameter '@i' used by the redirection target URL '/@i']`,
