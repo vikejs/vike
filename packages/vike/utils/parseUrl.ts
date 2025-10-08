@@ -33,6 +33,8 @@ type UrlPublic = {
   port: null | number
   /** The URL origin, e.g. `https://example.com` in `https://example.com/product/42` */
   origin: null | string
+  /** The URL full path, e.g. `/product/42?details=yes#reviews` in `https://example.com/product/42?details=yes#reviews` */
+  path: string
   /** The URL pathname, e.g. `/product/42` in `https://example.com/product/42?details=yes#reviews` */
   pathname: string
   /** URL pathname including the Base URL, e.g. `/some-base-url/product/42` in `https://example.com/some-base-url/product/42` (whereas `pageContext.urlParsed.pathname` is `/product/42`) */
@@ -100,6 +102,10 @@ function parseUrl(url: string, baseServer: string): UrlInternal {
   // decode after setting href
   pathname = decodePathname(pathname)
 
+  // pageContext.urlParsed.path
+  // TODO: should it be `pathname` or `pathnameOriginal`?
+  const path = pathname + (searchOriginal || '') + (hashOriginal || '')
+
   assert(pathname.startsWith('/'))
   return {
     href,
@@ -107,6 +113,7 @@ function parseUrl(url: string, baseServer: string): UrlInternal {
     hostname,
     port,
     origin,
+    path,
     pathname,
     pathnameOriginal: pathnameOriginal,
     isBaseMissing,

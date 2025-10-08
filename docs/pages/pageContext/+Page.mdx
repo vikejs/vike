@@ -93,6 +93,7 @@ URL information:
    {
      pathname: string
      pathnameOriginal: string
+     path: string
      search: Record<string, string> // AKA query parameters
      searchAll: Record<string, string[]>
      searchOriginal: null | string
@@ -116,6 +117,7 @@ URL information:
      pathname: '/hello/sébastien',
      // With Base URL, doesn't decode escaped characters
      pathnameOriginal: '/some-base-url/hello/s%C3%A9bastien',
+     path: '/hello/sébastien?fruit=%C3%A2pple&fruit=orânge#%C3%A2ge',
      search: { fruit: 'orânge' },
      searchAll: { fruit: ['âpple', 'orânge'] },
      searchOriginal: '?fruit=%C3%A2pple&fruit=orânge',
