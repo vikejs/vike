@@ -100,6 +100,11 @@ function parseUrl(url: string, baseServer: string): UrlInternal {
   // decode after setting href
   pathname = decodePathname(pathname)
 
+  /* Should it be `pathname` or `pathnameOriginal`? https://github.com/vikejs/vike/pull/2770
+  // pageContext.urlParsed.path
+  const path = pathname + (searchOriginal || '') + (hashOriginal || '')
+  */
+
   assert(pathname.startsWith('/'))
   return {
     href,
