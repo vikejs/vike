@@ -405,5 +405,6 @@ function assertUsageUrlRedirectTarget(url: string, errPrefix: string, isUnresolv
   assertUsage(false, errMsg)
 }
 function getErrMsg(url: string, errPrefix: string) {
-  return `${errPrefix} is ${pc.string(url)} but it should start with ${pc.string('/')}`
+  let errMsg = `${errPrefix} is ${pc.string(url)} but it should start with ${pc.string('/')}`
+  return errMsg
 }
