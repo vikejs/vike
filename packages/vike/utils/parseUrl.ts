@@ -386,12 +386,11 @@ function assertUsageUrlPathnameAbsolute(url: string, errPrefix: string): void {
   assertUsage(url.startsWith('/'), getErrMsg(url, errPrefix))
 }
 function assertUsageUrlRedirectTarget(url: string, errPrefix: string, isUnresolved?: true): void {
-  if (url.startsWith('/')) return
+  if (isUrlRedirectTarget(url)) return
 
   let errMsg = getErrMsg(url, errPrefix)
-
-  if (isUrlRedirectTarget(url)) return
   errMsg += ` or a protocol (${pc.string('http://')}, ${pc.string('mailto:')}, ...)`
+
   if (isUnresolved) {
     if (url === '*') return
     errMsg += `, or be ${pc.string('*')}`
