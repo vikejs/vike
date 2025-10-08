@@ -236,7 +236,7 @@ function parseProtocol(uri: string) {
   }
   return { protocol, uriWithoutProtocol }
 }
-function isUrlProtocol(protocol: string) {
+function isWebProtocol(protocol: string) {
   // Is there an alternative to having a blocklist?
   // - If the blocklist becomes too big, maybe use a allowlist instead ['tauri://', 'file://', 'capacitor://', 'http://', 'https://']
   const blocklist = [
@@ -361,7 +361,7 @@ URL with protocol.
  */
 function isUrlWithProtocol(url: string): boolean {
   const { protocol } = parseProtocol(url)
-  return !!protocol && isUrlProtocol(protocol)
+  return !!protocol && isWebProtocol(protocol)
 }
 /*
 URIs that aren't URLs.
@@ -379,7 +379,7 @@ We need to treat URIs differently than URLs.
 */
 function isUri(uri: string): boolean {
   const { protocol } = parseProtocol(uri)
-  return !!protocol && !isUrlProtocol(uri)
+  return !!protocol && !isWebProtocol(uri)
 }
 
 function assertUsageUrlPathnameAbsolute(url: string, errPrefix: string): void {
