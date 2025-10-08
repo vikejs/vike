@@ -393,8 +393,7 @@ function assertUsageUrlPathAbsolute(url: string, errPrefix: string): void {
 }
 function assertUsageUrlRedirectTarget(url: string, errPrefix: string, isUnresolved?: true): void {
   const errMsg = getErrMsg(url, errPrefix, true, isUnresolved)
-  if (isUrlRedirectTarget(url) || (isUnresolved && url === '*')) return
-  assertUsage(false, errMsg)
+  assertUsage(isUrlRedirectTarget(url) || (isUnresolved && url === '*'), errMsg)
 }
 function getErrMsg(url: string, errPrefix: string, allowProtocol?: true, allowUri?: true) {
   let errMsg = `${errPrefix} is ${pc.string(url)} but it should start with ${pc.string('/')}`
