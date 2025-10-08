@@ -5,7 +5,7 @@
 // Unit tests at ./parseUrl.spec.ts
 
 export { parseUrl }
-export { assertUsageUrlPathnameAbsolute }
+export { assertUsageUrlPathAbsolute }
 export { assertUsageUrlRedirectTarget }
 export { isUrl }
 export { isUri }
@@ -187,7 +187,7 @@ function getBaseURI() {
   return baseURI
 }
 function parseOrigin(url: string): { pathname: string; origin: null | string; protocol: null | string } {
-  if (!isUrlWithProtocol(url)) {
+  if (!isUrlWithWebProtocol(url)) {
     return { pathname: url, origin: null, protocol: null }
   } else {
     const { protocol, uriWithoutProtocol } = parseProtocol(url)
@@ -236,7 +236,7 @@ function parseProtocol(uri: string) {
   }
   return { protocol, uriWithoutProtocol }
 }
-function isUrlProtocol(protocol: string) {
+function isWebUrlProtocol(protocol: string) {
   // Is there an alternative to having a blocklist?
   // - If the blocklist becomes too big, maybe use a allowlist instead ['tauri://', 'file://', 'capacitor://', 'http://', 'https://']
   const blocklist = [
@@ -335,10 +335,16 @@ function createUrlFromComponents(
 
 function isUrl(url: string): boolean {
   // parseUrl() works with these URLs
-  return isUrlWithProtocol(url) || url.startsWith('/') || isUrlRelative(url)
+  return isUrlAbsolute(url) || isUrlRelative(url)
 }
 function isUrlRedirectTarget(url: string): boolean {
-  return url.startsWith('/') || isUri(url) || isUrlWithProtocol(url)
+  return isUrlAbsolute(url) || isUri(url)
+}
+function isUrlAbsolute(url: string): boolean {
+  return isUrlPathAbsolute(url) || isUrlWithWebProtocol(url)
+}
+function isUrlPathAbsolute(url: string): boolean {
+  return url.startsWith('/')
 }
 function isUrlRelative(url: string) {
   return ['.', '?', '#'].some((c) => url.startsWith(c)) || url === ''
@@ -359,9 +365,9 @@ URL with protocol.
 [Electron (`file://`)](https://github.com/vikejs/vike/issues/1557)
 [Capacitor](https://github.com/vikejs/vike/issues/1706)
  */
-function isUrlWithProtocol(url: string): boolean {
+function isUrlWithWebProtocol(url: string): boolean {
   const { protocol } = parseProtocol(url)
-  return !!protocol && isUrlProtocol(protocol)
+  return !!protocol && isWebUrlProtocol(protocol)
 }
 /*
 URIs that aren't URLs.
@@ -379,32 +385,19 @@ We need to treat URIs differently than URLs.
 */
 function isUri(uri: string): boolean {
   const { protocol } = parseProtocol(uri)
-  return !!protocol && !isUrlProtocol(uri)
+  return !!protocol && !isWebUrlProtocol(protocol)
 }
 
-function assertUsageUrlPathnameAbsolute(url: string, errPrefix: string): void {
-  assertUsageUrl(url, errPrefix)
+function assertUsageUrlPathAbsolute(url: string, errPrefix: string): void {
+  assertUsage(isUrlPathAbsolute(url), getErrMsg(url, errPrefix))
 }
 function assertUsageUrlRedirectTarget(url: string, errPrefix: string, isUnresolved?: true): void {
-  assertUsageUrl(url, errPrefix, { isRedirectTarget: isUnresolved ? 'unresolved' : true })
+  const errMsg = getErrMsg(url, errPrefix, true, isUnresolved)
+  assertUsage(isUrlRedirectTarget(url) || (isUnresolved && url === '*'), errMsg)
 }
-function assertUsageUrl(
-  url: string,
-  errPrefix: string,
-  { isRedirectTarget }: { isRedirectTarget?: true | 'unresolved' } = {},
-) {
-  if (url.startsWith('/')) return
-
+function getErrMsg(url: string, errPrefix: string, allowProtocol?: true, allowUri?: true) {
   let errMsg = `${errPrefix} is ${pc.string(url)} but it should start with ${pc.string('/')}`
-
-  if (isRedirectTarget) {
-    if (isUrlRedirectTarget(url)) return
-    errMsg += ` or a protocol (${pc.string('http://')}, ${pc.string('mailto:')}, ...)`
-    if (isRedirectTarget === 'unresolved') {
-      if (url === '*') return
-      errMsg += `, or be ${pc.string('*')}`
-    }
-  }
-
-  assertUsage(false, errMsg)
+  if (allowProtocol) errMsg += ` or a protocol (e.g. ${pc.string('http://')})`
+  if (allowUri) errMsg += `, or be ${pc.string('*')}`
+  return errMsg
 }

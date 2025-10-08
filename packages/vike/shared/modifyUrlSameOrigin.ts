@@ -9,7 +9,7 @@ import {
   isNotNullish_keyVal,
   parseUrl,
   objectFilter,
-  assertUsageUrlPathnameAbsolute,
+  assertUsageUrlPathAbsolute,
 } from './utils.js'
 
 type ModifyUrlSameOriginOptions = {
@@ -24,7 +24,7 @@ function modifyUrlSameOrigin(url: string, modify: ModifyUrlSameOriginOptions): s
 
   // Pathname
   const pathname = modify.pathname ?? urlParsed.pathnameOriginal
-  assertUsageUrlPathnameAbsolute(pathname, 'modify.pathname')
+  assertUsageUrlPathAbsolute(pathname, 'modify.pathname')
 
   // Search
   let search =

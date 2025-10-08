@@ -7,7 +7,7 @@ import {
   isObjectWithKeys,
   objectAssign,
   assertWarning,
-  assertUsageUrlPathnameAbsolute,
+  assertUsageUrlPathAbsolute,
   joinEnglish,
   assert,
 } from './utils.js'
@@ -130,8 +130,8 @@ async function getPageContextFromHook(
   }
 
   if (hasProp(hookReturn.pageContext, 'urlLogical')) {
-    assertUsageUrlPathnameAbsolute(
-      // We skip validation and type-cast instead of assertUsage() in order to save client-side KBs
+    assertUsageUrlPathAbsolute(
+      // We type-cast instead of assertUsage() validation in order to save client-side KBs
       hookReturn.pageContext.urlLogical as string,
       `${errPrefix} returned ${pc.cyan('{ pageContext: { urlLogical } }')} and ${pc.cyan('urlLogical')}`,
     )
