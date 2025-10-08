@@ -390,12 +390,12 @@ function assertUsageUrlRedirectTarget(url: string, errPrefix: string, isUnresolv
 
   let errMsg = getErrMsg(url, errPrefix)
 
-    if (isUrlRedirectTarget(url)) return
-    errMsg += ` or a protocol (${pc.string('http://')}, ${pc.string('mailto:')}, ...)`
-    if (isUnresolved) {
-      if (url === '*') return
-      errMsg += `, or be ${pc.string('*')}`
-    }
+  if (isUrlRedirectTarget(url)) return
+  errMsg += ` or a protocol (${pc.string('http://')}, ${pc.string('mailto:')}, ...)`
+  if (isUnresolved) {
+    if (url === '*') return
+    errMsg += `, or be ${pc.string('*')}`
+  }
 
   assertUsage(false, errMsg)
 }
