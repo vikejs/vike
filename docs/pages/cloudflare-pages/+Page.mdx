@@ -1,9 +1,11 @@
 import { Link } from '@brillout/docpress'
 import { StaticHostDocIntro, StaticHostDocOutro, StaticHostDocStrategies } from '../../components/static-host'
 
-Instead of using [Cloudflare Pages](https://pages.cloudflare.com), we recommend <Link href="/cloudflare#vike-cloudflare">using `vike-cloudflare`</Link> also for deploying static websites (aka <Link href="/pre-rendering#ssg">SSG / pre-rendered apps</Link>).
+Instead of using [Cloudflare Pages](https://pages.cloudflare.com), we recommend using <Link href="/vike-photon">`vike-photon`</Link> for deploying static websites (aka <Link href="/pre-rendering#ssg">SSG / pre-rendered apps</Link>) — see <Link href="/cloudflare" />.
 
-> Cloudflare and `vike-cloudflare` can also be used to deploy <Link href="/ssr">SSR</Link>. See <Link href="/cloudflare" />.
+> Cloudflare Pages is [being deprecated](https://blog.cloudflare.com/full-stack-development-on-cloudflare-workers/#start-with-workers) — you can still use it but the official recommendation is to start new projects with Cloudflare Workers instead.
+
+> The `vike-photon` extension can be used to deploy static websites as well as <Link href="/ssr">SSR</Link>. It always uses [Cloudflare Workers](https://workers.cloudflare.com) — never Cloudflare Pages — since Cloudflare Workers recently added support for serving static assets.
 
 ## See also
 
