@@ -210,7 +210,7 @@ serve(app, {
   },
 
   // Called once the server is created
-  onServer(server) {
+  onCreate(server) {
     // `server` type depends on your runtime:
     //   Node.js:  Server ('node:http') by default. It's an HTTPS or HTTP2 server
     //             if the `createServer` option was provided (see below).
