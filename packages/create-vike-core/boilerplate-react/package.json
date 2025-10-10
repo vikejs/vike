@@ -10,8 +10,8 @@
     "hono": "^4.8.4",
     "node-fetch": "^3.3.2",
     "prop-types": "15.8.1",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
     "vike": "^0.4.242",
     "vike-server": "^1.0.23",
     "vite": "^6.3.2"
