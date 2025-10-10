@@ -15,9 +15,9 @@
     "@vitejs/plugin-react-swc": "^4.0.1",
     "cross-fetch": "^4.1.0",
     "node-fetch": "^3.3.2",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "react-streaming": "^0.4.3",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-streaming": "^0.4.10",
     "typescript": "^5.9.2",
     "vike": "0.4.242",
     "vite": "^7.1.5"

@@ -7,7 +7,6 @@
   - Also `injectFilter()` — maybe deprecate `injectFilter()` in favor of `pageContext.injectAssets`? Do we need a new hook or is `onRenderHtml()`/`onAfterRenderHtml()` enough?
   - Also all return values of `onBeforeRender()`, `onRenderHtml()`, `onBeforeRoute()` and all hooks
 - Pre-rendering hook renaming? +onPrerender and +onPrerenderBegin ?
-- Update zustand example of vike-react to use Vite CLI instead of Vike CLI
 
 = TO-DO/next-major-release:
 == Highest Prio
