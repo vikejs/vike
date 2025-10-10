@@ -1,0 +1,1 @@
+import{j as e}from"./chunk-D0mW46NI.js";const r=()=>e.jsx(e.Fragment,{children:"automatically integrates Vike with JavaScript servers (Express.js, Hono, Fastify, ...) and deployment providers (Cloudflare, Vercel, ...) in a seamless fashion."});export{r as V};
