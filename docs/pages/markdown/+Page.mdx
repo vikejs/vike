@@ -146,7 +146,7 @@ You can use <Link href="/meta">`meta`</Link> to create a custom setting for defi
 /pages/+config.ts
 /pages/+onCreateGlobalContext.server.ts
 /pages/+Layout.tsx
-/pages/2024-new-year/+Page.mdx
+/pages/2024-new-year/+Page.md
 /pages/2024-new-year/+metadata.ts
 ```
 
@@ -186,7 +186,7 @@ export const metadata = {
 }
 ```
 
-> Unlike in the example <Link href="#with-a-custom-setting">below</Link> you cannot define `+metadata` inside `+Page.mdx`, because `+Page.mdx` is <Link href="/lazy-transpiling">only loaded when rendering that page</Link>. Consequently, the content of `+Page.mdx` isn't available when rendering another page.
+> Unlike in the example <Link href="#with-a-custom-setting">below</Link> you cannot define `+metadata` inside `+Page.md`, because `+Page.md` is <Link href="/lazy-transpiling">only loaded when rendering that page</Link>. Consequently, the content of `+Page.md` isn't available when rendering another page.
 
 ```ts
 // /pages/+onCreateGlobalContext.server.ts
@@ -260,7 +260,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       {/* The page's content */}
       <Content>
         <h1>{title}</h1>
-        {/* children is pageContext.Page which is the component defined by +Page.mdx */}
+        {/* children is pageContext.Page which is the component defined by +Page.md */}
         {children}
       </Content>
     </>
