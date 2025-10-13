@@ -49,7 +49,7 @@ For global metadata, we recommend:
 - <Link href="#with-a-custom-setting-eager" />
 
 <Warning>
- You may be tempted to use [`import.meta.glob()`](https://vitejs.dev/guide/features.html#glob-import) to retrieve the metadata of all pages, but we discourage this approach: loading all markdown files at once <ViteLazyTranspilingContradiction />.
+ You may be tempted to use [`import.meta.glob()`](https://vitejs.dev/guide/features.html#glob-import) to retrieve metadata defined inside all `+Page.md` files, but we discourage this approach: loading all `+Page.md` files at once <ViteLazyTranspilingContradiction />.
 </Warning>
 
 #### Local metadata
@@ -330,6 +330,11 @@ This page uses [markdown](https://en.wikipedia.org/wiki/Markdown).
 ```
 
 You can use such frontmatter to define <Link href="#metadata:~:text=What%20is%20local%20metadata">local metadata</Link>.
+
+<Warning>
+ We discourage using frontmatter for defining <Link href="#global-metadata">global metadata</Link>, because loading all `+Page.md` files at once <ViteLazyTranspilingContradiction />.
+</Warning>
+
 
 The markdown processor exposes the data defined by the frontmatter as an export, for example `export { frontmatter }`. You can access it by using <Link href="/meta">`meta`</Link> to define a `+frontmatter` setting (or whatever the name of the export is).
 
