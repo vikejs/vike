@@ -276,11 +276,12 @@ type CssTarget = ResolvedConfig['build']['cssTarget']
 type Target = ResolvedConfig['build']['target'] | CssTarget
 type TargetConfig = { global: Exclude<Target, undefined>; css: Target; isServerSide: boolean }
 function handleAssetsManifest_alignCssTarget(config: ResolvedConfig) {
-  if (isViteServerSide_viteEnvOptional(config, undefined)) return
-  const { cssTarget } = config.build
+  globalObject.configsAll.push(config)
+  const { cssTarget } = globalObject.configsAll
+    .filter((c) => !isViteServerSide_viteEnvOptional(c, undefined))
+    .at(-1)!.build
   assert(cssTarget)
   globalObject.configsAll.forEach((c) => (c.build.cssTarget = cssTarget))
-  globalObject.configsAll.push(config)
 }
 function handleAssetsManifest_assertUsageCssTarget(config: ResolvedConfig, env: Environment) {
   if (!handleAssetsManifest_isFixEnabled()) return
