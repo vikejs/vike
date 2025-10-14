@@ -1,7 +1,5 @@
 > :warning: This document is work-in-progress. It isn't exhaustive.
 
-# Features
-
 All essentials:
  - All render modes: SSR, SPA, and HTML-templating (zero browser-side JavaScript)
    - Each page can choose a different render mode
@@ -19,7 +17,7 @@ All essentials:
  - i18n
  - Base URL
 
-I'm not aware of any framework that implements *all* these features which I consider must-haves. (For example Next.js is missing isomorphic data fetching.)
+I ain't aware of any framework that implements *all* these features which I consider must-haves. (For example Next.js is missing isomorphic data fetching.)
 
 Unique Vike features:
  - [Do-one-thing-do-it-well architecture](https://vike.dev/architecture)
