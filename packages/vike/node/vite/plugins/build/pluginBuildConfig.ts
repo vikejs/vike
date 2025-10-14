@@ -28,7 +28,7 @@ import { isViteServerSide_viteEnvOptional } from '../../shared/isViteServerSide.
 import {
   handleAssetsManifest_assertUsageCssCodeSplit,
   handleAssetsManifest_getBuildConfig,
-  handleAssetsManifest_alignCssTarget_part2,
+  handleAssetsManifest_alignCssTarget,
 } from './handleAssetsManifest.js'
 import { resolveIncludeAssetsImportedByServer } from '../../../runtime/renderPage/getPageAssets/retrievePageAssetsProd.js'
 
@@ -41,7 +41,7 @@ function pluginBuildConfig(): Plugin[] {
       configResolved: {
         order: 'post',
         async handler(config) {
-          handleAssetsManifest_alignCssTarget_part2(config)
+          handleAssetsManifest_alignCssTarget(config)
           onSetupBuild()
           assertRollupInput(config)
           const entries = await getEntries(config)

@@ -3,7 +3,7 @@ export { handleAssetsManifest_getBuildConfig }
 export { handleAssetsManifest_isFixEnabled }
 export { handleAssetsManifest_assertUsageCssCodeSplit }
 export { handleAssetsManifest_assertUsageCssTarget }
-export { handleAssetsManifest_alignCssTarget_part2 }
+export { handleAssetsManifest_alignCssTarget }
 
 import fs from 'node:fs/promises'
 import fs_sync from 'node:fs'
@@ -275,7 +275,7 @@ function handleAssetsManifest_assertUsageCssCodeSplit(config: ResolvedConfig) {
 type CssTarget = ResolvedConfig['build']['cssTarget']
 type Target = ResolvedConfig['build']['target'] | CssTarget
 type TargetConfig = { global: Exclude<Target, undefined>; css: Target; isServerSide: boolean }
-function handleAssetsManifest_alignCssTarget_part2(config: ResolvedConfig) {
+function handleAssetsManifest_alignCssTarget(config: ResolvedConfig) {
   if (isViteServerSide_viteEnvOptional(config, undefined)) return
   const { cssTarget } = config.build
   assert(cssTarget)
