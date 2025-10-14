@@ -118,9 +118,6 @@ function pluginBuildApp(): Plugin[] {
         handler() {
           onSetupBuild()
           handleAssetsManifest_assertUsageCssTarget(config, this.environment)
-          /* Let vike:build:pluginBuildApp force exit
-          runPrerender_forceExit()
-          */
         },
       },
     },
