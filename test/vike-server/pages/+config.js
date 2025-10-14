@@ -7,5 +7,6 @@ import vikeServer from 'vike-server/config'
 const config = {
   Layout: Layout,
   server: 'server/index.js',
+  prerender: true,
   extends: [vikeReact, vikeServer],
 }
