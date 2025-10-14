@@ -3,8 +3,8 @@ export { handleAssetsManifest_getBuildConfig }
 export { handleAssetsManifest_isFixEnabled }
 export { handleAssetsManifest_assertUsageCssCodeSplit }
 export { handleAssetsManifest_assertUsageCssTarget }
-export { handleAssetsManifest_workaroundCssTarget_part1 }
-export { handleAssetsManifest_workaroundCssTarget_part2 }
+export { handleAssetsManifest_alignCssTarget_part1 }
+export { handleAssetsManifest_alignCssTarget_part2 }
 
 import fs from 'node:fs/promises'
 import fs_sync from 'node:fs'
@@ -277,13 +277,13 @@ function handleAssetsManifest_assertUsageCssCodeSplit(config: ResolvedConfig) {
 type CssTarget = ResolvedConfig['build']['cssTarget']
 type Target = ResolvedConfig['build']['target'] | CssTarget
 type TargetConfig = { global: Exclude<Target, undefined>; css: Target; isServerSide: boolean }
-function handleAssetsManifest_workaroundCssTarget_part1(config: ResolvedConfig) {
+function handleAssetsManifest_alignCssTarget_part1(config: ResolvedConfig) {
   globalObject.configsAll.push(config)
   if (!isViteServerSide_viteEnvOptional(config, undefined)) {
     globalObject.cssTarget = config.build.cssTarget
   }
 }
-function handleAssetsManifest_workaroundCssTarget_part2() {
+function handleAssetsManifest_alignCssTarget_part2() {
   assert(globalObject.cssTarget !== '__VIKE__UNSET')
   globalObject.configsAll.forEach((c) => (c.build.cssTarget = globalObject.cssTarget))
 }
