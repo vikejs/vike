@@ -3,7 +3,6 @@ export { handleAssetsManifest_getBuildConfig }
 export { handleAssetsManifest_isFixEnabled }
 export { handleAssetsManifest_assertUsageCssCodeSplit }
 export { handleAssetsManifest_assertUsageCssTarget }
-export { handleAssetsManifest_alignCssTarget_part1 }
 export { handleAssetsManifest_alignCssTarget_part2 }
 
 import fs from 'node:fs/promises'
@@ -29,7 +28,6 @@ type Bundle = Rollup.OutputBundle
 
 const globalObject = getGlobalObject('handleAssetsManifest.ts', {
   assetsJsonFilePath: undefined as string | undefined,
-  cssTarget: '__VIKE__UNSET' as CssTarget | '__VIKE__UNSET',
   targetsAll: [] as TargetConfig[],
   configsAll: [] as ResolvedConfig[],
 })
@@ -277,21 +275,22 @@ function handleAssetsManifest_assertUsageCssCodeSplit(config: ResolvedConfig) {
 type CssTarget = ResolvedConfig['build']['cssTarget']
 type Target = ResolvedConfig['build']['target'] | CssTarget
 type TargetConfig = { global: Exclude<Target, undefined>; css: Target; isServerSide: boolean }
-function handleAssetsManifest_alignCssTarget_part1(config: ResolvedConfig) {
+function handleAssetsManifest_alignCssTarget_part2(config: ResolvedConfig) {
+  if (isViteServerSide_viteEnvOptional(config, undefined)) return
+  const { cssTarget } = config.build
+  assert(cssTarget)
+  globalObject.configsAll.forEach((c) => (c.build.cssTarget = cssTarget))
   globalObject.configsAll.push(config)
-  if (!isViteServerSide_viteEnvOptional(config, undefined)) {
-    globalObject.cssTarget = config.build.cssTarget
-  }
-}
-function handleAssetsManifest_alignCssTarget_part2() {
-  assert(globalObject.cssTarget !== '__VIKE__UNSET')
-  globalObject.configsAll.forEach((c) => (c.build.cssTarget = globalObject.cssTarget))
 }
 function handleAssetsManifest_assertUsageCssTarget(config: ResolvedConfig, env: Environment) {
   if (!handleAssetsManifest_isFixEnabled()) return
+  console.log('>>>> handleAssetsManifest_assertUsageCssCodeSplit()')
   const isServerSide = isViteServerSide(config, env)
   assert(typeof isServerSide === 'boolean')
   assert(config.build.target !== undefined)
+  console.log('isServerSide', isServerSide)
+  console.log('config.build.cssTarget', config.build.cssTarget)
+  console.log('config.build.target', config.build.target)
   const { targetsAll } = globalObject
   targetsAll.push({ global: config.build.target, css: config.build.cssTarget, isServerSide })
   const targetsServer = targetsAll.filter((t) => t.isServerSide)
