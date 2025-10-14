@@ -284,13 +284,9 @@ function handleAssetsManifest_alignCssTarget_part2(config: ResolvedConfig) {
 }
 function handleAssetsManifest_assertUsageCssTarget(config: ResolvedConfig, env: Environment) {
   if (!handleAssetsManifest_isFixEnabled()) return
-  console.log('>>>> handleAssetsManifest_assertUsageCssCodeSplit()')
   const isServerSide = isViteServerSide(config, env)
   assert(typeof isServerSide === 'boolean')
   assert(config.build.target !== undefined)
-  console.log('isServerSide', isServerSide)
-  console.log('config.build.cssTarget', config.build.cssTarget)
-  console.log('config.build.target', config.build.target)
   const { targetsAll } = globalObject
   targetsAll.push({ global: config.build.target, css: config.build.cssTarget, isServerSide })
   const targetsServer = targetsAll.filter((t) => t.isServerSide)
