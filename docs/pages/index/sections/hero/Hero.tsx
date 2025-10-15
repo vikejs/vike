@@ -64,34 +64,38 @@ function HeroTagline({
             fontSize: '11px',
             fontWeight: 600,
             marginBottom: 20,
-            borderRadius: 6,
+            borderRadius: 20,
             overflow: 'hidden',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.12)',
-            border: '1px solid #d1d5db',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
+            border: '2px solid #e5e7eb',
+            background: 'white',
           }}
         >
           <div
             style={{
-              backgroundColor: '#555',
-              color: 'white',
-              padding: '0 8px',
+              backgroundColor: '#f8fafc',
+              color: '#64748b',
+              padding: '6px 12px',
               display: 'flex',
               alignItems: 'center',
               letterSpacing: '0.05em',
-              fontSize: 11,
+              fontSize: 10,
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              borderRight: '1px solid #e5e7eb',
             }}
           >
             REPLACES
           </div>
           <div
             style={{
-              backgroundColor: '#007ec6',
-              color: 'white',
-              padding: '4px 8px',
+              backgroundColor: 'white',
+              color: '#3b82f6',
+              padding: '6px 12px',
               display: 'flex',
               alignItems: 'center',
-              fontSize: 13,
-              fontWeight: 500,
+              fontSize: 12,
+              fontWeight: 600,
             }}
           >
             Next.js, Nuxt, ...
