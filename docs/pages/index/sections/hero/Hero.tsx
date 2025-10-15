@@ -165,15 +165,15 @@ function HeroTagline({
               quick-start
             </LinkTagline>{' '}
             &{' '}
-            <LinkTagline href="/new" color="#fed518">
+            <LinkTagline href="#full-fledged" color="#fed518">
               DX
             </LinkTagline>
             , and unprecedented architectural{' '}
-            <LinkTagline href="/new" color="#18cbfa">
+            <LinkTagline href="#flexible" color="#18cbfa">
               flexibility
             </LinkTagline>{' '}
             &{' '}
-            <LinkTagline href="/new" color="#1878ed">
+            <LinkTagline href="#stable" color="#1878ed">
               stability
             </LinkTagline>
             .
@@ -185,7 +185,7 @@ function HeroTagline({
 }
 
 function LinkTagline({ color, ...props }: { color: `${string}`; href: string; children: React.ReactNode }) {
-  return <span style={{ color, borderBottom: `2px dotted ${color}` }} {...props} />
+  return <a style={{ color, borderBottom: `2px dotted ${color}` }} {...props} />
 }
 
 /*
