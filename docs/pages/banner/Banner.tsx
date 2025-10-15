@@ -1,5 +1,6 @@
 export { Banner }
 export { BannerCover }
+export { BannerMinimal }
 export { BannerVikings }
 
 import React from 'react'
@@ -12,6 +13,9 @@ function Banner() {
 }
 function BannerCover() {
   return <BannerCommon logo={false} />
+}
+function BannerMinimal() {
+  return <BannerCommon logo={false} taglineSecondaryStyle={{ display: 'none' }} logoScale={1.1} />
 }
 function BannerVikings() {
   return (
@@ -49,12 +53,14 @@ function BannerCommon({
   logoScale = 1.3,
   logoStyle,
   logoTextStyle,
+  taglineSecondaryStyle,
 }: {
   logo?: boolean
   logoText?: string
   logoScale?: number
   logoStyle?: React.CSSProperties
   logoTextStyle?: React.CSSProperties
+  taglineSecondaryStyle?: React.CSSProperties
 }) {
   return (
     <div
@@ -118,6 +124,7 @@ function BannerCommon({
               fontSize: 28 * logoScale,
               maxWidth: 680 * logoScale,
               lineHeight: 1.3,
+              ...taglineSecondaryStyle,
             }}
           />
         )}
