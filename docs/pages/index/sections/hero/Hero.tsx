@@ -134,7 +134,7 @@ function HeroTagline({
                 fontWeight: 700,
                 color: '#42d392',
                 // Copied from https://vuejs.org/
-                background: '-webkit-linear-gradient(315deg, #00C6FB 25%, #005BEA)',
+                background: '-webkit-linear-gradient(315deg, #00C6FB 45%, #005BEA)',
                 backgroundClip: 'text',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
