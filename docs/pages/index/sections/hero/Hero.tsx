@@ -75,33 +75,38 @@ function HeroTagline({
               ...taglineStyle,
             }}
           >
-            Build{' '}
-            <span
-              style={{
-                fontWeight: 700,
-                color: '#42d392',
-                background: '-webkit-linear-gradient(315deg, #FF8C00 25%, #FFFF00)',
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-              }}
-            >
-              fast
+            <span style={{ whiteSpace: 'nowrap' }}>
+              Build{' '}
+              <span
+                style={{
+                  fontWeight: 700,
+                  color: '#42d392',
+                  background: '-webkit-linear-gradient(315deg, #FF8C00 25%, #FFFF00)',
+                  backgroundClip: 'text',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
+                fast
+              </span>
+              .
+            </span>{' '}
+            <span style={{ whiteSpace: 'nowrap' }}>
+              Build{' '}
+              <span
+                style={{
+                  fontWeight: 700,
+                  color: '#42d392',
+                  background: '-webkit-linear-gradient(315deg, #00C6FB 45%, #005BEA)',
+                  backgroundClip: 'text',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
+                right
+              </span>
+              .
             </span>
-            . Build{' '}
-            <span
-              style={{
-                fontWeight: 700,
-                color: '#42d392',
-                background: '-webkit-linear-gradient(315deg, #00C6FB 45%, #005BEA)',
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-              }}
-            >
-              right
-            </span>
-            .
           </div>
           <div
             id="tagline-secondary"
