@@ -23,9 +23,10 @@ function Hero() {
         alignItems: 'center',
       }}
     >
-      <div style={{ height: 60 }} id="hero-margin-top-1"></div>
+      <div style={{ height: 76 }} id="hero-margin-top-1"></div>
       {/* <VideoTalkLink /> */}
-      <div style={{ height: 16 }} id="hero-margin-top-2"></div>
+      <Replaces />
+      <div style={{ height: 0 }} id="hero-margin-top-2"></div>
       <HeroTagline />
       <div style={{ height: 50 }} id="hero-margin-mid-1"></div>
       <GetStartedBtn />
@@ -57,46 +58,6 @@ function HeroTagline({
           alignItems: 'center',
         }}
       >
-        <div
-          style={{
-            display: 'inline-flex',
-            alignItems: 'stretch',
-            fontSize: '11px',
-            fontWeight: 600,
-            marginTop: -6,
-            marginBottom: 6,
-            borderRadius: 6,
-            overflow: 'hidden',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.12)',
-            border: '1px solid #d1d5db',
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: '#eee',
-              padding: '0 8px',
-              display: 'flex',
-              alignItems: 'center',
-              letterSpacing: '0.05em',
-              fontSize: 11,
-            }}
-          >
-            REPLACES
-          </div>
-          <div
-            style={{
-              backgroundColor: '#8d8d8d',
-              color: 'white',
-              padding: '2px 8px',
-              display: 'flex',
-              alignItems: 'center',
-              fontSize: 13,
-              fontWeight: 500,
-            }}
-          >
-            Next.js, Nuxt, ...
-          </div>
-        </div>
         <h1
           style={{
             color: '#000000',
@@ -211,6 +172,51 @@ function LinkTagline({
     const target = document.querySelector(href)!
     target.scrollIntoView({ behavior: 'smooth' })
   }
+}
+
+function Replaces() {
+  return (
+    <div
+      style={{
+        display: 'inline-flex',
+        alignItems: 'stretch',
+        fontSize: '11px',
+        fontWeight: 600,
+        marginTop: -6,
+        marginBottom: 6,
+        borderRadius: 6,
+        overflow: 'hidden',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.12)',
+        border: '1px solid #d1d5db',
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: '#eee',
+          padding: '0 8px',
+          display: 'flex',
+          alignItems: 'center',
+          letterSpacing: '0.05em',
+          fontSize: 11,
+        }}
+      >
+        REPLACES
+      </div>
+      <div
+        style={{
+          backgroundColor: '#8d8d8d',
+          color: 'white',
+          padding: '2px 8px',
+          display: 'flex',
+          alignItems: 'center',
+          fontSize: 13,
+          fontWeight: 500,
+        }}
+      >
+        Next.js, Nuxt, ...
+      </div>
+    </div>
+  )
 }
 
 /*
