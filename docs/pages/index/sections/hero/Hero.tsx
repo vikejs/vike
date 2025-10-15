@@ -184,8 +184,31 @@ function HeroTagline({
   )
 }
 
-function LinkTagline({ color, ...props }: { color: `${string}`; href: string; children: React.ReactNode }) {
-  return <a style={{ color, borderBottom: `2px dotted ${color}` }} {...props} />
+function LinkTagline({
+  color,
+  href,
+  children,
+  ...props
+}: {
+  color: string
+  href: string
+  children: React.ReactNode
+}) {
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (href.startsWith('#')) {
+      e.preventDefault()
+      const target = document.querySelector(href)!
+      const offset = 72 // adjust for fixed header if needed
+      const y = target.getBoundingClientRect().top + window.scrollY - offset
+      window.scrollTo({ top: y, behavior: 'smooth' })
+    }
+  }
+
+  return (
+    <a href={href} onClick={handleClick} style={{ color, borderBottom: `2px dotted ${color}` }} {...props}>
+      {children}
+    </a>
+  )
 }
 
 /*
