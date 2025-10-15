@@ -180,7 +180,6 @@ function HeroTagline({
           </div>
         </h1>
       </div>
-      <Style>{'html { scroll-behavior: smooth; }'}</Style>
     </div>
   )
 }
@@ -196,9 +195,9 @@ function LinkTagline({
   children: React.ReactNode
 }) {
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    return;
     if (href.startsWith('#')) {
       e.preventDefault()
+      // Using `href` as `id` is buggy in Chrome => I guess scrollIntoView() conflicts with
       const target = document.querySelector(`#section_${href.slice(1)}`)!
       target.scrollIntoView({ behavior: 'smooth' })
     }
@@ -268,8 +267,4 @@ function GetStartedBtn() {
       </Link>
     </div>
   )
-}
-
-function Style({ children }: { children: string }) {
-  return <style dangerouslySetInnerHTML={{ __html: children }} />
 }
