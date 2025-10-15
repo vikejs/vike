@@ -63,7 +63,8 @@ function HeroTagline({
             alignItems: 'stretch',
             fontSize: '11px',
             fontWeight: 600,
-            marginBottom: 20,
+            marginTop: -20,
+            marginBottom: 10,
             borderRadius: 6,
             overflow: 'hidden',
             boxShadow: '0 1px 3px rgba(0, 0, 0, 0.12)',
@@ -72,8 +73,7 @@ function HeroTagline({
         >
           <div
             style={{
-              backgroundColor: '#555',
-              color: 'white',
+              backgroundColor: '#eee',
               padding: '0 8px',
               display: 'flex',
               alignItems: 'center',
@@ -85,7 +85,7 @@ function HeroTagline({
           </div>
           <div
             style={{
-              backgroundColor: '#007ec6',
+              backgroundColor: '#6b8ea1',
               color: 'white',
               padding: '4px 8px',
               display: 'flex',
