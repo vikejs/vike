@@ -203,7 +203,14 @@ function LinkTagline({
   }
 
   return (
-    <a rel="external" data-vike={false} href={href} onClick={handleClick} style={{ color, borderBottom: `2px dotted ${color}` }} {...props}>
+    <a
+      rel="external"
+      data-vike={false}
+      href={href}
+      onClick={handleClick}
+      style={{ color, borderBottom: `2px dotted ${color}` }}
+      {...props}
+    >
       {children}
     </a>
   )
