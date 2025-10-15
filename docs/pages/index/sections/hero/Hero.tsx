@@ -196,7 +196,6 @@ function LinkTagline({
 }) {
   return (
     <a
-      rel="external"
       data-vike={false}
       href={href}
       onClick={onClick}
