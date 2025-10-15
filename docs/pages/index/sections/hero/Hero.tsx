@@ -59,21 +59,22 @@ function HeroTagline({
       >
         <div
           style={{
-            backgroundColor: '#f3f4f6',
-            color: '#6b7280',
-            fontSize: '12px',
-            fontWeight: 600,
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            color: 'white',
+            fontSize: '11px',
+            fontWeight: 700,
             textTransform: 'uppercase',
-            letterSpacing: '0.05em',
-            padding: '6px 12px',
-            borderRadius: '20px',
-            marginBottom: '20px',
-            border: '1px solid #e5e7eb',
+            letterSpacing: '0.08em',
+            padding: '8px 16px',
+            borderRadius: '24px',
+            marginBottom: '24px',
             textAlign: 'center',
-            lineHeight: 1.2,
+            lineHeight: 1.3,
+            boxShadow: '0 4px 12px rgba(102, 126, 234, 0.25)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
           }}
         >
-          REPLACES<br />Next.js & Nuxt
+          REPLACES<br />next.js & nuxt
         </div>
         <h1
           style={{
