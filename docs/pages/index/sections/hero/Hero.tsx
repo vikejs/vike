@@ -80,7 +80,6 @@ function HeroTagline({
               style={{
                 fontWeight: 700,
                 color: '#42d392',
-                // Copied from https://vuejs.org/
                 background: '-webkit-linear-gradient(315deg, #FF8C00 25%, #FFFF00)',
                 backgroundClip: 'text',
                 WebkitBackgroundClip: 'text',
@@ -94,7 +93,6 @@ function HeroTagline({
               style={{
                 fontWeight: 700,
                 color: '#42d392',
-                // Copied from https://vuejs.org/
                 background: '-webkit-linear-gradient(315deg, #00C6FB 45%, #005BEA)',
                 backgroundClip: 'text',
                 WebkitBackgroundClip: 'text',
@@ -179,8 +177,7 @@ function Replaces() {
     <div
       style={{
         display: 'inline-flex',
-        alignItems: 'stretch',
-        fontSize: '11px',
+        fontSize: 11,
         fontWeight: 600,
         marginTop: -6,
         marginBottom: 6,
@@ -210,7 +207,7 @@ function Replaces() {
           display: 'flex',
           alignItems: 'center',
           fontSize: 13,
-          fontWeight: 500,
+          fontWeight: 550,
         }}
       >
         Next.js, Nuxt, ...
