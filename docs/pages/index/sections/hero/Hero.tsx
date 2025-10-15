@@ -63,70 +63,38 @@ function HeroTagline({
             alignItems: 'stretch',
             fontSize: '11px',
             fontWeight: 600,
-            marginBottom: 24,
-            borderRadius: 28,
+            marginBottom: 20,
+            borderRadius: 6,
             overflow: 'hidden',
-            boxShadow: '0 8px 32px rgba(59, 130, 246, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.8)',
-            border: '1px solid rgba(59, 130, 246, 0.2)',
-            background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%)',
-            position: 'relative',
-            backdropFilter: 'blur(8px)',
+            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.12)',
+            border: '1px solid #d1d5db',
           }}
         >
           <div
             style={{
-              background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%)',
-              color: '#334155',
-              padding: '10px 16px',
+              backgroundColor: '#555',
+              color: 'white',
+              padding: '0 8px',
               display: 'flex',
               alignItems: 'center',
-              letterSpacing: '0.1em',
-              fontSize: 9,
-              fontWeight: 800,
-              textTransform: 'uppercase',
-              borderRight: '1px solid rgba(59, 130, 246, 0.15)',
-              position: 'relative',
-              textShadow: '0 1px 2px rgba(255, 255, 255, 0.8)',
+              letterSpacing: '0.05em',
+              fontSize: 11,
             }}
           >
-            <div
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 100%)',
-                borderRadius: '28px 0 0 28px',
-              }}
-            />
-            <span style={{ position: 'relative', zIndex: 2 }}>REPLACES</span>
+            REPLACES
           </div>
           <div
             style={{
-              background: 'linear-gradient(135deg, #dbeafe 0%, #93c5fd 50%, #60a5fa 100%)',
-              color: '#1e40af',
-              padding: '10px 16px',
+              backgroundColor: '#007ec6',
+              color: 'white',
+              padding: '4px 8px',
               display: 'flex',
               alignItems: 'center',
-              fontSize: 11,
-              fontWeight: 700,
-              position: 'relative',
-              textShadow: '0 1px 2px rgba(255, 255, 255, 0.6)',
+              fontSize: 13,
+              fontWeight: 500,
             }}
           >
-            <div
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.05) 100%)',
-                borderRadius: '0 28px 28px 0',
-              }}
-            />
-            <span style={{ position: 'relative', zIndex: 2 }}>Next.js, Nuxt, ...</span>
+            Next.js, Nuxt, ...
           </div>
         </div>
         <h1
