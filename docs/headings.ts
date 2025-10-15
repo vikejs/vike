@@ -1065,8 +1065,12 @@ function misc() {
         url: '/banner',
       },
       {
-        title: 'Cover',
+        title: 'Banner — Cover',
         url: '/banner/cover',
+      },
+      {
+        title: 'Banner — Vikings',
+        url: '/banner/vikings',
       },
       {
         title: 'RPC',
