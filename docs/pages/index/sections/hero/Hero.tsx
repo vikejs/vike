@@ -85,7 +85,7 @@ function HeroTagline({
           </div>
           <div
             style={{
-              backgroundColor: '#f386bf',
+              backgroundColor: '#8d8d8d',
               color: 'white',
               padding: '2px 8px',
               display: 'flex',
