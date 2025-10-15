@@ -21,7 +21,7 @@ const SectionTextCollection = ({
       }}
     >
       <p
-        id={`section_${caption.toLowerCase()}`}
+        id={caption.toLowerCase()}
         style={{
           color: primaryColor,
           fontSize: '18px',

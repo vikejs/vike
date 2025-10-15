@@ -197,14 +197,13 @@ function LinkTagline({
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (href.startsWith('#')) {
       e.preventDefault()
-      // Using `href` as `id` is buggy in Chrome => I guess scrollIntoView() conflicts with
-      const target = document.querySelector(`#section_${href.slice(1)}`)!
+      const target = document.querySelector(href)!
       target.scrollIntoView({ behavior: 'smooth' })
     }
   }
 
   return (
-    <a href={href} onClick={handleClick} style={{ color, borderBottom: `2px dotted ${color}` }} {...props}>
+    <a rel="external" data-vike={false} href={href} onClick={handleClick} style={{ color, borderBottom: `2px dotted ${color}` }} {...props}>
       {children}
     </a>
   )
