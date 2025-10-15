@@ -3,7 +3,7 @@ export { pluginBuildApp }
 import { runPrerender_forceExit } from '../../../prerender/runPrerenderEntry.js'
 import type { Environment, InlineConfig, Plugin, ResolvedConfig } from 'vite'
 import { resolveOutDir } from '../../shared/getOutDirs.js'
-import { assert, assertWarning, getGlobalObject, onSetupBuild } from '../../utils.js'
+import { assert, assertWarning, escapeRegex, getGlobalObject, onSetupBuild } from '../../utils.js'
 import { isPrerenderAutoRunEnabled, wasPrerenderRun } from '../../../prerender/context.js'
 import type { VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { isViteCli, getViteConfigForBuildFromCli } from '../../shared/isViteCli.js'
@@ -20,9 +20,72 @@ const globalObject = getGlobalObject('build/pluginBuildApp.ts', {
   forceExit: false,
 })
 
+function pluginVirtualFileEntry(): Plugin[] {
+  const moduleContent = `<!-- vike:dummy-html -->`
+  const VIRTUAL_FILE_ENTRY_ID = 'virtual:vike:dummy-html'
+  const resolvedId = '\0' + VIRTUAL_FILE_ENTRY_ID
+  return [
+    {
+      name: 'telefunc:pluginVirtualFileEntry',
+      resolveId: {
+        filter: {
+          id: new RegExp(`^${escapeRegex(VIRTUAL_FILE_ENTRY_ID)}$`),
+        },
+        handler(id) {
+          assert(id === VIRTUAL_FILE_ENTRY_ID)
+          return resolvedId
+        },
+      },
+      load: {
+        filter: {
+          /* I don't know why this doesn't work:
+        id: resolvedId,
+        */
+          id: new RegExp(`^${escapeRegex(resolvedId)}$`),
+        },
+        handler(id) {
+          return id === resolvedId ? moduleContent : undefined
+        },
+      },
+    },
+  ]
+}
+function pluginVirtualFileEntry2(): Plugin[] {
+  const moduleContent = `console.log('vike:dummy-ssr-entry')`
+  const VIRTUAL_FILE_ENTRY_ID = 'virtual:vike:dummy-ssr-entry'
+  const resolvedId = '\0' + VIRTUAL_FILE_ENTRY_ID
+  return [
+    {
+      name: 'telefunc:pluginVirtualFileEntry',
+      resolveId: {
+        filter: {
+          id: new RegExp(`^${escapeRegex(VIRTUAL_FILE_ENTRY_ID)}$`),
+        },
+        handler(id) {
+          assert(id === VIRTUAL_FILE_ENTRY_ID)
+          return resolvedId
+        },
+      },
+      load: {
+        filter: {
+          /* I don't know why this doesn't work:
+        id: resolvedId,
+        */
+          id: new RegExp(`^${escapeRegex(resolvedId)}$`),
+        },
+        handler(id) {
+          return id === resolvedId ? moduleContent : undefined
+        },
+      },
+    },
+  ]
+}
+
 function pluginBuildApp(): Plugin[] {
   let config: ResolvedConfig
   return [
+    ...pluginVirtualFileEntry(),
+    ...pluginVirtualFileEntry2(),
     {
       name: 'vike:build:pluginBuildApp:pre',
       apply: 'build',
@@ -44,6 +107,7 @@ function pluginBuildApp(): Plugin[] {
                   assert(false)
                 }
               },
+              sharedConfigBuild: true,
             },
           }
         },
@@ -61,11 +125,17 @@ function pluginBuildApp(): Plugin[] {
                 build: {
                   outDir: resolveOutDir(config, true),
                   ssr: true,
+                  rollupOptions: {
+                    input: 'virtual:vike:dummy-ssr-entry',
+                  },
                 },
               },
               client: {
                 consumer: 'client',
                 build: {
+                  rollupOptions: {
+                    input: 'virtual:vike:dummy-html',
+                  },
                   outDir: resolveOutDir(config, false),
                   copyPublicDir: true,
                   ssr: false,
