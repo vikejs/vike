@@ -60,40 +60,43 @@ function HeroTagline({
         <div
           style={{
             display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
-            color: 'white',
-            fontSize: '10px',
-            fontWeight: 700,
-            textTransform: 'uppercase',
-            letterSpacing: '0.12em',
-            padding: '6px 14px',
-            borderRadius: '16px',
-            marginBottom: '22px',
-            textAlign: 'center',
-            lineHeight: 1,
-            boxShadow: '0 4px 14px rgba(79, 70, 229, 0.4), 0 1px 3px rgba(0, 0, 0, 0.1)',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            whiteSpace: 'nowrap',
-            position: 'relative',
+            alignItems: 'stretch',
+            fontSize: '11px',
+            fontWeight: 600,
+            marginBottom: '20px',
+            borderRadius: '4px',
             overflow: 'hidden',
+            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.12)',
+            border: '1px solid #d1d5db',
           }}
         >
           <div
             style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)',
-              borderRadius: '16px',
+              backgroundColor: '#555',
+              color: 'white',
+              padding: '4px 8px',
+              display: 'flex',
+              alignItems: 'center',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+              fontSize: '10px',
             }}
-          />
-          <span style={{ position: 'relative', zIndex: 1 }}>
-            REPLACES next.js & nuxt
-          </span>
+          >
+            REPLACES
+          </div>
+          <div
+            style={{
+              backgroundColor: '#e97749',
+              color: 'white',
+              padding: '4px 8px',
+              display: 'flex',
+              alignItems: 'center',
+              fontSize: '10px',
+              fontWeight: 500,
+            }}
+          >
+            next.js & nuxt
+          </div>
         </div>
         <h1
           style={{
