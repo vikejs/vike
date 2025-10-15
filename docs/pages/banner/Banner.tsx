@@ -111,7 +111,7 @@ function BannerCommon({
             taglineSecondaryStyle={{
               marginTop: 19,
               fontSize: 28 * logoScale,
-              maxWidth: 600 * logoScale,
+              maxWidth: 680 * logoScale,
               lineHeight: 1.3,
             }}
           />
