@@ -196,9 +196,9 @@ function LinkTagline({
 }) {
   return (
     <a
-      data-vike={!href.startsWith('#')}
       href={href}
       onClick={onClick}
+      data-vike={!href.startsWith('#')}
       style={{ color, borderBottom: `2px dotted ${color}` }}
       {...props}
     >
