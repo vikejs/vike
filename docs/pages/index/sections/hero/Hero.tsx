@@ -146,7 +146,6 @@ function HeroTagline({
 function LinkTagline({
   color,
   href,
-  children,
   ...props
 }: {
   color: string
@@ -160,9 +159,7 @@ function LinkTagline({
       data-vike={!href.startsWith('#')}
       style={{ color, borderBottom: `2px dotted ${color}` }}
       {...props}
-    >
-      {children}
-    </a>
+    />
   )
   function onClick(ev: React.MouseEvent<HTMLAnchorElement>) {
     if (!href.startsWith('#')) return
