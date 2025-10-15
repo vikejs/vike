@@ -86,6 +86,10 @@ function HeroTagline({
           <div
             style={{
               backgroundColor: '#f386bf',
+              border: '1px solid #eee',
+              // borderRadius: 6,
+              borderTopRightRadius: 6,
+              borderBottomRightRadius: 6,
               color: 'white',
               padding: '2px 8px',
               display: 'flex',
