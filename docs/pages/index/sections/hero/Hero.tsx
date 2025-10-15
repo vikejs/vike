@@ -194,26 +194,26 @@ function LinkTagline({
   href: string
   children: React.ReactNode
 }) {
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (href.startsWith('#')) {
-      e.preventDefault()
-      const target = document.querySelector(href)!
-      target.scrollIntoView({ behavior: 'smooth' })
-    }
-  }
-
   return (
     <a
       rel="external"
       data-vike={false}
       href={href}
-      onClick={handleClick}
+      onClick={onClick}
       style={{ color, borderBottom: `2px dotted ${color}` }}
       {...props}
     >
       {children}
     </a>
   )
+
+  function onClick(e: React.MouseEvent<HTMLAnchorElement>) {
+    if (href.startsWith('#')) {
+      e.preventDefault()
+      const target = document.querySelector(href)!
+      target.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
 }
 
 /*
