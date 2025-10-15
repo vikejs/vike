@@ -208,11 +208,10 @@ function LinkTagline({
   )
 
   function onClick(ev: React.MouseEvent<HTMLAnchorElement>) {
-    if (href.startsWith('#')) {
+    if (!href.startsWith('#')) return
       ev.preventDefault()
       const target = document.querySelector(href)!
       target.scrollIntoView({ behavior: 'smooth' })
-    }
   }
 }
 
