@@ -59,22 +59,41 @@ function HeroTagline({
       >
         <div
           style={{
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
             color: 'white',
-            fontSize: '11px',
+            fontSize: '10px',
             fontWeight: 700,
             textTransform: 'uppercase',
-            letterSpacing: '0.08em',
-            padding: '8px 16px',
-            borderRadius: '24px',
-            marginBottom: '24px',
+            letterSpacing: '0.12em',
+            padding: '6px 14px',
+            borderRadius: '16px',
+            marginBottom: '22px',
             textAlign: 'center',
-            lineHeight: 1.3,
-            boxShadow: '0 4px 12px rgba(102, 126, 234, 0.25)',
+            lineHeight: 1,
+            boxShadow: '0 4px 14px rgba(79, 70, 229, 0.4), 0 1px 3px rgba(0, 0, 0, 0.1)',
             border: '1px solid rgba(255, 255, 255, 0.2)',
+            whiteSpace: 'nowrap',
+            position: 'relative',
+            overflow: 'hidden',
           }}
         >
-          REPLACES<br />next.js & nuxt
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)',
+              borderRadius: '16px',
+            }}
+          />
+          <span style={{ position: 'relative', zIndex: 1 }}>
+            REPLACES next.js & nuxt
+          </span>
         </div>
         <h1
           style={{
