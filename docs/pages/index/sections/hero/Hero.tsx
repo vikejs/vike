@@ -11,7 +11,7 @@ import { UsedBy } from './UsedBy'
 import { QuoteTeam } from '../../../../components'
 
 const quoteSentence =
-  'Vike is the next generation of framework architecture, for an open and stable foundation that companies can build upon with confidence.'
+  'Vike is the next generation of framework architecture, for a flexible and stable foundation that companies can build upon with confidence.'
 
 function Hero() {
   return (
@@ -63,7 +63,7 @@ function HeroTagline({
             textAlign: 'center',
             width: '100%',
             marginBottom: 0,
-            fontWeight: 500,
+            fontWeight: 580,
           }}
         >
           <div
@@ -73,21 +73,35 @@ function HeroTagline({
               ...taglineStyle,
             }}
           >
-            The{' '}
+            Build{' '}
             <span
               style={{
-                fontWeight: 600,
+                fontWeight: 700,
                 color: '#42d392',
                 // Copied from https://vuejs.org/
-                background: '-webkit-linear-gradient(315deg, #42d392 25%, #647eff)',
+                background: '-webkit-linear-gradient(315deg, #FF8C00 25%, #FFFF00)',
                 backgroundClip: 'text',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
               }}
             >
-              Modular
-            </span>{' '}
-            Framework
+              fast
+            </span>
+            . Build{' '}
+            <span
+              style={{
+                fontWeight: 700,
+                color: '#42d392',
+                // Copied from https://vuejs.org/
+                background: '-webkit-linear-gradient(315deg, #00C6FB 25%, #005BEA)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+            >
+              right
+            </span>
+            .
           </div>
           <div
             id="tagline-secondary"
@@ -97,18 +111,40 @@ function HeroTagline({
               margin: 'auto',
               marginTop: 10,
               lineHeight: 1.35,
-              fontWeight: 400,
-              opacity: 0.45,
-              maxWidth: 550,
+              fontWeight: 450,
+              color: '#878787',
+              maxWidth: 750,
               ...taglineSecondaryStyle,
             }}
           >
-            Next.js & Nuxt alternative for unprecedented flexibility and stability
+            The framework for advanced applications.
+            <br />
+            With blazing fast{' '}
+            <LinkTagline href="/new" color="#fe9618">
+              quick-start
+            </LinkTagline>{' '}
+            &{' '}
+            <LinkTagline href="/new" color="#fed518">
+              DX
+            </LinkTagline>
+            , and unprecedented architectural{' '}
+            <LinkTagline href="/new" color="#18cbfa">
+              flexibility
+            </LinkTagline>{' '}
+            &{' '}
+            <LinkTagline href="/new" color="#1878ed">
+              stability
+            </LinkTagline>
+            .
           </div>
         </h1>
       </div>
     </div>
   )
+}
+
+function LinkTagline({ color, ...props }: { color: `${string}`; href: string; children: React.ReactNode }) {
+  return <span style={{ color, borderBottom: `2px dotted ${color}` }} {...props} />
 }
 
 /*
