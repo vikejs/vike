@@ -11,7 +11,7 @@ import { UsedBy } from './UsedBy'
 import { QuoteTeam } from '../../../../components'
 
 const quoteSentence =
-  'Vike is the next generation of framework architecture, for a flexible and stable foundation that companies can build upon with confidence.'
+  'Vike uses a next-generation framework architecture, for a flexible and stable foundation that companies can build upon with confidence.'
 
 function Hero() {
   return (
@@ -27,7 +27,7 @@ function Hero() {
       {/* <VideoTalkLink /> */}
       <div style={{ height: 16 }} id="hero-margin-top-2"></div>
       <HeroTagline />
-      <div style={{ height: 46 }} id="hero-margin-mid-1"></div>
+      <div style={{ height: 50 }} id="hero-margin-mid-1"></div>
       <GetStartedBtn />
       <div style={{ height: 52 }} id="hero-margin-mid-2"></div>
       <QuoteTeam>{quoteSentence}</QuoteTeam>
@@ -63,8 +63,8 @@ function HeroTagline({
             alignItems: 'stretch',
             fontSize: '11px',
             fontWeight: 600,
-            marginTop: -20,
-            marginBottom: 10,
+            marginTop: -6,
+            marginBottom: 6,
             borderRadius: 6,
             overflow: 'hidden',
             boxShadow: '0 1px 3px rgba(0, 0, 0, 0.12)',
@@ -109,6 +109,7 @@ function HeroTagline({
           <div
             id="tagline-main"
             style={{
+              letterSpacing: 0.7,
               opacity: 0.9,
               ...taglineStyle,
             }}
