@@ -206,7 +206,6 @@ function LinkTagline({
       {children}
     </a>
   )
-
   function onClick(ev: React.MouseEvent<HTMLAnchorElement>) {
     if (!href.startsWith('#')) return
     ev.preventDefault()
