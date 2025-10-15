@@ -57,6 +57,24 @@ function HeroTagline({
           alignItems: 'center',
         }}
       >
+        <div
+          style={{
+            backgroundColor: '#f3f4f6',
+            color: '#6b7280',
+            fontSize: '12px',
+            fontWeight: 600,
+            textTransform: 'uppercase',
+            letterSpacing: '0.05em',
+            padding: '6px 12px',
+            borderRadius: '20px',
+            marginBottom: '20px',
+            border: '1px solid #e5e7eb',
+            textAlign: 'center',
+            lineHeight: 1.2,
+          }}
+        >
+          REPLACES<br />Next.js & Nuxt
+        </div>
         <h1
           style={{
             color: '#000000',
