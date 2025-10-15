@@ -63,42 +63,45 @@ function HeroTagline({
             alignItems: 'stretch',
             fontSize: '11px',
             fontWeight: 600,
-            marginBottom: 20,
-            borderRadius: 20,
+            marginBottom: 22,
+            borderRadius: 24,
             overflow: 'hidden',
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
-            border: '2px solid #e5e7eb',
-            background: 'white',
+            boxShadow: '0 4px 16px rgba(59, 130, 246, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04)',
+            border: '1px solid rgba(59, 130, 246, 0.15)',
+            background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+            position: 'relative',
           }}
         >
           <div
             style={{
-              backgroundColor: '#f8fafc',
-              color: '#64748b',
-              padding: '6px 12px',
+              background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)',
+              color: '#475569',
+              padding: '8px 14px',
               display: 'flex',
               alignItems: 'center',
-              letterSpacing: '0.05em',
+              letterSpacing: '0.08em',
               fontSize: 10,
               fontWeight: 700,
               textTransform: 'uppercase',
-              borderRight: '1px solid #e5e7eb',
+              borderRight: '1px solid rgba(59, 130, 246, 0.1)',
+              position: 'relative',
             }}
           >
-            REPLACES
+            <span style={{ position: 'relative', zIndex: 1 }}>REPLACES</span>
           </div>
           <div
             style={{
-              backgroundColor: 'white',
-              color: '#3b82f6',
-              padding: '6px 12px',
+              background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
+              color: '#1d4ed8',
+              padding: '8px 14px',
               display: 'flex',
               alignItems: 'center',
               fontSize: 12,
               fontWeight: 600,
+              position: 'relative',
             }}
           >
-            Next.js, Nuxt, ...
+            <span style={{ position: 'relative', zIndex: 1 }}>Next.js, Nuxt, ...</span>
           </div>
         </div>
         <h1
