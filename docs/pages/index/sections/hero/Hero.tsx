@@ -200,6 +200,7 @@ function LinkTagline({
       const target = document.querySelector(href)!
       const offset = 72 // adjust for fixed header if needed
       const y = target.getBoundingClientRect().top + window.scrollY - offset
+      console.log(y)
       window.scrollTo({ top: y, behavior: 'smooth' })
     }
   }

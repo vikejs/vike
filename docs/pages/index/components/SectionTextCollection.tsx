@@ -16,12 +16,12 @@ const SectionTextCollection = ({
 }) => {
   return (
     <div
-      id={caption.toLowerCase()}
       style={{
         ...style,
       }}
     >
       <p
+        id={caption.toLowerCase()}
         style={{
           color: primaryColor,
           fontSize: '18px',
