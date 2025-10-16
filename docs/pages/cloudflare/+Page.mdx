@@ -6,6 +6,8 @@ import Examples from './Examples.mdx'
 
 We recommend using <Link href="/vike-photon">`vike-photon`</Link> to deploy your app to [Cloudflare](https://www.cloudflare.com).
 
+You can use Vike with the `@photonjs/cloudflare` for a zero-config Cloudflare deployment of your SSR or pre-rendered (aka SSG) app.
+
 {/* See https://github.com/vikejs/vike/pull/2605 for a test of applying the following vike-cloudflare install instructions to packages/create-vike-core/boilerplate-react/ and examples/react-full/ */ }
 
 > <UseScaffolder>Cloudflare</UseScaffolder>
@@ -19,7 +21,7 @@ We recommend using <Link href="/vike-photon">`vike-photon`</Link> to deploy your
   <TabPanel>
     ```shell
     npm i vike-photon @photonjs/cloudflare wrangler
-    # (optional) you can also install a server compatible with Cloudflare
+    # (optional) if you are using hono or hattip, you will also need:
     npm i @photonjs/hono
     # or
     npm i @photonjs/hattip
@@ -28,7 +30,7 @@ We recommend using <Link href="/vike-photon">`vike-photon`</Link> to deploy your
   <TabPanel>
     ```shell
     pnpm add vike-photon @photonjs/cloudflare wrangler
-    # (optional) you can also install a server compatible with Cloudflare
+    # (optional) if you are using hono or hattip, you will also need:
     pnpm add @photonjs/hono
     # or
     pnpm add @photonjs/hattip
@@ -37,7 +39,7 @@ We recommend using <Link href="/vike-photon">`vike-photon`</Link> to deploy your
   <TabPanel>
     ```shell
     yarn add vike-photon @photonjs/cloudflare wrangler
-    # (optional) you can also install a server compatible with Cloudflare
+    # (optional) if you are using hono or hattip, you will also need:
     pnpm add @photonjs/hono
     # or
     pnpm add @photonjs/hattip
