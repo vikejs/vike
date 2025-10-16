@@ -1,8 +1,9 @@
-import { Link, Warning, NoteWithoutIcon } from '@brillout/docpress'
+import { Link, Warning } from '@brillout/docpress'
 import { PageHeader } from '../../components'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import '../../components/tabs.css'
 import { VikePhotonDescription } from './VikePhotonDescription'
+import PhotonBuiltInServer from './PhotonBuiltInServer.mdx'
 import { githubDiscussions } from '../../links'
 
 <PageHeader>
@@ -60,7 +61,7 @@ Update your production `script` in `package.json`:
 }
 ```
 
-Photon includes a built-in server that supports basic features like SSR. If you need additional server functionality (e.g. [file uploads](https://hono.dev/examples/file-upload) or <Link href="/api-routes">API routes</Link>), then create your own server:
+<PhotonBuiltInServer />
 
 <Tabs>
   <TabList>
