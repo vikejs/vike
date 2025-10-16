@@ -6,11 +6,16 @@ import Examples from './Examples.mdx'
 
 We recommend using <Link href="/vike-photon">`vike-photon`</Link> to deploy your app to [Cloudflare](https://www.cloudflare.com).
 
-You can use Vike with the `@photonjs/cloudflare` for a zero-config Cloudflare deployment of your SSR or pre-rendered (aka SSG) app.
-
 {/* See https://github.com/vikejs/vike/pull/2605 for a test of applying the following vike-cloudflare install instructions to packages/create-vike-core/boilerplate-react/ and examples/react-full/ */ }
 
 > <UseScaffolder>Cloudflare</UseScaffolder>
+
+
+## `vike-photon` with `@photonjs/cloudflare`
+
+<Link href="/vike-photon" /> enables zero-configuration support for most Cloudflare features, including [static assets deployment](https://developers.cloudflare.com/workers/static-assets/get-started/#deploy-a-static-site) or [SSR](https://developers.cloudflare.com/workers/static-assets/get-started/#deploy-a-full-stack-application).
+
+If you <Link text="pre-render your pages only partially" href="/prerender#partial" />, you can also use <Link href="/vike-photon" /> to statically deploy your pre-rendered pages while dynamically serving your non-prerendered pages.
 
 <Tabs>
   <TabList>
@@ -21,33 +26,19 @@ You can use Vike with the `@photonjs/cloudflare` for a zero-config Cloudflare de
   <TabPanel>
     ```shell
     npm i vike-photon @photonjs/cloudflare wrangler
-    # (optional) if you are using hono or hattip, you will also need:
-    npm i @photonjs/hono
-    # or
-    npm i @photonjs/hattip
     ```
   </TabPanel>
   <TabPanel>
     ```shell
     pnpm add vike-photon @photonjs/cloudflare wrangler
-    # (optional) if you are using hono or hattip, you will also need:
-    pnpm add @photonjs/hono
-    # or
-    pnpm add @photonjs/hattip
     ```
   </TabPanel>
   <TabPanel>
     ```shell
     yarn add vike-photon @photonjs/cloudflare wrangler
-    # (optional) if you are using hono or hattip, you will also need:
-    pnpm add @photonjs/hono
-    # or
-    pnpm add @photonjs/hattip
     ```
   </TabPanel>
 </Tabs>
-
-> `@photonjs/cloudflare` currently only supports Hono and Hattip — more servers are coming soon.
 
 ```ts
 // pages/+config.ts
@@ -57,10 +48,6 @@ import vikePhoton from 'vike-photon/config'// [!code ++]
 
 export default {
   extends: [vikePhoton],// [!code ++]
-  // (optional) if you installed a server
-  photon: {// [!code ++]
-    server: 'server/index.ts'// [!code ++]
-  }// [!code ++]
 } satisfies Config
 ```
 
@@ -98,6 +85,60 @@ export default {
 .wrangler/ # [!code ++]
 ```
 
+
+### Using a server
+
+`@photonjs/cloudflare` currently only supports Hono and Hattip — more servers are coming soon.
+
+> Using a server is optional with <Link href="/vike-photon" />, even when deploying a SSR app
+
+<Tabs>
+  <TabList>
+    <Tab>npm</Tab>
+    <Tab>pnpm</Tab>
+    <Tab>yarn</Tab>
+  </TabList>
+  <TabPanel>
+    ```shell
+    # Hono
+    npm i @photonjs/hono
+    # Hattip
+    npm i @photonjs/hattip
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    # Hono
+    npm i @photonjs/hono
+    # Hattip
+    npm i @photonjs/hattip
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    # Hono
+    npm i @photonjs/hono
+    # Hattip
+    npm i @photonjs/hattip
+    ```
+  </TabPanel>
+</Tabs>
+
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+import vikePhoton from 'vike-photon/config'
+
+export default {
+  extends: [vikePhoton],
+  photon: {// [!code ++]
+    server: 'server/index.ts'// [!code ++]
+  }// [!code ++]
+} satisfies Config
+```
+
+See <Link href="/vike-photon#get-started" /> for instructions concerning `server/index.ts`
 
 ## Cloudflare APIs
 
