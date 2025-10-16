@@ -81,9 +81,9 @@ Photon includes a built-in server that supports basic features like SSR. If you 
       const app = new Hono()
       apply(app)
       return serve(app, {
-        // The following are optional
-        port: 3000,
-        hostname: 'localhost'
+        // Options
+        port: 3000, // default value
+        hostname: 'localhost' // default value
       })
     }
 
@@ -101,9 +101,9 @@ Photon includes a built-in server that supports basic features like SSR. If you 
       const app = express()
       apply(app)
       return serve(app, {
-        // The following are optional
-        port: 3000,
-        hostname: 'localhost'
+        // Options
+        port: 3000, // default value
+        hostname: 'localhost' // default value
       })
     }
 
@@ -128,9 +128,9 @@ Photon includes a built-in server that supports basic features like SSR. If you 
       await app.register(rawBody)
       await apply(app)
       return serve(app, {
-        // The following are optional
-        port: 3000,
-        hostname: 'localhost'
+        // Options
+        port: 3000, // default value
+        hostname: 'localhost' // default value
       })
     }
 
@@ -148,9 +148,9 @@ Photon includes a built-in server that supports basic features like SSR. If you 
       const app = createApp()
       apply(app)
       return serve(app, {
-        // The following are optional
-        port: 3000,
-        hostname: 'localhost'
+        // Options
+        port: 3000, // default value
+        hostname: 'localhost' // default value
       })
     }
 
@@ -167,9 +167,9 @@ Photon includes a built-in server that supports basic features like SSR. If you 
     function startServer() {
       const app = apply(new Elysia())
       return serve(app, {
-        // The following are optional
-        port: 3000,
-        hostname: 'localhost'
+        // Options
+        port: 3000, // default value
+        hostname: 'localhost' // default value
       })
     }
 
