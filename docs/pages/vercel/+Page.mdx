@@ -11,7 +11,7 @@ Alternatively, for more control, you can manually integrate Vercel yourself.
 > <UseScaffolder>Vercel</UseScaffolder>
 
 
-## `vike-photon` with `vite-plugin-vercel`
+## `vike-photon` with `@photonjs/vercel`
 
 <Link href="/vike-photon" /> enables zero-configuration support for all Vercel features, including [Incremental Static Regeneration (ISR)](https://vercel.com/docs/concepts/incremental-static-regeneration/overview) and Edge Middlewares.
 
@@ -25,17 +25,17 @@ If you <Link text="pre-render your pages only partially" href="/prerender#partia
   </TabList>
   <TabPanel>
     ```shell
-    npm i vike-photon vite-plugin-vercel
+    npm i vike-photon @photonjs/vercel
     ```
   </TabPanel>
   <TabPanel>
     ```shell
-    pnpm add vike-photon vite-plugin-vercel
+    pnpm add vike-photon @photonjs/vercel
     ```
   </TabPanel>
   <TabPanel>
     ```shell
-    yarn add vike-photon vite-plugin-vercel
+    yarn add vike-photon @photonjs/vercel
     ```
   </TabPanel>
 </Tabs>
@@ -55,7 +55,7 @@ export default {
 } satisfies Config
 ```
 
-> Under the hood, `vite-plugin-vercel` uses Vercel's [Build Output API](https://vercel.com/docs/build-output-api/v3).
+> Under the hood, `@photonjs/vercel` uses Vercel's [Build Output API](https://vercel.com/docs/build-output-api/v3).
 
 > See <Link href="/vike-photon" /> if you need to configure a server.
 
