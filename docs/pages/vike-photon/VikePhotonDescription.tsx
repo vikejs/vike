@@ -1,7 +1,7 @@
 import React from 'react'
 export const VikePhotonDescription = () => (
   <>
-    seamlessly integrates Vike with JavaScript servers (Express.js, Hono, Fastify, ...) and deployment providers
-    (Cloudflare, Vercel, ...).
+    integrates Vike with any JavaScript server (Express.js, Hono, Fastify, ...) and deployment provider (Cloudflare,
+    Vercel, self-hosting, ...) in a seamless fashion.
   </>
 )
