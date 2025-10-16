@@ -145,7 +145,7 @@ export default {
     function startServer() {
       const app = new Hono()
       apply(app)// [!code ++]
-      return serve(app, { port: 3000 })// [!code ++]
+      return serve(app)// [!code ++]
     }
 
     export default startServer()// [!code ++]
@@ -184,7 +184,7 @@ export default {
     function startServer() {
       const router = createRouter()
       apply(router)// [!code ++]
-      return serve(router, { port: 3000 })// [!code ++]
+      return serve(router)// [!code ++]
     }
 
     export default startServer()// [!code ++]
