@@ -55,18 +55,6 @@ export default {
 } satisfies Config
 ```
 
-```json
-// package.json
-
-{
-  "scripts": {
-    "dev": "vike dev",
-    "preview": "vike build && vite preview",// [!code ++]
-    "deploy": "vike build && wrangler deploy"// [!code ++]
-  }
-}
-```
-
 > Under the hood, `vite-plugin-vercel` uses Vercel's [Build Output API](https://vercel.com/docs/build-output-api/v3).
 
 > See <Link href="/vike-photon" /> if you need to configure a server.
