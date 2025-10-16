@@ -24,11 +24,11 @@ This page contains the entire documentation for `vike-photon`.
 
 ## Get started
 
-#### Scaffold new `vike-photon` app
+### Scaffold new `vike-photon` app
 
-Use <Link href="/new">vike.dev/new</Link> for creating a new Vike + `vike-photon` app.
+You can <Link href="/new">vike.dev/new</Link> for creating a new Vike + `vike-photon` app.
 
-#### Add `vike-photon` to existing app
+### Add `vike-photon` to existing app
 
 To add `vike-photon` to an existing Vike app: install the `vike-photon` npm package (e.g. `$ npm install vike-photon`) then extend your existing <Link href="/config#files">`+config.js`</Link> file (or create one) with `vike-photon`:
 
@@ -60,9 +60,7 @@ Update your production `script` in `package.json`:
 }
 ```
 
-Optionally, if Photon's built-in server isn't sufficient for you (e.g. [file uploads](https://hono.dev/examples/file-upload) or <Link href="/api-routes">API routes</Link>), create your own server as shown below.
-
-> Photon's built-in server supports only basic features such as SSR. This may or may not be sufficient depending on your needs.
+Photon includes a built-in server that supports basic features like SSR. If you need additional server functionality (e.g. [file uploads](https://hono.dev/examples/file-upload) or <Link href="/api-routes">API routes</Link>), create your own server as shown below.
 
 <Tabs>
   <TabList>
@@ -126,7 +124,7 @@ Optionally, if Photon's built-in server isn't sufficient for you (e.g. [file upl
         forceCloseConnections: true
       })
 
-      // ⚠️ Mandatory for Vike middleware
+      // ⚠️ Mandatory for Vike's SSR middleware
       await app.register(rawBody)
       await apply(app)
       return serve(app, {
