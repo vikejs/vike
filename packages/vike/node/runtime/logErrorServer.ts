@@ -7,14 +7,12 @@ import { execHookOnError } from './renderPage/execHookOnError.js'
 function logErrorServer(err: unknown) {
   execHookOnError(err)
 
-  // TODO https://gist.github.com/brillout/066293a687ab7cf695e62ad867bc6a9c
-  if (
-    isObject(err) &&
-    // Set by react-streaming
-    // https://github.com/brillout/react-streaming/blob/0f93e09059a5936a1fb581bc1ce0bce473e0d5e0/src/server/renderToStream/common.ts#L36
-    isCallable(err.prettifyThisError)
-  ) {
-    err = err.prettifyThisError(err)
+  // Set by react-streaming
+  // - https://github.com/brillout/react-streaming/blob/0fb5510d0a5a614f577668a519bccd62de40aed8/src/server/renderToStream/common.ts#L59-L62
+  // - https://gist.github.com/brillout/066293a687ab7cf695e62ad867bc6a9c
+  // - It doesn't seem to be needed? (The error Vike receives is already enhanced.) Should we remove this?
+  if (isObject(err) && isCallable(err.getEnhancedError)) {
+    err = err.getEnhancedError(err)
   }
 
   // We ensure we print a string; Cloudflare Workers doesn't seem to properly stringify `Error` objects.

@@ -19,7 +19,7 @@ import {
   assert,
   assertInfo,
   assertUsage,
-  assertUsageUrlPathnameAbsolute,
+  assertUsageUrlPathAbsolute,
   assertUsageUrlRedirectTarget,
   assertWarning,
   checkType,
@@ -140,7 +140,7 @@ function render_(
   }
   if (typeof urlOrStatusCode === 'string') {
     const url = urlOrStatusCode
-    assertUsageUrlPathnameAbsolute(url, getErrPrefix(abortCaller))
+    assertUsageUrlPathAbsolute(url, getErrPrefix(abortCaller))
     objectAssign(pageContextAbort, {
       _urlRewrite: url,
     })
@@ -346,8 +346,8 @@ function assertNoInfiniteAbortLoop(rewriteCount: number, redirectCount: number) 
   )
 }
 
-function getErrPrefix(abortCaller: AbortCaller): string {
-  return `URL passed to ${pc.code(abortCaller)}`
+function getErrPrefix(abortCaller: AbortCaller) {
+  return `URL passed to ${pc.code(abortCaller)}` as const
 }
 
 // https://github.com/microsoft/TypeScript/issues/28867#issue-387798238

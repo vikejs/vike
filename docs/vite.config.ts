@@ -1,11 +1,13 @@
 import svgr from 'vite-plugin-svgr'
 import type { UserConfig } from 'vite'
+import vike from 'vike/plugin'
 
 export default {
   optimizeDeps: { include: ['@batijs/elements'] },
   plugins: [
     // Used by the landing page, see `.svg?react` imports
     svgr(),
+    vike(),
   ],
   // https://github.com/vikejs/vike/blob/08a1ff55c80ddca64ca6d4417fefd45fefeb4ffb/vike/node/plugin/plugins/replaceConstants.ts#L32
   // @ts-expect-error

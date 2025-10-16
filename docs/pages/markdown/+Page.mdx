@@ -30,7 +30,7 @@ Example:
 
 ## Metadata
 
-There are several techniques for defining markdown metadata such as publishing date and author.
+There are several techniques for defining metadata (e.g. the date and author of a page).
 
 The preferred technique depends on whether you want to define global or local metadata.
 
@@ -49,7 +49,7 @@ For global metadata, we recommend:
 - <Link href="#with-a-custom-setting-eager" />
 
 <Warning>
- You may be tempted to use [`import.meta.glob()`](https://vitejs.dev/guide/features.html#glob-import) to retrieve the metadata of all pages, but we discourage this approach: loading all markdown files at once <ViteLazyTranspilingContradiction />.
+ You may be tempted to use [`import.meta.glob()`](https://vitejs.dev/guide/features.html#glob-import) to retrieve metadata defined inside all `+Page.md` files, but we discourage this approach: loading all `+Page.md` files at once <ViteLazyTranspilingContradiction />.
 </Warning>
 
 #### Local metadata
@@ -63,7 +63,7 @@ For local metadata, we recommend:
 
 ### With a `metadata.js` file
 
-A simple way to define metadata is to define a `metadata.js` file that contains <Link href="#metadata:~:text=What%20is%20global%20metadata">global metadata</Link>.
+A simple way to define metadata is to define a `metadata.js` file that contains <Link href="#global-metadata">global metadata</Link>.
 
 ```ts
 // /pages/metadata.ts
@@ -140,13 +140,13 @@ all essentials you'd expect from a frontend framework with a robust design.
 
 ### With a custom setting (eager)
 
-You can use <Link href="/meta">`meta`</Link> to create a custom setting for defining <Link href="#metadata:~:text=What%20is%20local%20metadata">global metadata</Link>.
+You can use <Link href="/meta">`meta`</Link> to create a custom setting for defining <Link href="#global-metadata">global metadata</Link>.
 
 ```yaml
 /pages/+config.ts
 /pages/+onCreateGlobalContext.server.ts
 /pages/+Layout.tsx
-/pages/2024-new-year/+Page.mdx
+/pages/2024-new-year/+Page.md
 /pages/2024-new-year/+metadata.ts
 ```
 
@@ -186,7 +186,7 @@ export const metadata = {
 }
 ```
 
-> Unlike in the example <Link href="#with-a-custom-setting">below</Link> you cannot define `+metadata` inside `+Page.mdx`, because `+Page.mdx` is <Link href="/lazy-transpiling">only loaded when rendering that page</Link>. Consequently, the content of `+Page.mdx` isn't available when rendering another page.
+> Unlike in the example <Link href="#with-a-custom-setting">below</Link> you cannot define `+metadata` inside `+Page.md`, because `+Page.md` is <Link href="/lazy-transpiling">only loaded when rendering that page</Link>. Consequently, the content of `+Page.md` isn't available when rendering another page.
 
 ```ts
 // /pages/+onCreateGlobalContext.server.ts
@@ -260,7 +260,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       {/* The page's content */}
       <Content>
         <h1>{title}</h1>
-        {/* children is pageContext.Page which is the component defined by +Page.mdx */}
+        {/* children is pageContext.Page which is the component defined by +Page.md */}
         {children}
       </Content>
     </>
@@ -275,7 +275,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 ### With a custom setting
 
-You can use <Link href="/meta">`meta`</Link> to create a custom setting for defining <Link href="#metadata:~:text=What%20is%20local%20metadata">local metadata</Link>.
+You can use <Link href="/meta">`meta`</Link> to create a custom setting for defining <Link href="#local-metadata">local metadata</Link>.
 
 ```mdx
 // /pages/2024-new-year/+Page.mdx
@@ -329,7 +329,12 @@ author: John Smith
 This page uses [markdown](https://en.wikipedia.org/wiki/Markdown).
 ```
 
-You can use such frontmatter to define <Link href="#metadata:~:text=What%20is%20local%20metadata">local metadata</Link>.
+You can use such frontmatter to define <Link href="#local-metadata">local metadata</Link>.
+
+<Warning>
+ We discourage using frontmatter for defining <Link href="#global-metadata">global metadata</Link>, because loading all `+Page.md` files at once <ViteLazyTranspilingContradiction />.
+</Warning>
+
 
 The markdown processor exposes the data defined by the frontmatter as an export, for example `export { frontmatter }`. You can access it by using <Link href="/meta">`meta`</Link> to define a `+frontmatter` setting (or whatever the name of the export is).
 

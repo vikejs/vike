@@ -73,9 +73,22 @@ Vue example:
 
 ## Links intercepting
 
-You can keep using `<a href="/some-url">` links: the Client Router automatically intercepts clicks on `<a>` elements.
+You can keep using `<a href="/some-url">` links: Vike's client-side router automatically intercepts clicks on `<a>` elements.
 
-You can skip the Client Router for individual `<a>` links by adding the `rel="external"` attribute, e.g. `<a rel="external" href="/some/url">The Client Router won't intercept me</a>`.
+You can skip Vike's client-side router from intercepting individual `<a>` links by adding the `data-vike="false"` attribute, e.g. `<a data-vike="false" href="/some/url">Vike's client router won't intercept me</a>`.
+
+For example, to enable smooth scrolling for some links:
+
+```tsx
+function LinkSmooth({ href, ...props }: { href: string; children: React.ReactNode }) {
+  return <a data-vike={false} onClick={onClick} {...props} />
+  function onClick(ev: React.MouseEvent<HTMLAnchorElement>) {
+    ev.preventDefault()
+    const target = document.querySelector(href)!
+    target.scrollIntoView({ behavior: 'smooth' })
+  }
+}
+```
 
 
 ## Hooks

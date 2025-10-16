@@ -7,6 +7,7 @@ export { getVikeConfigInternal }
 export { getVikeConfigInternalOptional }
 export { getVikeConfigInternalSync }
 export { setVikeConfigContext }
+export { isVikeConfigContextSet }
 export { reloadVikeConfig }
 export { isV1Design }
 export { getConfVal }
@@ -177,6 +178,9 @@ type VikeConfig = Pick<VikeConfigInternal, 'config' | 'pages' | 'prerenderContex
 function setVikeConfigContext(vikeConfigCtx_: VikeConfigContext) {
   // If the user changes Vite's `config.root` => Vite completely reloads itself => setVikeConfigContext() is called again
   globalObject.vikeConfigCtx = vikeConfigCtx_
+}
+function isVikeConfigContextSet() {
+  return !!globalObject.vikeConfigCtx
 }
 async function getOrResolveVikeConfig(
   userRootDir: string,

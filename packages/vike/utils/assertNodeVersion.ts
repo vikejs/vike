@@ -3,7 +3,7 @@ export { assertNodeVersion }
 import { isNodeJS } from './isNodeJS.js'
 import { assertVersion } from './assertVersion.js'
 
-// node_modules/vike/package.json#engines.node isn't enough as users can ignore it
+// node_modules/vike/package.json#engines.node isn't enough, as users often ignore it
 function assertNodeVersion() {
   if (!isNodeJS()) return
   const version = process.versions.node

@@ -11,7 +11,7 @@ import { UsedBy } from './UsedBy'
 import { QuoteTeam } from '../../../../components'
 
 const quoteSentence =
-  'Vike is the next generation of framework architecture, for an open and stable foundation that companies can build upon with confidence.'
+  'Vike uses a next-generation framework architecture, for a flexible and stable foundation that companies can build upon with confidence.'
 
 function Hero() {
   return (
@@ -23,11 +23,12 @@ function Hero() {
         alignItems: 'center',
       }}
     >
-      <div style={{ height: 60 }} id="hero-margin-top-1"></div>
+      <div style={{ height: 76 }} id="hero-margin-top-1"></div>
       {/* <VideoTalkLink /> */}
-      <div style={{ height: 16 }} id="hero-margin-top-2"></div>
+      <Replaces />
+      <div style={{ height: 0 }} id="hero-margin-top-2"></div>
       <HeroTagline />
-      <div style={{ height: 46 }} id="hero-margin-mid-1"></div>
+      <div style={{ height: 50 }} id="hero-margin-mid-1"></div>
       <GetStartedBtn />
       <div style={{ height: 52 }} id="hero-margin-mid-2"></div>
       <QuoteTeam>{quoteSentence}</QuoteTeam>
@@ -63,31 +64,49 @@ function HeroTagline({
             textAlign: 'center',
             width: '100%',
             marginBottom: 0,
-            fontWeight: 500,
+            fontWeight: 580,
           }}
         >
           <div
             id="tagline-main"
             style={{
+              letterSpacing: 0.7,
               opacity: 0.9,
               ...taglineStyle,
             }}
           >
-            The{' '}
-            <span
-              style={{
-                fontWeight: 600,
-                color: '#42d392',
-                // Copied from https://vuejs.org/
-                background: '-webkit-linear-gradient(315deg, #42d392 25%, #647eff)',
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-              }}
-            >
-              Modular
+            <span style={{ whiteSpace: 'nowrap' }}>
+              Build{' '}
+              <span
+                style={{
+                  fontWeight: 700,
+                  color: '#42d392',
+                  background: '-webkit-linear-gradient(315deg, #FF8C00 25%, #FFFF00)',
+                  backgroundClip: 'text',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
+                fast
+              </span>
+              .
             </span>{' '}
-            Framework
+            <span style={{ whiteSpace: 'nowrap' }}>
+              Build{' '}
+              <span
+                style={{
+                  fontWeight: 700,
+                  color: '#42d392',
+                  background: '-webkit-linear-gradient(315deg, #00C6FB 45%, #005BEA)',
+                  backgroundClip: 'text',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
+                right
+              </span>
+              .
+            </span>
           </div>
           <div
             id="tagline-secondary"
@@ -97,15 +116,103 @@ function HeroTagline({
               margin: 'auto',
               marginTop: 10,
               lineHeight: 1.35,
-              fontWeight: 400,
-              opacity: 0.45,
-              maxWidth: 550,
+              fontWeight: 450,
+              color: '#878787',
+              maxWidth: 750,
               ...taglineSecondaryStyle,
             }}
           >
-            Next.js & Nuxt alternative for unprecedented flexibility and stability
+            The framework for advanced applications.
+            <br />
+            With blazing fast{' '}
+            <LinkTagline href="/new" color="#fe9618">
+              quick-start
+            </LinkTagline>{' '}
+            &{' '}
+            <LinkTagline href="#full-fledged" color="#fed518">
+              DX
+            </LinkTagline>
+            , and unprecedented architectural{' '}
+            <LinkTagline href="#flexible" color="#18cbfa">
+              flexibility
+            </LinkTagline>{' '}
+            &{' '}
+            <LinkTagline href="#stable" color="#1878ed">
+              stability
+            </LinkTagline>
+            .
           </div>
         </h1>
+      </div>
+    </div>
+  )
+}
+
+function LinkTagline({
+  color,
+  href,
+  ...props
+}: {
+  color: string
+  href: string
+  children: React.ReactNode
+}) {
+  return (
+    <a
+      href={href}
+      onClick={onClick}
+      data-vike={!href.startsWith('#')}
+      style={{ color, borderBottom: `2px dotted ${color}` }}
+      {...props}
+    />
+  )
+  function onClick(ev: React.MouseEvent<HTMLAnchorElement>) {
+    if (!href.startsWith('#')) return
+    ev.preventDefault()
+    const target = document.querySelector(href)!
+    target.scrollIntoView({ behavior: 'smooth' })
+  }
+}
+
+function Replaces() {
+  return (
+    <div
+      style={{
+        display: 'inline-flex',
+        fontSize: 11,
+        fontWeight: 600,
+        marginTop: -6,
+        marginBottom: 6,
+        borderRadius: 6,
+        overflow: 'hidden',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.12)',
+        border: '1px solid #d1d5db',
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: '#eee',
+          padding: '0 8px',
+          display: 'flex',
+          alignItems: 'center',
+          letterSpacing: '0.05em',
+          fontSize: 11,
+        }}
+      >
+        REPLACES
+      </div>
+      <div
+        style={{
+          backgroundColor: '#8d8d8d',
+          color: 'white',
+          padding: '2px 8px',
+          display: 'flex',
+          alignItems: 'center',
+          fontSize: 13,
+          fontWeight: 550,
+        }}
+      >
+        Next.js, Nuxt, ...
       </div>
     </div>
   )

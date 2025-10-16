@@ -34,9 +34,9 @@ But **pre-rendering cannot be used for websites with content that changes very f
 > This website `https://vike.dev` uses pre-rendering and is deployed to <Link href="/github-pages" text="GitHub Pages" /> — a static host that is completely free, [easy to use](https://github.com/vikejs/vike/blob/main/.github/workflows/website.yml), and performant.
 
 
-## How to pre-render
+## Get started
 
-To opt into pre-rendering:
+To enable pre-rendering:
 
 ```ts
 // pages/+config.ts
@@ -48,31 +48,159 @@ export default {
 } satisfies Config
 ```
 
-List of options: <Link href="/prerender" />.
+Your pages' HTML are now rendered at build-time (when you run <Link href="/cli">`$ vike build`</Link>) instead of request-time.
 
-Your pages' HTML are rendered when you run <Link href="/cli">`$ vike build`</Link> and the generated HTML files are available at `dist/client/`.
+The generated `.html` files are written to `dist/client/`.
 
-For a page with a parameterized route (e.g. `/movie/@movieId`), you have to use the <Link href="/onBeforePrerenderStart">`onBeforePrerenderStart()` hook</Link> in order to provide the list of URLs that are to be pre-rendered. The `onBeforePrerenderStart()` hook can also be used to accelerate the pre-rendering process.
+### CLI instead of server
+
+With pre-rendering, you don't need a JavaScript server — you can use <Link href="/cli">`$ vike dev` and `$ vike preview`</Link> instead. (You do, however, need a JavaScript server if <Link href="#partial">you skip pre-rendering some pages</Link>.)
+
+### Parameterized routes
+
+For a page with a parameterized route (e.g. `/movie/@id`), you must use the <Link href="/onBeforePrerenderStart">`onBeforePrerenderStart()` hook</Link> to provide the list of URLs to be pre-rendered.
 
 <PreRenderDynamicRoutes />
 
-By default, all pages are pre-rendered. To pre-render only some pages, use the <Link href="/prerender#partial" text={<><code>partial</code> option</>} /> with <Link href="/prerender#toggle" text={<code>prerender: false</code>} />.
 
-If you pre-render all your pages, then you can use <Link href="/cli">`$ vike dev` and `$ vike preview`</Link> instead of using development/preview server.
+## Configuration
 
-You can programmatically invoke the pre-rendering process, see <Link href="/api#prerender" doNotInferSectionTitle />.
+Common `+prerender` options:
 
-React Example:
- - <RepoLink path='/examples/react-full/vite.config.ts' /> (see setting <code>prerender</code> option to `true`)
- - <RepoLink path='/examples/react-full/pages/hello/+onBeforePrerenderStart.ts' />
- - <RepoLink path='/examples/react-full/pages/star-wars/index/+onBeforePrerenderStart.ts' />
- - <RepoLink path='/examples/react-full/package.json' /> (see Vike CLI usage)
+```ts
+// pages/+config.ts
 
-Vue Example:
- - <RepoLink path='/examples/vue-full/vite.config.ts' /> (see setting <code>prerender</code> option to `true`)
- - <RepoLink path='/examples/vue-full/pages/hello/+onBeforePrerenderStart.ts' />
- - <RepoLink path='/examples/vue-full/pages/star-wars/index/+onBeforePrerenderStart.ts' />
- - <RepoLink path='/examples/vue-full/package.json' /> (see Vike CLI usage)
+import type { Config } from 'vike/types'
+
+export default {
+  prerender: {
+    noExtraDir: true, // Don't create a new directory for each HTML file
+    parallel: false // Disable concurrency — pre-render pages sequentially (one by one)
+    // ...
+  }
+} satisfies Config
+```
+
+> See <Link href="/prerender" /> for the list of all options.
+
+You can also:
+ - Pre-render only some pages (instead of pre-rendering all pages), see <Link href="#partial" />.
+ - Define redirections, see <Link href="/prerender#redirects" />.
+ - Use  <Link href="/api#prerender">Vike's `prerender()` API</Link> to invoke the pre-rendering process programmatically (instead of being run automatically on `$ vike build`).
+ - Accelerate the pre-rendering process by using the <Link href="/onBeforePrerenderStart">`onBeforePrerenderStart()` hook</Link>.
+
+## Partial
+
+By default, all pages are pre-rendered, but you can also pre-render only some pages.
+
+### Opt-out
+
+You can set `prerender: false` to skip a page from pre-rendering:
+
+```ts
+// /pages/+config.ts
+
+import type { Config } from 'vike/types'
+
+export default {
+  // Pre-render all pages by default
+  prerender: true
+} satisfies Config
+```
+
+```ts
+// /pages/news/+config.ts
+
+import type { Config } from 'vike/types'
+
+export default {
+  // Skip pre-rendering for /pages/news/+Page.ts
+  prerender: false
+} satisfies Config
+```
+
+> For example, a news page that displays the latest news fetched from a database should be rendered at request-time (not at build-time).
+>
+> See also: <Link href="/pre-rendering#should-i-pre-render" doNotInferSectionTitle />
+
+You can also disable pre-rendering for a group of pages:
+
+```ts
+// /pages/products/+prerender.ts
+
+// Applies to all /pages/products/**/+Page.ts
+export const prerender = false
+```
+
+> See also: <Link href="/config#inheritance" />
+
+### Opt-in instead of opt-out
+
+You can make pre-rendering opt-in instead of opt-out:
+
+```ts
+// /pages/+config.ts
+
+import type { Config } from 'vike/types'
+
+export default {
+  // By default, pages aren't pre-rendered
+  prerender: false
+} satisfies Config
+```
+
+```ts
+// /pages/(marketing)/+prerender.ts
+
+// Applies to all marketing pages /pages/(marketing)/**/+Page.ts
+export const prerender = true
+```
+
+> The directory `(marketing)` is ignored by Filesystem Routing, see <Link href="/routing#groups" />.
+
+### Dynamic condition
+
+You can dynamically disable/enable pre-rendering:
+
+```ts
+// /pages/+prerender.ts
+
+export const prerender = someCondition() ? false : true
+```
+
+> For example, to disable pre-rendering when previewing CMS changes:
+> ```ts
+> // /pages/+prerender.ts
+>
+> export const prerender = process.env.MODE !== 'preview'
+> ```
+
+Note that <Link href="/onBeforePrerenderStart">`onBeforePrerenderStart()` hooks</Link> are always called, even if `prerender` is `false`.
+If you want to define `onBeforePrerenderStart()` conditionally:
+
+```ts
+// /pages/movie/+prerender.ts
+
+export { prerender }
+
+import { someCondition } from './someCondition'
+
+const prerender = someCondition()
+```
+
+```ts
+// /pages/movie/+onBeforePrerenderStart.ts
+
+export { onBeforePrerenderStart }
+
+import { someCondition } from './someCondition'
+
+const onBeforePrerenderStart = someCondition()
+  ? async () => {
+      // ...
+    }
+  : null
+```
 
 
 ## SSG vs SSR

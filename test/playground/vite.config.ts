@@ -1,6 +1,6 @@
 import react from '@vitejs/plugin-react'
 import assert from 'node:assert'
-import { getVikeConfig } from 'vike/plugin'
+import vike, { getVikeConfig } from 'vike/plugin'
 import type { PluginOption, UserConfig } from 'vite'
 
 /* TO-DO/eventually: find a way to avoid an initial vite.config.js error to prevent the server from starting.
@@ -19,7 +19,7 @@ export default {
     //*/
     target: 'esnext',
   },
-  plugins: [react(), testPlugin() as any],
+  plugins: [react(), testPlugin() as any, vike()],
   // Simulate the real-world config users get (in this monorepo Vike is linked thus ssr.noExternal which isn't what users get)
   ssr: { external: ['vike'] },
 } satisfies UserConfig

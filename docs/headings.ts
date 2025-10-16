@@ -33,6 +33,7 @@ const categories = [
   'Get Started',
   'Guides (tools)',
   'Guides (more)',
+  'Warnings & Errors',
   'Blog',
   'Migration',
   { name: 'Work-in-progress', hide: true },
@@ -135,7 +136,7 @@ const headings = [
     level: 2,
     title: 'Pre-rendering (SSG)',
     url: '/pre-rendering',
-    sectionTitles: ['SSG vs SSR'],
+    sectionTitles: ['SSG vs SSR', 'Should I pre-render?'],
   },
   {
     level: 2,
@@ -726,6 +727,7 @@ const headingsDetached = [
   ...tools(),
   ...migrations(),
   ...misc(),
+  ...warningsAndErrors(),
   ...blog(),
   ...getStarted(),
   ...deprecated(),
@@ -1014,29 +1016,41 @@ function extensions() {
   ).map((h) => ({ ...h, category: 'Extensions' as const })) satisfies HeadingDetachedDefinition[]
 }
 
-function misc() {
+function warningsAndErrors() {
   return (
     [
       {
-        title: "[Warning] Don't define global configs locally",
+        title: "❌ Don't define global configs locally",
         url: '/warning/global-config',
       },
       {
-        title: "[Warning] Don't load multiple versions",
+        title: "❌ Don't load multiple versions",
         url: '/warning/version-mismatch',
       },
+      // Right category? Move it to guide?
       {
         title: '`process.env.NODE_ENV`',
         url: '/NODE_ENV',
       },
       {
-        title: '[Warning] Wrong setup',
+        title: '❌ Wrong setup',
         url: '/warning/setup',
       },
       {
-        title: '[Error] Runtime code defined in config file',
+        title: '❌ Runtime code defined in config file',
         url: '/error/runtime-in-config',
       },
+      {
+        title: '❌ No side exports',
+        url: '/no-side-exports',
+      },
+    ] as const
+  ).map((h) => ({ ...h, category: 'Warnings & Errors' as const })) satisfies HeadingDetachedDefinition[]
+}
+
+function misc() {
+  return (
+    [
       {
         title: 'Consulting',
         url: '/consulting',
@@ -1051,8 +1065,16 @@ function misc() {
         url: '/banner',
       },
       {
-        title: 'Cover',
+        title: 'Banner — Cover',
         url: '/banner/cover',
+      },
+      {
+        title: 'Banner — Minimal',
+        url: '/banner/minimal',
+      },
+      {
+        title: 'Banner — Vikings',
+        url: '/banner/vikings',
       },
       {
         title: 'RPC',
@@ -1151,10 +1173,6 @@ function guides() {
       {
         title: '`<head>` tags without `vike-{react,vue,solid}`',
         url: '/head-manual',
-      },
-      {
-        title: 'Rule: `no-side-exports`',
-        url: '/no-side-exports',
       },
       {
         title: 'Eject',

@@ -1,15 +1,25 @@
 export { pluginCommon }
 
 import { type InlineConfig, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
-import { assert, assertUsage, assertWarning, hasProp, isDevCheck, isDocker, isObject, isVitest } from '../utils.js'
+import {
+  assert,
+  assertUsage,
+  assertWarning,
+  hasProp,
+  isDevCheck,
+  isDocker,
+  isExactlyOneTruthy,
+  isObject,
+  isVitest,
+} from '../utils.js'
 import { assertRollupInput } from './build/pluginBuildConfig.js'
 import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
 import pc from '@brillout/picocolors'
 import { assertResolveAlias } from './pluginCommon/assertResolveAlias.js'
-import { isViteCliCall } from '../shared/isViteCliCall.js'
+import { isViteCli } from '../shared/isViteCli.js'
 import { isVikeCliOrApi } from '../../api/context.js'
 import { getVikeConfigInternal, setVikeConfigContext } from '../shared/resolveVikeConfigInternal.js'
-import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/prepareViteApiCall.js'
+import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/resolveViteConfigFromUser.js'
 import { temp_disablePrerenderAutoRun } from '../../prerender/context.js'
 import type { VitePluginServerEntryOptions } from '@brillout/vite-plugin-server-entry/plugin'
 const pluginName = 'vike:pluginCommon'
@@ -21,7 +31,7 @@ declare module 'vite' {
     _rootResolvedEarly?: string
     _baseViteOriginal?: string
     // We'll be able to remove once we have one Rolldown build instead of two Rollup builds
-    _viteConfigFromUserEnhanced?: InlineConfig
+    _viteConfigFromUserResolved?: InlineConfig
   }
 }
 
@@ -39,12 +49,14 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
         order: 'pre',
         async handler(configFromUser, env) {
           const isDev = isDevCheck(env)
-          const operation = env.command === 'build' ? 'build' : env.isPreview ? 'preview' : 'dev'
+          const isBuild = env.command === 'build'
+          const isPreview = env.isPreview!!
+          assert(isExactlyOneTruthy(isDev, isBuild, isPreview))
+          const viteContext = isBuild ? 'build' : isPreview ? 'preview' : 'dev'
           const rootResolvedEarly = configFromUser.root
             ? normalizeViteRoot(configFromUser.root)
-            : await getViteRoot(operation)
+            : await getViteRoot(viteContext)
           assert(rootResolvedEarly)
-          // TO-DO/next-major-release: we can remove setVikeConfigContext() call here since with Vike's CLI it's already called at vike/node/api/prepareViteApiCall.ts
           setVikeConfigContext({ userRootDir: rootResolvedEarly, isDev, vikeVitePluginOptions })
           const vikeConfig = await getVikeConfigInternal()
           return {
@@ -164,7 +176,7 @@ function assertSingleInstance(config: ResolvedConfig) {
 
 function assertVikeCliOrApi(config: ResolvedConfig) {
   if (isVikeCliOrApi()) return
-  if (isViteCliCall()) {
+  if (isViteCli()) {
     assert(!isVitest())
     return
   }

@@ -190,13 +190,15 @@ pages/admin/dashboard/+Page.jsx
 
 ### Global
 
-We call a configuration either *global* or *local*:
+Some configurations are always *global*, while others can be *local* — we distinguish these two types of configurations and call a configuration either *global* or *local*:
 
-- <IconGlobal/> **Global** — always applies to all pages.
+- <IconGlobal/> **Global configuration** — always applies to all pages.
 
-  For example, we call the <Link href="/base-url">Base URL setting</Link> global, because it affects your app globally.
+  For example, the <Link href="/base-url">Base URL setting</Link> is global: changing the Base URL affects your whole app (all your pages).
 
-  > Config inheritance doesn't apply:
+  A global config cannot be applied to only a subset of pages.
+
+  > There isn't any config inheritance for global configs:
   >
   > ```yaml
   > # Defining +baseAssets for a single page doesn't make sense — Vike logs a warning
@@ -207,9 +209,9 @@ We call a configuration either *global* or *local*:
   > /pages/index/+Page.js
   > ```
 
-- <IconLocal/> **Local** — can be defined on a per-page basis.
+- <IconLocal/> **Local configuration** — can be defined on a per-page basis.
 
-  For example, we call the <Link href="/title">`+title` setting</Link> local, because each page can have a different title.
+  For example, the <Link href="/title">`+title` setting</Link> is local, because each page can have a different title.
 
   > A local config can apply globally if defined at a global location:
   > ```ts
@@ -224,9 +226,9 @@ We call a configuration either *global* or *local*:
   > } satisfies Config
   > ```
 
-### Domain-driven File Structure
+### Groups
 
-You can use a <Link href="/routing#domain-driven-file-structure">domain-driven file structure</Link> to better organization configuration inheritance.
+You can use <Link href="/routing#groups">page groups</Link> to better organize configuration inheritance.
 
 ### Powerful
 
@@ -404,6 +406,6 @@ console.log(ssr) // import:./ssr:default
 ## See also
 
 - <Link href="/filesystem-routing" />
-- <Link href="/routing#domain-driven-file-structure" />
+- <Link href="/routing#groups" />
 - <Link href="/error/runtime-in-config" />
 - <Link href="/file-env" />

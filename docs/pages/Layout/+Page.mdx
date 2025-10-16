@@ -139,8 +139,11 @@ Examples:
 
 ## Data fetching
 
-To fetch data for your layouts see:
-- <Link href="/data-fetching#page-data-with-tools" />
+You currently cannot use the <Link href="/data">`+data` hook</Link> to fetch data only for layouts. Instead, load all data (including both the page and layout data) using a single `+data` hook.
+
+Alternatively, you can use <Link href="/data-fetching#page-data-with-tools">tools to fetch data at the component level</Link>. You can then fetch data for the layout component independently of page data.
+
+Support for cumulative `+data` hooks is a work in progress. You'll then be able to define a `+data` hook for your layout in addition to defining `+data` hooks for your pages, see:
 - [#1833 - Make `+data` and `+onBeforeRender` cumulative](https://github.com/vikejs/vike/issues/1833)
 
 

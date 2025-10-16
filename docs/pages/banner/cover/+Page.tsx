@@ -1,8 +1,8 @@
 export { Page }
 
 import React from 'react'
-import { BannerVikings } from '../Banner'
+import { BannerCover } from '../Banner'
 
 function Page() {
-  return <BannerVikings />
+  return <BannerCover />
 }

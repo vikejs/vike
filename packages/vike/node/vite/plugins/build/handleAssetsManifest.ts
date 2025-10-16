@@ -3,8 +3,7 @@ export { handleAssetsManifest_getBuildConfig }
 export { handleAssetsManifest_isFixEnabled }
 export { handleAssetsManifest_assertUsageCssCodeSplit }
 export { handleAssetsManifest_assertUsageCssTarget }
-export { handleAssetsManifest_workaroundCssTarget_part1 }
-export { handleAssetsManifest_workaroundCssTarget_part2 }
+export { handleAssetsManifest_alignCssTarget }
 
 import fs from 'node:fs/promises'
 import fs_sync from 'node:fs'
@@ -29,7 +28,6 @@ type Bundle = Rollup.OutputBundle
 
 const globalObject = getGlobalObject('handleAssetsManifest.ts', {
   assetsJsonFilePath: undefined as string | undefined,
-  cssTarget: '__VIKE__UNSET' as CssTarget | '__VIKE__UNSET',
   targetsAll: [] as TargetConfig[],
   configsAll: [] as ResolvedConfig[],
 })
@@ -277,15 +275,13 @@ function handleAssetsManifest_assertUsageCssCodeSplit(config: ResolvedConfig) {
 type CssTarget = ResolvedConfig['build']['cssTarget']
 type Target = ResolvedConfig['build']['target'] | CssTarget
 type TargetConfig = { global: Exclude<Target, undefined>; css: Target; isServerSide: boolean }
-function handleAssetsManifest_workaroundCssTarget_part1(config: ResolvedConfig) {
+function handleAssetsManifest_alignCssTarget(config: ResolvedConfig) {
   globalObject.configsAll.push(config)
-  if (!isViteServerSide_viteEnvOptional(config, undefined)) {
-    globalObject.cssTarget = config.build.cssTarget
-  }
-}
-function handleAssetsManifest_workaroundCssTarget_part2() {
-  assert(globalObject.cssTarget !== '__VIKE__UNSET')
-  globalObject.configsAll.forEach((c) => (c.build.cssTarget = globalObject.cssTarget))
+  const { cssTarget } = globalObject.configsAll
+    .filter((c) => !isViteServerSide_viteEnvOptional(c, undefined))
+    .at(-1)!.build
+  assert(cssTarget)
+  globalObject.configsAll.forEach((c) => (c.build.cssTarget = cssTarget))
 }
 function handleAssetsManifest_assertUsageCssTarget(config: ResolvedConfig, env: Environment) {
   if (!handleAssetsManifest_isFixEnabled()) return

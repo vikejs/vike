@@ -1,4 +1,6 @@
 export { pluginReplaceConstantsGlobalThis }
+// Trick for loading the `declare global` below
+export type _LoadDeclareGlobal__VIKE__IS = never
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { assert, isDebug, addVirtualFileIdPrefix, escapeRegex } from '../utils.js'

@@ -12,12 +12,12 @@
     "@vitejs/plugin-react": "^5.0.2",
     "cross-env": "^10.0.0",
     "express": "^5.1.0",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
     "telefunc": "^0.2.12",
     "typescript": "^5.9.2",
     "vite": "^7.1.5",
-    "vike": "0.4.240"
+    "vike": "0.4.242"
   },
   "type": "module"
 }

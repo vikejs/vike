@@ -10,7 +10,7 @@ export type { VikeVitePluginOptions }
 import type { Plugin } from 'vite'
 import { getClientEntrySrcDev } from './shared/getClientEntrySrcDev.js'
 import { setGetClientEntrySrcDev } from '../runtime/renderPage/getPageAssets/retrievePageAssetsDev.js'
-import { assertIsNotProductionRuntime, assertUsage } from './utils.js'
+import { assertIsNotProductionRuntime, assertUsage, isVitest } from './utils.js'
 import pc from '@brillout/picocolors'
 import { pluginPreview } from './plugins/pluginPreview.js'
 import { pluginDev } from './plugins/pluginDev.js'
@@ -35,6 +35,9 @@ import { pluginProdBuildEntry } from './plugins/build/pluginProdBuildEntry.js'
 import { pluginBuildConfig } from './plugins/build/pluginBuildConfig.js'
 import { pluginModuleBanner } from './plugins/build/pluginModuleBanner.js'
 import { pluginReplaceConstantsNonRunnableDev } from './plugins/non-runnable-dev/pluginReplaceConstantsNonRunnableDev.js'
+import { isVikeCliOrApi } from '../api/context.js'
+import { pluginViteConfigVikeExtensions } from './plugins/pluginViteConfigVikeExtensions.js'
+import { isOnlyResolvingUserConfig } from '../api/resolveViteConfigFromUser.js'
 
 // We don't call this in ./onLoad.ts to avoid a cyclic dependency with utils.ts
 setGetClientEntrySrcDev(getClientEntrySrcDev)
@@ -42,27 +45,32 @@ assertIsNotProductionRuntime()
 
 type PluginInterop = Record<string, unknown> & { name: string }
 // Return `PluginInterop` instead of `Plugin` to avoid type mismatch upon different Vite versions
-function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginInterop[] {
-  const plugins: Plugin[] = [
-    ...pluginCommon(vikeVitePluginOptions),
-    ...pluginVirtualFiles(),
-    ...pluginDev(),
-    ...pluginBuild(),
-    ...pluginPreview(),
-    ...pluginExtractAssets(),
-    ...pluginExtractExportNames(),
-    ...pluginSetGlobalContext(),
-    ...pluginBaseUrls(),
-    ...pluginReplaceConstantsEnvVars(),
-    ...pluginFileEnv(),
-    ...pluginWorkaroundCssModuleHmr(),
-    ...pluginWorkaroundVite6HmrRegression(),
-    ...pluginReplaceConstantsPageContext(),
-    ...pluginReplaceConstantsGlobalThis(),
-    ...pluginNonRunnabeDev(),
-  ]
-  Object.assign(plugins, { _vikeVitePluginOptions: vikeVitePluginOptions })
-  return plugins as any
+function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): Promise<PluginInterop[]> {
+  const promise = (async () => {
+    if (skip()) return []
+    const plugins: Plugin[] = [
+      ...pluginCommon(vikeVitePluginOptions),
+      ...pluginVirtualFiles(),
+      ...pluginDev(),
+      ...pluginBuild(),
+      ...pluginPreview(),
+      ...pluginExtractAssets(),
+      ...pluginExtractExportNames(),
+      ...pluginSetGlobalContext(),
+      ...pluginBaseUrls(),
+      ...pluginReplaceConstantsEnvVars(),
+      ...pluginFileEnv(),
+      ...pluginWorkaroundCssModuleHmr(),
+      ...pluginWorkaroundVite6HmrRegression(),
+      ...pluginReplaceConstantsPageContext(),
+      ...pluginReplaceConstantsGlobalThis(),
+      ...pluginNonRunnabeDev(),
+      ...(await pluginViteConfigVikeExtensions()),
+    ]
+    return plugins as PluginInterop[]
+  })()
+  Object.assign(promise, { _vikeVitePluginOptions: vikeVitePluginOptions })
+  return promise
 }
 
 function pluginBuild(): Plugin[] {
@@ -79,6 +87,32 @@ function pluginBuild(): Plugin[] {
 
 function pluginNonRunnabeDev() {
   return [...pluginViteRPC(), ...pluginReplaceConstantsNonRunnableDev()]
+}
+
+function skip() {
+  // Early resolving of user Vite configs
+  if (isOnlyResolvingUserConfig()) {
+    return true
+  }
+
+  // For Vitest, we only add Vike's Vite plugin if Vike's JavaScript API is used.
+  // - In the context of running unit tests with Vitest, Vike's Vite plugin doesn't add any value AFAICT.
+  // - If the user calls Vike's JavaScript API inside Vitest (e.g. `build()` inside `beforeAll()`)  => vite.config.js is loaded twice: once by Vitest and once by Vike => problematic because Vitest's environment is `development` whereas Vike's `build()` environment is `production` => the globalContext.ts isProd() function throws an assertion fail (I don't know why the two globalContext.ts instances aren't independent from each other) => that's why we skip Vike's Vite plugin when it's Vitest that loads vite.config.js
+  //   - When calling `$ vitest` Vitest loads vite.config.js if it lives at process.cwd()
+  // - The user is supposed to use Vike's API instead of Vite's API. Vike supports Vite's API only for third parties (e.g. Vitest or Storybook).
+  // - https://vike.dev/vitest
+  if (
+    /* Maybe also all third party tools such as Storybook?
+    !isViteCli() &&
+    /*/
+    isVitest() &&
+    ///*/
+    !isVikeCliOrApi()
+  ) {
+    return true
+  }
+
+  return false
 }
 
 // Error upon wrong usage

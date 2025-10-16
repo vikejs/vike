@@ -1,4 +1,6 @@
 export { Banner }
+export { BannerCover }
+export { BannerMinimal }
 export { BannerVikings }
 
 import React from 'react'
@@ -6,10 +8,19 @@ import { HeroTagline } from '../index/sections/hero/Hero'
 import vikeLogo from '../../assets/logo/vike.svg'
 import './Banner.css'
 
+function Banner() {
+  return <BannerCommon />
+}
+function BannerCover() {
+  return <BannerCommon logo={false} />
+}
+function BannerMinimal() {
+  return <BannerCommon logo={false} taglineSecondaryStyle={{ display: 'none' }} logoScale={1.1} />
+}
 function BannerVikings() {
   return (
     <BannerCommon
-      logoOnly
+      logo
       logoText="Vikings"
       logoScale={1.1}
       logoStyle={{
@@ -36,22 +47,20 @@ function BannerVikings() {
   )
 }
 
-function Banner() {
-  return <BannerCommon />
-}
-
 function BannerCommon({
-  logoOnly,
+  logo,
   logoText = 'Vike',
   logoScale = 1.3,
   logoStyle,
   logoTextStyle,
+  taglineSecondaryStyle,
 }: {
-  logoOnly?: boolean
+  logo?: boolean
   logoText?: string
   logoScale?: number
   logoStyle?: React.CSSProperties
   logoTextStyle?: React.CSSProperties
+  taglineSecondaryStyle?: React.CSSProperties
 }) {
   return (
     <div
@@ -72,47 +81,50 @@ function BannerCommon({
           marginTop: -8,
         }}
       >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            marginBottom: -7,
-            marginLeft: -25,
-          }}
-        >
-          <img
-            src={vikeLogo}
+        {logo !== false && (
+          <div
             style={{
-              height: 60 * logoScale,
-              objectFit: 'contain',
-              marginTop: -8,
-              marginRight: 14,
-              ...logoStyle,
-            }}
-          />
-          <span
-            className="logo-font"
-            style={{
-              fontSize: 45.6 * logoScale,
-              fontWeight: 440,
-              fontStyle: 'italic',
-              color: '#707070',
-              lineHeight: '1.2em',
-              ...logoTextStyle,
+              display: 'flex',
+              alignItems: 'center',
+              marginBottom: -7,
+              marginLeft: -25,
             }}
           >
-            {logoText}
-          </span>
-        </div>
-        {!logoOnly && (
+            <img
+              src={vikeLogo}
+              style={{
+                height: 60 * logoScale,
+                objectFit: 'contain',
+                marginTop: -8,
+                marginRight: 14,
+                ...logoStyle,
+              }}
+            />
+            <span
+              className="logo-font"
+              style={{
+                fontSize: 45.6 * logoScale,
+                fontWeight: 440,
+                fontStyle: 'italic',
+                color: '#707070',
+                lineHeight: '1.2em',
+                ...logoTextStyle,
+              }}
+            >
+              {logoText}
+            </span>
+          </div>
+        )}
+        {logo !== true && (
           <HeroTagline
             style={{ marginTop: -0 }}
             taglineStyle={{ fontSize: 50 * logoScale, marginBottom: 25 }}
             taglineSecondaryStyle={{
               marginTop: 19,
               fontSize: 28 * logoScale,
-              maxWidth: 600 * logoScale,
+              maxWidth: 680 * logoScale,
               lineHeight: 1.3,
+              ...taglineSecondaryStyle,
             }}
           />
         )}

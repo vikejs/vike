@@ -1,4 +1,6 @@
+// TODO: rename_full skipLink isLinkSkipped
 export { skipLink }
+export { isLinkIgnored }
 export { isSameAsCurrentUrl }
 
 import { normalizeClientSideUrl } from '../shared/normalizeClientSideUrl.js'
@@ -14,6 +16,7 @@ function skipLink(linkTag: HTMLElement): boolean {
     isUrlExternal(href) ||
     isSamePageHashLink(href) ||
     isNewTabLink(linkTag) ||
+    isLinkIgnored(linkTag) ||
     !hasBaseServer(href) ||
     // Purposely last because disableAutomaticLinkInterception will be removed in the next major release
     !isVikeLink(linkTag)
@@ -26,18 +29,25 @@ function isVikeLink(linkTag: HTMLElement) {
   if (!disableAutomaticLinkInterception) {
     return true
   } else {
+    // TODO: rename target attrVal
     const target = linkTag.getAttribute('data-vike-link')
     return target !== null && target !== 'false'
   }
 }
 
+// TODO rename
 function isNewTabLink(linkTag: HTMLElement) {
   const target = linkTag.getAttribute('target')
   const rel = linkTag.getAttribute('rel')
   return target === '_blank' || target === '_external' || rel === 'external' || linkTag.hasAttribute('download')
 }
+function isLinkIgnored(linkTag: HTMLElement) {
+  return linkTag.getAttribute('data-vike') === 'false'
+}
+// TODO refactor both functions below?
 function isSamePageHashLink(href: string): boolean {
   if (href.startsWith('#')) return true
+  // TODO: remove?
   if (
     href.includes('#') &&
     normalizeClientSideUrl(href, { withoutHash: true }) ===

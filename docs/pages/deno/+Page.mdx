@@ -1,7 +1,85 @@
+import { Link } from '@brillout/docpress'
 import { Example, CommunityNote } from '../../components'
 
-<CommunityNote url="https://deno.land" />
+<CommunityNote tool="deno" url="https://deno.land" />
 
-Example:
- - <Example timestamp="2023.04" repo="brillout/vps-deno" />
-   > vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike).
+Deno is a runtime for JavaScript and TypeScript that uses [V8](https://v8.dev/) and is built in Rust. It supports zero config TypeScript and has broad npm compatibility.
+
+
+## `package.json`
+
+### Without `package.json`
+
+If you don't want to define a `package.json` file, you can use the `npm:` specifier.
+
+```ts
+// vite.config.ts
+
+import { defineConfig } from 'npm:vite'
+import vike from 'npm:vike@latest/plugin'
+
+export default defineConfig({
+  plugins: [vike()]
+})
+```
+
+### With `package.json`
+
+If you are porting from a Node.js project, you likely already have a `package.json` file. If you create a new project we suggest creating a minimal one like this:
+
+```json5
+// package.json
+{
+  "dependencies": {
+    "vite": "latest",
+    "vike": "latest"
+  }
+}
+```
+
+```ts
+// vite.config.ts
+
+import { defineConfig } from 'vite' // The npm: prefix isn't required
+import vike from 'vike/plugin'
+
+export default defineConfig({
+  plugins: [vike()]
+})
+```
+
+> You can omit the `npm:` prefix throughout your project.
+
+> Don't use any package manager — let Deno handle your dependencies. See also: [Deno > Fundamentals > Importing third party modules and libraries Jump to heading](https://docs.deno.com/runtime/fundamentals/modules/#importing-third-party-modules-and-libraries).
+
+## Deno flags
+
+Since Deno handles your dependencies, add the `--node-modules-dir` flag to Deno commands.
+
+```json5
+// deno.json
+{
+  "tasks": {
+    "dev": "deno run --allow-all --node-modules-dir npm:vike dev",
+    "build": "deno run --allow-all --node-modules-dir npm:vike build",
+    "preview": "deno run --allow-all --node-modules-dir npm:vike preview",
+    "prod": "deno task build && deno task preview"
+  },
+}
+```
+
+You can now run following commands:
+ - `deno task dev` to start a development server
+ - `deno task build` to build the project
+ - `deno task preview` to preview a production build
+ - `deno task prod` to build and preview the project
+
+<br />
+
+## Examples
+
+- <Example timestamp="2025.10" repo="richard-unterberg/deno-vike-react" />
+  > Vike and <Link href="/vike-react">`vike-react`</Link> with Deno
+- <Example timestamp="2023.04" repo="brillout/vps-deno" />
+  > `vite-plugin-ssr` was the [previous name of Vike](https://vite-plugin-ssr.com/vike).
+

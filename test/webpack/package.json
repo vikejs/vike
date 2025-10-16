@@ -10,10 +10,10 @@
   "dependencies": {
     "@vitejs/plugin-react": "^5.0.2",
     "express": "^5.1.0",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
     "rimraf": "^6.0.1",
-    "vike": "0.4.240",
+    "vike": "0.4.242",
     "vite": "^7.1.4",
     "webpack": "^5.79.0",
     "webpack-cli": "^5.0.1"

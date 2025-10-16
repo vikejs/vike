@@ -1,12 +1,20 @@
 import { Link } from '@brillout/docpress'
 
-When running Vitest consider either:
- - Using Vike's JavaScript API, see <Link href="#with-vike" />.
- - Removing Vike's Vite plugin, see <Link href="#without-vike" />.
 
-## With Vike
+## Unit tests
 
-If you want to use Vitest to test your Vike app, then you can use <Link href="/api">Vike's JavaScript API</Link>:
+Using Vitest for unit tests should work out of the box.
+
+> By default, <Link href="/vite-plugin">Vike's Vite plugin</Link> isn't loaded when running Vitest.
+>
+> This is because Vitest is typically used for unit tests, where Vike's Vite plugin doesn't add any value. For that reason, Vike's Vite plugin removes itself when it detects Vitest.
+>
+> If you do want Vike's Vite plugin to be loaded, use Vike's JavaScript API (Vike's Vite plugin won't remove itself then) — see <Link href="#with-vike-e2e" />.
+
+
+## With Vike (e2e)
+
+If you want to use Vitest to test your whole Vike app (typically for end-to-end tests), use <Link href="/api">Vike's JavaScript API</Link>:
 
 ```ts
 // dev.spec.ts
@@ -33,6 +41,8 @@ function sleep(milliseconds: number): Promise<void> {
   return new Promise((r) => setTimeout(r, milliseconds))
 }
 ```
+
+> Make sure to use Vike's JavaScript API — not [Vite's API](https://vite.dev/guide/api-javascript). (When using Vike's JavaScript API, <Link href="#unit-tests">Vike's Vite pugin won't remove itself</Link>.)
 
 ```ts
 // preview.spec.ts
@@ -96,29 +106,3 @@ async function fetchHtml(urlPathname: string) {
   return html
 }
 ```
-
-> Feel free to [reach out on GitHub Discussions](https://github.com/vikejs/vike/discussions) if you want help setting up Vitest with Vike differently.
-
-
-## Without Vike
-
-If you want to test JavaScript code without testing your Vike app, then remove <Link href="/vite-plugin">Vike's Vite plugin</Link> when running Vitest:
-
-```ts
-// vite.config.ts
-
-import type { UserConfig } from 'vite'
-import vike from 'vike/plugin'
-
-export default {
-  plugin: [
-    // Always add Vike's Vite plugin// [!code --]
-    vike(),// [!code --]
-    // Don't add Vike's Vite plugin when running Vitest// [!code ++]
-    !process.env.VITEST && vike(),// [!code ++]
-    // ...
-  ]
-} satisfies UserConfig
-```
-
-So that you can share your `vite.config.js` settings between Vitest and your Vike app.

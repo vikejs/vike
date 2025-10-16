@@ -1,3 +1,62 @@
+## [0.4.242](https://github.com/vikejs/vike/compare/v0.4.241...v0.4.242) (2025-10-07)
+
+
+### Bug Fixes
+
+* allow omitting vite.config.js for Vike-based frameworks ([a6ddc2d](https://github.com/vikejs/vike/commit/a6ddc2dad79160c45d02650a64c1434d5bd0a2bd))
+* automatically load `globalThis.__VIKE__IS_*` types ([31ee8cc](https://github.com/vikejs/vike/commit/31ee8ccf91149ba885ee6974df781f1e15560ffb))
+* deprecate omitting Vike's Vite plugin inside vite.config.js ([#2763](https://github.com/vikejs/vike/issues/2763)) ([247c80a](https://github.com/vikejs/vike/commit/247c80a769609e7f4d6e2e19a4cbf6c683bff96e))
+* fix Vite's CLI args support ([#2762](https://github.com/vikejs/vike/issues/2762)) ([70ef50f](https://github.com/vikejs/vike/commit/70ef50fd6341f541579c74ee81a7e7c6e9515d14))
+* full-fledged support for third-party CLIs (Vite, Vite Plus, Vitest, Storybook, ...) ([#2760](https://github.com/vikejs/vike/issues/2760)) ([b071c2e](https://github.com/vikejs/vike/commit/b071c2e5071605c3c77e10446b76e7b4b3766e74))
+* skip Vike's Vite pugin for Vitest ([#2761](https://github.com/vikejs/vike/issues/2761)) ([a2ea963](https://github.com/vikejs/vike/commit/a2ea963de660617fb56c2ce837a295086d095609))
+* support getEnhancedError() ([6d5ed71](https://github.com/vikejs/vike/commit/6d5ed71068a95e5a2a7c28647de460b833e4e185))
+* support imoprting built-in modules in config files (fix [#2766](https://github.com/vikejs/vike/issues/2766)) ([60b0676](https://github.com/vikejs/vike/commit/60b06765ab692e40f46f5af12a035cc7e1f61b4a))
+* update Vite's CLI args support ([7e4b4e9](https://github.com/vikejs/vike/commit/7e4b4e9b74f3d1852dbf73c446fe78634f6a2d17))
+
+
+### MINOR BREAKING CHANGES
+
+> [!NOTE]
+> We recommend ignoring `MINOR BREAKING CHANGES` unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
+
+* By default, Vike's Vite plugin now removes itself when it detects Vitest, see https://vike.dev/vitest
+
+
+
+## [0.4.241](https://github.com/vikejs/vike/compare/v0.4.240...v0.4.241) (2025-09-30)
+
+
+### Bug Fixes
+
+* add info log upon rendering error page ([a80417c](https://github.com/vikejs/vike/commit/a80417cc7d0761f0d0353caf6695795d1972975a))
+* assert onRenderClient error isn't nullish ([aa64331](https://github.com/vikejs/vike/commit/aa64331c903b7101cbeb5b75bb1b80f822457e23))
+* don't dedupe error logging on the client-side ([098ff81](https://github.com/vikejs/vike/commit/098ff81daf5ac79d1aa3a519f8c5ccf9679d95f4))
+* enable Vike extensions to override error logging ([82bb0c2](https://github.com/vikejs/vike/commit/82bb0c2171003367836e812ceb468ffcc31c66c3))
+* enable Vike extensions to prettify server-side errors ([64b95cc](https://github.com/vikejs/vike/commit/64b95cc30e2b87ffd5098a0e0f59f691d5c6cec9))
+* fix +extends type ([ac3f1ec](https://github.com/vikejs/vike/commit/ac3f1ec1606a60f6ff4d372bda427cb5b76e3d46))
+* fix serialization non-JSON types ([#2715](https://github.com/vikejs/vike/issues/2715)) ([#2722](https://github.com/vikejs/vike/issues/2722)) ([9ba5428](https://github.com/vikejs/vike/commit/9ba5428d7342670f48c601b1022c6c72f0ac348f))
+* improve file env error message ([a11b13b](https://github.com/vikejs/vike/commit/a11b13b990933bb660d74f90543236c202ed1185))
+* remove false warning about Vitest setup ([39fc350](https://github.com/vikejs/vike/commit/39fc3502a77f3a256d981beb70bd3feb0bfa7c82))
+* remove prettifyThisError() support ([f8f0bcb](https://github.com/vikejs/vike/commit/f8f0bcb2d24e2041f8669a5dda0e9aef003f5c8e))
+* remove too sensitive pluginFileEnv assertion (fix [#2740](https://github.com/vikejs/vike/issues/2740)) ([95fc969](https://github.com/vikejs/vike/commit/95fc96905d06e26179459488b7f69ab2526babc1))
+* support `+data.server.js` (closes [#2724](https://github.com/vikejs/vike/issues/2724)) ([#2727](https://github.com/vikejs/vike/issues/2727)) ([bac5dee](https://github.com/vikejs/vike/commit/bac5dee2ae3164fc643c54734400282652dc70a0))
+* support calling `build()` multiple times (fix [#2733](https://github.com/vikejs/vike/issues/2733)) ([#2736](https://github.com/vikejs/vike/issues/2736)) ([309067c](https://github.com/vikejs/vike/commit/309067ca5c80e3607225599d24afe22a15828877))
+* support constants like `import.meta.env.DEV` in Vitest ([#2734](https://github.com/vikejs/vike/issues/2734)) ([3d03e90](https://github.com/vikejs/vike/commit/3d03e9038de37971c82cbfaed0f918f7472144e9))
+* update CLI command description ([4323b0b](https://github.com/vikejs/vike/commit/4323b0becaf6f5b75b64417291d98573021efc31))
+
+
+### Features
+
+* `+force` (alias for Vite's `--force`) (closes [#2743](https://github.com/vikejs/vike/issues/2743)) ([#2744](https://github.com/vikejs/vike/issues/2744)) ([42b44bb](https://github.com/vikejs/vike/commit/42b44bb78f76592f2dd85bea370d33dfe7429952))
+* new hook +onError ([#2731](https://github.com/vikejs/vike/issues/2731)) ([6f66174](https://github.com/vikejs/vike/commit/6f66174d13cf8b7582c21821a83d409e4abe57e7))
+
+
+### Performance Improvements
+
+* remove debugging code in client-side production ([#2726](https://github.com/vikejs/vike/issues/2726)) ([b1603be](https://github.com/vikejs/vike/commit/b1603bec56799f0255eb314fa8fdf36291f3a8ec))
+
+
+
 ## [0.4.240](https://github.com/vikejs/vike/compare/v0.4.239...v0.4.240) (2025-09-11)
 
 
@@ -29,7 +88,10 @@
 * start using hook filters ([#2688](https://github.com/vikejs/vike/issues/2688)) ([c1acee7](https://github.com/vikejs/vike/commit/c1acee74796b3e0a395a02132f613e41e018d969))
 
 
-### BREAKING CHANGES
+### MINOR BREAKING CHANGES
+
+> [!NOTE]
+> We recommend ignoring `MINOR BREAKING CHANGES` unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
 
 * Update to Vite `6.3.0` or above.
 
@@ -54,7 +116,10 @@
 * CSP support (closes [#1554](https://github.com/vikejs/vike/issues/1554)) ([#2664](https://github.com/vikejs/vike/issues/2664)) ([5762291](https://github.com/vikejs/vike/commit/576229110b71f5271f9fbdd58659a97574f0944d))
 
 
-### BREAKING CHANGES
+### MINOR BREAKING CHANGES
+
+> [!NOTE]
+> We recommend ignoring `MINOR BREAKING CHANGES` unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
 
 * Very old vike-react/vike-vue/vike-solid versions aren't supported anymore, update to a more recent version.
 

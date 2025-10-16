@@ -7,6 +7,8 @@ For a quick overview see <Link href="/routing#filesystem-routing" doNotInferSect
 
 ## Ignored directories
 
+#### Filesystem Routing
+
 Following directories are ignored by Filesystem Routing:
  - `src/`
  - `index/`
@@ -22,7 +24,9 @@ src/(marketing)/pages/jobs/+Page.ts                           /jobs
 pages/pages/src/(some-dir)/about/renderer/index/+Page.ts      /about
 ```
 
-Note that, except of `pages/` and `renderer/`, these directories aren't ignored by <Link href="/config#inheritance">config inheritance</Link>:
+#### Config Inheritance
+
+Note that, except for `pages/` and `renderer/`, the directories above aren't ignored by <Link href="/config#inheritance">config inheritance</Link>:
 
 ```yaml
 pages/index/+config.ts
@@ -31,13 +35,11 @@ pages/about/+Page.ts
 ```
 
 ```yaml
-# This +config.ts file applies to admin-panel/**/*
-admin-panel/pages/+config.ts
-# This +config.ts file applies to (marketing)/**/*
-(marketing)/page/+config.ts
+# This +config.ts file applies to pages/admin-panel/**/*
+pages/admin-panel/+config.ts
+# This +config.ts file applies to pages/(marketing)/**/*
+pages/(marketing)/+config.ts
 ```
-
-> See also: <Link href="/routing#groups" />
 
 Unlike the other ignored directories, the `pages/` and `renderer/` directories are also ignored by config inheritance:
 
@@ -68,6 +70,8 @@ admin-panel/renderer/+onRenderHtml.ts
 # - admin-panel/renderer/+onRenderHtml.ts
 admin-panel/pages/index/+Page.ts
 ```
+
+> We call defining multiple `pages/` directories a <Link href="/file-structure">domain-driven file structure</Link> — note how `(marketing)/pages/` and `admin-panel/pages/` are defined instead of `pages/(marketing)/` and `pages/admin-panel/`.
 
 > See also:
 >  - <Link href="/onRenderHtml" />

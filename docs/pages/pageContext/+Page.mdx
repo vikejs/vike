@@ -112,16 +112,16 @@ URL information:
    ```
    ```js
    {
-     // Without Base URL, and decodes escaped characters.
+     // Without Base URL, decodes escaped characters
      pathname: '/hello/sébastien',
-     // With Base URL, and doesn't decode escaped characters.
+     // With Base URL, doesn't decode escaped characters
      pathnameOriginal: '/some-base-url/hello/s%C3%A9bastien',
      search: { fruit: 'orânge' },
      searchAll: { fruit: ['âpple', 'orânge'] },
      searchOriginal: '?fruit=%C3%A2pple&fruit=orânge',
      hash: 'âge',
      hashOriginal: '#%C3%A2ge'
-     // Without Base URL, and doesn't decode escaped characters.
+     // Without Base URL, doesn't decode escaped characters
      href: 'https://example.com/hello/s%C3%A9bastien?fruit=%C3%A2pple&fruit=orânge#%C3%A2ge',
      origin: 'https://example.com',
      protocol: 'https://',
@@ -543,7 +543,7 @@ To workaround the issue you can either:
   }
   ```
 - Or, if the number of `?filter=` values isn't too large, you can use <Link href="/onBeforePrerenderStart">`onBeforePrerenderStart()`</Link> to pre-render all filter values: `/products?filter=computer`, `/products?filter=car`, ...
-  > You can then also use <Link href="/routing#parameterized-routes">parameterized route `/products/@filter`</Link> instead of `?filter=` if you prefer.
+  > If you use `onBeforePrerenderStart()` then <Link href="/pre-rendering#parameterized-routes">you can use parameterized routes</Link>, such as `/products/@filter` instead of `/products?filter=`.
 
 
 
