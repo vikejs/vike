@@ -60,7 +60,9 @@ Update your production `script` in `package.json`:
 }
 ```
 
-If you chose to override the default server, create (or update) your server entry:
+Optionally, if Photon's built-in server isn't sufficient for you (e.g. [file uploads](https://hono.dev/examples/file-upload) or <Link href="/api-routes">API routes</Link>), create your own server as shown below.
+
+> Photon's built-in server supports only basic features such as SSR. This may or may not be sufficient depending on your needs.
 
 <Tabs>
   <TabList>

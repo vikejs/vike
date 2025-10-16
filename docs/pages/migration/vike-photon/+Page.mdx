@@ -61,18 +61,18 @@ Guide to migrate from <Link href="/vike-server">`vike-server`</Link> to <Link hr
 // pages/+config.ts
 
 import type { Config } from 'vike/types'
-import vikeServer from 'vike-server/config';// [!code --]
-import vikePhoton from 'vike-photon/config';// [!code ++]
+import vikeServer from 'vike-server/config'// [!code --]
+import vikePhoton from 'vike-photon/config'// [!code ++]
 
 export default {
   extends: [
     // ...
     vikeServer,// [!code --]
-    vikePhoton,// [!code ++]
+    vikePhoton// [!code ++]
   ],
   server: 'server/index.ts',// [!code --]
   photon: {// [!code ++]
-    server: 'server/index.ts',// [!code ++]
+    server: 'server/index.ts'// [!code ++]
   }// [!code ++]
 } satisfies Config
 ```
