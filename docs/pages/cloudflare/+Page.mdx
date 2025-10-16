@@ -59,7 +59,8 @@ export default {
 {
   "scripts": {
     "dev": "vike dev",
-    "preview": "vike preview"// [!code ++]
+    "preview": "vike preview"// [!code ++],
+    "deploy": "vike build && wrangler deploy"// [!code ++]
   }
 }
 ```
@@ -90,7 +91,7 @@ export default {
 
 `@photonjs/cloudflare` currently only supports Hono and Hattip — more servers are coming soon.
 
-> Using a server is optional with <Link href="/vike-photon" />, even when deploying a SSR app
+> Using a server is optional with <Link href="/vike-photon" />, even when SSR is enabled
 
 <Tabs>
   <TabList>
@@ -139,6 +140,33 @@ export default {
 ```
 
 See <Link href="/vike-photon#get-started" /> for instructions concerning `server/index.ts`
+
+## Deploy
+
+To deploy an app to [Cloudflare Workers](https://developers.cloudflare.com/workers/), run the `deploy` script:
+
+<Tabs>
+  <TabList>
+    <Tab>npm</Tab>
+    <Tab>pnpm</Tab>
+    <Tab>yarn</Tab>
+  </TabList>
+  <TabPanel>
+    ```shell
+    npm deploy
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    pnpm deploy
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    yarn deploy
+    ```
+  </TabPanel>
+</Tabs>
 
 ## Cloudflare APIs
 
