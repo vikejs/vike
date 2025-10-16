@@ -4,18 +4,18 @@ import '../../components/tabs.css'
 import { UseScaffolder } from '../../components'
 import { Example } from '../../components'
 
-We recommend using <Link href="/vike-photon" /> for a seamless and full-fledged [Vercel](https://vercel.com) integration with ISR and Edge Middlewares.
+We recommend <Link href="#photon">using Photon</Link> for a seamless and full-fledged [Vercel](https://vercel.com) integration with ISR and Edge Middlewares.
 
-Alternatively, for more control, you can manually integrate Vercel yourself.
+> <UseScaffolder>Vercel (using Photon)</UseScaffolder>
 
-> <UseScaffolder>Vercel</UseScaffolder>
+> Alternatively, for more control, you can <Link href="#manual-integration">manually integrate Vercel</Link> instead of using Photon.
 
 
-## `vike-photon` with `@photonjs/vercel`
+## Photon
 
 <Link href="/vike-photon" /> enables zero-configuration support for all Vercel features, including [Incremental Static Regeneration (ISR)](https://vercel.com/docs/concepts/incremental-static-regeneration/overview) and Edge Middlewares.
 
-If you <Link text="pre-render your pages only partially" href="/prerender#partial" />, you can also use <Link href="/vike-photon" /> to statically deploy your pre-rendered pages while dynamically serving your non-prerendered pages.
+> If you <Link href="/pre-rendering#partial">pre-render your pages only partially</Link>, you can also use <Link href="/vike-photon" /> to statically deploy your pre-rendered pages while dynamically serving your SSR pages.
 
 <Tabs>
   <TabList>
@@ -60,19 +60,21 @@ export default {
 > See <Link href="/vike-photon" /> if you need to configure a server.
 
 
-## Deploy
+## Deployment
 
-### Using `vercel` CLI
+You can deploy your app using either Vercel's CLI or Vercel's Git integration.
 
-Install the [Vercel CLI](https://vercel.com/docs/cli), and run the `vercel` command.
+### CLI
+
+Install the [Vercel CLI](https://vercel.com/docs/cli), then run the `vercel` command.
 The CLI will guide you through the necessary steps.
 
-### Using git integration
+### Git
 
 See the [official documentation](https://vercel.com/docs/git#deploying-a-git-repository).
 
 
-## Custom integration
+## Manual integration
 
 ### API Route
 

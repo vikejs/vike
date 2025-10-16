@@ -11,7 +11,7 @@ We recommend <Link href="#photon">using Photon</Link> to deploy your app to [Clo
 
 > <UseScaffolder>Cloudflare (using Photon)</UseScaffolder>
 
-> You can also <Link href="#manual-integration">manually integrate Cloudflare</Link>.
+> Alternatively, for more control, you can <Link href="#manual-integration">manually integrate Cloudflare</Link> instead of using Photon.
 
 
 ## Photon
@@ -102,9 +102,9 @@ import vikePhoton from 'vike-photon/config'
 
 export default {
   extends: [vikePhoton],
-  photon: {
+  photon: {// [!code ++]
     server: 'server/index.ts'// [!code ++]
-  }
+  }// [!code ++]
 } satisfies Config
 ```
 
