@@ -62,7 +62,7 @@ export default {
 {
   "scripts": {
     "dev": "vike dev",
-    "preview": "vike build && vike preview",// [!code ++]
+    "preview": "vike build && vite preview",// [!code ++]
     "deploy": "vike build && wrangler deploy"// [!code ++]
   }
 }
@@ -76,9 +76,7 @@ export default {
   "$schema": "node_modules/wrangler/config-schema.json",
   "compatibility_date": "2025-08-06",
   "name": "my-vike-cloudflare-app",
-  "main": "photon:cloudflare:photon:server-entry",
-  // Required during dev and build
-  "compatibility_flags": ["nodejs_compat"]
+  "main": "photon:cloudflare:photon:server-entry"
 }
 ```
 </FileAdded>
