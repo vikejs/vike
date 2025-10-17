@@ -175,6 +175,7 @@ function LinkTagline({
 }
 
 function Replaces() {
+  const slashOpacity = 0.65
   return (
     <div
       style={{
@@ -192,7 +193,8 @@ function Replaces() {
       <div
         style={{
           backgroundColor: '#eee',
-          padding: '0 8px',
+          paddingRight: 8,
+          paddingLeft: 10,
           display: 'flex',
           alignItems: 'center',
           letterSpacing: '0.05em',
@@ -205,14 +207,15 @@ function Replaces() {
         style={{
           backgroundColor: '#8d8d8d',
           color: 'white',
-          padding: '2px 8px',
-          display: 'flex',
-          alignItems: 'center',
+          padding: '2px 0',
+          paddingLeft: 8,
+          paddingRight: 11,
           fontSize: 13,
           fontWeight: 550,
         }}
       >
-        Next.js, Nuxt, ...
+        Next.js <span style={{ opacity: slashOpacity }}>/</span> Nuxt{' '}
+        <span style={{ opacity: slashOpacity }}>/ ...</span>
       </div>
     </div>
   )
