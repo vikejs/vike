@@ -1,9 +1,3 @@
-h1 #tagline-main {
-  font-size: 60px;
-}
-h1 #tagline-secondary {
-  font-size: 27px;
-}
 #landing-page h2 {
   font-size: 36px;
   font-weight: 500;
@@ -13,17 +7,6 @@ h1 #tagline-secondary {
   font-weight: 500;
 }
 @media screen and (max-width: 768px) {
-  h1 #tagline-main {
-    font-size: 50px;
-    line-height: 1.2;
-    margin-bottom: 30px;
-  }
-  h1 #tagline-secondary {
-    font-size: 20px;
-  }
-  #landing-page h1 {
-    font-size: 48px;
-  }
   #landing-page h2 {
     font-size: 28px;
   }
