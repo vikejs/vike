@@ -139,8 +139,7 @@ export default {
     // server/index.ts
 
     import { Hono } from 'hono'
-    import { apply } from 'vike-cloudflare/hono'// [!code ++]
-    import { serve } from 'vike-cloudflare/hono/serve'// [!code ++]
+    import { apply, serve } from '@photonjs/hono'// [!code ++]
 
     function startServer() {
       const app = new Hono()
@@ -178,8 +177,7 @@ export default {
     // server/index.ts
 
     import { createRouter } from '@hattip/router'
-    import { apply } from 'vike-cloudflare/hattip'// [!code ++]
-    import { serve } from 'vike-cloudflare/hattip/serve'// [!code ++]
+    import { apply, serve } from '@photonjs/hattip'// [!code ++]
 
     function startServer() {
       const router = createRouter()
