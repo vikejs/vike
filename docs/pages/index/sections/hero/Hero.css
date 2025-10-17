@@ -45,7 +45,7 @@ h1 #tagline-secondary {
     zoom: 0.7;
   }
   #hero-badge {
-    zoom: 0.9;
+    font-size: 10px !important;
   }
   #tagline-secondary {
     max-width: 450px !important;

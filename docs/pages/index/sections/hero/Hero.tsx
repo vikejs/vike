@@ -199,7 +199,7 @@ function Replaces() {
           display: 'flex',
           alignItems: 'center',
           letterSpacing: '0.05em',
-          fontSize: 11,
+          lineHeight: 1.3,
         }}
       >
         REPLACES
@@ -208,10 +208,11 @@ function Replaces() {
         style={{
           backgroundColor: '#8d8d8d',
           color: 'white',
-          padding: '2px 0',
+          padding: '4px 0',
           paddingLeft: 8,
           paddingRight: 11,
-          fontSize: 13,
+          fontSize: '1.19em',
+          lineHeight: 1.2,
           fontWeight: 550,
         }}
       >
