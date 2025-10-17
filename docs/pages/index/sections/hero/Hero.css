@@ -27,6 +27,9 @@
   .hero-usedby {
     zoom: 0.7;
   }
+  #hero-badge {
+    zoom: 0.9;
+  }
   #tagline-secondary {
     max-width: 450px !important;
   }

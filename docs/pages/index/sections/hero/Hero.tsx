@@ -178,6 +178,7 @@ function Replaces() {
   const slashOpacity = 0.65
   return (
     <div
+      id="hero-badge"
       style={{
         display: 'inline-flex',
         fontSize: 11,
