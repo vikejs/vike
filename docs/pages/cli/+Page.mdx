@@ -7,6 +7,11 @@ Usage:
 - `$ vike prerender` <Link href="/pre-rendering">Pre-render</Link> pages (only needed when <Link href="/prerender#disableautorun">`prerender.disableAutoRun`</Link> is `true`).
 - `$ vike -v` Print Vike's installed version.
 
+> **Can I use Vite's CLI instead?**
+>
+> Yes, you can — Vike has full-fledged support for third-party CLIs (Vite, Vitest, Storybook, ...).
+>
+> That said, we generally recommend using Vike's CLI for better DX. For example, you can pass Vike-specific settings like `$ vike build --prerender false`, which isn't supported by third-party CLIs.
 
 ## Vike settings
 
@@ -31,11 +36,11 @@ $ vike build --prerender "{parallel:4,noExtraDir:true}"
 $ vike dev --force
 ```
 
-> These are all Vike settings: <Link href="/host" noBreadcrumb />/<Link href="/port" noBreadcrumb />/<Link href="/mode" noBreadcrumb />/<Link href="/prerender" noBreadcrumb />/<Link href="/force" noBreadcrumb />. (Note that Vike aliases some Vite settings for convenience, see <Link href="#vite-settings"/>.)
+> These are all Vike settings: <Link href="/host" noBreadcrumb />/<Link href="/port" noBreadcrumb />/<Link href="/mode" noBreadcrumb />/<Link href="/prerender" noBreadcrumb />/<Link href="/force" noBreadcrumb /> — note that Vike aliases some Vite settings for convenience, see <Link href="#vite-settings"/>.
 
 > You can set values using JavaScript(-like) syntax (see <Link href="#json5-syntax" />).
 
-#### `VIKE_CONFIG` environment variable
+#### `VIKE_CONFIG`
 
 You can also use the `VIKE_CONFIG` environment variable, for example:
 
@@ -60,13 +65,13 @@ Vike's CLI supports following [Vite CLI options](https://vite.dev/guide/cli#opti
  - `--port`
  - `--force`
 
-> These are actually Vike settings, which alias Vite settings. (See <Link href="/host" noBreadcrumb />/<Link href="/mode" noBreadcrumb />/<Link href="/port" noBreadcrumb />/<Link href="/force" noBreadcrumb />.) In other words: each Vike CLI option corresponds to a <Link href="/settings">Vike setting</Link>.
+> These are Vike settings that alias Vite settings (see <Link href="/host" noBreadcrumb />/<Link href="/mode" noBreadcrumb />/<Link href="/port" noBreadcrumb />/<Link href="/force" noBreadcrumb />). Each Vike CLI option corresponds to a <Link href="/settings">Vike setting</Link>.
 >
-> Reach out if you believe there are other Vite settings that should also be aliased.
+> Reach out if you believe some other Vite settings should also be aliased.
 
 For other Vite settings, use `vite.config.js` or `VITE_CONFIG`.
 
-#### `VITE_CONFIG` environment variable
+#### `VITE_CONFIG`
 
 You can use the `VITE_CONFIG` environment variable to pass [Vite settings](https://vite.dev/config/), for example:
 
