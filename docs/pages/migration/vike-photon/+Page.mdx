@@ -269,6 +269,94 @@ export default {
   </TabPanel>
 </Tabs>
 
+## 5. Replace `vike-cloudflare`
+
+> This step is only required if you have `vike-cloudflare` installed
+
+<Tabs>
+  <TabList>
+    <Tab>npm</Tab>
+    <Tab>pnpm</Tab>
+    <Tab>yarn</Tab>
+  </TabList>
+  <TabPanel>
+    ```shell
+    npm uninstall vike-cloudflare
+    npm i @photonjs/cloudflare
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    pnpm remove vike-cloudflare
+    pnpm add @photonjs/cloudflare
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    yarn remove vike-cloudflare
+    yarn add @photonjs/cloudflare
+    ```
+  </TabPanel>
+</Tabs>
+
+```ts
+// pages/+config.ts
+
+import vikeCloudflare from 'vike-cloudflare/config'// [!code --]
+
+export default {
+  extends: [
+    // ...
+    vikeCloudflare// [!code --]
+  ]
+}
+```
+
+
+## 6. Replace `vite-plugin-vercel`
+
+> This step is only required if you have `vite-plugin-vercel` installed
+
+<Tabs>
+  <TabList>
+    <Tab>npm</Tab>
+    <Tab>pnpm</Tab>
+    <Tab>yarn</Tab>
+  </TabList>
+  <TabPanel>
+    ```shell
+    npm uninstall vite-plugin-vercel
+    npm i @photonjs/vercel
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    pnpm remove vite-plugin-vercel
+    pnpm add @photonjs/vercel
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    yarn remove vite-plugin-vercel
+    yarn add @photonjs/vercel
+    ```
+  </TabPanel>
+</Tabs>
+
+
+```ts
+// vite.config.ts
+
+import vercel from "vite-plugin-vercel";// [!code --]
+
+export default {
+  vercel: {// [!code --]
+    // ...// [!code --]
+  },// [!code --]
+};
+```
+
+Then head to <Link href="/vercel" /> for additional advanced configurations.
 
 ## See also
 
