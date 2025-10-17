@@ -20,7 +20,7 @@ Finally, Vike is a community project: instead of leaning on a framework with bus
 
 |                                                                 | Vike                                                       | Next.js                       |
 | --------------------------------------------------------------- | ---------------------------------------------------------- | ----------------------------- |
-| Bundler                                                         | Vite (dev: esbuild+ESM, prod: Rollup)                      | Webpack                       |     
+| Bundler                                                         | Vite (dev: esbuild+ESM, prod: Rollup)                      | Webpack                       |
 | UI Framework                                                    | Any (React, Preact, Solid, etc.)                           | React only                    |
 | Code-splitting and bundling                                     | Yes                                                        | Yes                           |
 | HMR                                                             | Yes, fast                                                  | Yes, slow                     |
@@ -37,7 +37,7 @@ Finally, Vike is a community project: instead of leaning on a framework with bus
 | <Link text="Base URL" href="/base-url" />                       | Yes                                                        | Limited                       |
 | <p align="center">**Pre-rendering (SSG)**</p>                                                   |                                                            |                               |
 | Pre-rendering (SSG)                                    | Yes, for pages                                                        | Yes, for pages, or components ([Partial Pre-rendering](https://nextjs.org/learn/dashboard-app/partial-prerendering) using RSC)                               |
-| Incremental Static Regeneration (ISR)                  | No*, use <Link text="vite-plugin-vercel" href="/vercel#vite-plugin-vercel" />        | Yes, in the Node.js runtime, on Vercel    |
+| Incremental Static Regeneration (ISR)                  | No*, use <Link text="@photonjs/vercel" href="/vercel#isr" />        | Yes, in the Node.js runtime, on Vercel    |
 | SPA-only mode (popular for PWAs) ***                   | Yes                                                        | Limited: [no dynamic routing in App Router](https://github.com/vercel/next.js/discussions/64660)                       |
 | <p align="center">**Integrations**</p>                                                    |                                                            |                               |
 HTTP server | No*, bring your own | Baked-in, custom server partially supported with caveats[[1]](https://github.com/vikejs/vike/issues/158#issuecomment-1355306156)[[2]](https://stackoverflow.com/questions/58742343/do-i-have-to-use-express-in-next-js-project/70945468#70945468) |
@@ -160,7 +160,7 @@ Vike does not cache, by design, so by default your app will behave as you expect
 
 ### Next.js - server-first oriented
 
-Next.js - made by Vercel, a hosting provider - is server-focused. It now defaults to interpreting all React components in the React render tree as React Server Components (RSC), and if you don't want that, you have to opt-out. 
+Next.js - made by Vercel, a hosting provider - is server-focused. It now defaults to interpreting all React components in the React render tree as React Server Components (RSC), and if you don't want that, you have to opt-out.
 
 With RSCs, you have to inject the bundler directive "use client" (aka. start client bundling) into your React component tree at the start of every branch with components that you want to turn into Client Components.
 
