@@ -31,23 +31,42 @@ The entire documentation for using Photon is contained on this page, <Link href=
 
 > If you're using `vike-server` then  <Link href="/migration/vike-photon">migrate to `vike-photon`</Link>.
 
-To add `vike-photon` to an existing Vike app: install the `vike-photon` npm package (e.g. `$ npm install vike-photon`) then extend your existing <Link href="/config#files">`+config.js`</Link> file (or create one) with `vike-photon`:
+#### 1. Install
 
+<Tabs>
+  <TabList>
+    <Tab>npm</Tab>
+    <Tab>pnpm</Tab>
+    <Tab>yarn</Tab>
+  </TabList>
+  <TabPanel>
+    ```shell
+    npm i vike-photon
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    pnpm add vike-photon
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    yarn add vike-photon
+    ```
+  </TabPanel>
+</Tabs>
 ```ts
-// +config.ts
+// pages/+config.ts
 
 import type { Config } from 'vike/types'
 import vikePhoton from 'vike-photon/config'// [!code ++]
 
 export const config = {
-  extends: [vikePhoton],// [!code ++]
-  // (optional) override the default server
-  photon: {// [!code ++]
-    // Points to your server entry// [!code ++]
-    server: 'server/index.ts'// [!code ++]
-  }// [!code ++]
+  extends: [vikePhoton]// [!code ++]
 } satisfies Config
 ```
+
+#### 2. Scripts
 
 Update your production script in `package.json`:
 
@@ -61,7 +80,7 @@ Update your production script in `package.json`:
 }
 ```
 
-**Server**
+#### 3. Server (optional)
 
 <PhotonBuiltInServer />
 
