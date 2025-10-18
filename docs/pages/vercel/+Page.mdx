@@ -1,17 +1,111 @@
 import { Link, Warning } from '@brillout/docpress'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+import '../../components/tabs.css'
 import { UseScaffolder } from '../../components'
 import { Example } from '../../components'
+import { PhotonBuiltInServer, PhotonBetaWarning, PhotonAutoLoad, PhotonDeploymentProviderIntroPart1, PhotonDeploymentProviderIntroPart2 } from '../vike-photon/components'
 
-You can deploy Vike to [Vercel](https://vercel.com) simply by using a Vercel API Route. Alternatively, you can use `vite-plugin-vercel` for a full-fledged Vercel integration with ISR and Edge Middlewares.
-
-We recommend using the Vercel API Route technique because it's a simple and sturdy integration. Later, if the need arises, you can switch to `vite-plugin-vercel`.
-
-> <UseScaffolder>Vercel</UseScaffolder>
+<PhotonDeploymentProviderIntroPart1 provider="Vercel" link="https://vercel.com" />
+<PhotonDeploymentProviderIntroPart2 provider="Vercel" />
 
 
-## API Route
+## Get started
 
-You can integrate Vercel simply by creating a Vercel API Route `api/ssr.js` that server-side renders your app.
+### New app
+
+<UseScaffolder>Vercel with Photon</UseScaffolder>
+
+### Add to existing app
+
+> If you're using `vike-server` then  <Link href="/migration/vike-photon">migrate to `vike-photon`</Link>.
+
+#### 1. Install
+
+<Tabs>
+  <TabList>
+    <Tab>npm</Tab>
+    <Tab>pnpm</Tab>
+    <Tab>yarn</Tab>
+  </TabList>
+  <TabPanel>
+    ```shell
+    npm i vike-photon @photonjs/vercel
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    pnpm add vike-photon @photonjs/vercel
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    yarn add vike-photon @photonjs/vercel
+    ```
+  </TabPanel>
+</Tabs>
+
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+import vikePhoton from 'vike-photon/config'// [!code ++]
+
+export default {
+  extends: [vikePhoton]// [!code ++]
+} satisfies Config
+```
+
+<PhotonAutoLoad pkg="vercel" />
+
+> Under the hood, `@photonjs/vercel` uses Vercel's [Build Output API](https://vercel.com/docs/build-output-api/v3).
+
+#### 2. Server (optional)
+
+<PhotonBuiltInServer />
+
+#### 3. Deployment
+
+See <Link href="#deployment" />.
+
+
+## Deployment
+
+You can deploy your app using either Vercel's CLI or Vercel's Git integration.
+
+### CLI
+
+Install the [Vercel CLI](https://vercel.com/docs/cli), then run the `vercel` command.
+The CLI will guide you through the necessary steps.
+
+### Git
+
+See the [official documentation](https://vercel.com/docs/git#deploying-a-git-repository).
+
+
+## ISR
+
+Vike supports [Incremental Static Regeneration (ISR)](https://vercel.com/docs/concepts/incremental-static-regeneration/overview) when using Photon.
+
+```ts
+// pages/some-route/+config.ts
+
+import type { Config } from 'vike/types'
+
+export default {
+  // Options
+  isr: {
+    // Expiration time (in seconds) before the cached asset is re-generated
+    expiration: 30
+  },
+} satisfies Config
+```
+
+
+## Manual integration
+
+### API Route
+
+A simple way to integrate Vercel is to create a Vercel API Route `api/ssr.js` that server-side renders your app.
 
 Example:
  - <Example timestamp="2024.03" repo="brillout/vike-with-vercel" />
@@ -20,31 +114,20 @@ Example:
 > Using a Vercel API Route is a sturdy way to deploy to Vercel, as API Routes is a core Vercel feature: it's here to stay and, most importantly, stable. (Whereas Vercel's Build Output API is a moving target with occasional breaking changes.) Once you've set the server-side rendering API Route, you can expect it to work for the foreseeable future.
 
 
-## vite-plugin-vercel
+### Build Output API
 
-[`vite-plugin-vercel`](https://github.com/magne4000/vite-plugin-vercel) enables zero-configuration support for all Vercel features, including [Incremental Static Regeneration (ISR)](https://vercel.com/docs/concepts/incremental-static-regeneration/overview) and Edge Middlewares.
-
-If you <Link text="pre-render your pages only partially" href="/prerender#partial" />, you can also use `vite-plugin-vercel` to statically deploy your pre-rendered pages while dynamically serving your non-prerendered pages.
-
-> See Vike + `vite-plugin-vercel` installation instructions at [`vite-plugin-vercel` > Usage with Vike](https://github.com/magne4000/vite-plugin-vercel#usage-with-vike).
-
-> Under the hood, `vite-plugin-vercel` uses Vercel's [Build Output API](https://vercel.com/docs/build-output-api/v3).
-
-
-## Build Output API
-
-For maximum flexibility and configuration options, you can directly use the [Build Output API](https://vercel.com/docs/build-output-api/v3).
+For maximum flexibility and configuration options, you can use the [Build Output API](https://vercel.com/docs/build-output-api/v3) instead of an API route.
 
 Example:
  - <Example timestamp="2022.07" repo="brillout/vite-plugin-ssr_vercel_build-output-api" />
    > vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike).
 
 
-## Data APIs (GraphQL, RESTful, RPC)
+### API Routes with development
 
-Vercel API Routes only work on Vercel's platform; you cannot run them locally.
+Vercel API Routes only work in production on Vercel's platform. This means, you may need to re-create your API routes integration for development.
 
-This means that you need to integrate your data layer twice:
+For example, you typically need to integrate your data layer twice:
  1. Using Vercel's API Routes, for Vercel deployment.
  1. Using a local server (e.g. Express.js), for development.
 
@@ -56,5 +139,3 @@ This is usually easy to achieve as most data layer tools integrate using a singl
 In other words, you can add a data layer by:
  - Creating a new Vercel API Route, integrating that single endpoint.
  - Creating a new route to your local development server (e.g. Express.js), integrating that single endpoint.
-
-> When using SSR, we recommend using [RPC instead of GraphQL](https://telefunc.com/RPC-vs-GraphQL-REST), leading to a substantial simplification and increased development speed.

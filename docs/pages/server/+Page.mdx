@@ -1,20 +1,10 @@
-import { Link } from '@brillout/docpress'
-import { ConfigSpec, ProvidedBy } from '../../components'
+import { Link, Warning } from '@brillout/docpress'
+import { WhyPhoton } from '../vike-photon/components'
 
-<ConfigSpec
-  env="server"
-  providedBy={<ProvidedBy extension="vike-server">the <code>+server</code> setting</ProvidedBy> }
->
-```ts ts-only hide-menu
-import type { BuildOptions } from 'esbuild'
-type Server =
-  | string
-  | {
-      entry: string | { index: string; [name: string]: string }
-      standalone?: boolean | { esbuild: BuildOptions }
-      hmr?: boolean | 'prefer-restart'
-    }
-```
-</ConfigSpec>
+<Warning>
+  The `+server` setting has been replaced by <Link href="/photon">`+photon`</Link>, see:
+  - <Link href="/vike-server" />
+  - <Link href="/migration/vike-photon" />
+</Warning>
 
-The documentation for the various `+server` settings lives at <Link href="/vike-server"></Link>.
+> <WhyPhoton />

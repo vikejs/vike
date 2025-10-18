@@ -650,8 +650,8 @@ const headings = [
   },
   {
     level: 2,
-    title: '`+server`',
-    url: '/server',
+    title: '`+photon`',
+    url: '/photon',
   },
   {
     level: 2,
@@ -1007,8 +1007,8 @@ function extensions() {
         url: '/vike-solid',
       },
       {
-        title: '`vike-server`',
-        url: '/vike-server',
+        title: '`vike-photon`',
+        url: '/vike-photon',
         sectionTitles: ['HTTPS'],
         category: 'Overview',
       },
@@ -1247,6 +1247,11 @@ function blog() {
       {
         title: 'Introducing `vike-server`',
         url: '/blog/vike-server',
+      },
+      {
+        title: 'Introducing Photon',
+        url: '/blog/photon',
+        sectionTitles: ['Why Photon?'],
       },
       {
         title: 'Vite 6 is a groundbreaking release',
@@ -1519,6 +1524,14 @@ function deprecated() {
         title: '`_default.page.route.js`',
         url: '/_default.page.route.js',
       },
+      {
+        title: '`+server.js`',
+        url: '/server',
+      },
+      {
+        title: '`vike-server`',
+        url: '/vike-server',
+      },
     ] as const
   ).map((h) => ({ ...h, category: 'Deprecated' as const })) satisfies HeadingDetachedDefinition[]
 }
@@ -1566,6 +1579,10 @@ function migrations() {
       {
         title: 'Migrate `vike-cloudflare`',
         url: '/migration/vike-cloudflare',
+      },
+      {
+        title: 'Migration to `vike-photon`',
+        url: '/migration/vike-photon',
       },
     ] as const
   ).map((h) => ({ ...h, category: 'Migration' as const })) satisfies HeadingDetachedDefinition[]

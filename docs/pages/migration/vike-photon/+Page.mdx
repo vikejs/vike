@@ -1,0 +1,372 @@
+import { Link } from '@brillout/docpress'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+import '../../../components/tabs.css'
+import { PhotonAutoLoad } from '../../vike-photon/components'
+
+Guide to migrate from <Link href="/vike-server">`vike-server`</Link> to <Link href="/vike-photon">`vike-photon`</Link>.
+
+> See also:
+>
+> - <Link href="/vike-photon" />
+> - <Link href="/blog/photon" />
+
+## 1. Update dependencies
+
+<Tabs>
+  <TabList>
+    <Tab>npm</Tab>
+    <Tab>pnpm</Tab>
+    <Tab>yarn</Tab>
+  </TabList>
+  <TabPanel>
+    ```shell
+    npm uninstall vike-server
+    npm i vike-photon vike@latest
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    pnpm remove vike-server
+    pnpm add vike-photon vike@latest
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    yarn remove vike-server
+    yarn add vike-photon vike@latest
+    ```
+  </TabPanel>
+</Tabs>
+
+> `vike-photon` requires `vike >= 0.4.239`
+
+
+## 2. Update `scripts`
+
+```json
+// package.json
+
+{
+  "scripts": {
+    "dev": "vike dev",
+    "build": "vike build",
+    "prod": "NODE_ENV=production node dist/server/index.js"// [!code --]
+    "prod": "node ./dist/server/index.mjs"// [!code ++]
+  }
+}
+```
+
+## 3. Update `+config.js`
+
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+import vikeServer from 'vike-server/config'// [!code --]
+import vikePhoton from 'vike-photon/config'// [!code ++]
+
+export default {
+  extends: [
+    // ...
+    vikeServer,// [!code --]
+    vikePhoton// [!code ++]
+  ],
+  server: 'server/index.ts',// [!code --]
+  photon: {// [!code ++]
+    server: 'server/index.ts'// [!code ++]
+  }// [!code ++]
+} satisfies Config
+```
+
+## 4. Update server entry
+
+<Tabs>
+  <TabList>
+    <Tab>Hono</Tab>
+    <Tab>Express.js</Tab>
+    <Tab>Fastify</Tab>
+    <Tab>H3</Tab>
+    <Tab>Elysia</Tab>
+  </TabList>
+  <TabPanel>
+    {/* Hono */}
+    <Tabs>
+      <TabList>
+        <Tab>npm</Tab>
+        <Tab>pnpm</Tab>
+        <Tab>yarn</Tab>
+      </TabList>
+      <TabPanel>
+        ```shell
+        npm i @photonjs/hono
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        pnpm add @photonjs/hono
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        yarn add @photonjs/hono
+        ```
+      </TabPanel>
+    </Tabs>
+
+    ```ts
+    // server/index.ts
+
+    import { Hono } from 'hono'
+    // @detype-uncomment import { apply } from 'vike-server/hono'// [!code --]
+    // @detype-uncomment import { serve } from 'vike-server/hono/serve'// [!code --]
+    import { apply, serve } from '@photonjs/hono'// [!code ++]
+
+    // ...
+    ```
+  </TabPanel>
+  <TabPanel>
+    {/* Express.js */}
+    <Tabs>
+      <TabList>
+        <Tab>npm</Tab>
+        <Tab>pnpm</Tab>
+        <Tab>yarn</Tab>
+      </TabList>
+      <TabPanel>
+        ```shell
+        npm i @photonjs/express
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        pnpm add @photonjs/express
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        yarn add @photonjs/express
+        ```
+      </TabPanel>
+    </Tabs>
+
+    ```ts
+    // server/index.ts
+
+    import express from 'express'
+    // @detype-uncomment import { apply } from 'vike-server/express'// [!code --]
+    // @detype-uncomment import { serve } from 'vike-server/express/serve'// [!code --]
+    import { apply, serve } from '@photonjs/express'// [!code ++]
+
+    // ...
+    ```
+  </TabPanel>
+  <TabPanel>
+    {/* Fastify */}
+    <Tabs>
+      <TabList>
+        <Tab>npm</Tab>
+        <Tab>pnpm</Tab>
+        <Tab>yarn</Tab>
+      </TabList>
+      <TabPanel>
+        ```shell
+        npm i @photonjs/fastify
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        pnpm add @photonjs/fastify
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        yarn add @photonjs/fastify
+        ```
+      </TabPanel>
+    </Tabs>
+
+    ```ts
+    // server/index.ts
+
+    import fastify from 'fastify'
+    // @detype-uncomment import { apply } from 'vike-server/fastify'// [!code --]
+    // @detype-uncomment import { serve } from 'vike-server/fastify/serve'// [!code --]
+    import { apply, serve } from '@photonjs/fastify'// [!code ++]
+
+    // ...
+    ```
+  </TabPanel>
+  <TabPanel>
+    {/* H3 */}
+    <Tabs>
+      <TabList>
+        <Tab>npm</Tab>
+        <Tab>pnpm</Tab>
+        <Tab>yarn</Tab>
+      </TabList>
+      <TabPanel>
+        ```shell
+        npm i @photonjs/h3
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        pnpm add @photonjs/h3
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        yarn add @photonjs/h3
+        ```
+      </TabPanel>
+    </Tabs>
+
+    ```ts
+    // server/index.ts
+
+    import { createApp } from 'h3'
+    // @detype-uncomment import { apply } from 'vike-server/h3'// [!code --]
+    // @detype-uncomment import { serve } from 'vike-server/h3/serve'// [!code --]
+    import { apply, serve } from '@photonjs/h3'// [!code ++]
+
+    // ...
+    ```
+  </TabPanel>
+  <TabPanel>
+    {/* Elysia */}
+    <Tabs>
+      <TabList>
+        <Tab>npm</Tab>
+        <Tab>pnpm</Tab>
+        <Tab>yarn</Tab>
+      </TabList>
+      <TabPanel>
+        ```shell
+        npm i @photonjs/elysia
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        pnpm add @photonjs/elysia
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        yarn add @photonjs/elysia
+        ```
+      </TabPanel>
+    </Tabs>
+
+    ```ts
+    // server/index.ts
+
+    import { Elysia } from 'elysia'
+    // @detype-uncomment import { apply } from 'vike-server/elysia'// [!code --]
+    // @detype-uncomment import { serve } from 'vike-server/elysia/serve'// [!code --]
+    import { apply, serve } from '@photonjs/elysia'// [!code ++]
+
+    // ...
+    ```
+  </TabPanel>
+</Tabs>
+
+## 5a. Replace `vike-cloudflare`
+
+> This step is only required if you use `vike-cloudflare`.
+
+<Tabs>
+  <TabList>
+    <Tab>npm</Tab>
+    <Tab>pnpm</Tab>
+    <Tab>yarn</Tab>
+  </TabList>
+  <TabPanel>
+    ```shell
+    npm uninstall vike-cloudflare
+    npm i @photonjs/cloudflare
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    pnpm remove vike-cloudflare
+    pnpm add @photonjs/cloudflare
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    yarn remove vike-cloudflare
+    yarn add @photonjs/cloudflare
+    ```
+  </TabPanel>
+</Tabs>
+
+```ts
+// pages/+config.ts
+
+import vikeCloudflare from 'vike-cloudflare/config'// [!code --]
+
+export default {
+  extends: [
+    // ...
+    vikeCloudflare// [!code --]
+  ]
+}
+```
+
+<PhotonAutoLoad pkg="cloudflare" />
+
+> See also: <Link href="/cloudflare" />.
+
+## 5b. Replace `vite-plugin-vercel`
+
+> This step is only required if you use `vite-plugin-vercel`.
+
+<Tabs>
+  <TabList>
+    <Tab>npm</Tab>
+    <Tab>pnpm</Tab>
+    <Tab>yarn</Tab>
+  </TabList>
+  <TabPanel>
+    ```shell
+    npm uninstall vite-plugin-vercel
+    npm i @photonjs/vercel
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    pnpm remove vite-plugin-vercel
+    pnpm add @photonjs/vercel
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    yarn remove vite-plugin-vercel
+    yarn add @photonjs/vercel
+    ```
+  </TabPanel>
+</Tabs>
+
+
+```ts
+// vite.config.ts
+
+import vercel from "vite-plugin-vercel";// [!code --]
+
+export default {
+  vercel: {// [!code --]
+    // ...// [!code --]
+  },// [!code --]
+};
+```
+
+<PhotonAutoLoad pkg="vercel" />
+
+> See also: <Link href="/vercel" />.
+
+## See also
+
+- <Link href="/vike-photon" />
+- <Link href="/blog/photon" />
+- <Link href="/vercel" />
+- <Link href="/cloudflare" />

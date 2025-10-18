@@ -1,0 +1,587 @@
+import { Link, Warning, FileAdded } from '@brillout/docpress'
+import { PageHeader, UseScaffolder } from '../../components'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+import '../../components/tabs.css'
+import { PhotonDescription, PhotonBuiltInServer, PhotonBetaWarning } from './components.ts'
+
+<PageHeader>
+Version history: [`CHANGELOG.md`](https://github.com/vikejs/vike-photon/blob/main/CHANGELOG.md)<br/>
+Examples: [`examples/`](https://github.com/vikejs/vike-photon/tree/main/examples)<br/>
+Source code: [GitHub > `vikejs/vike-photon`](https://github.com/vikejs/vike-photon/tree/main/packages/vike-photon)<br/>
+</PageHeader>
+
+The `vike-photon` extension <PhotonDescription /> It's powered by [Photon](https://photonjs.dev).
+
+The entire documentation for using Photon is contained on this page, <Link href="/cloudflare"/> and <Link href="/vercel" />.
+
+<PhotonBetaWarning />
+
+> Alternatively, instead of using a server, you can <Link href="/pre-rendering">pre-render</Link> your pages and deploy to a <Link href="/static-hosts">static host</Link>.
+
+> If you want more control over server integration, see <Link href="/server-integration#custom-integration" />.
+
+
+## Get started
+
+### New app
+
+<UseScaffolder>Photon</UseScaffolder>
+
+### Add to existing app
+
+> If you're using `vike-server` then  <Link href="/migration/vike-photon">migrate to `vike-photon`</Link>.
+
+#### 1. Install
+
+<Tabs>
+  <TabList>
+    <Tab>npm</Tab>
+    <Tab>pnpm</Tab>
+    <Tab>yarn</Tab>
+  </TabList>
+  <TabPanel>
+    ```shell
+    npm i vike-photon
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    pnpm add vike-photon
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    yarn add vike-photon
+    ```
+  </TabPanel>
+</Tabs>
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+import vikePhoton from 'vike-photon/config'// [!code ++]
+
+export const config = {
+  extends: [vikePhoton]// [!code ++]
+} satisfies Config
+```
+
+#### 2. Scripts
+
+Update your production script in `package.json`:
+
+```json
+// package.json
+
+"scripts": {
+  "dev": "vike dev",
+  "build": "vike build",
+  "prod": "vike build && node ./dist/server/index.mjs"// [!code ++]
+}
+```
+
+#### 3. Server (optional)
+
+<PhotonBuiltInServer />
+
+
+## Server
+
+Photon includes a built-in server that supports basic features like SSR. If you need additional server functionalities (e.g. [file uploads](https://hono.dev/examples/file-upload) or <Link href="/api-routes">API routes</Link>), then create your own server:
+
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+import vikePhoton from 'vike-photon/config'
+
+export default {
+  extends: [vikePhoton],
+  photon: {// [!code ++]
+    server: 'server/index.ts'// [!code ++]
+  }// [!code ++]
+} satisfies Config
+```
+
+<Tabs>
+  <TabList>
+    <Tab>Hono</Tab>
+    <Tab>Express.js</Tab>
+    <Tab>Fastify</Tab>
+    <Tab>H3</Tab>
+    <Tab>Elysia</Tab>
+    <Tab>Hattip</Tab>
+  </TabList>
+  <TabPanel>
+    <Tabs>
+      <TabList>
+        <Tab>npm</Tab>
+        <Tab>pnpm</Tab>
+        <Tab>yarn</Tab>
+      </TabList>
+      <TabPanel>
+        ```shell
+        npm i hono @photonjs/hono
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        pnpm add hono @photonjs/hono
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        yarn add hono @photonjs/hono
+        ```
+      </TabPanel>
+    </Tabs>
+    <FileAdded>
+    ```ts
+    // server/index.ts
+
+    import { Hono } from 'hono'
+    import { apply, serve } from 'vike-photon/hono'
+
+    function startServer() {
+      const app = new Hono()
+      apply(app)
+      return serve(app)
+    }
+
+    export default startServer()
+    ```
+    </FileAdded>
+  </TabPanel>
+  <TabPanel>
+    <Tabs>
+      <TabList>
+        <Tab>npm</Tab>
+        <Tab>pnpm</Tab>
+        <Tab>yarn</Tab>
+      </TabList>
+      <TabPanel>
+        ```shell
+        npm i express @photonjs/express
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        pnpm add express @photonjs/express
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        yarn add express @photonjs/express
+        ```
+      </TabPanel>
+    </Tabs>
+    <FileAdded>
+    ```ts
+    // server/index.ts
+
+    import express from 'express'
+    import { apply, serve } from 'vike-photon/express'
+
+    function startServer() {
+      const app = express()
+      apply(app)
+      return serve(app)
+    }
+
+    export default startServer()
+    ```
+    </FileAdded>
+  </TabPanel>
+  <TabPanel>
+    <Tabs>
+      <TabList>
+        <Tab>npm</Tab>
+        <Tab>pnpm</Tab>
+        <Tab>yarn</Tab>
+      </TabList>
+      <TabPanel>
+        ```shell
+        npm i fastify fastify-raw-body @photonjs/fastify
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        pnpm add fastify fastify-raw-body @photonjs/fastify
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        yarn add fastify fastify-raw-body @photonjs/fastify
+        ```
+      </TabPanel>
+    </Tabs>
+    <FileAdded>
+    ```ts
+    // server/index.ts
+
+    import fastify from 'fastify'
+    import rawBody from 'fastify-raw-body'
+    import { apply, serve } from 'vike-photon/fastify'
+
+    async function startServer() {
+      const app = fastify({
+        // ⚠️ Mandatory for HMR support
+        forceCloseConnections: true
+      })
+      // ⚠️ Mandatory for Vike's SSR middleware
+      await app.register(rawBody)
+      await apply(app)
+      return serve(app)
+    }
+
+    export default startServer()
+    ```
+    </FileAdded>
+  </TabPanel>
+  <TabPanel>
+    <Tabs>
+      <TabList>
+        <Tab>npm</Tab>
+        <Tab>pnpm</Tab>
+        <Tab>yarn</Tab>
+      </TabList>
+      <TabPanel>
+        ```shell
+        npm i h3 @photonjs/h3
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        pnpm add h3 @photonjs/h3
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        yarn add h3 @photonjs/h3
+        ```
+      </TabPanel>
+    </Tabs>
+    <FileAdded>
+    ```ts
+    // server/index.ts
+
+    import { createApp } from 'h3'
+    import { apply, serve } from 'vike-photon/h3'
+
+    function startServer() {
+      const app = createApp()
+      apply(app)
+      return serve(app)
+    }
+
+    export default startServer()
+    ```
+    </FileAdded>
+  </TabPanel>
+  <TabPanel>
+    <Tabs>
+      <TabList>
+        <Tab>npm</Tab>
+        <Tab>pnpm</Tab>
+        <Tab>yarn</Tab>
+      </TabList>
+      <TabPanel>
+        ```shell
+        npm i elysia @photonjs/elysia
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        pnpm add elysia @photonjs/elysia
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        yarn add elysia @photonjs/elysia
+        ```
+      </TabPanel>
+    </Tabs>
+    <FileAdded>
+    ```ts
+    // server/index.ts
+
+    import { Elysia } from 'elysia'
+    import { apply, photon } from 'vike-photon/elysia'
+
+    function startServer() {
+      const app = new Elysia()
+      apply(app)
+      return serve(app)
+    }
+
+    export default startServer()
+    ```
+    </FileAdded>
+  </TabPanel>
+  <TabPanel>
+    <Tabs>
+      <TabList>
+        <Tab>npm</Tab>
+        <Tab>pnpm</Tab>
+        <Tab>yarn</Tab>
+      </TabList>
+      <TabPanel>
+        ```shell
+        npm i @hattip/router @photonjs/hattip
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        pnpm add @hattip/router @photonjs/hattip
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        yarn add @hattip/router @photonjs/hattip
+        ```
+      </TabPanel>
+    </Tabs>
+    ```ts
+    // server/index.ts
+
+    import { createRouter } from '@hattip/router'
+    import { apply, serve } from '@photonjs/hattip'// [!code ++]
+
+    function startServer() {
+      const router = createRouter()
+      apply(router)// [!code ++]
+      return serve(router)// [!code ++]
+    }
+
+    export default startServer()// [!code ++]
+    ```
+  </TabPanel>
+</Tabs>
+
+<Warning>
+  Photon's Cloudflare integration (`@photonjs/cloudflare`) currently only supports Hono and Hattip. (Support for more servers is work-in-progress.)
+</Warning>
+
+Where:
+ - `apply()` installs the middleware of Vike and Vike extensions.
+ - `serve()` attaches your server to Node.js, Cloudflare, Netlify, Vercel, Deno, Bun, ...
+   > See <Link href="#serve" /> for a list of options.
+
+Note that:
+- Vike is automatically added to your server — no need to manually integrate <Link href="/renderPage">`renderPage()`</Link>.
+- Some Vike extensions may also automatically add server middlewares.
+- Static files are automatically served.
+
+
+## Deployment
+
+#### Node/Bun/Deno
+
+In production, run `$ node ./dist/server/index.mjs` (or Bun/Deno).
+
+#### Vercel
+
+See <Link href="/vercel" />.
+
+#### Cloudflare
+
+See <Link href="/cloudflare" />.
+
+
+## `serve()`
+
+The `serve()` function enables you to define a single server entry while being able to target multiple environments (e.g. Node.js and Cloudflare have different server attachment styles).
+
+```ts
+serve(app, {
+  // Server port, defaults to 3000. It's ignored in Cloudflare and Vercel Edge (there
+  // isn't any server in serverless deployment).
+  port: 3000,
+
+  hostname: 'localhost', // default value
+
+  // Called once the server is accepting connections
+  onReady() {
+    console.log('Server is ready.')
+  },
+
+  // Called once the server is created
+  onCreate(server) {
+    // `server` type depends on your runtime:
+    //   Node.js:  Server ('node:http') by default. It's an HTTPS or HTTP2 server
+    //             if the `createServer` option was provided (see below).
+    //   Deno:     return of Deno.Serve (experimental support)
+    //   Bun:      return of Bun.Serve  (experimental support)
+
+    // `server` is `undefined` in Cloudflare and Vercel Edge (there
+    // isn't any server in serverless deployment)
+  },
+
+
+  // ⚠️  The following two options are available only when running on Node.js
+
+  // [Node.js] Can be one of:
+  //     import { createServer } from 'node:http'
+  //     import { createServer } from 'node:https'
+  //     import { createSecureServer as createServer } from 'node:http2'
+  createServer,
+
+  // [Node.js] Options forwarded to `createServer()`
+  serverOptions: {
+    // For example SSL/TLS key and certificate for HTTPS
+    key: fs.readFileSync('/etc/letsencrypt/live/example.com/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/example.com/fullchain.pem'),
+    // ... other createServer() options ...
+  },
+
+
+  // 👉 Other options are passed down as-is to the target environment
+
+  // For example, you can define all @hono/node-serve options here, such as:
+  fetch,
+  overrideGlobalObjects: false,
+
+  // ... any options of your target environment ...
+})
+```
+
+
+## Custom `pageContext`
+
+To define <Link href="/pageContext#custom">custom `pageContext` properties</Link> based on the HTTP request, you can use <Link href="/onCreatePageContext">`+onCreatePageContext.server.js`</Link> with <Link href="/pageContext#runtime">`pageContext.runtime`</Link>, for example:
+
+```ts
+// pages/+onCreatePageContext.server.ts
+// Environment: server
+
+import type { PageContextServer } from 'vike/types'
+
+// This hook is called upon new incoming HTTP requests
+export async function onCreatePageContext(pageContext: PageContextServer) {
+  pageContext.user = pageContext.runtime.req.user
+}
+```
+
+See also: <Link href="/auth" />.
+
+> The `+onCreatePageContext.server.js` hook above isn't really needed: you can simply access `pageContext.runtime.req.user` instead — it's just a convenience to set `pageContext.user` as an alias for `pageContext.runtime.req.user`
+
+
+## Standalone
+
+With `standalone: true`, the build output directory ([`dist/`](https://vite.dev/config/build-options.html#build-outdir)) contains everything needed for deployment. This means that, in production, only the `dist/` directory is required (you can remove `node_modules/` and skip `$ npm install`).
+
+<Warning>
+ This feature is experimental and may break upon any version update.
+</Warning>
+
+>  If the production code built with `standalone: true` fails to run with errors like `ENOENT: no such file or directory`, then disable standalone mode or replace
+>  the npm package throwing the error with another npm package. (The issue is that some npm package have dependencies that aren't explicit and, consequently, cannot be statically analyzed and cannot be included in the standalone bundle.)
+
+```ts
+// +config.ts
+
+import type { Config } from 'vike/types'
+import vikePhoton from 'vike-photon/config'
+
+export const config = {
+  // ...
+  extends: [vikePhoton],
+  photon: {
+    server: {
+      entry: 'server/index.ts',
+      standalone: true// [!code ++]
+    }
+  }
+} satisfies Config
+```
+
+Options:
+
+```ts
+
+import type { Config } from 'vike/types'
+
+export const config = {
+  // ...
+  extends: [vikePhoton],
+  photon: {
+    server: {
+      entry: 'server/index.ts',
+      standalone: {// [!code ++]
+        esbuild: {// [!code ++]
+          minify: true,// [!code ++]
+          // ... or any other esbuild option// [!code ++]
+        }// [!code ++]
+      }// [!code ++]
+    }
+  }
+} satisfies Config
+```
+
+> Instead of using `standalone: true`, we recommend tools such as [`pnpm deploy --prod`](https://pnpm.io/cli/deploy).
+> This provides better control over packed files and ensures greater compatibility.
+
+
+## HMR
+
+If you change a server file, the server code is automatically updated: the next HTTP response will be generated by the latest code. No full server reload is required.
+
+> This is experimental and doesn't always work: `vike-photon` sometimes still triggers a full server reload.
+
+If HMR isn't what you want (for example if you modify the database connection) you can manually trigger a full server reload by pressing `r + enter`.
+
+
+## Compression
+
+In production, `vike-photon` compresses all Vike responses.
+
+You can disable it:
+
+```ts
+// Manually importing Vike middlewares to access their options
+import { getMiddlewares } from "vike-photon/universal-middlewares";// [!code ++]
+
+apply(
+  app,
+  getMiddlewares({// [!code ++]
+    compress: false// [!code ++]
+  }),// [!code ++]
+);
+```
+
+
+## HTTPS
+
+If you want to use HTTPS in development, pass `createServer` and the HTTPS certificates to `serve()`:
+
+```ts
+import { createServer } from 'node:https'
+/* Or with HTTP2:
+import { createSecureServer as createServer } from 'node:http2'
+*/
+
+serve(app, {
+  createServer,
+
+  // [Node.js] Options forwarded to `createServer()`
+  serverOptions: {
+    // For example SSL/TLS key and certificate for HTTPS
+    key: fs.readFileSync('/etc/letsencrypt/live/example.com/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/example.com/fullchain.pem')
+    // ... other createServer() options ...
+  },
+})
+```
+
+
+## See also
+
+- <Link href="/photon" />
+- <Link href="/blog/photon" />
+- <Link href="/migration/vike-photon" />
+- <Link href="/vercel" />
+- <Link href="/cloudflare" />
+- <Link href="/server-integration#manual-integration" />
+- <Link href="/server-integration#non-javascript-backend" doNotInferSectionTitle />
+- <Link href="/renderPage" />
