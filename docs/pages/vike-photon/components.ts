@@ -1,4 +1,4 @@
-export * from './VikePhotonBetaWarning'
+export * from './PhotonBetaWarning'
 export { default as PhotonAutoLoad } from './PhotonAutoLoad.mdx'
 export { default as PhotonBuiltInServer } from './PhotonBuiltInServer.mdx'
 export * from './VikePhotonDescription'

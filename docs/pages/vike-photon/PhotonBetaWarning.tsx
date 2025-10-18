@@ -1,8 +1,8 @@
-export { VikePhotonBetaWarning }
+export { PhotonBetaWarning }
 
 import React from 'react'
 
-function VikePhotonBetaWarning() {
+function PhotonBetaWarning() {
   return (
     <blockquote>
       <p>
