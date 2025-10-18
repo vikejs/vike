@@ -1,4 +1,4 @@
-import { Link, Warning } from '@brillout/docpress'
+import { Link, Warning, FileAdded } from '@brillout/docpress'
 import { PageHeader, UseScaffolder } from '../../components'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import '../../components/tabs.css'
@@ -65,7 +65,28 @@ Update your production script in `package.json`:
 }
 ```
 
+**Server**
+
 <PhotonBuiltInServer />
+
+
+## Server
+
+Photon includes a built-in server that supports basic features like SSR. If you need additional server functionalities (e.g. [file uploads](https://hono.dev/examples/file-upload) or <Link href="/api-routes">API routes</Link>), then create your own server:
+
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+import vikePhoton from 'vike-photon/config'
+
+export default {
+  extends: [vikePhoton],
+  photon: {// [!code ++]
+    server: 'server/index.ts'// [!code ++]
+  }// [!code ++]
+} satisfies Config
+```
 
 <Tabs>
   <TabList>
@@ -74,8 +95,32 @@ Update your production script in `package.json`:
     <Tab>Fastify</Tab>
     <Tab>H3</Tab>
     <Tab>Elysia</Tab>
+    <Tab>Hattip</Tab>
   </TabList>
   <TabPanel>
+    <Tabs>
+      <TabList>
+        <Tab>npm</Tab>
+        <Tab>pnpm</Tab>
+        <Tab>yarn</Tab>
+      </TabList>
+      <TabPanel>
+        ```shell
+        npm i hono @photonjs/hono
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        pnpm add hono @photonjs/hono
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        yarn add hono @photonjs/hono
+        ```
+      </TabPanel>
+    </Tabs>
+    <FileAdded>
     ```ts
     // server/index.ts
 
@@ -85,17 +130,37 @@ Update your production script in `package.json`:
     function startServer() {
       const app = new Hono()
       apply(app)
-      return serve(app, {
-        // Options
-        port: 3000, // default value
-        hostname: 'localhost' // default value
-      })
+      return serve(app)
     }
 
     export default startServer()
     ```
+    </FileAdded>
   </TabPanel>
   <TabPanel>
+    <Tabs>
+      <TabList>
+        <Tab>npm</Tab>
+        <Tab>pnpm</Tab>
+        <Tab>yarn</Tab>
+      </TabList>
+      <TabPanel>
+        ```shell
+        npm i express @photonjs/express
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        pnpm add express @photonjs/express
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        yarn add express @photonjs/express
+        ```
+      </TabPanel>
+    </Tabs>
+    <FileAdded>
     ```ts
     // server/index.ts
 
@@ -105,17 +170,37 @@ Update your production script in `package.json`:
     function startServer() {
       const app = express()
       apply(app)
-      return serve(app, {
-        // Options
-        port: 3000, // default value
-        hostname: 'localhost' // default value
-      })
+      return serve(app)
     }
 
     export default startServer()
     ```
+    </FileAdded>
   </TabPanel>
   <TabPanel>
+    <Tabs>
+      <TabList>
+        <Tab>npm</Tab>
+        <Tab>pnpm</Tab>
+        <Tab>yarn</Tab>
+      </TabList>
+      <TabPanel>
+        ```shell
+        npm i fastify fastify-raw-body @photonjs/fastify
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        pnpm add fastify fastify-raw-body @photonjs/fastify
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        yarn add fastify fastify-raw-body @photonjs/fastify
+        ```
+      </TabPanel>
+    </Tabs>
+    <FileAdded>
     ```ts
     // server/index.ts
 
@@ -128,21 +213,40 @@ Update your production script in `package.json`:
         // ⚠️ Mandatory for HMR support
         forceCloseConnections: true
       })
-
       // ⚠️ Mandatory for Vike's SSR middleware
       await app.register(rawBody)
       await apply(app)
-      return serve(app, {
-        // Options
-        port: 3000, // default value
-        hostname: 'localhost' // default value
-      })
+      return serve(app)
     }
 
     export default startServer()
     ```
+    </FileAdded>
   </TabPanel>
   <TabPanel>
+    <Tabs>
+      <TabList>
+        <Tab>npm</Tab>
+        <Tab>pnpm</Tab>
+        <Tab>yarn</Tab>
+      </TabList>
+      <TabPanel>
+        ```shell
+        npm i h3 @photonjs/h3
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        pnpm add h3 @photonjs/h3
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        yarn add h3 @photonjs/h3
+        ```
+      </TabPanel>
+    </Tabs>
+    <FileAdded>
     ```ts
     // server/index.ts
 
@@ -152,17 +256,37 @@ Update your production script in `package.json`:
     function startServer() {
       const app = createApp()
       apply(app)
-      return serve(app, {
-        // Options
-        port: 3000, // default value
-        hostname: 'localhost' // default value
-      })
+      return serve(app)
     }
 
     export default startServer()
     ```
+    </FileAdded>
   </TabPanel>
   <TabPanel>
+    <Tabs>
+      <TabList>
+        <Tab>npm</Tab>
+        <Tab>pnpm</Tab>
+        <Tab>yarn</Tab>
+      </TabList>
+      <TabPanel>
+        ```shell
+        npm i elysia @photonjs/elysia
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        pnpm add elysia @photonjs/elysia
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        yarn add elysia @photonjs/elysia
+        ```
+      </TabPanel>
+    </Tabs>
+    <FileAdded>
     ```ts
     // server/index.ts
 
@@ -170,28 +294,63 @@ Update your production script in `package.json`:
     import { apply, photon } from 'vike-photon/elysia'
 
     function startServer() {
-      const app = apply(new Elysia())
-      return serve(app, {
-        // Options
-        port: 3000, // default value
-        hostname: 'localhost' // default value
-      })
+      const app = new Elysia()
+      apply(app)
+      return serve(app)
     }
 
     export default startServer()
     ```
+    </FileAdded>
+  </TabPanel>
+  <TabPanel>
+    <Tabs>
+      <TabList>
+        <Tab>npm</Tab>
+        <Tab>pnpm</Tab>
+        <Tab>yarn</Tab>
+      </TabList>
+      <TabPanel>
+        ```shell
+        npm i @hattip/router @photonjs/hattip
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        pnpm add @hattip/router @photonjs/hattip
+        ```
+      </TabPanel>
+      <TabPanel>
+        ```shell
+        yarn add @hattip/router @photonjs/hattip
+        ```
+      </TabPanel>
+    </Tabs>
+    ```ts
+    // server/index.ts
+
+    import { createRouter } from '@hattip/router'
+    import { apply, serve } from '@photonjs/hattip'// [!code ++]
+
+    function startServer() {
+      const router = createRouter()
+      apply(router)// [!code ++]
+      return serve(router)// [!code ++]
+    }
+
+    export default startServer()// [!code ++]
+    ```
   </TabPanel>
 </Tabs>
+
+<Warning>
+  The `@photonjs/cloudflare` plugin currently only supports Hono and Hattip. (Support for more servers is work-in-progress.)
+</Warning>
 
 Where:
  - `apply()` installs the middleware of Vike and Vike extensions.
  - `serve()` attaches your server to Node.js, Cloudflare, Netlify, Vercel, Deno, Bun, ...
-   <blockquote>
-   See <Link href="#serve-options" />.
-   </blockquote>
-   <blockquote>
-   `serve()` enables you to define a single server entry while being able to target multiple environments (e.g. Node.js and Cloudflare have different server attachment styles).
-   </blockquote>
+   > See <Link href="#serve" /> for a list of options.
 
 Note that:
 - Vike is automatically added to your server — no need to manually integrate <Link href="/renderPage">`renderPage()`</Link>.
@@ -214,13 +373,17 @@ See <Link href="/vercel" />.
 See <Link href="/cloudflare" />.
 
 
-## `serve()` options
+## `serve()`
+
+The `serve()` function enables you to define a single server entry while being able to target multiple environments (e.g. Node.js and Cloudflare have different server attachment styles).
 
 ```ts
 serve(app, {
   // Server port, defaults to 3000. It's ignored in Cloudflare and Vercel Edge (there
   // isn't any server in serverless deployment).
   port: 3000,
+
+  hostname: 'localhost' // default value
 
   // Called once the server is accepting connections
   onReady() {

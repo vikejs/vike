@@ -5,6 +5,7 @@ import '../../components/tabs.css'
 import Examples from './Examples.mdx'
 import PhotonBuiltInServer from '../vike-photon/PhotonBuiltInServer.mdx'
 import { VikePhotonBetaWarning } from '../vike-photon/BetaWarning'
+import PhotonAutoLoad from '../vike-photon/PhotonAutoLoad.mdx'
 
 {/* See https://github.com/vikejs/vike/pull/2605 for a test of applying the following vike-cloudflare install instructions to packages/create-vike-core/boilerplate-react/ and examples/react-full/ */ }
 
@@ -66,6 +67,8 @@ export default {
 } satisfies Config
 ```
 
+<PhotonAutoLoad pkg="cloudflare" />
+
 ```json
 // package.json
 
@@ -99,114 +102,9 @@ export default {
 .wrangler/ # [!code ++]
 ```
 
-
-### Server
+**Server**
 
 <PhotonBuiltInServer />
-
-```ts
-// pages/+config.ts
-
-import type { Config } from 'vike/types'
-import vikePhoton from 'vike-photon/config'
-
-export default {
-  extends: [vikePhoton],
-  photon: {// [!code ++]
-    server: 'server/index.ts'// [!code ++]
-  }// [!code ++]
-} satisfies Config
-```
-
-<Tabs>
-  <TabList>
-    <Tab>Hono</Tab>
-    <Tab>Hattip</Tab>
-  </TabList>
-
-  <TabPanel>
-    <Tabs>
-      <TabList>
-        <Tab>npm</Tab>
-        <Tab>pnpm</Tab>
-        <Tab>yarn</Tab>
-      </TabList>
-      <TabPanel>
-        ```shell
-        npm i hono @photonjs/hono
-        ```
-      </TabPanel>
-      <TabPanel>
-        ```shell
-        pnpm add hono @photonjs/hono
-        ```
-      </TabPanel>
-      <TabPanel>
-        ```shell
-        yarn add hono @photonjs/hono
-        ```
-      </TabPanel>
-    </Tabs>
-    ```ts
-    // server/index.ts
-
-    import { Hono } from 'hono'
-    import { apply, serve } from '@photonjs/hono'// [!code ++]
-
-    function startServer() {
-      const app = new Hono()
-      apply(app)// [!code ++]
-      return serve(app)// [!code ++]
-    }
-
-    export default startServer()// [!code ++]
-    ```
-  </TabPanel>
-  <TabPanel>
-    <Tabs>
-      <TabList>
-        <Tab>npm</Tab>
-        <Tab>pnpm</Tab>
-        <Tab>yarn</Tab>
-      </TabList>
-      <TabPanel>
-        ```shell
-        npm i @hattip/router @photonjs/hattip
-        ```
-      </TabPanel>
-      <TabPanel>
-        ```shell
-        pnpm add @hattip/router @photonjs/hattip
-        ```
-      </TabPanel>
-      <TabPanel>
-        ```shell
-        yarn add @hattip/router @photonjs/hattip
-        ```
-      </TabPanel>
-    </Tabs>
-    ```ts
-    // server/index.ts
-
-    import { createRouter } from '@hattip/router'
-    import { apply, serve } from '@photonjs/hattip'// [!code ++]
-
-    function startServer() {
-      const router = createRouter()
-      apply(router)// [!code ++]
-      return serve(router)// [!code ++]
-    }
-
-    export default startServer()// [!code ++]
-    ```
-  </TabPanel>
-</Tabs>
-
-
-> `@photonjs/cloudflare` currently only supports Hono and Hattip — more servers are coming soon.
-
-
-> See <Link href="/vike-photon" /> for the list of options.
 
 
 ## Cloudflare APIs
