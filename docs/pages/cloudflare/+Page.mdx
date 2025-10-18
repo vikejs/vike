@@ -9,10 +9,12 @@ import PhotonAutoLoad from '../vike-photon/PhotonAutoLoad.mdx'
 
 {/* See https://github.com/vikejs/vike/pull/2605 for a test of applying the following vike-cloudflare install instructions to packages/create-vike-core/boilerplate-react/ and examples/react-full/ */ }
 
-We recommend using [Photon](https://photonjs.dev) for a seamless and full-fledged [Cloudflare](https://www.cloudflare.com) integration, including developing against `workerd` (the runtime Cloudflare uses in production).
-{/* TODO: add link to blog post */}
+We recommend using [Photon](https://photonjs.dev) for a seamless and full-fledged [Cloudflare](https://www.cloudflare.com) integration.
 
-The entire documentation for using Photon is contained on this page and <Link href="/vike-photon"/>.
+The entire documentation for using Cloudflare with Photon is contained on this page and <Link href="/vike-photon"/>.
+
+> In development, your server code runs inside `workerd` (the runtime Cloudflare uses in production), so you're developing in an environment similar to production. This is a new Cloudflare feature that Photon's Cloudflare integration fully supports.
+{/* TODO: add link to blog post */}
 
 > Alternatively, for more control, you can <Link href="#manual-integration">manually integrate Cloudflare</Link> instead of using Photon.
 
@@ -21,17 +23,19 @@ The entire documentation for using Photon is contained on this page and <Link hr
 
 ## Get started
 
+You can deploy [static websites](https://developers.cloudflare.com/workers/static-assets/get-started/#deploy-a-static-site) as well as [SSR](https://developers.cloudflare.com/workers/static-assets/get-started/#deploy-a-full-stack-application).
+
+> If you <Link href="/pre-rendering#partial">pre-render your pages only partially</Link>, you can also use <Link href="/vike-photon" /> to statically deploy your pre-rendered pages while dynamically serving your SSR pages.
+
 ### New app
 
 <UseScaffolder>Cloudflare with Photon</UseScaffolder>
 
 ### Add to existing app
 
-By using <Link href="/vike-photon">`vike-photon`</Link> with `@photonjs/cloudflare` you get a seamless integration with Cloudflare.
+> If you're using `vike-server` then  <Link href="/migration/vike-photon">migrate to `vike-photon`</Link>.
 
-You can deploy [static websites](https://developers.cloudflare.com/workers/static-assets/get-started/#deploy-a-static-site) as well as [SSR](https://developers.cloudflare.com/workers/static-assets/get-started/#deploy-a-full-stack-application).
-
-> If you <Link href="/pre-rendering#partial">pre-render your pages only partially</Link>, you can also use <Link href="/vike-photon" /> to statically deploy your pre-rendered pages while dynamically serving your SSR pages.
+#### 1. Install
 
 <Tabs>
   <TabList>
@@ -69,6 +73,8 @@ export default {
 
 <PhotonAutoLoad pkg="cloudflare" />
 
+#### 2. Scripts
+
 ```json
 // package.json
 
@@ -81,6 +87,8 @@ export default {
 }
 ```
 <FileAdded>
+
+#### 3. Wrangler config
 
 ```jsonc
 // wrangler.jsonc
@@ -102,7 +110,7 @@ export default {
 .wrangler/ # [!code ++]
 ```
 
-**Server**
+#### 4. Server (optional)
 
 <PhotonBuiltInServer />
 

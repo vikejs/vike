@@ -9,7 +9,7 @@ import PhotonAutoLoad from '../vike-photon/PhotonAutoLoad.mdx'
 
 We recommend using [Photon](https://photonjs.dev) for a seamless and full-fledged [Vercel](https://vercel.com) integration, including [Incremental Static Regeneration (ISR)](https://vercel.com/docs/concepts/incremental-static-regeneration/overview).
 
-The entire documentation for using Photon is contained on this page and <Link href="/vike-photon"/>.
+The entire documentation for using Vercel with Photon is contained on this page and <Link href="/vike-photon"/>.
 
 > Alternatively, for more control, you can <Link href="#manual-integration">manually integrate Vercel</Link> instead of using Photon.
 
@@ -18,13 +18,17 @@ The entire documentation for using Photon is contained on this page and <Link hr
 
 ## Get started
 
+> If you <Link href="/pre-rendering#partial">pre-render your pages only partially</Link>, you can also use <Link href="/vike-photon" /> to statically deploy your pre-rendered pages while dynamically serving your SSR pages.
+
 ### New app
 
 <UseScaffolder>Vercel with Photon</UseScaffolder>
 
 ### Add to existing app
 
-> If you <Link href="/pre-rendering#partial">pre-render your pages only partially</Link>, you can also use <Link href="/vike-photon" /> to statically deploy your pre-rendered pages while dynamically serving your SSR pages.
+> If you're using `vike-server` then  <Link href="/migration/vike-photon">migrate to `vike-photon`</Link>.
+
+#### 1. Install
 
 <Tabs>
   <TabList>
@@ -64,7 +68,7 @@ export default {
 
 > Under the hood, `@photonjs/vercel` uses Vercel's [Build Output API](https://vercel.com/docs/build-output-api/v3).
 
-**Server**
+#### 2. Server (optional)
 
 <PhotonBuiltInServer />
 
