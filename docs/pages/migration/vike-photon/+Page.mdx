@@ -4,7 +4,7 @@ import '../../../components/tabs.css'
 
 Guide to migrate from <Link href="/vike-server">`vike-server`</Link> to <Link href="/vike-photon">`vike-photon`</Link>.
 
-> See also
+> See also:
 >
 > - <Link href="/vike-photon" />
 > - <Link href="/blog/photon" />
@@ -55,7 +55,7 @@ Guide to migrate from <Link href="/vike-server">`vike-server`</Link> to <Link hr
 }
 ```
 
-## 3. Update `+config`
+## 3. Update `+config.js`
 
 ```ts
 // pages/+config.ts
@@ -269,9 +269,9 @@ export default {
   </TabPanel>
 </Tabs>
 
-## 5. Replace `vike-cloudflare`
+## 5a. Replace `vike-cloudflare`
 
-> This step is only required if you have `vike-cloudflare` installed
+> This step is only required if you use `vike-cloudflare`.
 
 <Tabs>
   <TabList>
@@ -312,10 +312,13 @@ export default {
 }
 ```
 
+> Photon automatically picks up and uses `@photonjs/cloudflare`.
 
-## 6. Replace `vite-plugin-vercel`
+> See also: <Link href="/cloudflare#photon" />.
 
-> This step is only required if you have `vite-plugin-vercel` installed
+## 5b. Replace `vite-plugin-vercel`
+
+> This step is only required if you use `vite-plugin-vercel`.
 
 <Tabs>
   <TabList>
@@ -356,9 +359,15 @@ export default {
 };
 ```
 
-Then head to <Link href="/vercel#advanced-options" /> for additional advanced configurations.
+> Photon automatically picks up and uses `@photonjs/vercel`.
+
+> See also: <Link href="/vercel#photon" />.
+
+> See <Link href="/vercel#advanced-options" /> for configurations.
 
 ## See also
 
 - <Link href="/vike-photon" />
 - <Link href="/blog/photon" />
+- <Link href="/vercel#photon" />
+- <Link href="/cloudflare#photon" />

@@ -12,15 +12,13 @@ Examples: [`examples/`](https://github.com/vikejs/vike-photon/tree/main/examples
 Source code: [GitHub > `vikejs/vike-photon`](https://github.com/vikejs/vike-photon/tree/main/packages/vike-photon)<br/>
 </PageHeader>
 
-<br/>
-
-<VikePhotonBetaWarning />
-
 The `vike-photon` extension <VikePhotonDescription /> It's powered by [Photon](https://photonjs.dev).
 
-This page contains the entire documentation for `vike-photon`.
+The entire documentation is contained in this page, <Link href="/cloudflare#photon"/>, and <Link href="/vercel#photon" />.
 
-> If you're using <Link href="/vike-server">`vike-server`</Link> then  <Link href="/migration/vike-photon">migrate to `vike-photon`</Link>.
+> If you're using `vike-server` then  <Link href="/migration/vike-photon">migrate to `vike-photon`</Link>.
+
+<VikePhotonBetaWarning />
 
 > Alternatively, instead of using a server, you can <Link href="/pre-rendering">pre-render</Link> your pages and deploy to a <Link href="/static-hosts">static host</Link>.
 
@@ -34,6 +32,8 @@ This page contains the entire documentation for `vike-photon`.
 You can <Link href="/new">vike.dev/new</Link> for creating a new Vike + `vike-photon` app.
 
 ### Add `vike-photon` to existing app
+
+> If you're using `vike-server` then  <Link href="/migration/vike-photon">migrate to `vike-photon`</Link>.
 
 To add `vike-photon` to an existing Vike app: install the `vike-photon` npm package (e.g. `$ npm install vike-photon`) then extend your existing <Link href="/config#files">`+config.js`</Link> file (or create one) with `vike-photon`:
 
@@ -53,7 +53,7 @@ export const config = {
 } satisfies Config
 ```
 
-Update your production `script` in `package.json`:
+Update your production script in `package.json`:
 
 ```json
 // package.json
@@ -201,22 +201,17 @@ Note that:
 
 ## Deployment
 
-<Tabs>
-  <TabList>
-    <Tab>Node/Bun/Deno</Tab>
-    <Tab>Cloudflare</Tab>
-    <Tab>Vercel</Tab>
-  </TabList>
-  <TabPanel>
-    In production, run `$ node ./dist/server/index.mjs` (or Bun/Deno).
-  </TabPanel>
-  <TabPanel>
-    See <Link href="/vercel" />.
-  </TabPanel>
-  <TabPanel>
-    See <Link href="/cloudflare" />.
-  </TabPanel>
-</Tabs>
+#### Node/Bun/Deno
+
+In production, run `$ node ./dist/server/index.mjs` (or Bun/Deno).
+
+#### Vercel
+
+See <Link href="/vercel" />.
+
+#### Cloudflare
+
+See <Link href="/cloudflare" />.
 
 
 ## `serve()` options
@@ -407,6 +402,8 @@ serve(app, {
 - <Link href="/photon" />
 - <Link href="/blog/photon" />
 - <Link href="/migration/vike-photon" />
+- <Link href="/vercel#photon" />
+- <Link href="/cloudflare#photon" />
 - <Link href="/server-integration#manual-integration" />
 - <Link href="/server-integration#non-javascript-backend" doNotInferSectionTitle />
 - <Link href="/renderPage" />

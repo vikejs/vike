@@ -1,12 +1,14 @@
+export { VikePhotonBetaWarning }
+
 import React from 'react'
-import { Warning } from '@brillout/docpress'
 
-interface BetaWarningProps {
-  message?: string
-}
-
-export function VikePhotonBetaWarning({
-  message = 'Photon is currently in beta. APIs may change before stable release.',
-}: BetaWarningProps) {
-  return <Warning>{message}</Warning>
+function VikePhotonBetaWarning() {
+  return (
+    <blockquote>
+      <p>
+        <b>Photon is currently in beta</b> — you can use it in production, but expect breaking changes more frequently
+        than usual.
+      </p>
+    </blockquote>
+  )
 }
