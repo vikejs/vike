@@ -1,0 +1,1 @@
+#landing-page h2{font-size:36px;font-weight:500}#landing-page h3{font-size:18px;font-weight:500}@media screen and (max-width: 768px){#landing-page h2{font-size:28px}#landing-page h3{font-size:18px}}#landing-page a:has(>.landingpage-button){display:inline-block}
