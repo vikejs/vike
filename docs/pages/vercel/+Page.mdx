@@ -6,19 +6,20 @@ import { UseScaffolder } from '../../components'
 import { Example } from '../../components'
 import { VikePhotonBetaWarning } from '../vike-photon/BetaWarning'
 
-We recommend <Link href="#photon">using Photon</Link> for a seamless and full-fledged [Vercel](https://vercel.com) integration, including [Incremental Static Regeneration (ISR)](https://vercel.com/docs/concepts/incremental-static-regeneration/overview).
-
-
-> <UseScaffolder>Vercel (using Photon)</UseScaffolder>
+We recommend using [Photon](https://photonjs.dev) for a seamless and full-fledged [Vercel](https://vercel.com) integration, including [Incremental Static Regeneration (ISR)](https://vercel.com/docs/concepts/incremental-static-regeneration/overview).
 
 > Alternatively, for more control, you can <Link href="#manual-integration">manually integrate Vercel</Link> instead of using Photon.
 
-
-## Photon
-
-<Link href="/vike-photon" /> enables zero-configuration support for all Vercel features, including [Incremental Static Regeneration (ISR)](https://vercel.com/docs/concepts/incremental-static-regeneration/overview).
-
 <VikePhotonBetaWarning />
+
+
+## Get started
+
+### Scaffold new app
+
+<UseScaffolder>Vercel with Photon</UseScaffolder>
+
+### Add to existing app
 
 > If you <Link href="/pre-rendering#partial">pre-render your pages only partially</Link>, you can also use <Link href="/vike-photon" /> to statically deploy your pre-rendered pages while dynamically serving your SSR pages.
 
@@ -293,7 +294,7 @@ export default {
 
 ### ISR
 
-Vike supports [Incremental Static Regeneration (ISR)](https://vercel.com/docs/concepts/incremental-static-regeneration/overview) when <Link href="#photon">using Photon</Link>.
+Vike supports [Incremental Static Regeneration (ISR)](https://vercel.com/docs/concepts/incremental-static-regeneration/overview) when using Photon.
 
 ```ts
 // pages/some-route/+config.ts
