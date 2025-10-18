@@ -1,6 +1,7 @@
 import { Link } from '@brillout/docpress'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import '../../../components/tabs.css'
+import PhotonAutoLoad from '../../vike-photon/PhotonAutoLoad.mdx'
 
 Guide to migrate from <Link href="/vike-server">`vike-server`</Link> to <Link href="/vike-photon">`vike-photon`</Link>.
 
@@ -312,7 +313,7 @@ export default {
 }
 ```
 
-> Photon automatically picks up and uses `@photonjs/cloudflare`.
+<PhotonAutoLoad pkg="cloudflare" />
 
 > See also: <Link href="/cloudflare#photon" />.
 
@@ -359,7 +360,7 @@ export default {
 };
 ```
 
-> Photon automatically picks up and uses `@photonjs/vercel`.
+<PhotonAutoLoad pkg="vercel" />
 
 > See also: <Link href="/vercel#photon" />.
 
