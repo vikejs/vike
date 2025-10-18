@@ -3,24 +3,16 @@ import { Example, UseScaffolder } from '../../components'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import '../../components/tabs.css'
 import Examples from './Examples.mdx'
-import { PhotonBuiltInServer, PhotonBetaWarning, PhotonAutoLoad } from '../vike-photon/components'
+import { PhotonBuiltInServer, PhotonBetaWarning, PhotonAutoLoad, PhotonDeploymentProviderIntroPart1, PhotonDeploymentProviderIntroPart2 } from '../vike-photon/components'
 
 {/* See https://github.com/vikejs/vike/pull/2605 for a test of applying the following vike-cloudflare install instructions to packages/create-vike-core/boilerplate-react/ and examples/react-full/ */ }
 
-We recommend using [Photon](https://photonjs.dev) for a seamless and full-fledged [Cloudflare](https://www.cloudflare.com) integration.
-
-The entire documentation for using Cloudflare with Photon is contained on this page and <Link href="/vike-photon"/>.
+<PhotonDeploymentProviderIntroPart1 provider="Cloudflare" link="https://www.cloudflare.com" />
 
 > In development, your server code runs inside `workerd` (the runtime Cloudflare uses in production), so you're developing in an environment similar to production. This is a new Cloudflare feature that Photon fully supports.
 {/* TODO: add link to blog post */}
 
-> Alternatively, for more control, you can <Link href="#manual-integration">manually integrate Cloudflare</Link> instead of using Photon.
-
-<PhotonBetaWarning />
-
-You can deploy <Link href="/pre-rendering">static websites</Link> as well as <Link href="/ssr">SSR</Link>.
-
-> If you <Link href="/pre-rendering#partial">pre-render your pages only partially</Link>, you can also use <Link href="/vike-photon" /> to statically deploy your pre-rendered pages while dynamically serving your SSR pages.
+<PhotonDeploymentProviderIntroPart2 provider="Cloudflare" />
 
 
 ## Get started
