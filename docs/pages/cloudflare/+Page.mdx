@@ -108,31 +108,20 @@ export default {
 
 ## Cloudflare APIs
 
-You can access Cloudflare's APIs (such as [D1](https://developers.cloudflare.com/d1/) and [KV](https://developers.cloudflare.com/kv/)) by using [`import('cloudflare:workers')`](https://developers.cloudflare.com/workers/runtime-apis/bindings/#importing-env-as-a-global)
-
-Using <Link href="/onCreateGlobalContext">`+onCreateGlobalContext.server`</Link>, you can make [Cloudflare's bindings](https://developers.cloudflare.com/workers/runtime-apis/bindings/) (the `env` object) available anywhere via <Link href="/globalContext#custom">`globalContext.cloudflare.env`</Link>.
+To access Cloudflare's APIs (such as [D1](https://developers.cloudflare.com/d1/) and [KV](https://developers.cloudflare.com/kv/)), use [Cloudflare's bindings](https://developers.cloudflare.com/workers/runtime-apis/bindings/), which are available via the `env` object that you can [import from `cloudflare:workers`](https://developers.cloudflare.com/workers/runtime-apis/bindings/#importing-env-as-a-global).
 
 ```ts
-// pages/+onCreateGlobalContext.server.ts
+// Environment: server
 
-export { onCreateGlobalContext }
+import { env } from 'cloudflare:workers'
 
-import type { GlobalContextServer } from 'vike/types'
-
-async function onCreateGlobalContext(globalContext: GlobalContextServer) {
-  globalContext.cloudflare = await import('cloudflare:workers')
-}
-
-declare global {
-  namespace Vike {
-    interface GlobalContextServer {
-      cloudflare: { env: Cloudflare.Env }
-    }
-  }
-}
+// Key-value store
+env.KV.get("my-key")
+// Environment Variable
+env.LOG_LEVEL
 ```
 
-> For an example of how to access [Cloudflare D1](https://developers.cloudflare.com/d1/) during development, see:
+> Example of using [Cloudflare D1](https://developers.cloudflare.com/d1/):
 > <Tabs>
 >   <TabList>
 >     <Tab>npm</Tab>
@@ -157,6 +146,51 @@ declare global {
 > </Tabs>
 >
 > Or go to <Link href="/new">vike.dev/new</Link> and select `Cloudflare` with an ORM.
+
+> To make environment variables available on the client-side, use <Link href="/onCreateGlobalContext">+onCreateGlobalContext.server.js</Link> with a <Link href="/globalContext#custom">custom `globalContext` property</Link> and <Link href="/passToClient">`passToClient`</Link>.
+>
+> ```ts
+> // pages/+onCreateGlobalContext.server.ts
+> // Environment: server
+>
+> export { onCreateGlobalContext }
+>
+> import { env } from 'cloudflare:workers'
+> import type { GlobalContextServer } from 'vike/types'
+>
+> async function onCreateGlobalContext(globalContext: GlobalContextServer) {
+>   // Making the environment variable LOG_LEVEL available on the client-side
+>   globalContext.logLevel = env.LOG_LEVEL || 'info'
+> }
+>
+> declare global {
+>   namespace Vike {
+>     interface GlobalContext {
+>       logLevel: string
+>     }
+>   }
+> }
+> ```
+> ```ts
+> // pages/+config.ts
+>
+> import type { Config } from 'vike/types'
+>
+> export default {
+>   passToClient: ['logLevel']
+> } satisfies Config
+> ```
+>
+> ```ts
+> // anywhere.ts
+> // Environment: server and/or client
+>
+> import { getGlobalContext } from 'vike'
+>
+> const globalContext = getGlobalContext()
+> // Available anywhere
+> console.log(globalContext.logLevel)
+> ```
 
 
 ## TypeScript
