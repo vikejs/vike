@@ -1009,10 +1009,15 @@ function getConfigDefinitions(
 
       objectEntries(meta).forEach(([configName, configDefinitionUserLand]) => {
         if ('isDefinedByPeerDependency' in configDefinitionUserLand) {
-          configDefinitionUserLand = {
-            env: { client: false, server: false, config: false },
-            ...(configDefinitionUserLand as Record<string, unknown>),
+          /* vike-server@1.0.24 wrongfully sets `stream: { env: { config: true }, isDefinedByPeerDependency: true }`
+          assert(deepEqual(Object.keys(configDefinitionUserLand), ['isDefinedByPeerDependency']))
+          //*/
+          if (!configDefinitions[configName]) {
+            configDefinitions[configName] = {
+              env: { client: false, server: false, config: false },
+            }
           }
+          return
         }
         // User can override an existing config definition
         configDefinitions[configName] = {
