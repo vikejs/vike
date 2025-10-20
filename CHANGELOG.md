@@ -1,3 +1,19 @@
+## [0.4.243](https://github.com/vikejs/vike/compare/v0.4.242...v0.4.243) (2025-10-20)
+
+
+### Bug Fixes
+
+* allow pageContext.urlLogical to contain origin (fix vikejs/vike-server[#139](https://github.com/vikejs/vike/issues/139)) ([33026dc](https://github.com/vikejs/vike/commit/33026dc37e87c037f50df2cea06fac018f9cb69d))
+* fix meta isDefinedByPeerDependency (fix [#2788](https://github.com/vikejs/vike/issues/2788)) ([#2790](https://github.com/vikejs/vike/issues/2790)) ([6c8d6a3](https://github.com/vikejs/vike/commit/6c8d6a3ece7ffc7553a7015ab02dd122ede724bc))
+* further ensure consistent CSS target (fix [#2778](https://github.com/vikejs/vike/issues/2778)) ([#2780](https://github.com/vikejs/vike/issues/2780)) ([4a9fae0](https://github.com/vikejs/vike/commit/4a9fae0bbbd21f8dc5162a29344f4ee5938e712f))
+
+
+### Features
+
+* skip Vike from handling links by setting `<a data-vike="false">` ([490a945](https://github.com/vikejs/vike/commit/490a945f453fa08fec14d12d478cd2b23524aeff))
+
+
+
 ## [0.4.242](https://github.com/vikejs/vike/compare/v0.4.241...v0.4.242) (2025-10-07)
 
 
