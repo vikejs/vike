@@ -1010,7 +1010,9 @@ function getConfigDefinitions(
 
       objectEntries(meta).forEach(([configName, configDefinitionUserLand]) => {
         if ('isDefinedByPeerDependency' in configDefinitionUserLand) {
+          /* vike-server@1.0.24 wrongfully sets `stream: { env: { config: true }, isDefinedByPeerDependency: true }`
           assert(deepEqual(Object.keys(configDefinitionUserLand), ['isDefinedByPeerDependency']))
+          //*/
           if (!configDefinitions[configName]) {
             configDefinitions[configName] = {
               env: { client: false, server: false, config: false },
