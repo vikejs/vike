@@ -1009,10 +1009,12 @@ function getConfigDefinitions(
 
       objectEntries(meta).forEach(([configName, configDefinitionUserLand]) => {
         if ('isDefinedByPeerDependency' in configDefinitionUserLand) {
-          configDefinitionUserLand = {
-            env: { client: false, server: false, config: false },
-            ...(configDefinitionUserLand as Record<string, unknown>),
+          if (!configDefinitions[configName]) {
+            configDefinitions[configName] = {
+              env: { client: false, server: false, config: false },
+            }
           }
+          return
         }
         // User can override an existing config definition
         configDefinitions[configName] = {
