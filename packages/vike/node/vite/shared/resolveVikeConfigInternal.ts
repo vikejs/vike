@@ -41,7 +41,6 @@ import {
   checkType,
   objectAssign,
   getGlobalObject,
-  deepEqual,
 } from '../utils.js'
 import type {
   PageConfigGlobalBuildTime,
