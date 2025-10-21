@@ -302,6 +302,10 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { client: true },
   },
   middleware: { env: { server: true }, cumulative: true, eager: true, global: true },
+  cli: {
+    env: { config: true },
+    global: true,
+  },
   onPrerenderStart: {
     env: { server: true, production: true },
     eager: true,

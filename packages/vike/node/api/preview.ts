@@ -5,9 +5,10 @@ import { preview as previewVite, type ResolvedConfig, type PreviewServer } from 
 import { importServerProductionIndex } from '@brillout/vite-plugin-server-entry/runtime'
 import type { ApiOptions } from './types.js'
 import { getOutDirs } from '../vite/shared/getOutDirs.js'
-import { assertWarning, onSetupPreview } from './utils.js'
+import { assertUsage, assertWarning, onSetupPreview } from './utils.js'
 import pc from '@brillout/picocolors'
 import path from 'node:path'
+import { getVikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
 
 /**
  * Programmatically trigger `$ vike preview`
@@ -17,7 +18,15 @@ import path from 'node:path'
 async function preview(options: ApiOptions = {}): Promise<{ viteServer?: PreviewServer; viteConfig: ResolvedConfig }> {
   onSetupPreview()
   const { viteConfigFromUserResolved, viteConfigResolved } = await prepareViteApiCall(options, 'preview')
-  if (viteConfigResolved.vitePluginServerEntry?.inject) {
+
+  const vikeConfig = await getVikeConfigInternal()
+  const cliPreview = vikeConfig.config.cli?.preview
+
+  assertUsage(cliPreview !== false, `${pc.cyan('$ vike preview')} isn't supported`)
+  const useVite =
+    cliPreview === 'vite' || (cliPreview === undefined && !viteConfigResolved.vitePluginServerEntry?.inject)
+  if (!useVite) {
+    // Dynamically import() server production entry dist/server/index.js
     const outDir = getOutDirs(viteConfigResolved, undefined).outDirRoot
     const { outServerIndex } = await importServerProductionIndex({ outDir })
     const outServerIndexRelative = path.relative(viteConfigResolved.root, outServerIndex)
@@ -30,6 +39,7 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
       viteConfig: viteConfigResolved,
     }
   } else {
+    // Use Vite's preview server
     const server = await previewVite(viteConfigFromUserResolved)
     return {
       viteServer: server,
