@@ -47,7 +47,7 @@
   },
   "pnpm": {
     "overrides": {
-      "react-streaming": "0.4.10-commit-be9f6c2"
+      "react-streaming": "0.4.10-commit-9e08460"
     }
   },
   "packageManager": "pnpm@9.15.9"

@@ -12,7 +12,7 @@
     "node-fetch": "^2.6.9",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "react-streaming": "0.4.10-commit-be9f6c2",
+    "react-streaming": "0.4.10-commit-9e08460",
     "vite": "^7.0.6",
     "vike": "0.4.243",
     "wrangler": "^4.28.0"
