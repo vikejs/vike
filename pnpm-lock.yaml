@@ -243,8 +243,8 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       react-streaming:
-        specifier: 0.4.10-commit-6c29a3a
-        version: 0.4.10-commit-6c29a3a(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: 0.4.10-commit-d5a3f5c
+        version: 0.4.10-commit-d5a3f5c(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       vike:
         specifier: 0.4.243
         version: link:../../packages/vike
@@ -432,8 +432,8 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       react-streaming:
-        specifier: 0.4.10-commit-6c29a3a
-        version: 0.4.10-commit-6c29a3a(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: 0.4.10-commit-d5a3f5c
+        version: 0.4.10-commit-d5a3f5c(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -483,8 +483,8 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       react-streaming:
-        specifier: 0.4.10-commit-6c29a3a
-        version: 0.4.10-commit-6c29a3a(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: 0.4.10-commit-d5a3f5c
+        version: 0.4.10-commit-d5a3f5c(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       sirv:
         specifier: ^2.0.2
         version: 2.0.4
@@ -859,8 +859,8 @@ importers:
         specifier: ^0.5.10
         version: 0.5.10
       react-streaming:
-        specifier: 0.4.10-commit-6c29a3a
-        version: 0.4.10-commit-6c29a3a(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: 0.4.10-commit-d5a3f5c
+        version: 0.4.10-commit-d5a3f5c(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       rimraf:
         specifier: ^5.0.5
         version: 5.0.10
@@ -1003,8 +1003,8 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       react-streaming:
-        specifier: 0.4.10-commit-6c29a3a
-        version: 0.4.10-commit-6c29a3a(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: 0.4.10-commit-d5a3f5c
+        version: 0.4.10-commit-d5a3f5c(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       vike:
         specifier: 0.4.243
         version: link:../../packages/vike
@@ -1177,8 +1177,8 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       react-streaming:
-        specifier: 0.4.10-commit-6c29a3a
-        version: 0.4.10-commit-6c29a3a(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: 0.4.10-commit-d5a3f5c
+        version: 0.4.10-commit-d5a3f5c(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       sirv:
         specifier: ^2.0.2
         version: 2.0.4
@@ -1777,8 +1777,8 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       react-streaming:
-        specifier: 0.4.10-commit-6c29a3a
-        version: 0.4.10-commit-6c29a3a(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: 0.4.10-commit-d5a3f5c
+        version: 0.4.10-commit-d5a3f5c(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       typescript:
         specifier: ^5.9.2
         version: 5.9.3
@@ -7165,8 +7165,8 @@ packages:
       react: '>=19'
       react-dom: '>=19'
 
-  react-streaming@0.4.10-commit-6c29a3a:
-    resolution: {integrity: sha512-4iKe99yc1e1pMMafVv1rCpVwXkTG5oWb0hRweybbIX5keYVfvlLbyzTtuUxHuk7b41wkdKhkDBPctx0GA/0laQ==}
+  react-streaming@0.4.10-commit-d5a3f5c:
+    resolution: {integrity: sha512-cPAkqPFJzJhMR5V9sttFjitdaul/BJaMYOTXR/bTBXh2zGRLmjKygpRm8diDFWp5tRyni3rSwkhfTODJdGcNgA==}
     peerDependencies:
       react: '>=19'
       react-dom: '>=19'
@@ -14202,7 +14202,7 @@ snapshots:
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
 
-  react-streaming@0.4.10-commit-6c29a3a(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
+  react-streaming@0.4.10-commit-d5a3f5c(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:
       '@brillout/import': 0.2.6
       '@brillout/json-serializer': 0.5.21
