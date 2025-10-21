@@ -623,6 +623,11 @@ type ConfigBuiltIn = {
 
   /** @experimental */
   middleware?: Function
+
+  /** @experimental */
+  cli?: {
+    preview?: boolean | 'vite'
+  }
 }
 
 type ConfigBuiltInResolved = {
