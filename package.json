@@ -45,5 +45,10 @@
     "playwright": "^1.50.1",
     "vitest": "^3.2.4"
   },
+  "pnpm": {
+    "overrides": {
+      "react-streaming": "0.4.10-commit-be9f6c2"
+    }
+  },
   "packageManager": "pnpm@9.15.9"
 }
