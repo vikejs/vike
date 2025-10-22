@@ -100,10 +100,7 @@ import { getCliOptions } from '../../cli/context.js'
 import type { PrerenderContextPublic } from '../../prerender/runPrerender.js'
 import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderConfig.js'
 import type { ResolvedConfig, UserConfig } from 'vite'
-import {
-  getProxyForPublicUsage,
-  type DangerouslyUseInternals,
-} from '../../../shared/getProxyForPublicUsage.js'
+import { getProxyForPublicUsage, type DangerouslyUseInternals } from '../../../shared/getProxyForPublicUsage.js'
 import { setVikeConfigError } from '../../shared/getVikeConfigError.js'
 assertIsNotProductionRuntime()
 
