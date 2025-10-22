@@ -43,10 +43,10 @@ function getProp(
   const propStr = String(prop)
 
   if (prop === '_isProxyObject') return true
+  if (prop === 'dangerouslyUseInternals') return obj
 
   if (!skipOnInternalProp) {
     if (prop === 'ignoreWarning') return (prop: string) => getProp(prop, obj, objName, true, fallback)
-    if (prop === 'dangerouslyUseInternals') return obj
     if (!globalThis.__VIKE__IS_CLIENT) onInternalProp(propStr, objName)
   }
 
