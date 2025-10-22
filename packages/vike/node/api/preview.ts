@@ -19,9 +19,7 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
   onSetupPreview()
   const { viteConfigFromUserResolved, viteConfigResolved } = await prepareViteApiCall(options, 'preview')
 
-  const vikeConfig = await getVikeConfigInternal()
-  const cliPreview = vikeConfig.config.cli?.preview
-
+  const cliPreview = await resolveCliConfig()
   assertUsage(cliPreview !== false, `${pc.cyan('$ vike preview')} isn't supported`)
   const useVite =
     cliPreview === 'vite' || (cliPreview === undefined && !viteConfigResolved.vitePluginServerEntry?.inject)
@@ -46,4 +44,10 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
       viteConfig: server.config,
     }
   }
+}
+
+async function resolveCliConfig() {
+  const vikeConfig = await getVikeConfigInternal()
+  const cliPreview = vikeConfig.config.cli?.preview
+  return cliPreview
 }
