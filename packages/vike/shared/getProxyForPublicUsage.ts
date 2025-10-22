@@ -35,7 +35,7 @@ function getTrapGet(
   return function (_: any, prop: string | symbol) {
     const propStr = String(prop)
     if (prop === '_isProxyObject') return true
-    if (!skipOnInternalProp) onInternalProp(propStr, objName)
+    if (!skipOnInternalProp && !globalThis.__VIKE__IS_CLIENT) onInternalProp(propStr, objName)
     if (fallback && !(prop in obj)) {
       // Rudimentary flat pageContext implementation https://github.com/vikejs/vike/issues/1268
       // Failed full-fledged implementation: https://github.com/vikejs/vike/pull/2458
@@ -58,12 +58,9 @@ function onNotSerializable(propStr: string, val: unknown, objName: string) {
 }
 
 function onInternalProp(propStr: string, objName: string) {
-  // - We must skip it in the client-side because of the reactivity mechanism of UI frameworks like Solid.
-  // - TO-DO/eventually: use import.meta.CLIENT instead of isBrowser()
-  //   - Where import.meta.CLIENT is defined by Vike
-  //   - Using import.meta.env.CLIENT (note `.env.`) doesn't seem possible: https://github.com/brillout/playground_node_import.meta.env
-  //     - If Rolldown Vite + Rolldowns always transpiles node_modules/ then we can simply use import.meta.env.SSR
-  if (isBrowser()) return
+  // We must skip it on the client-side because of the reactivity mechanism of UI frameworks like Solid.
+  assert(!isBrowser())
+
   // TO-DO/soon/proxy: remove this and only warn on built-in access instead
   if (propStr === '_configFromHook') return
 
