@@ -33,7 +33,7 @@ import type { PageContextInternalClientAfterRender } from '../client/runtime-cli
 
 type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & {
   /** https://vike.dev/warning/internals */
-  dangerouslyUseInternals?: DangerouslyUseInternals<PageContextInternalServer & PageContextInternalServerAfterRender>
+  dangerouslyUseInternals: DangerouslyUseInternals<PageContextInternalServer & PageContextInternalServerAfterRender>
 } & Vike.PageContext &
   Vike.PageContextServer
 
@@ -42,7 +42,7 @@ type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & {
 type PageContext<Data = unknown> = PageContextClient<Data> | PageContextServer<Data>
 type PageContextClient<Data = unknown> = PageContextBuiltInClientWithClientRouting<Data> & {
   /** https://vike.dev/warning/internals */
-  dangerouslyUseInternals?: DangerouslyUseInternals<
+  dangerouslyUseInternals: DangerouslyUseInternals<
     PageContextInternalClient_ClientRouting & PageContextInternalClientAfterRender
   >
 } & Vike.PageContext &

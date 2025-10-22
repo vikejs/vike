@@ -23,13 +23,13 @@ type GlobalContextServer = Pick<
   | 'isClientSide'
 > & {
   /** https://vike.dev/warning/internals */
-  dangerouslyUseInternals?: GlobalContextServerInternal
+  dangerouslyUseInternals: GlobalContextServerInternal
 } & Vike.GlobalContext &
   Vike.GlobalContextServer
 
 type GlobalContextClient = GlobalContextBasePublic & {
   /** https://vike.dev/warning/internals */
-  dangerouslyUseInternals?: GlobalContextClientInternal
+  dangerouslyUseInternals: GlobalContextClientInternal
 } & Pick<GlobalContextClientInternal, 'isClientSide'> &
   Vike.GlobalContext &
   Vike.GlobalContextClient & {

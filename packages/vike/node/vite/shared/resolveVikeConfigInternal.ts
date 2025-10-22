@@ -175,7 +175,7 @@ function getVikeConfig(
 // Public usage
 type VikeConfig = Pick<VikeConfigInternal, 'config' | 'pages' | 'prerenderContext'> & {
   /** https://vike.dev/warning/internals */
-  dangerouslyUseInternals?: DangerouslyUseInternals<VikeConfigInternal>
+  dangerouslyUseInternals: DangerouslyUseInternals<VikeConfigInternal>
 }
 
 function setVikeConfigContext(vikeConfigCtx_: VikeConfigContext) {
