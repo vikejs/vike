@@ -2,14 +2,10 @@
 export type { PageContext }
 export type { PageContextServer }
 export type { PageContextClient }
-export type { GlobalContext }
-export type { GlobalContextServer }
-export type { GlobalContextClient }
 // For users who don't use Client Routing
 //  - PageContextServer is the same for Client Routing and Server Routing
 export type { PageContextWithServerRouting }
 export type { PageContextClientWithServerRouting }
-export type { GlobalContextClientWithServerRouting }
 
 // Internal usage
 export type { PageContextInternalServer }
@@ -30,9 +26,7 @@ import type {
 import type { From, PageContextConfig, Source, Sources } from '../shared/page-configs/resolveVikeConfigPublic.js'
 import type { Config } from './Config.js'
 import type { AbortStatusCode } from '../shared/route/abort.js'
-import type { GlobalContextServer } from '../node/runtime/globalContext.js'
-import type { GlobalContextClient } from '../client/runtime-client-routing/getGlobalContextClientInternal.js'
-import type { GlobalContextClientWithServerRouting } from '../client/runtime-server-routing/getGlobalContextClientInternal.js'
+import type { GlobalContextClient, GlobalContextServer, GlobalContextClientWithServerRouting } from './GlobalContext.js'
 
 type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & Vike.PageContext & Vike.PageContextServer
 
@@ -42,8 +36,6 @@ type PageContext<Data = unknown> = PageContextClient<Data> | PageContextServer<D
 type PageContextClient<Data = unknown> = PageContextBuiltInClientWithClientRouting<Data> &
   Vike.PageContext &
   Vike.PageContextClient
-
-type GlobalContext = GlobalContextServer | GlobalContextClient
 
 // With Server Routing
 type PageContextWithServerRouting<Data = unknown> = PageContextClientWithServerRouting<Data> | PageContextServer<Data>

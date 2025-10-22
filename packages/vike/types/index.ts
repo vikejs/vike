@@ -2,13 +2,15 @@ export type {
   PageContext,
   PageContextServer,
   PageContextClient,
+  PageContextWithServerRouting,
+  PageContextClientWithServerRouting,
+} from './PageContext.js'
+export type {
   GlobalContext,
   GlobalContextServer,
   GlobalContextClient,
-  PageContextWithServerRouting,
-  PageContextClientWithServerRouting,
   GlobalContextClientWithServerRouting,
-} from './PageContext.js'
+} from './GlobalContext.js'
 
 export type { PrerenderContextPublic as PrerenderContext } from '../node/prerender/runPrerender.js'
 

@@ -22,29 +22,36 @@ function getProxyForPublicUsage<Obj extends Target>(
   fallback?: Fallback,
 ): Obj {
   return new Proxy(obj, {
-    get: getTrapGet(obj, objName, skipOnInternalProp, fallback),
+    get: (_: any, prop: string | symbol) => getProp(prop, obj, objName, skipOnInternalProp, fallback),
   })
 }
 
-function getTrapGet(
+function getProp(
+  prop: string | symbol,
   obj: Record<string | symbol, unknown>,
   objName: string,
   skipOnInternalProp?: true,
   fallback?: Fallback,
 ) {
-  return function (_: any, prop: string | symbol) {
-    const propStr = String(prop)
-    if (prop === '_isProxyObject') return true
-    if (!skipOnInternalProp && !globalThis.__VIKE__IS_CLIENT) onInternalProp(propStr, objName)
-    if (fallback && !(prop in obj)) {
-      // Rudimentary flat pageContext implementation https://github.com/vikejs/vike/issues/1268
-      // Failed full-fledged implementation: https://github.com/vikejs/vike/pull/2458
-      return fallback(prop)
-    }
-    const val = obj[prop]
-    onNotSerializable(propStr, val, objName)
-    return val
+  const propStr = String(prop)
+
+  if (prop === '_isProxyObject') return true
+
+  if (!skipOnInternalProp) {
+    if (!globalThis.__VIKE__IS_CLIENT) onInternalProp(propStr, objName)
   }
+
+  if (fallback && !(prop in obj)) {
+    // Rudimentary flat pageContext implementation https://github.com/vikejs/vike/issues/1268
+    // Failed full-fledged implementation: https://github.com/vikejs/vike/pull/2458
+    return fallback(prop)
+  }
+
+  const val = obj[prop]
+
+  onNotSerializable(propStr, val, objName)
+
+  return val
 }
 
 function onNotSerializable(propStr: string, val: unknown, objName: string) {
