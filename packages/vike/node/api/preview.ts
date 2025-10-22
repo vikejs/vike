@@ -1,4 +1,5 @@
 export { preview }
+export type { CliPreviewConfig }
 
 import { prepareViteApiCall } from './prepareViteApiCall.js'
 import { preview as previewVite, type ResolvedConfig, type PreviewServer } from 'vite'
@@ -9,6 +10,7 @@ import { assertUsage, assertWarning, onSetupPreview } from './utils.js'
 import pc from '@brillout/picocolors'
 import path from 'node:path'
 import { getVikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
+import { isCallable } from '../runtime/utils.js'
 
 /**
  * Programmatically trigger `$ vike preview`
@@ -19,7 +21,7 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
   onSetupPreview()
   const { viteConfigFromUserResolved, viteConfigResolved } = await prepareViteApiCall(options, 'preview')
 
-  const cliPreview = await resolveCliConfig()
+  const cliPreview = await resolveCliPreviewConfig()
   assertUsage(cliPreview !== false, `${pc.cyan('$ vike preview')} isn't supported`)
   const useVite =
     cliPreview === 'vite' || (cliPreview === undefined && !viteConfigResolved.vitePluginServerEntry?.inject)
@@ -46,8 +48,14 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
   }
 }
 
-async function resolveCliConfig() {
+async function resolveCliPreviewConfig(): Promise<CliPreviewValue> {
   const vikeConfig = await getVikeConfigInternal()
-  const cliPreview = vikeConfig.config.cli?.preview
-  return cliPreview
+  const val = vikeConfig.config.cli?.preview
+  if (!isCallable(val)) {
+    return val
+  } else {
+    return await val()
+  }
 }
+type CliPreviewValue = boolean | 'vite' | undefined
+type CliPreviewConfig = CliPreviewValue | (() => CliPreviewValue | Promise<CliPreviewValue>)
