@@ -23,8 +23,7 @@ export { updateUserFiles }
 export { isRunnable }
 export { vikeConfigErrorRecoverMsg }
 export type { BuildInfo }
-export type { GlobalContextServerInternal as GlobalContextServerInternal }
-export type { GlobalContextServer }
+export type { GlobalContextServerInternal }
 
 // The core logic revolves around:
 // - virtualFileExportsGlobalEntry is the main requirement
@@ -70,7 +69,7 @@ import {
   getGlobalContextSyncErrMsg,
   type GlobalContextBase,
 } from '../../shared/createGlobalContextShared.js'
-import type { GlobalContext } from '../../types/PageContext.js'
+import type { GlobalContext, GlobalContextServer } from '../../types/GlobalContext.js'
 import { prepareGlobalContextForPublicUsage } from '../../shared/prepareGlobalContextForPublicUsage.js'
 import { logRuntimeError, logRuntimeInfo } from './loggerRuntime.js'
 import { getVikeConfigErrorBuild, setVikeConfigError } from '../shared/getVikeConfigError.js'
@@ -111,22 +110,6 @@ const globalObjectTyped = globalObject as typeof globalObject & {
 }
 const vikeConfigErrorRecoverMsg = pc.bold(pc.green('Vike config loaded'))
 assertIsNotBrowser()
-
-// Public usge
-type GlobalContextServer = Pick<
-  GlobalContextServerInternal,
-  | 'assetsManifest'
-  | 'config'
-  | 'viteConfig'
-  | 'viteConfigRuntime'
-  | 'pages'
-  | 'baseServer'
-  | 'baseAssets'
-  | 'isClientSide'
-> &
-  // https://vike.dev/globalContext#typescript
-  Vike.GlobalContext &
-  Vike.GlobalContextServer
 
 // Internal usage
 type GlobalContextServerInternal = Awaited<ReturnType<typeof createGlobalContext>>
