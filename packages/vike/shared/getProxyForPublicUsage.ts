@@ -69,8 +69,6 @@ type IgnoreWarning = (prop: string) => any
 /** https://vike.dev/warning/internals */
 type DangerouslyUseInternals<Obj> = Obj & Record<string, any>
 
-
-
 function onNotSerializable(propStr: string, val: unknown, objName: string) {
   if (val !== NOT_SERIALIZABLE) return
   const propName = getPropAccessNotation(propStr)
