@@ -22,17 +22,17 @@ function getProxyForPublicUsage<Obj extends Target>(
   fallback?: Fallback,
 ): Obj {
   return new Proxy(obj, {
-    get: getTrapGet(obj, objName, skipOnInternalProp, fallback),
+    get: (_: any, prop: string | symbol) => getProp(prop, obj, objName, skipOnInternalProp, fallback),
   })
 }
 
-function getTrapGet(
+function getProp(
+  prop: string | symbol,
   obj: Record<string | symbol, unknown>,
   objName: string,
   skipOnInternalProp?: true,
   fallback?: Fallback,
 ) {
-  return function (_: any, prop: string | symbol) {
     const propStr = String(prop)
     if (prop === '_isProxyObject') return true
     if (!skipOnInternalProp && !globalThis.__VIKE__IS_CLIENT) onInternalProp(propStr, objName)
@@ -44,7 +44,6 @@ function getTrapGet(
     const val = obj[prop]
     onNotSerializable(propStr, val, objName)
     return val
-  }
 }
 
 function onNotSerializable(propStr: string, val: unknown, objName: string) {
