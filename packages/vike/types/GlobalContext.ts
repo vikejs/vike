@@ -5,8 +5,9 @@ export type { GlobalContextClient }
 export type { GlobalContextClientWithServerRouting }
 
 import type { GlobalContextServerInternal } from '../node/runtime/globalContext.js'
-import type { GlobalContextClientWithServerRouting } from '../client/runtime-server-routing/getGlobalContextClientInternal.js'
-import type { GlobalContextClient } from '../client/runtime-client-routing/getGlobalContextClientInternal.js'
+import type { GlobalContextClientInternalWithServerRouting } from '../client/runtime-server-routing/getGlobalContextClientInternal.js'
+import type { GlobalContextBasePublic } from '../shared/createGlobalContextShared.js'
+import type { GlobalContextClientInternal } from '../client/runtime-client-routing/getGlobalContextClientInternal.js'
 
 type GlobalContext = GlobalContextServer | GlobalContextClient
 
@@ -24,3 +25,17 @@ type GlobalContextServer = Pick<
   // https://vike.dev/globalContext#typescript
   Vike.GlobalContext &
   Vike.GlobalContextServer
+
+type GlobalContextClient = GlobalContextBasePublic &
+  Pick<GlobalContextClientInternal, 'isClientSide'> &
+  Vike.GlobalContext &
+  Vike.GlobalContextClient & {
+    // Nothing extra for now
+  }
+
+type GlobalContextClientWithServerRouting = GlobalContextBasePublic &
+  Pick<GlobalContextClientInternalWithServerRouting, 'isClientSide'> &
+  Vike.GlobalContext &
+  Vike.GlobalContextClient & {
+    // Nothing extra for now
+  }
