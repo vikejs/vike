@@ -102,7 +102,6 @@ import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderCo
 import type { ResolvedConfig, UserConfig } from 'vite'
 import {
   getProxyForPublicUsage,
-  type IgnoreWarning,
   type DangerouslyUseInternals,
 } from '../../../shared/getProxyForPublicUsage.js'
 import { setVikeConfigError } from '../../shared/getVikeConfigError.js'
@@ -178,8 +177,6 @@ function getVikeConfig(
 }
 // Public usage
 type VikeConfig = Pick<VikeConfigInternal, 'config' | 'pages' | 'prerenderContext'> & {
-  /** https://vike.dev/warning/internals */
-  ignoreWarning: IgnoreWarning
   /** https://vike.dev/warning/internals */
   dangerouslyUseInternals?: DangerouslyUseInternals<VikeConfigInternal>
 }

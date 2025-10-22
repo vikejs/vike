@@ -1,5 +1,5 @@
 export { getProxyForPublicUsage }
-export type { IgnoreWarning, DangerouslyUseInternals }
+export type { DangerouslyUseInternals }
 
 // We use a proxy instead of property getters.
 // - The issue with property getters is that they can't be `writable: true` but we do want the user to be able to modify the value of internal properties.
@@ -24,8 +24,6 @@ function getProxyForPublicUsage<Obj extends Target>(
 ): Obj & {
   _isProxyObject: true
   /** https://vike.dev/warning/internals */
-  ignoreWarning: IgnoreWarning
-  /** https://vike.dev/warning/internals */
   dangerouslyUseInternals: DangerouslyUseInternals<Obj>
 } {
   return new Proxy(obj, {
@@ -46,7 +44,6 @@ function getProp(
   if (prop === 'dangerouslyUseInternals') return obj
 
   if (!skipOnInternalProp) {
-    if (prop === 'ignoreWarning') return (prop: string) => getProp(prop, obj, objName, true, fallback)
     if (!globalThis.__VIKE__IS_CLIENT) onInternalProp(propStr, objName)
   }
 
@@ -62,9 +59,6 @@ function getProp(
 
   return val
 }
-
-/** https://vike.dev/warning/internals */
-type IgnoreWarning = (prop: string) => any
 
 /** https://vike.dev/warning/internals */
 type DangerouslyUseInternals<Obj> = Obj & Record<string, any>

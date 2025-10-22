@@ -27,7 +27,7 @@ import type { From, PageContextConfig, Source, Sources } from '../shared/page-co
 import type { Config } from './Config.js'
 import type { AbortStatusCode } from '../shared/route/abort.js'
 import type { GlobalContextClient, GlobalContextServer, GlobalContextClientWithServerRouting } from './GlobalContext.js'
-import type { IgnoreWarning, DangerouslyUseInternals } from '../shared/getProxyForPublicUsage.js'
+import type { DangerouslyUseInternals } from '../shared/getProxyForPublicUsage.js'
 
 type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & Vike.PageContext & Vike.PageContextServer
 
@@ -171,8 +171,6 @@ type PageContextBuiltInCommon<Data> = PageContextConfig & {
    */
   isBaseMissing?: true
 
-  /** https://vike.dev/warning/internals */
-  ignoreWarning?: IgnoreWarning
   /** https://vike.dev/warning/internals */
   dangerouslyUseInternals?: DangerouslyUseInternals<PageContextBuiltInCommon<unknown>>
 }
