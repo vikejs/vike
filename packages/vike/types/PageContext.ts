@@ -27,14 +27,25 @@ import type { From, PageContextConfig, Source, Sources } from '../shared/page-co
 import type { Config } from './Config.js'
 import type { AbortStatusCode } from '../shared/route/abort.js'
 import type { GlobalContextClient, GlobalContextServer, GlobalContextClientWithServerRouting } from './GlobalContext.js'
+import type { DangerouslyUseInternals } from '../shared/getProxyForPublicUsage.js'
+import type { PageContextInternalServerAfterRender } from '../node/runtime/renderPage.js'
+import type { PageContextInternalClientAfterRender } from '../client/runtime-client-routing/renderPageClientSide.js'
 
-type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & Vike.PageContext & Vike.PageContextServer
+type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & {
+  /** https://vike.dev/warning/internals */
+  dangerouslyUseInternals: DangerouslyUseInternals<PageContextInternalServer & PageContextInternalServerAfterRender>
+} & Vike.PageContext &
+  Vike.PageContextServer
 
 // With Client Routing
 //  - Because of vike-{react/vue/solid} most users will eventually be using Client Routing => we give out the succinct type names `PageContext` and `PageContextClient` to these users
 type PageContext<Data = unknown> = PageContextClient<Data> | PageContextServer<Data>
-type PageContextClient<Data = unknown> = PageContextBuiltInClientWithClientRouting<Data> &
-  Vike.PageContext &
+type PageContextClient<Data = unknown> = PageContextBuiltInClientWithClientRouting<Data> & {
+  /** https://vike.dev/warning/internals */
+  dangerouslyUseInternals: DangerouslyUseInternals<
+    PageContextInternalClient_ClientRouting & PageContextInternalClientAfterRender
+  >
+} & Vike.PageContext &
   Vike.PageContextClient
 
 // With Server Routing

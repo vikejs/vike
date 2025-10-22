@@ -1,4 +1,5 @@
 export { getProxyForPublicUsage }
+export type { DangerouslyUseInternals }
 
 // We use a proxy instead of property getters.
 // - The issue with property getters is that they can't be `writable: true` but we do want the user to be able to modify the value of internal properties.
@@ -20,7 +21,11 @@ function getProxyForPublicUsage<Obj extends Target>(
   objName: 'pageContext' | 'globalContext' | 'prerenderContext' | 'vikeConfig',
   skipOnInternalProp?: true,
   fallback?: Fallback,
-): Obj {
+): Obj & {
+  _isProxyObject: true
+  /** https://vike.dev/warning/internals */
+  dangerouslyUseInternals: DangerouslyUseInternals<Obj>
+} {
   return new Proxy(obj, {
     get: (_: any, prop: string | symbol) => getProp(prop, obj, objName, skipOnInternalProp, fallback),
   })
@@ -36,6 +41,7 @@ function getProp(
   const propStr = String(prop)
 
   if (prop === '_isProxyObject') return true
+  if (prop === 'dangerouslyUseInternals') return obj
 
   if (!skipOnInternalProp) {
     if (!globalThis.__VIKE__IS_CLIENT) onInternalProp(propStr, objName)
@@ -53,6 +59,9 @@ function getProp(
 
   return val
 }
+
+/** https://vike.dev/warning/internals */
+type DangerouslyUseInternals<Obj> = Obj
 
 function onNotSerializable(propStr: string, val: unknown, objName: string) {
   if (val !== NOT_SERIALIZABLE) return
@@ -72,10 +81,9 @@ function onInternalProp(propStr: string, objName: string) {
   if (propStr === '_configFromHook') return
 
   if (propStr.startsWith('_')) {
-    assertWarning(
-      false,
-      `Using internal ${objName}.${propStr} which may break in any minor version update. Reach out on GitHub to request official support for your use case.`,
-      { onlyOnce: true, showStackTrace: true },
-    )
+    assertWarning(false, `Using internal ${objName}.${propStr} — https://vike.dev/warning/internals`, {
+      onlyOnce: true,
+      showStackTrace: true,
+    })
   }
 }
