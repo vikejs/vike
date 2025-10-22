@@ -1,23 +1,22 @@
-The following warning means you're accessing an internal API that isn't part of Vike's official interface.
+import { Link, Warning } from '@brillout/docpress'
+
+The following warning means you're accessing a Vike internal that isn't part of Vike's official interface.
 
 ```
 Using internal pageContext._someInternalProp — https://vike.dev/warning/internals
 ```
 
-Internal interfaces aren't guaranteed to be maintained — expect breaking changes in any minor version update.
+There isn't any guarantee whatsoever — expect breaking changes in any minor version update.
 
-The best practice is to reach out to Vike's team to get official support from your use case.
+Instead of using internals, reach out to Vike's team to get official support for your use case.
 
-That said, you can also bypass the warning by using `dangerouslyUseInternals`:
+That said, you can suppress the warning by using `dangerouslyUseInternals`:
 
 ```js
 pageContext._someInternalProp// [!code --]
 pageContext.dangerouslyUseInternals._someInternalProp// [!code ++]
 ```
 
-You can also use the legacy `ignoreWarning()` method:
-
-```js
-pageContext._someInternalProp// [!code --]
-pageContext.ignoreWarning('_someInternalProp')// [!code ++]
-```
+<Warning>
+  If you end up using `dangerouslyUseInternals` then we strongly suggest to reach out to Vike's team.
+</Warning>
