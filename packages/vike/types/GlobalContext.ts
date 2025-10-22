@@ -24,7 +24,7 @@ type GlobalContextServer = Pick<
 > & {
   /** https://vike.dev/warning/internals */
   dangerouslyUseInternals?: GlobalContextServerInternal
-} & Vike.GlobalContext & // https://vike.dev/globalContext#typescript
+} & Vike.GlobalContext &
   Vike.GlobalContextServer
 
 type GlobalContextClient = GlobalContextBasePublic & {
