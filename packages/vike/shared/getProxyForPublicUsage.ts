@@ -37,7 +37,9 @@ function getProp(
 
   if (prop === '_isProxyObject') return true
 
-  if (!skipOnInternalProp && !globalThis.__VIKE__IS_CLIENT) onInternalProp(propStr, objName)
+  if (!skipOnInternalProp) {
+    if (!globalThis.__VIKE__IS_CLIENT) onInternalProp(propStr, objName)
+  }
 
   if (fallback && !(prop in obj)) {
     // Rudimentary flat pageContext implementation https://github.com/vikejs/vike/issues/1268
