@@ -1044,6 +1044,10 @@ function warningsAndErrors() {
         title: '❌ No side exports',
         url: '/no-side-exports',
       },
+      {
+        title: '⚠️ Using Vike internals',
+        url: '/warning/internals',
+      },
     ] as const
   ).map((h) => ({ ...h, category: 'Warnings & Errors' as const })) satisfies HeadingDetachedDefinition[]
 }
