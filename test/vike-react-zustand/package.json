@@ -13,7 +13,7 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "typescript": "^5.9.3",
-    "vike": "0.4.243",
+    "vike": "0.4.244",
     "vike-react": "0.6.9",
     "vike-react-zustand": "^0.1.5",
     "vite": "^7.1.9",

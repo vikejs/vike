@@ -1,3 +1,19 @@
+## [0.4.244](https://github.com/vikejs/vike/compare/v0.4.243...v0.4.244) (2025-10-22)
+
+
+### Features
+
+* +cli.preview ([#2792](https://github.com/vikejs/vike/issues/2792)) ([a61466a](https://github.com/vikejs/vike/commit/a61466a5c8ed714ffd8300cbd004202c20ebd7e4))
+* allow +cli.preview to be async function ([#2795](https://github.com/vikejs/vike/issues/2795)) ([946b673](https://github.com/vikejs/vike/commit/946b673a42eef1fa8827d2236072bf461e4ee1a4))
+* pageContext.dangerouslyUseInternals._* ([#2794](https://github.com/vikejs/vike/issues/2794)) ([0440637](https://github.com/vikejs/vike/commit/04406378b7e339779b6b6ec21440bc71acae0003))
+
+
+### Performance Improvements
+
+* further tree-shake client runtime code ([a70ea31](https://github.com/vikejs/vike/commit/a70ea318b7b857ab10e0b729ded6bdc59ceaad9c))
+
+
+
 ## [0.4.243](https://github.com/vikejs/vike/compare/v0.4.242...v0.4.243) (2025-10-20)
 
 

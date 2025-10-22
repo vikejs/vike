@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "typescript": "^5.9.2",
-    "vike": "^0.4.243",
+    "vike": "^0.4.244",
     "vite": "^6.3.5",
     "@types/express": "^5.0.1",
     "tsx": "^4.19.4",
