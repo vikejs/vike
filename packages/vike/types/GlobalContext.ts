@@ -8,34 +8,43 @@ import type { GlobalContextServerInternal } from '../node/runtime/globalContext.
 import type { GlobalContextClientInternalWithServerRouting } from '../client/runtime-server-routing/getGlobalContextClientInternal.js'
 import type { GlobalContextBasePublic } from '../shared/createGlobalContextShared.js'
 import type { GlobalContextClientInternal } from '../client/runtime-client-routing/getGlobalContextClientInternal.js'
+import type { IgnoreWarning } from '../shared/getProxyForPublicUsage.js'
 
 type GlobalContext = GlobalContextServer | GlobalContextClient
 
-type GlobalContextServer = Pick<
-  GlobalContextServerInternal,
-  | 'assetsManifest'
-  | 'config'
-  | 'viteConfig'
-  | 'viteConfigRuntime'
-  | 'pages'
-  | 'baseServer'
-  | 'baseAssets'
-  | 'isClientSide'
-> &
+type GlobalContextServer = GlobalContextCommon &
+  Pick<
+    GlobalContextServerInternal,
+    | 'assetsManifest'
+    | 'config'
+    | 'viteConfig'
+    | 'viteConfigRuntime'
+    | 'pages'
+    | 'baseServer'
+    | 'baseAssets'
+    | 'isClientSide'
+  > &
   // https://vike.dev/globalContext#typescript
   Vike.GlobalContext &
   Vike.GlobalContextServer
 
-type GlobalContextClient = GlobalContextBasePublic &
+type GlobalContextClient = GlobalContextCommon &
+  GlobalContextBasePublic &
   Pick<GlobalContextClientInternal, 'isClientSide'> &
   Vike.GlobalContext &
   Vike.GlobalContextClient & {
     // Nothing extra for now
   }
 
-type GlobalContextClientWithServerRouting = GlobalContextBasePublic &
+type GlobalContextClientWithServerRouting = GlobalContextCommon &
+  GlobalContextBasePublic &
   Pick<GlobalContextClientInternalWithServerRouting, 'isClientSide'> &
   Vike.GlobalContext &
   Vike.GlobalContextClient & {
     // Nothing extra for now
   }
+
+type GlobalContextCommon = {
+  /** https://vike.dev/warning/internals */
+  ignoreWarning?: IgnoreWarning
+}

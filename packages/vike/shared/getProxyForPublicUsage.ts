@@ -1,4 +1,5 @@
 export { getProxyForPublicUsage }
+export type { IgnoreWarning }
 
 // We use a proxy instead of property getters.
 // - The issue with property getters is that they can't be `writable: true` but we do want the user to be able to modify the value of internal properties.
@@ -38,6 +39,7 @@ function getProp(
   if (prop === '_isProxyObject') return true
 
   if (!skipOnInternalProp) {
+    if (prop === 'ignoreWarning') return (prop: string) => getProp(prop, obj, objName, true, fallback)
     if (!globalThis.__VIKE__IS_CLIENT) onInternalProp(propStr, objName)
   }
 
@@ -53,6 +55,9 @@ function getProp(
 
   return val
 }
+
+/** https://vike.dev/warning/internals */
+type IgnoreWarning = (prop: string) => unknown
 
 function onNotSerializable(propStr: string, val: unknown, objName: string) {
   if (val !== NOT_SERIALIZABLE) return
@@ -72,10 +77,9 @@ function onInternalProp(propStr: string, objName: string) {
   if (propStr === '_configFromHook') return
 
   if (propStr.startsWith('_')) {
-    assertWarning(
-      false,
-      `Using internal ${objName}.${propStr} which may break in any minor version update. Reach out on GitHub to request official support for your use case.`,
-      { onlyOnce: true, showStackTrace: true },
-    )
+    assertWarning(false, `Using internal ${objName}.${propStr} — https://vike.dev/warning/internals`, {
+      onlyOnce: true,
+      showStackTrace: true,
+    })
   }
 }

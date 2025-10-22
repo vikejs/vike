@@ -1,0 +1,16 @@
+The following warning means you're accessing an internal API that isn't part of Vike's official interface.
+
+```
+Using internal pageContext._someInternalProp — https://vike.dev/warning/internals
+```
+
+Internal interfaces aren't guaranteed to be maintained — expect breaking changes in any minor version update.
+
+The best practice is to reach out to Vike's team to get official support from your use case.
+
+That said, you can also bypass the warning by using `ignoreWarning()`:
+
+```js
+pageContext._someInternalProp// [!code --]
+pageContext.ignoreWarning('_someInternalProp')// [!code ++]
+```
