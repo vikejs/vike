@@ -52,6 +52,7 @@ import type { PageContextClient, PageContextServer } from './PageContext.js'
 import type { GlobalContext } from './GlobalContext.js'
 import type { InlineConfig } from 'vite'
 import type { PassToClientPublic } from '../node/runtime/renderPage/html/serializeContext.js'
+import type { CliPreviewConfig } from '../node/api/preview.js'
 
 type HookNameOld = HookName | HookNameOldDesign
 type HookName = HookNamePage | HookNameGlobal
@@ -627,7 +628,7 @@ type ConfigBuiltIn = {
 
   /** @experimental */
   cli?: {
-    preview?: boolean | 'vite'
+    preview?: CliPreviewConfig
   }
 }
 
