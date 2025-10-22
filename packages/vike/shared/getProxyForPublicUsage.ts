@@ -34,15 +34,21 @@ function getProp(
   fallback?: Fallback,
 ) {
   const propStr = String(prop)
+
   if (prop === '_isProxyObject') return true
+
   if (!skipOnInternalProp && !globalThis.__VIKE__IS_CLIENT) onInternalProp(propStr, objName)
+
   if (fallback && !(prop in obj)) {
     // Rudimentary flat pageContext implementation https://github.com/vikejs/vike/issues/1268
     // Failed full-fledged implementation: https://github.com/vikejs/vike/pull/2458
     return fallback(prop)
   }
+
   const val = obj[prop]
+
   onNotSerializable(propStr, val, objName)
+
   return val
 }
 
