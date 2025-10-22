@@ -2,6 +2,7 @@ export { renderPage }
 export { renderPage_addAsyncHookwrapper }
 export type { PageContextInit }
 export type { PageContextBegin }
+export type { PageContextInternalServerAfterRender }
 
 import { renderPageAfterRoute } from './renderPage/renderPageAfterRoute.js'
 import {
@@ -407,6 +408,7 @@ function getPageContextHttpResponseErrorWithoutGlobalContext(
   return pageContextWithError
 }
 
+type PageContextInternalServerAfterRender = Awaited<ReturnType<typeof renderPageNominal>>
 async function renderPageNominal(pageContext: PageContextBegin) {
   objectAssign(pageContext, { errorWhileRendering: null })
 

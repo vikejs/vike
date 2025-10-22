@@ -4,6 +4,7 @@ export { disableClientRouting }
 export { firstRenderStartPromise }
 export { getPageContextClient }
 export type { PageContextBegin }
+export type { PageContextInternalClientAfterRender }
 
 import {
   assert,
@@ -69,6 +70,8 @@ import { preparePageContextForPublicUsageClientMinimal } from '../shared/prepare
 import type { VikeGlobalInternal } from '../../types/VikeGlobalInternal.js'
 import { logErrorClient } from './logErrorClient.js'
 
+type PageContextInternalClientAfterRender = NonNullable<Awaited<ReturnType<typeof renderPageClientSide>>>
+
 const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
   renderCounter: number
@@ -111,7 +114,7 @@ type RenderArgs = {
   isClientSideNavigation?: boolean
   pageContextInitClient?: Record<string, unknown>
 }
-async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
+async function renderPageClientSide(renderArgs: RenderArgs) {
   catchInfiniteLoop('renderPageClientSide()')
 
   const {
@@ -149,9 +152,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   globalObject.firstRenderStartPromiseResolve()
   if (isRenderOutdated()) return
 
-  await renderPageNominal()
-
-  return
+  return await renderPageNominal()
 
   async function renderPageNominal() {
     const onError = async (err: unknown) => {
@@ -286,7 +287,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       updateType(pageContext, pageContextAugmented)
 
       // Render page view
-      await renderPageView(pageContext)
+      return await renderPageView(pageContext)
     } else {
       // Fetch pageContext from server-side hooks
       let pageContextFromServerHooks: PageContextFromServerHooks
@@ -321,7 +322,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       if (isRenderOutdated()) return
       updateType(pageContext, pageContextFromClientHooks)
 
-      await renderPageView(pageContext)
+      return await renderPageView(pageContext)
     }
   }
 
@@ -588,6 +589,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     globalObject.renderedPageContext = pageContext
 
     stampFinished(urlOriginal)
+
+    return pageContext
   }
 }
 
