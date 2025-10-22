@@ -8,7 +8,14 @@ Internal interfaces aren't guaranteed to be maintained — expect breaking chang
 
 The best practice is to reach out to Vike's team to get official support from your use case.
 
-That said, you can also bypass the warning by using `ignoreWarning()`:
+That said, you can also bypass the warning by using `dangerouslyUseInternals`:
+
+```js
+pageContext._someInternalProp// [!code --]
+pageContext.dangerouslyUseInternals._someInternalProp// [!code ++]
+```
+
+You can also use the legacy `ignoreWarning()` method:
 
 ```js
 pageContext._someInternalProp// [!code --]

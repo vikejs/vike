@@ -8,7 +8,7 @@ import type { GlobalContextServerInternal } from '../node/runtime/globalContext.
 import type { GlobalContextClientInternalWithServerRouting } from '../client/runtime-server-routing/getGlobalContextClientInternal.js'
 import type { GlobalContextBasePublic } from '../shared/createGlobalContextShared.js'
 import type { GlobalContextClientInternal } from '../client/runtime-client-routing/getGlobalContextClientInternal.js'
-import type { IgnoreWarning } from '../shared/getProxyForPublicUsage.js'
+import type { IgnoreWarning, DangerouslyUseInternals } from '../shared/getProxyForPublicUsage.js'
 
 type GlobalContext = GlobalContextServer | GlobalContextClient
 
@@ -47,4 +47,6 @@ type GlobalContextClientWithServerRouting = GlobalContextCommon &
 type GlobalContextCommon = {
   /** https://vike.dev/warning/internals */
   ignoreWarning?: IgnoreWarning
+  /** https://vike.dev/warning/internals */
+  dangerouslyUseInternals?: DangerouslyUseInternals<any>
 }
