@@ -61,7 +61,7 @@ function getProp(
 }
 
 /** https://vike.dev/warning/internals */
-type DangerouslyUseInternals<Obj> = Obj & Record<string, any>
+type DangerouslyUseInternals<Obj> = Obj
 
 function onNotSerializable(propStr: string, val: unknown, objName: string) {
   if (val !== NOT_SERIALIZABLE) return
