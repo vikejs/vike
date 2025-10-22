@@ -100,7 +100,7 @@ import { getCliOptions } from '../../cli/context.js'
 import type { PrerenderContextPublic } from '../../prerender/runPrerender.js'
 import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderConfig.js'
 import type { ResolvedConfig, UserConfig } from 'vite'
-import { getProxyForPublicUsage } from '../../../shared/getProxyForPublicUsage.js'
+import { getProxyForPublicUsage, type IgnoreWarning } from '../../../shared/getProxyForPublicUsage.js'
 import { setVikeConfigError } from '../../shared/getVikeConfigError.js'
 assertIsNotProductionRuntime()
 
@@ -173,7 +173,10 @@ function getVikeConfig(
   return vikeConfigPublic
 }
 // Public usage
-type VikeConfig = Pick<VikeConfigInternal, 'config' | 'pages' | 'prerenderContext'>
+type VikeConfig = Pick<VikeConfigInternal, 'config' | 'pages' | 'prerenderContext'> & {
+  /** https://vike.dev/warning/internals */
+  ignoreWarning: IgnoreWarning
+}
 
 function setVikeConfigContext(vikeConfigCtx_: VikeConfigContext) {
   // If the user changes Vite's `config.root` => Vite completely reloads itself => setVikeConfigContext() is called again

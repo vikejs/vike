@@ -21,7 +21,11 @@ function getProxyForPublicUsage<Obj extends Target>(
   objName: 'pageContext' | 'globalContext' | 'prerenderContext' | 'vikeConfig',
   skipOnInternalProp?: true,
   fallback?: Fallback,
-): Obj {
+): Obj & {
+  _isProxyObject: true
+  /** https://vike.dev/warning/internals */
+  ignoreWarning: IgnoreWarning
+} {
   return new Proxy(obj, {
     get: (_: any, prop: string | symbol) => getProp(prop, obj, objName, skipOnInternalProp, fallback),
   })
@@ -57,7 +61,7 @@ function getProp(
 }
 
 /** https://vike.dev/warning/internals */
-type IgnoreWarning = (prop: string) => unknown
+type IgnoreWarning = (prop: string) => any
 
 function onNotSerializable(propStr: string, val: unknown, objName: string) {
   if (val !== NOT_SERIALIZABLE) return
