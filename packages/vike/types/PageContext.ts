@@ -29,13 +29,19 @@ import type { AbortStatusCode } from '../shared/route/abort.js'
 import type { GlobalContextClient, GlobalContextServer, GlobalContextClientWithServerRouting } from './GlobalContext.js'
 import type { DangerouslyUseInternals } from '../shared/getProxyForPublicUsage.js'
 
-type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & Vike.PageContext & Vike.PageContextServer
+type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & {
+  /** https://vike.dev/warning/internals */
+  dangerouslyUseInternals?: DangerouslyUseInternals<PageContextInternalServer>
+} & Vike.PageContext &
+  Vike.PageContextServer
 
 // With Client Routing
 //  - Because of vike-{react/vue/solid} most users will eventually be using Client Routing => we give out the succinct type names `PageContext` and `PageContextClient` to these users
 type PageContext<Data = unknown> = PageContextClient<Data> | PageContextServer<Data>
-type PageContextClient<Data = unknown> = PageContextBuiltInClientWithClientRouting<Data> &
-  Vike.PageContext &
+type PageContextClient<Data = unknown> = PageContextBuiltInClientWithClientRouting<Data> & {
+  /** https://vike.dev/warning/internals */
+  dangerouslyUseInternals?: DangerouslyUseInternals<PageContextInternalClient_ClientRouting>
+} & Vike.PageContext &
   Vike.PageContextClient
 
 // With Server Routing
@@ -170,9 +176,6 @@ type PageContextBuiltInCommon<Data> = PageContextConfig & {
    * https://vike.dev/pageContext#isBaseMissing
    */
   isBaseMissing?: true
-
-  /** https://vike.dev/warning/internals */
-  dangerouslyUseInternals?: DangerouslyUseInternals<PageContextBuiltInCommon<unknown>>
 }
 
 type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
