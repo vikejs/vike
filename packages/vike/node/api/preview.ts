@@ -10,7 +10,7 @@ import { assertUsage, assertWarning, onSetupPreview } from './utils.js'
 import pc from '@brillout/picocolors'
 import path from 'node:path'
 import { getVikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
-import { isCallable } from '../runtime/utils.js'
+import { isCallable } from './utils.js'
 
 /**
  * Programmatically trigger `$ vike preview`
