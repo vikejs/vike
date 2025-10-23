@@ -1258,7 +1258,7 @@ function blog() {
         sectionTitles: ['Why Photon?'],
       },
       {
-        title: 'Vite 6 is a groundbreaking release',
+        title: 'Why Vite 6 is a groundbreaking release',
         url: '/blog/vite-6',
       },
       {
