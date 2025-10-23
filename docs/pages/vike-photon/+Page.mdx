@@ -489,7 +489,7 @@ export const config = {
   extends: [vikePhoton],
   photon: {
     server: {
-      entry: 'server/index.ts',
+      id: 'server/index.ts',
       standalone: true// [!code ++]
     }
   }
@@ -507,7 +507,7 @@ export const config = {
   extends: [vikePhoton],
   photon: {
     server: {
-      entry: 'server/index.ts',
+      id: 'server/index.ts',
       standalone: {// [!code ++]
         esbuild: {// [!code ++]
           minify: true,// [!code ++]
