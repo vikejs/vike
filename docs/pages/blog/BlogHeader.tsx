@@ -1,34 +1,27 @@
-export { Maintainers }
-export { Contributors }
+export { BlogHeader }
 
-import { getMaintainerAvatar, maintainersList } from './maintainersList'
+import { getMaintainer, getMaintainerAvatar, type Maintainer, type MaintainerUsername } from '../team/maintainersList'
 import React from 'react'
 
-function Maintainers() {
+function BlogHeader({ authors, date }: { authors: MaintainerUsername[]; date: Date }) {
+  const maintainers = authors.map(getMaintainer)
   return (
     <div>
-      {maintainersList
-        .filter((m) => m.isCoreTeam)
-        .map((maintainer, i) => (
-          <Maintainer maintainer={maintainer} key={i} />
-        ))}
+      <div>{date.toLocaleDateString()}</div>
+      {maintainers.map((m) => {
+        return <Author maintainer={m} />
+      })}
     </div>
   )
 }
 
-function Contributors() {
-  return (
-    <div>
-      {maintainersList
-        .filter((m) => !m.isCoreTeam)
-        .map((maintainer, i) => (
-          <Maintainer maintainer={maintainer} key={i} />
-        ))}
-    </div>
-  )
-}
-
-function Maintainer({ maintainer }: { maintainer: (typeof maintainersList)[number] }) {
+function Author({ maintainer }: { maintainer: Maintainer }) {
+  /*
+  return <div>
+    {m.firstName}
+    {m.firstName}
+  </div>
+  */
   const marginHeight = 20
   const imgSize = 50
   const githubUrl = `https://github.com/${maintainer.username}`
@@ -64,11 +57,6 @@ function Maintainer({ maintainer }: { maintainer: (typeof maintainersList)[numbe
         <a href={githubUrl}>
           <i style={{ fontSize: '.9em', color: '#505050' }}>{maintainer.username}</i>
         </a>
-        <ul style={{ fontSize: '.8em', paddingLeft: 15, marginTop: 5, marginBottom: 0 }}>
-          {maintainer.roles.map((role, i) => (
-            <li key={i}>{role}</li>
-          ))}
-        </ul>
       </div>
     </div>
   )

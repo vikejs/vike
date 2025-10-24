@@ -1,17 +1,16 @@
 export { maintainersList }
 export { getMaintainerAvatar }
+export { getMaintainer }
+export type { MaintainerUsername }
+export type { Maintainer }
 
 import React from 'react'
 
-type Maintainer = {
-  username: string
-  firstName: string
-  roles: React.ReactNode[]
-  consultingUrl?: string
-  isCoreTeam?: true
-}
+type MaintainerList = typeof maintainersList
+type Maintainer = MaintainerList[number]
+type MaintainerUsername = Maintainer['username']
 
-const maintainersList: Maintainer[] = [
+const maintainersList = [
   {
     username: 'brillout',
     firstName: 'Rom',
@@ -84,11 +83,13 @@ const maintainersList: Maintainer[] = [
   {
     username: 'NilsJacobsen',
     firstName: 'Nils',
+    isCoreTeam: false,
     roles: [<>Vike's landing page</>],
   },
   {
     username: 'AurelienLourot',
     firstName: 'Aurélien',
+    isCoreTeam: false,
     roles: [
       <>
         <code>vike-vue</code> (Contributor)
@@ -102,6 +103,7 @@ const maintainersList: Maintainer[] = [
   {
     username: '4350pChris',
     firstName: 'Chris',
+    isCoreTeam: false,
     roles: [
       <>
         <code>vike-vue</code> (Creator)
@@ -117,13 +119,23 @@ const maintainersList: Maintainer[] = [
   {
     username: 'Blankeos',
     firstName: 'Carlo',
+    isCoreTeam: false,
     roles: [
       <>
         <code>vike-solid</code> (Contributor)
       </>,
     ],
   },
-]
+] as const satisfies {
+  username: string
+  firstName: string
+  roles: React.ReactNode[]
+  isCoreTeam: boolean
+}[]
+
+function getMaintainer(maintainerUsername: MaintainerUsername) {
+  return maintainersList.find((maintainer) => maintainer.username === maintainerUsername)!
+}
 
 function getMaintainerAvatar(maintainer: Maintainer, imgSize: number) {
   return `https://github.com/${maintainer.username}.png?size=${imgSize}`
