@@ -21,24 +21,39 @@ Photon is jam-packed with features:
 - **Code-splitting**: Per-route deployment to separate edge workers.
 - **Zero-config**: Deploy with minimal configuration.
 
-> Learn more about these features at [`photonjs.dev` > Why Photon > Features](https://photonjs.dev/why#features).
+> Learn more at [`photonjs.dev` > Why Photon > Features](https://photonjs.dev/why#features).
 
 ## Cloudflare
 
 
-When using `@photonjs/cloudflare` you develop against Cloudflare's `workerd` runtime instead of Node.js. The `workerd` runtime is the runtime Cloudflare uses in production, making the development environment a much more faithful represention of the production environment.
+When using `@photonjs/cloudflare`, the development environment runs inside Cloudflare's `workerd` runtime (instead of Node.js). It's the same runtime Cloudflare uses in production, making the development environment a much more faithful representation of production.
 
-> With Miniflare, there are many discrepancies between development and production, leading to poor DX, code duplication, and complicated architecture (it was notoriously hard and unclear how to integrate applications with Cloudflare). These issue are now all gone.
-
-> Vike is the amongst the first frameworks to support this.
-
+> Vike is among the first frameworks to support this.
+>
 > It's powered by <Link href="/blog/vite-6">Vite's Environment API</Link>, which enables Vite to run in a Node.js process while running the user's server code in another (non-Node.js) process such as `workerd`.
+
+It also allows you to directly use Cloudflare's APIs in development. (This was already possible with `getPlatformProxy()` but it was clunky to set up.)
+
+```ts
+// This works in production, as well as in development!
+
+import { env } from 'cloudflare:workers'
+// Key-value store
+env.KV.get('my-key')
+// Environment Variable
+env.LOG_LEVEL
+// ...
+```
+
+> Learn more at <Link href="/cloudflare#cloudflare-apis" doNotInferSectionTitle />.
+
+> With Miniflare, discrepancies between development and production led to poor DX, code duplication, and complicated architecture — integrating applications with Cloudflare was notoriously hard. All these issues are now solved.
 
 ## Why Photon?
 
 [Vite](https://vite.dev) has become the de-facto standard infrastructure shared across many frameworks, and we believe the same will happen for JavaScript server deployment — in one form or another.
 
-Photon aims to be open and collaborative, which is paramount for the community as a whole to move into the right direction. See also: [`photonjs.dev` > Why Photon > Philosophy](https://photonjs.dev/why#philosophy).
+Photon aims to be open and collaborative, which is paramount for the community as a whole to move in the right direction (see also [`photonjs.dev` > Why Photon > Philosophy](https://photonjs.dev/why#philosophy)).
 
 > While developing `vike-server` <Link href="/blog/vike-server#sharing-with-other-frameworks">we realized most code is agnostic to Vike</Link>. So we decided to make Vike's deployment infrastructure fully agnostic.
 >
@@ -50,12 +65,12 @@ Other than Photon, there are two projects working towards a unified infrastructu
 
 We are eager to collaborate [with Nitro](https://x.com/brillout/status/1977382732276617245) as well as [with Netlify's RFC](https://github.com/vitejs/vite/discussions/20907#discussioncomment-14739138) — the more we collaborate the better!
 
-These collaboration efforts are going to take a (long) time to come to fruition. In the meantime, Photon is our answer to the shared deployment infrastructure problem, and a concrete solution for our users to get a first-class integration with deployment providers.
+These collaboration efforts will take time to come to fruition. In the meantime, Photon is our answer to the shared deployment infrastructure problem, and provides a concrete solution for our users with first-class integrations with deployment providers.
 
 
 ## The future
 
-We don't know where (parts of) Photon will eventually end up living. The best outcome, if possible, is that we move some (ideally most) of Photon's logic to Vite and Vite deployment plugins (see [Netlify's RFC](https://github.com/vitejs/vite/discussions/20907)).
+We don't know how the shared deployment infrastructure problem will evolve. The best outcome, if possible, is that we move some — ideally most — of Photon's logic to Vite and its ecosystem (see [Netlify's RFC](https://github.com/vitejs/vite/discussions/20907)).
 
 
 ## See also

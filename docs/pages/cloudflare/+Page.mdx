@@ -113,11 +113,11 @@ To access Cloudflare's APIs (such as [D1](https://developers.cloudflare.com/d1/)
 // Environment: server
 
 import { env } from 'cloudflare:workers'
-
 // Key-value store
-env.KV.get("my-key")
+env.KV.get('my-key')
 // Environment Variable
 env.LOG_LEVEL
+// ...
 ```
 
 > Example of using [Cloudflare D1](https://developers.cloudflare.com/d1/):
@@ -146,7 +146,7 @@ env.LOG_LEVEL
 >
 > Or go to <Link href="/new">vike.dev/new</Link> and select `Cloudflare` with an ORM.
 
-> To make environment variables available on the client-side, use <Link href="/onCreateGlobalContext">+onCreateGlobalContext.server.js</Link> with a <Link href="/globalContext#custom">custom `globalContext` property</Link> and <Link href="/passToClient">`passToClient`</Link>.
+> To make environment variables available on the client-side, you can use <Link href="/onCreateGlobalContext">+onCreateGlobalContext.server.js</Link> with a <Link href="/globalContext#custom">custom `globalContext` property</Link> and <Link href="/passToClient">`passToClient`</Link>.
 >
 > ```ts
 > // pages/+onCreateGlobalContext.server.ts
