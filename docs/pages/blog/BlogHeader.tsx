@@ -86,12 +86,8 @@ function Author({ maintainer }: { maintainer: Maintainer }) {
         />
       </div>
       <div>
-        <div style={{ fontWeight: 600, fontSize: 14, color: '#333' }}>
-          {maintainer.firstName}
-        </div>
-        <div style={{ fontSize: 12, color: '#666' }}>
-          {maintainer.username}
-        </div>
+        <div style={{ fontWeight: 600, fontSize: 14, color: '#333' }}>{maintainer.firstName}</div>
+        <div style={{ fontSize: 12, color: '#666' }}>{maintainer.username}</div>
       </div>
     </a>
   )
