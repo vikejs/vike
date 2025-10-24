@@ -17,8 +17,7 @@ function BlogHeader({ authors, date }: { authors: MaintainerUsername[]; date: Da
     >
       <div
         style={{
-          fontSize: '14px',
-          color: '#666',
+          color: '#888',
           fontWeight: 500,
         }}
       >
@@ -28,7 +27,7 @@ function BlogHeader({ authors, date }: { authors: MaintainerUsername[]; date: Da
           day: 'numeric',
         })}
       </div>
-      {maintainers.map((maintainer, index) => (
+      {maintainers.map((maintainer) => (
         <Author key={maintainer.username} maintainer={maintainer} />
       ))}
     </div>
@@ -36,7 +35,7 @@ function BlogHeader({ authors, date }: { authors: MaintainerUsername[]; date: Da
 }
 
 function Author({ maintainer }: { maintainer: Maintainer }) {
-  const imgSize = 32
+  const imgSize = 40
   const githubUrl = `https://github.com/${maintainer.username}`
 
   return (
@@ -45,9 +44,9 @@ function Author({ maintainer }: { maintainer: Maintainer }) {
       style={{
         display: 'flex',
         alignItems: 'center',
-        gap: 8,
-        padding: '6px 10px',
-        borderRadius: 6,
+        gap: 10,
+        padding: '8px 10px',
+        borderRadius: 7,
         border: '1px solid #e0e0e0',
         transition: 'all 0.2s ease',
         textDecoration: 'none',
@@ -74,10 +73,10 @@ function Author({ maintainer }: { maintainer: Maintainer }) {
         />
       </div>
       <div>
-        <div style={{ fontWeight: 600, fontSize: '13px', color: '#333' }}>
+        <div style={{ fontWeight: 600, fontSize: 14, color: '#333' }}>
           {maintainer.firstName}
         </div>
-        <div style={{ fontSize: '11px', color: '#666' }}>
+        <div style={{ fontSize: 12, color: '#666' }}>
           {maintainer.username}
         </div>
       </div>
