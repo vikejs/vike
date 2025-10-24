@@ -54,9 +54,8 @@ function Author({ maintainer }: { maintainer: Maintainer }) {
         alignItems: 'center',
         gap: 12,
         padding: '8px 12px',
-        borderRadius: 8,
-        backgroundColor: '#f8f9fa',
-        border: '1px solid #e9ecef',
+        borderRadius: 7,
+        border: '1px solid #e0e0e0',
         transition: 'all 0.2s ease',
         textDecoration: 'none',
       }}
