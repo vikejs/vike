@@ -8,7 +8,8 @@ function BlogHeader({ authors, date }: { authors: MaintainerUsername[]; date: Da
   return (
     <div
       style={{
-        marginBottom: 32,
+        marginTop: -2,
+        marginBottom: 24,
         display: 'flex',
         flexWrap: 'wrap',
         alignItems: 'flex-start',
@@ -32,7 +33,7 @@ function BlogHeader({ authors, date }: { authors: MaintainerUsername[]; date: Da
         style={{
           color: '#999',
           fontWeight: 400,
-          fontSize: '14px',
+          fontSize: 15,
           fontStyle: 'italic',
         }}
       >
