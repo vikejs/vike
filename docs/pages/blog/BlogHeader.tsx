@@ -30,8 +30,10 @@ function BlogHeader({ authors, date }: { authors: MaintainerUsername[]; date: Da
       </div>
       <div
         style={{
-          color: '#888',
-          fontWeight: 500,
+          color: '#999',
+          fontWeight: 400,
+          fontSize: '14px',
+          fontStyle: 'italic',
         }}
       >
         {date.toLocaleDateString('en-US', {
