@@ -48,7 +48,8 @@ function Author({ maintainer }: { maintainer: Maintainer }) {
   const githubUrl = `https://github.com/${maintainer.username}`
 
   return (
-    <div
+    <a
+      href={githubUrl}
       style={{
         display: 'flex',
         alignItems: 'center',
@@ -58,45 +59,37 @@ function Author({ maintainer }: { maintainer: Maintainer }) {
         border: '1px solid #e0e0e0',
         transition: 'all 0.2s ease',
         textDecoration: 'none',
+        color: 'inherit',
+        cursor: 'pointer',
       }}
     >
-      <a
-        href={githubUrl}
+      <div
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          textDecoration: 'none',
-          color: 'inherit',
+          width: imgSize,
+          height: imgSize,
+          borderRadius: imgSize / 2,
+          overflow: 'hidden',
+          marginRight: 8,
         }}
       >
-        <div
+        <img
           style={{
             width: imgSize,
             height: imgSize,
-            borderRadius: imgSize / 2,
-            overflow: 'hidden',
-            marginRight: 8,
+            display: 'block',
           }}
-        >
-          <img
-            style={{
-              width: imgSize,
-              height: imgSize,
-              display: 'block',
-            }}
-            src={getMaintainerAvatar(maintainer, imgSize)}
-            alt={maintainer.username}
-          />
+          src={getMaintainerAvatar(maintainer, imgSize)}
+          alt={maintainer.username}
+        />
+      </div>
+      <div>
+        <div style={{ fontWeight: 600, fontSize: '14px', color: '#333' }}>
+          {maintainer.firstName}
         </div>
-        <div>
-          <div style={{ fontWeight: 600, fontSize: '14px', color: '#333' }}>
-            {maintainer.firstName}
-          </div>
-          <div style={{ fontSize: '12px', color: '#666' }}>
-            {maintainer.username}
-          </div>
+        <div style={{ fontSize: '12px', color: '#666' }}>
+          {maintainer.username}
         </div>
-      </a>
-    </div>
+      </div>
+    </a>
   )
 }
