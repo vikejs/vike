@@ -71,6 +71,7 @@ And lots of details:
 - Proper development error handling (hard to achieve, especially since Vite is bogus about it)
 - User can use `history.pushState()`: Vike's router detects that and gets out of the user's way
 - React component stack injected in stack trace
+- `dangerouslyUseInternals` https://vike.dev/warning/internals
 
 Misc:
 - `throw render()`
