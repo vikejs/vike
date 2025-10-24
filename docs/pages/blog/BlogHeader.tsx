@@ -8,16 +8,17 @@ function BlogHeader({ authors, date }: { authors: MaintainerUsername[]; date: Da
   return (
     <div
       style={{
-        marginBottom: 40,
-        paddingBottom: 24,
-        borderBottom: '1px solid #e5e5e5',
+        marginBottom: 32,
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        gap: 16,
       }}
     >
       <div
         style={{
           fontSize: '14px',
           color: '#666',
-          marginBottom: 16,
           fontWeight: 500,
         }}
       >
@@ -27,24 +28,15 @@ function BlogHeader({ authors, date }: { authors: MaintainerUsername[]; date: Da
           day: 'numeric',
         })}
       </div>
-      <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: 16,
-          alignItems: 'center',
-        }}
-      >
-        {maintainers.map((maintainer, index) => (
-          <Author key={maintainer.username} maintainer={maintainer} />
-        ))}
-      </div>
+      {maintainers.map((maintainer, index) => (
+        <Author key={maintainer.username} maintainer={maintainer} />
+      ))}
     </div>
   )
 }
 
 function Author({ maintainer }: { maintainer: Maintainer }) {
-  const imgSize = 40
+  const imgSize = 32
   const githubUrl = `https://github.com/${maintainer.username}`
 
   return (
@@ -53,9 +45,9 @@ function Author({ maintainer }: { maintainer: Maintainer }) {
       style={{
         display: 'flex',
         alignItems: 'center',
-        gap: 12,
-        padding: '8px 12px',
-        borderRadius: 7,
+        gap: 8,
+        padding: '6px 10px',
+        borderRadius: 6,
         border: '1px solid #e0e0e0',
         transition: 'all 0.2s ease',
         textDecoration: 'none',
@@ -69,7 +61,6 @@ function Author({ maintainer }: { maintainer: Maintainer }) {
           height: imgSize,
           borderRadius: imgSize / 2,
           overflow: 'hidden',
-          marginRight: 8,
         }}
       >
         <img
@@ -83,10 +74,10 @@ function Author({ maintainer }: { maintainer: Maintainer }) {
         />
       </div>
       <div>
-        <div style={{ fontWeight: 600, fontSize: '14px', color: '#333' }}>
+        <div style={{ fontWeight: 600, fontSize: '13px', color: '#333' }}>
           {maintainer.firstName}
         </div>
-        <div style={{ fontSize: '12px', color: '#666' }}>
+        <div style={{ fontSize: '11px', color: '#666' }}>
           {maintainer.username}
         </div>
       </div>
