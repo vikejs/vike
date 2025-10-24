@@ -19,6 +19,7 @@ function BlogHeader({ authors, date }: { authors: MaintainerUsername[]; date: Da
         style={{
           color: '#888',
           fontWeight: 500,
+          textDecoration: 'underline',
         }}
       >
         {date.toLocaleDateString('en-US', {
