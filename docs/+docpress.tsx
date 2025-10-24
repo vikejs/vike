@@ -12,7 +12,8 @@ const config: Config = {
   name: 'Vike',
   version: PROJECT_VERSION,
   url: 'https://vike.dev',
-  tagline: 'The Modular Framework — Next.js & Nuxt alternative for unprecedented flexibility and stability.',
+  tagline:
+    'The Next.js/Nuxt alternative for advanced applications. With blazing fast quick-start & DX, and unprecedented architectural flexibility & stability.',
   logo,
   banner: 'https://vike.dev/banner.jpg',
 
