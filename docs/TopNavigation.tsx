@@ -35,6 +35,15 @@ function TopNavigation() {
         />
         Get Started
       </a>
+      <MenuToggle menuId={2}>
+        <img
+          src={iconGear}
+          width={18}
+          style={{ marginRight: 'calc(var(--icon-text-padding))', position: 'relative', top: -2 }}
+          className="decolorize-8"
+        />{' '}
+        Blog
+      </MenuToggle>
     </>
   )
 }

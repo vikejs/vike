@@ -718,6 +718,63 @@ const headings = [
     url: '/settings',
     sectionTitles: ['HTML shell'],
   },
+  {
+    level: 1,
+    title: 'Blog',
+    titleIcon: iconGear,
+    color: '#80c1db',
+    menuModalFullWidth: true,
+  },
+  {
+    level: 4,
+    title: '2025',
+  },
+      {
+    level: 2,
+        title: 'Introducing `globalContext`',
+        url: '/blog/globalContext',
+      },
+      {
+    level: 2,
+        title: 'Introducing `vike-server`',
+        url: '/blog/vike-server',
+      },
+      {
+    level: 2,
+        title: 'Introducing Photon',
+        url: '/blog/photon',
+        sectionTitles: ['Why Photon?'],
+      },
+      {
+    level: 2,
+        title: 'Why Vite 6 is a groundbreaking release',
+        url: '/blog/vite-6',
+      },
+      {
+    level: 2,
+        title: 'Releases',
+        url: '/releases',
+      },
+      {
+    level: 2,
+        title: 'Mai 2024 Releases',
+        url: '/releases/2024-05',
+      },
+      {
+    level: 2,
+        title: 'June Releases',
+        url: '/releases/2024-06',
+      },
+      {
+    level: 2,
+        title: 'July Releases',
+        url: '/releases/2024-07',
+      },
+      {
+    level: 2,
+        title: 'August Releases',
+        url: '/releases/2024-08',
+      },
 ] as const satisfies HeadingDefinition[]
 
 const headingsDetached = [
@@ -728,7 +785,6 @@ const headingsDetached = [
   ...migrations(),
   ...misc(),
   ...warningsAndErrors(),
-  ...blog(),
   ...getStarted(),
   ...deprecated(),
   ...workInProgress(),
@@ -1239,50 +1295,6 @@ function guides() {
       },
     ] as const
   ).map((h) => ({ ...h, category: 'Guides (more)' as const })) satisfies HeadingDetachedDefinition[]
-}
-
-function blog() {
-  return (
-    [
-      {
-        title: 'Introducing `globalContext`',
-        url: '/blog/globalContext',
-      },
-      {
-        title: 'Introducing `vike-server`',
-        url: '/blog/vike-server',
-      },
-      {
-        title: 'Introducing Photon',
-        url: '/blog/photon',
-        sectionTitles: ['Why Photon?'],
-      },
-      {
-        title: 'Why Vite 6 is a groundbreaking release',
-        url: '/blog/vite-6',
-      },
-      {
-        title: 'Releases',
-        url: '/releases',
-      },
-      {
-        title: 'Mai 2024 Releases',
-        url: '/releases/2024-05',
-      },
-      {
-        title: 'June Releases',
-        url: '/releases/2024-06',
-      },
-      {
-        title: 'July Releases',
-        url: '/releases/2024-07',
-      },
-      {
-        title: 'August Releases',
-        url: '/releases/2024-08',
-      },
-    ] as const
-  ).map((h) => ({ ...h, category: 'Blog' as const })) satisfies HeadingDetachedDefinition[]
 }
 
 function getStarted() {
