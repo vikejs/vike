@@ -28,7 +28,7 @@ function Contributors() {
   )
 }
 
-function Maintainer({ maintainer }: { maintainer: (typeof maintainersList)[0] }) {
+function Maintainer({ maintainer }: { maintainer: (typeof maintainersList)[number] }) {
   const marginHeight = 20
   const imgSize = 50
   const githubUrl = `https://github.com/${maintainer.username}`
@@ -64,26 +64,6 @@ function Maintainer({ maintainer }: { maintainer: (typeof maintainersList)[0] })
         <a href={githubUrl}>
           <i style={{ fontSize: '.9em', color: '#505050' }}>{maintainer.username}</i>
         </a>
-        {maintainer.consultingUrl ? (
-          <>
-            {' '}
-            ·{' '}
-            <a href={maintainer.consultingUrl}>
-              <b
-                style={{
-                  fontSize: '.7em',
-                  color: 'white',
-                  backgroundColor: '#305090',
-                  padding: '1px 5px 2px 5px',
-                  verticalAlign: 'text-top',
-                  borderRadius: 3,
-                }}
-              >
-                consulting
-              </b>
-            </a>
-          </>
-        ) : null}
         <ul style={{ fontSize: '.8em', paddingLeft: 15, marginTop: 5, marginBottom: 0 }}>
           {maintainer.roles.map((role, i) => (
             <li key={i}>{role}</li>
