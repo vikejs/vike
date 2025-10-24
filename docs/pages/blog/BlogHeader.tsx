@@ -11,7 +11,7 @@ function BlogHeader({ authors, date }: { authors: MaintainerUsername[]; date: Da
         marginBottom: 32,
         display: 'flex',
         flexWrap: 'wrap',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'space-between',
         gap: 16,
       }}
