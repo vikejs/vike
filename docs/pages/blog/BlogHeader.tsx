@@ -12,9 +12,22 @@ function BlogHeader({ authors, date }: { authors: MaintainerUsername[]; date: Da
         display: 'flex',
         flexWrap: 'wrap',
         alignItems: 'center',
+        justifyContent: 'space-between',
         gap: 16,
       }}
     >
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          gap: 16,
+        }}
+      >
+        {maintainers.map((maintainer) => (
+          <Author key={maintainer.username} maintainer={maintainer} />
+        ))}
+      </div>
       <div
         style={{
           color: '#888',
@@ -28,9 +41,6 @@ function BlogHeader({ authors, date }: { authors: MaintainerUsername[]; date: Da
           day: 'numeric',
         })}
       </div>
-      {maintainers.map((maintainer) => (
-        <Author key={maintainer.username} maintainer={maintainer} />
-      ))}
     </div>
   )
 }
