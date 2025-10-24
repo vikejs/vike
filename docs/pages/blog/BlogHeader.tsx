@@ -6,58 +6,98 @@ import React from 'react'
 function BlogHeader({ authors, date }: { authors: MaintainerUsername[]; date: Date }) {
   const maintainers = authors.map(getMaintainer)
   return (
-    <div>
-      <div>{date.toLocaleDateString()}</div>
-      {maintainers.map((m) => {
-        return <Author maintainer={m} />
-      })}
+    <div
+      style={{
+        marginBottom: 40,
+        paddingBottom: 24,
+        borderBottom: '1px solid #e5e5e5',
+      }}
+    >
+      <div
+        style={{
+          fontSize: '14px',
+          color: '#666',
+          marginBottom: 16,
+          fontWeight: 500,
+        }}
+      >
+        {date.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        })}
+      </div>
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 16,
+          alignItems: 'center',
+        }}
+      >
+        {maintainers.map((maintainer, index) => (
+          <Author key={maintainer.username} maintainer={maintainer} />
+        ))}
+      </div>
     </div>
   )
 }
 
 function Author({ maintainer }: { maintainer: Maintainer }) {
-  /*
-  return <div>
-    {m.firstName}
-    {m.firstName}
-  </div>
-  */
-  const marginHeight = 20
-  const imgSize = 50
+  const imgSize = 40
   const githubUrl = `https://github.com/${maintainer.username}`
+
   return (
     <div
-      id="team"
       style={{
-        borderRadius: 7,
-        borderWidth: 1,
-        borderStyle: 'solid',
-        borderColor: '#e0e0e0',
-        overflow: 'hidden',
-        width: 500,
-        margin: `${marginHeight}px 0`,
         display: 'flex',
-        flexWrap: 'wrap',
-        padding: 20,
-        gap: 20,
-        textAlign: 'left',
+        alignItems: 'center',
+        gap: 12,
+        padding: '8px 12px',
+        borderRadius: 8,
+        backgroundColor: '#f8f9fa',
+        border: '1px solid #e9ecef',
+        transition: 'all 0.2s ease',
+        textDecoration: 'none',
       }}
     >
-      <a href={githubUrl}>
-        <div style={{ width: imgSize, height: imgSize, borderRadius: imgSize / 2, overflow: 'hidden' }}>
+      <a
+        href={githubUrl}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          textDecoration: 'none',
+          color: 'inherit',
+        }}
+      >
+        <div
+          style={{
+            width: imgSize,
+            height: imgSize,
+            borderRadius: imgSize / 2,
+            overflow: 'hidden',
+            marginRight: 8,
+          }}
+        >
           <img
-            style={{ width: imgSize, height: imgSize }}
+            style={{
+              width: imgSize,
+              height: imgSize,
+              display: 'block',
+            }}
             src={getMaintainerAvatar(maintainer, imgSize)}
             alt={maintainer.username}
           />
         </div>
+        <div>
+          <div style={{ fontWeight: 600, fontSize: '14px', color: '#333' }}>
+            {maintainer.firstName}
+          </div>
+          <div style={{ fontSize: '12px', color: '#666' }}>
+            {maintainer.username}
+          </div>
+        </div>
       </a>
-      <div>
-        <b>{maintainer.firstName}</b> ·{' '}
-        <a href={githubUrl}>
-          <i style={{ fontSize: '.9em', color: '#505050' }}>{maintainer.username}</i>
-        </a>
-      </div>
     </div>
   )
 }
