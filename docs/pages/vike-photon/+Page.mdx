@@ -461,6 +461,15 @@ import type { PageContextServer } from 'vike/types'
 export async function onCreatePageContext(pageContext: PageContextServer) {
   pageContext.user = pageContext.runtime.req.user
 }
+
+declare global {
+  namespace Vike {
+    interface Photon {
+      // 👉 Pick your server (for correct pageContext.runtime type)
+      server: 'hono' // | 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
+    }
+  }
+}
 ```
 
 See also: <Link href="/auth" />.
