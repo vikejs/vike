@@ -565,22 +565,6 @@ export default {
 } satisfies Config
 ```
 
-<Warning>
-Using `getMiddlewares(...)` to configure compression has been deprecated.
-Please remove its usage from your server entry file, and replace it with the configuration above.
-
-```ts
-import { getMiddlewares } from "vike-photon/universal-middlewares";// [!code --]
-
-apply(
-  app,
-  getMiddlewares({// [!code --]
-    compress: false// [!code --]
-  }),// [!code --]
-);
-```
-</Warning>
-
 ## sirv
 
 In production, `vike-photon` uses [sirv](https://universal-middleware.dev/middlewares/sirv) to serve static files.
@@ -622,6 +606,7 @@ serve(app, {
     cert: fs.readFileSync('/etc/letsencrypt/live/example.com/fullchain.pem')
     // ... other createServer() options ...
   },
+})
 })
 ```
 
