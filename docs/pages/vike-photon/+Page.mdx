@@ -565,7 +565,7 @@ export default {
 } satisfies Config
 ```
 
-## sirv
+## Static files
 
 In production, `vike-photon` uses [sirv](https://universal-middleware.dev/middlewares/sirv) to serve static files.
 
@@ -579,9 +579,9 @@ export default {
   extends: [vikePhoton],
   photon: {// [!code ++]
     // Do not serve static files// [!code ++]
-    sirv: false,// [!code ++],
+    static: false,// [!code ++],
     // See github.com/lukeed/sirv/tree/main/packages/sirv#api for advanced options// [!code ++]
-    // @detype-uncomment sirv: { root: '/dist/client', maxAge: 3600 }// [!code ++]
+    // @detype-uncomment static: { root: '/dist/client', maxAge: 3600 }// [!code ++]
   }// [!code ++]
 } satisfies Config
 ```
