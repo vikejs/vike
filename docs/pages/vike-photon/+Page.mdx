@@ -579,7 +579,7 @@ export default {
   extends: [vikePhoton],
   photon: {// [!code ++]
     // Do not serve static files// [!code ++]
-    sirv: false// [!code ++],
+    sirv: false,// [!code ++],
     // See github.com/lukeed/sirv/tree/main/packages/sirv#api for advanced options// [!code ++]
     // @detype-uncomment sirv: { root: '/dist/client', maxAge: 3600 }// [!code ++]
   }// [!code ++]
@@ -606,7 +606,6 @@ serve(app, {
     cert: fs.readFileSync('/etc/letsencrypt/live/example.com/fullchain.pem')
     // ... other createServer() options ...
   },
-})
 })
 ```
 
