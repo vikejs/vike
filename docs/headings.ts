@@ -727,52 +727,52 @@ const headings = [
     color: '#ff4343',
     menuModalFullWidth: true,
   },
-      {
+  {
     level: 2,
-        title: 'Introducing `globalContext`',
-        url: '/blog/globalContext',
-      },
-      {
+    title: 'Introducing `globalContext`',
+    url: '/blog/globalContext',
+  },
+  {
     level: 2,
-        title: 'Introducing `vike-server`',
-        url: '/blog/vike-server',
-      },
-      {
+    title: 'Introducing `vike-server`',
+    url: '/blog/vike-server',
+  },
+  {
     level: 2,
-        title: 'Introducing Photon',
-        url: '/blog/photon',
-        sectionTitles: ['Why Photon?'],
-      },
-      {
+    title: 'Introducing Photon',
+    url: '/blog/photon',
+    sectionTitles: ['Why Photon?'],
+  },
+  {
     level: 2,
-        title: 'Why Vite 6 is a groundbreaking release',
-        url: '/blog/vite-6',
-      },
-      {
+    title: 'Why Vite 6 is a groundbreaking release',
+    url: '/blog/vite-6',
+  },
+  {
     level: 2,
-        title: 'Releases',
-        url: '/releases',
-      },
-      {
+    title: 'Releases',
+    url: '/releases',
+  },
+  {
     level: 2,
-        title: 'Mai 2024 Releases',
-        url: '/releases/2024-05',
-      },
-      {
+    title: 'Mai 2024 Releases',
+    url: '/releases/2024-05',
+  },
+  {
     level: 2,
-        title: 'June Releases',
-        url: '/releases/2024-06',
-      },
-      {
+    title: 'June Releases',
+    url: '/releases/2024-06',
+  },
+  {
     level: 2,
-        title: 'July Releases',
-        url: '/releases/2024-07',
-      },
-      {
+    title: 'July Releases',
+    url: '/releases/2024-07',
+  },
+  {
     level: 2,
-        title: 'August Releases',
-        url: '/releases/2024-08',
-      },
+    title: 'August Releases',
+    url: '/releases/2024-08',
+  },
 ] as const satisfies HeadingDefinition[]
 
 const headingsDetached = [
