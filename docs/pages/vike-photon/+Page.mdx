@@ -560,6 +560,25 @@ apply(
 );
 ```
 
+## sirv
+
+In production, `vike-photon` uses [sirv](https://universal-middleware.dev/middlewares/sirv) to serve static files.
+
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+import vikePhoton from 'vike-photon/config'
+
+export default {
+  extends: [vikePhoton],
+  photon: {// [!code ++]
+    // Defaults to true (unless deployed on Vercel). If false, do not serve static files.// [!code ++]
+    // See github.com/lukeed/sirv/tree/main/packages/sirv#api for advanced options.// [!code ++]
+    sirv: false// [!code ++]
+  }// [!code ++]
+} satisfies Config
+```
 
 ## HTTPS
 
