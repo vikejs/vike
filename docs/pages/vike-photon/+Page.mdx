@@ -544,7 +544,7 @@ If HMR isn't what you want (for example if you modify the database connection) y
 
 ## Compression
 
-In production, `vike-photon` compresses all Vike responses.
+In production, Photon compresses all Vike responses.
 
 You can disable it, or enable it only for static files:
 
@@ -567,7 +567,9 @@ export default {
 
 ## Static files
 
-In production, `vike-photon` uses [@universal-middleware/sirv](https://universal-middleware.dev/middlewares/sirv) to serve static files.
+In production, Photon uses [`@universal-middleware/sirv`](https://universal-middleware.dev/middlewares/sirv) to serve static files.
+
+> In development, static files are served by [Vite](https://vitejs.dev)'s development server.
 
 You can disable it, or set options:
 
