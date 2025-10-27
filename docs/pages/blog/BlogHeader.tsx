@@ -3,7 +3,7 @@ export { BlogHeader }
 import { getMaintainer, getMaintainerAvatar, type Maintainer, type MaintainerUsername } from '../team/maintainersList'
 import React from 'react'
 
-function BlogHeader({ authors, date }: { authors: MaintainerUsername[]; date: Date }) {
+function BlogHeader({ authors, date }: { authors: MaintainerUsername[]; date?: Date }) {
   const maintainers = authors.map(getMaintainer)
   return (
     <div
@@ -29,20 +29,22 @@ function BlogHeader({ authors, date }: { authors: MaintainerUsername[]; date: Da
           <Author key={maintainer.username} maintainer={maintainer} />
         ))}
       </div>
-      <div
-        style={{
-          color: '#999',
-          fontWeight: 400,
-          fontSize: 15,
-          fontStyle: 'italic',
-        }}
-      >
-        {date.toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        })}
-      </div>
+      {date && (
+        <div
+          style={{
+            color: '#999',
+            fontWeight: 400,
+            fontSize: 15,
+            fontStyle: 'italic',
+          }}
+        >
+          {date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          })}
+        </div>
+      )}
     </div>
   )
 }
