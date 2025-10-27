@@ -29,4 +29,5 @@ export const config = {
       warning: 10 * 1000,
     },
   },
+  csp: { nonce: false },
 } satisfies Config

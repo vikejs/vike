@@ -27,6 +27,7 @@ import { testHistoryPushState } from './pages/pushState/e2e-test'
 import { testStarWars } from './pages/star-wars/e2e-test'
 import { testDefaultAndClearSuffixes } from './pages/config-meta/default-clear/e2e-test'
 import { isCI, skip } from '@brillout/test-e2e'
+import { testOtherFrameworkNavigation } from './public/e2e-test'
 
 const rootDir = path.dirname(fileURLToPath(import.meta.url))
 
@@ -56,5 +57,6 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run preview:build
   testNestedLayout()
   testDefaultAndClearSuffixes()
   testHistoryPushState()
+  testOtherFrameworkNavigation()
   testStarWars()
 }
