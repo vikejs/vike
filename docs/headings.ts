@@ -773,6 +773,7 @@ const headingsDetached = [
   ...migrations(),
   ...misc(),
   ...warningsAndErrors(),
+  ...blogDetached(),
   ...getStarted(),
   ...deprecated(),
   ...workInProgress(),
@@ -1283,6 +1284,17 @@ function guides() {
       },
     ] as const
   ).map((h) => ({ ...h, category: 'Guides (more)' as const })) satisfies HeadingDetachedDefinition[]
+}
+
+function blogDetached() {
+  return (
+    [
+      {
+        title: 'Releases',
+        url: '/releases',
+      },
+    ] as const
+  ).map((h) => ({ ...h, category: 'Blog' as const })) satisfies HeadingDetachedDefinition[]
 }
 
 function getStarted() {
