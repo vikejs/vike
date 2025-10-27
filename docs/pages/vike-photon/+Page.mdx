@@ -546,19 +546,40 @@ If HMR isn't what you want (for example if you modify the database connection) y
 
 In production, `vike-photon` compresses all Vike responses.
 
-You can disable it:
+You can disable it or only enable it for static files:
 
 ```ts
-// Manually importing Vike middlewares to access their options
-import { getMiddlewares } from "vike-photon/universal-middlewares";// [!code ++]
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+import vikePhoton from 'vike-photon/config'
+
+export default {
+  extends: [vikePhoton],
+  photon: {// [!code ++]
+    // Disable compression// [!code ++]
+    compress: false,// [!code ++]
+    // Only static files will be compressed// [!code ++]
+    // @detype-uncomment compress: 'static'// [!code ++]
+  }// [!code ++]
+} satisfies Config
+```
+
+<Warning>
+Using `getMiddlewares(...)` to configure compression has been deprecated.
+Please remove its usage from your server entry file, and replace it with the configuration above.
+
+```ts
+import { getMiddlewares } from "vike-photon/universal-middlewares";// [!code --]
 
 apply(
   app,
-  getMiddlewares({// [!code ++]
-    compress: false// [!code ++]
-  }),// [!code ++]
+  getMiddlewares({// [!code --]
+    compress: false// [!code --]
+  }),// [!code --]
 );
 ```
+</Warning>
 
 ## sirv
 
@@ -573,9 +594,10 @@ import vikePhoton from 'vike-photon/config'
 export default {
   extends: [vikePhoton],
   photon: {// [!code ++]
-    // Defaults to true (unless deployed on Vercel). If false, do not serve static files.// [!code ++]
-    // See github.com/lukeed/sirv/tree/main/packages/sirv#api for advanced options.// [!code ++]
-    sirv: false// [!code ++]
+    // Do not serve static files// [!code ++]
+    sirv: false// [!code ++],
+    // See github.com/lukeed/sirv/tree/main/packages/sirv#api for advanced options// [!code ++]
+    // @detype-uncomment sirv: { root: '/dist/client', maxAge: 3600 }// [!code ++]
   }// [!code ++]
 } satisfies Config
 ```
