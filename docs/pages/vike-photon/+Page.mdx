@@ -546,7 +546,7 @@ If HMR isn't what you want (for example if you modify the database connection) y
 
 In production, `vike-photon` compresses all Vike responses.
 
-You can disable it or only enable it for static files:
+You can disable it, or enable it only for static files:
 
 ```ts
 // pages/+config.ts
@@ -559,7 +559,7 @@ export default {
   photon: {// [!code ++]
     // Disable compression// [!code ++]
     compress: false,// [!code ++]
-    // Only static files will be compressed// [!code ++]
+    // Only compress static files// [!code ++]
     // @detype-uncomment compress: 'static'// [!code ++]
   }// [!code ++]
 } satisfies Config
@@ -568,6 +568,8 @@ export default {
 ## Static files
 
 In production, `vike-photon` uses [@universal-middleware/sirv](https://universal-middleware.dev/middlewares/sirv) to serve static files.
+
+You can disable it, or set options:
 
 ```ts
 // pages/+config.ts
@@ -578,13 +580,15 @@ import vikePhoton from 'vike-photon/config'
 export default {
   extends: [vikePhoton],
   photon: {// [!code ++]
-    // Do not serve static files// [!code ++]
-    static: false,// [!code ++],
-    // See github.com/lukeed/sirv/tree/main/packages/sirv#api for advanced options// [!code ++]
-    // @detype-uncomment static: { root: '/dist/client', maxAge: 3600 }// [!code ++]
+    // Don't serve static files// [!code ++]
+    static: false,// [!code ++]
+    // Settings// [!code ++]
+    // @detype-uncomment static: { maxAge: 3600, /* ... */ }// [!code ++]
   }// [!code ++]
 } satisfies Config
 ```
+
+> [All `sirv` options](https://github.com/lukeed/sirv/tree/main/packages/sirv#api) are supported.
 
 ## HTTPS
 
