@@ -544,22 +544,53 @@ If HMR isn't what you want (for example if you modify the database connection) y
 
 ## Compression
 
-In production, `vike-photon` compresses all Vike responses.
+In production, Photon compresses all Vike responses.
 
-You can disable it:
+You can disable it, or enable it only for static files:
 
 ```ts
-// Manually importing Vike middlewares to access their options
-import { getMiddlewares } from "vike-photon/universal-middlewares";// [!code ++]
+// pages/+config.ts
 
-apply(
-  app,
-  getMiddlewares({// [!code ++]
-    compress: false// [!code ++]
-  }),// [!code ++]
-);
+import type { Config } from 'vike/types'
+import vikePhoton from 'vike-photon/config'
+
+export default {
+  extends: [vikePhoton],
+  photon: {// [!code ++]
+    // Disable compression// [!code ++]
+    compress: false,// [!code ++]
+    // Only compress static files// [!code ++]
+    // @detype-uncomment compress: 'static'// [!code ++]
+  }// [!code ++]
+} satisfies Config
 ```
 
+## Static files
+
+In production, Photon uses [`@universal-middleware/sirv`](https://universal-middleware.dev/middlewares/sirv) to serve static files.
+
+> In development, static files are served by [Vite](https://vitejs.dev)'s development server.
+
+You can disable it, or set options:
+
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+import vikePhoton from 'vike-photon/config'
+
+export default {
+  extends: [vikePhoton],
+  photon: {// [!code ++]
+    // Don't serve static files// [!code ++]
+    static: false,// [!code ++]
+    // Settings// [!code ++]
+    // @detype-uncomment static: { maxAge: 3600, /* ... */ }// [!code ++]
+  }// [!code ++]
+} satisfies Config
+```
+
+> [All `sirv` options](https://github.com/lukeed/sirv/tree/main/packages/sirv#api) are supported.
 
 ## HTTPS
 
