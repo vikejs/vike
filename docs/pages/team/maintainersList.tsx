@@ -138,5 +138,6 @@ function getMaintainer(maintainerUsername: MaintainerUsername) {
 }
 
 function getMaintainerAvatar(maintainer: Maintainer, imgSize: number) {
-  return `https://github.com/${maintainer.username}.png?size=${imgSize}`
+  const scale = 4 // slightly better on desktop, massively bebter on mobile
+  return `https://github.com/${maintainer.username}.png?size=${imgSize * scale}`
 }
