@@ -3,6 +3,7 @@ export { Contributors }
 
 import { getMaintainerAvatar, maintainersList } from './maintainersList'
 import React from 'react'
+import './Maintainers.css'
 
 function Maintainers() {
   return (
@@ -34,7 +35,7 @@ function Maintainer({ maintainer }: { maintainer: (typeof maintainersList)[numbe
   const githubUrl = `https://github.com/${maintainer.username}`
   return (
     <div
-      id="team"
+      className="maintainer"
       style={{
         borderRadius: 7,
         borderWidth: 1,
