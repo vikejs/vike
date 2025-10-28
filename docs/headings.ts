@@ -104,7 +104,6 @@ const headings = [
     title: 'Scaffold new Vike app',
     pageDesign: {
       hideTitle: true,
-      // TODO test
       hideMenuLeft: true,
       contentMaxWidth: 1200,
     },
