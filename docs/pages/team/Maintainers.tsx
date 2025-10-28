@@ -44,6 +44,7 @@ function Maintainer({ maintainer }: { maintainer: (typeof maintainersList)[numbe
         overflow: 'hidden',
         width: 500,
         margin: `${marginHeight}px 0`,
+        maxWidth: '100%',
         display: 'flex',
         flexWrap: 'wrap',
         padding: 20,
