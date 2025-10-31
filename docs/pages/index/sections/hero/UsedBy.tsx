@@ -99,6 +99,7 @@ function UsedBy() {
               marginLeft: i === 0 ? 0 : 30,
             }}
             aria-label={e.desc}
+            data-label-position={i === data.length - 1 ? 'top-left' : null}
             className="hero-usedby colorize-on-hover"
           >
             <img
