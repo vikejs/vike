@@ -14,7 +14,7 @@
     <script>
         function navigate(event) {
             event.preventDefault();
-            history.replaceState({ turbolinks: true }, '');
+            // history.replaceState({ turbolinks: true }, '');
             history.pushState(null, '', event.target.href);
             location.reload();
         }
