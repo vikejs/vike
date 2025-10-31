@@ -77,7 +77,7 @@ function Block({
   return (
     <div
       style={{
-        backgroundColor: 'var(--bg-color)',
+        backgroundColor: 'var(--color-bg-gray)',
         display: 'flex',
         justifyContent: 'center',
         marginTop: 'var(--block-margin)',
