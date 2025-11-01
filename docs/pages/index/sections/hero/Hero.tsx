@@ -122,18 +122,7 @@ function HeroTagline({
               ...taglineSecondaryStyle,
             }}
           >
-            The framework for{' '}
-            <span
-              style={{
-                paddingLeft: 4,
-                paddingRight: 4,
-                outline: '1px dashed #878787',
-                // textDecoration: 'underline'
-              }}
-            >
-              advanced applications
-            </span>
-            .
+            The framework for advanced applications.
             <br />
             With blazing fast{' '}
             <LinkTagline href="/new" color="#fe9618">
