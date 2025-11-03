@@ -1,6 +1,6 @@
 export { isLinkSkipped }
 export { isLinkIgnored }
-export { isSameAsCurrentUrl }
+export { isHrefCurrentUrl }
 
 import { normalizeClientSideUrl } from '../shared/normalizeClientSideUrl.js'
 import { getBaseServer } from './getBaseServer.js'
@@ -53,7 +53,7 @@ function isSamePageHashLink(href: string): boolean {
   }
   return false
 }
-function isSameAsCurrentUrl(href: string) {
+function isHrefCurrentUrl(href: string) {
   if (href.startsWith('#')) return href === window.location.hash
   return normalizeClientSideUrl(href) === normalizeClientSideUrl(window.location.href)
 }
