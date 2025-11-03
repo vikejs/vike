@@ -14,7 +14,7 @@ function isLinkSkipped(linkTag: HTMLElement): boolean {
     href === '' ||
     isUrlExternal(href) ||
     isSamePageHashLink(href) ||
-    isNewTabLink(linkTag) ||
+    isLinkExternal(linkTag) ||
     isLinkIgnored(linkTag) ||
     !hasBaseServer(href) ||
     // Purposely last because disableAutomaticLinkInterception will be removed in the next major release
@@ -33,8 +33,7 @@ function isVikeLink(linkTag: HTMLElement) {
   }
 }
 
-// TODO rename
-function isNewTabLink(linkTag: HTMLElement) {
+function isLinkExternal(linkTag: HTMLElement) {
   const target = linkTag.getAttribute('target')
   const rel = linkTag.getAttribute('rel')
   return target === '_blank' || target === '_external' || rel === 'external' || linkTag.hasAttribute('download')
