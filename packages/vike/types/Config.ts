@@ -468,7 +468,7 @@ type ConfigBuiltIn = {
    *
    * https://vite.dev/config/
    */
-  vite?: InlineConfig
+  vite?: InlineConfig | (() => InlineConfig | Promise<InlineConfig>)
 
   /** Permanent redirections (HTTP status code 301)
    *
