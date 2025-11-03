@@ -8,7 +8,7 @@ export default (() => {
   const vikeConfig = getVikeConfig()
   assert(vikeConfig.pages['/pages/markdown']!.route === '/markdown')
   return {
-    // TEST: use +vite to add Vite plugin
+    // TEST: using +vite to add Vite plugin
     plugins: [mdx()],
   } satisfies UserConfig
 }) satisfies Config['vite']
