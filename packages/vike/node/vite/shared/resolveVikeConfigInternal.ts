@@ -154,11 +154,16 @@ async function getVikeConfigInternal(
  * https://vike.dev/getVikeConfig
  */
 function getVikeConfig(
-  // TO-DO/eventually: remove unused arguments (older versions used it and we didn't remove it yet to avoid a TypeScript breaking change)
-  // - No rush: we can do it later since it's getVikeConfig() is a beta feature as documented at https://vike.dev/getVikeConfig
-  // TODO
-  config: ResolvedConfig | UserConfig,
+  /** @deprecated the `config` argument isn't needed anymore — remove it (it doens't have any effect) */
+  config?: ResolvedConfig | UserConfig,
 ): VikeConfig {
+  /* TO-DO/eventualy: add deprecation warning. We don't do it yet because of vike-server and vike-cloudflare which are using getVikeConfig() with the argument.
+  assertWarning(
+    config === undefined,
+    `getVikeConfig() doesn't accept any argument anymore — remove the argument (it doens't have any effect anymore)`,
+    { onlyOnce: true, showStackTrace: true },
+  )
+  */
   assert(globalObject.vikeConfigSync)
   const vikeConfig = globalObject.vikeConfigSync
   assertUsage(
