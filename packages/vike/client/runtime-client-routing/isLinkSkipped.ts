@@ -28,9 +28,8 @@ function isVikeLink(linkTag: HTMLElement) {
   if (!disableAutomaticLinkInterception) {
     return true
   } else {
-    // TODO: rename target attrVal
-    const target = linkTag.getAttribute('data-vike-link')
-    return target !== null && target !== 'false'
+    const attrVal = linkTag.getAttribute('data-vike-link')
+    return attrVal !== null && attrVal !== 'false'
   }
 }
 
