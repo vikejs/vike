@@ -44,7 +44,6 @@ function isLinkIgnored(linkTag: HTMLElement) {
 // TODO refactor both functions below?
 function isSamePageHashLink(href: string): boolean {
   if (href.startsWith('#')) return true
-  // TODO: remove?
   if (
     href.includes('#') &&
     normalizeClientSideUrl(href, { withoutHash: true }) ===
