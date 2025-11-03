@@ -1,4 +1,3 @@
-// TODO: rename_full isLinkSkipped isLinkSkipped
 export { isLinkSkipped }
 export { isLinkIgnored }
 export { isSameAsCurrentUrl }
