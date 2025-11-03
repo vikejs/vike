@@ -156,6 +156,7 @@ async function getVikeConfigInternal(
 function getVikeConfig(
   // TO-DO/eventually: remove unused arguments (older versions used it and we didn't remove it yet to avoid a TypeScript breaking change)
   // - No rush: we can do it later since it's getVikeConfig() is a beta feature as documented at https://vike.dev/getVikeConfig
+  // TODO
   config: ResolvedConfig | UserConfig,
 ): VikeConfig {
   assert(globalObject.vikeConfigSync)
