@@ -5,7 +5,6 @@ export type { VikeConfig }
 // Internal usage
 export { getVikeConfigInternal }
 export { getVikeConfigInternalOptional }
-export { getVikeConfigInternalSync }
 export { setVikeConfigContext }
 export { isVikeConfigContextSet }
 export { reloadVikeConfig }
@@ -145,7 +144,6 @@ async function getVikeConfigInternal(
   const vikeConfig = await getOrResolveVikeConfig(userRootDir, isDev, vikeVitePluginOptions, doNotRestartViteOnError)
   return vikeConfig
 }
-// TO-DO/next-major-release: remove
 function getVikeConfigInternalSync(): VikeConfigInternal {
   assert(globalObject.vikeConfigSync)
   return globalObject.vikeConfigSync
