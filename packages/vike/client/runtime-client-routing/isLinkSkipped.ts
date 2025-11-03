@@ -13,7 +13,7 @@ function isLinkSkipped(linkTag: HTMLElement): boolean {
     !isUrl(href) ||
     href === '' ||
     isUrlExternal(href) ||
-    isSamePageHashLink(href) ||
+    isHrefSamePageHash(href) ||
     isLinkExternal(linkTag) ||
     isLinkIgnored(linkTag) ||
     !hasBaseServer(href) ||
@@ -42,7 +42,7 @@ function isLinkIgnored(linkTag: HTMLElement) {
   return linkTag.getAttribute('data-vike') === 'false'
 }
 // TODO refactor both functions below?
-function isSamePageHashLink(href: string): boolean {
+function isHrefSamePageHash(href: string): boolean {
   if (href.startsWith('#')) return true
   if (
     href.includes('#') &&
