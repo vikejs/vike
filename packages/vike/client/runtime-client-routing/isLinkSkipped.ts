@@ -1,5 +1,5 @@
-// TODO: rename_full skipLink isLinkSkipped
-export { skipLink }
+// TODO: rename_full isLinkSkipped isLinkSkipped
+export { isLinkSkipped }
 export { isLinkIgnored }
 export { isSameAsCurrentUrl }
 
@@ -7,7 +7,7 @@ import { normalizeClientSideUrl } from '../shared/normalizeClientSideUrl.js'
 import { getBaseServer } from './getBaseServer.js'
 import { assert, parseUrl, isBaseServer, isUrl, isUrlExternal } from './utils.js'
 
-function skipLink(linkTag: HTMLElement): boolean {
+function isLinkSkipped(linkTag: HTMLElement): boolean {
   const href = linkTag.getAttribute('href')
   return (
     href === null ||

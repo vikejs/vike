@@ -1,6 +1,6 @@
 export { initOnLinkClick }
 
-import { isLinkIgnored, isSameAsCurrentUrl, skipLink } from './skipLink.js'
+import { isLinkIgnored, isSameAsCurrentUrl, isLinkSkipped } from './isLinkSkipped.js'
 import { renderPageClientSide } from './renderPageClientSide.js'
 import { scrollToHashOrTop, type ScrollTarget } from './setScrollPosition.js'
 
@@ -29,7 +29,7 @@ async function onLinkClick(ev: MouseEvent) {
     return
   }
 
-  if (skipLink(linkTag)) return
+  if (isLinkSkipped(linkTag)) return
   ev.preventDefault()
 
   let scrollTarget: ScrollTarget

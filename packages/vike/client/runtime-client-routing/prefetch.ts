@@ -17,7 +17,7 @@ import {
   objectAssign,
 } from './utils.js'
 import { isErrorFetchingStaticAssets, loadPageConfigsLazyClientSide } from '../shared/loadPageConfigsLazyClientSide.js'
-import { skipLink } from './skipLink.js'
+import { isLinkSkipped } from './isLinkSkipped.js'
 import { disableClientRouting } from './renderPageClientSide.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { createPageContextClientSide, type PageContextCreated } from './createPageContextClientSide.js'
@@ -227,7 +227,7 @@ function addLinkPrefetchHandlers_apply(): void {
     if (globalObject.linkPrefetchHandlerAdded.has(linkTag)) continue
     globalObject.linkPrefetchHandlerAdded.add(linkTag)
 
-    if (skipLink(linkTag)) continue
+    if (isLinkSkipped(linkTag)) continue
 
     linkTag.addEventListener(
       'mouseover',
@@ -272,7 +272,7 @@ async function prefetchOnEvent(linkTag: HTMLAnchorElement, event: 'hover' | 'vie
   }
 
   // Check again in case DOM was manipulated since last check
-  if (skipLink(linkTag)) return
+  if (isLinkSkipped(linkTag)) return
 
   const urlOfLink = linkTag.getAttribute('href')!
 
