@@ -41,7 +41,6 @@ function isLinkExternal(linkTag: HTMLElement) {
 function isLinkIgnored(linkTag: HTMLElement) {
   return linkTag.getAttribute('data-vike') === 'false'
 }
-// TODO refactor both functions below?
 function isHrefSamePageHash(href: string): boolean {
   if (href.startsWith('#')) return true
   if (
