@@ -1,8 +1,8 @@
 // https://vike.dev/onHydrationEnd
 export { onHydrationEnd }
 
-import type { OnHydrationEndAsync } from 'vike/types'
+import type { PageContextClient } from 'vike/types'
 
-const onHydrationEnd: OnHydrationEndAsync = async (): ReturnType<OnHydrationEndAsync> => {
+const onHydrationEnd = async (pageContext: PageContextClient) => {
   console.log('Hydration finished; page is now interactive.')
 }

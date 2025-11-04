@@ -3,10 +3,10 @@ export { onRenderClient }
 
 import { createVueApp } from './createVueApp'
 import { getPageTitle } from './getPageTitle'
-import type { OnRenderClientAsync } from 'vike/types'
+import type { PageContextClient } from 'vike/types'
 
 let app: ReturnType<typeof createVueApp>
-const onRenderClient: OnRenderClientAsync = async (pageContext): ReturnType<OnRenderClientAsync> => {
+const onRenderClient = async (pageContext: PageContextClient) => {
   if (!app) {
     app = createVueApp(pageContext)
     app.mount('#app')
