@@ -1555,6 +1555,10 @@ function migrations() {
   return (
     [
       {
+        title: 'Hook Types',
+        url: '/migration/hook-types',
+      },
+      {
         title: 'Migrate Vike settings',
         url: '/migration/settings',
       },
