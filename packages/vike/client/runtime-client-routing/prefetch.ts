@@ -36,12 +36,23 @@ import { normalizeUrlArgument } from './normalizeUrlArgument.js'
 import type { GlobalContextClientInternal } from './getGlobalContextClientInternal.js'
 
 assertClientRouting()
+
+/** Check if prefetching is enabled based on current page context */
+function isPrefetchEnabled(): boolean {
+  const pageContextCurrent = getPageContextCurrent()
+  if (!pageContextCurrent) return true // Default to enabled if context not available yet
+  
+  const prefetchSettings = getPrefetchSettings(pageContextCurrent, null)
+  // Prefetching is enabled if either static assets OR pageContext prefetching is enabled
+  return prefetchSettings.staticAssets !== false || prefetchSettings.pageContext !== false
+}
+
 const globalObject = getGlobalObject('runtime-client-routing/prefetch.ts', {
   linkPrefetchHandlerAdded: new WeakSet<HTMLElement>(),
   addLinkPrefetchHandlers_debounce: null as null | ReturnType<typeof setTimeout>,
   mutationObserver: new MutationObserver(addLinkPrefetchHandlers),
   // `linkTags` [is automatically updated](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCollection#:~:text=An%20HTMLCollection%20in%20the%20HTML%20DOM%20is%20live%3B%20it%20is%20automatically%20updated%20when%20the%20underlying%20document%20is%20changed.)
-  linkTags: document.getElementsByTagName('A') as HTMLCollectionOf<HTMLAnchorElement>,
+  linkTags: isPrefetchEnabled() ? document.getElementsByTagName('A') as HTMLCollectionOf<HTMLAnchorElement> : [],
   prefetchedPageContexts: {} as Record<
     string, // URL
     PrefetchedPageContext
@@ -194,6 +205,8 @@ async function prefetch(
 
 // Lazy execution logic copied from: https://github.com/withastro/astro/blob/2594eb088d53a98181ac820243bcb1a765856ecf/packages/astro/src/runtime/client/dev-toolbar/apps/audit/index.ts#L53-L72
 function addLinkPrefetchHandlers() {
+  if (!isPrefetchEnabled()) return
+
   if (globalObject.addLinkPrefetchHandlers_debounce) clearTimeout(globalObject.addLinkPrefetchHandlers_debounce)
   globalObject.addLinkPrefetchHandlers_debounce = setTimeout(() => {
     // Wait for the next idle period, as it is less likely to interfere with any other work the browser is doing post-mutation.
@@ -206,9 +219,12 @@ function addLinkPrefetchHandlers() {
   }, 250)
 }
 function initLinkPrefetchHandlers() {
+  if (!isPrefetchEnabled()) return
   addLinkPrefetchHandlers()
 }
 function addLinkPrefetchHandlers_watch(): void {
+  if (!isPrefetchEnabled()) return
+
   // Notes about performance:
   // - https://stackoverflow.com/questions/31659567/performance-of-mutationobserver-to-detect-nodes-in-entire-dom/39332340#39332340
   // - https://news.ycombinator.com/item?id=15274211
@@ -223,6 +239,8 @@ function addLinkPrefetchHandlers_unwatch(): void {
   globalObject.mutationObserver.disconnect()
 }
 function addLinkPrefetchHandlers_apply(): void {
+  if (!isPrefetchEnabled()) return
+
   for (let linkTag of globalObject.linkTags) {
     if (globalObject.linkPrefetchHandlerAdded.has(linkTag)) continue
     globalObject.linkPrefetchHandlerAdded.add(linkTag)
