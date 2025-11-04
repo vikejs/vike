@@ -5,10 +5,10 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { Layout } from './Layout'
 import { getPageTitle } from './getPageTitle'
-import type { OnRenderClientAsync } from 'vike/types'
+import type { PageContextClient } from 'vike/types'
 
 let root: ReactDOM.Root
-const onRenderClient: OnRenderClientAsync = async (pageContext): ReturnType<OnRenderClientAsync> => {
+const onRenderClient = async (pageContext: PageContextClient) => {
   const { Page } = pageContext
   const page = (
     <Layout pageContext={pageContext}>

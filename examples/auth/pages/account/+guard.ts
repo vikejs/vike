@@ -2,9 +2,9 @@
 export { guard }
 
 import { render } from 'vike/abort'
-import type { GuardAsync } from 'vike/types'
+import type { PageContextServer } from 'vike/types'
 
-const guard: GuardAsync = async (pageContext): ReturnType<GuardAsync> => {
+const guard = async (pageContext: PageContextServer) => {
   if (!pageContext.user) {
     throw render('/login')
   }

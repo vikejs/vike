@@ -102,15 +102,30 @@ type ConfigNameGlobal =
 type Config = ConfigBuiltIn & Vike.Config
 
 // Purposeful code duplication for improving QuickInfo IntelliSense
-/** @deprecated This type is deprecated, see https://vike.dev/data */
+/** @deprecated This type is deprecated, see:
+ * - https://vike.dev/migration/hook-types
+ * - https://vike.dev/data
+ */
 type DataAsync<Data = unknown> = (pageContext: PageContextServer) => Promise<Data>
-/** @deprecated This type is deprecated, see https://vike.dev/data */
+/** @deprecated This type is deprecated, see:
+ * - https://vike.dev/migration/hook-types
+ * - https://vike.dev/data
+ */
 type DataSync<Data = unknown> = (pageContext: PageContextServer) => Data
-/** @deprecated This type is deprecated, see https://vike.dev/guard */
+/** @deprecated This type is deprecated, see:
+ * - https://vike.dev/migration/hook-types
+ * - https://vike.dev/guard
+ */
 type GuardAsync = (pageContext: PageContextServer) => Promise<void>
-/** @deprecated This type is deprecated, see https://vike.dev/guard */
+/** @deprecated This type is deprecated, see:
+ * - https://vike.dev/migration/hook-types
+ * - https://vike.dev/guard
+ */
 type GuardSync = (pageContext: PageContextServer) => void
-/** @deprecated This type is deprecated, see https://vike.dev/onBeforePrerenderStart */
+/** @deprecated This type is deprecated, see:
+ * - https://vike.dev/migration/hook-types
+ * - https://vike.dev/onBeforePrerenderStart
+ */
 type OnBeforePrerenderStartAsync<Data = unknown> = () => Promise<
   (
     | string
@@ -120,7 +135,10 @@ type OnBeforePrerenderStartAsync<Data = unknown> = () => Promise<
       }
   )[]
 >
-/** @deprecated This type is deprecated, see https://vike.dev/onBeforePrerenderStart */
+/** @deprecated This type is deprecated, see:
+ * - https://vike.dev/migration/hook-types
+ * - https://vike.dev/onBeforePrerenderStart
+ */
 type OnBeforePrerenderStartSync<Data = unknown> = () => (
   | string
   | {
@@ -128,13 +146,22 @@ type OnBeforePrerenderStartSync<Data = unknown> = () => (
       pageContext: Partial<Vike.PageContext & { data: Data }>
     }
 )[]
-/** @deprecated This type is deprecated, see https://vike.dev/onBeforeRender */
+/** @deprecated This type is deprecated, see:
+ * - https://vike.dev/migration/hook-types
+ * - https://vike.dev/onBeforeRender
+ */
 type OnBeforeRenderAsync = (
   pageContext: PageContextServer,
 ) => Promise<{ pageContext: Partial<Vike.PageContext> } | void>
-/** @deprecated This type is deprecated, see https://vike.dev/onBeforeRender */
+/** @deprecated This type is deprecated, see:
+ * - https://vike.dev/migration/hook-types
+ * - https://vike.dev/onBeforeRender
+ */
 type OnBeforeRenderSync = (pageContext: PageContextServer) => { pageContext: Partial<Vike.PageContext> } | void
-/** @deprecated This type is deprecated, see https://vike.dev/onBeforeRoute */
+/** @deprecated This type is deprecated, see:
+ * - https://vike.dev/migration/hook-types
+ * - https://vike.dev/onBeforeRoute
+ */
 type OnBeforeRouteAsync = (pageContext: PageContextServer) => Promise<{
   pageContext: Partial<
     | {
@@ -147,7 +174,10 @@ type OnBeforeRouteAsync = (pageContext: PageContextServer) => Promise<{
     | Vike.PageContext
   >
 }>
-/** @deprecated This type is deprecated, see https://vike.dev/onBeforeRoute */
+/** @deprecated This type is deprecated, see:
+ * - https://vike.dev/migration/hook-types
+ * - https://vike.dev/onBeforeRoute
+ */
 type OnBeforeRouteSync = (pageContext: PageContextServer) => {
   pageContext: Partial<
     | {
@@ -160,33 +190,69 @@ type OnBeforeRouteSync = (pageContext: PageContextServer) => {
     | Vike.PageContext
   >
 }
-/** @deprecated This type is deprecated, see https://vike.dev/onHydrationEnd */
+/** @deprecated This type is deprecated, see:
+ * - https://vike.dev/migration/hook-types
+ * - https://vike.dev/onHydrationEnd
+ */
 type OnHydrationEndAsync = (pageContext: PageContextClient) => Promise<void>
-/** @deprecated This type is deprecated, see https://vike.dev/onHydrationEnd */
+/** @deprecated This type is deprecated, see:
+ * - https://vike.dev/migration/hook-types
+ * - https://vike.dev/onHydrationEnd
+ */
 type OnHydrationEndSync = (pageContext: PageContextClient) => void
-/** @deprecated This type is deprecated, see https://vike.dev/onPageTransitionEnd */
+/** @deprecated This type is deprecated, see:
+ * - https://vike.dev/migration/hook-types
+ * - https://vike.dev/onPageTransitionEnd
+ */
 type OnPageTransitionEndAsync = (pageContext: PageContextClient) => Promise<void>
-/** @deprecated This type is deprecated, see https://vike.dev/onPageTransitionEnd */
+/** @deprecated This type is deprecated, see:
+ * - https://vike.dev/migration/hook-types
+ * - https://vike.dev/onPageTransitionEnd
+ */
 type OnPageTransitionEndSync = (pageContext: PageContextClient) => void
-/** @deprecated This type is deprecated, see https://vike.dev/onPageTransitionStart */
+/** @deprecated This type is deprecated, see:
+ * - https://vike.dev/migration/hook-types
+ * - https://vike.dev/onPageTransitionStart
+ */
 type OnPageTransitionStartAsync = (pageContext: PageContextClient) => Promise<void>
-/** @deprecated This type is deprecated, see https://vike.dev/onPageTransitionStart */
+/** @deprecated This type is deprecated, see:
+ * - https://vike.dev/migration/hook-types
+ * - https://vike.dev/onPageTransitionStart
+ */
 type OnPageTransitionStartSync = (pageContext: PageContextClient) => void
-/** @deprecated This type is deprecated, see https://vike.dev/onPrerenderStart */
+/** @deprecated This type is deprecated, see:
+ * - https://vike.dev/migration/hook-types
+ * - https://vike.dev/onPrerenderStart
+ */
 type OnPrerenderStartAsync = (prerenderContext: {
   pageContexts: PageContextServer[]
 }) => Promise<{ prerenderContext: { pageContexts: PageContextServer[] } }>
-/** @deprecated This type is deprecated, see https://vike.dev/onPrerenderStart */
+/** @deprecated This type is deprecated, see:
+ * - https://vike.dev/migration/hook-types
+ * - https://vike.dev/onPrerenderStart
+ */
 type OnPrerenderStartSync = (prerenderContext: { pageContexts: PageContextServer[] }) => {
   prerenderContext: { pageContexts: PageContextServer[] }
 }
-/** @deprecated This type is deprecated, see https://vike.dev/onRenderClient */
+/** @deprecated This type is deprecated, see:
+ * - https://vike.dev/migration/hook-types
+ * - https://vike.dev/onRenderClient
+ */
 type OnRenderClientAsync = (pageContext: PageContextClient) => Promise<void>
-/** @deprecated This type is deprecated, see https://vike.dev/onRenderClient */
+/** @deprecated This type is deprecated, see:
+ * - https://vike.dev/migration/hook-types
+ * - https://vike.dev/onRenderClient
+ */
 type OnRenderClientSync = (pageContext: PageContextClient) => void
-/** @deprecated This type is deprecated, see https://vike.dev/onRenderHtml */
+/** @deprecated This type is deprecated, see:
+ * - https://vike.dev/migration/hook-types
+ * - https://vike.dev/onRenderHtml
+ */
 type OnRenderHtmlAsync = (pageContext: PageContextServer) => Promise<OnRenderHtmlReturn>
-/** @deprecated This type is deprecated, see https://vike.dev/onRenderHtml */
+/** @deprecated This type is deprecated, see:
+ * - https://vike.dev/migration/hook-types
+ * - https://vike.dev/onRenderHtml
+ */
 type OnRenderHtmlSync = (pageContext: PageContextServer) => OnRenderHtmlReturn
 type OnRenderHtmlReturn =
   | DocumentHtml
@@ -208,7 +274,10 @@ type OnRenderHtmlPageContextReturn = Partial<
 type RouteAsync = (
   pageContext: PageContextServer | PageContextClient,
 ) => Promise<{ routeParams?: Record<string, string>; precedence?: number } | boolean>
-/** @deprecated This type is deprecated, see https://vike.dev/route */
+/** @deprecated This type is deprecated, see:
+ * - https://vike.dev/migration/hook-types
+ * - https://vike.dev/route
+ */
 type RouteSync = (
   pageContext: PageContextServer | PageContextClient,
 ) => { routeParams?: Record<string, string>; precedence?: number } | boolean

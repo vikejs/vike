@@ -5,9 +5,9 @@ import ReactDOMServer from 'react-dom/server'
 import React from 'react'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { Layout } from './Layout'
-import type { OnRenderHtmlAsync } from 'vike/types'
+import type { PageContextServer } from 'vike/types'
 
-const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRenderHtmlAsync> => {
+const onRenderHtml = async (pageContext: PageContextServer) => {
   const { Page } = pageContext
   const pageHtml = ReactDOMServer.renderToString(
     <Layout>
