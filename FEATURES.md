@@ -17,6 +17,10 @@ All essentials:
  - i18n
  - Base URL
 
+Not common:
+ - `ssr: boolean`
+ - Bati
+
 I ain't aware of any framework that implements *all* these features which I consider must-haves. (For example Next.js is missing isomorphic data fetching.)
 
 Unique Vike features:
