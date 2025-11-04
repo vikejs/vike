@@ -102,7 +102,10 @@ type ConfigNameGlobal =
 type Config = ConfigBuiltIn & Vike.Config
 
 // Purposeful code duplication for improving QuickInfo IntelliSense
-/** @deprecated This type is deprecated, see https://vike.dev/data */
+/** @deprecated This type is deprecated, see:
+ * - https://vike.dev/migration/hook-types
+ * - https://vike.dev/data
+ */
 type DataAsync<Data = unknown> = (pageContext: PageContextServer) => Promise<Data>
 /** @deprecated This type is deprecated, see https://vike.dev/data */
 type DataSync<Data = unknown> = (pageContext: PageContextServer) => Data
