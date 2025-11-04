@@ -1,3 +1,15 @@
+## [0.4.245](https://github.com/vikejs/vike/compare/v0.4.244...v0.4.245) (2025-11-04)
+
+
+### Bug Fixes
+
+* allow +vite to be a function for lazy evaluation ([#2809](https://github.com/vikejs/vike/issues/2809)) ([aae383f](https://github.com/vikejs/vike/commit/aae383fa43f1d6408ccf25cf27c27d1776d16a75))
+* deprecate getVikeConfig() argument and make it optional ([6ac0cba](https://github.com/vikejs/vike/commit/6ac0cba5e69c5d0df6707d442f1cbb31722e6aad))
+* fix cssTarget assert (fix [#2778](https://github.com/vikejs/vike/issues/2778)) ([a8703f7](https://github.com/vikejs/vike/commit/a8703f79ab8295ecad84f11694c753fd28c04fb9))
+* improve hook types migration (fix [#2806](https://github.com/vikejs/vike/issues/2806)) ([#2811](https://github.com/vikejs/vike/issues/2811)) ([5fd99d8](https://github.com/vikejs/vike/commit/5fd99d83618779f3a227e47cbb7670d140ee8c6f))
+
+
+
 ## [0.4.244](https://github.com/vikejs/vike/compare/v0.4.243...v0.4.244) (2025-10-22)
 
 
