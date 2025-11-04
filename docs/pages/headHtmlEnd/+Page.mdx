@@ -1,0 +1,104 @@
+import { Link, Warning } from '@brillout/docpress'
+import { ProvidedBy, UiFrameworkExtension, ConfigSpec } from '../../components'
+
+<ConfigSpec
+  env="server"
+  cumulative
+  global
+  providedBy={<ProvidedBy list={['vike-vue', 'vike-react']} noCustomGuide><code>headHtmlEnd</code></ProvidedBy>}
+/>
+
+The settings `headHtmlEnd`/<Link href="/headHtmlBegin" /> enable you to insert HTML at the beginning/end of the `<head>` tag.
+
+Inserting static HTML:
+
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+
+export default {
+  headHtmlEnd: '<meta name="something" />'
+} satisfies Config
+```
+
+> For adding `<script>` tags consider <Link href="/Head">`<Head>`</Link> or <Link href="/client">`+client.js`</Link> instead.
+
+Inserting dynamically generated HTML:
+
+```ts
+// pages/+headHtmlEnd.ts
+
+import type { PageContextServer } from 'vike/types'
+
+export default (pageContext: PageContextServer) => {
+  const { something } = pageContext
+  return `<div>${something}</div>`
+}
+```
+
+<Warning>
+Be cautious about the security risk called [XSS injections](https://en.wikipedia.org/wiki/Cross-site_scripting).
+</Warning>
+
+
+## Use cases
+
+### React
+
+When using React, it's often used for portals.
+
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+
+export default {
+  headHtmlEnd: '<div id="portal-root"></div>'
+} satisfies Config
+```
+
+You'll then get the following HTML:
+
+```tsx ts-only
+<head>
+  {/* ... */}
+  <div id="root">{reactHtml}</div>
+  <div id="portal-root"></div>// [!code ++]
+</head>
+```
+
+### Vue
+
+When using Vue, it's often used for adding the HTML targets of teleports.
+
+Teleports work out of the box when using `<Teleport to="teleported">` and you don't have to use `headHtml{Begin,End}` then.
+
+> `vike-vue` always inserts this at the end of the `<head>` tag:
+> ```vue
+> <div id="teleported">${
+>   pageContext.ssrContext.teleports?.['#teleported'] ?? ''
+> }</div>
+> ```
+
+> You can use <Link href="/pageContext">Vike's `pageContext` object</Link> to access [Vue's `ssrContext` object](https://vuejs.org/api/ssr#usessrcontext):
+>
+> ```ts
+> // pages/+headHtmlEnd.ts
+>
+> import type { PageContextServer } from 'vike/types'
+>
+> export default (pageContext: PageContextServer) => {
+>   const content = pageContext.ssrContext.teleports?.['#someTeleport'] ?? ''
+>   return `<div id="someTeleport">${content}</div>`
+> }
+> ```
+
+
+## See also
+
+- <Link href="/headHtmlBegin" />
+- <Link href="/head-tags"/>
+- <Link href="/client"/>
+- <Link href="/onRenderHtml"/>
+- <Link href="/settings#html-shell" doNotInferSectionTitle />

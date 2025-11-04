@@ -1426,6 +1426,14 @@ function api() {
         url: '/filesystemRoutingRoot',
       },
       {
+        title: '`headHtmlBegin`',
+        url: '/headHtmlBegin',
+      },
+      {
+        title: '`headHtmlEnd`',
+        url: '/headHtmlEnd',
+      },
+      {
         title: '`bodyHtmlBegin`',
         url: '/bodyHtmlBegin',
       },

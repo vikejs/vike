@@ -1,0 +1,11 @@
+import { Link } from '@brillout/docpress'
+import { ProvidedBy, ConfigSpec } from '../../components'
+
+<ConfigSpec
+  env="server"
+  cumulative
+  global
+  providedBy={<ProvidedBy list={['vike-vue', 'vike-react']} noCustomGuide><code>headHtmlBegin</code></ProvidedBy>}
+/>
+
+Setting for inserting HTML at the beginning of the `<head>` tag, see the documentation at <Link href="/headHtmlEnd">`headHtmlEnd`</Link>.
