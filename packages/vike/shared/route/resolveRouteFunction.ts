@@ -110,12 +110,11 @@ function warnDeprecatedAllowKey() {
 
 function assertRouteParams<T>(
   result: T,
-  errPrefix: string,
+  errPrefix: `${string} should`,
 ): asserts result is T & { routeParams?: Record<string, string> } {
   assert(errPrefix.endsWith(' should'))
   if (!hasProp(result, 'routeParams')) {
     return
   }
-  assert(errPrefix.endsWith(' should'))
-  assertUsage(hasProp(result, 'routeParams', 'string{}'), `${errPrefix} be an object holding string values.`)
+  assertUsage(hasProp(result, 'routeParams', 'string{}'), `${errPrefix} be ${pc.bold('Record<string, string>')}`)
 }
