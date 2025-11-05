@@ -19,6 +19,7 @@ import type { GlobalContextServerInternal } from '../../globalContext.js'
 import type { PageContextCreated } from '../createPageContextServerSide.js'
 import type { PageContextBegin } from '../../renderPage.js'
 import type { PageContextCspNonce } from '../csp.js'
+import { assertRouteParams } from '../../../../shared/route/resolveRouteFunction.js'
 
 const passToClientBuiltInPageContext = [
   'abortReason',
@@ -175,10 +176,12 @@ type PassToClientPublic = (
 )[]
 function getPassToClientPageContext(pageContext: {
   pageId: string
+  routeParams: Record<string, string>
   _passToClient: PassToClient
   _globalContext: GlobalContextServerInternal
   is404: null | boolean
 }): PassToClient {
+  assertPageContext(pageContext)
   let passToClient = [...pageContext._passToClient, ...passToClientBuiltInPageContext]
   if (isErrorPage(pageContext.pageId, pageContext._globalContext._pageConfigs)) {
     assert(hasProp(pageContext, 'is404', 'boolean'))
@@ -250,4 +253,17 @@ function applyPassToClient(passToClient: PassToClient, obj: Record<string, unkno
     objClientProps.push(prop)
   })
   return { objClient, objClientProps }
+}
+
+// Ensure the following client-side assert() don't fail:
+// https://github.com/vikejs/vike/blob/a33b6e6319a9a0e34ea78e23c5aa156022e3745c/packages/vike/client/shared/getJsonSerializedInHtml.ts#L15-L16
+function assertPageContext(pageContext: {
+  routeParams: unknown
+  pageId: unknown
+}) {
+  assertUsage(
+    hasProp(pageContext, 'pageId', 'string'),
+    `${pc.bold('pageContext.pageId')} should be a ${pc.bold('string')}`,
+  )
+  assertRouteParams(pageContext, `${pc.bold('pageContext.routeParams')} should`)
 }
