@@ -29,6 +29,7 @@ async function createPageContextClientSide() {
     _globalContext: globalContext,
     _pageFilesAll: globalContext._pageFilesAll, // TO-DO/next-major-release: remove
     isBackwardNavigation: null,
+    isHistoryNavigation: null,
     _hasPageContextFromServer: true as const,
   })
   objectAssign(pageContextCreated, getPageContextSerializedInHtml())
