@@ -107,7 +107,7 @@ export default {
 
 ## Cloudflare APIs
 
-To access Cloudflare's APIs (such as [D1](https://developers.cloudflare.com/d1/) and [KV](https://developers.cloudflare.com/kv/)), use [Cloudflare's bindings](https://developers.cloudflare.com/workers/runtime-apis/bindings/), which are available via the `env` object that you can [import from `cloudflare:workers`](https://developers.cloudflare.com/workers/runtime-apis/bindings/#importing-env-as-a-global).
+To access Cloudflare APIs (such as [D1](https://developers.cloudflare.com/d1/) and [KV](https://developers.cloudflare.com/kv/)), use [Cloudflare's bindings](https://developers.cloudflare.com/workers/runtime-apis/bindings/) which are available via the `env` object [imported from `cloudflare:workers`](https://developers.cloudflare.com/workers/runtime-apis/bindings/#importing-env-as-a-global).
 
 ```ts
 // Environment: server
@@ -115,7 +115,7 @@ To access Cloudflare's APIs (such as [D1](https://developers.cloudflare.com/d1/)
 import { env } from 'cloudflare:workers'
 // Key-value store
 env.KV.get('my-key')
-// Environment Variable
+// Environment variable
 env.LOG_LEVEL
 // ...
 ```
