@@ -51,7 +51,7 @@ Build fast.
 - [wip] Typesafe routes
 - [wip] AI
   - Simple approach: add Vike's docs to the LLMs's context => completely solves the "AI generates outdated code" problem
-  - `llm-{small,medium,full}.txt` => accomodates diverse foundational AI models & tools
+  - `llm-{small,medium,full}.txt` => accommodates diverse foundational AI models & tools
 - Bati
   - [Tanner got a lot of applause for TanStack's Bati-like feature]
 
@@ -116,7 +116,7 @@ Minor features that can be life changing for some users:
 - Supports [`@vitejs/plugin-legacy`](https://github.com/vitejs/vite/tree/main/packages/plugin-legacy).
 
 
-## Features [TODO: impement]
+## Features [TODO: implement]
 
 Things missing that some frameworks have (but is on the roadmap):
  - Nested Layouts
