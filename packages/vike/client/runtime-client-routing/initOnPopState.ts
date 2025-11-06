@@ -43,10 +43,10 @@ async function onPopState() {
     // Let the browser handle it
     return
   } else {
-    await handleBackForwardNavigation(previous, current)
+    await handleHistoryNavigation(previous, current)
   }
 }
-async function handleBackForwardNavigation(previous: HistoryInfo, current: HistoryInfo) {
+async function handleHistoryNavigation(previous: HistoryInfo, current: HistoryInfo) {
   const scrollTarget: ScrollTarget = current.state.scrollPosition || undefined
 
   const isHashNavigation = removeHash(current.url) === removeHash(previous.url) && current.url !== previous.url
