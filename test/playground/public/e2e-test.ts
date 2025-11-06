@@ -1,6 +1,6 @@
 export { testOtherFrameworkNavigation }
 
-import { test, page, getServerUrl, expect } from '@brillout/test-e2e'
+import { test, page, getServerUrl, expect, sleep } from '@brillout/test-e2e'
 import { expectUrl, waitForNavigation } from '../../utils'
 
 function testOtherFrameworkNavigation() {
@@ -13,6 +13,7 @@ function testOtherFrameworkNavigation() {
 
     await expectUrl('/star-wars')
     expect(await page.textContent('body')).toContain('Star Wars Movies')
+    await sleep(1000)
 
     navPromise = await waitForNavigation()
     await page.goBack()

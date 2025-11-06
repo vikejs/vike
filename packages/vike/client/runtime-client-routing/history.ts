@@ -7,7 +7,7 @@ export type { HistoryInfo }
 export type { ScrollPosition }
 
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
-import { assert, assertUsage, getGlobalObject, isObject, deepEqual, cast } from './utils.js'
+import { assert, assertUsage, getGlobalObject, isObject, deepEqual, cast, redirectHard } from './utils.js'
 
 const globalObject = getGlobalObject('history.ts', {
   monkeyPatched: false,
@@ -189,14 +189,24 @@ function getHistoryInfo(): HistoryInfo {
 function onPopStateBegin() {
   const { previous } = globalObject
 
-  const isHistoryStateEnhanced = (window.history.state as unknown) !== null
-  if (!isHistoryStateEnhanced) enhanceHistoryState()
+  const historyStateExists = window.history.state !== null
+  const isHistoryStateEnhanced = isVikeEnhanced(window.history.state as unknown)
+
+  if (historyStateExists && !isHistoryStateEnhanced) {
+    // Going back to a history entry not created by Vike - hard reload as Vike cannot handle it
+    redirectHard(getCurrentUrl())
+    return { isHistoryStateEnhanced: false as const }
+  }
+
+  if (!historyStateExists) {
+    enhanceHistoryState()
+  }
   assertIsVikeEnhanced(window.history.state as unknown)
 
   const current = getHistoryInfo()
   globalObject.previous = current
 
-  return { isHistoryStateEnhanced, previous, current }
+  return { isHistoryStateEnhanced: true as const, previous, current }
 }
 
 function initHistory() {
