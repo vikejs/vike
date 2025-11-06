@@ -105,8 +105,7 @@ type PageContextBegin = Awaited<ReturnType<typeof getPageContextBegin>>
 
 type RenderArgs = {
   scrollTarget: ScrollTarget
-  // TODO: refactor
-  isBackwardNavigation: boolean | null
+  isBackwardNavigation?: boolean | null // `null` when window.history.state.timestamp is missing
   isHistoryNavigation?: true
   urlOriginal?: string
   overwriteLastHistoryEntry?: boolean
@@ -122,7 +121,7 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
   const {
     urlOriginal = getCurrentUrl(),
     overwriteLastHistoryEntry = false,
-    isBackwardNavigation,
+    isBackwardNavigation = false,
     isHistoryNavigation = false,
     pageContextsFromRewrite = [],
     redirectCount = 0,
@@ -480,7 +479,6 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
           scrollTarget: undefined,
           urlOriginal: urlRedirect,
           overwriteLastHistoryEntry: false,
-          isBackwardNavigation: false,
           redirectCount: redirectCount + 1,
         })
       }
@@ -839,7 +837,6 @@ if (import.meta.env.DEV && import.meta.hot)
         scrollTarget: { preserveScroll: false },
         urlOriginal: getCurrentUrl(),
         overwriteLastHistoryEntry: true,
-        isBackwardNavigation: false,
       })
     }
   })

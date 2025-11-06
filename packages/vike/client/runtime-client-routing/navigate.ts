@@ -39,7 +39,6 @@ async function navigate(url: string, options?: Options): Promise<void> {
     scrollTarget,
     urlOriginal: url,
     overwriteLastHistoryEntry,
-    isBackwardNavigation: false,
     pageContextInitClient: pageContext,
   })
 }

@@ -249,7 +249,7 @@ type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltI
      *
      * https://vike.dev/pageContext#isBackwardNavigation
      */
-    isBackwardNavigation: boolean | null
+    isBackwardNavigation: boolean | null // `null` when window.history.state.timestamp is missing
     /**
      * Whether the user is navigating back or forward in history.
      *
