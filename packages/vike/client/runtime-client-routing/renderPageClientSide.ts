@@ -106,7 +106,7 @@ type PageContextBegin = Awaited<ReturnType<typeof getPageContextBegin>>
 type RenderArgs = {
   scrollTarget: ScrollTarget
   isBackwardNavigation: boolean | null
-  isHistoryNavigation?: true
+  isHistoryNavigation?: boolean
   urlOriginal?: string
   overwriteLastHistoryEntry?: boolean
   pageContextsFromRewrite?: PageContextFromRewrite[]
@@ -602,6 +602,7 @@ async function getPageContextBegin(
   {
     urlOriginal,
     isBackwardNavigation,
+    isHistoryNavigation,
     pageContextsFromRewrite,
     isClientSideNavigation,
     pageContextInitClient,
@@ -609,6 +610,7 @@ async function getPageContextBegin(
   }: {
     urlOriginal: string
     isBackwardNavigation: boolean | null
+    isHistoryNavigation: boolean
     pageContextsFromRewrite: PageContextFromRewrite[]
     isClientSideNavigation: boolean
     pageContextInitClient: Record<string, unknown> | undefined
@@ -619,6 +621,7 @@ async function getPageContextBegin(
   const pageContext = await createPageContextClientSide(urlOriginal)
   objectAssign(pageContext, {
     isBackwardNavigation,
+    isHistoryNavigation,
     isClientSideNavigation,
     isHydration: isFirstRender && !isForErrorPage,
     previousPageContext,

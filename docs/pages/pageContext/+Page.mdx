@@ -226,9 +226,17 @@ Whether the page is being <Link href="/pre-rendering">pre-rendered</Link>. The v
 
 Whether the user is navigating back in history.
 
-   The value is `true` when the user clicks on his browser's backward navigation button, or when invoking `history.back()`.
+The value is `true` when the user clicks on his browser's backward navigation button, or when invoking `history.back()`.
 
-   The `isBackwardNavigation` property is only defined when using <Link href="/client-routing" noBreadcrumb={true} />.
+The `isBackwardNavigation` property is only defined when using <Link href="/client-routing" noBreadcrumb={true} />.
+
+<Prop name="isHistoryNavigation" />
+
+Whether the user is navigating back or forward in history.
+
+The value is `true` when the user clicks on his browser's backward/forward navigation button, or when invoking `history.back()` or `history.forward()`.
+
+The `isHistoryNavigation` property is only defined when using <Link href="/client-routing" noBreadcrumb={true} />.
 
 <Prop name="previousPageContext" />
 

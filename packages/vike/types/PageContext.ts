@@ -286,6 +286,14 @@ type PageContextBuiltInClientWithServerRouting<Data> = Partial<PageContextBuiltI
      * https://vike.dev/pageContext#isBackwardNavigation
      */
     isBackwardNavigation: null
+    /**
+     * Whether the user is navigating back or forward in history.
+     *
+     * The `isHistoryNavigation` property only works with Client Routing. (The value is always `false` when using Server Routing.)
+     *
+     * https://vike.dev/pageContext#isHistoryNavigation
+     */
+    isHistoryNavigation: null
     globalContext: GlobalContextClientWithServerRouting
   }
 
