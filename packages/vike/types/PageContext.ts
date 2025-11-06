@@ -257,7 +257,7 @@ type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltI
      *
      * https://vike.dev/pageContext#isHistoryNavigation
      */
-    isHistoryNavigation: boolean
+    isHistoryNavigation: boolean | null
     /**
      * Upon client-side page navigation, you can use `pageContext.previousPageContext` to access the `pageContext` of the previous page.
      *
