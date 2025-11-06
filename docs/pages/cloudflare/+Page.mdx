@@ -9,7 +9,7 @@ import { PhotonBuiltInServer, PhotonBetaWarning, PhotonAutoLoad, PhotonDeploymen
 
 <PhotonDeploymentProviderIntroPart1 provider="Cloudflare" link="https://www.cloudflare.com" />
 
-> In development, your server code runs inside `workerd` (the runtime Cloudflare uses in production), so you're developing in an environment similar to production. This is a new Cloudflare feature that Photon fully supports.
+> In development, your server code runs inside `workerd` (the runtime Cloudflare uses in production), so you're developing in an environment similar to production. This is a new Cloudflare feature that Photon supports.
 {/* TODO: add link to blog post */}
 
 <PhotonDeploymentProviderIntroPart2 provider="Cloudflare" />
@@ -57,7 +57,7 @@ import type { Config } from 'vike/types'
 import vikePhoton from 'vike-photon/config'// [!code ++]
 
 export default {
-  extends: [vikePhoton],// [!code ++]
+  extends: [vikePhoton]// [!code ++]
 } satisfies Config
 ```
 
