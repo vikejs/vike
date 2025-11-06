@@ -218,6 +218,7 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
 
     isHydration?: undefined
     isBackwardNavigation?: undefined
+    isHistoryNavigation?: undefined
     previousPageContext?: undefined
   }
 
@@ -242,13 +243,21 @@ type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltI
     /** Whether the current page is already rendered to HTML */
     isHydration: boolean
     /**
-     * Whether the user is navigating back in history.
+     * Whether the user is navigating backward in history.
      *
      * The value is `true` when the user clicks on his browser's backward navigation button, or when invoking `history.back()`.
      *
      * https://vike.dev/pageContext#isBackwardNavigation
      */
     isBackwardNavigation: boolean | null
+    /**
+     * Whether the user is navigating back or forward in history.
+     *
+     * The value is `true` when the user clicks on his browser's backward/forward button, or when invoking `history.back()` or `history.forward()`.
+     *
+     * https://vike.dev/pageContext#isHistoryNavigation
+     */
+    isHistoryNavigation: boolean
     /**
      * Upon client-side page navigation, you can use `pageContext.previousPageContext` to access the `pageContext` of the previous page.
      *

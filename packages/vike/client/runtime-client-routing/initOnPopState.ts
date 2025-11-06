@@ -62,7 +62,7 @@ async function handleHistoryNavigation(previous: HistoryInfo, current: HistoryIn
   const isBackwardNavigation =
     !current.state.timestamp || !previous.state.timestamp ? null : current.state.timestamp < previous.state.timestamp
 
-  await renderPageClientSide({ scrollTarget, isBackwardNavigation, doNotRenderIfSamePage })
+  await renderPageClientSide({ scrollTarget, isBackwardNavigation, doNotRenderIfSamePage, isHistoryNavigation: true })
 }
 
 function removeHash(url: `/${string}`) {
