@@ -1,0 +1,15 @@
+import { Link, Warning } from '@brillout/docpress'
+import { ProvidedBy, ConfigSpec } from '../../components'
+
+<ConfigSpec
+  env="server"
+  cumulative
+  global
+  providedBy={<ProvidedBy list={['vike-vue', 'vike-react']} noCustomGuide><code>headHtmlBegin</code></ProvidedBy>}
+/>
+
+<Warning>
+  Try <Link href="/Head"/> and other settings first. Injecting raw HTML into head has very few use cases. See <Link href="/head-tags" /> for a general introduction about `<head>` tags.
+</Warning>
+
+Setting for inserting raw HTML at the beginning of the `<head>` tag, see the documentation of <Link href="/bodyHtmlEnd">`bodyHtmlEnd`</Link>.
