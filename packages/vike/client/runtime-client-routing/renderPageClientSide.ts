@@ -105,6 +105,7 @@ type PageContextBegin = Awaited<ReturnType<typeof getPageContextBegin>>
 
 type RenderArgs = {
   scrollTarget: ScrollTarget
+  // TODO: refactor
   isBackwardNavigation: boolean | null
   isHistoryNavigation?: true
   urlOriginal?: string
