@@ -194,7 +194,7 @@ env.LOG_LEVEL
 
 ## TypeScript
 
-If you use TypeScript, (re-)run [`wrangler types`](https://developers.cloudflare.com/workers/wrangler/commands/#types) after changing your Cloudflare configuration to generate/update the `worker-configuration.d.ts` file.
+If you use TypeScript, run [`wrangler types`](https://developers.cloudflare.com/workers/wrangler/commands/#types) whenever you change your Cloudflare configuration to update the `worker-configuration.d.ts` file.
 
 <Tabs>
   <TabList>
@@ -219,7 +219,7 @@ If you use TypeScript, (re-)run [`wrangler types`](https://developers.cloudflare
   </TabPanel>
 </Tabs>
 
-Then commit it:
+Then commit:
 
 ```bash
 git commit -am "update cloudflare types"
