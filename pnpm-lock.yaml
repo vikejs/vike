@@ -795,8 +795,8 @@ importers:
         specifier: ^0.5.21
         version: 0.5.21
       '@brillout/picocolors':
-        specifier: ^1.0.28
-        version: 1.0.28
+        specifier: ^1.0.29
+        version: 1.0.29
       '@brillout/require-shim':
         specifier: ^0.1.2
         version: 0.1.2
@@ -2435,6 +2435,9 @@ packages:
 
   '@brillout/picocolors@1.0.28':
     resolution: {integrity: sha512-FBsirUdUlmjmeUlEuqfnUoKAZUt+d0VfMVBYUsFQrDFEV9Rm/QDyG69PSQtQbI6SZQNiZuAWuyhE5USflzx6iQ==}
+
+  '@brillout/picocolors@1.0.29':
+    resolution: {integrity: sha512-EKkqdFJD+CeP6GfpZNcWcCCXS5o0HFXhwISoN5JnHG/kplVE2MmF23eKtl4JRKU1rkR7s3kFIKiJf15aV/Uodg==}
 
   '@brillout/release-me@0.4.3':
     resolution: {integrity: sha512-zZzzOT34JVDOo8pe+AhJODAajzMLitfUOZoZotBXTAVGzpcOWcoHM1F4VDih1FW8GOrKhs/r48nhem5AmMWm8Q==}
@@ -9032,9 +9035,11 @@ snapshots:
 
   '@brillout/picocolors@1.0.28': {}
 
+  '@brillout/picocolors@1.0.29': {}
+
   '@brillout/release-me@0.4.3':
     dependencies:
-      '@brillout/picocolors': 1.0.28
+      '@brillout/picocolors': 1.0.29
       commander: 11.1.0
       conventional-changelog: 5.1.0
       execa: 5.1.1
@@ -9049,7 +9054,7 @@ snapshots:
 
   '@brillout/shell@0.2.1':
     dependencies:
-      '@brillout/picocolors': 1.0.28
+      '@brillout/picocolors': 1.0.29
 
   '@brillout/spellcheck@0.1.2':
     dependencies:
@@ -9079,7 +9084,7 @@ snapshots:
   '@brillout/vite-plugin-server-entry@0.7.15':
     dependencies:
       '@brillout/import': 0.2.6
-      '@brillout/picocolors': 1.0.28
+      '@brillout/picocolors': 1.0.29
 
   '@cloudflare/kv-asset-handler@0.2.0':
     dependencies:
