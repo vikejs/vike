@@ -27,6 +27,7 @@ import { testHistoryPushState } from './pages/pushState/e2e-test'
 import { testStarWars } from './pages/star-wars/e2e-test'
 import { testDefaultAndClearSuffixes } from './pages/config-meta/default-clear/e2e-test'
 import { isCI, skip } from '@brillout/test-e2e'
+import { testRedirect } from './pages/redirect/e2e-test'
 
 const rootDir = path.dirname(fileURLToPath(import.meta.url))
 
@@ -57,4 +58,5 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run preview:build
   testDefaultAndClearSuffixes()
   testHistoryPushState()
   testStarWars()
+  testRedirect()
 }
