@@ -795,7 +795,7 @@ importers:
         specifier: ^0.5.21
         version: 0.5.21
       '@brillout/picocolors':
-        specifier: ^1.0.26
+        specifier: ^1.0.28
         version: 1.0.28
       '@brillout/require-shim':
         specifier: ^0.1.2
