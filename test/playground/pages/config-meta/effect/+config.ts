@@ -9,8 +9,10 @@ export default {
     settingWithEffect: {
       env: { server: false, client: false, config: true },
       effect: function ({ configValue, configDefinedAt }) {
-        return (configValue as boolean)
+        configValue = configValue as Config['settingWithEffect']
+        return configValue
           ? {
+              dependentSetting: configValue === 'setEnvAndValue' ? 'defined by settingWithEffect' : undefined,
               meta: {
                 dependentSetting: {
                   env: { server: true, client: true },

@@ -21,4 +21,13 @@ function testSettingEffect() {
       dependentSetting: 'default @ /effect',
     })
   })
+
+  test('Setting Effect - Applied with Value', async () => {
+    let json = await retrievePageContext('/config-meta/effect/with-effect-set-value')
+
+    expect(json).to.deep.equal({
+      settingWithEffect: 'undefined',
+      dependentSetting: 'defined by settingWithEffect',
+    })
+  })
 }
