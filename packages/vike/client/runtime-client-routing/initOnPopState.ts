@@ -28,7 +28,7 @@ import { catchInfiniteLoop } from './utils.js'
 // - Text links aren't supported: https://github.com/vikejs/vike/issues/2114
 // - docs/ is a good playground to test all this.
 // - No 'popstate' event is fired upon Server Routing — when the user clicks on a link before the page's JavaScript loaded.
-// - On a pristine page without JavaScript such as https://brillout.com the value is `window.history.state === null`.
+// - On a pristine page without JavaScript such as https://brillout.com we have `window.history.state === null`.
 
 function initOnPopState() {
   window.addEventListener('popstate', onPopState)

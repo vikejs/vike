@@ -196,7 +196,7 @@ function onPopStateBegin() {
 
   const isHistoryStateEnhanced = isVikeEnhanced(window.history.state)
   // Either:
-  // - `window.history.pushState(null,'','/some-path')` , or
+  // - `window.history.pushState(null, '', '/some-path')` , or
   // - hash navigation
   //   - Click on `<a href="#some-hash">`
   //   - Using the `location` API (only hash navigation)
@@ -215,9 +215,9 @@ function onPopStateBegin() {
   const current = getHistoryInfo()
   globalObject.previous = current
 
-  // Upon hash navigation: `isHistoryStatePristine===true`
+  // Let the browser handle hash navigations.
+  // - Upon hash navigation: `isHistoryStatePristine===true` (see comment above).
   if (isHistoryStatePristine) {
-    // Let the browser handle it
     return { skip: true as const }
   }
 

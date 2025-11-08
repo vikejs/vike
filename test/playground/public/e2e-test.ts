@@ -9,6 +9,7 @@ function testOtherFrameworkNavigation() {
 
     let navPromise = await waitForNavigation()
     await page.click('a[href="/star-wars"]')
+    // Page full reload
     await navPromise()
 
     await expectUrl('/star-wars')
@@ -17,7 +18,7 @@ function testOtherFrameworkNavigation() {
 
     navPromise = await waitForNavigation()
     await page.goBack()
-    // Page should reload because we are exiting Vike land
+    // Page should fully reload because we are exiting Vike land
     await navPromise()
 
     await expectUrl('/other-framework.html')
