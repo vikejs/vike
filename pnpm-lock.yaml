@@ -42,8 +42,8 @@ importers:
         specifier: ^0.0.48
         version: 0.0.48
       '@brillout/docpress':
-        specifier: ^0.15.12
-        version: 0.15.12(@algolia/client-search@5.21.0)(@types/react@19.2.2)(@vitejs/plugin-react-swc@4.1.0(vite@6.3.5(@types/node@24.7.2)(terser@5.38.1)(tsx@4.20.3)))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.9.3)(vike@packages+vike)(vite@6.3.5(@types/node@24.7.2)(terser@5.38.1)(tsx@4.20.3))
+        specifier: ^0.16.0
+        version: 0.16.0(@algolia/client-search@5.21.0)(@types/react@19.2.2)(@vitejs/plugin-react-swc@4.1.0(vite@6.3.5(@types/node@24.7.2)(terser@5.38.1)(tsx@4.20.3)))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.9.3)(vike@packages+vike)(vite@6.3.5(@types/node@24.7.2)(terser@5.38.1)(tsx@4.20.3))
       '@types/react':
         specifier: ^19.0.2
         version: 19.2.2
@@ -63,7 +63,7 @@ importers:
         specifier: ^5.9.2
         version: 5.9.3
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../packages/vike
       vite:
         specifier: ^6.3.4
@@ -105,7 +105,7 @@ importers:
         specifier: ^5.9.2
         version: 5.9.3
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vike-react:
         specifier: ^0.6.5
@@ -126,7 +126,7 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -156,7 +156,7 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -186,7 +186,7 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -210,7 +210,7 @@ importers:
         specifier: ^5.9.2
         version: 5.9.3
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^7.0.6
@@ -246,7 +246,7 @@ importers:
         specifier: ^0.4.10
         version: 0.4.10(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^7.0.6
@@ -270,7 +270,7 @@ importers:
         specifier: ^3.5.18
         version: 3.5.18(vue@3.5.18(typescript@5.9.3))
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^7.0.6
@@ -294,7 +294,7 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -312,7 +312,7 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -324,7 +324,7 @@ importers:
         specifier: ^5.9.2
         version: 5.9.3
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -345,7 +345,7 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -387,7 +387,7 @@ importers:
         specifier: ^5.9.2
         version: 5.9.3
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -438,7 +438,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^7.1.10
@@ -456,7 +456,7 @@ importers:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
 
   examples/react-streaming:
@@ -489,7 +489,7 @@ importers:
         specifier: ^2.0.2
         version: 2.0.4
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -519,7 +519,7 @@ importers:
         specifier: ^2.0.0
         version: 2.0.4
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -555,7 +555,7 @@ importers:
         specifier: ^5.9.2
         version: 5.9.3
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^7.1.5
@@ -591,7 +591,7 @@ importers:
         specifier: ^0.26.2
         version: 0.26.3(rollup@4.43.0)(vite@6.3.5(@types/node@20.17.17)(terser@5.38.1)(tsx@4.20.3))
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -615,7 +615,7 @@ importers:
         specifier: ^3.2.47
         version: 3.5.18(vue@3.5.18(typescript@5.9.3))
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -660,7 +660,7 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       vike:
-        specifier: ^0.4.244
+        specifier: ^0.4.245
         version: link:../../vike
       vike-server:
         specifier: ^1.0.23
@@ -702,7 +702,7 @@ importers:
         specifier: ^5.9.2
         version: 5.9.3
       vike:
-        specifier: ^0.4.244
+        specifier: ^0.4.245
         version: link:../../vike
       vike-server:
         specifier: ^1.0.23
@@ -732,7 +732,7 @@ importers:
         specifier: ^3.3.2
         version: 3.3.2
       vike:
-        specifier: ^0.4.244
+        specifier: ^0.4.245
         version: link:../../vike
       vike-server:
         specifier: ^1.0.23
@@ -771,7 +771,7 @@ importers:
         specifier: ^5.9.2
         version: 5.9.3
       vike:
-        specifier: ^0.4.244
+        specifier: ^0.4.245
         version: link:../../vike
       vike-server:
         specifier: ^1.0.23
@@ -795,8 +795,8 @@ importers:
         specifier: ^0.5.21
         version: 0.5.21
       '@brillout/picocolors':
-        specifier: ^1.0.26
-        version: 1.0.28
+        specifier: ^1.0.29
+        version: 1.0.29
       '@brillout/require-shim':
         specifier: ^0.1.2
         version: 0.1.2
@@ -889,7 +889,7 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -919,7 +919,7 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -949,7 +949,7 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -970,7 +970,7 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: 6.3.0
@@ -1006,7 +1006,7 @@ importers:
         specifier: ^0.4.10
         version: 0.4.10(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1030,7 +1030,7 @@ importers:
         specifier: ^3.2.47
         version: 3.5.18(vue@3.5.18(typescript@5.9.3))
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1054,7 +1054,7 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1066,7 +1066,7 @@ importers:
         specifier: ^5.9.2
         version: 5.9.3
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1087,7 +1087,7 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1132,7 +1132,7 @@ importers:
         specifier: ^5.9.2
         version: 5.9.3
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1150,7 +1150,7 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: 6.3.0
@@ -1183,7 +1183,7 @@ importers:
         specifier: ^2.0.2
         version: 2.0.4
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1201,7 +1201,7 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1237,7 +1237,7 @@ importers:
         specifier: ^5.9.2
         version: 5.9.3
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: 6.3.0
@@ -1255,7 +1255,7 @@ importers:
         specifier: ^3.2.47
         version: 3.5.18(vue@3.5.18(typescript@5.9.3))
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1294,7 +1294,7 @@ importers:
         specifier: ^0.24.3
         version: 0.24.3(rollup@4.43.0)(vite@6.3.0(@types/node@17.0.45)(terser@5.38.1)(tsx@4.20.3))
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: 6.3.0
@@ -1318,7 +1318,7 @@ importers:
         specifier: ^0.2.13
         version: 0.2.13(@babel/core@7.28.4)(@babel/parser@7.28.4)(@babel/types@7.28.4)(react-streaming@0.4.10(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@7.1.9(@types/node@24.7.2)(terser@5.38.1)(tsx@4.20.3))
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vike-react:
         specifier: ^0.6.5
@@ -1379,7 +1379,7 @@ importers:
         specifier: ^5.9.2
         version: 5.9.3
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1409,7 +1409,7 @@ importers:
         specifier: ^2.0.3
         version: 2.0.4
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1427,7 +1427,7 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1445,7 +1445,7 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1466,7 +1466,7 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vike-react:
         specifier: ^0.6.5
@@ -1490,7 +1490,7 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vike-react:
         specifier: ^0.6.5
@@ -1520,7 +1520,7 @@ importers:
         specifier: ^5.9.2
         version: 5.9.3
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1529,7 +1529,7 @@ importers:
   test/includeAssetsImportedByServer:
     dependencies:
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1574,7 +1574,7 @@ importers:
         specifier: ^5.9.2
         version: 5.9.3
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vike-react:
         specifier: ^0.6.5
@@ -1598,7 +1598,7 @@ importers:
         specifier: ^5.9.2
         version: 5.9.3
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1631,7 +1631,7 @@ importers:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1652,7 +1652,7 @@ importers:
         specifier: ^2.0.14
         version: 2.3.1(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3))
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1707,7 +1707,7 @@ importers:
         specifier: ^5.9.2
         version: 5.9.3
       vike:
-        specifier: ^0.4.244
+        specifier: ^0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.5
@@ -1728,7 +1728,7 @@ importers:
         specifier: ^4.20.3
         version: 4.20.3
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vike-solid:
         specifier: ^0.7.12
@@ -1783,7 +1783,7 @@ importers:
         specifier: ^5.9.2
         version: 5.9.3
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vike-react:
         specifier: 0.6.5
@@ -1819,7 +1819,7 @@ importers:
         specifier: ^5.9.2
         version: 5.9.3
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vike-react:
         specifier: 0.6.5
@@ -1855,7 +1855,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vike-react:
         specifier: 0.6.9
@@ -1888,7 +1888,7 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vike-react:
         specifier: ^0.6.9
@@ -1909,7 +1909,7 @@ importers:
         specifier: ^1.9.7
         version: 1.9.7
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vike-solid:
         specifier: ^0.7.12
@@ -1962,7 +1962,7 @@ importers:
         specifier: ^5.9.2
         version: 5.9.3
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vike-react:
         specifier: ^0.6.5
@@ -1992,7 +1992,7 @@ importers:
         specifier: ^28.3.1
         version: 28.3.1(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.20.3))
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vike-vue:
         specifier: ^0.9.0
@@ -2022,7 +2022,7 @@ importers:
         specifier: ^3.0.1
         version: 3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3))
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vike-vue:
         specifier: ^0.9.2
@@ -2059,7 +2059,7 @@ importers:
         specifier: ^5.9.2
         version: 5.9.3
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vike-react:
         specifier: ^0.6.5
@@ -2086,7 +2086,7 @@ importers:
         specifier: ^6.0.1
         version: 6.0.1
       vike:
-        specifier: 0.4.244
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^7.1.4
@@ -2406,8 +2406,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@brillout/docpress@0.15.12':
-    resolution: {integrity: sha512-FFLbx3k8vkvLqJ8M9QWnxxM1+cE3U/Y1GQYDIyEEVFuZc99LrcfkXISW+FN9jf8j4Pct0BmoH69LhzWqI9iNcA==}
+  '@brillout/docpress@0.16.0':
+    resolution: {integrity: sha512-wJY9WX71qUjR9cZNvnxaU6eoTURRHlLvc+XG7jnNzg1pI1Ou1YeqpaQK+1jN7ZvtnREG9si52k+Cy8X549P6oQ==}
     peerDependencies:
       '@vitejs/plugin-react-swc': '>=3.0.0'
       react: '>=18.0.0'
@@ -2435,6 +2435,9 @@ packages:
 
   '@brillout/picocolors@1.0.28':
     resolution: {integrity: sha512-FBsirUdUlmjmeUlEuqfnUoKAZUt+d0VfMVBYUsFQrDFEV9Rm/QDyG69PSQtQbI6SZQNiZuAWuyhE5USflzx6iQ==}
+
+  '@brillout/picocolors@1.0.29':
+    resolution: {integrity: sha512-EKkqdFJD+CeP6GfpZNcWcCCXS5o0HFXhwISoN5JnHG/kplVE2MmF23eKtl4JRKU1rkR7s3kFIKiJf15aV/Uodg==}
 
   '@brillout/release-me@0.4.3':
     resolution: {integrity: sha512-zZzzOT34JVDOo8pe+AhJODAajzMLitfUOZoZotBXTAVGzpcOWcoHM1F4VDih1FW8GOrKhs/r48nhem5AmMWm8Q==}
@@ -8994,7 +8997,7 @@ snapshots:
   '@biomejs/cli-win32-x64@1.9.4':
     optional: true
 
-  '@brillout/docpress@0.15.12(@algolia/client-search@5.21.0)(@types/react@19.2.2)(@vitejs/plugin-react-swc@4.1.0(vite@6.3.5(@types/node@24.7.2)(terser@5.38.1)(tsx@4.20.3)))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.9.3)(vike@packages+vike)(vite@6.3.5(@types/node@24.7.2)(terser@5.38.1)(tsx@4.20.3))':
+  '@brillout/docpress@0.16.0(@algolia/client-search@5.21.0)(@types/react@19.2.2)(@vitejs/plugin-react-swc@4.1.0(vite@6.3.5(@types/node@24.7.2)(terser@5.38.1)(tsx@4.20.3)))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.9.3)(vike@packages+vike)(vite@6.3.5(@types/node@24.7.2)(terser@5.38.1)(tsx@4.20.3))':
     dependencies:
       '@brillout/picocolors': 1.0.28
       '@docsearch/css': 3.9.0
@@ -9032,9 +9035,11 @@ snapshots:
 
   '@brillout/picocolors@1.0.28': {}
 
+  '@brillout/picocolors@1.0.29': {}
+
   '@brillout/release-me@0.4.3':
     dependencies:
-      '@brillout/picocolors': 1.0.28
+      '@brillout/picocolors': 1.0.29
       commander: 11.1.0
       conventional-changelog: 5.1.0
       execa: 5.1.1
@@ -9049,7 +9054,7 @@ snapshots:
 
   '@brillout/shell@0.2.1':
     dependencies:
-      '@brillout/picocolors': 1.0.28
+      '@brillout/picocolors': 1.0.29
 
   '@brillout/spellcheck@0.1.2':
     dependencies:
@@ -9079,7 +9084,7 @@ snapshots:
   '@brillout/vite-plugin-server-entry@0.7.15':
     dependencies:
       '@brillout/import': 0.2.6
-      '@brillout/picocolors': 1.0.28
+      '@brillout/picocolors': 1.0.29
 
   '@cloudflare/kv-asset-handler@0.2.0':
     dependencies:

@@ -17,7 +17,7 @@ import { catchInfiniteLoop } from './utils.js'
 // 2. URL hash changes:
 //    - By the user clicking on `<a href="#some-hash">`
 //      - The popstate event is *only* triggered if `href` starts with '#' (even if `href==='/foo#bar'` and the current URL has the same pathname '/foo' then popstate isn't triggered)
-//      - Vike doesn't intercept hash links (see `skipLink()`) and let's the browser handle them.
+//      - Vike doesn't intercept hash links (see `isLinkSkipped()`) and let's the browser handle them.
 //    - By the app using a `location` API such as `location.hash = 'some-hash'`
 //      - Only upon hash navigation: setting `location.href='/foo'` triggers a full page reload and no popstate event is fired.
 //      - Also upon `location.href='/foo#bar'` while the current URL is '/foo' (unlike <a> clicks).
@@ -38,9 +38,9 @@ async function onPopState() {
   const res = onPopStateBegin()
   if (res.skip) return
   const { previous, current } = res
-  await handleBackForwardNavigation(previous, current)
+  await handleHistoryNavigation(previous, current)
 }
-async function handleBackForwardNavigation(previous: HistoryInfo, current: HistoryInfo) {
+async function handleHistoryNavigation(previous: HistoryInfo, current: HistoryInfo) {
   const scrollTarget: ScrollTarget = current.state.scrollPosition || undefined
 
   const isHashNavigation = removeHash(current.url) === removeHash(previous.url) && current.url !== previous.url
@@ -56,7 +56,7 @@ async function handleBackForwardNavigation(previous: HistoryInfo, current: Histo
   const isBackwardNavigation =
     !current.state.timestamp || !previous.state.timestamp ? null : current.state.timestamp < previous.state.timestamp
 
-  await renderPageClientSide({ scrollTarget, isBackwardNavigation, doNotRenderIfSamePage })
+  await renderPageClientSide({ scrollTarget, isBackwardNavigation, doNotRenderIfSamePage, isHistoryNavigation: true })
 }
 
 function removeHash(url: `/${string}`) {

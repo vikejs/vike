@@ -5,9 +5,9 @@ import React from 'react'
 import { renderToStream } from 'react-streaming/server'
 import { escapeInject } from 'vike/server'
 import { Layout } from './Layout'
-import type { OnRenderHtmlAsync } from 'vike/types'
+import type { PageContextServer } from 'vike/types'
 
-const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRenderHtmlAsync> => {
+const onRenderHtml = async (pageContext: PageContextServer) => {
   const { Page, pageProps } = pageContext
 
   const page = (

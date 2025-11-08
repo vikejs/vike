@@ -1,21 +1,20 @@
-// TODO: rename_full skipLink isLinkSkipped
-export { skipLink }
+export { isLinkSkipped }
 export { isLinkIgnored }
-export { isSameAsCurrentUrl }
+export { isHrefCurrentUrl }
 
 import { normalizeClientSideUrl } from '../shared/normalizeClientSideUrl.js'
 import { getBaseServer } from './getBaseServer.js'
 import { assert, parseUrl, isBaseServer, isUrl, isUrlExternal } from './utils.js'
 
-function skipLink(linkTag: HTMLElement): boolean {
+function isLinkSkipped(linkTag: HTMLElement): boolean {
   const href = linkTag.getAttribute('href')
   return (
     href === null ||
     !isUrl(href) ||
     href === '' ||
     isUrlExternal(href) ||
-    isSamePageHashLink(href) ||
-    isNewTabLink(linkTag) ||
+    isHrefSamePageHash(href) ||
+    isLinkExternal(linkTag) ||
     isLinkIgnored(linkTag) ||
     !hasBaseServer(href) ||
     // Purposely last because disableAutomaticLinkInterception will be removed in the next major release
@@ -29,14 +28,12 @@ function isVikeLink(linkTag: HTMLElement) {
   if (!disableAutomaticLinkInterception) {
     return true
   } else {
-    // TODO: rename target attrVal
-    const target = linkTag.getAttribute('data-vike-link')
-    return target !== null && target !== 'false'
+    const attrVal = linkTag.getAttribute('data-vike-link')
+    return attrVal !== null && attrVal !== 'false'
   }
 }
 
-// TODO rename
-function isNewTabLink(linkTag: HTMLElement) {
+function isLinkExternal(linkTag: HTMLElement) {
   const target = linkTag.getAttribute('target')
   const rel = linkTag.getAttribute('rel')
   return target === '_blank' || target === '_external' || rel === 'external' || linkTag.hasAttribute('download')
@@ -44,10 +41,8 @@ function isNewTabLink(linkTag: HTMLElement) {
 function isLinkIgnored(linkTag: HTMLElement) {
   return linkTag.getAttribute('data-vike') === 'false'
 }
-// TODO refactor both functions below?
-function isSamePageHashLink(href: string): boolean {
+function isHrefSamePageHash(href: string): boolean {
   if (href.startsWith('#')) return true
-  // TODO: remove?
   if (
     href.includes('#') &&
     normalizeClientSideUrl(href, { withoutHash: true }) ===
@@ -57,7 +52,7 @@ function isSamePageHashLink(href: string): boolean {
   }
   return false
 }
-function isSameAsCurrentUrl(href: string) {
+function isHrefCurrentUrl(href: string) {
   if (href.startsWith('#')) return href === window.location.hash
   return normalizeClientSideUrl(href) === normalizeClientSideUrl(window.location.href)
 }

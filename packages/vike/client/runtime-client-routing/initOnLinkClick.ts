@@ -1,6 +1,6 @@
 export { initOnLinkClick }
 
-import { isLinkIgnored, isSameAsCurrentUrl, skipLink } from './skipLink.js'
+import { isLinkIgnored, isHrefCurrentUrl, isLinkSkipped } from './isLinkSkipped.js'
 import { renderPageClientSide } from './renderPageClientSide.js'
 import { scrollToHashOrTop, type ScrollTarget } from './setScrollPosition.js'
 
@@ -21,7 +21,7 @@ async function onLinkClick(ev: MouseEvent) {
   // Workaround for Firefox bug: clicking on a hash link that doesn't change the current URL causes Firefox to erroneously set `window.history.state = null` without firing any signal that we can detect.
   // - https://github.com/vikejs/vike/issues/1962
   // - https://github.com/sveltejs/kit/issues/8725
-  if (href.includes('#') && isSameAsCurrentUrl(href)) {
+  if (href.includes('#') && isHrefCurrentUrl(href)) {
     // Prevent Firefox from setting `window.history.state` to `null`
     ev.preventDefault()
     // Replicate the browser's native behavior
@@ -29,7 +29,7 @@ async function onLinkClick(ev: MouseEvent) {
     return
   }
 
-  if (skipLink(linkTag)) return
+  if (isLinkSkipped(linkTag)) return
   ev.preventDefault()
 
   let scrollTarget: ScrollTarget
@@ -40,7 +40,6 @@ async function onLinkClick(ev: MouseEvent) {
   await renderPageClientSide({
     scrollTarget,
     urlOriginal: href,
-    isBackwardNavigation: false,
   })
 }
 

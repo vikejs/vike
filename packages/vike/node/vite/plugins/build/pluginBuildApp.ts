@@ -95,6 +95,7 @@ function pluginBuildApp(): Plugin[] {
         */
         async handler(options, bundle) {
           try {
+            handleAssetsManifest_assertUsageCssTarget(config, this.environment)
             await handleAssetsManifest(config, this.environment, options, bundle)
             await triggerPrerendering(config, this.environment, bundle)
           } catch (err) {
@@ -117,7 +118,6 @@ function pluginBuildApp(): Plugin[] {
         order: 'post',
         handler() {
           onSetupBuild()
-          handleAssetsManifest_assertUsageCssTarget(config, this.environment)
         },
       },
     },

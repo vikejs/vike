@@ -5,7 +5,6 @@ export type { VikeConfig }
 // Internal usage
 export { getVikeConfigInternal }
 export { getVikeConfigInternalOptional }
-export { getVikeConfigInternalSync }
 export { setVikeConfigContext }
 export { isVikeConfigContextSet }
 export { reloadVikeConfig }
@@ -145,11 +144,6 @@ async function getVikeConfigInternal(
   const vikeConfig = await getOrResolveVikeConfig(userRootDir, isDev, vikeVitePluginOptions, doNotRestartViteOnError)
   return vikeConfig
 }
-// TO-DO/next-major-release: remove
-function getVikeConfigInternalSync(): VikeConfigInternal {
-  assert(globalObject.vikeConfigSync)
-  return globalObject.vikeConfigSync
-}
 
 // TO-DO/eventually: this maybe(/probably?) isn't safe against race conditions upon file changes in development, thus:
 // - Like getGlobalContext() and getGlobalContextSync() — make getVikeConfig() async and provide a getVikeConfigSync() while discourage using it
@@ -160,11 +154,18 @@ function getVikeConfigInternalSync(): VikeConfigInternal {
  * https://vike.dev/getVikeConfig
  */
 function getVikeConfig(
-  // TO-DO/eventually: remove unused arguments (older versions used it and we didn't remove it yet to avoid a TypeScript breaking change)
-  // - No rush: we can do it later since it's getVikeConfig() is a beta feature as documented at https://vike.dev/getVikeConfig
-  config: ResolvedConfig | UserConfig,
+  /** @deprecated the `config` argument isn't needed anymore — remove it (it doesn't have any effect) */
+  config?: ResolvedConfig | UserConfig,
 ): VikeConfig {
-  const vikeConfig = getVikeConfigInternalSync()
+  /* TO-DO/eventualy: add deprecation warning. We don't do it yet because of vike-server and vike-cloudflare which are using getVikeConfig() with the argument.
+  assertWarning(
+    config === undefined,
+    `getVikeConfig() doesn't accept any argument anymore — remove the argument (it doesn't have any effect)`,
+    { onlyOnce: true, showStackTrace: true },
+  )
+  */
+  assert(globalObject.vikeConfigSync)
+  const vikeConfig = globalObject.vikeConfigSync
   assertUsage(
     vikeConfig,
     'getVikeConfig() can only be used when Vite is loaded (i.e. during development or build) — Vite is never loaded in production.',

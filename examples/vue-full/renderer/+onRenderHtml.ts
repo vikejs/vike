@@ -5,9 +5,9 @@ import { renderToNodeStream } from '@vue/server-renderer'
 import { escapeInject } from 'vike/server'
 import { createVueApp } from './createVueApp'
 import { getPageTitle } from './getPageTitle'
-import type { OnRenderHtmlAsync } from 'vike/types'
+import type { PageContextServer } from 'vike/types'
 
-const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRenderHtmlAsync> => {
+const onRenderHtml = async (pageContext: PageContextServer) => {
   const app = createVueApp(pageContext)
   const stream = renderToNodeStream(app)
 

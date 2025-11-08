@@ -19,7 +19,7 @@ The entire documentation for using Photon is contained on this page, <Link href=
 
 > Alternatively, instead of using a server, you can <Link href="/pre-rendering">pre-render</Link> your pages and deploy to a <Link href="/static-hosts">static host</Link>.
 
-> If you want more control over server integration, see <Link href="/server-integration#custom-integration" />.
+> If you want more control over server integration, see <Link href="/server-integration#manual-integration" />.
 
 
 ## Get started
@@ -31,6 +31,10 @@ The entire documentation for using Photon is contained on this page, <Link href=
 ### Add to existing app
 
 > If you're using `vike-server` then  <Link href="/migration/vike-photon">migrate to `vike-photon`</Link>.
+
+> This guide is for self-hosted servers. For deploying to Cloudflare or Vercel, see:
+> - <Link href="/cloudflare#get-started" />
+> - <Link href="/vercel#get-started" />
 
 #### 1. Install
 
@@ -88,7 +92,7 @@ Update your production script in `package.json`:
 
 ## Server
 
-Photon includes a built-in server that supports basic features like SSR. If you need additional server functionalities (e.g. [file uploads](https://hono.dev/examples/file-upload) or <Link href="/api-routes">API routes</Link>), then create your own server:
+By default, Photon uses a built-in server that supports basic features like SSR. If you need additional server functionalities (e.g. [file uploads](https://hono.dev/examples/file-upload) or <Link href="/api-routes">API routes</Link>), then create your own server:
 
 ```ts
 // pages/+config.ts
@@ -461,6 +465,15 @@ import type { PageContextServer } from 'vike/types'
 export async function onCreatePageContext(pageContext: PageContextServer) {
   pageContext.user = pageContext.runtime.req.user
 }
+
+declare global {
+  namespace Vike {
+    interface Photon {
+      // 👉 Pick your server (for correct pageContext.runtime type)
+      server: 'hono' // | 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
+    }
+  }
+}
 ```
 
 See also: <Link href="/auth" />.
@@ -535,22 +548,53 @@ If HMR isn't what you want (for example if you modify the database connection) y
 
 ## Compression
 
-In production, `vike-photon` compresses all Vike responses.
+In production, Photon compresses all Vike responses.
 
-You can disable it:
+You can disable it, or enable it only for static files:
 
 ```ts
-// Manually importing Vike middlewares to access their options
-import { getMiddlewares } from "vike-photon/universal-middlewares";// [!code ++]
+// pages/+config.ts
 
-apply(
-  app,
-  getMiddlewares({// [!code ++]
-    compress: false// [!code ++]
-  }),// [!code ++]
-);
+import type { Config } from 'vike/types'
+import vikePhoton from 'vike-photon/config'
+
+export default {
+  extends: [vikePhoton],
+  photon: {// [!code ++]
+    // Disable compression// [!code ++]
+    compress: false,// [!code ++]
+    // Only compress static files// [!code ++]
+    // @detype-uncomment compress: 'static'// [!code ++]
+  }// [!code ++]
+} satisfies Config
 ```
 
+## Static files
+
+In production, Photon uses [`@universal-middleware/sirv`](https://universal-middleware.dev/middlewares/sirv) to serve static files.
+
+> In development, static files are served by [Vite](https://vitejs.dev)'s development server.
+
+You can disable it, or set options:
+
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+import vikePhoton from 'vike-photon/config'
+
+export default {
+  extends: [vikePhoton],
+  photon: {// [!code ++]
+    // Don't serve static files// [!code ++]
+    static: false,// [!code ++]
+    // Settings// [!code ++]
+    // @detype-uncomment static: { maxAge: 3600, /* ... */ }// [!code ++]
+  }// [!code ++]
+} satisfies Config
+```
+
+> [All `sirv` options](https://github.com/lukeed/sirv/tree/main/packages/sirv#api) are supported.
 
 ## HTTPS
 

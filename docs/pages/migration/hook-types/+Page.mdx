@@ -1,0 +1,27 @@
+import { Link } from '@brillout/docpress'
+
+Hook types such as `GuardSync` are deprecated — directly use <Link href="/pageContext#typescript">`PageContext`/`PageContextServer`/`PageContextClient`</Link> instead.
+
+```ts ts-only
+import type { GuardSync } from 'vike/types'// [!code --]
+import type { PageContextServer } from 'vike/types'// [!code ++]
+
+export const guard: GuardSync = (pageContext): ReturnType<GuardSync> => {// [!code --]
+export const guard = (pageContext: PageContextServer) => {// [!code ++]
+  // ...
+}
+```
+
+The new recommended TypeScript usage is documented on each hook's page (e.g. <Link href="/guard" />) — make sure the `TS` toggle is selected inside code snippets.
+
+> Directly using `pageContext` types is simpler, more precise and robust.
+
+> Some complex hook types (most notably <Link href="/onBeforeRender">`+onBeforeRender`</Link> and <Link href="/onRenderHtml">`+onRenderHtml`</Link>) will become trivial once we deprecate returning values inside hooks in favor of directly <Link href="/pageContext#custom">mutating `pageContext`</Link>.
+>
+> (In case you're curious: there are many reasons we're going in this direction. Heavily mutating `pageContext` may seem dirty, but it won't be — it will be powered by an immutable data structure, so there isn't any drawback both theoretically and practically).
+
+
+## See also
+
+- <Link href="/hooks" />
+- <Link href="/pageContext#typescript" />

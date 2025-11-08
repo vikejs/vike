@@ -277,9 +277,9 @@ type Target = ResolvedConfig['build']['target'] | CssTarget
 type TargetConfig = { global: Exclude<Target, undefined>; css: Target; isServerSide: boolean }
 function handleAssetsManifest_alignCssTarget(config: ResolvedConfig) {
   globalObject.configsAll.push(config)
-  const { cssTarget } = globalObject.configsAll
-    .filter((c) => !isViteServerSide_viteEnvOptional(c, undefined))
-    .at(-1)!.build
+  const clientSideConfigs = globalObject.configsAll.filter((c) => !isViteServerSide_viteEnvOptional(c, undefined))
+  if (clientSideConfigs.length === 0) return
+  const { cssTarget } = clientSideConfigs.at(-1)!.build
   assert(cssTarget)
   globalObject.configsAll.forEach((c) => (c.build.cssTarget = cssTarget))
 }

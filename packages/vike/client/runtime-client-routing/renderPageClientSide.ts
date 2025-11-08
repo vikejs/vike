@@ -105,7 +105,8 @@ type PageContextBegin = Awaited<ReturnType<typeof getPageContextBegin>>
 
 type RenderArgs = {
   scrollTarget: ScrollTarget
-  isBackwardNavigation: boolean | null
+  isBackwardNavigation?: boolean | null // `null` when window.history.state.timestamp is missing
+  isHistoryNavigation?: true
   urlOriginal?: string
   overwriteLastHistoryEntry?: boolean
   pageContextsFromRewrite?: PageContextFromRewrite[]
@@ -120,7 +121,8 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
   const {
     urlOriginal = getCurrentUrl(),
     overwriteLastHistoryEntry = false,
-    isBackwardNavigation,
+    isBackwardNavigation = false,
+    isHistoryNavigation = false,
     pageContextsFromRewrite = [],
     redirectCount = 0,
     doNotRenderIfSamePage,
@@ -138,6 +140,7 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
   const pageContextBeginArgs = {
     urlOriginal,
     isBackwardNavigation,
+    isHistoryNavigation,
     pageContextsFromRewrite,
     isClientSideNavigation,
     pageContextInitClient,
@@ -476,7 +479,6 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
           scrollTarget: undefined,
           urlOriginal: urlRedirect,
           overwriteLastHistoryEntry: false,
-          isBackwardNavigation: false,
           redirectCount: redirectCount + 1,
         })
       }
@@ -599,6 +601,7 @@ async function getPageContextBegin(
   {
     urlOriginal,
     isBackwardNavigation,
+    isHistoryNavigation,
     pageContextsFromRewrite,
     isClientSideNavigation,
     pageContextInitClient,
@@ -606,6 +609,7 @@ async function getPageContextBegin(
   }: {
     urlOriginal: string
     isBackwardNavigation: boolean | null
+    isHistoryNavigation: boolean
     pageContextsFromRewrite: PageContextFromRewrite[]
     isClientSideNavigation: boolean
     pageContextInitClient: Record<string, unknown> | undefined
@@ -616,6 +620,7 @@ async function getPageContextBegin(
   const pageContext = await createPageContextClientSide(urlOriginal)
   objectAssign(pageContext, {
     isBackwardNavigation,
+    isHistoryNavigation,
     isClientSideNavigation,
     isHydration: isFirstRender && !isForErrorPage,
     previousPageContext,
@@ -832,7 +837,6 @@ if (import.meta.env.DEV && import.meta.hot)
         scrollTarget: { preserveScroll: false },
         urlOriginal: getCurrentUrl(),
         overwriteLastHistoryEntry: true,
-        isBackwardNavigation: false,
       })
     }
   })

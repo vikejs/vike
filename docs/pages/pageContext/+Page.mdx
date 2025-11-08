@@ -144,13 +144,31 @@ The headers of the HTTP Response, see <Link href="/headersResponse"/>.
 
 <Prop name="runtime" />
 
-The `pageContext.runtime` object is the [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) and it contains:
- - `pageContext.runtime.req` — the original HTTP request object, for example [IncomingMessage](https://nodejs.org/api/http.html#class-httpincomingmessage).
- - `pageContext.runtime.res` — the original HTTP response object, for example [ServerResponse](https://nodejs.org/api/http.html#class-httpserverresponse).
-
-It's set by <Link href="/vike-photon">`vike-photon`</Link> (which uses [`universal-middleware`](https://universal-middleware.dev/) under the hood).
+The [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) object set by <Link href="/vike-photon">`vike-photon`</Link> (which uses [`universal-middleware`](https://universal-middleware.dev/) under the hood).
 
 > It's only available if you use `vike-photon`.
+
+```ts
+// Environment: server
+
+// The original HTTP request object
+pageContext.runtime.req
+// The original HTTP response object
+pageContext.runtime.res
+
+declare global {
+  namespace Vike {
+    interface Photon {
+      // 👉 Pick your server (for correct pageContext.runtime type)
+      server: 'hono' // | 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
+    }
+  }
+}
+```
+
+> When using Node.js:
+> - `pageContext.runtime.req` is [`IncomingMessage`](https://nodejs.org/api/http.html#class-httpincomingmessage)
+> - `pageContext.runtime.res` is [`ServerResponse`](https://nodejs.org/api/http.html#class-httpserverresponse)
 
 <Prop name="config" />
 
@@ -206,11 +224,19 @@ Whether the page is being <Link href="/pre-rendering">pre-rendered</Link>. The v
 
 <Prop name="isBackwardNavigation" />
 
-Whether the user is navigating back in history.
+Whether the user is navigating backward in history.
 
-   The value is `true` when the user clicks on his browser's backward navigation button, or when invoking `history.back()`.
+The value is `true` when the user clicks on his browser's backward navigation button, or when invoking `history.back()`.
 
-   The `isBackwardNavigation` property is only defined when using <Link href="/client-routing" noBreadcrumb={true} />.
+The `isBackwardNavigation` property is only defined when using <Link href="/client-routing" noBreadcrumb={true} />.
+
+<Prop name="isHistoryNavigation" />
+
+Whether the user is navigating back or forward in history.
+
+The value is `true` when the user clicks on his browser's backward/forward button, or when invoking `history.back()` or `history.forward()`.
+
+The `isHistoryNavigation` property is only defined when using <Link href="/client-routing" noBreadcrumb={true} />.
 
 <Prop name="previousPageContext" />
 

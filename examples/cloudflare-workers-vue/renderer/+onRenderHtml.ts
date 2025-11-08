@@ -5,10 +5,10 @@ import { pipeToWebWritable, pipeToNodeWritable } from '@vue/server-renderer'
 
 import { escapeInject, stampPipe } from 'vike/server'
 import { createVueApp } from './createVueApp'
-import type { OnRenderHtmlAsync } from 'vike/types'
+import type { PageContextServer } from 'vike/types'
 import type { Writable } from 'node:stream'
 
-const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRenderHtmlAsync> => {
+const onRenderHtml = async (pageContext: PageContextServer) => {
   const app = createVueApp(pageContext)
 
   // Streaming is optional: we can use renderToString() instead.

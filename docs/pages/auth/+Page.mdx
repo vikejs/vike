@@ -23,7 +23,7 @@ import type { PageContextServer } from 'vike/types'
 export async function onCreatePageContext(pageContext: PageContextServer) {
   // vike-photon exposes the request object at pageContext.runtime.req
   const { req } = pageContext.runtime
-  
+
   // Authentication middlewares (e.g. Passport.js and Grant) usually set req.user
   // to expose information about the logged-in user.
   const { user } = req
@@ -45,6 +45,10 @@ declare global {
         firstName: string
         email: string
       }
+    }
+    interface Photon {
+      // Pick your server (for correct pageContext.runtime type)
+      server: 'hono' // | 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
     }
   }
 }
