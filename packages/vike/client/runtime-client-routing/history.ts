@@ -206,7 +206,7 @@ function onPopStateBegin() {
   if (!isHistoryStateEnhanced && !isHistoryStatePristine) {
     // Going to a history entry not created by Vike — entering another "SPA realm" => hard reload
     // https://github.com/vikejs/vike/issues/2801#issuecomment-3490431479
-    redirectHard(getCurrentUrl())
+    // redirectHard(getCurrentUrl())
     return { skip: true as const }
   }
   if (!isHistoryStateEnhanced) enhanceHistoryState()
