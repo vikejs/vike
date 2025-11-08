@@ -1160,7 +1160,7 @@ function applyEffectConfVal(
     assert(configDef)
     assert(configDefEffect._userEffectDefinedAtFilePath)
     const configValueSource: ConfigValueSource = {
-      definedAt: sourceEffect.definedAt,
+      definedAt: configDefEffect._userEffectDefinedAtFilePath!,
       plusFile: sourceEffect.plusFile,
       locationId: sourceEffect.locationId,
       configEnv: configDef.env,
@@ -1179,7 +1179,8 @@ function applyEffectConfVal(
       `The configuration ${pc.cyan(configNameEffect)} is set to ${pc.cyan(JSON.stringify(sourceEffect.value))} which is considered ${isGlobalHumanReadable(isValueGlobalSource)}. However, it has a meta.effect that sets the configuration ${pc.cyan(configNameTarget)} to ${pc.cyan(JSON.stringify(configValue))} which is considered ${isGlobalHumanReadable(isValueGlobalTarget)}. This is contradictory: make sure the values are either both non-global or both global.`,
     )
     configValueSources[configNameTarget] ??= []
-    configValueSources[configNameTarget].push(configValueSource)
+    // Prepend effect-generated values so they have higher priority before sorting
+    configValueSources[configNameTarget].unshift(configValueSource)
   })
 }
 function applyEffectMetaEnv(
