@@ -80,6 +80,8 @@ function getTimestamp() {
 
 function saveScrollPosition() {
   const scrollPosition = getScrollPosition()
+  // TODO comment
+  if (!isVikeEnhanced(window.history.state)) return
   const state = getState()
   replaceHistoryState({ ...state, scrollPosition })
 }
@@ -189,24 +191,23 @@ function getHistoryInfo(): HistoryInfo {
 function onPopStateBegin() {
   const { previous } = globalObject
 
-  const historyStateExists = window.history.state !== null
-  const isHistoryStateEnhanced = isVikeEnhanced(window.history.state as unknown)
+  const isHistoryStateEnhanced = isVikeEnhanced(window.history.state)
+  // TODO comment
+  const isHistoryStatePristine = window.history.state === null
 
-  if (historyStateExists && !isHistoryStateEnhanced) {
+  if (!isHistoryStateEnhanced && !isHistoryStatePristine) {
+    // TODO comment
     // Going back to a history entry not created by Vike - hard reload as Vike cannot handle it
     redirectHard(getCurrentUrl())
-    return { isHistoryStateEnhanced: false as const }
+    return { skip: true as const }
   }
-
-  if (!historyStateExists) {
-    enhanceHistoryState()
-  }
+  if (!isHistoryStateEnhanced) enhanceHistoryState()
   assertIsVikeEnhanced(window.history.state as unknown)
 
   const current = getHistoryInfo()
   globalObject.previous = current
 
-  return { isHistoryStateEnhanced: true as const, previous, current }
+  return { isHistoryStatePristine, previous, current }
 }
 
 function initHistory() {

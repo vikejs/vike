@@ -33,14 +33,15 @@ function initOnPopState() {
 }
 async function onPopState() {
   catchInfiniteLoop('onPopState()')
-  console.log('onPopState()')
-  const { isHistoryStateEnhanced, previous, current } = onPopStateBegin()
-  // - `isHistoryStateEnhanced===false` <=> new hash navigation:
+  const { isHistoryStatePristine, previous, current, skip } = onPopStateBegin()
+  if (skip) return
+  // TODO refactor
+  // - `isHistoryStatePristine===true` <=> new hash navigation:
   //   - Click on `<a href="#some-hash">`
   //   - Using the `location` API (only hash navigation, see comments above).
-  // - `isHistoryStateEnhanced===true` <=> back-/forward navigation (including back-/forward hash navigation).
+  // - `isHistoryStatePristine===false` <=> back-/forward navigation (including back-/forward hash navigation).
   //   > Only back-/forward client-side navigation: no 'popstate' event is fired upon Server Routing (when the user clicks on a link before the page's JavaScript loaded), see comments above.
-  if (!isHistoryStateEnhanced) {
+  if (isHistoryStatePristine) {
     // Let the browser handle it
     return
   } else {
@@ -48,12 +49,10 @@ async function onPopState() {
   }
 }
 async function handleBackForwardNavigation(previous: HistoryInfo, current: HistoryInfo) {
-  console.log('handleBackForwardNavigation()')
   const scrollTarget: ScrollTarget = current.state.scrollPosition || undefined
 
   const isHashNavigation = removeHash(current.url) === removeHash(previous.url) && current.url !== previous.url
   if (isHashNavigation) {
-    console.log('isHashNavigation', isHashNavigation)
     // We have to scroll ourselves because we have set `window.history.scrollRestoration = 'manual'`
     setScrollPosition(scrollTarget)
     return
@@ -65,7 +64,6 @@ async function handleBackForwardNavigation(previous: HistoryInfo, current: Histo
   const isBackwardNavigation =
     !current.state.timestamp || !previous.state.timestamp ? null : current.state.timestamp < previous.state.timestamp
 
-  console.log('renderPageClientSide()', { isUserPushStateNavigation, isBackwardNavigation })
   await renderPageClientSide({ scrollTarget, isBackwardNavigation, doNotRenderIfSamePage })
 }
 
