@@ -3,6 +3,7 @@ export default Page
 import React from 'react'
 import { useData } from 'vike-react/useData'
 import type { Data } from './+data'
+import { Counter } from '../../../components/Counter'
 
 function Page() {
   const { movies } = useData<Data>()
@@ -22,6 +23,7 @@ function Page() {
       <p>
         Data can be fetched by using the <code>data()</code> hook.
       </p>
+      <Counter />
     </>
   )
 }

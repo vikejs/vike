@@ -7,7 +7,7 @@ export type { HistoryInfo }
 export type { ScrollPosition }
 
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
-import { assert, assertUsage, getGlobalObject, isObject, deepEqual, cast } from './utils.js'
+import { assert, assertUsage, getGlobalObject, isObject, deepEqual, cast, redirectHard } from './utils.js'
 
 const globalObject = getGlobalObject('history.ts', {
   monkeyPatched: false,
@@ -80,6 +80,11 @@ function getTimestamp() {
 
 function saveScrollPosition() {
   const scrollPosition = getScrollPosition()
+
+  // Don't overwrite history.state if it was set by a non-Vike history.pushState() call.
+  // https://github.com/vikejs/vike/issues/2801#issuecomment-3490431479
+  if (!isVikeEnhanced(window.history.state)) return
+
   const state = getState()
   replaceHistoryState({ ...state, scrollPosition })
 }
@@ -189,14 +194,34 @@ function getHistoryInfo(): HistoryInfo {
 function onPopStateBegin() {
   const { previous } = globalObject
 
-  const isHistoryStateEnhanced = (window.history.state as unknown) !== null
+  const isHistoryStateEnhanced = isVikeEnhanced(window.history.state)
+  // Either:
+  // - `window.history.pushState(null, '', '/some-path')` , or
+  // - hash navigation
+  //   - Click on `<a href="#some-hash">`
+  //   - Using the `location` API (only hash navigation)
+  // See comments a the top of the ./initOnPopState.ts file.
+  const isHistoryStatePristine = window.history.state === null
+
+  if (!isHistoryStateEnhanced && !isHistoryStatePristine) {
+    // Going to a history entry not created by Vike — entering another "SPA realm" => hard reload
+    // https://github.com/vikejs/vike/issues/2801#issuecomment-3490431479
+    redirectHard(getCurrentUrl())
+    return { skip: true as const }
+  }
   if (!isHistoryStateEnhanced) enhanceHistoryState()
   assertIsVikeEnhanced(window.history.state as unknown)
 
   const current = getHistoryInfo()
   globalObject.previous = current
 
-  return { isHistoryStateEnhanced, previous, current }
+  // Let the browser handle hash navigations.
+  // - Upon hash navigation: `isHistoryStatePristine===true` (see comment above).
+  if (isHistoryStatePristine) {
+    return { skip: true as const }
+  }
+
+  return { previous, current }
 }
 
 function initHistory() {

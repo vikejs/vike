@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Other Framework</title>
+    <script>
+      history.replaceState({ turbolinks: true }, '')
+    </script>
+  </head>
+  <body>
+    <h1>Other Framework Page</h1>
+    <p>Mimics other frameworks like Ruby on Rails Turbolinks existing on the same domain</p>
+
+    <a href="/star-wars" onclick="navigate(event)">Navigate to Vike</a>
+
+    <script>
+      function navigate(event) {
+        event.preventDefault()
+        history.pushState({ turbolinks: true }, '', event.target.href)
+        location.reload()
+      }
+    </script>
+  </body>
+</html>

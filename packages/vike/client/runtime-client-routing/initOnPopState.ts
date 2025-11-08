@@ -27,24 +27,18 @@ import { catchInfiniteLoop } from './utils.js'
 // - It isn't possible to monkey patch the `location` APIs. (Chrome throws `TypeError: Cannot redefine property` when attempt to overwrite any `location` property.)
 // - Text links aren't supported: https://github.com/vikejs/vike/issues/2114
 // - docs/ is a good playground to test all this.
+// - No 'popstate' event is fired upon Server Routing — when the user clicks on a link before the page's JavaScript loaded.
+// - On a pristine page without JavaScript such as https://brillout.com we have `window.history.state === null`.
 
 function initOnPopState() {
   window.addEventListener('popstate', onPopState)
 }
 async function onPopState() {
   catchInfiniteLoop('onPopState()')
-  const { isHistoryStateEnhanced, previous, current } = onPopStateBegin()
-  // - `isHistoryStateEnhanced===false` <=> new hash navigation:
-  //   - Click on `<a href="#some-hash">`
-  //   - Using the `location` API (only hash navigation, see comments above).
-  // - `isHistoryStateEnhanced===true` <=> back-/forward navigation (including back-/forward hash navigation).
-  //   > Only back-/forward client-side navigation: no 'popstate' event is fired upon Server Routing (when the user clicks on a link before the page's JavaScript loaded), see comments above.
-  if (!isHistoryStateEnhanced) {
-    // Let the browser handle it
-    return
-  } else {
-    await handleHistoryNavigation(previous, current)
-  }
+  const res = onPopStateBegin()
+  if (res.skip) return
+  const { previous, current } = res
+  await handleHistoryNavigation(previous, current)
 }
 async function handleHistoryNavigation(previous: HistoryInfo, current: HistoryInfo) {
   const scrollTarget: ScrollTarget = current.state.scrollPosition || undefined
