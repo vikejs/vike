@@ -200,7 +200,7 @@ function onPopStateBegin() {
   // - hash navigation
   //   - Click on `<a href="#some-hash">`
   //   - Using the `location` API (only hash navigation)
-  // On a pristine page without JavaScript such as https://brillout.com the value is `window.history.state === null`.
+  // See comments a the top of the ./initOnPopState.ts file.
   const isHistoryStatePristine = window.history.state === null
 
   if (!isHistoryStateEnhanced && !isHistoryStatePristine) {
@@ -215,7 +215,13 @@ function onPopStateBegin() {
   const current = getHistoryInfo()
   globalObject.previous = current
 
-  return { isHistoryStatePristine, previous, current }
+  // Upon hash navigation: `isHistoryStatePristine===true`
+  if (isHistoryStatePristine) {
+    // Let the browser handle it
+    return { skip: true as const }
+  }
+
+  return { previous, current }
 }
 
 function initHistory() {

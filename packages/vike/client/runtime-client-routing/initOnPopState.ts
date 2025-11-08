@@ -28,23 +28,17 @@ import { catchInfiniteLoop } from './utils.js'
 // - Text links aren't supported: https://github.com/vikejs/vike/issues/2114
 // - docs/ is a good playground to test all this.
 // - No 'popstate' event is fired upon Server Routing — when the user clicks on a link before the page's JavaScript loaded.
+// - On a pristine page without JavaScript such as https://brillout.com the value is `window.history.state === null`.
 
 function initOnPopState() {
   window.addEventListener('popstate', onPopState)
 }
 async function onPopState() {
   catchInfiniteLoop('onPopState()')
-  const { isHistoryStatePristine, previous, current, skip } = onPopStateBegin()
-  if (skip) return
-  // `isHistoryStatePristine===true` upon hash navigation:
-  // - Click on `<a href="#some-hash">`
-  // - Using the `location` API (only hash navigation, see comments above)
-  if (isHistoryStatePristine) {
-    // Let the browser handle it
-    return
-  } else {
-    await handleBackForwardNavigation(previous, current)
-  }
+  const res = onPopStateBegin()
+  if (res.skip) return
+  const { previous, current } = res
+  await handleBackForwardNavigation(previous, current)
 }
 async function handleBackForwardNavigation(previous: HistoryInfo, current: HistoryInfo) {
   const scrollTarget: ScrollTarget = current.state.scrollPosition || undefined
