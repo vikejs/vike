@@ -1110,8 +1110,7 @@ function applyEffects(
     const effect = runEffect(configNameEffect, configDefEffect, sourceEffect)
     if (!effect) return
     const configModFromEffect = effect
-    // Apply both meta.env changes and config value changes from the same effect result
-    applyEffectMetaEnv(configModFromEffect, configValueSources, configDefEffect)
+    // Apply config value changes first to create sources, then meta.env changes to modify their env
     applyEffectConfVal(
       configModFromEffect,
       sourceEffect,
@@ -1121,6 +1120,7 @@ function applyEffects(
       configDefinitions,
       plusFilesAll,
     )
+    applyEffectMetaEnv(configModFromEffect, configValueSources, configDefEffect)
   })
 }
 function runEffect(configName: string, configDef: ConfigDefinitionInternal, source: ConfigValueSource) {
