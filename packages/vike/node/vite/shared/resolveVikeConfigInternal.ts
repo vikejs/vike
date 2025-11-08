@@ -1154,11 +1154,13 @@ function applyEffectConfVal(
 ) {
   objectEntries(configModFromEffect).forEach(([configNameTarget, configValue]) => {
     if (configNameTarget === 'meta') return
+    // Don't create a config value source for undefined values - they shouldn't override existing values
+    if (configValue === undefined) return
     const configDef = configDefinitions[configNameTarget]
     assert(configDef)
     assert(configDefEffect._userEffectDefinedAtFilePath)
     const configValueSource: ConfigValueSource = {
-      definedAt: configDefEffect._userEffectDefinedAtFilePath!,
+      definedAt: sourceEffect.definedAt,
       plusFile: sourceEffect.plusFile,
       locationId: sourceEffect.locationId,
       configEnv: configDef.env,
