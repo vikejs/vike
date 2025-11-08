@@ -1,7 +1,7 @@
 export { testOtherFrameworkNavigation }
 
-import { test, page, getServerUrl, expect, sleep } from '@brillout/test-e2e'
-import { expectUrl, waitForNavigation } from '../../utils'
+import { test, page, getServerUrl, expect } from '@brillout/test-e2e'
+import { expectUrl, testCounter, waitForNavigation } from '../../utils'
 
 function testOtherFrameworkNavigation() {
   test('navigate from another SPA framework', async () => {
@@ -13,7 +13,7 @@ function testOtherFrameworkNavigation() {
 
     await expectUrl('/star-wars')
     expect(await page.textContent('body')).toContain('Star Wars Movies')
-    await sleep(1000)
+    await testCounter()
 
     navPromise = await waitForNavigation()
     await page.goBack()
