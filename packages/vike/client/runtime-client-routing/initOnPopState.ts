@@ -27,6 +27,7 @@ import { catchInfiniteLoop } from './utils.js'
 // - It isn't possible to monkey patch the `location` APIs. (Chrome throws `TypeError: Cannot redefine property` when attempt to overwrite any `location` property.)
 // - Text links aren't supported: https://github.com/vikejs/vike/issues/2114
 // - docs/ is a good playground to test all this.
+// - No 'popstate' event is fired upon Server Routing — when the user clicks on a link before the page's JavaScript loaded.
 
 function initOnPopState() {
   window.addEventListener('popstate', onPopState)
@@ -35,12 +36,9 @@ async function onPopState() {
   catchInfiniteLoop('onPopState()')
   const { isHistoryStatePristine, previous, current, skip } = onPopStateBegin()
   if (skip) return
-  // TODO refactor
-  // - `isHistoryStatePristine===true` <=> new hash navigation:
-  //   - Click on `<a href="#some-hash">`
-  //   - Using the `location` API (only hash navigation, see comments above).
-  // - `isHistoryStatePristine===false` <=> back-/forward navigation (including back-/forward hash navigation).
-  //   > Only back-/forward client-side navigation: no 'popstate' event is fired upon Server Routing (when the user clicks on a link before the page's JavaScript loaded), see comments above.
+  // `isHistoryStatePristine===true` upon hash navigation:
+  // - Click on `<a href="#some-hash">`
+  // - Using the `location` API (only hash navigation, see comments above)
   if (isHistoryStatePristine) {
     // Let the browser handle it
     return

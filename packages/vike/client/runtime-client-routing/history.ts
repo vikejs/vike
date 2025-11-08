@@ -80,8 +80,11 @@ function getTimestamp() {
 
 function saveScrollPosition() {
   const scrollPosition = getScrollPosition()
-  // TODO comment
+
+  // Don't overwrite history.state if it was set by a non-Vike history.pushState() call.
+  // https://github.com/vikejs/vike/issues/2801#issuecomment-3490431479
   if (!isVikeEnhanced(window.history.state)) return
+
   const state = getState()
   replaceHistoryState({ ...state, scrollPosition })
 }
@@ -192,12 +195,17 @@ function onPopStateBegin() {
   const { previous } = globalObject
 
   const isHistoryStateEnhanced = isVikeEnhanced(window.history.state)
-  // TODO comment
+  // Either:
+  // - `window.history.pushState(null,'','/some-path')` , or
+  // - hash navigation
+  //   - Click on `<a href="#some-hash">`
+  //   - Using the `location` API (only hash navigation)
+  // On a pristine page without JavaScript such as https://brillout.com the value is `window.history.state === null`.
   const isHistoryStatePristine = window.history.state === null
 
   if (!isHistoryStateEnhanced && !isHistoryStatePristine) {
-    // TODO comment
-    // Going back to a history entry not created by Vike - hard reload as Vike cannot handle it
+    // Going to a history entry not created by Vike — entering another "SPA realm" => hard reload
+    // https://github.com/vikejs/vike/issues/2801#issuecomment-3490431479
     redirectHard(getCurrentUrl())
     return { skip: true as const }
   }
