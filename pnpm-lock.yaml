@@ -1989,7 +1989,7 @@ importers:
         specifier: ^3.3.2
         version: 3.3.2
       solid-js:
-        specifier: ^1.9.7
+        specifier: ^1.9.10
         version: 1.9.10
       vike:
         specifier: 0.4.245
