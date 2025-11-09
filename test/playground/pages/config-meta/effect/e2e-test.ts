@@ -27,7 +27,7 @@ function testSettingEffect() {
 
     expect(json).to.deep.equal({
       settingWithEffect: 'undefined',
-      dependentSetting: 'defined by settingWithEffect',
+      dependentSetting: 'set by settingWithEffect',
     })
   })
 }

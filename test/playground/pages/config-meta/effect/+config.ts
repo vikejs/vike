@@ -12,7 +12,7 @@ export default {
         configValue = configValue as Config['settingWithEffect']
         return configValue
           ? {
-              dependentSetting: configValue === 'setEnvAndValue' ? 'defined by settingWithEffect' : undefined,
+              dependentSetting: configValue === 'setEnvAndValue' ? 'set by settingWithEffect' : undefined,
               meta: {
                 dependentSetting: {
                   env: { server: true, client: true },
