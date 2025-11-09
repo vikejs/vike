@@ -433,12 +433,7 @@ function getPageConfigsBuildTime(
     if (sources.length === 0) return
     pageConfigGlobal.configValueSources[configName] = sources
   })
-  applyEffectsMetaEnv(pageConfigGlobal.configValueSources, configDefinitionsResolved.configDefinitionsGlobal)
-  applyEffectsConfVal(
-    pageConfigGlobal.configValueSources,
-    configDefinitionsResolved.configDefinitionsGlobal,
-    plusFilesAll,
-  )
+  applyEffects(pageConfigGlobal.configValueSources, configDefinitionsResolved.configDefinitionsGlobal, plusFilesAll)
   sortConfigValueSources(pageConfigGlobal.configValueSources, null)
   assertPageConfigGlobal(pageConfigGlobal, plusFilesAll)
 
@@ -465,8 +460,7 @@ function getPageConfigsBuildTime(
 
       const pageConfigRoute = determineRouteFilesystem(locationId, configValueSources)
 
-      applyEffectsMetaEnv(configValueSources, configDefinitionsLocal)
-      applyEffectsConfVal(configValueSources, configDefinitionsLocal, plusFilesAll)
+      applyEffects(configValueSources, configDefinitionsLocal, plusFilesAll)
       sortConfigValueSources(configValueSources, locationId)
 
       const pageConfig = {
@@ -1104,7 +1098,7 @@ function assertMetaUsage(
 }
 
 // Test: https://github.com/vikejs/vike/blob/441a37c4c1a3b07bb8f6efb1d1f7be297a53974a/test/playground/vite.config.ts#L39
-function applyEffectsConfVal(
+function applyEffects(
   configValueSources: ConfigValueSources,
   configDefinitions: ConfigDefinitionsInternal,
   plusFilesAll: PlusFilesByLocationId,
@@ -1115,6 +1109,7 @@ function applyEffectsConfVal(
     const effect = runEffect(configNameEffect, configDefEffect, sourceEffect)
     if (!effect) return
     const configModFromEffect = effect
+    // Apply config value changes first to create sources, then meta.env changes to modify their env
     applyEffectConfVal(
       configModFromEffect,
       sourceEffect,
@@ -1124,16 +1119,6 @@ function applyEffectsConfVal(
       configDefinitions,
       plusFilesAll,
     )
-  })
-}
-// Test: https://github.com/vikejs/vike/blob/441a37c4c1a3b07bb8f6efb1d1f7be297a53974a/test/playground/pages/config-meta/effect/e2e-test.ts#L16
-function applyEffectsMetaEnv(configValueSources: ConfigValueSources, configDefinitions: ConfigDefinitionsInternal) {
-  objectEntries(configDefinitions).forEach(([configNameEffect, configDefEffect]) => {
-    const sourceEffect = configValueSources[configNameEffect]?.[0]
-    if (!sourceEffect) return
-    const effect = runEffect(configNameEffect, configDefEffect, sourceEffect)
-    if (!effect) return
-    const configModFromEffect = effect
     applyEffectMetaEnv(configModFromEffect, configValueSources, configDefEffect)
   })
 }

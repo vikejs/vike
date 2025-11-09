@@ -6,7 +6,7 @@ declare global {
       settingConfigOnly?: { nested: string }
       settingStandard?: { nested: string }
       settingCumulative?: { nested: string }
-      settingWithEffect?: boolean
+      settingWithEffect?: 'setEnvOnly' | 'setEnvAndValue'
       dependentSetting?: string
     }
     interface ConfigResolved {
