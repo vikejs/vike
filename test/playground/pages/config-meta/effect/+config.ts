@@ -14,12 +14,12 @@ export default {
         if (!val) return
         assert(val === 'setEnvAndValue' || configValue === 'setEnvOnly', { configDefinedAt })
         return {
-          dependentSetting: configValue === 'setEnvAndValue' ? 'set by settingWithEffect' : undefined,
           meta: {
             dependentSetting: {
               env: { server: true, client: true },
             },
           },
+          dependentSetting: configValue === 'setEnvAndValue' ? 'set by settingWithEffect' : undefined,
         }
       },
     },
