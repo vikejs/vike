@@ -1707,7 +1707,7 @@ importers:
         specifier: ^5.9.2
         version: 5.9.3
       vike:
-        specifier: ^0.4.245
+        specifier: 0.4.245
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.5
