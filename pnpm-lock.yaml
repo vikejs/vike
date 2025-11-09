@@ -1783,6 +1783,9 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^5.0.4
         version: 5.0.4(vite@7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.3
       vite:
         specifier: ^7.1.10
         version: 7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)
@@ -1817,6 +1820,9 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^5.1.0
         version: 5.1.0(vite@7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.3
       vite:
         specifier: ^7.1.12
         version: 7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)

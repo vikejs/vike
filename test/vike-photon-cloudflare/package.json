@@ -16,6 +16,7 @@
     "@photonjs/cloudflare": "^0.1.0",
     "@photonjs/runtime": "^0.1.0",
     "@vitejs/plugin-react": "^5.0.4",
+    "typescript": "^5.9.2",
     "vite": "^7.1.10",
     "wrangler": "^4.43.0"
   },

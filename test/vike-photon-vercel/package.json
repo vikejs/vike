@@ -15,6 +15,7 @@
     "@photonjs/runtime": "^0.1.4",
     "@photonjs/vercel": "^0.1.5",
     "@vitejs/plugin-react": "^5.1.0",
+    "typescript": "^5.9.2",
     "vite": "^7.1.12"
   },
   "type": "module"
