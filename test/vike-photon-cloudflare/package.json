@@ -1,0 +1,23 @@
+{
+  "scripts": {
+    "dev": "vike dev",
+    "build": "vike build",
+    "preview": "vike build && vite preview",
+    "deploy": "vike build && wrangler deploy"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "vike": "^0.4.242",
+    "vike-photon": "^0.1.10",
+    "vike-react": "^0.6.9"
+  },
+  "devDependencies": {
+    "@photonjs/cloudflare": "^0.1.0",
+    "@photonjs/runtime": "^0.1.0",
+    "@vitejs/plugin-react": "^5.0.4",
+    "vite": "^7.1.10",
+    "wrangler": "^4.43.0"
+  },
+  "type": "module"
+}
