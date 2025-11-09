@@ -11,7 +11,7 @@ import {
   iconSeedling,
   iconGlobe,
   iconPlug,
-  iconLoudspeaker,
+  iconMegaphone,
 } from '@brillout/docpress'
 import type { Config, HeadingDetachedDefinition as HeadingDetachedDefinition_ } from '@brillout/docpress'
 type HeadingDetachedDefinition = Omit<HeadingDetachedDefinition_, 'category'> & {
@@ -722,7 +722,7 @@ const headings = [
   {
     level: 1,
     title: 'Blog',
-    titleIcon: iconLoudspeaker,
+    titleIcon: iconMegaphone,
     color: '#ff4343',
     menuModalFullWidth: true,
   },

@@ -1,6 +1,6 @@
 export { TopNavigation }
 
-import { iconGear, iconSeedling, iconLoudspeaker, iconCoin, MenuToggle } from '@brillout/docpress'
+import { iconGear, iconSeedling, iconMegaphone, iconCoin, MenuToggle } from '@brillout/docpress'
 import React from 'react'
 
 function TopNavigation() {
@@ -37,9 +37,9 @@ function TopNavigation() {
       </a>
       <MenuToggle menuId={2}>
         <img
-          src={iconLoudspeaker}
-          width={18}
-          style={{ marginRight: 'calc(var(--icon-text-padding) + 1px)' }}
+          src={iconMegaphone}
+          width={23}
+          style={{ marginRight: 'calc(var(--icon-text-padding) + 1px)', position: 'relative', top: 1 }}
           className="decolorize-5"
         />
         Blog
