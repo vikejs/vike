@@ -2,7 +2,7 @@ export { config as default }
 
 import type { Config } from '@brillout/docpress'
 import { headings, headingsDetached, categories } from './headings'
-import logo from './assets/logo/vike.png'
+import logo from './assets/logo/vike.svg'
 import { PROJECT_VERSION } from './utils/PROJECT_VERSION'
 import { discordInvite } from './links'
 import { TopNavigation } from './TopNavigation'
