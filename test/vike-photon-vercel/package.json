@@ -1,0 +1,21 @@
+{
+  "scripts": {
+    "dev": "vike dev",
+    "build": "vike build",
+    "test:types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "vike": "^0.4.244",
+    "vike-photon": "^0.1.14",
+    "vike-react": "^0.6.10"
+  },
+  "devDependencies": {
+    "@photonjs/runtime": "^0.1.4",
+    "@photonjs/vercel": "^0.1.5",
+    "@vitejs/plugin-react": "^5.1.0",
+    "vite": "^7.1.12"
+  },
+  "type": "module"
+}
