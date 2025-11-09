@@ -243,8 +243,8 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       react-streaming:
-        specifier: ^0.4.10
-        version: 0.4.10(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: ^0.4.11
+        version: 0.4.11(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       vike:
         specifier: 0.4.245
         version: link:../../packages/vike
@@ -432,8 +432,8 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       react-streaming:
-        specifier: ^0.4.10
-        version: 0.4.10(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: ^0.4.11
+        version: 0.4.11(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -483,8 +483,8 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       react-streaming:
-        specifier: ^0.4.10
-        version: 0.4.10(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: ^0.4.11
+        version: 0.4.11(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       sirv:
         specifier: ^2.0.2
         version: 2.0.4
@@ -859,8 +859,8 @@ importers:
         specifier: ^0.5.10
         version: 0.5.10
       react-streaming:
-        specifier: ^0.4.10
-        version: 0.4.10(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: ^0.4.11
+        version: 0.4.11(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       rimraf:
         specifier: ^5.0.5
         version: 5.0.10
@@ -1003,8 +1003,8 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       react-streaming:
-        specifier: ^0.4.10
-        version: 0.4.10(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: ^0.4.11
+        version: 0.4.11(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       vike:
         specifier: 0.4.245
         version: link:../../packages/vike
@@ -1177,8 +1177,8 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       react-streaming:
-        specifier: ^0.4.10
-        version: 0.4.10(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: ^0.4.11
+        version: 0.4.11(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       sirv:
         specifier: ^2.0.2
         version: 2.0.4
@@ -1860,8 +1860,8 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       react-streaming:
-        specifier: ^0.4.10
-        version: 0.4.10(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: ^0.4.11
+        version: 0.4.11(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       typescript:
         specifier: ^5.9.2
         version: 5.9.3
@@ -16492,7 +16492,7 @@ snapshots:
     dependencies:
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
-      react-streaming: 0.4.10(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      react-streaming: 0.4.11(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       vike: link:packages/vike
 
   vike-react@0.6.9(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vike@packages+vike):
