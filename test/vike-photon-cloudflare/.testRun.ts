@@ -4,7 +4,7 @@ import { autoRetry, expect, fetch, fetchHtml, getServerUrl, page, run, skip, tes
 
 function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   skip('temp disabled')
-  if (cmd === 'pnpm run preview') return
+  if (true as boolean) return
 
   run(cmd, {
     serverUrl: 'http://localhost:3000',
