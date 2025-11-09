@@ -245,7 +245,7 @@
     "@types/picomatch": "^3.0.2",
     "@types/semver": "^7.5.8",
     "@types/source-map-support": "^0.5.10",
-    "react-streaming": "^0.4.11",
+    "react-streaming": "^0.4.12",
     "rimraf": "^5.0.5",
     "typescript": "^5.9.2",
     "vite": "^7.1.5"
