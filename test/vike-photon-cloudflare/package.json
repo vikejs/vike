@@ -2,23 +2,24 @@
   "scripts": {
     "dev": "vike dev",
     "build": "vike build",
-    "preview": "vike build && vite preview",
-    "deploy": "vike build && wrangler deploy"
+    "preview": "vike build && vike preview",
+    "deploy": "vike build && wrangler deploy",
+    "test:types": "tsc --noEmit"
   },
   "dependencies": {
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "vike": "0.4.245",
-    "vike-photon": "^0.1.10",
-    "vike-react": "^0.6.9"
+    "vike": "^0.4.244",
+    "vike-photon": "^0.1.14",
+    "vike-react": "^0.6.10"
   },
   "devDependencies": {
-    "@photonjs/cloudflare": "^0.1.0",
-    "@photonjs/runtime": "^0.1.0",
-    "@vitejs/plugin-react": "^5.0.4",
-    "typescript": "^5.9.2",
-    "vite": "^7.1.10",
-    "wrangler": "^4.43.0"
+    "@photonjs/cloudflare": "^0.1.4",
+    "@photonjs/runtime": "^0.1.4",
+    "@vitejs/plugin-react": "^5.1.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.12",
+    "wrangler": "^4.45.3"
   },
   "type": "module"
 }

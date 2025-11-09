@@ -1,8 +1,8 @@
-export { Layout }
+export { Layout };
 
-import type { PropsWithChildren } from 'react'
+import type { PropsWithChildren } from "react";
 
-import './Layout.css'
+import "./Layout.css";
 
 function Layout({ children }: PropsWithChildren) {
   return (
@@ -18,21 +18,21 @@ function Layout({ children }: PropsWithChildren) {
       </Sidebar>
       <Content>{children}</Content>
     </PageLayout>
-  )
+  );
 }
 
 function PageLayout({ children }: PropsWithChildren) {
   return (
     <div
       style={{
-        display: 'flex',
+        display: "flex",
         maxWidth: 900,
-        margin: 'auto',
+        margin: "auto",
       }}
     >
       {children}
     </div>
-  )
+  );
 }
 
 function Sidebar({ children }: PropsWithChildren) {
@@ -42,15 +42,15 @@ function Sidebar({ children }: PropsWithChildren) {
         padding: 20,
         paddingTop: 42,
         flexShrink: 0,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        lineHeight: '1.8em',
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        lineHeight: "1.8em",
       }}
     >
       {children}
     </div>
-  )
+  );
 }
 
 function Content({ children }: PropsWithChildren) {
@@ -59,11 +59,11 @@ function Content({ children }: PropsWithChildren) {
       style={{
         padding: 20,
         paddingBottom: 50,
-        borderLeft: '2px solid #eee',
-        minHeight: '100vh',
+        borderLeft: "2px solid #eee",
+        minHeight: "100vh",
       }}
     >
       {children}
     </div>
-  )
+  );
 }
