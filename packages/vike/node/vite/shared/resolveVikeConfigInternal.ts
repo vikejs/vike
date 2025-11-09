@@ -1098,7 +1098,6 @@ function assertMetaUsage(
 }
 
 // Test: https://github.com/vikejs/vike/blob/441a37c4c1a3b07bb8f6efb1d1f7be297a53974a/test/playground/vite.config.ts#L39
-// Test: https://github.com/vikejs/vike/blob/441a37c4c1a3b07bb8f6efb1d1f7be297a53974a/test/playground/pages/config-meta/effect/e2e-test.ts#L16
 function applyEffects(
   configValueSources: ConfigValueSources,
   configDefinitions: ConfigDefinitionsInternal,
