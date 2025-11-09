@@ -7,21 +7,21 @@
     "test:types": "tsc --noEmit"
   },
   "dependencies": {
-    "@universal-middleware/hono": "^0.4.16",
-    "hono": "^4.8.12",
-    "solid-js": "^1.9.7",
-    "tsx": "^4.20.3",
+    "@universal-middleware/hono": "^0.4.17",
+    "hono": "^4.10.4",
+    "solid-js": "^1.9.10",
+    "tsx": "^4.20.6",
     "vike": "0.4.245",
-    "vike-solid": "^0.7.12",
-    "vite": "^7.0.6"
+    "vike-solid": "^0.7.13",
+    "vite": "^7.2.2"
   },
   "devDependencies": {
     "@auth/core": "^0.40.0",
-    "@types/node": "^24.2.0",
-    "@universal-middleware/core": "^0.4.9",
-    "typescript": "^5.9.2",
+    "@types/node": "^24.10.0",
+    "@universal-middleware/core": "^0.4.13",
+    "typescript": "^5.9.3",
     "vike-cloudflare": "^0.2.7",
-    "wrangler": "^4.28.0"
+    "wrangler": "^4.46.0"
   },
   "type": "module"
 }
