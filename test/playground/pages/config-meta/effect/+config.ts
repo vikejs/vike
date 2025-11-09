@@ -1,3 +1,4 @@
+import { assert } from '../../../utils/assert'
 import type { Config } from 'vike/types'
 
 export default {
@@ -9,17 +10,17 @@ export default {
     settingWithEffect: {
       env: { server: false, client: false, config: true },
       effect: function ({ configValue, configDefinedAt }) {
-        configValue = configValue as Config['settingWithEffect']
-        return configValue
-          ? {
-              dependentSetting: configValue === 'setEnvAndValue' ? 'set by settingWithEffect' : undefined,
-              meta: {
-                dependentSetting: {
-                  env: { server: true, client: true },
-                },
-              },
-            }
-          : {}
+        const val = configValue as Config['settingWithEffect']
+        if (!val) return
+        assert(val === 'setEnvAndValue' || configValue === 'setEnvOnly', { configDefinedAt })
+        return {
+          dependentSetting: configValue === 'setEnvAndValue' ? 'set by settingWithEffect' : undefined,
+          meta: {
+            dependentSetting: {
+              env: { server: true, client: true },
+            },
+          },
+        }
       },
     },
   },
