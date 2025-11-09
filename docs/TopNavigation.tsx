@@ -9,7 +9,7 @@ function TopNavigation() {
       <MenuToggle menuId={1}>
         <img
           src={iconGear}
-          width={18}
+          width={19}
           style={{ marginRight: 'calc(var(--icon-text-padding))' }}
           className="decolorize-8"
         />{' '}
@@ -29,7 +29,7 @@ function TopNavigation() {
       >
         <img
           src={iconSeedling}
-          width={18}
+          width={20}
           style={{ marginRight: 'calc(var(--icon-text-padding) - 1px)' }}
           className="decolorize-8"
         />
