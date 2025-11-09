@@ -5,27 +5,21 @@ import { retrievePageContext } from '../retrievePageContext'
 
 function testSettingEffect() {
   test('Setting Effect - Not applied', async () => {
-    let json = await retrievePageContext('/config-meta/effect/without-effect')
-
-    expect(json).to.deep.equal({
+    expect(await retrievePageContext('/config-meta/effect/without-effect')).to.deep.equal({
       settingWithEffect: 'undefined',
       dependentSetting: 'undefined',
     })
   })
 
   test('Setting Effect - Applied', async () => {
-    let json = await retrievePageContext('/config-meta/effect/with-effect')
-
-    expect(json).to.deep.equal({
+    expect(await retrievePageContext('/config-meta/effect/with-effect')).to.deep.equal({
       settingWithEffect: 'undefined',
       dependentSetting: 'default @ /effect',
     })
   })
 
   test('Setting Effect - Applied with Value', async () => {
-    let json = await retrievePageContext('/config-meta/effect/with-effect-set-value')
-
-    expect(json).to.deep.equal({
+    expect(await retrievePageContext('/config-meta/effect/with-effect-set-value')).to.deep.equal({
       settingWithEffect: 'undefined',
       dependentSetting: 'set by settingWithEffect',
     })
