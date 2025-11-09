@@ -1,8 +1,7 @@
-Minimal example of using `vike-photon` and `vike-react` with `cloudflare`.
+Copy of https://github.com/vikejs/vike-photon/tree/b0c4ad50b3d57d6914b6a2fd876bcfa1c91744dd/examples/cloudflare-react
 
-```bash
-git clone git@github.com:vikejs/vike-photon
-cd vike-photon/examples/cloudflare-react/
-npm install
-npm run dev
-```
+To update:
+- Copy directory
+- Pin `"vike"` dependency in `package.json`
+- Update `README.md`
+- Run `pnpm run format`
