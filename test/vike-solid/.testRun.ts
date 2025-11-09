@@ -1,7 +1,7 @@
 export { testRun }
 
 import { autoRetry, expect, fetchHtml, getServerUrl, page, partRegex, run, test } from '@brillout/test-e2e'
-const dataHk = partRegex`data-hk=${/[0-9-]+/}`
+const dataHk = partRegex`data-hk="${/[0-9-]+/}"`
 
 let isProd: boolean
 
