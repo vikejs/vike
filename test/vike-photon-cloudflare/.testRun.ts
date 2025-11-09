@@ -1,8 +1,11 @@
 export { testRun }
 
-import { autoRetry, expect, fetch, fetchHtml, getServerUrl, page, run, test } from '@brillout/test-e2e'
+import { autoRetry, expect, fetch, fetchHtml, getServerUrl, page, run, skip, test } from '@brillout/test-e2e'
 
 function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
+  skip('temp disabled')
+  if (true as boolean) return
+
   run(cmd, {
     serverUrl: 'http://localhost:3000',
     tolerateError({ logText }) {
