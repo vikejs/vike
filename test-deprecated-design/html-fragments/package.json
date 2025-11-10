@@ -5,7 +5,7 @@
   "dependencies": {
     "typescript": "^5.9.2",
     "vite": "^6.3.2",
-    "vike": "0.4.245"
+    "vike": "0.4.246"
   },
   "type": "module"
 }

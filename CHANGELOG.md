@@ -1,3 +1,20 @@
+## [0.4.246](https://github.com/vikejs/vike/compare/v0.4.245...v0.4.246) (2025-11-10)
+
+
+### Bug Fixes
+
+* config effects can now change both value and env simultaneously (fix [#2822](https://github.com/vikejs/vike/issues/2822), closes [#2821](https://github.com/vikejs/vike/issues/2821)) ([#2825](https://github.com/vikejs/vike/issues/2825)) ([6880dc7](https://github.com/vikejs/vike/commit/6880dc7b114bb2679db013dad22c3055205a6591))
+* forbid wrong `pageContext.routeParams` usage (closes [#2813](https://github.com/vikejs/vike/issues/2813)) ([#2816](https://github.com/vikejs/vike/issues/2816)) ([687cea2](https://github.com/vikejs/vike/commit/687cea2a71e6c28c06ff3752948ba5e0562fa486))
+* set NODE_ENV to 'production' if undefined in production ([#2829](https://github.com/vikejs/vike/issues/2829)) ([3344364](https://github.com/vikejs/vike/commit/3344364a2c0bf20607f49f4e355fd510af836156))
+* support other SPA frameworks within same domain (fix [#2801](https://github.com/vikejs/vike/issues/2801)) ([#2805](https://github.com/vikejs/vike/issues/2805)) ([189d2b8](https://github.com/vikejs/vike/commit/189d2b8ec0c765bcaf1a0360c38ad46797881f11))
+
+
+### Features
+
+* `pageContext.isHistoryNavigation` (fix [#2818](https://github.com/vikejs/vike/issues/2818)) ([#2819](https://github.com/vikejs/vike/issues/2819)) ([4d0629e](https://github.com/vikejs/vike/commit/4d0629e0596846be0ad8cfbb0732441b43fcde9b))
+
+
+
 ## [0.4.245](https://github.com/vikejs/vike/compare/v0.4.244...v0.4.245) (2025-11-04)
 
 
