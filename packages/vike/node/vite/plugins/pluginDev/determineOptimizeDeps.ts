@@ -33,6 +33,9 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
   // - TO-DO/eventually: try removing the workaround and see if the CI fails (at test/@cloudflare_vite-plugin/) — maybe the issue will get fixed at some point.
   includeServer.push('react/jsx-dev-runtime')
 
+  includeClient.push('@compiled/react/runtime')
+  includeServer.push('@compiled/react/runtime')
+
   for (const envName in config.environments) {
     const env = config.environments[envName]!
     if (env.consumer === 'server' && env.optimizeDeps.noDiscovery === false) {
