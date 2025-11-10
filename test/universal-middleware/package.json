@@ -14,7 +14,7 @@
     "react-dom": "^19.2.0",
     "vike-react": "^0.6.5",
     "@universal-middleware/core": "^0.4.7",
-    "telefunc": "^0.2.10"
+    "telefunc": "^0.2.16"
   },
   "devDependencies": {
     "typescript": "^5.9.2",
