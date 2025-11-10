@@ -182,7 +182,6 @@ function getNodeEnv(): undefined | string {
   //*/
   return val
 }
-// TODO: rename
 function setNodeEnvProductionIfUndefined(): void | undefined {
   // The statement `process.env['NODE_ENV'] = 'production'` chokes webpack v4
   let val: string | undefined
