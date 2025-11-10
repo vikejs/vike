@@ -1315,38 +1315,38 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       telefunc:
-        specifier: ^0.2.15
-        version: 0.2.15(@babel/core@7.28.4)(@babel/parser@7.28.4)(@babel/types@7.28.4)(react-streaming@0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@7.1.3(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))
+        specifier: ^0.2.13
+        version: 0.2.13(@babel/core@7.28.4)(@babel/parser@7.28.4)(@babel/types@7.28.4)(react-streaming@0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))
       vike:
         specifier: 0.4.245
         version: link:../../packages/vike
       vike-react:
-        specifier: ^0.6.12
+        specifier: ^0.6.5
         version: 0.6.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vike@packages+vike)
     devDependencies:
       '@cloudflare/vite-plugin':
-        specifier: ^1.14.0
-        version: 1.14.0(vite@7.1.3(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))(workerd@1.20251105.0)(wrangler@4.46.0)
+        specifier: ^1.11.1
+        version: 1.14.0(vite@7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))(workerd@1.20251105.0)(wrangler@4.46.0)
       '@types/react':
-        specifier: ^19.2.2
+        specifier: ^19.1.8
         version: 19.2.2
       '@types/react-dom':
-        specifier: ^19.2.2
+        specifier: ^19.1.6
         version: 19.2.2(@types/react@19.2.2)
       '@vitejs/plugin-react':
-        specifier: ^5.1.0
-        version: 5.1.0(vite@7.1.3(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))
+        specifier: ^4.7.0
+        version: 4.7.0(vite@7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))
       build-worker:
         specifier: ^0.3.4
         version: 0.3.4
       typescript:
-        specifier: ^5.9.3
+        specifier: ^5.9.2
         version: 5.9.3
       vite:
-        specifier: 7.1.3
-        version: 7.1.3(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)
+        specifier: ^7.1.3
+        version: 7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)
       wrangler:
-        specifier: ^4.46.0
+        specifier: ^4.28.0
         version: 4.46.0
 
   test/abort:
@@ -7835,30 +7835,6 @@ packages:
       vite:
         optional: true
 
-  telefunc@0.2.15:
-    resolution: {integrity: sha512-dmUCc9/lvQj2F+N5YZoAo/QVpkAzaDZQzeMmnaoNl4bJemV+J8HU2tlj6jE4+1W8hyq2u9KiCwpvQ46rz5Wx9w==}
-    engines: {node: '>=12.19.0'}
-    peerDependencies:
-      '@babel/core': '>=7.0.0'
-      '@babel/parser': '>=7.0.0'
-      '@babel/types': '>=7.0.0'
-      react: '>=18.0.0'
-      react-streaming: '>=0.3.3'
-      vite: '>=6.3.0'
-    peerDependenciesMeta:
-      '@babel/core':
-        optional: true
-      '@babel/parser':
-        optional: true
-      '@babel/types':
-        optional: true
-      react:
-        optional: true
-      react-streaming:
-        optional: true
-      vite:
-        optional: true
-
   terser-webpack-plugin@5.3.10:
     resolution: {integrity: sha512-BKFPWlPDndPs+NGGCr1U59t0XScL5317Y0UReNrHaw9/FwhPENlq6bfgs+4yPfyP51vqC1bQ4rp1EfXW5ZSH9w==}
     engines: {node: '>= 10.13.0'}
@@ -8371,46 +8347,6 @@ packages:
       sass-embedded: '*'
       stylus: '*'
       sugarss: '*'
-      terser: ^5.16.0
-      tsx: ^4.8.1
-      yaml: ^2.4.2
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      jiti:
-        optional: true
-      less:
-        optional: true
-      lightningcss:
-        optional: true
-      sass:
-        optional: true
-      sass-embedded:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
-      tsx:
-        optional: true
-      yaml:
-        optional: true
-
-  vite@7.1.3:
-    resolution: {integrity: sha512-OOUi5zjkDxYrKhTV3V7iKsoS37VUM7v40+HuwEmcrsf11Cdx9y3DIr2Px6liIcZFwt3XSRpQvFpL3WVy7ApkGw==}
-    engines: {node: ^20.19.0 || >=22.12.0}
-    hasBin: true
-    peerDependencies:
-      '@types/node': ^20.19.0 || >=22.12.0
-      jiti: '>=1.21.0'
-      less: ^4.0.0
-      lightningcss: ^1.21.0
-      sass: ^1.70.0
-      sass-embedded: ^1.70.0
-      stylus: '>=0.54.8'
-      sugarss: ^5.0.0
       terser: ^5.16.0
       tsx: ^4.8.1
       yaml: ^2.4.2
@@ -9257,24 +9193,7 @@ snapshots:
     optionalDependencies:
       workerd: 1.20251105.0
 
-  '@cloudflare/vite-plugin@1.14.0(vite@7.1.3(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))(workerd@1.20251105.0)(wrangler@4.46.0)':
-    dependencies:
-      '@cloudflare/unenv-preset': 2.7.9(unenv@2.0.0-rc.24)(workerd@1.20251105.0)
-      '@remix-run/node-fetch-server': 0.8.0
-      get-port: 7.1.0
-      miniflare: 4.20251105.0
-      picocolors: 1.1.1
-      tinyglobby: 0.2.15
-      unenv: 2.0.0-rc.24
-      vite: 7.1.3(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)
-      wrangler: 4.46.0
-      ws: 8.18.0
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-      - workerd
-
-  '@cloudflare/vite-plugin@1.14.0(vite@7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))(wrangler@4.46.0)':
+  '@cloudflare/vite-plugin@1.14.0(vite@7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))(workerd@1.20251105.0)(wrangler@4.46.0)':
     dependencies:
       '@cloudflare/unenv-preset': 2.7.9(unenv@2.0.0-rc.24)(workerd@1.20251105.0)
       '@remix-run/node-fetch-server': 0.8.0
@@ -10186,7 +10105,7 @@ snapshots:
 
   '@photonjs/cloudflare@0.1.5(@hattip/core@0.0.49)(@types/express@5.0.3)(hono@4.10.4)(vite@7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))(wrangler@4.46.0)':
     dependencies:
-      '@cloudflare/vite-plugin': 1.14.0(vite@7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))(wrangler@4.46.0)
+      '@cloudflare/vite-plugin': 1.14.0(vite@7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))(workerd@1.20251105.0)(wrangler@4.46.0)
       '@photonjs/core': 0.1.5(@hattip/core@0.0.49)(@types/express@5.0.3)(hono@4.10.4)(vite@7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))
       '@universal-middleware/cloudflare': 0.4.10(@hattip/core@0.0.49)(@types/express@5.0.3)(hono@4.10.4)
     transitivePeerDependencies:
@@ -11096,18 +11015,6 @@ snapshots:
       '@types/babel__core': 7.20.5
       react-refresh: 0.17.0
       vite: 7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)
-    transitivePeerDependencies:
-      - supports-color
-
-  '@vitejs/plugin-react@5.1.0(vite@7.1.3(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))':
-    dependencies:
-      '@babel/core': 7.28.4
-      '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.4)
-      '@babel/plugin-transform-react-jsx-source': 7.27.1(@babel/core@7.28.4)
-      '@rolldown/pluginutils': 1.0.0-beta.43
-      '@types/babel__core': 7.20.5
-      react-refresh: 0.18.0
-      vite: 7.1.3(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)
     transitivePeerDependencies:
       - supports-color
 
@@ -15266,23 +15173,6 @@ snapshots:
       react-streaming: 0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       vite: 7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)
 
-  telefunc@0.2.15(@babel/core@7.28.4)(@babel/parser@7.28.4)(@babel/types@7.28.4)(react-streaming@0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@7.1.3(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)):
-    dependencies:
-      '@brillout/import': 0.2.6
-      '@brillout/json-serializer': 0.5.21
-      '@brillout/picocolors': 1.0.29
-      '@brillout/vite-plugin-server-entry': 0.7.15
-      es-module-lexer: 1.7.0
-      magic-string: 0.30.18
-      ts-morph: 26.0.0
-    optionalDependencies:
-      '@babel/core': 7.28.4
-      '@babel/parser': 7.28.4
-      '@babel/types': 7.28.4
-      react: 19.2.0
-      react-streaming: 0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
-      vite: 7.1.3(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)
-
   terser-webpack-plugin@5.3.10(webpack@5.97.1):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.29
@@ -15981,20 +15871,6 @@ snapshots:
       tsx: 4.20.6
 
   vite@6.3.5(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6):
-    dependencies:
-      esbuild: 0.25.12
-      fdir: 6.5.0(picomatch@4.0.3)
-      picomatch: 4.0.3
-      postcss: 8.5.6
-      rollup: 4.43.0
-      tinyglobby: 0.2.15
-    optionalDependencies:
-      '@types/node': 24.10.0
-      fsevents: 2.3.3
-      terser: 5.38.1
-      tsx: 4.20.6
-
-  vite@7.1.3(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6):
     dependencies:
       esbuild: 0.25.12
       fdir: 6.5.0(picomatch@4.0.3)
