@@ -3,7 +3,7 @@ export { onSetupRuntime }
 export { onSetupBuild }
 export { onSetupPrerender }
 export { onSetupPreview }
-export { setNodeEnvProduction }
+export { setNodeEnvProductionIfUndefined }
 export { markSetup_viteDevServer }
 export { markSetup_vitePreviewServer }
 export { markSetup_vikeVitePlugin }
@@ -75,14 +75,14 @@ function onSetupRuntime(): void | undefined {
 function onSetupBuild() {
   assertUsageNodeEnvIsNotDev('building')
   /* Not needed: Vite already sets `process.env.NODE_ENV = 'production'`
-  setNodeEnvProduction()
+  setNodeEnvProductionIfUndefined()
   */
 }
 // Called by ../node/prerender/runPrerender.ts
 function onSetupPrerender() {
   markSetup_isPrerendering()
   if (getNodeEnv()) assertUsageNodeEnvIsNotDev('pre-rendering')
-  setNodeEnvProduction()
+  setNodeEnvProductionIfUndefined()
 }
 // Called by ../node/api/preview.ts
 function onSetupPreview() {
@@ -182,10 +182,18 @@ function getNodeEnv(): undefined | string {
   //*/
   return val
 }
-function setNodeEnvProduction(): void | undefined {
+function setNodeEnvProductionIfUndefined(): void | undefined {
   // The statement `process.env['NODE_ENV'] = 'production'` chokes webpack v4
-  const proc = process
+  let val: string | undefined
+  let proc: typeof process
+  try {
+    proc = process
+    val = process.env.NODE_ENV
+  } catch {
+    return
+  }
+  if (val !== undefined) return
   const { env } = proc
-  env.NODE_ENV = 'production'
+  env.NODE_ENV ??= 'production'
   assert(isNodeEnv('production'))
 }
