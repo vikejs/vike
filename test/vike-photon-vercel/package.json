@@ -7,7 +7,7 @@
   "dependencies": {
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "vike": "0.4.245",
+    "vike": "0.4.246",
     "vike-photon": "^0.1.14",
     "vike-react": "^0.6.10"
   },
