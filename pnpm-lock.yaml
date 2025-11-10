@@ -549,8 +549,8 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       telefunc:
-        specifier: ^0.2.12
-        version: 0.2.13(@babel/core@7.28.4)(@babel/parser@7.28.4)(@babel/types@7.28.4)(react-streaming@0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))
+        specifier: ^0.2.16
+        version: 0.2.16(@babel/core@7.28.4)(@babel/parser@7.28.4)(@babel/types@7.28.4)(react-streaming@0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))
       typescript:
         specifier: ^5.9.2
         version: 5.9.3
@@ -1231,8 +1231,8 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       telefunc:
-        specifier: ^0.2.10
-        version: 0.2.13(@babel/core@7.28.4)(@babel/parser@7.28.4)(@babel/types@7.28.4)(react-streaming@0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@6.3.0(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))
+        specifier: ^0.2.16
+        version: 0.2.16(@babel/core@7.28.4)(@babel/parser@7.28.4)(@babel/types@7.28.4)(react-streaming@0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@6.3.0(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))
       typescript:
         specifier: ^5.9.2
         version: 5.9.3
@@ -1315,8 +1315,8 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       telefunc:
-        specifier: 0.2.14
-        version: 0.2.14(@babel/core@7.28.4)(@babel/parser@7.28.4)(@babel/types@7.28.4)(react-streaming@0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))
+        specifier: ^0.2.16
+        version: 0.2.16(@babel/core@7.28.4)(@babel/parser@7.28.4)(@babel/types@7.28.4)(react-streaming@0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))
       vike:
         specifier: 0.4.245
         version: link:../../packages/vike
@@ -1682,8 +1682,8 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       telefunc:
-        specifier: ^0.2.10
-        version: 0.2.13(@babel/core@7.28.4)(@babel/parser@7.28.4)(@babel/types@7.28.4)(react-streaming@0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@6.3.5(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))
+        specifier: ^0.2.16
+        version: 0.2.16(@babel/core@7.28.4)(@babel/parser@7.28.4)(@babel/types@7.28.4)(react-streaming@0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@6.3.5(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))
       vike-react:
         specifier: ^0.6.5
         version: 0.6.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vike@packages+vike)
@@ -7811,32 +7811,8 @@ packages:
     resolution: {integrity: sha512-5S7Va8hKfV7W5U6g3aYxXmlPoZVAwUMy9AOKyF2fVuZa2UD3qZjg578OrLRt8PcNN1PleVaL/5/yYATNL0ICUw==}
     engines: {node: '>=18'}
 
-  telefunc@0.2.13:
-    resolution: {integrity: sha512-GgKCV9yuXZS6ZmJXNtRqQ7SxACUawvprAwazedMK+zn1VGeRVlt1gn/Gl/cGC6hNwZSeQqN/QjH6BVNKDcdnXQ==}
-    engines: {node: '>=12.19.0'}
-    peerDependencies:
-      '@babel/core': '>=7.0.0'
-      '@babel/parser': '>=7.0.0'
-      '@babel/types': '>=7.0.0'
-      react: '>=18.0.0'
-      react-streaming: '>=0.3.3'
-      vite: '>=6.3.0'
-    peerDependenciesMeta:
-      '@babel/core':
-        optional: true
-      '@babel/parser':
-        optional: true
-      '@babel/types':
-        optional: true
-      react:
-        optional: true
-      react-streaming:
-        optional: true
-      vite:
-        optional: true
-
-  telefunc@0.2.14:
-    resolution: {integrity: sha512-aQEDVzkDiCfX3g3E3Wa+nSMYMGGlT/5gBGfYi+85hINgR3YJiQ0+3Bkyc5NYboGe3sAyRa9qkLtgmmv2ekLwzw==}
+  telefunc@0.2.16:
+    resolution: {integrity: sha512-SLan7OpQRKg1BXR7T5APMmwDqhkHfEgUzW/AuMzUxaGyNmgEJ7EmNCnpNH2RX2ATvPr8NJwL/6Dv8uAdCi3b3w==}
     engines: {node: '>=12.19.0'}
     peerDependencies:
       '@babel/core': '>=7.0.0'
@@ -15146,7 +15122,7 @@ snapshots:
       mkdirp: 3.0.1
       yallist: 5.0.0
 
-  telefunc@0.2.13(@babel/core@7.28.4)(@babel/parser@7.28.4)(@babel/types@7.28.4)(react-streaming@0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@6.3.0(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)):
+  telefunc@0.2.16(@babel/core@7.28.4)(@babel/parser@7.28.4)(@babel/types@7.28.4)(react-streaming@0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@6.3.0(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)):
     dependencies:
       '@brillout/import': 0.2.6
       '@brillout/json-serializer': 0.5.21
@@ -15163,7 +15139,7 @@ snapshots:
       react-streaming: 0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       vite: 6.3.0(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)
 
-  telefunc@0.2.13(@babel/core@7.28.4)(@babel/parser@7.28.4)(@babel/types@7.28.4)(react-streaming@0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@6.3.5(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)):
+  telefunc@0.2.16(@babel/core@7.28.4)(@babel/parser@7.28.4)(@babel/types@7.28.4)(react-streaming@0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@6.3.5(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)):
     dependencies:
       '@brillout/import': 0.2.6
       '@brillout/json-serializer': 0.5.21
@@ -15180,24 +15156,7 @@ snapshots:
       react-streaming: 0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       vite: 6.3.5(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)
 
-  telefunc@0.2.13(@babel/core@7.28.4)(@babel/parser@7.28.4)(@babel/types@7.28.4)(react-streaming@0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)):
-    dependencies:
-      '@brillout/import': 0.2.6
-      '@brillout/json-serializer': 0.5.21
-      '@brillout/picocolors': 1.0.29
-      '@brillout/vite-plugin-server-entry': 0.7.15
-      es-module-lexer: 1.7.0
-      magic-string: 0.30.18
-      ts-morph: 26.0.0
-    optionalDependencies:
-      '@babel/core': 7.28.4
-      '@babel/parser': 7.28.4
-      '@babel/types': 7.28.4
-      react: 19.2.0
-      react-streaming: 0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
-      vite: 7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)
-
-  telefunc@0.2.14(@babel/core@7.28.4)(@babel/parser@7.28.4)(@babel/types@7.28.4)(react-streaming@0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)):
+  telefunc@0.2.16(@babel/core@7.28.4)(@babel/parser@7.28.4)(@babel/types@7.28.4)(react-streaming@0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)):
     dependencies:
       '@brillout/import': 0.2.6
       '@brillout/json-serializer': 0.5.21
