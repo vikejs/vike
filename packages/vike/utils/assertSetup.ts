@@ -186,6 +186,6 @@ function setNodeEnvProduction(): void | undefined {
   // The statement `process.env['NODE_ENV'] = 'production'` chokes webpack v4
   const proc = process
   const { env } = proc
-  env.NODE_ENV = 'production'
+  env.NODE_ENV ??= 'production'
   assert(isNodeEnv('production'))
 }
