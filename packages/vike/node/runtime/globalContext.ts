@@ -53,7 +53,7 @@ import {
   assertIsNotBrowser,
   isNonRunnableDev,
   objectAssign,
-  setNodeEnvProduction,
+  setNodeEnvProductionIfUndefined,
 } from './utils.js'
 import type { ViteManifest } from '../../types/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
@@ -355,7 +355,7 @@ async function setGlobalContext_prodBuildEntry(prodBuildEntry: unknown) {
   debug('setGlobalContext_prodBuildEntry()')
   assert(!isNonRunnableDev())
   assertProdBuildEntry(prodBuildEntry)
-  setNodeEnvProduction()
+  setNodeEnvProductionIfUndefined()
   globalObject.prodBuildEntry = prodBuildEntry
   globalObject.prodBuildEntryPrevious = prodBuildEntry
   assert(globalObject.prodBuildEntry) // ensure no infinite loop
