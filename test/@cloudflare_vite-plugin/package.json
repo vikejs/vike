@@ -12,15 +12,15 @@
     "react-dom": "^19.2.0",
     "telefunc": "^0.2.13",
     "vike": "0.4.245",
-    "vike-react": "^0.6.5"
+    "vike-react": "^0.6.12"
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.11.1",
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
     "@vitejs/plugin-react": "^5.1.0",
     "build-worker": "^0.3.4",
-    "typescript": "^5.9.2",
+    "typescript": "^5.9.3",
     "vite": "^7.2.2",
     "wrangler": "^4.28.0"
   },
