@@ -26,18 +26,19 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
   const { _pageConfigs: pageConfigs } = vikeConfig
 
   const { entriesClient, entriesServer, includeClient, includeServer } = await getPageDeps(config, pageConfigs)
-
-  // Workaround for https://github.com/vitejs/vite-plugin-react/issues/650
-  // - The issue was closed as completed with https://github.com/vitejs/vite/pull/20495 but it doesn't fix the issue and the workaround is still needed.
-  // - TO-DO/eventually: try removing the workaround and see if the CI fails (at test/@cloudflare_vite-plugin/) — maybe the issue will get fixed at some point.
-  includeServer.push('react/jsx-dev-runtime')
-  // Workaround for https://github.com/vikejs/vike/issues/2823#issuecomment-3514325487
-  if (
-    requireResolveOptional({ importPath: '@compiled/react/runtime', userRootDir: config.root, importerFilePath: null })
-  ) {
-    includeServer.push('@compiled/react/runtime')
-    includeClient.push('@compiled/react/runtime')
-  }
+  ;[
+    // Workaround for https://github.com/vitejs/vite-plugin-react/issues/650
+    // - The issue was closed as completed with https://github.com/vitejs/vite/pull/20495 but it doesn't fix the issue and the workaround is still needed.
+    // - TO-DO/eventually: try removing the workaround and see if the CI fails (at test/@cloudflare_vite-plugin/) — maybe the issue will get fixed at some point.
+    'react/jsx-dev-runtime',
+    // Workaround for https://github.com/vikejs/vike/issues/2823#issuecomment-3514325487
+    '@compiled/react/runtime',
+  ].forEach((dep) => {
+    if (requireResolveOptional({ importPath: dep, userRootDir: config.root, importerFilePath: null })) {
+      includeServer.push(dep)
+      includeClient.push(dep)
+    }
+  })
 
   config.optimizeDeps.include = add(config.optimizeDeps.include, includeClient)
   config.optimizeDeps.entries = add(config.optimizeDeps.entries, entriesClient)
