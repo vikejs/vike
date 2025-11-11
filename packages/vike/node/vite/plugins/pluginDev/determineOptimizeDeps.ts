@@ -21,23 +21,40 @@ import { getConfigValueSourcesRelevant } from '../pluginVirtualFiles/getConfigVa
 
 const debug = createDebugger('vike:optimizeDeps')
 
+const WORKAROUND_LATE_DISCOVERY = [
+  // Workaround for https://github.com/vitejs/vite-plugin-react/issues/650
+  // - The issue was closed as completed with https://github.com/vitejs/vite/pull/20495 but it doesn't fix the issue and the workaround is still needed.
+  // - TO-DO/eventually: try removing the workaround and see if the CI fails (at test/@cloudflare_vite-plugin/) — maybe the issue will get fixed at some point.
+  'react/jsx-dev-runtime',
+  // Workaround for https://github.com/vikejs/vike/issues/2823#issuecomment-3514325487
+  '@compiled/react/runtime',
+]
+
 async function determineOptimizeDeps(config: ResolvedConfig) {
   const vikeConfig = await getVikeConfigInternal()
   const { _pageConfigs: pageConfigs } = vikeConfig
 
   const { entriesClient, entriesServer, includeClient, includeServer } = await getPageDeps(config, pageConfigs)
 
-  // Workaround for https://github.com/vitejs/vite-plugin-react/issues/650
-  // - The issue was closed as completed with https://github.com/vitejs/vite/pull/20495 but it doesn't fix the issue and the workaround is still needed.
-  // - TO-DO/eventually: try removing the workaround and see if the CI fails (at test/@cloudflare_vite-plugin/) — maybe the issue will get fixed at some point.
-  includeServer.push('react/jsx-dev-runtime')
-  // Workaround for https://github.com/vikejs/vike/issues/2823#issuecomment-3514325487
-  if (
-    requireResolveOptional({ importPath: '@compiled/react/runtime', userRootDir: config.root, importerFilePath: null })
-  ) {
-    includeServer.push('@compiled/react/runtime')
-    includeClient.push('@compiled/react/runtime')
-  }
+  WORKAROUND_LATE_DISCOVERY.forEach((dep) => {
+    const userRootDir = config.root
+    const resolved = requireResolveOptional({ importPath: dep, userRootDir, importerFilePath: null })
+    const resolvedInsideRepo = resolved && resolved.startsWith(userRootDir)
+    if (resolvedInsideRepo) {
+      // We add `dep` only if `resolvedInsideRepo === true` otherwise Vite logs a warning like the following.
+      // - ```console
+      //   [11:22:42.464][/examples/vue-full][npm run dev][stderr] Failed to resolve dependency: react/jsx-dev-runtime, present in client 'optimizeDeps.include'
+      //   ```
+      // - ```console
+      //   [12:24:53.225][/test/@cloudflare_vite-plugin/test-dev.test.ts][npm run dev][stderr] Failed to resolve dependency: @compiled/react/runtime, present in ssr 'optimizeDeps.include'
+      //   ```
+      includeClient.push(dep)
+      includeServer.push(dep)
+    } else if (config.optimizeDeps.include?.includes(dep)) {
+      // Monorepo => always `resolvedInsideRepo === false` — we use this other approach to workaround missing 'react/jsx-dev-runtime'
+      includeServer.push(dep)
+    }
+  })
 
   config.optimizeDeps.include = add(config.optimizeDeps.include, includeClient)
   config.optimizeDeps.entries = add(config.optimizeDeps.entries, entriesClient)
