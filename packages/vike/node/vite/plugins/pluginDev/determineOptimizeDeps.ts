@@ -41,10 +41,13 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
     const resolved = requireResolveOptional({ importPath: dep, userRootDir, importerFilePath: null })
     const resolvedInsideRepo = resolved && resolved.startsWith(userRootDir)
     if (resolvedInsideRepo) {
-      // We only add `dep` if `resolvedInsideRepo === true` otherwise Vite logs following warning:
-      // ```
-      // [11:22:42.464][/examples/vue-full][npm run dev][stderr] Failed to resolve dependency: react/jsx-dev-runtime, present in client 'optimizeDeps.include'
-      // ```
+      // We add `dep` only if `resolvedInsideRepo === true` otherwise Vite logs a warning like the following.
+      // - ```console
+      //   [11:22:42.464][/examples/vue-full][npm run dev][stderr] Failed to resolve dependency: react/jsx-dev-runtime, present in client 'optimizeDeps.include'
+      //   ```
+      // - ```console
+      //   [12:24:53.225][/test/@cloudflare_vite-plugin/test-dev.test.ts][npm run dev][stderr] Failed to resolve dependency: @compiled/react/runtime, present in ssr 'optimizeDeps.include'
+      //   ```
       includeClient.push(dep)
       includeServer.push(dep)
     } else if (config.optimizeDeps.include?.includes(dep)) {
