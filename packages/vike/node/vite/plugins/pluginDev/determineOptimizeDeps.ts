@@ -37,7 +37,9 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
   const { entriesClient, entriesServer, includeClient, includeServer } = await getPageDeps(config, pageConfigs)
 
   WORKAROUND_LATE_DISCOVERY.forEach((dep) => {
-    if (requireResolveOptional({ importPath: dep, userRootDir: config.root, importerFilePath: null })) {
+    const userRootDir = config.root
+    const resolved = requireResolveOptional({ importPath: dep, userRootDir, importerFilePath: null })
+    if (resolved && resolved.startsWith(userRootDir)) {
       includeClient.push(dep)
       includeServer.push(dep)
     }
