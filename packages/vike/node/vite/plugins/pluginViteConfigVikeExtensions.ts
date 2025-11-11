@@ -23,6 +23,11 @@ async function pluginViteConfigVikeExtensions(): Promise<Plugin[]> {
   )
   const pluginsFromExtensions: Plugin[] = (viteConfigFromExtensions.plugins ?? []) as Plugin[]
   delete viteConfigFromExtensions.plugins
+  // Avoid infinite loop
+  assertUsage(
+    !pluginsFromExtensions.some((p) => p.name?.startsWith('vike:')),
+    "Adding Vike's Vite plugin using +vite is forbidden",
+  )
   return [
     ...pluginsFromExtensions,
     {
