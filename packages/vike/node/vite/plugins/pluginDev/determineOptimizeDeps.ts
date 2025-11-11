@@ -39,13 +39,10 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
   WORKAROUND_LATE_DISCOVERY.forEach((dep) => {
     const userRootDir = config.root
     const resolved = requireResolveOptional({ importPath: dep, userRootDir, importerFilePath: null })
-    console.log('resolved', resolved)
     if (resolved && resolved.startsWith(userRootDir)) {
-      console.log('ADD 1', dep)
       includeClient.push(dep)
       includeServer.push(dep)
     } else if (config.optimizeDeps.include?.includes(dep)) {
-      console.log('ADD 2', dep)
       includeServer.push(dep)
     }
   })
