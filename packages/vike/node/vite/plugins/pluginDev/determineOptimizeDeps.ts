@@ -10,6 +10,7 @@ import {
   isArray,
   isFilePathAbsoluteFilesystem,
   isVirtualFileId,
+  requireResolveOptional,
 } from '../../utils.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { analyzeClientEntries } from '../build/pluginBuildConfig.js'
@@ -32,7 +33,11 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
   includeServer.push('react/jsx-dev-runtime')
   // Workaround for https://github.com/vikejs/vike/issues/2823#issuecomment-3514325487
   includeClient.push('@compiled/react/runtime')
-  includeServer.push('@compiled/react/runtime')
+  if (
+    requireResolveOptional({ importPath: '@compiled/react/runtime', userRootDir: config.root, importerFilePath: null })
+  ) {
+    includeServer.push('@compiled/react/runtime')
+  }
 
   config.optimizeDeps.include = add(config.optimizeDeps.include, includeClient)
   config.optimizeDeps.entries = add(config.optimizeDeps.entries, entriesClient)
