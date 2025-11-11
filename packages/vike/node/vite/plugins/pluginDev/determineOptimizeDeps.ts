@@ -42,6 +42,8 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
     if (resolved && resolved.startsWith(userRootDir)) {
       includeClient.push(dep)
       includeServer.push(dep)
+    } else if (config.optimizeDeps.include?.includes(dep)) {
+      includeServer.push(dep)
     }
   })
 
