@@ -100,7 +100,7 @@ function requireResolveOptional({
   importPath,
   importerFilePath,
   userRootDir,
-}: { importPath: string; importerFilePath: string; userRootDir: string }): string | null {
+}: { importPath: string; importerFilePath: string | null; userRootDir: string }): string | null {
   const res = requireResolve_(importPath, importerFilePath, userRootDir)
   if (res.hasFailed) return null
   return res.importPathResolvedFilePath
