@@ -116,7 +116,7 @@ async function getViteInfo(viteConfigFromUserVikeApiOptions: InlineConfig | unde
     // - Encourage users to define a vite.config.js file that also works with Vite's CLI (and potentially other third-party CLIs).
     // - Vike-based frameworks, such as DocPress, allow their users to omit defining a vite.config.js file.
     assertWarning(
-      viteConfigFromUserViteConfigFile, // Only show the warning if the user defined a vite.config.js file
+      !viteConfigFromUserViteConfigFile, // Only show the warning if the user defined a vite.config.js file
       "Omitting Vike's Vite plugin (inside your vite.config.js) is deprecated — make sure to always add Vike's Vite plugin https://vike.dev/vite-plugin",
       { onlyOnce: true },
     )
