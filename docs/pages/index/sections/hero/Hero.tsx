@@ -11,7 +11,7 @@ import { UsedBy } from './UsedBy'
 import { QuoteTeam } from '../../../../components'
 
 const quoteSentence =
-  'Vike uses a next-generation framework architecture, for a flexible and stable foundation that companies can build upon with confidence.'
+  'Vike is built on a stable, rock-solid core with powerful low-level hooks\u00A0—\u00A0a\u00A0foundation companies can trust and build upon with confidence.'
 
 function Hero() {
   return (
@@ -122,17 +122,15 @@ function HeroTagline({
               ...taglineSecondaryStyle,
             }}
           >
-            The framework for advanced applications.
-            <br />
-            With blazing fast{' '}
+            Composable framework for building advanced applications with blazing fast{' '}
             <LinkTagline href="/new" color="#fe9618">
               quick-start
             </LinkTagline>{' '}
             &{' '}
             <LinkTagline href="#full-fledged" color="#fed518">
               DX
-            </LinkTagline>
-            , and unprecedented architectural{' '}
+            </LinkTagline>{' '}
+            as well as unprecedented{' '}
             <LinkTagline href="#flexible" color="#18cbfa">
               flexibility
             </LinkTagline>{' '}

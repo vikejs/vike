@@ -23,7 +23,7 @@ function QuoteTeam({ children, style }: { children: React.ReactNode; style?: Rea
             flexShrink: 0,
           }}
         />
-        <i style={{ maxWidth: 550 }}>{children}</i>
+        <i style={{ maxWidth: 495 }}>{children}</i>
       </span>
       <a
         className="quote-team-author"
