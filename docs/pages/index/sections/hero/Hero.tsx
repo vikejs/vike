@@ -118,23 +118,23 @@ function HeroTagline({
               lineHeight: 1.35,
               fontWeight: 450,
               color: '#878787',
-              maxWidth: 750,
+              maxWidth: 800,
               ...taglineSecondaryStyle,
             }}
           >
-            Composable framework for building advanced applications with blazing fast{' '}
+            Composable framework for building advanced applications with blazing-fast{' '}
             <LinkTagline href="/new" color="#fe9618">
-              quick-start
-            </LinkTagline>{' '}
-            &{' '}
+              quick&nbsp;start
+            </LinkTagline>
+            , next-generation{' '}
             <LinkTagline href="#full-fledged" color="#fed518">
               DX
-            </LinkTagline>{' '}
-            as well as unprecedented{' '}
+            </LinkTagline>
+            , unprecedented{' '}
             <LinkTagline href="#flexible" color="#18cbfa">
               flexibility
-            </LinkTagline>{' '}
-            &{' '}
+            </LinkTagline>
+            , and foundational{' '}
             <LinkTagline href="#stable" color="#1878ed">
               stability
             </LinkTagline>
