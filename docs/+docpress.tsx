@@ -44,8 +44,9 @@ const config: Config = {
     top: -1,
   },
   navLogoTextStyle: {
-    letterSpacing: '0.01em',
-    fontWeight: 420,
+    letterSpacing: '0.04em',
+    fontWeight: 500,
     color: '#444',
+    fontSize: 22.8,
   },
 } satisfies Config
