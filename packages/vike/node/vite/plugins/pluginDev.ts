@@ -25,10 +25,9 @@ function pluginDev(): Plugin[] {
         handler() {
           return {
             appType: 'custom',
-            // TO-DO/next-major-release: remove (AFAICT we only need to use config.optimizeDeps for the old design)
             optimizeDeps: {
               exclude: [
-                // We exclude Vike's client runtime to be able to use Vite's import.meta.glob()
+                // We must exclude Vike's client runtime so it can import virtual modules
                 'vike/client',
                 'vike/client/router',
 
