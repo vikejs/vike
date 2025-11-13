@@ -28,7 +28,25 @@ function pluginDev(): Plugin[] {
             // TO-DO/next-major-release: remove (AFAICT we only need to use config.optimizeDeps for the old design)
             optimizeDeps: {
               exclude: [
-                'vike',
+                // We exclude Vike's client runtime to be able to use Vite's import.meta.glob()
+                'vike/client',
+                'vike/client/router',
+
+                // It seems like client-side/isomorphic imports also need to be excluded, in order to avoid the following:
+                //   ```
+                //   Client runtime loaded twice https://vike.dev/client-runtime-duplicated
+                //   ```
+                'vike/routing',
+                'vike/getPageContext',
+
+                // We exclude @brillout/json-serializer and @brillout/picocolors to avoid:
+                // ```
+                // 9:28:58 AM [vite] ✨ new dependencies optimized: @brillout/json-serializer/parse
+                // 9:28:58 AM [vite] ✨ optimized dependencies changed. reloading
+                // ```
+                '@brillout/json-serializer/parse',
+                '@brillout/json-serializer/stringify',
+                '@brillout/picocolors',
 
                 // We exclude all packages that depend on any optimizeDeps.exclude entry because, otherwise, the entry cannot be resolved when using pnpm. For example:
                 // ```
