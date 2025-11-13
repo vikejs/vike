@@ -1,6 +1,6 @@
-import type { Config } from 'vike/types'
+import { defineConfig } from 'vike/types'
 
-export default {
+export default defineConfig({
   prerender: {
     enable: null,
     parallel: 4,
@@ -22,7 +22,7 @@ export default {
     },
   },
   csp: { nonce: true },
-} satisfies Config
+})
 
 declare global {
   namespace Vike {

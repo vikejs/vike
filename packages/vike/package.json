@@ -15,7 +15,8 @@
       "types": "./dist/esm/client/runtime-server-routing/index.d.ts"
     },
     "./types": {
-      "types": "./dist/esm/types/index.d.ts"
+      "types": "./dist/esm/types/index.d.ts",
+      "default": "./dist/esm/types/index.js"
     },
     "./client/router": {
       "worker": "./dist/esm/node/client/router.js",
