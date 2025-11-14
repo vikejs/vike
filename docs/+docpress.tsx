@@ -42,6 +42,7 @@ const config: Config = {
   navLogoStyle: {
     position: 'relative',
     top: -1,
+    right: -1,
   },
   navLogoTextStyle: {
     letterSpacing: '0.04em',
