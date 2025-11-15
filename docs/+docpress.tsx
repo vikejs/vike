@@ -38,16 +38,16 @@ const config: Config = {
 
   topNavigation: <TopNavigation />,
   navMaxWidth: 1140,
-  navLogoSize: 38,
+  navLogoSize: 34,
   navLogoStyle: {
     position: 'relative',
     top: -1,
-    right: -1,
+    right: -2,
   },
   navLogoTextStyle: {
-    letterSpacing: '0.04em',
-    fontWeight: 500,
+    letterSpacing: '0.02em',
+    fontWeight: 480,
     color: '#444',
-    fontSize: 22.8,
+    fontSize: 22.4,
   },
 } satisfies Config
