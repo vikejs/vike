@@ -1125,6 +1125,10 @@ function misc() {
         url: '/banner/vikings',
       },
       {
+        title: 'Banner — Slides',
+        url: '/banner/slides',
+      },
+      {
         title: 'RPC',
         url: '/RPC',
       },

@@ -42,10 +42,12 @@ function Hero() {
 function HeroTagline({
   style,
   taglineStyle,
+  taglineSecondary,
   taglineSecondaryStyle,
 }: {
   style?: React.CSSProperties
   taglineStyle?: React.CSSProperties
+  taglineSecondary?: string
   taglineSecondaryStyle?: React.CSSProperties
 } = {}) {
   return (
@@ -122,23 +124,29 @@ function HeroTagline({
               ...taglineSecondaryStyle,
             }}
           >
-            Composable framework for building advanced applications with blazing-fast{' '}
-            <LinkTagline href="/new" color="#fe9618">
-              quick&nbsp;start
-            </LinkTagline>
-            , next-generation{' '}
-            <LinkTagline href="#full-fledged" color="#fed518">
-              DX
-            </LinkTagline>
-            , unprecedented{' '}
-            <LinkTagline href="#flexible" color="#18cbfa">
-              flexibility
-            </LinkTagline>
-            , and foundational{' '}
-            <LinkTagline href="#stable" color="#1878ed">
-              stability
-            </LinkTagline>
-            .
+            {taglineSecondary ? (
+              taglineSecondary
+            ) : (
+              <>
+                Composable framework for building advanced applications with blazing-fast{' '}
+                <LinkTagline href="/new" color="#fe9618">
+                  quick&nbsp;start
+                </LinkTagline>
+                , next-generation{' '}
+                <LinkTagline href="#full-fledged" color="#fed518">
+                  DX
+                </LinkTagline>
+                , unprecedented{' '}
+                <LinkTagline href="#flexible" color="#18cbfa">
+                  flexibility
+                </LinkTagline>
+                , and foundational{' '}
+                <LinkTagline href="#stable" color="#1878ed">
+                  stability
+                </LinkTagline>
+                .
+              </>
+            )}
           </div>
         </h1>
       </div>

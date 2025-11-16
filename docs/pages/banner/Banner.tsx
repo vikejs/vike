@@ -1,6 +1,7 @@
 export { Banner }
 export { BannerCover }
 export { BannerMinimal }
+export { BannerSlides }
 export { BannerVikings }
 
 import React from 'react'
@@ -16,6 +17,16 @@ function BannerCover() {
 }
 function BannerMinimal() {
   return <BannerCommon logo={false} taglineSecondaryStyle={{ display: 'none' }} logoScale={1.1} />
+}
+function BannerSlides() {
+  return (
+    <BannerCommon
+      taglineSecondary="Composable framework for building advanced applications"
+      taglineSecondaryStyle={{ marginTop: -20 }}
+      taglineStyle={{ marginTop: -20 }}
+      style={{ background: 'white' }}
+    />
+  )
 }
 function BannerVikings() {
   return (
@@ -48,18 +59,24 @@ function BannerVikings() {
 }
 
 function BannerCommon({
+  style,
   logo,
   logoText = 'Vike',
   logoScale = 1.3,
   logoStyle,
   logoTextStyle,
+  taglineStyle,
+  taglineSecondary,
   taglineSecondaryStyle,
 }: {
+  style?: React.CSSProperties
   logo?: boolean
   logoText?: string
   logoScale?: number
   logoStyle?: React.CSSProperties
   logoTextStyle?: React.CSSProperties
+  taglineStyle?: React.CSSProperties
+  taglineSecondary?: string
   taglineSecondaryStyle?: React.CSSProperties
 }) {
   return (
@@ -70,6 +87,7 @@ function BannerCommon({
         justifyContent: 'center',
         height: '100vh',
         background: '#f0f0f0',
+        ...style,
       }}
     >
       <div
@@ -118,7 +136,8 @@ function BannerCommon({
         {logo !== true && (
           <HeroTagline
             style={{ marginTop: -0 }}
-            taglineStyle={{ fontSize: 50 * logoScale, marginBottom: 25 }}
+            taglineStyle={{ fontSize: 50 * logoScale, marginBottom: 25, ...taglineStyle }}
+            taglineSecondary={taglineSecondary}
             taglineSecondaryStyle={{
               marginTop: 19,
               fontSize: 28 * logoScale,
