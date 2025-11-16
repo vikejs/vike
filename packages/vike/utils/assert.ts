@@ -52,7 +52,7 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
       return null
     }
     const debugInfoSerialized = typeof debugInfo === 'string' ? debugInfo : JSON.stringify(debugInfo)
-    return pc.dim(`Debug info for Vike maintainers (you can ignore this): ${debugInfoSerialized}`)
+    return pc.dim(`Debug for maintainers (you can ignore this): ${debugInfoSerialized}`)
   })()
 
   const link = pc.underline('https://github.com/vikejs/vike/issues/new?template=bug.yml')
