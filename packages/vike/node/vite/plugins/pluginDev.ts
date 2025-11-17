@@ -30,35 +30,16 @@ function pluginDev(): Plugin[] {
                 // We must exclude Vike's client runtime so it can import virtual modules
                 'vike/client',
                 'vike/client/router',
-
-                // It seems like client-side/isomorphic imports also need to be excluded, in order to avoid the following:
-                //   ```
-                //   Client runtime loaded twice https://vike.dev/client-runtime-duplicated
-                //   ```
-                'vike/routing',
-                'vike/getPageContext',
-
-                // We exclude @brillout/json-serializer and @brillout/picocolors to avoid:
+              ],
+              include: [
+                // Avoid:
                 // ```
                 // 9:28:58 AM [vite] ✨ new dependencies optimized: @brillout/json-serializer/parse
                 // 9:28:58 AM [vite] ✨ optimized dependencies changed. reloading
                 // ```
-                '@brillout/json-serializer/parse',
-                '@brillout/json-serializer/stringify',
-                '@brillout/picocolors',
-
-                // We exclude all packages that depend on any optimizeDeps.exclude entry because, otherwise, the entry cannot be resolved when using pnpm. For example:
-                // ```
-                // Failed to resolve import "@brillout/json-serializer/parse" from "../../packages/vike-react-query/dist/renderer/VikeReactQueryWrapper.js". Does the file exist?
-                // 343|  // ../../node_modules/.pnpm/react-streaming@0.3.16_react-dom@18.2.0_react@18.2.0/node_modules/react-streaming/dist/esm/client/useAsync.js
-                // 344|  import { parse as parse2 } from "@brillout/json-serializer/parse";
-                // ```
-                // The source map is confusing, the import actually lives at node_modules/.vite/deps/vike-react-query_renderer_VikeReactQueryWrapper.js which contains:
-                // ```js
-                // // ../../node_modules/.pnpm/react-streaming@0.3.16_react-dom@18.2.0_react@18.2.0/node_modules/react-streaming/dist/esm/client/useAsync.js
-                // import { parse as parse2 } from "@brillout/json-serializer/parse";
-                // ```
-                'react-streaming',
+                'vike > @brillout/json-serializer/parse',
+                'vike > @brillout/json-serializer/stringify',
+                'vike > @brillout/picocolors',
               ],
             },
           } satisfies UserConfig
