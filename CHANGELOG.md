@@ -1,3 +1,19 @@
+## [0.4.247](https://github.com/vikejs/vike/compare/v0.4.246...v0.4.247) (2025-11-17)
+
+
+### Bug Fixes
+
+* clear error message instead of inifinite loop upon self-adding Vike's Vite plugin ([bb4b6db](https://github.com/vikejs/vike/commit/bb4b6dbca2b4126557d7b29ad335b2a5859f0037))
+* don't try to pre-bundle react/jsx-dev-runtime for Vue apps ([#2832](https://github.com/vikejs/vike/issues/2832)) ([b97cec3](https://github.com/vikejs/vike/commit/b97cec30e9c058e65a55d480eb20e27af6a8838c))
+* fix `defineConfig()` (fix [#2834](https://github.com/vikejs/vike/issues/2834)) ([#2836](https://github.com/vikejs/vike/issues/2836)) ([0dbb3ec](https://github.com/vikejs/vike/commit/0dbb3ece932771525b68f346b67818951c0c2786))
+* fix warning when omitting adding Vike's Vite plugin ([47703fd](https://github.com/vikejs/vike/commit/47703fd02cdcc1cbe60544aad2cd62eadee6dc5b))
+* improve optimizeDeps ([#2842](https://github.com/vikejs/vike/issues/2842)) ([907d605](https://github.com/vikejs/vike/commit/907d605e718e134333de6e86f9e869659738d4e3))
+* polish bug error message ([b3b0e98](https://github.com/vikejs/vike/commit/b3b0e985b429a41f096eb9700ebe682d4fc5bb0f))
+* remove too sensitive assertion ([#2840](https://github.com/vikejs/vike/issues/2840)) ([8038581](https://github.com/vikejs/vike/commit/8038581861f4f08312bbadfbbe064133e58a250d))
+* workaround compiled runtime lazy optimizeDeps ([#2831](https://github.com/vikejs/vike/issues/2831)) ([62f5b1f](https://github.com/vikejs/vike/commit/62f5b1ffab38f09e0abaadb8af5d3e85c28db928))
+
+
+
 ## [0.4.246](https://github.com/vikejs/vike/compare/v0.4.245...v0.4.246) (2025-11-10)
 
 
