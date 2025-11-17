@@ -54,6 +54,8 @@ function pluginDev(): Plugin[] {
                 // 9:28:58 AM [vite] ✨ new dependencies optimized: @brillout/json-serializer/parse
                 // 9:28:58 AM [vite] ✨ optimized dependencies changed. reloading
                 // ```
+                'vike > @brillout/json-serializer/parse',
+                'vike > @brillout/json-serializer/stringify',
                 'vike > @brillout/picocolors',
               ],
             },
