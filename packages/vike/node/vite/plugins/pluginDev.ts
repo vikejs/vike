@@ -35,8 +35,6 @@ function pluginDev(): Plugin[] {
                 //   ```
                 //   Client runtime loaded twice https://vike.dev/client-runtime-duplicated
                 //   ```
-                'vike/routing',
-                'vike/getPageContext',
 
                 // We exclude all packages that depend on any optimizeDeps.exclude entry because, otherwise, the entry cannot be resolved when using pnpm. For example:
                 // ```
