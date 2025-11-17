@@ -49,7 +49,6 @@ function pluginDev(): Plugin[] {
                 // // ../../node_modules/.pnpm/react-streaming@0.3.16_react-dom@18.2.0_react@18.2.0/node_modules/react-streaming/dist/esm/client/useAsync.js
                 // import { parse as parse2 } from "@brillout/json-serializer/parse";
                 // ```
-                'react-streaming',
               ],
               include: [
                 // Avoid:
