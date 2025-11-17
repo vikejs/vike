@@ -38,14 +38,6 @@ function pluginDev(): Plugin[] {
                 'vike/routing',
                 'vike/getPageContext',
 
-                // We exclude @brillout/json-serializer and @brillout/picocolors to avoid:
-                // ```
-                // 9:28:58 AM [vite] ✨ new dependencies optimized: @brillout/json-serializer/parse
-                // 9:28:58 AM [vite] ✨ optimized dependencies changed. reloading
-                // ```
-                '@brillout/json-serializer/parse',
-                '@brillout/json-serializer/stringify',
-
                 // We exclude all packages that depend on any optimizeDeps.exclude entry because, otherwise, the entry cannot be resolved when using pnpm. For example:
                 // ```
                 // Failed to resolve import "@brillout/json-serializer/parse" from "../../packages/vike-react-query/dist/renderer/VikeReactQueryWrapper.js". Does the file exist?
@@ -59,7 +51,16 @@ function pluginDev(): Plugin[] {
                 // ```
                 'react-streaming',
               ],
-              include: ['vike > @brillout/picocolors'],
+              include: [
+                // Avoid:
+                // ```
+                // 9:28:58 AM [vite] ✨ new dependencies optimized: @brillout/json-serializer/parse
+                // 9:28:58 AM [vite] ✨ optimized dependencies changed. reloading
+                // ```
+                'vike > @brillout/json-serializer/parse',
+                'vike > @brillout/json-serializer/stringify',
+                'vike > @brillout/picocolors',
+              ],
             },
           } satisfies UserConfig
         },
