@@ -45,7 +45,6 @@ function pluginDev(): Plugin[] {
                 // ```
                 '@brillout/json-serializer/parse',
                 '@brillout/json-serializer/stringify',
-                // '@brillout/picocolors',
 
                 // We exclude all packages that depend on any optimizeDeps.exclude entry because, otherwise, the entry cannot be resolved when using pnpm. For example:
                 // ```
@@ -60,6 +59,7 @@ function pluginDev(): Plugin[] {
                 // ```
                 'react-streaming',
               ],
+              include: ['vike > @brillout/picocolors'],
             },
           } satisfies UserConfig
         },
