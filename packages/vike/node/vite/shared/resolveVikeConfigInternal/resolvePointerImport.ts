@@ -116,8 +116,10 @@ function resolveImportPathWithNode(
   })
   if (!filePathAbsoluteFilesystem) {
     assert(!isImportPathRelative(pointerImportData.importPath))
+    /* This assertion fails if the npm package has a wrongly defined package.json#exports
     // Libraries don't use path aliases => filePathAbsoluteFilesystem should be defined
     assert(!importerFilePathAbsolute.includes('node_modules'))
+    */
   }
   return filePathAbsoluteFilesystem
 }
