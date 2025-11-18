@@ -117,15 +117,27 @@ For example, in the following, it applies only to `my-app/` and `my-other-app/`.
 
 ## How does it work?
 
-For new or small projects, you can use Vike just like any other open-source tool: 100% gratis and without any license key.
+#### The idea
 
-For larger projects, Vike shows a pesky toaster `Get your license key at ...` in development (it's never shown in production) that you can remove by purchasing a license key. You install the key by adding it to your `+config.js` file, or by setting the `VIKE_KEY` environment variable.
+For small (or new) projects, you can use Vike just like any other open-source tool: 100% gratis and without any license key.
 
-Also, the npm package `vike` will adopt a proprietary license requiring companies outside the free tier to purchase a license key. Vike's Git repository stays 100% MIT-licensed.
+For larger projects, Vike shows a pesky toaster `Get your license key at ...` in development (it's never shown in production). You can remove it by purchasing a license key and adding it to `+config.js` or by setting the `VIKE_KEY` environment variable.
 
-In theory, since Vike is 100% open source, you could fork it, remove the pesky toaster, and build your own npm package. But maintaining a fork requires effort &mdash; you might as well apply for a free license key which is much easier.
+#### 100% Open Source
 
-The implementation is 100% offline: it uses asymmetric encryption to validate license keys, and reads your Git history to distinguish small apps from larger apps. It doesn't send any telemetry nor makes any server requests.
+The npm package `vike` will adopt a proprietary license requiring companies to get a license key when they see the pesky toaster (see above). Vike's Git repository stays 100% MIT-licensed.
+
+In theory, since Vike is 100% open source, you could fork it, remove the pesky toaster, and publish your own npm package. But maintaining a fork requires non-negligible effort &mdash; you might as well just apply for a free license key instead.
+
+#### 100% offline
+
+The implementation is 100% offline:
+ - Uses asymmetric encryption to validate license keys
+ - Reads your Vike configuration (e.g. number of `+Page.js` files) and Git history (e.g. number of Git committers) to distinguish small apps from larger apps
+
+No telemetry, zero server requests.
+
+Your privacy is fully respected. The only information Vike has about your company is when you purchase a license — just like a SaaS.
 
 
 ## Why zero-investors?
