@@ -45,6 +45,7 @@ async function fixServerAssets(
 ): Promise<{ clientManifestMod: ViteManifest; serverManifestMod: ViteManifest }> {
   const clientManifest = await readManifestFile(config, true)
   const serverManifest = await readManifestFile(config, false)
+  console.log('clientManifest', JSON.stringify(clientManifest, null, 2))
 
   const { clientManifestMod, serverManifestMod, filesToMove, filesToRemove } = addServerAssets(
     clientManifest,

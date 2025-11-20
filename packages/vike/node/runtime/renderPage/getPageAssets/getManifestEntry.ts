@@ -38,7 +38,7 @@ function getManifestEntry(
     //    - I don't know whether end users actually need this workaround? (I'm not sure what the bug actually is.)
     const manifestKeyEnd = id
     const { manifestKey, manifestEntry } = getEntryWithKeyEnd(manifestKeyEnd, assetsManifest, id)
-    assert(manifestEntry, debugInfo)
+    assert(manifestEntry, JSON.stringify(debugInfo, null, 2))
     return { manifestEntry, manifestKey }
   }
 

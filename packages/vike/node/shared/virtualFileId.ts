@@ -122,6 +122,9 @@ function generateVirtualFileId(
 
   if (args.type === 'page-entry') {
     const { pageId, isForClientSide } = args
+    assert(pageId)
+    assert(pageId !== '')
+    assert(pageId.length > 0)
     assert(typeof pageId === 'string')
     const id = `${isForClientSide ? virtualFileIdPageEntryClient : virtualFileIdPageEntryServer}${pageId}` as const
     return id
