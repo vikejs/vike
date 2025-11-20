@@ -46,11 +46,6 @@ async function fixServerAssets(
   const clientManifest = await readManifestFile(config, true)
   const serverManifest = await readManifestFile(config, false)
 
-  // Workaround: Restore trailing slashes in virtual file IDs that were replaced with TRAILING_SLASH placeholder
-  // to prevent Vite from normalizing them away
-  restoreTrailingSlashes(clientManifest)
-  restoreTrailingSlashes(serverManifest)
-
   const { clientManifestMod, serverManifestMod, filesToMove, filesToRemove } = addServerAssets(
     clientManifest,
     serverManifest,

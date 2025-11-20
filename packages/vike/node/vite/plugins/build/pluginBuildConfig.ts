@@ -197,10 +197,7 @@ function getEntryFromClientEntry(clientEntry: string, config: ResolvedConfig, ad
 }
 function getEntryFromPageConfig(pageConfig: PageConfigBuildTime, isForClientSide: boolean) {
   let { pageId } = pageConfig
-  let entryTarget = generateVirtualFileId({ type: 'page-entry', pageId, isForClientSide })
-  // Workaround: Vite removes trailing slashes from virtual file IDs, so we use a placeholder
-  // that will be restored later in fixServerAssets()
-  entryTarget = entryTarget.replace(/virtual:vike:page-entry:client:\/$/, 'virtual:vike:page-entry:client:TRAILING_SLASH')
+  const entryTarget = generateVirtualFileId({ type: 'page-entry', pageId, isForClientSide })
   let entryName = pageId
   // Avoid:
   // ```
