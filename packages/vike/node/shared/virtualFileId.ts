@@ -82,23 +82,17 @@ function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
 
     if (id.startsWith(virtualFileIdPageEntryClient)) {
       assert(isExtractAssets === false)
-      const pageIdFromVirtualId = id.slice(virtualFileIdPageEntryClient.length)
-      // Denormalize root pageId: empty string in virtual file ID means pageId="/"
-      const pageId = pageIdFromVirtualId === '' ? '/' : pageIdFromVirtualId
       return {
         type: 'page-entry',
-        pageId,
+        pageId: id.slice(virtualFileIdPageEntryClient.length),
         isForClientSide: true,
         isExtractAssets,
       }
     }
     if (id.startsWith(virtualFileIdPageEntryServer)) {
-      const pageIdFromVirtualId = id.slice(virtualFileIdPageEntryServer.length)
-      // Denormalize root pageId: empty string in virtual file ID means pageId="/"
-      const pageId = pageIdFromVirtualId === '' ? '/' : pageIdFromVirtualId
       return {
         type: 'page-entry',
-        pageId,
+        pageId: id.slice(virtualFileIdPageEntryServer.length),
         isForClientSide: false,
         isExtractAssets,
       }
@@ -129,10 +123,7 @@ function generateVirtualFileId(
   if (args.type === 'page-entry') {
     const { pageId, isForClientSide } = args
     assert(typeof pageId === 'string')
-    // Normalize root pageId for virtual file ID generation
-    // The root page has pageId="/" but virtual file ID should be "virtual:vike:page-entry:client:" (without trailing slash)
-    const normalizedPageId = pageId === '/' ? '' : pageId
-    const id = `${isForClientSide ? virtualFileIdPageEntryClient : virtualFileIdPageEntryServer}${normalizedPageId}` as const
+    const id = `${isForClientSide ? virtualFileIdPageEntryClient : virtualFileIdPageEntryServer}${pageId}` as const
     return id
   }
 

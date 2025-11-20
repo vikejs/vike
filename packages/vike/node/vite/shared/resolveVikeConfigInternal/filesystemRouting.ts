@@ -181,6 +181,11 @@ function removeFilename(filePathAbsoluteUserRootDir: string) {
   }
   let locationId = filePathParts.slice(0, -1).join('/')
   if (locationId === '') locationId = '/'
+
+  // Normalize locationId: /pages/index and / should be treated as the same location
+  // since they both resolve to the root route "/" after filesystem routing processing
+  if (locationId === '/pages/index') locationId = '/'
+
   assertLocationId(locationId)
   return locationId
 }
