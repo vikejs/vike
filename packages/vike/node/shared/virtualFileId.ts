@@ -142,7 +142,8 @@ function generateVirtualFileId(
     const { pageId, isForClientSide } = args
     assert(typeof pageId === 'string')
     const pageIdSerialized = serializePageId(pageId)
-    const id = `${isForClientSide ? virtualFileIdPageEntryClient : virtualFileIdPageEntryServer}${pageIdSerialized}` as const
+    const id =
+      `${isForClientSide ? virtualFileIdPageEntryClient : virtualFileIdPageEntryServer}${pageIdSerialized}` as const
     return id
   }
 
