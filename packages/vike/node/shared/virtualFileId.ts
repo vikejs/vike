@@ -59,6 +59,14 @@ assert(
 // - I guess Vite/Rollup mistakenly treat the virtual ID as a path and tries to normalize id
 const ROOT = 'ROOT'
 
+function serializePageId(pageId: string): string {
+  return pageId === '/' ? ROOT : pageId
+}
+
+function deserializePageId(pageId: string): string {
+  return pageId === ROOT ? '/' : pageId
+}
+
 type VirtualFileIdEntryParsed =
   | { type: 'global-entry'; isForClientSide: boolean; isClientRouting: boolean }
   | { type: 'page-entry'; isForClientSide: boolean; pageId: string; isExtractAssets: boolean }
@@ -88,8 +96,8 @@ function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
 
     if (id.startsWith(virtualFileIdPageEntryClient)) {
       assert(isExtractAssets === false)
-      let pageId = id.slice(virtualFileIdPageEntryClient.length)
-      if (pageId === ROOT) pageId = '/'
+      const pageIdSerialized = id.slice(virtualFileIdPageEntryClient.length)
+      const pageId = deserializePageId(pageIdSerialized)
       return {
         type: 'page-entry',
         pageId,
@@ -98,8 +106,8 @@ function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
       }
     }
     if (id.startsWith(virtualFileIdPageEntryServer)) {
-      let pageId = id.slice(virtualFileIdPageEntryServer.length)
-      if (pageId === ROOT) pageId = '/'
+      const pageIdSerialized = id.slice(virtualFileIdPageEntryServer.length)
+      const pageId = deserializePageId(pageIdSerialized)
       return {
         type: 'page-entry',
         pageId,
@@ -131,10 +139,10 @@ function generateVirtualFileId(
   }
 
   if (args.type === 'page-entry') {
-    let { pageId, isForClientSide } = args
+    const { pageId, isForClientSide } = args
     assert(typeof pageId === 'string')
-    pageId = pageId === '/' ? 'ROOT' : pageId
-    const id = `${isForClientSide ? virtualFileIdPageEntryClient : virtualFileIdPageEntryServer}${pageId}` as const
+    const pageIdSerialized = serializePageId(pageId)
+    const id = `${isForClientSide ? virtualFileIdPageEntryClient : virtualFileIdPageEntryServer}${pageIdSerialized}` as const
     return id
   }
 
