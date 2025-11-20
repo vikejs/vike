@@ -229,8 +229,8 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
   const onComplete = async (htmlFile: HtmlFile) => {
     prerenderedCount++
     const { pageId } = htmlFile.pageContext
-    assert(typeof pageId === 'string' || pageId === null)
-    if (pageId !== null) {
+    assert((typeof pageId === 'string' && pageId) || pageId === null)
+    if (pageId) {
       prerenderContext._prerenderedPageContexts[pageId] = htmlFile.pageContext
     }
     await writeFiles(htmlFile, viteConfig, options.onPagePrerender, prerenderContext, logLevel)
@@ -562,7 +562,7 @@ async function createPageContextPrerendering(
     const pageContextFromRoute = await route(pageContext)
     assert(hasProp(pageContextFromRoute, 'pageId', 'null') || hasProp(pageContextFromRoute, 'pageId', 'string')) // Help TS
     assertRouteMatch(pageContextFromRoute, pageContext)
-    assert(pageContextFromRoute.pageId !== null && pageContextFromRoute.pageId !== undefined)
+    assert(pageContextFromRoute.pageId)
     objectAssign(pageContext, pageContextFromRoute)
   } else {
     assert(pageId)
@@ -577,7 +577,7 @@ async function createPageContextPrerendering(
   let usesClientRouter: boolean
   {
     const { pageId } = pageContext
-    assert(pageId !== null && pageId !== undefined)
+    assert(pageId)
     assert(globalContext._isPrerendering)
     if (globalContext._pageConfigs.length > 0) {
       const pageConfig = globalContext._pageConfigs.find((p) => p.pageId === pageId)
@@ -601,7 +601,7 @@ function assertRouteMatch(
   },
 ) {
   if (pageContextFromRoute.pageId !== null) {
-    assert(pageContextFromRoute.pageId !== null && pageContextFromRoute.pageId !== undefined)
+    assert(pageContextFromRoute.pageId)
     return
   }
   let hookName: string | undefined
