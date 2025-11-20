@@ -229,8 +229,8 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
   const onComplete = async (htmlFile: HtmlFile) => {
     prerenderedCount++
     const { pageId } = htmlFile.pageContext
-    assert((typeof pageId === 'string' && pageId) || pageId === null)
-    if (pageId) {
+    assert(typeof pageId === 'string' || pageId === null)
+    if (pageId !== null) {
       prerenderContext._prerenderedPageContexts[pageId] = htmlFile.pageContext
     }
     await writeFiles(htmlFile, viteConfig, options.onPagePrerender, prerenderContext, logLevel)
@@ -462,10 +462,8 @@ function getUrlListFromPagesWithStaticRoute(
   doNotPrerenderList: DoNotPrerenderList,
 ) {
   const urlList: UrlListEntry[] = []
-  console.log('DEBUG: _pageRoutes:', JSON.stringify(globalContext._pageRoutes, null, 2))
   globalContext._pageRoutes.map((pageRoute) => {
     const { pageId } = pageRoute
-    console.log('DEBUG: Processing pageRoute with pageId:', JSON.stringify(pageId))
 
     if (doNotPrerenderList.find((p) => p.pageId === pageId)) return
 
@@ -484,10 +482,8 @@ function getUrlListFromPagesWithStaticRoute(
     }
 
     assert(urlOriginal.startsWith('/'))
-    console.log('DEBUG: Adding to urlList:', { urlOriginal, pageId })
     urlList.push({ urlOriginal, pageId })
   })
-  console.log('DEBUG: Final urlList:', JSON.stringify(urlList, null, 2))
   return urlList
 }
 function getUrlList404(globalContext: GlobalContextServerInternal): UrlListEntry[] {
@@ -563,9 +559,7 @@ async function createPageContextPrerendering(
   })
 
   if (!is404) {
-    console.log('DEBUG: Calling route() with urlOriginal:', pageContext.urlOriginal)
     const pageContextFromRoute = await route(pageContext)
-    console.log('DEBUG: route() returned pageId:', pageContextFromRoute.pageId)
     assert(hasProp(pageContextFromRoute, 'pageId', 'null') || hasProp(pageContextFromRoute, 'pageId', 'string')) // Help TS
     assertRouteMatch(pageContextFromRoute, pageContext)
     assert(pageContextFromRoute.pageId !== null && pageContextFromRoute.pageId !== undefined)
@@ -583,7 +577,7 @@ async function createPageContextPrerendering(
   let usesClientRouter: boolean
   {
     const { pageId } = pageContext
-    assert(pageId)
+    assert(pageId !== null && pageId !== undefined)
     assert(globalContext._isPrerendering)
     if (globalContext._pageConfigs.length > 0) {
       const pageConfig = globalContext._pageConfigs.find((p) => p.pageId === pageId)
