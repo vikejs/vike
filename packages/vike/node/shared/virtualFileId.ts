@@ -53,6 +53,12 @@ assert(
   ),
 )
 
+// Workaround:
+// - We replace virtual:vike:page-entry:client:/ with virtual:vike:page-entry:client:ROOT
+// - In order to avoid Vite to replace `virtual:vike:page-entry:client:/` with `virtual:vike:page-entry:client:`
+// - I guess Vite/Rollup mistakenly treat the virtual ID as a path and tries to normalize id
+const ROOT = 'ROOT'
+
 type VirtualFileIdEntryParsed =
   | { type: 'global-entry'; isForClientSide: boolean; isClientRouting: boolean }
   | { type: 'page-entry'; isForClientSide: boolean; pageId: string; isExtractAssets: boolean }
@@ -83,8 +89,7 @@ function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
     if (id.startsWith(virtualFileIdPageEntryClient)) {
       assert(isExtractAssets === false)
       let pageId = id.slice(virtualFileIdPageEntryClient.length)
-      // Denormalize: ROOT in virtual file ID means pageId="/" (root page)
-      if (pageId === 'ROOT') pageId = '/'
+      if (pageId === ROOT) pageId = '/'
       return {
         type: 'page-entry',
         pageId,
@@ -94,8 +99,7 @@ function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
     }
     if (id.startsWith(virtualFileIdPageEntryServer)) {
       let pageId = id.slice(virtualFileIdPageEntryServer.length)
-      // Denormalize: ROOT in virtual file ID means pageId="/" (root page)
-      if (pageId === 'ROOT') pageId = '/'
+      if (pageId === ROOT) pageId = '/'
       return {
         type: 'page-entry',
         pageId,
@@ -127,13 +131,10 @@ function generateVirtualFileId(
   }
 
   if (args.type === 'page-entry') {
-    const { pageId, isForClientSide } = args
+    let { pageId, isForClientSide } = args
     assert(typeof pageId === 'string')
-    // Workaround: Vite normalizes virtual:vike:page-entry:client:/ to virtual:vike:page-entry:client:
-    // So we use ROOT as an explicit identifier for the root page instead of empty string
-    const normalizedPageId = pageId === '/' ? 'ROOT' : pageId
-    const id =
-      `${isForClientSide ? virtualFileIdPageEntryClient : virtualFileIdPageEntryServer}${normalizedPageId}` as const
+    pageId = pageId === '/' ? 'ROOT' : pageId
+    const id = `${isForClientSide ? virtualFileIdPageEntryClient : virtualFileIdPageEntryServer}${pageId}` as const
     return id
   }
 
