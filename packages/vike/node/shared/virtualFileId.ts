@@ -35,24 +35,6 @@ const virtualFileIdGlobalEntryPrefix =
   //
   'virtual:vike:global-entry:'
 
-const virtualFileIdGlobalEntries = [
-  virtualFileIdGlobalEntryServer,
-  virtualFileIdGlobalEntryClientCR,
-  virtualFileIdGlobalEntryClientSR,
-]
-assert(
-  virtualFileIdGlobalEntries.every((v) =>
-    //
-    v.startsWith(virtualFileIdGlobalEntryPrefix),
-  ),
-)
-assert(
-  [virtualFileIdPageEntryClient, virtualFileIdPageEntryServer].every((v) =>
-    //
-    v.startsWith(virtualFileIdPageEntryPrefix),
-  ),
-)
-
 type VirtualFileIdEntryParsed =
   | { type: 'global-entry'; isForClientSide: boolean; isClientRouting: boolean }
   | { type: 'page-entry'; isForClientSide: boolean; pageId: string; isExtractAssets: boolean }
@@ -63,7 +45,6 @@ function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
 
   // Global entry
   if (id.includes(virtualFileIdGlobalEntryPrefix)) {
-    assert(virtualFileIdGlobalEntries.includes(id))
     const isForClientSide = id !== virtualFileIdGlobalEntryServer
     const isClientRouting = id === virtualFileIdGlobalEntryClientCR
     return {
@@ -75,7 +56,6 @@ function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
 
   // Page entry
   if (id.includes(virtualFileIdPageEntryPrefix)) {
-    assert(id.startsWith(virtualFileIdPageEntryPrefix))
     const idOriginal = id
     id = extractAssetsRemoveQuery(id)
     const isExtractAssets = idOriginal !== id
@@ -114,7 +94,6 @@ function generateVirtualFileId(
 ): string {
   if (args.type === 'global-entry') {
     const { isForClientSide, isClientRouting } = args
-    assert(typeof isClientRouting === 'boolean')
     if (!isForClientSide) {
       return virtualFileIdGlobalEntryServer
     } else if (isClientRouting) {
@@ -123,16 +102,13 @@ function generateVirtualFileId(
       return virtualFileIdGlobalEntryClientSR
     }
   }
-
   if (args.type === 'page-entry') {
     const { pageId, isForClientSide } = args
-    assert(typeof pageId === 'string')
     const pageIdSerialized = serializePageId(pageId)
     const id =
       `${isForClientSide ? virtualFileIdPageEntryClient : virtualFileIdPageEntryServer}${pageIdSerialized}` as const
     return id
   }
-
   assert(false)
 }
 
