@@ -463,7 +463,6 @@ function getPageConfigsBuildTime(
       applyEffects(configValueSources, configDefinitionsLocal, plusFilesAll)
       sortConfigValueSources(configValueSources, locationId)
 
-      assert(locationId)
       const pageConfig = {
         pageId: locationId,
         ...pageConfigRoute,

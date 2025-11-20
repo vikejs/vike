@@ -46,9 +46,7 @@ function pluginBuildConfig(): Plugin[] {
           assertRollupInput(config)
           const entries = await getEntries(config)
           assert(Object.keys(entries).length > 0)
-          // console.log('entries', entries)
           config.build.rollupOptions.input = injectRollupInputs(entries, config)
-          // console.log('config.build.rollupOptions.input', config.build.rollupOptions.input)
           addLogHook()
           handleAssetsManifest_assertUsageCssCodeSplit(config)
         },
