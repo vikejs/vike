@@ -53,20 +53,6 @@ assert(
   ),
 )
 
-// Workaround:
-// - We replace virtual:vike:page-entry:client:/ with virtual:vike:page-entry:client:ROOT
-// - In order to avoid Vite to replace `virtual:vike:page-entry:client:/` with `virtual:vike:page-entry:client:`
-// - I guess Vite/Rollup mistakenly treat the virtual ID as a path and tries to normalize id
-const ROOT = 'ROOT'
-
-function serializePageId(pageId: string): string {
-  return pageId === '/' ? ROOT : pageId
-}
-
-function deserializePageId(pageId: string): string {
-  return pageId === ROOT ? '/' : pageId
-}
-
 type VirtualFileIdEntryParsed =
   | { type: 'global-entry'; isForClientSide: boolean; isClientRouting: boolean }
   | { type: 'page-entry'; isForClientSide: boolean; pageId: string; isExtractAssets: boolean }
@@ -148,4 +134,16 @@ function generateVirtualFileId(
   }
 
   assert(false)
+}
+
+// Workaround:
+// - We replace virtual:vike:page-entry:client:/ with virtual:vike:page-entry:client:ROOT
+// - In order to avoid Vite to replace `virtual:vike:page-entry:client:/` with `virtual:vike:page-entry:client:`
+// - I guess Vite/Rollup mistakenly treat the virtual ID as a path and tries to normalize id
+const ROOT = 'ROOT'
+function serializePageId(pageId: string): string {
+  return pageId === '/' ? ROOT : pageId
+}
+function deserializePageId(pageId: string): string {
+  return pageId === ROOT ? '/' : pageId
 }
