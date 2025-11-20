@@ -83,8 +83,8 @@ function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
     if (id.startsWith(virtualFileIdPageEntryClient)) {
       assert(isExtractAssets === false)
       let pageId = id.slice(virtualFileIdPageEntryClient.length)
-      // Denormalize: empty string in virtual file ID means pageId="/" (root page)
-      if (pageId === '') pageId = '/'
+      // Denormalize: ROOT in virtual file ID means pageId="/" (root page)
+      if (pageId === 'ROOT') pageId = '/'
       return {
         type: 'page-entry',
         pageId,
@@ -94,8 +94,8 @@ function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
     }
     if (id.startsWith(virtualFileIdPageEntryServer)) {
       let pageId = id.slice(virtualFileIdPageEntryServer.length)
-      // Denormalize: empty string in virtual file ID means pageId="/" (root page)
-      if (pageId === '') pageId = '/'
+      // Denormalize: ROOT in virtual file ID means pageId="/" (root page)
+      if (pageId === 'ROOT') pageId = '/'
       return {
         type: 'page-entry',
         pageId,
@@ -130,8 +130,8 @@ function generateVirtualFileId(
     const { pageId, isForClientSide } = args
     assert(typeof pageId === 'string')
     // Workaround: Vite normalizes virtual:vike:page-entry:client:/ to virtual:vike:page-entry:client:
-    // So we generate the normalized form directly for the root page to match what will be in the manifest
-    const normalizedPageId = pageId === '/' ? '' : pageId
+    // So we use ROOT as an explicit identifier for the root page instead of empty string
+    const normalizedPageId = pageId === '/' ? 'ROOT' : pageId
     const id =
       `${isForClientSide ? virtualFileIdPageEntryClient : virtualFileIdPageEntryServer}${normalizedPageId}` as const
     return id
