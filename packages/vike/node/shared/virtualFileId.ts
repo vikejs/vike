@@ -82,17 +82,23 @@ function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
 
     if (id.startsWith(virtualFileIdPageEntryClient)) {
       assert(isExtractAssets === false)
+      const pageIdFromVirtualId = id.slice(virtualFileIdPageEntryClient.length)
+      // Denormalize root pageId: "" in virtual file ID means pageId="/"
+      const pageId = pageIdFromVirtualId === '' ? '/' : pageIdFromVirtualId
       return {
         type: 'page-entry',
-        pageId: id.slice(virtualFileIdPageEntryClient.length),
+        pageId,
         isForClientSide: true,
         isExtractAssets,
       }
     }
     if (id.startsWith(virtualFileIdPageEntryServer)) {
+      const pageIdFromVirtualId = id.slice(virtualFileIdPageEntryServer.length)
+      // Denormalize root pageId: "" in virtual file ID means pageId="/"
+      const pageId = pageIdFromVirtualId === '' ? '/' : pageIdFromVirtualId
       return {
         type: 'page-entry',
-        pageId: id.slice(virtualFileIdPageEntryServer.length),
+        pageId,
         isForClientSide: false,
         isExtractAssets,
       }
@@ -123,7 +129,9 @@ function generateVirtualFileId(
   if (args.type === 'page-entry') {
     const { pageId, isForClientSide } = args
     assert(typeof pageId === 'string')
-    const id = `${isForClientSide ? virtualFileIdPageEntryClient : virtualFileIdPageEntryServer}${pageId}` as const
+    // Normalize root pageId for virtual file ID generation: "/" becomes ""
+    const normalizedPageId = pageId === '/' ? '' : pageId
+    const id = `${isForClientSide ? virtualFileIdPageEntryClient : virtualFileIdPageEntryServer}${normalizedPageId}` as const
     return id
   }
 
