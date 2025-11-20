@@ -2,7 +2,7 @@ export default Page
 
 import React from 'react'
 import { navigate } from 'vike/client/router'
-import { Counter } from './components/Counter'
+import { Counter } from '../../components/Counter'
 
 function Page() {
   return (
