@@ -463,8 +463,20 @@ function getPageConfigsBuildTime(
       applyEffects(configValueSources, configDefinitionsLocal, plusFilesAll)
       sortConfigValueSources(configValueSources, locationId)
 
+      // Use the filesystem route string as pageId to ensure consistency between build time and runtime
+      // This fixes issues where moving files between locations (e.g., pages/index/+Page.tsx to +Page.tsx)
+      // results in different pageIds but the same route
+      // Special case: for the root route "/", use empty string as pageId to match virtual file ID generation
+      let pageId: string
+      if (pageConfigRoute.isErrorPage) {
+        pageId = locationId
+      } else {
+        const routeString = pageConfigRoute.routeFilesystem.routeString
+        pageId = routeString === '/' ? '' : routeString
+      }
+
       const pageConfig = {
-        pageId: locationId,
+        pageId,
         ...pageConfigRoute,
         configDefinitions: configDefinitionsLocal,
         plusFiles: plusFilesRelevant,

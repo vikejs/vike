@@ -204,7 +204,7 @@ function getEntryFromPageConfig(pageConfig: PageConfigBuildTime, isForClientSide
   // dist/client/assets/entries/.Dp9wM6PK.js
   // dist/server/entries/.mjs
   // ```
-  if (entryName === '/') entryName = 'root'
+  if (entryName === '/' || entryName === '') entryName = 'root'
   entryName = prependEntriesDir(entryName)
   assert(!entryName.endsWith('/'))
   return { entryName, entryTarget }
