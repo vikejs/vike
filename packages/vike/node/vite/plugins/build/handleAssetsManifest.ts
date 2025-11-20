@@ -46,6 +46,11 @@ async function fixServerAssets(
   const clientManifest = await readManifestFile(config, true)
   const serverManifest = await readManifestFile(config, false)
 
+  // Workaround: Restore trailing slashes in virtual file IDs that were replaced with TRAILING_SLASH placeholder
+  // to prevent Vite from normalizing them away
+  restoreTrailingSlashes(clientManifest)
+  restoreTrailingSlashes(serverManifest)
+
   const { clientManifestMod, serverManifestMod, filesToMove, filesToRemove } = addServerAssets(
     clientManifest,
     serverManifest,
@@ -414,4 +419,15 @@ function getManifestFilePath(config: ResolvedConfig, client: boolean) {
   const manifestFilePathRelative = getManifestFilePathRelative(env.build.manifest)
   const manifestFilePath = path.posix.join(outDir, manifestFilePathRelative)
   return manifestFilePath
+}
+
+function restoreTrailingSlashes(manifest: ViteManifest) {
+  // Restore TRAILING_SLASH placeholder back to / in virtual file IDs
+  for (const [key, entry] of Object.entries(manifest)) {
+    if (key.includes('virtual:vike:page-entry:client:TRAILING_SLASH')) {
+      const newKey = key.replace('virtual:vike:page-entry:client:TRAILING_SLASH', 'virtual:vike:page-entry:client:/')
+      manifest[newKey] = entry
+      delete manifest[key]
+    }
+  }
 }

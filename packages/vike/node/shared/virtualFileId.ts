@@ -82,17 +82,23 @@ function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
 
     if (id.startsWith(virtualFileIdPageEntryClient)) {
       assert(isExtractAssets === false)
+      let pageId = id.slice(virtualFileIdPageEntryClient.length)
+      // Handle TRAILING_SLASH placeholder used to workaround Vite normalizing virtual file IDs
+      if (pageId === 'TRAILING_SLASH') pageId = '/'
       return {
         type: 'page-entry',
-        pageId: id.slice(virtualFileIdPageEntryClient.length),
+        pageId,
         isForClientSide: true,
         isExtractAssets,
       }
     }
     if (id.startsWith(virtualFileIdPageEntryServer)) {
+      let pageId = id.slice(virtualFileIdPageEntryServer.length)
+      // Handle TRAILING_SLASH placeholder used to workaround Vite normalizing virtual file IDs
+      if (pageId === 'TRAILING_SLASH') pageId = '/'
       return {
         type: 'page-entry',
-        pageId: id.slice(virtualFileIdPageEntryServer.length),
+        pageId,
         isForClientSide: false,
         isExtractAssets,
       }
