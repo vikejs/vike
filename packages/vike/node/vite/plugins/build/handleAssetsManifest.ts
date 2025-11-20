@@ -415,14 +415,3 @@ function getManifestFilePath(config: ResolvedConfig, client: boolean) {
   const manifestFilePath = path.posix.join(outDir, manifestFilePathRelative)
   return manifestFilePath
 }
-
-function restoreTrailingSlashes(manifest: ViteManifest) {
-  // Restore TRAILING_SLASH placeholder back to / in virtual file IDs
-  for (const [key, entry] of Object.entries(manifest)) {
-    if (key.includes('virtual:vike:page-entry:client:TRAILING_SLASH')) {
-      const newKey = key.replace('virtual:vike:page-entry:client:TRAILING_SLASH', 'virtual:vike:page-entry:client:/')
-      manifest[newKey] = entry
-      delete manifest[key]
-    }
-  }
-}
