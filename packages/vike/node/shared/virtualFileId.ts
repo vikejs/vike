@@ -132,7 +132,8 @@ function generateVirtualFileId(
     // Workaround: Vite normalizes virtual:vike:page-entry:client:/ to virtual:vike:page-entry:client:
     // So we generate the normalized form directly for the root page to match what will be in the manifest
     const normalizedPageId = pageId === '/' ? '' : pageId
-    const id = `${isForClientSide ? virtualFileIdPageEntryClient : virtualFileIdPageEntryServer}${normalizedPageId}` as const
+    const id =
+      `${isForClientSide ? virtualFileIdPageEntryClient : virtualFileIdPageEntryServer}${normalizedPageId}` as const
     return id
   }
 
