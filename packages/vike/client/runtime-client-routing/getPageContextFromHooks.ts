@@ -65,6 +65,11 @@ async function getPageContextFromHooks_isHydration(
     PageContextBegin &
     PageContextConfig & { _hasPageContextFromServer: true } & PageContextForPublicUsageClient,
 ) {
+  // Execute client-only guard hooks during hydration
+  if (hookClientOnlyExists('guard', pageContext)) {
+    await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageClient(pageContext))
+  }
+
   for (const hookName of ['data', 'onBeforeRender'] as const) {
     // TO-DO/soon/cumulative-hooks: filter & execute all client-only hooks
     // - The client-side needs to know what hooks are client-only
@@ -132,11 +137,11 @@ async function getPageContextFromClientHooks(
     if (hookName === 'guard') {
       if (
         !isErrorPage &&
-        // We don't need to call guard() on the client-side if we fetch pageContext from the server side. (Because the `${url}.pageContext.json` HTTP request will already trigger the routing and guard() hook on the server-side.)
-        !pageContext._hasPageContextFromServer
+        // Execute guard() if:
+        // 1. We don't have pageContext from server (client-side navigation), OR
+        // 2. The guard is client-only (needs to run even during hydration)
+        (!pageContext._hasPageContextFromServer || hookClientOnlyExists(hookName, pageContext))
       ) {
-        // Should we really call the guard() hook on the client-side? Shouldn't we make the guard() hook a server-side
-        // only hook? Or maybe make its env configurable like data() and onBeforeRender()?
         await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageClient(pageContext))
       }
     } else {
@@ -243,7 +248,7 @@ function hasServerOnlyHook(pageContext: {
 }
 
 function hookClientOnlyExists(
-  hookName: 'data' | 'onBeforeRender',
+  hookName: 'data' | 'onBeforeRender' | 'guard',
   pageContext: {
     pageId: string
     _globalContext: GlobalContextClientInternal
@@ -253,14 +258,14 @@ function hookClientOnlyExists(
   return !!hookEnv.client && !hookEnv.server
 }
 function getHookEnv(
-  hookName: 'data' | 'onBeforeRender',
+  hookName: 'data' | 'onBeforeRender' | 'guard',
   pageContext: {
     pageId: string
     _globalContext: GlobalContextClientInternal
   },
 ) {
   if (isOldDesign(pageContext)) {
-    // Client-only onBeforeRender() or data() hooks were never supported for the V0.4 design
+    // Client-only onBeforeRender(), data(), or guard() hooks were never supported for the V0.4 design
     return { client: false, server: true }
   }
   const pageConfig = getPageConfig(pageContext.pageId, pageContext._globalContext._pageConfigs)
