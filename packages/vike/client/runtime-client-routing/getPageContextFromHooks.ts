@@ -74,8 +74,7 @@ async function getPageContextFromHooks_isHydration(
   for (const hookName of clientHooks) {
     if (!hookClientOnlyExists(hookName, pageContext)) continue
     if (hookName === 'guard') {
-      // TODO/now dedupe
-      await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageClient(pageContext))
+      await execHookGuardClient(pageContext)
     } else {
       await execHookDataLike(hookName, pageContext)
     }
@@ -139,7 +138,7 @@ async function getPageContextFromClientHooks(
     if (!hookClientOnlyExists(hookName, pageContext) || pageContext._hasPageContextFromServer) continue
     if (hookName === 'guard') {
       if (isErrorPage) continue
-      await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageClient(pageContext))
+      await execHookGuardClient(pageContext)
     } else {
       if (hookName === 'data') dataHookExecuted = true
       // This won't do anything if no hook has been defined or if the hook's env.client is false.
@@ -321,4 +320,10 @@ function isOldDesign(pageContext: {
   _globalContext: GlobalContextClientInternal
 }) {
   return pageContext._globalContext._pageConfigs.length === 0
+}
+
+async function execHookGuardClient(
+  pageContext: Parameters<typeof execHookGuard>[0] & Parameters<typeof preparePageContextForPublicUsageClient>[0],
+) {
+  await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageClient(pageContext))
 }
