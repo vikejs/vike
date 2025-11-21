@@ -4,6 +4,7 @@ export { testRedirectMailto }
 export { testOnCreateGlobalContext }
 export { testHooksCalled }
 export { testHeadersResponse }
+export { testGuardClient }
 
 import {
   autoRetry,
@@ -219,5 +220,58 @@ function testHeadersResponse() {
       expect(resp.headers.get('SOME-STaTIc-Header')).toBe('some-static-header-value')
       expect(resp.headers.get('some-dynamic-header')).toBe('the-page-url=/')
     }
+  })
+}
+
+function testGuardClient() {
+  test('client-side guard with render() - page reload', async () => {
+    // Navigate directly to the guard test page (simulates page reload)
+    await page.goto(getServerUrl() + '/guard-client-only')
+
+    // The guard should execute and redirect to success page
+    await autoRetry(async () => {
+      const url = page.url()
+      expect(url).toContain('/guard-client-only/success')
+    })
+
+    // Verify the guard executed and redirected correctly
+    await autoRetry(async () => {
+      const guardExecuted = await page.textContent('#guard-executed')
+      expect(guardExecuted).toBe('Yes')
+    })
+
+    // Verify the guard actually ran by checking the global flag
+    const guardExecuted = await page.evaluate(() => (window as any).__GUARD_CLIENT_EXECUTED__)
+    expect(guardExecuted).toBe(true)
+  })
+
+  test('client-side guard with render() - client-side navigation', async () => {
+    // Start from home page
+    await page.goto(getServerUrl() + '/')
+
+    // Clear any previous guard execution
+    await page.evaluate(() => {
+      ;(window as any).__GUARD_CLIENT_EXECUTED__ = false
+      ;(window as any).__GUARD_CLIENT_TIMESTAMP__ = null
+    })
+
+    // Navigate to guard test page via client-side routing
+    await page.click('a[href="/guard-client-only"]')
+
+    // The guard should execute and redirect to success page
+    await autoRetry(async () => {
+      const url = page.url()
+      expect(url).toContain('/guard-client-only/success')
+    })
+
+    // Verify the guard executed and redirected correctly
+    await autoRetry(async () => {
+      const guardExecuted = await page.textContent('#guard-executed')
+      expect(guardExecuted).toBe('Yes')
+    })
+
+    // Verify the guard actually ran
+    const guardExecuted = await page.evaluate(() => (window as any).__GUARD_CLIENT_EXECUTED__)
+    expect(guardExecuted).toBe(true)
   })
 }

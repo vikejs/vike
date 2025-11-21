@@ -19,6 +19,9 @@ function Page() {
           Interactive. <Counter />
         </li>
       </ul>
+      <p>
+        <a href="/guard-client-only">Test Client-Side Guard with render()</a> - Tests that +guard.client.js executes and redirects on both page reload and navigation.
+      </p>
     </>
   )
 }
