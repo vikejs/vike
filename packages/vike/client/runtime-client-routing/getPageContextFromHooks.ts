@@ -44,6 +44,9 @@ const globalObject = getGlobalObject<{
   pageContextInitIsPassedToClient?: true
 }>('runtime-client-routing/getPageContextFromHooks.ts', {})
 
+// TO-DO/soon/cumulative-hooks: filter & execute all client-only hooks (see other TO-DO/soon/cumulative-hooks entries)
+// - The client-side needs to know what hooks are client-only
+//   - Possible implementation: new computed prop `clientOnlyHooks: string[]` (list of hook ids) and add `hookId` to serialized config values
 const clientHooks = ['guard', 'data', 'onBeforeRender'] as const
 
 type PageContextSerialized = {
@@ -69,16 +72,12 @@ async function getPageContextFromHooks_isHydration(
     PageContextConfig & { _hasPageContextFromServer: true } & PageContextForPublicUsageClient,
 ) {
   for (const hookName of clientHooks) {
-    // TO-DO/soon/cumulative-hooks: filter & execute all client-only hooks
-    // - The client-side needs to know what hooks are client-only
-    //   - Possible implementation: new computed prop `clientOnlyHooks: string[]` (list of hook ids) and add `hookId` to serialized config values
-    if (hookClientOnlyExists(hookName, pageContext)) {
-      if (hookName === 'guard') {
-        // TODO/now dedupe
-        await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageClient(pageContext))
-      } else {
-        await execHookDataLike(hookName, pageContext)
-      }
+    if (!hookClientOnlyExists(hookName, pageContext)) continue
+    if (hookName === 'guard') {
+      // TODO/now dedupe
+      await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageClient(pageContext))
+    } else {
+      await execHookDataLike(hookName, pageContext)
     }
   }
   return pageContext
@@ -137,17 +136,14 @@ async function getPageContextFromClientHooks(
   // Note: for the error page, we also execute the client-side data() and onBeforeRender() hooks, but maybe we
   // shouldn't? The server-side does it as well (but maybe it shouldn't).
   for (const hookName of clientHooks) {
+    if (!hookClientOnlyExists(hookName, pageContext) || pageContext._hasPageContextFromServer) continue
     if (hookName === 'guard') {
-      if (!isErrorPage && (!pageContext._hasPageContextFromServer || hookClientOnlyExists(hookName, pageContext))) {
-        await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageClient(pageContext))
-      }
+      if (isErrorPage) continue
+      await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageClient(pageContext))
     } else {
-      // TO-DO/soon/cumulative-hooks: filter & execute all client-only hooks (see other TO-DO/soon/cumulative-hooks entries)
-      if (hookClientOnlyExists(hookName, pageContext) || !pageContext._hasPageContextFromServer) {
-        if (hookName === 'data') dataHookExecuted = true
-        // This won't do anything if no hook has been defined or if the hook's env.client is false.
-        await execHookDataLike(hookName, pageContext)
-      }
+      if (hookName === 'data') dataHookExecuted = true
+      // This won't do anything if no hook has been defined or if the hook's env.client is false.
+      await execHookDataLike(hookName, pageContext)
     }
   }
 
