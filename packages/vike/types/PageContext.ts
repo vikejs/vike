@@ -240,7 +240,11 @@ type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltI
     | 'from'
   > &
   PageContextClientCommon & {
-    /** Whether the current page is already rendered to HTML */
+    /**
+     * Whether the page is the first page rendered.
+     *
+     * https://vike.dev/pageContext#isHydration
+     */
     isHydration: boolean
     /**
      * Whether the user is navigating backward in history.
@@ -271,9 +275,9 @@ type PageContextBuiltInClientWithServerRouting<Data> = Partial<PageContextBuiltI
   Pick<PageContextBuiltInCommon<Data>, 'Page' | 'pageExports' | 'exports' | 'abortReason' | 'pageId' | 'data'> &
   PageContextClientCommon & {
     /**
-     * Whether the current page is already rendered to HTML.
+     * Whether the page is the first page rendered.
      *
-     * The `isHydration` value is always `true` when using Server Routing.
+     * The value is always `true` when using Server Routing.
      *
      * https://vike.dev/pageContext#isHydration
      */
