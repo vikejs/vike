@@ -138,9 +138,6 @@ async function getPageContextFromClientHooks(
     if (hookName === 'guard') {
       if (
         !isErrorPage &&
-        // Execute guard() if:
-        // 1. We don't have pageContext from server (client-side navigation), OR
-        // 2. The guard is client-only (needs to run even during hydration)
         (!pageContext._hasPageContextFromServer || hookClientOnlyExists(hookName, pageContext))
       ) {
         await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageClient(pageContext))
