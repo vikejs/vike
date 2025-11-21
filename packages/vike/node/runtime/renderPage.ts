@@ -34,11 +34,9 @@ import {
 import {
   assertNoInfiniteAbortLoop,
   ErrorAbort,
-  getPageContextFromAllRewrites,
   getPageContextFromAllAborts,
   isAbortError,
   logAbortErrorHandled,
-  PageContextFromRewrite,
   type PageContextFromAbort,
 } from '../../shared/route/abort.js'
 import {
@@ -185,31 +183,29 @@ async function renderPagePrepare(
     if (pageContextHttpResponse) return pageContextHttpResponse
   }
 
-  return await renderPageAlreadyPrepared(pageContextBegin, globalContext, httpRequestId, [], [])
+  return await renderPageAlreadyPrepared(pageContextBegin, globalContext, httpRequestId, [])
 }
 
 async function renderPageAlreadyPrepared(
   pageContextBegin: PageContextBegin,
   globalContext: GlobalContextServerInternal,
   httpRequestId: number,
-  pageContextsFromRewrite: PageContextFromRewrite[],
   pageContextsFromAborts: PageContextFromAbort[] = [],
 ): Promise<PageContextAfterRender> {
   const pageContextNominalPageBegin = forkPageContext(pageContextBegin)
   assertNoInfiniteAbortLoop(
-    pageContextsFromRewrite.length,
+    // Count rewrite aborts for infinite loop detection
+    pageContextsFromAborts.filter(abort => '_urlRewrite' in abort).length,
     // There doesn't seem to be a way to count the number of HTTP redirects (vike don't have access to the HTTP request headers/cookies)
     // https://stackoverflow.com/questions/9683007/detect-infinite-http-redirect-loop-on-server-side
     0,
   )
   let pageContextNominalPageSuccess: undefined | Awaited<ReturnType<typeof renderPageNominal>>
-  const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
-  // This is where pageContext._urlRewrite is set
-  assert(pageContextFromAllRewrites._urlRewrite === null || typeof pageContextFromAllRewrites._urlRewrite === 'string')
-  objectAssign(pageContextNominalPageBegin, pageContextFromAllRewrites)
 
-  // Add previousPageContexts from aborts
+  // Add previousPageContexts and _urlRewrite from aborts
   const pageContextFromAllAborts = getPageContextFromAllAborts(pageContextsFromAborts)
+  // This is where pageContext._urlRewrite is set
+  assert(pageContextFromAllAborts._urlRewrite === null || typeof pageContextFromAllAborts._urlRewrite === 'string')
   objectAssign(pageContextNominalPageBegin, pageContextFromAllAborts)
   let errNominalPage: unknown
   {
@@ -246,7 +242,6 @@ async function renderPageAlreadyPrepared(
       pageContextNominalPageBegin,
       globalContext,
       httpRequestId,
-      pageContextsFromRewrite,
       pageContextsFromAborts,
     )
   }
@@ -262,7 +257,6 @@ async function renderPageOnError(
   pageContextNominalPageBegin: PageContextBegin,
   globalContext: GlobalContextServerInternal,
   httpRequestId: number,
-  pageContextsFromRewrite: PageContextFromRewrite[],
   pageContextsFromAborts: PageContextFromAbort[] = [],
 ) {
   assert(pageContextNominalPageBegin)
@@ -274,7 +268,6 @@ async function renderPageOnError(
   if (isAbortError(errNominalPage)) {
     const handled = await handleAbortError(
       errNominalPage,
-      pageContextsFromRewrite,
       pageContextBegin,
       pageContextNominalPageBegin,
       httpRequestId,
@@ -310,7 +303,6 @@ async function renderPageOnError(
     if (isAbortError(errErrorPage)) {
       const handled = await handleAbortError(
         errErrorPage,
-        pageContextsFromRewrite,
         pageContextBegin,
         pageContextNominalPageBegin,
         httpRequestId,
@@ -593,7 +585,6 @@ function normalize(url: string) {
 
 async function handleAbortError(
   errAbort: ErrorAbort,
-  pageContextsFromRewrite: PageContextFromRewrite[],
   pageContextBegin: PageContextBegin,
   // handleAbortError() creates a new pageContext object and we don't merge pageContextNominalPageBegin to it: we only use some pageContextNominalPageBegin information.
   pageContextNominalPageBegin: PageContextBegin,
@@ -640,8 +631,7 @@ async function handleAbortError(
       pageContextBegin,
       globalContext,
       httpRequestId,
-      [...pageContextsFromRewrite, pageContextAbort],
-      [...pageContextsFromAborts, { pageContext: { urlOriginal: pageContextBegin.urlOriginal, _abortType: 'rewrite' as const } }]
+      [...pageContextsFromAborts, pageContextAbort]
     )
     Object.assign(pageContextReturn, pageContextAbort)
     return { pageContextReturn }
