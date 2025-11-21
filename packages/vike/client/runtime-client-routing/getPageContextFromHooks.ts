@@ -44,6 +44,8 @@ const globalObject = getGlobalObject<{
   pageContextInitIsPassedToClient?: true
 }>('runtime-client-routing/getPageContextFromHooks.ts', {})
 
+const clientHooks = ['guard', 'data', 'onBeforeRender'] as const
+
 type PageContextSerialized = {
   pageId: string
   _hasPageContextFromServer: true
@@ -66,17 +68,17 @@ async function getPageContextFromHooks_isHydration(
     PageContextBegin &
     PageContextConfig & { _hasPageContextFromServer: true } & PageContextForPublicUsageClient,
 ) {
-  if (hookClientOnlyExists('guard', pageContext)) {
-    // TODO/now dedupe
-    await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageClient(pageContext))
-  }
-
-  for (const hookName of ['data', 'onBeforeRender'] as const) {
+  for (const hookName of clientHooks) {
     // TO-DO/soon/cumulative-hooks: filter & execute all client-only hooks
     // - The client-side needs to know what hooks are client-only
     //   - Possible implementation: new computed prop `clientOnlyHooks: string[]` (list of hook ids) and add `hookId` to serialized config values
     if (hookClientOnlyExists(hookName, pageContext)) {
-      await execHookDataLike(hookName, pageContext)
+      if (hookName === 'guard') {
+        // TODO/now dedupe
+        await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageClient(pageContext))
+      } else {
+        await execHookDataLike(hookName, pageContext)
+      }
     }
   }
   return pageContext
@@ -134,7 +136,7 @@ async function getPageContextFromClientHooks(
   // server-side, so we run only the client-only ones in this case.
   // Note: for the error page, we also execute the client-side data() and onBeforeRender() hooks, but maybe we
   // shouldn't? The server-side does it as well (but maybe it shouldn't).
-  for (const hookName of ['guard', 'data', 'onBeforeRender'] as const) {
+  for (const hookName of clientHooks) {
     if (hookName === 'guard') {
       if (!isErrorPage && (!pageContext._hasPageContextFromServer || hookClientOnlyExists(hookName, pageContext))) {
         await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageClient(pageContext))
