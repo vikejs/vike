@@ -69,7 +69,7 @@ If you define `+guard.client.js` then it's executed and loaded only on the clien
 
 Upon the first page the user visits, `+guard.client.js` is called before rendering/<Link href="/hydration">hydrating</Link>. If that's an issue, consider:
  - Setting <Link href="/ssr">`+ssr: false`</Link>. (The `+guard.client.js` will then be able to block rendering.)
- - Using <Link href="/render">`throw render()`</Link> / <Link href="/redirect">`throw redirect()`</Link> inside <Link href="/hooks">another hook</Link>, for example <Link href="/onHydrationEnd">`+onHyrdationEnd`</Link>.
+ - Using <Link href="/render">`throw render()`</Link> / <Link href="/redirect">`throw redirect()`</Link> inside <Link href="/hooks">another hook</Link>, for example <Link href="/onHydrationEnd">`+onHydrationEnd`</Link>.
 
 > Aborting hydration works with React but [not with Vue](https://github.com/vuejs/vue/issues/13235).
 
