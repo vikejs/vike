@@ -12,8 +12,7 @@ function onData(pageContext: PageContext & { data: Data }) {
     assert(pageContext.isClientSideNavigation)
     */
   } else {
-    assert(pageContext.isHydration)
-    // @ts-expect-error TODO/now
-    assert(!pageContext.isClientSideNavigation)
+    assert(pageContext.isHydration === undefined)
+    assert(pageContext.isClientSideNavigation === false)
   }
 }
