@@ -59,6 +59,21 @@ If you define `+guard.server.js` then `guard()` is only executed and loaded on t
 
 > See also: <Link href="/file-env" />
 
+#### `+guard.client.js`
+
+Defining `+guard.client.js` isn't currently supported.
+
+Generally `+guard` is used to avoid the rendering process of a page (typically when the user isn't authorized to view that page).
+
+Usually, the motivation for defining a client-only `+guard.client.js` is to implement authorization for a pre-rendered page (e.g. an SSG app that doesn't even have a server). But that cannot work: if the page is pre-rendered then it's rendered at build-time but authorization is done at request-time. In other words: the rendering of the page (done at build-time) cannot be aborted.
+
+So, instead consider using in another hook such as <Link href="/onHyrdationEnd">`+onHyrdationEnd`</Link> `+guard.client.js` 
+The fundamental issue with `+guard.client.js`
+
+If you define `+guard.server.js` then `guard()` is only executed and loaded on the server.
+
+> See also: <Link href="/file-env" />
+
 #### Use other hooks
 
 For more control on where and when your guarding logic is executed, consider using <Link href="/render">`throw render()`</Link> / <Link href="/redirect">`throw redirect()`</Link> inside <Link href="/hooks">another hook</Link> than `guard()`.
