@@ -34,7 +34,7 @@ Note that:
 
 ## Execution order
 
-The `guard()` hook is the first hook called after the routing is evaluated. Most notably, it's always called before the <Link href="/data">`data()` hook</Link>. See <Link href="/hooks#lifecycle" />.
+By default, the `guard()` hook is the first hook called after the routing is evaluated. Most notably, it's always called before the <Link href="/data">`data()` hook</Link>. See <Link href="/hooks#lifecycle" />.
 
 > This guarantees that `throw render()` / `throw redirect()` is called before fetching data. (Unauthorized data fetching can be problematic.)
 
@@ -51,7 +51,7 @@ The `guard()` hook is called in the same environment as <Link href="/data">`data
 
 If the page doesn't have a `data()` hook, then `guard()` executes in the environment where routing happens. See <Link href="/hooks#lifecycle" />.
 
-> By default, the `guard()` hook (and the entire `+guard.js` file) is always loaded in both the client and server — even if it only executes on the server-side.
+> By default, the `guard()` hook (and the entire `+guard.js` file) is always loaded in both the client and server — even if it executes only on the client- or server-side.
 
 #### `+guard.server.js`
 
