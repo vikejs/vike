@@ -44,7 +44,7 @@ Build fast.
 - File-based server/client separation => ✅ Never mixed server/client code inside same file
   - [wip] IDE extension to show you the environment of each file.
 - Out-of-the-box state management support with Vike extensions.
-  [TODO] Compare with:
+  [TO-DO/eventually] Compare with:
   - https://redux.js.org/usage/nextjs
   - https://zustand.docs.pmnd.rs/guides/nextjs
 - Powerful hooks such as +onCreateGlobalContext and +onCreatePageContext
@@ -79,7 +79,7 @@ Open Source Pricing
 - [Our passion: solve your issues, build a premium framework, and for that we need to capture some fraction of the value we create]
 
 
-## Features [TODO: organize]
+## Features [TO-DO/eventually: organize]
 
 Unique Vike features:
  - URL rewriting for both [novel DX and novel UX](https://twitter.com/brillout/status/1687431520569425920) around authentication and authorization
@@ -116,7 +116,7 @@ Minor features that can be life changing for some users:
 - Supports [`@vitejs/plugin-legacy`](https://github.com/vitejs/vite/tree/main/packages/plugin-legacy).
 
 
-## Features [TODO: implement]
+## Features [TO-DO/eventually: implement]
 
 Things missing that some frameworks have (but is on the roadmap):
  - Nested Layouts

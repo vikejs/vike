@@ -29,14 +29,14 @@ Note that:
 
 - It can be asynchronous. (Unlike <Link href="/route-function">Route Functions</Link> which are always synchronous.)
 - A single `guard()` hook <Link href="/config#inheritance">can apply to one or multiple pages</Link>.
-- It's always used together with <Link href="/render">`throw render()`</Link> or <Link href="/redirect">`throw redirect()`</Link>. (The `guard()` hook doesn't accept any return value.)
+- It's always used together with <Link href="/render">`throw render()`</Link> or <Link href="/redirect">`throw redirect()`</Link>. (The `guard()` hook doesn't return any value.)
 
 
 ## Execution order
 
 The `guard()` hook is the first hook called after the routing is evaluated. Most notably, it's always called before the <Link href="/data">`data()` hook</Link>. See <Link href="/hooks#lifecycle" />.
 
-> Whenever possible, we recommend using `throw render()` / `throw redirect()` before fetching data. (Unauthorized data fetching can be problematic.)
+> This guarantees that `throw render()` / `throw redirect()` is called before fetching data. (Unauthorized data fetching can be problematic.)
 
 If you want to guard your pages after or during fetching data, then use <Link href="/render">`throw render()`</Link> / <Link href="/redirect">`throw redirect()`</Link> inside your `data()` hook instead (or any another <Link href="/hooks">Vike hook</Link>).
 
@@ -55,13 +55,13 @@ If the page doesn't have a `data()` hook, then `guard()` executes in the environ
 
 #### `+guard.server.js`
 
-If you define `+guard.server.js` then `guard()` is always executed and only loaded on the server.
+If you define `+guard.server.js` then `guard()` is only executed and loaded on the server.
 
-> See also: see <Link href="/file-env" />
+> See also: <Link href="/file-env" />
 
 #### Use other hooks
 
-For more control on where and when your guarding logic is executed, consider using <Link href="/render">`throw render()`</Link> / <Link href="/redirect">`throw redirect()`</Link> inside another hook than `guard()`.
+For more control on where and when your guarding logic is executed, consider using <Link href="/render">`throw render()`</Link> / <Link href="/redirect">`throw redirect()`</Link> inside <Link href="/hooks">another hook</Link> than `guard()`.
 
 
 ## See also
