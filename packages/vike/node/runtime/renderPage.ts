@@ -35,9 +35,11 @@ import {
   assertNoInfiniteAbortLoop,
   ErrorAbort,
   getPageContextFromAllRewrites,
+  getPageContextFromAllAborts,
   isAbortError,
   logAbortErrorHandled,
   PageContextFromRewrite,
+  type PageContextFromAbort,
 } from '../../shared/route/abort.js'
 import {
   getGlobalContextServerInternal,
@@ -183,7 +185,7 @@ async function renderPagePrepare(
     if (pageContextHttpResponse) return pageContextHttpResponse
   }
 
-  return await renderPageAlreadyPrepared(pageContextBegin, globalContext, httpRequestId, [])
+  return await renderPageAlreadyPrepared(pageContextBegin, globalContext, httpRequestId, [], [])
 }
 
 async function renderPageAlreadyPrepared(
@@ -191,6 +193,7 @@ async function renderPageAlreadyPrepared(
   globalContext: GlobalContextServerInternal,
   httpRequestId: number,
   pageContextsFromRewrite: PageContextFromRewrite[],
+  pageContextsFromAborts: PageContextFromAbort[] = [],
 ): Promise<PageContextAfterRender> {
   const pageContextNominalPageBegin = forkPageContext(pageContextBegin)
   assertNoInfiniteAbortLoop(
@@ -204,6 +207,10 @@ async function renderPageAlreadyPrepared(
   // This is where pageContext._urlRewrite is set
   assert(pageContextFromAllRewrites._urlRewrite === null || typeof pageContextFromAllRewrites._urlRewrite === 'string')
   objectAssign(pageContextNominalPageBegin, pageContextFromAllRewrites)
+
+  // Add previousPageContexts from aborts
+  const pageContextFromAllAborts = getPageContextFromAllAborts(pageContextsFromAborts)
+  objectAssign(pageContextNominalPageBegin, pageContextFromAllAborts)
   let errNominalPage: unknown
   {
     try {
@@ -240,6 +247,7 @@ async function renderPageAlreadyPrepared(
       globalContext,
       httpRequestId,
       pageContextsFromRewrite,
+      pageContextsFromAborts,
     )
   }
 }
@@ -255,6 +263,7 @@ async function renderPageOnError(
   globalContext: GlobalContextServerInternal,
   httpRequestId: number,
   pageContextsFromRewrite: PageContextFromRewrite[],
+  pageContextsFromAborts: PageContextFromAbort[] = [],
 ) {
   assert(pageContextNominalPageBegin)
   assert(hasProp(pageContextNominalPageBegin, 'urlOriginal', 'string'))
@@ -271,6 +280,7 @@ async function renderPageOnError(
       httpRequestId,
       pageContextErrorPageInit,
       globalContext,
+      pageContextsFromAborts,
     )
     if (handled.pageContextReturn) {
       // - throw redirect()
@@ -306,6 +316,7 @@ async function renderPageOnError(
         httpRequestId,
         pageContextErrorPageInit,
         globalContext,
+        pageContextsFromAborts,
       )
       // throw render(abortStatusCode)
       if (!handled.pageContextReturn) {
@@ -589,6 +600,7 @@ async function handleAbortError(
   httpRequestId: number,
   pageContextErrorPageInit: PageContextErrorPageInit,
   globalContext: GlobalContextServerInternal,
+  pageContextsFromAborts: PageContextFromAbort[] = [],
 ): Promise<
   | { pageContextReturn: PageContextAfterRender; pageContextAbort?: never }
   | { pageContextReturn?: never; pageContextAbort: Record<string, unknown> }
@@ -624,10 +636,13 @@ async function handleAbortError(
   }
 
   if (pageContextAbort._urlRewrite) {
-    const pageContextReturn = await renderPageAlreadyPrepared(pageContextBegin, globalContext, httpRequestId, [
-      ...pageContextsFromRewrite,
-      pageContextAbort,
-    ])
+    const pageContextReturn = await renderPageAlreadyPrepared(
+      pageContextBegin,
+      globalContext,
+      httpRequestId,
+      [...pageContextsFromRewrite, pageContextAbort],
+      [...pageContextsFromAborts, { pageContext: { urlOriginal: pageContextBegin.urlOriginal, _abortType: 'rewrite' as const } }]
+    )
     Object.assign(pageContextReturn, pageContextAbort)
     return { pageContextReturn }
   }

@@ -6,6 +6,7 @@ export { isAbortPageContext }
 export { logAbortErrorHandled }
 export { getPageContextFromAllRewrites }
 export { getPageContextFromAllRedirects }
+export { getPageContextFromAllAborts }
 export { AbortRender }
 export { assertNoInfiniteAbortLoop }
 export type { RedirectStatusCode }
@@ -13,6 +14,7 @@ export type { AbortStatusCode }
 export type { ErrorAbort }
 export type { PageContextFromRewrite }
 export type { PageContextFromRedirect }
+export type { PageContextFromAbort }
 export type { UrlRedirect }
 export type { PageContextAbort }
 
@@ -327,6 +329,31 @@ function getPageContextFromAllRedirects(pageContextsFromRedirect: PageContextFro
     redirectChain.push(pageContextFromRedirect._urlRedirect)
   })
   return { isRedirect: redirectChain }
+}
+
+type PageContextFromAbort = PageContextFromRewrite | PageContextFromRedirect | { pageContext: any }
+type PageContextFromAllAborts = { previousPageContexts: any[] }
+function getPageContextFromAllAborts(pageContextsFromAborts: PageContextFromAbort[]): PageContextFromAllAborts {
+  const previousPageContexts: any[] = []
+  pageContextsFromAborts.forEach((pageContextFromAbort) => {
+    if ('pageContext' in pageContextFromAbort) {
+      // This is a full pageContext from a previous abort
+      previousPageContexts.push(pageContextFromAbort.pageContext)
+    } else if ('_urlRedirect' in pageContextFromAbort) {
+      // This is a redirect - create a minimal pageContext
+      previousPageContexts.push({
+        urlOriginal: pageContextFromAbort._urlRedirect,
+        _abortType: 'redirect' as const,
+      })
+    } else if ('_urlRewrite' in pageContextFromAbort) {
+      // This is a rewrite - create a minimal pageContext
+      previousPageContexts.push({
+        urlOriginal: pageContextFromAbort._urlRewrite,
+        _abortType: 'rewrite' as const,
+      })
+    }
+  })
+  return { previousPageContexts }
 }
 function assertNoInfiniteLoop(pageContextsFromRewrite: PageContextFromRewrite[]) {
   const urlRewrites: string[] = []

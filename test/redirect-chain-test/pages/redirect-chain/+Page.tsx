@@ -1,21 +1,30 @@
 export default Page
 
 import React from 'react'
+import type { PreviousPageContext } from 'vike/types'
 
-function Page({ isRedirect, urlOriginal }: { isRedirect: string[], urlOriginal: string }) {
+function Page({
+  previousPageContexts,
+  urlOriginal
+}: {
+  previousPageContexts: PreviousPageContext[],
+  urlOriginal: string
+}) {
   return (
     <div>
-      <h1>Redirect Chain Test</h1>
+      <h1>Previous Page Contexts Test</h1>
       <p>Current URL: {urlOriginal}</p>
-      <p>Redirect Chain Length: {isRedirect.length}</p>
+      <p>Previous Page Contexts Length: {previousPageContexts.length}</p>
       <div>
-        <h2>Redirect Chain:</h2>
-        {isRedirect.length === 0 ? (
-          <p id="no-redirects">No redirects - this page was accessed directly</p>
+        <h2>Previous Page Contexts:</h2>
+        {previousPageContexts.length === 0 ? (
+          <p id="no-previous-contexts">No previous contexts - this page was accessed directly</p>
         ) : (
-          <ol id="redirect-chain">
-            {isRedirect.map((url, index) => (
-              <li key={index}>{url}</li>
+          <ol id="previous-contexts">
+            {previousPageContexts.map((pageContext, index) => (
+              <li key={index}>
+                {pageContext.urlOriginal} ({pageContext._abortType || 'unknown'})
+              </li>
             ))}
           </ol>
         )}
@@ -25,7 +34,8 @@ function Page({ isRedirect, urlOriginal }: { isRedirect: string[], urlOriginal: 
         <ul>
           <li><a href="/redirect-to-chain">Single redirect to this page</a></li>
           <li><a href="/redirect-to-redirect-to-chain">Double redirect to this page</a></li>
-          <li><a href="/redirect-chain">Direct access (no redirects)</a></li>
+          <li><a href="/rewrite-to-chain">Single rewrite to this page</a></li>
+          <li><a href="/redirect-chain">Direct access (no redirects/rewrites)</a></li>
         </ul>
       </div>
     </div>

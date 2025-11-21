@@ -46,11 +46,13 @@ import {
   type ErrorAbort,
   getPageContextFromAllRewrites,
   getPageContextFromAllRedirects,
+  getPageContextFromAllAborts,
   isAbortError,
   logAbortErrorHandled,
   PageContextAbort,
   type PageContextFromRewrite,
   type PageContextFromRedirect,
+  type PageContextFromAbort,
 } from '../../shared/route/abort.js'
 import { route } from '../../shared/route/index.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
@@ -113,6 +115,7 @@ type RenderArgs = {
   overwriteLastHistoryEntry?: boolean
   pageContextsFromRewrite?: PageContextFromRewrite[]
   pageContextsFromRedirect?: PageContextFromRedirect[]
+  pageContextsFromAborts?: PageContextFromAbort[]
   redirectCount?: number
   doNotRenderIfSamePage?: boolean
   isClientSideNavigation?: boolean
@@ -128,6 +131,7 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
     isHistoryNavigation = false,
     pageContextsFromRewrite = [],
     pageContextsFromRedirect = [],
+    pageContextsFromAborts = [],
     redirectCount = 0,
     doNotRenderIfSamePage,
     isClientSideNavigation = true,
@@ -147,6 +151,7 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
     isHistoryNavigation,
     pageContextsFromRewrite,
     pageContextsFromRedirect,
+    pageContextsFromAborts,
     isClientSideNavigation,
     pageContextInitClient,
     isFirstRender,
@@ -467,6 +472,7 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
         ...renderArgs,
         scrollTarget: undefined,
         pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAbort],
+        pageContextsFromAborts: [...pageContextsFromAborts, { pageContext: { urlOriginal, _abortType: 'rewrite' as const } }],
       })
       return { skip: true }
     }
@@ -487,6 +493,7 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
           overwriteLastHistoryEntry: false,
           redirectCount: redirectCount + 1,
           pageContextsFromRedirect: [...pageContextsFromRedirect, { _urlRedirect: urlOriginal }],
+          pageContextsFromAborts: [...pageContextsFromAborts, { pageContext: { urlOriginal, _abortType: 'redirect' as const } }],
         })
       }
       return { skip: true }
@@ -611,6 +618,7 @@ async function getPageContextBegin(
     isHistoryNavigation,
     pageContextsFromRewrite,
     pageContextsFromRedirect,
+    pageContextsFromAborts,
     isClientSideNavigation,
     pageContextInitClient,
     isFirstRender,
@@ -620,6 +628,7 @@ async function getPageContextBegin(
     isHistoryNavigation: boolean
     pageContextsFromRewrite: PageContextFromRewrite[]
     pageContextsFromRedirect: PageContextFromRedirect[]
+    pageContextsFromAborts: PageContextFromAbort[]
     isClientSideNavigation: boolean
     pageContextInitClient: Record<string, unknown> | undefined
     isFirstRender: boolean
@@ -656,6 +665,10 @@ async function getPageContextBegin(
   {
     const pageContextFromAllRedirects = getPageContextFromAllRedirects(pageContextsFromRedirect)
     objectAssign(pageContext, pageContextFromAllRedirects)
+  }
+  {
+    const pageContextFromAllAborts = getPageContextFromAllAborts(pageContextsFromAborts)
+    objectAssign(pageContext, pageContextFromAllAborts)
   }
   return pageContext
 }

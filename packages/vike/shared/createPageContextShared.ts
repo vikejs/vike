@@ -18,7 +18,7 @@ function createPageContextObject() {
   const pageContext = {
     _isOriginalObject: true as const,
     isPageContext: true as const,
-    isRedirect: [] as string[],
+    previousPageContexts: [] as any[], // Will be properly typed as PreviousPageContext[] when used
   }
   changeEnumerable(pageContext, '_isOriginalObject', false)
   return pageContext

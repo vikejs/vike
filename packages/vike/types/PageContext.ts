@@ -2,6 +2,7 @@
 export type { PageContext }
 export type { PageContextServer }
 export type { PageContextClient }
+export type { PreviousPageContext }
 // For users who don't use Client Routing
 //  - PageContextServer is the same for Client Routing and Server Routing
 export type { PageContextWithServerRouting }
@@ -130,14 +131,14 @@ type PageContextBuiltInCommon<Data> = PageContextConfig & {
   isClientSideNavigation: boolean
 
   /**
-   * The redirect chain: list of previous URLs that led to the current page through redirects.
+   * Previous page contexts from redirects and rewrites that led to the current page.
    *
-   * Empty array if the current page wasn't reached through any redirects.
-   * Contains the URLs in chronological order (first redirect URL first).
+   * Empty array if the current page wasn't reached through any redirects or rewrites.
+   * Contains the page contexts in chronological order (first redirect/rewrite first).
    *
-   * https://vike.dev/pageContext#isRedirect
+   * https://vike.dev/pageContext#previousPageContexts
    */
-  isRedirect: string[]
+  previousPageContexts: PreviousPageContext[]
 
   /**
    * The reason why the original page was aborted. Usually used for showing a custom message on the error page.
@@ -391,3 +392,11 @@ type PageContextBuiltInClientWithClientRouting_deprecated<Page = never> =
  */
 type PageContextBuiltInClientWithServerRouting_deprecated<Page = never> =
   PageContextBuiltInClientWithServerRouting<unknown>
+
+/**
+ * Previous page context type that doesn't include previousPageContexts to avoid circular references
+ */
+type PreviousPageContext = Omit<PageContextBuiltInCommon<unknown>, 'previousPageContexts'> & {
+  /** The type of abort that led to this page context */
+  _abortType?: 'redirect' | 'rewrite'
+}
