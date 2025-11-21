@@ -136,10 +136,7 @@ async function getPageContextFromClientHooks(
   // shouldn't? The server-side does it as well (but maybe it shouldn't).
   for (const hookName of ['guard', 'data', 'onBeforeRender'] as const) {
     if (hookName === 'guard') {
-      if (
-        !isErrorPage &&
-        (!pageContext._hasPageContextFromServer || hookClientOnlyExists(hookName, pageContext))
-      ) {
+      if (!isErrorPage && (!pageContext._hasPageContextFromServer || hookClientOnlyExists(hookName, pageContext))) {
         await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageClient(pageContext))
       }
     } else {
