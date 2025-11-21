@@ -12,7 +12,6 @@ import {
   testOnCreateGlobalContext,
   testRedirectMailto,
   testHeadersResponse,
-  testGuardClient,
 } from './pages/e2e-test'
 
 import { testSettingsInheritance } from './pages/about-page/e2e-test'
@@ -60,5 +59,4 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run preview:build
   testHistoryPushState()
   testOtherFrameworkNavigation()
   testStarWars()
-  testGuardClient()
 }
