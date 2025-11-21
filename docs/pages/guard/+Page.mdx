@@ -59,31 +59,6 @@ If you define `+guard.server.js` then `guard()` is always executed and only load
 
 > See also: see <Link href="/file-env" />
 
-#### `+guard.client.js`
-
-If you define `+guard.client.js` then `guard()` is executed only on the client-side and is executed on both:
-- Page reload (first page visit)
-- Client-side navigation
-
-This is useful for guards that need to access browser-only APIs or should run after the page has been hydrated.
-
-```ts
-// /pages/admin/+guard.client.ts
-
-export { guard }
-
-import type { PageContextClient } from 'vike/types'
-import { redirect } from 'vike/abort'
-
-async function guard(pageContext: PageContextClient) {
-  // This runs on the client-side for both page reload and navigation
-  const token = localStorage.getItem('authToken')
-  if (!token) {
-    throw redirect('/login')
-  }
-}
-```
-
 #### Use other hooks
 
 For more control on where and when your guarding logic is executed, consider using <Link href="/render">`throw render()`</Link> / <Link href="/redirect">`throw redirect()`</Link> inside another hook than `guard()`.
