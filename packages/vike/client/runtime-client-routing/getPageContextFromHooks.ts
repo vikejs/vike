@@ -135,7 +135,7 @@ async function getPageContextFromClientHooks(
   // Note: for the error page, we also execute the client-side data() and onBeforeRender() hooks, but maybe we
   // shouldn't? The server-side does it as well (but maybe it shouldn't).
   for (const hookName of clientHooks) {
-    if (!hookClientOnlyExists(hookName, pageContext) || pageContext._hasPageContextFromServer) continue
+    if (!hookClientOnlyExists(hookName, pageContext) && pageContext._hasPageContextFromServer) continue
     if (hookName === 'guard') {
       if (isErrorPage) continue
       await execHookGuardClient(pageContext)
