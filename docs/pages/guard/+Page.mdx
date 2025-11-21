@@ -42,10 +42,10 @@ If you want to guard your pages after or during fetching data, then use <Link hr
 
 > For being able to use `throw render()` / `throw redirect()` inside UI components, see [#1707: Use `throw render()` / `throw redirect()` inside React/Vue/Solid components](https://github.com/vikejs/vike/issues/1707).
 
+> For more control on where and when your guarding logic is executed, consider using <Link href="/render">`throw render()`</Link> / <Link href="/redirect">`throw redirect()`</Link> inside <Link href="/hooks">another hook</Link> than `guard()`.
+
 
 ## Environment
-
-#### Default
 
 The `guard()` hook is called in the same environment as <Link href="/data">`data()`</Link>. In other words, it's always called on the server-side unless you <Link href="/data#environment">configure `data()` to run on the client-side</Link>.
 
@@ -55,28 +55,23 @@ If the page doesn't have a `data()` hook, then `guard()` executes in the environ
 
 #### `+guard.server.js`
 
-If you define `+guard.server.js` then `guard()` is only executed and loaded on the server.
+If you define `+guard.server.js` then it's executed and loaded only on the server.
 
-> See also: <Link href="/file-env" />
+> See: <Link href="/file-env" />
 
 #### `+guard.client.js`
 
-Defining `+guard.client.js` isn't currently supported.
+If you define `+guard.client.js` then it's executed and loaded only on the client.
 
-Generally `+guard` is used to avoid the rendering process of a page (typically when the user isn't authorized to view that page).
+> See: <Link href="/file-env" />
 
-Usually, the motivation for defining a client-only `+guard.client.js` is to implement authorization for a pre-rendered page (e.g. an SSG app that doesn't even have a server). But that cannot work: if the page is pre-rendered then it's rendered at build-time but authorization is done at request-time. In other words: the rendering of the page (done at build-time) cannot be aborted.
+> Usually, the motivation for defining `+guard.client.js` is to implement authorization for an <Link href="/pre-rendering">SSG app</Link> that doesn't have any server. But keep in mind that `+guard.client.js` cannot prevent a page from being pre-rendered to HTML — pre-rendering happens at build-time while authorization is done at request-time.
 
-So, instead consider using in another hook such as <Link href="/onHyrdationEnd">`+onHyrdationEnd`</Link> `+guard.client.js` 
-The fundamental issue with `+guard.client.js`
+Upon the first page the user visits, `+guard.client.js` is called before rendering/<Link href="/hydration">hydrating</Link>. If that's an issue, consider:
+ - Setting <Link href="/ssr">`+ssr: false`</Link>. (The `+guard.client.js` will then be able to block rendering.)
+ - Using <Link href="/render">`throw render()`</Link> / <Link href="/redirect">`throw redirect()`</Link> inside <Link href="/hooks">another hook</Link>, for example <Link href="/onHydrationEnd">`+onHyrdationEnd`</Link>.
 
-If you define `+guard.server.js` then `guard()` is only executed and loaded on the server.
-
-> See also: <Link href="/file-env" />
-
-#### Use other hooks
-
-For more control on where and when your guarding logic is executed, consider using <Link href="/render">`throw render()`</Link> / <Link href="/redirect">`throw redirect()`</Link> inside <Link href="/hooks">another hook</Link> than `guard()`.
+> Aborting hydration works with React but [not with Vue](https://github.com/vuejs/vue/issues/13235).
 
 
 ## See also
