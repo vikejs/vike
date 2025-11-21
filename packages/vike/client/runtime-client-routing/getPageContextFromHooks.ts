@@ -141,7 +141,6 @@ async function getPageContextFromClientHooks(
       await execHookGuardClient(pageContext)
     } else {
       if (hookName === 'data') dataHookExecuted = true
-      // This won't do anything if no hook has been defined or if the hook's env.client is false.
       await execHookDataLike(hookName, pageContext)
     }
   }
@@ -161,6 +160,9 @@ async function execHookClient(hookName: HookName, pageContext: PageContextExecHo
   return await execHook(hookName, pageContext, (p) => preparePageContextForPublicUsageClient(p))
 }
 
+// It's a no-op if:
+// - No hook has been defined, or
+// - The hook's `env.client` is `false`
 async function execHookDataLike(hookName: 'data' | 'onBeforeRender', pageContext: PageContextExecHookClient) {
   let pageContextFromHook: Record<string, unknown> | undefined
   if (hookName === 'data') {
