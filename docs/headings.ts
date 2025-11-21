@@ -456,12 +456,6 @@ const headings = [
   },
   {
     level: 2,
-    title: '`+onData()` hook',
-    titleInNav: '`+onData()`',
-    url: '/onData',
-  },
-  {
-    level: 2,
     title: '`+guard()` hook',
     titleInNav: '`+guard()`',
     url: '/guard',
@@ -1344,6 +1338,10 @@ function api() {
       {
         title: '`+onBeforeRoute()` hook',
         url: '/onBeforeRoute',
+      },
+      {
+        title: '`+onData()` hook',
+        url: '/onData',
       },
       {
         title: '`hydrationCanBeAborted`',
