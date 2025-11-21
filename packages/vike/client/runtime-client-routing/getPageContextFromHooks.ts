@@ -66,7 +66,7 @@ async function getPageContextFromHooks_isHydration(
     PageContextConfig & { _hasPageContextFromServer: true } & PageContextForPublicUsageClient,
 ) {
   // Execute client-only guard hooks during hydration
-  if (hookClientOnlyExists('guard', pageContext)) {
+  if (guardClientOnlyExists(pageContext)) {
     await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageClient(pageContext))
   }
 
@@ -139,8 +139,8 @@ async function getPageContextFromClientHooks(
         !isErrorPage &&
         // Execute guard() if:
         // 1. We don't have pageContext from server (client-side navigation), OR
-        // 2. The guard is client-only (needs to run even during hydration)
-        (!pageContext._hasPageContextFromServer || hookClientOnlyExists(hookName, pageContext))
+        // 2. The guard is client-only (always execute client-only guards)
+        (!pageContext._hasPageContextFromServer || guardClientOnlyExists(pageContext))
       ) {
         await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageClient(pageContext))
       }
@@ -248,7 +248,7 @@ function hasServerOnlyHook(pageContext: {
 }
 
 function hookClientOnlyExists(
-  hookName: 'data' | 'onBeforeRender' | 'guard',
+  hookName: 'data' | 'onBeforeRender',
   pageContext: {
     pageId: string
     _globalContext: GlobalContextClientInternal
@@ -257,15 +257,43 @@ function hookClientOnlyExists(
   const hookEnv = getHookEnv(hookName, pageContext)
   return !!hookEnv.client && !hookEnv.server
 }
+
+function guardClientOnlyExists(
+  pageContext: {
+    pageId: string
+    _globalContext: GlobalContextClientInternal
+  },
+): boolean {
+  if (isOldDesign(pageContext)) {
+    // Client-only guard() hooks were never supported for the V0.4 design
+    return false
+  }
+  const pageConfig = getPageConfig(pageContext.pageId, pageContext._globalContext._pageConfigs)
+
+  // Check if there's a guard hook defined
+  const guardConfig = getConfigValueRuntime(pageConfig, 'guard')
+  if (!guardConfig) return false
+
+  // Check if it's client-only by looking at the file environment
+  // If the guard is defined in a .client.js file, it's client-only
+  const definedAtData = guardConfig.definedAtData
+  if (definedAtData && !Array.isArray(definedAtData)) {
+    const filePath = definedAtData.filePathToShowToUser || ''
+    return filePath.includes('.client.')
+  }
+
+  return false
+}
+
 function getHookEnv(
-  hookName: 'data' | 'onBeforeRender' | 'guard',
+  hookName: 'data' | 'onBeforeRender',
   pageContext: {
     pageId: string
     _globalContext: GlobalContextClientInternal
   },
 ) {
   if (isOldDesign(pageContext)) {
-    // Client-only onBeforeRender(), data(), or guard() hooks were never supported for the V0.4 design
+    // Client-only onBeforeRender() or data() hooks were never supported for the V0.4 design
     return { client: false, server: true }
   }
   const pageConfig = getPageConfig(pageContext.pageId, pageContext._globalContext._pageConfigs)
