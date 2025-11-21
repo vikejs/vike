@@ -91,7 +91,7 @@ type PageContextPrerendered = {
   urlOriginal: string
   _providedByHook?: ProvidedByHook
   pageId: string | null
-  isRedirect?: true
+  _isRedirectHtml?: true
   is404: boolean
 }
 type PrerenderedPageContexts = Record<string, PageContextPrerendered>
@@ -1167,7 +1167,7 @@ async function prerenderRedirects(
     const urlOriginal = urlSource
     const htmlString = getRedirectHtml(urlTarget)
     await onComplete({
-      pageContext: { urlOriginal, pageId: null, is404: false, isRedirect: true },
+      pageContext: { urlOriginal, pageId: null, is404: false, _isRedirectHtml: true },
       htmlString,
       pageContextSerialized: null,
     })

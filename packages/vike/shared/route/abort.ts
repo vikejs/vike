@@ -5,12 +5,14 @@ export { isAbortError }
 export { isAbortPageContext }
 export { logAbortErrorHandled }
 export { getPageContextFromAllRewrites }
+export { getPageContextFromAllRedirects }
 export { AbortRender }
 export { assertNoInfiniteAbortLoop }
 export type { RedirectStatusCode }
 export type { AbortStatusCode }
 export type { ErrorAbort }
 export type { PageContextFromRewrite }
+export type { PageContextFromRedirect }
 export type { UrlRedirect }
 export type { PageContextAbort }
 
@@ -315,6 +317,16 @@ function getPageContextFromAllRewrites(pageContextsFromRewrite: PageContextFromR
     Object.assign(pageContextFromAllRewrites, pageContextFromRewrite)
   })
   return pageContextFromAllRewrites
+}
+
+type PageContextFromRedirect = { _urlRedirect: string }
+type PageContextFromAllRedirects = { isRedirect: string[] }
+function getPageContextFromAllRedirects(pageContextsFromRedirect: PageContextFromRedirect[]): PageContextFromAllRedirects {
+  const redirectChain: string[] = []
+  pageContextsFromRedirect.forEach((pageContextFromRedirect) => {
+    redirectChain.push(pageContextFromRedirect._urlRedirect)
+  })
+  return { isRedirect: redirectChain }
 }
 function assertNoInfiniteLoop(pageContextsFromRewrite: PageContextFromRewrite[]) {
   const urlRewrites: string[] = []

@@ -18,6 +18,7 @@ function createPageContextObject() {
   const pageContext = {
     _isOriginalObject: true as const,
     isPageContext: true as const,
+    isRedirect: [] as string[],
   }
   changeEnumerable(pageContext, '_isOriginalObject', false)
   return pageContext

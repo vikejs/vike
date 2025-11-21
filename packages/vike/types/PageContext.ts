@@ -130,6 +130,16 @@ type PageContextBuiltInCommon<Data> = PageContextConfig & {
   isClientSideNavigation: boolean
 
   /**
+   * The redirect chain: list of previous URLs that led to the current page through redirects.
+   *
+   * Empty array if the current page wasn't reached through any redirects.
+   * Contains the URLs in chronological order (first redirect URL first).
+   *
+   * https://vike.dev/pageContext#isRedirect
+   */
+  isRedirect: string[]
+
+  /**
    * The reason why the original page was aborted. Usually used for showing a custom message on the error page.
    *
    * https://vike.dev/render

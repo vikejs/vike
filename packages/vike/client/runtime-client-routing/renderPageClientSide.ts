@@ -45,10 +45,12 @@ import {
   assertNoInfiniteAbortLoop,
   type ErrorAbort,
   getPageContextFromAllRewrites,
+  getPageContextFromAllRedirects,
   isAbortError,
   logAbortErrorHandled,
   PageContextAbort,
   type PageContextFromRewrite,
+  type PageContextFromRedirect,
 } from '../../shared/route/abort.js'
 import { route } from '../../shared/route/index.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
@@ -110,6 +112,7 @@ type RenderArgs = {
   urlOriginal?: string
   overwriteLastHistoryEntry?: boolean
   pageContextsFromRewrite?: PageContextFromRewrite[]
+  pageContextsFromRedirect?: PageContextFromRedirect[]
   redirectCount?: number
   doNotRenderIfSamePage?: boolean
   isClientSideNavigation?: boolean
@@ -124,6 +127,7 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
     isBackwardNavigation = false,
     isHistoryNavigation = false,
     pageContextsFromRewrite = [],
+    pageContextsFromRedirect = [],
     redirectCount = 0,
     doNotRenderIfSamePage,
     isClientSideNavigation = true,
@@ -142,6 +146,7 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
     isBackwardNavigation,
     isHistoryNavigation,
     pageContextsFromRewrite,
+    pageContextsFromRedirect,
     isClientSideNavigation,
     pageContextInitClient,
     isFirstRender,
@@ -474,12 +479,14 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
         redirectHard(urlRedirect)
         return { skip: true }
       } else {
+        // Add current URL to redirect chain before redirecting
         await renderPageClientSide({
           ...renderArgs,
           scrollTarget: undefined,
           urlOriginal: urlRedirect,
           overwriteLastHistoryEntry: false,
           redirectCount: redirectCount + 1,
+          pageContextsFromRedirect: [...pageContextsFromRedirect, { _urlRedirect: urlOriginal }],
         })
       }
       return { skip: true }
@@ -603,6 +610,7 @@ async function getPageContextBegin(
     isBackwardNavigation,
     isHistoryNavigation,
     pageContextsFromRewrite,
+    pageContextsFromRedirect,
     isClientSideNavigation,
     pageContextInitClient,
     isFirstRender,
@@ -611,6 +619,7 @@ async function getPageContextBegin(
     isBackwardNavigation: boolean | null
     isHistoryNavigation: boolean
     pageContextsFromRewrite: PageContextFromRewrite[]
+    pageContextsFromRedirect: PageContextFromRedirect[]
     isClientSideNavigation: boolean
     pageContextInitClient: Record<string, unknown> | undefined
     isFirstRender: boolean
@@ -643,6 +652,10 @@ async function getPageContextBegin(
     const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
     assert(!('urlOriginal' in pageContextFromAllRewrites))
     objectAssign(pageContext, pageContextFromAllRewrites)
+  }
+  {
+    const pageContextFromAllRedirects = getPageContextFromAllRedirects(pageContextsFromRedirect)
+    objectAssign(pageContext, pageContextFromAllRedirects)
   }
   return pageContext
 }
