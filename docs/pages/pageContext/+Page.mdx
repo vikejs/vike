@@ -185,9 +185,9 @@ The page's runtime <Link href="/config">configuration</Link> (both <Link href="/
 
 Whether the page is rendered to HTML.
 
-   When using <Link href="/client-routing" noBreadcrumb={true} />, the value is `true` for the first page the user navigates to, and `false` for any subsequent navigation. When using <Link href="/server-routing" noBreadcrumb={true} />, the value is always `true`.
+When using <Link href="/client-routing" noBreadcrumb={true} />, the value is `true` for the first page the user navigates to, and `false` for any subsequent navigation. When using <Link href="/server-routing" noBreadcrumb={true} />, the value is always `true`.
 
-   If the page doesn't throw an error then it's equivalent to <code>{'pageContext.isHydration\u00A0===\u00A0!pageContext.isClientSideNavigation'}</code>. If there is an error, the error page is rendered and both `pageContext.isHydration` `pageContext.isClientSideNavigation` are `false`.
+If the page doesn't throw an error then it's equivalent to <code>{'pageContext.isHydration\u00A0===\u00A0!pageContext.isClientSideNavigation'}</code>. If there is an error, the error page is rendered and both `pageContext.isHydration` `pageContext.isClientSideNavigation` are `false`.
 
 
 <Prop name="isClientSide" />
