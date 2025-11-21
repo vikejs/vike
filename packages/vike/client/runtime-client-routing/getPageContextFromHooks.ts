@@ -1,3 +1,4 @@
+// TODO/now: rename
 export { getPageContextFromHooks_isHydration }
 export { getPageContextFromHooks_serialized }
 export { getPageContextFromServerHooks }
@@ -43,6 +44,11 @@ const globalObject = getGlobalObject<{
   pageContextInitIsPassedToClient?: true
 }>('runtime-client-routing/getPageContextFromHooks.ts', {})
 
+// TO-DO/soon/cumulative-hooks: filter & execute all client-only hooks (see other TO-DO/soon/cumulative-hooks entries)
+// - The client-side needs to know what hooks are client-only
+//   - Possible implementation: new computed prop `clientOnlyHooks: string[]` (list of hook ids) and add `hookId` to serialized config values
+const clientHooks = ['guard', 'data', 'onBeforeRender'] as const
+
 type PageContextSerialized = {
   pageId: string
   _hasPageContextFromServer: true
@@ -65,11 +71,11 @@ async function getPageContextFromHooks_isHydration(
     PageContextBegin &
     PageContextConfig & { _hasPageContextFromServer: true } & PageContextForPublicUsageClient,
 ) {
-  for (const hookName of ['data', 'onBeforeRender'] as const) {
-    // TO-DO/soon/cumulative-hooks: filter & execute all client-only hooks
-    // - The client-side needs to know what hooks are client-only
-    //   - Possible implementation: new computed prop `clientOnlyHooks: string[]` (list of hook ids) and add `hookId` to serialized config values
-    if (hookClientOnlyExists(hookName, pageContext)) {
+  for (const hookName of clientHooks) {
+    if (!hookClientOnlyExists(hookName, pageContext)) continue
+    if (hookName === 'guard') {
+      await execHookGuardClient(pageContext)
+    } else {
       await execHookDataLike(hookName, pageContext)
     }
   }
@@ -128,24 +134,14 @@ async function getPageContextFromClientHooks(
   // server-side, so we run only the client-only ones in this case.
   // Note: for the error page, we also execute the client-side data() and onBeforeRender() hooks, but maybe we
   // shouldn't? The server-side does it as well (but maybe it shouldn't).
-  for (const hookName of ['guard', 'data', 'onBeforeRender'] as const) {
+  for (const hookName of clientHooks) {
+    if (!hookClientOnlyExists(hookName, pageContext) && pageContext._hasPageContextFromServer) continue
     if (hookName === 'guard') {
-      if (
-        !isErrorPage &&
-        // We don't need to call guard() on the client-side if we fetch pageContext from the server side. (Because the `${url}.pageContext.json` HTTP request will already trigger the routing and guard() hook on the server-side.)
-        !pageContext._hasPageContextFromServer
-      ) {
-        // Should we really call the guard() hook on the client-side? Shouldn't we make the guard() hook a server-side
-        // only hook? Or maybe make its env configurable like data() and onBeforeRender()?
-        await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageClient(pageContext))
-      }
+      if (isErrorPage) continue
+      await execHookGuardClient(pageContext)
     } else {
-      // TO-DO/soon/cumulative-hooks: filter & execute all client-only hooks (see other TO-DO/soon/cumulative-hooks entries)
-      if (hookClientOnlyExists(hookName, pageContext) || !pageContext._hasPageContextFromServer) {
-        if (hookName === 'data') dataHookExecuted = true
-        // This won't do anything if no hook has been defined or if the hook's env.client is false.
-        await execHookDataLike(hookName, pageContext)
-      }
+      if (hookName === 'data') dataHookExecuted = true
+      await execHookDataLike(hookName, pageContext)
     }
   }
 
@@ -164,6 +160,9 @@ async function execHookClient(hookName: HookName, pageContext: PageContextExecHo
   return await execHook(hookName, pageContext, (p) => preparePageContextForPublicUsageClient(p))
 }
 
+// It's a no-op if:
+// - No hook has been defined, or
+// - The hook's `env.client` is `false`
 async function execHookDataLike(hookName: 'data' | 'onBeforeRender', pageContext: PageContextExecHookClient) {
   let pageContextFromHook: Record<string, unknown> | undefined
   if (hookName === 'data') {
@@ -243,7 +242,7 @@ function hasServerOnlyHook(pageContext: {
 }
 
 function hookClientOnlyExists(
-  hookName: 'data' | 'onBeforeRender',
+  hookName: 'data' | 'onBeforeRender' | 'guard',
   pageContext: {
     pageId: string
     _globalContext: GlobalContextClientInternal
@@ -253,14 +252,14 @@ function hookClientOnlyExists(
   return !!hookEnv.client && !hookEnv.server
 }
 function getHookEnv(
-  hookName: 'data' | 'onBeforeRender',
+  hookName: 'data' | 'onBeforeRender' | 'guard',
   pageContext: {
     pageId: string
     _globalContext: GlobalContextClientInternal
   },
 ) {
   if (isOldDesign(pageContext)) {
-    // Client-only onBeforeRender() or data() hooks were never supported for the V0.4 design
+    // Client-only onBeforeRender(), data(), or guard() hooks were never supported for the V0.4 design
     return { client: false, server: true }
   }
   const pageConfig = getPageConfig(pageContext.pageId, pageContext._globalContext._pageConfigs)
@@ -323,4 +322,10 @@ function isOldDesign(pageContext: {
   _globalContext: GlobalContextClientInternal
 }) {
   return pageContext._globalContext._pageConfigs.length === 0
+}
+
+async function execHookGuardClient(
+  pageContext: Parameters<typeof execHookGuard>[0] & Parameters<typeof preparePageContextForPublicUsageClient>[0],
+) {
+  await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageClient(pageContext))
 }

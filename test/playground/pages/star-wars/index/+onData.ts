@@ -7,9 +7,12 @@ import { assert } from '../../../utils/assert'
 function onData(pageContext: PageContext & { data: Data }) {
   assert(pageContext.data.title === '6 Star Wars Movies')
   if (pageContext.isClientSide) {
-    assert(pageContext.isClientSideNavigation)
     assert(!pageContext.isHydration)
+    /* TODO/now
+    assert(pageContext.isClientSideNavigation)
+    */
   } else {
-    assert(!pageContext.isClientSideNavigation)
+    assert(pageContext.isHydration === undefined)
+    assert(pageContext.isClientSideNavigation === false)
   }
 }

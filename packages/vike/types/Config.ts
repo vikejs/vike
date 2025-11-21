@@ -82,6 +82,7 @@ type ConfigNameBuiltIn =
   | 'isClientRuntimeLoaded'
   | 'onBeforeRenderEnv'
   | 'dataEnv'
+  | 'guardEnv'
   | 'hooksTimeout'
   | 'clientHooks'
   | 'middleware'

@@ -248,6 +248,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
       )
     },
   },
+  // TODO/now: rename entries comments
   // TO-DO/soon/cumulative-hooks: remove and replace with new computed prop `clientOnlyHooks: string[]` (see other TO-DO/soon/cumulative-hooks entries)
   onBeforeRenderEnv: {
     env: { client: true },
@@ -262,6 +263,14 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     eager: true,
     _computed: (pageConfig): null | ConfigEnvInternal => {
       return !isConfigSet(pageConfig, 'data') ? null : getConfigEnv(pageConfig, 'data')
+    },
+  },
+  // TO-DO/soon/cumulative-hooks: remove and replace with new computed prop `clientOnlyHooks: string[]` (see other TO-DO/soon/cumulative-hooks entries)
+  guardEnv: {
+    env: { client: true },
+    eager: true,
+    _computed: (pageConfig): null | ConfigEnvInternal => {
+      return !isConfigSet(pageConfig, 'guard') ? null : getConfigEnv(pageConfig, 'guard')
     },
   },
   hooksTimeout: {

@@ -69,7 +69,7 @@ async function ensureWasClientSideRouted(pageIdFirst: `/pages/${string}`) {
   expect(pageId).toBe(pageIdFirst)
 }
 function findFirstPageId(html: string) {
-  expect(html).toContain('<script id="vike_pageContext" type="application/json">')
+  expect(html).toMatch(partRegex`<script id="vike_pageContext" type="application/json"${/[^>]*/}>`)
   expect(html).toContain('pageId')
   expect(html.split('pageId').length).toBe(2)
   const match = partRegex`"pageId":"${/([^"]+)/}"`.exec(html)
