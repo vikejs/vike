@@ -66,8 +66,8 @@ async function getPageContextFromHooks_isHydration(
     PageContextBegin &
     PageContextConfig & { _hasPageContextFromServer: true } & PageContextForPublicUsageClient,
 ) {
-  // Execute client-only guard hooks during hydration
   if (hookClientOnlyExists('guard', pageContext)) {
+    // TODO/now dedupe
     await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageClient(pageContext))
   }
 
