@@ -50,7 +50,7 @@ type AbortReason = Required<({ abortReason?: unknown } & Vike.PageContext)['abor
  * https://vike.dev/redirect
  *
  * @param url The URL to redirect to.
- * @param statusCode By default a temporary redirection (`302`) is performed. For permanent redirections (`301`), use `config.redirects` https://vike.dev/redirects instead or, alternatively, set the `statusCode` argument to `301`.
+ * @param statusCode By default the temporary redirection status code (`302`) is sent. For permanent redirections (`301`), use `+redirects` (https://vike.dev/redirects) or set this `statusCode` argument to `301`.
  */
 function redirect(url: string, statusCode?: 301 | 302): AbortRedirect {
   const abortCaller = 'throw redirect()' as const
