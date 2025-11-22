@@ -195,7 +195,7 @@ async function renderPageAlreadyPrepared(
   const pageContextNominalPageBegin = forkPageContext(pageContextBegin)
   assertNoInfiniteAbortLoop(
     // Count rewrite aborts for infinite loop detection
-    pageContextsFromAborts.filter(abort => '_urlRewrite' in abort).length,
+    pageContextsFromAborts.filter((abort) => '_urlRewrite' in abort).length,
     // There doesn't seem to be a way to count the number of HTTP redirects (vike don't have access to the HTTP request headers/cookies)
     // https://stackoverflow.com/questions/9683007/detect-infinite-http-redirect-loop-on-server-side
     0,
@@ -627,12 +627,10 @@ async function handleAbortError(
   }
 
   if (pageContextAbort._urlRewrite) {
-    const pageContextReturn = await renderPageAlreadyPrepared(
-      pageContextBegin,
-      globalContext,
-      httpRequestId,
-      [...pageContextsFromAborts, pageContextAbort]
-    )
+    const pageContextReturn = await renderPageAlreadyPrepared(pageContextBegin, globalContext, httpRequestId, [
+      ...pageContextsFromAborts,
+      pageContextAbort,
+    ])
     Object.assign(pageContextReturn, pageContextAbort)
     return { pageContextReturn }
   }

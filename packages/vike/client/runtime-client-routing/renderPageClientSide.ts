@@ -135,7 +135,7 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
   addLinkPrefetchHandlers_unwatch()
 
   const { isRenderOutdated, setHydrationCanBeAborted, isFirstRender } = getIsRenderOutdated()
-  assertNoInfiniteAbortLoop(pageContextsFromAborts.filter(abort => '_urlRewrite' in abort).length, redirectCount)
+  assertNoInfiniteAbortLoop(pageContextsFromAborts.filter((abort) => '_urlRewrite' in abort).length, redirectCount)
 
   const pageContextBeginArgs = {
     urlOriginal,
