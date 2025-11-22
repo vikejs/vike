@@ -306,13 +306,13 @@ function assertStatusCode(statusCode: number, expected: number[], caller: 'rende
   }
 }
 
-type PageContextFromAbort = { _urlRewrite: string } | { _urlRedirect: string }
-type PageContextFromAllAborts = { previousPageContexts: any[]; _urlRewrite: null | string }
+type PageContextFromAbort =
+  | { _urlRedirect: string; _urlRewrite?: undefined }
+  | { _urlRedirect?: undefined; _urlRewrite: string }
+type PageContextFromAllAborts = { previousPageContexts: PageContextFromAbort[]; _urlRewrite: null | string }
 function getPageContextFromAllAborts(pageContextsFromAborts: PageContextFromAbort[]): PageContextFromAllAborts {
   // Check for infinite loops in rewrites (similar to the old getPageContextFromAllRewrites)
-  const rewriteAborts = pageContextsFromAborts.filter(
-    (abort): abort is { _urlRewrite: string } => '_urlRewrite' in abort,
-  )
+  const rewriteAborts = pageContextsFromAborts.filter((pageContext) => pageContext._urlRewrite !== undefined)
   assertNoInfiniteLoop(rewriteAborts)
 
   const previousPageContexts: any[] = []
