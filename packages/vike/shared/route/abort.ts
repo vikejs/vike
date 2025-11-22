@@ -306,7 +306,7 @@ function assertStatusCode(statusCode: number, expected: number[], caller: 'rende
   }
 }
 
-type PageContextFromAbort = { _urlRewrite: string } | { _urlRedirect: string } | { pageContext: any }
+type PageContextFromAbort = { _urlRewrite: string } | { _urlRedirect: string }
 type PageContextFromAllAborts = { previousPageContexts: any[]; _urlRewrite: null | string }
 function getPageContextFromAllAborts(pageContextsFromAborts: PageContextFromAbort[]): PageContextFromAllAborts {
   // Check for infinite loops in rewrites (similar to the old getPageContextFromAllRewrites)
