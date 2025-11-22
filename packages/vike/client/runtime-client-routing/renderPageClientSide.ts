@@ -110,7 +110,6 @@ type RenderArgs = {
   urlOriginal?: string
   overwriteLastHistoryEntry?: boolean
   pageContextsFromAborts?: PageContextFromAbort[]
-  redirectCount?: number
   doNotRenderIfSamePage?: boolean
   isClientSideNavigation?: boolean
   pageContextInitClient?: Record<string, unknown>
@@ -124,7 +123,6 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
     isBackwardNavigation = false,
     isHistoryNavigation = false,
     pageContextsFromAborts = [],
-    redirectCount = 0,
     doNotRenderIfSamePage,
     isClientSideNavigation = true,
     pageContextInitClient,
@@ -135,7 +133,10 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
   addLinkPrefetchHandlers_unwatch()
 
   const { isRenderOutdated, setHydrationCanBeAborted, isFirstRender } = getIsRenderOutdated()
-  assertNoInfiniteAbortLoop(pageContextsFromAborts.filter((abort) => '_urlRewrite' in abort).length, redirectCount)
+  assertNoInfiniteAbortLoop(
+    pageContextsFromAborts.filter((abort) => '_urlRewrite' in abort).length,
+    pageContextsFromAborts.filter((abort) => '_urlRedirect' in abort).length,
+  )
 
   const pageContextBeginArgs = {
     urlOriginal,
@@ -480,7 +481,6 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
           scrollTarget: undefined,
           urlOriginal: urlRedirect,
           overwriteLastHistoryEntry: false,
-          redirectCount: redirectCount + 1,
           pageContextsFromAborts: [...pageContextsFromAborts, { _urlRedirect: urlOriginal }],
         })
       }
