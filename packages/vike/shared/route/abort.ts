@@ -325,7 +325,9 @@ function getPageContextFromAllAborts(pageContextsFromAborts: PageContextFromAbor
     }
   })
 
-  return { previousPageContexts: pageContextsFromAborts, _urlRewrite }
+  // TODO: propagate this new name
+  const pageContextAddendumFromAborts = { previousPageContexts: pageContextsFromAborts, _urlRewrite }
+  return pageContextAddendumFromAborts
 }
 function assertNoInfiniteLoop(pageContextsFromRewrite: { _urlRewrite: string }[]) {
   const urlRewrites: string[] = []
