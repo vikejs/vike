@@ -315,30 +315,17 @@ function getPageContextFromAllAborts(pageContextsFromAborts: PageContextFromAbor
   const rewriteAborts = pageContextsFromAborts.filter((pageContext) => pageContext._urlRewrite !== undefined)
   assertNoInfiniteLoop(rewriteAborts)
 
-  const previousPageContexts: any[] = []
   let _urlRewrite: null | string = null
-
   pageContextsFromAborts.forEach((pageContextFromAbort) => {
-    if ('pageContext' in pageContextFromAbort) {
-      // This is a full pageContext from a previous abort
-      previousPageContexts.push(pageContextFromAbort.pageContext)
-    } else if ('_urlRedirect' in pageContextFromAbort) {
-      // This is a redirect - create a minimal pageContext
-      previousPageContexts.push({
-        urlOriginal: pageContextFromAbort._urlRedirect,
-        _abortType: 'redirect' as const,
-      })
-    } else if ('_urlRewrite' in pageContextFromAbort) {
-      // This is a rewrite - create a minimal pageContext and track _urlRewrite
-      previousPageContexts.push({
-        urlOriginal: pageContextFromAbort._urlRewrite,
-        _abortType: 'rewrite' as const,
-      })
+    if (pageContextFromAbort._urlRedirect) {
+      // TODO?
+    }
+    if (pageContextFromAbort._urlRewrite) {
       _urlRewrite = pageContextFromAbort._urlRewrite
     }
   })
 
-  return { previousPageContexts, _urlRewrite }
+  return { previousPageContexts: pageContextsFromAborts, _urlRewrite }
 }
 function assertNoInfiniteLoop(pageContextsFromRewrite: { _urlRewrite: string }[]) {
   const urlRewrites: string[] = []
