@@ -194,15 +194,6 @@ async function renderPageEntryRecursive(
   pageContextsAborted: PageContextAborted[] = [],
 ): Promise<PageContextAfterRender> {
   const pageContextNominalPageBegin = forkPageContext(pageContextBegin)
-  /* TODO/now
-  assertNoInfiniteAbortLoop(
-    // Count rewrite aborts for infinite loop detection
-    pageContextsAborted.filter((abort) => '_urlRewrite' in abort).length,
-    // There doesn't seem to be a way to count the number of HTTP redirects (vike don't have access to the HTTP request headers/cookies)
-    // https://stackoverflow.com/questions/9683007/detect-infinite-http-redirect-loop-on-server-side
-    0,
-  )
-  */
 
   const pageContextAddendumFromAbort = getPageContextAddendumFromAbort(pageContextsAborted)
   objectAssign(pageContextNominalPageBegin, pageContextAddendumFromAbort)
@@ -643,11 +634,15 @@ async function handleAbort(
 
   // URL Rewrite — `throw render(url)`
   if (pageContextAbort._urlRewrite) {
+    pageContextsAborted = [...pageContextsAborted, pageContext]
+    assertNoInfiniteAbortLoop(pageContextsAborted)
     // Recursive renderPageEntryRecursive() call
-    const pageContextReturn = await renderPageEntryRecursive(pageContextBegin, globalContext, httpRequestId, [
-      ...pageContextsAborted,
-      pageContext,
-    ])
+    const pageContextReturn = await renderPageEntryRecursive(
+      pageContextBegin,
+      globalContext,
+      httpRequestId,
+      pageContextsAborted,
+    )
     return { pageContextReturn }
   }
 

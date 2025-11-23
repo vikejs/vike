@@ -314,11 +314,6 @@ type PageContextAddendumFromAbort = { pageContextsAborted: PageContextAborted[] 
 type PageContextAddendumFromAbort = { pageContextsAborted: PageContextAborted[]; } & (PageContextAbort | undefined)
 //*/
 function getPageContextAddendumFromAbort(pageContextsAborted: PageContextAborted[]): PageContextAddendumFromAbort {
-  // Check for infinite loops in rewrites (similar to the old getPageContextFromAllRewrites)
-  // const rewriteAborts = pageContextsAborted.filter((pageContext) => pageContext._urlRewrite !== undefined)
-  // TODO/now
-  // assertNoInfiniteLoop(rewriteAborts)
-
   const pageContextAddendumFromAbort = { pageContextsAborted }
   const pageContextAbortedLast = pageContextsAborted.at(-1)
   if (pageContextAbortedLast) {
@@ -329,26 +324,15 @@ function getPageContextAddendumFromAbort(pageContextsAborted: PageContextAborted
   }
   return pageContextAddendumFromAbort
 }
-function assertNoInfiniteLoop(pageContextsFromRewrite: { _urlRewrite: string }[]) {
-  const urlRewrites: string[] = []
-  pageContextsFromRewrite.forEach((pageContext) => {
-    const urlRewrite = pageContext._urlRewrite
-    {
-      const idx = urlRewrites.indexOf(urlRewrite)
-      if (idx !== -1) {
-        const loop: string = [...urlRewrites.slice(idx), urlRewrite].map((url) => `render('${url}')`).join(' => ')
-        assertUsage(false, `Infinite loop of render() calls: ${loop}`)
-      }
-    }
-    urlRewrites.push(urlRewrite)
-  })
-}
 
+// There doesn't seem to be a way to count the number of HTTP redirects (Vike doesn't have access to the HTTP request headers/cookies)
+// https://stackoverflow.com/questions/9683007/detect-infinite-http-redirect-loop-on-server-side
 function assertNoInfiniteAbortLoop(pageContextsAborted: PageContextAborted[]) {
   if (pageContextsAborted.length < 10) return
   const loop = pageContextsAborted.map((pageContext) => {
     return pageContext._pageContextAbort._abortCall
   })
+  // Unique array => no redundant call => no infinite loop
   if (unique(loop).length === loop.length) return
   assertUsage(false, `Infinite loop: ${loop.join(' => ')}`)
 }

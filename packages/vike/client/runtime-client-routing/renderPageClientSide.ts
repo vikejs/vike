@@ -132,12 +132,6 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
   addLinkPrefetchHandlers_unwatch()
 
   const { isRenderOutdated, setHydrationCanBeAborted, isFirstRender } = getIsRenderOutdated()
-  /* TODO/now
-  assertNoInfiniteAbortLoop(
-    pageContextsAborted.filter((abort) => '_urlRewrite' in abort).length,
-    pageContextsAborted.filter((abort) => '_urlRedirect' in abort).length,
-  )
-  */
 
   const pageContextBeginArgs = {
     urlOriginal,
@@ -460,6 +454,7 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
 
     objectAssign(pageContext, { _pageContextAbort: pageContextAbort })
     pageContextsAborted = [...pageContextsAborted, pageContext]
+    assertNoInfiniteAbortLoop(pageContextsAborted)
 
     // throw render('/some-url')
     if (pageContextAbort._urlRewrite) {
