@@ -354,7 +354,7 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
     // throw redirect()/render()
     let pageContextAbort: undefined | PageContextAbort
     if (isAbortError(err)) {
-      const res = await handleAbortError(err, pageContext)
+      const res = await handleAbort(err, pageContext)
       if (res.skip) return
       pageContextAbort = res.pageContextAbort
     }
@@ -444,7 +444,7 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
     await renderPageView(pageContext, args)
   }
 
-  async function handleAbortError(
+  async function handleAbort(
     err: ErrorAbort,
     pageContext: PageContextBegin,
   ): Promise<{ skip: true; pageContextAbort?: undefined } | { pageContextAbort: PageContextAbort; skip?: undefined }> {
