@@ -7,6 +7,7 @@ import type { PageContextClient } from './types'
 
 let root: ReactDOM.Root
 async function onRenderClient(pageContext: PageContextClient) {
+  console.log(pageContext.pageContextsAborted)
   const { Page } = pageContext
 
   const page = (

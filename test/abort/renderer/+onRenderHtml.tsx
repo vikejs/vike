@@ -7,6 +7,7 @@ import { Layout } from './Layout'
 import type { PageContextServer } from './types'
 
 function onRenderHtml(pageContext: PageContextServer) {
+  console.log(pageContext.pageContextsAborted)
   const { Page } = pageContext
   const pageHtml = ReactDOMServer.renderToString(
     <Layout pageContext={pageContext}>
