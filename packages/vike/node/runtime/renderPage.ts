@@ -183,6 +183,7 @@ async function renderPageEntryOnce(
     if (pageContextHttpResponse) return pageContextHttpResponse
   }
 
+  // First renderPageEntryRecursive() call
   return await renderPageEntryRecursive(pageContextBegin, globalContext, httpRequestId, [])
 }
 
@@ -631,6 +632,7 @@ async function handleAbort(
   }
 
   if (pageContextAbort._urlRewrite) {
+    // Recursive renderPageEntryRecursive() call
     const pageContextReturn = await renderPageEntryRecursive(pageContextBegin, globalContext, httpRequestId, [
       ...pageContextsFromAborts,
       pageContextAbort,
