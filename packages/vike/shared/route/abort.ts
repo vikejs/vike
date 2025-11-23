@@ -28,6 +28,7 @@ import {
   joinEnglish,
   objectAssign,
   truncateString,
+  unique,
 } from './utils.js'
 import pc from '@brillout/picocolors'
 
@@ -343,18 +344,13 @@ function assertNoInfiniteLoop(pageContextsFromRewrite: { _urlRewrite: string }[]
   })
 }
 
-function assertNoInfiniteAbortLoop(rewriteCount: number, redirectCount: number) {
-  const abortCalls = [
-    //
-    rewriteCount > 0 && pc.cyan("throw render('/some-url')"),
-    redirectCount > 0 && pc.cyan("throw redirect('/some-url')"),
-  ]
-    .filter(Boolean)
-    .join(' and ')
-  assertUsage(
-    rewriteCount + redirectCount <= 7,
-    `Maximum chain length of 7 ${abortCalls} exceeded. Did you define an infinite loop of ${abortCalls}?`,
-  )
+function assertNoInfiniteAbortLoop(pageContextsAborted: PageContextAborted[]) {
+  if (pageContextsAborted.length < 10) return
+  const loop = pageContextsAborted.map((pageContext) => {
+    return pageContext._pageContextAbort._abortCall
+  })
+  if (unique(loop).length === loop.length) return
+  assertUsage(false, `Infinite loop: ${loop.join(' => ')}`)
 }
 
 function getErrPrefix(abortCaller: AbortCaller) {
