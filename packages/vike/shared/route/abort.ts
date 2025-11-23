@@ -4,7 +4,7 @@ export { RenderErrorPage }
 export { isAbortError }
 export { isAbortPageContext }
 export { logAbortErrorHandled }
-export { getPageContextAddendumFromAbort }
+export { getPageContextAddendumAbort }
 export { AbortRender }
 export { assertNoInfiniteAbortLoop }
 export type { RedirectStatusCode }
@@ -308,20 +308,20 @@ function assertStatusCode(statusCode: number, expected: number[], caller: 'rende
 }
 
 type PageContextAborted = { _pageContextAbort: PageContextAbort; urlOriginal: string }
-// TODO rename ageContextAddendumFromAbort ageContextAddendumAbort
-type PageContextAddendumFromAbort =
+// TODO rename ageContextAddendumAbort ageContextAddendumAbort
+type PageContextAddendumAbort =
   | { pageContextsAborted: PageContextAborted[] }
   | ({ pageContextsAborted: PageContextAborted[] } & PageContextAbort)
-function getPageContextAddendumFromAbort(pageContextsAborted: PageContextAborted[]): PageContextAddendumFromAbort {
-  const pageContextAddendumFromAbort = { pageContextsAborted }
+function getPageContextAddendumAbort(pageContextsAborted: PageContextAborted[]): PageContextAddendumAbort {
+  const pageContextAddendumAbort = { pageContextsAborted }
   const pageContextAbortedLast = pageContextsAborted.at(-1)
   if (pageContextAbortedLast) {
     const pageContextAbort = pageContextAbortedLast._pageContextAbort
     assert(pageContextAbort)
     // Sets pageContext._urlRewrite from pageContextAbort._urlRewrite — it's also set at handleAbort()
-    objectAssign(pageContextAddendumFromAbort, pageContextAbort)
+    objectAssign(pageContextAddendumAbort, pageContextAbort)
   }
-  return pageContextAddendumFromAbort
+  return pageContextAddendumAbort
 }
 
 // There doesn't seem to be a way to count the number of HTTP redirects (Vike doesn't have access to the HTTP request headers/cookies)

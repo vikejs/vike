@@ -34,7 +34,7 @@ import {
 import {
   assertNoInfiniteAbortLoop,
   ErrorAbort,
-  getPageContextAddendumFromAbort,
+  getPageContextAddendumAbort,
   isAbortError,
   logAbortErrorHandled,
   type PageContextAborted,
@@ -195,8 +195,8 @@ async function renderPageEntryRecursive(
 ): Promise<PageContextAfterRender> {
   const pageContextNominalPageBegin = forkPageContext(pageContextBegin)
 
-  const pageContextAddendumFromAbort = getPageContextAddendumFromAbort(pageContextsAborted)
-  objectAssign(pageContextNominalPageBegin, pageContextAddendumFromAbort)
+  const pageContextAddendumAbort = getPageContextAddendumAbort(pageContextsAborted)
+  objectAssign(pageContextNominalPageBegin, pageContextAddendumAbort)
 
   let pageContextNominalPageSuccess: undefined | Awaited<ReturnType<typeof renderPageNominal>>
   let errNominalPage: unknown
@@ -602,7 +602,7 @@ async function handleAbort(
   assert(pageContextAbort)
 
   const pageContext = forkPageContext(pageContextBegin)
-  // Sets pageContext._urlRewrite from pageContextAbort._urlRewrite — it's also set by getPageContextAddendumFromAbort()
+  // Sets pageContext._urlRewrite from pageContextAbort._urlRewrite — it's also set by getPageContextAddendumAbort()
   objectAssign(pageContext, pageContextAbort)
   objectAssign(pageContext, { _pageContextAbort: pageContextAbort })
 

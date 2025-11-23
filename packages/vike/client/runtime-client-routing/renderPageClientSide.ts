@@ -44,7 +44,7 @@ import { pushHistoryState } from './history.js'
 import {
   assertNoInfiniteAbortLoop,
   type ErrorAbort,
-  getPageContextAddendumFromAbort,
+  getPageContextAddendumAbort,
   isAbortError,
   logAbortErrorHandled,
   PageContextAbort,
@@ -641,9 +641,9 @@ async function getPageContextBegin(
   })
 
   {
-    const pageContextAddendumFromAbort = getPageContextAddendumFromAbort(pageContextsAborted)
-    assert(!('urlOriginal' in pageContextAddendumFromAbort))
-    objectAssign(pageContext, pageContextAddendumFromAbort)
+    const pageContextAddendumAbort = getPageContextAddendumAbort(pageContextsAborted)
+    assert(!('urlOriginal' in pageContextAddendumAbort))
+    objectAssign(pageContext, pageContextAddendumAbort)
   }
   return pageContext
 }
