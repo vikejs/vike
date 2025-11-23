@@ -474,7 +474,6 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
         redirectHard(urlRedirect)
         return { skip: true }
       } else {
-        // Add current URL to redirect chain before redirecting
         await renderPageClientSide({
           ...renderArgs,
           scrollTarget: undefined,
