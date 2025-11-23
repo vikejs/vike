@@ -4,13 +4,13 @@ export { RenderErrorPage }
 export { isAbortError }
 export { isAbortPageContext }
 export { logAbortErrorHandled }
-export { getPageContextFromAllAborts }
+export { getPageContextAddendumFromAbort }
 export { AbortRender }
 export { assertNoInfiniteAbortLoop }
 export type { RedirectStatusCode }
 export type { AbortStatusCode }
 export type { ErrorAbort }
-export type { PageContextFromAbort }
+export type { PageContextAborted }
 export type { UrlRedirect }
 export type { PageContextAbort }
 
@@ -306,28 +306,26 @@ function assertStatusCode(statusCode: number, expected: number[], caller: 'rende
   }
 }
 
-type PageContextFromAbort =
-  | { _urlRedirect: string; _urlRewrite?: undefined }
-  | { _urlRedirect?: undefined; _urlRewrite: string }
-type PageContextFromAllAborts = { previousPageContexts: PageContextFromAbort[]; _urlRewrite: null | string }
-function getPageContextFromAllAborts(pageContextsFromAborts: PageContextFromAbort[]): PageContextFromAllAborts {
+type PageContextAborted = { _pageContextAbort: PageContextAbort; urlOriginal: string }
+// TODO rename ageContextAddendumFromAbort ageContextAddendumAbort
+type PageContextAddendumFromAbort = { pageContextsAborted: PageContextAborted[] }
+/* TODO/now
+type PageContextAddendumFromAbort = { pageContextsAborted: PageContextAborted[]; } & (PageContextAbort | undefined)
+//*/
+function getPageContextAddendumFromAbort(pageContextsAborted: PageContextAborted[]): PageContextAddendumFromAbort {
   // Check for infinite loops in rewrites (similar to the old getPageContextFromAllRewrites)
-  const rewriteAborts = pageContextsFromAborts.filter((pageContext) => pageContext._urlRewrite !== undefined)
-  assertNoInfiniteLoop(rewriteAborts)
+  // const rewriteAborts = pageContextsAborted.filter((pageContext) => pageContext._urlRewrite !== undefined)
+  // TODO/now
+  // assertNoInfiniteLoop(rewriteAborts)
 
-  let _urlRewrite: null | string = null
-  pageContextsFromAborts.forEach((pageContextFromAbort) => {
-    if (pageContextFromAbort._urlRedirect) {
-      // TODO?
-    }
-    if (pageContextFromAbort._urlRewrite) {
-      _urlRewrite = pageContextFromAbort._urlRewrite
-    }
-  })
-
-  // TODO: propagate this new name
-  const pageContextAddendumFromAborts = { previousPageContexts: pageContextsFromAborts, _urlRewrite }
-  return pageContextAddendumFromAborts
+  const pageContextAddendumFromAbort = { pageContextsAborted }
+  const pageContextAbortedLast = pageContextsAborted.at(-1)
+  if (pageContextAbortedLast) {
+    const pageContextAbort = pageContextAbortedLast._pageContextAbort
+    assert(pageContextAbort)
+    objectAssign(pageContextAddendumFromAbort, pageContextAbort)
+  }
+  return pageContextAddendumFromAbort
 }
 function assertNoInfiniteLoop(pageContextsFromRewrite: { _urlRewrite: string }[]) {
   const urlRewrites: string[] = []

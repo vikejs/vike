@@ -34,10 +34,10 @@ import {
 import {
   assertNoInfiniteAbortLoop,
   ErrorAbort,
-  getPageContextFromAllAborts,
+  getPageContextAddendumFromAbort,
   isAbortError,
   logAbortErrorHandled,
-  type PageContextFromAbort,
+  type PageContextAborted,
 } from '../../shared/route/abort.js'
 import {
   getGlobalContextServerInternal,
@@ -191,23 +191,27 @@ async function renderPageEntryRecursive(
   pageContextBegin: PageContextBegin,
   globalContext: GlobalContextServerInternal,
   httpRequestId: number,
-  pageContextsFromAborts: PageContextFromAbort[] = [],
+  pageContextsAborted: PageContextAborted[] = [],
 ): Promise<PageContextAfterRender> {
   const pageContextNominalPageBegin = forkPageContext(pageContextBegin)
+  /* TODO/now
   assertNoInfiniteAbortLoop(
     // Count rewrite aborts for infinite loop detection
-    pageContextsFromAborts.filter((abort) => '_urlRewrite' in abort).length,
+    pageContextsAborted.filter((abort) => '_urlRewrite' in abort).length,
     // There doesn't seem to be a way to count the number of HTTP redirects (vike don't have access to the HTTP request headers/cookies)
     // https://stackoverflow.com/questions/9683007/detect-infinite-http-redirect-loop-on-server-side
     0,
   )
-  let pageContextNominalPageSuccess: undefined | Awaited<ReturnType<typeof renderPageNominal>>
+  */
 
-  // Add previousPageContexts and _urlRewrite from aborts
-  const pageContextFromAllAborts = getPageContextFromAllAborts(pageContextsFromAborts)
+  const pageContextAddendumFromAbort = getPageContextAddendumFromAbort(pageContextsAborted)
+  /* TODO/now move comment
   // This is where pageContext._urlRewrite is set
-  assert(pageContextFromAllAborts._urlRewrite === null || typeof pageContextFromAllAborts._urlRewrite === 'string')
-  objectAssign(pageContextNominalPageBegin, pageContextFromAllAborts)
+  assert(pageContextAddendumFromAbort._urlRewrite === null || typeof pageContextAddendumFromAbort._urlRewrite === 'string')
+  //*/
+  objectAssign(pageContextNominalPageBegin, pageContextAddendumFromAbort)
+
+  let pageContextNominalPageSuccess: undefined | Awaited<ReturnType<typeof renderPageNominal>>
   let errNominalPage: unknown
   {
     try {
@@ -218,6 +222,7 @@ async function renderPageEntryRecursive(
       logRuntimeError(errNominalPage, httpRequestId)
     }
     if (!errNominalPage) {
+      // @ts-ignore
       assert(pageContextNominalPageSuccess === pageContextNominalPageBegin)
     }
   }
@@ -243,7 +248,7 @@ async function renderPageEntryRecursive(
       pageContextNominalPageBegin,
       globalContext,
       httpRequestId,
-      pageContextsFromAborts,
+      pageContextsAborted,
     )
   }
 }
@@ -259,7 +264,7 @@ async function renderPageOnError(
   pageContextNominalPageBegin: PageContextBegin,
   globalContext: GlobalContextServerInternal,
   httpRequestId: number,
-  pageContextsFromAborts: PageContextFromAbort[] = [],
+  pageContextsAborted: PageContextAborted[] = [],
 ) {
   assert(pageContextNominalPageBegin)
   assert(hasProp(pageContextNominalPageBegin, 'urlOriginal', 'string'))
@@ -275,7 +280,7 @@ async function renderPageOnError(
       httpRequestId,
       pageContextErrorPageInit,
       globalContext,
-      pageContextsFromAborts,
+      pageContextsAborted,
     )
     if (handled.pageContextReturn) {
       // - throw redirect()
@@ -310,7 +315,7 @@ async function renderPageOnError(
         httpRequestId,
         pageContextErrorPageInit,
         globalContext,
-        pageContextsFromAborts,
+        pageContextsAborted,
       )
       // TODO: minor refactor
       // throw render(abortStatusCode)
@@ -600,7 +605,7 @@ async function handleAbort(
   httpRequestId: number,
   pageContextErrorPageInit: PageContextErrorPageInit,
   globalContext: GlobalContextServerInternal,
-  pageContextsFromAborts: PageContextFromAbort[] = [],
+  pageContextsAborted: PageContextAborted[] = [],
 ): Promise<
   | { pageContextReturn: PageContextAfterRender; pageContextAbort?: never }
   | { pageContextReturn?: never; pageContextAbort: Record<string, unknown> }
@@ -608,6 +613,10 @@ async function handleAbort(
   logAbortErrorHandled(errAbort, globalContext._isProduction, pageContextNominalPageBegin)
   const pageContextAbort = errAbort._pageContextAbort
   assert(pageContextAbort)
+
+  const pageContext = forkPageContext(pageContextBegin)
+  objectAssign(pageContext, pageContextAbort)
+  objectAssign(pageContext, { _pageContextAbort: pageContextAbort })
 
   // Client-side navigation — [`pageContext.json` request](https://vike.dev/pageContext.json)
   if (pageContextNominalPageBegin.isClientSideNavigation) {
@@ -622,9 +631,7 @@ async function handleAbort(
           abortCall,
         )} but you didn't define an error page, make sure to define one https://vike.dev/error-page`,
       )
-      const pageContext = forkPageContext(pageContextBegin)
       objectAssign(pageContext, { pageId: errorPageId })
-      objectAssign(pageContext, pageContextAbort)
       objectAssign(pageContext, pageContextErrorPageInit, true)
       updateType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
       // We include pageContextInit: we don't only serialize pageContextAbort because the error page may need to access pageContextInit
@@ -635,26 +642,27 @@ async function handleAbort(
     const httpResponse = await createHttpResponsePageContextJson(pageContextSerialized)
     const pageContextReturn = { httpResponse }
     return { pageContextReturn }
+    /* TODO/now
+    objectAssign(pageContext, { httpResponse })
+    return { pageContextReturn: pageContext }
+    */
   }
 
   // URL Rewrite — `throw render(url)`
   if (pageContextAbort._urlRewrite) {
     // Recursive renderPageEntryRecursive() call
     const pageContextReturn = await renderPageEntryRecursive(pageContextBegin, globalContext, httpRequestId, [
-      ...pageContextsFromAborts,
-      pageContextAbort,
+      ...pageContextsAborted,
+      pageContext,
     ])
-    Object.assign(pageContextReturn, pageContextAbort)
     return { pageContextReturn }
   }
 
   // URL Redirection — `throw redirect()`
   if (pageContextAbort._urlRedirect) {
-    const pageContextReturn = forkPageContext(pageContextBegin)
-    objectAssign(pageContextReturn, pageContextAbort)
     const httpResponse = createHttpResponseRedirect(pageContextAbort._urlRedirect, pageContextBegin)
-    objectAssign(pageContextReturn, { httpResponse })
-    return { pageContextReturn }
+    objectAssign(pageContext, { httpResponse })
+    return { pageContextReturn: pageContext }
   }
 
   // Render error page — `throw render(abortStatusCode)` if not pageContext.json request

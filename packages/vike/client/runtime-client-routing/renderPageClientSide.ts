@@ -44,11 +44,11 @@ import { pushHistoryState } from './history.js'
 import {
   assertNoInfiniteAbortLoop,
   type ErrorAbort,
-  getPageContextFromAllAborts,
+  getPageContextAddendumFromAbort,
   isAbortError,
   logAbortErrorHandled,
   PageContextAbort,
-  type PageContextFromAbort,
+  type PageContextAborted,
 } from '../../shared/route/abort.js'
 import { route } from '../../shared/route/index.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
@@ -109,7 +109,7 @@ type RenderArgs = {
   isHistoryNavigation?: true
   urlOriginal?: string
   overwriteLastHistoryEntry?: boolean
-  pageContextsFromAborts?: PageContextFromAbort[]
+  pageContextsAborted?: PageContextAborted[]
   doNotRenderIfSamePage?: boolean
   isClientSideNavigation?: boolean
   pageContextInitClient?: Record<string, unknown>
@@ -122,27 +122,28 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
     overwriteLastHistoryEntry = false,
     isBackwardNavigation = false,
     isHistoryNavigation = false,
-    pageContextsFromAborts = [],
     doNotRenderIfSamePage,
     isClientSideNavigation = true,
     pageContextInitClient,
   } = renderArgs
-  let { scrollTarget } = renderArgs
+  let { scrollTarget, pageContextsAborted = [] } = renderArgs
   const { previousPageContext } = globalObject
 
   addLinkPrefetchHandlers_unwatch()
 
   const { isRenderOutdated, setHydrationCanBeAborted, isFirstRender } = getIsRenderOutdated()
+  /* TODO/now
   assertNoInfiniteAbortLoop(
-    pageContextsFromAborts.filter((abort) => '_urlRewrite' in abort).length,
-    pageContextsFromAborts.filter((abort) => '_urlRedirect' in abort).length,
+    pageContextsAborted.filter((abort) => '_urlRewrite' in abort).length,
+    pageContextsAborted.filter((abort) => '_urlRedirect' in abort).length,
   )
+  */
 
   const pageContextBeginArgs = {
     urlOriginal,
     isBackwardNavigation,
     isHistoryNavigation,
-    pageContextsFromAborts,
+    pageContextsAborted,
     isClientSideNavigation,
     pageContextInitClient,
     isFirstRender,
@@ -457,12 +458,15 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
     logAbortErrorHandled(err, !import.meta.env.DEV, pageContext)
     const pageContextAbort = errAbort._pageContextAbort
 
+    objectAssign(pageContext, { _pageContextAbort: pageContextAbort })
+    pageContextsAborted = [...pageContextsAborted, pageContext]
+
     // throw render('/some-url')
     if (pageContextAbort._urlRewrite) {
       await renderPageClientSide({
         ...renderArgs,
         scrollTarget: undefined,
-        pageContextsFromAborts: [...pageContextsFromAborts, pageContextAbort],
+        pageContextsAborted,
       })
       return { skip: true }
     }
@@ -481,7 +485,7 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
           scrollTarget: undefined,
           urlOriginal: urlRedirect,
           overwriteLastHistoryEntry: false,
-          pageContextsFromAborts: [...pageContextsFromAborts, { _urlRedirect: urlOriginal }],
+          pageContextsAborted,
         })
       }
       return { skip: true }
@@ -604,7 +608,7 @@ async function getPageContextBegin(
     urlOriginal,
     isBackwardNavigation,
     isHistoryNavigation,
-    pageContextsFromAborts,
+    pageContextsAborted,
     isClientSideNavigation,
     pageContextInitClient,
     isFirstRender,
@@ -612,7 +616,7 @@ async function getPageContextBegin(
     urlOriginal: string
     isBackwardNavigation: boolean | null
     isHistoryNavigation: boolean
-    pageContextsFromAborts: PageContextFromAbort[]
+    pageContextsAborted: PageContextAborted[]
     isClientSideNavigation: boolean
     pageContextInitClient: Record<string, unknown> | undefined
     isFirstRender: boolean
@@ -642,9 +646,9 @@ async function getPageContextBegin(
   })
 
   {
-    const pageContextFromAllAborts = getPageContextFromAllAborts(pageContextsFromAborts)
-    assert(!('urlOriginal' in pageContextFromAllAborts))
-    objectAssign(pageContext, pageContextFromAllAborts)
+    const pageContextAddendumFromAbort = getPageContextAddendumFromAbort(pageContextsAborted)
+    assert(!('urlOriginal' in pageContextAddendumFromAbort))
+    objectAssign(pageContext, pageContextAddendumFromAbort)
   }
   return pageContext
 }
