@@ -18,7 +18,6 @@ function createPageContextObject() {
   const pageContext = {
     _isOriginalObject: true as const,
     isPageContext: true as const,
-    previousPageContexts: [] as any[],
   }
   changeEnumerable(pageContext, '_isOriginalObject', false)
   return pageContext
