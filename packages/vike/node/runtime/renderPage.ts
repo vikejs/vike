@@ -284,8 +284,8 @@ async function renderPageOnError(
       return handled.pageContextReturn
     } else {
       // - throw render(abortStatusCode) if not pageContext.json request
+      objectAssign(pageContextErrorPageInit, handled.pageContextAbort)
     }
-    Object.assign(pageContextErrorPageInit, handled.pageContextAbort)
   }
 
   {
