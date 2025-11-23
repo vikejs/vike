@@ -312,6 +312,7 @@ async function renderPageOnError(
         globalContext,
         pageContextsFromAborts,
       )
+      // TODO: minor refactor
       // throw render(abortStatusCode)
       if (!handled.pageContextReturn) {
         const pageContextAbort = errErrorPage._pageContextAbort
@@ -322,6 +323,7 @@ async function renderPageOnError(
           )} doesn't occur while the error page is being rendered.`,
           { onlyOnce: false },
         )
+        // TODO: rename pageContextHttpWithError pageContextHttpErrorFallback
         const pageContextHttpWithError = getPageContextHttpResponseError(errNominalPage, pageContextBegin)
         return pageContextHttpWithError
       }
@@ -331,6 +333,7 @@ async function renderPageOnError(
     if (isNewError(errErrorPage, errNominalPage)) {
       logRuntimeError(errErrorPage, httpRequestId)
     }
+    // TODO: rename pageContextWithError pageContextHttpErrorFallback
     const pageContextWithError = getPageContextHttpResponseError(errNominalPage, pageContextBegin)
     return pageContextWithError
   }
@@ -391,6 +394,7 @@ function prettyUrl(url: string) {
   return pc.bold(url)
 }
 
+// TODO: rename getPageContextHttpResponseError getPageContextHttpResponseErrorFallback
 function getPageContextHttpResponseError(err: unknown, pageContextBegin: PageContextBegin): PageContextAfterRender {
   const pageContextWithError = forkPageContext(pageContextBegin)
   const httpResponse = createHttpResponseError(pageContextBegin)
