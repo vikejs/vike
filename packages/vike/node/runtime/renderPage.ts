@@ -602,10 +602,12 @@ async function handleAbort(
   | { pageContextReturn?: never; pageContextAbort: Record<string, unknown> }
 > {
   logAbortErrorHandled(errAbort, globalContext._isProduction, pageContextNominalPageBegin)
-
   const pageContextAbort = errAbort._pageContextAbort
-  let pageContextSerialized: string
+  assert(pageContextAbort)
+
+  // Client-side navigation — [`pageContext.json` request](https://vike.dev/pageContext.json)
   if (pageContextNominalPageBegin.isClientSideNavigation) {
+    let pageContextSerialized: string
     if (pageContextAbort.abortStatusCode) {
       const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
       const abortCall = pageContextAbort._abortCall
