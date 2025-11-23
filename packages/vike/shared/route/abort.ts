@@ -4,13 +4,13 @@ export { RenderErrorPage }
 export { isAbortError }
 export { isAbortPageContext }
 export { logAbortErrorHandled }
-export { getPageContextFromAllRewrites }
+export { getPageContextAddendumAbort }
 export { AbortRender }
 export { assertNoInfiniteAbortLoop }
 export type { RedirectStatusCode }
 export type { AbortStatusCode }
 export type { ErrorAbort }
-export type { PageContextFromRewrite }
+export type { PageContextAborted }
 export type { UrlRedirect }
 export type { PageContextAbort }
 
@@ -28,6 +28,7 @@ import {
   joinEnglish,
   objectAssign,
   truncateString,
+  unique,
 } from './utils.js'
 import pc from '@brillout/picocolors'
 
@@ -306,44 +307,32 @@ function assertStatusCode(statusCode: number, expected: number[], caller: 'rende
   }
 }
 
-type PageContextFromRewrite = { _urlRewrite: string }
-type PageContextFromAllRewrites = { _urlRewrite: null | string }
-function getPageContextFromAllRewrites(pageContextsFromRewrite: PageContextFromRewrite[]): PageContextFromAllRewrites {
-  assertNoInfiniteLoop(pageContextsFromRewrite)
-  const pageContextFromAllRewrites: PageContextFromAllRewrites = { _urlRewrite: null }
-  pageContextsFromRewrite.forEach((pageContextFromRewrite) => {
-    Object.assign(pageContextFromAllRewrites, pageContextFromRewrite)
-  })
-  return pageContextFromAllRewrites
-}
-function assertNoInfiniteLoop(pageContextsFromRewrite: PageContextFromRewrite[]) {
-  const urlRewrites: string[] = []
-  pageContextsFromRewrite.forEach((pageContext) => {
-    const urlRewrite = pageContext._urlRewrite
-    {
-      const idx = urlRewrites.indexOf(urlRewrite)
-      if (idx !== -1) {
-        const loop: string = [...urlRewrites.slice(idx), urlRewrite].map((url) => `render('${url}')`).join(' => ')
-        assertUsage(false, `Infinite loop of render() calls: ${loop}`)
-      }
-    }
-    urlRewrites.push(urlRewrite)
-  })
+type PageContextAborted = { _pageContextAbort: PageContextAbort; urlOriginal: string }
+type PageContextAddendumAbort =
+  | { pageContextsAborted: PageContextAborted[] }
+  | ({ pageContextsAborted: PageContextAborted[] } & PageContextAbort)
+function getPageContextAddendumAbort(pageContextsAborted: PageContextAborted[]): PageContextAddendumAbort {
+  const pageContextAddendumAbort = { pageContextsAborted }
+  const pageContextAbortedLast = pageContextsAborted.at(-1)
+  if (pageContextAbortedLast) {
+    const pageContextAbort = pageContextAbortedLast._pageContextAbort
+    assert(pageContextAbort)
+    // Sets pageContext._urlRewrite from pageContextAbort._urlRewrite — it's also set at handleAbort()
+    objectAssign(pageContextAddendumAbort, pageContextAbort)
+  }
+  return pageContextAddendumAbort
 }
 
-function assertNoInfiniteAbortLoop(rewriteCount: number, redirectCount: number) {
-  const abortCalls = [
-    // prettier-ignore
-    // biome-ignore format:
-    rewriteCount > 0 && pc.cyan("throw render('/some-url')"),
-    redirectCount > 0 && pc.cyan("throw redirect('/some-url')"),
-  ]
-    .filter(Boolean)
-    .join(' and ')
-  assertUsage(
-    rewriteCount + redirectCount <= 7,
-    `Maximum chain length of 7 ${abortCalls} exceeded. Did you define an infinite loop of ${abortCalls}?`,
-  )
+// There doesn't seem to be a way to count the number of HTTP redirects (Vike doesn't have access to the HTTP request headers/cookies)
+// https://stackoverflow.com/questions/9683007/detect-infinite-http-redirect-loop-on-server-side
+function assertNoInfiniteAbortLoop(pageContextsAborted: PageContextAborted[]) {
+  if (pageContextsAborted.length < 10) return
+  const loop = pageContextsAborted.map((pageContext) => {
+    return pageContext._pageContextAbort._abortCall
+  })
+  // Unique array => no redundant call => no infinite loop
+  if (unique(loop).length === loop.length) return
+  assertUsage(false, `Infinite loop: ${loop.join(' => ')}`)
 }
 
 function getErrPrefix(abortCaller: AbortCaller) {

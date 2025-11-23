@@ -550,6 +550,7 @@ async function createPageContextPrerendering(
   objectAssign(pageContext, {
     _urlHandler: null,
     _httpRequestId: null,
+    // TODO: remove all
     _urlRewrite: null,
     _noExtraDir: prerenderContext._noExtraDir,
     _prerenderContext: prerenderContext,

@@ -282,6 +282,14 @@ Always `true`, useful for distinguishing `pageContext` from other objects and na
 
 The CSP nonce, see <Link href="/csp" />.
 
+<Prop name="pageContextsAborted" />
+
+List of `pageContext` from previous <Link href="/redirect">`throw redirect()`</Link> and <Link href="/render">`throw render()`</Link> that led to the current page.
+
+<Warning>
+  `pageContext.pageContextsAborted` is experimental — reach out to the Vike maintainers on GitHub before using it.
+</Warning>
+
 
 ## Custom
 

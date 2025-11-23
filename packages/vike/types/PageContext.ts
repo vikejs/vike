@@ -216,6 +216,13 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
      */
     cspNonce: string | null
 
+    /**
+     * List of `pageContext` from previous `throw redirect()` and `throw render()` that led to the current page.
+     *
+     * https://vike.dev/pageContext#pageContextsAborted
+     */
+    pageContextsAborted: Partial<PageContextServer<Data>>[]
+
     isHydration?: undefined
     isBackwardNavigation?: undefined
     isHistoryNavigation?: undefined
@@ -268,6 +275,12 @@ type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltI
      * https://vike.dev/pageContext#previousPageContext
      */
     previousPageContext: PageContextClient<Data> | null
+    /**
+     * List of `pageContext` from previous `throw redirect()` and `throw render()` that led to the current page.
+     *
+     * https://vike.dev/pageContext#pageContextsAborted
+     */
+    pageContextsAborted: Partial<PageContextClient<Data>>[]
     globalContext: GlobalContextClient
   } & PageContextUrlClient
 
@@ -338,7 +351,7 @@ type PageContextInternalClient = Omit<
 >
 type PageContextInternalClient_ClientRouting = Omit<
   PageContextBuiltInClientWithClientRouting<unknown>,
-  OnlyUsers | 'previousPageContext'
+  OnlyUsers | 'previousPageContext' | 'pageContextsAborted'
 > & {
   previousPageContext: { pageId: string } | null
 }

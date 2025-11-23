@@ -8,7 +8,7 @@ function onData(pageContext: PageContext & { data: Data }) {
   assert(pageContext.data.title === '6 Star Wars Movies')
   if (pageContext.isClientSide) {
     assert(!pageContext.isHydration)
-    /* TODO/now
+    /* TODO
     assert(pageContext.isClientSideNavigation)
     */
   } else {

@@ -44,11 +44,11 @@ import { pushHistoryState } from './history.js'
 import {
   assertNoInfiniteAbortLoop,
   type ErrorAbort,
-  getPageContextFromAllRewrites,
+  getPageContextAddendumAbort,
   isAbortError,
   logAbortErrorHandled,
   PageContextAbort,
-  type PageContextFromRewrite,
+  type PageContextAborted,
 } from '../../shared/route/abort.js'
 import { route } from '../../shared/route/index.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
@@ -109,8 +109,7 @@ type RenderArgs = {
   isHistoryNavigation?: true
   urlOriginal?: string
   overwriteLastHistoryEntry?: boolean
-  pageContextsFromRewrite?: PageContextFromRewrite[]
-  redirectCount?: number
+  pageContextsAborted?: PageContextAborted[]
   doNotRenderIfSamePage?: boolean
   isClientSideNavigation?: boolean
   pageContextInitClient?: Record<string, unknown>
@@ -123,25 +122,22 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
     overwriteLastHistoryEntry = false,
     isBackwardNavigation = false,
     isHistoryNavigation = false,
-    pageContextsFromRewrite = [],
-    redirectCount = 0,
     doNotRenderIfSamePage,
     isClientSideNavigation = true,
     pageContextInitClient,
   } = renderArgs
-  let { scrollTarget } = renderArgs
+  let { scrollTarget, pageContextsAborted = [] } = renderArgs
   const { previousPageContext } = globalObject
 
   addLinkPrefetchHandlers_unwatch()
 
   const { isRenderOutdated, setHydrationCanBeAborted, isFirstRender } = getIsRenderOutdated()
-  assertNoInfiniteAbortLoop(pageContextsFromRewrite.length, redirectCount)
 
   const pageContextBeginArgs = {
     urlOriginal,
     isBackwardNavigation,
     isHistoryNavigation,
-    pageContextsFromRewrite,
+    pageContextsAborted,
     isClientSideNavigation,
     pageContextInitClient,
     isFirstRender,
@@ -358,7 +354,7 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
     // throw redirect()/render()
     let pageContextAbort: undefined | PageContextAbort
     if (isAbortError(err)) {
-      const res = await handleAbortError(err, pageContext)
+      const res = await handleAbort(err, pageContext)
       if (res.skip) return
       pageContextAbort = res.pageContextAbort
     }
@@ -448,7 +444,7 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
     await renderPageView(pageContext, args)
   }
 
-  async function handleAbortError(
+  async function handleAbort(
     err: ErrorAbort,
     pageContext: PageContextBegin,
   ): Promise<{ skip: true; pageContextAbort?: undefined } | { pageContextAbort: PageContextAbort; skip?: undefined }> {
@@ -456,12 +452,16 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
     logAbortErrorHandled(err, !import.meta.env.DEV, pageContext)
     const pageContextAbort = errAbort._pageContextAbort
 
+    objectAssign(pageContext, { _pageContextAbort: pageContextAbort })
+    pageContextsAborted = [...pageContextsAborted, pageContext]
+    assertNoInfiniteAbortLoop(pageContextsAborted)
+
     // throw render('/some-url')
     if (pageContextAbort._urlRewrite) {
       await renderPageClientSide({
         ...renderArgs,
         scrollTarget: undefined,
-        pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAbort],
+        pageContextsAborted,
       })
       return { skip: true }
     }
@@ -479,7 +479,7 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
           scrollTarget: undefined,
           urlOriginal: urlRedirect,
           overwriteLastHistoryEntry: false,
-          redirectCount: redirectCount + 1,
+          pageContextsAborted,
         })
       }
       return { skip: true }
@@ -602,7 +602,7 @@ async function getPageContextBegin(
     urlOriginal,
     isBackwardNavigation,
     isHistoryNavigation,
-    pageContextsFromRewrite,
+    pageContextsAborted,
     isClientSideNavigation,
     pageContextInitClient,
     isFirstRender,
@@ -610,7 +610,7 @@ async function getPageContextBegin(
     urlOriginal: string
     isBackwardNavigation: boolean | null
     isHistoryNavigation: boolean
-    pageContextsFromRewrite: PageContextFromRewrite[]
+    pageContextsAborted: PageContextAborted[]
     isClientSideNavigation: boolean
     pageContextInitClient: Record<string, unknown> | undefined
     isFirstRender: boolean
@@ -640,9 +640,9 @@ async function getPageContextBegin(
   })
 
   {
-    const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
-    assert(!('urlOriginal' in pageContextFromAllRewrites))
-    objectAssign(pageContext, pageContextFromAllRewrites)
+    const pageContextAddendumAbort = getPageContextAddendumAbort(pageContextsAborted)
+    assert(!('urlOriginal' in pageContextAddendumAbort))
+    objectAssign(pageContext, pageContextAddendumAbort)
   }
   return pageContext
 }
