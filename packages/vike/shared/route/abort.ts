@@ -309,10 +309,9 @@ function assertStatusCode(statusCode: number, expected: number[], caller: 'rende
 
 type PageContextAborted = { _pageContextAbort: PageContextAbort; urlOriginal: string }
 // TODO rename ageContextAddendumFromAbort ageContextAddendumAbort
-type PageContextAddendumFromAbort = { pageContextsAborted: PageContextAborted[] }
-/* TODO/now
-type PageContextAddendumFromAbort = { pageContextsAborted: PageContextAborted[]; } & (PageContextAbort | undefined)
-//*/
+type PageContextAddendumFromAbort =
+  | { pageContextsAborted: PageContextAborted[] }
+  | ({ pageContextsAborted: PageContextAborted[] } & PageContextAbort)
 function getPageContextAddendumFromAbort(pageContextsAborted: PageContextAborted[]): PageContextAddendumFromAbort {
   const pageContextAddendumFromAbort = { pageContextsAborted }
   const pageContextAbortedLast = pageContextsAborted.at(-1)
