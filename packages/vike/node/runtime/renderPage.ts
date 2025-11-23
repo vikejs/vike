@@ -105,7 +105,7 @@ async function renderPage<PageContextUserAdded extends {}, PageContextInitUser e
   logHttpRequest(urlOriginalPretty, httpRequestId)
 
   const { pageContextReturn } = await globalObject.asyncHookWrapper(httpRequestId, () =>
-    renderPagePrepare(pageContextInit, httpRequestId),
+    renderPageEntryOnce(pageContextInit, httpRequestId),
   )
 
   logHttpResponse(urlOriginalPretty, httpRequestId, pageContextReturn)
@@ -126,7 +126,7 @@ function getFallbackAsyncHookWrapper() {
   })
 }
 
-async function renderPagePrepare(
+async function renderPageEntryOnce(
   pageContextInit: PageContextInit,
   httpRequestId: number,
 ): Promise<PageContextAfterRender> {
@@ -183,10 +183,10 @@ async function renderPagePrepare(
     if (pageContextHttpResponse) return pageContextHttpResponse
   }
 
-  return await renderPageAlreadyPrepared(pageContextBegin, globalContext, httpRequestId, [])
+  return await renderPageEntryRecursive(pageContextBegin, globalContext, httpRequestId, [])
 }
 
-async function renderPageAlreadyPrepared(
+async function renderPageEntryRecursive(
   pageContextBegin: PageContextBegin,
   globalContext: GlobalContextServerInternal,
   httpRequestId: number,
@@ -247,6 +247,7 @@ async function renderPageAlreadyPrepared(
   }
 }
 
+// TODO: rename renderPageOnError renderPageEntryRecursive_error
 // When the normal page threw an error
 // - Can be a URL rewrite upon `throw render('/some-url')`
 // - Can be rendering the error page
@@ -266,7 +267,7 @@ async function renderPageOnError(
 
   // Handle `throw redirect()` and `throw render()` while rendering nominal page
   if (isAbortError(errNominalPage)) {
-    const handled = await handleAbortError(
+    const handled = await handleAbort(
       errNominalPage,
       pageContextBegin,
       pageContextNominalPageBegin,
@@ -301,7 +302,7 @@ async function renderPageOnError(
   } catch (errErrorPage) {
     // Handle `throw redirect()` and `throw render()` while rendering error page
     if (isAbortError(errErrorPage)) {
-      const handled = await handleAbortError(
+      const handled = await handleAbort(
         errErrorPage,
         pageContextBegin,
         pageContextNominalPageBegin,
@@ -411,6 +412,9 @@ function getPageContextHttpResponseErrorWithoutGlobalContext(
   return pageContextWithError
 }
 
+// TODO: rename renderPageNominal renderPageEntryRecursive_nominal
+// - Render page (no error)
+// - Render 404 page
 type PageContextInternalServerAfterRender = Awaited<ReturnType<typeof renderPageNominal>>
 async function renderPageNominal(pageContext: PageContextBegin) {
   objectAssign(pageContext, { errorWhileRendering: null })
@@ -583,7 +587,7 @@ function normalize(url: string) {
   return url || '/'
 }
 
-async function handleAbortError(
+async function handleAbort(
   errAbort: ErrorAbort,
   pageContextBegin: PageContextBegin,
   // handleAbortError() creates a new pageContext object and we don't merge pageContextNominalPageBegin to it: we only use some pageContextNominalPageBegin information.
@@ -627,7 +631,7 @@ async function handleAbortError(
   }
 
   if (pageContextAbort._urlRewrite) {
-    const pageContextReturn = await renderPageAlreadyPrepared(pageContextBegin, globalContext, httpRequestId, [
+    const pageContextReturn = await renderPageEntryRecursive(pageContextBegin, globalContext, httpRequestId, [
       ...pageContextsFromAborts,
       pageContextAbort,
     ])
