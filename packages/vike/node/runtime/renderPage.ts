@@ -205,10 +205,6 @@ async function renderPageEntryRecursive(
   */
 
   const pageContextAddendumFromAbort = getPageContextAddendumFromAbort(pageContextsAborted)
-  /* TODO/now move comment
-  // This is where pageContext._urlRewrite is set
-  assert(pageContextAddendumFromAbort._urlRewrite === null || typeof pageContextAddendumFromAbort._urlRewrite === 'string')
-  //*/
   objectAssign(pageContextNominalPageBegin, pageContextAddendumFromAbort)
 
   let pageContextNominalPageSuccess: undefined | Awaited<ReturnType<typeof renderPageNominal>>
@@ -615,6 +611,7 @@ async function handleAbort(
   assert(pageContextAbort)
 
   const pageContext = forkPageContext(pageContextBegin)
+  // Sets pageContext._urlRewrite from pageContextAbort._urlRewrite — it's also set by getPageContextAddendumFromAbort()
   objectAssign(pageContext, pageContextAbort)
   objectAssign(pageContext, { _pageContextAbort: pageContextAbort })
 

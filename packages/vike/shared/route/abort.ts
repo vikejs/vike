@@ -323,6 +323,7 @@ function getPageContextAddendumFromAbort(pageContextsAborted: PageContextAborted
   if (pageContextAbortedLast) {
     const pageContextAbort = pageContextAbortedLast._pageContextAbort
     assert(pageContextAbort)
+    // Sets pageContext._urlRewrite from pageContextAbort._urlRewrite — it's also set at handleAbort()
     objectAssign(pageContextAddendumFromAbort, pageContextAbort)
   }
   return pageContextAddendumFromAbort
