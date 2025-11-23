@@ -345,8 +345,7 @@ function assertNoInfiniteLoop(pageContextsFromRewrite: { _urlRewrite: string }[]
 
 function assertNoInfiniteAbortLoop(rewriteCount: number, redirectCount: number) {
   const abortCalls = [
-    // prettier-ignore
-    // biome-ignore format:
+    //
     rewriteCount > 0 && pc.cyan("throw render('/some-url')"),
     redirectCount > 0 && pc.cyan("throw redirect('/some-url')"),
   ]
