@@ -296,6 +296,7 @@ async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _u
   const pageContextFromServer: unknown = parse(responseText)
   assert(isObject(pageContextFromServer))
 
+  console.log('======== pageContextFromServer', pageContextFromServer)
   if (isAbortPageContext(pageContextFromServer)) {
     throw AbortRender(pageContextFromServer)
   }
