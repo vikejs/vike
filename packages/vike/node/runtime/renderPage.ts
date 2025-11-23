@@ -280,10 +280,10 @@ async function renderPageOnError(
     if (handled.pageContextReturn) {
       // - throw redirect()
       // - throw render(url)
-      // - throw render(abortStatusCode) if .pageContext.json request
+      // - throw render(abortStatusCode) if pageContext.json request
       return handled.pageContextReturn
     } else {
-      // - throw render(abortStatusCode) if not .pageContext.json request
+      // - throw render(abortStatusCode) if not pageContext.json request
     }
     Object.assign(pageContextErrorPageInit, handled.pageContextAbort)
   }
@@ -633,6 +633,7 @@ async function handleAbort(
     return { pageContextReturn }
   }
 
+  // URL Rewrite — `throw render(url)`
   if (pageContextAbort._urlRewrite) {
     // Recursive renderPageEntryRecursive() call
     const pageContextReturn = await renderPageEntryRecursive(pageContextBegin, globalContext, httpRequestId, [
@@ -642,6 +643,8 @@ async function handleAbort(
     Object.assign(pageContextReturn, pageContextAbort)
     return { pageContextReturn }
   }
+
+  // URL Redirection — `throw redirect()`
   if (pageContextAbort._urlRedirect) {
     const pageContextReturn = forkPageContext(pageContextBegin)
     objectAssign(pageContextReturn, pageContextAbort)
@@ -649,6 +652,8 @@ async function handleAbort(
     objectAssign(pageContextReturn, { httpResponse })
     return { pageContextReturn }
   }
+
+  // Render error page — `throw render(abortStatusCode)` if not pageContext.json request
   assert(pageContextAbort.abortStatusCode)
   return { pageContextAbort }
 }
