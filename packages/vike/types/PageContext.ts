@@ -2,7 +2,6 @@
 export type { PageContext }
 export type { PageContextServer }
 export type { PageContextClient }
-export type { PreviousPageContext }
 // For users who don't use Client Routing
 //  - PageContextServer is the same for Client Routing and Server Routing
 export type { PageContextWithServerRouting }
@@ -131,16 +130,6 @@ type PageContextBuiltInCommon<Data> = PageContextConfig & {
   isClientSideNavigation: boolean
 
   /**
-   * Previous page contexts from redirects and rewrites that led to the current page.
-   *
-   * Empty array if the current page wasn't reached through any redirects or rewrites.
-   * Contains the page contexts in chronological order (first redirect/rewrite first).
-   *
-   * https://vike.dev/pageContext#previousPageContexts
-   */
-  previousPageContexts: PreviousPageContext[]
-
-  /**
    * The reason why the original page was aborted. Usually used for showing a custom message on the error page.
    *
    * https://vike.dev/render
@@ -227,6 +216,13 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
      */
     cspNonce: string | null
 
+    /**
+     * List of `pageContext` from previous `throw redirect()` and `throw render()` that led to the current page.
+     *
+     * https://vike.dev/pageContext#pageContextsAborted
+     */
+    pageContextsAborted: Partial<PageContextServer<Data>>[]
+
     isHydration?: undefined
     isBackwardNavigation?: undefined
     isHistoryNavigation?: undefined
@@ -275,6 +271,12 @@ type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltI
      * https://vike.dev/pageContext#previousPageContext
      */
     previousPageContext: PageContextClient<Data> | null
+    /**
+     * List of `pageContext` from previous `throw redirect()` and `throw render()` that led to the current page.
+     *
+     * https://vike.dev/pageContext#pageContextsAborted
+     */
+    pageContextsAborted: Partial<PageContextClient<Data>>[]
     globalContext: GlobalContextClient
   } & PageContextUrlClient
 
@@ -345,7 +347,7 @@ type PageContextInternalClient = Omit<
 >
 type PageContextInternalClient_ClientRouting = Omit<
   PageContextBuiltInClientWithClientRouting<unknown>,
-  OnlyUsers | 'previousPageContext'
+  OnlyUsers | 'previousPageContext' | 'pageContextsAborted'
 > & {
   previousPageContext: { pageId: string } | null
 }
@@ -392,11 +394,3 @@ type PageContextBuiltInClientWithClientRouting_deprecated<Page = never> =
  */
 type PageContextBuiltInClientWithServerRouting_deprecated<Page = never> =
   PageContextBuiltInClientWithServerRouting<unknown>
-
-/**
- * Previous page context type that doesn't include previousPageContexts to avoid circular references
- */
-type PreviousPageContext = Omit<PageContextBuiltInCommon<unknown>, 'previousPageContexts'> & {
-  /** The type of abort that led to this page context */
-  _abortType?: 'redirect' | 'rewrite'
-}
