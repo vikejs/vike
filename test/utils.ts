@@ -25,8 +25,6 @@ async function testCounter(currentValue = 0) {
   // autoRetry() in case page just got client-side navigated
   await autoRetry(
     async () => {
-      console.log('>>> test counter 1')
-      console.log('body content', await page.textContent('body'))
       const btn = page.locator('button', { hasText: 'Counter' })
       expect(await btn.textContent()).toBe(`Counter ${currentValue}`)
     },
@@ -35,7 +33,6 @@ async function testCounter(currentValue = 0) {
   // autoRetry() in case page isn't hydrated yet
   await autoRetry(
     async () => {
-      console.log('>>> test counter 2')
       const btn = page.locator('button', { hasText: 'Counter' })
       await btn.click()
       expect(await btn.textContent()).toBe(`Counter ${currentValue + 1}`)

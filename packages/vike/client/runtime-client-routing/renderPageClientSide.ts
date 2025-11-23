@@ -127,7 +127,6 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
     pageContextInitClient,
   } = renderArgs
   let { scrollTarget, pageContextsAborted = [] } = renderArgs
-  console.log('pageContextAborted', pageContextsAborted)
   const { previousPageContext } = globalObject
 
   addLinkPrefetchHandlers_unwatch()
