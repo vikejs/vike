@@ -308,7 +308,6 @@ function assertStatusCode(statusCode: number, expected: number[], caller: 'rende
 }
 
 type PageContextAborted = { _pageContextAbort: PageContextAbort; urlOriginal: string }
-// TODO rename ageContextAddendumAbort ageContextAddendumAbort
 type PageContextAddendumAbort =
   | { pageContextsAborted: PageContextAborted[] }
   | ({ pageContextsAborted: PageContextAborted[] } & PageContextAbort)
