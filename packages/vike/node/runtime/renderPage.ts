@@ -637,12 +637,8 @@ async function handleAbort(
       pageContextSerialized = getPageContextClientSerializedAbort(pageContextAbort, false)
     }
     const httpResponse = await createHttpResponsePageContextJson(pageContextSerialized)
-    const pageContextReturn = { httpResponse }
-    return { pageContextReturn }
-    /* TODO/now
     objectAssign(pageContext, { httpResponse })
     return { pageContextReturn: pageContext }
-    */
   }
 
   // URL Rewrite — `throw render(url)`
