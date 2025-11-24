@@ -8,9 +8,17 @@ import { Counter } from '../index/Counter'
 function Page() {
   const pageContext = usePageContext()
   assert(Array.isArray(pageContext.pageContextsAborted))
-  /* TODO/now
-  if (pageContext.abortReason) assert(pageContext.pageContextsAborted.length > 0, pageContext.abortReason)
-  */
+
+  // throw render()
+  if (pageContext.abortReason) {
+    const { length } = pageContext.pageContextsAborted
+    if (pageContext.isHydration) {
+      assert(length === 0)
+    } else {
+      assert(length > 0)
+    }
+  }
+
   let { is404, abortReason, abortStatusCode } = pageContext
   if (!abortReason) {
     abortReason = is404 ? 'Page not found.' : 'Something went wrong.'
