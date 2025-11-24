@@ -15,6 +15,9 @@ function Layout({ children }: { children: React.ReactNode }) {
   const pageContext = usePageContext()
   const globalContext = pageContext.globalContext
 
+  // TEST: pageContext.pageContextsAborted is defined
+  assert(Array.isArray(pageContext.pageContextsAborted))
+
   // TEST: pageContext.isClientSide + Vite plugin vike:replaceConstants
   assert(import.meta.env.SSR === !pageContext.isClientSide)
   assert(import.meta.env.SSR === !globalContext.isClientSide)
