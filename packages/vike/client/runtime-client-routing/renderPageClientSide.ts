@@ -46,7 +46,6 @@ import {
   type ErrorAbort,
   getPageContextAddendumAbort,
   isAbortError,
-  isAbortPageContext,
   logAbortErrorHandled,
   PageContextAbort,
   type PageContextAborted,
@@ -70,7 +69,6 @@ import { getHookFromPageContextNew } from '../../shared/hooks/getHook.js'
 import { preparePageContextForPublicUsageClientMinimal } from '../shared/preparePageContextForPublicUsageClientShared.js'
 import type { VikeGlobalInternal } from '../../types/VikeGlobalInternal.js'
 import { logErrorClient } from './logErrorClient.js'
-import { forkPageContext } from '../../shared/forkPageContext.js'
 
 type PageContextInternalClientAfterRender = NonNullable<Awaited<ReturnType<typeof renderPageClientSide>>>
 
@@ -118,7 +116,6 @@ type RenderArgs = {
 }
 // TODO rename to renderPageClientSide
 async function renderPageClientSide(renderArgs: RenderArgs) {
-  console.log('renderPageClientSide')
   catchInfiniteLoop('renderPageClientSide()')
 
   const {
@@ -158,9 +155,7 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
   return await renderPageNominal()
 
   async function renderPageNominal() {
-    console.log('renderPageNominal')
     const onError = async (err: unknown) => {
-      console.log('onError')
       await handleError({ err })
     }
 
@@ -186,12 +181,10 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
     }
 
     // Get pageContext serialized in <script id="vike_pageContext" type="application/json">
-    let isAbort = false
     if (isFirstRender) {
       const pageContextSerialized = getPageContextFromHooks_serialized()
       // TO-DO/eventually: create helper assertPageContextFromHook()
       assert(!('urlOriginal' in pageContextSerialized))
-      if (isAbortPageContext(pageContextSerialized)) isAbort = true
       objectAssign(pageContext, pageContextSerialized)
       // TO-DO/pageContext-prefetch: remove or change, because this only makes sense for a pre-rendered page
       populatePageContextPrefetchCache(pageContext, { pageContextFromServerHooks: pageContextSerialized })
@@ -207,7 +200,6 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
         await onError(err)
         return
       }
-      console.log('pageContextFromRoute', pageContextFromRoute)
       if (isRenderOutdated()) return
 
       // TO-DO/eventually: create helper assertPageContextFromHook()
@@ -215,13 +207,8 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
       if (isFirstRender) {
         // Set pageContext properties set by onBeforeRoute()
         // - But we skip pageId and routeParams because routing may have been aborted by a server-side `throw render()`
-        const { pageId, routeParams: __, ...rest } = pageContextFromRoute
+        const { pageId: _, routeParams: __, ...rest } = pageContextFromRoute
         objectAssign(pageContext, rest)
-        if (isAbortPageContext(pageContext)) {
-          const pageContextPrevious = forkPageContext(pageContext)
-          // @ts-ignore
-          pageContextsAborted.push(pageContextPrevious)
-        }
         assert(hasProp(pageContext, 'routeParams', 'string{}')) // Help TS
       } else {
         objectAssign(pageContext, pageContextFromRoute)
@@ -468,7 +455,6 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
 
     objectAssign(pageContext, { _pageContextAbort: pageContextAbort })
     pageContextsAborted.push(pageContext)
-    console.log('handleAbort', pageContextsAborted)
     // TODO/now dedupe
     assertNoInfiniteAbortLoop(pageContextsAborted)
 
@@ -513,7 +499,6 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
       } & PageContextRouted,
     isErrorPage?: { err?: unknown },
   ) {
-    console.log('renderPageView')
     const onError = async (err: unknown) => {
       if (!isErrorPage) {
         await handleError({ err })
