@@ -6,7 +6,6 @@
   - Also `documentHtml` — use pageContext.html instead
   - Also `injectFilter()` — maybe deprecate `injectFilter()` in favor of `pageContext.injectAssets`? Do we need a new hook or is `onRenderHtml()`/`onAfterRenderHtml()` enough?
   - Also all return values of `onBeforeRender()`, `onRenderHtml()`, `onBeforeRoute()` and all hooks
-- Pre-rendering hook renaming? +onPrerender and +onPrerenderBegin ?
 
 = TO-DO/next-major-release:
 == Highest Prio
@@ -57,6 +56,7 @@
   - Soft deprecation + migration scripts => hook renaming not too annoying for the user?
   - Rename +on{After}RenderClient to +onRenderClient{Start,End} ?
   - Rename +onData => +onAfterData ? Maybe not because it isn't strictly always called after +data
+  - Pre-rendering hook renaming? +onPrerender and +onPrerenderBegin ?
 
 = TO-DO/later
 - NODE_ENV

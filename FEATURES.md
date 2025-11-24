@@ -92,14 +92,15 @@ Details:
   - [Example] Typo in option name (with "Did you mean xxx instead?")
 - User can use `history.pushState()`: Vike's router detects that and gets out of the user's way
 - React component stack injected in stack trace
+- pageContext.dangerouslyUseInternals
+  - https://vike.dev/warning/internals
+  - Explain why + give example => Vike's philosophy to treat blockers as high prio and minimize them as much as possible
+- Infinite loop guards, e.g. for infinite redirections
 
 Misc:
 - `throw render()`
 - Route Functions, powerful route globing
 - Text fragments https://github.com/vikejs/vike/issues/2114
-- Infinite loop guards, e.g. for infinite redirections
-- pageContext.dangerouslyUseInternals
-  - https://vike.dev/warning/internals
 - CSP nonce
   - PCI DSS compliance
 - ISR
