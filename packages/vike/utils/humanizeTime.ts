@@ -1,15 +1,15 @@
 export { humanizeTime }
 
-function humanizeTime(milliseconds: number): string {
+function humanizeTime(milliseconds: number) {
   const seconds = milliseconds / 1000
   if (seconds < 120) {
     const n = round(seconds)
-    return `${n} second${plural(n)}`
+    return `${n} second${plural(n)}` as const
   }
   {
     const minutes = seconds / 60
     const n = round(minutes)
-    return `${n} minute${plural(n)}`
+    return `${n} minute${plural(n)}` as const
   }
 }
 
@@ -19,6 +19,6 @@ function round(n: number): string {
   return rounded
 }
 
-function plural(n: string): string {
-  return n === '1' ? '' : 's'
+function plural(n: string) {
+  return n === '1' ? '' : ('s' as const)
 }

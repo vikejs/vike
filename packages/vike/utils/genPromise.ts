@@ -3,11 +3,12 @@ export { genPromise }
 // Simple implementation without timeout: https://github.com/vikejs/vike/blob/2e59b922e7e0f227d26018dc2b74877c9b0f581b/vike/utils/genPromise.ts
 
 import { assert, assertWarning } from './assert.js'
+import { humanizeTime } from './humanizeTime.js'
 
-const timeoutSecondsDefault = 25
+const timeoutDefault = 25 * 1000
 
 function genPromise<T = void>({
-  timeout: timeoutSeconds = timeoutSecondsDefault as number | null,
+  timeout = timeoutDefault as number | null,
 } = {}): {
   promise: Promise<T>
   resolve: (val: T) => void
@@ -32,18 +33,18 @@ function genPromise<T = void>({
   const timeoutClear = () => timeouts.forEach((t) => clearTimeout(t))
   const timeouts: ReturnType<typeof setTimeout>[] = []
   let promise: typeof promise_internal
-  if (!timeoutSeconds) {
+  if (!timeout) {
     promise = promise_internal
   } else {
     promise = new Proxy(promise_internal, {
       get(target, prop) {
         if (prop === 'then' && !finished) {
-          const err = new Error(`Promise hasn't resolved after ${timeoutSeconds} seconds`)
+          const err = new Error(`Promise hasn't resolved after ${humanizeTime(timeout)}`)
           timeouts.push(
             setTimeout(() => {
               assert(err.stack)
               assertWarning(false, removeStackErrorPrefix(err.stack), { onlyOnce: false })
-            }, timeoutSeconds * 1000),
+            }, timeout),
           )
         }
         const value = Reflect.get(target, prop)
