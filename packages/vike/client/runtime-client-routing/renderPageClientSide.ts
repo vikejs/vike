@@ -47,7 +47,7 @@ import {
   getPageContextAddendumAbort,
   isAbortError,
   logAbortErrorHandled,
-  PageContextAbort,
+  type PageContextAbort,
   type PageContextAborted,
 } from '../../shared/route/abort.js'
 import { route } from '../../shared/route/index.js'
