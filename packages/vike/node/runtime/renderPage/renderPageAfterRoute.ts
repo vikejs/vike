@@ -102,6 +102,7 @@ async function prerenderPage(
 ) {
   objectAssign(pageContext, {
     _isPageContextJsonRequest: null,
+    pageContextsAborted: [],
   })
 
   /* Should we execute the guard() hook upon pre-rendering? Is there a use case for this?
