@@ -624,7 +624,7 @@ async function handleAbort(
   objectAssign(pageContext, { _pageContextAbort: pageContextAbort })
 
   // Client-side navigation — [`pageContext.json` request](https://vike.dev/pageContext.json)
-  if (pageContextNominalPageBegin.isClientSideNavigation) {
+  if (pageContextBegin.isClientSideNavigation) {
     let pageContextSerialized: string
     if (pageContextAbort.abortStatusCode) {
       const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
