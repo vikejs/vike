@@ -308,10 +308,7 @@ function assertStatusCode(statusCode: number, expected: number[], caller: 'rende
 }
 
 type PageContextAborted = { _pageContextAbort: PageContextAbort; urlOriginal: string }
-type PageContextAddendumAbort =
-  | { pageContextsAborted: PageContextAborted[] }
-  | ({ pageContextsAborted: PageContextAborted[] } & PageContextAbort)
-function getPageContextAddendumAbort(pageContextsAborted: PageContextAborted[]): PageContextAddendumAbort {
+function getPageContextAddendumAbort(pageContextsAborted: PageContextAborted[]) {
   const pageContextAddendumAbort = { pageContextsAborted }
   const pageContextAbortedLast = pageContextsAborted.at(-1)
   if (pageContextAbortedLast) {
