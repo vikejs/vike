@@ -11,6 +11,7 @@ export type { RedirectStatusCode }
 export type { AbortStatusCode }
 export type { ErrorAbort }
 export type { PageContextAborted }
+export type { PageContextAddendumAbort }
 export type { UrlRedirect }
 export type { PageContextAbort }
 
@@ -308,6 +309,7 @@ function assertStatusCode(statusCode: number, expected: number[], caller: 'rende
 }
 
 type PageContextAborted = { _pageContextAbort: PageContextAbort; urlOriginal: string }
+type PageContextAddendumAbort = ReturnType<typeof getPageContextAddendumAbort>
 function getPageContextAddendumAbort(pageContextsAborted: PageContextAborted[]) {
   const pageContextAddendumAbort = { pageContextsAborted }
   const pageContextAbortedLast = pageContextsAborted.at(-1)
