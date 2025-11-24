@@ -233,6 +233,7 @@ async function renderPageEntryRecursive(
       errNominalPage,
       pageContextBegin,
       pageContextNominalPageBegin,
+      pageContextAddendumAbort,
       globalContext,
       httpRequestId,
       pageContextsAborted,
@@ -249,6 +250,7 @@ async function renderPageOnError(
   errNominalPage: unknown,
   pageContextBegin: PageContextBegin,
   pageContextNominalPageBegin: PageContextBegin,
+  pageContextAddendumAbort: ReturnType<typeof getPageContextAddendumAbort>,
   globalContext: GlobalContextServerInternal,
   httpRequestId: number,
   pageContextsAborted: PageContextAborted[] = [],
@@ -256,7 +258,9 @@ async function renderPageOnError(
   assert(pageContextNominalPageBegin)
   assert(hasProp(pageContextNominalPageBegin, 'urlOriginal', 'string'))
 
+  // TODO: inline getPageContextErrorPageInit() ?
   const pageContextErrorPageInit = await getPageContextErrorPageInit(pageContextBegin, errNominalPage)
+  objectAssign(pageContextErrorPageInit, pageContextAddendumAbort)
 
   // Handle `throw redirect()` and `throw render()` while rendering nominal page
   if (isAbortError(errNominalPage)) {
