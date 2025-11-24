@@ -114,6 +114,7 @@ type RenderArgs = {
   isClientSideNavigation?: boolean
   pageContextInitClient?: Record<string, unknown>
 }
+// TODO rename to renderPageClientSide
 async function renderPageClientSide(renderArgs: RenderArgs) {
   catchInfiniteLoop('renderPageClientSide()')
 

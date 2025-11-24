@@ -86,6 +86,7 @@ type PageContextInit = Pick<PageContextInternalServer, 'urlOriginal' | 'headersO
 }
 type PageContextBegin = ReturnType<typeof getPageContextBegin>
 
+// TODO rename to renderPageServer
 // `renderPage()` calls `renderPageNominal()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that Vike never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
 async function renderPage<PageContextUserAdded extends {}, PageContextInitUser extends PageContextInit>(
   pageContextInit: PageContextInitUser,
