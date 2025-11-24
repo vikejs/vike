@@ -126,8 +126,9 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
     doNotRenderIfSamePage,
     isClientSideNavigation = true,
     pageContextInitClient,
+    pageContextsAborted = [],
   } = renderArgs
-  let { scrollTarget, pageContextsAborted = [] } = renderArgs
+  let { scrollTarget } = renderArgs
   const { previousPageContext } = globalObject
 
   addLinkPrefetchHandlers_unwatch()
@@ -641,7 +642,7 @@ async function getPageContextBegin(
 
   {
     const pageContextAddendumAbort = getPageContextAddendumAbort(pageContextsAborted)
-    assert(!('urlOriginal' in pageContextAddendumAbort))
+    assert(!pageContextAddendumAbort || !('urlOriginal' in pageContextAddendumAbort))
     objectAssign(pageContext, pageContextAddendumAbort)
   }
   return pageContext

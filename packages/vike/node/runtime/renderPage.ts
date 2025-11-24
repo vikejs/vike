@@ -194,7 +194,7 @@ async function renderPageEntryRecursive(
   pageContextBegin: PageContextBegin,
   globalContext: GlobalContextServerInternal,
   httpRequestId: number,
-): Promise<PageContextAfterRender & { pageContextsAborted: PageContextAborted[] }> {
+): Promise<PageContextAfterRender> {
   catchInfiniteLoop('renderPageEntryRecursive()')
 
   const pageContextNominalPageBegin = forkPageContext(pageContextBegin)
@@ -287,7 +287,6 @@ async function renderPageOnError(
     const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
     if (!errorPageId) {
       objectAssign(pageContextErrorPageInit, { pageId: null })
-      pageContextErrorPageInit.pageContextsAborted
       return await handleErrorWithoutErrorPage(pageContextErrorPageInit)
     }
     objectAssign(pageContextErrorPageInit, { pageId: errorPageId })
@@ -417,7 +416,7 @@ function getPageContextHttpResponseErrorWithoutGlobalContext(
 // - Render page (no error)
 // - Render 404 page
 type PageContextInternalServerAfterRender = Awaited<ReturnType<typeof renderPageNominal>>
-async function renderPageNominal(pageContext: PageContextBegin & { pageContextsAborted: PageContextAborted[] }) {
+async function renderPageNominal(pageContext: PageContextBegin) {
   objectAssign(pageContext, { errorWhileRendering: null })
 
   // Route

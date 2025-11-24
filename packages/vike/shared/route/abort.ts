@@ -312,10 +312,10 @@ type PageContextMin = { urlOriginal: string }
 type PageContextAborted = { _pageContextAbort: PageContextAbort } & PageContextMin
 function getPageContextAddendumAbort(pageContextsAborted: PageContextAborted[]) {
   const pageContextAbortedLast = pageContextsAborted.at(-1)
-  if (!pageContextAbortedLast) return {}
+  if (!pageContextAbortedLast) return null
   const pageContextAbort = pageContextAbortedLast._pageContextAbort
   assert(pageContextAbort)
-  // Sets pageContext._urlRewrite from pageContextAbort._urlRewrite — it's also set at handleAbort()
+  // Sets pageContext._urlRewrite from pageContextAbort._urlRewrite
   return pageContextAbort
 }
 function addNewPageContextAborted(
