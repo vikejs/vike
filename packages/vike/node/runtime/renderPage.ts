@@ -198,6 +198,7 @@ async function renderPageEntryRecursive(
   const pageContextAddendumAbort = getPageContextAddendumAbort(pageContextBegin.pageContextsAborted)
   objectAssign(pageContextNominalPageBegin, pageContextAddendumAbort)
 
+  // TODO try inline renderPageNominal()
   let pageContextNominalPageSuccess: undefined | Awaited<ReturnType<typeof renderPageNominal>>
   let errNominalPage: unknown
   {
