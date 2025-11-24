@@ -2,10 +2,15 @@ export default Page
 
 import React from 'react'
 import { usePageContext } from '../../renderer/usePageContext'
+import { assert } from '../../utils/assert'
 import { Counter } from '../index/Counter'
 
 function Page() {
   const pageContext = usePageContext()
+  assert(Array.isArray(pageContext.pageContextsAborted))
+  /* TODO/now
+  if (pageContext.abortReason) assert(pageContext.pageContextsAborted.length > 0, pageContext.abortReason)
+  */
   let { is404, abortReason, abortStatusCode } = pageContext
   if (!abortReason) {
     abortReason = is404 ? 'Page not found.' : 'Something went wrong.'
