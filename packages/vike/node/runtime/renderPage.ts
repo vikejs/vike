@@ -2,6 +2,7 @@ export { renderPage }
 export { renderPage_addAsyncHookwrapper }
 export type { PageContextInit }
 export type { PageContextBegin }
+export type { PageContextBeginRecursive }
 export type { PageContextInternalServerAfterRender }
 
 import { renderPageAfterRoute } from './renderPage/renderPageAfterRoute.js'
@@ -83,7 +84,6 @@ type PageContextInit = Pick<PageContextInternalServer, 'urlOriginal' | 'headersO
   /** @deprecated Set pageContextInit.headersOriginal instead */ // TO-DO/next-major-release: remove
   headers?: Record<string, string>
 }
-type PageContextBegin = ReturnType<typeof getPageContextBegin>
 
 // `renderPage()` calls `renderPageNominal()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that Vike never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
 async function renderPage<PageContextUserAdded extends {}, PageContextInitUser extends PageContextInit>(
@@ -192,16 +192,16 @@ async function renderPageEntryRecursive(
   globalContext: GlobalContextServerInternal,
   httpRequestId: number,
   pageContextsAborted: PageContextAborted[] = [],
-): Promise<PageContextAfterRender> {
-  const pageContextNominalPageBegin = forkPageContext(pageContextBegin)
-
-  const pageContextAddendumAbort = getPageContextAddendumAbort(pageContextsAborted)
-  objectAssign(pageContextNominalPageBegin, pageContextAddendumAbort)
+): Promise<PageContextAfterRender & ReturnType<typeof getPageContextAddendumAbort>> {
+  const pageContextBeginRecursive = getPageContextBeginRecursive(pageContextBegin, pageContextsAborted)
+  // TODO
+  const pageContextNominalPageBegin = pageContextBeginRecursive
 
   let pageContextNominalPageSuccess: undefined | Awaited<ReturnType<typeof renderPageNominal>>
   let errNominalPage: unknown
   {
     try {
+      // @ts-ignore TODO
       pageContextNominalPageSuccess = await renderPageNominal(pageContextNominalPageBegin)
     } catch (err) {
       errNominalPage = err
@@ -231,9 +231,8 @@ async function renderPageEntryRecursive(
     assert(pageContextNominalPageSuccess === undefined)
     return await renderPageOnError(
       errNominalPage,
-      pageContextBegin,
+      pageContextBeginRecursive,
       pageContextNominalPageBegin,
-      pageContextAddendumAbort,
       globalContext,
       httpRequestId,
       pageContextsAborted,
@@ -248,9 +247,9 @@ async function renderPageEntryRecursive(
 // - Can be rendering Vike's generic error page (if no error page is defined, or if the error page throws an error)
 async function renderPageOnError(
   errNominalPage: unknown,
-  pageContextBegin: PageContextBegin,
+  // TODO
+  pageContextBegin: PageContextBeginRecursive,
   pageContextNominalPageBegin: PageContextBegin,
-  pageContextAddendumAbort: ReturnType<typeof getPageContextAddendumAbort>,
   globalContext: GlobalContextServerInternal,
   httpRequestId: number,
   pageContextsAborted: PageContextAborted[] = [],
@@ -260,7 +259,6 @@ async function renderPageOnError(
 
   // TODO: inline getPageContextErrorPageInit() ?
   const pageContextErrorPageInit = await getPageContextErrorPageInit(pageContextBegin, errNominalPage)
-  objectAssign(pageContextErrorPageInit, pageContextAddendumAbort)
 
   // Handle `throw redirect()` and `throw render()` while rendering nominal page
   if (isAbortError(errNominalPage)) {
@@ -417,7 +415,7 @@ function getPageContextHttpResponseErrorWithoutGlobalContext(
 // - Render page (no error)
 // - Render 404 page
 type PageContextInternalServerAfterRender = Awaited<ReturnType<typeof renderPageNominal>>
-async function renderPageNominal(pageContext: PageContextBegin) {
+async function renderPageNominal(pageContext: PageContextBegin & ReturnType<typeof getPageContextAddendumAbort>) {
   objectAssign(pageContext, { errorWhileRendering: null })
 
   // Route
@@ -447,7 +445,7 @@ async function renderPageNominal(pageContext: PageContextBegin) {
 }
 
 type PageContextErrorPageInit = Awaited<ReturnType<typeof getPageContextErrorPageInit>>
-async function getPageContextErrorPageInit(pageContextBegin: PageContextBegin, errNominalPage: unknown) {
+async function getPageContextErrorPageInit(pageContextBegin: PageContextBeginRecursive, errNominalPage: unknown) {
   const pageContext = forkPageContext(pageContextBegin)
 
   assert(errNominalPage)
@@ -461,6 +459,7 @@ async function getPageContextErrorPageInit(pageContextBegin: PageContextBegin, e
   return pageContext
 }
 
+type PageContextBegin = ReturnType<typeof getPageContextBegin>
 function getPageContextBegin(
   pageContextInit: PageContextInit,
   globalContext: GlobalContextServerInternal,
@@ -478,6 +477,13 @@ function getPageContextBegin(
   })
   objectAssign(pageContextBegin, { _httpRequestId: httpRequestId, _isPageContextJsonRequest })
   return pageContextBegin
+}
+type PageContextBeginRecursive = ReturnType<typeof getPageContextBeginRecursive>
+function getPageContextBeginRecursive(pageContextBegin: PageContextBegin, pageContextsAborted: PageContextAborted[]) {
+  const pageContextBeginRecursive = forkPageContext(pageContextBegin)
+  const pageContextAddendumAbort = getPageContextAddendumAbort(pageContextsAborted)
+  // objectAssign(pageContextBeginRecursive, pageContextAddendumAbort)
+  return pageContextBeginRecursive
 }
 
 function handlePageContextUrl(urlOriginal: string) {
@@ -590,7 +596,7 @@ function normalize(url: string) {
 
 async function handleAbort(
   errAbort: ErrorAbort,
-  pageContextBegin: PageContextBegin,
+  pageContextBegin: PageContextBeginRecursive,
   // handleAbortError() creates a new pageContext object and we don't merge pageContextNominalPageBegin to it: we only use some pageContextNominalPageBegin information.
   pageContextNominalPageBegin: PageContextBegin,
   httpRequestId: number,

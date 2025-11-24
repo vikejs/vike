@@ -22,6 +22,7 @@ import { execHookGuard } from '../../../shared/route/execHookGuard.js'
 import pc from '@brillout/picocolors'
 import { isServerSideError } from '../../../shared/misc/isServerSideError.js'
 import type { PageContextCreated } from './createPageContextServerSide.js'
+import type { PageContextBeginRecursive } from '../renderPage.js'
 import type { PageContextBegin } from '../renderPage.js'
 
 type PageContextAfterRender = { httpResponse: HttpResponse; errorWhileRendering: null | Error }
@@ -36,6 +37,7 @@ async function renderPageAfterRoute<
     _httpRequestId: number
   } & PageContextCreated &
     PageContextBegin &
+    PageContextBeginRecursive &
     PageContextUrlInternal &
     PageContext_loadPageConfigsLazyServerSide,
 >(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {
