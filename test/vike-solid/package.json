@@ -13,7 +13,7 @@
     "vike-solid": "^0.7.12"
   },
   "devDependencies": {
-    "typescript": "^5.9.2",
+    "typescript": "^5.9.3",
     "vite": "^7.0.6"
   },
   "type": "module"

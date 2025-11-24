@@ -19,7 +19,7 @@
     "@auth/core": "^0.40.0",
     "@types/node": "^24.10.0",
     "@universal-middleware/core": "^0.4.13",
-    "typescript": "^5.9.2",
+    "typescript": "^5.9.3",
     "vike-cloudflare": "^0.2.7",
     "wrangler": "^4.46.0"
   },
