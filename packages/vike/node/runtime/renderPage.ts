@@ -71,6 +71,7 @@ import { loadPageConfigsLazyServerSide } from './renderPage/loadPageConfigsLazyS
 import { resolveRedirects } from './renderPage/resolveRedirects.js'
 import type { PageContextInternalServer } from '../../types/PageContext.js'
 import { getVikeConfigError } from '../shared/getVikeConfigError.js'
+import { forkPageContext } from '../../shared/forkPageContext.js'
 
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
   httpRequestsCount: 0,
@@ -713,11 +714,4 @@ function getPageContextInvalidVikeConfig(err: unknown, pageContextInit: PageCont
   logRuntimeInfo?.(pc.bold(pc.red('Error loading Vike config — see error above')), httpRequestId, 'error-note')
   const pageContextWithError = getPageContextHttpResponseErrorWithoutGlobalContext(err, pageContextInit)
   return pageContextWithError
-}
-
-// Create pageContext forks to avoid leaks: upon an error (bug or abort) a brand new pageContext object is created, in order to avoid previous pageContext modifications that are now obsolete to leak to the new pageContext object.
-function forkPageContext(pageContextBegin: PageContextBegin) {
-  const pageContext = {}
-  objectAssign(pageContext, pageContextBegin, true)
-  return pageContext
 }
