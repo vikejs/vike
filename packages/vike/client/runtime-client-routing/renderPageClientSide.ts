@@ -453,7 +453,8 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
     const pageContextAbort = errAbort._pageContextAbort
 
     objectAssign(pageContext, { _pageContextAbort: pageContextAbort })
-    pageContextsAborted = [...pageContextsAborted, pageContext]
+    pageContextsAborted.push(pageContext)
+    // TODO/now dedupe
     assertNoInfiniteAbortLoop(pageContextsAborted)
 
     // throw render('/some-url')
