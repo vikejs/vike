@@ -290,7 +290,7 @@ async function renderPageOnError(
     if (!errorPageId) {
       objectAssign(pageContextErrorPageInit, { pageId: null })
       pageContextErrorPageInit.pageContextsAborted
-      return (await handleErrorWithoutErrorPage(pageContextErrorPageInit))
+      return await handleErrorWithoutErrorPage(pageContextErrorPageInit)
     }
     objectAssign(pageContextErrorPageInit, { pageId: errorPageId })
   }
