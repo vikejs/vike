@@ -37,7 +37,6 @@ import {
   getPageContextAddendumAbort,
   isAbortError,
   logAbortErrorHandled,
-  type PageContextAddendumAbort,
   type PageContextAborted,
   addNewPageContextAborted,
 } from '../../shared/route/abort.js'
@@ -239,7 +238,6 @@ async function renderPageEntryRecursive(
       errNominalPage,
       pageContextBegin,
       pageContextNominalPageBegin,
-      pageContextAddendumAbort,
       globalContext,
       httpRequestId,
     )
@@ -254,8 +252,7 @@ async function renderPageEntryRecursive(
 async function renderPageOnError(
   errNominalPage: unknown,
   pageContextBegin: PageContextBegin,
-  pageContextNominalPageBegin: PageContextBegin & PageContextAddendumAbort,
-  pageContextAddendumAbort: PageContextAddendumAbort,
+  pageContextNominalPageBegin: PageContextBegin,
   globalContext: GlobalContextServerInternal,
   httpRequestId: number,
 ) {
@@ -264,7 +261,6 @@ async function renderPageOnError(
 
   // TODO: inline getPageContextErrorPageInit() ?
   const pageContextErrorPageInit = await getPageContextErrorPageInit(pageContextBegin, errNominalPage)
-  objectAssign(pageContextErrorPageInit, pageContextAddendumAbort)
 
   // Handle `throw redirect()` and `throw render()` while rendering nominal page
   if (isAbortError(errNominalPage)) {
@@ -323,11 +319,7 @@ async function renderPageOnError(
           { onlyOnce: false },
         )
         // TODO: rename pageContextHttpWithError pageContextHttpErrorFallback
-        const pageContextHttpWithError = getPageContextHttpResponseError(
-          errNominalPage,
-          pageContextBegin,
-          pageContextAddendumAbort,
-        )
+        const pageContextHttpWithError = getPageContextHttpResponseError(errNominalPage, pageContextBegin)
         return pageContextHttpWithError
       }
       // `throw redirect()` / `throw render(url)`
@@ -337,11 +329,7 @@ async function renderPageOnError(
       logRuntimeError(errErrorPage, httpRequestId)
     }
     // TODO: rename pageContextWithError pageContextHttpErrorFallback
-    const pageContextWithError = getPageContextHttpResponseError(
-      errNominalPage,
-      pageContextBegin,
-      pageContextAddendumAbort,
-    )
+    const pageContextWithError = getPageContextHttpResponseError(errNominalPage, pageContextBegin)
     return pageContextWithError
   }
   return pageContextErrorPage
@@ -402,11 +390,7 @@ function prettyUrl(url: string) {
 }
 
 // TODO: rename getPageContextHttpResponseError getPageContextHttpResponseErrorFallback
-function getPageContextHttpResponseError(
-  err: unknown,
-  pageContextBegin: PageContextBegin,
-  pageContextAddendumAbort: PageContextAddendumAbort,
-) {
+function getPageContextHttpResponseError(err: unknown, pageContextBegin: PageContextBegin) {
   // TODO rename pageContextWithError pageContextErrorFallback
   const pageContextWithError = forkPageContext(pageContextBegin)
   const httpResponse = createHttpResponseError(pageContextBegin)
@@ -414,7 +398,6 @@ function getPageContextHttpResponseError(
     httpResponse,
     errorWhileRendering: err,
   })
-  objectAssign(pageContextWithError, pageContextAddendumAbort)
   return pageContextWithError
 }
 function getPageContextHttpResponseErrorWithoutGlobalContext(
@@ -496,7 +479,12 @@ function getPageContextBegin(
   objectAssign(pageContextBegin, {
     _httpRequestId: httpRequestId,
     _isPageContextJsonRequest,
-    // TODO/now comment
+    // This array is shared between all pageContext objects, i.e. the following is true for any `i` and `j` index:
+    // ```js
+    // const pageContextsAborted_i = pageContextsAborted[i].pageContextsAborted
+    // const pageContextsAborted_j = pageContextsAborted[j].pageContextsAborted
+    // assert(pageContextsAborted_i === pageContextsAborted_j)
+    // ```
     pageContextsAborted: [] as PageContextAborted[],
   })
   return pageContextBegin
@@ -614,7 +602,7 @@ async function handleAbort(
   errAbort: ErrorAbort,
   pageContextBegin: PageContextBegin,
   // handleAbortError() creates a new pageContext object and we don't merge pageContextNominalPageBegin to it: we only use some pageContextNominalPageBegin information.
-  pageContextNominalPageBegin: PageContextBegin & PageContextAddendumAbort,
+  pageContextNominalPageBegin: PageContextBegin,
   httpRequestId: number,
   pageContextErrorPageInit: PageContextErrorPageInit,
   globalContext: GlobalContextServerInternal,

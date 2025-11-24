@@ -23,7 +23,6 @@ import pc from '@brillout/picocolors'
 import { isServerSideError } from '../../../shared/misc/isServerSideError.js'
 import type { PageContextCreated } from './createPageContextServerSide.js'
 import type { PageContextBegin } from '../renderPage.js'
-import type { PageContextAddendumAbort } from '../../../shared/route/abort.js'
 
 type PageContextAfterRender = { httpResponse: HttpResponse; errorWhileRendering: null | Error }
 
@@ -38,7 +37,6 @@ async function renderPageAfterRoute<
   } & PageContextCreated &
     PageContextBegin &
     PageContextUrlInternal &
-    PageContextAddendumAbort &
     PageContext_loadPageConfigsLazyServerSide,
 >(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {
   // pageContext.pageId can either be the:

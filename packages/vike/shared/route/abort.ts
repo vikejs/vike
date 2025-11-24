@@ -11,7 +11,6 @@ export type { RedirectStatusCode }
 export type { AbortStatusCode }
 export type { ErrorAbort }
 export type { PageContextAborted }
-export type { PageContextAddendumAbort }
 export type { UrlRedirect }
 export type { PageContextAbort }
 
