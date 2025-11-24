@@ -2,10 +2,24 @@ export default Page
 
 import React from 'react'
 import { usePageContext } from '../../renderer/usePageContext'
+import { assert } from '../../utils/assert'
 import { Counter } from '../index/Counter'
 
 function Page() {
   const pageContext = usePageContext()
+  assert(Array.isArray(pageContext.pageContextsAborted))
+
+  // throw render()
+  if (pageContext.abortReason) {
+    const { length } = pageContext.pageContextsAborted
+    if (pageContext.isHydration) {
+      // The aborted pageContext isn't available since it was created on the server-side, see https://vike.dev/pageContext#pageContextsAborted
+      assert(length === 0)
+    } else {
+      assert(length > 0)
+    }
+  }
+
   let { is404, abortReason, abortStatusCode } = pageContext
   if (!abortReason) {
     abortReason = is404 ? 'Page not found.' : 'Something went wrong.'

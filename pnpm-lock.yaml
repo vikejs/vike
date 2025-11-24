@@ -435,7 +435,7 @@ importers:
         specifier: ^0.4.12
         version: 0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       typescript:
-        specifier: ^5.9.3
+        specifier: ^5.9.2
         version: 5.9.3
       vike:
         specifier: 0.4.247
@@ -1340,7 +1340,7 @@ importers:
         specifier: ^0.3.4
         version: 0.3.4
       typescript:
-        specifier: ^5.9.3
+        specifier: ^5.9.2
         version: 5.9.3
       vite:
         specifier: ^7.2.2
@@ -1747,7 +1747,7 @@ importers:
         specifier: ^0.4.13
         version: 0.4.13(@hattip/core@0.0.49)(@types/express@5.0.3)(hono@4.10.4)
       typescript:
-        specifier: ^5.9.3
+        specifier: ^5.9.2
         version: 5.9.3
       vike-cloudflare:
         specifier: ^0.2.7
@@ -1790,7 +1790,7 @@ importers:
         specifier: ^5.1.0
         version: 5.1.0(vite@7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))
       typescript:
-        specifier: ^5.9.3
+        specifier: ^5.9.2
         version: 5.9.3
       vite:
         specifier: ^7.1.12
@@ -1833,7 +1833,7 @@ importers:
         specifier: ^5.1.0
         version: 5.1.0(vite@7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))
       typescript:
-        specifier: ^5.9.3
+        specifier: ^5.9.2
         version: 5.9.3
       vite:
         specifier: ^7.1.12
@@ -1935,7 +1935,7 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       typescript:
-        specifier: ^5.9.3
+        specifier: ^5.9.2
         version: 5.9.3
       vike:
         specifier: 0.4.247

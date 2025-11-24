@@ -30,14 +30,15 @@ import {
   isUri,
   getUrlPretty,
   updateType,
+  catchInfiniteLoop,
 } from './utils.js'
 import {
-  assertNoInfiniteAbortLoop,
   ErrorAbort,
   getPageContextAddendumAbort,
   isAbortError,
   logAbortErrorHandled,
   type PageContextAborted,
+  addNewPageContextAborted,
 } from '../../shared/route/abort.js'
 import {
   getGlobalContextServerInternal,
@@ -70,6 +71,7 @@ import { loadPageConfigsLazyServerSide } from './renderPage/loadPageConfigsLazyS
 import { resolveRedirects } from './renderPage/resolveRedirects.js'
 import type { PageContextInternalServer } from '../../types/PageContext.js'
 import { getVikeConfigError } from '../shared/getVikeConfigError.js'
+import { forkPageContext } from '../../shared/forkPageContext.js'
 
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
   httpRequestsCount: 0,
@@ -85,6 +87,7 @@ type PageContextInit = Pick<PageContextInternalServer, 'urlOriginal' | 'headersO
 }
 type PageContextBegin = ReturnType<typeof getPageContextBegin>
 
+// TODO rename to renderPageServer
 // `renderPage()` calls `renderPageNominal()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that Vike never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
 async function renderPage<PageContextUserAdded extends {}, PageContextInitUser extends PageContextInit>(
   pageContextInit: PageContextInitUser,
@@ -184,20 +187,22 @@ async function renderPageEntryOnce(
   }
 
   // First renderPageEntryRecursive() call
-  return await renderPageEntryRecursive(pageContextBegin, globalContext, httpRequestId, [])
+  return await renderPageEntryRecursive(pageContextBegin, globalContext, httpRequestId)
 }
 
 async function renderPageEntryRecursive(
   pageContextBegin: PageContextBegin,
   globalContext: GlobalContextServerInternal,
   httpRequestId: number,
-  pageContextsAborted: PageContextAborted[] = [],
 ): Promise<PageContextAfterRender> {
+  catchInfiniteLoop('renderPageEntryRecursive()')
+
   const pageContextNominalPageBegin = forkPageContext(pageContextBegin)
 
-  const pageContextAddendumAbort = getPageContextAddendumAbort(pageContextsAborted)
+  const pageContextAddendumAbort = getPageContextAddendumAbort(pageContextBegin.pageContextsAborted)
   objectAssign(pageContextNominalPageBegin, pageContextAddendumAbort)
 
+  // TODO try inline renderPageNominal()
   let pageContextNominalPageSuccess: undefined | Awaited<ReturnType<typeof renderPageNominal>>
   let errNominalPage: unknown
   {
@@ -235,7 +240,6 @@ async function renderPageEntryRecursive(
       pageContextNominalPageBegin,
       globalContext,
       httpRequestId,
-      pageContextsAborted,
     )
   }
 }
@@ -251,11 +255,11 @@ async function renderPageOnError(
   pageContextNominalPageBegin: PageContextBegin,
   globalContext: GlobalContextServerInternal,
   httpRequestId: number,
-  pageContextsAborted: PageContextAborted[] = [],
 ) {
   assert(pageContextNominalPageBegin)
   assert(hasProp(pageContextNominalPageBegin, 'urlOriginal', 'string'))
 
+  // TODO: inline getPageContextErrorPageInit() ?
   const pageContextErrorPageInit = await getPageContextErrorPageInit(pageContextBegin, errNominalPage)
 
   // Handle `throw redirect()` and `throw render()` while rendering nominal page
@@ -267,7 +271,6 @@ async function renderPageOnError(
       httpRequestId,
       pageContextErrorPageInit,
       globalContext,
-      pageContextsAborted,
     )
     if (handled.pageContextReturn) {
       // - throw redirect()
@@ -284,7 +287,7 @@ async function renderPageOnError(
     const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
     if (!errorPageId) {
       objectAssign(pageContextErrorPageInit, { pageId: null })
-      return handleErrorWithoutErrorPage(pageContextErrorPageInit)
+      return await handleErrorWithoutErrorPage(pageContextErrorPageInit)
     }
     objectAssign(pageContextErrorPageInit, { pageId: errorPageId })
   }
@@ -302,7 +305,6 @@ async function renderPageOnError(
         httpRequestId,
         pageContextErrorPageInit,
         globalContext,
-        pageContextsAborted,
       )
       // TODO: minor refactor
       // throw render(abortStatusCode)
@@ -387,7 +389,8 @@ function prettyUrl(url: string) {
 }
 
 // TODO: rename getPageContextHttpResponseError getPageContextHttpResponseErrorFallback
-function getPageContextHttpResponseError(err: unknown, pageContextBegin: PageContextBegin): PageContextAfterRender {
+function getPageContextHttpResponseError(err: unknown, pageContextBegin: PageContextBegin) {
+  // TODO rename pageContextWithError pageContextErrorFallback
   const pageContextWithError = forkPageContext(pageContextBegin)
   const httpResponse = createHttpResponseError(pageContextBegin)
   objectAssign(pageContextWithError, {
@@ -472,7 +475,17 @@ function getPageContextBegin(
       isClientSideNavigation,
     },
   })
-  objectAssign(pageContextBegin, { _httpRequestId: httpRequestId, _isPageContextJsonRequest })
+  objectAssign(pageContextBegin, {
+    _httpRequestId: httpRequestId,
+    _isPageContextJsonRequest,
+    // This array is shared between all pageContext objects, i.e. the following is true for any `i` and `j` index:
+    // ```js
+    // const pageContextsAborted_i = pageContextsAborted[i].pageContextsAborted
+    // const pageContextsAborted_j = pageContextsAborted[j].pageContextsAborted
+    // assert(pageContextsAborted_i === pageContextsAborted_j)
+    // ```
+    pageContextsAborted: [] as PageContextAborted[],
+  })
   return pageContextBegin
 }
 
@@ -592,22 +605,20 @@ async function handleAbort(
   httpRequestId: number,
   pageContextErrorPageInit: PageContextErrorPageInit,
   globalContext: GlobalContextServerInternal,
-  pageContextsAborted: PageContextAborted[] = [],
-): Promise<
-  | { pageContextReturn: PageContextAfterRender; pageContextAbort?: never }
-  | { pageContextReturn?: never; pageContextAbort: Record<string, unknown> }
-> {
+) {
   logAbortErrorHandled(errAbort, globalContext._isProduction, pageContextNominalPageBegin)
   const pageContextAbort = errAbort._pageContextAbort
   assert(pageContextAbort)
 
+  addNewPageContextAborted(pageContextBegin.pageContextsAborted, pageContextNominalPageBegin, pageContextAbort)
+
   const pageContext = forkPageContext(pageContextBegin)
-  // Sets pageContext._urlRewrite from pageContextAbort._urlRewrite — it's also set by getPageContextAddendumAbort()
-  objectAssign(pageContext, pageContextAbort)
-  objectAssign(pageContext, { _pageContextAbort: pageContextAbort })
+  const pageContextAddendumAbort = getPageContextAddendumAbort(pageContextBegin.pageContextsAborted)
+  objectAssign(pageContext, pageContextAddendumAbort)
+  assert(pageContextAddendumAbort === pageContextAbort)
 
   // Client-side navigation — [`pageContext.json` request](https://vike.dev/pageContext.json)
-  if (pageContextNominalPageBegin.isClientSideNavigation) {
+  if (pageContextBegin.isClientSideNavigation) {
     let pageContextSerialized: string
     if (pageContextAbort.abortStatusCode) {
       const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
@@ -634,15 +645,8 @@ async function handleAbort(
 
   // URL Rewrite — `throw render(url)`
   if (pageContextAbort._urlRewrite) {
-    pageContextsAborted = [...pageContextsAborted, pageContext]
-    assertNoInfiniteAbortLoop(pageContextsAborted)
     // Recursive renderPageEntryRecursive() call
-    const pageContextReturn = await renderPageEntryRecursive(
-      pageContextBegin,
-      globalContext,
-      httpRequestId,
-      pageContextsAborted,
-    )
+    const pageContextReturn = await renderPageEntryRecursive(pageContextBegin, globalContext, httpRequestId)
     return { pageContextReturn }
   }
 
@@ -697,11 +701,4 @@ function getPageContextInvalidVikeConfig(err: unknown, pageContextInit: PageCont
   logRuntimeInfo?.(pc.bold(pc.red('Error loading Vike config — see error above')), httpRequestId, 'error-note')
   const pageContextWithError = getPageContextHttpResponseErrorWithoutGlobalContext(err, pageContextInit)
   return pageContextWithError
-}
-
-// Create pageContext forks to avoid leaks: upon an error (bug or abort) a brand new pageContext object is created, in order to avoid previous pageContext modifications that are now obsolete to leak to the new pageContext object.
-function forkPageContext(pageContextBegin: PageContextBegin) {
-  const pageContext = {}
-  objectAssign(pageContext, pageContextBegin, true)
-  return pageContext
 }

@@ -5,8 +5,8 @@ export { isAbortError }
 export { isAbortPageContext }
 export { logAbortErrorHandled }
 export { getPageContextAddendumAbort }
+export { addNewPageContextAborted }
 export { AbortRender }
-export { assertNoInfiniteAbortLoop }
 export type { RedirectStatusCode }
 export type { AbortStatusCode }
 export type { ErrorAbort }
@@ -240,6 +240,7 @@ function isAbortPageContext(pageContext: Record<string, unknown>): pageContext i
   return true
 }
 
+// TODO: rename logAbortErrorHandled logAbort
 function logAbortErrorHandled(
   err: ErrorAbort,
   isProduction: boolean,
@@ -307,22 +308,25 @@ function assertStatusCode(statusCode: number, expected: number[], caller: 'rende
   }
 }
 
-type PageContextAborted = { _pageContextAbort: PageContextAbort; urlOriginal: string }
-type PageContextAddendumAbort =
-  | { pageContextsAborted: PageContextAborted[] }
-  | ({ pageContextsAborted: PageContextAborted[] } & PageContextAbort)
-function getPageContextAddendumAbort(pageContextsAborted: PageContextAborted[]): PageContextAddendumAbort {
-  const pageContextAddendumAbort = { pageContextsAborted }
+type PageContextMin = { urlOriginal: string }
+type PageContextAborted = { _pageContextAbort: PageContextAbort } & PageContextMin
+function getPageContextAddendumAbort(pageContextsAborted: PageContextAborted[]) {
   const pageContextAbortedLast = pageContextsAborted.at(-1)
-  if (pageContextAbortedLast) {
-    const pageContextAbort = pageContextAbortedLast._pageContextAbort
-    assert(pageContextAbort)
-    // Sets pageContext._urlRewrite from pageContextAbort._urlRewrite — it's also set at handleAbort()
-    objectAssign(pageContextAddendumAbort, pageContextAbort)
-  }
-  return pageContextAddendumAbort
+  if (!pageContextAbortedLast) return null
+  const pageContextAbort = pageContextAbortedLast._pageContextAbort
+  assert(pageContextAbort)
+  // Sets pageContext._urlRewrite from pageContextAbort._urlRewrite
+  return pageContextAbort
 }
-
+function addNewPageContextAborted(
+  pageContextsAborted: PageContextAborted[],
+  pageContext: PageContextMin,
+  pageContextAbort: PageContextAbort,
+) {
+  objectAssign(pageContext, { _pageContextAbort: pageContextAbort })
+  pageContextsAborted.push(pageContext)
+  assertNoInfiniteAbortLoop(pageContextsAborted)
+}
 // There doesn't seem to be a way to count the number of HTTP redirects (Vike doesn't have access to the HTTP request headers/cookies)
 // https://stackoverflow.com/questions/9683007/detect-infinite-http-redirect-loop-on-server-side
 function assertNoInfiniteAbortLoop(pageContextsAborted: PageContextAborted[]) {

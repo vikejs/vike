@@ -10,7 +10,7 @@ import { type PageContextUrlInternal } from '../../../shared/getPageContextUrlCo
 import { createHttpResponsePage, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponse.js'
 import {
   loadPageConfigsLazyServerSide,
-  PageContext_loadPageConfigsLazyServerSide,
+  type PageContext_loadPageConfigsLazyServerSide,
   type PageConfigsLazy,
 } from './loadPageConfigsLazyServerSide.js'
 import { execHookOnRenderHtml } from './execHookOnRenderHtml.js'
@@ -102,6 +102,7 @@ async function prerenderPage(
 ) {
   objectAssign(pageContext, {
     _isPageContextJsonRequest: null,
+    pageContextsAborted: [],
   })
 
   /* Should we execute the guard() hook upon pre-rendering? Is there a use case for this?

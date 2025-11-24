@@ -42,12 +42,12 @@ import {
 } from '../shared/loadPageConfigsLazyClientSide.js'
 import { pushHistoryState } from './history.js'
 import {
-  assertNoInfiniteAbortLoop,
+  addNewPageContextAborted,
   type ErrorAbort,
   getPageContextAddendumAbort,
   isAbortError,
   logAbortErrorHandled,
-  PageContextAbort,
+  type PageContextAbort,
   type PageContextAborted,
 } from '../../shared/route/abort.js'
 import { route } from '../../shared/route/index.js'
@@ -114,6 +114,7 @@ type RenderArgs = {
   isClientSideNavigation?: boolean
   pageContextInitClient?: Record<string, unknown>
 }
+// TODO rename to renderPageClientSide
 async function renderPageClientSide(renderArgs: RenderArgs) {
   catchInfiniteLoop('renderPageClientSide()')
 
@@ -125,8 +126,9 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
     doNotRenderIfSamePage,
     isClientSideNavigation = true,
     pageContextInitClient,
+    pageContextsAborted = [],
   } = renderArgs
-  let { scrollTarget, pageContextsAborted = [] } = renderArgs
+  let { scrollTarget } = renderArgs
   const { previousPageContext } = globalObject
 
   addLinkPrefetchHandlers_unwatch()
@@ -206,7 +208,7 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
       if (isFirstRender) {
         // Set pageContext properties set by onBeforeRoute()
         // - But we skip pageId and routeParams because routing may have been aborted by a server-side `throw render()`
-        const { pageId, routeParams, ...rest } = pageContextFromRoute
+        const { pageId: _, routeParams: __, ...rest } = pageContextFromRoute
         objectAssign(pageContext, rest)
         assert(hasProp(pageContext, 'routeParams', 'string{}')) // Help TS
       } else {
@@ -452,9 +454,7 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
     logAbortErrorHandled(err, !import.meta.env.DEV, pageContext)
     const pageContextAbort = errAbort._pageContextAbort
 
-    objectAssign(pageContext, { _pageContextAbort: pageContextAbort })
-    pageContextsAborted = [...pageContextsAborted, pageContext]
-    assertNoInfiniteAbortLoop(pageContextsAborted)
+    addNewPageContextAborted(pageContextsAborted, pageContext, pageContextAbort)
 
     // throw render('/some-url')
     if (pageContextAbort._urlRewrite) {
@@ -624,6 +624,7 @@ async function getPageContextBegin(
     isClientSideNavigation,
     isHydration: isFirstRender && !isForErrorPage,
     previousPageContext,
+    pageContextsAborted,
     ...pageContextInitClient,
   })
 
@@ -641,7 +642,7 @@ async function getPageContextBegin(
 
   {
     const pageContextAddendumAbort = getPageContextAddendumAbort(pageContextsAborted)
-    assert(!('urlOriginal' in pageContextAddendumAbort))
+    assert(!pageContextAddendumAbort || !('urlOriginal' in pageContextAddendumAbort))
     objectAssign(pageContext, pageContextAddendumAbort)
   }
   return pageContext

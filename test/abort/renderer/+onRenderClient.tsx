@@ -3,12 +3,14 @@ export default onRenderClient
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { Layout } from './Layout'
+import { assert } from '../utils/assert'
 import type { PageContextClient } from './types'
 
 let root: ReactDOM.Root
 async function onRenderClient(pageContext: PageContextClient) {
-  const { Page } = pageContext
+  assert(Array.isArray(pageContext.pageContextsAborted))
 
+  const { Page } = pageContext
   const page = (
     <Layout pageContext={pageContext}>
       <Page />
