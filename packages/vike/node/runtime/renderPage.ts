@@ -30,15 +30,16 @@ import {
   isUri,
   getUrlPretty,
   updateType,
+  catchInfiniteLoop,
 } from './utils.js'
 import {
-  assertNoInfiniteAbortLoop,
   ErrorAbort,
   getPageContextAddendumAbort,
   isAbortError,
   logAbortErrorHandled,
   type PageContextAddendumAbort,
   type PageContextAborted,
+  addNewPageContextAborted,
 } from '../../shared/route/abort.js'
 import {
   getGlobalContextServerInternal,
@@ -195,6 +196,8 @@ async function renderPageEntryRecursive(
   globalContext: GlobalContextServerInternal,
   httpRequestId: number,
 ): Promise<PageContextAfterRender & { pageContextsAborted: PageContextAborted[] }> {
+  catchInfiniteLoop('renderPageEntryRecursive()')
+
   const pageContextNominalPageBegin = forkPageContext(pageContextBegin)
 
   const pageContextAddendumAbort = getPageContextAddendumAbort(pageContextBegin.pageContextsAborted)
@@ -620,8 +623,7 @@ async function handleAbort(
   const pageContextAbort = errAbort._pageContextAbort
   assert(pageContextAbort)
 
-  objectAssign(pageContextNominalPageBegin, { _pageContextAbort: pageContextAbort })
-  pageContextBegin.pageContextsAborted.push(pageContextNominalPageBegin)
+  addNewPageContextAborted(pageContextBegin.pageContextsAborted, pageContextNominalPageBegin, pageContextAbort)
 
   const pageContext = forkPageContext(pageContextBegin)
   // Sets pageContext._urlRewrite from pageContextAbort._urlRewrite — it's also set by getPageContextAddendumAbort()
@@ -655,8 +657,6 @@ async function handleAbort(
 
   // URL Rewrite — `throw render(url)`
   if (pageContextAbort._urlRewrite) {
-    // TODO/now move & dedupe
-    assertNoInfiniteAbortLoop(pageContextBegin.pageContextsAborted)
     // Recursive renderPageEntryRecursive() call
     const pageContextReturn = await renderPageEntryRecursive(pageContextBegin, globalContext, httpRequestId)
     return { pageContextReturn }

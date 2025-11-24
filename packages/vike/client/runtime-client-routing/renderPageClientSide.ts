@@ -42,7 +42,7 @@ import {
 } from '../shared/loadPageConfigsLazyClientSide.js'
 import { pushHistoryState } from './history.js'
 import {
-  assertNoInfiniteAbortLoop,
+  addNewPageContextAborted,
   type ErrorAbort,
   getPageContextAddendumAbort,
   isAbortError,
@@ -453,10 +453,7 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
     logAbortErrorHandled(err, !import.meta.env.DEV, pageContext)
     const pageContextAbort = errAbort._pageContextAbort
 
-    objectAssign(pageContext, { _pageContextAbort: pageContextAbort })
-    pageContextsAborted.push(pageContext)
-    // TODO/now dedupe
-    assertNoInfiniteAbortLoop(pageContextsAborted)
+    addNewPageContextAborted(pageContextsAborted, pageContext, pageContextAbort)
 
     // throw render('/some-url')
     if (pageContextAbort._urlRewrite) {

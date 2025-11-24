@@ -5,8 +5,8 @@ export { isAbortError }
 export { isAbortPageContext }
 export { logAbortErrorHandled }
 export { getPageContextAddendumAbort }
+export { addNewPageContextAborted }
 export { AbortRender }
-export { assertNoInfiniteAbortLoop }
 export type { RedirectStatusCode }
 export type { AbortStatusCode }
 export type { ErrorAbort }
@@ -309,7 +309,8 @@ function assertStatusCode(statusCode: number, expected: number[], caller: 'rende
   }
 }
 
-type PageContextAborted = { _pageContextAbort: PageContextAbort; urlOriginal: string }
+type PageContextMin = { urlOriginal: string }
+type PageContextAborted = { _pageContextAbort: PageContextAbort } & PageContextMin
 type PageContextAddendumAbort = ReturnType<typeof getPageContextAddendumAbort>
 function getPageContextAddendumAbort(pageContextsAborted: PageContextAborted[]) {
   const pageContextAddendumAbort = { pageContextsAborted }
@@ -322,7 +323,15 @@ function getPageContextAddendumAbort(pageContextsAborted: PageContextAborted[]) 
   }
   return pageContextAddendumAbort
 }
-
+function addNewPageContextAborted(
+  pageContextsAborted: PageContextAborted[],
+  pageContext: PageContextMin,
+  pageContextAbort: PageContextAbort,
+) {
+  objectAssign(pageContext, { _pageContextAbort: pageContextAbort })
+  pageContextsAborted.push(pageContext)
+  assertNoInfiniteAbortLoop(pageContextsAborted)
+}
 // There doesn't seem to be a way to count the number of HTTP redirects (Vike doesn't have access to the HTTP request headers/cookies)
 // https://stackoverflow.com/questions/9683007/detect-infinite-http-redirect-loop-on-server-side
 function assertNoInfiniteAbortLoop(pageContextsAborted: PageContextAborted[]) {
