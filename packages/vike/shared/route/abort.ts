@@ -310,17 +310,13 @@ function assertStatusCode(statusCode: number, expected: number[], caller: 'rende
 
 type PageContextMin = { urlOriginal: string }
 type PageContextAborted = { _pageContextAbort: PageContextAbort } & PageContextMin
-type PageContextAddendumAbort = ReturnType<typeof getPageContextAddendumAbort>
 function getPageContextAddendumAbort(pageContextsAborted: PageContextAborted[]) {
-  const pageContextAddendumAbort = { pageContextsAborted }
   const pageContextAbortedLast = pageContextsAborted.at(-1)
-  if (pageContextAbortedLast) {
-    const pageContextAbort = pageContextAbortedLast._pageContextAbort
-    assert(pageContextAbort)
-    // Sets pageContext._urlRewrite from pageContextAbort._urlRewrite — it's also set at handleAbort()
-    objectAssign(pageContextAddendumAbort, pageContextAbort)
-  }
-  return pageContextAddendumAbort
+  if (!pageContextAbortedLast) return {}
+  const pageContextAbort = pageContextAbortedLast._pageContextAbort
+  assert(pageContextAbort)
+  // Sets pageContext._urlRewrite from pageContextAbort._urlRewrite — it's also set at handleAbort()
+  return pageContextAbort
 }
 function addNewPageContextAborted(
   pageContextsAborted: PageContextAborted[],

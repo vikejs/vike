@@ -623,6 +623,7 @@ async function getPageContextBegin(
     isClientSideNavigation,
     isHydration: isFirstRender && !isForErrorPage,
     previousPageContext,
+    pageContextsAborted,
     ...pageContextInitClient,
   })
 

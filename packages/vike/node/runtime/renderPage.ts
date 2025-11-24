@@ -614,8 +614,9 @@ async function handleAbort(
   addNewPageContextAborted(pageContextBegin.pageContextsAborted, pageContextNominalPageBegin, pageContextAbort)
 
   const pageContext = forkPageContext(pageContextBegin)
-  // Sets pageContext._urlRewrite from pageContextAbort._urlRewrite — it's also set by getPageContextAddendumAbort()
-  objectAssign(pageContext, pageContextAbort)
+  const pageContextAddendumAbort = getPageContextAddendumAbort(pageContextBegin.pageContextsAborted)
+  objectAssign(pageContext, pageContextAddendumAbort)
+  assert(pageContextAddendumAbort === pageContextAbort)
 
   // Client-side navigation — [`pageContext.json` request](https://vike.dev/pageContext.json)
   if (pageContextBegin.isClientSideNavigation) {
