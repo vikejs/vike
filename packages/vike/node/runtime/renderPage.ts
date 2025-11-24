@@ -185,18 +185,17 @@ async function renderPageEntryOnce(
   }
 
   // First renderPageEntryRecursive() call
-  return await renderPageEntryRecursive(pageContextBegin, globalContext, httpRequestId, [])
+  return await renderPageEntryRecursive(pageContextBegin, globalContext, httpRequestId)
 }
 
 async function renderPageEntryRecursive(
   pageContextBegin: PageContextBegin,
   globalContext: GlobalContextServerInternal,
   httpRequestId: number,
-  pageContextsAborted: PageContextAborted[] = [],
 ): Promise<PageContextAfterRender & { pageContextsAborted: PageContextAborted[] }> {
   const pageContextNominalPageBegin = forkPageContext(pageContextBegin)
 
-  const pageContextAddendumAbort = getPageContextAddendumAbort(pageContextsAborted)
+  const pageContextAddendumAbort = getPageContextAddendumAbort(pageContextBegin.pageContextsAborted)
   objectAssign(pageContextNominalPageBegin, pageContextAddendumAbort)
 
   let pageContextNominalPageSuccess: undefined | Awaited<ReturnType<typeof renderPageNominal>>
@@ -237,7 +236,6 @@ async function renderPageEntryRecursive(
       pageContextAddendumAbort,
       globalContext,
       httpRequestId,
-      pageContextsAborted,
     )
   }
 }
@@ -272,7 +270,6 @@ async function renderPageOnError(
       httpRequestId,
       pageContextErrorPageInit,
       globalContext,
-      pageContextsAborted,
     )
     if (handled.pageContextReturn) {
       // - throw redirect()
@@ -308,7 +305,6 @@ async function renderPageOnError(
         httpRequestId,
         pageContextErrorPageInit,
         globalContext,
-        pageContextsAborted,
       )
       // TODO: minor refactor
       // throw render(abortStatusCode)
@@ -492,7 +488,12 @@ function getPageContextBegin(
       isClientSideNavigation,
     },
   })
-  objectAssign(pageContextBegin, { _httpRequestId: httpRequestId, _isPageContextJsonRequest })
+  objectAssign(pageContextBegin, {
+    _httpRequestId: httpRequestId,
+    _isPageContextJsonRequest,
+    // TODO/now comment
+    pageContextsAborted: [],
+  })
   return pageContextBegin
 }
 
@@ -612,13 +613,13 @@ async function handleAbort(
   httpRequestId: number,
   pageContextErrorPageInit: PageContextErrorPageInit,
   globalContext: GlobalContextServerInternal,
-  pageContextsAborted: PageContextAborted[] = [],
 ) {
   logAbortErrorHandled(errAbort, globalContext._isProduction, pageContextNominalPageBegin)
   const pageContextAbort = errAbort._pageContextAbort
   assert(pageContextAbort)
 
   const pageContext = forkPageContext(pageContextBegin)
+
   // Sets pageContext._urlRewrite from pageContextAbort._urlRewrite — it's also set by getPageContextAddendumAbort()
   objectAssign(pageContext, pageContextAbort)
   objectAssign(pageContext, { _pageContextAbort: pageContextAbort })
@@ -651,15 +652,10 @@ async function handleAbort(
 
   // URL Rewrite — `throw render(url)`
   if (pageContextAbort._urlRewrite) {
-    pageContextsAborted = [...pageContextsAborted, pageContext]
-    assertNoInfiniteAbortLoop(pageContextsAborted)
+    pageContextBegin.pageContextsAborted.push(pageContext)
+    assertNoInfiniteAbortLoop(pageContextBegin.pageContextsAborted)
     // Recursive renderPageEntryRecursive() call
-    const pageContextReturn = await renderPageEntryRecursive(
-      pageContextBegin,
-      globalContext,
-      httpRequestId,
-      pageContextsAborted,
-    )
+    const pageContextReturn = await renderPageEntryRecursive(pageContextBegin, globalContext, httpRequestId)
     return { pageContextReturn }
   }
 
