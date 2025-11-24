@@ -492,7 +492,7 @@ function getPageContextBegin(
     _httpRequestId: httpRequestId,
     _isPageContextJsonRequest,
     // TODO/now comment
-    pageContextsAborted: [],
+    pageContextsAborted: [] as PageContextAborted[],
   })
   return pageContextBegin
 }
@@ -618,11 +618,12 @@ async function handleAbort(
   const pageContextAbort = errAbort._pageContextAbort
   assert(pageContextAbort)
 
-  const pageContext = forkPageContext(pageContextBegin)
+  objectAssign(pageContextNominalPageBegin, { _pageContextAbort: pageContextAbort })
+  pageContextBegin.pageContextsAborted.push(pageContextNominalPageBegin)
 
+  const pageContext = forkPageContext(pageContextBegin)
   // Sets pageContext._urlRewrite from pageContextAbort._urlRewrite — it's also set by getPageContextAddendumAbort()
   objectAssign(pageContext, pageContextAbort)
-  objectAssign(pageContext, { _pageContextAbort: pageContextAbort })
 
   // Client-side navigation — [`pageContext.json` request](https://vike.dev/pageContext.json)
   if (pageContextBegin.isClientSideNavigation) {
@@ -652,7 +653,6 @@ async function handleAbort(
 
   // URL Rewrite — `throw render(url)`
   if (pageContextAbort._urlRewrite) {
-    pageContextBegin.pageContextsAborted.push(pageContext)
     assertNoInfiniteAbortLoop(pageContextBegin.pageContextsAborted)
     // Recursive renderPageEntryRecursive() call
     const pageContextReturn = await renderPageEntryRecursive(pageContextBegin, globalContext, httpRequestId)
