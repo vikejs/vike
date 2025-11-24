@@ -229,6 +229,7 @@ async function renderPageEntryRecursive(
   } else {
     assert(errNominalPage)
     assert(pageContextNominalPageSuccess === undefined)
+    // @ts-ignore TODO
     return await renderPageOnError(
       errNominalPage,
       pageContextBegin,
