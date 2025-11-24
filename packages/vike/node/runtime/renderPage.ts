@@ -255,7 +255,6 @@ async function renderPageOnError(
   pageContextAddendumAbort: PageContextAddendumAbort,
   globalContext: GlobalContextServerInternal,
   httpRequestId: number,
-  pageContextsAborted: PageContextAborted[] = [],
 ) {
   assert(pageContextNominalPageBegin)
   assert(hasProp(pageContextNominalPageBegin, 'urlOriginal', 'string'))
