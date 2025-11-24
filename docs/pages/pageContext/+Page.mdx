@@ -284,7 +284,9 @@ The CSP nonce, see <Link href="/csp" />.
 
 <Prop name="pageContextsAborted" />
 
-List of `pageContext` from previous <Link href="/redirect">`throw redirect()`</Link> and <Link href="/render">`throw render()`</Link> that led to the current page.
+List of previous `pageContext` aborted by <Link href="/redirect">`throw redirect()`</Link> or <Link href="/render">`throw render()`</Link> that led to the final rendered page.
+
+> The aborted `pageContext` objects are only available in the environment where they are created. For example, if you `throw render(403)` inside a UI component, the aborted `pageContext` is available on the client only upon client-side navigation — it isn't available upon <Link href="/hydration">hydration</Link>.
 
 <Warning>
   `pageContext.pageContextsAborted` is experimental — reach out to the Vike maintainers on GitHub before using it.

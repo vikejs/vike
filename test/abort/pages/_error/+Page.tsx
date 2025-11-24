@@ -13,6 +13,7 @@ function Page() {
   if (pageContext.abortReason) {
     const { length } = pageContext.pageContextsAborted
     if (pageContext.isHydration) {
+      // The aborted pageContext isn't available since it was created on the server-side, see https://vike.dev/pageContext#pageContextsAborted
       assert(length === 0)
     } else {
       assert(length > 0)

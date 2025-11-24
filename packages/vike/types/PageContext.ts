@@ -217,7 +217,7 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
     cspNonce: string | null
 
     /**
-     * List of `pageContext` from previous `throw redirect()` and `throw render()` that led to the current page.
+     * List of previous `pageContext` aborted by `throw redirect()` or `throw render()` that led to the final rendered page.
      *
      * https://vike.dev/pageContext#pageContextsAborted
      */
@@ -276,7 +276,7 @@ type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltI
      */
     previousPageContext: PageContextClient<Data> | null
     /**
-     * List of `pageContext` from previous `throw redirect()` and `throw render()` that led to the current page.
+     * List of previous `pageContext` aborted by `throw redirect()` or `throw render()` that led to the final rendered page.
      *
      * https://vike.dev/pageContext#pageContextsAborted
      */
