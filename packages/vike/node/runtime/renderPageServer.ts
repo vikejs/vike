@@ -319,9 +319,9 @@ async function renderPageServerOnError(
           )} doesn't occur while the error page is being rendered.`,
           { onlyOnce: false },
         )
-        // TODO: rename pageContextHttpWithError pageContextHttpErrorFallback
-        const pageContextHttpWithError = getPageContextHttpResponseError(errNominalPage, pageContextBegin)
-        return pageContextHttpWithError
+        // TODO: rename pageContextHttpErrorFallback pageContextHttpErrorFallback
+        const pageContextHttpErrorFallback = getPageContextHttpResponseError(errNominalPage, pageContextBegin)
+        return pageContextHttpErrorFallback
       }
     }
     if (isNewError(errErrorPage, errNominalPage)) {
