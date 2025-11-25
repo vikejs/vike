@@ -3,8 +3,6 @@ export { setContextVikeApiOperation }
 export { clearContextVikeApiOperation }
 export { getVikeApiOperation }
 
-// TODO: move
-
 import type { ApiOptions, ApiOperation } from '../node/api/types.js'
 // We don't import ./utils.js because this file is imported by server/
 import { assert, getGlobalObject } from '../server/runtime/utils.js'
