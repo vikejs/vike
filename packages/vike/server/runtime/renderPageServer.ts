@@ -420,32 +420,32 @@ function getPageContextHttpErrorFallback_noGlobalContext(
 // - Render page (no error)
 // - Render 404 page
 type PageContextInternalServerAfterRender = Awaited<ReturnType<typeof renderPageServerNominal>>
-async function renderPageServerNominal(pageContext: PageContextBegin) {
-  objectAssign(pageContext, { errorWhileRendering: null })
+async function renderPageServerNominal(pageContextNominalPageBegin: PageContextBegin) {
+  objectAssign(pageContextNominalPageBegin, { errorWhileRendering: null })
 
   // Route
   {
-    const pageContextFromRoute = await route(pageContext)
-    objectAssign(pageContext, pageContextFromRoute)
-    objectAssign(pageContext, { is404: pageContext.pageId ? null : true })
-    if (pageContext.pageId === null) {
+    const pageContextFromRoute = await route(pageContextNominalPageBegin)
+    objectAssign(pageContextNominalPageBegin, pageContextFromRoute)
+    objectAssign(pageContextNominalPageBegin, { is404: pageContextNominalPageBegin.pageId ? null : true })
+    if (pageContextNominalPageBegin.pageId === null) {
       const errorPageId = getErrorPageId(
-        pageContext._globalContext._pageFilesAll,
-        pageContext._globalContext._pageConfigs,
+        pageContextNominalPageBegin._globalContext._pageFilesAll,
+        pageContextNominalPageBegin._globalContext._pageConfigs,
       )
       if (!errorPageId) {
-        assert(hasProp(pageContext, 'pageId', 'null'))
-        return handleErrorWithoutErrorPage(pageContext)
+        assert(hasProp(pageContextNominalPageBegin, 'pageId', 'null'))
+        return handleErrorWithoutErrorPage(pageContextNominalPageBegin)
       }
-      objectAssign(pageContext, { pageId: errorPageId })
+      objectAssign(pageContextNominalPageBegin, { pageId: errorPageId })
     }
   }
-  assert(hasProp(pageContext, 'pageId', 'string'))
-  assert(pageContext.errorWhileRendering === null)
+  assert(hasProp(pageContextNominalPageBegin, 'pageId', 'string'))
+  assert(pageContextNominalPageBegin.errorWhileRendering === null)
 
   // Render
-  const pageContextAfterRender = await renderPageServerAfterRoute(pageContext)
-  assert(pageContext === pageContextAfterRender)
+  const pageContextAfterRender = await renderPageServerAfterRoute(pageContextNominalPageBegin)
+  assert(pageContextNominalPageBegin === pageContextAfterRender)
   return pageContextAfterRender
 }
 
