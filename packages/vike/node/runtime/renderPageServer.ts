@@ -234,7 +234,7 @@ async function renderPageServerEntryRecursive(
   } else {
     assert(errNominalPage)
     assert(pageContextNominalPageSuccess === undefined)
-    return await renderPageOnError(
+    return await renderPageServerOnError(
       errNominalPage,
       pageContextBegin,
       pageContextNominalPageBegin,
@@ -244,12 +244,12 @@ async function renderPageServerEntryRecursive(
   }
 }
 
-// TODO: rename renderPageOnError renderPageServerEntryRecursive_error
+// TODO: rename renderPageServerOnError renderPageServerEntryRecursive_error
 // When the normal page threw an error
 // - Can be a URL rewrite upon `throw render('/some-url')`
 // - Can be rendering the error page
 // - Can be rendering Vike's generic error page (if no error page is defined, or if the error page throws an error)
-async function renderPageOnError(
+async function renderPageServerOnError(
   errNominalPage: unknown,
   pageContextBegin: PageContextBegin,
   pageContextNominalPageBegin: PageContextBegin,
