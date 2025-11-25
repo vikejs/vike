@@ -88,7 +88,7 @@ type PageContextInit = Pick<PageContextInternalServer, 'urlOriginal' | 'headersO
 type PageContextBegin = ReturnType<typeof getPageContextBegin>
 
 // TODO rename to renderPageServer
-// `renderPage()` calls `renderPageNominal()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that Vike never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
+// `renderPage()` calls `renderPageServerNominal()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that Vike never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
 async function renderPage<PageContextUserAdded extends {}, PageContextInitUser extends PageContextInit>(
   pageContextInit: PageContextInitUser,
 ): Promise<
@@ -202,12 +202,12 @@ async function renderPageServerEntryRecursive(
   const pageContextAddendumAbort = getPageContextAddendumAbort(pageContextBegin.pageContextsAborted)
   objectAssign(pageContextNominalPageBegin, pageContextAddendumAbort)
 
-  // TODO try inline renderPageNominal()
-  let pageContextNominalPageSuccess: undefined | Awaited<ReturnType<typeof renderPageNominal>>
+  // TODO try inline renderPageServerNominal()
+  let pageContextNominalPageSuccess: undefined | Awaited<ReturnType<typeof renderPageServerNominal>>
   let errNominalPage: unknown
   {
     try {
-      pageContextNominalPageSuccess = await renderPageNominal(pageContextNominalPageBegin)
+      pageContextNominalPageSuccess = await renderPageServerNominal(pageContextNominalPageBegin)
     } catch (err) {
       errNominalPage = err
       assert(errNominalPage)
@@ -412,11 +412,11 @@ function getPageContextHttpResponseErrorWithoutGlobalContext(
   return pageContextWithError
 }
 
-// TODO: rename renderPageNominal renderPageServerEntryRecursive_nominal
+// TODO: rename renderPageServerNominal renderPageServerEntryRecursive_nominal
 // - Render page (no error)
 // - Render 404 page
-type PageContextInternalServerAfterRender = Awaited<ReturnType<typeof renderPageNominal>>
-async function renderPageNominal(pageContext: PageContextBegin) {
+type PageContextInternalServerAfterRender = Awaited<ReturnType<typeof renderPageServerNominal>>
+async function renderPageServerNominal(pageContext: PageContextBegin) {
   objectAssign(pageContext, { errorWhileRendering: null })
 
   // Route
