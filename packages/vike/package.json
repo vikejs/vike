@@ -4,12 +4,12 @@
   "repository": "https://github.com/vikejs/vike",
   "exports": {
     "./server": {
-      "worker": "./dist/esm/node/runtime/index.js",
-      "workerd": "./dist/esm/node/runtime/index.js",
-      "node": "./dist/esm/node/runtime/index.js",
+      "worker": "./dist/esm/server/runtime/index.js",
+      "workerd": "./dist/esm/server/runtime/index.js",
+      "node": "./dist/esm/server/runtime/index.js",
       "browser": "./dist/esm/client/node.js",
-      "types": "./dist/esm/node/runtime/index.d.ts",
-      "default": "./dist/esm/node/runtime/index.js"
+      "types": "./dist/esm/server/runtime/index.d.ts",
+      "default": "./dist/esm/server/runtime/index.js"
     },
     "./client": {
       "types": "./dist/esm/client/runtime-server-routing/index.d.ts"
@@ -87,12 +87,12 @@
       "default": "./dist/esm/shared/modifyUrl.js"
     },
     "./universal-middleware": {
-      "worker": "./dist/esm/node/runtime/universal-middleware.js",
-      "workerd": "./dist/esm/node/runtime/universal-middleware.js",
-      "node": "./dist/esm/node/runtime/universal-middleware.js",
+      "worker": "./dist/esm/server/runtime/universal-middleware.js",
+      "workerd": "./dist/esm/server/runtime/universal-middleware.js",
+      "node": "./dist/esm/server/runtime/universal-middleware.js",
       "browser": "./dist/esm/client/node.js",
-      "types": "./dist/esm/node/runtime/universal-middleware.d.ts",
-      "default": "./dist/esm/node/runtime/universal-middleware.js"
+      "types": "./dist/esm/server/runtime/universal-middleware.d.ts",
+      "default": "./dist/esm/server/runtime/universal-middleware.js"
     },
     "./__internal": {
       "node": "./dist/esm/__internal/index.js",
@@ -100,17 +100,17 @@
       "default": "./dist/esm/__internal/index.js"
     },
     "./__internal/setup": {
-      "node": "./dist/esm/node/runtime/page-files/setup.js",
-      "types": "./dist/esm/node/runtime/page-files/setup.d.ts",
-      "default": "./dist/esm/node/runtime/page-files/setup.js"
+      "node": "./dist/esm/server/runtime/page-files/setup.js",
+      "types": "./dist/esm/server/runtime/page-files/setup.d.ts",
+      "default": "./dist/esm/server/runtime/page-files/setup.js"
     },
     ".": {
-      "worker": "./dist/esm/node/runtime/index.js",
-      "workerd": "./dist/esm/node/runtime/index.js",
-      "node": "./dist/esm/node/runtime/index.js",
+      "worker": "./dist/esm/server/runtime/index.js",
+      "workerd": "./dist/esm/server/runtime/index.js",
+      "node": "./dist/esm/server/runtime/index.js",
       "browser": "./dist/esm/client/index.js",
-      "types": "./dist/esm/node/runtime/index.d.ts",
-      "default": "./dist/esm/node/runtime/index.js"
+      "types": "./dist/esm/server/runtime/index.d.ts",
+      "default": "./dist/esm/server/runtime/index.js"
     }
   },
   "dependencies": {
@@ -166,7 +166,7 @@
         "./dist/esm/types/index.d.ts"
       ],
       "server": [
-        "./dist/esm/node/runtime/index.d.ts"
+        "./dist/esm/server/runtime/index.d.ts"
       ],
       "client": [
         "./dist/esm/client/runtime-server-routing/index.d.ts"
@@ -202,19 +202,19 @@
         "./dist/esm/shared/modifyUrl.d.ts"
       ],
       "universal-middleware": [
-        "./dist/esm/node/runtime/universal-middleware.d.ts"
+        "./dist/esm/server/runtime/universal-middleware.d.ts"
       ],
       "__internal": [
         "./dist/esm/__internal/index.d.ts"
       ],
       "__internal/setup": [
-        "./dist/esm/node/runtime/page-files/setup.d.ts"
+        "./dist/esm/server/runtime/page-files/setup.d.ts"
       ]
     }
   },
-  "main": "./dist/esm/node/runtime/index.js",
+  "main": "./dist/esm/server/runtime/index.js",
   "browser": "./dist/esm/client/index.js",
-  "types": "./dist/esm/node/runtime/index.d.ts",
+  "types": "./dist/esm/server/runtime/index.d.ts",
   "type": "module",
   "bin": {
     "vike": "./node/cli/bin.js"
