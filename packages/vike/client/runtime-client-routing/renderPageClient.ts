@@ -18,9 +18,9 @@ import {
   catchInfiniteLoop,
 } from './utils.js'
 import {
-  getPageContextFromClientHooks,
+  getPageContextFromHooksClient,
   getPageContextFromHooksServer,
-  getPageContextFromClientHooks_firstRender,
+  getPageContextFromHooksClient_firstRender,
   getPageContextFromHooksServer_firstRender,
   type PageContextFromHooksServer,
   setPageContextInitIsPassedToClient,
@@ -276,9 +276,9 @@ async function renderPageClient(renderArgs: RenderArgs) {
     // Get pageContext from hooks (fetched from server, and/or directly called on the client-side)
     if (isFirstRender) {
       assert(hasProp(pageContext, '_hasPageContextFromServer', 'true'))
-      let pageContextAugmented: Awaited<ReturnType<typeof getPageContextFromClientHooks_firstRender>>
+      let pageContextAugmented: Awaited<ReturnType<typeof getPageContextFromHooksClient_firstRender>>
       try {
-        pageContextAugmented = await getPageContextFromClientHooks_firstRender(pageContext)
+        pageContextAugmented = await getPageContextFromHooksClient_firstRender(pageContext)
       } catch (err) {
         await onError(err)
         return
@@ -312,15 +312,15 @@ async function renderPageClient(renderArgs: RenderArgs) {
       objectAssign(pageContext, pageContextFromHooksServer)
 
       // Get pageContext from client-side hooks
-      let pageContextFromClientHooks: Awaited<ReturnType<typeof getPageContextFromClientHooks>>
+      let pageContextFromHooksClient: Awaited<ReturnType<typeof getPageContextFromHooksClient>>
       try {
-        pageContextFromClientHooks = await getPageContextFromClientHooks(pageContext, false)
+        pageContextFromHooksClient = await getPageContextFromHooksClient(pageContext, false)
       } catch (err) {
         await onError(err)
         return
       }
       if (isRenderOutdated()) return
-      updateType(pageContext, pageContextFromClientHooks)
+      updateType(pageContext, pageContextFromHooksClient)
 
       return await renderPageView(pageContext)
     }
@@ -432,15 +432,15 @@ async function renderPageClient(renderArgs: RenderArgs) {
     assert(!('urlOriginal' in pageContextFromHooksServer))
     objectAssign(pageContext, pageContextFromHooksServer)
 
-    let pageContextFromClientHooks: Awaited<ReturnType<typeof getPageContextFromClientHooks>>
+    let pageContextFromHooksClient: Awaited<ReturnType<typeof getPageContextFromHooksClient>>
     try {
-      pageContextFromClientHooks = await getPageContextFromClientHooks(pageContext, true)
+      pageContextFromHooksClient = await getPageContextFromHooksClient(pageContext, true)
     } catch (err: unknown) {
       onError(err)
       return
     }
     if (isRenderOutdated()) return
-    updateType(pageContext, pageContextFromClientHooks)
+    updateType(pageContext, pageContextFromHooksClient)
 
     await renderPageView(pageContext, args)
   }

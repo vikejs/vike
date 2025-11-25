@@ -1,7 +1,7 @@
-export { getPageContextFromClientHooks_firstRender }
+export { getPageContextFromHooksClient_firstRender }
 export { getPageContextFromHooksServer_firstRender }
 export { getPageContextFromHooksServer }
-export { getPageContextFromClientHooks }
+export { getPageContextFromHooksClient }
 export { setPageContextInitIsPassedToClient }
 export type { PageContextFromHooksServer }
 
@@ -62,7 +62,7 @@ function getPageContextFromHooksServer_firstRender(): PageContextSerialized & {
   })
   return pageContextSerialized
 }
-async function getPageContextFromClientHooks_firstRender(
+async function getPageContextFromHooksClient_firstRender(
   pageContext: PageContextSerialized &
     PageContextBegin &
     PageContextConfig & { _hasPageContextFromServer: true } & PageContextForPublicUsageClient,
@@ -118,7 +118,7 @@ async function getPageContextFromHooksServer(
   return { pageContextFromHooksServer }
 }
 
-async function getPageContextFromClientHooks(
+async function getPageContextFromHooksClient(
   pageContext: { pageId: string; _hasPageContextFromServer: boolean } & PageContextBegin &
     PageContextConfig &
     PageContextForPublicUsageClient,
@@ -147,8 +147,8 @@ async function getPageContextFromClientHooks(
     await execHookClient('onData', pageContext)
   }
 
-  const pageContextFromClientHooks = pageContext
-  return pageContextFromClientHooks
+  const pageContextFromHooksClient = pageContext
+  return pageContextFromHooksClient
 }
 
 type PageContextExecHookClient = PageContextConfig & PageContextForPublicUsageClient
