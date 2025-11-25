@@ -115,7 +115,7 @@ function render(abortStatusCode: 401 | 403 | 404 | 410 | 429 | 500 | 503, abortR
  * @param abortReason Sets `pageContext.abortReason` which is used by the error page to show a message to the user, see https://vike.dev/error-page
  */
 function render(url: `/${string}`, abortReason?: AbortReason): Error
-function render(urlOrStatusCode: string | number, abortReason?: unknown): Error {
+function render(urlOrStatusCode: string | AbortStatusCode, abortReason?: unknown): Error {
   const args = [typeof urlOrStatusCode === 'number' ? String(urlOrStatusCode) : JSON.stringify(urlOrStatusCode)]
   if (abortReason !== undefined) args.push(truncateString(JSON.stringify(abortReason), 30))
   const abortCaller = 'throw render()'
@@ -124,7 +124,7 @@ function render(urlOrStatusCode: string | number, abortReason?: unknown): Error 
 }
 
 function render_(
-  urlOrStatusCode: string | number,
+  urlOrStatusCode: string | AbortStatusCode,
   abortReason: unknown | undefined,
   abortCall: `render(${string})` | `RenderErrorPage()`,
   abortCaller: 'throw render()' | 'throw RenderErrorPage()',
@@ -185,7 +185,7 @@ type PageContextAbort = {
       _abortCall: `render(${string})` | `RenderErrorPage()`
       _abortCaller: 'throw render()' | 'throw RenderErrorPage()'
       abortReason: undefined | unknown
-      abortStatusCode: number
+      abortStatusCode: AbortStatusCode
     } & Omit<AbortUndefined, 'abortStatusCode'>)
 )
 type AbortUndefined = {

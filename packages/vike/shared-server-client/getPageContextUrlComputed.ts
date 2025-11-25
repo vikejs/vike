@@ -29,7 +29,7 @@ type PageContextUrl = {
 } & PageContextUrlComputed
 type PageContextUrlInternal = PageContextPrepareMinimum &
   PageContextUrl & {
-    _urlRewrite?: string
+    _urlRewrite?: string | null
   }
 type PageContextUrlClient = PageContextUrl
 type PageContextUrlServer = PageContextUrl & {
@@ -71,7 +71,7 @@ function getPageContextUrlComputed(pageContext: PageContextUrlSource): PageConte
 type PageContextUrlSource = {
   urlOriginal: string
   urlLogical?: string
-  _urlRewrite?: string
+  _urlRewrite?: string | null
   _baseServer: string
   _urlHandler: null | ((url: string) => string)
 }
