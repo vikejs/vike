@@ -3,8 +3,10 @@ export { setContextVikeApiOperation }
 export { clearContextVikeApiOperation }
 export { getVikeApiOperation }
 
+// TODO: move
+
 import type { ApiOptions, ApiOperation } from './types.js'
-// We don't import from ./utils.js because we tolerate this file to be loaded in production
+// We don't import ./utils.js because this file is imported by server/
 import { assert, getGlobalObject } from '../../server/runtime/utils.js'
 const globalObject = getGlobalObject<{ vikeApiOperation?: VikeApiOperation }>('api/context.ts', {})
 
