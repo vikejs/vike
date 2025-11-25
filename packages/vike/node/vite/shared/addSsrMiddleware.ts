@@ -1,6 +1,6 @@
 export { addSsrMiddleware }
 
-import { renderPage } from '../../runtime/renderPage.js'
+import { renderPageServer } from '../../runtime/renderPageServer.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { assertWarning } from '../utils.js'
 import pc from '@brillout/picocolors'
@@ -38,9 +38,9 @@ function addSsrMiddleware(
       },
       enumerable: false,
     })
-    let pageContext: Awaited<ReturnType<typeof renderPage>>
+    let pageContext: Awaited<ReturnType<typeof renderPageServer>>
     try {
-      pageContext = await renderPage(pageContextInit)
+      pageContext = await renderPageServer(pageContextInit)
     } catch (err) {
       // Throwing an error in a connect middleware shut downs the server
       console.error(err)

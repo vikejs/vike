@@ -8,7 +8,7 @@ import { isPrerenderAutoRunEnabled, wasPrerenderRun } from '../../../prerender/c
 import type { VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { isViteCli, getViteConfigForBuildFromCli } from '../../shared/isViteCli.js'
 import pc from '@brillout/picocolors'
-import { logErrorHint } from '../../../runtime/renderPage/logErrorHint.js'
+import { logErrorHint } from '../../../runtime/renderPageServer/logErrorHint.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { isVikeCliOrApi } from '../../../api/context.js'
 import { handleAssetsManifest, handleAssetsManifest_assertUsageCssTarget } from './handleAssetsManifest.js'

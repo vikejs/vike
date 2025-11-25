@@ -4,7 +4,7 @@ export { reload }
 // import { modifyUrlSameOrigin, ModifyUrlSameOriginOptions } from '../../shared/modifyUrlSameOrigin.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 import { normalizeUrlArgument } from './normalizeUrlArgument.js'
-import { firstRenderStartPromise, renderPageClientSide } from './renderPageClientSide.js'
+import { firstRenderStartPromise, renderPageClient } from './renderPageClient.js'
 import type { ScrollTarget } from './setScrollPosition.js'
 import { assertClientRouting } from './utils.js'
 
@@ -35,7 +35,7 @@ async function navigate(url: string, options?: Options): Promise<void> {
 
   const { keepScrollPosition, overwriteLastHistoryEntry, pageContext } = options ?? {}
   const scrollTarget: ScrollTarget = { preserveScroll: keepScrollPosition ?? false }
-  await renderPageClientSide({
+  await renderPageClient({
     scrollTarget,
     urlOriginal: url,
     overwriteLastHistoryEntry,

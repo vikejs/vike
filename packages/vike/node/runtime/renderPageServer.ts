@@ -1,14 +1,14 @@
-export { renderPage }
-export { renderPage_addAsyncHookwrapper }
+export { renderPageServer }
+export { renderPageServer_addAsyncHookwrapper }
 export type { PageContextInit }
 export type { PageContextBegin }
 export type { PageContextInternalServerAfterRender }
 
-import { renderPageAfterRoute } from './renderPage/renderPageAfterRoute.js'
+import { renderPageServerAfterRoute } from './renderPageServer/renderPageServerAfterRoute.js'
 import {
   createPageContextServerSide,
   createPageContextServerSideWithoutGlobalContext,
-} from './renderPage/createPageContextServerSide.js'
+} from './renderPageServer/createPageContextServerSide.js'
 import { route } from '../../shared/route/index.js'
 import {
   assert,
@@ -45,7 +45,7 @@ import {
   initGlobalContext_renderPage,
   type GlobalContextServerInternal,
 } from './globalContext.js'
-import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl.js'
+import { handlePageContextRequestUrl } from './renderPageServer/handlePageContextRequestUrl.js'
 import {
   type HttpResponse,
   createHttpResponse404,
@@ -54,26 +54,26 @@ import {
   createHttpResponseError,
   createHttpResponseErrorWithoutGlobalContext,
   createHttpResponseBaseIsMissing,
-} from './renderPage/createHttpResponse.js'
+} from './renderPageServer/createHttpResponse.js'
 import { logRuntimeError, logRuntimeInfo } from './loggerRuntime.js'
-import { isNewError } from './renderPage/isNewError.js'
-import { assertArguments } from './renderPage/assertArguments.js'
-import { log404 } from './renderPage/log404/index.js'
+import { isNewError } from './renderPageServer/isNewError.js'
+import { assertArguments } from './renderPageServer/assertArguments.js'
+import { log404 } from './renderPageServer/log404/index.js'
 import pc from '@brillout/picocolors'
 import type { PageContextServer } from '../../types/index.js'
 import {
   getPageContextClientSerializedAbort,
   getPageContextClientSerialized,
-} from './renderPage/html/serializeContext.js'
+} from './renderPageServer/html/serializeContext.js'
 import { getErrorPageId } from '../../shared/error-page.js'
-import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErrorPage.js'
-import { loadPageConfigsLazyServerSide } from './renderPage/loadPageConfigsLazyServerSide.js'
-import { resolveRedirects } from './renderPage/resolveRedirects.js'
+import { handleErrorWithoutErrorPage } from './renderPageServer/handleErrorWithoutErrorPage.js'
+import { loadPageConfigsLazyServerSide } from './renderPageServer/loadPageConfigsLazyServerSide.js'
+import { resolveRedirects } from './renderPageServer/resolveRedirects.js'
 import type { PageContextInternalServer } from '../../types/PageContext.js'
 import { getVikeConfigError } from '../shared/getVikeConfigError.js'
 import { forkPageContext } from '../../shared/forkPageContext.js'
 
-const globalObject = getGlobalObject('runtime/renderPage.ts', {
+const globalObject = getGlobalObject('runtime/renderPageServer.ts', {
   httpRequestsCount: 0,
   asyncHookWrapper: getFallbackAsyncHookWrapper(),
 })
@@ -87,9 +87,8 @@ type PageContextInit = Pick<PageContextInternalServer, 'urlOriginal' | 'headersO
 }
 type PageContextBegin = ReturnType<typeof getPageContextBegin>
 
-// TODO rename to renderPageServer
-// `renderPage()` calls `renderPageNominal()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that Vike never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
-async function renderPage<PageContextUserAdded extends {}, PageContextInitUser extends PageContextInit>(
+// `renderPageServer()` calls `renderPageServerNominal()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that Vike never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
+async function renderPageServer<PageContextUserAdded extends {}, PageContextInitUser extends PageContextInit>(
   pageContextInit: PageContextInitUser,
 ): Promise<
   // Partial because rendering may fail at any user hook.
@@ -108,7 +107,7 @@ async function renderPage<PageContextUserAdded extends {}, PageContextInitUser e
   logHttpRequest(urlOriginalPretty, httpRequestId)
 
   const { pageContextReturn } = await globalObject.asyncHookWrapper(httpRequestId, () =>
-    renderPageEntryOnce(pageContextInit, httpRequestId),
+    renderPageServerEntryOnce(pageContextInit, httpRequestId),
   )
 
   logHttpResponse(urlOriginalPretty, httpRequestId, pageContextReturn)
@@ -119,7 +118,7 @@ async function renderPage<PageContextUserAdded extends {}, PageContextInitUser e
 }
 
 // Add node:async_hooks wrapper
-function renderPage_addAsyncHookwrapper(wrapper: typeof globalObject.asyncHookWrapper) {
+function renderPageServer_addAsyncHookwrapper(wrapper: typeof globalObject.asyncHookWrapper) {
   globalObject.asyncHookWrapper = wrapper
 }
 // Fallback wrapper if node:async_hooks isn't available
@@ -129,7 +128,7 @@ function getFallbackAsyncHookWrapper() {
   })
 }
 
-async function renderPageEntryOnce(
+async function renderPageServerEntryOnce(
   pageContextInit: PageContextInit,
   httpRequestId: number,
 ): Promise<PageContextAfterRender> {
@@ -186,28 +185,28 @@ async function renderPageEntryOnce(
     if (pageContextHttpResponse) return pageContextHttpResponse
   }
 
-  // First renderPageEntryRecursive() call
-  return await renderPageEntryRecursive(pageContextBegin, globalContext, httpRequestId)
+  // First renderPageServerEntryRecursive() call
+  return await renderPageServerEntryRecursive(pageContextBegin, globalContext, httpRequestId)
 }
 
-async function renderPageEntryRecursive(
+async function renderPageServerEntryRecursive(
   pageContextBegin: PageContextBegin,
   globalContext: GlobalContextServerInternal,
   httpRequestId: number,
 ): Promise<PageContextAfterRender> {
-  catchInfiniteLoop('renderPageEntryRecursive()')
+  catchInfiniteLoop('renderPageServerEntryRecursive()')
 
   const pageContextNominalPageBegin = forkPageContext(pageContextBegin)
 
   const pageContextAddendumAbort = getPageContextAddendumAbort(pageContextBegin.pageContextsAborted)
   objectAssign(pageContextNominalPageBegin, pageContextAddendumAbort)
 
-  // TODO try inline renderPageNominal()
-  let pageContextNominalPageSuccess: undefined | Awaited<ReturnType<typeof renderPageNominal>>
+  // TODO try inline renderPageServerNominal()
+  let pageContextNominalPageSuccess: undefined | Awaited<ReturnType<typeof renderPageServerNominal>>
   let errNominalPage: unknown
   {
     try {
-      pageContextNominalPageSuccess = await renderPageNominal(pageContextNominalPageBegin)
+      pageContextNominalPageSuccess = await renderPageServerNominal(pageContextNominalPageBegin)
     } catch (err) {
       errNominalPage = err
       assert(errNominalPage)
@@ -234,7 +233,7 @@ async function renderPageEntryRecursive(
   } else {
     assert(errNominalPage)
     assert(pageContextNominalPageSuccess === undefined)
-    return await renderPageOnError(
+    return await renderPageServerOnError(
       errNominalPage,
       pageContextBegin,
       pageContextNominalPageBegin,
@@ -244,12 +243,12 @@ async function renderPageEntryRecursive(
   }
 }
 
-// TODO: rename renderPageOnError renderPageEntryRecursive_error
+// TODO: rename renderPageServerOnError renderPageServerEntryRecursive_error
 // When the normal page threw an error
 // - Can be a URL rewrite upon `throw render('/some-url')`
 // - Can be rendering the error page
 // - Can be rendering Vike's generic error page (if no error page is defined, or if the error page throws an error)
-async function renderPageOnError(
+async function renderPageServerOnError(
   errNominalPage: unknown,
   pageContextBegin: PageContextBegin,
   pageContextNominalPageBegin: PageContextBegin,
@@ -292,9 +291,9 @@ async function renderPageOnError(
     objectAssign(pageContextErrorPageInit, { pageId: errorPageId })
   }
 
-  let pageContextErrorPage: undefined | Awaited<ReturnType<typeof renderPageAfterRoute>>
+  let pageContextErrorPage: undefined | Awaited<ReturnType<typeof renderPageServerAfterRoute>>
   try {
-    pageContextErrorPage = await renderPageAfterRoute(pageContextErrorPageInit)
+    pageContextErrorPage = await renderPageServerAfterRoute(pageContextErrorPageInit)
   } catch (errErrorPage) {
     // Handle `throw redirect()` and `throw render()` while rendering error page
     if (isAbortError(errErrorPage)) {
@@ -412,11 +411,11 @@ function getPageContextHttpResponseErrorWithoutGlobalContext(
   return pageContextWithError
 }
 
-// TODO: rename renderPageNominal renderPageEntryRecursive_nominal
+// TODO: rename renderPageServerNominal renderPageServerEntryRecursive_nominal
 // - Render page (no error)
 // - Render 404 page
-type PageContextInternalServerAfterRender = Awaited<ReturnType<typeof renderPageNominal>>
-async function renderPageNominal(pageContext: PageContextBegin) {
+type PageContextInternalServerAfterRender = Awaited<ReturnType<typeof renderPageServerNominal>>
+async function renderPageServerNominal(pageContext: PageContextBegin) {
   objectAssign(pageContext, { errorWhileRendering: null })
 
   // Route
@@ -440,7 +439,7 @@ async function renderPageNominal(pageContext: PageContextBegin) {
   assert(pageContext.errorWhileRendering === null)
 
   // Render
-  const pageContextAfterRender = await renderPageAfterRoute(pageContext)
+  const pageContextAfterRender = await renderPageServerAfterRoute(pageContext)
   assert(pageContext === pageContextAfterRender)
   return pageContextAfterRender
 }
@@ -645,8 +644,8 @@ async function handleAbort(
 
   // URL Rewrite — `throw render(url)`
   if (pageContextAbort._urlRewrite) {
-    // Recursive renderPageEntryRecursive() call
-    const pageContextReturn = await renderPageEntryRecursive(pageContextBegin, globalContext, httpRequestId)
+    // Recursive renderPageServerEntryRecursive() call
+    const pageContextReturn = await renderPageServerEntryRecursive(pageContextBegin, globalContext, httpRequestId)
     return { pageContextReturn }
   }
 

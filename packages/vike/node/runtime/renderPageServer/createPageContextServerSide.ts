@@ -5,7 +5,7 @@ export type { PageContextCreated }
 import { assert, assertUsage, assertWarning, updateType, normalizeHeaders, objectAssign } from '../utils.js'
 import { getPageContextUrlComputed } from '../../../shared/getPageContextUrlComputed.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
-import type { PageContextInit } from '../renderPage.js'
+import type { PageContextInit } from '../renderPageServer.js'
 import { createPageContextObject, createPageContextShared } from '../../../shared/createPageContextShared.js'
 
 type PageContextCreated = Awaited<ReturnType<typeof createPageContextServerSide>>

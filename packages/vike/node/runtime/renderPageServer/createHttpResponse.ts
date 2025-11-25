@@ -18,7 +18,7 @@ import type { RedirectStatusCode, AbortStatusCode, UrlRedirect } from '../../../
 import { getHttpResponseBody, getHttpResponseBodyStreamHandlers, HttpResponseBody } from './getHttpResponseBody.js'
 import { getEarlyHints, type EarlyHint } from './getEarlyHints.js'
 import { assertNoInfiniteHttpRedirect } from './createHttpResponse/assertNoInfiniteHttpRedirect.js'
-import type { PageContextBegin } from '../renderPage.js'
+import type { PageContextBegin } from '../renderPageServer.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import { resolveHeadersResponseFinal } from './headersResponse.js'
 

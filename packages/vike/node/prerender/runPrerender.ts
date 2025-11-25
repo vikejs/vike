@@ -30,8 +30,8 @@ import {
   changeEnumerable,
   escapeHtml,
 } from './utils.js'
-import { prerenderPage } from '../runtime/renderPage/renderPageAfterRoute.js'
-import { createPageContextServerSide } from '../runtime/renderPage/createPageContextServerSide.js'
+import { prerenderPage } from '../runtime/renderPageServer/renderPageServerAfterRoute.js'
+import { createPageContextServerSide } from '../runtime/renderPageServer/createPageContextServerSide.js'
 import pc from '@brillout/picocolors'
 import { cpus } from 'node:os'
 import type { PageFile } from '../../shared/getPageFiles.js'
@@ -50,7 +50,7 @@ import { getConfigValueRuntime } from '../../shared/page-configs/getConfigValueR
 import { loadAndParseVirtualFilePageEntry } from '../../shared/page-configs/loadAndParseVirtualFilePageEntry.js'
 import { getErrorPageId, isErrorPage } from '../../shared/error-page.js'
 import { isAbortError } from '../../shared/route/abort.js'
-import { loadPageConfigsLazyServerSide } from '../runtime/renderPage/loadPageConfigsLazyServerSide.js'
+import { loadPageConfigsLazyServerSide } from '../runtime/renderPageServer/loadPageConfigsLazyServerSide.js'
 import {
   getHookFromPageConfig,
   getHookFromPageConfigGlobal,
@@ -68,7 +68,7 @@ import { resolvePrerenderConfigGlobal, resolvePrerenderConfigLocal } from './res
 import { getOutDirs } from '../vite/shared/getOutDirs.js'
 import fs from 'node:fs'
 import { getProxyForPublicUsage } from '../../shared/getProxyForPublicUsage.js'
-import { getStaticRedirectsForPrerender } from '../runtime/renderPage/resolveRedirects.js'
+import { getStaticRedirectsForPrerender } from '../runtime/renderPageServer/resolveRedirects.js'
 import { updateType } from '../runtime/utils.js'
 const docLink = 'https://vike.dev/i18n#pre-rendering'
 

@@ -33,7 +33,7 @@ import { isServerSideError } from '../../shared/misc/isServerSideError.js'
 import { execHook } from '../../shared/hooks/execHook.js'
 import type { HookName } from '../../types/Config.js'
 import type { PageContextCreated } from './createPageContextClientSide.js'
-import type { PageContextBegin } from './renderPageClientSide.js'
+import type { PageContextBegin } from './renderPageClient.js'
 import {
   type PageContextForPublicUsageClient,
   preparePageContextForPublicUsageClient,

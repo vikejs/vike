@@ -1,4 +1,4 @@
-export { renderPageClientSide }
+export { renderPageClient }
 export { getRenderCount }
 export { disableClientRouting }
 export { firstRenderStartPromise }
@@ -70,7 +70,7 @@ import { preparePageContextForPublicUsageClientMinimal } from '../shared/prepare
 import type { VikeGlobalInternal } from '../../types/VikeGlobalInternal.js'
 import { logErrorClient } from './logErrorClient.js'
 
-type PageContextInternalClientAfterRender = NonNullable<Awaited<ReturnType<typeof renderPageClientSide>>>
+type PageContextInternalClientAfterRender = NonNullable<Awaited<ReturnType<typeof renderPageClient>>>
 
 const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
@@ -84,7 +84,7 @@ const globalObject = getGlobalObject<{
   firstRenderStartPromise: Promise<void>
   firstRenderStartPromiseResolve: () => void
 }>(
-  'runtime-client-routing/renderPageClientSide.ts',
+  'runtime-client-routing/renderPageClient.ts',
   (() => {
     const { promise: firstRenderStartPromise, resolve: firstRenderStartPromiseResolve } = genPromise()
     return {
@@ -114,9 +114,8 @@ type RenderArgs = {
   isClientSideNavigation?: boolean
   pageContextInitClient?: Record<string, unknown>
 }
-// TODO rename to renderPageClientSide
-async function renderPageClientSide(renderArgs: RenderArgs) {
-  catchInfiniteLoop('renderPageClientSide()')
+async function renderPageClient(renderArgs: RenderArgs) {
+  catchInfiniteLoop('renderPageClient()')
 
   const {
     urlOriginal = getCurrentUrl(),
@@ -458,7 +457,7 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
 
     // throw render('/some-url')
     if (pageContextAbort._urlRewrite) {
-      await renderPageClientSide({
+      await renderPageClient({
         ...renderArgs,
         scrollTarget: undefined,
         pageContextsAborted,
@@ -474,7 +473,7 @@ async function renderPageClientSide(renderArgs: RenderArgs) {
         redirectHard(urlRedirect)
         return { skip: true }
       } else {
-        await renderPageClientSide({
+        await renderPageClient({
           ...renderArgs,
           scrollTarget: undefined,
           urlOriginal: urlRedirect,
@@ -834,7 +833,7 @@ if (import.meta.env.DEV && import.meta.hot)
   import.meta.hot.on('vite:afterUpdate', () => {
     const pageContext = globalObject.renderedPageContext
     if (pageContext?.pageId && isErrorPage(pageContext.pageId, pageContext._globalContext._pageConfigs)) {
-      renderPageClientSide({
+      renderPageClient({
         scrollTarget: { preserveScroll: false },
         urlOriginal: getCurrentUrl(),
         overwriteLastHistoryEntry: true,

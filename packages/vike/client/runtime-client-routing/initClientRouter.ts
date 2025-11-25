@@ -1,7 +1,7 @@
 export { initClientRouter }
 
 import { assert } from './utils.js'
-import { getRenderCount, renderPageClientSide } from './renderPageClientSide.js'
+import { getRenderCount, renderPageClient } from './renderPageClient.js'
 import { initOnPopState } from './initOnPopState.js'
 import { initOnLinkClick } from './initOnLinkClick.js'
 import { scrollRestoration_init } from './scrollRestoration.js'
@@ -28,7 +28,7 @@ async function initClientRouter() {
 
 async function renderFirstPage() {
   assert(getRenderCount() === 0)
-  await renderPageClientSide({
+  await renderPageClient({
     scrollTarget: { preserveScroll: true },
     isClientSideNavigation: false,
   })

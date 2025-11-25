@@ -1,4 +1,4 @@
-import { renderPage } from './index.js'
+import { renderPageServer } from './renderPageServer.js'
 
 export default async function universalVikeHandler(
   request: Request,
@@ -12,7 +12,7 @@ export default async function universalVikeHandler(
     urlOriginal: request.url,
     headersOriginal: request.headers,
   }
-  const pageContext = await renderPage(pageContextInit)
+  const pageContext = await renderPageServer(pageContextInit)
   const response = pageContext.httpResponse
   const readable = response.getReadableWebStream()
   return new Response(readable, {
