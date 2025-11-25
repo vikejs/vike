@@ -67,7 +67,10 @@ import {
 } from './renderPageServer/html/serializeContext.js'
 import { getErrorPageId } from '../../shared-server-client/error-page.js'
 import { handleErrorWithoutErrorPage } from './renderPageServer/handleErrorWithoutErrorPage.js'
-import { loadPageConfigsLazyServerSide, type PageContext_loadPageConfigsLazyServerSide } from './renderPageServer/loadPageConfigsLazyServerSide.js'
+import {
+  loadPageConfigsLazyServerSide,
+  type PageContext_loadPageConfigsLazyServerSide,
+} from './renderPageServer/loadPageConfigsLazyServerSide.js'
 import { resolveRedirects } from './renderPageServer/resolveRedirects.js'
 import type { PageContextInternalServer } from '../../types/PageContext.js'
 import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
@@ -257,9 +260,14 @@ async function renderPageServerOnError(
 ) {
   assert(pageContextNominalPageBegin)
   assert(hasProp(pageContextNominalPageBegin, 'urlOriginal', 'string'))
+  assert(errNominalPage)
 
-  // TODO: inline getPageContextErrorPageInit() ?
-  const pageContextErrorPageInit = await getPageContextErrorPageInit(pageContextBegin, errNominalPage)
+  const pageContextErrorPageInit = forkPageContext(pageContextBegin)
+  objectAssign(pageContextErrorPageInit, {
+    is404: false,
+    errorWhileRendering: errNominalPage as Error,
+    routeParams: {} as Record<string, string>,
+  })
 
   // Handle `throw redirect()` and `throw render()` while rendering nominal page
   if (isAbortError(errNominalPage)) {
@@ -439,21 +447,6 @@ async function renderPageServerNominal(pageContext: PageContextBegin) {
   const pageContextAfterRender = await renderPageServerAfterRoute(pageContext)
   assert(pageContext === pageContextAfterRender)
   return pageContextAfterRender
-}
-
-type PageContextErrorPageInit = Awaited<ReturnType<typeof getPageContextErrorPageInit>>
-async function getPageContextErrorPageInit(pageContextBegin: PageContextBegin, errNominalPage: unknown) {
-  const pageContext = forkPageContext(pageContextBegin)
-
-  assert(errNominalPage)
-  objectAssign(pageContext, {
-    is404: false,
-    errorWhileRendering: errNominalPage as Error,
-    routeParams: {} as Record<string, string>,
-  })
-
-  assert(pageContext.errorWhileRendering)
-  return pageContext
 }
 
 function getPageContextBegin(
