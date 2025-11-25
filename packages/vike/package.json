@@ -27,12 +27,12 @@
       "default": "./dist/esm/client/runtime-client-routing/index.js"
     },
     "./routing": {
-      "worker": "./dist/esm/shared/route/routing.js",
-      "workerd": "./dist/esm/shared/route/routing.js",
-      "node": "./dist/esm/shared/route/routing.js",
-      "browser": "./dist/esm/shared/route/routing.js",
-      "types": "./dist/esm/shared/route/routing.d.ts",
-      "default": "./dist/esm/shared/route/routing.js"
+      "worker": "./dist/esm/shared-server-client/route/routing.js",
+      "workerd": "./dist/esm/shared-server-client/route/routing.js",
+      "node": "./dist/esm/shared-server-client/route/routing.js",
+      "browser": "./dist/esm/shared-server-client/route/routing.js",
+      "types": "./dist/esm/shared-server-client/route/routing.d.ts",
+      "default": "./dist/esm/shared-server-client/route/routing.js"
     },
     "./cli": {
       "node": "./dist/esm/node/cli/index.js",
@@ -55,36 +55,36 @@
       "default": "./dist/esm/node/vite/index.js"
     },
     "./RenderErrorPage": {
-      "worker": "./dist/esm/shared/RenderErrorPage.js",
-      "workerd": "./dist/esm/shared/RenderErrorPage.js",
-      "node": "./dist/esm/shared/RenderErrorPage.js",
-      "browser": "./dist/esm/shared/RenderErrorPage.js",
-      "types": "./dist/esm/shared/RenderErrorPage.d.ts",
-      "default": "./dist/esm/shared/RenderErrorPage.js"
+      "worker": "./dist/esm/shared-server-client/RenderErrorPage.js",
+      "workerd": "./dist/esm/shared-server-client/RenderErrorPage.js",
+      "node": "./dist/esm/shared-server-client/RenderErrorPage.js",
+      "browser": "./dist/esm/shared-server-client/RenderErrorPage.js",
+      "types": "./dist/esm/shared-server-client/RenderErrorPage.d.ts",
+      "default": "./dist/esm/shared-server-client/RenderErrorPage.js"
     },
     "./abort": {
-      "worker": "./dist/esm/shared/abort.js",
-      "workerd": "./dist/esm/shared/abort.js",
-      "node": "./dist/esm/shared/abort.js",
-      "browser": "./dist/esm/shared/abort.js",
-      "types": "./dist/esm/shared/abort.d.ts",
-      "default": "./dist/esm/shared/abort.js"
+      "worker": "./dist/esm/shared-server-client/abort.js",
+      "workerd": "./dist/esm/shared-server-client/abort.js",
+      "node": "./dist/esm/shared-server-client/abort.js",
+      "browser": "./dist/esm/shared-server-client/abort.js",
+      "types": "./dist/esm/shared-server-client/abort.d.ts",
+      "default": "./dist/esm/shared-server-client/abort.js"
     },
     "./getPageContext": {
-      "worker": "./dist/esm/shared/getPageContext.js",
-      "workerd": "./dist/esm/shared/getPageContext.js",
-      "node": "./dist/esm/shared/getPageContext.js",
-      "browser": "./dist/esm/shared/getPageContext.js",
-      "types": "./dist/esm/shared/getPageContext.d.ts",
-      "default": "./dist/esm/shared/getPageContext.js"
+      "worker": "./dist/esm/shared-server-client/getPageContext.js",
+      "workerd": "./dist/esm/shared-server-client/getPageContext.js",
+      "node": "./dist/esm/shared-server-client/getPageContext.js",
+      "browser": "./dist/esm/shared-server-client/getPageContext.js",
+      "types": "./dist/esm/shared-server-client/getPageContext.d.ts",
+      "default": "./dist/esm/shared-server-client/getPageContext.js"
     },
     "./modifyUrl": {
-      "worker": "./dist/esm/shared/modifyUrl.js",
-      "workerd": "./dist/esm/shared/modifyUrl.js",
-      "node": "./dist/esm/shared/modifyUrl.js",
-      "browser": "./dist/esm/shared/modifyUrl.js",
-      "types": "./dist/esm/shared/modifyUrl.d.ts",
-      "default": "./dist/esm/shared/modifyUrl.js"
+      "worker": "./dist/esm/shared-server-client/modifyUrl.js",
+      "workerd": "./dist/esm/shared-server-client/modifyUrl.js",
+      "node": "./dist/esm/shared-server-client/modifyUrl.js",
+      "browser": "./dist/esm/shared-server-client/modifyUrl.js",
+      "types": "./dist/esm/shared-server-client/modifyUrl.d.ts",
+      "default": "./dist/esm/shared-server-client/modifyUrl.js"
     },
     "./universal-middleware": {
       "worker": "./dist/esm/server/runtime/universal-middleware.js",
@@ -175,7 +175,7 @@
         "./dist/esm/client/runtime-client-routing/index.d.ts"
       ],
       "routing": [
-        "./dist/esm/shared/route/routing.d.ts"
+        "./dist/esm/shared-server-client/route/routing.d.ts"
       ],
       "cli": [
         "./dist/esm/node/cli/index.d.ts"
@@ -190,16 +190,16 @@
         "./dist/esm/node/vite/index.d.ts"
       ],
       "RenderErrorPage": [
-        "./dist/esm/shared/RenderErrorPage.d.ts"
+        "./dist/esm/shared-server-client/RenderErrorPage.d.ts"
       ],
       "abort": [
-        "./dist/esm/shared/abort.d.ts"
+        "./dist/esm/shared-server-client/abort.d.ts"
       ],
       "getPageContext": [
-        "./dist/esm/shared/getPageContext.d.ts"
+        "./dist/esm/shared-server-client/getPageContext.d.ts"
       ],
       "modifyUrl": [
-        "./dist/esm/shared/modifyUrl.d.ts"
+        "./dist/esm/shared-server-client/modifyUrl.d.ts"
       ],
       "universal-middleware": [
         "./dist/esm/server/runtime/universal-middleware.d.ts"
