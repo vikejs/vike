@@ -100,7 +100,7 @@ import type { PrerenderContextPublic } from '../../prerender/runPrerender.js'
 import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderConfig.js'
 import type { ResolvedConfig, UserConfig } from 'vite'
 import { getProxyForPublicUsage, type DangerouslyUseInternals } from '../../../shared/getProxyForPublicUsage.js'
-import { setVikeConfigError } from '../../shared/getVikeConfigError.js'
+import { setVikeConfigError } from '../../../server/shared/getVikeConfigError.js'
 assertIsNotProductionRuntime()
 
 const globalObject = getGlobalObject('vite/shared/resolveVikeConfigInternal.ts', {

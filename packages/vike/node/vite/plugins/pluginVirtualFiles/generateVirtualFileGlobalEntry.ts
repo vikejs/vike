@@ -1,7 +1,7 @@
 export { generateVirtualFileGlobalEntry }
 
 import type { PageConfigBuildTime, PageConfigGlobalBuildTime } from '../../../../types/PageConfig.js'
-import { generateVirtualFileId } from '../../../shared/virtualFileId.js'
+import { generateVirtualFileId } from '../../../../server/shared/virtualFileId.js'
 import { debug } from './debug.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { FilesEnv, serializeConfigValues } from '../../../../shared/page-configs/serialize/serializeConfigValues.js'

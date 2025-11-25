@@ -70,7 +70,7 @@ import { handleErrorWithoutErrorPage } from './renderPageServer/handleErrorWitho
 import { loadPageConfigsLazyServerSide } from './renderPageServer/loadPageConfigsLazyServerSide.js'
 import { resolveRedirects } from './renderPageServer/resolveRedirects.js'
 import type { PageContextInternalServer } from '../../types/PageContext.js'
-import { getVikeConfigError } from '../../node/shared/getVikeConfigError.js'
+import { getVikeConfigError } from '../shared/getVikeConfigError.js'
 import { forkPageContext } from '../../shared/forkPageContext.js'
 
 const globalObject = getGlobalObject('runtime/renderPageServer.ts', {

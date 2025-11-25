@@ -4,7 +4,7 @@ import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageC
 import { getVikeClientEntry } from '../../../shared/getPageFiles/analyzePageClientSide/determineClientEntry.js'
 import type { PageConfigRuntime } from '../../../types/PageConfig.js'
 import { type AnalysisResult, analyzePageClientSide } from '../../../shared/getPageFiles/analyzePageClientSide.js'
-import { generateVirtualFileId } from '../../../node/shared/virtualFileId.js'
+import { generateVirtualFileId } from '../../shared/virtualFileId.js'
 import { analyzeClientSide } from '../../../shared/getPageFiles/analyzeClientSide.js'
 import { getConfigValueRuntime } from '../../../shared/page-configs/getConfigValueRuntime.js'
 import type { PageContext_loadPageConfigsLazyServerSide } from './loadPageConfigsLazyServerSide.js'

@@ -2,9 +2,9 @@ export { generateVirtualFilePageEntry }
 
 import { assert, getProjectError } from '../../utils.js'
 import type { PageConfigBuildTime } from '../../../../types/PageConfig.js'
-import { parseVirtualFileId, generateVirtualFileId } from '../../../shared/virtualFileId.js'
+import { parseVirtualFileId, generateVirtualFileId } from '../../../../server/shared/virtualFileId.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
-import { extractAssetsAddQuery } from '../../../shared/extractAssetsQuery.js'
+import { extractAssetsAddQuery } from '../../../../server/shared/extractAssetsQuery.js'
 import { debug } from './debug.js'
 import { FilesEnv, serializeConfigValues } from '../../../../shared/page-configs/serialize/serializeConfigValues.js'
 import { handleAssetsManifest_isFixEnabled } from '../build/handleAssetsManifest.js'

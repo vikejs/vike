@@ -15,7 +15,7 @@ import {
   virtualFileIdPrefix1,
   virtualFileIdPrefix2,
 } from '../utils.js'
-import { parseVirtualFileId } from '../../shared/virtualFileId.js'
+import { parseVirtualFileId } from '../../../server/shared/virtualFileId.js'
 import { reloadVikeConfig, isV1Design, getVikeConfigInternalOptional } from '../shared/resolveVikeConfigInternal.js'
 import pc from '@brillout/picocolors'
 import { logConfigInfo } from '../shared/loggerNotProd.js'
@@ -23,7 +23,7 @@ import { getFilePathToShowToUserModule } from '../shared/getFilePath.js'
 import { isRunnable, updateUserFiles } from '../../../server/runtime/globalContext.js'
 import { isPlusFile } from '../shared/resolveVikeConfigInternal/crawlPlusFiles.js'
 import { isTemporaryBuildFile } from '../shared/resolveVikeConfigInternal/transpileAndExecuteFile.js'
-import { getVikeConfigError } from '../../shared/getVikeConfigError.js'
+import { getVikeConfigError } from '../../../server/shared/getVikeConfigError.js'
 
 const filterRolldown = {
   id: {
