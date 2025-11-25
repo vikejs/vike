@@ -2,7 +2,6 @@ export { renderPageServer }
 export { renderPageServer_addAsyncHookwrapper }
 export type { PageContextInit }
 export type { PageContextBegin }
-export type { PageContextInternalServerAfterRender }
 
 import { renderPageServerAfterRoute } from './renderPageServer/renderPageServerAfterRoute.js'
 import {
@@ -67,7 +66,10 @@ import {
 } from './renderPageServer/html/serializeContext.js'
 import { getErrorPageId } from '../../shared-server-client/error-page.js'
 import { handleErrorWithoutErrorPage } from './renderPageServer/handleErrorWithoutErrorPage.js'
-import { loadPageConfigsLazyServerSide } from './renderPageServer/loadPageConfigsLazyServerSide.js'
+import {
+  loadPageConfigsLazyServerSide,
+  type PageContext_loadPageConfigsLazyServerSide,
+} from './renderPageServer/loadPageConfigsLazyServerSide.js'
 import { resolveRedirects } from './renderPageServer/resolveRedirects.js'
 import type { PageContextInternalServer } from '../../types/PageContext.js'
 import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
@@ -200,56 +202,65 @@ async function renderPageServerEntryRecursive(
 
   const pageContextAddendumAbort = getPageContextAddendumAbort(pageContextBegin.pageContextsAborted)
   objectAssign(pageContextNominalPageBegin, pageContextAddendumAbort)
+  objectAssign(pageContextNominalPageBegin, { errorWhileRendering: null })
 
-  // TODO try inline renderPageServerNominal()
-  let pageContextNominalPageSuccess: undefined | Awaited<ReturnType<typeof renderPageServerNominal>>
-  let errNominalPage: unknown
-  {
-    try {
-      pageContextNominalPageSuccess = await renderPageServerNominal(pageContextNominalPageBegin)
-    } catch (err) {
-      errNominalPage = err
-      assert(errNominalPage)
-      logRuntimeError(errNominalPage, httpRequestId)
-    }
-    if (!errNominalPage) {
-      // @ts-ignore
-      assert(pageContextNominalPageSuccess === pageContextNominalPageBegin)
-    }
-  }
-
-  // Log upon 404
-  if (
-    pageContextNominalPageSuccess &&
-    'is404' in pageContextNominalPageSuccess &&
-    pageContextNominalPageSuccess.is404 === true
-  ) {
-    await log404(pageContextNominalPageSuccess)
-  }
-
-  if (errNominalPage === undefined) {
-    assert(pageContextNominalPageSuccess)
-    return pageContextNominalPageSuccess
-  } else {
-    assert(errNominalPage)
-    assert(pageContextNominalPageSuccess === undefined)
-    return await renderPageServerOnError(
-      errNominalPage,
+  const onError = async (err: unknown) => {
+    assert(err)
+    logRuntimeError(err, httpRequestId)
+    return await renderPageServerEntryRecursive_onError(
+      err,
       pageContextBegin,
       pageContextNominalPageBegin,
       globalContext,
       httpRequestId,
     )
   }
+
+  // Route
+  let pageContextFromRoute: Awaited<ReturnType<typeof route>>
+  try {
+    pageContextFromRoute = await route(pageContextNominalPageBegin)
+  } catch (err) {
+    return await onError(err)
+  }
+  objectAssign(pageContextNominalPageBegin, pageContextFromRoute)
+  if (pageContextNominalPageBegin.pageId !== null) {
+    assert(pageContextNominalPageBegin.pageId)
+    objectAssign(pageContextNominalPageBegin, { is404: null })
+  } else {
+    objectAssign(pageContextNominalPageBegin, { is404: true })
+    await log404(pageContextNominalPageBegin)
+    const errorPageId = getErrorPageId(
+      pageContextNominalPageBegin._globalContext._pageFilesAll,
+      pageContextNominalPageBegin._globalContext._pageConfigs,
+    )
+    if (!errorPageId) {
+      assert(hasProp(pageContextNominalPageBegin, 'pageId', 'null')) // Help TS
+      return await handleErrorWithoutErrorPage(pageContextNominalPageBegin)
+    }
+    objectAssign(pageContextNominalPageBegin, { pageId: errorPageId })
+  }
+  assert(hasProp(pageContextNominalPageBegin, 'pageId', 'string'))
+  assert(pageContextNominalPageBegin.errorWhileRendering === null)
+
+  // - Render page (nominal, i.e. not the error page)
+  // - Render 404 page
+  let pageContextNominalPageSuccess: Awaited<ReturnType<typeof renderPageServerAfterRoute>>
+  try {
+    pageContextNominalPageSuccess = await renderPageServerAfterRoute(pageContextNominalPageBegin)
+  } catch (err) {
+    return await onError(err)
+  }
+  assert(pageContextNominalPageBegin === (pageContextNominalPageSuccess as any))
+  return pageContextNominalPageSuccess
 }
 
-// TODO: rename renderPageServerOnError renderPageServerEntryRecursive_error
 // When the normal page threw an error
 // - Can be a URL rewrite upon `throw render('/some-url')`
 // - Can be rendering the error page
 // - Can be rendering Vike's generic error page (if no error page is defined, or if the error page throws an error)
-async function renderPageServerOnError(
-  errNominalPage: unknown,
+async function renderPageServerEntryRecursive_onError(
+  err: unknown,
   pageContextBegin: PageContextBegin,
   pageContextNominalPageBegin: PageContextBegin,
   globalContext: GlobalContextServerInternal,
@@ -257,14 +268,19 @@ async function renderPageServerOnError(
 ) {
   assert(pageContextNominalPageBegin)
   assert(hasProp(pageContextNominalPageBegin, 'urlOriginal', 'string'))
+  assert(err)
 
-  // TODO: inline getPageContextErrorPageInit() ?
-  const pageContextErrorPageInit = await getPageContextErrorPageInit(pageContextBegin, errNominalPage)
+  const pageContextErrorPageInit = forkPageContext(pageContextBegin)
+  objectAssign(pageContextErrorPageInit, {
+    is404: false,
+    errorWhileRendering: err as Error,
+    routeParams: {} as Record<string, string>,
+  })
 
   // Handle `throw redirect()` and `throw render()` while rendering nominal page
-  if (isAbortError(errNominalPage)) {
+  if (isAbortError(err)) {
     const handled = await handleAbort(
-      errNominalPage,
+      err,
       pageContextBegin,
       pageContextNominalPageBegin,
       httpRequestId,
@@ -319,14 +335,14 @@ async function renderPageServerOnError(
           )} doesn't occur while the error page is being rendered.`,
           { onlyOnce: false },
         )
-        const pageContextHttpErrorFallback = getPageContextHttpErrorFallback(errNominalPage, pageContextBegin)
+        const pageContextHttpErrorFallback = getPageContextHttpErrorFallback(err, pageContextBegin)
         return pageContextHttpErrorFallback
       }
     }
-    if (isNewError(errErrorPage, errNominalPage)) {
+    if (isNewError(errErrorPage, err)) {
       logRuntimeError(errErrorPage, httpRequestId)
     }
-    const pageContextHttpErrorFallback = getPageContextHttpErrorFallback(errNominalPage, pageContextBegin)
+    const pageContextHttpErrorFallback = getPageContextHttpErrorFallback(err, pageContextBegin)
     return pageContextHttpErrorFallback
   }
   return pageContextErrorPage
@@ -406,54 +422,6 @@ function getPageContextHttpErrorFallback_noGlobalContext(
     errorWhileRendering: err,
   })
   return pageContextHttpErrorFallback
-}
-
-// TODO: rename renderPageServerNominal renderPageServerEntryRecursive_nominal
-// - Render page (no error)
-// - Render 404 page
-type PageContextInternalServerAfterRender = Awaited<ReturnType<typeof renderPageServerNominal>>
-async function renderPageServerNominal(pageContext: PageContextBegin) {
-  objectAssign(pageContext, { errorWhileRendering: null })
-
-  // Route
-  {
-    const pageContextFromRoute = await route(pageContext)
-    objectAssign(pageContext, pageContextFromRoute)
-    objectAssign(pageContext, { is404: pageContext.pageId ? null : true })
-    if (pageContext.pageId === null) {
-      const errorPageId = getErrorPageId(
-        pageContext._globalContext._pageFilesAll,
-        pageContext._globalContext._pageConfigs,
-      )
-      if (!errorPageId) {
-        assert(hasProp(pageContext, 'pageId', 'null'))
-        return handleErrorWithoutErrorPage(pageContext)
-      }
-      objectAssign(pageContext, { pageId: errorPageId })
-    }
-  }
-  assert(hasProp(pageContext, 'pageId', 'string'))
-  assert(pageContext.errorWhileRendering === null)
-
-  // Render
-  const pageContextAfterRender = await renderPageServerAfterRoute(pageContext)
-  assert(pageContext === pageContextAfterRender)
-  return pageContextAfterRender
-}
-
-type PageContextErrorPageInit = Awaited<ReturnType<typeof getPageContextErrorPageInit>>
-async function getPageContextErrorPageInit(pageContextBegin: PageContextBegin, errNominalPage: unknown) {
-  const pageContext = forkPageContext(pageContextBegin)
-
-  assert(errNominalPage)
-  objectAssign(pageContext, {
-    is404: false,
-    errorWhileRendering: errNominalPage as Error,
-    routeParams: {} as Record<string, string>,
-  })
-
-  assert(pageContext.errorWhileRendering)
-  return pageContext
 }
 
 function getPageContextBegin(
@@ -599,7 +567,7 @@ async function handleAbort(
   // handleAbortError() creates a new pageContext object and we don't merge pageContextNominalPageBegin to it: we only use some pageContextNominalPageBegin information.
   pageContextNominalPageBegin: PageContextBegin,
   httpRequestId: number,
-  pageContextErrorPageInit: PageContextErrorPageInit,
+  pageContextErrorPageInit: Omit<PageContext_loadPageConfigsLazyServerSide, 'pageId'>,
   globalContext: GlobalContextServerInternal,
 ) {
   logAbort(errAbort, globalContext._isProduction, pageContextNominalPageBegin)
