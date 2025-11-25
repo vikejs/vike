@@ -4,7 +4,7 @@
 export { logErrorProd }
 export { onRuntimeError }
 
-import { isAbortError } from '../../../shared/route/abort.js'
+import { isAbortError } from '../../../shared-server-client/route/abort.js'
 import { setAlreadyLogged } from './isNewError.js'
 import { warnIfErrorIsNotObject } from '../utils.js'
 import { logErrorHint } from './logErrorHint.js'

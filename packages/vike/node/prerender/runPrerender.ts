@@ -8,7 +8,7 @@ export type { PrerenderTrigger }
 // - The prerenderContext is used by vike-vercel
 
 import path from 'node:path'
-import { route } from '../../shared/route/index.js'
+import { route } from '../../shared-server-client/route/index.js'
 import {
   assert,
   assertUsage,
@@ -34,7 +34,7 @@ import { prerenderPage } from '../../server/runtime/renderPageServer/renderPageS
 import { createPageContextServerSide } from '../../server/runtime/renderPageServer/createPageContextServerSide.js'
 import pc from '@brillout/picocolors'
 import { cpus } from 'node:os'
-import type { PageFile } from '../../shared/getPageFiles.js'
+import type { PageFile } from '../../shared-server-client/getPageFiles.js'
 import {
   getGlobalContextServerInternal,
   type GlobalContextServerInternal,
@@ -43,31 +43,31 @@ import {
   setGlobalContext_prerenderContext,
 } from '../../server/runtime/globalContext.js'
 import { type ResolvedConfig, resolveConfig as resolveViteConfig } from 'vite'
-import { getPageFilesServerSide } from '../../shared/getPageFiles.js'
-import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
-import { getUrlFromRouteString } from '../../shared/route/resolveRouteString.js'
-import { getConfigValueRuntime } from '../../shared/page-configs/getConfigValueRuntime.js'
-import { loadAndParseVirtualFilePageEntry } from '../../shared/page-configs/loadAndParseVirtualFilePageEntry.js'
-import { getErrorPageId, isErrorPage } from '../../shared/error-page.js'
-import { isAbortError } from '../../shared/route/abort.js'
+import { getPageFilesServerSide } from '../../shared-server-client/getPageFiles.js'
+import { getPageContextRequestUrl } from '../../shared-server-client/getPageContextRequestUrl.js'
+import { getUrlFromRouteString } from '../../shared-server-client/route/resolveRouteString.js'
+import { getConfigValueRuntime } from '../../shared-server-client/page-configs/getConfigValueRuntime.js'
+import { loadAndParseVirtualFilePageEntry } from '../../shared-server-client/page-configs/loadAndParseVirtualFilePageEntry.js'
+import { getErrorPageId, isErrorPage } from '../../shared-server-client/error-page.js'
+import { isAbortError } from '../../shared-server-client/route/abort.js'
 import { loadPageConfigsLazyServerSide } from '../../server/runtime/renderPageServer/loadPageConfigsLazyServerSide.js'
 import {
   getHookFromPageConfig,
   getHookFromPageConfigGlobal,
   getHookTimeoutDefault,
   getHook_setIsPrerenderering,
-} from '../../shared/hooks/getHook.js'
-import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
+} from '../../shared-server-client/hooks/getHook.js'
+import { noRouteMatch } from '../../shared-server-client/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../types/PageConfig.js'
 import { getVikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
-import type { HookTimeout } from '../../shared/hooks/getHook.js'
-import { execHookDirectWithoutPageContext, isUserHookError } from '../../shared/hooks/execHook.js'
+import type { HookTimeout } from '../../shared-server-client/hooks/getHook.js'
+import { execHookDirectWithoutPageContext, isUserHookError } from '../../shared-server-client/hooks/execHook.js'
 import type { ApiOptions } from '../api/types.js'
 import { setWasPrerenderRun } from './context.js'
 import { resolvePrerenderConfigGlobal, resolvePrerenderConfigLocal } from './resolvePrerenderConfig.js'
 import { getOutDirs } from '../vite/shared/getOutDirs.js'
 import fs from 'node:fs'
-import { getProxyForPublicUsage } from '../../shared/getProxyForPublicUsage.js'
+import { getProxyForPublicUsage } from '../../shared-server-client/getProxyForPublicUsage.js'
 import { getStaticRedirectsForPrerender } from '../../server/runtime/renderPageServer/resolveRedirects.js'
 import { updateType } from '../../server/runtime/utils.js'
 const docLink = 'https://vike.dev/i18n#pre-rendering'

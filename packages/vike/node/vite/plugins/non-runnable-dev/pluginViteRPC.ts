@@ -2,7 +2,7 @@ export { pluginViteRPC }
 
 import type { Plugin, ViteDevServer } from 'vite'
 import { createViteRPC, isDevCheck } from '../../utils.js'
-import type { ClientDependency } from '../../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
+import type { ClientDependency } from '../../../../shared-server-client/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { retrievePageAssetsDev } from '../../../../server/runtime/renderPageServer/getPageAssets/retrievePageAssetsDev.js'
 import { getViteConfigRuntime } from '../../shared/getViteConfigRuntime.js'
 

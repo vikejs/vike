@@ -7,19 +7,19 @@ export type { PassToClientPublic }
 
 import { stringify, isJsonSerializerError } from '@brillout/json-serializer/stringify'
 import { assert, assertUsage, assertWarning, getPropAccessNotation, hasProp, unique } from '../../utils.js'
-import { isErrorPage } from '../../../../shared/error-page.js'
-import { addIs404ToPageProps } from '../../../../shared/addIs404ToPageProps.js'
+import { isErrorPage } from '../../../../shared-server-client/error-page.js'
+import { addIs404ToPageProps } from '../../../../shared-server-client/addIs404ToPageProps.js'
 import pc from '@brillout/picocolors'
-import { NOT_SERIALIZABLE } from '../../../../shared/NOT_SERIALIZABLE.js'
-import type { UrlRedirect } from '../../../../shared/route/abort.js'
-import { pageContextInitIsPassedToClient } from '../../../../shared/misc/pageContextInitIsPassedToClient.js'
-import { isServerSideError } from '../../../../shared/misc/isServerSideError.js'
+import { NOT_SERIALIZABLE } from '../../../../shared-server-client/NOT_SERIALIZABLE.js'
+import type { UrlRedirect } from '../../../../shared-server-client/route/abort.js'
+import { pageContextInitIsPassedToClient } from '../../../../shared-server-client/misc/pageContextInitIsPassedToClient.js'
+import { isServerSideError } from '../../../../shared-server-client/misc/isServerSideError.js'
 import { getPropKeys, getPropVal, setPropVal } from './propKeys.js'
 import type { GlobalContextServerInternal } from '../../globalContext.js'
 import type { PageContextCreated } from '../createPageContextServerSide.js'
 import type { PageContextBegin } from '../../renderPageServer.js'
 import type { PageContextCspNonce } from '../csp.js'
-import { assertRouteParams } from '../../../../shared/route/resolveRouteFunction.js'
+import { assertRouteParams } from '../../../../shared-server-client/route/resolveRouteFunction.js'
 
 const passToClientBuiltInPageContext = [
   'abortReason',

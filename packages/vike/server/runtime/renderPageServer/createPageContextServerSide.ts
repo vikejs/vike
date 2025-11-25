@@ -3,10 +3,13 @@ export { createPageContextServerSideWithoutGlobalContext }
 export type { PageContextCreated }
 
 import { assert, assertUsage, assertWarning, updateType, normalizeHeaders, objectAssign } from '../utils.js'
-import { getPageContextUrlComputed } from '../../../shared/getPageContextUrlComputed.js'
+import { getPageContextUrlComputed } from '../../../shared-server-client/getPageContextUrlComputed.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { PageContextInit } from '../renderPageServer.js'
-import { createPageContextObject, createPageContextShared } from '../../../shared/createPageContextShared.js'
+import {
+  createPageContextObject,
+  createPageContextShared,
+} from '../../../shared-server-client/createPageContextShared.js'
 
 type PageContextCreated = Awaited<ReturnType<typeof createPageContextServerSide>>
 function createPageContextServerSide(

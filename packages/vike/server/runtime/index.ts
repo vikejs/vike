@@ -16,7 +16,7 @@ export { injectAssets__public as _injectAssets } from './renderPageServer/html/i
 export { createPageRenderer } from '../createPageRenderer.js'
 import { assertWarning } from './utils.js'
 import pc from '@brillout/picocolors'
-import { RenderErrorPage as RenderErrorPage_ } from '../../shared/route/abort.js'
+import { RenderErrorPage as RenderErrorPage_ } from '../../shared-server-client/route/abort.js'
 /** @deprecated
  * Replace:
  *   ```

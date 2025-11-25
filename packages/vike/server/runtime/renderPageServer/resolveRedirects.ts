@@ -11,9 +11,13 @@ import {
   assertUsageUrlRedirectTarget,
   assertWarning,
   isUrlRedirectTarget,
-} from '../../../shared/utils.js'
-import { resolveUrlPathname } from '../../../shared/route/resolveUrlPathname.js'
-import { assertRouteString, isStaticRouteString, resolveRouteString } from '../../../shared/route/resolveRouteString.js'
+} from '../../../shared-server-client/utils.js'
+import { resolveUrlPathname } from '../../../shared-server-client/route/resolveUrlPathname.js'
+import {
+  assertRouteString,
+  isStaticRouteString,
+  resolveRouteString,
+} from '../../../shared-server-client/route/resolveRouteString.js'
 import pc from '@brillout/picocolors'
 assertIsNotBrowser() // Don't bloat the client
 

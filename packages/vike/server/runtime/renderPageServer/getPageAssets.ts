@@ -7,7 +7,7 @@ import { retrievePageAssetsDev } from './getPageAssets/retrievePageAssetsDev.js'
 import { inferMediaType, type MediaType } from './inferMediaType.js'
 import { sortPageAssetsForEarlyHintsHeader } from './getPageAssets/sortPageAssetsForEarlyHintsHeader.js'
 import { assert, prependBase, toPosixPath, unique, getViteRPC } from '../utils.js'
-import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
+import type { ClientDependency } from '../../../shared-server-client/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { ViteRPC } from '../../../node/vite/plugins/non-runnable-dev/pluginViteRPC.js'
 

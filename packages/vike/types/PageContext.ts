@@ -22,12 +22,17 @@ import type {
   PageContextUrlInternal,
   PageContextUrlClient,
   PageContextUrlServer,
-} from '../shared/getPageContextUrlComputed.js'
-import type { From, PageContextConfig, Source, Sources } from '../shared/page-configs/resolveVikeConfigPublic.js'
+} from '../shared-server-client/getPageContextUrlComputed.js'
+import type {
+  From,
+  PageContextConfig,
+  Source,
+  Sources,
+} from '../shared-server-client/page-configs/resolveVikeConfigPublic.js'
 import type { Config } from './Config.js'
-import type { AbortStatusCode } from '../shared/route/abort.js'
+import type { AbortStatusCode } from '../shared-server-client/route/abort.js'
 import type { GlobalContextClient, GlobalContextServer, GlobalContextClientWithServerRouting } from './GlobalContext.js'
-import type { DangerouslyUseInternals } from '../shared/getProxyForPublicUsage.js'
+import type { DangerouslyUseInternals } from '../shared-server-client/getProxyForPublicUsage.js'
 import type { PageContextInternalServerAfterRender } from '../server/runtime/renderPageServer.js'
 import type { PageContextInternalClientAfterRender } from '../client/runtime-client-routing/renderPageClient.js'
 

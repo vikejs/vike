@@ -3,7 +3,7 @@ export { findPageFiles }
 import { glob } from 'tinyglobby'
 import type { ResolvedConfig } from 'vite'
 import { assertWarning, toPosixPath, scriptFileExtensionPattern } from '../utils.js'
-import type { FileType } from '../../../shared/getPageFiles/fileTypes.js'
+import type { FileType } from '../../../shared-server-client/getPageFiles/fileTypes.js'
 import pc from '@brillout/picocolors'
 import { getOutDirs } from './getOutDirs.js'
 

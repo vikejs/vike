@@ -3,8 +3,8 @@ export { log404 }
 // Exported for ./index.spec.ts
 export { getRoutesInfo }
 
-import type { PageRoutes } from '../../../../shared/route/index.js'
-import { noRouteMatch } from '../../../../shared/route/noRouteMatch.js'
+import type { PageRoutes } from '../../../../shared-server-client/route/index.js'
+import { noRouteMatch } from '../../../../shared-server-client/route/noRouteMatch.js'
 import type { GlobalContextServerInternal } from '../../globalContext.js'
 import {
   assert,

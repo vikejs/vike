@@ -17,7 +17,7 @@ import {
 } from '../../utils.js'
 import { parseVirtualFileId } from '../../../../server/shared/virtualFileId.js'
 import { version as viteVersion } from 'vite'
-import { type FileType, fileTypes } from '../../../../shared/getPageFiles/fileTypes.js'
+import { type FileType, fileTypes } from '../../../../shared-server-client/getPageFiles/fileTypes.js'
 import path from 'node:path'
 import { generateVirtualFileGlobalEntry } from './generateVirtualFileGlobalEntry.js'
 import { getVikeConfigInternal, isV1Design as isV1Design_ } from '../../shared/resolveVikeConfigInternal.js'

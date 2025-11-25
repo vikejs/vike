@@ -47,7 +47,7 @@ import type { DocumentHtml } from '../server/runtime/renderPageServer/html/rende
 import type { InjectFilterEntry } from './index.js'
 import type { VikeVitePluginOptions } from '../node/vite/index.js'
 import type { Vike } from './VikeNamespace.js'
-import type { HooksTimeoutProvidedByUser } from '../shared/hooks/getHook.js'
+import type { HooksTimeoutProvidedByUser } from '../shared-server-client/hooks/getHook.js'
 import type { PageContextClient, PageContextServer } from './PageContext.js'
 import type { GlobalContext } from './GlobalContext.js'
 import type { InlineConfig } from 'vite'

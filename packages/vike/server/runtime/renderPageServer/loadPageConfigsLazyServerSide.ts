@@ -3,9 +3,9 @@ export type { PageContext_loadPageConfigsLazyServerSide }
 export type { PageConfigsLazy }
 export type { PageContextAfterPageEntryLoaded }
 
-import { type PageContextConfig, getPageFilesServerSide } from '../../../shared/getPageFiles.js'
-import { resolvePageContextConfig } from '../../../shared/page-configs/resolveVikeConfigPublic.js'
-import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide.js'
+import { type PageContextConfig, getPageFilesServerSide } from '../../../shared-server-client/getPageFiles.js'
+import { resolvePageContextConfig } from '../../../shared-server-client/page-configs/resolveVikeConfigPublic.js'
+import { analyzePageClientSideInit } from '../../../shared-server-client/getPageFiles/analyzePageClientSide.js'
 import {
   assertUsage,
   assertWarning,
@@ -18,13 +18,13 @@ import {
 } from '../utils.js'
 import { getPageAssets, type PageAsset } from './getPageAssets.js'
 import type { PageConfigRuntime } from '../../../types/PageConfig.js'
-import { findPageConfig } from '../../../shared/page-configs/findPageConfig.js'
+import { findPageConfig } from '../../../shared-server-client/page-configs/findPageConfig.js'
 import { analyzePage } from './analyzePage.js'
 import type { MediaType } from './inferMediaType.js'
-import { loadAndParseVirtualFilePageEntry } from '../../../shared/page-configs/loadAndParseVirtualFilePageEntry.js'
+import { loadAndParseVirtualFilePageEntry } from '../../../shared-server-client/page-configs/loadAndParseVirtualFilePageEntry.js'
 import { execHookServer } from './execHookServer.js'
 import type { PassToClient } from './html/serializeContext.js'
-import type { PageContextAfterRoute } from '../../../shared/route/index.js'
+import type { PageContextAfterRoute } from '../../../shared-server-client/route/index.js'
 import type { PageContextCreated } from './createPageContextServerSide.js'
 import { resolveHeadersResponseEarly } from './headersResponse.js'
 import { resolvePageContextCspNone } from './csp.js'

@@ -9,7 +9,10 @@ export type GlobalContextClientInternalShared =
   | GlobalContextClientInternal
   | GlobalContextClientInternalWithServerRouting
 
-import { createGlobalContextShared, getGlobalContextSyncErrMsg } from '../../shared/createGlobalContextShared.js'
+import {
+  createGlobalContextShared,
+  getGlobalContextSyncErrMsg,
+} from '../../shared-server-client/createGlobalContextShared.js'
 import type { GlobalContextClientInternal } from '../runtime-client-routing/getGlobalContextClientInternal.js'
 import type { GlobalContextClientInternalWithServerRouting } from '../runtime-server-routing/getGlobalContextClientInternal.js'
 import { getGlobalContextSerializedInHtml } from './getJsonSerializedInHtml.js'

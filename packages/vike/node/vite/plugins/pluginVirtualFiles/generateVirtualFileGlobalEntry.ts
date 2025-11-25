@@ -4,7 +4,10 @@ import type { PageConfigBuildTime, PageConfigGlobalBuildTime } from '../../../..
 import { generateVirtualFileId } from '../../../../server/shared/virtualFileId.js'
 import { debug } from './debug.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
-import { FilesEnv, serializeConfigValues } from '../../../../shared/page-configs/serialize/serializeConfigValues.js'
+import {
+  FilesEnv,
+  serializeConfigValues,
+} from '../../../../shared-server-client/page-configs/serialize/serializeConfigValues.js'
 
 async function generateVirtualFileGlobalEntry(
   isForClientSide: boolean,

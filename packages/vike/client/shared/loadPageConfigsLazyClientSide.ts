@@ -2,10 +2,10 @@ export { loadPageConfigsLazyClientSide }
 export type { PageContext_loadPageConfigsLazyClientSide }
 export { isErrorFetchingStaticAssets }
 
-import { getPageFilesClientSide, type PageFile } from '../../shared/getPageFiles.js'
-import { resolvePageContextConfig } from '../../shared/page-configs/resolveVikeConfigPublic.js'
-import { findPageConfig } from '../../shared/page-configs/findPageConfig.js'
-import { loadAndParseVirtualFilePageEntry } from '../../shared/page-configs/loadAndParseVirtualFilePageEntry.js'
+import { getPageFilesClientSide, type PageFile } from '../../shared-server-client/getPageFiles.js'
+import { resolvePageContextConfig } from '../../shared-server-client/page-configs/resolveVikeConfigPublic.js'
+import { findPageConfig } from '../../shared-server-client/page-configs/findPageConfig.js'
+import { loadAndParseVirtualFilePageEntry } from '../../shared-server-client/page-configs/loadAndParseVirtualFilePageEntry.js'
 import type { PageConfigGlobalRuntime, PageConfigRuntime, PageConfigRuntimeLoaded } from '../../types/PageConfig.js'
 import { objectAssign } from '../runtime-server-routing/utils.js'
 

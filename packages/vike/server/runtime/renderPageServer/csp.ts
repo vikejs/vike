@@ -5,7 +5,7 @@ export type { PageContextCspNonce }
 
 import { import_ } from '@brillout/import'
 import { assert } from '../utils.js'
-import type { PageContextConfig } from '../../../shared/getPageFiles.js'
+import type { PageContextConfig } from '../../../shared-server-client/getPageFiles.js'
 import type { PageContextServer } from '../../../types/PageContext.js'
 
 async function resolvePageContextCspNone(

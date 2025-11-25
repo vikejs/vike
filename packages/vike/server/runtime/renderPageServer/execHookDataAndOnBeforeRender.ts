@@ -1,6 +1,6 @@
 export { execHookDataAndOnBeforeRender }
 
-import { assertOnBeforeRenderHookReturn } from '../../../shared/assertOnBeforeRenderHookReturn.js'
+import { assertOnBeforeRenderHookReturn } from '../../../shared-server-client/assertOnBeforeRenderHookReturn.js'
 import { execHookServer, type PageContextExecHookServer } from './execHookServer.js'
 
 async function execHookDataAndOnBeforeRender(

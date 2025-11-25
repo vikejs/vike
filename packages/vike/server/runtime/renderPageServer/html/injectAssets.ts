@@ -5,7 +5,7 @@ export type { PageContextPromise }
 
 import { assert, isCallable, isPromise } from '../../utils.js'
 import type { PageAsset } from '../getPageAssets.js'
-import { assertPageContextProvidedByUser } from '../../../../shared/assertPageContextProvidedByUser.js'
+import { assertPageContextProvidedByUser } from '../../../../shared-server-client/assertPageContextProvidedByUser.js'
 import {
   joinHtmlTags,
   injectHtmlTags,

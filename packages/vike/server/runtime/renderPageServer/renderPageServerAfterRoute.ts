@@ -2,11 +2,11 @@ export { renderPageServerAfterRoute }
 export { prerenderPage }
 export type { PageContextAfterRender }
 
-import { getErrorPageId } from '../../../shared/error-page.js'
+import { getErrorPageId } from '../../../shared-server-client/error-page.js'
 import { getHtmlString } from './html/renderHtml.js'
 import { assert, assertUsage, updateType, hasProp, objectAssign } from '../utils.js'
 import { getPageContextClientSerialized } from './html/serializeContext.js'
-import { type PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
+import { type PageContextUrlInternal } from '../../../shared-server-client/getPageContextUrlComputed.js'
 import { createHttpResponsePage, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponse.js'
 import {
   loadPageConfigsLazyServerSide,
@@ -18,9 +18,9 @@ import { execHookDataAndOnBeforeRender } from './execHookDataAndOnBeforeRender.j
 import { logRuntimeError } from '../loggerRuntime.js'
 import { isNewError } from './isNewError.js'
 import { preparePageContextForPublicUsageServer } from './preparePageContextForPublicUsageServer.js'
-import { execHookGuard } from '../../../shared/route/execHookGuard.js'
+import { execHookGuard } from '../../../shared-server-client/route/execHookGuard.js'
 import pc from '@brillout/picocolors'
-import { isServerSideError } from '../../../shared/misc/isServerSideError.js'
+import { isServerSideError } from '../../../shared-server-client/misc/isServerSideError.js'
 import type { PageContextCreated } from './createPageContextServerSide.js'
 import type { PageContextBegin } from '../renderPageServer.js'
 

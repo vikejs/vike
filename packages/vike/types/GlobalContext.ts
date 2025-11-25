@@ -6,7 +6,7 @@ export type { GlobalContextClientWithServerRouting }
 
 import type { GlobalContextServerInternal } from '../server/runtime/globalContext.js'
 import type { GlobalContextClientInternalWithServerRouting } from '../client/runtime-server-routing/getGlobalContextClientInternal.js'
-import type { GlobalContextBasePublic } from '../shared/createGlobalContextShared.js'
+import type { GlobalContextBasePublic } from '../shared-server-client/createGlobalContextShared.js'
 import type { GlobalContextClientInternal } from '../client/runtime-client-routing/getGlobalContextClientInternal.js'
 
 type GlobalContext = GlobalContextServer | GlobalContextClient

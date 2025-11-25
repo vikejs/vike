@@ -1,12 +1,15 @@
 export { analyzePage }
 
-import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
-import { getVikeClientEntry } from '../../../shared/getPageFiles/analyzePageClientSide/determineClientEntry.js'
+import type { ClientDependency } from '../../../shared-server-client/getPageFiles/analyzePageClientSide/ClientDependency.js'
+import { getVikeClientEntry } from '../../../shared-server-client/getPageFiles/analyzePageClientSide/determineClientEntry.js'
 import type { PageConfigRuntime } from '../../../types/PageConfig.js'
-import { type AnalysisResult, analyzePageClientSide } from '../../../shared/getPageFiles/analyzePageClientSide.js'
+import {
+  type AnalysisResult,
+  analyzePageClientSide,
+} from '../../../shared-server-client/getPageFiles/analyzePageClientSide.js'
 import { generateVirtualFileId } from '../../shared/virtualFileId.js'
-import { analyzeClientSide } from '../../../shared/getPageFiles/analyzeClientSide.js'
-import { getConfigValueRuntime } from '../../../shared/page-configs/getConfigValueRuntime.js'
+import { analyzeClientSide } from '../../../shared-server-client/getPageFiles/analyzeClientSide.js'
+import { getConfigValueRuntime } from '../../../shared-server-client/page-configs/getConfigValueRuntime.js'
 import type { PageContext_loadPageConfigsLazyServerSide } from './loadPageConfigsLazyServerSide.js'
 
 function analyzePage(

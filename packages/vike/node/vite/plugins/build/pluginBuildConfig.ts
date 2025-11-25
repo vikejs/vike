@@ -19,11 +19,11 @@ import { findPageFiles } from '../../shared/findPageFiles.js'
 import type { ResolvedConfig, Plugin } from 'vite'
 import { generateVirtualFileId } from '../../../../server/shared/virtualFileId.js'
 import type { PageConfigBuildTime } from '../../../../types/PageConfig.js'
-import type { FileType } from '../../../../shared/getPageFiles/fileTypes.js'
+import type { FileType } from '../../../../shared-server-client/getPageFiles/fileTypes.js'
 import { extractAssetsAddQuery } from '../../../../server/shared/extractAssetsQuery.js'
 import { prependEntriesDir } from '../../../../server/shared/prependEntriesDir.js'
 import { getFilePathResolved } from '../../shared/getFilePath.js'
-import { getConfigValueBuildTime } from '../../../../shared/page-configs/getConfigValueBuildTime.js'
+import { getConfigValueBuildTime } from '../../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
 import { isViteServerSide_viteEnvOptional } from '../../shared/isViteServerSide.js'
 import {
   handleAssetsManifest_assertUsageCssCodeSplit,

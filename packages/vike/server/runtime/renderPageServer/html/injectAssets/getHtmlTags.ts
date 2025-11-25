@@ -16,11 +16,14 @@ import type { PageContextInjectAssets } from '../injectAssets.js'
 import type { StreamFromReactStreamingPackage } from '../stream/react-streaming.js'
 import type { PageAsset } from '../../getPageAssets.js'
 import type { PageConfigRuntime } from '../../../../../types/PageConfig.js'
-import { getPageConfig } from '../../../../../shared/page-configs/helpers.js'
-import { getConfigValueRuntime } from '../../../../../shared/page-configs/getConfigValueRuntime.js'
+import { getPageConfig } from '../../../../../shared-server-client/page-configs/helpers.js'
+import { getConfigValueRuntime } from '../../../../../shared-server-client/page-configs/getConfigValueRuntime.js'
 import pc from '@brillout/picocolors'
-import { getConfigDefinedAt } from '../../../../../shared/page-configs/getConfigDefinedAt.js'
-import { htmlElementId_globalContext, htmlElementId_pageContext } from '../../../../../shared/htmlElementIds.js'
+import { getConfigDefinedAt } from '../../../../../shared-server-client/page-configs/getConfigDefinedAt.js'
+import {
+  htmlElementId_globalContext,
+  htmlElementId_pageContext,
+} from '../../../../../shared-server-client/htmlElementIds.js'
 import { isFontFallback } from '../../isFontFallback.js'
 import { inferNonceAttr, type PageContextCspNonce } from '../../csp.js'
 

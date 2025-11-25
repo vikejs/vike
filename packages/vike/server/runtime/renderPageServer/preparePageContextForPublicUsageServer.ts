@@ -1,13 +1,13 @@
 export { preparePageContextForPublicUsageServer }
 export type { PageContextForPublicUsageServer }
 
-import type { PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
-import type { PageContextConfig } from '../../../shared/page-configs/resolveVikeConfigPublic.js'
+import type { PageContextUrlInternal } from '../../../shared-server-client/getPageContextUrlComputed.js'
+import type { PageContextConfig } from '../../../shared-server-client/page-configs/resolveVikeConfigPublic.js'
 import type { PageContextInternalServer } from '../../../types/PageContext.js'
 import {
   assertPropertyGetters,
   preparePageContextForPublicUsage,
-} from '../../../shared/preparePageContextForPublicUsage.js'
+} from '../../../shared-server-client/preparePageContextForPublicUsage.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 
 type PageContextForPublicUsageServer = PageContextInternalServer &

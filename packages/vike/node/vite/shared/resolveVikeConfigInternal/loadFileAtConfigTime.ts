@@ -11,13 +11,13 @@ import type { FilePathResolved } from '../../../../types/FilePath.js'
 import { type EsbuildCache, transpileAndExecuteFile } from './transpileAndExecuteFile.js'
 import { getConfigDefinitionOptional } from '../resolveVikeConfigInternal.js'
 import type { PlusFileValue } from './getPlusFilesAll.js'
-import { assertPlusFileExport } from '../../../../shared/page-configs/assertPlusFileExport.js'
+import { assertPlusFileExport } from '../../../../shared-server-client/page-configs/assertPlusFileExport.js'
 import pc from '@brillout/picocolors'
 import { type PointerImportData, parsePointerImportData } from './pointerImports.js'
 import { getConfigFileExport } from './getConfigFileExport.js'
 import { PointerImport, resolvePointerImportData } from './resolvePointerImport.js'
 import type { ConfigDefinitionInternal, ConfigDefinitionsInternal } from './configDefinitionsBuiltIn.js'
-import { getConfigDefinedAt } from '../../../../shared/page-configs/getConfigDefinedAt.js'
+import { getConfigDefinedAt } from '../../../../shared-server-client/page-configs/getConfigDefinedAt.js'
 
 assertIsNotProductionRuntime()
 

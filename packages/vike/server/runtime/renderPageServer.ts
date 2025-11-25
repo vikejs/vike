@@ -9,7 +9,7 @@ import {
   createPageContextServerSide,
   createPageContextServerSideWithoutGlobalContext,
 } from './renderPageServer/createPageContextServerSide.js'
-import { route } from '../../shared/route/index.js'
+import { route } from '../../shared-server-client/route/index.js'
 import {
   assert,
   hasProp,
@@ -39,7 +39,7 @@ import {
   logAbort,
   type PageContextAborted,
   addNewPageContextAborted,
-} from '../../shared/route/abort.js'
+} from '../../shared-server-client/route/abort.js'
 import {
   getGlobalContextServerInternal,
   initGlobalContext_renderPage,
@@ -65,13 +65,13 @@ import {
   getPageContextClientSerializedAbort,
   getPageContextClientSerialized,
 } from './renderPageServer/html/serializeContext.js'
-import { getErrorPageId } from '../../shared/error-page.js'
+import { getErrorPageId } from '../../shared-server-client/error-page.js'
 import { handleErrorWithoutErrorPage } from './renderPageServer/handleErrorWithoutErrorPage.js'
 import { loadPageConfigsLazyServerSide } from './renderPageServer/loadPageConfigsLazyServerSide.js'
 import { resolveRedirects } from './renderPageServer/resolveRedirects.js'
 import type { PageContextInternalServer } from '../../types/PageContext.js'
 import { getVikeConfigError } from '../shared/getVikeConfigError.js'
-import { forkPageContext } from '../../shared/forkPageContext.js'
+import { forkPageContext } from '../../shared-server-client/forkPageContext.js'
 
 const globalObject = getGlobalObject('runtime/renderPageServer.ts', {
   httpRequestsCount: 0,

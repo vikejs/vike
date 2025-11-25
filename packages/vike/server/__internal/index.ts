@@ -5,8 +5,8 @@ export { setGlobalContext_prodBuildEntry } from '../runtime/globalContext.js'
 export { route, getPagesAndRoutes }
 export type { PageRoutes, PageFile, PageConfigRuntime as PageConfig }
 
-import { route as routeInternal, type PageRoutes } from '../../shared/route/index.js'
-import type { PageFile } from '../../shared/getPageFiles/getPageFileObject.js'
+import { route as routeInternal, type PageRoutes } from '../../shared-server-client/route/index.js'
+import type { PageFile } from '../../shared-server-client/getPageFiles/getPageFileObject.js'
 import { getGlobalContextServerInternal, initGlobalContext_getPagesAndRoutes } from '../runtime/globalContext.js'
 import { setNodeEnvProductionIfUndefined } from '../../utils/assertSetup.js'
 import { PageConfigRuntime } from '../../types/PageConfig.js'
