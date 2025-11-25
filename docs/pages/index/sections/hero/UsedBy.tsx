@@ -117,7 +117,7 @@ function UsedBy() {
         ))}
       </div>
       <IllustrationNote style={{ marginTop: 1 }}>
-        Used by large companies to build mission-critical applications, see <Link href="/use-cases">Use Cases</Link>
+        Used by large organizations to build mission-critical applications, see <Link href="/use-cases">Use Cases</Link>
         <br />
       </IllustrationNote>
     </div>
