@@ -319,7 +319,6 @@ async function renderPageServerOnError(
           )} doesn't occur while the error page is being rendered.`,
           { onlyOnce: false },
         )
-        // TODO: rename pageContextHttpErrorFallback pageContextHttpErrorFallback
         const pageContextHttpErrorFallback = getPageContextHttpResponseError(errNominalPage, pageContextBegin)
         return pageContextHttpErrorFallback
       }
