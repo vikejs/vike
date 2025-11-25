@@ -232,7 +232,7 @@ async function renderPageServerEntryRecursive(
     )
     if (!errorPageId) {
       assert(hasProp(pageContextNominalPageBegin, 'pageId', 'null'))
-      return handleErrorWithoutErrorPage(pageContextNominalPageBegin)
+      return await handleErrorWithoutErrorPage(pageContextNominalPageBegin)
     }
     objectAssign(pageContextNominalPageBegin, { pageId: errorPageId })
   }
