@@ -262,7 +262,7 @@ async function renderPageServerEntryRecursive(
 // - Can be rendering the error page
 // - Can be rendering Vike's generic error page (if no error page is defined, or if the error page throws an error)
 async function renderPageServerEntryRecursive_onError(
-  errNominalPage: unknown,
+  err: unknown,
   pageContextBegin: PageContextBegin,
   pageContextNominalPageBegin: PageContextBegin,
   globalContext: GlobalContextServerInternal,
@@ -270,19 +270,19 @@ async function renderPageServerEntryRecursive_onError(
 ) {
   assert(pageContextNominalPageBegin)
   assert(hasProp(pageContextNominalPageBegin, 'urlOriginal', 'string'))
-  assert(errNominalPage)
+  assert(err)
 
   const pageContextErrorPageInit = forkPageContext(pageContextBegin)
   objectAssign(pageContextErrorPageInit, {
     is404: false,
-    errorWhileRendering: errNominalPage as Error,
+    errorWhileRendering: err as Error,
     routeParams: {} as Record<string, string>,
   })
 
   // Handle `throw redirect()` and `throw render()` while rendering nominal page
-  if (isAbortError(errNominalPage)) {
+  if (isAbortError(err)) {
     const handled = await handleAbort(
-      errNominalPage,
+      err,
       pageContextBegin,
       pageContextNominalPageBegin,
       httpRequestId,
@@ -337,14 +337,14 @@ async function renderPageServerEntryRecursive_onError(
           )} doesn't occur while the error page is being rendered.`,
           { onlyOnce: false },
         )
-        const pageContextHttpErrorFallback = getPageContextHttpErrorFallback(errNominalPage, pageContextBegin)
+        const pageContextHttpErrorFallback = getPageContextHttpErrorFallback(err, pageContextBegin)
         return pageContextHttpErrorFallback
       }
     }
-    if (isNewError(errErrorPage, errNominalPage)) {
+    if (isNewError(errErrorPage, err)) {
       logRuntimeError(errErrorPage, httpRequestId)
     }
-    const pageContextHttpErrorFallback = getPageContextHttpErrorFallback(errNominalPage, pageContextBegin)
+    const pageContextHttpErrorFallback = getPageContextHttpErrorFallback(err, pageContextBegin)
     return pageContextHttpErrorFallback
   }
   return pageContextErrorPage
