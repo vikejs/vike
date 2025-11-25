@@ -243,7 +243,7 @@ function isAbortPageContext(pageContext: Record<string, unknown>): pageContext i
 function logAbort(
   err: ErrorAbort,
   isProduction: boolean,
-  pageContext: { urlOriginal: string; _urlRewrite: null | string },
+  pageContext: { urlOriginal: string; _urlRewrite?: string },
 ) {
   if (isProduction) return
   const urlCurrent = pageContext._urlRewrite ?? pageContext.urlOriginal

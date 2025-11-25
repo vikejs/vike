@@ -38,8 +38,6 @@ function createPageContextServerSide(
     _baseServer: globalContext.baseServer,
     _baseAssets: globalContext.baseAssets,
     _pageContextInit: pageContextInit,
-    // TODO: remove all
-    _urlRewrite: null,
     _urlHandler: args.ssr?.urlHandler ?? null,
     isClientSideNavigation: args.ssr?.isClientSideNavigation ?? false,
   })
