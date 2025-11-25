@@ -257,7 +257,6 @@ async function renderPageServerEntryRecursive(
   return pageContextNominalPageSuccess
 }
 
-// TODO: rename renderPageServerEntryRecursive_onError renderPageServerEntryRecursive_error
 // When the normal page threw an error
 // - Can be a URL rewrite upon `throw render('/some-url')`
 // - Can be rendering the error page
