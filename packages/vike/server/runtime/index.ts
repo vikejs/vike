@@ -7,7 +7,7 @@ export { escapeInject, dangerouslySkipEscape } from './renderPageServer/html/ren
 export { pipeWebStream, pipeNodeStream, pipeStream, stampPipe } from './renderPageServer/html/stream.js'
 export { PROJECT_VERSION as version } from './utils.js'
 export { getGlobalContext, getGlobalContextSync, getGlobalContextAsync } from './globalContext.js'
-export { createDevMiddleware } from '../../node/runtime-dev/index.js'
+export { createDevMiddleware } from '../runtime-dev/index.js'
 
 // TO-DO/next-major-release: remove
 // Deprecated exports
