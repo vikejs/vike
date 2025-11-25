@@ -49,23 +49,23 @@ import {
   logAbort,
   type PageContextAbort,
   type PageContextAborted,
-} from '../../shared/route/abort.js'
-import { route } from '../../shared/route/index.js'
+} from '../../shared-server-client/route/abort.js'
+import { route } from '../../shared-server-client/route/index.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { setScrollPosition, type ScrollTarget } from './setScrollPosition.js'
 import { scrollRestoration_initialRenderIsDone } from './scrollRestoration.js'
-import { getErrorPageId, isErrorPage } from '../../shared/error-page.js'
-import type { PageContextConfig } from '../../shared/getPageFiles.js'
+import { getErrorPageId, isErrorPage } from '../../shared-server-client/error-page.js'
+import type { PageContextConfig } from '../../shared-server-client/getPageFiles.js'
 import { setPageContextCurrent } from './getPageContextCurrent.js'
-import { getRouteStringParameterList } from '../../shared/route/resolveRouteString.js'
+import { getRouteStringParameterList } from '../../shared-server-client/route/resolveRouteString.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 import type { PageContextClient, PageContextInternalClient } from '../../types/PageContext.js'
-import { execHookDirect, type PageContextExecHook, execHook } from '../../shared/hooks/execHook.js'
+import { execHookDirect, type PageContextExecHook, execHook } from '../../shared-server-client/hooks/execHook.js'
 import {
   type PageContextForPublicUsageClient,
   preparePageContextForPublicUsageClient,
 } from './preparePageContextForPublicUsageClient.js'
-import { getHookFromPageContextNew } from '../../shared/hooks/getHook.js'
+import { getHookFromPageContextNew } from '../../shared-server-client/hooks/getHook.js'
 import { preparePageContextForPublicUsageClientMinimal } from '../shared/preparePageContextForPublicUsageClientShared.js'
 import type { VikeGlobalInternal } from '../../types/VikeGlobalInternal.js'
 import { logErrorClient } from './logErrorClient.js'

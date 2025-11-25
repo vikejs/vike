@@ -21,10 +21,10 @@ import { isLinkSkipped } from './isLinkSkipped.js'
 import { disableClientRouting } from './renderPageClient.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { createPageContextClientSide, type PageContextCreated } from './createPageContextClientSide.js'
-import { route, type PageContextAfterRoute } from '../../shared/route/index.js'
-import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
+import { route, type PageContextAfterRoute } from '../../shared-server-client/route/index.js'
+import { noRouteMatch } from '../../shared-server-client/route/noRouteMatch.js'
 import { type PageContextFromHooksServer, getPageContextFromHooksServer } from './getPageContextFromHooks.js'
-import type { PageContextConfig, PageFile } from '../../shared/getPageFiles.js'
+import type { PageContextConfig, PageFile } from '../../shared-server-client/getPageFiles.js'
 import { getPageContextCurrent } from './getPageContextCurrent.js'
 import {
   PAGE_CONTEXT_MAX_AGE_DEFAULT,

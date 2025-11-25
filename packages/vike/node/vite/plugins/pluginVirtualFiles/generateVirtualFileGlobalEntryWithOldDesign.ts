@@ -15,15 +15,15 @@ import {
   isVersionMatch,
   assertWarning,
 } from '../../utils.js'
-import { parseVirtualFileId } from '../../../shared/virtualFileId.js'
+import { parseVirtualFileId } from '../../../../shared-server-node/virtualFileId.js'
 import { version as viteVersion } from 'vite'
-import { type FileType, fileTypes } from '../../../../shared/getPageFiles/fileTypes.js'
+import { type FileType, fileTypes } from '../../../../shared-server-client/getPageFiles/fileTypes.js'
 import path from 'node:path'
 import { generateVirtualFileGlobalEntry } from './generateVirtualFileGlobalEntry.js'
 import { getVikeConfigInternal, isV1Design as isV1Design_ } from '../../shared/resolveVikeConfigInternal.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
 import { isViteServerSide_extraSafe } from '../../shared/isViteServerSide.js'
-import { resolveIncludeAssetsImportedByServer } from '../../../runtime/renderPageServer/getPageAssets/retrievePageAssetsProd.js'
+import { resolveIncludeAssetsImportedByServer } from '../../../../server/runtime/renderPageServer/getPageAssets/retrievePageAssetsProd.js'
 import type { Environment } from 'vite'
 
 type GlobRoot = {

@@ -7,7 +7,7 @@ import { determineFsAllowList } from './pluginDev/determineFsAllowList.js'
 import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
 import { applyDev, assertWarning, isDocker } from '../utils.js'
 import { improveViteLogs } from '../shared/loggerVite.js'
-import { isErrorDebug } from '../../shared/isErrorDebug.js'
+import { isErrorDebug } from '../../../shared-server-node/isErrorDebug.js'
 import { installHttpRequestAsyncStore } from '../shared/getHttpRequestAsyncStore.js'
 import pc from '@brillout/picocolors'
 

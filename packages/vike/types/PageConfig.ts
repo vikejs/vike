@@ -22,7 +22,7 @@ export type { DefinedBy }
 export type { DefinedAtFilePath }
 export type { VirtualFileExportsPageEntry }
 
-import type { ConfigValueSerialized } from '../shared/page-configs/serialize/PageConfigSerialized.js'
+import type { ConfigValueSerialized } from '../shared-server-client/page-configs/serialize/PageConfigSerialized.js'
 import type { LocationId } from '../node/vite/shared/resolveVikeConfigInternal/filesystemRouting.js'
 import type { FilePath } from './FilePath.js'
 import type { ConfigDefinitionsInternal } from '../node/vite/shared/resolveVikeConfigInternal/configDefinitionsBuiltIn.js'

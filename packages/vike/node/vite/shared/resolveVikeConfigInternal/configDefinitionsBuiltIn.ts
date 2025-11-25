@@ -8,7 +8,10 @@ export type { ConfigEffect }
 import type { ConfigEnvInternal, ConfigEnv, DefinedAtFilePath } from '../../../../types/PageConfig.js'
 import type { Config, ConfigNameBuiltIn, ConfigNameGlobal } from '../../../../types/Config.js'
 import { assert, assertUsage } from '../../utils.js'
-import { getConfigDefinedAt, type ConfigDefinedAt } from '../../../../shared/page-configs/getConfigDefinedAt.js'
+import {
+  getConfigDefinedAt,
+  type ConfigDefinedAt,
+} from '../../../../shared-server-client/page-configs/getConfigDefinedAt.js'
 import {
   getConfigValueSourceRelevantAnyEnv,
   getConfigValueSourcesRelevant,

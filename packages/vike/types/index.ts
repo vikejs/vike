@@ -60,13 +60,13 @@ export type {
   ConfigDefinition,
   ConfigEffect,
 } from '../node/vite/shared/resolveVikeConfigInternal/configDefinitionsBuiltIn.js'
-export type { ConfigEntries } from '../shared/page-configs/resolveVikeConfigPublic.js'
+export type { ConfigEntries } from '../shared-server-client/page-configs/resolveVikeConfigPublic.js'
 
 export type { VikeConfig } from '../node/vite/shared/resolveVikeConfigInternal.js'
 
 export type { UrlPublic as Url } from '../utils/parseUrl.js'
 
-export type { InjectFilterEntry } from '../node/runtime/renderPageServer/html/injectAssets/getHtmlTags.js'
+export type { InjectFilterEntry } from '../server/runtime/renderPageServer/html/injectAssets/getHtmlTags.js'
 
 export { defineConfig } from './defineConfig.js'
 

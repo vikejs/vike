@@ -5,7 +5,7 @@ import {
   setGlobalContext_viteDevServer,
   setGlobalContext_viteConfig,
   setGlobalContext_isProductionAccordingToVite,
-} from '../../runtime/globalContext.js'
+} from '../../../server/runtime/globalContext.js'
 import { isDevCheck, markSetup_isViteDev, markSetup_viteDevServer, markSetup_vitePreviewServer } from '../utils.js'
 import { reloadVikeConfig } from '../shared/resolveVikeConfigInternal.js'
 import { getViteConfigRuntime } from '../shared/getViteConfigRuntime.js'

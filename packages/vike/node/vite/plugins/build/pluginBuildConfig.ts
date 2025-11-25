@@ -17,20 +17,20 @@ import {
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { findPageFiles } from '../../shared/findPageFiles.js'
 import type { ResolvedConfig, Plugin } from 'vite'
-import { generateVirtualFileId } from '../../../shared/virtualFileId.js'
+import { generateVirtualFileId } from '../../../../shared-server-node/virtualFileId.js'
 import type { PageConfigBuildTime } from '../../../../types/PageConfig.js'
-import type { FileType } from '../../../../shared/getPageFiles/fileTypes.js'
-import { extractAssetsAddQuery } from '../../../shared/extractAssetsQuery.js'
-import { prependEntriesDir } from '../../../shared/prependEntriesDir.js'
+import type { FileType } from '../../../../shared-server-client/getPageFiles/fileTypes.js'
+import { extractAssetsAddQuery } from '../../../../shared-server-node/extractAssetsQuery.js'
+import { prependEntriesDir } from '../../../../shared-server-node/prependEntriesDir.js'
 import { getFilePathResolved } from '../../shared/getFilePath.js'
-import { getConfigValueBuildTime } from '../../../../shared/page-configs/getConfigValueBuildTime.js'
+import { getConfigValueBuildTime } from '../../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
 import { isViteServerSide_viteEnvOptional } from '../../shared/isViteServerSide.js'
 import {
   handleAssetsManifest_assertUsageCssCodeSplit,
   handleAssetsManifest_getBuildConfig,
   handleAssetsManifest_alignCssTarget,
 } from './handleAssetsManifest.js'
-import { resolveIncludeAssetsImportedByServer } from '../../../runtime/renderPageServer/getPageAssets/retrievePageAssetsProd.js'
+import { resolveIncludeAssetsImportedByServer } from '../../../../server/runtime/renderPageServer/getPageAssets/retrievePageAssetsProd.js'
 
 function pluginBuildConfig(): Plugin[] {
   return [

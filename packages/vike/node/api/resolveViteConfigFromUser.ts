@@ -19,7 +19,7 @@ import path from 'node:path'
 import { assert, assertUsage, assertWarning, getGlobalObject, pick, toPosixPath } from './utils.js'
 import pc from '@brillout/picocolors'
 import { getEnvVarObject } from '../vite/shared/getEnvVarObject.js'
-import { getVikeApiOperation, isVikeCliOrApi } from './context.js'
+import { getVikeApiOperation, isVikeCliOrApi } from '../../shared-server-node/api-context.js'
 import { getViteCommandFromCli } from '../vite/shared/isViteCli.js'
 
 const globalObject = getGlobalObject<{ root?: string; isOnlyResolvingUserConfig?: boolean }>(

@@ -1,10 +1,10 @@
 export { isClientSideRoutable }
 
-import { analyzePageClientSideInit } from '../../shared/getPageFiles/analyzePageClientSide.js'
-import { findPageConfig } from '../../shared/page-configs/findPageConfig.js'
-import { analyzeClientSide } from '../../shared/getPageFiles/analyzeClientSide.js'
+import { analyzePageClientSideInit } from '../../shared-server-client/getPageFiles/analyzePageClientSide.js'
+import { findPageConfig } from '../../shared-server-client/page-configs/findPageConfig.js'
+import { analyzeClientSide } from '../../shared-server-client/getPageFiles/analyzeClientSide.js'
 import type { GlobalContextClientInternal } from './getGlobalContextClientInternal.js'
-import type { PageFile } from '../../shared/getPageFiles.js'
+import type { PageFile } from '../../shared-server-client/getPageFiles.js'
 
 // TO-DO/next-major-release: make it sync
 async function isClientSideRoutable(

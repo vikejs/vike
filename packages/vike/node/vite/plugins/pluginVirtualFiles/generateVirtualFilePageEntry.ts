@@ -2,14 +2,17 @@ export { generateVirtualFilePageEntry }
 
 import { assert, getProjectError } from '../../utils.js'
 import type { PageConfigBuildTime } from '../../../../types/PageConfig.js'
-import { parseVirtualFileId, generateVirtualFileId } from '../../../shared/virtualFileId.js'
+import { parseVirtualFileId, generateVirtualFileId } from '../../../../shared-server-node/virtualFileId.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
-import { extractAssetsAddQuery } from '../../../shared/extractAssetsQuery.js'
+import { extractAssetsAddQuery } from '../../../../shared-server-node/extractAssetsQuery.js'
 import { debug } from './debug.js'
-import { FilesEnv, serializeConfigValues } from '../../../../shared/page-configs/serialize/serializeConfigValues.js'
+import {
+  FilesEnv,
+  serializeConfigValues,
+} from '../../../../shared-server-client/page-configs/serialize/serializeConfigValues.js'
 import { handleAssetsManifest_isFixEnabled } from '../build/handleAssetsManifest.js'
-import { getConfigValueBuildTime } from '../../../../shared/page-configs/getConfigValueBuildTime.js'
-import { resolveIncludeAssetsImportedByServer } from '../../../runtime/renderPageServer/getPageAssets/retrievePageAssetsProd.js'
+import { getConfigValueBuildTime } from '../../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
+import { resolveIncludeAssetsImportedByServer } from '../../../../server/runtime/renderPageServer/getPageAssets/retrievePageAssetsProd.js'
 
 async function generateVirtualFilePageEntry(id: string, isDev: boolean): Promise<string> {
   const result = parseVirtualFileId(id)

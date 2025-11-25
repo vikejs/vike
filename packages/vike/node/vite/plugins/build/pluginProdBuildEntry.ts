@@ -2,13 +2,13 @@ export { pluginProdBuildEntry }
 export { set_macro_ASSETS_MANIFEST }
 
 import { serverProductionEntryPlugin } from '@brillout/vite-plugin-server-entry/plugin'
-import { virtualFileIdGlobalEntryServer } from '../../../shared/virtualFileId.js'
+import { virtualFileIdGlobalEntryServer } from '../../../../shared-server-node/virtualFileId.js'
 import { assert, PROJECT_VERSION, requireResolveDistFile } from '../../utils.js'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
 import { isUsingClientRouter } from '../pluginExtractExportNames.js'
-import { assertBuildInfo, type BuildInfo } from '../../../runtime/globalContext.js'
+import { assertBuildInfo, type BuildInfo } from '../../../../server/runtime/globalContext.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
 import { getViteConfigRuntime } from '../../shared/getViteConfigRuntime.js'
 type Bundle = Rollup.OutputBundle
@@ -97,7 +97,7 @@ function find_ASSETS_MANIFEST(bundle: Bundle) {
 }
 function getImportPath(config: ResolvedConfig) {
   // We resolve filePathAbsolute even if we don't use it: we use require.resolve() as an assertion that the relative path is correct
-  const filePathAbsolute = requireResolveDistFile('dist/esm/__internal/index.js')
+  const filePathAbsolute = requireResolveDistFile('dist/esm/server/__internal/index.js')
   if (
     // Let's implement a new config if a user needs the import to be a relative path instead of 'vike/__internal' (AFAIK a relative path is needed only if a framework has npm package 'vike' as direct dependency instead of a peer dependency and if the user of that framework uses pnpm)
     true as boolean

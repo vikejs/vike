@@ -9,7 +9,7 @@ export type { VikeVitePluginOptions }
 
 import type { Plugin } from 'vite'
 import { getClientEntrySrcDev } from './shared/getClientEntrySrcDev.js'
-import { setGetClientEntrySrcDev } from '../runtime/renderPageServer/getPageAssets/retrievePageAssetsDev.js'
+import { setGetClientEntrySrcDev } from '../../server/runtime/renderPageServer/getPageAssets/retrievePageAssetsDev.js'
 import { assertIsNotProductionRuntime, assertUsage, isVitest } from './utils.js'
 import pc from '@brillout/picocolors'
 import { pluginPreview } from './plugins/pluginPreview.js'
@@ -35,7 +35,7 @@ import { pluginProdBuildEntry } from './plugins/build/pluginProdBuildEntry.js'
 import { pluginBuildConfig } from './plugins/build/pluginBuildConfig.js'
 import { pluginModuleBanner } from './plugins/build/pluginModuleBanner.js'
 import { pluginReplaceConstantsNonRunnableDev } from './plugins/non-runnable-dev/pluginReplaceConstantsNonRunnableDev.js'
-import { isVikeCliOrApi } from '../api/context.js'
+import { isVikeCliOrApi } from '../../shared-server-node/api-context.js'
 import { pluginViteConfigVikeExtensions } from './plugins/pluginViteConfigVikeExtensions.js'
 import { isOnlyResolvingUserConfig } from '../api/resolveViteConfigFromUser.js'
 

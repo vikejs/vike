@@ -2,10 +2,10 @@ export { execHookOnRenderClient }
 export type { PageContextBeforeRenderClient }
 
 import { assert, assertUsage } from '../runtime-server-routing/utils.js'
-import { getHookFromPageContext, type Hook } from '../../shared/hooks/getHook.js'
-import type { PageFile, PageContextConfig } from '../../shared/getPageFiles.js'
+import { getHookFromPageContext, type Hook } from '../../shared-server-client/hooks/getHook.js'
+import type { PageFile, PageContextConfig } from '../../shared-server-client/getPageFiles.js'
 import type { PageContextForPublicUsageClientShared } from './preparePageContextForPublicUsageClientShared.js'
-import { execHookDirectSingle } from '../../shared/hooks/execHook.js'
+import { execHookDirectSingle } from '../../shared-server-client/hooks/execHook.js'
 import type { GlobalContextClientInternalShared } from './getGlobalContextClientInternalShared.js'
 
 type PageContextBeforeRenderClient = {

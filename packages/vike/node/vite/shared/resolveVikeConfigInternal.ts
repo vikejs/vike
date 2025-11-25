@@ -70,37 +70,46 @@ import {
   applyFilesystemRoutingRootEffect,
 } from './resolveVikeConfigInternal/filesystemRouting.js'
 import type { EsbuildCache } from './resolveVikeConfigInternal/transpileAndExecuteFile.js'
-import { getViteDevServer } from '../../runtime/globalContext.js'
+import { getViteDevServer } from '../../../server/runtime/globalContext.js'
 import { logConfigError, logConfigErrorRecover } from './loggerNotProd.js'
 import {
   removeSuperfluousViteLog_enable,
   removeSuperfluousViteLog_disable,
 } from './loggerVite/removeSuperfluousViteLog.js'
 import pc from '@brillout/picocolors'
-import { getConfigDefinedAt, getDefinedByString } from '../../../shared/page-configs/getConfigDefinedAt.js'
+import {
+  getConfigDefinedAt,
+  getDefinedByString,
+} from '../../../shared-server-client/page-configs/getConfigDefinedAt.js'
 import { loadPointerImport, loadValueFile } from './resolveVikeConfigInternal/loadFileAtConfigTime.js'
 import { resolvePointerImport } from './resolveVikeConfigInternal/resolvePointerImport.js'
 import { getFilePathResolved } from './getFilePath.js'
 import type { FilePath } from '../../../types/FilePath.js'
-import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
+import { getConfigValueBuildTime } from '../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
 import {
   resolveGlobalConfigPublic,
   type GlobalConfigPublic,
-} from '../../../shared/page-configs/resolveVikeConfigPublic.js'
-import { getConfigValuesBase, isJsonValue } from '../../../shared/page-configs/serialize/serializeConfigValues.js'
+} from '../../../shared-server-client/page-configs/resolveVikeConfigPublic.js'
+import {
+  getConfigValuesBase,
+  isJsonValue,
+} from '../../../shared-server-client/page-configs/serialize/serializeConfigValues.js'
 import {
   getPlusFilesAll,
   type PlusFile,
   type PlusFilesByLocationId,
 } from './resolveVikeConfigInternal/getPlusFilesAll.js'
 import { getEnvVarObject } from './getEnvVarObject.js'
-import { getVikeApiOperation } from '../../api/context.js'
+import { getVikeApiOperation } from '../../../shared-server-node/api-context.js'
 import { getCliOptions } from '../../cli/context.js'
 import type { PrerenderContextPublic } from '../../prerender/runPrerender.js'
 import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderConfig.js'
 import type { ResolvedConfig, UserConfig } from 'vite'
-import { getProxyForPublicUsage, type DangerouslyUseInternals } from '../../../shared/getProxyForPublicUsage.js'
-import { setVikeConfigError } from '../../shared/getVikeConfigError.js'
+import {
+  getProxyForPublicUsage,
+  type DangerouslyUseInternals,
+} from '../../../shared-server-client/getProxyForPublicUsage.js'
+import { setVikeConfigError } from '../../../shared-server-node/getVikeConfigError.js'
 assertIsNotProductionRuntime()
 
 const globalObject = getGlobalObject('vite/shared/resolveVikeConfigInternal.ts', {

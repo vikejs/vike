@@ -110,7 +110,7 @@ but you've requested "2025-07-18". Falling back to "2025-07-12"...
       ```shell
       [12:12:28.624][/examples/cloudflare-workers-vue][npm run preview][stderr] ▲ [WARNING] "import.meta" is not available with the "iife" output format and will be empty [empty-import-meta]
 
-          ../../packages/vike/dist/esm/node/runtime/globalContext.js:511:17:
+          ../../packages/vike/dist/esm/server/runtime/globalContext.js:511:17:
             511 │     const PROD = import.meta.env.PROD;
                 ╵                  ~~~~~~~~~~~
 

@@ -8,13 +8,13 @@ import {
 } from '../shared/loadPageConfigsLazyClientSide.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 
-import { createPageContextObject, createPageContextShared } from '../../shared/createPageContextShared.js'
+import { createPageContextObject, createPageContextShared } from '../../shared-server-client/createPageContextShared.js'
 import { getGlobalContextClientInternal } from './getGlobalContextClientInternal.js'
 import {
   preparePageContextForPublicUsageClient,
   type PageContextForPublicUsageClient,
 } from './preparePageContextForPublicUsageClient.js'
-import { execHook } from '../../shared/hooks/execHook.js'
+import { execHook } from '../../shared-server-client/hooks/execHook.js'
 
 const urlFirst = getCurrentUrl({ withoutHash: true })
 

@@ -29,9 +29,9 @@ export type { LogErrorArgs }
 export type { LogType }
 export type { LogCategory }
 
-import { isAbortError } from '../../../shared/route/abort.js'
-import { getViteConfig, vikeConfigErrorRecoverMsg } from '../../runtime/globalContext.js'
-import { overwriteRuntimeProductionLogger } from '../../runtime/loggerRuntime.js'
+import { isAbortError } from '../../../shared-server-client/route/abort.js'
+import { getViteConfig, vikeConfigErrorRecoverMsg } from '../../../server/runtime/globalContext.js'
+import { overwriteRuntimeProductionLogger } from '../../../server/runtime/loggerRuntime.js'
 import {
   assert,
   assertIsNotProductionRuntime,
@@ -42,7 +42,7 @@ import {
   warnIfErrorIsNotObject,
 } from '../utils.js'
 import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore.js'
-import { isErrorDebug } from '../../shared/isErrorDebug.js'
+import { isErrorDebug } from '../../../shared-server-node/isErrorDebug.js'
 import { isErrorWithCodeSnippet, getPrettyErrorWithCodeSnippet } from './loggerNotProd/errorWithCodeSnippet.js'
 import {
   getConfigExecutionErrorIntroMsg,
@@ -50,9 +50,9 @@ import {
 } from './resolveVikeConfigInternal/transpileAndExecuteFile.js'
 import { logWithVikeTag, logWithViteTag, logDirectly, applyViteSourceMapToStackTrace } from './loggerNotProd/log.js'
 import pc from '@brillout/picocolors'
-import { setAlreadyLogged } from '../../runtime/renderPageServer/isNewError.js'
-import { onRuntimeError } from '../../runtime/renderPageServer/loggerProd.js'
-import { isUserHookError } from '../../../shared/hooks/execHook.js'
+import { setAlreadyLogged } from '../../../server/runtime/renderPageServer/isNewError.js'
+import { onRuntimeError } from '../../../server/runtime/renderPageServer/loggerProd.js'
+import { isUserHookError } from '../../../shared-server-client/hooks/execHook.js'
 
 assertIsNotProductionRuntime()
 overwriteRuntimeProductionLogger(logRuntimeError, logRuntimeInfo)

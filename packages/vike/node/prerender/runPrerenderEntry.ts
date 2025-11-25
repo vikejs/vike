@@ -5,7 +5,7 @@ export { runPrerender_forceExit }
 
 import { assert } from './utils.js'
 import type { InlineConfig, ResolvedConfig } from 'vite'
-import { logErrorHint } from '../runtime/renderPageServer/logErrorHint.js'
+import { logErrorHint } from '../../server/runtime/renderPageServer/logErrorHint.js'
 import { prepareViteApiCall } from '../api/prepareViteApiCall.js'
 import { isVikeCli } from '../cli/context.js'
 import { isViteCli } from '../vite/shared/isViteCli.js'

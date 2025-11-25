@@ -37,8 +37,8 @@ function clean() {
   // ```
   const suffix = '?direct'
   // <link> defined by:
-  //  - https://github.com/vikejs/vike/blob/fae90a15d88e5e87ca9fcbb54cf2dc8773d2f229/vike/node/runtime/html/injectAssets/inferHtmlTags.ts#L35
-  //  - https://github.com/vikejs/vike/blob/fae90a15d88e5e87ca9fcbb54cf2dc8773d2f229/vike/node/runtime/renderPageServer/getPageAssets.ts#L68
+  //  - https://github.com/vikejs/vike/blob/fae90a15d88e5e87ca9fcbb54cf2dc8773d2f229/vike/server/runtime/html/injectAssets/inferHtmlTags.ts#L35
+  //  - https://github.com/vikejs/vike/blob/fae90a15d88e5e87ca9fcbb54cf2dc8773d2f229/vike/server/runtime/renderPageServer/getPageAssets.ts#L68
   const injectedByVike = [...document.querySelectorAll(`link[rel="stylesheet"][type="text/css"][href$="${suffix}"]`)]
 
   let isCleaned = true

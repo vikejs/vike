@@ -5,7 +5,7 @@ import { createPageContextClientSide } from './createPageContextClientSide.js'
 import { execHookOnRenderClient } from '../shared/execHookOnRenderClient.js'
 import { assertSingleInstance_onClientEntryServerRouting } from './utils.js'
 import { removeFoucBuster } from '../shared/removeFoucBuster.js'
-import { execHook } from '../../shared/hooks/execHook.js'
+import { execHook } from '../../shared-server-client/hooks/execHook.js'
 import { preparePageContextForPublicUsageClient } from './preparePageContextForPublicUsageClient.js'
 import { setVirtualFileExportsGlobalEntry } from '../shared/getGlobalContextClientInternalShared.js'
 // @ts-expect-error
