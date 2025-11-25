@@ -3,7 +3,6 @@ export { getPageContextFromHooks_serialized }
 export { getPageContextFromServerHooks }
 export { getPageContextFromClientHooks }
 export { setPageContextInitIsPassedToClient }
-export { execHookClient }
 export type { PageContextFromServerHooks }
 
 import {
