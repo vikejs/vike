@@ -240,7 +240,6 @@ function isAbortPageContext(pageContext: Record<string, unknown>): pageContext i
   return true
 }
 
-// TODO: rename logAbort logAbort
 function logAbort(
   err: ErrorAbort,
   isProduction: boolean,
