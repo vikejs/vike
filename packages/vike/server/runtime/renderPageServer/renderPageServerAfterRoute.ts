@@ -92,8 +92,6 @@ async function prerenderPage(
     PageConfigsLazy & {
       routeParams: Record<string, string>
       pageId: string
-      // TODO: remove all
-      _urlRewrite: null
       _httpRequestId: number | null
       _usesClientRouter: boolean
       _pageContextAlreadyProvidedByOnPrerenderHook?: true

@@ -32,9 +32,8 @@ import {
 } from './utils.js'
 import pc from '@brillout/picocolors'
 
-// For improved IntelliSense, we define the list of status code directly on redirect()'s argument type
+// For improved IntelliSense, we define the list of status codes directly on the argument types of redirect() and render()
 type RedirectStatusCode = number & Parameters<typeof redirect>[1]
-// For improved IntelliSense, we duplicate this list
 type AbortStatusCode = number & Parameters<InferTwoOverloads<typeof render>[0]>[0]
 
 type UrlRedirect = {
@@ -115,7 +114,7 @@ function render(abortStatusCode: 401 | 403 | 404 | 410 | 429 | 500 | 503, abortR
  * @param abortReason Sets `pageContext.abortReason` which is used by the error page to show a message to the user, see https://vike.dev/error-page
  */
 function render(url: `/${string}`, abortReason?: AbortReason): Error
-function render(urlOrStatusCode: string | number, abortReason?: unknown): Error {
+function render(urlOrStatusCode: string | AbortStatusCode, abortReason?: unknown): Error {
   const args = [typeof urlOrStatusCode === 'number' ? String(urlOrStatusCode) : JSON.stringify(urlOrStatusCode)]
   if (abortReason !== undefined) args.push(truncateString(JSON.stringify(abortReason), 30))
   const abortCaller = 'throw render()'
@@ -124,7 +123,7 @@ function render(urlOrStatusCode: string | number, abortReason?: unknown): Error 
 }
 
 function render_(
-  urlOrStatusCode: string | number,
+  urlOrStatusCode: string | AbortStatusCode,
   abortReason: unknown | undefined,
   abortCall: `render(${string})` | `RenderErrorPage()`,
   abortCaller: 'throw render()' | 'throw RenderErrorPage()',
@@ -185,7 +184,7 @@ type PageContextAbort = {
       _abortCall: `render(${string})` | `RenderErrorPage()`
       _abortCaller: 'throw render()' | 'throw RenderErrorPage()'
       abortReason: undefined | unknown
-      abortStatusCode: number
+      abortStatusCode: AbortStatusCode
     } & Omit<AbortUndefined, 'abortStatusCode'>)
 )
 type AbortUndefined = {
@@ -240,11 +239,7 @@ function isAbortPageContext(pageContext: Record<string, unknown>): pageContext i
   return true
 }
 
-function logAbort(
-  err: ErrorAbort,
-  isProduction: boolean,
-  pageContext: { urlOriginal: string; _urlRewrite: null | string },
-) {
+function logAbort(err: ErrorAbort, isProduction: boolean, pageContext: { urlOriginal: string; _urlRewrite?: string }) {
   if (isProduction) return
   const urlCurrent = pageContext._urlRewrite ?? pageContext.urlOriginal
   assert(urlCurrent)

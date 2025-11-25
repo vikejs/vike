@@ -21,7 +21,6 @@ async function createPageContextClientSide(urlOriginal: string) {
     _globalContext: globalContext,
     _pageFilesAll: globalContext._pageFilesAll, // TO-DO/next-major-release: remove
     _urlHandler: null,
-    _urlRewrite: null as null | string,
     _baseServer: baseServer,
   })
   const pageContextUrlComputed = getPageContextUrlComputed(pageContextCreated)
