@@ -485,10 +485,6 @@ See also: <Link href="/auth" />.
 
 With `standalone: true`, the build output directory ([`dist/`](https://vite.dev/config/build-options.html#build-outdir)) contains everything needed for deployment. This means that, in production, only the `dist/` directory is required (you can remove `node_modules/` and skip `$ npm install`).
 
-<Warning>
- This feature is experimental and may break upon any version update.
-</Warning>
-
 >  If the production code built with `standalone: true` fails to run with errors like `ENOENT: no such file or directory`, then disable standalone mode or replace
 >  the npm package throwing the error with another npm package. (The issue is that some npm package have dependencies that aren't explicit and, consequently, cannot be statically analyzed and cannot be included in the standalone bundle.)
 
@@ -503,9 +499,9 @@ export const config = {
   extends: [vikePhoton],
   photon: {
     server: {
-      id: 'server/index.ts',
-      standalone: true// [!code ++]
-    }
+      id: 'server/index.ts'
+    },
+    standalone: true// [!code ++]
   }
 } satisfies Config
 ```
@@ -521,20 +517,17 @@ export const config = {
   extends: [vikePhoton],
   photon: {
     server: {
-      id: 'server/index.ts',
-      standalone: {// [!code ++]
-        esbuild: {// [!code ++]
-          minify: true,// [!code ++]
-          // ... or any other esbuild option// [!code ++]
-        }// [!code ++]
-      }// [!code ++]
-    }
+      id: 'server/index.ts'
+    },
+    standalone: {// [!code ++]
+      singlefile: false, // Set to true to bundle into a single file// [!code ++]
+      minify: false,     // Set to true to minify output// [!code ++]
+      trace: true,       // Set to false to disable dependency tracing// [!code ++]
+      external: []       // Array of packages to exclude from bundling// [!code ++]
+    }// [!code ++]
   }
 } satisfies Config
 ```
-
-> Instead of using `standalone: true`, we recommend tools such as [`pnpm deploy --prod`](https://pnpm.io/cli/deploy).
-> This provides better control over packed files and ensures greater compatibility.
 
 
 ## HMR
