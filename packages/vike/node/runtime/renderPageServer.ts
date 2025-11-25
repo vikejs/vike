@@ -326,7 +326,6 @@ async function renderPageServerOnError(
     if (isNewError(errErrorPage, errNominalPage)) {
       logRuntimeError(errErrorPage, httpRequestId)
     }
-    // TODO: rename pageContextHttpErrorFallback pageContextHttpErrorFallback
     const pageContextHttpErrorFallback = getPageContextHttpResponseError(errNominalPage, pageContextBegin)
     return pageContextHttpErrorFallback
   }
