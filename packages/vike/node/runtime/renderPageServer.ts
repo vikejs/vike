@@ -52,7 +52,7 @@ import {
   createHttpResponseRedirect,
   createHttpResponsePageContextJson,
   createHttpResponseError,
-  createHttpResponseErrorWithoutGlobalContext,
+  createHttpResponseErrorFallback_noGlobalContext,
   createHttpResponseBaseIsMissing,
 } from './renderPageServer/createHttpResponse.js'
 import { logRuntimeError, logRuntimeInfo } from './loggerRuntime.js'
@@ -403,7 +403,7 @@ function getPageContextHttpResponseErrorWithoutGlobalContext(
   pageContextInit: PageContextInit,
 ): PageContextAfterRender {
   const pageContextWithError = createPageContextServerSideWithoutGlobalContext(pageContextInit)
-  const httpResponse = createHttpResponseErrorWithoutGlobalContext()
+  const httpResponse = createHttpResponseErrorFallback_noGlobalContext()
   objectAssign(pageContextWithError, {
     httpResponse,
     errorWhileRendering: err,

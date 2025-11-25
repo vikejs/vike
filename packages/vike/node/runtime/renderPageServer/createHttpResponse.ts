@@ -2,8 +2,8 @@ export { createHttpResponsePage }
 export { createHttpResponsePageContextJson }
 // TODO: rename createHttpResponseError createHttpResponseErrorFallback
 export { createHttpResponseError }
-// TODO: rename createHttpResponseErrorWithoutGlobalContext createHttpResponseErrorFallback_noGlobalContext
-export { createHttpResponseErrorWithoutGlobalContext }
+// TODO: rename createHttpResponseErrorFallback_noGlobalContext createHttpResponseErrorFallback_noGlobalContext
+export { createHttpResponseErrorFallback_noGlobalContext }
 export { createHttpResponseRedirect }
 export { createHttpResponse404 }
 export { createHttpResponseBaseIsMissing }
@@ -122,7 +122,7 @@ function createHttpResponseError(pageContext: {
   })()
   return createHttpResponseError_(reason)
 }
-function createHttpResponseErrorWithoutGlobalContext() {
+function createHttpResponseErrorFallback_noGlobalContext() {
   return createHttpResponseError_('no error page (https://vike.dev/error-page) could be rendered')
 }
 function createHttpResponseError_(reason: string): HttpResponse {
