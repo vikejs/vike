@@ -1,4 +1,4 @@
-import { renderPageServer } from './index.js'
+import { renderPageServer } from './renderPageServer.js'
 
 export default async function universalVikeHandler(
   request: Request,
