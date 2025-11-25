@@ -248,7 +248,6 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
       )
     },
   },
-  // TODO rename entries comments
   // TO-DO/soon/cumulative-hooks: remove and replace with new computed prop `clientOnlyHooks: string[]` (see other TO-DO/soon/cumulative-hooks comments)
   onBeforeRenderEnv: {
     env: { client: true },
