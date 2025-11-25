@@ -226,6 +226,7 @@ async function renderPageServerEntryRecursive(
   objectAssign(pageContextNominalPageBegin, pageContextFromRoute)
   objectAssign(pageContextNominalPageBegin, { is404: pageContextNominalPageBegin.pageId ? null : true })
   if (pageContextNominalPageBegin.pageId === null) {
+    await log404(pageContextNominalPageBegin)
     const errorPageId = getErrorPageId(
       pageContextNominalPageBegin._globalContext._pageFilesAll,
       pageContextNominalPageBegin._globalContext._pageConfigs,
@@ -248,12 +249,6 @@ async function renderPageServerEntryRecursive(
     return await onError(err)
   }
   assert(pageContextNominalPageBegin === (pageContextNominalPageSuccess as any))
-
-  // Log upon 404
-  if (pageContextNominalPageSuccess.is404) {
-    await log404(pageContextNominalPageSuccess)
-  }
-
   return pageContextNominalPageSuccess
 }
 
