@@ -2,8 +2,8 @@ export { assertV1Design }
 
 // TO-DO/next-major-release: remove
 
-import { PageFile } from '../../shared-server-client/getPageFiles.js'
-import type { PageConfigBuildTime } from '../../types/PageConfig.js'
+import { PageFile } from '../shared-server-client/getPageFiles.js'
+import type { PageConfigBuildTime } from '../types/PageConfig.js'
 import { assert, assertUsage, assertWarning, isNotNullish, unique } from './utils.js'
 
 function assertV1Design(pageConfigs: PageConfigBuildTime[] | boolean, pageFilesAll: PageFile[] | boolean): void {

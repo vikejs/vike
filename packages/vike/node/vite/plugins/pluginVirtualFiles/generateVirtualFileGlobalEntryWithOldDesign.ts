@@ -15,7 +15,7 @@ import {
   isVersionMatch,
   assertWarning,
 } from '../../utils.js'
-import { parseVirtualFileId } from '../../../../server/shared/virtualFileId.js'
+import { parseVirtualFileId } from '../../../../shared-server-node/virtualFileId.js'
 import { version as viteVersion } from 'vite'
 import { type FileType, fileTypes } from '../../../../shared-server-client/getPageFiles/fileTypes.js'
 import path from 'node:path'

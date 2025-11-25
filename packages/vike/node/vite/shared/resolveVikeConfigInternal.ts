@@ -109,7 +109,7 @@ import {
   getProxyForPublicUsage,
   type DangerouslyUseInternals,
 } from '../../../shared-server-client/getProxyForPublicUsage.js'
-import { setVikeConfigError } from '../../../server/shared/getVikeConfigError.js'
+import { setVikeConfigError } from '../../../shared-server-node/getVikeConfigError.js'
 assertIsNotProductionRuntime()
 
 const globalObject = getGlobalObject('vite/shared/resolveVikeConfigInternal.ts', {

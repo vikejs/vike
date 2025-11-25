@@ -24,14 +24,14 @@ import {
   isVirtualFileId,
   removeVirtualFileIdPrefix,
 } from '../utils.js'
-import { extractAssetsAddQuery } from '../../../server/shared/extractAssetsQuery.js'
+import { extractAssetsAddQuery } from '../../../shared-server-node/extractAssetsQuery.js'
 import { isAsset } from '../shared/isAsset.js'
 import { getImportStatements, type ImportStatement } from '../shared/parseEsModule.js'
 import type { Rollup } from 'vite'
 import pc from '@brillout/picocolors'
 import { handleAssetsManifest_isFixEnabled } from './build/handleAssetsManifest.js'
 import { getVikeConfigInternal, type VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
-import { assertV1Design } from '../../../server/shared/assertV1Design.js'
+import { assertV1Design } from '../../../shared-server-node/assertV1Design.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 import { resolveIncludeAssetsImportedByServer } from '../../../server/runtime/renderPageServer/getPageAssets/retrievePageAssetsProd.js'

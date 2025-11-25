@@ -7,7 +7,7 @@ import {
   type AnalysisResult,
   analyzePageClientSide,
 } from '../../../shared-server-client/getPageFiles/analyzePageClientSide.js'
-import { generateVirtualFileId } from '../../shared/virtualFileId.js'
+import { generateVirtualFileId } from '../../../shared-server-node/virtualFileId.js'
 import { analyzeClientSide } from '../../../shared-server-client/getPageFiles/analyzeClientSide.js'
 import { getConfigValueRuntime } from '../../../shared-server-client/page-configs/getConfigValueRuntime.js'
 import type { PageContext_loadPageConfigsLazyServerSide } from './loadPageConfigsLazyServerSide.js'
