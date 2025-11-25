@@ -52,8 +52,8 @@ function testGlobalContext() {
   })
 }
 
-// Unit tests at /vike/node/runtime/renderPage/resolveRedirects.spec.ts
-// https://github.com/vikejs/vike/blob/0e260ad6e64e98952138a90950e10e2d59d94a36/vike/node/runtime/renderPage/resolveRedirects.spec.ts
+// Unit tests at /vike/server/runtime/renderPage/resolveRedirects.spec.ts
+// https://github.com/vikejs/vike/blob/0e260ad6e64e98952138a90950e10e2d59d94a36/vike/server/runtime/renderPage/resolveRedirects.spec.ts
 function testRedirectMailto(isDev: boolean) {
   test('+redirects', async () => {
     await testRedirect('/about-us', '/about', isDev)
