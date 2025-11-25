@@ -46,7 +46,7 @@ import {
   type ErrorAbort,
   getPageContextAddendumAbort,
   isAbortError,
-  logAbortErrorHandled,
+  logAbort,
   type PageContextAbort,
   type PageContextAborted,
 } from '../../shared/route/abort.js'
@@ -450,7 +450,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     pageContext: PageContextBegin,
   ): Promise<{ skip: true; pageContextAbort?: undefined } | { pageContextAbort: PageContextAbort; skip?: undefined }> {
     const errAbort = err
-    logAbortErrorHandled(err, !import.meta.env.DEV, pageContext)
+    logAbort(err, !import.meta.env.DEV, pageContext)
     const pageContextAbort = errAbort._pageContextAbort
 
     addNewPageContextAborted(pageContextsAborted, pageContext, pageContextAbort)

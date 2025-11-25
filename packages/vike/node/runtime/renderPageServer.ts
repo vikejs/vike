@@ -36,7 +36,7 @@ import {
   ErrorAbort,
   getPageContextAddendumAbort,
   isAbortError,
-  logAbortErrorHandled,
+  logAbort,
   type PageContextAborted,
   addNewPageContextAborted,
 } from '../../shared/route/abort.js'
@@ -605,7 +605,7 @@ async function handleAbort(
   pageContextErrorPageInit: PageContextErrorPageInit,
   globalContext: GlobalContextServerInternal,
 ) {
-  logAbortErrorHandled(errAbort, globalContext._isProduction, pageContextNominalPageBegin)
+  logAbort(errAbort, globalContext._isProduction, pageContextNominalPageBegin)
   const pageContextAbort = errAbort._pageContextAbort
   assert(pageContextAbort)
 

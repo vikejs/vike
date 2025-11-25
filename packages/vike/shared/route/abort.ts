@@ -3,7 +3,7 @@ export { render }
 export { RenderErrorPage }
 export { isAbortError }
 export { isAbortPageContext }
-export { logAbortErrorHandled }
+export { logAbort }
 export { getPageContextAddendumAbort }
 export { addNewPageContextAborted }
 export { AbortRender }
@@ -240,8 +240,8 @@ function isAbortPageContext(pageContext: Record<string, unknown>): pageContext i
   return true
 }
 
-// TODO: rename logAbortErrorHandled logAbort
-function logAbortErrorHandled(
+// TODO: rename logAbort logAbort
+function logAbort(
   err: ErrorAbort,
   isProduction: boolean,
   pageContext: { urlOriginal: string; _urlRewrite: null | string },
