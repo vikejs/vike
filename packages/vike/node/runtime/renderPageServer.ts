@@ -1,5 +1,5 @@
 export { renderPage }
-export { renderPage_addAsyncHookwrapper }
+export { renderPageServer_addAsyncHookwrapper }
 export type { PageContextInit }
 export type { PageContextBegin }
 export type { PageContextInternalServerAfterRender }
@@ -119,7 +119,7 @@ async function renderPage<PageContextUserAdded extends {}, PageContextInitUser e
 }
 
 // Add node:async_hooks wrapper
-function renderPage_addAsyncHookwrapper(wrapper: typeof globalObject.asyncHookWrapper) {
+function renderPageServer_addAsyncHookwrapper(wrapper: typeof globalObject.asyncHookWrapper) {
   globalObject.asyncHookWrapper = wrapper
 }
 // Fallback wrapper if node:async_hooks isn't available

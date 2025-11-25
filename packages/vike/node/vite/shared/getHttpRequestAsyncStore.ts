@@ -12,7 +12,7 @@
 export { getHttpRequestAsyncStore }
 export { installHttpRequestAsyncStore }
 
-import { renderPage_addAsyncHookwrapper } from '../../runtime/renderPageServer.js'
+import { renderPageServer_addAsyncHookwrapper } from '../../runtime/renderPageServer.js'
 import { assert, assertIsNotProductionRuntime, getGlobalObject, isObject, unique } from '../utils.js'
 import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hooks'
 import { getConfigBuildErrorFormatted } from './resolveVikeConfigInternal/transpileAndExecuteFile.js'
@@ -41,7 +41,7 @@ async function installHttpRequestAsyncStore(): Promise<void> {
     return
   }
   globalObject.asyncLocalStorage = new mod.AsyncLocalStorage()
-  renderPage_addAsyncHookwrapper(async (httpRequestId, renderPage) => {
+  renderPageServer_addAsyncHookwrapper(async (httpRequestId, renderPage) => {
     assert(globalObject.asyncLocalStorage)
 
     const loggedErrors = new Set<unknown>()
