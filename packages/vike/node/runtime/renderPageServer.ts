@@ -305,9 +305,12 @@ async function renderPageServerOnError(
         pageContextErrorPageInit,
         globalContext,
       )
-      // TODO: minor refactor
-      // throw render(abortStatusCode)
-      if (!handled.pageContextReturn) {
+      if (handled.pageContextReturn) {
+        // - throw redirect()
+        // - throw render(url)
+        return handled.pageContextReturn
+      } else {
+        // - throw render(abortStatusCode)
         const pageContextAbort = errErrorPage._pageContextAbort
         assertWarning(
           false,
@@ -320,8 +323,6 @@ async function renderPageServerOnError(
         const pageContextHttpWithError = getPageContextHttpResponseError(errNominalPage, pageContextBegin)
         return pageContextHttpWithError
       }
-      // `throw redirect()` / `throw render(url)`
-      return handled.pageContextReturn
     }
     if (isNewError(errErrorPage, errNominalPage)) {
       logRuntimeError(errErrorPage, httpRequestId)
