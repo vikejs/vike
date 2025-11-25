@@ -8,7 +8,7 @@ import { getViteConfigRuntime } from '../../shared/getViteConfigRuntime.js'
 
 /* We cannot use [`filter.id`](https://rolldown.rs/plugins/hook-filters) because Vite's optimizeDeps bundles the package `vike` into node_modules/.vite/deps_ssr/chunk-WBC5FHD7.js
 const distFileIsNonRunnableDev = requireResolveDistFile('dist/esm/utils/isNonRunnableDev.js')
-const distFileGlobalContext = requireResolveDistFile('dist/esm/node/runtime/globalContext.js')
+const distFileGlobalContext = requireResolveDistFile('dist/esm/server/runtime/globalContext.js')
 const filterRolldown = {
   id: {
     include: [distFileIsNonRunnableDev, distFileGlobalContext].map(
