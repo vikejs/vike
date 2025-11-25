@@ -1,4 +1,4 @@
-export { getPageContextFromHooks_isHydration }
+export { getPageContextFromClientHooks_firstRender }
 export { getPageContextFromHooks_serialized }
 export { getPageContextFromServerHooks }
 export { getPageContextFromClientHooks }
@@ -62,7 +62,7 @@ function getPageContextFromHooks_serialized(): PageContextSerialized & {
   })
   return pageContextSerialized
 }
-async function getPageContextFromHooks_isHydration(
+async function getPageContextFromClientHooks_firstRender(
   pageContext: PageContextSerialized &
     PageContextBegin &
     PageContextConfig & { _hasPageContextFromServer: true } & PageContextForPublicUsageClient,

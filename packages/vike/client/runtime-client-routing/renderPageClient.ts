@@ -20,7 +20,7 @@ import {
 import {
   getPageContextFromClientHooks,
   getPageContextFromServerHooks,
-  getPageContextFromHooks_isHydration,
+  getPageContextFromClientHooks_firstRender,
   getPageContextFromHooks_serialized,
   type PageContextFromServerHooks,
   setPageContextInitIsPassedToClient,
@@ -276,9 +276,9 @@ async function renderPageClient(renderArgs: RenderArgs) {
     // Get pageContext from hooks (fetched from server, and/or directly called on the client-side)
     if (isFirstRender) {
       assert(hasProp(pageContext, '_hasPageContextFromServer', 'true'))
-      let pageContextAugmented: Awaited<ReturnType<typeof getPageContextFromHooks_isHydration>>
+      let pageContextAugmented: Awaited<ReturnType<typeof getPageContextFromClientHooks_firstRender>>
       try {
-        pageContextAugmented = await getPageContextFromHooks_isHydration(pageContext)
+        pageContextAugmented = await getPageContextFromClientHooks_firstRender(pageContext)
       } catch (err) {
         await onError(err)
         return
