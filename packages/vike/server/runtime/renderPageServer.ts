@@ -250,7 +250,7 @@ async function renderPageServerEntryRecursive(
   assert(pageContextNominalPageBegin === (pageContextNominalPageSuccess as any))
 
   // Log upon 404
-  if (pageContextNominalPageSuccess.is404 === true) {
+  if (pageContextNominalPageSuccess.is404) {
     await log404(pageContextNominalPageSuccess)
   }
 
