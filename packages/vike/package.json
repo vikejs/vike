@@ -95,9 +95,9 @@
       "default": "./dist/esm/server/runtime/universal-middleware.js"
     },
     "./__internal": {
-      "node": "./dist/esm/__internal/index.js",
-      "types": "./dist/esm/__internal/index.d.ts",
-      "default": "./dist/esm/__internal/index.js"
+      "node": "./dist/esm/server/__internal/index.js",
+      "types": "./dist/esm/server/__internal/index.d.ts",
+      "default": "./dist/esm/server/__internal/index.js"
     },
     "./__internal/setup": {
       "node": "./dist/esm/server/runtime/page-files/setup.js",
@@ -205,7 +205,7 @@
         "./dist/esm/server/runtime/universal-middleware.d.ts"
       ],
       "__internal": [
-        "./dist/esm/__internal/index.d.ts"
+        "./dist/esm/server/__internal/index.d.ts"
       ],
       "__internal/setup": [
         "./dist/esm/server/runtime/page-files/setup.d.ts"
