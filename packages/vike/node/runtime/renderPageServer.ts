@@ -51,7 +51,7 @@ import {
   createHttpResponse404,
   createHttpResponseRedirect,
   createHttpResponsePageContextJson,
-  createHttpResponseError,
+  createHttpResponseErrorFallback,
   createHttpResponseErrorFallback_noGlobalContext,
   createHttpResponseBaseIsMissing,
 } from './renderPageServer/createHttpResponse.js'
@@ -391,7 +391,7 @@ function prettyUrl(url: string) {
 function getPageContextHttpResponseError(err: unknown, pageContextBegin: PageContextBegin) {
   // TODO rename pageContextWithError pageContextErrorFallback
   const pageContextWithError = forkPageContext(pageContextBegin)
-  const httpResponse = createHttpResponseError(pageContextBegin)
+  const httpResponse = createHttpResponseErrorFallback(pageContextBegin)
   objectAssign(pageContextWithError, {
     httpResponse,
     errorWhileRendering: err,

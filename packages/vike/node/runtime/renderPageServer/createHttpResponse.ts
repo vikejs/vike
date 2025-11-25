@@ -1,7 +1,7 @@
 export { createHttpResponsePage }
 export { createHttpResponsePageContextJson }
-// TODO: rename createHttpResponseError createHttpResponseErrorFallback
-export { createHttpResponseError }
+// TODO: rename createHttpResponseErrorFallback createHttpResponseErrorFallback
+export { createHttpResponseErrorFallback }
 export { createHttpResponseErrorFallback_noGlobalContext }
 export { createHttpResponseRedirect }
 export { createHttpResponse404 }
@@ -105,7 +105,7 @@ function createHttpResponseBaseIsMissing(urlOriginal: string, baseServer: string
   )
   return httpResponse
 }
-function createHttpResponseError(pageContext: {
+function createHttpResponseErrorFallback(pageContext: {
   _globalContext: GlobalContextServerInternal
 }) {
   const reason = (() => {
