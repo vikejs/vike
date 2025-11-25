@@ -4,8 +4,8 @@ export { setGetClientEntrySrcDev }
 import { assert, getGlobalObject, styleFileRE } from '../../utils.js'
 import type { ModuleNode, ViteDevServer } from 'vite'
 import type { ClientDependency } from '../../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
-import { parseVirtualFileId } from '../../../shared/virtualFileId.js'
-import type { GetClientEntrySrcDev } from '../../../vite/shared/getClientEntrySrcDev.js'
+import { parseVirtualFileId } from '../../../../node/shared/virtualFileId.js'
+import type { GetClientEntrySrcDev } from '../../../../node/vite/shared/getClientEntrySrcDev.js'
 
 const globalObject = getGlobalObject('getPageAssets/retrievePageAssetsDev.ts', {
   // We cannot define getClientEntrySrcDev() in this file because it depends on utils/requireResolve.ts which isn't available in production

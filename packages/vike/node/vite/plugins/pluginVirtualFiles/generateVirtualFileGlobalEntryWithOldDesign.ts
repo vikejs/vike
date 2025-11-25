@@ -23,7 +23,7 @@ import { generateVirtualFileGlobalEntry } from './generateVirtualFileGlobalEntry
 import { getVikeConfigInternal, isV1Design as isV1Design_ } from '../../shared/resolveVikeConfigInternal.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
 import { isViteServerSide_extraSafe } from '../../shared/isViteServerSide.js'
-import { resolveIncludeAssetsImportedByServer } from '../../../runtime/renderPageServer/getPageAssets/retrievePageAssetsProd.js'
+import { resolveIncludeAssetsImportedByServer } from '../../../../server/runtime/renderPageServer/getPageAssets/retrievePageAssetsProd.js'
 import type { Environment } from 'vite'
 
 type GlobRoot = {

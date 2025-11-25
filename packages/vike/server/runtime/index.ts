@@ -7,13 +7,13 @@ export { escapeInject, dangerouslySkipEscape } from './renderPageServer/html/ren
 export { pipeWebStream, pipeNodeStream, pipeStream, stampPipe } from './renderPageServer/html/stream.js'
 export { PROJECT_VERSION as version } from './utils.js'
 export { getGlobalContext, getGlobalContextSync, getGlobalContextAsync } from './globalContext.js'
-export { createDevMiddleware } from '../runtime-dev/index.js'
+export { createDevMiddleware } from '../../node/runtime-dev/index.js'
 
 // TO-DO/next-major-release: remove
 // Deprecated exports
 export * from '../../types/index-dreprecated.js'
 export { injectAssets__public as _injectAssets } from './renderPageServer/html/injectAssets/injectAssets__public.js'
-export { createPageRenderer } from '../createPageRenderer.js'
+export { createPageRenderer } from '../../node/createPageRenderer.js'
 import { assertWarning } from './utils.js'
 import pc from '@brillout/picocolors'
 import { RenderErrorPage as RenderErrorPage_ } from '../../shared/route/abort.js'

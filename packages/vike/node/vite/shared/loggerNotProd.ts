@@ -30,8 +30,8 @@ export type { LogType }
 export type { LogCategory }
 
 import { isAbortError } from '../../../shared/route/abort.js'
-import { getViteConfig, vikeConfigErrorRecoverMsg } from '../../runtime/globalContext.js'
-import { overwriteRuntimeProductionLogger } from '../../runtime/loggerRuntime.js'
+import { getViteConfig, vikeConfigErrorRecoverMsg } from '../../../server/runtime/globalContext.js'
+import { overwriteRuntimeProductionLogger } from '../../../server/runtime/loggerRuntime.js'
 import {
   assert,
   assertIsNotProductionRuntime,
@@ -50,8 +50,8 @@ import {
 } from './resolveVikeConfigInternal/transpileAndExecuteFile.js'
 import { logWithVikeTag, logWithViteTag, logDirectly, applyViteSourceMapToStackTrace } from './loggerNotProd/log.js'
 import pc from '@brillout/picocolors'
-import { setAlreadyLogged } from '../../runtime/renderPageServer/isNewError.js'
-import { onRuntimeError } from '../../runtime/renderPageServer/loggerProd.js'
+import { setAlreadyLogged } from '../../../server/runtime/renderPageServer/isNewError.js'
+import { onRuntimeError } from '../../../server/runtime/renderPageServer/loggerProd.js'
 import { isUserHookError } from '../../../shared/hooks/execHook.js'
 
 assertIsNotProductionRuntime()

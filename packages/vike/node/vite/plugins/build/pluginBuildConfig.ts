@@ -30,7 +30,7 @@ import {
   handleAssetsManifest_getBuildConfig,
   handleAssetsManifest_alignCssTarget,
 } from './handleAssetsManifest.js'
-import { resolveIncludeAssetsImportedByServer } from '../../../runtime/renderPageServer/getPageAssets/retrievePageAssetsProd.js'
+import { resolveIncludeAssetsImportedByServer } from '../../../../server/runtime/renderPageServer/getPageAssets/retrievePageAssetsProd.js'
 
 function pluginBuildConfig(): Plugin[] {
   return [

@@ -58,13 +58,13 @@ import {
 import type { ViteManifest } from '../../types/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
-import { virtualFileIdGlobalEntryServer } from '../shared/virtualFileId.js'
+import { virtualFileIdGlobalEntryServer } from '../../node/shared/virtualFileId.js'
 import pc from '@brillout/picocolors'
 import type { GlobalConfigPublic } from '../../shared/page-configs/resolveVikeConfigPublic.js'
 import { loadPageRoutes, loadPageRoutesSync, type PageRoutes } from '../../shared/route/loadPageRoutes.js'
-import { assertV1Design } from '../shared/assertV1Design.js'
-import { resolveBase } from '../shared/resolveBase.js'
-import type { ViteConfigRuntime } from '../vite/shared/getViteConfigRuntime.js'
+import { assertV1Design } from '../../node/shared/assertV1Design.js'
+import { resolveBase } from '../../node/shared/resolveBase.js'
+import type { ViteConfigRuntime } from '../../node/vite/shared/getViteConfigRuntime.js'
 import {
   createGlobalContextShared,
   getGlobalContextSyncErrMsg,
@@ -73,11 +73,11 @@ import {
 import type { GlobalContext, GlobalContextServer } from '../../types/GlobalContext.js'
 import { prepareGlobalContextForPublicUsage } from '../../shared/prepareGlobalContextForPublicUsage.js'
 import { logRuntimeError, logRuntimeInfo } from './loggerRuntime.js'
-import { getVikeConfigErrorBuild, setVikeConfigError } from '../shared/getVikeConfigError.js'
+import { getVikeConfigErrorBuild, setVikeConfigError } from '../../node/shared/getVikeConfigError.js'
 import { hasAlreadyLogged } from './renderPageServer/isNewError.js'
 import type { Hook } from '../../shared/hooks/getHook.js'
-import type { ViteRPC } from '../vite/plugins/non-runnable-dev/pluginViteRPC.js'
-import { getVikeApiOperation } from '../api/context.js'
+import type { ViteRPC } from '../../node/vite/plugins/non-runnable-dev/pluginViteRPC.js'
+import { getVikeApiOperation } from '../../node/api/context.js'
 import type { PrerenderContext } from '../../types/index.js'
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<

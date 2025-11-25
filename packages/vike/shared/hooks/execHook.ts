@@ -20,7 +20,7 @@ import type { PageContextConfig } from '../getPageFiles.js'
 import { getHookFromPageConfigGlobalCumulative, getHookFromPageContextNew } from './getHook.js'
 import type { HookName, HookNameGlobal } from '../../types/Config.js'
 import type { PageConfigGlobalRuntime } from '../../types/PageConfig.js'
-import type { PageContextForPublicUsageServer } from '../../node/runtime/renderPageServer/preparePageContextForPublicUsageServer.js'
+import type { PageContextForPublicUsageServer } from '../../server/runtime/renderPageServer/preparePageContextForPublicUsageServer.js'
 import type { PageContextForPublicUsageClientShared } from '../../client/shared/preparePageContextForPublicUsageClientShared.js'
 import {
   type PageContextPrepareMinimum,

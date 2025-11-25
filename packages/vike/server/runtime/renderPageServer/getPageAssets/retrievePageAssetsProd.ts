@@ -4,7 +4,7 @@ export { resolveIncludeAssetsImportedByServer }
 import { assert, isImportPathNpmPackage } from '../../utils.js'
 import type { ViteManifest } from '../../../../types/ViteManifest.js'
 import { getManifestEntry } from './getManifestEntry.js'
-import { extractAssetsAddQuery } from '../../../shared/extractAssetsQuery.js'
+import { extractAssetsAddQuery } from '../../../../node/shared/extractAssetsQuery.js'
 import type { ClientDependency } from '../../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import type { ConfigResolved } from '../../../../types/index.js'
 

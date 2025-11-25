@@ -34,7 +34,7 @@ import { getVikeConfigInternal, type VikeConfigInternal } from '../shared/resolv
 import { assertV1Design } from '../../shared/assertV1Design.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
-import { resolveIncludeAssetsImportedByServer } from '../../runtime/renderPageServer/getPageAssets/retrievePageAssetsProd.js'
+import { resolveIncludeAssetsImportedByServer } from '../../../server/runtime/renderPageServer/getPageAssets/retrievePageAssetsProd.js'
 type ResolvedId = Rollup.ResolvedId
 
 const extractAssetsRE = /(\?|&)extractAssets(?:&|$)/

@@ -8,7 +8,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
 import { isUsingClientRouter } from '../pluginExtractExportNames.js'
-import { assertBuildInfo, type BuildInfo } from '../../../runtime/globalContext.js'
+import { assertBuildInfo, type BuildInfo } from '../../../../server/runtime/globalContext.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
 import { getViteConfigRuntime } from '../../shared/getViteConfigRuntime.js'
 type Bundle = Rollup.OutputBundle
