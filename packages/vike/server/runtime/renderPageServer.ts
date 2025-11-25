@@ -224,7 +224,8 @@ async function renderPageServerEntryRecursive(
     return await onError(err)
   }
   objectAssign(pageContextNominalPageBegin, pageContextFromRoute)
-  if (pageContextNominalPageBegin.pageId) {
+  if (pageContextNominalPageBegin.pageId !== null) {
+    assert(pageContextNominalPageBegin.pageId)
     objectAssign(pageContextNominalPageBegin, { is404: false })
   } else {
     objectAssign(pageContextNominalPageBegin, { is404: true })
@@ -234,7 +235,7 @@ async function renderPageServerEntryRecursive(
       pageContextNominalPageBegin._globalContext._pageConfigs,
     )
     if (!errorPageId) {
-      assert(hasProp(pageContextNominalPageBegin, 'pageId', 'null'))
+      assert(hasProp(pageContextNominalPageBegin, 'pageId', 'null')) // Help TS
       return await handleErrorWithoutErrorPage(pageContextNominalPageBegin)
     }
     objectAssign(pageContextNominalPageBegin, { pageId: errorPageId })
