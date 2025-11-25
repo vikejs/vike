@@ -21,7 +21,7 @@ import {
   getPageContextFromClientHooks,
   getPageContextFromServerHooks,
   getPageContextFromClientHooks_firstRender,
-  getPageContextFromHooks_serialized,
+  getPageContextFromServerHooks_firstRender,
   type PageContextFromServerHooks,
   setPageContextInitIsPassedToClient,
 } from './getPageContextFromHooks.js'
@@ -182,7 +182,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     // Get pageContext serialized in <script id="vike_pageContext" type="application/json">
     if (isFirstRender) {
-      const pageContextSerialized = getPageContextFromHooks_serialized()
+      const pageContextSerialized = getPageContextFromServerHooks_firstRender()
       // TO-DO/eventually: create helper assertPageContextFromHook()
       assert(!('urlOriginal' in pageContextSerialized))
       objectAssign(pageContext, pageContextSerialized)

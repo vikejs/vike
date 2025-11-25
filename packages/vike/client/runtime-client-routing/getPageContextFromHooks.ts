@@ -1,5 +1,5 @@
 export { getPageContextFromClientHooks_firstRender }
-export { getPageContextFromHooks_serialized }
+export { getPageContextFromServerHooks_firstRender }
 export { getPageContextFromServerHooks }
 export { getPageContextFromClientHooks }
 export { setPageContextInitIsPassedToClient }
@@ -51,7 +51,7 @@ type PageContextSerialized = {
   pageId: string
   _hasPageContextFromServer: true
 }
-function getPageContextFromHooks_serialized(): PageContextSerialized & {
+function getPageContextFromServerHooks_firstRender(): PageContextSerialized & {
   routeParams: Record<string, string>
   _hasPageContextFromServer: true
 } {
