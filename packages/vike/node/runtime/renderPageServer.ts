@@ -386,7 +386,6 @@ function prettyUrl(url: string) {
   return pc.bold(url)
 }
 
-// TODO: rename getPageContextHttpErrorFallback getPageContextHttpErrorFallbackFallback
 function getPageContextHttpErrorFallback(err: unknown, pageContextBegin: PageContextBegin) {
   const pageContextHttpErrorFallback = forkPageContext(pageContextBegin)
   const httpResponse = createHttpResponseErrorFallback(pageContextBegin)
