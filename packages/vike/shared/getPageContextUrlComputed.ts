@@ -107,7 +107,7 @@ function getUrlParsed(pageContext: PageContextUrlSource) {
     isBaseToBeRemoved = false
     assertUrlResolved(2)
   } else {
-    // Set by renderPage()
+    // Set by renderPageServer()
     urlResolved = pageContext.urlOriginal
     isBaseToBeRemoved = true
     assertUrlResolved(3)

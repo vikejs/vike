@@ -41,7 +41,7 @@ function determine(pageFilesAll: PageFile[], pageId: string, envIsClient: boolea
   const rendererFileIso = getRendererFile(true)
 
   // A page can load multiple `_default.page.*` files of the same `fileType`. In other words: non-renderer `_default.page.*` files are cumulative.
-  // The exception being HTML-only pages because we pick a single page file as client entry. We handle that use case at `renderPage()`.
+  // The exception being HTML-only pages because we pick a single page file as client entry. We handle that use case at `renderPageServer()`.
   const defaultFilesNonRenderer = pageFilesRelevant.filter(
     (p) => p.isDefaultPageFile && !p.isRendererPageFile && (p.isEnv(env) || p.isEnv('CLIENT_AND_SERVER')),
   )
