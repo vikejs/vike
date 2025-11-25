@@ -4,7 +4,7 @@ export type { PageContextInit }
 export type { PageContextBegin }
 export type { PageContextInternalServerAfterRender }
 
-import { renderPageAfterRoute } from './renderPageServer/renderPageAfterRoute.js'
+import { renderPageServerAfterRoute } from './renderPageServer/renderPageServerAfterRoute.js'
 import {
   createPageContextServerSide,
   createPageContextServerSideWithoutGlobalContext,
@@ -292,9 +292,9 @@ async function renderPageOnError(
     objectAssign(pageContextErrorPageInit, { pageId: errorPageId })
   }
 
-  let pageContextErrorPage: undefined | Awaited<ReturnType<typeof renderPageAfterRoute>>
+  let pageContextErrorPage: undefined | Awaited<ReturnType<typeof renderPageServerAfterRoute>>
   try {
-    pageContextErrorPage = await renderPageAfterRoute(pageContextErrorPageInit)
+    pageContextErrorPage = await renderPageServerAfterRoute(pageContextErrorPageInit)
   } catch (errErrorPage) {
     // Handle `throw redirect()` and `throw render()` while rendering error page
     if (isAbortError(errErrorPage)) {
@@ -440,7 +440,7 @@ async function renderPageNominal(pageContext: PageContextBegin) {
   assert(pageContext.errorWhileRendering === null)
 
   // Render
-  const pageContextAfterRender = await renderPageAfterRoute(pageContext)
+  const pageContextAfterRender = await renderPageServerAfterRoute(pageContext)
   assert(pageContext === pageContextAfterRender)
   return pageContextAfterRender
 }
