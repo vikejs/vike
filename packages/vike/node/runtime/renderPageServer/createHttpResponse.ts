@@ -1,6 +1,5 @@
 export { createHttpResponsePage }
 export { createHttpResponsePageContextJson }
-// TODO: rename createHttpResponseErrorFallback createHttpResponseErrorFallback
 export { createHttpResponseErrorFallback }
 export { createHttpResponseErrorFallback_noGlobalContext }
 export { createHttpResponseRedirect }
