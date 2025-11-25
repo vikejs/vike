@@ -50,8 +50,8 @@ import {
 } from './resolveVikeConfigInternal/transpileAndExecuteFile.js'
 import { logWithVikeTag, logWithViteTag, logDirectly, applyViteSourceMapToStackTrace } from './loggerNotProd/log.js'
 import pc from '@brillout/picocolors'
-import { setAlreadyLogged } from '../../runtime/renderPage/isNewError.js'
-import { onRuntimeError } from '../../runtime/renderPage/loggerProd.js'
+import { setAlreadyLogged } from '../../runtime/renderPageServer/isNewError.js'
+import { onRuntimeError } from '../../runtime/renderPageServer/loggerProd.js'
 import { isUserHookError } from '../../../shared/hooks/execHook.js'
 
 assertIsNotProductionRuntime()

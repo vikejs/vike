@@ -74,7 +74,7 @@ import type { GlobalContext, GlobalContextServer } from '../../types/GlobalConte
 import { prepareGlobalContextForPublicUsage } from '../../shared/prepareGlobalContextForPublicUsage.js'
 import { logRuntimeError, logRuntimeInfo } from './loggerRuntime.js'
 import { getVikeConfigErrorBuild, setVikeConfigError } from '../shared/getVikeConfigError.js'
-import { hasAlreadyLogged } from './renderPage/isNewError.js'
+import { hasAlreadyLogged } from './renderPageServer/isNewError.js'
 import type { Hook } from '../../shared/hooks/getHook.js'
 import type { ViteRPC } from '../vite/plugins/non-runnable-dev/pluginViteRPC.js'
 import { getVikeApiOperation } from '../api/context.js'

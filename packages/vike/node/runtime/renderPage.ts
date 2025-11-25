@@ -4,11 +4,11 @@ export type { PageContextInit }
 export type { PageContextBegin }
 export type { PageContextInternalServerAfterRender }
 
-import { renderPageAfterRoute } from './renderPage/renderPageAfterRoute.js'
+import { renderPageAfterRoute } from './renderPageServer/renderPageAfterRoute.js'
 import {
   createPageContextServerSide,
   createPageContextServerSideWithoutGlobalContext,
-} from './renderPage/createPageContextServerSide.js'
+} from './renderPageServer/createPageContextServerSide.js'
 import { route } from '../../shared/route/index.js'
 import {
   assert,
@@ -45,7 +45,7 @@ import {
   initGlobalContext_renderPage,
   type GlobalContextServerInternal,
 } from './globalContext.js'
-import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl.js'
+import { handlePageContextRequestUrl } from './renderPageServer/handlePageContextRequestUrl.js'
 import {
   type HttpResponse,
   createHttpResponse404,
@@ -54,21 +54,21 @@ import {
   createHttpResponseError,
   createHttpResponseErrorWithoutGlobalContext,
   createHttpResponseBaseIsMissing,
-} from './renderPage/createHttpResponse.js'
+} from './renderPageServer/createHttpResponse.js'
 import { logRuntimeError, logRuntimeInfo } from './loggerRuntime.js'
-import { isNewError } from './renderPage/isNewError.js'
-import { assertArguments } from './renderPage/assertArguments.js'
-import { log404 } from './renderPage/log404/index.js'
+import { isNewError } from './renderPageServer/isNewError.js'
+import { assertArguments } from './renderPageServer/assertArguments.js'
+import { log404 } from './renderPageServer/log404/index.js'
 import pc from '@brillout/picocolors'
 import type { PageContextServer } from '../../types/index.js'
 import {
   getPageContextClientSerializedAbort,
   getPageContextClientSerialized,
-} from './renderPage/html/serializeContext.js'
+} from './renderPageServer/html/serializeContext.js'
 import { getErrorPageId } from '../../shared/error-page.js'
-import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErrorPage.js'
-import { loadPageConfigsLazyServerSide } from './renderPage/loadPageConfigsLazyServerSide.js'
-import { resolveRedirects } from './renderPage/resolveRedirects.js'
+import { handleErrorWithoutErrorPage } from './renderPageServer/handleErrorWithoutErrorPage.js'
+import { loadPageConfigsLazyServerSide } from './renderPageServer/loadPageConfigsLazyServerSide.js'
+import { resolveRedirects } from './renderPageServer/resolveRedirects.js'
 import type { PageContextInternalServer } from '../../types/PageContext.js'
 import { getVikeConfigError } from '../shared/getVikeConfigError.js'
 import { forkPageContext } from '../../shared/forkPageContext.js'

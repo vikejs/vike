@@ -4,7 +4,7 @@ export let logRuntimeError: LogError
 export let logRuntimeInfo: null | LogInfo = null // logInfo is null in production
 export { overwriteRuntimeProductionLogger }
 
-import { logErrorProd } from './renderPage/loggerProd.js'
+import { logErrorProd } from './renderPageServer/loggerProd.js'
 import type { LogError, LogInfo } from '../vite/shared/loggerNotProd.js'
 
 // Set production logger (which is overwritten by loggerNotProd.ts in non-production environments such as development and during pre-rendering)

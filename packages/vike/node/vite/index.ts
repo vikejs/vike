@@ -9,7 +9,7 @@ export type { VikeVitePluginOptions }
 
 import type { Plugin } from 'vite'
 import { getClientEntrySrcDev } from './shared/getClientEntrySrcDev.js'
-import { setGetClientEntrySrcDev } from '../runtime/renderPage/getPageAssets/retrievePageAssetsDev.js'
+import { setGetClientEntrySrcDev } from '../runtime/renderPageServer/getPageAssets/retrievePageAssetsDev.js'
 import { assertIsNotProductionRuntime, assertUsage, isVitest } from './utils.js'
 import pc from '@brillout/picocolors'
 import { pluginPreview } from './plugins/pluginPreview.js'

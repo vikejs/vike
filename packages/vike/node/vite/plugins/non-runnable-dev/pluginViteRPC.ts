@@ -3,7 +3,7 @@ export { pluginViteRPC }
 import type { Plugin, ViteDevServer } from 'vite'
 import { createViteRPC, isDevCheck } from '../../utils.js'
 import type { ClientDependency } from '../../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
-import { retrievePageAssetsDev } from '../../../runtime/renderPage/getPageAssets/retrievePageAssetsDev.js'
+import { retrievePageAssetsDev } from '../../../runtime/renderPageServer/getPageAssets/retrievePageAssetsDev.js'
 import { getViteConfigRuntime } from '../../shared/getViteConfigRuntime.js'
 
 /* We cannot use [`filter.id`](https://rolldown.rs/plugins/hook-filters) because Vite's optimizeDeps bundles the package `vike` into node_modules/.vite/deps_ssr/chunk-WBC5FHD7.js
