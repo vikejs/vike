@@ -1,13 +1,11 @@
 // TO-DO/next-major-release: remove this file
 
 //import { SsrEnv, setSsrEnv } from './ssrEnv.js'
-import { renderPage } from './runtime/renderPageServer.js'
+import { renderPageServer } from './runtime/renderPageServer.js'
 import { assertWarning } from './runtime/utils.js'
 //import { importBuildWasLoaded } from './importBuild.js'
 
 export { createPageRenderer }
-
-type RenderPage = typeof renderPage
 
 type Options = {
   viteDevServer?: unknown
@@ -18,9 +16,9 @@ type Options = {
   baseAssets?: string | null
 }
 /** @deprecated */
-function createPageRenderer(options: Options): RenderPage {
+function createPageRenderer(options: Options): typeof renderPageServer {
   showWarnings(options)
-  return renderPage
+  return renderPageServer
 }
 
 function showWarnings(options: Options) {

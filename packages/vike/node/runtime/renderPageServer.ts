@@ -1,4 +1,4 @@
-export { renderPage }
+export { renderPageServer }
 export { renderPageServer_addAsyncHookwrapper }
 export type { PageContextInit }
 export type { PageContextBegin }
@@ -88,8 +88,8 @@ type PageContextInit = Pick<PageContextInternalServer, 'urlOriginal' | 'headersO
 type PageContextBegin = ReturnType<typeof getPageContextBegin>
 
 // TODO rename to renderPageServer
-// `renderPage()` calls `renderPageServerNominal()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that Vike never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
-async function renderPage<PageContextUserAdded extends {}, PageContextInitUser extends PageContextInit>(
+// `renderPageServer()` calls `renderPageServerNominal()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that Vike never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
+async function renderPageServer<PageContextUserAdded extends {}, PageContextInitUser extends PageContextInit>(
   pageContextInit: PageContextInitUser,
 ): Promise<
   // Partial because rendering may fail at any user hook.

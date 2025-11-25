@@ -2,7 +2,7 @@ import { isBrowser } from '../../utils/isBrowser.js'
 import { assert } from '../../utils/assert.js'
 assert(!isBrowser())
 
-export { renderPage } from './renderPageServer.js'
+export { renderPageServer as renderPage } from './renderPageServer.js'
 export { escapeInject, dangerouslySkipEscape } from './renderPageServer/html/renderHtml.js'
 export { pipeWebStream, pipeNodeStream, pipeStream, stampPipe } from './renderPageServer/html/stream.js'
 export { PROJECT_VERSION as version } from './utils.js'

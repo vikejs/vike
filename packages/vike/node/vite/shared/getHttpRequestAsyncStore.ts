@@ -41,7 +41,7 @@ async function installHttpRequestAsyncStore(): Promise<void> {
     return
   }
   globalObject.asyncLocalStorage = new mod.AsyncLocalStorage()
-  renderPageServer_addAsyncHookwrapper(async (httpRequestId, renderPage) => {
+  renderPageServer_addAsyncHookwrapper(async (httpRequestId, renderPageServer) => {
     assert(globalObject.asyncLocalStorage)
 
     const loggedErrors = new Set<unknown>()
@@ -69,7 +69,7 @@ async function installHttpRequestAsyncStore(): Promise<void> {
       shouldErrorBeSwallowed,
       errorDebugNoteAlreadyShown: false,
     }
-    const pageContextReturn = await globalObject.asyncLocalStorage.run(store, renderPage)
+    const pageContextReturn = await globalObject.asyncLocalStorage.run(store, renderPageServer)
     return { pageContextReturn }
   })
   return

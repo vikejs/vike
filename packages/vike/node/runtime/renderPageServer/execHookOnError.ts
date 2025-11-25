@@ -4,7 +4,7 @@ import { isObject, getGlobalObject } from '../utils.js'
 import { getGlobalContextServerInternalOptional } from '../globalContext.js'
 import { getHookFromPageConfigGlobalCumulative } from '../../../shared/hooks/getHook.js'
 
-const globalObject = getGlobalObject('renderPage/execHookOnError.ts', {
+const globalObject = getGlobalObject('renderPageServer/execHookOnError.ts', {
   seen: new WeakSet(),
 })
 

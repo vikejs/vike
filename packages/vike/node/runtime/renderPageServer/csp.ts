@@ -11,7 +11,7 @@ import type { PageContextServer } from '../../../types/PageContext.js'
 async function resolvePageContextCspNone(
   pageContext: PageContextConfig & Partial<PageContextCspNonce>,
 ): Promise<null | { cspNonce: string | null }> {
-  if (pageContext.cspNonce) return null // already set by user e.g. `renderPage({ cspNonce: '123456789' })`
+  if (pageContext.cspNonce) return null // already set by user e.g. `renderPageServer({ cspNonce: '123456789' })`
 
   const { csp } = pageContext.config
   const pageContextAddendum = { cspNonce: null as string | null }

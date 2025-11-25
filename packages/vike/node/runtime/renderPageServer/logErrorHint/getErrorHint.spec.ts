@@ -379,14 +379,14 @@ function cannot_read_property_of_undefined() {
           stack: `
 TypeError: Cannot read properties of undefined (reading 'foo')
     at onRenderHtml (file:///home/romu/code/vike/node_modules/.pnpm/vike-react@0.3.8_react-dom@18.2.0_react@18.2.0_vike@vike_vite@5.0.10/node_modules/vike-react/dist/renderer/onRenderHtml.js:21:49)
-    at file:///home/romu/code/vike/packages/vike/dist/esm/node/runtime/renderPage/execHookOnRenderHtml.js:15:53
+    at file:///home/romu/code/vike/packages/vike/dist/esm/node/runtime/renderPageServer/execHookOnRenderHtml.js:15:53
     at file:///home/romu/code/vike/packages/vike/dist/esm/shared/hooks/execHook.js:46:31
     at execHook (file:///home/romu/code/vike/packages/vike/dist/esm/shared/hooks/execHook.js:55:7)
-    at execHookOnRenderHtml (file:///home/romu/code/vike/packages/vike/dist/esm/node/runtime/renderPage/execHookOnRenderHtml.js:15:35)
-    at renderPageServerAfterRoute (file:///home/romu/code/vike/packages/vike/dist/esm/node/runtime/renderPage/renderPageServerAfterRoute.js:57:36)
-    at renderPageServerNominal (file:///home/romu/code/vike/packages/vike/dist/esm/node/runtime/renderPage.js:266:36)
-    at renderPageServerAlreadyPrepared (file:///home/romu/code/vike/packages/vike/dist/esm/node/runtime/renderPage.js:121:45)
-    at renderPageServerAndPrepare (file:///home/romu/code/vike/packages/vike/dist/esm/node/runtime/renderPage.js:101:12)
+    at execHookOnRenderHtml (file:///home/romu/code/vike/packages/vike/dist/esm/node/runtime/renderPageServer/execHookOnRenderHtml.js:15:35)
+    at renderPageServerAfterRoute (file:///home/romu/code/vike/packages/vike/dist/esm/node/runtime/renderPageServer/renderPageServerAfterRoute.js:57:36)
+    at renderPageServerNominal (file:///home/romu/code/vike/packages/vike/dist/esm/node/runtime/renderPageServer.js:266:36)
+    at renderPageServerAlreadyPrepared (file:///home/romu/code/vike/packages/vike/dist/esm/node/runtime/renderPageServer.js:121:45)
+    at renderPageServerAndPrepare (file:///home/romu/code/vike/packages/vike/dist/esm/node/runtime/renderPageServer.js:101:12)
     at file:///home/romu/code/vike/packages/vike/dist/esm/node/plugin/shared/getHttpRequestAsyncStore.js:68:35
 `,
         },
@@ -406,17 +406,17 @@ TypeError: Cannot read properties of undefined (reading '__H')
     at _renderToString (file:///Users/xxx/Code/Repos/xxx/node_modules/preact-render-to-string/src/index.js:298:15)
     at Proxy.S (file:///Users/xxx/Code/Repos/xxx/node_modules/preact-render-to-string/src/index.js:80:9)
     at onRenderHtml (/Users/xxx/Code/Repos/xxx/renderer/+onRenderHtml.jsx:12:29)
-    at file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPage/execHookOnRenderHtml.js:16:53
+    at file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPageServer/execHookOnRenderHtml.js:16:53
     at file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/shared/hooks/execHook.js:42:31
     at execHook (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/shared/hooks/execHook.js:51:7)
-    at execHookOnRenderHtml (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPage/execHookOnRenderHtml.js:16:35)
-    at renderPageServerAfterRoute (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPage/renderPageServerAfterRoute.js:56:36)
+    at execHookOnRenderHtml (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPageServer/execHookOnRenderHtml.js:16:35)
+    at renderPageServerAfterRoute (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPageServer/renderPageServerAfterRoute.js:56:36)
     at processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at renderPageServerNominal (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPage.js:257:36)
-    at renderPageServerAlreadyPrepared (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPage.js:113:45)
-    at renderPageServerAndPrepare (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPage.js:93:12)
+    at renderPageServerNominal (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPageServer.js:257:36)
+    at renderPageServerAlreadyPrepared (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPageServer.js:113:45)
+    at renderPageServerAndPrepare (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPageServer.js:93:12)
     at file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/plugin/shared/getHttpRequestAsyncStore.js:68:35
-    at renderPage (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPage.js:46:50)
+    at renderPageServer (file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/runtime/renderPageServer.js:46:50)
     at file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/plugin/shared/addSsrMiddleware.js:18:27
 `),
       ),
@@ -601,11 +601,11 @@ const { ApolloClient } = pkg;
     at async ModuleLoader.import (node:internal/modules/esm/loader:316:24)
     at async pageFile.loadFile (file:///home/romu/tmp/vite-ssr-test/node_modules/.pnpm/vite-plugin-ssr@0.4.142_vite@4.0.3/node_modules/vite-plugin-ssr/dist/esm/shared/getPageFiles/parseVirtualFileExportsGlobalEntry.js:31:40)
     at async Promise.all (index 0)
-    at async loadPageFiles (file:///home/romu/tmp/vite-ssr-test/node_modules/.pnpm/vite-plugin-ssr@0.4.142_vite@4.0.3/node_modules/vite-plugin-ssr/dist/esm/node/runtime/renderPage/loadPageFilesServerSide.js:86:5)
+    at async loadPageFiles (file:///home/romu/tmp/vite-ssr-test/node_modules/.pnpm/vite-plugin-ssr@0.4.142_vite@4.0.3/node_modules/vite-plugin-ssr/dist/esm/node/runtime/renderPageServer/loadPageFilesServerSide.js:86:5)
     at async Promise.all (index 0)
-    at async loadPageFilesServerSide (file:///home/romu/tmp/vite-ssr-test/node_modules/.pnpm/vite-plugin-ssr@0.4.142_vite@4.0.3/node_modules/vite-plugin-ssr/dist/esm/node/runtime/renderPage/loadPageFilesServerSide.js:13:110)
-    at async renderPageServerAfterRoute (file:///home/romu/tmp/vite-ssr-test/node_modules/.pnpm/vite-plugin-ssr@0.4.142_vite@4.0.3/node_modules/vite-plugin-ssr/dist/esm/node/runtime/renderPage/renderPageServerAfterRoute.js:30:31)
-    at async renderPageServerNominal (file:///home/romu/tmp/vite-ssr-test/node_modules/.pnpm/vite-plugin-ssr@0.4.142_vite@4.0.3/node_modules/vite-plugin-ssr/dist/esm/node/runtime/renderPage.js:267:36)
+    at async loadPageFilesServerSide (file:///home/romu/tmp/vite-ssr-test/node_modules/.pnpm/vite-plugin-ssr@0.4.142_vite@4.0.3/node_modules/vite-plugin-ssr/dist/esm/node/runtime/renderPageServer/loadPageFilesServerSide.js:13:110)
+    at async renderPageServerAfterRoute (file:///home/romu/tmp/vite-ssr-test/node_modules/.pnpm/vite-plugin-ssr@0.4.142_vite@4.0.3/node_modules/vite-plugin-ssr/dist/esm/node/runtime/renderPageServer/renderPageServerAfterRoute.js:30:31)
+    at async renderPageServerNominal (file:///home/romu/tmp/vite-ssr-test/node_modules/.pnpm/vite-plugin-ssr@0.4.142_vite@4.0.3/node_modules/vite-plugin-ssr/dist/esm/node/runtime/renderPageServer.js:267:36)
 `,
         },
       ),
@@ -636,7 +636,7 @@ const { LiveProvider, LiveEditor } = pkg;
     at async Promise.all (index 0)
     at async loadPageFilesServerSide (/home/romu/tmp/vite-ssr-redux-react-live-runner-example/node_modules/.pnpm/vite-plugin-ssr@0.4.131_vite@4.3.9/node_modules/vite-plugin-ssr/dist/cjs/shared/getPageFiles/analyzePageServerSide/loadPageFilesServerSide.js:10:5)
     at async Promise.all (index 0)
-    at async loadPageFilesServer (/home/romu/tmp/vite-ssr-redux-react-live-runner-example/node_modules/.pnpm/vite-plugin-ssr@0.4.131_vite@4.3.9/node_modules/vite-plugin-ssr/dist/cjs/node/runtime/renderPage/loadPageFilesServer.js:15:110)
+    at async loadPageFilesServer (/home/romu/tmp/vite-ssr-redux-react-live-runner-example/node_modules/.pnpm/vite-plugin-ssr@0.4.131_vite@4.3.9/node_modules/vite-plugin-ssr/dist/cjs/node/runtime/renderPageServer/loadPageFilesServer.js:15:110)
     at async /home/romu/tmp/vite-ssr-redux-react-live-runner-example/node_modules/.pnpm/vite-plugin-ssr@0.4.131_vite@4.3.9/node_modules/vite-plugin-ssr/dist/cjs/node/prerender/runPrerender.js:247:48
 `,
         },
@@ -1007,12 +1007,12 @@ function misc() {
         createErr(`
 Error: [vike][Wrong Usage] The guard() hook of /pages/maps/ingestion/@id/+guard.js returns a value, but guard() doesn't accept any return value
     at execHookGuard (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/shared/route/execHookGuard.js:23:5)
-    at async renderPageServerAfterRoute (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/node/runtime/renderPage/renderPageServerAfterRoute.js:34:9)
-    at async renderPageServerNominal (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/node/runtime/renderPage.js:268:36)
-    at async renderPageServerAlreadyPrepared (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/node/runtime/renderPage.js:121:45)
-    at async renderPageServerAndPrepare (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/node/runtime/renderPage.js:101:12)
-    at async renderPage_wrapper (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/node/runtime/renderPage.js:26:24)
-    at async renderPage (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/node/runtime/renderPage.js:46:50)
+    at async renderPageServerAfterRoute (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/node/runtime/renderPageServer/renderPageServerAfterRoute.js:34:9)
+    at async renderPageServerNominal (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/node/runtime/renderPageServer.js:268:36)
+    at async renderPageServerAlreadyPrepared (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/node/runtime/renderPageServer.js:121:45)
+    at async renderPageServerAndPrepare (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/node/runtime/renderPageServer.js:101:12)
+    at async renderPage_wrapper (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/node/runtime/renderPageServer.js:26:24)
+    at async renderPageServer (file:///usr/src/app/.yarn/__virtual__/vike-virtual-27ac05da25/0/cache/vike-npm-0.4.159-04de921938-8daf1447e0.zip/node_modules/vike/dist/esm/node/runtime/renderPageServer.js:46:50)
     at async file:///usr/src/app/server/index.js:75:25
       `),
       ),
