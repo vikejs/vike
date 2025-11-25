@@ -152,7 +152,7 @@ async function renderPageServerEntryOnce(
     // - initGlobalContext_renderPage() depends on +onCreateGlobalContext hooks
     assert(!isAbortError(err))
     logRuntimeError(err, httpRequestId)
-    const pageContextHttpErrorFallback = getPageContextHttpResponseError_noGlobalContext(err, pageContextInit)
+    const pageContextHttpErrorFallback = getPageContextHttpErrorFallback_noGlobalContext(err, pageContextInit)
     return pageContextHttpErrorFallback
   }
   {
@@ -319,14 +319,14 @@ async function renderPageServerOnError(
           )} doesn't occur while the error page is being rendered.`,
           { onlyOnce: false },
         )
-        const pageContextHttpErrorFallback = getPageContextHttpResponseError(errNominalPage, pageContextBegin)
+        const pageContextHttpErrorFallback = getPageContextHttpErrorFallback(errNominalPage, pageContextBegin)
         return pageContextHttpErrorFallback
       }
     }
     if (isNewError(errErrorPage, errNominalPage)) {
       logRuntimeError(errErrorPage, httpRequestId)
     }
-    const pageContextHttpErrorFallback = getPageContextHttpResponseError(errNominalPage, pageContextBegin)
+    const pageContextHttpErrorFallback = getPageContextHttpErrorFallback(errNominalPage, pageContextBegin)
     return pageContextHttpErrorFallback
   }
   return pageContextErrorPage
@@ -386,8 +386,8 @@ function prettyUrl(url: string) {
   return pc.bold(url)
 }
 
-// TODO: rename getPageContextHttpResponseError getPageContextHttpResponseErrorFallback
-function getPageContextHttpResponseError(err: unknown, pageContextBegin: PageContextBegin) {
+// TODO: rename getPageContextHttpErrorFallback getPageContextHttpErrorFallbackFallback
+function getPageContextHttpErrorFallback(err: unknown, pageContextBegin: PageContextBegin) {
   const pageContextHttpErrorFallback = forkPageContext(pageContextBegin)
   const httpResponse = createHttpResponseErrorFallback(pageContextBegin)
   objectAssign(pageContextHttpErrorFallback, {
@@ -396,7 +396,7 @@ function getPageContextHttpResponseError(err: unknown, pageContextBegin: PageCon
   })
   return pageContextHttpErrorFallback
 }
-function getPageContextHttpResponseError_noGlobalContext(
+function getPageContextHttpErrorFallback_noGlobalContext(
   err: unknown,
   pageContextInit: PageContextInit,
 ): PageContextAfterRender {
@@ -696,6 +696,6 @@ function getPageContextSkipRequest(pageContextInit: PageContextInit) {
 
 function getPageContextInvalidVikeConfig(err: unknown, pageContextInit: PageContextInit, httpRequestId: number) {
   logRuntimeInfo?.(pc.bold(pc.red('Error loading Vike config — see error above')), httpRequestId, 'error-note')
-  const pageContextHttpErrorFallback = getPageContextHttpResponseError_noGlobalContext(err, pageContextInit)
+  const pageContextHttpErrorFallback = getPageContextHttpErrorFallback_noGlobalContext(err, pageContextInit)
   return pageContextHttpErrorFallback
 }
