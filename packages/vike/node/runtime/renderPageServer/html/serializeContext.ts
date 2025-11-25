@@ -17,7 +17,7 @@ import { isServerSideError } from '../../../../shared/misc/isServerSideError.js'
 import { getPropKeys, getPropVal, setPropVal } from './propKeys.js'
 import type { GlobalContextServerInternal } from '../../globalContext.js'
 import type { PageContextCreated } from '../createPageContextServerSide.js'
-import type { PageContextBegin } from '../../renderPage.js'
+import type { PageContextBegin } from '../../renderPageServer.js'
 import type { PageContextCspNonce } from '../csp.js'
 import { assertRouteParams } from '../../../../shared/route/resolveRouteFunction.js'
 

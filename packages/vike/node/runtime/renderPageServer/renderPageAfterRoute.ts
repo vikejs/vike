@@ -22,7 +22,7 @@ import { execHookGuard } from '../../../shared/route/execHookGuard.js'
 import pc from '@brillout/picocolors'
 import { isServerSideError } from '../../../shared/misc/isServerSideError.js'
 import type { PageContextCreated } from './createPageContextServerSide.js'
-import type { PageContextBegin } from '../renderPage.js'
+import type { PageContextBegin } from '../renderPageServer.js'
 
 type PageContextAfterRender = { httpResponse: HttpResponse; errorWhileRendering: null | Error }
 

@@ -1,7 +1,7 @@
 // TO-DO/next-major-release: remove this file
 
 //import { SsrEnv, setSsrEnv } from './ssrEnv.js'
-import { renderPage } from './runtime/renderPage.js'
+import { renderPage } from './runtime/renderPageServer.js'
 import { assertWarning } from './runtime/utils.js'
 //import { importBuildWasLoaded } from './importBuild.js'
 

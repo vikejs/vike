@@ -1,6 +1,6 @@
 export { addSsrMiddleware }
 
-import { renderPage } from '../../runtime/renderPage.js'
+import { renderPage } from '../../runtime/renderPageServer.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { assertWarning } from '../utils.js'
 import pc from '@brillout/picocolors'
