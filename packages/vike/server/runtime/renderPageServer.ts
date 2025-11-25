@@ -417,8 +417,6 @@ function getPageContextHttpErrorFallback_noGlobalContext(
 }
 
 // TODO: rename renderPageServerNominal renderPageServerEntryRecursive_nominal
-// - Render page (no error)
-// - Render 404 page
 type PageContextInternalServerAfterRender = Awaited<ReturnType<typeof renderPageServerNominal>>
 async function renderPageServerNominal(pageContextNominalPageBegin: PageContextBegin) {
   objectAssign(pageContextNominalPageBegin, { errorWhileRendering: null })
@@ -443,7 +441,8 @@ async function renderPageServerNominal(pageContextNominalPageBegin: PageContextB
   assert(hasProp(pageContextNominalPageBegin, 'pageId', 'string'))
   assert(pageContextNominalPageBegin.errorWhileRendering === null)
 
-  // Render
+  // - Render page (nominal, i.e. not the error page)
+  // - Render 404 page
   const pageContextAfterRender = await renderPageServerAfterRoute(pageContextNominalPageBegin)
   assert(pageContextNominalPageBegin === pageContextAfterRender)
   return pageContextAfterRender
