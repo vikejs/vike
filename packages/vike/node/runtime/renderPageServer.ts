@@ -108,7 +108,7 @@ async function renderPage<PageContextUserAdded extends {}, PageContextInitUser e
   logHttpRequest(urlOriginalPretty, httpRequestId)
 
   const { pageContextReturn } = await globalObject.asyncHookWrapper(httpRequestId, () =>
-    renderPageEntryOnce(pageContextInit, httpRequestId),
+    renderPageServerEntryOnce(pageContextInit, httpRequestId),
   )
 
   logHttpResponse(urlOriginalPretty, httpRequestId, pageContextReturn)
@@ -129,7 +129,7 @@ function getFallbackAsyncHookWrapper() {
   })
 }
 
-async function renderPageEntryOnce(
+async function renderPageServerEntryOnce(
   pageContextInit: PageContextInit,
   httpRequestId: number,
 ): Promise<PageContextAfterRender> {
@@ -186,16 +186,16 @@ async function renderPageEntryOnce(
     if (pageContextHttpResponse) return pageContextHttpResponse
   }
 
-  // First renderPageEntryRecursive() call
-  return await renderPageEntryRecursive(pageContextBegin, globalContext, httpRequestId)
+  // First renderPageServerEntryRecursive() call
+  return await renderPageServerEntryRecursive(pageContextBegin, globalContext, httpRequestId)
 }
 
-async function renderPageEntryRecursive(
+async function renderPageServerEntryRecursive(
   pageContextBegin: PageContextBegin,
   globalContext: GlobalContextServerInternal,
   httpRequestId: number,
 ): Promise<PageContextAfterRender> {
-  catchInfiniteLoop('renderPageEntryRecursive()')
+  catchInfiniteLoop('renderPageServerEntryRecursive()')
 
   const pageContextNominalPageBegin = forkPageContext(pageContextBegin)
 
@@ -244,7 +244,7 @@ async function renderPageEntryRecursive(
   }
 }
 
-// TODO: rename renderPageOnError renderPageEntryRecursive_error
+// TODO: rename renderPageOnError renderPageServerEntryRecursive_error
 // When the normal page threw an error
 // - Can be a URL rewrite upon `throw render('/some-url')`
 // - Can be rendering the error page
@@ -412,7 +412,7 @@ function getPageContextHttpResponseErrorWithoutGlobalContext(
   return pageContextWithError
 }
 
-// TODO: rename renderPageNominal renderPageEntryRecursive_nominal
+// TODO: rename renderPageNominal renderPageServerEntryRecursive_nominal
 // - Render page (no error)
 // - Render 404 page
 type PageContextInternalServerAfterRender = Awaited<ReturnType<typeof renderPageNominal>>
@@ -645,8 +645,8 @@ async function handleAbort(
 
   // URL Rewrite — `throw render(url)`
   if (pageContextAbort._urlRewrite) {
-    // Recursive renderPageEntryRecursive() call
-    const pageContextReturn = await renderPageEntryRecursive(pageContextBegin, globalContext, httpRequestId)
+    // Recursive renderPageServerEntryRecursive() call
+    const pageContextReturn = await renderPageServerEntryRecursive(pageContextBegin, globalContext, httpRequestId)
     return { pageContextReturn }
   }
 
