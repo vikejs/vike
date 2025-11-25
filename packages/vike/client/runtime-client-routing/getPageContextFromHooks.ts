@@ -1,4 +1,3 @@
-// TODO rename
 export { getPageContextFromHooks_isHydration }
 export { getPageContextFromHooks_serialized }
 export { getPageContextFromServerHooks }
@@ -53,7 +52,6 @@ type PageContextSerialized = {
   pageId: string
   _hasPageContextFromServer: true
 }
-// TO-DO/eventually: rename
 function getPageContextFromHooks_serialized(): PageContextSerialized & {
   routeParams: Record<string, string>
   _hasPageContextFromServer: true
@@ -65,7 +63,6 @@ function getPageContextFromHooks_serialized(): PageContextSerialized & {
   })
   return pageContextSerialized
 }
-// TO-DO/eventually: rename
 async function getPageContextFromHooks_isHydration(
   pageContext: PageContextSerialized &
     PageContextBegin &
