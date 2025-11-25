@@ -10,7 +10,7 @@ import { isViteCli, getViteConfigForBuildFromCli } from '../../shared/isViteCli.
 import pc from '@brillout/picocolors'
 import { logErrorHint } from '../../../../server/runtime/renderPageServer/logErrorHint.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
-import { isVikeCliOrApi } from '../../../api/context.js'
+import { isVikeCliOrApi } from '../../../../shared-server-node/api-context.js'
 import { handleAssetsManifest, handleAssetsManifest_assertUsageCssTarget } from './handleAssetsManifest.js'
 import { isViteServerSide_onlySsrEnv } from '../../shared/isViteServerSide.js'
 import { runPrerenderFromAutoRun } from '../../../prerender/runPrerenderEntry.js'

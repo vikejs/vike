@@ -77,7 +77,7 @@ import { getVikeConfigErrorBuild, setVikeConfigError } from '../../shared-server
 import { hasAlreadyLogged } from './renderPageServer/isNewError.js'
 import type { Hook } from '../../shared-server-client/hooks/getHook.js'
 import type { ViteRPC } from '../../node/vite/plugins/non-runnable-dev/pluginViteRPC.js'
-import { getVikeApiOperation } from '../../node/api/context.js'
+import { getVikeApiOperation } from '../../shared-server-node/api-context.js'
 import type { PrerenderContext } from '../../types/index.js'
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
