@@ -1,11 +1,9 @@
-// TODO rename
-export { getPageContextFromHooks_isHydration }
-export { getPageContextFromHooks_serialized }
-export { getPageContextFromServerHooks }
-export { getPageContextFromClientHooks }
+export { getPageContextFromHooksClient }
+export { getPageContextFromHooksClient_firstRender }
+export { getPageContextFromHooksServer }
+export { getPageContextFromHooksServer_firstRender }
 export { setPageContextInitIsPassedToClient }
-export { execHookClient }
-export type { PageContextFromServerHooks }
+export type { PageContextFromHooksServer }
 
 import {
   assert,
@@ -44,7 +42,7 @@ const globalObject = getGlobalObject<{
   pageContextInitIsPassedToClient?: true
 }>('runtime-client-routing/getPageContextFromHooks.ts', {})
 
-// TO-DO/soon/cumulative-hooks: filter & execute all client-only hooks (see other TO-DO/soon/cumulative-hooks entries)
+// TO-DO/soon/cumulative-hooks: filter & execute all client-only hooks (see other TO-DO/soon/cumulative-hooks comments)
 // - The client-side needs to know what hooks are client-only
 //   - Possible implementation: new computed prop `clientOnlyHooks: string[]` (list of hook ids) and add `hookId` to serialized config values
 const clientHooks = ['guard', 'data', 'onBeforeRender'] as const
@@ -53,8 +51,8 @@ type PageContextSerialized = {
   pageId: string
   _hasPageContextFromServer: true
 }
-// TO-DO/eventually: rename
-function getPageContextFromHooks_serialized(): PageContextSerialized & {
+// Get `pageContext` values from `<script id="vike_pageContext" type="application/json">`
+function getPageContextFromHooksServer_firstRender(): PageContextSerialized & {
   routeParams: Record<string, string>
   _hasPageContextFromServer: true
 } {
@@ -65,8 +63,7 @@ function getPageContextFromHooks_serialized(): PageContextSerialized & {
   })
   return pageContextSerialized
 }
-// TO-DO/eventually: rename
-async function getPageContextFromHooks_isHydration(
+async function getPageContextFromHooksClient_firstRender(
   pageContext: PageContextSerialized &
     PageContextBegin &
     PageContextConfig & { _hasPageContextFromServer: true } & PageContextForPublicUsageClient,
@@ -82,18 +79,18 @@ async function getPageContextFromHooks_isHydration(
   return pageContext
 }
 
-type PageContextFromServerHooks = { _hasPageContextFromServer: boolean }
-async function getPageContextFromServerHooks(
+type PageContextFromHooksServer = { _hasPageContextFromServer: boolean }
+async function getPageContextFromHooksServer(
   pageContext: { pageId: string } & PageContextCreated,
   isErrorPage: boolean,
 ): Promise<
   | { is404ServerSideRouted: true }
   | {
       is404ServerSideRouted?: undefined
-      pageContextFromServerHooks: PageContextFromServerHooks
+      pageContextFromHooksServer: PageContextFromHooksServer
     }
 > {
-  const pageContextFromServerHooks = {
+  const pageContextFromHooksServer = {
     _hasPageContextFromServer: false,
   }
 
@@ -109,20 +106,20 @@ async function getPageContextFromServerHooks(
     const res = await fetchPageContextFromServer(pageContext)
     if ('is404ServerSideRouted' in res) return { is404ServerSideRouted: true as const }
     const { pageContextFromServer } = res
-    pageContextFromServerHooks._hasPageContextFromServer = true
+    pageContextFromHooksServer._hasPageContextFromServer = true
 
     // Already handled
     assert(!(isServerSideError in pageContextFromServer))
     assert(!('serverSideError' in pageContextFromServer))
 
-    objectAssign(pageContextFromServerHooks, pageContextFromServer)
+    objectAssign(pageContextFromHooksServer, pageContextFromServer)
   }
 
   // We cannot return the whole pageContext because this function is used for prefetching `pageContext` (which requires a partial pageContext to be merged with the future pageContext created upon rendering the page in the future).
-  return { pageContextFromServerHooks }
+  return { pageContextFromHooksServer }
 }
 
-async function getPageContextFromClientHooks(
+async function getPageContextFromHooksClient(
   pageContext: { pageId: string; _hasPageContextFromServer: boolean } & PageContextBegin &
     PageContextConfig &
     PageContextForPublicUsageClient,
@@ -151,8 +148,8 @@ async function getPageContextFromClientHooks(
     await execHookClient('onData', pageContext)
   }
 
-  const pageContextFromClientHooks = pageContext
-  return pageContextFromClientHooks
+  const pageContextFromHooksClient = pageContext
+  return pageContextFromHooksClient
 }
 
 type PageContextExecHookClient = PageContextConfig & PageContextForPublicUsageClient

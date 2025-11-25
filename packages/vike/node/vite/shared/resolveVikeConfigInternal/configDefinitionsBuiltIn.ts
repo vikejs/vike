@@ -248,8 +248,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
       )
     },
   },
-  // TODO rename entries comments
-  // TO-DO/soon/cumulative-hooks: remove and replace with new computed prop `clientOnlyHooks: string[]` (see other TO-DO/soon/cumulative-hooks entries)
+  // TO-DO/soon/cumulative-hooks: remove and replace with new computed prop `clientOnlyHooks: string[]` (see other TO-DO/soon/cumulative-hooks comments)
   onBeforeRenderEnv: {
     env: { client: true },
     eager: true,
@@ -257,7 +256,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
       return !isConfigSet(pageConfig, 'onBeforeRender') ? null : getConfigEnv(pageConfig, 'onBeforeRender')
     },
   },
-  // TO-DO/soon/cumulative-hooks: remove and replace with new computed prop `clientOnlyHooks: string[]` (see other TO-DO/soon/cumulative-hooks entries)
+  // TO-DO/soon/cumulative-hooks: remove and replace with new computed prop `clientOnlyHooks: string[]` (see other TO-DO/soon/cumulative-hooks comments)
   dataEnv: {
     env: { client: true },
     eager: true,
@@ -265,7 +264,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
       return !isConfigSet(pageConfig, 'data') ? null : getConfigEnv(pageConfig, 'data')
     },
   },
-  // TO-DO/soon/cumulative-hooks: remove and replace with new computed prop `clientOnlyHooks: string[]` (see other TO-DO/soon/cumulative-hooks entries)
+  // TO-DO/soon/cumulative-hooks: remove and replace with new computed prop `clientOnlyHooks: string[]` (see other TO-DO/soon/cumulative-hooks comments)
   guardEnv: {
     env: { client: true },
     eager: true,

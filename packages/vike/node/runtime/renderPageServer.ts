@@ -36,7 +36,7 @@ import {
   ErrorAbort,
   getPageContextAddendumAbort,
   isAbortError,
-  logAbortErrorHandled,
+  logAbort,
   type PageContextAborted,
   addNewPageContextAborted,
 } from '../../shared/route/abort.js'
@@ -51,8 +51,8 @@ import {
   createHttpResponse404,
   createHttpResponseRedirect,
   createHttpResponsePageContextJson,
-  createHttpResponseError,
-  createHttpResponseErrorWithoutGlobalContext,
+  createHttpResponseErrorFallback,
+  createHttpResponseErrorFallback_noGlobalContext,
   createHttpResponseBaseIsMissing,
 } from './renderPageServer/createHttpResponse.js'
 import { logRuntimeError, logRuntimeInfo } from './loggerRuntime.js'
@@ -152,8 +152,8 @@ async function renderPageServerEntryOnce(
     // - initGlobalContext_renderPage() depends on +onCreateGlobalContext hooks
     assert(!isAbortError(err))
     logRuntimeError(err, httpRequestId)
-    const pageContextWithError = getPageContextHttpResponseErrorWithoutGlobalContext(err, pageContextInit)
-    return pageContextWithError
+    const pageContextHttpErrorFallback = getPageContextHttpErrorFallback_noGlobalContext(err, pageContextInit)
+    return pageContextHttpErrorFallback
   }
   {
     const vikeConfigError = getVikeConfigError()
@@ -305,9 +305,12 @@ async function renderPageServerOnError(
         pageContextErrorPageInit,
         globalContext,
       )
-      // TODO: minor refactor
-      // throw render(abortStatusCode)
-      if (!handled.pageContextReturn) {
+      if (handled.pageContextReturn) {
+        // - throw redirect()
+        // - throw render(url)
+        return handled.pageContextReturn
+      } else {
+        // - throw render(abortStatusCode)
         const pageContextAbort = errErrorPage._pageContextAbort
         assertWarning(
           false,
@@ -316,19 +319,15 @@ async function renderPageServerOnError(
           )} doesn't occur while the error page is being rendered.`,
           { onlyOnce: false },
         )
-        // TODO: rename pageContextHttpWithError pageContextHttpErrorFallback
-        const pageContextHttpWithError = getPageContextHttpResponseError(errNominalPage, pageContextBegin)
-        return pageContextHttpWithError
+        const pageContextHttpErrorFallback = getPageContextHttpErrorFallback(errNominalPage, pageContextBegin)
+        return pageContextHttpErrorFallback
       }
-      // `throw redirect()` / `throw render(url)`
-      return handled.pageContextReturn
     }
     if (isNewError(errErrorPage, errNominalPage)) {
       logRuntimeError(errErrorPage, httpRequestId)
     }
-    // TODO: rename pageContextWithError pageContextHttpErrorFallback
-    const pageContextWithError = getPageContextHttpResponseError(errNominalPage, pageContextBegin)
-    return pageContextWithError
+    const pageContextHttpErrorFallback = getPageContextHttpErrorFallback(errNominalPage, pageContextBegin)
+    return pageContextHttpErrorFallback
   }
   return pageContextErrorPage
 }
@@ -387,28 +386,26 @@ function prettyUrl(url: string) {
   return pc.bold(url)
 }
 
-// TODO: rename getPageContextHttpResponseError getPageContextHttpResponseErrorFallback
-function getPageContextHttpResponseError(err: unknown, pageContextBegin: PageContextBegin) {
-  // TODO rename pageContextWithError pageContextErrorFallback
-  const pageContextWithError = forkPageContext(pageContextBegin)
-  const httpResponse = createHttpResponseError(pageContextBegin)
-  objectAssign(pageContextWithError, {
+function getPageContextHttpErrorFallback(err: unknown, pageContextBegin: PageContextBegin) {
+  const pageContextHttpErrorFallback = forkPageContext(pageContextBegin)
+  const httpResponse = createHttpResponseErrorFallback(pageContextBegin)
+  objectAssign(pageContextHttpErrorFallback, {
     httpResponse,
     errorWhileRendering: err,
   })
-  return pageContextWithError
+  return pageContextHttpErrorFallback
 }
-function getPageContextHttpResponseErrorWithoutGlobalContext(
+function getPageContextHttpErrorFallback_noGlobalContext(
   err: unknown,
   pageContextInit: PageContextInit,
 ): PageContextAfterRender {
-  const pageContextWithError = createPageContextServerSideWithoutGlobalContext(pageContextInit)
-  const httpResponse = createHttpResponseErrorWithoutGlobalContext()
-  objectAssign(pageContextWithError, {
+  const pageContextHttpErrorFallback = createPageContextServerSideWithoutGlobalContext(pageContextInit)
+  const httpResponse = createHttpResponseErrorFallback_noGlobalContext()
+  objectAssign(pageContextHttpErrorFallback, {
     httpResponse,
     errorWhileRendering: err,
   })
-  return pageContextWithError
+  return pageContextHttpErrorFallback
 }
 
 // TODO: rename renderPageServerNominal renderPageServerEntryRecursive_nominal
@@ -605,7 +602,7 @@ async function handleAbort(
   pageContextErrorPageInit: PageContextErrorPageInit,
   globalContext: GlobalContextServerInternal,
 ) {
-  logAbortErrorHandled(errAbort, globalContext._isProduction, pageContextNominalPageBegin)
+  logAbort(errAbort, globalContext._isProduction, pageContextNominalPageBegin)
   const pageContextAbort = errAbort._pageContextAbort
   assert(pageContextAbort)
 
@@ -698,6 +695,6 @@ function getPageContextSkipRequest(pageContextInit: PageContextInit) {
 
 function getPageContextInvalidVikeConfig(err: unknown, pageContextInit: PageContextInit, httpRequestId: number) {
   logRuntimeInfo?.(pc.bold(pc.red('Error loading Vike config — see error above')), httpRequestId, 'error-note')
-  const pageContextWithError = getPageContextHttpResponseErrorWithoutGlobalContext(err, pageContextInit)
-  return pageContextWithError
+  const pageContextHttpErrorFallback = getPageContextHttpErrorFallback_noGlobalContext(err, pageContextInit)
+  return pageContextHttpErrorFallback
 }
