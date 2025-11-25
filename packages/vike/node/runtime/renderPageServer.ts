@@ -73,7 +73,7 @@ import type { PageContextInternalServer } from '../../types/PageContext.js'
 import { getVikeConfigError } from '../shared/getVikeConfigError.js'
 import { forkPageContext } from '../../shared/forkPageContext.js'
 
-const globalObject = getGlobalObject('runtime/renderPage.ts', {
+const globalObject = getGlobalObject('runtime/renderPageServer.ts', {
   httpRequestsCount: 0,
   asyncHookWrapper: getFallbackAsyncHookWrapper(),
 })
