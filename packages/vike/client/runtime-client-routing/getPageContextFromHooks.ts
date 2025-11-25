@@ -1,9 +1,9 @@
 export { getPageContextFromClientHooks_firstRender }
-export { getPageContextFromServerHooks_firstRender }
-export { getPageContextFromServerHooks }
+export { getPageContextFromHooksServer_firstRender }
+export { getPageContextFromHooksServer }
 export { getPageContextFromClientHooks }
 export { setPageContextInitIsPassedToClient }
-export type { PageContextFromServerHooks }
+export type { PageContextFromHooksServer }
 
 import {
   assert,
@@ -51,7 +51,7 @@ type PageContextSerialized = {
   pageId: string
   _hasPageContextFromServer: true
 }
-function getPageContextFromServerHooks_firstRender(): PageContextSerialized & {
+function getPageContextFromHooksServer_firstRender(): PageContextSerialized & {
   routeParams: Record<string, string>
   _hasPageContextFromServer: true
 } {
@@ -78,18 +78,18 @@ async function getPageContextFromClientHooks_firstRender(
   return pageContext
 }
 
-type PageContextFromServerHooks = { _hasPageContextFromServer: boolean }
-async function getPageContextFromServerHooks(
+type PageContextFromHooksServer = { _hasPageContextFromServer: boolean }
+async function getPageContextFromHooksServer(
   pageContext: { pageId: string } & PageContextCreated,
   isErrorPage: boolean,
 ): Promise<
   | { is404ServerSideRouted: true }
   | {
       is404ServerSideRouted?: undefined
-      pageContextFromServerHooks: PageContextFromServerHooks
+      pageContextFromHooksServer: PageContextFromHooksServer
     }
 > {
-  const pageContextFromServerHooks = {
+  const pageContextFromHooksServer = {
     _hasPageContextFromServer: false,
   }
 
@@ -105,17 +105,17 @@ async function getPageContextFromServerHooks(
     const res = await fetchPageContextFromServer(pageContext)
     if ('is404ServerSideRouted' in res) return { is404ServerSideRouted: true as const }
     const { pageContextFromServer } = res
-    pageContextFromServerHooks._hasPageContextFromServer = true
+    pageContextFromHooksServer._hasPageContextFromServer = true
 
     // Already handled
     assert(!(isServerSideError in pageContextFromServer))
     assert(!('serverSideError' in pageContextFromServer))
 
-    objectAssign(pageContextFromServerHooks, pageContextFromServer)
+    objectAssign(pageContextFromHooksServer, pageContextFromServer)
   }
 
   // We cannot return the whole pageContext because this function is used for prefetching `pageContext` (which requires a partial pageContext to be merged with the future pageContext created upon rendering the page in the future).
-  return { pageContextFromServerHooks }
+  return { pageContextFromHooksServer }
 }
 
 async function getPageContextFromClientHooks(

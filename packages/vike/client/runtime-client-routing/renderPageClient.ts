@@ -19,10 +19,10 @@ import {
 } from './utils.js'
 import {
   getPageContextFromClientHooks,
-  getPageContextFromServerHooks,
+  getPageContextFromHooksServer,
   getPageContextFromClientHooks_firstRender,
-  getPageContextFromServerHooks_firstRender,
-  type PageContextFromServerHooks,
+  getPageContextFromHooksServer_firstRender,
+  type PageContextFromHooksServer,
   setPageContextInitIsPassedToClient,
 } from './getPageContextFromHooks.js'
 import { createPageContextClientSide } from './createPageContextClientSide.js'
@@ -182,12 +182,12 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     // Get pageContext serialized in <script id="vike_pageContext" type="application/json">
     if (isFirstRender) {
-      const pageContextSerialized = getPageContextFromServerHooks_firstRender()
+      const pageContextSerialized = getPageContextFromHooksServer_firstRender()
       // TO-DO/eventually: create helper assertPageContextFromHook()
       assert(!('urlOriginal' in pageContextSerialized))
       objectAssign(pageContext, pageContextSerialized)
       // TO-DO/pageContext-prefetch: remove or change, because this only makes sense for a pre-rendered page
-      populatePageContextPrefetchCache(pageContext, { pageContextFromServerHooks: pageContextSerialized })
+      populatePageContextPrefetchCache(pageContext, { pageContextFromHooksServer: pageContextSerialized })
     }
 
     // Route
@@ -290,15 +290,15 @@ async function renderPageClient(renderArgs: RenderArgs) {
       return await renderPageView(pageContext)
     } else {
       // Fetch pageContext from server-side hooks
-      let pageContextFromServerHooks: PageContextFromServerHooks
+      let pageContextFromHooksServer: PageContextFromHooksServer
       const pageContextPrefetched = getPageContextPrefetched(pageContext)
       if (pageContextPrefetched) {
-        pageContextFromServerHooks = pageContextPrefetched
+        pageContextFromHooksServer = pageContextPrefetched
       } else {
         try {
-          const result = await getPageContextFromServerHooks(pageContext, false)
+          const result = await getPageContextFromHooksServer(pageContext, false)
           if (result.is404ServerSideRouted) return
-          pageContextFromServerHooks = result.pageContextFromServerHooks
+          pageContextFromHooksServer = result.pageContextFromHooksServer
           // TO-DO/pageContext-prefetch: remove or change, because this only makes sense for a pre-rendered page
           populatePageContextPrefetchCache(pageContext, result)
         } catch (err) {
@@ -308,8 +308,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
       }
       if (isRenderOutdated()) return
       // TO-DO/eventually: create helper assertPageContextFromHook()
-      assert(!('urlOriginal' in pageContextFromServerHooks))
-      objectAssign(pageContext, pageContextFromServerHooks)
+      assert(!('urlOriginal' in pageContextFromHooksServer))
+      objectAssign(pageContext, pageContextFromHooksServer)
 
       // Get pageContext from client-side hooks
       let pageContextFromClientHooks: Awaited<ReturnType<typeof getPageContextFromClientHooks>>
@@ -418,19 +418,19 @@ async function renderPageClient(renderArgs: RenderArgs) {
     updateType(pageContext, res.pageContext)
     setPageContextCurrent(pageContext)
 
-    let pageContextFromServerHooks: PageContextFromServerHooks
+    let pageContextFromHooksServer: PageContextFromHooksServer
     try {
-      const result = await getPageContextFromServerHooks(pageContext, true)
+      const result = await getPageContextFromHooksServer(pageContext, true)
       if (result.is404ServerSideRouted) return
-      pageContextFromServerHooks = result.pageContextFromServerHooks
+      pageContextFromHooksServer = result.pageContextFromHooksServer
     } catch (err: unknown) {
       onError(err)
       return
     }
     if (isRenderOutdated()) return
     // TO-DO/eventually: create helper assertPageContextFromHook()
-    assert(!('urlOriginal' in pageContextFromServerHooks))
-    objectAssign(pageContext, pageContextFromServerHooks)
+    assert(!('urlOriginal' in pageContextFromHooksServer))
+    objectAssign(pageContext, pageContextFromHooksServer)
 
     let pageContextFromClientHooks: Awaited<ReturnType<typeof getPageContextFromClientHooks>>
     try {

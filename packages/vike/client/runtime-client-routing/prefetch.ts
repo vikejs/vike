@@ -23,7 +23,7 @@ import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { createPageContextClientSide, type PageContextCreated } from './createPageContextClientSide.js'
 import { route, type PageContextAfterRoute } from '../../shared/route/index.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
-import { type PageContextFromServerHooks, getPageContextFromServerHooks } from './getPageContextFromHooks.js'
+import { type PageContextFromHooksServer, getPageContextFromHooksServer } from './getPageContextFromHooks.js'
 import type { PageContextConfig, PageFile } from '../../shared/getPageFiles.js'
 import { getPageContextCurrent } from './getPageContextCurrent.js'
 import {
@@ -48,7 +48,7 @@ const globalObject = getGlobalObject('runtime-client-routing/prefetch.ts', {
   >,
 })
 
-type ResultPageContextFromServer = Awaited<ReturnType<typeof getPageContextFromServerHooks>>
+type ResultPageContextFromServer = Awaited<ReturnType<typeof getPageContextFromHooksServer>>
 type PrefetchedPageContext = {
   resultFetchedAt: number
   resultMaxAge: number
@@ -62,14 +62,14 @@ function getPageContextPrefetched(
   pageContext: {
     urlPathname: string
   } & PageContextConfig,
-): null | PageContextFromServerHooks {
+): null | PageContextFromHooksServer {
   const prefetchSettings = getPrefetchSettings(pageContext, null)
   // TO-DO/pageContext-prefetch: I guess we need linkTag to make this condition work
   if (!prefetchSettings.pageContext) return null
   const key = getCacheKey(pageContext.urlPathname)
   const found = globalObject.prefetchedPageContexts[key]
   if (!found || found.result.is404ServerSideRouted || isExpired(found)) return null
-  const pageContextPrefetched = found.result.pageContextFromServerHooks
+  const pageContextPrefetched = found.result.pageContextFromHooksServer
   /* TO-DO/pageContext-prefetch: make it work for when resultMaxAge is Infinity.
   // We discard the prefetched pageContext whenever we use it, so that the user always sees fresh data upon naivgating.
   delete globalObject.prefetchedPageContexts[key]
@@ -98,11 +98,11 @@ async function prefetchAssets(pageContextLink: {
   }
 }
 
-async function prefetchPageContextFromServerHooks(
+async function prefetchPageContextFromHooksServer(
   pageContextLink: PageContextForPrefetch,
   resultMaxAge: number | null,
 ): Promise<void> {
-  const result = await getPageContextFromServerHooks(pageContextLink, false)
+  const result = await getPageContextFromHooksServer(pageContextLink, false)
   setPageContextPrefetchCache(pageContextLink, result, resultMaxAge)
 }
 function populatePageContextPrefetchCache(
@@ -186,7 +186,7 @@ async function prefetch(
       if (options?.pageContext !== false) {
         assertUsage(isBrilloutDocpress(), "prefetching pageContext isn't supported yet")
         const resultMaxAge = typeof options?.pageContext === 'number' ? options.pageContext : null
-        await prefetchPageContextFromServerHooks(pageContextLink, resultMaxAge)
+        await prefetchPageContextFromHooksServer(pageContextLink, resultMaxAge)
       }
     })(),
   ])
@@ -294,7 +294,7 @@ async function prefetchOnEvent(linkTag: HTMLAnchorElement, event: 'hover' | 'vie
         if (!found || isExpired(found)) {
           // TO-DO/pageContext-prefetch: move this logic in getPrefetchSettings()
           const resultMaxAge = prefetchSettings.pageContext
-          await prefetchPageContextFromServerHooks(pageContextLink, resultMaxAge)
+          await prefetchPageContextFromHooksServer(pageContextLink, resultMaxAge)
         }
       }
     })(),
