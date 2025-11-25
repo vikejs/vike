@@ -152,7 +152,7 @@ async function renderPageServerEntryOnce(
     // - initGlobalContext_renderPage() depends on +onCreateGlobalContext hooks
     assert(!isAbortError(err))
     logRuntimeError(err, httpRequestId)
-    const pageContextHttpErrorFallback = getPageContextHttpResponseErrorWithoutGlobalContext(err, pageContextInit)
+    const pageContextHttpErrorFallback = getPageContextHttpResponseError_noGlobalContext(err, pageContextInit)
     return pageContextHttpErrorFallback
   }
   {
@@ -397,7 +397,7 @@ function getPageContextHttpResponseError(err: unknown, pageContextBegin: PageCon
   })
   return pageContextHttpErrorFallback
 }
-function getPageContextHttpResponseErrorWithoutGlobalContext(
+function getPageContextHttpResponseError_noGlobalContext(
   err: unknown,
   pageContextInit: PageContextInit,
 ): PageContextAfterRender {
@@ -697,6 +697,6 @@ function getPageContextSkipRequest(pageContextInit: PageContextInit) {
 
 function getPageContextInvalidVikeConfig(err: unknown, pageContextInit: PageContextInit, httpRequestId: number) {
   logRuntimeInfo?.(pc.bold(pc.red('Error loading Vike config — see error above')), httpRequestId, 'error-note')
-  const pageContextHttpErrorFallback = getPageContextHttpResponseErrorWithoutGlobalContext(err, pageContextInit)
+  const pageContextHttpErrorFallback = getPageContextHttpResponseError_noGlobalContext(err, pageContextInit)
   return pageContextHttpErrorFallback
 }
