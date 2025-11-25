@@ -19,9 +19,9 @@
       "default": "./dist/esm/types/index.js"
     },
     "./client/router": {
-      "worker": "./dist/esm/node/client/router.js",
-      "workerd": "./dist/esm/node/client/router.js",
-      "node": "./dist/esm/node/client/router.js",
+      "worker": "./dist/esm/server/client/router.js",
+      "workerd": "./dist/esm/server/client/router.js",
+      "node": "./dist/esm/server/client/router.js",
       "browser": "./dist/esm/client/runtime-client-routing/index.js",
       "types": "./dist/esm/client/runtime-client-routing/index.d.ts",
       "default": "./dist/esm/client/runtime-client-routing/index.js"
