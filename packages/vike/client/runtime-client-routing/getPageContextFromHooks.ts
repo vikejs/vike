@@ -51,6 +51,7 @@ type PageContextSerialized = {
   pageId: string
   _hasPageContextFromServer: true
 }
+// Get `pageContext` values from `<script id="vike_pageContext" type="application/json">`
 function getPageContextFromHooksServer_firstRender(): PageContextSerialized & {
   routeParams: Record<string, string>
   _hasPageContextFromServer: true
