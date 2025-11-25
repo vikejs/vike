@@ -226,7 +226,7 @@ async function renderPageServerEntryRecursive(
   objectAssign(pageContextNominalPageBegin, pageContextFromRoute)
   if (pageContextNominalPageBegin.pageId !== null) {
     assert(pageContextNominalPageBegin.pageId)
-    objectAssign(pageContextNominalPageBegin, { is404: false })
+    objectAssign(pageContextNominalPageBegin, { is404: null })
   } else {
     objectAssign(pageContextNominalPageBegin, { is404: true })
     await log404(pageContextNominalPageBegin)
