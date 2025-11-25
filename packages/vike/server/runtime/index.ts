@@ -13,7 +13,7 @@ export { createDevMiddleware } from '../runtime-dev/index.js'
 // Deprecated exports
 export * from '../../types/index-dreprecated.js'
 export { injectAssets__public as _injectAssets } from './renderPageServer/html/injectAssets/injectAssets__public.js'
-export { createPageRenderer } from '../../node/createPageRenderer.js'
+export { createPageRenderer } from '../createPageRenderer.js'
 import { assertWarning } from './utils.js'
 import pc from '@brillout/picocolors'
 import { RenderErrorPage as RenderErrorPage_ } from '../../shared/route/abort.js'
