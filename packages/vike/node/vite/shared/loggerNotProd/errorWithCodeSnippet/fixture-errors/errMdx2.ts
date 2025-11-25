@@ -51,7 +51,7 @@ export const errMdx2 = {
     '\n' +
     "If `throw redirect()` doesn't work:\n" +
     ' - **Make sure to add `pageContext.httpResponse.headers` to the HTTP response.**  \n' +
-    '   If you\'ve embedded Vike into your server using <Link text={<code>renderPageServer()</code>} href="/renderPageServer" />, then inspect whether `pageContext.httpResponse.headers` contains the `Location` header and double check that you\'re correctly adding all the headers defined by `pageContext.httpResponse.headers` to the HTTP response.\n' +
+    '   If you\'ve embedded Vike into your server using <Link text={<code>renderPage()</code>} href="/renderPage" />, then inspect whether `pageContext.httpResponse.headers` contains the `Location` header and double check that you\'re correctly adding all the headers defined by `pageContext.httpResponse.headers` to the HTTP response.\n' +
     '\n' +
     '\n' +
     `<h2 id="see-also">{'See also'}</h2>\n` +
