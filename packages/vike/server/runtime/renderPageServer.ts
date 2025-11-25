@@ -67,7 +67,7 @@ import {
 } from './renderPageServer/html/serializeContext.js'
 import { getErrorPageId } from '../../shared-server-client/error-page.js'
 import { handleErrorWithoutErrorPage } from './renderPageServer/handleErrorWithoutErrorPage.js'
-import { loadPageConfigsLazyServerSide } from './renderPageServer/loadPageConfigsLazyServerSide.js'
+import { loadPageConfigsLazyServerSide, type PageContext_loadPageConfigsLazyServerSide } from './renderPageServer/loadPageConfigsLazyServerSide.js'
 import { resolveRedirects } from './renderPageServer/resolveRedirects.js'
 import type { PageContextInternalServer } from '../../types/PageContext.js'
 import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
@@ -599,7 +599,7 @@ async function handleAbort(
   // handleAbortError() creates a new pageContext object and we don't merge pageContextNominalPageBegin to it: we only use some pageContextNominalPageBegin information.
   pageContextNominalPageBegin: PageContextBegin,
   httpRequestId: number,
-  pageContextErrorPageInit: PageContextErrorPageInit,
+  pageContextErrorPageInit: Omit<PageContext_loadPageConfigsLazyServerSide, 'pageId'>,
   globalContext: GlobalContextServerInternal,
 ) {
   logAbort(errAbort, globalContext._isProduction, pageContextNominalPageBegin)
