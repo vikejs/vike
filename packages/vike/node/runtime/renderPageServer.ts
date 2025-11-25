@@ -388,7 +388,6 @@ function prettyUrl(url: string) {
 
 // TODO: rename getPageContextHttpResponseError getPageContextHttpResponseErrorFallback
 function getPageContextHttpResponseError(err: unknown, pageContextBegin: PageContextBegin) {
-  // TODO rename pageContextHttpErrorFallback pageContextErrorFallback
   const pageContextHttpErrorFallback = forkPageContext(pageContextBegin)
   const httpResponse = createHttpResponseErrorFallback(pageContextBegin)
   objectAssign(pageContextHttpErrorFallback, {
