@@ -29,7 +29,7 @@ import type { AbortStatusCode } from '../shared/route/abort.js'
 import type { GlobalContextClient, GlobalContextServer, GlobalContextClientWithServerRouting } from './GlobalContext.js'
 import type { DangerouslyUseInternals } from '../shared/getProxyForPublicUsage.js'
 import type { PageContextInternalServerAfterRender } from '../node/runtime/renderPageServer.js'
-import type { PageContextInternalClientAfterRender } from '../client/runtime-client-routing/renderPageClientSide.js'
+import type { PageContextInternalClientAfterRender } from '../client/runtime-client-routing/renderPageClient.js'
 
 type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & {
   /** https://vike.dev/warning/internals */

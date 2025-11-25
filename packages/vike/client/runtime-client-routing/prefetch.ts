@@ -18,7 +18,7 @@ import {
 } from './utils.js'
 import { isErrorFetchingStaticAssets, loadPageConfigsLazyClientSide } from '../shared/loadPageConfigsLazyClientSide.js'
 import { isLinkSkipped } from './isLinkSkipped.js'
-import { disableClientRouting } from './renderPageClientSide.js'
+import { disableClientRouting } from './renderPageClient.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { createPageContextClientSide, type PageContextCreated } from './createPageContextClientSide.js'
 import { route, type PageContextAfterRoute } from '../../shared/route/index.js'

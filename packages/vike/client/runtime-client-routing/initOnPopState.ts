@@ -1,7 +1,7 @@
 export { initOnPopState }
 
 import { onPopStateBegin, type HistoryInfo } from './history.js'
-import { renderPageClientSide } from './renderPageClientSide.js'
+import { renderPageClient } from './renderPageClient.js'
 import { type ScrollTarget, setScrollPosition } from './setScrollPosition.js'
 import { catchInfiniteLoop } from './utils.js'
 
@@ -56,7 +56,7 @@ async function handleHistoryNavigation(previous: HistoryInfo, current: HistoryIn
   const isBackwardNavigation =
     !current.state.timestamp || !previous.state.timestamp ? null : current.state.timestamp < previous.state.timestamp
 
-  await renderPageClientSide({ scrollTarget, isBackwardNavigation, doNotRenderIfSamePage, isHistoryNavigation: true })
+  await renderPageClient({ scrollTarget, isBackwardNavigation, doNotRenderIfSamePage, isHistoryNavigation: true })
 }
 
 function removeHash(url: `/${string}`) {

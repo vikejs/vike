@@ -1,7 +1,7 @@
 export { initOnLinkClick }
 
 import { isLinkIgnored, isHrefCurrentUrl, isLinkSkipped } from './isLinkSkipped.js'
-import { renderPageClientSide } from './renderPageClientSide.js'
+import { renderPageClient } from './renderPageClient.js'
 import { scrollToHashOrTop, type ScrollTarget } from './setScrollPosition.js'
 
 function initOnLinkClick() {
@@ -37,7 +37,7 @@ async function onLinkClick(ev: MouseEvent) {
     const v = linkTag.getAttribute('keep-scroll-position')
     if (v !== null) scrollTarget = { preserveScroll: v === 'false' ? false : true }
   }
-  await renderPageClientSide({
+  await renderPageClient({
     scrollTarget,
     urlOriginal: href,
   })
