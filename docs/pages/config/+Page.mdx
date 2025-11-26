@@ -37,7 +37,7 @@ export default {
 // @detype-uncomment export default /* ... */
 ```
 
-For more convenience, you can prepend `+` to the file names and do this:
+For more convenience, you can define following `+` files instead:
 
 ```yaml
 /pages/product/@id/+config.ts # [!code --]
@@ -47,9 +47,9 @@ For more convenience, you can prepend `+` to the file names and do this:
 /pages/product/@id/+Layout.tsx # [!code ++]
 ```
 
-Vike automatically picks up any such `+` file, and it doesn't make any difference whether you define `Page`/`Layout` via `+config.js > export default { Page, Layout }` or `+Page.jsx`/`+Layout.jsx`
+Vike automatically picks up `+` file — it doesn't make any difference whether you define `Page`/`Layout` via `+Page.jsx`/`+Layout.jsx`, or via `+config.js > export default { Page, Layout }`.
 
-> Except of `+config.js`, any `+` file corresponds to a <Link href="/settings">Vike setting</Link> or <Link href="/hooks">Vike hook</Link>.
+> Except of `+config.js`, any `+` file corresponds to a Vike <Link href="/settings">setting</Link> or <Link href="/hooks">hook</Link>.
 
 
 ## Inheritance
