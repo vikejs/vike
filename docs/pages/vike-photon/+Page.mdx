@@ -520,10 +520,10 @@ export const config = {
       id: 'server/index.ts'
     },
     standalone: {// [!code ++]
-      singlefile: false, // Set to true to bundle into a single file// [!code ++]
-      minify: false,     // Set to true to minify output// [!code ++]
-      trace: true,       // Set to false to disable dependency tracing// [!code ++]
-      external: []       // Array of packages to exclude from bundling// [!code ++]
+      bundle: false, // Set to true to bundle into a single file// [!code ++]
+      minify: false, // Set to true to minify output// [!code ++]
+      trace: true,   // Set to false to disable dependency tracing// [!code ++]
+      external: []   // Array of packages to exclude from bundling// [!code ++]
     }// [!code ++]
   }
 } satisfies Config
