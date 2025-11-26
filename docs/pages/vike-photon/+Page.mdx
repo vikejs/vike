@@ -485,7 +485,7 @@ See also: <Link href="/auth" />.
 
 With `standalone: true`, the build output directory ([`dist/`](https://vite.dev/config/build-options.html#build-outdir)) contains everything needed for deployment. This means that, in production, only the `dist/` directory is required (you can remove `node_modules/` and skip `$ npm install`).
 
-> Skipping `node_modules/` massively reduces disk usage in production, which can be important, for example to reduce the size of Docker images.
+> Skipping `node_modules/` massively reduces disk usage in production, which can be important, for example to [reduce the size of Docker images](https://github.com/photon-js/photon/issues/42#issuecomment-3549657194).
 
 ```ts
 // +config.ts
