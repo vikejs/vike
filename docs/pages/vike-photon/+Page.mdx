@@ -485,8 +485,7 @@ See also: <Link href="/auth" />.
 
 With `standalone: true`, the build output directory ([`dist/`](https://vite.dev/config/build-options.html#build-outdir)) contains everything needed for deployment. This means that, in production, only the `dist/` directory is required (you can remove `node_modules/` and skip `$ npm install`).
 
->  If the production code built with `standalone: true` fails to run with errors like `ENOENT: no such file or directory`, then disable standalone mode or replace
->  the npm package throwing the error with another npm package. (The issue is that some npm package have dependencies that aren't explicit and, consequently, cannot be statically analyzed and cannot be included in the standalone bundle.)
+> Skipping `node_modules/` massively reduces disk usage in production, which can be important, for example to reduce the size of Docker images.
 
 ```ts
 // +config.ts
@@ -506,28 +505,28 @@ export const config = {
 } satisfies Config
 ```
 
-Options:
+Or with options:
 
 ```ts
-
 import type { Config } from 'vike/types'
 
 export const config = {
-  // ...
-  extends: [vikePhoton],
   photon: {
-    server: {
-      id: 'server/index.ts'
-    },
-    standalone: {// [!code ++]
-      bundle: false, // Set to true to bundle into a single file// [!code ++]
-      minify: false, // Set to true to minify output// [!code ++]
-      trace: true,   // Set to false to disable dependency tracing// [!code ++]
-      external: []   // Array of packages to exclude from bundling// [!code ++]
-    }// [!code ++]
+    standalone: {
+      // Default values
+      bundle: false, // true => bundle output (usually a single file)
+      minify: false, // true => minify output
+      trace: true, // false => disable dependency tracing
+      external: [] // List of packages to exclude from bundling
+    }
   }
 } satisfies Config
 ```
+
+> With `bundle: true` and `minify: true` you can significantly reduce size, but we recommend against this because it makes debugging more difficult (stack traces are harder to read). Adding source maps doesn't solve the issue, because `dist/` will now include source map files and may even end up larger.
+
+>  If the production code built with `standalone: true` fails to run with errors like `ENOENT: no such file or directory`, then disable standalone mode or replace
+>  the npm package throwing the error with another npm package. (The issue is that some npm package have dependencies that aren't explicit and, consequently, cannot be statically analyzed and cannot be included in the standalone bundle.)
 
 
 ## HMR
