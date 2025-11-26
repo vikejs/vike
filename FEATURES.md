@@ -96,6 +96,7 @@ Details:
   - https://vike.dev/warning/internals
   - Explain why + give example => Vike's philosophy to treat blockers as high prio and minimize them as much as possible
 - Infinite loop guards, e.g. for infinite redirections
+- Part of Vite's CI
 
 Misc:
 - `throw render()`
