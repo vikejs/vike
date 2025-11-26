@@ -525,9 +525,19 @@ export const config = {
 
 > With `bundle: true` and `minify: true` you can significantly reduce size, but we recommend against this because it makes debugging more difficult (stack traces are harder to read). Adding source maps doesn't solve the issue, because `dist/` will now include source map files and may even end up larger.
 
->  If the production code built with `standalone: true` fails to run with errors like `ENOENT: no such file or directory`, then disable standalone mode or replace
->  the npm package throwing the error with another npm package. (The issue is that some npm package have dependencies that aren't explicit and, consequently, cannot be statically analyzed and cannot be included in the standalone bundle.)
+> It's an advanced feature, [more powerful than just using a bundler](https://photonjs.dev/why#standalone).
 
+> If a package throws `ENOENT: no such file or directory` then either add it to `external` or ask the package maintainers to fix the issue.
+>
+> The issue is that some packages (only few in our experience) reference files in a dynamic fashion that isn't statically analyzable and, consequently, cannot be included in the standalone bundle.
+>
+> ```js
+> // ❌ Photon cannot trace the file reference:
+> fs.readFile('hello.' + someCondition ? 'js' : 'wasm')
+>
+> // ✅ Photon can trace this:
+> someCondition ? fs.readFile('hello.js') : fs.readFile('hello.wasm')
+> ```
 
 ## HMR
 
