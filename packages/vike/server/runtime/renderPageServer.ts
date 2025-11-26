@@ -229,7 +229,7 @@ async function renderPageServerEntryRecursive(
     objectAssign(pageContextNominalPageBegin, { is404: null })
   } else {
     objectAssign(pageContextNominalPageBegin, { is404: true })
-    await log404(pageContextNominalPageBegin)
+    log404(pageContextNominalPageBegin)
     const errorPageId = getErrorPageId(
       pageContextNominalPageBegin._globalContext._pageFilesAll,
       pageContextNominalPageBegin._globalContext._pageConfigs,

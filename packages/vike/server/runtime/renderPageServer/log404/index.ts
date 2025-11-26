@@ -18,7 +18,7 @@ import {
 import pc from '@brillout/picocolors'
 import type { PageContextCreated } from '../createPageContextServerSide.js'
 
-async function log404(
+function log404(
   pageContext: PageContextCreated & {
     urlPathname: string
     errorWhileRendering: null | Error
