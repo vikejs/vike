@@ -6,7 +6,7 @@ onLoad()
 
 // - Server-side bloat is negligible
 // - The Vite plugin imports the server runtime anyways
-export * from '../../server/runtime/utils.js'
+export * from '../../server/utils.js'
 
 // Utils only needed by `plugin/*`
 export * from '../../utils/requireResolve.js'

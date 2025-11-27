@@ -54,7 +54,7 @@ import {
   isNonRunnableDev,
   objectAssign,
   setNodeEnvProductionIfUndefined,
-} from './utils.js'
+} from '../utils.js'
 import type { ViteManifest } from '../../types/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'

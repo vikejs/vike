@@ -30,7 +30,7 @@ import {
   getUrlPretty,
   updateType,
   catchInfiniteLoop,
-} from './utils.js'
+} from '../utils.js'
 import {
   ErrorAbort,
   getPageContextAddendumAbort,

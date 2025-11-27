@@ -15,7 +15,7 @@ import {
   objectAssign,
   PromiseType,
   updateType,
-} from '../utils.js'
+} from '../../utils.js'
 import { getPageAssets, type PageAsset } from './getPageAssets.js'
 import type { PageConfigRuntime } from '../../../types/PageConfig.js'
 import { findPageConfig } from '../../../shared-server-client/page-configs/findPageConfig.js'

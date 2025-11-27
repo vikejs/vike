@@ -6,7 +6,7 @@ export type { PassToClient }
 export type { PassToClientPublic }
 
 import { stringify, isJsonSerializerError } from '@brillout/json-serializer/stringify'
-import { assert, assertUsage, assertWarning, getPropAccessNotation, hasProp, unique } from '../../utils.js'
+import { assert, assertUsage, assertWarning, getPropAccessNotation, hasProp, unique } from '../../../utils.js'
 import { isErrorPage } from '../../../../shared-server-client/error-page.js'
 import { addIs404ToPageProps } from '../../../../shared-server-client/addIs404ToPageProps.js'
 import pc from '@brillout/picocolors'

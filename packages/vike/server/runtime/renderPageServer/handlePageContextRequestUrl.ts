@@ -5,7 +5,7 @@ import {
   doNotCreateExtraDirectory,
 } from '../../../shared-server-client/getPageContextRequestUrl.js'
 import { modifyUrl } from '../../../shared-server-client/modifyUrl.js'
-import { baseServer, parseUrl, assert, slice, isObject, hasProp } from '../utils.js'
+import { baseServer, parseUrl, assert, slice, isObject, hasProp } from '../../utils.js'
 
 type UrlParsed = ReturnType<typeof parseUrl>
 
