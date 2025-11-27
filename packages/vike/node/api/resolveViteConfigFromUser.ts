@@ -21,6 +21,7 @@ import pc from '@brillout/picocolors'
 import { getEnvVarObject } from '../vite/shared/getEnvVarObject.js'
 import { getVikeApiOperation, isVikeCliOrApi } from '../../shared-server-node/api-context.js'
 import { getViteCommandFromCli } from '../vite/shared/isViteCli.js'
+import type { Config } from '../../types/index.js'
 
 const globalObject = getGlobalObject<{ root?: string; isOnlyResolvingUserConfig?: boolean }>(
   'api/prepareViteApiCall.ts',
@@ -71,7 +72,7 @@ async function getViteRoot(viteContext: ViteContext) {
 
 type ViteInfo = Awaited<ReturnType<typeof getViteInfo>>
 async function getViteInfo(viteConfigFromUserVikeApiOptions: InlineConfig | undefined, viteContext: ViteContext) {
-  let viteConfigFromUserResolved = mergeConfig({}, viteConfigFromUserVikeApiOptions ?? {})
+  let viteConfigFromUserResolved = clone(viteConfigFromUserVikeApiOptions ?? {})
 
   // Precedence:
   // 1. (highest precedence)  |  viteConfigFromUserEnvVar          |  VITE_CONFIG
@@ -81,16 +82,16 @@ async function getViteInfo(viteConfigFromUserVikeApiOptions: InlineConfig | unde
 
   // Resolve Vike's +mode setting
   {
-    const viteConfigFromUserVikeMode = pick(getVikeConfigFromCliOrEnv().vikeConfigFromCliOrEnv, ['mode'])
+    const viteConfigFromUserVikeMode = pick(getVikeConfigFromCliOrEnv().vikeConfigFromCliOrEnv as Config, ['mode'])
     if (Object.keys(viteConfigFromUserVikeMode).length > 0) {
-      viteConfigFromUserResolved = mergeConfig(viteConfigFromUserResolved ?? {}, viteConfigFromUserVikeMode)
+      viteConfigFromUserResolved = merge(viteConfigFromUserResolved ?? {}, viteConfigFromUserVikeMode)
     }
   }
 
   // Resolve VITE_CONFIG
   const viteConfigFromUserEnvVar = getEnvVarObject('VITE_CONFIG')
   if (viteConfigFromUserEnvVar) {
-    viteConfigFromUserResolved = mergeConfig(viteConfigFromUserResolved ?? {}, viteConfigFromUserEnvVar)
+    viteConfigFromUserResolved = merge(viteConfigFromUserResolved ?? {}, viteConfigFromUserEnvVar)
   }
 
   // Resolve vite.config.js
@@ -99,7 +100,7 @@ async function getViteInfo(viteConfigFromUserVikeApiOptions: InlineConfig | unde
   globalObject.isOnlyResolvingUserConfig = false
   // Correct precedence, replicates Vite:
   // https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L1001
-  const viteConfigResolved = mergeConfig(viteConfigFromUserViteConfigFile ?? {}, viteConfigFromUserResolved ?? {})
+  const viteConfigResolved = merge(viteConfigFromUserViteConfigFile ?? {}, viteConfigFromUserResolved ?? {})
 
   const root = normalizeViteRoot(viteConfigResolved.root ?? process.cwd())
   globalObject.root = root
@@ -134,6 +135,13 @@ async function getViteInfo(viteConfigFromUserVikeApiOptions: InlineConfig | unde
   assert(vikeVitePluginOptions)
 
   return { root, vikeVitePluginOptions, viteConfigFromUserResolved }
+}
+/** `c2` overrides `c1` */
+function merge(c1: UserConfig, c2: UserConfig): UserConfig {
+  return mergeConfig(c1, c2)
+}
+function clone(c: UserConfig): UserConfig {
+  return mergeConfig({}, c)
 }
 
 function findVikeVitePlugin(viteConfig: InlineConfig | UserConfig | undefined | null) {
