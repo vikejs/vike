@@ -99,15 +99,15 @@ function debug_(flag: Flag, options: Options, ...msgs: unknown[]) {
   })
 }
 
-function isDebug() {
+function isDebug(flag?: Flag): boolean {
+  assert(flag === undefined || flag && flags.includes(flag))
   const { flagsActivated, isAll, isGlobal } = getFlagsActivated()
-  return isAll || flagsActivated.length > 0 || isGlobal
-}
-function isDebugActivated(flag: Flag): boolean {
-  assert(flags.includes(flag))
-  const { flagsActivated, isAll } = getFlagsActivated()
-  const isActivated = flagsActivated.includes(flag) || (isAll && !flagsSkipWildcard.includes(flag))
-  return isActivated
+  if (flag) {
+    const isActivated = flagsActivated.includes(flag) || (isAll && !flagsSkipWildcard.includes(flag))
+    return isActivated
+  } else {
+    return isAll || flagsActivated.length > 0 || isGlobal
+  }
 }
 
 function formatMsg(
