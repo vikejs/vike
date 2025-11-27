@@ -107,6 +107,9 @@ function isDebug(flag?: Flag): boolean {
     return isAll || flagsActivated.length > 0 || isGlobal
   }
 }
+function isDebugError(): boolean {
+  return isDebug('vike:error')
+}
 
 function formatMsg(
   info: unknown,
@@ -215,8 +218,4 @@ function getDEBUG() {
   } catch {}
 
   return DEBUG
-}
-
-function isDebugError(): boolean {
-  return isDebug('vike:error')
 }
