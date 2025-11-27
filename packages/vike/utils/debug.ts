@@ -1,7 +1,7 @@
-export { debug }
-export { isDebug }
 export { createDebug }
+export { isDebug }
 export { isDebugError }
+export { debug }
 
 import { isCallable } from './isCallable.js'
 import { objectAssign } from './objectAssign.js'
