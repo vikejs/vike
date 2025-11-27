@@ -25,7 +25,7 @@ function testCloudflareBindings() {
 function testTodolist(isDev: boolean) {
   test('To-Do list', async () => {
     await page.goto(getServerUrl() + '/todo')
-    if (isDev) await sleep(300) // Seems to be required, otherwise the test is flaky. I don't know why.
+    if (isDev) await sleep(500) // Seems to be required, otherwise the test is flaky. I don't know why.
     await page.locator('button', { hasText: 'Reset' }).click()
     await autoRetry(
       async () => {

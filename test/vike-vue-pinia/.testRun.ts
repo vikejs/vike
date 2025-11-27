@@ -65,7 +65,7 @@ function testRun(cmd: `pnpm run ${'dev' | 'preview' | 'preview:ssg'}`) {
   }
 
   test('todos - add to-do', async () => {
-    await sleep(300) // Seems to be required, otherwise the test is flaky. I don't know why.
+    await sleep(500) // Seems to be required, otherwise the test is flaky. I don't know why.
     await page.fill('input[type="text"]', 'Buy bananas')
     await page.click('button[type="submit"]')
     await expectBananas()
