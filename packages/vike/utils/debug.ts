@@ -1,7 +1,7 @@
 export { debug }
 export { createDebug }
 export { isDebug }
-export { isDebugActivated }
+export { isDebug }
 export { isErrorDebug }
 
 import { isCallable } from './isCallable.js'
@@ -64,7 +64,7 @@ function createDebug(flag: Flag, optionsGlobal?: Options) {
     }
   }
   const debug = (...msgs: unknown[]) => debugWithOptions({})(...msgs)
-  objectAssign(debug, { options: debugWithOptions, isActivated: isDebugActivated(flag) })
+  objectAssign(debug, { options: debugWithOptions, isActivated: isDebug(flag) })
   return debug
 }
 
@@ -73,7 +73,7 @@ function debug(flag: Flag, ...msgs: unknown[]) {
 }
 
 function debug_(flag: Flag, options: Options, ...msgs: unknown[]) {
-  if (!isDebugActivated(flag)) return
+  if (!isDebug(flag)) return
   let [msgFirst, ...msgsRest] = msgs
   const padding = ' '.repeat(flag.length + 1)
   msgFirst = formatMsg(msgFirst, options, padding, 'FIRST')
@@ -219,5 +219,5 @@ function getDEBUG() {
 }
 
 function isErrorDebug(): boolean {
-  return isDebugActivated('vike:error')
+  return isDebug('vike:error')
 }

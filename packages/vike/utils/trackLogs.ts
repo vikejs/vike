@@ -1,10 +1,10 @@
-import { isDebugActivated } from './debug.js'
+import { isDebug } from './debug.js'
 import pc from '@brillout/picocolors'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
 
 assertIsNotBrowser()
 
-if (isDebugActivated('vike:log')) {
+if (isDebug('vike:log')) {
   trackLogs()
 }
 
