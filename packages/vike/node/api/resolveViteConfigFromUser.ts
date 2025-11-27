@@ -74,10 +74,10 @@ async function getViteInfo(viteConfigFromUserVikeApiOptions: InlineConfig | unde
   let viteConfigFromUserResolved = viteConfigFromUserVikeApiOptions
 
   // Precedence:
-  //  1) viteConfigFromUserEnvVar (highest precedence)
-  //  2) viteConfigFromUserVikeConfig
-  //  2) viteConfigFromUserVikeApiOptions
-  //  3) viteConfigFromUserViteFile (lowest precedence)
+  // 1. (highest precedence)  |  viteConfigFromUserEnvVar          |  VITE_CONFIG
+  // 2.                       |  viteConfigFromUserVikeConfig      |  VIKE_CONFIG & Vike CLI options — only `+mode`
+  // 2.                       |  viteConfigFromUserVikeApiOptions  |  Vike API options
+  // 3. (lowest precedence)   |  viteConfigFromUserViteFile        |  vite.config.js
 
   // Resolve Vike's +mode setting
   {
