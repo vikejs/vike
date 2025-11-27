@@ -3,12 +3,6 @@ export { onCreateGlobalContext }
 import type { GlobalContextServer } from 'vike/types'
 
 async function onCreateGlobalContext(globalContext: GlobalContextServer) {
-  // console.log('process.env',process.env)
-  console.log('import.meta.env', import.meta.env)
-  // @ts-ignore
-  console.log('import.meta.env2', import.meta.env2)
-  // @ts-ignore
-  console.log('TE3', TE3)
   const { pages } = globalContext
   let staticUrls: string[] = Object.values(pages)
     .map((p) => p.route)
