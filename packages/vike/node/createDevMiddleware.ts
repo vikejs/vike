@@ -13,6 +13,7 @@ import type { ApiOptions } from './api/types.js'
 async function createDevMiddleware(
   options: { root?: string } & ApiOptions = {},
 ): Promise<{ devMiddleware: Connect.Server; viteServer: ViteDevServer; viteConfig: ResolvedConfig }> {
+  console.log('createDevMiddleware()')
   const optionsMod = {
     ...options,
     viteConfig: {

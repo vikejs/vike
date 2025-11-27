@@ -56,6 +56,7 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
           const rootResolvedEarly = configFromUser.root
             ? normalizeViteRoot(configFromUser.root)
             : await getViteRoot(viteContext)
+          console.log('rootResolvedEarly', rootResolvedEarly)
           assert(rootResolvedEarly)
           setVikeConfigContext({ userRootDir: rootResolvedEarly, isDev, vikeVitePluginOptions })
           const vikeConfig = await getVikeConfigInternal()

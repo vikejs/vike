@@ -42,10 +42,12 @@ import { isOnlyResolvingUserConfig } from '../api/resolveViteConfigFromUser.js'
 // We don't call this in ./onLoad.ts to avoid a cyclic dependency with utils.ts
 setGetClientEntrySrcDev(getClientEntrySrcDev)
 assertIsNotProductionRuntime()
+console.log('vite/index.ts')
 
 type PluginInterop = Record<string, unknown> & { name: string }
 // Return `PluginInterop` instead of `Plugin` to avoid type mismatch upon different Vite versions
 function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): Promise<PluginInterop[]> {
+  console.log('vite plugin()')
   const promise = (async () => {
     if (skip()) return []
     const plugins: Plugin[] = [
