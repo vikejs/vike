@@ -451,19 +451,20 @@ serve(app, {
 ```
 
 
-## Custom `pageContext`
+## `pageContext.runtime`
 
-To define <Link href="/pageContext#custom">custom `pageContext` properties</Link> based on the HTTP request, you can use <Link href="/onCreatePageContext">`+onCreatePageContext.server.js`</Link> with <Link href="/pageContext#runtime">`pageContext.runtime`</Link>, for example:
+You can use `pageContext.runtime` to access the HTTP request object, for example:
 
 ```ts
-// pages/+onCreatePageContext.server.ts
-// Environment: server
+// pages/product/@id/+data.ts
 
 import type { PageContextServer } from 'vike/types'
 
-// This hook is called upon new incoming HTTP requests
-export async function onCreatePageContext(pageContext: PageContextServer) {
-  pageContext.user = pageContext.runtime.req.user
+export type Data = Awaited<ReturnType<typeof data>>
+export async function data(pageContext: PageContextServer) {
+  // Using pageContext.runtime.req to access the logged-in user
+  const { user } = pageContext.runtime.req
+  // ...
 }
 
 declare global {
@@ -476,9 +477,11 @@ declare global {
 }
 ```
 
-See also: <Link href="/auth" />.
+> For convenience, you can define `pageContext.user` as an alias of `pageContext.runtime.req.user` — see <Link href="/auth#pagecontext-user" doNotInferSectionTitle />.
 
-> The `+onCreatePageContext.server.js` hook above isn't really needed: you can simply access `pageContext.runtime.req.user` instead — it's just a convenience to set `pageContext.user` as an alias for `pageContext.runtime.req.user`
+See also:
+- <Link href="/pageContext#runtime">API > `pageContext.runtime`</Link>
+- <Link href="/auth" />
 
 
 ## Standalone

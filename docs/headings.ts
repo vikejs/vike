@@ -310,7 +310,7 @@ const headings = [
     level: 2,
     title: 'Authentication',
     url: '/auth',
-    sectionTitles: ['SSG'],
+    sectionTitles: ['SSG', '`pageContext.user`'],
   },
   {
     level: 2,
@@ -1047,7 +1047,7 @@ function extensions() {
       {
         title: '`vike-photon`',
         url: '/vike-photon',
-        sectionTitles: ['HTTPS'],
+        sectionTitles: ['HTTPS', '`pageContext.runtime`'],
         category: 'Overview',
       },
     ] as const

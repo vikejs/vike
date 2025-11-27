@@ -11,7 +11,7 @@ In principle, you can use Vike with any authentication tool such as:
 
 ## `pageContext.user`
 
-You can make information about the authenticated user available to your UI components and Vike hooks by defining a <Link href="/pageContext#custom">custom property `pageContext.user`</Link> in <Link href="/onCreatePageContext">`+onCreatePageContext.server.js`</Link>.
+You can make information about the authenticated user available to your UI components and Vike hooks by defining a <Link href="/pageContext#custom">custom property</Link> `pageContext.user` in <Link href="/onCreatePageContext">`+onCreatePageContext.server.js`</Link>.
 
 ```ts
 // pages/+onCreatePageContext.server.ts
@@ -69,7 +69,7 @@ export default {
 
 > You can access `pageContext` in any UI component and Vike hook — see <Link href="/pageContext" />.
 
-> If you use <Link href="/vike-photon">`vike-photon`</Link>, you can access the request object at `pageContext.runtime.req.user` (see <Link href="/pageContext#runtime">`pageContext.runtime`</Link>).
+> If you use <Link href="/vike-photon">`vike-photon`</Link>, you can access the request object at <Link href="/vike-photon#pagecontext-runtime">`pageContext.runtime.req`</Link>.
 >
 > If you don't use `vike-photon`, you can define a custom property `pageContext.req` at <Link href="/renderPage">`renderPage()`</Link>:
 > ```ts

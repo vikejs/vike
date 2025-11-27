@@ -9,14 +9,12 @@ import { PropPageContext as Prop, ConfigSpec } from '../../components'
 The `pageContext` object provides contextual information about the current page.
 
 ```ts
-// /pages/product/@id/+data.ts
-
-export { data }
-export type Data = Awaited<ReturnType<typeof data>>
+// pages/product/@id/+data.ts
 
 import type { PageContextServer } from 'vike/types'
 
-async function data(pageContext: PageContextServer) {
+export type Data = Awaited<ReturnType<typeof data>>
+export async function data(pageContext: PageContextServer) {
   // Common built-in properties
   pageContext.urlParsed.pathname // /product/42
   pageContext.routeParams.id // 42
@@ -169,6 +167,9 @@ declare global {
 > When using Node.js:
 > - `pageContext.runtime.req` is [`IncomingMessage`](https://nodejs.org/api/http.html#class-httpincomingmessage)
 > - `pageContext.runtime.res` is [`ServerResponse`](https://nodejs.org/api/http.html#class-httpserverresponse)
+
+See also:
+- <Link href="/vike-photon#pagecontext-runtime" doNotInferSectionTitle />
 
 <Prop name="config" />
 
