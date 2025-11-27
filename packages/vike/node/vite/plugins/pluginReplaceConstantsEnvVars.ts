@@ -56,7 +56,12 @@ function pluginReplaceConstantsEnvVars(): Plugin[] {
         handler(config_) {
           config = config_
           envVarsAll = loadEnv(config.mode, config.envDir || config.root, '')
+
+          // Add process.env values defined by .env files
+          Object.entries(envVarsAll).forEach(([key, val]) => (process.env[key] ??= val))
+
           envPrefix = getEnvPrefix(config)
+
           // Vite's built-in plugin vite:define needs to apply after this plugin.
           //  - This plugin vike:pluginReplaceConstantsEnvVars needs to apply after vike:pluginExtractAssets and vike:pluginExtractExportNames which need to apply after @vitejs/plugin-vue
           ;(config.plugins as Plugin[]).sort(lowerFirst<Plugin>((plugin) => (plugin.name === 'vite:define' ? 1 : 0)))
