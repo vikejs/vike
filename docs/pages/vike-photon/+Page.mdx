@@ -145,7 +145,7 @@ export default {
     // server/index.ts
 
     import { Hono } from 'hono'
-    import { apply, serve } from 'vike-photon/hono'
+    import { apply, serve } from '@photonjs/hono'
 
     function startServer() {
       const app = new Hono()
@@ -185,7 +185,7 @@ export default {
     // server/index.ts
 
     import express from 'express'
-    import { apply, serve } from 'vike-photon/express'
+    import { apply, serve } from '@photonjs/express'
 
     function startServer() {
       const app = express()
@@ -226,7 +226,7 @@ export default {
 
     import fastify from 'fastify'
     import rawBody from 'fastify-raw-body'
-    import { apply, serve } from 'vike-photon/fastify'
+    import { apply, serve } from '@photonjs/fastify'
 
     async function startServer() {
       const app = fastify({
@@ -271,7 +271,7 @@ export default {
     // server/index.ts
 
     import { createApp } from 'h3'
-    import { apply, serve } from 'vike-photon/h3'
+    import { apply, serve } from '@photonjs/h3'
 
     function startServer() {
       const app = createApp()
@@ -311,7 +311,7 @@ export default {
     // server/index.ts
 
     import { Elysia } from 'elysia'
-    import { apply, photon } from 'vike-photon/elysia'
+    import { apply, photon } from '@photonjs/elysia'
 
     function startServer() {
       const app = new Elysia()
