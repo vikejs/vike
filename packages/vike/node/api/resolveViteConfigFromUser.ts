@@ -75,7 +75,7 @@ async function getViteInfo(viteConfigFromUserVikeApiOptions: InlineConfig | unde
 
   // Precedence:
   // 1. (highest precedence)  |  viteConfigFromUserEnvVar          |  VITE_CONFIG
-  // 2.                       |  viteConfigFromUserVikeMode      |  VIKE_CONFIG & Vike CLI options — only `+mode`
+  // 2.                       |  viteConfigFromUserVikeMode        |  VIKE_CONFIG & Vike CLI options — only `+mode`
   // 2.                       |  viteConfigFromUserVikeApiOptions  |  Vike API options
   // 3. (lowest precedence)   |  viteConfigFromUserViteFile        |  vite.config.js
 
