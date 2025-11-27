@@ -4,8 +4,7 @@
 import { onLoad } from './onLoad.js'
 onLoad()
 
-// - Server-side bloat is negligible
-// - The Vite plugin imports the server runtime anyways
+// We can load all server/utils.ts since node/vite/ imports server/runime/ anyways.
 export * from '../../server/utils.js'
 
 // Utils only needed by `plugin/*`
