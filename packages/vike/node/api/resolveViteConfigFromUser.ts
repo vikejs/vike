@@ -1,7 +1,6 @@
 export { resolveViteConfigFromUser }
 export { isOnlyResolvingUserConfig }
 export { getVikeConfigInternalEarly }
-export { getViteContextWithOperation }
 export { getViteRoot }
 export { assertViteRoot }
 export { normalizeViteRoot }
@@ -28,12 +27,10 @@ const globalObject = getGlobalObject<{ root?: string; isOnlyResolvingUserConfig?
   {},
 )
 
-async function resolveViteConfigFromUser(
-  viteConfigFromUserVikeApiOptions: InlineConfig | undefined,
-  viteContext: ViteContext,
-) {
-  const viteInfo = await getViteInfo(viteConfigFromUserVikeApiOptions, viteContext)
-  setVikeConfigContext_(viteInfo, viteContext)
+async function resolveViteConfigFromUser() {
+  const { viteContext } = getVikeApiContext()
+  assert(viteContext)
+  const viteInfo = await getViteInfo(viteContext)
   const { viteConfigFromUserResolved } = viteInfo
   const { viteConfigResolved } = await assertViteRoot2(viteInfo.root, viteConfigFromUserResolved, viteContext)
   return {
@@ -46,7 +43,7 @@ async function getVikeConfigInternalEarly() {
   assert(!globalObject.isOnlyResolvingUserConfig) // ensure no infinite loop
   if (!isVikeConfigContextSet()) {
     const viteContext = getViteContext()
-    const viteInfo = await getViteInfo(undefined, viteContext)
+    const viteInfo = await getViteInfo(viteContext)
     setVikeConfigContext_(viteInfo, viteContext)
   }
   return await getVikeConfigInternal()
@@ -65,13 +62,15 @@ function isOnlyResolvingUserConfig() {
 }
 
 async function getViteRoot(viteContext: ViteContext) {
-  if (!globalObject.root) await getViteInfo(undefined, viteContext)
+  if (!globalObject.root) await getViteInfo(viteContext)
   assert(globalObject.root)
   return globalObject.root
 }
 
 type ViteInfo = Awaited<ReturnType<typeof getViteInfo>>
-async function getViteInfo(viteConfigFromUserVikeApiOptions: InlineConfig | undefined, viteContext: ViteContext) {
+async function getViteInfo(viteContext: ViteContext) {
+  const { viteConfigFromUserVikeApiOptions } = getVikeApiContext()
+
   let viteConfigFromUserResolved = clone(viteConfigFromUserVikeApiOptions ?? {})
 
   // Precedence:
@@ -226,6 +225,15 @@ function getViteContextWithOperation(operation: ApiOperation): ViteContext {
   }
   assert(false)
 }
+function getVikeApiContext() {
+  const vikeApiOperation = getVikeApiOperation()
+  if (!vikeApiOperation) return { viteConfigFromUserVikeApiOptions: null, viteContext: null }
+  const { options, operation } = vikeApiOperation!
+  const viteConfigFromUserVikeApiOptions = options.viteConfig
+  const viteContext = getViteContextWithOperation(operation)
+  return { viteConfigFromUserVikeApiOptions, viteContext }
+}
+
 function resolveViteContext(inlineConfig: InlineConfig = {}, viteContext: ViteContext) {
   const isBuild = viteContext === 'build'
   const isPreview = viteContext === 'preview'
