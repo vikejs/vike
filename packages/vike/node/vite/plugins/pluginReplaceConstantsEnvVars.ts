@@ -50,7 +50,24 @@ function pluginReplaceConstantsEnvVars(): Plugin[] {
   let config: ResolvedConfig
   return [
     {
-      name: 'vike:pluginReplaceConstantsEnvVars',
+      name: 'vike:pluginReplaceConstantsEnvVars:pre',
+      enforce: 'post',
+      config: {
+        order: 'post',
+        handler() {
+          return {
+            define: {
+              'import.meta.env': JSON.stringify(42),
+              __vite_import_meta_env__: JSON.stringify(42),
+              // 'import.meta.env2': JSON.stringify(43),
+              TE3: JSON.stringify(1),
+            },
+          }
+        },
+      },
+    },
+    {
+      name: 'vike:pluginReplaceConstantsEnvVars:post',
       enforce: 'post',
       configResolved: {
         handler(config_) {
@@ -60,16 +77,20 @@ function pluginReplaceConstantsEnvVars(): Plugin[] {
           // Vite's built-in plugin vite:define needs to apply after this plugin.
           //  - This plugin vike:pluginReplaceConstantsEnvVars needs to apply after vike:pluginExtractAssets and vike:pluginExtractExportNames which need to apply after @vitejs/plugin-vue
           ;(config.plugins as Plugin[]).sort(lowerFirst<Plugin>((plugin) => (plugin.name === 'vite:define' ? 1 : 0)))
+          // console.log((config.plugins as Plugin[]).map((plugin) => (plugin.name)))
         },
       },
       transform: {
-        filter: filterRolldown,
+        // filter: filterRolldown,
         handler(code, id, options) {
+          if (code.includes('import.meta.env2')) {
+            console.log('code', code)
+          }
           id = normalizeId(id)
           assertPosixPath(id)
           assertPosixPath(config.root)
           if (!id.startsWith(config.root)) return // skip linked dependencies
-          assert(filterFunction(id, code))
+          // assert(filterFunction(id, code))
 
           const isBuild = config.command === 'build'
           const isClientSide = !isViteServerSide_extraSafe(config, this.environment, options)
