@@ -238,7 +238,7 @@ function normalizeViteRoot(root: string) {
   )
 }
 
-const errMsg = `A Vite plugin is modifying Vite's setting ${pc.cyan('root')} which is forbidden` as const
+const errMsg = `A Vite plugin is modifying the Vite setting ${pc.cyan('root')} which is forbidden` as const
 async function assertViteRoot2(
   root: string,
   viteConfigFromUserResolved: InlineConfig | undefined,
