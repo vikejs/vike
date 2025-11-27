@@ -1,6 +1,6 @@
 export { debug }
-export { createDebug }
 export { isDebug }
+export { createDebug }
 export { isErrorDebug }
 
 import { isCallable } from './isCallable.js'
