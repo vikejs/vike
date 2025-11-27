@@ -3,7 +3,7 @@ export { logWithVikeTag }
 export { logDirectly }
 export { applyViteSourceMapToStackTrace }
 
-import { assert, stripAnsi, hasProp, assertIsNotProductionRuntime, PROJECT_VERSION, isErrorDebug } from '../../utils.js'
+import { assert, stripAnsi, hasProp, assertIsNotProductionRuntime, PROJECT_VERSION, isDebugError } from '../../utils.js'
 import pc from '@brillout/picocolors'
 import { getViteDevServer } from '../../../../server/runtime/globalContext.js'
 import type { LogCategory, LogType } from '../loggerNotProd.js'
@@ -65,7 +65,7 @@ function logDirectly(thing: unknown, logType: LogType) {
 }
 
 function applyViteSourceMapToStackTrace(thing: unknown) {
-  if (isErrorDebug()) return
+  if (isDebugError()) return
   if (!hasProp(thing, 'stack')) return
   const viteDevServer = getViteDevServer()
   if (!viteDevServer) return

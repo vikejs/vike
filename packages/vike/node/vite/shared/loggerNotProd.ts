@@ -37,7 +37,7 @@ import {
   assertIsNotProductionRuntime,
   formatHintLog,
   getAssertErrMsg,
-  isErrorDebug,
+  isDebugError,
   overwriteAssertProductionLogger,
   stripAnsi,
   warnIfErrorIsNotObject,
@@ -103,7 +103,7 @@ function logViteError(
 function logErr(err: unknown, httpRequestId: number | null = null, errorComesFromVite: boolean): void {
   warnIfErrorIsNotObject(err)
 
-  if (isAbortError(err) && !isErrorDebug()) {
+  if (isAbortError(err) && !isDebugError()) {
     return
   }
 
@@ -111,14 +111,14 @@ function logErr(err: unknown, httpRequestId: number | null = null, errorComesFro
 
   setAlreadyLogged(err)
   if (getHttpRequestAsyncStore()?.shouldErrorBeSwallowed(err)) {
-    if (!isErrorDebug()) return
+    if (!isDebugError()) return
   } else {
     store?.markErrorAsLogged(err)
   }
 
   const category = getCategory(httpRequestId)
 
-  if (!isErrorDebug()) {
+  if (!isDebugError()) {
     if (isErrorWithCodeSnippet(err)) {
       // We handle transpile errors globally because wrapping viteDevServer.ssrLoadModule() wouldn't be enough: transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when loading user code with import() (since Vite lazy-transpiles import() calls)
       const viteConfig = getViteConfig()
@@ -173,7 +173,7 @@ function logConfigError(err: unknown): void {
     const errMsgFormatted = getConfigBuildErrorFormatted(err)
     if (errMsgFormatted) {
       assert(stripAnsi(errMsgFormatted).startsWith('Failed to transpile'))
-      if (!isErrorDebug()) {
+      if (!isDebugError()) {
         logWithVikeTag(errMsgFormatted, 'error-thrown', category)
       } else {
         logDirectly(err, 'error-thrown')
@@ -225,7 +225,7 @@ function assertLogger(thing: string | Error, logType: LogType): void {
  *  - When vike modifies the error with getPrettyErrorWithCodeSnippet(err)
  */
 function logErrorDebugNote() {
-  if (isErrorDebug()) return
+  if (isDebugError()) return
   const store = getHttpRequestAsyncStore()
   if (store) {
     if (store.errorDebugNoteAlreadyShown) return

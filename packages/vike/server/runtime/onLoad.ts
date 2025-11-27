@@ -4,12 +4,12 @@ import { assertIsNotBrowser } from '../../utils/assertIsNotBrowser.js'
 import { assertNodeVersion } from '../../utils/assertNodeVersion.js'
 import { setAlwaysShowStackTrace } from '../../utils/assert.js'
 import { installRequireShim } from '@brillout/require-shim'
-import { isErrorDebug } from '../../utils/debug.js'
+import { isDebugError } from '../../utils/debug.js'
 
 function onLoad() {
   assertIsNotBrowser()
   assertNodeVersion()
-  if (isErrorDebug()) setAlwaysShowStackTrace()
+  if (isDebugError()) setAlwaysShowStackTrace()
   addEcosystemStamp()
   installRequireShim()
 }
