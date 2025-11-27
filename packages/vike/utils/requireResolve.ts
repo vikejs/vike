@@ -13,14 +13,14 @@ import { createRequire } from 'node:module'
 import path from 'node:path'
 import { assertIsImportPathNpmPackage, isImportPathNpmPackageOrPathAlias } from './parseNpmPackage.js'
 import { isNotNullish } from './isNullish.js'
-import { createDebugger } from './debug.js'
+import { createDebug } from './debug.js'
 const importMetaUrl = import.meta.url
 assertPosixPath(importMetaUrl)
 
 assertIsNotBrowser()
 assertIsNotProductionRuntime()
 
-const debug = createDebugger('vike:requireResolve')
+const debug = createDebug('vike:requireResolve')
 
 // - We still can't use import.meta.resolve() as of 23.1.0 (November 2024) because `parent` argument requires an experimental flag.
 //   - https://stackoverflow.com/questions/54977743/do-require-resolve-for-es-modules#comment139581675_62272600

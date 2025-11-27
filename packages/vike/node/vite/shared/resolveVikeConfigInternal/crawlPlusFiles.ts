@@ -10,7 +10,7 @@ import {
   isVersionMatch,
   isScriptFile,
   scriptFileExtensionList,
-  createDebugger,
+  createDebug,
   deepEqual,
   assertUsage,
   assertFilePathAbsoluteFilesystem,
@@ -29,7 +29,7 @@ import pc from '@brillout/picocolors'
 import picomatch, { type Matcher } from 'picomatch'
 import { ignorePatternsBuiltIn } from './crawlPlusFiles/ignorePatternsBuiltIn.js'
 const execA = promisify(exec)
-const debug = createDebugger('vike:crawl')
+const debug = createDebug('vike:crawl')
 
 assertIsNotProductionRuntime()
 const globalObject = getGlobalObject('getVikeConfig/crawlPlusFiles.ts', {

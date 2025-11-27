@@ -1,5 +1,5 @@
 export { debug }
-export { createDebugger }
+export { createDebug }
 export { isDebug }
 export { isDebugActivated }
 export { isErrorDebug }
@@ -54,7 +54,7 @@ type Options = {
   }
 }
 
-function createDebugger(flag: Flag, optionsGlobal?: Options) {
+function createDebug(flag: Flag, optionsGlobal?: Options) {
   assert(flags.includes(flag))
 
   const debugWithOptions = (optionsLocal: Options) => {

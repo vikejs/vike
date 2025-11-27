@@ -6,13 +6,13 @@ import { assert } from './assert.js'
 import { genPromise } from './genPromise.js'
 import { getRandomId } from './getRandomId.js'
 import { getGlobalObject } from './getGlobalObject.js'
-import { createDebugger } from './debug.js'
+import { createDebug } from './debug.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
 assertIsNotBrowser()
 const globalObject = getGlobalObject('utils/getViteRPC.ts', {
   rpc: null as null | object,
 })
-const debug = createDebugger('vike:vite-rpc')
+const debug = createDebug('vike:vite-rpc')
 
 type DataRequest = { callId: string; functionName: string; functionArgs: unknown[] }
 type DataResponse = { callId: string; functionReturn: unknown }

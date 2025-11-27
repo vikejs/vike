@@ -11,13 +11,13 @@ export { markSetup_isViteDev }
 
 import { assert, assertUsage, assertWarning } from './assert.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
-import { createDebugger } from './debug.js'
+import { createDebug } from './debug.js'
 import { getGlobalObject } from './getGlobalObject.js'
 import { isNonRunnableDev } from './isNonRunnableDev.js'
 import { isVitest } from './isVitest.js'
 import pc from '@brillout/picocolors'
 assertIsNotBrowser()
-const debug = createDebugger('vike:setup')
+const debug = createDebug('vike:setup')
 
 const setup = getGlobalObject<{
   shouldNotBeProduction?: true

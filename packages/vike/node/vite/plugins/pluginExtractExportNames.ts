@@ -3,19 +3,12 @@ export { isUsingClientRouter }
 export { extractExportNamesRE }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import {
-  assert,
-  getFileExtension,
-  createDebugger,
-  getGlobalObject,
-  assertUsage,
-  rollupSourceMapRemove,
-} from '../utils.js'
+import { assert, getFileExtension, createDebug, getGlobalObject, assertUsage, rollupSourceMapRemove } from '../utils.js'
 import { getExportNames } from '../shared/parseEsModule.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 const extractExportNamesRE = /(\?|&)extractExportNames(?:&|$)/
-const debug = createDebugger('vike:pluginExtractExportNames')
+const debug = createDebug('vike:pluginExtractExportNames')
 const globalObject = getGlobalObject<{ usesClientRouter?: true }>('plugins/pluginExtractExportNames.ts', {})
 
 const filterRolldown = {
