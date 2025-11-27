@@ -99,6 +99,10 @@ function debug_(flag: Flag, options: Options, ...msgs: unknown[]) {
   })
 }
 
+function isDebug() {
+  const { flagsActivated, isAll, isGlobal } = getFlagsActivated()
+  return isAll || flagsActivated.length > 0 || isGlobal
+}
 function isDebugActivated(flag: Flag): boolean {
   assert(flags.includes(flag))
   const { flagsActivated, isAll } = getFlagsActivated()
@@ -190,11 +194,6 @@ function getFlagsActivated() {
   const isAll = DEBUG.includes('vike:*')
   const isGlobal = /\bvike\b([^:]|$)/.test(DEBUG)
   return { flagsActivated, isAll, isGlobal }
-}
-
-function isDebug() {
-  const { flagsActivated, isAll, isGlobal } = getFlagsActivated()
-  return isAll || flagsActivated.length > 0 || isGlobal
 }
 
 function getDEBUG() {
