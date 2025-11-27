@@ -4,9 +4,9 @@ export type { OutDirs }
 
 import type { UserConfig, ResolvedConfig } from 'vite'
 import pc from '@brillout/picocolors'
-import { assert, assertPosixPath, assertUsage, createDebugger, pathJoin, toPosixPath } from '../utils.js'
+import { assert, assertPosixPath, assertUsage, createDebug, pathJoin, toPosixPath } from '../utils.js'
 import { isViteServerSide_viteEnvOptional, type ViteEnv } from './isViteServerSide.js'
-const debug = createDebugger('vike:outDir')
+const debug = createDebug('vike:outDir')
 
 type OutDirs = {
   /** Absolute path to `outDir` */

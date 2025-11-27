@@ -14,7 +14,7 @@ import {
   stripAnsi,
   getTerminalWidth,
   truncateString,
-} from '../../utils.js'
+} from '../../../utils.js'
 import pc from '@brillout/picocolors'
 import type { PageContextCreated } from '../createPageContextServerSide.js'
 

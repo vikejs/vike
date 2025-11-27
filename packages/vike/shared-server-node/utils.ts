@@ -1,20 +1,4 @@
-import { assertIsNotBrowser } from '../utils/assertIsNotBrowser.js'
-assertIsNotBrowser()
-
-export * from '../utils/assert.js'
-export * from '../utils/getFileExtension.js'
-export * from '../utils/getGlobalObject.js'
-export * from '../utils/isPlainObject.js'
-export * from '../utils/checkType.js'
-export * from '../utils/hasProp.js'
-export * from '../utils/objectAssign.js'
-export * from '../utils/checkType.js'
-export * from '../utils/hasProp.js'
-export * from '../utils/parseUrl.js'
-export * from '../utils/parseUrl-extras.js'
-export * from '../utils/isObject.js'
-export * from '../utils/assertIsNotBrowser.js'
-export * from '../utils/isNullish.js'
-export * from '../utils/unique.js'
-export * from '../utils/debug.js'
-export * from '../utils/virtualFileId.js'
+// We can load all server/utils.ts since shared-server-node/ imports from server/runime/ anyways.
+// And since /server/runime/ imports from shared-server-node/ both list of utils can be kept equivalent => this file can stay as-is.
+// While node/vite/ imports from shared-server-node/ the inverse isn't true: shared-server-node/ doesn't import from node/vite/ => node/vite/utils.ts can be (and actually is) a superset of shared-server-node/utils.js
+export * from '../server/utils.js'

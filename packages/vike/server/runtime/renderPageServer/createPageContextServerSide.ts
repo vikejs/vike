@@ -2,7 +2,7 @@ export { createPageContextServerSide }
 export { createPageContextServerSideWithoutGlobalContext }
 export type { PageContextCreated }
 
-import { assert, assertUsage, assertWarning, updateType, normalizeHeaders, objectAssign } from '../utils.js'
+import { assert, assertUsage, assertWarning, updateType, normalizeHeaders, objectAssign } from '../../utils.js'
 import { getPageContextUrlComputed } from '../../../shared-server-client/getPageContextUrlComputed.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { PageContextInit } from '../renderPageServer.js'

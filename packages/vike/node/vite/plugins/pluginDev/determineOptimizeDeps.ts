@@ -5,7 +5,7 @@ import { findPageFiles } from '../../shared/findPageFiles.js'
 import {
   assert,
   assertIsImportPathNpmPackage,
-  createDebugger,
+  createDebug,
   getNpmPackageName,
   isArray,
   isFilePathAbsoluteFilesystem,
@@ -22,7 +22,7 @@ import {
 import { getFilePathResolved } from '../../shared/getFilePath.js'
 import { getConfigValueSourcesRelevant } from '../pluginVirtualFiles/getConfigValueSourcesRelevant.js'
 
-const debug = createDebugger('vike:optimizeDeps')
+const debug = createDebug('vike:optimizeDeps')
 
 const WORKAROUND_LATE_DISCOVERY = [
   // Workaround for https://github.com/vitejs/vite-plugin-react/issues/650

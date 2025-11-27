@@ -19,7 +19,7 @@ import {
   isHtml,
   isPromise,
   objectAssign,
-} from '../../utils.js'
+} from '../../../utils.js'
 import { injectHtmlTagsToString, injectHtmlTagsToStream } from './injectAssets.js'
 import type { PageContextInjectAssets } from './injectAssets.js'
 import {

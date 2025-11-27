@@ -45,7 +45,7 @@ import {
   hasProp,
   getGlobalObject,
   genPromise,
-  createDebugger,
+  createDebug,
   checkType,
   PROJECT_VERSION,
   getViteRPC,
@@ -54,7 +54,7 @@ import {
   isNonRunnableDev,
   objectAssign,
   setNodeEnvProductionIfUndefined,
-} from './utils.js'
+} from '../utils.js'
 import type { ViteManifest } from '../../types/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
@@ -79,7 +79,7 @@ import type { Hook } from '../../shared-server-client/hooks/getHook.js'
 import type { ViteRPC } from '../../node/vite/plugins/non-runnable-dev/pluginViteRPC.js'
 import { getVikeApiOperation } from '../../shared-server-node/api-context.js'
 import type { PrerenderContext } from '../../types/index.js'
-const debug = createDebugger('vike:globalContext')
+const debug = createDebug('vike:globalContext')
 const globalObject = getGlobalObject<
   {
     globalContext?: Record<string, unknown>

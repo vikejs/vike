@@ -2,7 +2,7 @@
 
 //import { SsrEnv, setSsrEnv } from './ssrEnv.js'
 import { renderPageServer } from './runtime/renderPageServer.js'
-import { assertWarning } from './runtime/utils.js'
+import { assertWarning } from './utils.js'
 //import { importBuildWasLoaded } from './importBuild.js'
 
 export { createPageRenderer }

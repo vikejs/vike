@@ -1,7 +1,7 @@
-export { debug }
-export { createDebugger }
+export { createDebug }
 export { isDebug }
-export { isDebugActivated }
+export { isDebugError }
+export { debug }
 
 import { isCallable } from './isCallable.js'
 import { objectAssign } from './objectAssign.js'
@@ -53,7 +53,7 @@ type Options = {
   }
 }
 
-function createDebugger(flag: Flag, optionsGlobal?: Options) {
+function createDebug(flag: Flag, optionsGlobal?: Options) {
   assert(flags.includes(flag))
 
   const debugWithOptions = (optionsLocal: Options) => {
@@ -63,7 +63,7 @@ function createDebugger(flag: Flag, optionsGlobal?: Options) {
     }
   }
   const debug = (...msgs: unknown[]) => debugWithOptions({})(...msgs)
-  objectAssign(debug, { options: debugWithOptions, isActivated: isDebugActivated(flag) })
+  objectAssign(debug, { options: debugWithOptions, isActivated: isDebug(flag) })
   return debug
 }
 
@@ -72,7 +72,7 @@ function debug(flag: Flag, ...msgs: unknown[]) {
 }
 
 function debug_(flag: Flag, options: Options, ...msgs: unknown[]) {
-  if (!isDebugActivated(flag)) return
+  if (!isDebug(flag)) return
   let [msgFirst, ...msgsRest] = msgs
   const padding = ' '.repeat(flag.length + 1)
   msgFirst = formatMsg(msgFirst, options, padding, 'FIRST')
@@ -98,11 +98,17 @@ function debug_(flag: Flag, options: Options, ...msgs: unknown[]) {
   })
 }
 
-function isDebugActivated(flag: Flag): boolean {
-  assert(flags.includes(flag))
-  const { flagsActivated, isAll } = getFlagsActivated()
-  const isActivated = flagsActivated.includes(flag) || (isAll && !flagsSkipWildcard.includes(flag))
-  return isActivated
+function isDebug(flag?: Flag): boolean {
+  assert(flag === undefined || (flag && flags.includes(flag)))
+  const { flagsActivated, isAll, isGlobal } = getFlagsActivated()
+  if (flag) {
+    return flagsActivated.includes(flag) || (isAll && !flagsSkipWildcard.includes(flag))
+  } else {
+    return isAll || flagsActivated.length > 0 || isGlobal
+  }
+}
+function isDebugError(): boolean {
+  return isDebug('vike:error')
 }
 
 function formatMsg(
@@ -189,11 +195,6 @@ function getFlagsActivated() {
   const isAll = DEBUG.includes('vike:*')
   const isGlobal = /\bvike\b([^:]|$)/.test(DEBUG)
   return { flagsActivated, isAll, isGlobal }
-}
-
-function isDebug() {
-  const { flagsActivated, isAll, isGlobal } = getFlagsActivated()
-  return isAll || flagsActivated.length > 0 || isGlobal
 }
 
 function getDEBUG() {

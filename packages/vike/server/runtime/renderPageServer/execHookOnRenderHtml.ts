@@ -9,7 +9,7 @@ import {
   dangerouslySkipEscape,
 } from './html/renderHtml.js'
 import { getHookFromPageContext, type Hook } from '../../../shared-server-client/hooks/getHook.js'
-import { assert, assertUsage, assertWarning, isObject, objectAssign, isPromise, isCallable } from '../utils.js'
+import { assert, assertUsage, assertWarning, isObject, objectAssign, isPromise, isCallable } from '../../utils.js'
 import type { PageAsset } from './getPageAssets.js'
 import { isStream } from './html/stream.js'
 import { assertPageContextProvidedByUser } from '../../../shared-server-client/assertPageContextProvidedByUser.js'

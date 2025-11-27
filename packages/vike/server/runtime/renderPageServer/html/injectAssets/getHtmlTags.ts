@@ -3,7 +3,7 @@ export type { HtmlTag }
 export type { PreloadFilter }
 export type { InjectFilterEntry }
 
-import { assert, assertWarning, assertUsage, isObject, freezePartial } from '../../../utils.js'
+import { assert, assertWarning, assertUsage, isObject, freezePartial } from '../../../../utils.js'
 import {
   type PageContextSerialization,
   getGlobalContextClientSerialized,

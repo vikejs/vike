@@ -28,7 +28,7 @@ import {
   toPosixPath,
   assertUsage,
   isPlainScriptFile,
-  createDebugger,
+  createDebug,
   assertFilePathAbsoluteFilesystem,
   assertIsImportPathNpmPackage,
   genPromise,
@@ -44,8 +44,8 @@ import { getFilePathAbsoluteUserRootDir } from '../getFilePath.js'
 
 assertIsNotProductionRuntime()
 installSourceMapSupport()
-const debug = createDebugger('vike:pointer-imports')
-const debugEsbuildResolve = createDebugger('vike:esbuild-resolve')
+const debug = createDebug('vike:pointer-imports')
+const debugEsbuildResolve = createDebug('vike:esbuild-resolve')
 if (debugEsbuildResolve.isActivated) debugEsbuildResolve('esbuild version', version)
 
 type FileExports = { fileExports: Record<string, unknown> }

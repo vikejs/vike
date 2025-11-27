@@ -39,9 +39,9 @@ import {
   capitalizeFirstLetter,
   assertWarning,
   isCallable,
-  createDebugger,
+  createDebug,
   isBug,
-} from '../../utils.js'
+} from '../../../utils.js'
 import { HtmlRender } from './renderHtml.js'
 import {
   getStreamOfReactStreamingPackage,
@@ -53,7 +53,7 @@ import { import_ } from '@brillout/import'
 import type { Readable as Readable_, Writable as Writable_ } from 'node:stream'
 import pc from '@brillout/picocolors'
 
-const debug = createDebugger('vike:stream')
+const debug = createDebug('vike:stream')
 
 type StreamReadableWeb = ReadableStream
 type StreamReadableNode = Readable_

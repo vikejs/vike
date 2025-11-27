@@ -1,3 +1,3 @@
-import { createDebugger } from './debug.js'
+import { createDebug } from './debug.js'
 // TO-DO/next-major-release: remove (or rename?)
-export const debugGlob = createDebugger('vike:glob')
+export const debugGlob = createDebug('vike:glob')

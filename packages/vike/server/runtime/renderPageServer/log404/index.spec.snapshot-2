@@ -5,5 +5,5 @@
 │ /markdown                                                             │ Filesystem Route │ /pages/markdown/                        │
 │ /star-wars                                                            │ Filesystem Route │ /pages/star-wars/index/                 │
 │ /star-wars/@id                                                        │ Filesystem Route │ /pages/star-wars/@id/                   │
-│ function route(pageContext) { if (pageContext.urlPathname === "/he... │ Route Function   │ /pages/hello/+route.ts > export default │
+│ function route(arg) { const pageContext = arg; if (pageContext.url... │ Route Function   │ /pages/hello/+route.ts > export default │
 └───────────────────────────────────────────────────────────────────────┴──────────────────┴─────────────────────────────────────────┘

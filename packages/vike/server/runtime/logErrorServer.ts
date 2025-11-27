@@ -1,7 +1,7 @@
 export { logErrorServer }
 
 import pc from '@brillout/picocolors'
-import { isCallable, isObject } from './utils.js'
+import { isCallable, isObject } from '../utils.js'
 import { execHookOnError } from './renderPageServer/execHookOnError.js'
 
 function logErrorServer(err: unknown) {

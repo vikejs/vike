@@ -1,11 +1,10 @@
 export { improveViteLogs }
 
-import { assert, removeEmptyLines, trimWithAnsi, trimWithAnsiTrailOnly } from '../utils.js'
+import { assert, isDebugError, removeEmptyLines, trimWithAnsi, trimWithAnsiTrailOnly } from '../utils.js'
 import { logViteError, logViteAny } from './loggerNotProd.js'
 import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore.js'
 import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog.js'
 import type { LogType as LoggerType, ResolvedConfig, LogErrorOptions } from 'vite'
-import { isErrorDebug } from '../../../shared-server-node/isErrorDebug.js'
 
 function improveViteLogs(config: ResolvedConfig) {
   intercept('info', config)
@@ -15,7 +14,7 @@ function improveViteLogs(config: ResolvedConfig) {
 
 function intercept(loggerType: LoggerType, config: ResolvedConfig) {
   config.logger[loggerType] = (msg, options: LogErrorOptions = {}) => {
-    assert(!isErrorDebug())
+    assert(!isDebugError())
 
     if (removeSuperfluousViteLog(msg)) return
 
@@ -39,7 +38,7 @@ function intercept(loggerType: LoggerType, config: ResolvedConfig) {
       //    ```
       //    Error when evaluating SSR module virtual:vike:page-entry:server:/pages/abort: failed to import "/pages/abort/+Page.mdx"
       //    ```
-      assert(!isErrorDebug())
+      assert(!isDebugError())
       return
     }
 

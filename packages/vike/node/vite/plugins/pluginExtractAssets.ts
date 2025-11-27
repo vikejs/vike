@@ -16,7 +16,7 @@ import {
   assert,
   assertPosixPath,
   styleFileRE,
-  createDebugger,
+  createDebug,
   isScriptFile,
   assertUsage,
   rollupSourceMapRemove,
@@ -42,7 +42,7 @@ const rawRE = /(\?|&)raw(?:&|$)/
 const urlRE = /(\?|&)url(?:&|$)/
 const EMPTY_MODULE_ID = 'virtual:vike:empty-module'
 
-const debug = createDebugger('vike:pluginExtractAssets')
+const debug = createDebug('vike:pluginExtractAssets')
 
 const filterRolldown = {
   id: {

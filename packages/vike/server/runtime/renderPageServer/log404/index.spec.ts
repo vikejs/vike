@@ -1,7 +1,7 @@
 import { expect, describe, it, assert } from 'vitest'
 import { getRoutesInfo } from '../log404/index.js'
-import { stripAnsi } from '../../utils.js'
-import type { PageRoutes } from '../../../../shared/route/index.js'
+import { stripAnsi } from '../../../utils.js'
+import type { PageRoutes } from '../../../../shared-server-client/route/index.js'
 
 process.stdout.columns = 134
 
@@ -27,18 +27,20 @@ describe('getRoutesInfo()', () => {
 })
 
 const routeFunction = {
-  pageId: '/pages/hello',
-  comesFromV1PageConfig: true,
-  routeDefinedAtString: '/pages/hello/+route.ts > export default',
-  routeType: 'FUNCTION',
-  routeFunction: function route(pageContext: { urlPathname: string }) {
+  pageId: '/pages/hello' as const,
+  comesFromV1PageConfig: true as const,
+  routeFunctionFilePath: '/pages/hello/+route.ts' as const,
+  routeDefinedAtString: '/pages/hello/+route.ts > export default' as const,
+  routeType: 'FUNCTION' as const,
+  routeFunction: function route(arg: unknown) {
+    const pageContext: { urlPathname: string } = arg as any
     if (pageContext.urlPathname === '/hello' || pageContext.urlPathname === '/hello/') {
       const name = 'anonymous'
       return { routeParams: { name } }
     }
     // ...
   },
-} as const
+} satisfies PageRoutes[number]
 const pageRoutes1 = [
   {
     pageId: '/pages/index',

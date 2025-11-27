@@ -1,2 +1,2 @@
-import { createDebugger } from '../../utils.js'
-export const debug = createDebugger('vike:virtualFiles')
+import { createDebug } from '../../utils.js'
+export const debug = createDebug('vike:virtualFiles')

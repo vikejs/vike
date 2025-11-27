@@ -1,6 +1,6 @@
 export { execHookOnError }
 
-import { isObject, getGlobalObject } from '../utils.js'
+import { isObject, getGlobalObject } from '../../utils.js'
 import { getGlobalContextServerInternalOptional } from '../globalContext.js'
 import { getHookFromPageConfigGlobalCumulative } from '../../../shared-server-client/hooks/getHook.js'
 

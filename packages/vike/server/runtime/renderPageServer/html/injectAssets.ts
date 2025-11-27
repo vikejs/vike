@@ -3,7 +3,7 @@ export { injectHtmlTagsToStream }
 export type { PageContextInjectAssets }
 export type { PageContextPromise }
 
-import { assert, isCallable, isPromise } from '../../utils.js'
+import { assert, isCallable, isPromise } from '../../../utils.js'
 import type { PageAsset } from '../getPageAssets.js'
 import { assertPageContextProvidedByUser } from '../../../../shared-server-client/assertPageContextProvidedByUser.js'
 import {
