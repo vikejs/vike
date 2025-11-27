@@ -100,7 +100,7 @@ function debug_(flag: Flag, options: Options, ...msgs: unknown[]) {
 }
 
 function isDebug(flag?: Flag): boolean {
-  assert(flag === undefined || flag && flags.includes(flag))
+  assert(flag === undefined || (flag && flags.includes(flag)))
   const { flagsActivated, isAll, isGlobal } = getFlagsActivated()
   if (flag) {
     return flagsActivated.includes(flag) || (isAll && !flagsSkipWildcard.includes(flag))
