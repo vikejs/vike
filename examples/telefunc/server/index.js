@@ -18,7 +18,9 @@ async function startServer() {
   if (isProduction) {
     app.use(express.static(`${root}/dist/client`))
   } else {
-    const { devMiddleware } = await createDevMiddleware({ root })
+    const { devMiddleware } = await createDevMiddleware({
+      root: 'uehwqe',
+    })
     app.use(devMiddleware)
   }
 
