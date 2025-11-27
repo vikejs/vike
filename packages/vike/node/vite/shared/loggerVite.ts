@@ -1,11 +1,10 @@
 export { improveViteLogs }
 
-import { assert, removeEmptyLines, trimWithAnsi, trimWithAnsiTrailOnly } from '../utils.js'
+import { assert, isErrorDebug, removeEmptyLines, trimWithAnsi, trimWithAnsiTrailOnly } from '../utils.js'
 import { logViteError, logViteAny } from './loggerNotProd.js'
 import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore.js'
 import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog.js'
 import type { LogType as LoggerType, ResolvedConfig, LogErrorOptions } from 'vite'
-import { isErrorDebug } from '../../../shared-server-node/isErrorDebug.js'
 
 function improveViteLogs(config: ResolvedConfig) {
   intercept('info', config)

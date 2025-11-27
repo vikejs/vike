@@ -3,9 +3,8 @@ export { logWithVikeTag }
 export { logDirectly }
 export { applyViteSourceMapToStackTrace }
 
-import { assert, stripAnsi, hasProp, assertIsNotProductionRuntime, PROJECT_VERSION } from '../../utils.js'
+import { assert, stripAnsi, hasProp, assertIsNotProductionRuntime, PROJECT_VERSION, isErrorDebug } from '../../utils.js'
 import pc from '@brillout/picocolors'
-import { isErrorDebug } from '../../../../shared-server-node/isErrorDebug.js'
 import { getViteDevServer } from '../../../../server/runtime/globalContext.js'
 import type { LogCategory, LogType } from '../loggerNotProd.js'
 import { logErrorServer } from '../../../../server/runtime/logErrorServer.js'

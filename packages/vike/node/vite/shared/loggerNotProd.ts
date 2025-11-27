@@ -37,12 +37,12 @@ import {
   assertIsNotProductionRuntime,
   formatHintLog,
   getAssertErrMsg,
+  isErrorDebug,
   overwriteAssertProductionLogger,
   stripAnsi,
   warnIfErrorIsNotObject,
 } from '../utils.js'
 import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore.js'
-import { isErrorDebug } from '../../../shared-server-node/isErrorDebug.js'
 import { isErrorWithCodeSnippet, getPrettyErrorWithCodeSnippet } from './loggerNotProd/errorWithCodeSnippet.js'
 import {
   getConfigExecutionErrorIntroMsg,

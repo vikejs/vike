@@ -2,6 +2,7 @@ export { debug }
 export { createDebugger }
 export { isDebug }
 export { isDebugActivated }
+export { isErrorDebug }
 
 import { isCallable } from './isCallable.js'
 import { objectAssign } from './objectAssign.js'
@@ -217,4 +218,8 @@ function getDEBUG() {
   } catch {}
 
   return DEBUG
+}
+
+function isErrorDebug(): boolean {
+  return isDebugActivated('vike:error')
 }

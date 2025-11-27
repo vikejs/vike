@@ -4,7 +4,7 @@ import { assertIsNotBrowser } from '../../utils/assertIsNotBrowser.js'
 import { assertNodeVersion } from '../../utils/assertNodeVersion.js'
 import { setAlwaysShowStackTrace } from '../../utils/assert.js'
 import { installRequireShim } from '@brillout/require-shim'
-import { isErrorDebug } from '../../shared-server-node/isErrorDebug.js'
+import { isErrorDebug } from '../../utils/debug.js'
 
 function onLoad() {
   assertIsNotBrowser()
