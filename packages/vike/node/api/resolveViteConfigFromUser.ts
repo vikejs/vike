@@ -71,7 +71,7 @@ async function getViteRoot(viteContext: ViteContext) {
 
 type ViteInfo = Awaited<ReturnType<typeof getViteInfo>>
 async function getViteInfo(viteConfigFromUserVikeApiOptions: InlineConfig | undefined, viteContext: ViteContext) {
-  let viteConfigFromUserResolved = viteConfigFromUserVikeApiOptions
+  let viteConfigFromUserResolved = mergeConfig({}, viteConfigFromUserVikeApiOptions ?? {})
 
   // Precedence:
   // 1. (highest precedence)  |  viteConfigFromUserEnvVar          |  VITE_CONFIG
