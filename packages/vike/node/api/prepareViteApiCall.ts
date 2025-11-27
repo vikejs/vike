@@ -6,7 +6,6 @@ import { clearGlobalContext } from '../../server/runtime/globalContext.js'
 import { resolveViteConfigFromUser } from './resolveViteConfigFromUser.js'
 
 async function prepareViteApiCall(options: ApiOptions, operation: ApiOperation) {
-  console.log('prepareViteApiCall()')
   clear()
   setContextVikeApiOperation(operation, options)
   return resolveViteConfigFromUser()

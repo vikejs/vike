@@ -103,7 +103,6 @@ async function getViteInfo(viteContext: ViteContext) {
   const viteConfigResolved = merge(viteConfigFromUserViteConfigFile ?? {}, viteConfigFromUserResolved ?? {})
 
   const root = normalizeViteRoot(viteConfigResolved.root ?? process.cwd())
-
   globalObject.root = root
 
   // - Find options `vike(options)` set in vite.config.js
@@ -271,7 +270,6 @@ async function assertViteRoot2(
 function assertViteRoot(rootResolvedEarly: string, config: ResolvedConfig) {
   const rootResolved = config.root
   const rootGlobal = globalObject.root
-  console.log('assertViteRoot()', { rootResolvedEarly, rootResolved, rootGlobal })
   if (rootGlobal) assert(normalizeViteRoot(rootGlobal) === normalizeViteRoot(rootResolvedEarly))
   assertUsage(normalizeViteRoot(rootResolvedEarly) === normalizeViteRoot(rootResolved), errMsg)
 }
