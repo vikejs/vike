@@ -57,7 +57,7 @@ function pluginReplaceConstantsEnvVars(): Plugin[] {
           config = config_
           envVarsAll = loadEnv(config.mode, config.envDir || config.root, '')
 
-          // Add process.env values from .env files
+          // Add process.env values defined by .env files
           Object.entries(envVarsAll).forEach(([key, val]) => (process.env[key] ??= val))
 
           envPrefix = getEnvPrefix(config)
