@@ -1,7 +1,6 @@
 export { resolveViteConfigFromUser }
 export { isOnlyResolvingUserConfig }
 export { getVikeConfigInternalEarly }
-export { getViteContextWithOperation }
 export { getViteRoot }
 export { assertViteRoot }
 export { normalizeViteRoot }
