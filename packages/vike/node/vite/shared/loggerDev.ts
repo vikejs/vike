@@ -22,10 +22,6 @@ export { logConfigInfo }
 export { logConfigError }
 export { logConfigErrorRecover }
 export { logErrorDebugNote }
-export type { LogInfo }
-export type { LogInfoArgs }
-export type { LogError }
-export type { LogErrorArgs }
 export type { LogType }
 export type { LogCategory }
 
