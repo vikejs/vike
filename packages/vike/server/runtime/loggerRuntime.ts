@@ -4,6 +4,10 @@ export let logRuntimeError: LogError
 export let logRuntimeInfo: null | LogInfo = null // logInfo is null in production
 export { overwriteRuntimeProductionLogger }
 
+// TODO rename logErrorProd loggRuntimeErrorProd
+// TODO rename_full loggerNotProd loggerDep
+// TODO rename logRuntimeError logRuntimeErrorDev (temp rename it in this file before)
+// TODO rename more?
 import { logErrorProd } from './renderPageServer/loggerProd.js'
 import type { LogError, LogInfo } from '../../node/vite/shared/loggerNotProd.js'
 
