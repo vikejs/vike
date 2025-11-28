@@ -246,7 +246,7 @@ async function renderPageServerEntryRecursive(
 
   // - Render page (nominal, i.e. not the error page)
   // - Render 404 page
-  let pageContextNominalPageSuccess: Awaited<ReturnType<typeof renderPageServerAfterRoute>>
+  var pageContextNominalPageSuccess: Awaited<ReturnType<typeof renderPageServerAfterRoute>>
   try {
     pageContextNominalPageSuccess = await renderPageServerAfterRoute(pageContextNominalPageBegin)
   } catch (err) {
