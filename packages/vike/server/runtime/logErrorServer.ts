@@ -1,17 +1,13 @@
 export { logErrorServer }
 
 import pc from '@brillout/picocolors'
-import { assert, isCallable, isObject } from '../utils.js'
+import { isCallable, isObject } from '../utils.js'
 import { execHookOnError } from './renderPageServer/execHookOnError.js'
-import type { PageContext_logRuntime } from './loggerRuntime.js'
+import { assertPageContext_logRuntime, type PageContext_logRuntime } from './loggerRuntime.js'
 
 // TODO implement
 function logErrorServer(err: unknown, pageContext: PageContext_logRuntime) {
-  assert(
-    pageContext === 'NULL_TEMP' ||
-      typeof pageContext._httpRequestId === 'number' ||
-      pageContext._httpRequestId === null,
-  )
+  assertPageContext_logRuntime(pageContext)
 
   execHookOnError(err)
 

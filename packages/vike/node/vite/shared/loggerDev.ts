@@ -26,7 +26,11 @@ export type { LogType }
 
 import { isAbortError } from '../../../shared-server-client/route/abort.js'
 import { getViteConfig, vikeConfigErrorRecoverMsg } from '../../../server/runtime/globalContext.js'
-import { type PageContext_logRuntime, setLogRuntimeDev } from '../../../server/runtime/loggerRuntime.js'
+import {
+  assertPageContext_logRuntime,
+  type PageContext_logRuntime,
+  setLogRuntimeDev,
+} from '../../../server/runtime/loggerRuntime.js'
 import {
   assert,
   assertIsNotProductionRuntime,
@@ -61,12 +65,7 @@ type LogCategory = 'config' | `request(${number})`
 type ProjectTag = `[vike]` | `[vike@${typeof PROJECT_VERSION}]`
 
 function logRuntimeInfoDev(msg: string, pageContext: PageContext_logRuntime, logType: LogType) {
-  // TODO: dedupe
-  assert(
-    pageContext === 'NULL_TEMP' ||
-      typeof pageContext._httpRequestId === 'number' ||
-      pageContext._httpRequestId === null,
-  )
+  assertPageContext_logRuntime(pageContext)
   const httpRequestId = pageContext === 'NULL_TEMP' ? null : pageContext._httpRequestId
   const category = getCategory(httpRequestId)
   logWithVikeTag(msg, logType, category)
@@ -89,11 +88,7 @@ function logConfigErrorRecover(): void {
 }
 
 function logRuntimeErrorDev(err: unknown, pageContext: PageContext_logRuntime): void {
-  assert(
-    pageContext === 'NULL_TEMP' ||
-      typeof pageContext._httpRequestId === 'number' ||
-      pageContext._httpRequestId === null,
-  )
+  assertPageContext_logRuntime(pageContext)
   const httpRequestId = pageContext === 'NULL_TEMP' ? null : pageContext._httpRequestId
   logErr(err, httpRequestId, false)
 }
