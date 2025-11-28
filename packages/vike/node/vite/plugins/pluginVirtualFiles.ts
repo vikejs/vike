@@ -215,7 +215,7 @@ function reloadConfig(
 
   {
     const filePathToShowToUserResolved = getFilePathToShowToUserModule(filePath, config)
-    const msg = `${op} ${pc.dim(filePathToShowToUserResolved)}`
+    const msg = `${op} ${pc.dim(filePathToShowToUserResolved)}` as const
     logConfigInfo(msg, 'info')
   }
 
