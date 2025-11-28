@@ -3,10 +3,12 @@
 export let logRuntimeError: LogRuntimeError
 export let logRuntimeInfo: LogRuntimeInfo | null | LogRuntimeInfo = null // is `null` in production
 export { setLogRuntimeDev }
+export { assertPageContext_logRuntime }
 export type { PageContext_logRuntime }
 
 import { loggRuntimeErrorProd } from './renderPageServer/loggerProd.js'
 import type { LogType } from '../../node/vite/shared/loggerDev.js'
+import { assert } from '../utils.js'
 
 type LogRuntimeInfo = (msg: string, pageContext: PageContext_logRuntime, logType: LogType) => void
 type LogRuntimeError = (err: unknown, pageContext: PageContext_logRuntime) => void
@@ -27,4 +29,12 @@ logRuntimeError =
 function setLogRuntimeDev(logRuntimeErrorDev: LogRuntimeError, logRuntimeInfoDev: LogRuntimeInfo | null) {
   logRuntimeError = logRuntimeErrorDev
   logRuntimeInfo = logRuntimeInfoDev
+}
+
+function assertPageContext_logRuntime(pageContext: PageContext_logRuntime) {
+  assert(
+    pageContext === 'NULL_TEMP' ||
+      typeof pageContext._httpRequestId === 'number' ||
+      pageContext._httpRequestId === null,
+  )
 }
