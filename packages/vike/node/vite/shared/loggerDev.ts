@@ -98,12 +98,14 @@ function logViteError(
 function logErr(err: unknown, httpRequestId: number | null = null, errorComesFromVite: boolean): void {
   warnIfErrorIsNotObject(err)
 
+  // Skip `throw render()` / `throw redirect()`
   if (isAbortError(err) && !isDebugError()) {
     return
   }
 
   const store = getHttpRequestAsyncStore()
 
+  // Dedupe
   setAlreadyLogged(err)
   if (getHttpRequestAsyncStore()?.shouldErrorBeSwallowed(err)) {
     if (!isDebugError()) return
