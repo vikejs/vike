@@ -1,41 +1,83 @@
-import { RepoLink, ImportMeta, Warning, Contribution } from '@brillout/docpress'
+import { RepoLink, ImportMeta, Warning, Contribution, Link } from '@brillout/docpress'
 
-Environment variables can be defined in `.env` and `.env.[mode]` files.
+
+## Define
+
+Environment variables can be defined in `.env`, `.env.development`, and `.env.production` files:
+
+```bash
+# .env
+
+# This environment variable is available only on the server-side
+DATABASE_PASSWORD=e9wd!1hw1@#231
+# This environment variable is available on both the server- and client-side
+PUBLIC_ENV__CONTACT_EMAIL=hello@example.org
+```
+
+> Only environment variables prefixed with `PUBLIC_ENV__` are available on the client-side.
+<Warning>
+  `PUBLIC_ENV__*` environment variables must **never contain secret information** — all `PUBLIC_ENV__*` values are visible to everyone because they are included in your client bundles which are public.
+</Warning>
 
 ```bash
 # .env.development
+
+# This environment variable is available only in development
 DATABASE_URL=postgresql://localhost:5432
-
+```
+```bash
 # .env.production
+
+# This environment variable is available only in production
 DATABASE_URL=postgresql://database.example.com:5432
-DATABASE_PASSWORD=some-secret-password
-
-# .env
-EMAIL_USER=John Doe
-PUBLIC_ENV__SOME_KEY=123
 ```
 
-> The `.env.production`/`.env.development` file is loaded only in production/development while `.env` is always loaded, see [Vite > `.env` Files](https://vitejs.dev/guide/env-and-mode.html#env-files).
->
-> For [files not processed by Vite](https://github.com/vikejs/vike/issues/562), you need to manually install [dotenv](https://github.com/motdotla/dotenv) for your `.env` values to also be available in files that aren't processed by Vite.
+> You can define further [`.env.[mode]` files](https://vitejs.dev/guide/env-and-mode.html#env-files).
+
+<Warning>
+   **If your repository is public** (e.g. on GitHub), then make sure your `.env` files **never contain secret information** and, instead, consider defining secrets using:
+     - System environment variables (e.g. [`$ export DATABASE_PASSWORD=some-secret-password`](https://askubuntu.com/questions/730/how-do-i-set-environment-variables/731#731))
+     - [`.env.local` files](https://vitejs.dev/guide/env-and-mode.html#env-files:~:text=.env.*.local%20files%20are%20local%2Donly) (while adding `*.local` to your `.gitignore`)
+</Warning>
+
+
+## Access
+
+Use `import.meta.env` to access environment variables.
 
 ```ts
-function somewhere() {
-  // Environment variables prefixed with PUBLIC_ENV__ can be used anywhere: in server-side code
-  // as well as in client-side code.
-  import.meta.env.PUBLIC_ENV__SOME_KEY
+// /pages/movies/+data.ts
+
+import type { PageContextServer } from 'vike/types'
+
+const sql = new SQL({
+  // These environment variable are available here because +data runs on the server-side
+  username: import.meta.env.DATABASE_URL,
+  password: import.meta.env.DATABASE_PASSWORD
+})
+
+export async function data(pageContext: PageContextServer) {
+  const { movies } = await sql.run('SELECT * FROM movies;')
+  return movies
 }
 ```
 
-```ts
-function data() {
-  // Environment variables without the PUBLIC_ENV__ prefix can be used only in server-side code.
-  // If this data() hook is loaded only on the server-side (which is the case
-  // by default) then DATABASE_PASSWORD can be accessed here.
-  import.meta.env.DATABASE_PASSWORD
+> For server only code, you can access environment variables using [`process.env`](https://nodejs.org/en/learn/command-line/how-to-read-environment-variables-from-nodejs), but we generally recommend against this because it won't be <Link href="#static-replacement">statically replaced</Link>.
+
+```jsx
+// components/ContactUs.jsx
+
+// The UI compnent <ContactUs> is loaded on the client-side
+
+// This environment variable is available on the client-side: it's prefixed with PUBLIC_ENV__
+const email = import.meta.env.PUBLIC_ENV__CONTACT_EMAIL
+
+function ContactUs() {
+  return <p>Contact us at {email}</p>
 }
 ```
-> Keep in mind that <code>{'import.me'+'ta.env.SOME_ENV'}</code> is statically replaced:
+
+> Keep in mind that <code>{'import.meta.env.SOME_ENV'}</code> <Link href="#static-replacement">is statically replaced</Link>:
 > ```ts
 > // ❌ Won't work
 > import.meta.env['SOME_ENV']
@@ -45,13 +87,55 @@ function data() {
 > import.meta.env.SOME_ENV
 > ```
 
-<Warning>
-  As explained in [Vite's security note](https://vitejs.dev/guide/env-and-mode.html#env-files:~:text=the%20envPrefix%20option.-,SECURITY%20NOTES,-.env.*.local%20files):
-   - Never add secret information to `PUBLIC_ENV__` environment variables.
-   - If your repository is public (e.g. on GitHub), then make sure you don't publicly share secret information:
-     - Consider defining secrets with system environment variables (e.g. [`$ export DATABASE_PASSWORD=some-secret-password`](https://askubuntu.com/questions/730/how-do-i-set-environment-variables/731#731)).
-     - Consider [defining secrets with `.env.local` files](https://vitejs.dev/guide/env-and-mode.html#env-files:~:text=.env.*.local%20files%20are%20local%2Donly) while adding `*.local` to your `.gitignore`.
-</Warning>
+
+## TypeScript
+
+For improved DX, consider using [`zod`](https://github.com/colinhacks/zod), for example:
+- [Vike + vanilla zod](https://github.com/vikejs/vike/issues/1726#issuecomment-3570834649)
+- [Vike + `@t3-oss/env-core`](https://github.com/vikejs/vike/issues/1726#issuecomment-3587100776)
+
+> See also: [Vike's plan for built-in TypeScript support](https://github.com/vikejs/vike/issues/1726#issuecomment-3587449815).
+
+
+## Static replacement
+
+For better [tree shaking](https://rollupjs.org/introduction/#tree-shaking) (aka dead code elimination), `import.meta.env.SOME_ENV` is statically replaced with its value. For example:
+
+```js
+// src/someFile.js [source code in Git repository]
+
+console.log('value:', import.meta.env.DISABLE_TRACKING)
+
+if (import.meta.env.DISABLE_TRACKING === 'true') {
+  console.log('Tracking is disabled')
+} else {
+  await import('some-heavy-tracking-library')
+}
+```
+
+```bash
+# .env
+
+DISABLE_TRACKING='true'
+```
+
+The file `src/someFile.js` is built to:
+
+```js
+// dist/server/chunks/chunk-DdwTql6x.js [built code deployed to production]
+
+console.log("value:", "true");
+console.log("Tracking is disabled");
+```
+
+Note how the `import()` is completely removed, resulting in more lightweight production bundles.
+
+
+## Config files
+
+In config files, [`import.meta.env` isn't available](https://github.com/vikejs/vike/issues/1726#issuecomment-2208626928) (neither `vite.config.js` nor `+config.js`).
+
+Use [`process.env`](https://nodejs.org/en/learn/command-line/how-to-read-environment-variables-from-nodejs) instead of `import.meta.env`.
 
 
 ## Public allowlist
@@ -61,17 +145,12 @@ The following environment variables can be accessed from the client-side without
 - `STORYBOOK`
 
 <Contribution>
-  Contributions welcome to [add further environment variables to the allowlist](https://github.com/vikejs/vike/blob/main/packages/vike/node/plugin/plugins/envVars.ts).
+  Contributions welcome to [add entries to the `PUBLIC_ENV_ALLOWLIST` list](https://github.com/vikejs/vike/blob/main/packages/vike/node/vite/plugins/pluginReplaceConstantsEnvVars.ts).
 </Contribution>
-
-
-## Config files
-
-Note that [`import.meta.env` isn't available in config files](https://github.com/vikejs/vike/issues/1726#issuecomment-2208626928) (neither `vite.config.js` nor `+config.js`).
-
-> A workaround is to use [`process.env`](https://nodejs.org/en/learn/command-line/how-to-read-environment-variables-from-nodejs) instead of `import.meta.env`. But note that you'll then only be able to access environment variables coming from your operating system (you won't be able to access those defined in `.env` files).
 
 
 ## See also
 
-- [#1726 Improve environment variables support](https://github.com/vikejs/vike/issues/1726)
+- [Vite > Env Variables and Modes](https://vite.dev/guide/env-and-mode)
+- [Node.js > How to read environment variables from Node.js](https://nodejs.org/en/learn/command-line/how-to-read-environment-variables-from-nodejs)
+- [Polish #1726 — Improve environment variables support](https://github.com/vikejs/vike/issues/1726)
