@@ -54,7 +54,7 @@ import { logErrorServer } from '../../../server/runtime/logErrorServer.js'
 
 assertIsNotProductionRuntime()
 setLogRuntimeDev(logRuntimeErrorDev, logRuntimeInfoDev)
-setAssertLoggerDev(assertLogger)
+setAssertLoggerDev(assertLoggerDev)
 
 type LogType = 'info' | 'warn' | 'error-thrown' | 'error-recover' | 'error-note'
 type LogCategory = 'config' | `request(${number})`
@@ -202,7 +202,7 @@ function handleAssertMsg(err: unknown, category: LogCategory | null): boolean {
   logWithVikeTag(assertMsg, 'error-thrown', category, showVikeVersion)
   return true
 }
-function assertLogger(thing: string | Error, logType: LogType): void {
+function assertLoggerDev(thing: string | Error, logType: LogType): void {
   // vite.ssrFixStacktrace() is needed for `assertWarning(..., { showStackTrace: true })`
   applyViteSourceMapToStackTrace(thing)
   const category = getCategory()
