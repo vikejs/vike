@@ -13,7 +13,7 @@ type LogRuntimeInfo = (msg: string, httpRequestId: number | null, logType: LogTy
 // type LogRuntimeInfo = (msg: string, pageContext: PageContext_logRuntime, logType: LogType) => void
 type LogRuntimeError = (err: unknown, pageContext: PageContext_logRuntime) => void
 type PageContext_logRuntime =
-  | 'NULL'
+  | 'NULL_TEMP'
   | {
       // httpRequestId is `null` when pre-rendering
       _httpRequestId: number | null

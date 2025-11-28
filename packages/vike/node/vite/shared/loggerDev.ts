@@ -82,7 +82,7 @@ function logConfigErrorRecover(): void {
 }
 
 function logRuntimeErrorDev(err: unknown, pageContext: PageContext_logRuntime): void {
-  const httpRequestId = pageContext === 'NULL' ? null : pageContext._httpRequestId
+  const httpRequestId = pageContext === 'NULL_TEMP' ? null : pageContext._httpRequestId
   logErr(err, httpRequestId, false)
 }
 function logViteError(
@@ -283,7 +283,7 @@ function logDirectly(thing: unknown, logType: LogType) {
   }
   if (logType === 'error-thrown') {
     // console.error()
-    logErrorServer(thing, 'NULL') // TODO
+    logErrorServer(thing, 'NULL_TEMP') // TODO
     return
   }
   if (logType === 'error-recover') {
