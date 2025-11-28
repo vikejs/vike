@@ -5,13 +5,13 @@ export let logRuntimeInfo: null | LogInfo = null // logInfo is null in productio
 export { overwriteRuntimeProductionLogger }
 
 // TODO rename logErrorProd loggRuntimeErrorProd
-// TODO rename_full loggerNotProd loggerDep
+// TODO rename_full loggerDev loggerDep
 // TODO rename logRuntimeError logRuntimeErrorDev (temp rename it in this file before)
 // TODO rename more?
 import { logErrorProd } from './renderPageServer/loggerProd.js'
-import type { LogError, LogInfo } from '../../node/vite/shared/loggerNotProd.js'
+import type { LogError, LogInfo } from '../../node/vite/shared/loggerDev.js'
 
-// Set production logger (which is overwritten by loggerNotProd.ts in non-production environments such as development and during pre-rendering)
+// Set production logger (which is overwritten by loggerDev.ts in non-production environments such as development and during pre-rendering)
 logRuntimeError =
   // @ts-expect-error
   logRuntimeError ??

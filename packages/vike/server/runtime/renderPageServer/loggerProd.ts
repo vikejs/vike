@@ -1,5 +1,5 @@
 // Logger used for the production server.
-// Any other environment (dev, preview, build, and pre-rendering) uses loggerNotProd.ts instead.
+// Any other environment (dev, preview, build, and pre-rendering) uses loggerDev.ts instead.
 
 export { logErrorProd }
 export { onRuntimeError }

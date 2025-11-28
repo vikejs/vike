@@ -71,7 +71,7 @@ import {
 } from './resolveVikeConfigInternal/filesystemRouting.js'
 import type { EsbuildCache } from './resolveVikeConfigInternal/transpileAndExecuteFile.js'
 import { getViteDevServer } from '../../../server/runtime/globalContext.js'
-import { logConfigError, logConfigErrorRecover } from './loggerNotProd.js'
+import { logConfigError, logConfigErrorRecover } from './loggerDev.js'
 import {
   removeSuperfluousViteLog_enable,
   removeSuperfluousViteLog_disable,

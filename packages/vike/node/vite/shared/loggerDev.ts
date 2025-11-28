@@ -43,12 +43,12 @@ import {
   warnIfErrorIsNotObject,
 } from '../utils.js'
 import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore.js'
-import { isErrorWithCodeSnippet, getPrettyErrorWithCodeSnippet } from './loggerNotProd/errorWithCodeSnippet.js'
+import { isErrorWithCodeSnippet, getPrettyErrorWithCodeSnippet } from './loggerDev/errorWithCodeSnippet.js'
 import {
   getConfigExecutionErrorIntroMsg,
   getConfigBuildErrorFormatted,
 } from './resolveVikeConfigInternal/transpileAndExecuteFile.js'
-import { logWithVikeTag, logWithViteTag, logDirectly, applyViteSourceMapToStackTrace } from './loggerNotProd/log.js'
+import { logWithVikeTag, logWithViteTag, logDirectly, applyViteSourceMapToStackTrace } from './loggerDev/log.js'
 import pc from '@brillout/picocolors'
 import { setAlreadyLogged } from '../../../server/runtime/renderPageServer/isNewError.js'
 import { onRuntimeError } from '../../../server/runtime/renderPageServer/loggerProd.js'

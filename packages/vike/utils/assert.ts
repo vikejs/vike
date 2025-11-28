@@ -23,7 +23,7 @@ const globalObject = getGlobalObject<{
   alwaysShowStackTrace?: true
 }>('utils/assert.ts', {
   alreadyLogged: new Set(),
-  // Production logger. Overwritten by loggerNotProd.ts in non-production environments.
+  // Production logger. Overwritten by loggerDev.ts in non-production environments.
   logger(msg, logType) {
     if (logType === 'info') {
       console.log(msg)

@@ -1,7 +1,7 @@
 export { improveViteLogs }
 
 import { assert, isDebugError, removeEmptyLines, trimWithAnsi, trimWithAnsiTrailOnly } from '../utils.js'
-import { logViteError, logViteAny } from './loggerNotProd.js'
+import { logViteError, logViteAny } from './loggerDev.js'
 import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore.js'
 import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog.js'
 import type { LogType as LoggerType, ResolvedConfig, LogErrorOptions } from 'vite'

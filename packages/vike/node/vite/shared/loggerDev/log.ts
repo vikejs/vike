@@ -6,7 +6,7 @@ export { applyViteSourceMapToStackTrace }
 import { assert, stripAnsi, hasProp, assertIsNotProductionRuntime, PROJECT_VERSION, isDebugError } from '../../utils.js'
 import pc from '@brillout/picocolors'
 import { getViteDevServer } from '../../../../server/runtime/globalContext.js'
-import type { LogCategory, LogType } from '../loggerNotProd.js'
+import type { LogCategory, LogType } from '../loggerDev.js'
 import { logErrorServer } from '../../../../server/runtime/logErrorServer.js'
 
 assertIsNotProductionRuntime()
@@ -34,7 +34,7 @@ function logWithViteTag(msg: string, logType: LogType, category: LogCategory | n
 
 // Not production => every log is triggered by logDirectly()
 //  - Even all Vite logs also go through logDirectly() (see interceptors of loggerVite.ts)
-//  - Production => logs aren't managed by loggerNotProd.ts => logDirectly() is never called (not even loaded as asserted by assertIsVitePluginCode())
+//  - Production => logs aren't managed by loggerDev.ts => logDirectly() is never called (not even loaded as asserted by assertIsVitePluginCode())
 function logDirectly(thing: unknown, logType: LogType) {
   applyViteSourceMapToStackTrace(thing)
 
