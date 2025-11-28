@@ -6,7 +6,6 @@ import { execHookOnError } from './renderPageServer/execHookOnError.js'
 import type { PageContext_logRuntime } from './loggerRuntime.js'
 
 // TODO implement
-// TODO not optional
 function logErrorServer(err: unknown, pageContext: PageContext_logRuntime) {
   assert(
     pageContext === 'NULL_TEMP' ||
