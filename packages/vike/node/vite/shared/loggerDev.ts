@@ -82,6 +82,11 @@ function logConfigErrorRecover(): void {
 }
 
 function logRuntimeErrorDev(err: unknown, pageContext: PageContext_logRuntime): void {
+  assert(
+    pageContext === 'NULL_TEMP' ||
+      typeof pageContext._httpRequestId === 'number' ||
+      pageContext._httpRequestId === null,
+  )
   const httpRequestId = pageContext === 'NULL_TEMP' ? null : pageContext._httpRequestId
   logErr(err, httpRequestId, false)
 }
