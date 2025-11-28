@@ -4,7 +4,7 @@ import pc from '@brillout/picocolors'
 import { isCallable, isObject } from '../utils.js'
 import { execHookOnError } from './renderPageServer/execHookOnError.js'
 
-function logErrorServer(err: unknown) {
+function logErrorServer(err: unknown, pageContext: unknown) {
   execHookOnError(err)
 
   // Set by react-streaming

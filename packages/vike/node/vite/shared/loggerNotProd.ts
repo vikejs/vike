@@ -88,19 +88,28 @@ function logConfigErrorRecover(): void {
 
 function logRuntimeError(
   err: unknown,
-  // httpRequestId is `null` when pre-rendering
-  httpRequestId: number | null,
+  pageContext:
+    | 'NULL'
+    | {
+        // httpRequestId is `null` when pre-rendering
+        _httpRequestId: number | null
+      },
 ): void {
-  logErr(err, httpRequestId, false)
+  logErr(err, pageContext, false)
 }
 function logViteError(
   err: unknown,
   // httpRequestId is `undefined` if development environment doesn't support async stores
   httpRequestId: number | undefined,
 ): void {
-  logErr(err, httpRequestId, true)
+  // TODO
+  logErr(err, 'NULL', true)
 }
-function logErr(err: unknown, httpRequestId: number | null = null, errorComesFromVite: boolean): void {
+function logErr(
+  err: unknown,
+  pageContext: 'NULL' | { _httpRequestId: number | null },
+  errorComesFromVite: boolean,
+): void {
   warnIfErrorIsNotObject(err)
 
   if (isAbortError(err) && !isDebugError()) {
@@ -116,7 +125,8 @@ function logErr(err: unknown, httpRequestId: number | null = null, errorComesFro
     store?.markErrorAsLogged(err)
   }
 
-  const category = getCategory(httpRequestId)
+  // @ts-ignore
+  const category = getCategory(pageContext?.httpRequestId)
 
   if (!isDebugError()) {
     if (isErrorWithCodeSnippet(err)) {
@@ -149,7 +159,7 @@ function logErr(err: unknown, httpRequestId: number | null = null, errorComesFro
     logFallbackErrIntro(category, errorComesFromVite)
   }
 
-  logDirectly(err, 'error-thrown')
+  logDirectly(err, 'error-thrown', pageContext)
 
   // Needs to be called after logging the error.
   onRuntimeError(err)
