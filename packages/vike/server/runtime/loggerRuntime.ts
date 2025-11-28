@@ -17,7 +17,7 @@ logRuntimeError =
   // Default
   loggRuntimeErrorProd
 
-function setLoggerDev(logError_: LogRuntimeError, logInfo_: LogRuntimeInfo | null) {
-  logRuntimeError = logError_
-  logRuntimeInfo = logInfo_
+function setLoggerDev(logRuntimeErrorDev: LogRuntimeError, logRuntimeInfoDev: LogRuntimeInfo | null) {
+  logRuntimeError = logRuntimeErrorDev
+  logRuntimeInfo = logRuntimeInfoDev
 }
