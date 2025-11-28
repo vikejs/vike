@@ -60,7 +60,8 @@ type LogType = 'info' | 'warn' | 'error-thrown' | 'error-recover' | 'error-note'
 type LogCategory = 'config' | `request(${number})`
 type ProjectTag = `[vike]` | `[vike@${typeof PROJECT_VERSION}]`
 
-function logRuntimeInfoDev(msg: string, httpRequestId: number | null, logType: LogType) {
+function logRuntimeInfoDev(msg: string, pageContext: PageContext_logRuntime, logType: LogType) {
+  const httpRequestId = pageContext === 'NULL' ? null : pageContext._httpRequestId
   const category = getCategory(httpRequestId)
   logWithVikeTag(msg, logType, category)
 }

@@ -8,9 +8,7 @@ export type { PageContext_logRuntime }
 import { loggRuntimeErrorProd } from './renderPageServer/loggerProd.js'
 import type { LogType } from '../../node/vite/shared/loggerDev.js'
 
-type LogRuntimeInfo = (msg: string, httpRequestId: number | null, logType: LogType) => void
-// type LogRuntimeError = (err: unknown, httpRequestId: number | null) => void
-// type LogRuntimeInfo = (msg: string, pageContext: PageContext_logRuntime, logType: LogType) => void
+type LogRuntimeInfo = (msg: string, pageContext: PageContext_logRuntime, logType: LogType) => void
 type LogRuntimeError = (err: unknown, pageContext: PageContext_logRuntime) => void
 type PageContext_logRuntime =
   | 'NULL_TEMP'

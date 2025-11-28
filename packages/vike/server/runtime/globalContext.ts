@@ -426,7 +426,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
   const onSuccess = () => {
     if (globalObject.vikeConfigHasRuntimeError) {
       assert(logRuntimeInfo) // always defined in dev
-      logRuntimeInfo(vikeConfigErrorRecoverMsg, null, 'error-recover')
+      logRuntimeInfo(vikeConfigErrorRecoverMsg, 'NULL', 'error-recover')
     }
     globalObject.vikeConfigHasRuntimeError = false
     setVikeConfigError({ errorRuntime: false })
