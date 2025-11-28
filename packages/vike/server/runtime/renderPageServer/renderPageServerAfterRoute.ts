@@ -64,7 +64,7 @@ async function renderPageServerAfterRoute<
       await execHookDataAndOnBeforeRender(pageContext)
     } catch (err) {
       if (isNewError(err, pageContext.errorWhileRendering)) {
-        logRuntimeError(err, pageContext._httpRequestId)
+        logRuntimeError(err, pageContext)
       }
     }
   }

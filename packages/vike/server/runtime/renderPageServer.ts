@@ -54,7 +54,7 @@ import {
   createHttpResponseErrorFallback_noGlobalContext,
   createHttpResponseBaseIsMissing,
 } from './renderPageServer/createHttpResponse.js'
-import { logRuntimeError, logRuntimeInfo } from './loggerRuntime.js'
+import { logRuntimeError, logRuntimeInfo, type PageContext_logRuntime } from './loggerRuntime.js'
 import { isNewError } from './renderPageServer/isNewError.js'
 import { assertArguments } from './renderPageServer/assertArguments.js'
 import { log404 } from './renderPageServer/log404/index.js'
@@ -80,7 +80,10 @@ const globalObject = getGlobalObject('runtime/renderPageServer.ts', {
   asyncHookWrapper: getFallbackAsyncHookWrapper(),
 })
 
-type PageContextAfterRender = { httpResponse: HttpResponse } & Partial<PageContextInternalServer>
+type PageContextAfterRender = {
+  httpResponse: HttpResponse
+  _httpRequestId: null | number
+} & Partial<PageContextInternalServer>
 type PageContextInit = Pick<PageContextInternalServer, 'urlOriginal' | 'headersOriginal'> & {
   /** @deprecated Set `pageContextInit.urlOriginal` instead  */ // TO-DO/next-major-release: remove
   url?: string
@@ -106,7 +109,7 @@ async function renderPageServer<PageContextUserAdded extends {}, PageContextInit
 
   const httpRequestId = getRequestId()
   const urlOriginalPretty = getUrlPretty(pageContextInit.urlOriginal)
-  logHttpRequest(urlOriginalPretty, httpRequestId)
+  logHttpRequest(urlOriginalPretty, pageContextInit, httpRequestId)
 
   const { pageContextReturn } = await globalObject.asyncHookWrapper(httpRequestId, () =>
     renderPageServerEntryOnce(pageContextInit, httpRequestId),
@@ -153,8 +156,13 @@ async function renderPageServerEntryOnce(
     //   ```
     // - initGlobalContext_renderPage() depends on +onCreateGlobalContext hooks
     assert(!isAbortError(err))
-    logRuntimeError(err, httpRequestId)
-    const pageContextHttpErrorFallback = getPageContextHttpErrorFallback_noGlobalContext(err, pageContextInit)
+    const pageContext_logRuntime = getPageContext_logRuntimeEarly(pageContextInit, httpRequestId)
+    logRuntimeError(err, pageContext_logRuntime)
+    const pageContextHttpErrorFallback = getPageContextHttpErrorFallback_noGlobalContext(
+      err,
+      pageContextInit,
+      httpRequestId,
+    )
     return pageContextHttpErrorFallback
   }
   {
@@ -177,7 +185,7 @@ async function renderPageServerEntryOnce(
 
   // Normalize URL
   {
-    const pageContextHttpResponse = await normalizeUrl(pageContextBegin, globalContext, httpRequestId)
+    const pageContextHttpResponse = await normalizeUrl(pageContextBegin, globalContext)
     if (pageContextHttpResponse) return pageContextHttpResponse
   }
 
@@ -207,7 +215,7 @@ async function renderPageServerEntryRecursive(
   const onError = async (err: unknown) => {
     assert(err)
     assert(pageContextNominalPageSuccess === undefined)
-    logRuntimeError(err, httpRequestId)
+    logRuntimeError(err, pageContextNominalPageBegin)
     return await renderPageServerEntryRecursive_onError(
       err,
       pageContextBegin,
@@ -342,7 +350,7 @@ async function renderPageServerEntryRecursive_onError(
       }
     }
     if (isNewError(errErrorPage, err)) {
-      logRuntimeError(errErrorPage, httpRequestId)
+      logRuntimeError(errErrorPage, pageContextErrorPageInit)
     }
     const pageContextHttpErrorFallback = getPageContextHttpErrorFallback(err, pageContextBegin)
     return pageContextHttpErrorFallback
@@ -350,8 +358,9 @@ async function renderPageServerEntryRecursive_onError(
   return pageContextErrorPage
 }
 
-function logHttpRequest(urlOriginal: string, httpRequestId: number) {
-  logRuntimeInfo?.(getRequestInfoMessage(urlOriginal), httpRequestId, 'info')
+function logHttpRequest(urlOriginal: string, pageContextInit: PageContextInit, httpRequestId: number) {
+  const pageContext_logRuntime = getPageContext_logRuntimeEarly(pageContextInit, httpRequestId)
+  logRuntimeInfo?.(getRequestInfoMessage(urlOriginal), pageContext_logRuntime, 'info')
 }
 function getRequestInfoMessage(urlOriginal: string) {
   return `HTTP request: ${prettyUrl(urlOriginal)}`
@@ -393,7 +402,7 @@ function logHttpResponse(urlOriginalPretty: string, httpRequestId: number, pageC
       msg = `HTTP ${type} ${prettyUrl(urlOriginalPretty)} ${color(statusCode ?? 'ERR')}`
     }
   }
-  logRuntimeInfo?.(msg, httpRequestId, isNominal ? 'info' : 'error-note')
+  logRuntimeInfo?.(msg, pageContextReturn, isNominal ? 'info' : 'error-note')
 }
 function prettyUrl(url: string) {
   try {
@@ -416,8 +425,9 @@ function getPageContextHttpErrorFallback(err: unknown, pageContextBegin: PageCon
 function getPageContextHttpErrorFallback_noGlobalContext(
   err: unknown,
   pageContextInit: PageContextInit,
+  httpRequestId: number,
 ): PageContextAfterRender {
-  const pageContextHttpErrorFallback = createPageContextServerSideWithoutGlobalContext(pageContextInit)
+  const pageContextHttpErrorFallback = createPageContextServerSideWithoutGlobalContext(pageContextInit, httpRequestId)
   const httpResponse = createHttpResponseErrorFallback_noGlobalContext()
   objectAssign(pageContextHttpErrorFallback, {
     httpResponse,
@@ -440,6 +450,7 @@ function getPageContextBegin(
       urlHandler: _urlHandler,
       isClientSideNavigation,
     },
+    httpRequestId,
   })
   objectAssign(pageContextBegin, {
     _httpRequestId: httpRequestId,
@@ -490,11 +501,7 @@ function assertIsNotViteRequest(urlPathname: string, urlOriginal: string) {
   )
 }
 
-async function normalizeUrl(
-  pageContextBegin: PageContextBegin,
-  globalContext: GlobalContextServerInternal,
-  httpRequestId: number,
-) {
+async function normalizeUrl(pageContextBegin: PageContextBegin, globalContext: GlobalContextServerInternal) {
   const pageContext = forkPageContext(pageContextBegin)
   const { trailingSlash, disableUrlNormalization } = globalContext.config
   if (disableUrlNormalization) return null
@@ -505,7 +512,7 @@ async function normalizeUrl(
   if (!urlNormalized) return null
   logRuntimeInfo?.(
     `URL normalized from ${pc.cyan(urlOriginal)} to ${pc.cyan(urlNormalized)} (https://vike.dev/url-normalization)`,
-    httpRequestId,
+    pageContext,
     'info',
   )
   const httpResponse = createHttpResponseRedirect({ url: urlNormalized, statusCode: 301 }, pageContext)
@@ -552,7 +559,7 @@ async function getPermanentRedirect(
   }
   logRuntimeInfo?.(
     `Permanent redirection defined by config.redirects (https://vike.dev/redirects)`,
-    httpRequestId,
+    pageContext,
     'info',
   )
   const httpResponse = createHttpResponseRedirect({ url: urlTarget, statusCode: 301 }, pageContext)
@@ -656,7 +663,7 @@ function getPageContextSkipRequest(pageContextInit: PageContextInit) {
     errMsg404 = 'Not supported'
   }
   if (!errMsg404) return
-  const pageContext = createPageContextServerSideWithoutGlobalContext(pageContextInit)
+  const pageContext = createPageContextServerSideWithoutGlobalContext(pageContextInit, null)
   const httpResponse = createHttpResponse404(errMsg404)
   objectAssign(pageContext, { httpResponse })
   checkType<PageContextAfterRender>(pageContext)
@@ -664,7 +671,24 @@ function getPageContextSkipRequest(pageContextInit: PageContextInit) {
 }
 
 function getPageContextInvalidVikeConfig(err: unknown, pageContextInit: PageContextInit, httpRequestId: number) {
-  logRuntimeInfo?.(pc.bold(pc.red('Error loading Vike config — see error above')), httpRequestId, 'error-note')
-  const pageContextHttpErrorFallback = getPageContextHttpErrorFallback_noGlobalContext(err, pageContextInit)
+  const pageContext_logRuntime = getPageContext_logRuntimeEarly(pageContextInit, httpRequestId)
+  logRuntimeInfo?.(pc.bold(pc.red('Error loading Vike config — see error above')), pageContext_logRuntime, 'error-note')
+  const pageContextHttpErrorFallback = getPageContextHttpErrorFallback_noGlobalContext(
+    err,
+    pageContextInit,
+    httpRequestId,
+  )
   return pageContextHttpErrorFallback
+}
+
+/** Use this as last resort — prefer passing richer `pageContext` objects to the runtime logger */
+function getPageContext_logRuntimeEarly(
+  pageContextInit: PageContextInit,
+  httpRequestId: number,
+): PageContext_logRuntime {
+  const pageContext_logRuntime = {
+    ...pageContextInit,
+    _httpRequestId: httpRequestId,
+  }
+  return pageContext_logRuntime
 }

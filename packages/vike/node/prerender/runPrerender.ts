@@ -545,6 +545,7 @@ async function createPageContextPrerendering(
   }
   const pageContext = createPageContextServerSide(pageContextInit, globalContext, {
     isPrerendering: true,
+    httpRequestId: null,
   })
   assert(pageContext.isPrerendering === true)
   objectAssign(pageContext, {

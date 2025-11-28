@@ -22,14 +22,16 @@ function createPageContextServerSide(
           urlHandler: null | ((url: string) => string)
           isClientSideNavigation: boolean
         }
+        httpRequestId: number
       }
     | {
         isPrerendering: true
         ssr?: undefined
+        httpRequestId: null
       },
 ) {
   assert(pageContextInit.urlOriginal)
-  const pageContextCreated = createPageContext(pageContextInit, args.isPrerendering)
+  const pageContextCreated = createPageContext(pageContextInit, args.isPrerendering, args.httpRequestId)
 
   objectAssign(pageContextCreated, {
     _globalContext: globalContext,
@@ -76,15 +78,23 @@ function createPageContextServerSide(
 
   return pageContextCreated
 }
-function createPageContextServerSideWithoutGlobalContext(pageContextInit: PageContextInit) {
-  const pageContext = createPageContext(pageContextInit, false)
+function createPageContextServerSideWithoutGlobalContext(
+  pageContextInit: PageContextInit,
+  httpRequestId: number | null,
+) {
+  const pageContext = createPageContext(pageContextInit, false, httpRequestId)
   return pageContext
 }
-function createPageContext(pageContextInit: PageContextInit | null, isPrerendering: boolean) {
+function createPageContext(
+  pageContextInit: PageContextInit | null,
+  isPrerendering: boolean,
+  httpRequestId: number | null,
+) {
   const pageContext = createPageContextObject()
   objectAssign(pageContext, {
     isClientSide: false as const,
     isPrerendering,
+    _httpRequestId: httpRequestId,
   })
   objectAssign(pageContext, pageContextInit)
   return pageContext

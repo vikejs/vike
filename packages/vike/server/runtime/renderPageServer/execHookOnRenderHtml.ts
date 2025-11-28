@@ -66,7 +66,7 @@ async function execHookOnRenderHtml(
     // ```
     // <script>console.error("An error occurred on the server side while streaming the page to HTML, see server logs.")</script>
     // ```
-    logRuntimeError(err, pageContext._httpRequestId)
+    logRuntimeError(err, pageContext)
     if (!pageContext.errorWhileRendering) {
       pageContext.errorWhileRendering = err
     }

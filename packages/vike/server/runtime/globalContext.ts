@@ -417,7 +417,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
 
   const onError = (err: unknown) => {
     if (!hasAlreadyLogged(err)) {
-      logRuntimeError(err, null)
+      logRuntimeError(err, 'NULL_TEMP')
     }
     setVikeConfigError({ errorRuntime: { err } })
     globalObject.vikeConfigHasRuntimeError = true
@@ -426,7 +426,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
   const onSuccess = () => {
     if (globalObject.vikeConfigHasRuntimeError) {
       assert(logRuntimeInfo) // always defined in dev
-      logRuntimeInfo(vikeConfigErrorRecoverMsg, null, 'error-recover')
+      logRuntimeInfo(vikeConfigErrorRecoverMsg, 'NULL_TEMP', 'error-recover')
     }
     globalObject.vikeConfigHasRuntimeError = false
     setVikeConfigError({ errorRuntime: false })
