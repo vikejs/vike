@@ -54,7 +54,7 @@ import {
   createHttpResponseErrorFallback_noGlobalContext,
   createHttpResponseBaseIsMissing,
 } from './renderPageServer/createHttpResponse.js'
-import { logRuntimeError, logRuntimeInfo } from './loggerRuntime.js'
+import { logRuntimeError, logRuntimeInfo, type PageContext_logRuntime } from './loggerRuntime.js'
 import { isNewError } from './renderPageServer/isNewError.js'
 import { assertArguments } from './renderPageServer/assertArguments.js'
 import { log404 } from './renderPageServer/log404/index.js'
@@ -106,7 +106,7 @@ async function renderPageServer<PageContextUserAdded extends {}, PageContextInit
 
   const httpRequestId = getRequestId()
   const urlOriginalPretty = getUrlPretty(pageContextInit.urlOriginal)
-  logHttpRequest(urlOriginalPretty, httpRequestId)
+  logHttpRequest(urlOriginalPretty, pageContextInit, httpRequestId)
 
   const { pageContextReturn } = await globalObject.asyncHookWrapper(httpRequestId, () =>
     renderPageServerEntryOnce(pageContextInit, httpRequestId),
@@ -153,11 +153,8 @@ async function renderPageServerEntryOnce(
     //   ```
     // - initGlobalContext_renderPage() depends on +onCreateGlobalContext hooks
     assert(!isAbortError(err))
-    const pageContext_noGlobalContext = {
-      ...pageContextInit,
-      _httpRequestId: httpRequestId,
-    }
-    logRuntimeError(err, pageContext_noGlobalContext)
+    const pageContext_logRuntime = getPageContext_logRuntimeEarly(pageContextInit, httpRequestId)
+    logRuntimeError(err, pageContext_logRuntime)
     const pageContextHttpErrorFallback = getPageContextHttpErrorFallback_noGlobalContext(err, pageContextInit)
     return pageContextHttpErrorFallback
   }
@@ -181,7 +178,7 @@ async function renderPageServerEntryOnce(
 
   // Normalize URL
   {
-    const pageContextHttpResponse = await normalizeUrl(pageContextBegin, globalContext, httpRequestId)
+    const pageContextHttpResponse = await normalizeUrl(pageContextBegin, globalContext)
     if (pageContextHttpResponse) return pageContextHttpResponse
   }
 
@@ -354,8 +351,9 @@ async function renderPageServerEntryRecursive_onError(
   return pageContextErrorPage
 }
 
-function logHttpRequest(urlOriginal: string, httpRequestId: number) {
-  logRuntimeInfo?.(getRequestInfoMessage(urlOriginal), httpRequestId, 'info')
+function logHttpRequest(urlOriginal: string, pageContextInit: PageContextInit, httpRequestId: number) {
+  const pageContext_logRuntime = getPageContext_logRuntimeEarly(pageContextInit, httpRequestId)
+  logRuntimeInfo?.(getRequestInfoMessage(urlOriginal), pageContext_logRuntime, 'info')
 }
 function getRequestInfoMessage(urlOriginal: string) {
   return `HTTP request: ${prettyUrl(urlOriginal)}`
@@ -397,7 +395,7 @@ function logHttpResponse(urlOriginalPretty: string, httpRequestId: number, pageC
       msg = `HTTP ${type} ${prettyUrl(urlOriginalPretty)} ${color(statusCode ?? 'ERR')}`
     }
   }
-  logRuntimeInfo?.(msg, httpRequestId, isNominal ? 'info' : 'error-note')
+  logRuntimeInfo?.(msg, pageContextReturn, isNominal ? 'info' : 'error-note')
 }
 function prettyUrl(url: string) {
   try {
@@ -497,7 +495,6 @@ function assertIsNotViteRequest(urlPathname: string, urlOriginal: string) {
 async function normalizeUrl(
   pageContextBegin: PageContextBegin,
   globalContext: GlobalContextServerInternal,
-  httpRequestId: number,
 ) {
   const pageContext = forkPageContext(pageContextBegin)
   const { trailingSlash, disableUrlNormalization } = globalContext.config
@@ -509,7 +506,7 @@ async function normalizeUrl(
   if (!urlNormalized) return null
   logRuntimeInfo?.(
     `URL normalized from ${pc.cyan(urlOriginal)} to ${pc.cyan(urlNormalized)} (https://vike.dev/url-normalization)`,
-    httpRequestId,
+    pageContext,
     'info',
   )
   const httpResponse = createHttpResponseRedirect({ url: urlNormalized, statusCode: 301 }, pageContext)
@@ -556,7 +553,7 @@ async function getPermanentRedirect(
   }
   logRuntimeInfo?.(
     `Permanent redirection defined by config.redirects (https://vike.dev/redirects)`,
-    httpRequestId,
+    pageContext,
     'info',
   )
   const httpResponse = createHttpResponseRedirect({ url: urlTarget, statusCode: 301 }, pageContext)
@@ -668,7 +665,16 @@ function getPageContextSkipRequest(pageContextInit: PageContextInit) {
 }
 
 function getPageContextInvalidVikeConfig(err: unknown, pageContextInit: PageContextInit, httpRequestId: number) {
-  logRuntimeInfo?.(pc.bold(pc.red('Error loading Vike config — see error above')), httpRequestId, 'error-note')
+    const pageContext_logRuntime = getPageContext_logRuntimeEarly(pageContextInit, httpRequestId)
+  logRuntimeInfo?.(pc.bold(pc.red('Error loading Vike config — see error above')), pageContext_logRuntime, 'error-note')
   const pageContextHttpErrorFallback = getPageContextHttpErrorFallback_noGlobalContext(err, pageContextInit)
   return pageContextHttpErrorFallback
+}
+
+function getPageContext_logRuntimeEarly(pageContextInit: PageContextInit, httpRequestId: number): PageContext_logRuntime {
+  const pageContext_logRuntime = {
+    ...pageContextInit,
+    _httpRequestId: httpRequestId
+  }
+  return pageContext_logRuntime
 }
