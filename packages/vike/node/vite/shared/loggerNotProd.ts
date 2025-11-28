@@ -88,28 +88,19 @@ function logConfigErrorRecover(): void {
 
 function logRuntimeError(
   err: unknown,
-  pageContext:
-    | 'NULL'
-    | {
-        // httpRequestId is `null` when pre-rendering
-        _httpRequestId: number | null
-      },
+  // httpRequestId is `null` when pre-rendering
+  httpRequestId: number | null,
 ): void {
-  logErr(err, pageContext, false)
+  logErr(err, httpRequestId, false)
 }
 function logViteError(
   err: unknown,
   // httpRequestId is `undefined` if development environment doesn't support async stores
   httpRequestId: number | undefined,
 ): void {
-  // TODO
-  logErr(err, 'NULL', true)
+  logErr(err, httpRequestId, true)
 }
-function logErr(
-  err: unknown,
-  pageContext: 'NULL' | { _httpRequestId: number | null },
-  errorComesFromVite: boolean,
-): void {
+function logErr(err: unknown, httpRequestId: number | null = null, errorComesFromVite: boolean): void {
   warnIfErrorIsNotObject(err)
 
   if (isAbortError(err) && !isDebugError()) {
@@ -125,8 +116,7 @@ function logErr(
     store?.markErrorAsLogged(err)
   }
 
-  // @ts-ignore
-  const category = getCategory(pageContext?.httpRequestId)
+  const category = getCategory(httpRequestId)
 
   if (!isDebugError()) {
     if (isErrorWithCodeSnippet(err)) {
@@ -159,7 +149,7 @@ function logErr(
     logFallbackErrIntro(category, errorComesFromVite)
   }
 
-  logDirectly(err, 'error-thrown', pageContext)
+  logDirectly(err, 'error-thrown')
 
   // Needs to be called after logging the error.
   onRuntimeError(err)

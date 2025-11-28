@@ -153,11 +153,7 @@ async function renderPageServerEntryOnce(
     //   ```
     // - initGlobalContext_renderPage() depends on +onCreateGlobalContext hooks
     assert(!isAbortError(err))
-    const pageContext_noGlobalContext = {
-      ...pageContextInit,
-      _httpRequestId: httpRequestId,
-    }
-    logRuntimeError(err, pageContext_noGlobalContext)
+    logRuntimeError(err, httpRequestId)
     const pageContextHttpErrorFallback = getPageContextHttpErrorFallback_noGlobalContext(err, pageContextInit)
     return pageContextHttpErrorFallback
   }
@@ -211,7 +207,7 @@ async function renderPageServerEntryRecursive(
   const onError = async (err: unknown) => {
     assert(err)
     assert(pageContextNominalPageSuccess === undefined)
-    logRuntimeError(err, pageContextNominalPageBegin)
+    logRuntimeError(err, httpRequestId)
     return await renderPageServerEntryRecursive_onError(
       err,
       pageContextBegin,
@@ -346,7 +342,7 @@ async function renderPageServerEntryRecursive_onError(
       }
     }
     if (isNewError(errErrorPage, err)) {
-      logRuntimeError(errErrorPage, pageContextErrorPageInit)
+      logRuntimeError(errErrorPage, httpRequestId)
     }
     const pageContextHttpErrorFallback = getPageContextHttpErrorFallback(err, pageContextBegin)
     return pageContextHttpErrorFallback

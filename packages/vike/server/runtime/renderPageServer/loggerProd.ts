@@ -10,11 +10,7 @@ import { warnIfErrorIsNotObject } from '../../utils.js'
 import { logErrorHint } from './logErrorHint.js'
 import { logErrorServer } from '../logErrorServer.js'
 
-function logErrorProd(
-  err: unknown,
-  _httpRequestId: null | number,
-  pageContext: 'NULL' | { _httpRequestId: null | number },
-): void {
+function logErrorProd(err: unknown, _httpRequestId: null | number): void {
   warnIfErrorIsNotObject(err)
   setAlreadyLogged(err)
 
@@ -22,7 +18,7 @@ function logErrorProd(
     return
   }
 
-  logErrorServer(err, pageContext)
+  logErrorServer(err)
 
   // Needs to be called after logging the error.
   onRuntimeError(err)
