@@ -7,7 +7,7 @@ import type { PageContext_logRuntime } from './loggerRuntime.js'
 
 // TODO implement
 // TODO not optional
-function logErrorServer(err: unknown, pageContext?: PageContext_logRuntime) {
+function logErrorServer(err: unknown, pageContext: PageContext_logRuntime) {
   execHookOnError(err)
 
   // Set by react-streaming

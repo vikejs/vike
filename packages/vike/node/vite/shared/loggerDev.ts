@@ -283,7 +283,7 @@ function logDirectly(thing: unknown, logType: LogType) {
   }
   if (logType === 'error-thrown') {
     // console.error()
-    logErrorServer(thing)
+    logErrorServer(thing, 'NULL') // TODO
     return
   }
   if (logType === 'error-recover') {
