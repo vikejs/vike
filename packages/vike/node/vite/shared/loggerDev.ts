@@ -75,7 +75,7 @@ function logViteMsg(msg: string, logType: LogType, httpRequestId: number | null,
     const category = getCategory(httpRequestId)
     logWithViteTag(msg, logType, category)
   } else {
-    logDirectly(msg, logType)
+    printMsg(msg, logType)
   }
 }
 function logConfigInfo(msg: string, logType: LogType): void {
@@ -150,7 +150,7 @@ function logErr(err: unknown, httpRequestId: number | null = null, errorComesFro
     logFallbackErrIntro(category, errorComesFromVite)
   }
 
-  logDirectly(err, 'error-thrown')
+  printMsg(err, 'error-thrown')
 
   // Needs to be called after logging the error.
   onRuntimeError(err)
@@ -166,7 +166,7 @@ function logConfigError(err: unknown): void {
     if (errIntroMsg) {
       assert(stripAnsi(errIntroMsg).startsWith('Failed to execute'))
       logWithVikeTag(errIntroMsg, 'error-note', category)
-      logDirectly(err, 'error-thrown')
+      printMsg(err, 'error-thrown')
       return
     }
   }
@@ -177,7 +177,7 @@ function logConfigError(err: unknown): void {
       if (!isDebugError()) {
         logWithVikeTag(errMsgFormatted, 'error-thrown', category)
       } else {
-        logDirectly(err, 'error-thrown')
+        printMsg(err, 'error-thrown')
       }
       return
     }
@@ -188,7 +188,7 @@ function logConfigError(err: unknown): void {
   }
 
   if (category) logFallbackErrIntro(category, false)
-  logDirectly(err, 'error-thrown')
+  printMsg(err, 'error-thrown')
 }
 
 function logFallbackErrIntro(category: LogCategory, errorComesFromVite: boolean) {
@@ -233,7 +233,7 @@ function logErrorDebugNote() {
     store.errorDebugNoteAlreadyShown = true
   }
   const msg = pc.dim(formatHintLog("Error isn't helpful? See https://vike.dev/debug#verbose-errors"))
-  logDirectly(msg, 'error-note')
+  printMsg(msg, 'error-note')
 }
 
 function getCategory(httpRequestId: number | null = null): LogCategory | null {
@@ -254,7 +254,7 @@ function getCategory(httpRequestId: number | null = null): LogCategory | null {
 function logWithVikeTag(msg: string, logType: LogType, category: LogCategory | null, showVikeVersion = false) {
   const projectTag = getProjectTag(showVikeVersion)
   msg = prependTags(msg, projectTag, category, logType)
-  logDirectly(msg, logType)
+  printMsg(msg, logType)
 }
 function getProjectTag(showVikeVersion: boolean) {
   let projectTag: ProjectTag
@@ -267,13 +267,13 @@ function getProjectTag(showVikeVersion: boolean) {
 }
 function logWithViteTag(msg: string, logType: LogType, category: LogCategory | null) {
   msg = prependTags(msg, '[vite]', category, logType)
-  logDirectly(msg, logType)
+  printMsg(msg, logType)
 }
 
-// Not production => every log is triggered by logDirectly()
-//  - Even all Vite logs also go through logDirectly() (see interceptors of loggerVite.ts)
-//  - Production => logs aren't managed by loggerDev.ts => logDirectly() is never called (not even loaded as asserted by assertIsVitePluginCode())
-function logDirectly(thing: unknown, logType: LogType) {
+// Not production => every log is triggered by printMsg()
+//  - Even all Vite logs also go through printMsg() (see interceptors of loggerVite.ts)
+//  - Production => logs aren't managed by loggerDev.ts => printMsg() is never called (not even loaded as asserted by assertIsVitePluginCode())
+function printMsg(thing: unknown, logType: LogType) {
   applyViteSourceMapToStackTrace(thing)
 
   if (logType === 'info') {
