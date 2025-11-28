@@ -681,6 +681,7 @@ function getPageContextInvalidVikeConfig(err: unknown, pageContextInit: PageCont
   return pageContextHttpErrorFallback
 }
 
+/** Use this as last resort — prefer passing richer `pageContext` objects to the runtime logger */
 function getPageContext_logRuntimeEarly(
   pageContextInit: PageContextInit,
   httpRequestId: number,
