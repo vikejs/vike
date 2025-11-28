@@ -2,7 +2,7 @@
 
 export let logRuntimeError: LogRuntimeError
 export let logRuntimeInfo: LogRuntimeInfo | null | LogRuntimeInfo = null // is `null` in production
-export { setLoggerDev }
+export { setLogRuntimeDev }
 
 import { loggRuntimeErrorProd } from './renderPageServer/loggerProd.js'
 import type { LogType } from '../../node/vite/shared/loggerDev.js'
@@ -17,7 +17,7 @@ logRuntimeError =
   // Default
   loggRuntimeErrorProd
 
-function setLoggerDev(logRuntimeErrorDev: LogRuntimeError, logRuntimeInfoDev: LogRuntimeInfo | null) {
+function setLogRuntimeDev(logRuntimeErrorDev: LogRuntimeError, logRuntimeInfoDev: LogRuntimeInfo | null) {
   logRuntimeError = logRuntimeErrorDev
   logRuntimeInfo = logRuntimeInfoDev
 }

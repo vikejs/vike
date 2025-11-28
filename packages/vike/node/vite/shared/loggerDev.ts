@@ -26,7 +26,7 @@ export type { LogType }
 
 import { isAbortError } from '../../../shared-server-client/route/abort.js'
 import { getViteConfig, vikeConfigErrorRecoverMsg } from '../../../server/runtime/globalContext.js'
-import { setLoggerDev } from '../../../server/runtime/loggerRuntime.js'
+import { setLogRuntimeDev } from '../../../server/runtime/loggerRuntime.js'
 import {
   assert,
   assertIsNotProductionRuntime,
@@ -53,7 +53,7 @@ import { getViteDevServer } from '../../../server/runtime/globalContext.js'
 import { logErrorServer } from '../../../server/runtime/logErrorServer.js'
 
 assertIsNotProductionRuntime()
-setLoggerDev(logRuntimeErrorDev, logRuntimeInfoDev)
+setLogRuntimeDev(logRuntimeErrorDev, logRuntimeInfoDev)
 overwriteAssertProductionLogger(assertLogger)
 
 type LogType = 'info' | 'warn' | 'error-thrown' | 'error-recover' | 'error-note'
