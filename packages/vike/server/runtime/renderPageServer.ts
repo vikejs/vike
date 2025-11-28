@@ -246,6 +246,7 @@ async function renderPageServerEntryRecursive(
 
   // - Render page (nominal, i.e. not the error page)
   // - Render 404 page
+  // (`var` instead of `let` because of assert() above that can be called before reaching this line https://stackoverflow.com/a/11444416/270274)
   var pageContextNominalPageSuccess: Awaited<ReturnType<typeof renderPageServerAfterRoute>>
   try {
     pageContextNominalPageSuccess = await renderPageServerAfterRoute(pageContextNominalPageBegin)
