@@ -23,7 +23,6 @@ export { logConfigError }
 export { logConfigErrorRecover }
 export { logErrorDebugNote }
 export type { LogType }
-export type { LogCategory }
 
 import { isAbortError } from '../../../shared-server-client/route/abort.js'
 import { getViteConfig, vikeConfigErrorRecoverMsg } from '../../../server/runtime/globalContext.js'
@@ -59,10 +58,7 @@ overwriteAssertProductionLogger(assertLogger)
 
 type LogType = 'info' | 'warn' | 'error-thrown' | 'error-recover' | 'error-note'
 type LogCategory = 'config' | `request(${number})`
-type LogInfo = (...args: LogInfoArgs) => void
-type LogInfoArgs = Parameters<typeof logRuntimeInfoDev>
-type LogError = (...args: LogErrorArgs) => void
-type LogErrorArgs = Parameters<typeof logRuntimeErrorDev>
+type ProjectTag = `[vike]` | `[vike@${typeof PROJECT_VERSION}]`
 
 function logRuntimeInfoDev(msg: string, httpRequestId: number | null, logType: LogType) {
   const category = getCategory(httpRequestId)
@@ -248,8 +244,6 @@ function getCategory(httpRequestId: number | null = null): LogCategory | null {
   const category = `request(${httpRequestId})` as const
   return category
 }
-
-type ProjectTag = `[vike]` | `[vike@${typeof PROJECT_VERSION}]`
 
 function logWithVikeTag(msg: string, logType: LogType, category: LogCategory | null, showVikeVersion = false) {
   const projectTag = getProjectTag(showVikeVersion)
