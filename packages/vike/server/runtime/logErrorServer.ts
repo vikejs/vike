@@ -3,8 +3,11 @@ export { logErrorServer }
 import pc from '@brillout/picocolors'
 import { isCallable, isObject } from '../utils.js'
 import { execHookOnError } from './renderPageServer/execHookOnError.js'
+import type { PageContext_logRuntime } from './loggerRuntime.js'
 
-function logErrorServer(err: unknown) {
+// TODO implement
+// TODO not optional
+function logErrorServer(err: unknown, pageContext?: PageContext_logRuntime) {
   execHookOnError(err)
 
   // Set by react-streaming
