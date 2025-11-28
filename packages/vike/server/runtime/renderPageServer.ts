@@ -206,6 +206,7 @@ async function renderPageServerEntryRecursive(
 
   const onError = async (err: unknown) => {
     assert(err)
+    assert(pageContextNominalPageSuccess === undefined)
     logRuntimeError(err, httpRequestId)
     return await renderPageServerEntryRecursive_onError(
       err,
