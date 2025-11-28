@@ -1,13 +1,19 @@
 export { logErrorServer }
 
 import pc from '@brillout/picocolors'
-import { isCallable, isObject } from '../utils.js'
+import { assert, isCallable, isObject } from '../utils.js'
 import { execHookOnError } from './renderPageServer/execHookOnError.js'
 import type { PageContext_logRuntime } from './loggerRuntime.js'
 
 // TODO implement
 // TODO not optional
 function logErrorServer(err: unknown, pageContext: PageContext_logRuntime) {
+  assert(
+    pageContext === 'NULL_TEMP' ||
+      typeof pageContext._httpRequestId === 'number' ||
+      pageContext._httpRequestId === null,
+  )
+
   execHookOnError(err)
 
   // Set by react-streaming
