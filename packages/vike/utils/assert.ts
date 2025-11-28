@@ -5,7 +5,7 @@ export { assertInfo }
 export { getProjectError }
 export { addOnBeforeLogHook }
 export { getAssertErrMsg }
-export { overwriteAssertProductionLogger }
+export { setAssertLoggerDev }
 export { isBug }
 export { setAlwaysShowStackTrace }
 
@@ -215,7 +215,7 @@ function getAssertErrMsg(thing: unknown): { assertMsg: string; showVikeVersion: 
   return null
 }
 
-function overwriteAssertProductionLogger(logger: Logger): void {
+function setAssertLoggerDev(logger: Logger): void {
   globalObject.logger = logger
 }
 

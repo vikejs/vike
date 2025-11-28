@@ -34,7 +34,7 @@ import {
   getAssertErrMsg,
   hasProp,
   isDebugError,
-  overwriteAssertProductionLogger,
+  setAssertLoggerDev,
   PROJECT_VERSION,
   stripAnsi,
   warnIfErrorIsNotObject,
@@ -54,7 +54,7 @@ import { logErrorServer } from '../../../server/runtime/logErrorServer.js'
 
 assertIsNotProductionRuntime()
 setLogRuntimeDev(logRuntimeErrorDev, logRuntimeInfoDev)
-overwriteAssertProductionLogger(assertLogger)
+setAssertLoggerDev(assertLogger)
 
 type LogType = 'info' | 'warn' | 'error-thrown' | 'error-recover' | 'error-note'
 type LogCategory = 'config' | `request(${number})`
