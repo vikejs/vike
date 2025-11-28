@@ -16,7 +16,7 @@
 //  - Pre-rendering
 // In other words: everywhere except in production
 
-export { logViteAny }
+export { logViteMsg }
 export { logViteError }
 export { logConfigInfo }
 export { logConfigError }
@@ -64,7 +64,7 @@ function logRuntimeInfoDev(msg: string, httpRequestId: number | null, logType: L
   const category = getCategory(httpRequestId)
   logWithVikeTag(msg, logType, category)
 }
-function logViteAny(msg: string, logType: LogType, httpRequestId: number | null, prependViteTag: boolean): void {
+function logViteMsg(msg: string, logType: LogType, httpRequestId: number | null, prependViteTag: boolean): void {
   if (prependViteTag) {
     const category = getCategory(httpRequestId)
     logWithViteTag(msg, logType, category)
