@@ -2,7 +2,7 @@
 
 export let logRuntimeError: LogRuntimeError
 export let logRuntimeInfo: LogRuntimeInfo | null | LogRuntimeInfo = null // is `null` in production
-export { overwriteRuntimeProductionLogger }
+export { setLoggerDev }
 
 import { loggRuntimeErrorProd } from './renderPageServer/loggerProd.js'
 import type { LogType } from '../../node/vite/shared/loggerDev.js'
@@ -17,7 +17,7 @@ logRuntimeError =
   // Default
   loggRuntimeErrorProd
 
-function overwriteRuntimeProductionLogger(logError_: LogRuntimeError, logInfo_: LogRuntimeInfo | null) {
+function setLoggerDev(logError_: LogRuntimeError, logInfo_: LogRuntimeInfo | null) {
   logRuntimeError = logError_
   logRuntimeInfo = logInfo_
 }

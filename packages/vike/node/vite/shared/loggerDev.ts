@@ -31,7 +31,7 @@ export type { LogCategory }
 
 import { isAbortError } from '../../../shared-server-client/route/abort.js'
 import { getViteConfig, vikeConfigErrorRecoverMsg } from '../../../server/runtime/globalContext.js'
-import { overwriteRuntimeProductionLogger } from '../../../server/runtime/loggerRuntime.js'
+import { setLoggerDev } from '../../../server/runtime/loggerRuntime.js'
 import {
   assert,
   assertIsNotProductionRuntime,
@@ -55,7 +55,7 @@ import { onRuntimeError } from '../../../server/runtime/renderPageServer/loggerP
 import { isUserHookError } from '../../../shared-server-client/hooks/execHook.js'
 
 assertIsNotProductionRuntime()
-overwriteRuntimeProductionLogger(logRuntimeErrorDev, logRuntimeInfo)
+setLoggerDev(logRuntimeErrorDev, logRuntimeInfo)
 overwriteAssertProductionLogger(assertLogger)
 
 type LogType = 'info' | 'warn' | 'error-thrown' | 'error-recover' | 'error-note'
