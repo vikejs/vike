@@ -206,6 +206,7 @@ async function renderPageServerEntryRecursive(
 
   const onError = async (err: unknown) => {
     assert(err)
+    assert(pageContextNominalPageSuccess === undefined)
     logRuntimeError(err, httpRequestId)
     return await renderPageServerEntryRecursive_onError(
       err,
@@ -245,7 +246,8 @@ async function renderPageServerEntryRecursive(
 
   // - Render page (nominal, i.e. not the error page)
   // - Render 404 page
-  let pageContextNominalPageSuccess: Awaited<ReturnType<typeof renderPageServerAfterRoute>>
+  // (`var` instead of `let` because of assert() above that can be called before reaching this line https://stackoverflow.com/a/11444416/270274)
+  var pageContextNominalPageSuccess: Awaited<ReturnType<typeof renderPageServerAfterRoute>>
   try {
     pageContextNominalPageSuccess = await renderPageServerAfterRoute(pageContextNominalPageBegin)
   } catch (err) {

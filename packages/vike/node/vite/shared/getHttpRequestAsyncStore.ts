@@ -16,8 +16,8 @@ import { renderPageServer_addAsyncHookwrapper } from '../../../server/runtime/re
 import { assert, assertIsNotProductionRuntime, getGlobalObject, isObject, unique } from '../utils.js'
 import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hooks'
 import { getConfigBuildErrorFormatted } from './resolveVikeConfigInternal/transpileAndExecuteFile.js'
-import { logErrorDebugNote } from './loggerNotProd.js'
-import { isEquivalentErrorWithCodeSnippet } from './loggerNotProd/errorWithCodeSnippet.js'
+import { logErrorDebugNote } from './loggerDev.js'
+import { isEquivalentErrorWithCodeSnippet } from './loggerDev/errorWithCodeSnippet.js'
 import { isDeepStrictEqual } from 'node:util'
 
 assertIsNotProductionRuntime()

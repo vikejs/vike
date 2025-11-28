@@ -1,7 +1,7 @@
 // Logger used for the production server.
-// Any other environment (dev, preview, build, and pre-rendering) uses loggerNotProd.ts instead.
+// Any other environment (dev, preview, build, and pre-rendering) uses loggerDev.ts instead.
 
-export { logErrorProd }
+export { loggRuntimeErrorProd }
 export { onRuntimeError }
 
 import { isAbortError } from '../../../shared-server-client/route/abort.js'
@@ -10,7 +10,7 @@ import { warnIfErrorIsNotObject } from '../../utils.js'
 import { logErrorHint } from './logErrorHint.js'
 import { logErrorServer } from '../logErrorServer.js'
 
-function logErrorProd(err: unknown, _httpRequestId: null | number): void {
+function loggRuntimeErrorProd(err: unknown, _httpRequestId: null | number): void {
   warnIfErrorIsNotObject(err)
   setAlreadyLogged(err)
 

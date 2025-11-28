@@ -5,7 +5,7 @@ export { assertInfo }
 export { getProjectError }
 export { addOnBeforeLogHook }
 export { getAssertErrMsg }
-export { overwriteAssertProductionLogger }
+export { setAssertLoggerDev }
 export { isBug }
 export { setAlwaysShowStackTrace }
 
@@ -23,7 +23,7 @@ const globalObject = getGlobalObject<{
   alwaysShowStackTrace?: true
 }>('utils/assert.ts', {
   alreadyLogged: new Set(),
-  // Production logger. Overwritten by loggerNotProd.ts in non-production environments.
+  // Production logger. Overwritten by loggerDev.ts in non-production environments.
   logger(msg, logType) {
     if (logType === 'info') {
       console.log(msg)
@@ -215,7 +215,7 @@ function getAssertErrMsg(thing: unknown): { assertMsg: string; showVikeVersion: 
   return null
 }
 
-function overwriteAssertProductionLogger(logger: Logger): void {
+function setAssertLoggerDev(logger: Logger): void {
   globalObject.logger = logger
 }
 
