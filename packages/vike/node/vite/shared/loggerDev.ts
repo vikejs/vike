@@ -55,7 +55,7 @@ import { onRuntimeError } from '../../../server/runtime/renderPageServer/loggerP
 import { isUserHookError } from '../../../shared-server-client/hooks/execHook.js'
 
 assertIsNotProductionRuntime()
-overwriteRuntimeProductionLogger(logRuntimeError, logRuntimeInfo)
+overwriteRuntimeProductionLogger(logRuntimeErrorDev, logRuntimeInfo)
 overwriteAssertProductionLogger(assertLogger)
 
 type LogType = 'info' | 'warn' | 'error-thrown' | 'error-recover' | 'error-note'
@@ -63,7 +63,7 @@ type LogCategory = 'config' | `request(${number})`
 type LogInfo = (...args: LogInfoArgs) => void
 type LogInfoArgs = Parameters<typeof logRuntimeInfo>
 type LogError = (...args: LogErrorArgs) => void
-type LogErrorArgs = Parameters<typeof logRuntimeError>
+type LogErrorArgs = Parameters<typeof logRuntimeErrorDev>
 
 function logRuntimeInfo(msg: string, httpRequestId: number | null, logType: LogType) {
   const category = getCategory(httpRequestId)
@@ -86,7 +86,7 @@ function logConfigErrorRecover(): void {
   logWithVikeTag(vikeConfigErrorRecoverMsg, 'error-recover', category)
 }
 
-function logRuntimeError(
+function logRuntimeErrorDev(
   err: unknown,
   // httpRequestId is `null` when pre-rendering
   httpRequestId: number | null,
