@@ -9,12 +9,15 @@ import { loggRuntimeErrorProd } from './renderPageServer/loggerProd.js'
 import type { LogType } from '../../node/vite/shared/loggerDev.js'
 
 type LogRuntimeInfo = (msg: string, httpRequestId: number | null, logType: LogType) => void
-type LogRuntimeError = (err: unknown, httpRequestId: number | null) => void
+// type LogRuntimeError = (err: unknown, httpRequestId: number | null) => void
 // type LogRuntimeInfo = (msg: string, pageContext: PageContext_logRuntime, logType: LogType) => void
-// type LogRuntimeError = (err: unknown, pageContext: PageContext_logRuntime) => void
-type PageContext_logRuntime = {
-  _httpRequestId: number | null
-}
+type LogRuntimeError = (err: unknown, pageContext: PageContext_logRuntime) => void
+type PageContext_logRuntime =
+  | 'NULL'
+  | {
+      // httpRequestId is `null` when pre-rendering
+      _httpRequestId: number | null
+    }
 
 // Set production logger (which is overwritten by loggerDev.ts in non-production environments such as development and during pre-rendering)
 logRuntimeError =

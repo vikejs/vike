@@ -417,7 +417,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
 
   const onError = (err: unknown) => {
     if (!hasAlreadyLogged(err)) {
-      logRuntimeError(err, null)
+      logRuntimeError(err, 'NULL')
     }
     setVikeConfigError({ errorRuntime: { err } })
     globalObject.vikeConfigHasRuntimeError = true

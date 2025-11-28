@@ -26,7 +26,7 @@ export type { LogType }
 
 import { isAbortError } from '../../../shared-server-client/route/abort.js'
 import { getViteConfig, vikeConfigErrorRecoverMsg } from '../../../server/runtime/globalContext.js'
-import { setLogRuntimeDev } from '../../../server/runtime/loggerRuntime.js'
+import { type PageContext_logRuntime, setLogRuntimeDev } from '../../../server/runtime/loggerRuntime.js'
 import {
   assert,
   assertIsNotProductionRuntime,
@@ -81,11 +81,8 @@ function logConfigErrorRecover(): void {
   logWithVikeTag(vikeConfigErrorRecoverMsg, 'error-recover', category)
 }
 
-function logRuntimeErrorDev(
-  err: unknown,
-  // httpRequestId is `null` when pre-rendering
-  httpRequestId: number | null,
-): void {
+function logRuntimeErrorDev(err: unknown, pageContext: PageContext_logRuntime): void {
+  const httpRequestId = pageContext === 'NULL' ? null : pageContext._httpRequestId
   logErr(err, httpRequestId, false)
 }
 function logViteError(
