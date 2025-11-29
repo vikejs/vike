@@ -4,6 +4,7 @@ export { assertWarning }
 export { assertInfo }
 export { getProjectError }
 export { addOnBeforeAssertLog }
+export { addOnBeforeAssertErr }
 export { getAssertErrMsg }
 export { setAssertLoggerDev }
 export { isVikeBug }
@@ -18,6 +19,7 @@ import pc from '@brillout/picocolors'
 const globalObject = getGlobalObject<{
   alreadyLogged: Set<string>
   onBeforeAssertLog?: () => void
+  onBeforeAssertErr?: (err: Error) => void
   logger: Logger
   showStackTraceList: WeakSet<Error>
   alwaysShowStackTrace?: true
@@ -68,6 +70,7 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
   const internalError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
 
   globalObject.onBeforeAssertLog?.()
+  globalObject.onBeforeAssertErr?.(internalError)
   throw internalError
 }
 
@@ -86,6 +89,7 @@ function assertUsage(
     globalObject.showStackTraceList.add(usageError)
   }
   globalObject.onBeforeAssertLog?.()
+  globalObject.onBeforeAssertErr?.(usageError)
   if (!exitOnError) {
     throw usageError
   } else {
@@ -121,6 +125,7 @@ function assertWarning(
   globalObject.onBeforeAssertLog?.()
   if (showStackTrace) {
     const err = createErrorWithCleanStackTrace(msg, numberOfStackTraceLinesToRemove)
+    globalObject.onBeforeAssertErr?.(err)
     globalObject.showStackTraceList.add(err)
     globalObject.logger(err, 'warn')
   } else {
@@ -149,6 +154,9 @@ function assertInfo(condition: unknown, msg: string, { onlyOnce }: { onlyOnce: b
 
 function addOnBeforeAssertLog(onBeforeAssertLog: () => void) {
   globalObject.onBeforeAssertLog = onBeforeAssertLog
+}
+function addOnBeforeAssertErr(onBeforeAssertErr: (err: unknown) => void) {
+  globalObject.onBeforeAssertErr = onBeforeAssertErr
 }
 
 function addPrefixAssertType(msg: string, tag: Tag): string {

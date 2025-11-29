@@ -22,6 +22,7 @@ export { logConfigInfo }
 export { logConfigError }
 export { logConfigErrorRecover }
 export { logErrorDebugNote }
+export { applyViteSourceMapToStackTrace }
 export type { LogType }
 
 import { isAbortError } from '../../../shared-server-client/route/abort.js'
@@ -209,8 +210,6 @@ function handleAssertMsg(err: unknown, category: LogCategory | null): boolean {
   return true
 }
 function assertLoggerDev(thing: string | Error, logType: LogType): void {
-  // vite.ssrFixStacktrace() is needed for `assertWarning(..., { showStackTrace: true })`
-  applyViteSourceMapToStackTrace(thing)
   const category = getCategory()
   const res = getAssertErrMsg(thing)
   /* Risk of infinite loop
