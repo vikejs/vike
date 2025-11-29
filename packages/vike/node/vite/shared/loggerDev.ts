@@ -33,6 +33,7 @@ import {
   setLogRuntimeDev,
 } from '../../../server/runtime/loggerRuntime.js'
 import {
+  addOnBeforeAssertErr,
   assert,
   assertIsNotProductionRuntime,
   formatHintLog,
@@ -57,6 +58,10 @@ import { logErrorServer } from '../../../server/runtime/logErrorServer.js'
 
 assertIsNotProductionRuntime()
 setLogRuntimeDev(logRuntimeErrorDev, logRuntimeInfoDev)
+addOnBeforeAssertErr((err) => {
+  // We need to apply vite.ssrFixStacktrace() because `assertWarning(..., { showStackTrace: true })` isn't caught by the try-catch of renderPageServer()
+  applyViteSourceMapToStackTrace(err)
+})
 
 type LogType = 'info' | 'warn' | 'error-thrown' | 'error-recover' | 'error-note'
 type LogCategory = 'config' | `request(${number})`
