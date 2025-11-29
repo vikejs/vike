@@ -36,10 +36,8 @@ import {
   assert,
   assertIsNotProductionRuntime,
   formatHintLog,
-  getAssertErrMsg,
   hasProp,
   isDebugError,
-  setAssertLoggerDev,
   PROJECT_VERSION,
   stripAnsi,
   warnIfErrorIsNotObject,
@@ -59,7 +57,6 @@ import { logErrorServer } from '../../../server/runtime/logErrorServer.js'
 
 assertIsNotProductionRuntime()
 setLogRuntimeDev(logRuntimeErrorDev, logRuntimeInfoDev)
-setAssertLoggerDev(assertLoggerDev)
 
 type LogType = 'info' | 'warn' | 'error-thrown' | 'error-recover' | 'error-note'
 type LogCategory = 'config' | `request(${number})`
@@ -131,11 +128,6 @@ function logErr(err: unknown, httpRequestId: number | null = null, errorComesFro
       logErrorDebugNote()
       return
     }
-
-    {
-      const logged = handleAssertMsg(err, category)
-      if (logged) return
-    }
   }
 
   // Needs to be after assertion messages handling, because user hooks may throw an assertion error
@@ -183,10 +175,6 @@ function logConfigError(err: unknown): void {
       return
     }
   }
-  {
-    const logged = handleAssertMsg(err, category)
-    if (logged) return
-  }
 
   if (category) logFallbackErrIntro(category, false)
   logDirectly(err, 'error-thrown')
@@ -200,24 +188,6 @@ function logFallbackErrIntro(category: LogCategory, errorComesFromVite: boolean)
 function getConfigCategory(): LogCategory {
   const category = getCategory() ?? 'config'
   return category
-}
-
-function handleAssertMsg(err: unknown, category: LogCategory | null): boolean {
-  const res = getAssertErrMsg(err)
-  if (!res) return false
-  const { assertMsg, showVikeVersion } = res
-  logWithVikeTag(assertMsg, 'error-thrown', category, showVikeVersion)
-  return true
-}
-function assertLoggerDev(thing: string | Error, logType: LogType): void {
-  const category = getCategory()
-  const res = getAssertErrMsg(thing)
-  /* Risk of infinite loop
-  assert(res)
-  */
-  if (!res) throw new Error('Internal Vike error, reach out to a maintainer')
-  const { assertMsg, showVikeVersion } = res
-  logWithVikeTag(assertMsg, logType, category, showVikeVersion)
 }
 
 /** Note shown to user when vike does something risky:
