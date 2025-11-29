@@ -6,7 +6,7 @@ export { getProjectError }
 export { addOnBeforeLogHook }
 export { getAssertErrMsg }
 export { setAssertLoggerDev }
-export { isBug }
+export { isVikeBug }
 export { setAlwaysShowStackTrace }
 
 import { assertSingleInstance_onAssertModuleLoad } from './assertSingleInstance.js'
@@ -186,7 +186,7 @@ function getAssertErrMsg(thing: unknown): { assertMsg: string; showVikeVersion: 
     const showVikeVersion = tag === projectTagWithVersion
     const errStackPrefix = `Error: ${tag}`
     if (errStack?.startsWith(errStackPrefix)) {
-      if (globalObject.showStackTraceList.has(thing as any) || isBug(thing)) {
+      if (globalObject.showStackTraceList.has(thing as any) || isVikeBug(thing)) {
         const assertMsg = errStack.slice(errStackPrefix.length)
         return { assertMsg, showVikeVersion }
       }
@@ -219,7 +219,7 @@ function setAssertLoggerDev(logger: Logger): void {
   globalObject.logger = logger
 }
 
-function isBug(err: unknown): boolean {
+function isVikeBug(err: unknown): boolean {
   return String(err).includes(`[${bugTag}]`)
 }
 
