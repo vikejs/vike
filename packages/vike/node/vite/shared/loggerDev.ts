@@ -59,7 +59,7 @@ import { logErrorServer } from '../../../server/runtime/logErrorServer.js'
 assertIsNotProductionRuntime()
 setLogRuntimeDev(logRuntimeErrorDev, logRuntimeInfoDev)
 addOnBeforeAssertErr((err) => {
-  // We need to apply vite.ssrFixStacktrace() because `assertWarning(..., { showStackTrace: true })` isn't caught by the try-catch of renderPageServer()
+  // We must directly apply vite.ssrFixStacktrace() to `assertWarning(..., { showStackTrace: true })` because warnings aren't caught by the try-catch of renderPageServer()
   applyViteSourceMapToStackTrace(err)
 })
 
