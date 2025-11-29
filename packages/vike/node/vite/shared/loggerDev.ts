@@ -36,7 +36,6 @@ import {
   assert,
   assertIsNotProductionRuntime,
   formatHintLog,
-  getAssertErrMsg,
   hasProp,
   isDebugError,
   PROJECT_VERSION,
@@ -129,11 +128,6 @@ function logErr(err: unknown, httpRequestId: number | null = null, errorComesFro
       logErrorDebugNote()
       return
     }
-
-    {
-      const logged = handleAssertMsg(err, category)
-      if (logged) return
-    }
   }
 
   // Needs to be after assertion messages handling, because user hooks may throw an assertion error
@@ -181,10 +175,6 @@ function logConfigError(err: unknown): void {
       return
     }
   }
-  {
-    const logged = handleAssertMsg(err, category)
-    if (logged) return
-  }
 
   if (category) logFallbackErrIntro(category, false)
   logDirectly(err, 'error-thrown')
@@ -198,14 +188,6 @@ function logFallbackErrIntro(category: LogCategory, errorComesFromVite: boolean)
 function getConfigCategory(): LogCategory {
   const category = getCategory() ?? 'config'
   return category
-}
-
-function handleAssertMsg(err: unknown, category: LogCategory | null): boolean {
-  const res = getAssertErrMsg(err)
-  if (!res) return false
-  const { assertMsg, showVikeVersion } = res
-  logWithVikeTag(assertMsg, 'error-thrown', category, showVikeVersion)
-  return true
 }
 
 /** Note shown to user when vike does something risky:
