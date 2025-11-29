@@ -60,17 +60,17 @@ assertIsNotProductionRuntime()
 setLogRuntimeDev(logRuntimeErrorDev, logRuntimeInfoDev)
 setAssertLoggerDev(assertLoggerDev)
 
-type LogType = 'info' | 'warn' | 'error-thrown' | 'error-recover' | 'error-note'
+type LogType = 'info' | 'warn' | 'error-recover' | 'error-note'
 type LogCategory = 'config' | `request(${number})`
 type ProjectTag = `[vike]` | `[vike@${typeof PROJECT_VERSION}]`
 
-function logRuntimeInfoDev(msg: string, pageContext: PageContext_logRuntime, logType: LogType) {
+function logRuntimeInfoDev(msg: string, pageContext: PageContext_logRuntime, logType: Exclude<LogType, 'error-thrown'>) {
   assertPageContext_logRuntime(pageContext)
   const httpRequestId = pageContext === 'NULL_TEMP' ? null : pageContext._httpRequestId
   const category = getCategory(httpRequestId)
   logWithVikeTag(msg, logType, category)
 }
-function logViteMsg(msg: string, logType: LogType, httpRequestId: number | null, prependViteTag: boolean): void {
+function logViteMsg(msg: string, logType: Exclude<LogType, 'error-thrown'>, httpRequestId: number | null, prependViteTag: boolean): void {
   if (prependViteTag) {
     const category = getCategory(httpRequestId)
     logWithViteTag(msg, logType, category)
@@ -78,7 +78,7 @@ function logViteMsg(msg: string, logType: LogType, httpRequestId: number | null,
     printMsg(msg, logType)
   }
 }
-function logConfigInfo(msg: string, logType: LogType): void {
+function logConfigInfo(msg: string, logType: Exclude<LogType, 'error-thrown'>): void {
   const category = getConfigCategory()
   logWithVikeTag(msg, logType, category)
 }
@@ -150,7 +150,7 @@ function logErr(err: unknown, httpRequestId: number | null = null, errorComesFro
     logFallbackErrIntro(category, errorComesFromVite)
   }
 
-  printMsg(err, 'error-thrown')
+  printErr(err)
 
   // Needs to be called after logging the error.
   onRuntimeError(err)
@@ -166,7 +166,7 @@ function logConfigError(err: unknown): void {
     if (errIntroMsg) {
       assert(stripAnsi(errIntroMsg).startsWith('Failed to execute'))
       logWithVikeTag(errIntroMsg, 'error-note', category)
-      printMsg(err, 'error-thrown')
+      printErr(err)
       return
     }
   }
@@ -177,7 +177,7 @@ function logConfigError(err: unknown): void {
       if (!isDebugError()) {
         logWithVikeTag(errMsgFormatted, 'error-thrown', category)
       } else {
-        printMsg(err, 'error-thrown')
+        printErr(err)
       }
       return
     }
@@ -188,7 +188,7 @@ function logConfigError(err: unknown): void {
   }
 
   if (category) logFallbackErrIntro(category, false)
-  printMsg(err, 'error-thrown')
+  printErr(err)
 }
 
 function logFallbackErrIntro(category: LogCategory, errorComesFromVite: boolean) {
@@ -251,7 +251,7 @@ function getCategory(httpRequestId: number | null = null): LogCategory | null {
   return category
 }
 
-function logWithVikeTag(msg: string, logType: LogType, category: LogCategory | null, showVikeVersion = false) {
+function logWithVikeTag(msg: string, logType: Exclude<LogType, 'error-thrown'>, category: LogCategory | null, showVikeVersion = false) {
   const projectTag = getProjectTag(showVikeVersion)
   msg = prependTags(msg, projectTag, category, logType)
   printMsg(msg, logType)
@@ -265,7 +265,7 @@ function getProjectTag(showVikeVersion: boolean) {
   }
   return projectTag
 }
-function logWithViteTag(msg: string, logType: LogType, category: LogCategory | null) {
+function logWithViteTag(msg: string, logType: Exclude<LogType, 'error-thrown'>, category: LogCategory | null) {
   msg = prependTags(msg, '[vite]', category, logType)
   printMsg(msg, logType)
 }
@@ -273,7 +273,7 @@ function logWithViteTag(msg: string, logType: LogType, category: LogCategory | n
 // Not production => every log is triggered by printMsg()
 //  - Even all Vite logs also go through printMsg() (see interceptors of loggerVite.ts)
 //  - Production => logs aren't managed by loggerDev.ts => printMsg() is never called (not even loaded as asserted by assertIsVitePluginCode())
-function printMsg(thing: unknown, logType: LogType) {
+function printMsg(thing: unknown, logType: Exclude<LogType, 'error-thrown'>) {
   applyViteSourceMapToStackTrace(thing)
 
   if (logType === 'info') {
@@ -288,11 +288,6 @@ function printMsg(thing: unknown, logType: LogType) {
     console.error(thing)
     return
   }
-  if (logType === 'error-thrown') {
-    // console.error()
-    logErrorServer(thing, 'NULL_TEMP') // TODO
-    return
-  }
   if (logType === 'error-recover') {
     // stderr because user will most likely want to know about error recovering
     console.error(thing)
@@ -300,6 +295,11 @@ function printMsg(thing: unknown, logType: LogType) {
   }
 
   assert(false)
+}
+function printErr(err: unknown) {
+  // console.error()
+  logErrorServer(err, 'NULL_TEMP') // TODO
+  return
 }
 
 function applyViteSourceMapToStackTrace(thing: unknown) {
