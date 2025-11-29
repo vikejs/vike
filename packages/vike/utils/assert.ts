@@ -6,7 +6,6 @@ export { getProjectError }
 export { addOnBeforeAssertLog }
 export { addOnBeforeAssertErr }
 export { getAssertErrMsg }
-export { setAssertLoggerDev }
 export { isVikeBug }
 export { setAlwaysShowStackTrace }
 
@@ -20,22 +19,12 @@ const globalObject = getGlobalObject<{
   alreadyLogged: Set<string>
   onBeforeAssertLog?: () => void
   onBeforeAssertErr?: (err: Error) => void
-  logger: Logger
   showStackTraceList: WeakSet<Error>
   alwaysShowStackTrace?: true
 }>('utils/assert.ts', {
   alreadyLogged: new Set(),
-  // Production logger. Overwritten by loggerDev.ts in non-production environments.
-  logger(msg, logType) {
-    if (logType === 'info') {
-      console.log(msg)
-    } else {
-      console.warn(msg)
-    }
-  },
   showStackTraceList: new WeakSet(),
 })
-type Logger = (msg: string | Error, logType: 'warn' | 'info') => void
 assertSingleInstance_onAssertModuleLoad()
 
 const projectTag = `[vike]` as const
@@ -127,9 +116,9 @@ function assertWarning(
     const err = createErrorWithCleanStackTrace(msg, numberOfStackTraceLinesToRemove)
     globalObject.onBeforeAssertErr?.(err)
     globalObject.showStackTraceList.add(err)
-    globalObject.logger(err, 'warn')
+    console.warn(err)
   } else {
-    globalObject.logger(msg, 'warn')
+    console.warn(msg)
   }
 }
 
@@ -149,7 +138,7 @@ function assertInfo(condition: unknown, msg: string, { onlyOnce }: { onlyOnce: b
     }
   }
   globalObject.onBeforeAssertLog?.()
-  globalObject.logger(msg, 'info')
+  console.log(msg)
 }
 
 function addOnBeforeAssertLog(onBeforeAssertLog: () => void) {
@@ -221,10 +210,6 @@ function getAssertErrMsg(thing: unknown): { assertMsg: string; showVikeVersion: 
     }
   }
   return null
-}
-
-function setAssertLoggerDev(logger: Logger): void {
-  globalObject.logger = logger
 }
 
 function isVikeBug(err: unknown): boolean {
