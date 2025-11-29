@@ -40,7 +40,7 @@ import {
   assertWarning,
   isCallable,
   createDebug,
-  isBug,
+  isVikeBug,
 } from '../../../utils.js'
 import { HtmlRender } from './renderHtml.js'
 import {
@@ -381,7 +381,7 @@ async function processStream(
         // Ideally, we should catch and gracefully handle user land errors, as any error thrown here kills the server. (I assume that the fact it kills the server is a Node.js bug?)
 
         // Show "[vike][Bug] You stumbled upon a bug in Vike's source code" to user while printing original error
-        if (!isBug(err)) {
+        if (!isVikeBug(err)) {
           console.error(err)
           assert(false)
         }

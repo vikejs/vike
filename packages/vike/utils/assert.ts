@@ -3,10 +3,11 @@ export { assertUsage }
 export { assertWarning }
 export { assertInfo }
 export { getProjectError }
-export { addOnBeforeLogHook }
+export { addOnBeforeAssertLog }
+export { addOnBeforeAssertErr }
 export { getAssertErrMsg }
 export { setAssertLoggerDev }
-export { isBug }
+export { isVikeBug }
 export { setAlwaysShowStackTrace }
 
 import { assertSingleInstance_onAssertModuleLoad } from './assertSingleInstance.js'
@@ -17,7 +18,8 @@ import { PROJECT_VERSION } from './PROJECT_VERSION.js'
 import pc from '@brillout/picocolors'
 const globalObject = getGlobalObject<{
   alreadyLogged: Set<string>
-  onBeforeLog?: () => void
+  onBeforeAssertLog?: () => void
+  onBeforeAssertErr?: (err: Error) => void
   logger: Logger
   showStackTraceList: WeakSet<Error>
   alwaysShowStackTrace?: true
@@ -67,7 +69,8 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
   errMsg = addPrefixProjectName(errMsg, true)
   const internalError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
 
-  globalObject.onBeforeLog?.()
+  globalObject.onBeforeAssertLog?.()
+  globalObject.onBeforeAssertErr?.(internalError)
   throw internalError
 }
 
@@ -85,7 +88,8 @@ function assertUsage(
   if (showStackTrace) {
     globalObject.showStackTraceList.add(usageError)
   }
-  globalObject.onBeforeLog?.()
+  globalObject.onBeforeAssertLog?.()
+  globalObject.onBeforeAssertErr?.(usageError)
   if (!exitOnError) {
     throw usageError
   } else {
@@ -118,9 +122,10 @@ function assertWarning(
     if (alreadyLogged.has(key)) return
     alreadyLogged.add(key)
   }
-  globalObject.onBeforeLog?.()
+  globalObject.onBeforeAssertLog?.()
   if (showStackTrace) {
     const err = createErrorWithCleanStackTrace(msg, numberOfStackTraceLinesToRemove)
+    globalObject.onBeforeAssertErr?.(err)
     globalObject.showStackTraceList.add(err)
     globalObject.logger(err, 'warn')
   } else {
@@ -143,12 +148,15 @@ function assertInfo(condition: unknown, msg: string, { onlyOnce }: { onlyOnce: b
       alreadyLogged.add(key)
     }
   }
-  globalObject.onBeforeLog?.()
+  globalObject.onBeforeAssertLog?.()
   globalObject.logger(msg, 'info')
 }
 
-function addOnBeforeLogHook(onBeforeLog: () => void) {
-  globalObject.onBeforeLog = onBeforeLog
+function addOnBeforeAssertLog(onBeforeAssertLog: () => void) {
+  globalObject.onBeforeAssertLog = onBeforeAssertLog
+}
+function addOnBeforeAssertErr(onBeforeAssertErr: (err: unknown) => void) {
+  globalObject.onBeforeAssertErr = onBeforeAssertErr
 }
 
 function addPrefixAssertType(msg: string, tag: Tag): string {
@@ -186,7 +194,7 @@ function getAssertErrMsg(thing: unknown): { assertMsg: string; showVikeVersion: 
     const showVikeVersion = tag === projectTagWithVersion
     const errStackPrefix = `Error: ${tag}`
     if (errStack?.startsWith(errStackPrefix)) {
-      if (globalObject.showStackTraceList.has(thing as any) || isBug(thing)) {
+      if (globalObject.showStackTraceList.has(thing as any) || isVikeBug(thing)) {
         const assertMsg = errStack.slice(errStackPrefix.length)
         return { assertMsg, showVikeVersion }
       }
@@ -219,7 +227,7 @@ function setAssertLoggerDev(logger: Logger): void {
   globalObject.logger = logger
 }
 
-function isBug(err: unknown): boolean {
+function isVikeBug(err: unknown): boolean {
   return String(err).includes(`[${bugTag}]`)
 }
 
