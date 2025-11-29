@@ -17,7 +17,7 @@ import { PROJECT_VERSION } from './PROJECT_VERSION.js'
 import pc from '@brillout/picocolors'
 const globalObject = getGlobalObject<{
   alreadyLogged: Set<string>
-  onBeforeLog?: () => void
+  onBeforeAssertLog?: () => void
   logger: Logger
   showStackTraceList: WeakSet<Error>
   alwaysShowStackTrace?: true
@@ -67,7 +67,7 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
   errMsg = addPrefixProjectName(errMsg, true)
   const internalError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
 
-  globalObject.onBeforeLog?.()
+  globalObject.onBeforeAssertLog?.()
   throw internalError
 }
 
@@ -85,7 +85,7 @@ function assertUsage(
   if (showStackTrace) {
     globalObject.showStackTraceList.add(usageError)
   }
-  globalObject.onBeforeLog?.()
+  globalObject.onBeforeAssertLog?.()
   if (!exitOnError) {
     throw usageError
   } else {
@@ -118,7 +118,7 @@ function assertWarning(
     if (alreadyLogged.has(key)) return
     alreadyLogged.add(key)
   }
-  globalObject.onBeforeLog?.()
+  globalObject.onBeforeAssertLog?.()
   if (showStackTrace) {
     const err = createErrorWithCleanStackTrace(msg, numberOfStackTraceLinesToRemove)
     globalObject.showStackTraceList.add(err)
@@ -143,12 +143,12 @@ function assertInfo(condition: unknown, msg: string, { onlyOnce }: { onlyOnce: b
       alreadyLogged.add(key)
     }
   }
-  globalObject.onBeforeLog?.()
+  globalObject.onBeforeAssertLog?.()
   globalObject.logger(msg, 'info')
 }
 
-function addOnBeforeAssertLog(onBeforeLog: () => void) {
-  globalObject.onBeforeLog = onBeforeLog
+function addOnBeforeAssertLog(onBeforeAssertLog: () => void) {
+  globalObject.onBeforeAssertLog = onBeforeAssertLog
 }
 
 function addPrefixAssertType(msg: string, tag: Tag): string {
