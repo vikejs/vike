@@ -109,10 +109,9 @@ function logErr(err: unknown, httpRequestId: number | null = null, errorComesFro
     return
   }
 
-  const store = getHttpRequestAsyncStore()
-
   // Dedupe
   setAlreadyLogged(err)
+  const store = getHttpRequestAsyncStore()
   if (getHttpRequestAsyncStore()?.shouldErrorBeSwallowed(err)) {
     if (!isDebugError()) return
   } else {
