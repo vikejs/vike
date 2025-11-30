@@ -22,7 +22,6 @@ export { logConfigInfo }
 export { logConfigError }
 export { logConfigErrorRecover }
 export { logErrorDebugNote }
-export { applyViteSourceMapToStackTrace }
 export type { LogType }
 
 import { isAbortError } from '../../../shared-server-client/route/abort.js'
