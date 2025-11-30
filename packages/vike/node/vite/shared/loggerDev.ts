@@ -38,6 +38,7 @@ import {
   formatHintLog,
   hasProp,
   isDebugError,
+  isObject,
   PROJECT_VERSION,
   stripAnsi,
   warnIfErrorIsNotObject,
@@ -54,6 +55,7 @@ import { onRuntimeError } from '../../../server/runtime/renderPageServer/loggerP
 import { isUserHookError } from '../../../shared-server-client/hooks/execHook.js'
 import { getViteDevServer } from '../../../server/runtime/globalContext.js'
 import { logErrorServer } from '../../../server/runtime/logErrorServer.js'
+import { getBetterError } from '../../../utils/getBetterError.js'
 
 assertIsNotProductionRuntime()
 setLogRuntimeDev(logRuntimeErrorDev, logRuntimeInfoDev)
@@ -64,6 +66,7 @@ addOnBeforeAssertErr((err) => {
 
 type LogType = 'info' | 'warn' | 'error-thrown' | 'error-recover' | 'error-note'
 type LogCategory = 'config' | `request(${number})`
+// TODO: rename?
 type ProjectTag = `[vike]` | `[vike@${typeof PROJECT_VERSION}]`
 
 function logRuntimeInfoDev(msg: string, pageContext: PageContext_logRuntime, logType: LogType) {
@@ -125,10 +128,11 @@ function logErr(err: unknown, httpRequestId: number | null = null, errorComesFro
       // We handle transpile errors globally because wrapping viteDevServer.ssrLoadModule() wouldn't be enough: transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when loading user code with import() (since Vite lazy-transpiles import() calls)
       const viteConfig = getViteConfig()
       assert(viteConfig)
-      const prettyErr = getPrettyErrorWithCodeSnippet(err, viteConfig.root)
-      assert(stripAnsi(prettyErr).startsWith('Failed to transpile'))
-      logWithViteTag(prettyErr, 'error-thrown', category)
-      logErrorDebugNote()
+      let message = getPrettyErrorWithCodeSnippet(err, viteConfig.root)
+      assert(stripAnsi(message).startsWith('Failed to transpile'))
+      message = improveErrorMessage(message, '[vite]', category)
+      const errBetter = getBetterError(err, { message, stackIsOptional: true })
+      logDirectlyErr(errBetter)
       return
     }
   }
@@ -161,8 +165,10 @@ function logConfigError(err: unknown): void {
     const errIntroMsg = getConfigExecutionErrorIntroMsg(err)
     if (errIntroMsg) {
       assert(stripAnsi(errIntroMsg).startsWith('Failed to execute'))
-      logWithVikeTag(errIntroMsg, 'error-note', category)
-      logDirectly(err, 'error-thrown')
+      let message = errIntroMsg + '\n' + (!isObject(err) ? '' : String(err.message || ''))
+      message = prependTags(message, '[vike]', category, 'error-thrown')
+      const errBetter = getBetterError(err, { message })
+      logDirectlyErr(errBetter)
       return
     }
   }
@@ -170,11 +176,10 @@ function logConfigError(err: unknown): void {
     const errMsgFormatted = getConfigBuildErrorFormatted(err)
     if (errMsgFormatted) {
       assert(stripAnsi(errMsgFormatted).startsWith('Failed to transpile'))
-      if (!isDebugError()) {
-        logWithVikeTag(errMsgFormatted, 'error-thrown', category)
-      } else {
-        logDirectly(err, 'error-thrown')
-      }
+      let message = errMsgFormatted
+      message = improveErrorMessage(message, '[vike]', category)
+      const errBetter = getBetterError(err, { message, stackIsOptional: true })
+      logDirectlyErr(errBetter)
       return
     }
   }
@@ -197,6 +202,7 @@ function getConfigCategory(): LogCategory {
  *  - When vike dedupes (i.e. swallows) an error with getHttpRequestAsyncStore().shouldErrorBeSwallowed(err)
  *  - When vike modifies the error with getPrettyErrorWithCodeSnippet(err)
  */
+const errorDebugNote = pc.dim(formatHintLog("Error isn't helpful? See https://vike.dev/debug#verbose-errors"))
 function logErrorDebugNote() {
   if (isDebugError()) return
   const store = getHttpRequestAsyncStore()
@@ -204,8 +210,10 @@ function logErrorDebugNote() {
     if (store.errorDebugNoteAlreadyShown) return
     store.errorDebugNoteAlreadyShown = true
   }
-  const msg = pc.dim(formatHintLog("Error isn't helpful? See https://vike.dev/debug#verbose-errors"))
-  logDirectly(msg, 'error-note')
+  logDirectly(errorDebugNote, 'error-note')
+}
+function appendErrorDebugNote(errMsg: string) {
+  return errMsg + '\n\n' + errorDebugNote
 }
 
 function getCategory(httpRequestId: number | null = null): LogCategory | null {
@@ -262,7 +270,7 @@ function logDirectly(thing: unknown, logType: LogType) {
   }
   if (logType === 'error-thrown') {
     // console.error()
-    logErrorServer(thing, 'NULL_TEMP') // TODO
+    logErrorServer(thing, 'NULL_TEMP') // TODO pass pageContext
     return
   }
   if (logType === 'error-recover') {
@@ -273,6 +281,10 @@ function logDirectly(thing: unknown, logType: LogType) {
 
   assert(false)
 }
+function logDirectlyErr(err: unknown) {
+  applyViteSourceMapToStackTrace(err)
+  logErrorServer(err, 'NULL_TEMP') // TODO
+}
 
 function applyViteSourceMapToStackTrace(thing: unknown) {
   if (isDebugError()) return
@@ -281,6 +293,12 @@ function applyViteSourceMapToStackTrace(thing: unknown) {
   if (!viteDevServer) return
   // Apply Vite's source maps
   viteDevServer.ssrFixStacktrace(thing as Error)
+}
+
+function improveErrorMessage(message: string, tag: '[vite]' | ProjectTag, category: LogCategory | null) {
+  message = prependTags(message, tag, category, 'error-thrown')
+  message = appendErrorDebugNote(message)
+  return message
 }
 
 function prependTags(msg: string, projectTag: '[vite]' | ProjectTag, category: LogCategory | null, logType: LogType) {
