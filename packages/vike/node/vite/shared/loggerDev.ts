@@ -22,7 +22,6 @@ export { logConfigInfo }
 export { logConfigError }
 export { logConfigErrorRecover }
 export { logErrorDebugNote }
-export { applyViteSourceMapToStackTrace }
 export type { LogType }
 
 import { isAbortError } from '../../../shared-server-client/route/abort.js'
@@ -33,6 +32,7 @@ import {
   setLogRuntimeDev,
 } from '../../../server/runtime/loggerRuntime.js'
 import {
+  addOnBeforeAssertErr,
   assert,
   assertIsNotProductionRuntime,
   formatHintLog,
@@ -57,6 +57,10 @@ import { logErrorServer } from '../../../server/runtime/logErrorServer.js'
 
 assertIsNotProductionRuntime()
 setLogRuntimeDev(logRuntimeErrorDev, logRuntimeInfoDev)
+addOnBeforeAssertErr((err) => {
+  // We must directly apply vite.ssrFixStacktrace() to `assertWarning(..., { showStackTrace: true })` because warnings aren't caught by the try-catch of renderPageServer()
+  applyViteSourceMapToStackTrace(err)
+})
 
 type LogType = 'info' | 'warn' | 'error-thrown' | 'error-recover' | 'error-note'
 type LogCategory = 'config' | `request(${number})`
@@ -105,10 +109,9 @@ function logErr(err: unknown, httpRequestId: number | null = null, errorComesFro
     return
   }
 
-  const store = getHttpRequestAsyncStore()
-
   // Dedupe
   setAlreadyLogged(err)
+  const store = getHttpRequestAsyncStore()
   if (getHttpRequestAsyncStore()?.shouldErrorBeSwallowed(err)) {
     if (!isDebugError()) return
   } else {

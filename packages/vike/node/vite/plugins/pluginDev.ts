@@ -5,11 +5,10 @@ import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
 import { determineOptimizeDeps } from './pluginDev/determineOptimizeDeps.js'
 import { determineFsAllowList } from './pluginDev/determineFsAllowList.js'
 import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
-import { applyDev, assertWarning, isDocker, isDebugError, addOnBeforeAssertErr } from '../utils.js'
+import { applyDev, assertWarning, isDocker, isDebugError } from '../utils.js'
 import { improveViteLogs } from '../shared/loggerVite.js'
 import { installHttpRequestAsyncStore } from '../shared/getHttpRequestAsyncStore.js'
 import pc from '@brillout/picocolors'
-import { applyViteSourceMapToStackTrace } from '../shared/loggerDev.js'
 
 if (isDebugError()) {
   Error.stackTraceLimit = Infinity
@@ -18,20 +17,6 @@ if (isDebugError()) {
 function pluginDev(): Plugin[] {
   let config: ResolvedConfig
   return [
-    {
-      name: 'vike:pluginDev:pre',
-      apply: applyDev,
-      enforce: 'pre',
-      config: {
-        order: 'pre',
-        handler() {
-          addOnBeforeAssertErr((err) => {
-            // We need to apply vite.ssrFixStacktrace() because `assertWarning(..., { showStackTrace: true })` isn't caught by the try-catch of renderPageServer()
-            applyViteSourceMapToStackTrace(err)
-          })
-        },
-      },
-    },
     {
       name: 'vike:pluginDev',
       apply: applyDev,
