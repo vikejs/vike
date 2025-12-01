@@ -73,6 +73,7 @@ function logVite(msg: string, logType: LogType, httpRequestId: number | null, pr
 
 function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, errorComesFromVite = false): void {
   assertPageContext_logRuntime(pageContext)
+
   applyViteSourceMapToStackTrace(err)
 
   const logErr = (err: unknown) => {
