@@ -118,7 +118,7 @@ Common invalid JavaScript code published by npm packages.
 <CodeBlockTransformer lineBreak="white-space">
 ```
 (node:30335) Warning: To load an ES module, set "type": "module" in the package.json or use the .mjs extension.
-node_modules/some-library/dist/esm/index.js:1
+node_modules/some-library/dist/index.js:1
 SyntaxError: Cannot use import statement outside a module
     at Object.compileFunction (node:vm:352:18)
     at wrapSafe (node:internal/modules/cjs/loader:1033:15)
@@ -183,7 +183,7 @@ node:internal/process/esm_loader:91
     internalBinding('errors').triggerUncaughtException(
                               ^
 
-Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'node_modules/some-library/dist/esm/some-file' imported from node_modules/some-library/dist/esm/index.js
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'node_modules/some-library/dist/some-file' imported from node_modules/some-library/dist/index.js
 Did you mean to import some-file.js?
     at new NodeError (node:internal/errors:372:5)
     at finalizeResolution (node:internal/modules/esm/resolve:405:11)
