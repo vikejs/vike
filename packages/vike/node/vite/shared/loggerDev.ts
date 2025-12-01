@@ -7,7 +7,7 @@
 // - Never clear screen (it's complex with little benefit)
 // - Only show a one-liner init log (instead of Vite's multi-line log)
 
-export { logViteMsg }
+export { logVite }
 export { logConfigInfo }
 export { logErrorServerDev }
 export { logErrorDebugNote }
@@ -62,7 +62,7 @@ function logRuntimeInfoDev(msg: string, pageContext: PageContext_logRuntime, log
   const category = getCategory(httpRequestId)
   logWithVikeTag(msg, logType, category)
 }
-function logViteMsg(msg: string, logType: LogType, httpRequestId: number | null, prependViteTag: boolean): void {
+function logVite(msg: string, logType: LogType, httpRequestId: number | null, prependViteTag: boolean): void {
   const category = getCategory(httpRequestId)
   logDirectly(msg, logType, category, '[vite]', !prependViteTag)
 }
