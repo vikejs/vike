@@ -105,6 +105,10 @@ function logViteError(
 function logErrorServerDev(err: unknown, httpRequestId: number | null = null, errorComesFromVite = false): void {
   applyViteSourceMapToStackTrace(err)
 
+  const logErr = (err: unknown) => {
+    logErrorServer(err, 'NULL_TEMP') // TODO pass pageContext
+  }
+
   // Skip `throw render()` / `throw redirect()`
   if (isAbortError(err) && !isDebugError()) {
     return
@@ -264,9 +268,6 @@ function logDirectly(thing: unknown, logType: LogType) {
   }
 
   assert(false)
-}
-function logErr(err: unknown) {
-  logErrorServer(err, 'NULL_TEMP') // TODO pass pageContext
 }
 
 function applyViteSourceMapToStackTrace(thing: unknown) {
