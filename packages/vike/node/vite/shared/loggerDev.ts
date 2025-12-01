@@ -173,23 +173,17 @@ function logDev(
 
   if (logType === 'info') {
     console.log(msg)
-    return
-  }
-  if (logType === 'warn') {
+  } else if (logType === 'warn') {
     console.warn(msg)
-    return
-  }
-  if (logType === 'error') {
-    console.error(msg)
-    return
-  }
-  if (logType === 'error-resolve') {
+  } else if (
+    logType === 'error' ||
     // stderr because user will most likely want to know about error recovering
+    logType === 'error-resolve'
+  ) {
     console.error(msg)
-    return
+  } else {
+    assert(false)
   }
-
-  assert(false)
 }
 
 // Note shown to user when Vike modifies errors in a risky fashion.
