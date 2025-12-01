@@ -152,7 +152,7 @@ function logErrorServerDev(err: unknown, httpRequestId: number | null = null, er
     if (errIntro) {
       assert(stripAnsi(errIntro).startsWith('Failed to execute'))
       let message = addErrIntro(err, errIntro)
-      message = prependTags(message, '[vike]', category, 'error-thrown')
+      message = prependTags(message, '[vike]', category, 'error-note')
       const errBetter = getBetterError(err, { message })
       logDirectlyErr(errBetter)
       return
@@ -172,8 +172,12 @@ function logErrorServerDev(err: unknown, httpRequestId: number | null = null, er
   }
 
   if (category) {
-    const msg = errorComesFromVite ? 'Transpilation error' : 'An error was thrown'
-    logWithVikeTag(pc.bold(pc.red(`[Error] ${msg}:`)), 'error-note', category)
+    const errIntro = pc.bold(pc.red(`[Error] ${errorComesFromVite ? 'Transpilation error' : 'An error was thrown'}:`))
+    let message = addErrIntro(err, errIntro)
+    message = prependTags(message, '[vike]', category, 'error-note')
+    const errBetter = getBetterError(err, { message })
+    logDirectlyErr(errBetter)
+    return
   }
 
   logDirectlyErr(err)
