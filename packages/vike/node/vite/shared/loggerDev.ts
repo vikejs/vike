@@ -164,10 +164,10 @@ function logDev(
   msg: string,
   logType: LogType,
   category: LogCategory | null,
-  projectTag: TagTool,
+  tagTool: TagTool,
   doNotPrependTags?: boolean,
 ) {
-  if (!doNotPrependTags) msg = prependTags(msg, projectTag, category, logType)
+  if (!doNotPrependTags) msg = prependTags(msg, tagTool, category, logType)
 
   if (logType === 'info') {
     console.log(msg)
@@ -232,17 +232,17 @@ function applyViteSourceMapToStackTrace(thing: unknown) {
   viteDevServer.ssrFixStacktrace(thing as Error)
 }
 
-function prependTags(msg: string, projectTag: TagTool, category: LogCategory | null, logType: LogType) {
+function prependTags(msg: string, tagTool: TagTool, category: LogCategory | null, logType: LogType) {
   const color = (s: string) => {
     if (logType === 'error' && !hasRed(msg)) return pc.bold(pc.red(s))
     if (logType === 'error-resolve' && !hasGreen(msg)) return pc.bold(pc.green(s))
     if (logType === 'warn' && !hasYellow(msg)) return pc.yellow(s)
     assert(logType === 'info')
-    if (projectTag === '[vite]') return pc.bold(pc.cyan(s))
-    if (projectTag === '[vike]') return pc.bold(pc.cyan(s))
+    if (tagTool === '[vite]') return pc.bold(pc.cyan(s))
+    if (tagTool === '[vike]') return pc.bold(pc.cyan(s))
     assert(false)
   }
-  let tag = color(`${projectTag}`)
+  let tag = color(`${tagTool}`)
   if (category) {
     tag = tag + pc.dim(`[${category}]`)
   }
