@@ -140,7 +140,11 @@ function logErr(err: unknown, httpRequestId: number | null = null, errorComesFro
       'error-note',
       category,
     )
-  } else if (category) {
+    logDirectlyErr(err)
+    return
+  }
+
+  if (category) {
     logFallbackErrIntro(category, errorComesFromVite)
   }
 
