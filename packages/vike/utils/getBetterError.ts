@@ -7,7 +7,7 @@ import { isObject } from './isObject.js'
 function getBetterError(err: unknown, modifications: { message?: string; stack?: string; hideStack?: true }) {
   let errBetter: { message: string; stack: string }
 
-  // Normalize & copy
+  // Normalize
   if (!isObject(err)) {
     warnMalformed(err)
     errBetter = new Error(String(err)) as Required<Error>
