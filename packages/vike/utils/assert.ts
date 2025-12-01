@@ -23,8 +23,8 @@ const globalObject = getGlobalObject<{
 })
 assertSingleInstance_onAssertModuleLoad()
 
-const tagTool = `[vike]` as const
-const tagToolWithVersion = `[vike@${PROJECT_VERSION}]` as const
+const projectTag = `[vike]` as const
+const projectTagWithVersion = `[vike@${PROJECT_VERSION}]` as const
 const bugTag = 'Bug'
 type Tag = 'Bug' | 'Wrong Usage' | 'Error' | 'Warning'
 
@@ -154,7 +154,7 @@ function addWhitespace(msg: string) {
   }
 }
 function addPrefixProjectName(msg: string, showProjectVersion = false): string {
-  const prefix = showProjectVersion ? tagToolWithVersion : tagTool
+  const prefix = showProjectVersion ? projectTagWithVersion : projectTag
   return `${prefix}${msg}`
 }
 
