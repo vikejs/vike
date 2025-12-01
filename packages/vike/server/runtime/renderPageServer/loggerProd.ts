@@ -6,7 +6,6 @@ export { onRuntimeError }
 
 import { isAbortError } from '../../../shared-server-client/route/abort.js'
 import { setAlreadyLogged } from './isNewError.js'
-import { warnIfErrorIsNotObject } from '../../utils.js'
 import { logErrorHint } from './logErrorHint.js'
 import { logErrorServer } from '../logErrorServer.js'
 import { assertPageContext_logRuntime, type PageContext_logRuntime } from '../loggerRuntime.js'
@@ -14,7 +13,6 @@ import { assertPageContext_logRuntime, type PageContext_logRuntime } from '../lo
 function loggRuntimeErrorProd(err: unknown, pageContext: PageContext_logRuntime): void {
   assertPageContext_logRuntime(pageContext)
 
-  warnIfErrorIsNotObject(err)
   setAlreadyLogged(err)
 
   if (isAbortError(err)) {

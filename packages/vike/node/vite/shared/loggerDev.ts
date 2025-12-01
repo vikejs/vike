@@ -43,7 +43,6 @@ import {
   isDebugError,
   isObject,
   stripAnsi,
-  warnIfErrorIsNotObject,
 } from '../utils.js'
 import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore.js'
 import { isErrorWithCodeSnippet, getPrettyErrorWithCodeSnippet } from './loggerDev/errorWithCodeSnippet.js'
@@ -106,8 +105,6 @@ function logViteError(
   logErr(err, httpRequestId, true)
 }
 function logErr(err: unknown, httpRequestId: number | null = null, errorComesFromVite: boolean): void {
-  warnIfErrorIsNotObject(err)
-
   // Skip `throw render()` / `throw redirect()`
   if (isAbortError(err) && !isDebugError()) {
     return
@@ -159,9 +156,6 @@ function logErr(err: unknown, httpRequestId: number | null = null, errorComesFro
 }
 
 function logVikeConfigError(err: unknown): void {
-  // TODO: move
-  warnIfErrorIsNotObject(err)
-
   const category = getConfigCategory()
 
   {

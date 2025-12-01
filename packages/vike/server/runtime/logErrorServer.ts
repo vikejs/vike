@@ -1,13 +1,16 @@
 export { logErrorServer }
 
 import pc from '@brillout/picocolors'
-import { hasRed, isDebugError, isObject } from '../utils.js'
+import { assertIsNotBrowser, assertWarning, hasRed, isDebugError, isObject } from '../utils.js'
 import { execHookOnError } from './renderPageServer/execHookOnError.js'
 import { assertPageContext_logRuntime, type PageContext_logRuntime } from './loggerRuntime.js'
+assertIsNotBrowser()
 
 // TODO implement +onHook(err, pageContext)
 function logErrorServer(err: unknown, pageContext: PageContext_logRuntime) {
   assertPageContext_logRuntime(pageContext)
+
+  warnIfErrorIsNotObject(err)
 
   execHookOnError(err)
 
@@ -28,4 +31,27 @@ function getStackOrMessage(err: any): string {
   if (!isObject(err) || !err.stack) return String(err)
   if (err.hideStack) return err.message as string
   return err.stack as string
+}
+
+// It would be cleaner to:
+//  - Call assertUsageErrorIsObject() right after calling the user's hook
+//    - Attach the original error: assertUsageError.originalErrorValue = err
+//      - Show the original error in Vike's error handling
+//  - Use assertErrorIsObject() throughout Vike's source code
+function warnIfErrorIsNotObject(err: unknown): void {
+  if (!isObject(err)) {
+    console.warn('[vike] The thrown value is:')
+    console.warn(err)
+    assertWarning(
+      false,
+      `One of your hooks threw an error ${pc.cyan('throw someValue')} but ${pc.cyan(
+        'someValue',
+      )} isn't an object (it's ${pc.cyan(
+        `typeof someValue === ${typeof err}`,
+      )} instead). Make sure thrown values are always wrapped with ${pc.cyan('new Error()')}, in other words: ${pc.cyan(
+        'throw someValue',
+      )} should be replaced with ${pc.cyan('throw new Error(someValue)')}. The thrown value is printed above.`,
+      { onlyOnce: false },
+    )
+  }
 }
