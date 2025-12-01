@@ -168,15 +168,11 @@ function logErrorServerDev(err: unknown, httpRequestId: number | null = null, er
   }
 
   if (category) {
-    logFallbackErrIntro(category, errorComesFromVite)
+    const msg = errorComesFromVite ? 'Transpilation error' : 'An error was thrown'
+    logWithVikeTag(pc.bold(pc.red(`[Error] ${msg}:`)), 'error-note', category)
   }
 
   logDirectlyErr(err)
-}
-
-function logFallbackErrIntro(category: LogCategory, errorComesFromVite: boolean) {
-  const msg = errorComesFromVite ? 'Transpilation error' : 'An error was thrown'
-  logWithVikeTag(pc.bold(pc.red(`[Error] ${msg}:`)), 'error-note', category)
 }
 
 function getConfigCategory(): LogCategory {
