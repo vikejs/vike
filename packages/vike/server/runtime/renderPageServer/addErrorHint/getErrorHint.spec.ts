@@ -1,4 +1,4 @@
-import { getErrorHint } from '../logErrorHint'
+import { getErrorHint } from '../addErrorHint'
 import { expect, describe, it } from 'vitest'
 import { error_cannot_use_import_outside_of_module } from './errors'
 

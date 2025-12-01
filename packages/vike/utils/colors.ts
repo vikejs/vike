@@ -1,4 +1,7 @@
 export { stripAnsi }
+export { hasRed }
+export { hasGreen }
+export { hasYellow }
 
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
 assertIsNotBrowser()
@@ -20,4 +23,17 @@ function getAnsiRegex() {
     '(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-nq-uy=><~]))',
   ].join('|')
   return new RegExp(pattern, 'g')
+}
+
+function hasRed(str: string): boolean {
+  // https://github.com/brillout/picocolors/blob/e291f2a3e3251a7f218ab6369ae94434d85d0eb0/picocolors.js#L57
+  return str.includes('\x1b[31m')
+}
+function hasGreen(str: string): boolean {
+  // https://github.com/brillout/picocolors/blob/e291f2a3e3251a7f218ab6369ae94434d85d0eb0/picocolors.js#L58
+  return str.includes('\x1b[32m')
+}
+function hasYellow(str: string): boolean {
+  // https://github.com/brillout/picocolors/blob/e291f2a3e3251a7f218ab6369ae94434d85d0eb0/picocolors.js#L59
+  return str.includes('\x1b[33m')
 }

@@ -8,13 +8,13 @@ import { isPrerenderAutoRunEnabled, wasPrerenderRun } from '../../../prerender/c
 import type { VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { isViteCli, getViteConfigForBuildFromCli } from '../../shared/isViteCli.js'
 import pc from '@brillout/picocolors'
-import { logErrorHint } from '../../../../server/runtime/renderPageServer/logErrorHint.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { isVikeCliOrApi } from '../../../../shared-server-node/api-context.js'
 import { handleAssetsManifest, handleAssetsManifest_assertUsageCssTarget } from './handleAssetsManifest.js'
 import { isViteServerSide_onlySsrEnv } from '../../shared/isViteServerSide.js'
 import { runPrerenderFromAutoRun } from '../../../prerender/runPrerenderEntry.js'
 import { getManifestFilePathRelative } from '../../shared/getManifestFilePathRelative.js'
+import { logErrorServer } from '../../../../server/runtime/logErrorServer.js'
 
 const globalObject = getGlobalObject('build/pluginBuildApp.ts', {
   forceExit: false,
@@ -102,8 +102,7 @@ function pluginBuildApp(): Plugin[] {
             // We use try-catch also because:
             // - Vite/Rollup swallows errors thrown inside the writeBundle() hook. (It doesn't swallow errors thrown inside the first writeBundle() hook while building the client-side, but it does swallow errors thrown inside the second writeBundle() while building the server-side triggered after Vike calls Vite's `build()` API.)
             // - Avoid Rollup prefixing the error with [vike:build:pluginBuildApp], see for example https://github.com/vikejs/vike/issues/472#issuecomment-1276274203
-            console.error(err)
-            logErrorHint(err)
+            logErrorServer(err, 'NULL_TEMP')
             process.exit(1)
           }
         },

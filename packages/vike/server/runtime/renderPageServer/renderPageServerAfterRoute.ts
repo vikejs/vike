@@ -4,7 +4,7 @@ export type { PageContextAfterRender }
 
 import { getErrorPageId } from '../../../shared-server-client/error-page.js'
 import { getHtmlString } from './html/renderHtml.js'
-import { assert, assertUsage, updateType, hasProp, objectAssign } from '../../utils.js'
+import { assert, assertUsage, updateType, hasProp, objectAssign, isSameErrorMessage } from '../../utils.js'
 import { getPageContextClientSerialized } from './html/serializeContext.js'
 import { type PageContextUrlInternal } from '../../../shared-server-client/getPageContextUrlComputed.js'
 import { createHttpResponsePage, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponse.js'
@@ -16,7 +16,6 @@ import {
 import { execHookOnRenderHtml } from './execHookOnRenderHtml.js'
 import { execHookDataAndOnBeforeRender } from './execHookDataAndOnBeforeRender.js'
 import { logRuntimeError } from '../loggerRuntime.js'
-import { isNewError } from './isNewError.js'
 import { preparePageContextForPublicUsageServer } from './preparePageContextForPublicUsageServer.js'
 import { execHookGuard } from '../../../shared-server-client/route/execHookGuard.js'
 import pc from '@brillout/picocolors'
@@ -63,7 +62,7 @@ async function renderPageServerAfterRoute<
     try {
       await execHookDataAndOnBeforeRender(pageContext)
     } catch (err) {
-      if (isNewError(err, pageContext.errorWhileRendering)) {
+      if (isSameErrorMessage(err, pageContext.errorWhileRendering)) {
         logRuntimeError(err, pageContext)
       }
     }

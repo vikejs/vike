@@ -45,7 +45,7 @@ async function cmdDev() {
     viteServer.bindCLIShortcuts({ print: true })
   } catch (err) {
     console.error(pc.red(`Error while starting dev server:`))
-    // Error comes from Vite; no need to use logErrorHint()
+    // Error comes from Vite; no need to use addErrorHint()
     console.error(err)
     process.exit(1)
   }
@@ -56,7 +56,7 @@ async function cmdBuild() {
     await build()
   } catch (err) {
     console.error(pc.red(`Error during build:`))
-    // Error comes from Vite; no need to use logErrorHint()
+    // Error comes from Vite; no need to use addErrorHint()
     console.error(err)
     process.exit(1)
   }
@@ -73,7 +73,7 @@ async function cmdPreview() {
     }
   } catch (err) {
     console.error(pc.red(`Error while starting preview server:`))
-    // Error comes from Vite; no need to use logErrorHint()
+    // Error comes from Vite; no need to use addErrorHint()
     console.error(err)
     process.exit(1)
   }
