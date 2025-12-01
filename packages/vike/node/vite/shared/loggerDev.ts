@@ -56,7 +56,7 @@ import { logErrorServer } from '../../../server/runtime/logErrorServer.js'
 import { getBetterError } from '../../../utils/getBetterError.js'
 
 assertIsNotProductionRuntime()
-setLogRuntimeDev(logRuntimeErrorDev, logRuntimeInfoDev)
+setLogRuntimeDev(logErrorServerDev, logRuntimeInfoDev)
 addOnBeforeAssertErr((err) => {
   // We must directly apply vite.ssrFixStacktrace() to `assertWarning(..., { showStackTrace: true })` because warnings aren't caught by the try-catch of renderPageServer()
   applyViteSourceMapToStackTrace(err)
@@ -89,9 +89,6 @@ function logVikeConfigErrorRecover(): void {
   logWithVikeTag(vikeConfigErrorRecoverMsg, 'error-recover', category)
 }
 
-function logRuntimeErrorDev(err: unknown, pageContext: PageContext_logRuntime): void {
-  logErrorServerDev(err, pageContext)
-}
 function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, errorComesFromVite = false): void {
   assertPageContext_logRuntime(pageContext)
   applyViteSourceMapToStackTrace(err)
