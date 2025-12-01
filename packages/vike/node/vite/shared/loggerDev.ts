@@ -187,7 +187,7 @@ function logConfigError(err: unknown): void {
   }
 
   if (category) logFallbackErrIntro(category, false)
-  logDirectly(err, 'error-thrown')
+  logDirectlyErr(err)
 }
 
 function logFallbackErrIntro(category: LogCategory, errorComesFromVite: boolean) {
