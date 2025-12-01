@@ -5,7 +5,7 @@ import pc from '@brillout/picocolors'
 import { assertIsNotBrowser, assertWarning, getGlobalObject, hasRed, isDebugError, isObject } from '../utils.js'
 import { execHookOnError } from './renderPageServer/execHookOnError.js'
 import { assertPageContext_logRuntime, type PageContext_logRuntime } from './loggerRuntime.js'
-import { addErrorHint } from './renderPageServer/logErrorHint.js'
+import { addErrorHint } from './renderPageServer/addErrorHint.js'
 import { isAbortError } from '../../shared-server-client/route/abort.js'
 assertIsNotBrowser()
 const globalObject = getGlobalObject('server/runtime/logErrorServer.ts', {

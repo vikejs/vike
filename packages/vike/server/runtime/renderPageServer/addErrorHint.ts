@@ -1,5 +1,5 @@
 export { addErrorHint }
-// For ./logErrorHint/getErrorHint.spec.ts
+// For ./addErrorHint/getErrorHint.spec.ts
 export { getErrorHint }
 
 import { assert, formatHintLog, getBetterError, isObject } from '../../utils.js'
@@ -98,7 +98,7 @@ const errorsCjsEsm: Errors[] = [
 ]
 
 function addErrorHint(error: unknown) {
-  /* Collect errors for ./logErrorHint.spec.ts
+  /* Collect errors for ./addErrorHint.spec.ts
   collectError(error)
   //*/
   let hint = getErrorHint(error)
