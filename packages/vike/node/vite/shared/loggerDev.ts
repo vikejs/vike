@@ -155,10 +155,10 @@ function logVikeConfigError(err: unknown): void {
   const category = getConfigCategory()
 
   {
-    const errIntroMsg = getConfigExecutionErrorIntroMsg(err)
-    if (errIntroMsg) {
-      assert(stripAnsi(errIntroMsg).startsWith('Failed to execute'))
-      let message = addErrMsgIntro(err, errIntroMsg)
+    const errIntro = getConfigExecutionErrorIntroMsg(err)
+    if (errIntro) {
+      assert(stripAnsi(errIntro).startsWith('Failed to execute'))
+      let message = addErrIntro(err, errIntro)
       message = prependTags(message, '[vike]', category, 'error-thrown')
       const errBetter = getBetterError(err, { message })
       logDirectlyErr(errBetter)
@@ -301,7 +301,7 @@ function prependTags(msg: string, projectTag: '[vite]' | '[vike]', category: Log
   return `${timestamp} ${tag}${whitespace}${msg}`
 }
 
-function addErrMsgIntro(err: unknown, erroMsgIntro: string) {
+function addErrIntro(err: unknown, erroIntro: string) {
   const errMsg = !isObject(err) ? '' : String(err.message || '')
-  return erroMsgIntro + '\n' + errMsg
+  return erroIntro + '\n' + errMsg
 }
