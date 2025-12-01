@@ -70,6 +70,9 @@ function logConfigInfo(msg: string, logType: LogType): void {
   const category = getCategory() ?? 'config'
   logWithVikeTag(msg, logType, category)
 }
+function logWithVikeTag(msg: string, logType: LogType, category: LogCategory | null) {
+  logDirectly(msg, logType, category, '[vike]')
+}
 
 function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, errorComesFromVite = false): void {
   assertPageContext_logRuntime(pageContext)
@@ -191,10 +194,6 @@ function getCategory(httpRequestId: number | null = null): LogCategory | null {
   // const category = httpRequestId % 2 === 1 ? (`request-${httpRequestId}` as const) : (`request(${httpRequestId})` as const)
   const category = `request(${httpRequestId})` as const
   return category
-}
-
-function logWithVikeTag(msg: string, logType: LogType, category: LogCategory | null) {
-  logDirectly(msg, logType, category, '[vike]')
 }
 
 function logDirectly(
