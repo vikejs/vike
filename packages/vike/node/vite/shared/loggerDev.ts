@@ -223,31 +223,31 @@ function logWithVikeTag(msg: string, logType: LogType, category: LogCategory | n
 // Not production => every log is triggered by logDirectly()
 //  - Even all Vite logs also go through logDirectly() (see interceptors of loggerVite.ts)
 //  - Production => logs aren't managed by loggerDev.ts => logDirectly() is never called (not even loaded as asserted by assertIsVitePluginCode())
-function logDirectly(thing: string, logType: LogType) {
+function logDirectly(msg: string, logType: LogType) {
   // TODO: remove
-  applyViteSourceMapToStackTrace(thing)
+  applyViteSourceMapToStackTrace(msg)
 
   if (logType === 'info') {
-    console.log(thing)
+    console.log(msg)
     return
   }
   if (logType === 'warn') {
-    console.warn(thing)
+    console.warn(msg)
     return
   }
   if (logType === 'error-note') {
-    console.error(thing)
+    console.error(msg)
     return
   }
   // TODO: remove
   if (logType === 'error-thrown') {
     // console.error()
-    logErrorServer(thing, 'NULL_TEMP') // TODO pass pageContext
+    logErrorServer(msg, 'NULL_TEMP') // TODO pass pageContext
     return
   }
   if (logType === 'error-recover') {
     // stderr because user will most likely want to know about error recovering
-    console.error(thing)
+    console.error(msg)
     return
   }
 
