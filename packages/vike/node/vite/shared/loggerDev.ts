@@ -190,10 +190,7 @@ function getConfigCategory(): LogCategory {
   return category
 }
 
-/** Note shown to user when vike does something risky:
- *  - When vike dedupes (i.e. swallows) an error with getHttpRequestAsyncStore().shouldErrorBeSwallowed(err)
- *  - When vike modifies the error with getPrettyErrorWithCodeSnippet(err)
- */
+// Note shown to user when Vike modifies errors in a risky fashion.
 const errorDebugNote = pc.dim(formatHintLog("Error isn't helpful? See https://vike.dev/debug#verbose-errors"))
 // TODO: remove
 function logErrorDebugNote() {
