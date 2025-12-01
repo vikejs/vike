@@ -256,6 +256,7 @@ function logWithViteTag(msg: string, logType: LogType, category: LogCategory | n
 //  - Even all Vite logs also go through logDirectly() (see interceptors of loggerVite.ts)
 //  - Production => logs aren't managed by loggerDev.ts => logDirectly() is never called (not even loaded as asserted by assertIsVitePluginCode())
 function logDirectly(thing: unknown, logType: LogType) {
+  // TODO: remove
   applyViteSourceMapToStackTrace(thing)
 
   if (logType === 'info') {
@@ -270,6 +271,7 @@ function logDirectly(thing: unknown, logType: LogType) {
     console.error(thing)
     return
   }
+  // TODO: remove
   if (logType === 'error-thrown') {
     // console.error()
     logErrorServer(thing, 'NULL_TEMP') // TODO pass pageContext
