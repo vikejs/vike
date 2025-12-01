@@ -70,8 +70,8 @@ import {
   applyFilesystemRoutingRootEffect,
 } from './resolveVikeConfigInternal/filesystemRouting.js'
 import type { EsbuildCache } from './resolveVikeConfigInternal/transpileAndExecuteFile.js'
-import { getViteDevServer } from '../../../server/runtime/globalContext.js'
-import { logErrorServerDev, logVikeConfigErrorRecover } from './loggerDev.js'
+import { getViteDevServer, vikeConfigErrorRecoverMsg } from '../../../server/runtime/globalContext.js'
+import { logConfigInfo, logErrorServerDev } from './loggerDev.js'
 import {
   removeSuperfluousViteLog_enable,
   removeSuperfluousViteLog_disable,
@@ -263,7 +263,7 @@ async function resolveVikeConfigInternal_withErrorHandling(
     globalObject.vikeConfigHasBuildError = false
     setVikeConfigError({ errorBuild: false })
     if (hadError) {
-      logVikeConfigErrorRecover()
+      logConfigInfo(vikeConfigErrorRecoverMsg, 'error-resolve')
       if (globalObject.restartVite) {
         globalObject.restartVite = false
         restartViteDevServer()

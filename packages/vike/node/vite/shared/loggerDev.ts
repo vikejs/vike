@@ -19,12 +19,11 @@
 export { logViteMsg }
 export { logConfigInfo }
 export { logErrorServerDev }
-export { logVikeConfigErrorRecover }
 export { logErrorDebugNote }
 export type { LogType }
 
 import { isAbortError } from '../../../shared-server-client/route/abort.js'
-import { getViteConfig, vikeConfigErrorRecoverMsg } from '../../../server/runtime/globalContext.js'
+import { getViteConfig } from '../../../server/runtime/globalContext.js'
 import {
   assertPageContext_logRuntime,
   type PageContext_logRuntime,
@@ -79,10 +78,6 @@ function logViteMsg(msg: string, logType: LogType, httpRequestId: number | null,
 function logConfigInfo(msg: string, logType: LogType): void {
   const category = getConfigCategory()
   logWithVikeTag(msg, logType, category)
-}
-function logVikeConfigErrorRecover(): void {
-  const category = getConfigCategory()
-  logWithVikeTag(vikeConfigErrorRecoverMsg, 'error-resolve', category)
 }
 
 function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, errorComesFromVite = false): void {
