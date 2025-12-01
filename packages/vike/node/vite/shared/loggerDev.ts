@@ -110,11 +110,13 @@ function logErrorServerDev(err: unknown, httpRequestId: number | null = null, er
 
   // TODO: remove
   // Dedupe
+  {
   const store = getHttpRequestAsyncStore()
   if (getHttpRequestAsyncStore()?.shouldErrorBeSwallowed(err)) {
     if (!isDebugError()) return
   } else {
     store?.markErrorAsLogged(err)
+  }
   }
 
   const category = getCategory(httpRequestId)
