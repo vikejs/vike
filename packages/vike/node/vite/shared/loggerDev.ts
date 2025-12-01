@@ -30,7 +30,6 @@ import {
   hasRed,
   hasYellow,
   isDebugError,
-  isObject,
   stripAnsi,
 } from '../utils.js'
 import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore.js'
@@ -257,6 +256,6 @@ function prependTags(msg: string, tagTool: TagTool, tagSource: TagSource | null,
 }
 
 function getErrMsgWithIntro(err: unknown, errIntro: string) {
-  const errMsg = !isObject(err) ? '' : String(err.message || '')
+  const errMsg = String((err as any)?.message || '')
   return errIntro + '\n' + errMsg
 }
