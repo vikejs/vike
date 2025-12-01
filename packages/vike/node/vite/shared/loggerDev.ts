@@ -119,7 +119,6 @@ function logErr(err: unknown, httpRequestId: number | null = null, errorComesFro
 
   const category = getCategory(httpRequestId)
 
-  if (!isDebugError()) {
     if (isErrorWithCodeSnippet(err)) {
       // We handle transpile errors globally because wrapping viteDevServer.ssrLoadModule() wouldn't be enough: transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when loading user code with import() (since Vite lazy-transpiles import() calls)
       const viteConfig = getViteConfig()
@@ -132,7 +131,6 @@ function logErr(err: unknown, httpRequestId: number | null = null, errorComesFro
       logDirectlyErr(errBetter)
       return
     }
-  }
 
   const hook = isUserHookError(err)
   if (hook) {
