@@ -5,7 +5,7 @@ import pc from '@brillout/picocolors'
 import { assertIsNotBrowser, assertWarning, getGlobalObject, hasRed, isDebugError, isObject } from '../utils.js'
 import { execHookOnError } from './renderPageServer/execHookOnError.js'
 import { assertPageContext_logRuntime, type PageContext_logRuntime } from './loggerRuntime.js'
-import { logErrorHint } from './renderPageServer/logErrorHint.js'
+import { addErrorHint } from './renderPageServer/logErrorHint.js'
 import { isAbortError } from '../../shared-server-client/route/abort.js'
 assertIsNotBrowser()
 const globalObject = getGlobalObject('server/runtime/logErrorServer.ts', {
@@ -23,14 +23,14 @@ function logErrorServer(err: unknown, pageContext: PageContext_logRuntime) {
 
   warnIfErrorIsNotObject(err)
 
-  execHookOnError(err)
+  const errBetter = addErrorHint(err)
 
-  const errPrinted = getStackOrMessage(isDebugError() ? getOriginalError(err) : err)
+  execHookOnError(errBetter)
+
+  const errPrinted = getStackOrMessage(isDebugError() ? getOriginalError(errBetter) : errBetter)
   console.error(hasRed(errPrinted) ? errPrinted : pc.red(errPrinted))
 
   setAlreadyLogged(err)
-
-  logErrorHint(err)
 }
 
 function getOriginalError(err: any): unknown {

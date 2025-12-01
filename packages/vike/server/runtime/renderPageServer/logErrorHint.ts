@@ -1,9 +1,8 @@
-// TODO: use it once and with getBetterError()
-export { logErrorHint }
+export { addErrorHint }
 // For ./logErrorHint/getErrorHint.spec.ts
 export { getErrorHint }
 
-import { assert, formatHintLog, isObject } from '../../utils.js'
+import { assert, formatHintLog, getBetterError, isObject } from '../../utils.js'
 import pc from '@brillout/picocolors'
 
 const hintDefault = 'The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package'
@@ -98,12 +97,18 @@ const errorsCjsEsm: Errors[] = [
   { errMsg: 'Failed to resolve entry for package' },
 ]
 
-function logErrorHint(error: unknown): void {
+function addErrorHint(error: unknown) {
   /* Collect errors for ./logErrorHint.spec.ts
   collectError(error)
   //*/
-  const hint = getErrorHint(error)
-  if (hint) logHint(hint)
+  let hint = getErrorHint(error)
+  if (!hint) return error
+  hint = formatHintLog(hint)
+  hint = pc.bold(hint)
+  let message = String((error as any)?.message || '')
+  message = message + '\n' + hint
+  const errBetter = getBetterError(error, { message })
+  return errBetter
 }
 function getErrorHint(error: unknown): null | string {
   {
@@ -118,11 +123,6 @@ function getErrorHint(error: unknown): null | string {
   }
 
   return null
-}
-function logHint(hint: string) {
-  hint = formatHintLog(hint)
-  hint = pc.bold(hint)
-  console.error(hint)
 }
 
 function isKnownError(error: unknown) {
