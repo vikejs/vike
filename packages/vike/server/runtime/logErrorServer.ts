@@ -4,6 +4,7 @@ import pc from '@brillout/picocolors'
 import { assertIsNotBrowser, assertWarning, hasRed, isDebugError, isObject } from '../utils.js'
 import { execHookOnError } from './renderPageServer/execHookOnError.js'
 import { assertPageContext_logRuntime, type PageContext_logRuntime } from './loggerRuntime.js'
+import { logErrorHint } from './renderPageServer/logErrorHint.js'
 assertIsNotBrowser()
 
 // TODO implement +onHook(err, pageContext)
@@ -16,6 +17,9 @@ function logErrorServer(err: unknown, pageContext: PageContext_logRuntime) {
 
   const errPrinted = getStackOrMessage(isDebugError() ? getOriginalErrorDeep(err) : err)
   console.error(hasRed(errPrinted) ? errPrinted : pc.red(errPrinted))
+
+  // The more runtime errors we pass to logErrorHint() the better.
+  logErrorHint(err)
 }
 
 function getOriginalErrorDeep(err: any): unknown {

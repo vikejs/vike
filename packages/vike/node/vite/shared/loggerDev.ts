@@ -52,7 +52,6 @@ import {
 } from './resolveVikeConfigInternal/transpileAndExecuteFile.js'
 import pc from '@brillout/picocolors'
 import { setAlreadyLogged } from '../../../server/runtime/renderPageServer/isNewError.js'
-import { onRuntimeError } from '../../../server/runtime/renderPageServer/loggerProd.js'
 import { isUserHookError } from '../../../shared-server-client/hooks/execHook.js'
 import { getViteDevServer } from '../../../server/runtime/globalContext.js'
 import { logErrorServer } from '../../../server/runtime/logErrorServer.js'
@@ -150,9 +149,6 @@ function logErr(err: unknown, httpRequestId: number | null = null, errorComesFro
   }
 
   logDirectlyErr(err)
-
-  // Needs to be called after logging the error.
-  onRuntimeError(err)
 }
 
 function logVikeConfigError(err: unknown): void {
