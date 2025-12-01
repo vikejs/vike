@@ -17,8 +17,8 @@ function logErrorServer(err: unknown, pageContext: PageContext_logRuntime) {
 
 function getOriginalErrorDeep(err: any): unknown {
   if (!isObject(err) || !err.getOriginalError) return err
-  // TODO: update link below
-  // ErrorEnhanced https://gist.github.com/brillout/066293a687ab7cf695e62ad867bc6a9c
+  // getOriginalError() is set by getBetterError()
+  // https://github.com/vikejs/vike/blob/c0dc090e64ca9daa516ebf884fef66f5531cae69/packages/vike/utils/getBetterError.ts#L32
   return getOriginalErrorDeep((err as any).getOriginalError())
 }
 
