@@ -132,6 +132,7 @@ function logErrorServerDev(err: unknown, httpRequestId: number | null = null, er
     return
   }
 
+  {
   const hook = isUserHookError(err)
   if (hook) {
     const { hookName, hookFilePath } = hook
@@ -141,6 +142,7 @@ function logErrorServerDev(err: unknown, httpRequestId: number | null = null, er
     const errBetter = getBetterError(err, { message })
     logDirectlyErr(errBetter)
     return
+  }
   }
 
   {
