@@ -36,7 +36,10 @@ import {
   assert,
   assertIsNotProductionRuntime,
   formatHintLog,
+  hasGreen,
   hasProp,
+  hasRed,
+  hasYellow,
   isDebugError,
   isObject,
   PROJECT_VERSION,
@@ -318,16 +321,4 @@ function prependTags(msg: string, projectTag: '[vite]' | ProjectTag, category: L
   const whitespace = /\s|\[/.test(stripAnsi(msg)[0]!) ? '' : ' '
 
   return `${timestamp} ${tag}${whitespace}${msg}`
-}
-function hasRed(str: string): boolean {
-  // https://github.com/brillout/picocolors/blob/e291f2a3e3251a7f218ab6369ae94434d85d0eb0/picocolors.js#L57
-  return str.includes('\x1b[31m')
-}
-function hasGreen(str: string): boolean {
-  // https://github.com/brillout/picocolors/blob/e291f2a3e3251a7f218ab6369ae94434d85d0eb0/picocolors.js#L58
-  return str.includes('\x1b[32m')
-}
-function hasYellow(str: string): boolean {
-  // https://github.com/brillout/picocolors/blob/e291f2a3e3251a7f218ab6369ae94434d85d0eb0/picocolors.js#L59
-  return str.includes('\x1b[33m')
 }
