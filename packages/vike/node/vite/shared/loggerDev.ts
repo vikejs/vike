@@ -75,7 +75,8 @@ function logRuntimeInfoDev(msg: string, pageContext: PageContext_logRuntime, log
 function logViteMsg(msg: string, logType: LogType, httpRequestId: number | null, prependViteTag: boolean): void {
   if (prependViteTag) {
     const category = getCategory(httpRequestId)
-    logWithViteTag(msg, logType, category)
+    msg = prependTags(msg, '[vite]', category, logType)
+    logDirectly(msg, logType)
   } else {
     logDirectly(msg, logType)
   }
@@ -218,10 +219,6 @@ function getCategory(httpRequestId: number | null = null): LogCategory | null {
 
 function logWithVikeTag(msg: string, logType: LogType, category: LogCategory | null) {
   msg = prependTags(msg, '[vike]', category, logType)
-  logDirectly(msg, logType)
-}
-function logWithViteTag(msg: string, logType: LogType, category: LogCategory | null) {
-  msg = prependTags(msg, '[vite]', category, logType)
   logDirectly(msg, logType)
 }
 
