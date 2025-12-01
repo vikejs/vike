@@ -51,6 +51,7 @@ import {
   getConfigBuildErrorFormatted,
 } from './resolveVikeConfigInternal/transpileAndExecuteFile.js'
 import pc from '@brillout/picocolors'
+import { setAlreadyLogged } from '../../../server/runtime/renderPageServer/isNewError.js'
 import { isUserHookError } from '../../../shared-server-client/hooks/execHook.js'
 import { getViteDevServer } from '../../../server/runtime/globalContext.js'
 import { logErrorServer } from '../../../server/runtime/logErrorServer.js'
@@ -109,6 +110,7 @@ function logErr(err: unknown, httpRequestId: number | null = null, errorComesFro
   }
 
   // Dedupe
+  setAlreadyLogged(err)
   const store = getHttpRequestAsyncStore()
   if (getHttpRequestAsyncStore()?.shouldErrorBeSwallowed(err)) {
     if (!isDebugError()) return
