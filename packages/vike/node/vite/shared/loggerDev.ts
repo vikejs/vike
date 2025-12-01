@@ -202,9 +202,6 @@ function logDirectly(
 ) {
   if (!doNotPrependTags) msg = prependTags(msg, projectTag, category, logType)
 
-  // TODO: remove
-  applyViteSourceMapToStackTrace(msg)
-
   if (logType === 'info') {
     console.log(msg)
     return
@@ -215,12 +212,6 @@ function logDirectly(
   }
   if (logType === 'error-note') {
     console.error(msg)
-    return
-  }
-  // TODO: remove
-  if (logType === 'error-thrown') {
-    // console.error()
-    logErrorServer(msg, 'NULL_TEMP') // TODO pass pageContext
     return
   }
   if (logType === 'error-resolve') {
