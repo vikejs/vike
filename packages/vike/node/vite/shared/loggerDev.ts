@@ -292,7 +292,7 @@ function prependTags(msg: string, projectTag: '[vite]' | '[vike]', category: Log
   return `${timestamp} ${tag}${whitespace}${msg}`
 }
 
-function getErrMsgWithIntro(err: unknown, erroIntro: string) {
+function getErrMsgWithIntro(err: unknown, errorIntro: string) {
   const errMsg = !isObject(err) ? '' : String(err.message || '')
-  return erroIntro + '\n' + errMsg
+  return errorIntro + '\n' + errMsg
 }
