@@ -60,15 +60,15 @@ function logRuntimeInfoDev(msg: string, pageContext: PageContext_logRuntime, log
   assertPageContext_logRuntime(pageContext)
   const httpRequestId = pageContext === 'NULL_TEMP' ? null : pageContext._httpRequestId
   const category = getCategory(httpRequestId)
-  logDirectly(msg, logType, category, '[vike]')
+  logDev(msg, logType, category, '[vike]')
 }
 function logConfigInfo(msg: string, logType: LogType): void {
   const category = getCategory() ?? 'config'
-  logDirectly(msg, logType, category, '[vike]')
+  logDev(msg, logType, category, '[vike]')
 }
 function logVite(msg: string, logType: LogType, httpRequestId: number | null, prependViteTag: boolean): void {
   const category = getCategory(httpRequestId)
-  logDirectly(msg, logType, category, '[vite]', !prependViteTag)
+  logDev(msg, logType, category, '[vite]', !prependViteTag)
 }
 
 function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, errorComesFromVite = false): void {
@@ -171,7 +171,7 @@ function logErrorDebugNote() {
     if (store.errorDebugNoteAlreadyShown) return
     store.errorDebugNoteAlreadyShown = true
   }
-  logDirectly(errorDebugNote, 'error')
+  logDev(errorDebugNote, 'error')
   */
 }
 function appendErrorDebugNote(errMsg: string) {
@@ -193,7 +193,7 @@ function getCategory(httpRequestId: number | null = null): LogCategory | null {
   return category
 }
 
-function logDirectly(
+function logDev(
   msg: string,
   logType: LogType,
   category: LogCategory | null,
