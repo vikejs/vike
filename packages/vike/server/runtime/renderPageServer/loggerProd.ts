@@ -3,7 +3,6 @@
 
 export { loggRuntimeErrorProd }
 
-import { isAbortError } from '../../../shared-server-client/route/abort.js'
 import { setAlreadyLogged } from './isNewError.js'
 import { logErrorServer } from '../logErrorServer.js'
 import { assertPageContext_logRuntime, type PageContext_logRuntime } from '../loggerRuntime.js'
@@ -12,10 +11,6 @@ function loggRuntimeErrorProd(err: unknown, pageContext: PageContext_logRuntime)
   assertPageContext_logRuntime(pageContext)
 
   setAlreadyLogged(err)
-
-  if (isAbortError(err)) {
-    return
-  }
 
   logErrorServer(err, pageContext)
 }

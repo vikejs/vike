@@ -5,11 +5,14 @@ import { assertIsNotBrowser, assertWarning, hasRed, isDebugError, isObject } fro
 import { execHookOnError } from './renderPageServer/execHookOnError.js'
 import { assertPageContext_logRuntime, type PageContext_logRuntime } from './loggerRuntime.js'
 import { logErrorHint } from './renderPageServer/logErrorHint.js'
+import { isAbortError } from '../../shared-server-client/route/abort.js'
 assertIsNotBrowser()
 
 // TODO implement +onHook(err, pageContext)
 function logErrorServer(err: unknown, pageContext: PageContext_logRuntime) {
   assertPageContext_logRuntime(pageContext)
+
+  if (isAbortError(err)) return
 
   warnIfErrorIsNotObject(err)
 
