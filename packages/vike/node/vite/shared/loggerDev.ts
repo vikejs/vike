@@ -59,15 +59,15 @@ type TagTool = '[vike]' | '[vite]'
 function logRuntimeInfoDev(msg: string, pageContext: PageContext_logRuntime, logType: LogType) {
   assertPageContext_logRuntime(pageContext)
   const httpRequestId = pageContext === 'NULL_TEMP' ? null : pageContext._httpRequestId
-  const tagSource = getCategory(httpRequestId)
+  const tagSource = getTagSource(httpRequestId)
   logDev(msg, logType, tagSource, '[vike]')
 }
 function logConfigInfo(msg: string, logType: LogType): void {
-  const tagSource = getCategory() ?? 'config'
+  const tagSource = getTagSource() ?? 'config'
   logDev(msg, logType, tagSource, '[vike]')
 }
 function logVite(msg: string, logType: LogType, httpRequestId: number | null, prependViteTag: boolean): void {
-  const tagSource = getCategory(httpRequestId)
+  const tagSource = getTagSource(httpRequestId)
   logDev(msg, logType, tagSource, '[vite]', !prependViteTag)
 }
 
@@ -96,7 +96,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
   }
 
   const httpRequestId = pageContext === 'NULL_TEMP' ? null : pageContext._httpRequestId
-  const tagSource = getCategory(httpRequestId)
+  const tagSource = getTagSource(httpRequestId)
 
   if (isErrorWithCodeSnippet(err)) {
     // We handle transpile errors globally because wrapping viteDevServer.ssrLoadModule() wouldn't be enough: transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when loading user code with import() (since Vite lazy-transpiles import() calls)
@@ -208,7 +208,7 @@ function appendErrorDebugNote(errMsg: string) {
   return errMsg + '\n' + errorDebugNote
 }
 
-function getCategory(httpRequestId: number | null = null): TagSource | null {
+function getTagSource(httpRequestId: number | null = null): TagSource | null {
   const store = getHttpRequestAsyncStore()
   if (store?.httpRequestId !== undefined) {
     if (httpRequestId === null) {
