@@ -237,6 +237,7 @@ function prependTags(msg: string, projectTag: '[vite]' | '[vike]', category: Log
     if (logType === 'error' && !hasRed(msg)) return pc.bold(pc.red(s))
     if (logType === 'error-resolve' && !hasGreen(msg)) return pc.bold(pc.green(s))
     if (logType === 'warn' && !hasYellow(msg)) return pc.yellow(s)
+    assert(logType === 'info')
     if (projectTag === '[vite]') return pc.bold(pc.cyan(s))
     if (projectTag === '[vike]') return pc.bold(pc.cyan(s))
     assert(false)
