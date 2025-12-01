@@ -5,11 +5,11 @@ export { runPrerender_forceExit }
 
 import { assert } from './utils.js'
 import type { InlineConfig, ResolvedConfig } from 'vite'
-import { logErrorHint } from '../../server/runtime/renderPageServer/logErrorHint.js'
 import { prepareViteApiCall } from '../api/prepareViteApiCall.js'
 import { isVikeCli } from '../cli/context.js'
 import { isViteCli } from '../vite/shared/isViteCli.js'
 import { PrerenderOptions, runPrerender } from './runPrerender.js'
+import { logErrorServer } from '../../server/runtime/logErrorServer.js'
 
 async function runPrerenderFromAPI(options: PrerenderOptions = {}): Promise<{ viteConfig: ResolvedConfig }> {
   // - We purposely propagate the error to the user land, so that the error interrupts the user land. It's also, I guess, a nice-to-have that the user has control over the error.
@@ -22,9 +22,8 @@ async function runPrerenderFromCLIPrerenderCommand(): Promise<void> {
     const { viteConfigFromUserResolved } = await prepareViteApiCall({}, 'prerender')
     await runPrerender({ viteConfig: viteConfigFromUserResolved }, '$ vike prerender')
   } catch (err) {
-    console.error(err)
-    // Error may come from user-land; we need to use logErrorHint()
-    logErrorHint(err)
+    // Error may come from user-land
+    logErrorServer(err, 'NULL_TEMP')
     process.exit(1)
   }
   runPrerender_forceExit()
@@ -35,8 +34,7 @@ async function runPrerenderFromAutoRun(viteConfig: InlineConfig | undefined): Pr
     await runPrerender({ viteConfig }, 'auto-run')
   } catch (err) {
     // Avoid Rollup prefixing the error with [vike:build:pluginBuildApp], see for example https://github.com/vikejs/vike/issues/472#issuecomment-1276274203
-    console.error(err)
-    logErrorHint(err)
+    logErrorServer(err, 'NULL_TEMP')
     process.exit(1)
   }
   const forceExit = isVikeCli() || isViteCli()

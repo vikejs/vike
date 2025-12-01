@@ -18,7 +18,6 @@ function logErrorServer(err: unknown, pageContext: PageContext_logRuntime) {
   const errPrinted = getStackOrMessage(isDebugError() ? getOriginalErrorDeep(err) : err)
   console.error(hasRed(errPrinted) ? errPrinted : pc.red(errPrinted))
 
-  // The more runtime errors we pass to logErrorHint() the better.
   logErrorHint(err)
 }
 
