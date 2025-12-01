@@ -75,10 +75,6 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
 
   applyViteSourceMapToStackTrace(err)
 
-  const logErr = (err: unknown) => {
-    logErrorServer(err, pageContext)
-  }
-
   // Skip `throw render()` / `throw redirect()`
   if (isAbortError(err) && !isDebugError()) {
     return
@@ -97,6 +93,9 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
 
   const httpRequestId = pageContext === 'NULL_TEMP' ? null : pageContext._httpRequestId
   const tagSource = getTagSource(httpRequestId)
+  const logErr = (err: unknown) => {
+    logErrorServer(err, pageContext)
+  }
 
   if (isErrorWithCodeSnippet(err)) {
     // We handle transpile errors globally because wrapping viteDevServer.ssrLoadModule() wouldn't be enough: transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when loading user code with import() (since Vite lazy-transpiles import() calls)
