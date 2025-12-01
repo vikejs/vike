@@ -67,7 +67,7 @@ function logViteMsg(msg: string, logType: LogType, httpRequestId: number | null,
   logDirectly(msg, logType, category, '[vite]', !prependViteTag)
 }
 function logConfigInfo(msg: string, logType: LogType): void {
-  const category = getConfigCategory()
+  const category = getCategory() ?? 'config'
   logWithVikeTag(msg, logType, category)
 }
 
@@ -158,11 +158,6 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
   }
 
   logErr(err)
-}
-
-function getConfigCategory(): LogCategory {
-  const category = getCategory() ?? 'config'
-  return category
 }
 
 // Note shown to user when Vike modifies errors in a risky fashion.
