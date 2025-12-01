@@ -195,7 +195,9 @@ function getConfigCategory(): LogCategory {
  *  - When vike modifies the error with getPrettyErrorWithCodeSnippet(err)
  */
 const errorDebugNote = pc.dim(formatHintLog("Error isn't helpful? See https://vike.dev/debug#verbose-errors"))
+// TODO: remove
 function logErrorDebugNote() {
+  /*
   if (isDebugError()) return
   const store = getHttpRequestAsyncStore()
   if (store) {
@@ -203,6 +205,7 @@ function logErrorDebugNote() {
     store.errorDebugNoteAlreadyShown = true
   }
   logDirectly(errorDebugNote, 'error-note')
+  */
 }
 function appendErrorDebugNote(errMsg: string) {
   return errMsg + '\n' + errorDebugNote
