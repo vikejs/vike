@@ -216,7 +216,13 @@ function logWithVikeTag(msg: string, logType: LogType, category: LogCategory | n
   logDirectly(msg, logType, category, '[vite]')
 }
 
-function logDirectly(msg: string, logType: LogType, category: LogCategory | null, projectTag: '[vike]' | '[vite]', doNotPrependTags?: boolean) {
+function logDirectly(
+  msg: string,
+  logType: LogType,
+  category: LogCategory | null,
+  projectTag: '[vike]' | '[vite]',
+  doNotPrependTags?: boolean,
+) {
   if (!doNotPrependTags) msg = prependTags(msg, '[vike]', category, logType)
 
   // TODO: remove
