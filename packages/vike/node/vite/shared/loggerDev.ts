@@ -214,7 +214,7 @@ function logErrorDebugNote() {
   logDirectly(errorDebugNote, 'error-note')
 }
 function appendErrorDebugNote(errMsg: string) {
-  return errMsg + '\n\n' + errorDebugNote
+  return errMsg + '\n' + errorDebugNote
 }
 
 function getCategory(httpRequestId: number | null = null): LogCategory | null {
