@@ -13,13 +13,13 @@ function getBetterError(err: unknown, modifications: { message?: string; stack?:
     errBetter = new Error(String(err)) as Required<Error>
   } else {
     errBetter = structuredClone(err) as any
-    errBetter.message ??= ''
-    if (!err.stack) {
-      warnMalformed(err)
-      errBetter.stack = new Error(errBetter.message).stack!
-    }
-    if (!errBetter.stack.includes(errBetter.message)) warnMalformed(err)
   }
+  errBetter.message ??= ''
+  if (!errBetter.stack) {
+    warnMalformed(err)
+    errBetter.stack = new Error(errBetter.message).stack!
+  }
+  if (!errBetter.stack.includes(errBetter.message)) warnMalformed(err)
 
   // Modifications
   const errMessageOriginal = errBetter.message
