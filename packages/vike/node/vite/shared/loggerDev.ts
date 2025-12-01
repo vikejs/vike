@@ -132,7 +132,7 @@ function logErrorServerDev(err: unknown, httpRequestId: number | null = null, er
     message = prependTags(message, '[vite]', category, 'error-thrown')
     message = appendErrorDebugNote(message)
     const errBetter = getBetterError(err, { message, hideStack: true })
-    logDirectlyErr(errBetter)
+    logErr(errBetter)
     return
   }
 
@@ -144,7 +144,7 @@ function logErrorServerDev(err: unknown, httpRequestId: number | null = null, er
       let message = getErrMsgWithIntro(err, errIntro)
       message = prependTags(message, '[vike]', category, 'error-note')
       const errBetter = getBetterError(err, { message })
-      logDirectlyErr(errBetter)
+      logErr(errBetter)
       return
     }
   }
@@ -156,7 +156,7 @@ function logErrorServerDev(err: unknown, httpRequestId: number | null = null, er
       let message = getErrMsgWithIntro(err, errIntro)
       message = prependTags(message, '[vike]', category, 'error-note')
       const errBetter = getBetterError(err, { message })
-      logDirectlyErr(errBetter)
+      logErr(errBetter)
       return
     }
   }
@@ -168,7 +168,7 @@ function logErrorServerDev(err: unknown, httpRequestId: number | null = null, er
       let message = errMsgFormatted
       message = prependTags(message, '[vike]', category, 'error-thrown')
       const errBetter = getBetterError(err, { message, hideStack: true })
-      logDirectlyErr(errBetter)
+      logErr(errBetter)
       return
     }
   }
@@ -178,11 +178,11 @@ function logErrorServerDev(err: unknown, httpRequestId: number | null = null, er
     let message = getErrMsgWithIntro(err, errIntro)
     message = prependTags(message, '[vike]', category, 'error-note')
     const errBetter = getBetterError(err, { message })
-    logDirectlyErr(errBetter)
+    logErr(errBetter)
     return
   }
 
-  logDirectlyErr(err)
+  logErr(err)
 }
 
 function getConfigCategory(): LogCategory {
@@ -265,7 +265,7 @@ function logDirectly(thing: unknown, logType: LogType) {
 
   assert(false)
 }
-function logDirectlyErr(err: unknown) {
+function logErr(err: unknown) {
   logErrorServer(err, 'NULL_TEMP') // TODO pass pageContext
 }
 
