@@ -52,7 +52,7 @@ addOnBeforeAssertErr((err) => {
   applyViteSourceMapToStackTrace(err)
 })
 
-type LogType = 'info' | 'warn' | 'error-resolve' | 'error-note'
+type LogType = 'info' | 'warn' | 'error-resolve' | 'error'
 // TODO: rename
 type LogCategory = 'config' | `request(${number})`
 
@@ -104,7 +104,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
     assert(viteConfig)
     let message = getPrettyErrorWithCodeSnippet(err, viteConfig.root)
     assert(stripAnsi(message).startsWith('Failed to transpile'))
-    message = prependTags(message, '[vite]', category, 'error-thrown')
+    message = prependTags(message, '[vite]', category, 'error')
     message = appendErrorDebugNote(message)
     const errBetter = getBetterError(err, { message, hideStack: true })
     logErr(errBetter)
@@ -116,7 +116,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
     if (errMsgFormatted) {
       assert(stripAnsi(errMsgFormatted).startsWith('Failed to transpile'))
       let message = errMsgFormatted
-      message = prependTags(message, '[vike]', category, 'error-thrown')
+      message = prependTags(message, '[vike]', category, 'error')
       const errBetter = getBetterError(err, { message, hideStack: true })
       logErr(errBetter)
       return
@@ -210,7 +210,7 @@ function logDirectly(
     console.warn(msg)
     return
   }
-  if (logType === 'error-note') {
+  if (logType === 'error') {
     console.error(msg)
     return
   }
@@ -232,9 +232,9 @@ function applyViteSourceMapToStackTrace(thing: unknown) {
   viteDevServer.ssrFixStacktrace(thing as Error)
 }
 
-function prependTags(msg: string, projectTag: '[vite]' | '[vike]', category: LogCategory | null, logType: 'info' | 'warn' | 'error-thrown' | 'error-resolve' | 'error-note') {
+function prependTags(msg: string, projectTag: '[vite]' | '[vike]', category: LogCategory | null, logType: 'info' | 'warn' | 'error' | 'error-resolve' | 'error-note') {
   const color = (s: string) => {
-    if (logType === 'error-thrown' && !hasRed(msg)) return pc.bold(pc.red(s))
+    if (logType === 'error' && !hasRed(msg)) return pc.bold(pc.red(s))
     if (logType === 'error-resolve' && !hasGreen(msg)) return pc.bold(pc.green(s))
     if (logType === 'warn' && !hasYellow(msg)) return pc.yellow(s)
     if (projectTag === '[vite]') return pc.bold(pc.cyan(s))

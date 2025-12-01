@@ -45,8 +45,7 @@ function intercept(loggerType: LoggerType, config: ResolvedConfig) {
     // Vite's default logger preprends the "[vite]" tag if and only if options.timestamp is true
     const prependViteTag = options.timestamp || !!store?.httpRequestId
     // If it's an actual error => options.error is set => it's handled with logErrorServerDev() above
-    const logType = loggerType === 'error' ? 'error-note' : loggerType
-    logVite(msg, logType, store?.httpRequestId ?? null, prependViteTag)
+    logVite(msg, loggerType, store?.httpRequestId ?? null, prependViteTag)
   }
 }
 
