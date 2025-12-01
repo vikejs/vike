@@ -133,7 +133,6 @@ function logErr(err: unknown, httpRequestId: number | null = null, errorComesFro
     }
   }
 
-  // Needs to be after assertion messages handling, because user hooks may throw an assertion error
   const hook = isUserHookError(err)
   if (hook) {
     const { hookName, hookFilePath } = hook
