@@ -16,7 +16,7 @@ const globalObject = getGlobalObject('server/runtime/logErrorServer.ts', {
 function logErrorServer(err: unknown, pageContext: PageContext_logRuntime) {
   assertPageContext_logRuntime(pageContext)
 
-  if (isAbortError(err)) return
+  if (isAbortError(err) && !isDebugError()) return
 
   // I don't think there is a use case for printing the same error object twice? Reloading page throwing error => the same error is printed a second time but it's a different error object.
   if (hasAlreadyLogged(err)) return
