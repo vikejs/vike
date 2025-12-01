@@ -62,13 +62,13 @@ function logRuntimeInfoDev(msg: string, pageContext: PageContext_logRuntime, log
   const category = getCategory(httpRequestId)
   logDirectly(msg, logType, category, '[vike]')
 }
-function logVite(msg: string, logType: LogType, httpRequestId: number | null, prependViteTag: boolean): void {
-  const category = getCategory(httpRequestId)
-  logDirectly(msg, logType, category, '[vite]', !prependViteTag)
-}
 function logConfigInfo(msg: string, logType: LogType): void {
   const category = getCategory() ?? 'config'
   logDirectly(msg, logType, category, '[vike]')
+}
+function logVite(msg: string, logType: LogType, httpRequestId: number | null, prependViteTag: boolean): void {
+  const category = getCategory(httpRequestId)
+  logDirectly(msg, logType, category, '[vite]', !prependViteTag)
 }
 
 function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, errorComesFromVite = false): void {
