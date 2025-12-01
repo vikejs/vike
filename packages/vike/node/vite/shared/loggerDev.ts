@@ -152,7 +152,7 @@ function logErr(err: unknown, httpRequestId: number | null = null, errorComesFro
     logFallbackErrIntro(category, errorComesFromVite)
   }
 
-  logDirectly(err, 'error-thrown')
+  logDirectlyErr(err)
 
   // Needs to be called after logging the error.
   onRuntimeError(err)
