@@ -1,5 +1,5 @@
 import { assert } from './assert.js'
-import { stripAnsi } from './stripAnsi.js'
+import { stripAnsi } from './colors.js'
 
 export { formatHintLog }
 
