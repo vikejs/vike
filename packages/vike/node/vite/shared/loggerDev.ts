@@ -241,7 +241,7 @@ function applyViteSourceMapToStackTrace(thing: unknown) {
   viteDevServer.ssrFixStacktrace(thing as Error)
 }
 
-function prependTags(msg: string, projectTag: '[vite]' | '[vike]', category: LogCategory | null, logType: LogType) {
+function prependTags(msg: string, projectTag: '[vite]' | '[vike]', category: LogCategory | null, logType: 'info' | 'warn' | 'error-thrown' | 'error-resolve' | 'error-note') {
   const color = (s: string) => {
     if (logType === 'error-thrown' && !hasRed(msg)) return pc.bold(pc.red(s))
     if (logType === 'error-resolve' && !hasGreen(msg)) return pc.bold(pc.green(s))
