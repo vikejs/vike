@@ -197,7 +197,7 @@ function addFileExtensionsToRequireResolve(require_: NodeJS.Require) {
 
 function getPackageNodeModulesDirectory() {
   // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/${packageName}/dist/utils/requireResolve.js
-  assert(importMetaUrl.includes('/dist/utils/') || importMetaUrl.includes('/dist/cjs/utils/'))
+  assert(importMetaUrl.includes('/dist/utils/'))
   const packageNodeModulesDirectory = path.posix.join(removeFilePrefix(path.dirname(importMetaUrl)), '../../')
   // Return `node_modules/${packageName}/`
   return packageNodeModulesDirectory
