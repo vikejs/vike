@@ -19,7 +19,9 @@ function getBetterError(err: unknown, modifications: { message?: string; stack?:
     warnMalformed(err)
     errBetter.stack = new Error(errBetter.message).stack!
   }
-  if (!errBetter.stack.includes(errBetter.message)) warnMalformed(err)
+  if (!errBetter.stack.includes(errBetter.message)) {
+    warnMalformed(err)
+  }
 
   // Modifications
   const errMessageOriginal = errBetter.message
