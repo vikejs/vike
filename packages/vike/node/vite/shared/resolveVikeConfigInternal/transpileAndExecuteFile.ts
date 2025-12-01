@@ -424,7 +424,7 @@ async function formatBuildErr(err: unknown, filePath: FilePathResolved): Promise
 }
 
 const execErrIntroMsg = new WeakMap<object, ReturnType<typeof getErrIntroMsg>>()
-function getConfigExecutionErrorIntroMsg(err: unknown): string | null {
+function getConfigExecutionErrorIntroMsg(err: unknown) {
   if (!isObject(err)) return null
   const errIntroMsg = execErrIntroMsg.get(err)
   return errIntroMsg ?? null

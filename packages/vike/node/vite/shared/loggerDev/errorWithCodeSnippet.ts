@@ -35,7 +35,7 @@ function isErrorWithCodeSnippet(err: unknown): err is ErrorWithCodeSnippet {
   return false
 }
 
-function getPrettyErrorWithCodeSnippet(err: ErrorWithCodeSnippet, userRootDir: string): string {
+function getPrettyErrorWithCodeSnippet(err: ErrorWithCodeSnippet, userRootDir: string) {
   /* Uncomment to inspect and/or create fixture for ./errorWithCodeSnippet.spec.ts
   console.log('userRootDir', userRootDir)
   console.log('err.message', err.message)
