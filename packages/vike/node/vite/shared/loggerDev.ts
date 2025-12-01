@@ -42,7 +42,6 @@ import {
   hasYellow,
   isDebugError,
   isObject,
-  PROJECT_VERSION,
   stripAnsi,
   warnIfErrorIsNotObject,
 } from '../utils.js'
@@ -70,8 +69,6 @@ addOnBeforeAssertErr((err) => {
 type LogType = 'info' | 'warn' | 'error-thrown' | 'error-recover' | 'error-note'
 // TODO: rename
 type LogCategory = 'config' | `request(${number})`
-// TODO: rename?
-type ProjectTag = `[vike]` | `[vike@${typeof PROJECT_VERSION}]`
 
 function logRuntimeInfoDev(msg: string, pageContext: PageContext_logRuntime, logType: LogType) {
   assertPageContext_logRuntime(pageContext)
@@ -236,19 +233,9 @@ function getCategory(httpRequestId: number | null = null): LogCategory | null {
   return category
 }
 
-function logWithVikeTag(msg: string, logType: LogType, category: LogCategory | null, showVikeVersion = false) {
-  const projectTag = getProjectTag(showVikeVersion)
-  msg = prependTags(msg, projectTag, category, logType)
+function logWithVikeTag(msg: string, logType: LogType, category: LogCategory | null, showVikeVersion: false = false) {
+  msg = prependTags(msg, '[vike]', category, logType)
   logDirectly(msg, logType)
-}
-function getProjectTag(showVikeVersion: boolean) {
-  let projectTag: ProjectTag
-  if (showVikeVersion) {
-    projectTag = `[vike@${PROJECT_VERSION}]`
-  } else {
-    projectTag = `[vike]`
-  }
-  return projectTag
 }
 function logWithViteTag(msg: string, logType: LogType, category: LogCategory | null) {
   msg = prependTags(msg, '[vite]', category, logType)
@@ -302,7 +289,7 @@ function applyViteSourceMapToStackTrace(thing: unknown) {
   viteDevServer.ssrFixStacktrace(thing as Error)
 }
 
-function prependTags(msg: string, projectTag: '[vite]' | ProjectTag, category: LogCategory | null, logType: LogType) {
+function prependTags(msg: string, projectTag: '[vite]' | '[vike]', category: LogCategory | null, logType: LogType) {
   const color = (s: string) => {
     if (logType === 'error-thrown' && !hasRed(msg)) return pc.bold(pc.red(s))
     if (logType === 'error-recover' && !hasGreen(msg)) return pc.bold(pc.green(s))
