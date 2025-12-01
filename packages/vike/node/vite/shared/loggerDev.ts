@@ -167,7 +167,9 @@ function logDev(
   tagTool: TagTool,
   doNotPrependTags?: boolean,
 ) {
-  if (!doNotPrependTags) msg = prependTags(msg, tagTool, tagSource, logType)
+  if (!doNotPrependTags) {
+    msg = prependTags(msg, tagTool, tagSource, logType)
+  }
 
   if (logType === 'info') {
     console.log(msg)
