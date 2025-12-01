@@ -65,6 +65,7 @@ addOnBeforeAssertErr((err) => {
 })
 
 type LogType = 'info' | 'warn' | 'error-thrown' | 'error-recover' | 'error-note'
+// TODO: rename
 type LogCategory = 'config' | `request(${number})`
 // TODO: rename?
 type ProjectTag = `[vike]` | `[vike@${typeof PROJECT_VERSION}]`
