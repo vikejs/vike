@@ -19,8 +19,8 @@
 export { logViteMsg }
 export { logViteError }
 export { logConfigInfo }
-export { logConfigError }
-export { logConfigErrorRecover }
+export { logVikeConfigError }
+export { logVikeConfigErrorRecover }
 export { logErrorDebugNote }
 export type { LogType }
 
@@ -88,7 +88,7 @@ function logConfigInfo(msg: string, logType: LogType): void {
   const category = getConfigCategory()
   logWithVikeTag(msg, logType, category)
 }
-function logConfigErrorRecover(): void {
+function logVikeConfigErrorRecover(): void {
   const category = getConfigCategory()
   logWithVikeTag(vikeConfigErrorRecoverMsg, 'error-recover', category)
 }
@@ -158,7 +158,7 @@ function logErr(err: unknown, httpRequestId: number | null = null, errorComesFro
   onRuntimeError(err)
 }
 
-function logConfigError(err: unknown): void {
+function logVikeConfigError(err: unknown): void {
   warnIfErrorIsNotObject(err)
 
   const category = getConfigCategory()

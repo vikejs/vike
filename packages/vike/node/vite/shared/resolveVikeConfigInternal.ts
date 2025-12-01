@@ -71,7 +71,7 @@ import {
 } from './resolveVikeConfigInternal/filesystemRouting.js'
 import type { EsbuildCache } from './resolveVikeConfigInternal/transpileAndExecuteFile.js'
 import { getViteDevServer } from '../../../server/runtime/globalContext.js'
-import { logConfigError, logConfigErrorRecover } from './loggerDev.js'
+import { logVikeConfigError, logVikeConfigErrorRecover } from './loggerDev.js'
 import {
   removeSuperfluousViteLog_enable,
   removeSuperfluousViteLog_disable,
@@ -263,7 +263,7 @@ async function resolveVikeConfigInternal_withErrorHandling(
     globalObject.vikeConfigHasBuildError = false
     setVikeConfigError({ errorBuild: false })
     if (hadError) {
-      logConfigErrorRecover()
+      logVikeConfigErrorRecover()
       if (globalObject.restartVite) {
         globalObject.restartVite = false
         restartViteDevServer()
@@ -282,7 +282,7 @@ async function resolveVikeConfigInternal_withErrorHandling(
     if (!isDev) {
       reject(err)
     } else {
-      logConfigError(err)
+      logVikeConfigError(err)
       resolve(getVikeConfigDummy(esbuildCache))
     }
   }
