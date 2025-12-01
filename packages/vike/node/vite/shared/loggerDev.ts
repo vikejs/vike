@@ -92,21 +92,16 @@ function logVikeConfigErrorRecover(): void {
 
 function logRuntimeErrorDev(err: unknown, pageContext: PageContext_logRuntime): void {
   assertPageContext_logRuntime(pageContext)
-  const httpRequestId = pageContext === 'NULL_TEMP' ? null : pageContext._httpRequestId
-  logErrorServerDev(err, httpRequestId)
+  logErrorServerDev(err, pageContext)
 }
-function logViteError(
-  err: unknown,
-  // httpRequestId is `undefined` if development environment doesn't support async stores
-  httpRequestId: number | undefined,
-): void {
-  logErrorServerDev(err, httpRequestId, true)
+function logViteError(err: unknown): void {
+  logErrorServerDev(err, 'NULL_TEMP', true)
 }
-function logErrorServerDev(err: unknown, httpRequestId: number | null = null, errorComesFromVite = false): void {
+function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, errorComesFromVite = false): void {
   applyViteSourceMapToStackTrace(err)
 
   const logErr = (err: unknown) => {
-    logErrorServer(err, 'NULL_TEMP') // TODO pass pageContext
+    logErrorServer(err, pageContext)
   }
 
   // Skip `throw render()` / `throw redirect()`
@@ -125,6 +120,7 @@ function logErrorServerDev(err: unknown, httpRequestId: number | null = null, er
     }
   }
 
+  const httpRequestId = pageContext === 'NULL_TEMP' ? null : pageContext._httpRequestId
   const category = getCategory(httpRequestId)
 
   if (isErrorWithCodeSnippet(err)) {
