@@ -133,13 +133,12 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
   }
 
   {
-    const hook = isUserHookError(err)
-    if (hook) {
-      const { hookName, hookFilePath } = hook
-      const errIntro = pc.red(`Following error was thrown by the ${hookName}() hook defined at ${hookFilePath}`)
-      let message = getErrMsgWithIntro(err, errIntro)
-      message = prependTags(message, '[vike]', category, 'error-note')
-      const errBetter = getBetterError(err, { message })
+    const errMsgFormatted = getConfigBuildErrorFormatted(err)
+    if (errMsgFormatted) {
+      assert(stripAnsi(errMsgFormatted).startsWith('Failed to transpile'))
+      let message = errMsgFormatted
+      message = prependTags(message, '[vike]', category, 'error-thrown')
+      const errBetter = getBetterError(err, { message, hideStack: true })
       logErr(errBetter)
       return
     }
@@ -158,12 +157,13 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
   }
 
   {
-    const errMsgFormatted = getConfigBuildErrorFormatted(err)
-    if (errMsgFormatted) {
-      assert(stripAnsi(errMsgFormatted).startsWith('Failed to transpile'))
-      let message = errMsgFormatted
-      message = prependTags(message, '[vike]', category, 'error-thrown')
-      const errBetter = getBetterError(err, { message, hideStack: true })
+    const hook = isUserHookError(err)
+    if (hook) {
+      const { hookName, hookFilePath } = hook
+      const errIntro = pc.red(`Following error was thrown by the ${hookName}() hook defined at ${hookFilePath}`)
+      let message = getErrMsgWithIntro(err, errIntro)
+      message = prependTags(message, '[vike]', category, 'error-note')
+      const errBetter = getBetterError(err, { message })
       logErr(errBetter)
       return
     }
