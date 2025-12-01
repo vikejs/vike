@@ -53,7 +53,7 @@ addOnBeforeAssertErr((err) => {
 })
 
 type LogType = 'info' | 'warn' | 'error' | 'error-resolve'
-type LogCategory = 'config' | `request(${number})`
+type TagSource = 'config' | `request(${number})`
 type TagTool = '[vike]' | '[vite]'
 
 function logRuntimeInfoDev(msg: string, pageContext: PageContext_logRuntime, logType: LogType) {
@@ -163,7 +163,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
 function logDev(
   msg: string,
   logType: LogType,
-  category: LogCategory | null,
+  category: TagSource | null,
   tagTool: TagTool,
   doNotPrependTags?: boolean,
 ) {
@@ -208,7 +208,7 @@ function appendErrorDebugNote(errMsg: string) {
   return errMsg + '\n' + errorDebugNote
 }
 
-function getCategory(httpRequestId: number | null = null): LogCategory | null {
+function getCategory(httpRequestId: number | null = null): TagSource | null {
   const store = getHttpRequestAsyncStore()
   if (store?.httpRequestId !== undefined) {
     if (httpRequestId === null) {
@@ -232,7 +232,7 @@ function applyViteSourceMapToStackTrace(thing: unknown) {
   viteDevServer.ssrFixStacktrace(thing as Error)
 }
 
-function prependTags(msg: string, tagTool: TagTool, category: LogCategory | null, logType: LogType) {
+function prependTags(msg: string, tagTool: TagTool, category: TagSource | null, logType: LogType) {
   const color = (s: string) => {
     if (logType === 'error' && !hasRed(msg)) return pc.bold(pc.red(s))
     if (logType === 'error-resolve' && !hasGreen(msg)) return pc.bold(pc.green(s))
