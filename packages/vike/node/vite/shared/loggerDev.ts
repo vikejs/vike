@@ -133,16 +133,16 @@ function logErrorServerDev(err: unknown, httpRequestId: number | null = null, er
   }
 
   {
-  const hook = isUserHookError(err)
-  if (hook) {
-    const { hookName, hookFilePath } = hook
-    const errIntro = pc.red(`Following error was thrown by the ${hookName}() hook defined at ${hookFilePath}`)
-    let message = addErrIntro(err, errIntro)
-    message = prependTags(message, '[vike]', category, 'error-note')
-    const errBetter = getBetterError(err, { message })
-    logDirectlyErr(errBetter)
-    return
-  }
+    const hook = isUserHookError(err)
+    if (hook) {
+      const { hookName, hookFilePath } = hook
+      const errIntro = pc.red(`Following error was thrown by the ${hookName}() hook defined at ${hookFilePath}`)
+      let message = addErrIntro(err, errIntro)
+      message = prependTags(message, '[vike]', category, 'error-note')
+      const errBetter = getBetterError(err, { message })
+      logDirectlyErr(errBetter)
+      return
+    }
   }
 
   {
