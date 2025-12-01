@@ -1,4 +1,4 @@
-// TOOD: use it once and with getBetterError()
+// TODO: use it once and with getBetterError()
 export { logErrorHint }
 // For ./logErrorHint/getErrorHint.spec.ts
 export { getErrorHint }
