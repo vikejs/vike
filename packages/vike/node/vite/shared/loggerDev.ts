@@ -59,16 +59,16 @@ type TagTool = '[vike]' | '[vite]'
 function logRuntimeInfoDev(msg: string, pageContext: PageContext_logRuntime, logType: LogType) {
   assertPageContext_logRuntime(pageContext)
   const httpRequestId = pageContext === 'NULL_TEMP' ? null : pageContext._httpRequestId
-  const category = getCategory(httpRequestId)
-  logDev(msg, logType, category, '[vike]')
+  const tagSource = getCategory(httpRequestId)
+  logDev(msg, logType, tagSource, '[vike]')
 }
 function logConfigInfo(msg: string, logType: LogType): void {
-  const category = getCategory() ?? 'config'
-  logDev(msg, logType, category, '[vike]')
+  const tagSource = getCategory() ?? 'config'
+  logDev(msg, logType, tagSource, '[vike]')
 }
 function logVite(msg: string, logType: LogType, httpRequestId: number | null, prependViteTag: boolean): void {
-  const category = getCategory(httpRequestId)
-  logDev(msg, logType, category, '[vite]', !prependViteTag)
+  const tagSource = getCategory(httpRequestId)
+  logDev(msg, logType, tagSource, '[vite]', !prependViteTag)
 }
 
 function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, errorComesFromVite = false): void {
@@ -96,7 +96,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
   }
 
   const httpRequestId = pageContext === 'NULL_TEMP' ? null : pageContext._httpRequestId
-  const category = getCategory(httpRequestId)
+  const tagSource = getCategory(httpRequestId)
 
   if (isErrorWithCodeSnippet(err)) {
     // We handle transpile errors globally because wrapping viteDevServer.ssrLoadModule() wouldn't be enough: transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when loading user code with import() (since Vite lazy-transpiles import() calls)
@@ -104,7 +104,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
     assert(viteConfig)
     let message = getPrettyErrorWithCodeSnippet(err, viteConfig.root)
     assert(stripAnsi(message).startsWith('Failed to transpile'))
-    message = prependTags(message, '[vite]', category, 'error')
+    message = prependTags(message, '[vite]', tagSource, 'error')
     message = appendErrorDebugNote(message)
     const errBetter = getBetterError(err, { message, hideStack: true })
     logErr(errBetter)
@@ -116,7 +116,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
     if (errMsgFormatted) {
       assert(stripAnsi(errMsgFormatted).startsWith('Failed to transpile'))
       let message = errMsgFormatted
-      message = prependTags(message, '[vike]', category, 'error')
+      message = prependTags(message, '[vike]', tagSource, 'error')
       const errBetter = getBetterError(err, { message, hideStack: true })
       logErr(errBetter)
       return
@@ -128,7 +128,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
     if (errIntro) {
       assert(stripAnsi(errIntro).startsWith('Failed to execute'))
       let message = getErrMsgWithIntro(err, errIntro)
-      message = prependTags(message, '[vike]', category, 'error')
+      message = prependTags(message, '[vike]', tagSource, 'error')
       const errBetter = getBetterError(err, { message })
       logErr(errBetter)
       return
@@ -141,17 +141,17 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
       const { hookName, hookFilePath } = hook
       const errIntro = pc.red(`Following error was thrown by the ${hookName}() hook defined at ${hookFilePath}`)
       let message = getErrMsgWithIntro(err, errIntro)
-      message = prependTags(message, '[vike]', category, 'error')
+      message = prependTags(message, '[vike]', tagSource, 'error')
       const errBetter = getBetterError(err, { message })
       logErr(errBetter)
       return
     }
   }
 
-  if (category) {
+  if (tagSource) {
     const errIntro = pc.bold(pc.red(`[Error] ${errorComesFromVite ? 'Transpilation error' : 'An error was thrown'}:`))
     let message = getErrMsgWithIntro(err, errIntro)
-    message = prependTags(message, '[vike]', category, 'error')
+    message = prependTags(message, '[vike]', tagSource, 'error')
     const errBetter = getBetterError(err, { message })
     logErr(errBetter)
     return
@@ -163,11 +163,11 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
 function logDev(
   msg: string,
   logType: LogType,
-  category: TagSource | null,
+  tagSource: TagSource | null,
   tagTool: TagTool,
   doNotPrependTags?: boolean,
 ) {
-  if (!doNotPrependTags) msg = prependTags(msg, tagTool, category, logType)
+  if (!doNotPrependTags) msg = prependTags(msg, tagTool, tagSource, logType)
 
   if (logType === 'info') {
     console.log(msg)
@@ -218,9 +218,9 @@ function getCategory(httpRequestId: number | null = null): TagSource | null {
     }
   }
   if (httpRequestId === null) return null
-  // const category = httpRequestId % 2 === 1 ? (`request-${httpRequestId}` as const) : (`request(${httpRequestId})` as const)
-  const category = `request(${httpRequestId})` as const
-  return category
+  // const tagSource = httpRequestId % 2 === 1 ? (`request-${httpRequestId}` as const) : (`request(${httpRequestId})` as const)
+  const tagSource = `request(${httpRequestId})` as const
+  return tagSource
 }
 
 function applyViteSourceMapToStackTrace(thing: unknown) {
@@ -232,7 +232,7 @@ function applyViteSourceMapToStackTrace(thing: unknown) {
   viteDevServer.ssrFixStacktrace(thing as Error)
 }
 
-function prependTags(msg: string, tagTool: TagTool, category: TagSource | null, logType: LogType) {
+function prependTags(msg: string, tagTool: TagTool, tagSource: TagSource | null, logType: LogType) {
   const color = (s: string) => {
     if (logType === 'error' && !hasRed(msg)) return pc.bold(pc.red(s))
     if (logType === 'error-resolve' && !hasGreen(msg)) return pc.bold(pc.green(s))
@@ -243,8 +243,8 @@ function prependTags(msg: string, tagTool: TagTool, category: TagSource | null, 
     assert(false)
   }
   let tag = color(`${tagTool}`)
-  if (category) {
-    tag = tag + pc.dim(`[${category}]`)
+  if (tagSource) {
+    tag = tag + pc.dim(`[${tagSource}]`)
   }
 
   const timestamp = pc.dim(new Date().toLocaleTimeString())
