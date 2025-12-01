@@ -132,7 +132,7 @@ function logErr(err: unknown, httpRequestId: number | null = null, errorComesFro
       let message = getPrettyErrorWithCodeSnippet(err, viteConfig.root)
       assert(stripAnsi(message).startsWith('Failed to transpile'))
       message = improveErrorMessage(message, '[vite]', category)
-      const errBetter = getBetterError(err, { message, stackIsOptional: true })
+      const errBetter = getBetterError(err, { message, hideStack: true })
       logDirectlyErr(errBetter)
       return
     }
@@ -179,7 +179,7 @@ function logConfigError(err: unknown): void {
       assert(stripAnsi(errMsgFormatted).startsWith('Failed to transpile'))
       let message = errMsgFormatted
       message = improveErrorMessage(message, '[vike]', category)
-      const errBetter = getBetterError(err, { message, stackIsOptional: true })
+      const errBetter = getBetterError(err, { message, hideStack: true })
       logDirectlyErr(errBetter)
       return
     }

@@ -4,7 +4,7 @@ export { getBetterError }
 
 import { isObject } from './isObject.js'
 
-function getBetterError(err: unknown, modifications: { message?: string; stack?: string; stackIsOptional?: true }) {
+function getBetterError(err: unknown, modifications: { message?: string; stack?: string; hideStack?: true }) {
   let errBetter: { message: string; stack: string }
 
   // Normalize & copy

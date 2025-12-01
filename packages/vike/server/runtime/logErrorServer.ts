@@ -26,7 +26,7 @@ function getOriginalErrorDeep(err: any): unknown {
 // - TO-DO/eventually: is that still true? Let's eventually remove it and see if it crashes Cloudflare.
 function getStackOrMessage(err: any): string {
   if (!isObject(err) || !err.stack) return String(err)
-  if (err.stackIsOptional) return err.message as string
+  if (err.hideStack) return err.message as string
   return err.stack as string
 }
 
