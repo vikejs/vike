@@ -19,7 +19,7 @@
 export { logViteMsg }
 export { logViteError }
 export { logConfigInfo }
-export { logVikeConfigError }
+export { logErrorServerDev }
 export { logVikeConfigErrorRecover }
 export { logErrorDebugNote }
 export type { LogType }
@@ -143,16 +143,6 @@ function logErrorServerDev(err: unknown, httpRequestId: number | null = null, er
     return
   }
 
-  if (category) {
-    logFallbackErrIntro(category, errorComesFromVite)
-  }
-
-  logDirectlyErr(err)
-}
-
-function logVikeConfigError(err: unknown): void {
-  const category = getConfigCategory()
-
   {
     const errIntro = getConfigExecutionErrorIntroMsg(err)
     if (errIntro) {
@@ -164,6 +154,7 @@ function logVikeConfigError(err: unknown): void {
       return
     }
   }
+
   {
     const errMsgFormatted = getConfigBuildErrorFormatted(err)
     if (errMsgFormatted) {
@@ -176,7 +167,10 @@ function logVikeConfigError(err: unknown): void {
     }
   }
 
-  if (category) logFallbackErrIntro(category, false)
+  if (category) {
+    logFallbackErrIntro(category, errorComesFromVite)
+  }
+
   logDirectlyErr(err)
 }
 
