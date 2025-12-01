@@ -277,7 +277,7 @@ function logDirectly(thing: unknown, logType: LogType) {
 }
 function logDirectlyErr(err: unknown) {
   applyViteSourceMapToStackTrace(err)
-  logErrorServer(err, 'NULL_TEMP') // TODO
+  logErrorServer(err, 'NULL_TEMP') // TODO pass pageContext
 }
 
 function applyViteSourceMapToStackTrace(thing: unknown) {
