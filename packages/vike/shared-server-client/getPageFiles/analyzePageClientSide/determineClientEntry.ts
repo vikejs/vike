@@ -46,6 +46,6 @@ function determineClientEntry({
 
 function getVikeClientEntry(isClientRouting: boolean) {
   return isClientRouting
-    ? '@@vike/dist/esm/client/runtime-client-routing/entry.js'
-    : '@@vike/dist/esm/client/runtime-server-routing/entry.js'
+    ? '@@vike/dist/client/runtime-client-routing/entry.js'
+    : '@@vike/dist/client/runtime-server-routing/entry.js'
 }

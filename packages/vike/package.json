@@ -4,113 +4,113 @@
   "repository": "https://github.com/vikejs/vike",
   "exports": {
     "./server": {
-      "worker": "./dist/esm/server/runtime/index.js",
-      "workerd": "./dist/esm/server/runtime/index.js",
-      "node": "./dist/esm/server/runtime/index.js",
-      "browser": "./dist/esm/client/node.js",
-      "types": "./dist/esm/server/runtime/index.d.ts",
-      "default": "./dist/esm/server/runtime/index.js"
+      "worker": "./dist/server/runtime/index.js",
+      "workerd": "./dist/server/runtime/index.js",
+      "node": "./dist/server/runtime/index.js",
+      "browser": "./dist/client/node.js",
+      "types": "./dist/server/runtime/index.d.ts",
+      "default": "./dist/server/runtime/index.js"
     },
     "./client": {
-      "types": "./dist/esm/client/runtime-server-routing/index.d.ts"
+      "types": "./dist/client/runtime-server-routing/index.d.ts"
     },
     "./types": {
-      "types": "./dist/esm/types/index.d.ts",
-      "default": "./dist/esm/types/index.js"
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/types/index.js"
     },
     "./client/router": {
-      "worker": "./dist/esm/server/client/router.js",
-      "workerd": "./dist/esm/server/client/router.js",
-      "node": "./dist/esm/server/client/router.js",
-      "browser": "./dist/esm/client/runtime-client-routing/index.js",
-      "types": "./dist/esm/client/runtime-client-routing/index.d.ts",
-      "default": "./dist/esm/client/runtime-client-routing/index.js"
+      "worker": "./dist/server/client/router.js",
+      "workerd": "./dist/server/client/router.js",
+      "node": "./dist/server/client/router.js",
+      "browser": "./dist/client/runtime-client-routing/index.js",
+      "types": "./dist/client/runtime-client-routing/index.d.ts",
+      "default": "./dist/client/runtime-client-routing/index.js"
     },
     "./routing": {
-      "worker": "./dist/esm/shared-server-client/route/routing.js",
-      "workerd": "./dist/esm/shared-server-client/route/routing.js",
-      "node": "./dist/esm/shared-server-client/route/routing.js",
-      "browser": "./dist/esm/shared-server-client/route/routing.js",
-      "types": "./dist/esm/shared-server-client/route/routing.d.ts",
-      "default": "./dist/esm/shared-server-client/route/routing.js"
+      "worker": "./dist/shared-server-client/route/routing.js",
+      "workerd": "./dist/shared-server-client/route/routing.js",
+      "node": "./dist/shared-server-client/route/routing.js",
+      "browser": "./dist/shared-server-client/route/routing.js",
+      "types": "./dist/shared-server-client/route/routing.d.ts",
+      "default": "./dist/shared-server-client/route/routing.js"
     },
     "./cli": {
-      "node": "./dist/esm/node/cli/index.js",
-      "types": "./dist/esm/node/cli/index.d.ts",
-      "default": "./dist/esm/node/cli/index.js"
+      "node": "./dist/node/cli/index.js",
+      "types": "./dist/node/cli/index.d.ts",
+      "default": "./dist/node/cli/index.js"
     },
     "./api": {
-      "node": "./dist/esm/node/api/index.js",
-      "types": "./dist/esm/node/api/index.d.ts",
-      "default": "./dist/esm/node/api/index.js"
+      "node": "./dist/node/api/index.js",
+      "types": "./dist/node/api/index.d.ts",
+      "default": "./dist/node/api/index.js"
     },
     "./prerender": {
-      "node": "./dist/esm/node/prerender/index.js",
-      "types": "./dist/esm/node/prerender/index.d.ts",
-      "default": "./dist/esm/node/prerender/index.js"
+      "node": "./dist/node/prerender/index.js",
+      "types": "./dist/node/prerender/index.d.ts",
+      "default": "./dist/node/prerender/index.js"
     },
     "./plugin": {
-      "node": "./dist/esm/node/vite/index.js",
-      "types": "./dist/esm/node/vite/index.d.ts",
-      "default": "./dist/esm/node/vite/index.js"
+      "node": "./dist/node/vite/index.js",
+      "types": "./dist/node/vite/index.d.ts",
+      "default": "./dist/node/vite/index.js"
     },
     "./RenderErrorPage": {
-      "worker": "./dist/esm/shared-server-client/RenderErrorPage.js",
-      "workerd": "./dist/esm/shared-server-client/RenderErrorPage.js",
-      "node": "./dist/esm/shared-server-client/RenderErrorPage.js",
-      "browser": "./dist/esm/shared-server-client/RenderErrorPage.js",
-      "types": "./dist/esm/shared-server-client/RenderErrorPage.d.ts",
-      "default": "./dist/esm/shared-server-client/RenderErrorPage.js"
+      "worker": "./dist/shared-server-client/RenderErrorPage.js",
+      "workerd": "./dist/shared-server-client/RenderErrorPage.js",
+      "node": "./dist/shared-server-client/RenderErrorPage.js",
+      "browser": "./dist/shared-server-client/RenderErrorPage.js",
+      "types": "./dist/shared-server-client/RenderErrorPage.d.ts",
+      "default": "./dist/shared-server-client/RenderErrorPage.js"
     },
     "./abort": {
-      "worker": "./dist/esm/shared-server-client/abort.js",
-      "workerd": "./dist/esm/shared-server-client/abort.js",
-      "node": "./dist/esm/shared-server-client/abort.js",
-      "browser": "./dist/esm/shared-server-client/abort.js",
-      "types": "./dist/esm/shared-server-client/abort.d.ts",
-      "default": "./dist/esm/shared-server-client/abort.js"
+      "worker": "./dist/shared-server-client/abort.js",
+      "workerd": "./dist/shared-server-client/abort.js",
+      "node": "./dist/shared-server-client/abort.js",
+      "browser": "./dist/shared-server-client/abort.js",
+      "types": "./dist/shared-server-client/abort.d.ts",
+      "default": "./dist/shared-server-client/abort.js"
     },
     "./getPageContext": {
-      "worker": "./dist/esm/shared-server-client/getPageContext.js",
-      "workerd": "./dist/esm/shared-server-client/getPageContext.js",
-      "node": "./dist/esm/shared-server-client/getPageContext.js",
-      "browser": "./dist/esm/shared-server-client/getPageContext.js",
-      "types": "./dist/esm/shared-server-client/getPageContext.d.ts",
-      "default": "./dist/esm/shared-server-client/getPageContext.js"
+      "worker": "./dist/shared-server-client/getPageContext.js",
+      "workerd": "./dist/shared-server-client/getPageContext.js",
+      "node": "./dist/shared-server-client/getPageContext.js",
+      "browser": "./dist/shared-server-client/getPageContext.js",
+      "types": "./dist/shared-server-client/getPageContext.d.ts",
+      "default": "./dist/shared-server-client/getPageContext.js"
     },
     "./modifyUrl": {
-      "worker": "./dist/esm/shared-server-client/modifyUrl.js",
-      "workerd": "./dist/esm/shared-server-client/modifyUrl.js",
-      "node": "./dist/esm/shared-server-client/modifyUrl.js",
-      "browser": "./dist/esm/shared-server-client/modifyUrl.js",
-      "types": "./dist/esm/shared-server-client/modifyUrl.d.ts",
-      "default": "./dist/esm/shared-server-client/modifyUrl.js"
+      "worker": "./dist/shared-server-client/modifyUrl.js",
+      "workerd": "./dist/shared-server-client/modifyUrl.js",
+      "node": "./dist/shared-server-client/modifyUrl.js",
+      "browser": "./dist/shared-server-client/modifyUrl.js",
+      "types": "./dist/shared-server-client/modifyUrl.d.ts",
+      "default": "./dist/shared-server-client/modifyUrl.js"
     },
     "./universal-middleware": {
-      "worker": "./dist/esm/server/runtime/universal-middleware.js",
-      "workerd": "./dist/esm/server/runtime/universal-middleware.js",
-      "node": "./dist/esm/server/runtime/universal-middleware.js",
-      "browser": "./dist/esm/client/node.js",
-      "types": "./dist/esm/server/runtime/universal-middleware.d.ts",
-      "default": "./dist/esm/server/runtime/universal-middleware.js"
+      "worker": "./dist/server/runtime/universal-middleware.js",
+      "workerd": "./dist/server/runtime/universal-middleware.js",
+      "node": "./dist/server/runtime/universal-middleware.js",
+      "browser": "./dist/client/node.js",
+      "types": "./dist/server/runtime/universal-middleware.d.ts",
+      "default": "./dist/server/runtime/universal-middleware.js"
     },
     "./__internal": {
-      "node": "./dist/esm/server/__internal/index.js",
-      "types": "./dist/esm/server/__internal/index.d.ts",
-      "default": "./dist/esm/server/__internal/index.js"
+      "node": "./dist/server/__internal/index.js",
+      "types": "./dist/server/__internal/index.d.ts",
+      "default": "./dist/server/__internal/index.js"
     },
     "./__internal/setup": {
-      "node": "./dist/esm/server/runtime/page-files/setup.js",
-      "types": "./dist/esm/server/runtime/page-files/setup.d.ts",
-      "default": "./dist/esm/server/runtime/page-files/setup.js"
+      "node": "./dist/server/runtime/page-files/setup.js",
+      "types": "./dist/server/runtime/page-files/setup.d.ts",
+      "default": "./dist/server/runtime/page-files/setup.js"
     },
     ".": {
-      "worker": "./dist/esm/server/runtime/index.js",
-      "workerd": "./dist/esm/server/runtime/index.js",
-      "node": "./dist/esm/server/runtime/index.js",
-      "browser": "./dist/esm/client/index.js",
-      "types": "./dist/esm/server/runtime/index.d.ts",
-      "default": "./dist/esm/server/runtime/index.js"
+      "worker": "./dist/server/runtime/index.js",
+      "workerd": "./dist/server/runtime/index.js",
+      "node": "./dist/server/runtime/index.js",
+      "browser": "./dist/client/index.js",
+      "types": "./dist/server/runtime/index.d.ts",
+      "default": "./dist/server/runtime/index.js"
     }
   },
   "dependencies": {
@@ -163,58 +163,58 @@
   "typesVersions": {
     "*": {
       "types": [
-        "./dist/esm/types/index.d.ts"
+        "./dist/types/index.d.ts"
       ],
       "server": [
-        "./dist/esm/server/runtime/index.d.ts"
+        "./dist/server/runtime/index.d.ts"
       ],
       "client": [
-        "./dist/esm/client/runtime-server-routing/index.d.ts"
+        "./dist/client/runtime-server-routing/index.d.ts"
       ],
       "client/router": [
-        "./dist/esm/client/runtime-client-routing/index.d.ts"
+        "./dist/client/runtime-client-routing/index.d.ts"
       ],
       "routing": [
-        "./dist/esm/shared-server-client/route/routing.d.ts"
+        "./dist/shared-server-client/route/routing.d.ts"
       ],
       "cli": [
-        "./dist/esm/node/cli/index.d.ts"
+        "./dist/node/cli/index.d.ts"
       ],
       "api": [
-        "./dist/esm/node/api/index.d.ts"
+        "./dist/node/api/index.d.ts"
       ],
       "prerender": [
-        "./dist/esm/node/prerender/index.d.ts"
+        "./dist/node/prerender/index.d.ts"
       ],
       "plugin": [
-        "./dist/esm/node/vite/index.d.ts"
+        "./dist/node/vite/index.d.ts"
       ],
       "RenderErrorPage": [
-        "./dist/esm/shared-server-client/RenderErrorPage.d.ts"
+        "./dist/shared-server-client/RenderErrorPage.d.ts"
       ],
       "abort": [
-        "./dist/esm/shared-server-client/abort.d.ts"
+        "./dist/shared-server-client/abort.d.ts"
       ],
       "getPageContext": [
-        "./dist/esm/shared-server-client/getPageContext.d.ts"
+        "./dist/shared-server-client/getPageContext.d.ts"
       ],
       "modifyUrl": [
-        "./dist/esm/shared-server-client/modifyUrl.d.ts"
+        "./dist/shared-server-client/modifyUrl.d.ts"
       ],
       "universal-middleware": [
-        "./dist/esm/server/runtime/universal-middleware.d.ts"
+        "./dist/server/runtime/universal-middleware.d.ts"
       ],
       "__internal": [
-        "./dist/esm/server/__internal/index.d.ts"
+        "./dist/server/__internal/index.d.ts"
       ],
       "__internal/setup": [
-        "./dist/esm/server/runtime/page-files/setup.d.ts"
+        "./dist/server/runtime/page-files/setup.d.ts"
       ]
     }
   },
-  "main": "./dist/esm/server/runtime/index.js",
-  "browser": "./dist/esm/client/index.js",
-  "types": "./dist/esm/server/runtime/index.d.ts",
+  "main": "./dist/server/runtime/index.js",
+  "browser": "./dist/client/index.js",
+  "types": "./dist/server/runtime/index.d.ts",
   "type": "module",
   "bin": {
     "vike": "./node/cli/bin.js"
