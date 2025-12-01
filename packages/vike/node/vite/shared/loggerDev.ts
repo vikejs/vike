@@ -76,10 +76,8 @@ function logViteMsg(msg: string, logType: LogType, httpRequestId: number | null,
   if (prependViteTag) {
     const category = getCategory(httpRequestId)
     msg = prependTags(msg, '[vite]', category, logType)
-    logDirectly(msg, logType)
-  } else {
-    logDirectly(msg, logType)
   }
+  logDirectly(msg, logType)
 }
 function logConfigInfo(msg: string, logType: LogType): void {
   const category = getConfigCategory()
