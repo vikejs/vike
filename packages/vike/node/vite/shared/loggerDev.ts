@@ -237,7 +237,7 @@ function prependTags(msg: string, tagTool: TagTool, tagSource: TagSource | null,
     if (logType === 'error' && !hasRed(msg)) return pc.bold(pc.red(s))
     if (logType === 'error-resolve' && !hasGreen(msg)) return pc.bold(pc.green(s))
     if (logType === 'warn' && !hasYellow(msg)) return pc.yellow(s)
-    assert(logType === 'info', logType)
+    assert(logType === 'info')
     if (tagTool === '[vite]') return pc.bold(pc.cyan(s))
     if (tagTool === '[vike]') return pc.bold(pc.cyan(s))
     assert(false)
