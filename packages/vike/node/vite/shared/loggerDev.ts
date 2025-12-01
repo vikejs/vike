@@ -5,16 +5,7 @@
 //   - `willBeLogged: false` in production
 //   - `showTimestamp: true`
 // - Never clear screen (it's complex with little benefit)
-//   - Add shortcut to clear screen
-//   - Maybe rotate colors upon no requests within 30s?
 // - Only show a one-liner init log (instead of Vite's multi-line log)
-
-// Non-production logger used for:
-//  - Development
-//  - Preview
-//  - Build
-//  - Pre-rendering
-// In other words: everywhere except in production
 
 export { logViteMsg }
 export { logConfigInfo }
