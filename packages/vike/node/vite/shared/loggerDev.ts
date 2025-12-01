@@ -119,18 +119,18 @@ function logErr(err: unknown, httpRequestId: number | null = null, errorComesFro
 
   const category = getCategory(httpRequestId)
 
-    if (isErrorWithCodeSnippet(err)) {
-      // We handle transpile errors globally because wrapping viteDevServer.ssrLoadModule() wouldn't be enough: transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when loading user code with import() (since Vite lazy-transpiles import() calls)
-      const viteConfig = getViteConfig()
-      assert(viteConfig)
-      let message = getPrettyErrorWithCodeSnippet(err, viteConfig.root)
-      assert(stripAnsi(message).startsWith('Failed to transpile'))
-      message = prependTags(message, '[vite]', category, 'error-thrown')
-      message = appendErrorDebugNote(message)
-      const errBetter = getBetterError(err, { message, hideStack: true })
-      logDirectlyErr(errBetter)
-      return
-    }
+  if (isErrorWithCodeSnippet(err)) {
+    // We handle transpile errors globally because wrapping viteDevServer.ssrLoadModule() wouldn't be enough: transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when loading user code with import() (since Vite lazy-transpiles import() calls)
+    const viteConfig = getViteConfig()
+    assert(viteConfig)
+    let message = getPrettyErrorWithCodeSnippet(err, viteConfig.root)
+    assert(stripAnsi(message).startsWith('Failed to transpile'))
+    message = prependTags(message, '[vite]', category, 'error-thrown')
+    message = appendErrorDebugNote(message)
+    const errBetter = getBetterError(err, { message, hideStack: true })
+    logDirectlyErr(errBetter)
+    return
+  }
 
   const hook = isUserHookError(err)
   if (hook) {
