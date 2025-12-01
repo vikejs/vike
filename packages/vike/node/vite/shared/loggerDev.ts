@@ -53,7 +53,6 @@ addOnBeforeAssertErr((err) => {
 })
 
 type LogType = 'info' | 'warn' | 'error' | 'error-resolve'
-// TODO: rename
 type LogCategory = 'config' | `request(${number})`
 
 function logRuntimeInfoDev(msg: string, pageContext: PageContext_logRuntime, logType: LogType) {
