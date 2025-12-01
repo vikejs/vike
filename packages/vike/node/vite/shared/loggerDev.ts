@@ -241,7 +241,7 @@ function prependTags(msg: string, tagTool: TagTool, tagSource: TagSource | null,
     if (tagTool === '[vike]') return pc.bold(pc.cyan(s))
     assert(false)
   }
-  let tag = color(`${tagTool}`)
+  let tag = color(tagTool)
   if (tagSource) {
     tag = tag + pc.dim(`[${tagSource}]`)
   }
