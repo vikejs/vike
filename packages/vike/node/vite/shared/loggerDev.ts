@@ -52,7 +52,7 @@ addOnBeforeAssertErr((err) => {
   applyViteSourceMapToStackTrace(err)
 })
 
-type LogType = 'info' | 'warn' | 'error-resolve' | 'error'
+type LogType = 'info' | 'warn' | 'error' | 'error-resolve'
 // TODO: rename
 type LogCategory = 'config' | `request(${number})`
 
