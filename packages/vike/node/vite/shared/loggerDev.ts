@@ -160,6 +160,36 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
   logErr(err)
 }
 
+function logDev(
+  msg: string,
+  logType: LogType,
+  category: LogCategory | null,
+  projectTag: '[vike]' | '[vite]',
+  doNotPrependTags?: boolean,
+) {
+  if (!doNotPrependTags) msg = prependTags(msg, projectTag, category, logType)
+
+  if (logType === 'info') {
+    console.log(msg)
+    return
+  }
+  if (logType === 'warn') {
+    console.warn(msg)
+    return
+  }
+  if (logType === 'error') {
+    console.error(msg)
+    return
+  }
+  if (logType === 'error-resolve') {
+    // stderr because user will most likely want to know about error recovering
+    console.error(msg)
+    return
+  }
+
+  assert(false)
+}
+
 // Note shown to user when Vike modifies errors in a risky fashion.
 const errorDebugNote = pc.dim(formatHintLog("Error isn't helpful? See https://vike.dev/debug#verbose-errors"))
 // TODO: remove
@@ -191,36 +221,6 @@ function getCategory(httpRequestId: number | null = null): LogCategory | null {
   // const category = httpRequestId % 2 === 1 ? (`request-${httpRequestId}` as const) : (`request(${httpRequestId})` as const)
   const category = `request(${httpRequestId})` as const
   return category
-}
-
-function logDev(
-  msg: string,
-  logType: LogType,
-  category: LogCategory | null,
-  projectTag: '[vike]' | '[vite]',
-  doNotPrependTags?: boolean,
-) {
-  if (!doNotPrependTags) msg = prependTags(msg, projectTag, category, logType)
-
-  if (logType === 'info') {
-    console.log(msg)
-    return
-  }
-  if (logType === 'warn') {
-    console.warn(msg)
-    return
-  }
-  if (logType === 'error') {
-    console.error(msg)
-    return
-  }
-  if (logType === 'error-resolve') {
-    // stderr because user will most likely want to know about error recovering
-    console.error(msg)
-    return
-  }
-
-  assert(false)
 }
 
 function applyViteSourceMapToStackTrace(thing: unknown) {
