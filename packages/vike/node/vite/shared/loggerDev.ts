@@ -159,6 +159,7 @@ function logErr(err: unknown, httpRequestId: number | null = null, errorComesFro
 }
 
 function logVikeConfigError(err: unknown): void {
+  // TODO: move
   warnIfErrorIsNotObject(err)
 
   const category = getConfigCategory()
