@@ -73,11 +73,11 @@ function logRuntimeInfoDev(msg: string, pageContext: PageContext_logRuntime, log
   logWithVikeTag(msg, logType, category)
 }
 function logViteMsg(msg: string, logType: LogType, httpRequestId: number | null, prependViteTag: boolean): void {
+  const category = getCategory(httpRequestId)
   if (prependViteTag) {
-    const category = getCategory(httpRequestId)
     msg = prependTags(msg, '[vite]', category, logType)
   }
-  logDirectly(msg, logType)
+  logDirectly(msg, logType, category, '[vite]')
 }
 function logConfigInfo(msg: string, logType: LogType): void {
   const category = getConfigCategory()
@@ -217,10 +217,10 @@ function getCategory(httpRequestId: number | null = null): LogCategory | null {
 
 function logWithVikeTag(msg: string, logType: LogType, category: LogCategory | null) {
   msg = prependTags(msg, '[vike]', category, logType)
-  logDirectly(msg, logType)
+  logDirectly(msg, logType, category, '[vite]')
 }
 
-function logDirectly(msg: string, logType: LogType) {
+function logDirectly(msg: string, logType: LogType, category: LogCategory | null, projectTag: '[vike]' | '[vite]') {
   // TODO: remove
   applyViteSourceMapToStackTrace(msg)
 
