@@ -17,7 +17,6 @@
 // In other words: everywhere except in production
 
 export { logViteMsg }
-export { logViteError }
 export { logConfigInfo }
 export { logErrorServerDev }
 export { logVikeConfigErrorRecover }
@@ -93,9 +92,6 @@ function logVikeConfigErrorRecover(): void {
 function logRuntimeErrorDev(err: unknown, pageContext: PageContext_logRuntime): void {
   assertPageContext_logRuntime(pageContext)
   logErrorServerDev(err, pageContext)
-}
-function logViteError(err: unknown): void {
-  logErrorServerDev(err, 'NULL_TEMP', true)
 }
 function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, errorComesFromVite = false): void {
   applyViteSourceMapToStackTrace(err)
