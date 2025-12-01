@@ -90,10 +90,10 @@ function logVikeConfigErrorRecover(): void {
 }
 
 function logRuntimeErrorDev(err: unknown, pageContext: PageContext_logRuntime): void {
-  assertPageContext_logRuntime(pageContext)
   logErrorServerDev(err, pageContext)
 }
 function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, errorComesFromVite = false): void {
+  assertPageContext_logRuntime(pageContext)
   applyViteSourceMapToStackTrace(err)
 
   const logErr = (err: unknown) => {
