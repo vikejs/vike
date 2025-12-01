@@ -103,6 +103,8 @@ function logViteError(
   logErrorServerDev(err, httpRequestId, true)
 }
 function logErrorServerDev(err: unknown, httpRequestId: number | null = null, errorComesFromVite = false): void {
+  applyViteSourceMapToStackTrace(err)
+
   // Skip `throw render()` / `throw redirect()`
   if (isAbortError(err) && !isDebugError()) {
     return
@@ -264,7 +266,6 @@ function logDirectly(thing: unknown, logType: LogType) {
   assert(false)
 }
 function logDirectlyErr(err: unknown) {
-  applyViteSourceMapToStackTrace(err)
   logErrorServer(err, 'NULL_TEMP') // TODO pass pageContext
 }
 
