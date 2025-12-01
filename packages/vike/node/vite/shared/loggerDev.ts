@@ -62,7 +62,7 @@ addOnBeforeAssertErr((err) => {
   applyViteSourceMapToStackTrace(err)
 })
 
-type LogType = 'info' | 'warn' | 'error-thrown' | 'error-recover' | 'error-note'
+type LogType = 'info' | 'warn' | 'error-thrown' | 'error-resolve' | 'error-note'
 // TODO: rename
 type LogCategory = 'config' | `request(${number})`
 
@@ -85,7 +85,7 @@ function logConfigInfo(msg: string, logType: LogType): void {
 }
 function logVikeConfigErrorRecover(): void {
   const category = getConfigCategory()
-  logWithVikeTag(vikeConfigErrorRecoverMsg, 'error-recover', category)
+  logWithVikeTag(vikeConfigErrorRecoverMsg, 'error-resolve', category)
 }
 
 function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, errorComesFromVite = false): void {
@@ -242,7 +242,7 @@ function logDirectly(msg: string, logType: LogType) {
     logErrorServer(msg, 'NULL_TEMP') // TODO pass pageContext
     return
   }
-  if (logType === 'error-recover') {
+  if (logType === 'error-resolve') {
     // stderr because user will most likely want to know about error recovering
     console.error(msg)
     return
@@ -263,7 +263,7 @@ function applyViteSourceMapToStackTrace(thing: unknown) {
 function prependTags(msg: string, projectTag: '[vite]' | '[vike]', category: LogCategory | null, logType: LogType) {
   const color = (s: string) => {
     if (logType === 'error-thrown' && !hasRed(msg)) return pc.bold(pc.red(s))
-    if (logType === 'error-recover' && !hasGreen(msg)) return pc.bold(pc.green(s))
+    if (logType === 'error-resolve' && !hasGreen(msg)) return pc.bold(pc.green(s))
     if (logType === 'warn' && !hasYellow(msg)) return pc.yellow(s)
     if (projectTag === '[vite]') return pc.bold(pc.cyan(s))
     if (projectTag === '[vike]') return pc.bold(pc.cyan(s))
