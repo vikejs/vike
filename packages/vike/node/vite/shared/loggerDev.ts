@@ -108,6 +108,7 @@ function logErr(err: unknown, httpRequestId: number | null = null, errorComesFro
     return
   }
 
+  // TODO: remove
   // Dedupe
   const store = getHttpRequestAsyncStore()
   if (getHttpRequestAsyncStore()?.shouldErrorBeSwallowed(err)) {

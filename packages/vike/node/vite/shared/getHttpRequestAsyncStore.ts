@@ -1,3 +1,5 @@
+// TODO: refactor
+
 // Purpose of this file:
 //  - Swallow redundant error messages (Vite is buggy and emits the same error multiple times)
 //  - Prepend "[request(n)]" tag to Vite logs
