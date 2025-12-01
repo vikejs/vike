@@ -194,7 +194,7 @@ function getCategory(httpRequestId: number | null = null): LogCategory | null {
 }
 
 function logWithVikeTag(msg: string, logType: LogType, category: LogCategory | null) {
-  logDirectly(msg, logType, category, '[vite]')
+  logDirectly(msg, logType, category, '[vike]')
 }
 
 function logDirectly(
@@ -204,7 +204,7 @@ function logDirectly(
   projectTag: '[vike]' | '[vite]',
   doNotPrependTags?: boolean,
 ) {
-  if (!doNotPrependTags) msg = prependTags(msg, '[vike]', category, logType)
+  if (!doNotPrependTags) msg = prependTags(msg, projectTag, category, logType)
 
   // TODO: remove
   applyViteSourceMapToStackTrace(msg)
