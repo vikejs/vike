@@ -128,7 +128,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
     if (errIntro) {
       assert(stripAnsi(errIntro).startsWith('Failed to execute'))
       let message = getErrMsgWithIntro(err, errIntro)
-      message = prependTags(message, '[vike]', category, 'error-note')
+      message = prependTags(message, '[vike]', category, 'error')
       const errBetter = getBetterError(err, { message })
       logErr(errBetter)
       return
@@ -141,7 +141,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
       const { hookName, hookFilePath } = hook
       const errIntro = pc.red(`Following error was thrown by the ${hookName}() hook defined at ${hookFilePath}`)
       let message = getErrMsgWithIntro(err, errIntro)
-      message = prependTags(message, '[vike]', category, 'error-note')
+      message = prependTags(message, '[vike]', category, 'error')
       const errBetter = getBetterError(err, { message })
       logErr(errBetter)
       return
@@ -151,7 +151,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
   if (category) {
     const errIntro = pc.bold(pc.red(`[Error] ${errorComesFromVite ? 'Transpilation error' : 'An error was thrown'}:`))
     let message = getErrMsgWithIntro(err, errIntro)
-    message = prependTags(message, '[vike]', category, 'error-note')
+    message = prependTags(message, '[vike]', category, 'error')
     const errBetter = getBetterError(err, { message })
     logErr(errBetter)
     return
@@ -171,7 +171,7 @@ function logErrorDebugNote() {
     if (store.errorDebugNoteAlreadyShown) return
     store.errorDebugNoteAlreadyShown = true
   }
-  logDirectly(errorDebugNote, 'error-note')
+  logDirectly(errorDebugNote, 'error')
   */
 }
 function appendErrorDebugNote(errMsg: string) {
@@ -232,7 +232,7 @@ function applyViteSourceMapToStackTrace(thing: unknown) {
   viteDevServer.ssrFixStacktrace(thing as Error)
 }
 
-function prependTags(msg: string, projectTag: '[vite]' | '[vike]', category: LogCategory | null, logType: 'info' | 'warn' | 'error' | 'error-resolve' | 'error-note') {
+function prependTags(msg: string, projectTag: '[vite]' | '[vike]', category: LogCategory | null, logType: LogType) {
   const color = (s: string) => {
     if (logType === 'error' && !hasRed(msg)) return pc.bold(pc.red(s))
     if (logType === 'error-resolve' && !hasGreen(msg)) return pc.bold(pc.green(s))
