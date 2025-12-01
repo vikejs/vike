@@ -125,7 +125,7 @@ function requireResolveNpmPackage({
   if (res.hasFailed) throw res.err
   return res.importPathResolvedFilePath
 }
-function requireResolveDistFile(distFile: `dist/esm/${string}.js`) {
+function requireResolveDistFile(distFile: `dist/${string}.js`) {
   const packageNodeModulesDirectory = getPackageNodeModulesDirectory()
   assertPosixPath(packageNodeModulesDirectory)
   assertPosixPath(distFile)
@@ -196,9 +196,9 @@ function addFileExtensionsToRequireResolve(require_: NodeJS.Require) {
 }
 
 function getPackageNodeModulesDirectory() {
-  // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/${packageName}/dist/esm/utils/requireResolve.js
-  assert(importMetaUrl.includes('/dist/esm/utils/') || importMetaUrl.includes('/dist/cjs/utils/'))
-  const packageNodeModulesDirectory = path.posix.join(removeFilePrefix(path.dirname(importMetaUrl)), '../../../')
+  // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/${packageName}/dist/utils/requireResolve.js
+  assert(importMetaUrl.includes('/dist/utils/'))
+  const packageNodeModulesDirectory = path.posix.join(removeFilePrefix(path.dirname(importMetaUrl)), '../../')
   // Return `node_modules/${packageName}/`
   return packageNodeModulesDirectory
 }

@@ -32,14 +32,14 @@ DEBUG=vike:error,vike:log npm run dev
 ## Digging into `node_modules/`
 
 The quickest way to dig into Vike is by:
- - Directly modifying the built code at `node_modules/vike/dist/esm/**/*.js`, for example to:
+ - Directly modifying the built code at `node_modules/vike/dist/**/*.js`, for example to:
    - Inject `console.log()` to gather insights.
    - Try to fix the bug.
  - Reading the TypeScript source code (`$ git clone git@github.com:vikejs/vike`), to understand how the code works.
 
 The trick here is to directly modify the built code at `node_modules/`, while using the TypeScript source code to navigate and read code.
 
-> We recommend directly manipulating `node_modules/vike/dist/esm/**/*.js` because it's simpler and quicker than building Vike. That said, you can also build and then link Vike:
+> We recommend directly manipulating `node_modules/vike/dist/**/*.js` because it's simpler and quicker than building Vike. That said, you can also build and then link Vike:
 > ```bash
 > $ git clone git@github.com:vikejs/vike
 > $ cd vike/
@@ -80,7 +80,7 @@ You can then easily trace back where code in `dist/client/` originates from:
 import { j as jsxRuntimeExports } from "../chunks/chunk-BXiwBnjM.js";
 import { i as isBrowser, a as assertClientRouting } from "../chunks/chunk-CSn_bGv_.js";
 
-/*! /home/rom/code/vike/packages/vike/dist/esm/shared/route/utils.js [vike:pluginModuleBanner] */
+/*! /home/rom/code/vike/packages/vike/dist/shared/route/utils.js [vike:pluginModuleBanner] */
 if (isBrowser()) {
   assertClientRouting();
 }
