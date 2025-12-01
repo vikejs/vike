@@ -74,7 +74,6 @@ import type { GlobalContext, GlobalContextServer } from '../../types/GlobalConte
 import { prepareGlobalContextForPublicUsage } from '../../shared-server-client/prepareGlobalContextForPublicUsage.js'
 import { logRuntimeError, logRuntimeInfo } from './loggerRuntime.js'
 import { getVikeConfigErrorBuild, setVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
-import { hasAlreadyLogged } from './renderPageServer/isNewError.js'
 import type { Hook } from '../../shared-server-client/hooks/getHook.js'
 import type { ViteRPC } from '../../node/vite/plugins/non-runnable-dev/pluginViteRPC.js'
 import { getVikeApiOperation } from '../../shared-server-node/api-context.js'
@@ -416,9 +415,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
   globalObject.waitForUserFilesUpdateResolve.push(resolve)
 
   const onError = (err: unknown) => {
-    if (!hasAlreadyLogged(err)) {
-      logRuntimeError(err, 'NULL_TEMP')
-    }
+    logRuntimeError(err, 'NULL_TEMP')
     setVikeConfigError({ errorRuntime: { err } })
     globalObject.vikeConfigHasRuntimeError = true
     return { success: false }
