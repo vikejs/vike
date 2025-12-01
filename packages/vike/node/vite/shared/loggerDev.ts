@@ -131,7 +131,8 @@ function logErr(err: unknown, httpRequestId: number | null = null, errorComesFro
       assert(viteConfig)
       let message = getPrettyErrorWithCodeSnippet(err, viteConfig.root)
       assert(stripAnsi(message).startsWith('Failed to transpile'))
-      message = improveErrorMessage(message, '[vite]', category)
+      message = prependTags(message, '[vite]', category, 'error-thrown')
+      message = appendErrorDebugNote(message)
       const errBetter = getBetterError(err, { message, hideStack: true })
       logDirectlyErr(errBetter)
       return
@@ -178,7 +179,7 @@ function logConfigError(err: unknown): void {
     if (errMsgFormatted) {
       assert(stripAnsi(errMsgFormatted).startsWith('Failed to transpile'))
       let message = errMsgFormatted
-      message = improveErrorMessage(message, '[vike]', category)
+      message = prependTags(message, '[vike]', category, 'error-thrown')
       const errBetter = getBetterError(err, { message, hideStack: true })
       logDirectlyErr(errBetter)
       return
@@ -294,12 +295,6 @@ function applyViteSourceMapToStackTrace(thing: unknown) {
   if (!viteDevServer) return
   // Apply Vite's source maps
   viteDevServer.ssrFixStacktrace(thing as Error)
-}
-
-function improveErrorMessage(message: string, tag: '[vite]' | ProjectTag, category: LogCategory | null) {
-  message = prependTags(message, tag, category, 'error-thrown')
-  message = appendErrorDebugNote(message)
-  return message
 }
 
 function prependTags(msg: string, projectTag: '[vite]' | ProjectTag, category: LogCategory | null, logType: LogType) {
