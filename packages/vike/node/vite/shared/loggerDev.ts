@@ -53,8 +53,8 @@ addOnBeforeAssertErr((err) => {
 })
 
 type LogType = 'info' | 'warn' | 'error' | 'error-resolve'
-type TagSource = 'config' | `request(${number})`
 type TagTool = '[vike]' | '[vite]'
+type TagSource = 'config' | `request(${number})`
 
 function logRuntimeInfoDev(msg: string, pageContext: PageContext_logRuntime, logType: LogType) {
   assertPageContext_logRuntime(pageContext)
