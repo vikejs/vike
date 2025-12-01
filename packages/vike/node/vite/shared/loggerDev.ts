@@ -69,6 +69,7 @@ addOnBeforeAssertErr((err) => {
 type LogType = 'info' | 'warn' | 'error-thrown' | 'error-recover' | 'error-note'
 // TODO: rename
 type LogCategory = 'config' | `request(${number})`
+type ProjectTag = '[vite]' | '[vike]'
 
 function logRuntimeInfoDev(msg: string, pageContext: PageContext_logRuntime, logType: LogType) {
   assertPageContext_logRuntime(pageContext)
@@ -289,7 +290,7 @@ function applyViteSourceMapToStackTrace(thing: unknown) {
   viteDevServer.ssrFixStacktrace(thing as Error)
 }
 
-function prependTags(msg: string, projectTag: '[vite]' | '[vike]', category: LogCategory | null, logType: LogType) {
+function prependTags(msg: string, projectTag: ProjectTag, category: LogCategory | null, logType: LogType) {
   const color = (s: string) => {
     if (logType === 'error-thrown' && !hasRed(msg)) return pc.bold(pc.red(s))
     if (logType === 'error-recover' && !hasGreen(msg)) return pc.bold(pc.green(s))
