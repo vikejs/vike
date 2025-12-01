@@ -30,6 +30,7 @@ import {
   getUrlPretty,
   updateType,
   catchInfiniteLoop,
+  isSameErrorMessage,
 } from '../utils.js'
 import {
   ErrorAbort,
@@ -55,7 +56,6 @@ import {
   createHttpResponseBaseIsMissing,
 } from './renderPageServer/createHttpResponse.js'
 import { logRuntimeError, logRuntimeInfo, type PageContext_logRuntime } from './loggerRuntime.js'
-import { isNewError } from './renderPageServer/isNewError.js'
 import { assertArguments } from './renderPageServer/assertArguments.js'
 import { log404 } from './renderPageServer/log404/index.js'
 import pc from '@brillout/picocolors'
@@ -349,7 +349,7 @@ async function renderPageServerEntryRecursive_onError(
         return pageContextHttpErrorFallback
       }
     }
-    if (isNewError(errErrorPage, err)) {
+    if (isSameErrorMessage(errErrorPage, err)) {
       logRuntimeError(errErrorPage, pageContextErrorPageInit)
     }
     const pageContextHttpErrorFallback = getPageContextHttpErrorFallback(err, pageContextBegin)

@@ -1,20 +1,12 @@
-export { isNewError }
 export { setAlreadyLogged }
 export { hasAlreadyLogged }
 
-import { getGlobalObject, isObject, isSameErrorMessage } from '../../utils.js'
+import { getGlobalObject, isObject } from '../../utils.js'
 
 const globalObject = getGlobalObject('renderPageServer/isNewError.ts', {
   wasAlreadyLogged: new WeakSet<object>(),
 })
 
-function isNewError(errErrorPage: unknown, errNominalPage: unknown): boolean {
-  return (
-    !isSameErrorMessage(errNominalPage, errErrorPage) ||
-    // Isn't this redudant/superfluous? I think we can remove this entire file and only use isSameErrorMessage() instead.
-    !hasAlreadyLogged(errNominalPage)
-  )
-}
 function hasAlreadyLogged(err: unknown): boolean {
   if (!isObject(err)) return false
   return globalObject.wasAlreadyLogged.has(err)
