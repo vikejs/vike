@@ -93,16 +93,16 @@ function logVikeConfigErrorRecover(): void {
 function logRuntimeErrorDev(err: unknown, pageContext: PageContext_logRuntime): void {
   assertPageContext_logRuntime(pageContext)
   const httpRequestId = pageContext === 'NULL_TEMP' ? null : pageContext._httpRequestId
-  logErr(err, httpRequestId, false)
+  logErrorServerDev(err, httpRequestId, false)
 }
 function logViteError(
   err: unknown,
   // httpRequestId is `undefined` if development environment doesn't support async stores
   httpRequestId: number | undefined,
 ): void {
-  logErr(err, httpRequestId, true)
+  logErrorServerDev(err, httpRequestId, true)
 }
-function logErr(err: unknown, httpRequestId: number | null = null, errorComesFromVite: boolean): void {
+function logErrorServerDev(err: unknown, httpRequestId: number | null = null, errorComesFromVite: boolean): void {
   // Skip `throw render()` / `throw redirect()`
   if (isAbortError(err) && !isDebugError()) {
     return
