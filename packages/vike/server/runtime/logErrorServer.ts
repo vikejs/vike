@@ -25,7 +25,7 @@ function logErrorServer(err: unknown, pageContext: PageContext_logRuntime) {
 
   execHookOnError(err)
 
-  const errPrinted = getStackOrMessage(isDebugError() ? getOriginalErrorDeep(err) : err)
+  const errPrinted = getStackOrMessage(isDebugError() ? getOriginalError(err) : err)
   console.error(hasRed(errPrinted) ? errPrinted : pc.red(errPrinted))
 
   setAlreadyLogged(err)
@@ -33,11 +33,10 @@ function logErrorServer(err: unknown, pageContext: PageContext_logRuntime) {
   logErrorHint(err)
 }
 
-function getOriginalErrorDeep(err: any): unknown {
-  if (!isObject(err) || !err.getOriginalError) return err
+function getOriginalError(err: any): unknown {
   // getOriginalError() is set by getBetterError()
   // https://github.com/vikejs/vike/blob/c0dc090e64ca9daa516ebf884fef66f5531cae69/packages/vike/utils/getBetterError.ts#L32
-  return getOriginalErrorDeep((err as any).getOriginalError())
+  return err?.getOriginalError?.() ?? err
 }
 
 // We ensure we print a string; Cloudflare Workers doesn't seem to properly stringify `Error` objects.
