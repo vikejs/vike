@@ -54,7 +54,7 @@ addOnBeforeAssertErr((err) => {
 
 type LogType = 'info' | 'warn' | 'error' | 'error-resolve'
 type LogCategory = 'config' | `request(${number})`
-type ProjectTag = '[vike]' | '[vite]'
+type TagTool = '[vike]' | '[vite]'
 
 function logRuntimeInfoDev(msg: string, pageContext: PageContext_logRuntime, logType: LogType) {
   assertPageContext_logRuntime(pageContext)
@@ -164,7 +164,7 @@ function logDev(
   msg: string,
   logType: LogType,
   category: LogCategory | null,
-  projectTag: ProjectTag,
+  projectTag: TagTool,
   doNotPrependTags?: boolean,
 ) {
   if (!doNotPrependTags) msg = prependTags(msg, projectTag, category, logType)
@@ -232,7 +232,7 @@ function applyViteSourceMapToStackTrace(thing: unknown) {
   viteDevServer.ssrFixStacktrace(thing as Error)
 }
 
-function prependTags(msg: string, projectTag: ProjectTag, category: LogCategory | null, logType: LogType) {
+function prependTags(msg: string, projectTag: TagTool, category: LogCategory | null, logType: LogType) {
   const color = (s: string) => {
     if (logType === 'error' && !hasRed(msg)) return pc.bold(pc.red(s))
     if (logType === 'error-resolve' && !hasGreen(msg)) return pc.bold(pc.green(s))
