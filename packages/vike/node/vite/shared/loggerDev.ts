@@ -139,7 +139,7 @@ function logErrorServerDev(err: unknown, httpRequestId: number | null = null, er
     if (hook) {
       const { hookName, hookFilePath } = hook
       const errIntro = pc.red(`Following error was thrown by the ${hookName}() hook defined at ${hookFilePath}`)
-      let message = addErrIntro(err, errIntro)
+      let message = getErrMsgWithIntro(err, errIntro)
       message = prependTags(message, '[vike]', category, 'error-note')
       const errBetter = getBetterError(err, { message })
       logDirectlyErr(errBetter)
@@ -151,7 +151,7 @@ function logErrorServerDev(err: unknown, httpRequestId: number | null = null, er
     const errIntro = getConfigExecutionErrorIntroMsg(err)
     if (errIntro) {
       assert(stripAnsi(errIntro).startsWith('Failed to execute'))
-      let message = addErrIntro(err, errIntro)
+      let message = getErrMsgWithIntro(err, errIntro)
       message = prependTags(message, '[vike]', category, 'error-note')
       const errBetter = getBetterError(err, { message })
       logDirectlyErr(errBetter)
@@ -173,7 +173,7 @@ function logErrorServerDev(err: unknown, httpRequestId: number | null = null, er
 
   if (category) {
     const errIntro = pc.bold(pc.red(`[Error] ${errorComesFromVite ? 'Transpilation error' : 'An error was thrown'}:`))
-    let message = addErrIntro(err, errIntro)
+    let message = getErrMsgWithIntro(err, errIntro)
     message = prependTags(message, '[vike]', category, 'error-note')
     const errBetter = getBetterError(err, { message })
     logDirectlyErr(errBetter)
@@ -298,7 +298,7 @@ function prependTags(msg: string, projectTag: '[vite]' | '[vike]', category: Log
   return `${timestamp} ${tag}${whitespace}${msg}`
 }
 
-function addErrIntro(err: unknown, erroIntro: string) {
+function getErrMsgWithIntro(err: unknown, erroIntro: string) {
   const errMsg = !isObject(err) ? '' : String(err.message || '')
   return erroIntro + '\n' + errMsg
 }
