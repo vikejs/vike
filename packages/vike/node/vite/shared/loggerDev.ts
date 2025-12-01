@@ -60,7 +60,7 @@ function logRuntimeInfoDev(msg: string, pageContext: PageContext_logRuntime, log
   assertPageContext_logRuntime(pageContext)
   const httpRequestId = pageContext === 'NULL_TEMP' ? null : pageContext._httpRequestId
   const category = getCategory(httpRequestId)
-  logWithVikeTag(msg, logType, category)
+  logDirectly(msg, logType, category, '[vike]')
 }
 function logVite(msg: string, logType: LogType, httpRequestId: number | null, prependViteTag: boolean): void {
   const category = getCategory(httpRequestId)
@@ -68,9 +68,6 @@ function logVite(msg: string, logType: LogType, httpRequestId: number | null, pr
 }
 function logConfigInfo(msg: string, logType: LogType): void {
   const category = getCategory() ?? 'config'
-  logWithVikeTag(msg, logType, category)
-}
-function logWithVikeTag(msg: string, logType: LogType, category: LogCategory | null) {
   logDirectly(msg, logType, category, '[vike]')
 }
 
