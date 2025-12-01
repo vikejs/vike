@@ -233,7 +233,7 @@ function getCategory(httpRequestId: number | null = null): LogCategory | null {
   return category
 }
 
-function logWithVikeTag(msg: string, logType: LogType, category: LogCategory | null, showVikeVersion: false = false) {
+function logWithVikeTag(msg: string, logType: LogType, category: LogCategory | null) {
   msg = prependTags(msg, '[vike]', category, logType)
   logDirectly(msg, logType)
 }
