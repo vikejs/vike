@@ -172,10 +172,7 @@ function execHookDirectAsync<HookReturn>(
   ;(async () => {
     try {
       providePageContextInternal(pageContextForPublicUsage)
-      // Store proxy in async store for getPageContext({ asyncHook: true })
-      if (pageContextForPublicUsage && (pageContextForPublicUsage as any)._asyncStore) {
-        ;(pageContextForPublicUsage as any)._asyncStore.pageContext = pageContextForPublicUsage
-      }
+      storeProxyInAsyncStore(pageContextForPublicUsage)
       const ret = await hookFnCaller()
       resolve(ret)
     } catch (err) {
@@ -196,10 +193,7 @@ function execHookDirectSync<PageContext extends PageContextPrepareMinimum>(
 ) {
   const pageContextForPublicUsage = preparePageContextForPublicUsage(pageContext)
   providePageContextInternal(pageContextForPublicUsage)
-  // Store proxy in async store for getPageContext({ asyncHook: true })
-  if ((pageContextForPublicUsage as any)._asyncStore) {
-    ;(pageContextForPublicUsage as any)._asyncStore.pageContext = pageContextForPublicUsage
-  }
+  storeProxyInAsyncStore(pageContextForPublicUsage)
   const hookReturn = hook.hookFn(pageContextForPublicUsage)
   return { hookReturn }
 }
@@ -239,4 +233,16 @@ function providePageContextInternal(pageContext: null | PageContextPrepareMinimu
   Promise.resolve().then(() => {
     globalObject.pageContext = null
   })
+}
+
+// Store proxy in async store for getPageContext({ asyncHook: true })
+function storeProxyInAsyncStore(pageContext: null | PageContextPrepareMinimum): void {
+  if (pageContext && hasAsyncStore(pageContext)) {
+    pageContext._asyncStore.pageContext = pageContext
+  }
+}
+function hasAsyncStore(
+  pageContext: PageContextPrepareMinimum,
+): pageContext is PageContextPrepareMinimum & { _asyncStore: { pageContext?: PageContextPrepareMinimum } } {
+  return '_asyncStore' in pageContext && pageContext._asyncStore != null
 }
