@@ -6,6 +6,7 @@ import { usePageContext } from 'vike-react/usePageContext'
 import { assert } from '../utils/assert'
 import type { GlobalContextClient } from 'vike/types'
 import { someFnClient, someFnServer } from './someFn'
+import { getPageContext } from 'vike/getPageContext'
 
 function Layout({ children }: { children: React.ReactNode }) {
   /*
@@ -14,6 +15,14 @@ function Layout({ children }: { children: React.ReactNode }) {
 
   const pageContext = usePageContext()
   const globalContext = pageContext.globalContext
+
+  {
+    assert(pageContext)
+    const pageContext2 = getPageContext({ asyncHook: true })
+    assert(pageContext2)
+    assert(pageContext2.pageId === pageContext.pageId)
+    // assert(pageContext2 === pageContext)
+  }
 
   // TEST: pageContext.pageContextsAborted is defined
   assert(Array.isArray(pageContext.pageContextsAborted))

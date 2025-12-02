@@ -81,6 +81,7 @@ const globalObject = getGlobalObject<{
   //https://vike.dev/pageContext#previousPageContext
   previousPageContext?: PreviousPageContext
   renderedPageContext?: PageContextInternalClient & PageContext_loadPageConfigsLazyClientSide
+  currentPageContext?: Record<string, unknown>
   firstRenderStartPromise: Promise<void>
   firstRenderStartPromiseResolve: () => void
 }>(
@@ -627,6 +628,8 @@ async function getPageContextBegin(
     ...pageContextInitClient,
   })
 
+  globalObject.currentPageContext = pageContext
+
   // TO-DO/next-major-release: remove
   Object.defineProperty(pageContext, '_previousPageContext', {
     get() {
@@ -760,7 +763,7 @@ function areKeysEqual(key1: string | string[], key2: string | string[]): boolean
  * https://vike.dev/getPageContextClient
  */
 function getPageContextClient(): PageContextClient | null {
-  return (globalObject.renderedPageContext as any) ?? null
+  return (globalObject.currentPageContext as any) ?? null
 }
 
 type PageContextExecuteHook = Omit<

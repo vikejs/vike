@@ -71,12 +71,12 @@
       "default": "./dist/shared-server-client/abort.js"
     },
     "./getPageContext": {
-      "worker": "./dist/shared-server-client/getPageContext.js",
-      "workerd": "./dist/shared-server-client/getPageContext.js",
-      "node": "./dist/shared-server-client/getPageContext.js",
-      "browser": "./dist/shared-server-client/getPageContext.js",
-      "types": "./dist/shared-server-client/getPageContext.d.ts",
-      "default": "./dist/shared-server-client/getPageContext.js"
+      "worker": "./dist/server/runtime/getPageContext.js",
+      "workerd": "./dist/server/runtime/getPageContext.js",
+      "node": "./dist/server/runtime/getPageContext.js",
+      "browser": "./dist/client/runtime-client-routing/getPageContext.js",
+      "types": "./dist/server/runtime/getPageContext.d.ts",
+      "default": "./dist/server/runtime/getPageContext.js"
     },
     "./modifyUrl": {
       "worker": "./dist/shared-server-client/modifyUrl.js",
@@ -196,7 +196,7 @@
         "./dist/shared-server-client/abort.d.ts"
       ],
       "getPageContext": [
-        "./dist/shared-server-client/getPageContext.d.ts"
+        "./dist/server/runtime/getPageContext.d.ts"
       ],
       "modifyUrl": [
         "./dist/shared-server-client/modifyUrl.d.ts"
