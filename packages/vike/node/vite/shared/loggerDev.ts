@@ -10,7 +10,6 @@
 export { logVite }
 export { logConfigInfo }
 export { logErrorServerDev }
-export { logErrorDebugNote }
 export type { LogType }
 
 import { isAbortError } from '../../../shared-server-client/route/abort.js'
@@ -78,17 +77,6 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
   // Skip `throw render()` / `throw redirect()`
   if (isAbortError(err) && !isDebugError()) {
     return
-  }
-
-  // TODO: remove
-  // Dedupe
-  {
-    const store = getHttpRequestAsyncStore()
-    if (getHttpRequestAsyncStore()?.shouldErrorBeSwallowed(err)) {
-      if (!isDebugError()) return
-    } else {
-      store?.markErrorAsLogged(err)
-    }
   }
 
   const httpRequestId = pageContext === 'NULL_TEMP' ? null : pageContext._httpRequestId
@@ -191,20 +179,9 @@ function logDev(
   assert(false)
 }
 
+// TODO: minor refactor
 // Note shown to user when Vike modifies errors in a risky fashion.
 const errorDebugNote = pc.dim(formatHintLog("Error isn't helpful? See https://vike.dev/debug#verbose-errors"))
-// TODO: remove
-function logErrorDebugNote() {
-  /*
-  if (isDebugError()) return
-  const store = getHttpRequestAsyncStore()
-  if (store) {
-    if (store.errorDebugNoteAlreadyShown) return
-    store.errorDebugNoteAlreadyShown = true
-  }
-  logDev(errorDebugNote, 'error')
-  */
-}
 function appendErrorDebugNote(errMsg: string) {
   return errMsg + '\n' + errorDebugNote
 }
