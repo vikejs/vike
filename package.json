@@ -42,7 +42,7 @@
     "@brillout/spellcheck": "^0.1.2",
     "@brillout/test-e2e": "^0.6.17",
     "@brillout/test-types": "^0.1.13",
-    "playwright": "^1.57.0",
+    "playwright": "1.56.0",
     "vitest": "^3.2.4"
   },
   "packageManager": "pnpm@9.15.9"
