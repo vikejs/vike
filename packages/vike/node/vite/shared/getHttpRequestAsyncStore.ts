@@ -22,6 +22,7 @@ import {
   type PageContextBegin,
   renderPageServer_addAsyncHookwrapper,
 } from '../../../server/runtime/renderPageServer.js'
+import { preparePageContextForPublicUsageServer } from '../../../server/runtime/renderPageServer/preparePageContextForPublicUsageServer.js'
 import { assert, assertIsNotProductionRuntime, getGlobalObject, isObject } from '../utils.js'
 import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hooks'
 
@@ -70,5 +71,7 @@ function getHttpRequestId_withAsyncHook() {
 
 function getPageContext_withAsyncHook() {
   const asyncStore = getAsyncStore()
-  return asyncStore?.pageContext ?? null
+  const pageContext = asyncStore?.pageContext
+  if (!pageContext) return null
+  return preparePageContextForPublicUsageServer(pageContext as any)
 }

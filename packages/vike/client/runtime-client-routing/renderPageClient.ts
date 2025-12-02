@@ -763,7 +763,9 @@ function areKeysEqual(key1: string | string[], key2: string | string[]): boolean
  * https://vike.dev/getPageContextClient
  */
 function getPageContextClient(): PageContextClient | null {
-  return (globalObject.currentPageContext as any) ?? null
+  const pageContext = globalObject.currentPageContext
+  if (!pageContext) return null
+  return preparePageContextForPublicUsageClient(pageContext as any) as any
 }
 
 type PageContextExecuteHook = Omit<
