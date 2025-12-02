@@ -94,7 +94,6 @@ async function testRedirect(source: string, target: string, isDev: boolean) {
 
 function testOnCreateGlobalContext(isDev: boolean) {
   test('+onCreateGlobalContext', async () => {
-    return;
     const html = await fetchHtml('/')
     expect(html).toContain('<span id="setGloballyClient">hydrating...</span>')
     await page.goto(getServerUrl() + '/')
