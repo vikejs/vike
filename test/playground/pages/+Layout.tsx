@@ -21,7 +21,7 @@ function Layout({ children }: { children: React.ReactNode }) {
     const pageContext2 = getPageContext({ asyncHook: true })
     assert(pageContext2)
     assert(pageContext2.pageId === pageContext.pageId)
-    // assert(pageContext2 === pageContext)
+    assert(pageContext2 === pageContext)
   }
 
   // TEST: pageContext.pageContextsAborted is defined
