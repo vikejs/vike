@@ -40,12 +40,14 @@ function data(pageContext: PageContextServer) {// [!code ++]
 }
 ```
 
-You may ask yourself what the purpose of `getPageContext()` is and, indeed, it's useless for Vike users. But, if you are implementing a <Link href="/extensions">Vike extension</Link> and you want to implement a <Link href="#universal-hooks">universal hook</Link>, then `getPageContext()` is useful, see <Link href="#example" />.
+> You may ask yourself what the purpose of `getPageContext()` is and, indeed, it's useless for Vike users.
+>
+> It's useful when implementing a <Link href="/extensions">Vike extension</Link> that exports a <Link href="#universal-hooks">universal hook</Link>, see <Link href="#example" />.
 
 
 ## Universal Hooks
 
-A *universal hook* is a component hook that also works inside Vike hooks such as <Link href="/useConfig" />.
+A *universal hook* (e.g. <Link href="/useConfig">`useConfig()`</Link>) is a component hook that also works inside Vike hooks.
 
 ```ts
  // /components/SomeReactComponent.tsx
@@ -53,8 +55,8 @@ A *universal hook* is a component hook that also works inside Vike hooks such as
 import { useConfig } from 'vike-react/useConfig' // or vike-{vue,solid}
 
 function SomeReactComponent() {
-  // Not only can useConfig() be used inside a component...
-  const document = useConfig()
+  // useConfig() can be used inside a component, and can ...
+  const config = useConfig()
 }
 ```
 ```ts
@@ -63,14 +65,14 @@ function SomeReactComponent() {
 import { useConfig } from 'vike-react/useConfig'
 
 export function data() {
-  // ... but it can also be used inside a Vike hook.
-  const document = useConfig()
+  // ... also be used inside a Vike hook.
+  const config = useConfig()
 }
 ```
 
 ## Example
 
-In order to make `useConfig()` a universal hook (see <Link href="#universal-hooks" doNotInferSectionTitle />), the `useConfig()` implementation uses `getPageContext()`:
+In order to make <Link href="/useConfig">`useConfig()`</Link> a universal hook (see <Link href="#universal-hooks" doNotInferSectionTitle />), the `useConfig()` implementation uses `getPageContext()`:
 
 ```js
 // node_modules/vike-{react,vue,solid}/dist/hooks/useConfig.js
@@ -81,10 +83,10 @@ import { getPageContext } from 'vike/getPageContext'
 export function useConfig() {
   // useConfig() needs to access the pageContext object
 
-  // In case useConfig() is used inside a Vike hook
+  // If useConfig() is used inside a Vike hook
   let pageContext = getPageContext()
 
-  // In case useConfig() is used inside a React component
+  // If useConfig() is used inside a React/Vue/Solid component
   if (!pageContext) {
     pageContext = usePageContext()
   }
