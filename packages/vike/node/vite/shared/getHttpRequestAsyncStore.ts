@@ -1,4 +1,6 @@
 // TODO: refactor
+// - rename this file
+// - rename HttpRequestAsyncStore
 
 // Purpose of this file:
 //  - Swallow redundant error messages (Vite is buggy and emits the same error multiple times)
@@ -21,7 +23,9 @@ import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hook
 assertIsNotProductionRuntime()
 
 type HttpRequestAsyncStore = {
-  httpRequestId: number
+  pageContext: {
+    _httpRequestId: number
+  }
 }
 const globalObject = getGlobalObject('getHttpRequestAsyncStore.ts', {
   asyncLocalStorage: null as AsyncLocalStorageType<HttpRequestAsyncStore> | null,
@@ -39,7 +43,9 @@ async function installHttpRequestAsyncStore(): Promise<void> {
     assert(globalObject.asyncLocalStorage)
 
     const store = {
-      httpRequestId,
+      pageContext: {
+        _httpRequestId: httpRequestId,
+      },
     }
     const pageContextReturn = await globalObject.asyncLocalStorage.run(store, renderPageServer)
     return { pageContextReturn }

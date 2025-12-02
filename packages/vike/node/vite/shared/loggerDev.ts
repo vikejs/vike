@@ -188,11 +188,11 @@ function appendErrorDebugNote(errMsg: string) {
 
 function getTagSource(httpRequestId: number | null = null): TagSource | null {
   const store = getHttpRequestAsyncStore()
-  if (store?.httpRequestId !== undefined) {
+  if (store?.pageContext._httpRequestId !== undefined) {
     if (httpRequestId === null) {
-      httpRequestId = store.httpRequestId
+      httpRequestId = store.pageContext._httpRequestId
     } else {
-      assert(httpRequestId === store.httpRequestId)
+      assert(httpRequestId === store.pageContext._httpRequestId)
     }
   }
   if (httpRequestId === null) return null
