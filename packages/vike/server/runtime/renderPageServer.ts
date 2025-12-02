@@ -74,6 +74,7 @@ import { resolveRedirects } from './renderPageServer/resolveRedirects.js'
 import type { PageContextInternalServer } from '../../types/PageContext.js'
 import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
 import { forkPageContext } from '../../shared-server-client/forkPageContext.js'
+import type { AsyncStore } from '../../node/vite/shared/getHttpRequestAsyncStore.js'
 
 const globalObject = getGlobalObject('runtime/renderPageServer.ts', {
   httpRequestsCount: 0,
@@ -111,8 +112,8 @@ async function renderPageServer<PageContextUserAdded extends {}, PageContextInit
   const urlOriginalPretty = getUrlPretty(pageContextInit.urlOriginal)
   logHttpRequest(urlOriginalPretty, pageContextInit, httpRequestId)
 
-  const { pageContextReturn } = await globalObject.asyncHookWrapper(httpRequestId, () =>
-    renderPageServerEntryOnce(pageContextInit, httpRequestId),
+  const { pageContextReturn } = await globalObject.asyncHookWrapper(httpRequestId, (asyncStore) =>
+    renderPageServerEntryOnce(pageContextInit, httpRequestId, asyncStore),
   )
 
   logHttpResponse(urlOriginalPretty, httpRequestId, pageContextReturn)
@@ -128,14 +129,15 @@ function renderPageServer_addAsyncHookwrapper(wrapper: typeof globalObject.async
 }
 // Fallback wrapper if node:async_hooks isn't available
 function getFallbackAsyncHookWrapper() {
-  return async <PageContext>(_httpRequestId: number, ret: () => Promise<PageContext>) => ({
-    pageContextReturn: await ret(),
+  return async <PageContext>(_httpRequestId: number, ret: (asyncStore: AsyncStore) => Promise<PageContext>) => ({
+    pageContextReturn: await ret(null),
   })
 }
 
 async function renderPageServerEntryOnce(
   pageContextInit: PageContextInit,
   httpRequestId: number,
+  asyncStore: AsyncStore,
 ): Promise<PageContextAfterRender> {
   // Invalid config
   {

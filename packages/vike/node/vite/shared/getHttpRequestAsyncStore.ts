@@ -15,6 +15,7 @@
 
 export { getHttpRequestAsyncStore }
 export { installHttpRequestAsyncStore }
+export type { HttpRequestAsyncStore as AsyncStore }
 
 import { renderPageServer_addAsyncHookwrapper } from '../../../server/runtime/renderPageServer.js'
 import { assert, assertIsNotProductionRuntime, getGlobalObject, isObject } from '../utils.js'
@@ -22,7 +23,7 @@ import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hook
 
 assertIsNotProductionRuntime()
 
-type HttpRequestAsyncStore = {
+type HttpRequestAsyncStore = null | {
   pageContext: {
     _httpRequestId: number
   }
@@ -42,12 +43,13 @@ async function installHttpRequestAsyncStore(): Promise<void> {
   renderPageServer_addAsyncHookwrapper(async (httpRequestId, renderPageServer) => {
     assert(globalObject.asyncLocalStorage)
 
+    // TODO: rename to asyncStore
     const store = {
       pageContext: {
         _httpRequestId: httpRequestId,
       },
     }
-    const pageContextReturn = await globalObject.asyncLocalStorage.run(store, renderPageServer)
+    const pageContextReturn = await globalObject.asyncLocalStorage.run(store, () => renderPageServer(store))
     return { pageContextReturn }
   })
   return
