@@ -13,20 +13,23 @@
 //   - Example of Vite bug leading to swallowing of errors: https://github.com/vitejs/vite/issues/12631
 // - We dedupe errors ourself with getHttpRequestAsyncStore().shouldErrorBeSwallowed()
 
-export { getHttpRequestAsyncStore }
+export { getPageContext_withAsyncStore }
+export { getHttpRequestId_withAsyncStore }
 export { installHttpRequestAsyncStore }
 export type { HttpRequestAsyncStore as AsyncStore }
 
-import { renderPageServer_addAsyncHookwrapper } from '../../../server/runtime/renderPageServer.js'
+import {
+  type PageContextBegin,
+  renderPageServer_addAsyncHookwrapper,
+} from '../../../server/runtime/renderPageServer.js'
 import { assert, assertIsNotProductionRuntime, getGlobalObject, isObject } from '../utils.js'
 import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hooks'
 
 assertIsNotProductionRuntime()
 
 type HttpRequestAsyncStore = null | {
-  pageContext: {
-    _httpRequestId: number
-  }
+  httpRequestId: number
+  pageContext?: PageContextBegin
 }
 const globalObject = getGlobalObject('getHttpRequestAsyncStore.ts', {
   asyncLocalStorage: null as AsyncLocalStorageType<HttpRequestAsyncStore> | null,
@@ -45,19 +48,27 @@ async function installHttpRequestAsyncStore(): Promise<void> {
 
     // TODO: rename to asyncStore
     const store = {
-      pageContext: {
-        _httpRequestId: httpRequestId,
-      },
-    }
+      httpRequestId,
+    } satisfies HttpRequestAsyncStore
     const pageContextReturn = await globalObject.asyncLocalStorage.run(store, () => renderPageServer(store))
     return { pageContextReturn }
   })
   return
 }
 
-function getHttpRequestAsyncStore(): null | undefined | HttpRequestAsyncStore {
+function getAsyncStore() {
   if (globalObject.asyncLocalStorage === null) return null
   const store = globalObject.asyncLocalStorage.getStore()
   assert(store === undefined || isObject(store))
-  return store
+  return store ?? null
+}
+
+function getHttpRequestId_withAsyncStore() {
+  const asyncStore = getAsyncStore()
+  return asyncStore?.httpRequestId ?? null
+}
+
+function getPageContext_withAsyncStore() {
+  const asyncStore = getAsyncStore()
+  return asyncStore?.pageContext ?? null
 }

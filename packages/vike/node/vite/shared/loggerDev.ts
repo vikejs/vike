@@ -31,7 +31,6 @@ import {
   isDebugError,
   stripAnsi,
 } from '../utils.js'
-import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore.js'
 import { isErrorWithCodeSnippet, getPrettyErrorWithCodeSnippet } from './loggerDev/errorWithCodeSnippet.js'
 import {
   getConfigExecutionErrorIntroMsg,
@@ -42,6 +41,7 @@ import { isUserHookError } from '../../../shared-server-client/hooks/execHook.js
 import { getViteDevServer } from '../../../server/runtime/globalContext.js'
 import { logErrorServer } from '../../../server/runtime/logErrorServer.js'
 import { getBetterError } from '../../../utils/getBetterError.js'
+import { getHttpRequestId_withAsyncStore } from './getHttpRequestAsyncStore.js'
 
 assertIsNotProductionRuntime()
 setLogRuntimeDev(logErrorServerDev, logRuntimeInfoDev)
@@ -187,12 +187,12 @@ function appendErrorDebugNote(errMsg: string) {
 }
 
 function getTagSource(httpRequestId: number | null = null): TagSource | null {
-  const store = getHttpRequestAsyncStore()
-  if (store?.pageContext._httpRequestId !== undefined) {
+  const httpRequestIdFromStore = getHttpRequestId_withAsyncStore()
+  if (httpRequestIdFromStore !== null) {
     if (httpRequestId === null) {
-      httpRequestId = store.pageContext._httpRequestId
+      httpRequestId = httpRequestIdFromStore
     } else {
-      assert(httpRequestId === store.pageContext._httpRequestId)
+      assert(httpRequestId === httpRequestIdFromStore)
     }
   }
   if (httpRequestId === null) return null
