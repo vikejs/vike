@@ -1,5 +1,6 @@
 // TODO: refactor
 // - rename this file
+// - move this file to /server/runtime/
 // - rename HttpRequestAsyncStore
 
 // Purpose of this file:
@@ -23,10 +24,11 @@ import {
   renderPageServer_addAsyncHookwrapper,
 } from '../../../server/runtime/renderPageServer.js'
 import { preparePageContextForPublicUsageServer } from '../../../server/runtime/renderPageServer/preparePageContextForPublicUsageServer.js'
-import { assert, assertIsNotProductionRuntime, getGlobalObject, isObject } from '../utils.js'
+import { assert, assertIsNotBrowser, getGlobalObject, isObject } from '../../../server/utils.js'
 import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hooks'
+import { import_ } from '@brillout/import'
 
-assertIsNotProductionRuntime()
+assertIsNotBrowser()
 
 type HttpRequestAsyncStore = null | {
   httpRequestId: number
@@ -39,7 +41,7 @@ const globalObject = getGlobalObject('getHttpRequestAsyncStore.ts', {
 async function installHttpRequestAsyncStore(): Promise<void> {
   let mod: typeof import('node:async_hooks')
   try {
-    mod = await import('node:async_hooks')
+    mod = await import_('node:async_hooks')
   } catch {
     return
   }
