@@ -39,8 +39,8 @@ importers:
   docs:
     dependencies:
       '@batijs/elements':
-        specifier: ^0.0.50
-        version: 0.0.50
+        specifier: ^0.0.51
+        version: 0.0.51
       '@brillout/docpress':
         specifier: ^0.16.2
         version: 0.16.2(@algolia/client-search@5.21.0)(@types/react@19.2.2)(@vitejs/plugin-react-swc@4.1.0(vite@6.3.5(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.9.3)(vike@packages+vike)(vite@6.3.5(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))
@@ -2458,8 +2458,8 @@ packages:
     resolution: {integrity: sha512-qQ5m48eI/MFLQ5PxQj4PFaprjyCTLI37ElWMmNs0K8Lk3dVeOdNpB3ks8jc7yM5CDmVC73eMVk/trk3fgmrUpA==}
     engines: {node: '>=6.9.0'}
 
-  '@batijs/elements@0.0.50':
-    resolution: {integrity: sha512-PsHQdB9pY3JAyiqpfSh/sNMc1XY9FHCMDYLld/6frxYxQtm0Bf/+SaiQlrpyA7EQzdR6IB9Ndh0/QF50wY/jSg==}
+  '@batijs/elements@0.0.51':
+    resolution: {integrity: sha512-ePeyo8DCAVOgu1RA2BDxXV2SvwWd6lSYEO1cyTvYouwITVc9EWRIuXnixCTOQWShMg022VEs0V5OVHckxOQUlQ==}
 
   '@biomejs/biome@1.9.4':
     resolution: {integrity: sha512-1rkd7G70+o9KkTn5KLmDYXihGoTaIGO9PIIN2ZB7UJxFrWw04CZHPYiMRjYsaDvVV7hP1dYNRLxSANLaBFGpog==}
@@ -9166,7 +9166,7 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
 
-  '@batijs/elements@0.0.50': {}
+  '@batijs/elements@0.0.51': {}
 
   '@biomejs/biome@1.9.4':
     optionalDependencies:
