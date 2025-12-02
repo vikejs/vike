@@ -18,6 +18,7 @@ export { getPageContext_withAsyncHook }
 export { getHttpRequestId_withAsyncHook }
 export type { HttpRequestAsyncStore as AsyncStore }
 
+import { preparePageContextForPublicUsageServer } from '../../../server/runtime/renderPageServer/preparePageContextForPublicUsageServer.js'
 import {
   type PageContextBegin,
   renderPageServer_addAsyncHookwrapper,
@@ -73,5 +74,7 @@ function getHttpRequestId_withAsyncHook() {
 
 function getPageContext_withAsyncHook() {
   const asyncStore = getAsyncStore()
-  return asyncStore?.pageContext ?? null
+  const pageContext = asyncStore?.pageContext
+  if (!pageContext) return null
+  return preparePageContextForPublicUsageServer(pageContext as any)
 }
