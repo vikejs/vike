@@ -1,7 +1,7 @@
 export { improveViteLogs }
 
 import { assert, isDebugError, removeEmptyLines, trimWithAnsi, trimWithAnsiTrailOnly } from '../utils.js'
-import { getHttpRequestId_withAyncHook } from './getHttpRequestAsyncStore.js'
+import { getHttpRequestId_withAsyncHook } from './getHttpRequestAsyncStore.js'
 import { logErrorServerDev, logVite } from './loggerDev.js'
 import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog.js'
 import type { LogType as LoggerType, ResolvedConfig, LogErrorOptions } from 'vite'
@@ -40,7 +40,7 @@ function intercept(loggerType: LoggerType, config: ResolvedConfig) {
       return
     }
 
-    const httpRequestId = getHttpRequestId_withAyncHook()
+    const httpRequestId = getHttpRequestId_withAsyncHook()
 
     // Vite's default logger preprends the "[vite]" tag if and only if options.timestamp is true
     const prependViteTag = options.timestamp || typeof httpRequestId === 'number'

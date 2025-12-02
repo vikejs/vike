@@ -13,8 +13,8 @@
 //   - Example of Vite bug leading to swallowing of errors: https://github.com/vitejs/vite/issues/12631
 // - We dedupe errors ourself with getHttpRequestAsyncStore().shouldErrorBeSwallowed()
 
-export { getPageContext_withAyncHook }
-export { getHttpRequestId_withAyncHook }
+export { getPageContext_withAsyncHook }
+export { getHttpRequestId_withAsyncHook }
 export { installHttpRequestAsyncStore }
 export type { HttpRequestAsyncStore as AsyncStore }
 
@@ -63,12 +63,12 @@ function getAsyncStore() {
   return store ?? null
 }
 
-function getHttpRequestId_withAyncHook() {
+function getHttpRequestId_withAsyncHook() {
   const asyncStore = getAsyncStore()
   return asyncStore?.httpRequestId ?? null
 }
 
-function getPageContext_withAyncHook() {
+function getPageContext_withAsyncHook() {
   const asyncStore = getAsyncStore()
   return asyncStore?.pageContext ?? null
 }
