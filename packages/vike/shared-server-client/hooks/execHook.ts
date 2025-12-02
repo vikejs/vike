@@ -172,6 +172,10 @@ function execHookDirectAsync<HookReturn>(
   ;(async () => {
     try {
       providePageContextInternal(pageContextForPublicUsage)
+      // Store proxy in async store for getPageContext({ asyncHook: true })
+      if (pageContextForPublicUsage && (pageContextForPublicUsage as any)._asyncStore) {
+        ;(pageContextForPublicUsage as any)._asyncStore.pageContext = pageContextForPublicUsage
+      }
       const ret = await hookFnCaller()
       resolve(ret)
     } catch (err) {
@@ -192,6 +196,10 @@ function execHookDirectSync<PageContext extends PageContextPrepareMinimum>(
 ) {
   const pageContextForPublicUsage = preparePageContextForPublicUsage(pageContext)
   providePageContextInternal(pageContextForPublicUsage)
+  // Store proxy in async store for getPageContext({ asyncHook: true })
+  if ((pageContextForPublicUsage as any)._asyncStore) {
+    ;(pageContextForPublicUsage as any)._asyncStore.pageContext = pageContextForPublicUsage
+  }
   const hookReturn = hook.hookFn(pageContextForPublicUsage)
   return { hookReturn }
 }

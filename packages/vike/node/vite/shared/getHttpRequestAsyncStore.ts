@@ -75,5 +75,8 @@ function getPageContext_withAsyncHook() {
   const asyncStore = getAsyncStore()
   const pageContext = asyncStore?.pageContext
   if (!pageContext) return null
+  // If it's already a proxy (set by execHook), return it directly
+  if ((pageContext as any)._isProxyObject) return pageContext
+  // Otherwise create a new proxy (for backwards compatibility)
   return preparePageContextForPublicUsageServer(pageContext as any)
 }
