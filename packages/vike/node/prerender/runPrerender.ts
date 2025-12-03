@@ -70,7 +70,6 @@ import fs from 'node:fs'
 import { getProxyForPublicUsage } from '../../shared-server-client/getProxyForPublicUsage.js'
 import { getStaticRedirectsForPrerender } from '../../server/runtime/renderPageServer/resolveRedirects.js'
 import { updateType } from '../../server/utils.js'
-import { getAsyncLocalStorage, type AsyncStore } from '../../server/runtime/asyncHook.js'
 const docLink = 'https://vike.dev/i18n#pre-rendering'
 
 type HtmlFile = {
@@ -840,36 +839,23 @@ async function prerenderPages(
   concurrencyLimit: PLimit,
   onComplete: (htmlFile: HtmlFile) => Promise<void>,
 ) {
-  const asyncLocalStorage = await getAsyncLocalStorage()
-  let prerenderRequestId = 0
   await Promise.all(
     prerenderContext.pageContexts.map((pageContextBeforeRender) =>
       concurrencyLimit(async () => {
-        const httpRequestId = ++prerenderRequestId
-        const asyncStore: AsyncStore = { httpRequestId }
-        // Update pageContext with asyncStore before rendering
-        objectAssign(pageContextBeforeRender, { _asyncStore: asyncStore })
-        const renderPage = async () => {
-          let res: Awaited<ReturnType<typeof prerenderPage>>
-          try {
-            res = await prerenderPage(pageContextBeforeRender)
-          } catch (err) {
-            assertIsNotAbort(err, pc.cyan(pageContextBeforeRender.urlOriginal))
-            throw err
-          }
-          const { documentHtml, pageContext } = res
-          const pageContextSerialized = pageContext.is404 ? null : res.pageContextSerialized
-          await onComplete({
-            pageContext,
-            htmlString: documentHtml,
-            pageContextSerialized,
-          })
+        let res: Awaited<ReturnType<typeof prerenderPage>>
+        try {
+          res = await prerenderPage(pageContextBeforeRender)
+        } catch (err) {
+          assertIsNotAbort(err, pc.cyan(pageContextBeforeRender.urlOriginal))
+          throw err
         }
-        if (asyncLocalStorage) {
-          await asyncLocalStorage.run(asyncStore, renderPage)
-        } else {
-          await renderPage()
-        }
+        const { documentHtml, pageContext } = res
+        const pageContextSerialized = pageContext.is404 ? null : res.pageContextSerialized
+        await onComplete({
+          pageContext,
+          htmlString: documentHtml,
+          pageContextSerialized,
+        })
       }),
     ),
   )
