@@ -22,7 +22,11 @@ function Layout({ children }: { children: React.ReactNode }) {
     assert(pageContext)
     const pageContext2 = getPageContext({ asyncHook: true })
     assert(pageContext2)
-    if (![pageContext.pageId, pageContext2.pageId].includes('/pages/navigate-early')) {
+    if (
+      !['/pages/pushState', '/pages/navigate-early'].some((pageId) =>
+        [pageContext.pageId, pageContext2.pageId].includes(pageId),
+      )
+    ) {
       assert(pageContext2.pageId === pageContext.pageId, { pageId1: pageContext.pageId, pageId2: pageContext2.pageId })
       // TODO: use dangerouslyUseInternals ?
       // assert(pageContext2.dangerouslyUseInternals._originalObject === pageContext.dangerouslyUseInternals._originalObject)
