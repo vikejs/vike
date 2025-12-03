@@ -3,17 +3,6 @@
 // - move this file to /server/runtime/
 // - rename HttpRequestAsyncStore
 
-// Purpose of this file:
-//  - Swallow redundant error messages (Vite is buggy and emits the same error multiple times)
-//  - Prepend "[request(n)]" tag to Vite logs
-
-// The mechanism is skipped if the development environment doesn't support Async Hooks.
-
-// We purposely don't use config.logger.hasErrorLogged(err) because:
-// - We don't trust Vite with such details
-//   - Example of Vite bug leading to swallowing of errors: https://github.com/vitejs/vite/issues/12631
-// - We dedupe errors ourself with getHttpRequestAsyncStore().shouldErrorBeSwallowed()
-
 export { getPageContext_withAsyncHook }
 export { getHttpRequestId_withAsyncHook }
 export type { HttpRequestAsyncStore as AsyncStore }
