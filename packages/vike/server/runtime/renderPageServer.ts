@@ -73,12 +73,7 @@ import { resolveRedirects } from './renderPageServer/resolveRedirects.js'
 import type { PageContextInternalServer } from '../../types/PageContext.js'
 import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
 import { forkPageContext } from '../../shared-server-client/forkPageContext.js'
-import {
-  getPageContext_withAsyncHook,
-  getHttpRequestId_withAsyncHook,
-  getAsyncLocalStorage,
-  type AsyncStore,
-} from './asyncHook.js'
+import { getAsyncLocalStorage, type AsyncStore } from './asyncHook.js'
 
 const globalObject = getGlobalObject('runtime/renderPageServer.ts', {
   httpRequestsCount: 0,
