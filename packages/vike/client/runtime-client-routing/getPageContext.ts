@@ -1,6 +1,8 @@
 export { getPageContext }
 export { providePageContext }
 
+// TODO: set default asyncHook parameter value to `true` iff `+asyncHook: true`
+
 import { getPageContext as getPageContext_sync, providePageContext } from '../../shared-server-client/hooks/execHook.js'
 import { getPageContextClient } from './renderPageClient.js'
 import type { GetPageContextParams } from '../../server/runtime/getPageContext.js'
