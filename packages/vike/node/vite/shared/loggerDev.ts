@@ -41,7 +41,7 @@ import { isUserHookError } from '../../../shared-server-client/hooks/execHook.js
 import { getViteDevServer } from '../../../server/runtime/globalContext.js'
 import { logErrorServer } from '../../../server/runtime/logErrorServer.js'
 import { getBetterError } from '../../../utils/getBetterError.js'
-import { getHttpRequestId_withAsyncHook } from './getHttpRequestAsyncStore.js'
+import { getHttpRequestId_withAsyncHook } from '../../../server/runtime/asyncHook.js'
 
 assertIsNotProductionRuntime()
 setLogRuntimeDev(logErrorServerDev, logRuntimeInfoDev)

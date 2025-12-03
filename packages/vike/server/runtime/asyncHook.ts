@@ -7,12 +7,9 @@ export { getPageContext_withAsyncHook }
 export { getHttpRequestId_withAsyncHook }
 export type { HttpRequestAsyncStore as AsyncStore }
 
-import { preparePageContextForPublicUsageServer } from '../../../server/runtime/renderPageServer/preparePageContextForPublicUsageServer.js'
-import {
-  type PageContextBegin,
-  renderPageServer_addAsyncHookwrapper,
-} from '../../../server/runtime/renderPageServer.js'
-import { assert, assertIsNotBrowser, getGlobalObject, isObject } from '../../../server/utils.js'
+import { preparePageContextForPublicUsageServer } from './renderPageServer/preparePageContextForPublicUsageServer.js'
+import { type PageContextBegin, renderPageServer_addAsyncHookwrapper } from './renderPageServer.js'
+import { assert, assertIsNotBrowser, getGlobalObject, isObject } from '../utils.js'
 import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hooks'
 import { import_ } from '@brillout/import'
 
