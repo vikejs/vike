@@ -88,6 +88,22 @@ async function renderPageServerAfterRoute<
   return pageContext
 }
 
+async function prerenderPage(
+  pageContext: Parameters<typeof prerenderPageEntry>[0],
+  httpRequestId: number,
+) {
+  const asyncLocalStorage = await getAsyncLocalStorage()
+  const asyncStore: AsyncStore = { httpRequestId }
+  objectAssign(pageContext, { _asyncStore: asyncStore, _httpRequestId: httpRequestId })
+  asyncStore.pageContext = pageContext
+  const render = async () => await prerenderPageEntry(pageContext)
+  if (asyncLocalStorage) {
+    return await asyncLocalStorage.run(asyncStore, render)
+  } else {
+    return await render()
+  }
+}
+
 async function prerenderPageEntry(
   pageContext: PageContextCreated &
     PageConfigsLazy & {
@@ -125,21 +141,5 @@ async function prerenderPageEntry(
   } else {
     const pageContextSerialized = getPageContextClientSerialized(pageContext, false)
     return { documentHtml, pageContextSerialized, pageContext }
-  }
-}
-
-async function prerenderPage(
-  pageContext: Parameters<typeof prerenderPageEntry>[0],
-  httpRequestId: number,
-) {
-  const asyncLocalStorage = await getAsyncLocalStorage()
-  const asyncStore: AsyncStore = { httpRequestId }
-  objectAssign(pageContext, { _asyncStore: asyncStore, _httpRequestId: httpRequestId })
-  asyncStore.pageContext = pageContext
-  const render = async () => await prerenderPageEntry(pageContext)
-  if (asyncLocalStorage) {
-    return await asyncLocalStorage.run(asyncStore, render)
-  } else {
-    return await render()
   }
 }
