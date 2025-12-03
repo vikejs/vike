@@ -1,5 +1,4 @@
 export { renderPageServer }
-export { renderPageServer_addAsyncHookwrapper }
 export type { PageContextInit }
 export type { PageContextBegin }
 
@@ -74,11 +73,10 @@ import { resolveRedirects } from './renderPageServer/resolveRedirects.js'
 import type { PageContextInternalServer } from '../../types/PageContext.js'
 import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
 import { forkPageContext } from '../../shared-server-client/forkPageContext.js'
-import type { AsyncStore } from './asyncHook.js'
+import { getAsyncLocalStorage, type AsyncStore } from './asyncHook.js'
 
 const globalObject = getGlobalObject('runtime/renderPageServer.ts', {
   httpRequestsCount: 0,
-  asyncHookWrapper: getFallbackAsyncHookWrapper(),
 })
 
 type PageContextAfterRender = {
@@ -112,27 +110,19 @@ async function renderPageServer<PageContextUserAdded extends {}, PageContextInit
   const urlOriginalPretty = getUrlPretty(pageContextInit.urlOriginal)
   logHttpRequest(urlOriginalPretty, pageContextInit, httpRequestId)
 
-  const { pageContextReturn } = await globalObject.asyncHookWrapper(httpRequestId, (asyncStore) =>
-    renderPageServerEntryOnce(pageContextInit, httpRequestId, asyncStore),
-  )
+  const asyncStore: AsyncStore = { httpRequestId }
+  const asyncLocalStorage = await getAsyncLocalStorage()
+  const pageContextReturn = asyncLocalStorage
+    ? await asyncLocalStorage.run(asyncStore, () =>
+        renderPageServerEntryOnce(pageContextInit, httpRequestId, asyncStore),
+      )
+    : await renderPageServerEntryOnce(pageContextInit, httpRequestId, null)
 
   logHttpResponse(urlOriginalPretty, httpRequestId, pageContextReturn)
 
   checkType<PageContextAfterRender>(pageContextReturn)
   assert(pageContextReturn.httpResponse)
   return pageContextReturn as any
-}
-
-// TODO: refactor
-// Add node:async_hooks wrapper
-function renderPageServer_addAsyncHookwrapper(wrapper: typeof globalObject.asyncHookWrapper) {
-  globalObject.asyncHookWrapper = wrapper
-}
-// Fallback wrapper if node:async_hooks isn't available
-function getFallbackAsyncHookWrapper() {
-  return async <PageContext>(_httpRequestId: number, ret: (asyncStore: AsyncStore) => Promise<PageContext>) => ({
-    pageContextReturn: await ret(null),
-  })
 }
 
 async function renderPageServerEntryOnce(
