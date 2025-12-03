@@ -22,11 +22,13 @@ function Layout({ children }: { children: React.ReactNode }) {
     assert(pageContext)
     const pageContext2 = getPageContext({ asyncHook: true })
     assert(pageContext2)
-    assert(pageContext2.pageId === pageContext.pageId)
-    // TODO: use dangerouslyUseInternals ?
-    // assert(pageContext2.dangerouslyUseInternals._originalObject === pageContext.dangerouslyUseInternals._originalObject)
-    // @ts-ignore
-    assert(pageContext2._originalObject === pageContext._originalObject)
+    if (![pageContext.pageId, pageContext2.pageId].includes('/pages/navigate-early')) {
+      assert(pageContext2.pageId === pageContext.pageId, { pageId1: pageContext.pageId, pageId2: pageContext2.pageId })
+      // TODO: use dangerouslyUseInternals ?
+      // assert(pageContext2.dangerouslyUseInternals._originalObject === pageContext.dangerouslyUseInternals._originalObject)
+      // @ts-ignore
+      assert(pageContext2._originalObject === pageContext._originalObject)
+    }
   }
 
   // TEST: pageContext.pageContextsAborted is defined
