@@ -5,7 +5,7 @@ export { execHookDirectSingle }
 export { execHookDirectSingleWithReturn }
 export { execHookDirectWithoutPageContext }
 export { execHookDirectSync }
-export { getPageContext }
+export { getPageContext_sync }
 export { providePageContext }
 export { isUserHookError }
 export type { PageContextExecHook }
@@ -200,8 +200,7 @@ function isNotDisabled(timeout: false | number): timeout is number {
   return !!timeout && timeout !== Infinity
 }
 
-// TODO: rename function
-function getPageContext<PageContext = PageContextClient | PageContextServer>(): null | PageContext {
+function getPageContext_sync<PageContext = PageContextClient | PageContextServer>(): null | PageContext {
   const { pageContext } = globalObject
   if (!pageContext) return null
   const pageContextForPublicUsage = (pageContext as Record<string, unknown>)._isProxyObject

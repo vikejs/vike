@@ -3,7 +3,7 @@ export { providePageContext }
 export type { GetPageContextParams }
 
 import { getPageContext_withAsyncHook } from '../../node/vite/shared/getHttpRequestAsyncStore.js'
-import { getPageContext as getPageContext_sync, providePageContext } from '../../shared-server-client/hooks/execHook.js'
+import { getPageContext_sync, providePageContext } from '../../shared-server-client/hooks/execHook.js'
 import type { PageContextClient, PageContextServer } from '../../types/PageContext.js'
 
 type GetPageContextParams = Parameters<typeof getPageContext>[0]
