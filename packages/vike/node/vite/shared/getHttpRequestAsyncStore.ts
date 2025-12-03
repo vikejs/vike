@@ -36,9 +36,10 @@ const globalObject = getGlobalObject('getHttpRequestAsyncStore.ts', {
   asyncLocalStorage: null as AsyncLocalStorageType<HttpRequestAsyncStore> | null,
   installPromise: null as Promise<void> | null,
 })
-globalObject.installPromise = install()
+globalObject.installPromise = installHttpRequestAsyncStore()
 
-async function install(): Promise<void> {
+// TODO: rename
+async function installHttpRequestAsyncStore(): Promise<void> {
   let mod: typeof import('node:async_hooks')
   try {
     mod = await import_('node:async_hooks')
@@ -49,11 +50,10 @@ async function install(): Promise<void> {
   renderPageServer_addAsyncHookwrapper(async (httpRequestId, renderPageServer) => {
     assert(globalObject.asyncLocalStorage)
     await globalObject.installPromise
-
     // TODO: rename to asyncStore
-    const store = {
+    const store: HttpRequestAsyncStore = {
       httpRequestId,
-    } satisfies HttpRequestAsyncStore
+    }
     const pageContextReturn = await globalObject.asyncLocalStorage.run(store, () => renderPageServer(store))
     return { pageContextReturn }
   })
