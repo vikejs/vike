@@ -13,6 +13,7 @@ function getPageContext({ asyncHook }: GetPageContextParams = {}): TypeIsNotExpo
     if (pageContext) return pageContext as TypeIsNotExported
   }
 
+  // We only use getPageContextClient() if `asyncHook: true` in order to foster isomorphic code (so that, for example, toggling `ssr: boolean` works seamlessly)
   if (asyncHook) {
     const pageContext = getPageContextClient()
     if (pageContext) return pageContext as TypeIsNotExported
