@@ -23,7 +23,7 @@ import type { PageContext } from 'vike/types'
 
 function onCreateApp(pageContext: PageContext) {
   if (pageContext.isRenderingHead) {
-    // Don't add the plugin when rendering <head> (see Lifecycle)
+    // Don't add plugins when rendering <head> (see Lifecycle)
     return
   }
   const app = pageContext.app!

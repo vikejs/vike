@@ -69,20 +69,41 @@ export function onAfterRenderHtml(pageContext: PageContextServer) {
   pageContext.storeInitialState = pageContext.store.getState()
 }
 ```
-If you use React then you may also need to use <Link href="/Wrapper">`+Wrapper`</Link>:
-```tsx
-// pages/+Wrapper.tsx
-// Environment: server, client
 
-import React from 'react'
-import { Provider } from 'awesome-store/react'
-import { usePageContext } from 'vike-react/usePageContext'
+> **If you use React or Solid**, you may need to use <Link href="/Wrapper">`+Wrapper`</Link>:
+> ```tsx
+> // pages/+Wrapper.tsx
+> // Environment: server, client
+>
+> import React from 'react'
+> import { Provider } from 'awesome-store/react'
+> import { usePageContext } from 'vike-react/usePageContext'
+>
+> export default function StoreProvider({ children }: { children: React.ReactNode }) {
+>   const pageContext = usePageContext()
+>   return <Provider store={pageContext.store}>{children}</Provider>
+> }
+> ```
 
-export default function StoreProvider({ children }: { children: React.ReactNode }) {
-  const pageContext = usePageContext()
-  return <Provider store={pageContext.store}>{children}</Provider>
-}
-```
+> **If you use Vue**, you may need to use <Link href="/onCreateApp">`+onCreateApp`</Link>:
+> ```ts
+> // pages/+onCreateApp.ts
+> // Environment: server & client
+>
+> export { onCreateApp }
+>
+> import StoreVuePlugin from 'awesome-store/vue-plugin'
+> import type { PageContext } from 'vike/types'
+>
+> function onCreateApp(pageContext: PageContext) {
+>   if (pageContext.isRenderingHead) {
+>     // Don't add plugins when rendering <head> — see https://vike.dev/onCreateApp#lifecycle
+>     return
+>   }
+>   const app = pageContext.app!
+>   app.use(StoreVuePlugin)
+> }
+> ```
 
 **2. `passToClient`**
 
