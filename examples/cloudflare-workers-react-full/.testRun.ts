@@ -20,7 +20,8 @@ function testRun(
   const isWrangler = cmd === 'npm run preview'
   const isProd = cmd !== 'npm run dev'
 
-  /* Manually disabled
+  // TODO/tomorrow re-enable
+  //* Manually disabled
   if (isWrangler) {
     skip('SKIPPED: temporarily skip wrangler tests.')
     return
