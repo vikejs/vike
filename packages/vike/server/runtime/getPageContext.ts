@@ -7,6 +7,11 @@ import { getPageContext as getPageContext_sync, providePageContext } from '../..
 import type { PageContextClient, PageContextServer } from '../../types/PageContext.js'
 
 type GetPageContextParams = Parameters<typeof getPageContext>[0]
+/**
+ * Access `pageContext` object inside Vike hooks, in order to create universal hooks.
+ *
+ * https://vike.dev/getPageContext
+ */
 function getPageContext<PageContext = PageContextClient | PageContextServer>({
   asyncHook,
 }: { asyncHook?: boolean } = {}): null | PageContext {
