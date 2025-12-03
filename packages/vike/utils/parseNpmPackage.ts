@@ -35,10 +35,12 @@ function assertIsImportPathNpmPackage(str: string): void {
   )
 }
 
+/*
 function isNpmPackageName(str: string | undefined): boolean {
   const res = parseNpmPackage(str)
   return res !== null && res.importPath === null
 }
+*/
 
 function getNpmPackageName(str: string): null | string {
   const res = parseNpmPackage(str)
@@ -46,11 +48,13 @@ function getNpmPackageName(str: string): null | string {
   return res.pkgName
 }
 
+/*
 function getNpmPackageImportPath(str: string): null | string {
   const res = parseNpmPackage(str)
   if (!res) return null
   return res.importPath
 }
+*/
 
 function isPathAliasRecommended(alias: string): boolean {
   // Cannot be distinguished from npm package names

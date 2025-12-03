@@ -19,6 +19,7 @@ function handlePageContextRequestUrl(url: string) {
     }
   } else {
     const { urlWithoutPageContextRequestSuffix, searchVikeArgs } = processUrl(urlParsed, url)
+    // @ts-ignore
     const previousUrl = parseSearchVikeArgs(searchVikeArgs)
     return {
       /* TO-DO/soon/once: pass & use previousUrl

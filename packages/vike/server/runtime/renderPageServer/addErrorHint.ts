@@ -181,6 +181,7 @@ function getErrStack(err: unknown): null | string {
   return err.stack
 }
 
+/*
 function collectError(err: any) {
   console.log(
     [
@@ -191,16 +192,17 @@ function collectError(err: any) {
       '}',
     ].join('\n'),
   )
-  /* For reproductions using older vite-plugin-ssr versions, do one of the following.
-      - If upon pre-rendering:https: //github.com/brillout/repro_node-syntax-error#error-catched-by-vite-plugin-ssr
-      - Inject the logger inside `catch` in node_modules/vite-plugin-ssr/dist/server/runtime/renderPageServer.js
-      - Inject the following inside `configResolved(config_)` at node_modules/vite-plugin-ssr/dist/cjs/node/vite/plugins/pluginDev/index.js
-        ```js
-        config_.logger.error = (msg, options) => {
-          const { error } = options;
-          if (error) return;
-          console.log(...);
-        };
-        ```
-  */
+  // For reproductions using older vite-plugin-ssr versions, do one of the following.
+  //  - If upon pre-rendering:https: //github.com/brillout/repro_node-syntax-error#error-catched-by-vite-plugin-ssr
+  //  - Inject the logger inside `catch` in node_modules/vite-plugin-ssr/dist/server/runtime/renderPageServer.js
+  //  - Inject the following inside `configResolved(config_)` at node_modules/vite-plugin-ssr/dist/cjs/node/vite/plugins/pluginDev/index.js
+  //    ```js
+  //    config_.logger.error = (msg, options) => {
+  //      const { error } = options;
+  //      if (error) return;
+  //      console.log(...);
+  //    };
+  //    ```
+  //
 }
+*/

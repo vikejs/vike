@@ -268,16 +268,16 @@ function isJsonValue(value: unknown): boolean {
   }
   return true
 }
-function logJsonSerializeError(err: unknown, configName: string, definedAtData: DefinedAtData) {
+function logJsonSerializeError(_err: unknown, configName: string, definedAtData: DefinedAtData) {
   /*
   // import { isJsonSerializerError } from '@brillout/json-serializer/stringify'
   let serializationErrMsg = ''
-  if (isJsonSerializerError(err)) {
-    serializationErrMsg = err.messageCore
+  if (isJsonSerializerError(_err)) {
+    serializationErrMsg = _err.messageCore
   } else {
     // When a property getter throws an error
     console.error('Serialization error:')
-    console.error(err)
+    console.error(_err)
     serializationErrMsg = 'see serialization error printed above'
   }
   //*/

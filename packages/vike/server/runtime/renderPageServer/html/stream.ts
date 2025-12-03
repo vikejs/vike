@@ -77,8 +77,9 @@ type StreamProviderAny =
   // pipeNodeStream()
   | StreamPipeNodeWrapped
 
-// Not needed but just to clarify StreamProvider vs StreamConsumer
+/* Not needed but just to clarify StreamProvider vs StreamConsumer
 type StreamConsumer = StreamWritableWeb | StreamWritableNode
+*/
 
 // ReactDOMServer.renderToNodeStream() returns a NodeJS.ReadableStream which differs from Stream.Readable
 type StreamTypePatch = NodeJS.ReadableStream
@@ -357,8 +358,9 @@ async function processStream(
       })
     },
     async onEnd(
-      // Should we use this `isCancel`? Maybe we can skip `injectStringAtEnd()`?
+      /* Should we use this `isCancel`? Maybe we can skip `injectStringAtEnd()`?
       isCancel,
+      */
     ) {
       try {
         assert(!onEndWasCalled)
