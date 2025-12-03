@@ -28,16 +28,15 @@ import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hook
 import { import_ } from '@brillout/import'
 
 assertIsNotBrowser()
-// TODO: await installPromise
-const installPromise = installHttpRequestAsyncStore()
-
 type HttpRequestAsyncStore = null | {
   httpRequestId: number
   pageContext?: PageContextBegin
 }
 const globalObject = getGlobalObject('getHttpRequestAsyncStore.ts', {
   asyncLocalStorage: null as AsyncLocalStorageType<HttpRequestAsyncStore> | null,
+  installPromise: null as Promise<void> | null,
 })
+globalObject.installPromise = installHttpRequestAsyncStore()
 
 async function installHttpRequestAsyncStore(): Promise<void> {
   let mod: typeof import('node:async_hooks')
@@ -49,6 +48,7 @@ async function installHttpRequestAsyncStore(): Promise<void> {
   globalObject.asyncLocalStorage = new mod.AsyncLocalStorage()
   renderPageServer_addAsyncHookwrapper(async (httpRequestId, renderPageServer) => {
     assert(globalObject.asyncLocalStorage)
+    await globalObject.installPromise
 
     // TODO: rename to asyncStore
     const store = {
