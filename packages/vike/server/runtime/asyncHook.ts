@@ -31,11 +31,10 @@ async function install(): Promise<void> {
   renderPageServer_addAsyncHookwrapper(async (httpRequestId, renderPageServer) => {
     assert(globalObject.asyncLocalStorage)
     await globalObject.installPromise
-    // TODO: rename to asyncStore
-    const store: AsyncStore = {
+    const asyncStore: AsyncStore = {
       httpRequestId,
     }
-    const pageContextReturn = await globalObject.asyncLocalStorage.run(store, () => renderPageServer(store))
+    const pageContextReturn = await globalObject.asyncLocalStorage.run(asyncStore, () => renderPageServer(asyncStore))
     return { pageContextReturn }
   })
   return
