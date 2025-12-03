@@ -16,7 +16,6 @@
 
 export { getPageContext_withAsyncHook }
 export { getHttpRequestId_withAsyncHook }
-export { installHttpRequestAsyncStore }
 export type { HttpRequestAsyncStore as AsyncStore }
 
 import {
@@ -28,6 +27,8 @@ import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hook
 import { import_ } from '@brillout/import'
 
 assertIsNotBrowser()
+// TODO: await installPromise
+const installPromise = installHttpRequestAsyncStore()
 
 type HttpRequestAsyncStore = null | {
   httpRequestId: number

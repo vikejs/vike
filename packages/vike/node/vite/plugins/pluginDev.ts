@@ -7,7 +7,6 @@ import { determineFsAllowList } from './pluginDev/determineFsAllowList.js'
 import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
 import { applyDev, assertWarning, isDocker, isDebugError } from '../utils.js'
 import { improveViteLogs } from '../shared/loggerVite.js'
-import { installHttpRequestAsyncStore } from '../shared/getHttpRequestAsyncStore.js'
 import pc from '@brillout/picocolors'
 
 if (isDebugError()) {
@@ -50,7 +49,6 @@ function pluginDev(): Plugin[] {
           await determineOptimizeDeps(config)
           await determineFsAllowList(config)
           if (!isDebugError()) {
-            await installHttpRequestAsyncStore()
             improveViteLogs(config)
           }
           logDockerHint(config.server.host)
