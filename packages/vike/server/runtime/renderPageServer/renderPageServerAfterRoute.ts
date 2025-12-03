@@ -134,15 +134,9 @@ async function prerenderPage(
 ) {
   const asyncLocalStorage = await getAsyncLocalStorage()
   const asyncStore: AsyncStore = { httpRequestId }
-
-  const render = async () => {
-    // Set _asyncStore on pageContext before rendering so it's available in hooks
-    objectAssign(pageContext, { _asyncStore: asyncStore })
-    asyncStore.pageContext = pageContext as any
-
-    return await prerenderPageEntry(pageContext)
-  }
-
+  objectAssign(pageContext, { _asyncStore: asyncStore, _httpRequestId: httpRequestId })
+  asyncStore.pageContext = pageContext
+  const render = async () => await prerenderPageEntry(pageContext)
   if (asyncLocalStorage) {
     return await asyncLocalStorage.run(asyncStore, render)
   } else {
