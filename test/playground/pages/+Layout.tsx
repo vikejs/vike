@@ -6,6 +6,7 @@ import { usePageContext } from 'vike-react/usePageContext'
 import { assert } from '../utils/assert'
 import type { GlobalContextClient } from 'vike/types'
 import { someFnClient, someFnServer } from './someFn'
+import { getPageContext } from 'vike/getPageContext'
 
 function Layout({ children }: { children: React.ReactNode }) {
   /*
@@ -14,6 +15,25 @@ function Layout({ children }: { children: React.ReactNode }) {
 
   const pageContext = usePageContext()
   const globalContext = pageContext.globalContext
+
+  // TODO try to make it work with pre-rendering
+  // TEST: getPageContext()
+  if (!pageContext.isPrerendering) {
+    assert(pageContext)
+    const pageContext2 = getPageContext({ asyncHook: true })
+    assert(pageContext2)
+    if (
+      !['/pages/pushState', '/pages/navigate-early'].some(
+        (pageId) => pageContext.pageId === pageId || pageContext2.pageId === pageId,
+      )
+    ) {
+      assert(pageContext2.pageId === pageContext.pageId, { pageId1: pageContext.pageId, pageId2: pageContext2.pageId })
+      // TODO: use dangerouslyUseInternals ?
+      // assert(pageContext2.dangerouslyUseInternals._originalObject === pageContext.dangerouslyUseInternals._originalObject)
+      // @ts-ignore
+      assert(pageContext2._originalObject === pageContext._originalObject)
+    }
+  }
 
   // TEST: pageContext.pageContextsAborted is defined
   assert(Array.isArray(pageContext.pageContextsAborted))

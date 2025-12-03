@@ -1,8 +1,8 @@
 export { improveViteLogs }
 
 import { assert, isDebugError, removeEmptyLines, trimWithAnsi, trimWithAnsiTrailOnly } from '../utils.js'
+import { getHttpRequestId_withAsyncHook } from './getHttpRequestAsyncStore.js'
 import { logErrorServerDev, logVite } from './loggerDev.js'
-import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore.js'
 import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog.js'
 import type { LogType as LoggerType, ResolvedConfig, LogErrorOptions } from 'vite'
 
@@ -26,8 +26,6 @@ function intercept(loggerType: LoggerType, config: ResolvedConfig) {
     }
     msg = cleanFirstViteLog(msg)
 
-    const store = getHttpRequestAsyncStore()
-
     if (options.error) {
       // Vite does a poor job of handling errors.
       //  - It doesn't format error code snippets.
@@ -42,10 +40,12 @@ function intercept(loggerType: LoggerType, config: ResolvedConfig) {
       return
     }
 
+    const httpRequestId = getHttpRequestId_withAsyncHook()
+
     // Vite's default logger preprends the "[vite]" tag if and only if options.timestamp is true
-    const prependViteTag = options.timestamp || !!store?.httpRequestId
+    const prependViteTag = options.timestamp || typeof httpRequestId === 'number'
     // If it's an actual error => options.error is set => it's handled with logErrorServerDev() above
-    logVite(msg, loggerType, store?.httpRequestId ?? null, prependViteTag)
+    logVite(msg, loggerType, httpRequestId, prependViteTag)
   }
 }
 

@@ -74,6 +74,7 @@ import { resolveRedirects } from './renderPageServer/resolveRedirects.js'
 import type { PageContextInternalServer } from '../../types/PageContext.js'
 import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
 import { forkPageContext } from '../../shared-server-client/forkPageContext.js'
+import type { AsyncStore } from '../../node/vite/shared/getHttpRequestAsyncStore.js'
 
 const globalObject = getGlobalObject('runtime/renderPageServer.ts', {
   httpRequestsCount: 0,
@@ -111,8 +112,8 @@ async function renderPageServer<PageContextUserAdded extends {}, PageContextInit
   const urlOriginalPretty = getUrlPretty(pageContextInit.urlOriginal)
   logHttpRequest(urlOriginalPretty, pageContextInit, httpRequestId)
 
-  const { pageContextReturn } = await globalObject.asyncHookWrapper(httpRequestId, () =>
-    renderPageServerEntryOnce(pageContextInit, httpRequestId),
+  const { pageContextReturn } = await globalObject.asyncHookWrapper(httpRequestId, (asyncStore) =>
+    renderPageServerEntryOnce(pageContextInit, httpRequestId, asyncStore),
   )
 
   logHttpResponse(urlOriginalPretty, httpRequestId, pageContextReturn)
@@ -122,20 +123,22 @@ async function renderPageServer<PageContextUserAdded extends {}, PageContextInit
   return pageContextReturn as any
 }
 
+// TODO: refactor
 // Add node:async_hooks wrapper
 function renderPageServer_addAsyncHookwrapper(wrapper: typeof globalObject.asyncHookWrapper) {
   globalObject.asyncHookWrapper = wrapper
 }
 // Fallback wrapper if node:async_hooks isn't available
 function getFallbackAsyncHookWrapper() {
-  return async <PageContext>(_httpRequestId: number, ret: () => Promise<PageContext>) => ({
-    pageContextReturn: await ret(),
+  return async <PageContext>(_httpRequestId: number, ret: (asyncStore: AsyncStore) => Promise<PageContext>) => ({
+    pageContextReturn: await ret(null),
   })
 }
 
 async function renderPageServerEntryOnce(
   pageContextInit: PageContextInit,
   httpRequestId: number,
+  asyncStore: AsyncStore,
 ): Promise<PageContextAfterRender> {
   // Invalid config
   {
@@ -175,7 +178,7 @@ async function renderPageServerEntryOnce(
   }
   const { globalContext } = await getGlobalContextServerInternal()
 
-  const pageContextBegin = getPageContextBegin(pageContextInit, globalContext, httpRequestId)
+  const pageContextBegin = getPageContextBegin(pageContextInit, globalContext, httpRequestId, asyncStore)
 
   // Check Base URL
   {
@@ -206,7 +209,7 @@ async function renderPageServerEntryRecursive(
 ): Promise<PageContextAfterRender> {
   catchInfiniteLoop('renderPageServerEntryRecursive()')
 
-  const pageContextNominalPageBegin = forkPageContext(pageContextBegin)
+  const pageContextNominalPageBegin = fork(pageContextBegin)
 
   const pageContextAddendumAbort = getPageContextAddendumAbort(pageContextBegin.pageContextsAborted)
   objectAssign(pageContextNominalPageBegin, pageContextAddendumAbort)
@@ -280,7 +283,7 @@ async function renderPageServerEntryRecursive_onError(
   assert(hasProp(pageContextNominalPageBegin, 'urlOriginal', 'string'))
   assert(err)
 
-  const pageContextErrorPageInit = forkPageContext(pageContextBegin)
+  const pageContextErrorPageInit = fork(pageContextBegin)
   objectAssign(pageContextErrorPageInit, {
     is404: false,
     errorWhileRendering: err as Error,
@@ -414,7 +417,7 @@ function prettyUrl(url: string) {
 }
 
 function getPageContextHttpErrorFallback(err: unknown, pageContextBegin: PageContextBegin) {
-  const pageContextHttpErrorFallback = forkPageContext(pageContextBegin)
+  const pageContextHttpErrorFallback = fork(pageContextBegin)
   const httpResponse = createHttpResponseErrorFallback(pageContextBegin)
   objectAssign(pageContextHttpErrorFallback, {
     httpResponse,
@@ -440,6 +443,7 @@ function getPageContextBegin(
   pageContextInit: PageContextInit,
   globalContext: GlobalContextServerInternal,
   httpRequestId: number,
+  asyncStore: AsyncStore,
 ) {
   const { isClientSideNavigation, _urlHandler, _isPageContextJsonRequest } = handlePageContextUrl(
     pageContextInit.urlOriginal,
@@ -454,6 +458,7 @@ function getPageContextBegin(
   })
   objectAssign(pageContextBegin, {
     _httpRequestId: httpRequestId,
+    _asyncStore: asyncStore,
     _isPageContextJsonRequest,
     // This array is shared between all pageContext objects, i.e. the following is true for any `i` and `j` index:
     // ```js
@@ -502,7 +507,7 @@ function assertIsNotViteRequest(urlPathname: string, urlOriginal: string) {
 }
 
 async function normalizeUrl(pageContextBegin: PageContextBegin, globalContext: GlobalContextServerInternal) {
-  const pageContext = forkPageContext(pageContextBegin)
+  const pageContext = fork(pageContextBegin)
   const { trailingSlash, disableUrlNormalization } = globalContext.config
   if (disableUrlNormalization) return null
   const { urlOriginal } = pageContext
@@ -525,7 +530,7 @@ async function getPermanentRedirect(
   globalContext: GlobalContextServerInternal,
   httpRequestId: number,
 ) {
-  const pageContext = forkPageContext(pageContextBegin)
+  const pageContext = fork(pageContextBegin)
   const urlWithoutBase = removeBaseServer(pageContext.urlOriginal, globalContext.baseServer)
   let origin: null | string = null
   let urlTargetExternal: null | string = null
@@ -585,7 +590,7 @@ async function handleAbort(
 
   addNewPageContextAborted(pageContextBegin.pageContextsAborted, pageContextNominalPageBegin, pageContextAbort)
 
-  const pageContext = forkPageContext(pageContextBegin)
+  const pageContext = fork(pageContextBegin)
   const pageContextAddendumAbort = getPageContextAddendumAbort(pageContextBegin.pageContextsAborted)
   objectAssign(pageContext, pageContextAddendumAbort)
   assert(pageContextAddendumAbort === pageContextAbort)
@@ -636,7 +641,7 @@ async function handleAbort(
 }
 
 async function checkBaseUrl(pageContextBegin: PageContextBegin, globalContext: GlobalContextServerInternal) {
-  const pageContext = forkPageContext(pageContextBegin)
+  const pageContext = fork(pageContextBegin)
   const { baseServer } = globalContext
   const { urlOriginal } = pageContext
   const { isBaseMissing } = parseUrl(urlOriginal, baseServer)
@@ -691,4 +696,11 @@ function getPageContext_logRuntimeEarly(
     _httpRequestId: httpRequestId,
   }
   return pageContext_logRuntime
+}
+
+function fork<PageContext extends PageContextBegin>(pageContext: PageContext) {
+  const pageContextNew = forkPageContext(pageContext)
+  if (pageContext._asyncStore) pageContext._asyncStore.pageContext = pageContextNew
+  assert(pageContextNew._asyncStore === pageContext._asyncStore)
+  return pageContextNew
 }

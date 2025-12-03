@@ -72,6 +72,9 @@ async function getGlobalContextClientInternalShared() {
   return globalContext
 }
 
+// TODO: rename NeverExported TypeIsNotExported
+// TODO: update comment
+// TODO: replace never with TypeIsNotExported
 // Type is never exported — it's the server-side getGlobalContext() type that is exported and exposed to the user
 type NeverExported = never
 async function getGlobalContext(): Promise<NeverExported> {

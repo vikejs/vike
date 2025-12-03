@@ -200,6 +200,8 @@ function isNotDisabled(timeout: false | number): timeout is number {
   return !!timeout && timeout !== Infinity
 }
 
+// TODO: move JSDocs
+// TODO: rename function
 /**
  * Access `pageContext` object inside Vike hooks, in order to create universal hooks.
  *
