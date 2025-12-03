@@ -9,7 +9,7 @@ import type { PageContextClient, PageContextServer } from '../../types/PageConte
 type GetPageContextParams = Parameters<typeof getPageContext>[0]
 function getPageContext<PageContext = PageContextClient | PageContextServer>({
   asyncHook,
-}: { asyncHook?: boolean; clientFallback?: boolean } = {}): null | PageContext {
+}: { asyncHook?: boolean } = {}): null | PageContext {
   {
     const pageContext = getPageContext_sync()
     if (pageContext) return pageContext as any

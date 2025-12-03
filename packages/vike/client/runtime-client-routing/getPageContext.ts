@@ -6,13 +6,13 @@ import { getPageContextClient } from './renderPageClient.js'
 import type { GetPageContextParams } from '../../server/runtime/getPageContext.js'
 
 // Setting return type to `unknown` because it's the type of the server-side getPageContext() that is publicly exposed
-function getPageContext({ clientFallback }: GetPageContextParams = {}): unknown {
+function getPageContext({ asyncHook }: GetPageContextParams = {}): unknown {
   {
     const pageContext = getPageContext_sync()
     if (pageContext) return pageContext
   }
 
-  if (clientFallback !== false) {
+  if (asyncHook) {
     const pageContext = getPageContextClient()
     if (pageContext) return pageContext
   }
