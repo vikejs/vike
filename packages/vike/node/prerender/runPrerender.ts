@@ -70,7 +70,6 @@ import fs from 'node:fs'
 import { getProxyForPublicUsage } from '../../shared-server-client/getProxyForPublicUsage.js'
 import { getStaticRedirectsForPrerender } from '../../server/runtime/renderPageServer/resolveRedirects.js'
 import { updateType } from '../../server/utils.js'
-import { getAsyncLocalStorage, type AsyncStore } from '../../server/runtime/asyncHook.js'
 const docLink = 'https://vike.dev/i18n#pre-rendering'
 
 type HtmlFile = {
@@ -844,7 +843,13 @@ async function prerenderPages(
   await Promise.all(
     prerenderContext.pageContexts.map((pageContextBeforeRender) =>
       concurrencyLimit(async () => {
-        const res = await prerenderPageWithAsyncContext(pageContextBeforeRender, ++httpRequestId)
+        let res: Awaited<ReturnType<typeof prerenderPage>>
+        try {
+          res = await prerenderPage(pageContextBeforeRender, ++httpRequestId)
+        } catch (err) {
+          assertIsNotAbort(err, pc.cyan(pageContextBeforeRender.urlOriginal))
+          throw err
+        }
         const { documentHtml, pageContext } = res
         const pageContextSerialized = pageContext.is404 ? null : res.pageContextSerialized
         await onComplete({
@@ -855,33 +860,6 @@ async function prerenderPages(
       }),
     ),
   )
-}
-
-async function prerenderPageWithAsyncContext(
-  pageContext: Parameters<typeof prerenderPage>[0],
-  httpRequestId: number,
-) {
-  const asyncLocalStorage = await getAsyncLocalStorage()
-  const asyncStore: AsyncStore = { httpRequestId }
-
-  const render = async () => {
-    // Set _asyncStore on pageContext before rendering so it's available in hooks
-    objectAssign(pageContext, { _asyncStore: asyncStore })
-    asyncStore.pageContext = pageContext as any
-
-    try {
-      return await prerenderPage(pageContext)
-    } catch (err) {
-      assertIsNotAbort(err, pc.cyan(pageContext.urlOriginal))
-      throw err
-    }
-  }
-
-  if (asyncLocalStorage) {
-    return await asyncLocalStorage.run(asyncStore, render)
-  } else {
-    return await render()
-  }
 }
 
 function warnContradictoryNoPrerenderList(
