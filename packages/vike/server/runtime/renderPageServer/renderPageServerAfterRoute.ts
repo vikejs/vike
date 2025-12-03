@@ -88,12 +88,9 @@ async function renderPageServerAfterRoute<
   return pageContext
 }
 
-async function prerenderPage(
-  pageContext: Parameters<typeof prerenderPageEntry>[0],
-  httpRequestId: number,
-) {
+async function prerenderPage(pageContext: Parameters<typeof prerenderPageEntry>[0], httpRequestId: number) {
   const asyncLocalStorage = await getAsyncLocalStorage()
-  const asyncStore: AsyncStore = { httpRequestId, pageContext }
+  const asyncStore: AsyncStore = !asyncLocalStorage ? null : { httpRequestId, pageContext }
   objectAssign(pageContext, { _asyncStore: asyncStore, _httpRequestId: httpRequestId })
   const render = async () => await prerenderPageEntry(pageContext)
   if (asyncLocalStorage) {
