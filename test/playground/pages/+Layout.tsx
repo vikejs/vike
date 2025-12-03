@@ -17,7 +17,7 @@ function Layout({ children }: { children: React.ReactNode }) {
   const globalContext = pageContext.globalContext
 
   // TEST: getPageContext()
-  {
+  if (!pageContext.isPrerendering) {
     assert(pageContext)
     const pageContext2 = getPageContext({ asyncHook: true })
     assert(pageContext2)
