@@ -16,12 +16,11 @@ function Layout({ children }: { children: React.ReactNode }) {
   const pageContext = usePageContext()
   const globalContext = pageContext.globalContext
 
-  // TODO try to make it work with pre-rendering
   // TEST: getPageContext()
-  if (!pageContext.isPrerendering) {
+  {
     assert(pageContext)
     const pageContext2 = getPageContext({ asyncHook: true })
-    assert(pageContext2)
+    assert(pageContext2, 'pageContext2 is undefined')
     if (
       !['/pages/pushState', '/pages/navigate-early'].some(
         (pageId) => pageContext.pageId === pageId || pageContext2.pageId === pageId,
