@@ -840,12 +840,11 @@ async function prerenderPages(
   concurrencyLimit: PLimit,
   onComplete: (htmlFile: HtmlFile) => Promise<void>,
 ) {
-  const asyncLocalStorage = await getAsyncLocalStorage()
   let httpRequestId = 0
   await Promise.all(
     prerenderContext.pageContexts.map((pageContextBeforeRender) =>
       concurrencyLimit(async () => {
-        const res = await prerenderPageWithAsyncContext(pageContextBeforeRender, ++httpRequestId, asyncLocalStorage)
+        const res = await prerenderPageWithAsyncContext(pageContextBeforeRender, ++httpRequestId)
         const { documentHtml, pageContext } = res
         const pageContextSerialized = pageContext.is404 ? null : res.pageContextSerialized
         await onComplete({
@@ -861,8 +860,8 @@ async function prerenderPages(
 async function prerenderPageWithAsyncContext(
   pageContext: Parameters<typeof prerenderPage>[0],
   httpRequestId: number,
-  asyncLocalStorage: Awaited<ReturnType<typeof getAsyncLocalStorage>>,
 ) {
+  const asyncLocalStorage = await getAsyncLocalStorage()
   const asyncStore: AsyncStore = { httpRequestId }
 
   const render = async () => {
