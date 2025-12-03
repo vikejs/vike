@@ -1,6 +1,4 @@
 // TODO: refactor
-// - rename this file
-// - move this file to /server/runtime/
 // - rename HttpRequestAsyncStore
 
 export { getPageContext_withAsyncHook }
@@ -18,7 +16,7 @@ type HttpRequestAsyncStore = null | {
   httpRequestId: number
   pageContext?: PageContextBegin
 }
-const globalObject = getGlobalObject('getHttpRequestAsyncStore.ts', {
+const globalObject = getGlobalObject('server/runtime/asyncHook.ts', {
   asyncLocalStorage: null as AsyncLocalStorageType<HttpRequestAsyncStore> | null,
   installPromise: null as Promise<void> | null,
 })
