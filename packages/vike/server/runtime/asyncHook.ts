@@ -10,7 +10,7 @@ import { import_ } from '@brillout/import'
 
 assertIsNotBrowser()
 type AsyncStore = null | {
-  httpRequestId: number
+  requestId: number
   pageContext?: Record<string, unknown>
 }
 const globalObject = getGlobalObject('server/runtime/asyncHook.ts', {
@@ -42,7 +42,7 @@ function getAsyncStore() {
 
 function getHttpRequestId_withAsyncHook() {
   const asyncStore = getAsyncStore()
-  return asyncStore?.httpRequestId ?? null
+  return asyncStore?.requestId ?? null
 }
 
 function getPageContext_withAsyncHook() {

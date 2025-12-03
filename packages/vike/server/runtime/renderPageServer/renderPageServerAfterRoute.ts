@@ -34,7 +34,7 @@ async function renderPageServerAfterRoute<
     is404: null | boolean
     routeParams: Record<string, string>
     errorWhileRendering: null | Error
-    _httpRequestId: number
+    _requestId: number
   } & PageContextCreated &
     PageContextBegin &
     PageContextUrlInternal &
@@ -88,10 +88,10 @@ async function renderPageServerAfterRoute<
   return pageContext
 }
 
-async function prerenderPage(pageContext: Parameters<typeof prerenderPageEntry>[0], httpRequestId: number) {
+async function prerenderPage(pageContext: Parameters<typeof prerenderPageEntry>[0], requestId: number) {
   const asyncLocalStorage = await getAsyncLocalStorage()
-  const asyncStore: AsyncStore = !asyncLocalStorage ? null : { httpRequestId, pageContext }
-  objectAssign(pageContext, { _asyncStore: asyncStore, _httpRequestId: httpRequestId })
+  const asyncStore: AsyncStore = !asyncLocalStorage ? null : { requestId, pageContext }
+  objectAssign(pageContext, { _asyncStore: asyncStore, _requestId: requestId })
   const render = async () => await prerenderPageEntry(pageContext)
   if (asyncLocalStorage) {
     return await asyncLocalStorage.run(asyncStore, render)
@@ -105,7 +105,7 @@ async function prerenderPageEntry(
     PageConfigsLazy & {
       routeParams: Record<string, string>
       pageId: string
-      _httpRequestId: number | null
+      _requestId: number | null
       _usesClientRouter: boolean
       _pageContextAlreadyProvidedByOnPrerenderHook?: true
       is404: boolean

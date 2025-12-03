@@ -56,16 +56,16 @@ type TagSource = 'config' | `request(${number})`
 
 function logRuntimeInfoDev(msg: string, pageContext: PageContext_logRuntime, logType: LogType) {
   assertPageContext_logRuntime(pageContext)
-  const httpRequestId = pageContext === 'NULL_TEMP' ? null : pageContext._httpRequestId
-  const tagSource = getTagSource(httpRequestId)
+  const requestId = pageContext === 'NULL_TEMP' ? null : pageContext._requestId
+  const tagSource = getTagSource(requestId)
   logDev(msg, logType, tagSource, '[vike]')
 }
 function logConfigInfo(msg: string, logType: LogType): void {
   const tagSource = getTagSource() ?? 'config'
   logDev(msg, logType, tagSource, '[vike]')
 }
-function logVite(msg: string, logType: LogType, httpRequestId: number | null, prependViteTag: boolean): void {
-  const tagSource = getTagSource(httpRequestId)
+function logVite(msg: string, logType: LogType, requestId: number | null, prependViteTag: boolean): void {
+  const tagSource = getTagSource(requestId)
   logDev(msg, logType, tagSource, '[vite]', !prependViteTag)
 }
 
@@ -79,8 +79,8 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
     return
   }
 
-  const httpRequestId = pageContext === 'NULL_TEMP' ? null : pageContext._httpRequestId
-  const tagSource = getTagSource(httpRequestId)
+  const requestId = pageContext === 'NULL_TEMP' ? null : pageContext._requestId
+  const tagSource = getTagSource(requestId)
   const logErr = (err: unknown) => {
     logErrorServer(err, pageContext)
   }
@@ -185,18 +185,18 @@ function appendErrorDebugNote(errMsg: string) {
   return errMsg + '\n' + errorDebugNote
 }
 
-function getTagSource(httpRequestId: number | null = null): TagSource | null {
-  const httpRequestIdFromStore = getHttpRequestId_withAsyncHook()
-  if (httpRequestIdFromStore !== null) {
-    if (httpRequestId === null) {
-      httpRequestId = httpRequestIdFromStore
+function getTagSource(requestId: number | null = null): TagSource | null {
+  const requestIdFromStore = getHttpRequestId_withAsyncHook()
+  if (requestIdFromStore !== null) {
+    if (requestId === null) {
+      requestId = requestIdFromStore
     } else {
-      assert(httpRequestId === httpRequestIdFromStore)
+      assert(requestId === requestIdFromStore)
     }
   }
-  if (httpRequestId === null) return null
-  // const tagSource = httpRequestId % 2 === 1 ? (`request-${httpRequestId}` as const) : (`request(${httpRequestId})` as const)
-  const tagSource = `request(${httpRequestId})` as const
+  if (requestId === null) return null
+  // const tagSource = requestId % 2 === 1 ? (`request-${requestId}` as const) : (`request(${requestId})` as const)
+  const tagSource = `request(${requestId})` as const
   return tagSource
 }
 
