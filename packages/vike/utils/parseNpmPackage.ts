@@ -3,10 +3,6 @@ export { isImportPathNpmPackageOrPathAlias }
 export { assertIsImportPathNpmPackage }
 export { isPathAliasRecommended }
 export { getNpmPackageName }
-/* Currently not used
-export { isNpmPackageName }
-export { getNpmPackageImportPath }
-*/
 
 // For ./isNpmPackage.spec.ts
 export { parseNpmPackage }
@@ -15,6 +11,25 @@ export { isDistinguishable }
 import { assert } from './assert.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
 assertIsNotBrowser()
+
+function getNpmPackageName(str: string): null | string {
+  const res = parseNpmPackage(str)
+  if (!res) return null
+  return res.pkgName
+}
+/* Currently not used
+export function isNpmPackageName(str: string | undefined): boolean {
+  const res = parseNpmPackage(str)
+  return res !== null && res.importPath === null
+}
+//*/
+/* Currently not used
+export function getNpmPackageImportPath(str: string): null | string {
+  const res = parseNpmPackage(str)
+  if (!res) return null
+  return res.importPath
+}
+//*/
 
 function isImportPathNpmPackage(str: string, { cannotBePathAlias }: { cannotBePathAlias: true }): boolean {
   assert(cannotBePathAlias)
@@ -34,28 +49,6 @@ function assertIsImportPathNpmPackage(str: string): void {
     str,
   )
 }
-
-/*
-function isNpmPackageName(str: string | undefined): boolean {
-  const res = parseNpmPackage(str)
-  return res !== null && res.importPath === null
-}
-*/
-
-function getNpmPackageName(str: string): null | string {
-  const res = parseNpmPackage(str)
-  if (!res) return null
-  return res.pkgName
-}
-
-/*
-function getNpmPackageImportPath(str: string): null | string {
-  const res = parseNpmPackage(str)
-  if (!res) return null
-  return res.importPath
-}
-*/
-
 function isPathAliasRecommended(alias: string): boolean {
   // Cannot be distinguished from npm package names
   if (!isDistinguishable(alias)) return false
