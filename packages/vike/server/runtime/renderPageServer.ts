@@ -700,7 +700,7 @@ function getPageContext_logRuntimeEarly(
 
 function fork<PageContext extends PageContextBegin>(pageContext: PageContext) {
   const pageContextNew = forkPageContext(pageContext)
-  if (pageContextNew._asyncStore) pageContextNew._asyncStore.pageContext = pageContextNew
-  assert(pageContext._asyncStore === pageContextNew._asyncStore)
+  if (pageContext._asyncStore) pageContext._asyncStore.pageContext = pageContextNew
+  assert(pageContextNew._asyncStore === pageContext._asyncStore)
   return pageContextNew
 }
