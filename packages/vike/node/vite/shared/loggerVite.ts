@@ -40,12 +40,12 @@ function intercept(loggerType: LoggerType, config: ResolvedConfig) {
       return
     }
 
-    const httpRequestId = getHttpRequestId_withAsyncHook()
+    const requestId = getHttpRequestId_withAsyncHook()
 
     // Vite's default logger preprends the "[vite]" tag if and only if options.timestamp is true
-    const prependViteTag = options.timestamp || typeof httpRequestId === 'number'
+    const prependViteTag = options.timestamp || typeof requestId === 'number'
     // If it's an actual error => options.error is set => it's handled with logErrorServerDev() above
-    logVite(msg, loggerType, httpRequestId, prependViteTag)
+    logVite(msg, loggerType, requestId, prependViteTag)
   }
 }
 

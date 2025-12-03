@@ -81,7 +81,7 @@ const globalObject = getGlobalObject('runtime/renderPageServer.ts', {
 
 type PageContextAfterRender = {
   httpResponse: HttpResponse
-  _httpRequestId: null | number
+  _requestId: null | number
 } & Partial<PageContextInternalServer>
 type PageContextInit = Pick<PageContextInternalServer, 'urlOriginal' | 'headersOriginal'> & {
   /** @deprecated Set `pageContextInit.urlOriginal` instead  */ // TO-DO/next-major-release: remove
@@ -106,17 +106,14 @@ async function renderPageServer<PageContextUserAdded extends {}, PageContextInit
   const pageContextSkipRequest = getPageContextSkipRequest(pageContextInit)
   if (pageContextSkipRequest) return pageContextSkipRequest as any
 
-  const httpRequestId = getRequestId()
+  const requestId = getRequestId()
   const urlOriginalPretty = getUrlPretty(pageContextInit.urlOriginal)
-  logHttpRequest(urlOriginalPretty, pageContextInit, httpRequestId)
+  logHttpRequest(urlOriginalPretty, pageContextInit, requestId)
 
-  const asyncStore: AsyncStore = { httpRequestId }
   const asyncLocalStorage = await getAsyncLocalStorage()
-  const pageContextFinish = asyncLocalStorage
-    ? await asyncLocalStorage.run(asyncStore, () =>
-        renderPageServerEntryOnce(pageContextInit, httpRequestId, asyncStore),
-      )
-    : await renderPageServerEntryOnce(pageContextInit, httpRequestId, null)
+  const asyncStore: AsyncStore = !asyncLocalStorage ? null : { requestId }
+  const render = async () => await renderPageServerEntryOnce(pageContextInit, requestId, asyncStore)
+  const pageContextFinish = !asyncLocalStorage ? await render() : await asyncLocalStorage.run(asyncStore, render)
 
   logHttpResponse(urlOriginalPretty, pageContextFinish)
 
@@ -127,14 +124,14 @@ async function renderPageServer<PageContextUserAdded extends {}, PageContextInit
 
 async function renderPageServerEntryOnce(
   pageContextInit: PageContextInit,
-  httpRequestId: number,
+  requestId: number,
   asyncStore: AsyncStore,
 ): Promise<PageContextAfterRender> {
   // Invalid config
   {
     const vikeConfigError = getVikeConfigError()
     if (vikeConfigError) {
-      return getPageContextInvalidVikeConfig(vikeConfigError.err, pageContextInit, httpRequestId)
+      return getPageContextInvalidVikeConfig(vikeConfigError.err, pageContextInit, requestId)
     }
   }
 
@@ -149,26 +146,26 @@ async function renderPageServerEntryOnce(
     //   ```
     // - initGlobalContext_renderPage() depends on +onCreateGlobalContext hooks
     assert(!isAbortError(err))
-    const pageContext_logRuntime = getPageContext_logRuntimeEarly(pageContextInit, httpRequestId)
+    const pageContext_logRuntime = getPageContext_logRuntimeEarly(pageContextInit, requestId)
     logRuntimeError(err, pageContext_logRuntime)
     const pageContextHttpErrorFallback = getPageContextHttpErrorFallback_noGlobalContext(
       err,
       pageContextInit,
-      httpRequestId,
+      requestId,
     )
     return pageContextHttpErrorFallback
   }
   {
     const vikeConfigError = getVikeConfigError()
     if (vikeConfigError) {
-      return getPageContextInvalidVikeConfig(vikeConfigError.err, pageContextInit, httpRequestId)
+      return getPageContextInvalidVikeConfig(vikeConfigError.err, pageContextInit, requestId)
     } else {
       // `globalContext` now contains the entire Vike config and getVikeConfig() isn't called anymore for this request.
     }
   }
   const { globalContext } = await getGlobalContextServerInternal()
 
-  const pageContextBegin = getPageContextBegin(pageContextInit, globalContext, httpRequestId, asyncStore)
+  const pageContextBegin = getPageContextBegin(pageContextInit, globalContext, requestId, asyncStore)
 
   // Check Base URL
   {
@@ -189,13 +186,13 @@ async function renderPageServerEntryOnce(
   }
 
   // First renderPageServerEntryRecursive() call
-  return await renderPageServerEntryRecursive(pageContextBegin, globalContext, httpRequestId)
+  return await renderPageServerEntryRecursive(pageContextBegin, globalContext, requestId)
 }
 
 async function renderPageServerEntryRecursive(
   pageContextBegin: PageContextBegin,
   globalContext: GlobalContextServerInternal,
-  httpRequestId: number,
+  requestId: number,
 ): Promise<PageContextAfterRender> {
   catchInfiniteLoop('renderPageServerEntryRecursive()')
 
@@ -214,7 +211,7 @@ async function renderPageServerEntryRecursive(
       pageContextBegin,
       pageContextNominalPageBegin,
       globalContext,
-      httpRequestId,
+      requestId,
     )
   }
 
@@ -267,7 +264,7 @@ async function renderPageServerEntryRecursive_onError(
   pageContextBegin: PageContextBegin,
   pageContextNominalPageBegin: PageContextBegin,
   globalContext: GlobalContextServerInternal,
-  httpRequestId: number,
+  requestId: number,
 ) {
   assert(pageContextNominalPageBegin)
   assert(hasProp(pageContextNominalPageBegin, 'urlOriginal', 'string'))
@@ -286,7 +283,7 @@ async function renderPageServerEntryRecursive_onError(
       err,
       pageContextBegin,
       pageContextNominalPageBegin,
-      httpRequestId,
+      requestId,
       pageContextErrorPageInit,
       globalContext,
     )
@@ -320,7 +317,7 @@ async function renderPageServerEntryRecursive_onError(
         errErrorPage,
         pageContextBegin,
         pageContextNominalPageBegin,
-        httpRequestId,
+        requestId,
         pageContextErrorPageInit,
         globalContext,
       )
@@ -351,8 +348,8 @@ async function renderPageServerEntryRecursive_onError(
   return pageContextErrorPage
 }
 
-function logHttpRequest(urlOriginal: string, pageContextInit: PageContextInit, httpRequestId: number) {
-  const pageContext_logRuntime = getPageContext_logRuntimeEarly(pageContextInit, httpRequestId)
+function logHttpRequest(urlOriginal: string, pageContextInit: PageContextInit, requestId: number) {
+  const pageContext_logRuntime = getPageContext_logRuntimeEarly(pageContextInit, requestId)
   logRuntimeInfo?.(getRequestInfoMessage(urlOriginal), pageContext_logRuntime, 'info')
 }
 function getRequestInfoMessage(urlOriginal: string) {
@@ -418,9 +415,9 @@ function getPageContextHttpErrorFallback(err: unknown, pageContextBegin: PageCon
 function getPageContextHttpErrorFallback_noGlobalContext(
   err: unknown,
   pageContextInit: PageContextInit,
-  httpRequestId: number,
+  requestId: number,
 ): PageContextAfterRender {
-  const pageContextHttpErrorFallback = createPageContextServerSideWithoutGlobalContext(pageContextInit, httpRequestId)
+  const pageContextHttpErrorFallback = createPageContextServerSideWithoutGlobalContext(pageContextInit, requestId)
   const httpResponse = createHttpResponseErrorFallback_noGlobalContext()
   objectAssign(pageContextHttpErrorFallback, {
     httpResponse,
@@ -432,7 +429,7 @@ function getPageContextHttpErrorFallback_noGlobalContext(
 function getPageContextBegin(
   pageContextInit: PageContextInit,
   globalContext: GlobalContextServerInternal,
-  httpRequestId: number,
+  requestId: number,
   asyncStore: AsyncStore,
 ) {
   const { isClientSideNavigation, _urlHandler, _isPageContextJsonRequest } = handlePageContextUrl(
@@ -444,10 +441,10 @@ function getPageContextBegin(
       urlHandler: _urlHandler,
       isClientSideNavigation,
     },
-    httpRequestId,
+    requestId,
   })
   objectAssign(pageContextBegin, {
-    _httpRequestId: httpRequestId,
+    _requestId: requestId,
     _asyncStore: asyncStore,
     _isPageContextJsonRequest,
     // This array is shared between all pageContext objects, i.e. the following is true for any `i` and `j` index:
@@ -471,9 +468,9 @@ function handlePageContextUrl(urlOriginal: string) {
 }
 
 function getRequestId(): number {
-  const httpRequestId = ++globalObject.httpRequestsCount
-  assert(httpRequestId >= 1)
-  return httpRequestId
+  const requestId = ++globalObject.httpRequestsCount
+  assert(requestId >= 1)
+  return requestId
 }
 
 function assertIsUrl(urlOriginal: string) {
@@ -566,7 +563,7 @@ async function handleAbort(
   pageContextBegin: PageContextBegin,
   // handleAbortError() creates a new pageContext object and we don't merge pageContextNominalPageBegin to it: we only use some pageContextNominalPageBegin information.
   pageContextNominalPageBegin: PageContextBegin,
-  httpRequestId: number,
+  requestId: number,
   pageContextErrorPageInit: Omit<PageContext_loadPageConfigsLazyServerSide, 'pageId'>,
   globalContext: GlobalContextServerInternal,
 ) {
@@ -610,7 +607,7 @@ async function handleAbort(
   // URL Rewrite — `throw render(url)`
   if (pageContextAbort._urlRewrite) {
     // Recursive renderPageServerEntryRecursive() call
-    const pageContextReturn = await renderPageServerEntryRecursive(pageContextBegin, globalContext, httpRequestId)
+    const pageContextReturn = await renderPageServerEntryRecursive(pageContextBegin, globalContext, requestId)
     return { pageContextReturn }
   }
 
@@ -661,25 +658,18 @@ function getPageContextSkipRequest(pageContextInit: PageContextInit) {
   return pageContext
 }
 
-function getPageContextInvalidVikeConfig(err: unknown, pageContextInit: PageContextInit, httpRequestId: number) {
-  const pageContext_logRuntime = getPageContext_logRuntimeEarly(pageContextInit, httpRequestId)
+function getPageContextInvalidVikeConfig(err: unknown, pageContextInit: PageContextInit, requestId: number) {
+  const pageContext_logRuntime = getPageContext_logRuntimeEarly(pageContextInit, requestId)
   logRuntimeInfo?.(pc.bold(pc.red('Error loading Vike config — see error above')), pageContext_logRuntime, 'error')
-  const pageContextHttpErrorFallback = getPageContextHttpErrorFallback_noGlobalContext(
-    err,
-    pageContextInit,
-    httpRequestId,
-  )
+  const pageContextHttpErrorFallback = getPageContextHttpErrorFallback_noGlobalContext(err, pageContextInit, requestId)
   return pageContextHttpErrorFallback
 }
 
 /** Use this as last resort — prefer passing richer `pageContext` objects to the runtime logger */
-function getPageContext_logRuntimeEarly(
-  pageContextInit: PageContextInit,
-  httpRequestId: number,
-): PageContext_logRuntime {
+function getPageContext_logRuntimeEarly(pageContextInit: PageContextInit, requestId: number): PageContext_logRuntime {
   const pageContext_logRuntime = {
     ...pageContextInit,
-    _httpRequestId: httpRequestId,
+    _requestId: requestId,
   }
   return pageContext_logRuntime
 }
