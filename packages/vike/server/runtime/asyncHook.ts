@@ -27,7 +27,6 @@ async function install(): Promise<void> {
     return
   }
   globalObject.asyncLocalStorage = new mod.AsyncLocalStorage()
-  return
 }
 
 async function getAsyncLocalStorage() {
