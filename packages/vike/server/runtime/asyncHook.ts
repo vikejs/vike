@@ -16,9 +16,8 @@ type AsyncStore = null | {
 }
 const globalObject = getGlobalObject('server/runtime/asyncHook.ts', {
   asyncLocalStorage: null as AsyncLocalStorageType<AsyncStore> | null,
-  installPromise: null as Promise<void> | null,
+  installPromise: install()
 })
-globalObject.installPromise = install()
 
 async function install(): Promise<void> {
   let mod: typeof import('node:async_hooks')
