@@ -118,7 +118,7 @@ async function renderPageServer<PageContextUserAdded extends {}, PageContextInit
       )
     : await renderPageServerEntryOnce(pageContextInit, httpRequestId, null)
 
-  logHttpResponse(urlOriginalPretty, httpRequestId, pageContextFinish)
+  logHttpResponse(urlOriginalPretty, pageContextFinish)
 
   checkType<PageContextAfterRender>(pageContextFinish)
   assert(pageContextFinish.httpResponse)
@@ -184,7 +184,7 @@ async function renderPageServerEntryOnce(
 
   // Permanent redirects (HTTP status code `301`)
   {
-    const pageContextHttpResponse = await getPermanentRedirect(pageContextBegin, globalContext, httpRequestId)
+    const pageContextHttpResponse = await getPermanentRedirect(pageContextBegin, globalContext)
     if (pageContextHttpResponse) return pageContextHttpResponse
   }
 
@@ -358,7 +358,7 @@ function logHttpRequest(urlOriginal: string, pageContextInit: PageContextInit, h
 function getRequestInfoMessage(urlOriginal: string) {
   return `HTTP request: ${prettyUrl(urlOriginal)}`
 }
-function logHttpResponse(urlOriginalPretty: string, httpRequestId: number, pageContextReturn: PageContextAfterRender) {
+function logHttpResponse(urlOriginalPretty: string, pageContextReturn: PageContextAfterRender) {
   const statusCode = pageContextReturn.httpResponse?.statusCode ?? null
 
   let msg: `HTTP response ${string}` | `HTTP redirect ${string}`
@@ -518,7 +518,6 @@ async function normalizeUrl(pageContextBegin: PageContextBegin, globalContext: G
 async function getPermanentRedirect(
   pageContextBegin: PageContextBegin,
   globalContext: GlobalContextServerInternal,
-  httpRequestId: number,
 ) {
   const pageContext = fork(pageContextBegin)
   const urlWithoutBase = removeBaseServer(pageContext.urlOriginal, globalContext.baseServer)
