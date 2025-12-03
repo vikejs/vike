@@ -22,7 +22,10 @@ function Layout({ children }: { children: React.ReactNode }) {
     const pageContext2 = getPageContext({ asyncHook: true })
     assert(pageContext2)
     assert(pageContext2.pageId === pageContext.pageId)
-    // assert(pageContext2 === pageContext)
+    // TODO: use dangerouslyUseInternals ?
+    // assert(pageContext2.dangerouslyUseInternals._originalObject === pageContext.dangerouslyUseInternals._originalObject)
+    // @ts-ignore
+    assert(pageContext2._originalObject === pageContext._originalObject)
   }
 
   // TEST: pageContext.pageContextsAborted is defined

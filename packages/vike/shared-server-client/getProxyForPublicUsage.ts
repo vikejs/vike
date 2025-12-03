@@ -23,6 +23,7 @@ function getProxyForPublicUsage<Obj extends Target>(
   fallback?: Fallback,
 ): Obj & {
   _isProxyObject: true
+  _originalObject: Obj
   /** https://vike.dev/warning/internals */
   dangerouslyUseInternals: DangerouslyUseInternals<Obj>
 } {
@@ -41,6 +42,7 @@ function getProp(
   const propStr = String(prop)
 
   if (prop === '_isProxyObject') return true
+  if (prop === '_originalObject') return obj
   if (prop === 'dangerouslyUseInternals') return obj
 
   if (!skipOnInternalProp) {
