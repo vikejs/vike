@@ -28,6 +28,7 @@ function Layout({ children }: { children: React.ReactNode }) {
       )
     ) {
       assert(pageContext2.pageId === pageContext.pageId, { pageId1: pageContext.pageId, pageId2: pageContext2.pageId })
+      assert(pageContext.dangerouslyUseInternals._originalObject)
       assert(
         pageContext2.dangerouslyUseInternals._originalObject === pageContext.dangerouslyUseInternals._originalObject,
       )
