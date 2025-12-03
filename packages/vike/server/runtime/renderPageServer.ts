@@ -515,10 +515,7 @@ async function normalizeUrl(pageContextBegin: PageContextBegin, globalContext: G
   return pageContext
 }
 
-async function getPermanentRedirect(
-  pageContextBegin: PageContextBegin,
-  globalContext: GlobalContextServerInternal,
-) {
+async function getPermanentRedirect(pageContextBegin: PageContextBegin, globalContext: GlobalContextServerInternal) {
   const pageContext = fork(pageContextBegin)
   const urlWithoutBase = removeBaseServer(pageContext.urlOriginal, globalContext.baseServer)
   let origin: null | string = null
