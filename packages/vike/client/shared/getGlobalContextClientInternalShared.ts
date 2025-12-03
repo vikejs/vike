@@ -72,23 +72,20 @@ async function getGlobalContextClientInternalShared() {
   return globalContext
 }
 
-// TODO: rename NeverExported TypeIsNotExported
-// TODO: update comment
-// TODO: replace never with TypeIsNotExported
-// Type is never exported — it's the server-side getGlobalContext() type that is exported and exposed to the user
-type NeverExported = never
-async function getGlobalContext(): Promise<NeverExported> {
+// Return type `never` because it's the type of the server-side getGlobalContext() that is publicly exposed
+type TypeIsNotExported = never
+async function getGlobalContext(): Promise<TypeIsNotExported> {
   await globalObject.globalContextInitialPromise
   const globalContext = await globalObject.globalContextPromise
   assert(globalContext)
   checkType<GlobalContextNotTyped>(globalContext)
-  return globalContext as never
+  return globalContext as TypeIsNotExported
 }
-function getGlobalContextSync(): NeverExported {
+function getGlobalContextSync(): TypeIsNotExported {
   const { globalContext } = globalObject
   assertUsage(globalContext, getGlobalContextSyncErrMsg)
   checkType<GlobalContextNotTyped>(globalContext)
-  return globalContext as never
+  return globalContext as TypeIsNotExported
 }
 
 async function setVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry: unknown) {

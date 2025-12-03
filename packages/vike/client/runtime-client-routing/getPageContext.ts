@@ -1,9 +1,10 @@
 export { getPageContext }
 export { providePageContext }
 
-// TODO: set default asyncHook parameter value to `true` iff `+asyncHook: true`
+// TO-DO/eventually: create new setting `+asyncHook: true` that sets the default value of the `asyncHook` parameter below to `true`
+// TODO/next-release: update vike-{react,vue,solid} usage
 
-import { getPageContext as getPageContext_sync, providePageContext } from '../../shared-server-client/hooks/execHook.js'
+import { getPageContext_sync, providePageContext } from '../../shared-server-client/hooks/execHook.js'
 import { getPageContextClient } from './renderPageClient.js'
 import type { GetPageContextParams } from '../../server/runtime/getPageContext.js'
 

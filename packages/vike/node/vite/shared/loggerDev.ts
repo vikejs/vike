@@ -41,7 +41,7 @@ import { isUserHookError } from '../../../shared-server-client/hooks/execHook.js
 import { getViteDevServer } from '../../../server/runtime/globalContext.js'
 import { logErrorServer } from '../../../server/runtime/logErrorServer.js'
 import { getBetterError } from '../../../utils/getBetterError.js'
-import { getHttpRequestId_withAsyncHook } from './getHttpRequestAsyncStore.js'
+import { getHttpRequestId_withAsyncHook } from '../../../server/runtime/asyncHook.js'
 
 assertIsNotProductionRuntime()
 setLogRuntimeDev(logErrorServerDev, logRuntimeInfoDev)
@@ -179,10 +179,9 @@ function logDev(
   assert(false)
 }
 
-// TODO: minor refactor
 // Note shown to user when Vike modifies errors in a risky fashion.
-const errorDebugNote = pc.dim(formatHintLog("Error isn't helpful? See https://vike.dev/debug#verbose-errors"))
 function appendErrorDebugNote(errMsg: string) {
+  const errorDebugNote = pc.dim(formatHintLog("Error isn't helpful? See https://vike.dev/debug#verbose-errors"))
   return errMsg + '\n' + errorDebugNote
 }
 

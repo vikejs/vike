@@ -1,34 +1,25 @@
-// TODO: refactor
-// - rename this file
-// - move this file to /server/runtime/
-// - rename HttpRequestAsyncStore
-
 export { getPageContext_withAsyncHook }
 export { getHttpRequestId_withAsyncHook }
-export type { HttpRequestAsyncStore as AsyncStore }
+export type { AsyncStore }
 
-import { preparePageContextForPublicUsageServer } from '../../../server/runtime/renderPageServer/preparePageContextForPublicUsageServer.js'
-import {
-  type PageContextBegin,
-  renderPageServer_addAsyncHookwrapper,
-} from '../../../server/runtime/renderPageServer.js'
-import { assert, assertIsNotBrowser, getGlobalObject, isObject } from '../../../server/utils.js'
+import { preparePageContextForPublicUsageServer } from './renderPageServer/preparePageContextForPublicUsageServer.js'
+import { type PageContextBegin, renderPageServer_addAsyncHookwrapper } from './renderPageServer.js'
+import { assert, assertIsNotBrowser, getGlobalObject, isObject } from '../utils.js'
 import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hooks'
 import { import_ } from '@brillout/import'
 
 assertIsNotBrowser()
-type HttpRequestAsyncStore = null | {
+type AsyncStore = null | {
   httpRequestId: number
   pageContext?: PageContextBegin
 }
-const globalObject = getGlobalObject('getHttpRequestAsyncStore.ts', {
-  asyncLocalStorage: null as AsyncLocalStorageType<HttpRequestAsyncStore> | null,
+const globalObject = getGlobalObject('server/runtime/asyncHook.ts', {
+  asyncLocalStorage: null as AsyncLocalStorageType<AsyncStore> | null,
   installPromise: null as Promise<void> | null,
 })
-globalObject.installPromise = installHttpRequestAsyncStore()
+globalObject.installPromise = install()
 
-// TODO: rename
-async function installHttpRequestAsyncStore(): Promise<void> {
+async function install(): Promise<void> {
   let mod: typeof import('node:async_hooks')
   try {
     mod = await import_('node:async_hooks')
@@ -40,11 +31,10 @@ async function installHttpRequestAsyncStore(): Promise<void> {
   renderPageServer_addAsyncHookwrapper(async (httpRequestId, renderPageServer) => {
     assert(globalObject.asyncLocalStorage)
     await globalObject.installPromise
-    // TODO: rename to asyncStore
-    const store: HttpRequestAsyncStore = {
+    const asyncStore: AsyncStore = {
       httpRequestId,
     }
-    const pageContextReturn = await globalObject.asyncLocalStorage.run(store, () => renderPageServer(store))
+    const pageContextReturn = await globalObject.asyncLocalStorage.run(asyncStore, () => renderPageServer(asyncStore))
     return { pageContextReturn }
   })
   return
@@ -52,9 +42,9 @@ async function installHttpRequestAsyncStore(): Promise<void> {
 
 function getAsyncStore() {
   if (globalObject.asyncLocalStorage === null) return null
-  const store = globalObject.asyncLocalStorage.getStore()
-  assert(store === undefined || isObject(store))
-  return store ?? null
+  const asyncStore = globalObject.asyncLocalStorage.getStore()
+  assert(asyncStore === undefined || isObject(asyncStore))
+  return asyncStore ?? null
 }
 
 function getHttpRequestId_withAsyncHook() {
