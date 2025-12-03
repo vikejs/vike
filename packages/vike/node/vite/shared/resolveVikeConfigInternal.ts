@@ -163,8 +163,9 @@ async function getVikeConfigInternal(
  * https://vike.dev/getVikeConfig
  */
 function getVikeConfig(
+  // TO-DO/next-major-release: remove
   /** @deprecated the `config` argument isn't needed anymore — remove it (it doesn't have any effect) */
-  config?: ResolvedConfig | UserConfig,
+  _config?: ResolvedConfig | UserConfig,
 ): VikeConfig {
   /* TO-DO/eventualy: add deprecation warning. We don't do it yet because of vike-server and vike-cloudflare which are using getVikeConfig() with the argument.
   assertWarning(

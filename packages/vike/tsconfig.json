@@ -16,6 +16,8 @@
     // Strictness
     "strict": true,
     "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     // Misc
     "skipLibCheck": true,
     "noErrorTruncation": true

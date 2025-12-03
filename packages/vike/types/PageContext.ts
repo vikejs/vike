@@ -378,7 +378,7 @@ type PageContextInternalClient_ServerRouting = Omit<PageContextBuiltInClientWith
  *
  * See https://vike.dev/pageContext#typescript
  */
-type PageContextBuiltInServer_deprecated<Page = never> = PageContextBuiltInServer<unknown>
+type PageContextBuiltInServer_deprecated<_Page = never> = PageContextBuiltInServer<unknown>
 /** @deprecated
  * Replace:
  *   ```
@@ -391,7 +391,7 @@ type PageContextBuiltInServer_deprecated<Page = never> = PageContextBuiltInServe
  *
  * See https://vike.dev/pageContext#typescript
  */
-type PageContextBuiltInClientWithClientRouting_deprecated<Page = never> =
+type PageContextBuiltInClientWithClientRouting_deprecated<_Page = never> =
   PageContextBuiltInClientWithClientRouting<unknown>
 /** @deprecated
  * Replace:
@@ -405,5 +405,5 @@ type PageContextBuiltInClientWithClientRouting_deprecated<Page = never> =
  *
  * See https://vike.dev/pageContext#typescript
  */
-type PageContextBuiltInClientWithServerRouting_deprecated<Page = never> =
+type PageContextBuiltInClientWithServerRouting_deprecated<_Page = never> =
   PageContextBuiltInClientWithServerRouting<unknown>

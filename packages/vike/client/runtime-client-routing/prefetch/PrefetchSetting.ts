@@ -11,7 +11,7 @@ type PrefetchSetting =
       pageContext?: boolean | number
     }
 
-// TO-DO/pageContext-prefetch: use and implement PrefetchSettingFuture
+/* TO-DO/pageContext-prefetch: use and implement PrefetchSettingFuture
 type PrefetchSettingValue = {
   staticAssets?:
     | false
@@ -34,6 +34,7 @@ type PrefetchSettingValue = {
 type PrefetchSettingFuture = PrefetchSettingValue & {
   links?: PrefetchSettingValue
 }
+//*/
 
 // TO-DO/next-major-release: remove
 type PrefetchStaticAssets = false | 'hover' | 'viewport'
