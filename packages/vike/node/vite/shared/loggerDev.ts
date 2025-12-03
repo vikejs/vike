@@ -179,10 +179,9 @@ function logDev(
   assert(false)
 }
 
-// TODO: minor refactor
 // Note shown to user when Vike modifies errors in a risky fashion.
-const errorDebugNote = pc.dim(formatHintLog("Error isn't helpful? See https://vike.dev/debug#verbose-errors"))
 function appendErrorDebugNote(errMsg: string) {
+  const errorDebugNote = pc.dim(formatHintLog("Error isn't helpful? See https://vike.dev/debug#verbose-errors"))
   return errMsg + '\n' + errorDebugNote
 }
 
