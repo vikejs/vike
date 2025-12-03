@@ -1,9 +1,6 @@
-// TODO: refactor
-// - rename HttpRequestAsyncStore
-
 export { getPageContext_withAsyncHook }
 export { getHttpRequestId_withAsyncHook }
-export type { HttpRequestAsyncStore as AsyncStore }
+export type { AsyncStore }
 
 import { preparePageContextForPublicUsageServer } from './renderPageServer/preparePageContextForPublicUsageServer.js'
 import { type PageContextBegin, renderPageServer_addAsyncHookwrapper } from './renderPageServer.js'
@@ -12,12 +9,12 @@ import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hook
 import { import_ } from '@brillout/import'
 
 assertIsNotBrowser()
-type HttpRequestAsyncStore = null | {
+type AsyncStore = null | {
   httpRequestId: number
   pageContext?: PageContextBegin
 }
 const globalObject = getGlobalObject('server/runtime/asyncHook.ts', {
-  asyncLocalStorage: null as AsyncLocalStorageType<HttpRequestAsyncStore> | null,
+  asyncLocalStorage: null as AsyncLocalStorageType<AsyncStore> | null,
   installPromise: null as Promise<void> | null,
 })
 globalObject.installPromise = installHttpRequestAsyncStore()
@@ -36,7 +33,7 @@ async function installHttpRequestAsyncStore(): Promise<void> {
     assert(globalObject.asyncLocalStorage)
     await globalObject.installPromise
     // TODO: rename to asyncStore
-    const store: HttpRequestAsyncStore = {
+    const store: AsyncStore = {
       httpRequestId,
     }
     const pageContextReturn = await globalObject.asyncLocalStorage.run(store, () => renderPageServer(store))
