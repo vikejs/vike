@@ -866,6 +866,10 @@ async function prerenderPageWithAsyncContext(
   const asyncStore: AsyncStore = { httpRequestId }
 
   const render = async () => {
+    // Set _asyncStore on pageContext before rendering so it's available in hooks
+    objectAssign(pageContext, { _asyncStore: asyncStore })
+    asyncStore.pageContext = pageContext as any
+
     try {
       return await prerenderPage(pageContext)
     } catch (err) {
