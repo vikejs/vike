@@ -112,17 +112,17 @@ async function renderPageServer<PageContextUserAdded extends {}, PageContextInit
 
   const asyncStore: AsyncStore = { httpRequestId }
   const asyncLocalStorage = await getAsyncLocalStorage()
-  const pageContextReturn = asyncLocalStorage
+  const pageContextFinish = asyncLocalStorage
     ? await asyncLocalStorage.run(asyncStore, () =>
         renderPageServerEntryOnce(pageContextInit, httpRequestId, asyncStore),
       )
     : await renderPageServerEntryOnce(pageContextInit, httpRequestId, null)
 
-  logHttpResponse(urlOriginalPretty, httpRequestId, pageContextReturn)
+  logHttpResponse(urlOriginalPretty, httpRequestId, pageContextFinish)
 
-  checkType<PageContextAfterRender>(pageContextReturn)
-  assert(pageContextReturn.httpResponse)
-  return pageContextReturn as any
+  checkType<PageContextAfterRender>(pageContextFinish)
+  assert(pageContextFinish.httpResponse)
+  return pageContextFinish as any
 }
 
 async function renderPageServerEntryOnce(
