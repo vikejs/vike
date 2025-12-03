@@ -15,8 +15,7 @@ type LogRuntimeError = (err: unknown, pageContext: PageContext_logRuntime) => vo
 type PageContext_logRuntime =
   | 'NULL_TEMP'
   | {
-      // requestId is `null` when pre-rendering
-      _requestId: number | null
+      _requestId: number
     }
 
 // Set production logger (which is overwritten by loggerDev.ts in non-production environments such as development and during pre-rendering)
@@ -32,5 +31,5 @@ function setLogRuntimeDev(logRuntimeErrorDev: LogRuntimeError, logRuntimeInfoDev
 }
 
 function assertPageContext_logRuntime(pageContext: PageContext_logRuntime) {
-  assert(pageContext === 'NULL_TEMP' || typeof pageContext._requestId === 'number' || pageContext._requestId === null)
+  assert(pageContext === 'NULL_TEMP' || typeof pageContext._requestId === 'number')
 }

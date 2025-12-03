@@ -110,6 +110,7 @@ type PrerenderContext = {
   _pageContextInit: Record<string, unknown> | null
   _noExtraDir: boolean | null
   _prerenderedPageContexts: PrerenderedPageContexts
+  _requestIdCounter: number
 }
 type Output<PageContext = PageContextPrerendered> = {
   filePath: string
@@ -197,6 +198,7 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
     _noExtraDir: noExtraDir,
     _pageContextInit: options.pageContextInit ?? null,
     _prerenderedPageContexts: {},
+    _requestIdCounter: 0,
   }
 
   const doNotPrerenderList: DoNotPrerenderList = []
@@ -539,18 +541,19 @@ async function createPageContextPrerendering(
   pageId: string | undefined,
   providedByHook: ProvidedByHook,
 ) {
+  const requestId = ++prerenderContext._requestIdCounter
   const pageContextInit = {
     urlOriginal,
     ...prerenderContext._pageContextInit,
   }
   const pageContext = createPageContextServerSide(pageContextInit, globalContext, {
     isPrerendering: true,
-    requestId: null,
+    requestId,
   })
   assert(pageContext.isPrerendering === true)
   objectAssign(pageContext, {
     _urlHandler: null,
-    _requestId: null,
+    _requestId: requestId,
     _noExtraDir: prerenderContext._noExtraDir,
     _prerenderContext: prerenderContext,
     _providedByHook: providedByHook,
@@ -839,13 +842,13 @@ async function prerenderPages(
   concurrencyLimit: PLimit,
   onComplete: (htmlFile: HtmlFile) => Promise<void>,
 ) {
-  let requestId = 0
   await Promise.all(
     prerenderContext.pageContexts.map((pageContextBeforeRender) =>
       concurrencyLimit(async () => {
         let res: Awaited<ReturnType<typeof prerenderPage>>
         try {
-          res = await prerenderPage(pageContextBeforeRender, ++requestId)
+          assert(pageContextBeforeRender._requestId)
+          res = await prerenderPage(pageContextBeforeRender, pageContextBeforeRender._requestId)
         } catch (err) {
           assertIsNotAbort(err, pc.cyan(pageContextBeforeRender.urlOriginal))
           throw err

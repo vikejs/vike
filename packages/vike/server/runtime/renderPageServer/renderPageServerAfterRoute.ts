@@ -105,7 +105,7 @@ async function prerenderPageEntry(
     PageConfigsLazy & {
       routeParams: Record<string, string>
       pageId: string
-      _requestId: number | null
+      _requestId: number
       _usesClientRouter: boolean
       _pageContextAlreadyProvidedByOnPrerenderHook?: true
       is404: boolean

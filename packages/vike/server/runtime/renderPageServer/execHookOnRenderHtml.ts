@@ -42,7 +42,7 @@ async function execHookOnRenderHtml(
       __getPageAssets: GetPageAssets
       _isHtmlOnly: boolean
       _baseServer: string
-      _requestId: number | null
+      _requestId: number
     },
 ): Promise<{
   renderHook: RenderHook
