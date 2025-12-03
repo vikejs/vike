@@ -12,8 +12,9 @@ async function data(pageContext: PageContextServer) {
   const movies = await getStarWarsMovies()
 
   // TEST: getPageContext()
-  if (!pageContext.isPrerendering) {
+  {
     const pageContext2 = getPageContext({ asyncHook: true })!
+    assert(pageContext2, 'pageContext2 is undefined')
     assert(pageContext2.pageId === pageContext.pageId)
     assert(pageContext2.dangerouslyUseInternals._originalObject)
     assert(pageContext2.dangerouslyUseInternals._originalObject === pageContext.dangerouslyUseInternals._originalObject)

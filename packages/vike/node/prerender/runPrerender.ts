@@ -839,12 +839,13 @@ async function prerenderPages(
   concurrencyLimit: PLimit,
   onComplete: (htmlFile: HtmlFile) => Promise<void>,
 ) {
+  let httpRequestId = 0
   await Promise.all(
     prerenderContext.pageContexts.map((pageContextBeforeRender) =>
       concurrencyLimit(async () => {
         let res: Awaited<ReturnType<typeof prerenderPage>>
         try {
-          res = await prerenderPage(pageContextBeforeRender)
+          res = await prerenderPage(pageContextBeforeRender, ++httpRequestId)
         } catch (err) {
           assertIsNotAbort(err, pc.cyan(pageContextBeforeRender.urlOriginal))
           throw err

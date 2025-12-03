@@ -4,7 +4,6 @@ export { getAsyncLocalStorage }
 export type { AsyncStore }
 
 import { preparePageContextForPublicUsageServer } from './renderPageServer/preparePageContextForPublicUsageServer.js'
-import type { PageContextBegin } from './renderPageServer.js'
 import { assert, assertIsNotBrowser, getGlobalObject, isObject } from '../utils.js'
 import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hooks'
 import { import_ } from '@brillout/import'
@@ -12,7 +11,7 @@ import { import_ } from '@brillout/import'
 assertIsNotBrowser()
 type AsyncStore = null | {
   httpRequestId: number
-  pageContext?: PageContextBegin
+  pageContext?: Record<string, unknown>
 }
 const globalObject = getGlobalObject('server/runtime/asyncHook.ts', {
   asyncLocalStorage: null as AsyncLocalStorageType<AsyncStore> | null,

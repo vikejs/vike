@@ -1,5 +1,6 @@
 export { renderPageServerAfterRoute }
 export { prerenderPage }
+export { prerenderPageEntry }
 export type { PageContextAfterRender }
 
 import { getErrorPageId } from '../../../shared-server-client/error-page.js'
@@ -22,6 +23,7 @@ import pc from '@brillout/picocolors'
 import { isServerSideError } from '../../../shared-server-client/misc/isServerSideError.js'
 import type { PageContextCreated } from './createPageContextServerSide.js'
 import type { PageContextBegin } from '../renderPageServer.js'
+import { getAsyncLocalStorage, type AsyncStore } from '../asyncHook.js'
 
 type PageContextAfterRender = { httpResponse: HttpResponse; errorWhileRendering: null | Error }
 
@@ -86,7 +88,19 @@ async function renderPageServerAfterRoute<
   return pageContext
 }
 
-async function prerenderPage(
+async function prerenderPage(pageContext: Parameters<typeof prerenderPageEntry>[0], httpRequestId: number) {
+  const asyncLocalStorage = await getAsyncLocalStorage()
+  const asyncStore: AsyncStore = !asyncLocalStorage ? null : { httpRequestId, pageContext }
+  objectAssign(pageContext, { _asyncStore: asyncStore, _httpRequestId: httpRequestId })
+  const render = async () => await prerenderPageEntry(pageContext)
+  if (asyncLocalStorage) {
+    return await asyncLocalStorage.run(asyncStore, render)
+  } else {
+    return await render()
+  }
+}
+
+async function prerenderPageEntry(
   pageContext: PageContextCreated &
     PageConfigsLazy & {
       routeParams: Record<string, string>
