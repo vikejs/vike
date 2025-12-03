@@ -1,5 +1,4 @@
 export { renderPageServer }
-export { renderPageServer_addAsyncHookwrapper }
 export type { PageContextInit }
 export type { PageContextBegin }
 
@@ -74,11 +73,15 @@ import { resolveRedirects } from './renderPageServer/resolveRedirects.js'
 import type { PageContextInternalServer } from '../../types/PageContext.js'
 import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
 import { forkPageContext } from '../../shared-server-client/forkPageContext.js'
-import type { AsyncStore } from './asyncHook.js'
+import {
+  getPageContext_withAsyncHook,
+  getHttpRequestId_withAsyncHook,
+  getAsyncLocalStorage,
+  type AsyncStore,
+} from './asyncHook.js'
 
 const globalObject = getGlobalObject('runtime/renderPageServer.ts', {
   httpRequestsCount: 0,
-  asyncLocalStorage: null as null | { run: <T>(asyncStore: AsyncStore, fn: () => Promise<T>) => Promise<T> },
 })
 
 type PageContextAfterRender = {
@@ -113,8 +116,9 @@ async function renderPageServer<PageContextUserAdded extends {}, PageContextInit
   logHttpRequest(urlOriginalPretty, pageContextInit, httpRequestId)
 
   const asyncStore: AsyncStore = { httpRequestId }
-  const pageContextReturn = globalObject.asyncLocalStorage
-    ? await globalObject.asyncLocalStorage.run(asyncStore, () =>
+  const asyncLocalStorage = await getAsyncLocalStorage()
+  const pageContextReturn = asyncLocalStorage
+    ? await asyncLocalStorage.run(asyncStore, () =>
         renderPageServerEntryOnce(pageContextInit, httpRequestId, asyncStore),
       )
     : await renderPageServerEntryOnce(pageContextInit, httpRequestId, null)
@@ -124,10 +128,6 @@ async function renderPageServer<PageContextUserAdded extends {}, PageContextInit
   checkType<PageContextAfterRender>(pageContextReturn)
   assert(pageContextReturn.httpResponse)
   return pageContextReturn as any
-}
-
-function renderPageServer_addAsyncHookwrapper(asyncLocalStorage: NonNullable<typeof globalObject.asyncLocalStorage>) {
-  globalObject.asyncLocalStorage = asyncLocalStorage
 }
 
 async function renderPageServerEntryOnce(

@@ -1,9 +1,10 @@
 export { getPageContext_withAsyncHook }
 export { getHttpRequestId_withAsyncHook }
+export { getAsyncLocalStorage }
 export type { AsyncStore }
 
 import { preparePageContextForPublicUsageServer } from './renderPageServer/preparePageContextForPublicUsageServer.js'
-import { type PageContextBegin, renderPageServer_addAsyncHookwrapper } from './renderPageServer.js'
+import type { PageContextBegin } from './renderPageServer.js'
 import { assert, assertIsNotBrowser, getGlobalObject, isObject } from '../utils.js'
 import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hooks'
 import { import_ } from '@brillout/import'
@@ -27,8 +28,12 @@ async function install(): Promise<void> {
     return
   }
   globalObject.asyncLocalStorage = new mod.AsyncLocalStorage()
-  renderPageServer_addAsyncHookwrapper(globalObject.asyncLocalStorage)
   return
+}
+
+async function getAsyncLocalStorage() {
+  await globalObject.installPromise
+  return globalObject.asyncLocalStorage
 }
 
 function getAsyncStore() {
