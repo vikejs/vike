@@ -1,5 +1,6 @@
 export { preparePageContextForPublicUsageClient }
 export type { PageContextForPublicUsageClient }
+export type { PageContextPublicProxyClient }
 
 import { preparePageContextForPublicUsageClientShared } from '../shared/preparePageContextForPublicUsageClientShared.js'
 import type { PageContextConfig } from '../../shared-server-client/getPageFiles.js'
@@ -10,6 +11,7 @@ type PageContextForPublicUsageClient = PageContextPrepareMinimum &
   PageContextInternalClient_ClientRouting &
   PageContextConfig & { urlOriginal: string }
 
+type PageContextPublicProxyClient = ReturnType<typeof preparePageContextForPublicUsageClient>
 function preparePageContextForPublicUsageClient<PageContext extends PageContextForPublicUsageClient>(
   pageContext: PageContext,
 ) {
