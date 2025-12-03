@@ -5,17 +5,18 @@ import { getPageContext as getPageContext_sync, providePageContext } from '../..
 import { getPageContextClient } from './renderPageClient.js'
 import type { GetPageContextParams } from '../../server/runtime/getPageContext.js'
 
-// Setting return type to `unknown` because it's the type of the server-side getPageContext() that is publicly exposed
-function getPageContext({ asyncHook }: GetPageContextParams = {}): unknown {
+// Return type `never` because it's the type of the server-side getPageContext() that is publicly exposed
+type TypeIsNotExported = never
+function getPageContext({ asyncHook }: GetPageContextParams = {}): TypeIsNotExported {
   {
     const pageContext = getPageContext_sync()
-    if (pageContext) return pageContext
+    if (pageContext) return pageContext as TypeIsNotExported
   }
 
   if (asyncHook) {
     const pageContext = getPageContextClient()
-    if (pageContext) return pageContext
+    if (pageContext) return pageContext as TypeIsNotExported
   }
 
-  return null
+  return null as TypeIsNotExported
 }
