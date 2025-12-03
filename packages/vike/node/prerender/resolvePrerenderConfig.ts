@@ -7,7 +7,6 @@ import { getConfigValueBuildTime } from '../../shared-server-client/page-configs
 import type { PageConfigBuildTime } from '../../types/PageConfig.js'
 import {
   getConfigDefinedAt,
-  getConfigDefinedAtOptional,
 } from '../../shared-server-client/page-configs/getConfigDefinedAt.js'
 
 // When setting +prerender to an object => it also enables pre-rendering
