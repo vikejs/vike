@@ -14,18 +14,25 @@ import { NOT_SERIALIZABLE } from './NOT_SERIALIZABLE.js'
 import { assert, assertUsage, assertWarning, getPropAccessNotation, isBrowser } from './utils.js'
 
 function getProxyForPublicUsage<Obj extends Record<string | symbol, unknown>>(
-  obj: Obj,
-  objName: 'pageContext' | 'globalContext' | 'prerenderContext' | 'vikeConfig',
-  skipOnInternalProp?: boolean,
-  fallback?: (prop: string | symbol) => unknown,
+  ...args: [
+    // obj
+    Obj,
+    // objName
+    'pageContext' | 'globalContext' | 'prerenderContext' | 'vikeConfig',
+    // skipOnInternalProp
+    boolean,
+    // fallback
+    (prop: string | symbol) => unknown,
+  ]
 ): Obj & {
   _isProxyObject: true
   _originalObject: Obj
   /** https://vike.dev/warning/internals */
   dangerouslyUseInternals: DangerouslyUseInternals<Obj>
 } {
+  const [obj] = args
   return new Proxy(obj, {
-    get: (_: any, prop: string | symbol) => getProp(prop, obj, objName, skipOnInternalProp, fallback),
+    get: (_: any, prop: string | symbol) => getProp(prop, ...args),
   })
 }
 
