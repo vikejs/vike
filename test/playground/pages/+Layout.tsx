@@ -23,8 +23,8 @@ function Layout({ children }: { children: React.ReactNode }) {
     const pageContext2 = getPageContext({ asyncHook: true })
     assert(pageContext2)
     if (
-      !['/pages/pushState', '/pages/navigate-early'].some((pageId) =>
-        [pageContext.pageId, pageContext2.pageId].includes(pageId),
+      !['/pages/pushState', '/pages/navigate-early'].some(
+        (pageId) => pageContext.pageId === pageId || pageContext2.pageId === pageId,
       )
     ) {
       assert(pageContext2.pageId === pageContext.pageId, { pageId1: pageContext.pageId, pageId2: pageContext2.pageId })
