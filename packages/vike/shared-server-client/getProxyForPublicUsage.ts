@@ -17,7 +17,7 @@ type Target = Record<string, unknown>
 type Fallback = (prop: string | symbol) => unknown
 
 function getProxyForPublicUsage<Obj extends Target>(
-  obj: Obj & { _publicProxy?: Obj },
+  obj: Obj,
   objName: 'pageContext' | 'globalContext' | 'prerenderContext' | 'vikeConfig',
   skipOnInternalProp?: true,
   fallback?: Fallback,
@@ -26,10 +26,9 @@ function getProxyForPublicUsage<Obj extends Target>(
   /** https://vike.dev/warning/internals */
   dangerouslyUseInternals: DangerouslyUseInternals<Obj>
 } {
-  obj._publicProxy ??= new Proxy(obj, {
+  return new Proxy(obj, {
     get: (_: any, prop: string | symbol) => getProp(prop, obj, objName, skipOnInternalProp, fallback),
   })
-  return obj._publicProxy as any
 }
 
 function getProp(
