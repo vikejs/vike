@@ -36,9 +36,9 @@ const globalObject = getGlobalObject('getHttpRequestAsyncStore.ts', {
   asyncLocalStorage: null as AsyncLocalStorageType<HttpRequestAsyncStore> | null,
   installPromise: null as Promise<void> | null,
 })
-globalObject.installPromise = installHttpRequestAsyncStore()
+globalObject.installPromise = install()
 
-async function installHttpRequestAsyncStore(): Promise<void> {
+async function install(): Promise<void> {
   let mod: typeof import('node:async_hooks')
   try {
     mod = await import_('node:async_hooks')
