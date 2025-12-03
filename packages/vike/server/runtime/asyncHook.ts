@@ -42,9 +42,9 @@ async function install(): Promise<void> {
 
 function getAsyncStore() {
   if (globalObject.asyncLocalStorage === null) return null
-  const store = globalObject.asyncLocalStorage.getStore()
-  assert(store === undefined || isObject(store))
-  return store ?? null
+  const asyncStore = globalObject.asyncLocalStorage.getStore()
+  assert(asyncStore === undefined || isObject(asyncStore))
+  return asyncStore ?? null
 }
 
 function getHttpRequestId_withAsyncHook() {
