@@ -34,7 +34,7 @@ type PrefetchSettingValue = {
 type PrefetchSettingFuture = PrefetchSettingValue & {
   links?: PrefetchSettingValue
 }
-*/
+//*/
 
 // TO-DO/next-major-release: remove
 type PrefetchStaticAssets = false | 'hover' | 'viewport'
