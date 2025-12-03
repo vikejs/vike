@@ -123,6 +123,7 @@ async function renderPageServer<PageContextUserAdded extends {}, PageContextInit
   return pageContextReturn as any
 }
 
+// TODO: refactor
 // Add node:async_hooks wrapper
 function renderPageServer_addAsyncHookwrapper(wrapper: typeof globalObject.asyncHookWrapper) {
   globalObject.asyncHookWrapper = wrapper

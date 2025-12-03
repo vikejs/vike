@@ -16,6 +16,7 @@ function Layout({ children }: { children: React.ReactNode }) {
   const pageContext = usePageContext()
   const globalContext = pageContext.globalContext
 
+  // TODO try to make it work with pre-rendering
   // TEST: getPageContext()
   if (!pageContext.isPrerendering) {
     assert(pageContext)
