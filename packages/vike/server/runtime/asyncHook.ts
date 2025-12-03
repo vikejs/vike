@@ -27,16 +27,7 @@ async function install(): Promise<void> {
     return
   }
   globalObject.asyncLocalStorage = new mod.AsyncLocalStorage()
-  // TODO: try to call renderPageServer_addAsyncHookwrapper() earlier before promise above
-  renderPageServer_addAsyncHookwrapper(async (httpRequestId, renderPageServer) => {
-    assert(globalObject.asyncLocalStorage)
-    await globalObject.installPromise
-    const asyncStore: AsyncStore = {
-      httpRequestId,
-    }
-    const pageContextReturn = await globalObject.asyncLocalStorage.run(asyncStore, () => renderPageServer(asyncStore))
-    return { pageContextReturn }
-  })
+  renderPageServer_addAsyncHookwrapper(globalObject.asyncLocalStorage)
   return
 }
 

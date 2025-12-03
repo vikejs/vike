@@ -78,7 +78,7 @@ import type { AsyncStore } from './asyncHook.js'
 
 const globalObject = getGlobalObject('runtime/renderPageServer.ts', {
   httpRequestsCount: 0,
-  asyncHookWrapper: getFallbackAsyncHookWrapper(),
+  asyncLocalStorage: null as null | { run: <T>(asyncStore: AsyncStore, fn: () => Promise<T>) => Promise<T> },
 })
 
 type PageContextAfterRender = {
@@ -112,9 +112,12 @@ async function renderPageServer<PageContextUserAdded extends {}, PageContextInit
   const urlOriginalPretty = getUrlPretty(pageContextInit.urlOriginal)
   logHttpRequest(urlOriginalPretty, pageContextInit, httpRequestId)
 
-  const { pageContextReturn } = await globalObject.asyncHookWrapper(httpRequestId, (asyncStore) =>
-    renderPageServerEntryOnce(pageContextInit, httpRequestId, asyncStore),
-  )
+  const asyncStore: AsyncStore = { httpRequestId }
+  const pageContextReturn = globalObject.asyncLocalStorage
+    ? await globalObject.asyncLocalStorage.run(asyncStore, () =>
+        renderPageServerEntryOnce(pageContextInit, httpRequestId, asyncStore),
+      )
+    : await renderPageServerEntryOnce(pageContextInit, httpRequestId, null)
 
   logHttpResponse(urlOriginalPretty, httpRequestId, pageContextReturn)
 
@@ -123,16 +126,8 @@ async function renderPageServer<PageContextUserAdded extends {}, PageContextInit
   return pageContextReturn as any
 }
 
-// TODO: refactor
-// Add node:async_hooks wrapper
-function renderPageServer_addAsyncHookwrapper(wrapper: typeof globalObject.asyncHookWrapper) {
-  globalObject.asyncHookWrapper = wrapper
-}
-// Fallback wrapper if node:async_hooks isn't available
-function getFallbackAsyncHookWrapper() {
-  return async <PageContext>(_httpRequestId: number, ret: (asyncStore: AsyncStore) => Promise<PageContext>) => ({
-    pageContextReturn: await ret(null),
-  })
+function renderPageServer_addAsyncHookwrapper(asyncLocalStorage: NonNullable<typeof globalObject.asyncLocalStorage>) {
+  globalObject.asyncLocalStorage = asyncLocalStorage
 }
 
 async function renderPageServerEntryOnce(
