@@ -13,14 +13,11 @@ export type { DangerouslyUseInternals }
 import { NOT_SERIALIZABLE } from './NOT_SERIALIZABLE.js'
 import { assert, assertUsage, assertWarning, getPropAccessNotation, isBrowser } from './utils.js'
 
-type Target = Record<string, unknown>
-type Fallback = (prop: string | symbol) => unknown
-
-function getProxyForPublicUsage<Obj extends Target>(
+function getProxyForPublicUsage<Obj extends Record<string | symbol, unknown>>(
   obj: Obj,
   objName: 'pageContext' | 'globalContext' | 'prerenderContext' | 'vikeConfig',
-  skipOnInternalProp?: true,
-  fallback?: Fallback,
+  skipOnInternalProp?: boolean,
+  fallback?: (prop: string | symbol) => unknown,
 ): Obj & {
   _isProxyObject: true
   _originalObject: Obj
@@ -32,22 +29,22 @@ function getProxyForPublicUsage<Obj extends Target>(
   })
 }
 
-function getProp(
-  prop: string | symbol,
-  obj: Record<string | symbol, unknown>,
-  objName: string,
-  skipOnInternalProp?: true,
-  fallback?: Fallback,
-) {
+function getProp(prop: string | symbol, ...args: Parameters<typeof getProxyForPublicUsage>) {
+  const [obj, objName, skipOnInternalProp, fallback] = args
+
   const propStr = String(prop)
 
   if (prop === '_isProxyObject') return true
-  if (prop === '_originalObject') return obj
-  if (prop === 'dangerouslyUseInternals') return obj
+  if (prop === 'dangerouslyUseInternals') {
+    args[2] = true
+    return getProxyForPublicUsage(...args)
+  }
 
   if (!skipOnInternalProp) {
     if (!globalThis.__VIKE__IS_CLIENT) onInternalProp(propStr, objName)
   }
+
+  if (prop === '_originalObject') return obj
 
   if (fallback && !(prop in obj)) {
     // Rudimentary flat pageContext implementation https://github.com/vikejs/vike/issues/1268
