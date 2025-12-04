@@ -102,7 +102,7 @@ function pluginBuildApp(): Plugin[] {
             // We use try-catch also because:
             // - Vite/Rollup swallows errors thrown inside the writeBundle() hook. (It doesn't swallow errors thrown inside the first writeBundle() hook while building the client-side, but it does swallow errors thrown inside the second writeBundle() while building the server-side triggered after Vike calls Vite's `build()` API.)
             // - Avoid Rollup prefixing the error with [vike:build:pluginBuildApp], see for example https://github.com/vikejs/vike/issues/472#issuecomment-1276274203
-            logErrorServer(err, 'NULL_TEMP')
+            logErrorServer(err, null)
             process.exit(1)
           }
         },

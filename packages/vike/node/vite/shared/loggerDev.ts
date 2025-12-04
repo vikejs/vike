@@ -56,7 +56,7 @@ type TagSource = 'config' | `request(${number})`
 
 function logRuntimeInfoDev(msg: string, pageContext: PageContext_logRuntime, logType: LogType) {
   assertPageContext_logRuntime(pageContext)
-  const requestId = pageContext === 'NULL_TEMP' ? null : pageContext._requestId
+  const requestId = pageContext === null ? null : pageContext._requestId
   const tagSource = getTagSource(requestId)
   logDev(msg, logType, tagSource, '[vike]')
 }
@@ -79,7 +79,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
     return
   }
 
-  const requestId = pageContext === 'NULL_TEMP' ? null : pageContext._requestId
+  const requestId = pageContext === null ? null : pageContext._requestId
   const tagSource = getTagSource(requestId)
   const logErr = (err: unknown) => {
     logErrorServer(err, pageContext)

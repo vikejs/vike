@@ -23,7 +23,7 @@ async function runPrerenderFromCLIPrerenderCommand(): Promise<void> {
     await runPrerender({ viteConfig: viteConfigFromUserResolved }, '$ vike prerender')
   } catch (err) {
     // Error may come from user-land
-    logErrorServer(err, 'NULL_TEMP')
+    logErrorServer(err, null)
     process.exit(1)
   }
   runPrerender_forceExit()
@@ -34,7 +34,7 @@ async function runPrerenderFromAutoRun(viteConfig: InlineConfig | undefined): Pr
     await runPrerender({ viteConfig }, 'auto-run')
   } catch (err) {
     // Avoid Rollup prefixing the error with [vike:build:pluginBuildApp], see for example https://github.com/vikejs/vike/issues/472#issuecomment-1276274203
-    logErrorServer(err, 'NULL_TEMP')
+    logErrorServer(err, null)
     process.exit(1)
   }
   const forceExit = isVikeCli() || isViteCli()
