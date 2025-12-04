@@ -7,7 +7,7 @@ import { ConfigSpec } from '../../components'
   global
   isTypeOneLiner
 >
-`(error: unknown) => void{:ts}`
+`(error: unknown, pageContext: null | PageContextServer) => void{:ts}`
 </ConfigSpec>
 
 Hook called when an error occurs on the server.
@@ -18,7 +18,7 @@ Hook called when an error occurs on the server.
 
 import type { Config } from 'vike/types'
 
-export const onError: Config['onError'] = (error) => {
+export const onError: Config['onError'] = (error, pageContext) => {
   // ...
 }
 ```
