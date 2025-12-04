@@ -25,7 +25,7 @@ function logErrorServer(err: unknown, pageContext: PageContext_logRuntime) {
 
   const errBetter = addErrorHint(err)
 
-  execHookOnError(errBetter)
+  execHookOnError(errBetter, pageContext)
 
   const errPrinted = getStackOrMessage(isDebugError() ? getOriginalError(errBetter) : errBetter)
   console.error(hasRed(errPrinted) ? errPrinted : pc.red(errPrinted))
