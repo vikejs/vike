@@ -37,8 +37,8 @@ function createPageContextServerSide(
     _baseServer: globalContext.baseServer,
     _baseAssets: globalContext.baseAssets,
     _pageContextInit: pageContextInit,
-    _urlHandler: 'urlHandler' in args ? args.urlHandler : null,
-    isClientSideNavigation: 'isClientSideNavigation' in args ? args.isClientSideNavigation : false,
+    _urlHandler: args.isPrerendering ? null : args.urlHandler,
+    isClientSideNavigation: args.isPrerendering ? false : args.isClientSideNavigation,
   })
 
   objectAssign(pageContextCreated, globalContext._globalConfigPublic)
