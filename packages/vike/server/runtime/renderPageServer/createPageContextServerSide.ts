@@ -15,17 +15,18 @@ type PageContextCreated = Awaited<ReturnType<typeof createPageContextServerSide>
 function createPageContextServerSide(
   pageContextInit: PageContextInit,
   globalContext: GlobalContextServerInternal,
-  args:
+  args: {
+    requestId: number
+  } & (
+    | {
+        isPrerendering: true
+      }
     | {
         isPrerendering: false
         urlHandler: null | ((url: string) => string)
         isClientSideNavigation: boolean
-        requestId: number
       }
-    | {
-        isPrerendering: true
-        requestId: number
-      },
+  ),
 ) {
   assert(pageContextInit.urlOriginal)
   const pageContextCreated = createPageContext(pageContextInit, args.isPrerendering, args.requestId)
