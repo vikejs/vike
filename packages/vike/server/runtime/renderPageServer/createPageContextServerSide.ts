@@ -18,16 +18,12 @@ function createPageContextServerSide(
   args:
     | {
         isPrerendering: false
-        // TODO refactor: simplify by flatting
-        ssr: {
-          urlHandler: null | ((url: string) => string)
-          isClientSideNavigation: boolean
-        }
+        urlHandler: null | ((url: string) => string)
+        isClientSideNavigation: boolean
         requestId: number
       }
     | {
         isPrerendering: true
-        ssr?: undefined
         requestId: number
       },
 ) {
@@ -41,8 +37,8 @@ function createPageContextServerSide(
     _baseServer: globalContext.baseServer,
     _baseAssets: globalContext.baseAssets,
     _pageContextInit: pageContextInit,
-    _urlHandler: args.ssr?.urlHandler ?? null,
-    isClientSideNavigation: args.ssr?.isClientSideNavigation ?? false,
+    _urlHandler: 'urlHandler' in args ? args.urlHandler : null,
+    isClientSideNavigation: 'isClientSideNavigation' in args ? args.isClientSideNavigation : false,
   })
 
   objectAssign(pageContextCreated, globalContext._globalConfigPublic)
