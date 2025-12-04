@@ -7261,12 +7261,6 @@ packages:
     resolution: {integrity: sha512-QgT5//D3jfjJb6Gsjxv0Slpj23ip+HtOpnNgnb2S5zU3CB26G/IDPGoy4RJB42wzFE46DRsstbW6tKHoKbhAxw==}
     engines: {node: '>=0.10.0'}
 
-  react-streaming@0.4.12:
-    resolution: {integrity: sha512-OvIKK8MooiQ15KdCjmiNxpNP26k3oq5HmI8a0r4pPZAndyfh9MRbebP+0z2x1UCDO4bbjVzgD2A8+I85xJaNhA==}
-    peerDependencies:
-      react: '>=19'
-      react-dom: '>=19'
-
   react-streaming@0.4.13:
     resolution: {integrity: sha512-LNwxjglFKYDHxkt2N0rLPzqJiR/mWec94VVdi683t/Ha2VXxB8BXxni+TKdWt12v6fM1ygNgJYtzQrxFaTBFgw==}
     peerDependencies:
@@ -14403,15 +14397,6 @@ snapshots:
 
   react-refresh@0.18.0: {}
 
-  react-streaming@0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
-    dependencies:
-      '@brillout/import': 0.2.6
-      '@brillout/json-serializer': 0.5.21
-      '@brillout/picocolors': 1.0.29
-      isbot-fast: 1.2.0
-      react: 19.2.0
-      react-dom: 19.2.0(react@19.2.0)
-
   react-streaming@0.4.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:
       '@brillout/import': 0.2.6
@@ -15592,7 +15577,7 @@ snapshots:
     dependencies:
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
-      react-streaming: 0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      react-streaming: 0.4.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       vike: link:packages/vike
 
   vike-react@0.6.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vike@packages+vike):
