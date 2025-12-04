@@ -421,7 +421,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
       // We must check whether the error was already logged to avoid printing it twice, e.g. when +onCreateGlobalContext.js has a syntax error
       !hasAlreadyLogged(err)
     ) {
-      logRuntimeError(err, 'NULL_TEMP')
+      logRuntimeError(err, null)
     }
     setVikeConfigError({ errorRuntime: { err } })
     globalObject.vikeConfigHasRuntimeError = true
@@ -430,7 +430,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
   const onSuccess = () => {
     if (globalObject.vikeConfigHasRuntimeError) {
       assert(logRuntimeInfo) // always defined in dev
-      logRuntimeInfo(vikeConfigErrorRecoverMsg, 'NULL_TEMP', 'error-resolve')
+      logRuntimeInfo(vikeConfigErrorRecoverMsg, null, 'error-resolve')
     }
     globalObject.vikeConfigHasRuntimeError = false
     setVikeConfigError({ errorRuntime: false })

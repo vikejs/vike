@@ -30,7 +30,7 @@ function intercept(loggerType: LoggerType, config: ResolvedConfig) {
       // Vite does a poor job of handling errors.
       //  - It doesn't format error code snippets.
       //  - It only shows error.message which means that crucial information such as error.id isn't shown to the user.
-      logErrorServerDev(options.error, 'NULL_TEMP', true)
+      logErrorServerDev(options.error, null, true)
       // We swallow Vite's message: we didn't see it add any value so far.
       //  - It can even be confusing, such as the following:
       //    ```

@@ -283,7 +283,7 @@ async function resolveVikeConfigInternal_withErrorHandling(
     if (!isDev) {
       reject(err)
     } else {
-      logErrorServerDev(err, 'NULL_TEMP')
+      logErrorServerDev(err, null)
       resolve(getVikeConfigDummy(esbuildCache))
     }
   }

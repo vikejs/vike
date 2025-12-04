@@ -423,7 +423,7 @@ type ConfigBuiltIn = {
    *
    *  https://vike.dev/onError
    */
-  onError?: ((error: unknown) => void) | ImportString | null
+  onError?: ((error: unknown, pageContext: null | PageContextServer) => void) | ImportString | null
 
   /** Hook called when the `globalContext` object is created.
    *

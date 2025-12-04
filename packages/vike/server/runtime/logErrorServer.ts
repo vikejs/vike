@@ -12,7 +12,6 @@ const globalObject = getGlobalObject('server/runtime/logErrorServer.ts', {
   wasAlreadyLogged: new WeakSet<object>(),
 })
 
-// TODO implement +onHook(err, pageContext)
 function logErrorServer(err: unknown, pageContext: PageContext_logRuntime) {
   assertPageContext_logRuntime(pageContext)
 
@@ -25,7 +24,7 @@ function logErrorServer(err: unknown, pageContext: PageContext_logRuntime) {
 
   const errBetter = addErrorHint(err)
 
-  execHookOnError(errBetter)
+  execHookOnError(errBetter, pageContext)
 
   const errPrinted = getStackOrMessage(isDebugError() ? getOriginalError(errBetter) : errBetter)
   console.error(hasRed(errPrinted) ? errPrinted : pc.red(errPrinted))
