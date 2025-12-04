@@ -8,8 +8,8 @@
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.4.0",
     "@vitejs/plugin-react": "^4.7.0",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
     "typescript": "^5.9.3",
     "vike": "0.4.247",
     "vite": "^7.0.6",
