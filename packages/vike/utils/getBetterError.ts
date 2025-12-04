@@ -1,6 +1,7 @@
 export { getBetterError }
 
 // TO-DO/eventually: make it a library `@brillout/better-error`
+// TODO: fix, reprod: 7f4baa40ec95fa55319f85a38a50291460790683
 
 import { isObject } from './isObject.js'
 
