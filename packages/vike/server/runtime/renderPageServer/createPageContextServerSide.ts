@@ -18,6 +18,7 @@ function createPageContextServerSide(
   args:
     | {
         isPrerendering: false
+        // TODO refactor: simplify by flatting
         ssr: {
           urlHandler: null | ((url: string) => string)
           isClientSideNavigation: boolean
