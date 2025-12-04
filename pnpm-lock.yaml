@@ -243,8 +243,8 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       react-streaming:
-        specifier: ^0.4.12
-        version: 0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: ^0.4.13
+        version: 0.4.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       vike:
         specifier: 0.4.247
         version: link:../../packages/vike
@@ -432,8 +432,8 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       react-streaming:
-        specifier: ^0.4.12
-        version: 0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: ^0.4.13
+        version: 0.4.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -483,8 +483,8 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       react-streaming:
-        specifier: ^0.4.12
-        version: 0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: ^0.4.13
+        version: 0.4.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       sirv:
         specifier: ^2.0.2
         version: 2.0.4
@@ -550,7 +550,7 @@ importers:
         version: 19.2.0(react@19.2.0)
       telefunc:
         specifier: ^0.2.16
-        version: 0.2.16(@babel/core@7.28.5)(@babel/parser@7.28.5)(@babel/types@7.28.5)(react-streaming@0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))
+        version: 0.2.16(@babel/core@7.28.5)(@babel/parser@7.28.5)(@babel/types@7.28.5)(react-streaming@0.4.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -859,8 +859,8 @@ importers:
         specifier: ^0.5.10
         version: 0.5.10
       react-streaming:
-        specifier: ^0.4.12
-        version: 0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: ^0.4.13
+        version: 0.4.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       rimraf:
         specifier: ^5.0.5
         version: 5.0.10
@@ -1003,8 +1003,8 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       react-streaming:
-        specifier: ^0.4.12
-        version: 0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: ^0.4.13
+        version: 0.4.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       vike:
         specifier: 0.4.247
         version: link:../../packages/vike
@@ -1177,8 +1177,8 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       react-streaming:
-        specifier: ^0.4.12
-        version: 0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: ^0.4.13
+        version: 0.4.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       sirv:
         specifier: ^2.0.2
         version: 2.0.4
@@ -1232,7 +1232,7 @@ importers:
         version: 19.2.0(react@19.2.0)
       telefunc:
         specifier: ^0.2.16
-        version: 0.2.16(@babel/core@7.28.5)(@babel/parser@7.28.5)(@babel/types@7.28.5)(react-streaming@0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@6.3.0(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))
+        version: 0.2.16(@babel/core@7.28.5)(@babel/parser@7.28.5)(@babel/types@7.28.5)(react-streaming@0.4.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@6.3.0(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -1316,7 +1316,7 @@ importers:
         version: 19.2.0(react@19.2.0)
       telefunc:
         specifier: ^0.2.16
-        version: 0.2.16(@babel/core@7.28.5)(@babel/parser@7.28.5)(@babel/types@7.28.5)(react-streaming@0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))
+        version: 0.2.16(@babel/core@7.28.5)(@babel/parser@7.28.5)(@babel/types@7.28.5)(react-streaming@0.4.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))
       vike:
         specifier: 0.4.247
         version: link:../../packages/vike
@@ -1683,7 +1683,7 @@ importers:
         version: 19.2.0(react@19.2.0)
       telefunc:
         specifier: ^0.2.16
-        version: 0.2.16(@babel/core@7.28.5)(@babel/parser@7.28.5)(@babel/types@7.28.5)(react-streaming@0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@6.3.5(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))
+        version: 0.2.16(@babel/core@7.28.5)(@babel/parser@7.28.5)(@babel/types@7.28.5)(react-streaming@0.4.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@6.3.5(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))
       vike-react:
         specifier: ^0.6.5
         version: 0.6.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vike@packages+vike)
@@ -1860,8 +1860,8 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
       react-streaming:
-        specifier: ^0.4.12
-        version: 0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: ^0.4.13
+        version: 0.4.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -1945,7 +1945,7 @@ importers:
         version: 0.6.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vike@packages+vike)
       vike-react-zustand:
         specifier: ^0.1.6
-        version: 0.1.6(react-dom@19.2.0(react@19.2.0))(react-streaming@0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vike-react@0.6.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vike@packages+vike))(vike@packages+vike)(zustand@5.0.8(@types/react@19.2.5)(immer@10.2.0)(react@19.2.0)(use-sync-external-store@1.5.0(react@19.2.0)))
+        version: 0.1.6(react-dom@19.2.0(react@19.2.0))(react-streaming@0.4.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vike-react@0.6.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vike@packages+vike))(vike@packages+vike)(zustand@5.0.8(@types/react@19.2.5)(immer@10.2.0)(react@19.2.0)(use-sync-external-store@1.5.0(react@19.2.0)))
       vite:
         specifier: ^7.2.2
         version: 7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)
@@ -7263,6 +7263,12 @@ packages:
 
   react-streaming@0.4.12:
     resolution: {integrity: sha512-OvIKK8MooiQ15KdCjmiNxpNP26k3oq5HmI8a0r4pPZAndyfh9MRbebP+0z2x1UCDO4bbjVzgD2A8+I85xJaNhA==}
+    peerDependencies:
+      react: '>=19'
+      react-dom: '>=19'
+
+  react-streaming@0.4.13:
+    resolution: {integrity: sha512-LNwxjglFKYDHxkt2N0rLPzqJiR/mWec94VVdi683t/Ha2VXxB8BXxni+TKdWt12v6fM1ygNgJYtzQrxFaTBFgw==}
     peerDependencies:
       react: '>=19'
       react-dom: '>=19'
@@ -14406,6 +14412,15 @@ snapshots:
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
 
+  react-streaming@0.4.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
+    dependencies:
+      '@brillout/import': 0.2.6
+      '@brillout/json-serializer': 0.5.21
+      '@brillout/picocolors': 1.0.29
+      isbot-fast: 1.2.0
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
+
   react-tabs@6.1.0(react@19.2.0):
     dependencies:
       clsx: 2.1.1
@@ -15097,7 +15112,7 @@ snapshots:
       mkdirp: 3.0.1
       yallist: 5.0.0
 
-  telefunc@0.2.16(@babel/core@7.28.5)(@babel/parser@7.28.5)(@babel/types@7.28.5)(react-streaming@0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@6.3.0(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)):
+  telefunc@0.2.16(@babel/core@7.28.5)(@babel/parser@7.28.5)(@babel/types@7.28.5)(react-streaming@0.4.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@6.3.0(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)):
     dependencies:
       '@brillout/import': 0.2.6
       '@brillout/json-serializer': 0.5.21
@@ -15111,10 +15126,10 @@ snapshots:
       '@babel/parser': 7.28.5
       '@babel/types': 7.28.5
       react: 19.2.0
-      react-streaming: 0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      react-streaming: 0.4.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       vite: 6.3.0(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)
 
-  telefunc@0.2.16(@babel/core@7.28.5)(@babel/parser@7.28.5)(@babel/types@7.28.5)(react-streaming@0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@6.3.5(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)):
+  telefunc@0.2.16(@babel/core@7.28.5)(@babel/parser@7.28.5)(@babel/types@7.28.5)(react-streaming@0.4.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@6.3.5(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)):
     dependencies:
       '@brillout/import': 0.2.6
       '@brillout/json-serializer': 0.5.21
@@ -15128,10 +15143,10 @@ snapshots:
       '@babel/parser': 7.28.5
       '@babel/types': 7.28.5
       react: 19.2.0
-      react-streaming: 0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      react-streaming: 0.4.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       vite: 6.3.5(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)
 
-  telefunc@0.2.16(@babel/core@7.28.5)(@babel/parser@7.28.5)(@babel/types@7.28.5)(react-streaming@0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)):
+  telefunc@0.2.16(@babel/core@7.28.5)(@babel/parser@7.28.5)(@babel/types@7.28.5)(react-streaming@0.4.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vite@7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)):
     dependencies:
       '@brillout/import': 0.2.6
       '@brillout/json-serializer': 0.5.21
@@ -15145,7 +15160,7 @@ snapshots:
       '@babel/parser': 7.28.5
       '@babel/types': 7.28.5
       react: 19.2.0
-      react-streaming: 0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      react-streaming: 0.4.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       vite: 7.2.2(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6)
 
   terser-webpack-plugin@5.3.10(webpack@5.97.1):
@@ -15559,14 +15574,14 @@ snapshots:
       vike: link:packages/vike
       vike-react: 0.6.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vike@packages+vike)
 
-  vike-react-zustand@0.1.6(react-dom@19.2.0(react@19.2.0))(react-streaming@0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vike-react@0.6.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vike@packages+vike))(vike@packages+vike)(zustand@5.0.8(@types/react@19.2.5)(immer@10.2.0)(react@19.2.0)(use-sync-external-store@1.5.0(react@19.2.0))):
+  vike-react-zustand@0.1.6(react-dom@19.2.0(react@19.2.0))(react-streaming@0.4.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(vike-react@0.6.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vike@packages+vike))(vike@packages+vike)(zustand@5.0.8(@types/react@19.2.5)(immer@10.2.0)(react@19.2.0)(use-sync-external-store@1.5.0(react@19.2.0))):
     dependencies:
       '@babel/core': 7.28.5
       '@babel/types': 7.28.5
       '@brillout/json-serializer': 0.5.21
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
-      react-streaming: 0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      react-streaming: 0.4.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       vike: link:packages/vike
       vike-react: 0.6.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vike@packages+vike)
       zustand: 5.0.8(@types/react@19.2.5)(immer@10.2.0)(react@19.2.0)(use-sync-external-store@1.5.0(react@19.2.0))
@@ -15584,7 +15599,7 @@ snapshots:
     dependencies:
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
-      react-streaming: 0.4.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      react-streaming: 0.4.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       vike: link:packages/vike
 
   vike-server@1.0.24(@hattip/core@0.0.49)(@types/express@5.0.3)(hono@4.10.4)(vike@packages+vike)(vite@6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.20.6)):
