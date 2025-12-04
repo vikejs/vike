@@ -1,6 +1,6 @@
 export { getBetterError }
 
-// TO-DO/eventually: make it a library `@brillout/release-me`
+// TO-DO/eventually: make it a library `@brillout/better-error`
 
 import { isObject } from './isObject.js'
 
@@ -28,7 +28,7 @@ function getBetterError(err: unknown, modifications: { message?: string; stack?:
   Object.assign(errBetter, modifications)
   if (modifications.message) errBetter.stack = errBetter.stack.replaceAll(errMessageOriginal, modifications.message)
 
-  // https://gist.github.com/brillout/066293a687ab7cf695e62ad867bc6a9c
+  // Enable users to retrieve the original error
   Object.assign(errBetter, { getOriginalError: () => (err as any)?.getOriginalError?.() ?? err })
 
   return errBetter

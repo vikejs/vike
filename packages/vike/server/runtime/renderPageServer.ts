@@ -436,10 +436,8 @@ function getPageContextBegin(
   )
   const pageContextBegin = createPageContextServerSide(pageContextInit, globalContext, {
     isPrerendering: false,
-    ssr: {
-      urlHandler: _urlHandler,
-      isClientSideNavigation,
-    },
+    urlHandler: _urlHandler,
+    isClientSideNavigation,
     requestId,
   })
   objectAssign(pageContextBegin, {

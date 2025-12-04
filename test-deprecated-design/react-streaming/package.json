@@ -11,9 +11,9 @@
     "compression": "^1.7.4",
     "cross-env": "^7.0.3",
     "express": "^5.1.0",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "react-streaming": "^0.4.12",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
+    "react-streaming": "^0.4.13",
     "sirv": "^2.0.2",
     "vike": "0.4.247",
     "vite": "^6.3.2"

@@ -15,21 +15,18 @@ type PageContextCreated = Awaited<ReturnType<typeof createPageContextServerSide>
 function createPageContextServerSide(
   pageContextInit: PageContextInit,
   globalContext: GlobalContextServerInternal,
-  args:
-    | {
-        isPrerendering: false
-        // TODO refactor: simplify by flatting
-        ssr: {
-          urlHandler: null | ((url: string) => string)
-          isClientSideNavigation: boolean
-        }
-        requestId: number
-      }
+  args: {
+    requestId: number
+  } & (
     | {
         isPrerendering: true
-        ssr?: undefined
-        requestId: number
-      },
+      }
+    | {
+        isPrerendering: false
+        urlHandler: null | ((url: string) => string)
+        isClientSideNavigation: boolean
+      }
+  ),
 ) {
   assert(pageContextInit.urlOriginal)
   const pageContextCreated = createPageContext(pageContextInit, args.isPrerendering, args.requestId)
@@ -41,8 +38,8 @@ function createPageContextServerSide(
     _baseServer: globalContext.baseServer,
     _baseAssets: globalContext.baseAssets,
     _pageContextInit: pageContextInit,
-    _urlHandler: args.ssr?.urlHandler ?? null,
-    isClientSideNavigation: args.ssr?.isClientSideNavigation ?? false,
+    _urlHandler: args.isPrerendering ? null : args.urlHandler,
+    isClientSideNavigation: args.isPrerendering ? false : args.isClientSideNavigation,
   })
 
   objectAssign(pageContextCreated, globalContext._globalConfigPublic)
