@@ -5,4 +5,3 @@ To update:
 - Pin `"vike"` dependency in `package.json`
 - Update `README.md`
 - Add `.test-e2e.json` with `{ "ci": { "job": "Extensions" } }`
-- Run `pnpm run format`
