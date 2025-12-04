@@ -13,8 +13,6 @@ function Layout({ children }: { children: React.ReactNode }) {
   if (import.meta.env.SSR) throw new Error('Some Failure')
   //*/
 
-  euwqhe
-
   const pageContext = usePageContext()
   const globalContext = pageContext.globalContext
 
