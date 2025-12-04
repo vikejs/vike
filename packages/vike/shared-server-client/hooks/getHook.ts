@@ -40,7 +40,7 @@ import type {FilePath} from '../page-configs/FilePath.js'
   */
   hookFilePath: string
 }
-type HookFn<HookArg = HookArgDefault> = (arg: HookArg, ...rest: any[]) => unknown
+type HookFn<HookArg = HookArgDefault> = (arg: HookArg, ...rest: unknown[]) => unknown
 type HookTimeout = {
   error: number | false
   warning: number | false
