@@ -81,7 +81,7 @@ const globalObject = getGlobalObject('runtime/renderPageServer.ts', {
 
 type PageContextAfterRender = {
   httpResponse: HttpResponse
-  _requestId: null | number
+  _requestId: number
 } & Partial<PageContextInternalServer>
 type PageContextInit = Pick<PageContextInternalServer, 'urlOriginal' | 'headersOriginal'> & {
   /** @deprecated Set `pageContextInit.urlOriginal` instead  */ // TO-DO/next-major-release: remove
@@ -103,10 +103,9 @@ async function renderPageServer<PageContextUserAdded extends {}, PageContextInit
   assert(hasProp(pageContextInit, 'urlOriginal', 'string')) // assertUsage() already implemented at assertArguments()
   assertIsUrl(pageContextInit.urlOriginal)
   onSetupRuntime()
-  const pageContextSkipRequest = getPageContextSkipRequest(pageContextInit)
-  if (pageContextSkipRequest) return pageContextSkipRequest as any
-
   const requestId = getRequestId()
+  const pageContextSkipRequest = getPageContextSkipRequest(pageContextInit, requestId)
+  if (pageContextSkipRequest) return pageContextSkipRequest as any
   const urlOriginalPretty = getUrlPretty(pageContextInit.urlOriginal)
   logHttpRequest(urlOriginalPretty, pageContextInit, requestId)
 
@@ -638,7 +637,7 @@ async function checkBaseUrl(pageContextBegin: PageContextBegin, globalContext: G
   return pageContext
 }
 
-function getPageContextSkipRequest(pageContextInit: PageContextInit) {
+function getPageContextSkipRequest(pageContextInit: PageContextInit, requestId: number) {
   const urlPathnameWithBase = parseUrl(pageContextInit.urlOriginal, '/').pathname
   assertIsNotViteRequest(urlPathnameWithBase, pageContextInit.urlOriginal)
   let errMsg404: string | undefined
@@ -651,7 +650,7 @@ function getPageContextSkipRequest(pageContextInit: PageContextInit) {
     errMsg404 = 'Not supported'
   }
   if (!errMsg404) return
-  const pageContext = createPageContextServerSideWithoutGlobalContext(pageContextInit, null)
+  const pageContext = createPageContextServerSideWithoutGlobalContext(pageContextInit, requestId)
   const httpResponse = createHttpResponse404(errMsg404)
   objectAssign(pageContext, { httpResponse })
   checkType<PageContextAfterRender>(pageContext)

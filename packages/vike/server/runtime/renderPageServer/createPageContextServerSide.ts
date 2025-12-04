@@ -18,6 +18,7 @@ function createPageContextServerSide(
   args:
     | {
         isPrerendering: false
+        // TODO refactor: simplify by flatting
         ssr: {
           urlHandler: null | ((url: string) => string)
           isClientSideNavigation: boolean
@@ -27,7 +28,7 @@ function createPageContextServerSide(
     | {
         isPrerendering: true
         ssr?: undefined
-        requestId: null
+        requestId: number
       },
 ) {
   assert(pageContextInit.urlOriginal)
@@ -78,11 +79,11 @@ function createPageContextServerSide(
 
   return pageContextCreated
 }
-function createPageContextServerSideWithoutGlobalContext(pageContextInit: PageContextInit, requestId: number | null) {
+function createPageContextServerSideWithoutGlobalContext(pageContextInit: PageContextInit, requestId: number) {
   const pageContext = createPageContext(pageContextInit, false, requestId)
   return pageContext
 }
-function createPageContext(pageContextInit: PageContextInit | null, isPrerendering: boolean, requestId: number | null) {
+function createPageContext(pageContextInit: PageContextInit | null, isPrerendering: boolean, requestId: number) {
   const pageContext = createPageContextObject()
   objectAssign(pageContext, {
     isClientSide: false as const,
