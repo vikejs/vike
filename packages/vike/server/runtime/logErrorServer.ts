@@ -12,7 +12,6 @@ const globalObject = getGlobalObject('server/runtime/logErrorServer.ts', {
   wasAlreadyLogged: new WeakSet<object>(),
 })
 
-// TODO implement +onHook(err, pageContext)
 function logErrorServer(err: unknown, pageContext: PageContext_logRuntime) {
   assertPageContext_logRuntime(pageContext)
 
