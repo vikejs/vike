@@ -847,8 +847,7 @@ async function prerenderPages(
       concurrencyLimit(async () => {
         let res: Awaited<ReturnType<typeof prerenderPage>>
         try {
-          assert(pageContextBeforeRender._requestId)
-          res = await prerenderPage(pageContextBeforeRender, pageContextBeforeRender._requestId)
+          res = await prerenderPage(pageContextBeforeRender)
         } catch (err) {
           assertIsNotAbort(err, pc.cyan(pageContextBeforeRender.urlOriginal))
           throw err
