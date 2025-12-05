@@ -4,6 +4,7 @@ export { getBetterError }
 // TODO: fix? Reprod: 7f4baa40ec95fa55319f85a38a50291460790683
 
 import { isObject } from './isObject.js'
+import { assert } from './assert.js'
 
 function getBetterError(err: unknown, modifications: { message?: string | { prepend?: string; append?: string; }, stack?: string; hideStack?: true }) {
   let errBetter: { message: string; stack: string }
@@ -25,16 +26,30 @@ function getBetterError(err: unknown, modifications: { message?: string | { prep
   }
 
   // Modifications
-  const { message: _ , ...mods} = modifications
+  const errMessageOriginal = errBetter.message
+  const { message, ...mods } = modifications
   Object.assign(errBetter, mods)
-  if (modifications.message?.prepend) {
-    errBetter.message = modifications.message.prepend + errBetter.message
-    errBetter.stack = modifications.message.prepend + errBetter.stack
-  }
-  if (modifications.message?.append) {
-    const errMessageOriginal = errBetter.message
-    errBetter.message = modifications.message.prepend + errBetter.message
-    errBetter.stack = errBetter.stack.replaceAll(errMessageOriginal, errBetter.message)
+  if (message !== undefined) {
+    if (typeof message === 'string') {
+      // Complete replacement - also remove prefix before old message (e.g., "SyntaxError: ")
+      errBetter.message = message
+      const oldMessageIndex = errBetter.stack.indexOf(errMessageOriginal)
+      assert(oldMessageIndex >=0)
+      // Remove everything from start up to and including the old message
+      const afterOldMessage = errBetter.stack.slice(oldMessageIndex + errMessageOriginal.length)
+      errBetter.stack = message + afterOldMessage
+    } else {
+      // Prepend/append
+      if (message.prepend) {
+        errBetter.message = message.prepend + errBetter.message
+        errBetter.stack = message.prepend + errBetter.stack
+      }
+      if (message.append) {
+        const currentMessage = errBetter.message
+        errBetter.message = currentMessage + message.append
+        errBetter.stack = errBetter.stack.replaceAll(currentMessage, errBetter.message)
+      }
+    }
   }
 
   // Enable users to retrieve the original error
