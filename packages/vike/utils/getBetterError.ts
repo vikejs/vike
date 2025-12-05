@@ -4,7 +4,6 @@ export { getBetterError }
 // TODO: fix? Reprod: 7f4baa40ec95fa55319f85a38a50291460790683
 
 import { isObject } from './isObject.js'
-import { assert } from './assert.js'
 
 function getBetterError(
   err: unknown,
