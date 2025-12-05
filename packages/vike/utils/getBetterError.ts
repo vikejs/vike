@@ -32,7 +32,7 @@ function getBetterError(
   const errMessageOriginal = errBetter.message
   const { message: modsMessage, ...mods } = modifications
   Object.assign(errBetter, mods)
-  if (modsMessage !== undefined) {
+  if (modsMessage) {
     if (typeof modsMessage === 'string') {
       // Complete replacement - also remove prefix before old message (e.g., "SyntaxError: ")
       errBetter.message = modsMessage
