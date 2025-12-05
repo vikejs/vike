@@ -410,7 +410,7 @@ function getConfigBuildErrorFormatted(err: unknown) {
   const errMsgFormatted = err[formatted] as ErrMsgFormatted
   return errMsgFormatted
 }
-type ErrMsgFormatted = `Failed to transpile ${string} because:\n${string}`
+type ErrMsgFormatted = `${ErrIntroMsgTranspile}\n${string}`
 async function formatBuildErr(err: unknown, filePath: FilePathResolved): Promise<void> {
   assert(isObject(err) && err.errors)
   const msgEsbuild = (
@@ -483,6 +483,7 @@ function triggerPrepareStackTrace(err: unknown) {
 }
 
 type ErrIntroMsgExecute = ReturnType<typeof getErrIntroMsg<'execute'>>
+type ErrIntroMsgTranspile = ReturnType<typeof getErrIntroMsg<'transpile'>>
 function getErrIntroMsg<Operation extends 'transpile' | 'execute'>(operation: Operation, filePath: FilePathResolved) {
   const { filePathToShowToUserResolved } = filePath
   const msg =
