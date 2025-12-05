@@ -214,7 +214,7 @@ function getTags<TTagTool extends TagTool>(
   })()
   const timestamp = pc.dim(new Date().toLocaleTimeString() as '1:37:00 PM')
   const whitespace = (/\s|\[/.test(stripAnsi(msg)[0]!) ? '' : ' ') as ' '
-  const tagSourceStr = (!tagSource ? '' : pc.dim(`[${tagSource}]`)) as '[request(n)/config]'
+  const tagSourceStr = (!tagSource ? '' : pc.dim(`[${tagSource}]`)) as '[request(n)]'
   const tags = `${timestamp} ${tagToolColored}${tagSourceStr}${whitespace}` as const
   return tags
 }
