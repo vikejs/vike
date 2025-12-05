@@ -33,7 +33,6 @@ async function cmdDev() {
       // Restore console.log before printing welcome message
       restoreConsoleLog()
 
-      const info = viteServer.config.logger.info
       const startupDurationString = pc.dim(
         `ready in ${pc.reset(pc.bold(String(Math.ceil(performance.now() - startTime))))} ms`,
       )
