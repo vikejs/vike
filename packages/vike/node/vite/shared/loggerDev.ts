@@ -49,7 +49,7 @@ addOnBeforeAssertErr((err) => {
   // We must directly apply vite.ssrFixStacktrace() to `assertWarning(..., { showStackTrace: true })` because warnings aren't caught by the try-catch of renderPageServer()
   applyViteSourceMapToStackTrace(err)
 })
-// Note shown to user when Vike modifies errors in a risky fashion.
+// Note shown to user when Vike completely modifies the error message (which is somewhat risky)
 const errorDebugNote = pc.dim(formatHintLog("Error isn't helpful? See https://vike.dev/debug#verbose-errors"))
 
 type LogType = 'info' | 'warn' | 'error' | 'error-resolve'
