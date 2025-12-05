@@ -27,26 +27,26 @@ function getBetterError(err: unknown, modifications: { message?: string | { prep
 
   // Modifications
   const errMessageOriginal = errBetter.message
-  const { message, ...mods } = modifications
+  const { message: modsMessage, ...mods } = modifications
   Object.assign(errBetter, mods)
-  if (message !== undefined) {
-    if (typeof message === 'string') {
+  if (modsMessage !== undefined) {
+    if (typeof modsMessage === 'string') {
       // Complete replacement - also remove prefix before old message (e.g., "SyntaxError: ")
-      errBetter.message = message
+      errBetter.message = modsMessage
       const oldMessageIndex = errBetter.stack.indexOf(errMessageOriginal)
       assert(oldMessageIndex >=0)
       // Remove everything from start up to and including the old message
       const afterOldMessage = errBetter.stack.slice(oldMessageIndex + errMessageOriginal.length)
-      errBetter.stack = message + afterOldMessage
+      errBetter.stack = modsMessage + afterOldMessage
     } else {
       // Prepend/append
-      if (message.prepend) {
-        errBetter.message = message.prepend + errBetter.message
-        errBetter.stack = message.prepend + errBetter.stack
+      if (modsMessage.prepend) {
+        errBetter.message = modsMessage.prepend + errBetter.message
+        errBetter.stack = modsMessage.prepend + errBetter.stack
       }
-      if (message.append) {
+      if (modsMessage.append) {
         const currentMessage = errBetter.message
-        errBetter.message = currentMessage + message.append
+        errBetter.message = currentMessage + modsMessage.append
         errBetter.stack = errBetter.stack.replaceAll(currentMessage, errBetter.message)
       }
     }
