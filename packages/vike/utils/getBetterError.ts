@@ -5,7 +5,7 @@ export { getBetterError }
 
 import { isObject } from './isObject.js'
 
-function getBetterError(err: unknown, modifications: { message?: string; stack?: string; hideStack?: true }) {
+function getBetterError(err: unknown, modifications: { message?: string | { prepend?: string; append?: string; }, stack?: string; hideStack?: true }) {
   let errBetter: { message: string; stack: string }
 
   // Normalize
@@ -25,9 +25,17 @@ function getBetterError(err: unknown, modifications: { message?: string; stack?:
   }
 
   // Modifications
-  const errMessageOriginal = errBetter.message
-  Object.assign(errBetter, modifications)
-  if (modifications.message) errBetter.stack = errBetter.stack.replaceAll(errMessageOriginal, modifications.message)
+  const { message: _ , ...mods} = modifications
+  Object.assign(errBetter, mods)
+  if (modifications.message?.prepend) {
+    errBetter.message = modifications.message.prepend + errBetter.message
+    errBetter.stack = modifications.message.prepend + errBetter.stack
+  }
+  if (modifications.message?.append) {
+    const errMessageOriginal = errBetter.message
+    errBetter.message = modifications.message.prepend + errBetter.message
+    errBetter.stack = errBetter.stack.replaceAll(errMessageOriginal, errBetter.message)
+  }
 
   // Enable users to retrieve the original error
   Object.assign(errBetter, { getOriginalError: () => (err as any)?.getOriginalError?.() ?? err })

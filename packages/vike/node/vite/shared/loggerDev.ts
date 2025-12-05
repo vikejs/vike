@@ -49,6 +49,8 @@ addOnBeforeAssertErr((err) => {
   // We must directly apply vite.ssrFixStacktrace() to `assertWarning(..., { showStackTrace: true })` because warnings aren't caught by the try-catch of renderPageServer()
   applyViteSourceMapToStackTrace(err)
 })
+// Note shown to user when Vike modifies errors in a risky fashion.
+const errorDebugNote = pc.dim(formatHintLog("Error isn't helpful? See https://vike.dev/debug#verbose-errors"))
 
 type LogType = 'info' | 'warn' | 'error' | 'error-resolve'
 type TagTool = '[vike]' | '[vite]'
@@ -89,9 +91,8 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
     assert(viteConfig)
     let message = getPrettyErrorWithCodeSnippet(err, viteConfig.root)
     assert(stripAnsi(message).startsWith('Failed to transpile'))
-    message = prependTags(message, '[vite]', tagSource, 'error')
-    message = appendErrorDebugNote(message)
-    const errBetter = getBetterError(err, { message, hideStack: true })
+    const tags = getTags(message, '[vite]', tagSource, 'error')
+    const errBetter = getBetterError(err, { message: { prepend: '', append: '\n' + errorDebugNote }, hideStack: true })
     logErr(errBetter)
     return
   }
@@ -177,12 +178,6 @@ function logDev(
   assert(false)
 }
 
-// Note shown to user when Vike modifies errors in a risky fashion.
-function appendErrorDebugNote(errMsg: string) {
-  const errorDebugNote = pc.dim(formatHintLog("Error isn't helpful? See https://vike.dev/debug#verbose-errors"))
-  return errMsg + '\n' + errorDebugNote
-}
-
 function getTagSource(requestId: number | null = null): TagSource | null {
   const requestIdFromStore = getHttpRequestId_withAsyncHook()
   if (requestIdFromStore !== null) {
@@ -207,7 +202,11 @@ function applyViteSourceMapToStackTrace(thing: unknown) {
   viteDevServer.ssrFixStacktrace(thing as Error)
 }
 
-function prependTags(msg: string, tagTool: TagTool, tagSource: TagSource | null, logType: LogType) {
+function prependTags(...args: Parameters<typeof getTags>) {
+  const [msg] = args
+  return `${getTags(...args)}${msg}`
+}
+function getTags(msg: string, tagTool: TagTool, tagSource: TagSource | null, logType: LogType) {
   const color = (s: string) => {
     if (logType === 'error' && !hasRed(msg)) return pc.bold(pc.red(s))
     if (logType === 'error-resolve' && !hasGreen(msg)) return pc.bold(pc.green(s))

@@ -105,9 +105,7 @@ function addErrorHint(error: unknown) {
   if (!hint) return error
   hint = formatHintLog(hint)
   hint = pc.bold(hint)
-  let message = String((error as any)?.message || '')
-  message = message + '\n' + hint
-  const errBetter = getBetterError(error, { message })
+  const errBetter = getBetterError(error, { message: { append: '\n' + hint } })
   return errBetter
 }
 function getErrorHint(error: unknown): null | string {
