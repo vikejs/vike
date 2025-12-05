@@ -50,8 +50,9 @@ function getBetterError(
     errBetter.stack = modsMessage.prepend + errBetter.stack
   } else if (modsMessage?.append) {
     const messagePrev = errBetter.message
-    errBetter.message = errBetter.message + modsMessage.append
-    errBetter.stack = errBetter.stack.replace(messagePrev, errBetter.message)
+    const messageNext = errBetter.message + modsMessage.append
+    errBetter.message = messageNext
+    errBetter.stack = errBetter.stack.replace(messagePrev, messageNext)
   }
 
   // Enable users to retrieve the original error
