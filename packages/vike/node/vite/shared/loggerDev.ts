@@ -49,6 +49,8 @@ addOnBeforeAssertErr((err) => {
   // We must directly apply vite.ssrFixStacktrace() to `assertWarning(..., { showStackTrace: true })` because warnings aren't caught by the try-catch of renderPageServer()
   applyViteSourceMapToStackTrace(err)
 })
+// Note shown to user when Vike completely modifies the error message (which is somewhat risky)
+const errorDebugNote = pc.dim(formatHintLog("Error isn't helpful? See https://vike.dev/debug#verbose-errors"))
 
 type LogType = 'info' | 'warn' | 'error' | 'error-resolve'
 type TagTool = '[vike]' | '[vite]'
@@ -87,10 +89,10 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
     // We handle transpile errors globally because wrapping viteDevServer.ssrLoadModule() wouldn't be enough: transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when loading user code with import() (since Vite lazy-transpiles import() calls)
     const viteConfig = getViteConfig()
     assert(viteConfig)
-    let message = getPrettyErrorWithCodeSnippet(err, viteConfig.root)
-    assert(stripAnsi(message).startsWith('Failed to transpile'))
-    message = prependTags(message, '[vite]', tagSource, 'error')
-    message = appendErrorDebugNote(message)
+    const errMsgFormatted = getPrettyErrorWithCodeSnippet(err, viteConfig.root)
+    assert(stripAnsi(errMsgFormatted).startsWith('Failed to transpile'))
+    const message =
+      `${getTags(errMsgFormatted, '[vite]', tagSource, 'error')}${errMsgFormatted}\n${errorDebugNote}` as const
     const errBetter = getBetterError(err, { message, hideStack: true })
     logErr(errBetter)
     return
@@ -100,8 +102,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
     const errMsgFormatted = getConfigBuildErrorFormatted(err)
     if (errMsgFormatted) {
       assert(stripAnsi(errMsgFormatted).startsWith('Failed to transpile'))
-      let message = errMsgFormatted
-      message = prependTags(message, '[vike]', tagSource, 'error')
+      const message = `${getTagsError(errMsgFormatted, tagSource)}${errMsgFormatted}\n${errorDebugNote}` as const
       const errBetter = getBetterError(err, { message, hideStack: true })
       logErr(errBetter)
       return
@@ -112,9 +113,8 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
     const errIntro = getConfigExecutionErrorIntroMsg(err)
     if (errIntro) {
       assert(stripAnsi(errIntro).startsWith('Failed to execute'))
-      let message = getErrMsgWithIntro(err, errIntro)
-      message = prependTags(message, '[vike]', tagSource, 'error')
-      const errBetter = getBetterError(err, { message })
+      const prepend = `${getTagsError(errIntro, tagSource)}${errIntro}\n` as const
+      const errBetter = getBetterError(err, { message: { prepend } })
       logErr(errBetter)
       return
     }
@@ -124,10 +124,11 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
     const hook = isUserHookError(err)
     if (hook) {
       const { hookName, hookFilePath } = hook
-      const errIntro = pc.red(`Following error was thrown by the ${hookName}() hook defined at ${hookFilePath}`)
-      let message = getErrMsgWithIntro(err, errIntro)
-      message = prependTags(message, '[vike]', tagSource, 'error')
-      const errBetter = getBetterError(err, { message })
+      const errIntro = pc.red(
+        `Following error was thrown by the ${hookName as string}() hook defined at ${hookFilePath}`,
+      )
+      const prepend = `${getTagsError(errIntro, tagSource)}${errIntro}\n` as const
+      const errBetter = getBetterError(err, { message: { prepend } })
       logErr(errBetter)
       return
     }
@@ -135,9 +136,8 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
 
   if (tagSource) {
     const errIntro = pc.bold(pc.red(`[Error] ${errorComesFromVite ? 'Transpilation error' : 'An error was thrown'}:`))
-    let message = getErrMsgWithIntro(err, errIntro)
-    message = prependTags(message, '[vike]', tagSource, 'error')
-    const errBetter = getBetterError(err, { message })
+    const prepend = `${getTagsError(errIntro, tagSource)}${errIntro}\n` as const
+    const errBetter = getBetterError(err, { message: { prepend } })
     logErr(errBetter)
     return
   }
@@ -145,15 +145,9 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
   logErr(err)
 }
 
-function logDev(
-  msg: string,
-  logType: LogType,
-  tagSource: TagSource | null,
-  tagTool: TagTool,
-  doNotPrependTags?: boolean,
-) {
-  if (!doNotPrependTags) {
-    msg = prependTags(msg, tagTool, tagSource, logType)
+function logDev(msg: string, logType: LogType, tagSource: TagSource | null, tagTool: TagTool, doNotAddTags?: boolean) {
+  if (!doNotAddTags) {
+    msg = getTags(msg, tagTool, tagSource, logType) + msg
   }
 
   if (logType === 'info') {
@@ -175,12 +169,6 @@ function logDev(
   }
 
   assert(false)
-}
-
-// Note shown to user when Vike modifies errors in a risky fashion.
-function appendErrorDebugNote(errMsg: string) {
-  const errorDebugNote = pc.dim(formatHintLog("Error isn't helpful? See https://vike.dev/debug#verbose-errors"))
-  return errMsg + '\n' + errorDebugNote
 }
 
 function getTagSource(requestId: number | null = null): TagSource | null {
@@ -207,28 +195,26 @@ function applyViteSourceMapToStackTrace(thing: unknown) {
   viteDevServer.ssrFixStacktrace(thing as Error)
 }
 
-function prependTags(msg: string, tagTool: TagTool, tagSource: TagSource | null, logType: LogType) {
-  const color = (s: string) => {
-    if (logType === 'error' && !hasRed(msg)) return pc.bold(pc.red(s))
-    if (logType === 'error-resolve' && !hasGreen(msg)) return pc.bold(pc.green(s))
-    if (logType === 'warn' && !hasYellow(msg)) return pc.yellow(s)
-    if (tagTool === '[vite]') return pc.bold(pc.cyan(s))
-    if (tagTool === '[vike]') return pc.bold(pc.cyan(s))
-    assert(false)
-  }
-  let tag = color(tagTool)
-  if (tagSource) {
-    tag = tag + pc.dim(`[${tagSource}]`)
-  }
-
-  const timestamp = pc.dim(new Date().toLocaleTimeString())
-
-  const whitespace = /\s|\[/.test(stripAnsi(msg)[0]!) ? '' : ' '
-
-  return `${timestamp} ${tag}${whitespace}${msg}`
+function getTagsError(msg: string, tagSource: TagSource | null) {
+  return getTags(msg, '[vike]', tagSource, 'error')
 }
-
-function getErrMsgWithIntro(err: unknown, errIntro: string) {
-  const errMsg = String((err as any)?.message || '')
-  return errIntro + '\n' + errMsg
+function getTags<TTagTool extends TagTool>(
+  msg: string,
+  tagTool: TTagTool,
+  tagSource: TagSource | null,
+  logType: LogType,
+) {
+  const tagToolColored = (() => {
+    if (logType === 'error' && !hasRed(msg)) return pc.bold(pc.red(tagTool))
+    if (logType === 'error-resolve' && !hasGreen(msg)) return pc.bold(pc.green(tagTool))
+    if (logType === 'warn' && !hasYellow(msg)) return pc.yellow(tagTool)
+    if (tagTool === '[vite]') return pc.bold(pc.cyan(tagTool))
+    if (tagTool === '[vike]') return pc.bold(pc.cyan(tagTool))
+    assert(false)
+  })()
+  const timestamp = pc.dim(new Date().toLocaleTimeString() as '1:37:00 PM')
+  const whitespace = (/\s|\[/.test(stripAnsi(msg)[0]!) ? '' : ' ') as ' '
+  const tagSourceStr = (!tagSource ? '' : pc.dim(`[${tagSource}]`)) as '[request(n)]'
+  const tags = `${timestamp} ${tagToolColored}${tagSourceStr}${whitespace}` as const
+  return tags
 }

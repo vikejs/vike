@@ -57,11 +57,8 @@ function getPrettyErrorWithCodeSnippet(err: ErrorWithCodeSnippet, userRootDir: s
   assert(isErrorWithCodeSnippet(err))
   let { id, frame } = err
 
-  const msgFirstLine = [
-    pc.red('Failed to transpile'),
-    pc.bold(pc.red(getFilePathToShowToUserUnknown(id, userRootDir))),
-    pc.red('because:'),
-  ].join(' ')
+  const msgFirstLine =
+    `${pc.red('Failed to transpile')} ${pc.bold(pc.red(getFilePathToShowToUserUnknown(id, userRootDir)))} ${pc.red('because:')}` as const
 
   const errMsg = getPrettyErrMessage(err)
 
@@ -79,8 +76,9 @@ function getPrettyErrorWithCodeSnippet(err: ErrorWithCodeSnippet, userRootDir: s
     frame = pc.yellow(frame)
   }
 
-  let msg = [msgFirstLine, errMsg, frame].filter(Boolean).join('\n')
-  msg = removeEmptyLines(msg)
+  let errMsgCodeSnippet = [errMsg, frame].filter(Boolean).join('\n')
+  errMsgCodeSnippet = removeEmptyLines(errMsgCodeSnippet)
+  const errMsgFormatted = `${msgFirstLine}\n${errMsgCodeSnippet}` as const
 
   /* Vite already does a fairly good job at showing a concise error in the layover
   server.ws.send({
@@ -89,7 +87,7 @@ function getPrettyErrorWithCodeSnippet(err: ErrorWithCodeSnippet, userRootDir: s
   })
   */
 
-  return msg
+  return errMsgFormatted
 }
 
 function getPrettyErrMessage(err: ErrorWithCodeSnippet): string | null {

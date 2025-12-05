@@ -1,12 +1,17 @@
 export { getBetterError }
 
-// TO-DO/eventually: make it a library `@brillout/better-error`
-// TODO: fix? Reprod: 7f4baa40ec95fa55319f85a38a50291460790683
+// TO-DO/maybe: make it a library `@brillout/better-error`
 
 import { isObject } from './isObject.js'
+import { assertIsNotBrowser } from './assertIsNotBrowser.js'
+import { objectAssign } from './objectAssign.js'
+assertIsNotBrowser()
 
-function getBetterError(err: unknown, modifications: { message?: string; stack?: string; hideStack?: true }) {
-  let errBetter: { message: string; stack: string }
+function getBetterError(
+  err: unknown,
+  modifications: { message?: string | { prepend?: string; append?: string }; stack?: string; hideStack?: true },
+) {
+  let errBetter: { message: string; stack: string; hideStack?: true }
 
   // Normalize
   if (!isObject(err)) {
@@ -20,17 +25,42 @@ function getBetterError(err: unknown, modifications: { message?: string; stack?:
     warnMalformed(err)
     errBetter.stack = new Error(errBetter.message).stack!
   }
-  if (!errBetter.stack.includes(errBetter.message)) {
-    warnMalformed(err)
+
+  // Modifications: err.hideStack and err.stack
+  const { message: modsMessage, ...mods } = modifications
+  Object.assign(errBetter, mods)
+
+  // Modifications: err.message
+  if (typeof modsMessage === 'string') {
+    // Modify err.message
+    const messagePrev = errBetter.message
+    const messageNext = modsMessage
+    errBetter.message = messageNext
+    // Update err.stack
+    const messagePrevIdx = errBetter.stack.indexOf(messagePrev)
+    if (messagePrevIdx >= 0) {
+      // Completely replace the beginning of err.stack — removing prefix such as "SyntaxError: "
+      // - Following isn't always true: `err.stack.startsWith(err.message)` — because err.stack can start with "SyntaxError: " whereas err.message doesn't
+      const stackPrev = errBetter.stack.slice(messagePrevIdx + messagePrev.length)
+      errBetter.stack = messageNext + stackPrev
+    } else {
+      warnMalformed(err)
+    }
+  } else {
+    if (modsMessage?.append) {
+      const messagePrev = errBetter.message
+      const messageNext = errBetter.message + modsMessage.append
+      errBetter.message = messageNext
+      errBetter.stack = errBetter.stack.replace(messagePrev, messageNext)
+    }
+    if (modsMessage?.prepend) {
+      errBetter.message = modsMessage.prepend + errBetter.message
+      errBetter.stack = modsMessage.prepend + errBetter.stack
+    }
   }
 
-  // Modifications
-  const errMessageOriginal = errBetter.message
-  Object.assign(errBetter, modifications)
-  if (modifications.message) errBetter.stack = errBetter.stack.replaceAll(errMessageOriginal, modifications.message)
-
   // Enable users to retrieve the original error
-  Object.assign(errBetter, { getOriginalError: () => (err as any)?.getOriginalError?.() ?? err })
+  objectAssign(errBetter, { getOriginalError: () => (err as any)?.getOriginalError?.() ?? err })
 
   return errBetter
 }

@@ -403,12 +403,14 @@ async function executeFile(filePathToExecuteAbsoluteFilesystem: string, filePath
 }
 
 const formatted = '_formatted'
-function getConfigBuildErrorFormatted(err: unknown): null | string {
+function getConfigBuildErrorFormatted(err: unknown) {
   if (!isObject(err)) return null
   if (!(formatted in err)) return null
   assert(typeof err[formatted] === 'string')
-  return err[formatted]
+  const errMsgFormatted = err[formatted] as ErrMsgFormatted
+  return errMsgFormatted
 }
+type ErrMsgFormatted = `${ErrIntroMsgTranspile}\n${string}`
 async function formatBuildErr(err: unknown, filePath: FilePathResolved): Promise<void> {
   assert(isObject(err) && err.errors)
   const msgEsbuild = (
@@ -420,10 +422,11 @@ async function formatBuildErr(err: unknown, filePath: FilePathResolved): Promise
     .map((m) => m.trim())
     .join('\n')
   const msgIntro = getErrIntroMsg('transpile', filePath)
-  err[formatted] = `${msgIntro}\n${msgEsbuild}`
+  const errMsgFormatted: ErrMsgFormatted = `${msgIntro}\n${msgEsbuild}`
+  err[formatted] = errMsgFormatted
 }
 
-const execErrIntroMsg = new WeakMap<object, ReturnType<typeof getErrIntroMsg>>()
+const execErrIntroMsg = new WeakMap<object, ErrIntroMsgExecute>()
 function getConfigExecutionErrorIntroMsg(err: unknown) {
   if (!isObject(err)) return null
   const errIntroMsg = execErrIntroMsg.get(err)
@@ -479,7 +482,9 @@ function triggerPrepareStackTrace(err: unknown) {
   }
 }
 
-function getErrIntroMsg(operation: 'transpile' | 'execute', filePath: FilePathResolved) {
+type ErrIntroMsgExecute = ReturnType<typeof getErrIntroMsg<'execute'>>
+type ErrIntroMsgTranspile = ReturnType<typeof getErrIntroMsg<'transpile'>>
+function getErrIntroMsg<Operation extends 'transpile' | 'execute'>(operation: Operation, filePath: FilePathResolved) {
   const { filePathToShowToUserResolved } = filePath
   const msg =
     `${pc.red(`Failed to ${operation}`)} ${pc.bold(pc.red(filePathToShowToUserResolved))} ${pc.red(`because:`)}` as const
