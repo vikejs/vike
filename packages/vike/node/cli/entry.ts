@@ -3,6 +3,7 @@ import { dev, build, preview } from '../api/index.js'
 import pc from '@brillout/picocolors'
 import { parseCli } from './parseCli.js'
 import { setContextCliCommand } from './context.js'
+import { restoreConsoleLog } from '../vite/shared/loggerVite/removeSuperfluousViteLog.js'
 
 cli()
 
@@ -23,24 +24,14 @@ async function cli() {
 async function cmdDev() {
   const startTime = performance.now()
 
-  // TODO/copilot move it to removeSuperfluousViteLog()
   try {
-      // Suppress "[vite] connected." message by monkey patching console.log before server starts
-      const originalConsoleLog = console.log
-      console.log = function(...args: any[]) {
-        const msg = args.join(' ')
-        if (msg === '[vite] connected.') {
-          return
-        }
-        originalConsoleLog.apply(console, args)
-      }
     const { viteServer, viteVersion } = await dev()
 
     if (viteServer.httpServer) {
       await viteServer.listen()
 
       // Restore console.log before printing welcome message
-      console.log = originalConsoleLog
+      restoreConsoleLog()
 
       const info = viteServer.config.logger.info
       const startupDurationString = pc.dim(
@@ -54,8 +45,11 @@ async function cmdDev() {
       console.log('hasExistingLogs', hasExistingLogs)
     }
 
-      // TODO/copilot: why is it `false` ? I though the default value is `true`?
-      if (viteServer.config.clearScreen) {
+      // clearScreen is undefined (not explicitly set) by default when using vike CLI
+      // Vite's default is true, but when undefined it's treated as false
+      // We default to true to match Vite's expected behavior
+      const shouldClearScreen = viteServer.config.clearScreen !== false
+      if (shouldClearScreen) {
         viteServer.config.logger.clearScreen('info')
       }
       info(logWelcome, { timestamp: true })

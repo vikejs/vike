@@ -3,13 +3,16 @@ export { improveViteLogs }
 import { assert, isDebugError, removeEmptyLines, trimWithAnsi, trimWithAnsiTrailOnly } from '../utils.js'
 import { getHttpRequestId_withAsyncHook } from '../../../server/runtime/asyncHook.js'
 import { logErrorServerDev, logVite } from './loggerDev.js'
-import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog.js'
+import { removeSuperfluousViteLog, suppressViteConnectedMessage } from './loggerVite/removeSuperfluousViteLog.js'
 import type { LogType as LoggerType, ResolvedConfig, LogErrorOptions } from 'vite'
 
 function improveViteLogs(config: ResolvedConfig) {
   intercept('info', config)
   intercept('warn', config)
   intercept('error', config)
+  
+  // Suppress "[vite] connected." message that bypasses Vite's logger
+  suppressViteConnectedMessage()
 }
 
 function intercept(loggerType: LoggerType, config: ResolvedConfig) {

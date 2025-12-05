@@ -1,10 +1,13 @@
 export { removeSuperfluousViteLog }
 export { removeSuperfluousViteLog_enable }
 export { removeSuperfluousViteLog_disable }
+export { suppressViteConnectedMessage }
+export { restoreConsoleLog }
 
 import { assert, getGlobalObject } from '../../utils.js'
 const globalObject = getGlobalObject('removeSuperfluousViteLog.ts', {
   enabled: false,
+  originalConsoleLog: null as typeof console.log | null,
 })
 const superfluousLog = 'Forced re-optimization of dependencies'
 
@@ -18,6 +21,26 @@ function removeSuperfluousViteLog(msg: string): boolean {
   }
   return false
 }
+
+function suppressViteConnectedMessage(): void {
+  if (globalObject.originalConsoleLog) return // Already suppressed
+  globalObject.originalConsoleLog = console.log
+  console.log = function(...args: any[]) {
+    const msg = args.join(' ')
+    if (msg === '[vite] connected.') {
+      return
+    }
+    globalObject.originalConsoleLog!.apply(console, args)
+  }
+}
+
+function restoreConsoleLog(): void {
+  if (globalObject.originalConsoleLog) {
+    console.log = globalObject.originalConsoleLog
+    globalObject.originalConsoleLog = null
+  }
+}
+
 function removeSuperfluousViteLog_enable(): void {
   globalObject.enabled = true
 }
