@@ -47,15 +47,15 @@ function getBetterError(
       warnMalformed(err)
     }
   } else {
-    if (modsMessage?.prepend) {
-      errBetter.message = modsMessage.prepend + errBetter.message
-      errBetter.stack = modsMessage.prepend + errBetter.stack
-    }
     if (modsMessage?.append) {
       const messagePrev = errBetter.message
       const messageNext = errBetter.message + modsMessage.append
       errBetter.message = messageNext
       errBetter.stack = errBetter.stack.replace(messagePrev, messageNext)
+    }
+    if (modsMessage?.prepend) {
+      errBetter.message = modsMessage.prepend + errBetter.message
+      errBetter.stack = modsMessage.prepend + errBetter.stack
     }
   }
 
