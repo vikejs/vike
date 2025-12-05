@@ -26,7 +26,20 @@ async function cmdDev() {
     const { viteServer, viteVersion } = await dev()
 
     if (viteServer.httpServer) {
+      // Suppress "[vite] connected." message by monkey patching console.log before server starts
+      const originalConsoleLog = console.log
+      console.log = function(...args: any[]) {
+        // Strict check: match exactly "[vite] connected." message from HMR client
+        if (args.length === 1 && typeof args[0] === 'string' && args[0].trim() === '[vite] connected.') {
+          return
+        }
+        originalConsoleLog.apply(console, args)
+      }
+
       await viteServer.listen()
+
+      // Restore console.log before printing welcome message
+      console.log = originalConsoleLog
 
       const info = viteServer.config.logger.info
       const startupDurationString = pc.dim(
@@ -45,24 +58,6 @@ async function cmdDev() {
     } else {
       // vike-server => middleware mode => `viteServer.httpServer === null`
     }
-
-    // TODO/copilot move this logic at a better place, and restore right before printing logWelcome is printed
-    // Suppress "[vite] connected." message by temporarily monkey patching console.log
-    const originalConsoleLog = console.log
-    let suppressViteConnected = true
-    console.log = function(...args: any[]) {
-      // TODO/copilot More strict check
-      if (suppressViteConnected && args.length > 0 && typeof args[0] === 'string' && args[0].includes('[vite] connected')) {
-        return
-      }
-      originalConsoleLog.apply(console, args)
-    }
-    
-    // Restore after a short delay (the message comes right after server starts)
-    setTimeout(() => {
-      console.log = originalConsoleLog
-      suppressViteConnected = false
-    }, 2000)
 
     viteServer.bindCLIShortcuts({ print: true })
   } catch (err) {
