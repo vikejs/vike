@@ -35,10 +35,9 @@ function suppressViteConnectedMessage(): void {
   }
 }
 function suppressViteConnectedMessage_clean(): void {
-  if (globalObject.originalConsoleLog) {
-    console.log = globalObject.originalConsoleLog
-    globalObject.originalConsoleLog = null
-  }
+  assert(globalObject.originalConsoleLog)
+  console.log = globalObject.originalConsoleLog
+  globalObject.originalConsoleLog = null
 }
 
 function removeSuperfluousViteLog_enable(): void {
