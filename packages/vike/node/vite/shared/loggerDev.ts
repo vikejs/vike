@@ -102,7 +102,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
     const errMsgFormatted = getConfigBuildErrorFormatted(err)
     if (errMsgFormatted) {
       assert(stripAnsi(errMsgFormatted).startsWith('Failed to transpile'))
-      const message = `${getTagsError(errMsgFormatted, tagSource)}${errMsgFormatted}` as const
+      const message = `${getTagsError(errMsgFormatted, tagSource)}${errMsgFormatted}\n${errorDebugNote}` as const
       const errBetter = getBetterError(err, { message, hideStack: true })
       logErr(errBetter)
       return
