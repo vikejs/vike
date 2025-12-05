@@ -56,7 +56,7 @@ const errorDebugNote = pc.dim(formatHintLog("Error isn't helpful? See https://vi
 
 type LogType = 'info' | 'warn' | 'error' | 'error-resolve'
 type TagTool = '[vike]' | '[vite]'
-type TagSource = 'config' | `request(${number})`
+type TagSource = 'config' | `request:${number}`
 
 function logRuntimeInfoDev(msg: string, pageContext: PageContext_logRuntime, logType: LogType) {
   assertPageContext_logRuntime(pageContext)
@@ -184,7 +184,7 @@ function getTagSource(requestId: number | null = null): TagSource | null {
   }
   if (requestId === null) return null
   // const tagSource = requestId % 2 === 1 ? (`request-${requestId}` as const) : (`request(${requestId})` as const)
-  const tagSource = `request(${requestId})` as const
+  const tagSource = `request:${requestId}` as const
   return tagSource
 }
 

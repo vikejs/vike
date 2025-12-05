@@ -142,8 +142,11 @@ function addOnBeforeAssertErr(onBeforeAssertErr: (err: unknown) => void) {
 
 function addPrefixAssertType(msg: string, tag: Tag): string {
   let prefix = `[${tag}]`
-  const color = tag === 'Warning' ? 'yellow' : 'red'
-  prefix = pc.bold(pc[color](prefix))
+  if (tag === 'Warning') {
+    prefix = pc.yellow(prefix)
+  } else {
+    prefix = pc.bold(pc.red(prefix))
+  }
   return `${prefix}${msg}`
 }
 function addWhitespace(msg: string) {

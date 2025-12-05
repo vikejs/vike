@@ -37,8 +37,9 @@ async function cmdDev() {
       const startupDurationString = pc.dim(
         `ready in ${pc.reset(pc.bold(String(Math.ceil(performance.now() - startTime))))} ms`,
       )
+      const sep = pc.dim('·' as '-')
       const logWelcome =
-        `  ${colorVike('Vike')} ${pc.yellow(`v${PROJECT_VERSION}`)} ${pc.dim('/')} ${colorVite('VITE')} ${pc.cyan(`v${viteVersion}`)} ${pc.dim('/')} ${startupDurationString}\n` as const
+        `\n  ${colorVike('Vike')} ${pc.yellow(`v${PROJECT_VERSION}`)} ${sep} ${colorVite('Vite')} ${pc.cyan(`v${viteVersion}`)} ${sep} ${startupDurationString}\n` as const
       
     {
       const hasExistingLogs = process.stdout.bytesWritten > 0 || process.stderr.bytesWritten > 0
@@ -52,7 +53,7 @@ async function cmdDev() {
       if (shouldClearScreen) {
         viteServer.config.logger.clearScreen('info')
       }
-      info(logWelcome, { timestamp: true })
+      console.log(logWelcome)
 
       viteServer.printUrls()
     } else {
@@ -60,6 +61,7 @@ async function cmdDev() {
     }
 
     viteServer.bindCLIShortcuts({ print: true })
+    console.log()
   } catch (err) {
     console.error(pc.red(`Error while starting dev server:`))
     // Error comes from Vite; no need to use addErrorHint()
