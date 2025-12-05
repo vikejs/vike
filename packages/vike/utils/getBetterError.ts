@@ -1,6 +1,6 @@
 export { getBetterError }
 
-// TO-DO/eventually: make it a library `@brillout/better-error`
+// TO-DO/maybe: make it a library `@brillout/better-error`
 
 import { isObject } from './isObject.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
