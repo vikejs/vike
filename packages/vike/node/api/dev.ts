@@ -38,8 +38,6 @@ async function logVikeIntro(
 ) {
   let isCompact = true
   if (viteServer.httpServer) {
-    await viteServer.listen()
-
     // Restore console.log before printing welcome message
     swallowViteConnectedMessage_clean()
 
