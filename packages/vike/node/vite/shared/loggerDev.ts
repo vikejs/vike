@@ -145,14 +145,8 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
   logErr(err)
 }
 
-function logDev(
-  msg: string,
-  logType: LogType,
-  tagSource: TagSource | null,
-  tagTool: TagTool,
-  doNotPrependTags?: boolean,
-) {
-  if (!doNotPrependTags) {
+function logDev(msg: string, logType: LogType, tagSource: TagSource | null, tagTool: TagTool, doNotAddTags?: boolean) {
+  if (!doNotAddTags) {
     msg = getTags(msg, tagTool, tagSource, logType) + msg
   }
 
