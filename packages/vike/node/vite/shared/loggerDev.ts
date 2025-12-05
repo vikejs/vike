@@ -153,7 +153,7 @@ function logDev(
   doNotPrependTags?: boolean,
 ) {
   if (!doNotPrependTags) {
-    msg = prependTags(msg, tagTool, tagSource, logType)
+    msg = getTags(msg, tagTool, tagSource, logType) + msg
   }
 
   if (logType === 'info') {
@@ -201,10 +201,6 @@ function applyViteSourceMapToStackTrace(thing: unknown) {
   viteDevServer.ssrFixStacktrace(thing as Error)
 }
 
-function prependTags(...args: Parameters<typeof getTags>) {
-  const [msg] = args
-  return `${getTags(...args)}${msg}`
-}
 function getTagsError(msg: string, tagSource: TagSource | null) {
   return getTags(msg, '[vike]', tagSource, 'error')
 }
