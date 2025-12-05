@@ -41,8 +41,8 @@ function getBetterError(
     if (messagePrevIdx >= 0) {
       // Completely replace the beginning of err.stack — removing prefix such as "SyntaxError: "
       // - Following isn't always true: `err.stack.startsWith(err.message)` — because err.stack can start with "SyntaxError: " whereas err.message doesn't
-      const stackPrev = errBetter.stack.slice(messagePrevIdx + messagePrev.length)
-      errBetter.stack = messageNext + stackPrev
+      const stack = errBetter.stack.slice(messagePrevIdx + messagePrev.length)
+      errBetter.stack = messageNext + stack
     } else {
       warnMalformed(err)
     }
@@ -54,8 +54,9 @@ function getBetterError(
       errBetter.stack = errBetter.stack.replace(messagePrev, messageNext)
     }
     if (modsMessage?.prepend) {
-      errBetter.message = modsMessage.prepend + errBetter.message
-      errBetter.stack = modsMessage.prepend + errBetter.stack
+      const { prepend } = modsMessage
+      errBetter.message = prepend + errBetter.message
+      errBetter.stack = prepend + errBetter.stack
     }
   }
 
