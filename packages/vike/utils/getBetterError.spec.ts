@@ -1,0 +1,396 @@
+import { expect, describe, it, vi } from 'vitest'
+import { getBetterError } from './getBetterError.js'
+
+describe('getBetterError', () => {
+  describe('basic error handling', () => {
+    it('handles standard Error objects', () => {
+      const originalError = new Error('Original message')
+      const result = getBetterError(originalError, {})
+
+      expect(result.message).toBe('Original message')
+      expect(result.stack).toBeDefined()
+      expect(result.stack).toContain('Original message')
+    })
+
+    it('handles empty message', () => {
+      const errorWithEmptyMessage = new Error()
+      const result = getBetterError(errorWithEmptyMessage, {})
+
+      expect(result.message).toBe('')
+      expect(result.stack).toBeDefined()
+    })
+
+    it('handles error objects without stack', () => {
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      const errorWithoutStack = { message: 'Error without stack' }
+      const result = getBetterError(errorWithoutStack, {})
+
+      expect(result.message).toBe('Error without stack')
+      expect(result.stack).toBeDefined()
+      expect(consoleWarnSpy).toHaveBeenCalled()
+
+      consoleWarnSpy.mockRestore()
+    })
+
+    it('handles error objects with malformed stack', () => {
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      const errorWithMalformedStack = {
+        message: 'Error message',
+        stack: 'Stack without message',
+      }
+      const result = getBetterError(errorWithMalformedStack, {})
+
+      expect(result.message).toBe('Error message')
+      expect(result.stack).toBe('Stack without message')
+      expect(consoleWarnSpy).toHaveBeenCalled()
+
+      consoleWarnSpy.mockRestore()
+    })
+  })
+
+  describe('message: string (full replacement)', () => {
+    it('replaces error message completely', () => {
+      const originalError = new Error('Original message')
+      const result = getBetterError(originalError, {
+        message: 'Modified message',
+      })
+
+      expect(result.message).toBe('Modified message')
+      expect(result.stack).toContain('Modified message')
+      expect(result.stack).not.toContain('Original message')
+    })
+
+    it('removes error type prefix (e.g., "SyntaxError: ")', () => {
+      const syntaxError = new SyntaxError('invalid syntax')
+      const result = getBetterError(syntaxError, {
+        message: 'Custom error message',
+      })
+
+      expect(result.message).toBe('Custom error message')
+      expect(result.stack).toContain('Custom error message')
+      expect(result.stack).not.toContain('SyntaxError:')
+      expect(result.stack).not.toContain('invalid syntax')
+      // Stack should start with the new message
+      expect(result.stack.startsWith('Custom error message')).toBe(true)
+    })
+
+    it('removes TypeError prefix', () => {
+      const typeError = new TypeError('Cannot read property')
+      const result = getBetterError(typeError, {
+        message: 'Better error message',
+      })
+
+      expect(result.message).toBe('Better error message')
+      expect(result.stack).not.toContain('TypeError:')
+      expect(result.stack).not.toContain('Cannot read property')
+      expect(result.stack.startsWith('Better error message')).toBe(true)
+    })
+
+    it('handles replacement with empty string', () => {
+      const originalError = new Error('Original')
+      const result = getBetterError(originalError, {
+        message: '',
+      })
+
+      expect(result.message).toBe('')
+      expect(result.stack).not.toContain('Original')
+    })
+  })
+
+  describe('message: { prepend }', () => {
+    it('prepends to error message', () => {
+      const originalError = new Error('Original message')
+      const result = getBetterError(originalError, {
+        message: { prepend: '[ERROR] ' },
+      })
+
+      expect(result.message).toBe('[ERROR] Original message')
+      expect(result.stack).toContain('[ERROR] ')
+    })
+
+    it('prepends with multiline prefix', () => {
+      const originalError = new Error('Original')
+      const result = getBetterError(originalError, {
+        message: { prepend: 'Line 1\nLine 2\n' },
+      })
+
+      expect(result.message).toBe('Line 1\nLine 2\nOriginal')
+      expect(result.stack).toContain('Line 1\nLine 2\n')
+    })
+
+    it('prepends empty string has no effect', () => {
+      const originalError = new Error('Original')
+      const result = getBetterError(originalError, {
+        message: { prepend: '' },
+      })
+
+      expect(result.message).toBe('Original')
+    })
+  })
+
+  describe('message: { append }', () => {
+    it('appends to error message', () => {
+      const originalError = new Error('Original message')
+      const result = getBetterError(originalError, {
+        message: { append: ' - Additional info' },
+      })
+
+      expect(result.message).toBe('Original message - Additional info')
+      expect(result.stack).toContain('Original message - Additional info')
+    })
+
+    it('appends with newline hint', () => {
+      const originalError = new Error('Error occurred')
+      const result = getBetterError(originalError, {
+        message: { append: '\nHint: Check your configuration' },
+      })
+
+      expect(result.message).toBe('Error occurred\nHint: Check your configuration')
+      expect(result.stack).toContain('Error occurred\nHint: Check your configuration')
+    })
+
+    it('appends empty string has no effect', () => {
+      const originalError = new Error('Original')
+      const result = getBetterError(originalError, {
+        message: { append: '' },
+      })
+
+      expect(result.message).toBe('Original')
+    })
+  })
+
+  describe('message: { prepend, append }', () => {
+    it('prepends and appends to error message', () => {
+      const originalError = new Error('Original')
+      const result = getBetterError(originalError, {
+        message: { prepend: '[ERROR] ', append: ' - See docs' },
+      })
+
+      expect(result.message).toBe('[ERROR] Original - See docs')
+      expect(result.stack).toContain('[ERROR] Original - See docs')
+    })
+
+    it('handles complex prepend and append', () => {
+      const originalError = new Error('Failed')
+      const result = getBetterError(originalError, {
+        message: {
+          prepend: '[vike][error] ',
+          append: '\n\nFor more info: https://vike.dev',
+        },
+      })
+
+      expect(result.message).toBe('[vike][error] Failed\n\nFor more info: https://vike.dev')
+      expect(result.stack).toContain('[vike][error] Failed\n\nFor more info: https://vike.dev')
+    })
+  })
+
+  describe('non-object errors', () => {
+    it('handles string errors', () => {
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      const result = getBetterError('string error', {})
+
+      expect(result.message).toBe('string error')
+      expect(result.stack).toBeDefined()
+      expect(consoleWarnSpy).toHaveBeenCalledWith('Malformed error: ', 'string error')
+
+      consoleWarnSpy.mockRestore()
+    })
+
+    it('handles null as error', () => {
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      const result = getBetterError(null, {})
+
+      expect(result.message).toBe('null')
+      expect(result.stack).toBeDefined()
+      expect(consoleWarnSpy).toHaveBeenCalledWith('Malformed error: ', null)
+
+      consoleWarnSpy.mockRestore()
+    })
+
+    it('handles undefined as error', () => {
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      const result = getBetterError(undefined, {})
+
+      expect(result.message).toBe('undefined')
+      expect(result.stack).toBeDefined()
+      expect(consoleWarnSpy).toHaveBeenCalledWith('Malformed error: ', undefined)
+
+      consoleWarnSpy.mockRestore()
+    })
+
+    it('handles number as error', () => {
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      const result = getBetterError(42, {})
+
+      expect(result.message).toBe('42')
+      expect(result.stack).toBeDefined()
+      expect(consoleWarnSpy).toHaveBeenCalledWith('Malformed error: ', 42)
+
+      consoleWarnSpy.mockRestore()
+    })
+  })
+
+  describe('stack modification', () => {
+    it('modifies error stack directly', () => {
+      const originalError = new Error('Test error')
+      const result = getBetterError(originalError, {
+        stack: 'Custom stack trace',
+      })
+
+      expect(result.stack).toBe('Custom stack trace')
+    })
+
+    it('combines message and stack modifications', () => {
+      const originalError = new Error('Original')
+      const result = getBetterError(originalError, {
+        message: 'Modified',
+        stack: 'Custom stack',
+      })
+
+      expect(result.message).toBe('Modified')
+      expect(result.stack).toBe('Custom stack')
+    })
+  })
+
+  describe('hideStack option', () => {
+    it('sets hideStack flag when true', () => {
+      const originalError = new Error('Test error')
+      const result = getBetterError(originalError, {
+        hideStack: true,
+      })
+
+      expect(result.hideStack).toBe(true)
+    })
+
+    it('combines hideStack with message modifications', () => {
+      const originalError = new Error('Test')
+      const result = getBetterError(originalError, {
+        message: 'Modified',
+        hideStack: true,
+      })
+
+      expect(result.message).toBe('Modified')
+      expect(result.hideStack).toBe(true)
+    })
+  })
+
+  describe('getOriginalError', () => {
+    it('returns the original error when no chain exists', () => {
+      const error = new Error('Test')
+      const result = getBetterError(error, {})
+
+      expect(result.getOriginalError()).toBe(error)
+    })
+
+    it('preserves getOriginalError chain', () => {
+      const firstError = new Error('First error')
+      const secondError = getBetterError(firstError, { message: 'Second error' })
+      const thirdError = getBetterError(secondError, { message: 'Third error' })
+
+      expect(thirdError.getOriginalError()).toBe(firstError)
+      expect(secondError.getOriginalError()).toBe(firstError)
+    })
+
+    it('chains through multiple transformations', () => {
+      const original = new Error('Original')
+      const withPrepend = getBetterError(original, { message: { prepend: '[1] ' } })
+      const withAppend = getBetterError(withPrepend, { message: { append: ' [2]' } })
+      const withReplace = getBetterError(withAppend, { message: 'Replaced' })
+
+      expect(withReplace.getOriginalError()).toBe(original)
+    })
+  })
+
+  describe('structuredClone behavior', () => {
+    it('only preserves message and stack from Error objects', () => {
+      const customError = new Error('Custom error')
+      customError.code = 'E_CUSTOM'
+      customError.statusCode = 500
+
+      const result = getBetterError(customError, {})
+
+      // structuredClone only preserves message and stack from Error objects
+      expect(result.message).toBe('Custom error')
+      expect(result.stack).toBeDefined()
+      expect(result.code).toBeUndefined()
+      expect(result.statusCode).toBeUndefined()
+    })
+  })
+
+  describe('edge cases', () => {
+    it('handles message replacement with duplicate text in stack', () => {
+      const error = new Error('duplicate')
+      error.stack = 'Error: duplicate\n  at duplicate function\n  at duplicate file'
+
+      const result = getBetterError(error, {
+        message: 'replaced',
+      })
+
+      expect(result.message).toBe('replaced')
+      // Only the first occurrence (the error message part) should be replaced
+      expect(result.stack).toBe('replaced\n  at duplicate function\n  at duplicate file')
+    })
+
+    it('handles message not found in stack', () => {
+      const error = { message: 'Not in stack', stack: 'Some other stack' }
+      const result = getBetterError(error, { message: 'New message' })
+
+      expect(result.message).toBe('New message')
+      // If message not found, stack remains unchanged
+      expect(result.stack).toBe('Some other stack')
+    })
+
+    it('handles multiple modifications at once', () => {
+      const error = new Error('Original')
+      const result = getBetterError(error, {
+        message: { prepend: '[ERROR] ', append: '\nHint: check config' },
+        hideStack: true,
+      })
+
+      expect(result.message).toBe('[ERROR] Original\nHint: check config')
+      expect(result.hideStack).toBe(true)
+    })
+  })
+
+  describe('real-world use cases', () => {
+    it('adds hint to error message (like addErrorHint)', () => {
+      const error = new Error('Module not found')
+      const hint = '\n\nHint: Make sure the file exists and the path is correct'
+      const result = getBetterError(error, { message: { append: hint } })
+
+      expect(result.message).toContain('Module not found')
+      expect(result.message).toContain('Hint:')
+      expect(result.stack).toContain('Hint:')
+    })
+
+    it('formats transpilation error (like loggerDev)', () => {
+      const error = new SyntaxError('Unexpected token')
+      const result = getBetterError(error, {
+        message: '[vike] Failed to transpile\nUnexpected token',
+        hideStack: true,
+      })
+
+      expect(result.message).toBe('[vike] Failed to transpile\nUnexpected token')
+      expect(result.hideStack).toBe(true)
+      expect(result.stack).not.toContain('SyntaxError:')
+    })
+
+    it('prepends and appends debug info', () => {
+      const error = new Error('Build failed')
+      const result = getBetterError(error, {
+        message: {
+          prepend: '[vike][build] ',
+          append: '\n\nDebug info: See https://vike.dev/debug',
+        },
+      })
+
+      expect(result.message).toBe('[vike][build] Build failed\n\nDebug info: See https://vike.dev/debug')
+    })
+  })
+})
