@@ -25,18 +25,23 @@ function getBetterError(
     errBetter.stack = new Error(errBetter.message).stack!
   }
 
-  // Modifications
+  // Modifications: err.hideStack and err.stack
   const { message: modsMessage, ...mods } = modifications
   Object.assign(errBetter, mods)
+
+  // Modifications: err.message
   if (typeof modsMessage === 'string') {
+    // Modify err.message
     const messagePrev = errBetter.message
-    errBetter.message = modsMessage
-    const oldMessageIndex = errBetter.stack.indexOf(messagePrev)
-    if (oldMessageIndex >= 0) {
+    const messageNext = modsMessage
+    errBetter.message = messageNext
+    // Modify err.stack
+    const messagePrevIdx = errBetter.stack.indexOf(messagePrev)
+    if (messagePrevIdx >= 0) {
       // Completely replace the beginning of err.stack — removing prefix such as "SyntaxError: "
-      // - Following isn't always true: `err.stack.startsWith(err.message)` — because err.stack can start with "SyntaxError: " where err.message doesn't
-      const afterOldMessage = errBetter.stack.slice(oldMessageIndex + messagePrev.length)
-      errBetter.stack = modsMessage + afterOldMessage
+      // - Following isn't always true: `err.stack.startsWith(err.message)` — because err.stack can start with "SyntaxError: " whereas err.message doesn't
+      const stackPrev = errBetter.stack.slice(messagePrevIdx + messagePrev.length)
+      errBetter.stack = messageNext + stackPrev
     } else {
       warnMalformed(err)
     }
