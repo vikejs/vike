@@ -67,7 +67,7 @@ function cleanStartupLog(msg: string, config: ResolvedConfig) {
 
 function clearScreenOnStartup(config: ResolvedConfig) {
   const shouldClear = shouldStartupLogClear(config)
-  if(shouldClear) {
+  if (shouldClear) {
     config.logger.clearScreen('info')
   }
 }
