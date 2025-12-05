@@ -65,6 +65,7 @@ function cleanStartupLog(msg: string, config: ResolvedConfig) {
   const shouldClear = shouldStartupLogClear(config)
   if (shouldClear) {
     config.logger.clearScreen('info')
+    msg += '\n'
   } else {
     // Compact
     msg = removeEmptyLines(msg)
