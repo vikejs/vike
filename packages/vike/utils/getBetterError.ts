@@ -6,7 +6,10 @@ export { getBetterError }
 import { isObject } from './isObject.js'
 import { assert } from './assert.js'
 
-function getBetterError(err: unknown, modifications: { message?: string | { prepend?: string; append?: string; }, stack?: string; hideStack?: true }) {
+function getBetterError(
+  err: unknown,
+  modifications: { message?: string | { prepend?: string; append?: string }; stack?: string; hideStack?: true },
+) {
   let errBetter: { message: string; stack: string }
 
   // Normalize
@@ -34,7 +37,7 @@ function getBetterError(err: unknown, modifications: { message?: string | { prep
       // Complete replacement - also remove prefix before old message (e.g., "SyntaxError: ")
       errBetter.message = modsMessage
       const oldMessageIndex = errBetter.stack.indexOf(errMessageOriginal)
-      assert(oldMessageIndex >=0)
+      assert(oldMessageIndex >= 0)
       // Remove everything from start up to and including the old message
       const afterOldMessage = errBetter.stack.slice(oldMessageIndex + errMessageOriginal.length)
       errBetter.stack = modsMessage + afterOldMessage
