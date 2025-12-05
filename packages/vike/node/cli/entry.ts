@@ -46,10 +46,12 @@ async function cmdDev() {
       // vike-server => middleware mode => `viteServer.httpServer === null`
     }
 
+    // TODO/copilot move this logic at a better place, and restore right before printing logWelcome is printed
     // Suppress "[vite] connected." message by temporarily monkey patching console.log
     const originalConsoleLog = console.log
     let suppressViteConnected = true
     console.log = function(...args: any[]) {
+      // TODO/copilot More strict check
       if (suppressViteConnected && args.length > 0 && typeof args[0] === 'string' && args[0].includes('[vite] connected')) {
         return
       }
