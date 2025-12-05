@@ -10,7 +10,7 @@ function improveViteLogs(config: ResolvedConfig) {
   intercept('info', config)
   intercept('warn', config)
   intercept('error', config)
-  
+
   // Suppress "[vite] connected." message that bypasses Vite's logger
   suppressViteConnectedMessage()
 }

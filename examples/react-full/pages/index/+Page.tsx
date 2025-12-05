@@ -8,7 +8,7 @@ function Page() {
   return (
     <>
       <h1>Welcome to Vike</h1>
-      Thies page is:
+      This page is:
       <ul>
         <li>Rendered to HTML.</li>
         <li>

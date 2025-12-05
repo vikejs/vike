@@ -39,11 +39,11 @@ async function cmdDev() {
       const sep = pc.dim('·' as '-')
       const logWelcome =
         `\n  ${colorVike('Vike')} ${pc.yellow(`v${PROJECT_VERSION}`)} ${sep} ${colorVite('Vite')} ${pc.cyan(`v${viteVersion}`)} ${sep} ${startupDurationString}\n` as const
-      
-    {
-      const hasExistingLogs = process.stdout.bytesWritten > 0 || process.stderr.bytesWritten > 0
-      console.log('hasExistingLogs', hasExistingLogs)
-    }
+
+      {
+        const hasExistingLogs = process.stdout.bytesWritten > 0 || process.stderr.bytesWritten > 0
+        console.log('hasExistingLogs', hasExistingLogs)
+      }
 
       // clearScreen is undefined (not explicitly set) by default when using vike CLI
       // Vite's default is true, but when undefined it's treated as false

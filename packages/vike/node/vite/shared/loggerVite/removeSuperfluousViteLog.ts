@@ -25,7 +25,7 @@ function removeSuperfluousViteLog(msg: string): boolean {
 function suppressViteConnectedMessage(): void {
   if (globalObject.originalConsoleLog) return // Already suppressed
   globalObject.originalConsoleLog = console.log
-  console.log = function(...args: any[]) {
+  console.log = function (...args: any[]) {
     const msg = args.join(' ')
     if (msg === '[vite] connected.') {
       return
