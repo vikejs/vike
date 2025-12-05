@@ -422,7 +422,7 @@ async function formatBuildErr(err: unknown, filePath: FilePathResolved): Promise
     .map((m) => m.trim())
     .join('\n')
   const msgIntro = getErrIntroMsg('transpile', filePath)
-  const errMsgFormatted: ErrMsgFormatted = `${msgIntro}\n${msgEsbuild}` as const
+  const errMsgFormatted: ErrMsgFormatted = `${msgIntro}\n${msgEsbuild}`
   err[formatted] = errMsgFormatted
 }
 
