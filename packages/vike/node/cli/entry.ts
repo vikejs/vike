@@ -22,13 +22,13 @@ async function cli() {
 
 async function cmdDev() {
   const startTime = performance.now()
+
+  // TODO/copilot move it to removeSuperfluousViteLog()
   try {
       // Suppress "[vite] connected." message by monkey patching console.log before server starts
       const originalConsoleLog = console.log
       console.log = function(...args: any[]) {
         const msg = args.join(' ')
-        // process.stdout.write('III' + msg)
-        // Strict check: match exactly "[vite] connected." message from HMR client
         if (msg === '[vite] connected.') {
           return
         }
@@ -54,8 +54,8 @@ async function cmdDev() {
       console.log('hasExistingLogs', hasExistingLogs)
     }
 
-      // Respect user's clearScreen setting
-      if (true) {
+      // TODO/copilot: why is it `false` ? I though the default value is `true`?
+      if (viteServer.config.clearScreen) {
         viteServer.config.logger.clearScreen('info')
       }
       info(logWelcome, { timestamp: true })
