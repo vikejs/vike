@@ -36,7 +36,7 @@ function getBetterError(
     const messagePrev = errBetter.message
     const messageNext = modsMessage
     errBetter.message = messageNext
-    // Modify err.stack
+    // Update err.stack
     const messagePrevIdx = errBetter.stack.indexOf(messagePrev)
     if (messagePrevIdx >= 0) {
       // Completely replace the beginning of err.stack — removing prefix such as "SyntaxError: "
