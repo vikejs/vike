@@ -23,19 +23,20 @@ async function cli() {
 async function cmdDev() {
   const startTime = performance.now()
   try {
-    const { viteServer, viteVersion } = await dev()
-
-    if (viteServer.httpServer) {
       // Suppress "[vite] connected." message by monkey patching console.log before server starts
       const originalConsoleLog = console.log
       console.log = function(...args: any[]) {
+        const msg = args.join(' ')
+        // process.stdout.write('III' + msg)
         // Strict check: match exactly "[vite] connected." message from HMR client
-        if (args.length === 1 && typeof args[0] === 'string' && args[0].trim() === '[vite] connected.') {
+        if (msg === '[vite] connected.') {
           return
         }
         originalConsoleLog.apply(console, args)
       }
+    const { viteServer, viteVersion } = await dev()
 
+    if (viteServer.httpServer) {
       await viteServer.listen()
 
       // Restore console.log before printing welcome message
@@ -48,8 +49,13 @@ async function cmdDev() {
       const logWelcome =
         `  ${colorVike('Vike')} ${pc.yellow(`v${PROJECT_VERSION}`)} ${pc.dim('/')} ${colorVite('VITE')} ${pc.cyan(`v${viteVersion}`)} ${pc.dim('/')} ${startupDurationString}\n` as const
       
+    {
+      const hasExistingLogs = process.stdout.bytesWritten > 0 || process.stderr.bytesWritten > 0
+      console.log('hasExistingLogs', hasExistingLogs)
+    }
+
       // Respect user's clearScreen setting
-      if (viteServer.config.clearScreen) {
+      if (true) {
         viteServer.config.logger.clearScreen('info')
       }
       info(logWelcome, { timestamp: true })
