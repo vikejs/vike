@@ -1,8 +1,8 @@
 export { removeSuperfluousViteLog }
 export { removeSuperfluousViteLog_enable }
 export { removeSuperfluousViteLog_disable }
-export { suppressViteConnectedMessage }
-export { suppressViteConnectedMessage_clean }
+export { swallowViteConnectedMessage }
+export { swallowViteConnectedMessage_clean }
 
 import { assert, getGlobalObject } from '../../utils.js'
 const globalObject = getGlobalObject('removeSuperfluousViteLog.ts', {
@@ -23,7 +23,7 @@ function removeSuperfluousViteLog(msg: string): boolean {
 }
 
 // Suppress "[vite] connected." message that isn't logged using Vite's logger
-function suppressViteConnectedMessage(): void {
+function swallowViteConnectedMessage(): void {
   if (globalObject.originalConsoleLog) return // Already suppressed
   globalObject.originalConsoleLog = console.log
   console.log = function (...args: any[]) {
@@ -34,10 +34,11 @@ function suppressViteConnectedMessage(): void {
     globalObject.originalConsoleLog!.apply(console, args)
   }
 }
-function suppressViteConnectedMessage_clean(): void {
-  assert(globalObject.originalConsoleLog)
-  console.log = globalObject.originalConsoleLog
-  globalObject.originalConsoleLog = null
+function swallowViteConnectedMessage_clean(): void {
+  if (globalObject.originalConsoleLog) {
+    console.log = globalObject.originalConsoleLog
+    globalObject.originalConsoleLog = null
+  }
 }
 
 function removeSuperfluousViteLog_enable(): void {

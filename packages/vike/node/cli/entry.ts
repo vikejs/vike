@@ -3,7 +3,7 @@ import { dev, build, preview } from '../api/index.js'
 import pc from '@brillout/picocolors'
 import { parseCli } from './parseCli.js'
 import { setContextCliCommand } from './context.js'
-import { suppressViteConnectedMessage_clean } from '../vite/shared/loggerVite/removeSuperfluousViteLog.js'
+import { swallowViteConnectedMessage_clean } from '../vite/shared/loggerVite/removeSuperfluousViteLog.js'
 
 cli()
 
@@ -31,7 +31,7 @@ async function cmdDev() {
       await viteServer.listen()
 
       // Restore console.log before printing welcome message
-      suppressViteConnectedMessage_clean()
+      swallowViteConnectedMessage_clean()
 
       const startupDurationString = pc.dim(
         `ready in ${pc.reset(pc.bold(String(Math.ceil(performance.now() - startTime))))} ms`,
