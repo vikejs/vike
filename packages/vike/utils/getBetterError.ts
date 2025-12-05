@@ -26,34 +26,28 @@ function getBetterError(
   }
 
   // Modifications
-  const errMessageOriginal = errBetter.message
   const { message: modsMessage, ...mods } = modifications
   Object.assign(errBetter, mods)
-  if (modsMessage) {
     if (typeof modsMessage === 'string') {
+      const messagePrev = errBetter.message
       errBetter.message = modsMessage
-      const oldMessageIndex = errBetter.stack.indexOf(errMessageOriginal)
+      const oldMessageIndex = errBetter.stack.indexOf(messagePrev)
       if (oldMessageIndex >= 0) {
         // Completely replace the beginning of err.stack — removing prefix such as "SyntaxError: "
         // - Following isn't always true: `err.stack.startsWith(err.message)` — because err.stack can start with "SyntaxError: " where err.message doesn't
-        const afterOldMessage = errBetter.stack.slice(oldMessageIndex + errMessageOriginal.length)
+        const afterOldMessage = errBetter.stack.slice(oldMessageIndex + messagePrev.length)
         errBetter.stack = modsMessage + afterOldMessage
       } else {
         warnMalformed(err)
       }
-    } else {
-      // Prepend/append
-      if (modsMessage.prepend) {
+    } else if (modsMessage?.prepend) {
         errBetter.message = modsMessage.prepend + errBetter.message
         errBetter.stack = modsMessage.prepend + errBetter.stack
+    } else if (modsMessage?.append) {
+        const messagePrev = errBetter.message
+        errBetter.message = errBetter.message + modsMessage.append
+        errBetter.stack = errBetter.stack.replace(messagePrev, errBetter.message)
       }
-      if (modsMessage.append) {
-        const currentMessage = errBetter.message
-        errBetter.message = currentMessage + modsMessage.append
-        errBetter.stack = errBetter.stack.replace(currentMessage, errBetter.message)
-      }
-    }
-  }
 
   // Enable users to retrieve the original error
   Object.assign(errBetter, { getOriginalError: () => (err as any)?.getOriginalError?.() ?? err })
