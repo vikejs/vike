@@ -33,16 +33,35 @@ async function cmdDev() {
         `ready in ${pc.reset(pc.bold(String(Math.ceil(performance.now() - startTime))))} ms`,
       )
       const hasExistingLogs = process.stdout.bytesWritten > 0 || process.stderr.bytesWritten > 0
+      console.log('hasExistingLogs', hasExistingLogs)
       const logWelcome =
         `  ${colorVike('Vike')} ${pc.yellow(`v${PROJECT_VERSION}`)} ${pc.dim('/')} ${colorVite('VITE')} ${pc.cyan(`v${viteVersion}`)} ${pc.dim('/')} ${startupDurationString}\n` as const
+      // Note: this does work
+      // viteServer.config.logger.clearScreen('info')
       info(logWelcome, {
-        clear: !hasExistingLogs,
+        // TODO/copilot why doesn't it work?
+        clear: true,
       })
 
       viteServer.printUrls()
     } else {
       // vike-server => middleware mode => `viteServer.httpServer === null`
     }
+
+    /* TODO/copilot: intercept and suppress `[vite] connected.` — see:
+~/code/vike/examples/react-full (main*|u+1) pnpm dev
+
+> @ dev /home/rom/code/vike/examples/react-full
+> vike dev
+
+[vite] connected.
+hasExistingLogs true
+  Vike v0.4.247 / VITE v7.2.6 / ready in 626 ms
+  ➜  Local:   http://localhost:3000/
+  ➜  Network: use --host to expose
+  ➜  press h + enter to show help
+*/
+
 
     viteServer.bindCLIShortcuts({ print: true })
   } catch (err) {
