@@ -1,4 +1,5 @@
 export { improveViteLogs }
+export { cleanStartupLog }
 
 import { assert, isDebugError, removeEmptyLines, trimWithAnsi, trimWithAnsiTrailOnly } from '../utils.js'
 import { getHttpRequestId_withAsyncHook } from '../../../server/runtime/asyncHook.js'
@@ -10,8 +11,6 @@ function improveViteLogs(config: ResolvedConfig) {
   intercept('info', config)
   intercept('warn', config)
   intercept('error', config)
-
-  // Suppress "[vite] connected." message that bypasses Vite's logger
   swallowViteConnectedMessage()
 }
 
@@ -27,7 +26,7 @@ function intercept(loggerType: LoggerType, config: ResolvedConfig) {
       // No timestamp => no "[vite]" tag prepended => we don't trim the beginning of the message
       msg = trimWithAnsiTrailOnly(msg)
     }
-    msg = cleanFirstViteLog(msg)
+    msg = cleanFirstViteLog(msg, config)
 
     if (options.error) {
       // Vite does a poor job of handling errors.
@@ -52,11 +51,29 @@ function intercept(loggerType: LoggerType, config: ResolvedConfig) {
   }
 }
 
-function cleanFirstViteLog(msg: string): string {
+function cleanFirstViteLog(msg: string, config: ResolvedConfig): string {
   const isFirstVitLog = msg.includes('VITE') && msg.includes('ready')
   if (isFirstVitLog) {
-    return removeEmptyLines(msg)
+    return cleanStartupLog(msg, config)
   } else {
     return msg
   }
+}
+
+function cleanStartupLog(msg: string, config: ResolvedConfig) {
+  clearScreenOnStartup(config)
+  return removeEmptyLines(msg)
+}
+
+function clearScreenOnStartup(config: ResolvedConfig) {
+  const shouldClear = shouldStartupLogClear(config)
+  if(shouldClear) {
+    config.logger.clearScreen('info')
+  }
+}
+function shouldStartupLogClear(config: ResolvedConfig) {
+  const hasExistingLogs = process.stdout.bytesWritten > 0 || process.stderr.bytesWritten > 0
+  const notDisabled = config.clearScreen !== false
+  const shouldClear = notDisabled && !hasExistingLogs
+  return shouldClear
 }
