@@ -39,7 +39,7 @@ async function cmdDev() {
       // Note: this does work
       // viteServer.config.logger.clearScreen('info')
       info(logWelcome, {
-        // TODO/copilot why doesn't it work?
+        // TODO/copilot why doesn't it work? Don't cheat by using clearScreen() becuase it won't respect the users's `clearScreen` setting I guess?
         clear: true,
       })
 
@@ -49,6 +49,7 @@ async function cmdDev() {
     }
 
     /* TODO/copilot: intercept and suppress `[vite] connected.` — see:
+     * - We cannot use removeSuperfluousViteLog() because `[vite] connected.` doesn't go through Vite's logger, instead we must temporrarly monkey patch console.log()
 ~/code/vike/examples/react-full (main*|u+1) pnpm dev
 
 > @ dev /home/rom/code/vike/examples/react-full
