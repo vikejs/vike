@@ -4,13 +4,14 @@ export { getBetterError }
 
 import { isObject } from './isObject.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
+import { objectAssign } from './objectAssign.js'
 assertIsNotBrowser()
 
 function getBetterError(
   err: unknown,
   modifications: { message?: string | { prepend?: string; append?: string }; stack?: string; hideStack?: true },
 ) {
-  let errBetter: { message: string; stack: string }
+  let errBetter: { message: string; stack: string; hideStack?: true }
 
   // Normalize
   if (!isObject(err)) {
@@ -59,7 +60,7 @@ function getBetterError(
   }
 
   // Enable users to retrieve the original error
-  Object.assign(errBetter, { getOriginalError: () => (err as any)?.getOriginalError?.() ?? err })
+  objectAssign(errBetter, { getOriginalError: () => (err as any)?.getOriginalError?.() ?? err })
 
   return errBetter
 }
