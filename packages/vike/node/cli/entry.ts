@@ -32,37 +32,35 @@ async function cmdDev() {
       const startupDurationString = pc.dim(
         `ready in ${pc.reset(pc.bold(String(Math.ceil(performance.now() - startTime))))} ms`,
       )
-      const hasExistingLogs = process.stdout.bytesWritten > 0 || process.stderr.bytesWritten > 0
-      console.log('hasExistingLogs', hasExistingLogs)
       const logWelcome =
         `  ${colorVike('Vike')} ${pc.yellow(`v${PROJECT_VERSION}`)} ${pc.dim('/')} ${colorVite('VITE')} ${pc.cyan(`v${viteVersion}`)} ${pc.dim('/')} ${startupDurationString}\n` as const
-      // Note: this does work
-      // viteServer.config.logger.clearScreen('info')
-      info(logWelcome, {
-        // TODO/copilot why doesn't it work? Don't cheat by using clearScreen() becuase it won't respect the users's `clearScreen` setting I guess?
-        clear: true,
-      })
+      
+      // Respect user's clearScreen setting
+      if (viteServer.config.clearScreen) {
+        viteServer.config.logger.clearScreen('info')
+      }
+      info(logWelcome, { timestamp: true })
 
       viteServer.printUrls()
     } else {
       // vike-server => middleware mode => `viteServer.httpServer === null`
     }
 
-    /* TODO/copilot: intercept and suppress `[vite] connected.` — see:
-     * - We cannot use removeSuperfluousViteLog() because `[vite] connected.` doesn't go through Vite's logger, instead we must temporrarly monkey patch console.log()
-~/code/vike/examples/react-full (main*|u+1) pnpm dev
-
-> @ dev /home/rom/code/vike/examples/react-full
-> vike dev
-
-[vite] connected.
-hasExistingLogs true
-  Vike v0.4.247 / VITE v7.2.6 / ready in 626 ms
-  ➜  Local:   http://localhost:3000/
-  ➜  Network: use --host to expose
-  ➜  press h + enter to show help
-*/
-
+    // Suppress "[vite] connected." message by temporarily monkey patching console.log
+    const originalConsoleLog = console.log
+    let suppressViteConnected = true
+    console.log = function(...args: any[]) {
+      if (suppressViteConnected && args.length > 0 && typeof args[0] === 'string' && args[0].includes('[vite] connected')) {
+        return
+      }
+      originalConsoleLog.apply(console, args)
+    }
+    
+    // Restore after a short delay (the message comes right after server starts)
+    setTimeout(() => {
+      console.log = originalConsoleLog
+      suppressViteConnected = false
+    }, 2000)
 
     viteServer.bindCLIShortcuts({ print: true })
   } catch (err) {
