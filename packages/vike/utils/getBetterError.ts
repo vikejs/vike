@@ -45,14 +45,17 @@ function getBetterError(
     } else {
       warnMalformed(err)
     }
-  } else if (modsMessage?.prepend) {
-    errBetter.message = modsMessage.prepend + errBetter.message
-    errBetter.stack = modsMessage.prepend + errBetter.stack
-  } else if (modsMessage?.append) {
-    const messagePrev = errBetter.message
-    const messageNext = errBetter.message + modsMessage.append
-    errBetter.message = messageNext
-    errBetter.stack = errBetter.stack.replace(messagePrev, messageNext)
+  } else {
+    if (modsMessage?.prepend) {
+      errBetter.message = modsMessage.prepend + errBetter.message
+      errBetter.stack = modsMessage.prepend + errBetter.stack
+    }
+    if (modsMessage?.append) {
+      const messagePrev = errBetter.message
+      const messageNext = errBetter.message + modsMessage.append
+      errBetter.message = messageNext
+      errBetter.stack = errBetter.stack.replace(messagePrev, messageNext)
+    }
   }
 
   // Enable users to retrieve the original error
