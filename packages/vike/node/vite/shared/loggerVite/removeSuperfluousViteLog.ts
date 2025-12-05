@@ -2,7 +2,7 @@ export { removeSuperfluousViteLog }
 export { removeSuperfluousViteLog_enable }
 export { removeSuperfluousViteLog_disable }
 export { suppressViteConnectedMessage }
-export { restoreConsoleLog }
+export { suppressViteConnectedMessage_clean }
 
 import { assert, getGlobalObject } from '../../utils.js'
 const globalObject = getGlobalObject('removeSuperfluousViteLog.ts', {
@@ -34,7 +34,7 @@ function suppressViteConnectedMessage(): void {
     globalObject.originalConsoleLog!.apply(console, args)
   }
 }
-function restoreConsoleLog(): void {
+function suppressViteConnectedMessage_clean(): void {
   if (globalObject.originalConsoleLog) {
     console.log = globalObject.originalConsoleLog
     globalObject.originalConsoleLog = null
