@@ -4,7 +4,7 @@ import { prepareViteApiCall } from './prepareViteApiCall.js'
 import { createServer, type ResolvedConfig, type ViteDevServer, version as viteVersionVike } from 'vite'
 import type { ApiOptions } from './types.js'
 import { viteVersion as viteVersionUser } from '../vite/plugins/pluginCommon.js'
-import { colorVike, colorVite, PROJECT_VERSION, removeEmptyLines } from './utils.js'
+import { colorVike, colorVite, PROJECT_VERSION } from './utils.js'
 import { swallowViteConnectedMessage_clean } from '../vite/shared/loggerVite/removeSuperfluousViteLog.js'
 import pc from '@brillout/picocolors'
 import { cleanStartupLog } from '../vite/shared/loggerVite.js'
@@ -36,6 +36,7 @@ async function logVikeIntro(
   viteVersion: string,
   startTime: number,
 ) {
+  let isCompact = true
   if (viteServer.httpServer) {
     await viteServer.listen()
 
@@ -49,7 +50,9 @@ async function logVikeIntro(
     const logWelcome =
       `\n  ${colorVike('Vike')} ${pc.yellow(`v${PROJECT_VERSION}`)} ${sep} ${colorVite('Vite')} ${pc.cyan(`v${viteVersion}`)} ${sep} ${startupDurationString}\n` as const
 
-    cleanStartupLog(logWelcome, viteConfig)
+    const ret = cleanStartupLog(logWelcome, viteConfig)
+    console.log(ret.msg)
+    isCompact = ret.isCompact
 
     viteServer.printUrls()
   } else {
@@ -57,5 +60,5 @@ async function logVikeIntro(
   }
 
   viteServer.bindCLIShortcuts({ print: true })
-  console.log()
+  if (!isCompact) console.log()
 }

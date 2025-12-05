@@ -54,22 +54,22 @@ function intercept(loggerType: LoggerType, config: ResolvedConfig) {
 function cleanFirstViteLog(msg: string, config: ResolvedConfig): string {
   const isFirstVitLog = msg.includes('VITE') && msg.includes('ready')
   if (isFirstVitLog) {
-    return cleanStartupLog(msg, config)
+    const ret = cleanStartupLog(msg, config)
+    return ret.msg
   } else {
     return msg
   }
 }
 
 function cleanStartupLog(msg: string, config: ResolvedConfig) {
-  clearScreenOnStartup(config)
-  return removeEmptyLines(msg)
-}
-
-function clearScreenOnStartup(config: ResolvedConfig) {
   const shouldClear = shouldStartupLogClear(config)
   if (shouldClear) {
     config.logger.clearScreen('info')
+  } else {
+    // Compact
+    msg = removeEmptyLines(msg)
   }
+  return { msg, isCompact: !shouldClear }
 }
 function shouldStartupLogClear(config: ResolvedConfig) {
   const hasExistingLogs = process.stdout.bytesWritten > 0 || process.stderr.bytesWritten > 0
