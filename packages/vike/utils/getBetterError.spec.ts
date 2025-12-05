@@ -170,10 +170,10 @@ describe('getBetterError', () => {
         message: { prepend: '[ERROR] ', append: ' - See docs' },
       })
 
-      // Both prepend and append are applied to the message
+      // Both prepend and append are applied to the message and stack
       expect(result.message).toBe('[ERROR] Original - See docs')
-      // Stack has prepend but append may not work due to "Error:" mismatch
       expect(result.stack).toContain('[ERROR] ')
+      expect(result.stack).toContain(' - See docs')
     })
   })
 
