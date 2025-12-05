@@ -1,4 +1,5 @@
 export { pluginCommon }
+export let viteVersion = null as string | null
 
 import { type InlineConfig, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
 import {
@@ -48,6 +49,7 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
       config: {
         order: 'pre',
         async handler(configFromUser, env) {
+          viteVersion = this.meta.viteVersion
           const isDev = isDevCheck(env)
           const isBuild = env.command === 'build'
           const isPreview = env.isPreview!!

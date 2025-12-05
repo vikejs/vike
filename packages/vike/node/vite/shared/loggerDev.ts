@@ -23,6 +23,8 @@ import {
   addOnBeforeAssertErr,
   assert,
   assertIsNotProductionRuntime,
+  colorVike,
+  colorVite,
   formatHintLog,
   hasGreen,
   hasProp,
@@ -208,8 +210,8 @@ function getTags<TTagTool extends TagTool>(
     if (logType === 'error' && !hasRed(msg)) return pc.bold(pc.red(tagTool))
     if (logType === 'error-resolve' && !hasGreen(msg)) return pc.bold(pc.green(tagTool))
     if (logType === 'warn' && !hasYellow(msg)) return pc.yellow(tagTool)
-    if (tagTool === '[vite]') return pc.bold(pc.cyan(tagTool))
-    if (tagTool === '[vike]') return pc.bold(pc.cyan(tagTool))
+    if (tagTool === '[vite]') return colorVite(tagTool)
+    if (tagTool === '[vike]') return colorVike(tagTool)
     assert(false)
   })()
   const timestamp = pc.dim(new Date().toLocaleTimeString() as '1:37:00 PM')
