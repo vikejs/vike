@@ -101,19 +101,17 @@ function addErrorHint(error: unknown) {
   /* Collect errors for ./addErrorHint.spec.ts
   collectError(error)
   //*/
-  let hint = getErrorHint(error)
+  const hint = getErrorHint(error)
   if (!hint) return error
-  hint = formatHintLog(hint)
-  hint = pc.bold(hint)
-  const errBetter = getBetterError(error, { message: { append: '\n' + hint } })
-  return errBetter
+  const append = `\n${pc.bold(formatHintLog(hint))}` as const
+  return getBetterError(error, { message: { append } })
 }
-function getErrorHint(error: unknown): null | string {
+function getErrorHint(error: unknown) {
   {
     const knownErr = isKnownError(error)
     if (knownErr) {
       if (knownErr.link) {
-        return hintLinkPrefix + knownErr.link
+        return `${hintLinkPrefix}${knownErr.link}` as const
       } else {
         return hintDefault
       }
