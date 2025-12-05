@@ -40,19 +40,14 @@ async function cmdDev() {
       const logWelcome =
         `\n  ${colorVike('Vike')} ${pc.yellow(`v${PROJECT_VERSION}`)} ${sep} ${colorVite('Vite')} ${pc.cyan(`v${viteVersion}`)} ${sep} ${startupDurationString}\n` as const
 
-      {
-        const hasExistingLogs = process.stdout.bytesWritten > 0 || process.stderr.bytesWritten > 0
-        console.log('hasExistingLogs', hasExistingLogs)
-      }
-
-      // clearScreen is undefined (not explicitly set) by default when using vike CLI
-      // Vite's default is true, but when undefined it's treated as false
-      // We default to true to match Vite's expected behavior
-      const shouldClearScreen = viteServer.config.clearScreen !== false
+      const hasExistingLogs = process.stdout.bytesWritten > 0 || process.stderr.bytesWritten > 0
+      const shouldClearScreen = viteServer.config.clearScreen !== false && !hasExistingLogs
       if (shouldClearScreen) {
         viteServer.config.logger.clearScreen('info')
+        console.log(logWelcome)
+      } else {
+        console.log(logWelcome)
       }
-      console.log(logWelcome)
 
       viteServer.printUrls()
     } else {
