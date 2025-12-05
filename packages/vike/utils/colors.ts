@@ -2,7 +2,6 @@ export { stripAnsi }
 export { hasRed }
 export { hasGreen }
 export { hasYellow }
-export { colorVike }
 export { colorVite }
 
 import pc from '@brillout/picocolors'
@@ -11,9 +10,6 @@ assertIsNotBrowser()
 
 const ansiRegex = getAnsiRegex()
 
-function colorVike<Str extends string>(str: Str) {
-  return pc.bold(pc.yellow(str))
-}
 function colorVite<Str extends string>(str: Str) {
   return pc.bold(pc.cyan(str))
 }

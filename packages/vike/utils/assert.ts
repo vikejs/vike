@@ -12,6 +12,7 @@ import { assertSingleInstance_onAssertModuleLoad } from './assertSingleInstance.
 import { createErrorWithCleanStackTrace } from './createErrorWithCleanStackTrace.js'
 import { getGlobalObject } from './getGlobalObject.js'
 import { PROJECT_VERSION } from './PROJECT_VERSION.js'
+import { colorVike } from './colorVike.js'
 import pc from '@brillout/picocolors'
 const globalObject = getGlobalObject<{
   alreadyLogged: Set<string>
@@ -158,7 +159,7 @@ function addWhitespace(msg: string) {
 }
 function addPrefixProjectName(msg: string, showProjectVersion = false): string {
   const prefix = showProjectVersion ? projectTagWithVersion : projectTag
-  return `${prefix}${msg}`
+  return `${colorVike(prefix)}${msg}`
 }
 
 function isVikeBug(err: unknown): boolean {
