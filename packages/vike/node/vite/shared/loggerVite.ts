@@ -11,7 +11,7 @@ import {
 } from '../utils.js'
 import { getHttpRequestId_withAsyncHook } from '../../../server/runtime/asyncHook.js'
 import { logErrorServerDev, logVite } from './loggerDev.js'
-import { removeSuperfluousViteLog, swallowViteConnectedMessage } from './loggerVite/removeSuperfluousViteLog.js'
+import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog.js'
 import type { LogType as LoggerType, ResolvedConfig, LogErrorOptions } from 'vite'
 
 const globalObject = getGlobalObject('vite/shared/loggerDev.ts', {
@@ -24,7 +24,6 @@ function improveViteLogs(config: ResolvedConfig) {
   intercept('info', config)
   intercept('warn', config)
   intercept('error', config)
-  swallowViteConnectedMessage()
 }
 
 function intercept(loggerType: LoggerType, config: ResolvedConfig) {

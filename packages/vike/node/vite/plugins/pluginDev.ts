@@ -8,6 +8,10 @@ import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
 import { applyDev, assertWarning, isDocker, isDebugError } from '../utils.js'
 import { improveViteLogs } from '../shared/loggerVite.js'
 import pc from '@brillout/picocolors'
+import {
+  swallowViteConnectedMessage,
+  swallowViteConnectedMessage_clean,
+} from '../shared/loggerVite/removeSuperfluousViteLog.js'
 
 if (isDebugError()) {
   Error.stackTraceLimit = Infinity
@@ -50,19 +54,21 @@ function pluginDev(): Plugin[] {
           await determineFsAllowList(config)
           if (!isDebugError()) {
             improveViteLogs(config)
+            swallowViteConnectedMessage()
           }
           logDockerHint(config.server.host)
         },
       },
     },
     {
-      name: 'vike:pluginDev:addSsrMiddleware',
+      name: 'vike:pluginDev:post',
       apply: applyDev,
       // The SSR middleware should be last middleware
       enforce: 'post',
       configureServer: {
         order: 'post',
         handler(server) {
+          swallowViteConnectedMessage_clean()
           const hasHonoViteDevServer = !!config.plugins.find((p) => p.name === '@hono/vite-dev-server')
           if (config.server.middlewareMode || hasHonoViteDevServer) return
           return () => {
