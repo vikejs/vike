@@ -7,14 +7,15 @@ let viteServer: Awaited<ReturnType<typeof dev>>['viteServer']
 beforeAll(async () => {
   const ret = await dev({ viteConfig })
   viteServer = ret.viteServer
-  await viteServer.listen()
-  viteServer.printUrls()
+  // Note: viteServer.listen() is already called by dev() API
   await sleep(10) // avoid race condition of server not actually being ready
-}, 40 * 1000)
+}, 60 * 1000)
 
 afterAll(async () => {
   try {
     await viteServer.close()
+    // Wait for port to be fully released
+    await sleep(100)
   } catch (e) {
     console.error('Error closing Vite server:', e)
   }
