@@ -77,6 +77,22 @@ function intercept(loggerType: LoggerType, config: ResolvedConfig) {
 
 // - Clears screen if zero previous log
 // - Manages new lines
+function processStartupLog(firstLine: string, config: ResolvedConfig) {
+  const shouldClear = shouldStartupLogClear(config)
+  if (shouldClear) {
+    config.logger.clearScreen('info')
+  } else {
+    // Remove leading new line (for both Vite and Vike's startup log)
+    firstLine = removeEmptyLines(firstLine)
+  }
+  return { firstLine, isCompact: !shouldClear }
+}
+function shouldStartupLogClear(config: ResolvedConfig) {
+  const hasLoggedBefore = process.stdout.bytesWritten !== 0 || process.stderr.bytesWritten !== 0
+  const notDisabled = config.clearScreen !== false
+  const shouldClear = notDisabled && !hasLoggedBefore
+  return shouldClear
+}
 function removeSuperfluous_onViteLog(msg: string, config: ResolvedConfig): string {
   {
     const isFirstVitLog = msg.includes('VITE') && msg.includes('ready')
@@ -101,22 +117,6 @@ function removeSuperfluous_onViteLog(msg: string, config: ResolvedConfig): strin
     }
   }
   return msg
-}
-function processStartupLog(firstLine: string, config: ResolvedConfig) {
-  const shouldClear = shouldStartupLogClear(config)
-  if (shouldClear) {
-    config.logger.clearScreen('info')
-  } else {
-    // Remove leading new line (for both Vite and Vike's startup log)
-    firstLine = removeEmptyLines(firstLine)
-  }
-  return { firstLine, isCompact: !shouldClear }
-}
-function shouldStartupLogClear(config: ResolvedConfig) {
-  const hasLoggedBefore = process.stdout.bytesWritten !== 0 || process.stderr.bytesWritten !== 0
-  const notDisabled = config.clearScreen !== false
-  const shouldClear = notDisabled && !hasLoggedBefore
-  return shouldClear
 }
 
 function removeSuperfluousViteLog(msg: string): boolean {
