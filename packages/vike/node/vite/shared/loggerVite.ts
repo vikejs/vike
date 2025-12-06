@@ -70,6 +70,8 @@ function intercept(loggerType: LoggerType, config: ResolvedConfig) {
   }
 }
 
+// - Clears screen if zero previous log
+// - Manages new lines
 function cleanViteStartupLog(msg: string, config: ResolvedConfig): string {
   {
     const isFirstVitLog = msg.includes('VITE') && msg.includes('ready')
@@ -90,10 +92,8 @@ function cleanViteStartupLog(msg: string, config: ResolvedConfig): string {
       }
     }
   }
-
   return msg
 }
-
 function processStartupLogFirstLine(firstLine: string, config: ResolvedConfig) {
   const shouldClear = shouldStartupLogClear(config)
   if (shouldClear) {
