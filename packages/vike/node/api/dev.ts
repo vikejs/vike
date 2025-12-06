@@ -39,26 +39,23 @@ async function printStartupLog(
   viteVersion: string,
   startTime: number,
 ) {
-    // Restore console.log before printing welcome message
-    swallowViteConnectedMessage_clean()
+  // Restore console.log before printing welcome message
+  swallowViteConnectedMessage_clean()
 
-    const startupDurationString = pc.dim(
-      `ready in ${pc.reset(pc.bold(String(Math.ceil(performance.now() - startTime))))} ms`,
-    )
-    const sep = pc.dim('·' as '-')
-    const firstLine =
-      `\n  ${colorVike('Vike')} ${pc.yellow(`v${PROJECT_VERSION}`)} ${sep} ${colorVite('Vite')} ${pc.cyan(`v${viteVersion}`)} ${sep} ${startupDurationString}\n` as const
+  const startupDurationString = pc.dim(
+    `ready in ${pc.reset(pc.bold(String(Math.ceil(performance.now() - startTime))))} ms`,
+  )
+  const sep = pc.dim('·' as '-')
+  const firstLine =
+    `\n  ${colorVike('Vike')} ${pc.yellow(`v${PROJECT_VERSION}`)} ${sep} ${colorVite('Vite')} ${pc.cyan(`v${viteVersion}`)} ${sep} ${startupDurationString}\n` as const
 
-    const ret = processStartupLogFirstLine(firstLine, viteConfig)
-    console.log(ret.msg)
-    const { isCompact } = ret
+  const ret = processStartupLogFirstLine(firstLine, viteConfig)
+  console.log(ret.msg)
+  const { isCompact } = ret
 
-    // We don't call viteServer.printUrls() because Vite throws an error if `resolvedUrls` is missing:
-    // https://github.com/vitejs/vite/blob/df5a30d2690a2ebc4824a79becdcef30538dc602/packages/vite/src/node/server/index.ts#L745
-    printServerUrls(
-      viteServer.resolvedUrls || { local: ['http://localhost:3000'], network: [] },
-      viteConfig.server.host,
-    )
+  // We don't call viteServer.printUrls() because Vite throws an error if `resolvedUrls` is missing:
+  // https://github.com/vitejs/vite/blob/df5a30d2690a2ebc4824a79becdcef30538dc602/packages/vite/src/node/server/index.ts#L745
+  printServerUrls(viteServer.resolvedUrls || { local: ['http://localhost:3000'], network: [] }, viteConfig.server.host)
 
   viteServer.bindCLIShortcuts({ print: true })
   if (!isCompact) console.log()
