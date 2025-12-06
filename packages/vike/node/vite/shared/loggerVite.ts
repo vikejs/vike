@@ -28,6 +28,9 @@ function improveViteLogs(config: ResolvedConfig) {
 }
 
 function intercept(loggerType: LoggerType, config: ResolvedConfig) {
+  let isBeginning = true
+  setTimeout(() => (isBeginning = false), 10 * 1000)
+
   config.logger[loggerType] = (msg, options: LogErrorOptions = {}) => {
     assert(!isDebugError())
 
@@ -39,7 +42,10 @@ function intercept(loggerType: LoggerType, config: ResolvedConfig) {
       // No timestamp => no "[vite]" tag prepended => we don't trim the beginning of the message
       msg = trimWithAnsiTrailOnly(msg)
     }
-    msg = cleanViteStartupLog(msg, config)
+
+    if (isBeginning) {
+      msg = cleanViteStartupLog(msg, config)
+    }
 
     if (options.error) {
       // Vite does a poor job of handling errors.
