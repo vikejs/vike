@@ -78,7 +78,7 @@ function intercept(loggerType: LoggerType, config: ResolvedConfig) {
 // - Clears screen if zero previous log
 // - Manages new lines
 function processStartupLog(firstLine: string, config: ResolvedConfig) {
-  const shouldClear = shouldStartupLogClear(config)
+  const shouldClear = removeSuperfluous_shouldClear(config)
   if (shouldClear) {
     config.logger.clearScreen('info')
   } else {
@@ -87,7 +87,7 @@ function processStartupLog(firstLine: string, config: ResolvedConfig) {
   }
   return { firstLine, isCompact: !shouldClear }
 }
-function shouldStartupLogClear(config: ResolvedConfig) {
+function removeSuperfluous_shouldClear(config: ResolvedConfig) {
   const hasLoggedBefore = process.stdout.bytesWritten !== 0 || process.stderr.bytesWritten !== 0
   const notDisabled = config.clearScreen !== false
   const shouldClear = notDisabled && !hasLoggedBefore
