@@ -4,6 +4,8 @@ export { removeSuperfluousViteLog_disable }
 export { swallowViteConnectedMessage }
 export { swallowViteConnectedMessage_clean }
 
+// TODO: refactor inline this file
+
 import { assert, getGlobalObject } from '../../utils.js'
 const globalObject = getGlobalObject('removeSuperfluousViteLog.ts', {
   enabled: false,
