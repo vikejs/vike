@@ -9,7 +9,10 @@ import { isDebugError } from '../../utils/debug.js'
 function onLoad() {
   assertIsNotBrowser()
   assertNodeVersion()
-  if (isDebugError()) setAlwaysShowStackTrace()
+  if (isDebugError()) {
+    Error.stackTraceLimit = Infinity
+    setAlwaysShowStackTrace()
+  }
   addEcosystemStamp()
   installRequireShim()
 }

@@ -13,11 +13,6 @@ import {
   swallowViteConnectedMessage_clean,
 } from '../shared/loggerVite/removeSuperfluousViteLog.js'
 
-// TODO: move
-if (isDebugError()) {
-  Error.stackTraceLimit = Infinity
-}
-
 function pluginDev(): Plugin[] {
   let config: ResolvedConfig
   return [
