@@ -30,9 +30,8 @@ function swallowViteConnectedMessage(): void {
   globalObject.originalConsoleLog = console.log
   console.log = function (...args: any[]) {
     const msg = args.join(' ')
-    if (msg === '[vite] connected.') {
-      return
-    }
+    // Swallow
+    if (msg === '[vite] connected.') return
     globalObject.originalConsoleLog!.apply(console, args)
   }
 }
