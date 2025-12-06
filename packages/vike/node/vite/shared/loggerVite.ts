@@ -2,8 +2,8 @@ export { improveViteLogs }
 export { processStartupLog }
 export { swallowViteForceOptimizationLog_enable }
 export { swallowViteForceOptimizationLog_disable }
-export { swallowViteConnectedMessage }
-export { swallowViteConnectedMessage_clean }
+export { swallowViteLogConnected }
+export { swallowViteLogConnected_clean }
 
 import {
   assert,
@@ -22,7 +22,7 @@ const globalObject = getGlobalObject('vite/shared/loggerDev.ts', {
   processStartupLog_hasViteStartupLogged: null as null | true,
   processStartupLog_hasViteHelpShortcutLogged: null as null | true,
   swallowViteForceOptimizationLog_enabled: false,
-  swallowViteConnectedMessage_originalConsoleLog: null as typeof console.log | null,
+  swallowViteLogConnected_originalConsoleLog: null as typeof console.log | null,
 })
 
 function improveViteLogs(config: ResolvedConfig) {
@@ -137,27 +137,27 @@ function swallowViteForceOptimizationLog_disable(): void {
 }
 
 // Suppress "[vite] connected." message. (It doesn't go through Vite's logger thus we must monkey patch the console.log() function.)
-function swallowViteConnectedMessage(): void {
+function swallowViteLogConnected(): void {
   if (isDebugError()) return
-  if (globalObject.swallowViteConnectedMessage_originalConsoleLog) return
-  globalObject.swallowViteConnectedMessage_originalConsoleLog = console.log
-  console.log = swallowViteConnectedMessage_logPatch
-  setTimeout(swallowViteConnectedMessage_clean, 3000)
+  if (globalObject.swallowViteLogConnected_originalConsoleLog) return
+  globalObject.swallowViteLogConnected_originalConsoleLog = console.log
+  console.log = swallowViteLogConnected_logPatch
+  setTimeout(swallowViteLogConnected_clean, 3000)
 }
 // Remove console.log() monkey patch
-function swallowViteConnectedMessage_clean(): void {
+function swallowViteLogConnected_clean(): void {
   // Don't remove console.log() patches from other libraries (e.g. instrumentation)
-  if (console.log === swallowViteConnectedMessage_logPatch) return
-  assert(globalObject.swallowViteConnectedMessage_originalConsoleLog)
-  console.log = globalObject.swallowViteConnectedMessage_originalConsoleLog
-  globalObject.swallowViteConnectedMessage_originalConsoleLog = null
+  if (console.log === swallowViteLogConnected_logPatch) return
+  assert(globalObject.swallowViteLogConnected_originalConsoleLog)
+  console.log = globalObject.swallowViteLogConnected_originalConsoleLog
+  globalObject.swallowViteLogConnected_originalConsoleLog = null
 }
-function swallowViteConnectedMessage_logPatch(...args: unknown[]): void {
-  const { swallowViteConnectedMessage_originalConsoleLog: originalConsoleLog } = globalObject
+function swallowViteLogConnected_logPatch(...args: unknown[]): void {
+  const { swallowViteLogConnected_originalConsoleLog: originalConsoleLog } = globalObject
   assert(originalConsoleLog)
   const msg = args.join(' ')
   if (msg === '[vite] connected.') {
-    swallowViteConnectedMessage_clean()
+    swallowViteLogConnected_clean()
     return // swallow
   }
   originalConsoleLog.apply(console, args)

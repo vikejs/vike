@@ -8,7 +8,7 @@ import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
 import { applyDev, assertWarning, isDocker, isDebugError } from '../utils.js'
 import { improveViteLogs } from '../shared/loggerVite.js'
 import pc from '@brillout/picocolors'
-import { swallowViteConnectedMessage, swallowViteConnectedMessage_clean } from '../shared/loggerVite.js'
+import { swallowViteLogConnected, swallowViteLogConnected_clean } from '../shared/loggerVite.js'
 
 function pluginDev(): Plugin[] {
   let config: ResolvedConfig
@@ -58,7 +58,7 @@ function pluginDev(): Plugin[] {
       configureServer: {
         order: 'post',
         handler(server) {
-          swallowViteConnectedMessage_clean() // If inside a configureServer() `pre` hook => too early
+          swallowViteLogConnected_clean() // If inside a configureServer() `pre` hook => too early
           const hasHonoViteDevServer = !!config.plugins.find((p) => p.name === '@hono/vite-dev-server')
           if (config.server.middlewareMode || hasHonoViteDevServer) return
           return () => {
@@ -78,7 +78,7 @@ function pluginDev(): Plugin[] {
       configResolved: {
         order: 'post',
         handler() {
-          swallowViteConnectedMessage()
+          swallowViteLogConnected()
         },
       },
     },
