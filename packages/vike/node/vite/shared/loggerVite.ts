@@ -88,7 +88,7 @@ function cleanViteStartupLog(msg: string, config: ResolvedConfig): string {
     if (isViteHelpShortcutLog && !globalObject.hasViteHelpShortcutLogged) {
       globalObject.hasViteHelpShortcutLogged = true
       if (globalObject.hasViteStartupLogged && globalObject.isViteStartupLogCompact === false) {
-        msg += '\n'
+        return msg + '\n'
       }
     }
   }
