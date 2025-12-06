@@ -27,12 +27,12 @@ function removeSuperfluousViteLog(msg: string): boolean {
 // Suppress "[vite] connected." message that isn't logged using Vite's logger
 function swallowViteConnectedMessage(): void {
   if (globalObject.originalConsoleLog) return
-  globalObject.originalConsoleLog = console.log
-  console.log = function (...args: any[]) {
+  const originalConsoleLog = (globalObject.originalConsoleLog = console.log)
+  console.log = function (...args: unknown[]) {
     const msg = args.join(' ')
     // Swallow
     if (msg === '[vite] connected.') return
-    globalObject.originalConsoleLog!.apply(console, args)
+    originalConsoleLog.apply(console, args)
   }
   setTimeout(swallowViteConnectedMessage_clean, 3000)
 }
