@@ -52,9 +52,7 @@ function pluginDev(): Plugin[] {
           config = config_
           await determineOptimizeDeps(config)
           await determineFsAllowList(config)
-          if (!isDebugError()) {
-            improveViteLogs(config)
-          }
+          improveViteLogs(config)
           logDockerHint(config.server.host)
         },
       },

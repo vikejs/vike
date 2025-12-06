@@ -21,6 +21,7 @@ const globalObject = getGlobalObject('vite/shared/loggerDev.ts', {
 })
 
 function improveViteLogs(config: ResolvedConfig) {
+  if (isDebugError()) return
   intercept('info', config)
   intercept('warn', config)
   intercept('error', config)
