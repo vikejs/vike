@@ -5,7 +5,6 @@ import { createServer, type ResolvedConfig, type ViteDevServer, version as viteV
 import type { ApiOptions } from './types.js'
 import { viteVersionUser } from '../vite/plugins/pluginCommon.js'
 import { colorVike, colorVite, PROJECT_VERSION } from './utils.js'
-import { swallowViteConnectedMessage_clean } from '../vite/shared/loggerVite/removeSuperfluousViteLog.js'
 import pc from '@brillout/picocolors'
 import { processStartupLogFirstLine } from '../vite/shared/loggerVite.js'
 
@@ -39,8 +38,6 @@ async function printStartupLog(
   viteVersion: string,
   startTime: number,
 ) {
-  swallowViteConnectedMessage_clean()
-
   const startupDurationString = pc.dim(
     `ready in ${pc.reset(pc.bold(String(Math.ceil(performance.now() - startTime))))} ms`,
   )
