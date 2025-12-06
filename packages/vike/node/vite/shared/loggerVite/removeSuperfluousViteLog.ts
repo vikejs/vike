@@ -9,6 +9,7 @@ const globalObject = getGlobalObject('removeSuperfluousViteLog.ts', {
   removeSuperfluousViteLog_enabled: false,
   swallowViteConnectedMessage_originalConsoleLog: null as typeof console.log | null,
 })
+
 function removeSuperfluousViteLog(msg: string): boolean {
   if (!globalObject.removeSuperfluousViteLog_enabled) {
     return false
