@@ -35,6 +35,7 @@ function removeSuperfluousViteLog_disable(): void {
 function swallowViteConnectedMessage(): void {
   if (isDebugError()) return
   if (globalObject.originalConsoleLog) return
+  globalObject.originalConsoleLog = console.log
   console.log = swallowViteConnectedMessage_logPatch
   setTimeout(swallowViteConnectedMessage_clean, 3000)
 }
