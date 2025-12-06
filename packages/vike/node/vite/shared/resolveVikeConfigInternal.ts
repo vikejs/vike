@@ -75,7 +75,7 @@ import { logConfigInfo, logErrorServerDev } from './loggerDev.js'
 import {
   removeSuperfluousViteLog_enable,
   removeSuperfluousViteLog_disable,
-} from './loggerVite/removeSuperfluousViteLog.js'
+} from './loggerVite.js'
 import pc from '@brillout/picocolors'
 import {
   getConfigDefinedAt,

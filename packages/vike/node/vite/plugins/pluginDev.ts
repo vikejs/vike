@@ -11,7 +11,7 @@ import pc from '@brillout/picocolors'
 import {
   swallowViteConnectedMessage,
   swallowViteConnectedMessage_clean,
-} from '../shared/loggerVite/removeSuperfluousViteLog.js'
+} from '../shared/loggerVite.js'
 
 function pluginDev(): Plugin[] {
   let config: ResolvedConfig
