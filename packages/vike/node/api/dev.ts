@@ -6,7 +6,7 @@ import type { ApiOptions } from './types.js'
 import { viteVersionUser } from '../vite/plugins/pluginCommon.js'
 import { colorVike, colorVite, PROJECT_VERSION } from './utils.js'
 import pc from '@brillout/picocolors'
-import { processStartupLogFirstLine } from '../vite/shared/loggerVite.js'
+import { processStartupLog } from '../vite/shared/loggerVite.js'
 
 /**
  * Programmatically trigger `$ vike dev`
@@ -44,7 +44,7 @@ async function printStartupLog(
   const firstLine =
     `\n  ${colorVike('Vike')} ${pc.yellow(`v${PROJECT_VERSION}`)} ${sep} ${colorVite('Vite')} ${pc.cyan(`v${viteVersion}`)} ${sep} ${startupDurationString}\n` as const
 
-  const ret = processStartupLogFirstLine(firstLine, viteConfig)
+  const ret = processStartupLog(firstLine, viteConfig)
   console.log(ret.firstLine)
   const { isCompact } = ret
 

@@ -1,5 +1,5 @@
 export { improveViteLogs }
-export { processStartupLogFirstLine }
+export { processStartupLog }
 export { removeSuperfluousViteLog_enable }
 export { removeSuperfluousViteLog_disable }
 export { swallowViteConnectedMessage }
@@ -18,9 +18,9 @@ import { logErrorServerDev, logVite } from './loggerDev.js'
 import type { LogType as LoggerType, ResolvedConfig, LogErrorOptions } from 'vite'
 
 const globalObject = getGlobalObject('vite/shared/loggerDev.ts', {
-  processStartupLogFirstLine_isViteStartupLogCompact: null as null | boolean,
-  processStartupLogFirstLine_hasViteStartupLogged: null as null | true,
-  processStartupLogFirstLine_hasViteHelpShortcutLogged: null as null | true,
+  processStartupLog_isViteStartupLogCompact: null as null | boolean,
+  processStartupLog_hasViteStartupLogged: null as null | true,
+  processStartupLog_hasViteHelpShortcutLogged: null as null | true,
   removeSuperfluousViteLog_enabled: false,
   swallowViteConnectedMessage_originalConsoleLog: null as typeof console.log | null,
 })
@@ -80,26 +80,29 @@ function intercept(loggerType: LoggerType, config: ResolvedConfig) {
 function cleanViteStartupLog(msg: string, config: ResolvedConfig): string {
   {
     const isFirstVitLog = msg.includes('VITE') && msg.includes('ready')
-    if (isFirstVitLog && !globalObject.processStartupLogFirstLine_hasViteStartupLogged) {
-      globalObject.processStartupLogFirstLine_hasViteStartupLogged = true
-      let { firstLine, isCompact } = processStartupLogFirstLine(msg, config)
-      globalObject.processStartupLogFirstLine_isViteStartupLogCompact = isCompact
+    if (isFirstVitLog && !globalObject.processStartupLog_hasViteStartupLogged) {
+      globalObject.processStartupLog_hasViteStartupLogged = true
+      let { firstLine, isCompact } = processStartupLog(msg, config)
+      globalObject.processStartupLog_isViteStartupLogCompact = isCompact
       if (!isCompact) firstLine += '\n'
       return firstLine
     }
   }
   {
     const isViteHelpShortcutLog = msg.includes('press') && msg.includes('to show help')
-    if (isViteHelpShortcutLog && !globalObject.processStartupLogFirstLine_hasViteHelpShortcutLogged) {
-      globalObject.processStartupLogFirstLine_hasViteHelpShortcutLogged = true
-      if (globalObject.processStartupLogFirstLine_hasViteStartupLogged && globalObject.processStartupLogFirstLine_isViteStartupLogCompact === false) {
+    if (isViteHelpShortcutLog && !globalObject.processStartupLog_hasViteHelpShortcutLogged) {
+      globalObject.processStartupLog_hasViteHelpShortcutLogged = true
+      if (
+        globalObject.processStartupLog_hasViteStartupLogged &&
+        globalObject.processStartupLog_isViteStartupLogCompact === false
+      ) {
         return msg + '\n'
       }
     }
   }
   return msg
 }
-function processStartupLogFirstLine(firstLine: string, config: ResolvedConfig) {
+function processStartupLog(firstLine: string, config: ResolvedConfig) {
   const shouldClear = shouldStartupLogClear(config)
   if (shouldClear) {
     config.logger.clearScreen('info')
