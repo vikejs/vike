@@ -72,7 +72,7 @@ import {
 import type { EsbuildCache } from './resolveVikeConfigInternal/transpileAndExecuteFile.js'
 import { getViteDevServer, vikeConfigErrorRecoverMsg } from '../../../server/runtime/globalContext.js'
 import { logConfigInfo, logErrorServerDev } from './loggerDev.js'
-import { removeSuperfluousViteLog_enable, removeSuperfluousViteLog_disable } from './loggerVite.js'
+import { swallowViteForceOptimizationLog_enable, swallowViteForceOptimizationLog_disable } from './loggerVite.js'
 import pc from '@brillout/picocolors'
 import {
   getConfigDefinedAt,
@@ -1493,7 +1493,7 @@ function resolvePrerenderContext(vikeConfig: Parameters<typeof resolvePrerenderC
 function restartViteDevServer() {
   const viteDevServer = getViteDevServer()
   assert(viteDevServer)
-  removeSuperfluousViteLog_enable()
+  swallowViteForceOptimizationLog_enable()
   // We don't `await` because it never resolves it if we await it here => it hangs Vike's config resolving.
   // - I don't know why but I suspect there is a dead lock of a mutual dependency between Vite's restart() and Vike's config resolving.
   // - To reproduce: add `bla: 12` to examples/react-full/renderer/+config.ts => `9:22:30 AM [vike][config][Wrong Usage] /renderer/+config.ts sets an unknown config bla`
@@ -1505,7 +1505,7 @@ function restartViteDevServer() {
       console.error(err)
     }
   })()
-  removeSuperfluousViteLog_disable()
+  swallowViteForceOptimizationLog_disable()
 }
 
 function getVikeConfigDummy(esbuildCache: EsbuildCache): VikeConfigInternal {

@@ -1,7 +1,7 @@
 export { improveViteLogs }
 export { processStartupLog }
-export { removeSuperfluousViteLog_enable }
-export { removeSuperfluousViteLog_disable }
+export { swallowViteForceOptimizationLog_enable }
+export { swallowViteForceOptimizationLog_disable }
 export { swallowViteConnectedMessage }
 export { swallowViteConnectedMessage_clean }
 
@@ -21,7 +21,7 @@ const globalObject = getGlobalObject('vite/shared/loggerDev.ts', {
   processStartupLog_isViteStartupLogCompact: null as null | boolean,
   processStartupLog_hasViteStartupLogged: null as null | true,
   processStartupLog_hasViteHelpShortcutLogged: null as null | true,
-  removeSuperfluousViteLog_enabled: false,
+  swallowViteForceOptimizationLog_enabled: false,
   swallowViteConnectedMessage_originalConsoleLog: null as typeof console.log | null,
 })
 
@@ -39,7 +39,7 @@ function intercept(loggerType: LoggerType, config: ResolvedConfig) {
   config.logger[loggerType] = (msg, options: LogErrorOptions = {}) => {
     assert(!isDebugError())
 
-    if (removeSuperfluousViteLog(msg)) return
+    if (swallowViteForceOptimizationLog(msg)) return
 
     if (!!options.timestamp) {
       msg = trimWithAnsi(msg)
@@ -119,8 +119,8 @@ function processStartupLog_onViteLog(msg: string, config: ResolvedConfig): strin
   return msg
 }
 
-function removeSuperfluousViteLog(msg: string): boolean {
-  if (!globalObject.removeSuperfluousViteLog_enabled) {
+function swallowViteForceOptimizationLog(msg: string): boolean {
+  if (!globalObject.swallowViteForceOptimizationLog_enabled) {
     return false
   }
   if (msg.toLowerCase().includes('forced') && msg.toLowerCase().includes('optimization')) {
@@ -129,11 +129,11 @@ function removeSuperfluousViteLog(msg: string): boolean {
   }
   return false
 }
-function removeSuperfluousViteLog_enable(): void {
-  globalObject.removeSuperfluousViteLog_enabled = true
+function swallowViteForceOptimizationLog_enable(): void {
+  globalObject.swallowViteForceOptimizationLog_enabled = true
 }
-function removeSuperfluousViteLog_disable(): void {
-  globalObject.removeSuperfluousViteLog_enabled = false
+function swallowViteForceOptimizationLog_disable(): void {
+  globalObject.swallowViteForceOptimizationLog_enabled = false
 }
 
 // Suppress "[vite] connected." message. (It doesn't go through Vite's logger thus we must monkey patch the console.log() function.)
