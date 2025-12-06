@@ -22,7 +22,7 @@ async function dev(options: ApiOptions & { startupLog?: boolean } = {}) {
   const viteServer = server
   const viteConfig = server.config
   if (viteServer.httpServer) await viteServer.listen()
-  logVikeIntro(viteServer, viteConfig, viteVersion, startTime)
+  if (options.startupLog) logVikeIntro(viteServer, viteConfig, viteVersion, startTime)
   return {
     viteServer,
     viteConfig,
