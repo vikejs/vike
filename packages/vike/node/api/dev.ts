@@ -3,7 +3,7 @@ export { dev }
 import { prepareViteApiCall } from './prepareViteApiCall.js'
 import { createServer, type ResolvedConfig, type ViteDevServer, version as viteVersionVike } from 'vite'
 import type { ApiOptions } from './types.js'
-import { viteVersion as viteVersionUser } from '../vite/plugins/pluginCommon.js'
+import { viteVersionUser } from '../vite/plugins/pluginCommon.js'
 import { colorVike, colorVite, PROJECT_VERSION } from './utils.js'
 import { swallowViteConnectedMessage_clean } from '../vite/shared/loggerVite/removeSuperfluousViteLog.js'
 import pc from '@brillout/picocolors'
