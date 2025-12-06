@@ -5,9 +5,8 @@ import { dev } from 'vike/api'
 let viteServer: Awaited<ReturnType<typeof dev>>['viteServer']
 
 beforeAll(async () => {
-  const ret = await dev({ viteConfig })
+  const ret = await dev({ viteConfig, startupLog: true })
   viteServer = ret.viteServer
-  // Note: viteServer.listen() is already called by dev() API
   await sleep(10) // avoid race condition of server not actually being ready
 }, 60 * 1000)
 
