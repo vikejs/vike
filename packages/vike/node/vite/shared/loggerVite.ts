@@ -16,7 +16,7 @@ import type { LogType as LoggerType, ResolvedConfig, LogErrorOptions } from 'vit
 
 const globalObject = getGlobalObject('vite/shared/loggerDev.ts', {
   isViteStartupLogCompact: null as null | boolean,
-  isViteStartupLog: null as null | boolean,
+  hasViteStartupLogged: null as null | boolean,
 })
 
 function improveViteLogs(config: ResolvedConfig) {
@@ -66,8 +66,8 @@ function intercept(loggerType: LoggerType, config: ResolvedConfig) {
 function cleanFirstViteLog(msg: string, config: ResolvedConfig): string {
   {
     const isFirstVitLog = msg.includes('VITE') && msg.includes('ready')
-    if (isFirstVitLog) {
-      globalObject.isViteStartupLog = true
+    if (isFirstVitLog && !globalObject.hasViteStartupLogged) {
+      globalObject.hasViteStartupLogged = true
       const ret = processStartupLogFirstLine(msg, config)
       globalObject.isViteStartupLogCompact = ret.isCompact
       msg = ret.firstLine
@@ -77,7 +77,7 @@ function cleanFirstViteLog(msg: string, config: ResolvedConfig): string {
   }
   {
     const isViteHelpShortcutLog = msg.includes('press') && msg.includes('to show help')
-    if (isViteHelpShortcutLog && globalObject.isViteStartupLog && globalObject.isViteStartupLogCompact === false) {
+    if (isViteHelpShortcutLog && globalObject.hasViteStartupLogged && globalObject.isViteStartupLogCompact === false) {
       msg += '\n'
     }
   }
