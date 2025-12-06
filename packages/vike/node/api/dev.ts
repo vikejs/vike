@@ -30,6 +30,9 @@ async function dev(options: ApiOptions & { startupLog?: boolean } = {}) {
   }
 }
 
+// TODO:
+// - Add minor breaking change
+// - Update @brillout/test-e2e everywhere
 async function logVikeIntro(
   viteServer: ViteDevServer,
   viteConfig: ResolvedConfig,
