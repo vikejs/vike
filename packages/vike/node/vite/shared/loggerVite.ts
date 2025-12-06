@@ -49,7 +49,7 @@ function intercept(loggerType: LoggerType, config: ResolvedConfig) {
     }
 
     if (isBeginning) {
-      msg = cleanViteStartupLog(msg, config)
+      msg = removeSuperfluous_onViteLog(msg, config)
     }
 
     if (options.error) {
@@ -77,7 +77,7 @@ function intercept(loggerType: LoggerType, config: ResolvedConfig) {
 
 // - Clears screen if zero previous log
 // - Manages new lines
-function cleanViteStartupLog(msg: string, config: ResolvedConfig): string {
+function removeSuperfluous_onViteLog(msg: string, config: ResolvedConfig): string {
   {
     const isFirstVitLog = msg.includes('VITE') && msg.includes('ready')
     if (isFirstVitLog && !globalObject.processStartupLog_hasViteStartupLogged) {
