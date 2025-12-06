@@ -73,7 +73,7 @@ function cleanStartupLog(msg: string, config: ResolvedConfig) {
   return { msg, isCompact: !shouldClear }
 }
 function shouldStartupLogClear(config: ResolvedConfig) {
-  const hasExistingLogs = process.stdout.bytesWritten > 0 || process.stderr.bytesWritten > 0
+  const hasExistingLogs = process.stdout.bytesWritten !== 0 || process.stderr.bytesWritten !== 0
   const notDisabled = config.clearScreen !== false
   const shouldClear = notDisabled && !hasExistingLogs
   return shouldClear
