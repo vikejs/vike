@@ -68,7 +68,7 @@ function cleanFirstViteLog(msg: string, config: ResolvedConfig): string {
     if (isFirstVitLog) {
       const ret = processStartupLogFirstLine(msg, config)
       globalObject.isViteStartupLogCompact = ret.isCompact
-      msg = ret.msg
+      msg = ret.firstLine
       if (!ret.isCompact) msg += '\n'
       return msg
     }
@@ -84,15 +84,15 @@ function cleanFirstViteLog(msg: string, config: ResolvedConfig): string {
   return msg
 }
 
-function processStartupLogFirstLine(msg: string, config: ResolvedConfig) {
+function processStartupLogFirstLine(firstLine: string, config: ResolvedConfig) {
   const shouldClear = shouldStartupLogClear(config)
   if (shouldClear) {
     config.logger.clearScreen('info')
   } else {
     // Compact
-    msg = removeEmptyLines(msg)
+    firstLine = removeEmptyLines(firstLine)
   }
-  return { msg, isCompact: !shouldClear }
+  return { firstLine, isCompact: !shouldClear }
 }
 function shouldStartupLogClear(config: ResolvedConfig) {
   const hasExistingLogs = process.stdout.bytesWritten !== 0 || process.stderr.bytesWritten !== 0
