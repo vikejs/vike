@@ -37,7 +37,7 @@ async function logVikeIntro(
   startTime: number,
 ) {
   let isCompact = true
-  if (viteServer.httpServer) {
+  {
     // Restore console.log before printing welcome message
     swallowViteConnectedMessage_clean()
 
@@ -58,8 +58,6 @@ async function logVikeIntro(
       viteServer.resolvedUrls || { local: ['http://localhost:3000'], network: [] },
       viteConfig.server.host,
     )
-  } else {
-    // Photon => middleware mode => `viteServer.httpServer === null`
   }
 
   viteServer.bindCLIShortcuts({ print: true })
