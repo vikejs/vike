@@ -34,7 +34,7 @@ function intercept(loggerType: LoggerType, config: ResolvedConfig) {
   config.logger[loggerType] = (msg, options: LogErrorOptions = {}) => {
     assert(!isDebugError())
 
-    if (removeSuperfluousViteLog(msg)) return
+    // if (removeSuperfluousViteLog(msg)) return
 
     if (!!options.timestamp) {
       msg = trimWithAnsi(msg)

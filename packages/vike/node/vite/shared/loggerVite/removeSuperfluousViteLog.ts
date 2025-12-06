@@ -21,7 +21,6 @@ function removeSuperfluousViteLog(msg: string): boolean {
   }
   return false
 }
-
 function removeSuperfluousViteLog_enable(): void {
   globalObject.removeSuperfluousViteLog_enabled = true
 }
