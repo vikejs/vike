@@ -75,11 +75,10 @@ function cleanViteStartupLog(msg: string, config: ResolvedConfig): string {
     const isFirstVitLog = msg.includes('VITE') && msg.includes('ready')
     if (isFirstVitLog && !globalObject.hasViteStartupLogged) {
       globalObject.hasViteStartupLogged = true
-      const ret = processStartupLogFirstLine(msg, config)
-      globalObject.isViteStartupLogCompact = ret.isCompact
-      msg = ret.firstLine
-      if (!ret.isCompact) msg += '\n'
-      return msg
+      let { firstLine, isCompact } = processStartupLogFirstLine(msg, config)
+      globalObject.isViteStartupLogCompact = isCompact
+      if (!isCompact) firstLine += '\n'
+      return firstLine
     }
   }
   {
