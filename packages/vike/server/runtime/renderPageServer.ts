@@ -351,13 +351,20 @@ function logHttpRequest(urlOriginal: string, pageContextInit: PageContextInit, r
   const pageContext_logRuntime = getPageContext_logRuntimeEarly(pageContextInit, requestId)
   logRuntimeInfo?.(getRequestInfoMessage(urlOriginal), pageContext_logRuntime, 'info')
 }
+/*
+const arrowRight = pc.dim('>>')
+const arrowLeft = pc.dim('<<')
+/*/
+const arrowRight = pc.dim('»')
+const arrowLeft = pc.dim('«')
+//*/
 function getRequestInfoMessage(urlOriginal: string) {
-  return `HTTP request: ${prettyUrl(urlOriginal)}`
+  return `HTTP request  ${arrowRight} ${prettyUrl(urlOriginal)}`
 }
 function logHttpResponse(urlOriginalPretty: string, pageContextReturn: PageContextAfterRender) {
   const statusCode = pageContextReturn.httpResponse?.statusCode ?? null
 
-  let msg: `HTTP response ${string}` | `HTTP redirect ${string}`
+  let msg: `HTTP response ${typeof arrowLeft} ${string}` | `HTTP redirect ${string}`
   let isNominal: boolean
   {
     const { errorWhileRendering } = pageContextReturn
@@ -369,7 +376,7 @@ function logHttpResponse(urlOriginalPretty: string, pageContextReturn: PageConte
       //   - We should show `HTTP response ${urlOriginalPretty} ERR` instead.
       //   - Maybe we can/should make the error available at pageContext.errorWhileRendering
       assert(errorWhileRendering === null || errorWhileRendering === undefined)
-      msg = `HTTP response ${prettyUrl(urlOriginalPretty)} ${pc.dim('null')}`
+      msg = `HTTP response ${arrowLeft} ${prettyUrl(urlOriginalPretty)} ${pc.dim('null')}`
       // Erroneous value (it should sometimes be `false`) but it's fine as it doesn't seem to have much of an impact.
       isNominal = true
     } else {
@@ -377,7 +384,7 @@ function logHttpResponse(urlOriginalPretty: string, pageContextReturn: PageConte
       isNominal = isSuccess || statusCode === 404
       const color = (s: number | string) => pc.bold(isSuccess ? pc.green(String(s)) : pc.red(String(s)))
       const isRedirect = statusCode && 300 <= statusCode && statusCode <= 399
-      const type = isRedirect ? 'redirect' : 'response'
+      const type = isRedirect ? 'redirect' : (`response ${arrowLeft}` as const)
       if (isRedirect) {
         assert(pageContextReturn.httpResponse)
         const headerRedirect = pageContextReturn.httpResponse.headers

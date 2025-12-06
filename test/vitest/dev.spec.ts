@@ -5,12 +5,10 @@ import { dev } from 'vike/api'
 let viteServer: Awaited<ReturnType<typeof dev>>['viteServer']
 
 beforeAll(async () => {
-  const ret = await dev({ viteConfig })
+  const ret = await dev({ viteConfig, startupLog: true })
   viteServer = ret.viteServer
-  await viteServer.listen()
-  viteServer.printUrls()
   await sleep(10) // avoid race condition of server not actually being ready
-}, 40 * 1000)
+}, 60 * 1000)
 
 afterAll(async () => {
   try {

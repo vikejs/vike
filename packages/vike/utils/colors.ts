@@ -2,11 +2,17 @@ export { stripAnsi }
 export { hasRed }
 export { hasGreen }
 export { hasYellow }
+export { colorVite }
 
+import pc from '@brillout/picocolors'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
 assertIsNotBrowser()
 
 const ansiRegex = getAnsiRegex()
+
+function colorVite<Str extends string>(str: Str) {
+  return pc.bold(pc.cyan(str))
+}
 
 // Copied from https://github.com/chalk/strip-ansi/blob/1fdc531d4046cbaa830460f5c74452bf1f0a0884/index.js
 function stripAnsi(string: string) {

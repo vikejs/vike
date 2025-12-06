@@ -22,6 +22,7 @@ export default {
   plugins: [react(), testPlugin() as any, vike()],
   // Simulate the real-world config users get (in this monorepo Vike is linked thus ssr.noExternal which isn't what users get)
   ssr: { external: ['vike'] },
+  clearScreen: false,
 } satisfies UserConfig
 
 // TEST: returning a promise
