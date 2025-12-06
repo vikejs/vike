@@ -108,10 +108,7 @@ function processStartupLog_onViteLog(msg: string, config: ResolvedConfig): strin
     const isViteHelpShortcutLog = msg.includes('press') && msg.includes('to show help')
     if (isViteHelpShortcutLog && !globalObject.processStartupLog_hasViteLoggedHelpShortcut) {
       globalObject.processStartupLog_hasViteLoggedHelpShortcut = true
-      if (
-        globalObject.processStartupLog_hasViteLoggedStartup &&
-        globalObject.processStartupLog_isCompact === false
-      ) {
+      if (globalObject.processStartupLog_hasViteLoggedStartup && globalObject.processStartupLog_isCompact === false) {
         return msg + '\n'
       }
     }
@@ -154,7 +151,7 @@ function swallowViteLogConnected_clean(): void {
   globalObject.swallowViteLogConnected_originalConsoleLog = null
 }
 function swallowViteLogConnected_logPatch(...args: unknown[]): void {
-  const { swallowViteLogConnected_originalConsoleLog: originalConsoleLog } = globalObject
+  const originalConsoleLog = globalObject.swallowViteLogConnected_originalConsoleLog
   assert(originalConsoleLog)
   const msg = args.join(' ')
   if (msg === '[vite] connected.') {
