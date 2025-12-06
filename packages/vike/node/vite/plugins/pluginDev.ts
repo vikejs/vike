@@ -59,17 +59,6 @@ function pluginDev(): Plugin[] {
       },
     },
     {
-      name: 'vike:pluginDev:pre',
-      apply: applyDev,
-      enforce: 'pre',
-      configureServer: {
-        order: 'pre',
-        handler() {
-          swallowViteConnectedMessage_clean()
-        },
-      },
-    },
-    {
       name: 'vike:pluginDev:post',
       apply: applyDev,
       // The SSR middleware should be last middleware
@@ -77,6 +66,7 @@ function pluginDev(): Plugin[] {
       configureServer: {
         order: 'post',
         handler(server) {
+          swallowViteConnectedMessage_clean() // If inside a configureServer() `pre` hook => too early
           const hasHonoViteDevServer = !!config.plugins.find((p) => p.name === '@hono/vite-dev-server')
           if (config.server.middlewareMode || hasHonoViteDevServer) return
           return () => {
