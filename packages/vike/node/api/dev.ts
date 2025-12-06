@@ -31,9 +31,6 @@ async function dev(
   }
 }
 
-// TODO:
-// - Add minor breaking change
-// - Update @brillout/test-e2e everywhere
 async function printStartupLog(
   viteServer: ViteDevServer,
   viteConfig: ResolvedConfig,
