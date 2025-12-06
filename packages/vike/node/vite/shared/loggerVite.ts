@@ -18,7 +18,7 @@ import { logErrorServerDev, logVite } from './loggerDev.js'
 import type { LogType as LoggerType, ResolvedConfig, LogErrorOptions } from 'vite'
 
 const globalObject = getGlobalObject('vite/shared/loggerDev.ts', {
-  processStartupLog_isViteStartupLogCompact: null as null | boolean,
+  processStartupLog_isCompact: null as null | boolean,
   processStartupLog_hasViteStartupLogged: null as null | true,
   processStartupLog_hasViteHelpShortcutLogged: null as null | true,
   swallowViteLogForceOptimization_enabled: false,
@@ -99,7 +99,7 @@ function processStartupLog_onViteLog(msg: string, config: ResolvedConfig): strin
     if (isFirstVitLog && !globalObject.processStartupLog_hasViteStartupLogged) {
       globalObject.processStartupLog_hasViteStartupLogged = true
       let { firstLine, isCompact } = processStartupLog(msg, config)
-      globalObject.processStartupLog_isViteStartupLogCompact = isCompact
+      globalObject.processStartupLog_isCompact = isCompact
       if (!isCompact) firstLine += '\n'
       return firstLine
     }
@@ -110,7 +110,7 @@ function processStartupLog_onViteLog(msg: string, config: ResolvedConfig): strin
       globalObject.processStartupLog_hasViteHelpShortcutLogged = true
       if (
         globalObject.processStartupLog_hasViteStartupLogged &&
-        globalObject.processStartupLog_isViteStartupLogCompact === false
+        globalObject.processStartupLog_isCompact === false
       ) {
         return msg + '\n'
       }
