@@ -45,8 +45,10 @@ function swallowViteConnectedMessage_logPatch(...args: unknown[]): void {
   const { originalConsoleLog } = globalObject
   assert(originalConsoleLog)
   const msg = args.join(' ')
-  // Swallow
-  if (msg === '[vite] connected.') return
+  if (msg === '[vite] connected.') {
+    swallowViteConnectedMessage_clean()
+    return // swallow
+  }
   originalConsoleLog.apply(console, args)
 }
 
