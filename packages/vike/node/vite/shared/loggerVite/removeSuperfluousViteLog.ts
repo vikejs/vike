@@ -6,7 +6,7 @@ export { swallowViteConnectedMessage_clean }
 
 // TODO: refactor inline this file
 
-import { assert, getGlobalObject } from '../../utils.js'
+import { assert, getGlobalObject, isDebugError } from '../../utils.js'
 const globalObject = getGlobalObject('removeSuperfluousViteLog.ts', {
   enabled: false,
   originalConsoleLog: null as typeof console.log | null,
@@ -33,6 +33,7 @@ function removeSuperfluousViteLog_disable(): void {
 
 // Suppress "[vite] connected." message that isn't logged using Vite's logger
 function swallowViteConnectedMessage(): void {
+  if (isDebugError()) return
   if (globalObject.originalConsoleLog) return
   console.log = swallowViteConnectedMessage_logPatch
   setTimeout(swallowViteConnectedMessage_clean, 3000)

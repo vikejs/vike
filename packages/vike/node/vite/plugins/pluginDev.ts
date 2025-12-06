@@ -54,7 +54,6 @@ function pluginDev(): Plugin[] {
           await determineFsAllowList(config)
           if (!isDebugError()) {
             improveViteLogs(config)
-            swallowViteConnectedMessage()
           }
           logDockerHint(config.server.host)
         },
@@ -93,6 +92,12 @@ function pluginDev(): Plugin[] {
           if (isDebugError()) {
             return { clearScreen: false }
           }
+        },
+      },
+      configResolved: {
+        order: 'post',
+        async handler() {
+          swallowViteConnectedMessage()
         },
       },
     },
