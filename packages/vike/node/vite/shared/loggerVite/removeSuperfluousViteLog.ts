@@ -41,14 +41,11 @@ function swallowViteConnectedMessage(): void {
 }
 // Remove console.log() monkey patch
 function swallowViteConnectedMessage_clean(): void {
-  if (
-    // Don't remove console.log() patches from other libraries (e.g. instrumentation)
-    console.log === swallowViteConnectedMessage_logPatch
-  ) {
-    assert(globalObject.originalConsoleLog)
-    console.log = globalObject.originalConsoleLog
-    globalObject.originalConsoleLog = null
-  }
+  // Don't remove console.log() patches from other libraries (e.g. instrumentation)
+  if (console.log === swallowViteConnectedMessage_logPatch) return
+  assert(globalObject.originalConsoleLog)
+  console.log = globalObject.originalConsoleLog
+  globalObject.originalConsoleLog = null
 }
 function swallowViteConnectedMessage_logPatch(...args: unknown[]): void {
   const { originalConsoleLog } = globalObject
