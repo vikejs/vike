@@ -1,11 +1,22 @@
 export { improveViteLogs }
 export { cleanStartupLog }
 
-import { assert, isDebugError, removeEmptyLines, trimWithAnsi, trimWithAnsiTrailOnly } from '../utils.js'
+import {
+  assert,
+  getGlobalObject,
+  isDebugError,
+  removeEmptyLines,
+  trimWithAnsi,
+  trimWithAnsiTrailOnly,
+} from '../utils.js'
 import { getHttpRequestId_withAsyncHook } from '../../../server/runtime/asyncHook.js'
 import { logErrorServerDev, logVite } from './loggerDev.js'
 import { removeSuperfluousViteLog, swallowViteConnectedMessage } from './loggerVite/removeSuperfluousViteLog.js'
 import type { LogType as LoggerType, ResolvedConfig, LogErrorOptions } from 'vite'
+
+const globalObject = getGlobalObject('vite/shared/loggerDev.ts', {
+  isViteStartupLogCompact: null as null | boolean,
+})
 
 function improveViteLogs(config: ResolvedConfig) {
   intercept('info', config)
@@ -52,20 +63,31 @@ function intercept(loggerType: LoggerType, config: ResolvedConfig) {
 }
 
 function cleanFirstViteLog(msg: string, config: ResolvedConfig): string {
-  const isFirstVitLog = msg.includes('VITE') && msg.includes('ready')
-  if (isFirstVitLog) {
-    const ret = cleanStartupLog(msg, config)
-    return ret.msg
-  } else {
-    return msg
+  {
+    const isFirstVitLog = msg.includes('VITE') && msg.includes('ready')
+    if (isFirstVitLog) {
+      const ret = cleanStartupLog(msg, config)
+      globalObject.isViteStartupLogCompact = ret.isCompact
+      msg = ret.msg
+      if (!ret.isCompact) msg += '\n'
+      return msg
+    }
   }
+  {
+    const isViteHelpShortcutLog = msg.includes('press') && msg.includes('to show help')
+    // TODO refactor
+    if (isViteHelpShortcutLog && globalObject.isViteStartupLogCompact === false) {
+      msg += '\n'
+    }
+  }
+
+  return msg
 }
 
 function cleanStartupLog(msg: string, config: ResolvedConfig) {
   const shouldClear = shouldStartupLogClear(config)
   if (shouldClear) {
     config.logger.clearScreen('info')
-    msg += '\n'
   } else {
     // Compact
     msg = removeEmptyLines(msg)
