@@ -8,10 +8,7 @@ import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
 import { applyDev, assertWarning, isDocker, isDebugError } from '../utils.js'
 import { improveViteLogs } from '../shared/loggerVite.js'
 import pc from '@brillout/picocolors'
-import {
-  swallowViteConnectedMessage,
-  swallowViteConnectedMessage_clean,
-} from '../shared/loggerVite.js'
+import { swallowViteConnectedMessage, swallowViteConnectedMessage_clean } from '../shared/loggerVite.js'
 
 function pluginDev(): Plugin[] {
   let config: ResolvedConfig

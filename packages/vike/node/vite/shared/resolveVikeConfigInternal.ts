@@ -72,10 +72,7 @@ import {
 import type { EsbuildCache } from './resolveVikeConfigInternal/transpileAndExecuteFile.js'
 import { getViteDevServer, vikeConfigErrorRecoverMsg } from '../../../server/runtime/globalContext.js'
 import { logConfigInfo, logErrorServerDev } from './loggerDev.js'
-import {
-  removeSuperfluousViteLog_enable,
-  removeSuperfluousViteLog_disable,
-} from './loggerVite.js'
+import { removeSuperfluousViteLog_enable, removeSuperfluousViteLog_disable } from './loggerVite.js'
 import pc from '@brillout/picocolors'
 import {
   getConfigDefinedAt,
