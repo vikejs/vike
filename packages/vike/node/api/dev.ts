@@ -13,7 +13,9 @@ import { processStartupLogFirstLine } from '../vite/shared/loggerVite.js'
  *
  * https://vike.dev/api#dev
  */
-async function dev(options: ApiOptions & { startupLog?: boolean } = {}) {
+async function dev(
+  options: ApiOptions & { startupLog?: boolean } = {},
+): Promise<{ viteServer: ViteDevServer; viteConfig: ResolvedConfig; viteVersion: string }> {
   const startTime = performance.now()
   const { viteConfigFromUserResolved } = await prepareViteApiCall(options, 'dev')
   const server = await createServer(viteConfigFromUserResolved)
