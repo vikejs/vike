@@ -17,6 +17,7 @@ import type { LogType as LoggerType, ResolvedConfig, LogErrorOptions } from 'vit
 const globalObject = getGlobalObject('vite/shared/loggerDev.ts', {
   isViteStartupLogCompact: null as null | boolean,
   hasViteStartupLogged: null as null | boolean,
+  hasViteHelpShortcutLogged: null as null | boolean,
 })
 
 function improveViteLogs(config: ResolvedConfig) {
@@ -38,7 +39,7 @@ function intercept(loggerType: LoggerType, config: ResolvedConfig) {
       // No timestamp => no "[vite]" tag prepended => we don't trim the beginning of the message
       msg = trimWithAnsiTrailOnly(msg)
     }
-    msg = cleanFirstViteLog(msg, config)
+    msg = cleanViteStartupLog(msg, config)
 
     if (options.error) {
       // Vite does a poor job of handling errors.
@@ -63,7 +64,7 @@ function intercept(loggerType: LoggerType, config: ResolvedConfig) {
   }
 }
 
-function cleanFirstViteLog(msg: string, config: ResolvedConfig): string {
+function cleanViteStartupLog(msg: string, config: ResolvedConfig): string {
   {
     const isFirstVitLog = msg.includes('VITE') && msg.includes('ready')
     if (isFirstVitLog && !globalObject.hasViteStartupLogged) {
@@ -77,8 +78,11 @@ function cleanFirstViteLog(msg: string, config: ResolvedConfig): string {
   }
   {
     const isViteHelpShortcutLog = msg.includes('press') && msg.includes('to show help')
-    if (isViteHelpShortcutLog && globalObject.hasViteStartupLogged && globalObject.isViteStartupLogCompact === false) {
-      msg += '\n'
+    if (isViteHelpShortcutLog && !globalObject.hasViteHelpShortcutLogged) {
+      globalObject.hasViteHelpShortcutLogged = true
+      if (globalObject.hasViteStartupLogged && globalObject.isViteStartupLogCompact === false) {
+        msg += '\n'
+      }
     }
   }
 
