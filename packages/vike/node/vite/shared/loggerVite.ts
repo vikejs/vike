@@ -18,9 +18,9 @@ import { logErrorServerDev, logVite } from './loggerDev.js'
 import type { LogType as LoggerType, ResolvedConfig, LogErrorOptions } from 'vite'
 
 const globalObject = getGlobalObject('vite/shared/loggerDev.ts', {
-  isViteStartupLogCompact: null as null | boolean,
-  hasViteStartupLogged: null as null | true,
-  hasViteHelpShortcutLogged: null as null | true,
+  processStartupLogFirstLine_isViteStartupLogCompact: null as null | boolean,
+  processStartupLogFirstLine_hasViteStartupLogged: null as null | true,
+  processStartupLogFirstLine_hasViteHelpShortcutLogged: null as null | true,
   removeSuperfluousViteLog_enabled: false,
   swallowViteConnectedMessage_originalConsoleLog: null as typeof console.log | null,
 })
@@ -80,19 +80,19 @@ function intercept(loggerType: LoggerType, config: ResolvedConfig) {
 function cleanViteStartupLog(msg: string, config: ResolvedConfig): string {
   {
     const isFirstVitLog = msg.includes('VITE') && msg.includes('ready')
-    if (isFirstVitLog && !globalObject.hasViteStartupLogged) {
-      globalObject.hasViteStartupLogged = true
+    if (isFirstVitLog && !globalObject.processStartupLogFirstLine_hasViteStartupLogged) {
+      globalObject.processStartupLogFirstLine_hasViteStartupLogged = true
       let { firstLine, isCompact } = processStartupLogFirstLine(msg, config)
-      globalObject.isViteStartupLogCompact = isCompact
+      globalObject.processStartupLogFirstLine_isViteStartupLogCompact = isCompact
       if (!isCompact) firstLine += '\n'
       return firstLine
     }
   }
   {
     const isViteHelpShortcutLog = msg.includes('press') && msg.includes('to show help')
-    if (isViteHelpShortcutLog && !globalObject.hasViteHelpShortcutLogged) {
-      globalObject.hasViteHelpShortcutLogged = true
-      if (globalObject.hasViteStartupLogged && globalObject.isViteStartupLogCompact === false) {
+    if (isViteHelpShortcutLog && !globalObject.processStartupLogFirstLine_hasViteHelpShortcutLogged) {
+      globalObject.processStartupLogFirstLine_hasViteHelpShortcutLogged = true
+      if (globalObject.processStartupLogFirstLine_hasViteStartupLogged && globalObject.processStartupLogFirstLine_isViteStartupLogCompact === false) {
         return msg + '\n'
       }
     }
