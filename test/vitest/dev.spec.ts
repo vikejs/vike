@@ -13,8 +13,6 @@ beforeAll(async () => {
 afterAll(async () => {
   try {
     await viteServer.close()
-    // Wait for port to be fully released
-    await sleep(100)
   } catch (e) {
     console.error('Error closing Vite server:', e)
   }
