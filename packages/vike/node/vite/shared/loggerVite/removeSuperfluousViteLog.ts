@@ -24,6 +24,13 @@ function removeSuperfluousViteLog(msg: string): boolean {
   return false
 }
 
+function removeSuperfluousViteLog_enable(): void {
+  globalObject.enabled = true
+}
+function removeSuperfluousViteLog_disable(): void {
+  globalObject.enabled = false
+}
+
 // Suppress "[vite] connected." message that isn't logged using Vite's logger
 function swallowViteConnectedMessage(): void {
   if (globalObject.originalConsoleLog) return
@@ -50,11 +57,4 @@ function swallowViteConnectedMessage_logPatch(...args: unknown[]): void {
     return // swallow
   }
   originalConsoleLog.apply(console, args)
-}
-
-function removeSuperfluousViteLog_enable(): void {
-  globalObject.enabled = true
-}
-function removeSuperfluousViteLog_disable(): void {
-  globalObject.enabled = false
 }
