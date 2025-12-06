@@ -16,8 +16,8 @@ import type { LogType as LoggerType, ResolvedConfig, LogErrorOptions } from 'vit
 
 const globalObject = getGlobalObject('vite/shared/loggerDev.ts', {
   isViteStartupLogCompact: null as null | boolean,
-  hasViteStartupLogged: null as null | boolean,
-  hasViteHelpShortcutLogged: null as null | boolean,
+  hasViteStartupLogged: null as null | true,
+  hasViteHelpShortcutLogged: null as null | true,
 })
 
 function improveViteLogs(config: ResolvedConfig) {

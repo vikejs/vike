@@ -49,7 +49,7 @@ async function printStartupLog(
     `\n  ${colorVike('Vike')} ${pc.yellow(`v${PROJECT_VERSION}`)} ${sep} ${colorVite('Vite')} ${pc.cyan(`v${viteVersion}`)} ${sep} ${startupDurationString}\n` as const
 
   const ret = processStartupLogFirstLine(firstLine, viteConfig)
-  console.log(ret.msg)
+  console.log(ret.firstLine)
   const { isCompact } = ret
 
   // We don't call viteServer.printUrls() because Vite throws an error if `resolvedUrls` is missing:
