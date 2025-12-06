@@ -22,7 +22,7 @@ async function dev(options: ApiOptions & { startupLog?: boolean } = {}) {
   const viteServer = server
   const viteConfig = server.config
   if (viteServer.httpServer) await viteServer.listen()
-  if (options.startupLog) logVikeIntro(viteServer, viteConfig, viteVersion, startTime)
+  if (options.startupLog) printStartupLog(viteServer, viteConfig, viteVersion, startTime)
   return {
     viteServer,
     viteConfig,
@@ -33,7 +33,7 @@ async function dev(options: ApiOptions & { startupLog?: boolean } = {}) {
 // TODO:
 // - Add minor breaking change
 // - Update @brillout/test-e2e everywhere
-async function logVikeIntro(
+async function printStartupLog(
   viteServer: ViteDevServer,
   viteConfig: ResolvedConfig,
   viteVersion: string,
@@ -48,10 +48,10 @@ async function logVikeIntro(
       `ready in ${pc.reset(pc.bold(String(Math.ceil(performance.now() - startTime))))} ms`,
     )
     const sep = pc.dim('·' as '-')
-    const logWelcome =
+    const firstLine =
       `\n  ${colorVike('Vike')} ${pc.yellow(`v${PROJECT_VERSION}`)} ${sep} ${colorVite('Vite')} ${pc.cyan(`v${viteVersion}`)} ${sep} ${startupDurationString}\n` as const
 
-    const ret = cleanStartupLog(logWelcome, viteConfig)
+    const ret = cleanStartupLog(firstLine, viteConfig)
     console.log(ret.msg)
     isCompact = ret.isCompact
 
