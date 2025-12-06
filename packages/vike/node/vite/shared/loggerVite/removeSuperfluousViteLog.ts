@@ -31,7 +31,7 @@ function removeSuperfluousViteLog_disable(): void {
   globalObject.enabled = false
 }
 
-// Suppress "[vite] connected." message that isn't logged using Vite's logger
+// Suppress "[vite] connected." message. (It doesn't go through Vite's logger thus we must monkey patch the console.log() function.)
 function swallowViteConnectedMessage(): void {
   if (isDebugError()) return
   if (globalObject.originalConsoleLog) return
