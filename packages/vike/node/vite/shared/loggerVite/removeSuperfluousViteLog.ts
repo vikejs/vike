@@ -8,13 +8,13 @@ export { swallowViteConnectedMessage_clean }
 
 import { assert, getGlobalObject, isDebugError } from '../../utils.js'
 const globalObject = getGlobalObject('removeSuperfluousViteLog.ts', {
-  enabled: false,
+  removeSuperfluousViteLog_enabled: false,
   originalConsoleLog: null as typeof console.log | null,
 })
 const superfluousLog = 'Forced re-optimization of dependencies'
 
 function removeSuperfluousViteLog(msg: string): boolean {
-  if (!globalObject.enabled) {
+  if (!globalObject.removeSuperfluousViteLog_enabled) {
     return false
   }
   if (msg.toLowerCase().includes('forced') && msg.toLowerCase().includes('optimization')) {
@@ -25,10 +25,10 @@ function removeSuperfluousViteLog(msg: string): boolean {
 }
 
 function removeSuperfluousViteLog_enable(): void {
-  globalObject.enabled = true
+  globalObject.removeSuperfluousViteLog_enabled = true
 }
 function removeSuperfluousViteLog_disable(): void {
-  globalObject.enabled = false
+  globalObject.removeSuperfluousViteLog_enabled = false
 }
 
 // Suppress "[vite] connected." message. (It doesn't go through Vite's logger thus we must monkey patch the console.log() function.)
