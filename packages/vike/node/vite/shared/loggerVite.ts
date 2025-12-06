@@ -1,6 +1,5 @@
 export { improveViteLogs }
 export { processStartupLogFirstLine }
-export { removeSuperfluousViteLog }
 export { removeSuperfluousViteLog_enable }
 export { removeSuperfluousViteLog_disable }
 export { swallowViteConnectedMessage }
