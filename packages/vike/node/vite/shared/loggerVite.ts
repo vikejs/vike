@@ -1,5 +1,9 @@
-export { improveViteLogs }
-export { processStartupLogFirstLine }
+export { interceptViteLogs }
+export { processStartupLog }
+export { swallowViteLogForceOptimization_enable }
+export { swallowViteLogForceOptimization_disable }
+export { swallowViteLogConnected }
+export { swallowViteLogConnected_clean }
 
 import {
   assert,
@@ -11,16 +15,17 @@ import {
 } from '../utils.js'
 import { getHttpRequestId_withAsyncHook } from '../../../server/runtime/asyncHook.js'
 import { logErrorServerDev, logVite } from './loggerDev.js'
-import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog.js'
 import type { LogType as LoggerType, ResolvedConfig, LogErrorOptions } from 'vite'
 
 const globalObject = getGlobalObject('vite/shared/loggerDev.ts', {
-  isViteStartupLogCompact: null as null | boolean,
-  hasViteStartupLogged: null as null | true,
-  hasViteHelpShortcutLogged: null as null | true,
+  processStartupLog_isCompact: null as null | boolean,
+  processStartupLog_hasViteLoggedStartup: null as null | true,
+  processStartupLog_hasViteLoggedHelpShortcut: null as null | true,
+  swallowViteLogForceOptimization_enabled: false,
+  swallowViteLogConnected_originalConsoleLog: null as typeof console.log | null,
 })
 
-function improveViteLogs(config: ResolvedConfig) {
+function interceptViteLogs(config: ResolvedConfig) {
   if (isDebugError()) return
   intercept('info', config)
   intercept('warn', config)
@@ -34,7 +39,7 @@ function intercept(loggerType: LoggerType, config: ResolvedConfig) {
   config.logger[loggerType] = (msg, options: LogErrorOptions = {}) => {
     assert(!isDebugError())
 
-    if (removeSuperfluousViteLog(msg)) return
+    if (swallowViteLogForceOptimization(msg)) return
 
     if (!!options.timestamp) {
       msg = trimWithAnsi(msg)
@@ -44,7 +49,7 @@ function intercept(loggerType: LoggerType, config: ResolvedConfig) {
     }
 
     if (isBeginning) {
-      msg = cleanViteStartupLog(msg, config)
+      msg = processStartupLog_onViteLog(msg, config)
     }
 
     if (options.error) {
@@ -72,30 +77,8 @@ function intercept(loggerType: LoggerType, config: ResolvedConfig) {
 
 // - Clears screen if zero previous log
 // - Manages new lines
-function cleanViteStartupLog(msg: string, config: ResolvedConfig): string {
-  {
-    const isFirstVitLog = msg.includes('VITE') && msg.includes('ready')
-    if (isFirstVitLog && !globalObject.hasViteStartupLogged) {
-      globalObject.hasViteStartupLogged = true
-      let { firstLine, isCompact } = processStartupLogFirstLine(msg, config)
-      globalObject.isViteStartupLogCompact = isCompact
-      if (!isCompact) firstLine += '\n'
-      return firstLine
-    }
-  }
-  {
-    const isViteHelpShortcutLog = msg.includes('press') && msg.includes('to show help')
-    if (isViteHelpShortcutLog && !globalObject.hasViteHelpShortcutLogged) {
-      globalObject.hasViteHelpShortcutLogged = true
-      if (globalObject.hasViteStartupLogged && globalObject.isViteStartupLogCompact === false) {
-        return msg + '\n'
-      }
-    }
-  }
-  return msg
-}
-function processStartupLogFirstLine(firstLine: string, config: ResolvedConfig) {
-  const shouldClear = shouldStartupLogClear(config)
+function processStartupLog(firstLine: string, config: ResolvedConfig) {
+  const shouldClear = processStartupLog_shouldClear(config)
   if (shouldClear) {
     config.logger.clearScreen('info')
   } else {
@@ -104,9 +87,76 @@ function processStartupLogFirstLine(firstLine: string, config: ResolvedConfig) {
   }
   return { firstLine, isCompact: !shouldClear }
 }
-function shouldStartupLogClear(config: ResolvedConfig) {
+function processStartupLog_shouldClear(config: ResolvedConfig) {
   const hasLoggedBefore = process.stdout.bytesWritten !== 0 || process.stderr.bytesWritten !== 0
   const notDisabled = config.clearScreen !== false
   const shouldClear = notDisabled && !hasLoggedBefore
   return shouldClear
+}
+function processStartupLog_onViteLog(msg: string, config: ResolvedConfig): string {
+  {
+    const isFirstVitLog = msg.includes('VITE') && msg.includes('ready')
+    if (isFirstVitLog && !globalObject.processStartupLog_hasViteLoggedStartup) {
+      globalObject.processStartupLog_hasViteLoggedStartup = true
+      let { firstLine, isCompact } = processStartupLog(msg, config)
+      globalObject.processStartupLog_isCompact = isCompact
+      if (!isCompact) firstLine += '\n'
+      return firstLine
+    }
+  }
+  {
+    const isViteHelpShortcutLog = msg.includes('press') && msg.includes('to show help')
+    if (isViteHelpShortcutLog && !globalObject.processStartupLog_hasViteLoggedHelpShortcut) {
+      globalObject.processStartupLog_hasViteLoggedHelpShortcut = true
+      if (globalObject.processStartupLog_hasViteLoggedStartup && globalObject.processStartupLog_isCompact === false) {
+        return msg + '\n'
+      }
+    }
+  }
+  return msg
+}
+
+function swallowViteLogForceOptimization(msg: string): boolean {
+  if (!globalObject.swallowViteLogForceOptimization_enabled) {
+    return false
+  }
+  if (msg.toLowerCase().includes('forced') && msg.toLowerCase().includes('optimization')) {
+    assert(msg === 'Forced re-optimization of dependencies', msg) // assertion fails => Vite changed its message => update this function
+    return true
+  }
+  return false
+}
+function swallowViteLogForceOptimization_enable(): void {
+  if (isDebugError()) return
+  globalObject.swallowViteLogForceOptimization_enabled = true
+}
+function swallowViteLogForceOptimization_disable(): void {
+  globalObject.swallowViteLogForceOptimization_enabled = false
+}
+
+// Suppress "[vite] connected." message. (It doesn't go through Vite's logger thus we must monkey patch the console.log() function.)
+function swallowViteLogConnected(): void {
+  if (isDebugError()) return
+  if (globalObject.swallowViteLogConnected_originalConsoleLog) return
+  globalObject.swallowViteLogConnected_originalConsoleLog = console.log
+  console.log = swallowViteLogConnected_logPatch
+  setTimeout(swallowViteLogConnected_clean, 3000)
+}
+// Remove console.log() monkey patch
+function swallowViteLogConnected_clean(): void {
+  // Don't remove console.log() patches from other libraries (e.g. instrumentation)
+  if (console.log === swallowViteLogConnected_logPatch) return
+  assert(globalObject.swallowViteLogConnected_originalConsoleLog)
+  console.log = globalObject.swallowViteLogConnected_originalConsoleLog
+  globalObject.swallowViteLogConnected_originalConsoleLog = null
+}
+function swallowViteLogConnected_logPatch(...args: unknown[]): void {
+  const originalConsoleLog = globalObject.swallowViteLogConnected_originalConsoleLog
+  assert(originalConsoleLog)
+  const msg = args.join(' ')
+  if (msg === '[vite] connected.') {
+    swallowViteLogConnected_clean()
+    return // swallow
+  }
+  originalConsoleLog.apply(console, args)
 }
