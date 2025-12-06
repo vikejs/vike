@@ -52,11 +52,44 @@ async function logVikeIntro(
     console.log(ret.msg)
     isCompact = ret.isCompact
 
-    viteServer.printUrls()
+    // We don't call viteServer.printUrls() because Vite throws an error if `resolvedUrls` is missing:
+    // https://github.com/vitejs/vite/blob/df5a30d2690a2ebc4824a79becdcef30538dc602/packages/vite/src/node/server/index.ts#L745
+    printServerUrls(viteServer.resolvedUrls || { local: ['http://localhost:3000'], network: []  }, viteConfig.server.host)
   } else {
     // Photon => middleware mode => `viteServer.httpServer === null`
   }
 
   viteServer.bindCLIShortcuts({ print: true })
   if (!isCompact) console.log()
+}
+
+// Copied & adapted from Vite
+// https://github.com/vitejs/vite/blob/df5a30d2690a2ebc4824a79becdcef30538dc602/packages/vite/src/node/logger.ts#L168-L188
+function printServerUrls(
+  urls: ResolvedServerUrls,
+  optionsHost: string | boolean | undefined,
+): void {
+  // [Begin] interop
+  const colors = pc
+  const info = (msg: string) => console.log(msg)
+  // [End] interop
+  const colorUrl = (url: string) =>
+    colors.cyan(url.replace(/:(\d+)\//, (_, port) => `:${colors.bold(port)}/`))
+  for (const url of urls.local) {
+    info(`  ${colors.green('➜')}  ${colors.bold('Local')}:   ${colorUrl(url)}`)
+  }
+  for (const url of urls.network) {
+    info(`  ${colors.green('➜')}  ${colors.bold('Network')}: ${colorUrl(url)}`)
+  }
+  if (urls.network.length === 0 && optionsHost === undefined) {
+    info(
+      colors.dim(`  ${colors.green('➜')}  ${colors.bold('Network')}: use `) +
+        colors.bold('--host') +
+        colors.dim(' to expose'),
+    )
+  }
+}
+interface ResolvedServerUrls {
+  local: string[]
+  network: string[]
 }
