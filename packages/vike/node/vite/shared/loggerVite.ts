@@ -1,4 +1,4 @@
-export { improveViteLogs }
+export { interceptViteLogs }
 export { processStartupLog }
 export { swallowViteLogForceOptimization_enable }
 export { swallowViteLogForceOptimization_disable }
@@ -25,7 +25,7 @@ const globalObject = getGlobalObject('vite/shared/loggerDev.ts', {
   swallowViteLogConnected_originalConsoleLog: null as typeof console.log | null,
 })
 
-function improveViteLogs(config: ResolvedConfig) {
+function interceptViteLogs(config: ResolvedConfig) {
   if (isDebugError()) return
   intercept('info', config)
   intercept('warn', config)

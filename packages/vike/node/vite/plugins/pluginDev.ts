@@ -6,7 +6,7 @@ import { determineOptimizeDeps } from './pluginDev/determineOptimizeDeps.js'
 import { determineFsAllowList } from './pluginDev/determineFsAllowList.js'
 import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
 import { applyDev, assertWarning, isDocker, isDebugError } from '../utils.js'
-import { improveViteLogs } from '../shared/loggerVite.js'
+import { interceptViteLogs } from '../shared/loggerVite.js'
 import pc from '@brillout/picocolors'
 import { swallowViteLogConnected, swallowViteLogConnected_clean } from '../shared/loggerVite.js'
 
@@ -45,7 +45,7 @@ function pluginDev(): Plugin[] {
           config = config_
           await determineOptimizeDeps(config)
           await determineFsAllowList(config)
-          improveViteLogs(config)
+          interceptViteLogs(config)
           logDockerHint(config.server.host)
         },
       },
