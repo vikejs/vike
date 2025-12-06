@@ -100,7 +100,6 @@ function processStartupLogFirstLine(firstLine: string, config: ResolvedConfig) {
   if (shouldClear) {
     config.logger.clearScreen('info')
   } else {
-    // Compact
     firstLine = removeEmptyLines(firstLine)
   }
   return { firstLine, isCompact: !shouldClear }
