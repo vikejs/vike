@@ -19,8 +19,8 @@ import type { LogType as LoggerType, ResolvedConfig, LogErrorOptions } from 'vit
 
 const globalObject = getGlobalObject('vite/shared/loggerDev.ts', {
   processStartupLog_isCompact: null as null | boolean,
-  processStartupLog_hasViteStartupLogged: null as null | true,
-  processStartupLog_hasViteHelpShortcutLogged: null as null | true,
+  processStartupLog_hasViteLoggedStartup: null as null | true,
+  processStartupLog_hasViteLoggedHelpShortcut: null as null | true,
   swallowViteLogForceOptimization_enabled: false,
   swallowViteLogConnected_originalConsoleLog: null as typeof console.log | null,
 })
@@ -96,8 +96,8 @@ function processStartupLog_shouldClear(config: ResolvedConfig) {
 function processStartupLog_onViteLog(msg: string, config: ResolvedConfig): string {
   {
     const isFirstVitLog = msg.includes('VITE') && msg.includes('ready')
-    if (isFirstVitLog && !globalObject.processStartupLog_hasViteStartupLogged) {
-      globalObject.processStartupLog_hasViteStartupLogged = true
+    if (isFirstVitLog && !globalObject.processStartupLog_hasViteLoggedStartup) {
+      globalObject.processStartupLog_hasViteLoggedStartup = true
       let { firstLine, isCompact } = processStartupLog(msg, config)
       globalObject.processStartupLog_isCompact = isCompact
       if (!isCompact) firstLine += '\n'
@@ -106,10 +106,10 @@ function processStartupLog_onViteLog(msg: string, config: ResolvedConfig): strin
   }
   {
     const isViteHelpShortcutLog = msg.includes('press') && msg.includes('to show help')
-    if (isViteHelpShortcutLog && !globalObject.processStartupLog_hasViteHelpShortcutLogged) {
-      globalObject.processStartupLog_hasViteHelpShortcutLogged = true
+    if (isViteHelpShortcutLog && !globalObject.processStartupLog_hasViteLoggedHelpShortcut) {
+      globalObject.processStartupLog_hasViteLoggedHelpShortcut = true
       if (
-        globalObject.processStartupLog_hasViteStartupLogged &&
+        globalObject.processStartupLog_hasViteLoggedStartup &&
         globalObject.processStartupLog_isCompact === false
       ) {
         return msg + '\n'
