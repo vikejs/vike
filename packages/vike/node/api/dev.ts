@@ -39,8 +39,6 @@ async function printStartupLog(
   viteVersion: string,
   startTime: number,
 ) {
-  let isCompact = true
-  {
     // Restore console.log before printing welcome message
     swallowViteConnectedMessage_clean()
 
@@ -53,7 +51,7 @@ async function printStartupLog(
 
     const ret = processStartupLogFirstLine(firstLine, viteConfig)
     console.log(ret.msg)
-    isCompact = ret.isCompact
+    const { isCompact } = ret
 
     // We don't call viteServer.printUrls() because Vite throws an error if `resolvedUrls` is missing:
     // https://github.com/vitejs/vite/blob/df5a30d2690a2ebc4824a79becdcef30538dc602/packages/vite/src/node/server/index.ts#L745
@@ -61,7 +59,6 @@ async function printStartupLog(
       viteServer.resolvedUrls || { local: ['http://localhost:3000'], network: [] },
       viteConfig.server.host,
     )
-  }
 
   viteServer.bindCLIShortcuts({ print: true })
   if (!isCompact) console.log()
