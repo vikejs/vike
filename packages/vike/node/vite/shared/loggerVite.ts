@@ -98,6 +98,7 @@ function processStartupLogFirstLine(firstLine: string, config: ResolvedConfig) {
   if (shouldClear) {
     config.logger.clearScreen('info')
   } else {
+    // Remove leading new line (for both Vite and Vike's startup log)
     firstLine = removeEmptyLines(firstLine)
   }
   return { firstLine, isCompact: !shouldClear }
