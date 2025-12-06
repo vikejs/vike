@@ -34,6 +34,7 @@ function swallowViteConnectedMessage(): void {
     if (msg === '[vite] connected.') return
     globalObject.originalConsoleLog!.apply(console, args)
   }
+  setTimeout(swallowViteConnectedMessage_clean, 3000)
 }
 // Remove console.log() patch
 function swallowViteConnectedMessage_clean(): void {
