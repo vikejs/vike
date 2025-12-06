@@ -1,5 +1,5 @@
 export { improveViteLogs }
-export { cleanStartupLog }
+export { processStartupLogFirstLine }
 
 import {
   assert,
@@ -66,7 +66,7 @@ function cleanFirstViteLog(msg: string, config: ResolvedConfig): string {
   {
     const isFirstVitLog = msg.includes('VITE') && msg.includes('ready')
     if (isFirstVitLog) {
-      const ret = cleanStartupLog(msg, config)
+      const ret = processStartupLogFirstLine(msg, config)
       globalObject.isViteStartupLogCompact = ret.isCompact
       msg = ret.msg
       if (!ret.isCompact) msg += '\n'
@@ -84,7 +84,7 @@ function cleanFirstViteLog(msg: string, config: ResolvedConfig): string {
   return msg
 }
 
-function cleanStartupLog(msg: string, config: ResolvedConfig) {
+function processStartupLogFirstLine(msg: string, config: ResolvedConfig) {
   const shouldClear = shouldStartupLogClear(config)
   if (shouldClear) {
     config.logger.clearScreen('info')

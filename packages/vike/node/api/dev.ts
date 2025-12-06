@@ -7,7 +7,7 @@ import { viteVersionUser } from '../vite/plugins/pluginCommon.js'
 import { colorVike, colorVite, PROJECT_VERSION } from './utils.js'
 import { swallowViteConnectedMessage_clean } from '../vite/shared/loggerVite/removeSuperfluousViteLog.js'
 import pc from '@brillout/picocolors'
-import { cleanStartupLog } from '../vite/shared/loggerVite.js'
+import { processStartupLogFirstLine } from '../vite/shared/loggerVite.js'
 
 /**
  * Programmatically trigger `$ vike dev`
@@ -51,7 +51,7 @@ async function printStartupLog(
     const firstLine =
       `\n  ${colorVike('Vike')} ${pc.yellow(`v${PROJECT_VERSION}`)} ${sep} ${colorVite('Vite')} ${pc.cyan(`v${viteVersion}`)} ${sep} ${startupDurationString}\n` as const
 
-    const ret = cleanStartupLog(firstLine, viteConfig)
+    const ret = processStartupLogFirstLine(firstLine, viteConfig)
     console.log(ret.msg)
     isCompact = ret.isCompact
 
