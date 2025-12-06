@@ -130,6 +130,7 @@ function swallowViteLogForceOptimization(msg: string): boolean {
   return false
 }
 function swallowViteLogForceOptimization_enable(): void {
+  if (isDebugError()) return
   globalObject.swallowViteLogForceOptimization_enabled = true
 }
 function swallowViteLogForceOptimization_disable(): void {
