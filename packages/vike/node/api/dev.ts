@@ -54,6 +54,7 @@ async function printStartupLog(
   printServerUrls(viteServer.resolvedUrls || { local: ['http://localhost:3000'], network: [] }, viteConfig.server.host)
 
   viteServer.bindCLIShortcuts({ print: true })
+
   if (!isCompact) console.log()
 }
 
