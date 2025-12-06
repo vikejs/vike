@@ -6,9 +6,9 @@
 
 2. Always send both a visual and sound notification when completing tasks (including when merely answering questions). For example on Ubuntu:
    ```bash
-   # Visual notifcation
+   # Visual notification
    notify-send "AI" "Task completed"
-   # Sound notifcation
+   # Sound notification
    paplay /usr/share/sounds/freedesktop/stereo/complete.oga
    ```
 
