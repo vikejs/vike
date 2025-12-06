@@ -9,14 +9,12 @@ const globalObject = getGlobalObject('removeSuperfluousViteLog.ts', {
   removeSuperfluousViteLog_enabled: false,
   swallowViteConnectedMessage_originalConsoleLog: null as typeof console.log | null,
 })
-const superfluousLog = 'Forced re-optimization of dependencies'
-
 function removeSuperfluousViteLog(msg: string): boolean {
   if (!globalObject.removeSuperfluousViteLog_enabled) {
     return false
   }
   if (msg.toLowerCase().includes('forced') && msg.toLowerCase().includes('optimization')) {
-    assert(msg === superfluousLog, msg) // assertion fails => Vite changed its message => update this function
+    assert(msg === 'Forced re-optimization of dependencies', msg) // assertion fails => Vite changed its message => update this function
     return true
   }
   return false
