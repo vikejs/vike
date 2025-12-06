@@ -39,7 +39,6 @@ async function printStartupLog(
   viteVersion: string,
   startTime: number,
 ) {
-  // Restore console.log before printing welcome message
   swallowViteConnectedMessage_clean()
 
   const startupDurationString = pc.dim(

@@ -34,6 +34,7 @@ function swallowViteConnectedMessage(): void {
     globalObject.originalConsoleLog!.apply(console, args)
   }
 }
+// Remove console.log() patch
 function swallowViteConnectedMessage_clean(): void {
   if (globalObject.originalConsoleLog) {
     console.log = globalObject.originalConsoleLog
