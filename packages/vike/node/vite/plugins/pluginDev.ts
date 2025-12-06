@@ -95,7 +95,7 @@ function pluginDev(): Plugin[] {
       },
       configResolved: {
         order: 'post',
-        async handler() {
+        handler() {
           swallowViteConnectedMessage()
         },
       },
