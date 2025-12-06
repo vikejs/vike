@@ -73,7 +73,7 @@ function printServerUrls(urls: ResolvedServerUrls, optionsHost: string | boolean
   const colors = pc
   const info = (msg: string) => console.log(msg)
   // [End] interop
-  const colorUrl = (url: string) => colors.cyan(url.replace(/:(\d+)\//, (_, port) => `:${colors.bold(port)}/`))
+  const colorUrl = (url: string) => colors.underline(removeTrailingSlash(url))
   for (const url of urls.local) {
     info(`  ${colors.green('➜')}  ${colors.bold('Local')}:   ${colorUrl(url)}`)
   }
@@ -91,4 +91,8 @@ function printServerUrls(urls: ResolvedServerUrls, optionsHost: string | boolean
 interface ResolvedServerUrls {
   local: string[]
   network: string[]
+}
+function removeTrailingSlash(url: string) {
+  if (url.endsWith('/')) return url.slice(0, -1) // remove trailing slash
+  return url
 }
