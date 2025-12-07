@@ -9,7 +9,7 @@ import { getMagicString } from '../../shared/getMagicString.js'
 
 function pluginModuleBanner(): Plugin[] {
   let config: ResolvedConfig
-
+  let isEnabled = false
   return [
     {
       name: 'vike:build:pluginModuleBanner',
@@ -21,14 +21,18 @@ function pluginModuleBanner(): Plugin[] {
       configResolved: {
         handler(config_) {
           config = config_
+          isEnabled = checkIsEnabled(config)
         },
       },
       transform: {
         order: 'post',
-        /* Using a Rolldown hook filter doesn't make sense here: we apply this transformer to each module. But we use applyToEnvironment() to conditionally apply this plugin.
-        filter: {},
-        */
+        filter: {
+          get id() {
+            return isEnabled ? undefined : 'this-module-id-does-not-exist-and-never-matches-any-module'
+          },
+        },
         handler(code, id) {
+          if (!isEnabled) return undefined
           const { minify } = this.environment.config.build
           assert(minify === false, { minify })
           if (id.startsWith('\0')) id = id
@@ -50,5 +54,9 @@ function pluginModuleBanner(): Plugin[] {
 function checkIsEnabled(config: ResolvedConfig) {
   const { minify } = config.build
   assert(minify === false || minify, { minify })
-  return !minify
+  const isEnabled = !minify
+  // Avoid the legal comments inserted in the transform() hook to be removed.
+  // https://github.com/vitejs/vite/issues/21085#issuecomment-3502781005
+  if (isEnabled && config.esbuild) config.esbuild.legalComments = 'inline'
+  return isEnabled
 }
