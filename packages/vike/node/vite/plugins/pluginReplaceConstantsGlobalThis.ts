@@ -24,13 +24,12 @@ globalThis.__VIKE__IS_CLIENT = false
 globalThis.__VIKE__IS_DEBUG = isDebugVal
 
 const VIRTUAL_FILE_ID_globalThisConstants = 'virtual:vike:server:globalThis-constants'
-const VIRTUAL_FILE_ID = VIRTUAL_FILE_ID_globalThisConstants
 const filterRolldown = {
   id: {
-    include: new RegExp(escapeRegex(VIRTUAL_FILE_ID)),
+    include: new RegExp(escapeRegex(VIRTUAL_FILE_ID_globalThisConstants)),
   },
 }
-const filterFunction = (id: string) => id === VIRTUAL_FILE_ID || id === addVirtualFileIdPrefix(VIRTUAL_FILE_ID)
+const filterFunction = (id: string) => id === VIRTUAL_FILE_ID_globalThisConstants || id === addVirtualFileIdPrefix(VIRTUAL_FILE_ID_globalThisConstants)
 
 function pluginReplaceConstantsGlobalThis(): Plugin[] {
   let config: ResolvedConfig
@@ -75,7 +74,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
         filter: filterRolldown,
         handler(id) {
           assert(filterFunction(id))
-          assert(id === VIRTUAL_FILE_ID)
+          assert(id === VIRTUAL_FILE_ID_globalThisConstants)
           return addVirtualFileIdPrefix(id)
         },
       },
