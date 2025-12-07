@@ -30,7 +30,7 @@ type ScrollPosition = { x: number; y: number }
 // - The very first render
 // - Click on `<a href="#some-hash" />`
 // - `location.hash = 'some-hash'`
-function enhanceHistoryState() {
+function enhance() {
   if (isEnhanced(window.history.state as unknown)) return
   const stateVikeEnhanced = {
     _isVikeEnhanced: {
@@ -200,7 +200,7 @@ function onPopStateBegin() {
     redirectHard(getCurrentUrl())
     return { skip: true as const }
   }
-  if (!isHistoryStateEnhanced) enhanceHistoryState()
+  if (!isHistoryStateEnhanced) enhance()
   assertIsVikeEnhanced(window.history.state as unknown)
 
   const current = getHistoryInfo()
@@ -217,5 +217,5 @@ function onPopStateBegin() {
 
 function initHistory() {
   monkeyPatchHistoryAPI() // the earlier we call it the better (Vike can workaround erroneous library monkey patches if Vike is the last one in the monkey patch chain)
-  enhanceHistoryState() // enhance very first window.history.state which is `null`
+  enhance() // enhance very first window.history.state which is `null`
 }
