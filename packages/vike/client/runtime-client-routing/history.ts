@@ -181,8 +181,8 @@ function monkeyPatchHistoryAPI() {
   })
 }
 
-function isEqual(state1: any, state2: any) {
-  return deepEqual(state1._isVikeEnhanced, state2?._isVikeEnhanced)
+function isEqual(state1: unknown, state2: unknown) {
+  return deepEqual((state1 as any)?._isVikeEnhanced, (state2 as any)?._isVikeEnhanced)
 }
 
 function isVikeEnhanced(state: unknown): state is StateEnhanced {
