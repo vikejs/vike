@@ -352,6 +352,10 @@ function logHttpRequest(urlOriginal: string, pageContextInit: PageContextInit, r
   logRuntimeInfo?.(getRequestInfoMessage(urlOriginal), pageContext_logRuntime, 'info')
 }
 /*
+const arrowRight = pc.dim('→')
+const arrowLeft = pc.dim('←')
+*/
+/*
 const arrowRight = pc.dim('>>')
 const arrowLeft = pc.dim('<<')
 /*/
