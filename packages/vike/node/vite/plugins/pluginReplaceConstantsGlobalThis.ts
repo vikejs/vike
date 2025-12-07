@@ -23,7 +23,7 @@ const isDebugVal = isDebug()
 globalThis.__VIKE__IS_CLIENT = false
 globalThis.__VIKE__IS_DEBUG = isDebugVal
 
-const VIRTUAL_FILE_ID_globalThisConstants = 'virtual:vike:server:globalThis-constants'
+const VIRTUAL_FILE_ID_globalThisConstants = 'virtual:vike:server:globalThisConstants'
 const filterRolldown = {
   id: {
     include: new RegExp(escapeRegex(VIRTUAL_FILE_ID_globalThisConstants)),
