@@ -117,7 +117,7 @@ function monkeyPatchHistoryAPI() {
         `history.${funcName}(state) argument state must be an object`,
       )
 
-      const stateEnhanced: StateEnhanced = isEnhanced(stateOriginal)
+      const state: StateEnhanced = isEnhanced(stateOriginal)
         ? stateOriginal
         : {
             ...stateOriginal,
@@ -128,19 +128,19 @@ function monkeyPatchHistoryAPI() {
               ...(stateOriginal?._vike as undefined | Record<string, unknown>),
             },
           }
-      assertIsEnhanced(stateEnhanced)
-      funcOriginal(stateEnhanced, ...rest)
-      assert(isEqual(stateEnhanced, window.history.state as unknown))
+      assertIsEnhanced(state)
+      funcOriginal(state, ...rest)
+      assert(isEqual(state, window.history.state as unknown))
 
       globalObject.previous = getHistoryInfo()
 
       // Workaround https://github.com/vikejs/vike/issues/2504#issuecomment-3149764736
       queueMicrotask(() => {
-        if (isEqual(stateEnhanced, window.history.state as unknown)) return
-        Object.assign(stateEnhanced, window.history.state as unknown)
-        assertIsEnhanced(stateEnhanced)
-        replaceHistoryStateOriginal(stateEnhanced, rest[1])
-        assert(isEqual(stateEnhanced, window.history.state as unknown))
+        if (isEqual(state, window.history.state as unknown)) return
+        Object.assign(state, window.history.state as unknown)
+        assertIsEnhanced(state)
+        replaceHistoryStateOriginal(state, rest[1])
+        assert(isEqual(state, window.history.state as unknown))
       })
     }
   })
