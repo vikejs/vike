@@ -16,11 +16,7 @@ function pluginModuleBanner(): Plugin[] {
       enforce: 'post',
       apply: 'build',
       applyToEnvironment(environment) {
-        const { config } = environment
-        const { consumer } = config
-        const { minify } = config.build
-        assert(minify === false || minify, { minify, consumer })
-        return !minify
+        return checkIsEnabled(environment.config)
       },
       configResolved: {
         handler(config_) {
@@ -49,4 +45,10 @@ function pluginModuleBanner(): Plugin[] {
       },
     },
   ]
+}
+
+function checkIsEnabled(config: ResolvedConfig) {
+  const { minify } = config.build
+  assert(minify === false || minify, { minify })
+  return !minify
 }
