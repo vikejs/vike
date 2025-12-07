@@ -50,11 +50,14 @@ async function handleHistoryNavigation(previous: HistoryInfo, current: HistoryIn
     return
   }
 
-  const isUserPushStateNavigation = current.state._isVikeEnhanced.triggeredBy === 'user' || previous.state._isVikeEnhanced.triggeredBy === 'user'
+  const isUserPushStateNavigation =
+    current.state._isVikeEnhanced.triggeredBy === 'user' || previous.state._isVikeEnhanced.triggeredBy === 'user'
   const doNotRenderIfSamePage = isUserPushStateNavigation
 
   const isBackwardNavigation =
-    !current.state._isVikeEnhanced.timestamp || !previous.state._isVikeEnhanced.timestamp ? null : current.state._isVikeEnhanced.timestamp < previous.state._isVikeEnhanced.timestamp
+    !current.state._isVikeEnhanced.timestamp || !previous.state._isVikeEnhanced.timestamp
+      ? null
+      : current.state._isVikeEnhanced.timestamp < previous.state._isVikeEnhanced.timestamp
 
   await renderPageClient({ scrollTarget, isBackwardNavigation, doNotRenderIfSamePage, isHistoryNavigation: true })
 }
