@@ -33,47 +33,14 @@ type ScrollPosition = { x: number; y: number }
 // - `location.hash = 'some-hash'`
 function enhanceHistoryState() {
   if (isVikeEnhanced(window.history.state as unknown)) return
-  const stateVikeEnhanced = enhance(window.history.state as unknown)
-  replaceHistoryState(stateVikeEnhanced)
-}
-function enhance(stateNotEnhanced: unknown): StateEnhanced {
-  const timestamp = getTimestamp()
-  const scrollPosition = getScrollPosition()
-  const triggeredBy = 'browser'
-  let stateVikeEnhanced: StateEnhanced
-  if (!stateNotEnhanced) {
-    stateVikeEnhanced = {
-      _isVikeEnhanced: {
-        timestamp,
-        scrollPosition,
-        triggeredBy,
-      },
-    }
-  } else {
-    // State information may be incomplete if `window.history.state` is set by an old Vike version. (E.g. `state.timestamp` was introduced for `pageContext.isBackwardNavigation` in `0.4.19`.)
-    let oldVikeData: Partial<VikeHistoryData>
-    if (isObject(stateNotEnhanced) && '_isVikeEnhanced' in stateNotEnhanced) {
-      if (isObject(stateNotEnhanced._isVikeEnhanced)) {
-        // New format: _isVikeEnhanced is an object with nested properties
-        oldVikeData = stateNotEnhanced._isVikeEnhanced as Partial<VikeHistoryData>
-      } else {
-        // Old format: _isVikeEnhanced is true, properties are on state root
-        oldVikeData = stateNotEnhanced as Partial<VikeHistoryData>
-      }
-    } else {
-      oldVikeData = {}
-    }
-    stateVikeEnhanced = {
-      ...stateNotEnhanced,
-      _isVikeEnhanced: {
-        timestamp: oldVikeData.timestamp ?? timestamp,
-        scrollPosition: oldVikeData.scrollPosition ?? scrollPosition,
-        triggeredBy: oldVikeData.triggeredBy ?? triggeredBy,
-      },
-    }
+  const stateVikeEnhanced = {
+    _isVikeEnhanced: {
+      timestamp: getTimestamp(),
+      scrollPosition: getScrollPosition(),
+      triggeredBy: 'browser' as const,
+    },
   }
-  assertIsVikeEnhanced(stateVikeEnhanced)
-  return stateVikeEnhanced
+  replaceHistoryState(stateVikeEnhanced)
 }
 
 function getState(): StateEnhanced {
