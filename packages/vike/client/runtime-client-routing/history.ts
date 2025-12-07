@@ -111,21 +111,21 @@ function monkeyPatchHistoryAPI() {
   */
   ;(['pushState', 'replaceState'] as const).forEach((funcName) => {
     const funcOriginal = window.history[funcName].bind(window.history)
-    window.history[funcName] = (stateOriginal: unknown = {}, ...rest) => {
+    window.history[funcName] = (stateFromUser: unknown = {}, ...rest) => {
       assertUsage(
-        stateOriginal === undefined || stateOriginal === null || isObject(stateOriginal),
+        stateFromUser === undefined || stateFromUser === null || isObject(stateFromUser),
         `history.${funcName}(state) argument state must be an object`,
       )
 
-      const state: StateEnhanced = isEnhanced(stateOriginal)
-        ? stateOriginal
+      const state: StateEnhanced = isEnhanced(stateFromUser)
+        ? stateFromUser
         : {
-            ...stateOriginal,
+            ...stateFromUser,
             _vike: {
               scrollPosition: getScrollPosition(),
               timestamp: getTimestamp(),
               triggeredBy: 'user',
-              ...(stateOriginal?._vike as undefined | Record<string, unknown>),
+              ...(stateFromUser?._vike as undefined | Record<string, unknown>),
             },
           }
       assertIsEnhanced(state)
