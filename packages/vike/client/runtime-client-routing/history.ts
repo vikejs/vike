@@ -199,7 +199,6 @@ function onPopStateBegin() {
     return { skip: true as const }
   }
   if (!isStateEnhanced) enhance()
-  assertIsEnhanced(window.history.state as unknown)
 
   const current = getHistoryInfo()
   globalObject.previous = current
