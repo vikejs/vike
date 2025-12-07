@@ -8,6 +8,7 @@ import {
   FilesEnv,
   serializeConfigValues,
 } from '../../../../shared-server-client/page-configs/serialize/serializeConfigValues.js'
+import { VIRTUAL_FILE_ID_globalThisConstants } from '../pluginReplaceConstantsGlobalThis.js'
 
 async function generateVirtualFileGlobalEntry(
   isForClientSide: boolean,
@@ -33,7 +34,7 @@ function getCode(
   const filesEnv: FilesEnv = new Map()
 
   if (!isForClientSide) {
-    importStatements.push("import 'virtual:vike:server:globalThis-constants';")
+    importStatements.push(`import '${VIRTUAL_FILE_ID_globalThisConstants}';`)
   }
 
   lines.push('export const pageConfigsSerialized = [')
@@ -63,7 +64,7 @@ function getCode(
   let code = [...importStatements, ...lines].join('\n')
 
   if (!isForClientSide) {
-    code = "import 'virtual:vike:server:globalThis-constants';\n" + code
+    code = `import '${VIRTUAL_FILE_ID_globalThisConstants}';\n` + code
   }
 
   debug(id, isForClientSide ? 'CLIENT-SIDE' : 'SERVER-SIDE', code)
