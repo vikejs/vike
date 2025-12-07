@@ -185,9 +185,10 @@ function isEqual(state1: unknown, state2: unknown) {
 }
 
 function isVikeEnhanced(state: unknown): state is StateEnhanced {
-  if (isObject(state) && '_isVikeEnhanced' in state && isObject(state._isVikeEnhanced)) {
+  if (isObject(state) && '_isVikeEnhanced' in state) {
     /* We don't use the assert() below to save client-side KBs.
     const vikeData = state._isVikeEnhanced
+    assert(isObject(vikeData))
     assert(hasProp(vikeData, 'timestamp', 'number'))
     assert(hasProp(vikeData, 'scrollPosition'))
     if (vikeData.scrollPosition !== null) {
