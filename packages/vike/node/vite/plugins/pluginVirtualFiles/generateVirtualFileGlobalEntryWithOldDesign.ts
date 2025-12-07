@@ -25,6 +25,7 @@ import { getOutDirs } from '../../shared/getOutDirs.js'
 import { isViteServerSide_extraSafe } from '../../shared/isViteServerSide.js'
 import { resolveIncludeAssetsImportedByServer } from '../../../../server/runtime/renderPageServer/getPageAssets/retrievePageAssetsProd.js'
 import type { Environment } from 'vite'
+import { VIRTUAL_FILE_ID_constantsGlobalThis } from '../pluginReplaceConstantsGlobalThis.js'
 
 type GlobRoot = {
   includeDir: string // slash-terminated
@@ -60,7 +61,7 @@ async function getCode(
   let content = ''
 
   if (!isForClientSide) {
-    content += "import 'virtual:vike:server:globalThis-constants';\n"
+    content += `import '${VIRTUAL_FILE_ID_constantsGlobalThis}';\n`
   }
 
   {

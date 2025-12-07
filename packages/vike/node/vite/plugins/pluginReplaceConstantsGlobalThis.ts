@@ -1,4 +1,5 @@
 export { pluginReplaceConstantsGlobalThis }
+export { VIRTUAL_FILE_ID_constantsGlobalThis }
 // Trick for loading the `declare global` below
 export type _LoadDeclareGlobal__VIKE__IS = never
 
@@ -22,13 +23,14 @@ const isDebugVal = isDebug()
 globalThis.__VIKE__IS_CLIENT = false
 globalThis.__VIKE__IS_DEBUG = isDebugVal
 
-const VIRTUAL_FILE_ID = 'virtual:vike:server:globalThis-constants'
+const VIRTUAL_FILE_ID_constantsGlobalThis = 'virtual:vike:server:constantsGlobalThis'
 const filterRolldown = {
   id: {
-    include: new RegExp(escapeRegex(VIRTUAL_FILE_ID)),
+    include: new RegExp(escapeRegex(VIRTUAL_FILE_ID_constantsGlobalThis)),
   },
 }
-const filterFunction = (id: string) => id === VIRTUAL_FILE_ID || id === addVirtualFileIdPrefix(VIRTUAL_FILE_ID)
+const filterFunction = (id: string) =>
+  id === VIRTUAL_FILE_ID_constantsGlobalThis || id === addVirtualFileIdPrefix(VIRTUAL_FILE_ID_constantsGlobalThis)
 
 function pluginReplaceConstantsGlobalThis(): Plugin[] {
   let config: ResolvedConfig
@@ -73,7 +75,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
         filter: filterRolldown,
         handler(id) {
           assert(filterFunction(id))
-          assert(id === VIRTUAL_FILE_ID)
+          assert(id === VIRTUAL_FILE_ID_constantsGlobalThis)
           return addVirtualFileIdPrefix(id)
         },
       },
