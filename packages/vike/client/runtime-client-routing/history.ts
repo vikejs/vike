@@ -190,9 +190,9 @@ function onPopStateBegin() {
   //   - Click on `<a href="#some-hash">`
   //   - Using the `location` API (only hash navigation)
   // See comments a the top of the ./initOnPopState.ts file.
-  const isHistoryStatePristine = window.history.state === null
+  const isStatePristine = window.history.state === null
 
-  if (!isStateEnhanced && !isHistoryStatePristine) {
+  if (!isStateEnhanced && !isStatePristine) {
     // Going to a history entry not created by Vike — entering another "SPA realm" => hard reload
     // https://github.com/vikejs/vike/issues/2801#issuecomment-3490431479
     redirectHard(getCurrentUrl())
@@ -206,7 +206,7 @@ function onPopStateBegin() {
 
   // Let the browser handle hash navigations.
   // - Upon hash navigation: `isHistoryStatePristine===true` (see comment above).
-  if (isHistoryStatePristine) {
+  if (isStatePristine) {
     return { skip: true as const }
   }
 
