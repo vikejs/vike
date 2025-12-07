@@ -129,6 +129,7 @@ function monkeyPatchHistoryAPI() {
           }
       assertIsEnhanced(state)
       funcOriginal(state, ...rest)
+      // TO-DO/eventually remove excessive assertions to save client-side KBs
       assert(isEqual(state, window.history.state as unknown))
 
       globalObject.previous = getHistoryInfo()
