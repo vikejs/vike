@@ -31,7 +31,7 @@ type ScrollPosition = { x: number; y: number }
 // - Click on `<a href="#some-hash" />`
 // - `location.hash = 'some-hash'`
 function enhanceHistoryState() {
-  if (isVikeEnhanced(window.history.state as unknown)) return
+  if (isEnhanced(window.history.state as unknown)) return
   const stateVikeEnhanced = {
     _isVikeEnhanced: {
       timestamp: getTimestamp(),
@@ -66,7 +66,7 @@ function saveScrollPosition() {
 
   // Don't overwrite history.state if it was set by a non-Vike history.pushState() call.
   // https://github.com/vikejs/vike/issues/2801#issuecomment-3490431479
-  if (!isVikeEnhanced(window.history.state)) return
+  if (!isEnhanced(window.history.state)) return
 
   const state = getState()
   replaceHistoryState({ ...state, _isVikeEnhanced: { ...state._isVikeEnhanced, scrollPosition } })
@@ -118,7 +118,7 @@ function monkeyPatchHistoryAPI() {
         `history.${funcName}(state) argument state must be an object`,
       )
 
-      const stateEnhanced: StateEnhanced = isVikeEnhanced(stateOriginal)
+      const stateEnhanced: StateEnhanced = isEnhanced(stateOriginal)
         ? stateOriginal
         : {
             ...stateOriginal,
@@ -151,7 +151,7 @@ function isEqual(state1: unknown, state2: unknown) {
   return deepEqual((state1 as any)?._isVikeEnhanced, (state2 as any)?._isVikeEnhanced)
 }
 
-function isVikeEnhanced(state: unknown): state is StateEnhanced {
+function isEnhanced(state: unknown): state is StateEnhanced {
   if ((state as any)?._isVikeEnhanced) {
     /* We don't use the assert() below to save client-side KBs.
     const vikeData = state._isVikeEnhanced
@@ -168,7 +168,7 @@ function isVikeEnhanced(state: unknown): state is StateEnhanced {
   return false
 }
 function assertIsVikeEnhanced(state: unknown): asserts state is StateEnhanced {
-  if (isVikeEnhanced(state)) return
+  if (isEnhanced(state)) return
   assert(false, { state })
 }
 
@@ -185,7 +185,7 @@ function getHistoryInfo(): HistoryInfo {
 function onPopStateBegin() {
   const { previous } = globalObject
 
-  const isHistoryStateEnhanced = isVikeEnhanced(window.history.state)
+  const isHistoryStateEnhanced = isEnhanced(window.history.state)
   // Either:
   // - `window.history.pushState(null, '', '/some-path')` , or
   // - hash navigation
