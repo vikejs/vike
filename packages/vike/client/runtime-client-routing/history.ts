@@ -17,7 +17,7 @@ initHistory() // we redundantly call initHistory() to ensure it's called early
 globalObject.previous = getHistoryInfo()
 
 type StateEnhanced = {
-  _isVikeEnhanced: {
+  _vike: {
     timestamp: number
     scrollPosition: null | ScrollPosition
     triggeredBy: 'user' | 'vike' | 'browser'
@@ -32,7 +32,7 @@ type ScrollPosition = { x: number; y: number }
 function enhance() {
   if (isEnhanced(window.history.state as unknown)) return
   const stateEnhanced = {
-    _isVikeEnhanced: {
+    _vike: {
       timestamp: getTimestamp(),
       scrollPosition: getScrollPosition(),
       triggeredBy: 'browser' as const,
@@ -68,13 +68,13 @@ function saveScrollPosition() {
   if (!isEnhanced(window.history.state)) return
 
   const state = getState()
-  replaceHistoryState({ ...state, _isVikeEnhanced: { ...state._isVikeEnhanced, scrollPosition } })
+  replaceHistoryState({ ...state, _vike: { ...state._vike, scrollPosition } })
 }
 
 function pushHistoryState(url: string, overwriteLastHistoryEntry: boolean) {
   if (!overwriteLastHistoryEntry) {
     const state: StateEnhanced = {
-      _isVikeEnhanced: {
+      _vike: {
         timestamp: getTimestamp(),
         // I don't remember why I set it to `null`, maybe because setting it now would be too early? (Maybe there is a delay between renderPageClient() is finished and the browser updating the scroll position.) Anyways, it seems like autoSaveScrollPosition() is enough.
         scrollPosition: null,
@@ -121,11 +121,11 @@ function monkeyPatchHistoryAPI() {
         ? stateOriginal
         : {
             ...stateOriginal,
-            _isVikeEnhanced: {
+            _vike: {
               scrollPosition: getScrollPosition(),
               timestamp: getTimestamp(),
               triggeredBy: 'user',
-              ...(stateOriginal?._isVikeEnhanced as undefined | Record<string, unknown>),
+              ...(stateOriginal?._vike as undefined | Record<string, unknown>),
             },
           }
       assertIsVikeEnhanced(stateEnhanced)
@@ -147,13 +147,13 @@ function monkeyPatchHistoryAPI() {
 }
 
 function isEqual(state1: unknown, state2: unknown) {
-  return deepEqual((state1 as any)?._isVikeEnhanced, (state2 as any)?._isVikeEnhanced)
+  return deepEqual((state1 as any)?._vike, (state2 as any)?._vike)
 }
 
 function isEnhanced(state: unknown): state is StateEnhanced {
-  if ((state as any)?._isVikeEnhanced) {
+  if ((state as any)?._vike) {
     /* We don't use the assert() below to save client-side KBs.
-    const vikeData = state._isVikeEnhanced
+    const vikeData = state._vike
     assert(isObject(vikeData))
     assert(hasProp(vikeData, 'timestamp', 'number'))
     assert(hasProp(vikeData, 'scrollPosition'))
