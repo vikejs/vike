@@ -181,12 +181,12 @@ function monkeyPatchHistoryAPI() {
   })
 }
 
-function isEqual(state1: unknown, state2: unknown) {
-  return isObject(state1) && isObject(state2) && deepEqual(state1._isVikeEnhanced, state2._isVikeEnhanced)
+function isEqual(state1: any, state2: any) {
+  return deepEqual(state1._isVikeEnhanced, state2?._isVikeEnhanced)
 }
 
 function isVikeEnhanced(state: unknown): state is StateEnhanced {
-  if (isObject(state) && '_isVikeEnhanced' in state) {
+  if ((state as any)?._isVikeEnhanced) {
     /* We don't use the assert() below to save client-side KBs.
     const vikeData = state._isVikeEnhanced
     assert(isObject(vikeData))
