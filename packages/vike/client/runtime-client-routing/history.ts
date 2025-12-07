@@ -138,6 +138,7 @@ function monkeyPatchHistoryAPI() {
         ? stateOriginal
         : {
             _isVikeEnhanced: true,
+            // TODO/copilot: move these Vike-specific properties to { _isVikeEnhanced: { ScrollPosition, ... } } in order to avoid conflict with other libraries accessing window.history.state
             scrollPosition: getScrollPosition(),
             timestamp: getTimestamp(),
             triggeredBy: 'user',
