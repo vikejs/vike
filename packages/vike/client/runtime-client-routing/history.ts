@@ -164,20 +164,24 @@ function monkeyPatchHistoryAPI() {
           }
       assertIsVikeEnhanced(stateEnhanced)
       funcOriginal(stateEnhanced, ...rest)
-      assert(deepEqual(stateEnhanced, window.history.state as unknown))
+      assert(isEqual(stateEnhanced, window.history.state as unknown))
 
       globalObject.previous = getHistoryInfo()
 
       // Workaround https://github.com/vikejs/vike/issues/2504#issuecomment-3149764736
       queueMicrotask(() => {
-        if (deepEqual(stateEnhanced, window.history.state as unknown)) return
+        if (isEqual(stateEnhanced, window.history.state as unknown)) return
         Object.assign(stateEnhanced, window.history.state as unknown)
         assertIsVikeEnhanced(stateEnhanced)
         replaceHistoryStateOriginal(stateEnhanced, rest[1])
-        assert(deepEqual(stateEnhanced, window.history.state as unknown))
+        assert(isEqual(stateEnhanced, window.history.state as unknown))
       })
     }
   })
+}
+
+function isEqual(state1: unknown, state2: unknown) {
+  return isObject(state1) && isObject(state2) && deepEqual(state1._isVikeEnhanced, state2._isVikeEnhanced)
 }
 
 function isVikeEnhanced(state: unknown): state is StateEnhanced {
