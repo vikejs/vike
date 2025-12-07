@@ -10,6 +10,7 @@ function onLoad() {
   assertIsNotBrowser()
   assertNodeVersion()
   if (isDebugError()) {
+    // Is also exectued upon `$ vike build` because node/vite/utils.ts imports server/utils.ts
     Error.stackTraceLimit = Infinity
     setAlwaysShowStackTrace()
   }
