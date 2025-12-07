@@ -31,14 +31,14 @@ type ScrollPosition = { x: number; y: number }
 // - `location.hash = 'some-hash'`
 function enhance() {
   if (isEnhanced(window.history.state as unknown)) return
-  const stateVikeEnhanced = {
+  const stateEnhanced = {
     _isVikeEnhanced: {
       timestamp: getTimestamp(),
       scrollPosition: getScrollPosition(),
       triggeredBy: 'browser' as const,
     },
   }
-  replaceHistoryState(stateVikeEnhanced)
+  replaceHistoryState(stateEnhanced)
 }
 
 function getState(): StateEnhanced {
