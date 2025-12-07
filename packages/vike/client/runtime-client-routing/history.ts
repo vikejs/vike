@@ -16,13 +16,12 @@ const globalObject = getGlobalObject('history.ts', {
 initHistory() // we redundantly call initHistory() to ensure it's called early
 globalObject.previous = getHistoryInfo()
 
-type VikeHistoryData = {
-  timestamp: number
-  scrollPosition: null | ScrollPosition
-  triggeredBy: 'user' | 'vike' | 'browser'
-}
 type StateEnhanced = {
-  _isVikeEnhanced: VikeHistoryData
+  _isVikeEnhanced: {
+    timestamp: number
+    scrollPosition: null | ScrollPosition
+    triggeredBy: 'user' | 'vike' | 'browser'
+  }
   [key: string]: unknown
 }
 type ScrollPosition = { x: number; y: number }
