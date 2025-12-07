@@ -183,7 +183,7 @@ function getHistoryInfo(): HistoryInfo {
 function onPopStateBegin() {
   const { previous } = globalObject
 
-  const isHistoryStateEnhanced = isEnhanced(window.history.state)
+  const isStateEnhanced = isEnhanced(window.history.state)
   // Either:
   // - `window.history.pushState(null, '', '/some-path')` , or
   // - hash navigation
@@ -192,13 +192,13 @@ function onPopStateBegin() {
   // See comments a the top of the ./initOnPopState.ts file.
   const isHistoryStatePristine = window.history.state === null
 
-  if (!isHistoryStateEnhanced && !isHistoryStatePristine) {
+  if (!isStateEnhanced && !isHistoryStatePristine) {
     // Going to a history entry not created by Vike — entering another "SPA realm" => hard reload
     // https://github.com/vikejs/vike/issues/2801#issuecomment-3490431479
     redirectHard(getCurrentUrl())
     return { skip: true as const }
   }
-  if (!isHistoryStateEnhanced) enhance()
+  if (!isStateEnhanced) enhance()
   assertIsEnhanced(window.history.state as unknown)
 
   const current = getHistoryInfo()
