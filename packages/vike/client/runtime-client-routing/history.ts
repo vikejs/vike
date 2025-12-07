@@ -17,7 +17,7 @@ initHistory() // we redundantly call initHistory() to ensure it's called early
 globalObject.previous = getHistoryInfo()
 
 type StateEnhanced = {
-  _vike: {
+  vike: {
     timestamp: number
     scrollPosition: null | ScrollPosition
     triggeredBy: 'user' | 'vike' | 'browser'
@@ -32,7 +32,7 @@ type ScrollPosition = { x: number; y: number }
 function enhance() {
   if (isEnhanced(window.history.state as unknown)) return
   const stateEnhanced = {
-    _vike: {
+    vike: {
       timestamp: getTimestamp(),
       scrollPosition: getScrollPosition(),
       triggeredBy: 'browser' as const,
@@ -68,13 +68,13 @@ function saveScrollPosition() {
   if (!isEnhanced(window.history.state)) return
 
   const state = getState()
-  replaceHistoryState({ ...state, _vike: { ...state._vike, scrollPosition } })
+  replaceHistoryState({ ...state, vike: { ...state.vike, scrollPosition } })
 }
 
 function pushHistoryState(url: string, overwriteLastHistoryEntry: boolean) {
   if (!overwriteLastHistoryEntry) {
     const state: StateEnhanced = {
-      _vike: {
+      vike: {
         timestamp: getTimestamp(),
         // I don't remember why I set it to `null`, maybe because setting it now would be too early? (Maybe there is a delay between renderPageClient() is finished and the browser updating the scroll position.) Anyways, it seems like autoSaveScrollPosition() is enough.
         scrollPosition: null,
@@ -121,7 +121,7 @@ function monkeyPatchHistoryAPI() {
         ? stateFromUser
         : {
             ...stateFromUser,
-            _vike: {
+            vike: {
               scrollPosition: getScrollPosition(),
               timestamp: getTimestamp(),
               triggeredBy: 'user',
@@ -147,13 +147,13 @@ function monkeyPatchHistoryAPI() {
 }
 
 function isEqual(state1: unknown, state2: unknown) {
-  return deepEqual((state1 as any)?._vike, (state2 as any)?._vike)
+  return deepEqual((state1 as any)?.vike, (state2 as any)?.vike)
 }
 
 function isEnhanced(state: unknown): state is StateEnhanced {
-  if ((state as any)?._vike) {
+  if ((state as any)?.vike) {
     /* We don't use the assert() below to save client-side KBs.
-    const vikeData = state._vike
+    const vikeData = state.vike
     assert(isObject(vikeData))
     assert(hasProp(vikeData, 'timestamp', 'number'))
     assert(hasProp(vikeData, 'scrollPosition'))

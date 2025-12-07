@@ -41,7 +41,7 @@ async function onPopState() {
   await handleHistoryNavigation(previous, current)
 }
 async function handleHistoryNavigation(previous: HistoryInfo, current: HistoryInfo) {
-  const scrollTarget: ScrollTarget = current.state._vike.scrollPosition || undefined
+  const scrollTarget: ScrollTarget = current.state.vike.scrollPosition || undefined
 
   const isHashNavigation = removeHash(current.url) === removeHash(previous.url) && current.url !== previous.url
   if (isHashNavigation) {
@@ -51,13 +51,13 @@ async function handleHistoryNavigation(previous: HistoryInfo, current: HistoryIn
   }
 
   const isUserPushStateNavigation =
-    current.state._vike.triggeredBy === 'user' || previous.state._vike.triggeredBy === 'user'
+    current.state.vike.triggeredBy === 'user' || previous.state.vike.triggeredBy === 'user'
   const doNotRenderIfSamePage = isUserPushStateNavigation
 
   const isBackwardNavigation =
-    !current.state._vike.timestamp || !previous.state._vike.timestamp
+    !current.state.vike.timestamp || !previous.state.vike.timestamp
       ? null
-      : current.state._vike.timestamp < previous.state._vike.timestamp
+      : current.state.vike.timestamp < previous.state.vike.timestamp
 
   await renderPageClient({ scrollTarget, isBackwardNavigation, doNotRenderIfSamePage, isHistoryNavigation: true })
 }

@@ -60,7 +60,7 @@ You can then implement your navigation handling by listening to the [`popstate` 
 window.addEventListener('popstate', () => {
   // Vike sets triggeredBy to 'vike' | 'browser' | 'user'
   // https://vike.dev/navigate#history-pushstate
-  const { triggeredBy } = window.history.state
+  const { triggeredBy } = window.history.state?.vike
 
   // Navigation triggered by Vike or the browser
   if (triggeredBy === 'vike' || triggeredBy === 'browser') {
