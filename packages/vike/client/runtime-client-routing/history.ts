@@ -7,7 +7,7 @@ export type { HistoryInfo }
 export type { ScrollPosition }
 
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
-import { assert, assertUsage, getGlobalObject, isObject, deepEqual, cast, redirectHard } from './utils.js'
+import { assert, assertUsage, getGlobalObject, isObject, deepEqual, redirectHard } from './utils.js'
 
 const globalObject = getGlobalObject('history.ts', {
   monkeyPatched: false,
@@ -16,11 +16,14 @@ const globalObject = getGlobalObject('history.ts', {
 initHistory() // we redundantly call initHistory() to ensure it's called early
 globalObject.previous = getHistoryInfo()
 
-type StateEnhanced = {
+type VikeHistoryData = {
   timestamp: number
   scrollPosition: null | ScrollPosition
   triggeredBy: 'user' | 'vike' | 'browser'
-  _isVikeEnhanced: true
+}
+type StateEnhanced = {
+  _isVikeEnhanced: VikeHistoryData
+  [key: string]: unknown
 }
 type ScrollPosition = { x: number; y: number }
 
@@ -40,19 +43,33 @@ function enhance(stateNotEnhanced: unknown): StateEnhanced {
   let stateVikeEnhanced: StateEnhanced
   if (!stateNotEnhanced) {
     stateVikeEnhanced = {
-      timestamp,
-      scrollPosition,
-      triggeredBy,
-      _isVikeEnhanced: true,
+      _isVikeEnhanced: {
+        timestamp,
+        scrollPosition,
+        triggeredBy,
+      },
     }
   } else {
     // State information may be incomplete if `window.history.state` is set by an old Vike version. (E.g. `state.timestamp` was introduced for `pageContext.isBackwardNavigation` in `0.4.19`.)
-    cast<Partial<StateEnhanced>>(stateNotEnhanced)
+    let oldVikeData: Partial<VikeHistoryData>
+    if (isObject(stateNotEnhanced) && '_isVikeEnhanced' in stateNotEnhanced) {
+      if (isObject(stateNotEnhanced._isVikeEnhanced)) {
+        // New format: _isVikeEnhanced is an object with nested properties
+        oldVikeData = stateNotEnhanced._isVikeEnhanced as Partial<VikeHistoryData>
+      } else {
+        // Old format: _isVikeEnhanced is true, properties are on state root
+        oldVikeData = stateNotEnhanced as Partial<VikeHistoryData>
+      }
+    } else {
+      oldVikeData = {}
+    }
     stateVikeEnhanced = {
-      timestamp: stateNotEnhanced.timestamp ?? timestamp,
-      scrollPosition: stateNotEnhanced.scrollPosition ?? scrollPosition,
-      triggeredBy: stateNotEnhanced.triggeredBy ?? triggeredBy,
-      _isVikeEnhanced: true,
+      ...stateNotEnhanced,
+      _isVikeEnhanced: {
+        timestamp: oldVikeData.timestamp ?? timestamp,
+        scrollPosition: oldVikeData.scrollPosition ?? scrollPosition,
+        triggeredBy: oldVikeData.triggeredBy ?? triggeredBy,
+      },
     }
   }
   assertIsVikeEnhanced(stateVikeEnhanced)
@@ -86,17 +103,18 @@ function saveScrollPosition() {
   if (!isVikeEnhanced(window.history.state)) return
 
   const state = getState()
-  replaceHistoryState({ ...state, scrollPosition })
+  replaceHistoryState({ ...state, _isVikeEnhanced: { ...state._isVikeEnhanced, scrollPosition } })
 }
 
 function pushHistoryState(url: string, overwriteLastHistoryEntry: boolean) {
   if (!overwriteLastHistoryEntry) {
     const state: StateEnhanced = {
-      timestamp: getTimestamp(),
-      // I don't remember why I set it to `null`, maybe because setting it now would be too early? (Maybe there is a delay between renderPageClient() is finished and the browser updating the scroll position.) Anyways, it seems like autoSaveScrollPosition() is enough.
-      scrollPosition: null,
-      triggeredBy: 'vike',
-      _isVikeEnhanced: true,
+      _isVikeEnhanced: {
+        timestamp: getTimestamp(),
+        // I don't remember why I set it to `null`, maybe because setting it now would be too early? (Maybe there is a delay between renderPageClient() is finished and the browser updating the scroll position.) Anyways, it seems like autoSaveScrollPosition() is enough.
+        scrollPosition: null,
+        triggeredBy: 'vike',
+      },
     }
     // Calling the monkey patched history.pushState() (and not the original) so that other tools (e.g. user tracking) can listen to Vike's pushState() calls.
     // - https://github.com/vikejs/vike/issues/1582
@@ -137,12 +155,12 @@ function monkeyPatchHistoryAPI() {
       const stateEnhanced: StateEnhanced = isVikeEnhanced(stateOriginal)
         ? stateOriginal
         : {
-            _isVikeEnhanced: true,
-            // TODO/copilot: move these Vike-specific properties to { _isVikeEnhanced: { ScrollPosition, ... } } in order to avoid conflict with other libraries accessing window.history.state
-            scrollPosition: getScrollPosition(),
-            timestamp: getTimestamp(),
-            triggeredBy: 'user',
             ...stateOriginal,
+            _isVikeEnhanced: {
+              scrollPosition: getScrollPosition(),
+              timestamp: getTimestamp(),
+              triggeredBy: 'user',
+            },
           }
       assertIsVikeEnhanced(stateEnhanced)
       funcOriginal(stateEnhanced, ...rest)
@@ -163,14 +181,14 @@ function monkeyPatchHistoryAPI() {
 }
 
 function isVikeEnhanced(state: unknown): state is StateEnhanced {
-  if (isObject(state) && '_isVikeEnhanced' in state) {
+  if (isObject(state) && '_isVikeEnhanced' in state && isObject(state._isVikeEnhanced)) {
     /* We don't use the assert() below to save client-side KBs.
-    assert(hasProp(state, '_isVikeEnhanced', 'true'))
-    assert(hasProp(state, 'timestamp', 'number'))
-    assert(hasProp(state, 'scrollPosition'))
-    if (state.scrollPosition !== null) {
-      assert(hasProp(state, 'scrollPosition', 'object'))
-      assert(hasProp(state.scrollPosition, 'x', 'number') && hasProp(state.scrollPosition, 'y', 'number'))
+    const vikeData = state._isVikeEnhanced
+    assert(hasProp(vikeData, 'timestamp', 'number'))
+    assert(hasProp(vikeData, 'scrollPosition'))
+    if (vikeData.scrollPosition !== null) {
+      assert(hasProp(vikeData, 'scrollPosition', 'object'))
+      assert(hasProp(vikeData.scrollPosition, 'x', 'number') && hasProp(vikeData.scrollPosition, 'y', 'number'))
     }
     //*/
     return true
