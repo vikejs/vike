@@ -3,7 +3,7 @@
 import '../utils/trackLogs.js'
 
 // We call onLoad() here so that it's called even when only a subset of the runtime is loaded. (Making the assert() calls inside onLoad() a lot stronger.)
-import { onLoad } from './runtime/onLoad.js'
+import { onLoad } from './onLoad.js'
 onLoad()
 
 export * from '../utils/assert.js'
