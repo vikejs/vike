@@ -125,7 +125,6 @@ function monkeyPatchHistoryAPI() {
               scrollPosition: getScrollPosition(),
               timestamp: getTimestamp(),
               triggeredBy: 'user',
-              ...(stateFromUser?._vike as undefined | Record<string, unknown>),
             },
           }
       assertIsEnhanced(state)
