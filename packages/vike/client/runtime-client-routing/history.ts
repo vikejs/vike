@@ -22,7 +22,6 @@ type StateEnhanced = {
     scrollPosition: null | ScrollPosition
     triggeredBy: 'user' | 'vike' | 'browser'
   }
-  [key: string]: unknown
 }
 type ScrollPosition = { x: number; y: number }
 
