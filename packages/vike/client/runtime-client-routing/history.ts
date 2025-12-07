@@ -48,7 +48,7 @@ function getState(): StateEnhanced {
   // - Therefore, we have to monkey patch history.pushState() and history.replaceState()
   // - Therefore, we need the assert() below to ensure history.state has been enhanced by Vike
   //   - If users stumble upon this assert() then let's make it a assertUsage()
-  assertIsVikeEnhanced(state)
+  assertIsEnhanced(state)
   return state
 }
 
@@ -91,7 +91,7 @@ function pushHistoryState(url: string, overwriteLastHistoryEntry: boolean) {
 function replaceHistoryState(state: StateEnhanced, url?: string) {
   const url_ = url ?? null // Passing `undefined` chokes older Edge versions.
   window.history.replaceState(state, '', url_)
-  assertIsVikeEnhanced(window.history.state as unknown)
+  assertIsEnhanced(window.history.state as unknown)
 }
 function replaceHistoryStateOriginal(state: unknown, url: Parameters<typeof window.history.replaceState>[2]) {
   // Bypass all monkey patches.
@@ -128,7 +128,7 @@ function monkeyPatchHistoryAPI() {
               ...(stateOriginal?._vike as undefined | Record<string, unknown>),
             },
           }
-      assertIsVikeEnhanced(stateEnhanced)
+      assertIsEnhanced(stateEnhanced)
       funcOriginal(stateEnhanced, ...rest)
       assert(isEqual(stateEnhanced, window.history.state as unknown))
 
@@ -138,7 +138,7 @@ function monkeyPatchHistoryAPI() {
       queueMicrotask(() => {
         if (isEqual(stateEnhanced, window.history.state as unknown)) return
         Object.assign(stateEnhanced, window.history.state as unknown)
-        assertIsVikeEnhanced(stateEnhanced)
+        assertIsEnhanced(stateEnhanced)
         replaceHistoryStateOriginal(stateEnhanced, rest[1])
         assert(isEqual(stateEnhanced, window.history.state as unknown))
       })
@@ -166,7 +166,7 @@ function isEnhanced(state: unknown): state is StateEnhanced {
   }
   return false
 }
-function assertIsVikeEnhanced(state: unknown): asserts state is StateEnhanced {
+function assertIsEnhanced(state: unknown): asserts state is StateEnhanced {
   if (isEnhanced(state)) return
   assert(false, { state })
 }
@@ -200,7 +200,7 @@ function onPopStateBegin() {
     return { skip: true as const }
   }
   if (!isHistoryStateEnhanced) enhance()
-  assertIsVikeEnhanced(window.history.state as unknown)
+  assertIsEnhanced(window.history.state as unknown)
 
   const current = getHistoryInfo()
   globalObject.previous = current
