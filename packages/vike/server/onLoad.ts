@@ -1,15 +1,16 @@
 export { onLoad }
 
-import { assertIsNotBrowser } from '../../utils/assertIsNotBrowser.js'
-import { assertNodeVersion } from '../../utils/assertNodeVersion.js'
-import { setAlwaysShowStackTrace } from '../../utils/assert.js'
+import { assertIsNotBrowser } from '../utils/assertIsNotBrowser.js'
+import { assertNodeVersion } from '../utils/assertNodeVersion.js'
+import { setAlwaysShowStackTrace } from '../utils/assert.js'
 import { installRequireShim } from '@brillout/require-shim'
-import { isDebugError } from '../../utils/debug.js'
+import { isDebugError } from '../utils/debug.js'
 
 function onLoad() {
   assertIsNotBrowser()
   assertNodeVersion()
   if (isDebugError()) {
+    // Is also executed upon `$ vike build` because node/vite/utils.ts imports server/utils.ts
     Error.stackTraceLimit = Infinity
     setAlwaysShowStackTrace()
   }

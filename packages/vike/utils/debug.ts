@@ -10,15 +10,6 @@ import { getTerminalWidth } from './getTerminalWidth.js'
 import pc from '@brillout/picocolors'
 import { isArray } from './isArray.js'
 import { isObject } from './isObject.js'
-
-// Assert tree-shaking (ensure this module is loaded on the client-side only if debug is enabled).
-assert(
-  !globalThis.__VIKE__IS_CLIENT ||
-    globalThis.__VIKE__IS_DEBUG ||
-    // Vite doesn't do tree-shaking in dev (maybe it will with Rolldown?)
-    import.meta.env.DEV,
-)
-
 const flags = [
   'vike',
   'vike:crawl',
@@ -41,9 +32,16 @@ const flags = [
   'vike:vite-rpc',
 ] as const satisfies (`vike:${string}` | 'vike')[]
 const flagsSkipWildcard = ['vike:log']
+
+// Assert tree-shaking (ensure this module is loaded on the client-side only if debug is enabled).
+assert(
+  !globalThis.__VIKE__IS_CLIENT ||
+    globalThis.__VIKE__IS_DEBUG ||
+    // Vite doesn't do tree-shaking in dev (maybe it will with Rolldown?)
+    import.meta.env.DEV,
+)
 // We purposely read process.env.DEBUG early, in order to avoid users from the temptation to set process.env.DEBUG with JavaScript, since reading & writing process.env.DEBUG dynamically leads to inconsistencies such as https://github.com/vikejs/vike/issues/2239
 const DEBUG = getDEBUG() ?? ''
-if (isDebug()) Error.stackTraceLimit = Infinity
 assertFlagsActivated()
 
 type Flag = (typeof flags)[number]

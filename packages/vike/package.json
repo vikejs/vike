@@ -249,7 +249,7 @@
     "react-streaming": "^0.4.13",
     "rimraf": "^5.0.5",
     "typescript": "^5.9.3",
-    "vite": "^7.1.5"
+    "vite": "^7.2.6"
   },
   "scripts": {
     "dev": "tsc --watch",

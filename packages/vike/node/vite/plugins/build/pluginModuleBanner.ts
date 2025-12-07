@@ -29,9 +29,9 @@ function pluginModuleBanner(): Plugin[] {
       },
       transform: {
         order: 'post',
-        /* Using a Rolldown hook filter doesn't make sense here — we use applyToEnvironment() to conditionally apply this plugin.
-      filter: {},
-      */
+        /* Using a Rolldown hook filter doesn't make sense here: we apply this transformer to each module. But we use applyToEnvironment() to conditionally apply this plugin.
+        filter: {},
+        */
         handler(code, id) {
           const { minify } = this.environment.config.build
           assert(minify === false, { minify })
