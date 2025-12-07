@@ -34,15 +34,14 @@ const flags = [
 const flagsSkipWildcard = ['vike:log']
 
 // Assert tree-shaking (ensure this module is loaded on the client-side only if debug is enabled).
-assert(
+const isUsed =
   !globalThis.__VIKE__IS_CLIENT ||
-    globalThis.__VIKE__IS_DEBUG ||
-    // Vite doesn't do tree-shaking in dev (maybe it will with Rolldown?)
-    import.meta.env.DEV,
-)
+  globalThis.__VIKE__IS_DEBUG ||
+  // Vite doesn't do tree-shaking in dev (maybe it will with Rolldown?)
+  import.meta.env.DEV
 // We purposely read process.env.DEBUG early, in order to avoid users from the temptation to set process.env.DEBUG with JavaScript, since reading & writing process.env.DEBUG dynamically leads to inconsistencies such as https://github.com/vikejs/vike/issues/2239
-const DEBUG = getDEBUG() ?? ''
-assertFlagsActivated()
+const DEBUG = (isUsed && getDEBUG()) || ''
+if (isUsed) assertFlagsActivated()
 
 type Flag = (typeof flags)[number]
 type Options = {
@@ -53,6 +52,7 @@ type Options = {
 
 function createDebug(flag: Flag, optionsGlobal?: Options) {
   assert(flags.includes(flag))
+  assert(isUsed)
 
   const debugWithOptions = (optionsLocal: Options) => {
     return (...msgs: unknown[]) => {
@@ -70,6 +70,7 @@ function debug(flag: Flag, ...msgs: unknown[]) {
 }
 
 function debug_(flag: Flag, options: Options, ...msgs: unknown[]) {
+  assert(isUsed)
   if (!isDebug(flag)) return
   let [msgFirst, ...msgsRest] = msgs
   const padding = ' '.repeat(flag.length + 1)
@@ -97,6 +98,7 @@ function debug_(flag: Flag, options: Options, ...msgs: unknown[]) {
 }
 
 function isDebug(flag?: Flag): boolean {
+  assert(isUsed)
   assert(flag === undefined || (flag && flags.includes(flag)))
   const { flagsActivated, isAll, isGlobal } = getFlagsActivated()
   if (flag) {
@@ -179,6 +181,7 @@ function replaceFunctionSerializer(this: Record<string, unknown>, _key: string, 
 }
 
 function assertFlagsActivated() {
+  assert(isUsed)
   const { flagsActivated } = getFlagsActivated()
   flagsActivated.forEach((flag) => {
     assertUsage(
@@ -196,6 +199,8 @@ function getFlagsActivated() {
 }
 
 function getDEBUG() {
+  assert(isUsed)
+
   let DEBUG: undefined | string
 
   // ssr.noExternal
