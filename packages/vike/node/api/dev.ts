@@ -23,7 +23,7 @@ async function dev(
   const viteServer = server
   const viteConfig = server.config
   if (viteServer.httpServer) await viteServer.listen()
-  if (options.startupLog) startupLog(viteServer, viteConfig, viteVersion, startTime)
+  if (options.startupLog) startupLog(viteServer, viteVersion, startTime)
   return {
     viteServer,
     viteConfig,
@@ -31,12 +31,7 @@ async function dev(
   }
 }
 
-async function startupLog(
-  viteServer: ViteDevServer,
-  viteConfig: ResolvedConfig,
-  viteVersion: string,
-  startTime: number,
-) {
+async function startupLog(viteServer: ViteDevServer, viteVersion: string, startTime: number) {
   const startupDurationString = pc.dim(
     `ready in ${pc.reset(pc.bold(String(Math.ceil(performance.now() - startTime))))} ms`,
   )
@@ -44,6 +39,7 @@ async function startupLog(
   const firstLine =
     `\n  ${colorVike('Vike')} ${pc.yellow(`v${PROJECT_VERSION}`)} ${sep} ${colorVite('Vite')} ${pc.cyan(`v${viteVersion}`)} ${sep} ${startupDurationString}\n` as const
 
+  const viteConfig = viteServer.config
   const ret = processStartupLog(firstLine, viteConfig)
   console.log(ret.firstLine)
   const { isCompact } = ret
