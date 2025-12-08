@@ -40,9 +40,10 @@ function pluginModuleBanner(): Plugin[] {
           if (id.startsWith(config.root)) id = id.slice(config.root.length + 1)
           id = id.replaceAll('*/', '*\\/') // https://github.com/vikejs/vike/issues/2377
           const { magicString, getMagicStringResult } = getMagicString(code, id)
-          // Use legal comment so that esbuild doesn't remove it.
+          // (Mis)-using legal comment so that esbuild doesn't remove it.
           // - Terser still removes the comment, but I guess users use terser to minify JavaScript so I guess it's a good thing that comment is removed.
           // - https://esbuild.github.io/api/#legal-comments
+          // - Alternative to misusing legal commments: https://github.com/vitejs/vite/issues/21228#issuecomment-3627899741
           magicString.prepend(`/*! ${id} [vike:pluginModuleBanner] */\n`)
           return getMagicStringResult()
         },
