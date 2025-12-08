@@ -1,5 +1,4 @@
 export { pluginCommon }
-export let viteVersionUser = null as string | null | undefined
 
 import { type InlineConfig, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
 import {
@@ -23,6 +22,7 @@ import { getVikeConfigInternal, setVikeConfigContext } from '../shared/resolveVi
 import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/resolveViteConfigFromUser.js'
 import { temp_disablePrerenderAutoRun } from '../../prerender/context.js'
 import type { VitePluginServerEntryOptions } from '@brillout/vite-plugin-server-entry/plugin'
+import { version as viteVersionVike } from 'vite'
 const pluginName = 'vike:pluginCommon'
 
 declare module 'vite' {
@@ -33,6 +33,7 @@ declare module 'vite' {
     _baseViteOriginal?: string
     // We'll be able to remove once we have one Rolldown build instead of two Rollup builds
     _viteConfigFromUserResolved?: InlineConfig
+    _viteVersionResolved?: string
   }
 }
 
@@ -49,7 +50,7 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
       config: {
         order: 'pre',
         async handler(configFromUser, env) {
-          viteVersionUser = this?.meta?.viteVersion as string | undefined // is `undefined` on old Vite versions
+          const viteVersionUser = this?.meta?.viteVersion as string | undefined // is `undefined` on old Vite versions
           const isDev = isDevCheck(env)
           const isBuild = env.command === 'build'
           const isPreview = env.isPreview!!
@@ -63,6 +64,7 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
           const vikeConfig = await getVikeConfigInternal()
           return {
             _isDev: isDev,
+            _viteVersionResolved: viteVersionUser || viteVersionVike,
             _rootResolvedEarly: rootResolvedEarly,
             // TO-DO/next-major-release: remove https://github.com/vikejs/vike/issues/2122
             configVikePromise: Promise.resolve({

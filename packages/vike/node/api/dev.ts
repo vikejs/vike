@@ -1,10 +1,11 @@
 export { dev }
+// TO-DO/eventually: remove if it doesn't end up being used
+export { startupLog }
 
 import { prepareViteApiCall } from './prepareViteApiCall.js'
-import { createServer, type ResolvedConfig, type ViteDevServer, version as viteVersionVike } from 'vite'
+import { createServer, type ResolvedConfig, type ViteDevServer } from 'vite'
 import type { ApiOptions } from './types.js'
-import { viteVersionUser } from '../vite/plugins/pluginCommon.js'
-import { colorVike, colorVite, PROJECT_VERSION } from './utils.js'
+import { assert, colorVike, colorVite, PROJECT_VERSION } from './utils.js'
 import pc from '@brillout/picocolors'
 import { processStartupLog } from '../vite/shared/loggerVite.js'
 
@@ -16,14 +17,22 @@ import { processStartupLog } from '../vite/shared/loggerVite.js'
 async function dev(
   options: ApiOptions & { startupLog?: boolean } = {},
 ): Promise<{ viteServer: ViteDevServer; viteConfig: ResolvedConfig; viteVersion: string }> {
-  const startTime = performance.now()
   const { viteConfigFromUserResolved } = await prepareViteApiCall(options, 'dev')
   const server = await createServer(viteConfigFromUserResolved)
-  const viteVersion = viteVersionUser ?? viteVersionVike
   const viteServer = server
   const viteConfig = server.config
+  const viteVersion = viteConfig._viteVersionResolved
+  assert(viteVersion)
   if (viteServer.httpServer) await viteServer.listen()
-  if (options.startupLog) printStartupLog(viteServer, viteConfig, viteVersion, startTime)
+  if (options.startupLog) {
+    if (viteServer.resolvedUrls) {
+      startupLog(viteServer.resolvedUrls, viteServer)
+    } else {
+      // TO-DO/eventually: remove if it doesn't end up being used
+      ;(viteConfig.server as Record<string, any>).startupLog = (resolvedUrls: ResolvedServerUrls) =>
+        startupLog(resolvedUrls, viteServer)
+    }
+  }
   return {
     viteServer,
     viteConfig,
@@ -31,12 +40,12 @@ async function dev(
   }
 }
 
-async function printStartupLog(
-  viteServer: ViteDevServer,
-  viteConfig: ResolvedConfig,
-  viteVersion: string,
-  startTime: number,
-) {
+const startTime = performance.now()
+async function startupLog(resolvedUrls: ResolvedServerUrls, viteServer: ViteDevServer) {
+  const viteConfig = viteServer.config
+  const viteVersion = viteConfig._viteVersionResolved
+  assert(viteVersion)
+
   const startupDurationString = pc.dim(
     `ready in ${pc.reset(pc.bold(String(Math.ceil(performance.now() - startTime))))} ms`,
   )
@@ -50,10 +59,7 @@ async function printStartupLog(
 
   // We don't call viteServer.printUrls() because Vite throws an error if `resolvedUrls` is missing:
   // https://github.com/vitejs/vite/blob/df5a30d2690a2ebc4824a79becdcef30538dc602/packages/vite/src/node/server/index.ts#L745
-  printServerUrls(
-    viteServer.resolvedUrls || { local: [`http://localhost:${viteConfig.server.port}`], network: [] },
-    viteConfig.server.host,
-  )
+  printServerUrls(resolvedUrls, viteConfig.server.host)
 
   viteServer.bindCLIShortcuts({ print: true })
 
