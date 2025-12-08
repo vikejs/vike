@@ -1,10 +1,9 @@
 export { dev }
 
 import { prepareViteApiCall } from './prepareViteApiCall.js'
-import { createServer, type ResolvedConfig, type ViteDevServer, version as viteVersionVike } from 'vite'
+import { createServer, type ResolvedConfig, type ViteDevServer } from 'vite'
 import type { ApiOptions } from './types.js'
-import { viteVersionUser } from '../vite/plugins/pluginCommon.js'
-import { colorVike, colorVite, PROJECT_VERSION } from './utils.js'
+import { assert, colorVike, colorVite, PROJECT_VERSION } from './utils.js'
 import pc from '@brillout/picocolors'
 import { processStartupLog } from '../vite/shared/loggerVite.js'
 
@@ -19,9 +18,10 @@ async function dev(
   const startTime = performance.now()
   const { viteConfigFromUserResolved } = await prepareViteApiCall(options, 'dev')
   const server = await createServer(viteConfigFromUserResolved)
-  const viteVersion = viteVersionUser ?? viteVersionVike
   const viteServer = server
   const viteConfig = server.config
+  const viteVersion = viteConfig._viteVersionResolved
+  assert(viteVersion)
   if (viteServer.httpServer) await viteServer.listen()
   if (options.startupLog) {
     if (viteServer.resolvedUrls) {
