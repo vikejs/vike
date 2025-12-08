@@ -1,4 +1,4 @@
-= TO-DO/soon
+= TO-DO/now
 - Add assertWarning() deprecations:
   - `pageContext.exports`
   - `pageContext.configEntries`
@@ -6,6 +6,12 @@
   - Also `documentHtml` — use pageContext.html instead
   - Also `injectFilter()` — maybe deprecate `injectFilter()` in favor of `pageContext.injectAssets`? Do we need a new hook or is `onRenderHtml()`/`onAfterRenderHtml()` enough?
   - Also all return values of `onBeforeRender()`, `onRenderHtml()`, `onBeforeRoute()` and all hooks
+
+= TO-DO/after-open-source-pricing
+- NODE_ENV
+  - https://nodejs.org/en/learn/getting-started/nodejs-the-difference-between-development-and-production
+  - https://github.com/vikejs/vike/issues/1528
+  - https://vite.dev/guide/env-and-mode.html#node-env-and-modes
 
 = TO-DO/next-major-release:
 == Highest Prio
@@ -57,9 +63,3 @@
   - Rename +on{After}RenderClient to +onRenderClient{Start,End} ?
   - Rename +onData => +onAfterData ? Maybe not because it isn't strictly always called after +data
   - Pre-rendering hook renaming? +onPrerender and +onPrerenderBegin ?
-
-= TO-DO/later
-- NODE_ENV
-  - https://nodejs.org/en/learn/getting-started/nodejs-the-difference-between-development-and-production
-  - https://github.com/vikejs/vike/issues/1528
-  - https://vite.dev/guide/env-and-mode.html#node-env-and-modes
