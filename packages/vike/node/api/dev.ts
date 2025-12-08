@@ -23,7 +23,7 @@ async function dev(
   const viteServer = server
   const viteConfig = server.config
   if (viteServer.httpServer) await viteServer.listen()
-  if (options.startupLog) printStartupLog(viteServer, viteConfig, viteVersion, startTime)
+  if (options.startupLog) startupLog(viteServer, viteConfig, viteVersion, startTime)
   return {
     viteServer,
     viteConfig,
@@ -31,7 +31,7 @@ async function dev(
   }
 }
 
-async function printStartupLog(
+async function startupLog(
   viteServer: ViteDevServer,
   viteConfig: ResolvedConfig,
   viteVersion: string,
