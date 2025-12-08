@@ -1,4 +1,6 @@
 export { dev }
+// TO-DO/eventually: remove if it doesn't end up being used
+export { startupLog }
 
 import { prepareViteApiCall } from './prepareViteApiCall.js'
 import { createServer, type ResolvedConfig, type ViteDevServer } from 'vite'
@@ -15,7 +17,6 @@ import { processStartupLog } from '../vite/shared/loggerVite.js'
 async function dev(
   options: ApiOptions & { startupLog?: boolean } = {},
 ): Promise<{ viteServer: ViteDevServer; viteConfig: ResolvedConfig; viteVersion: string }> {
-  const startTime = performance.now()
   const { viteConfigFromUserResolved } = await prepareViteApiCall(options, 'dev')
   const server = await createServer(viteConfigFromUserResolved)
   const viteServer = server
@@ -25,9 +26,10 @@ async function dev(
   if (viteServer.httpServer) await viteServer.listen()
   if (options.startupLog) {
     if (viteServer.resolvedUrls) {
-      startupLog(viteServer.resolvedUrls, viteServer, viteVersion, startTime)
+      startupLog(viteServer.resolvedUrls, viteServer)
     } else {
-      // TODO
+      // TO-DO/eventually: remove if it doesn't end up being used
+      (viteConfig.server as Record<string, any>).startupLog = (resolvedUrls: ResolvedServerUrls) => startupLog(resolvedUrls, viteServer)
     }
   }
   return {
@@ -37,12 +39,12 @@ async function dev(
   }
 }
 
-async function startupLog(
-  resolvedUrls: ResolvedServerUrls,
-  viteServer: ViteDevServer,
-  viteVersion: string,
-  startTime: number,
-) {
+const startTime = performance.now()
+async function startupLog(resolvedUrls: ResolvedServerUrls, viteServer: ViteDevServer) {
+  const viteConfig = viteServer.config
+  const viteVersion = viteConfig._viteVersionResolved
+  assert(viteVersion)
+
   const startupDurationString = pc.dim(
     `ready in ${pc.reset(pc.bold(String(Math.ceil(performance.now() - startTime))))} ms`,
   )
@@ -50,7 +52,6 @@ async function startupLog(
   const firstLine =
     `\n  ${colorVike('Vike')} ${pc.yellow(`v${PROJECT_VERSION}`)} ${sep} ${colorVite('Vite')} ${pc.cyan(`v${viteVersion}`)} ${sep} ${startupDurationString}\n` as const
 
-  const viteConfig = viteServer.config
   const ret = processStartupLog(firstLine, viteConfig)
   console.log(ret.firstLine)
   const { isCompact } = ret

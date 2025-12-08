@@ -104,6 +104,10 @@
       "types": "./dist/server/runtime/page-files/setup.d.ts",
       "default": "./dist/server/runtime/page-files/setup.js"
     },
+    "./__internal/vite": {
+      "types": "./dist/server/__internal/vite.d.ts",
+      "default": "./dist/server/__internal/vite.js"
+    },
     ".": {
       "worker": "./dist/server/runtime/index.js",
       "workerd": "./dist/server/runtime/index.js",
