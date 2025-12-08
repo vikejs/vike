@@ -23,7 +23,13 @@ async function dev(
   const viteServer = server
   const viteConfig = server.config
   if (viteServer.httpServer) await viteServer.listen()
-  if (options.startupLog) startupLog(viteServer, viteVersion, startTime)
+  if (options.startupLog) {
+    if (viteServer.resolvedUrls) {
+      startupLog(viteServer.resolvedUrls, viteServer, viteVersion, startTime)
+    } else {
+      // TODO
+    }
+  }
   return {
     viteServer,
     viteConfig,
@@ -31,7 +37,12 @@ async function dev(
   }
 }
 
-async function startupLog(viteServer: ViteDevServer, viteVersion: string, startTime: number) {
+async function startupLog(
+  resolvedUrls: ResolvedServerUrls,
+  viteServer: ViteDevServer,
+  viteVersion: string,
+  startTime: number,
+) {
   const startupDurationString = pc.dim(
     `ready in ${pc.reset(pc.bold(String(Math.ceil(performance.now() - startTime))))} ms`,
   )
@@ -46,10 +57,7 @@ async function startupLog(viteServer: ViteDevServer, viteVersion: string, startT
 
   // We don't call viteServer.printUrls() because Vite throws an error if `resolvedUrls` is missing:
   // https://github.com/vitejs/vite/blob/df5a30d2690a2ebc4824a79becdcef30538dc602/packages/vite/src/node/server/index.ts#L745
-  printServerUrls(
-    viteServer.resolvedUrls || { local: [`http://localhost:${viteConfig.server.port}`], network: [] },
-    viteConfig.server.host,
-  )
+  printServerUrls(resolvedUrls, viteConfig.server.host)
 
   viteServer.bindCLIShortcuts({ print: true })
 
