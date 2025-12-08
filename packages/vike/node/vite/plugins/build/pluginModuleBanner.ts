@@ -4,7 +4,7 @@ import type { ResolvedConfig, Plugin } from 'vite'
 import { assert, removeVirtualFileIdPrefix } from '../../utils.js'
 import { getMagicString } from '../../shared/getMagicString.js'
 
-// (Mis)-using legal comments so that esbuild doesn't remove them.
+// Misusing legal comments so that esbuild doesn't remove them.
 // - Legal comments: https://esbuild.github.io/api/#legal-comments
 // - Terser removes legal comments, but I guess users use terser to minify JavaScript so I guess it's a good thing that comment is removed.
 // - Rollup's banner feature doesn't work with Vite: https://github.com/vitejs/vite/issues/8412
