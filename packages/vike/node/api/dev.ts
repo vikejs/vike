@@ -50,7 +50,10 @@ async function printStartupLog(
 
   // We don't call viteServer.printUrls() because Vite throws an error if `resolvedUrls` is missing:
   // https://github.com/vitejs/vite/blob/df5a30d2690a2ebc4824a79becdcef30538dc602/packages/vite/src/node/server/index.ts#L745
-  printServerUrls(viteServer.resolvedUrls || { local: ['http://localhost:3000'], network: [] }, viteConfig.server.host)
+  printServerUrls(
+    viteServer.resolvedUrls || { local: [`http://localhost:${viteConfig.server.port}`], network: [] },
+    viteConfig.server.host,
+  )
 
   viteServer.bindCLIShortcuts({ print: true })
 
