@@ -29,7 +29,8 @@ async function dev(
       startupLog(viteServer.resolvedUrls, viteServer)
     } else {
       // TO-DO/eventually: remove if it doesn't end up being used
-      (viteConfig.server as Record<string, any>).startupLog = (resolvedUrls: ResolvedServerUrls) => startupLog(resolvedUrls, viteServer)
+      ;(viteConfig.server as Record<string, any>).startupLog = (resolvedUrls: ResolvedServerUrls) =>
+        startupLog(resolvedUrls, viteServer)
     }
   }
   return {
