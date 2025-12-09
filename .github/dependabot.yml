@@ -7,6 +7,7 @@ updates:
     groups:
       dependencies-we-control:
         patterns:
+          - "@batijs/*"
           - "@brillout/*"
           - "@photonjs/*"
           - "@universal-middleware/*"
