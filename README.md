@@ -1,6 +1,6 @@
 # 🔨 Vike
 
-[Replaces Next.js/Nuxt] *The composable framework to build advanced applications with stability and flexibility.*
+**Replaces Next.js/Nuxt** — *The composable framework to build advanced applications with stability and flexibility.*
 
 ## Links
 
@@ -11,8 +11,10 @@
 
 ## Monorepo
 
-This [monorepo](https://en.wikipedia.org/wiki/Monorepo) contains the source code of:
+This is the [monorepo](https://en.wikipedia.org/wiki/Monorepo) for:
 
-[packages/vike](packages/vike/) ➡️ Package [`vike`](https://npmjs.com/package/vike)  
-[packages/create-vike-core](packages/create-vike-core/) ➡️ Package [`create-vike-core`](https://npmjs.com/package/create-vike-core)  
-[docs](docs/) ➡️ Website [vike.dev](http://vike.dev)  
+| Source | Output |
+|--------|--------|
+| [packages/vike/](packages/vike/) | Package [`vike`](https://npmjs.com/package/vike) |
+| [packages/create-vike-core/](packages/create-vike-core/) | Package [`create-vike-core`](https://npmjs.com/package/create-vike-core) |
+| [docs/](docs/) | Website [vike.dev](http://vike.dev) |
