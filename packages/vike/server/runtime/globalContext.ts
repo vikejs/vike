@@ -447,13 +447,12 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
   }
 
   const isOutdated = () => {
-    const yes = (
+    const yes =
       // There is a newer call — let the new call supersede the old one.
       // We deliberately swallow the intermetidate state (including any potential error) — it's now outdated and has existed only for a very short period of time.
       globalObject.waitForUserFilesUpdate !== promise ||
       // Avoid race condition: abort if there is a new globalObject.viteDevServer (happens when vite.config.js is modified => Vite's dev server is fully reloaded).
       viteDevServer !== globalObject.viteDevServer
-    )
     if (yes) debugFileChange('updateUserFiles()', '=> aborted: isOutdated')
     return yes
   }
