@@ -12,6 +12,8 @@
   - https://nodejs.org/en/learn/getting-started/nodejs-the-difference-between-development-and-production
   - https://github.com/vikejs/vike/issues/1528
   - https://vite.dev/guide/env-and-mode.html#node-env-and-modes
+- Release `vike-{react,vue,solid}@1.0.0`
+  - https://github.com/vikejs/vike-vue/pull/215#issuecomment-3632362659
 
 = TO-DO/next-major-release:
 == Highest Prio
