@@ -1,6 +1,7 @@
+export { optimizeDeps }
 export { determineOptimizeDeps }
 
-import type { ResolvedConfig } from 'vite'
+import type { ResolvedConfig, UserConfig } from 'vite'
 import { findPageFiles } from '../../shared/findPageFiles.js'
 import {
   assert,
@@ -32,6 +33,37 @@ const WORKAROUND_LATE_DISCOVERY = [
   // Workaround for https://github.com/vikejs/vike/issues/2823#issuecomment-3514325487
   '@compiled/react/runtime',
 ]
+
+const optimizeDeps = {
+  optimizeDeps: {
+    exclude: [
+      // We must exclude Vike's client runtime so it can import virtual modules
+      'vike/client',
+      'vike/client/router',
+    ],
+    include: [
+      // Avoid:
+      // ```
+      // 9:28:58 AM [vite] ✨ new dependencies optimized: @brillout/json-serializer/parse
+      // 9:28:58 AM [vite] ✨ optimized dependencies changed. reloading
+      // ```
+      'vike > @brillout/json-serializer/parse',
+      'vike > @brillout/json-serializer/stringify',
+      'vike > @brillout/picocolors',
+    ],
+  },
+  ssr: {
+    optimizeDeps: {
+      exclude: [
+        '@brillout/import',
+        '@brillout/json-serializer',
+        '@brillout/picocolors',
+        '@brillout/vite-plugin-server-entry',
+        'vike',
+      ],
+    },
+  },
+} as const satisfies UserConfig
 
 async function determineOptimizeDeps(config: ResolvedConfig) {
   const vikeConfig = await getVikeConfigInternal()
