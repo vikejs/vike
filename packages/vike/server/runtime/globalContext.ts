@@ -411,7 +411,6 @@ function assertVersionAtBuildTime(versionAtBuildTime: string) {
   )
 }
 
-// TODO: recover from +onCreateGlobalContext runtime error doesn't work
 async function updateUserFiles(): Promise<{ success: boolean }> {
   debug('updateUserFiles()')
   debugFileChange('updateUserFiles()')
