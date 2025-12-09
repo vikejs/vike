@@ -9,8 +9,8 @@
     "@vitejs/plugin-vue": "^6.0.1",
     "pinia": "^3.0.1",
     "vike": "0.4.247",
-    "vike-vue": "^0.9.2",
-    "vike-vue-pinia": "^0.2.2",
+    "vike-vue": "^0.9.6",
+    "vike-vue-pinia": "^0.2.3",
     "vite": "^6.1.0",
     "vue": "^3.5.13"
   },
