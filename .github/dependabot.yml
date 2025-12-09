@@ -1,61 +1,16 @@
 version: 2
 updates:
-  # npm dependencies for the root workspace
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "daily"
     groups:
-      # Eagerly bump all dependencies we control
-      vike-packages:
+      controlled-dependencies:
         patterns:
-          - "vike"
-          - "vike-*"
-      brillout-packages:
-        patterns:
+          - "vike*"
           - "@brillout/*"
-      universal-middleware-packages:
-        patterns:
           - "@universal-middleware/*"
-    open-pull-requests-limit: 10
 
-  # npm dependencies for packages/vike
-  - package-ecosystem: "npm"
-    directory: "/packages/vike"
-    schedule:
-      interval: "daily"
-    groups:
-      vike-packages:
-        patterns:
-          - "vike"
-          - "vike-*"
-      brillout-packages:
-        patterns:
-          - "@brillout/*"
-      universal-middleware-packages:
-        patterns:
-          - "@universal-middleware/*"
-    open-pull-requests-limit: 10
-
-  # npm dependencies for packages/create-vike-core
-  - package-ecosystem: "npm"
-    directory: "/packages/create-vike-core"
-    schedule:
-      interval: "daily"
-    groups:
-      vike-packages:
-        patterns:
-          - "vike"
-          - "vike-*"
-      brillout-packages:
-        patterns:
-          - "@brillout/*"
-      universal-middleware-packages:
-        patterns:
-          - "@universal-middleware/*"
-    open-pull-requests-limit: 10
-
-  # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
