@@ -1,3 +1,11 @@
+TODO/ai: add dependabot with following configuration:
+- Eagerly bump all dependencies we control:
+  - Vike (vike-react, vike-photon, ...)
+  - @brillout/*
+  - @universal-middleware/*
+- Bump them as soon as possible
+
+
 = TO-DO/now
 - Add assertWarning() deprecations:
   - `pageContext.exports`
