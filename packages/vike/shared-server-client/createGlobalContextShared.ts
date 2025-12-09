@@ -33,7 +33,6 @@ async function createGlobalContextShared<GlobalContextAdded extends {}, GlobalCo
   addGlobalContextTmp?: (globalContext: GlobalContextBase) => Promise<GlobalContextAdded>,
   addGlobalContextAsync?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddedAsync>,
 ) {
-  // TODO/ai the previousCreateGlobalContextPromise needs to be resolved also when one of async call below rejects (otherwise the promise will never resolve)
   const { previousCreateGlobalContextPromise } = globalObject
   const { promise, resolve } = genPromise({
     // Avoid this Cloudflare Worker error:
@@ -48,65 +47,67 @@ async function createGlobalContextShared<GlobalContextAdded extends {}, GlobalCo
     await previousCreateGlobalContextPromise
   }
 
-  const globalContext = createGlobalContextBase(virtualFileExportsGlobalEntry)
+  try {
+    const globalContext = createGlobalContextBase(virtualFileExportsGlobalEntry)
 
-  let isNewGlobalContext: boolean
-  if (!globalObject.globalContext) {
-    // We set globalObject.globalContext early and before any async operations, so that getGlobalContextSync() can be used early.
-    // - Required by vike-vercel
-    globalObject.globalContext = globalContext
-    isNewGlobalContext = false
-  } else {
-    isNewGlobalContext = true
-  }
-
-  if (
-    addGlobalContext &&
-    // TO-DO/next-major-release: remove
-    globalContext._pageConfigs.length > 0
-  ) {
-    const globalContextAdded = addGlobalContext?.(globalContext)
-    objectAssign(globalContext, globalContextAdded)
-  } else {
-    const globalContextAdded = await addGlobalContextTmp?.(globalContext)
-    objectAssign(globalContext, globalContextAdded)
-  }
-
-  {
-    const globalContextAddedAsync = await addGlobalContextAsync?.(globalContext)
-    objectAssign(globalContext, globalContextAddedAsync)
-  }
-
-  const onCreateGlobalContextHooks = getHookFromPageConfigGlobalCumulative(
-    globalContext._pageConfigGlobal,
-    'onCreateGlobalContext',
-  )
-  let hooksCalled = false
-  if (!hooksAreEqual(globalObject.onCreateGlobalContextHooks ?? [], onCreateGlobalContextHooks)) {
-    globalObject.onCreateGlobalContextHooks = onCreateGlobalContextHooks
-    await execHookGlobal(
-      'onCreateGlobalContext',
-      globalContext._pageConfigGlobal,
-      null,
-      globalContext,
-      prepareGlobalContextForPublicUsage,
-    )
-    hooksCalled = true
-  }
-
-  if (isNewGlobalContext) {
-    // Singleton: ensure all `globalContext` user-land references are preserved & updated.
-    if (hooksCalled) {
-      objectReplace(globalObject.globalContext, globalContext)
+    let isNewGlobalContext: boolean
+    if (!globalObject.globalContext) {
+      // We set globalObject.globalContext early and before any async operations, so that getGlobalContextSync() can be used early.
+      // - Required by vike-vercel
+      globalObject.globalContext = globalContext
+      isNewGlobalContext = false
     } else {
-      // We don't use objectReplace() in order to keep user-land properties.
-      objectAssign(globalObject.globalContext, globalContext, true)
+      isNewGlobalContext = true
     }
+
+    if (
+      addGlobalContext &&
+      // TO-DO/next-major-release: remove
+      globalContext._pageConfigs.length > 0
+    ) {
+      const globalContextAdded = addGlobalContext?.(globalContext)
+      objectAssign(globalContext, globalContextAdded)
+    } else {
+      const globalContextAdded = await addGlobalContextTmp?.(globalContext)
+      objectAssign(globalContext, globalContextAdded)
+    }
+
+    {
+      const globalContextAddedAsync = await addGlobalContextAsync?.(globalContext)
+      objectAssign(globalContext, globalContextAddedAsync)
+    }
+
+    const onCreateGlobalContextHooks = getHookFromPageConfigGlobalCumulative(
+      globalContext._pageConfigGlobal,
+      'onCreateGlobalContext',
+    )
+    let hooksCalled = false
+    if (!hooksAreEqual(globalObject.onCreateGlobalContextHooks ?? [], onCreateGlobalContextHooks)) {
+      globalObject.onCreateGlobalContextHooks = onCreateGlobalContextHooks
+      await execHookGlobal(
+        'onCreateGlobalContext',
+        globalContext._pageConfigGlobal,
+        null,
+        globalContext,
+        prepareGlobalContextForPublicUsage,
+      )
+      hooksCalled = true
+    }
+
+    if (isNewGlobalContext) {
+      // Singleton: ensure all `globalContext` user-land references are preserved & updated.
+      if (hooksCalled) {
+        objectReplace(globalObject.globalContext, globalContext)
+      } else {
+        // We don't use objectReplace() in order to keep user-land properties.
+        objectAssign(globalObject.globalContext, globalContext, true)
+      }
+    }
+
+    return globalObject.globalContext as typeof globalContext
+  } finally {
+    resolve()
   }
-
-  resolve()
-
-  return globalObject.globalContext as typeof globalContext
 }
 
 type GlobalContextBasePublic = Pick<GlobalContextBase, 'config' | 'pages' | 'isGlobalContext'>
