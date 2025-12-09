@@ -3,6 +3,7 @@ export { providePageContext }
 
 // TO-DO/eventually: create new setting `+asyncHook: true` that sets the default value of the `asyncHook` parameter below to `true`
 // TODO/next-release: update vike-{react,vue,solid} usage
+// TODO/next-release: contact Da-Jin about `window.history.state?.vike` https://vike.dev/navigate#history-pushstate
 
 import { getPageContext_sync, providePageContext } from '../../shared-server-client/hooks/execHook.js'
 import { getPageContextClient } from './renderPageClient.js'
