@@ -7,6 +7,9 @@ updates:
     groups:
       dependencies-we-control:
         patterns:
-          - "vike*"
           - "@brillout/*"
+          - "@photonjs/*"
           - "@universal-middleware/*"
+          - "telefunc"
+          - "vike-*"
+          - "vite-plugin-vercel"
