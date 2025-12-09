@@ -5,7 +5,7 @@ updates:
     schedule:
       interval: "daily"
     groups:
-      controlled-dependencies:
+      dependencies-we-control:
         patterns:
           - "vike*"
           - "@brillout/*"
