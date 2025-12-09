@@ -168,7 +168,7 @@ async function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
       return vikeVirtualFiles
     } else {
       // Ensure we invalidate `file` *before* server.ssrLoadModule() in updateUserFiles()
-      // Vite already invalidates it, but *after* handleHotUpdate() and thus after server.ssrLoadModule()
+      // Vite also invalidates it, but *after* handleHotUpdate() and thus after server.ssrLoadModule()
       ctx.modules.forEach((mod) => server.moduleGraph.invalidateModule(mod))
       if (isRunnable(server)) {
         await updateUserFiles()
