@@ -25,6 +25,7 @@ import { getConfigValueSourcesRelevant } from '../pluginVirtualFiles/getConfigVa
 
 const debug = createDebug('vike:optimizeDeps')
 
+// Eagerly add dependencies that cannot be discovered early by Vite
 const WORKAROUND_LATE_DISCOVERY = [
   // Workaround for https://github.com/vitejs/vite-plugin-react/issues/650
   // - The issue was closed as completed with https://github.com/vitejs/vite/pull/20495 but it doesn't fix the issue and the workaround is still needed.
@@ -65,21 +66,18 @@ const optimizeDeps = {
   },
 } as const satisfies UserConfig
 
-/**
- * Configures Vite's dependency optimization for both client and server environments.
- * 
- * - Collects all page dependencies (entries and npm packages) from page configs
- * - Adds workarounds for late-discovered dependencies (e.g., react/jsx-dev-runtime)
- * - Populates config.optimizeDeps.entries and config.optimizeDeps.include for client
- * - Populates environment-specific optimizeDeps for server environments
- * - Supports both V1 design (config-based) and V0.4 design (.page files)
- */
+// Populate optimizeDeps with dynamic entries:
+// - User's + files (i.e. Vike entries)
+// - Late discovered dependencies (if they exist)
+// - Make server environments inherit from ssr.optimizeDeps (it isn't the case by default)
 async function resolveOptimizeDeps(config: ResolvedConfig) {
   const vikeConfig = await getVikeConfigInternal()
   const { _pageConfigs: pageConfigs } = vikeConfig
 
+  // Retrieve user's + files (i.e. Vike entries)
   const { entriesClient, entriesServer, includeClient, includeServer } = await getPageDeps(config, pageConfigs)
 
+  // Late discovered dependencies
   WORKAROUND_LATE_DISCOVERY.forEach((dep) => {
     const userRootDir = config.root
     const resolved = requireResolveOptional({ importPath: dep, userRootDir, importerFilePath: null })
@@ -100,8 +98,11 @@ async function resolveOptimizeDeps(config: ResolvedConfig) {
     }
   })
 
+  // Set optimizeDeps (client-side)
   config.optimizeDeps.include = add(config.optimizeDeps.include, includeClient)
   config.optimizeDeps.entries = add(config.optimizeDeps.entries, entriesClient)
+
+  // Set optimizeDeps (server-side)
   for (const envName in config.environments) {
     const env = config.environments[envName]!
     if (env.consumer === 'server' && env.optimizeDeps.noDiscovery === false) {
@@ -110,6 +111,7 @@ async function resolveOptimizeDeps(config: ResolvedConfig) {
     }
   }
 
+  // Debug
   if (debug.isActivated)
     debug('optimizeDeps', {
       'config.optimizeDeps.entries': config.optimizeDeps.entries,
