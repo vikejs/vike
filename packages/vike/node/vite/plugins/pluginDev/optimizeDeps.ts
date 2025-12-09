@@ -65,7 +65,15 @@ const optimizeDeps = {
   },
 } as const satisfies UserConfig
 
-// TODO/copilot: add comment with bullet points of what resolveOptimizeDeps does
+/**
+ * Configures Vite's dependency optimization for both client and server environments.
+ * 
+ * - Collects all page dependencies (entries and npm packages) from page configs
+ * - Adds workarounds for late-discovered dependencies (e.g., react/jsx-dev-runtime)
+ * - Populates config.optimizeDeps.entries and config.optimizeDeps.include for client
+ * - Populates environment-specific optimizeDeps for server environments
+ * - Supports both V1 design (config-based) and V0.4 design (.page files)
+ */
 async function resolveOptimizeDeps(config: ResolvedConfig) {
   const vikeConfig = await getVikeConfigInternal()
   const { _pageConfigs: pageConfigs } = vikeConfig
