@@ -7,13 +7,13 @@
     "server:prod": "cross-env NODE_ENV=production node ./server"
   },
   "dependencies": {
-    "@types/express": "^5.0.1",
+    "@types/express": "^5.0.6",
     "@types/react": "^18.0.8",
     "@types/react-dom": "^18.0.3",
     "@vitejs/plugin-react": "^4.7.0",
     "cookie-parser": "^1.4.6",
     "cross-env": "^7.0.3",
-    "express": "5.0.1",
+    "express": "5.2.1",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "typescript": "^5.9.3",

@@ -10,7 +10,7 @@
     "@vitejs/plugin-react": "^4.7.0",
     "compression": "^1.7.4",
     "cross-env": "^7.0.3",
-    "express": "^5.1.0",
+    "express": "^5.2.1",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "sirv": "^2.0.3",

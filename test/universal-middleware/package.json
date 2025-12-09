@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@universal-middleware/express": "^0.4.22",
-    "express": "^5.1.0",
+    "express": "^5.2.1",
     "@vitejs/plugin-react": "^4.7.0",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
@@ -20,7 +20,7 @@
     "typescript": "^5.9.3",
     "vike": "0.4.247",
     "vite": "^6.3.5",
-    "@types/express": "^5.0.1",
+    "@types/express": "^5.0.6",
     "tsx": "^4.19.4",
     "cross-env": "^7.0.3",
     "@types/react": "^19.1.3",
