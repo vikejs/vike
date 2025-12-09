@@ -77,7 +77,7 @@ async function resolveOptimizeDeps(config: ResolvedConfig) {
   // Retrieve user's + files (i.e. Vike entries)
   const { entriesClient, entriesServer, includeClient, includeServer } = await getPageDeps(config, pageConfigs)
 
-  // Late discovered dependencies
+  // Add late discovered dependencies, if they exist
   LATE_DISCOVERED.forEach((dep) => {
     const userRootDir = config.root
     const resolved = requireResolveOptional({ importPath: dep, userRootDir, importerFilePath: null })
