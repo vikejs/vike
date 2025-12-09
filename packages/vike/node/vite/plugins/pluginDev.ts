@@ -2,7 +2,7 @@ export { pluginDev }
 export { logDockerHint }
 
 import { type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
-import { optimizeDeps, determineOptimizeDeps } from './pluginDev/determineOptimizeDeps.js'
+import { optimizeDeps, determineOptimizeDeps } from './pluginDev/optimizeDeps.js'
 import { determineFsAllowList } from './pluginDev/determineFsAllowList.js'
 import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
 import { applyDev, assertWarning, isDocker, isDebugError } from '../utils.js'
