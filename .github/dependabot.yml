@@ -10,8 +10,3 @@ updates:
           - "vike*"
           - "@brillout/*"
           - "@universal-middleware/*"
-
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "weekly"
