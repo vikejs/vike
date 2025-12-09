@@ -14,7 +14,7 @@
     "@types/node": "^24.1.0",
     "@types/react": "^19.1.9",
     "@types/react-dom": "^19.1.7",
-    "@universal-middleware/express": "^0.4.19",
+    "@universal-middleware/express": "^0.4.22",
     "@vercel/node": "^5.3.7",
     "@vitejs/plugin-react-swc": "^3.11.0",
     "express": "^5.1.0",
@@ -22,10 +22,10 @@
     "tsx": "^4.20.3",
     "typescript": "^5.9.3",
     "vike": "0.4.247",
-    "vike-react": "^0.6.5",
+    "vike-react": "^0.6.13",
     "vite": "^7.0.6"
   },
   "dependencies": {
-    "vite-plugin-vercel": "^9.0.7"
+    "vite-plugin-vercel": "^9.0.8"
   }
 }
