@@ -16,7 +16,7 @@
     "react-dom": "^19.2.1",
     "typescript": "^5.9.3",
     "vike": "^0.4.247",
-    "vike-server": "^1.0.23",
+    "vike-server": "^1.0.25",
     "vite": "^6.3.2"
   },
   "type": "module"
