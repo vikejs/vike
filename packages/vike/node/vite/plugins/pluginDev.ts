@@ -2,7 +2,7 @@ export { pluginDev }
 export { logDockerHint }
 
 import { type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
-import { optimizeDeps, determineOptimizeDeps } from './pluginDev/optimizeDeps.js'
+import { optimizeDeps, resolveOptimizeDeps } from './pluginDev/optimizeDeps.js'
 import { determineFsAllowList } from './pluginDev/determineFsAllowList.js'
 import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
 import { applyDev, assertWarning, isDocker, isDebugError } from '../utils.js'
@@ -27,7 +27,7 @@ function pluginDev(): Plugin[] {
       configResolved: {
         async handler(config_) {
           config = config_
-          await determineOptimizeDeps(config)
+          await resolveOptimizeDeps(config)
           await determineFsAllowList(config)
           interceptViteLogs(config)
           logDockerHint(config.server.host)

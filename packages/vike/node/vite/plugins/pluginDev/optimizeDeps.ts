@@ -1,5 +1,5 @@
 export { optimizeDeps }
-export { determineOptimizeDeps }
+export { resolveOptimizeDeps }
 
 import type { ResolvedConfig, UserConfig } from 'vite'
 import { findPageFiles } from '../../shared/findPageFiles.js'
@@ -65,8 +65,8 @@ const optimizeDeps = {
   },
 } as const satisfies UserConfig
 
-// TODO/copilot: add comment with bullet points of what determineOptimizeDeps does
-async function determineOptimizeDeps(config: ResolvedConfig) {
+// TODO/copilot: add comment with bullet points of what resolveOptimizeDeps does
+async function resolveOptimizeDeps(config: ResolvedConfig) {
   const vikeConfig = await getVikeConfigInternal()
   const { _pageConfigs: pageConfigs } = vikeConfig
 

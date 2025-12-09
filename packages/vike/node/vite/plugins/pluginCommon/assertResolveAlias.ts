@@ -61,7 +61,7 @@ function assertResolveAlias(config: ResolvedConfig) {
       }
 
       // Ensure path alias are distinguishable from npm package names, which is needed by:
-      //  - determineOptimizeDeps()
+      //  - resolveOptimizeDeps()
       //  - extractAssets
       //  - in general: using un-distinguishable path aliases is asking for trouble
       if (!isPathAliasRecommended(find)) {
