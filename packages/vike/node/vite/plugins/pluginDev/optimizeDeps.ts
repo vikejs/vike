@@ -25,8 +25,8 @@ import { getConfigValueSourcesRelevant } from '../pluginVirtualFiles/getConfigVa
 
 const debug = createDebug('vike:optimizeDeps')
 
-// Eagerly add dependencies that cannot be discovered early by Vite
-const WORKAROUND_LATE_DISCOVERY = [
+// Add dependencies that cannot be discovered by Vite during the scanning phase
+const LATE_DISCOVERED = [
   // Workaround for https://github.com/vitejs/vite-plugin-react/issues/650
   // - The issue was closed as completed with https://github.com/vitejs/vite/pull/20495 but it doesn't fix the issue and the workaround is still needed.
   // - TO-DO/eventually: try removing the workaround and see if the CI fails (at test/@cloudflare_vite-plugin/) — maybe the issue will get fixed at some point.
@@ -78,7 +78,7 @@ async function resolveOptimizeDeps(config: ResolvedConfig) {
   const { entriesClient, entriesServer, includeClient, includeServer } = await getPageDeps(config, pageConfigs)
 
   // Late discovered dependencies
-  WORKAROUND_LATE_DISCOVERY.forEach((dep) => {
+  LATE_DISCOVERED.forEach((dep) => {
     const userRootDir = config.root
     const resolved = requireResolveOptional({ importPath: dep, userRootDir, importerFilePath: null })
     const resolvedInsideRepo = resolved && resolved.startsWith(userRootDir)
