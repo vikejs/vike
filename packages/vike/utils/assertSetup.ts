@@ -51,7 +51,7 @@ function onSetupRuntime(): void | undefined {
       !setup.vikeVitePlugin,
       `Vike's Vite plugin (the ${pc.cyan('vike/plugin')} module) shouldn't be loaded in production, see ${pc.underline('https://vike.dev/warning/setup')}`,
     )
-    // This assert() one of the main goal of this file: it ensures assertIsNotProductionRuntime()
+    // This assert() one of the main goal of this file: it implements assertIsNotProductionRuntime()
     assert(!setup.shouldNotBeProduction)
   } else {
     if (!setup.isPreview && !setup.vitePreviewServer && !setup.isPrerendering) {
