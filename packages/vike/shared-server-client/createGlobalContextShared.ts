@@ -33,6 +33,7 @@ async function createGlobalContextShared<GlobalContextAdded extends {}, GlobalCo
   addGlobalContextTmp?: (globalContext: GlobalContextBase) => Promise<GlobalContextAdded>,
   addGlobalContextAsync?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddedAsync>,
 ) {
+  // TODO/ai the previousCreateGlobalContextPromise needs to be resolved also when one of async call below rejects (otherwise the promise will never resolve)
   const { previousCreateGlobalContextPromise } = globalObject
   const { promise, resolve } = genPromise({
     // Avoid this Cloudflare Worker error:
