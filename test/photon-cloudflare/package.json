@@ -10,18 +10,18 @@
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "vike": "0.4.247",
-    "vike-photon": "^0.1.14",
-    "vike-react": "^0.6.10"
+    "vike-photon": "^0.1.23",
+    "vike-react": "^0.6.13"
   },
   "devDependencies": {
-    "@photonjs/cloudflare": "^0.1.4",
-    "@photonjs/runtime": "^0.1.4",
-    "@types/react": "^19.1.9",
-    "@types/react-dom": "^19.1.7",
-    "@vitejs/plugin-react": "^5.1.0",
+    "@photonjs/cloudflare": "^0.1.12",
+    "@photonjs/runtime": "^0.1.15",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.2",
     "typescript": "^5.9.3",
-    "vite": "^7.1.12",
-    "wrangler": "^4.45.3"
+    "vite": "^7.2.7",
+    "wrangler": "^4.53.0"
   },
   "type": "module"
 }
