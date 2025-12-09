@@ -13,6 +13,7 @@ import { isObject } from './isObject.js'
 const flags = [
   'vike',
   'vike:crawl',
+  'vike:file-change',
   'vike:error',
   'vike:esbuild-resolve',
   'vike:pluginExtractAssets',

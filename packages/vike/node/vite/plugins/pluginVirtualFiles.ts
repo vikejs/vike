@@ -23,7 +23,7 @@ import { getFilePathToShowToUserModule } from '../shared/getFilePath.js'
 import { isRunnable, updateUserFiles } from '../../../server/runtime/globalContext.js'
 import { isPlusFile } from '../shared/resolveVikeConfigInternal/crawlPlusFiles.js'
 import { isTemporaryBuildFile } from '../shared/resolveVikeConfigInternal/transpileAndExecuteFile.js'
-import { getVikeConfigError } from '../../../shared-server-node/getVikeConfigError.js'
+import { debugFileChange, getVikeConfigError } from '../../../shared-server-node/getVikeConfigError.js'
 
 const filterRolldown = {
   id: {
@@ -53,6 +53,7 @@ function pluginVirtualFiles(): Plugin[] {
       },
       handleHotUpdate: {
         async handler(ctx) {
+          debugFileChange('handleHotUpdate()', ctx.file)
           try {
             return await handleHotUpdate(ctx, config)
           } catch (err) {
@@ -105,9 +106,11 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
   async function listener(file: string, isRemove: boolean) {
     file = normalizePath(file)
     if (isTemporaryBuildFile(file)) return
+    const operation = isRemove ? 'removed' : 'created'
+    debugFileChange('server.watcher', file, operation)
     const { moduleGraph } = server
     const isVikeConfigDep = await isVikeConfigDependency(file, moduleGraph)
-    const reload = () => reloadConfig(file, config, isRemove ? 'removed' : 'created', server)
+    const reload = () => reloadConfig(file, config, operation, server)
 
     // Config code
     if (isVikeConfigDep && !isVikeConfigDep.isProcessedByVite) {
@@ -152,6 +155,7 @@ function invalidateVikeVirtualFiles(server: ViteDevServer) {
 async function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
   const { file, server } = ctx
   const isVikeConfigDep = await isVikeConfigDependency(ctx.file, ctx.server.moduleGraph)
+  debugFileChange(isVikeConfigDep)
 
   if (isVikeConfigDep) {
     if (!isVikeConfigDep.isProcessedByVite) {
@@ -207,7 +211,7 @@ async function isVikeConfigDependency(
 function reloadConfig(
   filePath: string,
   config: ResolvedConfig,
-  op: 'modified' | 'created' | 'removed',
+  operation: 'modified' | 'created' | 'removed',
   server: ViteDevServer,
 ) {
   // Ensure server.ssrLoadModule() loads fresh Vike virtual files (`reloadConfig()` > `updateUserFiles()` > `server.ssrLoadModule()`)
@@ -215,7 +219,7 @@ function reloadConfig(
 
   {
     const filePathToShowToUserResolved = getFilePathToShowToUserModule(filePath, config)
-    const msg = `${op} ${pc.dim(filePathToShowToUserResolved)}` as const
+    const msg = `${operation} ${pc.dim(filePathToShowToUserResolved)}` as const
     logConfigInfo(msg, 'info')
   }
 
