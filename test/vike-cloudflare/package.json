@@ -21,7 +21,7 @@
     "@universal-middleware/core": "^0.4.13",
     "typescript": "^5.9.3",
     "vike-cloudflare": "^0.2.7",
-    "wrangler": "^4.46.0"
+    "wrangler": "^4.53.0"
   },
   "type": "module"
 }
