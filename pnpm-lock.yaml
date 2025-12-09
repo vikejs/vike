@@ -1535,6 +1535,49 @@ importers:
         specifier: ^6.3.2
         version: 6.3.5(@types/node@24.10.1)(terser@5.38.1)(tsx@4.20.6)
 
+  test/photon-cloudflare:
+    dependencies:
+      react:
+        specifier: ^19.2.1
+        version: 19.2.1
+      react-dom:
+        specifier: ^19.2.1
+        version: 19.2.1(react@19.2.1)
+      vike:
+        specifier: 0.4.247
+        version: link:../../packages/vike
+      vike-photon:
+        specifier: ^0.1.14
+        version: 0.1.14(mikuhgfhnoy3imrcsrmnibou44)
+      vike-react:
+        specifier: ^0.6.10
+        version: 0.6.13(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
+    devDependencies:
+      '@photonjs/cloudflare':
+        specifier: ^0.1.4
+        version: 0.1.5(@hattip/core@0.0.49)(@types/express@5.0.3)(hono@4.10.4)(vite@7.2.6(@types/node@24.10.1)(terser@5.38.1)(tsx@4.20.6))(wrangler@4.46.0)
+      '@photonjs/runtime':
+        specifier: ^0.1.4
+        version: 0.1.4(@hattip/core@0.0.49)(@types/express@5.0.3)(hono@4.10.4)(vite@7.2.6(@types/node@24.10.1)(terser@5.38.1)(tsx@4.20.6))
+      '@types/react':
+        specifier: ^19.1.9
+        version: 19.2.7
+      '@types/react-dom':
+        specifier: ^19.1.7
+        version: 19.2.3(@types/react@19.2.7)
+      '@vitejs/plugin-react':
+        specifier: ^5.1.0
+        version: 5.1.1(vite@7.2.6(@types/node@24.10.1)(terser@5.38.1)(tsx@4.20.6))
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^7.1.12
+        version: 7.2.6(@types/node@24.10.1)(terser@5.38.1)(tsx@4.20.6)
+      wrangler:
+        specifier: ^4.45.3
+        version: 4.46.0
+
   test/playground:
     dependencies:
       '@mdx-js/mdx':
@@ -1754,49 +1797,6 @@ importers:
         version: 0.2.7(@hattip/core@0.0.49)(@types/express@5.0.3)(hono@4.10.4)(vike@packages+vike)(vite@7.2.6(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))
       wrangler:
         specifier: ^4.46.0
-        version: 4.46.0
-
-  test/vike-photon-cloudflare:
-    dependencies:
-      react:
-        specifier: ^19.2.1
-        version: 19.2.1
-      react-dom:
-        specifier: ^19.2.1
-        version: 19.2.1(react@19.2.1)
-      vike:
-        specifier: 0.4.247
-        version: link:../../packages/vike
-      vike-photon:
-        specifier: ^0.1.14
-        version: 0.1.14(mikuhgfhnoy3imrcsrmnibou44)
-      vike-react:
-        specifier: ^0.6.10
-        version: 0.6.13(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
-    devDependencies:
-      '@photonjs/cloudflare':
-        specifier: ^0.1.4
-        version: 0.1.5(@hattip/core@0.0.49)(@types/express@5.0.3)(hono@4.10.4)(vite@7.2.6(@types/node@24.10.1)(terser@5.38.1)(tsx@4.20.6))(wrangler@4.46.0)
-      '@photonjs/runtime':
-        specifier: ^0.1.4
-        version: 0.1.4(@hattip/core@0.0.49)(@types/express@5.0.3)(hono@4.10.4)(vite@7.2.6(@types/node@24.10.1)(terser@5.38.1)(tsx@4.20.6))
-      '@types/react':
-        specifier: ^19.1.9
-        version: 19.2.5
-      '@types/react-dom':
-        specifier: ^19.1.7
-        version: 19.2.3(@types/react@19.2.5)
-      '@vitejs/plugin-react':
-        specifier: ^5.1.0
-        version: 5.1.1(vite@7.2.6(@types/node@24.10.1)(terser@5.38.1)(tsx@4.20.6))
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-      vite:
-        specifier: ^7.1.12
-        version: 7.2.6(@types/node@24.10.1)(terser@5.38.1)(tsx@4.20.6)
-      wrangler:
-        specifier: ^4.45.3
         version: 4.46.0
 
   test/vike-photon-vercel:
