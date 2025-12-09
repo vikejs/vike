@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.7.0",
-    "concurrently": "^7.1.0",
+    "concurrently": "^9.2.1",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "express": "^5.1.0",
