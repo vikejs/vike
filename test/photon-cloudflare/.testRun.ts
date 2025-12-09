@@ -3,11 +3,6 @@ export { testRun }
 import { autoRetry, expect, fetch, fetchHtml, getServerUrl, page, run, skip, test } from '@brillout/test-e2e'
 
 function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
-  if (cmd === 'pnpm run dev') {
-    skip('DISABLED: issues with optimizeDeps — TO-DO/eventually: dig into this')
-    return
-  }
-
   run(cmd, {
     serverUrl: 'http://localhost:3000',
     tolerateError({ logText }) {

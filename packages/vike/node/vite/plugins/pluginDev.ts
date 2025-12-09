@@ -37,6 +37,17 @@ function pluginDev(): Plugin[] {
                 'vike > @brillout/picocolors',
               ],
             },
+            ssr: {
+              optimizeDeps: {
+                exclude: [
+                  '@brillout/import',
+                  '@brillout/json-serializer',
+                  '@brillout/picocolors',
+                  '@brillout/vite-plugin-server-entry',
+                  'vike',
+                ],
+              },
+            },
           } satisfies UserConfig
         },
       },
