@@ -11,6 +11,7 @@ updates:
           - "@brillout/*"
           - "@photonjs/*"
           - "@universal-middleware/*"
+          - "react-streaming"
           - "telefunc"
           - "vike-*"
           - "vite-plugin-vercel"
