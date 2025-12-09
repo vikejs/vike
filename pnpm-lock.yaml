@@ -1691,7 +1691,7 @@ importers:
     dependencies:
       '@apollo/client':
         specifier: 3.6.9
-        version: 3.6.9(graphql@16.5.0)(react@18.2.0)
+        version: 3.6.9(graphql@16.12.0)(react@18.2.0)
       '@vitejs/plugin-react':
         specifier: ^4.7.0
         version: 4.7.0(vite@6.3.5(@types/node@24.10.1)(terser@5.38.1)(tsx@4.20.6))
@@ -1702,8 +1702,8 @@ importers:
         specifier: ^5.1.0
         version: 5.2.1
       graphql:
-        specifier: 16.5.0
-        version: 16.5.0
+        specifier: 16.12.0
+        version: 16.12.0
       node-fetch:
         specifier: 2.6.1
         version: 2.6.1
@@ -6324,8 +6324,8 @@ packages:
     peerDependencies:
       graphql: ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
 
-  graphql@16.5.0:
-    resolution: {integrity: sha512-qbHgh8Ix+j/qY+a/ZcJnFQ+j8ezakqPiHwPiZhV/3PgGlgf96QMBB5/f2rkiC9sgLoy/xvT6TSiaf2nTHJh5iA==}
+  graphql@16.12.0:
+    resolution: {integrity: sha512-DKKrynuQRne0PNpEbzuEdHlYOMksHSUI8Zc9Unei5gTsMNA2/vMpoMz/yKba50pejK56qj98qM0SjYxAKi13gQ==}
     engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
 
   gray-matter@4.0.3:
@@ -9249,14 +9249,14 @@ snapshots:
     dependencies:
       '@algolia/client-common': 5.21.0
 
-  '@apollo/client@3.6.9(graphql@16.5.0)(react@18.2.0)':
+  '@apollo/client@3.6.9(graphql@16.12.0)(react@18.2.0)':
     dependencies:
-      '@graphql-typed-document-node/core': 3.2.0(graphql@16.5.0)
+      '@graphql-typed-document-node/core': 3.2.0(graphql@16.12.0)
       '@wry/context': 0.6.1
       '@wry/equality': 0.5.7
       '@wry/trie': 0.3.2
-      graphql: 16.5.0
-      graphql-tag: 2.12.6(graphql@16.5.0)
+      graphql: 16.12.0
+      graphql-tag: 2.12.6(graphql@16.12.0)
       hoist-non-react-statics: 3.3.2
       optimism: 0.16.2
       prop-types: 15.8.1
@@ -10202,9 +10202,9 @@ snapshots:
 
   '@fastify/busboy@2.1.1': {}
 
-  '@graphql-typed-document-node/core@3.2.0(graphql@16.5.0)':
+  '@graphql-typed-document-node/core@3.2.0(graphql@16.12.0)':
     dependencies:
-      graphql: 16.5.0
+      graphql: 16.12.0
 
   '@hattip/adapter-cloudflare-workers@0.0.49':
     dependencies:
@@ -13654,12 +13654,12 @@ snapshots:
 
   graceful-fs@4.2.11: {}
 
-  graphql-tag@2.12.6(graphql@16.5.0):
+  graphql-tag@2.12.6(graphql@16.12.0):
     dependencies:
-      graphql: 16.5.0
+      graphql: 16.12.0
       tslib: 2.8.1
 
-  graphql@16.5.0: {}
+  graphql@16.12.0: {}
 
   gray-matter@4.0.3:
     dependencies:
