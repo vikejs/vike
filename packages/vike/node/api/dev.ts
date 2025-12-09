@@ -5,9 +5,10 @@ export { startupLog }
 import { prepareViteApiCall } from './prepareViteApiCall.js'
 import { createServer, type ResolvedConfig, type ViteDevServer } from 'vite'
 import type { ApiOptions } from './types.js'
-import { assert, colorVike, colorVite, PROJECT_VERSION } from './utils.js'
+import { assert, assertIsNotProductionRuntime, colorVike, colorVite, PROJECT_VERSION } from './utils.js'
 import pc from '@brillout/picocolors'
 import { processStartupLog } from '../vite/shared/loggerVite.js'
+assertIsNotProductionRuntime()
 
 /**
  * Programmatically trigger `$ vike dev`
