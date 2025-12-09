@@ -1,8 +1,8 @@
 export { pluginDev }
 export { logDockerHint }
 
-import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
-import { determineOptimizeDeps } from './pluginDev/determineOptimizeDeps.js'
+import { type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
+import { optimizeDeps, resolveOptimizeDeps } from './pluginDev/optimizeDeps.js'
 import { determineFsAllowList } from './pluginDev/determineFsAllowList.js'
 import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
 import { applyDev, assertWarning, isDocker, isDebugError } from '../utils.js'
@@ -20,41 +20,14 @@ function pluginDev(): Plugin[] {
         handler() {
           return {
             appType: 'custom',
-            optimizeDeps: {
-              exclude: [
-                // We must exclude Vike's client runtime so it can import virtual modules
-                'vike/client',
-                'vike/client/router',
-              ],
-              include: [
-                // Avoid:
-                // ```
-                // 9:28:58 AM [vite] ✨ new dependencies optimized: @brillout/json-serializer/parse
-                // 9:28:58 AM [vite] ✨ optimized dependencies changed. reloading
-                // ```
-                'vike > @brillout/json-serializer/parse',
-                'vike > @brillout/json-serializer/stringify',
-                'vike > @brillout/picocolors',
-              ],
-            },
-            ssr: {
-              optimizeDeps: {
-                exclude: [
-                  '@brillout/import',
-                  '@brillout/json-serializer',
-                  '@brillout/picocolors',
-                  '@brillout/vite-plugin-server-entry',
-                  'vike',
-                ],
-              },
-            },
+            ...optimizeDeps,
           } satisfies UserConfig
         },
       },
       configResolved: {
         async handler(config_) {
           config = config_
-          await determineOptimizeDeps(config)
+          await resolveOptimizeDeps(config)
           await determineFsAllowList(config)
           interceptViteLogs(config)
           logDockerHint(config.server.host)

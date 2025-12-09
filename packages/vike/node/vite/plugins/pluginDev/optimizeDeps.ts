@@ -1,6 +1,7 @@
-export { determineOptimizeDeps }
+export { optimizeDeps }
+export { resolveOptimizeDeps }
 
-import type { ResolvedConfig } from 'vite'
+import type { ResolvedConfig, UserConfig } from 'vite'
 import { findPageFiles } from '../../shared/findPageFiles.js'
 import {
   assert,
@@ -24,7 +25,8 @@ import { getConfigValueSourcesRelevant } from '../pluginVirtualFiles/getConfigVa
 
 const debug = createDebug('vike:optimizeDeps')
 
-const WORKAROUND_LATE_DISCOVERY = [
+// Add dependencies that cannot be discovered by Vite during the scanning phase
+const LATE_DISCOVERED = [
   // Workaround for https://github.com/vitejs/vite-plugin-react/issues/650
   // - The issue was closed as completed with https://github.com/vitejs/vite/pull/20495 but it doesn't fix the issue and the workaround is still needed.
   // - TO-DO/eventually: try removing the workaround and see if the CI fails (at test/@cloudflare_vite-plugin/) — maybe the issue will get fixed at some point.
@@ -33,13 +35,50 @@ const WORKAROUND_LATE_DISCOVERY = [
   '@compiled/react/runtime',
 ]
 
-async function determineOptimizeDeps(config: ResolvedConfig) {
+const optimizeDeps = {
+  optimizeDeps: {
+    exclude: [
+      // We must exclude Vike's client runtime so it can import virtual modules
+      'vike/client',
+      'vike/client/router',
+    ],
+    include: [
+      // Avoid:
+      // ```
+      // 9:28:58 AM [vite] ✨ new dependencies optimized: @brillout/json-serializer/parse
+      // 9:28:58 AM [vite] ✨ optimized dependencies changed. reloading
+      // ```
+      'vike > @brillout/json-serializer/parse',
+      'vike > @brillout/json-serializer/stringify',
+      'vike > @brillout/picocolors',
+    ],
+  },
+  ssr: {
+    optimizeDeps: {
+      exclude: [
+        '@brillout/import',
+        '@brillout/json-serializer',
+        '@brillout/picocolors',
+        '@brillout/vite-plugin-server-entry',
+        'vike',
+      ],
+    },
+  },
+} as const satisfies UserConfig
+
+// Populate optimizeDeps with dynamic entries:
+// - User's + files (i.e. Vike entries)
+// - Late discovered dependencies (if they exist)
+// - Make server environments inherit from ssr.optimizeDeps (it isn't the case by default)
+async function resolveOptimizeDeps(config: ResolvedConfig) {
   const vikeConfig = await getVikeConfigInternal()
   const { _pageConfigs: pageConfigs } = vikeConfig
 
+  // Retrieve user's + files (i.e. Vike entries)
   const { entriesClient, entriesServer, includeClient, includeServer } = await getPageDeps(config, pageConfigs)
 
-  WORKAROUND_LATE_DISCOVERY.forEach((dep) => {
+  // Add late discovered dependencies, if they exist
+  LATE_DISCOVERED.forEach((dep) => {
     const userRootDir = config.root
     const resolved = requireResolveOptional({ importPath: dep, userRootDir, importerFilePath: null })
     const resolvedInsideRepo = resolved && resolved.startsWith(userRootDir)
@@ -59,8 +98,11 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
     }
   })
 
+  // Set optimizeDeps (client-side)
   config.optimizeDeps.include = add(config.optimizeDeps.include, includeClient)
   config.optimizeDeps.entries = add(config.optimizeDeps.entries, entriesClient)
+
+  // Set optimizeDeps (server-side)
   for (const envName in config.environments) {
     const env = config.environments[envName]!
     if (env.consumer === 'server' && env.optimizeDeps.noDiscovery === false) {
@@ -69,6 +111,7 @@ async function determineOptimizeDeps(config: ResolvedConfig) {
     }
   }
 
+  // Debug
   if (debug.isActivated)
     debug('optimizeDeps', {
       'config.optimizeDeps.entries': config.optimizeDeps.entries,
