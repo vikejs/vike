@@ -675,7 +675,7 @@ function isProcessSharedWithVite(): boolean {
 }
 
 function isRunnable(viteDevServer: ViteDevServer): boolean {
-  assert(!isNonRunnableDev())
+  assert(!isNonRunnableDev()) // if `viteDevServer` exists => cannot be inside a non-runnable process
   const yes =
     // Vite 5
     !viteDevServer.environments ||
