@@ -1,9 +1,43 @@
-import { Link } from '@brillout/docpress'
+import { Link, Warning } from '@brillout/docpress'
 import { UiFrameworkExtension } from '../../components'
 
-The `getPageContext()` function allows you to access the <Link href="/pageContext">`pageContext` object</Link> inside Vike hooks.
+Usually, the <Link href="/pageContext">`pageContext` object</Link> can be access via <Link href="/usePageContext">`usePageContext()`</Link> or <Link href="/hooks">Vike hook</Link> arguments.
 
-> It's only useful if you're building a <Link href="/extensions">Vike extension</Link> and you want to implement a <Link href="#universal-hooks">universal hook</Link>. If you aren't building a Vike extension, then you don't need to know about `getPageContext()`.
+But in rare cases, there isn't any straightforward way to access the `pageContext` object. You can then use `getPageContext()`.
+
+```ts
+// Environment: server, client
+
+import { getPageContext } from 'vike/getPageContext'
+
+function anywhere() {
+  const pageContext = getPageContext({ asyncHook: true })
+}
+```
+
+When setting `asyncHook: true`, Vike uses its internal [async hook](https://nodejs.org/api/async_hooks.html) to access the `pageContext` object on the server. This guarantees `pageContext` access anywhere, as long as `getPageContext()` is called from a stack trace originating from the SSR HTTP request.
+
+<Warning>
+  **Use `getPageContext({ asyncHook: true })` only as last resort**, because some deployment platforms don't support [async hooks](https://nodejs.org/api/async_hooks.html). (Such as [using Cloudflare without `nodejs_compat`](https://developers.cloudflare.com/workers/runtime-apis/nodejs/asynclocalstorage/) for maximum efficiency.)
+
+  Always prefer and first try using <Link href="/usePageContext">`usePageContext()`</Link> or <Link href="/hooks">Vike hook</Link> arguments before using `getPageContext({ asyncHook: true })`.
+</Warning>
+
+> Using `getPageContext()` without `asyncHook: true` has limited value. Its only use case is enabling extensions to create so-called <Link href="#use-case-universal-hook">universal hooks</Link> — if you aren't building a Vike extension, then `getPageContext()` without `asyncHook: true` is most likely useless for you.
+
+
+## Use case: instrumentation
+
+The most common use case for `getPageContext({ asyncHook: true })` is [instrumentation](https://en.wikipedia.org/wiki/Instrumentation).
+
+Collecting logs is usually done by monkey patching `console.log()` — using `getPageContext({ asyncHook: true })` is the only practical way for accessing the `pageContext` object.
+
+
+## Use case: universal hook
+
+#### `getPageContext()`
+
+Using `getPageContext()` (without `asyncHook: true`) allows you to access the <Link href="/pageContext">`pageContext` object</Link> inside Vike hooks without accessing the `pageContext` argument.
 
 For example:
 
@@ -15,6 +49,7 @@ export type Data = Awaited<ReturnType<typeof data>>
 
 import { getPageContext } from 'vike/getPageContext'
 
+// Note how we don't use the pageContext argument of +data
 function data() {
   const pageContext = getPageContext()
 
@@ -42,20 +77,19 @@ function data(pageContext: PageContextServer) {// [!code ++]
 
 > You may ask yourself what the purpose of `getPageContext()` is and, indeed, it's useless for Vike users.
 >
-> It's useful when implementing a <Link href="/extensions">Vike extension</Link> that exports a <Link href="#universal-hooks">universal hook</Link>, see <Link href="#example" />.
+> It's only useful for implementing a <Link href="/extensions">Vike extension</Link> that exports a universal hook.
 
-
-## Universal Hooks
+#### Universal hook
 
 A *universal hook* (e.g. <Link href="/useConfig">`useConfig()`</Link>) is a component hook that also works inside Vike hooks.
 
 ```ts
- // /components/SomeReactComponent.tsx
+ // /components/SomeUiComponent.tsx
 
 import { useConfig } from 'vike-react/useConfig' // or vike-{vue,solid}
 
-function SomeReactComponent() {
-  // useConfig() can be used inside a component, and can ...
+function SomeUiComponent() {
+  // useConfig() can be used inside a UI component, and ...
   const config = useConfig()
 }
 ```
@@ -65,14 +99,14 @@ function SomeReactComponent() {
 import { useConfig } from 'vike-react/useConfig'
 
 export function data() {
-  // ... also be used inside a Vike hook.
+  // ... can also be used inside a Vike hook.
   const config = useConfig()
 }
 ```
 
-## Example
+#### Example
 
-In order to make <Link href="/useConfig">`useConfig()`</Link> a universal hook (see <Link href="#universal-hooks" doNotInferSectionTitle />), the `useConfig()` implementation uses `getPageContext()`:
+This is how <Link href="/useConfig">`useConfig()`</Link> is made a universal hook using `getPageContext()`:
 
 ```js
 // node_modules/vike-{react,vue,solid}/dist/hooks/useConfig.js
@@ -99,4 +133,7 @@ export function useConfig() {
 ## See also
 
 - <Link href="/pageContext" />
+- <Link href="/usePageContext" />
+- <Link href="/hooks" />
+- <Link href="/getPageContextClient">API > `getPageContextClient()`</Link>
 - <Link href="/getGlobalContext" />

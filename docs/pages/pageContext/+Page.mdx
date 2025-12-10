@@ -31,13 +31,13 @@ export async function data(pageContext: PageContextServer) {
 You can access `pageContext`:
  - In any UI component (by using <Link href="/usePageContext">`usePageContext()`</Link>).
  - In any <Link href="/hooks">Vike hook</Link>, e.g. <Link href="/data">`+data`</Link>.
- - On both the server and client (by using <Link href="/passToClient">`passToClient`</Link>).
+ - On the server, and on the client (using <Link href="/passToClient">`passToClient`</Link>).
 
 It includes:
  - <Link href="#built-in">Built-in properties</Link>, e.g. `pageContext.urlParsed` and `pageContext.routeParams`.
  - <Link href="#custom">Custom properties</Link> that you can add, for example `pageContext.user`.
 
-When the user navigates to a new page, a completely new `pageContext` object is created and the previous `pageContext` becomes obsolete &mdash; that's why it's called **page**Context, not **app**Context. See <Link href="#lifecycle" /> for more information.
+When the user navigates to a new page, a completely new `pageContext` object is created and the previous `pageContext` becomes obsolete &mdash; that's why it's called **page**Context (and not appContext). See <Link href="#lifecycle" /> for more information.
 
 See also: <Link href="/globalContext" />.
 
@@ -591,4 +591,6 @@ To workaround the issue you can either:
 - <Link href="/globalContext" />
 - <Link href="/onCreatePageContext" />
 - <Link href="/usePageContext" />
+- <Link href="/getPageContext">API > `getPageContext()`</Link>
+- <Link href="/getPageContextClient">API > `getPageContextClient()`</Link>
 - <Link href="/useData" />
