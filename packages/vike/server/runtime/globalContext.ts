@@ -422,7 +422,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
   globalObject.waitForUserFilesUpdateResolve ??= []
   globalObject.waitForUserFilesUpdateResolve.push(resolve)
 
-  const onError = (err: unknown) => {
+  function onError(err: unknown) {
     debugFileChange('updateUserFiles()', '=> onError()')
     if (
       // We must check whether the error was already logged to avoid printing it twice, e.g. when +onCreateGlobalContext.js has a syntax error
@@ -434,7 +434,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
     globalObject.vikeConfigHasRuntimeError = true
     return { success: false }
   }
-  const onSuccess = () => {
+  function onSuccess() {
     debugFileChange('updateUserFiles()', '=> onSuccess()')
     if (globalObject.vikeConfigHasRuntimeError) {
       assert(logRuntimeInfo) // always defined in dev
@@ -448,7 +448,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
     return { success: true }
   }
 
-  const isOutdated = () => {
+  function isOutdated() {
     const yes =
       // There is a newer call — let the new call supersede the old one.
       // We deliberately swallow the intermetidate state (including any potential error) — it's now outdated and has existed only for a very short period of time.
