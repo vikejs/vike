@@ -414,7 +414,7 @@ function assertVersionAtBuildTime(versionAtBuildTime: string) {
 }
 
 async function updateUserFiles(): Promise<{ success: boolean }> {
-  debugUpdate('updateUserFiles()')
+  debugUpdate()
 
   assert(!isProd())
   const { promise, resolve } = genPromise<void>()
@@ -469,7 +469,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
   virtualFileExportsGlobalEntry = (virtualFileExportsGlobalEntry as any).default || virtualFileExportsGlobalEntry
 
   if (getVikeConfigErrorBuild()) {
-    debugUpdate('updateUserFiles()', '=> aborted: build error')
+    debugUpdate('=> aborted: build error')
     return { success: false }
   }
 
@@ -485,7 +485,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
   return onSuccess()
 
   function onSuccess() {
-    debugUpdate('updateUserFiles()', '=> onSuccess()')
+    debugUpdate('=> onSuccess()')
     if (globalObject.vikeConfigHasRuntimeError) {
       assert(logRuntimeInfo) // always defined in dev
       logRuntimeInfo(vikeConfigErrorRecoverMsg, null, 'error-resolve')
@@ -499,7 +499,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
   }
 
   function onError(err: unknown) {
-    debugUpdate('updateUserFiles()', '=> onError()')
+    debugUpdate('=> onError()')
     if (
       // We must check whether the error was already logged to avoid printing it twice, e.g. when +onCreateGlobalContext.js has a syntax error
       !hasAlreadyLogged(err)
@@ -518,13 +518,13 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
       globalObject.waitForUserFilesUpdate !== promise ||
       // Avoid race condition: abort if there is a new globalObject.viteDevServer (happens when vite.config.js is modified => Vite's dev server is fully reloaded).
       viteDevServer !== globalObject.viteDevServer
-    if (yes) debugUpdate('updateUserFiles()', '=> aborted: isOutdated')
+    if (yes) debugUpdate('=> aborted: isOutdated')
     return yes
   }
 
   function debugUpdate(...args: Parameters<typeof debug>) {
-    debug(...args)
-    debugFileChange(...args)
+    debug('updateUserFiles()', ...args)
+    debugFileChange('updateUserFiles()', ...args)
   }
 }
 
