@@ -31,7 +31,7 @@ async function generateVirtualFilePageEntry(id: string, isDev: boolean): Promise
   if (!isDev) {
     assert(pageConfig)
   } else {
-    /* This assertion sometimes fail. It happens very seldom and I couldn't reproduce it (https://gist.github.com/brillout/9e212ce829f4d62a912ca163ffa8881a). I suspect some kind of HMR race condition.
+    /* This assertion sometimes fail. It happens very seldom and I couldn't reproduce it (https://gist.github.com/brillout/9e212ce829f4d62a912ca163ffa8881a). I suspect some kind of HMR race condition. UPDATE: [December 2024] This just happened at test/@cloudflare_vite-plugin/ — it isn't blocking, reloading the page fixes the issue.
     assert(pageConfig, { id, pageId })
     /*/
     if (!pageConfig) throw getProjectError('Outdated request')
