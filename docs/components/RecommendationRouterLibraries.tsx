@@ -1,7 +1,7 @@
 export { RecommendationRouterLibraries }
 
 import React from 'react'
-import { Link, Warning } from '@brillout/docpress'
+import { Contribution, Link, Warning } from '@brillout/docpress'
 
 function RecommendationRouterLibraries({
   libraryName,
@@ -48,10 +48,10 @@ function RecommendationRouterLibraries({
               </a>
             </li>
           </ul>
-          <p>Contributions welcome to explore deep integration using {onBeforeRouteLink}.</p>
+          <Contribution>Contributions welcome to explore deep integration using {onBeforeRouteLink}.</Contribution>
         </>
       ) : (
-        <>Contributions welcome to create an example of using Vike with {libraryName}.</>
+        <Contribution>Contributions welcome to create an example of using Vike with {libraryName}.</Contribution>
       )}
     </>
   )
