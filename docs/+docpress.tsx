@@ -13,7 +13,7 @@ const config: Config = {
   version: PROJECT_VERSION,
   url: 'https://vike.dev',
   tagline:
-    'Next.js/Nuxt alternative | 🔨 The composable framework | Build advanced applications with stability and flexibility.',
+    '(Replaces Next.js/Nuxt) 🔨 The composable framework to build advanced applications with stability and flexibility.',
   logo,
   banner: 'https://vike.dev/banner.jpg',
 
