@@ -20,7 +20,6 @@ export { setGlobalContext_prodBuildEntry } // production entry
 export { clearGlobalContext }
 export { assertBuildInfo }
 export { updateUserFiles }
-export { isRunnableDevServer }
 export { vikeConfigErrorRecoverMsg }
 export type { BuildInfo }
 export type { GlobalContextServerInternal }
@@ -220,11 +219,9 @@ async function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
   globalObject.viteDevServer = viteDevServer
   globalObject.viteDevServerPromiseResolve(viteDevServer)
 
-  if (isRunnableDevServer(viteDevServer)) {
-    const { success } = await updateUserFiles()
-    if (!success) return
-    assertGlobalContextIsDefined()
-  }
+  const { success } = await updateUserFiles()
+  if (!success) return
+  assertGlobalContextIsDefined()
 }
 function setGlobalContext_viteConfig(viteConfig: ResolvedConfig, viteConfigRuntime: ViteConfigRuntime): void {
   if (globalObject.viteConfig) return
@@ -417,17 +414,29 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
   debugUpdate()
 
   assert(!isProd())
+  const { viteDevServer } = globalObject
+
+  const isRunnableServer = !!viteDevServer && isRunnableDevServer(viteDevServer)
+  const isNonRunnableProcess = isNonRunnableDevProcess()
+
+  if (!isRunnableServer && !isNonRunnableProcess) {
+    // Not the runtime process — it's the Vite process and not the non-runnable process
+    debugUpdate('=> aborted: not runtime')
+    return { success: false }
+  }
+
   const { promise, resolve } = genPromise<void>()
   globalObject.waitForUserFilesUpdate = promise
   globalObject.waitForUserFilesUpdateResolve ??= []
   globalObject.waitForUserFilesUpdateResolve.push(resolve)
 
-  const { viteDevServer } = globalObject
   let hasError = false
   let virtualFileExportsGlobalEntry: Record<string, unknown> | undefined
   let err: unknown
-  if (viteDevServer) {
+  if (isRunnableServer) {
+    assert(viteDevServer)
     assert(isRunnableDevServer(viteDevServer))
+    assert(!isNonRunnableProcess)
 
     /* We don't use runner.import() yet, because as of vite@7.0.6 (July 2025) runner.import() unexpectedly invalidates the module graph, which is a unexpected behavior that doesn't happen with ssrLoadModule()
     // Vite 6
@@ -449,6 +458,8 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
       err = err_
     }
   } else {
+    assert(isNonRunnableProcess)
+    assert(!viteDevServer)
     try {
       // We don't directly use import() because:
       // - Avoid Cloudflare Workers (without @cloudflare/vite-plugin) to try to bundle `import('virtual:id')`.
