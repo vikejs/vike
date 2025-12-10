@@ -422,43 +422,6 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
   globalObject.waitForUserFilesUpdateResolve ??= []
   globalObject.waitForUserFilesUpdateResolve.push(resolve)
 
-  function onError(err: unknown) {
-    debugFileChange('updateUserFiles()', '=> onError()')
-    if (
-      // We must check whether the error was already logged to avoid printing it twice, e.g. when +onCreateGlobalContext.js has a syntax error
-      !hasAlreadyLogged(err)
-    ) {
-      logRuntimeError(err, null)
-    }
-    setVikeConfigError({ errorRuntime: { err } })
-    globalObject.vikeConfigHasRuntimeError = true
-    return { success: false }
-  }
-  function onSuccess() {
-    debugFileChange('updateUserFiles()', '=> onSuccess()')
-    if (globalObject.vikeConfigHasRuntimeError) {
-      assert(logRuntimeInfo) // always defined in dev
-      logRuntimeInfo(vikeConfigErrorRecoverMsg, null, 'error-resolve')
-    }
-    globalObject.vikeConfigHasRuntimeError = false
-    setVikeConfigError({ errorRuntime: false })
-    globalObject.waitForUserFilesUpdateResolve!.forEach((resolve) => resolve())
-    globalObject.waitForUserFilesUpdateResolve = []
-    resolve()
-    return { success: true }
-  }
-
-  function isOutdated() {
-    const yes =
-      // There is a newer call — let the new call supersede the old one.
-      // We deliberately swallow the intermetidate state (including any potential error) — it's now outdated and has existed only for a very short period of time.
-      globalObject.waitForUserFilesUpdate !== promise ||
-      // Avoid race condition: abort if there is a new globalObject.viteDevServer (happens when vite.config.js is modified => Vite's dev server is fully reloaded).
-      viteDevServer !== globalObject.viteDevServer
-    if (yes) debugFileChange('updateUserFiles()', '=> aborted: isOutdated')
-    return yes
-  }
-
   const { viteDevServer } = globalObject
   let hasError = false
   let virtualFileExportsGlobalEntry: Record<string, unknown> | undefined
@@ -518,7 +481,46 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
   }
   if (isOutdated()) return { success: false }
   if (hasError) return onError(err)
+
   return onSuccess()
+
+  function onSuccess() {
+    debugFileChange('updateUserFiles()', '=> onSuccess()')
+    if (globalObject.vikeConfigHasRuntimeError) {
+      assert(logRuntimeInfo) // always defined in dev
+      logRuntimeInfo(vikeConfigErrorRecoverMsg, null, 'error-resolve')
+    }
+    globalObject.vikeConfigHasRuntimeError = false
+    setVikeConfigError({ errorRuntime: false })
+    globalObject.waitForUserFilesUpdateResolve!.forEach((resolve) => resolve())
+    globalObject.waitForUserFilesUpdateResolve = []
+    resolve()
+    return { success: true }
+  }
+
+  function onError(err: unknown) {
+    debugFileChange('updateUserFiles()', '=> onError()')
+    if (
+      // We must check whether the error was already logged to avoid printing it twice, e.g. when +onCreateGlobalContext.js has a syntax error
+      !hasAlreadyLogged(err)
+    ) {
+      logRuntimeError(err, null)
+    }
+    setVikeConfigError({ errorRuntime: { err } })
+    globalObject.vikeConfigHasRuntimeError = true
+    return { success: false }
+  }
+
+  function isOutdated() {
+    const yes =
+      // There is a newer call — let the new call supersede the old one.
+      // We deliberately swallow the intermetidate state (including any potential error) — it's now outdated and has existed only for a very short period of time.
+      globalObject.waitForUserFilesUpdate !== promise ||
+      // Avoid race condition: abort if there is a new globalObject.viteDevServer (happens when vite.config.js is modified => Vite's dev server is fully reloaded).
+      viteDevServer !== globalObject.viteDevServer
+    if (yes) debugFileChange('updateUserFiles()', '=> aborted: isOutdated')
+    return yes
+  }
 }
 
 async function createGlobalContext(virtualFileExportsGlobalEntry: unknown) {
