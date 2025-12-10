@@ -675,12 +675,12 @@ function isProcessSharedWithVite(): boolean {
 }
 
 function isRunnable(viteDevServer: ViteDevServer): boolean {
+  assert(!isNonRunnableDev())
   const yes =
     // Vite 5
     !viteDevServer.environments ||
     // Vite 6 or above
     isRunnableDevEnvironment(viteDevServer.environments.ssr)
-  if (yes) assert(!isNonRunnableDev())
   return yes
 }
 
