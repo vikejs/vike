@@ -20,7 +20,7 @@ export { setGlobalContext_prodBuildEntry } // production entry
 export { clearGlobalContext }
 export { assertBuildInfo }
 export { updateUserFiles }
-export { isRunnable }
+export { isRunnableDevServer }
 export { vikeConfigErrorRecoverMsg }
 export type { BuildInfo }
 export type { GlobalContextServerInternal }
@@ -51,7 +51,7 @@ import {
   getViteRPC,
   isRunnableDevEnvironment,
   assertIsNotBrowser,
-  isNonRunnableDev,
+  isNonRunnableDevProcess,
   objectAssign,
   setNodeEnvProductionIfUndefined,
 } from '../utils.js'
@@ -210,6 +210,8 @@ function getGlobalContextForPublicUsage(): GlobalContextServer {
 
 async function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
   debug('setGlobalContext_viteDevServer()')
+  assert(!isNonRunnableDevProcess()) // if `viteDevServer` exists => cannot be inside a non-runnable process
+
   // We cannot cache globalObject.viteDevServer because it's fully replaced when the user modifies vite.config.js => Vite's dev server is fully reloaded and a new viteDevServer replaces the previous one.
   if (!globalObject.viteDevServer) {
     assertIsNotInitializedYet()
@@ -218,7 +220,7 @@ async function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
   globalObject.viteDevServer = viteDevServer
   globalObject.viteDevServerPromiseResolve(viteDevServer)
 
-  if (isRunnable(viteDevServer)) {
+  if (isRunnableDevServer(viteDevServer)) {
     const { success } = await updateUserFiles()
     if (!success) return
     assertGlobalContextIsDefined()
@@ -294,7 +296,7 @@ async function initGlobalContext(): Promise<void> {
     if (isProcessSharedWithVite()) {
       await globalObject.viteDevServerPromise
     } else {
-      assert(isNonRunnableDev())
+      assert(isNonRunnableDevProcess())
       await updateUserFiles()
     }
     assert(globalObject.waitForUserFilesUpdate)
@@ -357,7 +359,7 @@ async function loadProdBuildEntry(outDir?: string) {
 // https://github.com/vikejs/vike/blob/8c350e8105a626469e87594d983090919e82099b/packages/vike/node/vite/plugins/pluginBuild/pluginProdBuildEntry.ts#L47
 async function setGlobalContext_prodBuildEntry(prodBuildEntry: unknown) {
   debug('setGlobalContext_prodBuildEntry()')
-  assert(!isNonRunnableDev())
+  assert(!isNonRunnableDevProcess())
   assertProdBuildEntry(prodBuildEntry)
   setNodeEnvProductionIfUndefined()
   globalObject.prodBuildEntry = prodBuildEntry
@@ -412,57 +414,20 @@ function assertVersionAtBuildTime(versionAtBuildTime: string) {
 }
 
 async function updateUserFiles(): Promise<{ success: boolean }> {
-  debug('updateUserFiles()')
-  debugFileChange('updateUserFiles()')
+  debugUpdate()
+
   assert(!isProd())
   const { promise, resolve } = genPromise<void>()
   globalObject.waitForUserFilesUpdate = promise
   globalObject.waitForUserFilesUpdateResolve ??= []
   globalObject.waitForUserFilesUpdateResolve.push(resolve)
 
-  const onError = (err: unknown) => {
-    debugFileChange('updateUserFiles()', '=> onError()')
-    if (
-      // We must check whether the error was already logged to avoid printing it twice, e.g. when +onCreateGlobalContext.js has a syntax error
-      !hasAlreadyLogged(err)
-    ) {
-      logRuntimeError(err, null)
-    }
-    setVikeConfigError({ errorRuntime: { err } })
-    globalObject.vikeConfigHasRuntimeError = true
-    return { success: false }
-  }
-  const onSuccess = () => {
-    debugFileChange('updateUserFiles()', '=> onSuccess()')
-    if (globalObject.vikeConfigHasRuntimeError) {
-      assert(logRuntimeInfo) // always defined in dev
-      logRuntimeInfo(vikeConfigErrorRecoverMsg, null, 'error-resolve')
-    }
-    globalObject.vikeConfigHasRuntimeError = false
-    setVikeConfigError({ errorRuntime: false })
-    globalObject.waitForUserFilesUpdateResolve!.forEach((resolve) => resolve())
-    globalObject.waitForUserFilesUpdateResolve = []
-    resolve()
-    return { success: true }
-  }
-
-  const isOutdated = () => {
-    const yes =
-      // There is a newer call — let the new call supersede the old one.
-      // We deliberately swallow the intermetidate state (including any potential error) — it's now outdated and has existed only for a very short period of time.
-      globalObject.waitForUserFilesUpdate !== promise ||
-      // Avoid race condition: abort if there is a new globalObject.viteDevServer (happens when vite.config.js is modified => Vite's dev server is fully reloaded).
-      viteDevServer !== globalObject.viteDevServer
-    if (yes) debugFileChange('updateUserFiles()', '=> aborted: isOutdated')
-    return yes
-  }
-
   const { viteDevServer } = globalObject
   let hasError = false
   let virtualFileExportsGlobalEntry: Record<string, unknown> | undefined
   let err: unknown
   if (viteDevServer) {
-    assert(isRunnable(viteDevServer))
+    assert(isRunnableDevServer(viteDevServer))
 
     /* We don't use runner.import() yet, because as of vite@7.0.6 (July 2025) runner.import() unexpectedly invalidates the module graph, which is a unexpected behavior that doesn't happen with ssrLoadModule()
     // Vite 6
@@ -504,7 +469,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
   virtualFileExportsGlobalEntry = (virtualFileExportsGlobalEntry as any).default || virtualFileExportsGlobalEntry
 
   if (getVikeConfigErrorBuild()) {
-    debugFileChange('updateUserFiles()', '=> aborted: build error')
+    debugUpdate('=> aborted: build error')
     return { success: false }
   }
 
@@ -516,7 +481,51 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
   }
   if (isOutdated()) return { success: false }
   if (hasError) return onError(err)
+
   return onSuccess()
+
+  function onSuccess() {
+    debugUpdate('=> onSuccess()')
+    if (globalObject.vikeConfigHasRuntimeError) {
+      assert(logRuntimeInfo) // always defined in dev
+      logRuntimeInfo(vikeConfigErrorRecoverMsg, null, 'error-resolve')
+    }
+    globalObject.vikeConfigHasRuntimeError = false
+    setVikeConfigError({ errorRuntime: false })
+    globalObject.waitForUserFilesUpdateResolve!.forEach((resolve) => resolve())
+    globalObject.waitForUserFilesUpdateResolve = []
+    resolve()
+    return { success: true }
+  }
+
+  function onError(err: unknown) {
+    debugUpdate('=> onError()')
+    if (
+      // We must check whether the error was already logged to avoid printing it twice, e.g. when +onCreateGlobalContext.js has a syntax error
+      !hasAlreadyLogged(err)
+    ) {
+      logRuntimeError(err, null)
+    }
+    setVikeConfigError({ errorRuntime: { err } })
+    globalObject.vikeConfigHasRuntimeError = true
+    return { success: false }
+  }
+
+  function isOutdated() {
+    const yes =
+      // There is a newer call — let the new call supersede the old one.
+      // We deliberately swallow the intermetidate state (including any potential error) — it's now outdated and has existed only for a very short period of time.
+      globalObject.waitForUserFilesUpdate !== promise ||
+      // Avoid race condition: abort if there is a new globalObject.viteDevServer (happens when vite.config.js is modified => Vite's dev server is fully reloaded).
+      viteDevServer !== globalObject.viteDevServer
+    if (yes) debugUpdate('=> aborted: isOutdated')
+    return yes
+  }
+
+  function debugUpdate(...args: Parameters<typeof debug>) {
+    debug('updateUserFiles()', ...args)
+    debugFileChange('updateUserFiles()', ...args)
+  }
 }
 
 async function createGlobalContext(virtualFileExportsGlobalEntry: unknown) {
@@ -634,7 +643,7 @@ async function addGlobalContextAsync(globalContext: GlobalContextBase) {
     } else {
       assert(!isProcessSharedWithVite()) // process shared with Vite => globalObject.viteConfigRuntime should be set
       assert(!isProd()) // production => globalObject.buildInfo.viteConfigRuntime should be set
-      assert(isNonRunnableDev())
+      assert(isNonRunnableDevProcess())
       const rpc = getViteRPC<ViteRPC>()
       viteConfigRuntime = await rpc.getViteConfigRuntimeRPC()
     }
@@ -670,17 +679,17 @@ function resolveBaseRuntime(viteConfigRuntime: BuildInfo['viteConfigRuntime'], c
 
 function isProcessSharedWithVite(): boolean {
   const yes = globalThis.__VIKE__IS_PROCESS_SHARED_WITH_VITE ?? false
-  if (yes) assert(!isNonRunnableDev())
+  if (yes) assert(!isNonRunnableDevProcess())
   return yes
 }
 
-function isRunnable(viteDevServer: ViteDevServer): boolean {
+function isRunnableDevServer(viteDevServer: ViteDevServer): boolean {
+  assert(!isNonRunnableDevProcess()) // if `viteDevServer` exists => cannot be inside a non-runnable process
   const yes =
     // Vite 5
     !viteDevServer.environments ||
     // Vite 6 or above
     isRunnableDevEnvironment(viteDevServer.environments.ssr)
-  if (yes) assert(!isNonRunnableDev())
   return yes
 }
 
@@ -721,7 +730,7 @@ function isProdOptional(): boolean | null {
   // getGlobalContextAsync(isProduction)
   const no4 = globalObject.isProductionAccordingToUser === false
   // @cloudflare/vite-plugin
-  const no5 = isNonRunnableDev()
+  const no5 = isNonRunnableDevProcess()
   const no6 = globalThis.__VIKE__IS_DEV === true
   const no: boolean = no1 || no2 || no3 || no4 || no5 || no6
 
