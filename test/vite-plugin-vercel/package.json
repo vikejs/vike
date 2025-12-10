@@ -26,6 +26,6 @@
     "vite": "^7.0.6"
   },
   "dependencies": {
-    "vite-plugin-vercel": "^9.0.7"
+    "vite-plugin-vercel": "^9.0.8"
   }
 }
