@@ -51,7 +51,7 @@ import {
   getViteRPC,
   isRunnableDevEnvironment,
   assertIsNotBrowser,
-  isNonRunnableDev,
+  isNonRunnableDevProcess,
   objectAssign,
   setNodeEnvProductionIfUndefined,
 } from '../utils.js'
@@ -294,7 +294,7 @@ async function initGlobalContext(): Promise<void> {
     if (isProcessSharedWithVite()) {
       await globalObject.viteDevServerPromise
     } else {
-      assert(isNonRunnableDev())
+      assert(isNonRunnableDevProcess())
       await updateUserFiles()
     }
     assert(globalObject.waitForUserFilesUpdate)
@@ -357,7 +357,7 @@ async function loadProdBuildEntry(outDir?: string) {
 // https://github.com/vikejs/vike/blob/8c350e8105a626469e87594d983090919e82099b/packages/vike/node/vite/plugins/pluginBuild/pluginProdBuildEntry.ts#L47
 async function setGlobalContext_prodBuildEntry(prodBuildEntry: unknown) {
   debug('setGlobalContext_prodBuildEntry()')
-  assert(!isNonRunnableDev())
+  assert(!isNonRunnableDevProcess())
   assertProdBuildEntry(prodBuildEntry)
   setNodeEnvProductionIfUndefined()
   globalObject.prodBuildEntry = prodBuildEntry
@@ -634,7 +634,7 @@ async function addGlobalContextAsync(globalContext: GlobalContextBase) {
     } else {
       assert(!isProcessSharedWithVite()) // process shared with Vite => globalObject.viteConfigRuntime should be set
       assert(!isProd()) // production => globalObject.buildInfo.viteConfigRuntime should be set
-      assert(isNonRunnableDev())
+      assert(isNonRunnableDevProcess())
       const rpc = getViteRPC<ViteRPC>()
       viteConfigRuntime = await rpc.getViteConfigRuntimeRPC()
     }
@@ -670,12 +670,12 @@ function resolveBaseRuntime(viteConfigRuntime: BuildInfo['viteConfigRuntime'], c
 
 function isProcessSharedWithVite(): boolean {
   const yes = globalThis.__VIKE__IS_PROCESS_SHARED_WITH_VITE ?? false
-  if (yes) assert(!isNonRunnableDev())
+  if (yes) assert(!isNonRunnableDevProcess())
   return yes
 }
 
 function isRunnable(viteDevServer: ViteDevServer): boolean {
-  assert(!isNonRunnableDev()) // if `viteDevServer` exists => cannot be inside a non-runnable process
+  assert(!isNonRunnableDevProcess()) // if `viteDevServer` exists => cannot be inside a non-runnable process
   const yes =
     // Vite 5
     !viteDevServer.environments ||
@@ -721,7 +721,7 @@ function isProdOptional(): boolean | null {
   // getGlobalContextAsync(isProduction)
   const no4 = globalObject.isProductionAccordingToUser === false
   // @cloudflare/vite-plugin
-  const no5 = isNonRunnableDev()
+  const no5 = isNonRunnableDevProcess()
   const no6 = globalThis.__VIKE__IS_DEV === true
   const no: boolean = no1 || no2 || no3 || no4 || no5 || no6
 
