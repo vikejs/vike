@@ -23,7 +23,10 @@ async function loadAndParseVirtualFilePageEntry(
   }
   const { moduleId, moduleExportsPromise } = pageConfig.loadVirtualFilePageEntry()
   const moduleExports = await moduleExportsPromise
-  // `configValuesLoaded` is sometimes `undefined` https://github.com/vikejs/vike/discussions/2092
+  /* `moduleExports` is sometimes `undefined` https://github.com/vikejs/vike/discussions/2092
+  assert(moduleExports)
+  //*/
+  // Catch @cloudflare/vite-plugin bug
   assertVirtualFileExports(moduleExports, () => 'configValuesSerialized' in moduleExports, moduleId)
   const virtualFileExportsPageEntry = moduleExports
   const configValues = parseVirtualFileExportsPageEntry(virtualFileExportsPageEntry)
