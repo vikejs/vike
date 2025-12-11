@@ -1,6 +1,6 @@
 export { testRun }
 
-import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry, expectLog, sleep } from '@brillout/test-e2e'
+import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry, expectLog, sleep, partRegex } from '@brillout/test-e2e'
 import { ensureWasClientSideRouted, testCounter } from '../../test/utils'
 
 function testRun(uiFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
@@ -171,9 +171,7 @@ function testRun(uiFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run pre
               log.logSource === 'Browser Error' && log.logInfo.includes('http://localhost:3000/hello/forbidden'),
           })
         } else {
-          expectLog('HTTP response', { 
-            filter: (log) => log.logSource === 'stderr' && /HTTP response [«←] \/hello\/forbidden 401/.test(log.logText)
-          })
+          expectLog(partRegex`HTTP response ${/.*/} /hello/forbidden 401`, { filter: (log) => log.logSource === 'stderr' })
           expectLog('Failed to load resource: the server responded with a status of 401 (Unauthorized)', {
             filter: (log) =>
               log.logSource === 'Browser Error' && log.logInfo.includes('http://localhost:3000/hello/forbidden'),
@@ -184,9 +182,7 @@ function testRun(uiFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run pre
         const html = await fetchHtml('/hello/forbidden')
         expect(html).toContain(txt)
         if (isV1Design) {
-          expectLog('HTTP response', { 
-            filter: (log) => log.logSource === 'stderr' && /HTTP response [«←] \/hello\/forbidden 401/.test(log.logText)
-          })
+          expectLog(partRegex`HTTP response ${/.*/} /hello/forbidden 401`, { filter: (log) => log.logSource === 'stderr' })
         }
       })
     }
