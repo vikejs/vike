@@ -354,11 +354,11 @@ function logHttpRequest(urlOriginal: string, pageContextInit: PageContextInit, r
 /* Alternative icons:
 const arrowRight = pc.dim('»')
 const arrowLeft = pc.dim('«')
-const arrowRight = pc.dim('>>')
-const arrowLeft = pc.dim('<<')
-*/
 const arrowRight = pc.dim('→')
 const arrowLeft = pc.dim('←')
+*/
+const arrowRight = pc.dim('>>')
+const arrowLeft = pc.dim('<<')
 function getRequestInfoMessage(urlOriginal: string) {
   return `HTTP request  ${arrowRight} ${prettyUrl(urlOriginal)}`
 }
