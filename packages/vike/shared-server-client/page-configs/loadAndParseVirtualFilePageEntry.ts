@@ -1,6 +1,6 @@
 export { loadAndParseVirtualFilePageEntry }
 
-import { assert, objectAssign } from '../utils.js'
+import { objectAssign } from '../utils.js'
 import type {
   ConfigValues,
   PageConfigRuntime,
@@ -8,6 +8,7 @@ import type {
   VirtualFileExportsPageEntry,
 } from '../../types/PageConfig.js'
 import { parseConfigValuesSerialized } from './serialize/parsePageConfigsSerialized.js'
+import { assertVirtualFileExports } from '../assertVirtualFileExports.js'
 
 async function loadAndParseVirtualFilePageEntry(
   pageConfig: PageConfigRuntime,
@@ -22,9 +23,11 @@ async function loadAndParseVirtualFilePageEntry(
   }
   const { moduleId, moduleExportsPromise } = pageConfig.loadVirtualFilePageEntry()
   const moduleExports = await moduleExportsPromise
-  // `configValuesLoaded` is sometimes `undefined` https://github.com/vikejs/vike/discussions/2092
-  // `configValuesLoaded.configValuesSerialized` is sometimes `undefined` https://github.com/vikejs/vike/issues/2903
-  if (!moduleExports?.configValuesSerialized) assert(false, { moduleExports, moduleId })
+  /* `moduleExports` is sometimes `undefined` https://github.com/vikejs/vike/discussions/2092
+  assert(moduleExports)
+  //*/
+  // Catch @cloudflare/vite-plugin bug
+  assertVirtualFileExports(moduleExports, () => 'configValuesSerialized' in moduleExports, moduleId)
   const virtualFileExportsPageEntry = moduleExports
   const configValues = parseVirtualFileExportsPageEntry(virtualFileExportsPageEntry)
   Object.assign(pageConfig.configValues, configValues)

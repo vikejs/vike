@@ -12,12 +12,14 @@ import type {
   PageConfigGlobalRuntimeSerialized,
   PageConfigRuntimeSerialized,
 } from '../page-configs/serialize/PageConfigSerialized.js'
+import { assertVirtualFileExports } from '../assertVirtualFileExports.js'
 
 function parseVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry: unknown): {
   pageFilesAll: PageFile[]
   pageConfigs: PageConfigRuntime[]
   pageConfigGlobal: PageConfigGlobalRuntime
 } {
+  assertVirtualFileExports(virtualFileExportsGlobalEntry, (moduleExports: any) => 'pageFilesLazy' in moduleExports)
   assert(hasProp(virtualFileExportsGlobalEntry, 'pageFilesLazy', 'object'))
   assert(hasProp(virtualFileExportsGlobalEntry, 'pageFilesEager', 'object'))
   assert(hasProp(virtualFileExportsGlobalEntry, 'pageFilesExportNamesLazy', 'object'))
