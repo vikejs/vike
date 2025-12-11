@@ -352,13 +352,14 @@ function logHttpRequest(urlOriginal: string, pageContextInit: PageContextInit, r
   logRuntimeInfo?.(getRequestInfoMessage(urlOriginal), pageContext_logRuntime, 'info')
 }
 /* Alternative icons:
-const arrowRight = pc.dim('→')
-const arrowLeft = pc.dim('←')
+const arrowRight = pc.dim('»')
+const arrowLeft = pc.dim('«')
 const arrowRight = pc.dim('>>')
 const arrowLeft = pc.dim('<<')
 */
-const arrowRight = pc.dim('»')
-const arrowLeft = pc.dim('«')
+// TODO/ai: see git show HEAD and update all tests
+const arrowRight = pc.dim('→')
+const arrowLeft = pc.dim('←')
 function getRequestInfoMessage(urlOriginal: string) {
   return `HTTP request  ${arrowRight} ${prettyUrl(urlOriginal)}`
 }
