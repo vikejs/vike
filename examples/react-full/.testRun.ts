@@ -171,6 +171,7 @@ function testRun(uiFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run pre
               log.logSource === 'Browser Error' && log.logInfo.includes('http://localhost:3000/hello/forbidden'),
           })
         } else {
+          // TODO/ai pass a partRegex to avoid to have to update this test
           expectLog('HTTP response ← /hello/forbidden 401', { filter: (log) => log.logSource === 'stderr' })
           expectLog('Failed to load resource: the server responded with a status of 401 (Unauthorized)', {
             filter: (log) =>
