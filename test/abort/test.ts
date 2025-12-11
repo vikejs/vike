@@ -70,7 +70,7 @@ function testRun(
     const expectErrServer = () => {
       // Maybe we should also show a log in production?
       if (cmd === 'npm run prod') return
-      expectLog('HTTP response « /show-error-page 666', { filter: (log) => log.logSource === 'stderr' })
+      expectLog(partRegex`HTTP response ${/.*/} /show-error-page 666`, { filter: (log) => log.logSource === 'stderr' })
     }
     const expectErrClient = () =>
       expectLog('Failed to load resource: the server responded with a status of 666 (unknown)', {
