@@ -6,7 +6,7 @@ import { ConfigSpec } from '../../components'
   cumulative
 />
 
-Hook called when a <Link href="/pageContext">`pageContext` object</Link> is created.
+Hook called when the <Link href="/pageContext">`pageContext` object</Link> is created.
 
 ```ts
 // pages/+onCreatePageContext.ts
@@ -15,21 +15,42 @@ Hook called when a <Link href="/pageContext">`pageContext` object</Link> is crea
 import type { PageContext } from 'vike/types'
 
 export async function onCreatePageContext(pageContext: PageContext) {
-  // The object pageContext was just created
+  // Server or client — pageContext was just created
 }
 ```
+```ts
+// pages/+onCreatePageContext.server.ts
+// Environment: server
 
-You can define:
-- `+onCreatePageContext.js` => called when a `pageContext` is created (both client and server).
-- `+onCreatePageContext.server.js` => called when a `pageContext` is created on the server.
-- `+onCreatePageContext.client.js` => called when a `pageContext` is created on the client.
-- `+onCreatePageContext.server.js` and `+onCreatePageContext.server.js` => two different `onCreatePageContext()` hooks for server and client.
+import type { PageContextServer } from 'vike/types'
 
-> The `onCreatePageContext()` hook is called right after <Link href="/routing">routing</Link>, see <Link href="/hooks#lifecycle" />.
+export async function onCreatePageContext(pageContext: PageContextServer) {
+  // Server only — pageContext was just created
+}
+```
+```ts
+// pages/+onCreatePageContext.client.ts
+// Environment: client
 
+import type { PageContextClient } from 'vike/types'
+
+export async function onCreatePageContext(pageContext: PageContextClient) {
+  // Client only — pageContext was just created
+}
+```
 > See also:
 > - <Link href="/file-env" />
-> - <Link href="/onCreateGlobalContext" />
+
+> You can also define two separate hooks (`+onCreatePageContext.server.js` and `+onCreatePageContext.client.js`) instead of a single `+onCreatePageContext.js` hook.
+
+The `onCreatePageContext()` hook is called right after <Link href="/routing">routing</Link>, see:
+- <Link href="/hooks#lifecycle" />
+- <Link href="/pageContext#lifecycle" />
+
+You can define multiple `onCreatePageContext()` hooks that apply to different groups of pages (or just a single page), see <Link href="/config#inheritance"/>.
+
+See also:
+- <Link href="/onCreateGlobalContext" />
 
 
 ## Use cases
@@ -124,6 +145,7 @@ See also:
 ## See also
 
 - <Link href="/pageContext" />
+- <Link href="/pageContext#lifecycle" />
 - <Link href="/onCreateGlobalContext" />
 - <Link href="/hooks" />
 - <Link href="/hooks#lifecycle" />

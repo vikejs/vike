@@ -16,19 +16,39 @@ Hook called when the <Link href="/globalContext">`globalContext` object</Link> i
 import type { GlobalContext } from 'vike/types'
 
 export async function onCreateGlobalContext(globalContext: GlobalContext) {
-  // The object globalContext was just created
+  // Server or client — globalContext was just created
 }
 ```
+```ts
+// pages/+onCreateGlobalContext.server.ts
+// Environment: server
 
-You can define:
-- `+onCreateGlobalContext.js` => called when `globalContext` is created (both client and server).
-- `+onCreateGlobalContext.server.js` => called when `globalContext` is created on the server.
-- `+onCreateGlobalContext.client.js` => called when `globalContext` is created on the client.
-- `+onCreateGlobalContext.server.js` and `+onCreateGlobalContext.server.js` => two different `onCreateGlobalContext()` hooks for server and client.
+import type { GlobalContextServer } from 'vike/types'
 
+export async function onCreateGlobalContext(globalContext: GlobalContextServer) {
+  // Server only — globalContext was just created
+}
+```
+```ts
+// pages/+onCreateGlobalContext.client.ts
+// Environment: client
+
+import type { GlobalContextClient } from 'vike/types'
+
+export async function onCreateGlobalContext(globalContext: GlobalContextClient) {
+  // Client only — globalContext was just created
+}
+```
 > See also:
 > - <Link href="/file-env" />
-> - <Link href="/onCreatePageContext" />
+
+> You can also define two separate hooks (`+onCreateGlobalContext.server.js` and `+onCreateGlobalContext.client.js`) instead of a single `+onCreateGlobalContext.js` hook.
+
+See <Link href="/globalContext#lifecycle" /> to understand when `onCreateGlobalContext()` is called.
+
+See also:
+- <Link href="/onCreatePageContext" />
+
 
 
 ## Use cases
@@ -156,6 +176,7 @@ See <Link href="/globalContext#lifecycle" /> which explains when the `globalCont
 ## See also
 
 - <Link href="/globalContext" />
+- <Link href="/globalContext#lifecycle" />
 - <Link href="/getGlobalContext" />
 - <Link href="/onCreatePageContext" />
 - <Link href="/hooks" />
