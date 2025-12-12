@@ -12,4 +12,4 @@
    paplay /usr/share/sounds/freedesktop/stereo/complete.oga
    ```
 
-3. After completing a task and if you made changes, make a Git commit "[AI] Some summary" — make the summary succinct (ideally <70 characters). Never amend commits, always create new ones.
+3. After completing a task and if you made changes, make a Git commit "[AI] Some summary" — make the summary succinct (ideally <70 characters). **NEVER AMEND COMMITS** - always create new ones. **DO NOT USE `git commit --amend`** under any circumstances.
