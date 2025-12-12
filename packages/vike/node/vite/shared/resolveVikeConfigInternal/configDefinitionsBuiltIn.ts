@@ -206,7 +206,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { client: true },
     eager: true,
     _computed: (pageConfig): boolean => {
-      const sources = (['data', 'onBeforeRender', 'onCreatePageContext', 'guard'] as const)
+      const sources = (['data', 'onBeforeRender', 'guard'] as const)
         .map((hookName) =>
           getConfigValueSourcesRelevant(
             hookName,

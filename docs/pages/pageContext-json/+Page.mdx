@@ -63,19 +63,12 @@ To minimize server requests, you may want Vike to stop making `pageContext.json`
 > For example, if your data comes from another server, you typically don't want an unnecessary detour through your JavaScript/SSR server.
 
 To stop Vike from requesting `pageContext.json`, do the following:
-- Make sure the page doesn't use any server-only `data()`, `onCreatePageContext()`, or `onBeforeRender()` hook.
+- Make sure the page doesn't use any server-only `data()` or `onBeforeRender()` hook.
   > See also:
   > - <Link href="/data#environment" />
   > - <Link href="/onBeforeRender#environment" />
-  > - <Link href="/onCreatePageContext" />
   > - <Link href="/pageContext#lifecycle" />
   > <p/> {/* [MDX-workaround-list-at-end-of-note] */ }
-
-  > Also make sure your Vike extensions don't define such server-only hook.
-  >
-  > For example, [`vike-vue-pinia@0.2.3` defines `+onCreatePageContext.server.js`](https://github.com/vikejs/vike-vue/blob/c2146ea3fd187a58cad26f7025c3c2339bc4229b/packages/vike-vue-pinia/integration/onCreatePageContext.server.ts)
-  > and [`vike-react-redux@0.1.1` as well](https://github.com/vikejs/vike-react/blob/20942f6e2a392c56767657d5dd66060a0a8a34ae/packages/vike-react-redux/onCreatePageContext.server.ts)
-  > — since both extensions are tiny, you can consider <Link href="/eject">ejecting</Link> them.
 - If you have a <Link href="/server-integration">custom server integration</Link> (i.e. you don't use <Link href="/vike-photon">`vike-photon`</Link>), make sure the `pageContextInit` you pass to <Link href="/renderPage">`renderPage()`</Link> doesn't contain a property included in <Link href="/passToClient">`passToClient`</Link>.
   ```ts
   // Vike server middleware
