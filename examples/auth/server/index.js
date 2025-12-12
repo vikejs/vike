@@ -59,8 +59,7 @@ function vike(app) {
     const pageContextInit = {
       urlOriginal: req.originalUrl,
       headersOriginal: req.headers,
-      user: req.user,
-      userFullName: req.user?.fullName,
+      req,
     }
     const pageContext = await renderPage(pageContextInit)
     const { httpResponse } = pageContext
