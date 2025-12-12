@@ -9,7 +9,7 @@
     "react-dom": "^19.2.1",
     "vike": "0.4.247",
     "vike-photon": "^0.1.23",
-    "vike-react": "^0.6.13"
+    "vike-react": "^0.6.14"
   },
   "devDependencies": {
     "@photonjs/runtime": "^0.1.15",
