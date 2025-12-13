@@ -191,13 +191,10 @@ function isWrongEnv(moduleId: string, isServerSide: boolean): boolean {
   const modulePath = getModulePath(moduleId)
   if (isServerSide) {
     // On server-side, .client. is wrong
-    const suffixWrong = getSuffix('client')
-    return modulePath.includes(suffixWrong)
+    return modulePath.includes(getSuffix('client'))
   } else {
     // On client-side, both .server. and .ssr. are wrong
-    const suffixServer = getSuffix('server')
-    const suffixSsr = getSuffix('ssr')
-    return modulePath.includes(suffixServer) || modulePath.includes(suffixSsr)
+    return modulePath.includes(getSuffix('server')) || modulePath.includes(getSuffix('ssr'))
   }
 }
 
