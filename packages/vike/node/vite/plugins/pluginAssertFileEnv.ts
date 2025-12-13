@@ -163,11 +163,11 @@ function getErrMsg(
   config: ResolvedConfig,
   noColor: boolean,
 ) {
-  const modulePath = getModulePath(moduleId)
-
   const envActual = isServerSide ? 'server' : 'client'
   const envExpect = isServerSide ? 'client' : 'server'
+
   let errMsg: string
+  const modulePath = getModulePath(moduleId)
   let modulePathPretty = getFilePathToShowToUserModule(modulePath, config)
   if (!noColor) {
     const suffix = modulePath.includes(getSuffix('ssr')) ? getSuffix('ssr') : getSuffix(envExpect)
