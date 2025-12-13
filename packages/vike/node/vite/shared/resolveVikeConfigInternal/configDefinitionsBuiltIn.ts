@@ -221,12 +221,11 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
         .flat(1)
         // Server-only
         .filter((source) => !source.configEnv.client)
-        // Exclude SSR-only hooks (they don't require pageContext.json requests)
+        // Exclude `.ssr.js` hooks (they don't require pageContext.json requests)
         .filter((source) => {
-          // Check if the source is from a .ssr. file
           const definedAt = source.definedAt
-          if ('filePathAbsoluteVite' in definedAt) {
-            return !definedAt.filePathAbsoluteVite.includes('.ssr.')
+          if ('filePathAbsoluteVite' in definedAt && definedAt.filePathAbsoluteVite.includes('.ssr.')) {
+            return false
           }
           return true
         })
