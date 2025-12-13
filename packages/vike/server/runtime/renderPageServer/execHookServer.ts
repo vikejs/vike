@@ -13,9 +13,10 @@ import { getHookFromPageContextNew } from '../../../shared-server-client/hooks/g
 type PageContextExecHookServer = PageContextConfig & PageContextForPublicUsageServer
 async function execHookServer(hookName: HookName, pageContext: PageContextExecHookServer) {
   const allHooks = getHookFromPageContextNew(hookName, pageContext)
-  const hooks =
-    hookName === 'onCreatePageContext' && pageContext.isClientSideNavigation
-      ? allHooks.filter((hook) => !hook.hookFilePath.includes('.ssr.'))
-      : allHooks
+  const hooks = !pageContext.isClientSideNavigation
+    ? allHooks
+    : // TODO: dedupe, use function getFileSuffix()
+      // Don't execute `.ssr.js` hooks upon client-side navigation
+      allHooks.filter((hook) => !hook.hookFilePath.includes('.ssr.'))
   return await execHookDirect(hooks, pageContext, preparePageContextForPublicUsageServer)
 }
