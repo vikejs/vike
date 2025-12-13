@@ -1452,8 +1452,7 @@ function resolveConfigEnv(configEnv: ConfigEnvInternal, filePath: FilePath) {
   const configEnvResolved = { ...configEnv }
 
   if (filePath.filePathAbsoluteFilesystem) {
-    const { fileName } = filePath
-    const suffixes = getFileSuffixes(fileName)
+    const suffixes = getFileSuffixes(filePath.fileName)
     if (suffixes.includes('ssr') || suffixes.includes('server')) {
       configEnvResolved.server = true
       configEnvResolved.client = false
