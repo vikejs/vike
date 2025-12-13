@@ -16,13 +16,6 @@ const suffixes = [
 ] as const
 type Suffix = (typeof suffixes)[number]
 
-// TODO/ai simplify
 function getFileSuffixes(fileName: string): Suffix[] {
-  const found: Suffix[] = []
-  for (const suffix of suffixes) {
-    if (fileName.includes(`.${suffix}.`)) {
-      found.push(suffix)
-    }
-  }
-  return found
+  return suffixes.filter((suffix) => fileName.includes(`.${suffix}.`))
 }
