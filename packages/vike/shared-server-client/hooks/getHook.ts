@@ -75,11 +75,21 @@ function getHookFromPageContextNew(hookName: HookName, pageContext: PageContextC
     if (hookFn === null) return
     const hookFilePath = val.configDefinedByFile
   */
+  
+  // Check if this is during client-side navigation (pageContext.json request)
+  const isClientSideNavigation = 'isClientSideNavigation' in pageContext ? pageContext.isClientSideNavigation : false
+  
   pageContext.exportsAll[hookName]?.forEach((val) => {
     const hookFn = val.exportValue
     if (hookFn === null) return
     const hookFilePath = val.filePath
     assert(hookFilePath)
+    
+    // Skip .ssr. hooks during client-side navigation (pageContext.json requests)
+    if (isClientSideNavigation && hookFilePath.includes('.ssr.')) {
+      return
+    }
+    
     hooks.push(getHook(hookFn, hookName, hookFilePath, hookTimeout))
   })
   return hooks
