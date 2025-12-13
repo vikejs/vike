@@ -1,5 +1,7 @@
 export { pluginFileEnv }
 
+// TODO: pluginFileEnv.ts => pluginAssertFileEnv.ts
+
 // Implementation for https://vike.dev/file-env
 // Alternative implementations:
 // - Remix: https://github.com/remix-run/remix/blob/0e542779499b13ab9291cf20cd5e6b43e2905151/packages/remix-dev/vite/plugin.ts#L1504-L1594
@@ -28,12 +30,14 @@ import { isViteServerSide, isViteServerSide_extraSafe } from '../shared/isViteSe
 const skipNodeModules = '/node_modules/' // Only apply `.server.js`, `.client.js` and `.ssr.js` to user files
 const filterRolldown = {
   id: {
+    // TODO: refactor
     include: (['client', 'server', 'ssr'] as const).map((env) => `**/*${getSuffix(env)}*`),
     exclude: [`**${skipNodeModules}**`],
   },
 }
 const filterFunction = (id: string) => {
   if (id.includes(skipNodeModules)) return false
+  // TODO: refactor
   if (!id.includes(getSuffix('client')) && !id.includes(getSuffix('server')) && !id.includes(getSuffix('ssr')))
     return false
   return true
@@ -154,6 +158,7 @@ function pluginFileEnv(): Plugin[] {
     const envActual = isServerSide ? 'server' : 'client'
     const envExpect = isServerSide ? 'client' : 'server'
 
+    // TODO: refactor
     let errMsg: string
     let modulePathPretty = getFilePathToShowToUserModule(modulePath, config)
     if (!noColor) {
@@ -209,6 +214,7 @@ function skip(id: string, userRootDir: string): boolean {
   return false
 }
 
+// TODO: refactor
 function getSuffix(env: 'client' | 'server' | 'ssr') {
   return `.${env}.` as const
 }
