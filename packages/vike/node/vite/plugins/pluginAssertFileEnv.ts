@@ -25,17 +25,19 @@ import { normalizeId } from '../shared/normalizeId.js'
 import { isV1Design } from '../shared/resolveVikeConfigInternal.js'
 import { isViteServerSide, isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 
+const suffixes = ['client', 'server', 'ssr'] as const
+type Suffix = (typeof suffixes)[number]
+
 const skipNodeModules = '/node_modules/' // Only assert `.server.js`, `.client.js` and `.ssr.js` for user files
 const filterRolldown = {
   id: {
-    // TODO: refactor
-    include: (['client', 'server', 'ssr'] as const).map((env) => `**/*${getSuffix(env)}*`),
+    include: suffixes.map((env) => `**/*${getSuffix(env)}*`),
     exclude: [`**${skipNodeModules}**`],
   },
 }
 const filterFunction = (id: string) => {
   if (id.includes(skipNodeModules)) return false
-  // TODO: refactor
+  // TODO/ai: use suffixes
   if (!id.includes(getSuffix('client')) && !id.includes(getSuffix('server')) && !id.includes(getSuffix('ssr')))
     return false
   return true
@@ -212,8 +214,7 @@ function skip(id: string, userRootDir: string): boolean {
   return false
 }
 
-// TODO: refactor
-function getSuffix(env: 'client' | 'server' | 'ssr') {
+function getSuffix(env: Suffix) {
   return `.${env}.` as const
 }
 
