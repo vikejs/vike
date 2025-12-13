@@ -221,6 +221,8 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
         .flat(1)
         // Server-only
         .filter((source) => !source.configEnv.client)
+        // Exclude SSR-only hooks (they don't require pageContext.json requests)
+        .filter((source) => !source.configEnv.ssr)
         // Config value isn't `null`
         .filter((source) => !isConfigSourceValueNull(source))
       return sources.length > 0

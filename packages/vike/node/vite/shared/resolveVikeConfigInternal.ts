@@ -1452,7 +1452,11 @@ function resolveConfigEnv(configEnv: ConfigEnvInternal, filePath: FilePath) {
 
   if (filePath.filePathAbsoluteFilesystem) {
     const { fileName } = filePath
-    if (fileName.includes('.server.')) {
+    if (fileName.includes('.ssr.')) {
+      configEnvResolved.server = true
+      configEnvResolved.client = false
+      configEnvResolved.ssr = true
+    } else if (fileName.includes('.server.')) {
       configEnvResolved.server = true
       configEnvResolved.client = false
     } else if (fileName.includes('.client.')) {

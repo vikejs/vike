@@ -101,6 +101,8 @@ type ConfigEnvInternal = Omit<ConfigEnv, 'client'> & {
   client?: boolean | 'if-client-routing'
   /** Load value only in production, or only in development. */
   production?: boolean
+  /** Only execute during SSR (initial page load), not during pageContext.json requests */
+  ssr?: boolean
 }
 
 type ConfigValueSources = Record<
