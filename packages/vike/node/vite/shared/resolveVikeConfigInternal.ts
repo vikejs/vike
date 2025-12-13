@@ -60,7 +60,7 @@ import {
   type ConfigDefinitionInternal,
   type ConfigDefinitions,
 } from './resolveVikeConfigInternal/configDefinitionsBuiltIn.js'
-import { getFileSuffix } from '../../../shared-server-node/getFileSuffix.js'
+import { getFileSuffixes } from '../../../shared-server-node/getFileSuffixes.js'
 import {
   type LocationId,
   getLocationId,
@@ -1453,7 +1453,7 @@ function resolveConfigEnv(configEnv: ConfigEnvInternal, filePath: FilePath) {
 
   if (filePath.filePathAbsoluteFilesystem) {
     const { fileName } = filePath
-    const suffixes = getFileSuffix(fileName)
+    const suffixes = getFileSuffixes(fileName)
     if (suffixes.includes('ssr') || suffixes.includes('server')) {
       configEnvResolved.server = true
       configEnvResolved.client = false

@@ -1,4 +1,4 @@
-export { getFileSuffix }
+export { getFileSuffixes }
 
 const suffixes = [
   // .ssr.js
@@ -16,7 +16,7 @@ const suffixes = [
 ] as const
 type Suffix = (typeof suffixes)[number]
 
-function getFileSuffix(fileName: string): Suffix[] {
+function getFileSuffixes(fileName: string): Suffix[] {
   const found: Suffix[] = []
   for (const suffix of suffixes) {
     if (fileName.includes(`.${suffix}.`)) {
