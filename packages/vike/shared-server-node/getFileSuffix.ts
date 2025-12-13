@@ -1,6 +1,19 @@
 export { getFileSuffix }
 
-const suffixes = ['ssr', 'server', 'client', 'shared', 'clear', 'default'] as const
+const suffixes = [
+  // .ssr.js
+  'ssr',
+  // .server.js
+  'server',
+  // .client.js
+  'client',
+  // .shared.js
+  'shared',
+  // .clear.js
+  'clear',
+  // .default.js
+  'default',
+] as const
 type Suffix = (typeof suffixes)[number]
 
 function getFileSuffix(fileName: string): Suffix[] {
