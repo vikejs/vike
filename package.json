@@ -45,10 +45,5 @@
     "playwright-chromium": "^1.57.0",
     "vitest": "^3.2.4"
   },
-  "packageManager": "pnpm@9.15.9",
-  "pnpm": {
-    "patchedDependencies": {
-      "vike-vue-pinia": "patches/vike-vue-pinia.patch"
-    }
-  }
+  "packageManager": "pnpm@9.15.9"
 }
