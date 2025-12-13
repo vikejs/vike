@@ -1452,7 +1452,7 @@ function resolveConfigEnv(configEnv: ConfigEnvInternal, filePath: FilePath) {
 
   if (filePath.filePathAbsoluteFilesystem) {
     const { fileName } = filePath
-    // TODO: dedupe by implementing new function getFileSuffix()
+    // TODO/ai: dedupe by implementing new function getFileSuffix()
     if (fileName.includes('.ssr.') || fileName.includes('.server.')) {
       configEnvResolved.server = true
       configEnvResolved.client = false

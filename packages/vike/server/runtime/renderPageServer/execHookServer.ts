@@ -15,7 +15,7 @@ async function execHookServer(hookName: HookName, pageContext: PageContextExecHo
   const allHooks = getHookFromPageContextNew(hookName, pageContext)
   const hooks = !pageContext.isClientSideNavigation
     ? allHooks
-    : // TODO: dedupe, use function getFileSuffix()
+    : // TODO/ai: dedupe, use function getFileSuffix()
       // Don't execute `.ssr.js` hooks upon client-side navigation
       allHooks.filter((hook) => !hook.hookFilePath.includes('.ssr.'))
   return await execHookDirect(hooks, pageContext, preparePageContextForPublicUsageServer)
