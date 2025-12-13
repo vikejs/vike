@@ -368,7 +368,8 @@ export default {
 </Warning>
 
 Where:
- - `apply()` installs the middleware of Vike and Vike extensions.
+ - `apply()` installs the middleware of Vike and Vike extensions (powered by [Universal Middlewares](https://universal-middleware.dev)).
+   > Context populated by middlewares is automatically merged into <Link href="/pageContext">`pageContext`</Link>.
  - `serve()` attaches your server to Node.js, Cloudflare, Netlify, Vercel, Deno, Bun, ...
    > See <Link href="#serve" /> for a list of options.
 
