@@ -156,12 +156,15 @@ function pluginFileEnv(): Plugin[] {
     // Determine which suffix the file has
     let envExpect: string
     let suffix: string
+    let fileDescription: string
     if (modulePath.includes(getSuffix('ssr'))) {
       envExpect = 'server (SSR-only)'
       suffix = getSuffix('ssr')
+      fileDescription = 'SSR-only file'
     } else {
       envExpect = isServerSide ? 'client' : 'server'
       suffix = getSuffix(envExpect as 'client' | 'server')
+      fileDescription = `${capitalizeFirstLetter(envExpect)}-only file`
     }
 
     let errMsg: string
@@ -169,9 +172,7 @@ function pluginFileEnv(): Plugin[] {
     if (!noColor) {
       modulePathPretty = modulePathPretty.replaceAll(suffix, pc.bold(suffix))
     }
-    errMsg = `${capitalizeFirstLetter(
-      envExpect,
-    )}-only file ${modulePathPretty} (https://vike.dev/file-env) imported on the ${envActual}-side`
+    errMsg = `${fileDescription} ${modulePathPretty} (https://vike.dev/file-env) imported on the ${envActual}-side`
 
     {
       const importPaths = importers
