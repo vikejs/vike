@@ -25,19 +25,19 @@ import { normalizeId } from '../shared/normalizeId.js'
 import { isV1Design } from '../shared/resolveVikeConfigInternal.js'
 import { isViteServerSide, isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 
-const suffixes = ['client', 'server', 'ssr'] as const
-type Suffix = (typeof suffixes)[number]
+const envS = ['client', 'server', 'ssr'] as const
+type Env = (typeof envS)[number]
 
 const skipNodeModules = '/node_modules/' // Only assert `.server.js`, `.client.js` and `.ssr.js` for user files
 const filterRolldown = {
   id: {
-    include: suffixes.map((env) => `**/*${getSuffix(env)}*`),
+    include: envS.map((env) => `**/*${getSuffix(env)}*`),
     exclude: [`**${skipNodeModules}**`],
   },
 }
 const filterFunction = (id: string) => {
   if (id.includes(skipNodeModules)) return false
-  return suffixes.some((suffix) => id.includes(getSuffix(suffix)))
+  return envS.some((suffix) => id.includes(getSuffix(suffix)))
 }
 
 function pluginAssertFileEnv(): Plugin[] {
@@ -211,7 +211,7 @@ function skip(id: string, userRootDir: string): boolean {
   return false
 }
 
-function getSuffix(env: Suffix) {
+function getSuffix(env: Env) {
   return `.${env}.` as const
 }
 
