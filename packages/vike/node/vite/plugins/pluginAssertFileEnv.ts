@@ -144,14 +144,14 @@ function pluginAssertFileEnv(): Plugin[] {
   }
 }
 
-  function getErrMsg(
-    moduleId: string,
-    isServerSide: boolean,
-    importers: string[] | readonly string[],
-    onlyWarn: boolean,
-    config: ResolvedConfig,
-    noColor: boolean,
-  ) {
+function getErrMsg(
+  moduleId: string,
+  isServerSide: boolean,
+  importers: string[] | readonly string[],
+  onlyWarn: boolean,
+  config: ResolvedConfig,
+  noColor: boolean,
+) {
     const modulePath = getModulePath(moduleId)
 
     const envActual = isServerSide ? 'server' : 'client'
@@ -184,7 +184,7 @@ function pluginAssertFileEnv(): Plugin[] {
     }
 
     return errMsg
-  }
+}
 
 function isWrongEnv(moduleId: string, isServerSide: boolean): boolean {
   const modulePath = getModulePath(moduleId)
