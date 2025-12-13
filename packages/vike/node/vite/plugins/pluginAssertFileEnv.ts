@@ -1,7 +1,5 @@
 export { pluginAssertFileEnv }
 
-// TODO: pluginAssertFileEnv.ts => pluginAssertFileEnv.ts
-
 // Implementation for https://vike.dev/file-env
 // Alternative implementations:
 // - Remix: https://github.com/remix-run/remix/blob/0e542779499b13ab9291cf20cd5e6b43e2905151/packages/remix-dev/vite/plugin.ts#L1504-L1594
