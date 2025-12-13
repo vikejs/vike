@@ -60,6 +60,7 @@ import {
   type ConfigDefinitionInternal,
   type ConfigDefinitions,
 } from './resolveVikeConfigInternal/configDefinitionsBuiltIn.js'
+import { getFileSuffix } from '../../../shared-server-node/getFileSuffix.js'
 import {
   type LocationId,
   getLocationId,
@@ -1452,14 +1453,14 @@ function resolveConfigEnv(configEnv: ConfigEnvInternal, filePath: FilePath) {
 
   if (filePath.filePathAbsoluteFilesystem) {
     const { fileName } = filePath
-    // TODO/ai: dedupe by implementing new function getFileSuffix()
-    if (fileName.includes('.ssr.') || fileName.includes('.server.')) {
+    const suffix = getFileSuffix(fileName)
+    if (suffix === 'ssr' || suffix === 'server') {
       configEnvResolved.server = true
       configEnvResolved.client = false
-    } else if (fileName.includes('.client.')) {
+    } else if (suffix === 'client') {
       configEnvResolved.client = true
       configEnvResolved.server = false
-    } else if (fileName.includes('.shared.')) {
+    } else if (suffix === 'shared') {
       configEnvResolved.server = true
       configEnvResolved.client = true
     }
