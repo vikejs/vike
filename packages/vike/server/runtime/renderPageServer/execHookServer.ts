@@ -14,12 +14,12 @@ type PageContextExecHookServer = PageContextConfig & PageContextForPublicUsageSe
 async function execHookServer(hookName: HookName, pageContext: PageContextExecHookServer) {
   // Get all hooks for this hookName
   const allHooks = getHookFromPageContextNew(hookName, pageContext)
-  
+
   // For onCreatePageContext, filter out .ssr. hooks during client-side navigation
   const hooks =
     hookName === 'onCreatePageContext' && pageContext.isClientSideNavigation
       ? allHooks.filter((hook) => !hook.hookFilePath.includes('.ssr.'))
       : allHooks
-  
+
   return await execHookDirect(hooks, pageContext, preparePageContextForPublicUsageServer)
 }

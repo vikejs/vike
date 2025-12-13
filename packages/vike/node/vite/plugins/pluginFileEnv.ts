@@ -152,7 +152,7 @@ function pluginFileEnv(): Plugin[] {
     const modulePath = getModulePath(moduleId)
 
     const envActual = isServerSide ? 'server' : 'client'
-    
+
     // Determine which suffix the file has
     let envExpect: string
     let suffix: string
