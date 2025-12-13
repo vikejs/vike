@@ -498,6 +498,7 @@ const headings = [
     title: '`+onCreateGlobalContext()` hook',
     titleInNav: '`+onCreateGlobalContext()`',
     url: '/onCreateGlobalContext',
+    sectionTitles: ['Use case: store'],
   },
   {
     level: 2,
