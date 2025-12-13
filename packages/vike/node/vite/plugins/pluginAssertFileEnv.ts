@@ -37,10 +37,7 @@ const filterRolldown = {
 }
 const filterFunction = (id: string) => {
   if (id.includes(skipNodeModules)) return false
-  // TODO/ai: use suffixes
-  if (!id.includes(getSuffix('client')) && !id.includes(getSuffix('server')) && !id.includes(getSuffix('ssr')))
-    return false
-  return true
+  return suffixes.some((suffix) => id.includes(getSuffix(suffix)))
 }
 
 function pluginAssertFileEnv(): Plugin[] {
