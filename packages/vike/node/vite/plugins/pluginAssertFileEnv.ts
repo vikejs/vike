@@ -152,10 +152,9 @@ function pluginAssertFileEnv(): Plugin[] {
   ) {
     const modulePath = getModulePath(moduleId)
 
+    // TODO/ai move it to getErrMsg()
     const envActual = isServerSide ? 'server' : 'client'
     const envExpect = isServerSide ? 'client' : 'server'
-
-    // TODO: refactor
     let errMsg: string
     let modulePathPretty = getFilePathToShowToUserModule(modulePath, config)
     if (!noColor) {
@@ -196,6 +195,10 @@ function isWrongEnv(moduleId: string, isServerSide: boolean): boolean {
     // On client-side, both .server. and .ssr. are wrong
     return modulePath.includes(getSuffix('server')) || modulePath.includes(getSuffix('ssr'))
   }
+}
+
+function getErrMsg() {
+  // TODO/ai
 }
 
 function skip(id: string, userRootDir: string): boolean {
