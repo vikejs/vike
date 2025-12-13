@@ -163,38 +163,38 @@ function getErrMsg(
   config: ResolvedConfig,
   noColor: boolean,
 ) {
-    const modulePath = getModulePath(moduleId)
+  const modulePath = getModulePath(moduleId)
 
-    const envActual = isServerSide ? 'server' : 'client'
-    const envExpect = isServerSide ? 'client' : 'server'
-    let errMsg: string
-    let modulePathPretty = getFilePathToShowToUserModule(modulePath, config)
-    if (!noColor) {
-      const suffix = modulePath.includes(getSuffix('ssr')) ? getSuffix('ssr') : getSuffix(envExpect)
-      modulePathPretty = modulePathPretty.replaceAll(suffix, pc.bold(suffix))
+  const envActual = isServerSide ? 'server' : 'client'
+  const envExpect = isServerSide ? 'client' : 'server'
+  let errMsg: string
+  let modulePathPretty = getFilePathToShowToUserModule(modulePath, config)
+  if (!noColor) {
+    const suffix = modulePath.includes(getSuffix('ssr')) ? getSuffix('ssr') : getSuffix(envExpect)
+    modulePathPretty = modulePathPretty.replaceAll(suffix, pc.bold(suffix))
+  }
+  errMsg = `${capitalizeFirstLetter(
+    envExpect,
+  )}-only file ${modulePathPretty} (https://vike.dev/file-env) imported on the ${envActual}-side`
+
+  {
+    const importPaths = importers
+      .filter((importer) =>
+        // Can be Vike's virtual module: https://github.com/vikejs/vike/issues/2483
+        isFilePathAbsolute(importer),
+      )
+      .map((importer) => getFilePathToShowToUserModule(importer, config))
+      .map((importPath) => pc.cyan(importPath))
+    if (importPaths.length > 0) {
+      errMsg += ` by ${joinEnglish(importPaths, 'and')}`
     }
-    errMsg = `${capitalizeFirstLetter(
-      envExpect,
-    )}-only file ${modulePathPretty} (https://vike.dev/file-env) imported on the ${envActual}-side`
+  }
 
-    {
-      const importPaths = importers
-        .filter((importer) =>
-          // Can be Vike's virtual module: https://github.com/vikejs/vike/issues/2483
-          isFilePathAbsolute(importer),
-        )
-        .map((importer) => getFilePathToShowToUserModule(importer, config))
-        .map((importPath) => pc.cyan(importPath))
-      if (importPaths.length > 0) {
-        errMsg += ` by ${joinEnglish(importPaths, 'and')}`
-      }
-    }
+  if (onlyWarn) {
+    errMsg += ". This is potentially a security issue and Vike won't allow you to build your app for production."
+  }
 
-    if (onlyWarn) {
-      errMsg += ". This is potentially a security issue and Vike won't allow you to build your app for production."
-    }
-
-    return errMsg
+  return errMsg
 }
 
 function skip(id: string, userRootDir: string): boolean {
