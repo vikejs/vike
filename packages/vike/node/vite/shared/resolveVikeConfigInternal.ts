@@ -1454,14 +1454,13 @@ function resolveConfigEnv(configEnv: ConfigEnvInternal, filePath: FilePath) {
   if (filePath.filePathAbsoluteFilesystem) {
     const { fileName } = filePath
     const suffixes = getFileSuffix(fileName)
-    const suffix = suffixes[0]
-    if (suffix === 'ssr' || suffix === 'server') {
+    if (suffixes.includes('ssr') || suffixes.includes('server')) {
       configEnvResolved.server = true
       configEnvResolved.client = false
-    } else if (suffix === 'client') {
+    } else if (suffixes.includes('client')) {
       configEnvResolved.client = true
       configEnvResolved.server = false
-    } else if (suffix === 'shared') {
+    } else if (suffixes.includes('shared')) {
       configEnvResolved.server = true
       configEnvResolved.client = true
     }
