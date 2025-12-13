@@ -83,7 +83,7 @@ function pluginAssertFileEnv(): Plugin[] {
           if (!isWrongEnv(id, isServerSide)) return
           const { importers } = this.getModuleInfo(id)!
           // Throwing a verbose error doesn't waste client-side KBs as dynamic imports are code split.
-          const errMsg = getErrorMessage(id, isServerSide, importers, false, true)
+          const errMsg = getErrMsg(id, isServerSide, importers, false, config, true)
           // We have to inject empty exports to avoid Rollup complaining about missing exports, see https://gist.github.com/brillout/5ea45776e65bd65100a52ecd7bfda3ff
           const { exportNames } = await getExportNames(code)
           return rollupSourceMapRemove(
@@ -135,24 +135,25 @@ function pluginAssertFileEnv(): Plugin[] {
     onlyWarn: boolean,
   ) {
     if (!isWrongEnv(moduleId, isServerSide)) return
-    const errMsg = getErrorMessage(moduleId, isServerSide, importers, onlyWarn, false)
+    const errMsg = getErrMsg(moduleId, isServerSide, importers, onlyWarn, config, false)
     if (onlyWarn) {
       assertWarning(false, errMsg, { onlyOnce: true })
     } else {
       assertUsage(false, errMsg)
     }
   }
+}
 
-  function getErrorMessage(
+  function getErrMsg(
     moduleId: string,
     isServerSide: boolean,
     importers: string[] | readonly string[],
     onlyWarn: boolean,
+    config: ResolvedConfig,
     noColor: boolean,
   ) {
     const modulePath = getModulePath(moduleId)
 
-    // TODO/ai move it to getErrMsg()
     const envActual = isServerSide ? 'server' : 'client'
     const envExpect = isServerSide ? 'client' : 'server'
     let errMsg: string
@@ -184,7 +185,6 @@ function pluginAssertFileEnv(): Plugin[] {
 
     return errMsg
   }
-}
 
 function isWrongEnv(moduleId: string, isServerSide: boolean): boolean {
   const modulePath = getModulePath(moduleId)
@@ -195,10 +195,6 @@ function isWrongEnv(moduleId: string, isServerSide: boolean): boolean {
     // On client-side, both .server. and .ssr. are wrong
     return modulePath.includes(getSuffix('server')) || modulePath.includes(getSuffix('ssr'))
   }
-}
-
-function getErrMsg() {
-  // TODO/ai
 }
 
 function skip(id: string, userRootDir: string): boolean {
