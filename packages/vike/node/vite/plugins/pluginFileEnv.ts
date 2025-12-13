@@ -27,7 +27,7 @@ import { normalizeId } from '../shared/normalizeId.js'
 import { isV1Design } from '../shared/resolveVikeConfigInternal.js'
 import { isViteServerSide, isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 
-const skipNodeModules = '/node_modules/' // Only apply `.server.js`, `.client.js` and `.ssr.js` to user files
+const skipNodeModules = '/node_modules/' // Only assert `.server.js`, `.client.js` and `.ssr.js` for user files
 const filterRolldown = {
   id: {
     // TODO: refactor
