@@ -1,12 +1,12 @@
 export { getFileSuffixes }
 
 const suffixesAssertEnv = [
-  // .ssr.js
-  'ssr',
   // .server.js
   'server',
   // .client.js
   'client',
+  // .ssr.js
+  'ssr',
 ] as const
 const suffixes = [
   ...suffixesAssertEnv,
