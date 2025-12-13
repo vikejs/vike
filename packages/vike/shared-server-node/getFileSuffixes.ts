@@ -1,4 +1,5 @@
 export { getFileSuffixes }
+export { suffixesAssertEnv }
 
 const suffixesAssertEnv = [
   // .server.js
