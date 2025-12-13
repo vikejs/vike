@@ -150,40 +150,61 @@ function pluginAssertFileEnv(): Plugin[] {
     onlyWarn: boolean,
     noColor: boolean,
   ) {
-    const modulePath = getModulePath(moduleId)
-
-    // TODO/ai move it to getErrMsg()
-    const envActual = isServerSide ? 'server' : 'client'
-    const envExpect = isServerSide ? 'client' : 'server'
-    let errMsg: string
-    let modulePathPretty = getFilePathToShowToUserModule(modulePath, config)
-    if (!noColor) {
-      const suffix = modulePath.includes(getSuffix('ssr')) ? getSuffix('ssr') : getSuffix(envExpect)
-      modulePathPretty = modulePathPretty.replaceAll(suffix, pc.bold(suffix))
-    }
-    errMsg = `${capitalizeFirstLetter(
-      envExpect,
-    )}-only file ${modulePathPretty} (https://vike.dev/file-env) imported on the ${envActual}-side`
-
-    {
-      const importPaths = importers
-        .filter((importer) =>
-          // Can be Vike's virtual module: https://github.com/vikejs/vike/issues/2483
-          isFilePathAbsolute(importer),
-        )
-        .map((importer) => getFilePathToShowToUserModule(importer, config))
-        .map((importPath) => pc.cyan(importPath))
-      if (importPaths.length > 0) {
-        errMsg += ` by ${joinEnglish(importPaths, 'and')}`
-      }
-    }
-
-    if (onlyWarn) {
-      errMsg += ". This is potentially a security issue and Vike won't allow you to build your app for production."
-    }
-
-    return errMsg
+    return getErrMsg(moduleId, isServerSide, importers, onlyWarn, noColor, config)
   }
+}
+
+function getErrMsg(
+  moduleId: string,
+  isServerSide: boolean,
+  importers: string[] | readonly string[],
+  onlyWarn: boolean,
+  noColor: boolean,
+  config: ResolvedConfig,
+) {
+  const modulePath = getModulePath(moduleId)
+
+  const envActual = isServerSide ? 'server' : 'client'
+
+  // Determine which suffix the file has
+  let envExpect: string
+  let suffix: string
+  let fileDescription: string
+  if (modulePath.includes(getSuffix('ssr'))) {
+    envExpect = 'server (SSR-only)'
+    suffix = getSuffix('ssr')
+    fileDescription = 'SSR-only file'
+  } else {
+    envExpect = isServerSide ? 'client' : 'server'
+    suffix = getSuffix(envExpect as Env)
+    fileDescription = `${capitalizeFirstLetter(envExpect)}-only file`
+  }
+
+  let errMsg: string
+  let modulePathPretty = getFilePathToShowToUserModule(modulePath, config)
+  if (!noColor) {
+    modulePathPretty = modulePathPretty.replaceAll(suffix, pc.bold(suffix))
+  }
+  errMsg = `${fileDescription} ${modulePathPretty} (https://vike.dev/file-env) imported on the ${envActual}-side`
+
+  {
+    const importPaths = importers
+      .filter((importer) =>
+        // Can be Vike's virtual module: https://github.com/vikejs/vike/issues/2483
+        isFilePathAbsolute(importer),
+      )
+      .map((importer) => getFilePathToShowToUserModule(importer, config))
+      .map((importPath) => pc.cyan(importPath))
+    if (importPaths.length > 0) {
+      errMsg += ` by ${joinEnglish(importPaths, 'and')}`
+    }
+  }
+
+  if (onlyWarn) {
+    errMsg += ". This is potentially a security issue and Vike won't allow you to build your app for production."
+  }
+
+  return errMsg
 }
 
 function isWrongEnv(moduleId: string, isServerSide: boolean): boolean {
@@ -195,10 +216,6 @@ function isWrongEnv(moduleId: string, isServerSide: boolean): boolean {
     // On client-side, both .server. and .ssr. are wrong
     return modulePath.includes(getSuffix('server')) || modulePath.includes(getSuffix('ssr'))
   }
-}
-
-function getErrMsg() {
-  // TODO/ai
 }
 
 function skip(id: string, userRootDir: string): boolean {
