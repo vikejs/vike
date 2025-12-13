@@ -1,7 +1,7 @@
 export { execHookServer }
 export type { PageContextExecHookServer }
 
-import { execHook, execHookDirect } from '../../../shared-server-client/hooks/execHook.js'
+import { execHookDirect } from '../../../shared-server-client/hooks/execHook.js'
 import {
   preparePageContextForPublicUsageServer,
   type PageContextForPublicUsageServer,
@@ -12,13 +12,14 @@ import { getHookFromPageContextNew } from '../../../shared-server-client/hooks/g
 
 type PageContextExecHookServer = PageContextConfig & PageContextForPublicUsageServer
 async function execHookServer(hookName: HookName, pageContext: PageContextExecHookServer) {
-  // For onCreatePageContext, filter out .ssr. hooks during client-side navigation
-  if (hookName === 'onCreatePageContext' && pageContext.isClientSideNavigation) {
-    const allHooks = getHookFromPageContextNew(hookName, pageContext)
-    // Filter out hooks with .ssr. in their file path
-    const filteredHooks = allHooks.filter((hook) => !hook.hookFilePath.includes('.ssr.'))
-    return await execHookDirect(filteredHooks, pageContext, preparePageContextForPublicUsageServer)
-  }
+  // Get all hooks for this hookName
+  const allHooks = getHookFromPageContextNew(hookName, pageContext)
   
-  return await execHook(hookName, pageContext, preparePageContextForPublicUsageServer)
+  // For onCreatePageContext, filter out .ssr. hooks during client-side navigation
+  const hooks =
+    hookName === 'onCreatePageContext' && pageContext.isClientSideNavigation
+      ? allHooks.filter((hook) => !hook.hookFilePath.includes('.ssr.'))
+      : allHooks
+  
+  return await execHookDirect(hooks, pageContext, preparePageContextForPublicUsageServer)
 }
