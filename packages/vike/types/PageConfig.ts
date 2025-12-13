@@ -101,6 +101,7 @@ type ConfigEnvInternal = Omit<ConfigEnv, 'client'> & {
   client?: boolean | 'if-client-routing'
   /** Load value only in production, or only in development. */
   production?: boolean
+  // TODO/ai: I don't think we need this? Let's remove it?
   /** Only execute during SSR (initial page load), not during pageContext.json requests */
   ssr?: boolean
 }
