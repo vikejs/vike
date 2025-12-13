@@ -17,6 +17,6 @@ async function execHookServer(hookName: HookName, pageContext: PageContextExecHo
   const hooks = !pageContext.isClientSideNavigation
     ? allHooks
     : // Don't execute `.ssr.js` hooks upon client-side navigation
-      allHooks.filter((hook) => getFileSuffix(hook.hookFilePath) !== 'ssr')
+      allHooks.filter((hook) => !getFileSuffix(hook.hookFilePath).includes('ssr'))
   return await execHookDirect(hooks, pageContext, preparePageContextForPublicUsageServer)
 }
