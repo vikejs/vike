@@ -1,6 +1,4 @@
-export { pluginFileEnv }
-
-// TODO: pluginFileEnv.ts => pluginAssertFileEnv.ts
+export { pluginAssertFileEnv }
 
 // Implementation for https://vike.dev/file-env
 // Alternative implementations:
@@ -26,29 +24,29 @@ import { getExportNames } from '../shared/parseEsModule.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isV1Design } from '../shared/resolveVikeConfigInternal.js'
 import { isViteServerSide, isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
+import { suffixesAssertFileEnv } from '../../../shared-server-node/getFileSuffixes.js'
 
-const skipNodeModules = '/node_modules/' // Only apply `.server.js`, `.client.js` and `.ssr.js` to user files
+const envS = suffixesAssertFileEnv
+type Env = (typeof envS)[number]
+
+const skipNodeModules = '/node_modules/' // Only assert `.server.js`, `.client.js` and `.ssr.js` for user files
 const filterRolldown = {
   id: {
-    // TODO: refactor
-    include: (['client', 'server', 'ssr'] as const).map((env) => `**/*${getSuffix(env)}*`),
+    include: envS.map((env) => `**/*${getSuffix(env)}*`),
     exclude: [`**${skipNodeModules}**`],
   },
 }
 const filterFunction = (id: string) => {
   if (id.includes(skipNodeModules)) return false
-  // TODO: refactor
-  if (!id.includes(getSuffix('client')) && !id.includes(getSuffix('server')) && !id.includes(getSuffix('ssr')))
-    return false
-  return true
+  return envS.some((suffix) => id.includes(getSuffix(suffix)))
 }
 
-function pluginFileEnv(): Plugin[] {
+function pluginAssertFileEnv(): Plugin[] {
   let config: ResolvedConfig
   let viteDevServer: ViteDevServer | undefined
   return [
     {
-      name: 'vike:pluginFileEnv',
+      name: 'vike:pluginAssertFileEnv',
       load: {
         filter: filterRolldown,
         handler(id, options) {
@@ -86,7 +84,7 @@ function pluginFileEnv(): Plugin[] {
           if (!isWrongEnv(id, isServerSide)) return
           const { importers } = this.getModuleInfo(id)!
           // Throwing a verbose error doesn't waste client-side KBs as dynamic imports are code split.
-          const errMsg = getErrorMessage(id, isServerSide, importers, false, true)
+          const errMsg = getErrMsg(id, isServerSide, importers, false, config, true)
           // We have to inject empty exports to avoid Rollup complaining about missing exports, see https://gist.github.com/brillout/5ea45776e65bd65100a52ecd7bfda3ff
           const { exportNames } = await getExportNames(code)
           return rollupSourceMapRemove(
@@ -138,55 +136,12 @@ function pluginFileEnv(): Plugin[] {
     onlyWarn: boolean,
   ) {
     if (!isWrongEnv(moduleId, isServerSide)) return
-    const errMsg = getErrorMessage(moduleId, isServerSide, importers, onlyWarn, false)
+    const errMsg = getErrMsg(moduleId, isServerSide, importers, onlyWarn, config, false)
     if (onlyWarn) {
       assertWarning(false, errMsg, { onlyOnce: true })
     } else {
       assertUsage(false, errMsg)
     }
-  }
-
-  function getErrorMessage(
-    moduleId: string,
-    isServerSide: boolean,
-    importers: string[] | readonly string[],
-    onlyWarn: boolean,
-    noColor: boolean,
-  ) {
-    const modulePath = getModulePath(moduleId)
-
-    const envActual = isServerSide ? 'server' : 'client'
-    const envExpect = isServerSide ? 'client' : 'server'
-
-    // TODO: refactor
-    let errMsg: string
-    let modulePathPretty = getFilePathToShowToUserModule(modulePath, config)
-    if (!noColor) {
-      const suffix = modulePath.includes(getSuffix('ssr')) ? getSuffix('ssr') : getSuffix(envExpect)
-      modulePathPretty = modulePathPretty.replaceAll(suffix, pc.bold(suffix))
-    }
-    errMsg = `${capitalizeFirstLetter(
-      envExpect,
-    )}-only file ${modulePathPretty} (https://vike.dev/file-env) imported on the ${envActual}-side`
-
-    {
-      const importPaths = importers
-        .filter((importer) =>
-          // Can be Vike's virtual module: https://github.com/vikejs/vike/issues/2483
-          isFilePathAbsolute(importer),
-        )
-        .map((importer) => getFilePathToShowToUserModule(importer, config))
-        .map((importPath) => pc.cyan(importPath))
-      if (importPaths.length > 0) {
-        errMsg += ` by ${joinEnglish(importPaths, 'and')}`
-      }
-    }
-
-    if (onlyWarn) {
-      errMsg += ". This is potentially a security issue and Vike won't allow you to build your app for production."
-    }
-
-    return errMsg
   }
 }
 
@@ -194,14 +149,53 @@ function isWrongEnv(moduleId: string, isServerSide: boolean): boolean {
   const modulePath = getModulePath(moduleId)
   if (isServerSide) {
     // On server-side, .client. is wrong
-    const suffixWrong = getSuffix('client')
-    return modulePath.includes(suffixWrong)
+    return modulePath.includes(getSuffix('client'))
   } else {
     // On client-side, both .server. and .ssr. are wrong
-    const suffixServer = getSuffix('server')
-    const suffixSsr = getSuffix('ssr')
-    return modulePath.includes(suffixServer) || modulePath.includes(suffixSsr)
+    return modulePath.includes(getSuffix('server')) || modulePath.includes(getSuffix('ssr'))
   }
+}
+
+function getErrMsg(
+  moduleId: string,
+  isServerSide: boolean,
+  importers: string[] | readonly string[],
+  onlyWarn: boolean,
+  config: ResolvedConfig,
+  noColor: boolean,
+) {
+  const envActual = isServerSide ? 'server' : 'client'
+  const envExpect = isServerSide ? 'client' : 'server'
+
+  const modulePath = getModulePath(moduleId)
+  let modulePathPretty = getFilePathToShowToUserModule(modulePath, config)
+  if (!noColor) {
+    const suffix = modulePath.includes(getSuffix('ssr')) ? getSuffix('ssr') : getSuffix(envExpect)
+    modulePathPretty = modulePathPretty.replaceAll(suffix, pc.bold(suffix))
+  }
+
+  let errMsg = `${capitalizeFirstLetter(
+    envExpect,
+  )}-only file ${modulePathPretty} (https://vike.dev/file-env) imported on the ${envActual}-side`
+
+  {
+    const importPaths = importers
+      .filter((importer) =>
+        // Can be Vike's virtual module: https://github.com/vikejs/vike/issues/2483
+        isFilePathAbsolute(importer),
+      )
+      .map((importer) => getFilePathToShowToUserModule(importer, config))
+      .map((importPath) => pc.cyan(importPath))
+    if (importPaths.length > 0) {
+      errMsg += ` by ${joinEnglish(importPaths, 'and')}`
+    }
+  }
+
+  if (onlyWarn) {
+    errMsg += ". This is potentially a security issue and Vike won't allow you to build your app for production."
+  }
+
+  return errMsg
 }
 
 function skip(id: string, userRootDir: string): boolean {
@@ -214,8 +208,7 @@ function skip(id: string, userRootDir: string): boolean {
   return false
 }
 
-// TODO: refactor
-function getSuffix(env: 'client' | 'server' | 'ssr') {
+function getSuffix(env: Env) {
   return `.${env}.` as const
 }
 

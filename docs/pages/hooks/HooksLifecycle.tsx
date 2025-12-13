@@ -18,7 +18,7 @@ interface HookInfo {
 const routing = { name: 'Routing', href: '/routing', notAHook: true }
 const onCreateApp = { name: 'onCreateApp()', href: '/onCreateApp', providedBy: ['vike-vue'] as const }
 const onCreatePageContext = { name: 'onCreatePageContext()', href: '/onCreatePageContext' }
-const onCreateGlobalContext = { name: 'onCreateGlobalContext()', href: '/onCreateGlobalContext#lifecycle' }
+const onCreateGlobalContext = { name: 'onCreateGlobalContext()', href: '/onCreateGlobalContext' }
 const onBeforeRoute = { name: 'onBeforeRoute()', href: '/onBeforeRoute' }
 const guard = { name: 'guard()', href: '/guard' }
 const data = { name: 'data()', href: '/data' }
