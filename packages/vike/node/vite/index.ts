@@ -21,7 +21,7 @@ import { pluginSetGlobalContext } from './plugins/pluginSetGlobalContext.js'
 import { pluginCommon } from './plugins/pluginCommon.js'
 import { pluginBaseUrls } from './plugins/pluginBaseUrls.js'
 import { pluginReplaceConstantsEnvVars } from './plugins/pluginReplaceConstantsEnvVars.js'
-import { pluginFileEnv } from './plugins/pluginFileEnv.js'
+import { pluginAssertFileEnv } from './plugins/pluginAssertFileEnv.js'
 import { pluginWorkaroundCssModuleHmr } from './plugins/pluginWorkaroundCssModuleHmr.js'
 import { pluginWorkaroundVite6HmrRegression } from './plugins/pluginWorkaroundVite6HmrRegression.js'
 import { pluginReplaceConstantsPageContext } from './plugins/pluginReplaceConstantsPageContext.js'
@@ -59,7 +59,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): Promise<Plug
       ...pluginSetGlobalContext(),
       ...pluginBaseUrls(),
       ...pluginReplaceConstantsEnvVars(),
-      ...pluginFileEnv(),
+      ...pluginAssertFileEnv(),
       ...pluginWorkaroundCssModuleHmr(),
       ...pluginWorkaroundVite6HmrRegression(),
       ...pluginReplaceConstantsPageContext(),

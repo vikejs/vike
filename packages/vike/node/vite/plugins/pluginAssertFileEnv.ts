@@ -1,6 +1,6 @@
-export { pluginFileEnv }
+export { pluginAssertFileEnv }
 
-// TODO: pluginFileEnv.ts => pluginAssertFileEnv.ts
+// TODO: pluginAssertFileEnv.ts => pluginAssertFileEnv.ts
 
 // Implementation for https://vike.dev/file-env
 // Alternative implementations:
@@ -43,12 +43,12 @@ const filterFunction = (id: string) => {
   return true
 }
 
-function pluginFileEnv(): Plugin[] {
+function pluginAssertFileEnv(): Plugin[] {
   let config: ResolvedConfig
   let viteDevServer: ViteDevServer | undefined
   return [
     {
-      name: 'vike:pluginFileEnv',
+      name: 'vike:pluginAssertFileEnv',
       load: {
         filter: filterRolldown,
         handler(id, options) {
