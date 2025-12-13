@@ -24,9 +24,9 @@ import { getExportNames } from '../shared/parseEsModule.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isV1Design } from '../shared/resolveVikeConfigInternal.js'
 import { isViteServerSide, isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
-import { suffixesAssertEnv } from '../../../shared-server-node/getFileSuffixes.js'
+import { suffixesAssertFileEnv } from '../../../shared-server-node/getFileSuffixes.js'
 
-const envS = suffixesAssertEnv
+const envS = suffixesAssertFileEnv
 type Env = (typeof envS)[number]
 
 const skipNodeModules = '/node_modules/' // Only assert `.server.js`, `.client.js` and `.ssr.js` for user files
