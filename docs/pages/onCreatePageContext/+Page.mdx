@@ -53,9 +53,7 @@ See also:
 - <Link href="/onCreateGlobalContext" />
 
 
-## Use cases
-
-### Init
+## Use case: initialization
 
 Initializing a `pageContext` property:
 
@@ -78,7 +76,8 @@ declare global {
 }
 ```
 
-### Computed properties
+
+## Use case: computed properties
 
 Defining a `pageContext` property derived from multiple other properties:
 
@@ -112,16 +111,20 @@ declare global {
 > - <Link href="/pageContext#urlParsed">API > `pageContext.urlParsed`</Link>
 > - <Link href="/markdown#with-a-custom-setting-eager" doNotInferSectionTitle />
 
-### Store
+
+## Use case: store
 
 Initializing a <Link href="/store">store</Link> on the server-side:
 
 ```ts
-// pages/+onCreatePageContext.server.ts
+// pages/+onCreatePageContext.ssr.ts
 // Environment: server
 
-import { Store } from 'some-state-management-library'
+import { Store } from 'aweomse-store'
 import type { PageContextServer } from 'vike/types'
+
+// Note how we use `.ssr.js` instead of `.server.js` — this hook only runs during SSR,
+// not during client-side navigation (`pageContext.json` requests).
 
 export async function onCreatePageContext(pageContext: PageContextServer) {
   pageContext.store = new Store()
@@ -141,6 +144,7 @@ On the client-side, the store is typically initialized by using a <Link href="/o
 See also:
  - <Link href="/onCreateGlobalContext#store" />
  - <Link href="/store#manual-integration" />
+
 
 ## See also
 

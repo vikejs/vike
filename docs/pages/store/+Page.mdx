@@ -47,13 +47,16 @@ The integration can be broken down into three steps:
 
 Determine the store's initial state on the server-side (during SSR) and <Link href="/pageContext#custom">make it available as `pageContext.storeInitialState`</Link>.
 
-To achieve that, you can create the store at <Link href="/onCreatePageContext">`+onCreatePageContext.server.js`</Link>  and then retrieve its initial sate at <Link href="/onAfterRenderHtml">`+onAfterRenderHtml.js`</Link>:
+To achieve that, you can create the store at <Link href="/onCreatePageContext">`+onCreatePageContext.ssr.js`</Link>  and then retrieve its initial sate at <Link href="/onAfterRenderHtml">`+onAfterRenderHtml.js`</Link>:
 ```ts
-// pages/+onCreatePageContext.server.ts
+// pages/+onCreatePageContext.ssr.ts
 // Environment: server
 
-import type { PageContextServer } from 'vike/types'
 import { createStore } from 'awesome-store'
+import type { PageContextServer } from 'vike/types'
+
+// Note how we use `.ssr.js` instead of `.server.js` — this hook only runs during SSR,
+// not during client-side navigation (`pageContext.json` requests).
 
 export function onCreatePageContext(pageContext: PageContextServer) {
   pageContext.store = createStore()

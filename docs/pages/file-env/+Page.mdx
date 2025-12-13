@@ -1,10 +1,12 @@
 import { CodeBlockTransformer, Link } from '@brillout/docpress'
 
-Adding a filename suffix `.server.js` / `.client.js` / `.shared.js` to a file has following effect:
- - For all files, it *guarantees* in which environment the file is loaded.
- - For <Link href="/config#files">`+` files</Link>, it *determines* in which environment the file is loaded.
+For any file, adding `.server.js` / `.client.js` **guarantees** the environment in which it's loaded.
 
-See also <Link href="/config#clear-js" doNotInferSectionTitle noBreadcrumb /> and <Link href="/config#default-js" doNotInferSectionTitle noBreadcrumb />.
+For <Link href="/config#files">`+` files</Link>, adding `.server.js` / `.client.js` / `.shared.js` / `.ssr.js` **modifies** the environment.
+
+> See also:
+> - <Link href="/config#clear-js" doNotInferSectionTitle noBreadcrumb />
+> - <Link href="/config#default-js" doNotInferSectionTitle noBreadcrumb />
 
 ## For all files
 
@@ -48,14 +50,12 @@ window.onclick = () => {
 }
 ```
 
-### `.shared.js`
-
-The file extension `.shared.js` has an effect only for `+` files (see section below): it's useless for other files.
-
 
 ## For `+` files
 
-For <Link href="/config#files">`+` files</Link>, the most common use case is to change the environment of <Link href="/hooks">Vike hooks</Link>. Most notably the <Link href="/data">`data()` hook</Link>: by renaming `+data.js` to `+data.shared.js`/`+data.server.js`/`+data.client.js` you tell Vike in which environment `data()` should be loaded and executed, see <Link href="/data#environment" />.
+For <Link href="/config#files">`+` files</Link>, the most common use case is to change the environment of <Link href="/hooks">Vike hooks</Link>. Most notably the <Link href="/data">`data()` hook</Link>.
+
+For example, by renaming `+data.js` to `+data.shared.js`/`+data.server.js`/`+data.client.js` you tell Vike in which environment `data()` should be loaded and executed, see <Link href="/data#environment" />.
 
 > Essentially, it's a simpler way to set the <Link href="/meta#example-modify-data-env">`meta.env` setting</Link> of a `+` file.
 > Adding `.server.js`/`.client.js`/`.shared` to a `+` file, for example `/pages/product/@id/+data.js`, is equivalent to:
@@ -78,6 +78,14 @@ For <Link href="/config#files">`+` files</Link>, the most common use case is to 
 >   }
 > } satisfies Config
 > ```
+
+### `.ssr.js`
+
+Hooks with `.ssr.js` behave like `.server.js` but **run only during SSR** (initial page load on the server) — not during client-side navigation (<Link href="/pageContext.json">`pageContext.json` requests</Link>).
+
+It's commonly used to initialize stores during SSR (e.g. Pinia and Redux), see: <Link href="/onCreatePageContext#use-case-store" doNotInferSectionTitle />.
+
+> Using `.ssr.js` instead of `.server.js` prevents unnecessary <Link href="/pageContext.json">`pageContext.json` requests</Link> during client-side navigation.
 
 
 ## See also
