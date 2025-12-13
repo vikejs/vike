@@ -11,6 +11,7 @@ import type {
   PageConfigGlobalBuildTime,
 } from '../../../../types/PageConfig.js'
 import { assert, assertIsNotBrowser } from '../../utils.js'
+import { getFileSuffix } from '../../../../shared-server-node/getFileSuffix.js'
 
 assertIsNotBrowser()
 
@@ -115,10 +116,10 @@ function applyFilenameSuffix(sourcesRelevant: ConfigValueSource[]) {
   const getFileName = (source: ConfigValueSource) => source.plusFile?.filePath.fileName ?? ''
 
   // Apply `clear`: truncate at first clear file
-  const clearIndex = sourcesRelevant.findIndex((source) => getFileName(source).includes('.clear.'))
+  const clearIndex = sourcesRelevant.findIndex((source) => getFileSuffix(getFileName(source)).includes('clear'))
   if (clearIndex !== -1) sourcesRelevant = sourcesRelevant.slice(0, clearIndex + 1)
 
   // Apply `default`: exclude defaults if any non-defaults exist, otherwise keep only first default
-  const nonDefaults = sourcesRelevant.filter((source) => !getFileName(source).includes('.default.'))
+  const nonDefaults = sourcesRelevant.filter((source) => !getFileSuffix(getFileName(source)).includes('default'))
   return nonDefaults.length > 0 ? nonDefaults : sourcesRelevant.slice(0, 1)
 }

@@ -1,6 +1,6 @@
 export { getFileSuffix }
 
-const suffixes = ['ssr', 'server', 'client', 'shared'] as const
+const suffixes = ['ssr', 'server', 'client', 'shared', 'clear', 'default'] as const
 type Suffix = (typeof suffixes)[number]
 
 function getFileSuffix(fileName: string): Suffix[] {
