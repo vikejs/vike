@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  vike-vue-pinia:
+    hash: mssxfqr56xk6eip4fve527ildq
+    path: patches/vike-vue-pinia.patch
+
 importers:
 
   .:
@@ -2063,7 +2068,7 @@ importers:
         version: 0.9.6(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
       vike-vue-pinia:
         specifier: ^0.2.3
-        version: 0.2.3(pinia@3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3)))(vike-vue@0.9.6(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)))(vue@3.5.18(typescript@5.9.3))
+        version: 0.2.3(patch_hash=mssxfqr56xk6eip4fve527ildq)(pinia@3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3)))(vike-vue@0.9.6(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)))(vue@3.5.18(typescript@5.9.3))
       vite:
         specifier: ^6.1.0
         version: 6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
@@ -15009,7 +15014,7 @@ snapshots:
       - '@testing-library/jest-dom'
       - supports-color
 
-  vike-vue-pinia@0.2.3(pinia@3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3)))(vike-vue@0.9.6(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)))(vue@3.5.18(typescript@5.9.3)):
+  vike-vue-pinia@0.2.3(patch_hash=mssxfqr56xk6eip4fve527ildq)(pinia@3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3)))(vike-vue@0.9.6(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)))(vue@3.5.18(typescript@5.9.3)):
     dependencies:
       pinia: 3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3))
       vike-vue: 0.9.6(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
