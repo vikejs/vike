@@ -1,5 +1,7 @@
 export { pluginFileEnv }
 
+// TODO: pluginFileEnv.ts => pluginAssertFileEnv.ts
+
 // Implementation for https://vike.dev/file-env
 // Alternative implementations:
 // - Remix: https://github.com/remix-run/remix/blob/0e542779499b13ab9291cf20cd5e6b43e2905151/packages/remix-dev/vite/plugin.ts#L1504-L1594
@@ -25,16 +27,19 @@ import { normalizeId } from '../shared/normalizeId.js'
 import { isV1Design } from '../shared/resolveVikeConfigInternal.js'
 import { isViteServerSide, isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 
-const skipNodeModules = '/node_modules/' // Only apply `.server.js` and `.client.js` to user files
+const skipNodeModules = '/node_modules/' // Only apply `.server.js`, `.client.js` and `.ssr.js` to user files
 const filterRolldown = {
   id: {
-    include: (['client', 'server'] as const).map((env) => `**/*${getSuffix(env)}*`),
+    // TODO: refactor
+    include: (['client', 'server', 'ssr'] as const).map((env) => `**/*${getSuffix(env)}*`),
     exclude: [`**${skipNodeModules}**`],
   },
 }
 const filterFunction = (id: string) => {
   if (id.includes(skipNodeModules)) return false
-  if (!id.includes(getSuffix('client')) && !id.includes(getSuffix('server'))) return false
+  // TODO: refactor
+  if (!id.includes(getSuffix('client')) && !id.includes(getSuffix('server')) && !id.includes(getSuffix('ssr')))
+    return false
   return true
 }
 
@@ -153,10 +158,11 @@ function pluginFileEnv(): Plugin[] {
     const envActual = isServerSide ? 'server' : 'client'
     const envExpect = isServerSide ? 'client' : 'server'
 
+    // TODO: refactor
     let errMsg: string
     let modulePathPretty = getFilePathToShowToUserModule(modulePath, config)
     if (!noColor) {
-      const suffix = getSuffix(envExpect)
+      const suffix = modulePath.includes(getSuffix('ssr')) ? getSuffix('ssr') : getSuffix(envExpect)
       modulePathPretty = modulePathPretty.replaceAll(suffix, pc.bold(suffix))
     }
     errMsg = `${capitalizeFirstLetter(
@@ -186,8 +192,16 @@ function pluginFileEnv(): Plugin[] {
 
 function isWrongEnv(moduleId: string, isServerSide: boolean): boolean {
   const modulePath = getModulePath(moduleId)
-  const suffixWrong = getSuffix(isServerSide ? 'client' : 'server')
-  return modulePath.includes(suffixWrong)
+  if (isServerSide) {
+    // On server-side, .client. is wrong
+    const suffixWrong = getSuffix('client')
+    return modulePath.includes(suffixWrong)
+  } else {
+    // On client-side, both .server. and .ssr. are wrong
+    const suffixServer = getSuffix('server')
+    const suffixSsr = getSuffix('ssr')
+    return modulePath.includes(suffixServer) || modulePath.includes(suffixSsr)
+  }
 }
 
 function skip(id: string, userRootDir: string): boolean {
@@ -200,7 +214,8 @@ function skip(id: string, userRootDir: string): boolean {
   return false
 }
 
-function getSuffix(env: 'client' | 'server') {
+// TODO: refactor
+function getSuffix(env: 'client' | 'server' | 'ssr') {
   return `.${env}.` as const
 }
 

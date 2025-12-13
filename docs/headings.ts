@@ -186,9 +186,10 @@ const headings = [
   },
   {
     level: 2,
-    title: '`.server.js` / `.client.js` / `.shared.js`',
-    titleInNav: '`.server.js`/`.client.js`/`.shared.js`',
+    title: 'File Environment `.server.js` / `.client.js` / ...',
+    titleInNav: '`.server.js` / `.client.js` / ...',
     url: '/file-env',
+    sectionTitles: ['`.ssr.js`'],
   },
   {
     level: 2,
@@ -490,6 +491,7 @@ const headings = [
     title: '`+onCreatePageContext()` hook',
     titleInNav: '`+onCreatePageContext()`',
     url: '/onCreatePageContext',
+    sectionTitles: ['Use case: store'],
   },
   {
     level: 2,
