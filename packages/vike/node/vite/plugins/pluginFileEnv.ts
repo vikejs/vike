@@ -152,18 +152,12 @@ function pluginFileEnv(): Plugin[] {
     const modulePath = getModulePath(moduleId)
 
     const envActual = isServerSide ? 'server' : 'client'
-    let envExpect: 'server' | 'client'
-    let suffix: string
-    if (modulePath.includes(getSuffix('ssr'))) {
-      envExpect = 'server'
-      suffix = getSuffix('ssr')
-    } else {
-      envExpect = isServerSide ? 'client' : 'server'
-      suffix = getSuffix(envExpect)
-    }
+    const envExpect = isServerSide ? 'client' : 'server'
+
     let errMsg: string
     let modulePathPretty = getFilePathToShowToUserModule(modulePath, config)
     if (!noColor) {
+      const suffix = modulePath.includes(getSuffix('ssr')) ? getSuffix('ssr') : getSuffix(envExpect)
       modulePathPretty = modulePathPretty.replaceAll(suffix, pc.bold(suffix))
     }
     errMsg = `${capitalizeFirstLetter(
