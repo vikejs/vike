@@ -166,14 +166,14 @@ function getErrMsg(
   const envActual = isServerSide ? 'server' : 'client'
   const envExpect = isServerSide ? 'client' : 'server'
 
-  let errMsg: string
   const modulePath = getModulePath(moduleId)
   let modulePathPretty = getFilePathToShowToUserModule(modulePath, config)
   if (!noColor) {
     const suffix = modulePath.includes(getSuffix('ssr')) ? getSuffix('ssr') : getSuffix(envExpect)
     modulePathPretty = modulePathPretty.replaceAll(suffix, pc.bold(suffix))
   }
-  errMsg = `${capitalizeFirstLetter(
+
+  let errMsg = `${capitalizeFirstLetter(
     envExpect,
   )}-only file ${modulePathPretty} (https://vike.dev/file-env) imported on the ${envActual}-side`
 
