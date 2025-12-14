@@ -140,6 +140,13 @@ function addTags(msg: string, tagType: TagType | null, showProjectVersion = fals
   msg = addTagVike(msg, showProjectVersion)
   return msg
 }
+function addWhitespace(msg: string) {
+  if (msg.startsWith('[')) {
+    return msg
+  } else {
+    return ` ${msg}`
+  }
+}
 function addTagType(msg: string, tagType: TagType): string {
   let tag = `[${tagType}]`
   if (tagType === 'Warning') {
@@ -148,13 +155,6 @@ function addTagType(msg: string, tagType: TagType): string {
     tag = pc.bold(pc.red(tag))
   }
   return `${tag}${msg}`
-}
-function addWhitespace(msg: string) {
-  if (msg.startsWith('[')) {
-    return msg
-  } else {
-    return ` ${msg}`
-  }
 }
 function addTagVike(msg: string, showProjectVersion = false): string {
   const tag = showProjectVersion ? tagVikeWithVersion : tagVike
