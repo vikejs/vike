@@ -15,18 +15,22 @@ function getBetterError(
   err: unknown,
   modifications: { message?: string | { prepend?: string; append?: string }; stack?: string; hideStack?: true },
 ) {
+  const errOriginal = structuredClone(err)
+
   let errBetter: { message: string; stack: string; hideStack?: true }
 
   // Normalize
   if (!isObject(err)) {
-    warnMalformed(err)
+    warnMalformed(errOriginal)
     errBetter = new Error(String(err)) as Required<Error>
   } else {
-    errBetter = structuredClone(err) as any
+    // We mutate instead of structuredClone(err) to avoid breaking Vite's ssrFixStacktrace() internal rewroteStacktraces.has(err) check
+    // https://github.com/vitejs/vite/blob/dafd726032daa98d0e614f97aebe9d4dbffe2ea7/packages/vite/src/node/ssr/ssrStacktrace.ts#L95
+    errBetter = err as any
   }
   errBetter.message ??= ''
   if (!errBetter.stack) {
-    warnMalformed(err)
+    warnMalformed(errOriginal)
     errBetter.stack = new Error(errBetter.message).stack!
   }
 
@@ -48,7 +52,7 @@ function getBetterError(
       const stack = errBetter.stack.slice(messagePrevIdx + messagePrev.length)
       errBetter.stack = messageNext + stack
     } else {
-      warnMalformed(err)
+      warnMalformed(errOriginal)
     }
   } else {
     if (modsMessage?.append) {
@@ -65,12 +69,12 @@ function getBetterError(
   }
 
   // Enable users to retrieve the original error
-  objectAssign(errBetter, { getOriginalError: () => (err as any)?.getOriginalError?.() ?? err })
+  objectAssign(errBetter, { getOriginalError: () => (errOriginal as any)?.getOriginalError?.() ?? errOriginal })
 
   return errBetter
 }
 
 // TO-DO/eventually: think about whether logging this warning is a good idea
-function warnMalformed(err: unknown) {
-  console.warn('Malformed error: ', err)
+function warnMalformed(errOriginal: unknown) {
+  console.warn('Malformed error: ', errOriginal)
 }
