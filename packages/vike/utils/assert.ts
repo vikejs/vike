@@ -157,8 +157,8 @@ function addWhitespace(msg: string) {
   }
 }
 function addTagProject(msg: string, showProjectVersion = false): string {
-  const prefix = showProjectVersion ? tagProjectWithVersion : tagProject
-  return `${colorVike(prefix)}${msg}`
+  const tag = showProjectVersion ? tagProjectWithVersion : tagProject
+  return `${colorVike(tag)}${msg}`
 }
 
 function isVikeBug(err: unknown): boolean {
