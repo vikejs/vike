@@ -62,15 +62,15 @@ type TagSource = 'config' | `request-${number}`
 
 function logRuntimeInfoDev(msg: string, pageContext: PageContext_logRuntime, logType: LogType) {
   assertPageContext_logRuntime(pageContext)
-  const tagSource = addTagSource(pageContext?._requestId)
+  const tagSource = getTagSource(pageContext?._requestId)
   logDev(msg, logType, tagSource, '[vike]')
 }
 function logConfigInfo(msg: string, logType: LogType): void {
-  const tagSource = addTagSource() ?? 'config'
+  const tagSource = getTagSource() ?? 'config'
   logDev(msg, logType, tagSource, '[vike]')
 }
 function logVite(msg: string, logType: LogType, requestId: number | null, prependViteTag: boolean): void {
-  const tagSource = addTagSource(requestId)
+  const tagSource = getTagSource(requestId)
   logDev(msg, logType, tagSource, '[vite]', !prependViteTag)
 }
 
@@ -84,7 +84,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
     return
   }
 
-  const tagSource = addTagSource(pageContext?._requestId)
+  const tagSource = getTagSource(pageContext?._requestId)
   const logErr = (err: unknown) => {
     logErrorServer(err, pageContext)
   }
@@ -175,7 +175,7 @@ function logDev(msg: string, logType: LogType, tagSource: TagSource | null, tagT
   assert(false)
 }
 
-function addTagSource(requestId: number | null = null): TagSource | null {
+function getTagSource(requestId: number | null = null): TagSource | null {
   const requestIdFromStore = getRequestId_withAsyncHook()
   if (requestIdFromStore !== null) {
     if (requestId === null) {
