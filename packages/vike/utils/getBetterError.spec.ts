@@ -272,11 +272,15 @@ describe('getBetterError', () => {
   })
 
   describe('getOriginalError', () => {
-    it('returns the original error when no chain exists', () => {
+    it('returns a clone of the original error when no chain exists', () => {
       const error = new Error('Test')
       const result = getBetterError(error, {})
 
-      expect(result.getOriginalError()).toBe(error)
+      const originalError = result.getOriginalError()
+      // getOriginalError returns a clone, not the same reference
+      expect(originalError).not.toBe(error)
+      // But it has the same message
+      expect(originalError.message).toBe(error.message)
     })
 
     it('preserves getOriginalError chain', () => {
@@ -284,8 +288,9 @@ describe('getBetterError', () => {
       const secondError = getBetterError(firstError, { message: 'Second error' })
       const thirdError = getBetterError(secondError, { message: 'Third error' })
 
-      expect(thirdError.getOriginalError()).toBe(firstError)
-      expect(secondError.getOriginalError()).toBe(firstError)
+      // Both should return clones with the original message
+      expect(thirdError.getOriginalError().message).toBe('First error')
+      expect(secondError.getOriginalError().message).toBe('First error')
     })
 
     it('chains through multiple transformations', () => {
@@ -294,23 +299,24 @@ describe('getBetterError', () => {
       const withAppend = getBetterError(withPrepend, { message: { append: ' [2]' } })
       const withReplace = getBetterError(withAppend, { message: 'Replaced' })
 
-      expect(withReplace.getOriginalError()).toBe(original)
+      expect(withReplace.getOriginalError().message).toBe('Original')
     })
   })
 
-  describe('structuredClone behavior', () => {
-    it('only preserves message and stack from Error objects', () => {
+  describe('error mutation behavior', () => {
+    it('preserves custom properties on Error objects', () => {
       const customError = new Error('Custom error')
       customError.code = 'E_CUSTOM'
       customError.statusCode = 500
 
       const result = getBetterError(customError, {})
 
-      // structuredClone only preserves message and stack from Error objects
+      // Custom properties are preserved because we mutate the error instead of cloning
+      // (to avoid breaking Vite's ssrFixStacktrace() internal rewroteStacktraces.has(err) check)
       expect(result.message).toBe('Custom error')
       expect(result.stack).toBeDefined()
-      expect(result.code).toBeUndefined()
-      expect(result.statusCode).toBeUndefined()
+      expect(result.code).toBe('E_CUSTOM')
+      expect(result.statusCode).toBe(500)
     })
   })
 
