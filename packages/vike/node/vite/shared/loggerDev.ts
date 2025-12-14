@@ -106,7 +106,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
     const errMsgFormatted = getConfigBuildErrorFormatted(err)
     if (errMsgFormatted) {
       assert(stripAnsi(errMsgFormatted).startsWith('Failed to transpile'))
-      const message = `${addTagsError(errMsgFormatted, tagSource)}${errMsgFormatted}\n${errorDebugNote}` as const
+      const message = `${getTagsError(errMsgFormatted, tagSource)}${errMsgFormatted}\n${errorDebugNote}` as const
       const errBetter = getBetterError(err, { message, hideStack: true })
       logErr(errBetter)
       return
@@ -117,7 +117,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
     const errIntro = getConfigExecutionErrorIntroMsg(err)
     if (errIntro) {
       assert(stripAnsi(errIntro).startsWith('Failed to execute'))
-      const prepend = `${addTagsError(errIntro, tagSource)}${errIntro}\n` as const
+      const prepend = `${getTagsError(errIntro, tagSource)}${errIntro}\n` as const
       const errBetter = getBetterError(err, { message: { prepend } })
       logErr(errBetter)
       return
@@ -131,7 +131,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
       const errIntro = pc.red(
         `Following error was thrown by the ${hookName as string}() hook defined at ${hookFilePath}`,
       )
-      const prepend = `${addTagsError(errIntro, tagSource)}${errIntro}\n` as const
+      const prepend = `${getTagsError(errIntro, tagSource)}${errIntro}\n` as const
       const errBetter = getBetterError(err, { message: { prepend } })
       logErr(errBetter)
       return
@@ -140,7 +140,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
 
   if (tagSource) {
     const errIntro = colorError(`[Error] ${errorComesFromVite ? 'Transpilation error' : 'An error was thrown'}:`)
-    const prepend = `${addTagsError(errIntro, tagSource)}${errIntro}\n` as const
+    const prepend = `${getTagsError(errIntro, tagSource)}${errIntro}\n` as const
     const errBetter = getBetterError(err, { message: { prepend } })
     logErr(errBetter)
     return
@@ -199,7 +199,7 @@ function applyViteSourceMap(thing: unknown) {
   viteDevServer.ssrFixStacktrace(thing as Error)
 }
 
-function addTagsError(msg: string, tagSource: TagSource | null) {
+function getTagsError(msg: string, tagSource: TagSource | null) {
   return getTags(msg, '[vike]', tagSource, 'error')
 }
 function getTags<TTagTool extends TagTool>(
