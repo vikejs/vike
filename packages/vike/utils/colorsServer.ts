@@ -1,5 +1,5 @@
-// ./colors.js => server only
-// ./colorVike.js => server & client
+// ./colorsServer.js => server only
+// ./colorsClient.js => server & client
 
 export { stripAnsi }
 export { hasRed }
