@@ -16,7 +16,7 @@ import { colorVike, colorWarning, colorError } from './colorsClient.js'
 import pc from '@brillout/picocolors'
 const globalObject = getGlobalObject<{
   alreadyLogged: Set<string>
-  onBeforeAssertLog?: () => void
+  onBeforeLog?: () => void
   onBeforeErr?: (err: Error) => void
   alwaysShowStackTrace?: true
 }>('utils/assert.ts', {
@@ -52,7 +52,7 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
   errMsg = addTags(errMsg, tagTypeBug, true)
   const internalError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
 
-  globalObject.onBeforeAssertLog?.()
+  globalObject.onBeforeLog?.()
   globalObject.onBeforeErr?.(internalError)
   throw internalError
 }
@@ -66,7 +66,7 @@ function assertUsage(
   showStackTrace = showStackTrace || globalObject.alwaysShowStackTrace
   errMsg = addTags(errMsg, 'Wrong Usage')
   const usageError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
-  globalObject.onBeforeAssertLog?.()
+  globalObject.onBeforeLog?.()
   globalObject.onBeforeErr?.(usageError)
   if (!exitOnError) {
     throw usageError
@@ -96,7 +96,7 @@ function assertWarning(
     if (alreadyLogged.has(key)) return
     alreadyLogged.add(key)
   }
-  globalObject.onBeforeAssertLog?.()
+  globalObject.onBeforeLog?.()
   if (showStackTrace) {
     const err = createErrorWithCleanStackTrace(msg, numberOfStackTraceLinesToRemove)
     globalObject.onBeforeErr?.(err)
@@ -120,12 +120,12 @@ function assertInfo(condition: unknown, msg: string, { onlyOnce }: { onlyOnce: b
       alreadyLogged.add(key)
     }
   }
-  globalObject.onBeforeAssertLog?.()
+  globalObject.onBeforeLog?.()
   console.log(msg)
 }
 
 function setOnBeforeAssertLog(onBeforeAssertLog: () => void) {
-  globalObject.onBeforeAssertLog = onBeforeAssertLog
+  globalObject.onBeforeLog = onBeforeAssertLog
 }
 function setOnBeforeAssertErr(onBeforeAssertErr: (err: unknown) => void) {
   globalObject.onBeforeErr = onBeforeAssertErr
