@@ -20,7 +20,7 @@ import {
   setLogRuntimeDev,
 } from '../../../server/runtime/loggerRuntime.js'
 import {
-  sedOnBeforeAssertErr,
+  setOnBeforeAssertErr,
   assert,
   assertIsNotProductionRuntime,
   colorVike,
@@ -47,7 +47,7 @@ import { getHttpRequestId_withAsyncHook } from '../../../server/runtime/asyncHoo
 
 assertIsNotProductionRuntime()
 setLogRuntimeDev(logErrorServerDev, logRuntimeInfoDev)
-sedOnBeforeAssertErr((err) => {
+setOnBeforeAssertErr((err) => {
   // We must directly apply vite.ssrFixStacktrace() to `assertWarning(..., { showStackTrace: true })` because warnings aren't caught by the try-catch of renderPageServer()
   applyViteSourceMap(err)
 })

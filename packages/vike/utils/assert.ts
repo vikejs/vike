@@ -4,7 +4,7 @@ export { assertWarning }
 export { assertInfo }
 export { getProjectError }
 export { setOnBeforeAssertLog }
-export { sedOnBeforeAssertErr }
+export { setOnBeforeAssertErr }
 export { isVikeBug }
 export { setAlwaysShowStackTrace }
 
@@ -127,7 +127,7 @@ function assertInfo(condition: unknown, msg: string, { onlyOnce }: { onlyOnce: b
 function setOnBeforeAssertLog(onBeforeAssertLog: () => void) {
   globalObject.onBeforeAssertLog = onBeforeAssertLog
 }
-function sedOnBeforeAssertErr(onBeforeAssertErr: (err: unknown) => void) {
+function setOnBeforeAssertErr(onBeforeAssertErr: (err: unknown) => void) {
   globalObject.onBeforeAssertErr = onBeforeAssertErr
 }
 
