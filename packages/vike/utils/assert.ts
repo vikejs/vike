@@ -12,7 +12,7 @@ import { assertSingleInstance_onAssertModuleLoad } from './assertSingleInstance.
 import { createErrorWithCleanStackTrace } from './createErrorWithCleanStackTrace.js'
 import { getGlobalObject } from './getGlobalObject.js'
 import { PROJECT_VERSION } from './PROJECT_VERSION.js'
-import { colorVike, colorWarning, colorError } from './colorVike.js'
+import { colorVike, colorWarning, colorError } from './colorsClient.js'
 import pc from '@brillout/picocolors'
 const globalObject = getGlobalObject<{
   alreadyLogged: Set<string>
