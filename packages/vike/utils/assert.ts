@@ -26,7 +26,7 @@ assertSingleInstance_onAssertModuleLoad()
 
 const tagProject = `[vike]` as const
 const tagProjectWithVersion = `[vike@${PROJECT_VERSION}]` as const
-const tagBug = 'Bug'
+const tagAssertBug = 'Bug'
 type Tag = 'Bug' | 'Wrong Usage' | 'Error' | 'Warning'
 
 const numberOfStackTraceLinesToRemove = 2
@@ -50,7 +50,7 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
     .filter(Boolean)
     .join(' ')
   errMsg = addWhitespace(errMsg)
-  errMsg = addTagAssert(errMsg, tagBug)
+  errMsg = addTagAssert(errMsg, tagAssertBug)
   errMsg = addTagProject(errMsg, true)
   const internalError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
 
@@ -162,7 +162,7 @@ function addTagProject(msg: string, showProjectVersion = false): string {
 }
 
 function isVikeBug(err: unknown): boolean {
-  return String(err).includes(`[${tagBug}]`)
+  return String(err).includes(`[${tagAssertBug}]`)
 }
 
 // Called upon `DEBUG=vike:error`
