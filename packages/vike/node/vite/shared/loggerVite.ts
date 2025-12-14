@@ -13,7 +13,7 @@ import {
   trimWithAnsi,
   trimWithAnsiTrailOnly,
 } from '../utils.js'
-import { getHttpRequestId_withAsyncHook } from '../../../server/runtime/asyncHook.js'
+import { getRequestId_withAsyncHook } from '../../../server/runtime/asyncHook.js'
 import { logErrorServerDev, logVite } from './loggerDev.js'
 import type { LogType as LoggerType, ResolvedConfig, LogErrorOptions } from 'vite'
 
@@ -66,7 +66,7 @@ function intercept(loggerType: LoggerType, config: ResolvedConfig) {
       return
     }
 
-    const requestId = getHttpRequestId_withAsyncHook()
+    const requestId = getRequestId_withAsyncHook()
 
     // Vite's default logger preprends the "[vite]" tag if and only if options.timestamp is true
     const prependViteTag = options.timestamp || typeof requestId === 'number'

@@ -20,7 +20,7 @@ import {
   setLogRuntimeDev,
 } from '../../../server/runtime/loggerRuntime.js'
 import {
-  addOnBeforeAssertErr,
+  setAssertOnBeforeErr,
   assert,
   assertIsNotProductionRuntime,
   colorVike,
@@ -32,6 +32,8 @@ import {
   hasYellow,
   isDebugError,
   stripAnsi,
+  colorError,
+  colorWarning,
 } from '../utils.js'
 import { isErrorWithCodeSnippet, getPrettyErrorWithCodeSnippet } from './loggerDev/errorWithCodeSnippet.js'
 import {
@@ -43,11 +45,11 @@ import { isUserHookError } from '../../../shared-server-client/hooks/execHook.js
 import { getViteDevServer } from '../../../server/runtime/globalContext.js'
 import { logErrorServer } from '../../../server/runtime/logErrorServer.js'
 import { getBetterError } from '../../../utils/getBetterError.js'
-import { getHttpRequestId_withAsyncHook } from '../../../server/runtime/asyncHook.js'
+import { getRequestId_withAsyncHook } from '../../../server/runtime/asyncHook.js'
 
 assertIsNotProductionRuntime()
 setLogRuntimeDev(logErrorServerDev, logRuntimeInfoDev)
-addOnBeforeAssertErr((err) => {
+setAssertOnBeforeErr((err) => {
   // We must directly apply vite.ssrFixStacktrace() to `assertWarning(..., { showStackTrace: true })` because warnings aren't caught by the try-catch of renderPageServer()
   applyViteSourceMap(err)
 })
@@ -137,7 +139,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
   }
 
   if (tagSource) {
-    const errIntro = pc.bold(pc.red(`[Error] ${errorComesFromVite ? 'Transpilation error' : 'An error was thrown'}:`))
+    const errIntro = colorError(`[Error] ${errorComesFromVite ? 'Transpilation error' : 'An error was thrown'}:`)
     const prepend = `${getTagsError(errIntro, tagSource)}${errIntro}\n` as const
     const errBetter = getBetterError(err, { message: { prepend } })
     logErr(errBetter)
@@ -174,7 +176,7 @@ function logDev(msg: string, logType: LogType, tagSource: TagSource | null, tagT
 }
 
 function getTagSource(requestId: number | null = null): TagSource | null {
-  const requestIdFromStore = getHttpRequestId_withAsyncHook()
+  const requestIdFromStore = getRequestId_withAsyncHook()
   if (requestIdFromStore !== null) {
     if (requestId === null) {
       requestId = requestIdFromStore
@@ -207,16 +209,24 @@ function getTags<TTagTool extends TagTool>(
   logType: LogType,
 ) {
   const tagToolColored = (() => {
-    if (logType === 'error' && !hasRed(msg)) return pc.bold(pc.red(tagTool))
+    if (logType === 'error' && !hasRed(msg)) return colorError(tagTool)
     if (logType === 'error-resolve' && !hasGreen(msg)) return pc.bold(pc.green(tagTool))
-    if (logType === 'warn' && !hasYellow(msg)) return pc.yellow(tagTool)
+    if (logType === 'warn' && !hasYellow(msg)) return colorWarning(tagTool)
     if (tagTool === '[vite]') return colorVite(tagTool)
     if (tagTool === '[vike]') return colorVike(tagTool)
     assert(false)
   })()
-  const timestamp = pc.dim(new Date().toLocaleTimeString() as '1:37:00 PM')
+  const timestamp = getTagTimestamp()
   const whitespace = (/\s|\[/.test(stripAnsi(msg)[0]!) ? '' : ' ') as ' '
-  const tagSourceStr = (!tagSource ? '' : pc.dim(`[${tagSource}]`)) as '[request(n)]'
-  const tags = `${timestamp} ${tagToolColored}${tagSourceStr}${whitespace}` as const
+  const tagSourceOuter = getTagSourceOuter(tagSource)
+  const tags = `${timestamp} ${tagToolColored}${tagSourceOuter}${whitespace}` as const
   return tags
+}
+function getTagTimestamp() {
+  const timestamp = pc.dim(new Date().toLocaleTimeString() as '1:37:00 PM')
+  return timestamp
+}
+function getTagSourceOuter(tagSource: TagSource | null) {
+  const tagSourceOuter = (!tagSource ? '' : pc.dim(`[${tagSource}]`)) as '[request(n)]'
+  return tagSourceOuter
 }

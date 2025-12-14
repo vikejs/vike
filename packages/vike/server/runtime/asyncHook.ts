@@ -1,5 +1,5 @@
 export { getPageContext_withAsyncHook }
-export { getHttpRequestId_withAsyncHook }
+export { getRequestId_withAsyncHook }
 export { getAsyncLocalStorage }
 export type { AsyncStore }
 
@@ -40,7 +40,7 @@ function getAsyncStore() {
   return asyncStore ?? null
 }
 
-function getHttpRequestId_withAsyncHook() {
+function getRequestId_withAsyncHook() {
   const asyncStore = getAsyncStore()
   return asyncStore?.requestId ?? null
 }

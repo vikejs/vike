@@ -3,31 +3,31 @@ export { assertUsage }
 export { assertWarning }
 export { assertInfo }
 export { getProjectError }
-export { addOnBeforeAssertLog }
-export { addOnBeforeAssertErr }
 export { isVikeBug }
+export { setAssertOnBeforeLog }
+export { setAssertOnBeforeErr }
 export { setAlwaysShowStackTrace }
 
 import { assertSingleInstance_onAssertModuleLoad } from './assertSingleInstance.js'
 import { createErrorWithCleanStackTrace } from './createErrorWithCleanStackTrace.js'
 import { getGlobalObject } from './getGlobalObject.js'
 import { PROJECT_VERSION } from './PROJECT_VERSION.js'
-import { colorVike } from './colorVike.js'
+import { colorVike, colorWarning, colorError } from './colorsClient.js'
 import pc from '@brillout/picocolors'
 const globalObject = getGlobalObject<{
   alreadyLogged: Set<string>
-  onBeforeAssertLog?: () => void
-  onBeforeAssertErr?: (err: Error) => void
+  onBeforeLog?: () => void
+  onBeforeErr?: (err: Error) => void
   alwaysShowStackTrace?: true
 }>('utils/assert.ts', {
   alreadyLogged: new Set(),
 })
 assertSingleInstance_onAssertModuleLoad()
 
-const projectTag = `[vike]` as const
-const projectTagWithVersion = `[vike@${PROJECT_VERSION}]` as const
-const bugTag = 'Bug'
-type Tag = 'Bug' | 'Wrong Usage' | 'Error' | 'Warning'
+const tagVike = `[vike]` as const
+const tagVikeWithVersion = `[vike@${PROJECT_VERSION}]` as const
+const tagTypeBug = 'Bug'
+type TagType = 'Bug' | 'Wrong Usage' | 'Error' | 'Warning'
 
 const numberOfStackTraceLinesToRemove = 2
 
@@ -49,13 +49,11 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
   ]
     .filter(Boolean)
     .join(' ')
-  errMsg = addWhitespace(errMsg)
-  errMsg = addPrefixAssertType(errMsg, bugTag)
-  errMsg = addPrefixProjectName(errMsg, true)
+  errMsg = addTags(errMsg, tagTypeBug, true)
   const internalError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
 
-  globalObject.onBeforeAssertLog?.()
-  globalObject.onBeforeAssertErr?.(internalError)
+  globalObject.onBeforeLog?.()
+  globalObject.onBeforeErr?.(internalError)
   throw internalError
 }
 
@@ -66,12 +64,10 @@ function assertUsage(
 ): asserts condition {
   if (condition) return
   showStackTrace = showStackTrace || globalObject.alwaysShowStackTrace
-  errMsg = addWhitespace(errMsg)
-  errMsg = addPrefixAssertType(errMsg, 'Wrong Usage')
-  errMsg = addPrefixProjectName(errMsg)
+  errMsg = addTags(errMsg, 'Wrong Usage')
   const usageError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
-  globalObject.onBeforeAssertLog?.()
-  globalObject.onBeforeAssertErr?.(usageError)
+  globalObject.onBeforeLog?.()
+  globalObject.onBeforeErr?.(usageError)
   if (!exitOnError) {
     throw usageError
   } else {
@@ -81,9 +77,7 @@ function assertUsage(
 }
 
 function getProjectError(errMsg: string) {
-  errMsg = addWhitespace(errMsg)
-  errMsg = addPrefixAssertType(errMsg, 'Error')
-  errMsg = addPrefixProjectName(errMsg)
+  errMsg = addTags(errMsg, 'Error')
   const projectError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
   return projectError
 }
@@ -95,19 +89,17 @@ function assertWarning(
 ): void {
   if (condition) return
   showStackTrace = showStackTrace || globalObject.alwaysShowStackTrace
-  msg = addWhitespace(msg)
-  msg = addPrefixAssertType(msg, 'Warning')
-  msg = addPrefixProjectName(msg)
+  msg = addTags(msg, 'Warning')
   if (onlyOnce) {
     const { alreadyLogged } = globalObject
     const key = onlyOnce === true ? msg : onlyOnce
     if (alreadyLogged.has(key)) return
     alreadyLogged.add(key)
   }
-  globalObject.onBeforeAssertLog?.()
+  globalObject.onBeforeLog?.()
   if (showStackTrace) {
     const err = createErrorWithCleanStackTrace(msg, numberOfStackTraceLinesToRemove)
-    globalObject.onBeforeAssertErr?.(err)
+    globalObject.onBeforeErr?.(err)
     console.warn(err)
   } else {
     console.warn(msg)
@@ -118,8 +110,7 @@ function assertInfo(condition: unknown, msg: string, { onlyOnce }: { onlyOnce: b
   if (condition) {
     return
   }
-  msg = addWhitespace(msg)
-  msg = addPrefixProjectName(msg)
+  msg = addTags(msg, null)
   if (onlyOnce) {
     const { alreadyLogged } = globalObject
     const key = msg
@@ -129,40 +120,48 @@ function assertInfo(condition: unknown, msg: string, { onlyOnce }: { onlyOnce: b
       alreadyLogged.add(key)
     }
   }
-  globalObject.onBeforeAssertLog?.()
+  globalObject.onBeforeLog?.()
   console.log(msg)
 }
 
-function addOnBeforeAssertLog(onBeforeAssertLog: () => void) {
-  globalObject.onBeforeAssertLog = onBeforeAssertLog
+function setAssertOnBeforeLog(onBeforeAssertLog: () => void) {
+  globalObject.onBeforeLog = onBeforeAssertLog
 }
-function addOnBeforeAssertErr(onBeforeAssertErr: (err: unknown) => void) {
-  globalObject.onBeforeAssertErr = onBeforeAssertErr
+function setAssertOnBeforeErr(onBeforeAssertErr: (err: unknown) => void) {
+  globalObject.onBeforeErr = onBeforeAssertErr
 }
 
-function addPrefixAssertType(msg: string, tag: Tag): string {
-  let prefix = `[${tag}]`
-  if (tag === 'Warning') {
-    prefix = pc.yellow(prefix)
-  } else {
-    prefix = pc.bold(pc.red(prefix))
-  }
-  return `${prefix}${msg}`
+function addTags(msg: string, tagType: TagType | null, showProjectVersion = false) {
+  const tagVike = getTagVike(showProjectVersion) as '[vike]'
+  const tagTypeOuter = getTagType(tagType)
+  const tagWhitespace = getTagWhitespace(msg) as ' '
+  const tags = `${tagVike}${tagTypeOuter}${tagWhitespace}` as const
+  return tags + msg
 }
-function addWhitespace(msg: string) {
+function getTagWhitespace(msg: string) {
   if (msg.startsWith('[')) {
-    return msg
+    return ''
   } else {
-    return ` ${msg}`
+    return ' '
   }
 }
-function addPrefixProjectName(msg: string, showProjectVersion = false): string {
-  const prefix = showProjectVersion ? projectTagWithVersion : projectTag
-  return `${colorVike(prefix)}${msg}`
+function getTagType(tagType: TagType | null) {
+  if (!tagType) return ''
+  let tag = `[${tagType}]` as const
+  if (tagType === 'Warning') {
+    tag = colorWarning(tag)
+  } else {
+    tag = colorError(tag)
+  }
+  return tag
+}
+function getTagVike(showProjectVersion = false) {
+  const tag = showProjectVersion ? tagVikeWithVersion : tagVike
+  return colorVike(tag)
 }
 
 function isVikeBug(err: unknown): boolean {
-  return String(err).includes(`[${bugTag}]`)
+  return String(err).includes(`[${tagTypeBug}]`)
 }
 
 // Called upon `DEBUG=vike:error`

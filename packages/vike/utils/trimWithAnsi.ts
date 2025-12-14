@@ -2,7 +2,7 @@ export { trimWithAnsi }
 export { trimWithAnsiTrailOnly }
 
 import { assert } from './assert.js'
-import { stripAnsi } from './colors.js'
+import { stripAnsi } from './colorsServer.js'
 
 const whitespaceRegex = /(\s+)/ // Capturing parathesis so that split preserves separator
 

@@ -1,6 +1,6 @@
 import { describe, test, assert, expect } from 'vitest'
 import { build } from 'vike/api'
-import { stripAnsi } from '../../packages/vike/utils/colors'
+import { stripAnsi } from '../../packages/vike/utils/colorsServer'
 
 describe('build', () => {
   test('prevented', { timeout: 40 * 1000 }, async () => {

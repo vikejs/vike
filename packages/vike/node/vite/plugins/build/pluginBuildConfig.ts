@@ -4,7 +4,7 @@ export { analyzeClientEntries }
 
 import {
   assert,
-  addOnBeforeAssertLog,
+  setAssertOnBeforeLog,
   removeFileExtension,
   unique,
   assertUsage,
@@ -229,7 +229,7 @@ function addLogHook() {
     'rendering chunks (',
     'computing gzip size ('
   ]
-  addOnBeforeAssertLog(() => {
+  setAssertOnBeforeLog(() => {
     // Using viteTransientLogs is very conservative as clearing the current line is low risk. (We can assume that important messages, such as errors, include a trailing new line. Usually, only transient messages have no trailing new lines.)
     if (viteTransientLogs.some((s) => lastLog?.startsWith(s))) {
       process.stdout.clearLine(0)

@@ -1,3 +1,6 @@
+// ./colorsServer.js => server only
+// ./colorsClient.js => server & client
+
 export { stripAnsi }
 export { hasRed }
 export { hasGreen }
