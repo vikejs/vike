@@ -49,9 +49,7 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
   ]
     .filter(Boolean)
     .join(' ')
-  errMsg = addWhitespace(errMsg)
-  errMsg = addTagType(errMsg, tagTypeBug)
-  errMsg = addTagVike(errMsg, true)
+  errMsg = addTags(errMsg, tagTypeBug, true)
   const internalError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
 
   globalObject.onBeforeAssertLog?.()
@@ -66,9 +64,7 @@ function assertUsage(
 ): asserts condition {
   if (condition) return
   showStackTrace = showStackTrace || globalObject.alwaysShowStackTrace
-  errMsg = addWhitespace(errMsg)
-  errMsg = addTagType(errMsg, 'Wrong Usage')
-  errMsg = addTagVike(errMsg)
+  errMsg = addTags(errMsg, 'Wrong Usage')
   const usageError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
   globalObject.onBeforeAssertLog?.()
   globalObject.onBeforeAssertErr?.(usageError)
@@ -81,9 +77,7 @@ function assertUsage(
 }
 
 function getProjectError(errMsg: string) {
-  errMsg = addWhitespace(errMsg)
-  errMsg = addTagType(errMsg, 'Error')
-  errMsg = addTagVike(errMsg)
+  errMsg = addTags(errMsg, 'Error')
   const projectError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
   return projectError
 }
@@ -95,9 +89,7 @@ function assertWarning(
 ): void {
   if (condition) return
   showStackTrace = showStackTrace || globalObject.alwaysShowStackTrace
-  msg = addWhitespace(msg)
-  msg = addTagType(msg, 'Warning')
-  msg = addTagVike(msg)
+  msg = addTags(msg, 'Warning')
   if (onlyOnce) {
     const { alreadyLogged } = globalObject
     const key = onlyOnce === true ? msg : onlyOnce
@@ -140,6 +132,14 @@ function addOnBeforeAssertErr(onBeforeAssertErr: (err: unknown) => void) {
   globalObject.onBeforeAssertErr = onBeforeAssertErr
 }
 
+function addTags(msg: string, tagType: TagType | null, showProjectVersion = false) {
+  msg = addWhitespace(msg)
+  if (tagType) {
+    msg = addTagType(msg, tagType)
+  }
+  msg = addTagVike(msg, showProjectVersion)
+  return msg
+}
 function addTagType(msg: string, tagType: TagType): string {
   let tag = `[${tagType}]`
   if (tagType === 'Warning') {
