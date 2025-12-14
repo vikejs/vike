@@ -9,13 +9,14 @@ export { getBetterError }
 import { isObject } from './isObject.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
 import { objectAssign } from './objectAssign.js'
+import { shallowClone } from './shallowClone.js'
 assertIsNotBrowser()
 
 function getBetterError(
   err: unknown,
   modifications: { message?: string | { prepend?: string; append?: string }; stack?: string; hideStack?: true },
 ) {
-  const errOriginal = structuredClone(err)
+  const errOriginal = shallowClone(err)
 
   let errBetter: { message: string; stack: string; hideStack?: true }
 
