@@ -132,14 +132,14 @@ function setOnBeforeAssertErr(onBeforeAssertErr: (err: unknown) => void) {
 }
 
 function addTags(msg: string, tagType: TagType | null, showProjectVersion = false) {
-  msg = addWhitespace(msg)
+  msg = addTagWhitespace(msg)
   if (tagType) {
     msg = addTagType(msg, tagType)
   }
   msg = addTagVike(msg, showProjectVersion)
   return msg
 }
-function addWhitespace(msg: string) {
+function addTagWhitespace(msg: string) {
   if (msg.startsWith('[')) {
     return msg
   } else {
