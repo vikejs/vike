@@ -51,7 +51,7 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
     .join(' ')
   errMsg = addWhitespace(errMsg)
   errMsg = addTagAssert(errMsg, tagAssertBug)
-  errMsg = addTagProject(errMsg, true)
+  errMsg = addTagVike(errMsg, true)
   const internalError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
 
   globalObject.onBeforeAssertLog?.()
@@ -68,7 +68,7 @@ function assertUsage(
   showStackTrace = showStackTrace || globalObject.alwaysShowStackTrace
   errMsg = addWhitespace(errMsg)
   errMsg = addTagAssert(errMsg, 'Wrong Usage')
-  errMsg = addTagProject(errMsg)
+  errMsg = addTagVike(errMsg)
   const usageError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
   globalObject.onBeforeAssertLog?.()
   globalObject.onBeforeAssertErr?.(usageError)
@@ -83,7 +83,7 @@ function assertUsage(
 function getProjectError(errMsg: string) {
   errMsg = addWhitespace(errMsg)
   errMsg = addTagAssert(errMsg, 'Error')
-  errMsg = addTagProject(errMsg)
+  errMsg = addTagVike(errMsg)
   const projectError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
   return projectError
 }
@@ -97,7 +97,7 @@ function assertWarning(
   showStackTrace = showStackTrace || globalObject.alwaysShowStackTrace
   msg = addWhitespace(msg)
   msg = addTagAssert(msg, 'Warning')
-  msg = addTagProject(msg)
+  msg = addTagVike(msg)
   if (onlyOnce) {
     const { alreadyLogged } = globalObject
     const key = onlyOnce === true ? msg : onlyOnce
@@ -119,7 +119,7 @@ function assertInfo(condition: unknown, msg: string, { onlyOnce }: { onlyOnce: b
     return
   }
   msg = addWhitespace(msg)
-  msg = addTagProject(msg)
+  msg = addTagVike(msg)
   if (onlyOnce) {
     const { alreadyLogged } = globalObject
     const key = msg
@@ -156,7 +156,7 @@ function addWhitespace(msg: string) {
     return ` ${msg}`
   }
 }
-function addTagProject(msg: string, showProjectVersion = false): string {
+function addTagVike(msg: string, showProjectVersion = false): string {
   const tag = showProjectVersion ? tagVikeWithVersion : tagVike
   return `${colorVike(tag)}${msg}`
 }
