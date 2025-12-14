@@ -17,7 +17,7 @@
     "telefunc": "^0.2.17",
     "typescript": "^5.9.3",
     "vite": "6.3.0",
-    "vike": "0.4.248"
+    "vike": "0.4.249"
   },
   "type": "module"
 }

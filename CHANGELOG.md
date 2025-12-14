@@ -1,3 +1,12 @@
+## [0.4.249](https://github.com/vikejs/vike/compare/v0.4.248...v0.4.249) (2025-12-14)
+
+
+### Bug Fixes
+
+* fix project version ([6dc8484](https://github.com/vikejs/vike/commit/6dc8484173f4fa07821b20452b42555ca1590f09))
+
+
+
 ## [0.4.248](https://github.com/vikejs/vike/compare/v0.4.247...v0.4.248) (2025-12-14)
 
 
