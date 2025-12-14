@@ -140,9 +140,9 @@ function addOnBeforeAssertErr(onBeforeAssertErr: (err: unknown) => void) {
   globalObject.onBeforeAssertErr = onBeforeAssertErr
 }
 
-function addTagAssertType(msg: string, tag: Tag): string {
-  let prefix = `[${tag}]`
-  if (tag === 'Warning') {
+function addTagAssertType(msg: string, tagAssert: Tag): string {
+  let prefix = `[${tagAssert}]`
+  if (tagAssert === 'Warning') {
     prefix = pc.yellow(prefix)
   } else {
     prefix = pc.bold(pc.red(prefix))
