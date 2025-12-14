@@ -45,7 +45,7 @@ import { isUserHookError } from '../../../shared-server-client/hooks/execHook.js
 import { getViteDevServer } from '../../../server/runtime/globalContext.js'
 import { logErrorServer } from '../../../server/runtime/logErrorServer.js'
 import { getBetterError } from '../../../utils/getBetterError.js'
-import { getHttpRequestId_withAsyncHook } from '../../../server/runtime/asyncHook.js'
+import { getRequestId_withAsyncHook } from '../../../server/runtime/asyncHook.js'
 
 assertIsNotProductionRuntime()
 setLogRuntimeDev(logErrorServerDev, logRuntimeInfoDev)
@@ -176,7 +176,7 @@ function logDev(msg: string, logType: LogType, tagSource: TagSource | null, tagT
 }
 
 function addTagSource(requestId: number | null = null): TagSource | null {
-  const requestIdFromStore = getHttpRequestId_withAsyncHook()
+  const requestIdFromStore = getRequestId_withAsyncHook()
   if (requestIdFromStore !== null) {
     if (requestId === null) {
       requestId = requestIdFromStore
