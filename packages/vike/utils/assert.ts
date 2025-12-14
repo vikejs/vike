@@ -140,9 +140,9 @@ function addOnBeforeAssertErr(onBeforeAssertErr: (err: unknown) => void) {
   globalObject.onBeforeAssertErr = onBeforeAssertErr
 }
 
-function addTagType(msg: string, tagAssert: Tag): string {
-  let tag = `[${tagAssert}]`
-  if (tagAssert === 'Warning') {
+function addTagType(msg: string, tagType: Tag): string {
+  let tag = `[${tagType}]`
+  if (tagType === 'Warning') {
     tag = pc.yellow(tag)
   } else {
     tag = pc.bold(pc.red(tag))
