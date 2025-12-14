@@ -1,6 +1,8 @@
 // ./colorsServer.js => server only
 // ./colorsClient.js => server & client
 
+// !!!WARNING!!! KEEP THIS FILE MINIMAL: to save KBs sent to the browser
+
 export { colorVike }
 export { colorError }
 export { colorWarning }
