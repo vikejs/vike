@@ -141,13 +141,13 @@ function addOnBeforeAssertErr(onBeforeAssertErr: (err: unknown) => void) {
 }
 
 function addTagAssertType(msg: string, tagAssert: Tag): string {
-  let prefix = `[${tagAssert}]`
+  let tag = `[${tagAssert}]`
   if (tagAssert === 'Warning') {
-    prefix = pc.yellow(prefix)
+    tag = pc.yellow(tag)
   } else {
-    prefix = pc.bold(pc.red(prefix))
+    tag = pc.bold(pc.red(tag))
   }
-  return `${prefix}${msg}`
+  return `${tag}${msg}`
 }
 function addWhitespace(msg: string) {
   if (msg.startsWith('[')) {
