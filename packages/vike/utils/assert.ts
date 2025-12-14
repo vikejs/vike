@@ -132,9 +132,9 @@ function setAssertOnBeforeErr(onBeforeAssertErr: (err: unknown) => void) {
 }
 
 function addTags(msg: string, tagType: TagType | null, showProjectVersion = false) {
-  const tagVike = getTagVike(showProjectVersion)
+  const tagVike = getTagVike(showProjectVersion) as '[vike]'
   const tagTypeOuter = getTagType(tagType)
-  const tagWhitespace = getTagWhitespace(msg)
+  const tagWhitespace = getTagWhitespace(msg) as ' '
   const tags = `${tagVike}${tagTypeOuter}${tagWhitespace}` as const
   return tags + msg
 }
