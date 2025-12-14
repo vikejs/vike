@@ -96,14 +96,14 @@ function assertWarning(
     if (alreadyLogged.has(key)) return
     alreadyLogged.add(key)
   }
-  msg = addTags(msg, 'Warning')
+  const msgWithTags = addTags(msg, 'Warning')
   globalObject.onBeforeLog?.()
   if (showStackTrace) {
-    const err = createError(msg)
+    const err = createError(msgWithTags)
     globalObject.onBeforeErr?.(err)
     console.warn(err)
   } else {
-    console.warn(msg)
+    console.warn(msgWithTags)
   }
 }
 
