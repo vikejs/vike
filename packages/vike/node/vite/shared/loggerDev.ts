@@ -218,8 +218,8 @@ function getTags<TTagTool extends TagTool>(
   })()
   const timestamp = getTagTimestamp()
   const whitespace = (/\s|\[/.test(stripAnsi(msg)[0]!) ? '' : ' ') as ' '
-  const tagSourceStr = (!tagSource ? '' : pc.dim(`[${tagSource}]`)) as '[request(n)]'
-  const tags = `${timestamp} ${tagToolColored}${tagSourceStr}${whitespace}` as const
+  const tagSourceOuter = (!tagSource ? '' : pc.dim(`[${tagSource}]`)) as '[request(n)]'
+  const tags = `${timestamp} ${tagToolColored}${tagSourceOuter}${whitespace}` as const
   return tags
 }
 function getTagTimestamp() {
