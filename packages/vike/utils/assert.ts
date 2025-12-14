@@ -3,9 +3,9 @@ export { assertUsage }
 export { assertWarning }
 export { assertInfo }
 export { getProjectError }
+export { isVikeBug }
 export { setAssertOnBeforeLog }
 export { setAssertOnBeforeErr }
-export { isVikeBug }
 export { setAlwaysShowStackTrace }
 
 import { assertSingleInstance_onAssertModuleLoad } from './assertSingleInstance.js'
