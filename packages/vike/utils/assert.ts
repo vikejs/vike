@@ -133,11 +133,8 @@ function setAssertOnBeforeErr(onBeforeAssertErr: (err: unknown) => void) {
 
 function addTags(msg: string, tagType: TagType | null, showProjectVersion = false) {
   msg = addTagWhitespace(msg)
-  if (tagType) {
-    msg = addTagType(msg, tagType)
-  }
-  msg = addTagVike(msg, showProjectVersion)
-  return msg
+  const tags = `${addTagVike(showProjectVersion)}${getTagType(tagType)}` as const
+  return tags + msg
 }
 function addTagWhitespace(msg: string) {
   if (msg.startsWith('[')) {
@@ -146,18 +143,19 @@ function addTagWhitespace(msg: string) {
     return ` ${msg}`
   }
 }
-function addTagType(msg: string, tagType: TagType): string {
-  let tag = `[${tagType}]`
+function getTagType(tagType: TagType | null) {
+  if (!tagType) return ''
+  let tag = `[${tagType}]` as const
   if (tagType === 'Warning') {
     tag = colorWarning(tag)
   } else {
     tag = colorError(tag)
   }
-  return `${tag}${msg}`
+  return tag
 }
-function addTagVike(msg: string, showProjectVersion = false): string {
+function addTagVike(showProjectVersion = false) {
   const tag = showProjectVersion ? tagVikeWithVersion : tagVike
-  return `${colorVike(tag)}${msg}`
+  return colorVike(tag)
 }
 
 function isVikeBug(err: unknown): boolean {
