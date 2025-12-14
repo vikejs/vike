@@ -1,7 +1,7 @@
 export { formatHintLog }
 
 import { assert } from './assert.js'
-import { stripAnsi } from './colors.js'
+import { stripAnsi } from './colorsServer.js'
 
 function formatHintLog<Msg extends string>(msg: Msg) {
   assert(msg.length > 0)
