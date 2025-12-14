@@ -90,13 +90,13 @@ function assertWarning(
 ): void {
   if (condition) return
   showStackTrace = showStackTrace || globalObject.alwaysShowStackTrace
-  msg = addTags(msg, 'Warning')
   if (onlyOnce) {
     const { alreadyLogged } = globalObject
     const key = onlyOnce === true ? msg : onlyOnce
     if (alreadyLogged.has(key)) return
     alreadyLogged.add(key)
   }
+  msg = addTags(msg, 'Warning')
   globalObject.onBeforeLog?.()
   if (showStackTrace) {
     const err = createError(msg)
