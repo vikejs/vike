@@ -1,7 +1,5 @@
-import { run } from '@brillout/test-e2e'
-import { testCounter } from '../../test/utils'
-
-import { test, page, getServerUrl, expectLog } from '@brillout/test-e2e'
+import { run, test, page, getServerUrl, expectLog } from '@brillout/test-e2e'
+import { testCounter } from '../utils'
 
 run('npm run dev', { tolerateError: true })
 
