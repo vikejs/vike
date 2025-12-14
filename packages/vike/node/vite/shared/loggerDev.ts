@@ -32,6 +32,8 @@ import {
   hasYellow,
   isDebugError,
   stripAnsi,
+  colorError,
+  colorWarning,
 } from '../utils.js'
 import { isErrorWithCodeSnippet, getPrettyErrorWithCodeSnippet } from './loggerDev/errorWithCodeSnippet.js'
 import {
@@ -137,7 +139,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
   }
 
   if (tagSource) {
-    const errIntro = pc.bold(pc.red(`[Error] ${errorComesFromVite ? 'Transpilation error' : 'An error was thrown'}:`))
+    const errIntro = colorError(`[Error] ${errorComesFromVite ? 'Transpilation error' : 'An error was thrown'}:`)
     const prepend = `${addTagsError(errIntro, tagSource)}${errIntro}\n` as const
     const errBetter = getBetterError(err, { message: { prepend } })
     logErr(errBetter)
@@ -207,9 +209,9 @@ function addTags<TTagTool extends TagTool>(
   logType: LogType,
 ) {
   const tagToolColored = (() => {
-    if (logType === 'error' && !hasRed(msg)) return pc.bold(pc.red(tagTool))
+    if (logType === 'error' && !hasRed(msg)) return colorError(tagTool)
     if (logType === 'error-resolve' && !hasGreen(msg)) return pc.bold(pc.green(tagTool))
-    if (logType === 'warn' && !hasYellow(msg)) return pc.yellow(tagTool)
+    if (logType === 'warn' && !hasYellow(msg)) return colorWarning(tagTool)
     if (tagTool === '[vite]') return colorVite(tagTool)
     if (tagTool === '[vike]') return colorVike(tagTool)
     assert(false)
