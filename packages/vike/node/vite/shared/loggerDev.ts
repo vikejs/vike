@@ -218,11 +218,15 @@ function getTags<TTagTool extends TagTool>(
   })()
   const timestamp = getTagTimestamp()
   const whitespace = (/\s|\[/.test(stripAnsi(msg)[0]!) ? '' : ' ') as ' '
-  const tagSourceOuter = (!tagSource ? '' : pc.dim(`[${tagSource}]`)) as '[request(n)]'
+  const tagSourceOuter = getTagSourceOuter(tagSource)
   const tags = `${timestamp} ${tagToolColored}${tagSourceOuter}${whitespace}` as const
   return tags
 }
 function getTagTimestamp() {
   const timestamp = pc.dim(new Date().toLocaleTimeString() as '1:37:00 PM')
   return timestamp
+}
+function getTagSourceOuter(tagSource: TagSource | null) {
+  const tagSourceOuter = (!tagSource ? '' : pc.dim(`[${tagSource}]`)) as '[request(n)]'
+  return tagSourceOuter
 }
