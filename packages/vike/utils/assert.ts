@@ -27,7 +27,7 @@ assertSingleInstance_onAssertModuleLoad()
 const tagVike = `[vike]` as const
 const tagVikeWithVersion = `[vike@${PROJECT_VERSION}]` as const
 const tagAssertBug = 'Bug'
-type Tag = 'Bug' | 'Wrong Usage' | 'Error' | 'Warning'
+type TagType = 'Bug' | 'Wrong Usage' | 'Error' | 'Warning'
 
 const numberOfStackTraceLinesToRemove = 2
 
@@ -140,7 +140,7 @@ function addOnBeforeAssertErr(onBeforeAssertErr: (err: unknown) => void) {
   globalObject.onBeforeAssertErr = onBeforeAssertErr
 }
 
-function addTagType(msg: string, tagType: Tag): string {
+function addTagType(msg: string, tagType: TagType): string {
   let tag = `[${tagType}]`
   if (tagType === 'Warning') {
     tag = pc.yellow(tag)
