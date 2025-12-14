@@ -17,7 +17,7 @@ import pc from '@brillout/picocolors'
 const globalObject = getGlobalObject<{
   alreadyLogged: Set<string>
   onBeforeAssertLog?: () => void
-  onBeforeAssertErr?: (err: Error) => void
+  onBeforeErr?: (err: Error) => void
   alwaysShowStackTrace?: true
 }>('utils/assert.ts', {
   alreadyLogged: new Set(),
@@ -53,7 +53,7 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
   const internalError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
 
   globalObject.onBeforeAssertLog?.()
-  globalObject.onBeforeAssertErr?.(internalError)
+  globalObject.onBeforeErr?.(internalError)
   throw internalError
 }
 
@@ -67,7 +67,7 @@ function assertUsage(
   errMsg = addTags(errMsg, 'Wrong Usage')
   const usageError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
   globalObject.onBeforeAssertLog?.()
-  globalObject.onBeforeAssertErr?.(usageError)
+  globalObject.onBeforeErr?.(usageError)
   if (!exitOnError) {
     throw usageError
   } else {
@@ -99,7 +99,7 @@ function assertWarning(
   globalObject.onBeforeAssertLog?.()
   if (showStackTrace) {
     const err = createErrorWithCleanStackTrace(msg, numberOfStackTraceLinesToRemove)
-    globalObject.onBeforeAssertErr?.(err)
+    globalObject.onBeforeErr?.(err)
     console.warn(err)
   } else {
     console.warn(msg)
@@ -128,7 +128,7 @@ function setOnBeforeAssertLog(onBeforeAssertLog: () => void) {
   globalObject.onBeforeAssertLog = onBeforeAssertLog
 }
 function setOnBeforeAssertErr(onBeforeAssertErr: (err: unknown) => void) {
-  globalObject.onBeforeAssertErr = onBeforeAssertErr
+  globalObject.onBeforeErr = onBeforeAssertErr
 }
 
 function addTags(msg: string, tagType: TagType | null, showProjectVersion = false) {
