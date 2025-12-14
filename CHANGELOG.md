@@ -30,7 +30,10 @@
 * pass `pageContext` to +onError (closes [#2861](https://github.com/vikejs/vike/issues/2861)) ([#2890](https://github.com/vikejs/vike/issues/2890)) ([14351e3](https://github.com/vikejs/vike/commit/14351e3c30d0c3b7ce031c36e18155cd64ef1366))
 
 
-### BREAKING CHANGES
+### MINOR BREAKING CHANGES
+
+> [!NOTE]
+> We recommend ignoring `MINOR BREAKING CHANGES` unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
 
 * `history.state.triggeredBy` moved to `history.state?.vike.triggeredBy`
 * [Vike's `dev()` API](https://vike.dev/api#dev) now automatically attaches Vite's dev server (i.e. `viteDevServer.listen()`)
