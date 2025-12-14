@@ -1,3 +1,6 @@
+// ./colors.js => server only
+// ./colorVike.js => server & client
+
 export { stripAnsi }
 export { hasRed }
 export { hasGreen }

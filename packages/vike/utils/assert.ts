@@ -12,7 +12,7 @@ import { assertSingleInstance_onAssertModuleLoad } from './assertSingleInstance.
 import { createErrorWithCleanStackTrace } from './createErrorWithCleanStackTrace.js'
 import { getGlobalObject } from './getGlobalObject.js'
 import { PROJECT_VERSION } from './PROJECT_VERSION.js'
-import { colorVike } from './colorVike.js'
+import { colorVike, colorWarning, colorError } from './colorVike.js'
 import pc from '@brillout/picocolors'
 const globalObject = getGlobalObject<{
   alreadyLogged: Set<string>
@@ -149,9 +149,9 @@ function addTagWhitespace(msg: string) {
 function addTagType(msg: string, tagType: TagType): string {
   let tag = `[${tagType}]`
   if (tagType === 'Warning') {
-    tag = pc.yellow(tag)
+    tag = colorWarning(tag)
   } else {
-    tag = pc.bold(pc.red(tag))
+    tag = colorError(tag)
   }
   return `${tag}${msg}`
 }
