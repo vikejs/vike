@@ -24,7 +24,7 @@ const globalObject = getGlobalObject<{
 })
 assertSingleInstance_onAssertModuleLoad()
 
-const tagProject = `[vike]` as const
+const tagVike = `[vike]` as const
 const tagProjectWithVersion = `[vike@${PROJECT_VERSION}]` as const
 const tagAssertBug = 'Bug'
 type Tag = 'Bug' | 'Wrong Usage' | 'Error' | 'Warning'
@@ -157,7 +157,7 @@ function addWhitespace(msg: string) {
   }
 }
 function addTagProject(msg: string, showProjectVersion = false): string {
-  const tag = showProjectVersion ? tagProjectWithVersion : tagProject
+  const tag = showProjectVersion ? tagProjectWithVersion : tagVike
   return `${colorVike(tag)}${msg}`
 }
 
