@@ -94,7 +94,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
     const errMsgFormatted = getPrettyErrorWithCodeSnippet(err, viteConfig.root)
     assert(stripAnsi(errMsgFormatted).startsWith('Failed to transpile'))
     const message =
-      `${getTags(errMsgFormatted, '[vite]', tagSource, 'error')}${errMsgFormatted}\n${errorDebugNote}` as const
+      `${addTags(errMsgFormatted, '[vite]', tagSource, 'error')}${errMsgFormatted}\n${errorDebugNote}` as const
     const errBetter = getBetterError(err, { message, hideStack: true })
     logErr(errBetter)
     return
@@ -104,7 +104,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
     const errMsgFormatted = getConfigBuildErrorFormatted(err)
     if (errMsgFormatted) {
       assert(stripAnsi(errMsgFormatted).startsWith('Failed to transpile'))
-      const message = `${getTagsError(errMsgFormatted, tagSource)}${errMsgFormatted}\n${errorDebugNote}` as const
+      const message = `${addTagsError(errMsgFormatted, tagSource)}${errMsgFormatted}\n${errorDebugNote}` as const
       const errBetter = getBetterError(err, { message, hideStack: true })
       logErr(errBetter)
       return
@@ -115,7 +115,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
     const errIntro = getConfigExecutionErrorIntroMsg(err)
     if (errIntro) {
       assert(stripAnsi(errIntro).startsWith('Failed to execute'))
-      const prepend = `${getTagsError(errIntro, tagSource)}${errIntro}\n` as const
+      const prepend = `${addTagsError(errIntro, tagSource)}${errIntro}\n` as const
       const errBetter = getBetterError(err, { message: { prepend } })
       logErr(errBetter)
       return
@@ -129,7 +129,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
       const errIntro = pc.red(
         `Following error was thrown by the ${hookName as string}() hook defined at ${hookFilePath}`,
       )
-      const prepend = `${getTagsError(errIntro, tagSource)}${errIntro}\n` as const
+      const prepend = `${addTagsError(errIntro, tagSource)}${errIntro}\n` as const
       const errBetter = getBetterError(err, { message: { prepend } })
       logErr(errBetter)
       return
@@ -138,7 +138,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
 
   if (tagSource) {
     const errIntro = pc.bold(pc.red(`[Error] ${errorComesFromVite ? 'Transpilation error' : 'An error was thrown'}:`))
-    const prepend = `${getTagsError(errIntro, tagSource)}${errIntro}\n` as const
+    const prepend = `${addTagsError(errIntro, tagSource)}${errIntro}\n` as const
     const errBetter = getBetterError(err, { message: { prepend } })
     logErr(errBetter)
     return
@@ -149,7 +149,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
 
 function logDev(msg: string, logType: LogType, tagSource: TagSource | null, tagTool: TagTool, doNotAddTags?: boolean) {
   if (!doNotAddTags) {
-    msg = getTags(msg, tagTool, tagSource, logType) + msg
+    msg = addTags(msg, tagTool, tagSource, logType) + msg
   }
 
   if (logType === 'info') {
@@ -197,10 +197,10 @@ function applyViteSourceMap(thing: unknown) {
   viteDevServer.ssrFixStacktrace(thing as Error)
 }
 
-function getTagsError(msg: string, tagSource: TagSource | null) {
-  return getTags(msg, '[vike]', tagSource, 'error')
+function addTagsError(msg: string, tagSource: TagSource | null) {
+  return addTags(msg, '[vike]', tagSource, 'error')
 }
-function getTags<TTagTool extends TagTool>(
+function addTags<TTagTool extends TagTool>(
   msg: string,
   tagTool: TTagTool,
   tagSource: TagSource | null,
