@@ -135,15 +135,15 @@ function addTags(msg: string, tagType: TagType | null, showProjectVersion = fals
   const tagVike = getTagVike(showProjectVersion)
   const tagTypeOuter = getTagType(tagType)
   const tags = `${tagVike}${tagTypeOuter}` as const
-  msg = addTagWhitespace(msg)
+  msg = getTagWhitespace(msg) + msg
   msg = tags + msg
   return msg
 }
-function addTagWhitespace(msg: string) {
+function getTagWhitespace(msg: string) {
   if (msg.startsWith('[')) {
-    return msg
+    return ''
   } else {
-    return ` ${msg}`
+    return ' '
   }
 }
 function getTagType(tagType: TagType | null) {
