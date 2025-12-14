@@ -32,8 +32,6 @@ const tagVikeWithVersion = `[vike@${PROJECT_VERSION}]` as const
 const tagTypeBug = 'Bug'
 type TagType = 'Bug' | 'Wrong Usage' | 'Error' | 'Warning'
 
-const numberOfStackTraceLinesToRemove = 2
-
 function assert(condition: unknown, debugInfo?: unknown): asserts condition {
   if (condition) return
 
@@ -53,7 +51,7 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
     .filter(Boolean)
     .join(' ')
   errMsg = addTags(errMsg, tagTypeBug, true)
-  const internalError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
+  const internalError = createError(errMsg)
 
   globalObject.onBeforeLog?.()
   globalObject.onBeforeErr?.(internalError)
@@ -68,7 +66,7 @@ function assertUsage(
   if (condition) return
   showStackTrace = showStackTrace || globalObject.alwaysShowStackTrace
   errMsg = addTags(errMsg, 'Wrong Usage')
-  const usageError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
+  const usageError = createError(errMsg)
   globalObject.onBeforeLog?.()
   globalObject.onBeforeErr?.(usageError)
   if (!exitOnError) {
@@ -81,7 +79,7 @@ function assertUsage(
 
 function getProjectError(errMsg: string) {
   errMsg = addTags(errMsg, 'Error')
-  const projectError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
+  const projectError = createError(errMsg)
   return projectError
 }
 
@@ -101,7 +99,7 @@ function assertWarning(
   }
   globalObject.onBeforeLog?.()
   if (showStackTrace) {
-    const err = createErrorWithCleanStackTrace(msg, numberOfStackTraceLinesToRemove)
+    const err = createError(msg)
     globalObject.onBeforeErr?.(err)
     console.warn(err)
   } else {
@@ -178,4 +176,10 @@ function isVikeBug(err: unknown): boolean {
 // Called upon `DEBUG=vike:error`
 function setAlwaysShowStackTrace() {
   globalObject.alwaysShowStackTrace = true
+}
+
+function createError(errMsg: string) {
+  const err = createErrorWithCleanStackTrace(errMsg, 3)
+  if (globalObject.addTagsDev) err.stack = err.stack?.replace(/^Error:\s*/, '')
+  return err
 }
