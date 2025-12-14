@@ -132,9 +132,10 @@ function setAssertOnBeforeErr(onBeforeAssertErr: (err: unknown) => void) {
 }
 
 function addTags(msg: string, tagType: TagType | null, showProjectVersion = false) {
-  msg = addTagWhitespace(msg)
   const tags = `${addTagVike(showProjectVersion)}${getTagType(tagType)}` as const
-  return tags + msg
+  msg = addTagWhitespace(msg)
+  msg = tags + msg
+  return msg
 }
 function addTagWhitespace(msg: string) {
   if (msg.startsWith('[')) {
