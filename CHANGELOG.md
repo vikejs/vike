@@ -1,3 +1,43 @@
+## [0.4.248](https://github.com/vikejs/vike/compare/v0.4.247...v0.4.248) (2025-12-14)
+
+
+### Bug Fixes
+
+* add missing `BREAKING CHANGE:` for 903de25aa32172c132bc82e0305b2d81d6fe29c0 ([878698c](https://github.com/vikejs/vike/commit/878698cc97722491872631f8e3f9c794453952a8))
+* add Vike dependencies to ssr.optimizeDeps.exclude ([897b89e](https://github.com/vikejs/vike/commit/897b89e5b26ced79ab328fdab9ac78b0d3aa0df8))
+* also call +guard.client.js on first render (fix [#1916](https://github.com/vikejs/vike/issues/1916)) ([#2848](https://github.com/vikejs/vike/issues/2848)) ([903de25](https://github.com/vikejs/vike/commit/903de25aa32172c132bc82e0305b2d81d6fe29c0))
+* avoid breaking ssrFixStacktrace (vitejs/vite[#21269](https://github.com/vikejs/vike/issues/21269)) ([#2942](https://github.com/vikejs/vike/issues/2942)) ([5831f8b](https://github.com/vikejs/vike/commit/5831f8b56c95ba44f713354f24d645150dc3a80b))
+* avoid history state collision with other libraries (fix [#2894](https://github.com/vikejs/vike/issues/2894)) ([#2901](https://github.com/vikejs/vike/issues/2901)) ([dbcfa58](https://github.com/vikejs/vike/commit/dbcfa58edd27a1654fbca7c987a3429f5438cf4f))
+* expose Vike's history data ([e331796](https://github.com/vikejs/vike/commit/e331796f8b6da11a4daecb564670130fa03196b2))
+* fix auto-reloading of resolved runtime error in + file ([#2920](https://github.com/vikejs/vike/issues/2920)) ([dae98ec](https://github.com/vikejs/vike/commit/dae98ecb64618aa8c25732887d706a2d44b859a8))
+* fix module banner ([908fc62](https://github.com/vikejs/vike/commit/908fc62c099a952bcec5c19914bff8034d558f49))
+* fix RPC timeout ([4a392fb](https://github.com/vikejs/vike/commit/4a392fb804620ec8c7dd43e81108094c4f0a84b8))
+* fix utils/debug.js tree-shaking (fix [#2879](https://github.com/vikejs/vike/issues/2879)) ([c3d567b](https://github.com/vikejs/vike/commit/c3d567b97e148c30a8d8b2e7727eed3178b156f6))
+* fix Vite config early resolve (fix [#2850](https://github.com/vikejs/vike/issues/2850)) ([#2865](https://github.com/vikejs/vike/issues/2865)) ([cdee1c4](https://github.com/vikejs/vike/commit/cdee1c4790f5bda56a8ba43c238a9d81c5b7d1ee))
+* improve debug logs upon virtual module missing export (closes [#2903](https://github.com/vikejs/vike/issues/2903)) ([f7a3fb8](https://github.com/vikejs/vike/commit/f7a3fb8338decc1105b4189bbe29ec8ed427ebe1))
+* improve error message upon using old Vite version (fix [#2853](https://github.com/vikejs/vike/issues/2853)) ([b624f37](https://github.com/vikejs/vike/commit/b624f3718568648468fd172347a23570743e1c0e))
+* improve Vike's logs aesthetics ([#2895](https://github.com/vikejs/vike/issues/2895)) ([a1e7c11](https://github.com/vikejs/vike/commit/a1e7c11c8827a9c281b320649aaf00df80d9989f))
+* properly handle file changes upon non-runnable process (fix [#2898](https://github.com/vikejs/vike/issues/2898)) ([6ebbe6d](https://github.com/vikejs/vike/commit/6ebbe6dfd9887b536804f141a8776b4ce78feb8b))
+* virtual client entry for root location ([#2846](https://github.com/vikejs/vike/issues/2846)) ([3961797](https://github.com/vikejs/vike/commit/396179763ac64cdf1cdb95ce448c4d7594712aeb))
+
+
+### Features
+
+* `.ssr.js` ([#2939](https://github.com/vikejs/vike/issues/2939)) ([385fcb1](https://github.com/vikejs/vike/commit/385fcb1e1f26a7710afaf4b7840367e593803da6))
+* `getPageContext({ asyncHook: true })` ([#2877](https://github.com/vikejs/vike/issues/2877)) ([e5ba0b6](https://github.com/vikejs/vike/commit/e5ba0b6e6032ef00fd1535403ff52704854f28b0))
+* `pageContext.pageContextsAborted` ([#2849](https://github.com/vikejs/vike/issues/2849)) ([65b0f88](https://github.com/vikejs/vike/commit/65b0f88d96d00b8d620121d19be7d31d67725aa0))
+* add `.env` values to `process.env` ([#1726](https://github.com/vikejs/vike/issues/1726)) ([#2866](https://github.com/vikejs/vike/issues/2866)) ([6117108](https://github.com/vikejs/vike/commit/6117108e5fe3a6bce56964d10c995a363c2e8739))
+* pass `pageContext` to +onError (closes [#2861](https://github.com/vikejs/vike/issues/2861)) ([#2890](https://github.com/vikejs/vike/issues/2890)) ([14351e3](https://github.com/vikejs/vike/commit/14351e3c30d0c3b7ce031c36e18155cd64ef1366))
+
+
+### BREAKING CHANGES
+
+* `history.state.triggeredBy` moved to `history.state?.vike.triggeredBy`
+* [Vike's `dev()` API](https://vike.dev/api#dev) now automatically attaches Vite's dev server (i.e. `viteDevServer.listen()`)
+* `+guard.client.js` is now also called on first render, see https://vike.dev/guard#environment
+
+
+
 ## [0.4.247](https://github.com/vikejs/vike/compare/v0.4.246...v0.4.247) (2025-11-17)
 
 
