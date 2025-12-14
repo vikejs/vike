@@ -96,7 +96,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
     const errMsgFormatted = getPrettyErrorWithCodeSnippet(err, viteConfig.root)
     assert(stripAnsi(errMsgFormatted).startsWith('Failed to transpile'))
     const message =
-      `${addTags(errMsgFormatted, '[vite]', tagSource, 'error')}${errMsgFormatted}\n${errorDebugNote}` as const
+      `${getTags(errMsgFormatted, '[vite]', tagSource, 'error')}${errMsgFormatted}\n${errorDebugNote}` as const
     const errBetter = getBetterError(err, { message, hideStack: true })
     logErr(errBetter)
     return
@@ -151,7 +151,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
 
 function logDev(msg: string, logType: LogType, tagSource: TagSource | null, tagTool: TagTool, doNotAddTags?: boolean) {
   if (!doNotAddTags) {
-    msg = addTags(msg, tagTool, tagSource, logType) + msg
+    msg = getTags(msg, tagTool, tagSource, logType) + msg
   }
 
   if (logType === 'info') {
@@ -200,9 +200,9 @@ function applyViteSourceMap(thing: unknown) {
 }
 
 function addTagsError(msg: string, tagSource: TagSource | null) {
-  return addTags(msg, '[vike]', tagSource, 'error')
+  return getTags(msg, '[vike]', tagSource, 'error')
 }
-function addTags<TTagTool extends TagTool>(
+function getTags<TTagTool extends TagTool>(
   msg: string,
   tagTool: TTagTool,
   tagSource: TagSource | null,
