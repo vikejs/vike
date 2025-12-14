@@ -49,7 +49,7 @@ assertIsNotProductionRuntime()
 setLogRuntimeDev(logErrorServerDev, logRuntimeInfoDev)
 addOnBeforeAssertErr((err) => {
   // We must directly apply vite.ssrFixStacktrace() to `assertWarning(..., { showStackTrace: true })` because warnings aren't caught by the try-catch of renderPageServer()
-  applyViteSourceMapToStackTrace(err)
+  applyViteSourceMap(err)
 })
 // Note shown to user when Vike completely modifies the error message (which is somewhat risky)
 const errorDebugNote = pc.dim(formatHintLog("Error isn't helpful? See https://vike.dev/debug#verbose-errors"))
@@ -75,7 +75,7 @@ function logVite(msg: string, logType: LogType, requestId: number | null, prepen
 function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, errorComesFromVite = false): void {
   assertPageContext_logRuntime(pageContext)
 
-  applyViteSourceMapToStackTrace(err)
+  applyViteSourceMap(err)
 
   // Skip `throw render()` / `throw redirect()`
   if (isAbortError(err) && !isDebugError()) {
@@ -188,7 +188,7 @@ function getTagSource(requestId: number | null = null): TagSource | null {
   return tagSource
 }
 
-function applyViteSourceMapToStackTrace(thing: unknown) {
+function applyViteSourceMap(thing: unknown) {
   if (isDebugError()) return
   if (!hasProp(thing, 'stack')) return
   const viteDevServer = getViteDevServer()

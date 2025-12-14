@@ -57,7 +57,7 @@ function intercept(loggerType: LoggerType, config: ResolvedConfig) {
       //  - It doesn't format error code snippets.
       //  - It only shows error.message which means that crucial information such as error.id isn't shown to the user.
       logErrorServerDev(options.error, null, true)
-      // We swallow Vite's message: we didn't see it add any value so far.
+      // We swallow Vite's message: it doesn't seem to add any value.
       //  - It can even be confusing, such as the following:
       //    ```
       //    Error when evaluating SSR module virtual:vike:page-entry:server:/pages/abort: failed to import "/pages/abort/+Page.mdx"
