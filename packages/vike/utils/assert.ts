@@ -110,8 +110,7 @@ function assertInfo(condition: unknown, msg: string, { onlyOnce }: { onlyOnce: b
   if (condition) {
     return
   }
-  msg = addWhitespace(msg)
-  msg = addTagVike(msg)
+  msg = addTags(msg, null)
   if (onlyOnce) {
     const { alreadyLogged } = globalObject
     const key = msg
