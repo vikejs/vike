@@ -216,9 +216,13 @@ function getTags<TTagTool extends TagTool>(
     if (tagTool === '[vike]') return colorVike(tagTool)
     assert(false)
   })()
-  const timestamp = pc.dim(new Date().toLocaleTimeString() as '1:37:00 PM')
+  const timestamp = getTagTimestamp()
   const whitespace = (/\s|\[/.test(stripAnsi(msg)[0]!) ? '' : ' ') as ' '
   const tagSourceStr = (!tagSource ? '' : pc.dim(`[${tagSource}]`)) as '[request(n)]'
   const tags = `${timestamp} ${tagToolColored}${tagSourceStr}${whitespace}` as const
   return tags
+}
+function getTagTimestamp() {
+  const timestamp = pc.dim(new Date().toLocaleTimeString() as '1:37:00 PM')
+  return timestamp
 }
