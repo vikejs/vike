@@ -50,7 +50,7 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
     .filter(Boolean)
     .join(' ')
   errMsg = addWhitespace(errMsg)
-  errMsg = addTagAssertType(errMsg, tagBug)
+  errMsg = addTagAssert(errMsg, tagBug)
   errMsg = addTagProject(errMsg, true)
   const internalError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
 
@@ -67,7 +67,7 @@ function assertUsage(
   if (condition) return
   showStackTrace = showStackTrace || globalObject.alwaysShowStackTrace
   errMsg = addWhitespace(errMsg)
-  errMsg = addTagAssertType(errMsg, 'Wrong Usage')
+  errMsg = addTagAssert(errMsg, 'Wrong Usage')
   errMsg = addTagProject(errMsg)
   const usageError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
   globalObject.onBeforeAssertLog?.()
@@ -82,7 +82,7 @@ function assertUsage(
 
 function getProjectError(errMsg: string) {
   errMsg = addWhitespace(errMsg)
-  errMsg = addTagAssertType(errMsg, 'Error')
+  errMsg = addTagAssert(errMsg, 'Error')
   errMsg = addTagProject(errMsg)
   const projectError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
   return projectError
@@ -96,7 +96,7 @@ function assertWarning(
   if (condition) return
   showStackTrace = showStackTrace || globalObject.alwaysShowStackTrace
   msg = addWhitespace(msg)
-  msg = addTagAssertType(msg, 'Warning')
+  msg = addTagAssert(msg, 'Warning')
   msg = addTagProject(msg)
   if (onlyOnce) {
     const { alreadyLogged } = globalObject
@@ -140,7 +140,7 @@ function addOnBeforeAssertErr(onBeforeAssertErr: (err: unknown) => void) {
   globalObject.onBeforeAssertErr = onBeforeAssertErr
 }
 
-function addTagAssertType(msg: string, tagAssert: Tag): string {
+function addTagAssert(msg: string, tagAssert: Tag): string {
   let tag = `[${tagAssert}]`
   if (tagAssert === 'Warning') {
     tag = pc.yellow(tag)
