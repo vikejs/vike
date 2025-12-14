@@ -15,6 +15,8 @@ function getBetterError(
   err: unknown,
   modifications: { message?: string | { prepend?: string; append?: string }; stack?: string; hideStack?: true },
 ) {
+  // Preserve getOriginalError before cloning (structuredClone doesn't preserve methods)
+  const getOriginalErrorFromErr = isObject(err) ? (err as any).getOriginalError : undefined
   const errOriginal = structuredClone(err)
 
   let errBetter: { message: string; stack: string; hideStack?: true }
@@ -69,7 +71,7 @@ function getBetterError(
   }
 
   // Enable users to retrieve the original error
-  objectAssign(errBetter, { getOriginalError: () => (errOriginal as any)?.getOriginalError?.() ?? errOriginal })
+  objectAssign(errBetter, { getOriginalError: () => getOriginalErrorFromErr?.() ?? errOriginal })
 
   return errBetter
 }
