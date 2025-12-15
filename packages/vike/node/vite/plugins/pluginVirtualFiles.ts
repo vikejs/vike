@@ -167,13 +167,6 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
   }
 }
 
-function invalidateVikeVirtualFiles(server: ViteDevServer) {
-  const vikeVirtualFiles = getVikeVirtualFiles(server)
-  vikeVirtualFiles.forEach((mod) => {
-    server.moduleGraph.invalidateModule(mod)
-  })
-}
-
 async function isVikeDependency(
   filePathAbsoluteFilesystem: string,
   moduleGraph: ModuleGraph,
@@ -227,6 +220,13 @@ function reloadConfig(
   reloadVikeConfig()
 
   updateUserFiles()
+}
+
+function invalidateVikeVirtualFiles(server: ViteDevServer) {
+  const vikeVirtualFiles = getVikeVirtualFiles(server)
+  vikeVirtualFiles.forEach((mod) => {
+    server.moduleGraph.invalidateModule(mod)
+  })
 }
 
 function getVikeVirtualFiles(server: ViteDevServer): ModuleNode[] {
