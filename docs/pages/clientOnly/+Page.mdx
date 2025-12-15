@@ -41,6 +41,28 @@ Props:
 - **fallback**: Content shown while the component is being loaded.
 - All other props are passed to the loaded component.
 
+<Warning>
+  **Don't call `clientOnly()` inside a component** — always call it at your module's top level. (Otherwise the component's state isn't preserved.)
+  ```tsx
+  function SomeWrapper() {
+    // ❌ Bad: Don't call inside components
+    const SomeComponent = clientOnly(() => import('./SomeComponent.tsx'))
+    return <SomeComponent />
+  }
+  ```
+  ```tsx
+  // ✅ Good: Called at the module's top level
+  const SomeComponent = clientOnly(() => import('./SomeComponent.tsx'))
+  function SomeWrapper() {
+    return <SomeComponent />
+  }
+  ```
+
+  See also:
+   - [React > APIs > lazy > My `lazy` component’s state gets reset unexpectedly](https://react.dev/reference/react/lazy#my-lazy-components-state-gets-reset-unexpectedly)
+   - [#2928 — `clientOnly` fallback resets component state when hydrated](https://github.com/vikejs/vike/issues/2928)
+</Warning>
+
 
 ## Solid
 
