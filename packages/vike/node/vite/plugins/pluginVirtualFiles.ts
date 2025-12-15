@@ -142,11 +142,7 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
     return
   }
 
-  // New or deleted + file
-  if (isPlusFile(file)) {
-    reload()
-    return
-  }
+  assert(!isPlusFile(file))
 
   // Vike runtime code => let Vite handle it
   if (isVikeDep && isVikeDep.isProcessedByVite) {
