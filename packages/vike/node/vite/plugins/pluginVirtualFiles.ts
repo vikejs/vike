@@ -119,6 +119,7 @@ async function onFileModified(ctx: HmrContext, config: ResolvedConfig) {
     const vikeVirtualFiles = getVikeVirtualFiles(server)
     return vikeVirtualFiles
   }
+
   if (isAppFile.isRuntimeDependency) {
     // Ensure we invalidate `file` *before* server.ssrLoadModule() in updateUserFiles()
     // Vite also invalidates it, but *after* handleHotUpdate() and thus after server.ssrLoadModule()
