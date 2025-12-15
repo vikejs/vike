@@ -244,7 +244,7 @@
     "./universal-middleware.js"
   ],
   "devDependencies": {
-    "@brillout/release-me": "^0.4.11",
+    "@brillout/release-me": "^0.4.12",
     "@types/estree": "^1.0.5",
     "@types/node": "^20.10.5",
     "@types/picomatch": "^3.0.2",
