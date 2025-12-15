@@ -93,8 +93,8 @@ function pluginVirtualFiles(): Plugin[] {
       },
       configureServer: {
         handler(server) {
-          server.watcher.prependListener('add', (f) => onFileCreatedOrRemoved(f, false, server, config))
-          server.watcher.prependListener('unlink', (f) => onFileCreatedOrRemoved(f, true, server, config))
+          server.watcher.prependListener('add', (file) => onFileCreatedOrRemoved(file, false, server, config))
+          server.watcher.prependListener('unlink', (file) => onFileCreatedOrRemoved(file, true, server, config))
         },
       },
     },
