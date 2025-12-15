@@ -103,7 +103,7 @@ function pluginVirtualFiles(): Plugin[] {
 
 async function onFileModified(ctx: HmrContext, config: ResolvedConfig) {
   const { file, server } = ctx
-  const isVikeDep = await isVikeDependency(ctx.file, ctx.server.moduleGraph)
+  const isVikeDep = await isAppDependency(ctx.file, ctx.server.moduleGraph)
   debugFileChange(isVikeDep)
 
   if (isVikeDep) {
@@ -133,7 +133,7 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
   const operation = isRemove ? 'removed' : 'created'
   debugFileChange('server.watcher', file, operation)
   const { moduleGraph } = server
-  const isVikeDep = await isVikeDependency(file, moduleGraph)
+  const isVikeDep = await isAppDependency(file, moduleGraph)
   const reload = () => reloadConfig(file, config, operation, server)
 
   // Vike config (non-runtime) code
@@ -167,7 +167,7 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
   }
 }
 
-async function isVikeDependency(filePathAbsoluteFilesystem: string, moduleGraph: ModuleGraph) {
+async function isAppDependency(filePathAbsoluteFilesystem: string, moduleGraph: ModuleGraph) {
   // =============================
   // { isConfigDependency: false }
   // =============================
