@@ -1,0 +1,18 @@
+name: Auto-merge Dependabot PRs
+
+on:
+  workflow_run:
+    workflows: ['CI']
+    types: [completed]
+
+jobs:
+  auto-merge-dependabot:
+    if: ${{ github.actor == 'dependabot' && github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Merge Dependabot PR
+        uses: pascalgn/automerge-action@v0.17.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MERGE_METHOD: squash
+          MERGE_COMMIT_MESSAGE: pull-request-title
