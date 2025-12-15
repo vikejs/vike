@@ -154,12 +154,12 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
     return
   }
 
-  // Trick: when importing a file that doesn't exist => we don't know whether `file` is that missing file => we take a leap of faith when the conditions below are met.
+  // Trick: when fixing the path of a relative import => we don't know whether `file` is the imported file => we take a leap of faith when the conditions below are met.
   // - Not sure how reliable that trick is.
   // - Reloading Vike's config is cheap and file creation/removal is rare => the trick is worth it.
   // - Reproduction:
   //   ```bash
-  //   rm someDep.js && sleep 2 && git checkout someDep.js
+  //   rm someImportedFile.js && sleep 2 && git checkout someImportedFile.js
   //   ```
   if (isScriptFile(file) && getVikeConfigError() && !existsInViteModuleGraph(file, moduleGraph)) {
     reload()
