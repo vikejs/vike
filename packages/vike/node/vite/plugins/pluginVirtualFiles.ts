@@ -101,10 +101,12 @@ function pluginVirtualFiles(): Plugin[] {
 }
 
 function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
-  server.watcher.prependListener('add', (f) => onFileCreatedOrRemoved(f, false))
-  server.watcher.prependListener('unlink', (f) => onFileCreatedOrRemoved(f, true))
+  server.watcher.prependListener('add', (f) => onFileCreatedOrRemoved(f, false, server, config))
+  server.watcher.prependListener('unlink', (f) => onFileCreatedOrRemoved(f, true, server, config))
   return
-  async function onFileCreatedOrRemoved(file: string, isRemove: boolean) {
+}
+
+  async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: ViteDevServer, config: ResolvedConfig) {
     file = normalizePath(file)
     if (isTemporaryBuildFile(file)) return
     const operation = isRemove ? 'removed' : 'created'
@@ -143,7 +145,6 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
       return
     }
   }
-}
 
 function invalidateVikeVirtualFiles(server: ViteDevServer) {
   const vikeVirtualFiles = getVikeVirtualFiles(server)
