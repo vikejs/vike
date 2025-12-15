@@ -106,45 +106,45 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
   return
 }
 
-  async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: ViteDevServer, config: ResolvedConfig) {
-    file = normalizePath(file)
-    if (isTemporaryBuildFile(file)) return
-    const operation = isRemove ? 'removed' : 'created'
-    debugFileChange('server.watcher', file, operation)
-    const { moduleGraph } = server
-    const isVikeDep = await isVikeDependency(file, moduleGraph)
-    const reload = () => reloadConfig(file, config, operation, server)
+async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: ViteDevServer, config: ResolvedConfig) {
+  file = normalizePath(file)
+  if (isTemporaryBuildFile(file)) return
+  const operation = isRemove ? 'removed' : 'created'
+  debugFileChange('server.watcher', file, operation)
+  const { moduleGraph } = server
+  const isVikeDep = await isVikeDependency(file, moduleGraph)
+  const reload = () => reloadConfig(file, config, operation, server)
 
-    // Vike config (non-runtime) code
-    if (isVikeDep && !isVikeDep.isProcessedByVite) {
-      reload()
-      return
-    }
-
-    // New or deleted + file
-    if (isPlusFile(file)) {
-      reload()
-      return
-    }
-
-    // Vike runtime code => let Vite handle it
-    if (isVikeDep && isVikeDep.isProcessedByVite) {
-      assert(existsInViteModuleGraph(file, moduleGraph))
-      return
-    }
-
-    // Trick: when importing a file that doesn't exist => we don't know whether `file` is that missing file => we take a leap of faith when the conditions below are met.
-    // - Not sure how reliable that trick is.
-    // - Reloading Vike's config is cheap and file creation/removal is rare => the trick is worth it.
-    // - Reproduction:
-    //   ```bash
-    //   rm someDep.js && sleep 2 && git checkout someDep.js
-    //   ```
-    if (isScriptFile(file) && getVikeConfigError() && !existsInViteModuleGraph(file, moduleGraph)) {
-      reload()
-      return
-    }
+  // Vike config (non-runtime) code
+  if (isVikeDep && !isVikeDep.isProcessedByVite) {
+    reload()
+    return
   }
+
+  // New or deleted + file
+  if (isPlusFile(file)) {
+    reload()
+    return
+  }
+
+  // Vike runtime code => let Vite handle it
+  if (isVikeDep && isVikeDep.isProcessedByVite) {
+    assert(existsInViteModuleGraph(file, moduleGraph))
+    return
+  }
+
+  // Trick: when importing a file that doesn't exist => we don't know whether `file` is that missing file => we take a leap of faith when the conditions below are met.
+  // - Not sure how reliable that trick is.
+  // - Reloading Vike's config is cheap and file creation/removal is rare => the trick is worth it.
+  // - Reproduction:
+  //   ```bash
+  //   rm someDep.js && sleep 2 && git checkout someDep.js
+  //   ```
+  if (isScriptFile(file) && getVikeConfigError() && !existsInViteModuleGraph(file, moduleGraph)) {
+    reload()
+    return
+  }
+}
 
 function invalidateVikeVirtualFiles(server: ViteDevServer) {
   const vikeVirtualFiles = getVikeVirtualFiles(server)
@@ -206,7 +206,9 @@ async function isVikeDependency(
   // - They never modify Vike's virtual files.
   // - Same for all `+data.js` transitive dependencies.
   const importersAll = getImportersAll(filePathAbsoluteFilesystem, moduleGraph)
-  const isPlusValueFileDependency = Array.from(importersAll).some((importer) => importer.file && isPlusFile(importer.file))
+  const isPlusValueFileDependency = Array.from(importersAll).some(
+    (importer) => importer.file && isPlusFile(importer.file),
+  )
   if (isPlusValueFileDependency) return { isProcessedByVite: true }
 
   return null
