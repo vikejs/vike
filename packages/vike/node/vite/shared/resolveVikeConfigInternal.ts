@@ -79,7 +79,11 @@ import {
   getConfigDefinedAt,
   getDefinedByString,
 } from '../../../shared-server-client/page-configs/getConfigDefinedAt.js'
-import { loadPointerImport, loadValueFile, type PointerImportLoaded } from './resolveVikeConfigInternal/loadFileAtConfigTime.js'
+import {
+  loadPointerImport,
+  loadValueFile,
+  type PointerImportLoaded,
+} from './resolveVikeConfigInternal/loadFileAtConfigTime.js'
 import { resolvePointerImport } from './resolveVikeConfigInternal/resolvePointerImport.js'
 import { getFilePathResolved } from './getFilePath.js'
 import type { FilePath } from '../../../types/FilePath.js'
@@ -414,9 +418,9 @@ async function loadCustomConfigBuildTimeFiles(
           Object.entries(plusFile.pointerImportsByConfigName).map(async ([configName, pointerImportOrArray]) => {
             const pointerImports = Array.isArray(pointerImportOrArray) ? pointerImportOrArray : [pointerImportOrArray]
             await Promise.all(
-              pointerImports.map(pointerImport => 
-                loadPointerImport(pointerImport, userRootDir, configName, configDefinitions, esbuildCache)
-              )
+              pointerImports.map((pointerImport) =>
+                loadPointerImport(pointerImport, userRootDir, configName, configDefinitions, esbuildCache),
+              ),
             )
           }),
         )
@@ -848,8 +852,8 @@ function getConfigValueSources(
     const pointerImportOrArray = plusFile.pointerImportsByConfigName[configName]
     if (pointerImportOrArray) {
       const pointerImports = Array.isArray(pointerImportOrArray) ? pointerImportOrArray : [pointerImportOrArray]
-      return pointerImports.map(pointerImport => 
-        getConfigValueSourceFromPointerImport(plusFile, configDef, pointerImport)
+      return pointerImports.map((pointerImport) =>
+        getConfigValueSourceFromPointerImport(plusFile, configDef, pointerImport),
       )
     }
   }
@@ -864,7 +868,7 @@ function getConfigValueSourceFromPointerImport(
     locationId: plusFile.locationId,
     plusFile,
   }
-  
+
   const value = pointerImport.fileExportValueLoaded
     ? {
         valueIsLoaded: true as const,
