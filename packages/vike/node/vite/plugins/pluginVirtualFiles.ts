@@ -101,6 +101,32 @@ function pluginVirtualFiles(): Plugin[] {
   ]
 }
 
+async function onFileModified(ctx: HmrContext, config: ResolvedConfig) {
+  const { file, server } = ctx
+  const isVikeDep = await isVikeDependency(ctx.file, ctx.server.moduleGraph)
+  debugFileChange(isVikeDep)
+
+  if (isVikeDep) {
+    if (!isVikeDep.isProcessedByVite) {
+      /* Tailwind breaks this assertion, see https://github.com/vikejs/vike/discussions/1330#discussioncomment-7787238
+      const isViteModule = ctx.modules.length > 0
+      assert(!isViteModule)
+      */
+
+      reloadConfig(file, config, 'modified', server)
+
+      // Trigger a full page reload. (Because files such as +config.js can potentially modify Vike's virtual files.)
+      const vikeVirtualFiles = getVikeVirtualFiles(server)
+      return vikeVirtualFiles
+    } else {
+      // Ensure we invalidate `file` *before* server.ssrLoadModule() in updateUserFiles()
+      // Vite also invalidates it, but *after* handleHotUpdate() and thus after server.ssrLoadModule()
+      ctx.modules.forEach((mod) => server.moduleGraph.invalidateModule(mod))
+      await updateUserFiles()
+    }
+  }
+}
+
 async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: ViteDevServer, config: ResolvedConfig) {
   file = normalizePath(file)
   if (isTemporaryBuildFile(file)) return
@@ -146,32 +172,6 @@ function invalidateVikeVirtualFiles(server: ViteDevServer) {
   vikeVirtualFiles.forEach((mod) => {
     server.moduleGraph.invalidateModule(mod)
   })
-}
-
-async function onFileModified(ctx: HmrContext, config: ResolvedConfig) {
-  const { file, server } = ctx
-  const isVikeDep = await isVikeDependency(ctx.file, ctx.server.moduleGraph)
-  debugFileChange(isVikeDep)
-
-  if (isVikeDep) {
-    if (!isVikeDep.isProcessedByVite) {
-      /* Tailwind breaks this assertion, see https://github.com/vikejs/vike/discussions/1330#discussioncomment-7787238
-      const isViteModule = ctx.modules.length > 0
-      assert(!isViteModule)
-      */
-
-      reloadConfig(file, config, 'modified', server)
-
-      // Trigger a full page reload. (Because files such as +config.js can potentially modify Vike's virtual files.)
-      const vikeVirtualFiles = getVikeVirtualFiles(server)
-      return vikeVirtualFiles
-    } else {
-      // Ensure we invalidate `file` *before* server.ssrLoadModule() in updateUserFiles()
-      // Vite also invalidates it, but *after* handleHotUpdate() and thus after server.ssrLoadModule()
-      ctx.modules.forEach((mod) => server.moduleGraph.invalidateModule(mod))
-      await updateUserFiles()
-    }
-  }
 }
 
 async function isVikeDependency(
