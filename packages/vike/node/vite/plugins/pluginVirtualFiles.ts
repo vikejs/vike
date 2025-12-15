@@ -193,7 +193,7 @@ async function isVikeDependency(
   // - They're included in Vite's module graph.
   // - They never modify Vike's virtual files.
   // - Same for all `+data.js` transitive dependencies.
-  const importersAll = getImportersAll(filePathAbsoluteFilesystem, moduleGraph)
+  const importersAll = getImportersTransitive(filePathAbsoluteFilesystem, moduleGraph)
   const isPlusValueFileDependency = Array.from(importersAll).some(
     (importer) => importer.file && isPlusFile(importer.file),
   )
@@ -245,7 +245,7 @@ function existsInViteModuleGraph(file: string, moduleGraph: ModuleGraph): boolea
 }
 
 // Get all transitive importers (including the module itself)
-function getImportersAll(file: string, moduleGraph: ModuleGraph): Set<ModuleNode> {
+function getImportersTransitive(file: string, moduleGraph: ModuleGraph): Set<ModuleNode> {
   const importers = new Set<ModuleNode>()
   const mods = moduleGraph.getModulesByFile(file)
   if (!mods) return importers
