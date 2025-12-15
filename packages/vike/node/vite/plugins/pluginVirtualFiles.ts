@@ -151,7 +151,7 @@ function invalidateVikeVirtualFiles(server: ViteDevServer) {
   })
 }
 
-// Vite calls its hook handleHotUpdate() whenever *any file* is modified — including files that aren't in Vite's module graph such as `pages/+config.js`
+// Vite calls handleHotUpdate() whenever *any file* is modified — including files that aren't in Vite's module graph such as +config.js
 async function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
   const { file, server } = ctx
   const isVikeDep = await isVikeDependency(ctx.file, ctx.server.moduleGraph)
@@ -166,8 +166,7 @@ async function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
 
       reloadConfig(file, config, 'modified', server)
 
-      // Files such as `pages/+config.js` can potentially modify Vike's virtual files.
-      // Triggers a full page reload
+      // Trigger a full page reload. (Because files such as +config.js can potentially modify Vike's virtual files.)
       const vikeVirtualFiles = getVikeVirtualFiles(server)
       return vikeVirtualFiles
     } else {
@@ -186,10 +185,10 @@ async function isVikeDependency(
   // ============================
   // { isProcessedByVite: false }
   // ============================
-  // Vike config (non-runtime) files such as `pages/+config.js` which aren't processed by Vite.
+  // Vike config (non-runtime) files such as +config.js which aren't processed by Vite.
   // - They're missing in Vite's module graph.
   // - Potentially modifies Vike's virtual files.
-  // - Same for all `pages/+config.js` dependencies.
+  // - Same for all `pages/+config.js` transitive dependencies.
   assertPosixPath(filePathAbsoluteFilesystem)
   const vikeConfigObject = await getVikeConfigInternalOptional()
   if (vikeConfigObject) {
@@ -198,13 +197,13 @@ async function isVikeDependency(
     if (vikeConfigDependencies.has(filePathAbsoluteFilesystem)) return { isProcessedByVite: false }
   }
 
-  // ============================
+  // ===========================
   // { isProcessedByVite: true }
-  // ============================
+  // ===========================
   // Vike runtime files such as +data.js which are processed by Vite.
   // - They're included in Vite's module graph.
   // - They never modify Vike's virtual files.
-  // - Same for all `+data.js` dependencies.
+  // - Same for all `+data.js` transitive dependencies.
   const importersAll = getImportersAll(filePathAbsoluteFilesystem, moduleGraph)
   const isPlusValueFileDependency = Array.from(importersAll).some((importer) => importer.file && isPlusFile(importer.file))
   if (isPlusValueFileDependency) return { isProcessedByVite: true }
