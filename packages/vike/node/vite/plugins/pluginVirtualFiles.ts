@@ -51,11 +51,12 @@ function pluginVirtualFiles(): Plugin[] {
           return addVirtualFileIdPrefix(id)
         },
       },
+      // Vite calls handleHotUpdate() whenever *any file* is modified — including files that aren't in Vite's module graph such as +config.js
       handleHotUpdate: {
         async handler(ctx) {
           debugFileChange('handleHotUpdate()', ctx.file)
           try {
-            return await handleHotUpdate(ctx, config)
+            return await onFileModified(ctx, config)
           } catch (err) {
             // Vite swallows errors thrown by handleHotUpdate()
             console.error(err)
@@ -92,118 +93,99 @@ function pluginVirtualFiles(): Plugin[] {
       },
       configureServer: {
         handler(server) {
-          handleFileAddRemove(server, config)
+          server.watcher.prependListener('add', (file) => onFileCreatedOrRemoved(file, false, server, config))
+          server.watcher.prependListener('unlink', (file) => onFileCreatedOrRemoved(file, true, server, config))
         },
       },
     },
   ]
 }
 
-function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
-  server.watcher.prependListener('add', (f) => listener(f, false))
-  server.watcher.prependListener('unlink', (f) => listener(f, true))
-  return
-  async function listener(file: string, isRemove: boolean) {
-    file = normalizePath(file)
-    if (isTemporaryBuildFile(file)) return
-    const operation = isRemove ? 'removed' : 'created'
-    debugFileChange('server.watcher', file, operation)
-    const { moduleGraph } = server
-    const isVikeConfigDep = await isVikeConfigDependency(file, moduleGraph)
-    const reload = () => reloadConfig(file, config, operation, server)
+async function onFileModified(ctx: HmrContext, config: ResolvedConfig) {
+  const { file, server } = ctx
+  const isAppFile = await isAppDependency(ctx.file, ctx.server.moduleGraph)
+  debugFileChange(isAppFile)
+  if (!isAppFile) return
+  const reloadVikeConfig = () => reloadConfig(file, config, 'modified', server)
 
-    // Config code
-    if (isVikeConfigDep && !isVikeConfigDep.isProcessedByVite) {
-      reload()
-      return
-    }
+  if (isAppFile.isRuntimeDependency) {
+    // Ensure we invalidate `file` *before* server.ssrLoadModule() in updateUserFiles()
+    // Vite also invalidates it, but *after* handleHotUpdate() and thus after server.ssrLoadModule()
+    ctx.modules.forEach((mod) => server.moduleGraph.invalidateModule(mod))
+    // Re-running ssrLoadModule() is cheap (Vite uses a cache) => eagerly calling updateUserFiles() makes sense.
+    // - Even for SPA apps that don't have (m)any server files? Ideally, we should set `isRuntimeDependency: true` only for server modules (let's do it once Vite has a clear separate per-environment module graphs).
+    await updateUserFiles()
+  }
 
-    // New or deleted + file
-    if (isPlusFile(file)) {
-      reload()
-      return
-    }
+  if (isAppFile.isConfigDependency) {
+    /* Tailwind breaks this assertion, see https://github.com/vikejs/vike/discussions/1330#discussioncomment-7787238
+    const isViteModule = ctx.modules.length > 0
+    assert(!isViteModule)
+    */
 
-    // Runtime code => let Vite handle it
-    if (isVikeConfigDep && isVikeConfigDep.isProcessedByVite) {
-      assert(existsInViteModuleGraph(file, moduleGraph))
-      return
-    }
+    reloadVikeConfig()
 
-    // Trick: when importing a file that doesn't exist => we don't know whether `file` is that missing file => we take a leap of faith when the conditions below are met.
+    // Trigger a full page reload. (Because files such as +config.js can potentially modify Vike's virtual files.)
+    const vikeVirtualFiles = getVikeVirtualFiles(server)
+    return vikeVirtualFiles
+  }
+}
+
+async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: ViteDevServer, config: ResolvedConfig) {
+  file = normalizePath(file)
+  if (isTemporaryBuildFile(file)) return
+  const operation = isRemove ? 'removed' : 'created'
+  debugFileChange('server.watcher', file, operation)
+  const { moduleGraph } = server
+  const isAppFile = await isAppDependency(file, moduleGraph)
+  const reloadVikeConfig = () => reloadConfig(file, config, operation, server)
+
+  if (
+    // Vike config (non-runtime) code
+    isAppFile?.isConfigDependency ||
+    // New + file => not tracked yet by Vike (`vikeConfigObject._vikeConfigDependencies`) nor Vite (`moduleGraph`)
+    isPlusFile(file) ||
+    // Trick: when fixing the path of a relative import => we don't know whether `file` is the imported file => we take a leap of faith when the conditions below are met.
+    // - Reloading Vike's config is cheap => eagerly reloading it makes sense when it's in an erroneous state.
     // - Not sure how reliable that trick is.
-    // - Reloading Vike's config is cheap and file creation/removal is rare => the trick is worth it.
     // - Reproduction:
     //   ```bash
-    //   rm someDep.js && sleep 2 && git checkout someDep.js
+    //   rm someImportedFile.js && sleep 2 && git checkout someImportedFile.js
     //   ```
-    if (isScriptFile(file) && getVikeConfigError() && !existsInViteModuleGraph(file, moduleGraph)) {
-      reload()
-      return
-    }
+    (isScriptFile(file) && getVikeConfigError())
+  ) {
+    reloadVikeConfig()
   }
 }
 
-function invalidateVikeVirtualFiles(server: ViteDevServer) {
-  const vikeVirtualFiles = getVikeVirtualFiles(server)
-  vikeVirtualFiles.forEach((mod) => {
-    server.moduleGraph.invalidateModule(mod)
-  })
-}
+async function isAppDependency(filePathAbsoluteFilesystem: string, moduleGraph: ModuleGraph) {
+  const isAppFile: Partial<{ isConfigDependency: boolean; isRuntimeDependency: boolean }> = {}
 
-// Vite calls its hook handleHotUpdate() whenever *any file* is modified — including files that aren't in Vite's module graph such as `pages/+config.js`
-async function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
-  const { file, server } = ctx
-  const isVikeConfigDep = await isVikeConfigDependency(ctx.file, ctx.server.moduleGraph)
-  debugFileChange(isVikeConfigDep)
-
-  if (isVikeConfigDep) {
-    if (!isVikeConfigDep.isProcessedByVite) {
-      /* Tailwind breaks this assertion, see https://github.com/vikejs/vike/discussions/1330#discussioncomment-7787238
-      const isViteModule = ctx.modules.length > 0
-      assert(!isViteModule)
-      */
-
-      reloadConfig(file, config, 'modified', server)
-
-      // Files such as `pages/+config.js` can potentially modify Vike's virtual files.
-      // Triggers a full page reload
-      const vikeVirtualFiles = getVikeVirtualFiles(server)
-      return vikeVirtualFiles
-    } else {
-      // Ensure we invalidate `file` *before* server.ssrLoadModule() in updateUserFiles()
-      // Vite also invalidates it, but *after* handleHotUpdate() and thus after server.ssrLoadModule()
-      ctx.modules.forEach((mod) => server.moduleGraph.invalidateModule(mod))
-      await updateUserFiles()
-    }
-  }
-}
-
-async function isVikeConfigDependency(
-  filePathAbsoluteFilesystem: string,
-  moduleGraph: ModuleGraph,
-): Promise<null | { isProcessedByVite: boolean }> {
-  // Non-runtime Vike config files such as `pages/+config.js` which aren't processed by Vite.
+  // =============================
+  // { isConfigDependency: false }
+  // =============================
+  // Vike config (non-runtime) files such as +config.js which aren't processed by Vite.
   // - They're missing in Vite's module graph.
   // - Potentially modifies Vike's virtual files.
-  // - Same for all `pages/+config.js` dependencies.
+  // - Same for all `pages/+config.js` transitive dependencies.
   assertPosixPath(filePathAbsoluteFilesystem)
   const vikeConfigObject = await getVikeConfigInternalOptional()
   if (vikeConfigObject) {
     const { _vikeConfigDependencies: vikeConfigDependencies } = vikeConfigObject
     vikeConfigDependencies.forEach((f) => assertPosixPath(f))
-    if (vikeConfigDependencies.has(filePathAbsoluteFilesystem)) return { isProcessedByVite: false }
+    isAppFile.isConfigDependency = vikeConfigDependencies.has(filePathAbsoluteFilesystem)
   }
 
-  // Runtime Vike config files such as +data.js which are processed by Vite.
+  // =============================
+  // { isRuntimeDependency: true }
+  // =============================
+  // Vike runtime files such as +data.js which are processed by Vite.
   // - They're included in Vite's module graph.
   // - They never modify Vike's virtual files.
-  // - Same for all `+data.js` dependencies.
-  const importers = getImporters(filePathAbsoluteFilesystem, moduleGraph)
-  const isPlusValueFileDependency = Array.from(importers).some((importer) => importer.file && isPlusFile(importer.file))
-  if (isPlusValueFileDependency) return { isProcessedByVite: true }
+  // - Same for all `+data.js` transitive dependencies.
+  isAppFile.isRuntimeDependency = existsInViteModuleGraph(filePathAbsoluteFilesystem, moduleGraph)
 
-  return null
+  return isAppFile
 }
 
 function reloadConfig(
@@ -226,6 +208,13 @@ function reloadConfig(
   updateUserFiles()
 }
 
+function invalidateVikeVirtualFiles(server: ViteDevServer) {
+  const vikeVirtualFiles = getVikeVirtualFiles(server)
+  vikeVirtualFiles.forEach((mod) => {
+    server.moduleGraph.invalidateModule(mod)
+  })
+}
+
 function getVikeVirtualFiles(server: ViteDevServer): ModuleNode[] {
   const vikeVirtualFiles = Array.from(server.moduleGraph.urlToModuleMap.keys())
     .filter((url) => parseVirtualFileId(url))
@@ -235,38 +224,6 @@ function getVikeVirtualFiles(server: ViteDevServer): ModuleNode[] {
       return mod
     })
   return vikeVirtualFiles
-}
-
-// Get all transitive importers (including the module itself)
-function getImporters(file: string, moduleGraph: ModuleGraph): Set<ModuleNode> {
-  const importers = new Set<ModuleNode>()
-  const mods = moduleGraph.getModulesByFile(file)
-  if (!mods) return importers
-
-  for (const mod of mods) {
-    getModuleImporters(mod).forEach((importer) => {
-      if (importer) importers.add(importer)
-    })
-  }
-
-  return importers
-}
-function getModuleImporters(mod: ModuleNode, seen: Set<ModuleNode> = new Set()): Set<ModuleNode> {
-  if (seen.has(mod)) return new Set()
-  seen.add(mod)
-
-  const importers = new Set<ModuleNode>()
-  if (mod.id) importers.add(mod)
-
-  // Traverse through the importers (modules that import this module)
-  for (const importer of mod.importers) {
-    if (importer.id) importers.add(importer)
-    getModuleImporters(importer, seen).forEach((importerTransitive) => {
-      if (importerTransitive) importers.add(importerTransitive)
-    })
-  }
-
-  return importers
 }
 
 function existsInViteModuleGraph(file: string, moduleGraph: ModuleGraph): boolean {
