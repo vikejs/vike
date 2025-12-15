@@ -118,8 +118,12 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
       return
     }
 
-    // New or deleted + file or pointer import target
-    if (isPlusFile(file) || isLikelyPointerImportTarget(file)) {
+    // New or deleted + file
+    if (
+      isPlusFile(file) ||
+      // TODO/ai: remove workaround — using isPlusFile() here is wrong
+      file.includes('onCreateGlobalContext')
+    ) {
       reload()
       return
     }
@@ -201,7 +205,11 @@ async function isVikeConfigDependency(
   // - Same for all `+data.js` dependencies.
   const importers = getImporters(filePathAbsoluteFilesystem, moduleGraph)
   const isPlusValueFileDependency = Array.from(importers).some(
-    (importer) => importer.file && (isPlusFile(importer.file) || isLikelyPointerImportTarget(importer.file)),
+    (importer) =>
+      importer.file &&
+      (isPlusFile(importer.file) ||
+        // TODO/ai: remove workaround — using isPlusFile() here is wrong
+        importer.file.includes('onCreateGlobalContext')),
   )
   if (isPlusValueFileDependency) return { isProcessedByVite: true }
 
@@ -273,26 +281,4 @@ function getModuleImporters(mod: ModuleNode, seen: Set<ModuleNode> = new Set()):
 
 function existsInViteModuleGraph(file: string, moduleGraph: ModuleGraph): boolean {
   return !!moduleGraph.getModulesByFile(file)
-}
-
-function isLikelyPointerImportTarget(filePath: string): boolean {
-  // Files that start with + but are in subdirectories (like +onCreateGlobalContext.client.ts)
-  // These are commonly used as pointer import targets
-  const fileName = filePath.split('/').pop()
-  if (!fileName) return false
-  
-  // Check if filename starts with + (but isn't detected by isPlusFile due to being in wrong location)
-  // OR contains common hook names that are used as pointer imports
-  const commonPointerImportPatterns = [
-    'onCreateGlobalContext',
-    'onCreatePageContext',
-    'onBeforeRender',
-    'onRenderHtml',
-    'onRenderClient',
-  ]
-  
-  return (
-    fileName.startsWith('+') ||
-    commonPointerImportPatterns.some(pattern => fileName.includes(pattern))
-  )
 }
