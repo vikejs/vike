@@ -405,7 +405,7 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/extends
    */
-  extends?: Config | ImportString | (Config | ImportString)[]
+  extends?: Config | Config[] | ImportString
 
   /** Hook called before the page is rendered.
    *
@@ -711,4 +711,5 @@ type ConfigBuiltInResolved = {
 }
 
 type ConfigMeta = Record<string, ConfigDefinition>
-type ImportString = `import:${string}`
+type ImportStringVal = `import:${string}`
+type ImportString = ImportStringVal | ImportStringVal[]
