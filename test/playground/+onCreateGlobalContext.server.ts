@@ -1,7 +1,9 @@
+export { onCreateGlobalContext }
+
 import type { GlobalContextServer } from 'vike/types'
 import { assert } from './utils/assert'
 
-export default async function onCreateGlobalContext(globalContext: GlobalContextServer) {
+async function onCreateGlobalContext(globalContext: GlobalContextServer) {
   assert(import.meta.env.SOME_ENV_VAR === '123')
   assert(process.env.SOME_ENV_VAR === '123')
   assert(globalContext.config.redirects![0]!['/mail'])
