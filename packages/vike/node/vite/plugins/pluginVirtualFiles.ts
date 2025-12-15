@@ -204,6 +204,9 @@ async function isVikeDependency(
   //   .github/workflows/ci.yml
   //   migrations/migration-0123.ts
   //   ...
+  /* TO-DO/eventually: this assert should be true?
+  assert(!existsInViteModuleGraph(filePathAbsoluteFilesystem, moduleGraph))
+  //*/
   return null
 }
 
