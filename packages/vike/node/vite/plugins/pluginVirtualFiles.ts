@@ -138,14 +138,20 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
   const isAppFile = await isAppDependency(file, moduleGraph)
   const reloadVikeConfig = () => reloadConfig(file, config, operation, server)
 
-  // Vike config (non-runtime) code
-  if (isAppFile?.isConfigDependency) {
-    reloadVikeConfig()
-    return
-  }
-
-  // New + file => not tracked yet by Vike (`vikeConfigObject._vikeConfigDependencies`) nor Vite (`moduleGraph`)
-  if (isPlusFile(file)) {
+  if (
+    // Vike config (non-runtime) code
+    isAppFile?.isConfigDependency ||
+    // New + file => not tracked yet by Vike (`vikeConfigObject._vikeConfigDependencies`) nor Vite (`moduleGraph`)
+    isPlusFile(file) ||
+    // Trick: when fixing the path of a relative import => we don't know whether `file` is the imported file => we take a leap of faith when the conditions below are met.
+    // - Not sure how reliable that trick is.
+    // - Reloading Vike's config is cheap and file creation/removal is rare => the trick is worth it.
+    // - Reproduction:
+    //   ```bash
+    //   rm someImportedFile.js && sleep 2 && git checkout someImportedFile.js
+    //   ```
+    (isScriptFile(file) && getVikeConfigError() && !existsInViteModuleGraph(file, moduleGraph))
+  ) {
     reloadVikeConfig()
     return
   }
@@ -153,18 +159,6 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
   // Vike runtime code => let Vite handle it
   if (isAppFile?.isRuntimeDependency) {
     assert(existsInViteModuleGraph(file, moduleGraph))
-    return
-  }
-
-  // Trick: when fixing the path of a relative import => we don't know whether `file` is the imported file => we take a leap of faith when the conditions below are met.
-  // - Not sure how reliable that trick is.
-  // - Reloading Vike's config is cheap and file creation/removal is rare => the trick is worth it.
-  // - Reproduction:
-  //   ```bash
-  //   rm someImportedFile.js && sleep 2 && git checkout someImportedFile.js
-  //   ```
-  if (isScriptFile(file) && getVikeConfigError() && !existsInViteModuleGraph(file, moduleGraph)) {
-    reloadVikeConfig()
     return
   }
 }
