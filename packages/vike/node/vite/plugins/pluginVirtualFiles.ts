@@ -204,7 +204,6 @@ async function isVikeDependency(
   //   .github/workflows/ci.yml
   //   migrations/migration-0123.ts
   //   ...
-  assert(!isScriptFile(filePathAbsoluteFilesystem), { filePathAbsoluteFilesystem })
   return null
 }
 
