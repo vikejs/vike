@@ -138,7 +138,7 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
   const reload = () => reloadConfig(file, config, operation, server)
 
   // Vike config (non-runtime) code
-  if (isAppFile && isAppFile.isConfigDependency) {
+  if (isAppFile?.isConfigDependency) {
     reload()
     return
   }
@@ -150,7 +150,7 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
   }
 
   // Vike runtime code => let Vite handle it
-  if (isAppFile && isAppFile.isRuntimeDependency) {
+  if (isAppFile?.isRuntimeDependency) {
     assert(existsInViteModuleGraph(file, moduleGraph))
     return
   }
