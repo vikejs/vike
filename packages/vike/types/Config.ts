@@ -417,19 +417,19 @@ type ConfigBuiltIn = {
    *
    *  https://vike.dev/onCreatePageContext
    */
-  onCreatePageContext?: ((pageContext: PageContextServer) => void) | ImportString | (ImportString)[] | null
+  onCreatePageContext?: ((pageContext: PageContextServer) => void) | ImportString | ImportString[] | null
 
   /** Hook called when an error occurs during server-side rendering.
    *
    *  https://vike.dev/onError
    */
-  onError?: ((error: unknown, pageContext: null | PageContextServer) => void) | ImportString | (ImportString)[] | null
+  onError?: ((error: unknown, pageContext: null | PageContextServer) => void) | ImportString | ImportString[] | null
 
   /** Hook called when the `globalContext` object is created.
    *
    *  https://vike.dev/onCreateGlobalContext
    */
-  onCreateGlobalContext?: ((globalContext: GlobalContext) => void) | ImportString | (ImportString)[] | null
+  onCreateGlobalContext?: ((globalContext: GlobalContext) => void) | ImportString | ImportString[] | null
 
   /** Hook for fetching data.
    *
