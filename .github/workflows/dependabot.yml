@@ -7,12 +7,12 @@ on:
 
 jobs:
   auto-merge-dependabot:
-    if: ${{ github.actor == 'dependabot' && github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' && github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Merge Dependabot PR
-        uses: pascalgn/automerge-action@v0.17.0
+        run: gh pr merge --auto --squash "$PR_TITLE (#$PR_NUMBER)"
         env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          MERGE_METHOD: squash
-          MERGE_COMMIT_MESSAGE: pull-request-title
