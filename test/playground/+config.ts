@@ -22,6 +22,11 @@ export default defineConfig({
     },
   },
   csp: { nonce: true },
+  // TEST: array of import strings for cumulative configs
+  onCreateGlobalContext: [
+    'import:./+onCreateGlobalContext.server',
+    'import:./+onCreateGlobalContext.client',
+  ],
 })
 
 declare global {
