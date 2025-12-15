@@ -10,7 +10,7 @@ import { type EsbuildCache } from './transpileAndExecuteFile.js'
 import { crawlPlusFiles, getPlusFileValueConfigName } from './crawlPlusFiles.js'
 import { getConfigFileExport } from './getConfigFileExport.js'
 import { type ConfigFile, loadConfigFile, loadValueFile, PointerImportLoaded } from './loadFileAtConfigTime.js'
-import { resolvePointerImport, resolvePointerImports } from './resolvePointerImport.js'
+import { resolvePointerImport } from './resolvePointerImport.js'
 import { getFilePathResolved } from '../getFilePath.js'
 import type { FilePathResolved } from '../../../../types/FilePath.js'
 import { assertExtensionsConventions, assertExtensionsRequire } from './assertExtensions.js'
@@ -160,25 +160,22 @@ function getPlusFileFromConfigFile(
   Object.entries(fileExport).forEach(([configName, configValue]) => {
     fileExportsByConfigName[configName] = configValue
     
-    // Check if value is an array of import strings
-    if (Array.isArray(configValue) && configValue.every(v => typeof v === 'string')) {
-      const pointerImports = resolvePointerImports(configValue, configFile.filePath, userRootDir, configName)
-      if (pointerImports) {
-        pointerImportsByConfigName[configName] = pointerImports.map(pi => ({
-          ...pi,
-          fileExportValueLoaded: false,
-        }))
-        return
-      }
-    }
+    // Normalize to array for uniform processing
+    const configValues = Array.isArray(configValue) ? configValue : [configValue]
+    const pointerImports: PointerImportLoaded[] = []
     
-    // Single value or non-import array
-    const pointerImport = resolvePointerImport(configValue, configFile.filePath, userRootDir, configName)
-    if (pointerImport) {
-      pointerImportsByConfigName[configName] = {
-        ...pointerImport,
-        fileExportValueLoaded: false,
+    configValues.forEach(value => {
+      const pointerImport = resolvePointerImport(value, configFile.filePath, userRootDir, configName)
+      if (pointerImport) {
+        pointerImports.push({
+          ...pointerImport,
+          fileExportValueLoaded: false,
+        })
       }
+    })
+    
+    if (pointerImports.length > 0) {
+      pointerImportsByConfigName[configName] = pointerImports.length === 1 ? pointerImports[0]! : pointerImports
     }
   })
 

@@ -1,5 +1,4 @@
 export { resolvePointerImport }
-export { resolvePointerImports }
 export { resolvePointerImportData }
 export type { PointerImport }
 
@@ -40,26 +39,6 @@ function resolvePointerImport(
     fileExportPathToShowToUser,
   }
   return { fileExportPath }
-}
-
-function resolvePointerImports(
-  configValue: unknown,
-  importerFilePath: FilePathResolved,
-  userRootDir: string,
-  configName: string,
-): null | PointerImport[] {
-  if (Array.isArray(configValue)) {
-    const pointerImports: PointerImport[] = []
-    for (const item of configValue) {
-      const pointerImport = resolvePointerImport(item, importerFilePath, userRootDir, configName)
-      if (pointerImport) {
-        pointerImports.push(pointerImport)
-      }
-    }
-    return pointerImports.length > 0 ? pointerImports : null
-  }
-  const pointerImport = resolvePointerImport(configValue, importerFilePath, userRootDir, configName)
-  return pointerImport ? [pointerImport] : null
 }
 
 function resolvePointerImportData(
