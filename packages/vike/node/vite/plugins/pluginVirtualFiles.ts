@@ -154,11 +154,11 @@ function invalidateVikeVirtualFiles(server: ViteDevServer) {
 // Vite calls its hook handleHotUpdate() whenever *any file* is modified — including files that aren't in Vite's module graph such as `pages/+config.js`
 async function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
   const { file, server } = ctx
-  const isVikeConfigDep = await isVikeDependency(ctx.file, ctx.server.moduleGraph)
-  debugFileChange(isVikeConfigDep)
+  const isVikeDep = await isVikeDependency(ctx.file, ctx.server.moduleGraph)
+  debugFileChange(isVikeDep)
 
-  if (isVikeConfigDep) {
-    if (!isVikeConfigDep.isProcessedByVite) {
+  if (isVikeDep) {
+    if (!isVikeDep.isProcessedByVite) {
       /* Tailwind breaks this assertion, see https://github.com/vikejs/vike/discussions/1330#discussioncomment-7787238
       const isViteModule = ctx.modules.length > 0
       assert(!isViteModule)
