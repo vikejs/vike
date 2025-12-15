@@ -2,14 +2,17 @@ name: Auto-merge Dependabot PRs
 
 on:
   workflow_run:
-    workflows: ['CI'] # Make sure this matches the name of your CI workflow
+    workflows: ['CI']
     types: [completed]
 
 jobs:
   auto-merge-dependabot:
-    # 1. Only run if the CI workflow succeeded
+    # Only run if CI succeeded
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: Merge Dependabot PR
         uses: pascalgn/automerge-action@v0.17.0
