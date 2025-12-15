@@ -142,7 +142,7 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
     return
   }
 
-  // New or deleted + file
+  // New + file => not tracked yet by Vike (`vikeConfigObject._vikeConfigDependencies`) nor Vite (`moduleGraph`)
   if (isPlusFile(file)) {
     reload()
     return
