@@ -51,11 +51,12 @@ function pluginVirtualFiles(): Plugin[] {
           return addVirtualFileIdPrefix(id)
         },
       },
+      // Vite calls handleHotUpdate() whenever *any file* is modified — including files that aren't in Vite's module graph such as +config.js
       handleHotUpdate: {
         async handler(ctx) {
           debugFileChange('handleHotUpdate()', ctx.file)
           try {
-            return await handleHotUpdate(ctx, config)
+            return await onFileModified(ctx, config)
           } catch (err) {
             // Vite swallows errors thrown by handleHotUpdate()
             console.error(err)
@@ -151,8 +152,7 @@ function invalidateVikeVirtualFiles(server: ViteDevServer) {
   })
 }
 
-// Vite calls handleHotUpdate() whenever *any file* is modified — including files that aren't in Vite's module graph such as +config.js
-async function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
+async function onFileModified(ctx: HmrContext, config: ResolvedConfig) {
   const { file, server } = ctx
   const isVikeDep = await isVikeDependency(ctx.file, ctx.server.moduleGraph)
   debugFileChange(isVikeDep)
