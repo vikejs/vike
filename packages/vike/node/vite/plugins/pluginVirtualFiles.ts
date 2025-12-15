@@ -105,8 +105,8 @@ async function onFileModified(ctx: HmrContext, config: ResolvedConfig) {
   const { file, server } = ctx
   const isAppFile = await isAppDependency(ctx.file, ctx.server.moduleGraph)
   debugFileChange(isAppFile)
+  if (!isAppFile) return
 
-  if (isAppFile) {
     if (isAppFile.isConfigDependency) {
       /* Tailwind breaks this assertion, see https://github.com/vikejs/vike/discussions/1330#discussioncomment-7787238
       const isViteModule = ctx.modules.length > 0
@@ -125,7 +125,6 @@ async function onFileModified(ctx: HmrContext, config: ResolvedConfig) {
       ctx.modules.forEach((mod) => server.moduleGraph.invalidateModule(mod))
       await updateUserFiles()
     }
-  }
 }
 
 async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: ViteDevServer, config: ResolvedConfig) {
