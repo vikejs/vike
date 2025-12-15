@@ -199,8 +199,8 @@ async function isVikeConfigDependency(
   // - They're included in Vite's module graph.
   // - They never modify Vike's virtual files.
   // - Same for all `+data.js` dependencies.
-  const importers = getImporters(filePathAbsoluteFilesystem, moduleGraph)
-  const isPlusValueFileDependency = Array.from(importers).some((importer) => importer.file && isPlusFile(importer.file))
+  const importersAll = getImportersAll(filePathAbsoluteFilesystem, moduleGraph)
+  const isPlusValueFileDependency = Array.from(importersAll).some((importer) => importer.file && isPlusFile(importer.file))
   if (isPlusValueFileDependency) return { isProcessedByVite: true }
 
   return null
@@ -238,7 +238,7 @@ function getVikeVirtualFiles(server: ViteDevServer): ModuleNode[] {
 }
 
 // Get all transitive importers (including the module itself)
-function getImporters(file: string, moduleGraph: ModuleGraph): Set<ModuleNode> {
+function getImportersAll(file: string, moduleGraph: ModuleGraph): Set<ModuleNode> {
   const importers = new Set<ModuleNode>()
   const mods = moduleGraph.getModulesByFile(file)
   if (!mods) return importers
