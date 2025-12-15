@@ -135,17 +135,17 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
   debugFileChange('server.watcher', file, operation)
   const { moduleGraph } = server
   const isAppFile = await isAppDependency(file, moduleGraph)
-  const reload = () => reloadConfig(file, config, operation, server)
+  const reloadVikeConfig = () => reloadConfig(file, config, operation, server)
 
   // Vike config (non-runtime) code
   if (isAppFile?.isConfigDependency) {
-    reload()
+    reloadVikeConfig()
     return
   }
 
   // New + file => not tracked yet by Vike (`vikeConfigObject._vikeConfigDependencies`) nor Vite (`moduleGraph`)
   if (isPlusFile(file)) {
-    reload()
+    reloadVikeConfig()
     return
   }
 
@@ -163,7 +163,7 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
   //   rm someImportedFile.js && sleep 2 && git checkout someImportedFile.js
   //   ```
   if (isScriptFile(file) && getVikeConfigError() && !existsInViteModuleGraph(file, moduleGraph)) {
-    reload()
+    reloadVikeConfig()
     return
   }
 }
