@@ -109,7 +109,7 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
     const operation = isRemove ? 'removed' : 'created'
     debugFileChange('server.watcher', file, operation)
     const { moduleGraph } = server
-    const isVikeConfigDep = await isVikeConfigDependency(file, moduleGraph)
+    const isVikeConfigDep = await isVikeDependency(file, moduleGraph)
     const reload = () => reloadConfig(file, config, operation, server)
 
     // Config code
@@ -154,7 +154,7 @@ function invalidateVikeVirtualFiles(server: ViteDevServer) {
 // Vite calls its hook handleHotUpdate() whenever *any file* is modified — including files that aren't in Vite's module graph such as `pages/+config.js`
 async function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
   const { file, server } = ctx
-  const isVikeConfigDep = await isVikeConfigDependency(ctx.file, ctx.server.moduleGraph)
+  const isVikeConfigDep = await isVikeDependency(ctx.file, ctx.server.moduleGraph)
   debugFileChange(isVikeConfigDep)
 
   if (isVikeConfigDep) {
@@ -179,7 +179,7 @@ async function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
   }
 }
 
-async function isVikeConfigDependency(
+async function isVikeDependency(
   filePathAbsoluteFilesystem: string,
   moduleGraph: ModuleGraph,
 ): Promise<null | { isProcessedByVite: boolean }> {
