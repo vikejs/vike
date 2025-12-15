@@ -21,7 +21,6 @@ import pc from '@brillout/picocolors'
 import { logConfigInfo } from '../shared/loggerDev.js'
 import { getFilePathToShowToUserModule } from '../shared/getFilePath.js'
 import { updateUserFiles } from '../../../server/runtime/globalContext.js'
-import { isPlusFile } from '../shared/resolveVikeConfigInternal/crawlPlusFiles.js'
 import { isTemporaryBuildFile } from '../shared/resolveVikeConfigInternal/transpileAndExecuteFile.js'
 import { debugFileChange, getVikeConfigError } from '../../../shared-server-node/getVikeConfigError.js'
 
@@ -118,12 +117,9 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
       return
     }
 
-    // New or deleted + file
-    if (
-      isPlusFile(file) ||
-      // TODO/ai: remove workaround — using isPlusFile() here is wrong
-      file.includes('onCreateGlobalContext')
-    ) {
+    // New or deleted script file that could be a config file
+    // We can't know for sure without loading config, so reload for any script file
+    if (isScriptFile(file) && !isVikeConfigDep) {
       reload()
       return
     }
@@ -204,14 +200,10 @@ async function isVikeConfigDependency(
   // - They never modify Vike's virtual files.
   // - Same for all `+data.js` dependencies.
   const importers = getImporters(filePathAbsoluteFilesystem, moduleGraph)
-  const isPlusValueFileDependency = Array.from(importers).some(
-    (importer) =>
-      importer.file &&
-      (isPlusFile(importer.file) ||
-        // TODO/ai: remove workaround — using isPlusFile() here is wrong
-        importer.file.includes('onCreateGlobalContext')),
+  const hasConfigImporters = Array.from(importers).some(
+    (importer) => importer.file && vikeConfigObject?._vikeConfigDependencies.has(importer.file)
   )
-  if (isPlusValueFileDependency) return { isProcessedByVite: true }
+  if (hasConfigImporters) return { isProcessedByVite: true }
 
   return null
 }
