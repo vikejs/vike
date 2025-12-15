@@ -112,6 +112,8 @@ async function onFileModified(ctx: HmrContext, config: ResolvedConfig) {
     // Ensure we invalidate `file` *before* server.ssrLoadModule() in updateUserFiles()
     // Vite also invalidates it, but *after* handleHotUpdate() and thus after server.ssrLoadModule()
     ctx.modules.forEach((mod) => server.moduleGraph.invalidateModule(mod))
+    // Re-running ssrLoadModule() is cheap (Vite uses a cache) => eagerly calling updateUserFiles() makes sense.
+    // - Even for SPA apps that don't have (m)any server files? Ideally, we should set `isRuntimeDependency: true` only for server modules (let's do it once Vite has a clear separate per-environment module graphs).
     await updateUserFiles()
   }
 
@@ -144,8 +146,8 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
     // New + file => not tracked yet by Vike (`vikeConfigObject._vikeConfigDependencies`) nor Vite (`moduleGraph`)
     isPlusFile(file) ||
     // Trick: when fixing the path of a relative import => we don't know whether `file` is the imported file => we take a leap of faith when the conditions below are met.
+    // - Reloading Vike's config is cheap => eagerly reloading it makes sense when it's in an erroneous state.
     // - Not sure how reliable that trick is.
-    // - Reloading Vike's config is cheap and file creation/removal is rare => the trick is worth it.
     // - Reproduction:
     //   ```bash
     //   rm someImportedFile.js && sleep 2 && git checkout someImportedFile.js
