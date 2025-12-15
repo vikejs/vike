@@ -160,19 +160,11 @@ function getPlusFileFromConfigFile(
   Object.entries(fileExport).forEach(([configName, configValue]) => {
     fileExportsByConfigName[configName] = configValue
     
-    // Normalize to array for uniform processing
     const configValues = Array.isArray(configValue) ? configValue : [configValue]
-    const pointerImports: PointerImportLoaded[] = []
-    
-    configValues.forEach(value => {
-      const pointerImport = resolvePointerImport(value, configFile.filePath, userRootDir, configName)
-      if (pointerImport) {
-        pointerImports.push({
-          ...pointerImport,
-          fileExportValueLoaded: false,
-        })
-      }
-    })
+    const pointerImports = configValues
+      .map(value => resolvePointerImport(value, configFile.filePath, userRootDir, configName))
+      .filter((pi): pi is NonNullable<typeof pi> => !!pi)
+      .map(pi => ({ ...pi, fileExportValueLoaded: false as const }))
     
     if (pointerImports.length > 0) {
       pointerImportsByConfigName[configName] = pointerImports.length === 1 ? pointerImports[0]! : pointerImports

@@ -846,8 +846,9 @@ function getConfigValueSources(
 ): ConfigValueSource[] {
   if (plusFile.isConfigFile) {
     const pointerImportOrArray = plusFile.pointerImportsByConfigName[configName]
-    if (pointerImportOrArray && Array.isArray(pointerImportOrArray)) {
-      return pointerImportOrArray.map(pointerImport => 
+    if (pointerImportOrArray) {
+      const pointerImports = Array.isArray(pointerImportOrArray) ? pointerImportOrArray : [pointerImportOrArray]
+      return pointerImports.map(pointerImport => 
         getConfigValueSourceFromPointerImport(plusFile, configDef, pointerImport)
       )
     }
