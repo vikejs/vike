@@ -183,7 +183,10 @@ async function isVikeConfigDependency(
   filePathAbsoluteFilesystem: string,
   moduleGraph: ModuleGraph,
 ): Promise<null | { isProcessedByVite: boolean }> {
-  // Non-runtime Vike config files such as `pages/+config.js` which aren't processed by Vite.
+  // ============================
+  // { isProcessedByVite: false }
+  // ============================
+  // Vike config (non-runtime) files such as `pages/+config.js` which aren't processed by Vite.
   // - They're missing in Vite's module graph.
   // - Potentially modifies Vike's virtual files.
   // - Same for all `pages/+config.js` dependencies.
@@ -195,7 +198,10 @@ async function isVikeConfigDependency(
     if (vikeConfigDependencies.has(filePathAbsoluteFilesystem)) return { isProcessedByVite: false }
   }
 
-  // Runtime Vike config files such as +data.js which are processed by Vite.
+  // ============================
+  // { isProcessedByVite: true }
+  // ============================
+  // Vike runtime files such as +data.js which are processed by Vite.
   // - They're included in Vite's module graph.
   // - They never modify Vike's virtual files.
   // - Same for all `+data.js` dependencies.
