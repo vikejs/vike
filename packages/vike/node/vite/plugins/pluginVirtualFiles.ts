@@ -105,25 +105,29 @@ async function onFileModified(ctx: HmrContext, config: ResolvedConfig) {
   const { file, server } = ctx
   const isAppFile = await isAppDependency(ctx.file, ctx.server.moduleGraph)
   debugFileChange(isAppFile)
+  if (!isAppFile) return
+  const reloadVikeConfig = () => reloadConfig(file, config, 'modified', server)
 
-  if (isAppFile) {
-    if (isAppFile.isConfigDependency) {
-      /* Tailwind breaks this assertion, see https://github.com/vikejs/vike/discussions/1330#discussioncomment-7787238
-      const isViteModule = ctx.modules.length > 0
-      assert(!isViteModule)
-      */
+  if (isAppFile.isRuntimeDependency) {
+    // Ensure we invalidate `file` *before* server.ssrLoadModule() in updateUserFiles()
+    // Vite also invalidates it, but *after* handleHotUpdate() and thus after server.ssrLoadModule()
+    ctx.modules.forEach((mod) => server.moduleGraph.invalidateModule(mod))
+    // Re-running ssrLoadModule() is cheap (Vite uses a cache) => eagerly calling updateUserFiles() makes sense.
+    // - Even for SPA apps that don't have (m)any server files? Ideally, we should set `isRuntimeDependency: true` only for server modules (let's do it once Vite has a clear separate per-environment module graphs).
+    await updateUserFiles()
+  }
 
-      reloadConfig(file, config, 'modified', server)
+  if (isAppFile.isConfigDependency) {
+    /* Tailwind breaks this assertion, see https://github.com/vikejs/vike/discussions/1330#discussioncomment-7787238
+    const isViteModule = ctx.modules.length > 0
+    assert(!isViteModule)
+    */
 
-      // Trigger a full page reload. (Because files such as +config.js can potentially modify Vike's virtual files.)
-      const vikeVirtualFiles = getVikeVirtualFiles(server)
-      return vikeVirtualFiles
-    } else {
-      // Ensure we invalidate `file` *before* server.ssrLoadModule() in updateUserFiles()
-      // Vite also invalidates it, but *after* handleHotUpdate() and thus after server.ssrLoadModule()
-      ctx.modules.forEach((mod) => server.moduleGraph.invalidateModule(mod))
-      await updateUserFiles()
-    }
+    reloadVikeConfig()
+
+    // Trigger a full page reload. (Because files such as +config.js can potentially modify Vike's virtual files.)
+    const vikeVirtualFiles = getVikeVirtualFiles(server)
+    return vikeVirtualFiles
   }
 }
 
@@ -134,35 +138,29 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
   debugFileChange('server.watcher', file, operation)
   const { moduleGraph } = server
   const isAppFile = await isAppDependency(file, moduleGraph)
-  const reload = () => reloadConfig(file, config, operation, server)
+  const reloadVikeConfig = () => reloadConfig(file, config, operation, server)
 
-  // Vike config (non-runtime) code
-  if (isAppFile && isAppFile.isConfigDependency) {
-    reload()
-    return
-  }
-
-  // New or deleted + file
-  if (isPlusFile(file)) {
-    reload()
+  if (
+    // Vike config (non-runtime) code
+    isAppFile?.isConfigDependency ||
+    // New + file => not tracked yet by Vike (`vikeConfigObject._vikeConfigDependencies`) nor Vite (`moduleGraph`)
+    isPlusFile(file) ||
+    // Trick: when fixing the path of a relative import => we don't know whether `file` is the imported file => we take a leap of faith when the conditions below are met.
+    // - Reloading Vike's config is cheap => eagerly reloading it makes sense when it's in an erroneous state.
+    // - Not sure how reliable that trick is.
+    // - Reproduction:
+    //   ```bash
+    //   rm someImportedFile.js && sleep 2 && git checkout someImportedFile.js
+    //   ```
+    (isScriptFile(file) && getVikeConfigError() && !existsInViteModuleGraph(file, moduleGraph))
+  ) {
+    reloadVikeConfig()
     return
   }
 
   // Vike runtime code => let Vite handle it
-  if (isAppFile && isAppFile.isRuntimeDependency) {
+  if (isAppFile?.isRuntimeDependency) {
     assert(existsInViteModuleGraph(file, moduleGraph))
-    return
-  }
-
-  // Trick: when fixing the path of a relative import => we don't know whether `file` is the imported file => we take a leap of faith when the conditions below are met.
-  // - Not sure how reliable that trick is.
-  // - Reloading Vike's config is cheap and file creation/removal is rare => the trick is worth it.
-  // - Reproduction:
-  //   ```bash
-  //   rm someImportedFile.js && sleep 2 && git checkout someImportedFile.js
-  //   ```
-  if (isScriptFile(file) && getVikeConfigError() && !existsInViteModuleGraph(file, moduleGraph)) {
-    reload()
     return
   }
 }
