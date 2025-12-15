@@ -199,6 +199,11 @@ async function isVikeDependency(
   )
   if (isPlusValueFileDependency) return { isProcessedByVite: true }
 
+  // File unrelated to the user's Vite/Vike app, for example:
+  //   package.json
+  //   .github/workflows/ci.yml
+  //   migrations/migration-0123.ts
+  //   ...
   return null
 }
 
