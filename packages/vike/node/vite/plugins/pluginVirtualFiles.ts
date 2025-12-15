@@ -193,8 +193,8 @@ async function isVikeDependency(
   // - They're included in Vite's module graph.
   // - They never modify Vike's virtual files.
   // - Same for all `+data.js` transitive dependencies.
-  const importersAll = getImportersTransitive(filePathAbsoluteFilesystem, moduleGraph)
-  const isPlusValueFileDependency = Array.from(importersAll).some(
+  const importersTransitive = getImportersTransitive(filePathAbsoluteFilesystem, moduleGraph)
+  const isPlusValueFileDependency = Array.from(importersTransitive).some(
     (importer) => importer.file && isPlusFile(importer.file),
   )
   if (isPlusValueFileDependency) return { isProcessedByVite: true }
