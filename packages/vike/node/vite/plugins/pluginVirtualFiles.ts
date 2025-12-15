@@ -112,7 +112,7 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
     const isVikeDep = await isVikeDependency(file, moduleGraph)
     const reload = () => reloadConfig(file, config, operation, server)
 
-    // Config code
+    // Vike config (non-runtime) code
     if (isVikeDep && !isVikeDep.isProcessedByVite) {
       reload()
       return
@@ -124,7 +124,7 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
       return
     }
 
-    // Runtime code => let Vite handle it
+    // Vike runtime code => let Vite handle it
     if (isVikeDep && isVikeDep.isProcessedByVite) {
       assert(existsInViteModuleGraph(file, moduleGraph))
       return
