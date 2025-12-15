@@ -93,17 +93,12 @@ function pluginVirtualFiles(): Plugin[] {
       },
       configureServer: {
         handler(server) {
-          handleFileAddRemove(server, config)
+          server.watcher.prependListener('add', (f) => onFileCreatedOrRemoved(f, false, server, config))
+          server.watcher.prependListener('unlink', (f) => onFileCreatedOrRemoved(f, true, server, config))
         },
       },
     },
   ]
-}
-
-function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
-  server.watcher.prependListener('add', (f) => onFileCreatedOrRemoved(f, false, server, config))
-  server.watcher.prependListener('unlink', (f) => onFileCreatedOrRemoved(f, true, server, config))
-  return
 }
 
 async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: ViteDevServer, config: ResolvedConfig) {
