@@ -106,6 +106,7 @@ async function onFileModified(ctx: HmrContext, config: ResolvedConfig) {
   const isAppFile = await isAppDependency(ctx.file, ctx.server.moduleGraph)
   debugFileChange(isAppFile)
   if (!isAppFile) return
+  const reloadVikeConfig = () => reloadConfig(file, config, 'modified', server)
 
   if (isAppFile.isConfigDependency) {
     /* Tailwind breaks this assertion, see https://github.com/vikejs/vike/discussions/1330#discussioncomment-7787238
@@ -113,7 +114,7 @@ async function onFileModified(ctx: HmrContext, config: ResolvedConfig) {
       assert(!isViteModule)
       */
 
-    reloadConfig(file, config, 'modified', server)
+    reloadVikeConfig()
 
     // Trigger a full page reload. (Because files such as +config.js can potentially modify Vike's virtual files.)
     const vikeVirtualFiles = getVikeVirtualFiles(server)
