@@ -1,4 +1,4 @@
-import { Link } from '@brillout/docpress'
+import { Link, Warning } from '@brillout/docpress'
 import { UiFrameworkExtension, ProvidedBy, ConfigSpec } from '../../components'
 
 <ConfigSpec
@@ -26,21 +26,20 @@ Common use cases:
 ```tsx
 import { clientOnly } from 'vike-react/clientOnly'
 
-const SomeComponent = clientOnly(() => import("./SomeComponent.jsx"));
+const SomeComponent = clientOnly(() => import('./SomeComponent.tsx'))
 /* If the component isn't the default export:
 const SomeComponent = clientOnly(async () => (await import('some-library')).SomeComponent)
 */
 
-function MyComponent() {
+function SomeWrapper() {
   return <SomeComponent fallback={<Loading />} />
 }
 ```
 
-#### Props
+Props:
 
 - **fallback**: Content shown while the component is being loaded.
-
-All other props are passed to the loaded component.
+- All other props are passed to the loaded component.
 
 
 ## Solid
@@ -50,21 +49,20 @@ All other props are passed to the loaded component.
 ```tsx
 import { clientOnly } from 'vike-solid/clientOnly'
 
-const SomeComponent = clientOnly(() => import("./SomeComponent.jsx"));
+const SomeComponent = clientOnly(() => import('./SomeComponent.tsx'))
 /* If the component isn't the default export:
 const SomeComponent = clientOnly(async () => (await import('some-library')).SomeComponent)
 */
 
-function MyComponent() {
+function SomeWrapper() {
   return <SomeComponent fallback={<Loading />} />
 }
 ```
 
-#### Props
+Props:
 
 - **fallback**: Content shown while the component is being loaded.
-
-All other props are passed to the loaded component.
+- All other props are passed to the loaded component.
 
 
 ## Vue
