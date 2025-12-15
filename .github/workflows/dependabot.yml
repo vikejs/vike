@@ -1,21 +1,19 @@
 name: Auto-merge Dependabot PRs
 
 on:
-  workflow_run:
-    workflows: ['CI'] # Make sure this matches the name of your CI workflow
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+  check_suite:
     types: [completed]
 
 jobs:
   auto-merge-dependabot:
-    # 1. Only run if the CI workflow succeeded
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     steps:
       - name: Merge Dependabot PR
-        uses: pascalgn/automerge-action@v0.17.0
+        run: gh pr merge --auto --squash "$PR_TITLE (#$PR_NUMBER)"
         env:
-          MERGE_METHOD: squash
-          MERGE_COMMIT_MESSAGE: pull-request-title
-          MERGE_FILTER_AUTHOR: dependabot
-          MERGE_LABELS: dependencies
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
