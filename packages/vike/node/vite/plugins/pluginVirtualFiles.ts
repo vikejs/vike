@@ -244,7 +244,7 @@ function existsInViteModuleGraph(file: string, moduleGraph: ModuleGraph): boolea
   return !!moduleGraph.getModulesByFile(file)
 }
 
-// Get all transitive importers (including the module itself)
+// Get all ancestors in the module graph. Inlcudes the module itself.
 function getImportersTransitive(file: string, moduleGraph: ModuleGraph): Set<ModuleNode> {
   const importers = new Set<ModuleNode>()
   const mods = moduleGraph.getModulesByFile(file)
