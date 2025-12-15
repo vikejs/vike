@@ -101,10 +101,10 @@ function pluginVirtualFiles(): Plugin[] {
 }
 
 function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
-  server.watcher.prependListener('add', (f) => listener(f, false))
-  server.watcher.prependListener('unlink', (f) => listener(f, true))
+  server.watcher.prependListener('add', (f) => onFileCreatedOrRemoved(f, false))
+  server.watcher.prependListener('unlink', (f) => onFileCreatedOrRemoved(f, true))
   return
-  async function listener(file: string, isRemove: boolean) {
+  async function onFileCreatedOrRemoved(file: string, isRemove: boolean) {
     file = normalizePath(file)
     if (isTemporaryBuildFile(file)) return
     const operation = isRemove ? 'removed' : 'created'
