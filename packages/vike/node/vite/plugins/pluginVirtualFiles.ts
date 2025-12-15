@@ -240,6 +240,10 @@ function getVikeVirtualFiles(server: ViteDevServer): ModuleNode[] {
   return vikeVirtualFiles
 }
 
+function existsInViteModuleGraph(file: string, moduleGraph: ModuleGraph): boolean {
+  return !!moduleGraph.getModulesByFile(file)
+}
+
 // Get all transitive importers (including the module itself)
 function getImportersAll(file: string, moduleGraph: ModuleGraph): Set<ModuleNode> {
   const importers = new Set<ModuleNode>()
@@ -270,8 +274,4 @@ function getModuleImporters(mod: ModuleNode, seen: Set<ModuleNode> = new Set()):
   }
 
   return importers
-}
-
-function existsInViteModuleGraph(file: string, moduleGraph: ModuleGraph): boolean {
-  return !!moduleGraph.getModulesByFile(file)
 }
