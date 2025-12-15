@@ -152,20 +152,15 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
     //   ```bash
     //   rm someImportedFile.js && sleep 2 && git checkout someImportedFile.js
     //   ```
-    (isScriptFile(file) && getVikeConfigError() && !existsInViteModuleGraph(file, moduleGraph))
+    (isScriptFile(file) && getVikeConfigError())
   ) {
     reloadVikeConfig()
-    return
-  }
-
-  // Vike runtime code => let Vite handle it
-  if (isAppFile?.isRuntimeDependency) {
-    assert(existsInViteModuleGraph(file, moduleGraph))
-    return
   }
 }
 
 async function isAppDependency(filePathAbsoluteFilesystem: string, moduleGraph: ModuleGraph) {
+  const isAppFile: Partial<{ isConfigDependency: boolean; isRuntimeDependency: boolean }> = {}
+
   // =============================
   // { isConfigDependency: false }
   // =============================
@@ -178,7 +173,7 @@ async function isAppDependency(filePathAbsoluteFilesystem: string, moduleGraph: 
   if (vikeConfigObject) {
     const { _vikeConfigDependencies: vikeConfigDependencies } = vikeConfigObject
     vikeConfigDependencies.forEach((f) => assertPosixPath(f))
-    if (vikeConfigDependencies.has(filePathAbsoluteFilesystem)) return { isConfigDependency: true }
+    isAppFile.isConfigDependency = vikeConfigDependencies.has(filePathAbsoluteFilesystem)
   }
 
   // =============================
@@ -188,21 +183,9 @@ async function isAppDependency(filePathAbsoluteFilesystem: string, moduleGraph: 
   // - They're included in Vite's module graph.
   // - They never modify Vike's virtual files.
   // - Same for all `+data.js` transitive dependencies.
-  const importersTransitive = getImportersTransitive(filePathAbsoluteFilesystem, moduleGraph)
-  const isPlusValueFileDependency = Array.from(importersTransitive).some(
-    (importer) => importer.file && isPlusFile(importer.file),
-  )
-  if (isPlusValueFileDependency) return { isRuntimeDependency: true }
+  isAppFile.isRuntimeDependency = existsInViteModuleGraph(filePathAbsoluteFilesystem, moduleGraph)
 
-  // File unrelated to the user's Vite/Vike app, for example:
-  //   package.json
-  //   .github/workflows/ci.yml
-  //   migrations/migration-0123.ts
-  //   ...
-  /* TO-DO/eventually: this assert should be true?
-  assert(!existsInViteModuleGraph(filePathAbsoluteFilesystem, moduleGraph))
-  //*/
-  return null
+  return isAppFile
 }
 
 function reloadConfig(
@@ -245,36 +228,4 @@ function getVikeVirtualFiles(server: ViteDevServer): ModuleNode[] {
 
 function existsInViteModuleGraph(file: string, moduleGraph: ModuleGraph): boolean {
   return !!moduleGraph.getModulesByFile(file)
-}
-
-// Get all ancestors in the module graph. Includes the module itself.
-function getImportersTransitive(file: string, moduleGraph: ModuleGraph): Set<ModuleNode> {
-  const importers = new Set<ModuleNode>()
-  const mods = moduleGraph.getModulesByFile(file)
-  if (!mods) return importers
-
-  for (const mod of mods) {
-    getModuleImporters(mod).forEach((importer) => {
-      if (importer) importers.add(importer)
-    })
-  }
-
-  return importers
-}
-function getModuleImporters(mod: ModuleNode, seen: Set<ModuleNode> = new Set()): Set<ModuleNode> {
-  if (seen.has(mod)) return new Set()
-  seen.add(mod)
-
-  const importers = new Set<ModuleNode>()
-  if (mod.id) importers.add(mod)
-
-  // Traverse through the importers (modules that import this module)
-  for (const importer of mod.importers) {
-    if (importer.id) importers.add(importer)
-    getModuleImporters(importer, seen).forEach((importerTransitive) => {
-      if (importerTransitive) importers.add(importerTransitive)
-    })
-  }
-
-  return importers
 }
