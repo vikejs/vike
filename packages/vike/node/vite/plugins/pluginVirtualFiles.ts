@@ -117,9 +117,9 @@ async function onFileModified(ctx: HmrContext, config: ResolvedConfig) {
 
   if (isAppFile.isConfigDependency) {
     /* Tailwind breaks this assertion, see https://github.com/vikejs/vike/discussions/1330#discussioncomment-7787238
-      const isViteModule = ctx.modules.length > 0
-      assert(!isViteModule)
-      */
+    const isViteModule = ctx.modules.length > 0
+    assert(!isViteModule)
+    */
 
     reloadVikeConfig()
 
