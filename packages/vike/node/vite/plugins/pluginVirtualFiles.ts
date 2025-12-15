@@ -103,11 +103,11 @@ function pluginVirtualFiles(): Plugin[] {
 
 async function onFileModified(ctx: HmrContext, config: ResolvedConfig) {
   const { file, server } = ctx
-  const isVikeDep = await isAppDependency(ctx.file, ctx.server.moduleGraph)
-  debugFileChange(isVikeDep)
+  const isAppFile = await isAppDependency(ctx.file, ctx.server.moduleGraph)
+  debugFileChange(isAppFile)
 
-  if (isVikeDep) {
-    if (isVikeDep.isConfigDependency) {
+  if (isAppFile) {
+    if (isAppFile.isConfigDependency) {
       /* Tailwind breaks this assertion, see https://github.com/vikejs/vike/discussions/1330#discussioncomment-7787238
       const isViteModule = ctx.modules.length > 0
       assert(!isViteModule)
@@ -133,11 +133,11 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
   const operation = isRemove ? 'removed' : 'created'
   debugFileChange('server.watcher', file, operation)
   const { moduleGraph } = server
-  const isVikeDep = await isAppDependency(file, moduleGraph)
+  const isAppFile = await isAppDependency(file, moduleGraph)
   const reload = () => reloadConfig(file, config, operation, server)
 
   // Vike config (non-runtime) code
-  if (isVikeDep && isVikeDep.isConfigDependency) {
+  if (isAppFile && isAppFile.isConfigDependency) {
     reload()
     return
   }
@@ -149,7 +149,7 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
   }
 
   // Vike runtime code => let Vite handle it
-  if (isVikeDep && isVikeDep.isRuntimeDependency) {
+  if (isAppFile && isAppFile.isRuntimeDependency) {
     assert(existsInViteModuleGraph(file, moduleGraph))
     return
   }
