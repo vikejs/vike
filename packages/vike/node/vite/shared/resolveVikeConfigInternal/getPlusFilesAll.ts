@@ -10,7 +10,7 @@ import { type EsbuildCache } from './transpileAndExecuteFile.js'
 import { crawlPlusFiles, getPlusFileValueConfigName } from './crawlPlusFiles.js'
 import { getConfigFileExport } from './getConfigFileExport.js'
 import { type ConfigFile, loadConfigFile, loadValueFile, PointerImportLoaded } from './loadFileAtConfigTime.js'
-import { resolvePointerImport } from './resolvePointerImport.js'
+import { resolvePointerImport, resolvePointerImports } from './resolvePointerImport.js'
 import { getFilePathResolved } from '../getFilePath.js'
 import type { FilePathResolved } from '../../../../types/FilePath.js'
 import { assertExtensionsConventions, assertExtensionsRequire } from './assertExtensions.js'
@@ -29,7 +29,7 @@ type PlusFileConfig = PlusFileCommons & {
   >
   pointerImportsByConfigName: Record<
     string, // configName
-    PointerImportLoaded
+    PointerImportLoaded | PointerImportLoaded[]
   >
   isExtensionConfig: boolean
   extendsFilePaths: string[]
@@ -159,11 +159,24 @@ function getPlusFileFromConfigFile(
   const fileExport = getConfigFileExport(fileExports, filePath.filePathToShowToUser)
   Object.entries(fileExport).forEach(([configName, configValue]) => {
     fileExportsByConfigName[configName] = configValue
-    const pointerImport = resolvePointerImport(configValue, configFile.filePath, userRootDir, configName)
-    if (pointerImport) {
-      pointerImportsByConfigName[configName] = {
-        ...pointerImport,
-        fileExportValueLoaded: false,
+    const configDef = configDefinitionsBuiltIn[configName as keyof typeof configDefinitionsBuiltIn]
+    const isCumulative = configDef?.cumulative
+    
+    if (isCumulative && Array.isArray(configValue)) {
+      const pointerImports = resolvePointerImports(configValue, configFile.filePath, userRootDir, configName)
+      if (pointerImports) {
+        pointerImportsByConfigName[configName] = pointerImports.map(pi => ({
+          ...pi,
+          fileExportValueLoaded: false,
+        }))
+      }
+    } else {
+      const pointerImport = resolvePointerImport(configValue, configFile.filePath, userRootDir, configName)
+      if (pointerImport) {
+        pointerImportsByConfigName[configName] = {
+          ...pointerImport,
+          fileExportValueLoaded: false,
+        }
       }
     }
   })

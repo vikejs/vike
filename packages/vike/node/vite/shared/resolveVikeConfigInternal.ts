@@ -79,7 +79,7 @@ import {
   getConfigDefinedAt,
   getDefinedByString,
 } from '../../../shared-server-client/page-configs/getConfigDefinedAt.js'
-import { loadPointerImport, loadValueFile } from './resolveVikeConfigInternal/loadFileAtConfigTime.js'
+import { loadPointerImport, loadValueFile, type PointerImportLoaded } from './resolveVikeConfigInternal/loadFileAtConfigTime.js'
 import { resolvePointerImport } from './resolveVikeConfigInternal/resolvePointerImport.js'
 import { getFilePathResolved } from './getFilePath.js'
 import type { FilePath } from '../../../types/FilePath.js'
@@ -411,8 +411,13 @@ async function loadCustomConfigBuildTimeFiles(
         await loadValueFile(plusFile, configDefinitions, userRootDir, esbuildCache)
       } else {
         await Promise.all(
-          Object.entries(plusFile.pointerImportsByConfigName).map(async ([configName, pointerImport]) => {
-            await loadPointerImport(pointerImport, userRootDir, configName, configDefinitions, esbuildCache)
+          Object.entries(plusFile.pointerImportsByConfigName).map(async ([configName, pointerImportOrArray]) => {
+            const pointerImports = Array.isArray(pointerImportOrArray) ? pointerImportOrArray : [pointerImportOrArray]
+            await Promise.all(
+              pointerImports.map(pointerImport => 
+                loadPointerImport(pointerImport, userRootDir, configName, configDefinitions, esbuildCache)
+              )
+            )
           }),
         )
       }
@@ -811,7 +816,7 @@ function resolveConfigValueSources(
 ): ConfigValueSource[] {
   let sources: ConfigValueSource[] = plusFilesRelevant
     .filter((plusFile) => isDefiningConfig(plusFile, configName))
-    .map((plusFile) => getConfigValueSource(configName, plusFile, configDef, userRootDir))
+    .flatMap((plusFile) => getConfigValueSources(configName, plusFile, configDef, userRootDir))
 
   // Filter hydrid global-local configs
   if (!isCallable(configDef.global)) {
@@ -832,6 +837,50 @@ function resolveConfigValueSources(
 }
 function isDefiningConfig(plusFile: PlusFile, configName: string) {
   return getConfigNamesSetByPlusFile(plusFile).includes(configName)
+}
+function getConfigValueSources(
+  configName: string,
+  plusFile: PlusFile,
+  configDef: ConfigDefinitionInternal,
+  userRootDir: string,
+): ConfigValueSource[] {
+  if (plusFile.isConfigFile) {
+    const pointerImportOrArray = plusFile.pointerImportsByConfigName[configName]
+    if (pointerImportOrArray && Array.isArray(pointerImportOrArray)) {
+      return pointerImportOrArray.map(pointerImport => 
+        getConfigValueSourceFromPointerImport(plusFile, configDef, pointerImport)
+      )
+    }
+  }
+  return [getConfigValueSource(configName, plusFile, configDef, userRootDir)]
+}
+function getConfigValueSourceFromPointerImport(
+  plusFile: PlusFile,
+  configDef: ConfigDefinitionInternal,
+  pointerImport: PointerImportLoaded,
+): ConfigValueSource {
+  const configValueSourceCommon = {
+    locationId: plusFile.locationId,
+    plusFile,
+  }
+  
+  const value = pointerImport.fileExportValueLoaded
+    ? {
+        valueIsLoaded: true as const,
+        value: pointerImport.fileExportValue,
+      }
+    : {
+        valueIsLoaded: false as const,
+      }
+  const configValueSource: ConfigValueSource = {
+    ...configValueSourceCommon,
+    ...value,
+    configEnv: resolveConfigEnv(configDef.env, pointerImport.fileExportPath),
+    valueIsLoadedWithImport: true,
+    valueIsDefinedByPlusValueFile: false,
+    definedAt: pointerImport.fileExportPath,
+  }
+  return configValueSource
 }
 function getConfigValueSource(
   configName: string,
@@ -891,8 +940,12 @@ function getConfigValueSource(
     assert(confVal.valueIsLoaded)
 
     // Defined over pointer import
-    const pointerImport = plusFile.pointerImportsByConfigName[configName]
-    if (pointerImport) {
+    const pointerImportOrArray = plusFile.pointerImportsByConfigName[configName]
+    if (pointerImportOrArray) {
+      if (Array.isArray(pointerImportOrArray)) {
+        assert(false, 'Arrays should be handled by getConfigValueSources()')
+      }
+      const pointerImport = pointerImportOrArray
       const value = pointerImport.fileExportValueLoaded
         ? {
             valueIsLoaded: true as const,
