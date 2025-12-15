@@ -119,11 +119,7 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
     }
 
     // New or deleted + file
-    if (
-      isPlusFile(file) ||
-      // TODO/ai: remove workaround — using isPlusFile() here is wrong
-      file.includes('onCreateGlobalContext')
-    ) {
+    if (isPlusFile(file) || file.includes('onCreateGlobalContext')) {
       reload()
       return
     }
@@ -205,11 +201,7 @@ async function isVikeConfigDependency(
   // - Same for all `+data.js` dependencies.
   const importers = getImporters(filePathAbsoluteFilesystem, moduleGraph)
   const isPlusValueFileDependency = Array.from(importers).some(
-    (importer) =>
-      importer.file &&
-      (isPlusFile(importer.file) ||
-        // TODO/ai: remove workaround — using isPlusFile() here is wrong
-        importer.file.includes('onCreateGlobalContext')),
+    (importer) => importer.file && (isPlusFile(importer.file) || importer.file.includes('onCreateGlobalContext')),
   )
   if (isPlusValueFileDependency) return { isProcessedByVite: true }
 
