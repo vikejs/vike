@@ -152,7 +152,6 @@ function assertPlusFiles(plusFilesByLocationId: PlusFilesByLocationId) {
   assertExtensionsRequire(plusFiles)
 }
 
-// TODO: rename
 function getPlusFileFromConfigFile(
   configFile: ConfigFile,
   isExtensionConfig: boolean,
