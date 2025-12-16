@@ -157,7 +157,7 @@ function getPlusFileFromConfigFile(
   isExtensionConfig: boolean,
   locationId: LocationId,
   userRootDir: string,
-): PlusFile {
+) {
   const { fileExports, filePath, extendsFilePaths } = configFile
 
   const fileExportsByConfigName: PlusFileConfig['fileExportsByConfigName'] = {}
