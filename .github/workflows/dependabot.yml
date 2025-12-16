@@ -17,8 +17,8 @@ jobs:
       - name: Merge Dependabot PR
         uses: "pascalgn/automerge-action@v0.16.4"
         env:
-          MERGE_METHOD: squash
-          MERGE_COMMIT_MESSAGE: pull-request-title
-          MERGE_FILTER_AUTHOR: dependabot
-          MERGE_LABELS: dependencies
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MERGE_METHOD: "squash"
+          MERGE_COMMIT_MESSAGE: "pull-request-title"
+          MERGE_FILTER_AUTHOR: "dependabot"
+          MERGE_LABELS: "dependencies"
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
