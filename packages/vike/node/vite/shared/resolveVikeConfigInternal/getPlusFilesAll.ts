@@ -59,12 +59,12 @@ type PlusFilesByLocationId = Record<LocationId, PlusFile[]>
 
 async function getPlusFilesAll(userRootDir: string, esbuildCache: EsbuildCache): Promise<PlusFilesByLocationId> {
   // TODO: rename plusFilePaths
-  const plusFiles: FilePathResolved[] = (await crawlPlusFilePaths(userRootDir)).map(({ filePathAbsoluteUserRootDir }) =>
+  const plusFilePaths: FilePathResolved[] = (await crawlPlusFilePaths(userRootDir)).map(({ filePathAbsoluteUserRootDir }) =>
     getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir }),
   )
   const configFiles: FilePathResolved[] = []
   const valueFiles: FilePathResolved[] = []
-  plusFiles.forEach((f) => {
+  plusFilePaths.forEach((f) => {
     if (getPlusFileValueConfigName(f.filePathAbsoluteFilesystem) === 'config') {
       configFiles.push(f)
     } else {
