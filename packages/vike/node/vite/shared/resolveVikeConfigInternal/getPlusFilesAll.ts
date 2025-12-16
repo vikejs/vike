@@ -193,7 +193,6 @@ function sortMakeDeterministic(plusFile1: PlusFile, plusFile2: PlusFile): 0 | -1
 
 // TODO: rename/remove findPlusFilePaths
 async function findPlusFiles(userRootDir: string): Promise<FilePathResolved[]> {
-  // TODO: rename crawlPlusFilePaths
   const files = await crawlPlusFilePaths(userRootDir)
 
   const plusFiles: FilePathResolved[] = files.map(({ filePathAbsoluteUserRootDir }) =>
