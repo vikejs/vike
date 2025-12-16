@@ -62,13 +62,13 @@ async function getPlusFilesAll(userRootDir: string, esbuildCache: EsbuildCache):
   const plusFilePaths: FilePathResolved[] = (await crawlPlusFilePaths(userRootDir)).map(({ filePathAbsoluteUserRootDir }) =>
     getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir }),
   )
-  const configFiles: FilePathResolved[] = []
-  const valueFiles: FilePathResolved[] = []
+  const plusFilePathsConfig: FilePathResolved[] = []
+  const plusFilePathsValue: FilePathResolved[] = []
   plusFilePaths.forEach((f) => {
     if (getPlusFileValueConfigName(f.filePathAbsoluteFilesystem) === 'config') {
-      configFiles.push(f)
+      plusFilePathsConfig.push(f)
     } else {
-      valueFiles.push(f)
+      plusFilePathsValue.push(f)
     }
   })
 
@@ -77,7 +77,7 @@ async function getPlusFilesAll(userRootDir: string, esbuildCache: EsbuildCache):
 
   await Promise.all([
     // Config files
-    ...configFiles.map(async (filePath) => {
+    ...plusFilePathsConfig.map(async (filePath) => {
       const { filePathAbsoluteUserRootDir } = filePath
       assert(filePathAbsoluteUserRootDir)
       const { configFile, extendsConfigs } = await loadConfigFile(filePath, userRootDir, [], false, esbuildCache)
@@ -110,7 +110,7 @@ async function getPlusFilesAll(userRootDir: string, esbuildCache: EsbuildCache):
       })
     }),
     // Value files
-    ...valueFiles.map(async (filePath) => {
+    ...plusFilePathsValue.map(async (filePath) => {
       const { filePathAbsoluteUserRootDir } = filePath
       assert(filePathAbsoluteUserRootDir)
 
