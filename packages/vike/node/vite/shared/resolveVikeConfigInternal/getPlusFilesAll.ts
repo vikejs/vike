@@ -196,6 +196,5 @@ async function findPlusFiles(userRootDir: string): Promise<FilePathResolved[]> {
   const plusFilePaths: FilePathResolved[] = (await crawlPlusFilePaths(userRootDir)).map(
     ({ filePathAbsoluteUserRootDir }) => getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir }),
   )
-
   return plusFilePaths
 }
