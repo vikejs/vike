@@ -183,8 +183,6 @@ function getPlusFileFromConfigFile(
 
 // Make order deterministic (no other purpose)
 function sortMakeDeterministic(plusFile1: PlusFile, plusFile2: PlusFile): 0 | -1 | 1 {
-  // Sort +config.js before +{configName}.js
-  if (plusFile1.isConfigFile !== plusFile2.isConfigFile) return plusFile1.isConfigFile ? -1 : 1
   // Sort by file path
   return plusFile1.filePath.filePathAbsoluteVite < plusFile2.filePath.filePathAbsoluteVite ? -1 : 1
 }
