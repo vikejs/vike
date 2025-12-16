@@ -21,4 +21,5 @@ jobs:
           MERGE_COMMIT_MESSAGE: "pull-request-title"
           MERGE_FILTER_AUTHOR: "dependabot"
           MERGE_LABELS: "dependencies"
+          UPDATE_LABELS: "dependencies"
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
