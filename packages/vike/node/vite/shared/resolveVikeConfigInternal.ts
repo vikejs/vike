@@ -887,6 +887,7 @@ function getConfigValueSourceFromPointerImport(
   }
   return configValueSource
 }
+// TODO/ai move getConfigValueSources() inside this function — rename this functoin getConfigValueSources() and make it return ConfigValueSource[]
 function getConfigValueSource(
   configName: string,
   plusFile: PlusFile,

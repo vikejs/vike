@@ -29,6 +29,7 @@ type PlusFileConfig = PlusFileCommons & {
   >
   pointerImportsByConfigName: Record<
     string, // configName
+    // TODO/ai how about always PointerImportLoaded[] ?
     PointerImportLoaded | PointerImportLoaded[]
   >
   isExtensionConfig: boolean
