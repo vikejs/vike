@@ -711,5 +711,5 @@ type ConfigBuiltInResolved = {
 }
 
 type ConfigMeta = Record<string, ConfigDefinition>
-type ImportStringVal = `import:${string}`
 type ImportString = ImportStringVal | ImportStringVal[]
+type ImportStringVal = `import:${string}`
