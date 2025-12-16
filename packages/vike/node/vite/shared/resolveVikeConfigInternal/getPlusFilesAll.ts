@@ -59,7 +59,9 @@ type PlusFilesByLocationId = Record<LocationId, PlusFile[]>
 
 async function getPlusFilesAll(userRootDir: string, esbuildCache: EsbuildCache): Promise<PlusFilesByLocationId> {
   // TODO: rename plusFilePaths
-  const plusFiles = await findPlusFiles(userRootDir)
+  const plusFiles: FilePathResolved[] = (await crawlPlusFilePaths(userRootDir)).map(({ filePathAbsoluteUserRootDir }) =>
+    getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir }),
+  )
   const configFiles: FilePathResolved[] = []
   const valueFiles: FilePathResolved[] = []
   plusFiles.forEach((f) => {
@@ -189,12 +191,4 @@ function getPlusFileFromConfigFile(
 // Make order deterministic (no other purpose)
 function sortMakeDeterministic(plusFile1: PlusFile, plusFile2: PlusFile): 0 | -1 | 1 {
   return plusFile1.filePath.filePathAbsoluteVite < plusFile2.filePath.filePathAbsoluteVite ? -1 : 1
-}
-
-// TODO: rename/remove findPlusFilePaths
-async function findPlusFiles(userRootDir: string): Promise<FilePathResolved[]> {
-  const plusFilePaths: FilePathResolved[] = (await crawlPlusFilePaths(userRootDir)).map(
-    ({ filePathAbsoluteUserRootDir }) => getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir }),
-  )
-  return plusFilePaths
 }
