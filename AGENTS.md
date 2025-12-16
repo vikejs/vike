@@ -1,6 +1,6 @@
 THOROUGHLY read following two files:
 1. This file
-2. `~/.config/AGENTS.md` (user perferences)
+2. `~/.config/AGENTS.md` (user preferences)
 
 # Agent instructions
 
