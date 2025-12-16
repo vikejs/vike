@@ -2029,8 +2029,8 @@ importers:
         specifier: 0.4.249
         version: link:../../packages/vike
       vike-vue:
-        specifier: ^0.9.6
-        version: 0.9.6(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
+        specifier: ^0.9.7
+        version: 0.9.7(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
       vite:
         specifier: ^6.3.5
         version: 6.3.5(@types/node@22.15.30)(terser@5.38.1)(tsx@4.20.6)
@@ -2059,11 +2059,11 @@ importers:
         specifier: 0.4.249
         version: link:../../packages/vike
       vike-vue:
-        specifier: ^0.9.6
-        version: 0.9.6(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
+        specifier: ^0.9.7
+        version: 0.9.7(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
       vike-vue-pinia:
         specifier: ^0.2.4
-        version: 0.2.4(pinia@3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3)))(vike-vue@0.9.6(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)))(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
+        version: 0.2.4(pinia@3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3)))(vike-vue@0.9.7(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)))(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
       vite:
         specifier: ^6.1.0
         version: 6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
@@ -7834,8 +7834,8 @@ packages:
       vike-vue: '>=0.7.0'
       vue: '>=3.0.0'
 
-  vike-vue@0.9.6:
-    resolution: {integrity: sha512-dIMlMmmOrMHOILu5JCUCEBai4mVvFSxhgFcm+nzYQaLZafmcM98YZg/0jwmyd0DpNC5xUDkSxGIA/14Euz9F9g==}
+  vike-vue@0.9.7:
+    resolution: {integrity: sha512-nnH2b/j86oC3xx1dfnSrXW3ffVtmIHo928Es2SnGgetFNYDHUNzuq2wF0IjCZndENUvcGIIaaGGGq9xgkmCuUA==}
     peerDependencies:
       vike: '>=0.4.191'
       vue: '>=3.0.0'
@@ -8303,8 +8303,8 @@ packages:
   zod@4.1.13:
     resolution: {integrity: sha512-AvvthqfqrAhNH9dnfmrfKzX5upOdjUVJYFqNSlkmGf64gRaTzlPwz99IHYnVs28qYAybvAlBV+H7pn0saFY4Ig==}
 
-  zod@4.2.0:
-    resolution: {integrity: sha512-Bd5fw9wlIhtqCCxotZgdTOMwGm1a0u75wARVEY9HMs1X17trvA/lMi4+MGK5EUfYkXVTbX8UDiDKW4OgzHVUZw==}
+  zod@4.2.1:
+    resolution: {integrity: sha512-0wZ1IRqGGhMP76gLqz8EyfBXKk0J2qo2+H3fi4mcUP/KtTocoX08nmIAHl1Z2kJIZbZee8KOpBCSNPRgauucjw==}
 
   zustand@5.0.9:
     resolution: {integrity: sha512-ALBtUj0AfjJt3uNRQoL1tL2tMvj6Gp/6e39dnfT6uzpelGru8v1tPOGBzayOWbPJvujM8JojDk3E1LxeFisBNg==}
@@ -10525,7 +10525,7 @@ snapshots:
 
   '@vite-plugin-vercel/schemas@1.0.0':
     dependencies:
-      zod: 4.2.0
+      zod: 4.2.1
 
   '@vitejs/plugin-react-swc@3.11.0(vite@7.2.6(@types/node@24.10.0)(terser@5.38.1)(tsx@4.20.6))':
     dependencies:
@@ -15013,14 +15013,14 @@ snapshots:
       - '@testing-library/jest-dom'
       - supports-color
 
-  vike-vue-pinia@0.2.4(pinia@3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3)))(vike-vue@0.9.6(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)))(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)):
+  vike-vue-pinia@0.2.4(pinia@3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3)))(vike-vue@0.9.7(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)))(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)):
     dependencies:
       pinia: 3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3))
       vike: link:packages/vike
-      vike-vue: 0.9.6(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
+      vike-vue: 0.9.7(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
       vue: 3.5.18(typescript@5.9.3)
 
-  vike-vue@0.9.6(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)):
+  vike-vue@0.9.7(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)):
     dependencies:
       vike: link:packages/vike
       vue: 3.5.18(typescript@5.9.3)
@@ -15587,7 +15587,7 @@ snapshots:
 
   zod@4.1.13: {}
 
-  zod@4.2.0: {}
+  zod@4.2.1: {}
 
   zustand@5.0.9(@types/react@19.2.5)(immer@10.2.0)(react@19.2.1)(use-sync-external-store@1.5.0(react@19.2.1)):
     optionalDependencies:
