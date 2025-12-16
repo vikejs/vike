@@ -68,20 +68,20 @@ async function getPlusFilesByLocationId(
   const plusFilesByLocationId: PlusFilesByLocationId = {}
   await Promise.all(
     plusFilePaths.map(async (filePath) => {
-    if (getPlusFileValueConfigName(filePath.filePathAbsoluteFilesystem) === 'config') {
-      // +config.js files
+      if (getPlusFileValueConfigName(filePath.filePathAbsoluteFilesystem) === 'config') {
+        // +config.js files
 
-      const { filePathAbsoluteUserRootDir } = filePath
-      assert(filePathAbsoluteUserRootDir)
-      const { configFile, extendsConfigs } = await loadConfigFile(filePath, userRootDir, [], false, esbuildCache)
-      assert(filePath.filePathAbsoluteUserRootDir)
-      const locationId = getLocationId(filePathAbsoluteUserRootDir)
-      const plusFile = getPlusFileFromConfigFile(configFile, false, locationId, userRootDir)
+        const { filePathAbsoluteUserRootDir } = filePath
+        assert(filePathAbsoluteUserRootDir)
+        const { configFile, extendsConfigs } = await loadConfigFile(filePath, userRootDir, [], false, esbuildCache)
+        assert(filePath.filePathAbsoluteUserRootDir)
+        const locationId = getLocationId(filePathAbsoluteUserRootDir)
+        const plusFile = getPlusFileFromConfigFile(configFile, false, locationId, userRootDir)
 
-      plusFilesByLocationId[locationId] = plusFilesByLocationId[locationId] ?? []
-      plusFilesByLocationId[locationId]!.push(plusFile)
-      extendsConfigs.forEach((extendsConfig) => {
-        /* We purposely use the same locationId because the Vike extension's config should only apply to where it's being extended from, for example:
+        plusFilesByLocationId[locationId] = plusFilesByLocationId[locationId] ?? []
+        plusFilesByLocationId[locationId]!.push(plusFile)
+        extendsConfigs.forEach((extendsConfig) => {
+          /* We purposely use the same locationId because the Vike extension's config should only apply to where it's being extended from, for example:
         ```js
         // /pages/admin/+config.js
 
@@ -97,36 +97,36 @@ async function getPlusFilesByLocationId(
         export default { extends: [vikeReact] }
         ```
         */
-        const plusFile = getPlusFileFromConfigFile(extendsConfig, true, locationId, userRootDir)
-        assertExtensionsConventions(plusFile)
+          const plusFile = getPlusFileFromConfigFile(extendsConfig, true, locationId, userRootDir)
+          assertExtensionsConventions(plusFile)
+          plusFilesByLocationId[locationId]!.push(plusFile)
+        })
+      } else {
+        // +{configName}.js files
+
+        const { filePathAbsoluteUserRootDir } = filePath
+        assert(filePathAbsoluteUserRootDir)
+
+        const configName = getPlusFileValueConfigName(filePathAbsoluteUserRootDir)
+        assert(configName)
+
+        const locationId = getLocationId(filePathAbsoluteUserRootDir)
+
+        const plusFile: PlusFileValue = {
+          locationId,
+          filePath,
+          isConfigFile: false,
+          isNotLoaded: true,
+          configName,
+        }
+        plusFilesByLocationId[locationId] = plusFilesByLocationId[locationId] ?? []
         plusFilesByLocationId[locationId]!.push(plusFile)
-      })
-    } else {
-      // +{configName}.js files
 
-      const { filePathAbsoluteUserRootDir } = filePath
-      assert(filePathAbsoluteUserRootDir)
-
-      const configName = getPlusFileValueConfigName(filePathAbsoluteUserRootDir)
-      assert(configName)
-
-      const locationId = getLocationId(filePathAbsoluteUserRootDir)
-
-      const plusFile: PlusFileValue = {
-        locationId,
-        filePath,
-        isConfigFile: false,
-        isNotLoaded: true,
-        configName,
+        // We don't have access to the custom config definitions defined by the user yet.
+        //  - If `configDef` is `undefined` => we load the file +{configName}.js later.
+        //  - We already need to load +meta.js here (to get the custom config definitions defined by the user)
+        await loadValueFile(plusFile, configDefinitionsBuiltIn, userRootDir, esbuildCache)
       }
-      plusFilesByLocationId[locationId] = plusFilesByLocationId[locationId] ?? []
-      plusFilesByLocationId[locationId]!.push(plusFile)
-
-      // We don't have access to the custom config definitions defined by the user yet.
-      //  - If `configDef` is `undefined` => we load the file +{configName}.js later.
-      //  - We already need to load +meta.js here (to get the custom config definitions defined by the user)
-      await loadValueFile(plusFile, configDefinitionsBuiltIn, userRootDir, esbuildCache)
-    }
     }),
   )
 
