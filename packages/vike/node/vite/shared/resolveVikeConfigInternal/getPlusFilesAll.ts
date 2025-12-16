@@ -61,7 +61,9 @@ async function getPlusFilesAll(userRootDir: string, esbuildCache: EsbuildCache):
   const plusFilePaths: FilePathResolved[] = (await crawlPlusFilePaths(userRootDir)).map(({ filePathAbsoluteUserRootDir }) =>
     getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir }),
   )
+  // +config.js files
   const plusFilePathsConfig: FilePathResolved[] = []
+  // +{configName}.js files
   const plusFilePathsValue: FilePathResolved[] = []
   plusFilePaths.forEach((f) => {
     if (getPlusFileValueConfigName(f.filePathAbsoluteFilesystem) === 'config') {
