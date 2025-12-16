@@ -922,7 +922,7 @@ function getConfigValueSources(
       })
     }
 
-    // Defined inside +config.js (not via pointer import)
+    // Defined inside +config.js
     const configValueSource: ConfigValueSource = {
       ...configValueSourceCommon,
       valueIsLoaded: true,
