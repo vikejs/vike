@@ -64,22 +64,13 @@ async function getPlusFilesByLocationId(
   const plusFilePaths: FilePathResolved[] = (await crawlPlusFilePaths(userRootDir)).map(
     ({ filePathAbsoluteUserRootDir }) => getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir }),
   )
-  // +config.js files
-  const plusFilePathsConfig: FilePathResolved[] = []
-  // +{configName}.js files
-  const plusFilePathsValue: FilePathResolved[] = []
-  plusFilePaths.forEach((f) => {
-    if (getPlusFileValueConfigName(f.filePathAbsoluteFilesystem) === 'config') {
-      plusFilePathsConfig.push(f)
-    } else {
-      plusFilePathsValue.push(f)
-    }
-  })
 
   const plusFilesByLocationId: PlusFilesByLocationId = {}
-  await Promise.all([
-    // +config.js files
-    ...plusFilePathsConfig.map(async (filePath) => {
+  await Promise.all(
+    plusFilePaths.map(async (filePath) => {
+    if (getPlusFileValueConfigName(filePath.filePathAbsoluteFilesystem) === 'config') {
+      // +config.js files
+
       const { filePathAbsoluteUserRootDir } = filePath
       assert(filePathAbsoluteUserRootDir)
       const { configFile, extendsConfigs } = await loadConfigFile(filePath, userRootDir, [], false, esbuildCache)
@@ -110,9 +101,9 @@ async function getPlusFilesByLocationId(
         assertExtensionsConventions(plusFile)
         plusFilesByLocationId[locationId]!.push(plusFile)
       })
-    }),
-    // +{configName}.js files
-    ...plusFilePathsValue.map(async (filePath) => {
+    } else {
+      // +{configName}.js files
+
       const { filePathAbsoluteUserRootDir } = filePath
       assert(filePathAbsoluteUserRootDir)
 
@@ -135,8 +126,9 @@ async function getPlusFilesByLocationId(
       //  - If `configDef` is `undefined` => we load the file +{configName}.js later.
       //  - We already need to load +meta.js here (to get the custom config definitions defined by the user)
       await loadValueFile(plusFile, configDefinitionsBuiltIn, userRootDir, esbuildCache)
+    }
     }),
-  ])
+  )
 
   // Make lists element order deterministic
   Object.entries(plusFilesByLocationId).forEach(([_locationId, plusFiles]) => {
@@ -191,5 +183,8 @@ function getPlusFileFromConfigFile(
 
 // Make order deterministic (no other purpose)
 function sortMakeDeterministic(plusFile1: PlusFile, plusFile2: PlusFile): 0 | -1 | 1 {
+  // Sort +config.js before +{configName}.js
+  if (plusFile1.isConfigFile !== plusFile2.isConfigFile) return plusFile1.isConfigFile ? -1 : 1
+  // Sort by file path
   return plusFile1.filePath.filePathAbsoluteVite < plusFile2.filePath.filePathAbsoluteVite ? -1 : 1
 }
