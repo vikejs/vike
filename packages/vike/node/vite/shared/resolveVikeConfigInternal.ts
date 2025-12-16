@@ -906,7 +906,7 @@ function getConfigValueSources(
         : {
             valueIsLoaded: false as const,
           }
-      return {
+      const configValueSource: ConfigValueSource = {
         ...configValueSourceCommon,
         ...value,
         configEnv: resolveConfigEnv(configDef.env, pointerImport.fileExportPath),
@@ -914,6 +914,7 @@ function getConfigValueSources(
         valueIsDefinedByPlusValueFile: false,
         definedAt: pointerImport.fileExportPath,
       }
+      return configValueSource
       })
     }
 
