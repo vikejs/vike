@@ -74,7 +74,6 @@ async function getPlusFilesAll(userRootDir: string, esbuildCache: EsbuildCache):
   })
 
   let plusFilesByLocationId: PlusFilesByLocationId = {}
-
   await Promise.all([
     // Config files
     ...plusFilePathsConfig.map(async (filePath) => {
