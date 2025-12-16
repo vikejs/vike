@@ -7,7 +7,7 @@ import { assert } from '../../utils.js'
 import { configDefinitionsBuiltIn } from './configDefinitionsBuiltIn.js'
 import { type LocationId, getLocationId } from './filesystemRouting.js'
 import { type EsbuildCache } from './transpileAndExecuteFile.js'
-import { crawlPlusFiles, getPlusFileValueConfigName } from './crawlPlusFiles.js'
+import { crawlPlusFilePaths, getPlusFileValueConfigName } from './crawlPlusFilePaths.js'
 import { getConfigFileExport } from './getConfigFileExport.js'
 import { type ConfigFile, loadConfigFile, loadValueFile, PointerImportLoaded } from './loadFileAtConfigTime.js'
 import { resolvePointerImport } from './resolvePointerImport.js'
@@ -194,7 +194,7 @@ function sortMakeDeterministic(plusFile1: PlusFile, plusFile2: PlusFile): 0 | -1
 // TODO: rename/remove findPlusFilePaths
 async function findPlusFiles(userRootDir: string): Promise<FilePathResolved[]> {
   // TODO: rename crawlPlusFilePaths
-  const files = await crawlPlusFiles(userRootDir)
+  const files = await crawlPlusFilePaths(userRootDir)
 
   const plusFiles: FilePathResolved[] = files.map(({ filePathAbsoluteUserRootDir }) =>
     getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir }),

@@ -1,4 +1,4 @@
-export { crawlPlusFiles }
+export { crawlPlusFilePaths }
 export { isPlusFile }
 export { getPlusFileValueConfigName }
 
@@ -27,16 +27,16 @@ import { isTemporaryBuildFile } from './transpileAndExecuteFile.js'
 import { getEnvVarObject } from '../getEnvVarObject.js'
 import pc from '@brillout/picocolors'
 import picomatch, { type Matcher } from 'picomatch'
-import { ignorePatternsBuiltIn } from './crawlPlusFiles/ignorePatternsBuiltIn.js'
+import { ignorePatternsBuiltIn } from './crawlPlusFilePaths/ignorePatternsBuiltIn.js'
 const execA = promisify(exec)
 const debug = createDebug('vike:crawl')
 
 assertIsNotProductionRuntime()
-const globalObject = getGlobalObject('getVikeConfig/crawlPlusFiles.ts', {
+const globalObject = getGlobalObject('getVikeConfig/crawlPlusFilePaths.ts', {
   gitIsNotUsable: false,
 })
 
-async function crawlPlusFiles(userRootDir: string): Promise<{ filePathAbsoluteUserRootDir: string }[]> {
+async function crawlPlusFilePaths(userRootDir: string): Promise<{ filePathAbsoluteUserRootDir: string }[]> {
   assertPosixPath(userRootDir)
   assertFilePathAbsoluteFilesystem(userRootDir)
 
