@@ -903,22 +903,22 @@ function getConfigValueSources(
           locationId: plusFile.locationId,
           plusFile,
         }
-        const value = pointerImport.fileExportValueLoaded
-          ? {
-              valueIsLoaded: true as const,
-              value: pointerImport.fileExportValue,
-            }
-          : {
-              valueIsLoaded: false as const,
-            }
-        return {
-          ...configValueSourceCommon,
-          ...value,
-          configEnv: resolveConfigEnv(configDef.env, pointerImport.fileExportPath),
-          valueIsLoadedWithImport: true,
-          valueIsDefinedByPlusValueFile: false,
-          definedAt: pointerImport.fileExportPath,
-        }
+      const value = pointerImport.fileExportValueLoaded
+        ? {
+            valueIsLoaded: true as const,
+            value: pointerImport.fileExportValue,
+          }
+        : {
+            valueIsLoaded: false as const,
+          }
+      return {
+        ...configValueSourceCommon,
+        ...value,
+        configEnv: resolveConfigEnv(configDef.env, pointerImport.fileExportPath),
+        valueIsLoadedWithImport: true,
+        valueIsDefinedByPlusValueFile: false,
+        definedAt: pointerImport.fileExportPath,
+      }
       })
     }
 
