@@ -78,7 +78,7 @@ async function getPlusFilesByLocationId(
 
   let plusFilesByLocationId: PlusFilesByLocationId = {}
   await Promise.all([
-    // Config files
+    // +config.js files
     ...plusFilePathsConfig.map(async (filePath) => {
       const { filePathAbsoluteUserRootDir } = filePath
       assert(filePathAbsoluteUserRootDir)
@@ -111,7 +111,7 @@ async function getPlusFilesByLocationId(
         plusFilesByLocationId[locationId]!.push(plusFile)
       })
     }),
-    // Value files
+    // +{configName}.js files
     ...plusFilePathsValue.map(async (filePath) => {
       const { filePathAbsoluteUserRootDir } = filePath
       assert(filePathAbsoluteUserRootDir)
