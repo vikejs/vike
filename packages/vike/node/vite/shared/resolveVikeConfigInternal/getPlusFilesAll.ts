@@ -29,8 +29,7 @@ type PlusFileConfig = PlusFileCommons & {
   >
   pointerImportsByConfigName: Record<
     string, // configName
-    // TODO/ai how about always PointerImportLoaded[] ?
-    PointerImportLoaded | PointerImportLoaded[]
+    PointerImportLoaded[]
   >
   isExtensionConfig: boolean
   extendsFilePaths: string[]
@@ -168,7 +167,7 @@ function getPlusFileFromConfigFile(
       .map((pi) => ({ ...pi, fileExportValueLoaded: false as const }))
 
     if (pointerImports.length > 0) {
-      pointerImportsByConfigName[configName] = pointerImports.length === 1 ? pointerImports[0]! : pointerImports
+      pointerImportsByConfigName[configName] = pointerImports
     }
   })
 

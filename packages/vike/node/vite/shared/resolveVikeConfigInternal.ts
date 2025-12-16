@@ -848,52 +848,17 @@ function getConfigValueSources(
   configDef: ConfigDefinitionInternal,
   userRootDir: string,
 ): ConfigValueSource[] {
+  // Handle pointer imports (multiple sources)
   if (plusFile.isConfigFile) {
-    const pointerImportOrArray = plusFile.pointerImportsByConfigName[configName]
-    if (pointerImportOrArray) {
-      const pointerImports = Array.isArray(pointerImportOrArray) ? pointerImportOrArray : [pointerImportOrArray]
+    const pointerImports = plusFile.pointerImportsByConfigName[configName]
+    if (pointerImports) {
       return pointerImports.map((pointerImport) =>
         getConfigValueSourceFromPointerImport(plusFile, configDef, pointerImport),
       )
     }
   }
-  return [getConfigValueSource(configName, plusFile, configDef, userRootDir)]
-}
-function getConfigValueSourceFromPointerImport(
-  plusFile: PlusFile,
-  configDef: ConfigDefinitionInternal,
-  pointerImport: PointerImportLoaded,
-): ConfigValueSource {
-  const configValueSourceCommon = {
-    locationId: plusFile.locationId,
-    plusFile,
-  }
 
-  const value = pointerImport.fileExportValueLoaded
-    ? {
-        valueIsLoaded: true as const,
-        value: pointerImport.fileExportValue,
-      }
-    : {
-        valueIsLoaded: false as const,
-      }
-  const configValueSource: ConfigValueSource = {
-    ...configValueSourceCommon,
-    ...value,
-    configEnv: resolveConfigEnv(configDef.env, pointerImport.fileExportPath),
-    valueIsLoadedWithImport: true,
-    valueIsDefinedByPlusValueFile: false,
-    definedAt: pointerImport.fileExportPath,
-  }
-  return configValueSource
-}
-// TODO/ai move getConfigValueSources() inside this function — rename this functoin getConfigValueSources() and make it return ConfigValueSource[]
-function getConfigValueSource(
-  configName: string,
-  plusFile: PlusFile,
-  configDef: ConfigDefinitionInternal,
-  userRootDir: string,
-): ConfigValueSource {
+  // Single source - inline the logic from getConfigValueSource
   const confVal = getConfVal(plusFile, configName)
   assert(confVal)
 
@@ -928,67 +893,43 @@ function getConfigValueSource(
         fileExportPathToShowToUser: [],
       }
     }
-    const configValueSource: ConfigValueSource = {
-      ...configValueSourceCommon,
-      valueIsLoaded: true,
-      value: valueFilePath,
-      valueIsFilePath: true,
-      configEnv: configDef.env,
-      valueIsLoadedWithImport: false,
-      valueIsDefinedByPlusValueFile: false,
-      definedAt: definedAtFilePath,
-    }
-    return configValueSource
+    return [
+      {
+        ...configValueSourceCommon,
+        valueIsLoaded: true,
+        value: valueFilePath,
+        valueIsFilePath: true,
+        configEnv: configDef.env,
+        valueIsLoadedWithImport: false,
+        valueIsDefinedByPlusValueFile: false,
+        definedAt: definedAtFilePath,
+      },
+    ]
   }
 
   // +config.js
   if (plusFile.isConfigFile) {
     assert(confVal.valueIsLoaded)
 
-    // Defined over pointer import
-    const pointerImportOrArray = plusFile.pointerImportsByConfigName[configName]
-    if (pointerImportOrArray) {
-      if (Array.isArray(pointerImportOrArray)) {
-        assert(false, 'Arrays should be handled by getConfigValueSources()')
-      }
-      const pointerImport = pointerImportOrArray
-      const value = pointerImport.fileExportValueLoaded
-        ? {
-            valueIsLoaded: true as const,
-            value: pointerImport.fileExportValue,
-          }
-        : {
-            valueIsLoaded: false as const,
-          }
-      const configValueSource: ConfigValueSource = {
+    // Defined inside +config.js (not via pointer import)
+    return [
+      {
         ...configValueSourceCommon,
-        ...value,
-        configEnv: resolveConfigEnv(configDef.env, pointerImport.fileExportPath),
-        valueIsLoadedWithImport: true,
+        valueIsLoaded: true,
+        value: confVal.value,
+        configEnv: configDef.env,
+        valueIsLoadedWithImport: false,
         valueIsDefinedByPlusValueFile: false,
-        definedAt: pointerImport.fileExportPath,
-      }
-      return configValueSource
-    }
-
-    // Defined inside +config.js
-    const configValueSource: ConfigValueSource = {
-      ...configValueSourceCommon,
-      valueIsLoaded: true,
-      value: confVal.value,
-      configEnv: configDef.env,
-      valueIsLoadedWithImport: false,
-      valueIsDefinedByPlusValueFile: false,
-      definedAt: definedAtFilePath_,
-    }
-    return configValueSource
+        definedAt: definedAtFilePath_,
+      },
+    ]
   }
 
   // Defined by value file, i.e. +{configName}.js
-  if (!plusFile.isConfigFile) {
-    const configEnvResolved = resolveConfigEnv(configDef.env, plusFile.filePath)
-    assert(confVal.valueIsLoaded === !!configEnvResolved.config)
-    const configValueSource: ConfigValueSource = {
+  const configEnvResolved = resolveConfigEnv(configDef.env, plusFile.filePath)
+  assert(confVal.valueIsLoaded === !!configEnvResolved.config)
+  return [
+    {
       ...configValueSourceCommon,
       ...confVal,
       configEnv: configEnvResolved,
@@ -1002,11 +943,36 @@ function getConfigValueSource(
             : // Side-effect config (e.g. `export { frontmatter }` of .md files)
               [configName],
       },
-    }
-    return configValueSource
+    },
+  ]
+}
+function getConfigValueSourceFromPointerImport(
+  plusFile: PlusFile,
+  configDef: ConfigDefinitionInternal,
+  pointerImport: PointerImportLoaded,
+): ConfigValueSource {
+  const configValueSourceCommon = {
+    locationId: plusFile.locationId,
+    plusFile,
   }
 
-  assert(false)
+  const value = pointerImport.fileExportValueLoaded
+    ? {
+        valueIsLoaded: true as const,
+        value: pointerImport.fileExportValue,
+      }
+    : {
+        valueIsLoaded: false as const,
+      }
+  const configValueSource: ConfigValueSource = {
+    ...configValueSourceCommon,
+    ...value,
+    configEnv: resolveConfigEnv(configDef.env, pointerImport.fileExportPath),
+    valueIsLoadedWithImport: true,
+    valueIsDefinedByPlusValueFile: false,
+    definedAt: pointerImport.fileExportPath,
+  }
+  return configValueSource
 }
 function isDefiningPage(plusFiles: PlusFile[]): boolean {
   for (const plusFile of plusFiles) {
