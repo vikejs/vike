@@ -79,11 +79,7 @@ import {
   getConfigDefinedAt,
   getDefinedByString,
 } from '../../../shared-server-client/page-configs/getConfigDefinedAt.js'
-import {
-  loadPointerImport,
-  loadValueFile,
-  type PointerImportLoaded,
-} from './resolveVikeConfigInternal/loadFileAtConfigTime.js'
+import { loadPointerImport, loadValueFile } from './resolveVikeConfigInternal/loadFileAtConfigTime.js'
 import { resolvePointerImport } from './resolveVikeConfigInternal/resolvePointerImport.js'
 import { getFilePathResolved } from './getFilePath.js'
 import type { FilePath } from '../../../types/FilePath.js'
@@ -852,9 +848,28 @@ function getConfigValueSources(
   if (plusFile.isConfigFile) {
     const pointerImports = plusFile.pointerImportsByConfigName[configName]
     if (pointerImports) {
-      return pointerImports.map((pointerImport) =>
-        getConfigValueSourceFromPointerImport(plusFile, configDef, pointerImport),
-      )
+      return pointerImports.map((pointerImport) => {
+        const configValueSourceCommon = {
+          locationId: plusFile.locationId,
+          plusFile,
+        }
+        const value = pointerImport.fileExportValueLoaded
+          ? {
+              valueIsLoaded: true as const,
+              value: pointerImport.fileExportValue,
+            }
+          : {
+              valueIsLoaded: false as const,
+            }
+        return {
+          ...configValueSourceCommon,
+          ...value,
+          configEnv: resolveConfigEnv(configDef.env, pointerImport.fileExportPath),
+          valueIsLoadedWithImport: true,
+          valueIsDefinedByPlusValueFile: false,
+          definedAt: pointerImport.fileExportPath,
+        }
+      })
     }
   }
 
@@ -945,34 +960,6 @@ function getConfigValueSources(
       },
     },
   ]
-}
-function getConfigValueSourceFromPointerImport(
-  plusFile: PlusFile,
-  configDef: ConfigDefinitionInternal,
-  pointerImport: PointerImportLoaded,
-): ConfigValueSource {
-  const configValueSourceCommon = {
-    locationId: plusFile.locationId,
-    plusFile,
-  }
-
-  const value = pointerImport.fileExportValueLoaded
-    ? {
-        valueIsLoaded: true as const,
-        value: pointerImport.fileExportValue,
-      }
-    : {
-        valueIsLoaded: false as const,
-      }
-  const configValueSource: ConfigValueSource = {
-    ...configValueSourceCommon,
-    ...value,
-    configEnv: resolveConfigEnv(configDef.env, pointerImport.fileExportPath),
-    valueIsLoadedWithImport: true,
-    valueIsDefinedByPlusValueFile: false,
-    definedAt: pointerImport.fileExportPath,
-  }
-  return configValueSource
 }
 function isDefiningPage(plusFiles: PlusFile[]): boolean {
   for (const plusFile of plusFiles) {
