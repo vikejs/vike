@@ -1,4 +1,4 @@
-export { getPlusFilesAll }
+export { getPlusFilesByLocationId }
 export type { PlusFileValue }
 export type { PlusFile }
 export type { PlusFilesByLocationId }
@@ -57,9 +57,12 @@ type PlusFileValue = PlusFileCommon & {
   }
 type PlusFilesByLocationId = Record<LocationId, PlusFile[]>
 
-async function getPlusFilesAll(userRootDir: string, esbuildCache: EsbuildCache): Promise<PlusFilesByLocationId> {
-  const plusFilePaths: FilePathResolved[] = (await crawlPlusFilePaths(userRootDir)).map(({ filePathAbsoluteUserRootDir }) =>
-    getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir }),
+async function getPlusFilesByLocationId(
+  userRootDir: string,
+  esbuildCache: EsbuildCache,
+): Promise<PlusFilesByLocationId> {
+  const plusFilePaths: FilePathResolved[] = (await crawlPlusFilePaths(userRootDir)).map(
+    ({ filePathAbsoluteUserRootDir }) => getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir }),
   )
   // +config.js files
   const plusFilePathsConfig: FilePathResolved[] = []
