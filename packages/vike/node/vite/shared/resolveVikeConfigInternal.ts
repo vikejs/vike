@@ -899,10 +899,6 @@ function getConfigValueSources(
     const pointerImport = plusFile.pointerImportsByConfigName[configName]
     if (pointerImport) {
       return pointerImport.map((pointerImport) => {
-        const configValueSourceCommon = {
-          locationId: plusFile.locationId,
-          plusFile,
-        }
       const value = pointerImport.fileExportValueLoaded
         ? {
             valueIsLoaded: true as const,
