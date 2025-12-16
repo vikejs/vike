@@ -411,8 +411,7 @@ async function loadCustomConfigBuildTimeFiles(
         await loadValueFile(plusFile, configDefinitions, userRootDir, esbuildCache)
       } else {
         await Promise.all(
-          Object.entries(plusFile.pointerImportsByConfigName).map(async ([configName, pointerImport]) => {
-            const pointerImports = Array.isArray(pointerImport) ? pointerImport : [pointerImport]
+          Object.entries(plusFile.pointerImportsByConfigName).map(async ([configName, pointerImports]) => {
             await Promise.all(
               pointerImports.map((pointerImport) =>
                 loadPointerImport(pointerImport, userRootDir, configName, configDefinitions, esbuildCache),
