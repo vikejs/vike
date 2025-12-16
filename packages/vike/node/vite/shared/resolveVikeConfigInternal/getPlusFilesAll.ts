@@ -143,8 +143,8 @@ async function getPlusFilesAll(userRootDir: string, esbuildCache: EsbuildCache):
   assertPlusFiles(plusFilesByLocationId)
   return plusFilesByLocationId
 }
-function assertPlusFiles(plusFilesAll: PlusFilesByLocationId) {
-  const plusFiles = Object.values(plusFilesAll).flat()
+function assertPlusFiles(plusFilesByLocationId: PlusFilesByLocationId) {
+  const plusFiles = Object.values(plusFilesByLocationId).flat()
   // The earlier we call it the better, so that +require can be used by Vike extensions to depend on new Vike features
   assertExtensionsRequire(plusFiles)
 }
