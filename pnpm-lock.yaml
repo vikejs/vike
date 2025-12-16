@@ -1814,8 +1814,8 @@ importers:
         specifier: 0.4.249
         version: link:../../packages/vike
       vike-solid:
-        specifier: ^0.7.13
-        version: 0.7.13(solid-js@1.9.10)(vike@packages+vike)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
+        specifier: ^0.7.14
+        version: 0.7.14(solid-js@1.9.10)(vike@packages+vike)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
       vite:
         specifier: ^7.2.2
         version: 7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
@@ -1995,8 +1995,8 @@ importers:
         specifier: 0.4.249
         version: link:../../packages/vike
       vike-solid:
-        specifier: ^0.7.12
-        version: 0.7.13(solid-js@1.9.10)(vike@packages+vike)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
+        specifier: ^0.7.14
+        version: 0.7.14(solid-js@1.9.10)(vike@packages+vike)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
     devDependencies:
       typescript:
         specifier: ^5.9.3
@@ -2029,8 +2029,8 @@ importers:
         specifier: 0.4.249
         version: link:../../packages/vike
       vike-vue:
-        specifier: ^0.9.6
-        version: 0.9.6(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
+        specifier: ^0.9.7
+        version: 0.9.7(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
       vite:
         specifier: ^6.3.5
         version: 6.3.5(@types/node@22.19.2)(terser@5.38.1)(tsx@4.20.6)
@@ -2059,11 +2059,11 @@ importers:
         specifier: 0.4.249
         version: link:../../packages/vike
       vike-vue:
-        specifier: ^0.9.6
-        version: 0.9.6(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
+        specifier: ^0.9.7
+        version: 0.9.7(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
       vike-vue-pinia:
         specifier: ^0.2.4
-        version: 0.2.4(pinia@3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3)))(vike-vue@0.9.6(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)))(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
+        version: 0.2.4(pinia@3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3)))(vike-vue@0.9.7(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)))(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
       vite:
         specifier: ^6.1.0
         version: 6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
@@ -7747,8 +7747,8 @@ packages:
       vite:
         optional: true
 
-  vike-solid@0.7.13:
-    resolution: {integrity: sha512-yTlAtGF+V9Jhu2bob/tzm5dJsS1pz4fdMvJqE2SVJp4eBRuGeGM/EV31JvMvEgF8VF/pMXNQa2i877TADuNkNw==}
+  vike-solid@0.7.14:
+    resolution: {integrity: sha512-af8M8wSbEsDrDog2PaIL0r5r+vgAG/S7ViFXT/70MS7BxXKcxMtOVbCUGM09oxQlXsQOaH2BKDgziR9XbYclaA==}
     peerDependencies:
       solid-js: ^1.8.7
       vike: '>=0.4.195'
@@ -7762,8 +7762,8 @@ packages:
       vike-vue: '>=0.7.0'
       vue: '>=3.0.0'
 
-  vike-vue@0.9.6:
-    resolution: {integrity: sha512-dIMlMmmOrMHOILu5JCUCEBai4mVvFSxhgFcm+nzYQaLZafmcM98YZg/0jwmyd0DpNC5xUDkSxGIA/14Euz9F9g==}
+  vike-vue@0.9.7:
+    resolution: {integrity: sha512-nnH2b/j86oC3xx1dfnSrXW3ffVtmIHo928Es2SnGgetFNYDHUNzuq2wF0IjCZndENUvcGIIaaGGGq9xgkmCuUA==}
     peerDependencies:
       vike: '>=0.4.191'
       vue: '>=3.0.0'
@@ -7778,8 +7778,8 @@ packages:
     peerDependencies:
       vite: 4 || 5 || 6 || 7
 
-  vite-plugin-solid@2.11.8:
-    resolution: {integrity: sha512-hFrCxBfv3B1BmFqnJF4JOCYpjrmi/zwyeKjcomQ0khh8HFyQ8SbuBWQ7zGojfrz6HUOBFrJBNySDi/JgAHytWg==}
+  vite-plugin-solid@2.11.10:
+    resolution: {integrity: sha512-Yr1dQybmtDtDAHkii6hXuc1oVH9CPcS/Zb2jN/P36qqcrkNnVPsMTzQ06jyzFPFjj3U1IYKMVt/9ZqcwGCEbjw==}
     peerDependencies:
       '@testing-library/jest-dom': ^5.16.6 || ^5.17.0 || ^6.*
       solid-js: ^1.7.2
@@ -14724,25 +14724,25 @@ snapshots:
       - hono
       - srvx
 
-  vike-solid@0.7.13(solid-js@1.9.10)(vike@packages+vike)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)):
+  vike-solid@0.7.14(solid-js@1.9.10)(vike@packages+vike)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)):
     dependencies:
       isbot-fast: 1.2.0
       solid-js: 1.9.10
       vike: link:packages/vike
       vite: 7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
-      vite-plugin-solid: 2.11.8(solid-js@1.9.10)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
+      vite-plugin-solid: 2.11.10(solid-js@1.9.10)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
     transitivePeerDependencies:
       - '@testing-library/jest-dom'
       - supports-color
 
-  vike-vue-pinia@0.2.4(pinia@3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3)))(vike-vue@0.9.6(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)))(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)):
+  vike-vue-pinia@0.2.4(pinia@3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3)))(vike-vue@0.9.7(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)))(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)):
     dependencies:
       pinia: 3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3))
       vike: link:packages/vike
-      vike-vue: 0.9.6(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
+      vike-vue: 0.9.7(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
       vue: 3.5.18(typescript@5.9.3)
 
-  vike-vue@0.9.6(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)):
+  vike-vue@0.9.7(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)):
     dependencies:
       vike: link:packages/vike
       vue: 3.5.18(typescript@5.9.3)
@@ -14776,7 +14776,7 @@ snapshots:
       oxc-parser: 0.82.3
       vite: 6.3.5(@types/node@22.19.2)(terser@5.38.1)(tsx@4.20.6)
 
-  vite-plugin-solid@2.11.8(solid-js@1.9.10)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)):
+  vite-plugin-solid@2.11.10(solid-js@1.9.10)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)):
     dependencies:
       '@babel/core': 7.28.5
       '@types/babel__core': 7.20.5
