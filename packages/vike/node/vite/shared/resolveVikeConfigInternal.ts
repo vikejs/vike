@@ -898,23 +898,23 @@ function getConfigValueSources(
     const pointerImport = plusFile.pointerImportsByConfigName[configName]
     if (pointerImport) {
       return pointerImport.map((pointerImport) => {
-      const value = pointerImport.fileExportValueLoaded
-        ? {
-            valueIsLoaded: true as const,
-            value: pointerImport.fileExportValue,
-          }
-        : {
-            valueIsLoaded: false as const,
-          }
-      const configValueSource: ConfigValueSource = {
-        ...configValueSourceCommon,
-        ...value,
-        configEnv: resolveConfigEnv(configDef.env, pointerImport.fileExportPath),
-        valueIsLoadedWithImport: true,
-        valueIsDefinedByPlusValueFile: false,
-        definedAt: pointerImport.fileExportPath,
-      }
-      return configValueSource
+        const value = pointerImport.fileExportValueLoaded
+          ? {
+              valueIsLoaded: true as const,
+              value: pointerImport.fileExportValue,
+            }
+          : {
+              valueIsLoaded: false as const,
+            }
+        const configValueSource: ConfigValueSource = {
+          ...configValueSourceCommon,
+          ...value,
+          configEnv: resolveConfigEnv(configDef.env, pointerImport.fileExportPath),
+          valueIsLoadedWithImport: true,
+          valueIsDefinedByPlusValueFile: false,
+          definedAt: pointerImport.fileExportPath,
+        }
+        return configValueSource
       })
     }
 
