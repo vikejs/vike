@@ -76,7 +76,7 @@ async function getPlusFilesByLocationId(
     }
   })
 
-  let plusFilesByLocationId: PlusFilesByLocationId = {}
+  const plusFilesByLocationId: PlusFilesByLocationId = {}
   await Promise.all([
     // +config.js files
     ...plusFilePathsConfig.map(async (filePath) => {
