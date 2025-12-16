@@ -29,7 +29,7 @@ type PlusFileConfig = PlusFileCommons & {
   >
   pointerImportsByConfigName: Record<
     string, // configName
-    PointerImportLoaded
+    PointerImportLoaded[]
   >
   isExtensionConfig: boolean
   extendsFilePaths: string[]
@@ -159,12 +159,15 @@ function getPlusFileFromConfigFile(
   const fileExport = getConfigFileExport(fileExports, filePath.filePathToShowToUser)
   Object.entries(fileExport).forEach(([configName, configValue]) => {
     fileExportsByConfigName[configName] = configValue
-    const pointerImport = resolvePointerImport(configValue, configFile.filePath, userRootDir, configName)
-    if (pointerImport) {
-      pointerImportsByConfigName[configName] = {
-        ...pointerImport,
-        fileExportValueLoaded: false,
-      }
+
+    // Pointer imports
+    const values = Array.isArray(configValue) ? configValue : [configValue]
+    const pointerImports = values
+      .map((value) => resolvePointerImport(value, configFile.filePath, userRootDir, configName))
+      .filter((pointerImport) => pointerImport !== null)
+      .map((pointerImport) => ({ ...pointerImport, fileExportValueLoaded: false as const }))
+    if (pointerImports.length > 0) {
+      pointerImportsByConfigName[configName] = pointerImports
     }
   })
 

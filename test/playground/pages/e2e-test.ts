@@ -157,8 +157,8 @@ function testOnCreateGlobalContext(isDev: boolean) {
       expect(setGloballyClient).toContain(prefixClientOld)
       expect(setGloballyServer).toContain(prefixServerOld)
 
-      // Change +onCreateGlobalContext.client.ts
-      editFile('./+onCreateGlobalContext.client.ts', (s) => s.replace(prefixClientOld, prefixClientNew))
+      // Change onCreateGlobalContext.client.ts
+      editFile('./onCreateGlobalContext.client.ts', (s) => s.replace(prefixClientOld, prefixClientNew))
       await autoRetry(async () => {
         expect(await page.textContent('#setGloballyClient')).toContain(prefixClientNew)
       })
@@ -168,8 +168,8 @@ function testOnCreateGlobalContext(isDev: boolean) {
       })
       expect(await page.textContent('#setGloballyServer')).toBe(setGloballyServer)
 
-      // Change +onCreateGlobalContext.server.ts
-      editFile('./+onCreateGlobalContext.server.ts', (s) => s.replace(prefixServerOld, prefixServerNew))
+      // Change onCreateGlobalContext.server.ts
+      editFile('./onCreateGlobalContext.server.ts', (s) => s.replace(prefixServerOld, prefixServerNew))
       await autoRetry(async () => {
         expect(await page.textContent('#setGloballyServer')).toContain(prefixServerNew)
       })

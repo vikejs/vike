@@ -411,8 +411,12 @@ async function loadCustomConfigBuildTimeFiles(
         await loadValueFile(plusFile, configDefinitions, userRootDir, esbuildCache)
       } else {
         await Promise.all(
-          Object.entries(plusFile.pointerImportsByConfigName).map(async ([configName, pointerImport]) => {
-            await loadPointerImport(pointerImport, userRootDir, configName, configDefinitions, esbuildCache)
+          Object.entries(plusFile.pointerImportsByConfigName).map(async ([configName, pointerImports]) => {
+            await Promise.all(
+              pointerImports.map((pointerImport) =>
+                loadPointerImport(pointerImport, userRootDir, configName, configDefinitions, esbuildCache),
+              ),
+            )
           }),
         )
       }
@@ -811,7 +815,7 @@ function resolveConfigValueSources(
 ): ConfigValueSource[] {
   let sources: ConfigValueSource[] = plusFilesRelevant
     .filter((plusFile) => isDefiningConfig(plusFile, configName))
-    .map((plusFile) => getConfigValueSource(configName, plusFile, configDef, userRootDir))
+    .flatMap((plusFile) => getConfigValueSources(configName, plusFile, configDef, userRootDir))
 
   // Filter hydrid global-local configs
   if (!isCallable(configDef.global)) {
@@ -833,12 +837,12 @@ function resolveConfigValueSources(
 function isDefiningConfig(plusFile: PlusFile, configName: string) {
   return getConfigNamesSetByPlusFile(plusFile).includes(configName)
 }
-function getConfigValueSource(
+function getConfigValueSources(
   configName: string,
   plusFile: PlusFile,
   configDef: ConfigDefinitionInternal,
   userRootDir: string,
-): ConfigValueSource {
+): ConfigValueSource[] {
   const confVal = getConfVal(plusFile, configName)
   assert(confVal)
 
@@ -883,7 +887,7 @@ function getConfigValueSource(
       valueIsDefinedByPlusValueFile: false,
       definedAt: definedAtFilePath,
     }
-    return configValueSource
+    return [configValueSource]
   }
 
   // +config.js
@@ -893,23 +897,25 @@ function getConfigValueSource(
     // Defined over pointer import
     const pointerImport = plusFile.pointerImportsByConfigName[configName]
     if (pointerImport) {
-      const value = pointerImport.fileExportValueLoaded
-        ? {
-            valueIsLoaded: true as const,
-            value: pointerImport.fileExportValue,
-          }
-        : {
-            valueIsLoaded: false as const,
-          }
-      const configValueSource: ConfigValueSource = {
-        ...configValueSourceCommon,
-        ...value,
-        configEnv: resolveConfigEnv(configDef.env, pointerImport.fileExportPath),
-        valueIsLoadedWithImport: true,
-        valueIsDefinedByPlusValueFile: false,
-        definedAt: pointerImport.fileExportPath,
-      }
-      return configValueSource
+      return pointerImport.map((pointerImport) => {
+        const value = pointerImport.fileExportValueLoaded
+          ? {
+              valueIsLoaded: true as const,
+              value: pointerImport.fileExportValue,
+            }
+          : {
+              valueIsLoaded: false as const,
+            }
+        const configValueSource: ConfigValueSource = {
+          ...configValueSourceCommon,
+          ...value,
+          configEnv: resolveConfigEnv(configDef.env, pointerImport.fileExportPath),
+          valueIsLoadedWithImport: true,
+          valueIsDefinedByPlusValueFile: false,
+          definedAt: pointerImport.fileExportPath,
+        }
+        return configValueSource
+      })
     }
 
     // Defined inside +config.js
@@ -922,7 +928,7 @@ function getConfigValueSource(
       valueIsDefinedByPlusValueFile: false,
       definedAt: definedAtFilePath_,
     }
-    return configValueSource
+    return [configValueSource]
   }
 
   // Defined by value file, i.e. +{configName}.js
@@ -944,7 +950,7 @@ function getConfigValueSource(
               [configName],
       },
     }
-    return configValueSource
+    return [configValueSource]
   }
 
   assert(false)
