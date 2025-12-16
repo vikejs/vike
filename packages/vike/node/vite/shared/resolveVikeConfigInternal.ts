@@ -921,18 +921,18 @@ function getConfigValueSources(
         }
       })
     }
+
     // Defined inside +config.js (not via pointer import)
-    return [
-      {
-        ...configValueSourceCommon,
-        valueIsLoaded: true,
-        value: confVal.value,
-        configEnv: configDef.env,
-        valueIsLoadedWithImport: false,
-        valueIsDefinedByPlusValueFile: false,
-        definedAt: definedAtFilePath_,
-      },
-    ]
+    const configValueSource: ConfigValueSource = {
+      ...configValueSourceCommon,
+      valueIsLoaded: true,
+      value: confVal.value,
+      configEnv: configDef.env,
+      valueIsLoadedWithImport: false,
+      valueIsDefinedByPlusValueFile: false,
+      definedAt: definedAtFilePath_,
+    }
+    return [configValueSource]
   }
 
   // Defined by value file, i.e. +{configName}.js
