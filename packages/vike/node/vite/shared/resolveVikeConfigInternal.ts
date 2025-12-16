@@ -816,7 +816,7 @@ function resolveConfigValueSources(
 ): ConfigValueSource[] {
   let sources: ConfigValueSource[] = plusFilesRelevant
     .filter((plusFile) => isDefiningConfig(plusFile, configName))
-    .flatMap((plusFile) => getConfigValueSources(configName, plusFile, configDef, userRootDir))
+    .flatMap((plusFile) => getConfigValueSource(configName, plusFile, configDef, userRootDir))
 
   // Filter hydrid global-local configs
   if (!isCallable(configDef.global)) {
@@ -838,7 +838,7 @@ function resolveConfigValueSources(
 function isDefiningConfig(plusFile: PlusFile, configName: string) {
   return getConfigNamesSetByPlusFile(plusFile).includes(configName)
 }
-function getConfigValueSources(
+function getConfigValueSource(
   configName: string,
   plusFile: PlusFile,
   configDef: ConfigDefinitionInternal,
