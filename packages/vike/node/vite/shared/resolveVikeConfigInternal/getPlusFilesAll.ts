@@ -16,12 +16,12 @@ import type { FilePathResolved } from '../../../../types/FilePath.js'
 import { assertExtensionsConventions, assertExtensionsRequire } from './assertExtensions.js'
 
 type PlusFile = PlusFileConfig | PlusFileValue
-type PlusFileCommons = {
+type PlusFileCommon = {
   locationId: LocationId
   filePath: FilePathResolved
 }
-// +config.js
-type PlusFileConfig = PlusFileCommons & {
+/** +config.js */
+type PlusFileConfig = PlusFileCommon & {
   isConfigFile: true
   fileExportsByConfigName: Record<
     string, // configName
@@ -36,8 +36,8 @@ type PlusFileConfig = PlusFileCommons & {
   // TypeScript convenience
   isNotLoaded?: undefined
 }
-// +{configName}.js
-type PlusFileValue = PlusFileCommons & {
+/** +{configName}.js */
+type PlusFileValue = PlusFileCommon & {
   isConfigFile: false
   configName: string
 } & (
@@ -58,6 +58,7 @@ type PlusFileValue = PlusFileCommons & {
 type PlusFilesByLocationId = Record<LocationId, PlusFile[]>
 
 async function getPlusFilesAll(userRootDir: string, esbuildCache: EsbuildCache): Promise<PlusFilesByLocationId> {
+  // TODO: rename plusFilePaths
   const plusFiles = await findPlusFiles(userRootDir)
   const configFiles: FilePathResolved[] = []
   const valueFiles: FilePathResolved[] = []
@@ -69,6 +70,7 @@ async function getPlusFilesAll(userRootDir: string, esbuildCache: EsbuildCache):
     }
   })
 
+  // TODO: rename plusFile
   let plusFilesAll: PlusFilesByLocationId = {}
 
   await Promise.all([
@@ -146,6 +148,7 @@ function assertPlusFiles(plusFilesAll: PlusFilesByLocationId) {
   assertExtensionsRequire(plusFiles)
 }
 
+// TODO: rename
 function getPlusFileFromConfigFile(
   configFile: ConfigFile,
   isExtensionConfig: boolean,
@@ -188,7 +191,9 @@ function sortMakeDeterministic(plusFile1: PlusFile, plusFile2: PlusFile): 0 | -1
   return plusFile1.filePath.filePathAbsoluteVite < plusFile2.filePath.filePathAbsoluteVite ? -1 : 1
 }
 
+// TODO: rename/remove findPlusFilePaths
 async function findPlusFiles(userRootDir: string): Promise<FilePathResolved[]> {
+  // TODO: rename crawlPlusFilePaths
   const files = await crawlPlusFiles(userRootDir)
 
   const plusFiles: FilePathResolved[] = files.map(({ filePathAbsoluteUserRootDir }) =>
