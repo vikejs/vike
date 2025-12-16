@@ -73,7 +73,6 @@ async function getPlusFilesAll(userRootDir: string, esbuildCache: EsbuildCache):
     }
   })
 
-  // TODO: rename plusFile
   let plusFilesByLocationId: PlusFilesByLocationId = {}
 
   await Promise.all([
