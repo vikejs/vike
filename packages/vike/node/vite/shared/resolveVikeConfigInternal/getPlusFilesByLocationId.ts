@@ -1,4 +1,4 @@
-export { getPlusFilesAll }
+export { getPlusFilesByLocationId }
 export type { PlusFileValue }
 export type { PlusFile }
 export type { PlusFilesByLocationId }
@@ -7,7 +7,7 @@ import { assert } from '../../utils.js'
 import { configDefinitionsBuiltIn } from './configDefinitionsBuiltIn.js'
 import { type LocationId, getLocationId } from './filesystemRouting.js'
 import { type EsbuildCache } from './transpileAndExecuteFile.js'
-import { crawlPlusFiles, getPlusFileValueConfigName } from './crawlPlusFiles.js'
+import { crawlPlusFilePaths, getPlusFileValueConfigName } from './crawlPlusFilePaths.js'
 import { getConfigFileExport } from './getConfigFileExport.js'
 import { type ConfigFile, loadConfigFile, loadValueFile, PointerImportLoaded } from './loadFileAtConfigTime.js'
 import { resolvePointerImport } from './resolvePointerImport.js'
@@ -16,12 +16,12 @@ import type { FilePathResolved } from '../../../../types/FilePath.js'
 import { assertExtensionsConventions, assertExtensionsRequire } from './assertExtensions.js'
 
 type PlusFile = PlusFileConfig | PlusFileValue
-type PlusFileCommons = {
+type PlusFileCommon = {
   locationId: LocationId
   filePath: FilePathResolved
 }
-// +config.js
-type PlusFileConfig = PlusFileCommons & {
+/** +config.js */
+type PlusFileConfig = PlusFileCommon & {
   isConfigFile: true
   fileExportsByConfigName: Record<
     string, // configName
@@ -36,8 +36,8 @@ type PlusFileConfig = PlusFileCommons & {
   // TypeScript convenience
   isNotLoaded?: undefined
 }
-// +{configName}.js
-type PlusFileValue = PlusFileCommons & {
+/** +{configName}.js */
+type PlusFileValue = PlusFileCommon & {
   isConfigFile: false
   configName: string
 } & (
@@ -57,34 +57,31 @@ type PlusFileValue = PlusFileCommons & {
   }
 type PlusFilesByLocationId = Record<LocationId, PlusFile[]>
 
-async function getPlusFilesAll(userRootDir: string, esbuildCache: EsbuildCache): Promise<PlusFilesByLocationId> {
-  const plusFiles = await findPlusFiles(userRootDir)
-  const configFiles: FilePathResolved[] = []
-  const valueFiles: FilePathResolved[] = []
-  plusFiles.forEach((f) => {
-    if (getPlusFileValueConfigName(f.filePathAbsoluteFilesystem) === 'config') {
-      configFiles.push(f)
-    } else {
-      valueFiles.push(f)
-    }
-  })
+async function getPlusFilesByLocationId(
+  userRootDir: string,
+  esbuildCache: EsbuildCache,
+): Promise<PlusFilesByLocationId> {
+  const plusFilePaths: FilePathResolved[] = (await crawlPlusFilePaths(userRootDir)).map(
+    ({ filePathAbsoluteUserRootDir }) => getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir }),
+  )
 
-  let plusFilesAll: PlusFilesByLocationId = {}
+  const plusFilesByLocationId: PlusFilesByLocationId = {}
+  await Promise.all(
+    plusFilePaths.map(async (filePath) => {
+      if (getPlusFileValueConfigName(filePath.filePathAbsoluteFilesystem) === 'config') {
+        // +config.js files
 
-  await Promise.all([
-    // Config files
-    ...configFiles.map(async (filePath) => {
-      const { filePathAbsoluteUserRootDir } = filePath
-      assert(filePathAbsoluteUserRootDir)
-      const { configFile, extendsConfigs } = await loadConfigFile(filePath, userRootDir, [], false, esbuildCache)
-      assert(filePath.filePathAbsoluteUserRootDir)
-      const locationId = getLocationId(filePathAbsoluteUserRootDir)
-      const plusFile = getPlusFileFromConfigFile(configFile, false, locationId, userRootDir)
+        const { filePathAbsoluteUserRootDir } = filePath
+        assert(filePathAbsoluteUserRootDir)
+        const { configFile, extendsConfigs } = await loadConfigFile(filePath, userRootDir, [], false, esbuildCache)
+        assert(filePath.filePathAbsoluteUserRootDir)
+        const locationId = getLocationId(filePathAbsoluteUserRootDir)
+        const plusFile = getPlusFileFromConfigFile(configFile, false, locationId, userRootDir)
 
-      plusFilesAll[locationId] = plusFilesAll[locationId] ?? []
-      plusFilesAll[locationId]!.push(plusFile)
-      extendsConfigs.forEach((extendsConfig) => {
-        /* We purposely use the same locationId because the Vike extension's config should only apply to where it's being extended from, for example:
+        plusFilesByLocationId[locationId] = plusFilesByLocationId[locationId] ?? []
+        plusFilesByLocationId[locationId]!.push(plusFile)
+        extendsConfigs.forEach((extendsConfig) => {
+          /* We purposely use the same locationId because the Vike extension's config should only apply to where it's being extended from, for example:
         ```js
         // /pages/admin/+config.js
 
@@ -100,48 +97,49 @@ async function getPlusFilesAll(userRootDir: string, esbuildCache: EsbuildCache):
         export default { extends: [vikeReact] }
         ```
         */
-        const plusFile = getPlusFileFromConfigFile(extendsConfig, true, locationId, userRootDir)
-        assertExtensionsConventions(plusFile)
-        plusFilesAll[locationId]!.push(plusFile)
-      })
-    }),
-    // Value files
-    ...valueFiles.map(async (filePath) => {
-      const { filePathAbsoluteUserRootDir } = filePath
-      assert(filePathAbsoluteUserRootDir)
+          const plusFile = getPlusFileFromConfigFile(extendsConfig, true, locationId, userRootDir)
+          assertExtensionsConventions(plusFile)
+          plusFilesByLocationId[locationId]!.push(plusFile)
+        })
+      } else {
+        // +{configName}.js files
 
-      const configName = getPlusFileValueConfigName(filePathAbsoluteUserRootDir)
-      assert(configName)
+        const { filePathAbsoluteUserRootDir } = filePath
+        assert(filePathAbsoluteUserRootDir)
 
-      const locationId = getLocationId(filePathAbsoluteUserRootDir)
+        const configName = getPlusFileValueConfigName(filePathAbsoluteUserRootDir)
+        assert(configName)
 
-      const plusFile: PlusFileValue = {
-        locationId,
-        filePath,
-        isConfigFile: false,
-        isNotLoaded: true,
-        configName,
+        const locationId = getLocationId(filePathAbsoluteUserRootDir)
+
+        const plusFile: PlusFileValue = {
+          locationId,
+          filePath,
+          isConfigFile: false,
+          isNotLoaded: true,
+          configName,
+        }
+        plusFilesByLocationId[locationId] = plusFilesByLocationId[locationId] ?? []
+        plusFilesByLocationId[locationId]!.push(plusFile)
+
+        // We don't have access to the custom config definitions defined by the user yet.
+        //  - If `configDef` is `undefined` => we load the file +{configName}.js later.
+        //  - We already need to load +meta.js here (to get the custom config definitions defined by the user)
+        await loadValueFile(plusFile, configDefinitionsBuiltIn, userRootDir, esbuildCache)
       }
-      plusFilesAll[locationId] = plusFilesAll[locationId] ?? []
-      plusFilesAll[locationId]!.push(plusFile)
-
-      // We don't have access to the custom config definitions defined by the user yet.
-      //  - If `configDef` is `undefined` => we load the file +{configName}.js later.
-      //  - We already need to load +meta.js here (to get the custom config definitions defined by the user)
-      await loadValueFile(plusFile, configDefinitionsBuiltIn, userRootDir, esbuildCache)
     }),
-  ])
+  )
 
   // Make lists element order deterministic
-  Object.entries(plusFilesAll).forEach(([_locationId, plusFiles]) => {
+  Object.entries(plusFilesByLocationId).forEach(([_locationId, plusFiles]) => {
     plusFiles.sort(sortMakeDeterministic)
   })
 
-  assertPlusFiles(plusFilesAll)
-  return plusFilesAll
+  assertPlusFiles(plusFilesByLocationId)
+  return plusFilesByLocationId
 }
-function assertPlusFiles(plusFilesAll: PlusFilesByLocationId) {
-  const plusFiles = Object.values(plusFilesAll).flat()
+function assertPlusFiles(plusFilesByLocationId: PlusFilesByLocationId) {
+  const plusFiles = Object.values(plusFilesByLocationId).flat()
   // The earlier we call it the better, so that +require can be used by Vike extensions to depend on new Vike features
   assertExtensionsRequire(plusFiles)
 }
@@ -151,7 +149,7 @@ function getPlusFileFromConfigFile(
   isExtensionConfig: boolean,
   locationId: LocationId,
   userRootDir: string,
-): PlusFile {
+) {
   const { fileExports, filePath, extendsFilePaths } = configFile
 
   const fileExportsByConfigName: PlusFileConfig['fileExportsByConfigName'] = {}
@@ -185,15 +183,6 @@ function getPlusFileFromConfigFile(
 
 // Make order deterministic (no other purpose)
 function sortMakeDeterministic(plusFile1: PlusFile, plusFile2: PlusFile): 0 | -1 | 1 {
+  // Sort by file path
   return plusFile1.filePath.filePathAbsoluteVite < plusFile2.filePath.filePathAbsoluteVite ? -1 : 1
-}
-
-async function findPlusFiles(userRootDir: string): Promise<FilePathResolved[]> {
-  const files = await crawlPlusFiles(userRootDir)
-
-  const plusFiles: FilePathResolved[] = files.map(({ filePathAbsoluteUserRootDir }) =>
-    getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir }),
-  )
-
-  return plusFiles
 }

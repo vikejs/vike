@@ -93,10 +93,10 @@ import {
   isJsonValue,
 } from '../../../shared-server-client/page-configs/serialize/serializeConfigValues.js'
 import {
-  getPlusFilesAll,
+  getPlusFilesByLocationId,
   type PlusFile,
   type PlusFilesByLocationId,
-} from './resolveVikeConfigInternal/getPlusFilesAll.js'
+} from './resolveVikeConfigInternal/getPlusFilesByLocationId.js'
 import { getEnvVarObject } from './getEnvVarObject.js'
 import { getVikeApiOperation } from '../../../shared-server-node/api-context.js'
 import { getCliOptions } from '../../cli/context.js'
@@ -291,13 +291,13 @@ async function resolveVikeConfigInternal(
   vikeVitePluginOptions: unknown,
   esbuildCache: EsbuildCache,
 ): Promise<VikeConfigInternal> {
-  const plusFilesAll = await getPlusFilesAll(userRootDir, esbuildCache)
+  const plusFilesByLocationId = await getPlusFilesByLocationId(userRootDir, esbuildCache)
 
-  const configDefinitionsResolved = await resolveConfigDefinitions(plusFilesAll, userRootDir, esbuildCache)
+  const configDefinitionsResolved = await resolveConfigDefinitions(plusFilesByLocationId, userRootDir, esbuildCache)
 
   const { pageConfigGlobal, pageConfigs } = getPageConfigsBuildTime(
     configDefinitionsResolved,
-    plusFilesAll,
+    plusFilesByLocationId,
     userRootDir,
   )
   if (!globalObject.isV1Design_) globalObject.isV1Design_ = pageConfigs.length > 0
@@ -334,21 +334,21 @@ function resolveGlobalConfig(pageConfigGlobal: PageConfigGlobalBuildTime, pageCo
 
 type ConfigDefinitionsResolved = Awaited<ReturnType<typeof resolveConfigDefinitions>>
 async function resolveConfigDefinitions(
-  plusFilesAll: PlusFilesByLocationId,
+  plusFilesByLocationId: PlusFilesByLocationId,
   userRootDir: string,
   esbuildCache: EsbuildCache,
 ) {
-  const plusFilesAllOrdered = Object.values(plusFilesAll)
+  const plusFilesByLocationIdOrdered = Object.values(plusFilesByLocationId)
     .flat()
-    .sort((plusFile1, plusFile2) => sortAfterInheritanceOrderGlobal(plusFile1, plusFile2, plusFilesAll, null))
+    .sort((plusFile1, plusFile2) => sortAfterInheritanceOrderGlobal(plusFile1, plusFile2, plusFilesByLocationId, null))
   const configDefinitionsGlobal = getConfigDefinitions(
-    // We use `plusFilesAll` in order to allow local Vike extensions to create global configs, and to set the value of global configs such as `+vite` (enabling Vike extensions to add Vite plugins).
-    plusFilesAllOrdered,
+    // We use `plusFilesByLocationId` in order to allow local Vike extensions to create global configs, and to set the value of global configs such as `+vite` (enabling Vike extensions to add Vite plugins).
+    plusFilesByLocationIdOrdered,
     (configDef) => !!configDef.global,
   )
-  await loadCustomConfigBuildTimeFiles(plusFilesAll, configDefinitionsGlobal, userRootDir, esbuildCache)
+  await loadCustomConfigBuildTimeFiles(plusFilesByLocationId, configDefinitionsGlobal, userRootDir, esbuildCache)
 
-  const configDefinitionsAll = getConfigDefinitions(Object.values(plusFilesAll).flat())
+  const configDefinitionsAll = getConfigDefinitions(Object.values(plusFilesByLocationId).flat())
   const configNamesKnownAll = Object.keys(configDefinitionsAll)
   const configNamesKnownGlobal = Object.keys(configDefinitionsGlobal)
   assert(configNamesKnownGlobal.every((configName) => configNamesKnownAll.includes(configName)))
@@ -365,8 +365,8 @@ async function resolveConfigDefinitions(
     }
   > = {}
   await Promise.all(
-    objectEntries(plusFilesAll).map(async ([locationIdPage, plusFiles]) => {
-      const plusFilesRelevant: PlusFile[] = objectEntries(plusFilesAll)
+    objectEntries(plusFilesByLocationId).map(async ([locationIdPage, plusFiles]) => {
+      const plusFilesRelevant: PlusFile[] = objectEntries(plusFilesByLocationId)
         .filter(([locationId]) => isInherited(locationId, locationIdPage))
         .map(([, plusFiles]) => plusFiles)
         .flat()
@@ -397,7 +397,7 @@ async function resolveConfigDefinitions(
   return configDefinitionsResolved
 }
 // Load value files (with `env.config===true`) of *custom* configs.
-// - The value files of *built-in* configs are already loaded at `getPlusFilesAll()`.
+// - The value files of *built-in* configs are already loaded at `getPlusFilesByLocationId()`.
 async function loadCustomConfigBuildTimeFiles(
   plusFiles: PlusFilesByLocationId | PlusFile[],
   configDefinitions: ConfigDefinitionsInternal,
@@ -425,7 +425,7 @@ async function loadCustomConfigBuildTimeFiles(
 }
 function getPageConfigsBuildTime(
   configDefinitionsResolved: ConfigDefinitionsResolved,
-  plusFilesAll: PlusFilesByLocationId,
+  plusFilesByLocationId: PlusFilesByLocationId,
   userRootDir: string,
 ) {
   const pageConfigGlobal: PageConfigGlobalBuildTime = {
@@ -436,18 +436,22 @@ function getPageConfigsBuildTime(
     const sources = resolveConfigValueSources(
       configName,
       configDef,
-      // We use `plusFilesAll` in order to allow local Vike extensions to create global configs, and to set the value of global configs such as `+vite` (enabling Vike extensions to add Vite plugins).
-      Object.values(plusFilesAll).flat(),
+      // We use `plusFilesByLocationId` in order to allow local Vike extensions to create global configs, and to set the value of global configs such as `+vite` (enabling Vike extensions to add Vite plugins).
+      Object.values(plusFilesByLocationId).flat(),
       userRootDir,
       true,
-      plusFilesAll,
+      plusFilesByLocationId,
     )
     if (sources.length === 0) return
     pageConfigGlobal.configValueSources[configName] = sources
   })
-  applyEffects(pageConfigGlobal.configValueSources, configDefinitionsResolved.configDefinitionsGlobal, plusFilesAll)
+  applyEffects(
+    pageConfigGlobal.configValueSources,
+    configDefinitionsResolved.configDefinitionsGlobal,
+    plusFilesByLocationId,
+  )
   sortConfigValueSources(pageConfigGlobal.configValueSources, null)
-  assertPageConfigGlobal(pageConfigGlobal, plusFilesAll)
+  assertPageConfigGlobal(pageConfigGlobal, plusFilesByLocationId)
 
   const pageConfigs: PageConfigBuildTime[] = objectEntries(configDefinitionsResolved.configDefinitionsLocal)
     .filter(([_locationId, { plusFiles }]) => isDefiningPage(plusFiles))
@@ -464,7 +468,7 @@ function getPageConfigsBuildTime(
             plusFilesRelevant,
             userRootDir,
             false,
-            plusFilesAll,
+            plusFilesByLocationId,
           )
           if (sources.length === 0) return
           configValueSources[configName] = sources
@@ -472,7 +476,7 @@ function getPageConfigsBuildTime(
 
       const pageConfigRoute = determineRouteFilesystem(locationId, configValueSources)
 
-      applyEffects(configValueSources, configDefinitionsLocal, plusFilesAll)
+      applyEffects(configValueSources, configDefinitionsLocal, plusFilesByLocationId)
       sortConfigValueSources(configValueSources, locationId)
 
       const pageConfig = {
@@ -493,21 +497,28 @@ function getPageConfigsBuildTime(
 
   return { pageConfigs, pageConfigGlobal }
 }
-function assertPageConfigGlobal(pageConfigGlobal: PageConfigGlobalBuildTime, plusFilesAll: PlusFilesByLocationId) {
+function assertPageConfigGlobal(
+  pageConfigGlobal: PageConfigGlobalBuildTime,
+  plusFilesByLocationId: PlusFilesByLocationId,
+) {
   Object.entries(pageConfigGlobal.configValueSources).forEach(([configName, sources]) => {
-    assertGlobalConfigLocation(configName, sources, plusFilesAll, pageConfigGlobal.configDefinitions)
+    assertGlobalConfigLocation(configName, sources, plusFilesByLocationId, pageConfigGlobal.configDefinitions)
   })
 }
 function assertGlobalConfigLocation(
   configName: string,
   sources: ConfigValueSource[],
-  plusFilesAll: PlusFilesByLocationId,
+  plusFilesByLocationId: PlusFilesByLocationId,
   configDefinitionsGlobal: ConfigDefinitionsInternal,
 ) {
   // Determine existing global +config.js files
   const configFilePathsGlobal: string[] = []
   const plusFilesGlobal: PlusFile[] = Object.values(
-    objectFromEntries(objectEntries(plusFilesAll).filter(([locationId]) => isGlobalLocation(locationId, plusFilesAll))),
+    objectFromEntries(
+      objectEntries(plusFilesByLocationId).filter(([locationId]) =>
+        isGlobalLocation(locationId, plusFilesByLocationId),
+      ),
+    ),
   ).flat()
   plusFilesGlobal
     .filter((i) => i.isConfigFile)
@@ -529,7 +540,7 @@ function assertGlobalConfigLocation(
     if (!filePathAbsoluteUserRootDir) return
     assert(!plusFile.isExtensionConfig)
 
-    if (!isGlobalLocation(source.locationId, plusFilesAll)) {
+    if (!isGlobalLocation(source.locationId, plusFilesByLocationId)) {
       const configDef = configDefinitionsGlobal[configName]
       assert(configDef)
       const isConditionallyGlobal = isCallable(configDef.global)
@@ -745,11 +756,11 @@ function sortAfterInheritanceOrderPage(
 function sortAfterInheritanceOrderGlobal(
   plusFile1: PlusFile,
   plusFile2: PlusFile,
-  plusFilesAll: PlusFilesByLocationId | null,
+  plusFilesByLocationId: PlusFilesByLocationId | null,
   configName: string | null,
 ): SortReturn {
-  if (plusFilesAll) {
-    const ret = makeFirst((plusFile: PlusFile) => isGlobalLocation(plusFile.locationId, plusFilesAll))(
+  if (plusFilesByLocationId) {
+    const ret = makeFirst((plusFile: PlusFile) => isGlobalLocation(plusFile.locationId, plusFilesByLocationId))(
       plusFile1,
       plusFile2,
     )
@@ -801,7 +812,7 @@ function sortPlusFilesSameLocationId(plusFile1: PlusFile, plusFile2: PlusFile, c
   }
 
   // Config set by +{configName}.js (highest precedence)
-  // No need to make it deterministic: the overall order is already deterministic, see sortMakeDeterministic() at getPlusFilesAll()
+  // No need to make it deterministic: the overall order is already deterministic, see sortMakeDeterministic() at getPlusFilesByLocationId()
   return 0
 }
 
@@ -811,7 +822,7 @@ function resolveConfigValueSources(
   plusFilesRelevant: PlusFile[],
   userRootDir: string,
   isGlobal: boolean,
-  plusFilesAll: PlusFilesByLocationId,
+  plusFilesByLocationId: PlusFilesByLocationId,
 ): ConfigValueSource[] {
   let sources: ConfigValueSource[] = plusFilesRelevant
     .filter((plusFile) => isDefiningConfig(plusFile, configName))
@@ -827,7 +838,7 @@ function resolveConfigValueSources(
     sources = sources.filter((source) => {
       assert(source.configEnv.config)
       assert(source.valueIsLoaded)
-      const valueIsGlobal = resolveIsGlobalValue(configDef.global, source, plusFilesAll)
+      const valueIsGlobal = resolveIsGlobalValue(configDef.global, source, plusFilesByLocationId)
       return isGlobal ? valueIsGlobal : !valueIsGlobal
     })
   }
@@ -970,13 +981,13 @@ function isDefiningPageConfig(configName: string): boolean {
 function resolveIsGlobalValue(
   configDefGlobal: ConfigDefinitionInternal['global'],
   source: ConfigValueSource,
-  plusFilesAll: PlusFilesByLocationId,
+  plusFilesByLocationId: PlusFilesByLocationId,
 ) {
   assert(source.valueIsLoaded)
   let isGlobal: boolean
   if (isCallable(configDefGlobal))
     isGlobal = configDefGlobal(source.value, {
-      isGlobalLocation: isGlobalLocation(source.locationId, plusFilesAll),
+      isGlobalLocation: isGlobalLocation(source.locationId, plusFilesByLocationId),
     })
   else isGlobal = configDefGlobal ?? false
   assert(typeof isGlobal === 'boolean')
@@ -1115,7 +1126,7 @@ function assertMetaUsage(
 function applyEffects(
   configValueSources: ConfigValueSources,
   configDefinitions: ConfigDefinitionsInternal,
-  plusFilesAll: PlusFilesByLocationId,
+  plusFilesByLocationId: PlusFilesByLocationId,
 ) {
   objectEntries(configDefinitions).forEach(([configNameEffect, configDefEffect]) => {
     const sourceEffect = configValueSources[configNameEffect]?.[0]
@@ -1131,7 +1142,7 @@ function applyEffects(
       configNameEffect,
       configDefEffect,
       configDefinitions,
-      plusFilesAll,
+      plusFilesByLocationId,
     )
     applyEffectMetaEnv(configModFromEffect, configValueSources, configDefEffect)
   })
@@ -1163,7 +1174,7 @@ function applyEffectConfVal(
   configNameEffect: string,
   configDefEffect: ConfigDefinitionInternal,
   configDefinitions: ConfigDefinitionsInternal,
-  plusFilesAll: PlusFilesByLocationId,
+  plusFilesByLocationId: PlusFilesByLocationId,
 ) {
   objectEntries(configModFromEffect).forEach(([configNameTarget, configValue]) => {
     if (configNameTarget === 'meta') return
@@ -1181,8 +1192,8 @@ function applyEffectConfVal(
       value: configValue,
     }
     assert(sourceEffect.valueIsLoaded)
-    const isValueGlobalSource = resolveIsGlobalValue(configDefEffect.global, sourceEffect, plusFilesAll)
-    const isValueGlobalTarget = resolveIsGlobalValue(configDef.global, configValueSource, plusFilesAll)
+    const isValueGlobalSource = resolveIsGlobalValue(configDefEffect.global, sourceEffect, plusFilesByLocationId)
+    const isValueGlobalTarget = resolveIsGlobalValue(configDef.global, configValueSource, plusFilesByLocationId)
     const isGlobalHumanReadable = (isGlobal: boolean) => `${isGlobal ? 'non-' : ''}global` as const
     // The error message make it sound like it's an inherent limitation, it actually isn't (both ways can make senses).
     assertUsage(
@@ -1475,8 +1486,8 @@ function resolveConfigEnv(configEnv: ConfigEnvInternal, filePath: FilePath) {
 }
 
 /** Whether configs defined in `locationId` apply to every page */
-function isGlobalLocation(locationId: LocationId, plusFilesAll: PlusFilesByLocationId): boolean {
-  const locationIdsPage = objectEntries(plusFilesAll)
+function isGlobalLocation(locationId: LocationId, plusFilesByLocationId: PlusFilesByLocationId): boolean {
+  const locationIdsPage = objectEntries(plusFilesByLocationId)
     .filter(([_locationId, plusFiles]) => isDefiningPage(plusFiles))
     .map(([locationId]) => locationId)
   return locationIdsPage.every((locId) => isInherited(locationId, locId))

@@ -2,12 +2,12 @@ import { expect, describe, it, assert } from 'vitest'
 import path from 'node:path'
 import fs from 'node:fs'
 // process.env.DEBUG = 'vike:crawl'
-const { crawlPlusFiles } = await import('../crawlPlusFiles')
+const { crawlPlusFilePaths } = await import('../crawlPlusFilePaths')
 import { fileURLToPath } from 'node:url'
 const __dirname_ = path.dirname(fileURLToPath(import.meta.url))
 const userRootDir = path.join(__dirname_, './test-file-structure')
 
-describe('crawlPlusFiles()', () => {
+describe('crawlPlusFilePaths()', () => {
   it('works', async ({ onTestFinished }) => {
     const { clean } = createFiles([
       'pages/about/+bla.mdx',
@@ -47,7 +47,7 @@ describe('crawlPlusFiles()', () => {
 })
 
 async function crawl() {
-  const res = await crawlPlusFiles(userRootDir)
+  const res = await crawlPlusFilePaths(userRootDir)
   const files = res.map((f) => f.filePathAbsoluteUserRootDir).sort()
   return files
 }
