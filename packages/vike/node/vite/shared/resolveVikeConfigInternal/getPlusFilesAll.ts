@@ -74,7 +74,7 @@ async function getPlusFilesAll(userRootDir: string, esbuildCache: EsbuildCache):
   })
 
   // TODO: rename plusFile
-  let plusFilesAll: PlusFilesByLocationId = {}
+  let plusFilesByLocationId: PlusFilesByLocationId = {}
 
   await Promise.all([
     // Config files
@@ -86,8 +86,8 @@ async function getPlusFilesAll(userRootDir: string, esbuildCache: EsbuildCache):
       const locationId = getLocationId(filePathAbsoluteUserRootDir)
       const plusFile = getPlusFileFromConfigFile(configFile, false, locationId, userRootDir)
 
-      plusFilesAll[locationId] = plusFilesAll[locationId] ?? []
-      plusFilesAll[locationId]!.push(plusFile)
+      plusFilesByLocationId[locationId] = plusFilesByLocationId[locationId] ?? []
+      plusFilesByLocationId[locationId]!.push(plusFile)
       extendsConfigs.forEach((extendsConfig) => {
         /* We purposely use the same locationId because the Vike extension's config should only apply to where it's being extended from, for example:
         ```js
@@ -107,7 +107,7 @@ async function getPlusFilesAll(userRootDir: string, esbuildCache: EsbuildCache):
         */
         const plusFile = getPlusFileFromConfigFile(extendsConfig, true, locationId, userRootDir)
         assertExtensionsConventions(plusFile)
-        plusFilesAll[locationId]!.push(plusFile)
+        plusFilesByLocationId[locationId]!.push(plusFile)
       })
     }),
     // Value files
@@ -127,8 +127,8 @@ async function getPlusFilesAll(userRootDir: string, esbuildCache: EsbuildCache):
         isNotLoaded: true,
         configName,
       }
-      plusFilesAll[locationId] = plusFilesAll[locationId] ?? []
-      plusFilesAll[locationId]!.push(plusFile)
+      plusFilesByLocationId[locationId] = plusFilesByLocationId[locationId] ?? []
+      plusFilesByLocationId[locationId]!.push(plusFile)
 
       // We don't have access to the custom config definitions defined by the user yet.
       //  - If `configDef` is `undefined` => we load the file +{configName}.js later.
@@ -138,12 +138,12 @@ async function getPlusFilesAll(userRootDir: string, esbuildCache: EsbuildCache):
   ])
 
   // Make lists element order deterministic
-  Object.entries(plusFilesAll).forEach(([_locationId, plusFiles]) => {
+  Object.entries(plusFilesByLocationId).forEach(([_locationId, plusFiles]) => {
     plusFiles.sort(sortMakeDeterministic)
   })
 
-  assertPlusFiles(plusFilesAll)
-  return plusFilesAll
+  assertPlusFiles(plusFilesByLocationId)
+  return plusFilesByLocationId
 }
 function assertPlusFiles(plusFilesAll: PlusFilesByLocationId) {
   const plusFiles = Object.values(plusFilesAll).flat()
