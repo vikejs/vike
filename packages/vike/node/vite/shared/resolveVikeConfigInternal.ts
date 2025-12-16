@@ -936,10 +936,10 @@ function getConfigValueSources(
   }
 
   // Defined by value file, i.e. +{configName}.js
-  const configEnvResolved = resolveConfigEnv(configDef.env, plusFile.filePath)
-  assert(confVal.valueIsLoaded === !!configEnvResolved.config)
-  return [
-    {
+  if (!plusFile.isConfigFile) {
+    const configEnvResolved = resolveConfigEnv(configDef.env, plusFile.filePath)
+    assert(confVal.valueIsLoaded === !!configEnvResolved.config)
+    const configValueSource: ConfigValueSource = {
       ...configValueSourceCommon,
       ...confVal,
       configEnv: configEnvResolved,
@@ -953,8 +953,11 @@ function getConfigValueSources(
             : // Side-effect config (e.g. `export { frontmatter }` of .md files)
               [configName],
       },
-    },
-  ]
+    }
+    return [configValueSource]
+  }
+
+  assert(false)
 }
 function isDefiningPage(plusFiles: PlusFile[]): boolean {
   for (const plusFile of plusFiles) {
