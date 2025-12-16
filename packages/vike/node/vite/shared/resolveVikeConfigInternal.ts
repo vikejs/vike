@@ -844,36 +844,6 @@ function getConfigValueSources(
   configDef: ConfigDefinitionInternal,
   userRootDir: string,
 ): ConfigValueSource[] {
-  // Handle pointer imports (multiple sources)
-  if (plusFile.isConfigFile) {
-    const pointerImports = plusFile.pointerImportsByConfigName[configName]
-    if (pointerImports) {
-      return pointerImports.map((pointerImport) => {
-        const configValueSourceCommon = {
-          locationId: plusFile.locationId,
-          plusFile,
-        }
-        const value = pointerImport.fileExportValueLoaded
-          ? {
-              valueIsLoaded: true as const,
-              value: pointerImport.fileExportValue,
-            }
-          : {
-              valueIsLoaded: false as const,
-            }
-        return {
-          ...configValueSourceCommon,
-          ...value,
-          configEnv: resolveConfigEnv(configDef.env, pointerImport.fileExportPath),
-          valueIsLoadedWithImport: true,
-          valueIsDefinedByPlusValueFile: false,
-          definedAt: pointerImport.fileExportPath,
-        }
-      })
-    }
-  }
-
-  // Single source - inline the logic from getConfigValueSource
   const confVal = getConfVal(plusFile, configName)
   assert(confVal)
 
@@ -908,24 +878,49 @@ function getConfigValueSources(
         fileExportPathToShowToUser: [],
       }
     }
-    return [
-      {
-        ...configValueSourceCommon,
-        valueIsLoaded: true,
-        value: valueFilePath,
-        valueIsFilePath: true,
-        configEnv: configDef.env,
-        valueIsLoadedWithImport: false,
-        valueIsDefinedByPlusValueFile: false,
-        definedAt: definedAtFilePath,
-      },
-    ]
+    const configValueSource: ConfigValueSource = {
+      ...configValueSourceCommon,
+      valueIsLoaded: true,
+      value: valueFilePath,
+      valueIsFilePath: true,
+      configEnv: configDef.env,
+      valueIsLoadedWithImport: false,
+      valueIsDefinedByPlusValueFile: false,
+      definedAt: definedAtFilePath,
+    }
+    return [configValueSource]
   }
 
   // +config.js
   if (plusFile.isConfigFile) {
     assert(confVal.valueIsLoaded)
 
+    // Defined over pointer import
+    const pointerImport = plusFile.pointerImportsByConfigName[configName]
+    if (pointerImport) {
+      return pointerImport.map((pointerImport) => {
+        const configValueSourceCommon = {
+          locationId: plusFile.locationId,
+          plusFile,
+        }
+        const value = pointerImport.fileExportValueLoaded
+          ? {
+              valueIsLoaded: true as const,
+              value: pointerImport.fileExportValue,
+            }
+          : {
+              valueIsLoaded: false as const,
+            }
+        return {
+          ...configValueSourceCommon,
+          ...value,
+          configEnv: resolveConfigEnv(configDef.env, pointerImport.fileExportPath),
+          valueIsLoadedWithImport: true,
+          valueIsDefinedByPlusValueFile: false,
+          definedAt: pointerImport.fileExportPath,
+        }
+      })
+    }
     // Defined inside +config.js (not via pointer import)
     return [
       {
