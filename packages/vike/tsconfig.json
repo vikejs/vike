@@ -14,7 +14,7 @@
     "esModuleInterop": true,
     "moduleResolution": "Node16",
     // Libs
-    "lib": ["DOM", "DOM.Iterable", "ES2021"],
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "types": ["vite/client"],
     // Output
     "target": "ES2020",
