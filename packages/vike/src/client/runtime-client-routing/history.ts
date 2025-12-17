@@ -7,7 +7,7 @@ export type { HistoryInfo }
 export type { ScrollPosition }
 
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
-import { assert, assertUsage, getGlobalObject, isObject, deepEqual, redirectHard } from './utils.js'
+import { assert, assertUsage, getGlobalObject, isObject, redirectHard } from './utils.js'
 
 const globalObject = getGlobalObject('history.ts', {
   monkeyPatched: false,
@@ -127,32 +127,24 @@ function monkeyPatchHistoryAPI() {
               triggeredBy: 'user',
             },
           }
-      assertIsEnhanced(state)
       funcOriginal(state, ...rest)
-      // TO-DO/eventually remove excessive assertions to save client-side KBs
-      assert(isEqual(state, window.history.state as unknown))
+      assertIsEnhanced(window.history.state as unknown)
 
       globalObject.previous = getHistoryInfo()
 
       // Workaround https://github.com/vikejs/vike/issues/2504#issuecomment-3149764736
       queueMicrotask(() => {
-        if (isEqual(state, window.history.state as unknown)) return
+        if (isEnhanced(window.history.state)) return
         Object.assign(state, window.history.state as unknown)
-        assertIsEnhanced(state)
         replaceHistoryStateOriginal(
           state,
           /* Don't overwrite the URL changed by ohter tools https://github.com/vikejs/vike/issues/2894#issuecomment-3662644369
          rest[1],
           */
         )
-        assert(isEqual(state, window.history.state as unknown))
       })
     }
   })
-}
-
-function isEqual(state1: unknown, state2: unknown) {
-  return deepEqual((state1 as any)?.vike, (state2 as any)?.vike)
 }
 
 function isEnhanced(state: unknown): state is StateEnhanced {
