@@ -18,7 +18,7 @@ jobs:
         uses: pascalgn/automerge-action@v0.16.4
         env:
           MERGE_METHOD: squash
-          MERGE_COMMIT_MESSAGE: pull-request-title
+          MERGE_COMMIT_MESSAGE: "{pullRequest.title} (#{pullRequest.number})"
           MERGE_FILTER_AUTHOR: dependabot[bot]
           MERGE_LABELS: dependencies
           UPDATE_LABELS: dependencies
