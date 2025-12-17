@@ -93,7 +93,7 @@ function replaceHistoryState(state: StateEnhanced, url?: string) {
   window.history.replaceState(state, '', url_)
   assertIsEnhanced(window.history.state as unknown)
 }
-function replaceHistoryStateOriginal(state: unknown, url: Parameters<typeof window.history.replaceState>[2]) {
+function replaceHistoryStateOriginal(state: unknown, url?: Parameters<typeof window.history.replaceState>[2]) {
   // Bypass all monkey patches.
   // - Useful, for example, to avoid other tools listening to history.replaceState() calls
   History.prototype.replaceState.bind(window.history)(state, '', url)
@@ -139,7 +139,12 @@ function monkeyPatchHistoryAPI() {
         if (isEqual(state, window.history.state as unknown)) return
         Object.assign(state, window.history.state as unknown)
         assertIsEnhanced(state)
-        replaceHistoryStateOriginal(state, rest[1])
+        replaceHistoryStateOriginal(
+          state,
+          /* Don't overwrite the URL changed by ohter tools https://github.com/vikejs/vike/issues/2894#issuecomment-3662644369
+         rest[1],
+          */
+        )
         assert(isEqual(state, window.history.state as unknown))
       })
     }
