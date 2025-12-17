@@ -357,11 +357,7 @@ async function processStream(
         }
       })
     },
-    async onEnd(
-      /* Should we use this `isCancel`? Maybe we can skip `injectStringAtEnd()`?
-      isCancel,
-      //*/
-    ) {
+    async onEnd(isCancel) {
       try {
         assert(!onEndWasCalled)
         onEndWasCalled = true
@@ -370,13 +366,13 @@ async function processStream(
         onStreamDataOrEnd(() => {
           streamOriginalEnded = true
         })
-        if (injectStringAtEnd) {
+        if (injectStringAtEnd && !isCancel) {
           const injectedChunk = await injectStringAtEnd()
           writeStream(injectedChunk)
         }
         await promiseReadyToWrite // E.g. if the user calls the pipe wrapper after the original writable has ended
         assert(isReady())
-        flushBuffer()
+        if (!isCancel) flushBuffer()
         streamClosed = true
         debug('stream ended')
       } catch (err) {
@@ -644,7 +640,7 @@ async function createStreamWrapper({
       if (isClosed) return
       await onEnd(isCancel)
       isClosed = true
-      controllerProxy.close()
+      if (!isCancel) controllerProxy.close()
     }
     let controllerProxy: ReadableStreamController<unknown>
     assertReadableStreamConstructor()
@@ -664,6 +660,7 @@ async function createStreamWrapper({
         })
       },
       async cancel(...args) {
+        debug('stream cancelled')
         isCancel = true
         await readableOriginal.cancel(...args)
         // If readableOriginal has implemented readableOriginal.cancel() then the onEnd() callback and therefore closeStream() may already have been called at this point
@@ -673,6 +670,7 @@ async function createStreamWrapper({
 
     const writeChunk = (chunk: unknown) => {
       if (
+        !isCancel &&
         // If readableOriginal doesn't implement readableOriginal.cancel() then it may still emit data after we close the stream. We therefore need to check whether the steam is closed.
         !isClosed
       ) {
