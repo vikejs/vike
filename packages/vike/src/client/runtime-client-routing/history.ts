@@ -138,7 +138,7 @@ function monkeyPatchHistoryAPI() {
         Object.assign(state, window.history.state as unknown)
         replaceHistoryStateOriginal(
           state,
-          /* Don't overwrite the URL changed by ohter tools https://github.com/vikejs/vike/issues/2894#issuecomment-3662644369
+          /* Don't overwrite the URL changed by other tools https://github.com/vikejs/vike/issues/2894#issuecomment-3662644369
          rest[1],
           */
         )
