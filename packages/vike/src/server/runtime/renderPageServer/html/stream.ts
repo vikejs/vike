@@ -665,7 +665,12 @@ async function createStreamWrapper({
       },
       async cancel(...args) {
         isCancel = true
-        await readableOriginal.cancel(...args)
+        try {
+          await readableOriginal.cancel(...args)
+        } catch (err) {
+          // Ignore errors from canceling a locked stream - this can happen when the client
+          // disconnects while we're still reading from the stream (the stream is locked by handleReadableWeb)
+        }
         // If readableOriginal has implemented readableOriginal.cancel() then the onEnd() callback and therefore closeStream() may already have been called at this point
         await closeStream()
       },
