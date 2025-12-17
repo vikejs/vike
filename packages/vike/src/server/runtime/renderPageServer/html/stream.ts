@@ -324,7 +324,7 @@ async function processStream(
     flushStream() // Sets shouldFlushStream to true
   }
 
-  // We call onStreamEvent() also when the stream ends in order to properly handle the situation when the stream didn't emit any data
+  // We call onStreamDataOrEnd() also when the stream ends in order to properly handle the situation when the stream didn't emit any data
   const onStreamDataOrEnd = (cb: () => void) => {
     assert(streamOriginalEnded === false)
     streamOriginalHasStartedEmitting = true
@@ -366,7 +366,7 @@ async function processStream(
         assert(!onEndWasCalled)
         onEndWasCalled = true
         debug('stream end')
-        // We call onStreamEvent() also here in case the stream didn't emit any data
+        // We call onStreamDataOrEnd() also here in case the stream didn't emit any data
         onStreamDataOrEnd(() => {
           streamOriginalEnded = true
         })
