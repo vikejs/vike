@@ -2,7 +2,7 @@ import { Link } from '@brillout/docpress'
 
 The `NODE_ENV` environment variable (`process.env.NODE_ENV`) is a <Link href="#see-also">widespread convention</Link> used by tools to distinguish between development and production environments.
 
-In development, make sure `process.env.NODE_ENV` is one of:
+In development, make sure `process.env.NODE_ENV` is one of the following:
 
 ```js
 // In development:
@@ -12,7 +12,7 @@ process.env.NODE_ENV === ''            // ✅
 process.env.NODE_ENV === undefined     // ✅
 ```
 
-In production, it should be any other value.
+In production, it should be any value other than the ones above.
 
 > It's important to respect this convention: many tools run erroneously otherwise.
 
