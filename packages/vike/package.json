@@ -221,10 +221,10 @@
   "types": "./dist/server/runtime/index.d.ts",
   "type": "module",
   "bin": {
-    "vike": "./node/cli/bin.js"
+    "vike": "./bin.js"
   },
   "files": [
-    "./node/cli/bin.js",
+    "./bin.js",
     "./dist/",
     "./abort.js",
     "./api.js",
