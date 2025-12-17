@@ -1,26 +1,25 @@
 {
   "compilerOptions": {
-    // Output
-    "target": "ES2020",
-    "module": "Node16",
-    "outDir": "./dist/",
-    "rootDir": "./",
-    "declaration": true,
-    "noEmitOnError": false,
-    // Resolution
-    "moduleResolution": "Node16",
-    "esModuleInterop": true,
-    // Libs
-    "lib": ["ES2021", "DOM", "DOM.Iterable"],
-    "types": ["vite/client"],
+    // Misc
+    "skipLibCheck": true,
+    "noErrorTruncation": true,
     // Strictness
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    // Misc
-    "skipLibCheck": true,
-    "noErrorTruncation": true
+    // Resolution
+    "esModuleInterop": true,
+    "moduleResolution": "Node16",
+    // Libs
+    "lib": ["DOM", "DOM.Iterable", "ES2021"],
+    "types": ["vite/client"],
+    // Output
+    "target": "ES2020",
+    "module": "Node16",
+    "outDir": "./dist/",
+    "rootDir": "./",
+    "declaration": true
   },
-  "exclude": ["**/*.spec.ts", "./node_modules/", "./dist/"]
+  "exclude": ["**/*.spec.ts"]
 }
