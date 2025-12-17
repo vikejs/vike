@@ -2062,8 +2062,8 @@ importers:
         specifier: ^0.9.7
         version: 0.9.7(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
       vike-vue-pinia:
-        specifier: ^0.2.4
-        version: 0.2.4(pinia@3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3)))(vike-vue@0.9.7(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)))(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
+        specifier: ^0.2.5
+        version: 0.2.5(pinia@3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3)))(vike-vue@0.9.7(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)))(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
       vite:
         specifier: ^6.1.0
         version: 6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
@@ -7757,8 +7757,8 @@ packages:
       vike: '>=0.4.195'
       vite: '>=5.0.0'
 
-  vike-vue-pinia@0.2.4:
-    resolution: {integrity: sha512-QFKBDGB6KW6mrujTcsYJKPcYbA7Wz362FQqtssa78QpgJ0Cxx32+Dl2Jf/KSuzxVVAtxCmMx+5GA3Wji57CjNQ==}
+  vike-vue-pinia@0.2.5:
+    resolution: {integrity: sha512-LUl3vS8SVVTgSH5P5UH4SR7kaC1R3apziWV7p9J4qOfcDaBTu2kGtY65eT6glWcmIJ7PXPbap+5LJo/BGUzcoA==}
     peerDependencies:
       pinia: '>=3.0.0'
       vike: '>=0.4.249'
@@ -14740,7 +14740,7 @@ snapshots:
       - '@testing-library/jest-dom'
       - supports-color
 
-  vike-vue-pinia@0.2.4(pinia@3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3)))(vike-vue@0.9.7(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)))(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)):
+  vike-vue-pinia@0.2.5(pinia@3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3)))(vike-vue@0.9.7(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)))(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)):
     dependencies:
       pinia: 3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3))
       vike: link:packages/vike
