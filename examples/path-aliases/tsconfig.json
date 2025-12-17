@@ -12,8 +12,5 @@
     "paths": {
       "#root/*": ["./*"]
     }
-  },
-  "ts-node": {
-    "transpileOnly": true
   }
 }
