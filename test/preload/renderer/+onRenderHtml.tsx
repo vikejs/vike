@@ -2,8 +2,8 @@ export default onRenderHtml
 
 import React from 'react'
 import { renderToString } from 'react-dom/server'
-import { escapeInject, dangerouslySkipEscape } from '../../../packages/vike/server/runtime'
-import type { InjectFilterEntry } from '../../../packages/vike/types'
+import { escapeInject, dangerouslySkipEscape } from '../../../packages/vike/src/server/runtime'
+import type { InjectFilterEntry } from '../../../packages/vike/src/types'
 // @ts-ignore
 import { Layout } from './Layout'
 
