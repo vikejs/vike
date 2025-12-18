@@ -8,7 +8,9 @@ export type { PointerImportData }
 
 // Notes about `with { type: 'pointer' }`
 // - It works well with TypeScript: it doesn't complain upon `with { type: 'unknown-to-typescript' }` and go-to-definition & types are preserved: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-3.html#import-attributes
-// - Babel parser support for import attributes: https://babeljs.io/docs/babel-parser#plugins
+// - Babel seems to support it: https://github.com/acornjs/acorn/issues/1136#issuecomment-1203671368
+// - Acorn support for import attributes: https://github.com/acornjs/acorn/issues/983
+//   - Acorn plugin: https://github.com/acornjs/acorn/issues/983
 //   - Isn't stage 4 yet: https://github.com/tc39/proposal-import-attributes
 // - Using a import path suffix such as `import { Layout } from './Layout?real` breaks TypeScript, and TypeScript isn't working on supporting query params: https://github.com/microsoft/TypeScript/issues/10988#issuecomment-867135453
 // - Node.js >=21 supports import attributes: https://nodejs.org/api/esm.html#import-attributes
@@ -122,8 +124,8 @@ function getImports(code: string): ImportDeclaration[] {
   const result = parseSync(code, {
     sourceType: 'module',
   })
-  if (!result) throw new Error('Failed to parse code')
-  const { body } = result.program as any as Program
+  assert(result)
+  const { body } = result.program as Program
   const imports: ImportDeclaration[] = []
   body.forEach((node) => {
     if (node.type === 'ImportDeclaration') imports.push(node)
@@ -206,7 +208,8 @@ function assertPointerImportPath(importPath: string) {
   return isImportPath(importPath) || isFilePathAbsolute(importPath)
 }
 
-// Babel parser provides start/end in the AST nodes
+// Seems to be needed for both Babel and Acorn
+// https://github.com/acornjs/acorn/issues/1136#issuecomment-1203671368
 declare module 'estree' {
   interface BaseNodeWithoutComments {
     start: number
