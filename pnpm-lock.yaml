@@ -1944,8 +1944,8 @@ importers:
         specifier: 0.6.16
         version: 0.6.16(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
       vike-react-zustand:
-        specifier: ^0.1.6
-        version: 0.1.6(react-dom@19.2.1(react@19.2.1))(react-streaming@0.4.15(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(react@19.2.1)(vike-react@0.6.16(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike))(vike@packages+vike)(zustand@5.0.9(@types/react@19.2.7)(immer@10.2.0)(react@19.2.1)(use-sync-external-store@1.5.0(react@19.2.1)))
+        specifier: ^0.1.7
+        version: 0.1.7(react-dom@19.2.1(react@19.2.1))(react-streaming@0.4.15(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(react@19.2.1)(vike-react@0.6.16(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike))(vike@packages+vike)(zustand@5.0.9(@types/react@19.2.7)(immer@10.2.0)(react@19.2.1)(use-sync-external-store@1.5.0(react@19.2.1)))
       vite:
         specifier: ^7.2.2
         version: 7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
@@ -7549,8 +7549,8 @@ packages:
       vike: '>=0.4.249'
       vike-react: '>=0.6.3'
 
-  vike-react-zustand@0.1.6:
-    resolution: {integrity: sha512-0juU/lTqYP2tnZhUePJeiGEOgZz7jCWDAVRQIGVpf9LxOs0w1r4zNTdTCyu1iwT1aCkou1JE5ir5b6/N9AVPdA==}
+  vike-react-zustand@0.1.7:
+    resolution: {integrity: sha512-49eTe4j57ibcIvLXFEH1Fl1FOaCAj61DDW7TEIivN0ohptZUS13WS1VvqA4Yc4+o019ixYjnk1u2+XcsCXbIYg==}
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
@@ -14314,7 +14314,7 @@ snapshots:
       vike: link:packages/vike
       vike-react: 0.6.16(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
 
-  vike-react-zustand@0.1.6(react-dom@19.2.1(react@19.2.1))(react-streaming@0.4.15(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(react@19.2.1)(vike-react@0.6.16(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike))(vike@packages+vike)(zustand@5.0.9(@types/react@19.2.7)(immer@10.2.0)(react@19.2.1)(use-sync-external-store@1.5.0(react@19.2.1))):
+  vike-react-zustand@0.1.7(react-dom@19.2.1(react@19.2.1))(react-streaming@0.4.15(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(react@19.2.1)(vike-react@0.6.16(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike))(vike@packages+vike)(zustand@5.0.9(@types/react@19.2.7)(immer@10.2.0)(react@19.2.1)(use-sync-external-store@1.5.0(react@19.2.1))):
     dependencies:
       '@babel/core': 7.28.5
       '@babel/types': 7.28.5
