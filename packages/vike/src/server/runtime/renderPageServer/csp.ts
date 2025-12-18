@@ -42,6 +42,7 @@ async function generateNonce(): Promise<string> {
 
 type PageContextCspNonce = Pick<PageContextServer, 'cspNonce'>
 function inferNonceAttr(pageContext: PageContextCspNonce): string {
+  // No need to escape the injected HTML — pageContext.cspNone is controlled by the developer, not by the website visitor (I wouldn't know why the developer would set +csp.none to a value coming from the database)
   const nonceAttr = pageContext.cspNonce ? ` nonce="${pageContext.cspNonce}"` : ''
   return nonceAttr
 }
@@ -50,5 +51,6 @@ function addCspResponseHeader(pageContext: PageContextCspNonce, headersResponse:
   assert(pageContext.cspNonce === null || typeof pageContext.cspNonce === 'string') // ensure resolvePageContextCspNone() is called before addCspResponseHeader()
   if (!pageContext.cspNonce) return
   if (headersResponse.get('Content-Security-Policy')) return
+  // No need to sanitize the injected header — see comment above about not escaping HTML
   headersResponse.set('Content-Security-Policy', `script-src 'self' 'nonce-${pageContext.cspNonce}'`)
 }
