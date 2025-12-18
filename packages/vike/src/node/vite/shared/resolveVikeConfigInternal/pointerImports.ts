@@ -121,9 +121,6 @@ function transformPointerImports(
 function getImports(code: string): ImportDeclaration[] {
   const result = parseSync(code, {
     sourceType: 'module',
-    parserOpts: {
-      plugins: ['typescript', 'jsx'],
-    },
   })
   if (!result) throw new Error('Failed to parse code')
   const { body } = result.program as any as Program
