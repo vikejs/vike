@@ -64,7 +64,7 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
 
   test('todos - add to-do', async () => {
     expect(await getNumberOfItems()).toBe(2)
-    if (isDev) await sleep(500) // Seems to be required, otherwise the test is flaky. I don't know why.
+    if (isDev) await sleep(1000) // Seems to be required, otherwise the test is flaky. I don't know why.
     await page.fill('input[type="text"]', 'Buy bananas')
     await page.click('button[type="submit"]')
     const expectBananas = async () => {
