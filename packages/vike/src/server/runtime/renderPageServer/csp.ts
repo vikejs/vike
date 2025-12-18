@@ -42,6 +42,7 @@ async function generateNonce(): Promise<string> {
 
 type PageContextCspNonce = Pick<PageContextServer, 'cspNonce'>
 function inferNonceAttr(pageContext: PageContextCspNonce): string {
+  // TODO/ai use escapeHtml()
   const nonceAttr = pageContext.cspNonce ? ` nonce="${pageContext.cspNonce}"` : ''
   return nonceAttr
 }
@@ -50,5 +51,6 @@ function addCspResponseHeader(pageContext: PageContextCspNonce, headersResponse:
   assert(pageContext.cspNonce === null || typeof pageContext.cspNonce === 'string') // ensure resolvePageContextCspNone() is called before addCspResponseHeader()
   if (!pageContext.cspNonce) return
   if (headersResponse.get('Content-Security-Policy')) return
+  // TODO/ai do we need to escape this as well?
   headersResponse.set('Content-Security-Policy', `script-src 'self' 'nonce-${pageContext.cspNonce}'`)
 }
