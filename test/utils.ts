@@ -193,5 +193,5 @@ function testRunClassic(
  * I don't know why it's sometimes needed, there seem to be some kind of race condition?
  */
 async function sleepBeforeEditFile() {
-  await sleep(500)
+  await sleep(1000)
 }
