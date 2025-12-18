@@ -50,5 +50,5 @@ function addCspResponseHeader(pageContext: PageContextCspNonce, headersResponse:
   assert(pageContext.cspNonce === null || typeof pageContext.cspNonce === 'string') // ensure resolvePageContextCspNone() is called before addCspResponseHeader()
   if (!pageContext.cspNonce) return
   if (headersResponse.get('Content-Security-Policy')) return
-  headersResponse.set('Content-Security-Policy', `script-src 'self' 'nonce-${escapeHtml(pageContext.cspNonce)}'`)
+  headersResponse.set('Content-Security-Policy', `script-src 'self' 'nonce-${pageContext.cspNonce}'`)
 }
