@@ -4,14 +4,18 @@ export { addCspResponseHeader }
 export type { PageContextCspNonce }
 
 import { import_ } from '@brillout/import'
-import { assert, escapeHtml, sanitizeHttpHeader } from '../../utils.js'
+import { assert, sanitizeHttpHeader } from '../../utils.js'
 import type { PageContextConfig } from '../../../shared-server-client/getPageFiles.js'
 import type { PageContextServer } from '../../../types/PageContext.js'
 
 async function resolvePageContextCspNone(
   pageContext: PageContextConfig & Partial<PageContextCspNonce>,
 ): Promise<null | { cspNonce: string | null }> {
-  if (pageContext.cspNonce) return null // already set by user e.g. `renderPage({ cspNonce: '123456789' })`
+  if (pageContext.cspNonce) {
+    // Sanitize user-provided nonce to prevent both header injection and XSS
+    pageContext.cspNonce = sanitizeHttpHeader(pageContext.cspNonce)
+    return null
+  }
 
   const { csp } = pageContext.config
   const pageContextAddendum = { cspNonce: null as string | null }
@@ -20,7 +24,9 @@ async function resolvePageContextCspNone(
     if (csp.nonce === true) {
       pageContextAddendum.cspNonce = await generateNonce()
     } else {
-      pageContextAddendum.cspNonce = await csp.nonce(pageContext as any)
+      const nonce = await csp.nonce(pageContext as any)
+      // Sanitize custom nonce to prevent both header injection and XSS
+      pageContextAddendum.cspNonce = sanitizeHttpHeader(nonce)
     }
   }
 
@@ -42,7 +48,7 @@ async function generateNonce(): Promise<string> {
 
 type PageContextCspNonce = Pick<PageContextServer, 'cspNonce'>
 function inferNonceAttr(pageContext: PageContextCspNonce): string {
-  const nonceAttr = pageContext.cspNonce ? ` nonce="${escapeHtml(pageContext.cspNonce)}"` : ''
+  const nonceAttr = pageContext.cspNonce ? ` nonce="${pageContext.cspNonce}"` : ''
   return nonceAttr
 }
 
@@ -50,6 +56,5 @@ function addCspResponseHeader(pageContext: PageContextCspNonce, headersResponse:
   assert(pageContext.cspNonce === null || typeof pageContext.cspNonce === 'string') // ensure resolvePageContextCspNone() is called before addCspResponseHeader()
   if (!pageContext.cspNonce) return
   if (headersResponse.get('Content-Security-Policy')) return
-  const sanitizedNonce = sanitizeHttpHeader(pageContext.cspNonce)
-  headersResponse.set('Content-Security-Policy', `script-src 'self' 'nonce-${sanitizedNonce}'`)
+  headersResponse.set('Content-Security-Policy', `script-src 'self' 'nonce-${pageContext.cspNonce}'`)
 }
