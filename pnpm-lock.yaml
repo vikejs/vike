@@ -788,6 +788,9 @@ importers:
 
   packages/vike:
     dependencies:
+      '@babel/parser':
+        specifier: ^7.26.3
+        version: 7.28.5
       '@brillout/import':
         specifier: ^0.2.6
         version: 0.2.6
@@ -803,9 +806,6 @@ importers:
       '@brillout/vite-plugin-server-entry':
         specifier: ^0.7.15
         version: 0.7.15
-      acorn:
-        specifier: ^8.0.0
-        version: 8.15.0
       cac:
         specifier: ^6.0.0
         version: 6.7.14

@@ -8,8 +8,7 @@ export type { PointerImportData }
 
 // Notes about `with { type: 'pointer' }`
 // - It works well with TypeScript: it doesn't complain upon `with { type: 'unknown-to-typescript' }` and go-to-definition & types are preserved: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-3.html#import-attributes
-// - Acorn support for import attributes: https://github.com/acornjs/acorn/issues/983
-//   - Acorn plugin: https://github.com/acornjs/acorn/issues/983
+// - Babel parser support for import attributes: https://babeljs.io/docs/babel-parser#plugins
 //   - Isn't stage 4 yet: https://github.com/tc39/proposal-import-attributes
 // - Using a import path suffix such as `import { Layout } from './Layout?real` breaks TypeScript, and TypeScript isn't working on supporting query params: https://github.com/microsoft/TypeScript/issues/10988#issuecomment-867135453
 // - Node.js >=21 supports import attributes: https://nodejs.org/api/esm.html#import-attributes
@@ -21,7 +20,7 @@ export type { PointerImportData }
 //   - Esbuild removes comments: https://github.com/evanw/esbuild/issues/1439#issuecomment-877656182
 //   - Using source maps to track these magic comments is brittle (source maps can easily break)
 
-import { parse } from 'acorn'
+import { parse } from '@babel/parser'
 import type { Program, Identifier, ImportDeclaration } from 'estree'
 import { assert, assertUsage, assertWarning, isFilePathAbsolute, isImportPath, styleFileRE } from '../../utils.js'
 import pc from '@brillout/picocolors'
@@ -120,11 +119,11 @@ function transformPointerImports(
   return codeMod
 }
 function getImports(code: string): ImportDeclaration[] {
-  const { body } = parse(code, {
-    ecmaVersion: 'latest',
+  const ast = parse(code, {
     sourceType: 'module',
-    // https://github.com/acornjs/acorn/issues/1136
-  }) as any as Program
+    plugins: ['typescript', 'jsx'],
+  })
+  const { body } = ast.program as any as Program
   const imports: ImportDeclaration[] = []
   body.forEach((node) => {
     if (node.type === 'ImportDeclaration') imports.push(node)
@@ -207,7 +206,7 @@ function assertPointerImportPath(importPath: string) {
   return isImportPath(importPath) || isFilePathAbsolute(importPath)
 }
 
-// https://github.com/acornjs/acorn/issues/1136#issuecomment-1203671368
+// Babel parser provides start/end in the AST nodes
 declare module 'estree' {
   interface BaseNodeWithoutComments {
     start: number
