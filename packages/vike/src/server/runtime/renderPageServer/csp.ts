@@ -4,7 +4,7 @@ export { addCspResponseHeader }
 export type { PageContextCspNonce }
 
 import { import_ } from '@brillout/import'
-import { assert, escapeHtml } from '../../utils.js'
+import { assert, escapeHtml, sanitizeHttpHeader } from '../../utils.js'
 import type { PageContextConfig } from '../../../shared-server-client/getPageFiles.js'
 import type { PageContextServer } from '../../../types/PageContext.js'
 
@@ -50,12 +50,6 @@ function addCspResponseHeader(pageContext: PageContextCspNonce, headersResponse:
   assert(pageContext.cspNonce === null || typeof pageContext.cspNonce === 'string') // ensure resolvePageContextCspNone() is called before addCspResponseHeader()
   if (!pageContext.cspNonce) return
   if (headersResponse.get('Content-Security-Policy')) return
-  const sanitizedNonce = sanitizeHeader(pageContext.cspNonce)
+  const sanitizedNonce = sanitizeHttpHeader(pageContext.cspNonce)
   headersResponse.set('Content-Security-Policy', `script-src 'self' 'nonce-${sanitizedNonce}'`)
-}
-
-// TODO/ai: move to utils
-// TODO/ai: find a stackoverflow answer that provides an well-known implemention and use it
-function sanitizeHeader(value: string): string {
-  return value.replace(/[\r\n]/g, '')
 }
