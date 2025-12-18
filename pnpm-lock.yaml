@@ -2029,8 +2029,8 @@ importers:
         specifier: 0.4.249
         version: link:../../packages/vike
       vike-vue:
-        specifier: ^0.9.7
-        version: 0.9.7(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
+        specifier: ^0.9.8
+        version: 0.9.8(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
       vite:
         specifier: ^6.3.5
         version: 6.3.5(@types/node@22.19.2)(terser@5.38.1)(tsx@4.20.6)
@@ -2059,11 +2059,11 @@ importers:
         specifier: 0.4.249
         version: link:../../packages/vike
       vike-vue:
-        specifier: ^0.9.7
-        version: 0.9.7(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
+        specifier: ^0.9.8
+        version: 0.9.8(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
       vike-vue-pinia:
         specifier: ^0.2.6
-        version: 0.2.6(pinia@3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3)))(vike-vue@0.9.7(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)))(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
+        version: 0.2.6(pinia@3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3)))(vike-vue@0.9.8(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)))(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
       vite:
         specifier: ^6.1.0
         version: 6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
@@ -7590,8 +7590,8 @@ packages:
       vike-vue: '>=0.7.0'
       vue: '>=3.0.0'
 
-  vike-vue@0.9.7:
-    resolution: {integrity: sha512-nnH2b/j86oC3xx1dfnSrXW3ffVtmIHo928Es2SnGgetFNYDHUNzuq2wF0IjCZndENUvcGIIaaGGGq9xgkmCuUA==}
+  vike-vue@0.9.8:
+    resolution: {integrity: sha512-zf6msrhnnRwZcKDaZRyMvjIkv9DHxdPbqrBP9ndgSXeEvpq3IB8iIBadS/uqbKQTAtIq0j9EnZjInXPt95nF8g==}
     peerDependencies:
       vike: '>=0.4.191'
       vue: '>=3.0.0'
@@ -14430,14 +14430,14 @@ snapshots:
       - '@testing-library/jest-dom'
       - supports-color
 
-  vike-vue-pinia@0.2.6(pinia@3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3)))(vike-vue@0.9.7(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)))(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)):
+  vike-vue-pinia@0.2.6(pinia@3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3)))(vike-vue@0.9.8(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)))(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)):
     dependencies:
       pinia: 3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3))
       vike: link:packages/vike
-      vike-vue: 0.9.7(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
+      vike-vue: 0.9.8(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
       vue: 3.5.18(typescript@5.9.3)
 
-  vike-vue@0.9.7(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)):
+  vike-vue@0.9.8(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)):
     dependencies:
       vike: link:packages/vike
       vue: 3.5.18(typescript@5.9.3)
