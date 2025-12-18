@@ -8,6 +8,7 @@ export type { PointerImportData }
 
 // Notes about `with { type: 'pointer' }`
 // - It works well with TypeScript: it doesn't complain upon `with { type: 'unknown-to-typescript' }` and go-to-definition & types are preserved: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-3.html#import-attributes
+// - Babel already supports it: https://babeljs.io/docs/babel-parser#plugins => search for `importAttributes`
 // - Acorn support for import attributes: https://github.com/acornjs/acorn/issues/983
 //   - Acorn plugin: https://github.com/acornjs/acorn/issues/983
 //   - Isn't stage 4 yet: https://github.com/tc39/proposal-import-attributes
@@ -21,7 +22,7 @@ export type { PointerImportData }
 //   - Esbuild removes comments: https://github.com/evanw/esbuild/issues/1439#issuecomment-877656182
 //   - Using source maps to track these magic comments is brittle (source maps can easily break)
 
-import { parse } from 'acorn'
+import { parseSync } from '@babel/core'
 import type { Program, Identifier, ImportDeclaration } from 'estree'
 import { assert, assertUsage, assertWarning, isFilePathAbsolute, isImportPath, styleFileRE } from '../../utils.js'
 import pc from '@brillout/picocolors'
@@ -120,11 +121,11 @@ function transformPointerImports(
   return codeMod
 }
 function getImports(code: string): ImportDeclaration[] {
-  const { body } = parse(code, {
-    ecmaVersion: 'latest',
+  const result = parseSync(code, {
     sourceType: 'module',
-    // https://github.com/acornjs/acorn/issues/1136
-  }) as any as Program
+  })
+  assert(result)
+  const { body } = result.program as Program
   const imports: ImportDeclaration[] = []
   body.forEach((node) => {
     if (node.type === 'ImportDeclaration') imports.push(node)
@@ -207,6 +208,7 @@ function assertPointerImportPath(importPath: string) {
   return isImportPath(importPath) || isFilePathAbsolute(importPath)
 }
 
+// Seems to be needed for both Acorn and Babel
 // https://github.com/acornjs/acorn/issues/1136#issuecomment-1203671368
 declare module 'estree' {
   interface BaseNodeWithoutComments {
