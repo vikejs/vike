@@ -20,7 +20,7 @@ export type { PointerImportData }
 //   - Esbuild removes comments: https://github.com/evanw/esbuild/issues/1439#issuecomment-877656182
 //   - Using source maps to track these magic comments is brittle (source maps can easily break)
 
-import { parse } from '@babel/parser'
+import { parseSync } from '@babel/core'
 import type { Program, Identifier, ImportDeclaration } from 'estree'
 import { assert, assertUsage, assertWarning, isFilePathAbsolute, isImportPath, styleFileRE } from '../../utils.js'
 import pc from '@brillout/picocolors'
@@ -119,11 +119,14 @@ function transformPointerImports(
   return codeMod
 }
 function getImports(code: string): ImportDeclaration[] {
-  const ast = parse(code, {
+  const result = parseSync(code, {
     sourceType: 'module',
-    plugins: ['typescript', 'jsx'],
+    parserOpts: {
+      plugins: ['typescript', 'jsx'],
+    },
   })
-  const { body } = ast.program as any as Program
+  if (!result) throw new Error('Failed to parse code')
+  const { body } = result.program as any as Program
   const imports: ImportDeclaration[] = []
   body.forEach((node) => {
     if (node.type === 'ImportDeclaration') imports.push(node)
