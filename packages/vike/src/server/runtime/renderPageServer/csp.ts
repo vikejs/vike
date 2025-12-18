@@ -50,5 +50,10 @@ function addCspResponseHeader(pageContext: PageContextCspNonce, headersResponse:
   assert(pageContext.cspNonce === null || typeof pageContext.cspNonce === 'string') // ensure resolvePageContextCspNone() is called before addCspResponseHeader()
   if (!pageContext.cspNonce) return
   if (headersResponse.get('Content-Security-Policy')) return
-  headersResponse.set('Content-Security-Policy', `script-src 'self' 'nonce-${pageContext.cspNonce}'`)
+  const sanitizedNonce = sanitizeHeaderValue(pageContext.cspNonce)
+  headersResponse.set('Content-Security-Policy', `script-src 'self' 'nonce-${sanitizedNonce}'`)
+}
+
+function sanitizeHeaderValue(value: string): string {
+  return value.replace(/[\r\n]/g, '')
 }
