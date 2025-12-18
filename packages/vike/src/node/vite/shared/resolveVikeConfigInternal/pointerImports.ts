@@ -8,7 +8,7 @@ export type { PointerImportData }
 
 // Notes about `with { type: 'pointer' }`
 // - It works well with TypeScript: it doesn't complain upon `with { type: 'unknown-to-typescript' }` and go-to-definition & types are preserved: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-3.html#import-attributes
-// - Babel seems to support it: https://github.com/acornjs/acorn/issues/1136#issuecomment-1203671368
+// - Babel already supports it: https://babeljs.io/docs/babel-parser#plugins => search for `importAttributes`
 // - Acorn support for import attributes: https://github.com/acornjs/acorn/issues/983
 //   - Acorn plugin: https://github.com/acornjs/acorn/issues/983
 //   - Isn't stage 4 yet: https://github.com/tc39/proposal-import-attributes
@@ -208,7 +208,7 @@ function assertPointerImportPath(importPath: string) {
   return isImportPath(importPath) || isFilePathAbsolute(importPath)
 }
 
-// Seems to be needed for both Babel and Acorn
+// Seems to be needed for both Acorn and Babel
 // https://github.com/acornjs/acorn/issues/1136#issuecomment-1203671368
 declare module 'estree' {
   interface BaseNodeWithoutComments {
