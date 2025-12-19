@@ -62,17 +62,37 @@ const optionsVue: TransformStaticReplaceOptions = {
         remove: { arg: 2, prop: 'default' },
       },
     },
+    {
+      env: 'server',
+      call: {
+        match: {
+          function: ['import:vue/server-renderer:ssrRenderComponent'],
+          args: {
+            0: {
+              call: 'import:vue:unref',
+              args: {
+                0: 'import:vike-vue/ClientOnly:ClientOnly',
+              },
+            },
+          },
+        },
+        remove: { arg: 2, prop: 'default' },
+      },
+    },
   ],
 }
 
 describe('transformStaticReplace', () => {
-  it('Vue', async () => {
+  it('Vue SFC dev', async () => {
     await testTransform(optionsVue, './snapshot-vue-sfc-dev-before', './snapshot-vue-sfc-dev-after')
   })
-  it('React - dev', async () => {
-    await testTransform(optionsReact, './snapshot-react-prod-before', './snapshot-after-react')
+  it('Vue SFC prod', async () => {
+    await testTransform(optionsVue, './snapshot-vue-sfc-prod-before', './snapshot-vue-sfc-prod-after')
   })
-  it('React - prod', async () => {
+  it('React dev', async () => {
+    await testTransform(optionsReact, './snapshot-react-prod-before', './snapshot-react-prod-after')
+  })
+  it('React prod', async () => {
     await testTransform(optionsReact, './snapshot-react-dev-before', './snapshot-react-dev-after')
   })
 })

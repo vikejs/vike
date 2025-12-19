@@ -13,13 +13,13 @@ import * as t from '@babel/types'
  * - string starting with 'import:' matches an imported identifier
  * - { prop, equals } matches a property value inside an object argument
  * - { call, args } matches a call expression with specific arguments
- * - { object, property } matches a member expression like $setup["ClientOnly"]
+ * - { member, object, property } matches a member expression like $setup["ClientOnly"]
  */
 export type ArgCondition =
   | string
   | { prop: string; equals: unknown }
   | { call: string; args?: Record<number, ArgCondition> }
-  | { object: string; property: string | ArgCondition }
+  | { member: true; object: string; property: string | ArgCondition }
 
 /**
  * Target for replace operation.
@@ -395,7 +395,7 @@ function matchesCondition(
   }
 
   // Member expression condition: match $setup["ClientOnly"]
-  if ('object' in condition && !('prop' in condition)) {
+  if ('member' in condition) {
     if (!t.isMemberExpression(arg)) return false
 
     // Check object
@@ -418,30 +418,20 @@ function matchesCondition(
   }
 
   // Object condition: match prop value inside an object argument
-  if ('prop' in condition && 'equals' in condition) {
-    if (!t.isObjectExpression(arg)) return false
+  if (!t.isObjectExpression(arg)) return false
 
-    for (const prop of arg.properties) {
-      if (!t.isObjectProperty(prop)) continue
-      if (!t.isIdentifier(prop.key) || prop.key.name !== condition.prop) continue
+  for (const prop of arg.properties) {
+    if (!t.isObjectProperty(prop)) continue
+    if (!t.isIdentifier(prop.key) || prop.key.name !== condition.prop) continue
 
-      // Check value
-      if (condition.equals === null && t.isNullLiteral(prop.value)) return true
-      if (condition.equals === true && t.isBooleanLiteral(prop.value) && prop.value.value === true) return true
-      if (condition.equals === false && t.isBooleanLiteral(prop.value) && prop.value.value === false) return true
-      if (
-        typeof condition.equals === 'string' &&
-        t.isStringLiteral(prop.value) &&
-        prop.value.value === condition.equals
-      )
-        return true
-      if (
-        typeof condition.equals === 'number' &&
-        t.isNumericLiteral(prop.value) &&
-        prop.value.value === condition.equals
-      )
-        return true
-    }
+    // Check value
+    if (condition.equals === null && t.isNullLiteral(prop.value)) return true
+    if (condition.equals === true && t.isBooleanLiteral(prop.value) && prop.value.value === true) return true
+    if (condition.equals === false && t.isBooleanLiteral(prop.value) && prop.value.value === false) return true
+    if (typeof condition.equals === 'string' && t.isStringLiteral(prop.value) && prop.value.value === condition.equals)
+      return true
+    if (typeof condition.equals === 'number' && t.isNumericLiteral(prop.value) && prop.value.value === condition.equals)
+      return true
   }
 
   return false
