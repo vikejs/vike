@@ -1,0 +1,55 @@
+import { defineComponent as _defineComponent } from "vue";
+import { unref as _unref, withCtx as _withCtx, createVNode as _createVNode } from "vue";
+import { ssrRenderComponent as _ssrRenderComponent } from "vue/server-renderer";
+import { ClientOnly } from "vike-vue/ClientOnly";
+import ClientOnlyComponent from "./ClientOnlyComponent.vue";
+export default /* @__PURE__ */ _defineComponent({
+  __name: "+Page",
+  __ssrInlineRender: true,
+  setup(__props) {
+    return (_ctx, _push, _parent, _attrs) => {
+      _push(`<!--[--><h1 data-v-945a889b>ClientOnly</h1><h2 data-v-945a889b>Using <code data-v-945a889b>&lt;ClientOnly&gt;</code> component</h2><h3 data-v-945a889b>Basic example with fallback</h3>`);
+      _push(_ssrRenderComponent(_unref(ClientOnly), null, {
+        fallback: _withCtx((_, _push2, _parent2, _scopeId) => {
+          if (_push2) {
+            _push2(`<p data-v-945a889b${_scopeId}>Loading client-only component...</p>`);
+          } else {
+            return [
+              _createVNode("p", null, "Loading client-only component...")
+            ];
+          }
+        }),
+        default: _withCtx((_, _push2, _parent2, _scopeId) => {
+          if (_push2) {
+            _push2(`<p data-v-945a889b${_scopeId}>Some text before</p>`);
+            _push2(_ssrRenderComponent(ClientOnlyComponent, { msg: "hello" }, null, _parent2, _scopeId));
+            _push2(`<p data-v-945a889b${_scopeId}>Some text after</p>`);
+          } else {
+            return [
+              _createVNode("p", null, "Some text before"),
+              _createVNode(ClientOnlyComponent, { msg: "hello" }),
+              _createVNode("p", null, "Some text after")
+            ];
+          }
+        }),
+        _: 1
+        /* STABLE */
+      }, _parent));
+      _push(`<h3 data-v-945a889b>Without fallback</h3>`);
+      _push(_ssrRenderComponent(_unref(ClientOnly), null, {
+        default: _withCtx((_, _push2, _parent2, _scopeId) => {
+          if (_push2) {
+            _push2(_ssrRenderComponent(ClientOnlyComponent, { msg: "bonjour" }, null, _parent2, _scopeId));
+          } else {
+            return [
+              _createVNode(ClientOnlyComponent, { msg: "bonjour" })
+            ];
+          }
+        }),
+        _: 1
+        /* STABLE */
+      }, _parent));
+      _push(`<!--]-->`);
+    };
+  }
+});

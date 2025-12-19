@@ -54,8 +54,10 @@ const optionsVue: TransformStaticReplaceOptions = {
           function: ['import:vue/server-renderer:ssrRenderComponent'],
           args: {
             0: {
-              object: '$setup',
-              property: 'ClientOnly',
+              call: 'import:vue:unref',
+              args: {
+                0: 'import:vike-vue/ClientOnly:ClientOnly',
+              },
             },
           },
         },
@@ -69,10 +71,9 @@ const optionsVue: TransformStaticReplaceOptions = {
           function: ['import:vue/server-renderer:ssrRenderComponent'],
           args: {
             0: {
-              call: 'import:vue:unref',
-              args: {
-                0: 'import:vike-vue/ClientOnly:ClientOnly',
-              },
+              member: true,
+              object: '$setup',
+              property: 'ClientOnly',
             },
           },
         },
