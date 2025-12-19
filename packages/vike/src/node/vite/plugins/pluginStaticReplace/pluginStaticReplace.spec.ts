@@ -70,7 +70,7 @@ describe('transformStaticReplace', () => {
     await testTransform(optionsVue, './snapshot-vue-sfc-dev-before', './snapshot-vue-sfc-dev-after')
   })
   it('React - dev', async () => {
-    await testTransform(optionsReact, './snapshot-befor-react', './snapshot-after-react')
+    await testTransform(optionsReact, './snapshot-react-prod-before', './snapshot-after-react')
   })
   it('React - prod', async () => {
     await testTransform(optionsReact, './snapshot-react-dev-before', './snapshot-react-dev-after')
