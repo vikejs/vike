@@ -85,10 +85,10 @@ const optionsVue: TransformStaticReplaceOptions = {
 
 describe('transformStaticReplace', () => {
   it('Vue SFC dev', async () => {
-    await testTransform(optionsVue, './snapshot-vue-sfc-dev-before', './snapshot-vue-sfc-dev-after')
+    await testTransform(optionsVue, './snapshot-vue-dev-before', './snapshot-vue-dev-after')
   })
   it('Vue SFC prod', async () => {
-    await testTransform(optionsVue, './snapshot-vue-sfc-prod-before', './snapshot-vue-sfc-prod-after')
+    await testTransform(optionsVue, './snapshot-vue-prod-before', './snapshot-vue-prod-after')
   })
   it('React dev', async () => {
     await testTransform(optionsReact, './snapshot-react-prod-before', './snapshot-react-prod-after')
