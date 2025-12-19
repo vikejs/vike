@@ -9,7 +9,6 @@ const __dirname = dirname(__filename)
 
 const optionsReact: TransformStaticReplaceOptions = {
   rules: [
-    // jsx/jsxs/jsxDEV: children is a prop in arg 1
     {
       env: 'server',
       call: {
@@ -24,7 +23,6 @@ const optionsReact: TransformStaticReplaceOptions = {
         remove: { arg: 1, prop: 'children' },
       },
     },
-    // createElement: children are rest args starting at index 2
     {
       env: 'server',
       call: {
