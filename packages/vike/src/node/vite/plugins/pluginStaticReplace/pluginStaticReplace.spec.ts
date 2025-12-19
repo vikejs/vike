@@ -86,6 +86,6 @@ describe('transformStaticReplace', () => {
     const result = await transform(input, options)
 
     expect(result).toBeTruthy()
-    expect(result?.code).toMatchSnapshot()
+    expect(result?.code).toMatchFileSnapshot('./fixture-react-after')
   })
 })
