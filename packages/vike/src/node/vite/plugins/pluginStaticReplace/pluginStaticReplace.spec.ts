@@ -86,6 +86,6 @@ describe('transformStaticReplace', () => {
     const result = await transform(input, options)
 
     expect(result).toBeTruthy()
-    expect(result?.code).toMatchFileSnapshot('./snapshot-react-after')
+    expect(result?.code).toMatchFileSnapshot('./snapshot-after-react')
   })
 })
