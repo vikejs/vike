@@ -1,6 +1,5 @@
 import { defineComponent as _defineComponent } from "vue";
 import { ClientOnly } from "vike-vue/ClientOnly";
-import ClientOnlyComponent from "./ClientOnlyComponent.vue";
 const _sfc_main = _defineComponent({
   __name: "+Page",
   setup(__props, {
@@ -10,8 +9,7 @@ const _sfc_main = _defineComponent({
     const __returned__ = {
       get ClientOnly() {
         return ClientOnly;
-      },
-      ClientOnlyComponent
+      }
     };
     Object.defineProperty(__returned__, "__isScriptSetup", {
       enumerable: false,

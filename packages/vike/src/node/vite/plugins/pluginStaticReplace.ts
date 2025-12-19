@@ -1,15 +1,6 @@
 export { transformCode as transformStaticReplace }
 export type { TransformOptions as TransformStaticReplaceOptions }
 
-/* TODO/ai
-
-Problem: ClientOnlyComponent is still imported at snapshot-vue-dev-after but shouldn't.
-
-Idea: create new option `transform` that enables full transformation — use it to implement following rule: if `SomeComponent` defined at __returned__.SomeComponent doesn't occur as $setup.SomeComponent then remove it from `__returned__`.
-
-I think that should lead to ClientOnlyComponent be completely tree-shaked away
-*/
-
 import { transformAsync, type PluginItem, type NodePath } from '@babel/core'
 import * as t from '@babel/types'
 
@@ -122,6 +113,8 @@ export type ReplaceRule = CallRule & {
 
 export type TransformOptions = {
   rules: ReplaceRule[]
+  /** Enable removal of unused __returned__ properties (Vue-specific optimization) */
+  removeUnusedReturned?: boolean
 }
 
 // ============================================================================
@@ -137,6 +130,8 @@ type State = {
   /** Map: localName -> { source, exportName } */
   imports: Map<string, ParsedImport>
   alreadyUnreferenced: Set<string>
+  /** Track $setup member accesses for Vue optimization */
+  setupAccesses?: Set<string>
 }
 
 // ============================================================================
@@ -159,7 +154,7 @@ export async function transformCode({ code, id, env, options }: TransformInput):
     return false
   })
 
-  if (filteredRules.length === 0) {
+  if (filteredRules.length === 0 && !options.removeUnusedReturned) {
     return null
   }
 
@@ -168,13 +163,30 @@ export async function transformCode({ code, id, env, options }: TransformInput):
       modified: false,
       imports: new Map(),
       alreadyUnreferenced: new Set(),
+      setupAccesses: options.removeUnusedReturned ? new Set() : undefined,
     }
+
+    const plugins: PluginItem[] = [collectImportsPlugin(state)]
+
+    if (options.removeUnusedReturned) {
+      plugins.push(trackSetupAccessPlugin(state))
+    }
+
+    if (filteredRules.length > 0) {
+      plugins.push(applyRulesPlugin(state, filteredRules))
+    }
+
+    if (options.removeUnusedReturned) {
+      plugins.push(removeUnusedReturnedPlugin(state))
+    }
+
+    plugins.push(removeUnreferencedPlugin(state))
 
     const result = await transformAsync(code, {
       filename: id,
       ast: true,
       sourceMaps: true,
-      plugins: [collectImportsPlugin(state), applyRulesPlugin(state, filteredRules), removeUnreferencedPlugin(state)],
+      plugins,
     })
 
     if (!result?.code || !state.modified) {
@@ -542,6 +554,76 @@ function removeUnreferencedPlugin(state: State): PluginItem {
           if (!state.modified) return
           removeUnreferenced(program, state.alreadyUnreferenced)
         },
+      },
+    },
+  }
+}
+
+/**
+ * Track $setup member accesses to identify which __returned__ properties are used
+ */
+function trackSetupAccessPlugin(state: State): PluginItem {
+  return {
+    visitor: {
+      MemberExpression(path) {
+        if (!state.setupAccesses) return
+
+        // Match $setup["PropertyName"] or $setup.PropertyName
+        if (t.isIdentifier(path.node.object) && path.node.object.name === '$setup') {
+          let propertyName: string | null = null
+
+          if (path.node.computed && t.isStringLiteral(path.node.property)) {
+            propertyName = path.node.property.value
+          } else if (!path.node.computed && t.isIdentifier(path.node.property)) {
+            propertyName = path.node.property.name
+          }
+
+          if (propertyName) {
+            state.setupAccesses.add(propertyName)
+          }
+        }
+      },
+    },
+  }
+}
+
+/**
+ * Remove unused properties from __returned__ object in Vue SFC setup
+ */
+function removeUnusedReturnedPlugin(state: State): PluginItem {
+  return {
+    visitor: {
+      ObjectExpression(path) {
+        if (!state.setupAccesses) return
+
+        // Look for __returned__ object pattern
+        const parent = path.parent
+        if (!t.isVariableDeclarator(parent) || !t.isIdentifier(parent.id) || parent.id.name !== '__returned__') {
+          return
+        }
+
+        // Remove properties that are not accessed via $setup
+        const properties = path.node.properties.filter((prop) => {
+          // Keep spread elements and non-object properties
+          if (!t.isObjectProperty(prop)) return true
+
+          // Keep special properties like __isScriptSetup
+          if (t.isStringLiteral(prop.key)) return true
+
+          // Check if property is accessed via $setup
+          if (t.isIdentifier(prop.key)) {
+            const propertyName = prop.key.name
+            return state.setupAccesses.has(propertyName)
+          }
+
+          return true
+        })
+
+        // Only modify if we actually removed something
+        if (properties.length < path.node.properties.length) {
+          path.node.properties = properties
+          state.modified = true
+        }
       },
     },
   }

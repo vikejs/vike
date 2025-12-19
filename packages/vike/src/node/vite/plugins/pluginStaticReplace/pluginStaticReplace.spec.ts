@@ -46,6 +46,7 @@ const optionsReact: TransformStaticReplaceOptions = {
 }
 
 const optionsVue: TransformStaticReplaceOptions = {
+  removeUnusedReturned: true,
   rules: [
     {
       env: 'server',
