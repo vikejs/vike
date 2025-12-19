@@ -81,7 +81,7 @@ describe('transformStaticReplace', () => {
       ],
     }
 
-    const input = readFileSync(join(__dirname, 'snapshot-react'), 'utf-8')
+    const input = readFileSync(join(__dirname, 'snapshot-befor-react'), 'utf-8')
 
     const result = await transform(input, options)
 
