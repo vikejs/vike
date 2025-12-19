@@ -32,7 +32,7 @@ describe('transformStaticReplace', () => {
       ],
     }
 
-    const input = readFileSync(join(__dirname, 'snapshot-befor-vue-sfc-dev'), 'utf-8')
+    const input = readFileSync(join(__dirname, 'snapshot-vue-sfc-dev-before'), 'utf-8')
 
     const result = await transform(input, options)
     await expect(result!.code).toMatchFileSnapshot('./snapshot-after-vue-sfc-dev')
