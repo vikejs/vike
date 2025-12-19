@@ -1,6 +1,15 @@
 export { transformCode as transformStaticReplace }
 export type { TransformOptions as TransformStaticReplaceOptions }
 
+/* TODO/ai
+
+Problem: ClientOnlyComponent is still imported at snapshot-vue-dev-after but shouldn't.
+
+Idea: create new option `transform` that enables full transformation — use it to implement following rule: if `SomeComponent` defined at __returned__.SomeComponent doesn't occur as $setup.SomeComponent then remove it from `__returned__`.
+
+I think that should lead to ClientOnlyComponent be completely tree-shaked away
+*/
+
 import { transformAsync, type PluginItem, type NodePath } from '@babel/core'
 import * as t from '@babel/types'
 
