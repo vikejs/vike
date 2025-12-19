@@ -1,6 +1,6 @@
 import { transformStaticReplace, TransformStaticReplaceOptions } from '../pluginStaticReplace.js'
 import { describe, it, expect } from 'vitest'
-import { readFileSync } from 'node:fs'
+import { readFileSync, readdirSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 
@@ -99,26 +99,12 @@ const optionsSolid: TransformStaticReplaceOptions = {
 }
 
 describe('transformStaticReplace', () => {
-  it('Vue SFC dev', async () => {
-    await testTransform(optionsVue, './snapshot-vue-dev-before', './snapshot-vue-dev-after')
-  })
-  it('Vue SFC prod', async () => {
-    await testTransform(optionsVue, './snapshot-vue-prod-before', './snapshot-vue-prod-after')
-  })
-  it('React dev', async () => {
-    await testTransform(optionsReact, './snapshot-react-prod-before', './snapshot-react-prod-after')
-  })
-  it('React prod', async () => {
-    await testTransform(optionsReact, './snapshot-react-dev-before', './snapshot-react-dev-after')
-  })
-  /*
-  it('Solid dev', async () => {
-    await testTransform(optionsSolid, './snapshot-solid-dev-before', './snapshot-solid-dev-after')
-  })
-  */
-  it('Solid prod', async () => {
-    await testTransform(optionsSolid, './snapshot-solid-before', './snapshot-solid-after')
-  })
+  const snapshots = getSnapshots()
+  for (const snapshot of snapshots) {
+    it(snapshot.testName, async () => {
+      await testTransform(snapshot.options, `./${snapshot.beforeFile}`, `./${snapshot.afterFile}`)
+    })
+  }
 })
 
 async function testTransform(options: TransformStaticReplaceOptions, before: string, after: string) {
@@ -130,4 +116,27 @@ async function testTransform(options: TransformStaticReplaceOptions, before: str
     env: 'server',
   })
   await expect(result!.code).toMatchFileSnapshot(after)
+}
+
+function getSnapshots() {
+  const files = readdirSync(__dirname)
+  const beforeFiles = files.filter((f) => f.startsWith('snapshot-') && f.endsWith('-before'))
+
+  return beforeFiles.map((beforeFile) => {
+    const testName = beforeFile.replace('snapshot-', '').replace('-before', '')
+    const afterFile = beforeFile.replace('-before', '-after')
+
+    let options: TransformStaticReplaceOptions
+    if (testName.includes('vue')) {
+      options = optionsVue
+    } else if (testName.includes('solid')) {
+      options = optionsSolid
+    } else if (testName.includes('react')) {
+      options = optionsReact
+    } else {
+      throw new Error(`Unknown framework in test name: ${testName}`)
+    }
+
+    return { testName, beforeFile, afterFile, options }
+  })
 }
