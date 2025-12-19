@@ -81,11 +81,11 @@ describe('transformStaticReplace', () => {
       ],
     }
 
-    const input = readFileSync(join(__dirname, 'fixture-react'), 'utf-8')
+    const input = readFileSync(join(__dirname, 'snapshot-react'), 'utf-8')
 
     const result = await transform(input, options)
 
     expect(result).toBeTruthy()
-    expect(result?.code).toMatchFileSnapshot('./fixture-react-after')
+    expect(result?.code).toMatchFileSnapshot('./snapshot-react-after')
   })
 })
