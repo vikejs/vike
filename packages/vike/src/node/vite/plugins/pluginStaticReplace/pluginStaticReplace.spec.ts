@@ -73,7 +73,7 @@ describe('transformStaticReplace', () => {
     await testTransform(optionsReact, './snapshot-befor-react', './snapshot-after-react')
   })
   it('React - prod', async () => {
-    await testTransform(optionsReact, './snapshot-react-prod-before', './snapshot-react-prod-after')
+    await testTransform(optionsReact, './snapshot-react-dev-before', './snapshot-react-dev-after')
   })
 })
 
