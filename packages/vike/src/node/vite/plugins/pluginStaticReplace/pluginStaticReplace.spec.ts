@@ -39,4 +39,53 @@ describe('transformStaticReplace', () => {
     expect(result).toBeTruthy()
     expect(result?.code).toMatchSnapshot()
   })
+
+  it('React', async () => {
+    const options: TransformStaticReplaceOptions = {
+      rules: [
+        // jsx/jsxs/jsxDEV: children is a prop in arg 1
+        {
+          env: 'server',
+          call: {
+            match: {
+              function: [
+                'import:react/jsx-runtime:jsx',
+                'import:react/jsx-runtime:jsxs',
+                'import:react/jsx-dev-runtime:jsxDEV',
+              ],
+              args: { 0: 'import:vike-react/ClientOnly:ClientOnly' },
+            },
+            remove: { arg: 1, prop: 'children' },
+          },
+        },
+        // createElement: children are rest args starting at index 2
+        {
+          env: 'server',
+          call: {
+            match: {
+              function: 'import:react:createElement',
+              args: { 0: 'import:vike-react/ClientOnly:ClientOnly' },
+            },
+            remove: { argsFrom: 2 },
+          },
+        },
+        {
+          env: 'server',
+          call: {
+            match: {
+              function: 'import:vike-react/useHydrated:useHydrated',
+            },
+            replace: { with: false },
+          },
+        },
+      ],
+    }
+
+    const input = readFileSync(join(__dirname, 'fixture-react'), 'utf-8')
+
+    const result = await transform(input, options)
+
+    expect(result).toBeTruthy()
+    expect(result?.code).toMatchSnapshot()
+  })
 })

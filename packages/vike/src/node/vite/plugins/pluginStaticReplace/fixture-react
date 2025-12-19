@@ -1,0 +1,23 @@
+import { Fragment, jsx, jsxs } from "react/jsx-runtime";
+export default Page;
+import React from "react";
+import { Counter } from "./Counter";
+import { ClientOnly } from "vike-react/ClientOnly";
+import ClientOnlyComponent from "./ClientOnlyComponent";
+function Page() {
+  return /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsx("h1", { children: "Welcome" }),
+    "This page is:",
+    /* @__PURE__ */ jsxs("ul", { children: [
+      /* @__PURE__ */ jsx("li", { children: "Rendered to HTML." }),
+      /* @__PURE__ */ jsxs("li", { children: [
+        "Interactive. ",
+        /* @__PURE__ */ jsx(Counter, {})
+      ] }),
+      /* @__PURE__ */ jsxs(ClientOnly, { fallback: /* @__PURE__ */ jsx("li", { children: "Loading client-only component..." }), children: [
+        /* @__PURE__ */ jsx(ClientOnlyComponent, {}),
+        /* @__PURE__ */ jsx("div", { children: "This is a test" })
+      ] })
+    ] })
+  ] });
+}
