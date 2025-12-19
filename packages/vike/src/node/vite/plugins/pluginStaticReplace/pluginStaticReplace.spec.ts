@@ -32,7 +32,7 @@ describe('transformStaticReplace', () => {
       ],
     }
 
-    const input = readFileSync(join(__dirname, 'vue-sfc-dev-fixture-before.js'), 'utf-8')
+    const input = readFileSync(join(__dirname, 'vue-sfc-dev-fixture-before'), 'utf-8')
 
     const result = await transform(input, options)
 
