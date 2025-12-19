@@ -1,0 +1,45 @@
+var _jsxFileName = "/home/rom/code/vike-react/examples/minimal/pages/index/+Page.jsx";
+export default Page;
+import React from "react";
+import { Counter } from "./Counter";
+import { ClientOnly } from "vike-react/ClientOnly";
+import ClientOnlyComponent from "./ClientOnlyComponent";
+function Page() {
+  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("h1", { __self: this, __source: {
+    fileName: _jsxFileName,
+    lineNumber: 11,
+    columnNumber: 7
+  } }, "Welcome"), "This page is:", /* @__PURE__ */ React.createElement("ul", { __self: this, __source: {
+    fileName: _jsxFileName,
+    lineNumber: 13,
+    columnNumber: 7
+  } }, /* @__PURE__ */ React.createElement("li", { __self: this, __source: {
+    fileName: _jsxFileName,
+    lineNumber: 14,
+    columnNumber: 9
+  } }, "Rendered to HTML."), /* @__PURE__ */ React.createElement("li", { __self: this, __source: {
+    fileName: _jsxFileName,
+    lineNumber: 15,
+    columnNumber: 9
+  } }, "Interactive. ", /* @__PURE__ */ React.createElement(Counter, { __self: this, __source: {
+    fileName: _jsxFileName,
+    lineNumber: 16,
+    columnNumber: 24
+  } })), /* @__PURE__ */ React.createElement(ClientOnly, { fallback: /* @__PURE__ */ React.createElement("li", { __self: this, __source: {
+    fileName: _jsxFileName,
+    lineNumber: 18,
+    columnNumber: 31
+  } }, "Loading client-only component..."), __self: this, __source: {
+    fileName: _jsxFileName,
+    lineNumber: 18,
+    columnNumber: 9
+  } }, /* @__PURE__ */ React.createElement(ClientOnlyComponent, { __self: this, __source: {
+    fileName: _jsxFileName,
+    lineNumber: 19,
+    columnNumber: 11
+  } }), /* @__PURE__ */ React.createElement("div", { __self: this, __source: {
+    fileName: _jsxFileName,
+    lineNumber: 20,
+    columnNumber: 11
+  } }, "This is a test"))));
+}
