@@ -1,0 +1,63 @@
+import { Fragment, jsxDEV } from "react/jsx-dev-runtime";
+export default Page;
+import React from "react";
+import { Counter } from "./Counter";
+import { ClientOnly } from "vike-react/ClientOnly";
+import ClientOnlyComponent from "./ClientOnlyComponent";
+function Page() {
+  return /* @__PURE__ */ jsxDEV(Fragment, { children: [
+    /* @__PURE__ */ jsxDEV("h1", { children: "Welcome" }, void 0, false, {
+      fileName: "/home/rom/code/vike-react/examples/minimal/pages/index/+Page.jsx",
+      lineNumber: 11,
+      columnNumber: 7
+    }, this),
+    "This page is:",
+    /* @__PURE__ */ jsxDEV("ul", { children: [
+      /* @__PURE__ */ jsxDEV("li", { children: "Rendered to HTML." }, void 0, false, {
+        fileName: "/home/rom/code/vike-react/examples/minimal/pages/index/+Page.jsx",
+        lineNumber: 14,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV("li", { children: [
+        "Interactive. ",
+        /* @__PURE__ */ jsxDEV(Counter, {}, void 0, false, {
+          fileName: "/home/rom/code/vike-react/examples/minimal/pages/index/+Page.jsx",
+          lineNumber: 16,
+          columnNumber: 24
+        }, this)
+      ] }, void 0, true, {
+        fileName: "/home/rom/code/vike-react/examples/minimal/pages/index/+Page.jsx",
+        lineNumber: 15,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(ClientOnly, { fallback: /* @__PURE__ */ jsxDEV("li", { children: "Loading client-only component..." }, void 0, false, {
+        fileName: "/home/rom/code/vike-react/examples/minimal/pages/index/+Page.jsx",
+        lineNumber: 18,
+        columnNumber: 31
+      }, this), children: [
+        /* @__PURE__ */ jsxDEV(ClientOnlyComponent, {}, void 0, false, {
+          fileName: "/home/rom/code/vike-react/examples/minimal/pages/index/+Page.jsx",
+          lineNumber: 19,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ jsxDEV("div", { children: "This is a test" }, void 0, false, {
+          fileName: "/home/rom/code/vike-react/examples/minimal/pages/index/+Page.jsx",
+          lineNumber: 20,
+          columnNumber: 11
+        }, this)
+      ] }, void 0, true, {
+        fileName: "/home/rom/code/vike-react/examples/minimal/pages/index/+Page.jsx",
+        lineNumber: 18,
+        columnNumber: 9
+      }, this)
+    ] }, void 0, true, {
+      fileName: "/home/rom/code/vike-react/examples/minimal/pages/index/+Page.jsx",
+      lineNumber: 13,
+      columnNumber: 7
+    }, this)
+  ] }, void 0, true, {
+    fileName: "/home/rom/code/vike-react/examples/minimal/pages/index/+Page.jsx",
+    lineNumber: 10,
+    columnNumber: 5
+  }, this);
+}
