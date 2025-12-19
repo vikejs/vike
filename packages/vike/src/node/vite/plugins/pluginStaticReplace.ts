@@ -1,6 +1,15 @@
 export { transformCode as transformStaticReplace }
 export type { TransformOptions as TransformStaticReplaceOptions }
 
+/* TODO/ai
+
+Problem: ClientOnlyComponent is still imported at snapshot-vue-dev-after but shouldn't.
+
+Idea: create new option `transform` that enables full transformation — use it to implement following rule: if `SomeComponent` defined at __returned__.SomeComponent doesn't occur as $setup.SomeComponent then remove it from `__returned__`.
+
+I think that should lead to ClientOnlyComponent be completely tree-shaked away
+*/
+
 import { transformAsync, type PluginItem, type NodePath } from '@babel/core'
 import * as t from '@babel/types'
 
@@ -113,7 +122,6 @@ export type ReplaceRule = CallRule & {
 
 export type TransformOptions = {
   rules: ReplaceRule[]
-  cleanupVueReturned?: boolean
 }
 
 // ============================================================================
@@ -129,7 +137,6 @@ type State = {
   /** Map: localName -> { source, exportName } */
   imports: Map<string, ParsedImport>
   alreadyUnreferenced: Set<string>
-  setupReferences: Set<string>
 }
 
 // ============================================================================
@@ -161,43 +168,17 @@ export async function transformCode({ code, id, env, options }: TransformInput):
       modified: false,
       imports: new Map(),
       alreadyUnreferenced: new Set(),
-      setupReferences: new Set(),
     }
 
-    let plugins: PluginItem[] = [
-      collectImportsPlugin(state),
-      applyRulesPlugin(state, filteredRules),
-      removeUnreferencedPlugin(state),
-    ]
-
-    let result = await transformAsync(code, {
+    const result = await transformAsync(code, {
       filename: id,
       ast: true,
       sourceMaps: true,
-      plugins,
+      plugins: [collectImportsPlugin(state), applyRulesPlugin(state, filteredRules), removeUnreferencedPlugin(state)],
     })
 
     if (!result?.code || !state.modified) {
       return null
-    }
-
-    if (options.cleanupVueReturned) {
-      state.setupReferences.clear()
-
-      const result2 = await transformAsync(result.code, {
-        filename: id,
-        ast: true,
-        sourceMaps: true,
-        plugins: [
-          collectSetupReferencesPlugin(state),
-          cleanupVueReturnedPlugin(state),
-          removeUnreferencedPlugin(state),
-        ],
-      })
-
-      if (result2?.code) {
-        return { code: result2.code, map: result2.map }
-      }
     }
 
     return { code: result.code, map: result.map }
@@ -542,83 +523,6 @@ function applyRemove(path: NodePath<t.CallExpression>, remove: RemoveTarget, sta
       path.node.arguments = path.node.arguments.slice(0, remove.argsFrom)
       state.modified = true
     }
-  }
-}
-
-/**
- * Collect references to $setup properties
- */
-function collectSetupReferencesPlugin(state: State): PluginItem {
-  return {
-    visitor: {
-      Program: {
-        enter(program) {
-          program.traverse({
-            MemberExpression(path) {
-              const { object, property } = path.node
-
-              if (!t.isIdentifier(object) || object.name !== '$setup') return
-
-              if (t.isIdentifier(property) && !path.node.computed) {
-                state.setupReferences.add(property.name)
-              } else if (t.isStringLiteral(property) && path.node.computed) {
-                state.setupReferences.add(property.value)
-              }
-            },
-          })
-        },
-      },
-    },
-  }
-}
-
-/**
- * Clean up Vue __returned__ object by removing properties not referenced via $setup
- */
-function cleanupVueReturnedPlugin(state: State): PluginItem {
-  return {
-    visitor: {
-      Program: {
-        exit(program) {
-          program.traverse({
-            ObjectExpression(path) {
-              const parent = path.parent
-              if (!t.isVariableDeclarator(parent)) return
-              if (!t.isIdentifier(parent.id) || parent.id.name !== '__returned__') return
-
-              const propertiesToRemove: number[] = []
-
-              for (let i = 0; i < path.node.properties.length; i++) {
-                const prop = path.node.properties[i]
-
-                if (!t.isObjectProperty(prop) && !t.isObjectMethod(prop)) continue
-
-                let propertyName: string | null = null
-                if (t.isIdentifier(prop.key)) {
-                  propertyName = prop.key.name
-                } else if (t.isStringLiteral(prop.key)) {
-                  propertyName = prop.key.value
-                }
-
-                if (!propertyName) continue
-                if (propertyName === '__isScriptSetup') continue
-
-                if (!state.setupReferences.has(propertyName)) {
-                  propertiesToRemove.push(i)
-                }
-              }
-
-              if (propertiesToRemove.length > 0) {
-                for (let i = propertiesToRemove.length - 1; i >= 0; i--) {
-                  path.node.properties.splice(propertiesToRemove[i], 1)
-                }
-                state.modified = true
-              }
-            },
-          })
-        },
-      },
-    },
   }
 }
 

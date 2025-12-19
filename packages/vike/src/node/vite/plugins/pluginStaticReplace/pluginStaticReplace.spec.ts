@@ -46,7 +46,6 @@ const optionsReact: TransformStaticReplaceOptions = {
 }
 
 const optionsVue: TransformStaticReplaceOptions = {
-  cleanupVueReturned: true,
   rules: [
     {
       env: 'server',
