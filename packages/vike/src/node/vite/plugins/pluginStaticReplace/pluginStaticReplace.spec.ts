@@ -33,27 +33,10 @@ describe('transformStaticReplace', () => {
     }
 
     const input = readFileSync(join(__dirname, 'vue-sfc-dev-fixture-before.js'), 'utf-8')
-    const expected = readFileSync(join(__dirname, 'vue-sfc-dev-fixture-after.js'), 'utf-8')
 
     const result = await transform(input, options)
 
-    // Check the transformation happened
     expect(result).toBeTruthy()
-    expect(result?.code).toBeDefined()
-
-    const code = result!.code
-
-    // The key transformation: 'default' property should be removed from ClientOnly calls
-    // Count how many times 'default: _withCtx' appears - should be 0 after transformation
-    const defaultSlotMatches = code.match(/default:\s*_withCtx/g)
-    expect(defaultSlotMatches).toBeNull() // All default slots should be removed
-
-    // Verify fallback still exists in first call
-    expect(code).toContain('fallback: _withCtx')
-
-    // Verify both ClientOnly components are still called
-    const clientOnlyCalls = code.match(/ClientOnly/g)
-    expect(clientOnlyCalls).toBeTruthy()
-    expect(clientOnlyCalls!.length).toBeGreaterThanOrEqual(4) // imports + 2 calls in code
+    expect(result?.code).toMatchSnapshot()
   })
 })
