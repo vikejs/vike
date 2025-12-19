@@ -316,8 +316,7 @@ function matchesCallee(
           return true
         }
       }
-      // Import string: check member expression like React.createElement
-      // where React is the default import and createElement is the method
+      // Import string: check member expression
       if (t.isMemberExpression(callee) && t.isIdentifier(callee.object) && t.isIdentifier(callee.property)) {
         const imported = state.imports.get(callee.object.name)
         if (
@@ -486,9 +485,17 @@ function applyRemove(path: NodePath<t.CallExpression>, remove: RemoveTarget, sta
     const arg = path.node.arguments[remove.arg]
     if (!t.isObjectExpression(arg)) return
 
-    const index = arg.properties.findIndex(
-      (prop) => t.isObjectProperty(prop) && t.isIdentifier(prop.key) && prop.key.name === remove.prop,
-    )
+    const index = arg.properties.findIndex((prop) => {
+      // Check ObjectProperty with Identifier key
+      if (t.isObjectProperty(prop) && t.isIdentifier(prop.key) && prop.key.name === remove.prop) {
+        return true
+      }
+      // Check ObjectMethod (getter/setter)
+      if (t.isObjectMethod(prop) && t.isIdentifier(prop.key) && prop.key.name === remove.prop) {
+        return true
+      }
+      return false
+    })
     if (index !== -1) {
       arg.properties.splice(index, 1)
       state.modified = true

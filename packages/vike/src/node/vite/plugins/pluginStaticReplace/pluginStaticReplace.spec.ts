@@ -83,6 +83,21 @@ const optionsVue: TransformStaticReplaceOptions = {
   ],
 }
 
+const optionsSolid: TransformStaticReplaceOptions = {
+  rules: [
+    {
+      env: 'server',
+      call: {
+        match: {
+          function: 'import:solid-js/web:createComponent',
+          args: { 0: 'ClientOnly' },
+        },
+        remove: { arg: 1, prop: 'children' },
+      },
+    },
+  ],
+}
+
 describe('transformStaticReplace', () => {
   it('Vue SFC dev', async () => {
     await testTransform(optionsVue, './snapshot-vue-dev-before', './snapshot-vue-dev-after')
@@ -95,6 +110,14 @@ describe('transformStaticReplace', () => {
   })
   it('React prod', async () => {
     await testTransform(optionsReact, './snapshot-react-dev-before', './snapshot-react-dev-after')
+  })
+  /*
+  it('Solid dev', async () => {
+    await testTransform(optionsSolid, './snapshot-solid-dev-before', './snapshot-solid-dev-after')
+  })
+  */
+  it('Solid prod', async () => {
+    await testTransform(optionsSolid, './snapshot-solid-prod-before', './snapshot-solid-prod-after')
   })
 })
 
