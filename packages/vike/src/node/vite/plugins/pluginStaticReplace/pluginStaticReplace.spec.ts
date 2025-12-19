@@ -35,9 +35,7 @@ describe('transformStaticReplace', () => {
     const input = readFileSync(join(__dirname, 'snapshot-befor-vue-sfc-dev'), 'utf-8')
 
     const result = await transform(input, options)
-
-    expect(result).toBeTruthy()
-    expect(result?.code).toMatchSnapshot()
+    expect(result!.code).toMatchFileSnapshot('./snapshot-after-vue-sfc-dev')
   })
 
   it('React', async () => {
@@ -84,8 +82,6 @@ describe('transformStaticReplace', () => {
     const input = readFileSync(join(__dirname, 'snapshot-befor-react'), 'utf-8')
 
     const result = await transform(input, options)
-
-    expect(result).toBeTruthy()
-    expect(result?.code).toMatchFileSnapshot('./snapshot-after-react')
+    expect(result!.code).toMatchFileSnapshot('./snapshot-after-react')
   })
 })
