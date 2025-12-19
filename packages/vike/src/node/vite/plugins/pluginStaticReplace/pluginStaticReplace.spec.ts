@@ -117,7 +117,7 @@ describe('transformStaticReplace', () => {
   })
   */
   it('Solid prod', async () => {
-    await testTransform(optionsSolid, './snapshot-solid-prod-before', './snapshot-solid-prod-after')
+    await testTransform(optionsSolid, './snapshot-solid-before', './snapshot-solid-after')
   })
 })
 
