@@ -4,6 +4,12 @@ import { describe, it, expect } from 'vitest'
 const transform = (code: string, options: TransformStaticReplaceOptions) =>
   transformStaticReplace({ code, id: 'fake-id:pluginStaticReplace.spec.ts', options, env: 'server' })
 
+// TODO/ai:
+// Move pluginStaticReplace.spec.ts to pluginStaticReplace/pluginStaticReplace.spec.ts
+// Define two fixture files:
+//  pluginStaticReplace/vue-sfc-dev-fixture-before.js
+//  pluginStaticReplace/vue-sfc-dev-fixture-after.js
+
 describe('transformStaticReplace', () => {
   it('Vue', async () => {
     const options: TransformStaticReplaceOptions = {
