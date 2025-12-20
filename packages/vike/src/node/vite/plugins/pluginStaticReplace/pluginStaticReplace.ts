@@ -44,14 +44,14 @@ function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
 /**
  * Extract all staticReplaceList from vikeConfig
  */
-function getStaticReplaceList(vikeConfig: VikeConfigInternal): StaticReplace {
+function getStaticReplaceList(vikeConfig: VikeConfigInternal): StaticReplace[] {
   const staticReplaceConfigs = vikeConfig._from.configsCumulative.staticReplace
   if (!staticReplaceConfigs) return []
 
-  const staticReplaceList: StaticReplace = []
+  const staticReplaceList: StaticReplace[] = []
 
   for (const configValue of staticReplaceConfigs.values) {
-    const options = configValue.value as StaticReplace
+    const options = configValue.value as StaticReplace[]
     if (Array.isArray(options)) {
       staticReplaceList.push(...options)
     }
@@ -66,7 +66,7 @@ function getStaticReplaceList(vikeConfig: VikeConfigInternal): StaticReplace {
  * except for call.match.function array which is OR logic.
  * Between staticReplace entries it's OR logic.
  */
-function buildFilterRolldown(staticReplaceList: StaticReplace): { code: { include: RegExp } } | null {
+function buildFilterRolldown(staticReplaceList: StaticReplace[]): { code: { include: RegExp } } | null {
   const rulePatterns: string[] = []
 
   // Process each rule separately

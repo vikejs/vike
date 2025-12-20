@@ -82,7 +82,7 @@ export type RemoveTarget =
  *   remove: { arg: 2, prop: 'default' }
  * }
  */
-export type StaticReplaceEntry = {
+type StaticReplace = {
   /** Type of transformation - currently only 'call' is supported, but can be extended in the future */
   type?: 'call'
   /** Environment filter: 'client' = client only, 'server' = everything except client */
@@ -103,8 +103,6 @@ export type StaticReplaceEntry = {
   /** Remove target (optional) */
   remove?: RemoveTarget
 }
-
-type StaticReplace = StaticReplaceEntry[]
 
 // ============================================================================
 // Internal types
@@ -129,7 +127,7 @@ export type TransformInput = {
   code: string
   id: string
   env: string
-  options: StaticReplace
+  options: StaticReplace[]
 }
 
 export async function transformCode({ code, id, env, options }: TransformInput): Promise<TransformResult> {
@@ -243,7 +241,7 @@ function collectImportsPlugin(state: State): PluginItem {
 /**
  * Apply replacement rules to matching call expressions
  */
-function applyRulesPlugin(state: State, rules: StaticReplace): PluginItem {
+function applyRulesPlugin(state: State, rules: StaticReplace[]): PluginItem {
   return {
     visitor: {
       CallExpression(path) {
@@ -268,7 +266,7 @@ function applyRulesPlugin(state: State, rules: StaticReplace): PluginItem {
  */
 function matchesRule(
   path: NodePath<t.CallExpression>,
-  staticReplace: StaticReplaceEntry,
+  staticReplace: StaticReplace,
   calleeName: string,
   state: State,
 ): boolean {

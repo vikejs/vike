@@ -8,7 +8,7 @@ import { dirname, join } from 'node:path'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-const staticReplaceReact: StaticReplace = [
+const staticReplaceReact: StaticReplace[] = [
   {
     env: 'server',
     type: 'call',
@@ -41,7 +41,7 @@ const staticReplaceReact: StaticReplace = [
   },
 ]
 
-const staticReplaceVue: StaticReplace = [
+const staticReplaceVue: StaticReplace[] = [
   {
     env: 'server',
     type: 'call',
@@ -75,7 +75,7 @@ const staticReplaceVue: StaticReplace = [
   },
 ]
 
-const staticReplaceSolid: StaticReplace = [
+const staticReplaceSolid: StaticReplace[] = [
   {
     env: 'server',
     type: 'call',
@@ -96,7 +96,7 @@ describe('transformStaticReplace', () => {
   }
 })
 
-async function testTransform(options: StaticReplace, before: string, after: string) {
+async function testTransform(options: StaticReplace[], before: string, after: string) {
   const code = readFileSync(join(__dirname, before), 'utf-8')
   const result = await transformStaticReplace({
     code,
@@ -115,7 +115,7 @@ function getSnapshots() {
     const testName = beforeFile.replace('snapshot-', '').replace('-before', '')
     const afterFile = beforeFile.replace('-before', '-after')
 
-    let options: StaticReplace
+    let options: StaticReplace[]
     if (testName.includes('vue')) {
       options = staticReplaceVue
     } else if (testName.includes('solid')) {

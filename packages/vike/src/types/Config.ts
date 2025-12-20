@@ -707,7 +707,7 @@ type ConfigBuiltIn = {
    *
    * @experimental
    */
-  staticReplace?: StaticReplace
+  staticReplace?: StaticReplace[]
 }
 
 type ConfigBuiltInResolved = {
@@ -716,7 +716,7 @@ type ConfigBuiltInResolved = {
   prerender?: Exclude<Config['prerender'], ImportString | undefined>[]
   middleware?: Function[]
   headersResponse?: Exclude<Config['headersResponse'], ImportString | undefined>[]
-  staticReplace?: StaticReplace[]
+  staticReplace?: StaticReplace[][]
 }
 
 type ConfigMeta = Record<string, ConfigDefinition>
