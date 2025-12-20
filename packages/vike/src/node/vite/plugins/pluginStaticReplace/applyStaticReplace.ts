@@ -1,5 +1,5 @@
-export { applyStaticReplace }
-export type { StaticReplace }
+export { applyStaticReplace, parseImportString }
+export type { StaticReplace, ParsedImport }
 
 import { transformAsync, type PluginItem, type NodePath } from '@babel/core'
 import * as t from '@babel/types'
@@ -110,7 +110,7 @@ type StaticReplace = {
 
 type TransformResult = { code: string; map: any } | null
 
-type ParsedImport = { source: string; exportName: string }
+export type ParsedImport = { source: string; exportName: string }
 
 type State = {
   modified: boolean

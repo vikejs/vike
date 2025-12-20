@@ -1,7 +1,7 @@
 export { buildFilterRolldown }
 
 import { escapeRegex } from '../../utils.js'
-import { type StaticReplace } from './applyStaticReplace.js'
+import { type StaticReplace, parseImportString } from './applyStaticReplace.js'
 
 /**
  * Build a filterRolldown from staticReplaceList by extracting all import strings.
@@ -78,16 +78,6 @@ function buildFilterRolldown(staticReplaceList: StaticReplace[]): { code: { incl
       include: regex,
     },
   }
-}
-
-// TODO/ai dedupe
-function parseImportString(str: string): { source: string; exportName: string } | null {
-  if (!str.startsWith('import:')) return null
-  const rest = str.slice('import:'.length)
-  const parts = rest.split(':')
-  const exportName = parts.pop()!
-  const source = parts.join(':')
-  return { source, exportName }
 }
 
 /**
