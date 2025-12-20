@@ -45,6 +45,7 @@ export type RemoveTarget =
  * // jsx/jsxs/jsxDEV: replace children prop with null
  * {
  *   env: 'server',
+ *   type: 'call',
  *   match: {
  *     function: ['jsx', 'jsxs', 'jsxDEV'],
  *     args: { 0: 'import:vike-react/ClientOnly:ClientOnly' }
@@ -56,6 +57,7 @@ export type RemoveTarget =
  * // createElement: remove all children (args from index 2)
  * {
  *   env: 'server',
+ *   type: 'call',
  *   match: {
  *     function: 'createElement',
  *     args: { 0: 'import:vike-react/ClientOnly:ClientOnly' }
@@ -67,6 +69,7 @@ export type RemoveTarget =
  * // ssrRenderComponent: match nested call expression and remove default slot
  * {
  *   env: 'server',
+ *   type: 'call',
  *   match: {
  *     function: 'import:vue/server-renderer:ssrRenderComponent',
  *     args: {
@@ -80,6 +83,8 @@ export type RemoveTarget =
  * }
  */
 export type ReplaceRule = {
+  /** Type of transformation - currently only 'call' is supported, but can be extended in the future */
+  type?: 'call'
   /** Environment filter: 'client' = client only, 'server' = everything except client */
   env?: 'server' | 'client'
   /** Match criteria */

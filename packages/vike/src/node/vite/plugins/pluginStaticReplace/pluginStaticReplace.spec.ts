@@ -11,6 +11,7 @@ const __dirname = dirname(__filename)
 const staticReplaceReact: StaticReplace = [
   {
     env: 'server',
+    type: 'call',
     match: {
       function: [
         'import:react/jsx-runtime:jsx',
@@ -23,6 +24,7 @@ const staticReplaceReact: StaticReplace = [
   },
   {
     env: 'server',
+    type: 'call',
     match: {
       function: 'import:react:createElement',
       args: { 0: 'import:vike-react/ClientOnly:ClientOnly' },
@@ -31,6 +33,7 @@ const staticReplaceReact: StaticReplace = [
   },
   {
     env: 'server',
+    type: 'call',
     match: {
       function: 'import:vike-react/useHydrated:useHydrated',
     },
@@ -41,6 +44,7 @@ const staticReplaceReact: StaticReplace = [
 const staticReplaceVue: StaticReplace = [
   {
     env: 'server',
+    type: 'call',
     match: {
       function: ['import:vue/server-renderer:ssrRenderComponent'],
       args: {
@@ -56,6 +60,7 @@ const staticReplaceVue: StaticReplace = [
   },
   {
     env: 'server',
+    type: 'call',
     match: {
       function: ['import:vue/server-renderer:ssrRenderComponent'],
       args: {
@@ -73,9 +78,7 @@ const staticReplaceVue: StaticReplace = [
 const staticReplaceSolid: StaticReplace = [
   {
     env: 'server',
-    /* TODO/ai add this — we may add other support other types in the future
     type: 'call',
-    */
     match: {
       function: 'import:solid-js/web:createComponent',
       args: { 0: 'ClientOnly' },
@@ -206,6 +209,7 @@ describe('buildFilterRolldown', () => {
   it('returns null for rules without import strings', () => {
     const filter = buildFilterRolldown([
       {
+        type: 'call',
         match: {
           function: 'plainFunction',
           args: { 0: 'plainString' },
