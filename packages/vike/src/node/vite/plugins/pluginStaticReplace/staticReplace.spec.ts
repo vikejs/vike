@@ -126,7 +126,7 @@ function getSnapshots() {
       throw new Error(`Unknown framework in test name: ${testName}`)
     }
 
-    return { testName, beforeFile: `snapshots/${beforeFile}`, afterFile: `snapshots/${afterFile}`, options }
+    return { testName, beforeFile: `snapshots/${beforeFile}` as const, afterFile: `snapshots/${afterFile}` as const, options }
   })
 }
 
