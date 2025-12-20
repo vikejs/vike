@@ -73,6 +73,9 @@ const staticReplaceVue: StaticReplace = [
 const staticReplaceSolid: StaticReplace = [
   {
     env: 'server',
+    /* TODO/ai add this — we may add other support other types in the future
+    type: 'call',
+    */
     match: {
       function: 'import:solid-js/web:createComponent',
       args: { 0: 'ClientOnly' },
