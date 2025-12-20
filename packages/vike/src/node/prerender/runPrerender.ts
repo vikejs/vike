@@ -361,7 +361,7 @@ async function callOnBeforePrerenderStartHooks(
       concurrencyLimit(async () => {
         const hookName = 'onBeforePrerenderStart'
         const pageConfigLoaded = await loadAndParseVirtualFilePageEntry(pageConfig, false)
-        const hook = getHookFromPageConfig(pageConfigLoaded, hookName)
+        const hook = getHookFromPageConfig(pageConfigLoaded, hookName, globalContext._pageConfigGlobal)
         if (!hook) return
         const { hookFn, hookFilePath, hookTimeout } = hook
         onBeforePrerenderStartHooks.push({

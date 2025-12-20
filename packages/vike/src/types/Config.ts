@@ -11,6 +11,8 @@ export type { HookNameGlobal }
 export type { ImportString }
 export type { Route }
 export type { KeepScrollPosition }
+export type { OnHookCall }
+export type { OnHookCallHook }
 
 // TO-DO/next-major-release: remove
 export type { DataAsync }
@@ -68,7 +70,13 @@ type HookNamePage =
   | 'data'
   | 'onData'
   | 'route'
-type HookNameGlobal = 'onBeforeRoute' | 'onPrerenderStart' | 'onCreatePageContext' | 'onCreateGlobalContext' | 'onError'
+type HookNameGlobal =
+  | 'onBeforeRoute'
+  | 'onPrerenderStart'
+  | 'onCreatePageContext'
+  | 'onCreateGlobalContext'
+  | 'onError'
+  | 'onHookCall'
 // v0.4 design TO-DO/next-major-release: remove
 type HookNameOldDesign = 'render' | 'prerender' | 'onBeforePrerender'
 
@@ -431,6 +439,12 @@ type ConfigBuiltIn = {
    */
   onCreateGlobalContext?: ((globalContext: GlobalContext) => void) | ImportString | null
 
+  /** Hook called when any config function is invoked. Useful for instrumentation (Sentry, OpenTelemetry, etc.).
+   *
+   *  https://vike.dev/onHookCall
+   */
+  onHookCall?: OnHookCall | ImportString | null
+
   /** Hook for fetching data.
    *
    *  https://vike.dev/data
@@ -712,4 +726,19 @@ type ConfigBuiltInResolved = {
 
 type ConfigMeta = Record<string, ConfigDefinition>
 type ImportString = ImportStringVal | ImportStringVal[]
+
+/** Info about the hook being called */
+type OnHookCallHook = {
+  /** Name of the hook, e.g. 'onRenderHtml', 'data', 'guard' */
+  name: string
+  /** File path where the hook is defined */
+  filePath: string
+  /** Call the hook */
+  call: () => unknown
+}
+/** Wrapper for hook calls. Used for instrumentation (e.g. Sentry, OpenTelemetry).
+ *
+ * The `context` argument is `pageContext` for page hooks and `globalContext` for global hooks.
+ */
+type OnHookCall = (hook: OnHookCallHook, context: unknown) => unknown
 type ImportStringVal = `import:${string}`

@@ -15,7 +15,7 @@ export { getHookTimeoutDefault }
 
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import type { PageContextConfig } from '../getPageFiles.js'
-import type { HookNameOld, HookNamePage, HookNameGlobal, HookName } from '../../types/Config.js'
+import type { HookNameOld, HookNamePage, HookNameGlobal, HookName, OnHookCall } from '../../types/Config.js'
 import type { ConfigValue, PageConfigGlobalRuntime, PageConfigRuntime } from '../../types/PageConfig.js'
 import { getHookFilePathToShowToUser } from '../page-configs/helpers.js'
 import { getConfigValueRuntime } from '../page-configs/getConfigValueRuntime.js'
@@ -49,10 +49,13 @@ type HookTimeout = {
 type HooksTimeoutProvidedByUser = false | Partial<Record<HookNameOld, false | Partial<HookTimeout>>>
 type HooksTimeoutProvidedByUserNormalized = false | Partial<Record<HookNameOld, Partial<HookTimeout>>>
 
-function getHookFromPageContext(pageContext: PageContextConfig, hookName: HookNameOld): null | Hook {
+type PageContextForHook = PageContextConfig & PageContextPrepareMinimum
+
+function getHookFromPageContext(pageContext: PageContextForHook, hookName: HookNameOld): null | Hook {
   if (!(hookName in pageContext.exports)) {
     return null
   }
+  const pageConfigGlobal = pageContext._globalContext._pageConfigGlobal
   const { hooksTimeout } = pageContext.config
   const hookTimeout = getHookTimeout(hooksTimeout, hookName)
   const hookFn = pageContext.exports[hookName]
@@ -62,10 +65,11 @@ function getHookFromPageContext(pageContext: PageContextConfig, hookName: HookNa
   assert(file.exportValue === hookFn)
   const hookFilePath = file.filePath
   assert(hookFilePath)
-  return getHook(hookFn, hookName, hookFilePath, hookTimeout)
+  return getHook(hookFn, hookName, hookFilePath, hookTimeout, pageConfigGlobal)
 }
 // TO-DO/eventually: remove getHookFromPageContext() in favor of getHookFromPageContextNew()
-function getHookFromPageContextNew(hookName: HookName, pageContext: PageContextConfig): Hook[] {
+function getHookFromPageContextNew(hookName: HookName, pageContext: PageContextForHook): Hook[] {
+  const pageConfigGlobal = pageContext._globalContext._pageConfigGlobal
   const { hooksTimeout } = pageContext.config
   const hookTimeout = getHookTimeout(hooksTimeout, hookName)
   const hooks: Hook[] = []
@@ -80,24 +84,28 @@ function getHookFromPageContextNew(hookName: HookName, pageContext: PageContextC
     if (hookFn === null) return
     const hookFilePath = val.filePath
     assert(hookFilePath)
-    hooks.push(getHook(hookFn, hookName, hookFilePath, hookTimeout))
+    hooks.push(getHook(hookFn, hookName, hookFilePath, hookTimeout, pageConfigGlobal))
   })
   return hooks
 }
-function getHookFromPageConfig(pageConfig: PageConfigRuntime, hookName: HookNamePage): null | Hook {
+function getHookFromPageConfig(
+  pageConfig: PageConfigRuntime,
+  hookName: HookNamePage,
+  pageConfigGlobal: PageConfigGlobalRuntime,
+): null | Hook {
   const configValue = getConfigValueRuntime(pageConfig, hookName)
   if (!configValue?.value) return null
   const { hookFn, hookFilePath } = getHookFromConfigValue(configValue)
   const hooksTimeout = getConfigValueRuntime(pageConfig, 'hooksTimeout')?.value
   const hookTimeout = getHookTimeout(hooksTimeout, hookName)
-  return getHook(hookFn, hookName, hookFilePath, hookTimeout)
+  return getHook(hookFn, hookName, hookFilePath, hookTimeout, pageConfigGlobal)
 }
 function getHookFromPageConfigGlobal(pageConfigGlobal: PageConfigGlobalRuntime, hookName: HookNameGlobal): null | Hook {
   const configValue = pageConfigGlobal.configValues[hookName]
   if (!configValue?.value) return null
   const { hookFn, hookFilePath } = getHookFromConfigValue(configValue)
   const hookTimeout = getHookTimeoutGlobal(hookName)
-  return getHook(hookFn, hookName, hookFilePath, hookTimeout)
+  return getHook(hookFn, hookName, hookFilePath, hookTimeout, pageConfigGlobal)
 }
 function getHookFromPageConfigGlobalCumulative<HookArg = GlobalContextPrepareMinimum>(
   pageConfigGlobal: PageConfigGlobalRuntime,
@@ -112,7 +120,7 @@ function getHookFromPageConfigGlobalCumulative<HookArg = GlobalContextPrepareMin
     const hookTimeout = getHookTimeoutGlobal(hookName)
     assert(isArray(configValue.definedAtData))
     const hookFilePath = getHookFilePathToShowToUser(configValue.definedAtData[i]!)
-    return getHook(hookFn, hookName, hookFilePath, hookTimeout)
+    return getHook(hookFn, hookName, hookFilePath, hookTimeout, pageConfigGlobal)
   })
 }
 function getHookTimeoutGlobal(hookName: HookNameOld) {
@@ -125,10 +133,12 @@ function getHook<HookArg = HookArgDefault>(
   hookName: HookNameOld,
   hookFilePath: string,
   hookTimeout: HookTimeout,
+  pageConfigGlobal: PageConfigGlobalRuntime,
 ): Hook<HookArg> {
   assert(hookFilePath)
   assertHookFn<HookArg>(hookFn, { hookName, hookFilePath })
-  const hook = { hookFn, hookName, hookFilePath, hookTimeout }
+  const wrappedHookFn = wrapHookFn(hookFn, hookName, hookFilePath, pageConfigGlobal)
+  const hook = { hookFn: wrappedHookFn, hookName, hookFilePath, hookTimeout }
   return hook
 }
 
@@ -218,4 +228,32 @@ function getHookTimeoutDefault(hookName: HookNameOld): HookTimeout {
 }
 function getHook_setIsPrerenderering() {
   globalObject.isPrerendering = true
+}
+
+function wrapHookFn<HookArg>(
+  hookFn: HookFn<HookArg>,
+  hookName: HookNameOld,
+  hookFilePath: string,
+  pageConfigGlobal: PageConfigGlobalRuntime,
+): HookFn<HookArg> {
+  return function (this: unknown, ...args: unknown[]) {
+    const wrappers = getOnHookCallWrappers(pageConfigGlobal)
+    const callFn = () => (hookFn as Function).apply(this, args)
+    if (wrappers.length === 0) return callFn()
+    // First argument is pageContext for page hooks, globalContext for global hooks
+    const context = args[0]
+    const hook = { name: hookName, filePath: hookFilePath, call: callFn }
+    let fn = callFn
+    for (const wrapper of wrappers) {
+      const prev = fn
+      fn = () => wrapper({ ...hook, call: prev }, context)
+    }
+    return fn()
+  }
+}
+
+function getOnHookCallWrappers(pageConfigGlobal: PageConfigGlobalRuntime): OnHookCall[] {
+  const configValue = pageConfigGlobal.configValues['onHookCall']
+  if (!configValue?.value || !isArray(configValue.value)) return []
+  return configValue.value.filter(isCallable) as OnHookCall[]
 }
