@@ -25,10 +25,10 @@ export type ArgCondition =
  * Target for replace operation.
  */
 export type ReplaceTarget =
-  | { with: unknown } // Replace the entire call expression
-  | { arg: number; prop: string; with: unknown } // Replace a prop inside an object arg
-  | { arg: number; with: unknown } // Replace entire argument
-  | { argsFrom: number; with: unknown } // Replace all args from index onwards with a single value
+  | { with: string } // Replace the entire call expression with JSON string
+  | { arg: number; prop: string; with: string } // Replace a prop inside an object arg with JSON string
+  | { arg: number; with: string } // Replace entire argument with JSON string
+  | { argsFrom: number; with: string } // Replace all args from index onwards with a single value (JSON string)
 
 /**
  * Target for remove operation.
@@ -73,7 +73,7 @@ export type CallRule = {
  *       function: ['jsx', 'jsxs', 'jsxDEV'],
  *       args: { 0: 'import:vike-react/ClientOnly:ClientOnly' }
  *     },
- *     replace: { arg: 1, prop: 'children', with: null }
+ *     replace: { arg: 1, prop: 'children', with: JSON.stringify(null) }
  *   }
  * }
  *
@@ -192,15 +192,8 @@ function parseImportString(str: string): ParsedImport | null {
   return { source, exportName }
 }
 
-function valueToAst(value: unknown): t.Expression {
-  if (value === null) return t.nullLiteral()
-  if (value === undefined) return t.identifier('undefined')
-  if (typeof value === 'string') return t.stringLiteral(value)
-  if (typeof value === 'number') return t.numericLiteral(value)
-  if (typeof value === 'boolean') return t.booleanLiteral(value)
-  return t.callExpression(t.memberExpression(t.identifier('JSON'), t.identifier('parse')), [
-    t.stringLiteral(JSON.stringify(value)),
-  ])
+function valueToAst(value: string): t.Expression {
+  return t.callExpression(t.memberExpression(t.identifier('JSON'), t.identifier('parse')), [t.stringLiteral(value)])
 }
 
 function getCalleeName(callee: t.Expression | t.V8IntrinsicIdentifier): string | null {
