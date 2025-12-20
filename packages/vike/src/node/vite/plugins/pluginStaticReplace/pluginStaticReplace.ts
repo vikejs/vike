@@ -24,9 +24,8 @@ function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
         },
       },
       transform: {
-        filter: filterRolldown || undefined,
+        filter: filterRolldown,
         async handler(code, id, options) {
-          if (!staticReplaceList || staticReplaceList.length === 0) return null
           const env = isViteServerSide_extraSafe(config, this.environment, options) ? 'server' : 'client'
           const result = await transformStaticReplace({
             code,
