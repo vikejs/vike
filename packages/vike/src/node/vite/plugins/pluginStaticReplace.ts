@@ -1,6 +1,6 @@
 // TODO/ai move to pluginStaticReplace/staticReplace.ts
 
-export { staticReplace as applyStaticReplace }
+export { applyStaticReplace }
 export type { StaticReplace }
 
 import { transformAsync, type PluginItem, type NodePath } from '@babel/core'
@@ -132,7 +132,7 @@ export type TransformInput = {
   options: StaticReplace[]
 }
 
-export async function staticReplace({ code, id, env, options }: TransformInput): Promise<TransformResult> {
+async function applyStaticReplace({ code, id, env, options }: TransformInput): Promise<TransformResult> {
   // 'server' means "not client" (covers ssr, cloudflare, etc.)
   const filteredRules = options.filter((rule) => {
     if (!rule.env) return true
