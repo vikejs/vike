@@ -6,7 +6,7 @@ import type { Plugin, ResolvedConfig } from 'vite'
 import { assert, escapeRegex } from '../../utils.js'
 import { isViteServerSide_extraSafe } from '../../shared/isViteServerSide.js'
 import { VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
-import { transformStaticReplace, type TransformStaticReplaceOptions, type ReplaceRule } from '../pluginStaticReplace.js'
+import { transformStaticReplace, type StaticReplace, type ReplaceRule } from '../pluginStaticReplace.js'
 
 function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
   let config: ResolvedConfig
@@ -51,7 +51,7 @@ function getAllRules(vikeConfig: VikeConfigInternal): ReplaceRule[] {
   const allRules: ReplaceRule[] = []
 
   for (const configValue of staticReplaceConfigs.values) {
-    const options = configValue.value as TransformStaticReplaceOptions
+    const options = configValue.value as StaticReplace
     if (options?.rules) {
       allRules.push(...options.rules)
     }

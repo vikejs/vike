@@ -1,4 +1,4 @@
-import { transformStaticReplace, TransformStaticReplaceOptions } from '../pluginStaticReplace.js'
+import { transformStaticReplace, StaticReplace } from '../pluginStaticReplace.js'
 import { buildFilterRolldown } from './pluginStaticReplace.js'
 import { describe, it, expect } from 'vitest'
 import { readFileSync, readdirSync } from 'node:fs'
@@ -9,7 +9,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 // TODO: improve API?
-const optionsReact: TransformStaticReplaceOptions = {
+const optionsReact: StaticReplace = {
   // TODO: remove rules
   rules: [
     {
@@ -48,7 +48,7 @@ const optionsReact: TransformStaticReplaceOptions = {
   ],
 }
 
-const optionsVue: TransformStaticReplaceOptions = {
+const optionsVue: StaticReplace = {
   rules: [
     {
       env: 'server',
@@ -86,7 +86,7 @@ const optionsVue: TransformStaticReplaceOptions = {
   ],
 }
 
-const optionsSolid: TransformStaticReplaceOptions = {
+const optionsSolid: StaticReplace = {
   rules: [
     {
       env: 'server',
@@ -110,7 +110,7 @@ describe('transformStaticReplace', () => {
   }
 })
 
-async function testTransform(options: TransformStaticReplaceOptions, before: string, after: string) {
+async function testTransform(options: StaticReplace, before: string, after: string) {
   const code = readFileSync(join(__dirname, before), 'utf-8')
   const result = await transformStaticReplace({
     code,
@@ -129,7 +129,7 @@ function getSnapshots() {
     const testName = beforeFile.replace('snapshot-', '').replace('-before', '')
     const afterFile = beforeFile.replace('-before', '-after')
 
-    let options: TransformStaticReplaceOptions
+    let options: StaticReplace
     if (testName.includes('vue')) {
       options = optionsVue
     } else if (testName.includes('solid')) {

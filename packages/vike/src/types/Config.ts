@@ -53,7 +53,7 @@ import type { GlobalContext } from './GlobalContext.js'
 import type { InlineConfig } from 'vite'
 import type { PassToClientPublic } from '../server/runtime/renderPageServer/html/serializeContext.js'
 import type { CliPreviewConfig } from '../node/api/preview.js'
-import type { TransformStaticReplaceOptions } from '../node/vite/plugins/pluginStaticReplace.js'
+import type { StaticReplace } from '../node/vite/plugins/pluginStaticReplace.js'
 
 type HookNameOld = HookName | HookNameOldDesign
 type HookName = HookNamePage | HookNameGlobal
@@ -707,7 +707,7 @@ type ConfigBuiltIn = {
    *
    * @experimental
    */
-  staticReplace?: TransformStaticReplaceOptions
+  staticReplace?: StaticReplace
 }
 
 type ConfigBuiltInResolved = {
@@ -716,7 +716,7 @@ type ConfigBuiltInResolved = {
   prerender?: Exclude<Config['prerender'], ImportString | undefined>[]
   middleware?: Function[]
   headersResponse?: Exclude<Config['headersResponse'], ImportString | undefined>[]
-  staticReplace?: TransformStaticReplaceOptions[]
+  staticReplace?: StaticReplace[]
 }
 
 type ConfigMeta = Record<string, ConfigDefinition>

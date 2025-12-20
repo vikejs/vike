@@ -1,5 +1,5 @@
 export { transformCode as transformStaticReplace }
-export type { TransformOptions as TransformStaticReplaceOptions }
+export type { TransformOptions as StaticReplace }
 
 import { transformAsync, type PluginItem, type NodePath } from '@babel/core'
 import * as t from '@babel/types'
