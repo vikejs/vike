@@ -5,29 +5,29 @@ import { type StaticReplace } from './applyStaticReplace.js'
 
 /**
  * Build a filterRolldown from staticReplaceList by extracting all import strings.
- * For a single rule, ALL import strings must be present (AND logic),
+ * For a single entry, ALL import strings must be present (AND logic),
  * except for call.match.function array which is OR logic.
  * Between staticReplace entries it's OR logic.
  */
 function buildFilterRolldown(staticReplaceList: StaticReplace[]): { code: { include: RegExp } } | null {
   const rulePatterns: string[] = []
 
-  // Process each rule separately
-  for (const rule of staticReplaceList) {
+  // Process each entry separately
+  for (const staticReplaceEntry of staticReplaceList) {
     const importStrings = new Set<string>()
     const functionImportStrings = new Set<string>()
 
     // Extract function import strings separately
-    extractImportStrings(rule.match.function, functionImportStrings)
+    extractImportStrings(staticReplaceEntry.match.function, functionImportStrings)
 
     // Extract arg import strings
-    if (rule.match.args) {
-      for (const condition of Object.values(rule.match.args)) {
+    if (staticReplaceEntry.match.args) {
+      for (const condition of Object.values(staticReplaceEntry.match.args)) {
         extractImportStringsFromCondition(condition, importStrings)
       }
     }
 
-    // Build pattern for this rule
+    // Build pattern for this staticReplaceEntry
     const ruleParts: string[] = []
 
     // For function imports: if array, use OR; otherwise use AND
