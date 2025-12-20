@@ -1,5 +1,5 @@
 export { transformCode as transformStaticReplace }
-export type { TransformOptions as StaticReplace }
+export type { StaticReplace }
 
 import { transformAsync, type PluginItem, type NodePath } from '@babel/core'
 import * as t from '@babel/types'
@@ -104,7 +104,7 @@ export type ReplaceRule = {
   remove?: RemoveTarget
 }
 
-export type TransformOptions = ReplaceRule[]
+type StaticReplace = ReplaceRule[]
 
 // ============================================================================
 // Internal types
@@ -129,7 +129,7 @@ export type TransformInput = {
   code: string
   id: string
   env: string
-  options: TransformOptions
+  options: StaticReplace
 }
 
 export async function transformCode({ code, id, env, options }: TransformInput): Promise<TransformResult> {
@@ -243,7 +243,7 @@ function collectImportsPlugin(state: State): PluginItem {
 /**
  * Apply replacement rules to matching call expressions
  */
-function applyRulesPlugin(state: State, rules: ReplaceRule[]): PluginItem {
+function applyRulesPlugin(state: State, rules: StaticReplace): PluginItem {
   return {
     visitor: {
       CallExpression(path) {

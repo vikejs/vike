@@ -6,7 +6,7 @@ import type { Plugin, ResolvedConfig } from 'vite'
 import { assert, escapeRegex } from '../../utils.js'
 import { isViteServerSide_extraSafe } from '../../shared/isViteServerSide.js'
 import { VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
-import { transformStaticReplace, type StaticReplace, type ReplaceRule } from '../pluginStaticReplace.js'
+import { transformStaticReplace, type StaticReplace } from '../pluginStaticReplace.js'
 
 function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
   let config: ResolvedConfig
@@ -44,11 +44,11 @@ function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
 /**
  * Extract all staticReplaceList from vikeConfig
  */
-function getStaticReplaceList(vikeConfig: VikeConfigInternal): ReplaceRule[] {
+function getStaticReplaceList(vikeConfig: VikeConfigInternal): StaticReplace {
   const staticReplaceConfigs = vikeConfig._from.configsCumulative.staticReplace
   if (!staticReplaceConfigs) return []
 
-  const staticReplaceList: ReplaceRule[] = []
+  const staticReplaceList: StaticReplace = []
 
   for (const configValue of staticReplaceConfigs.values) {
     const options = configValue.value as StaticReplace
@@ -66,7 +66,7 @@ function getStaticReplaceList(vikeConfig: VikeConfigInternal): ReplaceRule[] {
  * except for call.match.function array which is OR logic.
  * Between staticReplace entries it's OR logic.
  */
-function buildFilterRolldown(staticReplaceList: ReplaceRule[]): { code: { include: RegExp } } | null {
+function buildFilterRolldown(staticReplaceList: StaticReplace): { code: { include: RegExp } } | null {
   const rulePatterns: string[] = []
 
   // Process each rule separately
