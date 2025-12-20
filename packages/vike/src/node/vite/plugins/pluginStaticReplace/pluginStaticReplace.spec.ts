@@ -151,16 +151,31 @@ describe('buildFilterRolldown', () => {
     expect(filter).not.toBeNull()
     expect(filter!.code.include).toBeInstanceOf(RegExp)
 
-    // Should match code containing react/jsx-runtime and ClientOnly
+    // Rule 1: Should match code containing (jsx OR jsxs OR jsxDEV) AND ClientOnly
     expect(
       filter!.code.include.test(
         'import { jsx } from "react/jsx-runtime"; import { ClientOnly } from "vike-react/ClientOnly"',
       ),
     ).toBe(true)
-    // Should match code containing vike-react/ClientOnly and ClientOnly
-    expect(filter!.code.include.test('import { ClientOnly } from "vike-react/ClientOnly"')).toBe(true)
-    // Should match code containing useHydrated
+    expect(
+      filter!.code.include.test(
+        'import { jsxDEV } from "react/jsx-dev-runtime"; import { ClientOnly } from "vike-react/ClientOnly"',
+      ),
+    ).toBe(true)
+
+    // Rule 2: Should match code containing createElement AND ClientOnly
+    expect(
+      filter!.code.include.test(
+        'import { createElement } from "react"; import { ClientOnly } from "vike-react/ClientOnly"',
+      ),
+    ).toBe(true)
+
+    // Rule 3: Should match code containing useHydrated alone
     expect(filter!.code.include.test('import { useHydrated } from "vike-react/useHydrated"')).toBe(true)
+
+    // Should NOT match ClientOnly alone (doesn't satisfy any complete rule)
+    expect(filter!.code.include.test('import { ClientOnly } from "vike-react/ClientOnly"')).toBe(false)
+
     // Should not match code without any of the imports
     expect(filter!.code.include.test('import React from "react"')).toBe(false)
   })
@@ -170,12 +185,22 @@ describe('buildFilterRolldown', () => {
     expect(filter).not.toBeNull()
     expect(filter!.code.include).toBeInstanceOf(RegExp)
 
-    // Should match code containing vue/server-renderer and ssrRenderComponent
+    // Rule 1: Should match code containing ssrRenderComponent AND unref AND ClientOnly
+    expect(
+      filter!.code.include.test(
+        'import { ssrRenderComponent } from "vue/server-renderer"; import { unref } from "vue"; import { ClientOnly } from "vike-vue/ClientOnly"',
+      ),
+    ).toBe(true)
+
+    // Rule 2: Should match code containing ssrRenderComponent alone (member expression has no import strings)
     expect(filter!.code.include.test('import { ssrRenderComponent } from "vue/server-renderer"')).toBe(true)
-    // Should match code containing vue and unref
-    expect(filter!.code.include.test('import { unref } from "vue"')).toBe(true)
-    // Should match code containing vike-vue/ClientOnly and ClientOnly
-    expect(filter!.code.include.test('import { ClientOnly } from "vike-vue/ClientOnly"')).toBe(true)
+
+    // Should NOT match unref alone (doesn't satisfy any complete rule)
+    expect(filter!.code.include.test('import { unref } from "vue"')).toBe(false)
+
+    // Should NOT match ClientOnly alone (doesn't satisfy any complete rule)
+    expect(filter!.code.include.test('import { ClientOnly } from "vike-vue/ClientOnly"')).toBe(false)
+
     // Should not match code without any of the imports
     expect(filter!.code.include.test('import { ref } from "vue"')).toBe(false)
   })

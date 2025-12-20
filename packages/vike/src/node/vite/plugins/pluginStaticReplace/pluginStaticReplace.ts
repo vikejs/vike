@@ -65,53 +65,90 @@ function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
   ]
 }
 
-// TODO/ai: make it more precise: all import strings defined by a single rule must be present (AND) — exececpt of an array call.match.function which is OR. Make it OR between/for each rule
 /**
  * Build a filterRolldown from rules by extracting all import strings.
- * For example: import:vike-react/ClientOnly:ClientOnly creates a regex
- * that matches files containing both 'vike-react/ClientOnly' and 'ClientOnly'
+ * For a single rule, ALL import strings must be present (AND logic),
+ * except for call.match.function array which is OR logic.
+ * Between rules, it's OR logic.
  */
 function buildFilterRolldown(rules: ReplaceRule[]): { code: { include: RegExp } } | null {
-  const importStrings = new Set<string>()
+  const rulePatterns: string[] = []
 
-  // Extract all import strings from rules
+  // Process each rule separately
   for (const rule of rules) {
-    extractImportStrings(rule.call.match.function, importStrings)
+    const importStrings = new Set<string>()
+    const functionImportStrings = new Set<string>()
 
+    // Extract function import strings separately
+    extractImportStrings(rule.call.match.function, functionImportStrings)
+
+    // Extract arg import strings
     if (rule.call.match.args) {
       for (const condition of Object.values(rule.call.match.args)) {
         extractImportStringsFromCondition(condition, importStrings)
       }
     }
-  }
 
-  if (importStrings.size === 0) return null
+    // Build pattern for this rule
+    const ruleParts: string[] = []
 
-  // Build regex pattern that matches files containing any of the import parts
-  const patterns: string[] = []
-  for (const importStr of importStrings) {
-    if (importStr.startsWith('import:')) {
-      const rest = importStr.slice('import:'.length)
-      const parts = rest.split(':')
-      const exportName = parts.pop()!
-      const source = parts.join(':')
+    // For function imports: if array, use OR; otherwise use AND
+    if (functionImportStrings.size > 0) {
+      const functionPatterns: string[] = []
+      for (const importStr of functionImportStrings) {
+        const parts = parseImportString(importStr)
+        if (parts) {
+          // Each function import should match both source and export name
+          functionPatterns.push(`(?=.*${escapeRegex(parts.source)})(?=.*${escapeRegex(parts.exportName)})`)
+        }
+      }
 
-      // Match files containing both the source and export name
-      patterns.push(`(?=.*${escapeRegex(source)})(?=.*${escapeRegex(exportName)})`)
+      // If multiple functions, they are alternatives (OR)
+      if (functionPatterns.length > 0) {
+        if (functionPatterns.length === 1) {
+          ruleParts.push(functionPatterns[0]!)
+        } else {
+          // Multiple function patterns: file must match at least one
+          ruleParts.push(`(?:${functionPatterns.join('|')})`)
+        }
+      }
+    }
+
+    // For arg imports: all must be present (AND)
+    for (const importStr of importStrings) {
+      const parts = parseImportString(importStr)
+      if (parts) {
+        // Each arg import should match both source and export name
+        ruleParts.push(`(?=.*${escapeRegex(parts.source)})(?=.*${escapeRegex(parts.exportName)})`)
+      }
+    }
+
+    // Combine all parts for this rule with AND logic
+    if (ruleParts.length > 0) {
+      // All parts must match for this rule
+      rulePatterns.push(ruleParts.join(''))
     }
   }
 
-  if (patterns.length === 0) return null
+  if (rulePatterns.length === 0) return null
 
-  // Create a regex that matches if any pattern matches
-  const regex = new RegExp(patterns.join('|'))
+  // Create a regex that matches if any rule pattern matches (OR between rules)
+  const regex = new RegExp(rulePatterns.join('|'))
 
   return {
-    // TODO/ai return importStrings to futher improve test
     code: {
       include: regex,
     },
   }
+}
+
+function parseImportString(str: string): { source: string; exportName: string } | null {
+  if (!str.startsWith('import:')) return null
+  const rest = str.slice('import:'.length)
+  const parts = rest.split(':')
+  const exportName = parts.pop()!
+  const source = parts.join(':')
+  return { source, exportName }
 }
 
 /**
