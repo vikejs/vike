@@ -1839,8 +1839,8 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vike-cloudflare:
-        specifier: ^0.2.7
-        version: 0.2.7(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.9.7)(vike@packages+vike)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
+        specifier: ^0.2.8
+        version: 0.2.8(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.9.7)(vike@packages+vike)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
       wrangler:
         specifier: ^4.53.0
         version: 4.53.0
@@ -7523,8 +7523,8 @@ packages:
   vfile@6.0.3:
     resolution: {integrity: sha512-KzIbH/9tXat2u30jf+smMwFCsno4wHVdNmzFyL+T/L3UGqqk6JKfVqOFOZEpZSHADH1k40ab6NUIXZq422ov3Q==}
 
-  vike-cloudflare@0.2.7:
-    resolution: {integrity: sha512-32f7aStW1M8gWdlHr+IFQbnMhUmfVqqvmvN4GKF19PRk1m6IM0TsgtPTxtDUgsaazurnYTjW8uK+mMN+92FqVg==}
+  vike-cloudflare@0.2.8:
+    resolution: {integrity: sha512-1t9kdcG10BrDcPCRob80MmO66AlAtARnua3iNcMPlP5JYLt/PhftxR6GS0mLJo1PPM8gFizujFJ77k+vJpnOSA==}
     peerDependencies:
       hono: ^4.7.4
       vike: '>=0.4.231'
@@ -14265,7 +14265,7 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.2
 
-  vike-cloudflare@0.2.7(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.9.7)(vike@packages+vike)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)):
+  vike-cloudflare@0.2.8(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.9.7)(vike@packages+vike)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)):
     dependencies:
       hono: 4.10.4
       vike: link:packages/vike
