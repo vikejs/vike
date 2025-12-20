@@ -1,12 +1,9 @@
-import { applyStaticReplace, StaticReplace } from '../pluginStaticReplace.js'
-import { buildFilterRolldown } from './pluginStaticReplace.js'
+import { applyStaticReplace, StaticReplace } from './applyStaticReplace.js'
+import { buildFilterRolldown } from './buildFilterRolldown.js'
 import { describe, it, expect } from 'vitest'
 import { readFileSync, readdirSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
-
-// TODO/ai: rename this file to staticReplace.spec.ts
-// TODO/ai: move all snapshots* to a new directory snapshot/* e.g. snapshot/vue-dev-before
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -103,7 +100,7 @@ async function testTransform(options: StaticReplace[], before: string, after: st
   const code = readFileSync(join(__dirname, before), 'utf-8')
   const result = await applyStaticReplace({
     code,
-    id: 'fake-id:pluginStaticReplace.spec.ts',
+    id: 'fake-id:staticReplace.spec.ts',
     options,
     env: 'server',
   })
@@ -111,7 +108,7 @@ async function testTransform(options: StaticReplace[], before: string, after: st
 }
 
 function getSnapshots() {
-  const files = readdirSync(__dirname)
+  const files = readdirSync(join(__dirname, 'snapshot'))
   const beforeFiles = files.filter((f) => f.startsWith('snapshot-') && f.endsWith('-before'))
 
   return beforeFiles.map((beforeFile) => {
@@ -129,7 +126,7 @@ function getSnapshots() {
       throw new Error(`Unknown framework in test name: ${testName}`)
     }
 
-    return { testName, beforeFile, afterFile, options }
+    return { testName, beforeFile: `snapshot/${beforeFile}`, afterFile: `snapshot/${afterFile}`, options }
   })
 }
 

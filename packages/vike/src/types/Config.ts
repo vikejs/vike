@@ -53,7 +53,7 @@ import type { GlobalContext } from './GlobalContext.js'
 import type { InlineConfig } from 'vite'
 import type { PassToClientPublic } from '../server/runtime/renderPageServer/html/serializeContext.js'
 import type { CliPreviewConfig } from '../node/api/preview.js'
-import type { StaticReplace } from '../node/vite/plugins/pluginStaticReplace.js'
+import type { StaticReplace } from '../node/vite/plugins/pluginStaticReplace/applyStaticReplace.js'
 
 type HookNameOld = HookName | HookNameOldDesign
 type HookName = HookNamePage | HookNameGlobal
