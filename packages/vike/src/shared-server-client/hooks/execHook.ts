@@ -52,7 +52,7 @@ async function execHook<PageContext extends PageContextExecHook>(
 
 async function execHookGlobal<HookArg extends GlobalContextPrepareMinimum>(
   hookName: HookNameGlobal,
-  globalContext: { _pageConfigGlobal: PageConfigGlobalRuntime },
+  globalContext: GlobalContextPrepareMinimum,
   pageContext: PageContextPrepareMinimum | null,
   hookArg: HookArg,
   prepareForPublicUsage: (hookArg: HookArg) => HookArg,
@@ -204,7 +204,7 @@ function execHookDirectSync<PageContext extends PageContextPrepareMinimum>(
 
 function execHookWithOnHookCall<HookReturn>(
   hook: HookLoc & { hookFn: Function },
-  globalContext: { _pageConfigGlobal: PageConfigGlobalRuntime },
+  globalContext: GlobalContextPrepareMinimum,
   ...args: unknown[]
 ): HookReturn {
   const { hookFn, hookName, hookFilePath } = hook

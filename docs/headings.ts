@@ -482,6 +482,12 @@ const headings = [
   },
   {
     level: 2,
+    title: '`+onHookCall()` hook',
+    titleInNav: '`+onHookCall()`',
+    url: '/onHookCall',
+  },
+  {
+    level: 2,
     title: '`+onPageTransitionStart()` hook',
     titleInNav: '`+onPageTransitionStart()`',
     url: '/onPageTransitionStart',

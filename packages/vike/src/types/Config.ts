@@ -739,7 +739,8 @@ type OnHookCallHook = {
 /**
  * Wrapper for hook calls. Used for instrumentation (e.g. Sentry, OpenTelemetry).
  *
- * The `context` argument is `pageContext` for page hooks and `globalContext` for global hooks.
+ * The `context` argument is `pageContext` (https://vike.dev/pageContext) for page hooks
+ * and `globalContext` (https://vike.dev/globalContext) for global hooks.
  *
  * **Important:** The wrapper must return the result of `hook.call()` to preserve the hook's return value.
  *
