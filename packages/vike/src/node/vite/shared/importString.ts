@@ -1,9 +1,9 @@
 export { parseImportString }
 export { isImportString }
 export { serializeImportString }
-export type { ImportStringParsed }
-export type { ImportStringList }
 export type { ImportString }
+export type { ImportStringList }
+export type { ImportStringParsed }
 
 import { assert } from '../utils.js'
 
@@ -14,11 +14,11 @@ const SEP = ':'
  * @example import:./Layout:default
  */
 type ImportString = `import:${string}:${string}`
+type ImportStringList = ImportString | ImportString[]
 type ImportStringParsed = {
   importPath: string
   exportName: string
 }
-type ImportStringList = ImportString | ImportString[]
 
 /**
  * Parse import string in format: import:importPath:exportName

@@ -25,7 +25,7 @@ export type {
   KeepScrollPosition,
 } from './Config.js'
 
-export { ImportString } from '../node/vite/shared/importString.js'
+export type { ImportString } from '../node/vite/shared/importString.js'
 
 // TO-DO/next-major-release: remove
 export type {
