@@ -1,3 +1,5 @@
+// TODO/ai move to pluginStaticReplace/staticReplace.ts
+
 export { transformCode as transformStaticReplace }
 export type { StaticReplace }
 

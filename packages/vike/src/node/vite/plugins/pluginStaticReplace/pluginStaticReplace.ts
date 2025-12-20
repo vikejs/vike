@@ -1,6 +1,5 @@
 export { pluginStaticReplace }
 export { buildFilterRolldown }
-export { getStaticReplaceList }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { assert, escapeRegex } from '../../utils.js'
@@ -24,6 +23,7 @@ function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
         },
       },
       transform: {
+        // TODO/ai skip node_modules
         filter: filterRolldown,
         async handler(code, id, options) {
           const env = isViteServerSide_extraSafe(config, this.environment, options) ? 'server' : 'client'
@@ -59,6 +59,7 @@ function getStaticReplaceList(vikeConfig: VikeConfigInternal): StaticReplace[] {
   return staticReplaceList
 }
 
+// TODO/ai: move to ./buildFilterRolldown.ts
 /**
  * Build a filterRolldown from staticReplaceList by extracting all import strings.
  * For a single rule, ALL import strings must be present (AND logic),

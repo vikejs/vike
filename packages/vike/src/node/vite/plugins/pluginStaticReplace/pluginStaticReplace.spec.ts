@@ -5,6 +5,9 @@ import { readFileSync, readdirSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 
+// TODO/ai: rename this file to staticReplace.spec.ts
+// TODO/ai: move all snapshots* to a new directory snapshot/* e.g. snapshot/vue-dev-before
+
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
