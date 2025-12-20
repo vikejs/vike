@@ -707,7 +707,7 @@ type ConfigBuiltIn = {
    *
    * @experimental
    */
-  staticReplace?: TransformStaticReplaceOptions | ImportString
+  staticReplace?: TransformStaticReplaceOptions
 }
 
 type ConfigBuiltInResolved = {
