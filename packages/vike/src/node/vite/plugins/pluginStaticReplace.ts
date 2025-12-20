@@ -1,10 +1,6 @@
 export { transformCode as transformStaticReplace }
 export type { TransformOptions as TransformStaticReplaceOptions }
 
-// TODO/ai
-// Create a new Vike setting +staticReplace — see https://github.com/vikejs/vike-react/pull/206#issuecomment-3669801068
-// Use the API defined here as the +staticReplace API (not the one defined in the comment above)
-
 import { transformAsync, type PluginItem, type NodePath } from '@babel/core'
 import * as t from '@babel/types'
 

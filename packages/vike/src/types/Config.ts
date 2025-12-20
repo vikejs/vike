@@ -53,6 +53,7 @@ import type { GlobalContext } from './GlobalContext.js'
 import type { InlineConfig } from 'vite'
 import type { PassToClientPublic } from '../server/runtime/renderPageServer/html/serializeContext.js'
 import type { CliPreviewConfig } from '../node/api/preview.js'
+import type { TransformStaticReplaceOptions } from '../node/vite/plugins/pluginStaticReplace.js'
 
 type HookNameOld = HookName | HookNameOldDesign
 type HookName = HookNamePage | HookNameGlobal
@@ -700,6 +701,13 @@ type ConfigBuiltIn = {
   cli?: {
     preview?: CliPreviewConfig
   }
+
+  /**
+   * Static code transformations for optimizations like removing component children server-side.
+   *
+   * @experimental
+   */
+  staticReplace?: TransformStaticReplaceOptions | ImportString
 }
 
 type ConfigBuiltInResolved = {
