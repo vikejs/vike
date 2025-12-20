@@ -5,6 +5,7 @@ export { execHookDirectSingle }
 export { execHookDirectSingleWithReturn }
 export { execHookDirectWithoutPageContext }
 export { execHookDirectSync }
+export { execHookWithWrappers }
 export { getPageContext_sync }
 export { providePageContext }
 export { isUserHookError }
@@ -17,9 +18,10 @@ import { isObject } from '../../utils/isObject.js'
 import type { PageContextClient, PageContextServer } from '../../types/PageContext.js'
 import type { Hook, HookLoc } from './getHook.js'
 import type { PageContextConfig } from '../getPageFiles.js'
-import { getHookFromPageConfigGlobalCumulative, getHookFromPageContextNew, callHookFn } from './getHook.js'
-import type { HookName, HookNameGlobal } from '../../types/Config.js'
+import { getHookFromPageConfigGlobalCumulative, getHookFromPageContextNew } from './getHook.js'
+import type { HookName, HookNameGlobal, HookNameOld, OnHookCall } from '../../types/Config.js'
 import type { PageConfigGlobalRuntime } from '../../types/PageConfig.js'
+import { isArray } from '../utils.js'
 import type { PageContextForPublicUsageServer } from '../../server/runtime/renderPageServer/preparePageContextForPublicUsageServer.js'
 import type { PageContextForPublicUsageClientShared } from '../../client/shared/preparePageContextForPublicUsageClientShared.js'
 import {
@@ -59,7 +61,11 @@ async function execHookGlobal<HookArg extends GlobalContextPrepareMinimum>(
   const hookArgForPublicUsage = prepareForPublicUsage(hookArg)
   await Promise.all(
     hooks.map(async (hook) => {
-      await execHookDirectAsync(() => callHookFn(hook, globalContext, hookArgForPublicUsage), hook, pageContext)
+      await execHookDirectAsync(
+        () => execHookWithWrappers(hook, globalContext, hookArgForPublicUsage),
+        hook,
+        pageContext,
+      )
     }),
   )
 }
@@ -74,7 +80,7 @@ async function execHookDirect<PageContext extends PageContextPrepareMinimum>(
   const hooksWithResult = await Promise.all(
     hooks.map(async (hook) => {
       const hookReturn = await execHookDirectAsync(
-        () => callHookFn(hook, pageContext._globalContext, pageContextForPublicUsage),
+        () => execHookWithWrappers(hook, pageContext._globalContext, pageContextForPublicUsage),
         hook,
         pageContextForPublicUsage,
       )
@@ -192,7 +198,7 @@ function execHookDirectSync<PageContext extends PageContextPrepareMinimum>(
 ) {
   const pageContextForPublicUsage = preparePageContextForPublicUsage(pageContext)
   providePageContextInternal(pageContextForPublicUsage)
-  const hookReturn = callHookFn(hook, pageContext._globalContext, pageContextForPublicUsage)
+  const hookReturn = execHookWithWrappers(hook, pageContext._globalContext, pageContextForPublicUsage)
   return { hookReturn }
 }
 
@@ -224,4 +230,33 @@ function providePageContextInternal(pageContext: null | PageContextPrepareMinimu
   Promise.resolve().then(() => {
     globalObject.pageContext = null
   })
+}
+
+type HookForExec = {
+  hookFn: Function
+  hookName: HookNameOld
+  hookFilePath: string
+}
+
+function execHookWithWrappers<HookReturn>(
+  hook: HookForExec,
+  globalContext: { _pageConfigGlobal: PageConfigGlobalRuntime },
+  ...args: unknown[]
+): HookReturn {
+  const { hookFn, hookName, hookFilePath } = hook
+  // Don't wrap onHookCall itself to prevent infinite recursion
+  if (hookName === 'onHookCall') return hookFn(...args)
+  const configValue = globalContext._pageConfigGlobal.configValues['onHookCall']
+  if (!configValue?.value) return hookFn(...args)
+  const wrappers = configValue.value
+  if (!isArray(wrappers)) return hookFn(...args)
+  // First arg is pageContext for page hooks, globalContext for global hooks
+  const context = args[0]
+  let fn = () => hookFn(...args)
+  for (const wrapper of wrappers as OnHookCall[]) {
+    const prev = fn
+    const hookPublic = { name: hookName, filePath: hookFilePath, call: prev }
+    fn = () => wrapper(hookPublic, context)
+  }
+  return fn()
 }
