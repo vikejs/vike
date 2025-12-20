@@ -56,6 +56,7 @@ import {
   getHookFromPageConfigGlobal,
   getHookTimeoutDefault,
   getHook_setIsPrerenderering,
+  callHookFn,
 } from '../../shared-server-client/hooks/getHook.js'
 import { noRouteMatch } from '../../shared-server-client/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../types/PageConfig.js'
@@ -361,7 +362,7 @@ async function callOnBeforePrerenderStartHooks(
       concurrencyLimit(async () => {
         const hookName = 'onBeforePrerenderStart'
         const pageConfigLoaded = await loadAndParseVirtualFilePageEntry(pageConfig, false)
-        const hook = getHookFromPageConfig(pageConfigLoaded, hookName, globalContext._pageConfigGlobal)
+        const hook = getHookFromPageConfig(pageConfigLoaded, hookName)
         if (!hook) return
         const { hookFn, hookFilePath, hookTimeout } = hook
         onBeforePrerenderStartHooks.push({
@@ -413,7 +414,7 @@ async function callOnBeforePrerenderStartHooks(
         if (doNotPrerenderList.find((p) => p.pageId === pageId)) return
         const { hookName, hookFilePath } = hook
 
-        const prerenderResult = await execHookDirectWithoutPageContext(() => hook.hookFn(), hook)
+        const prerenderResult = await execHookDirectWithoutPageContext(() => callHookFn(hook, globalContext), hook)
         const result = normalizeOnPrerenderHookResult(prerenderResult, hookFilePath, hookName)
 
         // Handle result

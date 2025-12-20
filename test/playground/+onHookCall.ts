@@ -1,4 +1,4 @@
-import { OnHookCall } from 'vike/types'
+import type { OnHookCall } from 'vike/types'
 
 export const onHookCall: OnHookCall = async (hook, context) => {
   console.log('before hook', hook.name, hook.filePath)

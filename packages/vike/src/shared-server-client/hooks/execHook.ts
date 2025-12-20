@@ -17,7 +17,7 @@ import { isObject } from '../../utils/isObject.js'
 import type { PageContextClient, PageContextServer } from '../../types/PageContext.js'
 import type { Hook, HookLoc } from './getHook.js'
 import type { PageContextConfig } from '../getPageFiles.js'
-import { getHookFromPageConfigGlobalCumulative, getHookFromPageContextNew } from './getHook.js'
+import { getHookFromPageConfigGlobalCumulative, getHookFromPageContextNew, callHookFn } from './getHook.js'
 import type { HookName, HookNameGlobal } from '../../types/Config.js'
 import type { PageConfigGlobalRuntime } from '../../types/PageConfig.js'
 import type { PageContextForPublicUsageServer } from '../../server/runtime/renderPageServer/preparePageContextForPublicUsageServer.js'
@@ -50,16 +50,16 @@ async function execHook<PageContext extends PageContextExecHook>(
 
 async function execHookGlobal<HookArg extends GlobalContextPrepareMinimum>(
   hookName: HookNameGlobal,
-  pageConfigGlobal: PageConfigGlobalRuntime,
+  globalContext: { _pageConfigGlobal: PageConfigGlobalRuntime },
   pageContext: PageContextPrepareMinimum | null,
   hookArg: HookArg,
   prepareForPublicUsage: (hookArg: HookArg) => HookArg,
 ) {
-  const hooks = getHookFromPageConfigGlobalCumulative(pageConfigGlobal, hookName)
+  const hooks = getHookFromPageConfigGlobalCumulative(globalContext._pageConfigGlobal, hookName)
   const hookArgForPublicUsage = prepareForPublicUsage(hookArg)
   await Promise.all(
     hooks.map(async (hook) => {
-      await execHookDirectAsync(() => hook.hookFn(hookArgForPublicUsage), hook, pageContext)
+      await execHookDirectAsync(() => callHookFn(hook, globalContext, hookArgForPublicUsage), hook, pageContext)
     }),
   )
 }
@@ -74,7 +74,7 @@ async function execHookDirect<PageContext extends PageContextPrepareMinimum>(
   const hooksWithResult = await Promise.all(
     hooks.map(async (hook) => {
       const hookReturn = await execHookDirectAsync(
-        () => hook.hookFn(pageContextForPublicUsage),
+        () => callHookFn(hook, pageContext._globalContext, pageContextForPublicUsage),
         hook,
         pageContextForPublicUsage,
       )
@@ -192,7 +192,7 @@ function execHookDirectSync<PageContext extends PageContextPrepareMinimum>(
 ) {
   const pageContextForPublicUsage = preparePageContextForPublicUsage(pageContext)
   providePageContextInternal(pageContextForPublicUsage)
-  const hookReturn = hook.hookFn(pageContextForPublicUsage)
+  const hookReturn = callHookFn(hook, pageContext._globalContext, pageContextForPublicUsage)
   return { hookReturn }
 }
 

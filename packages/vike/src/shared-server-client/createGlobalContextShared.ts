@@ -86,7 +86,7 @@ async function createGlobalContextShared<GlobalContextAdded extends {}, GlobalCo
       globalObject.onCreateGlobalContextHooks = onCreateGlobalContextHooks
       await execHookGlobal(
         'onCreateGlobalContext',
-        globalContext._pageConfigGlobal,
+        globalContext,
         null,
         globalContext,
         prepareGlobalContextForPublicUsage,
