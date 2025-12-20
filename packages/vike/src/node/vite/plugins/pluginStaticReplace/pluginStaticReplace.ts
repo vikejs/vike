@@ -10,9 +10,9 @@ import { transformStaticReplace, type StaticReplace, type ReplaceRule } from '..
 
 function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
   let config: ResolvedConfig
-  const rules = getStaticReplaceEntries(vikeConfig)
-  if (rules.length === 0) return []
-  const filterRolldown = buildFilterRolldown(rules)
+  const staticReplaceList = getStaticReplaceEntries(vikeConfig)
+  if (staticReplaceList.length === 0) return []
+  const filterRolldown = buildFilterRolldown(staticReplaceList)
   assert(filterRolldown)
   return [
     {
@@ -26,13 +26,13 @@ function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
       transform: {
         filter: filterRolldown || undefined,
         async handler(code, id, options) {
-          if (!rules || rules.length === 0) return null
+          if (!staticReplaceList || staticReplaceList.length === 0) return null
           const env = isViteServerSide_extraSafe(config, this.environment, options) ? 'server' : 'client'
           const result = await transformStaticReplace({
             code,
             id,
             env,
-            options: rules,
+            options: staticReplaceList,
           })
           return result
         },
@@ -42,7 +42,7 @@ function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
 }
 
 /**
- * Extract all rules from vikeConfig
+ * Extract all staticReplaceList from vikeConfig
  */
 function getStaticReplaceEntries(vikeConfig: VikeConfigInternal): ReplaceRule[] {
   const staticReplaceConfigs = vikeConfig._from.configsCumulative.staticReplace
@@ -61,16 +61,16 @@ function getStaticReplaceEntries(vikeConfig: VikeConfigInternal): ReplaceRule[] 
 }
 
 /**
- * Build a filterRolldown from rules by extracting all import strings.
+ * Build a filterRolldown from staticReplaceList by extracting all import strings.
  * For a single rule, ALL import strings must be present (AND logic),
  * except for call.match.function array which is OR logic.
- * Between rules, it's OR logic.
+ * Between staticReplace entries it's OR logic.
  */
-function buildFilterRolldown(rules: ReplaceRule[]): { code: { include: RegExp } } | null {
+function buildFilterRolldown(staticReplaceList: ReplaceRule[]): { code: { include: RegExp } } | null {
   const rulePatterns: string[] = []
 
   // Process each rule separately
-  for (const rule of rules) {
+  for (const rule of staticReplaceList) {
     const importStrings = new Set<string>()
     const functionImportStrings = new Set<string>()
 
@@ -127,7 +127,7 @@ function buildFilterRolldown(rules: ReplaceRule[]): { code: { include: RegExp } 
 
   if (rulePatterns.length === 0) return null
 
-  // Create a regex that matches if any rule pattern matches (OR between rules)
+  // Create a regex that matches if any rule pattern matches (OR between staticReplace entries)
   const regex = new RegExp(rulePatterns.join('|'))
 
   return {
