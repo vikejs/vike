@@ -42,7 +42,8 @@ const optionsReact: TransformStaticReplaceOptions = {
         match: {
           function: 'import:vike-react/useHydrated:useHydrated',
         },
-        replace: { with: JSON.stringify(false) },
+        // TODO/ai: change API so that `with` should be set to JSON.stringify(false) instead (it's more flexible)
+        replace: { with: false },
       },
     },
   ],
