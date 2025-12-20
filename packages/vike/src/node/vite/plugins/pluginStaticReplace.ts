@@ -39,81 +39,67 @@ export type RemoveTarget =
   | { argsFrom: number } // Remove all args from index onwards
 
 /**
- * Rule for function call replacement/removal.
- */
-export type CallRule = {
-  call: {
-    /** Match criteria */
-    match: {
-      /**
-       * Function name(s) to match.
-       * - Plain string: matches function name directly (e.g., 'jsx')
-       * - Import string: 'import:source:exportName' (e.g., 'import:react/jsx-runtime:jsx')
-       */
-      function: string | string[]
-      /** Conditions on arguments: index -> condition */
-      args?: Record<number, ArgCondition>
-    }
-    /** Replace target (optional) */
-    replace?: ReplaceTarget
-    /** Remove target (optional) */
-    remove?: RemoveTarget
-  }
-}
-
-/**
  * Rule for static replacement/removal.
- * Currently only supports function call rules, but can be extended in the future.
  *
  * @example
  * // jsx/jsxs/jsxDEV: replace children prop with null
  * {
- *   call: {
- *     match: {
- *       function: ['jsx', 'jsxs', 'jsxDEV'],
- *       args: { 0: 'import:vike-react/ClientOnly:ClientOnly' }
- *     },
- *     replace: { arg: 1, prop: 'children', with: null }
- *   }
+ *   env: 'server',
+ *   match: {
+ *     function: ['jsx', 'jsxs', 'jsxDEV'],
+ *     args: { 0: 'import:vike-react/ClientOnly:ClientOnly' }
+ *   },
+ *   replace: { arg: 1, prop: 'children', with: null }
  * }
  *
  * @example
  * // createElement: remove all children (args from index 2)
  * {
- *   call: {
- *     match: {
- *       function: 'createElement',
- *       args: { 0: 'import:vike-react/ClientOnly:ClientOnly' }
- *     },
- *     remove: { argsFrom: 2 }
- *   }
+ *   env: 'server',
+ *   match: {
+ *     function: 'createElement',
+ *     args: { 0: 'import:vike-react/ClientOnly:ClientOnly' }
+ *   },
+ *   remove: { argsFrom: 2 }
  * }
  *
  * @example
  * // ssrRenderComponent: match nested call expression and remove default slot
  * {
- *   call: {
- *     match: {
- *       function: 'import:vue/server-renderer:ssrRenderComponent',
- *       args: {
- *         0: {
- *           call: 'import:vue:unref',
- *           args: { 0: 'import:vike-vue/ClientOnly:ClientOnly' }
- *         }
+ *   env: 'server',
+ *   match: {
+ *     function: 'import:vue/server-renderer:ssrRenderComponent',
+ *     args: {
+ *       0: {
+ *         call: 'import:vue:unref',
+ *         args: { 0: 'import:vike-vue/ClientOnly:ClientOnly' }
  *       }
- *     },
- *     remove: { arg: 2, prop: 'default' }
- *   }
+ *     }
+ *   },
+ *   remove: { arg: 2, prop: 'default' }
  * }
  */
-export type ReplaceRule = CallRule & {
+export type ReplaceRule = {
   /** Environment filter: 'client' = client only, 'server' = everything except client */
   env?: 'server' | 'client'
-} // Can be extended: CallRule | VariableRule | ...
-
-export type TransformOptions = {
-  rules: ReplaceRule[]
+  /** Match criteria */
+  match: {
+    /**
+     * Function name(s) to match.
+     * - Plain string: matches function name directly (e.g., 'jsx')
+     * - Import string: 'import:source:exportName' (e.g., 'import:react/jsx-runtime:jsx')
+     */
+    function: string | string[]
+    /** Conditions on arguments: index -> condition */
+    args?: Record<number, ArgCondition>
+  }
+  /** Replace target (optional) */
+  replace?: ReplaceTarget
+  /** Remove target (optional) */
+  remove?: RemoveTarget
 }
+
+export type TransformOptions = ReplaceRule[]
 
 // ============================================================================
 // Internal types
@@ -143,7 +129,7 @@ export type TransformInput = {
 
 export async function transformCode({ code, id, env, options }: TransformInput): Promise<TransformResult> {
   // 'server' means "not client" (covers ssr, cloudflare, etc.)
-  const filteredRules = options.rules.filter((rule) => {
+  const filteredRules = options.filter((rule) => {
     if (!rule.env) return true
     if (rule.env === 'client') return env === 'client'
     if (rule.env === 'server') return env !== 'client'
@@ -261,10 +247,10 @@ function applyRulesPlugin(state: State, rules: ReplaceRule[]): PluginItem {
 
         for (const rule of rules) {
           if (!matchesRule(path, rule, calleeName, state)) continue
-          if (rule.call.replace) {
-            applyReplace(path, rule.call.replace, state)
-          } else if (rule.call.remove) {
-            applyRemove(path, rule.call.remove, state)
+          if (rule.replace) {
+            applyReplace(path, rule.replace, state)
+          } else if (rule.remove) {
+            applyRemove(path, rule.remove, state)
           }
         }
       },
@@ -276,7 +262,7 @@ function applyRulesPlugin(state: State, rules: ReplaceRule[]): PluginItem {
  * Check if a call expression matches a rule
  */
 function matchesRule(path: NodePath<t.CallExpression>, rule: ReplaceRule, calleeName: string, state: State): boolean {
-  const { match } = rule.call
+  const { match } = rule
 
   // Check callee name
   const functions = Array.isArray(match.function) ? match.function : [match.function]

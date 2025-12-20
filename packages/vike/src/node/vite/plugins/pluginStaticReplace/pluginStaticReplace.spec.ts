@@ -8,87 +8,71 @@ import { dirname, join } from 'node:path'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-const staticReplaceReact: StaticReplace = {
-  rules: [
-    {
-      env: 'server',
-      call: {
-        match: {
-          function: [
-            'import:react/jsx-runtime:jsx',
-            'import:react/jsx-runtime:jsxs',
-            'import:react/jsx-dev-runtime:jsxDEV',
-          ],
-          args: { 0: 'import:vike-react/ClientOnly:ClientOnly' },
-        },
-        remove: { arg: 1, prop: 'children' },
-      },
+const staticReplaceReact: StaticReplace = [
+  {
+    env: 'server',
+    match: {
+      function: [
+        'import:react/jsx-runtime:jsx',
+        'import:react/jsx-runtime:jsxs',
+        'import:react/jsx-dev-runtime:jsxDEV',
+      ],
+      args: { 0: 'import:vike-react/ClientOnly:ClientOnly' },
     },
-    {
-      env: 'server',
-      call: {
-        match: {
-          function: 'import:react:createElement',
-          args: { 0: 'import:vike-react/ClientOnly:ClientOnly' },
-        },
-        remove: { argsFrom: 2 },
-      },
+    remove: { arg: 1, prop: 'children' },
+  },
+  {
+    env: 'server',
+    match: {
+      function: 'import:react:createElement',
+      args: { 0: 'import:vike-react/ClientOnly:ClientOnly' },
     },
-    {
-      env: 'server',
-      call: {
-        match: {
-          function: 'import:vike-react/useHydrated:useHydrated',
-        },
-        replace: { with: false },
-      },
+    remove: { argsFrom: 2 },
+  },
+  {
+    env: 'server',
+    match: {
+      function: 'import:vike-react/useHydrated:useHydrated',
     },
-  ],
-}
+    replace: { with: false },
+  },
+]
 
-const staticReplaceVue: StaticReplace = {
-  rules: [
-    {
-      env: 'server',
-      call: {
-        match: {
-          function: ['import:vue/server-renderer:ssrRenderComponent'],
+const staticReplaceVue: StaticReplace = [
+  {
+    env: 'server',
+    match: {
+      function: ['import:vue/server-renderer:ssrRenderComponent'],
+      args: {
+        0: {
+          call: 'import:vue:unref',
           args: {
-            0: {
-              call: 'import:vue:unref',
-              args: {
-                0: 'import:vike-vue/ClientOnly:ClientOnly',
-              },
-            },
+            0: 'import:vike-vue/ClientOnly:ClientOnly',
           },
         },
-        remove: { arg: 2, prop: 'default' },
       },
     },
-    {
-      env: 'server',
-      call: {
-        match: {
-          function: ['import:vue/server-renderer:ssrRenderComponent'],
-          args: {
-            0: {
-              member: true,
-              object: '$setup',
-              property: 'ClientOnly',
-            },
-          },
+    remove: { arg: 2, prop: 'default' },
+  },
+  {
+    env: 'server',
+    match: {
+      function: ['import:vue/server-renderer:ssrRenderComponent'],
+      args: {
+        0: {
+          member: true,
+          object: '$setup',
+          property: 'ClientOnly',
         },
-        remove: { arg: 2, prop: 'default' },
       },
     },
-  ],
-}
+    remove: { arg: 2, prop: 'default' },
+  },
+]
 
-/* TODO/ai improve StaticReplace API — replace staticReplaceSolid with the following (same with the other staticReplace* above):
 const staticReplaceSolid: StaticReplace = [
   {
     env: 'server',
-    type: 'call',
     match: {
       function: 'import:solid-js/web:createComponent',
       args: { 0: 'ClientOnly' },
@@ -96,21 +80,6 @@ const staticReplaceSolid: StaticReplace = [
     remove: { arg: 1, prop: 'children' },
   },
 ]
-*/
-const staticReplaceSolid: StaticReplace = {
-  rules: [
-    {
-      env: 'server',
-      call: {
-        match: {
-          function: 'import:solid-js/web:createComponent',
-          args: { 0: 'ClientOnly' },
-        },
-        remove: { arg: 1, prop: 'children' },
-      },
-    },
-  ],
-}
 
 describe('transformStaticReplace', () => {
   const snapshots = getSnapshots()
@@ -157,7 +126,7 @@ function getSnapshots() {
 
 describe('buildFilterRolldown', () => {
   it('returns filter for optionsReact', () => {
-    const filter = buildFilterRolldown(staticReplaceReact.rules)
+    const filter = buildFilterRolldown(staticReplaceReact)
     expect(filter).not.toBeNull()
     expect(filter!.code.include).toBeInstanceOf(RegExp)
 
@@ -191,7 +160,7 @@ describe('buildFilterRolldown', () => {
   })
 
   it('returns filter for optionsVue', () => {
-    const filter = buildFilterRolldown(staticReplaceVue.rules)
+    const filter = buildFilterRolldown(staticReplaceVue)
     expect(filter).not.toBeNull()
     expect(filter!.code.include).toBeInstanceOf(RegExp)
 
@@ -216,7 +185,7 @@ describe('buildFilterRolldown', () => {
   })
 
   it('returns filter for optionsSolid', () => {
-    const filter = buildFilterRolldown(staticReplaceSolid.rules)
+    const filter = buildFilterRolldown(staticReplaceSolid)
     expect(filter).not.toBeNull()
     expect(filter!.code.include).toBeInstanceOf(RegExp)
 
@@ -234,13 +203,11 @@ describe('buildFilterRolldown', () => {
   it('returns null for rules without import strings', () => {
     const filter = buildFilterRolldown([
       {
-        call: {
-          match: {
-            function: 'plainFunction',
-            args: { 0: 'plainString' },
-          },
-          remove: { arg: 0 },
+        match: {
+          function: 'plainFunction',
+          args: { 0: 'plainString' },
         },
+        remove: { arg: 0 },
       },
     ])
     expect(filter).toBeNull()

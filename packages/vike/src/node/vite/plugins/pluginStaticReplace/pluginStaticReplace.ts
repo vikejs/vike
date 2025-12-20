@@ -32,7 +32,7 @@ function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
             code,
             id,
             env,
-            options: { rules },
+            options: rules,
           })
           return result
         },
@@ -52,8 +52,8 @@ function getAllRules(vikeConfig: VikeConfigInternal): ReplaceRule[] {
 
   for (const configValue of staticReplaceConfigs.values) {
     const options = configValue.value as StaticReplace
-    if (options?.rules) {
-      allRules.push(...options.rules)
+    if (Array.isArray(options)) {
+      allRules.push(...options)
     }
   }
 
@@ -75,11 +75,11 @@ function buildFilterRolldown(rules: ReplaceRule[]): { code: { include: RegExp } 
     const functionImportStrings = new Set<string>()
 
     // Extract function import strings separately
-    extractImportStrings(rule.call.match.function, functionImportStrings)
+    extractImportStrings(rule.match.function, functionImportStrings)
 
     // Extract arg import strings
-    if (rule.call.match.args) {
-      for (const condition of Object.values(rule.call.match.args)) {
+    if (rule.match.args) {
+      for (const condition of Object.values(rule.match.args)) {
         extractImportStringsFromCondition(condition, importStrings)
       }
     }
