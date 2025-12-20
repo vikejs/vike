@@ -86,7 +86,7 @@ function buildFilterRolldown(staticReplaceList: StaticReplace[]): { code: { incl
 function extractImportStrings(functions: string | string[], result: Set<string>): void {
   const arr = Array.isArray(functions) ? functions : [functions]
   for (const fn of arr) {
-    if (fn.startsWith('import:')) {
+    if (parseImportString(fn)) {
       result.add(fn)
     }
   }
@@ -97,13 +97,13 @@ function extractImportStrings(functions: string | string[], result: Set<string>)
  */
 function extractImportStringsFromCondition(condition: any, result: Set<string>): void {
   if (typeof condition === 'string') {
-    if (condition.startsWith('import:')) {
+    if (parseImportString(condition)) {
       result.add(condition)
     }
   } else if (condition && typeof condition === 'object') {
     // Handle call condition
     if ('call' in condition && typeof condition.call === 'string') {
-      if (condition.call.startsWith('import:')) {
+      if (parseImportString(condition.call)) {
         result.add(condition.call)
       }
       // Recursively check nested args

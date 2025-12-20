@@ -172,7 +172,6 @@ async function applyStaticReplace({ code, id, env, options }: TransformInput): P
 // Helpers
 // ============================================================================
 
-// TODO/ai dedupe
 function parseImportString(str: string): ParsedImport | null {
   if (!str.startsWith('import:')) return null
   const rest = str.slice('import:'.length)
