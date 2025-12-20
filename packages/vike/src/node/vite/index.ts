@@ -66,7 +66,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): Promise<Plug
       ...pluginWorkaroundVite6HmrRegression(),
       ...pluginReplaceConstantsPageContext(),
       ...pluginReplaceConstantsGlobalThis(),
-      ...pluginStaticReplace(),
+      ...pluginStaticReplace(vikeConfig),
       ...pluginNonRunnabeDev(),
       ...(await pluginViteConfigVikeExtensions(vikeConfig)),
     ]

@@ -4,10 +4,10 @@ import type { Plugin, ResolvedConfig } from 'vite'
 import { assertPosixPath } from '../../utils.js'
 import { normalizeId } from '../../shared/normalizeId.js'
 import { isViteServerSide_extraSafe } from '../../shared/isViteServerSide.js'
-import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
+import { VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { transformStaticReplace, type TransformStaticReplaceOptions, type ReplaceRule } from '../pluginStaticReplace.js'
 
-function pluginStaticReplace(): Plugin[] {
+function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
   let config: ResolvedConfig
   let rules: ReplaceRule[] | null = null
 
@@ -18,10 +18,6 @@ function pluginStaticReplace(): Plugin[] {
       configResolved: {
         async handler(config_) {
           config = config_
-
-          // Get cumulative staticReplace configs
-          const vikeConfig = await getVikeConfigInternal(false)
-          if (!vikeConfig) return
 
           const staticReplaceConfigs = vikeConfig._from.configsCumulative.staticReplace
           if (!staticReplaceConfigs) return
