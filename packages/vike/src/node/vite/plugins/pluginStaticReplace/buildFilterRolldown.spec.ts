@@ -81,6 +81,7 @@ const staticReplaceSolid: StaticReplace[] = [
   },
 ]
 
+// TODO/ai also test them against snapshots/*-before
 describe('buildFilterRolldown', () => {
   it('returns filter for optionsReact', () => {
     const filter = buildFilterRolldown(staticReplaceReact)
