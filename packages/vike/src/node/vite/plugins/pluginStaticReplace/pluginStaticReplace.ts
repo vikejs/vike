@@ -5,7 +5,7 @@ import type { Plugin, ResolvedConfig } from 'vite'
 import { assert, escapeRegex } from '../../utils.js'
 import { isViteServerSide_extraSafe } from '../../shared/isViteServerSide.js'
 import { VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
-import { transformStaticReplace, type StaticReplace } from '../pluginStaticReplace.js'
+import { applyStaticReplace, type StaticReplace } from '../pluginStaticReplace.js'
 
 function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
   let config: ResolvedConfig
@@ -27,7 +27,7 @@ function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
         filter: filterRolldown,
         async handler(code, id, options) {
           const env = isViteServerSide_extraSafe(config, this.environment, options) ? 'server' : 'client'
-          const result = await transformStaticReplace({
+          const result = await applyStaticReplace({
             code,
             id,
             env,

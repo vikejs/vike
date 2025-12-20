@@ -1,4 +1,4 @@
-import { transformStaticReplace, StaticReplace } from '../pluginStaticReplace.js'
+import { applyStaticReplace, StaticReplace } from '../pluginStaticReplace.js'
 import { buildFilterRolldown } from './pluginStaticReplace.js'
 import { describe, it, expect } from 'vitest'
 import { readFileSync, readdirSync } from 'node:fs'
@@ -90,7 +90,7 @@ const staticReplaceSolid: StaticReplace[] = [
   },
 ]
 
-describe('transformStaticReplace', () => {
+describe('applyStaticReplace', () => {
   const snapshots = getSnapshots()
   for (const snapshot of snapshots) {
     it(snapshot.testName, async () => {
@@ -101,7 +101,7 @@ describe('transformStaticReplace', () => {
 
 async function testTransform(options: StaticReplace[], before: string, after: string) {
   const code = readFileSync(join(__dirname, before), 'utf-8')
-  const result = await transformStaticReplace({
+  const result = await applyStaticReplace({
     code,
     id: 'fake-id:pluginStaticReplace.spec.ts',
     options,

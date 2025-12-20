@@ -1,6 +1,6 @@
 // TODO/ai move to pluginStaticReplace/staticReplace.ts
 
-export { staticReplace as transformStaticReplace }
+export { staticReplace as applyStaticReplace }
 export type { StaticReplace }
 
 import { transformAsync, type PluginItem, type NodePath } from '@babel/core'
