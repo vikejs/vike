@@ -72,7 +72,7 @@ function buildFilterRolldown(staticReplaceList: StaticReplace[]): RegExp | null 
   if (rulePatterns.length === 0) return null
 
   // Create a regex that matches if any rule pattern matches (OR between staticReplace entries)
-  return new RegExp(rulePatterns.join('|'))
+  return new RegExp(rulePatterns.join('|'), 's')
 }
 
 /**
