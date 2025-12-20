@@ -48,16 +48,16 @@ function getStaticReplaceEntries(vikeConfig: VikeConfigInternal): ReplaceRule[] 
   const staticReplaceConfigs = vikeConfig._from.configsCumulative.staticReplace
   if (!staticReplaceConfigs) return []
 
-  const allRules: ReplaceRule[] = []
+  const staticReplaceEntries: ReplaceRule[] = []
 
   for (const configValue of staticReplaceConfigs.values) {
     const options = configValue.value as StaticReplace
     if (Array.isArray(options)) {
-      allRules.push(...options)
+      staticReplaceEntries.push(...options)
     }
   }
 
-  return allRules
+  return staticReplaceEntries
 }
 
 /**
