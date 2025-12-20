@@ -1,4 +1,4 @@
-// TODO/ai move to pluginStaticReplace/staticReplace.ts
+// TODO/ai move to pluginStaticReplace/applyStaticReplace.ts
 
 export { applyStaticReplace }
 export type { StaticReplace }
