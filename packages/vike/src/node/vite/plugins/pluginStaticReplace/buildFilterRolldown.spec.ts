@@ -1,6 +1,8 @@
 import { buildFilterRolldown } from './buildFilterRolldown.js'
 import { StaticReplace } from './applyStaticReplace.js'
 import { describe, it, expect } from 'vitest'
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 
 const staticReplaceReact: StaticReplace[] = [
   {
@@ -81,7 +83,6 @@ const staticReplaceSolid: StaticReplace[] = [
   },
 ]
 
-// TODO/ai also test them against snapshots/*-before
 describe('buildFilterRolldown', () => {
   it('returns filter for optionsReact', () => {
     const filter = buildFilterRolldown(staticReplaceReact)
@@ -166,5 +167,79 @@ describe('buildFilterRolldown', () => {
       },
     ])
     expect(filter).toBeNull()
+  })
+
+  describe('snapshot tests', () => {
+    const readSnapshot = (filename: string): string => {
+      return readFileSync(join(__dirname, 'snapshots', filename), 'utf-8')
+    }
+
+    it('React filter matches React snapshots', () => {
+      const filter = buildFilterRolldown(staticReplaceReact)
+      expect(filter).not.toBeNull()
+
+      const reactDevBefore = readSnapshot('react-dev-before')
+      const reactProdBefore = readSnapshot('react-prod-before')
+      const classicReactDevBefore = readSnapshot('classic-react-dev-before')
+      const classicReactProdBefore = readSnapshot('classic-react-prod-before')
+
+      expect(filter!.test(reactDevBefore)).toBe(true)
+      expect(filter!.test(reactProdBefore)).toBe(true)
+      expect(filter!.test(classicReactDevBefore)).toBe(true)
+      expect(filter!.test(classicReactProdBefore)).toBe(true)
+    })
+
+    it('Vue filter matches Vue snapshots', () => {
+      const filter = buildFilterRolldown(staticReplaceVue)
+      expect(filter).not.toBeNull()
+
+      const vueDevBefore = readSnapshot('vue-dev-before')
+      const vueProdBefore = readSnapshot('vue-prod-before')
+
+      expect(filter!.test(vueDevBefore)).toBe(true)
+      expect(filter!.test(vueProdBefore)).toBe(true)
+    })
+
+    it('Solid filter matches Solid snapshots', () => {
+      const filter = buildFilterRolldown(staticReplaceSolid)
+      expect(filter).not.toBeNull()
+
+      const solidBefore = readSnapshot('solid-before')
+
+      expect(filter!.test(solidBefore)).toBe(true)
+    })
+
+    it('React filter does not match Vue/Solid snapshots', () => {
+      const filter = buildFilterRolldown(staticReplaceReact)
+      expect(filter).not.toBeNull()
+
+      const vueDevBefore = readSnapshot('vue-dev-before')
+      const solidBefore = readSnapshot('solid-before')
+
+      expect(filter!.test(vueDevBefore)).toBe(false)
+      expect(filter!.test(solidBefore)).toBe(false)
+    })
+
+    it('Vue filter does not match React/Solid snapshots', () => {
+      const filter = buildFilterRolldown(staticReplaceVue)
+      expect(filter).not.toBeNull()
+
+      const reactDevBefore = readSnapshot('react-dev-before')
+      const solidBefore = readSnapshot('solid-before')
+
+      expect(filter!.test(reactDevBefore)).toBe(false)
+      expect(filter!.test(solidBefore)).toBe(false)
+    })
+
+    it('Solid filter does not match React/Vue snapshots', () => {
+      const filter = buildFilterRolldown(staticReplaceSolid)
+      expect(filter).not.toBeNull()
+
+      const reactDevBefore = readSnapshot('react-dev-before')
+      const vueDevBefore = readSnapshot('vue-dev-before')
+
+      expect(filter!.test(reactDevBefore)).toBe(false)
+      expect(filter!.test(vueDevBefore)).toBe(false)
+    })
   })
 })
