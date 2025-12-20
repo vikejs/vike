@@ -65,6 +65,7 @@ function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
   ]
 }
 
+// TODO/ai: make it more precise: all import strings defined by a single rule must be present (AND) — exececpt of an array call.match.function which is OR. Make it OR between/for each rule
 /**
  * Build a filterRolldown from rules by extracting all import strings.
  * For example: import:vike-react/ClientOnly:ClientOnly creates a regex
@@ -106,6 +107,7 @@ function buildFilterRolldown(rules: ReplaceRule[]): { code: { include: RegExp } 
   const regex = new RegExp(patterns.join('|'))
 
   return {
+    // TODO/ai return importStrings to futher improve test
     code: {
       include: regex,
     },
