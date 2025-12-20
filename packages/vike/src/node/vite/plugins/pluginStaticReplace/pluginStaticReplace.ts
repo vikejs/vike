@@ -17,6 +17,7 @@ function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
     {
       name: 'vike:pluginStaticReplace',
       enforce: 'post',
+      // TODO/ai remove this hook in favor of using a new function getAllRules()
       configResolved: {
         async handler(config_) {
           config = config_
