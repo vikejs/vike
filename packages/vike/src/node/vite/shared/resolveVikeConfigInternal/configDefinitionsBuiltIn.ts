@@ -382,6 +382,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   staticReplace: {
     env: { config: true },
     cumulative: true,
+    global: true,
     /* TODO
     vite: true,
     */
