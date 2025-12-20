@@ -82,7 +82,7 @@ export type RemoveTarget =
  *   remove: { arg: 2, prop: 'default' }
  * }
  */
-export type ReplaceRule = {
+export type StaticReplaceEntry = {
   /** Type of transformation - currently only 'call' is supported, but can be extended in the future */
   type?: 'call'
   /** Environment filter: 'client' = client only, 'server' = everything except client */
@@ -104,7 +104,7 @@ export type ReplaceRule = {
   remove?: RemoveTarget
 }
 
-type StaticReplace = ReplaceRule[]
+type StaticReplace = StaticReplaceEntry[]
 
 // ============================================================================
 // Internal types
@@ -266,7 +266,7 @@ function applyRulesPlugin(state: State, rules: StaticReplace): PluginItem {
 /**
  * Check if a call expression matches a rule
  */
-function matchesRule(path: NodePath<t.CallExpression>, rule: ReplaceRule, calleeName: string, state: State): boolean {
+function matchesRule(path: NodePath<t.CallExpression>, rule: StaticReplaceEntry, calleeName: string, state: State): boolean {
   const { match } = rule
 
   // Check callee name
