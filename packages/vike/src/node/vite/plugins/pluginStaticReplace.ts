@@ -17,7 +17,7 @@ import * as t from '@babel/types'
  * - { call, args } matches a call expression with specific arguments
  * - { member, object, property } matches a member expression like $setup["ClientOnly"]
  */
-export type ArgCondition =
+type ArgCondition =
   | string
   | { prop: string; equals: unknown }
   | { call: string; args?: Record<number, ArgCondition> }
@@ -26,7 +26,7 @@ export type ArgCondition =
 /**
  * Target for replace operation.
  */
-export type ReplaceTarget =
+type ReplaceTarget =
   | { with: unknown } // Replace the entire call expression
   | { arg: number; prop: string; with: unknown } // Replace a prop inside an object arg
   | { arg: number; with: unknown } // Replace entire argument
@@ -35,7 +35,7 @@ export type ReplaceTarget =
 /**
  * Target for remove operation.
  */
-export type RemoveTarget =
+type RemoveTarget =
   | { arg: number; prop: string } // Remove a prop inside an object arg
   | { arg: number } // Remove entire argument
   | { argsFrom: number } // Remove all args from index onwards
@@ -125,7 +125,7 @@ type State = {
 // Main transformer
 // ============================================================================
 
-export type TransformInput = {
+type TransformInput = {
   code: string
   id: string
   env: string
