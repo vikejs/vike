@@ -8,7 +8,7 @@ import { dirname, join } from 'node:path'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-const optionsReact: StaticReplace = {
+const staticReplaceReact: StaticReplace = {
   rules: [
     {
       env: 'server',
@@ -46,7 +46,7 @@ const optionsReact: StaticReplace = {
   ],
 }
 
-const optionsVue: StaticReplace = {
+const staticReplaceVue: StaticReplace = {
   rules: [
     {
       env: 'server',
@@ -84,7 +84,7 @@ const optionsVue: StaticReplace = {
   ],
 }
 
-const optionsSolid: StaticReplace = {
+const staticReplaceSolid: StaticReplace = {
   rules: [
     {
       env: 'server',
@@ -129,11 +129,11 @@ function getSnapshots() {
 
     let options: StaticReplace
     if (testName.includes('vue')) {
-      options = optionsVue
+      options = staticReplaceVue
     } else if (testName.includes('solid')) {
-      options = optionsSolid
+      options = staticReplaceSolid
     } else if (testName.includes('react')) {
-      options = optionsReact
+      options = staticReplaceReact
     } else {
       throw new Error(`Unknown framework in test name: ${testName}`)
     }
@@ -144,7 +144,7 @@ function getSnapshots() {
 
 describe('buildFilterRolldown', () => {
   it('returns filter for optionsReact', () => {
-    const filter = buildFilterRolldown(optionsReact.rules)
+    const filter = buildFilterRolldown(staticReplaceReact.rules)
     expect(filter).not.toBeNull()
     expect(filter!.code.include).toBeInstanceOf(RegExp)
 
@@ -178,7 +178,7 @@ describe('buildFilterRolldown', () => {
   })
 
   it('returns filter for optionsVue', () => {
-    const filter = buildFilterRolldown(optionsVue.rules)
+    const filter = buildFilterRolldown(staticReplaceVue.rules)
     expect(filter).not.toBeNull()
     expect(filter!.code.include).toBeInstanceOf(RegExp)
 
@@ -203,7 +203,7 @@ describe('buildFilterRolldown', () => {
   })
 
   it('returns filter for optionsSolid', () => {
-    const filter = buildFilterRolldown(optionsSolid.rules)
+    const filter = buildFilterRolldown(staticReplaceSolid.rules)
     expect(filter).not.toBeNull()
     expect(filter!.code.include).toBeInstanceOf(RegExp)
 
