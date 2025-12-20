@@ -1,4 +1,5 @@
 export { pluginStaticReplace }
+export { buildFilterRolldown }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { assertPosixPath, escapeRegex } from '../../utils.js'

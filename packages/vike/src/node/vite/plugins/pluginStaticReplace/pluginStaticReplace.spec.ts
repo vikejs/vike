@@ -1,4 +1,5 @@
 import { transformStaticReplace, TransformStaticReplaceOptions } from '../pluginStaticReplace.js'
+import { buildFilterRolldown } from './pluginStaticReplace.js'
 import { describe, it, expect } from 'vitest'
 import { readFileSync, readdirSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
@@ -143,3 +144,70 @@ function getSnapshots() {
     return { testName, beforeFile, afterFile, options }
   })
 }
+
+describe('buildFilterRolldown', () => {
+  it('returns filter for optionsReact', () => {
+    const filter = buildFilterRolldown(optionsReact.rules)
+    expect(filter).not.toBeNull()
+    expect(filter!.code.include).toBeInstanceOf(RegExp)
+
+    // Should match code containing react/jsx-runtime and ClientOnly
+    expect(
+      filter!.code.include.test(
+        'import { jsx } from "react/jsx-runtime"; import { ClientOnly } from "vike-react/ClientOnly"',
+      ),
+    ).toBe(true)
+    // Should match code containing vike-react/ClientOnly and ClientOnly
+    expect(filter!.code.include.test('import { ClientOnly } from "vike-react/ClientOnly"')).toBe(true)
+    // Should match code containing useHydrated
+    expect(filter!.code.include.test('import { useHydrated } from "vike-react/useHydrated"')).toBe(true)
+    // Should not match code without any of the imports
+    expect(filter!.code.include.test('import React from "react"')).toBe(false)
+  })
+
+  it('returns filter for optionsVue', () => {
+    const filter = buildFilterRolldown(optionsVue.rules)
+    expect(filter).not.toBeNull()
+    expect(filter!.code.include).toBeInstanceOf(RegExp)
+
+    // Should match code containing vue/server-renderer and ssrRenderComponent
+    expect(filter!.code.include.test('import { ssrRenderComponent } from "vue/server-renderer"')).toBe(true)
+    // Should match code containing vue and unref
+    expect(filter!.code.include.test('import { unref } from "vue"')).toBe(true)
+    // Should match code containing vike-vue/ClientOnly and ClientOnly
+    expect(filter!.code.include.test('import { ClientOnly } from "vike-vue/ClientOnly"')).toBe(true)
+    // Should not match code without any of the imports
+    expect(filter!.code.include.test('import { ref } from "vue"')).toBe(false)
+  })
+
+  it('returns filter for optionsSolid', () => {
+    const filter = buildFilterRolldown(optionsSolid.rules)
+    expect(filter).not.toBeNull()
+    expect(filter!.code.include).toBeInstanceOf(RegExp)
+
+    // Should match code containing solid-js/web and createComponent
+    expect(filter!.code.include.test('import { createComponent } from "solid-js/web"')).toBe(true)
+    // Should not match code without the import
+    expect(filter!.code.include.test('import { createSignal } from "solid-js"')).toBe(false)
+  })
+
+  it('returns null for empty rules', () => {
+    const filter = buildFilterRolldown([])
+    expect(filter).toBeNull()
+  })
+
+  it('returns null for rules without import strings', () => {
+    const filter = buildFilterRolldown([
+      {
+        call: {
+          match: {
+            function: 'plainFunction',
+            args: { 0: 'plainString' },
+          },
+          remove: { arg: 0 },
+        },
+      },
+    ])
+    expect(filter).toBeNull()
+  })
+})
