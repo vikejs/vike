@@ -266,8 +266,13 @@ function applyRulesPlugin(state: State, rules: StaticReplace): PluginItem {
 /**
  * Check if a call expression matches a rule
  */
-function matchesRule(path: NodePath<t.CallExpression>, rule: StaticReplaceEntry, calleeName: string, state: State): boolean {
-  const { match } = rule
+function matchesRule(
+  path: NodePath<t.CallExpression>,
+  staticReplace: StaticReplaceEntry,
+  calleeName: string,
+  state: State,
+): boolean {
+  const { match } = staticReplace
 
   // Check callee name
   const functions = Array.isArray(match.function) ? match.function : [match.function]
