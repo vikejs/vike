@@ -109,10 +109,10 @@ async function testTransform(options: StaticReplace[], before: string, after: st
 
 function getSnapshots() {
   const files = readdirSync(join(__dirname, 'snapshot'))
-  const beforeFiles = files.filter((f) => f.startsWith('snapshot-') && f.endsWith('-before'))
+  const beforeFiles = files.filter((f) => f.startsWith('') && f.endsWith('-before'))
 
   return beforeFiles.map((beforeFile) => {
-    const testName = beforeFile.replace('snapshot-', '').replace('-before', '')
+    const testName = beforeFile.replace('', '').replace('-before', '')
     const afterFile = beforeFile.replace('-before', '-after')
 
     let options: StaticReplace[]
