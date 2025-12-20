@@ -10,7 +10,7 @@ import { parseImportString } from '../../shared/importString.js'
  * except for call.match.function array which is OR logic.
  * Between staticReplace entries it's OR logic.
  */
-function buildFilterRolldown(staticReplaceList: StaticReplace[]): { code: { include: RegExp } } | null {
+function buildFilterRolldown(staticReplaceList: StaticReplace[]): RegExp | null {
   const rulePatterns: string[] = []
 
   // Process each entry separately
@@ -72,13 +72,7 @@ function buildFilterRolldown(staticReplaceList: StaticReplace[]): { code: { incl
   if (rulePatterns.length === 0) return null
 
   // Create a regex that matches if any rule pattern matches (OR between staticReplace entries)
-  const regex = new RegExp(rulePatterns.join('|'))
-
-  return {
-    code: {
-      include: regex,
-    },
-  }
+  return new RegExp(rulePatterns.join('|'))
 }
 
 /**

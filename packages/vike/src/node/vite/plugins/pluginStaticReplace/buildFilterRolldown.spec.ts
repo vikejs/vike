@@ -85,71 +85,67 @@ describe('buildFilterRolldown', () => {
   it('returns filter for optionsReact', () => {
     const filter = buildFilterRolldown(staticReplaceReact)
     expect(filter).not.toBeNull()
-    expect(filter!.code.include).toBeInstanceOf(RegExp)
+    expect(filter).toBeInstanceOf(RegExp)
 
     // Rule 1: Should match code containing (jsx OR jsxs OR jsxDEV) AND ClientOnly
     expect(
-      filter!.code.include.test(
-        'import { jsx } from "react/jsx-runtime"; import { ClientOnly } from "vike-react/ClientOnly"',
-      ),
+      filter!.test('import { jsx } from "react/jsx-runtime"; import { ClientOnly } from "vike-react/ClientOnly"'),
     ).toBe(true)
     expect(
-      filter!.code.include.test(
+      filter!.test(
         'import { jsxDEV } from "react/jsx-dev-runtime"; import { ClientOnly } from "vike-react/ClientOnly"',
       ),
     ).toBe(true)
 
     // Rule 2: Should match code containing createElement AND ClientOnly
     expect(
-      filter!.code.include.test(
-        'import { createElement } from "react"; import { ClientOnly } from "vike-react/ClientOnly"',
-      ),
+      filter!.test('import { createElement } from "react"; import { ClientOnly } from "vike-react/ClientOnly"'),
     ).toBe(true)
 
     // Rule 3: Should match code containing useHydrated alone
-    expect(filter!.code.include.test('import { useHydrated } from "vike-react/useHydrated"')).toBe(true)
+    expect(filter!.test('import { useHydrated } from "vike-react/useHydrated"')).toBe(true)
 
     // Should NOT match ClientOnly alone (doesn't satisfy any complete rule)
-    expect(filter!.code.include.test('import { ClientOnly } from "vike-react/ClientOnly"')).toBe(false)
+    expect(filter!.test('import { ClientOnly } from "vike-react/ClientOnly"')).toBe(false)
 
     // Should not match code without any of the imports
-    expect(filter!.code.include.test('import React from "react"')).toBe(false)
+    expect(filter!.test('import React from "react"')).toBe(false)
   })
 
   it('returns filter for optionsVue', () => {
     const filter = buildFilterRolldown(staticReplaceVue)
     expect(filter).not.toBeNull()
-    expect(filter!.code.include).toBeInstanceOf(RegExp)
+    expect(filter).toBeInstanceOf(RegExp)
 
     // Rule 1: Should match code containing ssrRenderComponent AND unref AND ClientOnly
     expect(
-      filter!.code.include.test(
+      filter!.test(
         'import { ssrRenderComponent } from "vue/server-renderer"; import { unref } from "vue"; import { ClientOnly } from "vike-vue/ClientOnly"',
       ),
     ).toBe(true)
 
     // Rule 2: Should match code containing ssrRenderComponent alone (member expression has no import strings)
-    expect(filter!.code.include.test('import { ssrRenderComponent } from "vue/server-renderer"')).toBe(true)
+    expect(filter!.test('import { ssrRenderComponent } from "vue/server-renderer"')).toBe(true)
 
     // Should NOT match unref alone (doesn't satisfy any complete rule)
-    expect(filter!.code.include.test('import { unref } from "vue"')).toBe(false)
+    expect(filter!.test('import { unref } from "vue"')).toBe(false)
 
     // Should NOT match ClientOnly alone (doesn't satisfy any complete rule)
-    expect(filter!.code.include.test('import { ClientOnly } from "vike-vue/ClientOnly"')).toBe(false)
+    expect(filter!.test('import { ClientOnly } from "vike-vue/ClientOnly"')).toBe(false)
 
     // Should not match code without any of the imports
-    expect(filter!.code.include.test('import { ref } from "vue"')).toBe(false)
+    expect(filter!.test('import { ref } from "vue"')).toBe(false)
   })
 
   it('returns filter for optionsSolid', () => {
     const filter = buildFilterRolldown(staticReplaceSolid)
     expect(filter).not.toBeNull()
-    expect(filter!.code.include).toBeInstanceOf(RegExp)
+    expect(filter).toBeInstanceOf(RegExp)
 
     // Should match code containing solid-js/web and createComponent
-    expect(filter!.code.include.test('import { createComponent } from "solid-js/web"')).toBe(true)
+    expect(filter!.test('import { createComponent } from "solid-js/web"')).toBe(true)
     // Should not match code without the import
-    expect(filter!.code.include.test('import { createSignal } from "solid-js"')).toBe(false)
+    expect(filter!.test('import { createSignal } from "solid-js"')).toBe(false)
   })
 
   it('returns null for empty rules', () => {

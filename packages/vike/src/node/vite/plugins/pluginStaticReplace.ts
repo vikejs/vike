@@ -9,10 +9,29 @@ import { buildFilterRolldown } from './pluginStaticReplace/buildFilterRolldown.j
 
 function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
   let config: ResolvedConfig
+
+  // staticReplaceList
   const staticReplaceList = getStaticReplaceList(vikeConfig)
   if (staticReplaceList.length === 0) return []
-  const filterRolldown = buildFilterRolldown(staticReplaceList)
-  assert(filterRolldown)
+
+  // filterRolldown
+  const skipNodeModules = '/node_modules/'
+  const include = buildFilterRolldown(staticReplaceList)
+  assert(include)
+  const filterRolldown = {
+    id: {
+      exclude: `**${skipNodeModules}**`,
+    },
+    code: {
+      include,
+    },
+  }
+  const filterFunction = (id: string, code: string) => {
+    if (id.includes(skipNodeModules)) return false
+    if (!include.test(code)) return false
+    return true
+  }
+
   return [
     {
       name: 'vike:pluginStaticReplace',
@@ -23,13 +42,9 @@ function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
         },
       },
       transform: {
-        filter: {
-          code: {
-            include: filterRolldown.code.include,
-            exclude: /node_modules/,
-          },
-        },
+        filter: filterRolldown,
         async handler(code, id, options) {
+          assert(filterFunction(id, code))
           const env = isViteServerSide_extraSafe(config, this.environment, options) ? 'server' : 'client'
           const result = await applyStaticReplace({
             code,
