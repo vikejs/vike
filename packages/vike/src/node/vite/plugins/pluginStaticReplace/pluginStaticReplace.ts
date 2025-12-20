@@ -11,6 +11,8 @@ function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
   let config: ResolvedConfig
   let rules: ReplaceRule[] | null = null
 
+  // TODO/ai add filterRolldown: determine filter constant by gathering all import strings used at call.mach — e.g. import:vike-react/ClientOnly:ClientOnly => file must match the regex '\<vike-react\/ClientOnly\>' and '\<ClientOnly\>'
+
   return [
     {
       name: 'vike:pluginStaticReplace',
