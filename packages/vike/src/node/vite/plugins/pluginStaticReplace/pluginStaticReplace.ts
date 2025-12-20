@@ -3,17 +3,17 @@ export { buildFilterRolldown }
 export { getAllRules }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assertPosixPath, escapeRegex } from '../../utils.js'
-import { normalizeId } from '../../shared/normalizeId.js'
+import { assert, escapeRegex } from '../../utils.js'
 import { isViteServerSide_extraSafe } from '../../shared/isViteServerSide.js'
 import { VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { transformStaticReplace, type TransformStaticReplaceOptions, type ReplaceRule } from '../pluginStaticReplace.js'
 
 function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
   let config: ResolvedConfig
-  let rules: ReplaceRule[] | null = null
-  let filterRolldown: { code: { include: RegExp } } | null = null
-
+  const rules = getAllRules(vikeConfig)
+  if (rules.length === 0) return []
+  const filterRolldown = buildFilterRolldown(rules)
+  assert(filterRolldown)
   return [
     {
       name: 'vike:pluginStaticReplace',
@@ -21,33 +21,19 @@ function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
       configResolved: {
         async handler(config_) {
           config = config_
-
-          const allRules = getAllRules(vikeConfig)
-          if (allRules.length > 0) {
-            rules = allRules
-            filterRolldown = buildFilterRolldown(allRules)
-          }
         },
       },
       transform: {
         filter: filterRolldown || undefined,
         async handler(code, id, options) {
           if (!rules || rules.length === 0) return null
-
-          id = normalizeId(id)
-          assertPosixPath(id)
-          assertPosixPath(config.root)
-          if (!id.startsWith(config.root)) return null // skip linked dependencies
-
           const env = isViteServerSide_extraSafe(config, this.environment, options) ? 'server' : 'client'
-
           const result = await transformStaticReplace({
             code,
             id,
             env,
             options: { rules },
           })
-
           return result
         },
       },
