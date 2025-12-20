@@ -110,7 +110,7 @@ type StaticReplace = {
 
 type TransformResult = { code: string; map: any } | null
 
-export type ParsedImport = { source: string; exportName: string }
+type ParsedImport = { source: string; exportName: string }
 
 type State = {
   modified: boolean
