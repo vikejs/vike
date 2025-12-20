@@ -26,6 +26,7 @@ import { pluginWorkaroundCssModuleHmr } from './plugins/pluginWorkaroundCssModul
 import { pluginWorkaroundVite6HmrRegression } from './plugins/pluginWorkaroundVite6HmrRegression.js'
 import { pluginReplaceConstantsPageContext } from './plugins/pluginReplaceConstantsPageContext.js'
 import { pluginReplaceConstantsGlobalThis } from './plugins/pluginReplaceConstantsGlobalThis.js'
+import { pluginStaticReplace } from './plugins/pluginStaticReplace/pluginStaticReplace.js'
 import { pluginViteRPC } from './plugins/non-runnable-dev/pluginViteRPC.js'
 import { pluginBuildApp } from './plugins/build/pluginBuildApp.js'
 import { pluginDistPackageJsonFile } from './plugins/build/pluginDistPackageJsonFile.js'
@@ -65,6 +66,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): Promise<Plug
       ...pluginWorkaroundVite6HmrRegression(),
       ...pluginReplaceConstantsPageContext(),
       ...pluginReplaceConstantsGlobalThis(),
+      ...pluginStaticReplace(),
       ...pluginNonRunnabeDev(),
       ...(await pluginViteConfigVikeExtensions(vikeConfig)),
     ]

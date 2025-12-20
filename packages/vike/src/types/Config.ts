@@ -716,6 +716,7 @@ type ConfigBuiltInResolved = {
   prerender?: Exclude<Config['prerender'], ImportString | undefined>[]
   middleware?: Function[]
   headersResponse?: Exclude<Config['headersResponse'], ImportString | undefined>[]
+  staticReplace?: TransformStaticReplaceOptions[]
 }
 
 type ConfigMeta = Record<string, ConfigDefinition>
