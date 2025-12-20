@@ -55,9 +55,8 @@ function getStaticReplaceList(vikeConfig: VikeConfigInternal): StaticReplace[] {
 
   for (const configValue of staticReplaceConfigs.values) {
     const options = configValue.value as StaticReplace[]
-    if (Array.isArray(options)) {
-      staticReplaceList.push(...options)
-    }
+    assert(Array.isArray(options))
+    staticReplaceList.push(...options)
   }
 
   return staticReplaceList
