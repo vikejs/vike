@@ -734,7 +734,7 @@ type OnHookCallHook = {
   /** File path where the hook is defined */
   filePath: string
   /** Call the hook and return its result */
-  call: () => unknown
+  call: () => unknown | Promise<unknown>
 }
 /**
  * Wrapper for hook calls. Used for instrumentation (e.g. Sentry, OpenTelemetry).
@@ -751,5 +751,5 @@ type OnHookCallHook = {
  * }
  * ```
  */
-type OnHookCall = (hook: OnHookCallHook, context: unknown) => unknown
+type OnHookCall = (hook: OnHookCallHook, context: unknown) => unknown | Promise<unknown>
 type ImportStringVal = `import:${string}`
