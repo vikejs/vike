@@ -1,6 +1,6 @@
 export { pluginStaticReplace }
 export { buildFilterRolldown }
-export { getAllRules }
+export { getStaticReplaceEntries }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { assert, escapeRegex } from '../../utils.js'
@@ -10,7 +10,7 @@ import { transformStaticReplace, type StaticReplace, type ReplaceRule } from '..
 
 function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
   let config: ResolvedConfig
-  const rules = getAllRules(vikeConfig)
+  const rules = getStaticReplaceEntries(vikeConfig)
   if (rules.length === 0) return []
   const filterRolldown = buildFilterRolldown(rules)
   assert(filterRolldown)
@@ -44,7 +44,7 @@ function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
 /**
  * Extract all rules from vikeConfig
  */
-function getAllRules(vikeConfig: VikeConfigInternal): ReplaceRule[] {
+function getStaticReplaceEntries(vikeConfig: VikeConfigInternal): ReplaceRule[] {
   const staticReplaceConfigs = vikeConfig._from.configsCumulative.staticReplace
   if (!staticReplaceConfigs) return []
 
