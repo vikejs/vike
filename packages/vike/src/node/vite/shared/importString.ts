@@ -41,6 +41,9 @@ function parseImportString(
   assert(parts[0] === IMPORT)
 
   if (legacy && parts.length === 2) {
+    /* TODO
+    assertWarning(false, 'To-Do', { onlyOnce: true, showStackTrace: true })
+    */
     const exportName = 'default'
     const importPath = parts[1]
     assert(importPath)
