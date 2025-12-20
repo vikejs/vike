@@ -19,7 +19,7 @@ import type { PageContextClient, PageContextServer } from '../../types/PageConte
 import type { Hook, HookLoc } from './getHook.js'
 import type { PageContextConfig } from '../getPageFiles.js'
 import { getHookFromPageConfigGlobalCumulative, getHookFromPageContextNew } from './getHook.js'
-import type { HookName, HookNameGlobal, HookNameOld, OnHookCall } from '../../types/Config.js'
+import type { HookName, HookNameGlobal, OnHookCall } from '../../types/Config.js'
 import type { PageConfigGlobalRuntime } from '../../types/PageConfig.js'
 import { isArray } from '../utils.js'
 import type { PageContextForPublicUsageServer } from '../../server/runtime/renderPageServer/preparePageContextForPublicUsageServer.js'
@@ -202,6 +202,29 @@ function execHookDirectSync<PageContext extends PageContextPrepareMinimum>(
   return { hookReturn }
 }
 
+function execHookWithOnHookCall<HookReturn>(
+  hook: HookLoc & { hookFn: Function },
+  globalContext: { _pageConfigGlobal: PageConfigGlobalRuntime },
+  ...args: unknown[]
+): HookReturn {
+  const { hookFn, hookName, hookFilePath } = hook
+  // Don't wrap onHookCall itself to prevent infinite recursion
+  if (hookName === 'onHookCall') return hookFn(...args)
+  const configValue = globalContext._pageConfigGlobal.configValues['onHookCall']
+  if (!configValue?.value) return hookFn(...args)
+  const wrappers = configValue.value
+  if (!isArray(wrappers)) return hookFn(...args)
+  // First arg is pageContext for page hooks, globalContext for global hooks
+  const context = args[0]
+  let fn = () => hookFn(...args)
+  for (const wrapper of wrappers as OnHookCall[]) {
+    const prev = fn
+    const hookPublic = { name: hookName, filePath: hookFilePath, call: prev }
+    fn = () => wrapper(hookPublic, context)
+  }
+  return fn()
+}
+
 function isNotDisabled(timeout: false | number): timeout is number {
   return !!timeout && timeout !== Infinity
 }
@@ -230,33 +253,4 @@ function providePageContextInternal(pageContext: null | PageContextPrepareMinimu
   Promise.resolve().then(() => {
     globalObject.pageContext = null
   })
-}
-
-type HookForExec = {
-  hookFn: Function
-  hookName: HookNameOld
-  hookFilePath: string
-}
-
-function execHookWithOnHookCall<HookReturn>(
-  hook: HookForExec,
-  globalContext: { _pageConfigGlobal: PageConfigGlobalRuntime },
-  ...args: unknown[]
-): HookReturn {
-  const { hookFn, hookName, hookFilePath } = hook
-  // Don't wrap onHookCall itself to prevent infinite recursion
-  if (hookName === 'onHookCall') return hookFn(...args)
-  const configValue = globalContext._pageConfigGlobal.configValues['onHookCall']
-  if (!configValue?.value) return hookFn(...args)
-  const wrappers = configValue.value
-  if (!isArray(wrappers)) return hookFn(...args)
-  // First arg is pageContext for page hooks, globalContext for global hooks
-  const context = args[0]
-  let fn = () => hookFn(...args)
-  for (const wrapper of wrappers as OnHookCall[]) {
-    const prev = fn
-    const hookPublic = { name: hookName, filePath: hookFilePath, call: prev }
-    fn = () => wrapper(hookPublic, context)
-  }
-  return fn()
 }

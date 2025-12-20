@@ -733,12 +733,23 @@ type OnHookCallHook = {
   name: string
   /** File path where the hook is defined */
   filePath: string
-  /** Call the hook */
+  /** Call the hook and return its result */
   call: () => unknown
 }
-/** Wrapper for hook calls. Used for instrumentation (e.g. Sentry, OpenTelemetry).
+/**
+ * Wrapper for hook calls. Used for instrumentation (e.g. Sentry, OpenTelemetry).
  *
  * The `context` argument is `pageContext` for page hooks and `globalContext` for global hooks.
+ *
+ * **Important:** The wrapper must return the result of `hook.call()` to preserve the hook's return value.
+ *
+ * @example
+ * ```ts
+ * export const onHookCall: OnHookCall = async (hook, context) => {
+ *   const result = await hook.call()
+ *   return result
+ * }
+ * ```
  */
 type OnHookCall = (hook: OnHookCallHook, context: unknown) => unknown
 type ImportStringVal = `import:${string}`
