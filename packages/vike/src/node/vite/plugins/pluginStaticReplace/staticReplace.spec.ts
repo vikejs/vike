@@ -108,7 +108,7 @@ async function testTransform(options: StaticReplace[], before: string, after: st
 }
 
 function getSnapshots() {
-  const files = readdirSync(join(__dirname, 'snapshot'))
+  const files = readdirSync(join(__dirname, 'snapshots'))
   const beforeFiles = files.filter((f) => f.endsWith('-before'))
 
   return beforeFiles.map((beforeFile) => {
@@ -126,7 +126,7 @@ function getSnapshots() {
       throw new Error(`Unknown framework in test name: ${testName}`)
     }
 
-    return { testName, beforeFile: `snapshot/${beforeFile}`, afterFile: `snapshot/${afterFile}`, options }
+    return { testName, beforeFile: `snapshots/${beforeFile}`, afterFile: `snapshots/${afterFile}`, options }
   })
 }
 
