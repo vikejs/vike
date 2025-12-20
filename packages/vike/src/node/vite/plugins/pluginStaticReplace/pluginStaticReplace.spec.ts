@@ -8,9 +8,7 @@ import { dirname, join } from 'node:path'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-// TODO: improve API?
 const optionsReact: StaticReplace = {
-  // TODO: remove rules
   rules: [
     {
       env: 'server',
