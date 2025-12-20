@@ -22,9 +22,11 @@ export type { PageContextBuiltInClientWithServerRouting } from './PageContext.js
 export type {
   Config,
   ConfigMeta as Meta,
-  ImportString,
   KeepScrollPosition,
 } from './Config.js'
+
+// TODO export ImportString
+export { ImportStringList as ImportString } from '../node/vite/shared/importString.js'
 
 // TO-DO/next-major-release: remove
 export type {

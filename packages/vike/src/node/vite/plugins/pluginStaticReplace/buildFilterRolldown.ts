@@ -1,7 +1,8 @@
 export { buildFilterRolldown }
 
 import { escapeRegex } from '../../utils.js'
-import { type StaticReplace, parseImportString } from './applyStaticReplace.js'
+import type { StaticReplace } from './applyStaticReplace.js'
+import { parseImportString } from '../../shared/importString.js'
 
 /**
  * Build a filterRolldown from staticReplaceList by extracting all import strings.
@@ -36,8 +37,8 @@ function buildFilterRolldown(staticReplaceList: StaticReplace[]): { code: { incl
       for (const importStr of functionImportStrings) {
         const parts = parseImportString(importStr)
         if (parts) {
-          // Each function import should match both source and export name
-          functionPatterns.push(`(?=.*${escapeRegex(parts.source)})(?=.*${escapeRegex(parts.exportName)})`)
+          // Each function import should match both importPath and export name
+          functionPatterns.push(`(?=.*${escapeRegex(parts.importPath)})(?=.*${escapeRegex(parts.exportName)})`)
         }
       }
 
@@ -56,8 +57,8 @@ function buildFilterRolldown(staticReplaceList: StaticReplace[]): { code: { incl
     for (const importStr of importStrings) {
       const parts = parseImportString(importStr)
       if (parts) {
-        // Each arg import should match both source and export name
-        ruleParts.push(`(?=.*${escapeRegex(parts.source)})(?=.*${escapeRegex(parts.exportName)})`)
+        // Each arg import should match both importPath and export name
+        ruleParts.push(`(?=.*${escapeRegex(parts.importPath)})(?=.*${escapeRegex(parts.exportName)})`)
       }
     }
 

@@ -1,8 +1,9 @@
-export { applyStaticReplace, parseImportString }
-export type { StaticReplace, ParsedImport }
+export { applyStaticReplace }
+export type { StaticReplace }
 
 import { transformAsync, type PluginItem, type NodePath } from '@babel/core'
 import * as t from '@babel/types'
+import { parseImportString, type ImportStringParsed } from '../../shared/importString.js'
 
 // ============================================================================
 // Public API
@@ -92,7 +93,7 @@ type StaticReplace = {
     /**
      * Function name(s) to match.
      * - Plain string: matches function name directly (e.g., 'jsx')
-     * - Import string: 'import:source:exportName' (e.g., 'import:react/jsx-runtime:jsx')
+     * - Import string: 'import:importPath:exportName' (e.g., 'import:react/jsx-runtime:jsx')
      */
     function: string | string[]
     /** Conditions on arguments: index -> condition */
@@ -110,12 +111,10 @@ type StaticReplace = {
 
 type TransformResult = { code: string; map: any } | null
 
-type ParsedImport = { source: string; exportName: string }
-
 type State = {
   modified: boolean
   /** Map: localName -> { source, exportName } */
-  imports: Map<string, ParsedImport>
+  imports: Map<string, ImportStringParsed>
   alreadyUnreferenced: Set<string>
 }
 
@@ -172,15 +171,6 @@ async function applyStaticReplace({ code, id, env, options }: TransformInput): P
 // Helpers
 // ============================================================================
 
-function parseImportString(str: string): ParsedImport | null {
-  if (!str.startsWith('import:')) return null
-  const rest = str.slice('import:'.length)
-  const parts = rest.split(':')
-  const exportName = parts.pop()!
-  const source = parts.join(':')
-  return { source, exportName }
-}
-
 function valueToAst(value: unknown): t.Expression {
   if (value === null) return t.nullLiteral()
   if (value === undefined) return t.identifier('undefined')
@@ -201,11 +191,11 @@ function getCalleeName(callee: t.Expression | t.V8IntrinsicIdentifier): string |
 /**
  * Check if an identifier matches an import condition
  */
-function matchesImport(arg: t.Expression, parsed: ParsedImport, state: State): boolean {
+function matchesImport(arg: t.Expression, parsed: ImportStringParsed, state: State): boolean {
   if (!t.isIdentifier(arg)) return false
   const imported = state.imports.get(arg.name)
   if (!imported) return false
-  return imported.source === parsed.source && imported.exportName === parsed.exportName
+  return imported.importPath === parsed.importPath && imported.exportName === parsed.exportName
 }
 
 // ============================================================================
@@ -213,13 +203,13 @@ function matchesImport(arg: t.Expression, parsed: ParsedImport, state: State): b
 // ============================================================================
 
 /**
- * Collect all imports: localName -> { source, exportName }
+ * Collect all imports: localName -> { importPath, exportName }
  */
 function collectImportsPlugin(state: State): PluginItem {
   return {
     visitor: {
       ImportDeclaration(path) {
-        const source = path.node.source.value
+        const importPath = path.node.source.value
 
         for (const specifier of path.node.specifiers) {
           let exportName: string
@@ -231,7 +221,7 @@ function collectImportsPlugin(state: State): PluginItem {
             continue
           }
 
-          state.imports.set(specifier.local.name, { source, exportName })
+          state.imports.set(specifier.local.name, { importPath, exportName })
         }
       },
     },
@@ -306,7 +296,7 @@ function matchesCallee(
       // Import string: check if callee is an imported identifier
       if (t.isIdentifier(callee)) {
         const imported = state.imports.get(callee.name)
-        if (imported && imported.source === parsed.source && imported.exportName === parsed.exportName) {
+        if (imported && imported.importPath === parsed.importPath && imported.exportName === parsed.exportName) {
           return true
         }
       }
@@ -315,7 +305,7 @@ function matchesCallee(
         const imported = state.imports.get(callee.object.name)
         if (
           imported &&
-          imported.source === parsed.source &&
+          imported.importPath === parsed.importPath &&
           imported.exportName === 'default' &&
           callee.property.name === parsed.exportName
         ) {
@@ -341,7 +331,7 @@ function matchesCondition(
 ): boolean {
   // String condition
   if (typeof condition === 'string') {
-    // Import condition: 'import:source:exportName'
+    // Import condition: 'import:importPath:exportName'
     const parsed = parseImportString(condition)
     if (parsed) {
       return t.isExpression(arg) && matchesImport(arg, parsed, state)
@@ -366,7 +356,7 @@ function matchesCondition(
       // Import string: check if callee is an imported identifier
       if (!t.isIdentifier(arg.callee)) return false
       const imported = state.imports.get(arg.callee.name)
-      if (!imported || imported.source !== parsed.source || imported.exportName !== parsed.exportName) {
+      if (!imported || imported.importPath !== parsed.importPath || imported.exportName !== parsed.exportName) {
         return false
       }
     } else {
