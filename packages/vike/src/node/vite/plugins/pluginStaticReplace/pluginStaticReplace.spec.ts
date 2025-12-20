@@ -84,6 +84,19 @@ const staticReplaceVue: StaticReplace = {
   ],
 }
 
+/* TODO/ai improve StaticReplace API — replace staticReplaceSolid with the following (same with the other staticReplace* above):
+const staticReplaceSolid: StaticReplace = [
+  {
+    env: 'server',
+    type: 'call',
+    match: {
+      function: 'import:solid-js/web:createComponent',
+      args: { 0: 'ClientOnly' },
+    },
+    remove: { arg: 1, prop: 'children' },
+  },
+]
+*/
 const staticReplaceSolid: StaticReplace = {
   rules: [
     {
