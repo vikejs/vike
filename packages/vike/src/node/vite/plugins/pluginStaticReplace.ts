@@ -52,11 +52,10 @@ function getStaticReplaceList(vikeConfig: VikeConfigInternal): StaticReplace[] {
   if (!staticReplaceConfigs) return []
 
   const staticReplaceList: StaticReplace[] = []
-
   for (const configValue of staticReplaceConfigs.values) {
-    const options = configValue.value as StaticReplace[]
-    assert(Array.isArray(options))
-    staticReplaceList.push(...options)
+    const entries = configValue.value as StaticReplace[]
+    assert(Array.isArray(entries))
+    staticReplaceList.push(...entries)
   }
 
   return staticReplaceList
