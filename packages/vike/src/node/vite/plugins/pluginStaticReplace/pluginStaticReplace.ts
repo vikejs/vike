@@ -1,5 +1,6 @@
 export { pluginStaticReplace }
 export { buildFilterRolldown }
+export { getAllRules }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { assertPosixPath, escapeRegex } from '../../utils.js'
@@ -17,23 +18,11 @@ function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
     {
       name: 'vike:pluginStaticReplace',
       enforce: 'post',
-      // TODO/ai remove this hook in favor of using a new function getAllRules()
       configResolved: {
         async handler(config_) {
           config = config_
 
-          const staticReplaceConfigs = vikeConfig._from.configsCumulative.staticReplace
-          if (!staticReplaceConfigs) return
-
-          const allRules: ReplaceRule[] = []
-
-          for (const configValue of staticReplaceConfigs.values) {
-            const options = configValue.value as TransformStaticReplaceOptions
-            if (options?.rules) {
-              allRules.push(...options.rules)
-            }
-          }
-
+          const allRules = getAllRules(vikeConfig)
           if (allRules.length > 0) {
             rules = allRules
             filterRolldown = buildFilterRolldown(allRules)
@@ -64,6 +53,25 @@ function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
       },
     },
   ]
+}
+
+/**
+ * Extract all rules from vikeConfig
+ */
+function getAllRules(vikeConfig: VikeConfigInternal): ReplaceRule[] {
+  const staticReplaceConfigs = vikeConfig._from.configsCumulative.staticReplace
+  if (!staticReplaceConfigs) return []
+
+  const allRules: ReplaceRule[] = []
+
+  for (const configValue of staticReplaceConfigs.values) {
+    const options = configValue.value as TransformStaticReplaceOptions
+    if (options?.rules) {
+      allRules.push(...options.rules)
+    }
+  }
+
+  return allRules
 }
 
 /**
