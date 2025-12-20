@@ -80,6 +80,7 @@ function buildFilterRolldown(staticReplaceList: StaticReplace[]): { code: { incl
   }
 }
 
+// TODO/ai dedupe
 function parseImportString(str: string): { source: string; exportName: string } | null {
   if (!str.startsWith('import:')) return null
   const rest = str.slice('import:'.length)
