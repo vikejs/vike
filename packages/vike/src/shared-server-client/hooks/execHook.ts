@@ -5,7 +5,7 @@ export { execHookDirectSingle }
 export { execHookDirectSingleWithReturn }
 export { execHookDirectWithoutPageContext }
 export { execHookDirectSync }
-export { execHookWithWrappers }
+export { execHookWithOnHookCall }
 export { getPageContext_sync }
 export { providePageContext }
 export { isUserHookError }
@@ -62,7 +62,7 @@ async function execHookGlobal<HookArg extends GlobalContextPrepareMinimum>(
   await Promise.all(
     hooks.map(async (hook) => {
       await execHookDirectAsync(
-        () => execHookWithWrappers(hook, globalContext, hookArgForPublicUsage),
+        () => execHookWithOnHookCall(hook, globalContext, hookArgForPublicUsage),
         hook,
         pageContext,
       )
@@ -80,7 +80,7 @@ async function execHookDirect<PageContext extends PageContextPrepareMinimum>(
   const hooksWithResult = await Promise.all(
     hooks.map(async (hook) => {
       const hookReturn = await execHookDirectAsync(
-        () => execHookWithWrappers(hook, pageContext._globalContext, pageContextForPublicUsage),
+        () => execHookWithOnHookCall(hook, pageContext._globalContext, pageContextForPublicUsage),
         hook,
         pageContextForPublicUsage,
       )
@@ -198,7 +198,7 @@ function execHookDirectSync<PageContext extends PageContextPrepareMinimum>(
 ) {
   const pageContextForPublicUsage = preparePageContextForPublicUsage(pageContext)
   providePageContextInternal(pageContextForPublicUsage)
-  const hookReturn = execHookWithWrappers(hook, pageContext._globalContext, pageContextForPublicUsage)
+  const hookReturn = execHookWithOnHookCall(hook, pageContext._globalContext, pageContextForPublicUsage)
   return { hookReturn }
 }
 
@@ -238,7 +238,7 @@ type HookForExec = {
   hookFilePath: string
 }
 
-function execHookWithWrappers<HookReturn>(
+function execHookWithOnHookCall<HookReturn>(
   hook: HookForExec,
   globalContext: { _pageConfigGlobal: PageConfigGlobalRuntime },
   ...args: unknown[]

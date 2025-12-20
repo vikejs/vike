@@ -57,7 +57,7 @@ import {
   getHookTimeoutDefault,
   getHook_setIsPrerenderering,
 } from '../../shared-server-client/hooks/getHook.js'
-import { execHookWithWrappers } from '../../shared-server-client/hooks/execHook.js'
+import { execHookWithOnHookCall } from '../../shared-server-client/hooks/execHook.js'
 import { noRouteMatch } from '../../shared-server-client/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../types/PageConfig.js'
 import { getVikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
@@ -415,7 +415,7 @@ async function callOnBeforePrerenderStartHooks(
         const { hookName, hookFilePath } = hook
 
         const prerenderResult = await execHookDirectWithoutPageContext(
-          () => execHookWithWrappers(hook, globalContext),
+          () => execHookWithOnHookCall(hook, globalContext),
           hook,
         )
         const result = normalizeOnPrerenderHookResult(prerenderResult, hookFilePath, hookName)
