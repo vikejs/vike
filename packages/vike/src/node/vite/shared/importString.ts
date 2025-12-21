@@ -5,7 +5,8 @@ export type { ImportString }
 export type { ImportStringList }
 export type { ImportStringParsed }
 
-import { assert } from '../utils.js'
+import pc from '@brillout/picocolors'
+import { assert, assertWarning } from '../utils.js'
 
 const IMPORT = 'import'
 const SEP = ':'
@@ -36,14 +37,16 @@ function parseImportString(
   importString: string,
   { legacy = false }: { legacy?: boolean } = {},
 ): null | ImportStringParsed {
-  if (!isImportString(importString)) return null
+  if (!importString.startsWith(`${IMPORT}${SEP}`)) return null
   const parts = importString.split(SEP)
   assert(parts[0] === IMPORT)
 
   if (legacy && parts.length === 2) {
-    /* TODO
-    assertWarning(false, 'To-Do', { onlyOnce: true, showStackTrace: true })
-    */
+    assertWarning(
+      false,
+      `Replace ${pc.cyan(importString)} with ${pc.cyan(importString)}${pc.cyan(':default')} (import strings must include the export name)`,
+      { onlyOnce: true },
+    )
     const exportName = 'default'
     const importPath = parts[1]
     assert(importPath)
@@ -68,7 +71,7 @@ function parseImportString(
  * // => false
  */
 function isImportString(str: string): str is ImportString {
-  return str.startsWith(`${IMPORT}${SEP}`)
+  return !!parseImportString(str, { legacy: true })
 }
 
 /**
