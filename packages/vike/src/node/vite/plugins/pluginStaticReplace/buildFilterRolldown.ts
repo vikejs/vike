@@ -6,15 +6,11 @@ import { parseImportString } from '../../shared/importString.js'
 
 /**
  * Build a filterRolldown from staticReplaceList by extracting all import strings.
- * For a single entry, ALL import strings must be present (AND logic),
- * except for call.match.function array which is OR logic.
- * Between staticReplace entries it's OR logic.
- *
- * Performance: Uses (?=.*pattern1)(?=.*pattern2).* pattern for AND logic.
- * The trailing .* anchors lookaheads, improving regex engine efficiency.
+ * Flattens OR logic to top level: AND[] OR AND[] OR AND[]
+ * This creates simpler, more efficient regex patterns.
  */
 function buildFilterRolldown(staticReplaceList: StaticReplace[]): RegExp | null {
-  const rulePatterns: string[] = []
+  const allRulePatterns: string[] = []
 
   // Process each entry separately
   for (const staticReplaceEntry of staticReplaceList) {
@@ -31,50 +27,50 @@ function buildFilterRolldown(staticReplaceList: StaticReplace[]): RegExp | null 
       }
     }
 
-    // Build pattern for this staticReplaceEntry
-    const ruleParts: string[] = []
-
-    // For function imports: if multiple, use OR; each still needs both path and export
-    if (functionImportStrings.size > 0) {
-      const functionPatterns: string[] = []
-      for (const importStr of functionImportStrings) {
-        const parts = parseImportString(importStr)
-        if (parts) {
-          // Match both importPath and exportName (order-independent with lookaheads)
-          functionPatterns.push(`(?=.*${escapeRegex(parts.importPath)})(?=.*${escapeRegex(parts.exportName)})`)
-        }
-      }
-
-      if (functionPatterns.length > 0) {
-        // Multiple functions are alternatives (OR)
-        if (functionPatterns.length === 1) {
-          ruleParts.push(functionPatterns[0]!)
-        } else {
-          ruleParts.push(`(?:${functionPatterns.join('|')})`)
-        }
-      }
+    // Parse import parts
+    const functionParts: Array<{ importPath: string; exportName: string }> = []
+    for (const importStr of functionImportStrings) {
+      const parts = parseImportString(importStr)
+      if (parts) functionParts.push(parts)
     }
 
-    // For arg imports: all must be present (AND)
+    const argParts: Array<{ importPath: string; exportName: string }> = []
     for (const importStr of argImportStrings) {
       const parts = parseImportString(importStr)
-      if (parts) {
-        // Each arg import needs both path and export
-        ruleParts.push(`(?=.*${escapeRegex(parts.importPath)})(?=.*${escapeRegex(parts.exportName)})`)
-      }
+      if (parts) argParts.push(parts)
     }
 
-    // Combine all parts for this rule with trailing .* to anchor lookaheads
-    if (ruleParts.length > 0) {
-      rulePatterns.push(ruleParts.join('') + '.*')
+    // Flatten: create one AND pattern per function alternative
+    if (functionParts.length > 0) {
+      // For each function, create a complete AND pattern with all arg requirements
+      for (const fnPart of functionParts) {
+        const andParts: string[] = []
+        // Add function import requirements
+        andParts.push(`(?=.*${escapeRegex(fnPart.importPath)})`)
+        andParts.push(`(?=.*${escapeRegex(fnPart.exportName)})`)
+        // Add arg import requirements
+        for (const argPart of argParts) {
+          andParts.push(`(?=.*${escapeRegex(argPart.importPath)})`)
+          andParts.push(`(?=.*${escapeRegex(argPart.exportName)})`)
+        }
+        allRulePatterns.push(andParts.join('') + '.*')
+      }
+    } else if (argParts.length > 0) {
+      // No function requirements, just args
+      const andParts: string[] = []
+      for (const argPart of argParts) {
+        andParts.push(`(?=.*${escapeRegex(argPart.importPath)})`)
+        andParts.push(`(?=.*${escapeRegex(argPart.exportName)})`)
+      }
+      allRulePatterns.push(andParts.join('') + '.*')
     }
   }
 
-  if (rulePatterns.length === 0) return null
+  if (allRulePatterns.length === 0) return null
 
   // Create regex with 's' flag (dotAll) to handle multiline files
-  // Different rules are alternatives (OR)
-  return new RegExp(rulePatterns.join('|'), 's')
+  // All patterns are flat alternatives (OR)
+  return new RegExp(allRulePatterns.join('|'), 's')
 }
 
 /**
