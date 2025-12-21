@@ -791,6 +791,9 @@ importers:
       '@babel/core':
         specifier: ^7.28.5
         version: 7.28.5
+      '@babel/types':
+        specifier: ^7.28.5
+        version: 7.28.5
       '@brillout/import':
         specifier: ^0.2.6
         version: 0.2.6
@@ -840,9 +843,6 @@ importers:
         specifier: '>=6.3.0'
         version: 7.2.7(@types/node@20.17.17)(terser@5.38.1)(tsx@4.20.6)
     devDependencies:
-      '@babel/types':
-        specifier: ^7.28.5
-        version: 7.28.5
       '@brillout/release-me':
         specifier: ^0.4.12
         version: 0.4.12(conventional-commits-filter@5.0.0)

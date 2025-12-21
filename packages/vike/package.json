@@ -119,6 +119,7 @@
   },
   "dependencies": {
     "@babel/core": "^7.28.5",
+    "@babel/types": "^7.28.5",
     "@brillout/import": "^0.2.6",
     "@brillout/json-serializer": "^0.5.21",
     "@brillout/picocolors": "^1.0.30",
@@ -244,7 +245,6 @@
     "./universal-middleware.js"
   ],
   "devDependencies": {
-    "@babel/types": "^7.28.5",
     "@brillout/release-me": "^0.4.12",
     "@types/babel__core": "^7.20.5",
     "@types/estree": "^1.0.5",
