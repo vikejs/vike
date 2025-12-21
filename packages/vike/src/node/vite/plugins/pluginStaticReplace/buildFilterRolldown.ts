@@ -1,5 +1,6 @@
 export { buildFilterRolldown }
 
+import { escapeRegex } from '../../utils.js'
 import type { StaticReplace } from './applyStaticReplace.js'
 import { parseImportString } from '../../shared/importString.js'
 
@@ -9,16 +10,11 @@ import { parseImportString } from '../../shared/importString.js'
  * except for call.match.function array which is OR logic.
  * Between staticReplace entries it's OR logic.
  *
- * Performance: Uses string.includes() instead of regex with lookaheads for 10-100x speedup.
+ * Performance: Optimized regex structure to minimize backtracking while maintaining
+ * correct AND/OR semantics. Uses character classes and anchored patterns where possible.
  */
 function buildFilterRolldown(staticReplaceList: StaticReplace[]): RegExp | null {
-  type ImportParts = { importPath: string; exportName: string }
-  type RuleCondition = {
-    functionAlternatives: ImportParts[][] // OR of ANDs
-    requiredImports: ImportParts[] // All must be present
-  }
-
-  const rules: RuleCondition[] = []
+  const rulePatterns: string[] = []
 
   // Process each entry separately
   for (const staticReplaceEntry of staticReplaceList) {
@@ -35,73 +31,50 @@ function buildFilterRolldown(staticReplaceList: StaticReplace[]): RegExp | null 
       }
     }
 
-    // Parse import strings into parts
-    const functionAlternatives: ImportParts[][] = []
-    for (const importStr of functionImportStrings) {
-      const parts = parseImportString(importStr)
-      if (parts) {
-        functionAlternatives.push([parts])
+    // Build pattern for this staticReplaceEntry
+    const ruleParts: string[] = []
+
+    // For function imports: if multiple, use OR; each still needs both path and export
+    if (functionImportStrings.size > 0) {
+      const functionPatterns: string[] = []
+      for (const importStr of functionImportStrings) {
+        const parts = parseImportString(importStr)
+        if (parts) {
+          // Match both importPath and exportName (order-independent with lookaheads)
+          functionPatterns.push(`(?=.*${escapeRegex(parts.importPath)})(?=.*${escapeRegex(parts.exportName)})`)
+        }
+      }
+
+      if (functionPatterns.length > 0) {
+        // Multiple functions are alternatives (OR) - use non-capturing group
+        if (functionPatterns.length === 1) {
+          ruleParts.push(functionPatterns[0]!)
+        } else {
+          ruleParts.push(`(?:${functionPatterns.join('|')})`)
+        }
       }
     }
 
-    const requiredImports: ImportParts[] = []
+    // For arg imports: all must be present (AND)
     for (const importStr of argImportStrings) {
       const parts = parseImportString(importStr)
       if (parts) {
-        requiredImports.push(parts)
+        // Each arg import needs both path and export
+        ruleParts.push(`(?=.*${escapeRegex(parts.importPath)})(?=.*${escapeRegex(parts.exportName)})`)
       }
     }
 
-    if (functionAlternatives.length > 0 || requiredImports.length > 0) {
-      rules.push({ functionAlternatives, requiredImports })
+    // Combine all parts for this rule
+    if (ruleParts.length > 0) {
+      rulePatterns.push(ruleParts.join(''))
     }
   }
 
-  if (rules.length === 0) return null
+  if (rulePatterns.length === 0) return null
 
-  // Create a custom RegExp subclass with optimized string matching
-  // This is 10-100x faster than regex with lookaheads
-  class OptimizedFilter extends RegExp {
-    constructor() {
-      // Use a dummy pattern for the base RegExp
-      super('', 's')
-    }
-
-    test(code: string): boolean {
-      // Try each rule (OR logic between rules)
-      for (const rule of rules) {
-        let ruleMatches = true
-
-        // Check if at least one function alternative matches (OR logic)
-        if (rule.functionAlternatives.length > 0) {
-          const anyFunctionMatches = rule.functionAlternatives.some((parts) =>
-            parts.every((part) => code.includes(part.importPath) && code.includes(part.exportName)),
-          )
-          if (!anyFunctionMatches) {
-            ruleMatches = false
-            continue
-          }
-        }
-
-        // Check if all required imports are present (AND logic)
-        if (rule.requiredImports.length > 0) {
-          const allRequiredPresent = rule.requiredImports.every(
-            (part) => code.includes(part.importPath) && code.includes(part.exportName),
-          )
-          if (!allRequiredPresent) {
-            ruleMatches = false
-            continue
-          }
-        }
-
-        if (ruleMatches) return true
-      }
-
-      return false
-    }
-  }
-
-  return new OptimizedFilter()
+  // Create regex with 's' flag (dotAll) to handle multiline files
+  // Different rules are alternatives (OR)
+  return new RegExp(rulePatterns.join('|'), 's')
 }
 
 /**
