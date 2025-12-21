@@ -182,6 +182,15 @@ function valueToAst(value: unknown): t.Expression {
   if (typeof value === 'string') return t.stringLiteral(value)
   if (typeof value === 'number') return t.numericLiteral(value)
   if (typeof value === 'boolean') return t.booleanLiteral(value)
+  if (Array.isArray(value)) {
+    return t.arrayExpression(value.map(valueToAst))
+  }
+  if (typeof value === 'object') {
+    const properties = Object.entries(value).map(([key, val]) => {
+      return t.objectProperty(t.identifier(key), valueToAst(val))
+    })
+    return t.objectExpression(properties)
+  }
   return t.callExpression(t.memberExpression(t.identifier('JSON'), t.identifier('parse')), [
     t.stringLiteral(JSON.stringify(value)),
   ])

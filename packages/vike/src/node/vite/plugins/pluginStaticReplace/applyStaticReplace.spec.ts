@@ -84,7 +84,6 @@ const staticReplaceVue: StaticReplace[] = [
     match: {
       function: 'import:vike-vue/useHydrated:useHydrated',
     },
-    // TODO/ai this shouldn't inject `JSON.parse("{\"value\":false}")` but `{ value: false }` instead (see snapshots)
     replace: { with: { value: false } },
   },
 ]
