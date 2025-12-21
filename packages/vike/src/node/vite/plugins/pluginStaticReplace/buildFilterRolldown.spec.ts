@@ -88,6 +88,8 @@ describe('buildFilterRolldown', () => {
     const filter = buildFilterRolldown(staticReplaceReact)
     expect(filter).not.toBeNull()
     expect(filter).toBeInstanceOf(RegExp)
+    console.log(filter)
+    expect(filter).toMatchInlineSnapshot(`/\\(\\?:\\(\\?=\\.\\*react\\\\/jsx\\\\-runtime\\)\\(\\?=\\.\\*jsx\\)\\|\\(\\?=\\.\\*react\\\\/jsx\\\\-runtime\\)\\(\\?=\\.\\*jsxs\\)\\|\\(\\?=\\.\\*react\\\\/jsx\\\\-dev\\\\-runtime\\)\\(\\?=\\.\\*jsxDEV\\)\\)\\(\\?=\\.\\*vike\\\\-react\\\\/ClientOnly\\)\\(\\?=\\.\\*ClientOnly\\)\\|\\(\\?=\\.\\*react\\)\\(\\?=\\.\\*createElement\\)\\(\\?=\\.\\*vike\\\\-react\\\\/ClientOnly\\)\\(\\?=\\.\\*ClientOnly\\)\\|\\(\\?=\\.\\*vike\\\\-react\\\\/useHydrated\\)\\(\\?=\\.\\*useHydrated\\)/s`)
 
     // Rule 1: Should match code containing (jsx OR jsxs OR jsxDEV) AND ClientOnly
     expect(
