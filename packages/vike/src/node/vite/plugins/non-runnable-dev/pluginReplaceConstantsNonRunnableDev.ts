@@ -14,7 +14,7 @@ declare global {
 const IS_NON_RUNNABLE_DEV = 'globalThis.__VIKE__IS_NON_RUNNABLE_DEV'
 const DYNAMIC_IMPORT = '__VIKE__DYNAMIC_IMPORT'
 
-// ==== filterRolldown
+// === Rolldown filter
 const filterRolldown1 = {
   code: {
     include: IS_NON_RUNNABLE_DEV,
@@ -45,8 +45,7 @@ const filterFunction2 = (code: string) => {
 //   },
 // }
 // ```
-
-// ====
+// ===
 
 function pluginReplaceConstantsNonRunnableDev(): Plugin[] {
   return [

@@ -29,6 +29,7 @@ import { suffixesAssertFileEnv } from '../../../shared-server-node/getFileSuffix
 const envS = suffixesAssertFileEnv
 type Env = (typeof envS)[number]
 
+// === Rolldown filter
 const skipNodeModules = '/node_modules/' // Only assert `.server.js`, `.client.js` and `.ssr.js` for user files
 const filterRolldown = {
   id: {
@@ -40,6 +41,7 @@ const filterFunction = (id: string) => {
   if (id.includes(skipNodeModules)) return false
   return envS.some((suffix) => id.includes(getSuffix(suffix)))
 }
+// ===
 
 function pluginAssertFileEnv(): Plugin[] {
   let config: ResolvedConfig

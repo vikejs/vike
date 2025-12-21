@@ -11,12 +11,14 @@ const extractExportNamesRE = /(\?|&)extractExportNames(?:&|$)/
 const debug = createDebug('vike:pluginExtractExportNames')
 const globalObject = getGlobalObject<{ usesClientRouter?: true }>('plugins/pluginExtractExportNames.ts', {})
 
+// === Rolldown filter
 const filterRolldown = {
   id: {
     include: extractExportNamesRE,
   },
 }
 const filterFunction = (id: string) => extractExportNamesRE.test(id)
+// ===
 
 function pluginExtractExportNames(): Plugin[] {
   let isDev = false

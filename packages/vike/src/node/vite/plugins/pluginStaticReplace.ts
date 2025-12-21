@@ -15,7 +15,7 @@ function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
   const staticReplaceList = getStaticReplaceList(vikeConfig)
   if (staticReplaceList.length === 0) return []
 
-  // filterRolldown
+  // === Rolldown filter
   const skipNodeModules = '/node_modules/'
   const include = getFilterRolldown(staticReplaceList)
   assert(include)
@@ -32,6 +32,7 @@ function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
     if (!include.some((s) => code.includes(s))) return false
     return true
   }
+  // ===
 
   return [
     {

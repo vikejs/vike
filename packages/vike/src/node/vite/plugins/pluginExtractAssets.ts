@@ -44,12 +44,14 @@ const EMPTY_MODULE_ID = 'virtual:vike:empty-module'
 
 const debug = createDebug('vike:pluginExtractAssets')
 
+// === Rolldown filter
 const filterRolldown = {
   id: {
     include: extractAssetsRE,
   },
 }
 const filterFunction = (id: string) => extractAssetsRE.test(id)
+// ===
 
 function pluginExtractAssets(): Plugin[] {
   let config: ResolvedConfig
