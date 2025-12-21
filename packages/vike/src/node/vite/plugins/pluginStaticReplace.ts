@@ -47,12 +47,21 @@ function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
         filter: filterRolldown,
         async handler(code, id, options) {
           assert(filterFunction(id, code))
+          debug('id', id)
           const env = isViteServerSide_extraSafe(config, this.environment, options) ? 'server' : 'client'
+          debug('env', env)
           const result = await applyStaticReplace(code, staticReplaceList, id, env)
-          if (debug.isActivated && result) {
-            debug('id', id)
-            debug('before', code)
-            debug('after', result.code)
+          if (debug.isActivated) {
+            if (result === undefined) {
+              debug('Skipped')
+            }
+            if (result === null) {
+              debug('AST parsed, but no modifications')
+            }
+            if (result) {
+              debug('Before:', code)
+              debug('After:', result.code)
+            }
           }
           return result
         },

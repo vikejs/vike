@@ -128,13 +128,16 @@ async function applyStaticReplace(
   env: 'server' | 'client',
 ) {
   assert(staticReplaceList.length > 0)
+  const SKIPPED = undefined
+  const NO_CHANGE = null
+
   const staticReplaceListFiltered = staticReplaceList.filter((staticReplace) => {
     if (!staticReplace.env) return true
     return staticReplace.env === env
   })
 
   if (staticReplaceListFiltered.length === 0) {
-    return null
+    return SKIPPED
   }
 
   try {
@@ -156,13 +159,13 @@ async function applyStaticReplace(
     })
 
     if (!result?.code || !state.modified) {
-      return null
+      return NO_CHANGE
     }
 
     return { code: result.code, map: result.map }
   } catch (error) {
     console.error(`Error transforming ${id}:`, error)
-    return null
+    return SKIPPED
   }
 }
 
