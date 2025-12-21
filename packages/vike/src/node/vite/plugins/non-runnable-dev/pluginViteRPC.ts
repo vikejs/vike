@@ -6,18 +6,6 @@ import type { ClientDependency } from '../../../../shared-server-client/getPageF
 import { retrievePageAssetsDev } from '../../../../server/runtime/renderPageServer/getPageAssets/retrievePageAssetsDev.js'
 import { getViteConfigRuntime } from '../../shared/getViteConfigRuntime.js'
 
-/* We cannot use [`filter.id`](https://rolldown.rs/plugins/hook-filters) because Vite's optimizeDeps bundles the package `vike` into node_modules/.vite/deps_ssr/chunk-WBC5FHD7.js
-const distFileIsNonRunnableDev = requireResolveDistFile('dist/utils/isNonRunnableDevProcess.js')
-const distFileGlobalContext = requireResolveDistFile('dist/server/runtime/globalContext.js')
-const filterRolldown = {
-  id: {
-    include: [distFileIsNonRunnableDev, distFileGlobalContext].map(
-      (filePath) => new RegExp(`^${escapeRegex(filePath)}($|${escapeRegex('?')}.*)`),
-    ),
-  },
-}
-*/
-
 export type ViteRPC = ReturnType<typeof getViteRpcFunctions>
 function getViteRpcFunctions(viteDevServer: ViteDevServer) {
   return {
