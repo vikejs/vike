@@ -130,9 +130,7 @@ async function applyStaticReplace(
   assert(staticReplaceList.length > 0)
   const staticReplaceListFiltered = staticReplaceList.filter((staticReplace) => {
     if (!staticReplace.env) return true
-    if (staticReplace.env === 'client') return env === 'client'
-    if (staticReplace.env === 'server') return env !== 'client'
-    return false
+    return staticReplace.env === env
   })
 
   if (staticReplaceListFiltered.length === 0) {
