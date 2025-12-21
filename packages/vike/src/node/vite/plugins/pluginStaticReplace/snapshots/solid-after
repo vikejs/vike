@@ -1,0 +1,34 @@
+import { escape as _$escape } from "solid-js/web";
+import { ssr as _$ssr } from "solid-js/web";
+import { ssrHydrationKey as _$ssrHydrationKey } from "solid-js/web";
+import { createComponent as _$createComponent } from "solid-js/web";
+var _tmpl$ = ["<h1", ">My Vike + Solid App</h1>"],
+  _tmpl$3 = ["<ul", "><li>Rendered to HTML.</li><li>", "</li><li>", "</li><!--$-->", "<!--/--></ul>"],
+  _tmpl$4 = ["<li", ">Loading client-only component...</li>"];
+export { Page };
+import { clientOnly } from "vike-solid/clientOnly";
+import { ClientOnly } from "vike-solid/ClientOnly";
+import { Config } from "vike-solid/Config";
+import image from "../../assets/logo-new.svg";
+const ClientOnlyCounter = clientOnly(() => import("./Counter"));
+const ClientOnlyCounterSlow = clientOnly(async () => {
+  await new Promise(resolve => setTimeout(resolve, 2e3));
+  return import("./Counter");
+});
+function Page() {
+  return [_$createComponent(Config, {
+    image
+  }), _$ssr(_tmpl$, _$ssrHydrationKey()), "This page is:", _$ssr(_tmpl$3, _$ssrHydrationKey(), _$escape(_$createComponent(ClientOnlyCounter, {
+    get fallback() {
+      return "Waiting for client-side only component to load (quick)";
+    }
+  })), _$escape(_$createComponent(ClientOnlyCounterSlow, {
+    get fallback() {
+      return "Waiting for client-side only component to load (slow)";
+    }
+  })), _$escape(_$createComponent(ClientOnly, {
+    get fallback() {
+      return _$ssr(_tmpl$4, _$ssrHydrationKey());
+    }
+  })))];
+}

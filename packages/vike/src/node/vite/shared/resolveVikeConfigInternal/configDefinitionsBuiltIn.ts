@@ -379,6 +379,14 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { server: true },
     cumulative: true,
   },
+  staticReplace: {
+    env: { config: true },
+    cumulative: true,
+    global: true,
+    /* TODO
+    vite: true,
+    */
+  },
 }
 
 function getConfigEnv(pageConfig: PageConfigBuildTimeBeforeComputed, configName: string): null | ConfigEnvInternal {

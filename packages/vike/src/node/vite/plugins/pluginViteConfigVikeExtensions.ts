@@ -3,12 +3,11 @@ export { pluginViteConfigVikeExtensions }
 import type { InlineConfig, Plugin } from 'vite'
 import { mergeConfig } from 'vite'
 import { assertUsage, isCallable, isObject } from '../utils.js'
-import { getVikeConfigInternalEarly } from '../../api/resolveViteConfigFromUser.js'
+import type { VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 
 // Apply +vite
 // - For example, Vike extensions adding Vite plugins
-async function pluginViteConfigVikeExtensions(): Promise<Plugin[]> {
-  const vikeConfig = await getVikeConfigInternalEarly()
+async function pluginViteConfigVikeExtensions(vikeConfig: VikeConfigInternal): Promise<Plugin[]> {
   if (vikeConfig === null) return []
   let viteConfigFromExtensions: InlineConfig = {}
   const viteConfigsExtensions = vikeConfig._from.configsCumulative.vite
