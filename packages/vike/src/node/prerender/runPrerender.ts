@@ -57,7 +57,6 @@ import {
   getHookTimeoutDefault,
   getHook_setIsPrerenderering,
 } from '../../shared-server-client/hooks/getHook.js'
-import { execHookWithOnHookCall } from '../../shared-server-client/hooks/execHook.js'
 import { noRouteMatch } from '../../shared-server-client/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../types/PageConfig.js'
 import { getVikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
@@ -414,10 +413,7 @@ async function callOnBeforePrerenderStartHooks(
         if (doNotPrerenderList.find((p) => p.pageId === pageId)) return
         const { hookName, hookFilePath } = hook
 
-        const prerenderResult = await execHookDirectWithoutPageContext(
-          () => execHookWithOnHookCall(hook, globalContext),
-          hook,
-        )
+        const prerenderResult = await execHookDirectWithoutPageContext(() => hook.hookFn(), hook, globalContext)
         const result = normalizeOnPrerenderHookResult(prerenderResult, hookFilePath, hookName)
 
         // Handle result
@@ -755,6 +751,7 @@ async function callOnPrerenderStartHook(
   let result: unknown = await execHookDirectWithoutPageContext(
     () => hookFn(prerenderContextPublic),
     onPrerenderStartHook,
+    globalContext,
   )
 
   // Before applying result

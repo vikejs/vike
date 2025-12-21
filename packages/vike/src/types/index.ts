@@ -24,8 +24,6 @@ export type {
   ConfigMeta as Meta,
   ImportString,
   KeepScrollPosition,
-  OnHookCall,
-  OnHookCallHook,
 } from './Config.js'
 
 // TO-DO/next-major-release: remove

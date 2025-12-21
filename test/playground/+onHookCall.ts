@@ -1,8 +1,16 @@
-import type { OnHookCall } from 'vike/types'
+import type { Config } from 'vike/types'
 
-export const onHookCall: OnHookCall = async (hook, context) => {
-  console.log('before hook', hook.name, hook.filePath)
-  const result = await hook.call()
-  console.log('after hook', hook.name)
-  return result
+export const onHookCall: Config['onHookCall'] = {
+  sync: (hook, context) => {
+    console.log('onHookCall sync wrapper called', context)
+    console.log('before sync hook', hook.name, hook.filePath)
+    hook.call()
+    console.log('after sync hook', hook.name)
+  },
+  async: async (hook, context) => {
+    console.log('onHookCall async wrapper called', context)
+    console.log('before async hook', hook.name, hook.filePath)
+    await hook.call()
+    console.log('after async hook', hook.name)
+  },
 }

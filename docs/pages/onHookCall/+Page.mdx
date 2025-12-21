@@ -5,89 +5,92 @@ import { ConfigSpec } from '../../components'
   env="server, client"
   cumulative
   global
-  isTypeOneLiner
->
-`(hook: OnHookCallHook, context: unknown) => unknown | Promise<unknown>{:ts}`
-</ConfigSpec>
+/>
 
-Hook called whenever a Vike hook is invoked. Useful for instrumentation (e.g. Sentry, OpenTelemetry).
+Hook called whenever a Vike hook is called. Useful for instrumentation (e.g. Sentry, OpenTelemetry).
 
 ```ts
 // pages/+onHookCall.ts
 // Environment: server & client
 
-import type { OnHookCall } from 'vike/types'
+import type { Config } from 'vike/types'
 
-export const onHookCall: OnHookCall = async (hook, context) => {
-  console.log('before', hook.name, hook.filePath)
-  const result = await hook.call()
-  console.log('after', hook.name)
-  return result
+export const onHookCall: Config['onHookCall'] = {
+  async: async (hook, context) => {
+    console.log('before', hook.name, hook.filePath)
+    await hook.call()
+    console.log('after', hook.name)
+  }
 }
 ```
-
-> **Important:** The wrapper must return the result of `hook.call()` to preserve the hook's return value.
 
 The `hook` object contains:
 - `hook.name` — Name of the hook being called (e.g. `'onRenderHtml'`, `'data'`, `'guard'`)
 - `hook.filePath` — File path where the hook is defined
-- `hook.call()` — Function to call the actual hook
+- `hook.call()` — Function to call the actual hook (the return value is handled internally)
 
-The `context` argument is <Link href="/pageContext">`pageContext`</Link> for page hooks and <Link href="/globalContext">`globalContext`</Link> for global hooks.
+The `context` object contains:
+- `context.pageContext` — <Link href="/pageContext">`pageContext`</Link> (available for page hooks)
+- `context.globalContext` — <Link href="/globalContext">`globalContext`</Link> (always available)
+
+You need to export an object with `sync` and/or `async` functions depending on which hooks you want to wrap:
+- `sync` — wraps synchronous hooks
+- `async` — wraps asynchronous hooks
 
 
-## Use case: error tracking
+## Use case: instrumentation
 
-Track errors with services like Sentry or Bugsnag:
+Instrument hooks with Sentry:
 
 ```ts
 // pages/+onHookCall.ts
 // Environment: server & client
 
 import * as Sentry from '@sentry/node'
-import type { OnHookCall } from 'vike/types'
+import type { Config } from 'vike/types'
 
-export const onHookCall: OnHookCall = async (hook, context) => {
-  return await Sentry.startSpan(
-    {
-      op: 'vike.hook',
-      name: hook.name,
-      attributes: { filePath: hook.filePath }
-    },
-    async () => {
-      return await hook.call()
-    }
-  )
+export const onHookCall: Config['onHookCall'] = {
+  async: async (hook, context) => {
+    await Sentry.startSpan(
+      {
+        op: 'vike.hook',
+        name: hook.name,
+        attributes: { filePath: hook.filePath }
+      },
+      async () => {
+        await hook.call()
+      }
+    )
+  }
 }
 ```
 
-See also: <Link href="/error-tracking" />
-
-
-## Use case: performance monitoring
-
-Monitor hook performance with OpenTelemetry:
+Instrument hooks with OpenTelemetry:
 
 ```ts
 // pages/+onHookCall.ts
 // Environment: server & client
 
 import { trace } from '@opentelemetry/api'
-import type { OnHookCall } from 'vike/types'
+import type { Config } from 'vike/types'
 
 const tracer = trace.getTracer('vike')
 
-export const onHookCall: OnHookCall = async (hook, context) => {
-  return await tracer.startActiveSpan(hook.name, async (span) => {
-    span.setAttribute('hook.filePath', hook.filePath)
-    try {
-      return await hook.call()
-    } finally {
-      span.end()
-    }
-  })
+export const onHookCall: Config['onHookCall'] = {
+  async: async (hook, context) => {
+    await tracer.startActiveSpan(hook.name, async (span) => {
+      span.setAttribute('hook.filePath', hook.filePath)
+      try {
+        await hook.call()
+      } finally {
+        span.end()
+      }
+    })
+  }
 }
 ```
+
+See also: <Link href="/error-tracking" />
 
 
 ## Use case: logging
@@ -98,18 +101,19 @@ Log all hook executions for debugging:
 // pages/+onHookCall.ts
 // Environment: server & client
 
-import type { OnHookCall } from 'vike/types'
+import type { Config } from 'vike/types'
 
-export const onHookCall: OnHookCall = async (hook, context) => {
-  const start = performance.now()
-  console.log(`[${hook.name}] start`, hook.filePath)
-  try {
-    const result = await hook.call()
-    console.log(`[${hook.name}] done in ${(performance.now() - start).toFixed(2)}ms`)
-    return result
-  } catch (error) {
-    console.error(`[${hook.name}] error`, error)
-    throw error
+export const onHookCall: Config['onHookCall'] = {
+  async: async (hook, context) => {
+    const start = performance.now()
+    console.log(`[${hook.name}] start`, hook.filePath)
+    try {
+      await hook.call()
+      console.log(`[${hook.name}] done in ${(performance.now() - start).toFixed(2)}ms`)
+    } catch (error) {
+      console.error(`[${hook.name}] error`, error)
+      throw error
+    }
   }
 }
 ```

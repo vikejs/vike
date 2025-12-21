@@ -3,7 +3,7 @@ export { execHookOnError }
 import { isObject, getGlobalObject } from '../../utils.js'
 import { getGlobalContextServerInternalOptional } from '../globalContext.js'
 import { getHookFromPageConfigGlobalCumulative } from '../../../shared-server-client/hooks/getHook.js'
-import { execHookWithOnHookCall } from '../../../shared-server-client/hooks/execHook.js'
+import { execHookVanillaSync } from '../../../shared-server-client/hooks/execHook.js'
 import type { PageContext_logRuntime } from '../loggerRuntime.js'
 
 const globalObject = getGlobalObject('renderPageServer/execHookOnError.ts', {
@@ -22,7 +22,7 @@ function execHookOnError(err: unknown, pageContext: PageContext_logRuntime) {
   const hooks = getHookFromPageConfigGlobalCumulative<unknown>(globalContext._pageConfigGlobal, 'onError')
   for (const hook of hooks) {
     try {
-      execHookWithOnHookCall(hook, globalContext, err, pageContext)
+      execHookVanillaSync(() => hook.hookFn(err, pageContext), hook, globalContext)
     } catch (hookErr) {
       console.error(hookErr)
     }

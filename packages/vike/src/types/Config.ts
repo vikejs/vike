@@ -11,8 +11,7 @@ export type { HookNameGlobal }
 export type { ImportString }
 export type { Route }
 export type { KeepScrollPosition }
-export type { OnHookCall }
-export type { OnHookCallHook }
+export type { OnHookCallWrapper }
 
 // TO-DO/next-major-release: remove
 export type { DataAsync }
@@ -50,7 +49,7 @@ import type { InjectFilterEntry } from './index.js'
 import type { VikeVitePluginOptions } from '../node/vite/index.js'
 import type { Vike } from './VikeNamespace.js'
 import type { HooksTimeoutProvidedByUser } from '../shared-server-client/hooks/getHook.js'
-import type { PageContextClient, PageContextServer } from './PageContext.js'
+import type { PageContext, PageContextClient, PageContextServer } from './PageContext.js'
 import type { GlobalContext } from './GlobalContext.js'
 import type { InlineConfig } from 'vite'
 import type { PassToClientPublic } from '../server/runtime/renderPageServer/html/serializeContext.js'
@@ -307,6 +306,19 @@ type KeepScrollPosition =
  */
 type Route = string | RouteSync | RouteAsync
 
+type OnHookCallContext = {
+  pageContext?: PageContext
+  globalContext?: GlobalContext
+}
+
+type OnHookCallWrapper = {
+  sync?: (hook: { name: string; filePath: string; call: () => unknown }, context: OnHookCallContext) => void
+  async?: (
+    hook: { name: string; filePath: string; call: () => Promise<unknown> },
+    context: OnHookCallContext,
+  ) => Promise<void>
+}
+
 /** Page configuration.
  *
  * https://vike.dev/config
@@ -439,11 +451,11 @@ type ConfigBuiltIn = {
    */
   onCreateGlobalContext?: ((globalContext: GlobalContext) => void) | ImportString | null
 
-  /** Hook called when any config function is invoked. Useful for instrumentation (Sentry, OpenTelemetry, etc.).
+  /** Called when any hook is called. Useful for instrumentation (Sentry, OpenTelemetry, etc.).
    *
    *  https://vike.dev/onHookCall
    */
-  onHookCall?: OnHookCall | ImportString | null
+  onHookCall?: OnHookCallWrapper | ImportString | null
 
   /** Hook for fetching data.
    *
@@ -726,31 +738,4 @@ type ConfigBuiltInResolved = {
 
 type ConfigMeta = Record<string, ConfigDefinition>
 type ImportString = ImportStringVal | ImportStringVal[]
-
-/** Info about the hook being called */
-type OnHookCallHook = {
-  /** Name of the hook, e.g. 'onRenderHtml', 'data', 'guard' */
-  name: string
-  /** File path where the hook is defined */
-  filePath: string
-  /** Call the hook and return its result */
-  call: () => unknown | Promise<unknown>
-}
-/**
- * Wrapper for hook calls. Used for instrumentation (e.g. Sentry, OpenTelemetry).
- *
- * The `context` argument is `pageContext` (https://vike.dev/pageContext) for page hooks
- * and `globalContext` (https://vike.dev/globalContext) for global hooks.
- *
- * **Important:** The wrapper must return the result of `hook.call()` to preserve the hook's return value.
- *
- * @example
- * ```ts
- * export const onHookCall: OnHookCall = async (hook, context) => {
- *   const result = await hook.call()
- *   return result
- * }
- * ```
- */
-type OnHookCall = (hook: OnHookCallHook, context: unknown) => unknown | Promise<unknown>
 type ImportStringVal = `import:${string}`
