@@ -11,7 +11,7 @@ export type { HookNameGlobal }
 export type { ImportString }
 export type { Route }
 export type { KeepScrollPosition }
-export type { OnHookCallWrapper }
+export type { OnHookCall as OnHookCallWrapper }
 
 // TO-DO/next-major-release: remove
 export type { DataAsync }
@@ -311,7 +311,7 @@ type OnHookCallContext = {
   globalContext?: GlobalContext
 }
 
-type OnHookCallWrapper = {
+type OnHookCall = {
   sync?: (hook: { name: string; filePath: string; call: () => unknown }, context: OnHookCallContext) => void
   async?: (
     hook: { name: string; filePath: string; call: () => Promise<unknown> },
@@ -455,7 +455,7 @@ type ConfigBuiltIn = {
    *
    *  https://vike.dev/onHookCall
    */
-  onHookCall?: OnHookCallWrapper | ImportString | null
+  onHookCall?: OnHookCall | ImportString | null
 
   /** Hook for fetching data.
    *
