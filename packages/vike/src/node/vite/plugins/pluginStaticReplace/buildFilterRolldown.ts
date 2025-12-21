@@ -10,8 +10,8 @@ import { parseImportString } from '../../shared/importString.js'
  * except for call.match.function array which is OR logic.
  * Between staticReplace entries it's OR logic.
  *
- * Performance: Optimized regex structure to minimize backtracking while maintaining
- * correct AND/OR semantics. Uses character classes and anchored patterns where possible.
+ * Performance: Uses (?=.*pattern1)(?=.*pattern2).* pattern for AND logic.
+ * The trailing .* anchors lookaheads, improving regex engine efficiency.
  */
 function buildFilterRolldown(staticReplaceList: StaticReplace[]): RegExp | null {
   const rulePatterns: string[] = []
@@ -46,7 +46,7 @@ function buildFilterRolldown(staticReplaceList: StaticReplace[]): RegExp | null 
       }
 
       if (functionPatterns.length > 0) {
-        // Multiple functions are alternatives (OR) - use non-capturing group
+        // Multiple functions are alternatives (OR)
         if (functionPatterns.length === 1) {
           ruleParts.push(functionPatterns[0]!)
         } else {
@@ -64,9 +64,9 @@ function buildFilterRolldown(staticReplaceList: StaticReplace[]): RegExp | null 
       }
     }
 
-    // Combine all parts for this rule
+    // Combine all parts for this rule with trailing .* to anchor lookaheads
     if (ruleParts.length > 0) {
-      rulePatterns.push(ruleParts.join(''))
+      rulePatterns.push(ruleParts.join('') + '.*')
     }
   }
 
