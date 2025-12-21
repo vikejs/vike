@@ -4,6 +4,8 @@ import { escapeRegex } from '../../utils.js'
 import type { StaticReplace } from './applyStaticReplace.js'
 import { parseImportString } from '../../shared/importString.js'
 
+// TODO/ai https://claude.ai/share/ce4e4947-3a0b-4fc6-be21-fe40d8c8973c
+
 /**
  * Build a filterRolldown from staticReplaceList by extracting all import strings.
  * For a single entry, ALL import strings must be present (AND logic),
