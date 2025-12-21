@@ -6,71 +6,73 @@ import { parseImportString } from '../../shared/importString.js'
 
 /**
  * Build a filterRolldown from staticReplaceList by extracting all import strings.
- * Flattens OR logic to top level: AND[] OR AND[] OR AND[]
- * This creates simpler, more efficient regex patterns.
+ * For a single entry, ALL import strings must be present (AND logic),
+ * except for call.match.function array which is OR logic.
+ * Between staticReplace entries it's OR logic.
  */
 function buildFilterRolldown(staticReplaceList: StaticReplace[]): RegExp | null {
-  const allRulePatterns: string[] = []
+  const rulePatterns: string[] = []
 
   // Process each entry separately
   for (const staticReplaceEntry of staticReplaceList) {
+    const importStrings = new Set<string>()
     const functionImportStrings = new Set<string>()
-    const argImportStrings = new Set<string>()
 
-    // Extract function import strings
+    // Extract function import strings separately
     extractImportStrings(staticReplaceEntry.match.function, functionImportStrings)
 
     // Extract arg import strings
     if (staticReplaceEntry.match.args) {
       for (const condition of Object.values(staticReplaceEntry.match.args)) {
-        extractImportStringsFromCondition(condition, argImportStrings)
+        extractImportStringsFromCondition(condition, importStrings)
       }
     }
 
-    // Parse import parts
-    const functionParts: Array<{ importPath: string; exportName: string }> = []
-    for (const importStr of functionImportStrings) {
-      const parts = parseImportString(importStr)
-      if (parts) functionParts.push(parts)
-    }
+    // Build pattern for this staticReplaceEntry
+    const ruleParts: string[] = []
 
-    const argParts: Array<{ importPath: string; exportName: string }> = []
-    for (const importStr of argImportStrings) {
-      const parts = parseImportString(importStr)
-      if (parts) argParts.push(parts)
-    }
-
-    // Flatten: create one AND pattern per function alternative
-    if (functionParts.length > 0) {
-      // For each function, create a complete AND pattern with all arg requirements
-      for (const fnPart of functionParts) {
-        const andParts: string[] = []
-        // Add function import requirements
-        andParts.push(`(?=.*${escapeRegex(fnPart.importPath)})`)
-        andParts.push(`(?=.*${escapeRegex(fnPart.exportName)})`)
-        // Add arg import requirements
-        for (const argPart of argParts) {
-          andParts.push(`(?=.*${escapeRegex(argPart.importPath)})`)
-          andParts.push(`(?=.*${escapeRegex(argPart.exportName)})`)
+    // For function imports: if array, use OR; otherwise use AND
+    if (functionImportStrings.size > 0) {
+      const functionPatterns: string[] = []
+      for (const importStr of functionImportStrings) {
+        const parts = parseImportString(importStr)
+        if (parts) {
+          // Each function import should match both importPath and export name
+          functionPatterns.push(`(?=.*${escapeRegex(parts.importPath)})(?=.*${escapeRegex(parts.exportName)})`)
         }
-        allRulePatterns.push(andParts.join('') + '.*')
       }
-    } else if (argParts.length > 0) {
-      // No function requirements, just args
-      const andParts: string[] = []
-      for (const argPart of argParts) {
-        andParts.push(`(?=.*${escapeRegex(argPart.importPath)})`)
-        andParts.push(`(?=.*${escapeRegex(argPart.exportName)})`)
+
+      // If multiple functions, they are alternatives (OR)
+      if (functionPatterns.length > 0) {
+        if (functionPatterns.length === 1) {
+          ruleParts.push(functionPatterns[0]!)
+        } else {
+          // Multiple function patterns: file must match at least one
+          ruleParts.push(`(?:${functionPatterns.join('|')})`)
+        }
       }
-      allRulePatterns.push(andParts.join('') + '.*')
+    }
+
+    // For arg imports: all must be present (AND)
+    for (const importStr of importStrings) {
+      const parts = parseImportString(importStr)
+      if (parts) {
+        // Each arg import should match both importPath and export name
+        ruleParts.push(`(?=.*${escapeRegex(parts.importPath)})(?=.*${escapeRegex(parts.exportName)})`)
+      }
+    }
+
+    // Combine all parts for this rule with AND logic
+    if (ruleParts.length > 0) {
+      // All parts must match for this rule
+      rulePatterns.push(ruleParts.join(''))
     }
   }
 
-  if (allRulePatterns.length === 0) return null
+  if (rulePatterns.length === 0) return null
 
-  // Create regex with 's' flag (dotAll) to handle multiline files
-  // All patterns are flat alternatives (OR)
-  return new RegExp(allRulePatterns.join('|'), 's')
+  // Create a regex that matches if any rule pattern matches (OR between staticReplace entries)
+  return new RegExp(rulePatterns.join('|'), 's')
 }
 
 /**
