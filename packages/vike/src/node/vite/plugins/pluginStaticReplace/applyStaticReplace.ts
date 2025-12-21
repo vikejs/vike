@@ -122,9 +122,9 @@ type State = {
 // ============================================================================
 
 async function applyStaticReplace(
-  id: string,
-  staticReplaceList: StaticReplace[],
   code: string,
+  staticReplaceList: StaticReplace[],
+  id: string,
   env: 'server' | 'client',
 ) {
   assert(staticReplaceList.length > 0)
