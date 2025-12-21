@@ -5,6 +5,7 @@ export type { ImportString }
 export type { ImportStringList }
 export type { ImportStringParsed }
 
+import pc from '@brillout/picocolors'
 import { assert, assertWarning } from '../utils.js'
 
 const IMPORT = 'import'
@@ -41,7 +42,11 @@ function parseImportString(
   assert(parts[0] === IMPORT)
 
   if (legacy && parts.length === 2) {
-    assertWarning(false, 'TODO ' + importString, { onlyOnce: true, showStackTrace: true })
+    assertWarning(
+      false,
+      `Replace ${pc.cyan(importString)} with ${pc.cyan(importString)}${pc.cyan(pc.bold(':default'))} (import strings must contain not only the import path but also the export name)`,
+      { onlyOnce: true, showStackTrace: true },
+    )
     const exportName = 'default'
     const importPath = parts[1]
     assert(importPath)
