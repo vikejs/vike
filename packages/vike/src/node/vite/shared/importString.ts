@@ -45,7 +45,7 @@ function parseImportString(
     assertWarning(
       false,
       `Replace ${pc.cyan(importString)} with ${pc.cyan(importString)}${pc.cyan(':default')} (import strings must include the export name)`,
-      { onlyOnce: true, showStackTrace: true },
+      { onlyOnce: true },
     )
     const exportName = 'default'
     const importPath = parts[1]
