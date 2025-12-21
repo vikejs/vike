@@ -101,10 +101,10 @@ const staticReplaceSolid: StaticReplace[] = [
   },
   {
     env: 'server',
-    filter: 'vike-vue/useHydrated',
+    filter: 'vike-solid/useHydrated',
     type: 'call',
     match: {
-      function: 'import:vike-vue/useHydrated:useHydrated',
+      function: 'import:vike-solid/useHydrated:useHydrated',
     },
     replace: { with: { value: false } },
   },
