@@ -109,8 +109,6 @@ type StaticReplace = {
 // Internal types
 // ============================================================================
 
-type TransformResult = { code: string; map: any } | null
-
 type State = {
   modified: boolean
   /** Map: localName -> { source, exportName } */
@@ -129,7 +127,7 @@ type TransformInput = {
   options: StaticReplace[]
 }
 
-async function applyStaticReplace({ code, id, env, options }: TransformInput): Promise<TransformResult> {
+async function applyStaticReplace({ code, id, env, options }: TransformInput) {
   // 'server' means "not client" (covers ssr, cloudflare, etc.)
   const filteredRules = options.filter((rule) => {
     if (!rule.env) return true
