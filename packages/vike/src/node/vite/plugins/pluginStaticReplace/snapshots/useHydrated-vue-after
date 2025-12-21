@@ -1,0 +1,8 @@
+export function SomeComponent() {
+  const isHydrated = JSON.parse("{\"value\":false}");
+  if (isHydrated.value) {
+    return 'Hydrated!';
+  } else {
+    return 'SSR';
+  }
+}

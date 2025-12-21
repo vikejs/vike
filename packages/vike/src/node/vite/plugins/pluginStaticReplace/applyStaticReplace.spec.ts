@@ -77,6 +77,15 @@ const staticReplaceVue: StaticReplace[] = [
     },
     remove: { arg: 2, prop: 'default' },
   },
+  {
+    env: 'server',
+    filter: 'vike-vue/useHydrated',
+    type: 'call',
+    match: {
+      function: 'import:vike-vue/useHydrated:useHydrated',
+    },
+    replace: { with: { value: false } },
+  },
 ]
 
 const staticReplaceSolid: StaticReplace[] = [
@@ -89,6 +98,15 @@ const staticReplaceSolid: StaticReplace[] = [
       args: { 0: 'import:vike-solid/ClientOnly:ClientOnly' },
     },
     remove: { arg: 1, prop: 'children' },
+  },
+  {
+    env: 'server',
+    filter: 'vike-vue/useHydrated',
+    type: 'call',
+    match: {
+      function: 'import:vike-vue/useHydrated:useHydrated',
+    },
+    replace: { with: { value: false } },
   },
 ]
 
