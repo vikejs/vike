@@ -1,11 +1,13 @@
 export { pluginStaticReplace }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assert } from '../utils.js'
+import { assert, createDebug } from '../utils.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 import { VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { applyStaticReplace, type StaticReplace } from './pluginStaticReplace/applyStaticReplace.js'
 import { buildFilterRolldown } from './pluginStaticReplace/buildFilterRolldown.js'
+
+const debug = createDebug('vike:staticReplace')
 
 function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
   let config: ResolvedConfig
@@ -52,6 +54,11 @@ function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
             env,
             options: staticReplaceList,
           })
+          if (debug.isActivated && result) {
+            debug('id', id)
+            debug('before', code)
+            debug('after', result.code)
+          }
           return result
         },
       },
