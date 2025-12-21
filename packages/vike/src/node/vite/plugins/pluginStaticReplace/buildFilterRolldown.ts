@@ -1,5 +1,9 @@
 export { buildFilterRolldown }
 
+// TODO/ai:
+// Stop using RegEx instead return string[] (logical OR)
+// If match.function
+
 import { escapeRegex } from '../../utils.js'
 import type { StaticReplace } from './applyStaticReplace.js'
 import { parseImportString } from '../../shared/importString.js'
