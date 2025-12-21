@@ -4,7 +4,7 @@ export type { StaticReplace }
 import { transformAsync, type PluginItem, type NodePath } from '@babel/core'
 import * as t from '@babel/types'
 import { parseImportString, type ImportStringParsed } from '../../shared/importString.js'
-import assert from 'node:assert'
+import { assert } from '../../utils.js'
 
 // ============================================================================
 // Public API
