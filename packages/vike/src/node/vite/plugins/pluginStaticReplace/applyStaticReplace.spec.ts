@@ -90,14 +90,14 @@ describe('applyStaticReplace', () => {
   const snapshots = getSnapshots()
   for (const snapshot of snapshots) {
     it(snapshot.testName, async () => {
-      await testTransform(snapshot.options, `./${snapshot.beforeFile}`, `./${snapshot.afterFile}`)
+      await testTransform(snapshot.staticReplaceList, `./${snapshot.beforeFile}`, `./${snapshot.afterFile}`)
     })
   }
 })
 
-async function testTransform(options: StaticReplace[], before: string, after: string) {
+async function testTransform(staticReplaceList: StaticReplace[], before: string, after: string) {
   const code = readFileSync(join(__dirname, before), 'utf-8')
-  const result = await applyStaticReplace(code, options, 'fake-id:staticReplace.spec.ts', 'server')
+  const result = await applyStaticReplace(code, staticReplaceList, 'fake-id:staticReplace.spec.ts', 'server')
   await expect(result!.code).toMatchFileSnapshot(after)
 }
 
@@ -109,13 +109,13 @@ function getSnapshots() {
     const testName = beforeFile.replace('', '').replace('-before', '')
     const afterFile = beforeFile.replace('-before', '-after')
 
-    let options: StaticReplace[]
+    let staticReplaceList: StaticReplace[]
     if (testName.includes('vue')) {
-      options = staticReplaceVue
+      staticReplaceList = staticReplaceVue
     } else if (testName.includes('solid')) {
-      options = staticReplaceSolid
+      staticReplaceList = staticReplaceSolid
     } else if (testName.includes('react')) {
-      options = staticReplaceReact
+      staticReplaceList = staticReplaceReact
     } else {
       throw new Error(`Unknown framework in test name: ${testName}`)
     }
@@ -124,7 +124,7 @@ function getSnapshots() {
       testName,
       beforeFile: `snapshots/${beforeFile}` as const,
       afterFile: `snapshots/${afterFile}` as const,
-      options,
+      staticReplaceList,
     } as const
   })
 }
