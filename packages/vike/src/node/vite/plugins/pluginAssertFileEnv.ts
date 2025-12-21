@@ -72,6 +72,7 @@ function pluginAssertFileEnv(): Plugin[] {
           )
         },
       },
+      // TODO: only apply in build?
       // In production, we have to use transform() to replace modules with a runtime error because generateBundle() doesn't work for dynamic imports. In production, dynamic imports can only be verified at runtime.
       transform: {
         filter: filterRolldown,
