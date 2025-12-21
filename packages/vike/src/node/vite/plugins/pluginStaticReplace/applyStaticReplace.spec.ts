@@ -80,7 +80,7 @@ const staticReplaceSolid: StaticReplace[] = [
     type: 'call',
     match: {
       function: 'import:solid-js/web:createComponent',
-      args: { 0: 'ClientOnly' },
+      args: { 0: 'import:vike-solid/ClientOnly:ClientOnly' },
     },
     remove: { arg: 1, prop: 'children' },
   },
