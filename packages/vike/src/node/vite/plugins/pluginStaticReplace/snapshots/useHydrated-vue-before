@@ -1,0 +1,10 @@
+import { useHydrated } from 'vike-vue/useHydrated'
+
+export function SomeComponent() {
+  const isHydrated = useHydrated()
+  if (isHydrated.value) {
+    return 'Hydrated!'
+  } else {
+    return 'SSR'
+  }
+}
