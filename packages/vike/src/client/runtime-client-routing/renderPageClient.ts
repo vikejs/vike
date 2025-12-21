@@ -618,13 +618,11 @@ async function getPageContextBegin(
 ) {
   const previousPageContext = globalObject.previousPageContext ?? null
   const pageContext = await createPageContextClientSide(urlOriginal)
-  const isHydration = isFirstRender && !isForErrorPage
   objectAssign(pageContext, {
     isBackwardNavigation,
     isHistoryNavigation,
     isClientSideNavigation,
-    isHydration: isHydration,
-    isHydrated: !isHydration,
+    isHydration: isFirstRender && !isForErrorPage,
     previousPageContext,
     pageContextsAborted,
     ...pageContextInitClient,
