@@ -4,6 +4,7 @@ export type { StaticReplace }
 import { transformAsync, type PluginItem, type NodePath } from '@babel/core'
 import * as t from '@babel/types'
 import { parseImportString, type ImportStringParsed } from '../../shared/importString.js'
+import assert from 'node:assert'
 
 // ============================================================================
 // Public API
@@ -120,23 +121,21 @@ type State = {
 // Main transformer
 // ============================================================================
 
-type TransformInput = {
-  code: string
-  id: string
-  env: string
-  options: StaticReplace[]
-}
-
-async function applyStaticReplace({ code, id, env, options }: TransformInput) {
-  // 'server' means "not client" (covers ssr, cloudflare, etc.)
-  const filteredRules = options.filter((rule) => {
-    if (!rule.env) return true
-    if (rule.env === 'client') return env === 'client'
-    if (rule.env === 'server') return env !== 'client'
+async function applyStaticReplace(
+  id: string,
+  staticReplaceList: StaticReplace[],
+  code: string,
+  env: 'server' | 'client',
+) {
+  assert(staticReplaceList.length > 0)
+  const staticReplaceListFiltered = staticReplaceList.filter((staticReplace) => {
+    if (!staticReplace.env) return true
+    if (staticReplace.env === 'client') return env === 'client'
+    if (staticReplace.env === 'server') return env !== 'client'
     return false
   })
 
-  if (filteredRules.length === 0) {
+  if (staticReplaceListFiltered.length === 0) {
     return null
   }
 
@@ -151,7 +150,11 @@ async function applyStaticReplace({ code, id, env, options }: TransformInput) {
       filename: id,
       ast: true,
       sourceMaps: true,
-      plugins: [collectImportsPlugin(state), applyRulesPlugin(state, filteredRules), removeUnreferencedPlugin(state)],
+      plugins: [
+        collectImportsPlugin(state),
+        applyRulesPlugin(state, staticReplaceListFiltered),
+        removeUnreferencedPlugin(state),
+      ],
     })
 
     if (!result?.code || !state.modified) {

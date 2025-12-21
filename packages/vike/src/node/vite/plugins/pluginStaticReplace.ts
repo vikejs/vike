@@ -48,12 +48,7 @@ function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
         async handler(code, id, options) {
           assert(filterFunction(id, code))
           const env = isViteServerSide_extraSafe(config, this.environment, options) ? 'server' : 'client'
-          const result = await applyStaticReplace({
-            code,
-            id,
-            env,
-            options: staticReplaceList,
-          })
+          const result = await applyStaticReplace(code, staticReplaceList, id, env)
           if (debug.isActivated && result) {
             debug('id', id)
             debug('before', code)

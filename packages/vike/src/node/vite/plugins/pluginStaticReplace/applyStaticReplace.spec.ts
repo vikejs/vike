@@ -97,12 +97,7 @@ describe('applyStaticReplace', () => {
 
 async function testTransform(options: StaticReplace[], before: string, after: string) {
   const code = readFileSync(join(__dirname, before), 'utf-8')
-  const result = await applyStaticReplace({
-    code,
-    id: 'fake-id:staticReplace.spec.ts',
-    options,
-    env: 'server',
-  })
+  const result = await applyStaticReplace(code, options, 'fake-id:staticReplace.spec.ts', 'server')
   await expect(result!.code).toMatchFileSnapshot(after)
 }
 
