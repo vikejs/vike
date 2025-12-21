@@ -44,7 +44,7 @@ function parseImportString(
   if (legacy && parts.length === 2) {
     assertWarning(
       false,
-      `Replace ${pc.cyan(importString)} with ${pc.cyan(importString)}${pc.cyan(pc.bold(':default'))} (import strings must contain not only the import path but also the export name)`,
+      `Replace ${pc.cyan(importString)} with ${pc.cyan(importString)}${pc.cyan(':default')} (import strings must include the export name)`,
       { onlyOnce: true, showStackTrace: true },
     )
     const exportName = 'default'
