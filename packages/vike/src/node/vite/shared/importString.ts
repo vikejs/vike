@@ -36,12 +36,12 @@ function parseImportString(
   importString: string,
   { legacy = false }: { legacy?: boolean } = {},
 ): null | ImportStringParsed {
-  if (!isImportString(importString)) return null
+  if (!importString.startsWith(`${IMPORT}${SEP}`)) return null
   const parts = importString.split(SEP)
   assert(parts[0] === IMPORT)
 
   if (legacy && parts.length === 2) {
-    assertWarning(false, 'TODO', { onlyOnce: true, showStackTrace: true })
+    assertWarning(false, 'TODO ' + importString, { onlyOnce: true, showStackTrace: true })
     const exportName = 'default'
     const importPath = parts[1]
     assert(importPath)
@@ -66,7 +66,7 @@ function parseImportString(
  * // => false
  */
 function isImportString(str: string): str is ImportString {
-  return str.startsWith(`${IMPORT}${SEP}`)
+  return !!parseImportString(str, { legacy: true })
 }
 
 /**
