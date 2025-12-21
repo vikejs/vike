@@ -85,10 +85,12 @@ type RemoveTarget =
  * }
  */
 type StaticReplace = {
-  /** Type of transformation - currently only 'call' is supported, but can be extended in the future */
-  type?: 'call'
   /** Environment filter: 'client' = client only, 'server' = everything except client */
-  env?: 'server' | 'client'
+  env: 'server' | 'client'
+  /** Rolldown filter — MUST be narrowing as much as possible, otherwise you'll get significant performance degradation */
+  filter: string
+  /** Type of transformation - currently only 'call' is supported, but can be extended in the future */
+  type: 'call'
   /** Match criteria */
   match: {
     /**
@@ -132,8 +134,9 @@ async function applyStaticReplace(
   const NO_CHANGE = null
 
   const staticReplaceListFiltered = staticReplaceList.filter((staticReplace) => {
-    if (!staticReplace.env) return true
-    return staticReplace.env === env
+    if (staticReplace.env && staticReplace.env !== env) return false
+    if (!code.includes(staticReplace.filter)) return false
+    return true
   })
 
   if (staticReplaceListFiltered.length === 0) {

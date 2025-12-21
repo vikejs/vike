@@ -10,6 +10,7 @@ const __dirname = dirname(__filename)
 const staticReplaceReact: StaticReplace[] = [
   {
     env: 'server',
+    filter: 'vike-react/ClientOnly',
     type: 'call',
     match: {
       function: [
@@ -23,6 +24,7 @@ const staticReplaceReact: StaticReplace[] = [
   },
   {
     env: 'server',
+    filter: 'vike-react/ClientOnly',
     type: 'call',
     match: {
       function: 'import:react:createElement',
@@ -32,6 +34,7 @@ const staticReplaceReact: StaticReplace[] = [
   },
   {
     env: 'server',
+    filter: 'vike-react/useHydrated',
     type: 'call',
     match: {
       function: 'import:vike-react/useHydrated:useHydrated',
@@ -43,6 +46,7 @@ const staticReplaceReact: StaticReplace[] = [
 const staticReplaceVue: StaticReplace[] = [
   {
     env: 'server',
+    filter: 'vike-vue/ClientOnly',
     type: 'call',
     match: {
       function: ['import:vue/server-renderer:ssrRenderComponent'],
@@ -59,6 +63,7 @@ const staticReplaceVue: StaticReplace[] = [
   },
   {
     env: 'server',
+    filter: 'vike-vue/ClientOnly',
     type: 'call',
     match: {
       function: ['import:vue/server-renderer:ssrRenderComponent'],
@@ -77,6 +82,7 @@ const staticReplaceVue: StaticReplace[] = [
 const staticReplaceSolid: StaticReplace[] = [
   {
     env: 'server',
+    filter: 'vike-solid/ClientOnly',
     type: 'call',
     match: {
       function: 'import:solid-js/web:createComponent',

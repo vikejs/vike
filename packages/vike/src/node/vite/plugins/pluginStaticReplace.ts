@@ -1,11 +1,10 @@
 export { pluginStaticReplace }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assert, createDebug } from '../utils.js'
+import { assert, assertUsage, createDebug } from '../utils.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 import { VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { applyStaticReplace, type StaticReplace } from './pluginStaticReplace/applyStaticReplace.js'
-import { buildFilterRolldown } from './pluginStaticReplace/buildFilterRolldown.js'
 
 const debug = createDebug('vike:staticReplace')
 
@@ -18,7 +17,7 @@ function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
 
   // filterRolldown
   const skipNodeModules = '/node_modules/'
-  const include = buildFilterRolldown(staticReplaceList)
+  const include = getFilterRolldown(staticReplaceList)
   assert(include)
   const filterRolldown = {
     id: {
@@ -30,7 +29,7 @@ function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
   }
   const filterFunction = (id: string, code: string) => {
     if (id.includes(skipNodeModules)) return false
-    if (!include.test(code)) return false
+    if (!include.some((s) => code.includes(s))) return false
     return true
   }
 
@@ -85,4 +84,12 @@ function getStaticReplaceList(vikeConfig: VikeConfigInternal): StaticReplace[] {
   }
 
   return staticReplaceList
+}
+
+function getFilterRolldown(staticReplaceList: StaticReplace[]): string[] {
+  return staticReplaceList.map((staticReplace) => {
+    const { filter } = staticReplace
+    assertUsage(filter, '+staticReplace entry is missing rolldown filter')
+    return filter
+  })
 }
