@@ -2,7 +2,7 @@ export { onBeforeRenderHtml }
 
 import type { PageContextServer } from 'vike/types'
 import { assert } from '../utils/assert'
-import { getGlobalContext, getGlobalContextAsync, getGlobalContextSync } from 'vike'
+import { getGlobalContext, getGlobalContextAsync, getGlobalContextSync } from 'vike/server'
 
 async function onBeforeRenderHtml(pageContext: PageContextServer) {
   console.log('+onBeforeRenderHtml hook called')

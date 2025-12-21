@@ -2,7 +2,7 @@ export { onBeforeRenderClient }
 
 import type { PageContextClient } from 'vike/types'
 import { assert } from './utils/assert'
-import { getGlobalContext, getGlobalContextAsync, getGlobalContextSync } from 'vike'
+import { getGlobalContext, getGlobalContextAsync, getGlobalContextSync } from 'vike/client/router'
 
 async function onBeforeRenderClient(pageContext: PageContextClient) {
   console.log('+onBeforeRenderClient hook called')

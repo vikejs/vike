@@ -1,7 +1,7 @@
 export { assert }
 export { assertGlobalContext }
 
-import { getGlobalContext } from 'vike'
+import { getGlobalContext } from 'vike/server'
 
 async function assertGlobalContext() {
   const globalContext = await getGlobalContext()
