@@ -1,0 +1,9 @@
+export default Page;
+import React from "react";
+import { Counter } from "./Counter";
+import { ClientOnly } from "vike-react/ClientOnly";
+function Page() {
+  return /* @__PURE__ */React.createElement(React.Fragment, null, /* @__PURE__ */React.createElement("h1", null, "Welcome"), "This page is:", /* @__PURE__ */React.createElement("ul", null, /* @__PURE__ */React.createElement("li", null, "Rendered to HTML."), /* @__PURE__ */React.createElement("li", null, "Interactive. ", /* @__PURE__ */React.createElement(Counter, null)), /* @__PURE__ */React.createElement(ClientOnly, {
+    fallback: /* @__PURE__ */React.createElement("li", null, "Loading client-only component...")
+  })));
+}

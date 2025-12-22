@@ -26,6 +26,7 @@ import { pluginWorkaroundCssModuleHmr } from './plugins/pluginWorkaroundCssModul
 import { pluginWorkaroundVite6HmrRegression } from './plugins/pluginWorkaroundVite6HmrRegression.js'
 import { pluginReplaceConstantsPageContext } from './plugins/pluginReplaceConstantsPageContext.js'
 import { pluginReplaceConstantsGlobalThis } from './plugins/pluginReplaceConstantsGlobalThis.js'
+import { pluginStaticReplace } from './plugins/pluginStaticReplace.js'
 import { pluginViteRPC } from './plugins/non-runnable-dev/pluginViteRPC.js'
 import { pluginBuildApp } from './plugins/build/pluginBuildApp.js'
 import { pluginDistPackageJsonFile } from './plugins/build/pluginDistPackageJsonFile.js'
@@ -37,7 +38,7 @@ import { pluginModuleBanner } from './plugins/build/pluginModuleBanner.js'
 import { pluginReplaceConstantsNonRunnableDev } from './plugins/non-runnable-dev/pluginReplaceConstantsNonRunnableDev.js'
 import { isVikeCliOrApi } from '../../shared-server-node/api-context.js'
 import { pluginViteConfigVikeExtensions } from './plugins/pluginViteConfigVikeExtensions.js'
-import { isOnlyResolvingUserConfig } from '../api/resolveViteConfigFromUser.js'
+import { getVikeConfigInternalEarly, isOnlyResolvingUserConfig } from '../api/resolveViteConfigFromUser.js'
 
 // We don't call this in ./onLoad.ts to avoid a cyclic dependency with utils.ts
 setGetClientEntrySrcDev(getClientEntrySrcDev)
@@ -48,6 +49,7 @@ type PluginInterop = Record<string, unknown> & { name: string }
 function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): Promise<PluginInterop[]> {
   const promise = (async () => {
     if (skip()) return []
+    const vikeConfig = await getVikeConfigInternalEarly()
     const plugins: Plugin[] = [
       ...pluginCommon(vikeVitePluginOptions),
       ...pluginVirtualFiles(),
@@ -64,8 +66,9 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): Promise<Plug
       ...pluginWorkaroundVite6HmrRegression(),
       ...pluginReplaceConstantsPageContext(),
       ...pluginReplaceConstantsGlobalThis(),
+      ...pluginStaticReplace(vikeConfig),
       ...pluginNonRunnabeDev(),
-      ...(await pluginViteConfigVikeExtensions()),
+      ...(await pluginViteConfigVikeExtensions(vikeConfig)),
     ]
     return plugins as PluginInterop[]
   })()

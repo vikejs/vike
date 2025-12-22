@@ -25,12 +25,14 @@ import { isPlusFile } from '../shared/resolveVikeConfigInternal/crawlPlusFilePat
 import { isTemporaryBuildFile } from '../shared/resolveVikeConfigInternal/transpileAndExecuteFile.js'
 import { debugFileChange, getVikeConfigError } from '../../../shared-server-node/getVikeConfigError.js'
 
+// === Rolldown filter
 const filterRolldown = {
   id: {
     include: new RegExp(`^(${escapeRegex(virtualFileIdPrefix1)}|${escapeRegex(virtualFileIdPrefix2)})`),
   },
 }
 const filterFunction = (id: string) => isVirtualFileId(id)
+// ===
 
 function pluginVirtualFiles(): Plugin[] {
   let config: ResolvedConfig

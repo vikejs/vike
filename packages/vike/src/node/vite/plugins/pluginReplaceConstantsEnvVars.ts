@@ -28,6 +28,7 @@ const PUBLIC_ENV_ALLOWLIST = [
 //   - For it to work, we'll probably need the user to define the settings (e.g. `envDir`) for loadEnv() inside vike.config.js instead of vite.config.js
 //   - Or stop using Vite's `mode` implementation and have Vike implement its own `mode` feature? (So that the only dependencies are `$ vike build --mode staging` and `$ MODE=staging vike build`.)
 
+// === Rolldown filter
 const skipNodeModules = '/node_modules/'
 const skipIrrelevant = 'import.meta.env.'
 const filterRolldown = {
@@ -43,6 +44,7 @@ const filterFunction = (id: string, code: string) => {
   if (!code.includes(skipIrrelevant)) return false
   return true
 }
+// ===
 
 function pluginReplaceConstantsEnvVars(): Plugin[] {
   let envVarsAll: Record<string, string>

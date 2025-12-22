@@ -8,7 +8,6 @@ export type { HookName }
 export type { HookNameOld }
 export type { HookNamePage }
 export type { HookNameGlobal }
-export type { ImportString }
 export type { Route }
 export type { KeepScrollPosition }
 export type { OnHookCall as OnHookCallWrapper }
@@ -54,6 +53,8 @@ import type { GlobalContext } from './GlobalContext.js'
 import type { InlineConfig } from 'vite'
 import type { PassToClientPublic } from '../server/runtime/renderPageServer/html/serializeContext.js'
 import type { CliPreviewConfig } from '../node/api/preview.js'
+import type { StaticReplace } from '../node/vite/plugins/pluginStaticReplace/applyStaticReplace.js'
+import type { ImportStringList } from '../node/vite/shared/importString.js'
 
 type HookNameOld = HookName | HookNameOldDesign
 type HookName = HookNamePage | HookNameGlobal
@@ -331,13 +332,13 @@ type ConfigBuiltIn = {
    *
    *  https://vike.dev/route
    */
-  route?: Route | ImportString
+  route?: Route | ImportStringList
 
   /** Protect page(s), e.g. forbid unauthorized access.
    *
    *  https://vike.dev/guard
    */
-  guard?: GuardAsync | GuardSync | ImportString
+  guard?: GuardAsync | GuardSync | ImportStringList
   /**
    * Pre-render page(s).
    *
@@ -348,7 +349,7 @@ type ConfigBuiltIn = {
    */
   prerender?:
     | boolean
-    | ImportString
+    | ImportStringList
     | {
         /**
          * Allow only some of your pages to be pre-rendered.
@@ -425,31 +426,31 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/extends
    */
-  extends?: Config | Config[] | ImportString
+  extends?: Config | Config[] | ImportStringList
 
   /** Hook called before the page is rendered.
    *
    *  https://vike.dev/onBeforeRender
    */
-  onBeforeRender?: OnBeforeRenderAsync | OnBeforeRenderSync | ImportString | null
+  onBeforeRender?: OnBeforeRenderAsync | OnBeforeRenderSync | ImportStringList | null
 
   /** Hook called when a `pageContext` object is created.
    *
    *  https://vike.dev/onCreatePageContext
    */
-  onCreatePageContext?: ((pageContext: PageContextServer) => void) | ImportString | null
+  onCreatePageContext?: ((pageContext: PageContextServer) => void) | ImportStringList | null
 
   /** Hook called when an error occurs during server-side rendering.
    *
    *  https://vike.dev/onError
    */
-  onError?: ((error: unknown, pageContext: null | PageContextServer) => void) | ImportString | null
+  onError?: ((error: unknown, pageContext: null | PageContextServer) => void) | ImportStringList | null
 
   /** Hook called when the `globalContext` object is created.
    *
    *  https://vike.dev/onCreateGlobalContext
    */
-  onCreateGlobalContext?: ((globalContext: GlobalContext) => void) | ImportString | null
+  onCreateGlobalContext?: ((globalContext: GlobalContext) => void) | ImportStringList | null
 
   /** Called when any hook is called. Useful for instrumentation (Sentry, OpenTelemetry, etc.).
    *
@@ -461,7 +462,7 @@ type ConfigBuiltIn = {
    *
    *  https://vike.dev/data
    */
-  data?: DataAsync<unknown> | DataSync<unknown> | ImportString | null
+  data?: DataAsync<unknown> | DataSync<unknown> | ImportStringList | null
 
   /** Hook called as soon as `pageContext.data` is available.
    *
@@ -473,92 +474,92 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/passToClient
    */
-  passToClient?: PassToClientPublic | ImportString
+  passToClient?: PassToClientPublic | ImportStringList
 
   /** Hook called when page is rendered on the client-side.
    *
    * https://vike.dev/onRenderClient
    */
-  onRenderClient?: OnRenderClientAsync | OnRenderClientSync | ImportString
+  onRenderClient?: OnRenderClientAsync | OnRenderClientSync | ImportStringList
   /** Hook called when page is rendered to HTML on the server-side.
    *
    * https://vike.dev/onRenderHtml
    */
-  onRenderHtml?: OnRenderHtmlAsync | OnRenderHtmlSync | ImportString
+  onRenderHtml?: OnRenderHtmlAsync | OnRenderHtmlSync | ImportStringList
 
   /** Enable async Route Functions.
    *
    * https://vike.dev/route-function#async
    */
-  iKnowThePerformanceRisksOfAsyncRouteFunctions?: boolean | ImportString
+  iKnowThePerformanceRisksOfAsyncRouteFunctions?: boolean | ImportStringList
 
   /** Change the URL root of Filesystem Routing.
    *
    * https://vike.dev/filesystemRoutingRoot
    */
-  filesystemRoutingRoot?: string | ImportString
+  filesystemRoutingRoot?: string | ImportStringList
 
   /** Page Hook called when pre-rendering starts.
    *
    * https://vike.dev/onPrerenderStart
    */
-  onPrerenderStart?: OnPrerenderStartAsync | OnPrerenderStartSync | ImportString
+  onPrerenderStart?: OnPrerenderStartAsync | OnPrerenderStartSync | ImportStringList
   /** Global Hook called before the whole pre-rendering process starts.
    *
    * https://vike.dev/onBeforePrerenderStart
    */
-  onBeforePrerenderStart?: OnBeforePrerenderStartAsync | OnBeforePrerenderStartSync | ImportString
+  onBeforePrerenderStart?: OnBeforePrerenderStartAsync | OnBeforePrerenderStartSync | ImportStringList
 
   /** Hook called before the URL is routed to a page.
    *
    * https://vike.dev/onBeforeRoute
    */
-  onBeforeRoute?: OnBeforeRouteAsync | OnBeforeRouteSync | ImportString
+  onBeforeRoute?: OnBeforeRouteAsync | OnBeforeRouteSync | ImportStringList
 
   /** Hook called after the page is hydrated.
    *
    * https://vike.dev/onHydrationEnd
    */
-  onHydrationEnd?: OnHydrationEndAsync | OnHydrationEndSync | ImportString
+  onHydrationEnd?: OnHydrationEndAsync | OnHydrationEndSync | ImportStringList
   /** Hook called before the user navigates to a new page.
    *
    * https://vike.dev/onPageTransitionStart
    */
-  onPageTransitionStart?: OnPageTransitionStartAsync | OnPageTransitionStartSync | ImportString
+  onPageTransitionStart?: OnPageTransitionStartAsync | OnPageTransitionStartSync | ImportStringList
   /** Hook called after the user navigates to a new page.
    *
    * https://vike.dev/onPageTransitionEnd
    */
-  onPageTransitionEnd?: OnPageTransitionEndAsync | OnPageTransitionEndSync | ImportString
+  onPageTransitionEnd?: OnPageTransitionEndAsync | OnPageTransitionEndSync | ImportStringList
 
   /** Whether the UI framework (React/Vue/Solid/...) allows the page's hydration to be aborted.
    *
    * https://vike.dev/hydrationCanBeAborted
    */
-  hydrationCanBeAborted?: boolean | ImportString
+  hydrationCanBeAborted?: boolean | ImportStringList
   /** Add client code.
    *
    * https://vike.dev/client
    */
-  client?: string | ImportString
+  client?: string | ImportStringList
   /** Enable Client Routing.
    *
    * https://vike.dev/clientRouting
    */
-  clientRouting?: boolean | ImportString
+  clientRouting?: boolean | ImportStringList
 
   /**
    * Whether hooks are loaded on the client-side.
    *
    * https://vike.dev/clientHooks
    */
-  clientHooks?: boolean | null | ImportString
+  clientHooks?: boolean | null | ImportStringList
 
   /** Create new or modify existing configurations.
    *
    * https://vike.dev/meta
    */
-  meta?: ConfigMeta | ImportString
+  meta?: ConfigMeta | ImportStringList
 
   /** Vite configuration.
    *
@@ -621,7 +622,7 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/prefetch
    */
-  prefetch?: PrefetchSetting | ImportString
+  prefetch?: PrefetchSetting | ImportStringList
 
   // TO-DO/pageContext-prefetch: use following JSDoc to deprecate old interface.
   /** @deprecated Use `prefetch` setting (https://vike.dev/prefetch) instead.  */
@@ -629,7 +630,7 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/prefetchStaticAssets
    */
-  prefetchStaticAssets?: PrefetchStaticAssets | ImportString
+  prefetchStaticAssets?: PrefetchStaticAssets | ImportStringList
 
   /** Modify the timeouts of hooks. */
   hooksTimeout?: HooksTimeoutProvidedByUser
@@ -726,16 +727,22 @@ type ConfigBuiltIn = {
   cli?: {
     preview?: CliPreviewConfig
   }
+
+  /**
+   * Static code transformations for optimizations like removing component children server-side.
+   *
+   * @experimental
+   */
+  staticReplace?: StaticReplace[]
 }
 
 type ConfigBuiltInResolved = {
   passToClient?: string[][]
   redirects?: Record<string, string>[]
-  prerender?: Exclude<Config['prerender'], ImportString | undefined>[]
+  prerender?: Exclude<Config['prerender'], ImportStringList | undefined>[]
   middleware?: Function[]
-  headersResponse?: Exclude<Config['headersResponse'], ImportString | undefined>[]
+  headersResponse?: Exclude<Config['headersResponse'], ImportStringList | undefined>[]
+  staticReplace?: StaticReplace[][]
 }
 
 type ConfigMeta = Record<string, ConfigDefinition>
-type ImportString = ImportStringVal | ImportStringVal[]
-type ImportStringVal = `import:${string}`

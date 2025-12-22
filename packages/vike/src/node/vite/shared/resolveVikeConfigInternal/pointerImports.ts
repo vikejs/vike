@@ -26,6 +26,7 @@ import { parseSync } from '@babel/core'
 import type { Program, Identifier, ImportDeclaration } from 'estree'
 import { assert, assertUsage, assertWarning, isFilePathAbsolute, isImportPath, styleFileRE } from '../../utils.js'
 import pc from '@brillout/picocolors'
+import { parseImportString, isImportString, serializeImportString } from '../importString.js'
 
 function transformPointerImports(
   code: string,
@@ -133,8 +134,6 @@ function getImports(code: string): ImportDeclaration[] {
   return imports
 }
 
-const import_ = 'import'
-const SEP = ':'
 const zeroWidthSpace = '\u200b'
 /**
  * Data Structure for [pointer imports](https://vike.dev/config#pointer-imports):
@@ -160,11 +159,10 @@ function serializePointerImportData({
   importStringWasGenerated,
 }: Omit<PointerImportData, 'importString'>): string {
   const tag = importStringWasGenerated ? zeroWidthSpace : ''
-  // `import:${importPath}:${importPath}`
-  return `${tag}${import_}${SEP}${importPath}${SEP}${exportName}`
+  return `${tag}${serializeImportString({ importPath, exportName })}`
 }
 function isPointerImportData(str: string): boolean {
-  return str.startsWith(import_ + SEP) || str.startsWith(zeroWidthSpace + import_ + SEP)
+  return isImportString(str) || (str.startsWith(zeroWidthSpace) && isImportString(str.slice(1)))
 }
 function parsePointerImportData(importString: string): null | PointerImportData {
   if (!isPointerImportData(importString)) {
@@ -178,15 +176,9 @@ function parsePointerImportData(importString: string): null | PointerImportData 
     importString = importString.slice(1)
   }
 
-  const parts = importString.split(SEP).slice(1)
-  if (!importStringWasGenerated && parts.length === 1) {
-    const exportName = 'default'
-    const importPath = parts[0]!
-    return { importPath, exportName, importStringWasGenerated, importString }
-  }
-  assert(parts.length >= 2)
-  const exportName = parts[parts.length - 1]!
-  const importPath = parts.slice(0, -1).join(SEP)
+  const parsed = parseImportString(importString, { legacy: !importStringWasGenerated })
+  assert(parsed)
+  const { importPath, exportName } = parsed
 
   if (importPath.startsWith('.') && !(importPath.startsWith('./') || importPath.startsWith('../'))) {
     assert(!importStringWasGenerated)

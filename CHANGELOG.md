@@ -1,3 +1,23 @@
+## [0.4.250](https://github.com/vikejs/vike/compare/v0.4.249...v0.4.250) (2025-12-22)
+
+
+### Bug Fixes
+
+* @brillout/picocolors@^1.0.30 ([2203df7](https://github.com/vikejs/vike/commit/2203df7ca7c6ed305ba1856a5a74b9f25a87a0f4))
+* don't overwrite the URL changed by ohter tools (fix [#2894](https://github.com/vikejs/vike/issues/2894)) ([bcdf291](https://github.com/vikejs/vike/commit/bcdf291ec5441ff355b91b8473d5c61cbba45c1b))
+* properly handle stream cancellation (fix [#2954](https://github.com/vikejs/vike/issues/2954)) ([#2965](https://github.com/vikejs/vike/issues/2965)) ([55681da](https://github.com/vikejs/vike/commit/55681dae6a7d947008c8e344486a530433d8789e))
+* replace Acorn with Babel ([#2973](https://github.com/vikejs/vike/issues/2973)) ([edd603a](https://github.com/vikejs/vike/commit/edd603a4226ebd1827158e89e9c792f0a6f22b10))
+* simplify & fix HMR ([0c30315](https://github.com/vikejs/vike/commit/0c303152a378b86e35a2a6222d2576f79ded547b))
+* simplify history third-party overwrite workaround ([#2504](https://github.com/vikejs/vike/issues/2504)) ([f416149](https://github.com/vikejs/vike/commit/f4161495237f20c9856eee82240b4b25bf10d5d1))
+* support list of import strings ([#2950](https://github.com/vikejs/vike/issues/2950)) ([775a43e](https://github.com/vikejs/vike/commit/775a43e10a96e47fc8c9e80c3a3c749dde44d4f5))
+
+
+### Features
+
+* +staticReplace ([#2976](https://github.com/vikejs/vike/issues/2976)) ([567e1a9](https://github.com/vikejs/vike/commit/567e1a946d492278b7025cad86717e800cf3ae38))
+
+
+
 ## [0.4.249](https://github.com/vikejs/vike/compare/v0.4.248...v0.4.249) (2025-12-14)
 
 

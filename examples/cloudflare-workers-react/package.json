@@ -11,9 +11,9 @@
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "typescript": "^5.9.3",
-    "vike": "0.4.249",
+    "vike": "0.4.250",
     "vite": "^7.0.6",
-    "wrangler": "^4.53.0"
+    "wrangler": "^4.56.0"
   },
   "type": "module"
 }

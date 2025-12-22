@@ -16,6 +16,7 @@ const constantsIsClientSide = [
 // - See https://vike.dev/pageContext#narrowing-down
 // - We cannot use [`define`](https://vite.dev/config/shared-options.html#define) because of https://github.com/rolldown/rolldown/issues/4300
 
+// === Rolldown filter
 const skipNodeModules = '/node_modules/'
 const skipIrrelevant = 'Context.isClientSide'
 assert(constantsIsClientSide.every((constant) => constant.endsWith(skipIrrelevant)))
@@ -32,6 +33,7 @@ const filterFunction = (id: string, code: string) => {
   if (!code.includes(skipIrrelevant)) return false
   return true
 }
+// ===
 
 function pluginReplaceConstantsPageContext(): Plugin[] {
   let config: ResolvedConfig

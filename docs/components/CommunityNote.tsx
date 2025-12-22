@@ -21,7 +21,7 @@ function CommunityNote({ tool, url, hasExtension }: { tool?: string; url: string
         <a href={getEditLink(pageContext.urlPathname)} target="_blank">
           PR welcome
         </a>{' '}
-        to update or improve it.
+        to improve it.
       </Contribution>
       {hasExtension !== undefined && (
         <HasExtension toolName={tool} toolTitle={pageContext.resolved.pageTitle!} hasExtension={hasExtension} />

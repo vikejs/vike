@@ -28,6 +28,7 @@ const flags = [
   'vike:requireResolve',
   'vike:routing',
   'vike:setup',
+  'vike:staticReplace',
   'vike:stream',
   'vike:virtualFiles',
   'vike:vite-rpc',
