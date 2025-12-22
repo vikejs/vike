@@ -1,8 +1,8 @@
 export function SomeComponent() {
-  const isHydrated = {
+  const hydrated = {
     value: false
   };
-  if (isHydrated.value) {
+  if (hydrated.value) {
     return 'Hydrated!';
   } else {
     return 'SSR';
