@@ -541,6 +541,11 @@ const headings = [
   },
   {
     level: 2,
+    title: '`useHydrated()`',
+    url: '/useHydrated',
+  },
+  {
+    level: 2,
     title: '`getGlobalContext()`',
     url: '/getGlobalContext',
   },
@@ -556,8 +561,8 @@ const headings = [
   },
   {
     level: 2,
-    title: '`clientOnly()`',
-    url: '/clientOnly',
+    title: '`<ClientOnly>`',
+    url: '/ClientOnly',
   },
   {
     level: 2,
@@ -1454,6 +1459,10 @@ function api() {
       {
         title: 'Vite plugin',
         url: '/vite-plugin',
+      },
+      {
+        title: '`clientOnly()`',
+        url: '/clientOnly-helper',
       },
     ] as const
   ).map((h) => ({ ...h, category: 'API' as const })) satisfies HeadingDetachedDefinition[]

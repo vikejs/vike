@@ -1,0 +1,80 @@
+import { Link, RepoLink } from '@brillout/docpress'
+import { UiFrameworkExtension, ConfigSpec, ProvidedBy } from '../../components'
+
+<ConfigSpec
+  env="client, server"
+  providedBy={<ProvidedBy><code>useHydrated()</code></ProvidedBy>}
+  global={null}
+/>
+
+The `useHydrated()` hook returns whether the page has already been <Link href="/hydration">hydrated</Link>.
+
+On the server, it always returns `false`. On the client, it returns `false` on first render and `true` after hydration completes.
+
+Common use case: disable interactive elements until hydration completes.
+
+> The difference with <Link href="/pageContext#isHydration">`pageContext.isClientSide && !pageContext.isHydration`</Link> (which returns the same value) is that `useHydrated()` triggers a re-render after the component hydrates.
+
+
+## React
+
+```tsx
+import { useHydrated } from 'vike-react/useHydrated'
+
+function SomeComponent() {
+  const hydrated = useHydrated()
+  return (
+    <button type="button" disabled={!hydrated} onClick={doSomething}>
+      Click me
+    </button>
+  )
+}
+```
+
+
+## Vue
+
+```vue
+<template>
+  <button type="button" :disabled="!hydrated" @click="doSomething">
+    Click me
+  </button>
+</template>
+
+<script setup lang="ts">
+import { useHydrated } from 'vike-vue/useHydrated'
+const hydrated = useHydrated()
+</script>
+```
+
+
+## Solid
+
+```tsx
+import { useHydrated } from 'vike-solid/useHydrated'
+
+function SomeComponent() {
+  const hydrated = useHydrated()
+  return (
+    <button type="button" disabled={!hydrated()} onClick={doSomething}>
+      Click me
+    </button>
+  )
+}
+```
+
+
+## Without `vike-{react,vue,solid}`
+
+If you don't use a <UiFrameworkExtension />, you can implement `useHydrated()` yourself.
+
+See the source code:
+ - [GitHub > `vikejs/vike-react`](https://github.com/vikejs/vike-react)
+ - [GitHub > `vikejs/vike-vue`](https://github.com/vikejs/vike-vue)
+ - [GitHub > `vikejs/vike-solid`](https://github.com/vikejs/vike-solid)
+
+
+## See also
+
+- <Link href="/ClientOnly" />
+- <Link href="/ssr" />
