@@ -15,7 +15,7 @@
     "react-streaming": "^0.4.15",
     "vike": "0.4.249",
     "vite": "^6.3.2",
-    "wrangler": "^4.53.0"
+    "wrangler": "^4.56.0"
   },
   "type": "module"
 }
