@@ -12,7 +12,7 @@
     "vike-react": "^0.6.17"
   },
   "devDependencies": {
-    "@photonjs/runtime": "^0.1.15",
+    "@photonjs/runtime": "^0.1.16",
     "@photonjs/vercel": "^0.1.21",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
