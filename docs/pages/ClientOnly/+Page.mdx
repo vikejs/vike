@@ -1,0 +1,108 @@
+import { Link } from '@brillout/docpress'
+import { UiFrameworkExtension, ConfigSpec, ProvidedBy, TreeShaking } from '../../components'
+
+<ConfigSpec
+  env="client, server"
+  providedBy={<ProvidedBy><code>&lt;ClientOnly&gt;</code></ProvidedBy>}
+  global={null}
+/>
+
+Render components only on the client-side.
+
+<TreeShaking description={<>The children of <code>{'<ClientOnly>'}</code> are automatically removed and never loaded on the server.</>}>
+```jsx
+import { SomeComponent } from './SomeComponent'// [!code --]
+<ClientOnly fallback={<p>Loading...</p>}>
+  <SomeComponent />// [!code --]
+</ClientOnly>
+```
+
+This means `<SomeComponent>` can use browser-only APIs.
+
+```js
+// SomeComponent.js
+
+export { SomeComponent }
+
+// ✅ Doesn't throw "window is not defined" error — it's loaded only on the client-side
+console.log('Browser viewport width: ', window.innerWidth)
+
+function SomeComponent() {
+  // ...
+}
+```
+
+</TreeShaking>
+
+> `<ClientOnly>` supersedes <Link href="/clientOnly-helper">`clientOnly()`</Link> — it has better performance with a simpler DX.
+
+## React
+
+```tsx
+import { ClientOnly } from 'vike-react/ClientOnly'
+
+function Page() {
+  return (
+    <ClientOnly fallback={<p>Loading...</p>}>
+      <SomeComponent />
+    </ClientOnly>
+  )
+}
+```
+
+Props:
+- **children**: Content rendered only on the client-side after hydration.
+- **fallback** (optional): Content shown during SSR and before hydration completes.
+
+## Vue
+
+```vue
+<template>
+  <ClientOnly>
+    <SomeComponent />
+    <template #fallback>
+      <p>Loading...</p>
+    </template>
+  </ClientOnly>
+</template>
+
+<script setup lang="ts">
+import { ClientOnly } from 'vike-vue/ClientOnly'
+</script>
+```
+
+Props:
+- **default slot**: Content rendered only on the client-side after hydration.
+- **fallback slot** (optional): Content shown during SSR and before hydration completes.
+
+## Solid
+
+```tsx
+import { ClientOnly } from 'vike-solid/ClientOnly'
+
+function Page() {
+  return (
+    <ClientOnly fallback={<p>Loading...</p>}>
+      <SomeComponent />
+    </ClientOnly>
+  )
+}
+```
+
+Props:
+- **children**: Content rendered only on the client-side after hydration.
+- **fallback** (optional): Content shown during SSR and before hydration completes.
+
+## Without `vike-{react,vue,solid}`
+
+If you don't use a <UiFrameworkExtension />, you can implement `<ClientOnly>` yourself.
+
+See the source code:
+ - [GitHub > `vikejs/vike-react`](https://github.com/vikejs/vike-react)
+ - [GitHub > `vikejs/vike-vue`](https://github.com/vikejs/vike-vue)
+ - [GitHub > `vikejs/vike-solid`](https://github.com/vikejs/vike-solid)
+
+## See also
+
+- <Link href="/useHydrated" />
+- <Link href="/ssr" />

@@ -1,4 +1,4 @@
-import { Link, Warning } from '@brillout/docpress'
+import { Link, Warning, Danger } from '@brillout/docpress'
 import { UiFrameworkExtension, ProvidedBy, ConfigSpec } from '../../components'
 
 <ConfigSpec
@@ -8,6 +8,10 @@ import { UiFrameworkExtension, ProvidedBy, ConfigSpec } from '../../components'
 />
 
 The `clientOnly()` helper enables you to load and render a component only on the client-side.
+
+<Danger>
+  The `clientOnly()` will soon be deprecated, use <Link href="/ClientOnly">`<ClientOnly>`</Link> instead.
+</Danger>
 
 > Alternatively, you can set <Link href="/ssr">`ssr: false`</Link> to load and render the entire page on the client-side only.
 
@@ -127,3 +131,10 @@ See, for example, the source code at:
  - [GitHub > `vikejs/vike-react`](https://github.com/vikejs/vike-react)
  - [GitHub > `vikejs/vike-vue`](https://github.com/vikejs/vike-vue)
  - [GitHub > `vikejs/vike-solid`](https://github.com/vikejs/vike-solid)
+
+
+## See also
+
+- <Link href="/ClientOnly" />
+- <Link href="/useHydrated" />
+- <Link href="/ssr" />
