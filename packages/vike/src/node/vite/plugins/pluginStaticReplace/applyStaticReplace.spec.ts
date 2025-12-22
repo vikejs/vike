@@ -43,6 +43,7 @@ const staticReplaceReact: StaticReplace[] = [
   },
 ]
 
+// vike-vue doesn't use +staticReplace for now (it only uses Nuxt's tree-shake.ts instead)
 const staticReplaceVue: StaticReplace[] = [
   {
     env: 'server',
@@ -77,6 +78,7 @@ const staticReplaceVue: StaticReplace[] = [
     },
     remove: { arg: 2, prop: 'default' },
   },
+  // vike-vue doesn't and cannot use this (it would break Vue's HTML templates)
   {
     env: 'server',
     filter: 'vike-vue/useHydrated',
