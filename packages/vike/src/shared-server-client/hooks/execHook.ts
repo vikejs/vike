@@ -248,18 +248,22 @@ function execHookWithOnHookCall<HookReturn>(
 
   let originalCalled = false
   let originalReturn: HookReturn
+  let originalReturnPromiserResolve: () => void
+  let originalReturnPromise = new Promise<void>((r) => (originalReturnPromiserResolve = r))
   let call: () => HookReturn | Promise<HookReturn> = () => {
     originalCalled = true
     originalReturn = hookFnCaller()
+    originalReturnPromiserResolve()
     return originalReturn
   }
   for (const onHookCall of configValue.value as Function[]) {
     const hookPublic = { name: hookName, filePath: hookFilePath, sync, call }
     // (It would be simpler to define a single hookFnCaller() wrapper instead of chaining call() functions, but it would break the async hooks of the vike-react-sentry extension.)
-    call = () => {
+    call = async () => {
       // +onHookCall should call hookPublic.call() (the previous call() function) => chaining
       onHookCall(hookPublic, context)
       if (sync) assertUsage(originalCalled, 'onHookCall() must run hook.call() synchronously')
+      await originalReturnPromise
       return originalReturn
     }
   }
