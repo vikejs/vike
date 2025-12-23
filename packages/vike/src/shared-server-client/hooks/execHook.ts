@@ -236,7 +236,7 @@ function execHookWithOnHookCall<HookReturn>(
   hook: Omit<Hook, 'hookTimeout' | 'hookFn'>,
   globalContext: GlobalContextPrepareMinimum,
   pageContext: PageContextPrepareMinimum | null,
-  isSync: boolean,
+  sync = false,
 ): HookReturn | Promise<HookReturn> {
   const { hookName, hookFilePath } = hook
   assert(hookName !== 'onHookCall')
@@ -246,28 +246,27 @@ function execHookWithOnHookCall<HookReturn>(
   const context: { pageContext?: unknown; globalContext?: unknown } = { globalContext }
   if (pageContext) context.pageContext = pageContext
 
+  let originalCalled = false
   let originalReturn: HookReturn
   let fn: () => HookReturn | Promise<HookReturn> = () => {
+    originalCalled = true
     originalReturn = hookFnCaller()
     return originalReturn
   }
   for (const wrapper of configValue.value as unknown[]) {
-    const errorMessage = `The onHookCall() hook defined by ${configValue.definedAtData} should export an object with a ${isSync ? 'sync' : 'async'} function`
-    assertUsage(isObject(wrapper), errorMessage)
-    const applicableWrapper = isSync ? wrapper.sync : wrapper.async
-    assertUsage(isCallable(applicableWrapper), errorMessage)
+    assertUsage(
+      isCallable(wrapper),
+      `The onHookCall() hook should export a function but it exports ${typeof wrapper} instead`,
+    )
     const prev = fn
-    const hookPublic = { name: hookName, filePath: hookFilePath, call: prev }
-    if (isSync) {
-      fn = () => {
-        applicableWrapper(hookPublic, context)
-        return originalReturn
-      }
-    } else {
-      fn = async () => {
-        await applicableWrapper(hookPublic, context)
-        return originalReturn
-      }
+    const hookPublic = { name: hookName, filePath: hookFilePath, sync, call: prev }
+    fn = async () => {
+      await wrapper(hookPublic, context)
+      // For sync hooks this asserts the hook.call() has been called synchronously
+      // For async hooks, this asserts the hook.call() has been called before the wrapper's Promise resolves
+      // (prevents setTimeout(() => hook.call()) for example)
+      assertUsage(originalCalled, "The onHookCall() hook didn't call hook.call()")
+      return originalReturn
     }
   }
   return fn()

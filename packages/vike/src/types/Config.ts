@@ -10,7 +10,6 @@ export type { HookNamePage }
 export type { HookNameGlobal }
 export type { Route }
 export type { KeepScrollPosition }
-export type { OnHookCall as OnHookCallWrapper }
 
 // TO-DO/next-major-release: remove
 export type { DataAsync }
@@ -307,19 +306,6 @@ type KeepScrollPosition =
  */
 type Route = string | RouteSync | RouteAsync
 
-type OnHookCallContext = {
-  pageContext?: PageContext
-  globalContext?: GlobalContext
-}
-
-type OnHookCall = {
-  sync?: (hook: { name: string; filePath: string; call: () => unknown }, context: OnHookCallContext) => void
-  async?: (
-    hook: { name: string; filePath: string; call: () => Promise<unknown> },
-    context: OnHookCallContext,
-  ) => Promise<void>
-}
-
 /** Page configuration.
  *
  * https://vike.dev/config
@@ -456,7 +442,16 @@ type ConfigBuiltIn = {
    *
    *  https://vike.dev/onHookCall
    */
-  onHookCall?: OnHookCall | ImportString | null
+  onHookCall?:
+    | ((
+        hook: { name: string; filePath: string; sync: boolean; call: () => Promise<unknown> },
+        context: {
+          pageContext?: PageContext
+          globalContext?: GlobalContext
+        },
+      ) => void | Promise<void>)
+    | ImportString
+    | null
 
   /** Hook for fetching data.
    *

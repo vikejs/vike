@@ -15,27 +15,38 @@ Hook called whenever a Vike hook is called. Useful for instrumentation (e.g. Sen
 
 import type { Config } from 'vike/types'
 
-export const onHookCall: Config['onHookCall'] = {
-  async: async (hook, context) => {
-    console.log('before', hook.name, hook.filePath)
-    await hook.call()
-    console.log('after', hook.name)
-  }
+export const onHookCall: Config['onHookCall'] = async (hook, context) => {
+  console.log('before', hook.name, hook.filePath)
+  await hook.call()
+  console.log('after', hook.name)
 }
 ```
 
 The `hook` object contains:
 - `hook.name` — Name of the hook being called (e.g. `'onRenderHtml'`, `'data'`, `'guard'`)
 - `hook.filePath` — File path where the hook is defined
+- `hook.sync` — Whether the wrapped hook is synchronous
 - `hook.call()` — Function to call the actual hook (the return value is handled internally)
 
 The `context` object contains:
 - `context.pageContext` — <Link href="/pageContext">`pageContext`</Link> (available for page hooks)
 - `context.globalContext` — <Link href="/globalContext">`globalContext`</Link> (always available)
 
-You need to export an object with `sync` and/or `async` functions depending on which hooks you want to wrap:
-- `sync` — wraps synchronous hooks
-- `async` — wraps asynchronous hooks
+> **Important:** When `hook.sync` is `true`, you must call `hook.call()` synchronously (before any `await`). This is because sync hooks cannot be wrapped asynchronously while preserving synchronous execution.
+
+```ts
+// ❌ This breaks sync hooks
+export const onHookCall: Config['onHookCall'] = async (hook, context) => {
+  await someAsyncOperation()
+  await hook.call() // Too late for sync hooks!
+}
+
+// ✅ This works for both sync and async hooks
+export const onHookCall: Config['onHookCall'] = async (hook, context) => {
+  await hook.call() // Called before any await
+  await someAsyncOperation()
+}
+```
 
 
 ## Use case: instrumentation
@@ -49,19 +60,17 @@ Instrument hooks with Sentry:
 import * as Sentry from '@sentry/node'
 import type { Config } from 'vike/types'
 
-export const onHookCall: Config['onHookCall'] = {
-  async: async (hook, context) => {
-    await Sentry.startSpan(
-      {
-        op: 'vike.hook',
-        name: hook.name,
-        attributes: { filePath: hook.filePath }
-      },
-      async () => {
-        await hook.call()
-      }
-    )
-  }
+export const onHookCall: Config['onHookCall'] = async (hook, context) => {
+  await Sentry.startSpan(
+    {
+      op: 'vike.hook',
+      name: hook.name,
+      attributes: { filePath: hook.filePath }
+    },
+    async () => {
+      await hook.call()
+    }
+  )
 }
 ```
 
@@ -76,17 +85,15 @@ import type { Config } from 'vike/types'
 
 const tracer = trace.getTracer('vike')
 
-export const onHookCall: Config['onHookCall'] = {
-  async: async (hook, context) => {
-    await tracer.startActiveSpan(hook.name, async (span) => {
-      span.setAttribute('hook.filePath', hook.filePath)
-      try {
-        await hook.call()
-      } finally {
-        span.end()
-      }
-    })
-  }
+export const onHookCall: Config['onHookCall'] = async (hook, context) => {
+  await tracer.startActiveSpan(hook.name, async (span) => {
+    span.setAttribute('hook.filePath', hook.filePath)
+    try {
+      await hook.call()
+    } finally {
+      span.end()
+    }
+  })
 }
 ```
 
@@ -103,17 +110,15 @@ Log all hook executions for debugging:
 
 import type { Config } from 'vike/types'
 
-export const onHookCall: Config['onHookCall'] = {
-  async: async (hook, context) => {
-    const start = performance.now()
-    console.log(`[${hook.name}] start`, hook.filePath)
-    try {
-      await hook.call()
-      console.log(`[${hook.name}] done in ${(performance.now() - start).toFixed(2)}ms`)
-    } catch (error) {
-      console.error(`[${hook.name}] error`, error)
-      throw error
-    }
+export const onHookCall: Config['onHookCall'] = async (hook, context) => {
+  const start = performance.now()
+  console.log(`[${hook.name}] start`, hook.filePath)
+  try {
+    await hook.call()
+    console.log(`[${hook.name}] done in ${(performance.now() - start).toFixed(2)}ms`)
+  } catch (error) {
+    console.error(`[${hook.name}] error`, error)
+    throw error
   }
 }
 ```
