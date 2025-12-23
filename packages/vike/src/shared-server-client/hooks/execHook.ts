@@ -21,7 +21,7 @@ import type { Hook, HookLoc } from './getHook.js'
 import type { PageContextConfig } from '../getPageFiles.js'
 import { getHookFromPageConfigGlobalCumulative, getHookFromPageContextNew } from './getHook.js'
 import type { HookName, HookNameGlobal } from '../../types/Config.js'
-import { assert, isCallable, isPromise } from '../utils.js'
+import { assert, isCallable } from '../utils.js'
 import type { PageContextForPublicUsageServer } from '../../server/runtime/renderPageServer/preparePageContextForPublicUsageServer.js'
 import type { PageContextForPublicUsageClientShared } from '../../client/shared/preparePageContextForPublicUsageClientShared.js'
 import {
@@ -216,10 +216,8 @@ function execHookVanillaSync<HookReturn>(
   hook: Omit<Hook, 'hookTimeout' | 'hookFn'>,
   globalContext: GlobalContextPrepareMinimum,
   pageContext: PageContextPrepareMinimum | null = null,
-): HookReturn {
-  const ret = execHookWithOnHookCall(hookFnCaller, hook, globalContext, pageContext, true)
-  assert(!isPromise(ret))
-  return ret
+): Promise<HookReturn> | HookReturn {
+  return execHookWithOnHookCall(hookFnCaller, hook, globalContext, pageContext, true)
 }
 
 function execHookVanilla<HookReturn>(
