@@ -40,7 +40,9 @@ export const onHookCall: Config['onHookCall'] = async (hook, context) => {
   await someAsyncOperation()
   await hook.call() // Too late for sync hooks!
 }
+```
 
+```ts
 // ✅ This works for both sync and async hooks
 export const onHookCall: Config['onHookCall'] = async (hook, context) => {
   await hook.call() // Called before any await
