@@ -248,7 +248,7 @@ function execHookWithOnHookCall<HookReturn>(
 
   let originalCalled = false
   let originalReturn: HookReturn
-  let fn: () => HookReturn | Promise<HookReturn> = () => {
+  let call: () => HookReturn | Promise<HookReturn> = () => {
     originalCalled = true
     originalReturn = hookFnCaller()
     return originalReturn
@@ -258,9 +258,9 @@ function execHookWithOnHookCall<HookReturn>(
       isCallable(wrapper),
       `The onHookCall() hook should export a function but it exports ${typeof wrapper} instead`,
     )
-    const prev = fn
-    const hookPublic = { name: hookName, filePath: hookFilePath, sync, call: prev }
-    fn = async () => {
+    const callPrev = call
+    const hookPublic = { name: hookName, filePath: hookFilePath, sync, call: callPrev }
+    call = async () => {
       await wrapper(hookPublic, context)
       // For sync hooks this asserts the hook.call() has been called synchronously
       // For async hooks, this asserts the hook.call() has been called before the wrapper's Promise resolves
@@ -269,7 +269,7 @@ function execHookWithOnHookCall<HookReturn>(
       return originalReturn
     }
   }
-  return fn()
+  return call()
 }
 
 function isNotDisabled(timeout: false | number): timeout is number {
