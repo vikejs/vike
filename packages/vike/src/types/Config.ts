@@ -450,7 +450,7 @@ type ConfigBuiltIn = {
           globalContext?: GlobalContext
         },
       ) => void | Promise<void>)
-    | ImportString
+    | ImportStringList
     | null
 
   /** Hook for fetching data.
