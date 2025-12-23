@@ -257,10 +257,7 @@ function execHookWithOnHookCall<HookReturn>(
     const hookPublic = { name: hookName, filePath: hookFilePath, sync, call }
     call = async () => {
       const promise = onHookCall(hookPublic, context)
-      if (!sync) await promise
-      // - `sync: true` => asserts hook.call() has been called synchronously
-      // - `sync: false` => asserts hook.call() has been called before the onHookCall's Promise resolves (e.g. preventing `setTimeout(() => hook.call())`)
-      assertUsage(originalCalled, `onHookCall() must run hook.call()${!sync ? '' : ' synchronously'}`)
+      if (sync) assertUsage(originalCalled, 'onHookCall() must run hook.call() synchronously')
       await promise
       return originalReturn
     }
