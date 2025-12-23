@@ -258,8 +258,7 @@ function execHookWithOnHookCall<HookReturn>(
       isCallable(wrapper),
       `The onHookCall() hook should export a function but it exports ${typeof wrapper} instead`,
     )
-    const callPrev = call
-    const hookPublic = { name: hookName, filePath: hookFilePath, sync, call: callPrev }
+    const hookPublic = { name: hookName, filePath: hookFilePath, sync, call }
     call = async () => {
       await wrapper(hookPublic, context)
       // For sync hooks this asserts the hook.call() has been called synchronously
