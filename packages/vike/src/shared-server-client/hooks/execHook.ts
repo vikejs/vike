@@ -255,16 +255,11 @@ function execHookWithOnHookCall<HookReturn>(
   }
   for (const onHookCall of configValue.value as Function[]) {
     const hookPublic = { name: hookName, filePath: hookFilePath, sync, call }
-    call = async () => {
-      // - +onHookCall should call hookPublic.call() (the previous call() function) => chaining
-      // - The call() chain is synchronous (despite call() itself being async) if +onHookCall calls hookPublic.call() synchronously. (But the promises are awaited sequentially — it's uncommon to execute in parallel while awaiting sequentially — but we were lazy and didn't implement parallel awaiting.)
-      //   ACTUALLY: I'm wrong, the promises aren't awaited sequentially — only the last promise is awaited for.
-      const promise = onHookCall(hookPublic, context)
+    // (It would be simpler to define a single hookFnCaller() wrapper instead of chaining call() functions, but it would break the async hooks of the vike-react-sentry extension.)
+    call = () => {
+      // +onHookCall should call hookPublic.call() (the previous call() function) => chaining
+      onHookCall(hookPublic, context)
       if (sync) assertUsage(originalCalled, 'onHookCall() must run hook.call() synchronously')
-      await promise
-      /* We skip this assertUsage() to save client-side KBs
-      if (!sync) assertUsage(originalCalled, 'onHookCall() must run hook.call()')
-      */
       return originalReturn
     }
   }
