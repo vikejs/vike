@@ -23,7 +23,7 @@ import type { Hook, HookLoc } from './getHook.js'
 import type { PageContextConfig } from '../getPageFiles.js'
 import { getHookFromPageConfigGlobalCumulative, getHookFromPageContextNew } from './getHook.js'
 import type { HookName, HookNameGlobal } from '../../types/Config.js'
-import { assert, isCallable } from '../utils.js'
+import { assert } from '../utils.js'
 import type { PageContextForPublicUsageServer } from '../../server/runtime/renderPageServer/preparePageContextForPublicUsageServer.js'
 import type { PageContextForPublicUsageClientShared } from '../../client/shared/preparePageContextForPublicUsageClientShared.js'
 import {
@@ -253,11 +253,7 @@ function execHookWithOnHookCall<HookReturn>(
     originalReturn = hookFnCaller()
     return originalReturn
   }
-  for (const wrapper of configValue.value as unknown[]) {
-    assertUsage(
-      isCallable(wrapper),
-      `The onHookCall() hook should export a function but it exports ${typeof wrapper} instead`,
-    )
+  for (const wrapper of configValue.value as Function[]) {
     const hookPublic = { name: hookName, filePath: hookFilePath, sync, call }
     call = async () => {
       await wrapper(hookPublic, context)
