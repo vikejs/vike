@@ -1805,8 +1805,8 @@ importers:
   test/vike-cloudflare:
     dependencies:
       '@universal-middleware/hono':
-        specifier: ^0.4.17
-        version: 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.9.8)
+        specifier: ^0.4.18
+        version: 0.4.18(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.9.8)
       hono:
         specifier: ^4.10.4
         version: 4.10.4
@@ -4389,6 +4389,9 @@ packages:
 
   '@universal-middleware/hono@0.4.17':
     resolution: {integrity: sha512-NKO42xEv4oQ/fvMg4NN3je+bhBymIHi5mFWjyxAtb5ewbtkCZs9eb+aBNO+Ai1FEy2jQpkBEJMvclW5eohFw9g==}
+
+  '@universal-middleware/hono@0.4.18':
+    resolution: {integrity: sha512-RpnX8hKh2zx7hwVYzI32DjvH7KBYpt7MLIHWYw9QBSEzpD1ErqL+SpkvvlJaINjFs+sYJKH5IOoL53uHCL5alw==}
 
   '@universal-middleware/sirv@0.1.23':
     resolution: {integrity: sha512-Lh3Xc/NvwnfQ3/zabID5/OjKdwQcNyELEUxGaSk6R6j4KReGtXQYtP4ej8Jhq77df4wF39CQaEv5S+9h8ZPAyQ==}
@@ -10324,6 +10327,20 @@ snapshots:
       - srvx
 
   '@universal-middleware/hono@0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.9.8)':
+    dependencies:
+      '@universal-middleware/core': 0.4.14(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.9.8)
+    transitivePeerDependencies:
+      - '@cloudflare/workers-types'
+      - '@hattip/core'
+      - '@types/express'
+      - '@webroute/route'
+      - elysia
+      - fastify
+      - h3
+      - hono
+      - srvx
+
+  '@universal-middleware/hono@0.4.18(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.9.8)':
     dependencies:
       '@universal-middleware/core': 0.4.14(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.9.8)
     transitivePeerDependencies:
