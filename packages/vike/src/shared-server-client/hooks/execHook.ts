@@ -256,11 +256,12 @@ function execHookWithOnHookCall<HookReturn>(
   for (const onHookCall of configValue.value as Function[]) {
     const hookPublic = { name: hookName, filePath: hookFilePath, sync, call }
     call = async () => {
-      await onHookCall(hookPublic, context)
-      // For sync hooks this asserts the hook.call() has been called synchronously
-      // For async hooks, this asserts the hook.call() has been called before the onHookCall's Promise resolves
-      // (prevents setTimeout(() => hook.call()) for example)
-      assertUsage(originalCalled, 'onHookCall() must run hook.call()')
+      const promise = onHookCall(hookPublic, context)
+      if (!sync) await promise
+      // - `sync: true` => asserts hook.call() has been called synchronously
+      // - `sync: false` => asserts hook.call() has been called before the onHookCall's Promise resolves (e.g. preventing `setTimeout(() => hook.call())`)
+      assertUsage(originalCalled, `onHookCall() must run hook.call()${!sync ? '' : ' synchronously'}`)
+      await promise
       return originalReturn
     }
   }
