@@ -438,7 +438,7 @@ type ConfigBuiltIn = {
    */
   onCreateGlobalContext?: ((globalContext: GlobalContext) => void) | ImportStringList | null
 
-  /** Called when any hook is called. Useful for instrumentation (Sentry, OpenTelemetry, etc.).
+  /** Called whenever a hook is called.
    *
    *  https://vike.dev/onHookCall
    */
