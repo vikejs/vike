@@ -1,7 +1,8 @@
 import type { Config } from 'vike/types'
 
 export const onHookCall: Config['onHookCall'] = async (hook, context) => {
-  console.log('Before hook:', hook.name, hook.filePath)
+  // spellcheck-ignore
+  console.log('Befor hook:', hook.name, hook.filePath)
   try {
     await hook.call()
   } catch (err) {
