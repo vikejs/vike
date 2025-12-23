@@ -253,12 +253,12 @@ function execHookWithOnHookCall<HookReturn>(
     originalReturn = hookFnCaller()
     return originalReturn
   }
-  for (const wrapper of configValue.value as Function[]) {
+  for (const onHookCall of configValue.value as Function[]) {
     const hookPublic = { name: hookName, filePath: hookFilePath, sync, call }
     call = async () => {
-      await wrapper(hookPublic, context)
+      await onHookCall(hookPublic, context)
       // For sync hooks this asserts the hook.call() has been called synchronously
-      // For async hooks, this asserts the hook.call() has been called before the wrapper's Promise resolves
+      // For async hooks, this asserts the hook.call() has been called before the onHookCall's Promise resolves
       // (prevents setTimeout(() => hook.call()) for example)
       assertUsage(originalCalled, 'onHookCall() must run hook.call()')
       return originalReturn
