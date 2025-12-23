@@ -1,7 +1,14 @@
 import type { Config } from 'vike/types'
 
 export const onHookCall: Config['onHookCall'] = async (hook, context) => {
-  console.log('before async hook', hook.name, hook.filePath)
+  console.log(
+    'Befor hook:',
+    hook.name,
+    hook.filePath,
+    `sync:${hook.sync}`,
+    `!!pageContext:${!!context.pageContext}`,
+    `!!globalContext:${!!context.globalContext}`,
+  )
   await hook.call()
-  console.log('after async hook', hook.name)
+  console.log('After hook:', hook.name, hook.filePath)
 }
