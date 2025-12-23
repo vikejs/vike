@@ -239,7 +239,7 @@ function execHookWithOnHookCall<HookReturn>(
   sync = false,
 ): HookReturn | Promise<HookReturn> {
   const { hookName, hookFilePath } = hook
-  assert(hookName !== 'onHookCall')
+  assert(hookName !== 'onHookCall') // ensure no infinite loop
   const configValue = globalContext._pageConfigGlobal.configValues['onHookCall']
   if (!configValue?.value) return hookFnCaller()
 

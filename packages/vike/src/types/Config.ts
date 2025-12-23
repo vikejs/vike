@@ -444,14 +444,13 @@ type ConfigBuiltIn = {
    */
   onHookCall?:
     | ((
-        hook: { name: string; filePath: string; sync: boolean; call: () => Promise<void> },
+        hook: { name: string; filePath: string; sync: boolean; call: () => void | Promise<void> },
         context: {
           pageContext?: PageContextClient | PageContextServer
           globalContext?: GlobalContext
         },
       ) => void | Promise<void>)
     | ImportStringList
-    | null
 
   /** Hook for fetching data.
    *
