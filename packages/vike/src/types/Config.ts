@@ -444,7 +444,7 @@ type ConfigBuiltIn = {
    */
   onHookCall?:
     | ((
-        hook: { name: string; filePath: string; sync: boolean; call: () => Promise<unknown> },
+        hook: { name: string; filePath: string; sync: boolean; call: () => Promise<void> },
         context: {
           pageContext?: PageContextClient | PageContextServer
           globalContext?: GlobalContext
