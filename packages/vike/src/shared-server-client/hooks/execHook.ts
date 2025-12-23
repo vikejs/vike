@@ -264,7 +264,7 @@ function execHookWithOnHookCall<HookReturn>(
       // For sync hooks this asserts the hook.call() has been called synchronously
       // For async hooks, this asserts the hook.call() has been called before the wrapper's Promise resolves
       // (prevents setTimeout(() => hook.call()) for example)
-      assertUsage(originalCalled, "The onHookCall() hook didn't call hook.call()")
+      assertUsage(originalCalled, 'onHookCall() must run hook.call()')
       return originalReturn
     }
   }
