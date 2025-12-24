@@ -20,7 +20,7 @@ import { isErrorFetchingStaticAssets, loadPageConfigsLazyClientSide } from '../s
 import { isLinkSkipped } from './isLinkSkipped.js'
 import { disableClientRouting } from './renderPageClient.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
-import { createPageContextClientSide, type PageContextCreated } from './createPageContextClientSide.js'
+import { createPageContextClientSide, type PageContextCreatedClient } from './createPageContextClientSide.js'
 import { route, type PageContextAfterRoute } from '../../shared-server-client/route/index.js'
 import { noRouteMatch } from '../../shared-server-client/route/noRouteMatch.js'
 import { type PageContextFromHooksServer, getPageContextFromHooksServer } from './getPageContextFromHooks.js'
@@ -54,7 +54,7 @@ type PrefetchedPageContext = {
   resultMaxAge: number
   result: ResultPageContextFromServer
 }
-type PageContextForPrefetch = PageContextCreated & {
+type PageContextForPrefetch = PageContextCreatedClient & {
   pageId: string
 }
 
