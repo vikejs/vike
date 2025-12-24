@@ -11,7 +11,7 @@ export { logVite }
 export { logConfigInfo }
 export { logErrorServerDev }
 export type { LogType }
-export type { AddTagsDev }
+export type { AddAssertTagsDev }
 
 import { isAbortError } from '../../../shared-server-client/route/abort.js'
 import { getViteConfig } from '../../../server/runtime/globalContext.js'
@@ -35,7 +35,7 @@ import {
   stripAnsi,
   colorError,
   colorWarning,
-  setAssertAddTagsDev,
+  setAssertAddAssertTagsDev,
 } from '../utils.js'
 import { isErrorWithCodeSnippet, getPrettyErrorWithCodeSnippet } from './loggerDev/errorWithCodeSnippet.js'
 import {
@@ -55,7 +55,7 @@ setAssertOnBeforeErr((err) => {
   // We must directly apply vite.ssrFixStacktrace() to `assertWarning(..., { showStackTrace: true })` because warnings aren't caught by the try-catch of renderPageServer()
   applyViteSourceMap(err)
 })
-setAssertAddTagsDev(addTagsDev)
+setAssertAddAssertTagsDev(addAssertTagsDev)
 // Note shown to user when Vike completely modifies the error message (which is somewhat risky)
 const errorDebugNote = pc.dim(formatHintLog("Error isn't helpful? See https://vike.dev/debug#verbose-errors"))
 
@@ -233,8 +233,8 @@ function getTagSourceOuter(tagSource: TagSource | null) {
   const tagSourceOuter = (!tagSource ? '' : pc.dim(`[${tagSource}]`)) as '[request(n)]'
   return tagSourceOuter
 }
-type AddTagsDev = typeof addTagsDev
-function addTagsDev<TagVike extends string, TagType extends string>(tagVike: TagVike, tagType: TagType) {
+type AddAssertTagsDev = typeof addAssertTagsDev
+function addAssertTagsDev<TagVike extends string, TagType extends string>(tagVike: TagVike, tagType: TagType) {
   const timestamp = getTagTimestamp()
   const tagSource = getTagSource()
   const tagSourceOuter = getTagSourceOuter(tagSource)
