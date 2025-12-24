@@ -6,7 +6,7 @@ export { getProjectError }
 export { isVikeBug }
 export { setAssertOnBeforeLog }
 export { setAssertOnBeforeErr }
-export { setAlwaysShowStackTrace }
+export { setAssertAlwaysShowStackTrace }
 export { setAssertAddTagsDev }
 
 import { assertSingleInstance_onAssertModuleLoad } from './assertSingleInstance.js'
@@ -174,7 +174,7 @@ function isVikeBug(err: unknown): boolean {
 }
 
 // Called upon `DEBUG=vike:error`
-function setAlwaysShowStackTrace() {
+function setAssertAlwaysShowStackTrace() {
   globalObject.alwaysShowStackTrace = true
 }
 
