@@ -30,7 +30,7 @@ async function execHookOnBeforeRoute(
   | { _routingProvidedByOnBeforeRouteHook: false }
 > {
   const pageContextFromOnBeforeRouteHook = {}
-  if (!pageContext._globalContext._onBeforeRouteHook || (true as boolean)) return null
+  if (!pageContext._globalContext._onBeforeRouteHook) return null
   const pageContextFromHook = await getPageContextFromHook(pageContext._globalContext._onBeforeRouteHook, pageContext)
   if (pageContextFromHook) {
     objectAssign(pageContextFromOnBeforeRouteHook, pageContextFromHook)
