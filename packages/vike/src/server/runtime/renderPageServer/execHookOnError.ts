@@ -1,9 +1,9 @@
 export { execHookOnError }
 
 import { isObject, getGlobalObject } from '../../utils.js'
+import { execHookVanillaSync } from '../../../shared-server-client/hooks/execHook.js'
 import { getGlobalContextServerInternalOptional } from '../globalContext.js'
 import { getHookFromPageConfigGlobalCumulative } from '../../../shared-server-client/hooks/getHook.js'
-import { execHookVanillaSync } from '../../../shared-server-client/hooks/execHook.js'
 import type { PageContext_logRuntime } from '../loggerRuntime.js'
 
 const globalObject = getGlobalObject('renderPageServer/execHookOnError.ts', {
