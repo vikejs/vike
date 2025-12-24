@@ -1,5 +1,5 @@
 export { createHttpResponsePage }
-export { createHttpResponsePageContextJson }
+export { createHttpResponsePageJson }
 export { createHttpResponseErrorFallback }
 export { createHttpResponseErrorFallback_noGlobalContext }
 export { createHttpResponseErrorFallbackJson }
@@ -144,7 +144,7 @@ function createHttpResponseErrorFallbackJson() {
   return httpResponse
 }
 
-async function createHttpResponsePageContextJson(pageContextSerialized: string) {
+async function createHttpResponsePageJson(pageContextSerialized: string) {
   const httpResponse = createHttpResponse(200, contentTypeJson, [], pageContextSerialized, [], null)
   return httpResponse
 }

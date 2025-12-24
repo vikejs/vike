@@ -8,7 +8,7 @@ import { getHtmlString } from './html/renderHtml.js'
 import { assert, assertUsage, updateType, hasProp, objectAssign, isSameErrorMessage } from '../../utils.js'
 import { getPageContextClientSerialized } from './html/serializeContext.js'
 import { type PageContextUrlInternal } from '../../../shared-server-client/getPageContextUrlComputed.js'
-import { createHttpResponsePage, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponse.js'
+import { createHttpResponsePage, createHttpResponsePageJson, HttpResponse } from './createHttpResponse.js'
 import {
   loadPageConfigsLazyServerSide,
   type PageContext_loadPageConfigsLazyServerSide,
@@ -75,7 +75,7 @@ async function renderPageServerAfterRoute<
       objectAssign(pageContext, { [isServerSideError]: true })
     }
     const pageContextSerialized: string = getPageContextClientSerialized(pageContext, false)
-    const httpResponse = await createHttpResponsePageContextJson(pageContextSerialized)
+    const httpResponse = await createHttpResponsePageJson(pageContextSerialized)
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
