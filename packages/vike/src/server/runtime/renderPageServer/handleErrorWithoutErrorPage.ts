@@ -8,7 +8,7 @@ import type { GetPageAssets } from './getPageAssets.js'
 import type { PageContextCreated } from './createPageContextServerSide.js'
 
 // When the user hasn't defined _error.page.js
-async function handleErrorWithoutErrorPage<
+function handleErrorWithoutErrorPage<
   PageContext extends PageContextCreated & {
     errorWhileRendering: null | Error
     is404: null | boolean

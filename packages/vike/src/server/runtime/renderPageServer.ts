@@ -234,7 +234,7 @@ async function renderPageServerEntryRecursive(
     )
     if (!errorPageId) {
       assert(hasProp(pageContextNominalPageBegin, 'pageId', 'null')) // Help TS
-      return await handleErrorWithoutErrorPage(pageContextNominalPageBegin)
+      return handleErrorWithoutErrorPage(pageContextNominalPageBegin)
     }
     objectAssign(pageContextNominalPageBegin, { pageId: errorPageId })
   }
@@ -301,7 +301,7 @@ async function renderPageServerEntryRecursive_onError(
     const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
     if (!errorPageId) {
       objectAssign(pageContextErrorPageInit, { pageId: null })
-      return await handleErrorWithoutErrorPage(pageContextErrorPageInit)
+      return handleErrorWithoutErrorPage(pageContextErrorPageInit)
     }
     objectAssign(pageContextErrorPageInit, { pageId: errorPageId })
   }
