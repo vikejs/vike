@@ -1,6 +1,7 @@
 export { createPageContextServerSide }
 export { createPageContextServerSideWithoutGlobalContext }
 export type { PageContextCreated }
+export type { PageContextCreatedServerMinimum }
 
 import { assert, assertUsage, assertWarning, updateType, normalizeHeaders, objectAssign } from '../../utils.js'
 import { getPageContextUrlComputed } from '../../../shared-server-client/getPageContextUrlComputed.js'
@@ -11,6 +12,7 @@ import {
   createPageContextShared,
 } from '../../../shared-server-client/createPageContextShared.js'
 
+type PageContextCreatedServerMinimum = ReturnType<typeof createPageContextServerSideWithoutGlobalContext>
 type PageContextCreated = Awaited<ReturnType<typeof createPageContextServerSide>>
 function createPageContextServerSide(
   pageContextInit: PageContextInit,
