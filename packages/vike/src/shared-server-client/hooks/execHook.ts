@@ -249,28 +249,26 @@ function execHookWithOnHookCall<HookReturn>(
   let originalCalled = false
   let originalReturn: HookReturn
   let originalError: unknown
-  let call: () => HookReturn | Promise<HookReturn> = () => {
+  let call: () => HookReturn | Promise<HookReturn> = async () => {
     originalCalled = true
     try {
-      originalReturn = hookFnCaller()
+      originalReturn = sync ? hookFnCaller() : await hookFnCaller()
+      return originalReturn
     } catch (err) {
       originalError = err
+      throw originalError
     }
-    return originalReturn
   }
   for (const onHookCall of configValue.value as Function[]) {
     const hookPublic = { name: hookName, filePath: hookFilePath, sync, call }
-    call = () => {
-      onHookCall(hookPublic, context)
+    call = async () => {
+      sync ? onHookCall(hookPublic, context) : await onHookCall(hookPublic, context)
       assertUsage(originalCalled, 'onHookCall() must run hook.call()')
+      if (originalError) throw originalError
       return originalReturn
     }
   }
-  // Start the call() chain
-  call()
-  assert(originalCalled) // see assertUsage() above
-  if (originalError) throw originalError
-  return originalReturn!
+  return call()
 }
 
 function isNotDisabled(timeout: false | number): timeout is number {
