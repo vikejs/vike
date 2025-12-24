@@ -255,10 +255,11 @@ function execHookWithOnHookCall<HookReturn>(
   }
   for (const onHookCall of configValue.value as Function[]) {
     const hookPublic = { name: hookName, filePath: hookFilePath, sync, call }
-    call = () => {
+    call = async () => {
       // - +onHookCall must run hookPublic.call() (the previous call() function) => chaining
       // - The call() chain is synchronous (despite call() being async) as long as +onHookCall calls hookPublic.call() before any `await`. (Note that the promises are awaited sequentially — it's uncommon to execute in parallel while awaiting sequentially — but we were lazy and didn't implement parallel awaiting.)
-      onHookCall(hookPublic, context)
+      const promise = onHookCall(hookPublic, context)
+      if (!sync) await promise
       // - `sync: true`  => asserts hook.call() has been called before any `await`
       // - `sync: false` => asserts hook.call() has been called before the +onHookCall promise resolves (e.g. preventing `setTimeout(() => hook.call())`)
       assertUsage(originalCalled, 'onHookCall() must run hook.call()')
