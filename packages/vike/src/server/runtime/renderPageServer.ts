@@ -117,7 +117,7 @@ async function renderPageServer<PageContextUserAdded extends {}, PageContextInit
   logHttpResponse(urlOriginalPretty, pageContextFinish)
 
   checkType<PageContextAfterRender>(pageContextFinish)
-  assert(pageContextFinish.httpResponse)
+  assertPageContextFinish(pageContextFinish)
   return pageContextFinish as any
 }
 
@@ -684,4 +684,13 @@ function fork<PageContext extends PageContextBegin>(pageContext: PageContext) {
   if (pageContext._asyncStore) pageContext._asyncStore.pageContext = pageContextNew
   assert(pageContextNew._asyncStore === pageContext._asyncStore)
   return pageContextNew
+}
+
+function assertPageContextFinish(pageContextFinish: PageContextAfterRender) {
+  assert(pageContextFinish.httpResponse)
+  if (pageContextFinish.isClientSideNavigation) {
+    const headers = new Headers(pageContextFinish.httpResponse.headers)
+    const contentType = headers.get('Content-Type')
+    assert(contentType?.toLowerCase() === 'application/json')
+  }
 }

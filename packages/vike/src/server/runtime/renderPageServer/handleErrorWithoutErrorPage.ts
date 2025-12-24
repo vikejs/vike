@@ -1,9 +1,8 @@
 export { handleErrorWithoutErrorPage }
 
-import { stringify } from '@brillout/json-serializer/stringify'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import { assert, assertWarning, objectAssign } from '../../utils.js'
-import { createHttpResponsePage, createHttpResponseErrorFallback } from './createHttpResponse.js'
+import { createHttpResponseErrorFallback, createHttpResponseErrorFallbackJson } from './createHttpResponse.js'
 import pc from '@brillout/picocolors'
 import type { GetPageAssets } from './getPageAssets.js'
 import type { PageContextCreated } from './createPageContextServerSide.js'
@@ -33,7 +32,7 @@ async function handleErrorWithoutErrorPage<
   } else {
     const __getPageAssets: GetPageAssets = async () => []
     objectAssign(pageContext, { __getPageAssets })
-    const httpResponse = await createHttpResponsePage(stringify({ serverSideError: true }), null, pageContext)
+    const httpResponse = createHttpResponseErrorFallbackJson()
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }

@@ -1,7 +1,9 @@
 export { createHttpResponsePage }
+// TODO: rename createHttpResponsePageContextJson createHttpResponsePageJson
 export { createHttpResponsePageContextJson }
 export { createHttpResponseErrorFallback }
 export { createHttpResponseErrorFallback_noGlobalContext }
+export { createHttpResponseErrorFallbackJson }
 export { createHttpResponseRedirect }
 export { createHttpResponse404 }
 export { createHttpResponseBaseIsMissing }
@@ -19,6 +21,7 @@ import { assertNoInfiniteHttpRedirect } from './createHttpResponse/assertNoInfin
 import type { PageContextBegin } from '../renderPageServer.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import { resolveHeadersResponseFinal } from './headersResponse.js'
+import { stringify } from '@brillout/json-serializer/stringify'
 
 type HttpResponse = {
   statusCode: 200 | 404 | 500 | RedirectStatusCode | AbortStatusCode
@@ -28,6 +31,11 @@ type HttpResponse = {
   /** **Deprecated**: use `headers` instead, see https://vike.dev/migration/0.4.134 */
   contentType: 'application/json' | 'text/html;charset=utf-8'
 } & HttpResponseBody
+
+const contentTypeJson = 'application/json'
+/* TODO
+const contentTypeHtml = 'text/html;charset=utf-8'
+*/
 
 // Trick to improve TypeScript DX
 type StatusCode = HttpResponse['statusCode']
@@ -134,9 +142,13 @@ function createHttpResponseError_(reason: string): HttpResponse {
   )
   return httpResponse
 }
+function createHttpResponseErrorFallbackJson() {
+  const httpResponse = createHttpResponse(500, contentTypeJson, [], stringify({ serverSideError: true }))
+  return httpResponse
+}
 
 async function createHttpResponsePageContextJson(pageContextSerialized: string) {
-  const httpResponse = createHttpResponse(200, 'application/json', [], pageContextSerialized, [], null)
+  const httpResponse = createHttpResponse(200, contentTypeJson, [], pageContextSerialized, [], null)
   return httpResponse
 }
 
