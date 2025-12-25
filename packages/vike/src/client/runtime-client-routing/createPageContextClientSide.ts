@@ -8,8 +8,8 @@ import { getGlobalContextClientInternal } from './getGlobalContextClientInternal
 import { assert, updateType, isBaseServer, objectAssign } from './utils.js'
 
 async function createPageContextClientSide(urlOriginal: string) {
-  const pageContextCreated = createPageContextObject()
-  objectAssign(pageContextCreated, {
+  const pageContext = createPageContextObject()
+  objectAssign(pageContext, {
     isClientSide: true as const,
     isPrerendering: false as const,
     urlOriginal,
@@ -18,20 +18,20 @@ async function createPageContextClientSide(urlOriginal: string) {
 
   const baseServer = getBaseServer()
   assert(isBaseServer(baseServer))
-  objectAssign(pageContextCreated, {
+  objectAssign(pageContext, {
     _baseServer: baseServer,
   })
 
-  const pageContextUrlComputed = getPageContextUrlComputed(pageContextCreated)
-  objectAssign(pageContextCreated, pageContextUrlComputed)
+  const pageContextUrlComputed = getPageContextUrlComputed(pageContext)
+  objectAssign(pageContext, pageContextUrlComputed)
 
   const globalContext = await getGlobalContextClientInternal()
-  objectAssign(pageContextCreated, {
+  objectAssign(pageContext, {
     _globalContext: globalContext,
     _pageFilesAll: globalContext._pageFilesAll, // TO-DO/next-major-release: remove
   })
-  const pageContextAugmented = createPageContextShared(pageContextCreated, globalContext._globalConfigPublic)
-  updateType(pageContextCreated, pageContextAugmented)
+  const pageContextAugmented = createPageContextShared(pageContext, globalContext._globalConfigPublic)
+  updateType(pageContext, pageContextAugmented)
 
-  return pageContextCreated
+  return pageContext
 }
