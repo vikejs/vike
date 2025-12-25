@@ -2,38 +2,19 @@ export { preparePageContextForPublicUsage }
 export { assertPropertyGetters }
 export type { PageContextPrepareMinimum }
 
-import { assert, assertWarning, checkType, compareString, isPropertyGetter } from './utils.js'
+import { assert, assertWarning, compareString, isPropertyGetter } from './utils.js'
 import { addIs404ToPageProps } from './addIs404ToPageProps.js'
 import {
   type GlobalContextPrepareMinimum,
   prepareGlobalContextForPublicUsage,
 } from './prepareGlobalContextForPublicUsage.js'
 import { getProxyForPublicUsage } from './getProxyForPublicUsage.js'
-import type { PageContextCreated } from './createPageContextShared.js'
-import { PageContextCreatedClient } from '../client/runtime-client-routing/createPageContextClientSide.js'
-import { PageContextCreatedServer } from '../server/runtime/renderPageServer/createPageContextServerSide.js'
-import { PageContextCreatedClient_ServerRouting } from '../client/runtime-server-routing/createPageContextClientSide.js'
-
-type T =
-  | PageContextCreatedClient
-  | PageContextCreatedServer
-  | PageContextCreated
-  | PageContextCreatedClient_ServerRouting
-
-checkType<T>(1 as any)
 
 type PageContextPrepareMinimum = {
   _isOriginalObject: true
   isPageContext: true
   _globalContext: GlobalContextPrepareMinimum
 }
-//type T2 = Omit<PageContextCreatedClient, '_globalContext' | '_pageFilesAll' >
-type T2 = Pick<PageContextCreatedClient, 'isClientSide'>
-export type PageContextPrepareMinimum2 = {
-  _isOriginalObject: true
-  isPageContext: true
-  _globalContext: GlobalContextPrepareMinimum
-} & T2
 
 function preparePageContextForPublicUsage<PageContext extends PageContextPrepareMinimum>(pageContext: PageContext) {
   assert(!(pageContext as Record<string, unknown>)._isProxyObject)
