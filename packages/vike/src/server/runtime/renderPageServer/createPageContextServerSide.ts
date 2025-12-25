@@ -31,9 +31,9 @@ function createPageContextServerSide(
   ),
 ) {
   assert(pageContextInit.urlOriginal)
-  const pageContextCreated = createPageContext(pageContextInit, args.isPrerendering, args.requestId)
+  const pageContext = createPageContext(pageContextInit, args.isPrerendering, args.requestId)
 
-  objectAssign(pageContextCreated, {
+  objectAssign(pageContext, {
     _globalContext: globalContext,
     _pageFilesAll: globalContext._pageFilesAll, // TO-DO/next-major-release: remove
     // We use pageContext._baseServer and pageContext._baseAssets instead of pageContext._globalContext.baseServer and pageContext._globalContext.baseAssets because the Base URLs can (eventually one day if needed) be made non-global
@@ -44,11 +44,11 @@ function createPageContextServerSide(
     isClientSideNavigation: args.isPrerendering ? false : args.isClientSideNavigation,
   })
 
-  objectAssign(pageContextCreated, globalContext._globalConfigPublic)
+  objectAssign(pageContext, globalContext._globalConfigPublic)
 
   // pageContext.urlParsed
-  const pageContextUrlComputed = getPageContextUrlComputed(pageContextCreated)
-  objectAssign(pageContextCreated, pageContextUrlComputed)
+  const pageContextUrlComputed = getPageContextUrlComputed(pageContext)
+  objectAssign(pageContext, pageContextUrlComputed)
 
   // pageContext.headers
   {
@@ -70,13 +70,13 @@ function createPageContextServerSide(
     } else {
       headers = null
     }
-    objectAssign(pageContextCreated, { headers })
+    objectAssign(pageContext, { headers })
   }
 
-  const pageContextAugmented = createPageContextShared(pageContextCreated, globalContext._globalConfigPublic)
-  updateType(pageContextCreated, pageContextAugmented)
+  const pageContextAugmented = createPageContextShared(pageContext, globalContext._globalConfigPublic)
+  updateType(pageContext, pageContextAugmented)
 
-  return pageContextCreated
+  return pageContext
 }
 /** Use this as last resort — prefer passing richer `pageContext` objects to the runtime logger */
 function createPageContextServerSideWithoutGlobalContext(pageContextInit: PageContextInit, requestId: number) {
