@@ -12,7 +12,7 @@ import {
   createPageContextShared,
 } from '../../../shared-server-client/createPageContextShared.js'
 
-type PageContextCreatedServerMinimum = ReturnType<typeof createPageContextServerSideWithoutGlobalContext>
+type PageContextCreatedServerMinimum = ReturnType<typeof createPageContextBase>
 type PageContextCreatedServer = Awaited<ReturnType<typeof createPageContextServerSide>>
 function createPageContextServerSide(
   pageContextInit: PageContextInit,
