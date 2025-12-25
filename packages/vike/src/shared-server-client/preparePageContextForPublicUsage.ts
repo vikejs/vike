@@ -11,6 +11,7 @@ import {
 import { getProxyForPublicUsage } from './getProxyForPublicUsage.js'
 import type { PageContextCreatedBase } from './createPageContextShared.js'
 
+// TODO/refactor: prefer using PageContextCreatedBase over PageContextPrepareMinimum ?
 type PageContextPrepareMinimum = {
   _globalContext: GlobalContextPrepareMinimum
 } & PageContextCreatedBase

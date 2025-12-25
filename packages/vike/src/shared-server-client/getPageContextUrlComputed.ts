@@ -31,7 +31,8 @@ type PageContextUrl = {
 } & PageContextUrlComputed
 type PageContextUrlInternal = PageContextUrl & {
   _urlRewrite?: string
-} & PageContextCreatedBase & {
+} & // TODO/refactor: use PageContextExecHookMinium instead of following?
+  PageContextCreatedBase & {
     _globalContext: GlobalContextPrepareMinimum
   }
 type PageContextUrlClient = PageContextUrl
