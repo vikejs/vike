@@ -16,10 +16,10 @@ import {
   truncateString,
 } from '../../../utils.js'
 import pc from '@brillout/picocolors'
-import type { PageContextCreated } from '../createPageContextServerSide.js'
+import type { PageContextCreatedServer } from '../createPageContextServerSide.js'
 
 function log404(
-  pageContext: PageContextCreated & {
+  pageContext: PageContextCreatedServer & {
     urlPathname: string
     errorWhileRendering: null | Error
     _globalContext: GlobalContextServerInternal

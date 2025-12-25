@@ -4,17 +4,15 @@ export { hasAlreadyLogged }
 import pc from '@brillout/picocolors'
 import { assertIsNotBrowser, assertWarning, getGlobalObject, hasRed, isDebugError, isObject } from '../utils.js'
 import { execHookOnError } from './renderPageServer/execHookOnError.js'
-import { assertPageContext_logRuntime, type PageContext_logRuntime } from './loggerRuntime.js'
 import { addErrorHint } from './renderPageServer/addErrorHint.js'
 import { isAbortError } from '../../shared-server-client/route/abort.js'
+import type { PageContextCreatedServerMinimum } from './renderPageServer/createPageContextServerSide.js'
 assertIsNotBrowser()
 const globalObject = getGlobalObject('server/runtime/logErrorServer.ts', {
   wasAlreadyLogged: new WeakSet<object>(),
 })
 
-function logErrorServer(err: unknown, pageContext: PageContext_logRuntime) {
-  assertPageContext_logRuntime(pageContext)
-
+function logErrorServer(err: unknown, pageContext: PageContextCreatedServerMinimum | null) {
   if (isAbortError(err) && !isDebugError()) return
 
   // I don't think there is a use case for printing the same error object twice? Reloading page throwing error => the same error is printed a second time but it's a different error object.

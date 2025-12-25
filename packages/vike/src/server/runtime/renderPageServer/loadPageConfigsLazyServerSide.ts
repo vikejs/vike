@@ -25,11 +25,11 @@ import { loadAndParseVirtualFilePageEntry } from '../../../shared-server-client/
 import { execHookServer } from './execHookServer.js'
 import type { PassToClient } from './html/serializeContext.js'
 import type { PageContextAfterRoute } from '../../../shared-server-client/route/index.js'
-import type { PageContextCreated } from './createPageContextServerSide.js'
+import type { PageContextCreatedServer } from './createPageContextServerSide.js'
 import { resolveHeadersResponseEarly } from './headersResponse.js'
 import { resolvePageContextCspNone } from './csp.js'
 
-type PageContext_loadPageConfigsLazyServerSide = PageContextCreated &
+type PageContext_loadPageConfigsLazyServerSide = PageContextCreatedServer &
   PageContextAfterRoute & { is404: boolean | null; pageId: string }
 type PageConfigsLazy = PromiseType<ReturnType<typeof loadPageConfigsLazyServerSide>>
 

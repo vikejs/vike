@@ -1,22 +1,10 @@
 export { createPageContextClientSide }
+export type PageContextCreatedClient_ServerRouting = Awaited<ReturnType<typeof createPageContextClientSide>>
 
-import { assertUsage, updateType, objectAssign } from './utils.js'
-import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtml.js'
-import {
-  loadPageConfigsLazyClientSide,
-  type PageContext_loadPageConfigsLazyClientSide,
-} from '../shared/loadPageConfigsLazyClientSide.js'
-import { getCurrentUrl } from '../shared/getCurrentUrl.js'
+import { updateType, objectAssign } from './utils.js'
 
 import { createPageContextObject, createPageContextShared } from '../../shared-server-client/createPageContextShared.js'
 import { getGlobalContextClientInternal } from './getGlobalContextClientInternal.js'
-import {
-  preparePageContextForPublicUsageClient,
-  type PageContextForPublicUsageClient,
-} from './preparePageContextForPublicUsageClient.js'
-import { execHook } from '../../shared-server-client/hooks/execHook.js'
-
-const urlFirst = getCurrentUrl({ withoutHash: true })
 
 async function createPageContextClientSide() {
   const globalContext = await getGlobalContextClientInternal()
@@ -32,42 +20,9 @@ async function createPageContextClientSide() {
     isHistoryNavigation: null,
     _hasPageContextFromServer: true as const,
   })
-  objectAssign(pageContextCreated, getPageContextSerializedInHtml())
 
   // Sets pageContext.config to global configs
   updateType(pageContextCreated, createPageContextShared(pageContextCreated, globalContext._globalConfigPublic))
 
-  // Sets pageContext.config to local configs (overrides the pageContext.config set above)
-  updateType(pageContextCreated, await loadPageConfigsLazyClientSideAndExecHook(pageContextCreated))
-
-  assertPristineUrl()
   return pageContextCreated
-}
-
-function assertPristineUrl() {
-  const urlCurrent = getCurrentUrl({ withoutHash: true })
-  assertUsage(
-    urlFirst === urlCurrent,
-    `The URL was manipulated before the hydration finished ('${urlFirst}' to '${urlCurrent}'). Ensure the hydration has finished before manipulating the URL. Consider using the onHydrationEnd() hook.`,
-  )
-}
-
-type PageContextExecuteHook = Omit<
-  PageContextForPublicUsageClient,
-  keyof Awaited<ReturnType<typeof loadPageConfigsLazyClientSide>>
->
-async function loadPageConfigsLazyClientSideAndExecHook<
-  PageContext extends PageContext_loadPageConfigsLazyClientSide & PageContextExecuteHook,
->(pageContext: PageContext) {
-  const pageContextAddendum = await loadPageConfigsLazyClientSide(
-    pageContext.pageId,
-    pageContext._pageFilesAll,
-    pageContext._globalContext._pageConfigs,
-    pageContext._globalContext._pageConfigGlobal,
-  )
-  objectAssign(pageContext, pageContextAddendum)
-
-  await execHook('onCreatePageContext', pageContext, preparePageContextForPublicUsageClient)
-
-  return pageContext
 }

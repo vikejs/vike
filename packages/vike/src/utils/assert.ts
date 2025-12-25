@@ -6,8 +6,8 @@ export { getProjectError }
 export { isVikeBug }
 export { setAssertOnBeforeLog }
 export { setAssertOnBeforeErr }
-export { setAlwaysShowStackTrace }
-export { setAssertAddTagsDev }
+export { setAssertAlwaysShowStackTrace }
+export { setAssertAddAssertTagsDev }
 
 import { assertSingleInstance_onAssertModuleLoad } from './assertSingleInstance.js'
 import { createErrorWithCleanStackTrace } from './createErrorWithCleanStackTrace.js'
@@ -15,13 +15,13 @@ import { getGlobalObject } from './getGlobalObject.js'
 import { PROJECT_VERSION } from './PROJECT_VERSION.js'
 import { colorVike, colorWarning, colorError } from './colorsClient.js'
 import pc from '@brillout/picocolors'
-import type { AddTagsDev } from '../node/vite/shared/loggerDev.js'
+import type { AddAssertTagsDev } from '../node/vite/shared/loggerDev.js'
 const globalObject = getGlobalObject<{
   alreadyLogged: Set<string>
   onBeforeLog?: () => void
   onBeforeErr?: (err: Error) => void
   alwaysShowStackTrace?: true
-  addTagsDev?: AddTagsDev
+  addAssertTagsDev?: AddAssertTagsDev
 }>('utils/assert.ts', {
   alreadyLogged: new Set(),
 })
@@ -131,16 +131,16 @@ function setAssertOnBeforeLog(onBeforeAssertLog: () => void) {
 function setAssertOnBeforeErr(onBeforeAssertErr: (err: unknown) => void) {
   globalObject.onBeforeErr = onBeforeAssertErr
 }
-function setAssertAddTagsDev(addTagsDev: AddTagsDev) {
-  globalObject.addTagsDev = addTagsDev
+function setAssertAddAssertTagsDev(addAssertTagsDev: AddAssertTagsDev) {
+  globalObject.addAssertTagsDev = addAssertTagsDev
 }
 
 function addTags(msg: string, tagType: TagType | null, showProjectVersion = false) {
   const tagVike = getTagVike(showProjectVersion) as '[vike]'
   const tagTypeOuter = getTagType(tagType)
   const whitespace = getTagWhitespace(msg) as ' '
-  if (globalObject.addTagsDev) {
-    const tagsDev = globalObject.addTagsDev(tagVike, tagTypeOuter)
+  if (globalObject.addAssertTagsDev) {
+    const tagsDev = globalObject.addAssertTagsDev(tagVike, tagTypeOuter)
     return `${tagsDev}${whitespace}${msg}`
   } else {
     const tags = `${tagVike}${tagTypeOuter}` as const
@@ -174,12 +174,12 @@ function isVikeBug(err: unknown): boolean {
 }
 
 // Called upon `DEBUG=vike:error`
-function setAlwaysShowStackTrace() {
+function setAssertAlwaysShowStackTrace() {
   globalObject.alwaysShowStackTrace = true
 }
 
 function createError(errMsg: string) {
   const err = createErrorWithCleanStackTrace(errMsg, 3)
-  if (globalObject.addTagsDev) err.stack = err.stack?.replace(/^Error:\s*/, '')
+  if (globalObject.addAssertTagsDev) err.stack = err.stack?.replace(/^Error:\s*/, '')
   return err
 }

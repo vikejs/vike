@@ -5,11 +5,11 @@ import { assert, assertWarning, objectAssign } from '../../utils.js'
 import { createHttpResponseErrorFallback, createHttpResponseErrorFallbackJson } from './createHttpResponse.js'
 import pc from '@brillout/picocolors'
 import type { GetPageAssets } from './getPageAssets.js'
-import type { PageContextCreated } from './createPageContextServerSide.js'
+import type { PageContextCreatedServer } from './createPageContextServerSide.js'
 
 // When the user hasn't defined _error.page.js
-async function handleErrorWithoutErrorPage<
-  PageContext extends PageContextCreated & {
+function handleErrorWithoutErrorPage<
+  PageContext extends PageContextCreatedServer & {
     errorWhileRendering: null | Error
     is404: null | boolean
     pageId: null

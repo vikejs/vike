@@ -8,7 +8,7 @@ import { getHtmlString } from './html/renderHtml.js'
 import { assert, assertUsage, updateType, hasProp, objectAssign, isSameErrorMessage } from '../../utils.js'
 import { getPageContextClientSerialized } from './html/serializeContext.js'
 import { type PageContextUrlInternal } from '../../../shared-server-client/getPageContextUrlComputed.js'
-import { createHttpResponsePage, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponse.js'
+import { createHttpResponsePage, createHttpResponsePageJson, HttpResponse } from './createHttpResponse.js'
 import {
   loadPageConfigsLazyServerSide,
   type PageContext_loadPageConfigsLazyServerSide,
@@ -21,7 +21,7 @@ import { preparePageContextForPublicUsageServer } from './preparePageContextForP
 import { execHookGuard } from '../../../shared-server-client/route/execHookGuard.js'
 import pc from '@brillout/picocolors'
 import { isServerSideError } from '../../../shared-server-client/misc/isServerSideError.js'
-import type { PageContextCreated } from './createPageContextServerSide.js'
+import type { PageContextCreatedServer } from './createPageContextServerSide.js'
 import type { PageContextBegin } from '../renderPageServer.js'
 import { getAsyncLocalStorage, type AsyncStore } from '../asyncHook.js'
 
@@ -35,7 +35,7 @@ async function renderPageServerAfterRoute<
     routeParams: Record<string, string>
     errorWhileRendering: null | Error
     _requestId: number
-  } & PageContextCreated &
+  } & PageContextCreatedServer &
     PageContextBegin &
     PageContextUrlInternal &
     PageContext_loadPageConfigsLazyServerSide,
@@ -75,7 +75,7 @@ async function renderPageServerAfterRoute<
       objectAssign(pageContext, { [isServerSideError]: true })
     }
     const pageContextSerialized: string = getPageContextClientSerialized(pageContext, false)
-    const httpResponse = await createHttpResponsePageContextJson(pageContextSerialized)
+    const httpResponse = await createHttpResponsePageJson(pageContextSerialized)
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
@@ -103,7 +103,7 @@ async function prerenderPage(pageContext: Parameters<typeof prerenderPageEntry>[
 }
 
 async function prerenderPageEntry(
-  pageContext: PageContextCreated &
+  pageContext: PageContextCreatedServer &
     PageConfigsLazy & {
       routeParams: Record<string, string>
       pageId: string

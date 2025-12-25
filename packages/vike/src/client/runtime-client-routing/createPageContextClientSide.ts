@@ -1,5 +1,5 @@
 export { createPageContextClientSide }
-export type PageContextCreated = Awaited<ReturnType<typeof createPageContextClientSide>>
+export type PageContextCreatedClient = Awaited<ReturnType<typeof createPageContextClientSide>>
 
 import { createPageContextObject, createPageContextShared } from '../../shared-server-client/createPageContextShared.js'
 import { getPageContextUrlComputed } from '../../shared-server-client/getPageContextUrlComputed.js'

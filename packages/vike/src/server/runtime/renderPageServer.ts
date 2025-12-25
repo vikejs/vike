@@ -6,6 +6,7 @@ import { renderPageServerAfterRoute } from './renderPageServer/renderPageServerA
 import {
   createPageContextServerSide,
   createPageContextServerSideWithoutGlobalContext,
+  type PageContextCreatedServerMinimum,
 } from './renderPageServer/createPageContextServerSide.js'
 import { route } from '../../shared-server-client/route/index.js'
 import {
@@ -49,12 +50,12 @@ import {
   type HttpResponse,
   createHttpResponse404,
   createHttpResponseRedirect,
-  createHttpResponsePageContextJson,
+  createHttpResponsePageJson,
   createHttpResponseErrorFallback,
   createHttpResponseErrorFallback_noGlobalContext,
   createHttpResponseBaseIsMissing,
 } from './renderPageServer/createHttpResponse.js'
-import { logRuntimeError, logRuntimeInfo, type PageContext_logRuntime } from './loggerRuntime.js'
+import { logRuntimeError, logRuntimeInfo } from './loggerRuntime.js'
 import { assertArguments } from './renderPageServer/assertArguments.js'
 import { log404 } from './renderPageServer/log404/index.js'
 import pc from '@brillout/picocolors'
@@ -79,7 +80,7 @@ const globalObject = getGlobalObject('runtime/renderPageServer.ts', {
   httpRequestsCount: 0,
 })
 
-type PageContextAfterRender = {
+type PageContextAfterRender = PageContextCreatedServerMinimum & {
   httpResponse: HttpResponse
   _requestId: number
 } & Partial<PageContextInternalServer>
@@ -145,8 +146,8 @@ async function renderPageServerEntryOnce(
     //   ```
     // - initGlobalContext_renderPage() depends on +onCreateGlobalContext hooks
     assert(!isAbortError(err))
-    const pageContext_logRuntime = getPageContext_logRuntimeEarly(pageContextInit, requestId)
-    logRuntimeError(err, pageContext_logRuntime)
+    const pageContext = createPageContextServerSideWithoutGlobalContext(pageContextInit, requestId)
+    logRuntimeError(err, pageContext)
     const pageContextHttpErrorFallback = getPageContextHttpErrorFallback_noGlobalContext(
       err,
       pageContextInit,
@@ -234,7 +235,7 @@ async function renderPageServerEntryRecursive(
     )
     if (!errorPageId) {
       assert(hasProp(pageContextNominalPageBegin, 'pageId', 'null')) // Help TS
-      return await handleErrorWithoutErrorPage(pageContextNominalPageBegin)
+      return handleErrorWithoutErrorPage(pageContextNominalPageBegin)
     }
     objectAssign(pageContextNominalPageBegin, { pageId: errorPageId })
   }
@@ -301,7 +302,7 @@ async function renderPageServerEntryRecursive_onError(
     const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
     if (!errorPageId) {
       objectAssign(pageContextErrorPageInit, { pageId: null })
-      return await handleErrorWithoutErrorPage(pageContextErrorPageInit)
+      return handleErrorWithoutErrorPage(pageContextErrorPageInit)
     }
     objectAssign(pageContextErrorPageInit, { pageId: errorPageId })
   }
@@ -348,8 +349,8 @@ async function renderPageServerEntryRecursive_onError(
 }
 
 function logHttpRequest(urlOriginal: string, pageContextInit: PageContextInit, requestId: number) {
-  const pageContext_logRuntime = getPageContext_logRuntimeEarly(pageContextInit, requestId)
-  logRuntimeInfo?.(getRequestInfoMessage(urlOriginal), pageContext_logRuntime, 'info')
+  const pageContext = createPageContextServerSideWithoutGlobalContext(pageContextInit, requestId)
+  logRuntimeInfo?.(getRequestInfoMessage(urlOriginal), pageContext, 'info')
 }
 /* Alternative icons:
 const arrowRight = pc.dim('»')
@@ -604,7 +605,7 @@ async function handleAbort(
     } else {
       pageContextSerialized = getPageContextClientSerializedAbort(pageContextAbort, false)
     }
-    const httpResponse = await createHttpResponsePageContextJson(pageContextSerialized)
+    const httpResponse = await createHttpResponsePageJson(pageContextSerialized)
     objectAssign(pageContext, { httpResponse })
     return { pageContextReturn: pageContext }
   }
@@ -664,19 +665,10 @@ function getPageContextSkipRequest(pageContextInit: PageContextInit, requestId: 
 }
 
 function getPageContextInvalidVikeConfig(err: unknown, pageContextInit: PageContextInit, requestId: number) {
-  const pageContext_logRuntime = getPageContext_logRuntimeEarly(pageContextInit, requestId)
-  logRuntimeInfo?.(pc.bold(pc.red('Error loading Vike config — see error above')), pageContext_logRuntime, 'error')
+  const pageContext = createPageContextServerSideWithoutGlobalContext(pageContextInit, requestId)
+  logRuntimeInfo?.(pc.bold(pc.red('Error loading Vike config — see error above')), pageContext, 'error')
   const pageContextHttpErrorFallback = getPageContextHttpErrorFallback_noGlobalContext(err, pageContextInit, requestId)
   return pageContextHttpErrorFallback
-}
-
-/** Use this as last resort — prefer passing richer `pageContext` objects to the runtime logger */
-function getPageContext_logRuntimeEarly(pageContextInit: PageContextInit, requestId: number): PageContext_logRuntime {
-  const pageContext_logRuntime = {
-    ...pageContextInit,
-    _requestId: requestId,
-  }
-  return pageContext_logRuntime
 }
 
 function fork<PageContext extends PageContextBegin>(pageContext: PageContext) {
