@@ -20,6 +20,7 @@ import type { PageContextConfig } from '../getPageFiles.js'
 import { getHookFromPageConfigGlobalCumulative, getHookFromPageContextNew } from './getHook.js'
 import type { HookName, HookNameGlobal } from '../../types/Config.js'
 import type { PageConfigGlobalRuntime } from '../../types/PageConfig.js'
+import type { PageContextCreated } from '../createPageContextShared.js'
 import type { PageContextForPublicUsageServer } from '../../server/runtime/renderPageServer/preparePageContextForPublicUsageServer.js'
 import type { PageContextForPublicUsageClientShared } from '../../client/shared/preparePageContextForPublicUsageClientShared.js'
 import {
@@ -27,21 +28,19 @@ import {
   preparePageContextForPublicUsage,
 } from '../preparePageContextForPublicUsage.js'
 import type { GlobalContextPrepareMinimum } from '../prepareGlobalContextForPublicUsage.js'
-import type { PageContextCreatedClient } from '../../client/runtime-client-routing/createPageContextClientSide.js'
-import type { PageContextCreatedServer } from '../../server/runtime/renderPageServer/createPageContextServerSide.js'
-import type { PageContextCreatedClient_ServerRouting } from '../../client/runtime-server-routing/createPageContextClientSide.js'
 const globalObject = getGlobalObject('utils/execHook.ts', {
   userHookErrors: new WeakMap<object, HookLoc>(),
   pageContext: null as null | PageContextPrepareMinimum,
 })
 
 type PageContextExecHook = PageContextCreated & PageContextConfig & PageContextForPublicUsage
-type PageContextCreated = PageContextCreatedServer | PageContextCreatedClient | PageContextCreatedClient_ServerRouting
 type PageContextForPublicUsage = PageContextForPublicUsageServer | PageContextForPublicUsageClientShared
 
 type HookWithResult = Hook & {
   hookReturn: unknown
 }
+
+// TODO/refactor: export new type PageContextExecHookMinium instead of PageContextPrepareMinimum ?
 
 async function execHook<PageContext extends PageContextExecHook>(
   hookName: HookName,

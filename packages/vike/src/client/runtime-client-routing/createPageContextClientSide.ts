@@ -1,5 +1,6 @@
 export { createPageContextClientSide }
 export type PageContextCreatedClient = Awaited<ReturnType<typeof createPageContextClientSide>>
+export type PageContextCreatedClientBase = Awaited<ReturnType<typeof createPageContextBase>>
 
 import { createPageContextObject, createPageContextShared } from '../../shared-server-client/createPageContextShared.js'
 import { getPageContextUrlComputed } from '../../shared-server-client/getPageContextUrlComputed.js'
@@ -8,26 +9,36 @@ import { getGlobalContextClientInternal } from './getGlobalContextClientInternal
 import { assert, updateType, isBaseServer, objectAssign } from './utils.js'
 
 async function createPageContextClientSide(urlOriginal: string) {
+  const pageContext = createPageContextBase(urlOriginal)
+
   const globalContext = await getGlobalContextClientInternal()
+  objectAssign(pageContext, {
+    _globalContext: globalContext,
+    _pageFilesAll: globalContext._pageFilesAll, // TO-DO/next-major-release: remove
+  })
+  const pageContextAugmented = createPageContextShared(pageContext, globalContext._globalConfigPublic)
+  updateType(pageContext, pageContextAugmented)
 
-  const baseServer = getBaseServer()
-  assert(isBaseServer(baseServer))
+  return pageContext
+}
 
-  const pageContextCreated = createPageContextObject()
-  objectAssign(pageContextCreated, {
+function createPageContextBase(urlOriginal: string) {
+  const pageContext = createPageContextObject()
+  objectAssign(pageContext, {
     isClientSide: true as const,
     isPrerendering: false as const,
     urlOriginal,
-    _globalContext: globalContext,
-    _pageFilesAll: globalContext._pageFilesAll, // TO-DO/next-major-release: remove
     _urlHandler: null,
+  })
+
+  const baseServer = getBaseServer()
+  assert(isBaseServer(baseServer))
+  objectAssign(pageContext, {
     _baseServer: baseServer,
   })
-  const pageContextUrlComputed = getPageContextUrlComputed(pageContextCreated)
-  objectAssign(pageContextCreated, pageContextUrlComputed)
 
-  const pageContextAugmented = createPageContextShared(pageContextCreated, globalContext._globalConfigPublic)
-  updateType(pageContextCreated, pageContextAugmented)
+  const pageContextUrlComputed = getPageContextUrlComputed(pageContext)
+  objectAssign(pageContext, pageContextUrlComputed)
 
-  return pageContextCreated
+  return pageContext
 }
