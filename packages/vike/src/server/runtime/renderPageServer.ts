@@ -84,7 +84,9 @@ type PageContextAfterRender = PageContextCreatedServerBase & {
   httpResponse: HttpResponse
   _requestId: number
 } & Partial<PageContextInternalServer>
-type PageContextInit = Pick<PageContextInternalServer, 'urlOriginal' | 'headersOriginal'> & {
+type PageContextInit = {
+  urlOriginal: string
+  headersOriginal?: unknown
   /** @deprecated Set `pageContextInit.urlOriginal` instead  */ // TO-DO/next-major-release: remove
   url?: string
   /** @deprecated Set pageContextInit.headersOriginal instead */ // TO-DO/next-major-release: remove
