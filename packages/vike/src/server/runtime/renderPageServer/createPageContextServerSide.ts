@@ -78,11 +78,13 @@ function createPageContextServerSide(
 
   return pageContext
 }
+
 /** Use this as last resort — prefer passing richer `pageContext` objects to the runtime logger */
 function createPageContextServerSideWithoutGlobalContext(pageContextInit: PageContextInit, requestId: number) {
   const pageContext = createPageContextBase(pageContextInit, false, requestId)
   return pageContext
 }
+
 function createPageContextBase(pageContextInit: PageContextInit | null, isPrerendering: boolean, requestId: number) {
   const pageContext = createPageContextObject()
   objectAssign(pageContext, {
