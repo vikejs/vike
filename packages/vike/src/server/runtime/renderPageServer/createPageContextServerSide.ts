@@ -31,7 +31,7 @@ function createPageContextServerSide(
   ),
 ) {
   assert(pageContextInit.urlOriginal)
-  const pageContext = createPageContext(pageContextInit, args.isPrerendering, args.requestId)
+  const pageContext = createPageContextBase(pageContextInit, args.isPrerendering, args.requestId)
 
   objectAssign(pageContext, {
     _globalContext: globalContext,
@@ -80,10 +80,10 @@ function createPageContextServerSide(
 }
 /** Use this as last resort — prefer passing richer `pageContext` objects to the runtime logger */
 function createPageContextServerSideWithoutGlobalContext(pageContextInit: PageContextInit, requestId: number) {
-  const pageContext = createPageContext(pageContextInit, false, requestId)
+  const pageContext = createPageContextBase(pageContextInit, false, requestId)
   return pageContext
 }
-function createPageContext(pageContextInit: PageContextInit | null, isPrerendering: boolean, requestId: number) {
+function createPageContextBase(pageContextInit: PageContextInit | null, isPrerendering: boolean, requestId: number) {
   const pageContext = createPageContextObject()
   objectAssign(pageContext, {
     isClientSide: false as const,
