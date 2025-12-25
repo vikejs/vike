@@ -1,5 +1,6 @@
 export { createPageContextClientSide }
 export type PageContextCreatedClient_ServerRouting = Awaited<ReturnType<typeof createPageContextClientSide>>
+export type PageContextCreatedClientBase_ServerRouting = Awaited<ReturnType<typeof createPageContextBase>>
 
 import { updateType, objectAssign } from './utils.js'
 
