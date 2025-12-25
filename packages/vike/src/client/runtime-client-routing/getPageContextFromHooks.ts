@@ -152,7 +152,7 @@ async function getPageContextFromHooksClient(
   return pageContextFromHooksClient
 }
 
-type PageContextExecHookClient = PageContextConfig & PageContextForPublicUsageClient
+type PageContextExecHookClient = PageContextCreatedClient & PageContextConfig & PageContextForPublicUsageClient
 async function execHookClient(hookName: HookName, pageContext: PageContextExecHookClient) {
   return await execHook(hookName, pageContext, (p) => preparePageContextForPublicUsageClient(p))
 }

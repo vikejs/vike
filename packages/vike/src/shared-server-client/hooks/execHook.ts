@@ -27,12 +27,16 @@ import {
   preparePageContextForPublicUsage,
 } from '../preparePageContextForPublicUsage.js'
 import type { GlobalContextPrepareMinimum } from '../prepareGlobalContextForPublicUsage.js'
+import type { PageContextCreatedClient } from '../../client/runtime-client-routing/createPageContextClientSide.js'
+import type { PageContextCreatedServer } from '../../server/runtime/renderPageServer/createPageContextServerSide.js'
+import type { PageContextCreatedClient_ServerRouting } from '../../client/runtime-server-routing/createPageContextClientSide.js'
 const globalObject = getGlobalObject('utils/execHook.ts', {
   userHookErrors: new WeakMap<object, HookLoc>(),
   pageContext: null as null | PageContextPrepareMinimum,
 })
 
-type PageContextExecHook = PageContextConfig & PageContextForPublicUsage
+type PageContextExecHook = PageContextCreated & PageContextConfig & PageContextForPublicUsage
+type PageContextCreated = PageContextCreatedServer | PageContextCreatedClient | PageContextCreatedClient_ServerRouting
 type PageContextForPublicUsage = PageContextForPublicUsageServer | PageContextForPublicUsageClientShared
 
 type HookWithResult = Hook & {

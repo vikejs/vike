@@ -7,6 +7,10 @@ import type { PageFile, PageContextConfig } from '../../shared-server-client/get
 import type { PageContextForPublicUsageClientShared } from './preparePageContextForPublicUsageClientShared.js'
 import { execHookDirectSingle } from '../../shared-server-client/hooks/execHook.js'
 import type { GlobalContextClientInternalShared } from './getGlobalContextClientInternalShared.js'
+import type { PageContextCreatedClient } from '../runtime-client-routing/createPageContextClientSide.js'
+import type { PageContextCreatedClient_ServerRouting } from '../runtime-server-routing/createPageContextClientSide.js'
+
+type PageContextCreatedClientShared = PageContextCreatedClient | PageContextCreatedClient_ServerRouting
 
 type PageContextBeforeRenderClient = {
   _pageFilesLoaded: PageFile[]
@@ -14,7 +18,8 @@ type PageContextBeforeRenderClient = {
   urlPathname?: string
   pageId: string
   _globalContext: GlobalContextClientInternalShared
-} & PageContextConfig &
+} & PageContextCreatedClientShared &
+  PageContextConfig &
   PageContextForPublicUsageClientShared
 
 async function execHookOnRenderClient<PageContext extends PageContextBeforeRenderClient>(
