@@ -40,7 +40,7 @@ type HookWithResult = Hook & {
   hookReturn: unknown
 }
 
-// TODO/refactor: export new type PageContextExecHookMinium instead of PageContextPrepareMinimum ?
+// TODO/refactor: export new type PageContextExecHookMinimum instead of PageContextPrepareMinimum ?
 
 async function execHook<PageContext extends PageContextExecHook>(
   hookName: HookName,
