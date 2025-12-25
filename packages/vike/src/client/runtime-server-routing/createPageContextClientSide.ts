@@ -7,18 +7,18 @@ import { createPageContextObject, createPageContextShared } from '../../shared-s
 import { getGlobalContextClientInternal } from './getGlobalContextClientInternal.js'
 
 async function createPageContextClientSide() {
-  const pageContextCreated = createPageContextBase()
+  const pageContext = createPageContextBase()
 
   const globalContext = await getGlobalContextClientInternal()
-  objectAssign(pageContextCreated, {
+  objectAssign(pageContext, {
     _globalContext: globalContext,
     _pageFilesAll: globalContext._pageFilesAll, // TO-DO/next-major-release: remove
   })
 
   // Sets pageContext.config to global configs
-  updateType(pageContextCreated, createPageContextShared(pageContextCreated, globalContext._globalConfigPublic))
+  updateType(pageContext, createPageContextShared(pageContext, globalContext._globalConfigPublic))
 
-  return pageContextCreated
+  return pageContext
 }
 
 function createPageContextBase() {
