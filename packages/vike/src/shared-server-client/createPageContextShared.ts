@@ -19,10 +19,28 @@ import type {
 } from '../client/runtime-server-routing/createPageContextClientSide.js'
 
 type PageContextCreated = PageContextCreatedServer | PageContextCreatedClient | PageContextCreatedClient_ServerRouting
+
+/* Ideally we'd use this, but I couldn't make it work.
 type PageContextCreatedBase =
   | PageContextCreatedServerBase
   | PageContextCreatedClientBase
   | PageContextCreatedClientBase_ServerRouting
+/*/
+type PageContextCreatedBase = {
+  _isOriginalObject: true
+  isPageContext: true
+  isClientSide: boolean
+  // ... manually add common types here
+}
+type IsSubset<A, B> = B extends A ? true : false
+// @ts-ignore unused type test
+type _test = [
+  Expect<IsSubset<PageContextCreatedBase, PageContextCreatedServerBase>>,
+  Expect<IsSubset<PageContextCreatedBase, PageContextCreatedClientBase>>,
+  Expect<IsSubset<PageContextCreatedBase, PageContextCreatedClientBase_ServerRouting>>,
+]
+type Expect<T extends true> = T
+//*/
 
 function createPageContextShared<T extends Record<string, unknown>>(
   pageContextCreated: T,

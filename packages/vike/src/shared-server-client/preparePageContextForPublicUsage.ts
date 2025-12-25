@@ -9,12 +9,11 @@ import {
   prepareGlobalContextForPublicUsage,
 } from './prepareGlobalContextForPublicUsage.js'
 import { getProxyForPublicUsage } from './getProxyForPublicUsage.js'
+import type { PageContextCreatedBase } from './createPageContextShared.js'
 
 type PageContextPrepareMinimum = {
-  _isOriginalObject: true
-  isPageContext: true
   _globalContext: GlobalContextPrepareMinimum
-}
+} & PageContextCreatedBase
 
 function preparePageContextForPublicUsage<PageContext extends PageContextPrepareMinimum>(pageContext: PageContext) {
   assert(!(pageContext as Record<string, unknown>)._isProxyObject)
