@@ -24,12 +24,14 @@ async function createPageContextClientSide() {
     isHistoryNavigation: null,
     _hasPageContextFromServer: true as const,
   })
-  objectAssign(pageContextCreated, getPageContextSerializedInHtml())
 
   // Sets pageContext.config to global configs
   updateType(pageContextCreated, createPageContextShared(pageContextCreated, globalContext._globalConfigPublic))
 
   assertPristineUrl()
+
+  objectAssign(pageContextCreated, getPageContextSerializedInHtml())
+
   return pageContextCreated
 }
 
