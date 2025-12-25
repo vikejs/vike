@@ -12,6 +12,7 @@ export type { PageContextInternalServer }
 export type { PageContextInternalClient }
 export type { PageContextInternalClient_ServerRouting }
 export type { PageContextInternalClient_ClientRouting }
+export type { PageContextInit }
 
 // TO-DO/next-major-release: remove these three exports
 export type { PageContextBuiltInServer_deprecated as PageContextBuiltInServer }
@@ -63,7 +64,7 @@ type PageContextClientWithServerRouting<Data = unknown> = PageContextBuiltInClie
   Vike.PageContext &
   Vike.PageContextClient
 
-type PageContextBuiltInCommon<Data> = PageContextConfig & {
+type PageContextBuiltInCommon<Data> = PageContextConfig & PageContextInit & {
   /**
    * Useful for distinguishing `pageContext` from other objects and narrowing down TypeScript unions.
    *
@@ -91,32 +92,6 @@ type PageContextBuiltInCommon<Data> = PageContextConfig & {
    * https://vike.dev/pageContext#data
    */
   data: Data
-
-  /** The URL you provided to Vike when calling `renderPage({ urlOriginal })` in your server middleware.
-   *
-   * https://vike.dev/renderPage
-   */
-  urlOriginal: string
-
-  /**
-   * The HTTP request headers.
-   *
-   * As a string object normalized by Vike.
-   *
-   * https://vike.dev/headers
-   * https://vike.dev/pageContext#headers
-   */
-  headers: Record<string, string> | null
-
-  /**
-   * The HTTP request headers.
-   *
-   * The original object provided by the server.
-   *
-   * https://vike.dev/headers
-   * https://vike.dev/pageContext#headersOriginal
-   */
-  headersOriginal?: unknown // We set it to the type `unknown` instead of the type `HeadersInit` because `HeadersInit` isn't accurate: for example, `http.IncomingHttpHeaders` is a valid input for `new Headers()` but doesn't match the `HeadersInit` init.
 
   /**
    * The HTTP response headers.
@@ -174,10 +149,6 @@ type PageContextBuiltInCommon<Data> = PageContextConfig & {
   /** @experimental https://github.com/vikejs/vike/issues/1268 */
   sources: Sources
 
-  // TO-DO/next-major-release: move pageContext.urlParsed to pageContext.url
-  /** @deprecated */
-  url: string
-
   // TO-DO/next-major-release: remove
   /** @deprecated */
   pageExports: Record<string, unknown>
@@ -189,6 +160,27 @@ type PageContextBuiltInCommon<Data> = PageContextConfig & {
    * https://vike.dev/pageContext#isBaseMissing
    */
   isBaseMissing?: true
+}
+
+type PageContextInit = {
+  /** The URL provided when `renderPage({ urlOriginal })` is called.
+   *
+   * https://vike.dev/renderPage
+   */
+  urlOriginal: string
+  /**
+   * The HTTP request headers.
+   *
+   * The original object provided by the server.
+   *
+   * https://vike.dev/headers
+   * https://vike.dev/pageContext#headersOriginal
+   */
+  headersOriginal?: unknown // We set it to the type `unknown` instead of the type `HeadersInit` because `HeadersInit` isn't accurate: for example, `http.IncomingHttpHeaders` is a valid input for `new Headers()` but doesn't match the `HeadersInit` init.
+  /** @deprecated Set `pageContextInit.urlOriginal` instead  */ // TO-DO/next-major-release: remove
+  url?: string
+  /** @deprecated Set pageContextInit.headersOriginal instead */ // TO-DO/next-major-release: remove
+  headers?: Record<string, string>
 }
 
 type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
