@@ -1,8 +1,8 @@
 import { useHydrated } from 'vike-vue/useHydrated'
 
 export function SomeComponent() {
-  const isHydrated = useHydrated()
-  if (isHydrated.value) {
+  const hydrated = useHydrated()
+  if (hydrated.value) {
     return 'Hydrated!'
   } else {
     return 'SSR'

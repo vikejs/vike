@@ -25,7 +25,7 @@ import {
   type PageContextFromHooksServer,
   setPageContextInitIsPassedToClient,
 } from './getPageContextFromHooks.js'
-import { createPageContextClientSide } from './createPageContextClientSide.js'
+import { createPageContextClientSide, type PageContextCreatedClient } from './createPageContextClientSide.js'
 import {
   addLinkPrefetchHandlers,
   addLinkPrefetchHandlers_unwatch,
@@ -773,7 +773,7 @@ type PageContextExecuteHook = Omit<
   keyof Awaited<ReturnType<typeof loadPageConfigsLazyClientSide>>
 >
 async function loadPageConfigsLazyClientSideAndExecHook<
-  PageContext extends PageContext_loadPageConfigsLazyClientSide & PageContextExecuteHook,
+  PageContext extends PageContext_loadPageConfigsLazyClientSide & PageContextExecuteHook & PageContextCreatedClient,
 >(pageContext: PageContext, isFirstRender: boolean, isRenderOutdated: () => boolean) {
   let hasErr = false
   let err: unknown

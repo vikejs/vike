@@ -30,7 +30,7 @@ import { pageContextInitIsPassedToClient } from '../../shared-server-client/misc
 import { isServerSideError } from '../../shared-server-client/misc/isServerSideError.js'
 import { execHook } from '../../shared-server-client/hooks/execHook.js'
 import type { HookName } from '../../types/Config.js'
-import type { PageContextCreated } from './createPageContextClientSide.js'
+import type { PageContextCreatedClient } from './createPageContextClientSide.js'
 import type { PageContextBegin } from './renderPageClient.js'
 import {
   type PageContextForPublicUsageClient,
@@ -81,7 +81,7 @@ async function getPageContextFromHooksClient_firstRender(
 
 type PageContextFromHooksServer = { _hasPageContextFromServer: boolean }
 async function getPageContextFromHooksServer(
-  pageContext: { pageId: string } & PageContextCreated,
+  pageContext: { pageId: string } & PageContextCreatedClient,
   isErrorPage: boolean,
 ): Promise<
   | { is404ServerSideRouted: true }
@@ -152,7 +152,7 @@ async function getPageContextFromHooksClient(
   return pageContextFromHooksClient
 }
 
-type PageContextExecHookClient = PageContextConfig & PageContextForPublicUsageClient
+type PageContextExecHookClient = PageContextCreatedClient & PageContextConfig & PageContextForPublicUsageClient
 async function execHookClient(hookName: HookName, pageContext: PageContextExecHookClient) {
   return await execHook(hookName, pageContext, (p) => preparePageContextForPublicUsageClient(p))
 }

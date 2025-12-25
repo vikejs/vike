@@ -108,8 +108,8 @@ importers:
         specifier: 0.4.250
         version: link:../../packages/vike
       vike-react:
-        specifier: ^0.6.17
-        version: 0.6.17(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
+        specifier: ^0.6.18
+        version: 0.6.18(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
       vite:
         specifier: ^6.3.2
         version: 6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
@@ -1327,8 +1327,8 @@ importers:
         specifier: 0.4.250
         version: link:../../packages/vike
       vike-react:
-        specifier: ^0.6.17
-        version: 0.6.17(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
+        specifier: ^0.6.18
+        version: 0.6.18(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
     devDependencies:
       '@cloudflare/vite-plugin':
         specifier: ^1.17.0
@@ -1475,8 +1475,8 @@ importers:
         specifier: 0.4.250
         version: link:../../packages/vike
       vike-react:
-        specifier: ^0.6.17
-        version: 0.6.17(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
+        specifier: ^0.6.18
+        version: 0.6.18(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
       vite:
         specifier: ^6.3.2
         version: 6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
@@ -1499,8 +1499,8 @@ importers:
         specifier: 0.4.250
         version: link:../../packages/vike
       vike-react:
-        specifier: ^0.6.17
-        version: 0.6.17(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
+        specifier: ^0.6.18
+        version: 0.6.18(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
       vite:
         specifier: ^6.3.2
         version: 6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
@@ -1556,8 +1556,8 @@ importers:
         specifier: ^0.1.24
         version: 0.1.24(jzzxm762sn6uqzuzxziqymzd7e)
       vike-react:
-        specifier: ^0.6.17
-        version: 0.6.17(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
+        specifier: ^0.6.18
+        version: 0.6.18(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
     devDependencies:
       '@photonjs/cloudflare':
         specifier: ^0.1.13
@@ -1599,8 +1599,8 @@ importers:
         specifier: ^0.1.24
         version: 0.1.24(jzzxm762sn6uqzuzxziqymzd7e)
       vike-react:
-        specifier: ^0.6.17
-        version: 0.6.17(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
+        specifier: ^0.6.18
+        version: 0.6.18(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
     devDependencies:
       '@photonjs/runtime':
         specifier: ^0.1.16
@@ -1666,8 +1666,8 @@ importers:
         specifier: 0.4.250
         version: link:../../packages/vike
       vike-react:
-        specifier: ^0.6.17
-        version: 0.6.17(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
+        specifier: ^0.6.18
+        version: 0.6.18(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
       vite:
         specifier: ^7.0.6
         version: 7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
@@ -1774,8 +1774,8 @@ importers:
         specifier: ^0.2.17
         version: 0.2.17(@babel/core@7.28.5)(@babel/parser@7.28.5)(@babel/types@7.28.5)(react-streaming@0.4.15(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(react@19.2.1)(vite@6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
       vike-react:
-        specifier: ^0.6.17
-        version: 0.6.17(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
+        specifier: ^0.6.18
+        version: 0.6.18(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
     devDependencies:
       '@types/express':
         specifier: ^5.0.6
@@ -1805,8 +1805,8 @@ importers:
   test/vike-cloudflare:
     dependencies:
       '@universal-middleware/hono':
-        specifier: ^0.4.17
-        version: 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.9.8)
+        specifier: ^0.4.18
+        version: 0.4.18(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.9.8)
       hono:
         specifier: ^4.10.4
         version: 4.10.4
@@ -1820,8 +1820,8 @@ importers:
         specifier: 0.4.250
         version: link:../../packages/vike
       vike-solid:
-        specifier: ^0.7.14
-        version: 0.7.14(solid-js@1.9.10)(vike@packages+vike)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
+        specifier: ^0.7.18
+        version: 0.7.18(solid-js@1.9.10)(vike@packages+vike)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
       vite:
         specifier: ^7.2.2
         version: 7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
@@ -1875,8 +1875,8 @@ importers:
         specifier: 0.4.250
         version: link:../../packages/vike
       vike-react:
-        specifier: 0.6.17
-        version: 0.6.17(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
+        specifier: 0.6.18
+        version: 0.6.18(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
       vite:
         specifier: ^7.1.2
         version: 7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
@@ -1911,11 +1911,11 @@ importers:
         specifier: 0.4.250
         version: link:../../packages/vike
       vike-react:
-        specifier: 0.6.17
-        version: 0.6.17(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
+        specifier: 0.6.18
+        version: 0.6.18(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
       vike-react-redux:
         specifier: 0.1.3
-        version: 0.1.3(react-redux@9.2.0(@types/react@19.2.7)(react@19.2.1)(redux@5.0.1))(react@19.2.1)(vike-react@0.6.17(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike))(vike@packages+vike)
+        version: 0.1.3(react-redux@9.2.0(@types/react@19.2.7)(react@19.2.1)(redux@5.0.1))(react@19.2.1)(vike-react@0.6.18(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike))(vike@packages+vike)
       vite:
         specifier: ^6.2.5
         version: 6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
@@ -1947,11 +1947,11 @@ importers:
         specifier: 0.4.250
         version: link:../../packages/vike
       vike-react:
-        specifier: 0.6.17
-        version: 0.6.17(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
+        specifier: 0.6.18
+        version: 0.6.18(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
       vike-react-zustand:
         specifier: ^0.1.8
-        version: 0.1.8(react-dom@19.2.1(react@19.2.1))(react-streaming@0.4.15(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(react@19.2.1)(vike-react@0.6.17(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike))(vike@packages+vike)(zustand@5.0.9(@types/react@19.2.7)(immer@10.2.0)(react@19.2.1)(use-sync-external-store@1.5.0(react@19.2.1)))
+        version: 0.1.8(react-dom@19.2.1(react@19.2.1))(react-streaming@0.4.15(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(react@19.2.1)(vike-react@0.6.18(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike))(vike@packages+vike)(zustand@5.0.9(@types/react@19.2.7)(immer@10.2.0)(react@19.2.1)(use-sync-external-store@1.5.0(react@19.2.1)))
       vite:
         specifier: ^7.2.2
         version: 7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
@@ -1980,8 +1980,8 @@ importers:
         specifier: 0.4.250
         version: link:../../packages/vike
       vike-react:
-        specifier: ^0.6.17
-        version: 0.6.17(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
+        specifier: ^0.6.18
+        version: 0.6.18(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
       vike-server:
         specifier: ^1.0.25
         version: 1.0.25(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.9.8)(vike@packages+vike)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
@@ -2001,8 +2001,8 @@ importers:
         specifier: 0.4.250
         version: link:../../packages/vike
       vike-solid:
-        specifier: ^0.7.14
-        version: 0.7.14(solid-js@1.9.10)(vike@packages+vike)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
+        specifier: ^0.7.18
+        version: 0.7.18(solid-js@1.9.10)(vike@packages+vike)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
     devDependencies:
       typescript:
         specifier: ^5.9.3
@@ -2035,8 +2035,8 @@ importers:
         specifier: 0.4.250
         version: link:../../packages/vike
       vike-vue:
-        specifier: ^0.9.8
-        version: 0.9.8(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
+        specifier: ^0.9.9
+        version: 0.9.9(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
       vite:
         specifier: ^6.3.5
         version: 6.3.5(@types/node@22.19.2)(terser@5.38.1)(tsx@4.20.6)
@@ -2065,11 +2065,11 @@ importers:
         specifier: 0.4.250
         version: link:../../packages/vike
       vike-vue:
-        specifier: ^0.9.8
-        version: 0.9.8(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
+        specifier: ^0.9.9
+        version: 0.9.9(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
       vike-vue-pinia:
         specifier: ^0.2.6
-        version: 0.2.6(pinia@3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3)))(vike-vue@0.9.8(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)))(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
+        version: 0.2.6(pinia@3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3)))(vike-vue@0.9.9(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)))(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
       vite:
         specifier: ^6.1.0
         version: 6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
@@ -2127,8 +2127,8 @@ importers:
         specifier: 0.4.250
         version: link:../../packages/vike
       vike-react:
-        specifier: ^0.6.17
-        version: 0.6.17(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
+        specifier: ^0.6.18
+        version: 0.6.18(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
       vite:
         specifier: ^7.0.6
         version: 7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
@@ -2151,8 +2151,8 @@ importers:
         specifier: 0.4.250
         version: link:../../packages/vike
       vike-react:
-        specifier: ^0.6.17
-        version: 0.6.17(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
+        specifier: ^0.6.18
+        version: 0.6.18(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
       vite:
         specifier: ^6.3.2
         version: 6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
@@ -3579,16 +3579,34 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
+  '@oxc-parser/binding-android-arm64@0.104.0':
+    resolution: {integrity: sha512-2a4tk6mtkPbGwT4Zi8pjOqMkmkrvc/Pussmas+uXoiCVv7sn7P7Jn93ATu/HK49dxIwvrvQCZ3BcS0KhAvKxlQ==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+    cpu: [arm64]
+    os: [android]
+
   '@oxc-parser/binding-android-arm64@0.82.3':
     resolution: {integrity: sha512-hU9TSCa/dmYx0UCQyH+b9iONRGv5cfnvoSMKFf0v9xNwqlQu7mEil4po1d0a3Yjb7YyI9mz6e6bfg0XcjbMdBg==}
     engines: {node: '>=20.0.0'}
     cpu: [arm64]
     os: [android]
 
+  '@oxc-parser/binding-darwin-arm64@0.104.0':
+    resolution: {integrity: sha512-qprm6/Hr35TSCkJoo+huRHq3siyqRyMBtNVNJQkJorZAGcffQTzzdhmzJnA7TQc+WnN36/Jq56D7/INu0/2knQ==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+    cpu: [arm64]
+    os: [darwin]
+
   '@oxc-parser/binding-darwin-arm64@0.82.3':
     resolution: {integrity: sha512-LjBFMUtYYGZyA2g3+ajNPcn6RwsBoDbKELSf/pwVNCWHmAQwptw8zRc4VVDnBqANvkjmoe7MSp6TqKGi359/rw==}
     engines: {node: '>=20.0.0'}
     cpu: [arm64]
+    os: [darwin]
+
+  '@oxc-parser/binding-darwin-x64@0.104.0':
+    resolution: {integrity: sha512-Xpu0l/l2zCUeheIrpu7dz6FxQ96W0f8Dq9rhYE1yLtTqQpMGhefnEV5Lr8qd15clwniZiKWZO6FGQawQ7npt3Q==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+    cpu: [x64]
     os: [darwin]
 
   '@oxc-parser/binding-darwin-x64@0.82.3':
@@ -3597,11 +3615,23 @@ packages:
     cpu: [x64]
     os: [darwin]
 
+  '@oxc-parser/binding-freebsd-x64@0.104.0':
+    resolution: {integrity: sha512-I++fE3ZrhjtLzA0mqFcC/GuA6+dWNa/QkJJfm7sS4NGGQhipQQ2vikCK6jZK1YGIsbDFDrSoQCfA3tQfeK6pqg==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+    cpu: [x64]
+    os: [freebsd]
+
   '@oxc-parser/binding-freebsd-x64@0.82.3':
     resolution: {integrity: sha512-H8wJ8LNrRAZ1Q75r+bnEn79pPAq8zQKnbE5+mWu9Xq5qcaQ6l/ZgjdamjvK05hZZXicCV5xji315f+OKK2BayQ==}
     engines: {node: '>=20.0.0'}
     cpu: [x64]
     os: [freebsd]
+
+  '@oxc-parser/binding-linux-arm-gnueabihf@0.104.0':
+    resolution: {integrity: sha512-JkvwCNZm3ZwVG1r+c3LrcrxpJ1YXAtYEbVwOcwe+wh6LnltGoxEEZk7Zo9259jch8GiWW6AfRGDQY2FxzWJT7A==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+    cpu: [arm]
+    os: [linux]
 
   '@oxc-parser/binding-linux-arm-gnueabihf@0.82.3':
     resolution: {integrity: sha512-iomV7aBUubRHcsLkEnl8ORsPc2yIRfB4AD6N9KweUUZMEAiNFjS5DU83NcdmkMajejWqCNczzeFIyBkyRkptDw==}
@@ -3615,9 +3645,21 @@ packages:
     cpu: [arm]
     os: [linux]
 
+  '@oxc-parser/binding-linux-arm64-gnu@0.104.0':
+    resolution: {integrity: sha512-CD9Tzp3dfMtujHikS0JwTIOaDUCBWItvziUTDYsMXrfVHjfSaGGsaKqIQmNsG1Qg7QdmtMZtMW0pQcHGZQ2OoA==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+    cpu: [arm64]
+    os: [linux]
+
   '@oxc-parser/binding-linux-arm64-gnu@0.82.3':
     resolution: {integrity: sha512-p66Mlm9ZpraOf1YyyJTIlastfDWMr4For132Ns8iT4AWc1L+Ml4hJew5x/5Y0HXw6zX5q290FvHfWMIh499hxg==}
     engines: {node: '>=20.0.0'}
+    cpu: [arm64]
+    os: [linux]
+
+  '@oxc-parser/binding-linux-arm64-musl@0.104.0':
+    resolution: {integrity: sha512-lARUu7lrZ7CoAm2arLJQkq9Sem2NiC3DaphmPvlf2X+ngkWcYUCRxZanhe+++x/bVzKrwvxormC3IVaulP51mQ==}
+    engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [linux]
 
@@ -3627,10 +3669,22 @@ packages:
     cpu: [arm64]
     os: [linux]
 
+  '@oxc-parser/binding-linux-riscv64-gnu@0.104.0':
+    resolution: {integrity: sha512-hnPWrncj89/7AiMt19Juqpa04z8OpJrIf3/ToGkJafZ3A1ZN50atyNKQD5EmGs2/gdaFxF4hG3zUnLKhX9nTtQ==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+    cpu: [riscv64]
+    os: [linux]
+
   '@oxc-parser/binding-linux-riscv64-gnu@0.82.3':
     resolution: {integrity: sha512-gOLpW5RZLajzc/PfPBxYGLLQu9ErBJBZSboBpDafP1Vv8t/vmwEr0WA95oxPdFo0lMl2xkjcVNbOiVQA70U56Q==}
     engines: {node: '>=20.0.0'}
     cpu: [riscv64]
+    os: [linux]
+
+  '@oxc-parser/binding-linux-s390x-gnu@0.104.0':
+    resolution: {integrity: sha512-VegcKzBgUoHQ/p5NyV+GrdEgJEXhX4AD+kCZng+viP/eNsZJgmp2K1jDBCeLSUZIdSmdldK5wlSma3Bf8MKcUQ==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+    cpu: [s390x]
     os: [linux]
 
   '@oxc-parser/binding-linux-s390x-gnu@0.82.3':
@@ -3639,9 +3693,21 @@ packages:
     cpu: [s390x]
     os: [linux]
 
+  '@oxc-parser/binding-linux-x64-gnu@0.104.0':
+    resolution: {integrity: sha512-nDtCJIwaNgVNLR1EOgb1Xsz7VL3TOASLRbQEC+wLZycs3CCETlGNQht5OqwXPNjbem61kl4l8dvuEavu8BRT/Q==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+    cpu: [x64]
+    os: [linux]
+
   '@oxc-parser/binding-linux-x64-gnu@0.82.3':
     resolution: {integrity: sha512-/n13gpaEWlDHGWExq5lfZpvxKkA2w+zWA79C13F4yVskEzfZSk1x6dTBrkGSf3pFAUFHtzrlT/LPHiUyMJt5Tg==}
     engines: {node: '>=20.0.0'}
+    cpu: [x64]
+    os: [linux]
+
+  '@oxc-parser/binding-linux-x64-musl@0.104.0':
+    resolution: {integrity: sha512-E98MNPE3d88D2xUABQYWH2cYqLA/mmOM4XL3CZHaG5dM68sN3fzCyV0ryK5skq4hVK1L2e6jk79z5oLArsCYyA==}
+    engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [linux]
 
@@ -3651,10 +3717,27 @@ packages:
     cpu: [x64]
     os: [linux]
 
+  '@oxc-parser/binding-openharmony-arm64@0.104.0':
+    resolution: {integrity: sha512-/FNOTg5tzlpB0hunjdI1AiJp2lC8NvBl0HpqMk0qp42KAK+yOe7nyw7XcNpMH7SvhmPe+R3oyJV8UQv953sCvA==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+    cpu: [arm64]
+    os: [openharmony]
+
+  '@oxc-parser/binding-wasm32-wasi@0.104.0':
+    resolution: {integrity: sha512-I+xnHDxkInzHBZV+YERIvvrt+GFwEBdgq/RUax5jLl8yHg5iPVq11qtGh3m+2v8zAjQXYPmBbcANNGWwgXqtWQ==}
+    engines: {node: '>=14.0.0'}
+    cpu: [wasm32]
+
   '@oxc-parser/binding-wasm32-wasi@0.82.3':
     resolution: {integrity: sha512-oFL0vJfrR7Qkj+n3q9MQhqOsaWGiDg4B1Ch/mJMZGXJAkZ1dnYKQWLVymJkWsl4Ydgs82h6L20mX2IthbF0wHQ==}
     engines: {node: '>=14.0.0'}
     cpu: [wasm32]
+
+  '@oxc-parser/binding-win32-arm64-msvc@0.104.0':
+    resolution: {integrity: sha512-EWHVWfllZGTJFWfjfBKzvS/0uuw6/Z3+o598VTvySamy5fz2f4P1mNElvTi4tGGhbm1sGTYnYRNRW8XBAnGUGg==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+    cpu: [arm64]
+    os: [win32]
 
   '@oxc-parser/binding-win32-arm64-msvc@0.82.3':
     resolution: {integrity: sha512-2t3j5pWgL7ZWj/3Q1aiUBnH79oAzQO+KOM5tTVawIWpsHFqsuGEL5ckikap1JczHaugAaEvc067ihTjpSDoXVA==}
@@ -3662,11 +3745,20 @@ packages:
     cpu: [arm64]
     os: [win32]
 
+  '@oxc-parser/binding-win32-x64-msvc@0.104.0':
+    resolution: {integrity: sha512-Nj7zeywIvxBRRd0I6NrdGufOOdiwQcAKnkRwtWo5dejPTmR1XM+9iRHJztoKacejW5+VOdEwQrfCjpa8MdLJBQ==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+    cpu: [x64]
+    os: [win32]
+
   '@oxc-parser/binding-win32-x64-msvc@0.82.3':
     resolution: {integrity: sha512-MeMOFDIZ3vSZyjgjSkWKb/zdRc4eSwK0kUl5OmysjRIIyIK7LEFLpuk7R+Of4nUGYAQNRHyC8BcMJKO2OLBeqA==}
     engines: {node: '>=20.0.0'}
     cpu: [x64]
     os: [win32]
+
+  '@oxc-project/types@0.104.0':
+    resolution: {integrity: sha512-We30k+29WpOerl3gCb1v8IFL4vmKTkghjist4TQ89yw7adGDCKFGf8+4mA4H3Ek5ajRzzBZ7BtGY8aIaOv9oFQ==}
 
   '@oxc-project/types@0.82.3':
     resolution: {integrity: sha512-6nCUxBnGX0c6qfZW5MaF6/fmu5dHJDMiMPaioKHKs5mi5+8/FHQ7WGjgQIz1zxpmceMYfdIXkOaLYE+ejbuOtA==}
@@ -4390,6 +4482,9 @@ packages:
   '@universal-middleware/hono@0.4.17':
     resolution: {integrity: sha512-NKO42xEv4oQ/fvMg4NN3je+bhBymIHi5mFWjyxAtb5ewbtkCZs9eb+aBNO+Ai1FEy2jQpkBEJMvclW5eohFw9g==}
 
+  '@universal-middleware/hono@0.4.18':
+    resolution: {integrity: sha512-RpnX8hKh2zx7hwVYzI32DjvH7KBYpt7MLIHWYw9QBSEzpD1ErqL+SpkvvlJaINjFs+sYJKH5IOoL53uHCL5alw==}
+
   '@universal-middleware/sirv@0.1.23':
     resolution: {integrity: sha512-Lh3Xc/NvwnfQ3/zabID5/OjKdwQcNyELEUxGaSk6R6j4KReGtXQYtP4ej8Jhq77df4wF39CQaEv5S+9h8ZPAyQ==}
 
@@ -4895,15 +4990,19 @@ packages:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
     engines: {node: '>= 0.4'}
 
-  babel-plugin-jsx-dom-expressions@0.39.8:
-    resolution: {integrity: sha512-/MVOIIjonylDXnrWmG23ZX82m9mtKATsVHB7zYlPfDR9Vdd/NBE48if+wv27bSkBtyO7EPMUlcUc4J63QwuACQ==}
+  babel-plugin-jsx-dom-expressions@0.40.3:
+    resolution: {integrity: sha512-5HOwwt0BYiv/zxl7j8Pf2bGL6rDXfV6nUhLs8ygBX+EFJXzBPHM/euj9j/6deMZ6wa52Wb2PBaAV5U/jKwIY1w==}
     peerDependencies:
       '@babel/core': ^7.20.12
 
-  babel-preset-solid@1.9.6:
-    resolution: {integrity: sha512-HXTK9f93QxoH8dYn1M2mJdOlWgMsR88Lg/ul6QCZGkNTktjTE5HAf93YxQumHoCudLEtZrU1cFCMFOVho6GqFg==}
+  babel-preset-solid@1.9.10:
+    resolution: {integrity: sha512-HCelrgua/Y+kqO8RyL04JBWS/cVdrtUv/h45GntgQY+cJl4eBcKkCDV3TdMjtKx1nXwRaR9QXslM/Npm1dxdZQ==}
     peerDependencies:
       '@babel/core': ^7.0.0
+      solid-js: ^1.9.10
+    peerDependenciesMeta:
+      solid-js:
+        optional: true
 
   bail@2.0.2:
     resolution: {integrity: sha512-0xO6mYd7JB2YesxDKplafRpsiOzPt9V02ddPCLbY1xYGPOX24NTyN50qnUxgCPcSoYMhKpAuBTjQoRZCAkUDRw==}
@@ -5127,6 +5226,9 @@ packages:
     resolution: {integrity: sha512-fsfrO0MxV64Znoy8/l1vVIjjHa29SZyyqPgQBwhiDcaW8wJc2W3XWVOGx4M3oJBnv/zdUZIIp1gDeS98GzP8Ng==}
     engines: {node: '>=18'}
     hasBin: true
+
+  confbox@0.1.8:
+    resolution: {integrity: sha512-RMtmw0iFkeR4YV+fUOSucriAQNb9g8zFR52MWCtl+cCZOFRNL6zeB395vPzFhEjjn4fMxXudmELnl/KF/WrK6w==}
 
   confbox@0.2.2:
     resolution: {integrity: sha512-1NB+BKqhtNipMsov4xI/NnhCKp9XG9NamYp5PVm9klAT0fsrNPjaFICsCFhNhwZJKNh7zB/3q8qXz0E9oaMNtQ==}
@@ -5387,6 +5489,10 @@ packages:
 
   entities@4.5.0:
     resolution: {integrity: sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==}
+    engines: {node: '>=0.12'}
+
+  entities@6.0.1:
+    resolution: {integrity: sha512-aN97NXWF6AWBTahfVOIrB/NShkzi5H7F9r1s9mD3cDj4Ko5f2qhhVoYMibXF7GlLveb/D2ioWay8lxI97Ven3g==}
     engines: {node: '>=0.12'}
 
   envinfo@7.14.0:
@@ -6276,6 +6382,9 @@ packages:
     resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}
     engines: {node: '>=10'}
 
+  magic-regexp@0.10.0:
+    resolution: {integrity: sha512-Uly1Bu4lO1hwHUW0CQeSWuRtzCMNO00CmXtS8N6fyvB3B979GOEEeAkiTUDsmbYLAbvpUS/Kt5c4ibosAzVyVg==}
+
   magic-string@0.25.9:
     resolution: {integrity: sha512-RmF0AsMzgt25qzqqLc1+MbHmhdx0ojF2Fvs4XnOqz2ZOBXzzkEwc/dJQZCYHAn7v1jbVOjAZfK8msRn4BxO4VQ==}
 
@@ -6572,6 +6681,9 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
+  mlly@1.8.0:
+    resolution: {integrity: sha512-l8D9ODSRWLe2KHJSifWGwBqpTZXIXTeo8mlKjY+E2HAakaTeNpqAyBZ8GSqLzHgw4XmHmC8whvpjJNMbFZN7/g==}
+
   mri@1.2.0:
     resolution: {integrity: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==}
     engines: {node: '>=4'}
@@ -6700,9 +6812,18 @@ packages:
     resolution: {integrity: sha512-qFOyK5PjiWZd+QQIh+1jhdb9LpxTF0qs7Pm8o5QHYZ0M3vKqSqzsZaEB6oWlxZ+q2sJBMI/Ktgd2N5ZwQoRHfg==}
     engines: {node: '>= 0.4'}
 
+  oxc-parser@0.104.0:
+    resolution: {integrity: sha512-sIEpobLwe7KhW1JdTvBJkNDgjJarHNsx+Q37iRNyASvmlDOD+f8Qirvwp6nFNz7Q5q3JcsJ1dpKM+oMPTDF/dw==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+
   oxc-parser@0.82.3:
     resolution: {integrity: sha512-mJGrcrzaPYfCJwXsqPRJ8yeS3/Brn0qpt8jq7tPg3B7n3VSvKuKYhXhC0gBFQ+aIa9TdttdR/NWGh48lvUodjg==}
     engines: {node: '>=20.0.0'}
+
+  oxc-walker@0.6.0:
+    resolution: {integrity: sha512-BA3hlxq5+Sgzp7TCQF52XDXCK5mwoIZuIuxv/+JuuTzOs2RXkLqWZgZ69d8pJDDjnL7wiREZTWHBzFp/UWH88Q==}
+    peerDependencies:
+      oxc-parser: '>=0.98.0'
 
   p-limit@2.3.0:
     resolution: {integrity: sha512-//88mFWSJx8lxCzwdAABTJL2MyWB12+eIY7MDL2SqLmAkeKU9qxRvWuSyTjm3FUmpBEMuFfckAIqEaVGUDxb6w==}
@@ -6739,6 +6860,9 @@ packages:
 
   parse5@7.2.1:
     resolution: {integrity: sha512-BuBYQYlv1ckiPdQi/ohiivi9Sagc9JG+Ozs0r7b/0iK3sKmrb0b9FdWdBbOdx6hBCM/F9Ir82ofnBhtZOjCRPQ==}
+
+  parse5@7.3.0:
+    resolution: {integrity: sha512-IInvU7fabl34qmi9gY8XOVxhYyMyuH2xUNpb2q8/Y+7552KlejkRvqvD19nMoUW/uQGGbqNpA6Tufu5FL5BZgw==}
 
   parseurl@1.3.3:
     resolution: {integrity: sha512-CiyeOxFT/JZyN5m0z9PfXw4SCBJ6Sygz1Dpl0wqjlhDEGGBP1GnsUVEL0p63hoG1fcj3fHynXi9NYO4nWOL+qQ==}
@@ -6844,6 +6968,9 @@ packages:
   pkg-dir@4.2.0:
     resolution: {integrity: sha512-HRDzbaKjC+AOWVXxAU/x54COGeIv9eb+6CkDSQoNTt4XyWoIJvuPsXizxu/Fr23EiekbtZwmh1IcIG/l/a10GQ==}
     engines: {node: '>=8'}
+
+  pkg-types@1.3.1:
+    resolution: {integrity: sha512-/Jm5M4RvtBFVkKWRu2BLUTNP8/M2a+UwuAX+ae4770q1qVGtfjG+WTCupoZixokjmHiry8uI+dlY8KXYV5HVVQ==}
 
   pkg-types@2.3.0:
     resolution: {integrity: sha512-SIqCzDRg0s9npO5XQ3tNZioRY1uK06lA41ynBC1YmFTmnY6FjUjVt6s4LoADmwoig1qqD0oK8h1p/8mlMx8Oig==}
@@ -7010,6 +7137,10 @@ packages:
   reflect.getprototypeof@1.0.10:
     resolution: {integrity: sha512-00o4I+DVrefhv+nX0ulyi3biSHCPDe+yLv5o/p6d/UVlirijB8E16FtfwSAi4g3tcqrQ4lRAqQSoFEZJehYEcw==}
     engines: {node: '>= 0.4'}
+
+  regexp-tree@0.1.27:
+    resolution: {integrity: sha512-iETxpjK6YoRWJG5o6hXLwvjYAoW+FEZn9os0PD/b6AP6xQwsa/Y7lCVgIixBbUPMfhu+i2LtdeAqVTgGlQarfA==}
+    hasBin: true
 
   regexp.prototype.flags@1.5.4:
     resolution: {integrity: sha512-dYqgNSZbDwkaJ2ceRd9ojCGjBq+mOm9LmtXnAnEGyHhN/5R7iDW2TRw3h+o/jCFxus3P2LfWIIiwowAjANm7IA==}
@@ -7623,6 +7754,9 @@ packages:
     resolution: {integrity: sha512-OZs6gsjF4vMp32qrCbiVSkrFmXtG/AZhY3t0iAMrMBiAZyV9oALtXO8hsrHbMXF9x6L3grlFuwW2oAz7cav+Gw==}
     engines: {node: '>= 0.6'}
 
+  type-level-regexp@0.1.17:
+    resolution: {integrity: sha512-wTk4DH3cxwk196uGLK/E9pE45aLfeKJacKmcEgEOA/q5dnPGNxXt0cfYdFxb57L+sEpf1oJH4Dnx/pnRcku9jg==}
+
   typed-array-buffer@1.0.3:
     resolution: {integrity: sha512-nAYYwfY3qnzX30IkA6AQZjVbtK6duGontcQm1WSG1MD94YLqK0515GNApXkoxKOWMusVssAHWLh9SeaoefYFGw==}
     engines: {node: '>= 0.4'}
@@ -7654,6 +7788,9 @@ packages:
 
   uc.micro@2.1.0:
     resolution: {integrity: sha512-ARDJmphmdvUk6Glw7y9DQ2bFkKBHwQHLi2lsaH6PPmz/Ka9sFOBsBluozhDltWmnv9u/cF6Rt87znRTPV+yp/A==}
+
+  ufo@1.6.1:
+    resolution: {integrity: sha512-9a4/uxlTWJ4+a5i0ooc1rU7C7YOw3wT+UGqdeNNHWnOF9qcMBgLRS+4IYUqbczewFx4mLEig6gawh7X6mFlEkA==}
 
   uglify-js@3.19.3:
     resolution: {integrity: sha512-v3Xu+yuwBXisp6QYTcH4UbH+xYJXqnq2m/LtQVWKWzYc1iehYnLixoQDN9FH6/j9/oybfd6W9Ghwkl8+UMKTKQ==}
@@ -7732,6 +7869,10 @@ packages:
     resolution: {integrity: sha512-4/u/j4FrCKdi17jaxuJA0jClGxB1AvU2hw/IuayPc4ay1XGaJs/rbb4v5WKwAjNifjmXK9PIFyuPiaK8azyR9w==}
     engines: {node: '>=14.0.0'}
 
+  unplugin@2.3.11:
+    resolution: {integrity: sha512-5uKD0nqiYVzlmCRs01Fhs2BdkEgBS3SAVP6ndrBsuK42iC2+JHyxM05Rm9G8+5mkmRtzMZGY8Ct5+mliZxU/Ww==}
+    engines: {node: '>=18.12.0'}
+
   unplugin@2.3.3:
     resolution: {integrity: sha512-DN4DgiS13HFrAapoRmmoa9B35QzmQVRH2k58HelO28htXVNEEFZ8CGlZL0aRHXOXtz9McwY6lqaZjcc15uWMow==}
     engines: {node: '>=18.12.0'}
@@ -7755,9 +7896,6 @@ packages:
 
   v8-compile-cache-lib@3.0.1:
     resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}
-
-  validate-html-nesting@1.2.2:
-    resolution: {integrity: sha512-hGdgQozCsQJMyfK5urgFcWEqsSSrK63Awe0t/IMR0bZ0QMtnuaiHzThW81guu3qx9abLi99NEuiaN6P9gVYsNg==}
 
   validate-npm-package-license@3.0.4:
     resolution: {integrity: sha512-DpKm2Ui/xN7/HQKCtpZxoRWBhZ9Z0kqtygG8XCgNQ8ZlDnxuQmWhj566j8fN4Cu3/JmbhsDo7fcAJq4s9h27Ew==}
@@ -7817,12 +7955,12 @@ packages:
       vike-react: '>=0.4.13'
       zustand: '>=5.0.0'
 
-  vike-react@0.6.17:
-    resolution: {integrity: sha512-Ya0xnGjxYSdu8BQxi7mAPztxHgXugkxBqS3EQtQR8exAmxh/1jzLzmvPnb7mPF6RcCU4myInD8nFsjvU1qx6+w==}
+  vike-react@0.6.18:
+    resolution: {integrity: sha512-kMoRGhdP7nSE59iWMQ3SkC9O4ISdHhnxJlwwH03VUFuUpZp2OgLUCPmlgBeIj7TU0z+P2KHhschmojvcZanL4w==}
     peerDependencies:
       react: '>=19'
       react-dom: '>=19'
-      vike: '>=0.4.242'
+      vike: '>=0.4.250'
 
   vike-server@1.0.25:
     resolution: {integrity: sha512-drzqh062+1go2ZNR8A1SfNPxnMEGSdcPqWdlLaxq6JvgJXS0xDWh0utbwtTVz1ig8TVwrlutj/rq9JN/pP4caQ==}
@@ -7833,12 +7971,11 @@ packages:
       vite:
         optional: true
 
-  vike-solid@0.7.14:
-    resolution: {integrity: sha512-af8M8wSbEsDrDog2PaIL0r5r+vgAG/S7ViFXT/70MS7BxXKcxMtOVbCUGM09oxQlXsQOaH2BKDgziR9XbYclaA==}
+  vike-solid@0.7.18:
+    resolution: {integrity: sha512-bdn5Dsw8s2wtZ+Cl5DbT6zxOl6DvoSBNVmuAOQr1T76pnitvJ9b8WFZ69J7a74Sa+MwX+prLPmEIGRel2eOinA==}
     peerDependencies:
       solid-js: ^1.8.7
-      vike: '>=0.4.195'
-      vite: '>=5.0.0'
+      vike: '>=0.4.250'
 
   vike-vue-pinia@0.2.6:
     resolution: {integrity: sha512-8anZQN6SKPvaHaBnS99jOAQFEj9i16zGvbM9SbO7ZdwtehZIhuuvwn1upf8Ql8fUuEwLfEcEtNnDydW/GONIsw==}
@@ -7848,8 +7985,8 @@ packages:
       vike-vue: '>=0.7.0'
       vue: '>=3.0.0'
 
-  vike-vue@0.9.8:
-    resolution: {integrity: sha512-zf6msrhnnRwZcKDaZRyMvjIkv9DHxdPbqrBP9ndgSXeEvpq3IB8iIBadS/uqbKQTAtIq0j9EnZjInXPt95nF8g==}
+  vike-vue@0.9.9:
+    resolution: {integrity: sha512-qI9pL5A+8Rz5ZKSZwdJbfsL7x9WfRO2O+9y0caVI28aABSGJXUpISS/HoiSL+168oxcngjJ4Cewxy4kRyTHmkw==}
     peerDependencies:
       vike: '>=0.4.191'
       vue: '>=3.0.0'
@@ -8016,10 +8153,10 @@ packages:
       yaml:
         optional: true
 
-  vitefu@1.0.6:
-    resolution: {integrity: sha512-+Rex1GlappUyNN6UfwbVZne/9cYC4+R2XDk9xkNXBKMw6HQagdX9PgZ8V2v1WUSK1wfBLp7qbI1+XSNIlB1xmA==}
+  vitefu@1.1.1:
+    resolution: {integrity: sha512-B/Fegf3i8zh0yFbpzZ21amWzHmuNlLlmJT6n7bu5e+pCHUKQIfXSYokrqOBGEMMe9UG2sostKQF9mml/vYaWJQ==}
     peerDependencies:
-      vite: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0
+      vite: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0-beta.0
     peerDependenciesMeta:
       vite:
         optional: true
@@ -9535,16 +9672,31 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.19.1
 
+  '@oxc-parser/binding-android-arm64@0.104.0':
+    optional: true
+
   '@oxc-parser/binding-android-arm64@0.82.3':
+    optional: true
+
+  '@oxc-parser/binding-darwin-arm64@0.104.0':
     optional: true
 
   '@oxc-parser/binding-darwin-arm64@0.82.3':
     optional: true
 
+  '@oxc-parser/binding-darwin-x64@0.104.0':
+    optional: true
+
   '@oxc-parser/binding-darwin-x64@0.82.3':
     optional: true
 
+  '@oxc-parser/binding-freebsd-x64@0.104.0':
+    optional: true
+
   '@oxc-parser/binding-freebsd-x64@0.82.3':
+    optional: true
+
+  '@oxc-parser/binding-linux-arm-gnueabihf@0.104.0':
     optional: true
 
   '@oxc-parser/binding-linux-arm-gnueabihf@0.82.3':
@@ -9553,22 +9705,48 @@ snapshots:
   '@oxc-parser/binding-linux-arm-musleabihf@0.82.3':
     optional: true
 
+  '@oxc-parser/binding-linux-arm64-gnu@0.104.0':
+    optional: true
+
   '@oxc-parser/binding-linux-arm64-gnu@0.82.3':
+    optional: true
+
+  '@oxc-parser/binding-linux-arm64-musl@0.104.0':
     optional: true
 
   '@oxc-parser/binding-linux-arm64-musl@0.82.3':
     optional: true
 
+  '@oxc-parser/binding-linux-riscv64-gnu@0.104.0':
+    optional: true
+
   '@oxc-parser/binding-linux-riscv64-gnu@0.82.3':
+    optional: true
+
+  '@oxc-parser/binding-linux-s390x-gnu@0.104.0':
     optional: true
 
   '@oxc-parser/binding-linux-s390x-gnu@0.82.3':
     optional: true
 
+  '@oxc-parser/binding-linux-x64-gnu@0.104.0':
+    optional: true
+
   '@oxc-parser/binding-linux-x64-gnu@0.82.3':
     optional: true
 
+  '@oxc-parser/binding-linux-x64-musl@0.104.0':
+    optional: true
+
   '@oxc-parser/binding-linux-x64-musl@0.82.3':
+    optional: true
+
+  '@oxc-parser/binding-openharmony-arm64@0.104.0':
+    optional: true
+
+  '@oxc-parser/binding-wasm32-wasi@0.104.0':
+    dependencies:
+      '@napi-rs/wasm-runtime': 1.1.0
     optional: true
 
   '@oxc-parser/binding-wasm32-wasi@0.82.3':
@@ -9576,11 +9754,19 @@ snapshots:
       '@napi-rs/wasm-runtime': 1.1.0
     optional: true
 
+  '@oxc-parser/binding-win32-arm64-msvc@0.104.0':
+    optional: true
+
   '@oxc-parser/binding-win32-arm64-msvc@0.82.3':
+    optional: true
+
+  '@oxc-parser/binding-win32-x64-msvc@0.104.0':
     optional: true
 
   '@oxc-parser/binding-win32-x64-msvc@0.82.3':
     optional: true
+
+  '@oxc-project/types@0.104.0': {}
 
   '@oxc-project/types@0.82.3': {}
 
@@ -10324,6 +10510,20 @@ snapshots:
       - srvx
 
   '@universal-middleware/hono@0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.9.8)':
+    dependencies:
+      '@universal-middleware/core': 0.4.14(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.9.8)
+    transitivePeerDependencies:
+      - '@cloudflare/workers-types'
+      - '@hattip/core'
+      - '@types/express'
+      - '@webroute/route'
+      - elysia
+      - fastify
+      - h3
+      - hono
+      - srvx
+
+  '@universal-middleware/hono@0.4.18(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.9.8)':
     dependencies:
       '@universal-middleware/core': 0.4.14(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.9.8)
     transitivePeerDependencies:
@@ -11136,20 +11336,21 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.1.0
 
-  babel-plugin-jsx-dom-expressions@0.39.8(@babel/core@7.28.5):
+  babel-plugin-jsx-dom-expressions@0.40.3(@babel/core@7.28.5):
     dependencies:
       '@babel/core': 7.28.5
       '@babel/helper-module-imports': 7.18.6
       '@babel/plugin-syntax-jsx': 7.27.1(@babel/core@7.28.5)
       '@babel/types': 7.28.5
       html-entities: 2.3.3
-      parse5: 7.2.1
-      validate-html-nesting: 1.2.2
+      parse5: 7.3.0
 
-  babel-preset-solid@1.9.6(@babel/core@7.28.5):
+  babel-preset-solid@1.9.10(@babel/core@7.28.5)(solid-js@1.9.10):
     dependencies:
       '@babel/core': 7.28.5
-      babel-plugin-jsx-dom-expressions: 0.39.8(@babel/core@7.28.5)
+      babel-plugin-jsx-dom-expressions: 0.40.3(@babel/core@7.28.5)
+    optionalDependencies:
+      solid-js: 1.9.10
 
   bail@2.0.2: {}
 
@@ -11388,6 +11589,8 @@ snapshots:
       supports-color: 8.1.1
       tree-kill: 1.2.2
       yargs: 17.7.2
+
+  confbox@0.1.8: {}
 
   confbox@0.2.2: {}
 
@@ -11638,6 +11841,8 @@ snapshots:
   entities@3.0.1: {}
 
   entities@4.5.0: {}
+
+  entities@6.0.1: {}
 
   envinfo@7.14.0: {}
 
@@ -12698,6 +12903,16 @@ snapshots:
     dependencies:
       yallist: 4.0.0
 
+  magic-regexp@0.10.0:
+    dependencies:
+      estree-walker: 3.0.3
+      magic-string: 0.30.21
+      mlly: 1.8.0
+      regexp-tree: 0.1.27
+      type-level-regexp: 0.1.17
+      ufo: 1.6.1
+      unplugin: 2.3.11
+
   magic-string@0.25.9:
     dependencies:
       sourcemap-codec: 1.4.8
@@ -13282,6 +13497,13 @@ snapshots:
 
   mkdirp@1.0.4: {}
 
+  mlly@1.8.0:
+    dependencies:
+      acorn: 8.15.0
+      pathe: 2.0.3
+      pkg-types: 1.3.1
+      ufo: 1.6.1
+
   mri@1.2.0: {}
 
   mrmime@2.0.1: {}
@@ -13383,6 +13605,26 @@ snapshots:
       object-keys: 1.1.1
       safe-push-apply: 1.0.0
 
+  oxc-parser@0.104.0:
+    dependencies:
+      '@oxc-project/types': 0.104.0
+    optionalDependencies:
+      '@oxc-parser/binding-android-arm64': 0.104.0
+      '@oxc-parser/binding-darwin-arm64': 0.104.0
+      '@oxc-parser/binding-darwin-x64': 0.104.0
+      '@oxc-parser/binding-freebsd-x64': 0.104.0
+      '@oxc-parser/binding-linux-arm-gnueabihf': 0.104.0
+      '@oxc-parser/binding-linux-arm64-gnu': 0.104.0
+      '@oxc-parser/binding-linux-arm64-musl': 0.104.0
+      '@oxc-parser/binding-linux-riscv64-gnu': 0.104.0
+      '@oxc-parser/binding-linux-s390x-gnu': 0.104.0
+      '@oxc-parser/binding-linux-x64-gnu': 0.104.0
+      '@oxc-parser/binding-linux-x64-musl': 0.104.0
+      '@oxc-parser/binding-openharmony-arm64': 0.104.0
+      '@oxc-parser/binding-wasm32-wasi': 0.104.0
+      '@oxc-parser/binding-win32-arm64-msvc': 0.104.0
+      '@oxc-parser/binding-win32-x64-msvc': 0.104.0
+
   oxc-parser@0.82.3:
     dependencies:
       '@oxc-project/types': 0.82.3
@@ -13402,6 +13644,11 @@ snapshots:
       '@oxc-parser/binding-wasm32-wasi': 0.82.3
       '@oxc-parser/binding-win32-arm64-msvc': 0.82.3
       '@oxc-parser/binding-win32-x64-msvc': 0.82.3
+
+  oxc-walker@0.6.0(oxc-parser@0.104.0):
+    dependencies:
+      magic-regexp: 0.10.0
+      oxc-parser: 0.104.0
 
   p-limit@2.3.0:
     dependencies:
@@ -13443,6 +13690,10 @@ snapshots:
   parse5@7.2.1:
     dependencies:
       entities: 4.5.0
+
+  parse5@7.3.0:
+    dependencies:
+      entities: 6.0.1
 
   parseurl@1.3.3: {}
 
@@ -13527,6 +13778,12 @@ snapshots:
   pkg-dir@4.2.0:
     dependencies:
       find-up: 4.1.0
+
+  pkg-types@1.3.1:
+    dependencies:
+      confbox: 0.1.8
+      mlly: 1.8.0
+      pathe: 2.0.3
 
   pkg-types@2.3.0:
     dependencies:
@@ -13704,6 +13961,8 @@ snapshots:
       get-intrinsic: 1.3.0
       get-proto: 1.0.1
       which-builtin-type: 1.2.1
+
+  regexp-tree@0.1.27: {}
 
   regexp.prototype.flags@1.5.4:
     dependencies:
@@ -14502,6 +14761,8 @@ snapshots:
       media-typer: 1.1.0
       mime-types: 3.0.2
 
+  type-level-regexp@0.1.17: {}
+
   typed-array-buffer@1.0.3:
     dependencies:
       call-bound: 1.0.4
@@ -14542,6 +14803,8 @@ snapshots:
   uc.micro@1.0.6: {}
 
   uc.micro@2.1.0: {}
+
+  ufo@1.6.1: {}
 
   uglify-js@3.19.3:
     optional: true
@@ -14656,6 +14919,13 @@ snapshots:
       acorn: 8.15.0
       webpack-virtual-modules: 0.6.2
 
+  unplugin@2.3.11:
+    dependencies:
+      '@jridgewell/remapping': 2.3.5
+      acorn: 8.15.0
+      picomatch: 4.0.3
+      webpack-virtual-modules: 0.6.2
+
   unplugin@2.3.3:
     dependencies:
       acorn: 8.15.0
@@ -14682,8 +14952,6 @@ snapshots:
       react: 19.2.1
 
   v8-compile-cache-lib@3.0.1: {}
-
-  validate-html-nesting@1.2.2: {}
 
   validate-npm-package-license@3.0.4:
     dependencies:
@@ -14755,14 +15023,14 @@ snapshots:
       - srvx
       - supports-color
 
-  vike-react-redux@0.1.3(react-redux@9.2.0(@types/react@19.2.7)(react@19.2.1)(redux@5.0.1))(react@19.2.1)(vike-react@0.6.17(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike))(vike@packages+vike):
+  vike-react-redux@0.1.3(react-redux@9.2.0(@types/react@19.2.7)(react@19.2.1)(redux@5.0.1))(react@19.2.1)(vike-react@0.6.18(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike))(vike@packages+vike):
     dependencies:
       react: 19.2.1
       react-redux: 9.2.0(@types/react@19.2.7)(react@19.2.1)(redux@5.0.1)
       vike: link:packages/vike
-      vike-react: 0.6.17(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
+      vike-react: 0.6.18(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
 
-  vike-react-zustand@0.1.8(react-dom@19.2.1(react@19.2.1))(react-streaming@0.4.15(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(react@19.2.1)(vike-react@0.6.17(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike))(vike@packages+vike)(zustand@5.0.9(@types/react@19.2.7)(immer@10.2.0)(react@19.2.1)(use-sync-external-store@1.5.0(react@19.2.1))):
+  vike-react-zustand@0.1.8(react-dom@19.2.1(react@19.2.1))(react-streaming@0.4.15(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(react@19.2.1)(vike-react@0.6.18(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike))(vike@packages+vike)(zustand@5.0.9(@types/react@19.2.7)(immer@10.2.0)(react@19.2.1)(use-sync-external-store@1.5.0(react@19.2.1))):
     dependencies:
       '@babel/core': 7.28.5
       '@babel/types': 7.28.5
@@ -14771,12 +15039,12 @@ snapshots:
       react-dom: 19.2.1(react@19.2.1)
       react-streaming: 0.4.15(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
       vike: link:packages/vike
-      vike-react: 0.6.17(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
+      vike-react: 0.6.18(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike)
       zustand: 5.0.9(@types/react@19.2.7)(immer@10.2.0)(react@19.2.1)(use-sync-external-store@1.5.0(react@19.2.1))
     transitivePeerDependencies:
       - supports-color
 
-  vike-react@0.6.17(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike):
+  vike-react@0.6.18(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(vike@packages+vike):
     dependencies:
       react: 19.2.1
       react-dom: 19.2.1(react@19.2.1)
@@ -14867,26 +15135,29 @@ snapshots:
       - hono
       - srvx
 
-  vike-solid@0.7.14(solid-js@1.9.10)(vike@packages+vike)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)):
+  vike-solid@0.7.18(solid-js@1.9.10)(vike@packages+vike)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)):
     dependencies:
       isbot-fast: 1.2.0
       solid-js: 1.9.10
       vike: link:packages/vike
-      vite: 7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
       vite-plugin-solid: 2.11.10(solid-js@1.9.10)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
     transitivePeerDependencies:
       - '@testing-library/jest-dom'
       - supports-color
+      - vite
 
-  vike-vue-pinia@0.2.6(pinia@3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3)))(vike-vue@0.9.8(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)))(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)):
+  vike-vue-pinia@0.2.6(pinia@3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3)))(vike-vue@0.9.9(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)))(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)):
     dependencies:
       pinia: 3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3))
       vike: link:packages/vike
-      vike-vue: 0.9.8(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
+      vike-vue: 0.9.9(vike@packages+vike)(vue@3.5.18(typescript@5.9.3))
       vue: 3.5.18(typescript@5.9.3)
 
-  vike-vue@0.9.8(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)):
+  vike-vue@0.9.9(vike@packages+vike)(vue@3.5.18(typescript@5.9.3)):
     dependencies:
+      magic-string: 0.30.21
+      oxc-parser: 0.104.0
+      oxc-walker: 0.6.0(oxc-parser@0.104.0)
       vike: link:packages/vike
       vue: 3.5.18(typescript@5.9.3)
 
@@ -14923,12 +15194,12 @@ snapshots:
     dependencies:
       '@babel/core': 7.28.5
       '@types/babel__core': 7.20.5
-      babel-preset-solid: 1.9.6(@babel/core@7.28.5)
+      babel-preset-solid: 1.9.10(@babel/core@7.28.5)(solid-js@1.9.10)
       merge-anything: 5.1.7
       solid-js: 1.9.10
       solid-refresh: 0.6.3(solid-js@1.9.10)
       vite: 7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
-      vitefu: 1.0.6(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
+      vitefu: 1.1.1(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
     transitivePeerDependencies:
       - supports-color
 
@@ -15078,7 +15349,7 @@ snapshots:
       terser: 5.38.1
       tsx: 4.20.6
 
-  vitefu@1.0.6(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)):
+  vitefu@1.1.1(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)):
     optionalDependencies:
       vite: 7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
 

@@ -4,13 +4,13 @@ import { isObject, getGlobalObject } from '../../utils.js'
 import { execHookVanillaSync } from '../../../shared-server-client/hooks/execHook.js'
 import { getGlobalContextServerInternalOptional } from '../globalContext.js'
 import { getHookFromPageConfigGlobalCumulative } from '../../../shared-server-client/hooks/getHook.js'
-import type { PageContext_logRuntime } from '../loggerRuntime.js'
+import type { PageContextCreatedServerMinimum } from './createPageContextServerSide.js'
 
 const globalObject = getGlobalObject('renderPageServer/execHookOnError.ts', {
   seen: new WeakSet(),
 })
 
-function execHookOnError(err: unknown, pageContext: PageContext_logRuntime) {
+function execHookOnError(err: unknown, pageContext: PageContextCreatedServerMinimum | null) {
   if (isObject(err)) {
     if (globalObject.seen.has(err)) return
     globalObject.seen.add(err)

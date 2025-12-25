@@ -9,12 +9,15 @@ export type { PageContext_logRuntime }
 import { loggRuntimeErrorProd } from './renderPageServer/loggerProd.js'
 import type { LogType } from '../../node/vite/shared/loggerDev.js'
 import { assert } from '../utils.js'
+import type { PageContextCreatedServerMinimum } from './renderPageServer/createPageContextServerSide.js'
 
 type LogRuntimeInfo = (msg: string, pageContext: PageContext_logRuntime, logType: LogType) => void
 type LogRuntimeError = (err: unknown, pageContext: PageContext_logRuntime) => void
-type PageContext_logRuntime = null | {
-  _requestId: number
-}
+type PageContext_logRuntime =
+  | null
+  | (PageContextCreatedServerMinimum & {
+      _requestId: number
+    })
 
 // Set production logger (which is overwritten by loggerDev.ts in non-production environments such as development and during pre-rendering)
 logRuntimeError =
