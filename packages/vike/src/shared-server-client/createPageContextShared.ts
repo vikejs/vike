@@ -1,16 +1,20 @@
 export { createPageContextShared }
 export { createPageContextObject }
+export type { PageContextCreated }
 
-import type { GlobalConfigPublic } from './page-configs/resolveVikeConfigPublic.js'
-import { type PageContextPrepareMinimum } from './preparePageContextForPublicUsage.js'
 import { changeEnumerable, objectAssign } from './utils.js'
+import type { GlobalConfigPublic } from './page-configs/resolveVikeConfigPublic.js'
+import type { PageContextCreatedClient } from '../client/runtime-client-routing/createPageContextClientSide.js'
+import type { PageContextCreatedServer } from '../server/runtime/renderPageServer/createPageContextServerSide.js'
+import type { PageContextCreatedClient_ServerRouting } from '../client/runtime-server-routing/createPageContextClientSide.js'
 
-function createPageContextShared<T extends PageContextPrepareMinimum>(
+type PageContextCreated = PageContextCreatedServer | PageContextCreatedClient | PageContextCreatedClient_ServerRouting
+
+function createPageContextShared<T extends Record<string, unknown>>(
   pageContextCreated: T,
   globalConfigPublic: GlobalConfigPublic,
 ) {
   objectAssign(pageContextCreated, globalConfigPublic)
-
   return pageContextCreated
 }
 
