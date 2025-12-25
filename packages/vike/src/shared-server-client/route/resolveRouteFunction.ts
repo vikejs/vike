@@ -95,27 +95,13 @@ async function resolveRouteFunction(
 }
 
 // TO-DO/next-major-release: remove, and make routing synchronous (enabling Vike to synchronously check whether a link is a Vike link before even calling ev.preventDefault())
-async function assertSyncRouting(res: unknown, errPrefix: string) {
+function assertSyncRouting(res: unknown, errPrefix: string) {
   assertWarning(
-    !isPromise(res) || (await isFulfilledPromise(res)),
+    !isPromise(res),
     `${errPrefix} returned a promise, but asynchronous routing is deprecated and will be removed in the next major release, see https://vike.dev/route-function#async`,
     { onlyOnce: true },
   )
 }
-
-async function isFulfilledPromise(promise: Promise<unknown>): Promise<boolean> {
-  const state = await getPromiseState(promise)
-  return state.status === 'fulfilled'
-}
-
-async function getPromiseState(promise: Promise<unknown>) {
-  const PENDING = Symbol()
-  const result = await Promise.race([promise, Promise.resolve(PENDING)])
-
-  if (result === PENDING) return { status: 'pending' } as const
-  return { status: 'fulfilled', value: result } as const
-}
-
 // TO-DO/next-major-release: remove
 function warnDeprecatedAllowKey() {
   const allowKey = pc.cyan('iKnowThePerformanceRisksOfAsyncRouteFunctions')
