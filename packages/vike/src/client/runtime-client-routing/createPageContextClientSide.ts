@@ -19,14 +19,14 @@ async function createPageContextClientSide(urlOriginal: string) {
     _urlHandler: null,
     _baseServer: baseServer,
   })
+  const pageContextUrlComputed = getPageContextUrlComputed(pageContextCreated)
+  objectAssign(pageContextCreated, pageContextUrlComputed)
+
   const globalContext = await getGlobalContextClientInternal()
   objectAssign(pageContextCreated, {
     _globalContext: globalContext,
     _pageFilesAll: globalContext._pageFilesAll, // TO-DO/next-major-release: remove
   })
-  const pageContextUrlComputed = getPageContextUrlComputed(pageContextCreated)
-  objectAssign(pageContextCreated, pageContextUrlComputed)
-
   const pageContextAugmented = createPageContextShared(pageContextCreated, globalContext._globalConfigPublic)
   updateType(pageContextCreated, pageContextAugmented)
 
