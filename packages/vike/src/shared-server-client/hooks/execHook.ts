@@ -263,7 +263,22 @@ function execHookWithOnHookCall<HookReturn>(
   for (const onHookCall of configValue.value as Function[]) {
     const hookPublic = { name: hookName, filePath: hookFilePath, sync, call }
     call = () => {
-      onHookCall(hookPublic, context)
+      ;(async () => {
+        try {
+          await onHookCall(hookPublic, context)
+        } catch (err) {
+          console.error(err)
+          /* TO-DO/eventually: use dependency injection to be able to use logErrorServer() on the server-side.
+          if (!globalThis.__VIKE__IS_CLIENT && pageContext && hookName !== 'onError') {
+            assert(!pageContext.isClientSide)
+            logErrorServer(err, pageContext)
+          } else {
+            // Avoid infinite loop
+            console.error(err)
+          }
+          */
+        }
+      })()
       assertUsage(originalCalled, 'onHookCall() must run hook.call()')
       return originalReturn
     }
