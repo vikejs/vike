@@ -25,8 +25,6 @@ async function hydrate() {
 
   objectAssign(pageContext, getPageContextSerializedInHtml())
 
-  assertPristineUrl()
-
   // Sets pageContext.config using local configs — overrides the pageContext.config set using global configs at createPageContextClientSide()
   const pageContextAddendum = await loadPageConfigsLazyClientSide(
     pageContext.pageId,
@@ -37,6 +35,8 @@ async function hydrate() {
   objectAssign(pageContext, pageContextAddendum)
 
   await execHook('onCreatePageContext', pageContext, preparePageContextForPublicUsageClient)
+
+  assertPristineUrl()
 
   await execHookOnRenderClient(pageContext, preparePageContextForPublicUsageClient)
 
