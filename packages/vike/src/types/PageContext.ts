@@ -187,6 +187,16 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
   PageContextInit &
   PageContextUrlServer & {
     /**
+     * The HTTP request headers.
+     *
+     * As a string object normalized by Vike.
+     *
+     * https://vike.dev/headers
+     * https://vike.dev/pageContext#headers
+     */
+    headers: Record<string, string> | null
+
+    /**
      * Whether the environment is the client-side:
      * - In the browser, the value is `true`.
      * - Upon SSR and pre-rendering, the value is `false`.
@@ -249,6 +259,11 @@ type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltI
     | 'from'
   > &
   PageContextClientCommon & {
+    /**
+     * The current URL unprocessed (e.g. with the Base URL).
+     */
+    urlOriginal: string
+
     /**
      * Whether the page is the first page rendered.
      *
