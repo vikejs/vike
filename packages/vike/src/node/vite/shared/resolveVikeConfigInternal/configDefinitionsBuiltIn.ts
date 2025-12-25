@@ -18,6 +18,7 @@ import {
   isConfigSourceValueNull,
 } from '../../plugins/pluginVirtualFiles/getConfigValueSourcesRelevant.js'
 import type { PageConfigBuildTimeBeforeComputed } from '../resolveVikeConfigInternal.js'
+import { getFileSuffixes } from '../../../../shared-server-node/getFileSuffixes.js'
 
 // For users
 /** The meta definition of a config.
@@ -229,7 +230,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
         // Exclude `.ssr.js` hooks (they don't require pageContext.json requests)
         .filter((source) => {
           const { definedAt } = source
-          if ('filePathAbsoluteVite' in definedAt && definedAt.filePathAbsoluteVite.includes('.ssr.')) {
+          if ('fileName' in definedAt && getFileSuffixes(definedAt.fileName).includes('ssr')) {
             return false
           }
           return true

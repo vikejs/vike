@@ -1,7 +1,7 @@
 export { createPageContextServerSide }
 export { createPageContextServerSideWithoutGlobalContext }
 export type { PageContextCreatedServer }
-export type { PageContextCreatedServerMinimum }
+export type { PageContextCreatedServerBase }
 
 import { assert, assertUsage, assertWarning, updateType, normalizeHeaders, objectAssign } from '../../utils.js'
 import { getPageContextUrlComputed } from '../../../shared-server-client/getPageContextUrlComputed.js'
@@ -12,7 +12,7 @@ import {
   createPageContextShared,
 } from '../../../shared-server-client/createPageContextShared.js'
 
-type PageContextCreatedServerMinimum = ReturnType<typeof createPageContextServerSideWithoutGlobalContext>
+type PageContextCreatedServerBase = ReturnType<typeof createPageContextBase>
 type PageContextCreatedServer = Awaited<ReturnType<typeof createPageContextServerSide>>
 function createPageContextServerSide(
   pageContextInit: PageContextInit,
@@ -31,9 +31,9 @@ function createPageContextServerSide(
   ),
 ) {
   assert(pageContextInit.urlOriginal)
-  const pageContextCreated = createPageContext(pageContextInit, args.isPrerendering, args.requestId)
+  const pageContext = createPageContextBase(pageContextInit, args.isPrerendering, args.requestId)
 
-  objectAssign(pageContextCreated, {
+  objectAssign(pageContext, {
     _globalContext: globalContext,
     _pageFilesAll: globalContext._pageFilesAll, // TO-DO/next-major-release: remove
     // We use pageContext._baseServer and pageContext._baseAssets instead of pageContext._globalContext.baseServer and pageContext._globalContext.baseAssets because the Base URLs can (eventually one day if needed) be made non-global
@@ -44,11 +44,11 @@ function createPageContextServerSide(
     isClientSideNavigation: args.isPrerendering ? false : args.isClientSideNavigation,
   })
 
-  objectAssign(pageContextCreated, globalContext._globalConfigPublic)
+  objectAssign(pageContext, globalContext._globalConfigPublic)
 
   // pageContext.urlParsed
-  const pageContextUrlComputed = getPageContextUrlComputed(pageContextCreated)
-  objectAssign(pageContextCreated, pageContextUrlComputed)
+  const pageContextUrlComputed = getPageContextUrlComputed(pageContext)
+  objectAssign(pageContext, pageContextUrlComputed)
 
   // pageContext.headers
   {
@@ -70,20 +70,22 @@ function createPageContextServerSide(
     } else {
       headers = null
     }
-    objectAssign(pageContextCreated, { headers })
+    objectAssign(pageContext, { headers })
   }
 
-  const pageContextAugmented = createPageContextShared(pageContextCreated, globalContext._globalConfigPublic)
-  updateType(pageContextCreated, pageContextAugmented)
+  const pageContextAugmented = createPageContextShared(pageContext, globalContext._globalConfigPublic)
+  updateType(pageContext, pageContextAugmented)
 
-  return pageContextCreated
-}
-/** Use this as last resort — prefer passing richer `pageContext` objects to the runtime logger */
-function createPageContextServerSideWithoutGlobalContext(pageContextInit: PageContextInit, requestId: number) {
-  const pageContext = createPageContext(pageContextInit, false, requestId)
   return pageContext
 }
-function createPageContext(pageContextInit: PageContextInit | null, isPrerendering: boolean, requestId: number) {
+
+/** Use this as last resort — prefer passing richer `pageContext` objects to the runtime logger */
+function createPageContextServerSideWithoutGlobalContext(pageContextInit: PageContextInit, requestId: number) {
+  const pageContext = createPageContextBase(pageContextInit, false, requestId)
+  return pageContext
+}
+
+function createPageContextBase(pageContextInit: PageContextInit | null, isPrerendering: boolean, requestId: number) {
   const pageContext = createPageContextObject()
   objectAssign(pageContext, {
     isClientSide: false as const,

@@ -6,7 +6,7 @@ import { renderPageServerAfterRoute } from './renderPageServer/renderPageServerA
 import {
   createPageContextServerSide,
   createPageContextServerSideWithoutGlobalContext,
-  type PageContextCreatedServerMinimum,
+  type PageContextCreatedServerBase,
 } from './renderPageServer/createPageContextServerSide.js'
 import { route } from '../../shared-server-client/route/index.js'
 import {
@@ -71,7 +71,7 @@ import {
   type PageContext_loadPageConfigsLazyServerSide,
 } from './renderPageServer/loadPageConfigsLazyServerSide.js'
 import { resolveRedirects } from './renderPageServer/resolveRedirects.js'
-import type { PageContextInternalServer } from '../../types/PageContext.js'
+import type { PageContextInit, PageContextInternalServer } from '../../types/PageContext.js'
 import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
 import { forkPageContext } from '../../shared-server-client/forkPageContext.js'
 import { getAsyncLocalStorage, type AsyncStore } from './asyncHook.js'
@@ -80,16 +80,10 @@ const globalObject = getGlobalObject('runtime/renderPageServer.ts', {
   httpRequestsCount: 0,
 })
 
-type PageContextAfterRender = PageContextCreatedServerMinimum & {
+type PageContextAfterRender = PageContextCreatedServerBase & {
   httpResponse: HttpResponse
   _requestId: number
 } & Partial<PageContextInternalServer>
-type PageContextInit = Pick<PageContextInternalServer, 'urlOriginal' | 'headersOriginal'> & {
-  /** @deprecated Set `pageContextInit.urlOriginal` instead  */ // TO-DO/next-major-release: remove
-  url?: string
-  /** @deprecated Set pageContextInit.headersOriginal instead */ // TO-DO/next-major-release: remove
-  headers?: Record<string, string>
-}
 type PageContextBegin = ReturnType<typeof getPageContextBegin>
 
 // `renderPageServer()` calls `renderPageServerNominal()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that Vike never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
