@@ -8,17 +8,20 @@ import { getGlobalContextClientInternal } from './getGlobalContextClientInternal
 import { assert, updateType, isBaseServer, objectAssign } from './utils.js'
 
 async function createPageContextClientSide(urlOriginal: string) {
-  const baseServer = getBaseServer()
-  assert(isBaseServer(baseServer))
-
   const pageContextCreated = createPageContextObject()
   objectAssign(pageContextCreated, {
     isClientSide: true as const,
     isPrerendering: false as const,
     urlOriginal,
     _urlHandler: null,
+  })
+
+  const baseServer = getBaseServer()
+  assert(isBaseServer(baseServer))
+  objectAssign(pageContextCreated, {
     _baseServer: baseServer,
   })
+
   const pageContextUrlComputed = getPageContextUrlComputed(pageContextCreated)
   objectAssign(pageContextCreated, pageContextUrlComputed)
 
