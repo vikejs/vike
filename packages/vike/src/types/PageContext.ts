@@ -64,7 +64,7 @@ type PageContextClientWithServerRouting<Data = unknown> = PageContextBuiltInClie
   Vike.PageContext &
   Vike.PageContextClient
 
-type PageContextBuiltInCommon<Data> = PageContextConfig & PageContextInit & {
+type PageContextBuiltInCommon<Data> = PageContextConfig & {
   /**
    * Useful for distinguishing `pageContext` from other objects and narrowing down TypeScript unions.
    *
@@ -184,6 +184,7 @@ type PageContextInit = {
 }
 
 type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
+  PageContextInit &
   PageContextUrlServer & {
     /**
      * Whether the environment is the client-side:
