@@ -12,7 +12,7 @@ export const onHookCall: Config['onHookCall'] = async (hook, context) => {
     // ```
     // [/test/playground/test-preview.test.ts][npm run preview][Browser Error] Error: [vike][Error] The guard() hook defined by /pages/guard-client-only/+guard.client.ts timed out: it didn't finish after 30 seconds (https://vike.dev/hooksTimeout)
     // ```
-    // throw err
+    throw err
   } finally {
     console.log('After hook:', hook.name, hook.filePath)
   }
