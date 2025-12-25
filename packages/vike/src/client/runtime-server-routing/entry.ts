@@ -6,7 +6,7 @@ import {
   type PageContextCreatedClient_ServerRouting,
 } from './createPageContextClientSide.js'
 import { execHookOnRenderClient } from '../shared/execHookOnRenderClient.js'
-import { assertSingleInstance_onClientEntryServerRouting, objectAssign, updateType } from './utils.js'
+import { assertSingleInstance_onClientEntryServerRouting, assertUsage, objectAssign, updateType } from './utils.js'
 import { removeFoucBuster } from '../shared/removeFoucBuster.js'
 import { execHook } from '../../shared-server-client/hooks/execHook.js'
 import { preparePageContextForPublicUsageClient } from './preparePageContextForPublicUsageClient.js'
@@ -17,19 +17,25 @@ import {
   loadPageConfigsLazyClientSide,
   type PageContext_loadPageConfigsLazyClientSide,
 } from '../shared/loadPageConfigsLazyClientSide.js'
+import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtml.js'
+import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 
+const urlFirst = getCurrentUrl({ withoutHash: true })
 assertSingleInstance_onClientEntryServerRouting(import.meta.env.PROD)
-
 setVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry)
-
 if (import.meta.env.DEV) removeFoucBuster()
-
 hydrate()
 
 async function hydrate() {
   const pageContext = await createPageContextClientSide()
+
+  objectAssign(pageContext, getPageContextSerializedInHtml())
+
+  assertPristineUrl()
+
   // Sets pageContext.config to local configs (overrides the pageContext.config set above)
   updateType(pageContext, await loadPageConfigsLazyClientSideAndExecHook(pageContext))
+
   await execHookOnRenderClient(pageContext, preparePageContextForPublicUsageClient)
   await execHook('onHydrationEnd', pageContext, preparePageContextForPublicUsageClient)
 }
@@ -48,4 +54,12 @@ async function loadPageConfigsLazyClientSideAndExecHook<
   await execHook('onCreatePageContext', pageContext, preparePageContextForPublicUsageClient)
 
   return pageContext
+}
+
+function assertPristineUrl() {
+  const urlCurrent = getCurrentUrl({ withoutHash: true })
+  assertUsage(
+    urlFirst === urlCurrent,
+    `The URL was manipulated before the hydration finished ('${urlFirst}' to '${urlCurrent}'). Ensure the hydration has finished before manipulating the URL. Consider using the onHydrationEnd() hook.`,
+  )
 }
