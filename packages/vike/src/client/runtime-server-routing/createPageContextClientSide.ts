@@ -7,15 +7,7 @@ import { createPageContextObject, createPageContextShared } from '../../shared-s
 import { getGlobalContextClientInternal } from './getGlobalContextClientInternal.js'
 
 async function createPageContextClientSide() {
-  const pageContextCreated = createPageContextObject()
-  objectAssign(pageContextCreated, {
-    isClientSide: true as const,
-    isPrerendering: false as const,
-    isHydration: true as const,
-    isBackwardNavigation: null,
-    isHistoryNavigation: null,
-    _hasPageContextFromServer: true as const,
-  })
+  const pageContextCreated = createPageContextBase()
 
   const globalContext = await getGlobalContextClientInternal()
   objectAssign(pageContextCreated, {
@@ -26,5 +18,18 @@ async function createPageContextClientSide() {
   // Sets pageContext.config to global configs
   updateType(pageContextCreated, createPageContextShared(pageContextCreated, globalContext._globalConfigPublic))
 
+  return pageContextCreated
+}
+
+function createPageContextBase() {
+  const pageContextCreated = createPageContextObject()
+  objectAssign(pageContextCreated, {
+    isClientSide: true as const,
+    isPrerendering: false as const,
+    isHydration: true as const,
+    isBackwardNavigation: null,
+    isHistoryNavigation: null,
+    _hasPageContextFromServer: true as const,
+  })
   return pageContextCreated
 }
