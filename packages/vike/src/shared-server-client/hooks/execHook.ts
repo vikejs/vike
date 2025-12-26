@@ -7,8 +7,8 @@ export { execHookDirectSingle }
 export { execHookDirectSingleWithReturn }
 export { execHookDirectWithoutPageContext }
 export { execHookDirectSync }
-export { execHookWithOnHookCall as execHookVanilla }
-export { execHookWithOnHookCall as execHookVanillaSync }
+export { execHookBase as execHookVanilla }
+export { execHookBase as execHookVanillaSync }
 export { getPageContext_sync }
 export { providePageContext }
 export { isUserHookError }
@@ -186,7 +186,7 @@ function execHookDirectAsync<HookReturn>(
   ;(async () => {
     try {
       providePageContextInternal(pageContextForPublicUsage)
-      const ret = await execHookWithOnHookCall(hookFnCaller, hook, globalContext, pageContextForPublicUsage)
+      const ret = await execHookBase(hookFnCaller, hook, globalContext, pageContextForPublicUsage)
       resolve(ret)
     } catch (err) {
       if (isObject(err)) {
@@ -206,7 +206,7 @@ function execHookDirectSync<PageContext extends PageContextPrepareMinimum>(
 ) {
   const pageContextForPublicUsage = preparePageContextForPublicUsage(pageContext)
   providePageContextInternal(pageContextForPublicUsage)
-  const hookReturn = execHookWithOnHookCall(
+  const hookReturn = execHookBase(
     () => hook.hookFn(pageContextForPublicUsage),
     hook,
     pageContext._globalContext,
@@ -215,7 +215,7 @@ function execHookDirectSync<PageContext extends PageContextPrepareMinimum>(
   return { hookReturn }
 }
 
-function execHookWithOnHookCall<HookReturn>(
+function execHookBase<HookReturn>(
   hookFnCaller: () => HookReturn,
   hook: Omit<Hook, 'hookTimeout' | 'hookFn'>,
   globalContext: GlobalContextPrepareMinimum,
