@@ -185,7 +185,6 @@ function execHookDirectAsync<HookReturn>(
     }, timeoutErr)
   ;(async () => {
     try {
-      providePageContextInternal(pageContextForPublicUsage)
       const ret = await execHookBase(hookFnCaller, hook, globalContext, pageContextForPublicUsage)
       resolve(ret)
     } catch (err) {
@@ -205,7 +204,6 @@ function execHookDirectSync<PageContext extends PageContextPrepareMinimum>(
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
 ) {
   const pageContextForPublicUsage = preparePageContextForPublicUsage(pageContext)
-  providePageContextInternal(pageContextForPublicUsage)
   const hookReturn = execHookBase(
     () => hook.hookFn(pageContextForPublicUsage),
     hook,
@@ -226,14 +224,19 @@ function execHookBase<HookReturn>(
   assert(hookName !== 'onHookCall') // ensure no infinite loop
   const configValue = globalContext._pageConfigGlobal.configValues['onHookCall']
 
+  let call: () => HookReturn | Promise<HookReturn> = () => {
+    providePageContextInternal(pageContext)
+    return hookFnCaller()
+  }
+
   // +onHookCall doesn't exist
-  if (!configValue?.value) return hookFnCaller()
+  if (!configValue?.value) return call()
 
   // +onHookCall wrapping
   let originalCalled = false
   let originalReturn: HookReturn
   let originalError: unknown
-  let call: () => HookReturn | Promise<HookReturn> = () => {
+  call = () => {
     originalCalled = true
     try {
       originalReturn = hookFnCaller()
