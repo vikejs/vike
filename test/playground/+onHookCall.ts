@@ -6,8 +6,9 @@ export const onHookCall: Config['onHookCall'] = async (hook, pageContext) => {
   try {
     await hook.call()
   } catch (err) {
-    // Swallowing isn't possible by design
     console.log(`Error caught by +onHookCall for ${hook.name}:`, err)
+    // Swallowing isn't possible by design
+    if (Math.random() > 0.5) throw err
   } finally {
     console.log('After hook:', hook.name, hook.filePath)
   }
