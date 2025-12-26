@@ -258,23 +258,29 @@ function execHookWithOnHookCall<HookReturn>(
   }
   for (const onHookCall of configValue.value as Function[]) {
     const hookPublic = { name: hookName, filePath: hookFilePath, call }
+    // Recursively wrap hookFnCaller() so +onHookCall can use async hooks. (E.g. vike-react-sentry integrates Sentry's `Tracer.startActiveSpan()`.)
     call = () => {
       ;(async () => {
         try {
           await onHookCall(hookPublic, pageContext)
         } catch (err) {
           console.error(err)
-          /* TO-DO/eventually: use dependency injection to be able to use logErrorServer() on the server-side.
-          if (!globalThis.__VIKE__IS_CLIENT && pageContext && hookName !== 'onError') {
+          /* TO-DO/eventually: use dependency injection to be able to use logErrorServer() when this function runs on the server-side.
+          if (
+            !globalThis.__VIKE__IS_CLIENT &&
+            pageContext &&
+            // Avoid infinite loop
+            hookName !== 'onError'
+          ) {
             assert(!pageContext.isClientSide)
             logErrorServer(err, pageContext)
           } else {
-            // Avoid infinite loop
-            console.error(err)
+            logErrorClient(err)
           }
-          */
+          //*/
         }
       })()
+      // +onHookCall must run hook.call() before any `await` — https://github.com/vikejs/vike/pull/2978#discussion_r2645232953
       assertUsage(originalCalled, 'onHookCall() must run hook.call()')
       return originalReturn
     }
