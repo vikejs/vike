@@ -1,6 +1,8 @@
 import type { Config } from 'vike/types'
+import { assert } from './utils/assert'
 
 export const onHookCall: Config['onHookCall'] = async (hook, pageContext) => {
+  assert(pageContext === null || pageContext.isClientSide === true || pageContext.isClientSide === false)
   // spellcheck-ignore
   console.log('Befor hook:', hook.name, hook.filePath)
   try {
