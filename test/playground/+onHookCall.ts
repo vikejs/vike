@@ -1,6 +1,6 @@
 import type { Config } from 'vike/types'
 
-export const onHookCall: Config['onHookCall'] = async (hook, context) => {
+export const onHookCall: Config['onHookCall'] = async (hook, pageContext) => {
   // spellcheck-ignore
   console.log('Befor hook:', hook.name, hook.filePath)
   try {

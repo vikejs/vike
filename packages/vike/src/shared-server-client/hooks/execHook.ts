@@ -245,9 +245,6 @@ function execHookWithOnHookCall<HookReturn>(
   const configValue = globalContext._pageConfigGlobal.configValues['onHookCall']
   if (!configValue?.value) return hookFnCaller()
 
-  const context: { pageContext?: unknown; globalContext?: unknown } = { globalContext }
-  if (pageContext) context.pageContext = pageContext
-
   let originalCalled = false
   let originalReturn: HookReturn
   let originalError: unknown
@@ -265,7 +262,7 @@ function execHookWithOnHookCall<HookReturn>(
     call = () => {
       ;(async () => {
         try {
-          await onHookCall(hookPublic, context)
+          await onHookCall(hookPublic, pageContext)
         } catch (err) {
           console.error(err)
           /* TO-DO/eventually: use dependency injection to be able to use logErrorServer() on the server-side.

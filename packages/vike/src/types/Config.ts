@@ -447,10 +447,7 @@ type ConfigBuiltIn = {
   onHookCall?:
     | ((
         hook: { name: string; filePath: string; sync: boolean; call: () => void | Promise<void> },
-        context: {
-          pageContext?: PageContextClient | PageContextServer
-          globalContext?: GlobalContext
-        },
+        pageContext: PageContextClient | PageContextServer | null,
       ) => void | Promise<void>)
     | ImportStringList
 
