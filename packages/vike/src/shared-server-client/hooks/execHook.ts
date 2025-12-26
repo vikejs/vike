@@ -65,7 +65,7 @@ async function execHookGlobal<HookArg extends GlobalContextPrepareMinimum>(
   const hookArgForPublicUsage = prepareForPublicUsage(hookArg)
   await Promise.all(
     hooks.map(async (hook) => {
-      await execHookDirectAsync(() => hook.hookFn(hookArgForPublicUsage), hook, pageContext, globalContext)
+      await execHookDirectAsync(() => hook.hookFn(hookArgForPublicUsage), hook, globalContext, pageContext)
     }),
   )
 }
@@ -82,8 +82,8 @@ async function execHookDirect<PageContext extends PageContextPrepareMinimum>(
       const hookReturn = await execHookDirectAsync(
         () => hook.hookFn(pageContextForPublicUsage),
         hook,
-        pageContextForPublicUsage,
         pageContext._globalContext,
+        pageContextForPublicUsage,
       )
       return { ...hook, hookReturn }
     }),
@@ -128,16 +128,16 @@ async function execHookDirectWithoutPageContext<HookReturn>(
   const hookReturn = await execHookDirectAsync(
     hookFnCaller,
     { hookName, hookFilePath, hookTimeout },
-    null,
     globalContext,
+    null,
   )
   return hookReturn
 }
 function execHookDirectAsync<HookReturn>(
   hookFnCaller: () => HookReturn,
   hook: Omit<Hook, 'hookFn'>,
-  pageContextForPublicUsage: null | PageContextPrepareMinimum,
   globalContext: GlobalContextPrepareMinimum,
+  pageContextForPublicUsage: null | PageContextPrepareMinimum,
 ): Promise<HookReturn> {
   const {
     hookName,
