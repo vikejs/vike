@@ -215,6 +215,7 @@ function execHookDirectSync<PageContext extends PageContextPrepareMinimum>(
   return { hookReturn }
 }
 
+// Every execHook* variant should call this
 function execHookBase<HookReturn>(
   hookFnCaller: () => HookReturn,
   hook: Omit<Hook, 'hookTimeout' | 'hookFn'>,
