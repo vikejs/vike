@@ -9,8 +9,8 @@ import { ConfigSpec } from '../../components'
 ```ts
 type OnHookCall = (hook: Hook, pageContext: null | PageContext) => void
 type Hook = {
-  name: string,
-  filePath: string,
+  name: string
+  filePath: string
   call: () => void | Promise<void>
 }
 ```
@@ -27,20 +27,20 @@ import type { Config } from 'vike/types'
 export const onHookCall: Config['onHookCall'] = async (hook, pageContext) => {
   console.log('before', hook.name, hook.filePath)
   await hook.call()
-  console.log('after', hook.name)
+  console.log('after', hook.name, hook.filePath)
 }
 ```
 
 The first parameter `hook` contains:
 - `hook.name` — Name of the hook being called (e.g. `'onRenderHtml'`, `'data'`, `'guard'`)
 - `hook.filePath` — File path where the hook is defined
-- `hook.call()` — Function to call the actual hook (the return value is handled internally)
+- `hook.call()` — Call the hook
 
 The second parameter is <Link href="/pageContext">`pageContext`</Link> or `null`.
 
 > You can access <Link href="/globalContext">`globalContext`</Link> by using <Link href="/getGlobalContext" noBreadcrumb />.
 
-> You must call `hook.call()` synchronously (before any `await`). This is because sync hooks cannot be wrapped asynchronously while preserving synchronous execution.
+> You must always call `hook.call()` and do so before any `await`.
 >
 > ```ts
 > // ❌ This breaks sync hooks
