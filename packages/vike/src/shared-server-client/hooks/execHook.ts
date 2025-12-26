@@ -221,7 +221,7 @@ function execHookVanillaSync<HookReturn>(
   globalContext: GlobalContextPrepareMinimum,
   pageContext: PageContextPrepareMinimum | null = null,
 ): Promise<HookReturn> | HookReturn {
-  return execHookWithOnHookCall(hookFnCaller, hook, globalContext, pageContext, true)
+  return execHookWithOnHookCall(hookFnCaller, hook, globalContext, pageContext)
 }
 
 function execHookVanilla<HookReturn>(
@@ -230,7 +230,7 @@ function execHookVanilla<HookReturn>(
   globalContext: GlobalContextPrepareMinimum,
   pageContext: PageContextPrepareMinimum | null = null,
 ): Promise<HookReturn> | HookReturn {
-  return execHookWithOnHookCall(hookFnCaller, hook, globalContext, pageContext, false)
+  return execHookWithOnHookCall(hookFnCaller, hook, globalContext, pageContext)
 }
 
 function execHookWithOnHookCall<HookReturn>(
@@ -238,7 +238,6 @@ function execHookWithOnHookCall<HookReturn>(
   hook: Omit<Hook, 'hookTimeout' | 'hookFn'>,
   globalContext: GlobalContextPrepareMinimum,
   pageContext: PageContextPrepareMinimum | null,
-  sync = false,
 ): HookReturn | Promise<HookReturn> {
   const { hookName, hookFilePath } = hook
   assert(hookName !== 'onHookCall') // ensure no infinite loop
@@ -258,7 +257,7 @@ function execHookWithOnHookCall<HookReturn>(
     return originalReturn
   }
   for (const onHookCall of configValue.value as Function[]) {
-    const hookPublic = { name: hookName, filePath: hookFilePath, sync, call }
+    const hookPublic = { name: hookName, filePath: hookFilePath, call }
     call = () => {
       ;(async () => {
         try {
