@@ -5,7 +5,16 @@ import { ConfigSpec } from '../../components'
   env="server, client"
   cumulative
   global
-/>
+>
+```ts
+type OnHookCall = (hook: Hook, pageContext: null | PageContext) => void
+type Hook = {
+  name: string,
+  filePath: string,
+  call: () => void | Promise<void>
+}
+```
+</ConfigSpec>
 
 Hook called whenever a Vike hook is called. Useful for instrumentation (e.g. Sentry, OpenTelemetry).
 
@@ -15,40 +24,39 @@ Hook called whenever a Vike hook is called. Useful for instrumentation (e.g. Sen
 
 import type { Config } from 'vike/types'
 
-export const onHookCall: Config['onHookCall'] = async (hook, context) => {
+export const onHookCall: Config['onHookCall'] = async (hook, pageContext) => {
   console.log('before', hook.name, hook.filePath)
   await hook.call()
   console.log('after', hook.name)
 }
 ```
 
-The `hook` object contains:
+The first parameter `hook` contains:
 - `hook.name` — Name of the hook being called (e.g. `'onRenderHtml'`, `'data'`, `'guard'`)
 - `hook.filePath` — File path where the hook is defined
-- `hook.sync` — Whether the wrapped hook is synchronous
 - `hook.call()` — Function to call the actual hook (the return value is handled internally)
 
-The `context` object contains:
-- `context.pageContext` — <Link href="/pageContext">`pageContext`</Link> (available for page hooks)
-- `context.globalContext` — <Link href="/globalContext">`globalContext`</Link> (always available)
+The second parameter is <Link href="/pageContext">`pageContext`</Link> or `null`.
 
-> **Important:** When `hook.sync` is `true`, you must call `hook.call()` synchronously (before any `await`). This is because sync hooks cannot be wrapped asynchronously while preserving synchronous execution.
+> You can access <Link href="/globalContext">`globalContext`</Link> by using <Link href="/getGlobalContext" noBreadcrumb />.
 
-```ts
-// ❌ This breaks sync hooks
-export const onHookCall: Config['onHookCall'] = async (hook, context) => {
-  await someAsyncOperation()
-  await hook.call() // Too late for sync hooks!
-}
-```
-
-```ts
-// ✅ This works for both sync and async hooks
-export const onHookCall: Config['onHookCall'] = async (hook, context) => {
-  await hook.call() // Called before any await
-  await someAsyncOperation()
-}
-```
+> You must call `hook.call()` synchronously (before any `await`). This is because sync hooks cannot be wrapped asynchronously while preserving synchronous execution.
+>
+> ```ts
+> // ❌ This breaks sync hooks
+> export const onHookCall: Config['onHookCall'] = async (hook, pageContext) => {
+>   await someAsyncOperation()
+>   await hook.call() // Too late for sync hooks!
+> }
+> ```
+>
+> ```ts
+> // ✅ This works for both sync and async hooks
+> export const onHookCall: Config['onHookCall'] = async (hook, pageContext) => {
+>   await hook.call() // Called before any await
+>   await someAsyncOperation()
+> }
+> ```
 
 
 ## Use case: instrumentation
@@ -62,7 +70,7 @@ Instrument hooks with Sentry:
 import * as Sentry from '@sentry/node'
 import type { Config } from 'vike/types'
 
-export const onHookCall: Config['onHookCall'] = async (hook, context) => {
+export const onHookCall: Config['onHookCall'] = async (hook, pageContext) => {
   await Sentry.startSpan(
     {
       op: 'vike.hook',
@@ -87,7 +95,7 @@ import type { Config } from 'vike/types'
 
 const tracer = trace.getTracer('vike')
 
-export const onHookCall: Config['onHookCall'] = async (hook, context) => {
+export const onHookCall: Config['onHookCall'] = async (hook, pageContext) => {
   await tracer.startActiveSpan(hook.name, async (span) => {
     span.setAttribute('hook.filePath', hook.filePath)
     try {
@@ -112,14 +120,14 @@ Log all hook executions for debugging:
 
 import type { Config } from 'vike/types'
 
-export const onHookCall: Config['onHookCall'] = async (hook, context) => {
+export const onHookCall: Config['onHookCall'] = async (hook, pageContext) => {
   const start = performance.now()
-  console.log(`[${hook.name}] start`, hook.filePath)
+  console.log(`[+${hook.name}] start`, hook.filePath)
   try {
     await hook.call()
-    console.log(`[${hook.name}] done in ${(performance.now() - start).toFixed(2)}ms`)
+    console.log(`[+${hook.name}] done in ${(performance.now() - start).toFixed(2)}ms`)
   } catch (error) {
-    console.error(`[${hook.name}] error`, error)
+    console.error(`[+${hook.name}] error`, error)
     throw error
   }
 }
@@ -128,7 +136,6 @@ export const onHookCall: Config['onHookCall'] = async (hook, context) => {
 
 ## See also
 
-- <Link href="/hooks" />
 - <Link href="/error-tracking" />
-- <Link href="/pageContext" />
-- <Link href="/globalContext" />
+- <Link href="/onError" />
+- <Link href="/hooks" />
