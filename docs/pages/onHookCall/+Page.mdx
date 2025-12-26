@@ -122,7 +122,7 @@ import type { Config } from 'vike/types'
 
 export const onHookCall: Config['onHookCall'] = async (hook, pageContext) => {
   const start = performance.now()
-  console.log(`[+${hook.name}] start`, hook.filePath)
+  console.log(`[+${hook.name}] start`)
   try {
     await hook.call()
     console.log(`[+${hook.name}] done in ${(performance.now() - start).toFixed(2)}ms`)
