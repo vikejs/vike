@@ -7,8 +7,8 @@ export { execHookDirectSingle }
 export { execHookDirectSingleWithReturn }
 export { execHookDirectWithoutPageContext }
 export { execHookDirectSync }
-export { execHookVanilla }
-export { execHookVanillaSync }
+export { execHookWithOnHookCall as execHookVanilla }
+export { execHookWithOnHookCall as execHookVanillaSync }
 export { getPageContext_sync }
 export { providePageContext }
 export { isUserHookError }
@@ -186,7 +186,7 @@ function execHookDirectAsync<HookReturn>(
   ;(async () => {
     try {
       providePageContextInternal(pageContextForPublicUsage)
-      const ret = await execHookVanilla(hookFnCaller, hook, globalContext, pageContextForPublicUsage)
+      const ret = await execHookWithOnHookCall(hookFnCaller, hook, globalContext, pageContextForPublicUsage)
       resolve(ret)
     } catch (err) {
       if (isObject(err)) {
@@ -206,31 +206,13 @@ function execHookDirectSync<PageContext extends PageContextPrepareMinimum>(
 ) {
   const pageContextForPublicUsage = preparePageContextForPublicUsage(pageContext)
   providePageContextInternal(pageContextForPublicUsage)
-  const hookReturn = execHookVanillaSync(
+  const hookReturn = execHookWithOnHookCall(
     () => hook.hookFn(pageContextForPublicUsage),
     hook,
     pageContext._globalContext,
     pageContextForPublicUsage,
   )
   return { hookReturn }
-}
-
-function execHookVanillaSync<HookReturn>(
-  hookFnCaller: () => HookReturn,
-  hook: Omit<Hook, 'hookTimeout' | 'hookFn'>,
-  globalContext: GlobalContextPrepareMinimum,
-  pageContext: PageContextPrepareMinimum | null = null,
-): Promise<HookReturn> | HookReturn {
-  return execHookWithOnHookCall(hookFnCaller, hook, globalContext, pageContext)
-}
-
-function execHookVanilla<HookReturn>(
-  hookFnCaller: () => HookReturn,
-  hook: Omit<Hook, 'hookTimeout' | 'hookFn'>,
-  globalContext: GlobalContextPrepareMinimum,
-  pageContext: PageContextPrepareMinimum | null = null,
-): Promise<HookReturn> | HookReturn {
-  return execHookWithOnHookCall(hookFnCaller, hook, globalContext, pageContext)
 }
 
 function execHookWithOnHookCall<HookReturn>(

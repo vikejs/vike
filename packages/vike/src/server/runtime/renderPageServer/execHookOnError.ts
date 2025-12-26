@@ -22,7 +22,8 @@ function execHookOnError(err: unknown, pageContext: PageContextCreatedServerBase
   const hooks = getHookFromPageConfigGlobalCumulative<unknown>(globalContext._pageConfigGlobal, 'onError')
   for (const hook of hooks) {
     try {
-      execHookVanillaSync(() => hook.hookFn(err, pageContext), hook, globalContext)
+      // TODO/refactor: stop using any
+      execHookVanillaSync(() => hook.hookFn(err, pageContext), hook, globalContext, pageContext as any)
     } catch (hookErr) {
       console.error(hookErr)
     }
