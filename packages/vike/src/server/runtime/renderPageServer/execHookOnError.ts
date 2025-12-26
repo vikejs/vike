@@ -1,7 +1,7 @@
 export { execHookOnError }
 
 import { isObject, getGlobalObject } from '../../utils.js'
-import { execHookVanillaSync } from '../../../shared-server-client/hooks/execHook.js'
+import { execHookBase } from '../../../shared-server-client/hooks/execHook.js'
 import { getGlobalContextServerInternalOptional } from '../globalContext.js'
 import { getHookFromPageConfigGlobalCumulative } from '../../../shared-server-client/hooks/getHook.js'
 import type { PageContextCreatedServerBase } from './createPageContextServerSide.js'
@@ -23,7 +23,7 @@ function execHookOnError(err: unknown, pageContext: PageContextCreatedServerBase
   for (const hook of hooks) {
     try {
       // TODO/refactor: stop using any
-      execHookVanillaSync(() => hook.hookFn(err, pageContext), hook, globalContext, pageContext as any)
+      execHookBase(() => hook.hookFn(err, pageContext), hook, globalContext, pageContext as any)
     } catch (hookErr) {
       console.error(hookErr)
     }

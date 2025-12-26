@@ -8,7 +8,7 @@ export { execHookDirectSingleWithReturn }
 export { execHookDirectWithoutPageContext }
 export { execHookDirectSync }
 export { execHookBase as execHookVanilla }
-export { execHookBase as execHookVanillaSync }
+export { execHookBase as execHookBase }
 export { getPageContext_sync }
 export { providePageContext }
 export { isUserHookError }
