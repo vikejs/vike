@@ -223,8 +223,11 @@ function execHookBase<HookReturn>(
   const { hookName, hookFilePath } = hook
   assert(hookName !== 'onHookCall') // ensure no infinite loop
   const configValue = globalContext._pageConfigGlobal.configValues['onHookCall']
+
+  // +onHookCall doesn't exist
   if (!configValue?.value) return hookFnCaller()
 
+  // +onHookCall wrapping
   let originalCalled = false
   let originalReturn: HookReturn
   let originalError: unknown
