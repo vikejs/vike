@@ -285,7 +285,6 @@ function execHookWithOnHookCall<HookReturn>(
   }
   // Start the call() chain
   call()
-  assert(originalCalled) // see assertUsage() above
   if (originalError) throw originalError
   return originalReturn!
 }
