@@ -13,6 +13,7 @@ export { providePageContext }
 export { isUserHookError }
 export type { PageContextExecHook }
 
+// TODO: minor refactor — maybe completely remove (some) utils.js files?
 import { assert, getProjectError, assertWarning, assertUsage } from '../../utils/assert.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { humanizeTime } from '../../utils/humanizeTime.js'
