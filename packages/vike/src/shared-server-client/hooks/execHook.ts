@@ -224,7 +224,7 @@ function execHookBase<HookReturn>(
   assert(hookName !== 'onHookCall') // ensure no infinite loop
   const configValue = globalContext._pageConfigGlobal.configValues['onHookCall']
 
-  let call: () => HookReturn | Promise<HookReturn> = () => {
+  let call: () => HookReturn = () => {
     providePageContextInternal(pageContext)
     return hookFnCaller()
   }
