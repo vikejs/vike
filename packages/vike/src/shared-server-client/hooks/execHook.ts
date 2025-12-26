@@ -224,22 +224,22 @@ function execHookBase<HookReturn>(
   assert(hookName !== 'onHookCall') // ensure no infinite loop
   const configValue = globalContext._pageConfigGlobal.configValues['onHookCall']
 
-  let call: () => HookReturn = () => {
+  const callOriginal = () => {
     providePageContextInternal(pageContext)
     return hookFnCaller()
   }
 
   // +onHookCall doesn't exist
-  if (!configValue?.value) return call()
+  if (!configValue?.value) return callOriginal()
 
   // +onHookCall wrapping
   let originalCalled = false
   let originalReturn: HookReturn
   let originalError: unknown
-  call = () => {
+  let call = () => {
     originalCalled = true
     try {
-      originalReturn = hookFnCaller()
+      originalReturn = callOriginal()
     } catch (err) {
       originalError = err
     }
@@ -247,7 +247,7 @@ function execHookBase<HookReturn>(
   }
   for (const onHookCall of configValue.value as Function[]) {
     const hookPublic = { name: hookName, filePath: hookFilePath, call }
-    // Recursively wrap hookFnCaller() so +onHookCall can use async hooks. (E.g. vike-react-sentry integrates Sentry's `Tracer.startActiveSpan()`.)
+    // Recursively wrap callOriginal() so +onHookCall can use async hooks. (E.g. vike-react-sentry integrates Sentry's `Tracer.startActiveSpan()`.)
     call = () => {
       ;(async () => {
         try {
