@@ -1,3 +1,5 @@
+// TODO: rename 'Hook called' Called
+
 export type { Config }
 export type { ConfigBuiltIn }
 export type { ConfigBuiltInResolved }
@@ -69,7 +71,13 @@ type HookNamePage =
   | 'data'
   | 'onData'
   | 'route'
-type HookNameGlobal = 'onBeforeRoute' | 'onPrerenderStart' | 'onCreatePageContext' | 'onCreateGlobalContext' | 'onError'
+type HookNameGlobal =
+  | 'onBeforeRoute'
+  | 'onPrerenderStart'
+  | 'onCreatePageContext'
+  | 'onCreateGlobalContext'
+  | 'onError'
+  | 'onHookCall'
 // v0.4 design TO-DO/next-major-release: remove
 type HookNameOldDesign = 'render' | 'prerender' | 'onBeforePrerender'
 
@@ -431,6 +439,17 @@ type ConfigBuiltIn = {
    *  https://vike.dev/onCreateGlobalContext
    */
   onCreateGlobalContext?: ((globalContext: GlobalContext) => void) | ImportStringList | null
+
+  /** Called whenever a hook is called.
+   *
+   *  https://vike.dev/onHookCall
+   */
+  onHookCall?:
+    | ((
+        hook: { name: HookName; filePath: string; call: () => void | Promise<void> },
+        pageContext: PageContextClient | PageContextServer | null,
+      ) => void | Promise<void>)
+    | ImportStringList
 
   /** Hook for fetching data.
    *

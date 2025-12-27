@@ -134,6 +134,11 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     global: true,
     cumulative: true,
   },
+  onHookCall: {
+    env: { server: true, client: true },
+    global: true,
+    cumulative: true,
+  },
   onBeforeRender: {
     env: { server: true },
   },

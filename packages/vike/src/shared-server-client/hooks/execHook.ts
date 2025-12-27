@@ -1,3 +1,5 @@
+// TODO: rename all exports
+
 export { execHook }
 export { execHookGlobal }
 export { execHookDirect }
@@ -5,12 +7,14 @@ export { execHookDirectSingle }
 export { execHookDirectSingleWithReturn }
 export { execHookDirectWithoutPageContext }
 export { execHookDirectSync }
+export { execHookBase }
 export { getPageContext_sync }
 export { providePageContext }
 export { isUserHookError }
 export type { PageContextExecHook }
 
-import { getProjectError, assertWarning, assertUsage } from '../../utils/assert.js'
+// TODO: minor refactor — maybe completely remove (some) utils.js files?
+import { assert, getProjectError, assertWarning, assertUsage } from '../../utils/assert.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { humanizeTime } from '../../utils/humanizeTime.js'
 import { isObject } from '../../utils/isObject.js'
@@ -19,7 +23,6 @@ import type { Hook, HookLoc } from './getHook.js'
 import type { PageContextConfig } from '../getPageFiles.js'
 import { getHookFromPageConfigGlobalCumulative, getHookFromPageContextNew } from './getHook.js'
 import type { HookName, HookNameGlobal } from '../../types/Config.js'
-import type { PageConfigGlobalRuntime } from '../../types/PageConfig.js'
 import type { PageContextCreated } from '../createPageContextShared.js'
 import type { PageContextForPublicUsageServer } from '../../server/runtime/renderPageServer/preparePageContextForPublicUsageServer.js'
 import type { PageContextForPublicUsageClientShared } from '../../client/shared/preparePageContextForPublicUsageClientShared.js'
@@ -53,16 +56,16 @@ async function execHook<PageContext extends PageContextExecHook>(
 
 async function execHookGlobal<HookArg extends GlobalContextPrepareMinimum>(
   hookName: HookNameGlobal,
-  pageConfigGlobal: PageConfigGlobalRuntime,
+  globalContext: GlobalContextPrepareMinimum,
   pageContext: PageContextPrepareMinimum | null,
   hookArg: HookArg,
   prepareForPublicUsage: (hookArg: HookArg) => HookArg,
 ) {
-  const hooks = getHookFromPageConfigGlobalCumulative(pageConfigGlobal, hookName)
+  const hooks = getHookFromPageConfigGlobalCumulative(globalContext._pageConfigGlobal, hookName)
   const hookArgForPublicUsage = prepareForPublicUsage(hookArg)
   await Promise.all(
     hooks.map(async (hook) => {
-      await execHookDirectAsync(() => hook.hookFn(hookArgForPublicUsage), hook, pageContext)
+      await execHookDirectAsync(() => hook.hookFn(hookArgForPublicUsage), hook, globalContext, pageContext)
     }),
   )
 }
@@ -79,6 +82,7 @@ async function execHookDirect<PageContext extends PageContextPrepareMinimum>(
       const hookReturn = await execHookDirectAsync(
         () => hook.hookFn(pageContextForPublicUsage),
         hook,
+        pageContext._globalContext,
         pageContextForPublicUsage,
       )
       return { ...hook, hookReturn }
@@ -118,14 +122,21 @@ function isUserHookError(err: unknown): false | HookLoc {
 async function execHookDirectWithoutPageContext<HookReturn>(
   hookFnCaller: () => HookReturn,
   hook: Omit<Hook, 'hookFn'>,
+  globalContext: GlobalContextPrepareMinimum,
 ): Promise<HookReturn> {
   const { hookName, hookFilePath, hookTimeout } = hook
-  const hookReturn = await execHookDirectAsync(hookFnCaller, { hookName, hookFilePath, hookTimeout }, null)
+  const hookReturn = await execHookDirectAsync(
+    hookFnCaller,
+    { hookName, hookFilePath, hookTimeout },
+    globalContext,
+    null,
+  )
   return hookReturn
 }
 function execHookDirectAsync<HookReturn>(
   hookFnCaller: () => HookReturn,
   hook: Omit<Hook, 'hookFn'>,
+  globalContext: GlobalContextPrepareMinimum,
   pageContextForPublicUsage: null | PageContextPrepareMinimum,
 ): Promise<HookReturn> {
   const {
@@ -174,8 +185,7 @@ function execHookDirectAsync<HookReturn>(
     }, timeoutErr)
   ;(async () => {
     try {
-      providePageContextInternal(pageContextForPublicUsage)
-      const ret = await hookFnCaller()
+      const ret = await execHookBase(hookFnCaller, hook, globalContext, pageContextForPublicUsage)
       resolve(ret)
     } catch (err) {
       if (isObject(err)) {
@@ -194,9 +204,80 @@ function execHookDirectSync<PageContext extends PageContextPrepareMinimum>(
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
 ) {
   const pageContextForPublicUsage = preparePageContextForPublicUsage(pageContext)
-  providePageContextInternal(pageContextForPublicUsage)
-  const hookReturn = hook.hookFn(pageContextForPublicUsage)
+  const hookReturn = execHookBase(
+    () => hook.hookFn(pageContextForPublicUsage),
+    hook,
+    pageContext._globalContext,
+    pageContextForPublicUsage,
+  )
   return { hookReturn }
+}
+
+// Every execHook* variant should call this
+function execHookBase<HookReturn>(
+  hookFnCaller: () => HookReturn,
+  hook: Omit<Hook, 'hookTimeout' | 'hookFn'>,
+  globalContext: GlobalContextPrepareMinimum,
+  pageContext: PageContextPrepareMinimum | null,
+): HookReturn | Promise<HookReturn> {
+  const { hookName, hookFilePath } = hook
+  assert(hookName !== 'onHookCall') // ensure no infinite loop
+  const configValue = globalContext._pageConfigGlobal.configValues['onHookCall']
+
+  const callOriginal = () => {
+    providePageContextInternal(pageContext)
+    return hookFnCaller()
+  }
+
+  // +onHookCall doesn't exist
+  if (!configValue?.value) return callOriginal()
+
+  // +onHookCall wrapping
+  let originalCalled = false
+  let originalReturn: HookReturn
+  let originalError: unknown
+  let call = () => {
+    originalCalled = true
+    try {
+      originalReturn = callOriginal()
+    } catch (err) {
+      originalError = err
+    }
+    return originalReturn
+  }
+  for (const onHookCall of configValue.value as Function[]) {
+    const hookPublic = { name: hookName, filePath: hookFilePath, call }
+    // Recursively wrap callOriginal() so +onHookCall can use async hooks. (E.g. vike-react-sentry integrates Sentry's `Tracer.startActiveSpan()`.)
+    call = () => {
+      ;(async () => {
+        try {
+          await onHookCall(hookPublic, pageContext)
+        } catch (err) {
+          console.error(err)
+          /* TO-DO/eventually: use dependency injection to be able to use logErrorServer() when this function runs on the server-side.
+          if (
+            !globalThis.__VIKE__IS_CLIENT &&
+            pageContext &&
+            // Avoid infinite loop
+            hookName !== 'onError'
+          ) {
+            assert(!pageContext.isClientSide)
+            logErrorServer(err, pageContext)
+          } else {
+            logErrorClient(err)
+          }
+          //*/
+        }
+      })()
+      // +onHookCall must run hook.call() before any `await` — https://github.com/vikejs/vike/pull/2978#discussion_r2645232953
+      assertUsage(originalCalled, 'onHookCall() must run hook.call()')
+      return originalReturn
+    }
+  }
+  // Start the call() chain
+  call()
+  if (originalError) throw originalError
+  return originalReturn!
 }
 
 function isNotDisabled(timeout: false | number): timeout is number {

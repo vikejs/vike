@@ -1,0 +1,21 @@
+import type { Config } from 'vike/types'
+import { assert } from './utils/assert'
+
+export const onHookCall: Config['onHookCall'] = async (hook, pageContext) => {
+  assert(pageContext === null || pageContext.isClientSide === true || pageContext.isClientSide === false)
+  console.log(
+    // spellcheck-ignore
+    'Befor hook:',
+    hook.name,
+    hook.filePath,
+  )
+  try {
+    await hook.call()
+  } catch (err) {
+    console.log(`Error caught by +onHookCall for ${hook.name}:`, err)
+    // By design, swallowing isn't possible
+    if (Math.random() > 0.5) throw err
+  } finally {
+    console.log('After hook:', hook.name, hook.filePath)
+  }
+}

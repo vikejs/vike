@@ -1,0 +1,141 @@
+import { Link } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
+
+<ConfigSpec
+  env="server, client"
+  cumulative
+  global
+>
+```ts
+type OnHookCall = (hook: Hook, pageContext: null | PageContext) => void
+type Hook = {
+  name: string
+  filePath: string
+  call: () => void | Promise<void>
+}
+```
+</ConfigSpec>
+
+Hook called whenever a Vike hook is called. Useful for instrumentation (e.g. Sentry, OpenTelemetry).
+
+```ts
+// pages/+onHookCall.ts
+// Environment: server & client
+
+import type { Config } from 'vike/types'
+
+export const onHookCall: Config['onHookCall'] = async (hook, pageContext) => {
+  console.log('before', hook.name, hook.filePath)
+  await hook.call()
+  console.log('after', hook.name, hook.filePath)
+}
+```
+
+The first parameter `hook` contains:
+- `hook.name` — Name of the hook being called (e.g. `'onRenderHtml'`, `'data'`, `'guard'`)
+- `hook.filePath` — File path where the hook is defined
+- `hook.call()` — Call the hook
+
+The second parameter is <Link href="/pageContext">`pageContext`</Link> or `null`.
+
+> You can access <Link href="/globalContext">`globalContext`</Link> by using <Link href="/getGlobalContext" noBreadcrumb />.
+
+> You must always call `hook.call()` and do so before any `await`.
+>
+> ```ts
+> // ❌ This breaks sync hooks
+> export const onHookCall: Config['onHookCall'] = async (hook, pageContext) => {
+>   await someAsyncOperation()
+>   await hook.call() // Too late for sync hooks!
+> }
+> ```
+>
+> ```ts
+> // ✅ This works for both sync and async hooks
+> export const onHookCall: Config['onHookCall'] = async (hook, pageContext) => {
+>   await hook.call() // Called before any await
+>   await someAsyncOperation()
+> }
+> ```
+
+
+## Use case: instrumentation
+
+Instrument hooks with Sentry:
+
+```ts
+// pages/+onHookCall.ts
+// Environment: server & client
+
+import * as Sentry from '@sentry/node'
+import type { Config } from 'vike/types'
+
+export const onHookCall: Config['onHookCall'] = async (hook, pageContext) => {
+  await Sentry.startSpan(
+    {
+      op: 'vike.hook',
+      name: hook.name,
+      attributes: { filePath: hook.filePath }
+    },
+    async () => {
+      await hook.call()
+    }
+  )
+}
+```
+
+Instrument hooks with OpenTelemetry:
+
+```ts
+// pages/+onHookCall.ts
+// Environment: server & client
+
+import { trace } from '@opentelemetry/api'
+import type { Config } from 'vike/types'
+
+const tracer = trace.getTracer('vike')
+
+export const onHookCall: Config['onHookCall'] = async (hook, pageContext) => {
+  await tracer.startActiveSpan(hook.name, async (span) => {
+    span.setAttribute('hook.filePath', hook.filePath)
+    try {
+      await hook.call()
+    } finally {
+      span.end()
+    }
+  })
+}
+```
+
+See also: <Link href="/error-tracking" />
+
+
+## Use case: logging
+
+Log all hook executions for debugging:
+
+```ts
+// pages/+onHookCall.ts
+// Environment: server & client
+
+import type { Config } from 'vike/types'
+
+export const onHookCall: Config['onHookCall'] = async (hook, pageContext) => {
+  const start = performance.now()
+  console.log(`[+${hook.name}] start`)
+  try {
+    await hook.call()
+    console.log(`[+${hook.name}] done in ${(performance.now() - start).toFixed(2)}ms`)
+  } catch (error) {
+    console.error(`[+${hook.name}] error`, error)
+    throw error
+  }
+}
+```
+
+
+## See also
+
+- <Link href="/error-tracking" />
+- <Link href="/onError" />
+- <Link href="/hooks" />
