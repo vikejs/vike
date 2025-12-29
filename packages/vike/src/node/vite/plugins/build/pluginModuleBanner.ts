@@ -9,7 +9,8 @@ import { getMagicString } from '../../shared/getMagicString.js'
 // - Terser removes legal comments, but I guess users use terser to minify JavaScript so I guess it's a good thing that comment is removed.
 // - Rollup's banner feature doesn't work with Vite: https://github.com/vitejs/vite/issues/8412
 //   - But, anyways, we want to prepend the banner at the beginning of each module, not at the beginning of each file (I believe that's what Rollup's banner feature does).
-// - Potential alternative: https://github.com/vitejs/vite/issues/21228#issuecomment-3627899741
+// - Potential alternative: Rolldown's `postBanner` https://x.com/voidzerodev/status/2001683010446299613
+// - Potential alternative: Rolldown's `//#region` https://github.com/vitejs/vite/issues/21228#issuecomment-3627899741
 
 function pluginModuleBanner(): Plugin[] {
   let config: ResolvedConfig
