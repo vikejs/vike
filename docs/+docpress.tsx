@@ -2,7 +2,7 @@ export { config as default }
 
 import type { Config } from '@brillout/docpress'
 import { headings, headingsDetached, categories } from './headings'
-import logo from './assets/logo/vike.svg'
+import logo from './assets/logo/vike-experiment.svg'
 import { PROJECT_VERSION } from './utils/PROJECT_VERSION'
 import { discordInvite } from './links'
 import { TopNavigation } from './TopNavigation'
@@ -38,16 +38,17 @@ const config: Config = {
 
   topNavigation: <TopNavigation />,
   navMaxWidth: 1140,
-  navLogoSize: 34,
+  navLogoSize: 38,
   navLogoStyle: {
     position: 'relative',
-    top: -1,
-    right: -2,
+    top: 0,
+    left: 0,
   },
   navLogoTextStyle: {
     letterSpacing: '0.02em',
     fontWeight: 480,
-    color: '#444',
+    fontStyle: 'italic',
+    color: '#555',
     fontSize: 22.4,
   },
 } satisfies Config
