@@ -13,7 +13,7 @@
 </linearGradient>
 <linearGradient id="gradient-dynamic-9" x1="-2.0338" x2="9.7455" y1="-12.055" y2="-.27523" gradientTransform="scale(.85209 1.1736)" gradientUnits="userSpaceOnUse">
 <stop stop-color="#ff0" offset=".35"/>
-<stop stop-color="#ffc900" offset=".8"/>
+<stop stop-color="#ffc300" offset=".8"/>
 </linearGradient>
 <linearGradient id="gradient-dynamic-10" x1="1.0011" x2="18.396" y1="-22.234" y2="-4.8396" gradientTransform="scale(.99193 1.0081)" gradientUnits="userSpaceOnUse">
 <stop stop-color="#e0e0e0" offset=".22"/>
