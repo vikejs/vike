@@ -50,14 +50,14 @@ const config: Config = {
   },
   */
   navLogoTextStyle: {
-    color: 'transparent',
     letterSpacing: '0.14em',
     fontWeight: 530,
     fontSize: 24,
     marginLeft: 0,
-    backgroundColor: '#565656',
-    textShadow: '0px 2px 3px rgba(255, 255, 255, 0.8)',
-    backgroundClip: 'text',
+    color: '#fff',
+    /* engraved / inset illusion */
+    textShadow: '0 -1px 1px rgba(0, 0, 0, 0.35), 0  1px 0   rgba(255, 255, 255, 0.8)',
+
     /*
     textShadow: '-1px -1px 0 red',
     display: 'none',
