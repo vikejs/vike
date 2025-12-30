@@ -1,10 +1,7 @@
 <svg class="hammer" width="45" height="45" version="1.1" viewBox="-50 -50 45 45" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <defs>
-<filter id="outline-all" width="300%" height="300%" x="-1" y="-1">
-<feDropShadow dx="0.5" dy="0" flood-color="#fafafa" flood-opacity="1" stdDeviation="3"/>
-<feDropShadow dx="-0.5" dy="0" flood-color="#fafafa" flood-opacity="1" stdDeviation="3"/>
-<feDropShadow dx="0" dy="-0.5" flood-color="#fafafa" flood-opacity="1" stdDeviation="3"/>
-<feDropShadow dx="0" dy="0.5" flood-color="#fafafa" flood-opacity="1" stdDeviation="3"/>
+<filter id="shadow" width="300%" height="300%" x="-1" y="-1">
+<feDropShadow dx="4" dy="3" flood-color="#e3e3e3" flood-opacity="1" stdDeviation="2"/>
 </filter>
 <linearGradient id="gradient-dynamic-7" x1="2.6887" x2="20.805" y1="-25.244" y2="-7.1277" gradientTransform="scale(1.1262 .88795)" gradientUnits="userSpaceOnUse">
 <stop stop-color="#cfcfcf" offset=".22"/>
@@ -41,7 +38,7 @@
 <linearGradient id="linearGradient349" x1="-11.588" x2="-5.9954" y1="7.01" y2="12.602" gradientTransform="scale(1.0273 .97347)" gradientUnits="userSpaceOnUse" xlink:href="#gradient-dynamic-12"/>
 <linearGradient id="linearGradient351" x1="4.042" x2="9.6349" y1="-10.423" y2="-4.8297" gradientTransform="scale(1.0272 .97356)" gradientUnits="userSpaceOnUse" xlink:href="#gradient-dynamic-12"/>
 </defs>
-<g transform="translate(-32.088 -23.658)" filter="url(#outline-all)">
+<g transform="translate(-32.088 -23.658)" filter="url(#shadow)">
 <path d="m-4.868-10.713 0.368 2.511 1.668-1.061z" fill="#7d7d7d" stroke-linecap="round" stroke-linejoin="round"/>
 <g fill="#a3a3a3" stroke-linecap="round" stroke-linejoin="round">
 <path d="m5.836-22.026-10.704 11.313 2.036 1.45 10.703-11.314z"/>
