@@ -42,7 +42,7 @@ const config: Config = {
   navMaxWidth: 1140,
   navLogoStyle: {
     position: 'relative',
-    height: 38,
+    height: 45,
     width: 113,
     top: 0,
     left: 0,
