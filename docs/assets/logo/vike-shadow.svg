@@ -1,4 +1,4 @@
-<svg class="hammer" width="109.29" height="50" version="1.1" viewBox="-50 -50 109.29 50" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg class="hammer" width="50" height="50" version="1.1" viewBox="-50 -50 50 50" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <defs>
 <filter id="shadow" width="300%" height="300%" x="-1" y="-1">
 <feDropShadow dx="4" dy="3" flood-color="#e3e3e3" flood-opacity="1" stdDeviation="2"/>
