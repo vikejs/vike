@@ -1,10 +1,10 @@
 <svg class="hammer" width="45" height="45" version="1.1" viewBox="-50 -50 45 45" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <defs>
 <filter id="outline-all" width="300%" height="300%" x="-1" y="-1">
-<feDropShadow dx="0.5" dy="0" flood-color="#666" flood-opacity="1" stdDeviation="0"/>
-<feDropShadow dx="-0.5" dy="0" flood-color="#666" flood-opacity="1" stdDeviation="0"/>
-<feDropShadow dx="0" dy="-0.5" flood-color="#666" flood-opacity="1" stdDeviation="0"/>
-<feDropShadow dx="0" dy="0.5" flood-color="#666" flood-opacity="1" stdDeviation="0"/>
+<feDropShadow dx="0.5" dy="0" flood-color="#fafafa" flood-opacity="1" stdDeviation="3"/>
+<feDropShadow dx="-0.5" dy="0" flood-color="#fafafa" flood-opacity="1" stdDeviation="3"/>
+<feDropShadow dx="0" dy="-0.5" flood-color="#fafafa" flood-opacity="1" stdDeviation="3"/>
+<feDropShadow dx="0" dy="0.5" flood-color="#fafafa" flood-opacity="1" stdDeviation="3"/>
 </filter>
 <linearGradient id="gradient-dynamic-7" x1="2.6887" x2="20.805" y1="-25.244" y2="-7.1277" gradientTransform="scale(1.1262 .88795)" gradientUnits="userSpaceOnUse">
 <stop stop-color="#cfcfcf" offset=".22"/>
