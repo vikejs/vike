@@ -2,7 +2,7 @@ export { config as default }
 
 import type { Config } from '@brillout/docpress'
 import { headings, headingsDetached, categories } from './headings'
-import logoWithText from './assets/logo/vike-with-text.svg'
+import logoWithShadow from './assets/logo/vike-shadow.svg'
 import logo from './assets/logo/vike.svg'
 import { PROJECT_VERSION } from './utils/PROJECT_VERSION'
 import { discordInvite } from './links'
@@ -15,7 +15,7 @@ const config: Config = {
   url: 'https://vike.dev',
   tagline:
     '(Replaces Next.js/Nuxt) 🔨 The composable framework to build advanced applications with stability and flexibility.',
-  logo: logoWithText,
+  logo: logoWithShadow,
   favicon: logo,
   banner: 'https://vike.dev/banner.jpg',
 
@@ -40,11 +40,10 @@ const config: Config = {
 
   topNavigation: <TopNavigation />,
   navMaxWidth: 1140,
-  navLogoStyle: {
-    height: 50,
-    width: 109.281,
-  },
+  navLogoSize: 50,
   navLogoTextStyle: {
-    display: 'none',
+    fontWeight: 'normal',
+    fontSize: 21,
+    marginLeft: 0,
   },
 } satisfies Config
