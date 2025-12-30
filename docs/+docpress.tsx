@@ -43,7 +43,7 @@ const config: Config = {
   navLogoStyle: {
     position: 'relative',
     height: 50,
-    width: 113,
+    width: 109.281,
     top: 0,
     left: 0,
   },
