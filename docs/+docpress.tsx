@@ -50,12 +50,16 @@ const config: Config = {
   },
   */
   navLogoTextStyle: {
-    color: '#fff',
+    color: 'transparent',
     letterSpacing: '0.14em',
     fontWeight: 530,
     fontSize: 24,
     marginLeft: 0,
+    backgroundColor: '#565656',
+    textShadow: '0px 2px 3px rgba(255, 255, 255, 0.8)',
+    backgroundClip: 'text',
     /*
+    textShadow: '-1px -1px 0 red',
     display: 'none',
     opacity: 0,
     paddingRight:100,
