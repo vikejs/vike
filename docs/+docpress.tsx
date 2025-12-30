@@ -41,30 +41,9 @@ const config: Config = {
   topNavigation: <TopNavigation />,
   navMaxWidth: 1140,
   navLogoSize: 50,
-  /*
   navLogoTextStyle: {
-    fontWeight: 430,
-    color: '#555',
+    fontWeight: 'normal',
     fontSize: 21,
-    marginLeft: 0
-  },
-  */
-  navLogoTextStyle: {
-    letterSpacing: '0.14em',
-    fontWeight: 530,
-    fontSize: 24,
     marginLeft: 0,
-    color: '#fff',
-    /* engraved / inset illusion */
-    textShadow: '0 -1px 1px rgba(0, 0, 0, 0.35), 0  1px 0   rgba(255, 255, 255, 0.8)',
-
-    /*
-    textShadow: '-1px -1px 0 red',
-    display: 'none',
-    opacity: 0,
-    paddingRight:100,
-    paddingRight:100,
-    marginRight: 100,
-    */
   },
 } satisfies Config
