@@ -24,7 +24,7 @@ importers:
         specifier: ^0.1.13
         version: 0.1.15(typescript@5.9.3)
       playwright-chromium:
-        specifier: ^1.57.0
+        specifier: 1.57.0
         version: 1.57.0
       vitest:
         specifier: ^3.2.4
