@@ -50,11 +50,14 @@ const config: Config = {
   },
   */
   navLogoTextStyle: {
-    display: 'none',
-    opacity: 0,
-    fontSize: 18,
+    color: '#fff',
+    letterSpacing: '0.14em',
+    fontWeight: 530,
+    fontSize: 24,
     marginLeft: 0,
     /*
+    display: 'none',
+    opacity: 0,
     paddingRight:100,
     paddingRight:100,
     marginRight: 100,
