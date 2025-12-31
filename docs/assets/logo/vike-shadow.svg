@@ -37,8 +37,9 @@
 <linearGradient id="linearGradient353" x1="-11.994" x2="9.9591" y1="-9.931" y2="12.023" gradientTransform="scale(.98611 1.0141)" gradientUnits="userSpaceOnUse" xlink:href="#gradient-dynamic-19"/>
 <linearGradient id="linearGradient355" x1="-11.588" x2="-5.9954" y1="7.01" y2="12.602" gradientTransform="scale(1.0273 .97347)" gradientUnits="userSpaceOnUse" xlink:href="#gradient-dynamic-19"/>
 <linearGradient id="linearGradient357" x1="4.042" x2="9.6349" y1="-10.423" y2="-4.8297" gradientTransform="scale(1.0272 .97356)" gradientUnits="userSpaceOnUse" xlink:href="#gradient-dynamic-19"/>
-</defs>
-<g transform="translate(-35.746 -21.158)" filter="url(#shadow)">
+
+<!-- Define the hammer group without any filter -->
+<g id="hammer-content" transform="translate(-35.746 -21.158)">
 <g stroke-linecap="round" stroke-linejoin="round">
 <path d="m-4.868-10.713 0.368 2.511 1.668-1.061z" fill="#7d7d7d"/>
 <g fill="#a3a3a3">
@@ -80,4 +81,11 @@
 <path d="m18.247-3.429v-2.9l-2.035 1.45z" fill="#dcdbdb"/>
 </g>
 </g>
+</defs>
+
+<!-- First: Render with shadow -->
+<use xlink:href="#hammer-content" filter="url(#shadow)"/>
+
+<!-- Second: Render without shadow for crisp hammer, see https://gist.github.com/brillout/c9145f50a1ce33f63a57c78f7e4518b6 -->
+<use xlink:href="#hammer-content"/>
 </svg>
