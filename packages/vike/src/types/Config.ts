@@ -308,6 +308,77 @@ type KeepScrollPosition =
  */
 type Route = string | RouteSync | RouteAsync
 
+type PrerenderSettings = {
+  /**
+   * Allow only some of your pages to be pre-rendered.
+   *
+   * This setting doesn't affect the pre-rendering process: it merely suppresses the warnings when some of your pages cannot be pre-rendered.
+   *
+   * https://vike.dev/prerender#partial
+   *
+   * @default false
+   */
+  partial?: boolean
+  /**
+   * Whether +redirects should be pre-rendered to HTML documents that redirect the user.
+   *
+   * https://vike.dev/prerender#redirects
+   */
+  redirects?: boolean
+  /**
+   * Don't create a new directory for each HTML file.
+   *
+   * For example, generate `dist/client/about.html` instead of `dist/client/about/index.html`.
+   *
+   * https://vike.dev/prerender#noextradir
+   *
+   * @default false
+   */
+  noExtraDir?: boolean
+  /**
+   * Number of concurrent pre-render jobs.
+   *
+   * Set to `false` to disable concurrency.
+   *
+   * https://vike.dev/prerender#parallel
+   *
+   * @default os.cpus().length
+   */
+  parallel?: boolean | number
+  /**
+   * Disable the automatic initiation of the pre-rendering process when running `$ vike build`.
+   *
+   * Use this if you want to programmatically initiate the pre-rendering process instead.
+   *
+   * https://vike.dev/prerender#disableautorun
+   *
+   * @default false
+   */
+  disableAutoRun?: boolean
+  /**
+   * Whether to enable pre-rendering.
+   *
+   * Setting `enable: null` enables you to set prerender settings without enabling pre-rendering by default.
+   *
+   * This is useful, for example, if you want pre-rendering to stay opt-in instead of opt-out while setting pre-render settings globally.
+   *
+   * https://vike.dev/prerender#enable
+   *
+   * @default true
+   */
+  enable?: boolean | null
+  /**
+   * If you pre-render all your pages then Vike removes the `dist/server/` directory after pre-rendering has finished.
+   *
+   * If you set this setting to `true` then Vike won't remove the `dist/server/` directory.
+   *
+   * https://vike.dev/prerender#keepDistServer
+   *
+   * @default false
+   */
+  keepDistServer?: boolean
+}
+
 /** Page configuration.
  *
  * https://vike.dev/config
@@ -335,79 +406,7 @@ type ConfigBuiltIn = {
    *
    * @default false
    */
-  prerender?:
-    | boolean
-    | ImportStringList
-    | {
-        /**
-         * Allow only some of your pages to be pre-rendered.
-         *
-         * This setting doesn't affect the pre-rendering process: it merely suppresses the warnings when some of your pages cannot be pre-rendered.
-         *
-         * https://vike.dev/prerender#partial
-         *
-         * @default false
-         */
-        partial?: boolean
-        /**
-         * Whether +redirects should be pre-rendered to HTML documents that redirect the user.
-         *
-         * https://vike.dev/prerender#redirects
-         */
-        redirects?: boolean
-        /**
-         * Don't create a new directory for each HTML file.
-         *
-         * For example, generate `dist/client/about.html` instead of `dist/client/about/index.html`.
-         *
-         * https://vike.dev/prerender#noextradir
-         *
-         * @default false
-         */
-        noExtraDir?: boolean
-        /**
-         * Number of concurrent pre-render jobs.
-         *
-         * Set to `false` to disable concurrency.
-         *
-         * https://vike.dev/prerender#parallel
-         *
-         * @default os.cpus().length
-         */
-        parallel?: boolean | number
-        /**
-         * Disable the automatic initiation of the pre-rendering process when running `$ vike build`.
-         *
-         * Use this if you want to programmatically initiate the pre-rendering process instead.
-         *
-         * https://vike.dev/prerender#disableautorun
-         *
-         * @default false
-         */
-        disableAutoRun?: boolean
-        /**
-         * Whether to enable pre-rendering.
-         *
-         * Setting `enable: null` enables you to set prerender settings without enabling pre-rendering by default.
-         *
-         * This is useful, for example, if you want pre-rendering to stay opt-in instead of opt-out while setting pre-render settings globally.
-         *
-         * https://vike.dev/prerender#enable
-         *
-         * @default true
-         */
-        enable?: boolean | null
-        /**
-         * If you pre-render all your pages then Vike removes the `dist/server/` directory after pre-rendering has finished.
-         *
-         * If you set this setting to `true` then Vike won't remove the `dist/server/` directory.
-         *
-         * https://vike.dev/prerender#keepDistServer
-         *
-         * @default false
-         */
-        keepDistServer?: boolean
-      }
+  prerender?: boolean | ImportStringList | (() => boolean | PrerenderSettings) | PrerenderSettings
 
   /**
    * Install Vike extensions.

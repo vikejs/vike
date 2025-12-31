@@ -6,6 +6,7 @@ import { assert, assertUsage, isArray, isObject, objectAssign } from './utils.js
 import { getConfigValueBuildTime } from '../../shared-server-client/page-configs/getConfigValueBuildTime.js'
 import type { PageConfigBuildTime } from '../../types/PageConfig.js'
 import { getConfigDefinedAt } from '../../shared-server-client/page-configs/getConfigDefinedAt.js'
+import { isCallable } from '../../utils/isCallable.js'
 
 // When setting +prerender to an object => it also enables pre-rendering
 const defaultValueForObject = true
@@ -13,7 +14,15 @@ const defaultValueForObject = true
 function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal, 'config' | '_pageConfigs' | '_from'>) {
   const prerenderConfigs = vikeConfig.config.prerender || []
 
-  const prerenderSettings = prerenderConfigs.filter(isObject2)
+  // Evaluate callable configs
+  const prerenderConfigsResolved = prerenderConfigs.map((config) => {
+    if (isCallable(config)) {
+      return config()
+    }
+    return config
+  })
+
+  const prerenderSettings = prerenderConfigsResolved.filter(isObject2)
   const prerenderConfigGlobal = {
     partial: pickFirst(prerenderSettings.map((c) => c.partial)) ?? false,
     redirects: pickFirst(prerenderSettings.map((c) => c.redirects)) ?? null,
@@ -25,7 +34,7 @@ function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal, 'conf
 
   let defaultLocalValue = false
   {
-    const valueFirst = prerenderConfigs.filter((p) => !isObject(p) || p.enable !== null)[0]
+    const valueFirst = prerenderConfigsResolved.filter((p) => !isObject(p) || p.enable !== null)[0]
     if (valueFirst === true || (isObject(valueFirst) && (valueFirst.enable ?? defaultValueForObject))) {
       defaultLocalValue = true
     }
@@ -61,12 +70,18 @@ function resolvePrerenderConfigLocal(pageConfig: PageConfigBuildTime) {
   if (!configValue) return null
   const values = configValue.value
   assert(isArray(values))
-  const value = values[0]
+  let value = values[0]
   assert(isArray(configValue.definedAtData))
   const configDefinedAt = getConfigDefinedAt('Config', 'prerender', configValue.definedAtData)
+
+  // Handle callable prerender
+  if (isCallable(value)) {
+    value = value()
+  }
+
   assertUsage(
     typeof value === 'boolean',
-    `${configDefinedAt} must be a boolean (it isn't defined at a global location)`,
+    `${configDefinedAt} must be a boolean or a function that returns a boolean (it isn't defined at a global location)`,
   )
   const prerenderConfigLocal = { value }
   return prerenderConfigLocal
