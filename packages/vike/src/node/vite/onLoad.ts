@@ -5,12 +5,13 @@ import { assertIsNotProductionRuntime, markSetup_vikeVitePlugin } from '../../ut
 import { assertNodeVersion } from '../../utils/assertNodeVersion.js'
 import { version as viteVersion } from 'vite'
 import { assertViteVersion } from '../../utils/assertViteVersion.js'
+import { installUncaughtErrorHandlers } from '../../utils/installUncaughtErrorHandlers.js'
 
 function onLoad() {
   markSetup_vikeVitePlugin()
   assertIsNotBrowser()
   assertNodeVersion()
   assertViteVersion(viteVersion)
-  // Ensure we don't bloat the server runtime with heavy dependencies such Vite and esbuild
-  assertIsNotProductionRuntime()
+  assertIsNotProductionRuntime() // Don't bloat server with heavy dependencies like Vite and esbuild
+  installUncaughtErrorHandlers()
 }

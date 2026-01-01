@@ -5,10 +5,12 @@ import { assertNodeVersion } from '../utils/assertNodeVersion.js'
 import { setAssertAlwaysShowStackTrace } from '../utils/assert.js'
 import { installRequireShim } from '@brillout/require-shim'
 import { isDebugError } from '../utils/debug.js'
+import { installUncaughtErrorHandlers } from '../utils/installUncaughtErrorHandlers.js'
 
 function onLoad() {
   assertIsNotBrowser()
   assertNodeVersion()
+  installUncaughtErrorHandlers()
   if (isDebugError()) {
     // Is also executed upon `$ vike build` because node/vite/utils.ts imports server/utils.ts
     Error.stackTraceLimit = Infinity
