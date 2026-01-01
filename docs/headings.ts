@@ -906,6 +906,10 @@ function tools() {
         url: '/naive-ui',
       },
       {
+        title: 'Element Plus',
+        url: '/element-plus',
+      },
+      {
         title: 'Chakra UI',
         url: '/chakra',
       },
