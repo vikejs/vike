@@ -3,7 +3,7 @@ import vike from 'vike/plugin'
 
 export default {
   plugins: [react(), vike()],
-  vitePluginImportBuild: {
+  vitePluginServerEntry: {
     disableAutoImport: true,
   },
 }
