@@ -3,7 +3,6 @@ export { config as default }
 import type { Config } from '@brillout/docpress'
 import { headings, headingsDetached, categories } from './headings'
 import logoWithShadow from './assets/logo/vike-shadow.svg'
-import logo from './assets/logo/vike.svg'
 import { PROJECT_VERSION } from './utils/PROJECT_VERSION'
 import { discordInvite } from './links'
 import { TopNavigation } from './TopNavigation'
@@ -16,7 +15,10 @@ const config: Config = {
   tagline:
     '(Replaces Next.js/Nuxt) 🔨 The composable framework to build advanced applications with stability and flexibility.',
   logo: logoWithShadow,
-  favicon: logo,
+  favicon: {
+    browser: '/favicon.svg',
+    google: '/apple-touch-icon.png',
+  },
   banner: 'https://vike.dev/banner.jpg',
 
   github: 'https://github.com/vikejs/vike',
