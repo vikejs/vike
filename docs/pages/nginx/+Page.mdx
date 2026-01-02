@@ -10,6 +10,8 @@ Many users are using Vike with Nginx.
 
 ## Early Hints
 
-Nginx [doesn't seem to support 103 Early Hints yet](https://github.com/vikejs/vike/issues/1452#issuecomment-1925315908).
+Nginx added support for [HTTP Early Hints](https://datatracker.ietf.org/doc/html/rfc8297) starting from `1.29.0` (summer 2025, search for `hints` at [nginx.org/en/CHANGES](https://nginx.org/en/CHANGES)).
 
-For example, if you use Vike's <Link href="/preloading#early-hints">`pageContext.httpResponse.earlyHints`</Link> with Node.js's [`res.writeEarlyHints()`](https://nodejs.org/api/http.html#responsewriteearlyhintshints-callback), then you'll get a `ERR_HTTP2_PROTOCOL_ERROR` error in the browser.
+If you use Vike's <Link href="/preloading#early-hints">`pageContext.httpResponse.earlyHints`</Link> with Node.js's [`res.writeEarlyHints()`](https://nodejs.org/api/http.html#responsewriteearlyhintshints-callback) and get `ERR_HTTP2_PROTOCOL_ERROR` in the browser, then make sure to update Nginx.
+
+See also: [GitHub Issue #1452 — res.writeEarlyHints lock server response for 5 seconds](https://github.com/vikejs/vike/issues/1452).
