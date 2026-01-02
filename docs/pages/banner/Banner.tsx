@@ -16,7 +16,27 @@ function BannerCover() {
   return <BannerCommon logo={false} />
 }
 function BannerMinimal() {
-  return <BannerCommon logo={false} taglineSecondaryStyle={{ display: 'none' }} logoScale={1.1} />
+  return <BannerMinimalCommon style={{ background: 'white' }} styleH1={{ color: '#000' }} />
+}
+function BannerMinimalBlack() {
+  return <BannerMinimalCommon style={{ background: 'black' }} styleH1={{ color: '#eee' }} />
+}
+function BannerMinimalCommon({
+  style,
+  styleH1,
+}: {
+  style?: React.CSSProperties
+  styleH1?: React.CSSProperties
+}) {
+  return (
+    <BannerCommon
+      logo={false}
+      taglineSecondaryStyle={{ display: 'none' }}
+      logoScale={1.1}
+      style={style}
+      styleH1={styleH1}
+    />
+  )
 }
 function BannerSlides() {
   return (
@@ -60,6 +80,7 @@ function BannerVikings() {
 
 function BannerCommon({
   style,
+  styleH1,
   logo,
   logoText = 'Vike',
   logoScale = 1.3,
@@ -70,6 +91,7 @@ function BannerCommon({
   taglineSecondaryStyle,
 }: {
   style?: React.CSSProperties
+  styleH1?: React.CSSProperties
   logo?: boolean
   logoText?: string
   logoScale?: number
@@ -136,6 +158,7 @@ function BannerCommon({
         {logo !== true && (
           <HeroTagline
             style={{ marginTop: -0 }}
+            styleH1={styleH1}
             taglineStyle={{ fontSize: 50 * logoScale, marginBottom: 25, ...taglineStyle }}
             taglineSecondary={taglineSecondary}
             taglineSecondaryStyle={{

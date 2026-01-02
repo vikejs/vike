@@ -41,11 +41,13 @@ function Hero() {
 
 function HeroTagline({
   style,
+  styleH1,
   taglineStyle,
   taglineSecondary,
   taglineSecondaryStyle,
 }: {
   style?: React.CSSProperties
+  styleH1?: React.CSSProperties
   taglineStyle?: React.CSSProperties
   taglineSecondary?: string
   taglineSecondaryStyle?: React.CSSProperties
@@ -67,6 +69,7 @@ function HeroTagline({
             width: '100%',
             marginBottom: 0,
             fontWeight: 580,
+            ...styleH1,
           }}
         >
           <div
