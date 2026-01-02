@@ -7,6 +7,7 @@ const globalObject = getGlobalObject('./installUncaughtErrorHandlers.ts', {
 })
 
 // Avoid server shutdown upon uncaught errors, e.g. `setTimeout(() => throw new Error('Uncaught error'), 10)`
+// If in the future we want to call +onError then let's use different handlers
 function installUncaughtErrorHandlers() {
   if (globalObject.installed) return
   globalObject.installed = true
