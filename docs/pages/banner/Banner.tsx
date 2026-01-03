@@ -10,7 +10,7 @@ import vikeLogo from '../../assets/logo/vike-shadow.svg'
 import './Banner.css'
 
 function Banner() {
-  return <BannerCommon style={{ background: 'white' }} />
+  return <BannerCommon />
 }
 function BannerCover() {
   return <BannerCommon logo={false} />
@@ -108,7 +108,7 @@ function BannerCommon({
         alignItems: 'center',
         justifyContent: 'center',
         height: '100vh',
-        background: '#f0f0f0',
+        background: '#f5f5f5',
         ...style,
       }}
     >
@@ -144,9 +144,10 @@ function BannerCommon({
               className="logo-font"
               style={{
                 fontSize: 40 * logoScale,
+                letterSpacing: '-0.01em',
                 marginLeft: -10,
-                fontWeight: 'normal',
-                color: '#444',
+                fontWeight: 380,
+                color: '#555',
                 lineHeight: '1.2em',
                 ...logoTextStyle,
               }}
