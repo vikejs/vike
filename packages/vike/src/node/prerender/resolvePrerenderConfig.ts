@@ -8,7 +8,7 @@ import type { PageConfigBuildTime } from '../../types/PageConfig.js'
 import { getConfigDefinedAt } from '../../shared-server-client/page-configs/getConfigDefinedAt.js'
 import { isCallable } from '../../utils/isCallable.js'
 
-// +prerender is callable but getGlobalContext() cannot be used (see https://github.com/vikejs/vike/issues/3002#issuecomment-3703878380) but it's still usefull (see https://github.com/vikejs/vike/issues/3002#issuecomment-3704141813)
+// +prerender is callable but getGlobalContext() cannot be used (see https://github.com/vikejs/vike/issues/3002#issuecomment-3703878380) but it's still useful (see https://github.com/vikejs/vike/issues/3002#issuecomment-3704141813)
 
 // When setting +prerender to an object => it enables pre-rendering
 const defaultValueForObject = true
