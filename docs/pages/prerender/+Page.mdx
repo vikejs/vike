@@ -6,7 +6,9 @@ import { ConfigSpec } from '../../components'
   global={null}
 >
 ```ts ts-only hide-menu
-type Prerender = boolean | {
+// Can be a function that returns the setting
+type Prerender = PrerenderSetting | () => Promise<PrerenderSetting>
+type PrerenderSetting = boolean | {
   partial?: boolean
   redirects?: boolean
   noExtraDir?: boolean
@@ -20,7 +22,7 @@ type Prerender = boolean | {
 
 > <Link href="/pre-rendering" /> explains what pre-rendering is and how to use it.
 
-The default values:
+Default values:
 
 ```ts
 // pages/+config.ts
@@ -28,10 +30,9 @@ The default values:
 import type { Config } from 'vike/types'
 
 export default {
-  // The default values
   prerender: {
     partial: false,
-    redirects: isFullyPrerendered, // Default value is true if all pages are pre-rendered
+    redirects: isFullyPrerendered, // Default value is `true` if all pages are pre-rendered
     noExtraDir: false,
     parallel: os.cpus.length, // Number of CPUs
     disableAutoRun: false,

@@ -132,7 +132,7 @@ async function triggerPrerendering(config: ResolvedConfig, viteEnv: Environment,
   //  - The legacy plugin doesn't generate a manifest => we can use that to detect the legacy plugin build.
   //  - Issue & reproduction: https://github.com/vikejs/vike/issues/1154#issuecomment-1965954636
   if (!bundle[getManifestFilePathRelative(config.build.manifest)]) return
-  if (!isPrerenderAutoRunEnabled(vikeConfig)) return
+  if (!(await isPrerenderAutoRunEnabled(vikeConfig))) return
 
   const configInline = getFullBuildInlineConfig(config)
   const res = await runPrerenderFromAutoRun(configInline)

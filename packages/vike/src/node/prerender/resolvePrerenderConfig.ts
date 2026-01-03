@@ -6,14 +6,20 @@ import { assert, assertUsage, isArray, isObject, objectAssign } from './utils.js
 import { getConfigValueBuildTime } from '../../shared-server-client/page-configs/getConfigValueBuildTime.js'
 import type { PageConfigBuildTime } from '../../types/PageConfig.js'
 import { getConfigDefinedAt } from '../../shared-server-client/page-configs/getConfigDefinedAt.js'
+import { isCallable } from '../../utils/isCallable.js'
 
-// When setting +prerender to an object => it also enables pre-rendering
+// +prerender is callable but getGlobalContext() cannot be used (see https://github.com/vikejs/vike/issues/3002#issuecomment-3703878380) but it's still useful (see https://github.com/vikejs/vike/issues/3002#issuecomment-3704141813)
+
+// When setting +prerender to an object => it activates pre-rendering
 const defaultValueForObject = true
 
-function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal, 'config' | '_pageConfigs' | '_from'>) {
+async function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal, 'config' | '_pageConfigs' | '_from'>) {
   const prerenderConfigs = vikeConfig.config.prerender || []
+  const prerenderConfigsResolved = await Promise.all(
+    prerenderConfigs.map((config) => (isCallable(config) ? config() : config)),
+  )
 
-  const prerenderSettings = prerenderConfigs.filter(isObject2)
+  const prerenderSettings = prerenderConfigsResolved.filter(isObject2)
   const prerenderConfigGlobal = {
     partial: pickFirst(prerenderSettings.map((c) => c.partial)) ?? false,
     redirects: pickFirst(prerenderSettings.map((c) => c.redirects)) ?? null,
@@ -25,7 +31,7 @@ function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal, 'conf
 
   let defaultLocalValue = false
   {
-    const valueFirst = prerenderConfigs.filter((p) => !isObject(p) || p.enable !== null)[0]
+    const valueFirst = prerenderConfigsResolved.filter((p) => !isObject(p) || p.enable !== null)[0]
     if (valueFirst === true || (isObject(valueFirst) && (valueFirst.enable ?? defaultValueForObject))) {
       defaultLocalValue = true
     }
@@ -39,16 +45,13 @@ function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal, 'conf
     }
   }
 
+  const pageConfigs = vikeConfig._pageConfigs
+  const prerenderConfigLocalList = await Promise.all(pageConfigs.map(resolvePrerenderConfigLocal))
+  const isEnable = (prerenderConfigLocal: PrerenderConfigLocal) => prerenderConfigLocal?.value ?? defaultLocalValue
   objectAssign(prerenderConfigGlobal, {
     defaultLocalValue,
-    isPrerenderingEnabledForAllPages:
-      vikeConfig._pageConfigs.length > 0 &&
-      vikeConfig._pageConfigs.every(
-        (pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value ?? defaultLocalValue,
-      ),
-    isPrerenderingEnabled:
-      vikeConfig._pageConfigs.length > 0 &&
-      vikeConfig._pageConfigs.some((pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value ?? defaultLocalValue),
+    isPrerenderingEnabledForAllPages: pageConfigs.length > 0 && prerenderConfigLocalList.every(isEnable),
+    isPrerenderingEnabled: pageConfigs.length > 0 && prerenderConfigLocalList.some(isEnable),
   })
 
   // TO-DO/next-major-release: remove
@@ -56,17 +59,20 @@ function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal, 'conf
 
   return prerenderConfigGlobal
 }
-function resolvePrerenderConfigLocal(pageConfig: PageConfigBuildTime) {
+
+type PrerenderConfigLocal = Awaited<ReturnType<typeof resolvePrerenderConfigLocal>>
+async function resolvePrerenderConfigLocal(pageConfig: PageConfigBuildTime) {
   const configValue = getConfigValueBuildTime(pageConfig, 'prerender')
   if (!configValue) return null
   const values = configValue.value
   assert(isArray(values))
-  const value = values[0]
+  let value = values[0]
+  if (isCallable(value)) value = await value()
   assert(isArray(configValue.definedAtData))
   const configDefinedAt = getConfigDefinedAt('Config', 'prerender', configValue.definedAtData)
   assertUsage(
     typeof value === 'boolean',
-    `${configDefinedAt} must be a boolean (it isn't defined at a global location)`,
+    `${configDefinedAt} must be a boolean (or a function that returns a boolean) because it's defined as a page setting (not as a global setting)`,
   )
   const prerenderConfigLocal = { value }
   return prerenderConfigLocal

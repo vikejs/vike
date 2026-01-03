@@ -12,8 +12,8 @@ const globalObject = getGlobalObject<{ isDisabled?: true; wasPrerenderRun?: Prer
   {},
 )
 
-function isPrerenderAutoRunEnabled(vikeConfig: VikeConfigInternal) {
-  const prerenderConfigGlobal = resolvePrerenderConfigGlobal(vikeConfig)
+async function isPrerenderAutoRunEnabled(vikeConfig: VikeConfigInternal) {
+  const prerenderConfigGlobal = await resolvePrerenderConfigGlobal(vikeConfig)
   return (
     prerenderConfigGlobal.isPrerenderingEnabled &&
     !(prerenderConfigGlobal || {}).disableAutoRun &&

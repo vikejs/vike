@@ -169,7 +169,7 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
   const vikeConfig = await getVikeConfigInternal()
 
   const { outDirServer } = getOutDirs(viteConfig, undefined)
-  const prerenderConfigGlobal = resolvePrerenderConfigGlobal(vikeConfig)
+  const prerenderConfigGlobal = await resolvePrerenderConfigGlobal(vikeConfig)
   const { partial, noExtraDir, parallel, defaultLocalValue, isPrerenderingEnabled } = prerenderConfigGlobal
   if (!isPrerenderingEnabled) {
     assert(trigger !== 'auto-run')
@@ -272,20 +272,22 @@ async function collectDoNoPrerenderList(
   globalContext: GlobalContextServerInternal,
 ) {
   // V1 design
-  pageConfigs.forEach((pageConfig) => {
-    const prerenderConfigLocal = resolvePrerenderConfigLocal(pageConfig)
-    const { pageId } = pageConfig
-    if (!prerenderConfigLocal) {
-      if (!defaultLocalValue) {
-        doNotPrerenderList.push({ pageId })
+  await Promise.all(
+    pageConfigs.map(async (pageConfig) => {
+      const prerenderConfigLocal = await resolvePrerenderConfigLocal(pageConfig)
+      const { pageId } = pageConfig
+      if (!prerenderConfigLocal) {
+        if (!defaultLocalValue) {
+          doNotPrerenderList.push({ pageId })
+        }
+      } else {
+        const { value } = prerenderConfigLocal
+        if (value === false) {
+          doNotPrerenderList.push({ pageId })
+        }
       }
-    } else {
-      const { value } = prerenderConfigLocal
-      if (value === false) {
-        doNotPrerenderList.push({ pageId })
-      }
-    }
-  })
+    }),
+  )
 
   // Old design
   // TO-DO/next-major-release: remove
