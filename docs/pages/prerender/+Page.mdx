@@ -6,6 +6,8 @@ import { ConfigSpec } from '../../components'
   global={null}
 >
 ```ts ts-only hide-menu
+// Can be a function that returns the setting
+type Prerender = PrerenderSetting | () => Promise<PrerenderSetting>
 type PrerenderSetting = boolean | {
   partial?: boolean
   redirects?: boolean
@@ -15,8 +17,6 @@ type PrerenderSetting = boolean | {
   enable?: null | boolean
   keepDistServer?: boolean
 }
-// Can also be a function that returns the settings above
-type PrerenderConfig = PrerenderSetting | () => Promise<PrerenderSetting>
 ```
 </ConfigSpec>
 
