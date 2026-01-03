@@ -6,11 +6,11 @@ export { BannerVikings }
 
 import React from 'react'
 import { HeroTagline } from '../index/sections/hero/Hero'
-import vikeLogo from '../../assets/logo/vike.svg'
+import vikeLogo from '../../assets/logo/vike-shadow.svg'
 import './Banner.css'
 
 function Banner() {
-  return <BannerCommon />
+  return <BannerCommon style={{ background: 'white' }} />
 }
 function BannerCover() {
   return <BannerCommon logo={false} />
@@ -143,10 +143,10 @@ function BannerCommon({
             <span
               className="logo-font"
               style={{
-                fontSize: 45.6 * logoScale,
-                fontWeight: 440,
-                fontStyle: 'italic',
-                color: '#707070',
+                fontSize: 40 * logoScale,
+                marginLeft: -10,
+                fontWeight: 'normal',
+                color: '#444',
                 lineHeight: '1.2em',
                 ...logoTextStyle,
               }}
@@ -164,7 +164,7 @@ function BannerCommon({
             taglineSecondaryStyle={{
               marginTop: 19,
               fontSize: 28 * logoScale,
-              maxWidth: 680 * logoScale,
+              maxWidth: 800 * logoScale,
               lineHeight: 1.3,
               ...taglineSecondaryStyle,
             }}
