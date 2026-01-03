@@ -301,11 +301,9 @@ List of previous `pageContext` aborted by <Link href="/redirect">`throw redirect
 You can define custom `pageContext` properties.
 
 ```ts
-// Adding a new property — or modifying an existing one
+// Adding a new property, or modifying an existing one
 pageContext.myCustomProp = someValue
 ```
-
-> See the section <Link href="#extend">TypeScript > Extend</Link> for how to define the type of `pageContext.myCustomProp`.
 
 > See also: <Link href="/globalContext#custom" />.
 
@@ -329,11 +327,26 @@ export { onCreatePageContext }
 import type { PageContext } from 'vike/types'
 
 async function onCreatePageContext(pageContext: PageContext) {
-  pageContext.myCustomProp = someValue
+  pageContext.myCustomProp = { hello: 'world' }
+}
+
+declare global {
+  namespace Vike {
+    // Or `interface PageContextServer` if you define +onCreatePageContext.server.ts
+    // Or `interface PageContextClient` if you define +onCreatePageContext.client.ts
+    interface PageContext {
+      // Type of pageContext.myCustomProp
+      myCustomProp: {
+        hello: string
+      }
+    }
+  }
 }
 ```
 
 > See concrete use case at <Link href="/auth" />.
+
+> You can define `+onCreatePageContext.server.js` and/or `+onCreatePageContext.client.js` to set server- or client-side `pageContext` properties, see <Link href="/file-env" />.
 
 Or <Link href="/data">`+data`</Link>:
 
@@ -350,6 +363,15 @@ async function data(pageContext: PageContextServer) {
   pageContext.queryDuration = queryDuration
   return data
 }
+
+declare global {
+  namespace Vike {
+    interface PageContextServer {
+      // Type of pageContext.queryDuration
+      queryDuration?: number
+    }
+  }
+}
 ```
 
 
@@ -360,18 +382,53 @@ You can define custom properties inside your UI components, by using <Link href=
 ```ts
 // Inside any UI component
 const pageContext = usePageContext()
-pageContext.myCustomProp = someValue // Add or modify property
+pageContext.myCustomProp = { hello: 'world' } // Add or modify property
+
+declare global {
+  namespace Vike {
+    interface PageContext {
+      // Type of pageContext.myCustomProp
+      myCustomProp?: {
+        hello: string
+      }
+    }
+  }
+}
 ```
 
 
 ### `navigate()`
 
-Custom properties can be defined at <Link href="/navigate#options">`navigate({ pageContext: { someExtra: 'value' } })`</Link>.
+Custom properties can be defined at <Link href="/navigate#options">`navigate()`</Link> like this:
+
+```tsx
+import { navigate } from 'vike/client/router'
+
+function Form() {
+  return <form onSubmit={onSubmit}>{/* ... */}</form>
+}
+
+async function onSubmit() {
+  await navigate('/form/success', { pageContext: { someExtra: 'value' } })
+}
+
+declare global {
+  namespace Vike {
+    // Or `interface PageContext` if pageContext.someExtra is also defined on the server
+    interface PageContextClient {
+      // Type of pageContext.someExtra
+      someExtra?: string
+    }
+  }
+}
+```
 
 
 ### `renderPage()`
 
-If you don't use <Link href="/vike-photon">`vike-photon`</Link>, then you can define custom properties at <Link href="/renderPage">`renderPage()`</Link>:
+If you don't use <Link href="/vike-photon">`vike-photon`</Link>, you can define custom properties at <Link href="/renderPage">`renderPage()`</Link>.
+
+> If you use `vike-photon`, use <Link href="/onCreatePageContext">`+onCreatePageContext`</Link> instead.
 
 ```ts
 // Your Vike server middleware integration
@@ -395,6 +452,17 @@ app.get('*', async (req: Request) => {
   const pageContext = await renderPage(pageContextInit)
   // ...
 })
+
+declare global {
+  namespace Vike {
+    interface PageContextServer {
+      // Type of pageContext.user
+      user: User
+      // Type of pageContext.myCustomProp
+      myCustomProp: unknown
+    }
+  }
+}
 ```
 > Setting `pageContext.user` is a common use case for integrating authentication tools, see <Link href="/auth" />.
 

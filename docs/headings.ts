@@ -186,7 +186,7 @@ const headings = [
   },
   {
     level: 2,
-    title: 'File Environment `.server.js` / `.client.js` / ...',
+    title: 'File Environment (`.server.js`, `.client.js`, ...)',
     titleInNav: '`.server.js` / `.client.js` / ...',
     url: '/file-env',
     sectionTitles: ['`.ssr.js`'],
