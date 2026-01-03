@@ -136,3 +136,7 @@ Things missing that some frameworks have (but is on the roadmap):
   - Rock-solid client-side navigation scroll restoration (hard to achieve)
   - Rock-solid URL handling (much harder than it seems)
   - In general, things just work. No surprise of stumbling upon some bug.
+
+## Used by
+- https://formatjs.github.io/  
+  https://github.com/formatjs/formatjs/blob/e8f3770799e54aeedf11d93cecffcc808121fc5c/package.json#L144
