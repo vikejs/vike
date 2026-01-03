@@ -70,17 +70,12 @@ function resolvePrerenderConfigLocal(pageConfig: PageConfigBuildTime) {
   const values = configValue.value
   assert(isArray(values))
   let value = values[0]
+  if (isCallable(value)) value = value()
   assert(isArray(configValue.definedAtData))
   const configDefinedAt = getConfigDefinedAt('Config', 'prerender', configValue.definedAtData)
-
-  // Handle callable prerender
-  if (isCallable(value)) {
-    value = value()
-  }
-
   assertUsage(
     typeof value === 'boolean',
-    `${configDefinedAt} must be a boolean or a function that returns a boolean (it isn't defined at a global location)`,
+    `${configDefinedAt} must be a boolean (or a function that returns a boolean) because it's defined as a page setting (not as a global setting)`,
   )
   const prerenderConfigLocal = { value }
   return prerenderConfigLocal
