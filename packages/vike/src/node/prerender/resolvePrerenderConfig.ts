@@ -13,13 +13,7 @@ const defaultValueForObject = true
 
 function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal, 'config' | '_pageConfigs' | '_from'>) {
   const prerenderConfigs = vikeConfig.config.prerender || []
-  // TODO/ai make it one liner
-  const prerenderConfigsResolved = prerenderConfigs.map((config) => {
-    if (isCallable(config)) {
-      return config()
-    }
-    return config
-  })
+  const prerenderConfigsResolved = prerenderConfigs.map((config) => (isCallable(config) ? config() : config))
 
   const prerenderSettings = prerenderConfigsResolved.filter(isObject2)
   const prerenderConfigGlobal = {
