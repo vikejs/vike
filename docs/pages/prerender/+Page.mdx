@@ -15,14 +15,14 @@ type PrerenderSetting = boolean | {
   enable?: null | boolean
   keepDistServer?: boolean
 }
-// Can also be a function that return the settings above
-type PrerenderConfig = PrerenderSetting | (() => Promise<PrerenderSetting>)
+// Can also be a function that returns the settings above
+type PrerenderConfig = PrerenderSetting | () => Promise<PrerenderSetting>
 ```
 </ConfigSpec>
 
 > <Link href="/pre-rendering" /> explains what pre-rendering is and how to use it.
 
-The default values:
+Default values:
 
 ```ts
 // pages/+config.ts
@@ -30,10 +30,9 @@ The default values:
 import type { Config } from 'vike/types'
 
 export default {
-  // The default values
   prerender: {
     partial: false,
-    redirects: isFullyPrerendered, // Default value is true if all pages are pre-rendered
+    redirects: isFullyPrerendered, // Default value is `true` if all pages are pre-rendered
     noExtraDir: false,
     parallel: os.cpus.length, // Number of CPUs
     disableAutoRun: false,
