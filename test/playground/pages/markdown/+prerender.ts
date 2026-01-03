@@ -1,2 +1,2 @@
 // Test callable prerender
-export default () => true
+export default () => Promise.resolve(true)
