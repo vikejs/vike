@@ -478,7 +478,9 @@ declare global {
 }
 ```
 
-> For convenience, you can define `pageContext.user` as an alias of `pageContext.runtime.req.user` — see <Link href="/auth#pagecontext-user" doNotInferSectionTitle />.
+> You can use <Link href="/onCreatePageContext">`+onCreatePageContext`</Link> to define custom `pageContext` properties, see <Link href="/pageContext#custom" />.
+>
+> For example, you can define `pageContext.user` as an alias of `pageContext.runtime.req.user` for convenience, see <Link href="/auth#pagecontext-user" doNotInferSectionTitle />.
 
 See also:
 - <Link href="/pageContext#runtime">API > `pageContext.runtime`</Link>
