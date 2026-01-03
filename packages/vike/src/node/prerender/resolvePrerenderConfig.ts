@@ -11,9 +11,11 @@ import { isCallable } from '../../utils/isCallable.js'
 // When setting +prerender to an object => it also enables pre-rendering
 const defaultValueForObject = true
 
-function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal, 'config' | '_pageConfigs' | '_from'>) {
+async function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal, 'config' | '_pageConfigs' | '_from'>) {
   const prerenderConfigs = vikeConfig.config.prerender || []
-  const prerenderConfigsResolved = prerenderConfigs.map((config) => (isCallable(config) ? config() : config))
+  const prerenderConfigsResolved = await Promise.all(
+    prerenderConfigs.map((config) => (isCallable(config) ? config() : config)),
+  )
 
   const prerenderSettings = prerenderConfigsResolved.filter(isObject2)
   const prerenderConfigGlobal = {
@@ -41,16 +43,15 @@ function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal, 'conf
     }
   }
 
+  const pageConfigResults = await Promise.all(
+    vikeConfig._pageConfigs.map((pageConfig) => resolvePrerenderConfigLocal(pageConfig)),
+  )
   objectAssign(prerenderConfigGlobal, {
     defaultLocalValue,
     isPrerenderingEnabledForAllPages:
-      vikeConfig._pageConfigs.length > 0 &&
-      vikeConfig._pageConfigs.every(
-        (pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value ?? defaultLocalValue,
-      ),
+      vikeConfig._pageConfigs.length > 0 && pageConfigResults.every((result) => result?.value ?? defaultLocalValue),
     isPrerenderingEnabled:
-      vikeConfig._pageConfigs.length > 0 &&
-      vikeConfig._pageConfigs.some((pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value ?? defaultLocalValue),
+      vikeConfig._pageConfigs.length > 0 && pageConfigResults.some((result) => result?.value ?? defaultLocalValue),
   })
 
   // TO-DO/next-major-release: remove
@@ -58,13 +59,13 @@ function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal, 'conf
 
   return prerenderConfigGlobal
 }
-function resolvePrerenderConfigLocal(pageConfig: PageConfigBuildTime) {
+async function resolvePrerenderConfigLocal(pageConfig: PageConfigBuildTime) {
   const configValue = getConfigValueBuildTime(pageConfig, 'prerender')
   if (!configValue) return null
   const values = configValue.value
   assert(isArray(values))
   let value = values[0]
-  if (isCallable(value)) value = value()
+  if (isCallable(value)) value = await value()
   assert(isArray(configValue.definedAtData))
   const configDefinedAt = getConfigDefinedAt('Config', 'prerender', configValue.definedAtData)
   assertUsage(

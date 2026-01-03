@@ -282,7 +282,7 @@ async function resolveVikeConfigInternal_withErrorHandling(
       reject(err)
     } else {
       logErrorServerDev(err, null)
-      resolve(getVikeConfigDummy(esbuildCache))
+      resolve(await getVikeConfigDummy(esbuildCache))
     }
   }
 }
@@ -309,7 +309,7 @@ async function resolveVikeConfigInternal(
 
   const globalConfigPublic = resolveGlobalConfig(pageConfigGlobal, pageConfigs)
 
-  const prerenderContext = resolvePrerenderContext({
+  const prerenderContext = await resolvePrerenderContext({
     config: globalConfigPublic.config,
     _from: globalConfigPublic._from,
     _pageConfigs: pageConfigs,
@@ -1493,8 +1493,8 @@ function isGlobalLocation(locationId: LocationId, plusFilesByLocationId: PlusFil
   return locationIdsPage.every((locId) => isInherited(locationId, locId))
 }
 
-function resolvePrerenderContext(vikeConfig: Parameters<typeof resolvePrerenderConfigGlobal>[0]) {
-  const { isPrerenderingEnabled, isPrerenderingEnabledForAllPages } = resolvePrerenderConfigGlobal(vikeConfig)
+async function resolvePrerenderContext(vikeConfig: Parameters<typeof resolvePrerenderConfigGlobal>[0]) {
+  const { isPrerenderingEnabled, isPrerenderingEnabledForAllPages } = await resolvePrerenderConfigGlobal(vikeConfig)
   globalObject.prerenderContext ??= {
     isPrerenderingEnabled: false,
     isPrerenderingEnabledForAllPages: false,
@@ -1526,14 +1526,14 @@ function restartViteDevServer() {
   swallowViteLogForceOptimization_disable()
 }
 
-function getVikeConfigDummy(esbuildCache: EsbuildCache): VikeConfigInternal {
+async function getVikeConfigDummy(esbuildCache: EsbuildCache): Promise<VikeConfigInternal> {
   const pageConfigsDummy: VikeConfigInternal['_pageConfigs'] = []
   const pageConfigGlobalDummy: VikeConfigInternal['_pageConfigGlobal'] = {
     configValueSources: {},
     configDefinitions: {},
   }
   const globalConfigPublicDummy = resolveGlobalConfig(pageConfigGlobalDummy, pageConfigsDummy)
-  const prerenderContextDummy = resolvePrerenderContext({
+  const prerenderContextDummy = await resolvePrerenderContext({
     config: globalConfigPublicDummy.config,
     _from: globalConfigPublicDummy._from,
     _pageConfigs: pageConfigsDummy,
