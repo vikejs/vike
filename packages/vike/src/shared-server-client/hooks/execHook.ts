@@ -122,6 +122,7 @@ async function execHookDirectWithoutPageContext<HookReturn>(
   )
   return hookReturn
 }
+
 function execHookDirectAsync<HookReturn>(
   hookFnCaller: () => HookReturn,
   hook: Omit<Hook, 'hookFn'>,
