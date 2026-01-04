@@ -1,5 +1,3 @@
-// TODO: rename all exports
-
 export { execHook }
 export { execHookGlobal }
 export { execHooks }
