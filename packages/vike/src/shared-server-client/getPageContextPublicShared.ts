@@ -4,14 +4,12 @@ export type { PageContextPublicMinimum }
 
 import { assert, assertWarning, compareString, isPropertyGetter } from './utils.js'
 import { addIs404ToPageProps } from './addIs404ToPageProps.js'
-import { type GlobalContextPublicMinimum, getGlobalContextPublicShared } from './getGlobalContextPublicShared.js'
+import { getGlobalContextPublicShared } from './getGlobalContextPublicShared.js'
 import { getProxyForPublicUsage } from './getProxyForPublicUsage.js'
 import type { PageContextCreated } from './createPageContextShared.js'
 
 // TODO/refactor: prefer using PageContextCreated over PageContextPublicMinimum ?
-type PageContextPublicMinimum = {
-  _globalContext: GlobalContextPublicMinimum
-} & PageContextCreated
+type PageContextPublicMinimum = PageContextCreated
 
 function getPageContextPublicShared<PageContext extends PageContextPublicMinimum>(pageContext: PageContext) {
   assert(!(pageContext as Record<string, unknown>)._isProxyObject)
