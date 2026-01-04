@@ -1,6 +1,6 @@
 export { execHook }
 export { execHookGlobal }
-export { execHooks }
+export { execHookList }
 export { execHookSingle }
 export { execHookSingleWithReturn }
 export { execHookWithoutPageContext }
@@ -39,7 +39,7 @@ async function execHook<PageContext extends PageContextExecHook & PageContextCon
   getPageContextPublic: (pageContext: PageContext) => PageContext,
 ) {
   const hooks = getHooksFromPageContextNew(hookName, pageContext)
-  return await execHooks(hooks, pageContext, getPageContextPublic)
+  return await execHookList(hooks, pageContext, getPageContextPublic)
 }
 
 async function execHookGlobal(
@@ -56,7 +56,7 @@ async function execHookGlobal(
   )
 }
 
-async function execHooks<PageContext extends PageContextExecHook>(
+async function execHookList<PageContext extends PageContextExecHook>(
   hooks: Hook[],
   pageContext: PageContext,
   getPageContextPublic: (pageContext: PageContext) => PageContext,
@@ -82,7 +82,7 @@ async function execHookSingle<PageContext extends PageContextExecHook>(
   pageContext: PageContext,
   getPageContextPublic: (pageContext: PageContext) => PageContext,
 ) {
-  const hooksWithResult = await execHooks([hook], pageContext, getPageContextPublic)
+  const hooksWithResult = await execHookList([hook], pageContext, getPageContextPublic)
   const { hookReturn } = hooksWithResult[0]!
   assertUsage(
     hookReturn === undefined,
@@ -95,7 +95,7 @@ async function execHookSingleWithReturn<PageContext extends PageContextExecHook>
   pageContext: PageContext,
   getPageContextPublic: (pageContext: PageContext) => PageContext,
 ) {
-  const hooksWithResult = await execHooks([hook], pageContext, getPageContextPublic)
+  const hooksWithResult = await execHookList([hook], pageContext, getPageContextPublic)
   const { hookReturn } = hooksWithResult[0]!
   return { hookReturn }
 }

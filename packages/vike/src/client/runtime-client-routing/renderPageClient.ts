@@ -60,7 +60,7 @@ import { setPageContextCurrent } from './getPageContextCurrent.js'
 import { getRouteStringParameterList } from '../../shared-server-client/route/resolveRouteString.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 import type { PageContextClient, PageContextInternalClient } from '../../types/PageContext.js'
-import { execHooks, execHook } from '../../shared-server-client/hooks/execHook.js'
+import { execHookList, execHook } from '../../shared-server-client/hooks/execHook.js'
 import { type PageContextPublicClient, getPageContextPublicClient } from './getPageContextPublicClient.js'
 import { getHooksFromPageContextNew } from '../../shared-server-client/hooks/getHook.js'
 import { getPageContextPublicClientMinimal } from '../shared/getPageContextPublicClientShared.js'
@@ -169,7 +169,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
         globalObject.isTransitioning = true
         const hooks = getHooksFromPageContextNew('onPageTransitionStart', previousPageContext)
         try {
-          await execHooks(hooks, pageContext, getPageContextPublicClientMinimal)
+          await execHookList(hooks, pageContext, getPageContextPublicClientMinimal)
         } catch (err) {
           await onError(err)
           return
@@ -555,7 +555,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       assert(previousPageContext)
       const hooks = getHooksFromPageContextNew('onPageTransitionEnd', previousPageContext)
       try {
-        await execHooks(hooks, pageContext, getPageContextPublicClient)
+        await execHookList(hooks, pageContext, getPageContextPublicClient)
       } catch (err) {
         await onError(err)
         if (!isErrorPage) return
