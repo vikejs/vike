@@ -1,43 +1,36 @@
 export { createPageContextShared }
 export { createPageContextObject }
 export type { PageContextCreated }
-export type { PageContextCreatedBase }
+export type { PageContextCreatedMinimum }
 
 import { changeEnumerable, objectAssign } from './utils.js'
 import type { GlobalConfigPublic } from './page-configs/resolveVikeConfigPublic.js'
-import type {
-  PageContextCreatedClient,
-  PageContextCreatedClientBase,
-} from '../client/runtime-client-routing/createPageContextClientSide.js'
-import type {
-  PageContextCreatedServer,
-  PageContextCreatedServerBase,
-} from '../server/runtime/renderPageServer/createPageContextServerSide.js'
-import type {
-  PageContextCreatedClient_ServerRouting,
-  PageContextCreatedClientBase_ServerRouting,
-} from '../client/runtime-server-routing/createPageContextClientSide.js'
+import type { PageContextCreatedClient } from '../client/runtime-client-routing/createPageContextClientSide.js'
+import type { PageContextCreatedServer } from '../server/runtime/renderPageServer/createPageContextServerSide.js'
+import type { PageContextCreatedClient_ServerRouting } from '../client/runtime-server-routing/createPageContextClientSide.js'
+import type { GlobalContextPrepareMinimum } from './prepareGlobalContextForPublicUsage.js'
 
 type PageContextCreated = PageContextCreatedServer | PageContextCreatedClient | PageContextCreatedClient_ServerRouting
 
 /* Ideally we'd use this, but I couldn't make it work.
-type PageContextCreatedBase =
-  | PageContextCreatedServerBase
-  | PageContextCreatedClientBase
-  | PageContextCreatedClientBase_ServerRouting
+type PageContextCreated =
+  | PageContextCreatedServer
+  | PageContextCreatedClient
+  | PageContextCreatedClient_ServerRouting
 /*/
-type PageContextCreatedBase = {
+type PageContextCreatedMinimum = {
   _isOriginalObject: true
   isPageContext: true
   isClientSide: boolean
+  _globalContext: GlobalContextPrepareMinimum
   // ... manually add common types here
 }
 type IsSubset<A, B> = B extends A ? true : false
 // @ts-ignore unused type test
 type _test = [
-  Expect<IsSubset<PageContextCreatedBase, PageContextCreatedServerBase>>,
-  Expect<IsSubset<PageContextCreatedBase, PageContextCreatedClientBase>>,
-  Expect<IsSubset<PageContextCreatedBase, PageContextCreatedClientBase_ServerRouting>>,
+  Expect<IsSubset<PageContextCreatedMinimum, PageContextCreatedServer>>,
+  Expect<IsSubset<PageContextCreatedMinimum, PageContextCreatedClient>>,
+  Expect<IsSubset<PageContextCreatedMinimum, PageContextCreatedClient_ServerRouting>>,
 ]
 type Expect<T extends true> = T
 //*/
