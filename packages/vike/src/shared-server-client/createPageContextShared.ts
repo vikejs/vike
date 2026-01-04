@@ -1,6 +1,6 @@
 export { createPageContextShared }
 export { createPageContextObject }
-export type { PageContextCreated }
+export type { PageContextCreatedPrecise }
 export type { PageContextCreatedMinimum }
 
 import { changeEnumerable, objectAssign } from './utils.js'
@@ -10,10 +10,13 @@ import type { PageContextCreatedServer } from '../server/runtime/renderPageServe
 import type { PageContextCreatedClient_ServerRouting } from '../client/runtime-server-routing/createPageContextClientSide.js'
 import type { GlobalContextPrepareMinimum } from './getGlobalContextPublicShared.js'
 
-type PageContextCreated = PageContextCreatedServer | PageContextCreatedClient | PageContextCreatedClient_ServerRouting
+type PageContextCreatedPrecise =
+  | PageContextCreatedServer
+  | PageContextCreatedClient
+  | PageContextCreatedClient_ServerRouting
 
 /* Ideally we'd use this, but I couldn't make it work.
-type PageContextCreated =
+type PageContextCreatedPrecise =
   | PageContextCreatedServer
   | PageContextCreatedClient
   | PageContextCreatedClient_ServerRouting

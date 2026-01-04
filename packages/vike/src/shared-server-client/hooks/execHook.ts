@@ -24,7 +24,7 @@ import type { PageContextConfig } from '../getPageFiles.js'
 import { getHookFromPageConfigGlobalCumulative, getHookFromPageContextNew } from './getHook.js'
 import type { HookName, HookNameGlobal } from '../../types/Config.js'
 // @ts-ignore TODO use again?
-import type { PageContextCreated } from '../createPageContextShared.js'
+import type { PageContextCreatedPrecise } from '../createPageContextShared.js'
 import type { PageContextPublicServer } from '../../server/runtime/renderPageServer/getPageContextPublicServer.js'
 import type { PageContextPublicClientShared } from '../../client/shared/getPageContextPublicClientShared.js'
 import { type PageContextPrepareMinimum, getPageContextPublicShared } from '../getPageContextPublicShared.js'
