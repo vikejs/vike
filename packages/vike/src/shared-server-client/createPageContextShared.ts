@@ -15,12 +15,7 @@ type PageContextCreatedPrecise =
   | PageContextCreatedClient
   | PageContextCreatedClient_ServerRouting
 
-/* Ideally we'd use this, but I couldn't make it work.
-type PageContextCreatedPrecise =
-  | PageContextCreatedServer
-  | PageContextCreatedClient
-  | PageContextCreatedClient_ServerRouting
-/*/
+// Ideally we'd always use PageContextCreatedPrecise instead of PageContextCreatedMinimum, but it turns out to be difficult
 type PageContextCreatedMinimum = {
   _isOriginalObject: true
   isPageContext: true
@@ -36,7 +31,6 @@ type _test = [
   Expect<IsSubset<PageContextCreatedMinimum, PageContextCreatedClient_ServerRouting>>,
 ]
 type Expect<T extends true> = T
-//*/
 
 function createPageContextShared<T extends Record<string, unknown>>(
   pageContextCreated: T,
