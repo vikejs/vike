@@ -94,7 +94,7 @@ async function execHookDirect<PageContext extends PageContextExecHookMinimum>(
   return hooksWithResult
 }
 
-async function execHookDirectSingle<PageContext extends PageContextExecHook>(
+async function execHookDirectSingle<PageContext extends PageContextExecHookMinimum>(
   hook: Hook,
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
@@ -107,7 +107,7 @@ async function execHookDirectSingle<PageContext extends PageContextExecHook>(
   )
 }
 
-async function execHookDirectSingleWithReturn<PageContext extends PageContextExecHook>(
+async function execHookDirectSingleWithReturn<PageContext extends PageContextExecHookMinimum>(
   hook: Hook,
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,
