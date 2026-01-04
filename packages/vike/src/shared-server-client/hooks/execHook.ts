@@ -54,18 +54,16 @@ async function execHook<PageContext extends PageContextExecHook & PageContextCon
   return await execHookDirect(hooks, pageContext, getPageContextPublicShared)
 }
 
-async function execHookGlobal<HookArg extends GlobalContextPublicMinimum>(
+async function execHookGlobal(
   hookName: HookNameGlobal,
   globalContext: GlobalContextPublicMinimum,
-  pageContext: null,
-  hookArg: HookArg,
-  prepareForPublicUsage: (hookArg: HookArg) => HookArg,
+  prepareForPublicUsage: (globalContext: GlobalContextPublicMinimum) => GlobalContextPublicMinimum,
 ) {
   const hooks = getHookFromPageConfigGlobalCumulative(globalContext._pageConfigGlobal, hookName)
-  const hookArgForPublicUsage = prepareForPublicUsage(hookArg)
+  const globalContextPublic = prepareForPublicUsage(globalContext)
   await Promise.all(
     hooks.map(async (hook) => {
-      await execHookDirectAsync(() => hook.hookFn(hookArgForPublicUsage), hook, globalContext, pageContext)
+      await execHookDirectAsync(() => hook.hookFn(globalContextPublic), hook, globalContext, null)
     }),
   )
 }

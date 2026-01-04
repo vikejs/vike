@@ -81,7 +81,7 @@ async function createGlobalContextShared<GlobalContextAdded extends {}, GlobalCo
     let hooksCalled = false
     if (!hooksAreEqual(globalObject.onCreateGlobalContextHooks ?? [], onCreateGlobalContextHooks)) {
       globalObject.onCreateGlobalContextHooks = onCreateGlobalContextHooks
-      await execHookGlobal('onCreateGlobalContext', globalContext, null, globalContext, getGlobalContextPublicShared)
+      await execHookGlobal('onCreateGlobalContext', globalContext, getGlobalContextPublicShared)
       hooksCalled = true
     }
 
