@@ -103,10 +103,7 @@ import { getCliOptions } from '../../cli/context.js'
 import type { PrerenderContextPublic } from '../../prerender/runPrerender.js'
 import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderConfig.js'
 import type { ResolvedConfig, UserConfig } from 'vite'
-import {
-  getProxyForPublicUsage,
-  type DangerouslyUseInternals,
-} from '../../../shared-server-client/getProxyForPublicUsage.js'
+import { getPublicProxy, type DangerouslyUseInternals } from '../../../shared-server-client/getPublicProxy.js'
 import { setVikeConfigError } from '../../../shared-server-node/getVikeConfigError.js'
 assertIsNotProductionRuntime()
 
@@ -178,7 +175,7 @@ function getVikeConfig(
     vikeConfig,
     'getVikeConfig() can only be used when Vite is loaded (i.e. during development or build) — Vite is never loaded in production.',
   )
-  const vikeConfigPublic = getProxyForPublicUsage(vikeConfig, 'vikeConfig')
+  const vikeConfigPublic = getPublicProxy(vikeConfig, 'vikeConfig')
   return vikeConfigPublic
 }
 // Public usage

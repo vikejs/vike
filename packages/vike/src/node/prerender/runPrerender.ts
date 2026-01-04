@@ -67,7 +67,7 @@ import { setWasPrerenderRun } from './context.js'
 import { resolvePrerenderConfigGlobal, resolvePrerenderConfigLocal } from './resolvePrerenderConfig.js'
 import { getOutDirs } from '../vite/shared/getOutDirs.js'
 import fs from 'node:fs'
-import { getProxyForPublicUsage } from '../../shared-server-client/getProxyForPublicUsage.js'
+import { getPublicProxy } from '../../shared-server-client/getPublicProxy.js'
 import { getStaticRedirectsForPrerender } from '../../server/runtime/renderPageServer/resolveRedirects.js'
 import { updateType } from '../../server/utils.js'
 const docLink = 'https://vike.dev/i18n#pre-rendering'
@@ -1158,7 +1158,7 @@ function getPrerenderContextPublic(prerenderContext: PrerenderContext): Prerende
     changeEnumerable(pageContext, '_isOriginalObject', true)
   })
 
-  const prerenderContextPublic = getProxyForPublicUsage(prerenderContext, 'prerenderContext')
+  const prerenderContextPublic = getPublicProxy(prerenderContext, 'prerenderContext')
   return prerenderContextPublic
 }
 

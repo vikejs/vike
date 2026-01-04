@@ -5,7 +5,7 @@ export type { PageContextPublicMinimum }
 import { assert, assertWarning, compareString, isPropertyGetter } from './utils.js'
 import { addIs404ToPageProps } from './addIs404ToPageProps.js'
 import { getGlobalContextPublicShared } from './getGlobalContextPublicShared.js'
-import { getProxyForPublicUsage } from './getProxyForPublicUsage.js'
+import { getPublicProxy } from './getPublicProxy.js'
 import type { PageContextCreated } from './createPageContextShared.js'
 
 // TODO/refactor: prefer using PageContextCreated over PageContextPublicMinimum ?
@@ -36,7 +36,7 @@ function getPageContextPublicShared<PageContext extends PageContextPublicMinimum
   sortPageContext(pageContext)
 
   const globalContextPublic = getGlobalContextPublicShared(pageContext._globalContext)
-  const pageContextPublic = getProxyForPublicUsage(
+  const pageContextPublic = getPublicProxy(
     pageContext,
     'pageContext',
     // We must skip it in the client-side because of the reactivity mechanism of UI frameworks like Solid.

@@ -1,4 +1,4 @@
-export { getProxyForPublicUsage }
+export { getPublicProxy }
 export type { DangerouslyUseInternals }
 
 // We use a proxy instead of property getters.
@@ -18,7 +18,7 @@ type ObjProxy<Obj> = {
   _originalObject: Obj
 }
 
-function getProxyForPublicUsage<Obj extends Record<string | symbol, unknown>>(
+function getPublicProxy<Obj extends Record<string | symbol, unknown>>(
   obj: Obj,
   objName: 'pageContext' | 'globalContext' | 'prerenderContext' | 'vikeConfig',
   skipOnInternalProp?: boolean,
@@ -33,7 +33,7 @@ function getProxyForPublicUsage<Obj extends Record<string | symbol, unknown>>(
   })
 }
 
-function getProp(prop: string | symbol, ...args: Parameters<typeof getProxyForPublicUsage>) {
+function getProp(prop: string | symbol, ...args: Parameters<typeof getPublicProxy>) {
   const [obj, objName, skipOnInternalProp, fallback] = args
 
   const propStr = String(prop)
@@ -41,7 +41,7 @@ function getProp(prop: string | symbol, ...args: Parameters<typeof getProxyForPu
   if (prop === '_isProxyObject') return true
   if (prop === 'dangerouslyUseInternals') {
     args[2] = true // skipOnInternalProp
-    return getProxyForPublicUsage(...args)
+    return getPublicProxy(...args)
   }
 
   if (!skipOnInternalProp) {
