@@ -15,7 +15,7 @@ import { assertRouteParams, assertSyncRouting } from './resolveRouteFunction.js'
 import pc from '@brillout/picocolors'
 import type { PageContextBeforeRoute, PageContextAfterRoute } from './index.js'
 import type { Hook } from '../hooks/getHook.js'
-import { execHookSync, type PageContextExecHook } from '../hooks/execHook.js'
+import { execHookSingleSync, type PageContextExecHook } from '../hooks/execHook.js'
 import { getPageContextPublicShared } from '../getPageContextPublicShared.js'
 import type { GlobalContextInternal } from '../createGlobalContextShared.js'
 
@@ -65,7 +65,7 @@ async function getPageContextFromHook(
   pageId?: string | null
   routeParams?: Record<string, string>
 }> {
-  let { hookReturn } = execHookSync(
+  let { hookReturn } = execHookSingleSync(
     onBeforeRouteHook,
     pageContext._globalContext,
     pageContext,

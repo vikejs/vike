@@ -1,7 +1,7 @@
 export { execHookOnError }
 
 import { isObject, getGlobalObject, assert } from '../../utils.js'
-import { execHookSync } from '../../../shared-server-client/hooks/execHook.js'
+import { execHookSingleSync } from '../../../shared-server-client/hooks/execHook.js'
 import { getGlobalContextServerInternalOptional } from '../globalContext.js'
 import { getHooksFromPageConfigGlobalCumulative } from '../../../shared-server-client/hooks/getHook.js'
 import type {
@@ -30,7 +30,9 @@ function execHookOnError(
   const hooks = getHooksFromPageConfigGlobalCumulative<unknown>(globalContext._pageConfigGlobal, 'onError')
   for (const hook of hooks) {
     try {
-      execHookSync(hook, globalContext, pageContext, getPageContextPublicServer, () => hook.hookFn(err, pageContext))
+      execHookSingleSync(hook, globalContext, pageContext, getPageContextPublicServer, () =>
+        hook.hookFn(err, pageContext),
+      )
     } catch (hookErr) {
       console.error(hookErr)
     }
