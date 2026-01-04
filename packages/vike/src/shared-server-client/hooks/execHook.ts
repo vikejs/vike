@@ -1,13 +1,10 @@
-// TODO: rename all exports
-
 export { execHook }
 export { execHookGlobal }
-export { execHookDirect }
-export { execHookDirectSingle }
-export { execHookDirectSingleWithReturn }
-export { execHookDirectWithoutPageContext }
-export { execHookDirectSync }
-export { execHookBase }
+export { execHookList }
+export { execHookSingle }
+export { execHookSingleSync }
+export { execHookSingleWithReturn }
+export { execHookSingleWithoutPageContext }
 export { getPageContext_sync }
 export { providePageContext }
 export { isUserHookError }
@@ -21,69 +18,58 @@ import { isObject } from '../../utils/isObject.js'
 import type { PageContextClient, PageContextServer } from '../../types/PageContext.js'
 import type { Hook, HookLoc } from './getHook.js'
 import type { PageContextConfig } from '../getPageFiles.js'
-import { getHookFromPageConfigGlobalCumulative, getHookFromPageContextNew } from './getHook.js'
+import { getHooksFromPageConfigGlobalCumulative, getHooksFromPageContextNew } from './getHook.js'
 import type { HookName, HookNameGlobal } from '../../types/Config.js'
-// @ts-ignore TODO use again?
-import type { PageContextCreated } from '../createPageContextShared.js'
-import type { PageContextPublicServer } from '../../server/runtime/renderPageServer/getPageContextPublicServer.js'
-import type { PageContextPublicClientShared } from '../../client/shared/getPageContextPublicClientShared.js'
-import { type PageContextPrepareMinimum, getPageContextPublicShared } from '../getPageContextPublicShared.js'
-import type { GlobalContextPrepareMinimum } from '../getGlobalContextPublicShared.js'
+import { type PageContextPublicMinimum, getPageContextPublicShared } from '../getPageContextPublicShared.js'
+import type { GlobalContextPublicMinimum } from '../getGlobalContextPublicShared.js'
 const globalObject = getGlobalObject('utils/execHook.ts', {
   userHookErrors: new WeakMap<object, HookLoc>(),
   pageContext: null as null | PageContextExecHook,
 })
 
-// @ts-ignore TODO use again?
-type PageContextForPublicUsage = PageContextPublicServer | PageContextPublicClientShared
-
 type HookWithResult = Hook & {
   hookReturn: unknown
 }
 
-// TODO/refactor: use PageContextExecHook predominantly instead of PageContextPrepareMinimum
-// TODO/refactor: better name for PageContextExecHook ?
-type PageContextExecHook = PageContextPrepareMinimum
+type PageContextExecHook = PageContextPublicMinimum
 
 async function execHook<PageContext extends PageContextExecHook & PageContextConfig>(
   hookName: HookName,
   pageContext: PageContext,
-  getPageContextPublicShared: (pageContext: PageContext) => PageContext,
+  getPageContextPublic: (pageContext: PageContext) => PageContext,
 ) {
-  const hooks = getHookFromPageContextNew(hookName, pageContext)
-  return await execHookDirect(hooks, pageContext, getPageContextPublicShared)
+  const hooks = getHooksFromPageContextNew(hookName, pageContext)
+  return await execHookList(hooks, pageContext, getPageContextPublic)
 }
 
-async function execHookGlobal<HookArg extends GlobalContextPrepareMinimum>(
+async function execHookGlobal(
   hookName: HookNameGlobal,
-  globalContext: GlobalContextPrepareMinimum,
-  pageContext: PageContextExecHook | null,
-  hookArg: HookArg,
-  prepareForPublicUsage: (hookArg: HookArg) => HookArg,
+  globalContext: GlobalContextPublicMinimum,
+  getGlobalContextPublic: (globalContext: GlobalContextPublicMinimum) => GlobalContextPublicMinimum,
 ) {
-  const hooks = getHookFromPageConfigGlobalCumulative(globalContext._pageConfigGlobal, hookName)
-  const hookArgForPublicUsage = prepareForPublicUsage(hookArg)
+  const hooks = getHooksFromPageConfigGlobalCumulative(globalContext._pageConfigGlobal, hookName)
+  const globalContextPublic = getGlobalContextPublic(globalContext)
   await Promise.all(
     hooks.map(async (hook) => {
-      await execHookDirectAsync(() => hook.hookFn(hookArgForPublicUsage), hook, globalContext, pageContext)
+      await execHookBaseAsync(() => hook.hookFn(globalContextPublic), hook, globalContext, null)
     }),
   )
 }
 
-async function execHookDirect<PageContext extends PageContextExecHook>(
+async function execHookList<PageContext extends PageContextExecHook>(
   hooks: Hook[],
   pageContext: PageContext,
-  getPageContextPublicShared: (pageContext: PageContext) => PageContext,
+  getPageContextPublic: (pageContext: PageContext) => PageContext,
 ) {
   if (!hooks.length) return [] as HookWithResult[]
-  const pageContextForPublicUsage = getPageContextPublicShared(pageContext)
+  const pageContextPublic = getPageContextPublic(pageContext)
   const hooksWithResult = await Promise.all(
     hooks.map(async (hook) => {
-      const hookReturn = await execHookDirectAsync(
-        () => hook.hookFn(pageContextForPublicUsage),
+      const hookReturn = await execHookBaseAsync(
+        () => hook.hookFn(pageContextPublic),
         hook,
         pageContext._globalContext,
-        pageContextForPublicUsage,
+        pageContextPublic,
       )
       return { ...hook, hookReturn }
     }),
@@ -91,12 +77,12 @@ async function execHookDirect<PageContext extends PageContextExecHook>(
   return hooksWithResult
 }
 
-async function execHookDirectSingle<PageContext extends PageContextExecHook>(
+async function execHookSingle<PageContext extends PageContextExecHook>(
   hook: Hook,
   pageContext: PageContext,
-  getPageContextPublicShared: (pageContext: PageContext) => PageContext,
+  getPageContextPublic: (pageContext: PageContext) => PageContext,
 ) {
-  const hooksWithResult = await execHookDirect([hook], pageContext, getPageContextPublicShared)
+  const hooksWithResult = await execHookList([hook], pageContext, getPageContextPublic)
   const { hookReturn } = hooksWithResult[0]!
   assertUsage(
     hookReturn === undefined,
@@ -104,12 +90,12 @@ async function execHookDirectSingle<PageContext extends PageContextExecHook>(
   )
 }
 
-async function execHookDirectSingleWithReturn<PageContext extends PageContextExecHook>(
+async function execHookSingleWithReturn<PageContext extends PageContextExecHook>(
   hook: Hook,
   pageContext: PageContext,
-  getPageContextPublicShared: (pageContext: PageContext) => PageContext,
+  getPageContextPublic: (pageContext: PageContext) => PageContext,
 ) {
-  const hooksWithResult = await execHookDirect([hook], pageContext, getPageContextPublicShared)
+  const hooksWithResult = await execHookList([hook], pageContext, getPageContextPublic)
   const { hookReturn } = hooksWithResult[0]!
   return { hookReturn }
 }
@@ -119,25 +105,34 @@ function isUserHookError(err: unknown): false | HookLoc {
   return globalObject.userHookErrors.get(err) ?? false
 }
 
-async function execHookDirectWithoutPageContext<HookReturn>(
-  hookFnCaller: () => HookReturn,
+async function execHookSingleWithoutPageContext<HookReturn>(
   hook: Omit<Hook, 'hookFn'>,
-  globalContext: GlobalContextPrepareMinimum,
+  globalContext: GlobalContextPublicMinimum,
+  hookFnCaller: () => HookReturn,
 ): Promise<HookReturn> {
   const { hookName, hookFilePath, hookTimeout } = hook
-  const hookReturn = await execHookDirectAsync(
-    hookFnCaller,
-    { hookName, hookFilePath, hookTimeout },
-    globalContext,
-    null,
-  )
+  const hookReturn = await execHookBaseAsync(hookFnCaller, { hookName, hookFilePath, hookTimeout }, globalContext, null)
   return hookReturn
 }
-function execHookDirectAsync<HookReturn>(
+
+function execHookSingleSync<PageContext extends PageContextExecHook>(
+  hook: Omit<Hook<PageContext>, 'hookTimeout'>,
+  globalContext: GlobalContextPublicMinimum,
+  pageContext: PageContext | null,
+  getPageContextPublic: (pageContext: PageContext) => PageContext,
+  hookFnCaller?: () => unknown,
+) {
+  const pageContextPublic = pageContext && getPageContextPublic(pageContext)
+  hookFnCaller ??= () => hook.hookFn(pageContextPublic!)
+  const hookReturn = execHookBase(hookFnCaller, hook, globalContext, pageContextPublic)
+  return { hookReturn }
+}
+
+function execHookBaseAsync<HookReturn>(
   hookFnCaller: () => HookReturn,
   hook: Omit<Hook, 'hookFn'>,
-  globalContext: GlobalContextPrepareMinimum,
-  pageContextForPublicUsage: null | PageContextExecHook,
+  globalContext: GlobalContextPublicMinimum,
+  pageContextPublic: null | PageContextExecHook,
 ): Promise<HookReturn> {
   const {
     hookName,
@@ -185,7 +180,7 @@ function execHookDirectAsync<HookReturn>(
     }, timeoutErr)
   ;(async () => {
     try {
-      const ret = await execHookBase(hookFnCaller, hook, globalContext, pageContextForPublicUsage)
+      const ret = await execHookBase(hookFnCaller, hook, globalContext, pageContextPublic)
       resolve(ret)
     } catch (err) {
       if (isObject(err)) {
@@ -198,26 +193,11 @@ function execHookDirectAsync<HookReturn>(
   return promise
 }
 
-function execHookDirectSync<PageContext extends PageContextExecHook>(
-  hook: Omit<Hook, 'hookTimeout'>,
-  pageContext: PageContext,
-  getPageContextPublicShared: (pageContext: PageContext) => PageContext,
-) {
-  const pageContextForPublicUsage = getPageContextPublicShared(pageContext)
-  const hookReturn = execHookBase(
-    () => hook.hookFn(pageContextForPublicUsage),
-    hook,
-    pageContext._globalContext,
-    pageContextForPublicUsage,
-  )
-  return { hookReturn }
-}
-
-// Every execHook* variant should call this
+// Every execHook* function should be based on this
 function execHookBase<HookReturn>(
   hookFnCaller: () => HookReturn,
   hook: Omit<Hook, 'hookTimeout' | 'hookFn'>,
-  globalContext: GlobalContextPrepareMinimum,
+  globalContext: GlobalContextPublicMinimum,
   pageContext: PageContextExecHook | null,
 ): HookReturn | Promise<HookReturn> {
   const { hookName, hookFilePath } = hook
@@ -287,11 +267,11 @@ function isNotDisabled(timeout: false | number): timeout is number {
 function getPageContext_sync<PageContext = PageContextClient | PageContextServer>(): null | PageContext {
   const { pageContext } = globalObject
   if (!pageContext) return null
-  const pageContextForPublicUsage = (pageContext as Record<string, unknown>)._isProxyObject
+  const pageContextPublic = (pageContext as Record<string, unknown>)._isProxyObject
     ? // providePageContext() is called on the user-land (e.g. it's called by `vike-{react,vue,solid}`) thus it's already a proxy
       pageContext
     : getPageContextPublicShared(pageContext)
-  return pageContextForPublicUsage as any
+  return pageContextPublic as any
 }
 /**
  * Provide `pageContext` for universal hooks.

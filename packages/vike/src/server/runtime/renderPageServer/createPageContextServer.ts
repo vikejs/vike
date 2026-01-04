@@ -1,7 +1,7 @@
-export { createPageContextServerSide }
-export { createPageContextServerSideWithoutGlobalContext }
+export { createPageContextServer }
+export { createPageContextServerWithoutGlobalContext }
 export type { PageContextCreatedServer }
-export type { PageContextCreatedServerBase }
+export type { PageContextCreatedServerWithoutGlobalContext }
 
 import { assert, assertUsage, assertWarning, updateType, normalizeHeaders, objectAssign } from '../../utils.js'
 import { getPageContextUrlComputed } from '../../../shared-server-client/getPageContextUrlComputed.js'
@@ -12,9 +12,8 @@ import {
   createPageContextShared,
 } from '../../../shared-server-client/createPageContextShared.js'
 
-type PageContextCreatedServerBase = ReturnType<typeof createPageContextBase>
-type PageContextCreatedServer = Awaited<ReturnType<typeof createPageContextServerSide>>
-function createPageContextServerSide(
+type PageContextCreatedServer = Awaited<ReturnType<typeof createPageContextServer>>
+function createPageContextServer(
   pageContextInit: PageContextInit,
   globalContext: GlobalContextServerInternal,
   args: {
@@ -79,8 +78,9 @@ function createPageContextServerSide(
   return pageContext
 }
 
+type PageContextCreatedServerWithoutGlobalContext = ReturnType<typeof createPageContextServerWithoutGlobalContext>
 /** Use this as last resort — prefer passing richer `pageContext` objects to the runtime logger */
-function createPageContextServerSideWithoutGlobalContext(pageContextInit: PageContextInit, requestId: number) {
+function createPageContextServerWithoutGlobalContext(pageContextInit: PageContextInit, requestId: number) {
   const pageContext = createPageContextBase(pageContextInit, false, requestId)
   return pageContext
 }

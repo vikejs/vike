@@ -20,7 +20,7 @@ import { isErrorFetchingStaticAssets, loadPageConfigsLazyClientSide } from '../s
 import { isLinkSkipped } from './isLinkSkipped.js'
 import { disableClientRouting } from './renderPageClient.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
-import { createPageContextClientSide, type PageContextCreatedClient } from './createPageContextClientSide.js'
+import { createPageContextClient, type PageContextCreatedClient } from './createPageContextClient.js'
 import { route, type PageContextAfterRoute } from '../../shared-server-client/route/index.js'
 import { noRouteMatch } from '../../shared-server-client/route/noRouteMatch.js'
 import { type PageContextFromHooksServer, getPageContextFromHooksServer } from './getPageContextFromHooks.js'
@@ -307,7 +307,7 @@ function isExpired(found: PrefetchedPageContext) {
 
 // TO-DO/next-major-release: make it sync
 async function getPageContextLink(urlOfLink: string) {
-  const pageContextLink = await createPageContextClientSide(urlOfLink)
+  const pageContextLink = await createPageContextClient(urlOfLink)
 
   let pageContextFromRoute: PageContextAfterRoute
   try {

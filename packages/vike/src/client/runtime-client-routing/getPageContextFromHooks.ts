@@ -30,7 +30,7 @@ import { pageContextInitIsPassedToClient } from '../../shared-server-client/misc
 import { isServerSideError } from '../../shared-server-client/misc/isServerSideError.js'
 import { execHook } from '../../shared-server-client/hooks/execHook.js'
 import type { HookName } from '../../types/Config.js'
-import type { PageContextCreatedClient } from './createPageContextClientSide.js'
+import type { PageContextCreatedClient } from './createPageContextClient.js'
 import type { PageContextBegin } from './renderPageClient.js'
 import { type PageContextPublicClient, getPageContextPublicClient } from './getPageContextPublicClient.js'
 import type { ConfigEnv } from '../../types/index.js'

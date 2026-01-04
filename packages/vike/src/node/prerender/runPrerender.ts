@@ -31,7 +31,7 @@ import {
   escapeHtml,
 } from './utils.js'
 import { prerenderPage } from '../../server/runtime/renderPageServer/renderPageServerAfterRoute.js'
-import { createPageContextServerSide } from '../../server/runtime/renderPageServer/createPageContextServerSide.js'
+import { createPageContextServer } from '../../server/runtime/renderPageServer/createPageContextServer.js'
 import pc from '@brillout/picocolors'
 import { cpus } from 'node:os'
 import type { PageFile } from '../../shared-server-client/getPageFiles.js'
@@ -61,13 +61,13 @@ import { noRouteMatch } from '../../shared-server-client/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../types/PageConfig.js'
 import { getVikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
 import type { HookTimeout } from '../../shared-server-client/hooks/getHook.js'
-import { execHookDirectWithoutPageContext, isUserHookError } from '../../shared-server-client/hooks/execHook.js'
+import { execHookSingleWithoutPageContext, isUserHookError } from '../../shared-server-client/hooks/execHook.js'
 import type { ApiOptions } from '../api/types.js'
 import { setWasPrerenderRun } from './context.js'
 import { resolvePrerenderConfigGlobal, resolvePrerenderConfigLocal } from './resolvePrerenderConfig.js'
 import { getOutDirs } from '../vite/shared/getOutDirs.js'
 import fs from 'node:fs'
-import { getProxyForPublicUsage } from '../../shared-server-client/getProxyForPublicUsage.js'
+import { getPublicProxy } from '../../shared-server-client/getPublicProxy.js'
 import { getStaticRedirectsForPrerender } from '../../server/runtime/renderPageServer/resolveRedirects.js'
 import { updateType } from '../../server/utils.js'
 const docLink = 'https://vike.dev/i18n#pre-rendering'
@@ -253,7 +253,7 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
 
   await warnMissingPages(prerenderContext._prerenderedPageContexts, globalContext, doNotPrerenderList, partial)
 
-  const prerenderContextPublic = preparePrerenderContextForPublicUsage(prerenderContext)
+  const prerenderContextPublic = getPrerenderContextPublic(prerenderContext)
   objectAssign(vikeConfig.prerenderContext, prerenderContextPublic, true)
   setGlobalContext_prerenderContext(prerenderContextPublic)
 
@@ -415,7 +415,7 @@ async function callOnBeforePrerenderStartHooks(
         if (doNotPrerenderList.find((p) => p.pageId === pageId)) return
         const { hookName, hookFilePath } = hook
 
-        const prerenderResult = await execHookDirectWithoutPageContext(() => hook.hookFn(), hook, globalContext)
+        const prerenderResult = await execHookSingleWithoutPageContext(hook, globalContext, () => hook.hookFn())
         const result = normalizeOnPrerenderHookResult(prerenderResult, hookFilePath, hookName)
 
         // Handle result
@@ -548,7 +548,7 @@ async function createPageContextPrerendering(
     urlOriginal,
     ...prerenderContext._pageContextInit,
   }
-  const pageContext = createPageContextServerSide(pageContextInit, globalContext, {
+  const pageContext = createPageContextServer(pageContextInit, globalContext, {
     isPrerendering: true,
     requestId,
   })
@@ -749,11 +749,9 @@ async function callOnPrerenderStartHook(
     preservePropertyGetters(pageContext)
   })
 
-  const prerenderContextPublic = preparePrerenderContextForPublicUsage(prerenderContext)
-  let result: unknown = await execHookDirectWithoutPageContext(
-    () => hookFn(prerenderContextPublic),
-    onPrerenderStartHook,
-    globalContext,
+  const prerenderContextPublic = getPrerenderContextPublic(prerenderContext)
+  let result: unknown = await execHookSingleWithoutPageContext(onPrerenderStartHook, globalContext, () =>
+    hookFn(prerenderContextPublic),
   )
 
   // Before applying result
@@ -1137,7 +1135,7 @@ function assertIsNotAbort(err: unknown, urlOriginal: string) {
   )
 }
 
-function preparePrerenderContextForPublicUsage(prerenderContext: PrerenderContext): PrerenderContext {
+function getPrerenderContextPublic(prerenderContext: PrerenderContext): PrerenderContext {
   // TO-DO/next-major-release: remove
   if (!('prerenderPageContexts' in prerenderContext)) {
     Object.defineProperty(prerenderContext, 'prerenderPageContexts', {
@@ -1158,7 +1156,7 @@ function preparePrerenderContextForPublicUsage(prerenderContext: PrerenderContex
     changeEnumerable(pageContext, '_isOriginalObject', true)
   })
 
-  const prerenderContextPublic = getProxyForPublicUsage(prerenderContext, 'prerenderContext')
+  const prerenderContextPublic = getPublicProxy(prerenderContext, 'prerenderContext')
   return prerenderContextPublic
 }
 

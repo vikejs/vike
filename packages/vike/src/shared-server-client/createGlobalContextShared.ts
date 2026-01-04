@@ -10,10 +10,10 @@ import { parseVirtualFileExportsGlobalEntry } from './getPageFiles/parseVirtualF
 import { resolveGlobalContextConfig } from './page-configs/resolveVikeConfigPublic.js'
 import type { PageConfigRuntime } from '../types/PageConfig.js'
 import { execHookGlobal } from './hooks/execHook.js'
-import { type GlobalContextPrepareMinimum, getGlobalContextPublicShared } from './getGlobalContextPublicShared.js'
+import { type GlobalContextPublicMinimum, getGlobalContextPublicShared } from './getGlobalContextPublicShared.js'
 import type { GlobalContextServerInternal } from '../server/runtime/globalContext.js'
 import type { GlobalContextClientInternal } from '../client/runtime-client-routing/getGlobalContextClientInternal.js'
-import { getHookFromPageConfigGlobalCumulative, type Hook } from './hooks/getHook.js'
+import { getHooksFromPageConfigGlobalCumulative, type Hook } from './hooks/getHook.js'
 const getGlobalContextSyncErrMsg =
   "The global context isn't set yet, call getGlobalContextSync() later or use getGlobalContext() instead."
 
@@ -22,7 +22,7 @@ async function createGlobalContextShared<GlobalContextAdded extends {}, GlobalCo
   virtualFileExportsGlobalEntry: unknown,
   globalObject: {
     globalContext?: {}
-    onCreateGlobalContextHooks?: Hook<GlobalContextPrepareMinimum>[]
+    onCreateGlobalContextHooks?: Hook<GlobalContextPublicMinimum>[]
     previousCreateGlobalContextPromise?: Promise<void>
   },
   addGlobalContext?: (globalContext: GlobalContextBase) => GlobalContextAdded,
@@ -74,14 +74,14 @@ async function createGlobalContextShared<GlobalContextAdded extends {}, GlobalCo
       objectAssign(globalContext, globalContextAddedAsync)
     }
 
-    const onCreateGlobalContextHooks = getHookFromPageConfigGlobalCumulative(
+    const onCreateGlobalContextHooks = getHooksFromPageConfigGlobalCumulative(
       globalContext._pageConfigGlobal,
       'onCreateGlobalContext',
     )
     let hooksCalled = false
     if (!hooksAreEqual(globalObject.onCreateGlobalContextHooks ?? [], onCreateGlobalContextHooks)) {
       globalObject.onCreateGlobalContextHooks = onCreateGlobalContextHooks
-      await execHookGlobal('onCreateGlobalContext', globalContext, null, globalContext, getGlobalContextPublicShared)
+      await execHookGlobal('onCreateGlobalContext', globalContext, getGlobalContextPublicShared)
       hooksCalled = true
     }
 
@@ -136,7 +136,7 @@ function getAllPageIds(pageFilesAll: PageFile[], pageConfigs: PageConfigRuntime[
   return [...allPageIds, ...allPageIds2]
 }
 
-function hooksAreEqual<HookArg = GlobalContextPrepareMinimum>(
+function hooksAreEqual<HookArg = GlobalContextPublicMinimum>(
   hooks1: Hook<HookArg>[],
   hooks2: Hook<HookArg>[],
 ): boolean {

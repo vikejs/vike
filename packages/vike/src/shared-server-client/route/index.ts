@@ -12,7 +12,7 @@ if (isBrowser()) {
 }
 
 import { assert, assertUsage, isPlainObject, objectAssign, debug } from './utils.js'
-import { type PageContextUrlInternal, type PageContextUrlSource } from '../getPageContextUrlComputed.js'
+import type { PageContextUrlInternal, PageContextUrlSource } from '../getPageContextUrlComputed.js'
 import { resolvePrecedence } from './resolvePrecedence.js'
 import { resolveRouteString } from './resolveRouteString.js'
 import { resolveRouteFunction } from './resolveRouteFunction.js'
@@ -21,9 +21,7 @@ import type { PageRoutes, RouteType } from './loadPageRoutes.js'
 import pc from '@brillout/picocolors'
 import type { GlobalContextInternal } from '../createGlobalContextShared.js'
 
-type PageContextBeforeRoute = PageContextUrlInternal & {
-  _globalContext: GlobalContextInternal
-} & PageContextUrlSource
+type PageContextBeforeRoute = PageContextUrlInternal & { _globalContext: GlobalContextInternal } & PageContextUrlSource
 type PageContextAfterRoute = {
   pageId: string | null
   routeParams: Record<string, string>

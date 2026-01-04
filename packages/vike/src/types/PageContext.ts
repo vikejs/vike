@@ -33,16 +33,16 @@ import type {
 import type { Config } from './Config.js'
 import type { AbortStatusCode } from '../shared-server-client/route/abort.js'
 import type { GlobalContextClient, GlobalContextServer, GlobalContextClientWithServerRouting } from './GlobalContext.js'
-import type { DangerouslyUseInternals } from '../shared-server-client/getProxyForPublicUsage.js'
+import type { DangerouslyUseInternals } from '../shared-server-client/getPublicProxy.js'
 import type { PageContextInternalClientAfterRender } from '../client/runtime-client-routing/renderPageClient.js'
 import type { PageContextAfterRender } from '../server/runtime/renderPageServer/renderPageServerAfterRoute.js'
-import type { PageContextPublicProxyServer } from '../server/runtime/renderPageServer/getPageContextPublicServer.js'
+import type { PageContextPublicServer } from '../server/runtime/renderPageServer/getPageContextPublicServer.js'
 import type { PageContextPublicProxyClient } from '../client/runtime-client-routing/getPageContextPublicClient.js'
 
 type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & {
   /** https://vike.dev/warning/internals */
   dangerouslyUseInternals: DangerouslyUseInternals<
-    PageContextInternalServer & PageContextAfterRender & PageContextPublicProxyServer
+    PageContextInternalServer & PageContextAfterRender & PageContextPublicServer
   >
 } & Vike.PageContext &
   Vike.PageContextServer

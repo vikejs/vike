@@ -4,7 +4,7 @@ export { assertSyncRouting }
 export { warnDeprecatedAllowKey }
 
 import type { PageContextUrlInternal } from '../getPageContextUrlComputed.js'
-import { execHookDirectSync } from '../hooks/execHook.js'
+import { execHookSingleSync } from '../hooks/execHook.js'
 import { getPageContextPublicShared } from '../getPageContextPublicShared.js'
 import { assert, assertUsage, assertWarning, hasProp, isPlainObject, isPromise } from './utils.js'
 import pc from '@brillout/picocolors'
@@ -17,12 +17,13 @@ async function resolveRouteFunction(
   precedence: number | null
   routeParams: Record<string, string>
 }> {
-  let { hookReturn: result } = execHookDirectSync(
+  let { hookReturn: result } = execHookSingleSync(
     {
       hookFn: routeFunction,
       hookFilePath: routeFunctionFilePath,
       hookName: 'route',
     },
+    pageContext._globalContext,
     pageContext,
     getPageContextPublicShared,
   )

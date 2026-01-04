@@ -1,19 +1,19 @@
 export { execHookServer }
 export type { PageContextExecHookServer }
 
-import { execHookDirect } from '../../../shared-server-client/hooks/execHook.js'
-import { getPageContextPublicServer, type PageContextPublicServer } from './getPageContextPublicServer.js'
+import { execHookList, PageContextExecHook } from '../../../shared-server-client/hooks/execHook.js'
+import { getPageContextPublicServer } from './getPageContextPublicServer.js'
 import type { PageContextConfig } from '../../../shared-server-client/getPageFiles.js'
 import type { HookName } from '../../../types/Config.js'
-import { getHookFromPageContextNew } from '../../../shared-server-client/hooks/getHook.js'
+import { getHooksFromPageContextNew } from '../../../shared-server-client/hooks/getHook.js'
 import { getFileSuffixes } from '../../../shared-server-node/getFileSuffixes.js'
 
-type PageContextExecHookServer = PageContextConfig & PageContextPublicServer
+type PageContextExecHookServer = PageContextConfig & PageContextExecHook & { isClientSideNavigation: boolean }
 async function execHookServer(hookName: HookName, pageContext: PageContextExecHookServer) {
-  const allHooks = getHookFromPageContextNew(hookName, pageContext)
+  const allHooks = getHooksFromPageContextNew(hookName, pageContext)
   const hooks = !pageContext.isClientSideNavigation
     ? allHooks
     : // Don't execute `.ssr.js` hooks upon client-side navigation
       allHooks.filter((hook) => !getFileSuffixes(hook.hookFilePath).includes('ssr'))
-  return await execHookDirect(hooks, pageContext, getPageContextPublicServer)
+  return await execHookList(hooks, pageContext, getPageContextPublicServer)
 }

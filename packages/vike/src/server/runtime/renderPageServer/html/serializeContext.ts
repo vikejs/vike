@@ -16,7 +16,7 @@ import { pageContextInitIsPassedToClient } from '../../../../shared-server-clien
 import { isServerSideError } from '../../../../shared-server-client/misc/isServerSideError.js'
 import { getPropKeys, getPropVal, setPropVal } from './propKeys.js'
 import type { GlobalContextServerInternal } from '../../globalContext.js'
-import type { PageContextCreatedServer } from '../createPageContextServerSide.js'
+import type { PageContextCreatedServer } from '../createPageContextServer.js'
 import type { PageContextBegin } from '../../renderPageServer.js'
 import type { PageContextCspNonce } from '../csp.js'
 import { assertRouteParams } from '../../../../shared-server-client/route/resolveRouteFunction.js'

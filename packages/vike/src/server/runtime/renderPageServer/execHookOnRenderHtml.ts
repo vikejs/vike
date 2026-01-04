@@ -14,14 +14,16 @@ import type { PageAsset } from './getPageAssets.js'
 import { isStream } from './html/stream.js'
 import { assertPageContextProvidedByUser } from '../../../shared-server-client/assertPageContextProvidedByUser.js'
 import type { PreloadFilter } from './html/injectAssets/getHtmlTags.js'
-import { getPageContextPublicServer, type PageContextPublicServer } from './getPageContextPublicServer.js'
+import { getPageContextPublicServer } from './getPageContextPublicServer.js'
 import type { PageContextPromise } from './html/injectAssets.js'
 import { assertHookReturnedObject } from '../../../shared-server-client/assertHookReturnedObject.js'
 import { logRuntimeError } from '../loggerRuntime.js'
 import type { PageContextSerialization } from './html/serializeContext.js'
 import pc from '@brillout/picocolors'
-import { execHookDirectSingleWithReturn } from '../../../shared-server-client/hooks/execHook.js'
+import { execHookSingleWithReturn, type PageContextExecHook } from '../../../shared-server-client/hooks/execHook.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
+import type { PageContextConfig } from '../../../shared-server-client/getPageFiles.js'
+import type { PageContextInternalServer } from '../../../types/PageContext.js'
 
 type GetPageAssets = () => Promise<PageAsset[]>
 
@@ -32,10 +34,11 @@ type HookName =
   | 'render'
 
 async function execHookOnRenderHtml(
-  pageContext: PageContextPublicServer &
+  pageContext: PageContextConfig &
+    PageContextExecHook &
+    PageContextInternalServer &
     PageContextSerialization & {
       pageId: string
-      _globalContext: GlobalContextServerInternal
       __getPageAssets: GetPageAssets
       _isHtmlOnly: boolean
       _baseServer: string
@@ -48,7 +51,7 @@ async function execHookOnRenderHtml(
   const hook = getRenderHook(pageContext)
   objectAssign(pageContext, { _renderHook: hook })
 
-  const { hookReturn } = await execHookDirectSingleWithReturn(hook, pageContext, getPageContextPublicServer)
+  const { hookReturn } = await execHookSingleWithReturn(hook, pageContext, getPageContextPublicServer)
 
   const { documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter } = processHookReturnValue(
     hookReturn,
@@ -75,7 +78,7 @@ async function execHookOnRenderHtml(
 }
 
 function getRenderHook(
-  pageContext: PageContextPublicServer & {
+  pageContext: PageContextConfig & {
     _globalContext: GlobalContextServerInternal
   },
 ) {

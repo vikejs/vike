@@ -1,13 +1,12 @@
-export { createPageContextClientSide }
-export type PageContextCreatedClient_ServerRouting = Awaited<ReturnType<typeof createPageContextClientSide>>
-export type PageContextCreatedClientBase_ServerRouting = Awaited<ReturnType<typeof createPageContextBase>>
+export { createPageContextClient }
+export type PageContextCreatedClient_ServerRouting = Awaited<ReturnType<typeof createPageContextClient>>
 
 import { updateType, objectAssign } from './utils.js'
 
 import { createPageContextObject, createPageContextShared } from '../../shared-server-client/createPageContextShared.js'
 import { getGlobalContextClientInternal } from './getGlobalContextClientInternal.js'
 
-async function createPageContextClientSide() {
+async function createPageContextClient() {
   const pageContext = createPageContextBase()
 
   const globalContext = await getGlobalContextClientInternal()

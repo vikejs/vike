@@ -1,8 +1,8 @@
 export { getHookFromPageContext }
-export { getHookFromPageContextNew }
+export { getHooksFromPageContextNew }
 export { getHookFromPageConfig }
 export { getHookFromPageConfigGlobal }
-export { getHookFromPageConfigGlobalCumulative }
+export { getHooksFromPageConfigGlobalCumulative }
 export { getHook_setIsPrerenderering }
 export type { Hook }
 export type { HookLoc }
@@ -21,11 +21,11 @@ import { getHookFilePathToShowToUser } from '../page-configs/helpers.js'
 import { getConfigValueRuntime } from '../page-configs/getConfigValueRuntime.js'
 import { assert, assertUsage, checkType, isArray, isCallable, isObject } from '../utils.js'
 import pc from '@brillout/picocolors'
-import type { GlobalContextPrepareMinimum } from '../getGlobalContextPublicShared.js'
-import type { PageContextPrepareMinimum } from '../getPageContextPublicShared.js'
+import type { GlobalContextPublicMinimum } from '../getGlobalContextPublicShared.js'
+import type { PageContextPublicMinimum } from '../getPageContextPublicShared.js'
 const globalObject = getGlobalObject<{ isPrerendering?: true }>('hooks/getHook.ts', {})
 
-type HookArgDefault = PageContextPrepareMinimum
+type HookArgDefault = PageContextPublicMinimum
 type Hook<HookArg = HookArgDefault> = HookLoc & { hookFn: HookFn<HookArg>; hookTimeout: HookTimeout }
 type HookLoc = {
   hookName: HookNameOld
@@ -64,8 +64,8 @@ function getHookFromPageContext(pageContext: PageContextConfig, hookName: HookNa
   assert(hookFilePath)
   return getHook(hookFn, hookName, hookFilePath, hookTimeout)
 }
-// TO-DO/eventually: remove getHookFromPageContext() in favor of getHookFromPageContextNew()
-function getHookFromPageContextNew(hookName: HookName, pageContext: PageContextConfig): Hook[] {
+// TO-DO/eventually: remove getHookFromPageContext() in favor of getHooksFromPageContextNew()
+function getHooksFromPageContextNew(hookName: HookName, pageContext: PageContextConfig): Hook[] {
   const { hooksTimeout } = pageContext.config
   const hookTimeout = getHookTimeout(hooksTimeout, hookName)
   const hooks: Hook[] = []
@@ -99,7 +99,7 @@ function getHookFromPageConfigGlobal(pageConfigGlobal: PageConfigGlobalRuntime, 
   const hookTimeout = getHookTimeoutGlobal(hookName)
   return getHook(hookFn, hookName, hookFilePath, hookTimeout)
 }
-function getHookFromPageConfigGlobalCumulative<HookArg = GlobalContextPrepareMinimum>(
+function getHooksFromPageConfigGlobalCumulative<HookArg = GlobalContextPublicMinimum>(
   pageConfigGlobal: PageConfigGlobalRuntime,
   hookName: HookNameGlobal,
 ): Hook<HookArg>[] {

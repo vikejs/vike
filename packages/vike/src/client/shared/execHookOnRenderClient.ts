@@ -4,11 +4,10 @@ export type { PageContextBeforeRenderClient }
 import { assert, assertUsage } from '../runtime-server-routing/utils.js'
 import { getHookFromPageContext, type Hook } from '../../shared-server-client/hooks/getHook.js'
 import type { PageFile, PageContextConfig } from '../../shared-server-client/getPageFiles.js'
-import type { PageContextPublicClientShared } from './getPageContextPublicClientShared.js'
-import { execHookDirectSingle } from '../../shared-server-client/hooks/execHook.js'
+import { execHookSingle } from '../../shared-server-client/hooks/execHook.js'
 import type { GlobalContextClientInternalShared } from './getGlobalContextClientInternalShared.js'
-import type { PageContextCreatedClient } from '../runtime-client-routing/createPageContextClientSide.js'
-import type { PageContextCreatedClient_ServerRouting } from '../runtime-server-routing/createPageContextClientSide.js'
+import type { PageContextCreatedClient } from '../runtime-client-routing/createPageContextClient.js'
+import type { PageContextCreatedClient_ServerRouting } from '../runtime-server-routing/createPageContextClient.js'
 
 type PageContextCreatedClientShared = PageContextCreatedClient | PageContextCreatedClient_ServerRouting
 
@@ -19,12 +18,11 @@ type PageContextBeforeRenderClient = {
   pageId: string
   _globalContext: GlobalContextClientInternalShared
 } & PageContextCreatedClientShared &
-  PageContextConfig &
-  PageContextPublicClientShared
+  PageContextConfig
 
 async function execHookOnRenderClient<PageContext extends PageContextBeforeRenderClient>(
   pageContext: PageContext,
-  prepareForPublicUsage: (pageConfig: PageContext) => PageContext,
+  getPageContextPublic: (pageContext: PageContext) => PageContext,
 ): Promise<void> {
   let hook: null | Hook = null
 
@@ -65,12 +63,12 @@ async function execHookOnRenderClient<PageContext extends PageContextBeforeRende
   }
 
   // We don't use a try-catch wrapper because rendering errors are usually handled by the UI framework. (E.g. React's Error Boundaries.)
-  await execHookDirectSingle(hook, pageContext, prepareForPublicUsage)
+  await execHookSingle(hook, pageContext, getPageContextPublic)
 }
 
 function getUrlToShowToUser(pageContext: { urlOriginal?: string; urlPathname?: string }): string {
   let url: string | undefined
-  // try/catch to avoid passToClient assertUsage() (although: this may not be needed anymore, since we're now accessing pageContext and not pageContextForPublicUsage)
+  // try/catch to avoid passToClient assertUsage() (although: this may not be needed anymore, since we're now accessing pageContext and not pageContextPublic)
   try {
     url =
       // Client Routing

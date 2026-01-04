@@ -1,17 +1,16 @@
 export { getPageContextPublicClientShared }
 export { getPageContextPublicClientMinimal }
-export type { PageContextPublicClientShared }
 
 import { objectAssign } from '../runtime-server-routing/utils.js'
 import type { PageContextConfig } from '../../shared-server-client/getPageFiles.js'
 import {
   assertPropertyGetters,
-  type PageContextPrepareMinimum,
+  type PageContextPublicMinimum,
   getPageContextPublicShared,
 } from '../../shared-server-client/getPageContextPublicShared.js'
 import type { PageContextInternalClient } from '../../types/PageContext.js'
 
-type PageContextPublicClientShared = PageContextPrepareMinimum & PageContextInternalClient & PageContextConfig
+type PageContextPublicClientShared = PageContextPublicMinimum & PageContextInternalClient & PageContextConfig
 
 function getPageContextPublicClientShared<PageContext extends PageContextPublicClientShared>(
   pageContext: PageContext,
@@ -33,7 +32,7 @@ function getPageContextPublicClientShared<PageContext extends PageContextPublicC
   return getPageContextPublicClientMinimal(pageContext)
 }
 
-function getPageContextPublicClientMinimal<PageContext extends PageContextPrepareMinimum>(pageContext: PageContext) {
+function getPageContextPublicClientMinimal<PageContext extends PageContextPublicMinimum>(pageContext: PageContext) {
   const pageContextPublic = getPageContextPublicShared(pageContext)
   return pageContextPublic
 }
