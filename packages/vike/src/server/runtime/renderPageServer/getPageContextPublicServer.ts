@@ -8,6 +8,7 @@ import type { PageContextInternalServer } from '../../../types/PageContext.js'
 import {
   assertPropertyGetters,
   getPageContextPublicShared,
+  type PageContextPublicMinimum,
 } from '../../../shared-server-client/getPageContextPublicShared.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 
@@ -26,7 +27,7 @@ type PageContextPublicServer = PageContextInternalServer &
   }
 
 type PageContextPublicProxyServer = ReturnType<typeof getPageContextPublicServer>
-function getPageContextPublicServer<PageContext extends PageContextPublicServer>(pageContext: PageContext) {
+function getPageContextPublicServer<PageContext extends PageContextPublicMinimum>(pageContext: PageContext) {
   // TO-DO/next-major-release: after we remove supportVueReactiviy() we can call this later inside the agnostic getPageContextPublicShared()
   assertPropertyGetters(pageContext)
   const pageContextPublic = getPageContextPublicShared(pageContext)
