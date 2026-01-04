@@ -4,7 +4,7 @@ export type { PageContextBeforeRenderClient }
 import { assert, assertUsage } from '../runtime-server-routing/utils.js'
 import { getHookFromPageContext, type Hook } from '../../shared-server-client/hooks/getHook.js'
 import type { PageFile, PageContextConfig } from '../../shared-server-client/getPageFiles.js'
-import { execHookDirectSingle } from '../../shared-server-client/hooks/execHook.js'
+import { execHookSingle } from '../../shared-server-client/hooks/execHook.js'
 import type { GlobalContextClientInternalShared } from './getGlobalContextClientInternalShared.js'
 import type { PageContextCreatedClient } from '../runtime-client-routing/createPageContextClient.js'
 import type { PageContextCreatedClient_ServerRouting } from '../runtime-server-routing/createPageContextClient.js'
@@ -63,7 +63,7 @@ async function execHookOnRenderClient<PageContext extends PageContextBeforeRende
   }
 
   // We don't use a try-catch wrapper because rendering errors are usually handled by the UI framework. (E.g. React's Error Boundaries.)
-  await execHookDirectSingle(hook, pageContext, getPageContextPublic)
+  await execHookSingle(hook, pageContext, getPageContextPublic)
 }
 
 function getUrlToShowToUser(pageContext: { urlOriginal?: string; urlPathname?: string }): string {

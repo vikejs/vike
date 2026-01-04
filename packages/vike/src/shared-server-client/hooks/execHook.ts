@@ -3,10 +3,10 @@
 export { execHook }
 export { execHookGlobal }
 export { execHooks }
-export { execHookDirectSingle }
-export { execHookDirectSingleWithReturn }
-export { execHookDirectWithoutPageContext }
-export { execHookDirectSync }
+export { execHookSingle }
+export { execHookSingleWithReturn }
+export { execHookWithoutPageContext }
+export { execHookSync }
 export { getPageContext_sync }
 export { providePageContext }
 export { isUserHookError }
@@ -53,7 +53,7 @@ async function execHookGlobal(
   const globalContextPublic = getGlobalContextPublic(globalContext)
   await Promise.all(
     hooks.map(async (hook) => {
-      await execHookDirectAsync(() => hook.hookFn(globalContextPublic), hook, globalContext, null)
+      await execHookAsync(() => hook.hookFn(globalContextPublic), hook, globalContext, null)
     }),
   )
 }
@@ -67,7 +67,7 @@ async function execHooks<PageContext extends PageContextExecHook>(
   const pageContextPublic = getPageContextPublic(pageContext)
   const hooksWithResult = await Promise.all(
     hooks.map(async (hook) => {
-      const hookReturn = await execHookDirectAsync(
+      const hookReturn = await execHookAsync(
         () => hook.hookFn(pageContextPublic),
         hook,
         pageContext._globalContext,
@@ -79,7 +79,7 @@ async function execHooks<PageContext extends PageContextExecHook>(
   return hooksWithResult
 }
 
-async function execHookDirectSingle<PageContext extends PageContextExecHook>(
+async function execHookSingle<PageContext extends PageContextExecHook>(
   hook: Hook,
   pageContext: PageContext,
   getPageContextPublic: (pageContext: PageContext) => PageContext,
@@ -92,7 +92,7 @@ async function execHookDirectSingle<PageContext extends PageContextExecHook>(
   )
 }
 
-async function execHookDirectSingleWithReturn<PageContext extends PageContextExecHook>(
+async function execHookSingleWithReturn<PageContext extends PageContextExecHook>(
   hook: Hook,
   pageContext: PageContext,
   getPageContextPublic: (pageContext: PageContext) => PageContext,
@@ -107,22 +107,17 @@ function isUserHookError(err: unknown): false | HookLoc {
   return globalObject.userHookErrors.get(err) ?? false
 }
 
-async function execHookDirectWithoutPageContext<HookReturn>(
+async function execHookWithoutPageContext<HookReturn>(
   hookFnCaller: () => HookReturn,
   hook: Omit<Hook, 'hookFn'>,
   globalContext: GlobalContextPublicMinimum,
 ): Promise<HookReturn> {
   const { hookName, hookFilePath, hookTimeout } = hook
-  const hookReturn = await execHookDirectAsync(
-    hookFnCaller,
-    { hookName, hookFilePath, hookTimeout },
-    globalContext,
-    null,
-  )
+  const hookReturn = await execHookAsync(hookFnCaller, { hookName, hookFilePath, hookTimeout }, globalContext, null)
   return hookReturn
 }
 
-function execHookDirectSync<PageContext extends PageContextExecHook>(
+function execHookSync<PageContext extends PageContextExecHook>(
   hook: Omit<Hook<PageContext>, 'hookTimeout'>,
   globalContext: GlobalContextPublicMinimum,
   pageContext: PageContext | null,
@@ -135,7 +130,7 @@ function execHookDirectSync<PageContext extends PageContextExecHook>(
   return { hookReturn }
 }
 
-function execHookDirectAsync<HookReturn>(
+function execHookAsync<HookReturn>(
   hookFnCaller: () => HookReturn,
   hook: Omit<Hook, 'hookFn'>,
   globalContext: GlobalContextPublicMinimum,

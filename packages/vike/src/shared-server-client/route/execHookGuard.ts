@@ -3,7 +3,7 @@ export { execHookGuard }
 import { getHookFromPageContext, getHookTimeoutDefault, type Hook } from '../hooks/getHook.js'
 import { assert, assertUsage, isCallable } from './utils.js'
 import type { PageContextConfig, PageFile } from '../getPageFiles.js'
-import { execHookDirectSingle, type PageContextExecHook } from '../hooks/execHook.js'
+import { execHookSingle, type PageContextExecHook } from '../hooks/execHook.js'
 import type { GlobalContextInternal } from '../createGlobalContextShared.js'
 const errIntro = 'The guard() hook defined by'
 
@@ -28,7 +28,7 @@ async function execHookGuard<
 
   if (!hook) return
 
-  await execHookDirectSingle(hook, pageContext, getPageContextPublic)
+  await execHookSingle(hook, pageContext, getPageContextPublic)
 }
 
 // We cannot easily use pageContext.exports for the V0.4 design

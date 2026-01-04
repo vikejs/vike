@@ -20,10 +20,7 @@ import { assertHookReturnedObject } from '../../../shared-server-client/assertHo
 import { logRuntimeError } from '../loggerRuntime.js'
 import type { PageContextSerialization } from './html/serializeContext.js'
 import pc from '@brillout/picocolors'
-import {
-  execHookDirectSingleWithReturn,
-  type PageContextExecHook,
-} from '../../../shared-server-client/hooks/execHook.js'
+import { execHookSingleWithReturn, type PageContextExecHook } from '../../../shared-server-client/hooks/execHook.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { PageContextConfig } from '../../../shared-server-client/getPageFiles.js'
 import type { PageContextInternalServer } from '../../../types/PageContext.js'
@@ -54,7 +51,7 @@ async function execHookOnRenderHtml(
   const hook = getRenderHook(pageContext)
   objectAssign(pageContext, { _renderHook: hook })
 
-  const { hookReturn } = await execHookDirectSingleWithReturn(hook, pageContext, getPageContextPublicServer)
+  const { hookReturn } = await execHookSingleWithReturn(hook, pageContext, getPageContextPublicServer)
 
   const { documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter } = processHookReturnValue(
     hookReturn,
