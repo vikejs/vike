@@ -1,6 +1,5 @@
 export { getPageContextPublicClientShared }
 export { getPageContextPublicClientMinimal }
-export type { PageContextPublicClientShared }
 
 import { objectAssign } from '../runtime-server-routing/utils.js'
 import type { PageContextConfig } from '../../shared-server-client/getPageFiles.js'

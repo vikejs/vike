@@ -4,7 +4,6 @@ export type { PageContextBeforeRenderClient }
 import { assert, assertUsage } from '../runtime-server-routing/utils.js'
 import { getHookFromPageContext, type Hook } from '../../shared-server-client/hooks/getHook.js'
 import type { PageFile, PageContextConfig } from '../../shared-server-client/getPageFiles.js'
-import type { PageContextPublicClientShared } from './getPageContextPublicClientShared.js'
 import { execHookDirectSingle } from '../../shared-server-client/hooks/execHook.js'
 import type { GlobalContextClientInternalShared } from './getGlobalContextClientInternalShared.js'
 import type { PageContextCreatedClient } from '../runtime-client-routing/createPageContextClient.js'
@@ -19,8 +18,7 @@ type PageContextBeforeRenderClient = {
   pageId: string
   _globalContext: GlobalContextClientInternalShared
 } & PageContextCreatedClientShared &
-  PageContextConfig &
-  PageContextPublicClientShared
+  PageContextConfig
 
 async function execHookOnRenderClient<PageContext extends PageContextBeforeRenderClient>(
   pageContext: PageContext,
