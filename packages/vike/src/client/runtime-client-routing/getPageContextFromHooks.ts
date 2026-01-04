@@ -32,7 +32,7 @@ import { execHook } from '../../shared-server-client/hooks/execHook.js'
 import type { HookName } from '../../types/Config.js'
 import type { PageContextCreatedClient } from './createPageContextClientSide.js'
 import type { PageContextBegin } from './renderPageClient.js'
-import { type PageContextForPublicUsageClient, getPageContextPublicClient } from './getPageContextPublicClient.js'
+import { type PageContextPublicClient, getPageContextPublicClient } from './getPageContextPublicClient.js'
 import type { ConfigEnv } from '../../types/index.js'
 import type { GlobalContextClientInternal } from './getGlobalContextClientInternal.js'
 const globalObject = getGlobalObject<{
@@ -63,7 +63,7 @@ function getPageContextFromHooksServer_firstRender(): PageContextSerialized & {
 async function getPageContextFromHooksClient_firstRender(
   pageContext: PageContextSerialized &
     PageContextBegin &
-    PageContextConfig & { _hasPageContextFromServer: true } & PageContextForPublicUsageClient,
+    PageContextConfig & { _hasPageContextFromServer: true } & PageContextPublicClient,
 ) {
   for (const hookName of clientHooks) {
     if (!hookClientOnlyExists(hookName, pageContext)) continue
@@ -119,7 +119,7 @@ async function getPageContextFromHooksServer(
 async function getPageContextFromHooksClient(
   pageContext: { pageId: string; _hasPageContextFromServer: boolean } & PageContextBegin &
     PageContextConfig &
-    PageContextForPublicUsageClient,
+    PageContextPublicClient,
   isErrorPage: boolean,
 ) {
   let dataHookExecuted = false
@@ -149,7 +149,7 @@ async function getPageContextFromHooksClient(
   return pageContextFromHooksClient
 }
 
-type PageContextExecHookClient = PageContextCreatedClient & PageContextConfig & PageContextForPublicUsageClient
+type PageContextExecHookClient = PageContextCreatedClient & PageContextConfig & PageContextPublicClient
 async function execHookClient(hookName: HookName, pageContext: PageContextExecHookClient) {
   return await execHook(hookName, pageContext, (p) => getPageContextPublicClient(p))
 }

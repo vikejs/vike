@@ -1,6 +1,6 @@
 export { getPageContextPublicClientShared }
 export { getPageContextPublicClientMinimal }
-export type { PageContextForPublicUsageClientShared }
+export type { PageContextPublicClientShared }
 
 import { objectAssign } from '../runtime-server-routing/utils.js'
 import type { PageContextConfig } from '../../shared-server-client/getPageFiles.js'
@@ -11,9 +11,9 @@ import {
 } from '../../shared-server-client/preparePageContextForPublicUsage.js'
 import type { PageContextInternalClient } from '../../types/PageContext.js'
 
-type PageContextForPublicUsageClientShared = PageContextPrepareMinimum & PageContextInternalClient & PageContextConfig
+type PageContextPublicClientShared = PageContextPrepareMinimum & PageContextInternalClient & PageContextConfig
 
-function getPageContextPublicClientShared<PageContext extends PageContextForPublicUsageClientShared>(
+function getPageContextPublicClientShared<PageContext extends PageContextPublicClientShared>(
   pageContext: PageContext,
 ): PageContext & { Page: unknown } {
   // TO-DO/soon/proxy: use proxy

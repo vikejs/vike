@@ -61,7 +61,7 @@ import { getRouteStringParameterList } from '../../shared-server-client/route/re
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 import type { PageContextClient, PageContextInternalClient } from '../../types/PageContext.js'
 import { execHookDirect, execHook } from '../../shared-server-client/hooks/execHook.js'
-import { type PageContextForPublicUsageClient, getPageContextPublicClient } from './getPageContextPublicClient.js'
+import { type PageContextPublicClient, getPageContextPublicClient } from './getPageContextPublicClient.js'
 import { getHookFromPageContextNew } from '../../shared-server-client/hooks/getHook.js'
 import { getPageContextPublicClientMinimal } from '../shared/getPageContextPublicClientShared.js'
 import type { VikeGlobalInternal } from '../../types/VikeGlobalInternal.js'
@@ -96,7 +96,7 @@ const { firstRenderStartPromise } = globalObject
 type PreviousPageContext = { pageId: string } & PageContextConfig &
   PageContextRouted &
   PageContextCreatedClient &
-  PageContextForPublicUsageClient
+  PageContextPublicClient
 type PageContextRouted = { pageId: string; routeParams: Record<string, string> }
 
 type PageContextBegin = Awaited<ReturnType<typeof getPageContextBegin>>
@@ -766,7 +766,7 @@ function getPageContextClient(): PageContextClient | null {
 }
 
 type PageContextExecuteHook = Omit<
-  PageContextForPublicUsageClient,
+  PageContextPublicClient,
   keyof Awaited<ReturnType<typeof loadPageConfigsLazyClientSide>>
 >
 async function loadPageConfigsLazyClientSideAndExecHook<
