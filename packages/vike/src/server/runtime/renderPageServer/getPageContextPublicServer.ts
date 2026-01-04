@@ -1,5 +1,5 @@
 export { getPageContextPublicServer }
-export type { PageContextForPublicUsageServer }
+export type { PageContextPublicServer }
 export type { PageContextPublicProxyServer }
 
 import type { PageContextUrlInternal } from '../../../shared-server-client/getPageContextUrlComputed.js'
@@ -11,7 +11,7 @@ import {
 } from '../../../shared-server-client/preparePageContextForPublicUsage.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 
-type PageContextForPublicUsageServer = PageContextInternalServer &
+type PageContextPublicServer = PageContextInternalServer &
   PageContextConfig & {
     urlOriginal: string
     /** @deprecated */
@@ -26,7 +26,7 @@ type PageContextForPublicUsageServer = PageContextInternalServer &
   }
 
 type PageContextPublicProxyServer = ReturnType<typeof getPageContextPublicServer>
-function getPageContextPublicServer<PageContext extends PageContextForPublicUsageServer>(pageContext: PageContext) {
+function getPageContextPublicServer<PageContext extends PageContextPublicServer>(pageContext: PageContext) {
   // TO-DO/next-major-release: after we remove supportVueReactiviy() we can call this later inside the agnostic preparePageContextForPublicUsage()
   assertPropertyGetters(pageContext)
   const pageContextPublic = preparePageContextForPublicUsage(pageContext)

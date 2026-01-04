@@ -25,7 +25,7 @@ import { getHookFromPageConfigGlobalCumulative, getHookFromPageContextNew } from
 import type { HookName, HookNameGlobal } from '../../types/Config.js'
 // @ts-ignore TODO use again?
 import type { PageContextCreated } from '../createPageContextShared.js'
-import type { PageContextForPublicUsageServer } from '../../server/runtime/renderPageServer/getPageContextPublicServer.js'
+import type { PageContextPublicServer } from '../../server/runtime/renderPageServer/getPageContextPublicServer.js'
 import type { PageContextPublicClientShared } from '../../client/shared/getPageContextPublicClientShared.js'
 import {
   type PageContextPrepareMinimum,
@@ -38,7 +38,7 @@ const globalObject = getGlobalObject('utils/execHook.ts', {
 })
 
 // @ts-ignore TODO use again?
-type PageContextForPublicUsage = PageContextForPublicUsageServer | PageContextPublicClientShared
+type PageContextForPublicUsage = PageContextPublicServer | PageContextPublicClientShared
 
 type HookWithResult = Hook & {
   hookReturn: unknown
