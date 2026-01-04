@@ -12,8 +12,8 @@ export type { PageContextUrlSource }
 import { objectDefineProperty } from '../utils/objectDefineProperty.js'
 import { assertPropertyGetters } from './getPageContextPublicShared.js'
 import { assert, parseUrl, assertWarning, isBrowser, changeEnumerable, type UrlPublic } from './utils.js'
-import type { GlobalContextPublicMinimum } from './getGlobalContextPublicShared.js'
 import type { PageContextCreated } from './createPageContextShared.js'
+import type { PageContextExecHook } from './hooks/execHook.js'
 
 // TO-DO/next-major-release: move pageContext.urlParsed to pageContext.url
 type PageContextUrlComputed = {
@@ -29,11 +29,10 @@ type PageContextUrl = {
   /** The URL of the HTTP request */
   urlOriginal: string
 } & PageContextUrlComputed
-type PageContextUrlInternal = PageContextUrl & {
-  _urlRewrite?: string
-} & PageContextCreated & {
-    // TODO/refactor: use PageContextExecHook instead of following?
-    _globalContext: GlobalContextPublicMinimum
+type PageContextUrlInternal = PageContextUrl &
+  PageContextCreated &
+  PageContextExecHook & {
+    _urlRewrite?: string
   }
 type PageContextUrlClient = PageContextUrl
 type PageContextUrlServer = PageContextUrl & {

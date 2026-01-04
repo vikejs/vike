@@ -12,7 +12,7 @@ if (isBrowser()) {
 }
 
 import { assert, assertUsage, isPlainObject, objectAssign, debug } from './utils.js'
-import { type PageContextUrlInternal, type PageContextUrlSource } from '../getPageContextUrlComputed.js'
+import type { PageContextUrlInternal, PageContextUrlSource } from '../getPageContextUrlComputed.js'
 import { resolvePrecedence } from './resolvePrecedence.js'
 import { resolveRouteString } from './resolveRouteString.js'
 import { resolveRouteFunction } from './resolveRouteFunction.js'
