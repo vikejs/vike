@@ -10,11 +10,6 @@ import type { PageContextCreatedServer } from '../server/runtime/renderPageServe
 import type { PageContextCreatedClient_ServerRouting } from '../client/runtime-server-routing/createPageContextClientSide.js'
 import type { GlobalContextPrepareMinimum } from './getGlobalContextPublicShared.js'
 
-type PageContextCreatedPrecise =
-  | PageContextCreatedServer
-  | PageContextCreatedClient
-  | PageContextCreatedClient_ServerRouting
-
 // Ideally we'd always use PageContextCreatedPrecise instead of PageContextCreatedMinimum, but it turns out to be difficult
 type PageContextCreatedMinimum = {
   _isOriginalObject: true
@@ -31,6 +26,10 @@ type _test = [
   Expect<IsSubset<PageContextCreatedMinimum, PageContextCreatedClient_ServerRouting>>,
 ]
 type Expect<T extends true> = T
+type PageContextCreatedPrecise =
+  | PageContextCreatedServer
+  | PageContextCreatedClient
+  | PageContextCreatedClient_ServerRouting
 
 function createPageContextShared<T extends Record<string, unknown>>(
   pageContextCreated: T,
