@@ -1,30 +1,11 @@
 export { getPageContextPublicServer }
-export type { PageContextPublicServer }
 export type { PageContextPublicProxyServer }
 
-import type { PageContextUrlInternal } from '../../../shared-server-client/getPageContextUrlComputed.js'
-import type { PageContextConfig } from '../../../shared-server-client/page-configs/resolveVikeConfigPublic.js'
-import type { PageContextInternalServer } from '../../../types/PageContext.js'
 import {
   assertPropertyGetters,
   getPageContextPublicShared,
   type PageContextPublicMinimum,
 } from '../../../shared-server-client/getPageContextPublicShared.js'
-import type { GlobalContextServerInternal } from '../globalContext.js'
-
-type PageContextPublicServer = PageContextInternalServer &
-  PageContextConfig & {
-    urlOriginal: string
-    /** @deprecated */
-    url: string
-    urlPathname: string
-    urlParsed: PageContextUrlInternal['urlParsed']
-    routeParams: Record<string, string>
-    Page: unknown
-    pageId: string
-    is404: null | boolean
-    _globalContext: GlobalContextServerInternal
-  }
 
 type PageContextPublicProxyServer = ReturnType<typeof getPageContextPublicServer>
 function getPageContextPublicServer<PageContext extends PageContextPublicMinimum>(pageContext: PageContext) {
