@@ -11,14 +11,14 @@ import type { LogType } from '../../node/vite/shared/loggerDev.js'
 import { assert } from '../utils.js'
 import type {
   PageContextCreatedServer,
-  PageContextCreatedWithoutGlobalContext,
+  PageContextCreatedServerWithoutGlobalContext,
 } from './renderPageServer/createPageContextServer.js'
 
 type LogRuntimeInfo = (msg: string, pageContext: PageContext_logRuntime, logType: LogType) => void
 type LogRuntimeError = (err: unknown, pageContext: PageContext_logRuntime) => void
 type PageContext_logRuntime =
   | null
-  | ((PageContextCreatedServer | PageContextCreatedWithoutGlobalContext) & {
+  | ((PageContextCreatedServer | PageContextCreatedServerWithoutGlobalContext) & {
       _requestId: number
     })
 

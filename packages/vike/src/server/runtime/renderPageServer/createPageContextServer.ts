@@ -1,7 +1,7 @@
 export { createPageContextServer }
 export { createPageContextServerWithoutGlobalContext }
 export type { PageContextCreatedServer }
-export type { PageContextCreatedWithoutGlobalContext }
+export type { PageContextCreatedServerWithoutGlobalContext }
 
 import { assert, assertUsage, assertWarning, updateType, normalizeHeaders, objectAssign } from '../../utils.js'
 import { getPageContextUrlComputed } from '../../../shared-server-client/getPageContextUrlComputed.js'
@@ -12,7 +12,7 @@ import {
   createPageContextShared,
 } from '../../../shared-server-client/createPageContextShared.js'
 
-type PageContextCreatedWithoutGlobalContext = ReturnType<typeof createPageContextServerWithoutGlobalContext>
+type PageContextCreatedServerWithoutGlobalContext = ReturnType<typeof createPageContextServerWithoutGlobalContext>
 type PageContextCreatedServer = Awaited<ReturnType<typeof createPageContextServer>>
 function createPageContextServer(
   pageContextInit: PageContextInit,

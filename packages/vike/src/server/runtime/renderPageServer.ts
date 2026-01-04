@@ -6,7 +6,7 @@ import { renderPageServerAfterRoute } from './renderPageServer/renderPageServerA
 import {
   createPageContextServer,
   createPageContextServerWithoutGlobalContext,
-  type PageContextCreatedWithoutGlobalContext,
+  type PageContextCreatedServerWithoutGlobalContext,
 } from './renderPageServer/createPageContextServer.js'
 import { route } from '../../shared-server-client/route/index.js'
 import {
@@ -80,7 +80,7 @@ const globalObject = getGlobalObject('runtime/renderPageServer.ts', {
   httpRequestsCount: 0,
 })
 
-type PageContextAfterRender = PageContextCreatedWithoutGlobalContext & {
+type PageContextAfterRender = PageContextCreatedServerWithoutGlobalContext & {
   httpResponse: HttpResponse
   _requestId: number
 } & Partial<PageContextInternalServer>

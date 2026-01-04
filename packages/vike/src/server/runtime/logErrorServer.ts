@@ -8,7 +8,7 @@ import { addErrorHint } from './renderPageServer/addErrorHint.js'
 import { isAbortError } from '../../shared-server-client/route/abort.js'
 import type {
   PageContextCreatedServer,
-  PageContextCreatedWithoutGlobalContext,
+  PageContextCreatedServerWithoutGlobalContext,
 } from './renderPageServer/createPageContextServer.js'
 assertIsNotBrowser()
 const globalObject = getGlobalObject('server/runtime/logErrorServer.ts', {
@@ -17,7 +17,7 @@ const globalObject = getGlobalObject('server/runtime/logErrorServer.ts', {
 
 function logErrorServer(
   err: unknown,
-  pageContext: null | PageContextCreatedServer | PageContextCreatedWithoutGlobalContext,
+  pageContext: null | PageContextCreatedServer | PageContextCreatedServerWithoutGlobalContext,
 ) {
   if (isAbortError(err) && !isDebugError()) return
 
