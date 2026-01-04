@@ -16,10 +16,7 @@ import pc from '@brillout/picocolors'
 import type { PageContextBeforeRoute, PageContextAfterRoute } from './index.js'
 import type { Hook } from '../hooks/getHook.js'
 import { execHookDirectSync } from '../hooks/execHook.js'
-import {
-  type PageContextPrepareMinimum,
-  preparePageContextForPublicUsage,
-} from '../preparePageContextForPublicUsage.js'
+import { type PageContextPrepareMinimum, getPageContextPublicShared } from '../getPageContextPublicShared.js'
 import type { GlobalContextInternal } from '../createGlobalContextShared.js'
 
 async function execHookOnBeforeRoute(
@@ -68,7 +65,7 @@ async function getPageContextFromHook(
   pageId?: string | null
   routeParams?: Record<string, string>
 }> {
-  let { hookReturn } = execHookDirectSync(onBeforeRouteHook, pageContext, preparePageContextForPublicUsage)
+  let { hookReturn } = execHookDirectSync(onBeforeRouteHook, pageContext, getPageContextPublicShared)
   assertSyncRouting(hookReturn, `The onBeforeRoute() hook ${onBeforeRouteHook.hookFilePath}`)
   // TO-DO/next-major-release: make execHookOnBeforeRoute() and route() sync
   hookReturn = await hookReturn

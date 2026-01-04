@@ -1153,7 +1153,7 @@ function preparePrerenderContextForPublicUsage(prerenderContext: PrerenderContex
   }
 
   // Required because of https://vike.dev/i18n#pre-rendering
-  // - Thus, we have to let users access the original pageContext object => we cannot use ES proxies and we cannot use preparePageContextForPublicUsage()
+  // - Thus, we have to let users access the original pageContext object => we cannot use ES proxies and we cannot use getPageContextPublicShared()
   prerenderContext.pageContexts.forEach((pageContext) => {
     changeEnumerable(pageContext, '_isOriginalObject', true)
   })

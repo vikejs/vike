@@ -7,8 +7,8 @@ import type { PageContextConfig } from '../../shared-server-client/getPageFiles.
 import {
   assertPropertyGetters,
   type PageContextPrepareMinimum,
-  preparePageContextForPublicUsage,
-} from '../../shared-server-client/preparePageContextForPublicUsage.js'
+  getPageContextPublicShared,
+} from '../../shared-server-client/getPageContextPublicShared.js'
 import type { PageContextInternalClient } from '../../types/PageContext.js'
 
 type PageContextPublicClientShared = PageContextPrepareMinimum & PageContextInternalClient & PageContextConfig
@@ -23,7 +23,7 @@ function getPageContextPublicClientShared<PageContext extends PageContextPublicC
     pageContext.exports?.Page
   objectAssign(pageContext, { Page })
 
-  // TO-DO/next-major-release: after we remove supportVueReactiviy() we can call this later inside the agnostic preparePageContextForPublicUsage()
+  // TO-DO/next-major-release: after we remove supportVueReactiviy() we can call this later inside the agnostic getPageContextPublicShared()
   assertPropertyGetters(pageContext)
   // TO-DO/next-major-release: remove
   // - Requires https://github.com/vikejs/vike-vue/issues/198
@@ -34,7 +34,7 @@ function getPageContextPublicClientShared<PageContext extends PageContextPublicC
 }
 
 function getPageContextPublicClientMinimal<PageContext extends PageContextPrepareMinimum>(pageContext: PageContext) {
-  const pageContextPublic = preparePageContextForPublicUsage(pageContext)
+  const pageContextPublic = getPageContextPublicShared(pageContext)
   return pageContextPublic
 }
 
