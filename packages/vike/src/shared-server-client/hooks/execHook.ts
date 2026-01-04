@@ -31,7 +31,7 @@ import { type PageContextPublicMinimum, getPageContextPublicShared } from '../ge
 import type { GlobalContextPublicMinimum } from '../getGlobalContextPublicShared.js'
 const globalObject = getGlobalObject('utils/execHook.ts', {
   userHookErrors: new WeakMap<object, HookLoc>(),
-  pageContext: null as null | PageContextExecHookMin,
+  pageContext: null as null | PageContextExecHook,
 })
 
 // @ts-ignore TODO use again?
@@ -44,8 +44,6 @@ type HookWithResult = Hook & {
 // TODO/refactor: use PageContextExecHook predominantly instead of PageContextPublicMinimum
 // TODO/refactor: better name for PageContextExecHook ?
 type PageContextExecHook = PageContextPublicMinimum
-//type PageContextExecHookMin = Omit<PageContextPublicMinimum, '_globalContext'>
-type PageContextExecHookMin = PageContextExecHook
 
 async function execHook<PageContext extends PageContextExecHook & PageContextConfig>(
   hookName: HookName,
@@ -218,7 +216,7 @@ function execHookBase<HookReturn>(
   hookFnCaller: () => HookReturn,
   hook: Omit<Hook, 'hookTimeout' | 'hookFn'>,
   globalContext: GlobalContextPublicMinimum,
-  pageContext: PageContextExecHookMin | null,
+  pageContext: PageContextExecHook | null,
 ): HookReturn | Promise<HookReturn> {
   const { hookName, hookFilePath } = hook
   assert(hookName !== 'onHookCall') // ensure no infinite loop
@@ -301,7 +299,7 @@ function getPageContext_sync<PageContext = PageContextClient | PageContextServer
 function providePageContext(pageContext: null | PageContextClient | PageContextServer) {
   providePageContextInternal(pageContext as any)
 }
-function providePageContextInternal(pageContext: null | PageContextExecHookMin) {
+function providePageContextInternal(pageContext: null | PageContextExecHook) {
   globalObject.pageContext = pageContext
   // Promise.resolve() is quicker than process.nextTick() and setImmediate()
   // https://stackoverflow.com/questions/67949576/process-nexttick-before-promise-resolve-then

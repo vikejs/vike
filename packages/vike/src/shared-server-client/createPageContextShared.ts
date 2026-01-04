@@ -15,7 +15,7 @@ type PageContextCreated = {
   _isOriginalObject: true
   isPageContext: true
   isClientSide: boolean
-  _globalContext: GlobalContextPublicMinimum | null
+  _globalContext: GlobalContextPublicMinimum
   // ... manually add common types here
 }
 type IsSubset<A, B> = B extends A ? true : false

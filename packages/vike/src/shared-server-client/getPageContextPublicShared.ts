@@ -35,8 +35,7 @@ function getPageContextPublicShared<PageContext extends PageContextPublicMinimum
   // For a more readable `console.log(pageContext)` output
   sortPageContext(pageContext)
 
-  const globalContextPublic =
-    pageContext._globalContext === null ? null : getGlobalContextPublicShared(pageContext._globalContext)
+  const globalContextPublic = getGlobalContextPublicShared(pageContext._globalContext)
   const pageContextPublic = getPublicProxy(
     pageContext,
     'pageContext',
@@ -47,7 +46,7 @@ function getPageContextPublicShared<PageContext extends PageContextPublicMinimum
       if (prop === 'globalContext') {
         return globalContextPublic
       }
-      if (globalContextPublic !== null && prop in globalContextPublic) {
+      if (prop in globalContextPublic) {
         return (globalContextPublic as Record<string | symbol, unknown>)[prop]
       }
     },
