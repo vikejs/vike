@@ -7,7 +7,6 @@ export { execHookDirectSingle }
 export { execHookDirectSingleWithReturn }
 export { execHookDirectWithoutPageContext }
 export { execHookDirectSync }
-export { execHookBase }
 export { getPageContext_sync }
 export { providePageContext }
 export { isUserHookError }
@@ -124,17 +123,15 @@ async function execHookDirectWithoutPageContext<HookReturn>(
 }
 
 function execHookDirectSync<PageContext extends PageContextExecHook>(
-  hook: Omit<Hook, 'hookTimeout'>,
-  pageContext: PageContext,
+  hook: Omit<Hook<PageContext>, 'hookTimeout'>,
+  globalContext: GlobalContextPublicMinimum,
+  pageContext: PageContext | null,
   getPageContextPublic: (pageContext: PageContext) => PageContext,
+  hookFnCaller?: () => unknown,
 ) {
-  const pageContextPublic = getPageContextPublic(pageContext)
-  const hookReturn = execHookBase(
-    () => hook.hookFn(pageContextPublic),
-    hook,
-    pageContext._globalContext,
-    pageContextPublic,
-  )
+  const pageContextPublic = pageContext && getPageContextPublic(pageContext)
+  hookFnCaller ??= () => hook.hookFn(pageContextPublic!)
+  const hookReturn = execHookBase(hookFnCaller, hook, globalContext, pageContextPublic)
   return { hookReturn }
 }
 

@@ -65,7 +65,12 @@ async function getPageContextFromHook(
   pageId?: string | null
   routeParams?: Record<string, string>
 }> {
-  let { hookReturn } = execHookDirectSync(onBeforeRouteHook, pageContext, getPageContextPublicShared)
+  let { hookReturn } = execHookDirectSync(
+    onBeforeRouteHook,
+    pageContext._globalContext,
+    pageContext,
+    getPageContextPublicShared,
+  )
   assertSyncRouting(hookReturn, `The onBeforeRoute() hook ${onBeforeRouteHook.hookFilePath}`)
   // TO-DO/next-major-release: make execHookOnBeforeRoute() and route() sync
   hookReturn = await hookReturn

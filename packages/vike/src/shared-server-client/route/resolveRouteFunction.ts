@@ -23,6 +23,7 @@ async function resolveRouteFunction(
       hookFilePath: routeFunctionFilePath,
       hookName: 'route',
     },
+    pageContext._globalContext,
     pageContext,
     getPageContextPublicShared,
   )
