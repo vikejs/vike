@@ -23,7 +23,6 @@ import type { Hook, HookLoc } from './getHook.js'
 import type { PageContextConfig } from '../getPageFiles.js'
 import { getHookFromPageConfigGlobalCumulative, getHookFromPageContextNew } from './getHook.js'
 import type { HookName, HookNameGlobal } from '../../types/Config.js'
-// @ts-ignore TODO use again?
 import { type PageContextPublicMinimum, getPageContextPublicShared } from '../getPageContextPublicShared.js'
 import type { GlobalContextPublicMinimum } from '../getGlobalContextPublicShared.js'
 const globalObject = getGlobalObject('utils/execHook.ts', {
@@ -35,8 +34,6 @@ type HookWithResult = Hook & {
   hookReturn: unknown
 }
 
-// TODO/refactor: use PageContextExecHook predominantly instead of PageContextPublicMinimum
-// TODO/refactor: better name for PageContextExecHook ?
 type PageContextExecHook = PageContextPublicMinimum
 
 async function execHook<PageContext extends PageContextExecHook & PageContextConfig>(

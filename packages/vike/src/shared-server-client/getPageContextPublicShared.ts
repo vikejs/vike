@@ -8,7 +8,6 @@ import { getGlobalContextPublicShared } from './getGlobalContextPublicShared.js'
 import { getPublicProxy } from './getPublicProxy.js'
 import type { PageContextCreated } from './createPageContextShared.js'
 
-// TODO/refactor: prefer using PageContextCreated over PageContextPublicMinimum ?
 type PageContextPublicMinimum = PageContextCreated
 
 function getPageContextPublicShared<PageContext extends PageContextPublicMinimum>(pageContext: PageContext) {
