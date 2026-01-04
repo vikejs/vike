@@ -21,9 +21,7 @@ import type { PageRoutes, RouteType } from './loadPageRoutes.js'
 import pc from '@brillout/picocolors'
 import type { GlobalContextInternal } from '../createGlobalContextShared.js'
 
-type PageContextBeforeRoute = PageContextUrlInternal & {
-  _globalContext: GlobalContextInternal
-} & PageContextUrlSource
+type PageContextBeforeRoute = PageContextUrlInternal & { _globalContext: GlobalContextInternal } & PageContextUrlSource
 type PageContextAfterRoute = {
   pageId: string | null
   routeParams: Record<string, string>
