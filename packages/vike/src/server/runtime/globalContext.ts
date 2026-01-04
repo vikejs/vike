@@ -178,7 +178,7 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
   if (!globalObject.globalContext) await initGlobalContext_getGlobalContextAsync()
   if (!isProduction) await globalObject.waitForUserFilesUpdate
   assertGlobalContextIsDefined()
-  return getGlobalContextForPublicUsage()
+  return getGlobalContextPublic()
 }
 /**
  * Get runtime information about your app.
@@ -198,13 +198,13 @@ function getGlobalContextSync(): GlobalContext {
     "getGlobalContextSync() shouldn't be used in development, see https://vike.dev/getGlobalContext",
     { onlyOnce: true },
   )
-  return getGlobalContextForPublicUsage()
+  return getGlobalContextPublic()
 }
-function getGlobalContextForPublicUsage(): GlobalContextServer {
+function getGlobalContextPublic(): GlobalContextServer {
   const { globalContext } = globalObjectTyped
   assert(globalContext)
-  const globalContextForPublicUsage: GlobalContextServerInternal = getGlobalContextPublicShared(globalContext)
-  return globalContextForPublicUsage as any as GlobalContextServer
+  const globalContextPublic: GlobalContextServerInternal = getGlobalContextPublicShared(globalContext)
+  return globalContextPublic as any as GlobalContextServer
 }
 
 async function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
