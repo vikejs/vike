@@ -20,8 +20,12 @@ import { assertHookReturnedObject } from '../../../shared-server-client/assertHo
 import { logRuntimeError } from '../loggerRuntime.js'
 import type { PageContextSerialization } from './html/serializeContext.js'
 import pc from '@brillout/picocolors'
-import { execHookDirectSingleWithReturn } from '../../../shared-server-client/hooks/execHook.js'
+import {
+  execHookDirectSingleWithReturn,
+  type PageContextExecHook,
+} from '../../../shared-server-client/hooks/execHook.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
+import type { PageContextConfig } from '../../../shared-server-client/getPageFiles.js'
 
 type GetPageAssets = () => Promise<PageAsset[]>
 
@@ -32,10 +36,11 @@ type HookName =
   | 'render'
 
 async function execHookOnRenderHtml(
-  pageContext: PageContextPublicServer &
+  pageContext: PageContextConfig &
+    PageContextExecHook &
+    PageContextPublicServer &
     PageContextSerialization & {
       pageId: string
-      _globalContext: GlobalContextServerInternal
       __getPageAssets: GetPageAssets
       _isHtmlOnly: boolean
       _baseServer: string
@@ -75,7 +80,7 @@ async function execHookOnRenderHtml(
 }
 
 function getRenderHook(
-  pageContext: PageContextPublicServer & {
+  pageContext: PageContextConfig & {
     _globalContext: GlobalContextServerInternal
   },
 ) {

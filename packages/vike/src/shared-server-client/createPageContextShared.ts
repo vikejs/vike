@@ -1,6 +1,5 @@
 export { createPageContextShared }
 export { createPageContextObject }
-export type { PageContextCreatedPrecise }
 export type { PageContextCreated }
 
 import { changeEnumerable, objectAssign } from './utils.js'
@@ -26,6 +25,7 @@ type _test = [
   Expect<IsSubset<PageContextCreated, PageContextCreatedClient_ServerRouting>>,
 ]
 type Expect<T extends true> = T
+// @ts-ignore Isn't used yet. It is unusable? See `PageContextCreated` comment above.
 type PageContextCreatedPrecise =
   | PageContextCreatedServer
   | PageContextCreatedClient

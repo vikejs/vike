@@ -24,17 +24,12 @@ import type { PageContextConfig } from '../getPageFiles.js'
 import { getHookFromPageConfigGlobalCumulative, getHookFromPageContextNew } from './getHook.js'
 import type { HookName, HookNameGlobal } from '../../types/Config.js'
 // @ts-ignore TODO use again?
-import type { PageContextCreatedPrecise } from '../createPageContextShared.js'
-import type { PageContextPublicServer } from '../../server/runtime/renderPageServer/getPageContextPublicServer.js'
 import { type PageContextPublicMinimum, getPageContextPublicShared } from '../getPageContextPublicShared.js'
 import type { GlobalContextPublicMinimum } from '../getGlobalContextPublicShared.js'
 const globalObject = getGlobalObject('utils/execHook.ts', {
   userHookErrors: new WeakMap<object, HookLoc>(),
   pageContext: null as null | PageContextExecHook,
 })
-
-// @ts-ignore TODO use again?
-type PageContextPublic = PageContextPublicServer
 
 type HookWithResult = Hook & {
   hookReturn: unknown
