@@ -12,10 +12,10 @@ import type { PageContextCreatedClient_ServerRouting } from '../client/runtime-s
 type PageContextCreated = PageContextCreatedServer | PageContextCreatedClient | PageContextCreatedClient_ServerRouting
 
 /* Ideally we'd use this, but I couldn't make it work.
-type PageContextCreatedBase =
-  | PageContextCreatedServerBase
-  | PageContextCreatedClientBase
-  | PageContextCreatedClientBase_ServerRouting
+type PageContextCreated =
+  | PageContextCreatedServer
+  | PageContextCreatedClient
+  | PageContextCreatedClient_ServerRouting
 /*/
 type PageContextCreatedBase = {
   _isOriginalObject: true
