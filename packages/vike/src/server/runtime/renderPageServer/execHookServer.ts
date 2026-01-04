@@ -2,10 +2,7 @@ export { execHookServer }
 export type { PageContextExecHookServer }
 
 import { execHookDirect } from '../../../shared-server-client/hooks/execHook.js'
-import {
-  preparePageContextForPublicUsageServer,
-  type PageContextForPublicUsageServer,
-} from './preparePageContextForPublicUsageServer.js'
+import { getPageContextPublicServer, type PageContextForPublicUsageServer } from './getPageContextPublicServer.js'
 import type { PageContextConfig } from '../../../shared-server-client/getPageFiles.js'
 import type { HookName } from '../../../types/Config.js'
 import { getHookFromPageContextNew } from '../../../shared-server-client/hooks/getHook.js'
@@ -18,5 +15,5 @@ async function execHookServer(hookName: HookName, pageContext: PageContextExecHo
     ? allHooks
     : // Don't execute `.ssr.js` hooks upon client-side navigation
       allHooks.filter((hook) => !getFileSuffixes(hook.hookFilePath).includes('ssr'))
-  return await execHookDirect(hooks, pageContext, preparePageContextForPublicUsageServer)
+  return await execHookDirect(hooks, pageContext, getPageContextPublicServer)
 }
