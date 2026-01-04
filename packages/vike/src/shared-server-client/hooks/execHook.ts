@@ -35,7 +35,7 @@ const globalObject = getGlobalObject('utils/execHook.ts', {
 })
 
 // @ts-ignore TODO use again?
-type PageContextForPublicUsage = PageContextPublicServer | PageContextPublicClientShared
+type PageContextPublic = PageContextPublicServer | PageContextPublicClientShared
 
 type HookWithResult = Hook & {
   hookReturn: unknown

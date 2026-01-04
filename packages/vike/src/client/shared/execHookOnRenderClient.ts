@@ -70,7 +70,7 @@ async function execHookOnRenderClient<PageContext extends PageContextBeforeRende
 
 function getUrlToShowToUser(pageContext: { urlOriginal?: string; urlPathname?: string }): string {
   let url: string | undefined
-  // try/catch to avoid passToClient assertUsage() (although: this may not be needed anymore, since we're now accessing pageContext and not pageContextForPublicUsage)
+  // try/catch to avoid passToClient assertUsage() (although: this may not be needed anymore, since we're now accessing pageContext and not pageContextPublic)
   try {
     url =
       // Client Routing
