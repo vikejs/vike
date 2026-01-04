@@ -253,7 +253,7 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
 
   await warnMissingPages(prerenderContext._prerenderedPageContexts, globalContext, doNotPrerenderList, partial)
 
-  const prerenderContextPublic = preparePrerenderContextForPublicUsage(prerenderContext)
+  const prerenderContextPublic = getPrerenderContextPublic(prerenderContext)
   objectAssign(vikeConfig.prerenderContext, prerenderContextPublic, true)
   setGlobalContext_prerenderContext(prerenderContextPublic)
 
@@ -749,7 +749,7 @@ async function callOnPrerenderStartHook(
     preservePropertyGetters(pageContext)
   })
 
-  const prerenderContextPublic = preparePrerenderContextForPublicUsage(prerenderContext)
+  const prerenderContextPublic = getPrerenderContextPublic(prerenderContext)
   let result: unknown = await execHookDirectWithoutPageContext(
     () => hookFn(prerenderContextPublic),
     onPrerenderStartHook,
@@ -1137,7 +1137,7 @@ function assertIsNotAbort(err: unknown, urlOriginal: string) {
   )
 }
 
-function preparePrerenderContextForPublicUsage(prerenderContext: PrerenderContext): PrerenderContext {
+function getPrerenderContextPublic(prerenderContext: PrerenderContext): PrerenderContext {
   // TO-DO/next-major-release: remove
   if (!('prerenderPageContexts' in prerenderContext)) {
     Object.defineProperty(prerenderContext, 'prerenderPageContexts', {
