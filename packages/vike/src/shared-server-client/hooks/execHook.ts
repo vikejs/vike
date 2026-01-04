@@ -195,7 +195,7 @@ function execHookBaseAsync<HookReturn>(
   return promise
 }
 
-// Every execHook* variant should call this
+// Every execHook* function should be based on this
 function execHookBase<HookReturn>(
   hookFnCaller: () => HookReturn,
   hook: Omit<Hook, 'hookTimeout' | 'hookFn'>,
