@@ -3,7 +3,7 @@ export { execHookGlobal }
 export { execHookList }
 export { execHookSingle }
 export { execHookSingleWithReturn }
-export { execHookWithoutPageContext }
+export { execHookSingleWithoutPageContext }
 export { execHookSync }
 export { getPageContext_sync }
 export { providePageContext }
@@ -105,7 +105,7 @@ function isUserHookError(err: unknown): false | HookLoc {
   return globalObject.userHookErrors.get(err) ?? false
 }
 
-async function execHookWithoutPageContext<HookReturn>(
+async function execHookSingleWithoutPageContext<HookReturn>(
   hookFnCaller: () => HookReturn,
   hook: Omit<Hook, 'hookFn'>,
   globalContext: GlobalContextPublicMinimum,
