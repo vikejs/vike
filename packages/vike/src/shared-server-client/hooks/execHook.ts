@@ -21,7 +21,7 @@ import { isObject } from '../../utils/isObject.js'
 import type { PageContextClient, PageContextServer } from '../../types/PageContext.js'
 import type { Hook, HookLoc } from './getHook.js'
 import type { PageContextConfig } from '../getPageFiles.js'
-import { getHooksFromPageConfigGlobalCumulative, getHookFromPageContextNew } from './getHook.js'
+import { getHooksFromPageConfigGlobalCumulative, getHooksFromPageContextNew } from './getHook.js'
 import type { HookName, HookNameGlobal } from '../../types/Config.js'
 import { type PageContextPublicMinimum, getPageContextPublicShared } from '../getPageContextPublicShared.js'
 import type { GlobalContextPublicMinimum } from '../getGlobalContextPublicShared.js'
@@ -41,7 +41,7 @@ async function execHook<PageContext extends PageContextExecHook & PageContextCon
   pageContext: PageContext,
   getPageContextPublic: (pageContext: PageContext) => PageContext,
 ) {
-  const hooks = getHookFromPageContextNew(hookName, pageContext)
+  const hooks = getHooksFromPageContextNew(hookName, pageContext)
   return await execHookDirect(hooks, pageContext, getPageContextPublic)
 }
 

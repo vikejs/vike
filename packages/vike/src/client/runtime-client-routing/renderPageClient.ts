@@ -62,7 +62,7 @@ import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 import type { PageContextClient, PageContextInternalClient } from '../../types/PageContext.js'
 import { execHookDirect, execHook } from '../../shared-server-client/hooks/execHook.js'
 import { type PageContextPublicClient, getPageContextPublicClient } from './getPageContextPublicClient.js'
-import { getHookFromPageContextNew } from '../../shared-server-client/hooks/getHook.js'
+import { getHooksFromPageContextNew } from '../../shared-server-client/hooks/getHook.js'
 import { getPageContextPublicClientMinimal } from '../shared/getPageContextPublicClientShared.js'
 import type { VikeGlobalInternal } from '../../types/VikeGlobalInternal.js'
 import { logErrorClient } from './logErrorClient.js'
@@ -167,7 +167,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       // https://github.com/vikejs/vike/issues/1560
       if (!globalObject.isTransitioning) {
         globalObject.isTransitioning = true
-        const hooks = getHookFromPageContextNew('onPageTransitionStart', previousPageContext)
+        const hooks = getHooksFromPageContextNew('onPageTransitionStart', previousPageContext)
         try {
           await execHookDirect(hooks, pageContext, getPageContextPublicClientMinimal)
         } catch (err) {
@@ -553,7 +553,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     if (globalObject.isTransitioning) {
       globalObject.isTransitioning = undefined
       assert(previousPageContext)
-      const hooks = getHookFromPageContextNew('onPageTransitionEnd', previousPageContext)
+      const hooks = getHooksFromPageContextNew('onPageTransitionEnd', previousPageContext)
       try {
         await execHookDirect(hooks, pageContext, getPageContextPublicClient)
       } catch (err) {

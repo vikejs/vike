@@ -1,5 +1,5 @@
 export { getHookFromPageContext }
-export { getHookFromPageContextNew }
+export { getHooksFromPageContextNew }
 export { getHookFromPageConfig }
 export { getHookFromPageConfigGlobal }
 export { getHooksFromPageConfigGlobalCumulative }
@@ -64,8 +64,8 @@ function getHookFromPageContext(pageContext: PageContextConfig, hookName: HookNa
   assert(hookFilePath)
   return getHook(hookFn, hookName, hookFilePath, hookTimeout)
 }
-// TO-DO/eventually: remove getHookFromPageContext() in favor of getHookFromPageContextNew()
-function getHookFromPageContextNew(hookName: HookName, pageContext: PageContextConfig): Hook[] {
+// TO-DO/eventually: remove getHookFromPageContext() in favor of getHooksFromPageContextNew()
+function getHooksFromPageContextNew(hookName: HookName, pageContext: PageContextConfig): Hook[] {
   const { hooksTimeout } = pageContext.config
   const hookTimeout = getHookTimeout(hooksTimeout, hookName)
   const hooks: Hook[] = []
