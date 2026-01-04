@@ -6,7 +6,7 @@ import { assertIsNotBrowser, assertWarning, getGlobalObject, hasRed, isDebugErro
 import { execHookOnError } from './renderPageServer/execHookOnError.js'
 import { addErrorHint } from './renderPageServer/addErrorHint.js'
 import { isAbortError } from '../../shared-server-client/route/abort.js'
-import type { PageContextCreatedServerMinimum } from './renderPageServer/createPageContextServerSide.js'
+import type { PageContextCreatedServerMinimum } from './renderPageServer/createPageContextServer.js'
 assertIsNotBrowser()
 const globalObject = getGlobalObject('server/runtime/logErrorServer.ts', {
   wasAlreadyLogged: new WeakSet<object>(),

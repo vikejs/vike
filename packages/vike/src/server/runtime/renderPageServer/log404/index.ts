@@ -16,7 +16,7 @@ import {
   truncateString,
 } from '../../../utils.js'
 import pc from '@brillout/picocolors'
-import type { PageContextCreatedServer } from '../createPageContextServerSide.js'
+import type { PageContextCreatedServer } from '../createPageContextServer.js'
 
 function log404(
   pageContext: PageContextCreatedServer & {

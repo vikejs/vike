@@ -4,10 +4,10 @@ export type { PageContextBegin }
 
 import { renderPageServerAfterRoute } from './renderPageServer/renderPageServerAfterRoute.js'
 import {
-  createPageContextServerSide,
-  createPageContextServerSideWithoutGlobalContext,
+  createPageContextServer,
+  createPageContextServerWithoutGlobalContext,
   type PageContextCreatedServerMinimum,
-} from './renderPageServer/createPageContextServerSide.js'
+} from './renderPageServer/createPageContextServer.js'
 import { route } from '../../shared-server-client/route/index.js'
 import {
   assert,
@@ -140,7 +140,7 @@ async function renderPageServerEntryOnce(
     //   ```
     // - initGlobalContext_renderPage() depends on +onCreateGlobalContext hooks
     assert(!isAbortError(err))
-    const pageContext = createPageContextServerSideWithoutGlobalContext(pageContextInit, requestId)
+    const pageContext = createPageContextServerWithoutGlobalContext(pageContextInit, requestId)
     logRuntimeError(err, pageContext)
     const pageContextHttpErrorFallback = getPageContextHttpErrorFallback_noGlobalContext(
       err,
@@ -343,7 +343,7 @@ async function renderPageServerEntryRecursive_onError(
 }
 
 function logHttpRequest(urlOriginal: string, pageContextInit: PageContextInit, requestId: number) {
-  const pageContext = createPageContextServerSideWithoutGlobalContext(pageContextInit, requestId)
+  const pageContext = createPageContextServerWithoutGlobalContext(pageContextInit, requestId)
   logRuntimeInfo?.(getRequestInfoMessage(urlOriginal), pageContext, 'info')
 }
 /* Alternative icons:
@@ -419,7 +419,7 @@ function getPageContextHttpErrorFallback_noGlobalContext(
   pageContextInit: PageContextInit,
   requestId: number,
 ): PageContextAfterRender {
-  const pageContextHttpErrorFallback = createPageContextServerSideWithoutGlobalContext(pageContextInit, requestId)
+  const pageContextHttpErrorFallback = createPageContextServerWithoutGlobalContext(pageContextInit, requestId)
   const httpResponse = createHttpResponseErrorFallback_noGlobalContext()
   objectAssign(pageContextHttpErrorFallback, {
     httpResponse,
@@ -437,7 +437,7 @@ function getPageContextBegin(
   const { isClientSideNavigation, _urlHandler, _isPageContextJsonRequest } = handlePageContextUrl(
     pageContextInit.urlOriginal,
   )
-  const pageContextBegin = createPageContextServerSide(pageContextInit, globalContext, {
+  const pageContextBegin = createPageContextServer(pageContextInit, globalContext, {
     isPrerendering: false,
     urlHandler: _urlHandler,
     isClientSideNavigation,
@@ -651,7 +651,7 @@ function getPageContextSkipRequest(pageContextInit: PageContextInit, requestId: 
     errMsg404 = 'Not supported'
   }
   if (!errMsg404) return
-  const pageContext = createPageContextServerSideWithoutGlobalContext(pageContextInit, requestId)
+  const pageContext = createPageContextServerWithoutGlobalContext(pageContextInit, requestId)
   const httpResponse = createHttpResponse404(errMsg404)
   objectAssign(pageContext, { httpResponse })
   checkType<PageContextAfterRender>(pageContext)
@@ -659,7 +659,7 @@ function getPageContextSkipRequest(pageContextInit: PageContextInit, requestId: 
 }
 
 function getPageContextInvalidVikeConfig(err: unknown, pageContextInit: PageContextInit, requestId: number) {
-  const pageContext = createPageContextServerSideWithoutGlobalContext(pageContextInit, requestId)
+  const pageContext = createPageContextServerWithoutGlobalContext(pageContextInit, requestId)
   logRuntimeInfo?.(pc.bold(pc.red('Error loading Vike config — see error above')), pageContext, 'error')
   const pageContextHttpErrorFallback = getPageContextHttpErrorFallback_noGlobalContext(err, pageContextInit, requestId)
   return pageContextHttpErrorFallback

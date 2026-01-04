@@ -25,7 +25,7 @@ import { loadAndParseVirtualFilePageEntry } from '../../../shared-server-client/
 import { execHookServer } from './execHookServer.js'
 import type { PassToClient } from './html/serializeContext.js'
 import type { PageContextAfterRoute } from '../../../shared-server-client/route/index.js'
-import type { PageContextCreatedServer } from './createPageContextServerSide.js'
+import type { PageContextCreatedServer } from './createPageContextServer.js'
 import { resolveHeadersResponseEarly } from './headersResponse.js'
 import { resolvePageContextCspNone } from './csp.js'
 

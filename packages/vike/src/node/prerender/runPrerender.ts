@@ -31,7 +31,7 @@ import {
   escapeHtml,
 } from './utils.js'
 import { prerenderPage } from '../../server/runtime/renderPageServer/renderPageServerAfterRoute.js'
-import { createPageContextServerSide } from '../../server/runtime/renderPageServer/createPageContextServerSide.js'
+import { createPageContextServer } from '../../server/runtime/renderPageServer/createPageContextServer.js'
 import pc from '@brillout/picocolors'
 import { cpus } from 'node:os'
 import type { PageFile } from '../../shared-server-client/getPageFiles.js'
@@ -548,7 +548,7 @@ async function createPageContextPrerendering(
     urlOriginal,
     ...prerenderContext._pageContextInit,
   }
-  const pageContext = createPageContextServerSide(pageContextInit, globalContext, {
+  const pageContext = createPageContextServer(pageContextInit, globalContext, {
     isPrerendering: true,
     requestId,
   })

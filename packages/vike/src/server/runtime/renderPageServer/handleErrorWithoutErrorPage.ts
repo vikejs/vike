@@ -5,7 +5,7 @@ import { assert, assertWarning, objectAssign } from '../../utils.js'
 import { createHttpResponseErrorFallback, createHttpResponseErrorFallbackJson } from './createHttpResponse.js'
 import pc from '@brillout/picocolors'
 import type { GetPageAssets } from './getPageAssets.js'
-import type { PageContextCreatedServer } from './createPageContextServerSide.js'
+import type { PageContextCreatedServer } from './createPageContextServer.js'
 
 // When the user hasn't defined _error.page.js
 function handleErrorWithoutErrorPage<

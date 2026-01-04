@@ -1,5 +1,5 @@
-export { createPageContextServerSide }
-export { createPageContextServerSideWithoutGlobalContext }
+export { createPageContextServer }
+export { createPageContextServerWithoutGlobalContext }
 export type { PageContextCreatedServer }
 export type { PageContextCreatedServerMinimum }
 
@@ -14,8 +14,8 @@ import {
 
 // TODO: stop using this and all other *Base ones?
 type PageContextCreatedServerMinimum = ReturnType<typeof createPageContextMinimum>
-type PageContextCreatedServer = Awaited<ReturnType<typeof createPageContextServerSide>>
-function createPageContextServerSide(
+type PageContextCreatedServer = Awaited<ReturnType<typeof createPageContextServer>>
+function createPageContextServer(
   pageContextInit: PageContextInit,
   globalContext: GlobalContextServerInternal,
   args: {
@@ -81,7 +81,7 @@ function createPageContextServerSide(
 }
 
 /** Use this as last resort — prefer passing richer `pageContext` objects to the runtime logger */
-function createPageContextServerSideWithoutGlobalContext(pageContextInit: PageContextInit, requestId: number) {
+function createPageContextServerWithoutGlobalContext(pageContextInit: PageContextInit, requestId: number) {
   const pageContext = createPageContextMinimum(pageContextInit, false, requestId)
   return pageContext
 }

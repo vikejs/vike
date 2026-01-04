@@ -21,7 +21,7 @@ import { getPageContextPublicServer } from './getPageContextPublicServer.js'
 import { execHookGuard } from '../../../shared-server-client/route/execHookGuard.js'
 import pc from '@brillout/picocolors'
 import { isServerSideError } from '../../../shared-server-client/misc/isServerSideError.js'
-import type { PageContextCreatedServer } from './createPageContextServerSide.js'
+import type { PageContextCreatedServer } from './createPageContextServer.js'
 import type { PageContextBegin } from '../renderPageServer.js'
 import { getAsyncLocalStorage, type AsyncStore } from '../asyncHook.js'
 
