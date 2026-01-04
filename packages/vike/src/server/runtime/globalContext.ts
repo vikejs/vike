@@ -203,8 +203,8 @@ function getGlobalContextSync(): GlobalContext {
 function getGlobalContextForPublicUsage(): GlobalContextServer {
   const { globalContext } = globalObjectTyped
   assert(globalContext)
-  const globalContextForPublicUsage = prepareGlobalContextForPublicUsage(globalContext)
-  return globalContextForPublicUsage
+  const globalContextForPublicUsage: GlobalContextServerInternal = prepareGlobalContextForPublicUsage(globalContext)
+  return globalContextForPublicUsage as any as GlobalContextServer
 }
 
 async function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {

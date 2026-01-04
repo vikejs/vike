@@ -60,7 +60,7 @@ import { setPageContextCurrent } from './getPageContextCurrent.js'
 import { getRouteStringParameterList } from '../../shared-server-client/route/resolveRouteString.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 import type { PageContextClient, PageContextInternalClient } from '../../types/PageContext.js'
-import { execHookDirect, type PageContextExecHook, execHook } from '../../shared-server-client/hooks/execHook.js'
+import { execHookDirect, execHook } from '../../shared-server-client/hooks/execHook.js'
 import {
   type PageContextForPublicUsageClient,
   preparePageContextForPublicUsageClient,
@@ -98,7 +98,7 @@ const globalObject = getGlobalObject<{
 const { firstRenderStartPromise } = globalObject
 type PreviousPageContext = { pageId: string } & PageContextConfig &
   PageContextRouted &
-  PageContextExecHook &
+  PageContextCreatedClient &
   PageContextForPublicUsageClient
 type PageContextRouted = { pageId: string; routeParams: Record<string, string> }
 

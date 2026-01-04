@@ -11,7 +11,6 @@ export { execHookBase }
 export { getPageContext_sync }
 export { providePageContext }
 export { isUserHookError }
-export type { PageContextExecHook }
 export type { PageContextExecHookMinimum }
 
 // TODO: minor refactor — maybe completely remove (some) utils.js files?
@@ -24,6 +23,7 @@ import type { Hook, HookLoc } from './getHook.js'
 import type { PageContextConfig } from '../getPageFiles.js'
 import { getHookFromPageConfigGlobalCumulative, getHookFromPageContextNew } from './getHook.js'
 import type { HookName, HookNameGlobal } from '../../types/Config.js'
+// @ts-ignore TODO use again?
 import type { PageContextCreated } from '../createPageContextShared.js'
 import type { PageContextForPublicUsageServer } from '../../server/runtime/renderPageServer/preparePageContextForPublicUsageServer.js'
 import type { PageContextForPublicUsageClientShared } from '../../client/shared/preparePageContextForPublicUsageClientShared.js'
@@ -37,7 +37,7 @@ const globalObject = getGlobalObject('utils/execHook.ts', {
   pageContext: null as null | PageContextExecHookMinimum,
 })
 
-type PageContextExecHook = PageContextCreated & PageContextConfig & PageContextForPublicUsage
+// @ts-ignore TODO use again?
 type PageContextForPublicUsage = PageContextForPublicUsageServer | PageContextForPublicUsageClientShared
 
 type HookWithResult = Hook & {
@@ -48,7 +48,7 @@ type HookWithResult = Hook & {
 // TODO/refactor: better name for PageContextExecHookMinimum ?
 type PageContextExecHookMinimum = PageContextPrepareMinimum
 
-async function execHook<PageContext extends PageContextExecHook>(
+async function execHook<PageContext extends PageContextExecHookMinimum & PageContextConfig>(
   hookName: HookName,
   pageContext: PageContext,
   preparePageContextForPublicUsage: (pageContext: PageContext) => PageContext,

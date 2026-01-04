@@ -13,17 +13,21 @@ export type { DangerouslyUseInternals }
 import { NOT_SERIALIZABLE } from './NOT_SERIALIZABLE.js'
 import { assert, assertUsage, assertWarning, getPropAccessNotation, isBrowser } from './utils.js'
 
+type ObjProxy<Obj> = {
+  _isProxyObject: true
+  _originalObject: Obj
+}
+
 function getProxyForPublicUsage<Obj extends Record<string | symbol, unknown>>(
   obj: Obj,
   objName: 'pageContext' | 'globalContext' | 'prerenderContext' | 'vikeConfig',
   skipOnInternalProp?: boolean,
   fallback?: (prop: string | symbol) => unknown,
-): Obj & {
-  _isProxyObject: true
-  _originalObject: Obj
-  /** https://vike.dev/warning/internals */
-  dangerouslyUseInternals: DangerouslyUseInternals<Obj>
-} {
+): Obj &
+  ObjProxy<Obj> & {
+    /** https://vike.dev/warning/internals */
+    dangerouslyUseInternals: DangerouslyUseInternals<Obj>
+  } {
   return new Proxy(obj, {
     get: (_: any, prop: string | symbol) => getProp(prop, obj, objName, skipOnInternalProp, fallback),
   })
@@ -36,7 +40,7 @@ function getProp(prop: string | symbol, ...args: Parameters<typeof getProxyForPu
 
   if (prop === '_isProxyObject') return true
   if (prop === 'dangerouslyUseInternals') {
-    args[2] = true
+    args[2] = true // skipOnInternalProp
     return getProxyForPublicUsage(...args)
   }
 
@@ -60,7 +64,7 @@ function getProp(prop: string | symbol, ...args: Parameters<typeof getProxyForPu
 }
 
 /** https://vike.dev/warning/internals */
-type DangerouslyUseInternals<Obj> = Obj
+type DangerouslyUseInternals<Obj> = ObjProxy<Obj>
 
 function onNotSerializable(propStr: string, val: unknown, objName: string) {
   if (val !== NOT_SERIALIZABLE) return
