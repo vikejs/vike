@@ -28,7 +28,7 @@ import type { PageContextCreatedPrecise } from '../createPageContextShared.js'
 import type { PageContextPublicServer } from '../../server/runtime/renderPageServer/getPageContextPublicServer.js'
 import type { PageContextPublicClientShared } from '../../client/shared/getPageContextPublicClientShared.js'
 import { type PageContextPublicMinimum, getPageContextPublicShared } from '../getPageContextPublicShared.js'
-import type { GlobalContextPrepareMinimum } from '../getGlobalContextPublicShared.js'
+import type { GlobalContextPublicMinimum } from '../getGlobalContextPublicShared.js'
 const globalObject = getGlobalObject('utils/execHook.ts', {
   userHookErrors: new WeakMap<object, HookLoc>(),
   pageContext: null as null | PageContextExecHook,
@@ -54,9 +54,9 @@ async function execHook<PageContext extends PageContextExecHook & PageContextCon
   return await execHookDirect(hooks, pageContext, getPageContextPublicShared)
 }
 
-async function execHookGlobal<HookArg extends GlobalContextPrepareMinimum>(
+async function execHookGlobal<HookArg extends GlobalContextPublicMinimum>(
   hookName: HookNameGlobal,
-  globalContext: GlobalContextPrepareMinimum,
+  globalContext: GlobalContextPublicMinimum,
   pageContext: PageContextExecHook | null,
   hookArg: HookArg,
   prepareForPublicUsage: (hookArg: HookArg) => HookArg,
@@ -122,7 +122,7 @@ function isUserHookError(err: unknown): false | HookLoc {
 async function execHookDirectWithoutPageContext<HookReturn>(
   hookFnCaller: () => HookReturn,
   hook: Omit<Hook, 'hookFn'>,
-  globalContext: GlobalContextPrepareMinimum,
+  globalContext: GlobalContextPublicMinimum,
 ): Promise<HookReturn> {
   const { hookName, hookFilePath, hookTimeout } = hook
   const hookReturn = await execHookDirectAsync(
@@ -136,7 +136,7 @@ async function execHookDirectWithoutPageContext<HookReturn>(
 function execHookDirectAsync<HookReturn>(
   hookFnCaller: () => HookReturn,
   hook: Omit<Hook, 'hookFn'>,
-  globalContext: GlobalContextPrepareMinimum,
+  globalContext: GlobalContextPublicMinimum,
   pageContextForPublicUsage: null | PageContextExecHook,
 ): Promise<HookReturn> {
   const {
@@ -217,7 +217,7 @@ function execHookDirectSync<PageContext extends PageContextExecHook>(
 function execHookBase<HookReturn>(
   hookFnCaller: () => HookReturn,
   hook: Omit<Hook, 'hookTimeout' | 'hookFn'>,
-  globalContext: GlobalContextPrepareMinimum,
+  globalContext: GlobalContextPublicMinimum,
   pageContext: PageContextExecHook | null,
 ): HookReturn | Promise<HookReturn> {
   const { hookName, hookFilePath } = hook

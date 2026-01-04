@@ -21,7 +21,7 @@ import { getHookFilePathToShowToUser } from '../page-configs/helpers.js'
 import { getConfigValueRuntime } from '../page-configs/getConfigValueRuntime.js'
 import { assert, assertUsage, checkType, isArray, isCallable, isObject } from '../utils.js'
 import pc from '@brillout/picocolors'
-import type { GlobalContextPrepareMinimum } from '../getGlobalContextPublicShared.js'
+import type { GlobalContextPublicMinimum } from '../getGlobalContextPublicShared.js'
 import type { PageContextPublicMinimum } from '../getPageContextPublicShared.js'
 const globalObject = getGlobalObject<{ isPrerendering?: true }>('hooks/getHook.ts', {})
 
@@ -99,7 +99,7 @@ function getHookFromPageConfigGlobal(pageConfigGlobal: PageConfigGlobalRuntime, 
   const hookTimeout = getHookTimeoutGlobal(hookName)
   return getHook(hookFn, hookName, hookFilePath, hookTimeout)
 }
-function getHookFromPageConfigGlobalCumulative<HookArg = GlobalContextPrepareMinimum>(
+function getHookFromPageConfigGlobalCumulative<HookArg = GlobalContextPublicMinimum>(
   pageConfigGlobal: PageConfigGlobalRuntime,
   hookName: HookNameGlobal,
 ): Hook<HookArg>[] {

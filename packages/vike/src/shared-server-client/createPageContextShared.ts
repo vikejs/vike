@@ -8,14 +8,14 @@ import type { GlobalConfigPublic } from './page-configs/resolveVikeConfigPublic.
 import type { PageContextCreatedClient } from '../client/runtime-client-routing/createPageContextClientSide.js'
 import type { PageContextCreatedServer } from '../server/runtime/renderPageServer/createPageContextServerSide.js'
 import type { PageContextCreatedClient_ServerRouting } from '../client/runtime-server-routing/createPageContextClientSide.js'
-import type { GlobalContextPrepareMinimum } from './getGlobalContextPublicShared.js'
+import type { GlobalContextPublicMinimum } from './getGlobalContextPublicShared.js'
 
 // Ideally we'd always use PageContextCreatedPrecise instead of PageContextCreated, but it turns out to be difficult
 type PageContextCreated = {
   _isOriginalObject: true
   isPageContext: true
   isClientSide: boolean
-  _globalContext: GlobalContextPrepareMinimum
+  _globalContext: GlobalContextPublicMinimum
   // ... manually add common types here
 }
 type IsSubset<A, B> = B extends A ? true : false
