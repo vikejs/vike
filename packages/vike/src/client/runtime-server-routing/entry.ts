@@ -6,7 +6,7 @@ import { execHookOnRenderClient } from '../shared/execHookOnRenderClient.js'
 import { assertSingleInstance_onClientEntryServerRouting, assertUsage, objectAssign } from './utils.js'
 import { removeFoucBuster } from '../shared/removeFoucBuster.js'
 import { execHook } from '../../shared-server-client/hooks/execHook.js'
-import { preparePageContextForPublicUsageClient } from './preparePageContextForPublicUsageClient.js'
+import { getPageContextPublicClient } from './getPageContextPublicClient.js'
 import { setVirtualFileExportsGlobalEntry } from '../shared/getGlobalContextClientInternalShared.js'
 // @ts-expect-error
 import * as virtualFileExportsGlobalEntry from 'virtual:vike:global-entry:client:server-routing'
@@ -34,13 +34,13 @@ async function hydrate() {
   )
   objectAssign(pageContext, pageContextAddendum)
 
-  await execHook('onCreatePageContext', pageContext, preparePageContextForPublicUsageClient)
+  await execHook('onCreatePageContext', pageContext, getPageContextPublicClient)
 
   assertPristineUrl()
 
-  await execHookOnRenderClient(pageContext, preparePageContextForPublicUsageClient)
+  await execHookOnRenderClient(pageContext, getPageContextPublicClient)
 
-  await execHook('onHydrationEnd', pageContext, preparePageContextForPublicUsageClient)
+  await execHook('onHydrationEnd', pageContext, getPageContextPublicClient)
 }
 
 function assertPristineUrl() {

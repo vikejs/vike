@@ -1,5 +1,5 @@
-export { preparePageContextForPublicUsageClientShared }
-export { preparePageContextForPublicUsageClientMinimal }
+export { getPageContextPublicClientShared }
+export { getPageContextPublicClientMinimal }
 export type { PageContextForPublicUsageClientShared }
 
 import { objectAssign } from '../runtime-server-routing/utils.js'
@@ -13,7 +13,7 @@ import type { PageContextInternalClient } from '../../types/PageContext.js'
 
 type PageContextForPublicUsageClientShared = PageContextPrepareMinimum & PageContextInternalClient & PageContextConfig
 
-function preparePageContextForPublicUsageClientShared<PageContext extends PageContextForPublicUsageClientShared>(
+function getPageContextPublicClientShared<PageContext extends PageContextForPublicUsageClientShared>(
   pageContext: PageContext,
 ): PageContext & { Page: unknown } {
   // TO-DO/soon/proxy: use proxy
@@ -30,12 +30,10 @@ function preparePageContextForPublicUsageClientShared<PageContext extends PageCo
   // - Last time I tried to remove it (https://github.com/vikejs/vike/commit/705fd23598d9d69bf46a52c8550216cd7117ce71) the tests were failing as expected: only the Vue integrations that used shallowReactive() failed.
   supportVueReactiviy(pageContext)
 
-  return preparePageContextForPublicUsageClientMinimal(pageContext)
+  return getPageContextPublicClientMinimal(pageContext)
 }
 
-function preparePageContextForPublicUsageClientMinimal<PageContext extends PageContextPrepareMinimum>(
-  pageContext: PageContext,
-) {
+function getPageContextPublicClientMinimal<PageContext extends PageContextPrepareMinimum>(pageContext: PageContext) {
   const pageContextPublic = preparePageContextForPublicUsage(pageContext)
   return pageContextPublic
 }

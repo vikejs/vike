@@ -37,7 +37,7 @@ import type { DangerouslyUseInternals } from '../shared-server-client/getProxyFo
 import type { PageContextInternalClientAfterRender } from '../client/runtime-client-routing/renderPageClient.js'
 import type { PageContextAfterRender } from '../server/runtime/renderPageServer/renderPageServerAfterRoute.js'
 import type { PageContextPublicProxyServer } from '../server/runtime/renderPageServer/getPageContextPublicServer.js'
-import type { PageContextPublicProxyClient } from '../client/runtime-client-routing/preparePageContextForPublicUsageClient.js'
+import type { PageContextPublicProxyClient } from '../client/runtime-client-routing/getPageContextPublicClient.js'
 
 type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & {
   /** https://vike.dev/warning/internals */

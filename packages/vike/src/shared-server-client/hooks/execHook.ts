@@ -26,7 +26,7 @@ import type { HookName, HookNameGlobal } from '../../types/Config.js'
 // @ts-ignore TODO use again?
 import type { PageContextCreated } from '../createPageContextShared.js'
 import type { PageContextForPublicUsageServer } from '../../server/runtime/renderPageServer/getPageContextPublicServer.js'
-import type { PageContextForPublicUsageClientShared } from '../../client/shared/preparePageContextForPublicUsageClientShared.js'
+import type { PageContextForPublicUsageClientShared } from '../../client/shared/getPageContextPublicClientShared.js'
 import {
   type PageContextPrepareMinimum,
   preparePageContextForPublicUsage,

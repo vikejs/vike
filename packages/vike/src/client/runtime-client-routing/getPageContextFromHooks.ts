@@ -32,10 +32,7 @@ import { execHook } from '../../shared-server-client/hooks/execHook.js'
 import type { HookName } from '../../types/Config.js'
 import type { PageContextCreatedClient } from './createPageContextClientSide.js'
 import type { PageContextBegin } from './renderPageClient.js'
-import {
-  type PageContextForPublicUsageClient,
-  preparePageContextForPublicUsageClient,
-} from './preparePageContextForPublicUsageClient.js'
+import { type PageContextForPublicUsageClient, getPageContextPublicClient } from './getPageContextPublicClient.js'
 import type { ConfigEnv } from '../../types/index.js'
 import type { GlobalContextClientInternal } from './getGlobalContextClientInternal.js'
 const globalObject = getGlobalObject<{
@@ -154,7 +151,7 @@ async function getPageContextFromHooksClient(
 
 type PageContextExecHookClient = PageContextCreatedClient & PageContextConfig & PageContextForPublicUsageClient
 async function execHookClient(hookName: HookName, pageContext: PageContextExecHookClient) {
-  return await execHook(hookName, pageContext, (p) => preparePageContextForPublicUsageClient(p))
+  return await execHook(hookName, pageContext, (p) => getPageContextPublicClient(p))
 }
 
 // It's a no-op if:
@@ -322,7 +319,7 @@ function isOldDesign(pageContext: {
 }
 
 async function execHookGuardClient(
-  pageContext: Parameters<typeof execHookGuard>[0] & Parameters<typeof preparePageContextForPublicUsageClient>[0],
+  pageContext: Parameters<typeof execHookGuard>[0] & Parameters<typeof getPageContextPublicClient>[0],
 ) {
-  await execHookGuard(pageContext, (pageContext) => preparePageContextForPublicUsageClient(pageContext))
+  await execHookGuard(pageContext, (pageContext) => getPageContextPublicClient(pageContext))
 }
