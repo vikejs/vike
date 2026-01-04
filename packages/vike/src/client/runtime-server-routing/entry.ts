@@ -1,7 +1,7 @@
 import { assertServerRouting } from '../../utils/assertRoutingType.js'
 assertServerRouting()
 
-import { createPageContextClientSide } from './createPageContextClientSide.js'
+import { createPageContextClient } from './createPageContextClient.js'
 import { execHookOnRenderClient } from '../shared/execHookOnRenderClient.js'
 import { assertSingleInstance_onClientEntryServerRouting, assertUsage, objectAssign } from './utils.js'
 import { removeFoucBuster } from '../shared/removeFoucBuster.js'
@@ -21,11 +21,11 @@ if (import.meta.env.DEV) removeFoucBuster()
 hydrate()
 
 async function hydrate() {
-  const pageContext = await createPageContextClientSide()
+  const pageContext = await createPageContextClient()
 
   objectAssign(pageContext, getPageContextSerializedInHtml())
 
-  // Sets pageContext.config using local configs — overrides the pageContext.config set using global configs at createPageContextClientSide()
+  // Sets pageContext.config using local configs — overrides the pageContext.config set using global configs at createPageContextClient()
   const pageContextAddendum = await loadPageConfigsLazyClientSide(
     pageContext.pageId,
     pageContext._pageFilesAll,

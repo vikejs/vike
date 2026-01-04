@@ -5,9 +5,9 @@ export type { PageContextCreated }
 
 import { changeEnumerable, objectAssign } from './utils.js'
 import type { GlobalConfigPublic } from './page-configs/resolveVikeConfigPublic.js'
-import type { PageContextCreatedClient } from '../client/runtime-client-routing/createPageContextClientSide.js'
+import type { PageContextCreatedClient } from '../client/runtime-client-routing/createPageContextClient.js'
 import type { PageContextCreatedServer } from '../server/runtime/renderPageServer/createPageContextServer.js'
-import type { PageContextCreatedClient_ServerRouting } from '../client/runtime-server-routing/createPageContextClientSide.js'
+import type { PageContextCreatedClient_ServerRouting } from '../client/runtime-server-routing/createPageContextClient.js'
 import type { GlobalContextPublicMinimum } from './getGlobalContextPublicShared.js'
 
 // Ideally we'd always use PageContextCreatedPrecise instead of PageContextCreated, but it turns out to be difficult

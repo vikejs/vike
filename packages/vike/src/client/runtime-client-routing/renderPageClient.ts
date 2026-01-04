@@ -25,7 +25,7 @@ import {
   type PageContextFromHooksServer,
   setPageContextInitIsPassedToClient,
 } from './getPageContextFromHooks.js'
-import { createPageContextClientSide, type PageContextCreatedClient } from './createPageContextClientSide.js'
+import { createPageContextClient, type PageContextCreatedClient } from './createPageContextClient.js'
 import {
   addLinkPrefetchHandlers,
   addLinkPrefetchHandlers_unwatch,
@@ -614,7 +614,7 @@ async function getPageContextBegin(
   },
 ) {
   const previousPageContext = globalObject.previousPageContext ?? null
-  const pageContext = await createPageContextClientSide(urlOriginal)
+  const pageContext = await createPageContextClient(urlOriginal)
   objectAssign(pageContext, {
     isBackwardNavigation,
     isHistoryNavigation,
