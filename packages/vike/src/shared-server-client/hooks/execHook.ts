@@ -57,7 +57,7 @@ async function execHook<PageContext extends PageContextExecHook & PageContextCon
 async function execHookGlobal<HookArg extends GlobalContextPublicMinimum>(
   hookName: HookNameGlobal,
   globalContext: GlobalContextPublicMinimum,
-  pageContext: PageContextExecHook | null,
+  pageContext: null,
   hookArg: HookArg,
   prepareForPublicUsage: (hookArg: HookArg) => HookArg,
 ) {
