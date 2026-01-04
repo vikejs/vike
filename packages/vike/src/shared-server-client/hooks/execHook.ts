@@ -2,9 +2,9 @@ export { execHook }
 export { execHookGlobal }
 export { execHookList }
 export { execHookSingle }
+export { execHookSingleSync }
 export { execHookSingleWithReturn }
 export { execHookSingleWithoutPageContext }
-export { execHookSingleSync }
 export { getPageContext_sync }
 export { providePageContext }
 export { isUserHookError }
