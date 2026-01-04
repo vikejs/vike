@@ -6,12 +6,12 @@ import { assert, assertWarning, compareString, isPropertyGetter } from './utils.
 import { addIs404ToPageProps } from './addIs404ToPageProps.js'
 import { type GlobalContextPrepareMinimum, getGlobalContextPublicShared } from './getGlobalContextPublicShared.js'
 import { getProxyForPublicUsage } from './getProxyForPublicUsage.js'
-import type { PageContextCreatedMinimum } from './createPageContextShared.js'
+import type { PageContextCreated } from './createPageContextShared.js'
 
-// TODO/refactor: prefer using PageContextCreatedMinimum over PageContextPrepareMinimum ?
+// TODO/refactor: prefer using PageContextCreated over PageContextPrepareMinimum ?
 type PageContextPrepareMinimum = {
   _globalContext: GlobalContextPrepareMinimum
-} & PageContextCreatedMinimum
+} & PageContextCreated
 
 function getPageContextPublicShared<PageContext extends PageContextPrepareMinimum>(pageContext: PageContext) {
   assert(!(pageContext as Record<string, unknown>)._isProxyObject)

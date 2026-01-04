@@ -1,7 +1,7 @@
 export { createPageContextShared }
 export { createPageContextObject }
 export type { PageContextCreatedPrecise }
-export type { PageContextCreatedMinimum }
+export type { PageContextCreated }
 
 import { changeEnumerable, objectAssign } from './utils.js'
 import type { GlobalConfigPublic } from './page-configs/resolveVikeConfigPublic.js'
@@ -10,8 +10,8 @@ import type { PageContextCreatedServer } from '../server/runtime/renderPageServe
 import type { PageContextCreatedClient_ServerRouting } from '../client/runtime-server-routing/createPageContextClientSide.js'
 import type { GlobalContextPrepareMinimum } from './getGlobalContextPublicShared.js'
 
-// Ideally we'd always use PageContextCreatedPrecise instead of PageContextCreatedMinimum, but it turns out to be difficult
-type PageContextCreatedMinimum = {
+// Ideally we'd always use PageContextCreatedPrecise instead of PageContextCreated, but it turns out to be difficult
+type PageContextCreated = {
   _isOriginalObject: true
   isPageContext: true
   isClientSide: boolean
@@ -21,9 +21,9 @@ type PageContextCreatedMinimum = {
 type IsSubset<A, B> = B extends A ? true : false
 // @ts-ignore unused type test
 type _test = [
-  Expect<IsSubset<PageContextCreatedMinimum, PageContextCreatedServer>>,
-  Expect<IsSubset<PageContextCreatedMinimum, PageContextCreatedClient>>,
-  Expect<IsSubset<PageContextCreatedMinimum, PageContextCreatedClient_ServerRouting>>,
+  Expect<IsSubset<PageContextCreated, PageContextCreatedServer>>,
+  Expect<IsSubset<PageContextCreated, PageContextCreatedClient>>,
+  Expect<IsSubset<PageContextCreated, PageContextCreatedClient_ServerRouting>>,
 ]
 type Expect<T extends true> = T
 type PageContextCreatedPrecise =
