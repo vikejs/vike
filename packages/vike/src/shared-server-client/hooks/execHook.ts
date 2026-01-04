@@ -28,7 +28,7 @@ import type { PageContextCreated } from '../createPageContextShared.js'
 import type { PageContextPublicServer } from '../../server/runtime/renderPageServer/getPageContextPublicServer.js'
 import type { PageContextPublicClientShared } from '../../client/shared/getPageContextPublicClientShared.js'
 import { type PageContextPrepareMinimum, getPageContextPublicShared } from '../getPageContextPublicShared.js'
-import type { GlobalContextPrepareMinimum } from '../prepareGlobalContextForPublicUsage.js'
+import type { GlobalContextPrepareMinimum } from '../getGlobalContextPublicShared.js'
 const globalObject = getGlobalObject('utils/execHook.ts', {
   userHookErrors: new WeakMap<object, HookLoc>(),
   pageContext: null as null | PageContextExecHook,

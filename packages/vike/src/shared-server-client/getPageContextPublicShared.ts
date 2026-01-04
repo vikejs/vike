@@ -4,10 +4,7 @@ export type { PageContextPrepareMinimum }
 
 import { assert, assertWarning, compareString, isPropertyGetter } from './utils.js'
 import { addIs404ToPageProps } from './addIs404ToPageProps.js'
-import {
-  type GlobalContextPrepareMinimum,
-  prepareGlobalContextForPublicUsage,
-} from './prepareGlobalContextForPublicUsage.js'
+import { type GlobalContextPrepareMinimum, getGlobalContextPublicShared } from './getGlobalContextPublicShared.js'
 import { getProxyForPublicUsage } from './getProxyForPublicUsage.js'
 import type { PageContextCreatedMinimum } from './createPageContextShared.js'
 
@@ -40,7 +37,7 @@ function getPageContextPublicShared<PageContext extends PageContextPrepareMinimu
   // For a more readable `console.log(pageContext)` output
   sortPageContext(pageContext)
 
-  const globalContextPublic = prepareGlobalContextForPublicUsage(pageContext._globalContext)
+  const globalContextPublic = getGlobalContextPublicShared(pageContext._globalContext)
   const pageContextPublic = getProxyForPublicUsage(
     pageContext,
     'pageContext',

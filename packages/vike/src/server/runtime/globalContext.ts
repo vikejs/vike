@@ -70,7 +70,7 @@ import {
   type GlobalContextBase,
 } from '../../shared-server-client/createGlobalContextShared.js'
 import type { GlobalContext, GlobalContextServer } from '../../types/GlobalContext.js'
-import { prepareGlobalContextForPublicUsage } from '../../shared-server-client/prepareGlobalContextForPublicUsage.js'
+import { getGlobalContextPublicShared } from '../../shared-server-client/getGlobalContextPublicShared.js'
 import { logRuntimeError, logRuntimeInfo } from './loggerRuntime.js'
 import {
   debugFileChange,
@@ -203,7 +203,7 @@ function getGlobalContextSync(): GlobalContext {
 function getGlobalContextForPublicUsage(): GlobalContextServer {
   const { globalContext } = globalObjectTyped
   assert(globalContext)
-  const globalContextForPublicUsage: GlobalContextServerInternal = prepareGlobalContextForPublicUsage(globalContext)
+  const globalContextForPublicUsage: GlobalContextServerInternal = getGlobalContextPublicShared(globalContext)
   return globalContextForPublicUsage as any as GlobalContextServer
 }
 

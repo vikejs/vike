@@ -8,7 +8,7 @@ import type { GlobalConfigPublic } from './page-configs/resolveVikeConfigPublic.
 import type { PageContextCreatedClient } from '../client/runtime-client-routing/createPageContextClientSide.js'
 import type { PageContextCreatedServer } from '../server/runtime/renderPageServer/createPageContextServerSide.js'
 import type { PageContextCreatedClient_ServerRouting } from '../client/runtime-server-routing/createPageContextClientSide.js'
-import type { GlobalContextPrepareMinimum } from './prepareGlobalContextForPublicUsage.js'
+import type { GlobalContextPrepareMinimum } from './getGlobalContextPublicShared.js'
 
 type PageContextCreated = PageContextCreatedServer | PageContextCreatedClient | PageContextCreatedClient_ServerRouting
 
