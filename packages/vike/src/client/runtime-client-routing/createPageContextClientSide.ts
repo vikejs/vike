@@ -8,7 +8,7 @@ import { getGlobalContextClientInternal } from './getGlobalContextClientInternal
 import { assert, updateType, isBaseServer, objectAssign } from './utils.js'
 
 async function createPageContextClientSide(urlOriginal: string) {
-  const pageContext = createPageContextBase(urlOriginal)
+  const pageContext = createPageContextMinimum(urlOriginal)
 
   const globalContext = await getGlobalContextClientInternal()
   objectAssign(pageContext, {
@@ -21,7 +21,7 @@ async function createPageContextClientSide(urlOriginal: string) {
   return pageContext
 }
 
-function createPageContextBase(urlOriginal: string) {
+function createPageContextMinimum(urlOriginal: string) {
   const pageContext = createPageContextObject()
   objectAssign(pageContext, {
     isClientSide: true as const,

@@ -7,7 +7,7 @@ import { createPageContextObject, createPageContextShared } from '../../shared-s
 import { getGlobalContextClientInternal } from './getGlobalContextClientInternal.js'
 
 async function createPageContextClientSide() {
-  const pageContext = createPageContextBase()
+  const pageContext = createPageContextMinimum()
 
   const globalContext = await getGlobalContextClientInternal()
   objectAssign(pageContext, {
@@ -21,7 +21,7 @@ async function createPageContextClientSide() {
   return pageContext
 }
 
-function createPageContextBase() {
+function createPageContextMinimum() {
   const pageContextCreated = createPageContextObject()
   objectAssign(pageContextCreated, {
     isClientSide: true as const,

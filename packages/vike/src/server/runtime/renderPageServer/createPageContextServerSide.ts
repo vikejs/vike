@@ -13,7 +13,7 @@ import {
 } from '../../../shared-server-client/createPageContextShared.js'
 
 // TODO: stop using this and all other *Base ones?
-type PageContextCreatedServerMinimum = ReturnType<typeof createPageContextBase>
+type PageContextCreatedServerMinimum = ReturnType<typeof createPageContextMinimum>
 type PageContextCreatedServer = Awaited<ReturnType<typeof createPageContextServerSide>>
 function createPageContextServerSide(
   pageContextInit: PageContextInit,
@@ -32,7 +32,7 @@ function createPageContextServerSide(
   ),
 ) {
   assert(pageContextInit.urlOriginal)
-  const pageContext = createPageContextBase(pageContextInit, args.isPrerendering, args.requestId)
+  const pageContext = createPageContextMinimum(pageContextInit, args.isPrerendering, args.requestId)
 
   objectAssign(pageContext, {
     _globalContext: globalContext,
@@ -82,11 +82,11 @@ function createPageContextServerSide(
 
 /** Use this as last resort — prefer passing richer `pageContext` objects to the runtime logger */
 function createPageContextServerSideWithoutGlobalContext(pageContextInit: PageContextInit, requestId: number) {
-  const pageContext = createPageContextBase(pageContextInit, false, requestId)
+  const pageContext = createPageContextMinimum(pageContextInit, false, requestId)
   return pageContext
 }
 
-function createPageContextBase(pageContextInit: PageContextInit | null, isPrerendering: boolean, requestId: number) {
+function createPageContextMinimum(pageContextInit: PageContextInit | null, isPrerendering: boolean, requestId: number) {
   const pageContext = createPageContextObject()
   objectAssign(pageContext, {
     isClientSide: false as const,
