@@ -24,7 +24,7 @@ type PageContextBeforeRenderClient = {
 
 async function execHookOnRenderClient<PageContext extends PageContextBeforeRenderClient>(
   pageContext: PageContext,
-  prepareForPublicUsage: (pageConfig: PageContext) => PageContext,
+  getPageContextPublic: (pageContext: PageContext) => PageContext,
 ): Promise<void> {
   let hook: null | Hook = null
 
@@ -65,7 +65,7 @@ async function execHookOnRenderClient<PageContext extends PageContextBeforeRende
   }
 
   // We don't use a try-catch wrapper because rendering errors are usually handled by the UI framework. (E.g. React's Error Boundaries.)
-  await execHookDirectSingle(hook, pageContext, prepareForPublicUsage)
+  await execHookDirectSingle(hook, pageContext, getPageContextPublic)
 }
 
 function getUrlToShowToUser(pageContext: { urlOriginal?: string; urlPathname?: string }): string {
