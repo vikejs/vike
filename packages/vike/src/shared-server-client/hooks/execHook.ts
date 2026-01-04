@@ -53,7 +53,7 @@ async function execHookGlobal(
   const globalContextPublic = getGlobalContextPublic(globalContext)
   await Promise.all(
     hooks.map(async (hook) => {
-      await execHookAsync(() => hook.hookFn(globalContextPublic), hook, globalContext, null)
+      await execHookBaseAsync(() => hook.hookFn(globalContextPublic), hook, globalContext, null)
     }),
   )
 }
@@ -67,7 +67,7 @@ async function execHooks<PageContext extends PageContextExecHook>(
   const pageContextPublic = getPageContextPublic(pageContext)
   const hooksWithResult = await Promise.all(
     hooks.map(async (hook) => {
-      const hookReturn = await execHookAsync(
+      const hookReturn = await execHookBaseAsync(
         () => hook.hookFn(pageContextPublic),
         hook,
         pageContext._globalContext,
@@ -113,7 +113,7 @@ async function execHookWithoutPageContext<HookReturn>(
   globalContext: GlobalContextPublicMinimum,
 ): Promise<HookReturn> {
   const { hookName, hookFilePath, hookTimeout } = hook
-  const hookReturn = await execHookAsync(hookFnCaller, { hookName, hookFilePath, hookTimeout }, globalContext, null)
+  const hookReturn = await execHookBaseAsync(hookFnCaller, { hookName, hookFilePath, hookTimeout }, globalContext, null)
   return hookReturn
 }
 
@@ -130,7 +130,7 @@ function execHookSync<PageContext extends PageContextExecHook>(
   return { hookReturn }
 }
 
-function execHookAsync<HookReturn>(
+function execHookBaseAsync<HookReturn>(
   hookFnCaller: () => HookReturn,
   hook: Omit<Hook, 'hookFn'>,
   globalContext: GlobalContextPublicMinimum,
