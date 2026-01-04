@@ -14,7 +14,7 @@ import type { PageAsset } from './getPageAssets.js'
 import { isStream } from './html/stream.js'
 import { assertPageContextProvidedByUser } from '../../../shared-server-client/assertPageContextProvidedByUser.js'
 import type { PreloadFilter } from './html/injectAssets/getHtmlTags.js'
-import { getPageContextPublicServer, type PageContextPublicServer } from './getPageContextPublicServer.js'
+import { getPageContextPublicServer } from './getPageContextPublicServer.js'
 import type { PageContextPromise } from './html/injectAssets.js'
 import { assertHookReturnedObject } from '../../../shared-server-client/assertHookReturnedObject.js'
 import { logRuntimeError } from '../loggerRuntime.js'
@@ -26,6 +26,7 @@ import {
 } from '../../../shared-server-client/hooks/execHook.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { PageContextConfig } from '../../../shared-server-client/getPageFiles.js'
+import type { PageContextInternalServer } from '../../../types/PageContext.js'
 
 type GetPageAssets = () => Promise<PageAsset[]>
 
@@ -38,7 +39,7 @@ type HookName =
 async function execHookOnRenderHtml(
   pageContext: PageContextConfig &
     PageContextExecHook &
-    PageContextPublicServer &
+    PageContextInternalServer &
     PageContextSerialization & {
       pageId: string
       __getPageAssets: GetPageAssets
