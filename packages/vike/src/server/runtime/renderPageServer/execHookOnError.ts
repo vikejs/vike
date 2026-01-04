@@ -4,13 +4,16 @@ import { isObject, getGlobalObject, assert } from '../../utils.js'
 import { execHookBase } from '../../../shared-server-client/hooks/execHook.js'
 import { getGlobalContextServerInternalOptional } from '../globalContext.js'
 import { getHookFromPageConfigGlobalCumulative } from '../../../shared-server-client/hooks/getHook.js'
-import type { PageContextCreatedServer, PageContextCreatedServerMinimum } from './createPageContextServer.js'
+import type { PageContextCreatedServer, PageContextCreatedWithoutGlobalContext } from './createPageContextServer.js'
 
 const globalObject = getGlobalObject('renderPageServer/execHookOnError.ts', {
   seen: new WeakSet(),
 })
 
-function execHookOnError(err: unknown, pageContext: null | PageContextCreatedServerMinimum | PageContextCreatedServer) {
+function execHookOnError(
+  err: unknown,
+  pageContext: null | PageContextCreatedWithoutGlobalContext | PageContextCreatedServer,
+) {
   if (isObject(err)) {
     if (globalObject.seen.has(err)) return
     globalObject.seen.add(err)

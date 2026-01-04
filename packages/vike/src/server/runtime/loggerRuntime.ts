@@ -9,13 +9,13 @@ export type { PageContext_logRuntime }
 import { loggRuntimeErrorProd } from './renderPageServer/loggerProd.js'
 import type { LogType } from '../../node/vite/shared/loggerDev.js'
 import { assert } from '../utils.js'
-import type { PageContextCreatedServerMinimum } from './renderPageServer/createPageContextServer.js'
+import type { PageContextCreatedWithoutGlobalContext } from './renderPageServer/createPageContextServer.js'
 
 type LogRuntimeInfo = (msg: string, pageContext: PageContext_logRuntime, logType: LogType) => void
 type LogRuntimeError = (err: unknown, pageContext: PageContext_logRuntime) => void
 type PageContext_logRuntime =
   | null
-  | (PageContextCreatedServerMinimum & {
+  | (PageContextCreatedWithoutGlobalContext & {
       _requestId: number
     })
 

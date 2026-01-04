@@ -1,7 +1,7 @@
 export { createPageContextServer }
 export { createPageContextServerWithoutGlobalContext }
 export type { PageContextCreatedServer }
-export type { PageContextCreatedServerMinimum }
+export type { PageContextCreatedWithoutGlobalContext }
 
 import { assert, assertUsage, assertWarning, updateType, normalizeHeaders, objectAssign } from '../../utils.js'
 import { getPageContextUrlComputed } from '../../../shared-server-client/getPageContextUrlComputed.js'
@@ -13,7 +13,7 @@ import {
 } from '../../../shared-server-client/createPageContextShared.js'
 
 // TODO: stop using this and all other *Base ones?
-type PageContextCreatedServerMinimum = ReturnType<typeof createPageContextMinimum>
+type PageContextCreatedWithoutGlobalContext = ReturnType<typeof createPageContextMinimum>
 type PageContextCreatedServer = Awaited<ReturnType<typeof createPageContextServer>>
 function createPageContextServer(
   pageContextInit: PageContextInit,
