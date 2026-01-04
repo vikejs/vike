@@ -12,7 +12,6 @@ import {
   createPageContextShared,
 } from '../../../shared-server-client/createPageContextShared.js'
 
-type PageContextCreatedServerWithoutGlobalContext = ReturnType<typeof createPageContextServerWithoutGlobalContext>
 type PageContextCreatedServer = Awaited<ReturnType<typeof createPageContextServer>>
 function createPageContextServer(
   pageContextInit: PageContextInit,
@@ -79,6 +78,7 @@ function createPageContextServer(
   return pageContext
 }
 
+type PageContextCreatedServerWithoutGlobalContext = ReturnType<typeof createPageContextServerWithoutGlobalContext>
 /** Use this as last resort — prefer passing richer `pageContext` objects to the runtime logger */
 function createPageContextServerWithoutGlobalContext(pageContextInit: PageContextInit, requestId: number) {
   const pageContext = createPageContextBase(pageContextInit, false, requestId)
