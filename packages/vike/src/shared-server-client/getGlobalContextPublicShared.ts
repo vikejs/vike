@@ -5,7 +5,6 @@ import { getProxyForPublicUsage } from './getProxyForPublicUsage.js'
 import { assert } from './utils.js'
 import type { PageConfigGlobalRuntime } from '../types/PageConfig.js'
 
-// TODO: rename?
 type GlobalContextPublicMinimum = {
   _isOriginalObject: true
   isGlobalContext: true
