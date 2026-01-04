@@ -13,7 +13,7 @@ import { execHookGlobal } from './hooks/execHook.js'
 import { type GlobalContextPublicMinimum, getGlobalContextPublicShared } from './getGlobalContextPublicShared.js'
 import type { GlobalContextServerInternal } from '../server/runtime/globalContext.js'
 import type { GlobalContextClientInternal } from '../client/runtime-client-routing/getGlobalContextClientInternal.js'
-import { getHookFromPageConfigGlobalCumulative, type Hook } from './hooks/getHook.js'
+import { getHooksFromPageConfigGlobalCumulative, type Hook } from './hooks/getHook.js'
 const getGlobalContextSyncErrMsg =
   "The global context isn't set yet, call getGlobalContextSync() later or use getGlobalContext() instead."
 
@@ -74,7 +74,7 @@ async function createGlobalContextShared<GlobalContextAdded extends {}, GlobalCo
       objectAssign(globalContext, globalContextAddedAsync)
     }
 
-    const onCreateGlobalContextHooks = getHookFromPageConfigGlobalCumulative(
+    const onCreateGlobalContextHooks = getHooksFromPageConfigGlobalCumulative(
       globalContext._pageConfigGlobal,
       'onCreateGlobalContext',
     )

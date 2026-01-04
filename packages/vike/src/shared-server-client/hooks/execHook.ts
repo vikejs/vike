@@ -21,7 +21,7 @@ import { isObject } from '../../utils/isObject.js'
 import type { PageContextClient, PageContextServer } from '../../types/PageContext.js'
 import type { Hook, HookLoc } from './getHook.js'
 import type { PageContextConfig } from '../getPageFiles.js'
-import { getHookFromPageConfigGlobalCumulative, getHookFromPageContextNew } from './getHook.js'
+import { getHooksFromPageConfigGlobalCumulative, getHookFromPageContextNew } from './getHook.js'
 import type { HookName, HookNameGlobal } from '../../types/Config.js'
 import { type PageContextPublicMinimum, getPageContextPublicShared } from '../getPageContextPublicShared.js'
 import type { GlobalContextPublicMinimum } from '../getGlobalContextPublicShared.js'
@@ -50,7 +50,7 @@ async function execHookGlobal(
   globalContext: GlobalContextPublicMinimum,
   getGlobalContextPublic: (globalContext: GlobalContextPublicMinimum) => GlobalContextPublicMinimum,
 ) {
-  const hooks = getHookFromPageConfigGlobalCumulative(globalContext._pageConfigGlobal, hookName)
+  const hooks = getHooksFromPageConfigGlobalCumulative(globalContext._pageConfigGlobal, hookName)
   const globalContextPublic = getGlobalContextPublic(globalContext)
   await Promise.all(
     hooks.map(async (hook) => {

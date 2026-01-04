@@ -2,7 +2,7 @@ export { getHookFromPageContext }
 export { getHookFromPageContextNew }
 export { getHookFromPageConfig }
 export { getHookFromPageConfigGlobal }
-export { getHookFromPageConfigGlobalCumulative }
+export { getHooksFromPageConfigGlobalCumulative }
 export { getHook_setIsPrerenderering }
 export type { Hook }
 export type { HookLoc }
@@ -99,7 +99,7 @@ function getHookFromPageConfigGlobal(pageConfigGlobal: PageConfigGlobalRuntime, 
   const hookTimeout = getHookTimeoutGlobal(hookName)
   return getHook(hookFn, hookName, hookFilePath, hookTimeout)
 }
-function getHookFromPageConfigGlobalCumulative<HookArg = GlobalContextPublicMinimum>(
+function getHooksFromPageConfigGlobalCumulative<HookArg = GlobalContextPublicMinimum>(
   pageConfigGlobal: PageConfigGlobalRuntime,
   hookName: HookNameGlobal,
 ): Hook<HookArg>[] {
