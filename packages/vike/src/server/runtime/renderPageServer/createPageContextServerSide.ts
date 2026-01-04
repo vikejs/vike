@@ -12,6 +12,7 @@ import {
   createPageContextShared,
 } from '../../../shared-server-client/createPageContextShared.js'
 
+// TODO: stop using this and all other *Base ones?
 type PageContextCreatedServerBase = ReturnType<typeof createPageContextBase>
 type PageContextCreatedServer = Awaited<ReturnType<typeof createPageContextServerSide>>
 function createPageContextServerSide(
