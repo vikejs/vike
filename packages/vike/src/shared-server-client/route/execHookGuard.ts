@@ -3,7 +3,7 @@ export { execHookGuard }
 import { getHookFromPageContext, getHookTimeoutDefault, type Hook } from '../hooks/getHook.js'
 import { assert, assertUsage, isCallable } from './utils.js'
 import type { PageContextConfig, PageFile } from '../getPageFiles.js'
-import { execHookDirectSingle, type PageContextExecHookMinimum } from '../hooks/execHook.js'
+import { execHookDirectSingle, type PageContextExecHook } from '../hooks/execHook.js'
 import type { GlobalContextInternal } from '../createGlobalContextShared.js'
 const errIntro = 'The guard() hook defined by'
 
@@ -12,7 +12,7 @@ async function execHookGuard<
     pageId: string
   } & {
     _globalContext: GlobalContextInternal
-  } & PageContextExecHookMinimum &
+  } & PageContextExecHook &
     PageContextConfig,
 >(pageContext: PageContext, prepareForPublicUsage: (pageConfig: PageContext) => PageContext): Promise<void> {
   let hook: Hook | null

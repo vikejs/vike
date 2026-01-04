@@ -32,7 +32,7 @@ type PageContextUrl = {
 type PageContextUrlInternal = PageContextUrl & {
   _urlRewrite?: string
 } & PageContextCreatedMinimum & {
-    // TODO/refactor: use PageContextExecHookMinimum instead of following?
+    // TODO/refactor: use PageContextExecHook instead of following?
     _globalContext: GlobalContextPrepareMinimum
   }
 type PageContextUrlClient = PageContextUrl
