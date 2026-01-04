@@ -5,7 +5,7 @@ export { warnDeprecatedAllowKey }
 
 import type { PageContextUrlInternal } from '../getPageContextUrlComputed.js'
 import { execHookDirectSync } from '../hooks/execHook.js'
-import { preparePageContextForPublicUsage } from '../preparePageContextForPublicUsage.js'
+import { getPageContextPublicShared } from '../getPageContextPublicShared.js'
 import { assert, assertUsage, assertWarning, hasProp, isPlainObject, isPromise } from './utils.js'
 import pc from '@brillout/picocolors'
 
@@ -24,7 +24,7 @@ async function resolveRouteFunction(
       hookName: 'route',
     },
     pageContext,
-    preparePageContextForPublicUsage,
+    getPageContextPublicShared,
   )
   assertSyncRouting(result, `The Route Function ${routeFunctionFilePath}`)
   // TO-DO/next-major-release: make resolveRouteFunction() and route() sync

@@ -10,9 +10,9 @@ export type { PageContextUrlSource }
 // =====================
 
 import { objectDefineProperty } from '../utils/objectDefineProperty.js'
-import { assertPropertyGetters } from './preparePageContextForPublicUsage.js'
+import { assertPropertyGetters } from './getPageContextPublicShared.js'
 import { assert, parseUrl, assertWarning, isBrowser, changeEnumerable, type UrlPublic } from './utils.js'
-import type { GlobalContextPrepareMinimum } from './prepareGlobalContextForPublicUsage.js'
+import type { GlobalContextPrepareMinimum } from './getGlobalContextPublicShared.js'
 import type { PageContextCreatedMinimum } from './createPageContextShared.js'
 
 // TO-DO/next-major-release: move pageContext.urlParsed to pageContext.url

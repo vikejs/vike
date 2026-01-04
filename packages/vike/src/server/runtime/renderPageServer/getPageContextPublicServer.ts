@@ -1,5 +1,5 @@
-export { preparePageContextForPublicUsageServer }
-export type { PageContextForPublicUsageServer }
+export { getPageContextPublicServer }
+export type { PageContextPublicServer }
 export type { PageContextPublicProxyServer }
 
 import type { PageContextUrlInternal } from '../../../shared-server-client/getPageContextUrlComputed.js'
@@ -7,11 +7,11 @@ import type { PageContextConfig } from '../../../shared-server-client/page-confi
 import type { PageContextInternalServer } from '../../../types/PageContext.js'
 import {
   assertPropertyGetters,
-  preparePageContextForPublicUsage,
-} from '../../../shared-server-client/preparePageContextForPublicUsage.js'
+  getPageContextPublicShared,
+} from '../../../shared-server-client/getPageContextPublicShared.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 
-type PageContextForPublicUsageServer = PageContextInternalServer &
+type PageContextPublicServer = PageContextInternalServer &
   PageContextConfig & {
     urlOriginal: string
     /** @deprecated */
@@ -25,12 +25,10 @@ type PageContextForPublicUsageServer = PageContextInternalServer &
     _globalContext: GlobalContextServerInternal
   }
 
-type PageContextPublicProxyServer = ReturnType<typeof preparePageContextForPublicUsageServer>
-function preparePageContextForPublicUsageServer<PageContext extends PageContextForPublicUsageServer>(
-  pageContext: PageContext,
-) {
-  // TO-DO/next-major-release: after we remove supportVueReactiviy() we can call this later inside the agnostic preparePageContextForPublicUsage()
+type PageContextPublicProxyServer = ReturnType<typeof getPageContextPublicServer>
+function getPageContextPublicServer<PageContext extends PageContextPublicServer>(pageContext: PageContext) {
+  // TO-DO/next-major-release: after we remove supportVueReactiviy() we can call this later inside the agnostic getPageContextPublicShared()
   assertPropertyGetters(pageContext)
-  const pageContextPublic = preparePageContextForPublicUsage(pageContext)
+  const pageContextPublic = getPageContextPublicShared(pageContext)
   return pageContextPublic
 }

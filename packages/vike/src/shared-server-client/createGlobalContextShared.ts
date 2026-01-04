@@ -10,10 +10,7 @@ import { parseVirtualFileExportsGlobalEntry } from './getPageFiles/parseVirtualF
 import { resolveGlobalContextConfig } from './page-configs/resolveVikeConfigPublic.js'
 import type { PageConfigRuntime } from '../types/PageConfig.js'
 import { execHookGlobal } from './hooks/execHook.js'
-import {
-  type GlobalContextPrepareMinimum,
-  prepareGlobalContextForPublicUsage,
-} from './prepareGlobalContextForPublicUsage.js'
+import { type GlobalContextPrepareMinimum, getGlobalContextPublicShared } from './getGlobalContextPublicShared.js'
 import type { GlobalContextServerInternal } from '../server/runtime/globalContext.js'
 import type { GlobalContextClientInternal } from '../client/runtime-client-routing/getGlobalContextClientInternal.js'
 import { getHookFromPageConfigGlobalCumulative, type Hook } from './hooks/getHook.js'
@@ -84,13 +81,7 @@ async function createGlobalContextShared<GlobalContextAdded extends {}, GlobalCo
     let hooksCalled = false
     if (!hooksAreEqual(globalObject.onCreateGlobalContextHooks ?? [], onCreateGlobalContextHooks)) {
       globalObject.onCreateGlobalContextHooks = onCreateGlobalContextHooks
-      await execHookGlobal(
-        'onCreateGlobalContext',
-        globalContext,
-        null,
-        globalContext,
-        prepareGlobalContextForPublicUsage,
-      )
+      await execHookGlobal('onCreateGlobalContext', globalContext, null, globalContext, getGlobalContextPublicShared)
       hooksCalled = true
     }
 

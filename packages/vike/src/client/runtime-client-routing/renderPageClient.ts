@@ -61,12 +61,9 @@ import { getRouteStringParameterList } from '../../shared-server-client/route/re
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 import type { PageContextClient, PageContextInternalClient } from '../../types/PageContext.js'
 import { execHookDirect, execHook } from '../../shared-server-client/hooks/execHook.js'
-import {
-  type PageContextForPublicUsageClient,
-  preparePageContextForPublicUsageClient,
-} from './preparePageContextForPublicUsageClient.js'
+import { type PageContextPublicClient, getPageContextPublicClient } from './getPageContextPublicClient.js'
 import { getHookFromPageContextNew } from '../../shared-server-client/hooks/getHook.js'
-import { preparePageContextForPublicUsageClientMinimal } from '../shared/preparePageContextForPublicUsageClientShared.js'
+import { getPageContextPublicClientMinimal } from '../shared/getPageContextPublicClientShared.js'
 import type { VikeGlobalInternal } from '../../types/VikeGlobalInternal.js'
 import { logErrorClient } from './logErrorClient.js'
 
@@ -99,7 +96,7 @@ const { firstRenderStartPromise } = globalObject
 type PreviousPageContext = { pageId: string } & PageContextConfig &
   PageContextRouted &
   PageContextCreatedClient &
-  PageContextForPublicUsageClient
+  PageContextPublicClient
 type PageContextRouted = { pageId: string; routeParams: Record<string, string> }
 
 type PageContextBegin = Awaited<ReturnType<typeof getPageContextBegin>>
@@ -172,7 +169,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
         globalObject.isTransitioning = true
         const hooks = getHookFromPageContextNew('onPageTransitionStart', previousPageContext)
         try {
-          await execHookDirect(hooks, pageContext, preparePageContextForPublicUsageClientMinimal)
+          await execHookDirect(hooks, pageContext, getPageContextPublicClientMinimal)
         } catch (err) {
           await onError(err)
           return
@@ -518,7 +515,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     const onRenderClientPromise = (async () => {
       let onRenderClientError: unknown
       try {
-        await execHookOnRenderClient(pageContext, preparePageContextForPublicUsageClient)
+        await execHookOnRenderClient(pageContext, getPageContextPublicClient)
       } catch (err) {
         assert(err)
         onRenderClientError = err
@@ -541,7 +538,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     // onHydrationEnd()
     if (isFirstRender && !onRenderClientError) {
       try {
-        await execHook('onHydrationEnd', pageContext, preparePageContextForPublicUsageClient)
+        await execHook('onHydrationEnd', pageContext, getPageContextPublicClient)
       } catch (err) {
         await onError(err)
         if (!isErrorPage) return
@@ -558,7 +555,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       assert(previousPageContext)
       const hooks = getHookFromPageContextNew('onPageTransitionEnd', previousPageContext)
       try {
-        await execHookDirect(hooks, pageContext, preparePageContextForPublicUsageClient)
+        await execHookDirect(hooks, pageContext, getPageContextPublicClient)
       } catch (err) {
         await onError(err)
         if (!isErrorPage) return
@@ -765,11 +762,11 @@ function areKeysEqual(key1: string | string[], key2: string | string[]): boolean
 function getPageContextClient(): PageContextClient | null {
   const pageContext = globalObject.currentPageContext
   if (!pageContext) return null
-  return preparePageContextForPublicUsageClient(pageContext as any) as any
+  return getPageContextPublicClient(pageContext as any) as any
 }
 
 type PageContextExecuteHook = Omit<
-  PageContextForPublicUsageClient,
+  PageContextPublicClient,
   keyof Awaited<ReturnType<typeof loadPageConfigsLazyClientSide>>
 >
 async function loadPageConfigsLazyClientSideAndExecHook<
@@ -800,7 +797,7 @@ async function loadPageConfigsLazyClientSideAndExecHook<
   objectAssign(pageContext, pageContextAddendum!)
 
   try {
-    await execHook('onCreatePageContext', pageContext, preparePageContextForPublicUsageClient)
+    await execHook('onCreatePageContext', pageContext, getPageContextPublicClient)
   } catch (err_) {
     err = err
     hasErr = true
