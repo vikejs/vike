@@ -14,7 +14,7 @@ async function execHookGuard<
     _globalContext: GlobalContextInternal
   } & PageContextExecHook &
     PageContextConfig,
->(pageContext: PageContext, prepareForPublicUsage: (pageConfig: PageContext) => PageContext): Promise<void> {
+>(pageContext: PageContext, getPageContextPublic: (pageConfig: PageContext) => PageContext): Promise<void> {
   let hook: Hook | null
   if (pageContext._globalContext._pageFilesAll.length > 0) {
     // TO-DO/next-major-release: remove
@@ -28,7 +28,7 @@ async function execHookGuard<
 
   if (!hook) return
 
-  await execHookDirectSingle(hook, pageContext, prepareForPublicUsage)
+  await execHookDirectSingle(hook, pageContext, getPageContextPublic)
 }
 
 // We cannot easily use pageContext.exports for the V0.4 design

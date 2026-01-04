@@ -48,19 +48,19 @@ type PageContextExecHook = PageContextPublicMinimum
 async function execHook<PageContext extends PageContextExecHook & PageContextConfig>(
   hookName: HookName,
   pageContext: PageContext,
-  getPageContextPublicShared: (pageContext: PageContext) => PageContext,
+  getPageContextPublic: (pageContext: PageContext) => PageContext,
 ) {
   const hooks = getHookFromPageContextNew(hookName, pageContext)
-  return await execHookDirect(hooks, pageContext, getPageContextPublicShared)
+  return await execHookDirect(hooks, pageContext, getPageContextPublic)
 }
 
 async function execHookGlobal(
   hookName: HookNameGlobal,
   globalContext: GlobalContextPublicMinimum,
-  prepareForPublicUsage: (globalContext: GlobalContextPublicMinimum) => GlobalContextPublicMinimum,
+  getGlobalContextPublic: (globalContext: GlobalContextPublicMinimum) => GlobalContextPublicMinimum,
 ) {
   const hooks = getHookFromPageConfigGlobalCumulative(globalContext._pageConfigGlobal, hookName)
-  const globalContextPublic = prepareForPublicUsage(globalContext)
+  const globalContextPublic = getGlobalContextPublic(globalContext)
   await Promise.all(
     hooks.map(async (hook) => {
       await execHookDirectAsync(() => hook.hookFn(globalContextPublic), hook, globalContext, null)
@@ -71,10 +71,10 @@ async function execHookGlobal(
 async function execHookDirect<PageContext extends PageContextExecHook>(
   hooks: Hook[],
   pageContext: PageContext,
-  getPageContextPublicShared: (pageContext: PageContext) => PageContext,
+  getPageContextPublic: (pageContext: PageContext) => PageContext,
 ) {
   if (!hooks.length) return [] as HookWithResult[]
-  const pageContextForPublicUsage = getPageContextPublicShared(pageContext)
+  const pageContextForPublicUsage = getPageContextPublic(pageContext)
   const hooksWithResult = await Promise.all(
     hooks.map(async (hook) => {
       const hookReturn = await execHookDirectAsync(
@@ -92,9 +92,9 @@ async function execHookDirect<PageContext extends PageContextExecHook>(
 async function execHookDirectSingle<PageContext extends PageContextExecHook>(
   hook: Hook,
   pageContext: PageContext,
-  getPageContextPublicShared: (pageContext: PageContext) => PageContext,
+  getPageContextPublic: (pageContext: PageContext) => PageContext,
 ) {
-  const hooksWithResult = await execHookDirect([hook], pageContext, getPageContextPublicShared)
+  const hooksWithResult = await execHookDirect([hook], pageContext, getPageContextPublic)
   const { hookReturn } = hooksWithResult[0]!
   assertUsage(
     hookReturn === undefined,
@@ -105,9 +105,9 @@ async function execHookDirectSingle<PageContext extends PageContextExecHook>(
 async function execHookDirectSingleWithReturn<PageContext extends PageContextExecHook>(
   hook: Hook,
   pageContext: PageContext,
-  getPageContextPublicShared: (pageContext: PageContext) => PageContext,
+  getPageContextPublic: (pageContext: PageContext) => PageContext,
 ) {
-  const hooksWithResult = await execHookDirect([hook], pageContext, getPageContextPublicShared)
+  const hooksWithResult = await execHookDirect([hook], pageContext, getPageContextPublic)
   const { hookReturn } = hooksWithResult[0]!
   return { hookReturn }
 }
@@ -199,9 +199,9 @@ function execHookDirectAsync<HookReturn>(
 function execHookDirectSync<PageContext extends PageContextExecHook>(
   hook: Omit<Hook, 'hookTimeout'>,
   pageContext: PageContext,
-  getPageContextPublicShared: (pageContext: PageContext) => PageContext,
+  getPageContextPublic: (pageContext: PageContext) => PageContext,
 ) {
-  const pageContextForPublicUsage = getPageContextPublicShared(pageContext)
+  const pageContextForPublicUsage = getPageContextPublic(pageContext)
   const hookReturn = execHookBase(
     () => hook.hookFn(pageContextForPublicUsage),
     hook,
