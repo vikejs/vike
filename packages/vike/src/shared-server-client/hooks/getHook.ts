@@ -22,10 +22,10 @@ import { getConfigValueRuntime } from '../page-configs/getConfigValueRuntime.js'
 import { assert, assertUsage, checkType, isArray, isCallable, isObject } from '../utils.js'
 import pc from '@brillout/picocolors'
 import type { GlobalContextPrepareMinimum } from '../getGlobalContextPublicShared.js'
-import type { PageContextPrepareMinimum } from '../getPageContextPublicShared.js'
+import type { PageContextPublicMinimum } from '../getPageContextPublicShared.js'
 const globalObject = getGlobalObject<{ isPrerendering?: true }>('hooks/getHook.ts', {})
 
-type HookArgDefault = PageContextPrepareMinimum
+type HookArgDefault = PageContextPublicMinimum
 type Hook<HookArg = HookArgDefault> = HookLoc & { hookFn: HookFn<HookArg>; hookTimeout: HookTimeout }
 type HookLoc = {
   hookName: HookNameOld

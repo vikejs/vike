@@ -1,6 +1,6 @@
 export { getPageContextPublicShared }
 export { assertPropertyGetters }
-export type { PageContextPrepareMinimum }
+export type { PageContextPublicMinimum }
 
 import { assert, assertWarning, compareString, isPropertyGetter } from './utils.js'
 import { addIs404ToPageProps } from './addIs404ToPageProps.js'
@@ -8,12 +8,12 @@ import { type GlobalContextPrepareMinimum, getGlobalContextPublicShared } from '
 import { getProxyForPublicUsage } from './getProxyForPublicUsage.js'
 import type { PageContextCreated } from './createPageContextShared.js'
 
-// TODO/refactor: prefer using PageContextCreated over PageContextPrepareMinimum ?
-type PageContextPrepareMinimum = {
+// TODO/refactor: prefer using PageContextCreated over PageContextPublicMinimum ?
+type PageContextPublicMinimum = {
   _globalContext: GlobalContextPrepareMinimum
 } & PageContextCreated
 
-function getPageContextPublicShared<PageContext extends PageContextPrepareMinimum>(pageContext: PageContext) {
+function getPageContextPublicShared<PageContext extends PageContextPublicMinimum>(pageContext: PageContext) {
   assert(!(pageContext as Record<string, unknown>)._isProxyObject)
   assert(!(pageContext as Record<string, unknown>).globalContext) // pageContext.globalContext should only be available to users — Vike itself should use pageContext._globalContext instead
   assert(pageContext._isOriginalObject) // ensure we preserve the original object reference

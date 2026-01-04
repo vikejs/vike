@@ -27,7 +27,7 @@ import type { HookName, HookNameGlobal } from '../../types/Config.js'
 import type { PageContextCreatedPrecise } from '../createPageContextShared.js'
 import type { PageContextPublicServer } from '../../server/runtime/renderPageServer/getPageContextPublicServer.js'
 import type { PageContextPublicClientShared } from '../../client/shared/getPageContextPublicClientShared.js'
-import { type PageContextPrepareMinimum, getPageContextPublicShared } from '../getPageContextPublicShared.js'
+import { type PageContextPublicMinimum, getPageContextPublicShared } from '../getPageContextPublicShared.js'
 import type { GlobalContextPrepareMinimum } from '../getGlobalContextPublicShared.js'
 const globalObject = getGlobalObject('utils/execHook.ts', {
   userHookErrors: new WeakMap<object, HookLoc>(),
@@ -41,9 +41,9 @@ type HookWithResult = Hook & {
   hookReturn: unknown
 }
 
-// TODO/refactor: use PageContextExecHook predominantly instead of PageContextPrepareMinimum
+// TODO/refactor: use PageContextExecHook predominantly instead of PageContextPublicMinimum
 // TODO/refactor: better name for PageContextExecHook ?
-type PageContextExecHook = PageContextPrepareMinimum
+type PageContextExecHook = PageContextPublicMinimum
 
 async function execHook<PageContext extends PageContextExecHook & PageContextConfig>(
   hookName: HookName,

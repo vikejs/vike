@@ -5,9 +5,9 @@ export type { PageContextPublicProxyClient }
 import { getPageContextPublicClientShared } from '../shared/getPageContextPublicClientShared.js'
 import type { PageContextConfig } from '../../shared-server-client/getPageFiles.js'
 import type { PageContextInternalClient_ClientRouting } from '../../types/PageContext.js'
-import type { PageContextPrepareMinimum } from '../../shared-server-client/getPageContextPublicShared.js'
+import type { PageContextPublicMinimum } from '../../shared-server-client/getPageContextPublicShared.js'
 
-type PageContextPublicClient = PageContextPrepareMinimum &
+type PageContextPublicClient = PageContextPublicMinimum &
   PageContextInternalClient_ClientRouting &
   PageContextConfig & { urlOriginal: string }
 
