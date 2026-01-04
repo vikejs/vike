@@ -415,7 +415,7 @@ async function callOnBeforePrerenderStartHooks(
         if (doNotPrerenderList.find((p) => p.pageId === pageId)) return
         const { hookName, hookFilePath } = hook
 
-        const prerenderResult = await execHookSingleWithoutPageContext(() => hook.hookFn(), hook, globalContext)
+        const prerenderResult = await execHookSingleWithoutPageContext(hook, globalContext, () => hook.hookFn())
         const result = normalizeOnPrerenderHookResult(prerenderResult, hookFilePath, hookName)
 
         // Handle result
@@ -750,10 +750,8 @@ async function callOnPrerenderStartHook(
   })
 
   const prerenderContextPublic = getPrerenderContextPublic(prerenderContext)
-  let result: unknown = await execHookSingleWithoutPageContext(
-    () => hookFn(prerenderContextPublic),
-    onPrerenderStartHook,
-    globalContext,
+  let result: unknown = await execHookSingleWithoutPageContext(onPrerenderStartHook, globalContext, () =>
+    hookFn(prerenderContextPublic),
   )
 
   // Before applying result

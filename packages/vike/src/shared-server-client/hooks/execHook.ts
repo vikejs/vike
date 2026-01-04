@@ -106,9 +106,9 @@ function isUserHookError(err: unknown): false | HookLoc {
 }
 
 async function execHookSingleWithoutPageContext<HookReturn>(
-  hookFnCaller: () => HookReturn,
   hook: Omit<Hook, 'hookFn'>,
   globalContext: GlobalContextPublicMinimum,
+  hookFnCaller: () => HookReturn,
 ): Promise<HookReturn> {
   const { hookName, hookFilePath, hookTimeout } = hook
   const hookReturn = await execHookBaseAsync(hookFnCaller, { hookName, hookFilePath, hookTimeout }, globalContext, null)
