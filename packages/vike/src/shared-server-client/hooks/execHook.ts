@@ -123,6 +123,21 @@ async function execHookDirectWithoutPageContext<HookReturn>(
   return hookReturn
 }
 
+function execHookDirectSync<PageContext extends PageContextExecHook>(
+  hook: Omit<Hook, 'hookTimeout'>,
+  pageContext: PageContext,
+  getPageContextPublic: (pageContext: PageContext) => PageContext,
+) {
+  const pageContextPublic = getPageContextPublic(pageContext)
+  const hookReturn = execHookBase(
+    () => hook.hookFn(pageContextPublic),
+    hook,
+    pageContext._globalContext,
+    pageContextPublic,
+  )
+  return { hookReturn }
+}
+
 function execHookDirectAsync<HookReturn>(
   hookFnCaller: () => HookReturn,
   hook: Omit<Hook, 'hookFn'>,
@@ -186,21 +201,6 @@ function execHookDirectAsync<HookReturn>(
   })()
 
   return promise
-}
-
-function execHookDirectSync<PageContext extends PageContextExecHook>(
-  hook: Omit<Hook, 'hookTimeout'>,
-  pageContext: PageContext,
-  getPageContextPublic: (pageContext: PageContext) => PageContext,
-) {
-  const pageContextPublic = getPageContextPublic(pageContext)
-  const hookReturn = execHookBase(
-    () => hook.hookFn(pageContextPublic),
-    hook,
-    pageContext._globalContext,
-    pageContextPublic,
-  )
-  return { hookReturn }
 }
 
 // Every execHook* variant should call this
