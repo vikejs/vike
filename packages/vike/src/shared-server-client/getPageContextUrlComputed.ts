@@ -13,7 +13,7 @@ import { objectDefineProperty } from '../utils/objectDefineProperty.js'
 import { assertPropertyGetters } from './preparePageContextForPublicUsage.js'
 import { assert, parseUrl, assertWarning, isBrowser, changeEnumerable, type UrlPublic } from './utils.js'
 import type { GlobalContextPrepareMinimum } from './prepareGlobalContextForPublicUsage.js'
-import type { PageContextCreatedBase } from './createPageContextShared.js'
+import type { PageContextCreatedMinimum } from './createPageContextShared.js'
 
 // TO-DO/next-major-release: move pageContext.urlParsed to pageContext.url
 type PageContextUrlComputed = {
@@ -31,7 +31,7 @@ type PageContextUrl = {
 } & PageContextUrlComputed
 type PageContextUrlInternal = PageContextUrl & {
   _urlRewrite?: string
-} & PageContextCreatedBase & {
+} & PageContextCreatedMinimum & {
     // TODO/refactor: use PageContextExecHookMinimum instead of following?
     _globalContext: GlobalContextPrepareMinimum
   }
