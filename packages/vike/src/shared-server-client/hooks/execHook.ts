@@ -12,6 +12,7 @@ export { getPageContext_sync }
 export { providePageContext }
 export { isUserHookError }
 export type { PageContextExecHook }
+export type { PageContextExecHookMinimum }
 
 // TODO: minor refactor — maybe completely remove (some) utils.js files?
 import { assert, getProjectError, assertWarning, assertUsage } from '../../utils/assert.js'
@@ -43,7 +44,9 @@ type HookWithResult = Hook & {
   hookReturn: unknown
 }
 
-// TODO/refactor: export new type PageContextExecHookMinimum instead of PageContextPrepareMinimum ?
+// TODO/refactor: use PageContextExecHookMinimum predominantly instead of PageContextPrepareMinimum
+// TODO/refactor: better name for PageContextExecHookMinimum ?
+type PageContextExecHookMinimum = PageContextPrepareMinimum
 
 async function execHook<PageContext extends PageContextExecHook>(
   hookName: HookName,
