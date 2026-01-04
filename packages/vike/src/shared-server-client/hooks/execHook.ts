@@ -74,14 +74,14 @@ async function execHookDirect<PageContext extends PageContextExecHook>(
   getPageContextPublic: (pageContext: PageContext) => PageContext,
 ) {
   if (!hooks.length) return [] as HookWithResult[]
-  const pageContextForPublicUsage = getPageContextPublic(pageContext)
+  const pageContextPublic = getPageContextPublic(pageContext)
   const hooksWithResult = await Promise.all(
     hooks.map(async (hook) => {
       const hookReturn = await execHookDirectAsync(
-        () => hook.hookFn(pageContextForPublicUsage),
+        () => hook.hookFn(pageContextPublic),
         hook,
         pageContext._globalContext,
-        pageContextForPublicUsage,
+        pageContextPublic,
       )
       return { ...hook, hookReturn }
     }),
@@ -135,7 +135,7 @@ function execHookDirectAsync<HookReturn>(
   hookFnCaller: () => HookReturn,
   hook: Omit<Hook, 'hookFn'>,
   globalContext: GlobalContextPublicMinimum,
-  pageContextForPublicUsage: null | PageContextExecHook,
+  pageContextPublic: null | PageContextExecHook,
 ): Promise<HookReturn> {
   const {
     hookName,
@@ -183,7 +183,7 @@ function execHookDirectAsync<HookReturn>(
     }, timeoutErr)
   ;(async () => {
     try {
-      const ret = await execHookBase(hookFnCaller, hook, globalContext, pageContextForPublicUsage)
+      const ret = await execHookBase(hookFnCaller, hook, globalContext, pageContextPublic)
       resolve(ret)
     } catch (err) {
       if (isObject(err)) {
@@ -201,12 +201,12 @@ function execHookDirectSync<PageContext extends PageContextExecHook>(
   pageContext: PageContext,
   getPageContextPublic: (pageContext: PageContext) => PageContext,
 ) {
-  const pageContextForPublicUsage = getPageContextPublic(pageContext)
+  const pageContextPublic = getPageContextPublic(pageContext)
   const hookReturn = execHookBase(
-    () => hook.hookFn(pageContextForPublicUsage),
+    () => hook.hookFn(pageContextPublic),
     hook,
     pageContext._globalContext,
-    pageContextForPublicUsage,
+    pageContextPublic,
   )
   return { hookReturn }
 }
@@ -285,11 +285,11 @@ function isNotDisabled(timeout: false | number): timeout is number {
 function getPageContext_sync<PageContext = PageContextClient | PageContextServer>(): null | PageContext {
   const { pageContext } = globalObject
   if (!pageContext) return null
-  const pageContextForPublicUsage = (pageContext as Record<string, unknown>)._isProxyObject
+  const pageContextPublic = (pageContext as Record<string, unknown>)._isProxyObject
     ? // providePageContext() is called on the user-land (e.g. it's called by `vike-{react,vue,solid}`) thus it's already a proxy
       pageContext
     : getPageContextPublicShared(pageContext)
-  return pageContextForPublicUsage as any
+  return pageContextPublic as any
 }
 /**
  * Provide `pageContext` for universal hooks.
