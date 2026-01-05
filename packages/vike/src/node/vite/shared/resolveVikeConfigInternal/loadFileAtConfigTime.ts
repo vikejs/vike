@@ -78,9 +78,7 @@ async function loadValueFile(
   interfaceValueFile.isNotLoaded = false
   assert(!interfaceValueFile.isNotLoaded)
   interfaceValueFile.fileExportsByConfigName = {}
-  esbuildCache.currentPlusFile = interfaceValueFile.filePath.filePathAbsoluteFilesystem
   const { fileExports } = await transpileAndExecuteFile(interfaceValueFile.filePath, userRootDir, false, esbuildCache)
-  esbuildCache.currentPlusFile = undefined
   const { filePathToShowToUser } = interfaceValueFile.filePath
   assertPlusFileExport(fileExports, filePathToShowToUser, configName)
   Object.entries(fileExports).forEach(([exportName, configValue]) => {
@@ -99,15 +97,7 @@ async function loadConfigFile(
 ): Promise<{ configFile: ConfigFile; extendsConfigs: ConfigFile[] }> {
   const { filePathAbsoluteFilesystem } = configFilePath
   assertNoInfiniteLoop(visited, filePathAbsoluteFilesystem)
-  // Set currentPlusFile for + files (like +config.js) but not for extension configs
-  const isPlusConfigFile = !isExtensionConfig && filePathAbsoluteFilesystem.split('/').pop()?.startsWith('+')
-  if (isPlusConfigFile) {
-    esbuildCache.currentPlusFile = filePathAbsoluteFilesystem
-  }
   const { fileExports } = await transpileAndExecuteFile(configFilePath, userRootDir, isExtensionConfig, esbuildCache)
-  if (isPlusConfigFile) {
-    esbuildCache.currentPlusFile = undefined
-  }
   const { extendsConfigs, extendsFilePaths } = await loadExtendsConfigs(
     fileExports,
     configFilePath,
