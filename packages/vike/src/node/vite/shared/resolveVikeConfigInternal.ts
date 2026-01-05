@@ -1080,15 +1080,6 @@ function getConfigDefinitions(
           ...configDefinitions[configName],
           ...configDefinitionUserLand,
         }
-
-        // Validate that if `vite: true` then `global: true`
-        const configDef = configDefinitions[configName]
-        if (configDef.vite) {
-          assertUsage(
-            configDef.global,
-            `${plusFile.filePath.filePathToShowToUser} sets ${pc.cyan(`meta.${configName}.vite`)} to ${pc.cyan('true')} but it requires ${pc.cyan(`meta.${configName}.global`)} to be ${pc.cyan('true')}`,
-          )
-        }
       })
     })
 
@@ -1160,6 +1151,15 @@ function assertMetaUsage(
           )} instead)`,
         )
       }
+    }
+
+    // vite: true requires global: true
+    if ('vite' in def && def.vite) {
+      assert(metaConfigDefinedAt)
+      assertUsage(
+        def.global,
+        `${metaConfigDefinedAt} sets ${pc.cyan(`meta.${configName}.vite`)} to ${pc.cyan('true')} but ${pc.cyan(`meta.${configName}.global`)} isn't ${pc.cyan('true')} (vite: true requires global: true)`,
+      )
     }
   })
 }
