@@ -1,4 +1,4 @@
-import '../utils/trackLogs.js' // should be loaded ASAP
+import '../../utils/trackLogs.js' // should be loaded ASAP
 
 import { assertIsNotBrowser } from '../../utils/assertIsNotBrowser.js'
 import { assertIsNotProductionRuntime, markSetup_vikeVitePlugin } from '../../utils/assertSetup.js'
