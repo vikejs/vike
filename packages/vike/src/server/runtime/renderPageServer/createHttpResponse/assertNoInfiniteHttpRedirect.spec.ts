@@ -1,5 +1,5 @@
 import { expect, describe, it, assert } from 'vitest'
-import { stripAnsi } from '../../../../utils/assert.js'
+import { stripAnsi } from '../../../../utils/colorsServer.js'
 import { assertNoInfiniteHttpRedirect } from './assertNoInfiniteHttpRedirect.js'
 
 const call = (urlRedirectTarget: string, urlOriginal: string) =>
