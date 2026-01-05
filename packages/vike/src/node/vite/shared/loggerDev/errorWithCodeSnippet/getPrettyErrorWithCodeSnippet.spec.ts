@@ -1,7 +1,7 @@
 import { getPrettyErrorWithCodeSnippet, isErrorWithCodeSnippet } from '../errorWithCodeSnippet.js'
 
 import { expect, describe, it } from 'vitest'
-import { stripAnsi } from '../../../utils.js'
+import { stripAnsi } from '../../../../../utils/colorsServer.js'
 
 import { errBabelSolid } from './fixture-errors/errBabelSolid.js'
 import { errBabelReact } from './fixture-errors/errBabelReact.js'
