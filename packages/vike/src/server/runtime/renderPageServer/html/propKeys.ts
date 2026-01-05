@@ -1,3 +1,4 @@
+import '../../../assertEnvServer.js'
 export { getPropVal }
 export { setPropVal }
 export { getPropKeys }

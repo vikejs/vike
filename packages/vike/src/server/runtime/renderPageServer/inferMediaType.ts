@@ -1,3 +1,4 @@
+import '../../assertEnvServer.js'
 export { inferMediaType }
 export type { MediaType }
 

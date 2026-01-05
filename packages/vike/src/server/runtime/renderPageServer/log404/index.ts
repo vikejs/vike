@@ -1,3 +1,4 @@
+import '../../../assertEnvServer.js'
 export { log404 }
 
 // Exported for ./index.spec.ts

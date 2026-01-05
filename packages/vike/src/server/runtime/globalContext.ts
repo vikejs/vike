@@ -1,4 +1,5 @@
 // Public use
+import '../assertEnvServer.js'
 export { getGlobalContext }
 export { getGlobalContextSync }
 export { getGlobalContextAsync }

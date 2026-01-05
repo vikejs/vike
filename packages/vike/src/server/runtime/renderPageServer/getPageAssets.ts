@@ -1,3 +1,4 @@
+import '../../assertEnvServer.js'
 export { getPageAssets }
 export type { PageAsset }
 export type { GetPageAssets }

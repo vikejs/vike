@@ -1,3 +1,4 @@
+import '../../assertEnvServer.js'
 export { isFontFallback }
 
 import type { PageAsset } from './getPageAssets.js'

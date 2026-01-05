@@ -1,3 +1,4 @@
+import '../../../assertEnvServer.js'
 export { getPageContextClientSerialized }
 export { getPageContextClientSerializedAbort }
 export { getGlobalContextClientSerialized }

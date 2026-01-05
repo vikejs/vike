@@ -1,3 +1,4 @@
+import '../../../assertEnvServer.js'
 export { assertNoInfiniteHttpRedirect }
 
 import { assert, assertUsage } from '../../../../utils/assert.js'

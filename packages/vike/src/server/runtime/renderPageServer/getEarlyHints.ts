@@ -1,3 +1,4 @@
+import '../../assertEnvServer.js'
 export { getEarlyHints }
 export type { EarlyHint }
 

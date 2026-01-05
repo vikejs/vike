@@ -1,3 +1,4 @@
+import '../../../assertEnvServer.js'
 export { retrievePageAssetsDev }
 export { setGetClientEntrySrcDev }
 

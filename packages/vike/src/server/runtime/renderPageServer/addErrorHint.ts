@@ -1,3 +1,4 @@
+import '../../assertEnvServer.js'
 export { addErrorHint }
 // For ./addErrorHint/getErrorHint.spec.ts
 export { getErrorHint }

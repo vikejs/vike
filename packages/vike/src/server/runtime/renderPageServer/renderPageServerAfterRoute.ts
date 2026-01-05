@@ -1,3 +1,4 @@
+import '../../assertEnvServer.js'
 export { renderPageServerAfterRoute }
 export { prerenderPage }
 export { prerenderPageEntry }

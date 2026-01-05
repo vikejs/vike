@@ -1,3 +1,4 @@
+import '../../../assertEnvServer.js'
 export { escapeInject }
 export { dangerouslySkipEscape }
 export { renderDocumentHtml }

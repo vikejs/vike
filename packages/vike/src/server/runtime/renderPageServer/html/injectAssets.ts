@@ -1,3 +1,4 @@
+import '../../../assertEnvServer.js'
 export { injectHtmlTagsToString }
 export { injectHtmlTagsToStream }
 export type { PageContextInjectAssets }

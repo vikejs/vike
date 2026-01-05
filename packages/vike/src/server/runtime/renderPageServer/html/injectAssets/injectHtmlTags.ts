@@ -1,5 +1,6 @@
 // Unit tests at ./injectHtmlTags.spec.ts
 
+import '../../../../assertEnvServer.js'
 export { injectHtmlTags }
 export { injectHtmlTagsUsingStream }
 export { createHtmlHeadIfMissing }

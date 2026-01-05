@@ -1,3 +1,4 @@
+import '../assertEnvServer.js'
 export { logErrorServer }
 export { hasAlreadyLogged }
 

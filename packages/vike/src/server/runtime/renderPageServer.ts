@@ -1,3 +1,4 @@
+import '../assertEnvServer.js'
 export { renderPageServer }
 export type { PageContextInit }
 export type { PageContextBegin }

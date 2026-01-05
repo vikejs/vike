@@ -1,3 +1,4 @@
+import '../../assertEnvServer.js'
 export { resolvePageContextCspNone }
 export { inferNonceAttr }
 export { addCspResponseHeader }

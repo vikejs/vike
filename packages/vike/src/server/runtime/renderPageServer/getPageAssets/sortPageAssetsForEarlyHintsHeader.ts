@@ -1,3 +1,4 @@
+import '../../../assertEnvServer.js'
 export { sortPageAssetsForEarlyHintsHeader }
 
 import { higherFirst } from '../../../../utils/sorter.js'

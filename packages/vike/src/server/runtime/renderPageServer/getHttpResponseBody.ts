@@ -1,3 +1,4 @@
+import '../../assertEnvServer.js'
 export { getHttpResponseBody }
 export { getHttpResponseBodyStreamHandlers }
 export type { HttpResponseBody }
