@@ -1,3 +1,5 @@
+import '../../../../assertEnvVite.js'
+
 export const errBabelSolid = {
   code: 'BABEL_PARSE_ERROR',
   reasonCode: 'InvalidLhs',

@@ -1,8 +1,11 @@
+import '../assertEnvVite.js'
+
 export { addSsrMiddleware }
 
 import { renderPageServer } from '../../../server/runtime/renderPageServer.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
-import { assertWarning } from '../utils.js'
+import { assertWarning } from '../../../utils/assert.js'
+
 import pc from '@brillout/picocolors'
 type ConnectServer = ViteDevServer['middlewares']
 

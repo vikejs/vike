@@ -1,3 +1,5 @@
+import '../../assertEnvVite.js'
+
 export { transformPointerImports }
 export { parsePointerImportData }
 export { isPointerImportData }
@@ -24,7 +26,10 @@ export type { PointerImportData }
 
 import { parseSync } from '@babel/core'
 import type { Program, Identifier, ImportDeclaration } from 'estree'
-import { assert, assertUsage, assertWarning, isFilePathAbsolute, isImportPath, styleFileRE } from '../../utils.js'
+import { assert, assertUsage, assertWarning } from '../../../../utils/assert.js'
+import { isFilePathAbsolute } from '../../../../utils/isFilePathAbsoluteFilesystem.js'
+import { isImportPath } from '../../../../utils/isImportPath.js'
+import { styleFileRE } from '../../../../utils/styleFileRE.js'
 import pc from '@brillout/picocolors'
 import { parseImportString, isImportString, serializeImportString } from '../importString.js'
 

@@ -1,7 +1,11 @@
+import '../assertEnvVite.js'
+
 export { pluginPreview }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assertUsage, applyPreview } from '../utils.js'
+import { applyPreview } from '../../../utils/isDev.js'
+import { assertUsage } from '../../../utils/assert.js'
+
 import fs from 'node:fs'
 import path from 'node:path'
 import type { ViteDevServer } from 'vite'

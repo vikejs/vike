@@ -1,6 +1,8 @@
+import '../../assertEnvVite.js'
+
 export { generateVirtualFilePageEntry }
 
-import { assert, getProjectError } from '../../utils.js'
+import { assert, getProjectError } from '../../../../utils/assert.js'
 import type { PageConfigBuildTime } from '../../../../types/PageConfig.js'
 import { parseVirtualFileId, generateVirtualFileId } from '../../../../shared-server-node/virtualFileId.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'

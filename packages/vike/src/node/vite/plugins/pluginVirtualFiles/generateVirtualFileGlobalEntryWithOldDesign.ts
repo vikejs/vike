@@ -1,3 +1,5 @@
+import '../../assertEnvVite.js'
+
 export { generateVirtualFileGlobalEntryWithOldDesign }
 
 // TO-DO/next-major-release:
@@ -7,14 +9,11 @@ export { generateVirtualFileGlobalEntryWithOldDesign }
 //    - Systematically remove all pageFilesAll references does the trick?
 
 import type { ResolvedConfig } from 'vite'
-import {
-  assert,
-  assertPosixPath,
-  scriptFileExtensionPattern,
-  debugGlob,
-  isVersionMatch,
-  assertWarning,
-} from '../../utils.js'
+import { assert, assertWarning } from '../../../../utils/assert.js'
+import { isVersionMatch } from '../../../../utils/assertVersion.js'
+import { debugGlob } from '../../../../utils/debugGlob.js'
+import { scriptFileExtensionPattern } from '../../../../utils/isScriptFile.js'
+import { assertPosixPath } from '../../../../utils/path.js'
 import { parseVirtualFileId } from '../../../../shared-server-node/virtualFileId.js'
 import { version as viteVersion } from 'vite'
 import { type FileType, fileTypes } from '../../../../shared-server-client/getPageFiles/fileTypes.js'

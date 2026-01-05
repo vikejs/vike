@@ -1,3 +1,5 @@
+import '../assertEnvVite.js'
+
 export { pluginSetGlobalContext }
 
 import type { Plugin } from 'vite'
@@ -6,7 +8,13 @@ import {
   setGlobalContext_viteConfig,
   setGlobalContext_isProductionAccordingToVite,
 } from '../../../server/runtime/globalContext.js'
-import { isDevCheck, markSetup_isViteDev, markSetup_viteDevServer, markSetup_vitePreviewServer } from '../utils.js'
+import {
+  markSetup_isViteDev,
+  markSetup_viteDevServer,
+  markSetup_vitePreviewServer,
+} from '../../../utils/assertSetup.js'
+import { isDevCheck } from '../../../utils/isDev.js'
+
 import { reloadVikeConfig } from '../shared/resolveVikeConfigInternal.js'
 import { getViteConfigRuntime } from '../shared/getViteConfigRuntime.js'
 

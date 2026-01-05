@@ -1,8 +1,13 @@
+import '../assertEnvVite.js'
+
 export { findPageFiles }
 
 import { glob } from 'tinyglobby'
 import type { ResolvedConfig } from 'vite'
-import { assertWarning, toPosixPath, scriptFileExtensionPattern } from '../utils.js'
+import { scriptFileExtensionPattern } from '../../../utils/isScriptFile.js'
+import { toPosixPath } from '../../../utils/path.js'
+import { assertWarning } from '../../../utils/assert.js'
+
 import type { FileType } from '../../../shared-server-client/getPageFiles/fileTypes.js'
 import pc from '@brillout/picocolors'
 import { getOutDirs } from './getOutDirs.js'

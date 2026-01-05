@@ -1,17 +1,16 @@
+import '../assertEnvVite.js'
+
 export { pluginReplaceConstantsEnvVars }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { loadEnv } from 'vite'
-import {
-  assert,
-  assertPosixPath,
-  assertUsage,
-  assertWarning,
-  escapeRegex,
-  isArray,
-  isNotNullish,
-  lowerFirst,
-} from '../utils.js'
+import { escapeRegex } from '../../../utils/escapeRegex.js'
+import { isNotNullish } from '../../../utils/isNullish.js'
+import { assert, assertUsage, assertWarning } from '../../../utils/assert.js'
+import { isArray } from '../../../utils/isArray.js'
+import { lowerFirst } from '../../../utils/sorter.js'
+import { assertPosixPath } from '../../../utils/path.js'
+
 import { getFilePathToShowToUserModule } from '../shared/getFilePath.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'

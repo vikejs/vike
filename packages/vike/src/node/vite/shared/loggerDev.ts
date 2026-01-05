@@ -7,6 +7,8 @@
 // - Never clear screen (it's complex with little benefit)
 // - Only show a one-liner init log (instead of Vite's multi-line log)
 
+import '../assertEnvVite.js'
+
 export { logVite }
 export { logConfigInfo }
 export { logErrorServerDev }
@@ -20,23 +22,14 @@ import {
   type PageContext_logRuntime,
   setLogRuntimeDev,
 } from '../../../server/runtime/loggerRuntime.js'
-import {
-  setAssertOnBeforeErr,
-  assert,
-  assertIsNotProductionRuntime,
-  colorVike,
-  colorVite,
-  formatHintLog,
-  hasGreen,
-  hasProp,
-  hasRed,
-  hasYellow,
-  isDebugError,
-  stripAnsi,
-  colorError,
-  colorWarning,
-  setAssertAddAssertTagsDev,
-} from '../utils.js'
+import { assertIsNotProductionRuntime } from '../../../utils/assertSetup.js'
+import { colorVike, colorError, colorWarning } from '../../../utils/colorsClient.js'
+import { colorVite, hasGreen, hasRed, hasYellow, stripAnsi } from '../../../utils/colorsServer.js'
+import { isDebugError } from '../../../utils/debug.js'
+import { formatHintLog } from '../../../utils/formatHintLog.js'
+import { setAssertOnBeforeErr, assert, setAssertAddAssertTagsDev } from '../../../utils/assert.js'
+import { hasProp } from '../../../utils/hasProp.js'
+
 import { isErrorWithCodeSnippet, getPrettyErrorWithCodeSnippet } from './loggerDev/errorWithCodeSnippet.js'
 import {
   getConfigExecutionErrorIntroMsg,

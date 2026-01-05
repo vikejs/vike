@@ -1,3 +1,5 @@
+import '../assertEnvVite.js'
+
 export { isViteServerSide }
 export { isViteServerSide_viteEnvOptional }
 export { isViteServerSide_onlySsrEnv }
@@ -7,7 +9,8 @@ export { isViteServerSide_configEnvironment }
 export type { ViteEnv }
 
 import type { Environment, EnvironmentOptions, ResolvedConfig, UserConfig, Plugin } from 'vite'
-import { assert, assertUsage, viteVersionMin } from '../utils.js'
+import { viteVersionMin } from '../../../utils/assertViteVersion.js'
+import { assert, assertUsage } from '../../../utils/assert.js'
 
 type ViteEnv = { name?: string; config: EnvironmentOptions | Environment['config'] }
 

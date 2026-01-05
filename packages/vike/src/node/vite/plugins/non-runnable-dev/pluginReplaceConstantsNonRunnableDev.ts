@@ -1,8 +1,12 @@
+import '../../assertEnvVite.js'
+
 export { pluginReplaceConstantsNonRunnableDev }
 
 // We cannot use [`define`](https://vite.dev/config/shared-options.html#define) because we don't have access to `this.environment` and therefore we cannot call `isRunnableDevEnvironment(this.environment)` inside a configEnvironment() hook.
 
-import { isRunnableDevEnvironment, isDevCheck, assert } from '../../utils.js'
+import { assert } from '../../../../utils/assert.js'
+import { isDevCheck } from '../../../../utils/isDev.js'
+import { isRunnableDevEnvironment } from '../../../../utils/isRunnableDevEnvironment.js'
 import { getMagicString } from '../../shared/getMagicString.js'
 import type { Plugin } from 'vite'
 

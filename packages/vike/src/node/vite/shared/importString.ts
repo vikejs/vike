@@ -1,3 +1,5 @@
+import '../assertEnvVite.js'
+
 export { parseImportString }
 export { isImportString }
 export { serializeImportString }
@@ -6,7 +8,7 @@ export type { ImportStringList }
 export type { ImportStringParsed }
 
 import pc from '@brillout/picocolors'
-import { assert, assertWarning } from '../utils.js'
+import { assert, assertWarning } from '../../../utils/assert.js'
 
 const IMPORT = 'import'
 const SEP = ':'

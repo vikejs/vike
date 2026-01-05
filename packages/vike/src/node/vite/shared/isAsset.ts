@@ -1,3 +1,5 @@
+import '../assertEnvVite.js'
+
 export { isAsset }
 
 function isAsset(filename: string) {

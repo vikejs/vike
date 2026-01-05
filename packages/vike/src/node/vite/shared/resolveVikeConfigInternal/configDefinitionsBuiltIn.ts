@@ -1,3 +1,5 @@
+import '../../assertEnvVite.js'
+
 export { configDefinitionsBuiltIn }
 export type { ConfigDefinition }
 export type { ConfigDefinitions }
@@ -7,7 +9,7 @@ export type { ConfigEffect }
 
 import type { ConfigEnvInternal, ConfigEnv, DefinedAtFilePath } from '../../../../types/PageConfig.js'
 import type { Config, ConfigNameBuiltIn, ConfigNameGlobal } from '../../../../types/Config.js'
-import { assert, assertUsage } from '../../utils.js'
+import { assert, assertUsage } from '../../../../utils/assert.js'
 import {
   getConfigDefinedAt,
   type ConfigDefinedAt,

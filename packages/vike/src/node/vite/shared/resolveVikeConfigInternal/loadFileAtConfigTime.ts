@@ -1,12 +1,17 @@
 // Files loaded at config time:
 
+import '../../assertEnvVite.js'
+
 export { loadPointerImport }
 export { loadValueFile }
 export { loadConfigFile }
 export type { ConfigFile }
 export type { PointerImportLoaded }
 
-import { assert, assertUsage, assertIsNotProductionRuntime, isArrayOfStrings, isObject } from '../../utils.js'
+import { assert, assertUsage } from '../../../../utils/assert.js'
+import { assertIsNotProductionRuntime } from '../../../../utils/assertSetup.js'
+import { isArrayOfStrings } from '../../../../utils/isArrayOfStrings.js'
+import { isObject } from '../../../../utils/isObject.js'
 import type { FilePathResolved } from '../../../../types/FilePath.js'
 import { type EsbuildCache, transpileAndExecuteFile } from './transpileAndExecuteFile.js'
 import { getConfigDefinitionOptional } from '../resolveVikeConfigInternal.js'

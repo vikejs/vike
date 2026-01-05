@@ -1,4 +1,6 @@
 // Public usage
+import '../assertEnvVite.js'
+
 export { getVikeConfig }
 export type { VikeConfig }
 
@@ -15,32 +17,27 @@ export { getVikeConfigFromCliOrEnv }
 export type { VikeConfigInternal }
 export type { PageConfigBuildTimeBeforeComputed }
 
-import {
-  assertPosixPath,
-  assert,
-  isObject,
-  assertUsage,
-  assertWarning,
-  objectEntries,
-  hasProp,
-  includes,
-  assertIsNotProductionRuntime,
-  getMostSimilar,
-  joinEnglish,
-  assertKeys,
-  objectKeys,
-  objectFromEntries,
-  unique,
-  isCallable,
-  makeFirst,
-  lowerFirst,
-  makeLast,
-  type SortReturn,
-  genPromise,
-  checkType,
-  objectAssign,
-  getGlobalObject,
-} from '../utils.js'
+import { assertKeys } from '../../../utils/assertKeys.js'
+import { assertIsNotProductionRuntime } from '../../../utils/assertSetup.js'
+import { getMostSimilar } from '../../../utils/getMostSimilar.js'
+import { includes } from '../../../utils/includes.js'
+import { objectEntries } from '../../../utils/objectEntries.js'
+import { objectFromEntries } from '../../../utils/objectFromEntries.js'
+import { objectKeys } from '../../../utils/objectKeys.js'
+import { makeLast, type SortReturn } from '../../../utils/sorter.js'
+import { assert, assertUsage, assertWarning } from '../../../utils/assert.js'
+import { checkType } from '../../../utils/checkType.js'
+import { genPromise } from '../../../utils/genPromise.js'
+import { getGlobalObject } from '../../../utils/getGlobalObject.js'
+import { hasProp } from '../../../utils/hasProp.js'
+import { isCallable } from '../../../utils/isCallable.js'
+import { isObject } from '../../../utils/isObject.js'
+import { joinEnglish } from '../../../utils/joinEnglish.js'
+import { objectAssign } from '../../../utils/objectAssign.js'
+import { makeFirst, lowerFirst } from '../../../utils/sorter.js'
+import { unique } from '../../../utils/unique.js'
+import { assertPosixPath } from '../../../utils/path.js'
+
 import type {
   PageConfigGlobalBuildTime,
   ConfigEnvInternal,

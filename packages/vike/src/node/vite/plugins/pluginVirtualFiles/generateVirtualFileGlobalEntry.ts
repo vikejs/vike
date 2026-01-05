@@ -1,3 +1,5 @@
+import '../../assertEnvVite.js'
+
 export { generateVirtualFileGlobalEntry }
 
 import type { PageConfigBuildTime, PageConfigGlobalBuildTime } from '../../../../types/PageConfig.js'

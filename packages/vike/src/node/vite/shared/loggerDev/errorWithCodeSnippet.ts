@@ -1,6 +1,8 @@
 // Prettify transpilation errors
 //  - Doesn't work for optimize errors: https://gist.github.com/brillout/9b7bb78ae866558b292ea1b516a986ec
 
+import '../../assertEnvVite.js'
+
 export { getPrettyErrorWithCodeSnippet }
 export { isErrorWithCodeSnippet }
 export { isEquivalentErrorWithCodeSnippet }
@@ -12,7 +14,11 @@ export { getPrettyErrMessage }
 // Copied & adapted from https://github.com/vitejs/vite/blob/9c114c5c72a6af87e3330d5573362554b4511265/packages/vite/src/node/server/middlewares/error.ts
 
 import pc from '@brillout/picocolors'
-import { assert, escapeRegex, isObject, removeEmptyLines, stripAnsi } from '../../utils.js'
+import { assert } from '../../../../utils/assert.js'
+import { stripAnsi } from '../../../../utils/colorsServer.js'
+import { escapeRegex } from '../../../../utils/escapeRegex.js'
+import { isObject } from '../../../../utils/isObject.js'
+import { removeEmptyLines } from '../../../../utils/removeEmptyLines.js'
 import { cleanFilePathUnknown, getFilePathToShowToUserUnknown } from '../getFilePath.js'
 
 // Subset of RollupError

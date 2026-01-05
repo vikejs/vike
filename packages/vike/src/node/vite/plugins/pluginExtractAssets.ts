@@ -8,22 +8,20 @@
 //  - We recommend using the debug flag to get an idea of how this plugin works: `$ DEBUG=vike:pluginExtractAssets pnpm exec vike build`. Then have a look at `dist/client/manifest.json` and see how `.page.server.js` entries have zero JavaScript but only CSS.
 //  - This approach supports import path aliases `vite.config.js#resolve.alias` https://vitejs.dev/config/#resolve-alias
 
+import '../assertEnvVite.js'
+
 export { pluginExtractAssets }
 export { extractAssetsRE }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import {
-  assert,
-  assertPosixPath,
-  styleFileRE,
-  createDebug,
-  isScriptFile,
-  assertUsage,
-  rollupSourceMapRemove,
-  addVirtualFileIdPrefix,
-  isVirtualFileId,
-  removeVirtualFileIdPrefix,
-} from '../utils.js'
+import { createDebug } from '../../../utils/debug.js'
+import { isScriptFile } from '../../../utils/isScriptFile.js'
+import { rollupSourceMapRemove } from '../../../utils/rollupSourceMap.js'
+import { styleFileRE } from '../../../utils/styleFileRE.js'
+import { addVirtualFileIdPrefix, isVirtualFileId, removeVirtualFileIdPrefix } from '../../../utils/virtualFileId.js'
+import { assert, assertUsage } from '../../../utils/assert.js'
+import { assertPosixPath } from '../../../utils/path.js'
+
 import { extractAssetsAddQuery } from '../../../shared-server-node/extractAssetsQuery.js'
 import { isAsset } from '../shared/isAsset.js'
 import { getImportStatements, type ImportStatement } from '../shared/parseEsModule.js'

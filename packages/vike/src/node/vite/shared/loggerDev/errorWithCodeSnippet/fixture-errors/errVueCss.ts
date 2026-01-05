@@ -1,3 +1,5 @@
+import '../../../../assertEnvVite.js'
+
 export const errVueCss = {
   name: 'CssSyntaxError',
   reason: 'Unexpected }',
