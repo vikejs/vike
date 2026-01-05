@@ -271,7 +271,7 @@ function isV1Design(): boolean {
   return globalObject.isV1Design_
 }
 
-// TODO/ai: improve the logic by checking whether there is a change in this function after vikeConfigPromise resoles/rejects
+// TODO/ai: move the `vite: true` logic here: check whether there is a change in `vite: true` config in this function after vikeConfigPromise resoles/rejects
 async function resolveVikeConfigInternal_withErrorHandling(
   userRootDir: string,
   isDev: boolean,
