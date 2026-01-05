@@ -1154,11 +1154,11 @@ function assertMetaUsage(
     }
 
     // vite: true requires global: true
-    if ('vite' in def && def.vite) {
+    if (def.vite) {
       assert(metaConfigDefinedAt)
       assertUsage(
         def.global,
-        `${metaConfigDefinedAt} sets ${pc.cyan(`meta.${configName}.vite`)} to ${pc.cyan('true')} but ${pc.cyan(`meta.${configName}.global`)} isn't ${pc.cyan('true')} (vite: true requires global: true)`,
+        `${metaConfigDefinedAt} sets ${pc.cyan(`meta.${configName}.vite`)} to ${pc.cyan('true')} which requires ${pc.cyan(`meta.${configName}.global`)} to be ${pc.cyan('true')}`,
       )
     }
   })
