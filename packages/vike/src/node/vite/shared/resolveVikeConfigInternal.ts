@@ -159,7 +159,7 @@ function getVikeConfig(
   /** @deprecated the `config` argument isn't needed anymore — remove it (it doesn't have any effect) */
   _config?: ResolvedConfig | UserConfig,
 ): VikeConfig {
-  /* TO-DO/eventualy: add deprecation warning. We don't do it yet because of vike-server and vike-cloudflare which are using getVikeConfig() with the argument.
+  /* TO-DO/eventually: add deprecation warning. We don't do it yet because of vike-server and vike-cloudflare which are using getVikeConfig() with the argument.
   assertWarning(
     config === undefined,
     `getVikeConfig() doesn't accept any argument anymore — remove the argument (it doesn't have any effect)`,
@@ -301,7 +301,7 @@ function hasViteConfigChanged(vikeConfigOld: VikeConfigInternal | null, vikeConf
   for (const configName of viteConfigNames) {
     const valOld = configValuesOld[configName]?.value
     const valNew = configValuesNew[configName]?.value
-    // TO-DO/eventualy: make it work for functions e.g. Vite plugins added via +vite — two solutions to make it work:
+    // TO-DO/eventually: make it work for functions e.g. Vite plugins added via +vite — two solutions to make it work:
     //  - We cache transpileWithEsbuild() but it's far from trivial
     //  - We trigger a Vite reload by watching file changes instead of hasViteConfigChanged()
     //    - Implmentation: https://github.com/vikejs/vike/pull/3017/changes/1e55cbc1ed8bac4a72bf8c658cfbd67eecb7802a
