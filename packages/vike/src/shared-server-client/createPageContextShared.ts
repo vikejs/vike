@@ -2,8 +2,8 @@ export { createPageContextShared }
 export { createPageContextObject }
 export type { PageContextCreated }
 
-import { changeEnumerable } from '../../utils/changeEnumerable.js'
-import { objectAssign } from '../../utils/objectAssign.js'
+import { changeEnumerable } from '../utils/changeEnumerable.js'
+import { objectAssign } from '../utils/objectAssign.js'
 
 import type { GlobalConfigPublic } from './page-configs/resolveVikeConfigPublic.js'
 import type { PageContextCreatedClient } from '../client/runtime-client-routing/createPageContextClient.js'

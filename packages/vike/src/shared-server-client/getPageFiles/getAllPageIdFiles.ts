@@ -3,7 +3,8 @@
 export { getPageFilesClientSide }
 export { getPageFilesServerSide }
 
-import { assert, assertUsage, isNotNullish } from '../../utils/assert.js'
+import { assert, assertUsage } from '../../utils/assert.js'
+import { isNotNullish } from '../../utils/isNullish.js'
 
 import type { PageFile } from './getPageFileObject.js'
 

@@ -1,6 +1,7 @@
 export { getConfigValueBuildTime }
 
-import { assert, type ResolveTypeAsString } from '../../utils/assert.js'
+import { assert } from '../../utils/assert.js'
+import type { ResolveTypeAsString } from '../../utils/hasProp.js'
 
 import type { PageConfigBuildTime, ConfigValue, ConfigValueSource, DefinedAt } from '../../types/PageConfig.js'
 import type { ConfigNameBuiltIn } from '../../types/Config.js'

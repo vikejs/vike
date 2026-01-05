@@ -1,6 +1,6 @@
 export { assertVirtualFileExports }
 
-import { assert } from '../../utils/assert.js'
+import { assert } from '../utils/assert.js'
 
 function assertVirtualFileExports<ModuleExports>(
   moduleExports: ModuleExports,

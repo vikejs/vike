@@ -25,15 +25,10 @@ import type {
 } from '../../types/PageConfig.js'
 import { type ConfigDefinedAtOptional, getConfigDefinedAtOptional, getDefinedAtString } from './getConfigDefinedAt.js'
 import { getConfigValueFilePathToShowToUser } from './helpers.js'
-import {
-  assert,
-  assertWarning,
-  assertUsage,
-  makeLast,
-  isScriptFile,
-  isTemplateFile,
-  objectDefineProperty,
-} from '../../utils/assert.js'
+import { assert, assertWarning, assertUsage } from '../../utils/assert.js'
+import { makeLast } from '../../utils/sorter.js'
+import { isScriptFile, isTemplateFile } from '../../utils/isScriptFile.js'
+import { objectDefineProperty } from '../../utils/objectDefineProperty.js'
 import { isBrowser } from '../../utils/isBrowser.js'
 import { isObject } from '../../utils/isObject.js'
 

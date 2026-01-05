@@ -4,11 +4,12 @@ export type { GlobalContextBase }
 export type { GlobalContextBasePublic }
 export type GlobalContextInternal = GlobalContextServerInternal | GlobalContextClientInternal
 
-import { assert, objectReplace } from '../../utils/assert.js'
-import { changeEnumerable } from '../../utils/changeEnumerable.js'
-import { genPromise } from '../../utils/genPromise.js'
-import { objectAssign } from '../../utils/objectAssign.js'
-import { unique } from '../../utils/unique.js'
+import { assert } from '../utils/assert.js'
+import { objectReplace } from '../utils/objectReplace.js'
+import { changeEnumerable } from '../utils/changeEnumerable.js'
+import { genPromise } from '../utils/genPromise.js'
+import { objectAssign } from '../utils/objectAssign.js'
+import { unique } from '../utils/unique.js'
 
 import type { PageFile } from './getPageFiles.js'
 import { parseVirtualFileExportsGlobalEntry } from './getPageFiles/parseVirtualFileExportsGlobalEntry.js'

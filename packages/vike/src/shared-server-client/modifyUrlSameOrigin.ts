@@ -4,13 +4,9 @@ export { ModifyUrlSameOriginOptions }
 // We don't move modifyUrlSameOrigin() to the modifyUrl.ts file because we plan to use modifyUrlSameOrigin() on the client-side:
 // https://github.com/vikejs/vike/blob/c5a2de5e85262771f97851767c00ac35da69c64b/packages/vike/client/runtime-client-routing/navigate.ts#L4
 
-import {
-  createUrlFromComponents,
-  isNotNullish_keyVal,
-  objectFilter,
-  assertUsageUrlPathAbsolute,
-} from '../../utils/assert.js'
-import { parseUrl } from '../../utils/parseUrl.js'
+import { createUrlFromComponents, assertUsageUrlPathAbsolute, parseUrl } from '../utils/parseUrl.js'
+import { isNotNullish_keyVal } from '../utils/isNullish.js'
+import { objectFilter } from '../utils/objectFilter.js'
 
 type ModifyUrlSameOriginOptions = {
   hash?: string | null

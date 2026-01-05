@@ -11,8 +11,9 @@ export type { DangerouslyUseInternals }
 // Show warning when user is accessing internal `_` properties.
 
 import { NOT_SERIALIZABLE } from './NOT_SERIALIZABLE.js'
-import { assert, assertUsage, assertWarning, getPropAccessNotation } from '../../utils/assert.js'
-import { isBrowser } from '../../utils/isBrowser.js'
+import { assert, assertUsage, assertWarning } from '../utils/assert.js'
+import { getPropAccessNotation } from '../utils/getPropAccessNotation.js'
+import { isBrowser } from '../utils/isBrowser.js'
 
 type ObjProxy<Obj> = {
   _isProxyObject: true

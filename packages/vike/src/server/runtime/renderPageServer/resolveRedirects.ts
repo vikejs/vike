@@ -5,8 +5,8 @@ export { getStaticRedirectsForPrerender }
 export { resolveRouteStringRedirect }
 
 import { assertIsNotBrowser } from '../../../utils/assertIsNotBrowser.js'
-import { assert, assertUsage, assertUsageUrlRedirectTarget, assertWarning } from '../../../utils/assert.js'
-import { isUrlRedirectTarget } from '../../../utils/parseUrl.js'
+import { assert, assertUsage, assertWarning } from '../../../utils/assert.js'
+import { isUrlRedirectTarget, assertUsageUrlRedirectTarget } from '../../../utils/parseUrl.js'
 import { resolveUrlPathname } from '../../../shared-server-client/route/resolveUrlPathname.js'
 import {
   assertRouteString,

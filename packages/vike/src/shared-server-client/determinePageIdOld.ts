@@ -1,7 +1,7 @@
 export { determinePageIdOld }
 
-import { assert } from '../../utils/assert.js'
-import { slice } from '../../utils/slice.js'
+import { assert } from '../utils/assert.js'
+import { slice } from '../utils/slice.js'
 
 // TO-DO/next-major-release: remove
 function determinePageIdOld(filePath: string): string {

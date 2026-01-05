@@ -11,10 +11,11 @@ export type { PageContextUrlSource }
 
 import { objectDefineProperty } from '../utils/objectDefineProperty.js'
 import { assertPropertyGetters } from './getPageContextPublicShared.js'
-import { assert, assertWarning, type UrlPublic } from '../../utils/assert.js'
-import { changeEnumerable } from '../../utils/changeEnumerable.js'
-import { isBrowser } from '../../utils/isBrowser.js'
-import { parseUrl } from '../../utils/parseUrl.js'
+import { assert, assertWarning } from '../utils/assert.js'
+import type { UrlPublic } from '../utils/parseUrl.js'
+import { changeEnumerable } from '../utils/changeEnumerable.js'
+import { isBrowser } from '../utils/isBrowser.js'
+import { parseUrl } from '../utils/parseUrl.js'
 
 import type { PageContextCreated } from './createPageContextShared.js'
 import type { PageContextExecHook } from './hooks/execHook.js'
