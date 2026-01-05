@@ -642,8 +642,17 @@ type ConfigBuiltIn = {
   /** @experimental */
   middleware?: Function
 
-  /** @experimental */
   cli?: {
+    /** @experimental
+     *
+     * Preview configuration.
+     *
+     * Set it to `false` if previewing isn't supported.
+     *
+     * Set it to `true` if previewing should load the `dist/server/index.js` entry.
+     *
+     * Set it to `vite` if previewing should use Vite's preview server.
+     */
     preview?: CliPreviewConfig
   }
 
