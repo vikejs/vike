@@ -1,6 +1,6 @@
 export { sortPageAssetsForEarlyHintsHeader }
 
-import { higherFirst } from '../../../utils.js'
+import { higherFirst } from '../../../../utils/sorter.js'
 import type { PageAsset } from '../getPageAssets.js'
 
 async function sortPageAssetsForEarlyHintsHeader(pageAssets: PageAsset[], isProduction: boolean) {

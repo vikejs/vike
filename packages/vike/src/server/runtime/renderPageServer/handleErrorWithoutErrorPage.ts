@@ -1,7 +1,8 @@
 export { handleErrorWithoutErrorPage }
 
 import type { GlobalContextServerInternal } from '../globalContext.js'
-import { assert, assertWarning, objectAssign } from '../../utils.js'
+import { assert, assertWarning } from '../../../utils/assert.js'
+import { objectAssign } from '../../../utils/objectAssign.js'
 import { createHttpResponseErrorFallback, createHttpResponseErrorFallbackJson } from './createHttpResponse.js'
 import pc from '@brillout/picocolors'
 import type { GetPageAssets } from './getPageAssets.js'

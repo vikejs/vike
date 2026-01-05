@@ -9,7 +9,8 @@ export { createHttpResponseBaseIsMissing }
 export type { HttpResponse }
 
 import type { GetPageAssets } from './getPageAssets.js'
-import { assert, assertWarning, escapeHtml } from '../../utils.js'
+import { escapeHtml } from '../../../utils/escapeHtml.js'
+import { assert, assertWarning } from '../../../utils/assert.js'
 import type { HtmlRender } from './html/renderHtml.js'
 import { getErrorPageId, isErrorPage } from '../../../shared-server-client/error-page.js'
 import type { RenderHook } from './execHookOnRenderHtml.js'

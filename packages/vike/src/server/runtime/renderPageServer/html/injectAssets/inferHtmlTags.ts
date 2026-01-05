@@ -3,7 +3,7 @@ export { inferPreloadTag }
 export { inferEarlyHintLink }
 export { scriptCommonAttrs }
 
-import { assert } from '../../../../utils.js'
+import { assert } from 'FIXME_utils.js'
 import type { PageAsset } from '../../getPageAssets.js'
 import { inferNonceAttr, type PageContextCspNonce } from '../../csp.js'
 

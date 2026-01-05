@@ -4,7 +4,7 @@ export { addCspResponseHeader }
 export type { PageContextCspNonce }
 
 import { import_ } from '@brillout/import'
-import { assert } from '../../utils.js'
+import { assert } from '../../../utils/assert.js'
 import type { PageContextConfig } from '../../../shared-server-client/getPageFiles.js'
 import type { PageContextServer } from '../../../types/PageContext.js'
 

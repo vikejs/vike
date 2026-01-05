@@ -1,7 +1,8 @@
 export { retrievePageAssetsProd }
 export { resolveIncludeAssetsImportedByServer }
 
-import { assert, isImportPathNpmPackage } from '../../../utils.js'
+import { isImportPathNpmPackage } from '../../../../utils/isImportPath.js'
+import { assert } from '../../../../utils/assert.js'
 import type { ViteManifest } from '../../../../types/ViteManifest.js'
 import { getManifestEntry } from './getManifestEntry.js'
 import { extractAssetsAddQuery } from '../../../../shared-server-node/extractAssetsQuery.js'

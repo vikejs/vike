@@ -1,6 +1,6 @@
 import { expect, describe, it, assert } from 'vitest'
 import { getRoutesInfo } from '../log404/index.js'
-import { stripAnsi } from '../../../utils.js'
+import { stripAnsi } from '../../../../utils/assert.js'
 import type { PageRoutes } from '../../../../shared-server-client/route/index.js'
 
 process.stdout.columns = 134

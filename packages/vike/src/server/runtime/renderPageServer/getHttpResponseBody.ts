@@ -23,7 +23,7 @@ import {
   pipeToStreamWritableWeb,
   pipeToStreamWritableNode,
 } from './html/stream.js'
-import { assert, assertUsage, assertWarning } from '../../utils.js'
+import { assert, assertUsage, assertWarning } from '../../../utils/assert.js'
 import { getHtmlString, type HtmlRender } from './html/renderHtml.js'
 import type { RenderHook } from './execHookOnRenderHtml.js'
 import pc from '@brillout/picocolors'

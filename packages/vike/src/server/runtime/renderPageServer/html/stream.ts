@@ -29,19 +29,14 @@ export type { StreamWritableNode }
 export type { StreamPipeWeb }
 export type { StreamPipeNode }
 
-import {
-  assert,
-  assertUsage,
-  checkType,
-  isObject,
-  hasProp,
-  objectAssign,
-  capitalizeFirstLetter,
-  assertWarning,
-  isCallable,
-  createDebug,
-  isVikeBug,
-} from '../../../utils.js'
+import { isCallable } from '../../../../utils/isCallable.js'
+import { capitalizeFirstLetter } from '../../../../utils/capitalizeFirstLetter.js'
+import { createDebug } from '../../../../utils/debug.js'
+import { assert, assertUsage, assertWarning, isVikeBug } from '../../../../utils/assert.js'
+import { checkType } from '../../../../utils/checkType.js'
+import { hasProp } from '../../../../utils/hasProp.js'
+import { isObject } from '../../../../utils/isObject.js'
+import { objectAssign } from '../../../../utils/objectAssign.js'
 import { HtmlRender } from './renderHtml.js'
 import {
   getStreamOfReactStreamingPackage,

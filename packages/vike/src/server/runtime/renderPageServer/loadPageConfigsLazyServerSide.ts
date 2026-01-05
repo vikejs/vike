@@ -6,16 +6,13 @@ export type { PageContextAfterPageEntryLoaded }
 import { type PageContextConfig, getPageFilesServerSide } from '../../../shared-server-client/getPageFiles.js'
 import { resolvePageContextConfig } from '../../../shared-server-client/page-configs/resolveVikeConfigPublic.js'
 import { analyzePageClientSideInit } from '../../../shared-server-client/getPageFiles/analyzePageClientSide.js'
-import {
-  assertUsage,
-  assertWarning,
-  hasProp,
-  isArray,
-  isObject,
-  objectAssign,
-  PromiseType,
-  updateType,
-} from '../../utils.js'
+import { isArray } from '../../../utils/isArray.js'
+import { PromiseType } from '../../../utils/PromiseType.js'
+import { assertUsage, assertWarning } from '../../../utils/assert.js'
+import { hasProp } from '../../../utils/hasProp.js'
+import { isObject } from '../../../utils/isObject.js'
+import { objectAssign } from '../../../utils/objectAssign.js'
+import { updateType } from '../../../utils/updateType.js'
 import { getPageAssets, type PageAsset } from './getPageAssets.js'
 import type { PageConfigRuntime } from '../../../types/PageConfig.js'
 import { findPageConfig } from '../../../shared-server-client/page-configs/findPageConfig.js'

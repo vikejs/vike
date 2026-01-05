@@ -1,7 +1,9 @@
 export { retrievePageAssetsDev }
 export { setGetClientEntrySrcDev }
 
-import { assert, getGlobalObject, styleFileRE } from '../../../utils.js'
+import { styleFileRE } from '../../../../utils/styleFileRE.js'
+import { assert } from '../../../../utils/assert.js'
+import { getGlobalObject } from '../../../../utils/getGlobalObject.js'
 import type { ModuleNode, ViteDevServer } from 'vite'
 import type { ClientDependency } from '../../../../shared-server-client/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { parseVirtualFileId } from '../../../../shared-server-node/virtualFileId.js'

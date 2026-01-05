@@ -5,7 +5,11 @@ export type { PageContextAfterRender }
 
 import { getErrorPageId } from '../../../shared-server-client/error-page.js'
 import { getHtmlString } from './html/renderHtml.js'
-import { assert, assertUsage, updateType, hasProp, objectAssign, isSameErrorMessage } from '../../utils.js'
+import { assert, assertUsage } from '../../../utils/assert.js'
+import { hasProp } from '../../../utils/hasProp.js'
+import { isSameErrorMessage } from '../../../utils/isSameErrorMessage.js'
+import { objectAssign } from '../../../utils/objectAssign.js'
+import { updateType } from '../../../utils/updateType.js'
 import { getPageContextClientSerialized } from './html/serializeContext.js'
 import { type PageContextUrlInternal } from '../../../shared-server-client/getPageContextUrlComputed.js'
 import { createHttpResponsePage, createHttpResponsePageJson, HttpResponse } from './createHttpResponse.js'

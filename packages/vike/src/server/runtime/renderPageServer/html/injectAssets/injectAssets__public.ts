@@ -1,6 +1,6 @@
 export { injectAssets__public }
 
-import { assertUsage, assertWarning, castProp, hasProp } from '../../../../utils.js'
+import { assertUsage, assertWarning, castProp, hasProp } from 'FIXME_utils.js'
 import { injectHtmlTagsToString } from '../injectAssets.js'
 import type { PageAsset } from '../../getPageAssets.js'
 
