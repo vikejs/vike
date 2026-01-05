@@ -61,6 +61,8 @@ type ConfigDefinition_ = {
    * https://vike.dev/extends#inheritance
    */
   global?: boolean | ((value: unknown, moreInfo: { isGlobalLocation: boolean }) => boolean)
+  /** Whether changes to the configuration should trigger a Vite restart. */
+  vite?: boolean
 }
 type ConfigDefinitionDefinedByPeerDependency = {
   /**
@@ -93,8 +95,6 @@ type ConfigDefinitionInternal = Omit<ConfigDefinition_, 'env'> & {
   _valueIsFilePath?: true
   _userEffectDefinedAtFilePath?: DefinedAtFilePath
   env: ConfigEnvInternal
-  /** Whether changes to this config should trigger a Vite dev server restart */
-  vite?: boolean
 }
 
 type ConfigDefinitions = Record<
