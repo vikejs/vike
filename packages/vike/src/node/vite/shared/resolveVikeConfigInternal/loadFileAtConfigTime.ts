@@ -1,6 +1,6 @@
-// Files loaded at config time:
-
 import '../../assertEnvVite.js'
+
+// Files loaded at config time:
 
 export { loadPointerImport }
 export { loadValueFile }

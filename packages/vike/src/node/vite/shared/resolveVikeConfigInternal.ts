@@ -1,5 +1,6 @@
-// Public usage
 import '../assertEnvVite.js'
+
+// Public usage
 
 export { getVikeConfig }
 export type { VikeConfig }

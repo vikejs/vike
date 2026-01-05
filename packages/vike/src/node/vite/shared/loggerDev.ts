@@ -1,3 +1,5 @@
+import '../assertEnvVite.js'
+
 // TO-DO/eventually:
 // - New hook onLog(): https://github.com/vikejs/vike/issues/1438
 // - Exact same logs between prod and dev, only difference is that some log objects have:
@@ -6,8 +8,6 @@
 //   - `showTimestamp: true`
 // - Never clear screen (it's complex with little benefit)
 // - Only show a one-liner init log (instead of Vite's multi-line log)
-
-import '../assertEnvVite.js'
 
 export { logVite }
 export { logConfigInfo }

@@ -1,7 +1,7 @@
+import '../../assertEnvVite.js'
+
 // Prettify transpilation errors
 //  - Doesn't work for optimize errors: https://gist.github.com/brillout/9b7bb78ae866558b292ea1b516a986ec
-
-import '../../assertEnvVite.js'
 
 export { getPrettyErrorWithCodeSnippet }
 export { isErrorWithCodeSnippet }
