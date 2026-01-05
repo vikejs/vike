@@ -1,5 +1,7 @@
 // Utils needed by Vike's server runtime
 
+// TODO/ai remove this utils.ts as well — the idea is to import ./assertEnvServer.ts as first import in every server/**/*.ts file (see git show HEAD)
+
 export * from '../utils/assert.js'
 export * from '../utils/cast.js'
 export * from '../utils/checkType.js'
