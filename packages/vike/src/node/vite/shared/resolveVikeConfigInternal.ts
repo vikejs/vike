@@ -318,8 +318,9 @@ function deepEqualPrimitive(x: any, y: any): boolean {
   // Different types
   if (tx !== ty) return false
 
-  // Skip non-primitive values (functions, symbols, etc)
-  if (tx === 'function' || tx === 'symbol') return true
+  // For non-primitive values (functions, symbols, etc), use reference equality
+  // If they're the same reference, they're equal; if not, they changed
+  if (tx === 'function' || tx === 'symbol') return x === y
 
   // Primitives (null, undefined, boolean, number, string, bigint)
   if (x === null || y === null || tx !== 'object') return x === y
