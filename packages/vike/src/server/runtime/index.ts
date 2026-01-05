@@ -1,9 +1,5 @@
 import '../assertEnvServer.js'
 
-import { isBrowser } from '../../utils/isBrowser.js'
-import { assert } from '../../utils/assert.js'
-assert(!isBrowser())
-
 export { renderPageServer as renderPage } from './renderPageServer.js'
 export { escapeInject, dangerouslySkipEscape } from './renderPageServer/html/renderHtml.js'
 export { pipeWebStream, pipeNodeStream, pipeStream, stampPipe } from './renderPageServer/html/stream.js'
