@@ -1,7 +1,7 @@
 export { execHookOnRenderClient }
 export type { PageContextBeforeRenderClient }
 
-import { assert, assertUsage } from '../runtime-server-routing/utils.js'
+import { assert, assertUsage } from '../../utils/assert.js'
 import { getHookFromPageContext, type Hook } from '../../shared-server-client/hooks/getHook.js'
 import type { PageFile, PageContextConfig } from '../../shared-server-client/getPageFiles.js'
 import { execHookSingle } from '../../shared-server-client/hooks/execHook.js'

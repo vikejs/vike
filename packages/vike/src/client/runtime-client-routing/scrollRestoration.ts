@@ -9,7 +9,8 @@ export { scrollRestoration_initialRenderIsDone }
 
 // See also: https://github.com/cyco130/knave/blob/e9e1bc7687848504293197f1b314b7d12ad0d228/design.md#scroll-restoration
 
-import { getGlobalObject, onPageHide, onPageShow } from './utils.js'
+import { getGlobalObject } from '../../utils/getGlobalObject.js'
+import { onPageHide, onPageShow } from '../../utils/onPageVisibilityChange.js'
 const globalObject = getGlobalObject<{ initialRenderIsDone?: true }>('runtime-client-routing/scrollRestoration.ts', {})
 
 function scrollRestoration_init() {

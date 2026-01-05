@@ -5,16 +5,12 @@ export { getPageContextFromHooksServer_firstRender }
 export { setPageContextInitIsPassedToClient }
 export type { PageContextFromHooksServer }
 
-import {
-  assert,
-  assertUsage,
-  hasProp,
-  objectAssign,
-  getProjectError,
-  redirectHard,
-  isObject,
-  getGlobalObject,
-} from './utils.js'
+import { assert, assertUsage, getProjectError } from '../../utils/assert.js'
+import { getGlobalObject } from '../../utils/getGlobalObject.js'
+import { hasProp } from '../../utils/hasProp.js'
+import { isObject } from '../../utils/isObject.js'
+import { objectAssign } from '../../utils/objectAssign.js'
+import { redirectHard } from '../../utils/redirectHard.js'
 import { parse } from '@brillout/json-serializer/parse'
 import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtml.js'
 import type { PageContextConfig, PageFile } from '../../shared-server-client/getPageFiles.js'

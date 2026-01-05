@@ -4,7 +4,7 @@ export { getPrefetchSettings }
 export { PAGE_CONTEXT_MAX_AGE_DEFAULT }
 export type { PrefetchSettingResolved }
 
-import { assertUsage, assertInfo } from '../utils.js'
+import { assertUsage, assertInfo } from '../../../utils/assert.js'
 import type { PageContextConfig } from '../../../shared-server-client/getPageFiles.js'
 import type { PrefetchSetting, PrefetchStaticAssets } from './PrefetchSetting.js'
 

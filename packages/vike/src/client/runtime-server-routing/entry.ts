@@ -3,7 +3,9 @@ assertServerRouting()
 
 import { createPageContextClient } from './createPageContextClient.js'
 import { execHookOnRenderClient } from '../shared/execHookOnRenderClient.js'
-import { assertSingleInstance_onClientEntryServerRouting, assertUsage, objectAssign } from './utils.js'
+import { assertUsage } from '../../utils/assert.js'
+import { assertSingleInstance_onClientEntryServerRouting } from '../../utils/assertSingleInstance.js'
+import { objectAssign } from '../../utils/objectAssign.js'
 import { removeFoucBuster } from '../shared/removeFoucBuster.js'
 import { execHook } from '../../shared-server-client/hooks/execHook.js'
 import { getPageContextPublicClient } from './getPageContextPublicClient.js'

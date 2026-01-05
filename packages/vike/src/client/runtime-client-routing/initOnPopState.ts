@@ -3,7 +3,7 @@ export { initOnPopState }
 import { onPopStateBegin, type HistoryInfo } from './history.js'
 import { renderPageClient } from './renderPageClient.js'
 import { type ScrollTarget, setScrollPosition } from './setScrollPosition.js'
-import { catchInfiniteLoop } from './utils.js'
+import { catchInfiniteLoop } from '../../utils/catchInfiniteLoop.js'
 
 // The 'popstate' event is triggered when the browser doesn't fully load the new URL, for example:
 // - `location.hash='#foo'` triggers the popstate event while `location.href='/foo'` doesn't.

@@ -1,6 +1,6 @@
 export { logErrorClient }
 
-import { isObject } from './utils.js'
+import { isObject } from '../../utils/isObject.js'
 
 function logErrorClient(err: unknown) {
   if (

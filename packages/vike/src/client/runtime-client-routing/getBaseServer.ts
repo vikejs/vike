@@ -1,6 +1,6 @@
 export { getBaseServer }
 
-import { assert } from '../runtime-server-routing/utils.js'
+import { assert } from '../../utils/assert.js'
 
 function getBaseServer(): string {
   const baseServer = import.meta.env.BASE_SERVER

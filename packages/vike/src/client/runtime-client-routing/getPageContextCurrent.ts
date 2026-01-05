@@ -1,7 +1,7 @@
 export { setPageContextCurrent }
 export { getPageContextCurrent }
 
-import { getGlobalObject } from './utils.js'
+import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import type { PageContextConfig } from '../../shared-server-client/getPageFiles.js'
 
 type PageContextCurrent = PageContextConfig & {

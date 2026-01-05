@@ -2,7 +2,7 @@ import { assertClientRouting } from '../../utils/assertRoutingType.js'
 assertClientRouting()
 
 import { initClientRouter } from './initClientRouter.js'
-import { assertSingleInstance_onClientEntryClientRouting } from './utils.js'
+import { assertSingleInstance_onClientEntryClientRouting } from '../../utils/assertSingleInstance.js'
 import { removeFoucBuster } from '../shared/removeFoucBuster.js'
 import { setVirtualFileExportsGlobalEntry } from '../shared/getGlobalContextClientInternalShared.js'
 // @ts-expect-error
