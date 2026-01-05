@@ -1,3 +1,5 @@
+import './assertEnvCli.js'
+
 import { dev, build, preview } from '../api/index.js'
 import pc from '@brillout/picocolors'
 import { parseCli } from './parseCli.js'

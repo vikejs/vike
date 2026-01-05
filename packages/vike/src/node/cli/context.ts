@@ -1,9 +1,12 @@
+import './assertEnvCli.js'
+
 export { isVikeCli }
 export { setContextCliCommand }
 export { getCliOptions }
 
 import type { CliOptions, Command } from './parseCli.js'
-import { assert, getGlobalObject } from './utils.js'
+import { assert } from '../../utils/assert.js'
+import { getGlobalObject } from '../../utils/getGlobalObject.js'
 const globalObject = getGlobalObject<{ cliCommand?: CliCommand }>('cli/context.ts', {})
 
 type CliCommand = {
