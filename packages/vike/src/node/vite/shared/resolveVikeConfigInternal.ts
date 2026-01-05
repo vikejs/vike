@@ -131,6 +131,7 @@ type VikeConfigInternal = GlobalConfigPublic & {
   prerenderContext: PrerenderContext
 }
 
+// TODO/ai: when a Vike config has `vite: true` (see other TODO/ai) then reload Vite's dev server iff. the config changed (use a shallow equal test to detect whether the value change)
 function reloadVikeConfig() {
   assert(globalObject.vikeConfigCtx)
   const { userRootDir, vikeVitePluginOptions } = globalObject.vikeConfigCtx

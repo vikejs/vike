@@ -389,7 +389,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { config: true },
     cumulative: true,
     global: true,
-    /* TODO
+    /* TODO/ai see other TODO/ai
     vite: true,
     */
   },
