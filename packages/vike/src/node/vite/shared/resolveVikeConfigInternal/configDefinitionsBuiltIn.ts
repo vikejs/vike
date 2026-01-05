@@ -93,6 +93,8 @@ type ConfigDefinitionInternal = Omit<ConfigDefinition_, 'env'> & {
   _valueIsFilePath?: true
   _userEffectDefinedAtFilePath?: DefinedAtFilePath
   env: ConfigEnvInternal
+  /** Whether changes to this config should trigger a Vite dev server restart */
+  vite?: boolean
 }
 
 type ConfigDefinitions = Record<
@@ -389,9 +391,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { config: true },
     cumulative: true,
     global: true,
-    /* TODO/ai see other TODO/ai
     vite: true,
-    */
   },
 }
 

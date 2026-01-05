@@ -40,6 +40,7 @@ import {
   checkType,
   objectAssign,
   getGlobalObject,
+  deepEqual,
 } from '../utils.js'
 import type {
   PageConfigGlobalBuildTime,
@@ -116,6 +117,7 @@ const globalObject = getGlobalObject('vite/shared/resolveVikeConfigInternal.ts',
   vikeConfigSync: null as VikeConfigInternal | null,
   vikeConfigCtx: null as VikeConfigContext | null, // Information provided by Vite's `config` and Vike's CLI. We could, if we want or need to, completely remove the dependency on Vite.
   prerenderContext: null as null | PrerenderContext,
+  previousViteConfigValues: null as null | Record<string, unknown>,
 })
 type VikeConfigContext = { userRootDir: string; isDev: boolean; vikeVitePluginOptions: unknown }
 type PrerenderContext = {
@@ -131,12 +133,65 @@ type VikeConfigInternal = GlobalConfigPublic & {
   prerenderContext: PrerenderContext
 }
 
-// TODO/ai: when a Vike config has `vite: true` (see other TODO/ai) then reload Vite's dev server iff. the config changed (use a shallow equal test to detect whether the value change)
 function reloadVikeConfig() {
   assert(globalObject.vikeConfigCtx)
   const { userRootDir, vikeVitePluginOptions } = globalObject.vikeConfigCtx
   assert(vikeVitePluginOptions)
-  resolveVikeConfigInternal_withErrorHandling(userRootDir, true, vikeVitePluginOptions)
+
+  // Get previous config values for configs with vite: true
+  const previousValues = globalObject.previousViteConfigValues
+
+  // Trigger config reload and handle restart logic asynchronously
+  ;(async () => {
+    // Reload the config
+    await resolveVikeConfigInternal_withErrorHandling(userRootDir, true, vikeVitePluginOptions)
+
+    // Get new config values for configs with vite: true
+    const newValues = getViteConfigValues()
+
+    // Check if any vite-affecting config changed
+    let shouldRestartVite = false
+    if (previousValues === null) {
+      // First load - restart needed
+      shouldRestartVite = true
+    } else {
+      // Compare previous and new values using shallow equal
+      const allConfigNames = new Set([...Object.keys(previousValues), ...Object.keys(newValues)])
+      for (const configName of allConfigNames) {
+        if (!deepEqual(previousValues[configName], newValues[configName])) {
+          shouldRestartVite = true
+          break
+        }
+      }
+    }
+
+    // Store new values for next comparison
+    globalObject.previousViteConfigValues = newValues
+
+    // Only restart Vite if config values actually changed
+    if (shouldRestartVite) {
+      restartViteDevServer()
+    }
+  })()
+}
+
+function getViteConfigValues(): Record<string, unknown> {
+  const vikeConfig = globalObject.vikeConfigSync
+  if (!vikeConfig) return {}
+
+  const viteConfigValues: Record<string, unknown> = {}
+  const { _pageConfigGlobal } = vikeConfig
+  const configDefinitions = getConfigDefinitions([], (configDef) => !!configDef.vite)
+
+  Object.keys(configDefinitions).forEach((configName) => {
+    const configValues = getConfigValues(_pageConfigGlobal, true)
+    const configValue = configValues[configName]
+    if (configValue) {
+      viteConfigValues[configName] = configValue.value
+    }
+  })
+
+  return viteConfigValues
 }
 
 async function getVikeConfigInternal(
