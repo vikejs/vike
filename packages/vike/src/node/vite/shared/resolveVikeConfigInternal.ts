@@ -226,7 +226,7 @@ async function resolveVikeConfigInternal_withErrorHandling(
     vikeConfigDependencies: new Set(),
   }
 
-  const vikeConfigPrevious = globalObject.vikeConfigSync
+  const vikeConfigOld = globalObject.vikeConfigSync
 
   let hasError = false
   let ret: VikeConfigInternal | undefined
@@ -267,7 +267,7 @@ async function resolveVikeConfigInternal_withErrorHandling(
         viteRestarted = true
       }
     }
-    if (!viteRestarted && isDev && hasViteConfigChanged(vikeConfigPrevious, ret)) {
+    if (!viteRestarted && isDev && hasViteConfigChanged(vikeConfigOld, ret)) {
       restartViteDevServer()
     }
 
