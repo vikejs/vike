@@ -108,7 +108,7 @@ import { setVikeConfigError } from '../../../shared-server-node/getVikeConfigErr
 assertIsNotProductionRuntime()
 
 const globalObject = getGlobalObject('vite/shared/resolveVikeConfigInternal.ts', {
-  restartVite: false,
+  restartViteBecauseOfError: false,
   vikeConfigHasBuildError: null as boolean | null,
   isV1Design_: null as boolean | null,
   vikeConfigPromise: null as Promise<VikeConfigInternal> | null,
@@ -260,8 +260,8 @@ async function resolveVikeConfigInternal_withErrorHandling(
     setVikeConfigError({ errorBuild: false })
     if (hadError) {
       logConfigInfo(vikeConfigErrorRecoverMsg, 'error-resolve')
-      if (globalObject.restartVite) {
-        globalObject.restartVite = false
+      if (globalObject.restartViteBecauseOfError) {
+        globalObject.restartViteBecauseOfError = false
         restartViteDevServer()
       }
     }
@@ -273,7 +273,7 @@ async function resolveVikeConfigInternal_withErrorHandling(
 
     globalObject.vikeConfigHasBuildError = true
     setVikeConfigError({ errorBuild: { err } })
-    if (!doNotRestartViteOnError) globalObject.restartVite = true
+    if (!doNotRestartViteOnError) globalObject.restartViteBecauseOfError = true
 
     if (!isDev) {
       reject(err)
