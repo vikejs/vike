@@ -40,7 +40,6 @@ import {
   checkType,
   objectAssign,
   getGlobalObject,
-  deepEqual,
 } from '../utils.js'
 import type {
   PageConfigGlobalBuildTime,
@@ -305,12 +304,38 @@ function hasViteConfigChanged(vikeConfigOld: VikeConfigInternal | null, vikeConf
   for (const configName of viteConfigNames) {
     const valOld = configValuesOld[configName]?.value
     const valNew = configValuesNew[configName]?.value
-    if (!deepEqual(valOld, valNew)) {
+    if (!deepEqualPrimitive(valOld, valNew)) {
       return true
     }
   }
 
   return false
+}
+
+function deepEqualPrimitive(x: any, y: any): boolean {
+  const tx = typeof x
+  const ty = typeof y
+
+  // Different types
+  if (tx !== ty) return false
+
+  // Skip non-primitive values (functions, symbols, etc)
+  if (tx === 'function' || tx === 'symbol') return true
+
+  // Primitives (null, undefined, boolean, number, string, bigint)
+  if (x === null || y === null || tx !== 'object') return x === y
+
+  // Arrays
+  if (Array.isArray(x) && Array.isArray(y)) {
+    if (x.length !== y.length) return false
+    return x.every((val, i) => deepEqualPrimitive(val, y[i]))
+  }
+
+  // Objects
+  const keysX = Object.keys(x)
+  const keysY = Object.keys(y)
+  if (keysX.length !== keysY.length) return false
+  return keysX.every((key) => deepEqualPrimitive(x[key], y[key]))
 }
 async function resolveVikeConfigInternal(
   userRootDir: string,
