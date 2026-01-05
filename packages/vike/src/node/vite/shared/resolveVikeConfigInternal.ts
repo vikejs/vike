@@ -302,12 +302,12 @@ function checkIfViteConfigChanged(
   const configDefinitions = getConfigDefinitions([], (configDef) => !!configDef.vite)
   const viteConfigNames = Object.keys(configDefinitions)
 
-  const previousConfigValues = getConfigValues(vikeConfigOld._pageConfigGlobal, true)
-  const newConfigValues = getConfigValues(vikeConfigNew._pageConfigGlobal, true)
+  const configValuesOld = getConfigValues(vikeConfigOld._pageConfigGlobal, true)
+  const configValuesNew = getConfigValues(vikeConfigNew._pageConfigGlobal, true)
 
   for (const configName of viteConfigNames) {
-    const previousValue = previousConfigValues[configName]?.value
-    const newValue = newConfigValues[configName]?.value
+    const previousValue = configValuesOld[configName]?.value
+    const newValue = configValuesNew[configName]?.value
     if (!deepEqual(previousValue, newValue)) {
       return true
     }
