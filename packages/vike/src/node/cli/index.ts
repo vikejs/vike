@@ -1,6 +1,6 @@
-// TO-DO/next-major-release: remove this file
-
 import './assertEnvCli.js'
+
+// TO-DO/next-major-release: remove this file
 
 export { prerender } from '../api/prerender.js'
 
