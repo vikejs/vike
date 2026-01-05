@@ -315,38 +315,14 @@ function deepEqualPrimitive(x: any, y: any): boolean {
   const tx = typeof x
   const ty = typeof y
 
-  // Different types
-  if (tx !== ty) return false
+  // Skip functions - treat them as always equal
+  if (tx === 'function' || ty === 'function') return true
 
-  // Primitives (null, undefined, boolean, number, string, bigint)
-  if (x === null || y === null || tx !== 'object') return x === y
-
-  // Skip non-plain objects and non-arrays (functions, symbols, class instances, etc.)
-  const isArrayX = Array.isArray(x)
-  const isArrayY = Array.isArray(y)
-  const isPlainObjectX = !isArrayX && Object.getPrototypeOf(x) === Object.prototype
-  const isPlainObjectY = !isArrayY && Object.getPrototypeOf(y) === Object.prototype
-
-  // If either is not a plain object/array, skip comparison (treat as equal)
-  if (!isArrayX && !isPlainObjectX) return true
-  if (!isArrayY && !isPlainObjectY) return true
-
-  // Arrays
-  if (isArrayX && isArrayY) {
-    if (x.length !== y.length) return false
-    return x.every((val, i) => deepEqualPrimitive(val, y[i]))
-  }
-
-  // Plain objects
-  if (isPlainObjectX && isPlainObjectY) {
-    const keysX = Object.keys(x)
-    const keysY = Object.keys(y)
-    if (keysX.length !== keysY.length) return false
-    return keysX.every((key) => deepEqualPrimitive(x[key], y[key]))
-  }
-
-  // One is array, other is plain object
-  return false
+  // Copy of deepEqual for everything else
+  return x && y && tx === 'object' && tx === ty
+    ? Object.keys(x).length === Object.keys(y).length &&
+        Object.keys(x).every((key) => deepEqualPrimitive(x[key], y[key]))
+    : x === y
 }
 
 async function resolveVikeConfigInternal(
