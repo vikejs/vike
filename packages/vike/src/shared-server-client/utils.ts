@@ -1,3 +1,5 @@
+// TODO/ai: remove all utils.ts files except the ones that call onLoad
+
 // Utils needed by all runtimes:
 //  - runtime of server
 //  - runtime of client (Server Routing)
