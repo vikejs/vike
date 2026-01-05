@@ -4,8 +4,6 @@ import { getVikeConfig } from 'vike/plugin'
 import type { Config } from 'vike/types'
 import type { UserConfig } from 'vite'
 
-console.log(1)
-
 export default (() => {
   const vikeConfig = getVikeConfig()
   assert(vikeConfig.pages['/pages/markdown']!.route === '/markdown')

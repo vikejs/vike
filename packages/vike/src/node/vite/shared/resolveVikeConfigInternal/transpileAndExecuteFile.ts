@@ -63,7 +63,6 @@ async function transpileAndExecuteFile(
   isExtensionConfig: boolean,
   esbuildCache: EsbuildCache,
 ): Promise<FileExports> {
-  console.log('filePath', filePath.filePathToShowToUser)
   const { filePathAbsoluteFilesystem, filePathToShowToUserResolved } = filePath
   assert(filePathAbsoluteFilesystem)
   const fileExtension = getFileExtension(filePathAbsoluteFilesystem)
