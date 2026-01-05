@@ -1,7 +1,7 @@
 export { getPageContextPublicClientShared }
 export { getPageContextPublicClientMinimal }
 
-import { objectAssign } from '../runtime-server-routing/utils.js'
+import { objectAssign } from '../../utils/objectAssign.js'
 import type { PageContextConfig } from '../../shared-server-client/getPageFiles.js'
 import {
   assertPropertyGetters,

@@ -6,17 +6,16 @@ export { getPageContextClient }
 export type { PageContextBegin }
 export type { PageContextInternalClientAfterRender }
 
-import {
-  assert,
-  objectAssign,
-  redirectHard,
-  getGlobalObject,
-  hasProp,
-  updateType,
-  genPromise,
-  isCallable,
-  catchInfiniteLoop,
-} from './utils.js'
+import { assert, assertInfo, assertWarning } from '../../utils/assert.js'
+import { catchInfiniteLoop } from '../../utils/catchInfiniteLoop.js'
+import { genPromise } from '../../utils/genPromise.js'
+import { getGlobalObject } from '../../utils/getGlobalObject.js'
+import { hasProp } from '../../utils/hasProp.js'
+import { isCallable } from '../../utils/isCallable.js'
+import { isReact } from '../../utils/isReact.js'
+import { objectAssign } from '../../utils/objectAssign.js'
+import { redirectHard } from '../../utils/redirectHard.js'
+import { updateType } from '../../utils/updateType.js'
 import {
   getPageContextFromHooksClient,
   getPageContextFromHooksServer,
@@ -33,7 +32,6 @@ import {
   getPageContextPrefetched,
   populatePageContextPrefetchCache,
 } from './prefetch.js'
-import { assertInfo, assertWarning, isReact } from './utils.js'
 import { type PageContextBeforeRenderClient, execHookOnRenderClient } from '../shared/execHookOnRenderClient.js'
 import {
   isErrorFetchingStaticAssets,

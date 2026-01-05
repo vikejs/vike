@@ -1,7 +1,7 @@
 export { analyzeExports }
 
 import { getExportNames } from './getExportNames.js'
-import { assertUsage } from '../../utils.js'
+import { assertUsage } from '../../../utils/assert.js'
 import type { PageFile } from '../getPageFileObject.js'
 
 // TO-DO/next-major-release: remove

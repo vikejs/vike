@@ -1,16 +1,12 @@
 export { execHookOnBeforeRoute }
 
 import { assertPageContextProvidedByUser } from '../assertPageContextProvidedByUser.js'
-import {
-  assertUsage,
-  hasProp,
-  isObjectWithKeys,
-  objectAssign,
-  assertWarning,
-  assertUsageUrlAbsolute,
-  joinEnglish,
-  assert,
-} from './utils.js'
+import { assertUsage, assertWarning, assert } from '../../utils/assert.js'
+import { assertUsageUrlAbsolute } from '../../utils/parseUrl.js'
+import { hasProp } from '../../utils/hasProp.js'
+import { isObjectWithKeys } from '../../utils/isObjectWithKeys.js'
+import { joinEnglish } from '../../utils/joinEnglish.js'
+import { objectAssign } from '../../utils/objectAssign.js'
 import { assertRouteParams, assertSyncRouting } from './resolveRouteFunction.js'
 import pc from '@brillout/picocolors'
 import type { PageContextBeforeRoute, PageContextAfterRoute } from './index.js'

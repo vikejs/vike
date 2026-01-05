@@ -3,7 +3,10 @@ export { autoSaveScrollPosition }
 export { scrollToHashOrTop }
 export type { ScrollTarget }
 
-import { assert, onPageHide, sleep, throttle } from './utils.js'
+import { assert } from '../../utils/assert.js'
+import { onPageHide } from '../../utils/onPageVisibilityChange.js'
+import { sleep } from '../../utils/sleep.js'
+import { throttle } from '../../utils/throttle.js'
 import { replaceHistoryStateOriginal, saveScrollPosition, type ScrollPosition } from './history.js'
 
 type ScrollTarget = undefined | { preserveScroll: boolean } | ScrollPosition

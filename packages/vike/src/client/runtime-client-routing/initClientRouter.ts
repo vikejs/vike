@@ -1,6 +1,6 @@
 export { initClientRouter }
 
-import { assert } from './utils.js'
+import { assert } from '../../utils/assert.js'
 import { getRenderCount, renderPageClient } from './renderPageClient.js'
 import { initOnPopState } from './initOnPopState.js'
 import { initOnLinkClick } from './initOnLinkClick.js'

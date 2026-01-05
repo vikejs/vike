@@ -1,6 +1,6 @@
 export { findPageConfig }
 
-import { assert } from '../utils.js'
+import { assert } from '../../utils/assert.js'
 import type { PageConfigRuntime } from '../../types/PageConfig.js'
 
 function findPageConfig(pageConfigs: PageConfigRuntime[], pageId: string): null | PageConfigRuntime {

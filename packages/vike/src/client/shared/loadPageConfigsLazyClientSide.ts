@@ -7,7 +7,7 @@ import { resolvePageContextConfig } from '../../shared-server-client/page-config
 import { findPageConfig } from '../../shared-server-client/page-configs/findPageConfig.js'
 import { loadAndParseVirtualFilePageEntry } from '../../shared-server-client/page-configs/loadAndParseVirtualFilePageEntry.js'
 import type { PageConfigGlobalRuntime, PageConfigRuntime, PageConfigRuntimeLoaded } from '../../types/PageConfig.js'
-import { objectAssign } from '../runtime-server-routing/utils.js'
+import { objectAssign } from '../../utils/objectAssign.js'
 
 const errStamp = '_isAssetsError'
 

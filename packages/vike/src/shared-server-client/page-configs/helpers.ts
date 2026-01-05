@@ -2,7 +2,8 @@ export { getPageConfig }
 export { getConfigValueFilePathToShowToUser }
 export { getHookFilePathToShowToUser }
 
-import { assert, isArray } from '../utils.js'
+import { assert } from '../../utils/assert.js'
+import { isArray } from '../../utils/isArray.js'
 import type { PageConfigRuntime, DefinedAtData } from '../../types/PageConfig.js'
 
 function getPageConfig(pageId: string, pageConfigs: PageConfigRuntime[]): PageConfigRuntime {

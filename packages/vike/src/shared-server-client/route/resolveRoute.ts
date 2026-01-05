@@ -1,6 +1,6 @@
 export { resolveRoute }
 
-import { assertUsage } from './utils.js'
+import { assertUsage } from '../../utils/assert.js'
 import { resolveRouteString } from './resolveRouteString.js'
 import pc from '@brillout/picocolors'
 

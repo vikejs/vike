@@ -4,7 +4,9 @@ export { assertV1Design }
 
 import { PageFile } from '../shared-server-client/getPageFiles.js'
 import type { PageConfigBuildTime } from '../types/PageConfig.js'
-import { assert, assertUsage, assertWarning, isNotNullish, unique } from './utils.js'
+import { assert, assertUsage, assertWarning } from '../utils/assert.js'
+import { isNotNullish } from '../utils/isNullish.js'
+import { unique } from '../utils/unique.js'
 
 function assertV1Design(pageConfigs: PageConfigBuildTime[] | boolean, pageFilesAll: PageFile[] | boolean): void {
   const isOldDesign = pageFilesAll === true || (pageFilesAll !== false && pageFilesAll.length > 0)

@@ -1,6 +1,7 @@
 export { assertHookReturnedObject }
 
-import { assert, assertUsage, stringifyStringArray } from './utils.js'
+import { assert, assertUsage } from '../utils/assert.js'
+import { stringifyStringArray } from '../utils/stringifyStringArray.js'
 
 function assertHookReturnedObject<Keys extends readonly string[]>(
   obj: Record<string, unknown>,

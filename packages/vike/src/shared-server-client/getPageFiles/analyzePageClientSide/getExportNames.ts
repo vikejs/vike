@@ -1,6 +1,6 @@
 export { getExportNames }
 
-import { assert } from '../../utils.js'
+import { assert } from '../../../utils/assert.js'
 import type { PageFile } from '../getPageFileObject.js'
 
 function getExportNames(p: PageFile): string[] {

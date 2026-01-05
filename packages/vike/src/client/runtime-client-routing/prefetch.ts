@@ -6,16 +6,11 @@ export { addLinkPrefetchHandlers }
 export { addLinkPrefetchHandlers_watch }
 export { addLinkPrefetchHandlers_unwatch }
 
-import {
-  assert,
-  assertClientRouting,
-  assertUsage,
-  assertWarning,
-  checkIfClientRouting,
-  getGlobalObject,
-  hasProp,
-  objectAssign,
-} from './utils.js'
+import { assert, assertUsage, assertWarning } from '../../utils/assert.js'
+import { assertClientRouting, checkIfClientRouting } from '../../utils/assertRoutingType.js'
+import { getGlobalObject } from '../../utils/getGlobalObject.js'
+import { hasProp } from '../../utils/hasProp.js'
+import { objectAssign } from '../../utils/objectAssign.js'
 import { isErrorFetchingStaticAssets, loadPageConfigsLazyClientSide } from '../shared/loadPageConfigsLazyClientSide.js'
 import { isLinkSkipped } from './isLinkSkipped.js'
 import { disableClientRouting } from './renderPageClient.js'

@@ -4,7 +4,7 @@ export type { GlobalContextClientInternal }
 import { getGlobalContextClientInternalShared } from '../shared/getGlobalContextClientInternalShared.js'
 import { loadPageRoutes } from '../../shared-server-client/route/loadPageRoutes.js'
 import type { GlobalContextBase } from '../../shared-server-client/createGlobalContextShared.js'
-import { objectAssign } from './utils.js'
+import { objectAssign } from '../../utils/objectAssign.js'
 
 type GlobalContextClientInternal = Awaited<ReturnType<typeof getGlobalContextClientInternal>>
 

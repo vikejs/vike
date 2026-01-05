@@ -5,7 +5,10 @@ import { createPageContextObject, createPageContextShared } from '../../shared-s
 import { getPageContextUrlComputed } from '../../shared-server-client/getPageContextUrlComputed.js'
 import { getBaseServer } from './getBaseServer.js'
 import { getGlobalContextClientInternal } from './getGlobalContextClientInternal.js'
-import { assert, updateType, isBaseServer, objectAssign } from './utils.js'
+import { assert } from '../../utils/assert.js'
+import { objectAssign } from '../../utils/objectAssign.js'
+import { isBaseServer } from '../../utils/parseUrl.js'
+import { updateType } from '../../utils/updateType.js'
 
 async function createPageContextClient(urlOriginal: string) {
   const pageContext = createPageContextBase(urlOriginal)

@@ -6,7 +6,7 @@ import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 import { normalizeUrlArgument } from './normalizeUrlArgument.js'
 import { firstRenderStartPromise, renderPageClient } from './renderPageClient.js'
 import type { ScrollTarget } from './setScrollPosition.js'
-import { assertClientRouting } from './utils.js'
+import { assertClientRouting } from '../../utils/assertRoutingType.js'
 
 assertClientRouting()
 

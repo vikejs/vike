@@ -5,7 +5,10 @@ export { virtualFileIdGlobalEntryClientSR }
 export { virtualFileIdGlobalEntryClientCR }
 
 import { extractAssetsRemoveQuery } from './extractAssetsQuery.js'
-import { assert, assertIsNotBrowser, removeVirtualFileIdPrefix } from './utils.js'
+import { assert } from '../utils/assert.js'
+import { assertIsNotBrowser } from '../utils/assertIsNotBrowser.js'
+import { removeVirtualFileIdPrefix } from '../utils/virtualFileId.js'
+
 assertIsNotBrowser()
 
 // Global entries

@@ -1,6 +1,7 @@
 export { assertOnBeforeRenderHookReturn }
 
-import { assertUsage, isPlainObject } from './utils.js'
+import { assertUsage } from '../utils/assert.js'
+import { isPlainObject } from '../utils/isPlainObject.js'
 import { assertPageContextProvidedByUser } from './assertPageContextProvidedByUser.js'
 import { assertHookReturnedObject } from './assertHookReturnedObject.js'
 import pc from '@brillout/picocolors'

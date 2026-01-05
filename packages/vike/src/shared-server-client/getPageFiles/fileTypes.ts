@@ -5,7 +5,7 @@ export { fileTypes }
 export { isValidFileType }
 export { determineFileType }
 
-import { assert } from '../utils.js'
+import { assert } from '../../utils/assert.js'
 import { isScriptFile } from '../../utils/isScriptFile.js'
 
 const fileTypes = [
