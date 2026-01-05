@@ -7,7 +7,6 @@ export { getViteCommandFromCli }
 import { toPosixPath } from '../../../utils/path.js'
 import { assert } from '../../../utils/assert.js'
 import { isObject } from '../../../utils/isObject.js'
-
 import { cac } from 'cac'
 
 const desc = 'vike:vite-cli-simulation'

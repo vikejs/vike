@@ -9,7 +9,6 @@ import { toPosixPath, pathJoin } from '../../../utils/path.js'
 import { requireResolveNpmPackage, requireResolveDistFile } from '../../../utils/requireResolve.js'
 import { assert } from '../../../utils/assert.js'
 import { assertPosixPath } from '../../../utils/path.js'
-
 import type { ViteDevServer } from 'vite'
 
 assertIsNotProductionRuntime()

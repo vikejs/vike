@@ -7,7 +7,6 @@ import type { ResolvedConfig } from 'vite'
 import { assertFilePathAbsoluteFilesystem } from '../../../utils/isFilePathAbsoluteFilesystem.js'
 import { assert } from '../../../utils/assert.js'
 import { hasProp } from '../../../utils/hasProp.js'
-
 import { getOutDirs } from './getOutDirs.js'
 
 type ViteConfigRuntime = ReturnType<typeof getViteConfigRuntime>

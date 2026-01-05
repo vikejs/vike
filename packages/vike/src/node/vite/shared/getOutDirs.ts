@@ -10,7 +10,6 @@ import { createDebug } from '../../../utils/debug.js'
 import { pathJoin, toPosixPath } from '../../../utils/path.js'
 import { assert, assertUsage } from '../../../utils/assert.js'
 import { assertPosixPath } from '../../../utils/path.js'
-
 import { isViteServerSide_viteEnvOptional, type ViteEnv } from './isViteServerSide.js'
 const debug = createDebug('vike:outDir')
 

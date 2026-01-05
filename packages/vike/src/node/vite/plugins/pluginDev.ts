@@ -11,7 +11,6 @@ import { isDebugError } from '../../../utils/debug.js'
 import { applyDev } from '../../../utils/isDev.js'
 import { isDocker } from '../../../utils/isDocker.js'
 import { assertWarning } from '../../../utils/assert.js'
-
 import { interceptViteLogs } from '../shared/loggerVite.js'
 import pc from '@brillout/picocolors'
 import { swallowViteLogConnected, swallowViteLogConnected_clean } from '../shared/loggerVite.js'

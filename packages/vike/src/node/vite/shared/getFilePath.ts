@@ -14,7 +14,6 @@ import { assertIsImportPathNpmPackage } from '../../../utils/parseNpmPackage.js'
 import { toPosixPath } from '../../../utils/path.js'
 import { assert } from '../../../utils/assert.js'
 import { assertPosixPath } from '../../../utils/path.js'
-
 import type { FilePathResolved, FilePathUnresolved } from '../../../types/FilePath.js'
 import type { ResolvedConfig } from 'vite'
 

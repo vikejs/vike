@@ -5,7 +5,6 @@ export { pluginReplaceConstantsPageContext }
 import type { Plugin, ResolvedConfig } from 'vite'
 import { assert } from '../../../utils/assert.js'
 import { assertPosixPath } from '../../../utils/path.js'
-
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 import { getMagicString } from '../shared/getMagicString.js'

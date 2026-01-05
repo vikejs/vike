@@ -7,7 +7,6 @@ import { mergeConfig } from 'vite'
 import { assertUsage } from '../../../utils/assert.js'
 import { isCallable } from '../../../utils/isCallable.js'
 import { isObject } from '../../../utils/isObject.js'
-
 import type { VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 
 // Apply +vite

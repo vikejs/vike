@@ -38,7 +38,6 @@ import { objectAssign } from '../../../utils/objectAssign.js'
 import { makeFirst, lowerFirst } from '../../../utils/sorter.js'
 import { unique } from '../../../utils/unique.js'
 import { assertPosixPath } from '../../../utils/path.js'
-
 import type {
   PageConfigGlobalBuildTime,
   ConfigEnvInternal,

@@ -15,7 +15,6 @@ import { isFilePathAbsolute } from '../../../utils/isFilePathAbsoluteFilesystem.
 import { rollupSourceMapRemove } from '../../../utils/rollupSourceMap.js'
 import { assert, assertUsage, assertWarning } from '../../../utils/assert.js'
 import { joinEnglish } from '../../../utils/joinEnglish.js'
-
 import { extractAssetsRE } from './pluginExtractAssets.js'
 import { extractExportNamesRE } from './pluginExtractExportNames.js'
 import pc from '@brillout/picocolors'

@@ -5,7 +5,6 @@ export { pluginStaticReplace }
 import type { Plugin, ResolvedConfig } from 'vite'
 import { createDebug } from '../../../utils/debug.js'
 import { assert, assertUsage } from '../../../utils/assert.js'
-
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 import { VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { applyStaticReplace, type StaticReplace } from './pluginStaticReplace/applyStaticReplace.js'

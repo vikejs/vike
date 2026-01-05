@@ -10,7 +10,6 @@ import { isDebug } from '../../../utils/debug.js'
 import { escapeRegex } from '../../../utils/escapeRegex.js'
 import { addVirtualFileIdPrefix } from '../../../utils/virtualFileId.js'
 import { assert } from '../../../utils/assert.js'
-
 import {
   isViteServerSide_applyToEnvironment,
   isViteServerSide_configEnvironment,

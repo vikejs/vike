@@ -12,7 +12,6 @@ import { removeEmptyLines } from '../../../utils/removeEmptyLines.js'
 import { trimWithAnsi, trimWithAnsiTrailOnly } from '../../../utils/trimWithAnsi.js'
 import { assert } from '../../../utils/assert.js'
 import { getGlobalObject } from '../../../utils/getGlobalObject.js'
-
 import { getRequestId_withAsyncHook } from '../../../server/runtime/asyncHook.js'
 import { logErrorServerDev, logVite } from './loggerDev.js'
 import type { LogType as LoggerType, ResolvedConfig, LogErrorOptions } from 'vite'

@@ -10,7 +10,6 @@ import { getFileExtension } from '../../../utils/getFileExtension.js'
 import { rollupSourceMapRemove } from '../../../utils/rollupSourceMap.js'
 import { assert, assertUsage } from '../../../utils/assert.js'
 import { getGlobalObject } from '../../../utils/getGlobalObject.js'
-
 import { getExportNames } from '../shared/parseEsModule.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'

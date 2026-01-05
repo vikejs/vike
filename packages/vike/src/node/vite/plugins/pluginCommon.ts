@@ -10,7 +10,6 @@ import { isVitest } from '../../../utils/isVitest.js'
 import { assert, assertUsage, assertWarning } from '../../../utils/assert.js'
 import { hasProp } from '../../../utils/hasProp.js'
 import { isObject } from '../../../utils/isObject.js'
-
 import { assertRollupInput } from './build/pluginBuildConfig.js'
 import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
 import pc from '@brillout/picocolors'
