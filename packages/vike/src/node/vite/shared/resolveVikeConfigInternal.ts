@@ -316,7 +316,7 @@ function deepEqualPrimitive(x: any, y: any): boolean {
   const ty = typeof y
 
   // Skip functions - treat them as always equal
-  if (tx === 'function' || ty === 'function') return true
+  if (tx === 'function' && ty === 'function') return true
 
   // Copy of deepEqual for everything else
   return x && y && tx === 'object' && tx === ty
