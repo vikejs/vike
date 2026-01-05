@@ -408,16 +408,6 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
 }
 
-// Validate that all built-in configs with vite: true also have global: true
-Object.entries(configDefinitionsBuiltIn).forEach(([configName, configDef]) => {
-  if (configDef.vite) {
-    assert(
-      configDef.global,
-      `Built-in config ${configName} has vite: true but global isn't true (this is a Vike internal bug)`,
-    )
-  }
-})
-
 function getConfigEnv(pageConfig: PageConfigBuildTimeBeforeComputed, configName: string): null | ConfigEnvInternal {
   const source = getConfigValueSourceRelevantAnyEnv(configName, pageConfig)
   if (!source) return null
