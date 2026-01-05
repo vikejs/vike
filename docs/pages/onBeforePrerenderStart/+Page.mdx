@@ -6,9 +6,9 @@ import { ConfigSpec } from '../../components'
   env="build-time"
 />
 
-The `onBeforePrerenderStart()` hook is executed upon <Link text="pre-rendering" href="/pre-rendering" /> your app.
+Hook called for initializing <Link href="/pre-rendering">pre-rendering</Link> (before <Link href="/onPrerenderStart" />).
 
-> It's *only* executed while pre-rendering and, consequently, never executed during development.
+> It's executed only for pre-rendering and, consequently, never executes during development.
 
 It's usually used for:
  - Providing the list of URLs of parameterized routes.

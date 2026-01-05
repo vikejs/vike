@@ -6,10 +6,9 @@ import { ConfigSpec } from '../../components'
   global
 />
 
-The `onPrerenderStart()` hook is called once when <Link href="/pre-rendering">pre-rendering</Link> starts.
-It receives as argument an array of all <Link href="/pageContext">page contexts</Link> to be pre-rendered, and returns
-a new array of page contexts, giving you a chance to add/remove/modify pages. This is usually used for
-<Link href="/i18n">internationalization</Link>.
+Hook called when <Link href="/pre-rendering">pre-rendering</Link> starts (after <Link href="/onBeforePrerenderStart" />).
+
+It receives the list of all <Link href="/pageContext">`pageContext` objects</Link> to be pre-rendered and returns a new list — enabling you to add, remove, or modify `pageContext` objects. It's commonly used for <Link href="/i18n">internationalization</Link>.
 
 ```ts
 export { onPrerenderStart }

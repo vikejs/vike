@@ -1,5 +1,3 @@
-// TODO: rename 'Hook called' Called
-
 export type { Config }
 export type { ConfigBuiltIn }
 export type { ConfigBuiltInResolved }
@@ -368,7 +366,7 @@ type ConfigBuiltIn = {
    */
   onCreateGlobalContext?: ((globalContext: GlobalContext) => void) | ImportStringList | null
 
-  /** Called whenever a hook is called.
+  /** Hook called whenever a hook is called.
    *
    *  https://vike.dev/onHookCall
    */
@@ -420,12 +418,12 @@ type ConfigBuiltIn = {
    */
   filesystemRoutingRoot?: string | ImportStringList
 
-  /** Page Hook called when pre-rendering starts.
+  /** Hook called when pre-rendering starts.
    *
    * https://vike.dev/onPrerenderStart
    */
   onPrerenderStart?: OnPrerenderStartAsync | OnPrerenderStartSync | ImportStringList
-  /** Global Hook called before the whole pre-rendering process starts.
+  /** Hook called for initializing pre-rendering.
    *
    * https://vike.dev/onBeforePrerenderStart
    */
