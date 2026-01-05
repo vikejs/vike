@@ -1,10 +1,3 @@
-// Utils needed by Vike's Vite plugin
-
-// We call onLoad() here so that it's called even when only a subset of the plugin is loaded. (Making the assert() calls inside onLoad() a lot stronger.)
-import { onLoad } from './onLoad.js'
-onLoad()
-
-// We can load all server/utils.ts since node/vite/ imports server/runime/ anyways.
 export * from '../../utils/assert.js'
 export * from '../../utils/cast.js'
 export * from '../../utils/checkType.js'
