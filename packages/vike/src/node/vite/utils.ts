@@ -1,3 +1,5 @@
+// TODO/ai Same thing: remove this utils.ts and import ./assertEnvVite.ts as first import in every vite/**/*.ts file (see git show 8b6842cd2a9c33c709aa2f106a1149c92cd586cf)
+
 export * from '../../utils/assert.js'
 export * from '../../utils/cast.js'
 export * from '../../utils/checkType.js'
