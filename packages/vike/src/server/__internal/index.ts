@@ -1,6 +1,6 @@
-// Used by vike:build:pluginProdBuildEntry
 import '../assertEnvServer.js'
 
+// Used by vike:build:pluginProdBuildEntry
 export { setGlobalContext_prodBuildEntry } from '../runtime/globalContext.js'
 
 // Used by vite-plugin-vercel
