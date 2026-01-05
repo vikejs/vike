@@ -1,3 +1,5 @@
+import '../../../../assertEnvVite.js'
+
 export const errVueHtml = {
   id: '/home/rom/code/vike/examples/vue-full/pages/index/+Page.vue',
   plugin: 'vite:vue',

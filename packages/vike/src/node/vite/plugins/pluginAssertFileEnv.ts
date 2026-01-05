@@ -1,3 +1,5 @@
+import '../assertEnvVite.js'
+
 export { pluginAssertFileEnv }
 
 // Implementation for https://vike.dev/file-env
@@ -7,16 +9,12 @@ export { pluginAssertFileEnv }
 // - SvelteKit: https://github.com/sveltejs/kit/blob/6ea7abbc2f66e46cb83ff95cd459a5f548cb7e1e/packages/kit/src/exports/vite/index.js#L383-L401
 
 import type { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
-import {
-  applyDev,
-  assert,
-  assertUsage,
-  assertWarning,
-  capitalizeFirstLetter,
-  isFilePathAbsolute,
-  joinEnglish,
-  rollupSourceMapRemove,
-} from '../utils.js'
+import { capitalizeFirstLetter } from '../../../utils/capitalizeFirstLetter.js'
+import { applyDev } from '../../../utils/isDev.js'
+import { isFilePathAbsolute } from '../../../utils/isFilePathAbsoluteFilesystem.js'
+import { rollupSourceMapRemove } from '../../../utils/rollupSourceMap.js'
+import { assert, assertUsage, assertWarning } from '../../../utils/assert.js'
+import { joinEnglish } from '../../../utils/joinEnglish.js'
 import { extractAssetsRE } from './pluginExtractAssets.js'
 import { extractExportNamesRE } from './pluginExtractExportNames.js'
 import pc from '@brillout/picocolors'

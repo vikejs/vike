@@ -1,3 +1,5 @@
+import './assertEnvApi.js'
+
 export { prepareViteApiCall }
 
 import type { ApiOptions, ApiOperation } from './types.js'

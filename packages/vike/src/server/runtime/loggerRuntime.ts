@@ -1,3 +1,5 @@
+import '../assertEnvServer.js'
+
 // Logger used by the the server runtime. (Also during pre-rendering since it uses the sever runtime.)
 
 export let logRuntimeError: LogRuntimeError
@@ -8,7 +10,7 @@ export type { PageContext_logRuntime }
 
 import { loggRuntimeErrorProd } from './renderPageServer/loggerProd.js'
 import type { LogType } from '../../node/vite/shared/loggerDev.js'
-import { assert } from '../utils.js'
+import { assert } from '../../utils/assert.js'
 import type {
   PageContextCreatedServer,
   PageContextCreatedServerWithoutGlobalContext,

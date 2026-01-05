@@ -1,20 +1,22 @@
+import '../assertEnvVite.js'
+
 export { pluginVirtualFiles }
 
 import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode, ModuleGraph } from 'vite'
 import { normalizePath } from 'vite'
 import { generateVirtualFilePageEntry } from './pluginVirtualFiles/generateVirtualFilePageEntry.js'
 import { generateVirtualFileGlobalEntryWithOldDesign } from './pluginVirtualFiles/generateVirtualFileGlobalEntryWithOldDesign.js'
+import { escapeRegex } from '../../../utils/escapeRegex.js'
+import { isScriptFile } from '../../../utils/isScriptFile.js'
 import {
-  assert,
-  assertPosixPath,
-  isScriptFile,
   addVirtualFileIdPrefix,
   isVirtualFileId,
   removeVirtualFileIdPrefix,
-  escapeRegex,
   virtualFileIdPrefix1,
   virtualFileIdPrefix2,
-} from '../utils.js'
+} from '../../../utils/virtualFileId.js'
+import { assert } from '../../../utils/assert.js'
+import { assertPosixPath } from '../../../utils/path.js'
 import { parseVirtualFileId } from '../../../shared-server-node/virtualFileId.js'
 import { reloadVikeConfig, isV1Design, getVikeConfigInternalOptional } from '../shared/resolveVikeConfigInternal.js'
 import pc from '@brillout/picocolors'

@@ -1,3 +1,5 @@
+import '../../../assertEnvServer.js'
+
 export { escapeInject }
 export { dangerouslySkipEscape }
 export { renderDocumentHtml }
@@ -9,17 +11,13 @@ export type { DocumentHtml }
 // This export is needed even though it's not used anywhere, see https://github.com/vikejs/vike/issues/511
 export type { TemplateWrapped }
 
-import {
-  assert,
-  assertUsage,
-  assertWarning,
-  checkType,
-  escapeHtml,
-  hasProp,
-  isHtml,
-  isPromise,
-  objectAssign,
-} from '../../../utils.js'
+import { escapeHtml } from '../../../../utils/escapeHtml.js'
+import { isPromise } from '../../../../utils/isPromise.js'
+import { isHtml } from '../../../../utils/isHtml.js'
+import { assert, assertUsage, assertWarning } from '../../../../utils/assert.js'
+import { checkType } from '../../../../utils/checkType.js'
+import { hasProp } from '../../../../utils/hasProp.js'
+import { objectAssign } from '../../../../utils/objectAssign.js'
 import { injectHtmlTagsToString, injectHtmlTagsToStream } from './injectAssets.js'
 import type { PageContextInjectAssets } from './injectAssets.js'
 import {

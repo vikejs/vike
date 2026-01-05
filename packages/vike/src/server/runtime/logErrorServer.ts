@@ -1,8 +1,15 @@
+import '../assertEnvServer.js'
+
 export { logErrorServer }
 export { hasAlreadyLogged }
 
 import pc from '@brillout/picocolors'
-import { assertIsNotBrowser, assertWarning, getGlobalObject, hasRed, isDebugError, isObject } from '../utils.js'
+import { assertWarning } from '../../utils/assert.js'
+import { assertIsNotBrowser } from '../../utils/assertIsNotBrowser.js'
+import { hasRed } from '../../utils/colorsServer.js'
+import { isDebugError } from '../../utils/debug.js'
+import { getGlobalObject } from '../../utils/getGlobalObject.js'
+import { isObject } from '../../utils/isObject.js'
 import { execHookOnError } from './renderPageServer/execHookOnError.js'
 import { addErrorHint } from './renderPageServer/addErrorHint.js'
 import { isAbortError } from '../../shared-server-client/route/abort.js'

@@ -1,3 +1,5 @@
+import './assertEnvApi.js'
+
 export { prerender }
 
 import { runPrerenderFromAPI } from '../prerender/runPrerenderEntry.js'

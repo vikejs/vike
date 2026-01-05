@@ -1,9 +1,13 @@
+import '../../../../assertEnvServer.js'
+
 export { getHtmlTags }
 export type { HtmlTag }
 export type { PreloadFilter }
 export type { InjectFilterEntry }
 
-import { assert, assertWarning, assertUsage, isObject, freezePartial } from '../../../../utils.js'
+import { assert, assertWarning, assertUsage } from '../../../../../utils/assert.js'
+import { freezePartial } from '../../../../../utils/freezePartial.js'
+import { isObject } from '../../../../../utils/isObject.js'
 import {
   type PageContextSerialization,
   getGlobalContextClientSerialized,

@@ -1,3 +1,5 @@
+import '../../../../assertEnvServer.js'
+
 // Unit tests at ./injectHtmlTags.spec.ts
 
 export { injectHtmlTags }
@@ -9,7 +11,8 @@ export { joinHtmlTags }
 export { injectAtOpeningTag }
 export { injectAtClosingTag }
 
-import { assert, assertUsage, slice } from '../../../../utils.js'
+import { assert, assertUsage } from '../../../../../utils/assert.js'
+import { slice } from '../../../../../utils/slice.js'
 import type { StreamFromReactStreamingPackage } from '../stream/react-streaming.js'
 import type { HtmlTag } from './getHtmlTags.js'
 

@@ -1,8 +1,12 @@
+import '../assertEnvVite.js'
+
 export { pluginViteConfigVikeExtensions }
 
 import type { InlineConfig, Plugin } from 'vite'
 import { mergeConfig } from 'vite'
-import { assertUsage, isCallable, isObject } from '../utils.js'
+import { assertUsage } from '../../../utils/assert.js'
+import { isCallable } from '../../../utils/isCallable.js'
+import { isObject } from '../../../utils/isObject.js'
 import type { VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 
 // Apply +vite

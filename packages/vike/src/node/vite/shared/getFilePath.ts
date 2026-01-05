@@ -1,3 +1,5 @@
+import '../assertEnvVite.js'
+
 export { getFilePathResolved }
 export { getFilePathUnresolved }
 export { getFilePathAbsoluteUserRootDir }
@@ -7,13 +9,11 @@ export { cleanFilePathUnknown }
 export { assertModuleId }
 
 import path from 'node:path'
-import {
-  assert,
-  assertIsImportPathNpmPackage,
-  assertFilePathAbsoluteFilesystem,
-  assertPosixPath,
-  toPosixPath,
-} from '../utils.js'
+import { assertFilePathAbsoluteFilesystem } from '../../../utils/isFilePathAbsoluteFilesystem.js'
+import { assertIsImportPathNpmPackage } from '../../../utils/parseNpmPackage.js'
+import { toPosixPath } from '../../../utils/path.js'
+import { assert } from '../../../utils/assert.js'
+import { assertPosixPath } from '../../../utils/path.js'
 import type { FilePathResolved, FilePathUnresolved } from '../../../types/FilePath.js'
 import type { ResolvedConfig } from 'vite'
 

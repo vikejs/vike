@@ -1,3 +1,5 @@
+import '../../assertEnvVite.js'
+
 export { getConfigValueSourcesRelevant }
 export { getConfigValueSourceRelevantAnyEnv }
 export { isRuntimeEnvMatch }
@@ -10,7 +12,8 @@ import type {
   PageConfigBuildTime,
   PageConfigGlobalBuildTime,
 } from '../../../../types/PageConfig.js'
-import { assert, assertIsNotBrowser } from '../../utils.js'
+import { assert } from '../../../../utils/assert.js'
+import { assertIsNotBrowser } from '../../../../utils/assertIsNotBrowser.js'
 import { getFileSuffixes } from '../../../../shared-server-node/getFileSuffixes.js'
 
 assertIsNotBrowser()

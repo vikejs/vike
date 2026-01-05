@@ -1,3 +1,5 @@
+import '../assertEnvVite.js'
+
 export { getMagicString }
 
 import MagicString from 'magic-string'

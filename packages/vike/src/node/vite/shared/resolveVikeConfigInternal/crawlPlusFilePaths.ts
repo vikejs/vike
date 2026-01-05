@@ -1,24 +1,20 @@
+import '../../assertEnvVite.js'
+
 export { crawlPlusFilePaths }
 export { isPlusFile }
 export { getPlusFileValueConfigName }
 
-import {
-  assertPosixPath,
-  assert,
-  scriptFileExtensionPattern,
-  assertIsNotProductionRuntime,
-  isVersionMatch,
-  isScriptFile,
-  scriptFileExtensionList,
-  createDebug,
-  deepEqual,
-  assertUsage,
-  assertFilePathAbsoluteFilesystem,
-  assertWarning,
-  hasProp,
-  isNotNullish,
-  getGlobalObject,
-} from '../../utils.js'
+import { assert, assertUsage, assertWarning } from '../../../../utils/assert.js'
+import { assertIsNotProductionRuntime } from '../../../../utils/assertSetup.js'
+import { isVersionMatch } from '../../../../utils/assertVersion.js'
+import { createDebug } from '../../../../utils/debug.js'
+import { deepEqual } from '../../../../utils/deepEqual.js'
+import { getGlobalObject } from '../../../../utils/getGlobalObject.js'
+import { hasProp } from '../../../../utils/hasProp.js'
+import { assertFilePathAbsoluteFilesystem } from '../../../../utils/isFilePathAbsoluteFilesystem.js'
+import { isNotNullish } from '../../../../utils/isNullish.js'
+import { scriptFileExtensionPattern, isScriptFile, scriptFileExtensionList } from '../../../../utils/isScriptFile.js'
+import { assertPosixPath } from '../../../../utils/path.js'
 import path from 'node:path'
 import { glob } from 'tinyglobby'
 import { exec } from 'node:child_process'

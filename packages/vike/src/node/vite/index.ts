@@ -1,16 +1,20 @@
+import './assertEnvVite.js'
+
 export default plugin
 export { plugin }
 // TO-DO/next-major-release: remove
 export { plugin as ssr }
 export { getVikeConfig } from './shared/resolveVikeConfigInternal.js'
-export { PROJECT_VERSION as version } from './utils.js'
+export { PROJECT_VERSION as version } from '../../utils/PROJECT_VERSION.js'
 export type { VikeVitePluginOptions as UserConfig }
 export type { VikeVitePluginOptions }
 
 import type { Plugin } from 'vite'
 import { getClientEntrySrcDev } from './shared/getClientEntrySrcDev.js'
 import { setGetClientEntrySrcDev } from '../../server/runtime/renderPageServer/getPageAssets/retrievePageAssetsDev.js'
-import { assertIsNotProductionRuntime, assertUsage, isVitest } from './utils.js'
+import { assertIsNotProductionRuntime } from '../../utils/assertSetup.js'
+import { assertUsage } from '../../utils/assert.js'
+import { isVitest } from '../../utils/isVitest.js'
 import pc from '@brillout/picocolors'
 import { pluginPreview } from './plugins/pluginPreview.js'
 import { pluginDev } from './plugins/pluginDev.js'

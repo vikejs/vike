@@ -1,3 +1,5 @@
+import './assertEnvApi.js'
+
 export { dev }
 // TO-DO/eventually: remove if it doesn't end up being used
 export { startupLog }
@@ -5,7 +7,11 @@ export { startupLog }
 import { prepareViteApiCall } from './prepareViteApiCall.js'
 import { createServer, type ResolvedConfig, type ViteDevServer } from 'vite'
 import type { ApiOptions } from './types.js'
-import { assert, assertIsNotProductionRuntime, colorVike, colorVite, PROJECT_VERSION } from './utils.js'
+import { assert } from '../../utils/assert.js'
+import { assertIsNotProductionRuntime } from '../../utils/assertSetup.js'
+import { colorVike } from '../../utils/colorsClient.js'
+import { colorVite } from '../../utils/colorsServer.js'
+import { PROJECT_VERSION } from '../../utils/PROJECT_VERSION.js'
 import pc from '@brillout/picocolors'
 import { processStartupLog } from '../vite/shared/loggerVite.js'
 assertIsNotProductionRuntime()

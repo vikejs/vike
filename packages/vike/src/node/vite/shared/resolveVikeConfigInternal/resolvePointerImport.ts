@@ -1,18 +1,17 @@
+import '../../assertEnvVite.js'
+
 export { resolvePointerImport }
 export { resolvePointerImportData }
 export type { PointerImport }
 
 import pc from '@brillout/picocolors'
 import type { DefinedAtFilePath } from '../../../../types/PageConfig.js'
-import {
-  assert,
-  assertPosixPath,
-  assertUsage,
-  isFilePathAbsolute,
-  isImportPathRelative,
-  isImportPathNpmPackageOrPathAlias,
-  requireResolveOptional,
-} from '../../utils.js'
+import { assert, assertUsage } from '../../../../utils/assert.js'
+import { isFilePathAbsolute } from '../../../../utils/isFilePathAbsoluteFilesystem.js'
+import { isImportPathRelative } from '../../../../utils/isImportPath.js'
+import { isImportPathNpmPackageOrPathAlias } from '../../../../utils/parseNpmPackage.js'
+import { assertPosixPath } from '../../../../utils/path.js'
+import { requireResolveOptional } from '../../../../utils/requireResolve.js'
 import { type PointerImportData, assertPointerImportPath, parsePointerImportData } from './pointerImports.js'
 import { getFilePathAbsoluteUserRootDir, getFilePathResolved, getFilePathUnresolved } from '../getFilePath.js'
 import type { FilePath, FilePathResolved } from '../../../../types/FilePath.js'

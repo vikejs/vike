@@ -1,9 +1,13 @@
+import '../../assertEnvVite.js'
+
 export { pluginBuildApp }
 
 import { runPrerender_forceExit } from '../../../prerender/runPrerenderEntry.js'
 import type { Environment, InlineConfig, Plugin, ResolvedConfig } from 'vite'
 import { resolveOutDir } from '../../shared/getOutDirs.js'
-import { assert, assertWarning, getGlobalObject, onSetupBuild } from '../../utils.js'
+import { assert, assertWarning } from '../../../../utils/assert.js'
+import { onSetupBuild } from '../../../../utils/assertSetup.js'
+import { getGlobalObject } from '../../../../utils/getGlobalObject.js'
 import { isPrerenderAutoRunEnabled, wasPrerenderRun } from '../../../prerender/context.js'
 import type { VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { isViteCli, getViteConfigForBuildFromCli } from '../../shared/isViteCli.js'

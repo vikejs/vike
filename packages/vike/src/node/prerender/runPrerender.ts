@@ -64,7 +64,7 @@ import { getOutDirs } from '../vite/shared/getOutDirs.js'
 import fs from 'node:fs'
 import { getPublicProxy } from '../../shared-server-client/getPublicProxy.js'
 import { getStaticRedirectsForPrerender } from '../../server/runtime/renderPageServer/resolveRedirects.js'
-import { updateType } from '../../server/utils.js'
+import { updateType } from '../../utils/updateType.js'
 const docLink = 'https://vike.dev/i18n#pre-rendering'
 
 type HtmlFile = {

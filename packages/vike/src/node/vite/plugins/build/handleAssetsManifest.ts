@@ -1,3 +1,5 @@
+import '../../assertEnvVite.js'
+
 export { handleAssetsManifest }
 export { handleAssetsManifest_getBuildConfig }
 export { handleAssetsManifest_isFixEnabled }
@@ -10,7 +12,12 @@ import fs_sync from 'node:fs'
 import path from 'node:path'
 import { existsSync } from 'node:fs'
 import type { ViteManifest, ViteManifestEntry } from '../../../../types/ViteManifest.js'
-import { assert, assertWarning, getGlobalObject, isEqualStringList, isObject, pLimit, unique } from '../../utils.js'
+import { assert, assertWarning } from '../../../../utils/assert.js'
+import { getGlobalObject } from '../../../../utils/getGlobalObject.js'
+import { isEqualStringList } from '../../../../utils/isEqualStringList.js'
+import { isObject } from '../../../../utils/isObject.js'
+import { pLimit } from '../../../../utils/pLimit.js'
+import { unique } from '../../../../utils/unique.js'
 import { parseVirtualFileId } from '../../../../shared-server-node/virtualFileId.js'
 import type { Environment, ResolvedConfig, Rollup } from 'vite'
 import { getAssetsDir } from '../../shared/getAssetsDir.js'

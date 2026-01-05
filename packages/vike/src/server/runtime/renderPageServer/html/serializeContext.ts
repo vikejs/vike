@@ -1,3 +1,5 @@
+import '../../../assertEnvServer.js'
+
 export { getPageContextClientSerialized }
 export { getPageContextClientSerializedAbort }
 export { getGlobalContextClientSerialized }
@@ -6,7 +8,10 @@ export type { PassToClient }
 export type { PassToClientPublic }
 
 import { stringify, isJsonSerializerError } from '@brillout/json-serializer/stringify'
-import { assert, assertUsage, assertWarning, getPropAccessNotation, hasProp, unique } from '../../../utils.js'
+import { unique } from '../../../../utils/unique.js'
+import { getPropAccessNotation } from '../../../../utils/getPropAccessNotation.js'
+import { assert, assertUsage, assertWarning } from '../../../../utils/assert.js'
+import { hasProp } from '../../../../utils/hasProp.js'
 import { isErrorPage } from '../../../../shared-server-client/error-page.js'
 import { addIs404ToPageProps } from '../../../../shared-server-client/addIs404ToPageProps.js'
 import pc from '@brillout/picocolors'

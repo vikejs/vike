@@ -1,3 +1,5 @@
+import '../assertEnvServer.js'
+
 export { renderPageServer }
 export type { PageContextInit }
 export type { PageContextBegin }
@@ -9,29 +11,25 @@ import {
   type PageContextCreatedServerWithoutGlobalContext,
 } from './renderPageServer/createPageContextServer.js'
 import { route } from '../../shared-server-client/route/index.js'
+import { assert, assertWarning, assertUsage } from '../../utils/assert.js'
+import { onSetupRuntime } from '../../utils/assertSetup.js'
+import { catchInfiniteLoop } from '../../utils/catchInfiniteLoop.js'
+import { checkType } from '../../utils/checkType.js'
+import { getGlobalObject } from '../../utils/getGlobalObject.js'
+import { hasProp } from '../../utils/hasProp.js'
+import { isSameErrorMessage } from '../../utils/isSameErrorMessage.js'
+import { objectAssign } from '../../utils/objectAssign.js'
 import {
-  assert,
-  hasProp,
-  objectAssign,
-  isUrl,
-  parseUrl,
-  onSetupRuntime,
-  assertWarning,
-  getGlobalObject,
-  checkType,
-  assertUsage,
   normalizeUrlPathname,
   removeBaseServer,
   modifyUrlPathname,
   prependBase,
   removeUrlOrigin,
   setUrlOrigin,
-  isUri,
   getUrlPretty,
-  updateType,
-  catchInfiniteLoop,
-  isSameErrorMessage,
-} from '../utils.js'
+} from '../../utils/parseUrl-extras.js'
+import { isUrl, parseUrl, isUri } from '../../utils/parseUrl.js'
+import { updateType } from '../../utils/updateType.js'
 import {
   ErrorAbort,
   getPageContextAddendumAbort,

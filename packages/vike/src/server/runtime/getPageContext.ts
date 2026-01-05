@@ -1,3 +1,5 @@
+import '../assertEnvServer.js'
+
 export { getPageContext }
 export { providePageContext }
 export type { GetPageContextParams }

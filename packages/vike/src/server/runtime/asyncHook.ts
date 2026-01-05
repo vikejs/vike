@@ -1,10 +1,15 @@
+import '../assertEnvServer.js'
+
 export { getPageContext_withAsyncHook }
 export { getRequestId_withAsyncHook }
 export { getAsyncLocalStorage }
 export type { AsyncStore }
 
 import { getPageContextPublicServer } from './renderPageServer/getPageContextPublicServer.js'
-import { assert, assertIsNotBrowser, getGlobalObject, isObject } from '../utils.js'
+import { assert } from '../../utils/assert.js'
+import { assertIsNotBrowser } from '../../utils/assertIsNotBrowser.js'
+import { getGlobalObject } from '../../utils/getGlobalObject.js'
+import { isObject } from '../../utils/isObject.js'
 import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hooks'
 import { import_ } from '@brillout/import'
 

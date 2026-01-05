@@ -1,3 +1,5 @@
+import '../assertEnvServer.js'
+
 // Used by vike:build:pluginProdBuildEntry
 export { setGlobalContext_prodBuildEntry } from '../runtime/globalContext.js'
 

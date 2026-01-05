@@ -1,9 +1,11 @@
+import '../../assertEnvVite.js'
+
 export { getPlusFilesByLocationId }
 export type { PlusFileValue }
 export type { PlusFile }
 export type { PlusFilesByLocationId }
 
-import { assert } from '../../utils.js'
+import { assert } from '../../../../utils/assert.js'
 import { configDefinitionsBuiltIn } from './configDefinitionsBuiltIn.js'
 import { type LocationId, getLocationId } from './filesystemRouting.js'
 import { type EsbuildCache } from './transpileAndExecuteFile.js'

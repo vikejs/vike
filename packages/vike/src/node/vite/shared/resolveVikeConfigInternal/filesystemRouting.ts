@@ -1,3 +1,5 @@
+import '../../assertEnvVite.js'
+
 export { getFilesystemRouteString }
 export { getFilesystemRouteDefinedBy }
 export { isInherited }
@@ -10,7 +12,10 @@ export type { LocationId }
 export { getLogicalPath }
 
 import pc from '@brillout/picocolors'
-import { assert, assertIsNotProductionRuntime, assertPosixPath, assertWarning, higherFirst } from '../../utils.js'
+import { assert, assertWarning } from '../../../../utils/assert.js'
+import { assertIsNotProductionRuntime } from '../../../../utils/assertSetup.js'
+import { assertPosixPath } from '../../../../utils/path.js'
+import { higherFirst } from '../../../../utils/sorter.js'
 assertIsNotProductionRuntime()
 
 /**

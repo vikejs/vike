@@ -1,3 +1,5 @@
+import '../assertEnvVite.js'
+
 export { pluginDev }
 export { logDockerHint }
 
@@ -5,7 +7,10 @@ import { type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
 import { optimizeDeps, resolveOptimizeDeps } from './pluginDev/optimizeDeps.js'
 import { determineFsAllowList } from './pluginDev/determineFsAllowList.js'
 import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
-import { applyDev, assertWarning, isDocker, isDebugError } from '../utils.js'
+import { isDebugError } from '../../../utils/debug.js'
+import { applyDev } from '../../../utils/isDev.js'
+import { isDocker } from '../../../utils/isDocker.js'
+import { assertWarning } from '../../../utils/assert.js'
 import { interceptViteLogs } from '../shared/loggerVite.js'
 import pc from '@brillout/picocolors'
 import { swallowViteLogConnected, swallowViteLogConnected_clean } from '../shared/loggerVite.js'

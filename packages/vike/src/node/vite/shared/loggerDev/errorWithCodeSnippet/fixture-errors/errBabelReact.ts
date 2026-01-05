@@ -1,3 +1,5 @@
+import '../../../../assertEnvVite.js'
+
 export const errBabelReact = {
   code: 'BABEL_PARSE_ERROR',
   reasonCode: 'UnexpectedToken',

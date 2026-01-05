@@ -1,3 +1,5 @@
+import '../../assertEnvServer.js'
+
 export { execHookDataAndOnBeforeRender }
 
 import { assertOnBeforeRenderHookReturn } from '../../../shared-server-client/assertOnBeforeRenderHookReturn.js'

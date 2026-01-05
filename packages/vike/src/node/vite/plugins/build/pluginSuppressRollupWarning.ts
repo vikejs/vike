@@ -1,3 +1,5 @@
+import '../../assertEnvVite.js'
+
 // Suppress Rollup warnings `Generated an empty chunk: "index.page.server"`
 
 export { pluginSuppressRollupWarning }

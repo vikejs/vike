@@ -1,8 +1,13 @@
+import '../../assertEnvServer.js'
+
 export { addErrorHint }
 // For ./addErrorHint/getErrorHint.spec.ts
 export { getErrorHint }
 
-import { assert, formatHintLog, getBetterError, isObject } from '../../utils.js'
+import { assert } from '../../../utils/assert.js'
+import { formatHintLog } from '../../../utils/formatHintLog.js'
+import { getBetterError } from '../../../utils/getBetterError.js'
+import { isObject } from '../../../utils/isObject.js'
 import pc from '@brillout/picocolors'
 
 const hintDefault = 'The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package'

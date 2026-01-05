@@ -1,3 +1,5 @@
+import '../../assertEnvServer.js'
+
 export { getPageAssets }
 export type { PageAsset }
 export type { GetPageAssets }
@@ -6,7 +8,11 @@ import { retrievePageAssetsProd } from './getPageAssets/retrievePageAssetsProd.j
 import { retrievePageAssetsDev } from './getPageAssets/retrievePageAssetsDev.js'
 import { inferMediaType, type MediaType } from './inferMediaType.js'
 import { sortPageAssetsForEarlyHintsHeader } from './getPageAssets/sortPageAssetsForEarlyHintsHeader.js'
-import { assert, prependBase, toPosixPath, unique, getViteRPC } from '../../utils.js'
+import { toPosixPath } from '../../../utils/path.js'
+import { unique } from '../../../utils/unique.js'
+import { getViteRPC } from '../../../utils/getViteRPC.js'
+import { assert } from '../../../utils/assert.js'
+import { prependBase } from '../../../utils/parseUrl-extras.js'
 import type { ClientDependency } from '../../../shared-server-client/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { ViteRPC } from '../../../node/vite/plugins/non-runnable-dev/pluginViteRPC.js'
