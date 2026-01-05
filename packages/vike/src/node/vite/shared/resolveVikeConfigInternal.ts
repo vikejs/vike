@@ -297,10 +297,7 @@ function hasViteConfigChanged(vikeConfigOld: VikeConfigInternal | null, vikeConf
   if (!vikeConfigOld) return false
 
   const configDefinitions = vikeConfigNew._pageConfigGlobal.configDefinitions
-  const viteConfigNames = Object.keys(configDefinitions).filter((configName) => {
-    const configDef = configDefinitions[configName]
-    return configDef && configDef.vite
-  })
+  const viteConfigNames = Object.keys(configDefinitions).filter((configName) => configDefinitions[configName]!.vite)
 
   const configValuesOld = getConfigValues(vikeConfigOld._pageConfigGlobal, true)
   const configValuesNew = getConfigValues(vikeConfigNew._pageConfigGlobal, true)
