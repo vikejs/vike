@@ -108,7 +108,6 @@ async function onFileModified(ctx: HmrContext, config: ResolvedConfig) {
   const isAppFile = await isAppDependency(ctx.file, ctx.server.moduleGraph)
   debugFileChange(isAppFile)
   if (!isAppFile) return
-  const reloadVikeConfig = () => reloadConfig(file, config, 'modified', server)
 
   if (isAppFile.isRuntimeDependency) {
     // Ensure we invalidate `file` *before* server.ssrLoadModule() in updateUserFiles()
@@ -125,7 +124,7 @@ async function onFileModified(ctx: HmrContext, config: ResolvedConfig) {
     assert(!isViteModule)
     */
 
-    reloadVikeConfig()
+    reloadAll(file, config, 'modified', server)
 
     // Trigger a full page reload. (Because files such as +config.js can potentially modify Vike's virtual files.)
     const vikeVirtualFiles = getVikeVirtualFiles(server)
@@ -140,7 +139,6 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
   debugFileChange('server.watcher', file, operation)
   const { moduleGraph } = server
   const isAppFile = await isAppDependency(file, moduleGraph)
-  const reloadVikeConfig = () => reloadConfig(file, config, operation, server)
 
   if (
     // Vike config (non-runtime) code
@@ -156,7 +154,7 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
     //   ```
     (isScriptFile(file) && getVikeConfigError())
   ) {
-    reloadVikeConfig()
+    reloadAll(file, config, operation, server)
   }
 }
 
@@ -190,7 +188,7 @@ async function isAppDependency(filePathAbsoluteFilesystem: string, moduleGraph: 
   return isAppFile
 }
 
-function reloadConfig(
+function reloadAll(
   filePath: string,
   config: ResolvedConfig,
   operation: 'modified' | 'created' | 'removed',
