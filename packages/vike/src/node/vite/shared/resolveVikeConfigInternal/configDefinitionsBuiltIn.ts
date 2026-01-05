@@ -354,8 +354,8 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   vite: {
     env: { config: true },
-    global: true,
     cumulative: true,
+    global: true,
     vite: true,
   },
   disableAutoFullBuild: {
