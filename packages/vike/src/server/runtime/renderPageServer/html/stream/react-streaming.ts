@@ -1,5 +1,6 @@
-// Zero-config support for https://www.npmjs.com/package/react-streaming
 import '../../../../assertEnvServer.js'
+
+// Zero-config support for https://www.npmjs.com/package/react-streaming
 
 export { isStreamFromReactStreamingPackage }
 export { streamFromReactStreamingPackageToString }

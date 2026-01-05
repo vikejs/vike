@@ -1,6 +1,7 @@
+import '../assertEnvServer.js'
+
 // TO-DO/eventually: point package.json#exports['./server'] to this file.
 // - Write migration guide, see comment below.
-import '../assertEnvServer.js'
 
 export * from './index.js'
 import { assertWarning } from '../../utils/assert.js'

@@ -1,6 +1,6 @@
-// Public use
 import '../assertEnvServer.js'
 
+// Public use
 export { getGlobalContext }
 export { getGlobalContextSync }
 export { getGlobalContextAsync }

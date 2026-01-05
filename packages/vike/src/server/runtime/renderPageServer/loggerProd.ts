@@ -1,6 +1,7 @@
+import '../../assertEnvServer.js'
+
 // Logger used for the production server.
 // Any other environment (dev, preview, build, and pre-rendering) uses loggerDev.ts instead.
-import '../../assertEnvServer.js'
 
 export { loggRuntimeErrorProd }
 
