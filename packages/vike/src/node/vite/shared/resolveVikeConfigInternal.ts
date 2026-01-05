@@ -306,6 +306,8 @@ function hasViteConfigChanged(vikeConfigOld: VikeConfigInternal | null, vikeConf
     const valOld = configValuesOld[configName]?.value
     const valNew = configValuesNew[configName]?.value
     if (!deepEqual(valOld, valNew)) {
+      console.log(configName, valOld, valNew)
+      console.log(vikeConfigNew._pageConfigGlobal.configValueSources[configName])
       return true
     }
   }

@@ -1,6 +1,7 @@
 import { defineConfig } from 'vike/types'
 
 export default defineConfig({
+  host: false,
   prerender: {
     enable: null,
     parallel: 4,
