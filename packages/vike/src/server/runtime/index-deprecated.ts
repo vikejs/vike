@@ -4,6 +4,7 @@ import '../assertEnvServer.js'
 // - Write migration guide, see comment below.
 
 export * from './index.js'
+
 import { assertWarning } from '../../utils/assert.js'
 import pc from '@brillout/picocolors'
 assertWarning(
