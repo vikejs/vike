@@ -159,22 +159,24 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
 }
 
 async function isAppDependency(filePathAbsoluteFilesystem: string, moduleGraph: ModuleGraph) {
-  // TODO/ai change it to `isConfigDependency: null | string[]` where string[] represents all + files that (transitively) import `filePathAbsoluteFilesystem`
-  const isAppFile: Partial<{ isConfigDependency: boolean; isRuntimeDependency: boolean }> = {}
+  const isAppFile: Partial<{ isConfigDependency: null | string[]; isRuntimeDependency: boolean }> = {}
 
   // =============================
-  // { isConfigDependency: false }
+  // { isConfigDependency: null | string[] }
   // =============================
   // Vike config (non-runtime) files such as +config.js which aren't processed by Vite.
   // - They're missing in Vite's module graph.
   // - Potentially modifies Vike's virtual files.
   // - Same for all `pages/+config.js` transitive dependencies.
+  // isConfigDependency is null if the file is not a config dependency, or an array of + files that (transitively) import it
   assertPosixPath(filePathAbsoluteFilesystem)
   const vikeConfigObject = await getVikeConfigInternalOptional()
   if (vikeConfigObject) {
     const { _vikeConfigDependencies: vikeConfigDependencies } = vikeConfigObject
-    vikeConfigDependencies.forEach((f) => assertPosixPath(f))
-    isAppFile.isConfigDependency = vikeConfigDependencies.has(filePathAbsoluteFilesystem)
+    const plusFiles = vikeConfigDependencies.get(filePathAbsoluteFilesystem)
+    if (plusFiles !== undefined) {
+      isAppFile.isConfigDependency = plusFiles.length > 0 ? plusFiles : null
+    }
   }
 
   // =============================

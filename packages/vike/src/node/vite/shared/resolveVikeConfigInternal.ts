@@ -127,7 +127,7 @@ type PrerenderContext = {
 type VikeConfigInternal = GlobalConfigPublic & {
   _pageConfigs: PageConfigBuildTime[]
   _pageConfigGlobal: PageConfigGlobalBuildTime
-  _vikeConfigDependencies: Set<string>
+  _vikeConfigDependencies: Map<string, string[]>
   prerenderContext: PrerenderContext
 }
 
@@ -226,7 +226,7 @@ async function resolveVikeConfigInternal_withErrorHandling(
 
   const esbuildCache: EsbuildCache = {
     transpileCache: {},
-    vikeConfigDependencies: new Set(),
+    vikeConfigDependencies: new Map(),
   }
 
   let hasError = false
