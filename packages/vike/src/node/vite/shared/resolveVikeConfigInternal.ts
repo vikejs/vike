@@ -137,61 +137,7 @@ function reloadVikeConfig() {
   assert(globalObject.vikeConfigCtx)
   const { userRootDir, vikeVitePluginOptions } = globalObject.vikeConfigCtx
   assert(vikeVitePluginOptions)
-
-  // Get previous config values for configs with vite: true
-  const previousValues = globalObject.previousViteConfigValues
-
-  // Trigger config reload and handle restart logic asynchronously
-  ;(async () => {
-    // Reload the config
-    await resolveVikeConfigInternal_withErrorHandling(userRootDir, true, vikeVitePluginOptions)
-
-    // Get new config values for configs with vite: true
-    const newValues = getViteConfigValues()
-
-    // Check if any vite-affecting config changed
-    let shouldRestartVite = false
-    if (previousValues === null) {
-      // First load - restart needed
-      shouldRestartVite = true
-    } else {
-      // Compare previous and new values using shallow equal
-      const allConfigNames = new Set([...Object.keys(previousValues), ...Object.keys(newValues)])
-      for (const configName of allConfigNames) {
-        if (!deepEqual(previousValues[configName], newValues[configName])) {
-          shouldRestartVite = true
-          break
-        }
-      }
-    }
-
-    // Store new values for next comparison
-    globalObject.previousViteConfigValues = newValues
-
-    // Only restart Vite if config values actually changed
-    if (shouldRestartVite) {
-      restartViteDevServer()
-    }
-  })()
-}
-
-function getViteConfigValues(): Record<string, unknown> {
-  const vikeConfig = globalObject.vikeConfigSync
-  if (!vikeConfig) return {}
-
-  const viteConfigValues: Record<string, unknown> = {}
-  const { _pageConfigGlobal } = vikeConfig
-  const configDefinitions = getConfigDefinitions([], (configDef) => !!configDef.vite)
-
-  Object.keys(configDefinitions).forEach((configName) => {
-    const configValues = getConfigValues(_pageConfigGlobal, true)
-    const configValue = configValues[configName]
-    if (configValue) {
-      viteConfigValues[configName] = configValue.value
-    }
-  })
-
-  return viteConfigValues
+  resolveVikeConfigInternal_withErrorHandling(userRootDir, true, vikeVitePluginOptions)
 }
 
 async function getVikeConfigInternal(
@@ -271,7 +217,6 @@ function isV1Design(): boolean {
   return globalObject.isV1Design_
 }
 
-// TODO/ai: move the `vite: true` logic here: check whether there is a change in `vite: true` config in this function after vikeConfigPromise resoles/rejects
 async function resolveVikeConfigInternal_withErrorHandling(
   userRootDir: string,
   isDev: boolean,
@@ -285,6 +230,9 @@ async function resolveVikeConfigInternal_withErrorHandling(
     transpileCache: {},
     vikeConfigDependencies: new Set(),
   }
+
+  // Get previous config values for configs with vite: true
+  const previousViteConfigValues = globalObject.previousViteConfigValues
 
   let hasError = false
   let ret: VikeConfigInternal | undefined
@@ -315,12 +263,21 @@ async function resolveVikeConfigInternal_withErrorHandling(
     const hadError = globalObject.vikeConfigHasBuildError
     globalObject.vikeConfigHasBuildError = false
     setVikeConfigError({ errorBuild: false })
+
+    // Check if vite: true configs changed
+    const newViteConfigValues = getViteConfigValues(ret)
+    const viteConfigChanged = checkViteConfigChanged(previousViteConfigValues, newViteConfigValues)
+    globalObject.previousViteConfigValues = newViteConfigValues
+
     if (hadError) {
       logConfigInfo(vikeConfigErrorRecoverMsg, 'error-resolve')
       if (globalObject.restartViteBecauseOfError) {
         globalObject.restartViteBecauseOfError = false
         restartViteDevServer()
       }
+    } else if (viteConfigChanged && isDev) {
+      // Restart Vite dev server only if vite: true configs changed
+      restartViteDevServer()
     }
 
     resolve(ret)
@@ -339,6 +296,41 @@ async function resolveVikeConfigInternal_withErrorHandling(
       resolve(await getVikeConfigDummy(esbuildCache))
     }
   }
+}
+
+function getViteConfigValues(vikeConfig: VikeConfigInternal): Record<string, unknown> {
+  const viteConfigValues: Record<string, unknown> = {}
+  const { _pageConfigGlobal } = vikeConfig
+  const configDefinitions = getConfigDefinitions([], (configDef) => !!configDef.vite)
+
+  Object.keys(configDefinitions).forEach((configName) => {
+    const configValues = getConfigValues(_pageConfigGlobal, true)
+    const configValue = configValues[configName]
+    if (configValue) {
+      viteConfigValues[configName] = configValue.value
+    }
+  })
+
+  return viteConfigValues
+}
+
+function checkViteConfigChanged(
+  previousValues: Record<string, unknown> | null,
+  newValues: Record<string, unknown>,
+): boolean {
+  if (previousValues === null) {
+    // First load - no change
+    return false
+  }
+
+  const allConfigNames = new Set([...Object.keys(previousValues), ...Object.keys(newValues)])
+  for (const configName of allConfigNames) {
+    if (!deepEqual(previousValues[configName], newValues[configName])) {
+      return true
+    }
+  }
+
+  return false
 }
 async function resolveVikeConfigInternal(
   userRootDir: string,
