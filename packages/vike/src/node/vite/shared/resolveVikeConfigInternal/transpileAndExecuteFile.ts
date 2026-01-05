@@ -55,8 +55,7 @@ type EsbuildCache = {
     string, // filePathAbsoluteFilesystem
     Promise<FileExports>
   >
-  vikeConfigDependencies: Map<string, string[]> // dependency file -> array of + files that import it
-  currentPlusFile?: string // Track which + file is currently being transpiled
+  vikeConfigDependencies: Set<string>
 }
 async function transpileAndExecuteFile(
   filePath: FilePathResolved,
@@ -117,18 +116,7 @@ async function transpileFile(
 
   assert(filePathAbsoluteFilesystem)
   assertPosixPath(filePathAbsoluteFilesystem)
-  const currentPlusFile = esbuildCache.currentPlusFile
-  if (currentPlusFile) {
-    const existingImporters = esbuildCache.vikeConfigDependencies.get(filePathAbsoluteFilesystem) || []
-    if (!existingImporters.includes(currentPlusFile)) {
-      esbuildCache.vikeConfigDependencies.set(filePathAbsoluteFilesystem, [...existingImporters, currentPlusFile])
-    }
-  } else {
-    // For config files or non-plus files, ensure they're tracked but with no importers
-    if (!esbuildCache.vikeConfigDependencies.has(filePathAbsoluteFilesystem)) {
-      esbuildCache.vikeConfigDependencies.set(filePathAbsoluteFilesystem, [])
-    }
-  }
+  esbuildCache.vikeConfigDependencies.add(filePathAbsoluteFilesystem)
 
   if (debug.isActivated) debug('transpile', filePathToShowToUserResolved)
   let { code, pointerImports } = await transpileWithEsbuild(filePath, userRootDir, transformImports, esbuildCache)
@@ -342,17 +330,7 @@ async function transpileWithEsbuild(
           // We collect the dependency `args.path` in case the build fails (upon build error => error is thrown => no metafile)
           let { path } = args
           path = toPosixPath(path)
-          const currentPlusFile = esbuildCache.currentPlusFile
-          if (currentPlusFile) {
-            const existingImporters = esbuildCache.vikeConfigDependencies.get(path) || []
-            if (!existingImporters.includes(currentPlusFile)) {
-              esbuildCache.vikeConfigDependencies.set(path, [...existingImporters, currentPlusFile])
-            }
-          } else {
-            if (!esbuildCache.vikeConfigDependencies.has(path)) {
-              esbuildCache.vikeConfigDependencies.set(path, [])
-            }
-          }
+          esbuildCache.vikeConfigDependencies.add(path)
           return undefined
         })
         /* To exhaustively collect all dependencies upon build failure, we would also need to use onResolve().
@@ -382,17 +360,7 @@ async function transpileWithEsbuild(
     filePathRelative = toPosixPath(filePathRelative)
     assertPosixPath(userRootDir)
     const filePathAbsoluteFilesystem = path.posix.join(userRootDir, filePathRelative)
-    const currentPlusFile = esbuildCache.currentPlusFile
-    if (currentPlusFile) {
-      const existingImporters = esbuildCache.vikeConfigDependencies.get(filePathAbsoluteFilesystem) || []
-      if (!existingImporters.includes(currentPlusFile)) {
-        esbuildCache.vikeConfigDependencies.set(filePathAbsoluteFilesystem, [...existingImporters, currentPlusFile])
-      }
-    } else {
-      if (!esbuildCache.vikeConfigDependencies.has(filePathAbsoluteFilesystem)) {
-        esbuildCache.vikeConfigDependencies.set(filePathAbsoluteFilesystem, [])
-      }
-    }
+    esbuildCache.vikeConfigDependencies.add(filePathAbsoluteFilesystem)
   })
 
   const code = result.outputFiles![0]!.text
