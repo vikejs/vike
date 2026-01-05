@@ -159,7 +159,6 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
 }
 
 async function isAppDependency(filePathAbsoluteFilesystem: string, moduleGraph: ModuleGraph) {
-  // TODO/ai change it to `isConfigDependency: null | string[]` where string[] represents all + files that (transitively) import `filePathAbsoluteFilesystem`
   const isAppFile: Partial<{ isConfigDependency: boolean; isRuntimeDependency: boolean }> = {}
 
   // =============================
