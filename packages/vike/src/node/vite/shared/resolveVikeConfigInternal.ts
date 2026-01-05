@@ -271,7 +271,7 @@ async function resolveVikeConfigInternal_withErrorHandling(
         viteRestarted = true
       }
     }
-    if (!viteRestarted && isDev && checkIfViteConfigChanged(vikeConfigPrevious, ret)) {
+    if (!viteRestarted && isDev && hasViteConfigChanged(vikeConfigPrevious, ret)) {
       restartViteDevServer()
     }
 
@@ -293,13 +293,9 @@ async function resolveVikeConfigInternal_withErrorHandling(
   }
 }
 
-function checkIfViteConfigChanged(
-  vikeConfigOld: VikeConfigInternal | null,
-  vikeConfigNew: VikeConfigInternal,
-): boolean {
-  if (vikeConfigOld === null) return false
+function hasViteConfigChanged(vikeConfigOld: VikeConfigInternal | null, vikeConfigNew: VikeConfigInternal): boolean {
+  if (!vikeConfigOld) return false
 
-  // Get all config definitions (including user-defined ones from meta)
   const configDefinitions = vikeConfigNew._pageConfigGlobal.configDefinitions
   const viteConfigNames = Object.keys(configDefinitions).filter((configName) => {
     const configDef = configDefinitions[configName]
@@ -310,9 +306,9 @@ function checkIfViteConfigChanged(
   const configValuesNew = getConfigValues(vikeConfigNew._pageConfigGlobal, true)
 
   for (const configName of viteConfigNames) {
-    const previousValue = configValuesOld[configName]?.value
-    const newValue = configValuesNew[configName]?.value
-    if (!deepEqual(previousValue, newValue)) {
+    const valOld = configValuesOld[configName]?.value
+    const valNew = configValuesNew[configName]?.value
+    if (!deepEqual(valOld, valNew)) {
       return true
     }
   }
