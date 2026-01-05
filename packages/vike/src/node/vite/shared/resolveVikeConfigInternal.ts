@@ -297,18 +297,15 @@ function checkIfViteConfigChanged(
   vikeConfigOld: VikeConfigInternal | null,
   vikeConfigNew: VikeConfigInternal,
 ): boolean {
-  if (vikeConfigOld === null) {
-    // First load - no change
-    return false
-  }
+  if (vikeConfigOld === null) return false
 
   const configDefinitions = getConfigDefinitions([], (configDef) => !!configDef.vite)
-  const configNames = Object.keys(configDefinitions)
+  const viteConfigNames = Object.keys(configDefinitions)
 
   const previousConfigValues = getConfigValues(vikeConfigOld._pageConfigGlobal, true)
   const newConfigValues = getConfigValues(vikeConfigNew._pageConfigGlobal, true)
 
-  for (const configName of configNames) {
+  for (const configName of viteConfigNames) {
     const previousValue = previousConfigValues[configName]?.value
     const newValue = newConfigValues[configName]?.value
     if (!deepEqual(previousValue, newValue)) {
