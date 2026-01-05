@@ -1,3 +1,5 @@
+import '../../../../assertEnvVite.js'
+
 export const errMdx1 = {
   name: '5:5-5:6',
   message: 'Unexpected closing slash `/` in tag, expected an open tag first',

@@ -1,3 +1,5 @@
+import '../assertEnvVite.js'
+
 // TO-DO/next-major-release: remove
 
 // Remove this workaround if the other workaround config.build.ssrEmitAssets turns out to be reliable.
@@ -12,18 +14,13 @@ export { pluginExtractAssets }
 export { extractAssetsRE }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import {
-  assert,
-  assertPosixPath,
-  styleFileRE,
-  createDebug,
-  isScriptFile,
-  assertUsage,
-  rollupSourceMapRemove,
-  addVirtualFileIdPrefix,
-  isVirtualFileId,
-  removeVirtualFileIdPrefix,
-} from '../utils.js'
+import { createDebug } from '../../../utils/debug.js'
+import { isScriptFile } from '../../../utils/isScriptFile.js'
+import { rollupSourceMapRemove } from '../../../utils/rollupSourceMap.js'
+import { styleFileRE } from '../../../utils/styleFileRE.js'
+import { addVirtualFileIdPrefix, isVirtualFileId, removeVirtualFileIdPrefix } from '../../../utils/virtualFileId.js'
+import { assert, assertUsage } from '../../../utils/assert.js'
+import { assertPosixPath } from '../../../utils/path.js'
 import { extractAssetsAddQuery } from '../../../shared-server-node/extractAssetsQuery.js'
 import { isAsset } from '../shared/isAsset.js'
 import { getImportStatements, type ImportStatement } from '../shared/parseEsModule.js'

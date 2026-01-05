@@ -1,10 +1,15 @@
+import '../../assertEnvVite.js'
+
 export { pluginDistFileNames }
 
 // Attempt to preserve file structure of `.page.js` files:
 //  - https://github.com/vikejs/vike/commit/11a4c49e5403aa7c37c8020c462b499425b41854
 //  - Blocker: https://github.com/rollup/rollup/issues/4724
 
-import { assertPosixPath, assert, assertUsage, isArray, isCallable } from '../../utils.js'
+import { assert, assertUsage } from '../../../../utils/assert.js'
+import { isArray } from '../../../../utils/isArray.js'
+import { isCallable } from '../../../../utils/isCallable.js'
+import { assertPosixPath } from '../../../../utils/path.js'
 import path from 'node:path'
 import crypto from 'node:crypto'
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'

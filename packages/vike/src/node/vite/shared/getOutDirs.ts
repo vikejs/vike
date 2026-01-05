@@ -1,10 +1,15 @@
+import '../assertEnvVite.js'
+
 export { getOutDirs }
 export { resolveOutDir }
 export type { OutDirs }
 
 import type { UserConfig, ResolvedConfig } from 'vite'
 import pc from '@brillout/picocolors'
-import { assert, assertPosixPath, assertUsage, createDebug, pathJoin, toPosixPath } from '../utils.js'
+import { createDebug } from '../../../utils/debug.js'
+import { pathJoin, toPosixPath } from '../../../utils/path.js'
+import { assert, assertUsage } from '../../../utils/assert.js'
+import { assertPosixPath } from '../../../utils/path.js'
 import { isViteServerSide_viteEnvOptional, type ViteEnv } from './isViteServerSide.js'
 const debug = createDebug('vike:outDir')
 

@@ -1,7 +1,10 @@
+import '../../assertEnvVite.js'
+
 export { pluginViteRPC }
 
 import type { Plugin, ViteDevServer } from 'vite'
-import { createViteRPC, isDevCheck } from '../../utils.js'
+import { createViteRPC } from '../../../../utils/getViteRPC.js'
+import { isDevCheck } from '../../../../utils/isDev.js'
 import type { ClientDependency } from '../../../../shared-server-client/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { retrievePageAssetsDev } from '../../../../server/runtime/renderPageServer/getPageAssets/retrievePageAssetsDev.js'
 import { getViteConfigRuntime } from '../../shared/getViteConfigRuntime.js'

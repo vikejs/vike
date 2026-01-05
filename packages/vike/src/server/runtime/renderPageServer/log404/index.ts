@@ -1,20 +1,17 @@
-export { log404 }
+import '../../../assertEnvServer.js'
 
+export { log404 }
 // Exported for ./index.spec.ts
 export { getRoutesInfo }
 
 import type { PageRoutes } from '../../../../shared-server-client/route/index.js'
 import { noRouteMatch } from '../../../../shared-server-client/route/noRouteMatch.js'
 import type { GlobalContextServerInternal } from '../../globalContext.js'
-import {
-  assert,
-  assertUsage,
-  assertInfo,
-  compareString,
-  stripAnsi,
-  getTerminalWidth,
-  truncateString,
-} from '../../../utils.js'
+import { assert, assertUsage, assertInfo } from '../../../../utils/assert.js'
+import { compareString } from '../../../../utils/compareString.js'
+import { stripAnsi } from '../../../../utils/colorsServer.js'
+import { getTerminalWidth } from '../../../../utils/getTerminalWidth.js'
+import { truncateString } from '../../../../utils/truncateString.js'
 import pc from '@brillout/picocolors'
 import type { PageContextCreatedServer } from '../createPageContextServer.js'
 

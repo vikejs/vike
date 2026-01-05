@@ -1,3 +1,5 @@
+import '../../../../assertEnvVite.js'
+
 export const errSwcBig = {
   code: 'GenericFailure',
   line: '6',

@@ -1,3 +1,5 @@
+import '../assertEnvVite.js'
+
 export { pluginWorkaroundVite6HmrRegression }
 
 import type { Plugin } from 'vite'

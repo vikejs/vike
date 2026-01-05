@@ -1,3 +1,5 @@
+import '../../assertEnvVite.js'
+
 export { transpileAndExecuteFile }
 export { getConfigBuildErrorFormatted }
 export { getConfigExecutionErrorIntroMsg }
@@ -18,25 +20,19 @@ import fs from 'node:fs'
 import path from 'node:path'
 import pc from '@brillout/picocolors'
 import { import_ } from '@brillout/import'
-import {
-  assertPosixPath,
-  getRandomId,
-  assertIsNotProductionRuntime,
-  assert,
-  assertWarning,
-  isObject,
-  toPosixPath,
-  assertUsage,
-  isPlainScriptFile,
-  createDebug,
-  assertFilePathAbsoluteFilesystem,
-  assertIsImportPathNpmPackage,
-  genPromise,
-  isVitest,
-  isImportPathNpmPackageOrPathAlias,
-  isImportPathRelative,
-  requireResolveOptionalDir,
-} from '../../utils.js'
+import { assert, assertWarning, assertUsage } from '../../../../utils/assert.js'
+import { assertIsNotProductionRuntime } from '../../../../utils/assertSetup.js'
+import { createDebug } from '../../../../utils/debug.js'
+import { genPromise } from '../../../../utils/genPromise.js'
+import { getRandomId } from '../../../../utils/getRandomId.js'
+import { assertFilePathAbsoluteFilesystem } from '../../../../utils/isFilePathAbsoluteFilesystem.js'
+import { isImportPathRelative } from '../../../../utils/isImportPath.js'
+import { isObject } from '../../../../utils/isObject.js'
+import { isPlainScriptFile } from '../../../../utils/isScriptFile.js'
+import { isVitest } from '../../../../utils/isVitest.js'
+import { assertIsImportPathNpmPackage, isImportPathNpmPackageOrPathAlias } from '../../../../utils/parseNpmPackage.js'
+import { assertPosixPath, toPosixPath } from '../../../../utils/path.js'
+import { requireResolveOptionalDir } from '../../../../utils/requireResolve.js'
 import { transformPointerImports } from './pointerImports.js'
 import sourceMapSupport from 'source-map-support'
 import type { FilePathResolved } from '../../../../types/FilePath.js'

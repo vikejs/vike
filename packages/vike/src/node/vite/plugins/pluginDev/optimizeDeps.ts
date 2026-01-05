@@ -1,18 +1,17 @@
+import '../../assertEnvVite.js'
+
 export { optimizeDeps }
 export { resolveOptimizeDeps }
 
 import type { ResolvedConfig, UserConfig } from 'vite'
 import { findPageFiles } from '../../shared/findPageFiles.js'
-import {
-  assert,
-  assertIsImportPathNpmPackage,
-  createDebug,
-  getNpmPackageName,
-  isArray,
-  isFilePathAbsoluteFilesystem,
-  isVirtualFileId,
-  requireResolveOptional,
-} from '../../utils.js'
+import { assert } from '../../../../utils/assert.js'
+import { createDebug } from '../../../../utils/debug.js'
+import { isArray } from '../../../../utils/isArray.js'
+import { isFilePathAbsoluteFilesystem } from '../../../../utils/isFilePathAbsoluteFilesystem.js'
+import { assertIsImportPathNpmPackage, getNpmPackageName } from '../../../../utils/parseNpmPackage.js'
+import { requireResolveOptional } from '../../../../utils/requireResolve.js'
+import { isVirtualFileId } from '../../../../utils/virtualFileId.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { analyzeClientEntries } from '../build/pluginBuildConfig.js'
 import type { DefinedAtFilePath, PageConfigBuildTime } from '../../../../types/PageConfig.js'

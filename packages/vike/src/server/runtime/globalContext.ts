@@ -1,3 +1,5 @@
+import '../assertEnvServer.js'
+
 // Public use
 export { getGlobalContext }
 export { getGlobalContextSync }
@@ -33,27 +35,22 @@ export type { GlobalContextServerInternal }
 // - In development: globalObject.viteDevServer which is Vite's development server
 //   - globalObject.viteDevServer is used by updateUserFiles() which then sets virtualFileExportsGlobalEntry
 
-import {
-  assert,
-  onSetupRuntime,
-  assertUsage,
-  assertWarning,
-  isPlainObject,
-  objectReplace,
-  isObject,
-  hasProp,
-  getGlobalObject,
-  genPromise,
-  createDebug,
-  checkType,
-  PROJECT_VERSION,
-  getViteRPC,
-  isRunnableDevEnvironment,
-  assertIsNotBrowser,
-  isNonRunnableDevProcess,
-  objectAssign,
-  setNodeEnvProductionIfUndefined,
-} from '../utils.js'
+import { PROJECT_VERSION } from '../../utils/PROJECT_VERSION.js'
+import { assert, assertUsage, assertWarning } from '../../utils/assert.js'
+import { assertIsNotBrowser } from '../../utils/assertIsNotBrowser.js'
+import { isPlainObject } from '../../utils/isPlainObject.js'
+import { objectReplace } from '../../utils/objectReplace.js'
+import { genPromise } from '../../utils/genPromise.js'
+import { createDebug } from '../../utils/debug.js'
+import { getViteRPC } from '../../utils/getViteRPC.js'
+import { isRunnableDevEnvironment } from '../../utils/isRunnableDevEnvironment.js'
+import { isNonRunnableDevProcess } from '../../utils/isNonRunnableDevProcess.js'
+import { onSetupRuntime, setNodeEnvProductionIfUndefined } from '../../utils/assertSetup.js'
+import { checkType } from '../../utils/checkType.js'
+import { getGlobalObject } from '../../utils/getGlobalObject.js'
+import { hasProp } from '../../utils/hasProp.js'
+import { isObject } from '../../utils/isObject.js'
+import { objectAssign } from '../../utils/objectAssign.js'
 import type { ViteManifest } from '../../types/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'

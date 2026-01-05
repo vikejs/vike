@@ -1,7 +1,10 @@
+import '../../assertEnvServer.js'
+
 export { inferMediaType }
 export type { MediaType }
 
-import { styleFileRE, isScriptFile } from '../../utils.js'
+import { styleFileRE } from '../../../utils/styleFileRE.js'
+import { isScriptFile } from '../../../utils/isScriptFile.js'
 
 type MediaType = null | {
   // List of `as` values: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link#attr-as

@@ -1,3 +1,5 @@
+import '../../../../assertEnvVite.js'
+
 export const errVueJavascript = {
   code: 'BABEL_PARSER_SYNTAX_ERROR',
   reasonCode: 'MissingSemicolon',

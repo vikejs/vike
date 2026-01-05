@@ -1,3 +1,5 @@
+import '../assertEnvServer.js'
+
 export { navigate }
 export { reload }
 export { prefetch }

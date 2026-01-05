@@ -4,15 +4,12 @@ export { isJsonValue }
 export type { FilesEnv }
 
 import { assertIsNotProductionRuntime } from '../../../utils/assertSetup.js'
-import {
-  assert,
-  assertIsNotBrowser,
-  assertPosixPath,
-  assertUsage,
-  deepEqual,
-  getPropAccessNotation,
-  isImportPathRelative,
-} from '../../../node/vite/utils.js'
+import { assert, assertUsage } from '../../../utils/assert.js'
+import { assertIsNotBrowser } from '../../../utils/assertIsNotBrowser.js'
+import { assertPosixPath } from '../../../utils/path.js'
+import { deepEqual } from '../../../utils/deepEqual.js'
+import { getPropAccessNotation } from '../../../utils/getPropAccessNotation.js'
+import { isImportPathRelative } from '../../../utils/isImportPath.js'
 import type {
   ConfigEnvInternal,
   ConfigValue,

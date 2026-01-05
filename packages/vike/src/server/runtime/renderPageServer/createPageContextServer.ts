@@ -1,9 +1,14 @@
+import '../../assertEnvServer.js'
+
 export { createPageContextServer }
 export { createPageContextServerWithoutGlobalContext }
 export type { PageContextCreatedServer }
 export type { PageContextCreatedServerWithoutGlobalContext }
 
-import { assert, assertUsage, assertWarning, updateType, normalizeHeaders, objectAssign } from '../../utils.js'
+import { normalizeHeaders } from '../../../utils/normalizeHeaders.js'
+import { assert, assertUsage, assertWarning } from '../../../utils/assert.js'
+import { objectAssign } from '../../../utils/objectAssign.js'
+import { updateType } from '../../../utils/updateType.js'
 import { getPageContextUrlComputed } from '../../../shared-server-client/getPageContextUrlComputed.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { PageContextInit } from '../renderPageServer.js'

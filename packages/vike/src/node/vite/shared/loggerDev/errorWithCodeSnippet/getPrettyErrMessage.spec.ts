@@ -1,5 +1,4 @@
 import { getPrettyErrMessage } from '../errorWithCodeSnippet.js'
-
 import { expect, describe, it } from 'vitest'
 
 describe('getPrettyErrMessage()', () => {

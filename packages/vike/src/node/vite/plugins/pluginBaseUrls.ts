@@ -1,8 +1,10 @@
+import '../assertEnvVite.js'
+
 export { pluginBaseUrls }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { resolveBase } from '../../../shared-server-node/resolveBase.js'
-import { assert } from '../utils.js'
+import { assert } from '../../../utils/assert.js'
 import { getVikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 
 function pluginBaseUrls(): Plugin[] {

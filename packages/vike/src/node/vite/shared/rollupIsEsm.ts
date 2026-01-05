@@ -1,5 +1,10 @@
-import { assert } from '../utils.js'
-export function rollupIsEsm(rollupOptions: { format: string }) {
+import '../assertEnvVite.js'
+
+export { rollupIsEsm }
+
+import { assert } from '../../../utils/assert.js'
+
+function rollupIsEsm(rollupOptions: { format: string }) {
   const { format } = rollupOptions
   assert(typeof format === 'string')
   assert(

@@ -1,10 +1,12 @@
+import '../../assertEnvVite.js'
+
 export { applyStaticReplace }
 export type { StaticReplace }
 
 import { transformAsync, type PluginItem, type NodePath } from '@babel/core'
 import * as t from '@babel/types'
 import { parseImportString, type ImportStringParsed } from '../../shared/importString.js'
-import { assert } from '../../utils.js'
+import { assert } from '../../../../utils/assert.js'
 
 // ============================================================================
 // Public API

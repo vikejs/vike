@@ -1,3 +1,5 @@
+import '../assertEnvVite.js'
+
 export { interceptViteLogs }
 export { processStartupLog }
 export { swallowViteLogForceOptimization_enable }
@@ -5,14 +7,11 @@ export { swallowViteLogForceOptimization_disable }
 export { swallowViteLogConnected }
 export { swallowViteLogConnected_clean }
 
-import {
-  assert,
-  getGlobalObject,
-  isDebugError,
-  removeEmptyLines,
-  trimWithAnsi,
-  trimWithAnsiTrailOnly,
-} from '../utils.js'
+import { isDebugError } from '../../../utils/debug.js'
+import { removeEmptyLines } from '../../../utils/removeEmptyLines.js'
+import { trimWithAnsi, trimWithAnsiTrailOnly } from '../../../utils/trimWithAnsi.js'
+import { assert } from '../../../utils/assert.js'
+import { getGlobalObject } from '../../../utils/getGlobalObject.js'
 import { getRequestId_withAsyncHook } from '../../../server/runtime/asyncHook.js'
 import { logErrorServerDev, logVite } from './loggerDev.js'
 import type { LogType as LoggerType, ResolvedConfig, LogErrorOptions } from 'vite'

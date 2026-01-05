@@ -1,9 +1,13 @@
+import './assertEnvCli.js'
+
 export { parseCli }
 export type { Command }
 export type { CliOptions }
 
 import pc from '@brillout/picocolors'
-import { assert, includes, PROJECT_VERSION } from './utils.js'
+import { assert } from '../../utils/assert.js'
+import { includes } from '../../utils/includes.js'
+import { PROJECT_VERSION } from '../../utils/PROJECT_VERSION.js'
 import { parseJson5 } from '../vite/shared/getEnvVarObject.js'
 
 type CliOptions = Record<string, unknown>

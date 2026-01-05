@@ -1,3 +1,5 @@
+import '../../assertEnvServer.js'
+
 export { analyzePage }
 
 import type { ClientDependency } from '../../../shared-server-client/getPageFiles/analyzePageClientSide/ClientDependency.js'

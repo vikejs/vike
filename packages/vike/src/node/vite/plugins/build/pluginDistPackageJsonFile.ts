@@ -1,3 +1,5 @@
+import '../../assertEnvVite.js'
+
 export { pluginDistPackageJsonFile }
 
 // We create a file `dist/server/package.json` to support ESM users.

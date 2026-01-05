@@ -1,19 +1,16 @@
+import '../../assertEnvVite.js'
+
 export { pluginBuildConfig }
 export { assertRollupInput }
 export { analyzeClientEntries }
 
-import {
-  assert,
-  setAssertOnBeforeLog,
-  removeFileExtension,
-  unique,
-  assertUsage,
-  injectRollupInputs,
-  normalizeRollupInput,
-  onSetupBuild,
-  assertIsImportPathNpmPackage,
-  requireResolveDistFile,
-} from '../../utils.js'
+import { assert, setAssertOnBeforeLog, assertUsage } from '../../../../utils/assert.js'
+import { onSetupBuild } from '../../../../utils/assertSetup.js'
+import { injectRollupInputs, normalizeRollupInput } from '../../../../utils/injectRollupInputs.js'
+import { assertIsImportPathNpmPackage } from '../../../../utils/parseNpmPackage.js'
+import { removeFileExtension } from '../../../../utils/removeFileExtension.js'
+import { requireResolveDistFile } from '../../../../utils/requireResolve.js'
+import { unique } from '../../../../utils/unique.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { findPageFiles } from '../../shared/findPageFiles.js'
 import type { ResolvedConfig, Plugin } from 'vite'

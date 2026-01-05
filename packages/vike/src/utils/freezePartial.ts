@@ -1,8 +1,8 @@
 export { freezePartial }
 
-import pc from '@brillout/picocolors'
 // Unit tests at ./freezePartial.spec.ts
 
+import pc from '@brillout/picocolors'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
 assertIsNotBrowser()
 

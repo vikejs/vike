@@ -1,6 +1,10 @@
+import '../../../assertEnvServer.js'
+
 export { assertNoInfiniteHttpRedirect }
 
-import { assert, assertUsage, getGlobalObject, removeUrlOrigin } from '../../../utils.js'
+import { assert, assertUsage } from '../../../../utils/assert.js'
+import { getGlobalObject } from '../../../../utils/getGlobalObject.js'
+import { removeUrlOrigin } from '../../../../utils/parseUrl-extras.js'
 import pc from '@brillout/picocolors'
 
 type Graph = Record<string, Set<string>>

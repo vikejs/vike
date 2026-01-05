@@ -1,8 +1,10 @@
+import '../../assertEnvServer.js'
+
 export { resolveHeadersResponseEarly }
 export { resolveHeadersResponseFinal }
 
 import { addCspResponseHeader, PageContextCspNonce } from './csp.js'
-import { isCallable } from '../../utils.js'
+import { isCallable } from '../../../utils/isCallable.js'
 import { cacheControlDisable, getCacheControl } from './getCacheControl.js'
 import type { PageContextAfterPageEntryLoaded } from './loadPageConfigsLazyServerSide.js'
 

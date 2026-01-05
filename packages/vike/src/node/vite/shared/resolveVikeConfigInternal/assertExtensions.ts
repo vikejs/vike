@@ -1,8 +1,13 @@
+import '../../assertEnvVite.js'
+
 export { assertExtensionsConventions }
 export { assertExtensionsRequire }
 
 import pc from '@brillout/picocolors'
-import { PROJECT_VERSION, assert, assertUsage, assertWarning, findPackageJson, isObject } from '../../utils.js'
+import { PROJECT_VERSION } from '../../../../utils/PROJECT_VERSION.js'
+import { assert, assertUsage, assertWarning } from '../../../../utils/assert.js'
+import { findPackageJson } from '../../../../utils/findPackageJson.js'
+import { isObject } from '../../../../utils/isObject.js'
 import { getConfVal } from '../resolveVikeConfigInternal.js'
 import type { PlusFile } from './getPlusFilesByLocationId.js'
 import path from 'node:path'
